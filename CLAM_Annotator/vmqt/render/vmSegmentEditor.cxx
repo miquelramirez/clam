@@ -75,6 +75,7 @@ namespace CLAM
 			unsigned current = mSegmentation->current();
 			const Segmentation::TimePositions & beginnings = mSegmentation->onsets();
 			const Segmentation::TimePositions & endings = mSegmentation->offsets();
+			glLineWidth(2);
 			for(unsigned i=0;  i < nElems; i++)
 			{
 				if(beginnings[i] > mView.right) break;
@@ -92,6 +93,7 @@ namespace CLAM
 			if (current>=nElems) return; // no current
 			if (IsVisible(beginnings[current],endings[current],mView.left,mView.right)) 
 				StippledRect(beginnings[current],endings[current],mYRange.min,mYRange.max);
+			glLineWidth(1);
 		}
 
 		void SegmentEditor::MouseMoveEvent(double x, double y)
@@ -369,7 +371,6 @@ namespace CLAM
 		{
 			float vPadding = mVMargin-(2.0*(mView.top-mView.bottom)/double(mViewport.h));
 			float hPadding = 3.0*(mView.right-mView.left)/double(mViewport.w);
-			glLineWidth(2);
 			// draw stippled rect
 			glColor3ub(mColors[STIPPLED].r,mColors[STIPPLED].g,mColors[STIPPLED].b);
 			glEnable(GL_LINE_STIPPLE);
@@ -378,7 +379,6 @@ namespace CLAM
 			PlainRect(left-hPadding,right+hPadding,bottom-vPadding,top+vPadding);
 			glEnd();
 			glDisable(GL_LINE_STIPPLE);
-			glLineWidth(1);
 		}
 
 		bool SegmentEditor::IsVisible(double left, double right, double lBound, double rBound)
@@ -395,22 +395,17 @@ namespace CLAM
 										bool isSelected)
 		{
 			int cindex = isSelected ? SELECTED : NORMAL;
-			int lineWidth = isCurrent ? CLINEWIDTH : NLINEWIDTH;
-			glLineWidth(lineWidth);
 			// fill rec
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			glEnable(GL_BLEND);
 			glColor4ub(mColors[cindex].r,mColors[cindex].g,mColors[cindex].b,125);
 			glBegin(GL_QUADS);
 			PlainRect(left,right,bottom,top);
 			glEnd();
-			glDisable(GL_BLEND);
 			// draw plain
-			glColor3ub(mColors[cindex].r,mColors[cindex].g,mColors[cindex].b);
+			glColor4ub(mColors[cindex].r,mColors[cindex].g,mColors[cindex].b,200);
 			glBegin(GL_LINE_STRIP);
 			PlainRect(left,right,bottom,top);
 			glEnd();
-			glLineWidth(1);
 		}
 
 		void SegmentEditor::DrawVHighlighted(double bottom,  double top)
@@ -421,16 +416,13 @@ namespace CLAM
 				? mSegmentation->onsets()[mHighlighted] 
 				: mSegmentation->offsets()[mHighlighted];
 			bool isCurrent = (mHighlighted == (int)mSegmentation->current());
-			int lineWidth = isCurrent ? CLINEWIDTH : NLINEWIDTH;
 		   
-			glLineWidth(lineWidth);
 			// draw vertical highlighted 
 			glColor3ub(mColors[HIGHLIGHTED].r,mColors[HIGHLIGHTED].g,mColors[HIGHLIGHTED].b);
 			glBegin(GL_LINES);
 			glVertex2d(x,top-mVMargin); 
 			glVertex2d(x,bottom+mVMargin);
 			glEnd();
-			glLineWidth(1);
 		}
 	}
 }
