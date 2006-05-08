@@ -52,4 +52,8 @@ from the source tarballs.
     $ scons package
 
 
+Mac OSX specific
+-----------------
+
+Compilation in OSX is still to be tested
 
