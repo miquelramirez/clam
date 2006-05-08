@@ -83,41 +83,37 @@ namespace CLAM
 			unsigned offset = (mView.left > 0) ? unsigned(mView.left) : 0;
 			unsigned length = unsigned(mView.right-mView.left);
 
-			if(mHugeModeEnabled)
+			if(mHugeModeEnabled && length/5 >= unsigned(mViewport.w) )
 			{
-				if(length/5 >= (unsigned)mViewport.w)
-				{
-					mHugeMode = true;
-					unsigned start_search, end_search, search_interval_len, search_rem_interval_len;
-					unsigned max_size = (unsigned)mViewport.w;
-					mMaxArray.resize(max_size);
-					mMinArray.resize(max_size);
+				mHugeMode = true;
+				unsigned max_size = (unsigned)mViewport.w;
+				mMaxArray.resize(max_size);
+				mMinArray.resize(max_size);
 
-					search_interval_len = length / max_size;
-					search_rem_interval_len = length % max_size;
-			
-					unsigned first_pass_iterations = (search_rem_interval_len) ? max_size-1 : max_size;
-					start_search = offset;
-					end_search = start_search + search_interval_len;				
-			
-					CLAM::TData * dataPtr = &mCachedData[0];
-					for(unsigned i=0; i < first_pass_iterations; i++)
-					{
-						mMaxArray[i] = *std::max_element(dataPtr+start_search, 
-														 dataPtr+end_search);
-						mMinArray[i] = *std::min_element(dataPtr+start_search, 
-														 dataPtr+end_search);
-						start_search = end_search;
-						end_search += search_interval_len;	
-					}
-					if(!search_rem_interval_len) return;
-					mMaxArray[max_size-1] = *std::max_element(dataPtr+start_search, 
-															  dataPtr+start_search+search_rem_interval_len);
-					mMinArray[max_size-1] = *std::min_element(dataPtr+start_search, 
-															  dataPtr+start_search+search_rem_interval_len);
-					mLocalView.right = double(mMaxArray.size())-1;
-					return;
+				unsigned search_interval_len = length / max_size;
+				unsigned search_rem_interval_len = length % max_size;
+		
+				unsigned first_pass_iterations = (search_rem_interval_len) ? max_size-1 : max_size;
+				unsigned start_search = offset;
+				unsigned end_search = start_search + search_interval_len;				
+		
+				CLAM::TData * dataPtr = &mCachedData[0];
+				for(unsigned i=0; i < first_pass_iterations; i++)
+				{
+					mMaxArray[i] = *std::max_element(dataPtr+start_search, 
+													 dataPtr+end_search);
+					mMinArray[i] = *std::min_element(dataPtr+start_search, 
+													 dataPtr+end_search);
+					start_search = end_search;
+					end_search += search_interval_len;	
 				}
+				if(!search_rem_interval_len) return;
+				mMaxArray[max_size-1] = *std::max_element(dataPtr+start_search, 
+														  dataPtr+start_search+search_rem_interval_len);
+				mMinArray[max_size-1] = *std::min_element(dataPtr+start_search, 
+														  dataPtr+start_search+search_rem_interval_len);
+				mLocalView.right = double(mMaxArray.size())-1;
+				return;
 			}
 	
 			mHugeMode = false;
