@@ -3,7 +3,6 @@
 
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
-#include <CLAM/Array.hxx>
 #include "Project.hxx"
 #include <vector>
 
@@ -47,8 +46,6 @@ namespace VM
 			void setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
 			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
 			void clearData();
-			void initData(const CLAM_Annotator::FrameDivision & frameDivision, const CLAM::DataArray * arrays, unsigned nFrames, const std::list<std::string> & binLabels, CLAM::TData samplingRate);
-			void initData(unsigned nFrames);
 		protected:
 			double *_frameData;
 			int _updatePending;
