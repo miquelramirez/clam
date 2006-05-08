@@ -1,11 +1,12 @@
 
- * Instant views optimizations to avoid KeySpace flickering
 
 2006-05-08 v0.3.1
 'Review feedback release'
  * Using CLAM 0.91 (CVS)
  * Instant views are managed as plugins and can be usable in any suited attribute
    which can be selected from the user interface. (Views/Add instant view)
+ * Instant views optimizations to avoid KeySpace flickering
+ * Fix: Artifacts on the segmentation editor view
  * Fix: The extractor console now keeps the aspect of the output
  * Fix: Crash when a descriptor load failed and the audio is longer
  * BocaClient:
