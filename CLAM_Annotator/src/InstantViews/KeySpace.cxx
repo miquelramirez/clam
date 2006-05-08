@@ -26,22 +26,9 @@ unsigned nY = 100;
 std::vector<float> weights;
 
 
-inline void Rectangle(float x, float y, float w, float h)
-{
-	glBegin(GL_QUADS);
-		glVertex2f( x,   y+h );
-		glVertex2f( x+w, y+h );
-		glVertex2f( x+w, y );
-		glVertex2f( x,   y );
-	glEnd();
-}
-
-
-
 CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
 	: PcpTorus(parent)
 {
-	x = y = w = h = 0;
 	x_res = 1;
 	y_res = 1;
 
@@ -100,7 +87,7 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 	}
 	_maxValue = 1;
 	setWhatsThis(tr(
-				"<p>The <b>Key Space view</b> represents the probability of each key/chord to be the one played.</p>\n"
+				"<p>The <b>Key Space view</b> represents the probability of each key/chord to be the one being played.</p>\n"
 				"<p>Mayor chords/keys are displayed with uppercase letters and minor chords/keys are displayed with lowercase letters.\n"
 				"Tonally close key/chords are displayed closer so normally you have a color stain covering several chords\n"
 				"with the most probable chord as a central color spot.</p>\n"
@@ -115,11 +102,7 @@ void CLAM::VM::KeySpace::initializeGL()
 }
 void CLAM::VM::KeySpace::resizeGL(int width, int height)
 {
-	x = 0;
-	y = 0;
-	w = width;
-	h = height;
-	glViewport(x,y,w,h);
+	glViewport(0,0,width,height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0,x_res,y_res,0,-2,2);
@@ -170,6 +153,7 @@ void CLAM::VM::KeySpace::DrawTiles()
 	if (_nBins!=nKeyNodes) return;
 	float xStep = x_res/nX;
 	float yStep = y_res/nY;
+	glBegin(GL_QUADS);
 	for(unsigned i=0; i<nX; i++)
 	{
 		float x1 = i*xStep;
@@ -193,9 +177,13 @@ void CLAM::VM::KeySpace::DrawTiles()
 			ColorIndex *= 200.f;
 			int cidx = floorf(ColorIndex);
 			glColor3d(pRColor[cidx],pGColor[cidx],pBColor[cidx]);
-			Rectangle(x1,y1,xStep,yStep);
+			glVertex2f( x1,   y1+yStep );
+			glVertex2f( x1+xStep, y1+yStep );
+			glVertex2f( x1+xStep, y1 );
+			glVertex2f( x1,   y1 );
 		}
 	}
+	glEnd();
 }
 
 void CLAM::VM::KeySpace::DrawLabels()
