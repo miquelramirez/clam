@@ -6,23 +6,6 @@
         <translation>Quant a l&apos;Annotador de Música</translation>
     </message>
     <message>
-        <source>&lt;p&gt;The CLAM Annotator is a tool that allows:
-&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Supervise and correct the results 
-of automated audio feature extraction
-algorithms.&lt;/li&gt;
-&lt;li&gt;Generate manually edited annotations of audio
-as training examples 
-or ground truth for those algorithms.&lt;/li&gt;
-&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;p&gt;El CLAM Music Annotator és una eina que permet:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Supervisar i corregir els resultats d&apos;algoritmes d&apos;extracció automàtica de característiques de l&apos;àudio.&lt;/li&gt;
-&lt;li&gt;Generar anotacions manuals que serveixin d&apos;exemples d&apos;entrenament o de referència per avaluar aquests algorismes.&lt;/li&gt;
-&lt;/ul&gt;</translation>
-    </message>
-    <message>
         <source>Authors</source>
         <translation>Autors</translation>
     </message>
@@ -39,34 +22,6 @@ or ground truth for those algorithms.&lt;/li&gt;
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br /&gt;Free Software Foundation, Inc.,&lt;br /&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>&lt;p&gt;Authors:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Xavier Amatriain &amp;lt;xavier@create.ucsb.edu&amp;gt;&lt;/li&gt;
-&lt;li&gt;David Garcia &amp;lt;dgarcia@iua.upf.edu&amp;gt; &lt;/li&gt;
-&lt;li&gt;Ismael Mosquera &amp;lt;imosquera@iua.upf.edu&amp;gt;&lt;/li&gt;
-&lt;li&gt;Jordi Massaguer &amp;lt;jmassaguer@iua.upf.edu&amp;gt;&lt;/li&gt;
-&lt;li&gt;The CLAM Team &amp;lt;clam@iua.upf.edu&amp;gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Contributors:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; (&quot;Key Space&quot; view)&lt;/li&gt;
-&lt;/ul&gt;
-</source>
-        <translation type="obsolete">&lt;p&gt;Autors:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Xavier Amatriain &amp;lt;xavier@create.ucsb.edu&amp;gt;&lt;/li&gt;
-&lt;li&gt;David Garcia &amp;lt;dgarcia@iua.upf.edu&amp;gt; &lt;/li&gt;
-&lt;li&gt;Ismael Mosquera &amp;lt;imosquera@iua.upf.edu&amp;gt;&lt;/li&gt;
-&lt;li&gt;Jordi Massaguer &amp;lt;jmassaguer@iua.upf.edu&amp;gt;&lt;/li&gt;
-&lt;li&gt;L&apos;equip CLAM &amp;lt;clam@iua.upf.edu&amp;gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Contributors:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; (vista \&quot;Espai de claus&quot;)&lt;/li&gt;
-&lt;/ul&gt;
-</translation>
-    </message>
-    <message>
         <source>&lt;p&gt;This software is partially founded by:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;SIMAC IST-507142 European Project&lt;/li&gt;
@@ -77,12 +32,6 @@ or ground truth for those algorithms.&lt;/li&gt;
 &lt;li&gt;El projecte europeu SIMAC IST-507142&lt;/li&gt;
 &lt;li&gt;La Generalitat de Catalunya, exp. 200/05 ST&lt;/li&gt;
 &lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;b&gt;CLAM Annotator v 0.3&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;Based on CLAM v0.90&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;&lt;b&gt;Annotador de Música de CLAM v 0.3&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;Basat en CLAM v0.90&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Music Annotator v 0.3.1&lt;/b&gt;&lt;/p&gt;
@@ -151,26 +100,6 @@ or ground truth for those algorithms.&lt;/li&gt;
         <translation>&lt;p&gt;&lt;b&gt;No ha estat possible obrir el arxiu seleccionat &apos;&apos;%1&apos;&lt;/b&gt;&lt;/p&gt;.</translation>
     </message>
     <message>
-        <source>&lt;p&gt;&lt;b&gt;Error: No extractor defined for the project.&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;Unable to extract descriptors from song. Define the extractor first, please.&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;&lt;b&gt;Error: No heu definit cap extractor pel projecte.&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;No es pot extreure cap descriptor fins que ho feu.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;b&gt;Error: Unable to launch the extractor.&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;Check that the extractor is well configured and you have permissions to run it.&lt;/p&gt;
-&lt;p&gt;The configured command was:&lt;/p&gt;
-&lt;tt&gt;%1&lt;/tt&gt;</source>
-        <translation type="obsolete">&lt;p&gt;&lt;b&gt;Error: No ha estat possible llençar l&apos;extractor.&lt;/b&gt;&lt;/p&gt;
-&lt;p&gt;Comproveu que l&apos;extractor està correctamente generat i teniu permissos d&apos;execució.&lt;/p&gt;
-&lt;p&gt;La comanda configurada actualement és:&lt;/p&gt;
-&lt;tt&gt;%1&lt;/tt&gt;</translation>
-    </message>
-    <message>
-        <source>&amp;%1 %2</source>
-        <translation type="obsolete">&amp;%1 %2</translation>
-    </message>
-    <message>
         <source>Project Documentation</source>
         <translation>Documentació del projecte</translation>
     </message>
@@ -185,10 +114,6 @@ or ground truth for those algorithms.&lt;/li&gt;
     <message>
         <source> [modified project]</source>
         <translation> [projecte modificat]</translation>
-    </message>
-    <message>
-        <source> [modified song]</source>
-        <translation type="obsolete"> [canço modificada]</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;em&gt;(No project documentation available)&lt;/em&gt;&lt;/p&gt;</source>
@@ -219,20 +144,12 @@ or ground truth for those algorithms.&lt;/li&gt;
         <translation>La interfície ha estat adaptada al nou esquema.</translation>
     </message>
     <message>
-        <source>Adding Segmentation: &apos;%1&apos;</source>
-        <translation type="obsolete">Afegint segmentació: &apos;%1&apos;</translation>
-    </message>
-    <message>
         <source>Removing segment at </source>
         <translation> S&apos;ha eliminat un segment a la posició </translation>
     </message>
     <message>
         <source>Inserting segment at </source>
         <translation> S&apos;ha inserit un segment a la posició </translation>
-    </message>
-    <message>
-        <source>Error Loading Project File</source>
-        <translation type="obsolete">Error carregant l&apos;arxiu del projecte</translation>
     </message>
     <message>
         <source>Frame %1 changed value from %2 to %3</source>
@@ -277,10 +194,6 @@ or ground truth for those algorithms.&lt;/li&gt;
         <translation>Escolliu un nom de ficher pel nou projecte</translation>
     </message>
     <message>
-        <source>Annotator project files (*.pro)</source>
-        <translation type="obsolete">Projectes de l&apos;Anotador de Música (*.pro)</translation>
-    </message>
-    <message>
         <source>Save Changes</source>
         <translation>Desar els canvis</translation>
     </message>
@@ -289,20 +202,8 @@ or ground truth for those algorithms.&lt;/li&gt;
         <translation>Descartar els canvis</translation>
     </message>
     <message>
-        <source>Saving Previous Song Descriptors...</source>
-        <translation type="obsolete">S&apos;estan desant la descripció de la cançò...</translation>
-    </message>
-    <message>
         <source>Loading descriptors...</source>
         <translation>S&apos;està carregant la descripció de la cançò...</translation>
-    </message>
-    <message>
-        <source>Filling Global Descriptors...</source>
-        <translation type="obsolete">S&apos;estan omplint els descriptors a nivell de cançò...</translation>
-    </message>
-    <message>
-        <source>Drawing Audio...</source>
-        <translation type="obsolete">Dibuixant l&apos;àudio...</translation>
     </message>
     <message>
         <source>Error opening audio file</source>
@@ -311,10 +212,6 @@ or ground truth for those algorithms.&lt;/li&gt;
     <message>
         <source>Done</source>
         <translation>Fet</translation>
-    </message>
-    <message>
-        <source>Loading LLD Data...</source>
-        <translation type="obsolete">S&apos;estan carregant els descriptors de baix nivell...</translation>
     </message>
     <message>
         <source>Refreshing audio...</source>
@@ -327,10 +224,6 @@ or ground truth for those algorithms.&lt;/li&gt;
     <message>
         <source>Descriptors file could not be validated with the schema.</source>
         <translation>Els descriptors no han pogut ser validats amb l&apos;esquema.</translation>
-    </message>
-    <message>
-        <source>Error Loading Descriptors Pool File</source>
-        <translation type="obsolete">S&apos;ha produït un error carregant els descriptors</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Error, reading &apos;%1:
@@ -634,55 +527,8 @@ com ara una nota.&lt;/p&gt;
 &lt;p&gt;Podeu editar els valors fent clic a la cel·la adient.&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>&lt;p&gt;The &lt;b&gt;frame level descriptors editor&lt;/b&gt; allows editing
- floating point descriptors that has an occurrence for each frame.&lt;/p&gt;
- &lt;ul&gt;
- &lt;li&gt;Dragging Points: Moving them.&lt;/li&gt;
- &lt;li&gt;Page up/down: Set focus prev/next point&lt;/li&gt;
- &lt;li&gt;Hover point: Set focus to point&lt;/li&gt;
- &lt;li&gt;Dragging play positon: Moves it.&lt;/li&gt;
- &lt;li&gt;&apos;r&apos;+Click: Set the current play position.&lt;/li&gt;
- &lt;li&gt;Arrows: Change focused point values&lt;/li&gt;
- &lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;p&gt;L&apos;&lt;b&gt;editor de descriptors de baix nivell&lt;/b&gt; permet editar
-descriptors de tipus real (decimals) que tenen un valor diferent a intervals regulars.&lt;/p&gt;
- &lt;ul&gt;
- &lt;li&gt;Arrosega punts: Canvia el seu valor.&lt;/li&gt;
- &lt;li&gt;Pagina amunt/avall: Posa el focus al punt següent o anterior&lt;/li&gt;
- &lt;li&gt;Passa el ratoli per un punt: Dona el focus a aquest punt&lt;/li&gt;
- &lt;li&gt;Fletxes: Canvia els valors del punt amb focus&lt;/li&gt;
- &lt;li&gt;Arrosegar la barra de transport: Canvia la posició de reproducció.&lt;/li&gt;
- &lt;li&gt;&apos;r&apos;+Click: Canvia la posició de reproducció.&lt;/li&gt;
- &lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The &lt;b&gt;segmentation editor&lt;/b&gt; allows you to change song level segmentations.&lt;/p&gt;
- &lt;ul&gt;
- &lt;li&gt;Click Body: Set as current segment&lt;/li&gt;
- &lt;li&gt;Dragging segment limit: Moves it&lt;/li&gt;
- &lt;li&gt;Insert + Click: Inserts a segment&lt;/li&gt;
- &lt;li&gt;Delete: Deletes the current segment&lt;/li&gt;
- &lt;li&gt;Dragging play positon: Moves it.&lt;/li&gt;
- &lt;li&gt;&apos;r&apos;+Click: Set the current play position.&lt;/li&gt;
- &lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;p&gt;L&apos;&lt;b&gt;editor de segmentació&lt;/b&gt; permet modifcar els segments.&lt;/p&gt;
- &lt;ul&gt;
- &lt;li&gt;Clic al cos: selecciona el segment com actual&lt;/li&gt;
- &lt;li&gt;Arrosegar un inici/final de segment: El canvia&lt;/li&gt;
- &lt;li&gt;Ctrl + Arrosegar un inici/final de segment: El canvia tot empenyent els altres&lt;/li&gt;
- &lt;li&gt;Inserta + Click: Inserta un segment&lt;/li&gt;
- &lt;li&gt;Suprimeix: Elimina el segment actual&lt;/li&gt;
- &lt;li&gt;Arrossegar punt de reproducció: El canvia.&lt;/li&gt;
- &lt;li&gt;&apos;r&apos;+Click: Posiciona el punt de reproducció.&lt;/li&gt;
- &lt;/ul&gt;</translation>
-    </message>
-    <message>
         <source>Creating instant views...</source>
         <translation>S&apos;estan creant les vistes instantànies...</translation>
-    </message>
-    <message>
-        <source>Loading Instant Views Data...</source>
-        <translation type="obsolete">S&apos;estan carregant les dades a les vistes instantànies...</translation>
     </message>
     <message>
         <source>&lt;p&gt;The &lt;b&gt;frame level descriptors editor&lt;/b&gt; allows editing
@@ -852,18 +698,6 @@ Voleu pujar-los al servidor BOCA?</translation>
 </context>
 <context>
     <name>CLAM::VM::KeySpace</name>
-    <message>
-        <source>&lt;p&gt;The &lt;b&gt;Key Space view&lt;/b&gt; represents the probability of each key/chord to be the one played.&lt;/p&gt;
-&lt;p&gt;Mayor chords/keys are displayed with uppercase letters and minor chords/keys are displayed with lowercase letters.
-Tonally close key/chords are displayed closer so normally you have a color stain covering several chords
-with the most probable chord as a central color spot.&lt;/p&gt;
-</source>
-        <translation type="obsolete">&lt;p&gt;La &lt;b&gt;vista de &apos;Espai de claus&apos;&lt;/b&gt; representa la probabilitat de cada clau o acord de ser el que s&apos;està reproduïnt.&lt;/p&gt;
-&lt;p&gt;Les claus i acords majors es representen amb majúscules i les claus i acords menors en minúscules.
-Les claus o acords tonalmente properes es visualitzent també properes, tal que normalment
-es veu una taca de color cobrint diversos acords amb un punt de color mes intens en el centre al damunt de la clau o acord mes probable.&lt;/p&gt;
-</translation>
-    </message>
     <message>
         <source>&lt;p&gt;The &lt;b&gt;Key Space view&lt;/b&gt; represents the probability of each key/chord to be the one being played.&lt;/p&gt;
 &lt;p&gt;Mayor chords/keys are displayed with uppercase letters and minor chords/keys are displayed with lowercase letters.
@@ -1196,10 +1030,6 @@ Typical shapes are:&lt;/p&gt;
 </context>
 <context>
     <name>TaskRunner</name>
-    <message>
-        <source>&lt;div style=&apos;color: blue;&apos;&gt;Executing &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;&lt;/div&gt;</source>
-        <translation type="obsolete">&lt;div style=&apos;color: blue;&apos;&gt;S&apos;està executant &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;&lt;/div&gt;</translation>
-    </message>
     <message>
         <source>&lt;div style=&apos;color: blue;&apos;&gt;Done.&lt;/div&gt;</source>
         <translation>&lt;div style=&apos;color: blue;&apos;&gt;Fet.&lt;/div&gt;</translation>
