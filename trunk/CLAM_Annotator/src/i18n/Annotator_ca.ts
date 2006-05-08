@@ -16,7 +16,7 @@ algorithms.&lt;/li&gt;
 as training examples 
 or ground truth for those algorithms.&lt;/li&gt;
 &lt;/ul&gt;</source>
-        <translation>&lt;p&gt;El CLAM Music Annotator és una eina que permet:&lt;/p&gt;
+        <translation type="obsolete">&lt;p&gt;El CLAM Music Annotator és una eina que permet:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Supervisar i corregir els resultats d&apos;algoritmes d&apos;extracció automàtica de característiques de l&apos;àudio.&lt;/li&gt;
 &lt;li&gt;Generar anotacions manuals que serveixin d&apos;exemples d&apos;entrenament o de referència per avaluar aquests algorismes.&lt;/li&gt;
@@ -52,7 +52,7 @@ or ground truth for those algorithms.&lt;/li&gt;
 &lt;li&gt;Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; (&quot;Key Space&quot; view)&lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation>&lt;p&gt;Autors:&lt;/p&gt;
+        <translation type="obsolete">&lt;p&gt;Autors:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Xavier Amatriain &amp;lt;xavier@create.ucsb.edu&amp;gt;&lt;/li&gt;
 &lt;li&gt;David Garcia &amp;lt;dgarcia@iua.upf.edu&amp;gt; &lt;/li&gt;
@@ -81,8 +81,63 @@ or ground truth for those algorithms.&lt;/li&gt;
     <message>
         <source>&lt;p&gt;&lt;b&gt;CLAM Annotator v 0.3&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Based on CLAM v0.90&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;b&gt;Annotador de Música de CLAM v 0.3&lt;/b&gt;&lt;/p&gt;
+        <translation type="obsolete">&lt;p&gt;&lt;b&gt;Annotador de Música de CLAM v 0.3&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Basat en CLAM v0.90&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;Music Annotator v 0.3.1&lt;/b&gt;&lt;/p&gt;
+<byte value="x9"/><byte value="x9"/>&lt;p&gt;Based on CLAM v0.90&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;Annotador de Música de CLAM v 0.3.1&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Basat en CLAM v0.90&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The CLAM Annotator is a tool that allows:
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Supervise and correct the results 
+<byte value="x9"/>of automated audio feature extraction
+<byte value="x9"/>algorithms.&lt;/li&gt;
+&lt;li&gt;Generate manually edited annotations of audio
+<byte value="x9"/>as training examples 
+<byte value="x9"/>or ground truth for those algorithms.&lt;/li&gt;
+&lt;/ul&gt;</source>
+        <translation>&lt;p&gt;El CLAM Music Annotator és una eina que permet:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Supervisar i corregir els resultats d&apos;algoritmes d&apos;extracció automàtica de característiques de l&apos;àudio.&lt;/li&gt;
+&lt;li&gt;Generar anotacions manuals que en serveixin d&apos;exemple d&apos;entrenament o de referència d&apos;avaluació per aquests algorismes.&lt;/li&gt;
+&lt;/ul&gt;</translation>
+    </message>
+    <message encoding="UTF-8">
+        <source>&lt;p&gt;Authors:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Xavier Amatriain &amp;lt;xavier@create.ucsb.edu&amp;gt;&lt;/li&gt;
+&lt;li&gt;David Garcia &amp;lt;dgarcia@iua.upf.edu&amp;gt; &lt;/li&gt;
+&lt;li&gt;Ismael Mosquera &amp;lt;imosquera@iua.upf.edu&amp;gt;&lt;/li&gt;
+&lt;li&gt;Jordi Massaguer &amp;lt;jmassaguer@iua.upf.edu&amp;gt;&lt;/li&gt;
+&lt;li&gt;The CLAM Team &amp;lt;clam@iua.upf.edu&amp;gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Contributors:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Christopher Harte &amp;lt;harte@elec.qmul.ac.uk&amp;gt; (&quot;Tonnetz&quot; view)&lt;/li&gt;
+&lt;li&gt;Emilia Gómez &amp;lt;egomez@iua.upf.edu&amp;gt; (&quot;Key Space&quot; view)&lt;/li&gt;
+&lt;li&gt;Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; (&quot;Key Space&quot; view)&lt;/li&gt;
+&lt;/ul&gt;
+</source>
+        <translation>&lt;p&gt;Autors:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Xavier Amatriain &amp;lt;xavier@create.ucsb.edu&amp;gt;&lt;/li&gt;
+&lt;li&gt;David Garcia &amp;lt;dgarcia@iua.upf.edu&amp;gt; &lt;/li&gt;
+&lt;li&gt;Ismael Mosquera &amp;lt;imosquera@iua.upf.edu&amp;gt;&lt;/li&gt;
+&lt;li&gt;Jordi Massaguer &amp;lt;jmassaguer@iua.upf.edu&amp;gt;&lt;/li&gt;
+&lt;li&gt;L&apos;equip CLAM &amp;lt;clam@iua.upf.edu&amp;gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Contribucions:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Christopher Harte &amp;lt;harte@elec.qmul.ac.uk&amp;gt; (Vista &quot;Tonnetz&quot;)&lt;/li&gt;
+&lt;li&gt;Emilia Gómez &amp;lt;egomez@iua.upf.edu&amp;gt; (Vista &quot;Key Space&quot;)&lt;/li&gt;
+&lt;li&gt;Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; (Vista &quot;Key Space&quot;)&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -98,7 +153,7 @@ or ground truth for those algorithms.&lt;/li&gt;
     <message>
         <source>&lt;p&gt;&lt;b&gt;Error: No extractor defined for the project.&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Unable to extract descriptors from song. Define the extractor first, please.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;b&gt;Error: No heu definit cap extractor pel projecte.&lt;/b&gt;&lt;/p&gt;
+        <translation type="obsolete">&lt;p&gt;&lt;b&gt;Error: No heu definit cap extractor pel projecte.&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;No es pot extreure cap descriptor fins que ho feu.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -106,14 +161,14 @@ or ground truth for those algorithms.&lt;/li&gt;
 &lt;p&gt;Check that the extractor is well configured and you have permissions to run it.&lt;/p&gt;
 &lt;p&gt;The configured command was:&lt;/p&gt;
 &lt;tt&gt;%1&lt;/tt&gt;</source>
-        <translation>&lt;p&gt;&lt;b&gt;Error: No ha estat possible llençar l&apos;extractor.&lt;/b&gt;&lt;/p&gt;
+        <translation type="obsolete">&lt;p&gt;&lt;b&gt;Error: No ha estat possible llençar l&apos;extractor.&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Comproveu que l&apos;extractor està correctamente generat i teniu permissos d&apos;execució.&lt;/p&gt;
 &lt;p&gt;La comanda configurada actualement és:&lt;/p&gt;
 &lt;tt&gt;%1&lt;/tt&gt;</translation>
     </message>
     <message>
         <source>&amp;%1 %2</source>
-        <translation>&amp;%1 %2</translation>
+        <translation type="obsolete">&amp;%1 %2</translation>
     </message>
     <message>
         <source>Project Documentation</source>
@@ -133,7 +188,7 @@ or ground truth for those algorithms.&lt;/li&gt;
     </message>
     <message>
         <source> [modified song]</source>
-        <translation> [canço modificada]</translation>
+        <translation type="obsolete"> [canço modificada]</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;em&gt;(No project documentation available)&lt;/em&gt;&lt;/p&gt;</source>
@@ -165,7 +220,7 @@ or ground truth for those algorithms.&lt;/li&gt;
     </message>
     <message>
         <source>Adding Segmentation: &apos;%1&apos;</source>
-        <translation>Afegint segmentació: &apos;%1&apos;</translation>
+        <translation type="obsolete">Afegint segmentació: &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Removing segment at </source>
@@ -177,7 +232,7 @@ or ground truth for those algorithms.&lt;/li&gt;
     </message>
     <message>
         <source>Error Loading Project File</source>
-        <translation>Error carregant l&apos;arxiu del projecte</translation>
+        <translation type="obsolete">Error carregant l&apos;arxiu del projecte</translation>
     </message>
     <message>
         <source>Frame %1 changed value from %2 to %3</source>
@@ -223,7 +278,7 @@ or ground truth for those algorithms.&lt;/li&gt;
     </message>
     <message>
         <source>Annotator project files (*.pro)</source>
-        <translation>Projectes de l&apos;Anotador de Música (*.pro)</translation>
+        <translation type="obsolete">Projectes de l&apos;Anotador de Música (*.pro)</translation>
     </message>
     <message>
         <source>Save Changes</source>
@@ -235,7 +290,7 @@ or ground truth for those algorithms.&lt;/li&gt;
     </message>
     <message>
         <source>Saving Previous Song Descriptors...</source>
-        <translation>S&apos;estan desant la descripció de la cançò...</translation>
+        <translation type="obsolete">S&apos;estan desant la descripció de la cançò...</translation>
     </message>
     <message>
         <source>Loading descriptors...</source>
@@ -243,11 +298,11 @@ or ground truth for those algorithms.&lt;/li&gt;
     </message>
     <message>
         <source>Filling Global Descriptors...</source>
-        <translation>S&apos;estan omplint els descriptors a nivell de cançò...</translation>
+        <translation type="obsolete">S&apos;estan omplint els descriptors a nivell de cançò...</translation>
     </message>
     <message>
         <source>Drawing Audio...</source>
-        <translation>Dibuixant l&apos;àudio...</translation>
+        <translation type="obsolete">Dibuixant l&apos;àudio...</translation>
     </message>
     <message>
         <source>Error opening audio file</source>
@@ -259,7 +314,7 @@ or ground truth for those algorithms.&lt;/li&gt;
     </message>
     <message>
         <source>Loading LLD Data...</source>
-        <translation>S&apos;estan carregant els descriptors de baix nivell...</translation>
+        <translation type="obsolete">S&apos;estan carregant els descriptors de baix nivell...</translation>
     </message>
     <message>
         <source>Refreshing audio...</source>
@@ -275,7 +330,7 @@ or ground truth for those algorithms.&lt;/li&gt;
     </message>
     <message>
         <source>Error Loading Descriptors Pool File</source>
-        <translation>S&apos;ha produït un error carregant els descriptors</translation>
+        <translation type="obsolete">S&apos;ha produït un error carregant els descriptors</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Error, reading &apos;%1:
@@ -589,7 +644,7 @@ com ara una nota.&lt;/p&gt;
  &lt;li&gt;&apos;r&apos;+Click: Set the current play position.&lt;/li&gt;
  &lt;li&gt;Arrows: Change focused point values&lt;/li&gt;
  &lt;/ul&gt;</source>
-        <translation>&lt;p&gt;L&apos;&lt;b&gt;editor de descriptors de baix nivell&lt;/b&gt; permet editar
+        <translation type="obsolete">&lt;p&gt;L&apos;&lt;b&gt;editor de descriptors de baix nivell&lt;/b&gt; permet editar
 descriptors de tipus real (decimals) que tenen un valor diferent a intervals regulars.&lt;/p&gt;
  &lt;ul&gt;
  &lt;li&gt;Arrosega punts: Canvia el seu valor.&lt;/li&gt;
@@ -610,7 +665,7 @@ descriptors de tipus real (decimals) que tenen un valor diferent a intervals reg
  &lt;li&gt;Dragging play positon: Moves it.&lt;/li&gt;
  &lt;li&gt;&apos;r&apos;+Click: Set the current play position.&lt;/li&gt;
  &lt;/ul&gt;</source>
-        <translation>&lt;p&gt;L&apos;&lt;b&gt;editor de segmentació&lt;/b&gt; permet modifcar els segments.&lt;/p&gt;
+        <translation type="obsolete">&lt;p&gt;L&apos;&lt;b&gt;editor de segmentació&lt;/b&gt; permet modifcar els segments.&lt;/p&gt;
  &lt;ul&gt;
  &lt;li&gt;Clic al cos: selecciona el segment com actual&lt;/li&gt;
  &lt;li&gt;Arrosegar un inici/final de segment: El canvia&lt;/li&gt;
@@ -627,7 +682,172 @@ descriptors de tipus real (decimals) que tenen un valor diferent a intervals reg
     </message>
     <message>
         <source>Loading Instant Views Data...</source>
+        <translation type="obsolete">S&apos;estan carregant les dades a les vistes instantànies...</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The &lt;b&gt;frame level descriptors editor&lt;/b&gt; allows editing
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> floating point descriptors that has an occurrence for each frame.&lt;/p&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;ul&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Dragging Points: Moving them.&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Page up/down: Set focus prev/next point&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Hover point: Set focus to point&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Dragging play positon: Moves it.&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;&apos;r&apos;+Click: Set the current play position.&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Arrows: Change focused point values&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;/ul&gt;</source>
+        <translation>&lt;p&gt;L&apos;&lt;b&gt;editor de descriptors de baix nivell&lt;/b&gt; permet editar
+descriptors de tipus real (decimals) que tenen un valor diferent a intervals regulars.&lt;/p&gt;
+ &lt;ul&gt;
+ &lt;li&gt;Arrosega punts: Canvia el seu valor.&lt;/li&gt;
+ &lt;li&gt;Pagina amunt/avall: Posa el focus al punt següent o anterior&lt;/li&gt;
+ &lt;li&gt;Passa el ratoli per un punt: Dona el focus a aquest punt&lt;/li&gt;
+ &lt;li&gt;Fletxes: Canvia els valors del punt amb focus&lt;/li&gt;
+ &lt;li&gt;Arrosegar la barra de transport: Canvia la posició de reproducció.&lt;/li&gt;
+ &lt;li&gt;&apos;r&apos;+Click: Canvia la posició de reproducció.&lt;/li&gt;
+ &lt;/ul&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;The &lt;b&gt;segmentation editor&lt;/b&gt; allows you to change song level segmentations.&lt;/p&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;ul&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Click Body: Set as current segment&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Dragging segment limit: Moves it&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Insert + Click: Inserts a segment&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Delete: Deletes the current segment&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Dragging play positon: Moves it.&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;&apos;r&apos;+Click: Set the current play position.&lt;/li&gt;
+<byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;/ul&gt;</source>
+        <translation>&lt;p&gt;L&apos;&lt;b&gt;editor de segmentació&lt;/b&gt; permet modifcar els segments.&lt;/p&gt;
+ &lt;ul&gt;
+ &lt;li&gt;Clic al cos: selecciona el segment com actual&lt;/li&gt;
+ &lt;li&gt;Arrosegar un inici/final de segment: El canvia&lt;/li&gt;
+ &lt;li&gt;Ctrl + Arrosegar un inici/final de segment: El canvia tot empenyent els altres&lt;/li&gt;
+ &lt;li&gt;Inserta + Click: Inserta un segment&lt;/li&gt;
+ &lt;li&gt;Suprimeix: Elimina el segment actual&lt;/li&gt;
+ &lt;li&gt;Arrossegar punt de reproducció: El canvia.&lt;/li&gt;
+ &lt;li&gt;&apos;r&apos;+Click: Posiciona el punt de reproducció.&lt;/li&gt;
+ &lt;/ul&gt;</translation>
+    </message>
+    <message>
+        <source>Prueba</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;Error: No extractor was defined for the project.&lt;/b&gt;&lt;/p&gt;
+</source>
+        <translation>&lt;p&gt;&lt;b&gt;Error: No heu definit cap extractor pel projecte.&lt;/b&gt;&lt;/p&gt;
+</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;Error: Unable to launch the extractor.&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Check that the project extractor is well configured and you have permissions to run it.&lt;/p&gt;
+&lt;p&gt;The configured command was:&lt;/p&gt;
+&lt;tt&gt;%1&lt;/tt&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;Error: No ha estat possible llençar l&apos;extractor.&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Comproveu que l&apos;extractor està correctament configurat al projecte i teniu permissos d&apos;execució.&lt;/p&gt;
+&lt;p&gt;La comanda configurada actualement és:&lt;/p&gt;
+&lt;tt&gt;%1&lt;/tt&gt;</translation>
+    </message>
+    <message>
+        <source> [modified descriptors]</source>
+        <translation> [descripció modificada]</translation>
+    </message>
+    <message>
+        <source>Adding segmentation: &apos;%1&apos;</source>
+        <translation>Afegint segmentació: &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Error loading project file</source>
+        <translation>Error carregant l&apos;arxiu del projecte</translation>
+    </message>
+    <message>
+        <source>Annotator project file (*.pro)</source>
+        <translation>Projecte de l&apos;Anotador de Música (*.pro)</translation>
+    </message>
+    <message>
+        <source>Saving previous song descriptors...</source>
+        <translation>S&apos;estan desant la descripció de la cançò...</translation>
+    </message>
+    <message>
+        <source>Filling global descriptors...</source>
+        <translation type="unfinished">S&apos;estan omplint els descriptors a nivell de cançò...</translation>
+    </message>
+    <message>
+        <source>Drawing audio...</source>
+        <translation>Dibuixant l&apos;àudio...</translation>
+    </message>
+    <message>
+        <source>Loading instant views data...</source>
         <translation>S&apos;estan carregant les dades a les vistes instantànies...</translation>
+    </message>
+    <message>
+        <source>Loading frame level data...</source>
+        <translation>S&apos;estan carregant els descriptors de baix nivell...</translation>
+    </message>
+    <message>
+        <source>Error loading descriptors</source>
+        <translation>S&apos;ha produït un error carregant els descriptors</translation>
+    </message>
+    <message>
+        <source>Refressing song data...</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BocaClientGui</name>
+    <message>
+        <source>Choose a BOCA task file</source>
+        <translation>Esculliu una tasca de BOCA</translation>
+    </message>
+    <message>
+        <source>Simac Task file (*.task)
+All Files (*)</source>
+        <translation>Tasca de BOCA (*.task)
+Tots els fitxers (*)</translation>
+    </message>
+    <message>
+        <source>No descriptors downloaded</source>
+        <translation>No s&apos;ha descarregat cap descriptor</translation>
+    </message>
+    <message>
+        <source>No modification has been detected. No upload needed.</source>
+        <translation>No és necessari pujar dades al servidor perquè no heu fet cap modificació.</translation>
+    </message>
+    <message>
+        <source>Uploading changes</source>
+        <translation>S&apos;estan pujant les dades al servidor</translation>
+    </message>
+    <message>
+        <source>The following files have been updated.
+
+</source>
+        <translation>Els següents fitxers han estat modificats.
+
+</translation>
+    </message>
+    <message>
+        <source>
+Do you want to upload them back to the BOCA server?</source>
+        <translation>
+Voleu pujar-los al servidor BOCA?</translation>
+    </message>
+    <message>
+        <source>Upload</source>
+        <translation>Si</translation>
+    </message>
+    <message>
+        <source>Don&apos;t upload</source>
+        <translation>No</translation>
+    </message>
+</context>
+<context>
+    <name>BocaTaskRunner</name>
+    <message>
+        <source>Executing &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;</source>
+        <translation>Executant  &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;</translation>
+    </message>
+    <message>
+        <source>&lt;div style=&apos;color: blue;&apos;&gt;Done.&lt;/div&gt;</source>
+        <translation>&lt;div style=&apos;color: blue;&apos;&gt;Fet.&lt;/div&gt;</translation>
     </message>
 </context>
 <context>
@@ -638,18 +858,29 @@ descriptors de tipus real (decimals) que tenen un valor diferent a intervals reg
 Tonally close key/chords are displayed closer so normally you have a color stain covering several chords
 with the most probable chord as a central color spot.&lt;/p&gt;
 </source>
-        <translation>&lt;p&gt;La &lt;b&gt;vista de &apos;Espai de claus&apos;&lt;/b&gt; representa la probabilitat de cada clau o acord de ser el que s&apos;està reproduïnt.&lt;/p&gt;
+        <translation type="obsolete">&lt;p&gt;La &lt;b&gt;vista de &apos;Espai de claus&apos;&lt;/b&gt; representa la probabilitat de cada clau o acord de ser el que s&apos;està reproduïnt.&lt;/p&gt;
 &lt;p&gt;Les claus i acords majors es representen amb majúscules i les claus i acords menors en minúscules.
 Les claus o acords tonalmente properes es visualitzent també properes, tal que normalment
 es veu una taca de color cobrint diversos acords amb un punt de color mes intens en el centre al damunt de la clau o acord mes probable.&lt;/p&gt;
 </translation>
     </message>
+    <message>
+        <source>&lt;p&gt;The &lt;b&gt;Key Space view&lt;/b&gt; represents the probability of each key/chord to be the one being played.&lt;/p&gt;
+&lt;p&gt;Mayor chords/keys are displayed with uppercase letters and minor chords/keys are displayed with lowercase letters.
+Tonally close key/chords are displayed closer so normally you have a color stain covering several chords
+with the most probable chord as a central color spot.&lt;/p&gt;
+</source>
+        <translation>&lt;p&gt;La &lt;b&gt;vista de &apos;Espai de claus&apos;&lt;/b&gt; representa la probabilitat de cada clau o acord de ser el que s&apos;està reproduïnt.&lt;/p&gt;
+&lt;p&gt;Les claus i acords majors es representen amb majúscules i les claus i acords menors en minúscules.
+Les claus o acords tonalmente properes es visualitzent també properes, tal que normalment
+es veu una taca de color cobrint diversos acords amb un punt de color mes intens en el centre al damunt de la clau o acord mes probable.&lt;/p&gt;</translation>
+    </message>
 </context>
 <context>
     <name>CLAM::VM::PcpTorus</name>
     <message>
-        <source>&lt;p&gt;The &lt;b&gt;Pitch Torus view&lt;/b&gt; represents the intensity of each note played.&lt;/p&gt;
-&lt;p&gt;Notes are displayed so that harmonic notes are painted closer.
+        <source>&lt;p&gt;The &lt;b&gt;Tonnetz view&lt;/b&gt; represents the intensity of each note played.&lt;/p&gt;
+&lt;p&gt;Notes are displayed in a toroidal surface so that harmonic notes are painted closer.
 Thus, when the played notes are a chord, a mode dependant shape is displayed.
 Typical shapes are:&lt;/p&gt;
 &lt;ul&gt;
@@ -700,7 +931,7 @@ Typical shapes are:&lt;/p&gt;
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Cancel·la</translation>
     </message>
     <message>
         <source>&lt; &amp;Back</source>
@@ -740,7 +971,7 @@ Typical shapes are:&lt;/p&gt;
     </message>
     <message>
         <source>Execute with a sample wave</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Executa amb un audio de proves</translation>
     </message>
     <message>
         <source>Simac Services</source>
@@ -765,6 +996,41 @@ Typical shapes are:&lt;/p&gt;
     <message>
         <source>Descriptors to download from the server</source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GUI</name>
+    <message>
+        <source>CLAM Annotator Simac Task Handler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project Name</source>
+        <translation>Nom del projecte</translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation>Navega...</translation>
+    </message>
+    <message>
+        <source>Task file</source>
+        <translation>Tasca</translation>
+    </message>
+    <message>
+        <source>Path to save files</source>
+        <translation type="unfinished">Directori on desar els fitxers</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:FreeMono; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;Press Go! when ready&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation>Sortir</translation>
+    </message>
+    <message>
+        <source>Go</source>
+        <translation>Endavant</translation>
     </message>
 </context>
 <context>
@@ -824,6 +1090,25 @@ Typical shapes are:&lt;/p&gt;
     <message>
         <source>Cancel</source>
         <translation>Cancel·la</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <source>Tonnezt</source>
+        <translation>Tonnezt</translation>
+    </message>
+    <message>
+        <source>Choose the attribute to take the pitches from</source>
+        <translation>Escolliu els attributs d&apos;on treure els tons</translation>
+    </message>
+    <message>
+        <source>PCP attribute:</source>
+        <translation>Attributs pel PCP:</translation>
+    </message>
+    <message>
+        <source>Key Space</source>
+        <translation>Espai de claus</translation>
     </message>
 </context>
 <context>
@@ -913,18 +1198,22 @@ Typical shapes are:&lt;/p&gt;
     <name>TaskRunner</name>
     <message>
         <source>&lt;div style=&apos;color: blue;&apos;&gt;Executing &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;&lt;/div&gt;</source>
-        <translation>&lt;div style=&apos;color: blue;&apos;&gt;S&apos;està executant &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;&lt;/div&gt;</translation>
+        <translation type="obsolete">&lt;div style=&apos;color: blue;&apos;&gt;S&apos;està executant &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;&lt;/div&gt;</translation>
     </message>
     <message>
         <source>&lt;div style=&apos;color: blue;&apos;&gt;Done.&lt;/div&gt;</source>
         <translation>&lt;div style=&apos;color: blue;&apos;&gt;Fet.&lt;/div&gt;</translation>
+    </message>
+    <message>
+        <source>Executing &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;</source>
+        <translation>Executant &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;</translation>
     </message>
 </context>
 <context>
     <name>Ui</name>
     <message>
         <source>Loading data ... </source>
-        <translation type="unfinished"></translation>
+        <translation> S&apos;esta carregant l&apos;applicació...</translation>
     </message>
 </context>
 </TS>
