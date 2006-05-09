@@ -45,6 +45,45 @@ namespace VM
 			virtual void setCurrentTime(double timeMiliseconds)=0;
 	};
 
+	class FloatArrayDataSource 
+	{
+		public:
+			FloatArrayDataSource();
+			void setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
+			void clearData();
+			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
+			bool setCurrentTime(double timeMiliseconds);
+
+			const std::string & getLabel(unsigned bin) const
+			{
+				return _binLabels[bin];
+			}
+			const double * getData() const
+			{
+				if (_data.empty()) return 0;
+				return &_data[0];
+			}
+			const double * frameData() const
+			{
+				return _frameData;
+			}
+			unsigned nFrames() const
+			{
+				return _nFrames;
+			}
+		private:
+			const CLAM_Annotator::Project * _project;
+			std::string _scope;
+			std::string _name;
+			std::vector<std::string> _binLabels;
+			std::vector<double> _data;
+			unsigned _nFrames;
+			const CLAM_Annotator::FrameDivision * _frameDivision;
+			CLAM::TData _samplingRate;
+			const double *_frameData;
+			unsigned _currentFrame;
+	};
+
 	class PcpTorus : public InstantView
 	{
 		Q_OBJECT
@@ -61,28 +100,23 @@ namespace VM
 
 		public slots:
 			virtual void setCurrentTime(double timeMiliseconds);
-		private:
-			const std::string & getLabel(unsigned pitch);
+		protected:
+			const std::string & getLabel(unsigned bin) const;
+			const double *frameData() const
+			{
+				return _dataSource.frameData();
+			}
 		public:
 			void setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
 			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
 			void clearData();
 		protected:
-			double *_frameData;
 			int _updatePending;
-			std::vector<std::string> _binLabels;
 			double _maxValue;
 			unsigned _nBins;
+			FloatArrayDataSource _dataSource;
 		private:
-			unsigned _nFrames;
-			unsigned _currentFrame;
-			std::vector<double> _data;
 			QFont _font;
-			const CLAM_Annotator::FrameDivision * _frameDivision;
-			CLAM::TData _samplingRate;
-			const CLAM_Annotator::Project * _project;
-			std::string _scope;
-			std::string _name;
 	};
 
 
