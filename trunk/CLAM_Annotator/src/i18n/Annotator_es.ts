@@ -3,7 +3,7 @@
     <name>About</name>
     <message>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Acerca del Anotador de Música</translation>
     </message>
     <message>
         <source>&lt;p&gt;The CLAM Annotator is a tool that allows:
@@ -16,19 +16,29 @@
 <byte value="x9"/>as training examples 
 <byte value="x9"/>or ground truth for those algorithms.&lt;/li&gt;
 &lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;The Anotador de Música CLAM es una herramienta que permite:
+&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Supervisar y corregir los resultados de algoritmos
+<byte value="x9"/>de extracción automática 
+<byte value="x9"/>de características del áudio.&lt;/li&gt;
+&lt;li&gt;Generar manualmente anotaciones del áudio
+<byte value="x9"/>para servir a dichos algoritmos
+<byte value="x9"/>de ejemplos de entrenamiento
+<byte value="x9"/>o de referencia de validacion.&lt;/li&gt;
+&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation type="unfinished"></translation>
+        <translation>Autores</translation>
     </message>
     <message>
         <source>Acknoledgements</source>
-        <translation type="unfinished"></translation>
+        <translation>Agradecimientos</translation>
     </message>
     <message>
         <source>License</source>
-        <translation type="unfinished"></translation>
+        <translation>Acuerdo de licencia</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br /&gt;Free Software Foundation, Inc.,&lt;br /&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -37,7 +47,8 @@
     <message>
         <source>&lt;p&gt;&lt;b&gt;Music Annotator v 0.3.1&lt;/b&gt;&lt;/p&gt;
 <byte value="x9"/><byte value="x9"/>&lt;p&gt;Based on CLAM v0.90&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Anotador de Música v 0.3.1&lt;/b&gt;&lt;/p&gt;
+<byte value="x9"/><byte value="x9"/>&lt;p&gt;Basado en CLAM v0.90&lt;/p&gt;</translation>
     </message>
     <message encoding="UTF-8">
         <source>&lt;p&gt;Authors:&lt;/p&gt;
@@ -55,7 +66,21 @@
 &lt;li&gt;Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; (&quot;Key Space&quot; view)&lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Autores:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Xavier Amatriain &amp;lt;xavier@create.ucsb.edu&amp;gt;&lt;/li&gt;
+&lt;li&gt;David Garcia &amp;lt;dgarcia@iua.upf.edu&amp;gt; &lt;/li&gt;
+&lt;li&gt;Ismael Mosquera &amp;lt;imosquera@iua.upf.edu&amp;gt;&lt;/li&gt;
+&lt;li&gt;Jordi Massaguer &amp;lt;jmassaguer@iua.upf.edu&amp;gt;&lt;/li&gt;
+&lt;li&gt;El equipo CLAM &amp;lt;clam@iua.upf.edu&amp;gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Contribuciones:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Christopher Harte &amp;lt;harte@elec.qmul.ac.uk&amp;gt; (vista &quot;Tonnetz&quot;)&lt;/li&gt;
+&lt;li&gt;Emilia Gómez &amp;lt;egomez@iua.upf.edu&amp;gt; (vista &quot;Key Space&quot;)&lt;/li&gt;
+&lt;li&gt;Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; (vista &quot;Key Space&quot;)&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
         <source>&lt;p&gt;This software is partially founded by:&lt;/p&gt;
@@ -63,131 +88,137 @@
 &lt;li&gt;SIMAC IST-507142 European Project&lt;/li&gt;
 &lt;li&gt;Generalitat de Catalunya, exp. 200/05 ST&lt;/li&gt;
 &lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Este programa ha sido parcialmente financiado por:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;El proyecto europeo SIMAC IST-507142&lt;/li&gt;
+&lt;li&gt;Generalitat de Catalunya, exp. 200/05 ST&lt;/li&gt;
+&lt;/ul&gt;</translation>
     </message>
 </context>
 <context>
     <name>Annotator</name>
     <message>
         <source>Extracting descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>Se está extrayendo la descripción</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Unable to open selected file &apos;%1&apos;&lt;/b&gt;&lt;/p&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;No ha sido posible abrir el fichero seleccionado &apos;%1&apos;&lt;/b&gt;&lt;/p&gt;.</translation>
     </message>
     <message>
         <source>Project Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Documentación del proyecto</translation>
     </message>
     <message>
         <source>Description Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquema de descripción</translation>
     </message>
     <message>
         <source>Music Annotator</source>
-        <translation type="unfinished"></translation>
+        <translation>Anotador de Música</translation>
     </message>
     <message>
         <source> [modified project]</source>
-        <translation type="unfinished"></translation>
+        <translation> [projecto modificado]</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;em&gt;(No project documentation available)&lt;/em&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;em&gt;(No existe documentación de proyecto)&lt;/em&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Error Loading Schema File</source>
-        <translation type="unfinished"></translation>
+        <translation>Error cargando el esquema de descripción</translation>
     </message>
     <message>
         <source>Adapting Interface to Song level descriptors...</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptando el interfaz a los descriptores a nivell de canción...</translation>
     </message>
     <message>
         <source>Adapting Interface to Frame level descriptors...</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptando el interfaz a los descriptores de bajo nivel...</translation>
     </message>
     <message>
         <source>Adapting Interface to Segmentations...</source>
-        <translation type="unfinished"></translation>
+        <translation>Adaptando el interfaz a las segmentaciones...</translation>
     </message>
     <message>
         <source>Updating schema browser...</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizando el navegador del esquema...</translation>
     </message>
     <message>
         <source>User interface adapted to the new schema.</source>
-        <translation type="unfinished"></translation>
+        <translation>La adaptación del interfaz al esquema ha finalizado.</translation>
     </message>
     <message>
         <source>Removing segment at </source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminando el segmento en la posición </translation>
     </message>
     <message>
         <source>Inserting segment at </source>
-        <translation type="unfinished"></translation>
+        <translation> Insertando segmento en la posición </translation>
     </message>
     <message>
         <source>Frame %1 changed value from %2 to %3</source>
-        <translation type="unfinished"></translation>
+        <translation>El valor del instante %1 cambió de %2 a %3</translation>
     </message>
     <message>
         <source>Updating auralizations after playback</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualizando la auralización una vez parada la reproducción</translation>
     </message>
     <message>
         <source>Close project</source>
-        <translation type="unfinished"></translation>
+        <translation>Cerrando el proyecto</translation>
     </message>
     <message>
         <source>Do you want to save changes to the project?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Quiere guardar los cambios del proyecto?</translation>
     </message>
     <message>
         <source>Removing songs from project</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminando las canciones del proyecto
+</translation>
     </message>
     <message>
         <source>Are you sure you want to remove selected songs from the project?
 (Audio files and extracted descriptors files won&apos;t be removed from the disk)</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Está seguro de que quiere eliminar del proyecto las canciones seleccionadas?
+(Tanto el audio como la descripción extraida no se eliminaran del disco en ningún caso)</translation>
     </message>
     <message>
         <source>Add files to the project</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadiendo ficheros al proyecto</translation>
     </message>
     <message>
         <source>Songs (*.wav *.mp3 *.ogg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Canciones (*.wav *.mp3 *.ogg)</translation>
     </message>
     <message>
         <source>Choose a project to work with</source>
-        <translation type="unfinished"></translation>
+        <translation>Elija un proyecto de trabajo</translation>
     </message>
     <message>
         <source>Choose a filename for the new project</source>
-        <translation type="unfinished"></translation>
+        <translation>Elija un nombre de fichero para el nuevo proyecto</translation>
     </message>
     <message>
         <source>Save Changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar cambios</translation>
     </message>
     <message>
         <source>Discard Them</source>
-        <translation type="unfinished"></translation>
+        <translation>Descartar cambios</translation>
     </message>
     <message>
         <source>Loading descriptors...</source>
-        <translation type="unfinished"></translation>
+        <translation>Se esta cargando la descripción...</translation>
     </message>
     <message>
         <source>Error opening audio file</source>
-        <translation type="unfinished"></translation>
+        <translation>Se ha producido un error abriendo el fichero de audio</translation>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Hecho</translation>
     </message>
     <message>
         <source>Refreshing audio...</source>
@@ -195,28 +226,29 @@
     </message>
     <message>
         <source>Updating segment auralization, after last audio refresh...</source>
-        <translation type="unfinished"></translation>
+        <translation>Se esta actualizando la auralización de segmentos, una vez la carga del audio se ha completado...</translation>
     </message>
     <message>
         <source>Descriptors file could not be validated with the schema.</source>
-        <translation type="unfinished"></translation>
+        <translation>La descripción incluida en el fichero no pudo validarse con el esquema.</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Error, reading &apos;%1:
 &lt;b&gt;Details:&lt;/p&gt;&lt;pre&gt;%2&lt;/pre&gt;&lt;/b&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Error leyendo &apos;%1:
+&lt;b&gt;Detalles:&lt;/p&gt;&lt;pre&gt;%2&lt;/pre&gt;&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Song Descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>Descripción de canción</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichero</translation>
     </message>
     <message>
         <source>Intrasong Descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>Descripcion de detalle</translation>
     </message>
     <message>
         <source>&lt;p&gt;The &lt;b&gt;segmentation level descriptors table&lt;/b&gt;
@@ -226,304 +258,315 @@ currently selected segmentation.
 &lt;/p&gt;
 &lt;p&gt;You can edit the values by clicking 
 to the proper cell.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;La &lt;b&gt;tabla de descripción de segmento&lt;/b&gt;
+le permite editar valores para los atributos asociados
+con el segmento seleccionado en rojo a la izquierda.
+Los atributos presentados dependeran del tipo de segmento
+seleccionado en el combo box en la parte inferior.
+&lt;/p&gt;
+&lt;p&gt;Puede editar los valores haciendo click en la casilla.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>This combo box allows you to change the segmentation that is currently displayed on the segmentation view.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este combo le permite cambiar el tipo de segmentación que actualmente se visualiza en la vista de segmentación.</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;yuda</translation>
     </message>
     <message>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Vista</translation>
     </message>
     <message>
         <source>&amp;Playback</source>
-        <translation type="unfinished"></translation>
+        <translation>Re&amp;producción</translation>
     </message>
     <message>
         <source>&amp;Song</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Canción</translation>
     </message>
     <message>
         <source>&amp;Project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Proyecto</translation>
     </message>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Archivo</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Salir</translation>
     </message>
     <message>
         <source>Exit</source>
-        <translation type="unfinished"></translation>
+        <translation>Salir</translation>
     </message>
     <message>
         <source>Quits the application</source>
-        <translation type="unfinished"></translation>
+        <translation>Cierra la aplicación</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <source>About</source>
-        <translation type="unfinished"></translation>
+        <translation>Acerca del Anotador de Música</translation>
     </message>
     <message>
         <source>Information about the application</source>
-        <translation type="unfinished"></translation>
+        <translation>Información sobre esta aplicación</translation>
     </message>
     <message>
         <source>&amp;New project</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyecto &amp;nuevo</translation>
     </message>
     <message>
         <source>New project</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyecto nuevo</translation>
     </message>
     <message>
         <source>Creates a new project</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea un proyecto nuevo</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>&amp;Save project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Guardar proyecto</translation>
     </message>
     <message>
         <source>Save project</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar proyecto</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>&amp;Open project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Abrir proyecto</translation>
     </message>
     <message>
         <source>Open project</source>
-        <translation type="unfinished"></translation>
+        <translation>Abrir proyecto</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <source>&amp;Add songs to project</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Añade canciones al proyecto</translation>
     </message>
     <message>
         <source>Add songs to project</source>
-        <translation type="unfinished"></translation>
+        <translation>Añade canciones al proyecto</translation>
     </message>
     <message>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <source>Remove song from project</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina canción del proyecto</translation>
     </message>
     <message>
         <source>Browse &amp;Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Explorar el es&amp;quema</translation>
     </message>
     <message>
         <source>Browse Schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Explorar el esquema</translation>
     </message>
     <message>
         <source>&amp;Save Descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Guardar la descripción</translation>
     </message>
     <message>
         <source>Save Descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar la descripción</translation>
     </message>
     <message>
         <source>Auralize segments &amp;onsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Auraliza los inicios de &amp;segmento</translation>
     </message>
     <message>
         <source>Auralize segments onsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Auraliza los inicios de segmento</translation>
     </message>
     <message>
         <source>Auralize &amp;frame level descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>Auraliza los descriptores de &amp;instante</translation>
     </message>
     <message>
         <source>Auralize frame level descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>Auraliza los descriptores de instante</translation>
     </message>
     <message>
         <source>&amp;Compute descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Calcula la descripción</translation>
     </message>
     <message>
         <source>Compute descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>Calcula la descripción</translation>
     </message>
     <message>
         <source>&amp;What&apos;s this?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Qué es &amp;esto?</translation>
     </message>
     <message>
         <source>What&apos;s this?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Qué es esto?</translation>
     </message>
     <message>
         <source>Shift+F1</source>
-        <translation type="unfinished"></translation>
+        <translation>Shift+F1</translation>
     </message>
     <message>
         <source>Play</source>
-        <translation type="unfinished"></translation>
+        <translation>Reproduce</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Pause</source>
-        <translation type="unfinished"></translation>
+        <translation>Pausa</translation>
     </message>
     <message>
         <source>Ctrl+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+W</translation>
     </message>
     <message>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Para</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
         <source>&amp;Link current segment to playback</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Mueve el segmento actual con la reproducción</translation>
     </message>
     <message>
         <source>Link current segment to playback</source>
-        <translation type="unfinished"></translation>
+        <translation>Mueve el segmento actual con la reproducción</translation>
     </message>
     <message>
         <source>About &amp;Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Acerca de &amp;Qt</translation>
     </message>
     <message>
         <source>Information about Qt</source>
-        <translation type="unfinished"></translation>
+        <translation>Información acerca de Qt</translation>
     </message>
     <message>
         <source>&amp;Reload descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Recarga los descriptores</translation>
     </message>
     <message>
         <source>Reload descriptors file</source>
-        <translation type="unfinished"></translation>
+        <translation>Recarga los descriptores</translation>
     </message>
     <message>
         <source>Add &amp;segmentation view</source>
-        <translation type="unfinished"></translation>
+        <translation>Añade una vista de &amp;segmentos</translation>
     </message>
     <message>
         <source>Add segmentation view</source>
-        <translation type="unfinished"></translation>
+        <translation>Añade una vista de segmentos</translation>
     </message>
     <message>
         <source>Add &amp;frame evolution view</source>
-        <translation type="unfinished"></translation>
+        <translation>Añade una vista de &amp;evolución</translation>
     </message>
     <message>
         <source>Add &amp;instant view</source>
-        <translation type="unfinished"></translation>
+        <translation>Añade una vista de &amp;instantanea</translation>
     </message>
     <message>
         <source>Edit project properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Edita las propiedades del proyecto</translation>
     </message>
     <message>
         <source>Current song descriptors have been changed.
 Do you want to save them?</source>
-        <translation type="unfinished"></translation>
+        <translation>La descripción de la canción actual ha cambiado.
+Desea guardarla?</translation>
     </message>
     <message>
         <source>&amp;About Music Annotator</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Acerca del Anotador de Música</translation>
     </message>
     <message>
         <source>Add songs</source>
-        <translation type="unfinished"></translation>
+        <translation>Añade canciones</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Error: No extractor was defined for the project.&lt;/b&gt;&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Error: No se ha definido ningún extractor para el proyecto.&lt;/b&gt;&lt;/p&gt;
+</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Error: Unable to launch the extractor.&lt;/b&gt;&lt;/p&gt;
 &lt;p&gt;Check that the project extractor is well configured and you have permissions to run it.&lt;/p&gt;
 &lt;p&gt;The configured command was:&lt;/p&gt;
 &lt;tt&gt;%1&lt;/tt&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Error: No se pudo lanzar el extractor.&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Compruebe que el proyecto tiene un extractor configurado correctamente y que usted tiene permisos para ejecutarlo.&lt;/p&gt;
+&lt;p&gt;El comando configurado es:&lt;/p&gt;
+&lt;tt&gt;%1&lt;/tt&gt;</translation>
     </message>
     <message>
         <source> [modified descriptors]</source>
-        <translation type="unfinished"></translation>
+        <translation> [descripción modificada]</translation>
     </message>
     <message>
         <source>Creating instant views...</source>
-        <translation type="unfinished"></translation>
+        <translation>Creando vistas instantaneas...</translation>
     </message>
     <message>
         <source>Adding segmentation: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadiendo segmentación: &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Error loading project file</source>
-        <translation type="unfinished"></translation>
+        <translation>Error cargando el proyecto</translation>
     </message>
     <message>
         <source>Annotator project file (*.pro)</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyecto del Anotador de Música (*.pro)</translation>
     </message>
     <message>
         <source>Saving previous song descriptors...</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardando la descripcion de la anterior canción...</translation>
     </message>
     <message>
         <source>Filling global descriptors...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargando los descriptores globales...</translation>
     </message>
     <message>
         <source>Drawing audio...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dibujando el audio...</translation>
     </message>
     <message>
         <source>Loading instant views data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargando datos en las vistas instantáneas...</translation>
     </message>
     <message>
         <source>Loading frame level data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargando los datos a nivell de instante...</translation>
     </message>
     <message>
         <source>Error loading descriptors</source>
-        <translation type="unfinished"></translation>
+        <translation>Error cargando la descripción</translation>
     </message>
     <message>
         <source>Refressing song data...</source>
@@ -679,9 +722,6 @@ Typical shapes are:&lt;/p&gt;
         <source>Value</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>Dialog</name>
 </context>
 <context>
     <name>GUI</name>
