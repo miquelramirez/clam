@@ -615,7 +615,7 @@ descriptors de tipus real (decimals) que tenen un valor diferent a intervals reg
     </message>
     <message>
         <source>Filling global descriptors...</source>
-        <translation type="unfinished">S&apos;estan omplint els descriptors a nivell de cançó...</translation>
+        <translation>S&apos;estan omplint els descriptors a nivell de cançó...</translation>
     </message>
     <message>
         <source>Drawing audio...</source>
@@ -735,7 +735,28 @@ Typical shapes are:&lt;/p&gt;
 &lt;li&gt;6/9: Five horizontal. The root is the lefter note.&lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;La vista &lt;b&gt;Tonnetz&lt;/b&gt; representa la intensitat de cada nota.&lt;/p&gt;
+&lt;p&gt;Les notes estan representades a una superfície toroidal de tal manera que les notes harmòniques estan mes properes.
+D&apos;aquesta manera quan les notes formen un acord es veu una figura que depen del mode.
+Les figures típiques són:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Major: Triangle apuntant amunt. L&apos;arrell és la nota a l&apos;esquerra. (C-E-G)&lt;/li&gt;
+&lt;li&gt;Menor: Triangle apuntant avall. L&apos;arrell és la nota a l&apos;esquerra. (C-Eb-G)&lt;/li&gt;
+&lt;li&gt;Quinta: Parell horitzontal. L&apos;arrell és la nota a l&apos;esquerra. (C-G)&lt;/li&gt;
+&lt;li&gt;Augmented: Barra endavant. (C-E-G#)&lt;/li&gt;
+&lt;li&gt;Diminished: Barra enrere. (C-Eb-A-F#)&lt;/li&gt;
+&lt;li&gt;Major7: Paral·lelogram cap endavant. L&apos;arrell és la nota a l&apos;esquerra. (C-E-G-B)&lt;/li&gt;
+&lt;li&gt;Minor7: Paral·lelogram cap enrera. L&apos;arrell és la nota a l&apos;esquerra. (C-Eb-G-Bb&lt;/li&gt;
+&lt;li&gt;Dominant7: Triangle apuntant amunt mes una cua cap avall. L&apos;arrell és la nota a l&apos;esquerra. (C-E-G-Bb)&lt;/li&gt;
+&lt;li&gt;MajorMinor7: Triangle apuntant avall mes una cua cap amunt. L&apos;arrell és la nota a l&apos;esquerra. (C-Eb-G-B)&lt;/li&gt;
+&lt;li&gt;Diminished7: Tripleta cap avall i un amunt. L&apos;arrell és la nota a l&apos;esquerra. (C-Eb-F#-Bb)&lt;/li&gt;
+&lt;li&gt;Minor6: Triangle apuntant avall i un a l&apos;esquerra, cap amunt. L&apos;arrell és la segona nota a l&apos;esquerra. (C-G-A-Eb)&lt;/li&gt;
+&lt;li&gt;Major6: Triangle apuntant amunt i un a l&apos;esquerra cap avall. L&apos;arrell és la segona nota a l&apos;esquerra. (C-G-A-E)&lt;/li&gt;
+&lt;li&gt;Suspended4: Tripleta horizontal. L&apos;arrell és la nota a l&apos;esquerra. (C-F-G)&lt;/li&gt;
+&lt;li&gt;Suspended2: Tripleta horizontal. L&apos;arrell és la nota a l&apos;esquerra. (C-D-G)&lt;/li&gt;
+&lt;li&gt;6/9: Cinc en horitzontal. L&apos;arrell és la nota a l&apos;esquerra. &lt;/li&gt;
+&lt;/ul&gt;
+</translation>
     </message>
 </context>
 <context>
@@ -747,89 +768,6 @@ Typical shapes are:&lt;/p&gt;
     <message>
         <source>Value</source>
         <translation>Valor</translation>
-    </message>
-</context>
-<context>
-    <name>Dialog</name>
-    <message>
-        <source>Creating a new project</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wellcome to the wizard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="unfinished">Cancel·la</translation>
-    </message>
-    <message>
-        <source>&lt; &amp;Back</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Next &gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Finish</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose the new project file location</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>/home/me/Annotations/FirstWeek/Project.pro</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose a way to extract descriptors from new songs.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No descriptor source</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>An extractor executable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>MyExtractor.exe</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Execute with a sample wave</source>
-        <translation type="unfinished">Executa amb un audio de proves</translation>
-    </message>
-    <message>
-        <source>Simac Services</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>http://simac-services.upf.es/SimacServices/</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose the schema location.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Schema.sc</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Descriptors available on the server</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Descriptors to download from the server</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
