@@ -132,7 +132,7 @@ void CLAM::VM::KeySpace::resizeGL(int width, int height)
 void CLAM::VM::KeySpace::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	if (_frameData) DrawTiles();
+	if (frameData()) DrawTiles();
 	DrawLabels();
 
 	_updatePending=0;
@@ -167,7 +167,7 @@ void CLAM::VM::KeySpace::DrawTiles()
 	_maxValue*=.5;
 	for (unsigned i=0; i<_nBins; i++)
 	{
-		if (_maxValue<_frameData[i]) _maxValue=_frameData[i];
+		if (_maxValue<frameData()[i]) _maxValue=frameData()[i];
 	}
 	if (_maxValue<1e-10) _maxValue=1e-10;
 
@@ -186,7 +186,7 @@ void CLAM::VM::KeySpace::DrawTiles()
 			for(unsigned m=0; m<nKeyNodes; m++)
 			{
 				unsigned weightIndex = m+nKeyNodes*(k+nY*i);
-				num += _frameData[m] * weights[weightIndex] /_maxValue;
+				num += frameData()[m] * weights[weightIndex] /_maxValue;
 				den += weights[weightIndex];
 			}
 			double value = (den != 0.) ? num / den : 0;
@@ -218,10 +218,10 @@ void CLAM::VM::KeySpace::DrawLabels()
 		if (y1 < 4.*y_res/nY)
 			y1 = 4.*y_res/nY;
 
-		float value = _frameData ? _frameData[i]/_maxValue : 0; 
+		float value = frameData() ? frameData()[i]/_maxValue : 0; 
 		if (value>.6) glColor3d(0,0,0);
 		else          glColor3d(1,1,1);
 
-		renderText(x1, y1, -1, _binLabels[i].c_str());
+		renderText(x1, y1, -1, getLabel(i).c_str());
 	}
 }

@@ -36,13 +36,7 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 	_font.setFamily("sans-serif");
 	_font.setPointSize(11);
 	_updatePending=0;
-	_currentFrame=0;
-	_frameData = 0;
-	_currentFrame = 0;
 	_nBins=0;
-	_nFrames=0;
-	_frameDivision=0;
-	_samplingRate=44100;
 	_maxValue=1;
 	setWhatsThis(tr(
 				"<p>The <b>Tonnetz view</b> represents the intensity of each note played.</p>\n"
@@ -67,16 +61,6 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 				"<li>6/9: Five horizontal. The root is the lefter note.</li>\n"
 				"</ul>\n"
 				));
-}
-
-void CLAM::VM::PcpTorus::clearData()
-{
-	_data.resize(0);
-	_frameData = 0;
-	_nFrames=0;
-	_currentFrame = 0;
-	_frameDivision=0;
-	_maxValue=1;
 }
 
 void CLAM::VM::PcpTorus::initializeGL()
@@ -118,9 +102,9 @@ void CLAM::VM::PcpTorus::Draw()
 	if (!_nBins) return;
 	_maxValue*=0.95;
 	if (_maxValue<1e-5) _maxValue=1;
-	if (_frameData)
+	if (frameData())
 		for (unsigned i = 0; i < _nBins; i++)
-			if (_frameData[i]>=_maxValue) _maxValue=_frameData[i];
+			if (frameData()[i]>=_maxValue) _maxValue=frameData()[i];
 	for (int y = 0; y<4; y++)
 		for (int x = 0-y/2; x<10; x++)
 			DrawTile(x,y);
@@ -140,7 +124,7 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 		bool isMinor = y&1;
 		bin =  ((x*7)%(_nBins/2) + 11*(y/2) + (isMinor?4:0)  + _nBins*1000)%(_nBins/2) + (isMinor?_nBins/2:0);
 	}
-	double pitchLevel = _frameData? _frameData[bin]/_maxValue: 0;
+	double pitchLevel = frameData()? frameData()[bin]/_maxValue: 0;
 	double hexsize=pitchLevel;
 	if (hexsize>1) hexsize = 1;
 	glPushMatrix();
@@ -191,48 +175,101 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 
 void CLAM::VM::PcpTorus::setCurrentTime(double timeMiliseconds)
 {
-	unsigned newFrame = _frameDivision ? _frameDivision->GetItem(timeMiliseconds*_samplingRate): 0;
-	if (_nFrames==0) _frameData = 0;
-	else if (newFrame>=_nFrames) newFrame=_nFrames-1;
-	_frameData = _data.size()? &_data[_nBins * newFrame] : 0;
-	if (newFrame == _currentFrame) return;
-	_currentFrame = newFrame;
+	bool mustUpdate = _dataSource.setCurrentTime(timeMiliseconds);
+	if (!mustUpdate) return;
 	if (!_updatePending++) update();
 }
 
-const std::string & CLAM::VM::PcpTorus::getLabel(unsigned bin)
+const std::string & CLAM::VM::PcpTorus::getLabel(unsigned bin) const
 {
-	return _binLabels[bin];
+	return _dataSource.getLabel(bin);
 }
 
 void CLAM::VM::PcpTorus::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
 {
-	_project = &project;
-	_scope = scope;
-	_name = name;
-	const std::list<std::string> & binLabels=_project->GetAttributeScheme(_scope,_name).GetBinLabels();
-	_binLabels.assign(binLabels.begin(), binLabels.end());
+	_dataSource.setSource(project, scope, name);
+	const std::list<std::string> & binLabels=project.GetAttributeScheme(scope,name).GetBinLabels();
 	_nBins = binLabels.size();
 }
 
 void CLAM::VM::PcpTorus::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
 {
-	unsigned nFrames = data.GetNumberOfContexts(_scope);
-	const CLAM::DataArray * arrays = data.GetReadPool<CLAM::DataArray>(_scope,_name);
-	const CLAM_Annotator::SchemaAttribute & parent = _project->GetParentAttribute(_scope);
-	const CLAM_Annotator::FrameDivision & division = data.GetReadPool<CLAM_Annotator::FrameDivision>(parent.GetScope(),parent.GetName())[0];
-	_frameDivision = & division;
-	_samplingRate = samplingRate;
-	_nFrames = nFrames;
-	_data.resize(_nFrames*_nBins);
+	_dataSource.updateData(data, samplingRate);
+}
+
+
+void CLAM::VM::PcpTorus::clearData()
+{
+	_dataSource.clearData();
+	_maxValue=1;
+}
+
+CLAM::VM::FloatArrayDataSource::FloatArrayDataSource()
+	: _nFrames(0)
+	, _frameDivision(0)
+	, _samplingRate(44100)
+	, _frameData(0)
+	, _currentFrame(0)
+{
+}
+
+void CLAM::VM::FloatArrayDataSource::clearData()
+{
+	_data.resize(0);
+	_nFrames=0;
+	_frameDivision=0;
 	_frameData=0;
+	_currentFrame=0;
+}
+
+void CLAM::VM::FloatArrayDataSource::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
+{
+	_name = name;
+	_scope = scope;
+	_project = & project;
+	const std::list<std::string> & binLabels=
+		project.GetAttributeScheme(scope,name).GetBinLabels();
+	_binLabels.assign(binLabels.begin(), binLabels.end());
+}
+
+void CLAM::VM::FloatArrayDataSource::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
+{
+	_frameData = 0;
+	_samplingRate = samplingRate;
+	_nFrames = data.GetNumberOfContexts(_scope);
+	const CLAM_Annotator::SchemaAttribute & parent =
+		_project->GetParentAttribute(_scope);
+	_frameDivision = 
+		data.GetReadPool<CLAM_Annotator::FrameDivision>(
+			parent.GetScope(),
+			parent.GetName()
+		);
+	const CLAM::DataArray * arrays =
+		data.GetReadPool<CLAM::DataArray>(_scope,_name);
+	unsigned nBins = _binLabels.size();
+	_data.resize(_nFrames*nBins);
 	for (unsigned frame =0; frame < _nFrames; frame++)
-		for (unsigned i=0; i<_nBins; i++)
+	{
+		const CLAM::DataArray & array = arrays[frame];
+		for (unsigned i=0; i<nBins; i++)
 		{
-			double value = arrays[frame][i]*_nBins;
-			_data[frame*_nBins+i] = value;
+			// TODO: This nBins is and adhoc hack for normalization
+			double value = array[i]*nBins;
+			_data[frame*nBins+i] = value;
 		}
-	_frameData=&_data[0];
+	}
+	_frameData = &_data[0];
+}
+
+bool CLAM::VM::FloatArrayDataSource::setCurrentTime(double timeMiliseconds)
+{
+	unsigned newFrame = _frameDivision ? _frameDivision->GetItem(timeMiliseconds*_samplingRate): 0;
+	if (_nFrames==0) _frameData = 0;
+	else if (newFrame>=_nFrames) newFrame=_nFrames-1;
+	_frameData = getData()? getData()+_binLabels.size()*newFrame : 0;
+	if (newFrame == _currentFrame) return false;
+	_currentFrame = newFrame;
+	return true;
 }
 
 
