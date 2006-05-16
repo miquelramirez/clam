@@ -117,7 +117,7 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 
 void CLAM::VM::KeySpace::initializeGL()
 {
-	glShadeModel(GL_FLAT);
+	glShadeModel(GL_SMOOTH);
 	glClearColor(0,0,0,0); // rgba
 	glEnable(GL_CULL_FACE);
 }
@@ -174,13 +174,13 @@ void CLAM::VM::KeySpace::DrawTiles()
 	if (_nBins!=nKeyNodes) return;
 	float xStep = x_res/nX;
 	float yStep = y_res/nY;
-	glBegin(GL_QUADS);
-	for(unsigned i=0; i<nX; i++)
+	glBegin(GL_QUAD_STRIP);
+	for(unsigned k=0; k<nY; k++)
 	{
-		float x1 = i*xStep;
-		for(unsigned k=0; k<nY; k++)
+		float y1 = k*yStep;
+		for(unsigned i=0; i<nX; i++)
 		{
-			float y1 = k*yStep;
+			float x1 = i*xStep;
 			double num = 0.;
 			double den = 0.;
 			for(unsigned m=0; m<nKeyNodes; m++)
@@ -197,12 +197,12 @@ void CLAM::VM::KeySpace::DrawTiles()
 			ColorIndex *= ColorIndex;
 			ColorIndex *= 200.f;
 			int cidx = floorf(ColorIndex);
-			glColor3d(pRColor[cidx],pGColor[cidx],pBColor[cidx]);
-			glVertex2f( x1,   y1+yStep );
-			glVertex2f( x1+xStep, y1+yStep );
-			glVertex2f( x1+xStep, y1 );
 			glVertex2f( x1,   y1 );
+			glVertex2f( x1,   y1+yStep );
+			glColor3d(pRColor[cidx],pGColor[cidx],pBColor[cidx]);
 		}
+		glVertex2f( 1,   y1 );
+		glVertex2f( 1,   y1+yStep );
 	}
 	glEnd();
 }
