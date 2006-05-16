@@ -1,17 +1,58 @@
-import re
-import os.path
 
+"""SCons.Tool.qt
+
+Tool-specific initialization for Qt.
+
+There normally shouldn't be any need to import this module directly.
+It will usually be imported through the generic SCons.Tool.Tool()
+selection method.
+
+"""
+
+#
+# Copyright (c) 2001, 2002, 2003, 2004 The SCons Foundation
+#
+# Permission is hereby granted, free of charge, to any person obtaining
+# a copy of this software and associated documentation files (the
+# "Software"), to deal in the Software without restriction, including
+# without limitation the rights to use, copy, modify, merge, publish,
+# distribute, sublicense, and/or sell copies of the Software, and to
+# permit persons to whom the Software is furnished to do so, subject to
+# the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+# KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+# LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+# OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+# WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+#
+
+__revision__ = "/home/scons/scons/branch.0/branch.96/baseline/src/engine/SCons/Tool/qt.py 0.96.92.D001 2006/04/10 23:13:27 knight"
+
+import os.path
+import re
+
+import SCons.Action
+import SCons.Builder
 import SCons.Defaults
+import SCons.Scanner
 import SCons.Tool
 import SCons.Util
 
-
 class ToolQtWarning(SCons.Warnings.Warning):
 	pass
+
 class GeneratedMocFileNotIncluded(ToolQtWarning):
 	pass
+
 class QtdirNotFound(ToolQtWarning):
 	pass
+
 SCons.Warnings.enableWarningClass(ToolQtWarning)
 
 qrcinclude_re = re.compile(r'<file>([^<]*)</file>', re.M)
@@ -20,11 +61,11 @@ qrcinclude_re = re.compile(r'<file>([^<]*)</file>', re.M)
 header_extensions = [".h", ".hxx", ".hpp", ".hh"]
 if SCons.Util.case_sensitive_suffixes('.h', '.H'):
 	header_extensions.append('.H')
-#cplusplus = __import__('c++', globals(), locals(), ['Scons.Tools'])
+#cplusplus = __import__('c++', globals(), locals(), [])
 #cxx_suffixes = cplusplus.CXXSuffixes
 cxx_suffixes = [".c", ".cxx", ".cpp", ".cc"]
 
-def _checkMocIncluded(target, source, env):
+def checkMocIncluded(target, source, env):
 	moc = target[0]
 	cpp = source[0]
 	# looks like cpp.includes is cleared before the build stage :-(
@@ -37,7 +78,7 @@ def _checkMocIncluded(target, source, env):
 			"Generated moc file '%s' is not included by '%s'" %
 			(str(moc), str(cpp)))
 
-def _find_file(filename, paths, node_factory):
+def find_file(filename, paths, node_factory):
 	retval = None
 	for dir in paths:
 		node = node_factory(filename, dir)
@@ -60,12 +101,12 @@ class _Automoc:
 		or Lib. Adds objects and builders for the special qt files.
 		"""
 		try:
-			if int(env.subst('$QT_AUTOSCAN')) == 0:
+			if int(env.subst('$QT4_AUTOSCAN')) == 0:
 				return target, source
 		except ValueError:
 			pass
 		try:
-			debug = int(env.subst('$QT_DEBUG'))
+			debug = int(env.subst('$QT4_DEBUG'))
 		except ValueError:
 			debug = 0
 		
@@ -110,9 +151,7 @@ class _Automoc:
 				# try to find the header file in the corresponding source
 				# directory
 				hname = splitext(cpp.name)[0] + h_ext
-				h = _find_file(hname,
-							  (cpp.get_dir(),),
-							  FS.File)
+				h = find_file(hname, (cpp.get_dir(),), env.File)
 				if h:
 					if debug:
 						print "scons: qt: Scanning '%s' (header of '%s')" % (str(h), str(cpp))
@@ -173,8 +212,6 @@ def generate(env):
 	print "Loading qt4 tool..."
 
 	def locateQt4Command(env, command, qtdir) :
-		fullpath = env.Detect([command+'-qt4', command])
-		if not (fullpath is None) : return fullpath
 		fullpath1 = os.path.join(qtdir,'bin',command +'-qt4')
 		if os.access(fullpath1, os.X_OK) or \
 			os.access(fullpath1+".exe", os.X_OK):
@@ -183,6 +220,8 @@ def generate(env):
 		if os.access(fullpath2, os.X_OK) or \
 			os.access(fullpath2+".exe", os.X_OK):
 			return fullpath2
+		fullpath = env.Detect([command+'-qt4', command])
+		if not (fullpath is None) : return fullpath
 		raise "Qt4 command '" + command + "' not found. Tried: " + fullpath1 + " and "+ fullpath2
 		
 
@@ -191,48 +230,60 @@ def generate(env):
 	Builder = SCons.Builder.Builder
 	splitext = SCons.Util.splitext
 
-	# the basics
 	env['QTDIR']  = _detect(env)
-	env['QT4_MOC'] = locateQt4Command(env,'moc', env['QTDIR'])
-	env['QT4_UIC'] = locateQt4Command(env,'uic', env['QTDIR'])
-	env['QT4_RCC'] = locateQt4Command(env,'rcc', env['QTDIR'])
-	env['QT4_LUPDATE'] = locateQt4Command(env,'lupdate', env['QTDIR'])
-	env['QT4_LRELEASE'] = locateQt4Command(env,'lrelease', env['QTDIR'])
+	env.SetDefault(
+		QTDIR  = _detect(env),
+		QT4_BINPATH = os.path.join('$QTDIR', 'bin'),
+		QT4_CPPPATH = os.path.join('$QTDIR', 'include'),
+		QT4_LIBPATH = os.path.join('$QTDIR', 'lib'),
+		# TODO: This is not reliable to QTDIR value changes but needed in order to support '-qt4' variants
+		QT4_MOC = locateQt4Command(env,'moc', env['QTDIR']),
+		QT4_UIC = locateQt4Command(env,'uic', env['QTDIR']),
+		QT4_RCC = locateQt4Command(env,'rcc', env['QTDIR']),
+		QT4_LUPDATE = locateQt4Command(env,'lupdate', env['QTDIR']),
+		QT4_LRELEASE = locateQt4Command(env,'lrelease', env['QTDIR']),
+		QT4_LIB = '', # KLUDGE to avoid linking qt3 library
 
-	# Should the qt tool try to figure out, which sources are to be moc'ed ?
-	env['QT4_AUTOSCAN'] = 1
+		QT4_AUTOSCAN = 1, # Should the qt tool try to figure out, which sources are to be moc'ed?
 
-	# Some QT specific flags. I don't expect someone wants to
-	# manipulate those ...
-	env['QT4_UICDECLFLAGS'] = CLVar('')
-	env['QT4_MOCFROMHFLAGS'] = CLVar('')
-	env['QT4_MOCFROMCXXFLAGS'] = CLVar('-i')
-	env['QT4_QRCFLAGS'] = ''
+		# Some QT specific flags. I don't expect someone wants to
+		# manipulate those ...
+		QT4_UICFLAGS = CLVar(''),
+		QT4_MOCFROMHFLAGS = CLVar(''),
+		QT4_MOCFROMCXXFLAGS = CLVar('-i'),
+		QT4_QRCFLAGS = '',
 
-	# suffixes/prefixes for the headers / sources to generate
-	env['QT4_MOCHPREFIX'] = 'moc_'
-	env['QT4_MOCHSUFFIX'] = '$CXXFILESUFFIX'
-	env['QT4_MOCCXXPREFIX'] = 'moc_'
-	env['QT4_MOCCXXSUFFIX'] = '.moc'
-	env['QT4_UISUFFIX'] = '.ui'
-	env['QT4_UICDECLPREFIX'] = 'ui_'
-	env['QT4_UICDECLSUFFIX'] = '.h'
-	env['QT4_QRCSUFFIX'] = '.qrc',
-	env['QT4_QRCCXXSUFFIX'] = '$CXXFILESUFFIX'
-	env['QT4_QRCCXXPREFIX'] = 'qrc_'
+		# suffixes/prefixes for the headers / sources to generate
+		QT4_UISUFFIX = '.ui',
+		QT4_UICDECLPREFIX = 'ui_',
+		QT4_UICDECLSUFFIX = '.h',
+		QT4_MOCHPREFIX = 'moc_',
+		QT4_MOCHSUFFIX = '$CXXFILESUFFIX',
+		QT4_MOCCXXPREFIX = 'moc_',
+		QT4_MOCCXXSUFFIX = '.moc',
+		QT4_QRCSUFFIX = '.qrc',
+		QT4_QRCCXXSUFFIX = '$CXXFILESUFFIX',
+		QT4_QRCCXXPREFIX = 'qrc_',
 
-	env['QT4_LIB'] = '' # KLUDGE to avoid linking qt3 library
+		# Commands for the qt support ...
+		QT4_UIC4COM = ('$QT4_UIC $QT4_UICFLAGS -o ${TARGETS[0]} $SOURCE'),
+		QT4_MOCFROMHCOM = ('$QT4_MOC $QT4_MOCFROMHFLAGS -o ${TARGETS[0]} $SOURCE'),
+		QT4_MOCFROMCXXCOM = [
+		CLVar('$QT4_MOC $QT4_MOCFROMCXXFLAGS -o ${TARGETS[0]} $SOURCE'),
+		Action(checkMocIncluded,None)],
+		QT4_LUPDATECOM = ('$QT4_LUPDATE $SOURCE -ts $TARGETS'),
+		QT4_LRELEASECOM = ('$QT4_LRELEASE $SOURCE'),
+		QT4_RCCCOM = ('$QT4_RCC $QT4_QRCFLAGS $SOURCE -o $TARGET'),
+		)
 
 	# Translation builder
 	tsbuilder = Builder(
-		action ='$QT4_LUPDATE $SOURCES -ts $TARGETS',
+		action =SCons.Action.Action('$QT4_LUPDATECOM','$QT4_LUPDATECOMSTR'),
 		multi=1
 		)
 	env.Append( BUILDERS = { 'Ts': tsbuilder } )
 	qmbuilder = Builder(
-		action =[
-			'$QT4_LRELEASE $SOURCE',
-			],
+		action = SCons.Action.Action('$QT4_LRELEASECOM', '$QT4_LRELEASECOMSTR'),
 		src_suffix = '.ts',
 		suffix = '.qm',
 		single_source = True
@@ -244,12 +295,12 @@ def generate(env):
 		contents = node.get_contents()
 		includes = qrcinclude_re.findall(contents)
 		return includes
-	qrcscanner = env.Scanner(name = 'qrcfile',
+	qrcscanner = SCons.Scanner.Scanner(name = 'qrcfile',
 		function = scanResources,
 		argument = None,
 		skeys = ['.qrc'])
 	qrcbuilder = Builder(
-		action ='$QT4_RCC $QT4_QRCFLAGS $SOURCE -o $TARGET',
+		action = SCons.Action.Action('$QT4_RCCCOM', '$QT4_RCCCOMSTR'),
 		source_scanner = qrcscanner,
 		src_suffix = '$QT4_QRCSUFFIX',
 		suffix = '$QT4_QRCCXXSUFFIX',
@@ -259,31 +310,26 @@ def generate(env):
 	env.Append( BUILDERS = { 'Qrc': qrcbuilder } )
 
 	# Interface builder
-	env['QT4_UIC4COM'] = [
-		CLVar('$QT4_UIC $QT4_UICDECLFLAGS -o ${TARGETS[0]} $SOURCE'),
-		]
 	uic4builder = Builder(
-		action='$QT4_UIC4COM',
+		action=SCons.Action.Action('$QT4_UIC4COM', '$QT4_UIC4COMSTR'),
 		src_suffix='$QT4_UISUFFIX',
 		suffix='$QT4_UICDECLSUFFIX',
 		prefix='$QT4_UICDECLPREFIX',
 		single_source = True
+		#TODO: Consider the uiscanner on new scons version
 		)
 	env.Append( BUILDERS = { 'Uic4': uic4builder } )
 
 	# Metaobject builder
-	env['QT4_MOCFROMHCOM'] = (
-		'$QT4_MOC $QT4_MOCFROMHFLAGS -o ${TARGETS[0]} $SOURCE')
-	env['QT4_MOCFROMCXXCOM'] = [
-		CLVar('$QT4_MOC $QT4_MOCFROMCXXFLAGS -o ${TARGETS[0]} $SOURCE'),
-		Action(_checkMocIncluded,None)]
 	mocBld = Builder(action={}, prefix={}, suffix={})
 	for h in header_extensions:
-		mocBld.add_action(h, '$QT4_MOCFROMHCOM')
+		act = SCons.Action.Action('$QT4_MOCFROMHCOM', '$QT4_MOCFROMHCOMSTR')
+		mocBld.add_action(h, act)
 		mocBld.prefix[h] = '$QT4_MOCHPREFIX'
 		mocBld.suffix[h] = '$QT4_MOCHSUFFIX'
 	for cxx in cxx_suffixes:
-		mocBld.add_action(cxx, '$QT4_MOCFROMCXXCOM')
+		act = SCons.Action.Action('$QT4_MOCFROMCXXCOM', '$QT4_MOCFROMCXXCOMSTR')
+		mocBld.add_action(cxx, act)
 		mocBld.prefix[cxx] = '$QT4_MOCCXXPREFIX'
 		mocBld.suffix[cxx] = '$QT4_MOCCXXSUFFIX'
 	env.Append( BUILDERS = { 'Moc4': mocBld } )
@@ -302,8 +348,8 @@ def generate(env):
 					 SHLIBEMITTER=[AutomocShared],
 					 LIBEMITTER  =[AutomocStatic],
 					 # Of course, we need to link against the qt libraries
-					 CPPPATH=[os.path.join('$QTDIR', 'include')],
-					 LIBPATH=[os.path.join('$QTDIR', 'lib')],
+					 CPPPATH=["$QT4_CPPPATH"],
+					 LIBPATH=["$QT4_LIBPATH"],
 					 LIBS=['$QT4_LIB'])
 	
 	import new
@@ -348,8 +394,8 @@ def enable_modules(self, modules, debug=False) :
 		for module in modules :
 			if module in pclessModules :
 			#	self.AppendUnique(LIBS=[module])
-				self.AppendUnique(LIBPATH=[os.path.join(self["QTDIR"],"lib",module)])
-				self.AppendUnique(CPPPATH=[os.path.join(self["QTDIR"],"include","qt4",module)])
+				self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib",module)])
+				self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
 				modules.remove(module)
 		self.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 		(
