@@ -177,8 +177,8 @@ if sys.platform != 'win32' :
 	else:
 		htmls = [ '../../resources/html/en/license.html' ]
 		install_html = tools_env.Install( tools_env['install_prefix']+"/share/smstools/html/en", htmls )
-		manpage = ['../../resources/man/man9/QtSMSTools.9']
-		install_manpage = tools_env.Install( tools_env['install_prefix']+"/share/man/man9", manpage )
+		manpage = ['../../resources/man/man1/QtSMSTools.1']
+		install_manpage = tools_env.Install( tools_env['install_prefix']+"/share/man/man1", manpage )
 		tools_bin = tools_env.Program( 'QtSMSTools', sourcefiles, LINKFLAGS=['-rdynamic'] )
 		install_bin = tools_env.Install( tools_env['install_prefix']+'/bin', tools_bin )
 		tools_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
@@ -191,8 +191,8 @@ else :
 
 	htmls = [ '../../resources/html/en/license.html' ]
 	install_html = tools_env.Install( tools_env['install_prefix']+"html/en", htmls )
-	manpage = ['../../resources/man/man9/QtSMSTools.9']
-	install_manpage = tools_env.Install( tools_env['install_prefix']+"man/man9", manpage )
+	manpage = ['../../resources/man/man1/QtSMSTools.1']
+	install_manpage = tools_env.Install( tools_env['install_prefix']+"man/man1", manpage )
 
 	install_bin = tools_env.Install( tools_env['install_prefix'], tools_bin )
 	install_alias = tools_env.Alias( 'install', [install_bin,install_html, install_manpage] )
