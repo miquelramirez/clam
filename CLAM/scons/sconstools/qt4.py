@@ -231,6 +231,7 @@ def generate(env):
 	splitext = SCons.Util.splitext
 
 	env['QTDIR']  = _detect(env)
+	# TODO: 'Replace' should be 'SetDefault'
 	env.SetDefault(
 		QTDIR  = _detect(env),
 		QT4_BINPATH = os.path.join('$QTDIR', 'bin'),
@@ -266,12 +267,12 @@ def generate(env):
 		QT4_QRCCXXPREFIX = 'qrc_',
 
 		# Commands for the qt support ...
-		QT4_UIC4COM = ('$QT4_UIC $QT4_UICFLAGS -o ${TARGETS[0]} $SOURCE'),
-		QT4_MOCFROMHCOM = ('$QT4_MOC $QT4_MOCFROMHFLAGS -o ${TARGETS[0]} $SOURCE'),
+		QT4_UICCOM = '$QT4_UIC $QT4_UICFLAGS -o $TARGET $SOURCE',
+		QT4_MOCFROMHCOM = '$QT4_MOC $QT4_MOCFROMHFLAGS -o $TARGET $SOURCE',
 		QT4_MOCFROMCXXCOM = [
-		CLVar('$QT4_MOC $QT4_MOCFROMCXXFLAGS -o ${TARGETS[0]} $SOURCE'),
+		CLVar('$QT4_MOC $QT4_MOCFROMCXXFLAGS -o $TARGET $SOURCE'),
 		Action(checkMocIncluded,None)],
-		QT4_LUPDATECOM = ('$QT4_LUPDATE $SOURCE -ts $TARGETS'),
+		QT4_LUPDATECOM = ('$QT4_LUPDATE $SOURCE -ts $TARGET'),
 		QT4_LRELEASECOM = ('$QT4_LRELEASE $SOURCE'),
 		QT4_RCCCOM = ('$QT4_RCC $QT4_QRCFLAGS $SOURCE -o $TARGET'),
 		)
@@ -311,7 +312,7 @@ def generate(env):
 
 	# Interface builder
 	uic4builder = Builder(
-		action=SCons.Action.Action('$QT4_UIC4COM', '$QT4_UIC4COMSTR'),
+		action=SCons.Action.Action('$QT4_UICCOM', '$QT4_UICCOMSTR'),
 		src_suffix='$QT4_UISUFFIX',
 		suffix='$QT4_UICDECLSUFFIX',
 		prefix='$QT4_UICDECLPREFIX',
@@ -410,9 +411,10 @@ def enable_modules(self, modules, debug=False) :
 			self.AppendUnique(LIBS=['opengl32'])
 		self.AppendUnique(CPPPATH=[ '$QTDIR/include/'+module
 			for module in modules])
-		self.AppendUnique(LIBPATH=['$QTDIR/lib'])
+		self.AppendUnique(LIBPATH=['$QTDIR\\lib'])
 
 
 def exists(env):
 	return _detect(env)
+
 
