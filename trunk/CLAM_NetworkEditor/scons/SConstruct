@@ -167,8 +167,8 @@ for root, _, filenames in os.walk('../resources/graphics' ) :
 	for filename in filenames :
 		graphics.append( '../resources/graphics/' + filename )
 
-manpages = [ 'NetworkEditor.9' ]
-manpages = [ '../resources/man/man9/'+item for item in manpages ]
+manpages = [ 'NetworkEditor.1' ]
+manpages = [ '../resources/man/man1/'+item for item in manpages ]
 
 if sys.platform != 'win32' :
 	neted_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
@@ -195,7 +195,7 @@ if sys.platform != 'win32' :
 		neted_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
 		install_examples = neted_env.Install( neted_env['install_prefix']+'/share/doc/networkeditor/examples', examples )
 		install_graphics = neted_env.Install( neted_env['install_prefix']+'/share/networkeditor/graphics', graphics )
-		install_manpages = neted_env.Install( neted_env['install_prefix']+'/share/man/man9', manpages )
+		install_manpages = neted_env.Install( neted_env['install_prefix']+'/share/man/man1', manpages )
 		install_alias = neted_env.Alias( 'install', [install_bin, install_examples, install_graphics, install_manpages] )
 else :
 	parse_pkg_config( neted_env )
