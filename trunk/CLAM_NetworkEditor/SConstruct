@@ -102,7 +102,8 @@ extraPaths += [
 includePaths = sourcePaths + extraPaths
 
 sources = scanFiles('*.cxx', sourcePaths)
-sources = filter( (lambda a : a.rfind( "Ladspa")==-1 ),  sources )
+if sys.platform == "win32" :
+	sources = filter( (lambda a : a.rfind( "Ladspa")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "uic_")==-1 ),  sources )
