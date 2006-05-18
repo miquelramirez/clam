@@ -2,9 +2,9 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "CLAM-NetworkEditor"
-!define PRODUCT_VERSION "0.3"
+!define PRODUCT_VERSION "${VERSION}"
 !define PRODUCT_PUBLISHER "CLAM devel"
-!define PRODUCT_WEB_SITE "http://www.iua.upf.es/mtg/clam"
+!define PRODUCT_WEB_SITE "http://clam.iua.upf.edu"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\NetworkEditor.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -29,7 +29,7 @@
 ; Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ; License page
-!insertmacro MUI_PAGE_LICENSE "license.txt"
+!insertmacro MUI_PAGE_LICENSE "../COPYING"
 ; Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ; Instfiles page
@@ -53,6 +53,7 @@ InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
+
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
    ReadEnvStr $0 CLAM_PATH
@@ -73,10 +74,20 @@ Section "Principal" SEC01
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
   CreateShortCut "$DESKTOP\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
+  File '${EXTERNALDLLDIR}\libsndfile.dll'
+  File '${EXTERNALDLLDIR}\ogg.dll'
+  File '${EXTERNALDLLDIR}\pthreadVCE.dll'
+  File '${EXTERNALDLLDIR}\qt-mt322.dll'
+  File '${EXTERNALDLLDIR}\vorbis.dll'
+  File '${EXTERNALDLLDIR}\vorbisenc.dll'
+  File '${EXTERNALDLLDIR}\vorbisfile.dll'
+  File '${EXTERNALDLLDIR}\xerces-c_2_3_0.dll'
+  File '${VCRUNTIMEDIR}\msvcp71.dll'
+  File '${VCRUNTIMEDIR}\msvcr71.dll'
   SetOutPath "$INSTDIR\resources\"
-  File "..\resources\mtg.xpm"
-  File "..\resources\mtg2.xpm"
-  File "..\resources\mtg3.xpm"
+  File "..\resources\mtg.xpm" ; TODO: Remove it
+  File "..\resources\mtg2.xpm" ; TODO: Remove it
+  File "..\resources\mtg3.xpm" ; TODO: Remove it
 SectionEnd
 
 Section -AdditionalIcons
@@ -124,6 +135,23 @@ Section Uninstall
 
   RMDir "$SMPROGRAMS\CLAM\NetworkEditor"
   RMDir "$INSTDIR\resources"
+  Delete "$INSTDIR\bin\libsndfile.dll"
+  Delete "$INSTDIR\bin\ogg.dll"
+  Delete "$INSTDIR\bin\pthreadVCE.dll"
+  Delete "$INSTDIR\bin\qt-mt322.dll"
+  Delete "$INSTDIR\bin\vorbis.dll"
+  Delete "$INSTDIR\bin\vorbisenc.dll"
+  Delete "$INSTDIR\bin\vorbisfile.dll"
+  Delete "$INSTDIR\bin\xerces-c_2_3_0.dll"
+  Delete "$INSTDIR\bin\msvcp71.dll"
+  Delete "$INSTDIR\bin\msvcr71.dll"
+  Delete "$SMPROGRAMS\CLAM\NetworkEditor\Uninstall.lnk"
+  Delete "$SMPROGRAMS\CLAM\NetworkEditor\Website.lnk"
+  Delete "$DESKTOP\NetworkEditor.lnk"
+  Delete "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk"
+
+  RMDir "$SMPROGRAMS\CLAM\NetworkEditor"
+  RMDir "$SMPROGRAMS\CLAM"
   RMDir "$INSTDIR\bin"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
