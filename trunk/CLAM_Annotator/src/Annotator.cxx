@@ -179,6 +179,11 @@ Annotator::Annotator(const std::string & nameProject = "")
 	mAbout = new QDialog(this);
 	Ui::About aboutUi;
 	aboutUi.setupUi(mAbout);
+	aboutUi.versionInfo->setText(tr(
+			"<p><b>Music Annotator version %1</b></p>\n"
+			"<p>Based on CLAM version %2</p>")
+			.arg("0.3.2-CVS")
+			.arg("0.91-CVS"));
 	initInterface();
 	setMenuAudioItemsEnabled(false);
 	loadSettings();
