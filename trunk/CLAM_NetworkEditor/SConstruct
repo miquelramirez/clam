@@ -3,7 +3,7 @@ import os
 import glob
 import sys
 
-version='0.3.2-CVS'
+version='0.2.1-CVS'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
