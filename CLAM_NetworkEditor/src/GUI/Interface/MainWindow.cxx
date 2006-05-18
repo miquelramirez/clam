@@ -160,6 +160,7 @@ namespace NetworkGUI
 					)
 				.arg("0.2.1-CVS")
 				.arg("0.91-CVS"));
+		setIcon(*(mpAboutDlg->icon()));
 
 		ProcessingTree * procTree = new ProcessingTree( mNetworkPresentation, mDockProcMenu );
 		mDockProcMenu->setWidget( procTree );
