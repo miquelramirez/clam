@@ -30,6 +30,7 @@
 #include <qmenubar.h>
 #include <qfiledialog.h>
 #include <qapplication.h>
+#include <qlabel.h>
 #include <string>
 #include "aboutdialog.h"
 
@@ -153,6 +154,12 @@ namespace NetworkGUI
 		setDockEnabled( mDockProcMenu, Qt::DockBottom, false );
 
 		mpAboutDlg = new AboutDialog( this, "NetworkEditor_AboutDialog", true );
+		mpAboutDlg->versionInfo->setText(tr(
+					"<p><b>Network Editor version %1</b></p>"
+					"<p>Using CLAM version %2</p>"
+					)
+				.arg("0.2.1-CVS")
+				.arg("0.91-CVS"));
 
 		ProcessingTree * procTree = new ProcessingTree( mNetworkPresentation, mDockProcMenu );
 		mDockProcMenu->setWidget( procTree );
