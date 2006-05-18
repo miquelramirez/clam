@@ -1,6 +1,7 @@
+#:vim:set syntax=python
 import sys, os, string, glob
 
-version='0.2'
+version='0.2.1'
 
 def create_setup( target, source, env ) :
 	os.system( "makensis clam_networkeditor.nsi" )
