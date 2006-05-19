@@ -54,7 +54,7 @@
                         <number>1</number>
                     </property>
                     <property name="text">
-                        <string>&lt;p&gt;&lt;b&gt;Network Editor version %1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Using CLAM %2&lt;/p&gt;</string>
+                        <string>&lt;p&gt;&lt;b&gt;Network Editor version %1&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Based on CLAM version %2&lt;/p&gt;</string>
                     </property>
                     <property name="textFormat">
                         <enum>RichText</enum>
