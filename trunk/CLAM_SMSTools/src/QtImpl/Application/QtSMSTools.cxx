@@ -462,6 +462,12 @@ namespace QtSMS
 	void QtSMSTools::showAboutBox()
 	{
 		AboutBox* aboutBox = new AboutBox(this);
+		aboutBox->versionInfo->setText(tr(
+			"<p><b>SMSTools version %1</b></p>"
+			"<p>Based on CLAM version %2</p>")
+			.arg("0.4.1-CVS")
+			.arg("0.91-CVS")
+			);
 		aboutBox->exec();
 	}
 
