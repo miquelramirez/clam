@@ -232,7 +232,8 @@ def generate(env):
 
 	env['QTDIR']  = _detect(env)
 	# TODO: 'Replace' should be 'SetDefault'
-	env.SetDefault(
+#	env.SetDefault(
+	env.Replace(
 		QTDIR  = _detect(env),
 		QT4_BINPATH = os.path.join('$QTDIR', 'bin'),
 		QT4_CPPPATH = os.path.join('$QTDIR', 'include'),
@@ -270,8 +271,8 @@ def generate(env):
 		QT4_UICCOM = '$QT4_UIC $QT4_UICFLAGS -o $TARGET $SOURCE',
 		QT4_MOCFROMHCOM = '$QT4_MOC $QT4_MOCFROMHFLAGS -o $TARGET $SOURCE',
 		QT4_MOCFROMCXXCOM = [
-		CLVar('$QT4_MOC $QT4_MOCFROMCXXFLAGS -o $TARGET $SOURCE'),
-		Action(checkMocIncluded,None)],
+			'$QT4_MOC $QT4_MOCFROMCXXFLAGS -o $TARGET $SOURCE',
+			Action(checkMocIncluded,None)],
 		QT4_LUPDATECOM = ('$QT4_LUPDATE $SOURCE -ts $TARGET'),
 		QT4_LRELEASECOM = ('$QT4_LRELEASE $SOURCE'),
 		QT4_RCCCOM = ('$QT4_RCC $QT4_QRCFLAGS $SOURCE -o $TARGET'),
@@ -376,7 +377,6 @@ def enable_modules(self, modules, debug=False) :
 		]
 	pclessModules = [
 		'QtUiTools',
-		'QtUiTools_debug',
 	]
 	invalidModules=[]
 	for module in modules:
@@ -390,22 +390,20 @@ def enable_modules(self, modules, debug=False) :
 	if 'QtGui' in modules:
 		self.AppendUnique(CPPFLAGS=['-DQT_GUI_LIB'])
 
+	debugSuffix = ''
 	if sys.platform == "linux2" :
-		if debug : modules = [module+"_debug" for module in modules]
+		if debug : debugSuffix = '_debug'
 		for module in modules :
-			if module in pclessModules :
-			#	self.AppendUnique(LIBS=[module])
-				self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib",module)])
-				self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
-				modules.remove(module)
-		self.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
-		(
-			self['QTDIR'],
-			' '.join(modules)))
+			if module not in pclessModules : continue
+			self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
+			self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib",module)])
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
+			modules.remove(module)
+		if debug : modules = [module+debugSuffix for module in modules]
+		self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(modules))
 		return
 	if sys.platform == "win32" :
 		if debug : debugSuffix = 'd'
-		else : debugSuffix = ''
 		self.AppendUnique(LIBS=[lib+'4'+debugSuffix for lib in modules])
 		if 'QtOpenGL' in modules:
 			self.AppendUnique(LIBS=['opengl32'])
