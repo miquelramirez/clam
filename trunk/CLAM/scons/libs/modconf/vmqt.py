@@ -9,7 +9,8 @@ def setup_vmqt_environment( vmqt_env, conf ) :
 		vmqt_env.Append( CPPPATH=['%s'%vmqt_env['qt_includes']] )
 		vmqt_env.Append( LIBPATH=['%s'%vmqt_env['qt_libs']] )
 	except KeyError :
-		pass
+		vmqt_env.Append( CPPPATH=['%s/include/qt3'%vmqt_env['QTDIR']] )
+		vmqt_env.Append( LIBPATH=['%s/lib'%vmqt_env['QTDIR']] )
 
 	result = conf.CheckCXXHeader( 'qapplication.h' )
 	if not result :
