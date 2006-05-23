@@ -25,6 +25,7 @@
 #include <list>
 #include <map>
 #include <QtCore/QString>
+#include "Tonnetz.hxx"
 
 namespace CLAM_Annotator { class Project; }
 namespace CLAM_Annotator { class InstantView; }

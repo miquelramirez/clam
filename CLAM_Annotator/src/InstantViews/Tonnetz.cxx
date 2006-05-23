@@ -19,7 +19,7 @@
  *
  */
 
-#include "PcpTorus.hxx"
+#include "Tonnetz.hxx"
 #include <QtGui/QPixmap>
 #include <QtCore/QTimer>
 #include <iostream>
@@ -27,10 +27,10 @@
 #include <CLAM/Pool.hxx>
 #include <CLAM/Array.hxx>
 
-CLAM::VM::PcpTorus::~PcpTorus()
+CLAM::VM::Tonnetz::~Tonnetz()
 {
 }
-CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
+CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 	InstantView(parent)
 {
 	_font.setFamily("sans-serif");
@@ -63,7 +63,7 @@ CLAM::VM::PcpTorus::PcpTorus(QWidget * parent) :
 				));
 }
 
-void CLAM::VM::PcpTorus::initializeGL()
+void CLAM::VM::Tonnetz::initializeGL()
 {
 	glShadeModel(GL_FLAT);
 	glClearColor(0,0,0,0); // rgba
@@ -73,7 +73,7 @@ void CLAM::VM::PcpTorus::initializeGL()
 	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 	glEnable(GL_CULL_FACE);
 }
-void CLAM::VM::PcpTorus::resizeGL(int width, int height)
+void CLAM::VM::Tonnetz::resizeGL(int width, int height)
 {
 	int side = qMin(width, height);
 	glViewport(0 , 0, width, height); // This is to have a square
@@ -89,7 +89,7 @@ void CLAM::VM::PcpTorus::resizeGL(int width, int height)
 	glOrtho(left,right,bottom,top,front,back);
 	glMatrixMode(GL_MODELVIEW);
 }
-void CLAM::VM::PcpTorus::paintGL()
+void CLAM::VM::Tonnetz::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	Draw();
@@ -97,7 +97,7 @@ void CLAM::VM::PcpTorus::paintGL()
 	_updatePending=0;
 
 }
-void CLAM::VM::PcpTorus::Draw()
+void CLAM::VM::Tonnetz::Draw()
 {
 	if (!_nBins) return;
 	_maxValue*=0.95;
@@ -108,22 +108,42 @@ void CLAM::VM::PcpTorus::Draw()
 	for (int y = 0; y<4; y++)
 		for (int x = 0-y/2; x<10; x++)
 			DrawTile(x,y);
+	DrawChordsShapes();
+	glColor4f(1,1,.5,1);
+	for (int y = 0; y<4; y++)
+		for (int x = 0-y/2; x<10; x++)
+			DrawLabel(x,y);
 }
 
-void CLAM::VM::PcpTorus::DrawTile(int x, int y)
+unsigned CLAM::VM::Tonnetz::BinAtPosition(int x, int y)
+{
+	if (_nBins==12)
+		return (x*7+y*4+_nBins*1000)%_nBins; // for pitches
+	if (_nBins==24) // for tonality
+	{
+		bool isminor = y&1;
+		return  ((x*7)%(_nBins/2) + 11*(y/2) + (isminor?4:0)  + _nBins*1000)%(_nBins/2) + (isminor?_nBins/2:0);
+	}
+	return 0;
+}
+
+
+void CLAM::VM::Tonnetz::DrawLabel(int x, int y)
 {
 	const double sin30 = .5;
 	const double cos30 = .8660254;
 	const double posx = x*2*cos30+y*cos30;
 	const double posy = y*(1+sin30);
-	unsigned bin=0;
-	if (_nBins==12)
-		bin = (x*7+y*4+_nBins*1000)%_nBins; // For pitches
-	else if (_nBins==24) // For tonality
-	{
-		bool isMinor = y&1;
-		bin =  ((x*7)%(_nBins/2) + 11*(y/2) + (isMinor?4:0)  + _nBins*1000)%(_nBins/2) + (isMinor?_nBins/2:0);
-	}
+	unsigned bin=BinAtPosition(x,y);
+	renderText(posx, posy, .6, getLabel(bin).c_str(), _font);
+}
+void CLAM::VM::Tonnetz::DrawTile(int x, int y)
+{
+	const double sin30 = .5;
+	const double cos30 = .8660254;
+	const double posx = x*2*cos30+y*cos30;
+	const double posy = y*(1+sin30);
+	unsigned bin=BinAtPosition(x,y);
 	double pitchLevel = frameData()? frameData()[bin]/_maxValue: 0;
 	double hexsize=pitchLevel;
 	if (hexsize>1) hexsize = 1;
@@ -167,38 +187,71 @@ void CLAM::VM::PcpTorus::DrawTile(int x, int y)
 		glEnd();
 		*/
 	glPopMatrix();
-	glColor4f(1,1,.5,1);
-	renderText(posx, posy, .6, getLabel(bin).c_str(), _font);
 }
 
+void CLAM::VM::Tonnetz::DrawChordsShapes()
+{
+	return;
+	const double sin30 = .5;
+	const double cos30 = .8660254;
+//	const double posx = x*2*cos30+y*cos30;
+//	const double posy = y*(1+sin30);
+	glPushMatrix();
+	glTranslatef(4*cos30+2*cos30,2*1.5,0);
+	glLineWidth(5);
+	glColor4f(0,.5,1,1);
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(0,0,.2);
+	glVertex3f(cos30,1+sin30,.2);
+	glVertex3f(2*cos30,0,.2);
+	glVertex3f(0,0,.2);
+	glEnd();
+	glTranslatef(.05,.05,0);
+	glColor4f(.5,0,1,1);
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(0,0,.2);
+	glVertex3f(cos30,-1-sin30,.2);
+	glVertex3f(2*cos30,0,.2);
+	glVertex3f(0,0,.2);
+	glEnd();
+	glTranslatef(.05,.05,0);
+	glColor4f(.5,.5,0,1);
+	glBegin(GL_LINE_STRIP);
+	glVertex3f(2*cos30,0,.2);
+	glVertex3f(0,0,.2);
+	glVertex3f(cos30,+1+sin30,.2);
+	glVertex3f(2*cos30,0,.2);
+	glVertex3f(3*cos30,-1-sin30,.2);
+	glEnd();
+	glPopMatrix();
+}
 
-
-void CLAM::VM::PcpTorus::setCurrentTime(double timeMiliseconds)
+void CLAM::VM::Tonnetz::setCurrentTime(double timeMiliseconds)
 {
 	bool mustUpdate = _dataSource.setCurrentTime(timeMiliseconds);
 	if (!mustUpdate) return;
 	if (!_updatePending++) update();
 }
 
-const std::string & CLAM::VM::PcpTorus::getLabel(unsigned bin) const
+const std::string & CLAM::VM::Tonnetz::getLabel(unsigned bin) const
 {
 	return _dataSource.getLabel(bin);
 }
 
-void CLAM::VM::PcpTorus::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
+void CLAM::VM::Tonnetz::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
 {
 	_dataSource.setSource(project, scope, name);
 	const std::list<std::string> & binLabels=project.GetAttributeScheme(scope,name).GetBinLabels();
 	_nBins = binLabels.size();
 }
 
-void CLAM::VM::PcpTorus::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
+void CLAM::VM::Tonnetz::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
 {
 	_dataSource.updateData(data, samplingRate);
 }
 
 
-void CLAM::VM::PcpTorus::clearData()
+void CLAM::VM::Tonnetz::clearData()
 {
 	_dataSource.clearData();
 	_maxValue=1;

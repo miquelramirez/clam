@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef PcpTorus_hxx
-#define PcpTorus_hxx
+#ifndef Tonnetz_hxx
+#define Tonnetz_hxx
 
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
@@ -84,19 +84,22 @@ namespace VM
 			unsigned _currentFrame;
 	};
 
-	class PcpTorus : public InstantView
+	class Tonnetz : public InstantView
 	{
 		Q_OBJECT
 
 		public:
-			PcpTorus(QWidget * parent);
-			~PcpTorus();
+			Tonnetz(QWidget * parent);
+			~Tonnetz();
 			virtual void initializeGL();
 			virtual void resizeGL(int width, int height);
 			virtual void paintGL();
 		private:
+			unsigned BinAtPosition(int x, int y);
 			void Draw();
 			void DrawTile(int x, int y);
+			void DrawLabel(int x, int y);
+			void DrawChordsShapes();
 
 		public slots:
 			virtual void setCurrentTime(double timeMiliseconds);
@@ -125,4 +128,4 @@ namespace VM
 
 
 
-#endif// PcpTorus_hxx
+#endif// Tonnetz_hxx
