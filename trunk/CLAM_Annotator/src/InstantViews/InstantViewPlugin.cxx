@@ -21,7 +21,7 @@
 
 #include "InstantViewPlugin.hxx"
 #include "Project.hxx"
-#include "PcpTorus.hxx"
+#include "Tonnetz.hxx"
 #include "KeySpace.hxx"
 
 #include <string>
@@ -57,13 +57,13 @@ InstantViewPlugin * InstantViewPlugin::getPlugin(const std::string & type)
 /// Concrete plugins
 
 
-class PcpTorusPlugin : public InstantViewPlugin
+class TonnetzPlugin : public InstantViewPlugin
 {
-	virtual const char * id() const { return "PcpTorus"; }
+	virtual const char * id() const { return "Tonnetz"; }
 	virtual QString name() const { return QObject::tr("Tonnezt"); }
 	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
-		CLAM::VM::PcpTorus * view =  new CLAM::VM::PcpTorus(parent);
+		CLAM::VM::Tonnetz * view =  new CLAM::VM::Tonnetz(parent);
 		view->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
 		return view;
 	}
@@ -142,7 +142,7 @@ class KeySpacePlugin : public InstantViewPlugin
 Initializer::Initializer()
 {
 	plugins["KeySpace"] = new KeySpacePlugin;
-	plugins["PcpTorus"] = new PcpTorusPlugin;
+	plugins["Tonnetz"] = new TonnetzPlugin;
 }
 
 

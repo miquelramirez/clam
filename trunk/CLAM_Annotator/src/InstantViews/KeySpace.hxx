@@ -22,11 +22,11 @@
 #ifndef _KEYSPACE_
 #define _KEISPACE_
 
-#include "PcpTorus.hxx"
+#include "Tonnetz.hxx"
 namespace CLAM {
 namespace VM {
 
-class KeySpace : public PcpTorus
+class KeySpace : public Tonnetz
 {
 protected:
 	float x_res, y_res;

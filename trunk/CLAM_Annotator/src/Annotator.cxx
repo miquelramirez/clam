@@ -59,10 +59,12 @@
 #include <vmBPFPlot.hxx>
 #include <vmAudioPlot.hxx>
 #include <vmBPFPlayer.hxx>
-#include "PcpTorus.hxx"
 #include "InstantViewPlugin.hxx"
+#include "InstantView.hxx"
 
-#define VERSION "2.1"
+#ifndef VERSION
+#define VERSION "0.3.2-CVS"
+#endif
 
 #ifndef RESOURCES_BASE
 #define RESOURCES_BASE "../resources"
@@ -182,7 +184,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 	aboutUi.versionInfo->setText(tr(
 			"<p><b>Music Annotator version %1</b></p>\n"
 			"<p>Based on CLAM version %2</p>")
-			.arg("0.3.2-CVS")
+			.arg(VERSION)
 			.arg("0.91-CVS"));
 	initInterface();
 	setMenuAudioItemsEnabled(false);
@@ -397,6 +399,16 @@ void Annotator::adaptInstantViewsToSchema()
 	for (unsigned i=0; i<instantViews.size(); i++)
 	{
 		InstantViewPlugin * plugin = InstantViewPlugin::getPlugin(instantViews[i].GetType());
+		if (!plugin)
+		{
+			QMessageBox::warning(this,
+				tr("Invalid instant view"), 
+				tr("The project tried to create a instant view of type '%1' "
+					"which is not available in your system")
+					.arg(instantViews[i].GetType().c_str())
+			);
+			continue;
+		}
 		CLAM::VM::InstantView * view = plugin->createView(mVSplit, mProject, instantViews[i]);
 		mInstantViews.push_back(view);
 	}

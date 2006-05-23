@@ -48,7 +48,7 @@ std::vector<float> weights;
 
 
 CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
-	: PcpTorus(parent)
+	: Tonnetz(parent)
 {
 	x_res = 1;
 	y_res = 1;
