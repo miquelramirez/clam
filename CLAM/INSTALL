@@ -81,7 +81,7 @@ applications from the source tarballs.
  As a hint, in an Ubuntu Breezy (Debian based) distribution these 
  are the needed packages:
    libxerces26-dev, fftw-dev, sfftw-dev, libfltk1.1-dev, libqt3-mt-dev, 
-   libasound2-dev, libvorbis-dev, libsndfile1-dev, libmad0-dev, 
+   libasound2-dev, libvorbis-dev, libogg-dev, libsndfile1-dev, libmad0-dev, 
    libid3-3.8.3-dev, ladspa-sdk, (optional: libxml++2.6-dev >=2.10,
    libjack-dev)
 
