@@ -33,7 +33,7 @@ static InstantViewPlugin::PluginMap plugins;
 class Initializer
 {
 public:
-	Initializer::Initializer();
+	Initializer();
 };
 
 static Initializer initializer;
