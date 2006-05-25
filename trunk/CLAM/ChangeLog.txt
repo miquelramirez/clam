@@ -1,3 +1,4 @@
+ 
  * Segmentation classes moved to clam-core
  * New segmentation class UnsizedSegmentation
  * New data abstraction EquidistantPointsFunction
