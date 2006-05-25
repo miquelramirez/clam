@@ -149,13 +149,13 @@ void ReadingRegion<WritingRegion>::RemoveProducer()
 template<class WritingRegion>
 typename ReadingRegion<WritingRegion>::ReadingRegionsIterator ReadingRegion<WritingRegion>::BeginReaders()
 {
-	return 0; 
+	throw 0; 
 }
 
 template<class WritingRegion>
 typename ReadingRegion<WritingRegion>::ReadingRegionsIterator ReadingRegion<WritingRegion>::EndReaders()
 {
-	return 0; 
+	throw 0; 
 }
 
 template<class WritingRegion>
