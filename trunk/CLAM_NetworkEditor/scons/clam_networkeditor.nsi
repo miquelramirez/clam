@@ -48,7 +48,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "${PRODUCT_NAME}-${PRODUCT_VERSION}_setup.exe"
+OutFile "..\${PRODUCT_NAME}-${PRODUCT_VERSION}_setup.exe"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
@@ -70,7 +70,7 @@ FunctionEnd
 Section "Principal" SEC01
   SetOutPath "$INSTDIR\bin"
   SetOverwrite ifnewer
-  File "NetworkEditor.exe"
+  File "..\NetworkEditor.exe"
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
   CreateShortCut "$DESKTOP\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"

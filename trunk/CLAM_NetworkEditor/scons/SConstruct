@@ -91,15 +91,15 @@ def parse_pkg_config( env ) :
 	env.Append( CPPPATH = cpppath.keys() )
 
 
-neted_env = Environment( tools=['default','qt'], ENV=os.environ )
+env = Environment( tools=['default','qt'], ENV=os.environ )
 if sys.platform == 'win32' :
-	neted_env.Replace( QT_LIB = 'qt-mt322' )
-#	splitted_path = neted_env['ENV']['QTDIR'].split('\\')
+	env.Replace( QT_LIB = 'qt-mt322' )
+#	splitted_path = env['ENV']['QTDIR'].split('\\')
 #	version_str = splitted_path[2]
 #	qt_suffix = ''.join( version_str.split('.') )
-#	neted_env.Replace( QT_LIB = 'qt-mt%s'%qt_suffix )
+#	env.Replace( QT_LIB = 'qt-mt%s'%qt_suffix )
 else :
-	neted_env.Replace( QT_LIB = 'qt-mt' )
+	env.Replace( QT_LIB = 'qt-mt' )
 
 opts = Options('NetworkEditor.conf')
 
@@ -117,32 +117,32 @@ else :
 
 opts.Add( BoolOption( 'release', 'Build network editor enabling compiler optimizations', 'no') )
 
-opts.Update(neted_env)
-opts.Save('NetworkEditor.conf', neted_env)
+opts.Update(env)
+opts.Save('NetworkEditor.conf', env)
 
-Help(opts.GenerateHelpText(neted_env))
+Help(opts.GenerateHelpText(env))
 
 if sys.platform != 'win32' :
-	if neted_env['release'] :
-		neted_env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+	if env['release'] :
+		env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
 	else :
-		neted_env.Append( CCFLAGS=['-g', '-Wall'] )
-	export_pkg_config = 'export PKG_CONFIG_PATH='+neted_env['clam_prefix']+'/lib/pkgconfig'
+		env.Append( CCFLAGS=['-g', '-Wall'] )
+	export_pkg_config = 'export PKG_CONFIG_PATH='+env['clam_prefix']+'/lib/pkgconfig'
 	execute_pkg_config = 'pkg-config --cflags --libs clam_core clam_processing clam_audioio clam_vmqt'
-	neted_env.ParseConfig( export_pkg_config + ' && ' + execute_pkg_config  )
+	env.ParseConfig( export_pkg_config + ' && ' + execute_pkg_config  )
 else :
-	if neted_env['release'] :
-		neted_env.Append( CPPFLAGS = ['-DWIN32'] )
-		neted_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
-		neted_env.Append( LINKFLAGS = ['/LTCG'] )
+	if env['release'] :
+		env.Append( CPPFLAGS = ['-DWIN32'] )
+		env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
+		env.Append( LINKFLAGS = ['/LTCG'] )
 	else :
-		neted_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
-		neted_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
-		neted_env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
+		env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
+		env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
+		env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
 source_dirs = ['../src','../src/GUI','../src/GUI/Base','../src/GUI/Interface','../src/GUI/Qt_Presentations','../src/GUI/Qt_Presentations/ConcretePresentations', '../src/Processings','../src/Visualization']
 
-neted_env.Append(CPPPATH=source_dirs)
+env.Append(CPPPATH=source_dirs)
 
 sourcefiles = []
 for dir in source_dirs :
@@ -172,57 +172,57 @@ manpages = [ 'NetworkEditor.1' ]
 manpages = [ '../resources/man/man1/'+item for item in manpages ]
 
 if sys.platform != 'win32' :
-	neted_env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
-	neted_env.Append(CCFLAGS=['-I/usr/include'])
+	env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
+	env.Append(CCFLAGS=['-I/usr/include'])
 
 	if sys.platform == 'darwin':
-		neted_bin_pre = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-bind_at_load','-dynamic'] )
+		neted_bin_pre = env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-bind_at_load','-dynamic'] )
 		#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
-		bundle_bin = neted_env.Install( 'NetworkEditor.app/Contents/MacOS', neted_bin_pre )
-		bundle_data = neted_env.Install( 'NetworkEditor.app/Contents', 'resources/Info.plist')
-		bundle_icon = neted_env.Install( 'NetworkEditor.app/Contents/Resources', 'resources/CLAM.icns')
+		bundle_bin = env.Install( 'NetworkEditor.app/Contents/MacOS', neted_bin_pre )
+		bundle_data = env.Install( 'NetworkEditor.app/Contents', 'resources/Info.plist')
+		bundle_icon = env.Install( 'NetworkEditor.app/Contents/Resources', 'resources/CLAM.icns')
 		neted_bin = [ neted_bin_pre + bundle_bin + bundle_data + bundle_icon ]
 
 		#DMG creation process
 		dmg_bld = Builder( action=Action(create_dmg, create_dmg_message ))
-		neted_env.Append( BUILDERS={'CreateDMG' : dmg_bld} )
-		dmg = neted_env.CreateDMG('notused', neted_bin )
-		neted_env.Alias('dmg', [neted_bin, dmg])
+		env.Append( BUILDERS={'CreateDMG' : dmg_bld} )
+		dmg = env.CreateDMG('notused', neted_bin )
+		env.Alias('dmg', [neted_bin, dmg])
 
 	else:
-		neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-rdynamic'] )
+		neted_bin = env.Program( 'NetworkEditor', sourcefiles, LINKFLAGS=['-rdynamic'] )
 
-		install_bin = neted_env.Install( neted_env['install_prefix']+'/bin', neted_bin )
-		neted_env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
-		install_examples = neted_env.Install( neted_env['install_prefix']+'/share/doc/networkeditor/examples', examples )
-		install_graphics = neted_env.Install( neted_env['install_prefix']+'/share/networkeditor/graphics', graphics )
-		install_manpages = neted_env.Install( neted_env['install_prefix']+'/share/man/man1', manpages )
-		install_alias = neted_env.Alias( 'install', [install_bin, install_examples, install_graphics, install_manpages] )
+		install_bin = env.Install( env['install_prefix']+'/bin', neted_bin )
+		env.AddPostAction( install_bin, 'chmod 755 $TARGET' )
+		install_examples = env.Install( env['install_prefix']+'/share/doc/networkeditor/examples', examples )
+		install_graphics = env.Install( env['install_prefix']+'/share/networkeditor/graphics', graphics )
+		install_manpages = env.Install( env['install_prefix']+'/share/man/man1', manpages )
+		install_alias = env.Alias( 'install', [install_bin, install_examples, install_graphics, install_manpages] )
 else :
-	parse_pkg_config( neted_env )
-	neted_env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
-	neted_env.Append( CCFLAGS = ['/EHsc'] )
-	neted_env.Append( LINKFLAGS = ['/machine:x86'] )
-	neted_bin = neted_env.Program( 'NetworkEditor', sourcefiles )
-	install_bin = neted_env.Install( neted_env['install_prefix'], neted_bin )
-	install_examples = neted_env.Install( neted_env['install_prefix']+'/examples', examples )
-	install_graphics = neted_env.Install( neted_env['install_prefix']+'/graphics', graphics )
-	install_alias = neted_env.Alias( 'install', [install_bin, install_examples, install_graphics] )
+	parse_pkg_config( env )
+	env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
+	env.Append( CCFLAGS = ['/EHsc'] )
+	env.Append( LINKFLAGS = ['/machine:x86'] )
+	neted_bin = env.Program( 'NetworkEditor', sourcefiles )
+	install_bin = env.Install( env['install_prefix'], neted_bin )
+	install_examples = env.Install( env['install_prefix']+'/examples', examples )
+	install_graphics = env.Install( env['install_prefix']+'/graphics', graphics )
+	install_alias = env.Alias( 'install', [install_bin, install_examples, install_graphics] )
 
 	variantVCProj = 'Debug'
-	if neted_env['release'] :
+	if env['release'] :
 		variantVCProj = 'Release' 
 
-	generate_vcproj = neted_env.MSVSProject( target = 'NetworkEditor' + neted_env['MSVSPROJECTSUFFIX'],
+	generate_vcproj = env.MSVSProject( target = 'NetworkEditor' + env['MSVSPROJECTSUFFIX'],
 				srcs = sourcefiles,
 				buildtarget = neted_bin,
 				variant = variantVCProj )
 
 	setup_bld = Builder( action=Action(create_setup, create_setup_message ))
-	neted_env.Append( BUILDERS={'CreateSetup' : setup_bld} )
-	setup = neted_env.CreateSetup('notused', neted_bin )
-	neted_env.Alias('CreateSetup', [setup])
+	env.Append( BUILDERS={'CreateSetup' : setup_bld} )
+	setup = env.CreateSetup('notused', neted_bin )
+	env.Alias('CreateSetup', [setup])
 	
-	vc_alias =neted_env.Alias('visual_project', [generate_vcproj])
+	vc_alias =env.Alias('visual_project', [generate_vcproj])
 
 Default(neted_bin)
