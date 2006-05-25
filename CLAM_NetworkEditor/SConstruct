@@ -3,9 +3,9 @@ import os
 import glob
 import sys
 
-version='0.2.1-CVS'
+version='0.3.2-CVS-20060525-1'
 options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
+options.Add(PathOption('install_prefix', 'The prefix where the networkeditor will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(PathOption('clam_sconstools', 'The path to the scons tools provided by clam', ''))
 options.Add(BoolOption('release', 'Build CLAM NetworkEditor enabling compiler optimizations', 'no') )
@@ -125,7 +125,7 @@ if sys.platform=="win32" :
 	sources += env.RES(source=["resources/NetworkEditor.rc"])
 
 env.Append(CPPPATH=includePaths)
-env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
+env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
@@ -146,7 +146,7 @@ manpages = [
 	'resources/man/man1/NetworkEditor.1',
 	]
 
-# Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
+# Manual step: lupdate-qt4 *xx *ui -ts NetworkEditor_ca.ts
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
 env.Precious(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
 translatableSources = scanFiles('*.cxx', sourcePaths);
@@ -161,7 +161,7 @@ if len(tsfiles) :
 installation = {
 	'/bin' : programs,
 	'/share/man/man1' : manpages,
-	'/share/annotator/i18n': translations
+	'/share/networkeditor/i18n': translations
 }
 
 installTargets = [
@@ -177,7 +177,7 @@ if sys.platform=='win32' :
 	"""
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % version ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
-	externalsDllDir = os.path.join(os.environ['CLAM_PATH'],"externals")
+	externalsDllDir = os.environ['EXTERNALDLLDIR'] #TODO fix
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
 	# Get the visual studio runtimes path
 	for vcRuntimeDir in os.environ['PATH'].split(";") :
@@ -185,12 +185,12 @@ if sys.platform=='win32' :
 		if os.access(os.path.join(vcRuntimeDir,"msvcr71.dll"),os.R_OK) :
 			break
 	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
-	win_packages = [env.Nsis( source='scons\\clam_annotator.nsi')]
+	win_packages = [env.Nsis( source='scons\\clam_networkeditor.nsi')]
 	env.Alias('package', win_packages)
 
 if sys.platform=='macosx' : # not really tested!!!
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"NetworkEditor.app/Contents/Resources\\""')
-	#Binaries: annotator + sample extractor
+	#Binaries: networkeditor + sample extractor
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
 
 	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
