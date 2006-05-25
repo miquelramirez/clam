@@ -295,7 +295,7 @@ namespace CLAM{
 		}
 	public:
 	
-		void QTConfigurator::show() {
+		void show() {
 			super::show();
 		}
 
