@@ -194,7 +194,7 @@ def _detect(env):
 	QTDIR = os.environ.get('QTDIR',None)
 	if QTDIR!=None : return QTDIR
 
-	moc = env.WhereIs('moc-qt4') or env.WhereIs('moc')
+	moc = env.WhereIs('moc-qt4') or env.WhereIs('moc4') or env.WhereIs('moc')
 	if moc:
 		SCons.Warnings.warn(
 			QtdirNotFound,
@@ -216,11 +216,15 @@ def generate(env):
 		if os.access(fullpath1, os.X_OK) or \
 			os.access(fullpath1+".exe", os.X_OK):
 			return fullpath1
+		fullpath3 = os.path.join(qtdir,'bin',command +'4')
+		if os.access(fullpath3, os.X_OK) or \
+			os.access(fullpath3+".exe", os.X_OK):
+			return fullpath3
 		fullpath2 = os.path.join(qtdir,'bin',command)
 		if os.access(fullpath2, os.X_OK) or \
 			os.access(fullpath2+".exe", os.X_OK):
 			return fullpath2
-		fullpath = env.Detect([command+'-qt4', command])
+		fullpath = env.Detect([command+'-qt4', command+'4', command])
 		if not (fullpath is None) : return fullpath
 		raise "Qt4 command '" + command + "' not found. Tried: " + fullpath1 + " and "+ fullpath2
 		
