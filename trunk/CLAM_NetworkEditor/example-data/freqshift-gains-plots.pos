@@ -8,8 +8,8 @@
   <WidgetList>
     <Widget>
       <Name>AudioOut_0</Name>
-      <X>698</X>
-      <Y>320</Y>
+      <X>714</X>
+      <Y>310</Y>
       <Width>99</Width>
       <Height>58</Height>
     </Widget>
@@ -39,7 +39,21 @@
       <X>43</X>
       <Y>239</Y>
       <Width>56</Width>
-      <Height>218</Height>
+      <Height>76</Height>
+    </Widget>
+    <Widget>
+      <Name>OutControlSender_1</Name>
+      <X>36</X>
+      <Y>536</Y>
+      <Width>56</Width>
+      <Height>76</Height>
+    </Widget>
+    <Widget>
+      <Name>OutControlSender_2</Name>
+      <X>615</X>
+      <Y>14</Y>
+      <Width>56</Width>
+      <Height>76</Height>
     </Widget>
     <Widget>
       <Name>PeaksPortMonitor_0</Name>
@@ -63,6 +77,20 @@
       <Height>58</Height>
     </Widget>
     <Widget>
+      <Name>SMSResidualGain_0</Name>
+      <X>310</X>
+      <Y>434</Y>
+      <Width>147</Width>
+      <Height>58</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSSinusoidalGain_0</Name>
+      <X>570</X>
+      <Y>209</Y>
+      <Width>158</Width>
+      <Height>58</Height>
+    </Widget>
+    <Widget>
       <Name>SMSSynthesis_0</Name>
       <X>514</X>
       <Y>373</Y>
@@ -75,34 +103,6 @@
       <Y>410</Y>
       <Width>219</Width>
       <Height>226</Height>
-    </Widget>
-    <Widget>
-      <Name>SMSResidualGain_0</Name>
-      <X>310</X>
-      <Y>434</Y>
-      <Width>147</Width>
-      <Height>58</Height>
-    </Widget>
-    <Widget>
-      <Name>OutControlSender_1</Name>
-      <X>36</X>
-      <Y>536</Y>
-      <Width>56</Width>
-      <Height>101</Height>
-    </Widget>
-    <Widget>
-      <Name>SMSSinusoidalGain_0</Name>
-      <X>570</X>
-      <Y>209</Y>
-      <Width>158</Width>
-      <Height>58</Height>
-    </Widget>
-    <Widget>
-      <Name>OutControlSender_2</Name>
-      <X>615</X>
-      <Y>14</Y>
-      <Width>57</Width>
-      <Height>133</Height>
     </Widget>
   </WidgetList>
 
