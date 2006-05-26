@@ -16,7 +16,7 @@
       <Type></Type>
       <BPFAmount>
         <Interpolation>Linear</Interpolation>
-        <Points size="5">{0 1} {0.379603 2} {0.481586 2} {0.747875 2} {1 0.5}</Points>
+        <Points size="6">{0 0.5} {0.379603 0.5} {0.379603 2} {0.481586 2} {0.747875 2} {1 0.5}</Points>
       </BPFAmount>
       <SamplingRate>22050</SamplingRate>
       <HopSize>256</HopSize>
