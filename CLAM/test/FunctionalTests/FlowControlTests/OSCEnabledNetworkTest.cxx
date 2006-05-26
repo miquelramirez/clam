@@ -50,7 +50,7 @@ public:
 		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
 		mNet->Start();
 		mNet->StartListeningOSC();
-		usleep(500);
+		usleep(1500);
 	}
 	
 	void tearDown(void)
@@ -60,7 +60,7 @@ public:
 		delete mNet;
 
 		delete transmitPort;
-		usleep(500);
+		usleep(1500);
 	}
 
 private:
@@ -91,7 +91,7 @@ private:
 	void testReceivedPacket_WhenNoSuchProcessing()
 	{
 		Send("processing1","input",1983);
-		usleep(500);
+		usleep(1500);
 		CPPUNIT_ASSERT_EQUAL ( std::string("[RECEIVED] processing1.input 1983 - No such processing"), mNet->GetLogMessage() );
 	}
 
@@ -123,7 +123,7 @@ private:
 		mNet->AddProcessing("processing1",new CLAM::PrintControl(conf));	
 
 		Send("processing1","input",1983);
-		usleep(500);
+		usleep(1500);
 		
 		std::string expectedLog("[RECEIVED] processing1.input 1983 - Delivered");
 		CPPUNIT_ASSERT_EQUAL ( expectedLog, mNet->GetLogMessage() );
@@ -137,7 +137,7 @@ private:
 	{
 		//Creates special parameter-free osc packet
 		Send("processing1","input",0);
-		usleep(500);
+		usleep(1500);
 		std::string expected("[RECEIVED] ERROR Parsing:  0 : missing argument");
 		CPPUNIT_ASSERT_EQUAL ( expected, mNet->GetLogMessage() );
 
