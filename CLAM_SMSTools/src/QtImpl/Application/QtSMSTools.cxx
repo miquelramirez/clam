@@ -138,21 +138,21 @@ namespace QtSMS
 	{
 		std::string fn = (!mEngine->GetGlobalConfig().GetOutputSoundFile().empty()) ? 
 			mEngine->GetGlobalConfig().GetOutputSoundFile() : "outputSound.wav";
-		QString filename = QFileDialog::getSaveFileName(fn.c_str(),"Audio (*.wav *.ogg)",this);
+		QString filename = QFileDialog::getSaveFileName(fn.c_str(),"Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreOutputSound(filename.ascii());
 	}
 
 	void QtSMSTools::saveSynthesizedSinusoidal()
 	{
-		QString filename = QFileDialog::getSaveFileName("synthesized_sinusoidal_out.wav","Audio (*.wav *.ogg)",this);
+		QString filename = QFileDialog::getSaveFileName("synthesized_sinusoidal_out.wav","Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreOutputSoundSinusoidal(filename.ascii());
 	}
 
 	void QtSMSTools::saveSynthesizedResidua()
 	{
-		QString filename = QFileDialog::getSaveFileName("synthesized_residual_out.wav","Audio (*.wav *.ogg)",this);
+		QString filename = QFileDialog::getSaveFileName("synthesized_residual_out.wav","Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mEngine->StoreOutputSoundResidual(filename.ascii());
 	}

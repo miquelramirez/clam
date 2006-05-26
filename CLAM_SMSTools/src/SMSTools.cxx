@@ -453,7 +453,7 @@ namespace CLAMGUI
 
 	void SMSTools::StoreSound(const CLAM::Audio& audio)
 	{
-		char* fileName = fl_file_chooser("Choose file to store in...", "{*.wav,*.ogg}", "");
+		char* fileName = fl_file_chooser("Choose file to store in...", "{*.wav,*.ogg,*.mp3}", "");
 
 		if ( !fileName )
 			return;
