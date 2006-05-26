@@ -76,9 +76,20 @@ env.EnableClamModules([
 
 mainSources = {
 	'NetworkEditor' : os.path.join('src','main.cxx'),
-	'Prototyper' : os.path.join('src','Prototyper','BlockingPrototyper.cxx'),
-	'Prototyper-jack' : os.path.join('src','Prototyper','JACKPrototyper.cxx'),
 }
+blacklist = [
+		os.path.join('src','Prototyper','PAPrototyper.cxx'),
+		]
+if sys.platform=='linux2' :
+	mainSources.update({
+		'Prototyper' : os.path.join('src','Prototyper','BlockingPrototyper.cxx'),
+		'Prototyper-jack' : os.path.join('src','Prototyper','JACKPrototyper.cxx'),
+	})
+else :
+	blacklist += [
+		os.path.join('src','Prototyper','BlockingPrototyper.cxx'),
+		os.path.join('src','Prototyper','JACKPrototyper.cxx'),
+	]
 
 sourcePaths = [
 	os.path.join('src'),
@@ -113,7 +124,8 @@ sources = filter( (lambda a : a.rfind( "uic_")==-1 ),  sources )
 sources = dict.fromkeys(sources).keys()
 for mainSource in mainSources.values() :
 	sources.remove(mainSource)
-sources.remove( os.path.join('src','Prototyper','PAPrototyper.cxx') )
+for blacksheep in blacklist :
+	sources.remove( blacksheep )
 
 qrcfiles = scanFiles("*.qrc", sourcePaths)
 if qrcfiles : sources += env.Qrc(source=qrcfiles)
