@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="CLAM">
+
+  <processing id="ExternGenerator_0" type="ExternGenerator"/>
+
+  <processing id="ExternInControl_0" type="ExternInControl">
+    <MinValue>0</MinValue>
+    <MaxValue>20</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>Hz</UnitName>
+  </processing>
+
+  <processing id="ExternInControl_1" type="ExternInControl">
+    <MinValue>100</MinValue>
+    <MaxValue>1000</MaxValue>
+    <Step>1</Step>
+    <UnitName>Hz</UnitName>
+  </processing>
+
+  <processing id="ExternSink_0" type="ExternSink"/>
+
+  <processing id="Oscillator_0" type="Oscillator">
+    <Frequency>440</Frequency>
+    <Amplitude>1</Amplitude>
+    <ModIndex>1</ModIndex>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <processing id="OutControlSender_0" type="OutControlSender">
+    <Min>0.5</Min>
+    <Default>50</Default>
+    <Max>50</Max>
+    <Step>0.1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_1" type="OutControlSender">
+    <Min>100</Min>
+    <Default>100</Default>
+    <Max>1000</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="SimpleOscillator_0" type="SimpleOscillator">
+    <Frequency>440</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <port_connection>
+    <out>ExternGenerator_0.AudioOut</out>
+    <in>Oscillator_0.Input Frequency Modulation</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Oscillator_0.Audio Output</out>
+    <in>ExternSink_0.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SimpleOscillator_0.Audio Output</out>
+    <in>Oscillator_0.Input Phase Modulation</in>
+  </port_connection>
+
+  <control_connection>
+    <out>ExternInControl_0.output</out>
+    <in>SimpleOscillator_0.Pitch</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ExternInControl_1.output</out>
+    <in>Oscillator_0.Pitch</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_0.out</out>
+    <in>SimpleOscillator_0.Pitch</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_1.out</out>
+    <in>Oscillator_0.Pitch</in>
+  </control_connection>
+
+</network>
