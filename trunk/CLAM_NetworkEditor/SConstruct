@@ -76,6 +76,8 @@ env.EnableClamModules([
 
 mainSources = {
 	'NetworkEditor' : os.path.join('src','main.cxx'),
+	'Prototyper' : os.path.join('src','Prototyper','BlockingPrototyper.cxx'),
+	'Prototyper-jack' : os.path.join('src','Prototyper','JACKPrototyper.cxx'),
 }
 
 sourcePaths = [
@@ -88,6 +90,7 @@ sourcePaths = [
 	os.path.join('src','Processings'),
 	os.path.join('src','Processings','MIDI'),
 	os.path.join('src','Visualization'),
+	os.path.join('src','Prototyper'),
 ]
 extraPaths = []
 extraPaths += [
@@ -110,6 +113,7 @@ sources = filter( (lambda a : a.rfind( "uic_")==-1 ),  sources )
 sources = dict.fromkeys(sources).keys()
 for mainSource in mainSources.values() :
 	sources.remove(mainSource)
+sources.remove( os.path.join('src','Prototyper','PAPrototyper.cxx') )
 
 qrcfiles = scanFiles("*.qrc", sourcePaths)
 if qrcfiles : sources += env.Qrc(source=qrcfiles)
@@ -124,6 +128,7 @@ sources += [ os.path.join( os.path.dirname(uiccpp),
 if sys.platform=="win32" :
 	sources += env.RES(source=["resources/NetworkEditor.rc"])
 
+env.Append(LIBS=['qui'])
 env.Append(CPPPATH=includePaths)
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
