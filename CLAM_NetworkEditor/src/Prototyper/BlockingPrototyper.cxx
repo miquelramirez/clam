@@ -1,6 +1,12 @@
 #include "PrototypeLoader.hxx"
 #include "BlockingNetworkPlayer.hxx"
 
+#ifdef WIN32
+	#include <CLAM/InitAudioIO.hxx>
+	#include <CLAM/InitProcessing.hxx>
+#endif
+
+
 #include "Utils.hxx"
 
 #include <string>
@@ -13,6 +19,11 @@ int main( int argc, char *argv[] )
 			<< argv[0] << " <networkfile> [ <uifile> ]" << std::endl;
 		return -1;
 	}
+
+#ifdef WIN32
+	CLAM::ProcessingModule::init();
+	CLAM::AudioIOModule::init();
+#endif
 
 	std::string networkFile, uiFile;
 	

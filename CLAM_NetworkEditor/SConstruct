@@ -76,18 +76,17 @@ env.EnableClamModules([
 
 mainSources = {
 	'NetworkEditor' : os.path.join('src','main.cxx'),
+	'Prototyper' : os.path.join('src','Prototyper','BlockingPrototyper.cxx'),
 }
 blacklist = [
-		os.path.join('src','Prototyper','PAPrototyper.cxx'),
-		]
+	os.path.join('src','Prototyper','PAPrototyper.cxx'),
+]
 if sys.platform=='linux2' :
 	mainSources.update({
-		'Prototyper' : os.path.join('src','Prototyper','BlockingPrototyper.cxx'),
 		'Prototyper-jack' : os.path.join('src','Prototyper','JACKPrototyper.cxx'),
 	})
 else :
 	blacklist += [
-		os.path.join('src','Prototyper','BlockingPrototyper.cxx'),
 		os.path.join('src','Prototyper','JACKPrototyper.cxx'),
 	]
 
