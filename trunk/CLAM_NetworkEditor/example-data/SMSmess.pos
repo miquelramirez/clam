@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<WidgetLocations>
+
+  <WindowWidth>800</WindowWidth>
+
+  <WindowHeight>600</WindowHeight>
+
+  <WidgetList>
+    <Widget>
+      <Name>AudioOut</Name>
+      <X>479</X>
+      <Y>223</Y>
+      <Width>66</Width>
+      <Height>52</Height>
+    </Widget>
+    <Widget>
+      <Name>MonoAudioFileReader</Name>
+      <X>1</X>
+      <Y>177</Y>
+      <Width>111</Width>
+      <Height>52</Height>
+    </Widget>
+    <Widget>
+      <Name>OutControlSender</Name>
+      <X>160</X>
+      <Y>25</Y>
+      <Width>86</Width>
+      <Height>46</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSAnalysisCore</Name>
+      <X>101</X>
+      <Y>278</Y>
+      <Width>98</Width>
+      <Height>52</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSFreqShift</Name>
+      <X>337</X>
+      <Y>108</Y>
+      <Width>83</Width>
+      <Height>52</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSResidualGain</Name>
+      <X>190</X>
+      <Y>402</Y>
+      <Width>98</Width>
+      <Height>52</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSSinusoidalGain</Name>
+      <X>191</X>
+      <Y>189</Y>
+      <Width>103</Width>
+      <Height>68</Height>
+    </Widget>
+    <Widget>
+      <Name>SMSSynthesis</Name>
+      <X>387</X>
+      <Y>310</Y>
+      <Width>85</Width>
+      <Height>52</Height>
+    </Widget>
+  </WidgetList>
+
+</WidgetLocations>
