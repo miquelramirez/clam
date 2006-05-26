@@ -134,14 +134,14 @@ namespace QtSMS
 
 	void SMSConfigDlg::browseInputSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg)",this);
+		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mInputSoundLineEdit->setText(filename);
 	}
 
 	void SMSConfigDlg::browseOutputSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg)",this);
+		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mOutputSoundLineEdit->setText(filename);
 	}
@@ -162,7 +162,7 @@ namespace QtSMS
 
 	void SMSConfigDlg::browseMorphSoundFile()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg)",this);
+		QString filename = QFileDialog::getOpenFileName(QString::null,"Audio (*.wav *.ogg *.mp3)",this);
 		if(filename.isEmpty()) return;
 		mMorphSoundFileLineEdit->setText(filename);
 	}
