@@ -14,20 +14,20 @@
 
   <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
     <SourceFile>
-      <URI>/home/parumi/clam-sandboxes/devel/build/Examples/JACKPrototyper/jaume-voice.wav</URI>
+      <URI>example-data/jaume-voice.ogg</URI>
       <Header>
         <SampleRate>44100</SampleRate>
-        <Samples>2938666</Samples>
+        <Samples>1501229</Samples>
         <Channels>1</Channels>
-        <Length>66636.4</Length>
-        <Format>WAV</Format>
-        <Encoding>signed 16-bit</Encoding>
+        <Length>34041.5</Length>
+        <Format>VorbisMk1</Format>
+        <Encoding>Format Default</Encoding>
         <Endianess>Format Default</Endianess>
       </Header>
       <TextualDescriptors/>
     </SourceFile>
     <SelectedChannel>0</SelectedChannel>
-    <Loop>0</Loop>
+    <Loop>1</Loop>
   </processing>
 
   <processing id="OutControlSender_0" type="OutControlSender">

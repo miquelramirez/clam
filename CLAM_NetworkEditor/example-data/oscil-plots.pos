@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<WidgetLocations>
+
+  <WindowWidth>1175</WindowWidth>
+
+  <WindowHeight>791</WindowHeight>
+
+  <WidgetList>
+    <Widget>
+      <Name>MonoAudioFileReader_0</Name>
+      <X>101</X>
+      <Y>87</Y>
+      <Width>168</Width>
+      <Height>58</Height>
+    </Widget>
+    <Widget>
+      <Name>AudioOut_0</Name>
+      <X>610</X>
+      <Y>188</Y>
+      <Width>99</Width>
+      <Height>58</Height>
+    </Widget>
+    <Widget>
+      <Name>Oscillator_0</Name>
+      <X>409</X>
+      <Y>309</Y>
+      <Width>102</Width>
+      <Height>58</Height>
+    </Widget>
+    <Widget>
+      <Name>SimpleOscillator_0</Name>
+      <X>153</X>
+      <Y>356</Y>
+      <Width>141</Width>
+      <Height>58</Height>
+    </Widget>
+    <Widget>
+      <Name>OutControlSender_0</Name>
+      <X>34</X>
+      <Y>70</Y>
+      <Width>56</Width>
+      <Height>258</Height>
+    </Widget>
+    <Widget>
+      <Name>OutControlSender_1</Name>
+      <X>435</X>
+      <Y>39</Y>
+      <Width>60</Width>
+      <Height>126</Height>
+    </Widget>
+    <Widget>
+      <Name>AudioPortMonitor_0</Name>
+      <X>631</X>
+      <Y>338</Y>
+      <Width>201</Width>
+      <Height>179</Height>
+    </Widget>
+    <Widget>
+      <Name>AudioPortMonitor_1</Name>
+      <X>400</X>
+      <Y>533</Y>
+      <Width>275</Width>
+      <Height>134</Height>
+    </Widget>
+  </WidgetList>
+
+</WidgetLocations>
