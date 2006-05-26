@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<SMS_Transformation_Score>
+
+  <Configurations>
+    <Config>
+      <ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
+      <Amount>0</Amount>
+    </Config>
+    <Config>
+      <ConcreteClassName>SMSGenderChange</ConcreteClassName>
+      <Type>SMSGenderChange</Type>
+      <Amount>0</Amount>
+    </Config>
+    <Config>
+      <ConcreteClassName>SMSTimeStretch</ConcreteClassName>
+      <Type></Type>
+      <BPFAmount>
+        <Interpolation>Linear</Interpolation>
+        <Points size="5">{0 1} {0.379603 2} {0.481586 2} {0.747875 2} {1 0.5}</Points>
+      </BPFAmount>
+      <SamplingRate>22050</SamplingRate>
+      <HopSize>256</HopSize>
+      <Harmonic>0</Harmonic>
+      <UseBPF>1</UseBPF>
+    </Config>
+    <Config>
+      <ConcreteClassName>SMSTransformationChainIO</ConcreteClassName>
+      <Amount>0</Amount>
+    </Config>
+  </Configurations>
+
+  <OnArray size="4">1 1 1 1</OnArray>
+
+</SMS_Transformation_Score>
