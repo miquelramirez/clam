@@ -78,21 +78,23 @@ namespace std
 				}
 
 		}
-/*  // TODO: Commented out as g++ 4.1 complaints, it seems not to be used
+  // TODO: Commented out as g++ 4.1 complaints, it seems not to be used
 	template < typename RandomIterator, typename value_type >
 		RandomIterator hunt( RandomIterator begin, RandomIterator end,
 				     const value_type& val )
 		{
-			return hunt( begin, end, val, begin );
+			throw 0;
+			//return hunt( begin, end, val, begin );
 		}
 
 	template < typename RandomIterator, typename value_type, typename GreatEqCmp >
 		RandomIterator hunt( RandomIterator begin, RandomIterator end,
 				     const value_type& val, GreatEqCmp cmpOp )
 		{
-			return hunt( begin, end, val, begin, cmpOp );
+			throw 0;
+			//return hunt( begin, end, val, begin, cmpOp );
 		}
-*/
+
 	template < typename RandomIterator, typename value_type, typename GreatEqCmp >
 		RandomIterator hunt( RandomIterator begin, RandomIterator end,
 				 const value_type& val, RandomIterator last, GreatEqCmp cmpOp  )
