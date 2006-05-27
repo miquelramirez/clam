@@ -26,6 +26,7 @@
 #include "Network.hxx"
 
 #include <iostream>
+#include <qobject.h>
 
 namespace CLAM
 {
@@ -39,8 +40,10 @@ static std::string getMonitorNumber()
 }
 
 
-class PrototypeLoader
+class PrototypeLoader : QObject
 {
+	Q_OBJECT
+private:
 	std::string mNetworkFile;
 	QWidget * mMainWidget;
 	NetworkPlayer * mPlayer;
