@@ -1,54 +1,28 @@
 
--------------------------------------------
+= CLAM Network Editor ver 0.2.1 =
 
-1. Make shure that you have unpacked both CLAM and CLAM_NetworkEditor tarballs 
-   in the same directory.
+== Overview ==
 
-2. Configure CLAM
-   NetworkEditor currently it needs the oscpack library installed. You will find 
-   the tarball in the CLAM web (download).
+The CLAM Network Editor is a tool for editing CLAM processing networks.
+Those processing networks can become the processing core of an application
+by using the CLAM::NetworkPlayer class in your program or by using
+the CLAM Prototyper to link the network to a Qt Designer interface.
 
-   - Go into CLAM/build/srcdeps and run 'make'
-   - Go into CLAM/build and run:
-     $ autoconf -f
-     $ ./configure
-     This script will complain if doesn't found some needed dependent libraries.
-     Some of them are completely optional: libportaudio, libportmidi,
-     libxml++. So don't worry if ./configure reports failure on any of these.
-     (See also the list of needed packages at the end)
+See the CLAM doxygen documentation on how to use the CLAM::NetworkPlayer
+class.
 
-3. Build NetworkEditor 
-  - Edit CLAM_NetworkEditor/build/clam-location.cfg so that CLAM_LOCATION
-    variable is the path (absolute or relative) to the CLAM dir.
-  - Go into CLAM_NetworkEditor/build/Tools and run :
-    $ make depend && make CONFIG=release 
+The CLAM Prototyper comes into several flawours depending on the audio
+subsystem you want to use: Prototyper (for native sound application),
+Prototyper-jack (for jack support on linux and macosx) and Prototyper-pa
+(for using the PortAudio abstraction layer).
 
-Now you should be able to run ./NetworkEditor
+== Installation ==
 
-You can also use the .xml files of networks patched with NetworkEditor with the Prototyper.
-CLAM/build/Examples/Prototyper/
+The INSTALL file contains instructions about compiling and installing.
 
-------
+== License ==
 
-Further information in chapters 16 and 17 of the online documentation
-http://www.iua.upf.es/mtg/clam  (doc)
+The COPYING file contains the license terms to use, modify and 
+redistribute this software.
 
 
-------
-
-
-CLAM dependent (debian) packages :
-
-libxerces26-dev
-fftw-dev
-sfftw-dev
-libfltk1.1-dev
-libqt-mt-dev
-libqwt-dev
-libasound2-dev
-libvorbis-dev
-libsndfile-dev
-libmad0-dev
-libid3-3.8.3-dev
-  
-   
