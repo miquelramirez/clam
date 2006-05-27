@@ -39,8 +39,6 @@ int main( int argc, char *argv[] )
 	
 	QApplication app( argc, argv );
 
-	QApplication::addLibraryPath(app.applicationDirPath()+"/plugins");
-
 	CLAM::PrototypeLoader loader(networkFile);
 	loader.SetNetworkPlayer( *(new CLAM::BlockingNetworkPlayer(networkFile)) );
 	
