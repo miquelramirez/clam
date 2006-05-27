@@ -28,21 +28,21 @@ int main( int argc, char *argv[] )
 	std::string networkFile, uiFile;
 	
 	networkFile=argv[1];
-	
+
 	if (argc==2)
 		uiFile=GetUiFromXmlFile(networkFile);
 	else if (argc==3)
 		uiFile = argv[2]; 
-	
+
 	if ( !FileExists(networkFile) || !FileExists(uiFile) )
 		return -1;
 	
 	QApplication app( argc, argv );
 
-	CLAM::PrototypeLoader loader(networkFile);
+	CLAM::PrototypeLoader loader( networkFile );
 	loader.SetNetworkPlayer( *(new CLAM::BlockingNetworkPlayer(networkFile)) );
 	
-	QWidget * prototype = loader.LoadPrototype(uiFile);
+	QWidget * prototype = loader.LoadPrototype( uiFile );
 	if (!prototype) return -1;
 	loader.ConnectWithNetwork();
 
@@ -55,6 +55,6 @@ int main( int argc, char *argv[] )
 //	loader.Start();
 	int result = app.exec();
 	loader.Stop();
-	
+
 	return result;
 }

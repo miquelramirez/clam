@@ -19,8 +19,6 @@ int main( int argc, char *argv[] )
 
 	std::string networkFile, uiFile;
 	
-	QApplication app( argc, argv );
-
 	std::list<std::string> portlist;
 
 	//Deal with Network&Interface files
@@ -55,12 +53,13 @@ int main( int argc, char *argv[] )
 	if ( !FileExists(networkFile) || !FileExists(uiFile) )
 		return -1;
 	
-	CLAM::PrototypeLoader loader( networkFile );
+	QApplication app( argc, argv );
 
+	CLAM::PrototypeLoader loader( networkFile );
 	loader.SetNetworkPlayer( *(new CLAM::JACKNetworkPlayer(networkFile, portlist)) );
 	
 	QWidget * prototype = loader.LoadPrototype( uiFile );
-	if ( !prototype ) return -1;
+	if (!prototype) return -1;
 	loader.ConnectWithNetwork();
 
 	// Set up the dynamic dialog here
