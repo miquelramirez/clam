@@ -57,6 +57,10 @@ void PrototypeLoader::ConnectWithNetwork()
 	// TODO: Still not ported
 	//ConnectWidgetsWithPorts<CLAM::VM::NetSinTracksPlot>
 	//	("OutPort__.*", "CLAM::VM::NetSinTracksPlot");
+	QObject * playButton = mMainWidget->child("PlayButton");
+	connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
+	QObject * stopButton = mMainWidget->child("StopButton");
+	connect(stopButton, SIGNAL(clicked()), this, SLOT(Stop()));  
 }
 
 void PrototypeLoader::Start()
@@ -127,6 +131,8 @@ void PrototypeLoader::ConnectWidgetsWithMappedControls(CLAM::Network & network, 
 template < typename PlotClass >
 void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 {
+	if (!QWidgetFactory::supportsWidget(plotClassName))
+		qWarning(tr("No support for widgets %1. Maybe the CLAM qt plugins has not been loaded").arg(plotClassName));
 	CLAM::Network & network = mPlayer->GetNetwork();
 	QWidget * prototype = mMainWidget;
 	QObjectList * widgets = prototype->queryList(plotClassName,prefix);
