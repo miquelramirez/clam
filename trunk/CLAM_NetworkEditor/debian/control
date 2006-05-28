@@ -2,7 +2,7 @@ Source: clam-networkeditor
 Section: x11
 Priority: optional
 Maintainer: parumi <clam@iua.upf.es>
-Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++, make (>= 3.80), libclamcore-dev (>= 0.90.0), libclamprocessing-dev (>= 0.90.0), libclamaudioio-dev (>= 0.90.0), libclamvmqt-dev (>= 0.90.0), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
+Build-Depends: debhelper (>= 4.0.0), scons, g++, make, libclamcore-dev (>= 0.90.0), libclamprocessing-dev (>= 0.90.0), libclamaudioio-dev (>= 0.90.0), libclamvmqt-dev (>= 0.90.0), libqt3-headers, libqt3-mt-dev
 Standards-Version: 3.6.1
 
 Package: clam-networkeditor
@@ -11,8 +11,15 @@ Architecture: any
 Depends: libclamcore (>= 0.90.0), libclamprocessing (>= 0.90.0), libclamaudioio (>= 0.90.0), libclamvmqt (>= 0.90.0)
 
 Description: CLAM prototyping tool
- The networkeditor is a graphic application meant for designing
- audio and music digital signal processing systems. Networkeditor
- features a GUI following the metaphor of specifying DSP components
- as 'boxes' and connecting them to define the DSP system data flow.
+ The CLAM Network Editor is a tool for editing CLAM processing networks.
+ Those processing networks can become the processing core of an audio
+ application by using the CLAM::NetworkPlayer class in such program, 
+ or by using the CLAM Prototyper to link the network to a Qt Designer
+ interface.
+ .
+ This packages provides both the Network Editor and the Prototyper
+ in several flawours (jack and alsa).
+ It also provides a plugin for Qt Designer which adds widgets
+ to display several kinds of CLAM audio objects from a running network.
+
 
