@@ -71,7 +71,7 @@ clean:
 
 	# Add here commands to clean up after the build process.
 	rm -rf $(CURDIR)/scons/libs/*.conf
-	-$(MAKE) -C $(CURDIR)/scons/libs clean
+	-cd $(CURDIR)/scons/libs && scons -c
 
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
@@ -114,25 +114,24 @@ install: build
 	mkdir -p $(CURDIR)/debian/libclamvmfl-dev/usr
 	mkdir -p $(CURDIR)/debian/libclamvmqt/usr
 	mkdir -p $(CURDIR)/debian/libclamvmqt-dev/usr
-	#cd $(CURDIR)/scons/libs && scons install_prefix=$(DESTDIR) install_core
-	$(MAKE) -C $(CURDIR)/scons/libs install-core-runtime DESTDIR=$(CURDIR)/debian/libclamcore
-	$(MAKE) -C $(CURDIR)/scons/libs install-core-dev DESTDIR=$(CURDIR)/debian/libclamcore-dev
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamcore/usr install_core_runtime
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamcore-dev/usr install_core_dev
 	rm -rf $(CURDIR)/debian/libclamcore/usr/lib/*.so
 	rm -rf $(CURDIR)/debian/libclamcore-dev/usr/lib/*.so.*
-	$(MAKE) -C $(CURDIR)/scons/libs install-processing-runtime DESTDIR=$(CURDIR)/debian/libclamprocessing
-	$(MAKE) -C $(CURDIR)/scons/libs install-processing-dev DESTDIR=$(CURDIR)/debian/libclamprocessing-dev
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamprocessing/usr install_processing_runtime
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamprocessing-dev/usr install_processing_dev
 	rm -rf $(CURDIR)/debian/libclamprocessing/usr/lib/*.so
 	rm -rf $(CURDIR)/debian/libclamprocessing-dev/usr/lib/*.so.*
-	$(MAKE) -C $(CURDIR)/scons/libs install-audioio-runtime DESTDIR=$(CURDIR)/debian/libclamaudioio
-	$(MAKE) -C $(CURDIR)/scons/libs install-audioio-dev DESTDIR=$(CURDIR)/debian/libclamaudioio-dev
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamaudioio/usr install_audioio_runtime
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamaudioio-dev/usr install_audioio_dev
 	rm -rf $(CURDIR)/debian/libclamaudioio/usr/lib/*.so
 	rm -rf $(CURDIR)/debian/libclamaudioio-dev/usr/lib/*.so.*
-	$(MAKE) -C $(CURDIR)/scons/libs install-vmfl-runtime DESTDIR=$(CURDIR)/debian/libclamvmfl
-	$(MAKE) -C $(CURDIR)/scons/libs install-vmfl-dev DESTDIR=$(CURDIR)/debian/libclamvmfl-dev
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamvmfl/usr install_vmfl_runtime
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamvmfl-dev/usr install_vmfl_dev
 	rm -rf $(CURDIR)/debian/libclamvmfl/usr/lib/*.so
 	rm -rf $(CURDIR)/debian/libclamvmfl-dev/usr/lib/*.so.*
-	$(MAKE) -C $(CURDIR)/scons/libs install-vmqt-runtime DESTDIR=$(CURDIR)/debian/libclamvmqt
-	$(MAKE) -C $(CURDIR)/scons/libs install-vmqt-dev DESTDIR=$(CURDIR)/debian/libclamvmqt-dev
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamvmqt/usr install_vmqt_runtime
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamvmqt-dev/usr install_vmqt_dev
 	rm -rf $(CURDIR)/debian/libclamvmqt/usr/lib/*.so
 	rm -rf $(CURDIR)/debian/libclamvmqt-dev/usr/lib/*.so.*
 	find $(CURDIR)/debian -type f -name .sconsign | xargs rm -rf
