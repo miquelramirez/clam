@@ -83,16 +83,14 @@ namespace std
 		RandomIterator hunt( RandomIterator begin, RandomIterator end,
 				     const value_type& val )
 		{
-			throw 0;
-			//return hunt( begin, end, val, begin );
+			return hunt( begin, end, val, begin );
 		}
 
 	template < typename RandomIterator, typename value_type, typename GreatEqCmp >
 		RandomIterator hunt( RandomIterator begin, RandomIterator end,
 				     const value_type& val, GreatEqCmp cmpOp )
 		{
-			throw 0;
-			//return hunt( begin, end, val, begin, cmpOp );
+			return hunt( begin, end, val, begin, cmpOp );
 		}
 
 	template < typename RandomIterator, typename value_type, typename GreatEqCmp >
