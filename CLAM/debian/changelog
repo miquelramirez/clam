@@ -1,14 +1,20 @@
 libclam (0.91.0-1) unstable; urgency=low
 
   * New upstream release
+  * Package descriptions updated
+  * Added interdependencies for libclamX packages
+  * Proper sections (libdev -> libdevel)
+  * Removed xlib-dev that is no more in xorg
+  * Removed versions on most build deps so they have not to be
+    updated every time
 
- -- CLAM Team <clam@iua.upf.es>  Tue,  27 May 2006 17:12:24 +0100
+ -- CLAM Team <clam@iua.upf.es>  Tue, 27 May 2006 17:12:24 +0100
 
 libclam (0.90.0-1) unstable; urgency=low
 
   * New upstream release
 
- -- Pau Arumí <parumi@iua.upf.es>  Tue,  7 Feb 2006 17:12:24 +0100
+ -- Pau ArumÃ­ <parumi@iua.upf.es>  Tue,  7 Feb 2006 17:12:24 +0100
 
 libclam (0.8.0-1) unstable; urgency=low
 
