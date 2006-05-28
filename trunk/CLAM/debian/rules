@@ -13,7 +13,7 @@
 
 
 CFLAGS = -Wall -g
-OPTIONS=prefix=/usr xmlbackend=xercesc release=yes
+OPTIONS=prefix=/usr xmlbackend=xercesc release=yes with_osc_support=no
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -46,16 +46,19 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	$(MAKE) -C $(CURDIR)/scons/libs build-core
-	$(MAKE) -C $(CURDIR)/scons/libs build-processing
-	$(MAKE) -C $(CURDIR)/scons/libs build-audioio
-	$(MAKE) -C $(CURDIR)/scons/libs build-vmfl
-	$(MAKE) -C $(CURDIR)/scons/libs build-vmqt
+	cd $(CURDIR)/scons/libs; scons $(OPTIONS) configure
+	cd $(CURDIR)/scons/libs; scons $(OPTIONS) core processing audioio vmfl vmqt
+	cd $(CURDIR)
+	#$(MAKE) -C $(CURDIR)/scons/libs build-core
+	#$(MAKE) -C $(CURDIR)/scons/libs build-processing
+	#$(MAKE) -C $(CURDIR)/scons/libs build-audioio
+	#$(MAKE) -C $(CURDIR)/scons/libs build-vmfl
+	#$(MAKE) -C $(CURDIR)/scons/libs build-vmqt
 	#cd $(CURDIR)/scons/libs && scons $(OPTIONS) core
 	# First, tarballize the examples folder
 	tar zcvf examples.tar.gz examples
 	# and now doxygenate CLAM stuff
-	doxygen $(CURDIR)/doxygen.cfg
+	#	doxygen $(CURDIR)/doxygen.cfg
 	# tarballize dox
 	tar zcvf clam-doxydocs.tar.gz doxygen
 
