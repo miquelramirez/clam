@@ -18,8 +18,6 @@
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 
 !define ALL_USERS
-!include WriteEnvStr.nsh # or the name you chose
-
 
 ; Language Selection Dialog Settings
 !define MUI_LANGDLL_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
@@ -71,9 +69,8 @@ Section "Principal" SEC01
   SetOutPath "$INSTDIR\bin"
   SetOverwrite ifnewer
   File "..\NetworkEditor.exe"
-  CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
-  CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
-  CreateShortCut "$DESKTOP\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
+  File "..\Prototyper.exe"
+  File '${QTDIR}\bin\designer.exe'
   File '${EXTERNALDLLDIR}\libsndfile.dll'
   File '${EXTERNALDLLDIR}\ogg.dll'
   File '${EXTERNALDLLDIR}\pthreadVCE.dll'
@@ -84,10 +81,15 @@ Section "Principal" SEC01
   File '${EXTERNALDLLDIR}\xerces-c_2_3_0.dll'
   File '${VCRUNTIMEDIR}\msvcp71.dll'
   File '${VCRUNTIMEDIR}\msvcr71.dll'
-  SetOutPath "$INSTDIR\resources\"
-  File "..\resources\mtg.xpm" ; TODO: Remove it
-  File "..\resources\mtg2.xpm" ; TODO: Remove it
-  File "..\resources\mtg3.xpm" ; TODO: Remove it
+  SetOutPath "$INSTDIR\bin\designer"
+  File "..\CLAMWidgets.dll"
+
+  CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
+  CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
+  CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Prototyper.lnk" "$INSTDIR\bin\Prototyper.exe"
+  CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\QtDesigner.lnk" "$INSTDIR\bin\designer.exe"
+  CreateShortCut "$DESKTOP\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
+  CreateShortCut "$DESKTOP\Prototyper.lnk" "$INSTDIR\bin\Prototyper.exe"
 SectionEnd
 
 Section -AdditionalIcons
@@ -121,20 +123,22 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
-  Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\resources\mtg.xpm"
-  Delete "$INSTDIR\resources\mtg2.xpm"
-  Delete "$INSTDIR\resources\mtg3.xpm"
-  Delete "$INSTDIR\bin\NetworkEditor.exe"
-
+  Delete "$DESKTOP\NetworkEditor.lnk"
+  Delete "$DESKTOP\Prototyper.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\Uninstall.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\Website.lnk"
-  Delete "$DESKTOP\NetworkEditor.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk"
-
+  Delete "$SMPROGRAMS\CLAM\NetworkEditor\Prototyper.lnk"
+  Delete "$SMPROGRAMS\CLAM\NetworkEditor\QtDesigner.lnk"
   RMDir "$SMPROGRAMS\CLAM\NetworkEditor"
-  RMDir "$INSTDIR\resources"
+  RMDir "$SMPROGRAMS\CLAM"
+
+  Delete "$INSTDIR\${PRODUCT_NAME}.url"
+  Delete "$INSTDIR\uninst.exe"
+  Delete "$INSTDIR\bin\NetworkEditor.exe"
+  Delete "$INSTDIR\bin\Prototyper.exe"
+  Delete "$INSTDIR\bin\designer\CLAMWidgets.dll"
+  Delete "$INSTDIR\bin\designer.exe"
   Delete "$INSTDIR\bin\libsndfile.dll"
   Delete "$INSTDIR\bin\ogg.dll"
   Delete "$INSTDIR\bin\pthreadVCE.dll"
@@ -145,14 +149,9 @@ Section Uninstall
   Delete "$INSTDIR\bin\xerces-c_2_3_0.dll"
   Delete "$INSTDIR\bin\msvcp71.dll"
   Delete "$INSTDIR\bin\msvcr71.dll"
-  Delete "$SMPROGRAMS\CLAM\NetworkEditor\Uninstall.lnk"
-  Delete "$SMPROGRAMS\CLAM\NetworkEditor\Website.lnk"
-  Delete "$DESKTOP\NetworkEditor.lnk"
-  Delete "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk"
-
-  RMDir "$SMPROGRAMS\CLAM\NetworkEditor"
-  RMDir "$SMPROGRAMS\CLAM"
+  RMDir "$INSTDIR\bin\designer"
   RMDir "$INSTDIR\bin"
+  RMDir "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
