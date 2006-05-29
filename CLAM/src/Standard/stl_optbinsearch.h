@@ -83,15 +83,9 @@ namespace std
 		RandomIterator hunt( RandomIterator begin, RandomIterator end,
 				     const value_type& val )
 		{
-			return hunt( begin, end, val, begin );
+			return hunt( begin, end, val);
 		}
 
-	template < typename RandomIterator, typename value_type, typename GreatEqCmp >
-		RandomIterator hunt( RandomIterator begin, RandomIterator end,
-				     const value_type& val, GreatEqCmp cmpOp )
-		{
-			return hunt( begin, end, val, begin, cmpOp );
-		}
 
 	template < typename RandomIterator, typename value_type, typename GreatEqCmp >
 		RandomIterator hunt( RandomIterator begin, RandomIterator end,
@@ -159,6 +153,13 @@ namespace std
 			return begin + detail::bisect( begin, end, val, guess, upperBound, cmpOp );
 		}		
 
+
+	template < typename RandomIterator, typename value_type, typename GreatEqCmp >
+		RandomIterator hunt( RandomIterator begin, RandomIterator end,
+				     const value_type& val, GreatEqCmp cmpOp )
+		{
+			return hunt( begin, end, val, begin, cmpOp );
+		}
 
 	template < typename RandomIterator, typename value_type >
 		RandomIterator hunt( RandomIterator begin, RandomIterator end,
