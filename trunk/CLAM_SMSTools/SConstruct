@@ -58,7 +58,7 @@ env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-	'clam_vmqt'
+	'clam_vmqt',
 	] , CLAMInstallDir)
 
 #env.EnableQt4Modules([
@@ -137,7 +137,11 @@ if sys.platform=='linux2' :
 	else :
 		env.Append( CCFLAGS=['-g', '-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
-
+else:
+	if env['release'] :
+		env.Append( LINKFLAGS = ['/LTCG'] )
+	else:
+		env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
 programs = []
 for main in mainSources.items() :
@@ -186,7 +190,7 @@ if sys.platform=='win32' :
 		if os.access(os.path.join(vcRuntimeDir,"msvcr71.dll"),os.R_OK) :
 			break
 	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
-	win_packages = [env.Nsis( source='scons\\QtSMSTools\\clam_qtsmstools.nsi')]
+	win_packages = [env.Nsis( source='resources\\clam_smstools.nsi')]
 	env.Alias('package', win_packages)
 
 if sys.platform=='macosx' : # not really tested!!!
