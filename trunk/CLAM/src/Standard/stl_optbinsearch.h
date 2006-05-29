@@ -78,13 +78,6 @@ namespace std
 				}
 
 		}
-  // TODO: Commented out as g++ 4.1 complaints, it seems not to be used
-	template < typename RandomIterator, typename value_type >
-		RandomIterator hunt( RandomIterator begin, RandomIterator end,
-				     const value_type& val )
-		{
-			return hunt( begin, end, val);
-		}
 
 
 	template < typename RandomIterator, typename value_type, typename GreatEqCmp >
@@ -226,6 +219,14 @@ namespace std
 			
 			return begin + detail::bisect( begin, end, val, guess, upperBound );
 		}		
+
+  // TODO: Commented out as g++ 4.1 complaints, it seems not to be used
+	template < typename RandomIterator, typename value_type >
+		RandomIterator hunt( RandomIterator begin, RandomIterator end,
+				     const value_type& val )
+		{
+			return hunt( begin, end, val, begin);
+		}
 	
 }
 
