@@ -1,3 +1,5 @@
+#ifdef USE_XERCES_TRUE
+
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
@@ -382,3 +384,4 @@ private:
 } // namespace Test
 } // namespace Cuidado
 
+#endif //USE_XERCES_TRUE
