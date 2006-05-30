@@ -116,7 +116,7 @@ if sys.platform=="win32" :
 	sources += env.RES(source=["scons/Annotator.rc"])
 
 env.Append(CPPPATH=includePaths)
-env.Append(LIBPATH=CLAMVmQtPath)
+env.Append(LIBPATH=[CLAMVmQtPath])
 env.Append(LIBS="clam_vmqt4")
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
 env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
