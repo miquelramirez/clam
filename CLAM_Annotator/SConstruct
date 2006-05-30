@@ -7,7 +7,6 @@ version='0.3.1'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(PathOption('clam_vmqt4_path', 'The path to the vmqt module', '')) # to be removed
 options.Add(PathOption('clam_sconstools', 'The path to the scons tools provided by clam', ''))
 options.Add(BoolOption('release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
@@ -34,7 +33,7 @@ env.Tool('clam', toolpath=[env['clam_sconstools']])
 env.Tool('nsis', toolpath=[env['clam_sconstools']])
 
 CLAMInstallDir = env['clam_prefix']
-CLAMVmQtPath = env['clam_vmqt4_path']
+CLAMVmQtPath = 'vmqt'
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
