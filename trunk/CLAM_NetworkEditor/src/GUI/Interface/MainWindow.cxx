@@ -35,6 +35,9 @@
 #include "aboutdialog.h"
 
 #include "NetworkController.hxx"
+#ifndef DATA_EXAMPLES_PATH
+#define DATA_EXAMPLES_PATH "example-data"
+#endif
 
 #include <iostream> // TODO: remove
 
@@ -84,6 +87,12 @@ namespace NetworkGUI
 	    loadNetwork->setMenuText( tr( "&Load" ) );
 		loadNetwork->setAccel( tr( "CTRL+O" ) );
 		connect( loadNetwork, SIGNAL( activated() ), this, SLOT( LoadNetwork() ) );
+		
+		QAction* loadExampleNetwork = new QAction( this, "LoadExampleNetwork" );
+		loadExampleNetwork->addTo( file );
+	    loadExampleNetwork->setMenuText( tr( "&Load Example" ) );
+		loadExampleNetwork->setAccel( tr( "CTRL+E" ) );
+		connect( loadExampleNetwork, SIGNAL( activated() ), this, SLOT( LoadExampleNetwork() ) );
 		
 		QAction* saveNetwork = new QAction( this, "SaveNetwork" );
 		saveNetwork->addTo( file );
@@ -190,6 +199,18 @@ namespace NetworkGUI
 	void MainWindow::NewNetwork()
 	{
 		SignalNewNetworkSignal.Emit();
+	}
+
+	void MainWindow::LoadExampleNetwork()
+	{
+		QString s = QFileDialog::getOpenFileName(
+			DATA_EXAMPLES_PATH,
+			"XML Files (*.xml)",
+			this,
+			"open file dialog"
+			"Choose a file to load network" );
+		if (s==QString::null) return;
+		LoadNetwork(std::string(s.ascii()));
 	}
 
 	void MainWindow::LoadNetwork()

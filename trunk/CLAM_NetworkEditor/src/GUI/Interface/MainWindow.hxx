@@ -57,6 +57,7 @@ public: //slots
 
 public slots:
  	void LoadNetwork();
+ 	void LoadExampleNetwork();
 	void SaveNetwork();
 	void NewNetwork(); 
 	void SaveAsNetwork();
