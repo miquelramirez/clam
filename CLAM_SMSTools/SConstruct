@@ -180,6 +180,7 @@ installation = {
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
+
 if sys.platform=='win32' : 
 	"""
 	installTargets += [
@@ -199,6 +200,7 @@ if sys.platform=='win32' :
 			break
 	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
 	win_packages = [env.Nsis( source='resources\\clam_smstools.nsi')]
+	env.PreAction(win_packages, '%s/changeExampleDataPath.py example-data ..' % env['clam_sconstools'])
 	env.Alias('package', win_packages)
 
 if sys.platform=='macosx' : # not really tested!!!
