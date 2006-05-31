@@ -8,6 +8,7 @@
 #include "NetSpecgramPlot.hxx"
 #include "NetFundTrackPlot.hxx"
 #include "NetSinTracksPlot.hxx"
+
 #include <iostream>
 
 class CLAMWidgetsPlugin : public QWidgetPlugin
@@ -16,6 +17,10 @@ public:
 	CLAMWidgetsPlugin()
 	{
 		std::cout << "Loading CLAM qt widgets plugins" << std::endl;
+	}
+	~CLAMWidgetsPlugin()
+	{
+		std::cout << "Destroying CLAM qt widgets plugins" << std::endl;
 	}
 	QStringList keys() const
 	{
