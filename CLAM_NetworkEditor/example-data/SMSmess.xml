@@ -10,14 +10,14 @@
 
   <processing id="MonoAudioFileReader" type="MonoAudioFileReader">
     <SourceFile>
-      <URI>jaume-voice.ogg</URI>
+      <URI>F:/clam-sandboxes/CLAM-TestData/jaume-voice.wav</URI>
       <Header>
         <SampleRate>44100</SampleRate>
-        <Samples>1501228</Samples>
+        <Samples>2938666</Samples>
         <Channels>1</Channels>
-        <Length>34041.5</Length>
-        <Format>VorbisMk1</Format>
-        <Encoding>Format Default</Encoding>
+        <Length>66636.4</Length>
+        <Format>WAV</Format>
+        <Encoding>signed 16-bit</Encoding>
         <Endianess>Format Default</Endianess>
       </Header>
       <TextualDescriptors/>

@@ -52,7 +52,7 @@ int main( int argc, char *argv[] )
 	prototype->show();
 
 
-//	loader.Start();
+	loader.Start();
 	int result = app.exec();
 	loader.Stop();
 
