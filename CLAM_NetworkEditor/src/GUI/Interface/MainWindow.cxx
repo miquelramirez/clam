@@ -207,7 +207,7 @@ namespace NetworkGUI
 	void MainWindow::LoadNetwork(const std::string & xmlfilename)
 	{
 		mNetworkPresentation.GetNetworkController().LoadNetworkFrom(xmlfilename);
-		mCurrentNetwork = xmlfilename;
+		mCurrentNetwork = xmlfilename.c_str();
 	}
 
 
