@@ -42,6 +42,7 @@ public:
 	MainWindow();
 	virtual ~MainWindow();
 	Qt_NetworkPresentation & GetNetworkPresentation();
+	void LoadNetwork(const std::string & xmlfilename);
 
 private:
 	void SendMessageToStatus( const std::string & );

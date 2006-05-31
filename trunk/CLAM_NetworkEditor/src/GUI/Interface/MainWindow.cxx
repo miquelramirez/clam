@@ -200,12 +200,14 @@ namespace NetworkGUI
 			this,
 			"open file dialog"
 			"Choose a file to load network" );
+		if (s==QString::null) return;
+		LoadNetwork(std::string(s.ascii()));
+	}
 
-		if (s==QString::null)
-			return;
-		
-		mNetworkPresentation.GetNetworkController().LoadNetworkFrom(std::string(s.ascii()) );
-		mCurrentNetwork = s;
+	void MainWindow::LoadNetwork(const std::string & xmlfilename)
+	{
+		mNetworkPresentation.GetNetworkController().LoadNetworkFrom(xmlfilename);
+		mCurrentNetwork = xmlfilename;
 	}
 
 
@@ -228,7 +230,10 @@ namespace NetworkGUI
 	void MainWindow::SaveNetwork()
 	{
 		if (mCurrentNetwork==QString::null)
+		{
+			SaveAsNetwork();
 			return;
+		}
 		std::string xmlfile = mCurrentNetwork.ascii();
 		mNetworkPresentation.GetNetworkController().SaveNetworkTo(xmlfile);
 	}
