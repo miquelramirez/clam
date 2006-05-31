@@ -152,6 +152,7 @@ manpages = [
 	'resources/man/man1/SMSTools.1',
 	]
 
+
 # Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
 env.Precious(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
@@ -164,10 +165,16 @@ if len(tsfiles) :
 #	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
 	translations = env.Qm(source = tsfiles)
 
+examples = []
+for ext in ['xml', 'wav', 'mp3', 'ogg']:
+	examples += scanFiles('*.%s'%ext, ['example-data'])
+
+
 installation = {
 	'/bin' : programs,
 	'/share/man/man1' : manpages,
-	'/share/smstools/i18n': translations
+	'/share/smstools/i18n': translations,
+	'/share/smstools/example-data': examples
 }
 
 installTargets = [

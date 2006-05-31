@@ -178,11 +178,16 @@ if len(tsfiles) :
 #	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
 	translations = env.Qm(source = tsfiles)
 
+examples = []
+for ext in ['xml', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
+	examples += scanFiles('*.%s'%ext, ['example-data'])
+
 installation = {
 	'/bin' : programs,
 	'/bin/designer': [qtplugin],
 	'/share/man/man1' : manpages,
 	'/share/networkeditor/i18n': translations,
+	'/share/networkeditor/example-data': examples,
 }
 
 installTargets = [
