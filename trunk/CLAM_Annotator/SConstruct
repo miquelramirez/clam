@@ -3,7 +3,7 @@ import os
 import glob
 import sys
 
-version='0.3.1'
+version='0.3.2-CVS-20060525-1'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
@@ -183,7 +183,7 @@ if sys.platform=='win32' :
 			) for dll in 'Core', 'Gui', 'OpenGL']
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % version ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
-	externalsDllDir = os.path.join(os.environ['CLAM_PATH'],"externals")
+	externalsDllDir = os.environ['EXTERNALDLLDIR']
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
 	# Get the visual studio runtimes path
 	for vcRuntimeDir in os.environ['PATH'].split(";") :
