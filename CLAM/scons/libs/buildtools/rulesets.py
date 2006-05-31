@@ -24,14 +24,14 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 		sys.exit(1)
 
 	if sys.platform == 'linux2' :
-		soname = 'libclam_'+name+'.so.%s' % versionnumbers[0]
+		libname = 'libclam_'+name+'.so.%s.%s.%s' % (versionnumbers[0], versionnumbers[1], versionnumbers[2])
 		middle_linker_name = 'libclam_'+name+'.so.%s.%s' % (versionnumbers[0], versionnumbers[1])
+		soname = 'libclam_'+name+'.so.%s' % versionnumbers[0]
 		linker_name = 'libclam_'+name+'.so'
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
 		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.so.%s'%version )
-		soname_lib = env.SonameLink( middle_linker_name, lib )				# lib***.so.X.Y -> lib***.so.X.Y.Z
-		middlelinkername_lib = env.LinkerNameLink( soname, soname_lib )			# lib***.so.X -> lib***.so.X.Y
-		linkername_lib = env.LinkerNameLink( linker_name, middlelinkername_lib)		# lib***.so -> lib***.so.X
+		soname_lib = env.SonameLink( soname, lib )				# lib***.so.X.Y -> lib***.so.X.Y.Z
+		linkername_lib = env.LinkerNameLink( linker_name, soname_lib )		# lib***.so -> lib***.so.X
 	else : #darwin
 		soname = 'libclam_'+name+'.%s.dylib' % versionnumbers[0]
 		middle_linker_name = 'libclam_'+name+'.%s.%s.dylib' % (versionnumbers[0], versionnumbers[1])
@@ -59,12 +59,13 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 	runtime_soname = env.SonameLink( install_dirs.lib + '/' + soname, runtime_lib )
 
 	env.Alias( 'install_'+name+'_runtime', [runtime_lib, runtime_soname] )
+	env.Append(CPPDEFINES="CLAM_MODULE='\"%s\"'"%name)
 
-	static_lib = env.Library( 'clam_'+name, source_files )
-	install_static = env.Install( install_dirs.lib, static_lib )
+#	static_lib = env.Library( 'clam_'+name, source_files )
+#	install_static = env.Install( install_dirs.lib, static_lib )
 
 	dev_linkername =  env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
-	env.Alias( 'install_'+name+'_dev', [install_headers,dev_linkername, install_descriptor, install_static] )
+	env.Alias( 'install_'+name+'_dev', [install_headers,dev_linkername, install_descriptor]) #, install_static] )
 
 	return tgt, install_tgt
 
