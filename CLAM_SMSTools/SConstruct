@@ -11,6 +11,7 @@ options.Add(PathOption('clam_sconstools', 'The path to the scons tools provided 
 options.Add(BoolOption('release', 'Build CLAM SMSTools enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
+os.environ['EXTERNALDLLDIR']='f:\\clam-external-libs\dlls'
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -182,7 +183,7 @@ if sys.platform=='win32' :
 	"""
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % version ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
-	externalsDllDir = os.path.join(os.environ['CLAM_PATH'],"externals")
+	externalsDllDir = os.environ['EXTERNALDLLDIR']
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
 	# Get the visual studio runtimes path
 	for vcRuntimeDir in os.environ['PATH'].split(";") :
