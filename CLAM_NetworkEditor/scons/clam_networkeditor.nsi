@@ -84,6 +84,10 @@ Section "Principal" SEC01
   SetOutPath "$INSTDIR\bin\designer"
   File "..\CLAMWidgets.dll"
 
+  SetOutPath "$INSTDIR\example-data\"
+  File "..\example-data\*"
+
+
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Prototyper.lnk" "$INSTDIR\bin\Prototyper.exe"

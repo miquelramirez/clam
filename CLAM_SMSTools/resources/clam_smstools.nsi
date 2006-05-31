@@ -82,6 +82,9 @@ Section "Principal" SEC01
   File '${EXTERNALDLLDIR}\xerces-c_2_3_0.dll'
   File '${VCRUNTIMEDIR}\msvcp71.dll'
   File '${VCRUNTIMEDIR}\msvcr71.dll'
+
+  SetOutPath "$INSTDIR\example-data\"
+  File "..\example-data\*"
 SectionEnd
 
 Section -AdditionalIcons
