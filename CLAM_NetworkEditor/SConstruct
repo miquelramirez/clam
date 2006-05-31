@@ -21,6 +21,7 @@ def scanFiles(pattern, paths) :
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
+os.environ['EXTERNALDLLDIR']='f:\\clam-external-libs\dlls'
 
 env = Environment(ENV=os.environ, tools=['default','qt'], options=options)
 options.Save('options.cache', env)
@@ -197,7 +198,7 @@ if sys.platform=='win32' :
 	"""
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % version ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
-	externalsDllDir = os.environ['EXTERNALDLLDIR'] #TODO fix
+	externalsDllDir = os.environ['EXTERNALDLLDIR'] 
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
 	# Get the visual studio runtimes path
 	for vcRuntimeDir in os.environ['PATH'].split(";") :
