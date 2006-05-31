@@ -66,7 +66,9 @@ void PrototypeLoader::ConnectWithNetwork()
 void PrototypeLoader::Start()
 {
 	CLAM_ASSERT( mPlayer!=NULL , "PrototypeLoader::ConnectWithNetwork() : no NetworkPlayer assigned. Do it with SetNetworkPlayer(..)");
+	std::cout << "starting" << std::endl;
 	mPlayer->Start();
+	std::cout << "started" << std::endl;
 }
 
 void PrototypeLoader::Stop()
