@@ -46,7 +46,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( SpectralPeakDetectTest );
 class SpectralPeakDetectTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( SpectralPeakDetectTest );
-	CPPUNIT_TEST( test );
+	CPPUNIT_TEST( test5kSin );
 	CPPUNIT_TEST_SUITE_END();
 
 private:
@@ -146,46 +146,14 @@ private:
 		return peaks;
 	}
 
-/*	void assertDescriptorExtractionInsideTolerance(const std::map<std::string, CLAM::TData> & expected, 
-		CLAM::TData tolerance, CLAM::TData & (CLAM::SpectralPeakDescriptors::*getter)() const )
-	{
-		std::stringstream log;
-		bool success = true;
-		mDescriptors->UpdateData();
-		CLAM::SpectralPeakArray peaks;
-		std::map<std::string, CLAM::TData>::const_iterator it;
-		for (it = expected.begin(); it != expected.end(); it++) {
-			peaks = helperGetData(it->first);
-//			CLAM::XMLStorage::Dump(peaks, "Peaks", mPathToTestData + "/SpectralPeaks/" + it->first + "-Peaks.xml");
-			mDescriptors->SetpSpectralPeakArray(&peaks);
-			mDescriptors->Compute();
-			if (
-				(std::isnan((mDescriptors->*getter)()) != std::isnan(it->second)) ||
-				(std::isinf((mDescriptors->*getter)()) != std::isinf(it->second)) ||
-				(mDescriptors->*getter)() > (*it).second + tolerance ||
-				(mDescriptors->*getter)() < (*it).second - tolerance
-				)
-			{
-				log << (*it).first
-				<< ": expected " << (*it).second
-				<< ", received " << (mDescriptors->*getter)()
-				<< std::endl;
-
-				success = false;
-			}
-		}
-
-		CPPUNIT_ASSERT_MESSAGE(std::string("Error margins surpassed:\n")+log.str()
-			,success);
-	}
-*/
 private:
-	void test()
+	void test5kSin()
 	{
 		CLAM::SpectralPeakArray peaks;
 		peaks = helperGetData("sin5000.wav");
-//		CLAM::XMLStorage::Dump(peaks, "Peaks", mPathToTestData + "/SpectralPeaks/" + it->first + "-Peaks.xml");
 		CLAM::XMLStorage::Dump(peaks, "Peaks",  "sin5000-Peaks.xml");
+		CPPUNIT_ASSERT( peaks.GetFreqBuffer()[0] > 4995);
+		CPPUNIT_ASSERT( peaks.GetFreqBuffer()[0] < 5001);
 	}	
 };
 
