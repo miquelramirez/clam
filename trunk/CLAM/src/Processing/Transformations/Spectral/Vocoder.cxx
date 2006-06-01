@@ -71,7 +71,7 @@ bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 	TData fCurrentGainBandLimit = fCurrentBandLimit*2;
 	int currentGainBandLimit = Round(fCurrentGainBandLimit*spectralResolution);
 	
-	TData gainBandFactor = pow(TData(spectrumSize)/currentBandLimit,1./nGainBands)i;
+	TData gainBandFactor = pow(TData(spectrumSize)/currentBandLimit,1./nGainBands);
 	TData fGainBandFactor = pow(spectralRange/fCurrentGainBandLimit,1./nGainBands);
 	
 	TData bandEnergy =0;
