@@ -10,7 +10,7 @@
 
   <processing id="MonoAudioFileReader" type="MonoAudioFileReader">
     <SourceFile>
-      <URI>F:/clam-sandboxes/CLAM-TestData/jaume-voice.wav</URI>
+    <URI>example-data/jaume-voice.wav</URI>
       <Header>
         <SampleRate>44100</SampleRate>
         <Samples>2938666</Samples>

@@ -14,7 +14,7 @@
 
   <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
     <SourceFile>
-      <URI>external-data/jaume-voice.ogg</URI>
+      <URI>example-data/jaume-voice.ogg</URI>
       <Header>
         <SampleRate>44100</SampleRate>
         <Samples>2938666</Samples>
