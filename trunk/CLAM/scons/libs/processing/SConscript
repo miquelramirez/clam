@@ -42,7 +42,6 @@ def define_module_contents() :
 	realHeaders = []
 	for orig,target in file_retriever.origTargetHeaders :
 		processing_env.CopyFileAndUpdateIncludes(target, orig)
-		print '===== copy and update includes (arget, orig)', target, orig
 		realHeaders.append(target)
 
 
