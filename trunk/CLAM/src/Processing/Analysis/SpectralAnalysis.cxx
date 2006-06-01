@@ -23,6 +23,7 @@
 #include "Frame.hxx"
 #include "SpectrumConfig.hxx"
 #include "SpectralAnalysis.hxx"
+#include "Factory.hxx"
 
 namespace CLAM
 {
@@ -50,6 +51,8 @@ SpectralAnalysis::~SpectralAnalysis()
 bool SpectralAnalysis::ConcreteConfigure(const ProcessingConfig& cfg)
 {
 	CopyAsConcreteConfig(mConfig,cfg);
+ 
+	mConfig.Sync();
 	ConfigureChildren();
 	ConfigureData();
 	return true;
@@ -69,6 +72,9 @@ void SpectralAnalysis::ConfigureData()
 {
 	TData samplingRate=mConfig.GetSamplingRate();
 	
+	mInput.SetSize(mConfig.GetWindowSize());
+	mInput.SetHop(mConfig.GetHopSize());
+
 	mAudioFrame.SetSize(mConfig.GetprFFTSize());
 	mAudioFrame.SetSampleRate(mConfig.GetSamplingRate());
 	mWindow.SetSize(mConfig.GetWindowSize());
@@ -116,6 +122,16 @@ bool SpectralAnalysis::Do(void)
 
 bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 {
+//xamat: testing
+/*	 std::cout<<"***SpectralAnalysis Configuration: "<<std::endl;
+	 std::cout<<"AnalWindowSize: "<< mConfig.GetWindowSize()<<std::endl;
+	 std::cout<<"HopSize: "<< mConfig.GetHopSize()<<std::endl;
+	 std::cout<<"FFTSize: "<<mConfig.GetprFFTSize()<<std::endl;
+	 std::cout<<"SamplingRate: "<<mConfig.GetSamplingRate()<<std::endl;
+	 std::cout<<"Input Audio Size: "<<in.GetSize()<<std::endl;
+	 std::cout<<"Output Spectrum Size: "<<outSp.GetSize()<<std::endl;
+*/
+
 	/* mAudioFrame is used as a helper audio copy where all windowing is done */
 	in.GetAudioChunk(0,in.GetSize()-1 ,mAudioFrame,true );
 
@@ -148,6 +164,11 @@ bool SpectralAnalysis::Do(Frame& in)
 bool SpectralAnalysis::Do(Segment& in)
 {
 	return Do(in.GetFrame(in.mCurrentFrameIndex++));
+}
+
+namespace detail 
+{
+	static CLAM::Factory<CLAM::Processing>::Registrator<SpectralAnalysis> regtSpectralAnalysis( "SpectralAnalysis" );
 }
 
 } // namespace CLAM

@@ -39,7 +39,7 @@ void SpectralSynthesisConfig::DefaultValues()
 	SetSamplingRate(44100);
 
 	/** Default analysis window size corresponds to 512*/
-	SetAnalWindowSize(513);
+	SetAnalWindowSize(1025);
 	SetAnalWindowType(EWindowType::eBlackmanHarris92);
 	GetAnalWindowGenerator().SetInvert(true);
 
@@ -56,9 +56,26 @@ void SpectralSynthesisConfig::DefaultValues()
 
 }
 
+void SpectralSynthesisConfig::Sync()
+{
+  int aws = GetprAnalWindowSize();
+  int hs = GetprHopSize();
+  
+  SetSamplingRate(GetprSamplingRate());
+
+  SetAnalWindowSize(aws);
+  SetAnalWindowType(GetprAnalWindowType());
+
+  SetHopSize(hs);
+
+  GetSynthWindowGenerator().SetSize(GetHopSize()*2+1);
+}
+
+
 void SpectralSynthesisConfig::SetAnalWindowSize(TSize w)
 {
 	CLAM_ASSERT(w%2==1,"Window size must be odd");
+	SetprAnalWindowSize(w);
 	GetAnalWindowGenerator().SetSize(w);
 	TData audioSize=TData(PowerOfTwo((w-1)*int(pow(TData(2.0),TData(GetZeroPadding())))));
 	GetIFFT().SetAudioSize(int(audioSize));
@@ -73,6 +90,7 @@ TSize SpectralSynthesisConfig::GetAnalWindowSize() const
 void SpectralSynthesisConfig::SetAnalWindowType(const EWindowType& t)
 {
 	GetAnalWindowGenerator().SetType(t);
+	SetprAnalWindowType(t);
 }
 
 const EWindowType& SpectralSynthesisConfig::GetAnalWindowType() const
@@ -107,8 +125,7 @@ int SpectralSynthesisConfig::GetZeroPadding() const
 void SpectralSynthesisConfig::SetHopSize(TSize h)
 {
 	GetSynthWindowGenerator().SetSize(2*h+1);
-	//GetOverlapAdd().SetHopSize(h);
-	//GetOverlapAdd().SetBufferSize(GetFrameSize()+h);
+	SetprHopSize(h);
 }
 
 TSize SpectralSynthesisConfig::GetHopSize() const

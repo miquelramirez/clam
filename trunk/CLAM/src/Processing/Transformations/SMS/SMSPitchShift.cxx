@@ -40,7 +40,10 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 	{
 		outPeaks = inPeaks; 
 		outFund = inFund;
-		outRes = inRes;
+		if(mIgnoreResidual.GetLastValue()<0.01)//if it is zero...
+		{
+			outRes = inRes;
+		}
 	}
 
 	TData spectralRange = 22050; // default for SampleRate = 44100;
@@ -91,15 +94,18 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 	if(mIsHarmonic.GetLastValue()>0)
 	{
 		if(haveEnvelope) mSpectralEnvelopeApply.Do(outPeaks,mSpectralEnvelope,outPeaks);
-		mFDCombFilter.mFreq.DoControl(mIsHarmonic.GetLastValue()*amount);
-		mFDCombFilter.Do(inRes,outRes);
+		if(mIgnoreResidual.GetLastValue()<0.01)//if it is zero...
+		{
+			mFDCombFilter.mFreq.DoControl(mIsHarmonic.GetLastValue()*amount);
+			mFDCombFilter.Do(inRes,outRes);
+		}
 	}
 	return true;
 }
 
 bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
-	out=in;	// TODO most likely this copy is not necessary
+	//out=in;	// TODO most likely this copy is not necessary
 
 	return Do( in.GetSpectralPeakArray(),
 			in.GetFundamental(), 

@@ -39,16 +39,19 @@ friend class SpectralSynthesis;
 
 public:
 	
-	DYNAMIC_TYPE_USING_INTERFACE(SpectralSynthesisConfig,7,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE(SpectralSynthesisConfig,10,ProcessingConfig);
 /** Configuration for children Processing Objects*/
 	DYN_ATTRIBUTE(0,public,WindowGeneratorConfig,AnalWindowGenerator);
 	DYN_ATTRIBUTE(1,public,WindowGeneratorConfig,SynthWindowGenerator);
 	DYN_ATTRIBUTE(2,public,CircularShiftConfig,CircularShift);
 	DYN_ATTRIBUTE(3,public,IFFTConfig,IFFT);
-	DYN_ATTRIBUTE(4,protected,int, prZeroPadding);
-	DYN_ATTRIBUTE(5,protected,int,prSamplingRate);
+	DYN_ATTRIBUTE(4,public,int, prZeroPadding);
+	DYN_ATTRIBUTE(5,public,int,prSamplingRate);
 	DYN_ATTRIBUTE(6,public,bool,Residual);
-
+  //xamat: added this to be able to access from configurators
+        DYN_ATTRIBUTE(7,public,int,prAnalWindowSize);
+        DYN_ATTRIBUTE(8,public,EWindowType,prAnalWindowType);  
+        DYN_ATTRIBUTE(9,public,int,prHopSize);
 
 //Config shortcuts
 
@@ -110,6 +113,8 @@ private:
 
 	void DefaultInit();
 	void DefaultValues();
+  /** Sync all configuration values*/
+	void Sync();
 
 	/** Ad-hoc routine for finding FFT Size*/
 	TInt32 PowerOfTwo(TInt32 size);

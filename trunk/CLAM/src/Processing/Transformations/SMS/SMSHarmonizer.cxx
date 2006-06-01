@@ -28,36 +28,32 @@ namespace CLAM
 
 bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 {
-	BPF voices=mConfig.GetBPF();
+	BPF& voices=mConfig.GetBPF();
 	TSize nVoices=voices.Size();
-	Frame tmpInFrame(in),tmpOutFrame(in);
-	tmpOutFrame.AddResidualSpec();
-	tmpOutFrame.AddSpectralPeakArray();
-	tmpOutFrame.UpdateData();
 	
 	for(int i=0;i<nVoices;i++)
 	{
 		TData amount=voices.GetValueFromIndex(i);
 		TData gain=voices.GetXValue(i);
 		mPitchShift.GetInControl("Amount").DoControl(amount);
-		mPitchShift.Do(in,tmpInFrame);
-		Gain(tmpInFrame,gain);
-		AddFrame(tmpInFrame,tmpOutFrame,tmpOutFrame);
+		mPitchShift.Do(in,mTmpFrame);
+		Gain(mTmpFrame,gain);
+		AddFrame(mTmpFrame,out,out);
 	}
-	out.SetResidualSpec(tmpOutFrame.GetResidualSpec());
-	out.SetSpectralPeakArray(tmpOutFrame.GetSpectralPeakArray());
+	
 	//We set fundamental value of input to zero as it is inharmonic
-	Fundamental tmpFund;
-	tmpFund.AddElem();
-	out.SetFundamental(tmpFund);
+	out.SetFundamental(mTmpFund);
 	return true;
 }
 
 void SMSHarmonizer::AddFrame(const Frame& in1, const Frame& in2, Frame& out)
 {
-	mSpectrumAdder.Start();
-	mSpectrumAdder.Do(in1.GetResidualSpec(),in2.GetResidualSpec(),out.GetResidualSpec());
-	mSpectrumAdder.Stop();
+	if(mIgnoreResidualCtl.GetLastValue()<0.01) // is 0
+	{
+		mSpectrumAdder.Start();
+		mSpectrumAdder.Do(in1.GetResidualSpec(),in2.GetResidualSpec(),out.GetResidualSpec());
+		mSpectrumAdder.Stop();
+	}
 	out.SetSpectralPeakArray(in1.GetSpectralPeakArray()+in2.GetSpectralPeakArray());
 }
 	
@@ -75,10 +71,13 @@ void SMSHarmonizer::Gain(Frame& inputFrame, TData gain)
 	{
 		peakMag[i]=std::min(peakMag[i]+gain,TData(0));
 	}
-	DataArray& resMag = residual.GetMagBuffer();
-	for(int i=0;i<specSize;i++)
+	if(mIgnoreResidualCtl.GetLastValue()<0.01) // is 0
 	{
-		resMag[i] = resMag[i]*linGain;
+		DataArray& resMag = residual.GetMagBuffer();
+		for(int i=0;i<specSize;i++)
+		{
+			resMag[i] = resMag[i]*linGain;
+		}
 	}
 }
 

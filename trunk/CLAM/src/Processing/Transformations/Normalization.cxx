@@ -164,7 +164,7 @@ namespace CLAM
 
 		mIsSilenceCtrl.SendControl(false);
 			
-		return sqrt( maxEnergy / TData(mFrameSize ) );
+		return CLAM_sqrt( maxEnergy / TData(mFrameSize ) );
 		
 
 	}
@@ -209,7 +209,7 @@ namespace CLAM
 
 		mIsSilenceCtrl.SendControl(false);
 
-		return sqrt( avgEnergy );
+		return CLAM_sqrt( avgEnergy );
 
 	}
 
@@ -260,7 +260,7 @@ namespace CLAM
 
 		mIsSilenceCtrl.SendControl(false);
 
-		return sqrt( chunksEnergies[i]/TData(mFrameSize) );
+		return CLAM_sqrt( chunksEnergies[i]/TData(mFrameSize) );
 
 	}
 	

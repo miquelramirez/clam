@@ -20,6 +20,9 @@
  */
 
 #include "SpectralSynthesis.hxx"
+#include "Factory.hxx"
+
+#include <iostream>
 
 namespace CLAM
 {
@@ -132,9 +135,15 @@ void SpectralSynthesis::ConfigureData()
 
 bool SpectralSynthesis::ConcreteConfigure(const ProcessingConfig& c)
 {
-	CopyAsConcreteConfig(mConfig, c);
+         CopyAsConcreteConfig(mConfig, c);
+	 
+	 mConfig.Sync();
 
-	//CONFIGURE CHILDREN AND DATA
+	 mOutput.SetSize( mConfig.GetHopSize()*2 );
+	 mOutput.SetHop( mConfig.GetHopSize()*2 );
+
+
+	 //CONFIGURE CHILDREN AND DATA
 	ConfigureChildren();
 
 	ConfigureData();
@@ -152,7 +161,15 @@ bool SpectralSynthesis::Do(void)
 
 bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 {
-
+//xamat: testing
+/*	 std::cout<<"***SpectralSynthesis Configuration: "<<std::endl;
+	 std::cout<<"AnalWindowSize: "<< mConfig.GetAnalWindowSize()<<std::endl;
+	 std::cout<<"HopSize: "<< mConfig.GetHopSize()<<std::endl;
+	 std::cout<<"FFTSize: "<<mConfig.GetIFFT().GetAudioSize()<<std::endl;
+	 std::cout<<"SamplingRate: "<<mConfig.GetSamplingRate()<<std::endl;
+	 std::cout<<"Input Spectrum Size: "<<in.GetSize()<<std::endl;
+	 std::cout<<"Output Audio Size: "<<out.GetSize()<<std::endl;
+*/
 	SpecTypeFlags tmpFlags;
 	in.GetType(tmpFlags);
 	if(!tmpFlags.bComplex)
@@ -170,8 +187,15 @@ bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 //Now we take the central samples to multiply with the window
 	int centerSample=mAudio1.GetSize()/2;
 	mAudio1.GetAudioChunk(centerSample-mConfig.GetHopSize(),centerSample+mConfig.GetHopSize()-1,mAudio2,false);
+//xamat test:
+/*	std::cout<<"Sizes in SpectralSynthesis " << std::endl;
+	std::cout<<"Audio before synthesis window size: " << mAudio2.GetSize() << std::endl;
+	std::cout<<"Synthesis window size: " << mSynthWindow.GetSize() << std::endl;
+	std::cout<<"Output audio size: " << out.GetSize() << std::endl;
+*/
 //Aplying inverse window
 	mPO_AudioProduct.Do(mAudio2, mSynthWindow,out);
+
 	
 	return true;
 }
@@ -202,6 +226,11 @@ TInt32 SpectralSynthesis::CalculatePowerOfTwo(TInt32 size)
 	if(outputSize == size << 1)
 		outputSize = outputSize >> 1;
 	return outputSize;
+}
+
+namespace detail 
+{
+	static CLAM::Factory<CLAM::Processing>::Registrator<SpectralSynthesis> regtSpectralSynthesis( "SpectralSynthesis" );
 }
 
 }

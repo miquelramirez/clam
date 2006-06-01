@@ -38,19 +38,23 @@ namespace CLAM {
  *  WindowGenerator, Circular Shift and FFT. These configurations
  *  should only be modified by advanced users
  */
+
 class SpectralAnalysisConfig:public ProcessingConfig
 {
 	friend class SpectralAnalysis;
 
-	DYNAMIC_TYPE_USING_INTERFACE (SpectralAnalysisConfig,7,ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (SpectralAnalysisConfig,9,ProcessingConfig);
 /** Configuration for children Processing Objects*/
 	DYN_ATTRIBUTE(0,public,WindowGeneratorConfig, WindowGenerator);
 	DYN_ATTRIBUTE(1,public,CircularShiftConfig,CircularShift);
 	DYN_ATTRIBUTE(2,public,FFTConfig, FFT);
-	DYN_ATTRIBUTE(3,protected,int, prHopSize);
-	DYN_ATTRIBUTE(4,protected,int, prZeroPadding);
-	DYN_ATTRIBUTE(5,protected,int, prSamplingRate);
+	DYN_ATTRIBUTE(3,public,int, prHopSize);
+	DYN_ATTRIBUTE(4,public,int, prZeroPadding);
+	DYN_ATTRIBUTE(5,public,int, prSamplingRate);
 	DYN_ATTRIBUTE(6,public,int, prFFTSize);
+  //xamat: added these so they can be accessible from a configurator
+        DYN_ATTRIBUTE(7,public,int, prWindowSize);
+        DYN_ATTRIBUTE(8,public,EWindowType, prWindowType);
 
 public:
 //Config shortcuts
@@ -110,6 +114,10 @@ public:
 
 /** returns SamplingRate */
 	TData GetSamplingRate() const;
+
+/** synchronize configuration values just in case they had been modified directly **/
+void Sync();
+
 
 private:
 

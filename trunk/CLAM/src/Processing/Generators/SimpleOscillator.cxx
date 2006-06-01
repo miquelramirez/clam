@@ -57,7 +57,8 @@ SimpleOscillator::SimpleOscillator()
 	mFreqUpdated( false ),
 	mAmpUpdated( false ),
 	mFreqCtl(0),
-	mAmpCtl(0)
+	mAmpCtl(0),
+	mSamplesBetweenCallsCtl("SamplesBetweenCalls", this)
 
 {
 	mFreqCtl = new SimpleOscillatorCtrl( "Pitch", this, &SimpleOscillator::UpdateFreq );
@@ -73,7 +74,8 @@ SimpleOscillator::SimpleOscillator( const SimpleOscillatorConfig& cfg )
 	mFreqUpdated( false ),
 	mAmpUpdated( false ),
 	mFreqCtl(0),
-	mAmpCtl(0)
+	mAmpCtl(0),
+	mSamplesBetweenCallsCtl("SamplesBetweenCalls", this)
 {
 	mFreqCtl = new SimpleOscillatorCtrl( "Pitch", this, &SimpleOscillator::UpdateFreq );
 	mAmpCtl = new SimpleOscillatorCtrl( "Amplitude", this, &SimpleOscillator::UpdateAmp );
@@ -95,7 +97,8 @@ bool SimpleOscillator::ConcreteConfigure( const ProcessingConfig& c )
 	mPhase = mConfig.GetPhase(); // TEMP HACK  (See also constructor
 	mSamplingRate = mConfig.GetSamplingRate();
 	mDeltaPhase = TData(2.*PI*mConfig.GetFrequency()/mSamplingRate);
-
+	//xamat: kludge to convert this into an LFO, eventually separate into a different class
+	mSamplesBetweenCallsCtl.DoControl(1);
 	return true;
 }
 
@@ -125,6 +128,23 @@ bool SimpleOscillator::Do( Audio& out )
 
 	return true;
 }
+
+//xamat: kludge to convert this into an LFO, eventually separate into a different class
+bool SimpleOscillator::Do( TData& out )
+{
+	if( !AbleToExecute() ) return true;
+	
+	ApplyFreqAndAmpControls();
+
+	out = mAmp * TData(sin(mPhase));
+	mPhase += mDeltaPhase*mSamplesBetweenCallsCtl.GetLastValue();
+		
+	if (mPhase>TData(2*PI)) 
+		mPhase-=TData(2*PI);
+
+	return true;
+}
+
 
 int SimpleOscillator::UpdateFreq( TControlData value )
 {

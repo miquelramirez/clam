@@ -158,7 +158,7 @@ namespace CLAM {
 				TData fsr_by_flc = fsr/flc;
 
 				SetFilterPoint(out,0,0,g);
-				SetFilterPoint(out,1,flc*pow(2.0,-3.0/ssb),g);
+				SetFilterPoint(out,1,flc*CLAM_pow(2.0,-3.0/ssb),g);
 				SetFilterPoint(out,2,flc,g-3);
 				SetFilterPoint(out,3,fsr,g-3-ssb*(log(fsr_by_flc)/log(TData(2))));
 				break;
@@ -168,7 +168,7 @@ namespace CLAM {
 				out.SetBPFSize(4);
 				SetFilterPoint(out,0,0,MINUSINFINITY);
 				SetFilterPoint(out,1,fhc,g-3);
-				SetFilterPoint(out,2,fhc*pow(2.0,3.0/spb),g);
+				SetFilterPoint(out,2,fhc*CLAM_pow(2.0,3.0/spb),g);
 				SetFilterPoint(out,3,fsr,g);
 				break;
 			}
@@ -177,8 +177,8 @@ namespace CLAM {
 				out.SetBPFSize(6);
 				SetFilterPoint(out,0,0,MINUSINFINITY);
 				SetFilterPoint(out,1,flc,g-3);
-				SetFilterPoint(out,2,flc*pow(2.0,3.0/spb),g);
-				SetFilterPoint(out,3,fhc*pow(2.0,-3.0/ssb),g);
+				SetFilterPoint(out,2,flc*CLAM_pow(2.0,3.0/spb),g);
+				SetFilterPoint(out,3,fhc*CLAM_pow(2.0,-3.0/ssb),g);
 				SetFilterPoint(out,4,fhc,g-3);
 				SetFilterPoint(out,5,fsr,MINUSINFINITY);
 				
@@ -188,13 +188,13 @@ namespace CLAM {
 			{
 				out.SetBPFSize(7);
 				SetFilterPoint(out,0,0,g);
-				SetFilterPoint(out,1,flc*pow(2.0,-3.0/ssb),g);
+				SetFilterPoint(out,1,flc*CLAM_pow(2.0,-3.0/ssb),g);
 				SetFilterPoint(out,2,flc,g-3);
-				TData crossFreq=(pow((double)flc,(1.0/(1.0-spb/ssb)))/pow((double)fhc,(1.0/(ssb/spb-1.0))));
+				TData crossFreq=(CLAM_pow((double)flc,(1.0/(1.0-spb/ssb)))/CLAM_pow((double)fhc,(1.0/(ssb/spb-1.0))));
 				TData crossf_by_flc = crossFreq/flc;
 				SetFilterPoint(out,3,crossFreq,g-3-ssb*(log(crossf_by_flc)/log(TData(2))));
 				SetFilterPoint(out,4,fhc,g-3);
-				SetFilterPoint(out,5,fhc*pow(2.0,3.0/spb),g);
+				SetFilterPoint(out,5,fhc*CLAM_pow(2.0,3.0/spb),g);
 				SetFilterPoint(out,6,fsr,g);
 				break;
 			}
@@ -209,7 +209,7 @@ namespace CLAM {
 				
 				TData tmpValue = bpf.GetValueFromIndex(i);
 						
-				tmpValue = (tmpValue==0.0001) ? 0 : pow(10.0,tmpValue/20.0); 
+				tmpValue = (tmpValue==0.0001) ? 0 : CLAM_pow(10.0,tmpValue/20.0); 
 				bpf.SetValue(i, tmpValue);
 			}
 			out.SetScale(EScale(EScale::eLinear));

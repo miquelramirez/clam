@@ -19,12 +19,29 @@ namespace CLAM
 			const ProcessingConfig& GetConfig() const { return mConfig; }
 
 			virtual bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
+			
+			virtual bool ConcreteStart(){ return InitControls();}
+			
+			/** Virtual function to override when needing to give different default values to the controls*/
+			virtual bool InitControls()
+			{ 
+				GetInControl("Amount").DoControl(0.);
+				return true;
+			}
 
 		protected:
 		
 			FrameTransformationConfig mConfig;
 			
 			InControl mAmount;
+	};
+	
+	//@todo: could also add ports here
+	template <typename T>
+	class FrameTransformationTmpl : public FrameTransformation
+	{
+	public:	
+		virtual bool Do(const T&, T&) = 0;
 	};
 
 } // namespace CLAM

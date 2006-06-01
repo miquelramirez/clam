@@ -91,8 +91,8 @@ private:
 
 public:
 	TokenDelay(const TokenDelayConfig& cfg = TokenDelayConfig() ) :
-		mInput ("In", this, 1),
-		mOutput ("Out", this, 1),
+		mInput ("In", this),
+		mOutput ("Out", this),
 		mDelayControl("Delay Control", this),
 		mCapacity(0)
 	{
@@ -126,7 +126,7 @@ public:
 	* words: when the delay value gets increased, the out object can be the same
 	* for a number of Do executions.
 	*/
-	virtual bool Do(T & in, T* & out);
+	virtual bool Do(const T & in, T& out);
 
 	
 
@@ -178,12 +178,12 @@ private:
 
 // Implementation Details:
 
-	std::deque<T*> mTokenQueue;
+	std::deque<T> mTokenQueue;
 	/** The maximun number of elements in the queue. */
 	unsigned mCapacity;
-	/** The control value readed on the last started Do */
+	/** The control value read on the last started Do */
 	unsigned mGivenDelay;
-	/** The control value readed on the previous Do to the last started Do */
+	/** The control value read on the previous Do */
 	unsigned mLastDelay;
 
 };
@@ -228,7 +228,7 @@ unsigned TokenDelay<T>::CastDelayControlValue(TControlData readControlValue) {
 }
 
 template <class T> 
-bool TokenDelay<T>::Do(T& in, T* & out)
+bool TokenDelay<T>::Do(const T& in, T& out)
 // implementation using the supervised-mode Do
 {
 	// @todo debug
@@ -237,8 +237,8 @@ bool TokenDelay<T>::Do(T& in, T* & out)
 	// If the value is different make the difference efective
 	if (mLastDelay != mGivenDelay)
 		UpdateBuffersToDelay();
-
-	mTokenQueue.push_back(&in);
+	
+	mTokenQueue.push_back(in);
 	out=mTokenQueue.front();
 	if (mTokenQueue.size()>mGivenDelay)
 		mTokenQueue.pop_front();
@@ -252,9 +252,9 @@ template <class T>
 void TokenDelay<T>::UpdateBuffersToDelay()
 {
 	while (mTokenQueue.size()>mGivenDelay) {
-		T* toDelete=mTokenQueue.front();
+		//T* toDelete=mTokenQueue.front();
 		mTokenQueue.pop_front();
-		this->Discard(toDelete);
+		//this->Discard(toDelete);
 	}
 	return;
 }
