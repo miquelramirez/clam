@@ -16,7 +16,7 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Controls', 'src/Processing/Base/NullProcessingConfig.hxx', 'src/Visualization/Base', 'src/Visualization/View', 'src/Visualization/Util' ]
+	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Transformations/Spectral', 'src/Processing/Controls', 'src/Processing/Base/NullProcessingConfig.hxx', 'src/Visualization/Base', 'src/Visualization/View', 'src/Visualization/Util' ]
 
 	if sys.platform == 'win32':
 		folders.append('src/Processing/InitProcessing*.*xx')
@@ -42,6 +42,7 @@ def define_module_contents() :
 	realHeaders = []
 	for orig,target in file_retriever.origTargetHeaders :
 		processing_env.CopyFileAndUpdateIncludes(target, orig)
+		print '===== copy and update includes (arget, orig)', target, orig
 		realHeaders.append(target)
 
 
