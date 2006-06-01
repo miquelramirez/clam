@@ -80,7 +80,6 @@ Section "Principal" SEC01
   SetOutPath "$INSTDIR\example-data\"
   File "..\example-data\*"
 
-
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Prototyper.lnk" "$INSTDIR\bin\Prototyper.exe"
@@ -146,8 +145,10 @@ Section Uninstall
   Delete "$INSTDIR\bin\xerces-c_2_3_0.dll"
   Delete "$INSTDIR\bin\msvcp71.dll"
   Delete "$INSTDIR\bin\msvcr71.dll"
+  Delete "$INSTDIR\example-data\*"
   RMDir "$INSTDIR\bin\designer"
   RMDir "$INSTDIR\bin"
+  RMDir "$INSTDIR\example-data"
   RMDir "$INSTDIR"
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
