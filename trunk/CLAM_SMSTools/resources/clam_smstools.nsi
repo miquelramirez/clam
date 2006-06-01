@@ -62,9 +62,6 @@ Section "Principal" SEC01
   SetOutPath "$INSTDIR\bin"
   SetOverwrite ifnewer
   File "..\SMSTools.exe"
-  CreateDirectory "$SMPROGRAMS\CLAM\SMSTools"
-  CreateShortCut "$SMPROGRAMS\CLAM\SMSTools\SMSTools.lnk" "$INSTDIR\bin\SMSTools.exe"
-  CreateShortCut "$DESKTOP\SMSTools.lnk" "$INSTDIR\bin\SMSTools.exe"
   File '${EXTERNALDLLDIR}\libsndfile.dll'
   File '${EXTERNALDLLDIR}\ogg.dll'
   File '${EXTERNALDLLDIR}\pthreadVCE.dll'
@@ -78,6 +75,10 @@ Section "Principal" SEC01
 
   SetOutPath "$INSTDIR\example-data\"
   File "..\example-data\*"
+
+  CreateDirectory "$SMPROGRAMS\CLAM\SMSTools"
+  CreateShortCut "$SMPROGRAMS\CLAM\SMSTools\SMSTools.lnk" "$INSTDIR\bin\SMSTools.exe"
+  CreateShortCut "$DESKTOP\SMSTools.lnk" "$INSTDIR\bin\SMSTools.exe"
 SectionEnd
 
 Section -AdditionalIcons
@@ -111,17 +112,16 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
+  Delete "$DESKTOP\SMSTools.lnk"
+  Delete "$SMPROGRAMS\CLAM\SMSTools\Uninstall.lnk"
+  Delete "$SMPROGRAMS\CLAM\SMSTools\Website.lnk"
+  Delete "$SMPROGRAMS\CLAM\SMSTools\SMSTools.lnk"
+  RMDir "$SMPROGRAMS\CLAM\SMSTools"
+  RMDir "$SMPROGRAMS\CLAM"
+
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\bin\SMSTools.exe"
-
-  Delete "$SMPROGRAMS\CLAM\SMSTools\Uninstall.lnk"
-  Delete "$SMPROGRAMS\CLAM\SMSTools\Website.lnk"
-  Delete "$DESKTOP\SMSTools.lnk"
-  Delete "$SMPROGRAMS\CLAM\SMSTools\SMSTools.lnk"
-
-  RMDir "$SMPROGRAMS\CLAM\SMSTools"
-  RMDir "$INSTDIR\resources"
   Delete "$INSTDIR\bin\libsndfile.dll"
   Delete "$INSTDIR\bin\ogg.dll"
   Delete "$INSTDIR\bin\pthreadVCE.dll"
@@ -132,14 +132,11 @@ Section Uninstall
   Delete "$INSTDIR\bin\xerces-c_2_3_0.dll"
   Delete "$INSTDIR\bin\msvcp71.dll"
   Delete "$INSTDIR\bin\msvcr71.dll"
-  Delete "$SMPROGRAMS\CLAM\SMSTools\Uninstall.lnk"
-  Delete "$SMPROGRAMS\CLAM\SMSTools\Website.lnk"
-  Delete "$DESKTOP\SMSTools.lnk"
-  Delete "$SMPROGRAMS\CLAM\SMSTools\SMSTools.lnk"
-
-  RMDir "$SMPROGRAMS\CLAM\SMSTools"
-  RMDir "$SMPROGRAMS\CLAM"
+  Delete "$INSTDIR\example-data\*"
   RMDir "$INSTDIR\bin"
+  RMDir "$INSTDIR\example-data"
+  RMDir "$INSTDIR"
+
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
