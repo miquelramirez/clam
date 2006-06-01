@@ -212,6 +212,7 @@ if sys.platform=='win32' :
 			break
 	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
 	win_packages = [env.Nsis( source='scons\\clam_networkeditor.nsi')]
+	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % env['clam_sconstools'])
 	env.Alias('package', win_packages)
 
 if sys.platform=='macosx' : # not really tested!!!
