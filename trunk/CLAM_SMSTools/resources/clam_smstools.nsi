@@ -54,14 +54,7 @@ ShowUnInstDetails show
 
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
-   ReadEnvStr $0 CLAM_PATH
-   StrCmp $0 "" 0 +6
-   MessageBox MB_ICONEXCLAMATION|MB_YESNO "CLAM external dependencies have not been installed. Do you want to continue?" IDYES +2
-   Abort
-   MessageBox MB_ICONEXCLAMATION|MB_OK "The application won't work until you install the external libraries package located at ${PRODUCT_WEB_SITE}"
    StrCpy $INSTDIR "$PROGRAMFILES\CLAM\SMSTools"
-   Goto +2
-   StrCpy $INSTDIR "$0\SMSTools"
    
 FunctionEnd
 
