@@ -29,9 +29,10 @@ namespace CLAM
 
 void SpectralAnalysisConfig::DefaultInit()
 {
-	AddAll();
-	UpdateData();
-	DefaultValues();	
+  
+  AddAll();
+  UpdateData();
+  DefaultValues();	
 }
 
 void SpectralAnalysisConfig::DefaultValues()
@@ -44,13 +45,13 @@ void SpectralAnalysisConfig::DefaultValues()
 	SetprHopSize(0);//for preventing reading uninitialized memory
 
 	/** Default window size */
-	SetWindowSize(513);
+	SetWindowSize(1025);
 	SetWindowType(EWindowType::eBlackmanHarris92);
 	
 	/** WindowSize/2*/
 	SetHopSize((GetWindowSize()-1)/2);
 
-	GetCircularShift().SetAmount(-256);
+	GetCircularShift().SetAmount(-(GetWindowSize()-1)/2);
 
 }
 
@@ -58,6 +59,7 @@ void SpectralAnalysisConfig::DefaultValues()
 void SpectralAnalysisConfig::SetWindowSize(TSize w)
 {
 	CLAM_ASSERT(w%2==1,"Window size must be odd");
+	SetprWindowSize(w);
 	GetWindowGenerator().SetSize(w);
 	SetprFFTSize(nextPowerOfTwo( int( (w-1)*pow(TData(2),TData(GetZeroPadding())) ) ) );
 	GetCircularShift().SetAmount(-((w-1)/TData(2))); 
@@ -75,7 +77,8 @@ TSize SpectralAnalysisConfig::GetWindowSize() const
 /** Analysis Window type*/
 void SpectralAnalysisConfig::SetWindowType(const EWindowType& t)
 {
-	GetWindowGenerator().SetType(t);
+        SetprWindowType(t);
+        GetWindowGenerator().SetType(t);
 }
 
 const EWindowType& SpectralAnalysisConfig::GetWindowType() const
@@ -105,7 +108,7 @@ void SpectralAnalysisConfig::SetHopSize(TSize h)
 
 TSize SpectralAnalysisConfig::GetHopSize() const
 {
-		return GetprHopSize();
+	return GetprHopSize();
 }
 
 /** Sampling rate of the input audio*/
@@ -122,7 +125,20 @@ TData SpectralAnalysisConfig::GetSamplingRate() const
 }
 
 
+void  SpectralAnalysisConfig::Sync()
+{
+  
+        int zp = GetprZeroPadding();
+        int ws = GetprWindowSize();
+        SetSamplingRate(GetprSamplingRate());
 
+	SetZeroPadding(zp);
+
+	SetWindowSize(ws);
+	SetWindowType(GetprWindowType());  
+
+	SetHopSize(GetprHopSize());
+}
 
 } // namespace CLAM
 

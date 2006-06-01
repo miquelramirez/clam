@@ -24,6 +24,7 @@
 
 #include "Processing.hxx"
 #include "SpectralEnvelopeExtractConfig.hxx"
+#include "BPF.hxx"
 
 namespace CLAM {
 
@@ -102,6 +103,10 @@ namespace CLAM {
 		 *  @return true if success
 		 */
 		bool CheckOutputType(Spectrum& out);
+		
+		//member BPF's used for initialization
+		BPF mMagBPF;
+		BPF mPhaseBPF;
 		
  	}; 
 

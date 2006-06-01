@@ -97,7 +97,9 @@ protected:
 	bool           mAmpUpdated;
 	SimpleOscillatorCtrl* mFreqCtl;
 	SimpleOscillatorCtrl* mAmpCtl;
-
+	
+	//xamat: kludge to convert this into an LFO, eventually separate into a different class
+	InControl mSamplesBetweenCallsCtl;
 protected:	
 
 	inline void ApplyFreqAndAmpControls()
@@ -135,6 +137,8 @@ public:
 
 	// "Generative Do"
 	bool Do(Audio& out);
+	/** Do for generating one sample at a time: useful to use the oscillator as a LFO*/
+	bool Do(TData& out);
 };
 
 }

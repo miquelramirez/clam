@@ -97,11 +97,12 @@ namespace CLAM {
 		DataArray& ofreqBuffer=output.GetFreqBuffer();
 
 		int i;
-
+		
+		BPF& env = spectralEnvelope.GetMagBPF();
 		for(i=0;i<nPeaks;i++)
 		{
 			ophaseBuffer[i]=iphaseBuffer[i];
-			omagBuffer[i]=spectralEnvelope.GetMag((TData)ifreqBuffer[i]);
+			omagBuffer[i]=env.GetValue(ifreqBuffer[i]);
 			ofreqBuffer[i]=ifreqBuffer[i];
 		}
 		
@@ -120,9 +121,17 @@ namespace CLAM {
 		
 		int i;
 		TData delta = input.GetSpectralRange()/(spectrumSize-1);
-		for(i=0;i<spectrumSize;i++)
+		DataArray& outMag = output.GetMagBuffer();
+		BPF& env = spectralEnvelope.GetMagBPF();
+		
+		TData currentFreq = 0.;
+		for(i=0;i<spectrumSize;i++, currentFreq+=delta)
+		//for(i=0;currentFreq<10000;i++, currentFreq+=delta)
 		{
-			output.SetMag(i,spectralEnvelope.GetMag((TData)i*delta));
+			//std::cout<<outMag[i] << " will be " << env.GetValue(currentFreq) <<std::endl;
+			outMag[i] = env.GetValue(currentFreq);
+			
+			//output.SetMag(i,spectralEnvelope.GetMag((TData)i*delta));
 		}
 
 

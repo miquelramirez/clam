@@ -20,7 +20,7 @@
  */
 
 #include "OverlapAdd.hxx"
-
+#include "Factory.hxx"
 
 namespace CLAM
 {
@@ -52,6 +52,7 @@ bool OverlapAdd::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
 
+
 	int frameSize=mConfig.GetFrameSize();
 
 	mInput.SetSize( frameSize*2 );
@@ -80,7 +81,13 @@ bool OverlapAdd::Do(void)
 
 bool OverlapAdd::Do( const Audio &in, Audio & out)
 {
-	// TODO: refactor
+	//xamat: testing
+  /*	std::cout<<"***OverlapAdd Configuration: "<<std::endl;
+	std::cout<<"FrameSize: "<<mConfig.GetFrameSize()<<std::endl;
+	std::cout<<"Input Audio Size: "<<in.GetSize()<<std::endl;
+	std::cout<<"Output Audio Size: "<<out.GetSize()<<std::endl;
+  */
+  // TODO: refactor
 	int halfSize = in.GetSize()/2;
 	CLAM_DEBUG_ASSERT( out.GetSize() == halfSize, "OverlapAdd::Do - Audio Out size must be half the input size" );
 	CLAM_DEBUG_ASSERT( mConfig.GetFrameSize() == halfSize, "OverlapAdd::Do - Config FrameSize must be half the input size" );
@@ -109,6 +116,11 @@ bool OverlapAdd::Do( const Audio &in, Audio & out)
 	
 	return true;
 } 
+
+namespace detail 
+{
+	static CLAM::Factory<CLAM::Processing>::Registrator<OverlapAdd> regtOverlapAdd( "OverlapAdd" );
+}
 
 } // namespace CLAM
 

@@ -45,7 +45,12 @@ namespace CLAM{
 		InControl mIndexCtl;//says what the amount sent as control is modifying
 		InControlTmpl<SMSHarmonizer> mUpdateBPFCtl;//"boolean" control used to say that we want to update BPF
 		InControl mTransCtl;
-		
+		/** xamat:adding residual does not improve results much and adds a lot of overhead, there should
+		 *	probably be a configuration parameter to control whether we want to add residual or not, but that
+		 *	would mean changing the kind of configuration. For the time being the output residual is the input.*/
+		InControlTmpl<SMSHarmonizer> mIgnoreResidualCtl;
+	public:
+			
 		int UpdateBPF(TControlData value)
 		{
 			CLAM::BPF& bpf= mConfig.GetBPF();
@@ -58,14 +63,22 @@ namespace CLAM{
 			bpf.SetValue((int)mIndexCtl.GetLastValue(), mTransCtl.GetLastValue());
 			return 0;
 		}
+		int IgnoreResidual(TControlData value)
+		{
+			mPitchShift.mIgnoreResidual.DoControl(value);
+		}
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSHarmonizer():
 			mIndexCtl("Index", this),
 			mTransCtl("Transposition",this),
+			mIgnoreResidualCtl("IgnoreResidual",this, &SMSHarmonizer::IgnoreResidual, true),
 			mUpdateBPFCtl("UpdateBPF", this, &SMSHarmonizer::UpdateBPF, true)
 		{
 			Configure(FrameTransformationConfig());
+			mTmpFrame.AddAll();
+			mTmpFrame.UpdateData();
+			mTmpFund.AddElem();
 		}
 		
 		bool ConcreteConfigure(const ProcessingConfig& c)
@@ -73,6 +86,8 @@ namespace CLAM{
 			CopyAsConcreteConfig( mConfig, c );
 			InitBPF();
 			mPitchShift.Configure(FrameTransformationConfig());
+			//By default we ignore residual!!
+			mIgnoreResidualCtl.DoControl(1.);
 			return true;
 		}
 
@@ -92,6 +107,9 @@ namespace CLAM{
 		SpectrumAdder2 mSpectrumAdder;
 		void AddFrame(const Frame& in1, const Frame& in2, Frame& out);
 		void Gain(Frame& inputFrame, TData gain);
+		
+		Fundamental mTmpFund;
+		Frame mTmpFrame;
 		
 		void InitBPF()
 		{

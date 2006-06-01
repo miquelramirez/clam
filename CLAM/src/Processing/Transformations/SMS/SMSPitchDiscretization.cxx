@@ -60,7 +60,7 @@ bool SMSPitchDiscretization::Do( 	const SpectralPeakArray& inPeaks,
 
 		int nst = Round(12*log(pitch/55)/log2);
 		TData pow2_1_12=1.0594630f;
-		TData discPitch=55*(pow(pow2_1_12,nst));
+		TData discPitch=55*(CLAM_pow(pow2_1_12,nst));
 		
 		TData amount=discPitch/pitch;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2001-2006 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -42,6 +42,7 @@ namespace CLAM {
 	void SpectralEnvelopeExtractConfig::DefaultValues()
 	{
 		SetInterpolationType(EInterpolation::eSpline);
+		SetMaxPeaks(200);
 	}
 
 
@@ -67,6 +68,8 @@ namespace CLAM {
 	{
 
 		CopyAsConcreteConfig(mConfig, c);
+		mMagBPF.SetIntpType(mConfig.GetInterpolationType());
+		mPhaseBPF.SetIntpType(EInterpolation::eLinear);
 		return true;
 	}
 
@@ -114,10 +117,16 @@ namespace CLAM {
 		Array<Point>& magPointArray=output.GetMagBPF().GetPointArray();
 		Array<Point>& phasePointArray=output.GetPhaseBPF().GetPointArray();
 
-		magPointArray.Resize(nPeaks+1);
-		magPointArray.SetSize(nPeaks+1);
-		phasePointArray.Resize(nPeaks+1);
-		phasePointArray.SetSize(nPeaks+1);
+		//magPointArray.Resize(nPeaks+1);
+		//magPointArray.SetSize(nPeaks+1);
+		//phasePointArray.Resize(nPeaks+1);
+		//phasePointArray.SetSize(nPeaks+1);
+		//Max number of points allowed: should be a config param
+		magPointArray.Resize(mConfig.GetMaxPeaks());
+		magPointArray.SetSize(mConfig.GetMaxPeaks());
+		phasePointArray.Resize(mConfig.GetMaxPeaks());
+		phasePointArray.SetSize(mConfig.GetMaxPeaks());
+		
 		for(int i=0;i<nPeaks;i++)
 		{
 			magPointArray[i+1].SetX(freqBuffer[i]);
@@ -127,7 +136,8 @@ namespace CLAM {
 			phasePointArray[i+1].SetY(phaseBuffer[i]);
 
 		}
-	
+		
+		//todo: a lot of duplicated code, should extract in different functions
 		if(input.GetScale()==EScale::eLog)
 		{
 		
@@ -145,16 +155,27 @@ namespace CLAM {
 			TData freqGap=lastFreq-freqBuffer[nPeaks-3];
 			TData currentFreq=lastFreq+freqGap;
 			TData currentMag=magBuffer[nPeaks-2];
-
-			while(currentMag>-200)
+		
+			while(currentMag>-mConfig.GetMaxPeaks())
 			{
 				currentMag-=(currentFreq/lastFreq-1)*12;
-				magPointArray.AddElem(Point(currentFreq,currentMag));
-				phasePointArray.AddElem(Point(currentFreq,0));//check phase!!! this is not correct although may not be necessary
+				//magPointArray.AddElem(Point(currentFreq,currentMag));
+				magPointArray[nPeaks].SetY(currentMag);
+				magPointArray[nPeaks].SetX(currentFreq);
+				phasePointArray[nPeaks].SetY(0);
+				phasePointArray[nPeaks].SetX(currentFreq);
+				//phasePointArray.AddElem(Point(currentFreq,0));//check phase!!! this is not correct although may not be necessary
 				currentFreq+=freqGap;
 				nPeaks++;
+				if(nPeaks==mConfig.GetMaxPeaks()) break;
 				
 			}
+			//we resize arrays to final size
+			magPointArray.Resize(nPeaks);
+			magPointArray.SetSize(nPeaks);
+			phasePointArray.Resize(nPeaks);
+			phasePointArray.SetSize(nPeaks);
+		
 
 		}
 		else
@@ -173,20 +194,32 @@ namespace CLAM {
 			TData freqGap=lastFreq-freqBuffer[nPeaks-3];
 			TData currentFreq=lastFreq+freqGap;
 			TData currentMag=magBuffer[nPeaks-2];
+		
+		
 			while(currentMag<0.0000000001)
 			{
-				currentMag*=pow(0.06,(double)(currentFreq/lastFreq-1.0));
-				magPointArray.AddElem(Point(currentFreq,currentMag));
-				phasePointArray.AddElem(Point(currentFreq,0));//check phase!!! this is not correct although may not be necessary
+				currentMag*=CLAM_pow(0.06,(double)(currentFreq/lastFreq-1.0));
+				//magPointArray.AddElem(Point(currentFreq,currentMag));
+				magPointArray[nPeaks].SetY(currentMag);
+				magPointArray[nPeaks].SetX(currentFreq);
+				phasePointArray[nPeaks].SetY(0);
+				phasePointArray[nPeaks].SetX(currentFreq);
+				//phasePointArray.AddElem(Point(currentFreq,0));//check phase!!! this is not correct although may not be necessary
 				currentFreq+=freqGap;
 				nPeaks++;
-				
+				if(nPeaks==mConfig.GetMaxPeaks()) break;
 			}
+			
+			//we resize arrays to final size
+			magPointArray.Resize(nPeaks);
+			magPointArray.SetSize(nPeaks);
+			phasePointArray.Resize(nPeaks);
+			phasePointArray.SetSize(nPeaks);
 		}
 		
 		output.SetSize(nPeaks);
 		output.GetMagBPF().UpdateSplineTable();
-		output.GetPhaseBPF().UpdateSplineTable();
+		//not needed output.GetPhaseBPF().UpdateSplineTable();
 
 		return true;
 	}
@@ -194,15 +227,16 @@ namespace CLAM {
 	bool SpectralEnvelopeExtract::CheckOutputType(Spectrum& out) 
 	{
 		SpecTypeFlags tmpFlags;
+		out.GetType(tmpFlags);
+		if((!tmpFlags.bMagPhase) && tmpFlags.bMagPhaseBPF) return true;
+		
 		tmpFlags.bMagPhaseBPF=1;
 		tmpFlags.bMagPhase=0;
 		out.SetType(tmpFlags);
 
-		out.SetMagBPF(BPF(mConfig.GetInterpolationType()));
-		out.SetPhaseBPF(BPF(EInterpolation::eLinear));
+		out.SetMagBPF(mMagBPF);
+		out.SetPhaseBPF(mPhaseBPF);
 		
-		/* Clear the  output Array */
-
 		
 		return true;
 	}

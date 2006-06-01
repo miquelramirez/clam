@@ -33,9 +33,10 @@ namespace CLAM {
 	class SpectralEnvelopeExtractConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpectralEnvelopeExtractConfig, 1,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (SpectralEnvelopeExtractConfig, 2,ProcessingConfig);
 		/** Type of interpolation for resultant Spectrum BPF*/
 		DYN_ATTRIBUTE (0, public, EInterpolation, InterpolationType);
+		DYN_ATTRIBUTE (1, public, int, MaxPeaks);
 		
 	protected:
 		void DefaultInit();

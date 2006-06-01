@@ -56,6 +56,7 @@ namespace CLAM{
 		OutPort<Spectrum> mOutSpectrum;
 
 		InControl mIsHarmonic;
+		
 
 	public:
 		SMSPitchShift()
@@ -66,9 +67,11 @@ namespace CLAM{
 			mOutFundamental("Out Fundamental", this),
 			mInSpectrum("In Spectrum", this), 
 			mOutSpectrum("Out Spectrum", this), 
-			mIsHarmonic("Harmonic",this)
+			mIsHarmonic("Harmonic",this),
+			mIgnoreResidual("IgnoreResidual,this")
 		{
 			Configure( SegmentTransformationConfig() );
+			mIgnoreResidual.DoControl(0.);
 		}
 
  		~SMSPitchShift() {}
@@ -107,6 +110,11 @@ namespace CLAM{
 		SpectralEnvelopeApply mSpectralEnvelopeApply;
 		FDCombFilter mFDCombFilter;
 		Spectrum mSpectralEnvelope;
+	public:
+		/** In some cases, such as in the harmonizer it makes sense to ignore the residual spectrum in order to keep
+		 *	things manageable. This should if fact be a configuration param, but we don't want to introduce specific
+		 *	params that prevent us from using the generic one*/
+		InControl mIgnoreResidual;
 	};		
 }	//namespace CLAM
 
