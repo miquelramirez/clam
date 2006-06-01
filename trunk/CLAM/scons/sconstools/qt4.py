@@ -413,7 +413,7 @@ def enable_modules(self, modules, debug=False) :
 			self.AppendUnique(LIBS=['opengl32'])
 		self.AppendUnique(CPPPATH=[ '$QTDIR/include/'+module
 			for module in modules])
-		self.AppendUnique(LIBPATH=['$QTDIR\\lib'])
+		self.AppendUnique(LIBPATH=[os.path.join('$QTDIR','lib')])
 
 
 def exists(env):
