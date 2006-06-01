@@ -92,6 +92,8 @@ def parse_pkg_config( env ) :
 	env.Append( CPPPATH = cpppath.keys() )
 
 tools_env = Environment( tools=['default', 'qt'], ENV=os.environ )
+tools_env['QT_AUTOMOC'] = False
+tools_env['CXXFILESUFFIXbooo'] = ".cxx"
 if sys.platform == 'win32' :
 	tools_env.Replace( QT_LIB = 'qt-mt322' )
 else :
