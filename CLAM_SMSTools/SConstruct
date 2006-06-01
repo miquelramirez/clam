@@ -11,7 +11,7 @@ options.Add(PathOption('clam_sconstools', 'The path to the scons tools provided 
 options.Add(BoolOption('release', 'Build CLAM SMSTools enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
-os.environ['EXTERNALDLLDIR']='f:\\clam-external-libs\dlls'
+
 
 def scanFiles(pattern, paths) :
 	files = []
