@@ -19,7 +19,7 @@ def generate(env) :
 	def scanNsisContent(node, env, path, arg):
 		contents = node.get_contents()
 		includes = nsisFiles_re.findall(contents)
-		return includes
+		return filter(lambda x: x.rfind('*')==-1, includes)
 	nsisscanner = env.Scanner(name = 'nsisfile',
 		function = scanNsisContent,
 		argument = None,
