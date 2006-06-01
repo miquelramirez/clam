@@ -3,7 +3,7 @@ import os
 import glob
 import sys
 
-version='0.4.1-CVS'
+version='0.4.1-CVS-20060601-1'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the smstools will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
