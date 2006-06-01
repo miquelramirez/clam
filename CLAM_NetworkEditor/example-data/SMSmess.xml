@@ -10,7 +10,7 @@
 
   <processing id="MonoAudioFileReader" type="MonoAudioFileReader">
     <SourceFile>
-    <URI>example-data/jaume-voice.wav</URI>
+    <URI>example-data/jaume-voice.mp3</URI>
       <Header>
         <SampleRate>44100</SampleRate>
         <Samples>2938666</Samples>
