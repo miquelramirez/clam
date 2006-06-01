@@ -160,7 +160,7 @@ for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
 
 qtplugin = env.SharedLibrary("CLAMWidgets",os.path.join('src','QtDesignerPlugins','CLAMWidgetsPlugin.cxx'), 
-	CPPFLAGS=['-DQ_THREAD_S QT_PLUGIN','-DQT_SHARED','-DQT_THREAD_SUPPORT'])
+	CPPFLAGS=['-DQT_PLUGIN','-DQT_SHARED','-DQT_THREAD_SUPPORT'])
 
 manpages = [
 	'resources/man/man1/NetworkEditor.1',
