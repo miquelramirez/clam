@@ -97,6 +97,8 @@ applications from the source tarballs.
    There is no official Debian package for oscpack, so if you want to 
    use it you'll need to install it from sources. 
    [ http://www.audiomulch.com/~rossb/code/oscpack/ ]
+   or use the direct download link:
+   wget http://www.audiomulch.com/~rossb/code/oscpack/oscpack_1_0_1.zip
 
  Some of the previous libraries are optional, and there exist 
  command-line options for disabling them at configure time.
