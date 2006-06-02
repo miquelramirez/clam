@@ -14,7 +14,7 @@ Consider that such descriptors are computed every 2048 samples so their precissi
 &lt;/p&gt;
 </Description>
 
-  <Schema>Schema.sc</Schema>
+  <Schema>CLAMDescriptors.sc</Schema>
 
   <Extractor>ClamExtractorExample</Extractor>
 
