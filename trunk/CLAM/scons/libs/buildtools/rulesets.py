@@ -37,7 +37,7 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env, mo
 		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.so.%s'%version )
 		soname_lib = env.SonameLink( soname, lib )				# lib***.so.X.Y -> lib***.so.X.Y.Z
 		linkername_lib = env.LinkerNameLink( linker_name, soname_lib )		# lib***.so -> lib***.so.X
-		env.Depends(lib, ['../%s/libclam_%s.so.%s'%(module,module,versionnumbers[0]) for module in moduleDependencies ])
+		env.Depends(lib, ['../%s/libclam_%s.so'%(module,module) for module in moduleDependencies ])
 	else : #darwin
 		soname = 'libclam_'+name+'.%s.dylib' % versionnumbers[0]
 		middle_linker_name = 'libclam_'+name+'.%s.%s.dylib' % (versionnumbers[0], versionnumbers[1])
