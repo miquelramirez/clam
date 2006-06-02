@@ -11,7 +11,7 @@ import os, sys
 
 Import('audioio_env version top install_dirs header_db')
 
-def define_module_contents() :
+def define_module_contents(env) :
 	if not os.path.exists('src') :
 		os.mkdir('src')
 	if not os.path.exists('include' ) :
@@ -34,27 +34,27 @@ def define_module_contents() :
 	if sys.platform == 'win32' :
 		folders.append('src/Processing/InitAudioIO*.*xx')
 	else :
-		if audioio_env.has_key('with_jack_support') and audioio_env['with_jack_support'] == True:
+		if env.has_key('with_jack_support') and env['with_jack_support'] == True:
 			folders.append('src/Flow/Networks/JACKNetworkPlayer*.*xx')
 
-	if audioio_env['with_portmidi'] :
+	if env['with_portmidi'] :
 		folders.append( 'src/Tools/PortMIDI' )
 
 	if sys.platform == 'linux2' :
-		if audioio_env['with_alsa'] :
+		if env['with_alsa'] :
 			folders.append( 'src/Tools/MIDIIO/Linux' )
 			folders.append( 'src/Tools/AudioIO/Linux')
 	elif sys.platform == 'win32':
-		if audioio_env['audio_backend'] == 'rtaudio' :
+		if env['audio_backend'] == 'rtaudio' :
 			print('using rtaudio')
 			folders += ['src/Tools/AudioIO/RtAudio'] #, 'src/Defines/Windows/CLAM_windows.h']
-		elif audioio_env['audio_backend'] == 'directx' :
+		elif env['audio_backend'] == 'directx' :
 			print('using directx')
 			folders += [
 				'src/Tools/AudioIO/Windows/DirectXAudioDevice.cxx',
 				'src/Tools/AudioIO/Windows/DXFullDuplex.*xx',
 				]
-		elif audioio_env['audio_backend'] == 'portaudio' :
+		elif env['audio_backend'] == 'portaudio' :
 			print('using portaudio')
 			folders += [
 				'src/Tools/AudioIO/Windows/PAAudio*.*xx', 
@@ -63,10 +63,10 @@ def define_module_contents() :
 				'src/Tools/AudioIO/Windows/DoubleBuffer.*xx',
 				]
 	else :
-		if audioio_env['audio_backend'] == 'rtaudio' :
+		if env['audio_backend'] == 'rtaudio' :
 			print('using rtaudio2')
 			folders += ['src/Tools/AudioIO/RtAudio']
-			audioio_env.Append( LINKFLAGS=['-framework','CoreAudio'] )
+			env.Append( LINKFLAGS=['-framework','CoreAudio'] )
 		elif audioio_env['audio_backend'] == 'portaudio' :
 			print('using portaudio')
 			folders += ['src/Flow/Networks/PANetworkPlayer*.*xx']
@@ -82,25 +82,25 @@ def define_module_contents() :
 	file_retriever.scan_without_copy()
 
 	builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
-	audioio_env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
+	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
 
 	realHeaders = []
 	for orig,target in file_retriever.origTargetHeaders :
-		audioio_env.CopyFileAndUpdateIncludes(target, orig)
+		env.CopyFileAndUpdateIncludes(target, orig)
 		realHeaders.append(target)
 
 	realSources = []
 	for orig,target in file_retriever.origTargetSources:
-		audioio_env.CopyFileAndUpdateIncludes(target,orig)
+		env.CopyFileAndUpdateIncludes(target,orig)
 		realSources.append(target)
 
 	manifest = Manifest()
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-realHeaders, realSources = define_module_contents()
+realHeaders, realSources = define_module_contents(audioio_env)
 
-moduleDependencies=['core','processing']
+moduleDependencies = ['core','processing']
 
 lib_tgt, install_tgt = lib_rules( 'audioio', version, realHeaders, realSources, install_dirs, audioio_env, moduleDependencies )
 
