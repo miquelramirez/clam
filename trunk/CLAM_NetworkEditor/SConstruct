@@ -21,7 +21,6 @@ def scanFiles(pattern, paths) :
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
-os.environ['EXTERNALDLLDIR']='f:\\clam-external-libs\dlls'
 
 env = Environment(ENV=os.environ, tools=['default','qt'], options=options)
 options.Save('options.cache', env)
@@ -59,7 +58,7 @@ env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-	'clam_vmqt'
+	'clam_vmqt',
 	] , CLAMInstallDir)
 
 #env.EnableQt4Modules([
@@ -107,12 +106,7 @@ extraPaths = []
 extraPaths += [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
-#	'/usr/include/qt4/', # quick KLUDGE for ubuntu
 ]
-extraPaths += [
-	os.path.join('SimacServicesClient'),
-	os.path.join('SimacServicesClient','generated'),
-	]
 includePaths = sourcePaths + extraPaths
 
 sources = scanFiles('*.cxx', sourcePaths)
@@ -177,6 +171,13 @@ translations = []
 if len(tsfiles) : 
 #	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
 	translations = env.Qm(source = tsfiles)
+"""
+if sys.platform=='win32' :
+	qtpluginsInstallationPath = '/bin/designer'
+else :
+	qtpluginsInstallationPath = '/lib/clam/plugins/designer'
+	qtpluginsInstallationPath = '$QTDIR/plugins/designer'
+"""
 
 examples = []
 for ext in ['xml', 'pos', 'ui', 'wav', 'mp3', 'ogg']:

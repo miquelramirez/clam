@@ -12,7 +12,6 @@ options.Add(BoolOption('release', 'Build CLAM SMSTools enabling compiler optimiz
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
 
-
 def scanFiles(pattern, paths) :
 	files = []
 	for path in paths :
@@ -88,7 +87,6 @@ extraPaths += [
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 	'src',
 	os.path.join('src','GUI','ScoreEditor')
-#	'/usr/include/qt4/', # quick KLUDGE for ubuntu
 ]
 includePaths = sourcePaths + extraPaths
 

@@ -91,12 +91,9 @@ extraPaths += recursiveDirs(CLAMVmQtPath+"/widget")
 extraPaths += [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
-#	'/usr/include/qt4/', # quick KLUDGE for ubuntu
-]
-extraPaths += [
 	os.path.join('SimacServicesClient'),
 	os.path.join('SimacServicesClient','generated'),
-	]
+]
 includePaths = sourcePaths + extraPaths
 
 sources = scanFiles('*.cxx', sourcePaths)
