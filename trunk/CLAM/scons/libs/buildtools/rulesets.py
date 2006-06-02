@@ -9,14 +9,20 @@ def handle_preinclude ( env ):
 		env.Append(CCFLAGS='/FICLAM/%s'%env['preinclude'])
 	return
 
-def posix_lib_rules( name, version, headers, source_files, install_dirs, env, moduleDependencies=[]) :
-
+def lib_rules(name, version, headers, sources, install_dirs, env, moduleDependencies=[]) :
 	env.Prepend(CPPPATH=['include']+['../%s/include'%module for module in moduleDependencies])
 	env.Append(LIBS=['clam_%s'%module for module in moduleDependencies ])
 	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])
 	#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
-	#for file in source_files :
+	if sys.platform != 'win32' :
+		return posix_lib_rules( name, version, headers , sources, install_dirs, env )
+	else :
+		return win32_lib_rules( name, version, headers , sources, install_dirs, env )
+
+def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleDependencies=[]) :
+
+	#for file in sources :
 	#	print "file to compile: " + str(file)
 	lib_descriptor = env.File( 'clam_'+name+'.pc' )
 
@@ -34,7 +40,7 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env, mo
 		soname = 'libclam_'+name+'.so.%s' % versionnumbers[0]
 		linker_name = 'libclam_'+name+'.so'
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
-		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.so.%s'%version )
+		lib = env.SharedLibrary( 'clam_' + name, sources, SHLIBSUFFIX='.so.%s'%version )
 		soname_lib = env.SonameLink( soname, lib )				# lib***.so.X.Y -> lib***.so.X.Y.Z
 		linkername_lib = env.LinkerNameLink( linker_name, soname_lib )		# lib***.so -> lib***.so.X
 		env.Depends(lib, ['../%s/libclam_%s.so'%(module,module) for module in moduleDependencies ])
@@ -45,7 +51,7 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env, mo
 		env.Append( CCFLAGS=['-fno-common'] )
 		env.Append( SHLINKFLAGS=['-dynamic',
 				'-Wl,-install_name,%s'%(install_dirs.lib + '/' + 'libclam_' + name + '.%s.dylib'%(version))] )
-		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.%s.dylib'%version )
+		lib = env.SharedLibrary( 'clam_' + name, sources, SHLIBSUFFIX='.%s.dylib'%version )
 		soname_lib = env.LinkerNameLink( middle_linker_name, lib )		# lib***.X.Y.dylib -> lib***.X.Y.Z.dylib
 		middlelinkername_lib = env.LinkerNameLink( soname, soname_lib )		# lib***.so.X -> lib***.so.X.Y
 		linkername_lib = env.LinkerNameLink( linker_name, middlelinkername_lib)		# lib***.dylib -> lib***.X.dylib
@@ -67,7 +73,7 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env, mo
 	env.Alias( 'install_'+name+'_runtime', [runtime_lib, runtime_soname] )
 	env.Append(CPPDEFINES="CLAM_MODULE='\"%s\"'"%name)
 
-#	static_lib = env.Library( 'clam_'+name, source_files )
+#	static_lib = env.Library( 'clam_'+name, sources )
 #	install_static = env.Install( install_dirs.lib, static_lib )
 
 	dev_linkername =  env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
@@ -75,12 +81,8 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env, mo
 
 	return tgt, install_tgt
 
-def win32_lib_rules( name, version, headers, source_files, install_dirs, env, moduleDependencies =[] ) :
-	env.Prepend(CPPPATH=['include']+['../%s/include'%module for module in moduleDependencies])
-	env.Append(LIBS=['clam_%s'%module for module in moduleDependencies ])
-	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])
-	#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
-	static_lib = env.Library( 'clam_' + name, source_files )
+def win32_lib_rules( name, version, headers, sources, install_dirs, env, moduleDependencies =[] ) :
+	static_lib = env.Library( 'clam_' + name, sources )
 	tgt = env.Alias(name, static_lib)
 	lib_descriptor = env.File( 'clam_'+name+'.pc' )
 	install_static = env.Install( install_dirs.lib, static_lib )

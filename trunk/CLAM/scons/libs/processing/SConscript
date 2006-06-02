@@ -97,9 +97,6 @@ realHeaders, realSources = define_module_contents()
 
 moduleDependencies = ['core']
 
-if sys.platform != 'win32' :
-	lib_tgt, install_tgt = posix_lib_rules( 'processing', version, realHeaders, realSources, install_dirs, processing_env, moduleDependencies )
-else :
-	lib_tgt, install_tgt = win32_lib_rules( 'processing', version, realHeaders, realSources, install_dirs, processing_env, moduleDependencies )
+lib_tgt, install_tgt = lib_rules( 'processing', version, realHeaders, realSources, install_dirs, processing_env, moduleDependencies )
 
 Return( 'lib_tgt', 'install_tgt' )
