@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <WidgetLocations>
 
-  <WindowWidth>1175</WindowWidth>
+  <WindowWidth>1280</WindowWidth>
 
-  <WindowHeight>791</WindowHeight>
+  <WindowHeight>950</WindowHeight>
 
   <WidgetList>
     <Widget>
       <Name>AudioOut_0</Name>
-      <X>714</X>
-      <Y>310</Y>
+      <X>1012</X>
+      <Y>627</Y>
       <Width>99</Width>
       <Height>58</Height>
     </Widget>
     <Widget>
       <Name>FundTrackPortMonitor_0</Name>
-      <X>598</X>
-      <Y>563</Y>
+      <X>384</X>
+      <Y>287</Y>
       <Width>313</Width>
       <Height>181</Height>
     </Widget>
     <Widget>
       <Name>FundamentalPortMonitor_0</Name>
-      <X>357</X>
-      <Y>568</Y>
-      <Width>219</Width>
-      <Height>146</Height>
+      <X>387</X>
+      <Y>474</Y>
+      <Width>314</Width>
+      <Height>178</Height>
     </Widget>
     <Widget>
       <Name>MonoAudioFileReader_0</Name>
@@ -36,24 +36,24 @@
     </Widget>
     <Widget>
       <Name>OutControlSender_0</Name>
-      <X>43</X>
-      <Y>239</Y>
+      <X>429</X>
+      <Y>6</Y>
       <Width>56</Width>
-      <Height>76</Height>
+      <Height>108</Height>
     </Widget>
     <Widget>
       <Name>OutControlSender_1</Name>
-      <X>36</X>
-      <Y>536</Y>
+      <X>323</X>
+      <Y>531</Y>
       <Width>56</Width>
-      <Height>76</Height>
+      <Height>130</Height>
     </Widget>
     <Widget>
       <Name>OutControlSender_2</Name>
-      <X>615</X>
-      <Y>14</Y>
+      <X>601</X>
+      <Y>12</Y>
       <Width>56</Width>
-      <Height>76</Height>
+      <Height>110</Height>
     </Widget>
     <Widget>
       <Name>PeaksPortMonitor_0</Name>
@@ -64,8 +64,8 @@
     </Widget>
     <Widget>
       <Name>SMSAnalysisCore_0</Name>
-      <X>173</X>
-      <Y>259</Y>
+      <X>108</X>
+      <Y>380</Y>
       <Width>147</Width>
       <Height>58</Height>
     </Widget>
@@ -78,8 +78,8 @@
     </Widget>
     <Widget>
       <Name>SMSResidualGain_0</Name>
-      <X>310</X>
-      <Y>434</Y>
+      <X>329</X>
+      <Y>790</Y>
       <Width>147</Width>
       <Height>58</Height>
     </Widget>
@@ -92,15 +92,15 @@
     </Widget>
     <Widget>
       <Name>SMSSynthesis_0</Name>
-      <X>514</X>
-      <Y>373</Y>
+      <X>746</X>
+      <Y>769</Y>
       <Width>129</Width>
       <Height>58</Height>
     </Widget>
     <Widget>
       <Name>SpecgramPortMonitor_0</Name>
-      <X>739</X>
-      <Y>410</Y>
+      <X>891</X>
+      <Y>294</Y>
       <Width>219</Width>
       <Height>226</Height>
     </Widget>

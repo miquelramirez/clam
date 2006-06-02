@@ -54,6 +54,8 @@
       <prZeroPadding>0</prZeroPadding>
       <prSamplingRate>44100</prSamplingRate>
       <prFFTSize>2048</prFFTSize>
+      <prWindowSize>2049</prWindowSize>
+      <prWindowType>Hamming</prWindowType>
     </SinSpectralAnalysis>
     <ResSpectralAnalysis>
       <WindowGenerator>
@@ -74,6 +76,8 @@
       <prZeroPadding>0</prZeroPadding>
       <prSamplingRate>44100</prSamplingRate>
       <prFFTSize>1024</prFFTSize>
+      <prWindowSize>1025</prWindowSize>
+      <prWindowType>BlackmanHarris92</prWindowType>
     </ResSpectralAnalysis>
     <PeakDetect>
       <MaxPeaks>500</MaxPeaks>
@@ -162,6 +166,9 @@
       <prZeroPadding>0</prZeroPadding>
       <prSamplingRate>44100</prSamplingRate>
       <Residual>0</Residual>
+      <prAnalWindowSize>1025</prAnalWindowSize>
+      <prAnalWindowType>BlackmanHarris92</prAnalWindowType>
+      <prHopSize>512</prHopSize>
     </SpectralSynth>
     <OverlapAddSin>
       <FrameSize>512</FrameSize>

@@ -17,10 +17,10 @@
       <URI>example-data/jaume-voice.mp3</URI>
       <Header>
         <SampleRate>44100</SampleRate>
-        <Samples>1501229</Samples>
+        <Samples>1491903</Samples>
         <Channels>1</Channels>
-        <Length>34041.5</Length>
-        <Format>VorbisMk1</Format>
+        <Length>33830</Length>
+        <Format>Mpeg Audio Layer 3</Format>
         <Encoding>Format Default</Encoding>
         <Endianess>Format Default</Endianess>
       </Header>
@@ -76,6 +76,8 @@
       <prZeroPadding>0</prZeroPadding>
       <prSamplingRate>44100</prSamplingRate>
       <prFFTSize>2048</prFFTSize>
+      <prWindowSize>2049</prWindowSize>
+      <prWindowType>Hamming</prWindowType>
     </SinSpectralAnalysis>
     <ResSpectralAnalysis>
       <WindowGenerator>
@@ -96,6 +98,8 @@
       <prZeroPadding>0</prZeroPadding>
       <prSamplingRate>44100</prSamplingRate>
       <prFFTSize>1024</prFFTSize>
+      <prWindowSize>1025</prWindowSize>
+      <prWindowType>BlackmanHarris92</prWindowType>
     </ResSpectralAnalysis>
     <PeakDetect>
       <MaxPeaks>500</MaxPeaks>
@@ -135,11 +139,17 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSFreqShift_0" type="SMSFreqShift"/>
+  <processing id="SMSFreqShift_0" type="SMSFreqShift">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
 
-  <processing id="SMSResidualGain_0" type="SMSResidualGain"/>
+  <processing id="SMSResidualGain_0" type="SMSResidualGain">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
 
-  <processing id="SMSSinusoidalGain_0" type="SMSSinusoidalGain"/>
+  <processing id="SMSSinusoidalGain_0" type="SMSSinusoidalGain">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
 
   <processing id="SMSSynthesis_0" type="SMSSynthesis">
     <SynthSineSpectrum>
@@ -155,7 +165,7 @@
     <SpectralSynth>
       <AnalWindowGenerator>
         <Type>BlackmanHarris92</Type>
-        <Size>4025</Size>
+        <Size>1025</Size>
         <MaxSize>0</MaxSize>
         <UseTable>1</UseTable>
         <Normalize>NormalizationForAnalysis</Normalize>
@@ -178,6 +188,9 @@
       <prZeroPadding>0</prZeroPadding>
       <prSamplingRate>44100</prSamplingRate>
       <Residual>0</Residual>
+      <prAnalWindowSize>1025</prAnalWindowSize>
+      <prAnalWindowType>BlackmanHarris92</prAnalWindowType>
+      <prHopSize>512</prHopSize>
     </SpectralSynth>
     <OverlapAddSin>
       <FrameSize>512</FrameSize>

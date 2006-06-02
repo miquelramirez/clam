@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="CLAM">
+
+  <processing id="AudioOut_0" type="AudioOut">
+    <Device>default:default</Device>
+    <ChannelID>0</ChannelID>
+    <FrameSize>512</FrameSize>
+    <SampleRate>44100</SampleRate>
+  </processing>
+
+  <processing id="AudioPortMonitor_0" type="AudioPortMonitor"/>
+
+  <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
+    <SourceFile>
+      <URI>example-data/jaume-voice.mp3</URI>
+      <Header>
+        <SampleRate>44100</SampleRate>
+        <Samples>9936364</Samples>
+        <Channels>1</Channels>
+        <Length>225314</Length>
+        <Format>WAV</Format>
+        <Encoding>signed 16-bit</Encoding>
+        <Endianess>Format Default</Endianess>
+      </Header>
+      <TextualDescriptors/>
+    </SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
+  </processing>
+
+  <processing id="OscillatingSpectralNotch_0" type="OscillatingSpectralNotch">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
+
+  <processing id="OutControlSender_0" type="OutControlSender">
+    <Min>0</Min>
+    <Default>5</Default>
+    <Max>20</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_1" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_10" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>100</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Knot</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_2" type="OutControlSender">
+    <Min>20</Min>
+    <Default>1000</Default>
+    <Max>5000</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_3" type="OutControlSender">
+    <Min>5</Min>
+    <Default>200</Default>
+    <Max>500</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_4" type="OutControlSender">
+    <Min>-60</Min>
+    <Default>0</Default>
+    <Max>60</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_5" type="OutControlSender">
+    <Min>-60</Min>
+    <Default>0</Default>
+    <Max>0</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_6" type="OutControlSender">
+    <Min>-60</Min>
+    <Default>0</Default>
+    <Max>0</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_7" type="OutControlSender">
+    <Min>-60</Min>
+    <Default>0</Default>
+    <Max>0</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_8" type="OutControlSender">
+    <Min>1000</Min>
+    <Default>5000</Default>
+    <Max>10000</Max>
+    <Step>100</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OutControlSender_9" type="OutControlSender">
+    <Min>100</Min>
+    <Default>1000</Default>
+    <Max>5000</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OverlapAdd_0" type="OverlapAdd">
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Robotization_0" type="Robotization">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
+
+  <processing id="SpectralAnalysis_0" type="SpectralAnalysis">
+    <WindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>2049</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>0</Invert>
+    </WindowGenerator>
+    <CircularShift>
+      <Amount>-1024</Amount>
+    </CircularShift>
+    <FFT>
+      <AudioSize>2048</AudioSize>
+    </FFT>
+    <prHopSize>512</prHopSize>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>2048</prFFTSize>
+    <prWindowSize>2049</prWindowSize>
+    <prWindowType>BlackmanHarris92</prWindowType>
+  </processing>
+
+  <processing id="SpectralSynthesis_0" type="SpectralSynthesis">
+    <AnalWindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>2049</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>1</Invert>
+    </AnalWindowGenerator>
+    <SynthWindowGenerator>
+      <Type>Triangular</Type>
+      <Size>1025</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NoNormalization</Normalize>
+      <Invert>0</Invert>
+    </SynthWindowGenerator>
+    <CircularShift>
+      <Amount>1024</Amount>
+    </CircularShift>
+    <IFFT>
+      <AudioSize>2048</AudioSize>
+    </IFFT>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <Residual>0</Residual>
+    <prAnalWindowSize>2049</prAnalWindowSize>
+    <prAnalWindowType>BlackmanHarris92</prAnalWindowType>
+    <prHopSize>512</prHopSize>
+  </processing>
+
+  <processing id="SpectrumPortMonitor_0" type="SpectrumPortMonitor"/>
+
+  <processing id="ThreeBandFilter_0" type="ThreeBandFilter">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
+
+  <port_connection>
+    <out>MonoAudioFileReader_0.Samples Read</out>
+    <in>SpectralAnalysis_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>OscillatingSpectralNotch_0.Out Spectrum</out>
+    <in>SpectralSynthesis_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>OverlapAdd_0.Audio Output</out>
+    <in>AudioPortMonitor_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>OverlapAdd_0.Audio Output</out>
+    <in>AudioOut_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Robotization_0.Out Spectrum</out>
+    <in>OscillatingSpectralNotch_0.In Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralAnalysis_0.Output</out>
+    <in>SpectrumPortMonitor_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralAnalysis_0.Output</out>
+    <in>ThreeBandFilter_0.In Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralSynthesis_0.Output</out>
+    <in>OverlapAdd_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ThreeBandFilter_0.Out Spectrum</out>
+    <in>Robotization_0.In Spectrum</in>
+  </port_connection>
+
+  <control_connection>
+    <out>OutControlSender_0.out</out>
+    <in>OscillatingSpectralNotch_0.OscFreq</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_1.out</out>
+    <in>OscillatingSpectralNotch_0.OscWidth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_10.out</out>
+    <in>Robotization_0.Amount</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_2.out</out>
+    <in>OscillatingSpectralNotch_0.Amount</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_3.out</out>
+    <in>OscillatingSpectralNotch_0.Bandwidth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_4.out</out>
+    <in>OscillatingSpectralNotch_0.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_5.out</out>
+    <in>ThreeBandFilter_0.LowGain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_6.out</out>
+    <in>ThreeBandFilter_0.MidGain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_7.out</out>
+    <in>ThreeBandFilter_0.HighGain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_8.out</out>
+    <in>ThreeBandFilter_0.HighCutoff</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OutControlSender_9.out</out>
+    <in>ThreeBandFilter_0.Amount</in>
+  </control_connection>
+
+</network>
