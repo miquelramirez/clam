@@ -43,6 +43,9 @@
 #include <CLAM/IFFTConfig.hxx>
 #include <CLAM/MonoAudioFileReaderConfig.hxx>
 #include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
+#include <CLAM/SpectralAnalysisConfig.hxx>
+#include <CLAM/SpectralSynthesisConfig.hxx>
+#include <CLAM/OverlapAddConfig.hxx>
 #include <CLAM/SMSAnalysisConfig.hxx>
 #include <CLAM/SMSSynthesisConfig.hxx>
 #include <CLAM/SpectralPeakDetectConfig.hxx>
@@ -126,6 +129,15 @@ static ProcessingConfigPresentationFactory::Registrator<NetworkGUI::MonoAudioFil
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::MultiChannelAudioFileReaderConfig> > 
 	regtMultiChannelAudioFileReaderCfg( "MultiChannelAudioFileReaderConfig" );
 	
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SpectralAnalysisConfig> > 
+	regtSpectralAnalysisCfg("SpectralAnalysisConfig");
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SpectralSynthesisConfig> > 
+	regtSpectralSynthesisCfg("SpectralSynthesisConfig");
+
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::OverlapAddConfig> > 
+	regtOverlapAddCfg("OverlapAddConfig");
+
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::SMSAnalysisConfig> > 
 	regtSmsAnalysisCfg("SMSAnalysisConfig");
 

@@ -88,10 +88,13 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 
 	QListViewItem * analysis = new QListViewItem( this,"Analysis" );	
 	new ProcessingItem( analysis, "FFT_rfftw" );	
+	new ProcessingItem( analysis, "SpectralAnalysis") ;
 	new ProcessingItem( analysis, "SMSAnalysisCore" );	
 
 	QListViewItem * synthesis = new QListViewItem( this,"Synthesis" );
 	new ProcessingItem( synthesis, "IFFT_rfftw" );	
+	new ProcessingItem( synthesis, "SpectralSynthesis") ;
+	new ProcessingItem( synthesis, "OverlapAdd") ;
 	new ProcessingItem( synthesis, "SMSSynthesis" );	
 
 	QListViewItem * smstrans = new QListViewItem(this, "SMS Transformations");
@@ -105,6 +108,16 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 	new ProcessingItem( smstrans, "SMSPitchDiscretization" );
 	new ProcessingItem( smstrans, "SMSGenderChange" );
 
+	QListViewItem * spectraltrans = new QListViewItem(this, "Spectral Transformations");
+	new ProcessingItem( spectraltrans, "OscillatingSpectralNotch" );
+	new ProcessingItem( spectraltrans, "SpectralDelay" );
+	new ProcessingItem( spectraltrans, "Vocoder" );
+	new ProcessingItem( spectraltrans, "ThreeBandFilter" );
+	new ProcessingItem( spectraltrans, "Robotization" );
+	new ProcessingItem( spectraltrans, "SampleAndHold" );
+	new ProcessingItem( spectraltrans, "ThreeBandCompressor" );
+	new ProcessingItem( spectraltrans, "Peakalizer" );
+	new ProcessingItem( spectraltrans, "ThreeBandAM" );
 		
 	QListViewItem * utils = new QListViewItem( this, "Utils" );
 #ifndef WIN32

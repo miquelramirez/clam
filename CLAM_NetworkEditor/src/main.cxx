@@ -31,17 +31,17 @@
 
 #ifndef WIN32
 	#if USE_JACK
-#include <CLAM/JACKNetworkPlayer.hxx>
+		#include <CLAM/JACKNetworkPlayer.hxx>
 	#endif
 	#if USE_PORTAUDIO
-#include <CLAM/PANetworkPlayer.hxx>
+		#include <CLAM/PANetworkPlayer.hxx>
 	#endif
 #else
-#include <CLAM/InitAudioIO.hxx>
-#include <CLAM/InitProcessing.hxx>
+	#include <CLAM/InitAudioIO.hxx>
+	#include <CLAM/InitProcessing.hxx>
 #endif
 
-	#  include <CLAM/PushFlowControl.hxx>
+#include <CLAM/PushFlowControl.hxx>
 #include <CLAM/BasicFlowControl.hxx>
 
 #include <qapplication.h>
