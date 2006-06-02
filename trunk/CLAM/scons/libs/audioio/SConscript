@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # SConstruct file for CLAM i/o
 from buildtools import *
 from buildtools.include_rename import *
@@ -16,8 +17,20 @@ def define_module_contents() :
 		os.mkdir('src')
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
-	
-	folders = ['src/Processing/AudioFileIO', 'src/Processing/AudioIO', 'src/Processing/MIDIIO', 'src/Tools/MIDIIO', 'src/Tools/MIDIIO/File', 'src/Tools/MIDIIO/TextFile', 'src/Tools/AudioIO', 'src/Tools/AudioFileIO', 'src/Processing/AudioIO*.*xx', 'src/Flow/Networks/BlockingNetworkPlayer*.*xx','src/System/Application']
+
+	folders = [
+		'src/Processing/AudioFileIO',
+		'src/Processing/AudioIO',
+		'src/Processing/MIDIIO',
+		'src/Tools/MIDIIO',
+		'src/Tools/MIDIIO/File',
+		'src/Tools/MIDIIO/TextFile',
+		'src/Tools/AudioIO',
+		'src/Tools/AudioFileIO',
+		'src/Processing/AudioIO*.*xx',
+		'src/Flow/Networks/BlockingNetworkPlayer*.*xx',
+		'src/System/Application',
+		]
 
 	if sys.platform == 'win32' :
 		folders.append('src/Processing/InitAudioIO*.*xx')
@@ -38,13 +51,18 @@ def define_module_contents() :
 			folders += ['src/Tools/AudioIO/RtAudio'] #, 'src/Defines/Windows/CLAM_windows.h']
 		elif audioio_env['audio_backend'] == 'directx' :
 			print('using directx')
-			folders += ['src/Tools/AudioIO/Windows/DirectXAudioDevice.cxx', 'src/Tools/AudioIO/Windows/DXFullDuplex.*xx']
+			folders += [
+				'src/Tools/AudioIO/Windows/DirectXAudioDevice.cxx',
+				'src/Tools/AudioIO/Windows/DXFullDuplex.*xx',
+				]
 		elif audioio_env['audio_backend'] == 'portaudio' :
 			print('using portaudio')
-			folders += ['src/Tools/AudioIO/Windows/PAAudio*.*xx', 
-					'src/Tools/AudioIO/Windows/PACLAM*.*xx', 
-					'src/Tools/AudioIO/Windows/PortAudioUtils.*', 
-					'src/Tools/AudioIO/Windows/DoubleBuffer.*xx']
+			folders += [
+				'src/Tools/AudioIO/Windows/PAAudio*.*xx', 
+				'src/Tools/AudioIO/Windows/PACLAM*.*xx', 
+				'src/Tools/AudioIO/Windows/PortAudioUtils.*', 
+				'src/Tools/AudioIO/Windows/DoubleBuffer.*xx',
+				]
 	else :
 		if audioio_env['audio_backend'] == 'rtaudio' :
 			print('using rtaudio2')
@@ -54,7 +72,11 @@ def define_module_contents() :
 			print('using portaudio')
 			folders += ['src/Flow/Networks/PANetworkPlayer*.*xx']
 
-	blacklist = ['foo.cxx','main.cxx','GUIAudioApplication.*xx']
+	blacklist = [
+		'foo.cxx',
+		'main.cxx',
+		'GUIAudioApplication.*xx',
+		]
 
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
 
@@ -77,23 +99,17 @@ def define_module_contents() :
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-# Module dependencies and tasks
-
 if not audioio_env.GetOption('clean') :
-
 	pkg_data = PackageData( 'clam_audioio', version, [] )
 	pkg_data.create_pkg_descriptor( audioio_env, 'clam_audioio.pc' )
 
 realHeaders, realSources = define_module_contents()
-audioio_env.Prepend(CPPPATH=['include','../core/include','../processing/include'])
 
-audioio_env.Append(LIBS=['clam_core','clam_processing'])
-audioio_env.Prepend(LIBPATH=['../core','../processing'])
-#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
+moduleDependencies=['core','processing']
 
 if sys.platform != 'win32' :
-	audioio_tgt, audioio_install_tgt = posix_lib_rules( 'audioio', version, realHeaders, realSources, install_dirs, audioio_env )
+	lib_tgt, install_tgt = posix_lib_rules( 'audioio', version, realHeaders, realSources, install_dirs, audioio_env, moduleDependencies )
 else :
-	audioio_tgt, audioio_install_tgt = win32_lib_rules( 'audioio', version, realHeaders, realSources, install_dirs, audioio_env )
+	lib_tgt, install_tgt = win32_lib_rules( 'audioio', version, realHeaders, realSources, install_dirs, audioio_env, moduleDependencies )
 
-Return( 'audioio_tgt', 'audioio_install_tgt' )
+Return( 'lib_tgt', 'install_tgt' )

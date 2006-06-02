@@ -320,6 +320,7 @@ top = '../..'
 Export('top')
 
 clam_env = Environment( ENV=os.environ, tools=['default','qt'])
+clam_env.SConsignFile()
 
 if not clam_env.GetOption("clean") :
 	header_db = shelve.open( 'header.db' )

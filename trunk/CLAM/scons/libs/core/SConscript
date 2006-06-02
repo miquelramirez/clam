@@ -7,6 +7,7 @@ from buildtools.file_retriever import FileRetriever
 from buildtools.rulesets import *
 
 from buildtools.custom_builders import *
+
 import os, sys
 
 Import('core_env version top install_dirs header_db')
@@ -17,14 +18,40 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	core_folders = ['src/Base', 'src/Data/Base', 'src/Data/BasicProcessing/Audio.*', 'src/Data/Descriptors/Pool', 'src/Data/Editable', 'src/Defines', 'src/Errors', 'src/Flow/Ports', 'src/Flow/Networks', 'src/Flow/Controls', 'src/Processing/Base', 'src/Processing/Plugins','src/Standard', 'src/Storage', 'src/Storage/Base', 'src/Storage/XML','src/System','src/System/Threads', 'externals/CbLib']
+	folders = [
+		'src/Base',
+		'src/Data/Base',
+		'src/Data/BasicProcessing/Audio.*',
+		'src/Data/Descriptors/Pool',
+		'src/Data/Editable',
+		'src/Defines',
+		'src/Errors',
+		'src/Flow/Ports',
+		'src/Flow/Networks',
+		'src/Flow/Controls',
+		'src/Processing/Base',
+		'src/Processing/Plugins',
+		'src/Standard',
+		'src/Storage',
+		'src/Storage/Base',
+		'src/Storage/XML',
+		'src/System',
+		'src/System/Threads',
+		'externals/CbLib',
+		]
 
 	if sys.platform == 'win32' :
-		core_folders.append('src/Defines/Windows')
+		folders.append('src/Defines/Windows')
 	else :
-		core_folders.append('src/Defines/Unix')	
+		folders.append('src/Defines/Unix')	
 
-	blacklist = ['ScaleCnv', 'LadspaBridge', 'BlockingNetworkPlayer', 'JACKNetworkPlayer', 'PANetworkPlayer']
+	blacklist = [
+		'ScaleCnv',
+		'LadspaBridge',
+		'BlockingNetworkPlayer',
+		'JACKNetworkPlayer',
+		'PANetworkPlayer',
+		]
 
 	if sys.platform == 'win32' :
 		blacklist.append( 'Watchdog.+' )
@@ -46,7 +73,7 @@ def define_module_contents() :
 		blacklist.append( 'OSC.+')
 
 	
-	file_retriever = FileRetriever( top+'/..', core_folders, blacklist )
+	file_retriever = FileRetriever( top+'/..', folders, blacklist )
 
 	file_retriever.scan_without_copy()
 
@@ -79,7 +106,6 @@ def define_module_contents() :
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-
 if not core_env.GetOption('clean') :
 	pkg_data = PackageData( 'clam_core', version )
 	pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
@@ -89,10 +115,8 @@ realHeaders, realSources = define_module_contents()
 core_env.Prepend(CPPPATH='include')
 
 if sys.platform != 'win32' :
-	core_tgt, core_install_tgt = posix_lib_rules( 'core', version, realHeaders , realSources, install_dirs, core_env )
+	lib_tgt, install_tgt = posix_lib_rules( 'core', version, realHeaders , realSources, install_dirs, core_env )
 else :
-	# TODO whats about templates
-	#templates = [ 'src/Point.cxx', 'src/Polar.cxx', 'src/Complex.cxx', 'src/BPF.cxx', 'src/Matrix.cxx', 'src/Order.cxx'] 
-	core_tgt, core_install_tgt = win32_lib_rules( 'core', version, realHeaders, realSources, install_dirs, core_env )
+	lib_tgt, install_tgt = win32_lib_rules( 'core', version, realHeaders, realSources, install_dirs, core_env )
 
-Return( 'core_tgt','core_install_tgt' )
+Return( 'lib_tgt', 'install_tgt' )
