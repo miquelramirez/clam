@@ -47,17 +47,17 @@ def define_module_contents(env) :
 	file_retriever.scan_without_copy()
 
 	builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
-	vmfl_env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
+	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
 
 	realHeaders = []
 	for orig,target in file_retriever.origTargetHeaders :
-		vmfl_env.CopyFileAndUpdateIncludes(target, orig)
+		env.CopyFileAndUpdateIncludes(target, orig)
 		realHeaders.append(target)
 
 
 	realSources = []
 	for orig,target in file_retriever.origTargetSources:
-		vmfl_env.CopyFileAndUpdateIncludes(target,orig)
+		env.CopyFileAndUpdateIncludes(target,orig)
 		realSources.append(target)
 
 	manifest = Manifest()
