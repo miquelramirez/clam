@@ -89,10 +89,6 @@ def define_module_contents() :
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-if not processing_env.GetOption('clean') :
-	pkg_data = PackageData( 'clam_processing', version, [] )
-	pkg_data.create_pkg_descriptor( processing_env, 'clam_processing.pc' )
-
 realHeaders, realSources = define_module_contents()
 
 moduleDependencies = ['core']

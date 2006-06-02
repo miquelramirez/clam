@@ -106,10 +106,6 @@ def define_module_contents() :
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-if not core_env.GetOption('clean') :
-	pkg_data = PackageData( 'clam_core', version )
-	pkg_data.create_pkg_descriptor( core_env, 'clam_core.pc' )
-
 realHeaders, realSources = define_module_contents()
 
 lib_tgt, install_tgt = lib_rules( 'core', version, realHeaders , realSources, install_dirs, core_env )

@@ -10,6 +10,10 @@ def handle_preinclude ( env ):
 	return
 
 def lib_rules(name, version, headers, sources, install_dirs, env, moduleDependencies=[]) :
+	if not env.GetOption('clean') : # David: I don't understand why you don't want to clean it
+		pkg_data = PackageData( 'clam_%s'%name, version )
+		pkg_data.create_pkg_descriptor( env, 'clam_%s.pc'%name )
+
 	env.Prepend(CPPPATH=['include']+['../%s/include'%module for module in moduleDependencies])
 	env.Append(LIBS=['clam_%s'%module for module in moduleDependencies ])
 	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])

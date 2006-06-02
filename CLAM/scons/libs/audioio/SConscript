@@ -99,10 +99,6 @@ def define_module_contents() :
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-if not audioio_env.GetOption('clean') :
-	pkg_data = PackageData( 'clam_audioio', version, [] )
-	pkg_data.create_pkg_descriptor( audioio_env, 'clam_audioio.pc' )
-
 realHeaders, realSources = define_module_contents()
 
 moduleDependencies=['core','processing']
