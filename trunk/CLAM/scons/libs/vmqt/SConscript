@@ -12,13 +12,14 @@ import os, sys
 Import('vmqt_env version top install_dirs header_db')
 
 def define_module_contents(env) :
+	'''
 	if not os.path.exists('src') :
 		os.mkdir('src')
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
-
-	#if not os.path.exists('CLAM') :
-	#	os.makedirs('CLAM')
+	'''
+	if not os.path.exists('CLAM') :
+		os.makedirs('CLAM')
 
 	folders = [
 		'src/Visualization/QTVM/Controllers',
@@ -52,8 +53,8 @@ def define_module_contents(env) :
 
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
 
-#	file_retriever.out_src = 'CLAM'
-#	file_retriever.out_inc = 'CLAM'
+	file_retriever.out_src = 'CLAM'
+	file_retriever.out_inc = 'CLAM'
 
 	file_retriever.scan_without_copy()
 
@@ -76,6 +77,8 @@ def define_module_contents(env) :
 	return realHeaders, realSources
 
 realHeaders, realSources = define_module_contents(vmqt_env)
+
+vmqt_env.Prepend(CPPPATH=['.'])
 
 moduleDependencies = ['core','processing','audioio']
 
