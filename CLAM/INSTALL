@@ -85,8 +85,13 @@ applications from the source tarballs.
    libid3-3.8.3-dev, ladspa-sdk, (optional: libxml++2.6-dev >=2.10,
    libjack-dev)
 
- Redhad packages list: TODO. 
- We'd appreciate any help on this list. Please mail to clam@iua.upf.es
+ Redhad / Fedora Core packages list (tested with FC5)
+   gcc-c++ scons fftw2-devel fltk-devel libvorbis-devel libogg-devel qt-devel
+   qt-designer libxml++-devel alsa-lib-devel libsndfile-devel ladspa-devel 
+   id3lib-devel libXi-devel 
+   Unofficial Pakages:
+   libmad-devel (lvn5) jack-audio-connection-kit-devel (rhfc5.ccrma)
+   qt4-devel, qt4 
 
  Non-packaged libraries : oscpack. 
    There is no official Debian package for oscpack, so if you want to 
