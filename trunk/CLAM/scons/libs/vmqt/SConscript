@@ -76,10 +76,6 @@ def define_module_contents() :
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-if not vmqt_env.GetOption('clean') :
-	pkg_data = PackageData( 'clam_vmqt', version, [] )
-	pkg_data.create_pkg_descriptor( vmqt_env, 'clam_vmqt.pc' )
-
 realHeaders, realSources = define_module_contents()
 
 moduleDependencies = ['core','processing','audioio']

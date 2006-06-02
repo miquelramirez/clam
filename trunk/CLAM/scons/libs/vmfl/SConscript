@@ -65,10 +65,6 @@ def define_module_contents() :
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-if not vmfl_env.GetOption('clean') :
-	pkg_data = PackageData( 'clam_vmfl', version, [] )
-	pkg_data.create_pkg_descriptor( vmfl_env, 'clam_vmfl.pc' )
-
 realHeaders, realSources = define_module_contents()
 
 moduleDependencies=['core', 'processing', 'audioio']
