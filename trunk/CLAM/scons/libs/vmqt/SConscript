@@ -11,7 +11,7 @@ import os, sys
 
 Import('vmqt_env version top install_dirs header_db')
 
-def define_module_contents() :
+def define_module_contents(env) :
 	if not os.path.exists('src') :
 		os.mkdir('src')
 	if not os.path.exists('include' ) :
@@ -58,24 +58,24 @@ def define_module_contents() :
 	file_retriever.scan_without_copy()
 
 	builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
-	vmqt_env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
+	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
 
 	realHeaders = []
 	for orig,target in file_retriever.origTargetHeaders :
-		vmqt_env.CopyFileAndUpdateIncludes(target, orig)
+		env.CopyFileAndUpdateIncludes(target, orig)
 		realHeaders.append(target)
 
 
 	realSources = []
 	for orig,target in file_retriever.origTargetSources:
-		vmqt_env.CopyFileAndUpdateIncludes(target,orig)
+		env.CopyFileAndUpdateIncludes(target,orig)
 		realSources.append(target)
 
 	manifest = Manifest()
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-realHeaders, realSources = define_module_contents()
+realHeaders, realSources = define_module_contents(vmqt_env)
 
 moduleDependencies = ['core','processing','audioio']
 

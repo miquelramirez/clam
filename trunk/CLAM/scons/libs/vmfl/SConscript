@@ -11,7 +11,7 @@ import os, sys
 
 Import('vmfl_env version top install_dirs header_db')
 
-def define_module_contents() :
+def define_module_contents(env) :
 	if not os.path.exists('src') :
 		os.mkdir('src')
 	if not os.path.exists('include' ) :
@@ -64,9 +64,9 @@ def define_module_contents() :
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-realHeaders, realSources = define_module_contents()
+realHeaders, realSources = define_module_contents(vmfl_env)
 
-moduleDependencies=['core', 'processing', 'audioio']
+moduleDependencies = ['core', 'processing', 'audioio']
 
 lib_tgt, install_tgt = lib_rules( 'vmfl', version, realHeaders, realSources, install_dirs, vmfl_env, moduleDependencies )
 

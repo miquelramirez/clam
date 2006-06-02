@@ -11,7 +11,7 @@ import os, sys
 
 Import('processing_env version top install_dirs header_db')
 
-def define_module_contents() :
+def define_module_contents(env) :
 	if not os.path.exists('src') :
 		os.mkdir('src')
 	if not os.path.exists('include' ) :
@@ -57,12 +57,12 @@ def define_module_contents() :
 		'SupportedToolkits',
 		]
 
-	if not processing_env.has_key('with_osc_support') or processing_env['with_osc_support'] == False :
+	if not processing_env.has_key('with_osc_support') or env['with_osc_support'] == False :
 		blacklist.append('OSCSender')
 
-	if not processing_env.has_key('with_fftw') or processing_env['with_fftw'] == False :
+	if not env.has_key('with_fftw') or env['with_fftw'] == False :
 		blacklist.append('.+rfftw.+')
-	if not processing_env.has_key('with_nr_fft') or processing_env['with_nr_fft'] == False :
+	if not env.has_key('with_nr_fft') or env['with_nr_fft'] == False :
 		blacklist.append('.*numrecipes.+')
 		blacklist.append('.+numrec.+')
 	
@@ -71,24 +71,24 @@ def define_module_contents() :
 	file_retriever.scan_without_copy()
 
 	builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
-	processing_env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
+	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
 
 	realHeaders = []
 	for orig,target in file_retriever.origTargetHeaders :
-		processing_env.CopyFileAndUpdateIncludes(target, orig)
+		env.CopyFileAndUpdateIncludes(target, orig)
 		realHeaders.append(target)
 
 
 	realSources = []
 	for orig,target in file_retriever.origTargetSources:
-		processing_env.CopyFileAndUpdateIncludes(target,orig)
+		env.CopyFileAndUpdateIncludes(target,orig)
 		realSources.append(target)
 
 	manifest = Manifest()
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-realHeaders, realSources = define_module_contents()
+realHeaders, realSources = define_module_contents(processing_env)
 
 moduleDependencies = ['core']
 
