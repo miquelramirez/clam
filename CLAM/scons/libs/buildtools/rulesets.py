@@ -9,7 +9,12 @@ def handle_preinclude ( env ):
 		env.Append(CCFLAGS='/FICLAM/%s'%env['preinclude'])
 	return
 
-def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
+def posix_lib_rules( name, version, headers, source_files, install_dirs, env, moduleDependencies=[]) :
+
+	env.Prepend(CPPPATH=['include']+['../%s/include'%module for module in moduleDependencies])
+	env.Append(LIBS=['clam_%s'%module for module in moduleDependencies ])
+	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])
+	#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
 	#for file in source_files :
 	#	print "file to compile: " + str(file)
@@ -32,6 +37,7 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 		lib = env.SharedLibrary( 'clam_' + name, source_files, SHLIBSUFFIX='.so.%s'%version )
 		soname_lib = env.SonameLink( soname, lib )				# lib***.so.X.Y -> lib***.so.X.Y.Z
 		linkername_lib = env.LinkerNameLink( linker_name, soname_lib )		# lib***.so -> lib***.so.X
+		env.Depends(lib, ['../%s/libclam_%s.so.%s'%(module,module,versionnumbers[0]) for module in moduleDependencies ])
 	else : #darwin
 		soname = 'libclam_'+name+'.%s.dylib' % versionnumbers[0]
 		middle_linker_name = 'libclam_'+name+'.%s.%s.dylib' % (versionnumbers[0], versionnumbers[1])
@@ -69,7 +75,11 @@ def posix_lib_rules( name, version, headers, source_files, install_dirs, env) :
 
 	return tgt, install_tgt
 
-def win32_lib_rules( name, version, headers, source_files, install_dirs, env ) :
+def win32_lib_rules( name, version, headers, source_files, install_dirs, env, moduleDependencies =[] ) :
+	env.Prepend(CPPPATH=['include']+['../%s/include'%module for module in moduleDependencies])
+	env.Append(LIBS=['clam_%s'%module for module in moduleDependencies ])
+	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])
+	#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 	static_lib = env.Library( 'clam_' + name, source_files )
 	tgt = env.Alias(name, static_lib)
 	lib_descriptor = env.File( 'clam_'+name+'.pc' )
@@ -78,3 +88,4 @@ def win32_lib_rules( name, version, headers, source_files, install_dirs, env ) :
 	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
 	install_tgt = env.Alias('install_'+name, [install_headers,install_static,install_descriptor])
 	return tgt, install_tgt
+

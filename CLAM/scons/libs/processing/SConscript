@@ -1,14 +1,16 @@
+#!/usr/bin/python
 # SConstruct file for CLAMprocessing
 from buildtools import *
 from buildtools.include_rename import *
 from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 from buildtools.rulesets import *
+
 from buildtools.custom_builders import *
+
 import os, sys
 
 Import('processing_env version top install_dirs header_db')
-
 
 def define_module_contents() :
 	if not os.path.exists('src') :
@@ -16,12 +18,45 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	folders = ['src/Data/BasicProcessing','src/Data/Descriptors','src/Data/Descriptors/Melody', 'src/Processing/Analysis', 'src/Processing/ArithOps', 'src/Processing/Generators/', 'src/Processing/Synthesis', 'src/Processing/Transformations', 'externals/numrec', 'src/Processing/SDIFIO', 'src/Tools/SDIF','src/Processing/Default*.*xx', 'src/Processing/SMS*.*xx', 'src/Standard/ScaleCnv.*','src/Processing/Transformations/SMS', 'src/Processing/Transformations/Spectral', 'src/Processing/Controls', 'src/Processing/Base/NullProcessingConfig.hxx', 'src/Visualization/Base', 'src/Visualization/View', 'src/Visualization/Util' ]
+	folders = [
+		'src/Data/BasicProcessing',
+		'src/Data/Descriptors',
+		'src/Data/Descriptors/Melody',
+		'src/Processing/Analysis',
+		'src/Processing/ArithOps',
+		'src/Processing/Generators/',
+		'src/Processing/Synthesis',
+		'src/Processing/Transformations',
+		'externals/numrec',
+		'src/Processing/SDIFIO',
+		'src/Tools/SDIF',
+		'src/Processing/Default*.*xx',
+		'src/Processing/SMS*.*xx',
+		'src/Standard/ScaleCnv.*',
+		'src/Processing/Transformations/SMS',
+		'src/Processing/Transformations/Spectral',
+		'src/Processing/Controls',
+		'src/Processing/Base/NullProcessingConfig.hxx',
+		'src/Visualization/Base',
+		'src/Visualization/View',
+		'src/Visualization/Util',
+		]
 
 	if sys.platform == 'win32':
 		folders.append('src/Processing/InitProcessing*.*xx')
 
-	blacklist = ['GT_FilterBank','OnsetDetector',r'Audio\..+' , 'FileChooser', 'MessageBox', 'FLTKConfigurator', 'QTConfigurator', 'WidgetTKWrapper', 'FDFilterController', 'SupportedToolkits']
+	blacklist = [
+		'GT_FilterBank',
+		'OnsetDetector',
+		r'Audio\..+' ,
+		'FileChooser',
+		'MessageBox',
+		'FLTKConfigurator',
+		'QTConfigurator',
+		'WidgetTKWrapper',
+		'FDFilterController',
+		'SupportedToolkits',
+		]
 
 	if not processing_env.has_key('with_osc_support') or processing_env['with_osc_support'] == False :
 		blacklist.append('OSCSender')
@@ -54,22 +89,17 @@ def define_module_contents() :
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
-# Module dependencies and tasks
-
 if not processing_env.GetOption('clean') :
-
 	pkg_data = PackageData( 'clam_processing', version, [] )
 	pkg_data.create_pkg_descriptor( processing_env, 'clam_processing.pc' )
 
 realHeaders, realSources = define_module_contents()
 
-processing_env.Prepend(CPPPATH=['include','../core/include'])
-processing_env.Append(LIBS=['clam_core'])
-processing_env.Prepend(LIBPATH=['../core'])
+moduleDependencies = ['core']
 
 if sys.platform != 'win32' :
-	processing_tgt, processing_install_tgt = posix_lib_rules( 'processing', version, realHeaders, realSources, install_dirs, processing_env )
+	lib_tgt, install_tgt = posix_lib_rules( 'processing', version, realHeaders, realSources, install_dirs, processing_env, moduleDependencies )
 else :
-	processing_tgt, processing_install_tgt = win32_lib_rules( 'processing', version, realHeaders, realSources, install_dirs, processing_env )
+	lib_tgt, install_tgt = win32_lib_rules( 'processing', version, realHeaders, realSources, install_dirs, processing_env, moduleDependencies )
 
-Return( 'processing_tgt', 'processing_install_tgt' )
+Return( 'lib_tgt', 'install_tgt' )

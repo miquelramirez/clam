@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # SConstruct file for CLAM vmfl
 from buildtools import *
 from buildtools.include_rename import *
@@ -8,6 +9,7 @@ from buildtools.rulesets import *
 from buildtools.custom_builders import *
 
 import os, sys
+
 Import('vmfl_env version top install_dirs header_db')
 
 def define_module_contents() :
@@ -16,12 +18,33 @@ def define_module_contents() :
 	if not os.path.exists('include' ) :
 		os.makedirs('include/CLAM')
 
-	folders = ['src/Visualization/GL', 'src/Visualization/Plot', 'src/Visualization/Presentation/Base', 'src/Visualization/Presentation/FLTK', 'src/Visualization/Widget/FLTKWrapper.*xx', 'src/Visualization/Widget/FLTK', 'GUIAudioApplication.*xx', 'src/Visualization/Base/WidgetTKWrapper.*xx', 'src/Visualization/Util/FileChooser.*xx', 'src/Visualization/Util/MessageBox.*xx', 'src/Visualization/View/FLTKConfigurator.*xx','src/Visualization/Base/SupportedToolkits.*xx']
+	folders = [
+		'src/Visualization/GL',
+		'src/Visualization/Plot',
+		'src/Visualization/Presentation/Base',
+		'src/Visualization/Presentation/FLTK',
+		'src/Visualization/Widget/FLTKWrapper.*xx',
+		'src/Visualization/Widget/FLTK',
+		'GUIAudioApplication.*xx',
+		'src/Visualization/Base/WidgetTKWrapper.*xx',
+		'src/Visualization/Util/FileChooser.*xx',
+		'src/Visualization/Util/MessageBox.*xx',
+		'src/Visualization/View/FLTKConfigurator.*xx',
+		'src/Visualization/Base/SupportedToolkits.*xx',
+		]
 
-	blacklist = ['GLLogPowSpRenderer','GLLogSpRenderer','ProcessingController','Fl_Range','FDFilterController','TokenDelayController','HugeArrayRenderer']
+	blacklist = [
+		'GLLogPowSpRenderer',
+		'GLLogSpRenderer',
+		'ProcessingController',
+		'Fl_Range',
+		'FDFilterController',
+		'TokenDelayController',
+		'HugeArrayRenderer',
+		]
 
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
-	
+
 	file_retriever.scan_without_copy()
 
 	builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
@@ -38,12 +61,9 @@ def define_module_contents() :
 		vmfl_env.CopyFileAndUpdateIncludes(target,orig)
 		realSources.append(target)
 
-
 	manifest = Manifest()
 	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
-
-# Module task and depedencies definition
 
 if not vmfl_env.GetOption('clean') :
 	pkg_data = PackageData( 'clam_vmfl', version, [] )
@@ -51,18 +71,11 @@ if not vmfl_env.GetOption('clean') :
 
 realHeaders, realSources = define_module_contents()
 
-vmfl_env.Prepend(CPPPATH=['include','../core/include','../processing/include','../audioio/include'])
-vmfl_env.Append(LIBS=['clam_core', 'clam_processing','clam_audioio'])
-
-#if sys.platform == 'win32' : 
-#	vmfl_env.Append( LIBS=['clam_core_templates'] )
-
-vmfl_env.Prepend(LIBPATH=['../core','../processing','../audioio'])
+moduleDependencies=['core', 'processing', 'audioio']
 
 if sys.platform != 'win32' :
-	vmfl_target, vmfl_install_target = posix_lib_rules( 'vmfl', version, realHeaders, realSources, install_dirs, vmfl_env )
+	lib_tgt, install_tgt = posix_lib_rules( 'vmfl', version, realHeaders, realSources, install_dirs, vmfl_env, moduleDependencies )
 else :
-	vmfl_target, vmfl_install_target = win32_lib_rules( 'vmfl', version, realHeaders, realSources, install_dirs, vmfl_env )
+	lib_tgt, install_tgt = win32_lib_rules( 'vmfl', version, realHeaders, realSources, install_dirs, vmfl_env, moduleDependencies )
 
-
-Return( 'vmfl_target', 'vmfl_install_target' )
+Return( 'lib_tgt', 'install_tgt' )
