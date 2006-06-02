@@ -12,7 +12,7 @@
 
   <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
     <SourceFile>
-      <URI>example-data/jaume-voice.mp3</URI>
+      <URI>example-data/Guillamino_CitiusAltiusFortius.mp3</URI>
       <Header>
         <SampleRate>44100</SampleRate>
         <Samples>9936364</Samples>
