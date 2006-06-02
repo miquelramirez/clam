@@ -84,10 +84,7 @@ realHeaders, realSources = define_module_contents()
 
 moduleDependencies = ['core','processing','audioio']
 
-if sys.platform != 'win32' :
-	lib_tgt, install_tgt = posix_lib_rules( 'vmqt', version, realHeaders, realSources, install_dirs, vmqt_env, moduleDependencies )
-else :
-	lib_tgt, install_tgt = win32_lib_rules( 'vmqt', version, realHeaders, realSources, install_dirs, vmqt_env, moduleDependencies )
+lib_tgt, install_tgt = lib_rules( 'vmqt', version, realHeaders, realSources, install_dirs, vmqt_env, moduleDependencies )
 
 Return( 'lib_tgt', 'install_tgt' )
 

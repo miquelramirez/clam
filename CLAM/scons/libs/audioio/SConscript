@@ -107,9 +107,6 @@ realHeaders, realSources = define_module_contents()
 
 moduleDependencies=['core','processing']
 
-if sys.platform != 'win32' :
-	lib_tgt, install_tgt = posix_lib_rules( 'audioio', version, realHeaders, realSources, install_dirs, audioio_env, moduleDependencies )
-else :
-	lib_tgt, install_tgt = win32_lib_rules( 'audioio', version, realHeaders, realSources, install_dirs, audioio_env, moduleDependencies )
+lib_tgt, install_tgt = lib_rules( 'audioio', version, realHeaders, realSources, install_dirs, audioio_env, moduleDependencies )
 
 Return( 'lib_tgt', 'install_tgt' )

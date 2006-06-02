@@ -89,7 +89,7 @@ def define_module_contents() :
 	if sys.platform == 'win32' :
 		copyCmd = 'copy ..\\..\\..\\src\\Defines\\preinclude.hxx include\\CLAM\\preinclude.hxx'
 	else :
-      		copyCmd = 'cp ../../../src/Defines/preinclude.hxx include/CLAM/preinclude.hxx'
+		copyCmd = 'cp ../../../src/Defines/preinclude.hxx include/CLAM/preinclude.hxx'
 		
 	print copyCmd
 	os.system( copyCmd )
@@ -112,11 +112,6 @@ if not core_env.GetOption('clean') :
 
 realHeaders, realSources = define_module_contents()
 
-core_env.Prepend(CPPPATH='include')
-
-if sys.platform != 'win32' :
-	lib_tgt, install_tgt = posix_lib_rules( 'core', version, realHeaders , realSources, install_dirs, core_env )
-else :
-	lib_tgt, install_tgt = win32_lib_rules( 'core', version, realHeaders, realSources, install_dirs, core_env )
+lib_tgt, install_tgt = lib_rules( 'core', version, realHeaders , realSources, install_dirs, core_env )
 
 Return( 'lib_tgt', 'install_tgt' )
