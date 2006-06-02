@@ -1,5 +1,7 @@
 from SCons.Action import *
 from buildtools import *
+from buildtools.pkggen import PackageData
+
 import sys
 
 def handle_preinclude ( env ):

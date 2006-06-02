@@ -2,7 +2,6 @@
 # SConstruct file for CLAMcore
 from buildtools import *
 from buildtools.include_rename import update_includes
-from buildtools.pkggen import PackageData
 from buildtools.file_retriever import FileRetriever
 from buildtools.rulesets import *
 
