@@ -83,6 +83,8 @@ public:
 		Configure(c);
 	}
 
+	const char *GetClassName() const {return "Controller";}
+
 	bool Do()
 	{	
 		IdxList::iterator ListIt;		
@@ -146,9 +148,6 @@ private:
 		
 		return modifiedQs;
 	}
-
-	const char *GetClassName() const {return "Controller";}
-
 	Mutex mDataMutex;
 	Mutex mControllerDoMutex;
 };
