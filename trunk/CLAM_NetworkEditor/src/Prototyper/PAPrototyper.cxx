@@ -1,17 +1,12 @@
-
 #ifndef USE_PORTAUDIO
 #error ERROR: trying to compile a PortAudio based example without having it enabled in CLAM
 #endif
 
-#include "PANetworkPlayer.hxx"
 #include "PrototypeLoader.hxx"
+#include "PANetworkPlayer.hxx"
 
 #include "Utils.hxx"
-
-#include <fstream>
 #include <iostream>
-
-using std::string;
 
 int main( int argc, char *argv[] )
 {
@@ -31,10 +26,7 @@ int main( int argc, char *argv[] )
 	
 	networkFile=argv[1];
 
-	if (argc==2)
-		uiFile=GetUiFromXmlFile(networkFile);
-	else if (argc==3)
-		uiFile = argv[2]; 
+	uiFile= argc>2 ? argv[2] : GetUiFromXmlFile(networkFile);
 
 	if ( !FileExists(networkFile) || !FileExists(uiFile) )
 		return -1;
