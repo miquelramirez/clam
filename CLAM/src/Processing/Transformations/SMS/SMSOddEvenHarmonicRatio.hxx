@@ -38,8 +38,6 @@ namespace CLAM{
 
 	class SMSOddEvenHarmonicRatio: public FrameTransformation
 	{
-		const char *GetClassName() const {return "SMSOddEvenHarmonicRatio";}
-
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
@@ -56,6 +54,8 @@ namespace CLAM{
 
  		~SMSOddEvenHarmonicRatio() {}
 	
+		const char *GetClassName() const {return "SMSOddEvenHarmonicRatio";}
+
 		bool Do(const Frame& in, Frame& out)
 		{
 			return Do(in.GetSpectralPeakArray(), out.GetSpectralPeakArray());
