@@ -1,48 +1,44 @@
-
 #if 0 // should be #ifndef USE_JACK
 #error ERROR: trying to compile a JACK based example without having it enabled in CLAM
 #endif
 
-#include "JACKNetworkPlayer.hxx"
 #include "PrototypeLoader.hxx"
+#include "JACKNetworkPlayer.hxx"
 
 #include "Utils.hxx"
+#include <iostream>
 
 int main( int argc, char *argv[] )
 {
-	if ( argc<2 || argc>5 )
+	if (argc<2 || argc>5)
 	{
 		std::cout << " Usage: " 
 			<< argv[0] << " <networkfile> [ <uifile> inputPort outputPort ]" << std::endl;
 		return -1;
 	}
 
+#ifdef WIN32
+	CLAM::ProcessingModule::init();
+	CLAM::AudioIOModule::init();
+#endif
+
 	std::string networkFile, uiFile;
 	
-	std::list<std::string> portlist;
+	networkFile=argv[1];
 
-	//Deal with Network&Interface files
-	if ( argc==2 )
-	{
-		networkFile=argv[1];
-		uiFile=GetUiFromXmlFile(networkFile);
-	}
-	else if ( argc>2 )
-	{
-		networkFile=argv[1];
-		uiFile=argv[2];
-	}
+	uiFile= argc>2 ? argv[2] : GetUiFromXmlFile(networkFile);
 
 	//Deal with input and output port patterns
+	std::list<std::string> portlist;
 	if ( argc==4 ) //Case 1: only input
 	{		
-		portlist.push_back( std::string( argv[3]) );
-		portlist.push_back( "NULL");
+		portlist.push_back( argv[3] );
+		portlist.push_back( "NULL" );
 	}
 	else if ( argc==5 ) //Case 2: input & output
 	{
 		portlist.push_back( argv[3] );
-		portlist.push_back( std::string(argv[4]) );
+		portlist.push_back( argv[4] );
 	}
 	else //Case 3: nothing specified
 	{
