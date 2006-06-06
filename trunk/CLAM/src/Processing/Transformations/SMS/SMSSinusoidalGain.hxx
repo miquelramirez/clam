@@ -37,8 +37,6 @@ namespace CLAM{
 
 	class SMSSinusoidalGain : public FrameTransformation
 	{
-		const char *GetClassName() const {return "SMSSinusoidalGain";}
-
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
@@ -53,6 +51,8 @@ namespace CLAM{
 		}
 
  		~SMSSinusoidalGain() {}
+
+		const char *GetClassName() const {return "SMSSinusoidalGain";}
 
 		bool Do(const Frame& in, Frame& out)
 		{

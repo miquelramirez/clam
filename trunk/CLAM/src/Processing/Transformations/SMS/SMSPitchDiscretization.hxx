@@ -61,6 +61,8 @@ namespace CLAM{
 
  		~SMSPitchDiscretization() {}
 
+		const char *GetClassName() const {return "SMSPitchDiscretization";}
+
 		bool Do()
 		{	bool result = Do(mInPeaks.GetData(), 
 					  		mInFund.GetData(), 
@@ -89,10 +91,6 @@ namespace CLAM{
 											Spectrum& outSpectrum
 										);
 
-	private:
-
-		const char *GetClassName() const {return "SMSPitchDiscretization";}
-		
 	};		
 } //namespace CLAM
 
