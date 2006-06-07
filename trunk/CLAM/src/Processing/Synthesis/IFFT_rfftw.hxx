@@ -28,7 +28,11 @@
 #include "SpectrumConfig.hxx"
 
 extern "C" {
-#include FFTW_HEADER
+#if !defined(WIN32) && !defined(CLAM_DOUBLE)
+	#include <srfftw.h>
+#else
+	#include <rfftw.h>
+#endif
 }
 
 namespace CLAM {
