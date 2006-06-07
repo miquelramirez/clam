@@ -22,7 +22,7 @@
 #ifndef _CharCopierExtractor_hxx_
 #define _CharCopierExtractor_hxx_
 
-#include "Extractor.hxx"
+#include <CLAM/Extractor.hxx>
 
 
 namespace CLAMTest

@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "LibXmlDomDocumentHandler.hxx"
+#include <CLAM/LibXmlDomDocumentHandler.hxx>
 #include <sstream>
 #include <iostream>
 

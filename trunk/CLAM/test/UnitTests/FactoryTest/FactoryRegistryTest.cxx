@@ -4,7 +4,7 @@
 
 #include "DummyProducts.hxx"
 
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 
 namespace CLAMTest
 {

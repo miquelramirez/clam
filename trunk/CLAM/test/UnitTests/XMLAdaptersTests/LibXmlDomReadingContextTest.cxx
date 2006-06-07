@@ -1,13 +1,13 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "XMLStorage.hxx"
-#include "XmlMockUpObjects.hxx"
-#include "Component.hxx"
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/XmlMockUpObjects.hxx>
+#include <CLAM/Component.hxx>
 #include <list>
-#include "LibXmlDomReadingContext.hxx"
-#include "LibXmlDomWriter.hxx"
-#include "LibXmlDomReader.hxx"
+#include <CLAM/LibXmlDomReadingContext.hxx>
+#include <CLAM/LibXmlDomWriter.hxx>
+#include <CLAM/LibXmlDomReader.hxx>
 
 /*
 TOTEST:

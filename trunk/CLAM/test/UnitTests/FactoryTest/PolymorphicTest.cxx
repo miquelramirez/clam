@@ -7,6 +7,7 @@
 #include "Polymorphic.hxx"
 
 #include <list>
+#include <sstream>
 
 namespace CLAMTest
 {
@@ -19,15 +20,19 @@ class PolymorphicTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( PolymorphicTest );
 	CPPUNIT_TEST(testAdapte_byDefaultPointsNull);
+/*
 	CPPUNIT_TEST(testAdapte_createsAFooWithSuchParameter);
 	CPPUNIT_TEST(testAdapte_createsABarWithSuchParameter);
 	CPPUNIT_TEST(testConstGet);
 	CPPUNIT_TEST(testReferenceConversor);
 	CPPUNIT_TEST(testConstructorFromReference);
-//	CPPUNIT_TEST(testConstructorFromConstReference);
 	CPPUNIT_TEST(testAssignFromReference);
 	CPPUNIT_TEST(testGetClassName);
-
+	CPPUNIT_TEST(testXmlDump_whenFoo);
+	CPPUNIT_TEST(testXmlDump_whenBar);
+	CPPUNIT_TEST(testXmlRestore_whenFoo);
+	CPPUNIT_TEST(testXmlRestore_whenBar);
+*/
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -51,18 +56,18 @@ public:
 	}
 
 private:
-
 	// helper methods:
-	MyFactoryType::CreatorMethod FooCreator() {
+	MyFactoryType::CreatorMethod FooCreator()
+	{
 		return MyFactoryType::Registrator<DummyProductFoo>::Create;
 	}
 
-	MyFactoryType::CreatorMethod BarCreator() {
+	MyFactoryType::CreatorMethod BarCreator()
+	{
 		return MyFactoryType::Registrator<DummyProductBar>::Create;
 	}
 
 
-	// Tests definition :
 protected:
 
 	void testAdapte_byDefaultPointsNull()
@@ -124,16 +129,10 @@ protected:
 		MyPolymorphicType poly(*expected);
 		DummyProduct & result = poly;
 		CPPUNIT_ASSERT_EQUAL( expected , &result);
+
+		delete expected;
 	}
-/*
-	void testConstructorFromConstReference()
-	{
-		const DummyProduct * expected = BarCreator()();
-		const MyPolymorphicType poly(*expected);
-		const DummyProduct & result = poly;
-		CPPUNIT_ASSERT_EQUAL( expected , &result);
-	}
-*/
+
 	void testAssignFromReference()
 	{
 		DummyProduct * expected = BarCreator()();
@@ -145,75 +144,70 @@ protected:
 
 	void testGetClassName()
 	{
-		std::string className = "DummyProductBar";
-		MyPolymorphicType poly(className);
+		std::string className = "Polymorphic";
+		MyPolymorphicType poly;
 		std::string result = poly.GetClassName();
 		CPPUNIT_ASSERT_EQUAL( className , result);
 	}
 
-
-
-
-	/////////// The edge
-
-	void testCreateFooReturnsAFoo()
+	void testXmlDump_whenFoo()
 	{
-		DummyProduct* returned = FooCreator()();
-
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *returned );
-		delete returned;
+		std::string className = "DummyProductFoo";
+		MyPolymorphicType poly(className);
+		std::stringstream stream;
+		CLAM::XMLStorage::Dump(poly,"Poly",stream);
+		CPPUNIT_ASSERT_EQUAL(std::string(
+			"<Poly type=\"DummyProductFoo\">"
+				"FooContent"
+			"</Poly>"
+			),stream.str());
 	}
 
-	void testCreate_ReturnsAFoo()
+	void testXmlDump_whenBar()
 	{
-		mTheFactory->AddCreator( "DummyProductFoo", FooCreator() );
-
-		DummyProduct* returned = mTheFactory->Create("DummyProductFoo");
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *returned );
-
-		// tear down:
-		delete returned;
-		mTheFactory->Clear();
-
+		std::string className = "DummyProductBar";
+		MyPolymorphicType poly(className);
+		std::stringstream stream;
+		CLAM::XMLStorage::Dump(poly,"Poly",stream);
+		CPPUNIT_ASSERT_EQUAL(std::string(
+			"<Poly type=\"DummyProductBar\">"
+				"BarContent"
+			"</Poly>"
+			),stream.str());
 	}
 
-	void testCreateSafe_WithABadKey()
+	void testXmlRestore_whenFoo()
 	{
-		try{
-			mTheFactory->CreateSafe("DummyProductFoo");
-			CPPUNIT_FAIL("Should throw an exception");
-		} catch ( CLAM::ErrFactory& ) {}
+		std::stringstream stream(
+			"<Poly type=\"DummyProductFoo\">"
+				"FooContent"
+			"</Poly>");
+		MyPolymorphicType poly;
+		CLAM::XMLStorage::Restore(poly,stream);
+		DummyProduct & adaptee = poly.Get();
+
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, adaptee);
+
+//		CPPUNIT_ASSERT_EQUAL(
+//			std::string("FooContent"),
+//			((DummyProductFoo&)adaptee).content());
 	}
 
-
-	void testAddCreator_WithRepeatedKey()
+	void testXmlRestore_whenBar()
 	{
-		mTheFactory->AddCreator("DummyProductFoo", FooCreator() );
-		try{
-			mTheFactory->AddCreator("DummyProductFoo", FooCreator());
-			CPPUNIT_FAIL("an assertion should happen");
-		} catch ( CLAM::ErrAssertionFailed& )
-		{}
-	}
+		std::stringstream stream(
+			"<Poly type=\"DummyProductBar\">"
+				"BarContent"
+			"</Poly>");
+		MyPolymorphicType poly;
+		CLAM::XMLStorage::Restore(poly,stream);
+		DummyProduct & adaptee = poly.Get();
 
-	void testAddCreatorSafe_WithRepeatedKey()
-	{
-		mTheFactory->AddCreator("DummyProductFoo", BarCreator() );
-		try{
-			mTheFactory->AddCreatorSafe("DummyProductFoo", FooCreator());
-			CPPUNIT_FAIL("an ErrFactory should be raised");
-		} catch (CLAM::ErrFactory&) {
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductBar, adaptee);
 
-		}
-	}
-
-	void testGetRegisteredNames_WithNoKeys()
-	{
-		std::list<std::string> registeredNames;
-
-		mTheFactory->GetRegisteredNames( registeredNames );
-
-		CPPUNIT_ASSERT_EQUAL( true, registeredNames.empty() );
+//		CPPUNIT_ASSERT_EQUAL(
+//			std::string("BarContent"),
+//			((DummyProductBar&)adaptee).content());
 	}
 
 };

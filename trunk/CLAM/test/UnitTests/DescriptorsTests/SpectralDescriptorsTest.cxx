@@ -20,15 +20,15 @@
  */
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "SpectralDescriptors.hxx"
-#include "Spectrum.hxx"
-#include "FFT.hxx"
-#include "SpecTypeFlags.hxx"
-#include "AudioFile.hxx"
-#include "MonoAudioFileReader.hxx"
-#include "XMLStorage.hxx"
+#include <CLAM/SpectralDescriptors.hxx>
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/FFT.hxx>
+#include <CLAM/SpecTypeFlags.hxx>
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/XMLStorage.hxx>
 
 
 

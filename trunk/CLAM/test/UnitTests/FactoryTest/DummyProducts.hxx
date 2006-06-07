@@ -1,10 +1,14 @@
 #ifndef __DUMMYPRODUCTS__
 #define __DUMMYPRODUCTS__
 
+#include <CLAM/Component.hxx>
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/XMLAdapter.hxx>
+
 namespace CLAMTest
 {
 
-	class DummyProduct
+	class DummyProduct : public CLAM::Component
 	{
 	public:
 		DummyProduct() {}
@@ -17,21 +21,51 @@ namespace CLAMTest
 	class DummyProductFoo
 		: public DummyProduct
 	{
+		std::string mFooContent;
 	public:
-		DummyProductFoo() {}
+		DummyProductFoo() {mFooContent="FooContent";}
 		virtual ~DummyProductFoo() {}
 		virtual void dummyVirtual() {}
 		virtual const char * GetClassName() const {return "DummyProductFoo";}
+		virtual void StoreOn(CLAM::Storage & storage) const
+		{
+			CLAM::XMLAdapter<std::string> adapter(mFooContent);
+			storage.Store(adapter);			
+		}
+		virtual void LoadFrom(CLAM::Storage & storage)
+		{
+			CLAM::XMLAdapter<std::string> adapter(mFooContent);
+			storage.Load(adapter);			
+		}
+		const std::string & fooContent() const
+		{
+			return mFooContent;
+		}
 	};
 
 	class DummyProductBar
 		: public DummyProduct
 	{
+		std::string mBarContent;
 	public:
-		DummyProductBar() {}
+		DummyProductBar() {mBarContent="BarContent";}
 		virtual ~DummyProductBar() {}
 		virtual void dummyVirtual() {}
 		virtual const char * GetClassName() const {return "DummyProductBar";}
+		void StoreOn(CLAM::Storage & storage) const
+		{
+			CLAM::XMLAdapter<std::string> adapter(mBarContent);
+			storage.Store(adapter);			
+		}
+		void LoadFrom(CLAM::Storage & storage)
+		{
+			CLAM::XMLAdapter<std::string> adapter(mBarContent);
+			storage.Load(adapter);			
+		}
+		const std::string & barContent() const
+		{
+			return mBarContent;
+		}
 	};
 
   class A

@@ -20,10 +20,10 @@
 */
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "AutoPanner.hxx"
-#include "InControl.hxx"
-#include "OSDefines.hxx" // some  tests use M_PI
-#include "Processing.hxx"
+#include <CLAM/AutoPanner.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/OSDefines.hxx>
+#include <CLAM/Processing.hxx>
 
 namespace CLAMTest {
 

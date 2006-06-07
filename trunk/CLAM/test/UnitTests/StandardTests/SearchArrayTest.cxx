@@ -1,9 +1,9 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
-#include "SearchArray.hxx"
-#include "stl_optbinsearch.h"
-#include "Array.hxx"
-#include "Point.hxx"
+#include "cppUnitHelper.hxx"
+#include <CLAM/SearchArray.hxx>
+#include <CLAM/stl_optbinsearch.h>
+#include <CLAM/Array.hxx>
+#include <CLAM/Point.hxx>
 
 namespace CLAM_Math
 {

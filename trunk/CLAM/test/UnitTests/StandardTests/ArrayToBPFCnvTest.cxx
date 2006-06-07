@@ -1,8 +1,8 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
-#include "Array.hxx"
-#include "BPF.hxx"
-#include "ArrayToBPFCnv.hxx"
+#include "cppUnitHelper.hxx"
+#include <CLAM/Array.hxx>
+#include <CLAM/BPF.hxx>
+#include <CLAM/ArrayToBPFCnv.hxx>
 
 namespace CLAMTest
 {

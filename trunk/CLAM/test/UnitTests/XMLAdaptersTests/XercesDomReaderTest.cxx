@@ -1,12 +1,12 @@
 #ifdef USE_XERCES_TRUE
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "XercesDomWriter.hxx"
-#include "XercesDomReader.hxx"
-#include "XercesInitializer.hxx"
-#include "XercesEncodings.hxx"
+#include <CLAM/XercesDomWriter.hxx>
+#include <CLAM/XercesDomReader.hxx>
+#include <CLAM/XercesInitializer.hxx>
+#include <CLAM/XercesEncodings.hxx>
 #include <sstream>
 #include <fstream>
 

@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "XmlWriteContext.hxx"
+#include <CLAM/XmlWriteContext.hxx>
 
 namespace CLAM
 {

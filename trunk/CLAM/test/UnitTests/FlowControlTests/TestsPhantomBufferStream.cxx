@@ -1,7 +1,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "PhantomBuffer.hxx"
-#include "WritingRegion.hxx"
+#include <CLAM/PhantomBuffer.hxx>
+#include <CLAM/WritingRegion.hxx>
 #include <list>
 #include <iostream>
 

@@ -1,13 +1,13 @@
 #ifdef USE_XERCES_TRUE
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "XercesDomDocumentHandler.hxx"
-#include "XercesInitializer.hxx"
+#include <CLAM/XercesDomDocumentHandler.hxx>
+#include <CLAM/XercesInitializer.hxx>
 #include <sstream>
 #include <xercesc/dom/DOMImplementation.hpp>
-#include "XercesEncodings.hxx"
+#include <CLAM/XercesEncodings.hxx>
 #include <iostream>
 
 // TODO: Get the read errors

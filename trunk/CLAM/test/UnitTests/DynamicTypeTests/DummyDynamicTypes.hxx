@@ -24,11 +24,11 @@
 #include <iostream>
 #include <vector>
 
-#include "XMLStorage.hxx"
+#include <CLAM/XMLStorage.hxx>
 
-#include "Component.hxx"
-#include "DynamicType.hxx"
-#include "Array.hxx"
+#include <CLAM/Component.hxx>
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/Array.hxx>
 
 namespace CLAMTest {
 
