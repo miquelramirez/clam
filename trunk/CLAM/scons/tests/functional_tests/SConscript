@@ -1,45 +1,60 @@
 #!/usr/bin/python
 Import('env')
-import sys, os
-sys.path +=['../../libs/buildtools']
-from include_rename import update_includes
-from file_retriever import FileRetriever
-import shelve
+import sys, os, glob
 
-header_db = shelve.open( '../../libs/header.db' )
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(path+"/"+pattern)
+	return files
 
-if not os.path.exists('src') :
-	os.mkdir('src')
-if not os.path.exists('include') :
-	os.mkdir('include')
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
-folders = ['UnitTests','UnitTests/CommonHelpers','FunctionalTests/CommonHelpers','FunctionalTests/FlowControlTests','FunctionalTests/ProcessingTests']
-blacklist = ['TestRunnerQt','TestMIDIIO','TestOnsetDetector','TestSpectralPeakDetect','TestSMSAnalysis','TestAudioFileIn']
+def unique(list) :
+	return dict.fromkeys(list).keys()
+
+folders = [
+	'UnitTests',
+	'UnitTests/CommonHelpers',
+	'FunctionalTests/CommonHelpers',
+	'FunctionalTests/FlowControlTests',
+	'FunctionalTests/ProcessingTests',
+	]
+blacklist = [
+	'UnitTests/TestRunnerQt.cxx',
+	'FunctionalTests/ProcessingTests/TestMIDIIO.cxx',
+	'FunctionalTests/ProcessingTests/TestOnsetDetector.cxx',
+	'FunctionalTests/ProcessingTests/TestSpectralPeakDetect.cxx',
+	'FunctionalTests/ProcessingTests/TestSMSAnalysis.cxx',
+#	'TestAudioFileIn',
+	]
 
 if sys.platform == 'win32' :
-	blacklist += ['OSC*']
-	
-file_retriever = FileRetriever( '../../../test', folders, blacklist )
-file_retriever.out_inc = 'include'
+	blacklist += [
+		'FunctionalTests/FlowControlTests/OSCEnabledNetworkTest.cxx',
+	]
 
-print "Retrieving files and changing includes...",
-file_retriever.scan()
+folders = [ os.path.join('../../../test', folder) for folder in folders ]
+blacklist = [ os.path.join('../../../test', blacksheep) for blacksheep in blacklist ]
+sources = scanFiles('*.cxx', folders)
+headers = scanFiles('*.hxx', folders)
+print sources
+for blacksheep in blacklist :
+	sources.remove(blacksheep) 
 
-for filename in file_retriever.headers :
-	update_includes( header_db, filename )
-for filename in file_retriever.sources :
-	update_includes( header_db, filename )
-print "ok"
+print headers
+print sources
 
 if sys.platform != 'win32'  :
 	env.Append( CPPPATH=['include'] )
-	env.Append(CCFLAGS='-include CLAM/preinclude.hxx')
 else :
-	env.Append( CCFLAGS = '/FICLAM/preinclude.hxx' )
 	env.Append( CCFLAGS = ['/EHsc'] )
 	env.Append( LINKFLAGS = ['/subsystem:console','/machine:x86'] )	
-functional_tests = env.Program( 'FunctionalTests', file_retriever.sources )
+
+functional_tests = env.Program( 'FunctionalTests', sources )
 
 test_alias = Alias( 'run_functional_tests', [functional_tests], functional_tests[0].abspath )
 
 AlwaysBuild( test_alias )
+
