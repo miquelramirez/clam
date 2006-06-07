@@ -1,11 +1,11 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "AudioFile.hxx"
-#include "AudioFileHeader.hxx"
-#include "AudioFileFormats.hxx"
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/AudioFileHeader.hxx>
+#include <CLAM/AudioFileFormats.hxx>
 
-#include "XMLStorage.hxx"
+#include <CLAM/XMLStorage.hxx>
 #include <fstream>
 
 namespace CLAMTest

@@ -1,10 +1,10 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "Processing.hxx"
+#include <CLAM/Processing.hxx>
 
-#include "InPort.hxx"
-#include "InControl.hxx"
-#include "OutPort.hxx"
-#include "OutControl.hxx"
+#include <CLAM/InPort.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/OutPort.hxx>
+#include <CLAM/OutControl.hxx>
 #include "DummyProcessingData.hxx"
 
 namespace CLAMTest

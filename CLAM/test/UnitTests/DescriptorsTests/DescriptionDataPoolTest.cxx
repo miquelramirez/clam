@@ -20,10 +20,10 @@
  */
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "Pool.hxx"
-#include "DataTypes.hxx"
+#include <CLAM/Pool.hxx>
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAMTest
 {

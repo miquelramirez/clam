@@ -1,7 +1,7 @@
 #ifndef _XML_MOCK_UP_OBJECTS_HXX_
 #define _XML_MOCK_UP_OBJECTS_HXX_
-#include "BasicXMLable.hxx"
-#include "Component.hxx"
+#include <CLAM/BasicXMLable.hxx>
+#include <CLAM/Component.hxx>
 #include <list>
 
 namespace CLAM

@@ -1,7 +1,7 @@
 #ifndef _DummyProcessingData_hxx_
 #define _DummyProcessingData_hxx_
 
-#include "ProcessingData.hxx"
+#include <CLAM/ProcessingData.hxx>
 
 namespace CLAMTest
 {

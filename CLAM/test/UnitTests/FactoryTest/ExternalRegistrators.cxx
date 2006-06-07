@@ -1,4 +1,4 @@
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include "DummyProducts.hxx"
 #include "FactoryOnOtherTranslationUnits.hxx"
 

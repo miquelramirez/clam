@@ -1,8 +1,8 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 #include <string>
 
-#include "XmlScoped.hxx"
+#include <CLAM/XmlScoped.hxx>
 
 namespace CLAM
 {

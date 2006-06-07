@@ -19,9 +19,9 @@
  *
  */
 
-#include "Text.hxx"
-#include "DynamicType.hxx"
-#include "XMLStorage.hxx"
+#include <CLAM/Text.hxx>
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/XMLStorage.hxx>
 #include "XMLTestHelper.hxx"
 #include <cppunit/extensions/HelperMacros.h>
 

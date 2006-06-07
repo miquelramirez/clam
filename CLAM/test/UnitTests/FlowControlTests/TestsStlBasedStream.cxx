@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
-#include "WritingRegion.hxx"
-#include "ReadingRegion.hxx"
+#include <CLAM/WritingRegion.hxx>
+#include <CLAM/ReadingRegion.hxx>
 #include <list>
 
 /**

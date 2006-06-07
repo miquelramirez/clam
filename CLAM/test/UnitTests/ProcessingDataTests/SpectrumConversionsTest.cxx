@@ -1,9 +1,9 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "Spectrum.hxx"
-#include "SpecTypeFlags.hxx"
-#include "SpectrumConfig.hxx"
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/SpecTypeFlags.hxx>
+#include <CLAM/SpectrumConfig.hxx>
 
 namespace CLAMTest
 {

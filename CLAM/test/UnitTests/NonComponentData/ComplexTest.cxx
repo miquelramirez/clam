@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "Complex.hxx"
+#include <CLAM/Complex.hxx>
 
 namespace CLAMTest
 {

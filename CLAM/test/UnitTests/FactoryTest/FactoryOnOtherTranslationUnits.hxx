@@ -1,7 +1,7 @@
 #ifndef __FACTORYONOTHERTRANSLATIONUNITS__
 #define __FACTORYONOTHERTRANSLATIONUNITS__
 
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 #include "DummyProducts.hxx"
 
 namespace CLAMTest

@@ -19,7 +19,7 @@
  *
  */
 
-#include "Enum.hxx"
+#include <CLAM/Enum.hxx>
 #include <cppunit/extensions/HelperMacros.h>
 
 

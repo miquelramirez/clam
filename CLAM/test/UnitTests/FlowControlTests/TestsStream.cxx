@@ -1,11 +1,11 @@
-#include "WritingRegion.hxx"
-#include "ReadingRegion.hxx"
+#include <CLAM/WritingRegion.hxx>
+#include <CLAM/ReadingRegion.hxx>
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <vector>
 #include <list>
-#include "PhantomBuffer.hxx"
-#include "DataTypes.hxx"
+#include <CLAM/PhantomBuffer.hxx>
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAMTest {
 

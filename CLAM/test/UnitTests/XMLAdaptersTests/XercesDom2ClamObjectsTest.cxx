@@ -1,9 +1,9 @@
 #ifdef USE_XERCES_TRUE
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "XMLStorage.hxx"
+#include <CLAM/XMLStorage.hxx>
 #include "XmlMockUpObjects.hxx"
 #include <fstream>
 /*

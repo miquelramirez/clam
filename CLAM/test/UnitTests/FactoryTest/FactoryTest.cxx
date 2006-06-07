@@ -1,9 +1,9 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
 #include "DummyProducts.hxx"
 
-#include "Factory.hxx"
+#include <CLAM/Factory.hxx>
 
 #include <list>
 

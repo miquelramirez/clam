@@ -22,7 +22,7 @@
 // TODO: Symbolic operation
 
 
-#include "Flags.hxx"
+#include <CLAM/Flags.hxx>
 #include <cppunit/extensions/HelperMacros.h>
 #include <string>
 #include "XMLTestHelper.hxx"

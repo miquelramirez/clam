@@ -20,16 +20,16 @@
  */
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "Extractor.hxx"
-#include "Pool.hxx"
-#include "DataTypes.hxx"
-#include "Spectrum.hxx"
-#include "SpectrumConfig.hxx"
-#include "Audio.hxx"
-#include "SpectralAnalysis.hxx"
-#include "XMLStorage.hxx"
+#include <CLAM/Extractor.hxx>
+#include <CLAM/Pool.hxx>
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/SpectrumConfig.hxx>
+#include <CLAM/Audio.hxx>
+#include <CLAM/SpectralAnalysis.hxx>
+#include <CLAM/XMLStorage.hxx>
 #include <sstream>
 #include <fstream>
 

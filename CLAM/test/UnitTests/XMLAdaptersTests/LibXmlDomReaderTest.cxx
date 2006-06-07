@@ -1,8 +1,8 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "LibXmlDomReader.hxx"
-#include "LibXmlDomWriter.hxx"
+#include <CLAM/LibXmlDomReader.hxx>
+#include <CLAM/LibXmlDomWriter.hxx>
 #include <sstream>
 #include <fstream>
 

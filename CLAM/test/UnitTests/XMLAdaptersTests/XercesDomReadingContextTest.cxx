@@ -1,15 +1,15 @@
 #ifdef USE_XERCES_TRUE
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
 #include "XmlMockUpObjects.hxx"
-#include "Component.hxx"
+#include <CLAM/Component.hxx>
 #include <list>
-#include "XercesDomWriter.hxx"
-#include "XercesDomReader.hxx"
-#include "XercesInitializer.hxx"
-#include "XercesDomReadingContext.hxx"
+#include <CLAM/XercesDomWriter.hxx>
+#include <CLAM/XercesDomReader.hxx>
+#include <CLAM/XercesInitializer.hxx>
+#include <CLAM/XercesDomReadingContext.hxx>
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMText.hpp>
 #include <xercesc/dom/DOMComment.hpp>

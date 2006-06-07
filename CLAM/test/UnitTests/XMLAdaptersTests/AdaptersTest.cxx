@@ -29,13 +29,13 @@
  * @todo List of basic objects XML test
  */
 
-#include "XMLAdapter.hxx"
-#include "XMLArrayAdapter.hxx"
-#include "XMLComponentAdapter.hxx"
-#include "XMLIterableAdapter.hxx"
-#include "XMLStorage.hxx"
-#include "Array.hxx"
-#include "List.hxx"
+#include <CLAM/XMLAdapter.hxx>
+#include <CLAM/XMLArrayAdapter.hxx>
+#include <CLAM/XMLComponentAdapter.hxx>
+#include <CLAM/XMLIterableAdapter.hxx>
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/Array.hxx>
+#include <CLAM/List.hxx>
 #include "XMLTestHelper.hxx"
 
 #include <cppunit/extensions/HelperMacros.h>

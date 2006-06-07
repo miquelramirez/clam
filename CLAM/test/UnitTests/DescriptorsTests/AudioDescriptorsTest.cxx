@@ -20,13 +20,13 @@
  */
 
 #include <cppunit/extensions/HelperMacros.h>
-#include "cppUnitHelper.hxx" // necessary for the custom assert
+#include "cppUnitHelper.hxx"
 
-#include "AudioDescriptors.hxx"
-#include "AudioFileIn.hxx"
-#include "AudioFileConfig.hxx"
-#include "MonoAudioFileReader.hxx"
-#include "XMLStorage.hxx"
+#include <CLAM/AudioDescriptors.hxx>
+#include <CLAM/AudioFileIn.hxx>
+#include <CLAM/AudioFileConfig.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/XMLStorage.hxx>
 
 
 
