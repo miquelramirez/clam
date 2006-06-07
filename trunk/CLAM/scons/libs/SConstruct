@@ -9,7 +9,7 @@ from buildtools.tool_checks import *
 from buildtools.package_checks import *
 from buildtools.generic_checks import *
 from buildtools.installdirs import * 
-#from buildtools.dmg_creation import *
+from buildtools.dmg_creation import *
 from buildtools.rulesets import handle_preinclude
 # module check sequences
 from modconf import *
