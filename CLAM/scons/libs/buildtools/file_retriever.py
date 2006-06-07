@@ -61,30 +61,6 @@ class FileRetriever :
 				return True
 		return False
 
-	def scan( self, header_db = None ) :
-		for target in self.scantargets :
-			if not os.path.isdir( target ) :
-				base = os.path.dirname(target)
-				for file in glob.glob(target ) :
-					if not self.is_blacklisted(file) :
-						if self.is_header(file) :
-							self.__setup_file( file, self.out_inc )
-							self.headers.append( '%s/%s'%(self.out_inc,os.path.basename(file)) )
-						if self.is_source(file) :
-							self.__setup_file( file, self.out_src )
-							self.sources.append( '%s/%s'%(self.out_src,os.path.basename(file)) )
-			else :
-
-				for file in os.listdir(target) :
-					if not self.is_blacklisted(file) :
-						if self.is_header(file) :
-							self.__setup_file( "/".join([target, file]), self.out_inc )
-							self.headers.append( '%s/%s'%(self.out_inc,file) )
-						if self.is_source(file) :
-							self.__setup_file( "/".join([target, file]), self.out_src )
-							self.sources.append( '%s/%s'%(self.out_src,file) )
-
-		
 	def scan_without_copy( self, header_db = None ) :
 		for target in self.scantargets :
 			if not os.path.isdir( target ) : # is a file
