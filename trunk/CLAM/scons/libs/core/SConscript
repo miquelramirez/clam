@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # SConstruct file for CLAMcore
 from buildtools import *
-from buildtools.include_rename import update_includes
 from buildtools.file_retriever import FileRetriever
 from buildtools.rulesets import *
 
@@ -101,8 +100,6 @@ def define_module_contents(env) :
 		env.CopyFileAndUpdateIncludes(target,orig)
 		realSources.append(target)
 
-	manifest = Manifest()
-	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
 realHeaders, realSources = define_module_contents(core_env)

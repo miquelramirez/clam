@@ -94,8 +94,6 @@ def define_module_contents(env) :
 		env.CopyFileAndUpdateIncludes(target,orig)
 		realSources.append(target)
 
-	manifest = Manifest()
-	manifest.store( realHeaders, realSources )
 	return realHeaders, realSources
 
 realHeaders, realSources = define_module_contents(audioio_env)

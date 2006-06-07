@@ -4,14 +4,12 @@ import os
 import shelve
 import copy
 # tools for build configuration
-from buildtools import *
 from buildtools.custom_builders import * 
-from buildtools.thorough_check import ThoroughPackageCheck
 from buildtools.tool_checks import *
 from buildtools.package_checks import *
 from buildtools.generic_checks import *
 from buildtools.installdirs import * 
-from buildtools.dmg_creation import *
+#from buildtools.dmg_creation import *
 from buildtools.rulesets import handle_preinclude
 # module check sequences
 from modconf import *
@@ -333,7 +331,6 @@ clam_env['preinclude']='preinclude.hxx'
 setup_build_options( clam_env )
 
 clam_env.Append( CPPFLAGS = '' )
-clam_env['preinclude'] = 'preinclude.hxx'
 
 Export('clam_env')
 
@@ -347,6 +344,8 @@ if sys.platform == 'win32' :
 	clam_env.Replace( QT_LIB = 'qt-mt322')
 else :
 	clam_env.Replace( QT_LIB = 'qt-mt' )
+clam_env['CXXFILESUFFIX'] = '.cxx'
+
 
 if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() :
     configureModules(clam_env)

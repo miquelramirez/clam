@@ -9,7 +9,6 @@ def handle_preinclude ( env ):
 		env.Append(CCFLAGS='-include CLAM/%s'%env['preinclude'])
 	else:
 		env.Append(CCFLAGS='/FICLAM/%s'%env['preinclude'])
-	return
 
 def lib_rules(name, version, headers, sources, install_dirs, env, moduleDependencies=[]) :
 	if not env.GetOption('clean') : # David: I don't understand why you don't want to clean it
