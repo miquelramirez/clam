@@ -83,18 +83,6 @@ def define_module_contents(env) :
 		env.CopyFileAndUpdateIncludes(target, orig)
 		realHeaders.append(target)
 
-	print "*** Provisinal copy of preinclude TODO: get rid of preinclude.h *******" #TODO
-	if sys.platform == 'win32' :
-		copyCmd = 'copy ..\\..\\..\\src\\Defines\\preinclude.hxx include\\CLAM\\preinclude.hxx'
-	else :
-		copyCmd = 'cp ../../../src/Defines/preinclude.hxx include/CLAM/preinclude.hxx'
-		
-	print copyCmd
-	os.system( copyCmd )
-	realHeaders.append('include/CLAM/preinclude.hxx')
- 	# end TODO remove
-
-
 	realSources = []
 	for orig,target in file_retriever.origTargetSources:
 		env.CopyFileAndUpdateIncludes(target,orig)
