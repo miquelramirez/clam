@@ -3,7 +3,7 @@
 
 #include "DummyProducts.hxx"
 
-#include <CLAM/Factory.hxx>
+#include "Factory.hxx" // CLAM
 
 #include <list>
 

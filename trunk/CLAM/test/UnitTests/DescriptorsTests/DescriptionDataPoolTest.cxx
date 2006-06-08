@@ -22,8 +22,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/Pool.hxx>
-#include <CLAM/DataTypes.hxx>
+#include "Pool.hxx" // CLAM
+#include "DataTypes.hxx" // CLAM
 
 namespace CLAMTest
 {

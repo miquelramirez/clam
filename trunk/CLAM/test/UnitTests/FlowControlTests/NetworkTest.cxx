@@ -20,20 +20,20 @@
 */
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <CLAM/Processing.hxx>
-#include <CLAM/Network.hxx>
-#include <CLAM/BasicFlowControl.hxx>
+#include "Processing.hxx" // CLAM
+#include "Network.hxx" // CLAM
+#include "BasicFlowControl.hxx" // CLAM
 #include <string>
 #include "BaseLoggable.hxx"
-#include <CLAM/InPort.hxx>
-#include <CLAM/OutPort.hxx>
-#include <CLAM/InControl.hxx>
-#include <CLAM/OutControl.hxx>
+#include "InPort.hxx" // CLAM
+#include "OutPort.hxx" // CLAM
+#include "InControl.hxx" // CLAM
+#include "OutControl.hxx" // CLAM
 #include "DummyProcessingData.hxx"
 
-#include <CLAM/Oscillator.hxx>
-#include <CLAM/AudioMultiplier.hxx>
-#include <CLAM/AudioFileIn.hxx>
+#include "Oscillator.hxx" // CLAM
+#include "AudioMultiplier.hxx" // CLAM
+#include "AudioFileIn.hxx" // CLAM
 
 namespace CLAMTest {
 

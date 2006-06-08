@@ -23,7 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-#include <CLAM/DynamicType.hxx>
+#include "DynamicType.hxx" // CLAM
 #include "DummyDynamicTypes.hxx"
 
 namespace CLAMTest

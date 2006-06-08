@@ -22,13 +22,13 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <string>
 #include "BaseLoggable.hxx"
-#include <CLAM/Network.hxx>
-#include <CLAM/Oscillator.hxx>
-#include <CLAM/AudioMultiplier.hxx>
-#include <CLAM/AutoPanner.hxx>
-#include <CLAM/FFT_rfftw.hxx>
-#include <CLAM/XMLStorage.hxx>
-#include <CLAM/BasicFlowControl.hxx>
+#include "Network.hxx" // CLAM
+#include "Oscillator.hxx" // CLAM
+#include "AudioMultiplier.hxx" // CLAM
+#include "AutoPanner.hxx" // CLAM
+#include "FFT_rfftw.hxx" // CLAM
+#include "XMLStorage.hxx" // CLAM
+#include "BasicFlowControl.hxx" // CLAM
 #include "cppUnitHelper.hxx"
 
 namespace CLAMTest {

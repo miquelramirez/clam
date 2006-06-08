@@ -22,14 +22,14 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/Pool.hxx>
-#include <CLAM/DataTypes.hxx>
-#include <CLAM/Spectrum.hxx>
-#include <CLAM/SpectrumConfig.hxx>
-#include <CLAM/Audio.hxx>
-#include <CLAM/SpectralAnalysis.hxx>
-#include <CLAM/XMLStorage.hxx>
-#include <CLAM/XMLAdapter.hxx>
+#include "Pool.hxx" // CLAM
+#include "DataTypes.hxx" // CLAM
+#include "Spectrum.hxx" // CLAM
+#include "SpectrumConfig.hxx" // CLAM
+#include "Audio.hxx" // CLAM
+#include "SpectralAnalysis.hxx" // CLAM
+#include "XMLStorage.hxx" // CLAM
+#include "XMLAdapter.hxx" // CLAM
 #include <sstream>
 
 

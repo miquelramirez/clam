@@ -20,10 +20,10 @@
 */
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <CLAM/AudioMixer.hxx>
-#include <CLAM/Processing.hxx>
-#include <CLAM/Audio.hxx>
-#include <CLAM/OutControl.hxx>
+#include "AudioMixer.hxx" // CLAM
+#include "Processing.hxx" // CLAM
+#include "Audio.hxx" // CLAM
+#include "OutControl.hxx" // CLAM
 
 namespace CLAMTest{
 

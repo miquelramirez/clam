@@ -1,11 +1,11 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/AudioFile.hxx>
-#include <CLAM/AudioFileHeader.hxx>
-#include <CLAM/AudioFileFormats.hxx>
+#include "AudioFile.hxx" // CLAM
+#include "AudioFileHeader.hxx" // CLAM
+#include "AudioFileFormats.hxx" // CLAM
 
-#include <CLAM/XMLStorage.hxx>
+#include "XMLStorage.hxx" // CLAM
 #include <fstream>
 
 namespace CLAMTest

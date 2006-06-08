@@ -22,10 +22,10 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/DescriptionScheme.hxx>
-#include <CLAM/DataTypes.hxx>
-#include <CLAM/Component.hxx>
-#include <CLAM/XMLStorage.hxx>
+#include "DescriptionScheme.hxx" // CLAM
+#include "DataTypes.hxx" // CLAM
+#include "Component.hxx" // CLAM
+#include "XMLStorage.hxx" // CLAM
 
 
 namespace CLAMTest

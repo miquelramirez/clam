@@ -22,8 +22,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/Extractor.hxx>
-#include <CLAM/DataTypes.hxx>
+#include "Extractor.hxx" // CLAM
+#include "DataTypes.hxx" // CLAM
 #include "CharCopierExtractor.hxx"
 
 

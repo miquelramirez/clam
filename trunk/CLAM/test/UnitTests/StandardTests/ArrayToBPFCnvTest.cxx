@@ -1,8 +1,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
-#include <CLAM/Array.hxx>
-#include <CLAM/BPF.hxx>
-#include <CLAM/ArrayToBPFCnv.hxx>
+#include "Array.hxx" // CLAM
+#include "BPF.hxx" // CLAM
+#include "ArrayToBPFCnv.hxx" // CLAM
 
 namespace CLAMTest
 {

@@ -1,9 +1,9 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
-#include <CLAM/SearchArray.hxx>
-#include <CLAM/stl_optbinsearch.h>
-#include <CLAM/Array.hxx>
-#include <CLAM/Point.hxx>
+#include "SearchArray.hxx" // CLAM
+#include "stl_optbinsearch.h" // CLAM
+#include "Array.hxx" // CLAM
+#include "Point.hxx" // CLAM
 
 namespace CLAM_Math
 {

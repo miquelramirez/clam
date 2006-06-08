@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
-#include <CLAM/Factory.hxx>
-#include <CLAM/Processing.hxx>
+#include "Factory.hxx" // CLAM
+#include "Processing.hxx" // CLAM
 
 	
 

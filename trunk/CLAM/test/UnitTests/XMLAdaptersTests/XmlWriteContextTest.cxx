@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/XmlWriteContext.hxx>
+#include "XmlWriteContext.hxx" // CLAM
 
 namespace CLAM
 {

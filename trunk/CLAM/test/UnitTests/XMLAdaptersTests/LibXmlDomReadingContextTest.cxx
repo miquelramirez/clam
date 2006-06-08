@@ -1,13 +1,13 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/XMLStorage.hxx>
-#include <CLAM/XmlMockUpObjects.hxx>
-#include <CLAM/Component.hxx>
+#include "XMLStorage.hxx" // CLAM
+#include "XmlMockUpObjects.hxx" // CLAM
+#include "Component.hxx" // CLAM
 #include <list>
-#include <CLAM/LibXmlDomReadingContext.hxx>
-#include <CLAM/LibXmlDomWriter.hxx>
-#include <CLAM/LibXmlDomReader.hxx>
+#include "LibXmlDomReadingContext.hxx" // CLAM
+#include "LibXmlDomWriter.hxx" // CLAM
+#include "LibXmlDomReader.hxx" // CLAM
 
 /*
 TOTEST:

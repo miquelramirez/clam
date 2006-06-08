@@ -1,8 +1,8 @@
-#include <CLAM/WritingRegion.hxx>
-#include <CLAM/ReadingRegion.hxx>
+#include "WritingRegion.hxx" // CLAM
+#include "ReadingRegion.hxx" // CLAM
 
-#include <CLAM/PhantomBuffer.hxx>
-#include <CLAM/Assert.hxx>
+#include "PhantomBuffer.hxx" // CLAM
+#include "Assert.hxx" // CLAM
 #include <cppunit/extensions/HelperMacros.h>
 #include <sstream>
 #include <fstream>

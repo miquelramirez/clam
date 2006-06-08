@@ -27,7 +27,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 
-#include <CLAM/XMLStorage.hxx>
+#include "XMLStorage.hxx" // CLAM
 
 using namespace CLAM;
 

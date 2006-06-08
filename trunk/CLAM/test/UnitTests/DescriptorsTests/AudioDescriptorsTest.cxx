@@ -22,11 +22,11 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/AudioDescriptors.hxx>
-#include <CLAM/AudioFileIn.hxx>
-#include <CLAM/AudioFileConfig.hxx>
-#include <CLAM/MonoAudioFileReader.hxx>
-#include <CLAM/XMLStorage.hxx>
+#include "AudioDescriptors.hxx" // CLAM
+#include "AudioFileIn.hxx" // CLAM
+#include "AudioFileConfig.hxx" // CLAM
+#include "MonoAudioFileReader.hxx" // CLAM
+#include "XMLStorage.hxx" // CLAM
 
 
 

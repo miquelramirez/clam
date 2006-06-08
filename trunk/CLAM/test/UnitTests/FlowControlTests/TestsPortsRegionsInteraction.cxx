@@ -1,13 +1,13 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include <CLAM/InPort.hxx>
-#include <CLAM/OutPort.hxx>
-#include <CLAM/InPortPublisher.hxx>
-#include <CLAM/OutPortPublisher.hxx>
+#include "InPort.hxx" // CLAM
+#include "OutPort.hxx" // CLAM
+#include "InPortPublisher.hxx" // CLAM
+#include "OutPortPublisher.hxx" // CLAM
 
-#include <CLAM/AudioInPortPublisher.hxx>
-#include <CLAM/AudioOutPortPublisher.hxx>
-#include <CLAM/AudioInPort.hxx>
-#include <CLAM/AudioOutPort.hxx>
+#include "AudioInPortPublisher.hxx" // CLAM
+#include "AudioOutPortPublisher.hxx" // CLAM
+#include "AudioInPort.hxx" // CLAM
+#include "AudioOutPort.hxx" // CLAM
 
 namespace CLAMTest {
 

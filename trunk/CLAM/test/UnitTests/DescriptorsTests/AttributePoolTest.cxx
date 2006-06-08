@@ -22,9 +22,9 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/AttributePool.hxx>
-#include <CLAM/DataTypes.hxx>
-#include <CLAM/Component.hxx>
+#include "AttributePool.hxx" // CLAM
+#include "DataTypes.hxx" // CLAM
+#include "Component.hxx" // CLAM
 
 
 namespace CLAMTest
