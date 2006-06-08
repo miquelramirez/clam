@@ -82,7 +82,11 @@ namespace CLAMVM
 		double wX = (((double)sx / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
 		double wY = mYAxis->maximum() - (((double)sy / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
 
+	#ifdef _MSC_VER
+		_snprintf( txtBuffer, maxLen,  "freq. %.2f Hz time %.3f secs",  wY, wX );	
+	#else
 		std::snprintf( txtBuffer, maxLen,  "freq. %.2f Hz time %.3f secs",  wY, wX );	
+	#endif
 	}
 
 	void Fl_FundFreq::Show()

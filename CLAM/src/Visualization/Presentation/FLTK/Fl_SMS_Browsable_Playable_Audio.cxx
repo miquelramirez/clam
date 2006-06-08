@@ -111,7 +111,11 @@ void Fl_SMS_Browsable_Playable_Audio::OnRefreshTooltip( int x, int y, char* text
 	double wX = (((double)x / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
 	double wY = mYAxis->maximum() - (((double)y / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
 
-	std::snprintf( textBuffer, maxLen,  mTooltipFormat.c_str(),  wX, wY );
+	#ifdef _MSC_VER
+		_snprintf( textBuffer, maxLen,  mTooltipFormat.c_str(),  wX, wY );
+	#else
+		std::snprintf( textBuffer, maxLen,  mTooltipFormat.c_str(),  wX, wY );
+	#endif
 }
 
 void Fl_SMS_Browsable_Playable_Audio::OnDisplaySelectedXValue( double value )

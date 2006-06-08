@@ -81,8 +81,11 @@ namespace CLAMVM
 
 		double wX = ((double)x / (double)screenBox.pixel_width)* ( fabs( worldBox.mRight - worldBox.mLeft ) ) + worldBox.mLeft;
 		double wY = ((double)y / (double)screenBox.pixel_height) * ( fabs( worldBox.mTop - worldBox.mBottom ) );
-
+	#ifdef _MSC_VER
+		_snprintf( textBuffer, maxLength, "X=%.3g, Y=%.3g", wX, wY);
+	#else
 		std::snprintf( textBuffer, maxLength, "X=%.3g, Y=%.3g", wX, wY);
+	#endif
 		
 	}
 
