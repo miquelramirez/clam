@@ -188,14 +188,8 @@ def setup_build_options( env ) :
 	opts = Options('clam.conf')
 	
 	# global options
-	if sys.platform == 'linux2' :
-		opts.Add( PathOption( 'prefix', 'Directory to install under', '/usr/local'))
-	elif sys.platform == 'darwin' :
-		opts.Add( PathOption( 'prefix', 'Directory to install under (warning: do not set /usr)', '/usr/local'))
-	else :
-		opts.Add( PathOption( 'prefix', 'Directory to install under', 'G:\\projects\CLAM-bin') )
-
-	opts.Add( PathOption( 'install_prefix', 'Directory to install under (for packagers)', '.'))
+	opts.Add( PathOption( 'prefix', 'Install location for CLAM', '/usr/local'))
+	opts.Add( PathOption( 'install_prefix', 'Install location when packaging (just for .deb creation)', '.'))
 	if sys.platform == 'win32' : #!= 'linux2' :
 		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
 	if sys.platform == 'win32' :
@@ -387,6 +381,13 @@ processing_tgt, processing_install_tgt = SConscript('processing/SConscript')
 audioio_tgt, audioio_install_tgt = SConscript('audioio/SConscript')
 vmfl_tgt, vmfl_install_tgt = SConscript('vmfl/SConscript')
 vmqt_tgt, vmqt_install_tgt = SConscript('vmqt/SConscript')
+
+import glob, os
+install_dirs = InstallDirs()
+install_dirs.compose(clam_env)
+sconstoolsTargetDir = os.path.join(install_dirs.data, 'clam', 'sconstools')
+sconstoolsInstall = clam_env.Install(sconstoolsTargetDir, glob.glob('../sconstools/*.py'))
+Depends(core_install_tgt, sconstoolsInstall)
 
 # Module dependencies
 if sys.platform != 'darwin':
