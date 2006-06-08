@@ -22,26 +22,25 @@
 #include "ErrProcessingObj.hxx"
 #include "Processing.hxx"
 #include <cstdio>
+#include <string>
 
 namespace CLAM {
 
 	ErrProcessingObj::ErrProcessingObj()
+		: Err( (std::string()+"Processing Error").c_str() )
 	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		std::snprintf(mMsg, 1024, "Processing Error"); // Initialization of the error message
 	}
 
 
-	ErrProcessingObj::ErrProcessingObj(const char* msg,const Processing *o)
+	ErrProcessingObj::ErrProcessingObj(const char* msg) 
+		: Err( (std::string()+"Processing Error: " + msg).c_str() )
+		
 	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		if (!o)
-			std::snprintf(mMsg,1024,"Processing Error: %s", msg); // Initialization of the error message
-		else
-//			std::snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetFullName().c_str(),msg);
-			std::snprintf(mMsg,1024,"Error in processing object %s: \n%s", o->GetClassName(),msg);
+	}
+	ErrProcessingObj::ErrProcessingObj(const char* msg,const Processing *o) 
+		: Err( (std::string()+"Error in processing object " + o->GetClassName() + ": \n" + msg).c_str() )
+		
+	{
 	}
 
 }

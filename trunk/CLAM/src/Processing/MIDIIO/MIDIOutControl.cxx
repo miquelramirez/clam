@@ -21,6 +21,7 @@
 
 #include "InControl.hxx"
 #include "MIDIOutControl.hxx"
+#include <string>
 
 namespace CLAM {
 
@@ -128,12 +129,11 @@ bool MIDIOutControl::ConcreteConfigure(const ProcessingConfig& c)
 		}
 		if (fieldname)
 		{
-			char tmp[256];
-			std::snprintf(tmp,256,"%s:%s",MIDI::GetMessageInfo(m).name,fieldname);
+			std::string tmp = std::string() + MIDI:GetMessageInfo(m).name + ":" + fieldname;
 			/* add the InControl, and remember which message byte it will
 			 * control */
 			mControlIdToMsgByteId[ctrlid] = i;
-			mMyInControls.AddElem(new InControlTmpl<MIDIOutControl>(ctrlid++,tmp,this,&MIDIOutControl::DoControl));
+			mMyInControls.AddElem(new InControlTmpl<MIDIOutControl>(ctrlid++,tmp.c_str(),this,&MIDIOutControl::DoControl));
 		}
 	}
 

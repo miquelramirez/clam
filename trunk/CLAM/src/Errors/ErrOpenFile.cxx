@@ -25,15 +25,14 @@
 #include "ErrOpenFile.hxx"
 #include "OSDefines.hxx"
 #include <errno.h>
+#include <string>
 
 namespace CLAM {
 
 	ErrOpenFile::ErrOpenFile(const char* filename)
+		: Err( (std::string() + "Opening file \"" + filename + "\" failed: " +
+			strerror(errno)).c_str() )
 	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		std::snprintf(mMsg,1024,"Opening file \"%s\" failed: %s",
-		         filename,strerror(errno));
 	}
 
 }

@@ -22,16 +22,12 @@
 #include "ErrOutOfMemory.hxx"
 #include "OSDefines.hxx"
 
-#include <cstdio>
-#include <new>
 
 namespace CLAM {
 
 	ErrOutOfMemory::ErrOutOfMemory(int size)
+		: Err( "Out of memory, allocating memory\n" )
 	{
-		mMsg = new (std::nothrow) char[1024];
-		if (!mMsg) return;
-		std::snprintf(mMsg,1024,"Out of memory, allocating %d bytes\n",size);
 	}
 
 }

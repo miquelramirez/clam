@@ -40,7 +40,9 @@ namespace CLAM {
 
 		ErrProcessingObj();
 
-		ErrProcessingObj(const char* msg,const Processing *o=0);
+		ErrProcessingObj(const char* msg);
+
+		ErrProcessingObj(const char* msg,const Processing *o);
 
 		~ErrProcessingObj() throw() {} 
 
