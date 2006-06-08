@@ -82,16 +82,16 @@ clean:
 	find $(CURDIR) -type f -name .sconsign | xargs rm -rf
 	find $(CURDIR) -type f -name *.db | xargs rm -rf
 	rm -rf $(CURDIR)/scons/libs/*.conf
-	rm -rf $(CURDIR)/debian/libclamcore/usr
-	rm -rf $(CURDIR)/debian/libclamcore-dev/usr
-	rm -rf $(CURDIR)/debian/libclamprocessing/usr
-	rm -rf $(CURDIR)/debian/libclamprocessing-dev/usr
-	rm -rf $(CURDIR)/debian/libclamaudioio/usr
-	rm -rf $(CURDIR)/debian/libclamaudioio-dev/usr
-	rm -rf $(CURDIR)/debian/libclamvmfl/usr
-	rm -rf $(CURDIR)/debian/libclamvmfl-dev/usr
-	rm -rf $(CURDIR)/debian/libclamvmqt/usr
-	rm -rf $(CURDIR)/debian/libclamvmqt-dev/usr
+	rm -rf $(CURDIR)/debian/libclam-core0/usr
+	rm -rf $(CURDIR)/debian/libclam-core-dev/usr
+	rm -rf $(CURDIR)/debian/libclam-processing0/usr
+	rm -rf $(CURDIR)/debian/libclam-processing-dev/usr
+	rm -rf $(CURDIR)/debian/libclam-audioio0/usr
+	rm -rf $(CURDIR)/debian/libclam-audioio-dev/usr
+	rm -rf $(CURDIR)/debian/libclam-vmfl0/usr
+	rm -rf $(CURDIR)/debian/libclam-vmfl-dev/usr
+	rm -rf $(CURDIR)/debian/libclam-vmqt0/usr
+	rm -rf $(CURDIR)/debian/libclam-vmqt-dev/usr
 	rm -rf $(CURDIR)/CLAM.tag
 	rm -rf $(CURDIR)/*.tar.gz
 
@@ -104,36 +104,36 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp
-	mkdir -p $(CURDIR)/debian/libclamcore/usr
-	mkdir -p $(CURDIR)/debian/libclamcore-dev/usr
-	mkdir -p $(CURDIR)/debian/libclamprocessing/usr
-	mkdir -p $(CURDIR)/debian/libclamprocessing-dev/usr
-	mkdir -p $(CURDIR)/debian/libclamaudioio/usr
-	mkdir -p $(CURDIR)/debian/libclamaudioio-dev/usr
-	mkdir -p $(CURDIR)/debian/libclamvmfl/usr
-	mkdir -p $(CURDIR)/debian/libclamvmfl-dev/usr
-	mkdir -p $(CURDIR)/debian/libclamvmqt/usr
-	mkdir -p $(CURDIR)/debian/libclamvmqt-dev/usr
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamcore/usr install_core_runtime
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamcore-dev/usr install_core_dev
-	rm -rf $(CURDIR)/debian/libclamcore/usr/lib/*.so
-	rm -rf $(CURDIR)/debian/libclamcore-dev/usr/lib/*.so.*
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamprocessing/usr install_processing_runtime
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamprocessing-dev/usr install_processing_dev
-	rm -rf $(CURDIR)/debian/libclamprocessing/usr/lib/*.so
-	rm -rf $(CURDIR)/debian/libclamprocessing-dev/usr/lib/*.so.*
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamaudioio/usr install_audioio_runtime
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamaudioio-dev/usr install_audioio_dev
-	rm -rf $(CURDIR)/debian/libclamaudioio/usr/lib/*.so
-	rm -rf $(CURDIR)/debian/libclamaudioio-dev/usr/lib/*.so.*
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamvmfl/usr install_vmfl_runtime
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamvmfl-dev/usr install_vmfl_dev
-	rm -rf $(CURDIR)/debian/libclamvmfl/usr/lib/*.so
-	rm -rf $(CURDIR)/debian/libclamvmfl-dev/usr/lib/*.so.*
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamvmqt/usr install_vmqt_runtime
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclamvmqt-dev/usr install_vmqt_dev
-	rm -rf $(CURDIR)/debian/libclamvmqt/usr/lib/*.so
-	rm -rf $(CURDIR)/debian/libclamvmqt-dev/usr/lib/*.so.*
+	mkdir -p $(CURDIR)/debian/libclam-core0/usr
+	mkdir -p $(CURDIR)/debian/libclam-core-dev/usr
+	mkdir -p $(CURDIR)/debian/libclam-processing0/usr
+	mkdir -p $(CURDIR)/debian/libclam-processing-dev/usr
+	mkdir -p $(CURDIR)/debian/libclam-audioio0/usr
+	mkdir -p $(CURDIR)/debian/libclam-audioio-dev/usr
+	mkdir -p $(CURDIR)/debian/libclam-vmfl0/usr
+	mkdir -p $(CURDIR)/debian/libclam-vmfl-dev/usr
+	mkdir -p $(CURDIR)/debian/libclam-vmqt0/usr
+	mkdir -p $(CURDIR)/debian/libclam-vmqt-dev/usr
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-core0/usr install_core_runtime
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-core-dev/usr install_core_dev
+	rm -rf $(CURDIR)/debian/libclam-core0/usr/lib/*.so
+	rm -rf $(CURDIR)/debian/libclam-core-dev/usr/lib/*.so.*
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-processing0/usr install_processing_runtime
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-processing-dev/usr install_processing_dev
+	rm -rf $(CURDIR)/debian/libclam-processing0/usr/lib/*.so
+	rm -rf $(CURDIR)/debian/libclam-processing-dev/usr/lib/*.so.*
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-audioio0/usr install_audioio_runtime
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-audioio-dev/usr install_audioio_dev
+	rm -rf $(CURDIR)/debian/libclam-audioio0/usr/lib/*.so
+	rm -rf $(CURDIR)/debian/libclam-audioio-dev/usr/lib/*.so.*
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-vmfl0/usr install_vmfl_runtime
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-vmfl-dev/usr install_vmfl_dev
+	rm -rf $(CURDIR)/debian/libclam-vmfl0/usr/lib/*.so
+	rm -rf $(CURDIR)/debian/libclam-vmfl-dev/usr/lib/*.so.*
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-vmqt0/usr install_vmqt_runtime
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-vmqt-dev/usr install_vmqt_dev
+	rm -rf $(CURDIR)/debian/libclam-vmqt0/usr/lib/*.so
+	rm -rf $(CURDIR)/debian/libclam-vmqt-dev/usr/lib/*.so.*
 	find $(CURDIR)/debian -type f -name .sconsign | xargs rm -rf
 	# and copy it to the libclam-doc folder
 	mkdir -p $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
@@ -172,11 +172,11 @@ binary-arch: build install
 #	dh_python
 	dh_makeshlibs
 	dh_installdeb
-	dh_shlibdeps -L libclamcore -l debian/libclamcore/usr/lib
-	dh_shlibdeps -L libclamprocessing -l debian/libclamprocessing/usr/lib
-	dh_shlibdeps -L libclamaudioio -l debian/libclamaudioio/usr/lib
-	dh_shlibdeps -L libclamvmfl -l debian/libclamvmfl/usr/lib
-	dh_shlibdeps -L libclamvmqt -l debian/libclamvmqt/usr/lib
+	dh_shlibdeps -L libclam-core0 -l debian/libclam-core0/usr/lib
+	dh_shlibdeps -L libclam-processing0 -l debian/libclam-processing0/usr/lib
+	dh_shlibdeps -L libclam-audioio0 -l debian/libclam-audioio0/usr/lib
+	dh_shlibdeps -L libclam-vmfl0 -l debian/libclam-vmfl0/usr/lib
+	dh_shlibdeps -L libclam-vmqt0 -l debian/libclam-vmqt0/usr/lib
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
