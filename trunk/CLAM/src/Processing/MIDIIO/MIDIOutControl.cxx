@@ -129,7 +129,7 @@ bool MIDIOutControl::ConcreteConfigure(const ProcessingConfig& c)
 		}
 		if (fieldname)
 		{
-			std::string tmp = std::string() + MIDI:GetMessageInfo(m).name + ":" + fieldname;
+			std::string tmp = std::string() + MIDI::GetMessageInfo(m).name + ":" + fieldname;
 			/* add the InControl, and remember which message byte it will
 			 * control */
 			mControlIdToMsgByteId[ctrlid] = i;
