@@ -131,7 +131,7 @@ namespace CLAM {
 			if (snd_card_next(&card) < 0 || card < 0)
 				return; // No cards found
 			while (card >= 0) {
-				snprintf(name, 63,"hw:%d", card);
+				std::snprintf(name, 63,"hw:%d", card);
 				if (snd_ctl_open(&handle, name, 0) < 0)
 					continue; // Card control open error!
 				if (snd_ctl_card_info(handle, info) < 0) {
@@ -143,7 +143,7 @@ namespace CLAM {
 					snd_ctl_rawmidi_next_device(handle, &dev);
 					if (dev < 0)
 						break;
-					snprintf(name, 63,"hw:%d,%d", card,dev);
+					std::snprintf(name, 63,"hw:%d,%d", card,dev);
 					mAvailableDevices.push_back(name);
 				}
 				snd_ctl_close(handle);

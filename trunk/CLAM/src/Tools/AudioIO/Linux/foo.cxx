@@ -489,7 +489,7 @@ main()
 	short buf[1024];
 	try
 	{
-		SndPcm sndpcm(44099,2,"hw:0,0","hw:0,0");
+		SndPcm sndpcm(44099,2,"plughw:0,0","plughw:0,0");
 		
 		setscheduler();
 

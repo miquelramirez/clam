@@ -31,7 +31,7 @@ namespace CLAM {
 	{
 		mMsg = new (std::nothrow) char[1024];
 		if (!mMsg) return;
-		snprintf(mMsg,1024,"Out of memory, allocating %d bytes\n",size);
+		std::snprintf(mMsg,1024,"Out of memory, allocating %d bytes\n",size);
 	}
 
 }

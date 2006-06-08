@@ -26,13 +26,6 @@
 #include "CLAM_Math.hxx"
 #include <cstdio>
 
-#if _MSC_VER <= 1310
-#define STD_SNPRINTF snprintf
-#else
-#define STD_SNPRINTF std::snprintf
-#endif
-
-
 namespace CLAMVM
 {
 	TooltipTracker2D::TooltipTracker2D()
@@ -89,7 +82,7 @@ namespace CLAMVM
 		double wX = ((double)x / (double)screenBox.pixel_width)* ( fabs( worldBox.mRight - worldBox.mLeft ) ) + worldBox.mLeft;
 		double wY = ((double)y / (double)screenBox.pixel_height) * ( fabs( worldBox.mTop - worldBox.mBottom ) );
 
-		STD_SNPRINTF( textBuffer, maxLength, "X=%.3g, Y=%.3g", wX, wY);
+		std::snprintf( textBuffer, maxLength, "X=%.3g, Y=%.3g", wX, wY);
 		
 	}
 

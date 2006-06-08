@@ -122,7 +122,7 @@ void SndPcm::Start(void)
 	if (phandle)
 	{
 		int n = latency*2; // write two silent buffers
-		while (n)
+		while (n>0)
 		{
 			int m = n;
 			if (m>nSilentBlockFrames) m = nSilentBlockFrames;
@@ -514,7 +514,9 @@ long SndPcm::writebuf(snd_pcm_t *handle, char *buf, long len)
 	while (len > 0) {
 		r = snd_pcm_writei(handle, buf, len);
 		if (r == -EAGAIN)
+		{
 			continue;
+		}
 		// cat_error("write = %li\n", r);
 		if (r < 0)
 			return r;
@@ -573,7 +575,7 @@ main()
 	short buf[1024];
 	try
 	{
-		SndPcm sndpcm(44099,2,"hw:0,0","hw:0,0");
+		SndPcm sndpcm(44099,2,"plughw:0,0","plughw:0,0");
 		
 		setscheduler();
 
