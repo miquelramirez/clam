@@ -4,12 +4,6 @@ from buildtools.pkggen import PackageData
 
 import sys
 
-def handle_preinclude ( env ):
-	if sys.platform != 'win32' :
-		env.Append(CCFLAGS='-include CLAM/%s'%env['preinclude'])
-	else:
-		env.Append(CCFLAGS='/FICLAM/%s'%env['preinclude'])
-
 def lib_rules(name, version, headers, sources, install_dirs, env, moduleDependencies=[]) :
 	if not env.GetOption('clean') : # David: I don't understand why you don't want to clean it
 		pkg_data = PackageData( 'clam_%s'%name, version )

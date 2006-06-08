@@ -10,7 +10,6 @@ from buildtools.package_checks import *
 from buildtools.generic_checks import *
 from buildtools.installdirs import * 
 from buildtools.dmg_creation import *
-from buildtools.rulesets import handle_preinclude
 # module check sequences
 from modconf import *
 from modconf.core import * 
@@ -35,7 +34,6 @@ def load_config_file_to_env( env, dir ):
 
 def save_config_file_from_env( env, dir ):
 	# workaround due to bug in scons (if we add the flag after loading it will add "" to the new flagand will fail
-	handle_preinclude(env)
 	opts = Options()
 	opts.Add( 'CPPPATH', 'CPP PATH', '')
 	opts.Add( 'CCFLAGS', 'CC FLAGS', '')
@@ -319,8 +317,6 @@ if not clam_env.GetOption("clean") :
 else :
 	header_db = None
 Export('header_db')
-
-clam_env['preinclude']='preinclude.hxx'
 
 setup_build_options( clam_env )
 

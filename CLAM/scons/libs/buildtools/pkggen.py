@@ -46,7 +46,7 @@ class PackageData :
 		ccflags = edict.get('CCFLAGS', [''])
 		cppaths = edict.get('CPPPATH', [''])
 		cpppaths = [ '/I'+path for path in cppaths ]
-		print >> out, "Cflags: /I%s\\include /FICLAM/preinclude.hxx %s"%( env['prefix'] ," ".join(cppflags+cpppaths+ccflags))	
+		print >> out, "Cflags: %s"%" ".join(cppflags+cpppaths+ccflags)	
 
 		out.close()
 
