@@ -32,7 +32,7 @@ namespace CLAM {
 	{
 		mMsg = new (std::nothrow) char[1024];
 		if (!mMsg) return;
-		snprintf(mMsg,1024,"Opening file \"%s\" failed: %s",
+		std::snprintf(mMsg,1024,"Opening file \"%s\" failed: %s",
 		         filename,strerror(errno));
 	}
 

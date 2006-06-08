@@ -122,7 +122,7 @@ bool MIDIInControl::ConcreteConfigure(const ProcessingConfig& c)
 		if (fieldname)
 		{
 			char tmp[256];
-			snprintf(tmp,256,"%s:%s",MIDI::GetMessageInfo(m).name,fieldname);
+			std::snprintf(tmp,256,"%s:%s",MIDI::GetMessageInfo(m).name,fieldname);
 			/* add the InControl, and remember which message byte it will
 			 * control */
 			mMsgByteIdToControlId[i] = ctrlid++;

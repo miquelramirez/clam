@@ -101,7 +101,7 @@ namespace CLAMVM
 		double wX = (((double)sx / (double)mDisplay->w())*(fabs(mXAxis->maximum()-mXAxis->minimum()))) + mXAxis->minimum();
 		double wY = mYAxis->maximum() - (((double)sy / (double)mDisplay->h())*(fabs(mYAxis->maximum()-mYAxis->minimum())));
 
-		snprintf( txtBuffer, maxLen,  mTooltipFmtStr.c_str(),  wX, wY );	
+		std::snprintf( txtBuffer, maxLen,  mTooltipFmtStr.c_str(),  wX, wY );	
 
 	}
 
