@@ -40,7 +40,6 @@ namespace CLAM {
 		ErrDynamicType();
 		ErrDynamicType(char* msg);
 		ErrDynamicType(char* msg1, const char* msg2);
-		ErrDynamicType(char* msg1, const char* msg2, const char* msg3);
 
 		virtual ~ErrDynamicType() throw();
 	};
