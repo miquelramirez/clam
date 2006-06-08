@@ -4,7 +4,7 @@
 #include <cppunit/ui/text/TestRunner.h>
 
 #include "cppUnitHelper.hxx"
-#include <CLAM/Assert.hxx>
+#include "Assert.hxx" // CLAM
 
 int main(void){
 	// this flag allows clam asserts to behave throwing an exception instead

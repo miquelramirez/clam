@@ -3,10 +3,10 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/XercesDomWriter.hxx>
-#include <CLAM/XercesDomReader.hxx>
-#include <CLAM/XercesInitializer.hxx>
-#include <CLAM/XercesEncodings.hxx>
+#include "XercesDomWriter.hxx" // CLAM
+#include "XercesDomReader.hxx" // CLAM
+#include "XercesInitializer.hxx" // CLAM
+#include "XercesEncodings.hxx" // CLAM
 #include <sstream>
 #include <fstream>
 

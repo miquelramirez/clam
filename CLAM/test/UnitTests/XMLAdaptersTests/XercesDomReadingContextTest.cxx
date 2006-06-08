@@ -4,12 +4,12 @@
 #include "cppUnitHelper.hxx"
 
 #include "XmlMockUpObjects.hxx"
-#include <CLAM/Component.hxx>
+#include "Component.hxx" // CLAM
 #include <list>
-#include <CLAM/XercesDomWriter.hxx>
-#include <CLAM/XercesDomReader.hxx>
-#include <CLAM/XercesInitializer.hxx>
-#include <CLAM/XercesDomReadingContext.hxx>
+#include "XercesDomWriter.hxx" // CLAM
+#include "XercesDomReader.hxx" // CLAM
+#include "XercesInitializer.hxx" // CLAM
+#include "XercesDomReadingContext.hxx" // CLAM
 #include <xercesc/dom/DOMElement.hpp>
 #include <xercesc/dom/DOMText.hpp>
 #include <xercesc/dom/DOMComment.hpp>

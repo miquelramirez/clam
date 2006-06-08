@@ -3,11 +3,11 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/XercesDomDocumentHandler.hxx>
-#include <CLAM/XercesInitializer.hxx>
+#include "XercesDomDocumentHandler.hxx" // CLAM
+#include "XercesInitializer.hxx" // CLAM
 #include <sstream>
 #include <xercesc/dom/DOMImplementation.hpp>
-#include <CLAM/XercesEncodings.hxx>
+#include "XercesEncodings.hxx" // CLAM
 #include <iostream>
 
 // TODO: Get the read errors

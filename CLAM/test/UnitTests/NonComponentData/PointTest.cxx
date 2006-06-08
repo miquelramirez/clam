@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/Point.hxx>
+#include "Point.hxx" // CLAM
 
 namespace CLAMTest
 {

@@ -1,6 +1,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
-#include <CLAM/Array.hxx>
+#include "Array.hxx" // CLAM
 
 namespace CLAMTest
 {

@@ -1,6 +1,6 @@
 #include <cppunit/extensions/HelperMacros.h>
-#include <CLAM/ReadingRegion.hxx>
-#include <CLAM/WritingRegion.hxx>
+#include "ReadingRegion.hxx" // CLAM
+#include "WritingRegion.hxx" // CLAM
 
 namespace CLAMTest {
 

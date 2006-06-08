@@ -2,7 +2,7 @@
 #include "cppUnitHelper.hxx"
 #include <string>
 
-#include <CLAM/XmlScoped.hxx>
+#include "XmlScoped.hxx" // CLAM
 
 namespace CLAM
 {

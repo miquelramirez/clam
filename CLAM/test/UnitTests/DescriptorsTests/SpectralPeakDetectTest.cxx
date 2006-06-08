@@ -22,14 +22,14 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/SpectralPeakArray.hxx>
-#include <CLAM/SpectralPeakDetect.hxx>
-#include <CLAM/Spectrum.hxx>
-#include <CLAM/FFT.hxx>
-#include <CLAM/SpecTypeFlags.hxx>
-#include <CLAM/AudioFile.hxx>
-#include <CLAM/MonoAudioFileReader.hxx>
-#include <CLAM/XMLStorage.hxx>
+#include "SpectralPeakArray.hxx" // CLAM
+#include "SpectralPeakDetect.hxx" // CLAM
+#include "Spectrum.hxx" // CLAM
+#include "FFT.hxx" // CLAM
+#include "SpecTypeFlags.hxx" // CLAM
+#include "AudioFile.hxx" // CLAM
+#include "MonoAudioFileReader.hxx" // CLAM
+#include "XMLStorage.hxx" // CLAM
 
 
 

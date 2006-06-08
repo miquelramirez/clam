@@ -1,9 +1,9 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/Spectrum.hxx>
-#include <CLAM/SpecTypeFlags.hxx>
-#include <CLAM/SpectrumConfig.hxx>
+#include "Spectrum.hxx" // CLAM
+#include "SpecTypeFlags.hxx" // CLAM
+#include "SpectrumConfig.hxx" // CLAM
 
 namespace CLAMTest
 {

@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/LibXmlDomDocumentHandler.hxx>
+#include "LibXmlDomDocumentHandler.hxx" // CLAM
 #include <sstream>
 #include <iostream>
 

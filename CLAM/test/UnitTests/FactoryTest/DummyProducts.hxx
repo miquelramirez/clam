@@ -1,9 +1,9 @@
 #ifndef __DUMMYPRODUCTS__
 #define __DUMMYPRODUCTS__
 
-#include <CLAM/Component.hxx>
-#include <CLAM/XMLStorage.hxx>
-#include <CLAM/XMLAdapter.hxx>
+#include "Component.hxx" // CLAM
+#include "XMLStorage.hxx" // CLAM
+#include "XMLAdapter.hxx" // CLAM
 
 namespace CLAMTest
 {

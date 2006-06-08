@@ -3,7 +3,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/XMLStorage.hxx>
+#include "XMLStorage.hxx" // CLAM
 #include "XmlMockUpObjects.hxx"
 #include <fstream>
 /*

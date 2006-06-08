@@ -3,9 +3,9 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include <CLAM/XercesDomWriter.hxx>
-#include <CLAM/XercesInitializer.hxx>
-#include <CLAM/XercesEncodings.hxx>
+#include "XercesDomWriter.hxx" // CLAM
+#include "XercesInitializer.hxx" // CLAM
+#include "XercesEncodings.hxx" // CLAM
 #include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMDocument.hpp>
 #include <xercesc/dom/DOMElement.hpp>

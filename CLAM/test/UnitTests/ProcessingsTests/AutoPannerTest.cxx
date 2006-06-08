@@ -20,10 +20,10 @@
 */
 
 #include <cppunit/extensions/HelperMacros.h>
-#include <CLAM/AutoPanner.hxx>
-#include <CLAM/InControl.hxx>
-#include <CLAM/OSDefines.hxx>
-#include <CLAM/Processing.hxx>
+#include "AutoPanner.hxx" // CLAM
+#include "InControl.hxx" // CLAM
+#include "OSDefines.hxx" // CLAM
+#include "Processing.hxx" // CLAM
 
 namespace CLAMTest {
 
