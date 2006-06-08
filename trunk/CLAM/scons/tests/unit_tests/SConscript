@@ -5,7 +5,7 @@ import sys, os, glob
 def scanFiles(pattern, paths) :
 	files = []
 	for path in paths :
-		files+=glob.glob(path+"/"+pattern)
+		files+=glob.glob(os.path.join(path,pattern))
 	return files
 
 def recursiveDirs(root) :
@@ -15,36 +15,36 @@ def unique(list) :
 	return dict.fromkeys(list).keys()
 
 folders = [
-	'UnitTests',
-	'UnitTests/CommonHelpers',
-	'UnitTests/ControlTests',
-	'UnitTests/DescriptorsTests',
-	'UnitTests/DynamicTypeTests',
-	'UnitTests/FactoryTest',
-	'UnitTests/FlowControlTests',
-	'UnitTests/NonComponentData',
-	'UnitTests/PortsTest',
-	'UnitTests/ProcessingBaseTests',
-	'UnitTests/ProcessingDataTests',
-	'UnitTests/ProcessingsTests',
-	'UnitTests/StandardTests',
-	'UnitTests/ToolsTests',
-	'UnitTests/XMLAdaptersTests',
+	os.path.join('UnitTests'),
+	os.path.join('UnitTests','CommonHelpers'),
+	os.path.join('UnitTests','ControlTests'),
+	os.path.join('UnitTests','DescriptorsTests'),
+	os.path.join('UnitTests','DynamicTypeTests'),
+	os.path.join('UnitTests','FactoryTest'),
+	os.path.join('UnitTests','FlowControlTests'),
+	os.path.join('UnitTests','NonComponentData'),
+	os.path.join('UnitTests','PortsTest'),
+	os.path.join('UnitTests','ProcessingBaseTests'),
+	os.path.join('UnitTests','ProcessingDataTests'),
+	os.path.join('UnitTests','ProcessingsTests'),
+	os.path.join('UnitTests','StandardTests'),
+	os.path.join('UnitTests','ToolsTests'),
+	os.path.join('UnitTests','XMLAdaptersTests'),
 	]
 blacklist = [
-	'UnitTests/TestRunnerQt.cxx',
-	'UnitTests/FactoryTest/PolymorphicTest.cxx',
-	"UnitTests/ProcessingsTests/AudioMixerTest.cxx",
+	os.path.join('UnitTests','TestRunnerQt.cxx'),
+	os.path.join('UnitTests','FactoryTest','PolymorphicTest.cxx'),
+	os.path.join("UnitTests','ProcessingsTests','AudioMixerTest.cxx"),
 	# TODO see for libxml?
-	"UnitTests/XMLAdaptersTests/LibXmlDomDocumentHandlerTest.cxx",
-	"UnitTests/XMLAdaptersTests/LibXmlDomReaderTest.cxx",
-	"UnitTests/XMLAdaptersTests/LibXmlDomReadingContextTest.cxx",
-	"UnitTests/XMLAdaptersTests/LibXmlDomWriterTest.cxx",
+	os.path.join("UnitTests','XMLAdaptersTests','LibXmlDomDocumentHandlerTest.cxx"),
+	os.path.join("UnitTests','XMLAdaptersTests','LibXmlDomReaderTest.cxx"),
+	os.path.join("UnitTests','XMLAdaptersTests','LibXmlDomReadingContextTest.cxx"),
+	os.path.join("UnitTests','XMLAdaptersTests','LibXmlDomWriterTest.cxx"),
 	]
 
 
-folders = [ os.path.join('../../../test', folder) for folder in folders ]
-blacklist = [ os.path.join('../../../test', blacksheep) for blacksheep in blacklist ]
+folders = [ os.path.join('..','..','..','test', folder) for folder in folders ]
+blacklist = [ os.path.join('..','..','..','test', blacksheep) for blacksheep in blacklist ]
 sources = scanFiles('*.cxx', folders)
 headers = scanFiles('*.hxx', folders)
 print sources

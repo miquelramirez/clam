@@ -5,7 +5,7 @@ import sys, os, glob
 def scanFiles(pattern, paths) :
 	files = []
 	for path in paths :
-		files+=glob.glob(path+"/"+pattern)
+		files+=glob.glob(os.path.join(path,pattern))
 	return files
 
 def recursiveDirs(root) :
@@ -15,28 +15,28 @@ def unique(list) :
 	return dict.fromkeys(list).keys()
 
 folders = [
-	'UnitTests',
-	'UnitTests/CommonHelpers',
-	'FunctionalTests/CommonHelpers',
-	'FunctionalTests/FlowControlTests',
-	'FunctionalTests/ProcessingTests',
+	os.path.join('UnitTests'),
+	os.path.join('UnitTests','CommonHelpers'),
+	os.path.join('FunctionalTests','CommonHelpers'),
+	os.path.join('FunctionalTests','FlowControlTests'),
+	os.path.join('FunctionalTests','ProcessingTests'),
 	]
 blacklist = [
-	'UnitTests/TestRunnerQt.cxx',
-	'FunctionalTests/ProcessingTests/TestMIDIIO.cxx',
-	'FunctionalTests/ProcessingTests/TestOnsetDetector.cxx',
-	'FunctionalTests/ProcessingTests/TestSpectralPeakDetect.cxx',
-	'FunctionalTests/ProcessingTests/TestSMSAnalysis.cxx',
+	os.path.join('UnitTests','TestRunnerQt.cxx'),
+	os.path.join('FunctionalTests','ProcessingTests','TestMIDIIO.cxx'),
+	os.path.join('FunctionalTests','ProcessingTests','TestOnsetDetector.cxx'),
+	os.path.join('FunctionalTests','ProcessingTests','TestSpectralPeakDetect.cxx'),
+	os.path.join('FunctionalTests','ProcessingTests','TestSMSAnalysis.cxx'),
 #	'TestAudioFileIn',
 	]
 
 if sys.platform == 'win32' :
 	blacklist += [
-		'FunctionalTests/FlowControlTests/OSCEnabledNetworkTest.cxx',
+		os.path.join('FunctionalTests','FlowControlTests','OSCEnabledNetworkTest.cxx'),
 	]
 
-folders = [ os.path.join('../../../test', folder) for folder in folders ]
-blacklist = [ os.path.join('../../../test', blacksheep) for blacksheep in blacklist ]
+folders = [ os.path.join('..','..','..','test', folder) for folder in folders ]
+blacklist = [ os.path.join('..','..','..','test', blacksheep) for blacksheep in blacklist ]
 sources = scanFiles('*.cxx', folders)
 headers = scanFiles('*.hxx', folders)
 print sources
