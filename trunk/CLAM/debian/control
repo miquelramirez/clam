@@ -1,4 +1,4 @@
-Source: libclam
+Source: clam
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
 Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++, make (>= 3.80), autoconf (>= 2.59), ladspa-sdk (>= 1.1), libxerces26-dev, sfftw-dev, libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1),  libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3), doxygen (>= 1.4.0)
@@ -7,7 +7,7 @@ Standards-Version: 3.6.1
 Package: libclam
 Section: libs
 Architecture: any
-Depends: libclamcore, libclamprocessing, libclamvmfl, libclamaudioio, libclamvmqt
+Depends: libclam-core0, libclam-processing, libclam-vmfl, libclam-audioio, libclam-vmqt
 Description: runtime package for the CLAM framework
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
@@ -20,7 +20,7 @@ Description: runtime package for the CLAM framework
 Package: libclam-dev
 Section: libdevel
 Architecture: any
-Depends: libclamcore-dev, libclamprocessing-dev, libclamaudioio-dev, libclamvmfl-dev, libclamvmqt-dev
+Depends: libclam-core-dev, libclam-processing-dev, libclam-audioio-dev, libclam-vmfl-dev, libclam-vmqt-dev
 Description: development package for the CLAM framework
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
@@ -33,7 +33,7 @@ Description: development package for the CLAM framework
 Package: libclam-doc
 Section: doc
 Architecture: all
-Suggests: libclamcore-dev (= ${Source-Version}), libclamprocessing-dev (= ${Source-Version}), libclamaudioio-dev (= ${Source-Version}), libclamvmqt-dev (= ${Source-Version}), libclamvmfl-dev (= ${Source-Version})
+Suggests: libclam-core-dev (= ${Source-Version}), libclam-processing-dev (= ${Source-Version}), libclam-audioio-dev (= ${Source-Version}), libclam-vmqt-dev (= ${Source-Version}), libclam-vmfl-dev (= ${Source-Version})
 Description: CLAM framework documentation package
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
@@ -43,12 +43,12 @@ Description: CLAM framework documentation package
  .
  This package contains the framework documentation and some example programs.
 
-Package: libclamcore-dev
+Package: libclam-core-dev
 Section: libdevel
 Architecture: any
-Depends: libclamcore (= ${Source-Version}), ladspa-sdk (>= 1.1), pkg-config (>= 0.15), libxerces26-dev
+Depends: libclam-core0 (= ${Source-Version}), ladspa-sdk (>= 1.1), pkg-config (>= 0.15), libxerces26-dev
 Suggests: libclam-doc (= ${Source-Version})
-Conflicts: libclamcore-dev (<< ${Source-Version})
+Conflicts: libclam-core-dev (<< ${Source-Version})
 Description: CLAM framework core components (development files)
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
@@ -66,10 +66,10 @@ Description: CLAM framework core components (development files)
   * Threading support
   * Framework 'standard' data structures
 
-Package: libclamprocessing-dev
+Package: libclam-processing-dev
 Section: libdevel
 Architecture: any
-Depends: libclamprocessing(= ${Source-Version}), libclamcore-dev (= ${Source-Version}), pkg-config (>= 0.15), sfftw-dev
+Depends: libclam-processing(= ${Source-Version}), libclam-core-dev (= ${Source-Version}), pkg-config (>= 0.15), sfftw-dev
 Suggests: libclam-doc (= ${Source-Version})
 Description: CLAM framework processing algorithms repository
  CLAM is a framework to develop audio and music applications in C++.
@@ -82,10 +82,10 @@ Description: CLAM framework processing algorithms repository
  which contains powerful digital signal processing algorithms encapsulated as
  CLAM Processing objects.
 
-Package: libclamaudioio-dev
+Package: libclam-audioio-dev
 Section: libdevel
 Architecture: any
-Depends: libclamaudioio (= ${Source-Version}), libclamcore-dev (= ${Source-Version}), libclamprocessing-dev (= ${Source-Version}), pkg-config (>= 0.15), libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8)
+Depends: libclam-audioio (= ${Source-Version}), libclam-core-dev (= ${Source-Version}), libclam-processing-dev (= ${Source-Version}), pkg-config (>= 0.15), libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8)
 Suggests: libclam-doc (= ${Source-Version})
 Description: CLAM framework audio and MIDI i/o components
  CLAM is a framework to develop audio and music applications in C++.
@@ -94,7 +94,7 @@ Description: CLAM framework audio and MIDI i/o components
  useful to abstract target platform for most tasks in an audio applications
  such as audio devices, file formats, threading...
  .
- This package contains development files to develop with libclamaudioio,
+ This package contains development files to develop with libclam-audioio,
  which has the components that allow to:
   * Read or write data from/into a sound card buffer
   * Read or write data from/into audio files (both PCM and compressed -
@@ -102,10 +102,10 @@ Description: CLAM framework audio and MIDI i/o components
   * Read or write messages from MIDI devices
   * Read or write messages from MIDI files
 
-Package: libclamvmfl-dev
+Package: libclam-vmfl-dev
 Section: libdevel
 Architecture: any
-Depends: libclamvmfl (= ${Source-Version}), libclamcore-dev (= ${Source-Version}), libclamprocessing-dev (= ${Source-Version}), libclamaudioio-dev (= ${Source-Version}), pkg-config (>= 0.15), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev
+Depends: libclam-vmfl (= ${Source-Version}), libclam-core-dev (= ${Source-Version}), libclam-processing-dev (= ${Source-Version}), libclam-audioio-dev (= ${Source-Version}), pkg-config (>= 0.15), libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev
 Suggests: libclam-doc (= ${Source-Version})
 Description: CLAM framework data visualization components (FLTK)
  CLAM is a framework to develop audio and music applications in C++.
@@ -117,10 +117,10 @@ Description: CLAM framework data visualization components (FLTK)
  This package contains development files to develop with libvmfltk,
  which contains data visualization components which rely on the FLTK toolkit.
 
-Package: libclamvmqt-dev
+Package: libclam-vmqt-dev
 Section: libdevel
 Architecture: any
-Depends: libclamvmqt (= ${Source-Version}), libclamcore-dev (= ${Source-Version}), libclamprocessing-dev (= ${Source-Version}), libclamaudioio-dev (= ${Source-Version}), pkg-config (>= 0.15), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
+Depends: libclam-vmqt (= ${Source-Version}), libclam-core-dev (= ${Source-Version}), libclam-processing-dev (= ${Source-Version}), libclam-audioio-dev (= ${Source-Version}), pkg-config (>= 0.15), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
 Suggests: libclam-doc (= ${Source-Version})
 Description: CLAM framework data visualization components (Qt)
  CLAM is a framework to develop audio and music applications in C++.
@@ -133,7 +133,7 @@ Description: CLAM framework data visualization components (Qt)
  which contains data visualization components which rely on the Qt toolkit.
 
 
-Package: libclamcore
+Package: libclam-core0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
@@ -153,10 +153,10 @@ Description: CLAM framework core components
   * Threading support
   * Framework 'standard' data structures
 
-Package: libclamprocessing
+Package: libclam-processing
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libclamcore (= ${Source-Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclam-core0 (= ${Source-Version})
 Description: CLAM framework processing algorithms repository
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
@@ -167,10 +167,10 @@ Description: CLAM framework processing algorithms repository
  This package contains digital signal processing algorithms encapsulated as
  CLAM Processing objects.
 
-Package: libclamaudioio
+Package: libclam-audioio
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libclamcore (= ${Source-Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclam-core0 (= ${Source-Version})
 Description: CLAM framework audio and MIDI i/o components
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
@@ -186,10 +186,10 @@ Description: CLAM framework audio and MIDI i/o components
   * Read or write messages from MIDI devices
   * Read or write messages from MIDI files
 
-Package: libclamvmfl
+Package: libclam-vmfl
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libclamcore (= ${Source-Version}), libclamprocessing (= ${Source-Version}), libclamaudioio (= ${Source-Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclam-core0 (= ${Source-Version}), libclam-processing (= ${Source-Version}), libclam-audioio (= ${Source-Version})
 Description: CLAM framework data visualization components (FLTK)
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
@@ -200,10 +200,10 @@ Description: CLAM framework data visualization components (FLTK)
  This package contains CLAM framework data visualization components which
  rely on the FLTK toolkit.
 
-Package: libclamvmqt
+Package: libclam-vmqt
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libclamcore (= ${Source-Version}), libclamprocessing (= ${Source-Version}), libclamaudioio (= ${Source-Version})
+Depends: ${shlibs:Depends}, ${misc:Depends}, libclam-core0 (= ${Source-Version}), libclam-processing (= ${Source-Version}), libclam-audioio (= ${Source-Version})
 Description: CLAM framework data visualization components (Qt)
  CLAM is a framework to develop audio and music applications in C++.
  It provides tools to perform advanced analysis, transformations and synthesis,
