@@ -20,33 +20,23 @@
  */
 
 #include "ErrDynamicType.hxx"
-#include <cstdio>
+#include <string>
 
 
 namespace CLAM {
 
 	ErrDynamicType::ErrDynamicType()
+		: Err("\nDynamicType Error")
 	{
-		mMsg = new char[250];
-		std::snprintf(mMsg, 250, "\nDynamicType Error"); // Initialization of the error message
 	}
 
 	ErrDynamicType::ErrDynamicType(char* msg)
+		: Err((std::string("\nDynamicType Error: ")+msg).c_str())
 	{
-		mMsg = new char[250];
-		std::snprintf(mMsg, 250,"\nDynamicType Error: %s", msg); // Initialization of the error message
 	}
-
 	ErrDynamicType::ErrDynamicType(char* msg1, const char* msg2)
+		: Err((std::string("\nDynamicType Error: ")+msg1+" "+msg2).c_str())
 	{
-		mMsg = new char[250];
-		std::snprintf(mMsg, 250,"\nDynamicType Error: %s %s", msg1, msg2); // Initialization of the error message
-	}
-
-	ErrDynamicType::ErrDynamicType(char* msg1, const char* msg2, const char* msg3)
-	{
-		mMsg = new char[250];
-		std::snprintf(mMsg, 250,"\nDynamicType Error: %s %s %s", msg1, msg2, msg3); // Initialization of the error message
 	}
 
 	ErrDynamicType::~ErrDynamicType() throw()
