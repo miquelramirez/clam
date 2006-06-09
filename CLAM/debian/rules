@@ -13,7 +13,7 @@
 
 
 CFLAGS = -Wall -g
-OPTIONS=prefix=/usr xmlbackend=xercesc release=yes with_osc_support=no
+OPTIONS= prefix=/usr xmlbackend=xercesc release=yes with_osc_support=no double=yes
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -116,6 +116,7 @@ install: build
 	mkdir -p $(CURDIR)/debian/libclam-vmqt-dev/usr
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-core0/usr install_core_runtime
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-core-dev/usr install_core_dev
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-core-dev/usr install_sconstools
 	rm -rf $(CURDIR)/debian/libclam-core0/usr/lib/*.so
 	rm -rf $(CURDIR)/debian/libclam-core-dev/usr/lib/*.so.*
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-processing0/usr install_processing_runtime

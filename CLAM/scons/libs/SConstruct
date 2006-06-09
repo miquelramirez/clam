@@ -383,6 +383,7 @@ install_dirs = InstallDirs()
 install_dirs.compose(clam_env)
 sconstoolsTargetDir = os.path.join(install_dirs.data, 'clam', 'sconstools')
 sconstoolsInstall = clam_env.Install(sconstoolsTargetDir, glob.glob('../sconstools/*.py'))
+clam_env.Alias('install_sconstools', sconstoolsInstall)
 Depends(core_install_tgt, sconstoolsInstall)
 
 # Module dependencies
