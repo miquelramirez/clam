@@ -91,6 +91,11 @@ if sys.platform=='linux2' :
 elif sys.platform=='win32':
 #	env.Append(LIBPATH=[ os.path.join(env['vstsdk_path,'] 'win','library')])
 	env.Append(CPPDEFINES=['WIN32', '_WINDOWS', ('WINDOWS',1)])
+#	env.Append(LIBPATH=[ os.path.join(env['vstsdk_path'],'win','library')])
+	env.Append(CPPDEFINES=['WIN32','_WINDOWS',('WINDOWS',1),'_WINDLL'])
+	env.Append(CPPFLAGS=['/GL-','/Og','/Op','/Ot','/G5','/FD','/EHsc','/MT','/W3','/nologo','/c'])
+	env.Append(LINKFLAGS=['/incremental:no','/subsystem:windows','/machine:i386'])
+#	env.Append(LIBS=['kernel32','winspool','comdlg32','advapi32','shell32','ole32','oleaut32','uuid','odbc32','odbccp32'])
 	if env['release'] :
 		env.Append(CPPDEFINES=['NDEBUG'])
 	else :
