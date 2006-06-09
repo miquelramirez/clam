@@ -7,6 +7,9 @@ clam (0.91.0-1) unstable; urgency=low
   * Removed xlib-dev that is no more in xorg
   * Removed versions on most build deps so they have not to be
     updated every time
+  * Library packages names match the soname
+  * Disabling oscpack support as there is no debian package
+  * Installing scons tools for clam
 
  -- CLAM Team <clam@iua.upf.es>  Tue, 27 May 2006 17:12:24 +0100
 

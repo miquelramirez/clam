@@ -1,4 +1,4 @@
-OPTIONS=prefix=/usr xmlbackend=xercesc release=yes
+OPTIONS=prefix=/usr xmlbackend=xercesc release=yes with_osc_support=no
 
 .PHONY: clean build all build-core build-processing build-audioio build-vmfl build-vmqt install install-core install-processing install-audioio install-vmfl install-vmqt
 
