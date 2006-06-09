@@ -55,6 +55,7 @@ else :
 
 #TODO: KLUDGE to allow old style and new style CLAM headers
 env.Append(CPPPATH=env['clam_prefix']+'/include/CLAM')
+env.Append(CPPPATH=env['clam_prefix']+'/include')
 env.Append(CPPPATH='include')
 
 Export( 'env' )
