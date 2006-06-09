@@ -29,24 +29,18 @@ def enable_modules( self, libs, path) :
 					else :
 						ldlibs[token] = True
 			elif tokens[0] == 'Cflags:':
+				# remove Cflags: from the line
+				line = line[len('Cflags:'):] 
 				foo = line.strip().split(' /')
-				for token in foo[1:] :
-					token = '/' + token
+				for token in foo :
 					# search for -X flags
 					if(token.find(' -')!=-1):
-						listOfRealTokens = token.split(' -')
+						listOfRealTokens = token.split()
 						#print('new token to parse: ' + token)
-						firstToken = listOfRealTokens[0]
-						if "/I" in firstToken:
-							cpppath[ firstToken.replace("/I","") ] = True
-						elif "/D" in firstToken :
-							cppflags[ firstToken ] = True
-						else :
-							ccflags[firstToken] = True
-						for realToken in listOfRealTokens[1:]:
-							#print('new token to parse: ' + realToken)
-							ccflags['-'+realToken] = True
+						for realToken in listOfRealTokens:
+							ccflags[realToken] = True
 					else:
+						token = '/' + token
 						#print('new token to parse: ' + token)
 						if "/I" in token :
 							cpppath[ token.replace("/I","") ] = True
@@ -64,6 +58,9 @@ def enable_modules( self, libs, path) :
 	self.AppendUnique( CPPFLAGS = cppflags.keys() )
 	self.AppendUnique( CCFLAGS = ccflags.keys() )
 	self.AppendUnique( CPPPATH = cpppath.keys() )
+	
+#	sys.exit()
+
 
 def generate(env) :
 	import new
