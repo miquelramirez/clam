@@ -57,6 +57,9 @@ else :
 env.Append(CPPPATH=env['clam_prefix']+'/include/CLAM')
 env.Append(CPPPATH=env['clam_prefix']+'/include')
 env.Append(CPPPATH='include')
+env.Append(CPPPATH=os.path.join('..','..','..','test','UnitTests', 'CommonHelpers'))
+env.Append(CPPPATH=os.path.join('..','..','..','test','UnitTests'))
+env.Append(CPPPATH=os.path.join('..','..','..','test','FunctionalTests','CommonHelpers'))
 
 Export( 'env' )
 SConscript('unit_tests/SConscript')
