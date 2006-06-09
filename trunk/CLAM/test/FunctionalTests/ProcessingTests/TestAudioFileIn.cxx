@@ -58,7 +58,7 @@ namespace CLAMTest
 			{
 				doProofOfConcept();
 			}
-			catch( CLAM::UnavailableSoundFile& error )
+			catch( CLAM::UnavailableSoundFile&  )
 			{
 				// As expected...
 			}
@@ -279,7 +279,7 @@ namespace CLAMTest
 
 			processing.Start();
 
-			CPPUNIT_ASSERT_EQUAL( 22050.f, processing.SampleRate() );			
+			CPPUNIT_ASSERT_EQUAL( 22050.0, processing.SampleRate() );			
 		}
 
 		void testDo_ReadSampleRateAsExpected_96kHz_WAVE()
@@ -297,7 +297,7 @@ namespace CLAMTest
 
 			processing.Start();
 
-			CPPUNIT_ASSERT_EQUAL( 96000.f, processing.SampleRate() );			
+			CPPUNIT_ASSERT_EQUAL( 96000.0, processing.SampleRate() );			
 		}
 
 		void testDo_ReadAudioObjectLength_is_OK()
