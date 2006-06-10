@@ -48,24 +48,25 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	# TODO: remove this comment
-	#scons -c
-	#find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
-	#find $(CURDIR) -type f -name *.pyc | xargs rm -rf
-	#find $(CURDIR) -type f -name *.o | xargs rm -rf
-	#find $(CURDIR) -type f -name *.os | xargs rm -rf
-	#find $(CURDIR) -type f -name *.a | xargs rm -rf
-	#find $(CURDIR) -type f -name .*.swp | xargs rm -rf
-	#find $(CURDIR) -type f -name .sconsign | xargs rm -rf
-	#find $(CURDIR) -type f -name *.db | xargs rm -rf
-	#rm -rf $(CURDIR)/options.cache
+	scons -c
+	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
+	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
+	find $(CURDIR) -type f -name *.o | xargs rm -rf
+	find $(CURDIR) -type f -name *.os | xargs rm -rf
+	find $(CURDIR) -type f -name *.a | xargs rm -rf
+	find $(CURDIR) -type f -name .*.swp | xargs rm -rf
+	find $(CURDIR) -type f -name .sconsign | xargs rm -rf
+	find $(CURDIR) -type f -name *.db | xargs rm -rf
+	rm -f $(CURDIR)/options.cache
+	rm -f $(CURDIR)/Prototyper.1
+	#rm -f $(CURDIR)/.sconsign.dblite
 
-	#dh_clean 
+	dh_clean 
 
 install: build
 	dh_testdir
 	dh_testroot
-	#dh_clean -k
+	dh_clean -k
 	dh_installdirs
 
 	# Add here commands to install the package into debian/clam-networkeditor.
@@ -97,7 +98,7 @@ binary-arch: build install
 #	dh_installcron
 #	dh_installinfo
 	dh_installman
-	dh_link
+	dh_link  dh_link usr/share/man/man1/Prototyper.1 usr/share/man/man1/Prototyper-jack.1
 	dh_strip
 	dh_compress
 	dh_fixperms
