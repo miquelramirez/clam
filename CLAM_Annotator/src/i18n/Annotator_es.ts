@@ -41,10 +41,6 @@
         <translation>Acuerdo de licencia</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br /&gt;Free Software Foundation, Inc.,&lt;br /&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;p&gt;&lt;b&gt;Music Annotator v 0.3.1&lt;/b&gt;&lt;/p&gt;
 <byte value="x9"/><byte value="x9"/>&lt;p&gt;Based on CLAM v0.90&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Anotador de Música v 0.3.1&lt;/b&gt;&lt;/p&gt;
@@ -93,6 +89,10 @@
 &lt;li&gt;El proyecto europeo SIMAC IST-507142&lt;/li&gt;
 &lt;li&gt;Generalitat de Catalunya, exp. 200/05 ST&lt;/li&gt;
 &lt;/ul&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br /&gt;Free Software Foundation, Inc.,&lt;br /&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br /&gt;Free Software Foundation, Inc.,&lt;br /&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -151,7 +151,7 @@
     </message>
     <message>
         <source>Removing segment at </source>
-        <translation>Eliminando el segmento en la posición </translation>
+        <translation> Eliminando el segmento en la posición </translation>
     </message>
     <message>
         <source>Inserting segment at </source>
@@ -222,7 +222,7 @@
     </message>
     <message>
         <source>Refreshing audio...</source>
-        <translation type="unfinished"></translation>
+        <translation>Se está refrescando el audio...</translation>
     </message>
     <message>
         <source>Updating segment auralization, after last audio refresh...</source>
@@ -570,7 +570,15 @@ Desea guardarla?</translation>
     </message>
     <message>
         <source>Refressing song data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Se está refrescando la descripción...</translation>
+    </message>
+    <message>
+        <source>Invalid instant view</source>
+        <translation>Vista instantànea invalida</translation>
+    </message>
+    <message>
+        <source>The project tried to create a instant view of type &apos;%1&apos; which is not available in your system</source>
+        <translation>El proyecto intentó crear una vista instantánea de tipo &apos;%1&apos; que no está disponible en su sistema</translation>
     </message>
     <message>
         <source>&lt;p&gt;The &lt;b&gt;project song list&lt;/b&gt; is a list with the working songs for the project.
@@ -579,7 +587,12 @@ Click on one song to load its description.&lt;/p&gt;
 &lt;p&gt;If there is no computed description, you can generate it for the selected song it
 by clicking the &lt;tt&gt;Compute Descriptors&lt;/tt&gt; button and, once the computation is finished,
 the &lt;tt&gt;Reload Descriptors&lt;/tt&gt; one.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;La &lt;b&gt;lista de canciones&lt;/b&gt; contiene las canciones de trabajo para el proyecto.
+Puede añadir canciones para trabajar con ellas seleccionando la opción del menú &lt;tt&gt;Proyecto/Añadir cancion al proyecto&lt;/tt&gt;.
+Haga click en una canción para cargar su descripción..&lt;/p&gt;
+&lt;p&gt;Si no existe una descripción calculada, puede generarla seleccionando la canción, 
+haciendo click en la herramienta de &lt;tt&gt;Calcular descripción&lt;/tt&gt; 
+y, una vez esté calculada, haciendo click en la herramienta &lt;tt&gt;Recargar Descripción&lt;/tt&gt;.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;The &lt;b&gt;song level descriptors table&lt;/b&gt;
@@ -587,7 +600,12 @@ contains descriptors values for song level descriptors.
 Song level descriptors are those that has a single occurrence for each song.
 As constrast, &apos;note level descriptors&apos; would have an occurrence for each note.&lt;/p&gt;
 &lt;p&gt;You can edit the values by clicking to the proper cell.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;La &lt;b&gt;tabla de atributos a nivel de canción&lt;/b&gt;
+contiene los valores de los atributos que están a nivel de canción.
+Dichos atributos son los que tienen una sola ocurrencia para toda la canción,
+en contraste, por ejemplo, con los atributos a nivel de nota que tendrían una
+ocurrencia para cada nota.&lt;/p&gt;
+&lt;p&gt;Puede editar dichos valores haciendo click en la celda.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;The &lt;b&gt;frame level descriptors editor&lt;/b&gt; allows editing
@@ -600,7 +618,16 @@ As constrast, &apos;note level descriptors&apos; would have an occurrence for ea
 <byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;&apos;r&apos;+Click: Set the current play position.&lt;/li&gt;
 <byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Arrows: Change focused point values&lt;/li&gt;
 <byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;El &lt;b&gt;editor de attributos instantáneos&lt;/b&gt; permite editar
+atributos de tipo coma flotante que tienen una ocurrencia a cada instante.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Arrastrar un punto: Cambia su valor.&lt;/li&gt;
+&lt;li&gt;Avanza/retrocede página: Cambia el foco al punto anterior o siguiente.&lt;/li&gt;
+&lt;li&gt;Pasar por un punto: Fija el foco en el punto.&lt;/li&gt;
+&lt;li&gt;Arrastrar la posición de play: Cambia el inicio de la reproducción.&lt;/li&gt;
+&lt;li&gt;&apos;r&apos;+Click: Situa el inicio de la reproducción.&lt;/li&gt;
+&lt;li&gt;Flechas del cursor: Cambia el valor del punto con foco.&lt;/li&gt;
+&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;The &lt;b&gt;segmentation editor&lt;/b&gt; allows you to change song level segmentations.&lt;/p&gt;
@@ -612,65 +639,19 @@ As constrast, &apos;note level descriptors&apos; would have an occurrence for ea
 <byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;Dragging play positon: Moves it.&lt;/li&gt;
 <byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;li&gt;&apos;r&apos;+Click: Set the current play position.&lt;/li&gt;
 <byte value="x9"/><byte value="x9"/><byte value="x9"/> &lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;El &lt;b&gt;editor de segmentos&lt;/b&gt; permite cambiar los límites de los segmentos de la segmentación seleccionada.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Click en el interior: Pone el foco en el segmento&lt;/li&gt;
+&lt;li&gt;Arrastrar limite de segmento: Lo mueve, siguiendo las retricciones&lt;/li&gt;
+&lt;li&gt;Inserta + Click: Inserta un segmento con inicio en la posición&lt;/li&gt;
+&lt;li&gt;Suprimir: Elimina el segmento bajo el foco&lt;/li&gt;
+&lt;li&gt;Arrastrar la posición de play: Cambia el inicio de la reproducción.&lt;/li&gt;
+&lt;li&gt;&apos;r&apos;+Click: Situa el inicio de la reproducción.&lt;/li&gt;
+&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>Prueba</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>BocaClientGui</name>
-    <message>
-        <source>Choose a BOCA task file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Simac Task file (*.task)
-All Files (*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No descriptors downloaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No modification has been detected. No upload needed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Uploading changes</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The following files have been updated.
-
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Do you want to upload them back to the BOCA server?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Upload</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Don&apos;t upload</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>BocaTaskRunner</name>
-    <message>
-        <source>Executing &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;div style=&apos;color: blue;&apos;&gt;Done.&lt;/div&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Test</translation>
     </message>
 </context>
 <context>
@@ -681,11 +662,16 @@ Do you want to upload them back to the BOCA server?</source>
 Tonally close key/chords are displayed closer so normally you have a color stain covering several chords
 with the most probable chord as a central color spot.&lt;/p&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;La &lt;b&gt;vista Key Space&lt;/b&gt; representa la probabilidad esté sonando cada acorde o tonalidad.&lt;/p&gt;
+&lt;p&gt;Los acordes/tonalidades menores se representan con letras mayúsculas y los menores con minúsculas.
+Los acordes o tonalidades con contenido tonal parecido se representan cercanas de tal manera que normalmente
+habra una mancha de color cubriendo varios acordes alrededor del acorde o tonalidad mas probable 
+que se verà como un punto de color mas intenso.&lt;/p&gt;
+</translation>
     </message>
 </context>
 <context>
-    <name>CLAM::VM::PcpTorus</name>
+    <name>CLAM::VM::Tonnetz</name>
     <message>
         <source>&lt;p&gt;The &lt;b&gt;Tonnetz view&lt;/b&gt; represents the intensity of each note played.&lt;/p&gt;
 &lt;p&gt;Notes are displayed in a toroidal surface so that harmonic notes are painted closer.
@@ -709,232 +695,225 @@ Typical shapes are:&lt;/p&gt;
 &lt;li&gt;6/9: Five horizontal. The root is the lefter note.&lt;/li&gt;
 &lt;/ul&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;La &lt;b&gt;vista Tonnetz&lt;/b&gt; representa la intensidad de cada nota que suena.&lt;/p&gt;
+&lt;p&gt;Las notas se visualizan en una superficie toroidal, estando las notas harmónicas más cerca.
+De esta manera, cuando las notas que suenan forman un acorde, los hexagonos iluminados
+forman una figura geométrica que es característica del modo del acorde.
+Las figuras típicas son:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Mayor: Triángulo con la punta hacia arriba. La raiz es la nota a la izquierda. (C-E-G)&lt;/li&gt;
+&lt;li&gt;Menor: Triángulo con la punta hacia abajo. La raiz es la nota a la izquierda. (C-Eb-G)&lt;/li&gt;
+&lt;li&gt;Quinta: Pareja en horizontal. La raiz es la nota a la izquierda. (C-G)&lt;/li&gt;
+&lt;li&gt;Augmentado: Barra inclinada hacia adelante. (C-E-G#)&lt;/li&gt;
+&lt;li&gt;Disminuido: Barra inclinada hacia atras. (C-Eb-A-F#)&lt;/li&gt;
+&lt;li&gt;Mayor7: Paralelogramo inclinado hacia adelante. La raiz es la nota a la izquierda. (C-E-G-B)&lt;/li&gt;
+&lt;li&gt;Menor7: Paralelogramo inclinado hacia atras. La raiz es la nota a la izquierda. (C-Eb-G-Bb&lt;/li&gt;
+&lt;li&gt;Dominante7: Triángulo hacia arriba con una cola hacia abajo. La raiz es la nota a la izquierda. (C-E-G-Bb)&lt;/li&gt;
+&lt;li&gt;MayorMenor7: Triángulo hacia abajo con una cola hacia arriba. La raiz es la nota a la izquierda. (C-Eb-G-B)&lt;/li&gt;
+&lt;li&gt;Disminuido7: Triplet down and one up. La raiz es la nota a la izquierda. (C-Eb-F#-Bb)&lt;/li&gt;
+&lt;li&gt;Menor6: Triangulo hacia abajo con una cabeza hacia arriba. La raiz es la &lt;b&gt;segunda&lt;/b&gt; nota a la izquierda. (C-G-A-Eb)&lt;/li&gt;
+&lt;li&gt;Mayor6: Triangulo hacia arriba mas una cabeza hacia abajo. La raiz es la &lt;b&gt;segunda&lt;/b&gt; nota a la izquierda. (C-G-A-E)&lt;/li&gt;
+&lt;li&gt;Suspendido4: Trio en horizontal. La raiz es la nota a la izquierda. (C-F-G)&lt;/li&gt;
+&lt;li&gt;Suspendido2: Trio en horizontal. La raiz es la nota a la izquierda. (C-D-G)&lt;/li&gt;
+&lt;li&gt;6/9: Quinteto en horizontal. La raiz es la nota a la izquierda.&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
     </message>
 </context>
 <context>
     <name>CLAM_Annotator::DescriptorTableController</name>
     <message>
         <source>Descriptor</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributo</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>GUI</name>
-    <message>
-        <source>CLAM Annotator Simac Task Handler</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Project Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Task file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Path to save files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:FreeMono; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;Press Go! when ready&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Quit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Go</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor</translation>
     </message>
 </context>
 <context>
     <name>ProjectEditor</name>
     <message>
         <source>Project Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propiedades del proyecto</translation>
     </message>
     <message>
         <source>Project &amp;information: </source>
-        <translation type="unfinished"></translation>
+        <translation> &amp;Información del proyecto:</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;h1&amp;gt;Beats Annotation&amp;lt;/h1&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;h2&amp;gt;Description:&amp;lt;/h2&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;p&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The goal of this annotation task is to annotate the first 2 minutes of the excerpt for the beats.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;/p&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;h2&amp;gt;Reference descriptors:&amp;lt;/h2&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;p&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You can take some descriptors as reference such as the energy.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Consider that such descriptors are computed every 2048 samples so their precission may be not as accurate as it seems.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;/p&amp;gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;h1&amp;gt;Beats Annotation&amp;lt;/h1&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;h2&amp;gt;Description:&amp;lt;/h2&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;p&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;The goal of this annotation task is to annotate the first 2 minutes of the excerpt for the beats.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;/p&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;h2&amp;gt;Reference descriptors:&amp;lt;/h2&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;p&amp;gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You can take some descriptors as reference such as the energy.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Consider that such descriptors are computed every 2048 samples so their precission may be not as accurate as it seems.&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;/p&amp;gt;&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>MyExtractor.exe</source>
-        <translation type="unfinished"></translation>
+        <translation>MyExtractor.exe</translation>
     </message>
     <message>
         <source>Execute with a sample wave</source>
-        <translation type="unfinished"></translation>
+        <translation>Prueba con un audio de ejemplo</translation>
     </message>
     <message>
         <source>.pool</source>
-        <translation type="unfinished"></translation>
+        <translation>.pool</translation>
     </message>
     <message>
         <source>/home/me/Annotations/FirstWeek/Project.pro</source>
-        <translation type="unfinished"></translation>
+        <translation>/home/me/Annotations/FirstWeek/Project.pro</translation>
     </message>
     <message>
         <source>Schema.sc</source>
-        <translation type="unfinished"></translation>
+        <translation>Schema.sc</translation>
     </message>
     <message>
         <source>Descriptors file suffix:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sufijo para las descripciones:</translation>
     </message>
     <message>
         <source>Project &amp;file</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fichero de Proyecto</translation>
     </message>
     <message>
         <source>E&amp;xtractor command:</source>
-        <translation type="unfinished"></translation>
+        <translation>Comando e&amp;xtractor:</translation>
     </message>
     <message>
         <source>Description &amp;scheme:</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;squema de descripción:</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>Aceptar</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Cancelar</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>Tonnezt</source>
-        <translation type="unfinished"></translation>
+        <translation>Tonnezt</translation>
     </message>
     <message>
         <source>Choose the attribute to take the pitches from</source>
-        <translation type="unfinished"></translation>
+        <translation>Elija el atributo del que tomar el valor para los tonos</translation>
     </message>
     <message>
         <source>PCP attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Atributo de perfil de tonalidad:</translation>
     </message>
     <message>
         <source>Key Space</source>
-        <translation type="unfinished"></translation>
+        <translation>Key Space</translation>
     </message>
 </context>
 <context>
     <name>SchemaBrowser</name>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Atrobitp</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <source>Schema Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Explorador del esquema</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>Mínimo</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>Máximo</translation>
     </message>
     <message>
         <source>Child scope</source>
-        <translation type="unfinished"></translation>
+        <translation>Ámbito hijo</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;em&gt;(No attribute or scope selected)&lt;/em&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;em&gt;(No se ha seleccionado ningún attributo ni ámbito)&lt;/em&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Scope &apos;%1&apos;&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Ámbito &apos;%1&apos;&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Attribute &apos;%1::%2&apos;&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Atributo &apos;%1::%2&apos;&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>&lt;li&gt;&lt;b&gt;Type:&lt;/b&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;b&gt;Tipo:&lt;/b&gt; %1&lt;/li&gt;</translation>
     </message>
     <message>
         <source>&lt;li&gt;&lt;b&gt;Available values:&lt;/b&gt; </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;li&gt;&lt;b&gt;Units:&lt;/b&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;li&gt;&lt;b&gt;Minimum value:&lt;/b&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;li&gt;&lt;b&gt;Maximum value:&lt;/b&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No child scope</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;li&gt;&lt;b&gt;Child scope:&lt;/b&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;li&gt;&lt;b&gt;Segmentation policy:&lt;/b&gt; %1&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Description&lt;/h2&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;&lt;em&gt;(The schema has no embeded documentation for the attribute)&lt;/em&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;b&gt;Valores disponibles:&lt;/b&gt; </translation>
     </message>
     <message>
         <source>&lt;li&gt;&lt;b&gt;Array bins labels:&lt;/b&gt; </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt;&lt;b&gt;Etiquetas para los elementos:&lt;/b&gt; </translation>
+    </message>
+    <message>
+        <source>&lt;li&gt;&lt;b&gt;Units:&lt;/b&gt; %1&lt;/li&gt;</source>
+        <translation>&lt;li&gt;&lt;b&gt;Unidades:&lt;/b&gt; %1&lt;/li&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;li&gt;&lt;b&gt;Minimum value:&lt;/b&gt; %1&lt;/li&gt;</source>
+        <translation>&lt;li&gt;&lt;b&gt;Valor mínimo:&lt;/b&gt; %1&lt;/li&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;li&gt;&lt;b&gt;Maximum value:&lt;/b&gt; %1&lt;/li&gt;</source>
+        <translation>&lt;li&gt;&lt;b&gt;Valor Máximo:&lt;/b&gt; %1&lt;/li&gt;</translation>
+    </message>
+    <message>
+        <source>No child scope</source>
+        <translation>No tiene ámbito hijo</translation>
+    </message>
+    <message>
+        <source>&lt;li&gt;&lt;b&gt;Child scope:&lt;/b&gt; %1&lt;/li&gt;</source>
+        <translation>&lt;li&gt;&lt;b&gt;Ámbito hijo:&lt;/b&gt; %1&lt;/li&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;li&gt;&lt;b&gt;Segmentation policy:&lt;/b&gt; %1&lt;/li&gt;</source>
+        <translation>&lt;li&gt;&lt;b&gt;Reglas de segmentación:&lt;/b&gt; %1&lt;/li&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;h2&gt;Description&lt;/h2&gt;</source>
+        <translation>&lt;h2&gt;Descripción&lt;/h2&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;em&gt;(The schema has no embeded documentation for the attribute)&lt;/em&gt;&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;em&gt;(El esquema no contiene documentación para el atributo)&lt;/em&gt;&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
     <name>TaskRunner</name>
     <message>
-        <source>&lt;div style=&apos;color: blue;&apos;&gt;Done.&lt;/div&gt;</source>
-        <translation type="unfinished"></translation>
+        <source>Executing &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;</source>
+        <translation>Ejecutando &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;</translation>
     </message>
     <message>
-        <source>Executing &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;</source>
-        <translation type="unfinished"></translation>
+        <source>&lt;div style=&apos;color: blue;&apos;&gt;Done.&lt;/div&gt;</source>
+        <translation>&lt;div style=&apos;color: blue;&apos;&gt;Hecho.&lt;/div&gt;</translation>
     </message>
 </context>
 <context>
     <name>Ui</name>
     <message>
         <source>Loading data ... </source>
-        <translation type="unfinished"></translation>
+        <translation> Cargando datos... </translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;Music Annotator version %1&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Based on CLAM version %2&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;Anotador de Música, versión %1&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Basado en CLAM, versión %2&lt;/p&gt;</translation>
     </message>
 </context>
 </TS>
