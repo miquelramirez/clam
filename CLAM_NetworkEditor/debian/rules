@@ -98,7 +98,7 @@ binary-arch: build install
 #	dh_installcron
 #	dh_installinfo
 	dh_installman
-	dh_link  dh_link usr/share/man/man1/Prototyper.1 usr/share/man/man1/Prototyper-jack.1
+	dh_link
 	dh_strip
 	dh_compress
 	dh_fixperms
