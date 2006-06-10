@@ -655,6 +655,60 @@ atributos de tipo coma flotante que tienen una ocurrencia a cada instante.&lt;/p
     </message>
 </context>
 <context>
+    <name>BocaClientGui</name>
+    <message>
+        <source>Choose a BOCA task file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Simac Task file (*.task)
+All Files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No descriptors downloaded</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No modification has been detected. No upload needed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uploading changes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The following files have been updated.
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Do you want to upload them back to the BOCA server?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>BocaTaskRunner</name>
+    <message>
+        <source>Executing &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;</source>
+        <translation type="unfinished">Ejecutando &apos;&lt;tt&gt;%1 %2&lt;/tt&gt;&apos;</translation>
+    </message>
+    <message>
+        <source>&lt;div style=&apos;color: blue;&apos;&gt;Done.&lt;/div&gt;</source>
+        <translation type="unfinished">&lt;div style=&apos;color: blue;&apos;&gt;Hecho.&lt;/div&gt;</translation>
+    </message>
+</context>
+<context>
     <name>CLAM::VM::KeySpace</name>
     <message>
         <source>&lt;p&gt;The &lt;b&gt;Key Space view&lt;/b&gt; represents the probability of each key/chord to be the one being played.&lt;/p&gt;
@@ -729,6 +783,41 @@ Las figuras típicas son:&lt;/p&gt;
     <message>
         <source>Value</source>
         <translation>Valor</translation>
+    </message>
+</context>
+<context>
+    <name>GUI</name>
+    <message>
+        <source>CLAM Annotator Simac Task Handler</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Project Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Task file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path to save files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:FreeMono; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;Press Go! when ready&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Quit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Go</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
