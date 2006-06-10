@@ -7,7 +7,6 @@ version='0.3.2-CVS-20060601-1'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(PathOption('clam_sconstools', 'The path to the scons tools provided by clam', ''))
 options.Add(BoolOption('release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
@@ -26,20 +25,21 @@ env = Environment(ENV=os.environ, tools=['default'], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 
-env.SConsignFile() # Single signature file
-
-env.Tool('qt4', toolpath=[env['clam_sconstools']])
-env.Tool('clam', toolpath=[env['clam_sconstools']])
-env.Tool('nsis', toolpath=[env['clam_sconstools']])
-
 CLAMInstallDir = env['clam_prefix']
 CLAMVmQtPath = 'vmqt'
+clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+
+env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.Tool('nsis', toolpath=[clam_sconstoolspath])
+
+env.SConsignFile() # Single signature file
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
-env['QT4_MOCHPREFIX'] = 'generated/moc_'
-env['QT4_UICDECLPREFIX'] = 'generated/ui_'
-env['QT4_QRCCXXPREFIX'] = 'generated/qrc_'
+env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
+env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
+env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
@@ -60,7 +60,6 @@ env.EnableQt4Modules([
 	'QtCore',
 	'QtGui',
 	'QtOpenGL',
-#	'QtSvg',
 #	'QtSql',
 #	'QtNetwork',
 #	'QtTest',
@@ -116,7 +115,6 @@ env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=[CLAMVmQtPath])
 env.Append(LIBS="clam_vmqt4")
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
-env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 
