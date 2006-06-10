@@ -19,7 +19,7 @@
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br /&gt;Free Software Foundation, Inc.,&lt;br /&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br /&gt;Free Software Foundation, Inc.,&lt;br /&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:11pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br /&gt;Free Software Foundation, Inc.,&lt;br /&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;This software is partially founded by:&lt;/p&gt;
@@ -87,6 +87,10 @@
 &lt;li&gt;Jordi Bonada &amp;lt;jbonada@iua.upf.edu&amp;gt; (Vista &quot;Key Space&quot;)&lt;/li&gt;
 &lt;/ul&gt;
 </translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br /&gt;Free Software Foundation, Inc.,&lt;br /&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:Sans Serif; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.&lt;/p&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;You should have received a copy of the GNU General Public License along with this program; if not, write to the&lt;br /&gt;Free Software Foundation, Inc.,&lt;br /&gt;59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -637,6 +641,14 @@ descriptors de tipus real (decimals) que tenen un valor diferent a intervals reg
         <source>Refressing song data...</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Invalid instant view</source>
+        <translation>La vista instantània no és válida</translation>
+    </message>
+    <message>
+        <source>The project tried to create a instant view of type &apos;%1&apos; which is not available in your system</source>
+        <translation>El projecte definia una vista instantània del tipus &apos;%1&apos;, que no està disponible al vostre sistema</translation>
+    </message>
 </context>
 <context>
     <name>BocaClientGui</name>
@@ -735,6 +747,55 @@ Typical shapes are:&lt;/p&gt;
 &lt;li&gt;6/9: Five horizontal. The root is the lefter note.&lt;/li&gt;
 &lt;/ul&gt;
 </source>
+        <translation type="obsolete">&lt;p&gt;La vista &lt;b&gt;Tonnetz&lt;/b&gt; representa la intensitat de cada nota.&lt;/p&gt;
+&lt;p&gt;Les notes estan representades a una superfície toroidal de tal manera que les notes harmòniques estan mes properes.
+D&apos;aquesta manera quan les notes formen un acord es veu una figura que depen del mode.
+Les figures típiques són:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Major: Triangle apuntant amunt. L&apos;arrell és la nota a l&apos;esquerra. (C-E-G)&lt;/li&gt;
+&lt;li&gt;Menor: Triangle apuntant avall. L&apos;arrell és la nota a l&apos;esquerra. (C-Eb-G)&lt;/li&gt;
+&lt;li&gt;Quinta: Parell horitzontal. L&apos;arrell és la nota a l&apos;esquerra. (C-G)&lt;/li&gt;
+&lt;li&gt;Augmented: Barra endavant. (C-E-G#)&lt;/li&gt;
+&lt;li&gt;Diminished: Barra enrere. (C-Eb-A-F#)&lt;/li&gt;
+&lt;li&gt;Major7: Paral·lelogram cap endavant. L&apos;arrell és la nota a l&apos;esquerra. (C-E-G-B)&lt;/li&gt;
+&lt;li&gt;Minor7: Paral·lelogram cap enrera. L&apos;arrell és la nota a l&apos;esquerra. (C-Eb-G-Bb&lt;/li&gt;
+&lt;li&gt;Dominant7: Triangle apuntant amunt mes una cua cap avall. L&apos;arrell és la nota a l&apos;esquerra. (C-E-G-Bb)&lt;/li&gt;
+&lt;li&gt;MajorMinor7: Triangle apuntant avall mes una cua cap amunt. L&apos;arrell és la nota a l&apos;esquerra. (C-Eb-G-B)&lt;/li&gt;
+&lt;li&gt;Diminished7: Tripleta cap avall i un amunt. L&apos;arrell és la nota a l&apos;esquerra. (C-Eb-F#-Bb)&lt;/li&gt;
+&lt;li&gt;Minor6: Triangle apuntant avall i un a l&apos;esquerra, cap amunt. L&apos;arrell és la segona nota a l&apos;esquerra. (C-G-A-Eb)&lt;/li&gt;
+&lt;li&gt;Major6: Triangle apuntant amunt i un a l&apos;esquerra cap avall. L&apos;arrell és la segona nota a l&apos;esquerra. (C-G-A-E)&lt;/li&gt;
+&lt;li&gt;Suspended4: Tripleta horizontal. L&apos;arrell és la nota a l&apos;esquerra. (C-F-G)&lt;/li&gt;
+&lt;li&gt;Suspended2: Tripleta horizontal. L&apos;arrell és la nota a l&apos;esquerra. (C-D-G)&lt;/li&gt;
+&lt;li&gt;6/9: Cinc en horitzontal. L&apos;arrell és la nota a l&apos;esquerra. &lt;/li&gt;
+&lt;/ul&gt;
+</translation>
+    </message>
+</context>
+<context>
+    <name>CLAM::VM::Tonnetz</name>
+    <message>
+        <source>&lt;p&gt;The &lt;b&gt;Tonnetz view&lt;/b&gt; represents the intensity of each note played.&lt;/p&gt;
+&lt;p&gt;Notes are displayed in a toroidal surface so that harmonic notes are painted closer.
+Thus, when the played notes are a chord, a mode dependant shape is displayed.
+Typical shapes are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Major: Pointing up triangle. The root is the lefter note. (C-E-G)&lt;/li&gt;
+&lt;li&gt;Minor: Pointing down triangle. The root is the lefter note. (C-Eb-G)&lt;/li&gt;
+&lt;li&gt;Fifth: Horitzontal pair. The root is the lefter note. (C-G)&lt;/li&gt;
+&lt;li&gt;Augmented: Forward slash. (C-E-G#)&lt;/li&gt;
+&lt;li&gt;Diminished: Backward slash. (C-Eb-A-F#)&lt;/li&gt;
+&lt;li&gt;Major7: Forward Paralelogram. The root is the lefter note. (C-E-G-B)&lt;/li&gt;
+&lt;li&gt;Minor7: Backward Paralelogram. The root is the lefter note. (C-Eb-G-Bb&lt;/li&gt;
+&lt;li&gt;Dominant7: Pointing up triangle with a tail down. The root is the lefter note. (C-E-G-Bb)&lt;/li&gt;
+&lt;li&gt;MajorMinor7: Pointing down triangle with a tail up. The root is the lefter note. (C-Eb-G-B)&lt;/li&gt;
+&lt;li&gt;Diminished7: Triplet down and one up. The root is the lefter note. (C-Eb-F#-Bb)&lt;/li&gt;
+&lt;li&gt;Minor6: Down triangle plus a head up. The root is the second lefter note. (C-G-A-Eb)&lt;/li&gt;
+&lt;li&gt;Major6: Up triangle plust a head up. The root is the lefter note. (C-G-A-E)&lt;/li&gt;
+&lt;li&gt;Suspended4: Three horizontal. The root is the lefter note. (C-F-G)&lt;/li&gt;
+&lt;li&gt;Suspended2: Three horizontal. The root is the lefter note. (C-D-G)&lt;/li&gt;
+&lt;li&gt;6/9: Five horizontal. The root is the lefter note.&lt;/li&gt;
+&lt;/ul&gt;
+</source>
         <translation>&lt;p&gt;La vista &lt;b&gt;Tonnetz&lt;/b&gt; representa la intensitat de cada nota.&lt;/p&gt;
 &lt;p&gt;Les notes estan representades a una superfície toroidal de tal manera que les notes harmòniques estan mes properes.
 D&apos;aquesta manera quan les notes formen un acord es veu una figura que depen del mode.
@@ -773,10 +834,6 @@ Les figures típiques són:&lt;/p&gt;
 <context>
     <name>GUI</name>
     <message>
-        <source>CLAM Annotator Simac Task Handler</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Project Name</source>
         <translation>Nom del projecte</translation>
     </message>
@@ -790,11 +847,7 @@ Les figures típiques són:&lt;/p&gt;
     </message>
     <message>
         <source>Path to save files</source>
-        <translation type="unfinished">Directori on desar els fitxers</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:FreeMono; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;Press Go! when ready&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Directori on desar els fitxers</translation>
     </message>
     <message>
         <source>Quit</source>
@@ -803,6 +856,14 @@ Les figures típiques són:&lt;/p&gt;
     <message>
         <source>Go</source>
         <translation>Endavant</translation>
+    </message>
+    <message>
+        <source>CLAM Annotator Simac Task Handler</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:FreeMono; font-size:10pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;Press Go! when ready&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -982,6 +1043,12 @@ Les figures típiques són:&lt;/p&gt;
     <message>
         <source>Loading data ... </source>
         <translation> S&apos;esta carregant l&apos;applicació...</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;&lt;b&gt;Music Annotator version %1&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Based on CLAM version %2&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;L&apos;Anotador de Música, versión %1&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Basat a CLAM, versión %2&lt;/p&gt;</translation>
     </message>
 </context>
 </TS>
