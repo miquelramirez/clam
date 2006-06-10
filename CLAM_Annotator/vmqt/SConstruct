@@ -3,7 +3,9 @@ import os, sys, glob
 
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(PathOption('clam_sconstools', 'The location to the scons tools provided by CLAM', ''))
+options.Add(BoolOption('release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
+options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
+
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -17,30 +19,43 @@ def recursiveDirs(root) :
 def unique(list) :
 	return dict.fromkeys(list).keys()
 
-env = Environment( ENV=os.environ, tools=['default'], options=options)
+env = Environment(ENV=os.environ, tools=['default'], options=options)
 options.Update(env)
 options.Save('options.cache', env)
+Help(options.GenerateHelpText(env))
 
-env.Tool('qt4', toolpath=[env['clam_sconstools']])
-env.Tool('clam', toolpath=[env['clam_sconstools']])
 CLAMInstallDir = env['clam_prefix']
+clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+
+env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.Tool('nsis', toolpath=[clam_sconstoolspath])
 
 env.SConsignFile() # Single signature file
 
 env['CXXFILESUFFIX'] = '.cxx'
+env['QT4_UICDECLSUFFIX'] = '.hxx'
 env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
 env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
 env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
-env['QT4_UICDECLSUFFIX'] = '.hxx'
+if not env['verbose']:
+	env['CXXCOMSTR'] = '== Compiling $SOURCE'
+	env['LINKCOMSTR'] = '== Linking $TARGET'
+	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
+	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
+	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
+	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
+	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
 
 env.EnableQt4Modules([
+	'QtCore',
 	'QtGui',
+	'QtOpenGL',
 #	'QtSql',
 #	'QtNetwork',
 #	'QtTest',
 #	'QtXml',
-	'QtCore',
-	'QtOpenGL',
 #	'QtSvg',
 #	'Qt3Support',
 	])
