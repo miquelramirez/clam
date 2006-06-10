@@ -7,7 +7,7 @@ version='0.3.1-CVS-20060601-1'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the networkeditor will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(PathOption('clam_sconstools', 'The path to the scons tools provided by clam', ''))
+options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt3/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('release', 'Build CLAM NetworkEditor enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
@@ -32,10 +32,10 @@ if sys.platform=="linux2" :
 	env['QT_LIB']='qt-mt'
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
-	
-#env.Tool('qt4', toolpath=[env['clam_sconstools']])
-env.Tool('clam', toolpath=[env['clam_sconstools']])
-env.Tool('nsis', toolpath=[env['clam_sconstools']])
+clam_sconstoolspath = os.path.join(env['clam_prefix'],'share','clam','sconstools')
+#env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.Tool('nsis', toolpath=[clam_sconstoolspath])
 
 CLAMInstallDir = env['clam_prefix']
 
@@ -171,13 +171,8 @@ translations = []
 if len(tsfiles) : 
 #	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
 	translations = env.Qm(source = tsfiles)
-"""
-if sys.platform=='win32' :
-	qtpluginsInstallationPath = '/bin/designer'
-else :
-	qtpluginsInstallationPath = '/lib/clam/plugins/designer'
-	qtpluginsInstallationPath = '$QTDIR/plugins/designer'
-"""
+
+qtpluginsInstallationPath = env['qt_plugins_install_path']
 
 examples = []
 for ext in ['xml', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
@@ -185,7 +180,7 @@ for ext in ['xml', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
 
 installation = {
 	'/bin' : programs,
-	'/bin/designer': [qtplugin],
+	qtpluginsInstallationPath : [qtplugin],
 	'/share/man/man1' : manpages,
 	'/share/networkeditor/i18n': translations,
 	'/share/networkeditor/example-data': examples,
