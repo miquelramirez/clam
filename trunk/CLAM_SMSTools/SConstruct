@@ -7,7 +7,6 @@ version='0.4.1-CVS-20060601-1'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the smstools will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(PathOption('clam_sconstools', 'The path to the scons tools provided by clam', ''))
 options.Add(BoolOption('release', 'Build CLAM SMSTools enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
@@ -32,10 +31,11 @@ if sys.platform=="linux2" :
 	env['QT_LIB']='qt-mt'
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
-	
-#env.Tool('qt4', toolpath=[env['clam_sconstools']])
-env.Tool('clam', toolpath=[env['clam_sconstools']])
-env.Tool('nsis', toolpath=[env['clam_sconstools']])
+clam_sconstoolspath = os.path.join(env['clam_prefix'],'share','clam','sconstools')
+
+#env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.Tool('nsis', toolpath=[clam_sconstoolspath])
 
 CLAMInstallDir = env['clam_prefix']
 
@@ -196,7 +196,7 @@ if sys.platform=='win32' :
 			break
 	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
 	win_packages = [env.Nsis( source='resources\\clam_smstools.nsi')]
-	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % env['clam_sconstools'])
+	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % clam_sconstoolspath)
 	env.Alias('package', win_packages)
 
 if sys.platform=='macosx' : # not really tested!!!

@@ -1,20 +1,17 @@
 Source: clam-smstools
-Section: x11
+Section: sound
 Priority: optional
-Maintainer: parumi <parumi@iua.upf.es>
-Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++, make (>= 3.80), libclamcore-dev (>= 0.90.0), libclamprocessing-dev (>= 0.90.0), libclamaudioio-dev (>= 0.90.0), libclamvmqt-dev (>= 0.90.0), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
-
+Maintainer: CLAM Team <clam@iua.upf.es>
+Build-Depends: debhelper (>= 4.0.0), scons, g++, make, libclam-core-dev (>= 0.91.0), libclam-processing-dev (>= 0.91.0), libclam-audioio-dev (>= 0.91.0), libclam-vmqt-dev (>= 0.91.0), libqt3-headers, libqt3-mt-dev, docbook-to-man
 Standards-Version: 3.6.1
+
 Package: clam-smstools
 Architecture: any
-#Depends: ${shlibs:Depends}, ${misc:Depends}
-Depends: libclamcore (>= 0.90.0), libclamprocessing (>= 0.90.0), libclamaudioio (>= 0.90.0), libclamvmqt (>= 0.90.0)
-Description: CLAM-based SMS analysis/synthesis application
- SmsTools bundles together three different applications that
- implement the SMS Analysis/Transformation/Synthesis pipeline.
- They are:
-  * SMSTools - A graphical application that uses FLTK
-  * SMSConsole - A console application that offers the
-    same functionality as SMSTools
-  * SMSBatch - A console application that allows to apply
-    SMS algorithms over sets of files at once.
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: CLAM SMSTools, SMS based audio authoring tool
+ SmsTools is an audio authoring application which allows to
+ analyze the audio using Spectral Model Synthesis (SMS)
+ and perform pipelined transformations on such representation.
+ SMS representation makes easy to perform quality effects
+ such as gender change, pitch shift, time streetch, morphing...
+
