@@ -11,10 +11,8 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-# This has to be exported to make some magic below work.
-export DH_OPTIONS
 
-
+OPTIONS= clam_prefix=/usr install_prefix=$(CURDIR)/debian/clam-smstools/usr release=1 verbose=0 double=1
 
 CFLAGS = -Wall -g
 
@@ -29,19 +27,21 @@ configure-stamp:
 	dh_testdir
 	# Add here commands to configure the package.
 
-	touch configure-stamp
+	touch $@
 
 
-#Architecture 
 build: build-stamp
 build-stamp: configure-stamp
+	dh_testdir
 
 	# Add here commands to compile the arch part of the package.
 	#$(MAKE) 
-	cd scons/QtSMSTools && scons
+	mkdir -p $(CURDIR)/debian/clam-smstools/usr
+	scons $(OPTIONS)
 	# Add here commands to compile the indep part of the package.
-	#$(MAKE) doc
-	touch build-stamp
+	convert -resize 32x32 -colors 24 resources/SMSTools-icon.png $(CURDIR)/clam-smstools.xpm
+	#docbook-to-man debian/SMSTools.sgml > SMSTools.1
+	touch $@
 
 clean:
 	dh_testdir
@@ -49,7 +49,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	cd scons/QtSMSTools && scons -c
+	scons -c
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
@@ -58,7 +58,8 @@ clean:
 	find $(CURDIR) -type f -name .*.swp | xargs rm -rf
 	find $(CURDIR) -type f -name .sconsign | xargs rm -rf
 	find $(CURDIR) -type f -name *.db | xargs rm -rf
-	rm -rf $(CURDIR)/scons/*.conf
+	rm -f $(CURDIR)/options.cache
+	#rm -f $(CURDIR)/SMSTools.1
 
 	dh_clean 
 
@@ -68,43 +69,45 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into
-	
+	# Add here commands to install the package into debian/clam-smstools.
+	mkdir -p $(CURDIR)/debian/clam-smstools/usr
+	scons install $(OPTIONS)
+	cp $(CURDIR)/clam-smstools.xpm ${CURDIR}/debian/clam-smstools/usr/share/pixmaps
 
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
 
-	# Add here commands to install the arch part of the package into 
-	# debian/tmp.
-	mkdir -p $(CURDIR)/debian/tmp/usr
-	cd scons/QtSMSTools && scons install_prefix=$(CURDIR)/debian/tmp/usr install
-	find . -type f -name .sconsign* | xargs rm -rf
-
-binary: build install
+# Build architecture-dependent files here.
+binary-arch: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
 	dh_installdocs
 	dh_installexamples
-#	dh_installmenu
+#	dh_install
+	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
 #	dh_installmime
+#	dh_python
 #	dh_installinit
 #	dh_installcron
 #	dh_installinfo
 	dh_installman
 	dh_link
 	dh_strip
-	dh_compress 
+	dh_compress
 	dh_fixperms
 #	dh_perl
-#	dh_python
-	dh_makeshlibs
+#	dh_makeshlibs
 	dh_installdeb
-#	dh_shlibdeps
+	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
 
-.PHONY: build clean binary install install configure
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure
