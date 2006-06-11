@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=CLAM SMSTools
+GenericName=Audio authoring tool
+Comment=Manipulates audio using Spectral Modeling Synthesys technology
+Icon=/usr/share/pixmaps/clam-smstools.xpm
+Type=Application
+Categories=Application;AudioVideo;
+Exec=SMSTools
+Terminal=false
+MimeType=
