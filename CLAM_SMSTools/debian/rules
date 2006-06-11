@@ -35,7 +35,6 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the arch part of the package.
-	#$(MAKE) 
 	mkdir -p $(CURDIR)/debian/clam-smstools/usr
 	scons $(OPTIONS)
 	# Add here commands to compile the indep part of the package.
@@ -73,6 +72,7 @@ install: build
 	mkdir -p $(CURDIR)/debian/clam-smstools/usr
 	scons install $(OPTIONS)
 	cp $(CURDIR)/clam-smstools.xpm ${CURDIR}/debian/clam-smstools/usr/share/pixmaps
+	dh_install debian/clam-smstools.desktop /usr/share/applications/
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -91,7 +91,7 @@ binary-arch: build install
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
-#	dh_installmime
+	dh_installmime
 #	dh_python
 #	dh_installinit
 #	dh_installcron

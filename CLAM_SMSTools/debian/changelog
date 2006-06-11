@@ -1,4 +1,4 @@
-clam-smstools (0.4.0-1) unstable; urgency=low
+clam-smstools (0.4.1-1) unstable; urgency=low
 
   * New upstream release
   * References to CLAM library names changed
@@ -12,7 +12,7 @@ clam-smstools (0.4.0-1) unstable; urgency=low
 
   * First 0.4 release
 
- -- Pau Arumí­ <parumi@iua.upf.es>  Wed,  8 Feb 2006 19:16:43 +0100
+ -- Pau Arumí <parumi@iua.upf.es>  Wed,  8 Feb 2006 19:16:43 +0100
 
 clam-smstools (0.4.0-pre2-1) unstable; urgency=low
 
