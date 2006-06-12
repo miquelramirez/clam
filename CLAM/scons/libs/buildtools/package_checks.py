@@ -376,15 +376,11 @@ int main( int argc, char** argv )
 package_checks['check_glu'] = ThoroughPackageCheck( 'glu', 'c', None, glu_test_code )
 
 libqt_test_code = r"""\
-#include <qapplication.h>
-#include <stdlib.h>
-#include <stdio.h>
+#include <qstring.h>
 
 int main()
 {
-	int argc = 2;
-	char *argv[]={"Just","testing"};
-	QApplication app(argc,argv);
+	QString foo = "foo";
 	return 0;	
 }
 """
