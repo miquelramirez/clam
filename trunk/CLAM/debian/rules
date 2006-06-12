@@ -13,7 +13,7 @@
 
 
 CFLAGS = -Wall -g
-OPTIONS= prefix=/usr xmlbackend=xercesc release=yes with_osc_support=no double=yes
+OPTIONS= prefix=/usr xmlbackend=xercesc release=yes with_osc_support=no double=0
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -58,7 +58,7 @@ build-stamp: configure-stamp
 	# First, tarballize the examples folder
 	tar zcvf examples.tar.gz examples
 	# and now doxygenate CLAM stuff
-	#	doxygen $(CURDIR)/doxygen.cfg
+	doxygen $(CURDIR)/doxygen.cfg
 	# tarballize dox
 	tar zcvf clam-doxydocs.tar.gz doxygen
 
