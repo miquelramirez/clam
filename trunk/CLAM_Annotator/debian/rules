@@ -49,8 +49,8 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	scons -C$(CURDIR) -c
-	scons -C$(CURDIR)/vmqt -c
+	#scons -C$(CURDIR) -c
+	#scons -C$(CURDIR)/vmqt -c
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
