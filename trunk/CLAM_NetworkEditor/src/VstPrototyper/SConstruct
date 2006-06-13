@@ -89,7 +89,6 @@ if sys.platform=='linux2' :
 		env.Append( CCFLAGS=['-g', '-Wall'] )
 elif sys.platform=='win32':
 #	env.Append(LIBPATH=[ os.path.join(env['vstsdk_path,'] 'win','library')])
-#	env.Append(CPPDEFINES=['WIN32', '_WINDOWS', ('WINDOWS',1)])
 	env.Append(LINKFLAGS=['/subsystem:windows','/machine:i386', ''])
 	env['WIN32_INSERT_DEF'] = 1
 	if env['release'] :
