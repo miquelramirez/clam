@@ -181,9 +181,12 @@ examples = []
 for ext in ['xml', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
 	examples += scanFiles('*.%s'%ext, ['example-data'])
 
+menuEntries = glob.glob('resources/*.desktop')
+
 installation = {
 	'/bin' : programs,
 	qtpluginsInstallationPath : [qtplugin],
+	'/share/applications', menuEntries,
 	'/share/man/man1' : manpages,
 	'/share/networkeditor/i18n': translations,
 	'/share/networkeditor/example-data': examples,
@@ -202,7 +205,7 @@ if sys.platform=='win32' :
 	"""
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % version ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
-	externalsDllDir = os.environ['EXTERNALDLLDIR'] 
+	externalsDllDir = os.environ['EXTERNALDLLDIR']
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
 	# Get the visual studio runtimes path
 	for vcRuntimeDir in os.environ['PATH'].split(";") :
@@ -229,6 +232,7 @@ if sys.platform=='macosx' : # not really tested!!!
 	env.Alias('package', mac_packages)
 
 env.Alias('install', installTargets )
+programs+=[qtplugin]
 
-env.Default(programs+[qtplugin], translations)
+env.Default(programs, translations)
 
