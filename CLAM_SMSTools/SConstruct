@@ -170,11 +170,14 @@ examples = []
 for ext in ['xml', 'wav', 'mp3', 'ogg']:
 	examples += scanFiles('*.%s'%ext, ['example-data'])
 
+menuEntries = glob.glob('resources/*.desktop')
+
 installation = {
 	'/bin' : programs,
+	'/share/applications', menuEntries,
 	'/share/man/man1' : manpages,
 	'/share/smstools/i18n': translations,
-	'/share/smstools/example-data': examples
+	'/share/smstools/example-data': examples,
 }
 
 installTargets = [

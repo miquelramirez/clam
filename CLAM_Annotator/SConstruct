@@ -176,8 +176,11 @@ song_examples = []
 for ext in ['pool', 'chords', 'mp3', 'wav', 'ogg']:
 	song_examples += scanFiles('*.%s'%ext, ['Samples/SongsTest'])
 
+menuEntries = glob.glob('resources/*.desktop')
+
 installation = {
 	'/bin' : programs,
+	'/share/applications', menuEntries,
 	'/share/man/man1' : manpages,
 	'/share/annotator/i18n': translations,
 	'/share/annotator/example-data': examples,
