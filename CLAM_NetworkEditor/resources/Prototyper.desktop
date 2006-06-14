@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=CLAM Prototyper
+GenericName=Prototype runner
+Comment=Runs an audio processing core under a QT designer interface
+Icon=/usr/share/pixmaps/clam-networkeditor.xpm
+Type=Application
+Categories=Application;AudioVideo;Audio;Development;GUIDesigner;Qt;
+Exec=Prototyper
+Terminal=false
+MimeType=

@@ -186,7 +186,7 @@ menuEntries = glob.glob('resources/*.desktop')
 installation = {
 	'/bin' : programs,
 	qtpluginsInstallationPath : [qtplugin],
-	'/share/applications', menuEntries,
+	'/share/applications': menuEntries,
 	'/share/man/man1' : manpages,
 	'/share/networkeditor/i18n': translations,
 	'/share/networkeditor/example-data': examples,

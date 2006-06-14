@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=CLAM Network Editor
+GenericName=CLAM patching tool
+Comment=An audio tool to build processing networks by connecting functional boxes
+Icon=/usr/share/pixmaps/clam-networkeditor.xpm
+Type=Application
+Categories=Application;AudioVideo;Audio;Qt;
+Exec=NetworkEditor
+Terminal=false
+MimeType=xml
