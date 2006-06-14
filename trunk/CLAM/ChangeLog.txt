@@ -1,19 +1,19 @@
 2006-06-14 CLAM_0_91_0
-'Linux binaries'
- * .deb's for debian sid
- * .deb's for ubuntu dapper
- * setups for windows
-
-2006-0X-XX CLAM_0_91_0
-'ACM Contest release first candidate'
+'Binary distribution release'
+ * Added Fedora Core packaging
+ * Debian packaging reworked for debian and ubuntu
+ * NSIS setups for windows reworked
+ * Testfarm countinously compiles and runs application and tests on the
+   supported platforms, Windows, MacOsX and Linux (Ubuntu/Debian/Fedora)
+ * Prototyper and QtPlugin moved to Network Editor tarball
+ * Applications are integrated on the desktop. Icons and menu entries...
+ * Applications tutorials
+ * Applications examples are now installed with the apps
  * Segmentation classes moved to clam-core
  * New segmentation class UnsizedSegmentation
  * New data abstraction EquidistantPointsFunction
    (An array with units, optional limits and x axis information)
  * Examples, and tests (Unit/Functional) now compiles with scons
- * Windows, Linux and OSX being continuously tested with testfarm.     
- * Prototyper and QtPlugin moved to Network Editor tarball
- * testfarm compiles all apps and tests in 4 platforms 
 
 2006-02-07 CLAM_0_90_0
 'New scons buildsystem and multiplaform again'
