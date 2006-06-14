@@ -73,7 +73,7 @@ install: build
 	mkdir -p $(CURDIR)/debian/clam-networkeditor/usr
 	scons install $(OPTIONS)
 	cp $(CURDIR)/clam-networkeditor.xpm ${CURDIR}/debian/clam-networkeditor/usr/share/pixmaps
-	find . -type f -name .sconsign* | xargs rm -rf
+	/usr/share/clam/sconstools/changeExampleDataPath.py debian/clam-networkeditor/usr/share/networkeditor /usr/share/networkeditor
 
 # Build architecture-independent files here.
 binary-indep: build install
