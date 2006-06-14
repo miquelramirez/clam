@@ -142,8 +142,8 @@ env.Append(CPPPATH=includePaths)
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
-else: 
-	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="%s"'%env['install_prefix'] + '/share/networkeditor/example-data')
+else:
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"%s\\""'%env['install_prefix'] + '/share/networkeditor/example-data')
 
 if sys.platform=='linux2' :
 	if env['release'] :
