@@ -3,18 +3,18 @@ import os
 import glob
 import sys
 
-version='0.3.2-CVS-20060601-1'
+version='0.3.2'#-CVS-20060601-1'
 options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('install_prefix', 'The prefix where the annotator will be installed', ''))
+options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(BoolOption('release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
+options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
 
 def scanFiles(pattern, paths) :
 	files = []
 	for path in paths :
-		files+=glob.glob(path+"/"+pattern)
+		files+=glob.glob(os.path.join(path,pattern))
 	return files
 
 def recursiveDirs(root) :
@@ -25,15 +25,16 @@ env = Environment(ENV=os.environ, tools=['default'], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 
+env.SConsignFile() # Single signature file
+
 CLAMInstallDir = env['clam_prefix']
-CLAMVmQtPath = 'vmqt'
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+CLAMVmQtPath = 'vmqt'
 
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
 
-env.SConsignFile() # Single signature file
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
@@ -117,6 +118,8 @@ env.Append(LIBS="clam_vmqt4")
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
+else: 
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="%s"'%env['install_prefix'] + '/share/annotator/example-data')
 
 if sys.platform=='linux2' :
 	if env['release'] :
@@ -163,6 +166,7 @@ translations = []
 if len(tsfiles) : 
 #	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
 	translations = env.Qm(source = tsfiles)
+
 
 examples = []
 for ext in ['pro', 'sc']:

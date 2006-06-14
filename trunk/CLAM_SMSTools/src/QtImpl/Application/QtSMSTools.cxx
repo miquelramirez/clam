@@ -19,6 +19,10 @@
 #include <qprocess.h>
 #endif
 
+#ifndef DATA_EXAMPLES_PATH
+#define DATA_EXAMPLES_PATH "example-data"
+#endif
+
 namespace QtSMS
 {
 	QtSMSTools::QtSMSTools()
@@ -49,7 +53,7 @@ namespace QtSMS
 
 	void QtSMSTools::loadConfiguration()
 	{
-		QString filename = QFileDialog::getOpenFileName(QString::null,"(*.xml *.sdif)",this);
+		QString filename = QFileDialog::getOpenFileName(DATA_EXAMPLES_PATH,"(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
 		if(mEngine->LoadConfiguration(filename.ascii()))
 		{

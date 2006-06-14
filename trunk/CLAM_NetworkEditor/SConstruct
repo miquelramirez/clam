@@ -3,19 +3,19 @@ import os
 import glob
 import sys
 
-version='0.3.1-CVS-20060601-1'
+version='0.3.1'#-CVS-20060601-1'
 options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('install_prefix', 'The prefix where the networkeditor will be installed', ''))
+options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt3/plugins/designer)','/bin/designer'))
-options.Add(BoolOption('release', 'Build CLAM NetworkEditor enabling compiler optimizations', 'no') )
+options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
 
 def scanFiles(pattern, paths) :
 	files = []
 	for path in paths :
-		files+=glob.glob(path+"/"+pattern)
+		files+=glob.glob(os.path.join(path,pattern))
 	return files
 
 def recursiveDirs(root) :
@@ -32,18 +32,20 @@ if sys.platform=="linux2" :
 	env['QT_LIB']='qt-mt'
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
-clam_sconstoolspath = os.path.join(env['clam_prefix'],'share','clam','sconstools')
+
+CLAMInstallDir = env['clam_prefix']
+clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+
 #env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
 
-CLAMInstallDir = env['clam_prefix']
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
-env['QT4_MOCHPREFIX'] = 'generated/moc_'
-env['QT4_UICDECLPREFIX'] = 'generated/ui_'
-env['QT4_QRCCXXPREFIX'] = 'generated/qrc_'
+env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
+env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
+env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
@@ -126,6 +128,7 @@ if qrcfiles : sources += env.Qrc(source=qrcfiles)
 
 uifiles = scanFiles("*.ui", sourcePaths)
 if uifiles: env.Uic(source=uifiles)
+
 sources += [ os.path.join( os.path.dirname(uiccpp),
 		'uic_'+os.path.splitext(os.path.basename(uiccpp))[0]+'.cxx') for uiccpp in uifiles ]
 sources += [ os.path.join( os.path.dirname(uiccpp),
@@ -137,9 +140,10 @@ if sys.platform=="win32" :
 env.Append(LIBS=['qui'])
 env.Append(CPPPATH=includePaths)
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
-env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
+else: 
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="%s"'%env['install_prefix'] + '/share/networkeditor/example-data')
 
 if sys.platform=='linux2' :
 	if env['release'] :
@@ -173,7 +177,6 @@ if len(tsfiles) :
 	translations = env.Qm(source = tsfiles)
 
 qtpluginsInstallationPath = env['qt_plugins_install_path']
-
 examples = []
 for ext in ['xml', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
 	examples += scanFiles('*.%s'%ext, ['example-data'])
