@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=CLAM Jack Prototyper
+GenericName=Prototype runner
+Comment=Runs an audio processing core under a QT designer interface (Jack enabled)
+Icon=/usr/share/pixmaps/clam-networkeditor.xpm
+Type=Application
+Categories=Application;AudioVideo;Audio;Development;GUIDesigner;Qt;
+Exec=Prototyper-jack
+Terminal=false
+MimeType=

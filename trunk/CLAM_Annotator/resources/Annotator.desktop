@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=CLAM Music Annotator
+GenericName=Music annotation tool
+Comment=A tool to compute and edit music related information
+Icon=/usr/share/pixmaps/clam-annotator.xpm
+Type=Application
+Categories=Application;AudioVideo;Audio;Music;
+Exec=Annotator
+Terminal=false
+MimeType=
