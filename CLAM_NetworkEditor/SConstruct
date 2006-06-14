@@ -143,7 +143,8 @@ env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/ne
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 else:
-	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"%s\\""'%env['install_prefix'] + '/share/networkeditor/example-data')
+	# TODO: This should not be hardcoded neither install_prefix (because package intall)
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
 
 if sys.platform=='linux2' :
 	if env['release'] :
