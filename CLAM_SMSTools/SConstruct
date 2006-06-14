@@ -3,11 +3,11 @@ import os
 import glob
 import sys
 
-version='0.4.1-CVS-20060601-1'
+version='0.4.1'#-CVS-20060601-1'
 options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('install_prefix', 'The prefix where the smstools will be installed', ''))
+options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(BoolOption('release', 'Build CLAM SMSTools enabling compiler optimizations', 'no') )
+options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
 
@@ -42,9 +42,9 @@ env.Tool('nsis', toolpath=[clam_sconstoolspath])
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
-env['QT4_MOCHPREFIX'] = 'generated/moc_'
-env['QT4_UICDECLPREFIX'] = 'generated/ui_'
-env['QT4_QRCCXXPREFIX'] = 'generated/qrc_'
+env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
+env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
+env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
@@ -129,6 +129,8 @@ env.Append(CPPPATH=includePaths)
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/smstools\\""')
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
+else: 
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="%s"'%env['install_prefix'] + '/share/smstools/example-data')
 
 if sys.platform=='linux2' :
 	if env['release'] :
@@ -162,6 +164,7 @@ translations = []
 if len(tsfiles) : 
 #	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
 	translations = env.Qm(source = tsfiles)
+
 
 examples = []
 for ext in ['xml', 'wav', 'mp3', 'ogg']:
