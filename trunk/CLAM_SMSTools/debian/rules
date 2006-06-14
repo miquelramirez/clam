@@ -72,7 +72,8 @@ install: build
 	mkdir -p $(CURDIR)/debian/clam-smstools/usr
 	scons install $(OPTIONS)
 	cp $(CURDIR)/clam-smstools.xpm ${CURDIR}/debian/clam-smstools/usr/share/pixmaps
-#	dh_install debian/clam-smstools.desktop /usr/share/applications/ # Now we do it on scons
+	#dh_install debian/clam-smstools.desktop /usr/share/applications/ # Now we do it on scons
+	/usr/share/clam/sconstools/changeExampleDataPath.py debian/clam-smstools/usr/share/smstools /usr/share/smstools
 
 # Build architecture-independent files here.
 binary-indep: build install
