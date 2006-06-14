@@ -1,3 +1,9 @@
+2006-06-14 CLAM_0_91_0
+'Linux binaries'
+ * .deb's for debian sid
+ * .deb's for ubuntu dapper
+ * setups for windows
+
 2006-0X-XX CLAM_0_91_0
 'ACM Contest release first candidate'
  * Segmentation classes moved to clam-core
