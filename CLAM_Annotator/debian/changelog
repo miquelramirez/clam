@@ -1,3 +1,11 @@
+clam-annotator (0.3.2-2) unstable; urgency=low
+
+  * Added freedesktop menu entry
+  * Examples modified to access the wavs at the proper location
+  * Open files on /usr/share/<app>/example-data
+
+ -- CLAM Team <clam@iua.upf.es>  Tue, 15 Jun 2006 10:22:34 +0100
+
 clam-annotator (0.3.2-1) unstable; urgency=low
 
   * New upstream release
