@@ -1,9 +1,13 @@
-2006-06-14 CLAM_0_91_0
-'Binary distribution release'
+2006-??-?? CLAM 0.91.1 CVS
+
+
+2006-06-14 CLAM 0.91.0
+'Spectral transformations, annotator, packaging, and desktop integration release'
+ * 30 new spectral transformations
  * Added Fedora Core packaging
  * Debian packaging reworked for debian and ubuntu
  * NSIS setups for windows reworked
- * Testfarm countinously compiles and runs application and tests on the
+ * Testfarm countinously compiles and runs applications and tests on the
    supported platforms, Windows, MacOsX and Linux (Ubuntu/Debian/Fedora)
  * Prototyper and QtPlugin moved to Network Editor tarball
  * Applications are integrated on the desktop. Icons and menu entries...
@@ -15,7 +19,7 @@
    (An array with units, optional limits and x axis information)
  * Examples, and tests (Unit/Functional) now compiles with scons
 
-2006-02-07 CLAM_0_90_0
+2006-02-07 CLAM 0.90.0
 'New scons buildsystem and multiplaform again'
   * Building and packaging
      ** New build system based on scons
@@ -75,7 +79,7 @@
 
 
 
-2005-07-21 CLAM_0_8_0
+2005-07-21 CLAM 0.8.0
 'Prototyper with streaming SMS transformations'
   * SMS Transformations on the network editor:
      ** All SMS Transformations have been refactored in order to work
@@ -142,7 +146,7 @@
         not found (and not specifyed with the --without-libname option)
 
 
-2004-11-18 CLAM_0_7_0
+2004-11-18 CLAM 0.7.0
 'Easier deployment, better plots and Processing Networks'
   * Processing Ports Infrastructure Complete Rewrite:
      ** Now effectively works with any datatype (i.e. InPort<Spectrum>)
@@ -243,7 +247,7 @@
   * MS Visual support:
      ** MS Visual 6 is no longer supported.
 
-2004-04-13 CLAM_0_6_1
+2004-04-13 CLAM 0.6_1
 'qt && Visual 7 support'
   * General:
      ** Some memory leaks removed with Valgrind
@@ -278,7 +282,7 @@
      ** Solved a bug that crashed SMSTools when trying to load an XML 
         analysis.
 
-2004-02-18 CLAM_0_6_0
+2004-02-18 CLAM 0.6.0
 'Audio file formats: Reloaded'
 
   * Network Editor:
@@ -344,7 +348,7 @@
 
 
 
-2004-01-15 CLAM_0_5_7
+2004-01-15 CLAM 0.5.7
 'Tomorrow MacOsX patch'
   * SMSTools:
      ** Fix: Closing window crashed on MacOsX.
@@ -374,7 +378,7 @@
      ** Fix: Did not compile in previous release. Example in general is still 
         outdated though.
 
-2004-01-12 CLAM_0_5_6
+2004-01-12 CLAM 0.5_6
 'XML and Ladspa rewrite'
   * XML:
      ** Both, basic XMLStorage usage interface and customization interface 
@@ -419,7 +423,7 @@
   * Build system:
      ** Fix: some fltk-config nagging options removed on aclocal
 
-2003-11-26 CLAM_0_5_5
+2003-11-26 CLAM 0.5.5
 
   * General:
      ** Code cleanup
@@ -438,10 +442,10 @@
      ** A generic RtAAudioDevice for all platforms (includes some platform 
         specific workarounds)
 
-2003-11-06 CLAM_0_5_4
+2003-11-06 CLAM 0.5.4
 
   * Build system:
-     ** Added 'Compiling_against_CLAM_example' subdir to the build dir. It 
+     ** Added 'Compiling_against_CLAM example' subdir to the build dir. It 
         contains an out-of-the-box example of how a CLAM external aplication 
         can compile against the library. It contains a tutorial in its 
         'readme.html' file. Since now it was a separated tarball available in 
@@ -536,7 +540,7 @@
      ** Configuration of processings from interface.
      ** Serialization
 
-2003-10-4 CLAM_0_5_3
+2003-10-4 CLAM 0.5.3
 'Starting the new course'
 
   * Build system:
@@ -564,10 +568,10 @@
         spectral peak.
      ** The FFT_rfftw and FFT_ooura Processings were missing a return on 
         SetPrototypes() which only generated a compiler error when 
-        CLAM_ASSERT was disabled.
+        CLAM ASSERT was disabled.
   * Processing - Synthesis:
      ** The IFFT_rfftw Processing was missing a return on SetPrototypes() 
-        which only generated a compiler error when CLAM_ASSERT was disabled.
+        which only generated a compiler error when CLAM ASSERT was disabled.
   * Processing - AudioFileIO:
      ** AudioFileIn should now be capable of loading PCM encoded files with 
         sample formats of 8, 16, 24 or 32 bits/sample
@@ -587,7 +591,7 @@
      ** Example about Segment and SDIF I/O added to examples/
      ** Examples explaining how to use new VM Plots added to examples/
 
-2003-07-25 CLAM_0_5_2
+2003-07-25 CLAM 0.5.2
 'Processing bug-fixing, SMSTools update'
 
   * Processing - Transformation - SMS:
@@ -621,7 +625,7 @@
             devoted to transformation parameters edition
 
 
-2003-07-03 CLAM_0_5_1
+2003-07-03 CLAM 0.5.1
 'SMSTools update and Mac compilation issues'
 
   * Examples - SMS:
@@ -658,7 +662,7 @@
      ** Library generation under Linux available (still not for a CLAM lib 
         but for generating user libraries)
 
-2003-06-11 CLAM_0_5_0
+2003-06-11 CLAM 0.5.0
 'flashing new build system and SMSTools'
   * Build system:
      ** New flashing build system, fast, crossplatform and easy to use
@@ -763,7 +767,7 @@
      ** Configurators: New type suported: 'Filename'
      ** 'Formal' documentation will be soon made publicly available
 
-2003-03-05 CLAM_0_4_2
+2003-03-05 CLAM 0.4.2
 'Cuidado merge update'
 
   * General
@@ -825,7 +829,7 @@
   * MSVisualC++ build system
      ** Changed extended.c to extended.cxx. Used by 
         Tools/AudioFileIO/AIFFFileIO
-     ** CLAM_Windows.hxx used instead windows.h to work arraund some nasty 
+     ** CLAM Windows.hxx used instead windows.h to work arraund some nasty 
         defines
   * SpectralDelay
      ** QT dependencies removed from the .dsp. That includes build 
@@ -838,7 +842,7 @@
      ** Modified boost::dir_it added as external included library (Only works 
         for Windows... by now)
 
-2003-01-23 CLAM_0_4_1
+2003-01-23 CLAM 0.4.1
 'Analysis Synthesis debuggin'
 
   * General:
@@ -848,7 +852,7 @@
         misredeclarations
   * Unix build system:
      ** Better support for external projects
-     ** $(CLAM_PATH)/ prefix needs to be added on for each filename on 
+     ** $(CLAM PATH)/ prefix needs to be added on for each filename on 
         '.files' files
   * Spectral Analysis:
      ** Fix: WindowGenerator Enums symbols had illegal spaces on their inside
@@ -883,12 +887,12 @@
      ** Did a little modification in the GUI so Audio displays are closed 
         when editing configuration
 
-2002-11-26 CLAM_0_4_0-rel
+2002-11-26 CLAM 0.4.0-rel
 'Fly examples, fly to seattle' release
 
   * General:
      ** Directory reorganization
-     ** CLAM_WARNING macros with customizable behaviour
+     ** CLAM WARNING macros with customizable behaviour
      ** New integrated examples: Salto and Rappid
   * AnalisysSysthesis:
      ** Major rework
@@ -936,12 +940,12 @@
 
 
 
-2002-04-26 CLAM_0_3_0-rel
+2002-04-26 CLAM 0.3.0-rel
 
   * General:
      ** CLAM code is now released under GPL license.
      ** MTG namespace becomes CLAM namespace
-     ** All library macros have 'CLAM_' as prefix
+     ** All library macros have 'CLAM ' as prefix
      ** PARANOID support has been dropped.
      ** New error handling macros.
      ** More tests and examples
@@ -1001,7 +1005,7 @@
      ** Tests projects now share .obj files between them, thus making faster 
         the build process
 
-2002-04-19 CLAM_0_2_2-rel
+2002-04-19 CLAM 0.2.2-rel
 
   * DynamicType class:
      ** Dynamic type accessor checks are now only done in debug mode.
@@ -1038,7 +1042,7 @@
         document and the User tutorial.
 
 
-2002-02-27 CLAM_0_2_1-rel
+2002-02-27 CLAM 0.2.1-rel
 
   * Array class:
      ** Changed the Resize/SetSize semantics, fixing some remaining bugs. 
@@ -1077,7 +1081,7 @@
         inconsistencies.
   * Updated the GUI Snapshot code.
 
-2002-02-19 CLAM_0_2_0-rel
+2002-02-19 CLAM 0.2.0-rel
 
   * Array class:
      ** Fixed bug in memory reallocation and movement.
