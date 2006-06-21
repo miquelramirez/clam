@@ -3,7 +3,6 @@ import os
 import glob
 import sys
 
-version='0.3.1'#-CVS-20060601-1'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
@@ -39,6 +38,13 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 #env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
+sys.path.append(clam_sconstoolspath)
+import versionInfo
+version, fullVersion = versionInfo.takeFromChangeLog("CHANGES", "NetworkEditor")
+print "Version: ", version
+print "Package version: ", fullVersion
+versionInfo.generateVersionSources(os.path.join('src','NetworkEditorVersion'), "NetworkEditor", fullVersion)
+
 
 
 env['CXXFILESUFFIX'] = '.cxx'
