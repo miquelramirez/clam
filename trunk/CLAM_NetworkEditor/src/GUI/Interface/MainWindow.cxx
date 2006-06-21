@@ -33,6 +33,8 @@
 #include <qlabel.h>
 #include <string>
 #include "aboutdialog.h"
+#include <CLAM/CLAMVersion.hxx>
+#include "NetworkEditorVersion.hxx"
 
 #include "NetworkController.hxx"
 #ifndef DATA_EXAMPLES_PATH
@@ -167,8 +169,8 @@ namespace NetworkGUI
 					"<p><b>Network Editor version %1</b></p>"
 					"<p>Using CLAM version %2</p>"
 					)
-				.arg("0.3.1-CVS")
-				.arg("0.91-CVS"));
+				.arg(NetworkEditor::GetFullVersion())
+				.arg(CLAM::GetFullVersion()));
 		setIcon(*(mpAboutDlg->icon()));
 
 		ProcessingTree * procTree = new ProcessingTree( mNetworkPresentation, mDockProcMenu );
