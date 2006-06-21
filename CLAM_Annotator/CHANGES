@@ -1,6 +1,14 @@
+2006-??-?? MusicAnnotator 0.3.3 CVS
+''
 
+2006-06-18 MusicAnnotator 0.3.2
+'Linux binary packaging release'
+ * Using CLAM 0.91.0
+ * Packages for debian sid, ubuntu dapper and fedora core 5
+ * Few internal refactorings on instant views architecture
+ * Fix: CLAM crash on exit due to duplicated symbols in CLAM libs
 
-2006-05-08 v0.3.1
+2006-05-08 MusicAnnotator 0.3.1
 'Review feedback release'
  * Using CLAM 0.91 (CVS)
  * Instant views are managed as plugins and can be usable in any suited attribute
@@ -20,7 +28,7 @@
    ** BOCA task are binded with the BOCA client
  * Credits and acknoledgements updated on the About dialog.
 
-2006-04-30 v0.3.0
+2006-04-30 MusicAnnotator 0.3.0
 'Final SIMAC meeting release'
  * Using CLAM 0.91 (CVS)
  * Ported to QT4 using the new vmqt widgets
@@ -38,7 +46,7 @@
    ** All provided extractors follow the same commandline conventions
  * Minor adaptations to the BOCA client to the new services
 
-2006-02-07  v0.2
+2006-02-07 MusicAnnotator 0.2
  * using CLAM 0.90.0
  * New segment editor:
    ** Different annotation restrictions depending on the schema. 

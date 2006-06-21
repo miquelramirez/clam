@@ -56,6 +56,9 @@
 #include <CLAM/MultiChannelAudioFileReader.hxx>
 #include <CLAM/AudioFile.hxx>
 
+#include <CLAM/CLAMVersion.hxx>
+#include "MusicAnnotatorVersion.hxx"
+
 #include <vmBPFPlot.hxx>
 #include <vmAudioPlot.hxx>
 #include <vmBPFPlayer.hxx>
@@ -184,8 +187,8 @@ Annotator::Annotator(const std::string & nameProject = "")
 	aboutUi.versionInfo->setText(tr(
 			"<p><b>Music Annotator version %1</b></p>\n"
 			"<p>Based on CLAM version %2</p>")
-			.arg(VERSION)
-			.arg("0.91-CVS"));
+			.arg(MusicAnnotator::GetFullVersion())
+			.arg(CLAM::GetFullVersion()));
 	initInterface();
 	setMenuAudioItemsEnabled(false);
 	loadSettings();

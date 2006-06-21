@@ -3,7 +3,6 @@ import os
 import glob
 import sys
 
-version='0.3.2'#-CVS-20060601-1'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
@@ -34,6 +33,13 @@ CLAMVmQtPath = 'vmqt'
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
+sys.path.append(clam_sconstoolspath)
+import versionInfo
+version, fullVersion = versionInfo.takeFromChangeLog("CHANGES", "MusicAnnotator")
+print "Version: ", version
+print "Package version: ", fullVersion
+versionInfo.generateVersionSources(os.path.join('src','MusicAnnotatorVersion'), "MusicAnnotator", fullVersion)
+
 
 
 env['CXXFILESUFFIX'] = '.cxx'
@@ -196,7 +202,7 @@ if sys.platform=='win32' :
 			env['install_prefix']+"/bin", 
 			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
 			) for dll in 'Core', 'Gui', 'OpenGL']
-	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % version ])
+	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullversion ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
 	externalsDllDir = os.environ['EXTERNALDLLDIR']
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
