@@ -1,7 +1,7 @@
-def takeFromChangeLog(changelogFile) :
+def takeFromChangeLog(changelogFile, product='CLAM') :
 	import re
 	import datetime
-	versionExtractor = re.compile(r'[0-9?]+-[0-9?]+-[0-9?]+ CLAM (?P<Major>[0-9]+)\.(?P<Minor>[0-9]+)\.(?P<Patch>[0-9]+)(?P<CVS>.*CVS.*)?')
+	versionExtractor = re.compile(r'[0-9?]+-[0-9?]+-[0-9?]+ %s (?P<Major>[0-9]+)\.(?P<Minor>[0-9]+)\.(?P<Patch>[0-9]+)(?P<CVS>.*CVS.*)?'%product)
 	for line in file(changelogFile) :
 		match = versionExtractor.match(line)
 		if match is None: continue
