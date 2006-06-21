@@ -12,6 +12,8 @@
 #include "QtSMSTools.hxx"
 #include "LicenseDlg.hxx"
 #include "AboutBox.hxx"
+#include <CLAM/CLAMVersion.hxx>
+#include "SMSToolsVersion.hxx"
 
 #ifdef WIN32
 #include <CLAM/CLAM_windows.h>
@@ -469,8 +471,8 @@ namespace QtSMS
 		aboutBox->versionInfo->setText(tr(
 			"<p><b>SMSTools version %1</b></p>"
 			"<p>Based on CLAM version %2</p>")
-			.arg("0.4.1-CVS")
-			.arg("0.91-CVS")
+			.arg(SMSTools::GetFullVersion())
+			.arg(CLAM::GetFullVersion())
 			);
 		aboutBox->exec();
 	}

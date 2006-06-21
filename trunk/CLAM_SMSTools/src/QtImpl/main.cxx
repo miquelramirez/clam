@@ -27,7 +27,7 @@ int main( int argc, char ** argv )
 	QApplication app( argc, argv );
 
 ///////////////////////////////////
-//	                         //
+//                               //
 //   TODO: add a splash window   //
 //                               // 
 ///////////////////////////////////
