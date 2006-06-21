@@ -445,7 +445,7 @@
 2003-11-06 CLAM 0.5.4
 
   * Build system:
-     ** Added 'Compiling_against_CLAM example' subdir to the build dir. It 
+     ** Added 'Compiling_against_CLAM_example' subdir to the build dir. It 
         contains an out-of-the-box example of how a CLAM external aplication 
         can compile against the library. It contains a tutorial in its 
         'readme.html' file. Since now it was a separated tarball available in 
@@ -568,10 +568,10 @@
         spectral peak.
      ** The FFT_rfftw and FFT_ooura Processings were missing a return on 
         SetPrototypes() which only generated a compiler error when 
-        CLAM ASSERT was disabled.
+        CLAM_ASSERT was disabled.
   * Processing - Synthesis:
      ** The IFFT_rfftw Processing was missing a return on SetPrototypes() 
-        which only generated a compiler error when CLAM ASSERT was disabled.
+        which only generated a compiler error when CLAM_ASSERT was disabled.
   * Processing - AudioFileIO:
      ** AudioFileIn should now be capable of loading PCM encoded files with 
         sample formats of 8, 16, 24 or 32 bits/sample
@@ -829,7 +829,7 @@
   * MSVisualC++ build system
      ** Changed extended.c to extended.cxx. Used by 
         Tools/AudioFileIO/AIFFFileIO
-     ** CLAM Windows.hxx used instead windows.h to work arraund some nasty 
+     ** CLAM_Windows.hxx used instead windows.h to work arraund some nasty 
         defines
   * SpectralDelay
      ** QT dependencies removed from the .dsp. That includes build 
@@ -852,7 +852,7 @@
         misredeclarations
   * Unix build system:
      ** Better support for external projects
-     ** $(CLAM PATH)/ prefix needs to be added on for each filename on 
+     ** $(CLAM_PATH)/ prefix needs to be added on for each filename on 
         '.files' files
   * Spectral Analysis:
      ** Fix: WindowGenerator Enums symbols had illegal spaces on their inside
@@ -892,7 +892,7 @@
 
   * General:
      ** Directory reorganization
-     ** CLAM WARNING macros with customizable behaviour
+     ** CLAM_WARNING macros with customizable behaviour
      ** New integrated examples: Salto and Rappid
   * AnalisysSysthesis:
      ** Major rework
@@ -945,7 +945,7 @@
   * General:
      ** CLAM code is now released under GPL license.
      ** MTG namespace becomes CLAM namespace
-     ** All library macros have 'CLAM ' as prefix
+     ** All library macros have 'CLAM_' as prefix
      ** PARANOID support has been dropped.
      ** New error handling macros.
      ** More tests and examples
