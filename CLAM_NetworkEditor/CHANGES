@@ -1,5 +1,8 @@
 2006-??-?? NetworkEditor 0.3.2 CVS
 ''
+ * Network files extension is now .clamnetwork
+ * Prototypers ask for a network when none given or launched from the menu
+ * Mime types and actions added
  * Taking the version from the changelog file (CHANGES)
 
 
