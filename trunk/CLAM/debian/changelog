@@ -1,10 +1,8 @@
-clam (0.91.0-2) unstable; urgency=low
+clam (0.91.1-1) unstable; urgency=low
 
-  * Added freedesktop icon
-  * Examples modified to access the wavs at the proper location
-  * Open files on /usr/share/<app>/example-data
+  * New upstream release
 
- -- CLAM Team <clam@iua.upf.es>  Tue, 15 Jun 2006 10:22:34 +0100
+ -- CLAM Team <clam@iua.upf.es>  Tue, 22 Jun 2006 10:22:34 +0100
 
 clam (0.91.0-1) unstable; urgency=low
 

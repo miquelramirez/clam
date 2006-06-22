@@ -1,3 +1,9 @@
+clam-smstools (0.4.2-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- CLAM Team <clam@iua.upf.es>  Tue, 22 Jun 2006 10:22:34 +0100
+
 clam-smstools (0.4.1-2) unstable; urgency=low
 
   * Added freedesktop menu entry
