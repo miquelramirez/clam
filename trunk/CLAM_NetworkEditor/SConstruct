@@ -189,11 +189,13 @@ for ext in ['clamnetwork', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
 	examples += scanFiles('*.%s'%ext, ['example-data'])
 
 menuEntries = glob.glob('resources/*.desktop')
+mimeEntries = 'resources/clam-network.xml'
 
 installation = {
 	'/bin' : programs,
 	qtpluginsInstallationPath : [qtplugin],
 	'/share/applications': menuEntries,
+	'/share/mime/packages': mimeEntries,
 	'/share/man/man1' : manpages,
 	'/share/networkeditor/i18n': translations,
 	'/share/networkeditor/example-data': examples,

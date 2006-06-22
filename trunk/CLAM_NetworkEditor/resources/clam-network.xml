@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+    <mime-type type="application/x-clamnetwork">
+    <comment xml:lang="en">CLAM Network</comment>
+    <comment xml:lang="ca">Xarxa de CLAM</comment>
+    <comment xml:lang="es">Red de CLAM</comment>
+    <glob pattern="*.clamnetwork"/>
+  </mime-type>
+</mime-info>
