@@ -212,7 +212,7 @@ if sys.platform=='win32' :
 			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
 			) for dll in 'Core', 'Gui', 'OpenGL']
 	"""
-	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % version ])
+	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
 	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
 	externalsDllDir = os.environ['EXTERNALDLLDIR']
 	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
