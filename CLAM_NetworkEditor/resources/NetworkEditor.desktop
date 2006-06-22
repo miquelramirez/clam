@@ -8,4 +8,9 @@ Type=Application
 Categories=Application;AudioVideo;Audio;Qt;
 Exec=NetworkEditor
 Terminal=false
-MimeType=xml
+MimeType=application/x-clamnetwork;
+
+[Desktop Action Edit]
+Exec=NetworkEditor %f
+Name=Edit (NetworkEditor)
+

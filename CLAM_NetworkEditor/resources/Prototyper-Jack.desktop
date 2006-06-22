@@ -8,4 +8,9 @@ Type=Application
 Categories=Application;AudioVideo;Audio;Development;GUIDesigner;Qt;
 Exec=Prototyper-jack
 Terminal=false
-MimeType=
+MimeType=application/x-clamnetwork;
+
+[Desktop Action Run]
+Exec=Prototyper-jack %f
+Name=Run with Jackified Prototyper
+
