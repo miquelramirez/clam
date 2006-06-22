@@ -8,10 +8,11 @@
 
 #include "Utils.hxx"
 #include <iostream>
+#include <qfiledialog.h>
 
 int main( int argc, char *argv[] )
 {
-	if (argc<2 || argc>3)
+	if (argc>3)
 	{
 		std::cout << " Usage: " 
 			<< argv[0] << " <networkfile> [ <uifile> ]" << std::endl;
@@ -23,17 +24,25 @@ int main( int argc, char *argv[] )
 	CLAM::AudioIOModule::init();
 #endif
 
+	QApplication app( argc, argv );
+
 	std::string networkFile, uiFile;
-	
-	networkFile=argv[1];
+	if (argc<2)
+	{
+		QString file = QFileDialog::getOpenFileName( QString::null, "CLAM Network files(*.clamnetwork)", 0, 0, "Choose a Network to run");
+		if (!file) return -1;
+		networkFile=file.ascii();
+	}
+	else
+	{
+		networkFile=argv[1];
+	}
 
 	uiFile= argc>2 ? argv[2] : GetUiFromXmlFile(networkFile);
 
 	if ( !FileExists(networkFile) || !FileExists(uiFile) )
 		return -1;
 	
-	QApplication app( argc, argv );
-
 	CLAM::PrototypeLoader loader( networkFile );
 	loader.SetNetworkPlayer( *(new CLAM::BlockingNetworkPlayer(networkFile)) );
 	
