@@ -43,6 +43,8 @@
 
 #include <iostream> // TODO: remove
 
+static const char * networkFilter = "CLAM Network files (*.clamnetwork)";
+
 namespace NetworkGUI
 {
 
@@ -207,7 +209,7 @@ namespace NetworkGUI
 	{
 		QString s = QFileDialog::getOpenFileName(
 			DATA_EXAMPLES_PATH,
-			"XML Files (*.xml)",
+			networkFilter,
 			this,
 			"open file dialog"
 			"Choose a file to load network" );
@@ -219,7 +221,7 @@ namespace NetworkGUI
 	{
 		QString s = QFileDialog::getOpenFileName(
 			"",
-			"XML Files (*.xml)",
+			networkFilter,
 			this,
 			"open file dialog"
 			"Choose a file to load network" );
@@ -238,7 +240,7 @@ namespace NetworkGUI
 	{
 		QString s = QFileDialog::getSaveFileName(
 			mCurrentNetwork,
-			"XML Files (*.xml)",
+			networkFilter,
 			this,
 			"save file dialog"
 			"Choose a file to save network" );
