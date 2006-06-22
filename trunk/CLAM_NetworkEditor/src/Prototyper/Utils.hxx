@@ -20,7 +20,7 @@ bool FileExists( const std::string filename )
 std::string GetUiFromXmlFile(const std::string& xmlfile)
 {
 	std::string filename = xmlfile;
-	filename.erase( filename.size()-4, 4 );
+	filename.erase( filename.size()-12, 12 );
 	filename+=std::string(".ui");
 	return filename;
 }
