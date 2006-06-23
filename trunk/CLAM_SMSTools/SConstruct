@@ -217,8 +217,8 @@ if sys.platform=='win32' :
 	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % clam_sconstoolspath)
 	env.Alias('package', win_packages)
 
-if sys.platform=='darwin' : # not really tested!!!
-	#Binaries: smstools + sample extractor
+if sys.platform=='darwin' :
+	# TODO: Review why those flags were added# TODO: Review why those flags were added# TODO: Review why those flags were added
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
 
 	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
