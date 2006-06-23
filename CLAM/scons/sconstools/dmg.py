@@ -1,10 +1,12 @@
 import os
 
 def create_dmg( target, source, env) :
+	bundle = 'NetworkEditor.app'
+	volume = str(target[0]).replace('.dmg', '')
+
 	os.system( "mkdir DMG" )
-	os.system( "cp README.txt DMG" )
-	os.system( "cp -r Annotator.app DMG" )
-	os.system( "sudo hdiutil create -srcfolder DMG -volname CLAM_Annotator -uid 0 CLAM_Annotator-%s.dmg"%version )
+	os.system( "cp -r %s DMG"%source[0] )
+	os.system( "sudo hdiutil create -srcfolder DMG -volname %s -uid 0 %s"%(volume, target[0]) )
 	os.system( "rm -rf DMG" )
 
 def create_dmg_message( target, source, env):

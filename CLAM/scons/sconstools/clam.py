@@ -1,7 +1,7 @@
 import sys
 
 def enable_modules( self, libs, path) :
-	if sys.platform == 'linux2': 
+	if sys.platform in ['linux2','darwin'] : 
 		self.ParseConfig('PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config %s --libs --cflags'%
 			(
 				path,
