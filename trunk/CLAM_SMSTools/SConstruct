@@ -134,7 +134,10 @@ if sys.platform=="win32" :
 	sources += env.RES(source=["resources/SMSTools.rc"])
 
 env.Append(CPPPATH=includePaths)
-env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/smstools\\""')
+if sys.platform=='darwin' :
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"SMSTools.app/Contents/Resources\\""')
+else :
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/smstools\\""')
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 else:
@@ -214,8 +217,7 @@ if sys.platform=='win32' :
 	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % clam_sconstoolspath)
 	env.Alias('package', win_packages)
 
-if sys.platform=='macosx' : # not really tested!!!
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"SMSTools.app/Contents/Resources\\""')
+if sys.platform=='darwin' : # not really tested!!!
 	#Binaries: smstools + sample extractor
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
 
