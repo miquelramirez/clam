@@ -6,7 +6,8 @@ def create_dmg( target, source, env) :
 
 	os.system( "mkdir DMG" )
 	os.system( "cp -r %s DMG"%source[0] )
-	os.system( "sudo hdiutil create -srcfolder DMG -volname %s -uid 0 %s"%(volume, target[0]) )
+	os.system( "hdiutil create -srcfolder DMG -volname %s %s"%(volume, target[0]) )
+	#os.system( "sudo hdiutil create -srcfolder DMG -volname %s -uid 0 %s"%(volume, target[0]) )
 	os.system( "rm -rf DMG" )
 
 def create_dmg_message( target, source, env):
