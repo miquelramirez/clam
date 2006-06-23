@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleExecutable</key>
-	<string>QtSMSTools</string>
+	<string>SMSTools</string>
 	<key>CFBundleIconFile</key>
 	<string>CLAM.icns</string>
 	<key>CFBundleName</key>
