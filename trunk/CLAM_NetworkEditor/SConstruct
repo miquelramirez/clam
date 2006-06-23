@@ -27,7 +27,7 @@ Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
-if sys.platform=="linux2" :
+if sys.platform in ["linux2","darwin"] :
 	env['QT_LIB']='qt-mt'
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
@@ -38,6 +38,7 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 #env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
+env.Tool('dmg', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
 version, fullVersion = versionInfo.takeFromChangeLog("CHANGES", "NetworkEditor")
@@ -145,7 +146,10 @@ if sys.platform=="win32" :
 
 env.Append(LIBS=['qui'])
 env.Append(CPPPATH=includePaths)
-env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
+if sys.platform=='darwin' :
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"NetworkEditor.app/Contents/Resources\\""')
+else :
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 else:
@@ -226,8 +230,7 @@ if sys.platform=='win32' :
 	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % clam_sconstoolspath)
 	env.Alias('package', win_packages)
 
-if sys.platform=='macosx' : # not really tested!!!
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"NetworkEditor.app/Contents/Resources\\""')
+if sys.platform=='darwin' : # not really tested!!!
 	#Binaries: networkeditor + sample extractor
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
 
@@ -237,7 +240,7 @@ if sys.platform=='macosx' : # not really tested!!!
 		env.Install( 'NetworkEditor.app/Contents', 'resources/Info.plist'),
 		env.Install( 'NetworkEditor.app/Contents/Resources', 'resources/CLAM.icns'),
 		]
-	mac_packages = env.Dmg('notused', installTargets )
+	mac_packages = env.Dmg('CLAM_NetworkEditor-%s.dmg'%fullVersion, [env.Dir('NetworkEditor.app/')]+installTargets )
 	env.Alias('package', mac_packages)
 
 env.Alias('install', installTargets )
