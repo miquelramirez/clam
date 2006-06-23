@@ -231,7 +231,7 @@ if sys.platform=='win32' :
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' : # not really tested!!!
-	#Binaries: networkeditor + sample extractor
+	# TODO: Review why those flags were added# TODO: Review why those flags were added# TODO: Review why those flags were added
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
 
 	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
