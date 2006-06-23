@@ -164,12 +164,16 @@ if sys.platform=='linux2' :
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
 
 
+extralinkFlags = []
+if sys.platform == 'darwin' :
+	extralinkFlags=['-dynamic','-bind_at_load']
+	
 programs = []
 for main in mainSources.items() :
-	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
+	programs += [ env.Program(target=main[0], source = sources+[main[1]], LINKFLAGS=extralinkFlags) ]
 
 qtplugin = env.SharedLibrary("CLAMWidgets",os.path.join('src','QtDesignerPlugins','CLAMWidgetsPlugin.cxx'), 
-	CPPFLAGS=['-DQT_PLUGIN','-DQT_SHARED','-DQT_THREAD_SUPPORT'])
+	CPPFLAGS=['-DQT_PLUGIN','-DQT_SHARED','-DQT_THREAD_SUPPORT'], LINKFLAGS=[])
 
 manpages = [
 	'resources/man/man1/NetworkEditor.1',
@@ -230,9 +234,7 @@ if sys.platform=='win32' :
 	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % clam_sconstoolspath)
 	env.Alias('package', win_packages)
 
-if sys.platform=='darwin' : # not really tested!!!
-	# TODO: Review why those flags were added# TODO: Review why those flags were added# TODO: Review why those flags were added
-	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
+if sys.platform=='darwin' :
 
 	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
 	installTargets = [
