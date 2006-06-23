@@ -26,7 +26,7 @@ Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
-if sys.platform=="linux2" :
+if sys.platform in ["linux2","darwin"] :
 	env['QT_LIB']='qt-mt'
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
@@ -37,6 +37,7 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 #env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
+env.Tool('dmg', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
 version, fullVersion = versionInfo.takeFromChangeLog("CHANGES", "SMSTools")
@@ -146,7 +147,7 @@ if sys.platform=='linux2' :
 	else :
 		env.Append( CCFLAGS=['-g', '-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
-else:
+if sys.platform=='win32':
 	if env['release'] :
 		env.Append( LINKFLAGS = ['/LTCG'] )
 	else:
@@ -224,7 +225,7 @@ if sys.platform=='macosx' : # not really tested!!!
 		env.Install( 'SMSTools.app/Contents', 'resources/Info.plist'),
 		env.Install( 'SMSTools.app/Contents/Resources', 'resources/CLAM.icns'),
 		]
-	mac_packages = env.Dmg('notused', installTargets )
+	mac_packages = env.Dmg('CLAM_SMSTools-%s.dmg'%fullVersion, [env.Dir('SMSTools.app/')]+installTargets )
 	env.Alias('package', mac_packages)
 
 env.Alias('install', installTargets )
