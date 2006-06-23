@@ -26,7 +26,8 @@ cp resources_mac/README.txt DMG ;
 cp resources_mac/Install.command DMG ;
 
 echo " Creating DMG package" ;
-sudo hdiutil create -srcfolder DMG -volname CLAM-libs -uid 0 CLAM-libs-%s.dmg ;
+#sudo hdiutil create -srcfolder DMG -volname CLAM-libs -uid 0  ;
+hdiutil create -srcfolder DMG -volname CLAM-libs %s;
 rm -rf DMG ;
 
 echo " Success!" ;

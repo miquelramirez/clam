@@ -403,8 +403,8 @@ else:
 	#DMG creation process
 	dmg_bld = Builder( action=Action( create_dmg, create_dmg_message ))
 	clam_env.Append( BUILDERS={'CreateDMG' : dmg_bld} )
-	dmg = clam_env.CreateDMG( fullVersion, None )
-	clam_env.Alias('dmg', [ all_alias, dmg])
+	dmg = clam_env.CreateDMG( "CLAM-libs-%s.dmg" % fullVersion, None )
+	clam_env.Alias('package', [ all_alias, dmg])
 
 Default( all_alias )
 print """\
