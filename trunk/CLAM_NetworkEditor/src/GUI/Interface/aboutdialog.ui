@@ -229,8 +229,5 @@ Free Software Foundation, Inc.,
         <slot>close()</slot>
     </connection>
 </connections>
-<slots>
-    <slot>mouseReleaseEvent( QMouseEvent * e )</slot>
-</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
