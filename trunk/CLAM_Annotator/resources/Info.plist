@@ -5,7 +5,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Annotator</string>
 	<key>CFBundleIconFile</key>
-	<string>CLAM.icns</string>
+	<string>CLAM-MusicAnnotator.icns</string>
 	<key>CFBundleName</key>
 	<string>Annotator</string>
 	<key>CFBundlePackageType</key>
