@@ -259,7 +259,7 @@ public: // Inner classes. Public for better testing
 			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, Create );
 		}
 		~Registrator() {
-			std::cout << CLAM_MODULE << "~Registrator() " << mKey << std::endl;
+//			std::cout << CLAM_MODULE << "~Registrator() " << mKey << std::endl;
 		}
 
 		static AbstractProduct* Create() {
