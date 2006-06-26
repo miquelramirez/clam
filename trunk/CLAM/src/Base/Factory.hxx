@@ -25,6 +25,7 @@
 #include <map>
 #include <string>
 #include <list>
+//#include <iostream>
 
 #include "Assert.hxx"
 
@@ -39,6 +40,9 @@ public:
 
 };
 
+#ifndef CLAM_MODULE
+#define CLAM_MODULE "Application"
+#endif
 
 template <typename AbstractProductType>
 class Factory
@@ -230,26 +234,39 @@ public: // Inner classes. Public for better testing
 
 	public:
 		Registrator( RegistryKey key, TheFactoryType& fact ) {
-			fact.AddCreatorWarningRepetitions( key, Create );
+			mKey=key;
+//			std::cout << CLAM_MODULE << "Registrator(key,factory) " << mKey << std::endl;
+			fact.AddCreatorWarningRepetitions( mKey, Create );
 		}
 
 		Registrator( TheFactoryType& fact ) {
 			ConcreteProductType dummy;
+			mKey=dummy.GetClassName();
+//			std::cout << CLAM_MODULE << "Registrator(factory) " << dummy.GetClassName() << std::endl;
 			fact.AddCreatorWarningRepetitions( dummy.GetClassName(), Create );
 		}
 
 		Registrator( RegistryKey key ) {
-			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( key, Create );
+			mKey=key;
+//			std::cout << CLAM_MODULE << "Registrator(key) " << mKey << std::endl;
+			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, Create );
 		}
 
 		Registrator( ) {
 			ConcreteProductType dummy;
-			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( dummy.GetClassName(), Create );
+			mKey=dummy.GetClassName();
+//			std::cout << CLAM_MODULE << "Registrator() " << mKey << std::endl;
+			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, Create );
+		}
+		~Registrator() {
+			std::cout << CLAM_MODULE << "~Registrator() " << mKey << std::endl;
 		}
 
 		static AbstractProduct* Create() {
 			return new ConcreteProductType;
 		}
+	private:
+		RegistryKey mKey;
 
 	};
 
