@@ -18,7 +18,11 @@ applications from the source tarballs.
 
         $ scons configure
         $ scons
+	$ scons               
         $ sudo scons install
+
+ (update) The two 'scons' commands are needed because a bug in our SConstruct
+ file. Though it is expected to be fixed soon --27th june 06
 
  This will compile all the libraries with default options, and install
  them to the default dirs ( /usr/lib/ and /usr/include/ )
