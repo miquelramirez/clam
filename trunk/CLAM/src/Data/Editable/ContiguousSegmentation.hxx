@@ -44,7 +44,7 @@ namespace CLAM
 			if (timePosition<=0.0) throw InsertedOutOfBounds();
 			TimePositions::iterator insertPoint = 
 				std::lower_bound(_offsets.begin(), _offsets.end(), timePosition);
-			if (insertPoint == _offsets.end()) throw InsertedOutOfBounds();
+			if (insertPoint == _offsets.end()) return insertPoint - _offsets.begin();
 			// 'position' must be computed before the insertion to not invalidate iterators.
 			unsigned position = insertPoint - _offsets.begin() +1;
 			_offsets.insert(insertPoint, timePosition);
