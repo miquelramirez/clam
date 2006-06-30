@@ -4,6 +4,7 @@
  * Version information taken from changelog is available for apps.
 
 
+
 2006-06-14 CLAM 0.91.0
 'Spectral transformations, annotator, packaging, and desktop integration release'
  * 30 new spectral transformations
