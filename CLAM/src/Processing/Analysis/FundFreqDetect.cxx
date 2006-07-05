@@ -128,7 +128,7 @@ namespace CLAM
 
 		// Calculate Maximun Magnitude Peak
 		TIndex nMaxMagPeak = peaks.GetMaxMagPos();
-		double maxMag      = peaks.GetMag(nMaxMagPeak);
+		TData maxMag      = peaks.GetMag(nMaxMagPeak);
 
 		// 1.- SELECT PEAKS
 		// Add an index to the PeakArray
@@ -175,7 +175,7 @@ namespace CLAM
 		// After the maximum magnitude peak
 		TData x,y,a,b;
 		a = - 10*spectralRes/TData(1000.0);
-		b = maxMag - 50 - a*(double)peakBinPosBuffer[nMaxMagPeak];
+		b = maxMag - 50 - a*(TData)peakBinPosBuffer[nMaxMagPeak];
 		for(int i=nMaxMagPeak+1; i<z; i++) 
 		{
 			y = peakMagnitudes[i];
@@ -224,7 +224,7 @@ namespace CLAM
 		      	nMaxMagPeak2 = peaks.GetMaxMagIndex();
 			if(peakIndexes.Size() >= 3)
 			{
-				double aux;
+				TData aux;
 				// find third max magnitude peak
 				aux = peakMagnitudes[peakIndexes[nMaxMagPeak2]];
 				peakMagnitudes[peakIndexes[nMaxMagPeak2]]=-2000;
@@ -259,7 +259,7 @@ namespace CLAM
 		}
 	  	
 		// 2.3.- Frequency offset between peaks above the maximun magnitude peak and the maximun magnitude peak
-		double freq;
+		TData freq;
 		for (int i = nMaxMagPeak+1; i<peakIndexes.Size(); i++)
 		{
 			// be careful not to exceed the maximun permitted
@@ -306,11 +306,46 @@ namespace CLAM
 		}
 
 		// 3.- CALCULATE ERRORS (TMW procedure)
-
+		TData oneOverSeventyFive = 0.013333333333f;
+		
+		const int nPeaks = peaks.GetIndexArray().Size();
+		
+		int i;
+		
+		//These are all needed by the WeightCandidate and it is much better to compute just once				
+		DataArray magFactor(nPeaks);
+		DataArray magFactor3(nPeaks);
+		DataArray magFactor4(nPeaks);
+		DataArray magFactor4r(nPeaks);
+		DataArray magFactor4q(nPeaks);
+		DataArray magFactor34q(nPeaks);
+				
+		for (i=0; i<nPeaks; i++)
+		{
+			TData Mag = peakMagnitudes[peakIndexes[i]];
+			TData tmpMagFactor = TData(CLAM_max(0.0,maxMag - Mag + 20.0));
+			tmpMagFactor = TData(1.0) - tmpMagFactor*oneOverSeventyFive;
+			if (tmpMagFactor < 0)
+				tmpMagFactor = 0;
+			magFactor[i] = tmpMagFactor;
+			magFactor3[i] = tmpMagFactor*tmpMagFactor*tmpMagFactor;
+			magFactor4[i] = magFactor3[i]*tmpMagFactor;
+			magFactor4r[i] = magFactor4[i]*mMPr;
+			magFactor4q[i] = magFactor4[i]*mMPq;
+			magFactor34q[i] = magFactor3[i] + magFactor4q[i];
+		}
+		
+		int maxNMP = CLAM_min(mMPnPeaks,nPeaks);
+		// predicted to measured mismatch error
+		int maxNPM = 10;
+		//xamat: does not depend on variable data: compute out of the loop!!
+		if (nPeaks > 4)
+			maxNPM = CLAM_min(mPMnPeaks,nPeaks);
+			
 		for (int i=0; i<candidatesFrequency.Size(); i++)
 		{
-			double myFrequency = candidatesFrequency[i];
-			TData myError = WeightCandidate(myFrequency,maxMag,peaks);
+			TData myFrequency = candidatesFrequency[i];
+			TData myError = WeightCandidate(myFrequency,peaks, magFactor, magFactor34q, magFactor4r, maxNMP, maxNPM);
 			candidatesError[i] = myError;
 		}
 		
@@ -358,7 +393,7 @@ namespace CLAM
 			TData FinalError = candidates2Error[i];
 			for(TData lPitch = Low; lPitch <=High; lPitch += Incr)
 			{
-				TData lErr = WeightCandidate(double(lPitch),maxMag,peaks);
+				TData lErr = WeightCandidate(lPitch,peaks, magFactor, magFactor34q, magFactor4r, maxNMP, maxNPM);
 				if (lPitch > peakFrequencies[peakIndexes[nMaxMagPeak]]*1.1)
 					lErr +=10;
 				if (lErr < FinalError)
@@ -393,74 +428,96 @@ namespace CLAM
 		return true;
 	}
 	
-	double FundFreqDetect::WeightCandidate(double freq, double MaxMag, SpectralPeakArray& peaks) const
+	TData FundFreqDetect::WeightCandidate(TData freq, const SpectralPeakArray& peaks, const DataArray& magFactor, const DataArray& magFactor34q, 
+		const DataArray& magFactor4r, int maxNMP, int maxNPM) const
 	{
-		TData Tmp;
-		const int nPeaks = peaks.GetIndexArray().Size();
-		const IndexArray & peakIndexes = peaks.GetIndexArray();
-		DataArray& peakFrequencies=peaks.GetFreqBuffer();
-		DataArray& peakMagnitudes=peaks.GetMagBuffer();
+			TData Tmp;
+			const int nPeaks = peaks.GetIndexArray().Size();
+			const IndexArray & peakIndexes = peaks.GetIndexArray();
+			DataArray& peakFrequencies=peaks.GetFreqBuffer();
+			DataArray& peakMagnitudes=peaks.GetMagBuffer();
+		
+			TData ErrorPM = 0;
+			TData ErrorMP = 0;
 
-		// predicted to measured mismatch error
-		TData ErrorPM = 0;
-		int MaxNPM = 10;
-		if (nPeaks > 4)
-			MaxNPM = std::min(mPMnPeaks,nPeaks);
-		TData Harmonic = TData(freq);
-		TSize nPM = MaxNPM;
-		TData lastFreq=TData(peakFrequencies[peakIndexes[nPeaks-1]]);
-		if (nPeaks > 0)
-		{
+			TData HarmonicPm = freq;
+			TSize nPM = maxNPM;
+			TData lastFreq=peakFrequencies[peakIndexes[nPeaks-1]];
+			
+			// measured to predicted mismatch error 
+			TData HarmonicMp = freq;
+			TSize nMP = nPeaks;
+			
 			int Peak =0;
-			for (int i=0; i<MaxNPM; i++)
+			int i;
+			
+			bool finishedPM = false;
+			bool finishedMP = false;
+			
+			TData tenTimesFreq = freq*10.f;
+			bool isFreqHigh = (freq>500.);
+			TData oneOverFundFreq = 1./freq;
+			
+			for (i=0; i<nPeaks; i++)
 			{
-				if (Harmonic > lastFreq)
+				if(!finishedPM)
 				{
-					nPM = i+1;
-					break;	
+					if(i<maxNPM)
+					{
+						if (HarmonicPm > lastFreq)
+						{
+							nPM = i+1;
+							finishedPM = true;
+							if (finishedMP) break;
+						}
+						else
+						{
+							Peak = GetClosestPeak(HarmonicPm,Peak, peakIndexes, peakFrequencies);
+							//xamat: does not depend on variable data: compute out of the loop!!
+							TData Freq = peakFrequencies[peakIndexes[Peak]];
+							TData Mag  = peakMagnitudes[peakIndexes[Peak]];
+							
+							TData FreqDistance = Abs(Freq - HarmonicPm);
+							//xamat: note that default value for mPMp is 0.5 thus yielding a sqrt
+#ifdef CLAM_OPTIMIZE
+							Tmp = FreqDistance / CLAM_sqrt(HarmonicPm);
+#else							
+							Tmp = FreqDistance * CLAM_pow(HarmonicPm, -mPMp);
+#endif
+							ErrorPM += (Tmp +magFactor[Peak] * (mPMq * Tmp - mPMr));
+							HarmonicPm += freq;
+						}
+					}
 				}
-				Peak = GetClosestPeak(Harmonic,Peak, peakIndexes, peakFrequencies);
-				TData Freq = TData(peakFrequencies[peakIndexes[Peak]]);
-				TData Mag  = TData(peakMagnitudes[peakIndexes[Peak]]);
-				TData FreqDistance = fabs(Freq - Harmonic);
-				Tmp = FreqDistance * pow(Harmonic, -mPMp);
-				TData MagFactor = TData(std::max(0.0,MaxMag - Mag + 20.0));
-				MagFactor = TData(1.0) - MagFactor/TData(75.0);
-				if (MagFactor < 0)
-					MagFactor = 0;
-				ErrorPM += (Tmp +MagFactor * (mPMq * Tmp - mPMr));
-				Harmonic +=TData(freq);
+			
+				if(!finishedMP)
+				{
+					TData Freq = TData(peakFrequencies[peakIndexes[i]]);
+					// For high frequency candidates, not get into account too-low peaks
+					if ( (isFreqHigh) && (Freq < 100))
+						continue;
+					
+					HarmonicMp = GetClosestHarmonic(Freq,freq, oneOverFundFreq);
+					TData FreqDistance = Abs(Freq - HarmonicMp);
+					//xamat: note that default value for mMPp is 0.5 thus yielding a sqrt							
+#ifdef CLAM_OPTIMIZE
+					Tmp = FreqDistance / CLAM_sqrt(Freq);
+#else					
+					Tmp = FreqDistance * CLAM_pow(Freq, -mMPp);
+#endif
+					ErrorMP += magFactor34q[i] * Tmp - magFactor4r[i];
+					if (Freq > tenTimesFreq){
+						if (i > maxNMP)
+						{
+							nMP =	i+1;
+							finishedMP = true;
+							if (finishedPM) break;
+						}
+					}
+				}
 			}
-		}
-
-		// measured to predicted mismatch error 
-		TData ErrorMP = 0;
-		int MaxNMP = std::min(mMPnPeaks,nPeaks);
-		Harmonic = TData(freq);
-		TSize nMP = nPeaks;
-		for (int Peak=0; Peak<nPeaks; Peak++)
-		{
-			TData Freq = TData(peakFrequencies[peakIndexes[Peak]]);
-			// For high frequency candidates, not get into account too-low peaks
-			if ( (freq > 500) && (Freq < 100))
-				continue;
-
-			TData Mag = TData(peakMagnitudes[peakIndexes[Peak]]);
-			Harmonic = TData(GetClosestHarmonic(Freq,freq));
-			TData FreqDistance = fabs(Freq - Harmonic);
-			Tmp = FreqDistance * pow(Freq, -mMPp);
-			TData MagFactor = TData(std::max(0.0,MaxMag - Mag + 20.0));
-			MagFactor = TData(1.0) - MagFactor/TData(75.0);
-			if (MagFactor < 0)
-				MagFactor = 0;
-			ErrorMP += (Tmp + MagFactor * (mMPq * Tmp - mMPr))*MagFactor*MagFactor*MagFactor;
-			if (Freq <= freq * 10) continue;
-			if (Peak <= MaxNMP) continue;
-			nMP =	Peak+1;
-			break;
-		}
 	
-
+		
 		// total error
 		if (ErrorPM > 20)
 			ErrorPM = 20 + (ErrorPM-20)*(ErrorPM-20);
@@ -473,14 +530,14 @@ namespace CLAM
 	/* Get the closest peak to a given frequency 
 	   and returns the number of the closest peak 
 	   there's another parameter, peak, that contains the last peak taken   */
-	int FundFreqDetect::GetClosestPeak(double freq, int firstPeak, const IndexArray& peakIndexes, const DataArray & peakFrequencies) const
+	int FundFreqDetect::GetClosestPeak(TData freq, int firstPeak, const IndexArray& peakIndexes, const DataArray & peakFrequencies) const
 	{
 		const int size = peakIndexes.Size();
 		int bestpeak = firstPeak;
-		double distance = INFINITE_MAGNITUD;
+		TData distance = INFINITE_MAGNITUD;
 		for (int peak=firstPeak; peak < size; peak++)
 		{
-			const double nextdistance = fabs(freq - peakFrequencies[peakIndexes[peak]]);
+			TData nextdistance = Abs(freq - peakFrequencies[peakIndexes[peak]]);
 			if (nextdistance >= distance)
 				return peak-1;
 			bestpeak = peak; 
@@ -490,14 +547,15 @@ namespace CLAM
 	}
 
 	/* Get Closest Harmonic */
-	double FundFreqDetect::GetClosestHarmonic(double peak, double fundfreq) const
+	TData FundFreqDetect::GetClosestHarmonic(TData peak, TData fundfreq, TData oneOverFundfreq) const
 	{
 		if(peak<fundfreq)
 			return fundfreq;
-		return floor(peak/fundfreq+.5)*fundfreq;
+		//xamat: this should be optimized!
+		return floor(peak*oneOverFundfreq+.5)*fundfreq;
 	}
 
-	bool FundFreqDetect::IsGoodCandidate(double freq) const
+	bool FundFreqDetect::IsGoodCandidate(TData freq) const
 	{
 		return (freq >= mLowestFundFreq)  && (freq <= mHighestFundFreq);
 	}
