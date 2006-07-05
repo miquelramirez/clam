@@ -40,6 +40,7 @@ const float ONE_OVER_LN2 =	(1.44269504088896333066907387547f);
 const float LN10	=		(2.3025850929940456840179914546843642076011f);		/* ln(10) */
 const float ONE_OVER_LN10 =	(0.43429448190325177635683940025f);
 const float LN2_OVER_LN10 = LN2*ONE_OVER_LN10;
+const float TIMES20LN2_OVER_LN10 = 20*LN2_OVER_LN10;
 const long LONG_OFFSET	=	4096L;
 const float FLOAT_OFFSET =	4096.0;
 const float HUGE_ = 1.0e8;
@@ -331,6 +332,15 @@ inline float CLAM_log10(register float x)
 	return (float) log10((double)x);
 #else
 	return LN2_OVER_LN10*CLAM_log2(x);
+#endif
+}
+
+inline float CLAM_20log10(register float x)
+{
+#ifndef CLAM_OPTIMIZE
+	return (float) 20*log10((double)x);
+#else
+	return TIMES20LN2_OVER_LN10*CLAM_log2(x);
 #endif
 }
 
