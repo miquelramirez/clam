@@ -32,8 +32,13 @@ bool SpectralDenoiser::Do(const Spectrum& in, Spectrum& out)
 	{
 		out = in; //TODO big cludge for streaming
 	}
+	if (mSpectrum.GetSize()!= in.GetSize())
+		mSpectrum.SetSize(in.GetSize());
+	
 	DataArray& inMag = in.GetMagBuffer();
-	DataArray& outMag = out.GetMagBuffer();
+	DataArray& inPhase = in.GetPhaseBuffer();
+	DataArray& mMag = mSpectrum.GetMagBuffer();
+	DataArray& mPhase = mSpectrum.GetPhaseBuffer();
 	
 	int spectrumSize = in.GetSize();
 	
@@ -42,9 +47,14 @@ bool SpectralDenoiser::Do(const Spectrum& in, Spectrum& out)
 	int i;	
 	for(i = 0; i<spectrumSize; i++)
 	{
-		if(inMag[i] < threshold) outMag[i] = 0.;
-		else outMag[i] = inMag[i];
+		if(inMag[i] < threshold && (inMag[i]<mMag[i] || mMag[i] == 0.))
+		{
+			mMag[i] = inMag[i];
+			mPhase[i] = inPhase[i];
+		}
 	}
+	//ugly kludge but I cannot change the SpectrumSubstracter to const :(
+	mSpectrumSubstracter.Do(const_cast<Spectrum&>(in), mSpectrum, out);
 	return true;
 }
 

@@ -50,14 +50,15 @@ bool Deesser::Do(const Spectrum& in, Spectrum& out)
 	TData maxMag = 0;
 	for( i = lowCutoff; i<highCutoff; i++)
 	{
-		if(iMag[i]>threshold && iMag[i]>maxMag)
+		if(iMag[i]>threshold) oMag[i] = threshold;
+		/*if(iMag[i]>threshold && iMag[i]>maxMag)
 		//use difference from the threshold to control gain of the Notch
-			maxMag = iMag[i];
+			maxMag = iMag[i];*/
 	}
-	if (maxMag>0) {
+	/*if (maxMag>0) {
 		mNotch.GetInControl("Gain").DoControl(DB(threshold/maxMag));
 		mNotch.Do(out,out);
-	}
+	}*/
 	return true;
 }
 

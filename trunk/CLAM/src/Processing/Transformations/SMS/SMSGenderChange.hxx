@@ -38,6 +38,8 @@ namespace CLAM{
 	class SMSGenderChange: public FrameTransformation
 	{
 		
+		const char *GetClassName() const {return "SMSGenderChange";}
+
 		InPort<SpectralPeakArray> mInPeaks;
 		OutPort<SpectralPeakArray> mOutPeaks;
 		InPort<Fundamental> mInFund;
@@ -58,8 +60,6 @@ namespace CLAM{
 		{}
 
  		~SMSGenderChange() {}
-
-		const char *GetClassName() const {return "SMSGenderChange";}
 
 		bool Do() 
 		{

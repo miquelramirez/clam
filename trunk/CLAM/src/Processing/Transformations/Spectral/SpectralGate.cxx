@@ -19,43 +19,37 @@
  *
  */
 
-#include "SpectralNotch.hxx"
+#include "SpectralGate.hxx"
 #include "Factory.hxx"
 
 namespace CLAM
 {
 
 
-bool SpectralNotch::Do(const Spectrum& in, Spectrum& out)
+bool SpectralGate::Do(const Spectrum& in, Spectrum& out)
 {
-	out = in; //we need to copy input to output no matter what
-	
+	if (!mConfig.GetPreserveOuts())
+	{
+		out = in; //TODO big cludge for streaming
+	}
+	DataArray& inMag = in.GetMagBuffer();
 	DataArray& outMag = out.GetMagBuffer();
 	
 	int spectrumSize = in.GetSize();
 	
-	TData spectralResolution = spectrumSize/in.GetSpectralRange();
-	int centerFreq= Round(mAmount.GetLastValue()*spectralResolution);
-	int band = Round(mBandwidthCtl.GetLastValue()*spectralResolution);
-	TData gain = log2lin(mGainCtl.GetLastValue());
-	int n;
-	int harmonic = 1;
-	int leftLimit = centerFreq-band;
-	if(leftLimit<0) leftLimit = 0;
-	int rightLimit = centerFreq+band+1;
-	if(rightLimit>spectrumSize) rightLimit=spectrumSize;
-	for (n=leftLimit; n<rightLimit;n++)
-	{ 
-		outMag[n] *= gain ;
+	//control is supposed to be in dB's
+	TData threshold = log2lin(mAmount.GetLastValue());
+	int i;	
+	for(i = 0; i<spectrumSize; i++)
+	{
+		if(inMag[i] < threshold) outMag[i] = 0.;
+		else outMag[i] = inMag[i];
 	}
-	//implement small rolloff to avoid Gibbs effect
-	outMag[leftLimit-1] *= (gain*0.5); 
-	outMag[rightLimit] *= (gain*0.5); 
 	return true;
 }
 
 typedef Factory<Processing> ProcessingFactory;
 
-static ProcessingFactory::Registrator<SpectralNotch> regtSpectralNotch( "SpectralNotch" );
+static ProcessingFactory::Registrator<SpectralGate> regtSpectralGate( "SpectralGate" );
 
 }

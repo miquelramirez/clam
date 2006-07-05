@@ -46,6 +46,8 @@ namespace CLAM{
 	 */
 	class SMSPitchShift: public FrameTransformation
 	{
+		const char *GetClassName() const {return "SMSPitchShift";}
+
 		InPort<SpectralPeakArray> mInPeaks;
 		OutPort<SpectralPeakArray> mOutPeaks;
 		InPort<Fundamental> mInFundamental;
@@ -73,8 +75,6 @@ namespace CLAM{
 		}
 
  		~SMSPitchShift() {}
-
-		const char *GetClassName() const {return "SMSPitchShift";}
 
 		bool Do(const SpectralPeakArray& inPeaks,
 		        const Fundamental& inFund,

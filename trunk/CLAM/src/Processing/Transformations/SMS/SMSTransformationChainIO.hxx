@@ -39,6 +39,12 @@ namespace CLAM{
 	class SMSTransformationChainIO: public SegmentTransformation
 	{
 		
+		/** This method returns the name of the object
+		 *  @return Char pointer with the name of object
+		 */
+		const char *GetClassName() const {return "SMSTransformationChainIO";}
+
+
 	public:
 		/** Base constructor of class. Calls Configure method with a SMSTransformationConfig initialised by default*/
 		SMSTransformationChainIO()
@@ -54,11 +60,6 @@ namespace CLAM{
 		/** Destructor of the class*/
  		~SMSTransformationChainIO()
 		{}
-
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
-		const char *GetClassName() const {return "SMSTransformationChainIO";}
 
 		bool Do()
 		{

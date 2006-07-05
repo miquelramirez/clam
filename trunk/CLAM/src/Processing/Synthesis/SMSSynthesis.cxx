@@ -283,8 +283,7 @@ bool SMSSynthesis::Do(Frame& in)
 	
 //We initialize input frame, adding necessary attributes
 	InitFrame(in);
-//First we set the controls 
-	mCurrentTimeControl.DoControl(in.GetCenterTime());
+//First we set the controls sa	mCurrentTimeControl.DoControl(in.GetCenterTime());
 	mCurrentPitch.DoControl(in.GetFundamental().GetFreq(0));
 	
 

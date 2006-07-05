@@ -125,6 +125,8 @@ namespace CLAM {
 
 	out.SetSampleRate(in.GetSpectralRange()*2);
 
+	TData twoOverSize = 2.0/mSize;
+
 	switch(mState) {
 	case sComplex:
 	  ComplexToIFFTOoura(in);
@@ -133,7 +135,7 @@ namespace CLAM {
 	  // is using a non-inplace version of rdft (which would
 	  // not reduce performance).
 	  for (i=0; i<mSize; i++)
-		outbuffer[i]=ifftbuffer[i]*2.0/mSize;
+		outbuffer[i]=ifftbuffer[i]*twoOverSize;
 	  break;
 	case sOther:
 	  OtherToIFFTOoura(in);
@@ -142,7 +144,7 @@ namespace CLAM {
 	  // is using a non-inplace version of rdft (which would
 	  // not reduce performance).
 	  for (i=0; i<mSize; i++)
-		outbuffer[i]=ifftbuffer[i]*2.0/mSize;
+		outbuffer[i]=ifftbuffer[i]*twoOverSize;
 
 	  break;
 	default:
@@ -168,16 +170,33 @@ namespace CLAM {
   inline void IFFT_ooura::OtherToIFFTOoura(const Spectrum &in) const
 	{
 		SpecTypeFlags flags;
-
-		Spectrum tmpSpec = in;
-
-		if (!in.HasComplexArray()) {
-			tmpSpec.GetType(flags);
-			flags.bComplex=1;
-			tmpSpec.SetTypeSynchronize(flags);
+		in.GetType(flags);
+		if(flags.bMagPhase)
+		{
+			DataArray& inMag = in.GetMagBuffer();
+			DataArray& inPhase = in.GetPhaseBuffer();
+			ifftbuffer[0] = inMag[0]*CLAM_cos(inPhase[0]);//inbuffer[0].Real();
+			ifftbuffer[1] = inMag[mSize/2]*CLAM_cos(inPhase[mSize/2]);//inbuffer[mSize/2].Real();
+			int i;
+			TData* ifftbuffer_iter1 = &(ifftbuffer[2]);
+			TData* ifftbuffer_iter2 = &(ifftbuffer[3]);
+			TData* inMag_iter = &(inMag[1]);
+			TData* inPhase_iter = &(inPhase[1]);
+			for (i=1; i<mSize/2; ifftbuffer_iter1+=2,ifftbuffer_iter2+=2, inMag_iter++, inPhase_iter++, i++) {
+				*ifftbuffer_iter1 = (*inMag_iter)*CLAM_cos((*inPhase_iter));
+				*ifftbuffer_iter2 = -(*inMag_iter)*CLAM_sin(*inPhase_iter);
+			}
+		
 		}
-
-		ComplexToIFFTOoura(tmpSpec);
+		else
+		{
+			Spectrum tmpSpec = in;
+			if (!in.HasComplexArray()) {
+				flags.bComplex=1;
+				tmpSpec.SetTypeSynchronize(flags);
+			}
+			ComplexToIFFTOoura(tmpSpec);
+		}
 
 	}
 	

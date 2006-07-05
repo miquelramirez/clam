@@ -37,6 +37,11 @@ namespace CLAM{
 	class SMSHarmonizer: public FrameTransformation
 	{
 		
+		/** This method returns the name of the object
+		 *  @return Char pointer with the name of object
+		 */
+		const char *GetClassName() const {return "SMSHarmonizer";}
+		
 		InControl mIndexCtl;//says what the amount sent as control is modifying
 		InControlTmpl<SMSHarmonizer> mUpdateBPFCtl;//"boolean" control used to say that we want to update BPF
 		InControl mTransCtl;
@@ -60,7 +65,7 @@ namespace CLAM{
 		}
 		int IgnoreResidual(TControlData value)
 		{
-			return mPitchShift.mIgnoreResidual.DoControl(value);
+			mPitchShift.mIgnoreResidual.DoControl(value);
 		}
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
@@ -75,11 +80,6 @@ namespace CLAM{
 			mTmpFrame.UpdateData();
 			mTmpFund.AddElem();
 		}
-		
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
-		const char *GetClassName() const {return "SMSHarmonizer";}
 		
 		bool ConcreteConfigure(const ProcessingConfig& c)
 		{

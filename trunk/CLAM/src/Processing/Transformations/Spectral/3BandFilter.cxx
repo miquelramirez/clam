@@ -52,8 +52,12 @@ bool ThreeBandFilter::Do(const Spectrum& in, Spectrum& out)
 	{
 		if(i>highCutoff) 
 			currentGain = highGain;
+		else if(i==highCutoff)
+			currentGain = (highGain+midGain)*0.5; //implementing small rolloff to avoid Gibbs effect
 		else if(i>lowCutoff) 
 			currentGain = midGain;
+		else if(i==lowCutoff)
+			currentGain = (lowGain+midGain)*0.5; //implementing small rolloff to avoid Gibbs effect	
 		oMag[i] *= currentGain;
 	}
 	return true;
