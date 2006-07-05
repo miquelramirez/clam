@@ -117,7 +117,7 @@ inline SpectralPeak Lin(SpectralPeak &inPeak,int scalingFactor)
 {
 	if (inPeak.GetScale()!=EScale::eLinear){
 		TData currMag = inPeak.GetMag();
-		inPeak.SetMag(pow(TData(10),TData(currMag/scalingFactor)));
+		inPeak.SetMag(CLAM_pow(TData(10),TData(currMag/scalingFactor)));
 		inPeak.SetScale(EScale::eLinear);
 	}
 	return inPeak;
@@ -143,7 +143,7 @@ inline SpectralPeak DB(SpectralPeak& inPeak,int scalingFactor=20)
 {
 	if (inPeak.GetScale()!=EScale::eLog){
 		TData currMag = inPeak.GetMag();
-		inPeak.SetMag(scalingFactor*log10(currMag));
+		inPeak.SetMag(scalingFactor*CLAM_log10(currMag));
 		inPeak.SetScale(EScale::eLog);
 	}
 	return inPeak;

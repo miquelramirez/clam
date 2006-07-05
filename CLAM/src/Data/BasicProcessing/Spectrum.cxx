@@ -189,67 +189,84 @@ void Spectrum::ToDB()
 {
 	if(GetScale()!=EScale::eLinear)
 		return;
-	
+
 	int i;
 	SpecTypeFlags flags;
-	TData specSize;
+	TSize specSize = GetSize();
 	if (HasMagBuffer())
 	{
-		DataArray &mag = GetMagBuffer();
-		specSize=TData(GetSize());
-		for (i=0; i<specSize; i++)
-		{
-			if(mag[i]==0) mag[i]=-200;
-			else mag[i]= 20*log10(mag[i]); 
-		}
+			DataArray &mag = GetMagBuffer();
+			for (i=0; i<specSize; i++)
+			{
+#ifdef CLAM_OPTIMIZE
+				//we discard magnitudes lower than 100 dB
+				//todo: this optimization should also be applied to other places
+				if(mag[i]<0.00001f) mag[i]=-200;
+#else				
+				if(mag[i]==0) mag[i]=-200;
+#endif
+				else mag[i]= CLAM_20log10(mag[i]); 
+			}
 	}
 	if (HasPolarArray()) // WARNING: computational expensive operation
 	{
-		Array<Polar> &polar = GetPolarArray();
-		specSize=TData(GetSize());
-		for (i=0; i<specSize; i++)
-		{
-			TData magLin = polar[i].Mag();
-			TData magLog;
-			if(magLin==0) magLog=-200;
-			else magLog = 20*log10(magLin);
-			polar[i].SetMag(magLog);
-		}
-		flags.bPolar = true;
-		flags.bMagPhase = false;
+			Array<Polar> &polar = GetPolarArray();
+			for (i=0; i<specSize; i++)
+			{
+				TData magLin = polar[i].Mag();
+				TData magLog;
+#ifdef CLAM_OPTIMIZE
+				//we discard magnitudes lower than 100 dB
+				//todo: this optimization should also be applied to the reverse conversion
+				if(magLin<0.00001f) magLog=-200;
+#else				
+				if(magLin==0) magLog=-200;
+#endif				
+				else magLog = CLAM_20log10(magLin);
+				polar[i].SetMag(magLog);
+			}
+			flags.bPolar = true;
+			flags.bMagPhase = false;
 	}
 	if (HasComplexArray())  // WARNING: computational expensive operation
 	{
-		Array<Complex> &complex = GetComplexArray();
-		specSize=TData(GetSize());
-		for (i=0; i<specSize; i++)
-		{
-			TData re = complex[i].Real();
-			TData im = complex[i].Imag();
-			TData magLin = sqrt(re*re + im*im);
-			TData magLog;
-			if(magLin==0) magLog=-200;
-			else magLog = 20*log10(magLin);
-			complex[i].SetReal(magLog * re / magLin);
-			complex[i].SetImag(magLog * im / magLin);
-		}
-		flags.bComplex = true;
-		flags.bMagPhase = false;
+			Array<Complex> &complex = GetComplexArray();
+			for (i=0; i<specSize; i++)
+			{
+				TData re = complex[i].Real();
+				TData im = complex[i].Imag();
+				TData magLin = CLAM_sqrt(re*re + im*im);
+				TData magLog;
+#ifdef CLAM_OPTIMIZE
+				if(magLin<0.00001f) magLog=-200;
+#else				
+				if(magLin==0) magLog=-200;
+#endif								
+				else magLog = CLAM_20log10(magLin);
+				complex[i].SetReal(magLog * re / magLin);
+				complex[i].SetImag(magLog * im / magLin);
+			}
+			flags.bComplex = true;
+			flags.bMagPhase = false;
 	}
 	if (HasMagBPF())  // WARNING: computational expensive operation
 	{
-		BPF &magBPF= GetMagBPF();
-		const int bpfSize=GetBPFSize();
-		for (i=0; i<bpfSize; i++)
-		{
-			TData magLin=magBPF.GetValueFromIndex(i);
-			TData magLog;
-			if(magLin==0) magLog=-200;
-			else magLog = 20*log10(magLin);
-			magBPF.SetValue(i,magLog);
-		}
-		flags.bMagPhaseBPF = true;
-		flags.bMagPhase = false;
+			BPF &magBPF= GetMagBPF();
+			const int bpfSize=GetBPFSize();
+			for (i=0; i<bpfSize; i++)
+			{
+				TData magLin=magBPF.GetValueFromIndex(i);
+				TData magLog;
+#ifdef CLAM_OPTIMIZE
+				if(magLin<0.00001f) magLog=-200;
+#else				
+				if(magLin==0) magLog=-200;
+#endif								
+				else magLog = CLAM_20log10(magLin);
+				magBPF.SetValue(i,magLog);
+			}
+			flags.bMagPhaseBPF = true;
+			flags.bMagPhase = false;
 	}
 	SetScale(EScale(EScale::eLog));
 }
@@ -261,7 +278,7 @@ void Spectrum::ToLinear()
 	{
 		int i;
 		SpecTypeFlags flags;
-		TData specSize=TData(GetSize());
+		TSize specSize = GetSize();
 		if (HasMagBuffer())
 		{
 			DataArray &mag = GetMagBuffer();
@@ -292,7 +309,7 @@ void Spectrum::ToLinear()
 			{
 				TData re = complex[i].Real();
 				TData im = complex[i].Imag();
-				TData magLog = sqrt(re*re + im*im);
+				TData magLog = CLAM_sqrt(re*re + im*im);
 				TData magLin;
 				if(magLog<=-200) magLin=0;
 				else magLin = log2lin(magLog);
@@ -400,8 +417,8 @@ void Spectrum::SetMag(TIndex pos, TData newMag)
 		GetPolarArray()[pos].SetMag(newMag);
 	if (tmpFlags.bComplex){
 		TData tmpAng=GetComplexArray()[pos].Ang();
-		GetComplexArray()[pos].SetReal(newMag*cos(tmpAng));
-		GetComplexArray()[pos].SetImag(newMag*sin(tmpAng));}
+		GetComplexArray()[pos].SetReal(newMag*CLAM_cos(tmpAng));
+		GetComplexArray()[pos].SetImag(newMag*CLAM_sin(tmpAng));}
 }
 
 void Spectrum::SetMag(TData freq, TData newMag)
@@ -421,8 +438,8 @@ void Spectrum::SetPhase(TIndex pos,TData newPhase)//inefficient Set, for efficie
 		GetPolarArray()[pos].SetAng(newPhase);
 	else if (tmpFlags.bComplex){
 		TData tmpMag=GetComplexArray()[pos].Mag();
-		GetComplexArray()[pos].SetReal(tmpMag*cos(newPhase));
-		GetComplexArray()[pos].SetImag(tmpMag*sin(newPhase));
+		GetComplexArray()[pos].SetReal(tmpMag*CLAM_cos(newPhase));
+		GetComplexArray()[pos].SetImag(tmpMag*CLAM_sin(newPhase));
 	}
 }
 
@@ -640,8 +657,8 @@ void Spectrum::MagPhase2Complex(const DataArray& magBuffer,const DataArray& phas
 	  complexArray.SetSize(size);*/
 	for (int i=0; i<size; i++) 
 	{
-		complexArray[i].SetReal(magBuffer[i]*cos(phaseBuffer[i]));
-		complexArray[i].SetImag(magBuffer[i]*sin(phaseBuffer[i]));
+		complexArray[i].SetReal(magBuffer[i]*CLAM_cos(phaseBuffer[i]));
+		complexArray[i].SetImag(magBuffer[i]*CLAM_sin(phaseBuffer[i]));
 	}
 }
 

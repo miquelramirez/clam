@@ -48,7 +48,6 @@ void SpectralPeakArray::DefaultInit()
 	// SpectralPeakDetect::CheckOutputType demands all SpectralPeakArrays to comply
 	// with the following dyn attribs
 	AddBinWidthBuffer();
-	AddFreqBuffer();
 	AddBinPosBuffer();
 	AddPhaseBuffer();
 	// MRJ: End of SpectralPeakDetect::CheckOutputType attributes requirements. It
@@ -497,7 +496,7 @@ void SpectralPeakArray::TodB()
 		for (i=0; i<nPeaks; i++)
 		{
 			if(mag[i]==0) mag[i]=TData(0.0001);
-			mag[i]= 20*log10(mag[i]); 
+			mag[i]= CLAM_20log10(mag[i]); 
 		}
 		SetScale(EScale::eLog);
 	}
@@ -522,18 +521,49 @@ void SpectralPeakArray::ToLinear()
 
 }
 
-
+//xamat: this operator is bound to fail if operands have different attributes, should add checking?
 SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 {
-	SpectralPeakArray tmp(in);
+	CLAM_ASSERT(in.HasMagBuffer(), "SpectralPeakArray::operator+: second operand needs to have a Magnitude Buffer");
+	CLAM_ASSERT(in.HasFreqBuffer(), "SpectralPeakArray::operator+: second operand needs to have a Frequency Buffer");
+	CLAM_ASSERT(in.HasPhaseBuffer(), "SpectralPeakArray::operator+: second operand needs to have a Phase Buffer");
+	CLAM_ASSERT(in.HasIndexArray(), "SpectralPeakArray::operator+: second operand needs to have an Index Array");
+	CLAM_ASSERT(HasMagBuffer(), "SpectralPeakArray::operator+: first operand needs to have a Magnitude Buffer");
+	CLAM_ASSERT(HasFreqBuffer(), "SpectralPeakArray::operator+: first operand needs to have a Frequency Buffer");
+	CLAM_ASSERT(HasPhaseBuffer(), "SpectralPeakArray::operator+: first operand needs to have a Phase Buffer");
+	CLAM_ASSERT(HasIndexArray(), "SpectralPeakArray::operator+: first operand needs to have an Index Array");
+	
+	
+	SpectralPeakArray tmp;
+	tmp.AddIndexArray();
+	tmp.UpdateData();
+	tmp.SetScale(in.GetScale());
+	
 	tmp.SetnMaxPeaks(GetnMaxPeaks()+in.GetnMaxPeaks());
-	tmp.SetnPeaks(0);
+	tmp.SetnPeaks(tmp.GetnMaxPeaks());
+	
 	int origIndex=0,inIndex=0;
-	SpectralPeak currentOrigPeak,currentInPeak;
+	DataArray& inPeakMagArray = in.GetMagBuffer();
+	DataArray& inPeakFreqArray = in.GetFreqBuffer();
+	DataArray& inPeakPhaseArray = in.GetPhaseBuffer();
+	IndexArray& inPeakIndexArray = in.GetIndexArray();
+	
+	DataArray& origPeakMagArray = GetMagBuffer();
+	DataArray& origPeakFreqArray = GetFreqBuffer();
+	DataArray& origPeakPhaseArray = GetPhaseBuffer();
+	IndexArray& origPeakIndexArray = GetIndexArray();
+	
+	DataArray& tmpPeakMagArray = tmp.GetMagBuffer();
+	DataArray& tmpPeakFreqArray = tmp.GetFreqBuffer();
+	DataArray& tmpPeakPhaseArray = tmp.GetPhaseBuffer();
+	IndexArray& tmpPeakIndexArray = tmp.GetIndexArray();
+		
 	bool finished=false,finishedOrig=false, finishedIn=false;
 	TSize origSize,inSize;
 	origSize=GetnPeaks();
 	inSize=in.GetnPeaks();
+	//xamat optimizing
+	int nAddedPeaks = 0;
 	while(!finished)
 	{
 		if(origIndex>=origSize-1) finishedOrig=true;
@@ -543,8 +573,13 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 		{
 			if(!finishedIn)
 			{
-				currentInPeak=in.GetSpectralPeak(inIndex);
-				tmp.AddSpectralPeak(currentInPeak,true,inIndex*2+1);
+				//note: we could overload the SetSpectralPeak operator but not passing a SpectralPeaks but the values
+				tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
+				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = inPeakMagArray[inIndex];
+				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
+							
+				nAddedPeaks++;
 				inIndex++;
 			}
 			else finished=true;
@@ -553,35 +588,57 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 		{
 			if(!finishedOrig)
 			{
-				currentOrigPeak=GetSpectralPeak(origIndex);
-				tmp.AddSpectralPeak(currentOrigPeak,true,origIndex*2);
+				tmpPeakMagArray[nAddedPeaks] = origPeakMagArray[origIndex];
+				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = origPeakMagArray[origIndex];
+				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
+				
+				nAddedPeaks++;
 				origIndex++;
 			}
 			else finished=true;
 		}
 		else
 		{
-			currentOrigPeak=GetSpectralPeak(origIndex);
-			currentInPeak=in.GetSpectralPeak(inIndex);
-			if(currentOrigPeak.GetFreq()<currentInPeak.GetFreq())
+			if(origPeakFreqArray[origIndex]<inPeakFreqArray[inIndex])
 			{
-				tmp.AddSpectralPeak(currentOrigPeak,true,origIndex*2);
+				tmpPeakMagArray[nAddedPeaks] = origPeakMagArray[origIndex];
+				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = origPeakMagArray[origIndex];
+				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
+				nAddedPeaks++;
 				origIndex++;
 			}
-			else if(currentOrigPeak.GetFreq()>currentInPeak.GetFreq())
+			else if(origPeakFreqArray[origIndex]>inPeakFreqArray[inIndex])
 			{
-				tmp.AddSpectralPeak(currentInPeak,true,inIndex*2+1);
+				tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
+				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = inPeakMagArray[inIndex];
+				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
+			
+				nAddedPeaks++;
 				inIndex++;
 			}
 			else
 			{
-				tmp.AddSpectralPeak(currentOrigPeak,true,origIndex*2);
+				tmpPeakMagArray[nAddedPeaks] = origPeakMagArray[origIndex];
+				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = origPeakMagArray[origIndex];
+				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
+				
+				nAddedPeaks++;
 				origIndex++;
-				tmp.AddSpectralPeak(currentInPeak,true,inIndex*2+1);
+				tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
+				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
+				tmpPeakPhaseArray[nAddedPeaks] = inPeakMagArray[inIndex];
+				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
+			
+				nAddedPeaks++;
 				inIndex++;
 			}
 		}
 	}
+	tmp.SetnPeaks(nAddedPeaks);
 	return tmp;
 }
 
