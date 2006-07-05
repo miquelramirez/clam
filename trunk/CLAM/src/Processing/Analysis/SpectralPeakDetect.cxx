@@ -82,9 +82,9 @@ namespace CLAM {
 
 		if (mInput.GetData().GetScale() != EScale::eLog)
 		{
-			Spectrum tmpLinearInSpectrum = mInput.GetData();
-			tmpLinearInSpectrum.ToDB();
-			result = Do( tmpLinearInSpectrum, mOutput.GetData() );
+			mTmpLinearInSpectrum = mInput.GetData();
+			mTmpLinearInSpectrum.ToDB();
+			result = Do( mTmpLinearInSpectrum, mOutput.GetData() );
 		}
 		else
 		{

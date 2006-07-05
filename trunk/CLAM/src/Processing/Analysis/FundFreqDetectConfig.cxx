@@ -40,7 +40,7 @@ namespace CLAM
 		SetLowestFundFreq(35);
 		SetHighestFundFreq(1500); // was 2000
 		SetMaxCandMagDiff(30);
-		SetMaxFundFreqError(10); 
+		SetMaxFundFreqError(10);//was 10, just testing 
 		SetNInt(5);
 		SetPMp(0.5);
 		SetPMq(TData(1.4));
@@ -48,11 +48,17 @@ namespace CLAM
 		SetMPp(0.5);
 		SetMPq(TData(1.4));
 		SetMPr(0.5);
+#ifdef CLAM_OPTIMIZE
+		SetPMnPeaks(5);
+		SetMPnPeaks(5);
+		SetNMaxCandidates(5);
+#else
 		SetPMnPeaks(10);
 		SetMPnPeaks(10);
+		SetNMaxCandidates(40); 
+#endif
 		SetPMCont(1.0);
 		SetMPCont(1.0);
-		SetNMaxCandidates(40); // was 60
 	}
 
 

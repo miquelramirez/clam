@@ -143,7 +143,7 @@ namespace CLAM {
 
 	virtual void ToComplex(Spectrum &out) = 0;
 
-	void ToOther(Spectrum &out);		
+	virtual void ToOther(Spectrum &out);		
 
     };
 

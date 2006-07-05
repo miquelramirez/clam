@@ -61,7 +61,7 @@ void SpectralAnalysisConfig::SetWindowSize(TSize w)
 	CLAM_ASSERT(w%2==1,"Window size must be odd");
 	SetprWindowSize(w);
 	GetWindowGenerator().SetSize(w);
-	SetprFFTSize(nextPowerOfTwo( int( (w-1)*pow(TData(2),TData(GetZeroPadding())) ) ) );
+	SetprFFTSize(nextPowerOfTwo( int( (w-1)*CLAM_pow(TData(2),TData(GetZeroPadding())) ) ) );
 	GetCircularShift().SetAmount(-((w-1)/TData(2))); 
 	GetFFT().SetAudioSize(GetprFFTSize());
 	if(w<2*GetHopSize()+1)
@@ -90,7 +90,7 @@ const EWindowType& SpectralAnalysisConfig::GetWindowType() const
 void SpectralAnalysisConfig::SetZeroPadding(int z)
 {
 	SetprZeroPadding(z);
-	SetprFFTSize(nextPowerOfTwo( int( (GetWindowSize()-1) * pow(TData(2),TData(GetZeroPadding())) ) ) );
+	SetprFFTSize(nextPowerOfTwo( int( (GetWindowSize()-1) * CLAM_pow(TData(2),TData(GetZeroPadding())) ) ) );
 	GetFFT().SetAudioSize(GetprFFTSize());
 }
 

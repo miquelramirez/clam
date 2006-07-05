@@ -113,6 +113,8 @@ namespace CLAM
 
 		bool CheckInputType(const Spectrum &in);
 		bool CheckOutputType(const SpectralPeakArray &out);
+		
+		Spectrum mTmpLinearInSpectrum;
  	}; 
 
 } //namespace CLAM

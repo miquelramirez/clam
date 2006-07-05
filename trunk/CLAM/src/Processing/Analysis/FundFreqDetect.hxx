@@ -75,10 +75,11 @@ namespace CLAM {
 		bool Do(SpectralPeakArray& input,Fundamental& fund);
 	private:
 
-		double WeightCandidate(double freq, double maxMag,SpectralPeakArray&) const;
-		int GetClosestPeak(double freq, int firstPeak, const IndexArray & peakIndexes, const DataArray & peakFrequencies) const;
-		double GetClosestHarmonic(double peak, double fundfreq) const;
-		bool IsGoodCandidate(double freq) const;
+		inline TData WeightCandidate(TData freq, const SpectralPeakArray&, const DataArray& magFactor, const DataArray& magFactor34q, 
+			const DataArray& magFactor4r,int maxNMP, int maxNPM) const;
+		inline int GetClosestPeak(TData freq, int firstPeak, const IndexArray & peakIndexes, const DataArray & peakFrequencies) const;
+		inline TData GetClosestHarmonic(TData peak, TData fundfreq, TData oneOverFundFreq) const;
+		inline bool IsGoodCandidate(TData freq) const;
 
 		/** Maximum number of candidates*/
 		TData mnMaxCandidates;

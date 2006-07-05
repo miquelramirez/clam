@@ -20,8 +20,8 @@
  */
 
 #include "SinTracking.hxx"
+#include "SearchArray.hxx"
 
-#include <iostream> // TODO: remove
 
 namespace CLAM
 {
@@ -220,21 +220,39 @@ TIndex SinTracking::GetCandidate(TData currentPeakFreq,
   TData tmpDistance;
   distance=-1;
   int nPeaks=iPeakArray.GetnPeaks();
-  DataArray peakFreqBuffer=iPeakArray.GetFreqBuffer();
-  TData factor=100/currentPeakFreq;
-  for (int i=0;i<nPeaks;i++)
+  DataArray& peakFreqBuffer=iPeakArray.GetFreqBuffer();
+  TData factor=100./currentPeakFreq;
+  
+  //xamat: test!
+  SearchArray<TData> mySearch(peakFreqBuffer);
+  TIndex found=mySearch.Find(currentPeakFreq);
+  TIndex originalFound = found;
+  distance = Abs(peakFreqBuffer[found]-currentPeakFreq);
+  //make sure that the two surrounding peaks are not in fact closer
+  TIndex newFound;
+  TData nextDistance;
+  if(originalFound<nPeaks-1)
   {
-	tmpDistance=Abs(peakFreqBuffer[i]-currentPeakFreq)*factor;
-	if((distance==-1)/*test: XA &&(tmpDistance<mThreshold)*/ || 
-	  (tmpDistance < distance))
+	for(newFound=found+1; newFound<nPeaks; newFound++)
 	{
-	  distance=tmpDistance;
-	  bestCandidate=i;
+		nextDistance = Abs(peakFreqBuffer[newFound]-currentPeakFreq);
+		if(nextDistance>distance) break;
+		distance = nextDistance;
 	}
+	found = newFound-1;
   }
-  //CLAM_ASSERT (bestCandidate!=-1,"SinTracking::GetCandidate: No candidate!");
-  return bestCandidate;
-
+  if(originalFound>0)
+  {
+	for(newFound=found-1; newFound>-1; newFound--)
+	{
+		nextDistance = Abs(peakFreqBuffer[newFound]-currentPeakFreq);
+		if(nextDistance>distance) break;
+		distance = nextDistance;
+		}
+	found = newFound + 1;
+  }
+  distance *= factor;
+  return found;
 }
 
 
@@ -360,6 +378,10 @@ bool SinTracking::DoInharmonic(const SpectralPeakArray& iPeakArray,SpectralPeakA
 	}
 	CheckForNewBornTracks(iPeakArray,oPeakArray);
 	mPreviousPeakArray=oPeakArray;
+	
+	//xamat: testing not to keep inharmonic peaks
+	//oPeakArray.SetnPeaks(0);
+	//mPreviousPeakArray=oPeakArray;
 	return true;
 }
 
@@ -384,6 +406,9 @@ void SinTracking::HarmonicTracking(const SpectralPeakArray& in,SpectralPeakArray
 {
 	TData d;
 	TIndex pos;
+	
+	out.SetnPeaks(mnMaxSines);
+	
 	//DataArray& iFreqBuffer=in.GetFreqBuffer();
 	DataArray& oFreqBuffer=out.GetFreqBuffer();
 	DataArray& iMagBuffer=in.GetMagBuffer();
@@ -394,22 +419,10 @@ void SinTracking::HarmonicTracking(const SpectralPeakArray& in,SpectralPeakArray
 	
 	int i;
 
-	/*for(i=0;i<mnMaxSines;i++)
-	{
-		pos=GetCandidate(oFreqBuffer[i],in,d);
-		if(d<funFreq/2 && pos>-1)
-		{
-			oMagBuffer[i]=iMagBuffer[pos];
-			oFreqBuffer[i]=iFreqBuffer[pos];
-			oPhaseBuffer[i]=iPhaseBuffer[pos];
-
-		}
-	}*/
-
-	//GILLES
 	TSize nPeaks=mnMaxSines;
 	i=0;
-	do
+	int n;
+	for(n=0; n<mnMaxSines;n++)
 	{
 		pos=GetCandidate(oFreqBuffer[i],in,d);
 		if(d<funFreq/2 && pos>-1)
@@ -417,24 +430,13 @@ void SinTracking::HarmonicTracking(const SpectralPeakArray& in,SpectralPeakArray
 			if(i==0 || iMagBuffer[pos]!=oMagBuffer[i-1])
 			{
 				oMagBuffer[i]=iMagBuffer[pos];
-				//XA: oFreqBuffer[i]=iFreqBuffer[pos];
+				oFreqBuffer[i]=oFreqBuffer[n];
 				oPhaseBuffer[i]=iPhaseBuffer[pos];
 				i++;
 			}
-			else
-			{
-				out.DeleteSpectralPeak(i);
-				nPeaks=nPeaks-1;
-				out.SetnPeaks(nPeaks);
-			}
 		}
-		else
-		{
-			out.DeleteSpectralPeak(i);
-			nPeaks=nPeaks-1;
-			out.SetnPeaks(nPeaks);
-		}
-	}while(i<out.GetnPeaks());
+	}
+	out.SetnPeaks(i);
 }
 
 void SinTracking::InitHarmonicTracks(SpectralPeakArray& peaks, TData funFreq)

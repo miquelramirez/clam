@@ -122,15 +122,6 @@ bool SpectralAnalysis::Do(void)
 
 bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 {
-//xamat: testing
-/*	 std::cout<<"***SpectralAnalysis Configuration: "<<std::endl;
-	 std::cout<<"AnalWindowSize: "<< mConfig.GetWindowSize()<<std::endl;
-	 std::cout<<"HopSize: "<< mConfig.GetHopSize()<<std::endl;
-	 std::cout<<"FFTSize: "<<mConfig.GetprFFTSize()<<std::endl;
-	 std::cout<<"SamplingRate: "<<mConfig.GetSamplingRate()<<std::endl;
-	 std::cout<<"Input Audio Size: "<<in.GetSize()<<std::endl;
-	 std::cout<<"Output Spectrum Size: "<<outSp.GetSize()<<std::endl;
-*/
 
 	/* mAudioFrame is used as a helper audio copy where all windowing is done */
 	in.GetAudioChunk(0,in.GetSize()-1 ,mAudioFrame,true );
@@ -141,9 +132,8 @@ bool SpectralAnalysis::Do(const Audio& in,Spectrum& outSp)
 
 	/* Zero padding is added to audioframe */
 	mAudioFrame.SetSize(mConfig.GetprFFTSize());
-
 	
-	/* Windowing funcition is now applied */
+	/* Windowing function is now applied */
 	mPO_AProduct.Do(mAudioFrame, mWindow, mAudioFrame);
 	
 	/* Finally, we do the circular shift */

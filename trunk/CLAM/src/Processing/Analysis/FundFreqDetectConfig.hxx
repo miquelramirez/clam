@@ -45,13 +45,17 @@ namespace CLAM {
 	  DYN_ATTRIBUTE (3,public,TData, MaxCandMagDiff); 
 	  /** Maximun allowed Two-Way Mismatch (TWM) error (default: 10). */
 	  DYN_ATTRIBUTE (4,public,TData, MaxFundFreqError);
-	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 0.5. */
+	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 0.5. 
+		* Note, if the CLAM_OPTIMIZE is active this parameter is not configurable and
+		* is always taken to be the default 0.5 */
 	  DYN_ATTRIBUTE (5,public,TData, PMp); 
 	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 1.4. */
 	  DYN_ATTRIBUTE (6,public,TData, PMq );
 	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 0.5. */
 	  DYN_ATTRIBUTE (7,public,TData, PMr );
-	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 0.5. */
+	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 0.5. 
+		* Note, if the CLAM_OPTIMIZE is active this parameter is not configurable and
+		* is always taken to be the default 0.5 */
 	  DYN_ATTRIBUTE (8,public,TData, MPp );
 	  /** Parameter to weight candidates (Harmonic Error Constants). Default: 1.4. */
 	  DYN_ATTRIBUTE (9,public,TData, MPq );

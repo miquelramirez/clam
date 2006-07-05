@@ -288,7 +288,7 @@ double WindowGenerator::BesselFunction(double x) const
 	for(int i=2; i<50; i++)
 	{
 		Factorial *= i;
-		Sum += pow( pow(HalfX, (double)i) / Factorial, 2.0);
+		Sum += CLAM_pow( CLAM_pow(HalfX, (double)i) / Factorial, 2.0);
 	}
 	return Sum;
 }
@@ -310,7 +310,7 @@ void WindowGenerator::KaiserBessel(long size,DataArray& window,
 	for(int i=0; i<iHalfsize; i++)
 	{
 		window[i] = window[windowsize-i-1] =TData(
-		   BesselFunction(PiAlpha * sqrt(1.0 - pow((double)(i-iHalfsize) /
+		   BesselFunction(PiAlpha * CLAM_sqrt(1.0 - CLAM_pow((double)(i-iHalfsize) /
 		   dHalfsize, 2.0))) / BesselFunction(PiAlpha) );
 	}
 
@@ -325,13 +325,13 @@ void WindowGenerator::BlackmanHarrisX(long size,DataArray& window,
 
 	if(size%2 !=0)
 	{
-		window[(int)(size/2)] = a0 - a1 * cos(fConst * ((int)(size/2))) + a2 *
-			cos(fConst * 2 * ((int)(size/2))) - a3 * cos(fConst * 3 * ((int)(size/2)));
+		window[(int)(size/2)] = a0 - a1 * CLAM_cos(fConst * ((int)(size/2))) + a2 *
+			CLAM_cos(fConst * 2 * ((int)(size/2))) - a3 * CLAM_cos(fConst * 3 * ((int)(size/2)));
 	}
 	for(int i = 0; i < (int)(size/2); i++)
 	{
-		window[i] = window[size-i-1] = a0 - a1 * cos(fConst * i) +
-			a2 * cos(fConst * 2 * i) - a3 * cos(fConst * 3 * i);
+		window[i] = window[size-i-1] = a0 - a1 * CLAM_cos(fConst * i) +
+			a2 * CLAM_cos(fConst * 2 * i) - a3 * CLAM_cos(fConst * 3 * i);
 	}
 
 
@@ -385,9 +385,9 @@ void WindowGenerator::BlackmanHarrisLike(long size, DataArray& window) const
 	for(int i=0; i<size; i++)
 		fSum += window[i] = 
 			+ 0.47
-			- 0.45 * cos(TData(TWO_PI/(size-1.0)*i)) 
-			- 0.01 * cos(TData(TWO_PI/(size-1.0)*i*2.0)) 
-			- 0.01 * cos(TData(TWO_PI/(size-1.0)*i*3.0));
+			- 0.45 * CLAM_cos(TData(TWO_PI/(size-1.0)*i)) 
+			- 0.01 * CLAM_cos(TData(TWO_PI/(size-1.0)*i*2.0)) 
+			- 0.01 * CLAM_cos(TData(TWO_PI/(size-1.0)*i*3.0));
 	fSum = fSum/2;
 	for (int i = 0; i < size; i++)
 		window[i] = window[i] / fSum;
@@ -401,11 +401,11 @@ void WindowGenerator::Hamming(long size,DataArray& window) const
 	if(size%2 !=0)
 		window[(int)(size/2)]= 
 			+ TData(0.54)
-			- TData(0.46)*cos(TData(2.0)*TData(PI)*((int)(size/2))/(size-1));
+			- TData(0.46)*CLAM_cos(TData(2.0)*TData(PI)*((int)(size/2))/(size-1));
 	for(int i = 0; i < (int)(size/2); i++) 
 		window[i] = window[size-i-1] = 
 			+ TData(0.54)
-			- TData(0.46) * cos(TData(2.0)*TData(PI)*i/(size-1));
+			- TData(0.46) * CLAM_cos(TData(2.0)*TData(PI)*i/(size-1));
 }
 
 /* function to design a Triangular window*/
@@ -467,7 +467,7 @@ void WindowGenerator::Sine(long size,DataArray& window) const
 	double tmp2 = 0.5*(2.0*float(size));
 
 	for (int i=0;i<size;i++) 
-	  window[i] = (float)(1+tmp2*sin(tmp1*(i+1)));
+	  window[i] = (float)(1+tmp2*CLAM_sin(tmp1*(i+1)));
 
 }
 

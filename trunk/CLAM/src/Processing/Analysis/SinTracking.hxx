@@ -110,33 +110,33 @@ namespace CLAM {
 		void HarmonicTracking(const SpectralPeakArray& in,SpectralPeakArray& out,TData funFreq);
 
 		/** True if peakArray[peakIndex] is already assigned to a track*/
-		bool IsPeakAssigned(const SpectralPeakArray &peakArray, TIndex peakIndex) const;
+		inline bool IsPeakAssigned(const SpectralPeakArray &peakArray, TIndex peakIndex) const;
 
 		/** True if candidate's distance to fixedPeak is less than threshold*/
-		bool IsCandidate(const SpectralPeak& fixedPeak,const SpectralPeak& candidate) const;
+		inline bool IsCandidate(const SpectralPeak& fixedPeak,const SpectralPeak& candidate) const;
 
 		/** True if currentFramePeak has a candidate peak in nextFramePeakArray*/
-		bool ThereIsCandidate(TData currentFramePeakFreq, 
+		inline bool ThereIsCandidate(TData currentFramePeakFreq, 
                         const SpectralPeakArray& iPeakArray,SpectralPeakArray& oPeakArray) const;
 		
 		/** Returns index of candidate and distance to currentFramePeak*/
-		TIndex GetCandidate(TData currentFramePeakFreq, 
+		inline TIndex GetCandidate(TData currentFramePeakFreq, 
 						const SpectralPeakArray& nextFramePeakArray,TData& distance) const;
   
 		/** Makes sure that candidate does not match better another peak in currentFramePeakArray*/
-		bool IsBestCandidate(TData candidateFreq, TData currentFreq) const;
+		inline bool IsBestCandidate(TData candidateFreq, TData currentFreq) const;
 
 		  
 		/** Returns index of first peak not assigned to a track in framePeakArray, beginning
 		* at beginAt index*/
-		TIndex GetFirstNonAssignedPeakPos(const SpectralPeakArray& framePeakArray, TIndex beginAt) const;
+		inline TIndex GetFirstNonAssignedPeakPos(const SpectralPeakArray& framePeakArray, TIndex beginAt) const;
   
 		/** Assigns trackId to nextPeakArray[peakIndex]*/
-		void Match(TIndex trackId, TIndex peakIndex,const SpectralPeak& currentPeak, SpectralPeakArray& oPeakArray) const;
+		inline void Match(TIndex trackId, TIndex peakIndex,const SpectralPeak& currentPeak, SpectralPeakArray& oPeakArray) const;
   
 		/** Kills track identified by trackId and assigns pPeakArray as its last peak array
 		* (spectral frame)*/
-		void KillTrack(int trackPosition) const;
+		inline void KillTrack(int trackPosition) const;
 
 		void KillAll();
   
