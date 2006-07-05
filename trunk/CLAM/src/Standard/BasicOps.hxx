@@ -503,7 +503,7 @@ public:
 	/// Memoryless Computation using external lower level functors
 	U operator()(const Array<T>& a,SquaredSumTmpl<false,T>& sqrSum,StaticFalse* useMemory)
 	{
-		return sqrt(sqrSum(a,(StaticFalse*)(0)));
+		return CLAM_sqrt(sqrSum(a,(StaticFalse*)(0)));
 	}
 	/// Memoryfull Computation using external lower level functors
 	U operator()(const Array<T>& a,SquaredSumTmpl<false,T>& sqrSum,StaticTrue* useMemory=NULL)
@@ -698,7 +698,7 @@ public:
 	StandardDeviationTmpl():memory(){}
 	U operator()(const Array<T>& a,CentralMoment<2,abs,T,U>& centralMoment2,bool useMemory=false)
 	{
-		if(!useMemory) return sqrt(centralMoment2(a));
+		if(!useMemory) return CLAM_sqrt(centralMoment2(a));
 
 		if (alreadyComputed) return memory;
 		alreadyComputed=true;

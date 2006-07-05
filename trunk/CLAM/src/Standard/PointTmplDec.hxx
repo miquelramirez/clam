@@ -79,7 +79,7 @@ namespace CLAM
 	/*member funtion, euclidian distance*/
 		double Distance(const PointTmpl<TX,TY>& newPoint)const
 		{
-			return pow((TData)pow((TData)(mX-newPoint.mX),(TData)2)+pow((TData)(mY-newPoint.mY),(TData)2),(TData)0.5);
+			return CLAM_pow((TData)CLAM_pow((TData)(mX-newPoint.mX),(TData)2)+CLAM_pow((TData)(mY-newPoint.mY),(TData)2),(TData)0.5);
 		}
 
 	/*non-member operators*/

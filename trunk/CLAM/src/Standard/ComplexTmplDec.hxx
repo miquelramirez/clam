@@ -49,7 +49,14 @@ namespace CLAM
 		/// returns magnitude
 		const T Mag() const
 		{
-			return sqrt(mRe*mRe + mIm*mIm);
+#ifdef CLAM_OPTIMIZE
+			const float insignificant = 0.0001;
+			T absIm = Abs(mIm);
+			T absRe = Abs(mRe);
+			if(absIm<insignificant) return absRe;
+			if(absRe<insignificant) return absIm;
+#endif
+			return CLAM_sqrt(mRe*mRe + mIm*mIm);
 		}
 
 		/// returns squared magnitude
@@ -61,13 +68,13 @@ namespace CLAM
 		/// returns angle
 		const T Ang() const
 		{
-			return atan2(mIm, mRe);
+			return CLAM_atan2(mIm, mRe);
 		}
 
 		/// function to handle polar coordinates
 		ComplexTmpl<T> ToPolar(const T& r, const T& theta)
 		{
-			return ComplexTmpl<T>(r*cos(theta), r*sin(theta));
+			return ComplexTmpl<T>(r*CLAM_cos(theta), r*CLAM_sin(theta));
 		}
 
 		// ------   member operators ... ------

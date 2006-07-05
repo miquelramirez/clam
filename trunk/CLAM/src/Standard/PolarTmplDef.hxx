@@ -34,10 +34,10 @@ namespace CLAM
 	{
 		T r1,i1,r2,i2,r3,i3;
 		
-		r1 = fabs(a.mMag) * cos(a.mAng); 
-		i1 = fabs(a.mMag) * sin(a.mAng); 
-		r2 = fabs(mMag) * cos(mAng);
-		i2 = fabs(mMag) * sin(mAng);
+		r1 = fabs(a.mMag) * CLAM_cos(a.mAng); 
+		i1 = fabs(a.mMag) * CLAM_sin(a.mAng); 
+		r2 = fabs(mMag) * CLAM_cos(mAng);
+		i2 = fabs(mMag) * CLAM_sin(mAng);
 		
 		r3 = r1+r2;
 		i3 = i1+i2;
@@ -54,16 +54,16 @@ namespace CLAM
 	{
 		T r1,i1,r2,i2,r3,i3;
 
-		r1 = fabs(a.mMag) * cos(a.mAng); 
-		i1 = fabs(a.mMag) * sin(a.mAng); 
-		r2 = fabs(mMag) * cos(mAng);
-		i2 = fabs(mMag) * sin(mAng);
+		r1 = fabs(a.mMag) * CLAM_cos(a.mAng); 
+		i1 = fabs(a.mMag) * CLAM_sin(a.mAng); 
+		r2 = fabs(mMag) * CLAM_cos(mAng);
+		i2 = fabs(mMag) * CLAM_sin(mAng);
 		
 		r3 = r2-r1;
 		i3 = i2-i1;
 		
-		mMag = sqrt (r3*r3 + i3*i3);
-		mAng = atan2 (i3,r3); 
+		mMag = CLAM_sqrt (r3*r3 + i3*i3);
+		mAng = CLAM_atan2 (i3,r3); 
 	
 		return *this;
 	}
@@ -74,15 +74,15 @@ namespace CLAM
 	{
 		T r1,i1,r2,i2,r3,i3;
 		
-		r1 = fabs(mMag) * cos(mAng); 
-		i1 = fabs(mMag) * sin(mAng); 
-		r2 = fabs(b.mMag) * cos(b.mAng);
-		i2 = fabs(b.mMag) * sin(b.mAng);
+		r1 = fabs(mMag) * CLAM_cos(mAng); 
+		i1 = fabs(mMag) * CLAM_sin(mAng); 
+		r2 = fabs(b.mMag) * CLAM_cos(b.mAng);
+		i2 = fabs(b.mMag) * CLAM_sin(b.mAng);
 		
 		r3 = r1+r2;
 		i3 = i1+i2;
 		
-		PolarTmpl<T> ret(sqrt (r3*r3 + i3*i3),atan2 (i3,r3)); 
+		PolarTmpl<T> ret(CLAM_sqrt (r3*r3 + i3*i3),CLAM_atan2 (i3,r3)); 
 		return ret;
 	}
 
@@ -92,15 +92,15 @@ namespace CLAM
 	{
 		T r1,i1,r2,i2,r3,i3;
 		
-		r1 = fabs(mMag) * cos(mAng); 
-		i1 = fabs(mMag) * sin(mAng); 
-		r2 = fabs(b.mMag) * cos(b.mAng);
-		i2 = fabs(b.mMag) * sin(b.mAng);
+		r1 = fabs(mMag) * CLAM_cos(mAng); 
+		i1 = fabs(mMag) * CLAM_sin(mAng); 
+		r2 = fabs(b.mMag) * CLAM_cos(b.mAng);
+		i2 = fabs(b.mMag) * CLAM_sin(b.mAng);
 		
 		r3 = r1-r2;
 		i3 = i1-i2;
 		
-		PolarTmpl<T> ret(sqrt (r3*r3 + i3*i3),atan2 (i3,r3)); 
+		PolarTmpl<T> ret(CLAM_sqrt (r3*r3 + i3*i3),CLAM_atan2 (i3,r3)); 
 		return ret;
 	}
 

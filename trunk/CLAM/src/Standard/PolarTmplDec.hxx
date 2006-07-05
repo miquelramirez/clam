@@ -51,19 +51,19 @@ namespace CLAM
 		// returns real part
 		const T Real (void) const
 		{
-			return fabs(mMag) * cos(mAng);
+			return fabs(mMag) * CLAM_cos(mAng);
 		}
 
 		// returns imaginary part
 		const T Imag (void) const
 		{
-			return fabs(mMag) * sin(mAng); 
+			return fabs(mMag) * CLAM_sin(mAng); 
 		}
 
 		// friend function to handle cartesian coordinates
 		friend PolarTmpl<T> ToComplex(const T& real, const T& imag)
 		{
-			return PolarTmpl<T> (sqrt (real*real + imag*imag),atan2 (imag,real));
+			return PolarTmpl<T> (CLAM_sqrt (real*real + imag*imag),CLAM_atan2 (imag,real));
 		};
 
 		// ------   member operators ... ------
