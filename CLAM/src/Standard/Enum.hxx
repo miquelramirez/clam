@@ -322,6 +322,6 @@ std::ostream & operator << (std::ostream & os, const Enum & e) throw (IllegalVal
  */
 std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue);
 
-};
+}
 #endif // _ENUM_H_
 
