@@ -383,11 +383,35 @@ namespace CLAM {
 		TData *mo = out.GetMagBuffer().GetPtr();
 		TData *fo = out.GetPhaseBuffer().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			Polar po=Polar(m1[i],f1[i])+Polar(m2[i],f2[i]);
-			mo[i]=po.Mag();
-			fo[i]=po.Ang();
+		
+			TData r1,i1,r2,i2,r3,i3;
+		
+			r1 = Abs(m1[i]) * CLAM_cos(f1[i]); 
+			i1 = Abs(m1[i]) * CLAM_sin(f1[i]); 
+			r2 = Abs(m2[i]) * CLAM_cos(f2[i]);
+			i2 = Abs(m2[i]) * CLAM_sin(f2[i]);
+		
+			r3 = r1+r2;
+			i3 = i1+i2;
+#ifdef CLAM_OPTIMIZE
+			const float insignificant = 0.0001;
+			TData absIm = Abs(i3);
+			TData absRe = Abs(r3);
+			if(absIm<insignificant) mo[i] = absRe;
+			else if(absRe<insignificant) mo[i] = absIm;
+			else mo[i] = CLAM_sqrt (r3*r3 + i3*i3);
+#else
+			mo[i] = CLAM_sqrt (r3*r3 + i3*i3);
+#endif
+			fo[i] = CLAM_atan2 (i3,r3);
+			
+			//Polar po=Polar(m1[i],f1[i])+Polar(m2[i],f2[i]);
+			//mo[i]=po.Mag();
+			//fo[i]=po.Ang();
 		}
 
+#ifndef CLAM_OPTIMIZE
+//if optimizations are on we asume the spectrums do not need to be converted back
 		f.bComplex=f.bPolar=f.bMagPhaseBPF=false;
 		f.bMagPhase=true;
 		out.SynchronizeTo(f);
@@ -407,7 +431,7 @@ namespace CLAM {
 			out.RemovePhaseBuffer();
 			out.UpdateData();
 		}
-
+#endif
 	}
 
 	void SpectrumAdder2::AddComplex(Spectrum& in1, Spectrum& in2, Spectrum& out)
@@ -681,7 +705,7 @@ namespace CLAM {
 		TData *mo = out.GetMagBuffer().GetPtr();
 		TData *fo = out.GetPhaseBuffer().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			Polar po = Polar(pow(TData(10),m1.GetValue(pos)/TData(10.0)),f1.GetValue(pos)) + 
+			Polar po = Polar(CLAM_pow(TData(10),m1.GetValue(pos)/TData(10.0)),f1.GetValue(pos)) + 
 			            Polar(m2[i],f2[i]);
 			mo[i]=po.Mag();
 			fo[i]=po.Ang();
@@ -772,8 +796,8 @@ namespace CLAM {
 		Complex *c2 = in2.GetComplexArray().GetPtr();
 		Complex *co = out.GetComplexArray().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			TData BRe = fabs(m1.GetValue(pos)) * cos(f1.GetValue(pos));
-			TData BIm = fabs(m1.GetValue(pos)) * sin(f1.GetValue(pos));
+			TData BRe = fabs(m1.GetValue(pos)) * CLAM_cos(f1.GetValue(pos));
+			TData BIm = fabs(m1.GetValue(pos)) * CLAM_sin(f1.GetValue(pos));
 			co[i]= Complex(BRe,BIm) + c2[i];
 			pos+=delta;
 		}
@@ -827,8 +851,8 @@ namespace CLAM {
 		Complex *c2 = in2.GetComplexArray().GetPtr();
 		Complex *co = out.GetComplexArray().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			TData BRe = pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * cos(f1.GetValue(pos));
-			TData BIm = pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * sin(f1.GetValue(pos));
+			TData BRe = CLAM_pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * CLAM_cos(f1.GetValue(pos));
+			TData BIm = CLAM_pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * CLAM_sin(f1.GetValue(pos));
 			co[i]= Complex(BRe,BIm) + c2[i];
 			pos+=delta;
 		}
@@ -967,7 +991,7 @@ namespace CLAM {
 		Polar *p2 = in2.GetPolarArray().GetPtr();
 		Polar *po = out.GetPolarArray().GetPtr();
 		for (int i=0;i<mSize;i++) {
-			TData BMag = pow(TData(10),m1.GetValue(pos)/TData(10.0));
+			TData BMag = CLAM_pow(TData(10),m1.GetValue(pos)/TData(10.0));
 			TData BPha = f1.GetValue(pos);
 			po[i]=Polar(BMag,BPha)+p2[i];
 			pos+=delta;

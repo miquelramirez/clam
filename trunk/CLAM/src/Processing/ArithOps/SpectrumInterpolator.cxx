@@ -734,7 +734,7 @@ namespace CLAM {
 		Polar polIntFactor=Polar(intFactor);
 		
 		for (int i=0;i<mSize;i++) {
-			Polar po = polInvIntFactor*Polar(pow(TData(10),m1.GetValue(pos)/TData(10.0)),f1.GetValue(pos)) + 
+			Polar po = polInvIntFactor*Polar(CLAM_pow(TData(10),m1.GetValue(pos)/TData(10.0)),f1.GetValue(pos)) + 
 			            polIntFactor*Polar(m2[i],f2[i]);
 			mo[i]=po.Mag();
 			fo[i]=po.Ang();
@@ -832,8 +832,8 @@ namespace CLAM {
 		TData invIntFactor=1-intFactor;
 
 		for (int i=0;i<mSize;i++) {
-			TData BRe = fabs(m1.GetValue(pos)) * cos(f1.GetValue(pos));
-			TData BIm = fabs(m1.GetValue(pos)) * sin(f1.GetValue(pos));
+			TData BRe = fabs(m1.GetValue(pos)) * CLAM_cos(f1.GetValue(pos));
+			TData BIm = fabs(m1.GetValue(pos)) * CLAM_sin(f1.GetValue(pos));
 			co[i]= Complex(BRe,BIm)*invIntFactor + c2[i]*intFactor;
 			pos+=delta;
 		}
@@ -894,8 +894,8 @@ namespace CLAM {
 		TData invIntFactor=1-intFactor;
 
 		for (int i=0;i<mSize;i++) {
-			TData BRe = pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * cos(f1.GetValue(pos));
-			TData BIm = pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * sin(f1.GetValue(pos));
+			TData BRe = CLAM_pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * CLAM_cos(f1.GetValue(pos));
+			TData BIm = CLAM_pow(TData(10),fabs(m1.GetValue(pos))/TData(10.0)) * CLAM_sin(f1.GetValue(pos));
 			co[i]= Complex(BRe,BIm)*invIntFactor + c2[i]*intFactor;
 			pos+=delta;
 		}
@@ -1052,7 +1052,7 @@ namespace CLAM {
 		Polar polIntFactor=Polar(intFactor);
 
 		for (int i=0;i<mSize;i++) {
-			TData BMag = pow(TData(10),m1.GetValue(pos)/TData(10.0));
+			TData BMag = CLAM_pow(TData(10),m1.GetValue(pos)/TData(10.0));
 			TData BPha = f1.GetValue(pos);
 			po[i]=polInvIntFactor*Polar(BMag,BPha)+polIntFactor*p2[i];
 			pos+=delta;

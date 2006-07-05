@@ -135,6 +135,7 @@ namespace CLAM {
 	  for (i=0; i<mSize; i++)
 		fftbuffer[i]=inbuffer[i];
 	  rdft(mSize, 1, fftbuffer, ip, w);
+	  
 	  ToOther(out);
 	  break;
 	default:
@@ -161,7 +162,60 @@ namespace CLAM {
 		
 	outbuffer.SetSize(mSize/2+1);
   }
+  
+  void FFT_ooura::ToMagPhase(Spectrum &out) {
+	int i;
+	DataArray& outMag = out.GetMagBuffer();
+	DataArray& outPhase = out.GetPhaseBuffer();
 
+	outMag[0] = Abs(fftbuffer[0]); // Real Values
+	outMag[mSize/2] = Abs(fftbuffer[1]);
+	outPhase[0] = 0.f;
+	outPhase[mSize/2] = 0.f;
+	
+	TData re, im;
+	TData* fftbuffer_iter1 = &(fftbuffer[2]);
+	TData* fftbuffer_iter2 = &(fftbuffer[3]);
+	TData* outMag_iter = &(outMag[1]);
+	TData* outPhase_iter = &(outPhase[1]);
+	for (i=1; i<mSize/2; fftbuffer_iter1+=2,fftbuffer_iter2+=2, outMag_iter++, outPhase_iter++, i++) {
+	re = *fftbuffer_iter1;
+	im = -*fftbuffer_iter2;
+#ifdef CLAM_OPTIMIZE
+	const float insignificant = 0.0001;
+	TData absIm = Abs(im);
+	TData absRe = Abs(re);
+	if(absIm<insignificant) *outMag_iter = absRe;
+	else if(absRe<insignificant) *outMag_iter = absIm;
+	else
+#endif
+		*outMag_iter = CLAM_sqrt(re*re + im*im);
+	*outPhase_iter = CLAM_atan2(im,re);
+	}
+		
+	outMag.SetSize(mSize/2+1);
+	outPhase.SetSize(mSize/2+1);
+  }
+
+	void FFT_ooura::ToOther(Spectrum &out)
+	{
+		if(out.HasComplexArray()) {
+			ToComplex(out);
+			out.SynchronizeTo(mComplexflags);
+		}
+		else {
+			SpecTypeFlags flags;
+			out.GetType(flags);
+			if(flags.bMagPhase)
+			{
+				ToMagPhase(out);
+			}
+			else {
+				ToComplex(mComplexSpectrum);
+				out.SynchronizeTo(mComplexSpectrum);
+			}
+		}
+	}
 
 
   ////////////////////////////////////
@@ -217,15 +271,15 @@ void FFT_ooura::makewt(int nw, int *ip, TData *w)
     ip[1] = 1;
     if (nw > 2) {
         nwh = nw >> 1;
-        delta = atan(1.0) / nwh;
+        delta = CLAM_atan(1.0) / nwh;
         w[0] = 1;
         w[1] = 0;
-        w[nwh] = cos(delta * nwh);
+        w[nwh] = CLAM_cos(delta * nwh);
         w[nwh + 1] = w[nwh];
         if (nwh > 2) {
             for (j = 2; j < nwh; j += 2) {
-                x = cos(delta * j);
-                y = sin(delta * j);
+                x = CLAM_cos(delta * j);
+                y = CLAM_sin(delta * j);
                 w[j] = x;
                 w[j + 1] = y;
                 w[nw - j] = y;
@@ -245,12 +299,12 @@ void FFT_ooura::makect(int nc, int *ip, TData *c)
     ip[1] = nc;
     if (nc > 1) {
         nch = nc >> 1;
-        delta = atan(1.0) / nch;
-        c[0] = cos(delta * nch);
+        delta = CLAM_atan(1.0) / nch;
+        c[0] = CLAM_cos(delta * nch);
         c[nch] = 0.5 * c[0];
         for (j = 1; j < nch; j++) {
-            c[j] = 0.5 * cos(delta * j);
-            c[nc - j] = 0.5 * sin(delta * j);
+            c[j] = 0.5 * CLAM_cos(delta * j);
+            c[nc - j] = 0.5 * CLAM_sin(delta * j);
         }
     }
 }

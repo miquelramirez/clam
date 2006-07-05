@@ -62,6 +62,8 @@ namespace CLAM {
 		// Output conversions
 
 		void ToComplex(Spectrum &out);
+		void ToMagPhase(Spectrum &out);
+		void ToOther(Spectrum &out);
 
 	public:
 		// FFTOOURA original functions, modified to accept
