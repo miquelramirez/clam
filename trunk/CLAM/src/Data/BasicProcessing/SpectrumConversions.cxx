@@ -99,7 +99,7 @@ namespace CLAM
 
 		for ( int i = 0; i < nBins; i++ )
 		{
-			linBuffer[i] = pow( TData(10), logBuffer[i]*inv_20 ) ;
+			linBuffer[i] = CLAM_pow( TData(10), logBuffer[i]*inv_20 ) ;
 		}
 	}
 
@@ -110,7 +110,7 @@ namespace CLAM
 
 		for ( int i = 0; i < nBins; i++ )
 		{
-			dataBuffer[i] = pow( TData(10), dataBuffer[i]*inv_20 ) ;
+			dataBuffer[i] = CLAM_pow( TData(10), dataBuffer[i]*inv_20 ) ;
 		}
 	}
 
@@ -135,7 +135,7 @@ namespace CLAM
 			}
 			else
 			{
-				destMag[i] = 10.f*log10(magSquared); // = 20*log10(sqrt(re^2 + im^2))
+				destMag[i] = 10.f*CLAM_log10(magSquared); // = 20*log10(CLAM_sqrt(re^2 + im^2))
 			}
 
 			destPhase[i] = src[i].Ang(); // = atan2(im. re)
@@ -150,7 +150,7 @@ namespace CLAM
 				
 		for ( int i = 0; i < nBins; i++ )
 		{
-			logData[i]=20*log10(linearBuffer[i]);
+			logData[i]=CLAM_20log10(linearBuffer[i]);
 		}
 
 	}
@@ -161,7 +161,7 @@ namespace CLAM
 
 		for ( int i = 0; i < nBins; i++ )
 		{
-			dataBuffer[i]=20*log10( dataBuffer[i] );
+			dataBuffer[i]=CLAM_20log10( dataBuffer[i] );
 		}
 	}
 

@@ -177,53 +177,53 @@ private:
 
 public:
 	/** Returns index from a given frequency */
-	TIndex IndexFromFreq(TData freq) const;
+	inline TIndex IndexFromFreq(TData freq) const;
 
 
 public:
 // Internal converting routines
 	/** Convert from Complex to Polar Buffer */
-	void Complex2Polar() ;
+	inline void Complex2Polar() ;
 	/** Convert from Polar to Complex Buffer */
-	void Polar2Complex() ;
+	inline void Polar2Complex() ;
 	/** Convert from Complex to Mag/Phase buffers */
-	void Complex2MagPhase() ;
+	inline void Complex2MagPhase() ;
 	/** Convert from Polar to Mag/Phase buffers */
-	void Polar2MagPhase() ;
+	inline void Polar2MagPhase() ;
 	/** Convert from Mag/Phase to Polar */
-	void MagPhase2Polar() ;
+	inline void MagPhase2Polar() ;
 	/** Convert from Mag/Phase to Complex */
-	void MagPhase2Complex() ;
+	inline void MagPhase2Complex() ;
 	/** Convert to BPF */
-	void MagPhase2BPF() ;
+	inline void MagPhase2BPF() ;
 	/** Convert from BPF to MagPhase*/
-	void BPF2MagPhase();
+	inline void BPF2MagPhase();
 
 // Converting routines from a second input spectrum
 /** Convert from Complex to Polar Buffer */
-	void Complex2Polar(const Spectrum& in) ;
+	inline void Complex2Polar(const Spectrum& in) ;
 	/** Convert from Polar to Complex Buffer */
-	void Polar2Complex(const Spectrum& in) ;
+	inline void Polar2Complex(const Spectrum& in) ;
 	/** Convert from Complex to Mag/Phase buffers */
-	void Complex2MagPhase(const Spectrum& in) ;
+	inline void Complex2MagPhase(const Spectrum& in) ;
 	/** Convert from Polar to Mag/Phase buffers */
-	void Polar2MagPhase(const Spectrum& in) ;
+	inline void Polar2MagPhase(const Spectrum& in) ;
 	/** Convert from Mag/Phase to Polar */
-	void MagPhase2Polar(const Spectrum& in) ;
+	inline void MagPhase2Polar(const Spectrum& in) ;
 	/** Convert from Mag/Phase to Complex */
-	void MagPhase2Complex(const Spectrum& in) ;
+	inline void MagPhase2Complex(const Spectrum& in) ;
 	/** Convert to BPF */
-	void MagPhase2BPF(const Spectrum& in) ;
+	inline void MagPhase2BPF(const Spectrum& in) ;
 	/** Convert from BPF to MagPhase*/
-	void BPF2MagPhase(const Spectrum& in);
+	inline void BPF2MagPhase(const Spectrum& in);
 private:
 //Low level converting routines
-	void Polar2MagPhase(const Array<Polar>& polarArray,DataArray& magBuffer, DataArray& phaseBuffer);
-	void Complex2MagPhase(const Array<Complex>& complexArray, DataArray& magBuffer, DataArray& phaseBuffer);
-	void MagPhase2Polar(const DataArray& magBuffer,const DataArray& phaseBuffer,Array<Polar>& polarArray);
-	void MagPhase2Complex(const DataArray& magBuffer,const DataArray& phaseBuffer,Array<Complex>& complexArray);
-	void MagPhase2BPF(const DataArray& magBuffer, const DataArray& phaseBuffer, BPF& magBPF, BPF& phaseBPF);
-	void BPF2MagPhase( const BPF& magBPF, const BPF& phaseBPF, DataArray& magBuffer, DataArray& phaseBuffer);
+	inline void Polar2MagPhase(const Array<Polar>& polarArray,DataArray& magBuffer, DataArray& phaseBuffer);
+	inline void Complex2MagPhase(const Array<Complex>& complexArray, DataArray& magBuffer, DataArray& phaseBuffer);
+	inline void MagPhase2Polar(const DataArray& magBuffer,const DataArray& phaseBuffer,Array<Polar>& polarArray);
+	inline void MagPhase2Complex(const DataArray& magBuffer,const DataArray& phaseBuffer,Array<Complex>& complexArray);
+	inline void MagPhase2BPF(const DataArray& magBuffer, const DataArray& phaseBuffer, BPF& magBPF, BPF& phaseBPF);
+	inline void BPF2MagPhase( const BPF& magBPF, const BPF& phaseBPF, DataArray& magBuffer, DataArray& phaseBuffer);
 
 };
 
