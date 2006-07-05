@@ -44,7 +44,7 @@ namespace CLAM{
 	public:
 		const char* GetClassName() const
 		{
-			return "SpectralAM";
+			return "SpectralRingMod";
 		}
 
 		SpectralRingModulation() 

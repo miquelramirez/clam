@@ -27,6 +27,16 @@
 #include "ErrDynamicType.hxx"
 #include "SpectrumConfig.hxx"
 
+#ifdef CLAM_DOUBLE
+#define FFTW_HEADER <rfftw.h>
+#else
+#ifdef WIN32
+#define FFTW_HEADER <rfftw.h>
+#else
+#define FFTW_HEADER <srfftw.h>
+#endif
+#endif
+
 extern "C" {
 #if !defined(WIN32) && !defined(CLAM_DOUBLE)
 	#include <srfftw.h>

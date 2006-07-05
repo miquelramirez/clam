@@ -246,22 +246,37 @@ void PhaseManagement::DoPhaseContinuation(SpectralPeakArray& p)
 {
 	int i;
 	TData t=mCurrentTime.GetLastValue();
-	for(i=0;i<p.GetnPeaks();i++)
+	int nPeaks = p.GetnPeaks();
+	DataArray& lastPhaseBuffer = mLastPeakArray.GetPhaseBuffer();
+	DataArray& lastFreqBuffer = mLastPeakArray.GetFreqBuffer();
+	DataArray& currentPhaseBuffer = p.GetPhaseBuffer();
+	DataArray& currentFreqBuffer = p.GetFreqBuffer();
+	
+	TData timeDifference = t-mFrameTime;
+	TData halfPI= TData(TWO_PI)*TData(0.5);
+	
+	TData halfPITimeDifference = timeDifference*halfPI;
+	TData twoPITimeDifference = TData(TWO_PI)*timeDifference;
+	
+	for(i=0;i<nPeaks;i++)
 	{
 		TIndex currentIndex=p.GetIndex(i);
 		TIndex lastPos=mLastPeakArray.GetPositionFromIndex(currentIndex);
 		if(lastPos!=-1)
 		{
-			SpectralPeak tmpPeak=mLastPeakArray.GetSpectralPeak(lastPos);
-			p.SetPhase(i,tmpPeak.GetPhase()+TData(TWO_PI)*TData(0.5)*(tmpPeak.GetFreq()+p.GetFreq(i))*(t-mFrameTime));
+			//SpectralPeak tmpPeak=mLastPeakArray.GetSpectralPeak(lastPos);
+			//p.SetPhase(i,tmpPeak.GetPhase()+TData(TWO_PI)*TData(0.5)*(tmpPeak.GetFreq()+p.GetFreq(i))*(t-mFrameTime));
+			currentPhaseBuffer[i] = lastPhaseBuffer[lastPos]+
+				halfPITimeDifference*(lastFreqBuffer[lastPos]+currentFreqBuffer[i]);
 			
 		}
 		else
 		{
-			p.SetPhase(i,TData(TWO_PI)*p.GetFreq(i)*(t-mFrameTime));
+			//p.SetPhase(i,TData(TWO_PI)*p.GetFreq(i)*(t-mFrameTime));
+			currentPhaseBuffer[i] = currentFreqBuffer[i]*twoPITimeDifference;
 		}
-		p.SetPhase(i,p.GetPhase(i)-floor((TData)(p.GetPhase(i)/TData(TWO_PI)))*TData(TWO_PI));
-		
+		//p.SetPhase(i,p.GetPhase(i)-floor((TData)(p.GetPhase(i)/TData(TWO_PI)))*TData(TWO_PI));
+		currentPhaseBuffer[i] = currentPhaseBuffer[i]-floor((TData)(currentPhaseBuffer[i]/TData(TWO_PI)))*TData(TWO_PI);
 	}
 	mFrameTime=t;
 	mLastPeakArray=p;

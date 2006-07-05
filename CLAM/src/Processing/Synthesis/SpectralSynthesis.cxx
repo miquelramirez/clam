@@ -161,38 +161,16 @@ bool SpectralSynthesis::Do(void)
 
 bool SpectralSynthesis::Do(Spectrum& in, Audio& out)
 {
-//xamat: testing
-/*	 std::cout<<"***SpectralSynthesis Configuration: "<<std::endl;
-	 std::cout<<"AnalWindowSize: "<< mConfig.GetAnalWindowSize()<<std::endl;
-	 std::cout<<"HopSize: "<< mConfig.GetHopSize()<<std::endl;
-	 std::cout<<"FFTSize: "<<mConfig.GetIFFT().GetAudioSize()<<std::endl;
-	 std::cout<<"SamplingRate: "<<mConfig.GetSamplingRate()<<std::endl;
-	 std::cout<<"Input Spectrum Size: "<<in.GetSize()<<std::endl;
-	 std::cout<<"Output Audio Size: "<<out.GetSize()<<std::endl;
-*/
-	SpecTypeFlags tmpFlags;
-	in.GetType(tmpFlags);
-	if(!tmpFlags.bComplex)
-	{
-		tmpFlags.bComplex=1;
-	}
-//convert MagPhase data to ComplexData
-	in.SetTypeSynchronize(tmpFlags); 
+
+	TSize analWindowSize = mConfig.GetAnalWindowSize()-1;//note I include the minus 1!
+	TSize hopSize = mConfig.GetHopSize();
 //Now we do the inverse FFT
 	mPO_IFFT.Do(in, mAudio0);
 //Undoing Synthesis circular shift
 	mPO_CircularShift.Do(mAudio0,mAudio0);
-//Undoing zero padding by hand seems a bit ugly but...
-	mAudio0.GetAudioChunk(0,mConfig.GetAnalWindowSize()-1,mAudio1,false);
-//Now we take the central samples to multiply with the window
-	int centerSample=mAudio1.GetSize()/2;
-	mAudio1.GetAudioChunk(centerSample-mConfig.GetHopSize(),centerSample+mConfig.GetHopSize()-1,mAudio2,false);
-//xamat test:
-/*	std::cout<<"Sizes in SpectralSynthesis " << std::endl;
-	std::cout<<"Audio before synthesis window size: " << mAudio2.GetSize() << std::endl;
-	std::cout<<"Synthesis window size: " << mSynthWindow.GetSize() << std::endl;
-	std::cout<<"Output audio size: " << out.GetSize() << std::endl;
-*/
+//We take the central samples to multiply with the window while also undoing the zero padding
+	int centerSample = analWindowSize*0.5;
+	mAudio0.GetAudioChunk(centerSample-hopSize,centerSample+hopSize-1,mAudio2,false);
 //Aplying inverse window
 	mPO_AudioProduct.Do(mAudio2, mSynthWindow,out);
 

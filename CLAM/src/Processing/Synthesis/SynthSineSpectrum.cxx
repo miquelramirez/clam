@@ -692,7 +692,7 @@ bool SynthSineSpectrum::Do(const SpectralPeakArray& peakArray,Spectrum& residual
 
 void SynthSineSpectrum::FillSynthSineSpectrum	(	const SpectralPeakArray& peakArray, double gain)
 {
-	TSize 		mainLobeBins = TSize ( TData(8)*pow(2.0,(double)mConfig.GetZeroPadding()) ) ; // Number of bins in the mainlope of a transformed BHarris92 window 
+	TSize 		mainLobeBins = TSize ( TData(8)*CLAM_pow(2.0,(double)mConfig.GetZeroPadding()) ) ; // Number of bins in the mainlope of a transformed BHarris92 window 
                            
 	TIndex 		b,i,k,l,Index,numPeaks = peakArray.GetnPeaks();
   					
@@ -710,22 +710,22 @@ void SynthSineSpectrum::FillSynthSineSpectrum	(	const SpectralPeakArray& peakArr
 	TSize zeroPadding=TSize( TData(mConfig.GetZeroPadding()) );
 
 	TData binPosFactor=2*(spectrumSize-1)/samplingRate;
-	TData firstBinFactor= 3* pow((TData)2,(TData)zeroPadding);
+	TData firstBinFactor= 3* CLAM_pow((TData)2,(TData)zeroPadding);
 
-	int incr=int(pow(2.0,9.0-mConfig.GetZeroPadding()));
+	int incr=int(CLAM_pow(2.0,9.0-mConfig.GetZeroPadding()));
 	int lastBin=4096-incr;
 	/* loop thru all the peaks ...*/
 	for(i=0;i<numPeaks;i++)
 	{
 		if(peakArray.GetScale()==EScale::eLog)//if it is in dB
 		{
-			currMag = pow(10.0,(peakMagBuffer[i]/20.0));
+			currMag = CLAM_pow(10.0,(peakMagBuffer[i]/20.0));
 		}
 		else	currMag = peakMagBuffer[i];
 		currFreq = peakFreqBuffer[i];
   		phase = peakPhaseBuffer[i];
-		Cos = cos(phase);		// we assume the phase is constant throughout the frame
-		Sin = sin(phase);
+		Cos = CLAM_cos(phase);		// we assume the phase is constant throughout the frame
+		Sin = CLAM_sin(phase);
 		// we use the frequency specify position of the peak, not the binpos !
 		currBinPos = currFreq*binPosFactor;
     

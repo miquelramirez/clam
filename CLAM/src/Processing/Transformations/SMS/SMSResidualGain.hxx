@@ -38,6 +38,8 @@ namespace CLAM{
 	class SMSResidualGain: public FrameTransformation
 	{
 		
+		const char *GetClassName() const {return "SMSResidualGain";}
+
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
@@ -52,8 +54,6 @@ namespace CLAM{
 		}
 
  		~SMSResidualGain() {}
-
-		const char *GetClassName() const {return "SMSResidualGain";}
 
 		bool Do(const Frame& in, Frame& out)
 		{

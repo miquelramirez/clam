@@ -56,8 +56,8 @@ namespace CLAM{
 		{
 			Configure( FrameTransformationConfig() );
 			SimpleOscillatorConfig cfg;
-			cfg.SetFrequency(200);
-			cfg.SetAmplitude(1);
+			cfg.SetFrequency(1000.);
+			cfg.SetAmplitude(1.);
 			mOscillator.Configure(cfg);
 		}
 

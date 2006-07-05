@@ -54,7 +54,7 @@ bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 	mMagBuffer.Resize(spectrumSize);
 	mMagBuffer.SetSize(spectrumSize);
 	
-	TData bandFactor = pow(TData(spectrumSize),1./nBands);
+	TData bandFactor = pow(spectrumSize,1./nBands);
 	TData fBandFactor = pow(spectralRange,1./nBands);
 	
 	TData fCurrentBandLimit = fFirstBand;
@@ -71,7 +71,7 @@ bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 	TData fCurrentGainBandLimit = fCurrentBandLimit*2;
 	int currentGainBandLimit = Round(fCurrentGainBandLimit*spectralResolution);
 	
-	TData gainBandFactor = pow(TData(spectrumSize)/currentBandLimit,1./nGainBands);
+	TData gainBandFactor = pow(spectrumSize/currentBandLimit,1./nGainBands);
 	TData fGainBandFactor = pow(spectralRange/fCurrentGainBandLimit,1./nGainBands);
 	
 	TData bandEnergy =0;

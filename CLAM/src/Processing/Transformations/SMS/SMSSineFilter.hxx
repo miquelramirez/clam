@@ -68,6 +68,10 @@ namespace CLAM
 	class SMSSineFilter: public FrameTransformation
 	{
 		
+		/** This method returns the name of the object
+		 *  @return Char pointer with the name of object
+		 */
+		const char *GetClassName() const {return "SMSSineFilter";}
 
 		InPort<SpectralPeakArray> mInPeaks;
 		OutPort<SpectralPeakArray> mOutPeaks;
@@ -119,11 +123,6 @@ namespace CLAM
 		{
 			Configure( cfg );
 		}
-
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
-		const char *GetClassName() const {return "SMSSineFilter";}
 
 		virtual bool ConcreteConfigure(const ProcessingConfig& cfg) 
 		{

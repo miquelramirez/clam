@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
@@ -20,59 +21,62 @@
  */
 
 
-#ifndef _SMSOddEvenHarmonicRatio_
-#define _SMSOddEvenHarmonicRatio_
+#ifndef _SpectralGate_
+#define _SpectralGate_
 
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "InControl.hxx"
-#include "SpectralPeakArray.hxx"
 #include "Frame.hxx"
-#include "SegmentTransformationConfig.hxx"
 #include "FrameTransformation.hxx"
 #include "FrameTransformationConfig.hxx"
 
-
 namespace CLAM{
 
-
-	class SMSOddEvenHarmonicRatio: public FrameTransformation
+	class SpectralGate: public FrameTransformationTmpl<Spectrum>
 	{
-		const char *GetClassName() const {return "SMSOddEvenHarmonicRatio";}
-
-		InPort<SpectralPeakArray> mIn;
-		OutPort<SpectralPeakArray> mOut;
+		InPort<Spectrum> mIn;
+		OutPort<Spectrum> mOut;
 
 	public:
-
-		SMSOddEvenHarmonicRatio() 
-			: 
-			mIn("In SpectralPeaks", this), 
-			mOut("Out SpectralPeaks", this)
+		const char* GetClassName() const
 		{
-			Configure( SegmentTransformationConfig() );
-
+			return "SpectralGate";
 		}
 
- 		~SMSOddEvenHarmonicRatio() {}
-	
+		SpectralGate() 
+			: 
+			mIn("In Spectrum", this), 
+			mOut("Out Spectrum", this) 
+		{
+			Configure( FrameTransformationConfig() );
+		}
+
+ 		~SpectralGate() {}	
+		
+		virtual bool InitControls()
+		{ 
+			GetInControl("Amount").DoControl(-30);
+			
+			return true;
+		}
+		
 		bool Do(const Frame& in, Frame& out)
 		{
-			return Do(in.GetSpectralPeakArray(), out.GetSpectralPeakArray());
+			return Do(in.GetSpectrum(), 
+				  out.GetSpectrum());
 		}
 
-		bool Do(const SpectralPeakArray& in, SpectralPeakArray& out);
+		bool Do(const Spectrum& in, Spectrum& out);
 
 		bool Do()
 		{
-			bool result = Do(mIn.GetData(), mOut.GetData());
+			bool result = Do(mIn.GetData(), mOut.GetData()); 
 			mIn.Consume();
 			mOut.Produce();
 			return result;
 		}
-
 	};		
 };//namespace CLAM
 
-#endif // _SMSOddEvenHarmonicRatio_
-
+#endif // _SpectralGate_

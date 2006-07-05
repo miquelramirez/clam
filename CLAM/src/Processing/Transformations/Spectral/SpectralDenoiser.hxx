@@ -30,6 +30,7 @@
 #include "Frame.hxx"
 #include "FrameTransformation.hxx"
 #include "FrameTransformationConfig.hxx"
+#include "SpectrumSubstracter2.hxx"
 
 namespace CLAM{
 
@@ -56,7 +57,7 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Amount").DoControl(-90);
+			GetInControl("Amount").DoControl(-30);
 			
 			return true;
 		}
@@ -76,6 +77,9 @@ namespace CLAM{
 			mOut.Produce();
 			return result;
 		}
+	private:
+		Spectrum mSpectrum;
+		SpectrumSubstracter2 mSpectrumSubstracter;
 	};		
 };//namespace CLAM
 
