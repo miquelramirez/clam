@@ -65,7 +65,7 @@ namespace CLAM{
 		}
 		int IgnoreResidual(TControlData value)
 		{
-			mPitchShift.mIgnoreResidual.DoControl(value);
+			return mPitchShift.mIgnoreResidual.DoControl(value);
 		}
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
