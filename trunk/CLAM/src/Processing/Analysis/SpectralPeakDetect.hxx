@@ -26,13 +26,13 @@
 #include "InPort.hxx"
 #include "OutPort.hxx"
 #include "SpectralPeakDetectConfig.hxx"
+#include "Spectrum.hxx"
 
 namespace CLAM
 {
 
 	class SpectralPeakArray;
 	class Storage;
-	class Spectrum;
 	class ProcessingConfig;
 
 	/**
