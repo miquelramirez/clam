@@ -1,0 +1,157 @@
+#!/usr/bin/python
+import os
+import glob
+import sys
+
+options = Options('options.cache', ARGUMENTS)
+options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
+options.Add(PathOption('install_prefix', 'Display the full command line instead a short command description', '/usr/local') )
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(os.path.join(path,pattern))
+	return files
+
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+env = Environment(ENV=os.environ, tools=['default'], options=options)
+options.Save('options.cache', env)
+Help(options.GenerateHelpText(env))
+
+env.SConsignFile() # Single signature file
+
+env.Tool('qt4', toolpath='.')
+
+
+env['CXXFILESUFFIX'] = '.cxx'
+env['QT4_UICDECLSUFFIX'] = '.hxx'
+env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
+env['QT4_UICDECLPREFIX'] = os.path.join('generated','uic_')
+env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
+if not env['verbose']:
+	env['CXXCOMSTR'] = '== Compiling $SOURCE'
+	env['LINKCOMSTR'] = '== Linking $TARGET'
+	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
+	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
+	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
+	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
+	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
+
+env.EnableQt4Modules([
+	'QtCore',
+	'QtGui',
+	'QtOpenGL',
+#	'QtSql',
+#	'QtNetwork',
+#	'QtTest',
+#	'QtXml',
+#	'QtSvg',
+#	'Qt3Support',
+	])
+
+mainSources = {
+	'ProofOfConcept' : os.path.join('src','main.cxx'),
+}
+
+sourcePaths = [
+	'src',
+	os.path.join('src','generated'),
+]
+extraPaths = []
+
+includePaths = sourcePaths + extraPaths
+
+sources = scanFiles('*.cxx', sourcePaths)
+sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
+sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
+sources = dict.fromkeys(sources).keys()
+for mainSource in mainSources.values() :
+	sources.remove(mainSource)
+
+qrcfiles = scanFiles("*.qrc", sourcePaths)
+if qrcfiles : sources += env.Qrc(source=qrcfiles)
+
+uifiles = scanFiles("*.ui", sourcePaths)
+if uifiles: uiheaders = env.Uic4(source=uifiles)
+
+env.Append(CPPPATH=includePaths)
+
+if sys.platform=='linux2' :
+		env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+#	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
+testsources = scanFiles('*.cxx', ['test'])
+
+programs = []
+for main in mainSources.items() :
+	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
+env.Append(LIBS=['cppunit'])
+programs += [ env.Program(target='UnitTests', source = sources+testsources) ]
+
+# Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
+tsfiles = scanFiles("*.ts", ["src/i18n/"])
+#env.NoClean(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
+translatableSources = scanFiles('*.cxx', sourcePaths);
+translatableSources+= scanFiles('*.hxx', sourcePaths);
+translatableSources+= scanFiles('*.ui', sourcePaths);
+translatableSources = filter( (lambda a : a.rfind( "generated/")==-1 ),  translatableSources )
+translations = []
+if len(tsfiles) : 
+#	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
+	translations = env.Qm(source = tsfiles)
+
+
+examples = []
+
+
+menuEntries = glob.glob('resources/*.desktop')
+
+installation = {
+	'/bin' : programs,
+	'/share/applications': menuEntries,
+	'/share/annotator/i18n': translations,
+	'/share/annotator/example-data': examples,
+}
+
+installTargets = [
+	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
+
+if sys.platform=='win32' : 
+	installTargets += [
+		env.Install(
+			env['install_prefix']+"/bin", 
+			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
+			) for dll in 'Core', 'Gui', 'OpenGL']
+	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
+	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
+	externalsDllDir = os.environ['EXTERNALDLLDIR']
+	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
+	# Get the visual studio runtimes path
+	for vcRuntimeDir in os.environ['PATH'].split(";") :
+		vcRuntimeDir = os.path.normpath(vcRuntimeDir)
+		if os.access(os.path.join(vcRuntimeDir,"msvcr71.dll"),os.R_OK) :
+			break
+	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
+	win_packages = [env.Nsis( source='scons\\clam_annotator.nsi')]
+	env.Alias('package', win_packages)
+
+if sys.platform=='macosx' : # not really tested!!!
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
+	#Binaries: annotator + sample extractor
+	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
+
+	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
+	installTargets = [
+		env.Install( 'Annotator.app/Contents/MacOS', programs ),
+		env.Install( 'Annotator.app/Contents', 'resources/Info.plist'),
+		env.Install( 'Annotator.app/Contents/Resources', 'resources/CLAM.icns'),
+		]
+	mac_packages = env.Dmg('notused', installTargets )
+	env.Alias('package', mac_packages)
+
+env.Alias('install', installTargets )
+
+env.Default(programs, translations)
+
