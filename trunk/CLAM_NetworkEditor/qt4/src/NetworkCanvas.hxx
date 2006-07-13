@@ -207,11 +207,8 @@ public:
 		if (tangentIn>target.x()-minTangentSize) tangentIn = target.x()-minTangentSize;
 		path.moveTo(source);
 		path.cubicTo(tangentOut, source.y(), tangentIn, target.y(), target.x(), target.y()); // 3 = portHeight/2
-		painter.setBrush(Qt::transparent);
-		painter.setPen(QPen(QBrush(QColor(0x50,0x50,0x22)), 5));
-		painter.drawPath(path);
-		painter.setPen(QPen(QBrush(QColor(0xbb,0x99,0x44)), 3));
-		painter.drawPath(path);
+		painter.strokePath(path, QPen(QBrush(QColor(0x50,0x50,0x22)), 5));
+		painter.strokePath(path, QPen(QBrush(QColor(0xbb,0x99,0x44)), 3));
 	}
 	void paintControlConnection(QPainter & painter, unsigned module1, unsigned outcontrol, unsigned module2, unsigned incontrol)
 	{
@@ -228,11 +225,8 @@ public:
 		if (tangentIn>target.y()-minTangentSize) tangentIn = target.y()-minTangentSize;
 		path.moveTo(source);
 		path.cubicTo(source.x(), tangentOut, target.x(), tangentIn, target.x(), target.y()); // 3 = portHeight/2
-		painter.setBrush(Qt::transparent);
-		painter.setPen(QPen(QBrush(QColor(0x20,0x50,0x52)), 5));
-		painter.drawPath(path);
-		painter.setPen(QPen(QBrush(QColor(0x4b,0x99,0xb4)), 3));
-		painter.drawPath(path);
+		painter.strokePath(path, QPen(QBrush(QColor(0x20,0x50,0x52)), 5));
+		painter.strokePath(path, QPen(QBrush(QColor(0x4b,0x99,0xb4)), 3));
 	}
 
 	void mouseMoveEvent(QMouseEvent * event)
