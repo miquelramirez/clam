@@ -17,11 +17,11 @@ class ProcessingBox : public QWidget
 	Q_OBJECT
 public:
 	enum {
-		portWidth = 10,
-		portHeight = 6,
+		portWidth = 12,
+		portHeight = 12,
 		portSpacing = 4,
 		controlWidth = 10,
-		controlHeight = 6,
+		controlHeight = 12,
 		controlSpacing = 4
 	};
 	ProcessingBox(QWidget * parent, const QString & name, unsigned nInports, unsigned nOutports)
@@ -32,15 +32,16 @@ public:
 		, _nIncontrols(2)
 		, _nOutcontrols(3)
 		, moving(false)
-		
+		, resizing(false)
 	{
+		setMouseTracking(true);
 		QFontMetrics metrics(font());
 		textHeight = metrics.height();
-		int minimumHeight = 1*textHeight+4*margin;
+		int minimumHeight = textHeight+2*margin;
 		if (minimumHeight<_nInports*(portHeight+portSpacing)) minimumHeight = _nInports*(portHeight+portSpacing);
 		if (minimumHeight<_nOutports*(portHeight+portSpacing)) minimumHeight = _nOutports*(portHeight+portSpacing);
-		minimumHeight+=2*controlHeight;
-		setMinimumSize(metrics.width(_name)+2*margin, minimumHeight );
+		minimumHeight+=2*controlHeight + 2*margin;
+		setMinimumSize(metrics.width(_name)+2*(margin+portWidth), minimumHeight );
 	}
 	virtual ~ProcessingBox() {}
 
@@ -62,22 +63,22 @@ public:
 		painter.setPen(QColor(0x53,0x30,0x42));
 		for (unsigned i = 0; i<_nInports; i++)
 		{
-			painter.drawRect(0, controlHeight+i*(portSpacing+portHeight), portWidth, portHeight);
+			painter.drawEllipse(0, margin+controlHeight+i*(portSpacing+portHeight), portWidth, portHeight);
 		}
 		for (unsigned i = 0; i<_nOutports; i++)
 		{
-			painter.drawRect(width(), controlHeight+i*(portSpacing+portHeight), -portWidth, portHeight);
+			painter.drawEllipse(width(), margin+controlHeight+i*(portSpacing+portHeight), -portWidth, portHeight);
 		}
 		// Controls
 		painter.setBrush(QColor(0xf6,0x60,0x84));
 		painter.setPen(QColor(0x53,0x30,0x42));
 		for (unsigned i = 0; i<_nIncontrols; i++)
 		{
-			painter.drawRect(portWidth+i*(controlSpacing+controlWidth), 0, controlWidth, controlHeight);
+			painter.drawRect(margin+portWidth+i*(controlSpacing+controlWidth), 0, controlWidth, controlHeight);
 		}
 		for (unsigned i = 0; i<_nOutports; i++)
 		{
-			painter.drawRect(portWidth+i*(controlSpacing+controlWidth), height(), controlWidth, -controlHeight);
+			painter.drawRect(margin+portWidth+i*(controlSpacing+controlWidth), height(), controlWidth, -controlHeight);
 		}
 		// Text
 		painter.setPen(Qt::white);
@@ -107,10 +108,20 @@ public:
 			std::cout << "Handling controls" << std::endl;
 			return;
 		}
-		if (y<textHeight+margin)
+		// Resize corner
+		if (x>width()-portWidth-margin && y>height()-controlHeight-margin)
+		{
+			resizing=true;
+			dragOrigin=event->pos();
+			originalSize=size();
+			setCursor(Qt::SizeFDiagCursor);
+			return;
+		}
+		// Head
+		if (y<textHeight+margin+controlHeight)
 		{
 			moving=true;
-			moveOrigin=event->pos();
+			dragOrigin=event->pos();
 			setCursor(Qt::SizeAllCursor);
 			return;
 		}
@@ -119,8 +130,47 @@ public:
 	{
 		if (moving)
 		{
-			move(pos() - moveOrigin + event->pos());
+			move(pos() - dragOrigin + event->pos());
 			((QWidget*)parent())->update();
+			return;
+		}
+		int x = event->pos().x();
+		int y = event->pos().y();
+		if (resizing)
+		{
+			resize(
+				originalSize.width() - dragOrigin.x() + x,
+				originalSize.height() - dragOrigin.y() + y
+				);
+			((QWidget*)parent())->update();
+			return;
+		}
+		setCursor(Qt::ArrowCursor);
+		if (x<portWidth)
+		{
+			std::cout << "Handling inports" << std::endl;
+			return;
+		}
+		if (x>width()-portWidth)
+		{
+			std::cout << "Handling outports" << std::endl;
+			return;
+		}
+		if (y<controlHeight)
+		{
+			std::cout << "Handling incontrols" << std::endl;
+			return;
+		}
+		if (y>height()-controlHeight)
+		{
+			std::cout << "Handling controls" << std::endl;
+			return;
+		}
+		// Resize corner
+		if (x>width()-portWidth-margin && y>height()-controlHeight-margin)
+		{
+			setCursor(Qt::SizeFDiagCursor);
+			return;
 		}
 	}
 	void mouseReleaseEvent(QMouseEvent * event)
@@ -130,23 +180,28 @@ public:
 			setCursor(Qt::ArrowCursor);
 			moving=false;
 		}
+		if (resizing)
+		{
+			setCursor(Qt::ArrowCursor);
+			resizing=false;
+		}
 	}
 	// returns the inport connect point in parent coords
 	QPoint getInportPos(unsigned i) const
 	{
-		return QPoint( x(), y()+controlHeight+i*(portSpacing+portHeight) + portHeight/2  );
+		return QPoint( x(), y()+margin+controlHeight+i*(portSpacing+portHeight) + portHeight/2  );
 	}
 	QPoint getOutportPos(unsigned i) const
 	{
-		return QPoint( x()+width(), y()+controlHeight+i*(portSpacing+portHeight) + portHeight/2  );
+		return QPoint( x()+width(), y()+margin+controlHeight+i*(portSpacing+portHeight) + portHeight/2  );
 	}
 	QPoint getIncontrolPos(unsigned i) const
 	{
-		return QPoint( x()+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2,  y()  );
+		return QPoint( x()+margin+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2,  y()  );
 	}
 	QPoint getOutcontrolPos(unsigned i) const
 	{
-		return QPoint( x()+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2, y()+height()  );
+		return QPoint( x()+margin+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2, y()+height()  );
 	}
 private:
 	QString _name;
@@ -154,8 +209,10 @@ private:
 	unsigned _nOutports;
 	unsigned _nIncontrols;
 	unsigned _nOutcontrols;
-	QPoint moveOrigin;
 	bool moving;
+	QPoint dragOrigin;
+	QSize originalSize;
+	bool resizing;
 	int textHeight;
 };
 
