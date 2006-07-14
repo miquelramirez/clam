@@ -110,6 +110,7 @@ public:
 			std::cout << "Handling controls" << std::endl;
 			return;
 		}
+		raise();
 		// Resize corner
 		if (x>width()-portWidth-margin && y>height()-controlHeight-margin)
 		{
