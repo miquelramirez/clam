@@ -58,6 +58,8 @@ public:
 		painter.drawRect(portWidth, controlHeight, width()-2*portWidth, height()-2*controlHeight);
 		painter.setBrush(QColor(0x99,0xbb,0x99));
 		painter.drawRect(portWidth+margin, controlHeight+margin+textHeight, width()-2*(margin+portWidth), height()-textHeight-2*(margin+controlHeight));
+		painter.setBrush(QColor(0xb9,0xbb,0xb9));
+		painter.drawRect(width()-portWidth-margin, height()-controlHeight-margin, margin, margin);
 		// Ports
 		painter.setBrush(QColor(0xa6,0x60,0x84));
 		painter.setPen(QColor(0x53,0x30,0x42));
