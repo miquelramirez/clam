@@ -5,6 +5,7 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPainterPath>
 #include <QtGui/QMouseEvent>
+#include <QtGui/QInputDialog>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -49,13 +50,7 @@ public:
 		, resizing(false)
 	{
 		setMouseTracking(true);
-		QFontMetrics metrics(font());
-		textHeight = metrics.height();
-		int minimumHeight = textHeight+2*margin;
-		if (minimumHeight<_nInports*(portHeight+portSpacing)) minimumHeight = _nInports*(portHeight+portSpacing);
-		if (minimumHeight<_nOutports*(portHeight+portSpacing)) minimumHeight = _nOutports*(portHeight+portSpacing);
-		minimumHeight+=2*controlHeight + 2*margin;
-		setMinimumSize(metrics.width(_name)+2*(margin+portWidth), minimumHeight );
+		rename(name);
 	}
 	virtual ~ProcessingBox() {}
 
@@ -135,6 +130,25 @@ public:
 	{
 		return (x-margin-portWidth)/(controlWidth+controlSpacing);
 	}
+	// returns the inport connect point in parent coords
+	QPoint getInportPos(unsigned i) const
+	{
+		return QPoint( x(), y()+margin+controlHeight+i*(portSpacing+portHeight) + portHeight/2  );
+	}
+	QPoint getOutportPos(unsigned i) const
+	{
+		return QPoint( x()+width(), y()+margin+controlHeight+i*(portSpacing+portHeight) + portHeight/2  );
+	}
+	QPoint getIncontrolPos(unsigned i) const
+	{
+		return QPoint( x()+margin+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2,  y()  );
+	}
+	QPoint getOutcontrolPos(unsigned i) const
+	{
+		return QPoint( x()+margin+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2, y()+height()  );
+	}
+
+
 	void mousePressEvent(QMouseEvent * event)
 	{
 		int x = event->pos().x();
@@ -237,22 +251,29 @@ public:
 			resizing=false;
 		}
 	}
-	// returns the inport connect point in parent coords
-	QPoint getInportPos(unsigned i) const
+	void mouseDoubleClickEvent(QMouseEvent * event)
 	{
-		return QPoint( x(), y()+margin+controlHeight+i*(portSpacing+portHeight) + portHeight/2  );
+		int x = event->pos().x();
+		int y = event->pos().y();
+		Region region = getRegion(x,y);
+		if (region==nameRegion) 
+		{
+			bool ok;
+			QString newName = QInputDialog::getText(this, tr("Rename the processing"), tr("New name"), QLineEdit::Normal, _name);
+			if (ok && !newName.isEmpty()) rename(newName);
+		}
 	}
-	QPoint getOutportPos(unsigned i) const
+	void rename(const QString & newName)
 	{
-		return QPoint( x()+width(), y()+margin+controlHeight+i*(portSpacing+portHeight) + portHeight/2  );
-	}
-	QPoint getIncontrolPos(unsigned i) const
-	{
-		return QPoint( x()+margin+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2,  y()  );
-	}
-	QPoint getOutcontrolPos(unsigned i) const
-	{
-		return QPoint( x()+margin+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2, y()+height()  );
+		_name=newName;
+		QFontMetrics metrics(font());
+		textHeight = metrics.height();
+		int minimumHeight = textHeight+2*margin;
+		if (minimumHeight<_nInports*(portHeight+portSpacing)) minimumHeight = _nInports*(portHeight+portSpacing);
+		if (minimumHeight<_nOutports*(portHeight+portSpacing)) minimumHeight = _nOutports*(portHeight+portSpacing);
+		minimumHeight+=2*controlHeight + 2*margin;
+		setMinimumSize(metrics.width(_name)+2*(margin+portWidth), minimumHeight );
+		((QWidget*)parent())->update();
 	}
 private:
 	QString _name;
