@@ -51,12 +51,10 @@ public:
 	{
 		QPainter painter(this);
 		painter.setRenderHint(QPainter::Antialiasing);
-		QColor runningProcesingFrame(0x30,0x8f,0x30);
-		QColor runningProcesingFrameBorder(0x20,0x6f,0x20);
 
 		// Box
-		painter.setPen(runningProcesingFrameBorder);
-		painter.setBrush(runningProcesingFrame);
+		painter.setPen(QColor(0x20,0x6f,0x20));
+		painter.setBrush(QColor(0x30,0x8f,0x30));
 		painter.drawRect(portWidth, controlHeight, width()-2*portWidth, height()-2*controlHeight);
 		painter.setBrush(QColor(0x99,0xbb,0x99));
 		painter.drawRect(portWidth+margin, controlHeight+margin+textHeight, width()-2*(margin+portWidth), height()-textHeight-2*(margin+controlHeight));
@@ -159,36 +157,40 @@ public:
 			return;
 		}
 		setCursor(Qt::ArrowCursor);
-		if (x<portWidth)
+		if (x>=0 && x<portWidth)
 		{
 			int index = portIndexByYPos(y);
 			if (index<0) return;
 			if (index>=_nInports) return;
-			std::cout << "Hovering inport " << index << std::endl;
+			setToolTip(tr("Inport %1").arg(index));
+			setStatusTip(tr("Drag: connects, Double click: removes connections"));
 			return;
 		}
-		if (x>width()-portWidth)
+		if (x<=width() && x>width()-portWidth)
 		{
 			int index = portIndexByYPos(y);
 			if (index<0) return;
 			if (index>=_nOutports) return;
-			std::cout << "Hovering outport " << index << std::endl;
+			setToolTip(tr("Outport %1").arg(index));
+			setStatusTip(tr("Drag: connects, Double click: removes connections"));
 			return;
 		}
-		if (y<controlHeight)
+		if (y>=0 && y<controlHeight)
 		{
 			int index = controlIndexByXPos(x);
 			if (index<0) return;
 			if (index>=_nIncontrols) return;
-			std::cout << "Hovering incontrol" << index << std::endl;
+			setToolTip(tr("Incontrol %1").arg(index));
+			setStatusTip(tr("Drag: connects, Double click: removes connections"));
 			return;
 		}
-		if (y>height()-controlHeight)
+		if (y<=height() && y>height()-controlHeight)
 		{
 			int index = controlIndexByXPos(x);
 			if (index<0) return;
 			if (index>=_nOutcontrols) return;
-			std::cout << "Hovering outcontrol" << index << std::endl;
+			setToolTip(tr("Outcontrol %1").arg(index));
+			setStatusTip(tr("Drag: connects, Double click: removes connections"));
 			return;
 		}
 		// Resize corner
