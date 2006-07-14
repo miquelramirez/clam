@@ -16,13 +16,25 @@ class ProcessingBox : public QWidget
 {
 	Q_OBJECT
 public:
-	enum {
+	enum
+	{
 		portWidth = 12,
 		portHeight = 12,
 		portSpacing = 4,
 		controlWidth = 10,
-		controlHeight = 12,
-		controlSpacing = 4
+		controlHeight = 10,
+		controlSpacing = 6
+	};
+	enum Region 
+	{
+		inportsRegion,
+		outportsRegion,
+		incontrolsRegion,
+		outcontrolsRegion,
+		nameRegion,
+		resizeHandleRegion,
+		bodyRegion,
+		noRegion
 	};
 	ProcessingBox(QWidget * parent, const QString & name,
 		   	unsigned nInports, unsigned nOutports,
@@ -54,9 +66,9 @@ public:
 
 		// Box
 		painter.setPen(QColor(0x20,0x6f,0x20));
-		painter.setBrush(QColor(0x30,0x8f,0x30));
+		painter.setBrush(QColor(0x30,0x8f,0x30,0xaf));
 		painter.drawRect(portWidth, controlHeight, width()-2*portWidth, height()-2*controlHeight);
-		painter.setBrush(QColor(0x99,0xbb,0x99));
+		painter.setBrush(QColor(0xF9,0xFb,0xF9,0xaf));
 		painter.drawRect(portWidth+margin, controlHeight+margin+textHeight, width()-2*(margin+portWidth), height()-textHeight-2*(margin+controlHeight));
 		painter.setBrush(QColor(0xb9,0xbb,0xb9));
 		painter.drawRect(width()-portWidth-margin, height()-controlHeight-margin, margin, margin);
@@ -69,7 +81,7 @@ public:
 		}
 		for (unsigned i = 0; i<_nOutports; i++)
 		{
-			painter.drawEllipse(width(), margin+controlHeight+i*(portSpacing+portHeight), -portWidth, portHeight);
+			painter.drawEllipse(width()-portWidth, margin+controlHeight+i*(portSpacing+portHeight), portWidth, portHeight);
 		}
 		// Controls
 		painter.setBrush(QColor(0xf6,0x60,0x84));
@@ -80,54 +92,40 @@ public:
 		}
 		for (unsigned i = 0; i<_nOutcontrols; i++)
 		{
-			painter.drawRect(margin+portWidth+i*(controlSpacing+controlWidth), height(), controlWidth, -controlHeight);
+			painter.drawRect(margin+portWidth+i*(controlSpacing+controlWidth), height()-controlHeight, controlWidth, controlHeight);
 		}
 		// Text
 		painter.setPen(Qt::white);
 		painter.drawText(QRect(portWidth+margin, controlHeight+margin, width()-2*margin+portWidth, textHeight), _name);
 	}
-	void mousePressEvent(QMouseEvent * event)
+	Region getRegion(const QPoint & point) const
 	{
-		int x = event->pos().x();
-		int y = event->pos().y();
+		return getRegion(point.x(), point.y());
+	}
+	Region getRegion(int x, int y) const
+	{
+		if (x<0)
+			return noRegion;
+		if (x>width())
+			return noRegion;
+		if (y<0)
+			return noRegion;
+		if (y>height())
+			return noRegion;
+
 		if (x<portWidth)
-		{
-			std::cout << "Clicking inports" << std::endl;
-			return;
-		}
+			return inportsRegion;
 		if (x>width()-portWidth)
-		{
-			std::cout << "Clicking outports" << std::endl;
-			return;
-		}
-		if (y<controlHeight)
-		{
-			std::cout << "Clicking incontrols" << std::endl;
-			return;
-		}
-		if (y>height()-controlHeight)
-		{
-			std::cout << "Clicking outcontrols" << std::endl;
-			return;
-		}
-		raise();
-		// Resize corner
-		if (x>width()-portWidth-margin && y>height()-controlHeight-margin)
-		{
-			resizing=true;
-			dragOrigin=event->pos();
-			originalSize=size();
-			setCursor(Qt::SizeFDiagCursor);
-			return;
-		}
-		// Head
+			return outportsRegion;
+		if (y>=0 && y<controlHeight)
+			return incontrolsRegion;
+		if (y<=height() && y>height()-controlHeight)
+			return outcontrolsRegion;
 		if (y<textHeight+margin+controlHeight)
-		{
-			moving=true;
-			dragOrigin=event->pos();
-			setCursor(Qt::SizeAllCursor);
-			return;
-		}
+			return nameRegion;
+		if (x>width()-portWidth-margin && y>height()-controlHeight-margin)
+			return resizeHandleRegion;
+		return bodyRegion;
 	}
 	int portIndexByYPos(int y)
 	{
@@ -137,8 +135,34 @@ public:
 	{
 		return (x-margin-portWidth)/(controlWidth+controlSpacing);
 	}
+	void mousePressEvent(QMouseEvent * event)
+	{
+		int x = event->pos().x();
+		int y = event->pos().y();
+		Region region = getRegion(x,y);
+		if (region==noRegion) return;
+		raise();
+		// Resize corner
+		if (region==resizeHandleRegion)
+		{
+			resizing=true;
+			dragOrigin=event->pos();
+			originalSize=size();
+			setCursor(Qt::SizeFDiagCursor);
+			return;
+		}
+		// Head
+		if (region==nameRegion)
+		{
+			moving=true;
+			dragOrigin=event->pos();
+			setCursor(Qt::SizeAllCursor);
+			return;
+		}
+	}
 	void mouseMoveEvent(QMouseEvent * event)
 	{
+		setToolTip(QString::null);
 		if (moving)
 		{
 			move(pos() - dragOrigin + event->pos());
@@ -157,7 +181,8 @@ public:
 			return;
 		}
 		setCursor(Qt::ArrowCursor);
-		if (x>=0 && x<portWidth)
+		Region region = getRegion(x,y);
+		if (region==inportsRegion)
 		{
 			int index = portIndexByYPos(y);
 			if (index<0) return;
@@ -166,7 +191,7 @@ public:
 			setStatusTip(tr("Drag: connects, Double click: removes connections"));
 			return;
 		}
-		if (x<=width() && x>width()-portWidth)
+		if (region==outportsRegion)
 		{
 			int index = portIndexByYPos(y);
 			if (index<0) return;
@@ -175,7 +200,7 @@ public:
 			setStatusTip(tr("Drag: connects, Double click: removes connections"));
 			return;
 		}
-		if (y>=0 && y<controlHeight)
+		if (region==incontrolsRegion)
 		{
 			int index = controlIndexByXPos(x);
 			if (index<0) return;
@@ -184,7 +209,7 @@ public:
 			setStatusTip(tr("Drag: connects, Double click: removes connections"));
 			return;
 		}
-		if (y<=height() && y>height()-controlHeight)
+		if (region==outcontrolsRegion)
 		{
 			int index = controlIndexByXPos(x);
 			if (index<0) return;
@@ -193,8 +218,7 @@ public:
 			setStatusTip(tr("Drag: connects, Double click: removes connections"));
 			return;
 		}
-		// Resize corner
-		if (x>width()-portWidth-margin && y>height()-controlHeight-margin)
+		if (region==resizeHandleRegion)
 		{
 			setCursor(Qt::SizeFDiagCursor);
 			return;
