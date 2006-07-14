@@ -24,13 +24,15 @@ public:
 		controlHeight = 12,
 		controlSpacing = 4
 	};
-	ProcessingBox(QWidget * parent, const QString & name, unsigned nInports, unsigned nOutports)
+	ProcessingBox(QWidget * parent, const QString & name,
+		   	unsigned nInports, unsigned nOutports,
+			unsigned nIncontrols, unsigned nOutcontrols)
 		: QWidget(parent)
 		, _name(name)
 		, _nInports(nInports)
 		, _nOutports(nOutports)
-		, _nIncontrols(2)
-		, _nOutcontrols(3)
+		, _nIncontrols(nIncontrols)
+		, _nOutcontrols(nOutcontrols)
 		, moving(false)
 		, resizing(false)
 	{
@@ -78,7 +80,7 @@ public:
 		{
 			painter.drawRect(margin+portWidth+i*(controlSpacing+controlWidth), 0, controlWidth, controlHeight);
 		}
-		for (unsigned i = 0; i<_nOutports; i++)
+		for (unsigned i = 0; i<_nOutcontrols; i++)
 		{
 			painter.drawRect(margin+portWidth+i*(controlSpacing+controlWidth), height(), controlWidth, -controlHeight);
 		}
@@ -92,22 +94,22 @@ public:
 		int y = event->pos().y();
 		if (x<portWidth)
 		{
-			std::cout << "Handling inports" << std::endl;
+			std::cout << "Clicking inports" << std::endl;
 			return;
 		}
 		if (x>width()-portWidth)
 		{
-			std::cout << "Handling outports" << std::endl;
+			std::cout << "Clicking outports" << std::endl;
 			return;
 		}
 		if (y<controlHeight)
 		{
-			std::cout << "Handling incontrols" << std::endl;
+			std::cout << "Clicking incontrols" << std::endl;
 			return;
 		}
 		if (y>height()-controlHeight)
 		{
-			std::cout << "Handling controls" << std::endl;
+			std::cout << "Clicking outcontrols" << std::endl;
 			return;
 		}
 		raise();
@@ -128,6 +130,14 @@ public:
 			setCursor(Qt::SizeAllCursor);
 			return;
 		}
+	}
+	int portIndexByYPos(int y)
+	{
+		return (y-margin-controlHeight)/(portHeight+portSpacing);
+	}
+	int controlIndexByXPos(int x)
+	{
+		return (x-margin-portWidth)/(controlWidth+controlSpacing);
 	}
 	void mouseMoveEvent(QMouseEvent * event)
 	{
@@ -151,22 +161,34 @@ public:
 		setCursor(Qt::ArrowCursor);
 		if (x<portWidth)
 		{
-			std::cout << "Handling inports" << std::endl;
+			int index = portIndexByYPos(y);
+			if (index<0) return;
+			if (index>=_nInports) return;
+			std::cout << "Hovering inport " << index << std::endl;
 			return;
 		}
 		if (x>width()-portWidth)
 		{
-			std::cout << "Handling outports" << std::endl;
+			int index = portIndexByYPos(y);
+			if (index<0) return;
+			if (index>=_nOutports) return;
+			std::cout << "Hovering outport " << index << std::endl;
 			return;
 		}
 		if (y<controlHeight)
 		{
-			std::cout << "Handling incontrols" << std::endl;
+			int index = controlIndexByXPos(x);
+			if (index<0) return;
+			if (index>=_nIncontrols) return;
+			std::cout << "Hovering incontrol" << index << std::endl;
 			return;
 		}
 		if (y>height()-controlHeight)
 		{
-			std::cout << "Handling controls" << std::endl;
+			int index = controlIndexByXPos(x);
+			if (index<0) return;
+			if (index>=_nOutcontrols) return;
+			std::cout << "Hovering outcontrol" << index << std::endl;
 			return;
 		}
 		// Resize corner
@@ -233,9 +255,12 @@ public:
 	{
 		setMouseTracking(true);
 		resize(600,300);
-		_processings.push_back(new ProcessingBox(this, "Processing1", 2, 2));
-		_processings.push_back(new ProcessingBox(this, "Processing2", 4, 5));
-		_processings[1]->move(200,200);
+		_processings.push_back(new ProcessingBox(this, "Processing1", 2, 2, 2, 3));
+		_processings.push_back(new ProcessingBox(this, "Processing2", 4, 5, 1, 2));
+		_processings.push_back(new ProcessingBox(this, "Processing3", 2, 0, 2, 0));
+		_processings[0]->move(300,200);
+		_processings[1]->move(200,10);
+		_processings[2]->move(100,200);
 	}
 
 	virtual ~NetworkCanvas();
@@ -243,14 +268,11 @@ public:
 	void paintEvent(QPaintEvent * event)
 	{
 		setMinimumSize(200,100);
-		int posX = 5;
-		int y = 10;
-		int height = 80;
-		int width = 200;
 		QPainter painter(this);
 		paintPortConnection(painter, 0,1, 1,3);
 		paintPortConnection(painter, 1,1, 0,1);
 		paintControlConnection(painter, 1,1, 0,1);
+		paintControlConnection(painter, 1,1, 2,1);
 	}
 	void paintPortConnection(QPainter & painter, unsigned module1, unsigned outport, unsigned module2, unsigned inport)
 	{
@@ -291,26 +313,10 @@ public:
 
 	void mouseMoveEvent(QMouseEvent * event)
 	{
-		unsigned x = event->x();
-		int y = event->y();
-		_tooltipText=QString::null;
-		if (
-			y<_rulerHeight+2*margin ||
-			y>=height()-3*margin)
-		{
-			update();
-			return;
-		}
-		_tooltipText = "Booo";
-		_tooltipX=x;
-		_tooltipY=y;
-		update();
 	}
 
 	void mouseDoubleClickEvent(QMouseEvent * event)
 	{
-		int x = event->x();
-		int y = event->y();
 	}
 
 
