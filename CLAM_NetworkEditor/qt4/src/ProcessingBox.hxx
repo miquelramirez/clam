@@ -10,6 +10,8 @@
 #include <iostream>
 #include <cmath>
 
+class NetworkCanvas;
+
 class ProcessingBox : public QWidget
 {
 	Q_OBJECT
@@ -35,10 +37,11 @@ public:
 		bodyRegion,
 		noRegion
 	};
-	ProcessingBox(QWidget * parent, const QString & name,
+	ProcessingBox(NetworkCanvas * parent, const QString & name,
 		   	unsigned nInports, unsigned nOutports,
 			unsigned nIncontrols, unsigned nOutcontrols)
-		: QWidget(parent)
+		: QWidget((QWidget*)(parent))
+		, _canvas(parent)
 		, _name(name)
 		, _nInports(nInports)
 		, _nOutports(nOutports)
@@ -54,7 +57,19 @@ public:
 
 	void paintEvent(QPaintEvent * event)
 	{
+		return;
 		QPainter painter(this);
+		paintBox(painter);
+	}
+	void paintFromParent(QPainter & painter)
+	{
+		painter.save();
+		painter.translate(x(),y());
+		paintBox(painter);
+		painter.restore();
+	}
+	void paintBox(QPainter & painter)
+	{
 		painter.setRenderHint(QPainter::Antialiasing);
 
 		// Box
@@ -285,6 +300,7 @@ public:
 		((QWidget*)parent())->update();
 	}
 private:
+	NetworkCanvas * _canvas;
 	QString _name;
 	unsigned _nInports;
 	unsigned _nOutports;

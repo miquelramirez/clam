@@ -5,6 +5,8 @@
 #include <QtGui/QPainter>
 #include <QtGui/QPainterPath>
 #include <QtGui/QMouseEvent>
+#include <QtGui/QPrinter>
+#include <QtGui/QPrintDialog>
 #include "ProcessingBox.hxx"
 #include <vector>
 #include <iostream>
@@ -89,6 +91,7 @@ public:
 		: QWidget(parent)
 	{
 		setMouseTracking(true);
+		setAcceptDrops(true);
 		resize(600,300);
 		_processings.push_back(new ProcessingBox(this, "Processing1", 2, 2, 2, 3));
 		_processings.push_back(new ProcessingBox(this, "Processing2", 4, 5, 1, 2));
@@ -108,13 +111,16 @@ public:
 	{
 		setMinimumSize(200,100);
 		QPainter painter(this);
+		paint(painter);
+	}
+	void paint(QPainter & painter)
+	{
 		for (unsigned i = 0; i<_portWires.size(); i++)
 			_portWires[i]->draw(painter);
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->draw(painter);
-	}
-	void paintControlConnection(QPainter & painter, ProcessingBox * module1, unsigned outcontrol, ProcessingBox * module2, unsigned incontrol)
-	{
+		for (unsigned i = 0; i<_processings.size(); i++)
+			_processings[i]->paintFromParent(painter);
 	}
 
 	void mouseMoveEvent(QMouseEvent * event)
@@ -123,6 +129,35 @@ public:
 
 	void mouseDoubleClickEvent(QMouseEvent * event)
 	{
+		print();
+	}
+
+	void print()
+	{
+		QPrinter printer(QPrinter::HighResolution);
+		printer.setOutputFormat(QPrinter::PdfFormat);
+		printer.setOutputFileName("Network.pdf");
+		QPrintDialog * dialog = new QPrintDialog(&printer, this);
+		dialog->exec();
+		QPainter painter;
+		painter.begin(&printer);
+		paint(painter);
+		painter.end();
+	}
+
+	void dragEnterEvent(QDragEnterEvent *event)
+	{
+		std::cout << "Drag enter" << std::endl;
+		event->acceptProposedAction();
+	}
+	void dragMoveEvent(QDragMoveEvent *event)
+	{
+		std::cout << "Draggin" << std::endl;
+		event->acceptProposedAction();
+	}
+	void dropEvent(QDropEvent *event)
+	{
+
 	}
 private:
 	std::vector<ProcessingBox *> _processings;
