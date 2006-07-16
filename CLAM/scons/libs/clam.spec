@@ -8,7 +8,7 @@ URL: http://clam.iua.upf.edu
 Group: System Environment/Libraries
 Source0: http://clam.iua.upf.edu/download/src/CLAM-0.91.0.tar.gz
 Source1: http://clam.iua.upf.edu/download/src/CLAM-Annotator-0.3.2.tar.gz
-Source2: http://clam.iua.upf.edu/download/src/CLAM-NetworkEditor-0.4.1.tar.gz
+Source2: http://clam.iua.upf.edu/download/src/CLAM-NetworkEditor-0.3.1.tar.gz
 Source3: http://clam.iua.upf.edu/download/src/CLAM-SMSTools-0.4.1.tar.gz
 #Patch: eject-2.0.2-buildroot.patch
 BuildRoot: /var/tmp/%{name}-buildroot
@@ -54,25 +54,39 @@ This package includes the flag ship applications:
 export CLAM=CLAM-0.91.0
 export ANNOTATOR=CLAM-Annotator-0.3.2
 export SMSTOOLS=CLAM-SMSTools-0.4.1
-export NETWORKEDITOR=CLAM-NetworkEditor-0.4.1
+export NETWORKEDITOR=CLAM-NetworkEditor-0.3.1
 
 cd $RPM_BUILD_DIR
 rm -rf CLAM*
-#tar xvfz $RPM_SOURCE_DIR/$CLAM.tar.gz
-#tar xvfz $RPM_SOURCE_DIR/$ANNOTATOR.tar.gz
-#tar xvfz $RPM_SOURCE_DIR/$SMSTOOLS.tar.gz
-#tar xvfz $RPM_SOURCE_DIR/$NETWORKEDITOR.tar.gz
-cvs co -d$CLAM CLAM
-cvs co -d$ANNOTATOR CLAM_Annotator
-cvs co -d$SMSTOOLS CLAM_SMSTools
-cvs co -d$NETWORKEDITOR CLAM_NetworkEditor
+
+#export USECVS=true
+
+# If you have not CVS acces uncomment the following lines
+if [ "$USECVS"=="true" ]
+then 
+	cvs co -d$CLAM CLAM
+	cvs co -d$ANNOTATOR CLAM_Annotator
+	cvs co -d$SMSTOOLS CLAM_SMSTools
+	cvs co -d$NETWORKEDITOR CLAM_NetworkEditor
+else
+	cd $RPM_SOURCE_DIR/
+	wget http://clam.iua.upf.edu/download/src/$CLAM.tar.gz
+	wget http://clam.iua.upf.edu/download/src/$ANNOTATOR.tar.gz
+	wget http://clam.iua.upf.edu/download/src/$SMSTOOLS.tar.gz
+	wget http://clam.iua.upf.edu/download/src/$NETWORKEDITOR.tar.gz
+	cd ..
+	tar xvfz $RPM_SOURCE_DIR/$CLAM.tar.gz
+	tar xvfz $RPM_SOURCE_DIR/$ANNOTATOR.tar.gz
+	tar xvfz $RPM_SOURCE_DIR/$SMSTOOLS.tar.gz
+	tar xvfz $RPM_SOURCE_DIR/$NETWORKEDITOR.tar.gz
+fi
 
 %build
 echo Testing whether NETWORKEDITOR is $NETWORKEDITOR
 export CLAM=CLAM-0.91.0
 export ANNOTATOR=CLAM-Annotator-0.3.2
 export SMSTOOLS=CLAM-SMSTools-0.4.1
-export NETWORKEDITOR=CLAM-NetworkEditor-0.4.1
+export NETWORKEDITOR=CLAM-NetworkEditor-0.3.1
 export INSTALLDIR=$RPM_BUILD_ROOT/usr
 export SCONSTOOLSDIR=$RPM_BUILD_DIR/$CLAM/scons/sconstools/
 mkdir -p $INSTALLDIR
@@ -100,7 +114,7 @@ scons install_prefix=$INSTALLDIR clam_prefix=$INSTALLDIR clam_sconstools=$SCONST
 export CLAM=CLAM-0.91.0
 export ANNOTATOR=CLAM-Annotator-0.3.2
 export SMSTOOLS=CLAM-SMSTools-0.4.1
-export NETWORKEDITOR=CLAM-NetworkEditor-0.4.1
+export NETWORKEDITOR=CLAM-NetworkEditor-0.3.1
 export INSTALLDIR=$RPM_BUILD_ROOT/usr
 export SCONSTOOLSDIR=$RPM_BUILD_DIR/$CLAM/scons/sconstools/
 export QTDIR=/usr/lib/qt-3.3
