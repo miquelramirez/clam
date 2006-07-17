@@ -8,7 +8,6 @@ ProcessingBox::~ProcessingBox()
 ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 		unsigned nInports, unsigned nOutports,
 		unsigned nIncontrols, unsigned nOutcontrols)
-//	: QWidget((QWidget*)(parent))
 	: _canvas(parent)
 	, _name(name)
 	, _nInports(nInports)
@@ -18,7 +17,6 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, moving(false)
 	, resizing(false)
 {
-//	setMouseTracking(true); //TODO;
 	rename(name);
 }
 
@@ -100,12 +98,8 @@ void ProcessingBox::paintBox(QPainter & painter)
 }
 ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
 {
-	return getRegion(point.x(), point.y());
-}
-ProcessingBox::Region ProcessingBox::getRegion(int x, int y) const
-{
-	x = x - _pos.x();
-	y = y - _pos.y();
+	int x = point.x()-_pos.x();
+	int y = point.y()-_pos.y();
 	if (x<0)
 		return noRegion;
 	if (x>_size.width())
@@ -129,14 +123,14 @@ ProcessingBox::Region ProcessingBox::getRegion(int x, int y) const
 		return resizeHandleRegion;
 	return bodyRegion;
 }
-int ProcessingBox::portIndexByYPos(int y)
+int ProcessingBox::portIndexByYPos(const QPoint & point)
 {
-	y-=_pos.y();
+	int y = point.y()-_pos.y();
 	return (y-margin-controlHeight)/(portHeight+portSpacing);
 }
-int ProcessingBox::controlIndexByXPos(int x)
+int ProcessingBox::controlIndexByXPos(const QPoint & point)
 {
-	x-=_pos.x();
+	int x = point.x()-_pos.x();
 	return (x-margin-portWidth)/(controlWidth+controlSpacing);
 }
 // returns the inport connect point in parent coords
@@ -181,6 +175,38 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 		_canvas->setCursor(Qt::SizeFDiagCursor);
 		return;
 	}
+	if (region==inportsRegion)
+	{
+		int index = portIndexByYPos(event->pos());
+		if (index<0) return;
+		if (index>=_nInports) return;
+		_canvas->startDrag(NetworkCanvas::InportDrag, this, index);
+		return;
+	}
+	if (region==outportsRegion)
+	{
+		int index = portIndexByYPos(event->pos());
+		if (index<0) return;
+		if (index>=_nOutports) return;
+		_canvas->startDrag(NetworkCanvas::OutportDrag, this, index);
+		return;
+	}
+	if (region==incontrolsRegion)
+	{
+		int index = controlIndexByXPos(event->pos());
+		if (index<0) return;
+		if (index>=_nIncontrols) return;
+		_canvas->startDrag(NetworkCanvas::IncontrolDrag, this, index);
+		return;
+	}
+	if (region==outcontrolsRegion)
+	{
+		int index = controlIndexByXPos(event->pos());
+		if (index<0) return;
+		if (index>=_nOutcontrols) return;
+		_canvas->startDrag(NetworkCanvas::OutcontrolDrag, this, index);
+		return;
+	}
 }
 void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 {
@@ -200,14 +226,12 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 			));
 		return;
 	}
-	int x = event->pos().x();
-	int y = event->pos().y();
 	Region region = getRegion(event->pos());
 	if (region==noRegion) return;
 	_canvas->setCursor(Qt::ArrowCursor);
 	if (region==inportsRegion)
 	{
-		int index = portIndexByYPos(y);
+		int index = portIndexByYPos(event->pos());
 		if (index<0) return;
 		if (index>=_nInports) return;
 		_highLightRegion=region;
@@ -217,7 +241,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	}
 	if (region==outportsRegion)
 	{
-		int index = portIndexByYPos(y);
+		int index = portIndexByYPos(event->pos());
 		if (index<0) return;
 		if (index>=_nOutports) return;
 		_highLightRegion=region;
@@ -227,7 +251,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	}
 	if (region==incontrolsRegion)
 	{
-		int index = controlIndexByXPos(x);
+		int index = controlIndexByXPos(event->pos());
 		if (index<0) return;
 		if (index>=_nIncontrols) return;
 		_highLightRegion=region;
@@ -237,7 +261,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	}
 	if (region==outcontrolsRegion)
 	{
-		int index = controlIndexByXPos(x);
+		int index = controlIndexByXPos(event->pos());
 		if (index<0) return;
 		if (index>=_nOutcontrols) return;
 		_highLightRegion=region;
@@ -274,12 +298,39 @@ void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 		_canvas->setCursor(Qt::ArrowCursor);
 		resizing=false;
 	}
+	Region region = getRegion(event->pos());
+	if (_canvas->dragStatus()==NetworkCanvas::OutportDrag && region==inportsRegion)
+	{
+		int index = portIndexByYPos(event->pos());
+		if (index<0) return;
+		if (index>=_nInports) return;
+		_canvas->endConnectionTo(this, index);
+	}
+	if (_canvas->dragStatus()==NetworkCanvas::InportDrag &&  region==outportsRegion)
+	{
+		int index = portIndexByYPos(event->pos());
+		if (index<0) return;
+		if (index>=_nOutports) return;
+		_canvas->endConnectionTo(this, index);
+	}
+	if (_canvas->dragStatus()==NetworkCanvas::OutcontrolDrag && region==incontrolsRegion)
+	{
+		int index = controlIndexByXPos(event->pos());
+		if (index<0) return;
+		if (index>=_nIncontrols) return;
+		_canvas->endConnectionTo(this, index);
+	}
+	if (_canvas->dragStatus()==NetworkCanvas::IncontrolDrag && region==outcontrolsRegion)
+	{
+		int index = controlIndexByXPos(event->pos());
+		if (index<0) return;
+		if (index>=_nOutcontrols) return;
+		_canvas->endConnectionTo(this, index);
+	}
 }
 void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 {
-	int x = event->pos().x();
-	int y = event->pos().y();
-	Region region = getRegion(x,y);
+	Region region = getRegion(event->pos());
 	if (region==nameRegion) 
 	{
 		bool ok;
