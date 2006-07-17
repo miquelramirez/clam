@@ -1,4 +1,5 @@
 #include "ProcessingBox.hxx"
+#include "NetworkCanvas.hxx"
 
 ProcessingBox::~ProcessingBox()
 {
@@ -33,16 +34,16 @@ void ProcessingBox::paintBox(QPainter & painter)
 	painter.setRenderHint(QPainter::Antialiasing);
 
 	// Box
-	painter.setPen(QColor(0x20,0x6f,0x20));
-	painter.setBrush(QColor(0x30,0x8f,0x30,0xaf));
+	painter.setPen(_canvas->colorBoxFrameOutline());
+	painter.setBrush(_canvas->colorBoxFrame());
 	painter.drawRect(portWidth, controlHeight, width()-2*portWidth, height()-2*controlHeight);
-	painter.setBrush(QColor(0xF9,0xFb,0xF9,0xaf));
+	painter.setBrush(_canvas->colorBoxBody());
 	painter.drawRect(portWidth+margin, controlHeight+margin+textHeight, width()-2*(margin+portWidth), height()-textHeight-2*(margin+controlHeight));
-	painter.setBrush(QColor(0xb9,0xbb,0xb9));
+	painter.setBrush(_canvas->colorResizeHandle());
 	painter.drawRect(width()-portWidth-margin, height()-controlHeight-margin, margin, margin);
 	// Ports
-	painter.setBrush(QColor(0xa6,0x60,0x84));
-	painter.setPen(QColor(0x53,0x30,0x42));
+	painter.setBrush(_canvas->colorPort());
+	painter.setPen(_canvas->colorPortOutline());
 	for (unsigned i = 0; i<_nInports; i++)
 	{
 		painter.drawEllipse(0, margin+controlHeight+i*(portSpacing+portHeight), portWidth, portHeight);
@@ -52,8 +53,8 @@ void ProcessingBox::paintBox(QPainter & painter)
 		painter.drawEllipse(width()-portWidth, margin+controlHeight+i*(portSpacing+portHeight), portWidth, portHeight);
 	}
 	// Controls
-	painter.setBrush(QColor(0xf6,0x60,0x84));
-	painter.setPen(QColor(0x53,0x30,0x42));
+	painter.setBrush(_canvas->colorControl());
+	painter.setPen(_canvas->colorControlOutline());
 	for (unsigned i = 0; i<_nIncontrols; i++)
 	{
 		painter.drawRect(margin+portWidth+i*(controlSpacing+controlWidth), 0, controlWidth, controlHeight);
