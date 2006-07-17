@@ -72,8 +72,8 @@ public:
 		if (tangentIn>target.y()-minTangentSize) tangentIn = target.y()-minTangentSize;
 		path.moveTo(source);
 		path.cubicTo(source.x(), tangentOut, target.x(), tangentIn, target.x(), target.y()); // 3 = portHeight/2
-		painter.strokePath(path, QPen(QBrush(QColor(0x20,0x50,0x52)), 5));
-		painter.strokePath(path, QPen(QBrush(QColor(0x4b,0x99,0xb4)), 3));
+		painter.strokePath(path, QPen(QBrush(QColor(0x20,0x50,0x52)), 4));
+		painter.strokePath(path, QPen(QBrush(QColor(0x4b,0x99,0xb4)), 2));
 	}
 private:
 	ProcessingBox * _source;
@@ -92,7 +92,6 @@ public:
 	{
 		setMouseTracking(true);
 		setAcceptDrops(true);
-		resize(600,300);
 		_processings.push_back(new ProcessingBox(this, "Processing1", 2, 2, 2, 3));
 		_processings.push_back(new ProcessingBox(this, "Processing2", 4, 5, 1, 2));
 		_processings.push_back(new ProcessingBox(this, "Processing3", 2, 0, 2, 0));
@@ -159,6 +158,40 @@ public:
 	{
 
 	}
+
+	QColor colorBoxFrameOutline() const
+	{
+		return QColor(0x20,0x6f,0x20);
+	}
+	QColor colorBoxFrame() const
+	{
+		return QColor(0x30,0x8f,0x30,0xaf);
+	}
+	QColor colorBoxBody() const
+	{
+		return QColor(0xF9,0xFb,0xF9,0xaf);
+	}
+	QColor colorResizeHandle() const
+	{
+		return QColor(0xf9,0xbb,0xb9);
+	}
+	QColor colorPortOutline() const
+	{
+		return QColor(0x53,0x30,0x42);
+	}
+	QColor colorPort() const
+	{
+		return QColor(0xa6,0x60,0x84);
+	}
+	QColor colorControl() const
+	{
+		return QColor(0xf6,0x60,0x84);
+	}
+	QColor colorControlOutline() const
+	{
+		return QColor(0x53,0x30,0x42);
+	}
+
 private:
 	std::vector<ProcessingBox *> _processings;
 	std::vector<PortWire *> _portWires;
