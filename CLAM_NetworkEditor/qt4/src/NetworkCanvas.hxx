@@ -87,17 +87,37 @@ class NetworkCanvas : public QWidget
 
 	Q_OBJECT
 public:
+	enum DragStatus 
+	{
+		NoDrag,
+		InportDrag,
+		OutportDrag,
+		IncontrolDrag,
+		OutcontrolDrag,
+		MoveDrag,
+		ResizeDrag
+	};
 	NetworkCanvas(QWidget * parent=0)
 		: QWidget(parent)
+		, _dragStatus(NoDrag)
+		, _dragProcessing(0)
+		, _dragConnectionIndex(0)
 	{
 		setMouseTracking(true);
 		setAcceptDrops(true);
+		setMinimumSize(200,100);
+		resize(600,300);
+		example1();
+	}
+
+	void example1()
+	{
 		_processings.push_back(new ProcessingBox(this, "Processing1", 2, 2, 2, 3));
 		_processings.push_back(new ProcessingBox(this, "Processing2", 4, 5, 1, 2));
 		_processings.push_back(new ProcessingBox(this, "Processing3", 2, 0, 2, 0));
-		_processings[0]->move(300,200);
-		_processings[1]->move(200,10);
-		_processings[2]->move(100,200);
+		_processings[0]->move(QPoint(300,200));
+		_processings[1]->move(QPoint(200,10));
+		_processings[2]->move(QPoint(100,200));
 		_portWires.push_back(new PortWire(_processings[0],1, _processings[1],3));
 		_portWires.push_back(new PortWire(_processings[1],1, _processings[0],1));
 		_controlWires.push_back(new ControlWire(_processings[1],1, _processings[0],1));
@@ -106,11 +126,30 @@ public:
 
 	virtual ~NetworkCanvas();
 
+	void raise(ProcessingBox * toRaise)
+	{
+		std::vector<ProcessingBox*>::iterator search = std::find(_processings.begin(), _processings.end(), toRaise);
+		if (search==_processings.end()) return;
+		_processings.erase(search);
+		_processings.push_back(toRaise);
+	}
+
 	void paintEvent(QPaintEvent * event)
 	{
-		setMinimumSize(200,100);
 		QPainter painter(this);
 		paint(painter);
+	}
+	void print()
+	{
+		QPrinter printer(QPrinter::HighResolution);
+		printer.setOutputFormat(QPrinter::PdfFormat);
+		printer.setOutputFileName("Network.pdf");
+		QPrintDialog * dialog = new QPrintDialog(&printer, this);
+		dialog->exec();
+		QPainter painter;
+		painter.begin(&printer);
+		paint(painter);
+		painter.end();
 	}
 	void paint(QPainter & painter)
 	{
@@ -124,25 +163,43 @@ public:
 
 	void mouseMoveEvent(QMouseEvent * event)
 	{
+		if (_dragStatus==NoDrag)
+		{
+			for (unsigned i = _processings.size(); i--; )
+				_processings[i]->mouseMoveEvent(event);
+			update();
+			return;
+		}
 	}
 
+	void mousePressEvent(QMouseEvent * event)
+	{
+		for (unsigned i = _processings.size(); i--; )
+		{
+			if (_processings[i]->getRegion(event->pos())==ProcessingBox::noRegion) continue;
+			_processings[i]->mousePressEvent(event);
+			update();
+			return;
+		}
+	}
+	void mouseReleaseEvent(QMouseEvent * event)
+	{
+		for (unsigned i = _processings.size(); i--; )
+			_processings[i]->mouseReleaseEvent(event);
+		update();
+	}
 	void mouseDoubleClickEvent(QMouseEvent * event)
 	{
+		for (unsigned i = _processings.size(); i--; )
+		{
+			if (_processings[i]->getRegion(event->pos())==ProcessingBox::noRegion) continue;
+			_processings[i]->mouseDoubleClickEvent(event);
+			update();
+			return;
+		}
 		print();
 	}
 
-	void print()
-	{
-		QPrinter printer(QPrinter::HighResolution);
-		printer.setOutputFormat(QPrinter::PdfFormat);
-		printer.setOutputFileName("Network.pdf");
-		QPrintDialog * dialog = new QPrintDialog(&printer, this);
-		dialog->exec();
-		QPainter painter;
-		painter.begin(&printer);
-		paint(painter);
-		painter.end();
-	}
 
 	void dragEnterEvent(QDragEnterEvent *event)
 	{
@@ -192,10 +249,20 @@ public:
 		return QColor(0x53,0x30,0x42);
 	}
 
+	void startDrag(DragStatus status, ProcessingBox * processing, int connection)
+	{
+		_dragStatus=status;
+		_dragProcessing=processing;
+		_dragConnectionIndex=connection;
+	}
+
 private:
 	std::vector<ProcessingBox *> _processings;
 	std::vector<PortWire *> _portWires;
 	std::vector<ControlWire *> _controlWires;
+	DragStatus _dragStatus;
+	ProcessingBox * _dragProcessing;
+	unsigned _dragConnectionIndex;
 };
 
 
