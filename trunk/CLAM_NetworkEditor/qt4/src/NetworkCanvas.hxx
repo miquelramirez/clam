@@ -26,7 +26,10 @@ public:
 	{
 		QPoint source = _source->getOutportPos(_outport);
 		QPoint target = _target->getInportPos(_inport);
-		painter.setRenderHint(QPainter::Antialiasing);
+		draw(painter, source, target);
+	}
+	static void draw(QPainter & painter, QPoint source, QPoint target)
+	{
 		QPainterPath path;
 		int minTangentSize=abs(target.y()-source.y());
 		if (minTangentSize>150) minTangentSize=150;
@@ -36,7 +39,7 @@ public:
 		int tangentIn=source.x();
 		if (tangentIn>target.x()-minTangentSize) tangentIn = target.x()-minTangentSize;
 		path.moveTo(source);
-		path.cubicTo(tangentOut, source.y(), tangentIn, target.y(), target.x(), target.y()); // 3 = portHeight/2
+		path.cubicTo(tangentOut, source.y(), tangentIn, target.y(), target.x(), target.y());
 		painter.strokePath(path, QPen(QBrush(QColor(0x50,0x50,0x22)), 5));
 		painter.strokePath(path, QPen(QBrush(QColor(0xbb,0x99,0x44)), 3));
 	}
@@ -61,7 +64,10 @@ public:
 	{
 		QPoint source = _source->getOutcontrolPos(_outcontrol);
 		QPoint target = _target->getIncontrolPos(_incontrol);
-		painter.setRenderHint(QPainter::Antialiasing);
+		draw(painter, source, target);
+	}
+	static void draw(QPainter & painter, QPoint source, QPoint target)
+	{
 		QPainterPath path;
 		int minTangentSize=abs(target.x()-source.x());
 		if (minTangentSize>150) minTangentSize=150;
@@ -71,7 +77,7 @@ public:
 		int tangentIn=source.y();
 		if (tangentIn>target.y()-minTangentSize) tangentIn = target.y()-minTangentSize;
 		path.moveTo(source);
-		path.cubicTo(source.x(), tangentOut, target.x(), tangentIn, target.x(), target.y()); // 3 = portHeight/2
+		path.cubicTo(source.x(), tangentOut, target.x(), tangentIn, target.x(), target.y());
 		painter.strokePath(path, QPen(QBrush(QColor(0x20,0x50,0x52)), 4));
 		painter.strokePath(path, QPen(QBrush(QColor(0x4b,0x99,0xb4)), 2));
 	}
@@ -118,10 +124,10 @@ public:
 		_processings[0]->move(QPoint(300,200));
 		_processings[1]->move(QPoint(200,10));
 		_processings[2]->move(QPoint(100,200));
-		_portWires.push_back(new PortWire(_processings[0],1, _processings[1],3));
-		_portWires.push_back(new PortWire(_processings[1],1, _processings[0],1));
-		_controlWires.push_back(new ControlWire(_processings[1],1, _processings[0],1));
-		_controlWires.push_back(new ControlWire(_processings[1],1, _processings[2],1));
+		addPortWire(_processings[0],1, _processings[1],3);
+		addPortWire(_processings[1],1, _processings[0],1);
+		addControlWire(_processings[1],1, _processings[0],1);
+		addControlWire(_processings[1],1, _processings[2],1);
 	}
 
 	virtual ~NetworkCanvas();
@@ -153,23 +159,31 @@ public:
 	}
 	void paint(QPainter & painter)
 	{
+		painter.setRenderHint(QPainter::Antialiasing);
 		for (unsigned i = 0; i<_portWires.size(); i++)
 			_portWires[i]->draw(painter);
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->draw(painter);
 		for (unsigned i = 0; i<_processings.size(); i++)
 			_processings[i]->paintFromParent(painter);
+		if (_dragStatus==InportDrag)
+			PortWire::draw(painter, _dragPoint, _dragProcessing->getInportPos(_dragConnectionIndex));
+		if (_dragStatus==OutportDrag)
+			PortWire::draw(painter, _dragProcessing->getOutportPos(_dragConnectionIndex), _dragPoint);
+		if (_dragStatus==IncontrolDrag)
+			ControlWire::draw(painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnectionIndex));
+		if (_dragStatus==OutcontrolDrag)
+			ControlWire::draw(painter, _dragProcessing->getOutcontrolPos(_dragConnectionIndex), _dragPoint);
 	}
 
 	void mouseMoveEvent(QMouseEvent * event)
 	{
-		if (_dragStatus==NoDrag)
-		{
-			for (unsigned i = _processings.size(); i--; )
-				_processings[i]->mouseMoveEvent(event);
-			update();
-			return;
-		}
+		_dragPoint = event->pos();
+		setToolTip(0);
+		setStatusTip(0);
+		for (unsigned i = _processings.size(); i--; )
+			_processings[i]->mouseMoveEvent(event);
+		update();
 	}
 
 	void mousePressEvent(QMouseEvent * event)
@@ -186,6 +200,7 @@ public:
 	{
 		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->mouseReleaseEvent(event);
+		_dragStatus=NoDrag;
 		update();
 	}
 	void mouseDoubleClickEvent(QMouseEvent * event)
@@ -255,6 +270,40 @@ public:
 		_dragProcessing=processing;
 		_dragConnectionIndex=connection;
 	}
+	DragStatus dragStatus() const
+	{
+		return _dragStatus;
+	}
+	void endConnectionTo(ProcessingBox * processing, int connection)
+	{
+		switch (_dragStatus) 
+		{
+			case InportDrag:
+			{
+				addPortWire(processing, connection, _dragProcessing, _dragConnectionIndex);
+			} break;
+			case OutportDrag:
+			{
+				addPortWire(_dragProcessing, _dragConnectionIndex, processing, connection);
+			} break;
+			case IncontrolDrag:
+			{
+				addControlWire(processing, connection, _dragProcessing, _dragConnectionIndex);
+			} break;
+			case OutcontrolDrag:
+			{
+				addControlWire(_dragProcessing, _dragConnectionIndex, processing, connection);
+			} break;
+		}
+	}
+	void addPortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	{
+		_portWires.push_back(new PortWire(source, outlet, target, inlet));
+	}
+	void addControlWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	{
+		_controlWires.push_back(new ControlWire(source, outlet, target, inlet));
+	}
 
 private:
 	std::vector<ProcessingBox *> _processings;
@@ -263,6 +312,7 @@ private:
 	DragStatus _dragStatus;
 	ProcessingBox * _dragProcessing;
 	unsigned _dragConnectionIndex;
+	QPoint _dragPoint;
 };
 
 

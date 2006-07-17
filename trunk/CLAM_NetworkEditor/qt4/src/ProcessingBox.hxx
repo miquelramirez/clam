@@ -44,9 +44,8 @@ public:
 	void paintFromParent(QPainter & painter);
 	void paintBox(QPainter & painter);
 	Region getRegion(const QPoint & point) const;
-	Region getRegion(int x, int y) const;
-	int portIndexByYPos(int y);
-	int controlIndexByXPos(int x);
+	int portIndexByYPos(const QPoint & point);
+	int controlIndexByXPos(const QPoint & point);
 	// returns the inport connect point in parent coords
 	QPoint getInportPos(unsigned i) const;
 	QPoint getOutportPos(unsigned i) const;
