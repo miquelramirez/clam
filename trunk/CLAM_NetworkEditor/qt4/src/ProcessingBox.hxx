@@ -12,9 +12,8 @@
 
 class NetworkCanvas;
 
-class ProcessingBox : public QWidget
+class ProcessingBox 
 {
-	Q_OBJECT
 public:
 	enum
 	{
@@ -59,6 +58,8 @@ public:
 	void mouseReleaseEvent(QMouseEvent * event);
 	void mouseDoubleClickEvent(QMouseEvent * event);
 	void rename(const QString & newName);
+	void move(const QPoint & newPosition);
+	void resize(const QSize & newSize);
 private:
 	NetworkCanvas * _canvas;
 	QString _name;
@@ -72,6 +73,11 @@ private:
 	QSize originalSize;
 	bool resizing;
 	int textHeight;
+	QPoint _pos;
+	QSize _size;
+	QSize _minimumSize;
+	Region _highLightRegion;
+	unsigned _highLightConnection;
 };
 
 
