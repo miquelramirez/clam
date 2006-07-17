@@ -182,7 +182,8 @@ public:
 		if (region==nameRegion)
 		{
 			moving=true;
-			dragOrigin=event->pos();
+			originalPosition = pos();
+			dragOrigin=event->globalPos();
 			setCursor(Qt::SizeAllCursor);
 			return;
 		}
@@ -192,7 +193,7 @@ public:
 		setToolTip(QString::null);
 		if (moving)
 		{
-			move(pos() - dragOrigin + event->pos());
+			move(originalPosition - dragOrigin + event->globalPos());
 			((QWidget*)parent())->update();
 			return;
 		}
@@ -308,6 +309,7 @@ private:
 	unsigned _nOutcontrols;
 	bool moving;
 	QPoint dragOrigin;
+	QPoint originalPosition;
 	QSize originalSize;
 	bool resizing;
 	int textHeight;
