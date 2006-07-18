@@ -150,6 +150,9 @@ public:
 		QPrinter printer(QPrinter::HighResolution);
 		printer.setOutputFormat(QPrinter::PdfFormat);
 		printer.setOutputFileName("Network.pdf");
+		printer.setFullPage(true);
+		printer.setCreator( "CLAM NetworkEditor");
+		printer.setOrientation(QPrinter::Landscape);
 		QPrintDialog * dialog = new QPrintDialog(&printer, this);
 		dialog->exec();
 		QPainter painter;

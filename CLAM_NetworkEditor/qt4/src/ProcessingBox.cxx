@@ -110,13 +110,29 @@ ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
 		return noRegion;
 
 	if (x<portWidth)
+	{
+		if (y<margin+controlHeight) return noRegion;
+		if (y>=margin+controlHeight+_nInports*(portHeight+portSpacing)) return noRegion;
 		return inportsRegion;
+	}
 	if (x>_size.width()-portWidth)
+	{
+		if (y<margin+controlHeight) return noRegion;
+		if (y>=margin+controlHeight+_nOutports*(portHeight+portSpacing)) return noRegion;
 		return outportsRegion;
+	}
 	if (y>=0 && y<controlHeight)
+	{
+		if (x<margin+portHeight) return noRegion;
+		if (x>=margin+portHeight+_nIncontrols*(controlHeight+controlSpacing)) return noRegion;
 		return incontrolsRegion;
+	}
 	if (y<=_size.height() && y>_size.height()-controlHeight)
+	{
+		if (x<margin+portHeight) return noRegion;
+		if (x>=margin+portHeight+_nOutcontrols*(controlHeight+controlSpacing)) return noRegion;
 		return outcontrolsRegion;
+	}
 	if (y<textHeight+margin+controlHeight)
 		return nameRegion;
 	if (x>_size.width()-portWidth-margin && y>_size.height()-controlHeight-margin)
@@ -178,32 +194,24 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 	if (region==inportsRegion)
 	{
 		int index = portIndexByYPos(event->pos());
-		if (index<0) return;
-		if (index>=_nInports) return;
 		_canvas->startDrag(NetworkCanvas::InportDrag, this, index);
 		return;
 	}
 	if (region==outportsRegion)
 	{
 		int index = portIndexByYPos(event->pos());
-		if (index<0) return;
-		if (index>=_nOutports) return;
 		_canvas->startDrag(NetworkCanvas::OutportDrag, this, index);
 		return;
 	}
 	if (region==incontrolsRegion)
 	{
 		int index = controlIndexByXPos(event->pos());
-		if (index<0) return;
-		if (index>=_nIncontrols) return;
 		_canvas->startDrag(NetworkCanvas::IncontrolDrag, this, index);
 		return;
 	}
 	if (region==outcontrolsRegion)
 	{
 		int index = controlIndexByXPos(event->pos());
-		if (index<0) return;
-		if (index>=_nOutcontrols) return;
 		_canvas->startDrag(NetworkCanvas::OutcontrolDrag, this, index);
 		return;
 	}
@@ -232,8 +240,6 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	if (region==inportsRegion)
 	{
 		int index = portIndexByYPos(event->pos());
-		if (index<0) return;
-		if (index>=_nInports) return;
 		_highLightRegion=region;
 		_highLightConnection=index;
 		_canvas->setToolTip(QObject::tr("Inport %1").arg(index));
@@ -242,8 +248,6 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	if (region==outportsRegion)
 	{
 		int index = portIndexByYPos(event->pos());
-		if (index<0) return;
-		if (index>=_nOutports) return;
 		_highLightRegion=region;
 		_highLightConnection=index;
 		_canvas->setToolTip(QObject::tr("Outport %1").arg(index));
@@ -252,8 +256,6 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	if (region==incontrolsRegion)
 	{
 		int index = controlIndexByXPos(event->pos());
-		if (index<0) return;
-		if (index>=_nIncontrols) return;
 		_highLightRegion=region;
 		_highLightConnection=index;
 		_canvas->setToolTip(QObject::tr("Incontrol %1").arg(index));
@@ -262,8 +264,6 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	if (region==outcontrolsRegion)
 	{
 		int index = controlIndexByXPos(event->pos());
-		if (index<0) return;
-		if (index>=_nOutcontrols) return;
 		_highLightRegion=region;
 		_highLightConnection=index;
 		_canvas->setToolTip(QObject::tr("Outcontrol %1").arg(index));
@@ -302,29 +302,21 @@ void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 	if (_canvas->dragStatus()==NetworkCanvas::OutportDrag && region==inportsRegion)
 	{
 		int index = portIndexByYPos(event->pos());
-		if (index<0) return;
-		if (index>=_nInports) return;
 		_canvas->endConnectionTo(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::InportDrag &&  region==outportsRegion)
 	{
 		int index = portIndexByYPos(event->pos());
-		if (index<0) return;
-		if (index>=_nOutports) return;
 		_canvas->endConnectionTo(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::OutcontrolDrag && region==incontrolsRegion)
 	{
 		int index = controlIndexByXPos(event->pos());
-		if (index<0) return;
-		if (index>=_nIncontrols) return;
 		_canvas->endConnectionTo(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::IncontrolDrag && region==outcontrolsRegion)
 	{
 		int index = controlIndexByXPos(event->pos());
-		if (index<0) return;
-		if (index>=_nOutcontrols) return;
 		_canvas->endConnectionTo(this, index);
 	}
 }
