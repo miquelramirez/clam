@@ -7,6 +7,7 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QPrinter>
 #include <QtGui/QPrintDialog>
+#include <QtGui/QMenu>
 #include "ProcessingBox.hxx"
 #include <vector>
 #include <iostream>
@@ -15,17 +16,17 @@
 class PortWire
 {
 public:
-	PortWire(ProcessingBox * source, unsigned outport, ProcessingBox * target, unsigned inport)
+	PortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 		: _source(source)
 		, _target(target)
-		, _outport(outport)
-		, _inport(inport)
+		, _outlet(outlet)
+		, _inlet(inlet)
 	{
 	}
 	void draw(QPainter & painter)
 	{
-		QPoint source = _source->getOutportPos(_outport);
-		QPoint target = _target->getInportPos(_inport);
+		QPoint source = _source->getOutportPos(_outlet);
+		QPoint target = _target->getInportPos(_inlet);
 		draw(painter, source, target);
 	}
 	static void draw(QPainter & painter, QPoint source, QPoint target)
@@ -43,27 +44,39 @@ public:
 		painter.strokePath(path, QPen(QBrush(QColor(0x50,0x50,0x22)), 5));
 		painter.strokePath(path, QPen(QBrush(QColor(0xbb,0x99,0x44)), 3));
 	}
+	bool involves(ProcessingBox * processing)
+	{
+		return processing == _source || processing == _target;
+	}
+	bool comesFrom(ProcessingBox * source, unsigned outlet)
+	{
+		return source == _source && _outlet == outlet;
+	}
+	bool goesTo(ProcessingBox * target, unsigned inlet)
+	{
+		return target == _target && _inlet == inlet;
+	}
 private:
 	ProcessingBox * _source;
 	ProcessingBox * _target;
-	unsigned _outport;
-	unsigned _inport;
+	unsigned _outlet;
+	unsigned _inlet;
 };
 
 class ControlWire
 {
 public:
-	ControlWire(ProcessingBox * source, unsigned outcontrol, ProcessingBox * target, unsigned incontrol)
+	ControlWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 		: _source(source)
 		, _target(target)
-		, _outcontrol(outcontrol)
-		, _incontrol(incontrol)
+		, _outlet(outlet)
+		, _inlet(inlet)
 	{
 	}
 	void draw(QPainter & painter)
 	{
-		QPoint source = _source->getOutcontrolPos(_outcontrol);
-		QPoint target = _target->getIncontrolPos(_incontrol);
+		QPoint source = _source->getOutcontrolPos(_outlet);
+		QPoint target = _target->getIncontrolPos(_inlet);
 		draw(painter, source, target);
 	}
 	static void draw(QPainter & painter, QPoint source, QPoint target)
@@ -81,11 +94,23 @@ public:
 		painter.strokePath(path, QPen(QBrush(QColor(0x20,0x50,0x52)), 4));
 		painter.strokePath(path, QPen(QBrush(QColor(0x4b,0x99,0xb4)), 2));
 	}
+	bool involves(ProcessingBox * processing)
+	{
+		return processing == _source || processing == _target;
+	}
+	bool comesFrom(ProcessingBox * source, unsigned outlet)
+	{
+		return source == _source && _outlet == outlet;
+	}
+	bool goesTo(ProcessingBox * target, unsigned inlet)
+	{
+		return target == _target && _inlet == inlet;
+	}
 private:
 	ProcessingBox * _source;
 	ProcessingBox * _target;
-	unsigned _outcontrol;
-	unsigned _incontrol;
+	unsigned _outlet;
+	unsigned _inlet;
 };
 
 class NetworkCanvas : public QWidget
@@ -108,6 +133,7 @@ public:
 		, _dragStatus(NoDrag)
 		, _dragProcessing(0)
 		, _dragConnectionIndex(0)
+		, _printing(false)
 	{
 		setMouseTracking(true);
 		setAcceptDrops(true);
@@ -147,6 +173,7 @@ public:
 	}
 	void print()
 	{
+		_printing = true;
 		QPrinter printer(QPrinter::HighResolution);
 		printer.setOutputFormat(QPrinter::PdfFormat);
 		printer.setOutputFileName("Network.pdf");
@@ -159,6 +186,7 @@ public:
 		painter.begin(&printer);
 		paint(painter);
 		painter.end();
+		_printing = false;
 	}
 	void paint(QPainter & painter)
 	{
@@ -177,7 +205,36 @@ public:
 			ControlWire::draw(painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnectionIndex));
 		if (_dragStatus==OutcontrolDrag)
 			ControlWire::draw(painter, _dragProcessing->getOutcontrolPos(_dragConnectionIndex), _dragPoint);
+		drawTooltip(painter);
 	}
+
+	void drawTooltip(QPainter & painter)
+	{
+		if (_tooltipText.isNull()) return;
+		QFontMetrics _metrics(font());
+		int margin =3;
+		double tooltipWidth = _metrics.width(_tooltipText)+2*margin;
+		double tooltipHeight = _metrics.height()+2*margin;
+		double x = _tooltipPos.x()+16;
+		if (x + tooltipWidth > width())
+		x = _tooltipPos.x() - _metrics.width(_tooltipText) - 2*margin;
+		double y = _tooltipPos.y() +16;
+		if (y + tooltipHeight > height())
+		y = _tooltipPos.y() - tooltipHeight;
+
+		QRectF tooltip(x, y, _metrics.width(_tooltipText)+2*margin, tooltipHeight)  ;
+		painter.setBrush(QColor(0xff,0xff,0x90,0x90));
+		painter.setPen(QColor(0xff,0xff,0x90,0xff));
+		painter.drawRect(tooltip);
+		painter.setPen(Qt::black);
+		painter.drawText(tooltip, Qt::AlignCenter, _tooltipText);
+	}
+
+	void setToolTip(const QString & text)
+	{
+		_tooltipText = text;
+	}
+
 
 	void mouseMoveEvent(QMouseEvent * event)
 	{
@@ -187,10 +244,12 @@ public:
 		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->mouseMoveEvent(event);
 		update();
+		_tooltipPos=_dragPoint;
 	}
 
 	void mousePressEvent(QMouseEvent * event)
 	{
+		if (event->button()!=Qt::LeftButton) return;
 		for (unsigned i = _processings.size(); i--; )
 		{
 			if (_processings[i]->getRegion(event->pos())==ProcessingBox::noRegion) continue;
@@ -218,6 +277,38 @@ public:
 		print();
 	}
 
+	void contextMenuEvent(QContextMenuEvent * event)
+	{
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(event->pos());
+			if (region==ProcessingBox::noRegion) continue;
+			QMenu menu(this);
+			menu.move(event->globalPos());
+			if (
+				region==ProcessingBox::inportsRegion ||
+				region==ProcessingBox::outportsRegion ||
+				region==ProcessingBox::incontrolsRegion ||
+				region==ProcessingBox::outcontrolsRegion )
+			{
+				menu.addAction(QIcon("src/images/remove.png"), "Disconnect",
+						this, SLOT(onDisconnect()))->setData(event->pos());
+				menu.addAction(QIcon("src/images/editcopy.png"), "Copy",
+						this, SLOT(onCopyConnection()))->setData(event->pos());
+			}
+			if (region==ProcessingBox::nameRegion || 
+				region==ProcessingBox::bodyRegion ||
+				region==ProcessingBox::resizeHandleRegion)
+			{
+				menu.addAction(QIcon("src/images/configure.png"), "Configure",
+						this, SLOT(onConfigure()))->setData(event->pos());
+				menu.addAction(QIcon("src/images/editdelete.png"), "Delete",
+						this, SLOT(onDeleteProcessing()))->setData(event->pos());
+			}
+			menu.exec();
+			return;
+		}
+	}
 
 	void dragEnterEvent(QDragEnterEvent *event)
 	{
@@ -231,19 +322,31 @@ public:
 	}
 	void dropEvent(QDropEvent *event)
 	{
-
+		QString type =  event->mimeData()->text();
+		std::cout << type.toStdString() << std::endl;
+		_processings.push_back(new ProcessingBox(this, type, 2, 2, 2, 3));
+		_processings.back()->move(event->pos());
+		event->acceptProposedAction();
 	}
 
+	QColor colorBoxFrameText() const
+	{
+		if (_printing) return QColor(0x00,0x00,0x00);
+		return QColor(0xff,0xff,0xff);
+	}
 	QColor colorBoxFrameOutline() const
 	{
+		if (_printing) return QColor(0x00,0x00,0x00);
 		return QColor(0x20,0x6f,0x20);
 	}
 	QColor colorBoxFrame() const
 	{
+		if (_printing) return QColor(0xd0,0xd0,0xd0);
 		return QColor(0x30,0x8f,0x30,0xaf);
 	}
 	QColor colorBoxBody() const
 	{
+		if (_printing) return QColor(0xe0,0xe0,0xe0);
 		return QColor(0xF9,0xFb,0xF9,0xaf);
 	}
 	QColor colorResizeHandle() const
@@ -307,7 +410,139 @@ public:
 	{
 		_controlWires.push_back(new ControlWire(source, outlet, target, inlet));
 	}
+	ProcessingBox * addProcessing(const QString & type, int x, int y)
+	{
+		_processings.push_back(new ProcessingBox(this, type, 4, 5, 2, 2));
+		_processings.back()->move(QPoint(x,y));
+		return _processings.back();
+	}
 
+	void disconnectIncontrol(ProcessingBox * processing, unsigned index)
+	{
+		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
+			   	it<_controlWires.end();)
+		{
+			ControlWire * wire = *it;
+			if (!wire->goesTo(processing, index)) it++;
+			else
+			{
+				delete wire;
+				it=_controlWires.erase(it);
+			}
+		}
+	}
+	void disconnectOutcontrol(ProcessingBox * processing, unsigned index)
+	{
+		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
+			   	it<_controlWires.end();)
+		{
+			ControlWire * wire = *it;
+			if (!wire->comesFrom(processing, index)) it++;
+			else
+			{
+				delete wire;
+				it=_controlWires.erase(it);
+			}
+		}
+	}
+	void disconnectInport(ProcessingBox * processing, unsigned index)
+	{
+		for (std::vector<PortWire*>::iterator it=_portWires.begin();
+			   	it<_portWires.end();)
+		{
+			PortWire * wire = *it;
+			if (!wire->goesTo(processing, index)) it++;
+			else
+			{
+				delete wire;
+				it=_portWires.erase(it);
+			}
+		}
+	}
+	void disconnectOutport(ProcessingBox * processing, unsigned index)
+	{
+		for (std::vector<PortWire*>::iterator it=_portWires.begin();
+			   	it<_portWires.end();)
+		{
+			PortWire * wire = *it;
+			if (!wire->comesFrom(processing, index)) it++;
+			else
+			{
+				delete wire;
+				it=_portWires.erase(it);
+			}
+		}
+	}
+
+	void removeProcessing(ProcessingBox * processing)
+	{
+		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
+			   	it<_controlWires.end(); )
+		{
+			ControlWire * wire = *it;
+			if (!wire->involves(processing)) it++;
+			else
+			{
+				delete wire;
+				it=_controlWires.erase(it);
+			}
+		}
+		for (std::vector<PortWire*>::iterator it=_portWires.begin();
+			   	it<_portWires.end(); )
+		{
+			PortWire * wire = *it;
+			if (!wire->involves(processing)) it++;
+			else
+			{
+				delete wire;
+				it=_portWires.erase(it);
+			}
+		}
+		delete processing;
+		_processings.erase(std::find(_processings.begin(), _processings.end(), processing));
+	}
+
+private slots:
+	void onCopyConnection()
+	{
+	}
+	void onConfigure()
+	{
+	}
+	void onDisconnect()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(point);
+			switch (region)
+			{
+				case ProcessingBox::noRegion: 
+					continue;
+				case ProcessingBox::inportsRegion:
+					disconnectInport(_processings[i], _processings[i]->portIndexByYPos(point));
+				case ProcessingBox::outportsRegion:
+					disconnectOutport(_processings[i], _processings[i]->portIndexByYPos(point));
+				case ProcessingBox::incontrolsRegion:
+					disconnectIncontrol(_processings[i], _processings[i]->controlIndexByXPos(point));
+				case ProcessingBox::outcontrolsRegion:
+					disconnectOutcontrol(_processings[i], _processings[i]->controlIndexByXPos(point));
+			return;
+			}
+		}
+	}
+	void onDeleteProcessing()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(point);
+			if (region == ProcessingBox::noRegion) continue;
+			removeProcessing(_processings[i]);
+			return;
+		}
+	}
+	
 private:
 	std::vector<ProcessingBox *> _processings;
 	std::vector<PortWire *> _portWires;
@@ -316,6 +551,10 @@ private:
 	ProcessingBox * _dragProcessing;
 	unsigned _dragConnectionIndex;
 	QPoint _dragPoint;
+	QPoint _tooltipPos;
+	QString _tooltipText;
+	bool _printing;
+	
 };
 
 

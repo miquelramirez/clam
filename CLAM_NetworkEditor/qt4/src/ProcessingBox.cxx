@@ -93,7 +93,7 @@ void ProcessingBox::paintBox(QPainter & painter)
 	if (_highLightRegion == outcontrolsRegion)
 		painter.drawRect(margin+portWidth+_highLightConnection*(controlSpacing+controlWidth), _size.height()-controlHeight, controlWidth, controlHeight);
 	// Text
-	painter.setPen(Qt::white);
+	painter.setPen(_canvas->colorBoxFrameText());
 	painter.drawText(QRect(portWidth+margin, controlHeight+margin, _size.width()-2*margin+portWidth, textHeight), _name);
 }
 ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
