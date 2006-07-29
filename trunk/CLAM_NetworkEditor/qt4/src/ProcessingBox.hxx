@@ -51,6 +51,11 @@ public:
 	QPoint getOutportPos(unsigned i) const;
 	QPoint getIncontrolPos(unsigned i) const;
 	QPoint getOutcontrolPos(unsigned i) const;
+	QString getName() const;
+	QString getInportName(unsigned i) const;
+	QString getOutportName(unsigned i) const;
+	QString getIncontrolName(unsigned i) const;
+	QString getOutcontrolName(unsigned i) const;
 
 	void mousePressEvent(QMouseEvent * event);
 	void mouseMoveEvent(QMouseEvent * event);

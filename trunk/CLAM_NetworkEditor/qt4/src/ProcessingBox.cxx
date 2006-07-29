@@ -253,7 +253,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		int index = portIndexByYPos(event->pos());
 		_highLightRegion=region;
 		_highLightConnection=index;
-		_canvas->setToolTip(QObject::tr("Inport %1").arg(index));
+		_canvas->setToolTip(getInportName(index));
 		return;
 	}
 	if (region==outportsRegion)
@@ -261,7 +261,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		int index = portIndexByYPos(event->pos());
 		_highLightRegion=region;
 		_highLightConnection=index;
-		_canvas->setToolTip(QObject::tr("Outport %1").arg(index));
+		_canvas->setToolTip(getOutportName(index));
 		return;
 	}
 	if (region==incontrolsRegion)
@@ -269,7 +269,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		int index = controlIndexByXPos(event->pos());
 		_highLightRegion=region;
 		_highLightConnection=index;
-		_canvas->setToolTip(QObject::tr("Incontrol %1").arg(index));
+		_canvas->setToolTip(getIncontrolName(index));
 		return;
 	}
 	if (region==outcontrolsRegion)
@@ -277,7 +277,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		int index = controlIndexByXPos(event->pos());
 		_highLightRegion=region;
 		_highLightConnection=index;
-		_canvas->setToolTip(QObject::tr("Outcontrol %1").arg(index));
+		_canvas->setToolTip(getOutcontrolName(index));
 		return;
 	}
 	if (region==resizeHandleRegion)
@@ -340,6 +340,28 @@ void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 		QString newName = QInputDialog::getText(_canvas, QObject::tr("Rename the processing"), QObject::tr("New name"), QLineEdit::Normal, _name);
 		if (ok && !newName.isEmpty()) rename(newName);
 	}
+}
+
+QString ProcessingBox::getName() const
+{
+	return _name;
+}
+
+QString ProcessingBox::getOutportName(unsigned index) const
+{
+	return QString("Outport_%1").arg(index);
+}
+QString ProcessingBox::getInportName(unsigned index) const
+{
+	return QString("Inport_%1").arg(index);
+}
+QString ProcessingBox::getOutcontrolName(unsigned index) const
+{
+	return QString("Outcontrol_%1").arg(index);
+}
+QString ProcessingBox::getIncontrolName(unsigned index) const
+{
+	return QString("Incontrol_%1").arg(index);
 }
 
 
