@@ -323,8 +323,11 @@ public:
 	void dropEvent(QDropEvent *event)
 	{
 		QString type =  event->mimeData()->text();
-		std::cout << type.toStdString() << std::endl;
-		_processings.push_back(new ProcessingBox(this, type, 2, 2, 2, 3));
+		unsigned nInports= QInputDialog::getInteger(this, type, "Number of inports",2,0,10);
+		unsigned nOutports= QInputDialog::getInteger(this, type, "Number of outports",2,0,10);
+		unsigned nIncontrols= QInputDialog::getInteger(this, type, "Number of incontrols",2,0,10);
+		unsigned nOutcontrols= QInputDialog::getInteger(this, type, "Number of outcontrols",2,0,10);
+		_processings.push_back(new ProcessingBox(this, type, nInports, nOutcontrols, nIncontrols, nOutcontrols));
 		_processings.back()->move(event->pos());
 		event->acceptProposedAction();
 	}
