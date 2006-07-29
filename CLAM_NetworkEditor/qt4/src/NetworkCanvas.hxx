@@ -292,22 +292,28 @@ public:
 				region==ProcessingBox::outcontrolsRegion )
 			{
 				menu.addAction(QIcon("src/images/remove.png"), "Disconnect",
-						this, SLOT(onDisconnect()))->setData(event->pos());
+					this, SLOT(onDisconnect()))->setData(event->pos());
 				menu.addAction(QIcon("src/images/editcopy.png"), "Copy",
-						this, SLOT(onCopyConnection()))->setData(event->pos());
+					this, SLOT(onCopyConnection()))->setData(event->pos());
 			}
 			if (region==ProcessingBox::nameRegion || 
 				region==ProcessingBox::bodyRegion ||
 				region==ProcessingBox::resizeHandleRegion)
 			{
 				menu.addAction(QIcon("src/images/configure.png"), "Configure",
-						this, SLOT(onConfigure()))->setData(event->pos());
+					this, SLOT(onConfigure()))->setData(event->pos());
 				menu.addAction(QIcon("src/images/editdelete.png"), "Delete",
-						this, SLOT(onDeleteProcessing()))->setData(event->pos());
+					this, SLOT(onDeleteProcessing()))->setData(event->pos());
 			}
 			menu.exec();
 			return;
 		}
+		QMenu menu(this);
+		menu.move(event->globalPos());
+		menu.addAction(QIcon("src/images/newprocessing.png"), "Add processing",
+			this, SLOT(onNewProcessing()))->setData(event->pos());
+		menu.exec();
+
 	}
 
 	void dragEnterEvent(QDragEnterEvent *event)
@@ -323,13 +329,18 @@ public:
 	void dropEvent(QDropEvent *event)
 	{
 		QString type =  event->mimeData()->text();
+		addProcessing(event->pos(), type);
+		event->acceptProposedAction();
+	}
+
+	void addProcessing(QPoint point, QString type)
+	{
 		unsigned nInports= QInputDialog::getInteger(this, type, "Number of inports",2,0,10);
 		unsigned nOutports= QInputDialog::getInteger(this, type, "Number of outports",2,0,10);
 		unsigned nIncontrols= QInputDialog::getInteger(this, type, "Number of incontrols",2,0,10);
 		unsigned nOutcontrols= QInputDialog::getInteger(this, type, "Number of outcontrols",2,0,10);
-		_processings.push_back(new ProcessingBox(this, type, nInports, nOutcontrols, nIncontrols, nOutcontrols));
-		_processings.back()->move(event->pos());
-		event->acceptProposedAction();
+		_processings.push_back(new ProcessingBox(this, type, nInports, nOutports, nIncontrols, nOutcontrols));
+		_processings.back()->move(point);
 	}
 
 	QColor colorBoxFrameText() const
@@ -544,6 +555,13 @@ private slots:
 			removeProcessing(_processings[i]);
 			return;
 		}
+	}
+	void onNewProcessing()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		QString type = QInputDialog::getText(this, "Type", "Type", QLineEdit::Normal, "A Processing");
+		if (type.isNull()) return;
+		addProcessing(point, type);
 	}
 	
 private:
