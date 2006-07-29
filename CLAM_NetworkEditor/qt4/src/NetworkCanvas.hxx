@@ -8,6 +8,8 @@
 #include <QtGui/QPrinter>
 #include <QtGui/QPrintDialog>
 #include <QtGui/QMenu>
+#include <QtGui/QApplication>
+#include <QtGui/QClipboard>
 #include "ProcessingBox.hxx"
 #include <vector>
 #include <iostream>
@@ -293,7 +295,7 @@ public:
 			{
 				menu.addAction(QIcon("src/images/remove.png"), "Disconnect",
 					this, SLOT(onDisconnect()))->setData(event->pos());
-				menu.addAction(QIcon("src/images/editcopy.png"), "Copy",
+				menu.addAction(QIcon("src/images/editcopy.png"), "Copy connection name",
 					this, SLOT(onCopyConnection()))->setData(event->pos());
 			}
 			if (region==ProcessingBox::nameRegion || 
@@ -519,6 +521,39 @@ public:
 private slots:
 	void onCopyConnection()
 	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		QString toCopy;
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(point);
+			if (region==ProcessingBox::noRegion) continue;
+			switch (region)
+			{
+				case ProcessingBox::outportsRegion: 
+					toCopy = QString("CLAM_Outport__%1__%2")
+						.arg(_processings[i]->getName())
+						.arg(_processings[i]->getOutportName(_processings[i]->portIndexByYPos(point)));
+					break;
+				case ProcessingBox::inportsRegion: 
+					toCopy = QString("CLAM_Inport__%1__%2")
+						.arg(_processings[i]->getName())
+						.arg(_processings[i]->getInportName(_processings[i]->portIndexByYPos(point)));
+					break;
+				case ProcessingBox::incontrolsRegion: 
+					toCopy = QString("CLAM_Incontrol__%1__%2")
+						.arg(_processings[i]->getName())
+						.arg(_processings[i]->getIncontrolName(_processings[i]->controlIndexByXPos(point)));
+					break;
+				case ProcessingBox::outcontrolsRegion: 
+					toCopy = QString("CLAM_Outcontrol__%1__%2")
+						.arg(_processings[i]->getName())
+						.arg(_processings[i]->getOutcontrolName(_processings[i]->controlIndexByXPos(point)));
+					break;
+			}
+			break;
+		}
+		if (toCopy.isNull()) return;
+		QApplication::clipboard()->setText(toCopy);
 	}
 	void onConfigure()
 	{
