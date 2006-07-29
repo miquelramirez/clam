@@ -535,12 +535,16 @@ private slots:
 					continue;
 				case ProcessingBox::inportsRegion:
 					disconnectInport(_processings[i], _processings[i]->portIndexByYPos(point));
+				break;
 				case ProcessingBox::outportsRegion:
 					disconnectOutport(_processings[i], _processings[i]->portIndexByYPos(point));
+				break;
 				case ProcessingBox::incontrolsRegion:
 					disconnectIncontrol(_processings[i], _processings[i]->controlIndexByXPos(point));
+				break;
 				case ProcessingBox::outcontrolsRegion:
 					disconnectOutcontrol(_processings[i], _processings[i]->controlIndexByXPos(point));
+				break;
 			return;
 			}
 		}
