@@ -40,11 +40,22 @@ void ProcessingBox::rename(const QString & newName)
 	_name=newName;
 	QFontMetrics metrics(_canvas->font());
 	textHeight = metrics.height();
+
 	int minimumHeight = textHeight+2*margin;
-	if (minimumHeight<_nInports*(portHeight+portSpacing)) minimumHeight = _nInports*(portHeight+portSpacing);
-	if (minimumHeight<_nOutports*(portHeight+portSpacing)) minimumHeight = _nOutports*(portHeight+portSpacing);
-	minimumHeight+=2*controlHeight + 2*margin;
-	_minimumSize = QSize(metrics.width(_name)+2*(margin+portWidth), minimumHeight );
+	int inportsHeight = _nInports*(portHeight+portSpacing);
+	int outportsHeight = _nOutports*(portHeight+portSpacing);
+	if (minimumHeight<inportsHeight) minimumHeight = inportsHeight;
+	if (minimumHeight<outportsHeight) minimumHeight = outportsHeight;
+	minimumHeight += 2*controlHeight + 2*margin;
+
+	int minimumWidth = metrics.width(_name);
+	int incontrolsWidth = _nIncontrols*(controlWidth+controlSpacing);
+	int outcontrolsWidth = _nOutcontrols*(controlWidth+controlSpacing);
+	if (minimumWidth<incontrolsWidth) minimumWidth = incontrolsWidth;
+	if (minimumWidth<outcontrolsWidth) minimumWidth = outcontrolsWidth;
+	minimumWidth += 2*portWidth + 2*margin;
+
+	_minimumSize = QSize(minimumWidth, minimumHeight );
 	resize(_size);
 	_canvas->update();
 }
