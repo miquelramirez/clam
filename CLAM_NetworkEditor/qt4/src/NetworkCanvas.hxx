@@ -41,15 +41,11 @@ public:
 		if (tangentOut<source.x()+minTangentSize) tangentOut = source.x()+minTangentSize;
 		int tangentIn=source.x();
 		if (tangentIn>target.x()-minTangentSize) tangentIn = target.x()-minTangentSize;
-		std::cout
-			<< source.x() << " " << source.y() << " "
-		   	<< tangentOut << " " 
-			<< tangentIn << " " 
-			<< target.x() << " " << target.y() << " "
-			<< std::endl;
+
 		// We use tangentY instead of plain source.y() in order to avoid a qt bezier bug
 		int tangentY = source.y();
 		if (std::abs(source.y()-target.y())<7) tangentY+=6;
+
 		path.moveTo(source);
 		path.cubicTo(tangentOut, tangentY, tangentIn, target.y(), target.x(), target.y());
 		painter.strokePath(path, QPen(QBrush(QColor(0x50,0x50,0x22)), 6));
@@ -100,8 +96,13 @@ public:
 		if (tangentOut<source.y()+minTangentSize) tangentOut = source.y()+minTangentSize;
 		int tangentIn=source.y();
 		if (tangentIn>target.y()-minTangentSize) tangentIn = target.y()-minTangentSize;
+
+		// We use tangentX instead of plain source.x() in order to avoid a qt bezier bug
+		int tangentX = source.x();
+		if (std::abs(source.x()-target.x())<7) tangentX+=6;
+
 		path.moveTo(source);
-		path.cubicTo(source.x(), tangentOut, target.x(), tangentIn, target.x(), target.y());
+		path.cubicTo(tangentX, tangentOut, target.x(), tangentIn, target.x(), target.y());
 		painter.strokePath(path, QPen(QBrush(QColor(0x20,0x50,0x52)), 4));
 		painter.strokePath(path, QPen(QBrush(QColor(0x4b,0x99,0xb4)), 2));
 	}
