@@ -8,12 +8,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>495</width>
-    <height>395</height>
+    <width>560</width>
+    <height>482</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>MainWindow</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset/>
   </property>
   <widget class="QWidget" name="centralwidget" >
    <layout class="QHBoxLayout" >
@@ -30,8 +33,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>495</width>
-     <height>28</height>
+     <width>560</width>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -66,6 +69,8 @@
     <addaction name="action_Save_network" />
     <addaction name="action_Save_as" />
     <addaction name="separator" />
+    <addaction name="action_Print" />
+    <addaction name="separator" />
     <addaction name="action_Quit" />
    </widget>
    <addaction name="menu_File" />
@@ -73,7 +78,16 @@
    <addaction name="menu_View" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>460</y>
+     <width>560</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolBar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
@@ -84,6 +98,7 @@
    <addaction name="action_New" />
    <addaction name="action_Open" />
    <addaction name="action_Save_network" />
+   <addaction name="action_Print" />
    <addaction name="action_Enable_processings_menu" />
    <addaction name="action_Play" />
    <addaction name="action_Stop" />
@@ -92,7 +107,7 @@
   </widget>
   <action name="action_New" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/48x48/actions/filenew.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/filenew.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;New</string>
@@ -106,7 +121,7 @@
   </action>
   <action name="action_Open" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/22x22/actions/fileopen.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open</string>
@@ -117,7 +132,7 @@
   </action>
   <action name="action_Open_example_network" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/default.kde/22x22/actions/fileopen.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
    </property>
    <property name="text" >
     <string>Open e&amp;xample</string>
@@ -128,7 +143,7 @@
   </action>
   <action name="action_Play" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/22x22/actions/player_play.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/player_play.png</iconset>
    </property>
    <property name="text" >
     <string>Play</string>
@@ -139,7 +154,7 @@
   </action>
   <action name="action_Save_network" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/22x22/actions/filesave.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Save</string>
@@ -150,7 +165,7 @@
   </action>
   <action name="action_Stop" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/22x22/actions/player_stop.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/player_stop.png</iconset>
    </property>
    <property name="text" >
     <string>Stop</string>
@@ -161,7 +176,7 @@
   </action>
   <action name="action_Save_as" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/22x22/actions/filesaveas.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/filesaveas.png</iconset>
    </property>
    <property name="text" >
     <string>Save &amp;as</string>
@@ -169,7 +184,7 @@
   </action>
   <action name="action_Quit" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/22x22/actions/exit.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/exit.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Quit</string>
@@ -188,7 +203,7 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/22x22/actions/view_tree.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/view_tree.png</iconset>
    </property>
    <property name="text" >
     <string>Enable &amp;processing menu</string>
@@ -196,7 +211,7 @@
   </action>
   <action name="action_Whats_this" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/22x22/actions/contexthelp.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/contexthelp.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;What's this</string>
@@ -207,7 +222,7 @@
   </action>
   <action name="action_Online_tutorial" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/22x22/actions/help.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/help.png</iconset>
    </property>
    <property name="text" >
     <string>Online tutorial</string>
@@ -215,14 +230,24 @@
   </action>
   <action name="action_Run_prototyper" >
    <property name="icon" >
-    <iconset>../../../../../../usr/share/icons/crystalsvg/22x22/actions/exec.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/exec.png</iconset>
    </property>
    <property name="text" >
     <string>Run prototyper</string>
    </property>
   </action>
+  <action name="action_Print" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/fileprint.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Print</string>
+   </property>
+  </action>
  </widget>
  <pixmapfunction></pixmapfunction>
- <resources/>
+ <resources>
+  <include location="images.qrc" />
+ </resources>
  <connections/>
 </ui>

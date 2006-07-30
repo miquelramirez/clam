@@ -178,6 +178,12 @@ QPoint ProcessingBox::getOutcontrolPos(unsigned i) const
 	return QPoint( _pos.x()+margin+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2, _pos.y()+_size.height()  );
 }
 
+void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
+{
+	moving = true;
+	originalPosition = _pos;
+	dragOrigin = initialGlobalPos;
+}
 
 void ProcessingBox::mousePressEvent(QMouseEvent * event)
 {
@@ -187,9 +193,7 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 	// Head
 	if (region==nameRegion)
 	{
-		moving=true;
-		originalPosition = _pos;
-		dragOrigin=event->globalPos();
+		startMoving(event->globalPos());
 		_canvas->setCursor(Qt::SizeAllCursor);
 		return;
 	}
@@ -231,6 +235,12 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 {
 	_highLightRegion=noRegion;;
 	if (moving)
+	{
+		QPoint dragDelta = event->globalPos() - dragOrigin;
+		move(originalPosition + dragDelta);
+		return;
+	}
+	if (_canvas->dragStatus()==NetworkCanvas::PanDrag)
 	{
 		QPoint dragDelta = event->globalPos() - dragOrigin;
 		move(originalPosition + dragDelta);
