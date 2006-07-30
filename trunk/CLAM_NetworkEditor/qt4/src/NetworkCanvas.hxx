@@ -35,16 +35,25 @@ public:
 	{
 		QPainterPath path;
 		int minTangentSize=abs(target.y()-source.y());
-		if (minTangentSize>150) minTangentSize=150;
-		if (target.x()<source.x()) minTangentSize=150;
+		if (minTangentSize<150) minTangentSize=150;
+		if (target.x()<=source.x()) minTangentSize=150;
 		int tangentOut=target.x();
 		if (tangentOut<source.x()+minTangentSize) tangentOut = source.x()+minTangentSize;
 		int tangentIn=source.x();
 		if (tangentIn>target.x()-minTangentSize) tangentIn = target.x()-minTangentSize;
+		std::cout
+			<< source.x() << " " << source.y() << " "
+		   	<< tangentOut << " " 
+			<< tangentIn << " " 
+			<< target.x() << " " << target.y() << " "
+			<< std::endl;
+		// We use tangentY instead of plain source.y() in order to avoid a qt bezier bug
+		int tangentY = source.y();
+		if (std::abs(source.y()-target.y())<7) tangentY+=6;
 		path.moveTo(source);
-		path.cubicTo(tangentOut, source.y(), tangentIn, target.y(), target.x(), target.y());
-		painter.strokePath(path, QPen(QBrush(QColor(0x50,0x50,0x22)), 5));
-		painter.strokePath(path, QPen(QBrush(QColor(0xbb,0x99,0x44)), 3));
+		path.cubicTo(tangentOut, tangentY, tangentIn, target.y(), target.x(), target.y());
+		painter.strokePath(path, QPen(QBrush(QColor(0x50,0x50,0x22)), 6));
+		painter.strokePath(path, QPen(QBrush(QColor(0xbb,0x99,0x44)), 4));
 	}
 	bool involves(ProcessingBox * processing)
 	{
@@ -128,7 +137,8 @@ public:
 		IncontrolDrag,
 		OutcontrolDrag,
 		MoveDrag,
-		ResizeDrag
+		ResizeDrag,
+		PanDrag
 	};
 	NetworkCanvas(QWidget * parent=0)
 		: QWidget(parent)
@@ -173,6 +183,7 @@ public:
 		QPainter painter(this);
 		paint(painter);
 	}
+public slots:
 	void print()
 	{
 		_printing = true;
@@ -190,6 +201,7 @@ public:
 		painter.end();
 		_printing = false;
 	}
+public:
 	void paint(QPainter & painter)
 	{
 		painter.setRenderHint(QPainter::Antialiasing);
@@ -215,17 +227,19 @@ public:
 		if (_tooltipText.isNull()) return;
 		QFontMetrics _metrics(font());
 		int margin =3;
+
 		double tooltipWidth = _metrics.width(_tooltipText)+2*margin;
-		double tooltipHeight = _metrics.height()+2*margin;
 		double x = _tooltipPos.x()+16;
 		if (x + tooltipWidth > width())
 		x = _tooltipPos.x() - _metrics.width(_tooltipText) - 2*margin;
+
+		double tooltipHeight = _metrics.height()+2*margin;
 		double y = _tooltipPos.y() +16;
 		if (y + tooltipHeight > height())
 		y = _tooltipPos.y() - tooltipHeight;
 
 		QRectF tooltip(x, y, _metrics.width(_tooltipText)+2*margin, tooltipHeight)  ;
-		painter.setBrush(QColor(0xff,0xff,0x90,0x90));
+		painter.setBrush(QColor(0xff,0xff,0x90,0xa0));
 		painter.setPen(QColor(0xff,0xff,0x90,0xff));
 		painter.drawRect(tooltip);
 		painter.setPen(Qt::black);
@@ -259,6 +273,13 @@ public:
 			update();
 			return;
 		}
+		if (!(event->modifiers()&Qt::ControlModifier)) return;
+		startDrag(PanDrag,0,0);
+		for (unsigned i = _processings.size(); i--; )
+		{
+			_processings[i]->startMoving(event->globalPos());
+		}
+		update();
 	}
 	void mouseReleaseEvent(QMouseEvent * event)
 	{
@@ -293,18 +314,18 @@ public:
 				region==ProcessingBox::incontrolsRegion ||
 				region==ProcessingBox::outcontrolsRegion )
 			{
-				menu.addAction(QIcon("src/images/remove.png"), "Disconnect",
+				menu.addAction(QIcon(":/icons/images/remove.png"), "Disconnect",
 					this, SLOT(onDisconnect()))->setData(event->pos());
-				menu.addAction(QIcon("src/images/editcopy.png"), "Copy connection name",
+				menu.addAction(QIcon(":/icons/images/editcopy.png"), "Copy connection name",
 					this, SLOT(onCopyConnection()))->setData(event->pos());
 			}
 			if (region==ProcessingBox::nameRegion || 
 				region==ProcessingBox::bodyRegion ||
 				region==ProcessingBox::resizeHandleRegion)
 			{
-				menu.addAction(QIcon("src/images/configure.png"), "Configure",
+				menu.addAction(QIcon(":/icons/images/configure.png"), "Configure",
 					this, SLOT(onConfigure()))->setData(event->pos());
-				menu.addAction(QIcon("src/images/editdelete.png"), "Delete",
+				menu.addAction(QIcon(":/icons/images/editdelete.png"), "Remove",
 					this, SLOT(onDeleteProcessing()))->setData(event->pos());
 			}
 			menu.exec();
@@ -312,7 +333,7 @@ public:
 		}
 		QMenu menu(this);
 		menu.move(event->globalPos());
-		menu.addAction(QIcon("src/images/newprocessing.png"), "Add processing",
+		menu.addAction(QIcon(":/icons/images/newprocessing.png"), "Add processing",
 			this, SLOT(onNewProcessing()))->setData(event->pos());
 		menu.exec();
 
@@ -580,8 +601,8 @@ private slots:
 				case ProcessingBox::outcontrolsRegion:
 					disconnectOutcontrol(_processings[i], _processings[i]->controlIndexByXPos(point));
 				break;
-			return;
 			}
+			return;
 		}
 	}
 	void onDeleteProcessing()

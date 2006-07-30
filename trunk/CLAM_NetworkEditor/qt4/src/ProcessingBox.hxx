@@ -64,6 +64,7 @@ public:
 	void rename(const QString & newName);
 	void move(const QPoint & newPosition);
 	void resize(const QSize & newSize);
+	void startMoving(const QPoint & initialGlobalPos);
 private:
 	NetworkCanvas * _canvas;
 	QString _name;
