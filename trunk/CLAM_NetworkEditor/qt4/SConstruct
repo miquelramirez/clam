@@ -62,7 +62,7 @@ env.EnableQt4Modules([
 #	'QtXml',
 #	'QtSvg',
 #	'Qt3Support',
-	], debug=True)
+	], debug=False)
 
 mainSources = {
 	'ProofOfConcept' : os.path.join('src','main.cxx'),
