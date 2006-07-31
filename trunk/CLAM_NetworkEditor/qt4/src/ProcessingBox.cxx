@@ -16,6 +16,7 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, _nOutcontrols(nOutcontrols)
 	, moving(false)
 	, resizing(false)
+	, _highLightRegion(noRegion)
 {
 	rename(name);
 }

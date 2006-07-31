@@ -152,6 +152,8 @@ public:
 		setAcceptDrops(true);
 		setMinimumSize(200,100);
 		resize(600,300);
+	   	// Overwritten latter. But some text is needed to enable it.
+		setWhatsThis("Dummy");
 		example1();
 	}
 
@@ -170,6 +172,8 @@ public:
 	}
 
 	virtual ~NetworkCanvas();
+
+	void clear();
 
 	void raise(ProcessingBox * toRaise)
 	{
@@ -353,8 +357,65 @@ public:
 	void dropEvent(QDropEvent *event)
 	{
 		QString type =  event->mimeData()->text();
-		addProcessing(event->pos(), type);
 		event->acceptProposedAction();
+		addProcessing(event->pos(), type);
+	}
+	bool event(QEvent * event)
+	{
+		if (event->type()!=QEvent::WhatsThis) return QWidget::event(event);
+		QHelpEvent * helpEvent = (QHelpEvent *) event;
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(helpEvent->pos());
+			if (region==ProcessingBox::noRegion) continue;
+			QString connectionText("%1:\nDrag it to an %2 to connect them.\n"
+					"Hover to see its name\n"
+					"The context menu has options for disconnecting and "
+					"for copying the connection name for using it on Qt Designer.\n");
+			switch (region)
+			{
+			case ProcessingBox::incontrolsRegion:
+				setWhatsThis(connectionText.arg(tr("Incontrol")).arg(tr("outcontrol")));
+			break;
+			case ProcessingBox::outcontrolsRegion:
+				setWhatsThis(connectionText.arg(tr("Outcontrol")).arg(tr("incontrol")));
+			break;
+			case ProcessingBox::inportsRegion:
+				setWhatsThis(connectionText.arg(tr("Inport")).arg(tr("outport")));
+			break;
+			case ProcessingBox::outportsRegion:
+				setWhatsThis(connectionText.arg(tr("Outport")).arg(tr("inport")));
+			break;
+			case ProcessingBox::resizeHandleRegion:
+			case ProcessingBox::nameRegion:
+			case ProcessingBox::bodyRegion:
+				setWhatsThis(tr(
+						"<p>\n"
+						"This is a Processing, which encapsulates a processing algorithm.\n"
+						"Round connectors are ports, which consumes and produces data; "
+						"inlets on the left and outlets on the right.\n"
+						"Square connectors are controls which communicate events; "
+						"inlets on the top and outlets on the bottom.\n"
+						"</p>\n"
+						"<p>Available actions</p>"
+						"<ul>\n"
+						"<li>Right click over the body or over the connectors for context actions.</li>\n"
+						"<li>Drag connectors to connect to a complementary one.</li>\n"
+						"<li>Double click the name to rename.</li>\n"
+						"<li>Drag the name to move the processing box.</li>\n"
+						"<li>Drag the handle on the bottom right to resize the processing box.</li>\n"
+						"</ul>\n"
+						));
+			}
+			return QWidget::event(event);
+		}
+		setWhatsThis(tr(
+			"<p>This is the 'network canvas'. "
+			"Drag here processings from the 'Processing tool box' "
+			"and connect them by dragging compatible connectors. "
+			"You may pan the canvas by dragging it with the control key pressed.</p>"
+			));
+		return QWidget::event(event);
 	}
 
 	void addProcessing(QPoint point, QString type)
