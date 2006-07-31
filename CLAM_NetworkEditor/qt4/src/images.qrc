@@ -1,7 +1,9 @@
 <RCC>
     <qresource prefix="/icons" >
+        <file>images/GeneLogo.png</file>
         <file>images/NetworkEditor-icon.png</file>
         <file>images/NetworkEditor-icon.svg</file>
+        <file>images/clamlogo.png</file>
         <file>images/configure.png</file>
         <file>images/contexthelp.png</file>
         <file>images/editcopy.png</file>
@@ -20,6 +22,7 @@
         <file>images/player_stop.png</file>
         <file>images/processing.png</file>
         <file>images/remove.png</file>
+        <file>images/upf-mtg-logo.png</file>
         <file>images/view_tree.png</file>
     </qresource>
 </RCC>

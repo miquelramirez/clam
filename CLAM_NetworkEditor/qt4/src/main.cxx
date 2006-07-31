@@ -46,12 +46,12 @@ int main( int argc, char ** argv )
 	app.installTranslator(&qtTranslator);
 
 	QTranslator translator;
-	translator.load(I18N_PATH "share/annotator/i18n/Annotator_"+ locale);
+	translator.load(I18N_PATH "share/networkeditor/i18n/NetworkEditor_"+ locale);
 	app.installTranslator(&translator);
 
-	QCoreApplication::setOrganizationName("UPF");
-	QCoreApplication::setOrganizationDomain("bmat.com");
-	QCoreApplication::setApplicationName("Segment tester");
+	QCoreApplication::setOrganizationName("CLAM");
+	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
+	QCoreApplication::setApplicationName("Network Editor");
 	MainWindow w;
 	w.show();
 	return app.exec();
