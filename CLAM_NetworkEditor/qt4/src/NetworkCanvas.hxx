@@ -195,8 +195,8 @@ public:
 public slots:
 	void print()
 	{
-		_printing = true;
-		QPrinter printer(QPrinter::HighResolution);
+		_printing = false;
+		QPrinter printer;
 		printer.setOutputFormat(QPrinter::PdfFormat);
 		printer.setOutputFileName("Network.pdf");
 		printer.setFullPage(true);
@@ -236,14 +236,15 @@ public:
 		if (_tooltipText.isNull()) return;
 		QFontMetrics _metrics(font());
 		int margin =3;
+		int cursorSize = 8;
 
 		double tooltipWidth = _metrics.width(_tooltipText)+2*margin;
-		double x = _tooltipPos.x()+16;
+		double x = _tooltipPos.x()+cursorSize;
 		if (x + tooltipWidth > width())
 		x = _tooltipPos.x() - _metrics.width(_tooltipText) - 2*margin;
 
 		double tooltipHeight = _metrics.height()+2*margin;
-		double y = _tooltipPos.y() +16;
+		double y = _tooltipPos.y() +cursorSize;
 		if (y + tooltipHeight > height())
 		y = _tooltipPos.y() - tooltipHeight;
 
@@ -350,12 +351,10 @@ public:
 
 	void dragEnterEvent(QDragEnterEvent *event)
 	{
-		std::cout << "Drag enter" << std::endl;
 		event->acceptProposedAction();
 	}
 	void dragMoveEvent(QDragMoveEvent *event)
 	{
-		std::cout << "Draggin" << std::endl;
 		event->acceptProposedAction();
 	}
 	void dropEvent(QDropEvent *event)
