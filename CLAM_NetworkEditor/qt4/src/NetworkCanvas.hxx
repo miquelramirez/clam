@@ -10,6 +10,10 @@
 #include <QtGui/QMenu>
 #include <QtGui/QApplication>
 #include <QtGui/QClipboard>
+#include <QtGui/QGridLayout>
+#include <QtGui/QSpinBox>
+#include <QtGui/QLabel>
+#include <QtGui/QPushButton>
 #include "ProcessingBox.hxx"
 #include <vector>
 #include <iostream>
@@ -35,7 +39,7 @@ public:
 	{
 		QPainterPath path;
 		int minTangentSize=abs(target.y()-source.y());
-		if (minTangentSize<150) minTangentSize=150;
+		if (minTangentSize>150) minTangentSize=150;
 		if (target.x()<=source.x()) minTangentSize=150;
 		int tangentOut=target.x();
 		if (tangentOut<source.x()+minTangentSize) tangentOut = source.x()+minTangentSize;
@@ -210,10 +214,10 @@ public:
 	void paint(QPainter & painter)
 	{
 		painter.setRenderHint(QPainter::Antialiasing);
-		for (unsigned i = 0; i<_portWires.size(); i++)
-			_portWires[i]->draw(painter);
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->draw(painter);
+		for (unsigned i = 0; i<_portWires.size(); i++)
+			_portWires[i]->draw(painter);
 		for (unsigned i = 0; i<_processings.size(); i++)
 			_processings[i]->paintFromParent(painter);
 		if (_dragStatus==InportDrag)
@@ -420,10 +424,38 @@ public:
 
 	void addProcessing(QPoint point, QString type)
 	{
-		unsigned nInports= QInputDialog::getInteger(this, type, "Number of inports",2,0,10);
-		unsigned nOutports= QInputDialog::getInteger(this, type, "Number of outports",2,0,10);
-		unsigned nIncontrols= QInputDialog::getInteger(this, type, "Number of incontrols",2,0,10);
-		unsigned nOutcontrols= QInputDialog::getInteger(this, type, "Number of outcontrols",2,0,10);
+		QDialog * portsDialog = new QDialog(this);
+		QGridLayout * layout = new QGridLayout(portsDialog);
+		const char * labels[] = {
+			"Number of inports",
+			"Number of outports",
+			"Number of incontrols",
+			"Number of outcontrols",
+			0
+		};
+		std::vector <QSpinBox*> widgets;
+		for (unsigned i = 0; labels[i]; i++) 
+		{
+			QSpinBox * widget = new QSpinBox(portsDialog);
+			widget->setMinimum(0);
+			widget->setMaximum(10);
+			widget->setValue(2);
+			QLabel * label = new QLabel(labels[i], portsDialog);
+			layout->addWidget(label, i,0);
+			layout->addWidget(widget, i,1);
+			widgets.push_back(widget);
+		}
+		QPushButton * ok = new QPushButton("Ok",portsDialog);
+		QPushButton * cancel = new QPushButton("Cancel",portsDialog);
+		connect(ok, SIGNAL(clicked()), portsDialog, SLOT(accept()));
+		connect(cancel, SIGNAL(clicked()), portsDialog, SLOT(reject()));
+		layout->addWidget(cancel,4,0);
+		layout->addWidget(ok,4,1);
+		if (!portsDialog->exec()) return;
+		unsigned nInports= widgets[0]->value();
+		unsigned nOutports= widgets[1]->value();
+		unsigned nIncontrols= widgets[2]->value();
+		unsigned nOutcontrols= widgets[3]->value();
 		_processings.push_back(new ProcessingBox(this, type, nInports, nOutports, nIncontrols, nOutcontrols));
 		_processings.back()->move(point);
 	}
