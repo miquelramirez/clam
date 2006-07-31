@@ -23,11 +23,6 @@
 #define __PROCESSINGTREE_HXX__
 
 #include <QtGui/QTreeWidget>
-//Added by qt3to4:
-#include <QtGui/QMouseEvent>
-#include <string>
-#include <CLAM/Signalv2.hxx>
-#include <CLAM/Slotv0.hxx>
 
 namespace CLAM
 {
