@@ -37,28 +37,6 @@
      <height>28</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="action_Whats_this" />
-    <addaction name="action_Online_tutorial" />
-    <addaction name="action_About" />
-   </widget>
-   <widget class="QMenu" name="menu_Network" >
-    <property name="title" >
-     <string>&amp;Network</string>
-    </property>
-    <addaction name="action_Play" />
-    <addaction name="action_Stop" />
-    <addaction name="action_Run_prototyper" />
-   </widget>
-   <widget class="QMenu" name="menu_View" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <addaction name="action_Show_processing_toolbox" />
-   </widget>
    <widget class="QMenu" name="menu_File" >
     <property name="title" >
      <string>&amp;File</string>
@@ -73,9 +51,38 @@
     <addaction name="separator" />
     <addaction name="action_Quit" />
    </widget>
+   <widget class="QMenu" name="menu_Interface" >
+    <property name="title" >
+     <string>&amp;Interface</string>
+    </property>
+    <addaction name="action_Edit_Interface" />
+    <addaction name="action_Run_prototyper" />
+   </widget>
+   <widget class="QMenu" name="menu_View" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Show_processing_toolbox" />
+   </widget>
+   <widget class="QMenu" name="menu_Network" >
+    <property name="title" >
+     <string>&amp;Network</string>
+    </property>
+    <addaction name="action_Play" />
+    <addaction name="action_Stop" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="action_Whats_this" />
+    <addaction name="action_Online_tutorial" />
+    <addaction name="action_About" />
+   </widget>
    <addaction name="menu_File" />
    <addaction name="menu_Network" />
    <addaction name="menu_View" />
+   <addaction name="menu_Interface" />
    <addaction name="menuHelp" />
   </widget>
   <widget class="QStatusBar" name="statusbar" />
@@ -93,10 +100,16 @@
    <addaction name="action_Open" />
    <addaction name="action_Save" />
    <addaction name="action_Print" />
+   <addaction name="separator" />
    <addaction name="action_Show_processing_toolbox" />
+   <addaction name="separator" />
    <addaction name="action_Play" />
    <addaction name="action_Stop" />
+   <addaction name="separator" />
+   <addaction name="action_Edit_Interface" />
    <addaction name="action_Run_prototyper" />
+   <addaction name="separator" />
+   <addaction name="action_Online_tutorial" />
    <addaction name="action_Whats_this" />
   </widget>
   <action name="action_New" >
@@ -185,6 +198,9 @@
    </property>
   </action>
   <action name="action_About" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/NetworkEditor-icon.png</iconset>
+   </property>
    <property name="text" >
     <string>&amp;About</string>
    </property>
@@ -236,6 +252,14 @@
    </property>
    <property name="text" >
     <string>Print</string>
+   </property>
+  </action>
+  <action name="action_Edit_Interface" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/designer.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Edit Interface</string>
    </property>
   </action>
  </widget>
