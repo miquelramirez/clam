@@ -7,6 +7,10 @@
 #include <QtGui/QWhatsThis>
 #include <QtCore/QProcess>
 #include "uic_About.hxx"
+#include <CLAM/Network.hxx>
+#include <CLAM/NetworkPlayer.hxx>
+#include <CLAM/CLAMVersion.hxx>
+#include "NetworkEditorVersion.hxx"
 
 class MainWindow : public QMainWindow
 {
@@ -26,6 +30,7 @@ public:
 		w->setWidget(_canvas);
 		QDockWidget * dock = new QDockWidget(this);
 		NetworkGUI::ProcessingTree * processingTree = new NetworkGUI::ProcessingTree(dock);
+		dock->setWindowTitle("Processing Toolbox");
 		dock->setWidget(processingTree);
 		addDockWidget(Qt::LeftDockWidgetArea, dock);
 
@@ -33,7 +38,16 @@ public:
 		Ui::About aboutUi;
 		aboutUi.setupUi(_aboutDialog);
 
-		connect(ui.action_Enable_processings_menu, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));
+		aboutUi.versionInfo->setText(tr(
+			"<p><b>Network Editor version %1</b></p>"
+			"<p>Using CLAM version %2</p>"
+			)
+			.arg(NetworkEditor::GetFullVersion())
+			.arg(CLAM::GetFullVersion())
+			);
+
+
+		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 	}
 public slots:
@@ -63,6 +77,8 @@ public slots:
 private:
 	NetworkCanvas * _canvas;
 	QDialog * _aboutDialog;
+	CLAM::Network * _network;
+	CLAM::NetworkPlayer * _networkPlayer;
 };
 
 

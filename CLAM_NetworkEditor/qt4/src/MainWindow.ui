@@ -34,7 +34,7 @@
      <x>0</x>
      <y>0</y>
      <width>560</width>
-     <height>29</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp" >
@@ -44,12 +44,6 @@
     <addaction name="action_Whats_this" />
     <addaction name="action_Online_tutorial" />
     <addaction name="action_About" />
-   </widget>
-   <widget class="QMenu" name="menu_View" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <addaction name="action_Enable_processings_menu" />
    </widget>
    <widget class="QMenu" name="menu_Network" >
     <property name="title" >
@@ -73,22 +67,22 @@
     <addaction name="separator" />
     <addaction name="action_Quit" />
    </widget>
+   <widget class="QMenu" name="menu_View" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Show_processing_toolbox" />
+   </widget>
    <addaction name="menu_File" />
    <addaction name="menu_Network" />
    <addaction name="menu_View" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>460</y>
-     <width>560</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
+   <property name="windowTitle" >
+    <string>Main ToolBar</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -99,7 +93,7 @@
    <addaction name="action_Open" />
    <addaction name="action_Save_network" />
    <addaction name="action_Print" />
-   <addaction name="action_Enable_processings_menu" />
+   <addaction name="action_Show_processing_toolbox" />
    <addaction name="action_Play" />
    <addaction name="action_Stop" />
    <addaction name="action_Run_prototyper" />
@@ -195,7 +189,7 @@
     <string>&amp;About</string>
    </property>
   </action>
-  <action name="action_Enable_processings_menu" >
+  <action name="action_Show_processing_toolbox" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -206,7 +200,7 @@
     <iconset resource="images.qrc" >:/icons/images/view_tree.png</iconset>
    </property>
    <property name="text" >
-    <string>Enable &amp;processing menu</string>
+    <string>Show &amp;processing toolbox</string>
    </property>
   </action>
   <action name="action_Whats_this" >

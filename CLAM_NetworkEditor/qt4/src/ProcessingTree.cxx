@@ -21,6 +21,7 @@
 
 #include "ProcessingTree.hxx"
 #include <QtGui/QMouseEvent>
+#include <QtGui/QHeaderView>
 
 namespace NetworkGUI
 {
@@ -140,8 +141,9 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	: QTreeWidget(parent)
 {
 	setColumnCount(1);
-	setHeaderLabels(QStringList() << tr("Processings tool box"));
+	setHeaderLabels(QStringList() << tr("Processings toolbox"));
 	setRootIsDecorated( true );
+	header()->hide();
 
 	for (unsigned i=0; processingClasses[i]; i++)
 	{
