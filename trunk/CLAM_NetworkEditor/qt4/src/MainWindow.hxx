@@ -5,12 +5,23 @@
 #include <QtGui/QScrollArea>
 #include <QtGui/QDockWidget>
 #include <QtGui/QWhatsThis>
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
 #include <QtCore/QProcess>
 #include "uic_About.hxx"
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
+#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/BlockingNetworkPlayer.hxx>
+#include <CLAM/XMLStorage.hxx>
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
+
+#ifndef DATA_EXAMPLES_PATH
+// TODO: QT4PORT without the ../
+#define DATA_EXAMPLES_PATH "../example-data"
+#endif
+
 
 class MainWindow : public QMainWindow
 {
@@ -49,7 +60,46 @@ public:
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
+		updateCaption();
+
+		int frameSize = 512;
+	    _network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
+		_networkPlayer = new CLAM::BlockingNetworkPlayer();
+		_networkPlayer->SetNetwork(_network);
 	}
+
+	QString networkFilter() {return tr("CLAM Network files (*.clamnetwork)"); }
+
+	void load(const QString & filename)
+	{
+		std::cout << "Loading " << filename.toStdString() << "..." << std::endl;
+		clear();
+		CLAM::XMLStorage::Restore(_network, filename.toStdString());
+		_networkFile = filename;
+		updateCaption();
+		// TODO: Error on load
+		// TODO: Update canvas
+	}
+	void save(const QString & filename)
+	{
+		std::cout << "Saving " << filename.toStdString() << "..." << std::endl;
+		CLAM::XMLStorage::Dump(_network, "network", filename.toStdString());
+		_networkFile = filename;
+		updateCaption();
+	}
+	void clear()
+	{
+		_networkPlayer->Stop();
+		_networkFile = QString();
+		_canvas->clear();
+		_network.Clear();
+		updateCaption();
+	}
+	void updateCaption()
+	{
+		setWindowTitle(tr("Network Editor - %1").arg(_networkFile.isNull()?tr("Untitled"):_networkFile));
+	}
+
 public slots:
 	void on_action_Whats_this_triggered()
 	{
@@ -69,16 +119,45 @@ public slots:
 	}
 	void on_action_New_triggered()
 	{
-		// TODO: Choose the network type (jack, alsa...)?
-		// TODO: Set the filename to null
-		// TODO: Erase the CLAM network
-		_canvas->clear();
+		clear();
+	}
+	void on_action_Open_triggered()
+	{
+		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", "", networkFilter());
+		if (file==QString::null) return;
+		load(file);
+	}
+	void on_action_Open_example_triggered()
+	{
+		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", DATA_EXAMPLES_PATH, networkFilter());
+		if (file==QString::null) return;
+		load(file);
+	}
+	void on_action_Save_triggered()
+	{
+		if (_networkFile.isNull()) on_action_Save_as_triggered();
+		else save(_networkFile);
+	}
+	void on_action_Save_as_triggered()
+	{
+        QString file = QFileDialog::getSaveFileName(this, "", _networkFile, networkFilter());
+        if (file==QString::null) return;
+		save(file);
+	}
+	void on_action_Play_triggered()
+	{
+		_networkPlayer->Start();
+	}
+	void on_action_Stop_triggered()
+	{
+		_networkPlayer->Stop();
 	}
 private:
 	NetworkCanvas * _canvas;
 	QDialog * _aboutDialog;
-	CLAM::Network * _network;
+	CLAM::Network _network;
 	CLAM::NetworkPlayer * _networkPlayer;
+	QString _networkFile;
 };
 
 

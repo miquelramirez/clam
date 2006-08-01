@@ -53,25 +53,25 @@
     <addaction name="action_Stop" />
     <addaction name="action_Run_prototyper" />
    </widget>
+   <widget class="QMenu" name="menu_View" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Show_processing_toolbox" />
+   </widget>
    <widget class="QMenu" name="menu_File" >
     <property name="title" >
      <string>&amp;File</string>
     </property>
     <addaction name="action_New" />
     <addaction name="action_Open" />
-    <addaction name="action_Open_example_network" />
-    <addaction name="action_Save_network" />
+    <addaction name="action_Open_example" />
+    <addaction name="action_Save" />
     <addaction name="action_Save_as" />
     <addaction name="separator" />
     <addaction name="action_Print" />
     <addaction name="separator" />
     <addaction name="action_Quit" />
-   </widget>
-   <widget class="QMenu" name="menu_View" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <addaction name="action_Show_processing_toolbox" />
    </widget>
    <addaction name="menu_File" />
    <addaction name="menu_Network" />
@@ -91,7 +91,7 @@
    </attribute>
    <addaction name="action_New" />
    <addaction name="action_Open" />
-   <addaction name="action_Save_network" />
+   <addaction name="action_Save" />
    <addaction name="action_Print" />
    <addaction name="action_Show_processing_toolbox" />
    <addaction name="action_Play" />
@@ -124,7 +124,7 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="action_Open_example_network" >
+  <action name="action_Open_example" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
    </property>
@@ -146,7 +146,7 @@
     <string>Space</string>
    </property>
   </action>
-  <action name="action_Save_network" >
+  <action name="action_Save" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/filesave.png</iconset>
    </property>
