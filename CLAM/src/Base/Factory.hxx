@@ -124,7 +124,7 @@ public: // Inner classes. Public for better testing
 			CreatorMethod res = CommonGetCreator(creatorId);
 			if (!res)
 			{
-				std::string errmsg("GetCreator invoked with a non existent key : ");
+				std::string errmsg("GetCreator invoked with a non existent key: ");
 				errmsg += creatorId + "\nRegistered keys are:\n";
 				errmsg += GetRegisteredNames();
 				CLAM_ASSERT(res,errmsg.c_str());
@@ -141,8 +141,10 @@ public: // Inner classes. Public for better testing
 			CreatorMethod res = CommonGetCreator(creatorId);
 			if (!res)
 			{
-				std::string msg("GetCreatorSafe invoked with a non existent key");
-				msg += std::string(creatorId);
+				std::string msg("GetCreatorSafe invoked with a non existent key: ");
+				msg += creatorId;
+				msg += "\nRegistered keys are:\n";
+				msg += GetRegisteredNames();
 				throw ErrFactory(msg.c_str());
 			}
 			return res;
