@@ -62,7 +62,7 @@ namespace CLAM
 		XMLAdapter<Text> classNameAdapter( className, "type");
 		store.Load(classNameAdapter);
 
-		mAdaptee = ProcessingFactory::GetInstance().Create(className);
+		mAdaptee = ProcessingFactory::GetInstance().CreateSafe(className);
 		ProcessingConfig&  cfg = (ProcessingConfig&)mAdaptee->GetConfig();
 		XMLComponentAdapter configAdapter( cfg );
 		store.Load(configAdapter);
