@@ -97,7 +97,7 @@ public:
 	}
 	void updateCaption()
 	{
-		setWindowTitle(tr("Network Editor - %1").arg(_networkFile.isNull()?tr("Untitled"):_networkFile));
+		setWindowTitle(tr("CLAM Network Editor - %1").arg(_networkFile.isNull()?tr("Untitled"):_networkFile));
 	}
 
 public slots:
