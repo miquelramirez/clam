@@ -3,7 +3,6 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QPainter>
-#include <QtGui/QPainterPath>
 #include <QtGui/QMouseEvent>
 #include <QtGui/QPrinter>
 #include <QtGui/QPrintDialog>
@@ -15,119 +14,8 @@
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 #include "ProcessingBox.hxx"
+#include "Wires.hxx"
 #include <vector>
-#include <iostream>
-#include <cmath>
-
-class PortWire
-{
-public:
-	PortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
-		: _source(source)
-		, _target(target)
-		, _outlet(outlet)
-		, _inlet(inlet)
-	{
-	}
-	void draw(QPainter & painter)
-	{
-		QPoint source = _source->getOutportPos(_outlet);
-		QPoint target = _target->getInportPos(_inlet);
-		draw(painter, source, target);
-	}
-	static void draw(QPainter & painter, QPoint source, QPoint target)
-	{
-		QPainterPath path;
-		int minTangentSize=abs(target.y()-source.y());
-		if (minTangentSize>150) minTangentSize=150;
-		if (target.x()<=source.x()) minTangentSize=150;
-		int tangentOut=target.x();
-		if (tangentOut<source.x()+minTangentSize) tangentOut = source.x()+minTangentSize;
-		int tangentIn=source.x();
-		if (tangentIn>target.x()-minTangentSize) tangentIn = target.x()-minTangentSize;
-
-		// We use tangentY instead of plain source.y() in order to avoid a qt bezier bug
-		int tangentY = source.y();
-		if (std::abs(source.y()-target.y())<7) tangentY+=6;
-
-		path.moveTo(source);
-		path.cubicTo(tangentOut, tangentY, tangentIn, target.y(), target.x(), target.y());
-		painter.strokePath(path, QPen(QBrush(QColor(0x50,0x50,0x22)), 6));
-		painter.strokePath(path, QPen(QBrush(QColor(0xbb,0x99,0x44)), 4));
-	}
-	bool involves(ProcessingBox * processing)
-	{
-		return processing == _source || processing == _target;
-	}
-	bool comesFrom(ProcessingBox * source, unsigned outlet)
-	{
-		return source == _source && _outlet == outlet;
-	}
-	bool goesTo(ProcessingBox * target, unsigned inlet)
-	{
-		return target == _target && _inlet == inlet;
-	}
-private:
-	ProcessingBox * _source;
-	ProcessingBox * _target;
-	unsigned _outlet;
-	unsigned _inlet;
-};
-
-class ControlWire
-{
-public:
-	ControlWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
-		: _source(source)
-		, _target(target)
-		, _outlet(outlet)
-		, _inlet(inlet)
-	{
-	}
-	void draw(QPainter & painter)
-	{
-		QPoint source = _source->getOutcontrolPos(_outlet);
-		QPoint target = _target->getIncontrolPos(_inlet);
-		draw(painter, source, target);
-	}
-	static void draw(QPainter & painter, QPoint source, QPoint target)
-	{
-		QPainterPath path;
-		int minTangentSize=abs(target.x()-source.x());
-		if (minTangentSize>150) minTangentSize=150;
-		if (target.y()<source.y()) minTangentSize=150;
-		int tangentOut=target.y();
-		if (tangentOut<source.y()+minTangentSize) tangentOut = source.y()+minTangentSize;
-		int tangentIn=source.y();
-		if (tangentIn>target.y()-minTangentSize) tangentIn = target.y()-minTangentSize;
-
-		// We use tangentX instead of plain source.x() in order to avoid a qt bezier bug
-		int tangentX = source.x();
-		if (std::abs(source.x()-target.x())<7) tangentX+=6;
-
-		path.moveTo(source);
-		path.cubicTo(tangentX, tangentOut, target.x(), tangentIn, target.x(), target.y());
-		painter.strokePath(path, QPen(QBrush(QColor(0x20,0x50,0x52)), 4));
-		painter.strokePath(path, QPen(QBrush(QColor(0x4b,0x99,0xb4)), 2));
-	}
-	bool involves(ProcessingBox * processing)
-	{
-		return processing == _source || processing == _target;
-	}
-	bool comesFrom(ProcessingBox * source, unsigned outlet)
-	{
-		return source == _source && _outlet == outlet;
-	}
-	bool goesTo(ProcessingBox * target, unsigned inlet)
-	{
-		return target == _target && _inlet == inlet;
-	}
-private:
-	ProcessingBox * _source;
-	ProcessingBox * _target;
-	unsigned _outlet;
-	unsigned _inlet;
-};
 
 class NetworkCanvas : public QWidget
 {
@@ -195,7 +83,7 @@ public:
 public slots:
 	void print()
 	{
-		_printing = false;
+		_printing = true;
 		QPrinter printer;
 		printer.setOutputFormat(QPrinter::PdfFormat);
 		printer.setOutputFileName("Network.pdf");
@@ -471,16 +359,17 @@ public:
 	}
 	QColor colorBoxFrame() const
 	{
-		if (_printing) return QColor(0xd0,0xd0,0xd0);
+		if (_printing) return QColor(0xf0,0xf0,0xf0);
 		return QColor(0x30,0x8f,0x30,0xaf);
 	}
 	QColor colorBoxBody() const
 	{
-		if (_printing) return QColor(0xe0,0xe0,0xe0);
+		if (_printing) return QColor(0xd0,0xd0,0xd0);
 		return QColor(0xF9,0xFb,0xF9,0xaf);
 	}
 	QColor colorResizeHandle() const
 	{
+		if (_printing) return QColor(0xd0,0xf0,0xd0);
 		return QColor(0xf9,0xbb,0xb9);
 	}
 	QColor colorPortOutline() const
@@ -489,15 +378,16 @@ public:
 	}
 	QColor colorPort() const
 	{
+		if (_printing) return QColor(0xd0,0x50,0xa0);
 		return QColor(0xa6,0x60,0x84);
-	}
-	QColor colorControl() const
-	{
-		return QColor(0xf6,0x60,0x84);
 	}
 	QColor colorControlOutline() const
 	{
 		return QColor(0x53,0x30,0x42);
+	}
+	QColor colorControl() const
+	{
+		return QColor(0xf6,0x60,0x84);
 	}
 
 	void startDrag(DragStatus status, ProcessingBox * processing, int connection)
