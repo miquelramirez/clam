@@ -14,6 +14,7 @@
 #include <CLAM/PushFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
+#include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
 
@@ -74,7 +75,20 @@ public:
 	{
 		std::cout << "Loading " << filename.toStdString() << "..." << std::endl;
 		clear();
-		CLAM::XMLStorage::Restore(_network, filename.toStdString());
+		try
+		{
+			CLAM::XMLStorage::Restore(_network, filename.toStdString());
+		}
+		catch(CLAM::XmlStorageErr &e)
+		{
+			QMessageBox::critical(this, tr("Error loading the network"), 
+					tr("<p>An occurred while loading the network file.<p>"
+						"<p><b>%1</b></p>").arg(e.what()));
+			clear();
+			return;
+		}
+		_canvas->loadNetwork(&_network);
+		_canvas->loadPositions(filename+".pos");
 		_networkFile = filename;
 		updateCaption();
 		// TODO: Error on load
@@ -84,6 +98,7 @@ public:
 	{
 		std::cout << "Saving " << filename.toStdString() << "..." << std::endl;
 		CLAM::XMLStorage::Dump(_network, "network", filename.toStdString());
+		_canvas->savePositions(filename+".pos");
 		_networkFile = filename;
 		updateCaption();
 	}
