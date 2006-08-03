@@ -9,6 +9,7 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
+#include <CLAM/Processing.hxx>
 
 class NetworkCanvas;
 
@@ -41,6 +42,7 @@ public:
 			unsigned nIncontrols, unsigned nOutcontrols);
 	virtual ~ProcessingBox();
 
+	void setProcessing(CLAM::Processing * processing);
 	void paintFromParent(QPainter & painter);
 	void paintBox(QPainter & painter);
 	Region getRegion(const QPoint & point) const;
@@ -85,6 +87,7 @@ private:
 	QSize _minimumSize;
 	Region _highLightRegion;
 	unsigned _highLightConnection;
+	CLAM::Processing * _processing;
 };
 
 
