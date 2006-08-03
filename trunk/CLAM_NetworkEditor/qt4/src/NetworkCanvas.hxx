@@ -13,9 +13,12 @@
 #include <QtGui/QSpinBox>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 #include "ProcessingBox.hxx"
 #include "Wires.hxx"
 #include <vector>
+#include <CLAM/Network.hxx>
 
 class NetworkCanvas : public QWidget
 {
@@ -62,6 +65,8 @@ public:
 		addControlWire(_processings[1],1, _processings[0],1);
 		addControlWire(_processings[1],1, _processings[2],1);
 	}
+
+	static quint32 positionFileMagicNumber() { return 0x01026420; }
 
 	virtual ~NetworkCanvas();
 
@@ -311,40 +316,57 @@ public:
 
 	void addProcessing(QPoint point, QString type)
 	{
-		QDialog * portsDialog = new QDialog(this);
-		QGridLayout * layout = new QGridLayout(portsDialog);
-		const char * labels[] = {
-			"Number of inports",
-			"Number of outports",
-			"Number of incontrols",
-			"Number of outcontrols",
-			0
-		};
-		std::vector <QSpinBox*> widgets;
-		for (unsigned i = 0; labels[i]; i++) 
+		addProcessingBox(type, 0, point);
+	}
+
+	void addProcessingBox(const QString & name, CLAM::Processing * processing, QPoint point=QPoint(), QSize size=QSize())
+	{
+		if (processing)
 		{
-			QSpinBox * widget = new QSpinBox(portsDialog);
-			widget->setMinimum(0);
-			widget->setMaximum(10);
-			widget->setValue(2);
-			QLabel * label = new QLabel(labels[i], portsDialog);
-			layout->addWidget(label, i,0);
-			layout->addWidget(widget, i,1);
-			widgets.push_back(widget);
+			unsigned nInports = processing->GetInPorts().Size();
+			unsigned nOutports = processing->GetOutPorts().Size();
+			unsigned nIncontrols = processing->GetInControls().Size();
+			unsigned nOutcontrols = processing->GetOutControls().Size();
+			_processings.push_back(new ProcessingBox(this, name, nInports, nOutports, nIncontrols, nOutcontrols));
 		}
-		QPushButton * ok = new QPushButton("Ok",portsDialog);
-		QPushButton * cancel = new QPushButton("Cancel",portsDialog);
-		connect(ok, SIGNAL(clicked()), portsDialog, SLOT(accept()));
-		connect(cancel, SIGNAL(clicked()), portsDialog, SLOT(reject()));
-		layout->addWidget(cancel,4,0);
-		layout->addWidget(ok,4,1);
-		if (!portsDialog->exec()) return;
-		unsigned nInports= widgets[0]->value();
-		unsigned nOutports= widgets[1]->value();
-		unsigned nIncontrols= widgets[2]->value();
-		unsigned nOutcontrols= widgets[3]->value();
-		_processings.push_back(new ProcessingBox(this, type, nInports, nOutports, nIncontrols, nOutcontrols));
+		else
+		{
+			QDialog * portsDialog = new QDialog(this);
+			QGridLayout * layout = new QGridLayout(portsDialog);
+			const char * labels[] = {
+				"Number of inports",
+				"Number of outports",
+				"Number of incontrols",
+				"Number of outcontrols",
+				0
+			};
+			std::vector <QSpinBox*> widgets;
+			for (unsigned i = 0; labels[i]; i++) 
+			{
+				QSpinBox * widget = new QSpinBox(portsDialog);
+				widget->setMinimum(0);
+				widget->setMaximum(10);
+				widget->setValue(2);
+				QLabel * label = new QLabel(labels[i], portsDialog);
+				layout->addWidget(label, i,0);
+				layout->addWidget(widget, i,1);
+				widgets.push_back(widget);
+			}
+			QPushButton * ok = new QPushButton("Ok",portsDialog);
+			QPushButton * cancel = new QPushButton("Cancel",portsDialog);
+			connect(ok, SIGNAL(clicked()), portsDialog, SLOT(accept()));
+			connect(cancel, SIGNAL(clicked()), portsDialog, SLOT(reject()));
+			layout->addWidget(cancel,4,0);
+			layout->addWidget(ok,4,1);
+			if (!portsDialog->exec()) return;
+			unsigned nInports= widgets[0]->value();
+			unsigned nOutports= widgets[1]->value();
+			unsigned nIncontrols= widgets[2]->value();
+			unsigned nOutcontrols= widgets[3]->value();
+			_processings.push_back(new ProcessingBox(this, name, nInports, nOutports, nIncontrols, nOutcontrols));
+		}
 		_processings.back()->move(point);
+		_processings.back()->resize(size);
 	}
 
 	QColor colorBoxFrameText() const
@@ -430,12 +452,6 @@ public:
 	{
 		_controlWires.push_back(new ControlWire(source, outlet, target, inlet));
 	}
-	ProcessingBox * addProcessing(const QString & type, int x, int y)
-	{
-		_processings.push_back(new ProcessingBox(this, type, 4, 5, 2, 2));
-		_processings.back()->move(QPoint(x,y));
-		return _processings.back();
-	}
 
 	void disconnectIncontrol(ProcessingBox * processing, unsigned index)
 	{
@@ -520,6 +536,114 @@ public:
 		}
 		delete processing;
 		_processings.erase(std::find(_processings.begin(), _processings.end(), processing));
+	}
+
+	void loadNetwork(CLAM::Network * network)
+	{
+		CLAM::Network::ProcessingsMap::const_iterator it;
+		for (it=network->BeginProcessings(); it!=network->EndProcessings(); it++)
+		{
+			const std::string & name = it->first;
+			CLAM::Processing * processing = it->second;
+			addProcessingBox( name.c_str(),  processing );
+		}
+		// TODO: Refactor this code please!!!
+		for (unsigned p = 0; p<_processings.size(); p++)
+		{
+			std::string producerName = _processings[p]->getName().toStdString();
+			CLAM::Processing & producer = network->GetProcessing(producerName);
+			CLAM::OutPortRegistry & outPorts = producer.GetOutPorts();
+			for (unsigned op = 0; op<outPorts.Size(); op++)
+			{
+				CLAM::OutPortBase & outPort = outPorts.GetByNumber(op);
+				std::string completeOutName = producerName + "." + outPort.GetName();
+				CLAM::Network::NamesList connected = network->GetInPortsConnectedTo( completeOutName );
+				CLAM::Network::NamesList::iterator inName;
+				for(inName=connected.begin(); inName!=connected.end(); inName++)
+				{
+					std::string consumerName = network->GetProcessingIdentifier(*inName);
+					std::string peerConnection = network->GetLastIdentifier(*inName);
+					CLAM::Processing & consumer = network->GetProcessing(consumerName);
+					CLAM::InPortRegistry & inPorts = consumer.GetInPorts();
+					ProcessingBox * consumerBox = getBox(consumerName.c_str());
+					if (!consumerBox) continue; // TODO: Error?
+					for (unsigned ip=0; ip<consumer.GetInPorts().Size(); ip++)
+					{
+						CLAM::InPortBase & inPort = inPorts.GetByNumber(ip);
+						if (inPort.GetName()!=peerConnection) continue;
+						addPortWire(_processings[p], op, consumerBox, ip);
+						break;
+					}
+				}
+			}
+			CLAM::OutControlRegistry & outControls = producer.GetOutControls();
+			for (unsigned op = 0; op<outControls.Size(); op++)
+			{
+				CLAM::OutControl & outControl = outControls.GetByNumber(op);
+				std::string completeOutName = producerName + "." + outControl.GetName();
+				CLAM::Network::NamesList connected = network->GetInControlsConnectedTo( completeOutName );
+				CLAM::Network::NamesList::iterator inName;
+				for(inName=connected.begin(); inName!=connected.end(); inName++)
+				{
+					std::string consumerName = network->GetProcessingIdentifier(*inName);
+					std::string peerConnection = network->GetLastIdentifier(*inName);
+					CLAM::Processing & consumer = network->GetProcessing(consumerName);
+					CLAM::InControlRegistry & inControls = consumer.GetInControls();
+					ProcessingBox * consumerBox = getBox(consumerName.c_str());
+					if (!consumerBox) continue; // TODO: Error?
+					for (unsigned ip=0; ip<consumer.GetInControls().Size(); ip++)
+					{
+						CLAM::InControl & inControl = inControls.GetByNumber(ip);
+						if (inControl.GetName()!=peerConnection) continue;
+						addControlWire(_processings[p], op, consumerBox, ip);
+						break;
+					}
+				}
+			}
+		}
+	}
+	void savePositions(const QString & filename)
+	{
+		QFile file(filename);
+		file.open(QIODevice::WriteOnly);
+		QDataStream stream(&file);
+		stream << positionFileMagicNumber();
+		for (unsigned i=0; i<_processings.size(); i++)
+		{
+			stream << _processings[i]->getName();
+			stream << _processings[i]->pos();
+			stream << _processings[i]->size();
+		}
+	}
+	void loadPositions(const QString & filename)
+	{
+		QFile file(filename);
+		file.open(QIODevice::ReadOnly);
+		QDataStream stream(&file);
+		quint32 magic;
+		stream >> magic;
+		if (magic!=positionFileMagicNumber()) return;
+		while (!stream.atEnd())
+		{
+			QString name;
+			QPoint pos;
+			QSize size;
+			stream >> name;
+			stream >> pos;
+			stream >> size;
+			if (stream.status()!=QDataStream::Ok) break;
+			ProcessingBox * box = getBox(name);
+			if (!box) continue;
+			box->move(pos);
+			box->resize(size);
+		}
+	}
+private:
+	ProcessingBox * getBox(const QString & name)
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+			if (_processings[i]->getName()==name) return _processings[i];
+		return 0;
 	}
 
 private slots:
