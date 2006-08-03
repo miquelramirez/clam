@@ -262,7 +262,10 @@ public:
 	}
 	void wheelEvent(QWheelEvent * event)
 	{
-		zoom(event->delta());
+		const int deltaUnitsPerDegree = 8;
+		const int degreesPerStep = 15;
+		int steps = event->delta() / (deltaUnitsPerDegree*degreesPerStep);
+		zoom(steps);
 	}
 	bool event(QEvent * event)
 	{
