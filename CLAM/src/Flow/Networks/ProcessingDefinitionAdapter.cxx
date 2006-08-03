@@ -26,6 +26,7 @@
 #include "ProcessingConfig.hxx"
 #include "Factory.hxx"
 #include "XMLAdapter.hxx"
+#include "XmlStorageErr.hxx"
 
 namespace CLAM
 {
@@ -62,7 +63,17 @@ namespace CLAM
 		XMLAdapter<Text> classNameAdapter( className, "type");
 		store.Load(classNameAdapter);
 
-		mAdaptee = ProcessingFactory::GetInstance().CreateSafe(className);
+		try
+		{
+			mAdaptee = ProcessingFactory::GetInstance().CreateSafe(className);
+		}
+		catch (ErrFactory & e)
+		{
+			std::string message = 
+				"Trying to create a processing of type '" +
+				className + "' which is not available.";
+			throw XmlStorageErr(message.c_str());
+		}
 		ProcessingConfig&  cfg = (ProcessingConfig&)mAdaptee->GetConfig();
 		XMLComponentAdapter configAdapter( cfg );
 		store.Load(configAdapter);
