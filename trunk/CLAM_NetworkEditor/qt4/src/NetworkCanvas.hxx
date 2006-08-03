@@ -43,6 +43,7 @@ public:
 		, _dragConnectionIndex(0)
 		, _printing(false)
 		, _zoomFactor(1.)
+		, _network(0)
 	{
 		setMouseTracking(true);
 		setAcceptDrops(true);
@@ -318,20 +319,19 @@ public:
 
 	void addProcessing(QPoint point, QString type)
 	{
-		addProcessingBox(type, 0, point);
+		if (!_network)
+		{
+			addProcessingBox(type, 0, point);
+			return;
+		}
+		std::string name = _network->AddProcessing(type.toStdString());
+		CLAM::Processing & processing = _network->GetProcessing(name);
+		addProcessingBox(name.c_str(), &processing, point);
 	}
 
 	void addProcessingBox(const QString & name, CLAM::Processing * processing, QPoint point=QPoint(), QSize size=QSize())
 	{
-		if (processing)
-		{
-			unsigned nInports = processing->GetInPorts().Size();
-			unsigned nOutports = processing->GetOutPorts().Size();
-			unsigned nIncontrols = processing->GetInControls().Size();
-			unsigned nOutcontrols = processing->GetOutControls().Size();
-			_processings.push_back(new ProcessingBox(this, name, nInports, nOutports, nIncontrols, nOutcontrols));
-		}
-		else
+		if (!processing)
 		{
 			QDialog * portsDialog = new QDialog(this);
 			QGridLayout * layout = new QGridLayout(portsDialog);
@@ -367,6 +367,9 @@ public:
 			unsigned nOutcontrols= widgets[3]->value();
 			_processings.push_back(new ProcessingBox(this, name, nInports, nOutports, nIncontrols, nOutcontrols));
 		}
+		else
+			_processings.push_back(new ProcessingBox(this, name, 0, 0, 0, 0));
+		_processings.back()->setProcessing(processing);
 		_processings.back()->move(point);
 		_processings.back()->resize(size);
 	}
@@ -430,21 +433,41 @@ public:
 		{
 			case InportDrag:
 			{
-				addPortWire(processing, connection, _dragProcessing, _dragConnectionIndex);
+				addPortConnection(processing, connection, _dragProcessing, _dragConnectionIndex);
 			} break;
 			case OutportDrag:
 			{
-				addPortWire(_dragProcessing, _dragConnectionIndex, processing, connection);
+				addPortConnection(_dragProcessing, _dragConnectionIndex, processing, connection);
 			} break;
 			case IncontrolDrag:
 			{
-				addControlWire(processing, connection, _dragProcessing, _dragConnectionIndex);
+				addControlConnection(processing, connection, _dragProcessing, _dragConnectionIndex);
 			} break;
 			case OutcontrolDrag:
 			{
-				addControlWire(_dragProcessing, _dragConnectionIndex, processing, connection);
+				addControlConnection(_dragProcessing, _dragConnectionIndex, processing, connection);
 			} break;
 		}
+	}
+	void addPortConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	{
+		if (_network)
+		{
+			QString out = source->getName() + "." + source->getOutportName(outlet);
+			QString in = target->getName() + "." + target->getInportName(inlet);
+			if (!_network->ConnectPorts(out.toStdString(), in.toStdString())) return;
+		}
+		addPortWire(source, outlet, target, inlet);
+	}
+	void addControlConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	{
+		if (_network)
+		{
+			QString out = source->getName() + "." + source->getOutcontrolName(outlet);
+			QString in = target->getName() + "." + target->getIncontrolName(inlet);
+			if (!_network->ConnectControls(out.toStdString(), in.toStdString())) return;
+		}
+		addPortWire(source, outlet, target, inlet);
 	}
 	void addPortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
@@ -514,6 +537,7 @@ public:
 
 	void removeProcessing(ProcessingBox * processing)
 	{
+		if (_network) _network->RemoveProcessing(processing->getName().toStdString());
 		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
 			   	it<_controlWires.end(); )
 		{
@@ -542,8 +566,11 @@ public:
 
 	void loadNetwork(CLAM::Network * network)
 	{
+		clear();
+		_network = network;
+		if (!_network) return;
 		CLAM::Network::ProcessingsMap::const_iterator it;
-		for (it=network->BeginProcessings(); it!=network->EndProcessings(); it++)
+		for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
 		{
 			const std::string & name = it->first;
 			CLAM::Processing * processing = it->second;
@@ -553,19 +580,19 @@ public:
 		for (unsigned p = 0; p<_processings.size(); p++)
 		{
 			std::string producerName = _processings[p]->getName().toStdString();
-			CLAM::Processing & producer = network->GetProcessing(producerName);
+			CLAM::Processing & producer = _network->GetProcessing(producerName);
 			CLAM::OutPortRegistry & outPorts = producer.GetOutPorts();
 			for (unsigned op = 0; op<outPorts.Size(); op++)
 			{
 				CLAM::OutPortBase & outPort = outPorts.GetByNumber(op);
 				std::string completeOutName = producerName + "." + outPort.GetName();
-				CLAM::Network::NamesList connected = network->GetInPortsConnectedTo( completeOutName );
+				CLAM::Network::NamesList connected = _network->GetInPortsConnectedTo( completeOutName );
 				CLAM::Network::NamesList::iterator inName;
 				for(inName=connected.begin(); inName!=connected.end(); inName++)
 				{
-					std::string consumerName = network->GetProcessingIdentifier(*inName);
-					std::string peerConnection = network->GetLastIdentifier(*inName);
-					CLAM::Processing & consumer = network->GetProcessing(consumerName);
+					std::string consumerName = _network->GetProcessingIdentifier(*inName);
+					std::string peerConnection = _network->GetLastIdentifier(*inName);
+					CLAM::Processing & consumer = _network->GetProcessing(consumerName);
 					CLAM::InPortRegistry & inPorts = consumer.GetInPorts();
 					ProcessingBox * consumerBox = getBox(consumerName.c_str());
 					if (!consumerBox) continue; // TODO: Error?
@@ -583,13 +610,13 @@ public:
 			{
 				CLAM::OutControl & outControl = outControls.GetByNumber(op);
 				std::string completeOutName = producerName + "." + outControl.GetName();
-				CLAM::Network::NamesList connected = network->GetInControlsConnectedTo( completeOutName );
+				CLAM::Network::NamesList connected = _network->GetInControlsConnectedTo( completeOutName );
 				CLAM::Network::NamesList::iterator inName;
 				for(inName=connected.begin(); inName!=connected.end(); inName++)
 				{
-					std::string consumerName = network->GetProcessingIdentifier(*inName);
-					std::string peerConnection = network->GetLastIdentifier(*inName);
-					CLAM::Processing & consumer = network->GetProcessing(consumerName);
+					std::string consumerName = _network->GetProcessingIdentifier(*inName);
+					std::string peerConnection = _network->GetLastIdentifier(*inName);
+					CLAM::Processing & consumer = _network->GetProcessing(consumerName);
 					CLAM::InControlRegistry & inControls = consumer.GetInControls();
 					ProcessingBox * consumerBox = getBox(consumerName.c_str());
 					if (!consumerBox) continue; // TODO: Error?
@@ -756,7 +783,7 @@ private:
 	QString _tooltipText;
 	bool _printing;
 	double _zoomFactor;
-	
+	CLAM::Network * _network;
 };
 
 

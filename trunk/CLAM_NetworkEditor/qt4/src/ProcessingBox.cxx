@@ -17,6 +17,7 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, moving(false)
 	, resizing(false)
 	, _highLightRegion(noRegion)
+	, _processing(0)
 {
 	rename(name);
 }
@@ -32,6 +33,17 @@ void ProcessingBox::move(const QPoint & point)
 {
 	_pos=point;
 }
+
+void ProcessingBox::setProcessing(CLAM::Processing * processing)
+{
+	_processing = processing;
+	if (!processing) return;
+	_nInports = _processing->GetInPorts().Size();
+	_nOutports = _processing->GetOutPorts().Size();
+	_nIncontrols = _processing->GetInControls().Size();
+	_nOutcontrols = _processing->GetOutControls().Size();
+}
+
 void ProcessingBox::resize(const QSize & size)
 {
 	_size=size.expandedTo(_minimumSize);
@@ -360,19 +372,27 @@ QString ProcessingBox::getName() const
 
 QString ProcessingBox::getOutportName(unsigned index) const
 {
-	return QString("Outport_%1").arg(index);
+	if (!_processing) return QString("Outport_%1").arg(index);
+	CLAM::OutPortRegistry & outPorts = _processing->GetOutPorts();
+	return outPorts.GetByNumber(index).GetName().c_str();
 }
 QString ProcessingBox::getInportName(unsigned index) const
 {
-	return QString("Inport_%1").arg(index);
+	if (!_processing) return QString("Inport_%1").arg(index);
+	CLAM::InPortRegistry & inPorts = _processing->GetInPorts();
+	return inPorts.GetByNumber(index).GetName().c_str();
 }
 QString ProcessingBox::getOutcontrolName(unsigned index) const
 {
-	return QString("Outcontrol_%1").arg(index);
+	if (!_processing) return QString("Outcontrol_%1").arg(index);
+	CLAM::OutControlRegistry & outControls = _processing->GetOutControls();
+	return outControls.GetByNumber(index).GetName().c_str();
 }
 QString ProcessingBox::getIncontrolName(unsigned index) const
 {
-	return QString("Incontrol_%1").arg(index);
+	if (!_processing) return QString("Incontrol_%1").arg(index);
+	CLAM::InControlRegistry & inControls = _processing->GetInControls();
+	return inControls.GetByNumber(index).GetName().c_str();
 }
 
 
