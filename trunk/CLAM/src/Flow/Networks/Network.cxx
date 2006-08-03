@@ -197,7 +197,7 @@ namespace CLAM
 	{
 		AssertFlowControlNotNull();
 
-		Processing * proc = ProcessingFactory::GetInstance().Create( key );
+		Processing * proc = ProcessingFactory::GetInstance().CreateSafe( key );
 
 		// returns false if the key was repeated.
 		if (!mProcessings.insert( ProcessingsMap::value_type( name, proc ) ).second )
@@ -212,7 +212,7 @@ namespace CLAM
 
 		std::string name = GetUnusedName( key ); // this won't be needed in the future
 		
-		Processing * proc = ProcessingFactory::GetInstance().Create( key );
+		Processing * proc = ProcessingFactory::GetInstance().CreateSafe( key );
 
 		// returns false if the key was repeated.
 		if (!mProcessings.insert( ProcessingsMap::value_type( name , proc ) ).second )
@@ -399,7 +399,7 @@ namespace CLAM
 		return last_ofResult == std::string::npos ? 0 : last_ofResult+1;
 	}
 
-	std::string Network::GetLastIdentifier( const std::string& str ) const
+	std::string Network::GetConnectorIdentifier( const std::string& str ) const
 	{
 		return str.substr( PositionOfLastIdentifier(str)+1 );
 	}
@@ -413,25 +413,25 @@ namespace CLAM
 	InPortBase & Network::GetInPortByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
-		return proc.GetInPorts().Get( GetLastIdentifier(name) );
+		return proc.GetInPorts().Get( GetConnectorIdentifier(name) );
 	}
 
 	OutPortBase & Network::GetOutPortByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
-		return proc.GetOutPorts().Get( GetLastIdentifier(name) );
+		return proc.GetOutPorts().Get( GetConnectorIdentifier(name) );
 	}
 
 	InControl & Network::GetInControlByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
-		return proc.GetInControls().Get( GetLastIdentifier(name) );
+		return proc.GetInControls().Get( GetConnectorIdentifier(name) );
 	}
 
 	OutControl & Network::GetOutControlByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
-		return proc.GetOutControls().Get( GetLastIdentifier(name) );
+		return proc.GetOutControls().Get( GetConnectorIdentifier(name) );
 	}
 
 	void Network::Start()
@@ -440,7 +440,6 @@ namespace CLAM
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
 			if (it->second->GetExecState() == Processing::Ready)
 				it->second->Start();		
-
 	}
 	
 	void Network::Stop()
@@ -449,7 +448,6 @@ namespace CLAM
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
 			if (it->second->GetExecState() == Processing::Running)
 				it->second->Stop();
-	
 	}
 	
 	void Network::Do()
