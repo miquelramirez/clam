@@ -116,7 +116,7 @@ public:
 	NamesList GetInControlsConnectedTo( const std::string & ) const;
 	InPortsList GetInPortsConnectedTo( OutPortBase & ) const;
 
-	std::string GetLastIdentifier( const std::string& ) const;
+	std::string GetConnectorIdentifier( const std::string& ) const;
 	std::string GetProcessingIdentifier( const std::string& ) const;
 	
 
