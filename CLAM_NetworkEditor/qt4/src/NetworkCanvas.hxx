@@ -14,6 +14,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 #include <QtCore/QFile>
+#include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
 #include "ProcessingBox.hxx"
 #include "Wires.hxx"
@@ -328,9 +329,17 @@ public:
 			addProcessingBox(type, 0, point);
 			return;
 		}
-		std::string name = _network->AddProcessing(type.toStdString());
-		CLAM::Processing & processing = _network->GetProcessing(name);
-		addProcessingBox(name.c_str(), &processing, point);
+		try
+		{
+			std::string name = _network->AddProcessing(type.toStdString());
+			CLAM::Processing & processing = _network->GetProcessing(name);
+			addProcessingBox(name.c_str(), &processing, point);
+		}
+		catch (CLAM::Err & e)
+		{
+			QMessageBox::critical(this, tr("Error creating a processing"),
+				tr("<p>The processing type '<tt>%1</tt>' is not supported.</p>").arg(type));
+		}
 	}
 
 	void addProcessingBox(const QString & name, CLAM::Processing * processing, QPoint point=QPoint(), QSize size=QSize())
