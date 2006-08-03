@@ -25,5 +25,8 @@
         <file>images/remove.png</file>
         <file>images/upf-mtg-logo.png</file>
         <file>images/view_tree.png</file>
+        <file>images/viewmag+.png</file>
+        <file>images/viewmag-.png</file>
+        <file>images/viewmag1.png</file>
     </qresource>
 </RCC>

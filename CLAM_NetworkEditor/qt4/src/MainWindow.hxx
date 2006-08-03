@@ -167,6 +167,18 @@ public slots:
 	{
 		_networkPlayer->Stop();
 	}
+	void on_action_Zoom_in_triggered()
+	{
+		_canvas->zoom(+1);
+	}
+	void on_action_Zoom_out_triggered()
+	{
+		_canvas->zoom(-1);
+	}
+	void on_action_Default_zoom_triggered()
+	{
+		_canvas->resetZoom();
+	}
 private:
 	NetworkCanvas * _canvas;
 	QDialog * _aboutDialog;

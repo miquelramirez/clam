@@ -34,7 +34,7 @@
      <x>0</x>
      <y>0</y>
      <width>560</width>
-     <height>28</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File" >
@@ -58,12 +58,6 @@
     <addaction name="action_Edit_Interface" />
     <addaction name="action_Run_prototyper" />
    </widget>
-   <widget class="QMenu" name="menu_View" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <addaction name="action_Show_processing_toolbox" />
-   </widget>
    <widget class="QMenu" name="menu_Network" >
     <property name="title" >
      <string>&amp;Network</string>
@@ -79,13 +73,31 @@
     <addaction name="action_Online_tutorial" />
     <addaction name="action_About" />
    </widget>
+   <widget class="QMenu" name="menu_View" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Show_processing_toolbox" />
+    <addaction name="action_Default_zoom" />
+    <addaction name="action_Zoom_in" />
+    <addaction name="action_Zoom_out" />
+   </widget>
    <addaction name="menu_File" />
    <addaction name="menu_Network" />
-   <addaction name="menu_View" />
    <addaction name="menu_Interface" />
+   <addaction name="menu_View" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>460</y>
+     <width>560</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolBar" >
    <property name="windowTitle" >
     <string>Main ToolBar</string>
@@ -101,13 +113,16 @@
    <addaction name="action_Save" />
    <addaction name="action_Print" />
    <addaction name="separator" />
-   <addaction name="action_Show_processing_toolbox" />
-   <addaction name="separator" />
    <addaction name="action_Play" />
    <addaction name="action_Stop" />
    <addaction name="separator" />
    <addaction name="action_Edit_Interface" />
    <addaction name="action_Run_prototyper" />
+   <addaction name="separator" />
+   <addaction name="action_Show_processing_toolbox" />
+   <addaction name="action_Zoom_in" />
+   <addaction name="action_Default_zoom" />
+   <addaction name="action_Zoom_out" />
    <addaction name="separator" />
    <addaction name="action_Online_tutorial" />
    <addaction name="action_Whats_this" />
@@ -260,6 +275,30 @@
    </property>
    <property name="text" >
     <string>&amp;Edit Interface</string>
+   </property>
+  </action>
+  <action name="action_Zoom_in" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/viewmag+.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Zoom &amp;in</string>
+   </property>
+  </action>
+  <action name="action_Zoom_out" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/viewmag-.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Zoom &amp;out</string>
+   </property>
+  </action>
+  <action name="action_Default_zoom" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/viewmag1.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Default zoom</string>
    </property>
   </action>
  </widget>
