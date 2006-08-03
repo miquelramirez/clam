@@ -106,8 +106,8 @@ public:
 	{
 		_networkPlayer->Stop();
 		_networkFile = QString();
-		_canvas->clear();
 		_network.Clear();
+		_canvas->loadNetwork(&_network);
 		updateCaption();
 	}
 	void updateCaption()
