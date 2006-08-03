@@ -42,6 +42,7 @@ void ProcessingBox::setProcessing(CLAM::Processing * processing)
 	_nOutports = _processing->GetOutPorts().Size();
 	_nIncontrols = _processing->GetInControls().Size();
 	_nOutcontrols = _processing->GetOutControls().Size();
+	rename(_name);
 }
 
 void ProcessingBox::resize(const QSize & size)
