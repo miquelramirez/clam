@@ -42,6 +42,7 @@ public:
 		, _dragProcessing(0)
 		, _dragConnectionIndex(0)
 		, _printing(false)
+		, _zoomFactor(1.)
 	{
 		setMouseTracking(true);
 		setAcceptDrops(true);
@@ -107,6 +108,7 @@ public:
 	void paint(QPainter & painter)
 	{
 		painter.setRenderHint(QPainter::Antialiasing);
+		painter.scale(_zoomFactor,_zoomFactor);
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->draw(painter);
 		for (unsigned i = 0; i<_portWires.size(); i++)
@@ -638,6 +640,17 @@ public:
 			box->resize(size);
 		}
 	}
+
+	void zoom(int steps)
+	{
+		_zoomFactor*=1 + steps*.25;
+		update();
+	}
+	void resetZoom()
+	{
+		_zoomFactor=1.;
+		update();
+	}
 private:
 	ProcessingBox * getBox(const QString & name)
 	{
@@ -658,22 +671,22 @@ private slots:
 			switch (region)
 			{
 				case ProcessingBox::outportsRegion: 
-					toCopy = QString("CLAM_Outport__%1__%2")
+					toCopy = QString("Outport__%1__%2")
 						.arg(_processings[i]->getName())
 						.arg(_processings[i]->getOutportName(_processings[i]->portIndexByYPos(point)));
 					break;
 				case ProcessingBox::inportsRegion: 
-					toCopy = QString("CLAM_Inport__%1__%2")
+					toCopy = QString("Inport__%1__%2")
 						.arg(_processings[i]->getName())
 						.arg(_processings[i]->getInportName(_processings[i]->portIndexByYPos(point)));
 					break;
 				case ProcessingBox::incontrolsRegion: 
-					toCopy = QString("CLAM_Incontrol__%1__%2")
+					toCopy = QString("Incontrol__%1__%2")
 						.arg(_processings[i]->getName())
 						.arg(_processings[i]->getIncontrolName(_processings[i]->controlIndexByXPos(point)));
 					break;
 				case ProcessingBox::outcontrolsRegion: 
-					toCopy = QString("CLAM_Outcontrol__%1__%2")
+					toCopy = QString("Outcontrol__%1__%2")
 						.arg(_processings[i]->getName())
 						.arg(_processings[i]->getOutcontrolName(_processings[i]->controlIndexByXPos(point)));
 					break;
@@ -742,6 +755,7 @@ private:
 	QPoint _tooltipPos;
 	QString _tooltipText;
 	bool _printing;
+	double _zoomFactor;
 	
 };
 
