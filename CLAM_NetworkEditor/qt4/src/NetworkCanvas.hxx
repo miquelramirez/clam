@@ -427,7 +427,7 @@ public:
 	{
 		return _dragStatus;
 	}
-	void endConnectionTo(ProcessingBox * processing, int connection)
+	void endConnectionDragTo(ProcessingBox * processing, int connection)
 	{
 		switch (_dragStatus) 
 		{
@@ -508,6 +508,13 @@ public:
 	}
 	void disconnectInport(ProcessingBox * processing, unsigned index)
 	{
+		/*
+		if (_network)
+		{
+			QString in = processing->getName() + "." + processing->getInportName(index);
+			_network->DisconnectConnectionsToInport(in.toStdString());
+		}
+		*/
 		for (std::vector<PortWire*>::iterator it=_portWires.begin();
 			   	it<_portWires.end();)
 		{
@@ -591,7 +598,7 @@ public:
 				for(inName=connected.begin(); inName!=connected.end(); inName++)
 				{
 					std::string consumerName = _network->GetProcessingIdentifier(*inName);
-					std::string peerConnection = _network->GetLastIdentifier(*inName);
+					std::string peerConnection = _network->GetConnectorIdentifier(*inName);
 					CLAM::Processing & consumer = _network->GetProcessing(consumerName);
 					CLAM::InPortRegistry & inPorts = consumer.GetInPorts();
 					ProcessingBox * consumerBox = getBox(consumerName.c_str());
@@ -615,7 +622,7 @@ public:
 				for(inName=connected.begin(); inName!=connected.end(); inName++)
 				{
 					std::string consumerName = _network->GetProcessingIdentifier(*inName);
-					std::string peerConnection = _network->GetLastIdentifier(*inName);
+					std::string peerConnection = _network->GetConnectorIdentifier(*inName);
 					CLAM::Processing & consumer = _network->GetProcessing(consumerName);
 					CLAM::InControlRegistry & inControls = consumer.GetInControls();
 					ProcessingBox * consumerBox = getBox(consumerName.c_str());

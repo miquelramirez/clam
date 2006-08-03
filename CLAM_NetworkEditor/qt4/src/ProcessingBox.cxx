@@ -336,22 +336,22 @@ void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 	if (_canvas->dragStatus()==NetworkCanvas::OutportDrag && region==inportsRegion)
 	{
 		int index = portIndexByYPos(event->pos());
-		_canvas->endConnectionTo(this, index);
+		_canvas->endConnectionDragTo(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::InportDrag &&  region==outportsRegion)
 	{
 		int index = portIndexByYPos(event->pos());
-		_canvas->endConnectionTo(this, index);
+		_canvas->endConnectionDragTo(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::OutcontrolDrag && region==incontrolsRegion)
 	{
 		int index = controlIndexByXPos(event->pos());
-		_canvas->endConnectionTo(this, index);
+		_canvas->endConnectionDragTo(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::IncontrolDrag && region==outcontrolsRegion)
 	{
 		int index = controlIndexByXPos(event->pos());
-		_canvas->endConnectionTo(this, index);
+		_canvas->endConnectionDragTo(this, index);
 	}
 }
 void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
