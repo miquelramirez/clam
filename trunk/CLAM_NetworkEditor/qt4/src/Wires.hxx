@@ -6,14 +6,40 @@
 #include <QtGui/QPainterPath>
 #include <cmath>
 
-class PortWire
+class Wire
 {
 public:
-	PortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	Wire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 		: _source(source)
 		, _target(target)
 		, _outlet(outlet)
 		, _inlet(inlet)
+	{
+	}
+	bool involves(ProcessingBox * processing)
+	{
+		return processing == _source || processing == _target;
+	}
+	bool comesFrom(ProcessingBox * source, unsigned outlet)
+	{
+		return source == _source && _outlet == outlet;
+	}
+	bool goesTo(ProcessingBox * target, unsigned inlet)
+	{
+		return target == _target && _inlet == inlet;
+	}
+protected:
+	ProcessingBox * _source;
+	ProcessingBox * _target;
+	unsigned _outlet;
+	unsigned _inlet;
+};
+
+class PortWire : public Wire
+{
+public:
+	PortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+		: Wire(source, outlet, target, inlet)
 	{
 	}
 	void draw(QPainter & painter)
@@ -42,33 +68,21 @@ public:
 		painter.strokePath(path, QPen(QBrush(QColor(0x50,0x50,0x22)), 6));
 		painter.strokePath(path, QPen(QBrush(QColor(0xbb,0x99,0x44)), 4));
 	}
-	bool involves(ProcessingBox * processing)
+	std::string getTargetId()
 	{
-		return processing == _source || processing == _target;
+		return (_target->getName()+"."+_target->getInportName(_inlet)).toStdString();
 	}
-	bool comesFrom(ProcessingBox * source, unsigned outlet)
+	std::string getSourceId()
 	{
-		return source == _source && _outlet == outlet;
+		return (_source->getName()+"."+_source->getOutportName(_outlet)).toStdString();
 	}
-	bool goesTo(ProcessingBox * target, unsigned inlet)
-	{
-		return target == _target && _inlet == inlet;
-	}
-private:
-	ProcessingBox * _source;
-	ProcessingBox * _target;
-	unsigned _outlet;
-	unsigned _inlet;
 };
 
-class ControlWire
+class ControlWire : public Wire
 {
 public:
 	ControlWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
-		: _source(source)
-		, _target(target)
-		, _outlet(outlet)
-		, _inlet(inlet)
+		: Wire(source, outlet, target, inlet)
 	{
 	}
 	void draw(QPainter & painter)
@@ -97,23 +111,14 @@ public:
 		painter.strokePath(path, QPen(QBrush(QColor(0x20,0x50,0x52)), 4));
 		painter.strokePath(path, QPen(QBrush(QColor(0x4b,0x99,0xb4)), 2));
 	}
-	bool involves(ProcessingBox * processing)
+	std::string getTargetId()
 	{
-		return processing == _source || processing == _target;
+		return (_target->getName()+"."+_target->getIncontrolName(_inlet)).toStdString();
 	}
-	bool comesFrom(ProcessingBox * source, unsigned outlet)
+	std::string getSourceId()
 	{
-		return source == _source && _outlet == outlet;
+		return (_source->getName()+"."+_source->getOutcontrolName(_outlet)).toStdString();
 	}
-	bool goesTo(ProcessingBox * target, unsigned inlet)
-	{
-		return target == _target && _inlet == inlet;
-	}
-private:
-	ProcessingBox * _source;
-	ProcessingBox * _target;
-	unsigned _outlet;
-	unsigned _inlet;
 };
 
 #endif//Wires_hxx

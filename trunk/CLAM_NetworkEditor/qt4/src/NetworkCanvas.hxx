@@ -259,6 +259,10 @@ public:
 		event->acceptProposedAction();
 		addProcessing(event->pos(), type);
 	}
+	void wheelEvent(QWheelEvent * event)
+	{
+		zoom(event->delta());
+	}
 	bool event(QEvent * event)
 	{
 		if (event->type()!=QEvent::WhatsThis) return QWidget::event(event);
@@ -467,7 +471,7 @@ public:
 			QString in = target->getName() + "." + target->getIncontrolName(inlet);
 			if (!_network->ConnectControls(out.toStdString(), in.toStdString())) return;
 		}
-		addPortWire(source, outlet, target, inlet);
+		addControlWire(source, outlet, target, inlet);
 	}
 	void addPortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
@@ -487,6 +491,8 @@ public:
 			if (!wire->goesTo(processing, index)) it++;
 			else
 			{
+				if (_network)
+					_network->DisconnectControls(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_controlWires.erase(it);
 			}
@@ -501,6 +507,8 @@ public:
 			if (!wire->comesFrom(processing, index)) it++;
 			else
 			{
+				if (_network)
+					_network->DisconnectControls(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_controlWires.erase(it);
 			}
@@ -508,13 +516,6 @@ public:
 	}
 	void disconnectInport(ProcessingBox * processing, unsigned index)
 	{
-		/*
-		if (_network)
-		{
-			QString in = processing->getName() + "." + processing->getInportName(index);
-			_network->DisconnectConnectionsToInport(in.toStdString());
-		}
-		*/
 		for (std::vector<PortWire*>::iterator it=_portWires.begin();
 			   	it<_portWires.end();)
 		{
@@ -522,6 +523,8 @@ public:
 			if (!wire->goesTo(processing, index)) it++;
 			else
 			{
+				if (_network)
+					_network->DisconnectPorts(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_portWires.erase(it);
 			}
@@ -536,6 +539,8 @@ public:
 			if (!wire->comesFrom(processing, index)) it++;
 			else
 			{
+				if (_network)
+					_network->DisconnectPorts(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_portWires.erase(it);
 			}
