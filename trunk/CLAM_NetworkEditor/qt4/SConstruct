@@ -98,7 +98,7 @@ if uifiles: uiheaders = env.Uic4(source=uifiles)
 env.Append(CPPPATH=includePaths)
 
 if sys.platform=='linux2' :
-		env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
 testsources = scanFiles('*.cxx', ['test'])
 

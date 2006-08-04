@@ -122,9 +122,12 @@ void ProcessingBox::paintBox(QPainter & painter)
 		drawConnector(painter, outcontrolsRegion, i);
 
 	// Highlights
-	painter.setBrush(Qt::yellow); // TODO; colorPortHightLight
-	painter.setPen(_canvas->colorPortOutline());
-	drawConnector(painter, _highLightRegion, _highLightConnection);
+	if (_highLightRegion != noRegion)
+	{
+		painter.setBrush(_canvas->colorHighlightConnector(this, _highLightRegion, _highLightConnection));
+		painter.setPen(_canvas->colorPortOutline());
+		drawConnector(painter, _highLightRegion, _highLightConnection);
+	}
 
 	// Text
 	painter.setPen(_canvas->colorBoxFrameText());
