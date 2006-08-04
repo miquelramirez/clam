@@ -56,71 +56,110 @@ void ProcessingBox::rename(const QString & newName)
 	textHeight = metrics.height();
 
 	int minimumHeight = textHeight+2*margin;
-	int inportsHeight = _nInports*(portHeight+portSpacing);
-	int outportsHeight = _nOutports*(portHeight+portSpacing);
+	int inportsHeight = _nInports*portStep;
+	int outportsHeight = _nOutports*portStep;
 	if (minimumHeight<inportsHeight) minimumHeight = inportsHeight;
 	if (minimumHeight<outportsHeight) minimumHeight = outportsHeight;
-	minimumHeight += 2*controlHeight + 2*margin;
+	minimumHeight += 2*portOffset;
 
 	int minimumWidth = metrics.width(_name);
-	int incontrolsWidth = _nIncontrols*(controlWidth+controlSpacing);
-	int outcontrolsWidth = _nOutcontrols*(controlWidth+controlSpacing);
+	int incontrolsWidth = _nIncontrols*controlStep;
+	int outcontrolsWidth = _nOutcontrols*controlStep;
 	if (minimumWidth<incontrolsWidth) minimumWidth = incontrolsWidth;
 	if (minimumWidth<outcontrolsWidth) minimumWidth = outcontrolsWidth;
-	minimumWidth += 2*portWidth + 2*margin;
+	minimumWidth += 2*controlOffset;
 
 	_minimumSize = QSize(minimumWidth, minimumHeight );
 	resize(_size);
 	_canvas->update();
 }
+QColor execBodyColor(QColor defaultColor, CLAM::Processing * processing)
+{
+	if (not processing) return defaultColor;
+	if (processing->GetExecState() == CLAM::Processing::Unconfigured)
+		return QColor(0xff,0xa0,0xa0,0x70);
+	return defaultColor;
+}
+
+QColor execFrameColor(QColor defaultColor, CLAM::Processing * processing)
+{
+	if (not processing) return defaultColor;
+	if (processing->GetExecState() == CLAM::Processing::Unconfigured)
+		return QColor(0xff,0x00,0x00,0xa0);
+	return defaultColor;
+}
+
 void ProcessingBox::paintBox(QPainter & painter)
 {
 	painter.setRenderHint(QPainter::Antialiasing);
 
+	QColor boxBodyColor = execBodyColor(_canvas->colorBoxBody(),_processing);
+	QColor boxFrameColor = execFrameColor(_canvas->colorBoxFrame(),_processing);
 	// Box
 	painter.setPen(_canvas->colorBoxFrameOutline());
-	painter.setBrush(_canvas->colorBoxFrame());
-	painter.drawRect(portWidth, controlHeight, _size.width()-2*portWidth, _size.height()-2*controlHeight);
-	painter.setBrush(_canvas->colorBoxBody());
-	painter.drawRect(portWidth+margin, controlHeight+margin+textHeight, _size.width()-2*(margin+portWidth), _size.height()-textHeight-2*(margin+controlHeight));
+	painter.setBrush(boxFrameColor);
+	painter.drawRect(portWidth, controlHeight,
+		   	_size.width()-2*portWidth, _size.height()-2*controlHeight);
+	painter.setBrush(boxBodyColor);
+	painter.drawRect(portWidth+margin, controlHeight+margin+textHeight,
+		   	_size.width()-2*(margin+portWidth), _size.height()-textHeight-2*(margin+controlHeight));
 	painter.setBrush(_canvas->colorResizeHandle());
-	painter.drawRect(_size.width()-portWidth-margin, _size.height()-controlHeight-margin, margin, margin);
+	painter.drawRect(_size.width()-portWidth-margin, _size.height()-controlHeight-margin,
+		   	margin, margin);
 	// Ports
 	painter.setBrush(_canvas->colorPort());
 	painter.setPen(_canvas->colorPortOutline());
 	for (unsigned i = 0; i<_nInports; i++)
-	{
-		painter.drawEllipse(0, margin+controlHeight+i*(portSpacing+portHeight), portWidth, portHeight);
-	}
+		drawConnector(painter, inportsRegion, i);
 	for (unsigned i = 0; i<_nOutports; i++)
-	{
-		painter.drawEllipse(_size.width()-portWidth, margin+controlHeight+i*(portSpacing+portHeight), portWidth, portHeight);
-	}
+		drawConnector(painter, outportsRegion, i);
 	// Controls
 	painter.setBrush(_canvas->colorControl());
 	painter.setPen(_canvas->colorControlOutline());
 	for (unsigned i = 0; i<_nIncontrols; i++)
-	{
-		painter.drawRect(margin+portWidth+i*(controlSpacing+controlWidth), 0, controlWidth, controlHeight);
-	}
+		drawConnector(painter, incontrolsRegion, i);
 	for (unsigned i = 0; i<_nOutcontrols; i++)
-	{
-		painter.drawRect(margin+portWidth+i*(controlSpacing+controlWidth), _size.height()-controlHeight, controlWidth, controlHeight);
-	}
+		drawConnector(painter, outcontrolsRegion, i);
+
+	// Highlights
 	painter.setBrush(Qt::yellow); // TODO; colorPortHightLight
 	painter.setPen(_canvas->colorPortOutline());
-	if (_highLightRegion == inportsRegion)
-		painter.drawEllipse(0, margin+controlHeight+_highLightConnection*(portSpacing+portHeight), portWidth, portHeight);
-	if (_highLightRegion == outportsRegion)
-		painter.drawEllipse(_size.width()-portWidth, margin+controlHeight+_highLightConnection*(portSpacing+portHeight), portWidth, portHeight);
-	if (_highLightRegion == incontrolsRegion)
-		painter.drawRect(margin+portWidth+_highLightConnection*(controlSpacing+controlWidth), 0, controlWidth, controlHeight);
-	if (_highLightRegion == outcontrolsRegion)
-		painter.drawRect(margin+portWidth+_highLightConnection*(controlSpacing+controlWidth), _size.height()-controlHeight, controlWidth, controlHeight);
+	drawConnector(painter, _highLightRegion, _highLightConnection);
+
 	// Text
 	painter.setPen(_canvas->colorBoxFrameText());
-	painter.drawText(QRect(portWidth+margin, controlHeight+margin, _size.width()-2*margin+portWidth, textHeight), _name);
+	painter.drawText(QRect(controlOffset, portOffset, _size.width()-2*margin+portWidth, textHeight), _name);
 }
+
+void ProcessingBox::drawConnector(QPainter & painter, Region region, unsigned index)
+{
+	switch (region)
+	{
+	case inportsRegion:
+		painter.drawEllipse(
+				0, portOffset+index*portStep,
+			   	portWidth, portHeight);
+	return;
+	case outportsRegion:
+		painter.drawEllipse(
+				_size.width()-portWidth, portOffset+index*portStep,
+			   	portWidth, portHeight);
+	return;
+	case incontrolsRegion:
+		painter.drawRect(
+				controlOffset+index*controlStep, 0,
+			   	controlWidth, controlHeight);
+	return;
+	case outcontrolsRegion:
+		painter.drawRect(
+				controlOffset+index*controlStep, _size.height()-controlHeight,
+			   	controlWidth, controlHeight);
+	return;
+	default:
+	return;
+	}
+}
+
 ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
 {
 	int x = point.x()-_pos.x();
@@ -136,26 +175,26 @@ ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
 
 	if (x<portWidth)
 	{
-		if (y<margin+controlHeight) return noRegion;
-		if (y>=margin+controlHeight+_nInports*(portHeight+portSpacing)) return noRegion;
+		if (y<portOffset) return noRegion;
+		if (y>=portOffset+_nInports*portStep) return noRegion;
 		return inportsRegion;
 	}
 	if (x>_size.width()-portWidth)
 	{
-		if (y<margin+controlHeight) return noRegion;
-		if (y>=margin+controlHeight+_nOutports*(portHeight+portSpacing)) return noRegion;
+		if (y<portOffset) return noRegion;
+		if (y>=portOffset+_nOutports*portStep) return noRegion;
 		return outportsRegion;
 	}
 	if (y>=0 && y<controlHeight)
 	{
-		if (x<margin+portHeight) return noRegion;
-		if (x>=margin+portHeight+_nIncontrols*(controlHeight+controlSpacing)) return noRegion;
+		if (x<controlOffset) return noRegion;
+		if (x>=controlOffset+_nIncontrols*controlStep) return noRegion;
 		return incontrolsRegion;
 	}
 	if (y<=_size.height() && y>_size.height()-controlHeight)
 	{
-		if (x<margin+portHeight) return noRegion;
-		if (x>=margin+portHeight+_nOutcontrols*(controlHeight+controlSpacing)) return noRegion;
+		if (x<controlOffset) return noRegion;
+		if (x>=controlOffset+_nOutcontrols*controlStep) return noRegion;
 		return outcontrolsRegion;
 	}
 	if (y<textHeight+margin+controlHeight)
@@ -164,32 +203,34 @@ ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
 		return resizeHandleRegion;
 	return bodyRegion;
 }
+
+
 int ProcessingBox::portIndexByYPos(const QPoint & point)
 {
 	int y = point.y()-_pos.y();
-	return (y-margin-controlHeight)/(portHeight+portSpacing);
+	return (y-portOffset)/portStep;
 }
 int ProcessingBox::controlIndexByXPos(const QPoint & point)
 {
 	int x = point.x()-_pos.x();
-	return (x-margin-portWidth)/(controlWidth+controlSpacing);
+	return (x-controlOffset)/controlStep;
 }
 // returns the inport connect point in parent coords
 QPoint ProcessingBox::getInportPos(unsigned i) const
 {
-	return QPoint( _pos.x(), _pos.y()+margin+controlHeight+i*(portSpacing+portHeight) + portHeight/2  );
+	return _pos + QPoint( 0, portOffset+i*portStep + portHeight/2  );
 }
 QPoint ProcessingBox::getOutportPos(unsigned i) const
 {
-	return QPoint( _pos.x()+_size.width(), _pos.y()+margin+controlHeight+i*(portSpacing+portHeight) + portHeight/2  );
+	return _pos + QPoint( _size.width(), portOffset+i*portStep + portHeight/2  );
 }
 QPoint ProcessingBox::getIncontrolPos(unsigned i) const
 {
-	return QPoint( _pos.x()+margin+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2,  _pos.y()  );
+	return _pos + QPoint( controlOffset+i*controlStep + controlWidth/2, 0 );
 }
 QPoint ProcessingBox::getOutcontrolPos(unsigned i) const
 {
-	return QPoint( _pos.x()+margin+portWidth+i*(controlSpacing+controlWidth) + controlWidth/2, _pos.y()+_size.height()  );
+	return _pos + QPoint( controlOffset+i*controlStep + controlWidth/2, _size.height()  );
 }
 
 void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
@@ -201,13 +242,13 @@ void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
 
 void ProcessingBox::mousePressEvent(QMouseEvent * event)
 {
-	Region region = getRegion(event->pos());
+	Region region = getRegion(_canvas->translatedPos(event));
 	if (region==noRegion) return;
 	_canvas->raise(this);
 	// Head
 	if (region==nameRegion)
 	{
-		startMoving(event->globalPos());
+		startMoving(_canvas->translatedGlobalPos(event));
 		_canvas->setCursor(Qt::SizeAllCursor);
 		return;
 	}
@@ -216,31 +257,31 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 	{
 		resizing=true;
 		originalSize = _size;
-		dragOrigin=event->globalPos();
+		dragOrigin=_canvas->translatedGlobalPos(event);
 		_canvas->setCursor(Qt::SizeFDiagCursor);
 		return;
 	}
 	if (region==inportsRegion)
 	{
-		int index = portIndexByYPos(event->pos());
+		int index = portIndexByYPos(_canvas->translatedPos(event));
 		_canvas->startDrag(NetworkCanvas::InportDrag, this, index);
 		return;
 	}
 	if (region==outportsRegion)
 	{
-		int index = portIndexByYPos(event->pos());
+		int index = portIndexByYPos(_canvas->translatedPos(event));
 		_canvas->startDrag(NetworkCanvas::OutportDrag, this, index);
 		return;
 	}
 	if (region==incontrolsRegion)
 	{
-		int index = controlIndexByXPos(event->pos());
+		int index = controlIndexByXPos(_canvas->translatedPos(event));
 		_canvas->startDrag(NetworkCanvas::IncontrolDrag, this, index);
 		return;
 	}
 	if (region==outcontrolsRegion)
 	{
-		int index = controlIndexByXPos(event->pos());
+		int index = controlIndexByXPos(_canvas->translatedPos(event));
 		_canvas->startDrag(NetworkCanvas::OutcontrolDrag, this, index);
 		return;
 	}
@@ -250,31 +291,31 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	_highLightRegion=noRegion;;
 	if (moving)
 	{
-		QPoint dragDelta = event->globalPos() - dragOrigin;
+		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;
 		move(originalPosition + dragDelta);
 		return;
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::PanDrag)
 	{
-		QPoint dragDelta = event->globalPos() - dragOrigin;
+		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;
 		move(originalPosition + dragDelta);
 		return;
 	}
 	if (resizing)
 	{
-		QPoint dragDelta = event->globalPos() - dragOrigin;
+		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;
 		resize(QSize(
 			originalSize.width() + dragDelta.x(),
 			originalSize.height() + dragDelta.y()
 			));
 		return;
 	}
-	Region region = getRegion(event->pos());
+	Region region = getRegion(_canvas->translatedPos(event));
 	if (region==noRegion) return;
 	_canvas->setCursor(Qt::ArrowCursor);
 	if (region==inportsRegion)
 	{
-		int index = portIndexByYPos(event->pos());
+		int index = portIndexByYPos(_canvas->translatedPos(event));
 		_highLightRegion=region;
 		_highLightConnection=index;
 		_canvas->setToolTip(getInportName(index));
@@ -282,7 +323,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	}
 	if (region==outportsRegion)
 	{
-		int index = portIndexByYPos(event->pos());
+		int index = portIndexByYPos(_canvas->translatedPos(event));
 		_highLightRegion=region;
 		_highLightConnection=index;
 		_canvas->setToolTip(getOutportName(index));
@@ -290,7 +331,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	}
 	if (region==incontrolsRegion)
 	{
-		int index = controlIndexByXPos(event->pos());
+		int index = controlIndexByXPos(_canvas->translatedPos(event));
 		_highLightRegion=region;
 		_highLightConnection=index;
 		_canvas->setToolTip(getIncontrolName(index));
@@ -298,7 +339,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	}
 	if (region==outcontrolsRegion)
 	{
-		int index = controlIndexByXPos(event->pos());
+		int index = controlIndexByXPos(_canvas->translatedPos(event));
 		_highLightRegion=region;
 		_highLightConnection=index;
 		_canvas->setToolTip(getOutcontrolName(index));
@@ -312,12 +353,16 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	}
 	if (region==bodyRegion)
 	{
-		_canvas->setStatusTip(QObject::tr("Double click: configure"));
+		if (_processing and _processing->GetExecState()==CLAM::Processing::Unconfigured)
+			_canvas->setToolTip(_processing->GetConfigErrorMessage().c_str());
+		_canvas->setStatusTip(QObject::tr("Double click: configure. Left click: Processing menu"));
 		return;
 	}
 	if (region==nameRegion)
 	{
-		_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename"));
+		if (_processing and _processing->GetExecState()==CLAM::Processing::Unconfigured)
+			_canvas->setToolTip(_processing->GetConfigErrorMessage().c_str());
+		_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
 		return;
 	}
 }
@@ -333,36 +378,44 @@ void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 		_canvas->setCursor(Qt::ArrowCursor);
 		resizing=false;
 	}
-	Region region = getRegion(event->pos());
+	Region region = getRegion(_canvas->translatedPos(event));
 	if (_canvas->dragStatus()==NetworkCanvas::OutportDrag && region==inportsRegion)
 	{
-		int index = portIndexByYPos(event->pos());
+		int index = portIndexByYPos(_canvas->translatedPos(event));
 		_canvas->endConnectionDragTo(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::InportDrag &&  region==outportsRegion)
 	{
-		int index = portIndexByYPos(event->pos());
+		int index = portIndexByYPos(_canvas->translatedPos(event));
 		_canvas->endConnectionDragTo(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::OutcontrolDrag && region==incontrolsRegion)
 	{
-		int index = controlIndexByXPos(event->pos());
+		int index = controlIndexByXPos(_canvas->translatedPos(event));
 		_canvas->endConnectionDragTo(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::IncontrolDrag && region==outcontrolsRegion)
 	{
-		int index = controlIndexByXPos(event->pos());
+		int index = controlIndexByXPos(_canvas->translatedPos(event));
 		_canvas->endConnectionDragTo(this, index);
 	}
 }
 void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 {
-	Region region = getRegion(event->pos());
+	Region region = getRegion(_canvas->translatedPos(event));
 	if (region==nameRegion) 
 	{
 		bool ok;
 		QString newName = QInputDialog::getText(_canvas, QObject::tr("Rename the processing"), QObject::tr("New name"), QLineEdit::Normal, _name);
-		if (ok && !newName.isEmpty()) rename(newName);
+		if (!ok) return;
+		if (newName.isEmpty()) return;
+		if (!_canvas->renameProcessing(_name, newName))
+		{
+			QMessageBox::critical(_canvas, QObject::tr("Naming processing"),
+				QObject::tr("A processing already exists with this name."));
+			return;
+		}
+	   	rename(newName);
 	}
 }
 

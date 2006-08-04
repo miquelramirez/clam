@@ -69,8 +69,6 @@ public:
 		addControlWire(_processings[1],1, _processings[2],1);
 	}
 
-	static quint32 positionFileMagicNumber() { return 0x01026420; }
-
 	virtual ~NetworkCanvas();
 
 	void clear();
@@ -159,9 +157,18 @@ public:
 	}
 
 
+	template <class Event> QPoint translatedPos(Event * event)
+	{
+		return event->pos()/_zoomFactor;
+	}
+	template <class Event> QPoint translatedGlobalPos(Event * event)
+	{
+		return event->globalPos()/_zoomFactor;
+	}
+
 	void mouseMoveEvent(QMouseEvent * event)
 	{
-		_dragPoint = event->pos();
+		_dragPoint = translatedPos(event);
 		setToolTip(0);
 		setStatusTip(0);
 		for (unsigned i = _processings.size(); i--; )
@@ -175,7 +182,7 @@ public:
 		if (event->button()!=Qt::LeftButton) return;
 		for (unsigned i = _processings.size(); i--; )
 		{
-			if (_processings[i]->getRegion(event->pos())==ProcessingBox::noRegion) continue;
+			if (_processings[i]->getRegion(translatedPos(event))==ProcessingBox::noRegion) continue;
 			_processings[i]->mousePressEvent(event);
 			update();
 			return;
@@ -184,7 +191,7 @@ public:
 		startDrag(PanDrag,0,0);
 		for (unsigned i = _processings.size(); i--; )
 		{
-			_processings[i]->startMoving(event->globalPos());
+			_processings[i]->startMoving(translatedGlobalPos(event));
 		}
 		update();
 	}
@@ -199,7 +206,7 @@ public:
 	{
 		for (unsigned i = _processings.size(); i--; )
 		{
-			if (_processings[i]->getRegion(event->pos())==ProcessingBox::noRegion) continue;
+			if (_processings[i]->getRegion(translatedPos(event))==ProcessingBox::noRegion) continue;
 			_processings[i]->mouseDoubleClickEvent(event);
 			update();
 			return;
@@ -209,12 +216,12 @@ public:
 
 	void contextMenuEvent(QContextMenuEvent * event)
 	{
+		QMenu menu(this);
+		menu.move(event->globalPos());
 		for (unsigned i = _processings.size(); i--; )
 		{
-			ProcessingBox::Region region = _processings[i]->getRegion(event->pos());
+			ProcessingBox::Region region = _processings[i]->getRegion(translatedPos(event));
 			if (region==ProcessingBox::noRegion) continue;
-			QMenu menu(this);
-			menu.move(event->globalPos());
 			if (
 				region==ProcessingBox::inportsRegion ||
 				region==ProcessingBox::outportsRegion ||
@@ -222,26 +229,24 @@ public:
 				region==ProcessingBox::outcontrolsRegion )
 			{
 				menu.addAction(QIcon(":/icons/images/remove.png"), "Disconnect",
-					this, SLOT(onDisconnect()))->setData(event->pos());
+					this, SLOT(onDisconnect()))->setData(translatedPos(event));
 				menu.addAction(QIcon(":/icons/images/editcopy.png"), "Copy connection name",
-					this, SLOT(onCopyConnection()))->setData(event->pos());
+					this, SLOT(onCopyConnection()))->setData(translatedPos(event));
 			}
 			if (region==ProcessingBox::nameRegion || 
 				region==ProcessingBox::bodyRegion ||
 				region==ProcessingBox::resizeHandleRegion)
 			{
 				menu.addAction(QIcon(":/icons/images/configure.png"), "Configure",
-					this, SLOT(onConfigure()))->setData(event->pos());
+					this, SLOT(onConfigure()))->setData(translatedPos(event));
 				menu.addAction(QIcon(":/icons/images/editdelete.png"), "Remove",
-					this, SLOT(onDeleteProcessing()))->setData(event->pos());
+					this, SLOT(onDeleteProcessing()))->setData(translatedPos(event));
 			}
 			menu.exec();
 			return;
 		}
-		QMenu menu(this);
-		menu.move(event->globalPos());
 		menu.addAction(QIcon(":/icons/images/newprocessing.png"), "Add processing",
-			this, SLOT(onNewProcessing()))->setData(event->pos());
+			this, SLOT(onNewProcessing()))->setData(translatedPos(event));
 		menu.exec();
 
 	}
@@ -258,7 +263,7 @@ public:
 	{
 		QString type =  event->mimeData()->text();
 		event->acceptProposedAction();
-		addProcessing(event->pos(), type);
+		addProcessing(translatedPos(event), type);
 	}
 	void wheelEvent(QWheelEvent * event)
 	{
@@ -615,12 +620,13 @@ public:
 				for(inName=connected.begin(); inName!=connected.end(); inName++)
 				{
 					std::string consumerName = _network->GetProcessingIdentifier(*inName);
+					ProcessingBox * consumerBox = getBox(consumerName.c_str());
+					if (!consumerBox) continue; // TODO: Error?
+
 					std::string peerConnection = _network->GetConnectorIdentifier(*inName);
 					CLAM::Processing & consumer = _network->GetProcessing(consumerName);
 					CLAM::InPortRegistry & inPorts = consumer.GetInPorts();
-					ProcessingBox * consumerBox = getBox(consumerName.c_str());
-					if (!consumerBox) continue; // TODO: Error?
-					for (unsigned ip=0; ip<consumer.GetInPorts().Size(); ip++)
+					for (unsigned ip=0; ip<inPorts.Size(); ip++)
 					{
 						CLAM::InPortBase & inPort = inPorts.GetByNumber(ip);
 						if (inPort.GetName()!=peerConnection) continue;
@@ -639,12 +645,13 @@ public:
 				for(inName=connected.begin(); inName!=connected.end(); inName++)
 				{
 					std::string consumerName = _network->GetProcessingIdentifier(*inName);
+					ProcessingBox * consumerBox = getBox(consumerName.c_str());
+					if (!consumerBox) continue; // TODO: Error?
+
 					std::string peerConnection = _network->GetConnectorIdentifier(*inName);
 					CLAM::Processing & consumer = _network->GetProcessing(consumerName);
 					CLAM::InControlRegistry & inControls = consumer.GetInControls();
-					ProcessingBox * consumerBox = getBox(consumerName.c_str());
-					if (!consumerBox) continue; // TODO: Error?
-					for (unsigned ip=0; ip<consumer.GetInControls().Size(); ip++)
+					for (unsigned ip=0; ip<inControls.Size(); ip++)
 					{
 						CLAM::InControl & inControl = inControls.GetByNumber(ip);
 						if (inControl.GetName()!=peerConnection) continue;
@@ -655,6 +662,9 @@ public:
 			}
 		}
 	}
+
+	static quint32 positionFileMagicNumber() { return 0x01026420; }
+
 	void savePositions(const QString & filename)
 	{
 		QFile file(filename);
@@ -694,13 +704,23 @@ public:
 
 	void zoom(int steps)
 	{
-		_zoomFactor*=1 + steps*.25;
+		if (steps>=0)
+			for (int i=0; i<steps; i++)
+				_zoomFactor*=1.0625;
+		else
+			for (int i=0; i>steps; i--)
+				_zoomFactor/=1.0625;
 		update();
 	}
 	void resetZoom()
 	{
 		_zoomFactor=1.;
 		update();
+	}
+	bool renameProcessing(QString oldName, QString newName)
+	{
+		if (!_network) return true;
+		return _network->ChangeKeyMap(oldName.toStdString(), newName.toStdString());
 	}
 private:
 	ProcessingBox * getBox(const QString & name)
@@ -741,10 +761,10 @@ private slots:
 						.arg(_processings[i]->getName())
 						.arg(_processings[i]->getOutcontrolName(_processings[i]->controlIndexByXPos(point)));
 					break;
+				default:
+					return; // Matches a region but not a connector one
 			}
-			break;
 		}
-		if (toCopy.isNull()) return;
 		QApplication::clipboard()->setText(toCopy);
 	}
 	void onConfigure()
