@@ -118,7 +118,7 @@ namespace CLAM
 			log << "[RECEIVED] "<<path<<" "<<controlvalue;
 
 			string processingname=mParentNetwork->GetProcessingIdentifier(path);
-			string controlname=mParentNetwork->GetLastIdentifier(path);
+			string controlname=mParentNetwork->GetConnectorIdentifier(path);
 
 			if (mParentNetwork->HasProcessing(processingname))
 			{
