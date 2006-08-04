@@ -97,7 +97,7 @@ public:
 	void ConfigureProcessing( const std::string &, const ProcessingConfig & );
 	/** Calls Configure() for each processing with its current configuration  */
 	void ReconfigureAllProcessings();
-	void ChangeKeyMap( const std::string & oldName, const std::string & newName );	
+	bool ChangeKeyMap( const std::string & oldName, const std::string & newName );	
 	
 	const std::string & GetNetworkId(const Processing * proc) const;
 	
