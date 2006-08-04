@@ -543,16 +543,16 @@ namespace CLAM
 		throw 0; // To avoid warning message
 	}
 
-	void Network::ChangeKeyMap( const std::string & oldName, const std::string & newName )
+	bool Network::ChangeKeyMap( const std::string & oldName, const std::string & newName )
 	{
+		if (oldName==newName) return true;
 		if( mProcessings.find( newName ) != mProcessings.end() ) // newName is being used
-		{
-			CLAM_ASSERT( false, "Network::ChangeKeyMap Trying to modify unexistent processing" );
-		}
+			return false;
 		ProcessingsMap::iterator it = mProcessings.find( oldName );
 		Processing * proc = it->second;
 		mProcessings.erase( it );
 		mProcessings.insert( ProcessingsMap::value_type( newName, proc ) );
+		return true;
 	}
 }
 
