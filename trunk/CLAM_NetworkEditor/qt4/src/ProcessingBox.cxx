@@ -101,10 +101,10 @@ void ProcessingBox::paintBox(QPainter & painter)
 	painter.drawRect(portWidth, controlHeight,
 		   	_size.width()-2*portWidth, _size.height()-2*controlHeight);
 	painter.setBrush(boxBodyColor);
-	painter.drawRect(portWidth+margin, controlHeight+margin+textHeight,
-		   	_size.width()-2*(margin+portWidth), _size.height()-textHeight-2*(margin+controlHeight));
+	painter.drawRect(controlOffset, portOffset+textHeight,
+		   	_size.width()-2*controlOffset, _size.height()-textHeight-2*portOffset);
 	painter.setBrush(_canvas->colorResizeHandle());
-	painter.drawRect(_size.width()-portWidth-margin, _size.height()-controlHeight-margin,
+	painter.drawRect(_size.width()-controlOffset, _size.height()-portOffset,
 		   	margin, margin);
 	// Ports
 	painter.setBrush(_canvas->colorPort());
@@ -131,7 +131,7 @@ void ProcessingBox::paintBox(QPainter & painter)
 
 	// Text
 	painter.setPen(_canvas->colorBoxFrameText());
-	painter.drawText(QRect(controlOffset, portOffset, _size.width()-2*margin+portWidth, textHeight), _name);
+	painter.drawText(QRect(controlOffset, portOffset, _size.width()-2*controlOffset, textHeight), _name);
 }
 
 void ProcessingBox::drawConnector(QPainter & painter, Region region, unsigned index)
@@ -200,9 +200,9 @@ ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
 		if (x>=controlOffset+_nOutcontrols*controlStep) return noRegion;
 		return outcontrolsRegion;
 	}
-	if (y<textHeight+margin+controlHeight)
+	if (y<textHeight+portOffset)
 		return nameRegion;
-	if (x>_size.width()-portWidth-margin && y>_size.height()-controlHeight-margin)
+	if (x>_size.width()-controlOffset && y>_size.height()-portOffset)
 		return resizeHandleRegion;
 	return bodyRegion;
 }

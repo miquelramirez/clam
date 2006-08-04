@@ -22,6 +22,7 @@
 #include <CLAM/Network.hxx>
 #include <CLAM/SMSAnalysisConfig.hxx>
 #include <CLAM/MonoAudioFileReaderConfig.hxx>
+#include <CLAM/Filename.hxx>
 #include "Qt4Configurator.hxx"
 
 class NetworkCanvas : public QWidget
