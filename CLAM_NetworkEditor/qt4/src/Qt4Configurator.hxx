@@ -31,20 +31,23 @@
 #include <CLAM/BPF.hxx>
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/DynamicType.hxx>
-
-#include <qdialog.h>
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qspinbox.h>
-#include <qvalidator.h>
-#include <qcombobox.h>
-//Added by qt3to4:
-#include <QFrame>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-
+#include <CLAM/Filename.hxx>
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/AudioFile.hxx>
 #include <CLAM/QtEnvelopeEditor.hxx>
+
+#include <QtGui/QDialog>
+#include <QtGui/QPushButton>
+#include <QtGui/QLabel>
+#include <QtGui/QLineEdit>
+#include <QtGui/QSpinBox>
+#include <QtGui/QComboBox>
+#include <QtGui/QFileDialog>
+//Added by qt3to4:
+#include <QtGui/QFrame>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
+
 
 namespace CLAM{
 	/**
@@ -288,6 +291,63 @@ namespace CLAM{
 			value = mInput->GetValue();
 		}
 
+		template <typename T>
+		void AddWidget(const char *name, CLAM::Filename *foo, T& value) {
+
+			QLineEdit * mInput = new QLineEdit(value.c_str());
+			mInput->setMinimumWidth(300);
+
+			QPushButton * fileBrowserLauncher = new QPushButton("...");
+			fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+			QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
+			fd->setFileMode( QFileDialog::ExistingFile );
+
+			connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
+			connect( fd, SIGNAL(fileSelected( const QString & )), mInput, SLOT( setText( const QString & )));
+			QHBoxLayout * cell = new QHBoxLayout;
+			mLayout->addLayout(cell);
+			cell->addWidget(new QLabel(name));
+			cell->addWidget(mInput);
+			cell->addWidget(fileBrowserLauncher);
+			cell->setSpacing(5);
+			PushWidget(name, mInput);
+		}
+
+		template <typename T>
+		void RetrieveValue(const char *name, CLAM::Filename *foo, T& value) {
+			QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+			value = mInput->text().toStdString();
+		}
+
+		template <typename T>
+		void AddWidget(const char *name, CLAM::AudioFile *foo, T& value) {
+
+			QLineEdit * mInput = new QLineEdit(value.GetLocation().c_str());
+			mInput->setMinimumWidth(300);
+
+			QPushButton * fileBrowserLauncher = new QPushButton("...");
+			fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+			QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
+			fd->setFileMode( QFileDialog::AnyFile );
+
+			connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
+			connect( fd, SIGNAL(fileSelected( const QString & )), mInput, SLOT( setText( const QString & )));
+			QHBoxLayout * cell = new QHBoxLayout;
+			mLayout->addLayout(cell);
+			cell->addWidget(new QLabel(name));
+			cell->addWidget(mInput);
+			cell->addWidget(fileBrowserLauncher);
+			cell->setSpacing(5);
+			PushWidget(name, mInput);
+		}
+
+		template <typename T>
+		void RetrieveValue(const char *name, CLAM::AudioFile *foo, T& value) {
+			QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+			value.OpenExisting(mInput->text().toStdString());
+		}
 	public slots:
 
 		void Apply() {
