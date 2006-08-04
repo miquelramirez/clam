@@ -18,24 +18,34 @@ class ProcessingBox
 public:
 	enum
 	{
+		margin = 5,
 		portWidth = 12,
 		portHeight = 12,
 		portSpacing = 4,
 		controlWidth = 10,
 		controlHeight = 10,
 		controlSpacing = 6,
-		margin = 5
+		portStep = portSpacing + portHeight,
+		portOffset = margin + controlHeight,
+		controlStep = controlSpacing + controlWidth,
+		controlOffset = margin + portWidth
 	};
 	enum Region 
 	{
+		noRegion=0,
 		inportsRegion,
 		outportsRegion,
 		incontrolsRegion,
 		outcontrolsRegion,
 		nameRegion,
 		resizeHandleRegion,
-		bodyRegion,
-		noRegion
+		bodyRegion
+	};
+	enum HLMode
+	{
+		normal,
+		acceptConnection,
+		forbidConnection
 	};
 	ProcessingBox(NetworkCanvas * parent, const QString & name,
 		   	unsigned nInports, unsigned nOutports,
@@ -44,7 +54,6 @@ public:
 
 	void setProcessing(CLAM::Processing * processing);
 	void paintFromParent(QPainter & painter);
-	void paintBox(QPainter & painter);
 	Region getRegion(const QPoint & point) const;
 	int portIndexByYPos(const QPoint & point);
 	int controlIndexByXPos(const QPoint & point);
@@ -69,6 +78,9 @@ public:
 	void startMoving(const QPoint & initialGlobalPos);
 	QPoint pos() { return _pos; }
 	QSize size() { return _size; }
+private:
+	void paintBox(QPainter & painter);
+	void drawConnector(QPainter & painter, Region region, unsigned index);
 private:
 	NetworkCanvas * _canvas;
 	QString _name;
