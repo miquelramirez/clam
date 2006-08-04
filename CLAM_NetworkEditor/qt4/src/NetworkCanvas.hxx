@@ -20,6 +20,9 @@
 #include "Wires.hxx"
 #include <vector>
 #include <CLAM/Network.hxx>
+#include <CLAM/SMSAnalysisConfig.hxx>
+#include <CLAM/MonoAudioFileReaderConfig.hxx>
+#include "Qt4Configurator.hxx"
 
 class NetworkCanvas : public QWidget
 {
@@ -438,16 +441,6 @@ public:
 		return QColor(0xf6,0x60,0x84);
 	}
 
-	void startDrag(DragStatus status, ProcessingBox * processing, int connection)
-	{
-		_dragStatus=status;
-		_dragProcessing=processing;
-		_dragConnectionIndex=connection;
-	}
-	DragStatus dragStatus() const
-	{
-		return _dragStatus;
-	}
 	QColor colorHighlightConnector(ProcessingBox * processing, ProcessingBox::Region region, int connection)
 	{
 		QColor normalHighlight = Qt::yellow;
@@ -478,6 +471,17 @@ public:
 			default:
 				return normalHighlight;
 		}
+	}
+
+	void startDrag(DragStatus status, ProcessingBox * processing, int connection)
+	{
+		_dragStatus=status;
+		_dragProcessing=processing;
+		_dragConnectionIndex=connection;
+	}
+	DragStatus dragStatus() const
+	{
+		return _dragStatus;
 	}
 	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
@@ -815,6 +819,11 @@ private slots:
 	}
 	void onConfigure()
 	{
+//		CLAM::SMSAnalysisConfig config;
+		CLAM::MonoAudioFileReaderConfig config;
+		CLAM::Qt4Configurator configurator(this);
+		configurator.SetConfig(config);
+		configurator.exec();
 	}
 	void onDisconnect()
 	{
