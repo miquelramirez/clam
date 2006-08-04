@@ -41,12 +41,6 @@ public:
 		resizeHandleRegion,
 		bodyRegion
 	};
-	enum HLMode
-	{
-		normal,
-		acceptConnection,
-		forbidConnection
-	};
 	ProcessingBox(NetworkCanvas * parent, const QString & name,
 		   	unsigned nInports, unsigned nOutports,
 			unsigned nIncontrols, unsigned nOutcontrols);

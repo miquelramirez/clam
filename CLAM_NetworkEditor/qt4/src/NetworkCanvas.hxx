@@ -448,6 +448,52 @@ public:
 	{
 		return _dragStatus;
 	}
+	QColor colorHighlightConnector(ProcessingBox * processing, ProcessingBox::Region region, int connection)
+	{
+		QColor normalHighlight = Qt::yellow;
+		QColor forbidenDrop(0xff,0xaa,0xaa);
+		QColor allowedDrop(0xaa,0xff,0xaa);
+		switch (_dragStatus) 
+		{
+			case InportDrag:
+				if (region != ProcessingBox::outportsRegion) return forbidenDrop;
+				if (canConnectPorts(processing, connection, _dragProcessing, _dragConnectionIndex))
+					return allowedDrop;
+				return forbidenDrop;
+			case OutportDrag:
+				if (region != ProcessingBox::inportsRegion) return forbidenDrop;
+				if (canConnectPorts(_dragProcessing, _dragConnectionIndex, processing, connection))
+					return allowedDrop;
+				return forbidenDrop;
+			case IncontrolDrag:
+				if (region != ProcessingBox::outcontrolsRegion) return forbidenDrop;
+				if (canConnectControls(processing, connection, _dragProcessing, _dragConnectionIndex))
+					return allowedDrop;
+				return forbidenDrop;
+			case OutcontrolDrag:
+				if (region != ProcessingBox::incontrolsRegion) return forbidenDrop;
+				if (canConnectControls(_dragProcessing, _dragConnectionIndex, processing, connection))
+					return allowedDrop;
+				return forbidenDrop;
+			default:
+				return normalHighlight;
+		}
+	}
+	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	{
+		if (!_network) return true;
+		QString outName = source->getName() + "." + source->getOutportName(outlet);
+		QString inName = target->getName() + "." + target->getInportName(inlet);
+		CLAM::OutPortBase & out = _network->GetOutPortByCompleteName(outName.toStdString());
+		CLAM::InPortBase & in = _network->GetInPortByCompleteName(inName.toStdString());
+		return out.IsConnectableTo(in);
+	}
+	bool canConnectControls(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	{
+		if (!_network) return true;
+		return true;
+	}
+
 	void endConnectionDragTo(ProcessingBox * processing, int connection)
 	{
 		switch (_dragStatus) 
