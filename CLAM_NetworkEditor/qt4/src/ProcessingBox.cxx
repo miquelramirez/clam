@@ -131,7 +131,8 @@ void ProcessingBox::paintBox(QPainter & painter)
 
 	// Text
 	painter.setPen(_canvas->colorBoxFrameText());
-	painter.drawText(QRect(controlOffset, portOffset, _size.width()-2*controlOffset, textHeight), _name);
+	painter.drawText(QRect(controlOffset, portOffset,
+			_size.width()-2*controlOffset, textHeight), _name);
 }
 
 void ProcessingBox::drawConnector(QPainter & painter, Region region, unsigned index)
@@ -452,4 +453,46 @@ QString ProcessingBox::getIncontrolName(unsigned index) const
 	return inControls.GetByNumber(index).GetName().c_str();
 }
 
+#include "ConfiguratorLauncher.hxx"
+#include "uic_DummyProcessingConfig.hxx"
+#include <CLAM/Factory.hxx>
 
+bool ProcessingBox::configure()
+{
+	if (_processing)
+	{
+		const CLAM::ProcessingConfig & config = _processing->GetConfig();
+		ConfiguratorLauncher * launcher=0;
+	   	try
+		{
+			launcher = CLAM::Factory<ConfiguratorLauncher>::GetInstance()
+				.CreateSafe(config.GetClassName());
+		}
+		catch (CLAM::ErrFactory & e)
+		{
+			QMessageBox::critical(_canvas, _canvas->tr("Configuring"),
+				   	_canvas->tr("No configuration dialog available for this processing"));
+			return false;
+		}
+		return launcher->Launch(*_processing,_name);
+	}
+	else
+	{
+		Ui::DummyProcessingConfig ui;
+		QDialog * configDialog = new QDialog(_canvas);
+		ui.setupUi(configDialog);
+		ui.inports->setValue(_nInports);
+		ui.outports->setValue(_nOutports);
+		ui.incontrols->setValue(_nIncontrols);
+		ui.outcontrols->setValue(_nOutcontrols);
+		if (not configDialog->exec()) return false;
+		// TODO: clear connections
+		_nInports= ui.inports->value();
+		_nOutports= ui.outports->value();
+		_nIncontrols= ui.incontrols->value();
+		_nOutcontrols= ui.outcontrols->value();
+		rename(_name);
+	}
+	// TODO: Update port layout
+	return true;
+}
