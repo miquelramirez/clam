@@ -474,7 +474,9 @@ bool ProcessingBox::configure()
 				   	_canvas->tr("No configuration dialog available for this processing"));
 			return false;
 		}
-		return launcher->Launch(*_processing,_name);
+		if (not launcher->Launch(*_processing,_name)) return false;
+		setProcessing(_processing);
+		return true;
 	}
 	else
 	{
@@ -492,7 +494,6 @@ bool ProcessingBox::configure()
 		_nIncontrols= ui.incontrols->value();
 		_nOutcontrols= ui.outcontrols->value();
 		rename(_name);
+		return true;
 	}
-	// TODO: Update port layout
-	return true;
 }
