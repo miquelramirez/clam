@@ -73,6 +73,7 @@ public:
 	virtual ~NetworkCanvas();
 
 	void clear();
+	void clearWires();
 
 	void raise(ProcessingBox * toRaise)
 	{
@@ -628,6 +629,12 @@ public:
 			CLAM::Processing * processing = it->second;
 			addProcessingBox( name.c_str(),  processing );
 		}
+		refreshWires();
+	}
+
+	void refreshWires()
+	{
+		clearWires();
 		// TODO: Refactor this code please!!!
 		for (unsigned p = 0; p<_processings.size(); p++)
 		{
@@ -798,6 +805,7 @@ private slots:
 			ProcessingBox::Region region = _processings[i]->getRegion(point);
 			if (region==ProcessingBox::noRegion) continue;
 			if (not _processings[i]->configure()) return;
+			if (_network) refreshWires();
 			markAsChanged();
 			return;
 		}
