@@ -154,10 +154,12 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, std::string *foo, T& value) {
+			QLineEdit * mInput = new QLineEdit(QString(value.c_str()));
+
 			QHBoxLayout * cell = new QHBoxLayout;
 			mLayout->addLayout(cell);
-			cell->addWidget(new QLabel(name, cell));
-			QLineEdit * mInput = new QLineEdit(QString(value.c_str()), cell);
+			cell->addWidget(new QLabel(name));
+			cell->addWidget(mInput);
 			PushWidget(name, mInput);
 		}
 		template <typename T>
@@ -170,6 +172,7 @@ namespace CLAM{
 		template <typename T>
 		void AddWidget(const char *name, TData *foo, T& value) {
 			QDoubleSpinBox * mInput = new QDoubleSpinBox;
+			mInput->setRange(-1e16,1e16);
 			mInput->setValue(value);
 
 			QHBoxLayout * cell = new QHBoxLayout;
@@ -188,7 +191,7 @@ namespace CLAM{
 		template <typename T>
 		void AddWidget(const char *name, TSize *foo, T& value) {
 			QSpinBox * mInput = new QSpinBox;
-			mInput->setMinimum(0);
+			mInput->setRange(0,1e16);
 			mInput->setValue(value);
 
 			QHBoxLayout * cell = new QHBoxLayout;
@@ -253,6 +256,7 @@ namespace CLAM{
 			QPushButton * mInput = new QPushButton("Details...");
 			mInput->setAutoDefault(false);
 			Qt4Configurator * subConfigurator = new Qt4Configurator(this);
+			subConfigurator->setWindowTitle(windowTitle()+"."+name);
 			subConfigurator->SetConfig(value);
 			connect( mInput, SIGNAL(clicked()), subConfigurator, SLOT(show()) );
 
@@ -301,9 +305,10 @@ namespace CLAM{
 			fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 			QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
 			fd->setFileMode( QFileDialog::ExistingFile );
-
 			connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
-			connect( fd, SIGNAL(fileSelected( const QString & )), mInput, SLOT( setText( const QString & )));
+			connect( fd, SIGNAL(currentChanged( const QString & )), mInput, SLOT( setText( const QString & )));
+			fd->selectFile(value.c_str());
+
 			QHBoxLayout * cell = new QHBoxLayout;
 			mLayout->addLayout(cell);
 			cell->addWidget(new QLabel(name));
@@ -325,14 +330,17 @@ namespace CLAM{
 
 			QLineEdit * mInput = new QLineEdit(value.GetLocation().c_str());
 			mInput->setMinimumWidth(300);
+			mInput->setReadOnly(true);
 
 			QPushButton * fileBrowserLauncher = new QPushButton("...");
 			fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 			QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
 			fd->setFileMode( QFileDialog::AnyFile );
-
+			fd->selectFile(value.GetLocation().c_str());
+			fd->setDirectory(value.GetLocation().c_str());
 			connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
-			connect( fd, SIGNAL(fileSelected( const QString & )), mInput, SLOT( setText( const QString & )));
+			connect( fd, SIGNAL(currentChanged( const QString & )), mInput, SLOT( setText( const QString & )));
+
 			QHBoxLayout * cell = new QHBoxLayout;
 			mLayout->addLayout(cell);
 			cell->addWidget(new QLabel(name));
@@ -354,11 +362,11 @@ namespace CLAM{
 			SetInfo();
 		}
 		void Discard() {
-			close();
+			reject();
 		}
 		void Ok() {
 			Apply();
-			Discard();
+			accept();
 		}
 	public:
 	

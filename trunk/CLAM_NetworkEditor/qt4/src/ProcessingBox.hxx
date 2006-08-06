@@ -72,6 +72,7 @@ public:
 	void startMoving(const QPoint & initialGlobalPos);
 	QPoint pos() { return _pos; }
 	QSize size() { return _size; }
+	bool configure();
 private:
 	void paintBox(QPainter & painter);
 	void drawConnector(QPainter & painter, Region region, unsigned index);

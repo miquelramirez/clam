@@ -58,19 +58,34 @@ public:
 			.arg(CLAM::GetFullVersion())
 			);
 
-
-		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));
-		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
-		updateCaption();
-
 		int frameSize = 512;
 	    _network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
 		_networkPlayer = new CLAM::BlockingNetworkPlayer();
 		_networkPlayer->SetNetwork(_network);
+
+		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));
+		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
+		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
+		updateCaption();
+
 	}
 
 	QString networkFilter() {return tr("CLAM Network files (*.clamnetwork)"); }
 
+	bool checkUnsavedChanges()
+	{
+		bool goOn = true;
+		bool abort = false;
+		if (not _canvas->isChanged()) return goOn;
+		int reply = QMessageBox::question(this, tr("Unsaved changes"),
+				tr("The network has been modified. Do you want to save it?"),
+			   	tr("Save"), tr("Discard"), tr("Abort"));
+		if (reply == 2) return abort;
+		if (reply == 1 ) return goOn;
+		
+		on_action_Save_triggered();
+		return _canvas->isChanged()? abort : goOn;;
+	}
 	void load(const QString & filename)
 	{
 		std::cout << "Loading " << filename.toStdString() << "..." << std::endl;
@@ -99,6 +114,7 @@ public:
 		std::cout << "Saving " << filename.toStdString() << "..." << std::endl;
 		CLAM::XMLStorage::Dump(_network, "network", filename.toStdString());
 		_canvas->savePositions(filename+".pos");
+		_canvas->clearChanges();
 		_networkFile = filename;
 		updateCaption();
 	}
@@ -110,12 +126,20 @@ public:
 		_canvas->loadNetwork(&_network);
 		updateCaption();
 	}
+
+	void closeEvent(QCloseEvent *event)
+	{
+		if (checkUnsavedChanges()) event->accept();
+		else event->ignore();
+	}
+public slots:
 	void updateCaption()
 	{
-		setWindowTitle(tr("CLAM Network Editor - %1").arg(_networkFile.isNull()?tr("Untitled"):_networkFile));
+		setWindowTitle(tr("CLAM Network Editor - %1%2")
+				.arg(_networkFile.isNull()?tr("Untitled"):_networkFile)
+				.arg(_canvas->isChanged()?tr(" [modified]"):"")
+				);
 	}
-
-public slots:
 	void on_action_Whats_this_triggered()
 	{
 		QWhatsThis::enterWhatsThisMode();
@@ -134,16 +158,19 @@ public slots:
 	}
 	void on_action_New_triggered()
 	{
+		if (!checkUnsavedChanges()) return;
 		clear();
 	}
 	void on_action_Open_triggered()
 	{
+		if (!checkUnsavedChanges()) return;
 		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", "", networkFilter());
 		if (file==QString::null) return;
 		load(file);
 	}
 	void on_action_Open_example_triggered()
 	{
+		if (!checkUnsavedChanges()) return;
 		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", DATA_EXAMPLES_PATH, networkFilter());
 		if (file==QString::null) return;
 		load(file);

@@ -20,10 +20,6 @@
 #include "Wires.hxx"
 #include <vector>
 #include <CLAM/Network.hxx>
-#include <CLAM/SMSAnalysisConfig.hxx>
-#include <CLAM/MonoAudioFileReaderConfig.hxx>
-#include <CLAM/Filename.hxx>
-#include "Qt4Configurator.hxx"
 
 class NetworkCanvas : public QWidget
 {
@@ -49,6 +45,7 @@ public:
 		, _printing(false)
 		, _zoomFactor(1.)
 		, _network(0)
+		, _changed(false)
 	{
 		setMouseTracking(true);
 		setAcceptDrops(true);
@@ -339,6 +336,7 @@ public:
 		if (!_network)
 		{
 			addProcessingBox(type, 0, point);
+			markAsChanged();
 			return;
 		}
 		try
@@ -346,6 +344,7 @@ public:
 			std::string name = _network->AddProcessing(type.toStdString());
 			CLAM::Processing & processing = _network->GetProcessing(name);
 			addProcessingBox(name.c_str(), &processing, point);
+			markAsChanged();
 		}
 		catch (CLAM::Err & e)
 		{
@@ -357,41 +356,7 @@ public:
 	void addProcessingBox(const QString & name, CLAM::Processing * processing, QPoint point=QPoint(), QSize size=QSize())
 	{
 		if (!processing)
-		{
-			QDialog * portsDialog = new QDialog(this);
-			QGridLayout * layout = new QGridLayout(portsDialog);
-			const char * labels[] = {
-				"Number of inports",
-				"Number of outports",
-				"Number of incontrols",
-				"Number of outcontrols",
-				0
-			};
-			std::vector <QSpinBox*> widgets;
-			for (unsigned i = 0; labels[i]; i++) 
-			{
-				QSpinBox * widget = new QSpinBox(portsDialog);
-				widget->setMinimum(0);
-				widget->setMaximum(10);
-				widget->setValue(2);
-				QLabel * label = new QLabel(labels[i], portsDialog);
-				layout->addWidget(label, i,0);
-				layout->addWidget(widget, i,1);
-				widgets.push_back(widget);
-			}
-			QPushButton * ok = new QPushButton("Ok",portsDialog);
-			QPushButton * cancel = new QPushButton("Cancel",portsDialog);
-			connect(ok, SIGNAL(clicked()), portsDialog, SLOT(accept()));
-			connect(cancel, SIGNAL(clicked()), portsDialog, SLOT(reject()));
-			layout->addWidget(cancel,4,0);
-			layout->addWidget(ok,4,1);
-			if (!portsDialog->exec()) return;
-			unsigned nInports= widgets[0]->value();
-			unsigned nOutports= widgets[1]->value();
-			unsigned nIncontrols= widgets[2]->value();
-			unsigned nOutcontrols= widgets[3]->value();
-			_processings.push_back(new ProcessingBox(this, name, nInports, nOutports, nIncontrols, nOutcontrols));
-		}
+			_processings.push_back(new ProcessingBox(this, name, 1, 1, 0, 0));
 		else
 			_processings.push_back(new ProcessingBox(this, name, 0, 0, 0, 0));
 		_processings.back()->setProcessing(processing);
@@ -520,6 +485,7 @@ public:
 				addControlConnection(_dragProcessing, _dragConnectionIndex, processing, connection);
 			} break;
 		}
+		markAsChanged();
 	}
 	void addPortConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
@@ -563,6 +529,7 @@ public:
 					_network->DisconnectControls(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_controlWires.erase(it);
+				markAsChanged();
 			}
 		}
 	}
@@ -579,6 +546,7 @@ public:
 					_network->DisconnectControls(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_controlWires.erase(it);
+				markAsChanged();
 			}
 		}
 	}
@@ -595,6 +563,7 @@ public:
 					_network->DisconnectPorts(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_portWires.erase(it);
+				markAsChanged();
 			}
 		}
 	}
@@ -611,12 +580,14 @@ public:
 					_network->DisconnectPorts(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_portWires.erase(it);
+				markAsChanged();
 			}
 		}
 	}
 
 	void removeProcessing(ProcessingBox * processing)
 	{
+		markAsChanged();
 		if (_network) _network->RemoveProcessing(processing->getName().toStdString());
 		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
 			   	it<_controlWires.end(); )
@@ -648,6 +619,7 @@ public:
 	{
 		clear();
 		_network = network;
+		clearChanges();
 		if (!_network) return;
 		CLAM::Network::ProcessingsMap::const_iterator it;
 		for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
@@ -820,11 +792,15 @@ private slots:
 	}
 	void onConfigure()
 	{
-//		CLAM::SMSAnalysisConfig config;
-		CLAM::MonoAudioFileReaderConfig config;
-		CLAM::Qt4Configurator configurator(this);
-		configurator.SetConfig(config);
-		configurator.exec();
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(point);
+			if (region==ProcessingBox::noRegion) continue;
+			if (not _processings[i]->configure()) return;
+			markAsChanged();
+			return;
+		}
 	}
 	void onDisconnect()
 	{
@@ -870,6 +846,22 @@ private slots:
 		if (type.isNull()) return;
 		addProcessing(point, type);
 	}
+signals:
+	void changed();
+public:
+	bool isChanged()
+	{
+		return _changed;
+	}
+	void markAsChanged()
+	{
+		_changed = true;
+		emit changed();
+	}
+	void clearChanges()
+	{
+		_changed = false;
+	}
 	
 private:
 	std::vector<ProcessingBox *> _processings;
@@ -884,6 +876,7 @@ private:
 	bool _printing;
 	double _zoomFactor;
 	CLAM::Network * _network;
+	bool _changed;
 };
 
 
