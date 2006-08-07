@@ -23,7 +23,7 @@
 #define _SpectralSynthesis_
 
 //uncomment this if you want to use Ooura fft instead of fftw 
-#define CLAM_OOURA
+//#define CLAM_OOURA
 
 #include "ProcessingComposite.hxx"
 
