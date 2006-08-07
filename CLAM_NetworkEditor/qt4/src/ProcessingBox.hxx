@@ -74,8 +74,10 @@ public:
 	QSize size() { return _size; }
 	bool configure();
 private:
+	void recomputeMinimumSizes();
 	void paintBox(QPainter & painter);
 	void drawConnector(QPainter & painter, Region region, unsigned index);
+	void refreshConnectors();
 private:
 	NetworkCanvas * _canvas;
 	QString _name;

@@ -20,6 +20,7 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, _processing(0)
 {
 	rename(name);
+	recomputeMinimumSizes();
 }
 
 void ProcessingBox::paintFromParent(QPainter & painter)
@@ -37,12 +38,17 @@ void ProcessingBox::move(const QPoint & point)
 void ProcessingBox::setProcessing(CLAM::Processing * processing)
 {
 	_processing = processing;
-	if (!processing) return;
+	refreshConnectors();
+}
+
+void ProcessingBox::refreshConnectors()
+{
+	if (!_processing) return;
 	_nInports = _processing->GetInPorts().Size();
 	_nOutports = _processing->GetOutPorts().Size();
 	_nIncontrols = _processing->GetInControls().Size();
 	_nOutcontrols = _processing->GetOutControls().Size();
-	rename(_name);
+	recomputeMinimumSizes();
 }
 
 void ProcessingBox::resize(const QSize & size)
@@ -52,6 +58,10 @@ void ProcessingBox::resize(const QSize & size)
 void ProcessingBox::rename(const QString & newName)
 {
 	_name=newName;
+	recomputeMinimumSizes();
+}
+void ProcessingBox::recomputeMinimumSizes()
+{
 	QFontMetrics metrics(_canvas->font());
 	textHeight = metrics.height();
 
@@ -493,7 +503,7 @@ bool ProcessingBox::configure()
 		_nOutports= ui.outports->value();
 		_nIncontrols= ui.incontrols->value();
 		_nOutcontrols= ui.outcontrols->value();
-		rename(_name);
+		recomputeMinimumSizes();
 		return true;
 	}
 }
