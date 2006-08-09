@@ -98,6 +98,8 @@ namespace CLAM {
 	CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
 					  GetExecState() != Ready,
 					  "FFT_ooura: Do(): Not in execution mode");
+	CLAM_DEBUG_ASSERT(isPowerOfTwo(mSize),
+					  "FFT_ooura: Do(): Not a power of two");
 
 	if (GetExecState() == Disabled)
 	  return true;
@@ -157,44 +159,10 @@ namespace CLAM {
 		
 	for (i=1; i<mSize/2; i++) {
 	  outbuffer[i].SetReal(fftbuffer[2*i]);  
-	  outbuffer[i].SetImag(-fftbuffer[2*i+1]);
+	  outbuffer[i].SetImag(fftbuffer[2*i+1]);
 	}
 		
 	outbuffer.SetSize(mSize/2+1);
-  }
-  
-  void FFT_ooura::ToMagPhase(Spectrum &out) {
-	int i;
-	DataArray& outMag = out.GetMagBuffer();
-	DataArray& outPhase = out.GetPhaseBuffer();
-
-	outMag[0] = Abs(fftbuffer[0]); // Real Values
-	outMag[mSize/2] = Abs(fftbuffer[1]);
-	outPhase[0] = 0.f;
-	outPhase[mSize/2] = 0.f;
-	
-	TData re, im;
-	TData* fftbuffer_iter1 = &(fftbuffer[2]);
-	TData* fftbuffer_iter2 = &(fftbuffer[3]);
-	TData* outMag_iter = &(outMag[1]);
-	TData* outPhase_iter = &(outPhase[1]);
-	for (i=1; i<mSize/2; fftbuffer_iter1+=2,fftbuffer_iter2+=2, outMag_iter++, outPhase_iter++, i++) {
-	re = *fftbuffer_iter1;
-	im = -*fftbuffer_iter2;
-#ifdef CLAM_OPTIMIZE
-	const float insignificant = 0.0001;
-	TData absIm = Abs(im);
-	TData absRe = Abs(re);
-	if(absIm<insignificant) *outMag_iter = absRe;
-	else if(absRe<insignificant) *outMag_iter = absIm;
-	else
-#endif
-		*outMag_iter = CLAM_sqrt(re*re + im*im);
-	*outPhase_iter = CLAM_atan2(im,re);
-	}
-		
-	outMag.SetSize(mSize/2+1);
-	outPhase.SetSize(mSize/2+1);
   }
 
 	void FFT_ooura::ToOther(Spectrum &out)
@@ -206,14 +174,10 @@ namespace CLAM {
 		else {
 			SpecTypeFlags flags;
 			out.GetType(flags);
-			if(flags.bMagPhase)
-			{
-				ToMagPhase(out);
-			}
-			else {
-				ToComplex(mComplexSpectrum);
-				out.SynchronizeTo(mComplexSpectrum);
-			}
+			
+			
+			ToComplex(mComplexSpectrum);
+			out.SynchronizeTo(mComplexSpectrum);
 		}
 	}
 
