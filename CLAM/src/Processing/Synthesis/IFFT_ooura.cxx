@@ -119,6 +119,9 @@ namespace CLAM {
 	CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
 					  GetExecState() != Ready,
 					  "IFFT_ooura: Do(): Not in execution mode");
+	
+	CLAM_DEBUG_ASSERT(isPowerOfTwo(mSize),
+					  "IFFT_ooura: Do(): Not a power of two");
 
 	if (GetExecState() == Disabled)
 	  return true;
@@ -240,13 +243,13 @@ namespace CLAM {
 			// Input object checking
 			if (out.GetSize()!=mSize) { 
 				std::stringstream ss;
-				ss << "IFFT_rfftw::Do: Wrong size in IFFT Audio output\n"
+				ss << "IFFT_ooura::Do: Wrong size in IFFT Audio output\n"
 				   << "  Expected: " << mSize*2+1 << ", used " << out.GetSize();
 				CLAM_ASSERT(0,ss.str().c_str());
 			}
 			if (in.GetSize() < mSize/2+1 ) { // ALGORITHM DEPENDENT CHECKING
 				std::stringstream ss;
-				ss << "IFFT_rfftw::Do: not enough memory in input Spectrum.\n"
+				ss << "IFFT_ooura::Do: not enough memory in input Spectrum.\n"
 				   << "  Expected: " << mSize/2+1 << ", used " << in.GetSize();
 				CLAM_ASSERT(0,ss.str().c_str());
 
