@@ -166,7 +166,7 @@ namespace CLAM {
 		
 	for (i=1; i<mSize/2; i++) {
 	  ifftbuffer[2*i] = inbuffer[i].Real();  
-	  ifftbuffer[2*i+1] = -inbuffer[i].Imag();
+	  ifftbuffer[2*i+1] = inbuffer[i].Imag();
 	}
   }
   
@@ -187,7 +187,7 @@ namespace CLAM {
 			TData* inPhase_iter = &(inPhase[1]);
 			for (i=1; i<mSize/2; ifftbuffer_iter1+=2,ifftbuffer_iter2+=2, inMag_iter++, inPhase_iter++, i++) {
 				*ifftbuffer_iter1 = (*inMag_iter)*CLAM_cos((*inPhase_iter));
-				*ifftbuffer_iter2 = -(*inMag_iter)*CLAM_sin(*inPhase_iter);
+				*ifftbuffer_iter2 = (*inMag_iter)*CLAM_sin(*inPhase_iter);
 			}
 		
 		}
