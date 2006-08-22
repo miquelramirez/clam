@@ -36,10 +36,10 @@ public:
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
 
 		QScrollArea * w = new QScrollArea(this);
-		w->setWidgetResizable(true);
 		_canvas = new NetworkCanvas;
 		setCentralWidget(w);
 		w->setWidget(_canvas);
+		
 		QDockWidget * dock = new QDockWidget(this);
 		NetworkGUI::ProcessingTree * processingTree = new NetworkGUI::ProcessingTree(dock);
 		dock->setWindowTitle("Processing Toolbox");

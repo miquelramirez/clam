@@ -41,7 +41,7 @@ public:
 		: QWidget(parent)
 		, _dragStatus(NoDrag)
 		, _dragProcessing(0)
-		, _dragConnectionIndex(0)
+		, _dragConnection(0)
 		, _printing(false)
 		, _zoomFactor(1.)
 		, _network(0)
@@ -109,8 +109,20 @@ public slots:
 public:
 	void paint(QPainter & painter)
 	{
+		const int wireBend=40;
+		_outbox=QRect(wireBend,wireBend,1,1);
+		for (unsigned i = 0; i<_processings.size(); i++)
+			_outbox = _outbox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
+		_outbox.setSize(_outbox.size()+QSize(2*wireBend,2*wireBend));
+		_outbox.translate(-wireBend,-wireBend);
+		_outbox = _outbox.unite(QRect(_outbox.topLeft(),((QWidget*)parent())->size()/_zoomFactor));
+		resize(_outbox.size()*_zoomFactor);
+
 		painter.setRenderHint(QPainter::Antialiasing);
 		painter.scale(_zoomFactor,_zoomFactor);
+		painter.translate(-_outbox.topLeft());
+		painter.setPen(QPen(Qt::yellow,6));
+		painter.drawRect(_outbox);
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->draw(painter);
 		for (unsigned i = 0; i<_portWires.size(); i++)
@@ -118,13 +130,13 @@ public:
 		for (unsigned i = 0; i<_processings.size(); i++)
 			_processings[i]->paintFromParent(painter);
 		if (_dragStatus==InportDrag)
-			PortWire::draw(painter, _dragPoint, _dragProcessing->getInportPos(_dragConnectionIndex));
+			PortWire::draw(painter, _dragPoint, _dragProcessing->getInportPos(_dragConnection));
 		if (_dragStatus==OutportDrag)
-			PortWire::draw(painter, _dragProcessing->getOutportPos(_dragConnectionIndex), _dragPoint);
+			PortWire::draw(painter, _dragProcessing->getOutportPos(_dragConnection), _dragPoint);
 		if (_dragStatus==IncontrolDrag)
-			ControlWire::draw(painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnectionIndex));
+			ControlWire::draw(painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnection));
 		if (_dragStatus==OutcontrolDrag)
-			ControlWire::draw(painter, _dragProcessing->getOutcontrolPos(_dragConnectionIndex), _dragPoint);
+			ControlWire::draw(painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
 		drawTooltip(painter);
 	}
 
@@ -161,7 +173,7 @@ public:
 
 	template <class Event> QPoint translatedPos(Event * event)
 	{
-		return event->pos()/_zoomFactor;
+		return event->pos()/_zoomFactor+_outbox.topLeft();
 	}
 	template <class Event> QPoint translatedGlobalPos(Event * event)
 	{
@@ -417,22 +429,22 @@ public:
 		{
 			case InportDrag:
 				if (region != ProcessingBox::outportsRegion) return forbidenDrop;
-				if (canConnectPorts(processing, connection, _dragProcessing, _dragConnectionIndex))
+				if (canConnectPorts(processing, connection, _dragProcessing, _dragConnection))
 					return allowedDrop;
 				return forbidenDrop;
 			case OutportDrag:
 				if (region != ProcessingBox::inportsRegion) return forbidenDrop;
-				if (canConnectPorts(_dragProcessing, _dragConnectionIndex, processing, connection))
+				if (canConnectPorts(_dragProcessing, _dragConnection, processing, connection))
 					return allowedDrop;
 				return forbidenDrop;
 			case IncontrolDrag:
 				if (region != ProcessingBox::outcontrolsRegion) return forbidenDrop;
-				if (canConnectControls(processing, connection, _dragProcessing, _dragConnectionIndex))
+				if (canConnectControls(processing, connection, _dragProcessing, _dragConnection))
 					return allowedDrop;
 				return forbidenDrop;
 			case OutcontrolDrag:
 				if (region != ProcessingBox::incontrolsRegion) return forbidenDrop;
-				if (canConnectControls(_dragProcessing, _dragConnectionIndex, processing, connection))
+				if (canConnectControls(_dragProcessing, _dragConnection, processing, connection))
 					return allowedDrop;
 				return forbidenDrop;
 			default:
@@ -444,7 +456,7 @@ public:
 	{
 		_dragStatus=status;
 		_dragProcessing=processing;
-		_dragConnectionIndex=connection;
+		_dragConnection=connection;
 	}
 	DragStatus dragStatus() const
 	{
@@ -471,19 +483,19 @@ public:
 		{
 			case InportDrag:
 			{
-				addPortConnection(processing, connection, _dragProcessing, _dragConnectionIndex);
+				addPortConnection(processing, connection, _dragProcessing, _dragConnection);
 			} break;
 			case OutportDrag:
 			{
-				addPortConnection(_dragProcessing, _dragConnectionIndex, processing, connection);
+				addPortConnection(_dragProcessing, _dragConnection, processing, connection);
 			} break;
 			case IncontrolDrag:
 			{
-				addControlConnection(processing, connection, _dragProcessing, _dragConnectionIndex);
+				addControlConnection(processing, connection, _dragProcessing, _dragConnection);
 			} break;
 			case OutcontrolDrag:
 			{
-				addControlConnection(_dragProcessing, _dragConnectionIndex, processing, connection);
+				addControlConnection(_dragProcessing, _dragConnection, processing, connection);
 			} break;
 		}
 		markAsChanged();
@@ -877,7 +889,7 @@ private:
 	std::vector<ControlWire *> _controlWires;
 	DragStatus _dragStatus;
 	ProcessingBox * _dragProcessing;
-	unsigned _dragConnectionIndex;
+	unsigned _dragConnection;
 	QPoint _dragPoint;
 	QPoint _tooltipPos;
 	QString _tooltipText;
@@ -885,6 +897,7 @@ private:
 	double _zoomFactor;
 	CLAM::Network * _network;
 	bool _changed;
+	QRect _outbox;
 };
 
 
