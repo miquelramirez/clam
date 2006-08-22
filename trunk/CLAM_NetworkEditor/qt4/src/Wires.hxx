@@ -76,6 +76,16 @@ public:
 	{
 		return (_source->getName()+"."+_source->getOutportName(_outlet)).toStdString();
 	}
+	void expand(QRect & rect)
+	{
+		const int wireBend=40;
+		QPoint source = _source->getOutportPos(_outlet);
+		QPoint target = _target->getInportPos(_inlet);
+		if (rect.left()>target.x()-wireBend)
+			rect.setLeft(target.x()-wireBend);
+		if (rect.right()<source.x()+wireBend)
+			rect.setRight(source.x()+wireBend);
+	}
 };
 
 class ControlWire : public Wire
@@ -118,6 +128,16 @@ public:
 	std::string getSourceId()
 	{
 		return (_source->getName()+"."+_source->getOutcontrolName(_outlet)).toStdString();
+	}
+	void expand(QRect & rect)
+	{
+		const int wireBend=40;
+		QPoint source = _source->getOutcontrolPos(_outlet);
+		QPoint target = _target->getIncontrolPos(_inlet);
+		if (rect.top()>target.y()-wireBend)
+			rect.setTop(target.y()-wireBend);
+		if (rect.bottom()<source.y()+wireBend)
+			rect.setBottom(source.y()+wireBend);
 	}
 };
 
