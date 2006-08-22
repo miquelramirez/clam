@@ -71,7 +71,7 @@ env.EnableQt4Modules([
 	], debug=False)
 
 mainSources = {
-	'ProofOfConcept' : os.path.join('src','main.cxx'),
+	'NetworkEditor' : os.path.join('src','main.cxx'),
 }
 
 sourcePaths = [
