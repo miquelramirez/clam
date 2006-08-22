@@ -109,12 +109,13 @@ public slots:
 public:
 	void paint(QPainter & painter)
 	{
-		const int wireBend=40;
-		_outbox=QRect(wireBend,wireBend,1,1);
+		_outbox=QRect(0,0,1,1);
 		for (unsigned i = 0; i<_processings.size(); i++)
 			_outbox = _outbox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
-		_outbox.setSize(_outbox.size()+QSize(2*wireBend,2*wireBend));
-		_outbox.translate(-wireBend,-wireBend);
+		for (unsigned i = 0; i<_controlWires.size(); i++)
+			_controlWires[i]->expand(_outbox);
+		for (unsigned i = 0; i<_portWires.size(); i++)
+			_portWires[i]->expand(_outbox);
 		_outbox = _outbox.unite(QRect(_outbox.topLeft(),((QWidget*)parent())->size()/_zoomFactor));
 		resize(_outbox.size()*_zoomFactor);
 
