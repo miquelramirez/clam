@@ -1,5 +1,6 @@
 #include "ProcessingBox.hxx"
 #include "NetworkCanvas.hxx"
+#include "ControlSenderWidget.hxx"
 #include <QtGui/QSlider>
 #include <QtDebug>
 
@@ -58,6 +59,10 @@ void ProcessingBox::paintFromParent(QPainter & painter)
 void ProcessingBox::setProcessing(CLAM::Processing * processing)
 {
 	_processing = processing;
+	QWidget * embeded = 0;
+	if (_processing and _processing->GetClassName()==std::string("OutControlSender"))
+		embeded = new ControlSenderWidget(_processing);
+	embed(embeded);
 	refreshConnectors();
 }
 
@@ -89,8 +94,12 @@ void ProcessingBox::recomputeMinimumSizes()
 {
 	QFontMetrics metrics(_canvas->font());
 	textHeight = metrics.height();
-
-	int minimumHeight = textHeight+2*margin;
+	int embededMinHeight = 2*margin;
+	if (_embeded and embededMinHeight<_embeded->minimumHeight())
+		embededMinHeight = _embeded->minimumHeight();
+	if (_embeded and embededMinHeight<_embeded->minimumSizeHint().height())
+		embededMinHeight = _embeded->minimumSizeHint().height();
+	int minimumHeight = textHeight+embededMinHeight;
 	int inportsHeight = _nInports*portStep;
 	int outportsHeight = _nOutports*portStep;
 	if (minimumHeight<inportsHeight) minimumHeight = inportsHeight;
@@ -98,6 +107,10 @@ void ProcessingBox::recomputeMinimumSizes()
 	minimumHeight += 2*portOffset;
 
 	int minimumWidth = metrics.width(_name);
+	if (_embeded and minimumWidth<_embeded->minimumWidth())
+		minimumWidth = _embeded->minimumWidth();
+	if (_embeded and minimumWidth<_embeded->minimumSizeHint().width())
+		minimumWidth = _embeded->minimumSizeHint().width();
 	int incontrolsWidth = _nIncontrols*controlStep;
 	int outcontrolsWidth = _nOutcontrols*controlStep;
 	if (minimumWidth<incontrolsWidth) minimumWidth = incontrolsWidth;

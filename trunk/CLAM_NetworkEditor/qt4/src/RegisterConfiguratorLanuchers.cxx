@@ -55,6 +55,7 @@
 #include <CLAM/WindowGeneratorConfig.hxx>
 #include <CLAM/CircularShiftConfig.hxx>
 #include <CLAM/NullProcessingConfig.hxx>
+#include <CLAM/OutControlSender.hxx>
 
 // local processings
 #include <CLAM/FlagControl.hxx>
@@ -134,6 +135,7 @@ STANDARD_PROCESSING_CONFIG_REGISTER(ControlPrinterConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ControlScalerConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ExternInControlConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ExternOutControlConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(OutControlSenderConfig);
 // MIDI
 STANDARD_PROCESSING_CONFIG_REGISTER(MIDIKeyboardConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(MIDIIOConfig);
