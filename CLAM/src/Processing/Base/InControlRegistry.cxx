@@ -39,8 +39,8 @@ InControl& InControlRegistry::Get(const std::string & name) const
 		if (name == (*it)->GetName()) 
 			return **it;
 
-	std::string error( "name not found in InControls collection: " );
-	error += "'" +  name + "'" + ". In ports availables: " + AvailableNames();
+	std::string error = 
+		"No in control named '" +  name + "'.\nTry with: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
 	return *(InControl*)NULL; // just to get rid of warnings
@@ -59,18 +59,12 @@ bool InControlRegistry::Has(const std::string& name) const
 std::string InControlRegistry::AvailableNames() const
 {
 	std::string result;
-	ConstIterator it;
-	bool first=true;
-	for (it=mInControls.begin(); it!=mInControls.end(); it++)
+	std::string separator = "";
+	for (ConstIterator it=mInControls.begin(); it!=mInControls.end(); it++)
 	{
-		if (!first) 
-			result += ", ";
-		else 
-			first = false;
 		InControl & control = *(*it);
-		result += "'";
-		result += control.GetName();
-		result += "'";
+		result += separator + "'" + control.GetName() + "'";
+		separator = ",";
 	}
 	return result;
 }

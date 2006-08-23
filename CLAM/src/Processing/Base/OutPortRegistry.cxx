@@ -47,8 +47,8 @@ OutPortBase & OutPortRegistry::Get(const std::string & name) const
 	for (it=mOutPorts.begin(); it!=mOutPorts.end(); it++)
 		if (name == (*it)->GetName()) 
 			return **it;
-	std::string error( "name not found in OutPorts collection: " );
-	error += name;
+	std::string error = 
+		"No out port named '" +  name + "'.\nTry with: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 	
 	return *(OutPortBase*)NULL; // just to get rid of warnings
@@ -103,4 +103,16 @@ void OutPortRegistry::Publish( OutPortBase * out )
 	mOutPorts.push_back( out );
 }
 
+std::string OutPortRegistry::AvailableNames() const
+{
+	std::string result;
+	std::string separator = "";
+	for (ConstIterator it=mOutPorts.begin(); it!=mOutPorts.end(); it++)
+	{
+		OutPortBase & port = *(*it);
+		result += separator + "'" + port.GetName() + "'";
+		separator = ",";
+	}
+	return result;
+}
 }// namespace CLAM
