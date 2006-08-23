@@ -82,7 +82,7 @@ public:
 	int mNWriteChannels;
 	
 	/** Constructor of the class that sets the name of object to the string passed by parameter
-	 *  @name String with the name of object
+	 *  @arg name String with the name of object
 	 */
 	AudioDevice(const std::string& name)
 	{
