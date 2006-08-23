@@ -1,8 +1,11 @@
 #include "ProcessingBox.hxx"
 #include "NetworkCanvas.hxx"
+#include <QtGui/QSlider>
+#include <QtDebug>
 
 ProcessingBox::~ProcessingBox()
 {
+	if (_embeded) delete _embeded;
 }
 
 ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
@@ -18,23 +21,41 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, resizing(false)
 	, _highLightRegion(noRegion)
 	, _processing(0)
+	, _embeded(0)
 {
+	embed(new QSlider(Qt::Horizontal));
 	rename(name);
 	recomputeMinimumSizes();
 }
 
+void ProcessingBox::embed(QWidget * widget)
+{
+	if (_embeded) delete _embeded;
+	_embeded = widget;
+	if (!_embeded) return;
+	_embeded->setParent(_canvas);
+	_embeded->show();
+}
+
+void ProcessingBox::updateEmbededWidget()
+{
+	if (!_embeded) return;
+	QRect embedZone(
+			controlOffset, portOffset + textHeight,
+   			_size.width()-2*controlOffset, _size.height()-textHeight-2*portOffset);
+	embedZone.translate(pos());
+	embedZone = _canvas->translatedRect(embedZone);
+	_embeded->setGeometry(embedZone);
+}
+
 void ProcessingBox::paintFromParent(QPainter & painter)
 {
+	updateEmbededWidget();
 	painter.save();
 	painter.translate(_pos);
 	paintBox(painter);
 	painter.restore();
 }
-void ProcessingBox::move(const QPoint & point)
-{
-	_pos=point;
-}
-
 void ProcessingBox::setProcessing(CLAM::Processing * processing)
 {
 	_processing = processing;
@@ -55,6 +76,11 @@ void ProcessingBox::resize(const QSize & size)
 {
 	_size=size.expandedTo(_minimumSize);
 }
+void ProcessingBox::move(const QPoint & point)
+{
+	_pos=point;
+}
+
 void ProcessingBox::rename(const QString & newName)
 {
 	_name=newName;
