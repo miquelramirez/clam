@@ -17,13 +17,12 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, _nOutports(nOutports)
 	, _nIncontrols(nIncontrols)
 	, _nOutcontrols(nOutcontrols)
-	, moving(false)
-	, resizing(false)
+	, _actionMode(NoAction)
 	, _highLightRegion(noRegion)
 	, _processing(0)
 	, _embeded(0)
 {
-	embed(new QSlider(Qt::Horizontal));
+//	embed(new QSlider(Qt::Horizontal));
 	rename(name);
 	recomputeMinimumSizes();
 }
@@ -275,7 +274,7 @@ QPoint ProcessingBox::getOutcontrolPos(unsigned i) const
 
 void ProcessingBox::startMoving(const QPoint & initialGlobalPos)
 {
-	moving = true;
+	_actionMode = Moving;
 	originalPosition = _pos;
 	dragOrigin = initialGlobalPos;
 }
@@ -295,7 +294,7 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 	// Resize corner
 	if (region==resizeHandleRegion)
 	{
-		resizing=true;
+		_actionMode = Resizing;
 		originalSize = _size;
 		dragOrigin=_canvas->translatedGlobalPos(event);
 		_canvas->setCursor(Qt::SizeFDiagCursor);
@@ -329,19 +328,13 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 {
 	_highLightRegion=noRegion;;
-	if (moving)
+	if (_actionMode==Moving || _canvas->dragStatus()==NetworkCanvas::PanDrag)
 	{
 		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;
 		move(originalPosition + dragDelta);
 		return;
 	}
-	if (_canvas->dragStatus()==NetworkCanvas::PanDrag)
-	{
-		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;
-		move(originalPosition + dragDelta);
-		return;
-	}
-	if (resizing)
+	if (_actionMode==Resizing)
 	{
 		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;
 		resize(QSize(
@@ -408,15 +401,15 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 }
 void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 {
-	if (moving)
+	if (_actionMode==Moving)
 	{
 		_canvas->setCursor(Qt::ArrowCursor);
-		moving=false;
+		_actionMode = NoAction;
 	}
-	if (resizing)
+	if (_actionMode==Resizing)
 	{
 		_canvas->setCursor(Qt::ArrowCursor);
-		resizing=false;
+		_actionMode = NoAction;
 	}
 	Region region = getRegion(_canvas->translatedPos(event));
 	if (_canvas->dragStatus()==NetworkCanvas::OutportDrag && region==inportsRegion)

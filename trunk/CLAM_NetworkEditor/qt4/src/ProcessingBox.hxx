@@ -41,6 +41,12 @@ public:
 		resizeHandleRegion,
 		bodyRegion
 	};
+	enum ActionMode
+	{
+		NoAction,
+		Resizing,
+		Moving
+	};
 	ProcessingBox(NetworkCanvas * parent, const QString & name,
 		   	unsigned nInports, unsigned nOutports,
 			unsigned nIncontrols, unsigned nOutcontrols);
@@ -87,11 +93,10 @@ private:
 	unsigned _nOutports;
 	unsigned _nIncontrols;
 	unsigned _nOutcontrols;
-	bool moving;
+	ActionMode _actionMode;
 	QPoint dragOrigin;
 	QPoint originalPosition;
 	QSize originalSize;
-	bool resizing;
 	int textHeight;
 	QPoint _pos;
 	QSize _size;
