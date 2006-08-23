@@ -72,12 +72,14 @@ public:
 	void startMoving(const QPoint & initialGlobalPos);
 	QPoint pos() { return _pos; }
 	QSize size() { return _size; }
+	void embed(QWidget * widget);
 	bool configure();
 private:
 	void recomputeMinimumSizes();
 	void paintBox(QPainter & painter);
 	void drawConnector(QPainter & painter, Region region, unsigned index);
 	void refreshConnectors();
+	void updateEmbededWidget();
 private:
 	NetworkCanvas * _canvas;
 	QString _name;
@@ -97,6 +99,7 @@ private:
 	Region _highLightRegion;
 	unsigned _highLightConnection;
 	CLAM::Processing * _processing;
+	QWidget * _embeded;
 };
 
 

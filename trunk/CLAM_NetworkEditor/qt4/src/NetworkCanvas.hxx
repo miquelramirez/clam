@@ -122,8 +122,7 @@ public:
 		painter.setRenderHint(QPainter::Antialiasing);
 		painter.scale(_zoomFactor,_zoomFactor);
 		painter.translate(-_outbox.topLeft());
-		painter.setPen(QPen(Qt::yellow,6));
-		painter.drawRect(_outbox);
+
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->draw(painter);
 		for (unsigned i = 0; i<_portWires.size(); i++)
@@ -172,6 +171,12 @@ public:
 	}
 
 
+	QRect translatedRect(QRect rect)
+	{
+		rect.setSize(rect.size()*_zoomFactor);
+		rect.moveTopLeft((rect.topLeft()-_outbox.topLeft())*_zoomFactor);
+		return rect;
+	}
 	template <class Event> QPoint translatedPos(Event * event)
 	{
 		return event->pos()/_zoomFactor+_outbox.topLeft();
