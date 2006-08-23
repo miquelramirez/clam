@@ -40,8 +40,8 @@ OutControl& OutControlRegistry::Get(const std::string & name) const
 		if (name == (*it)->GetName()) 
 			return **it;
 	
-	std::string error( "name not found in OutControls collection: " );
-	error += name;
+	std::string error = 
+		"No out control named '" +  name + "'.\nTry with: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
 	return *(OutControl*)NULL; // Just to get rid of warnings
@@ -87,5 +87,17 @@ void OutControlRegistry::Publish( OutControl * out )
 	mOutControls.push_back( out );
 }
 
+std::string OutControlRegistry::AvailableNames() const
+{
+	std::string result;
+	std::string separator = "";
+	for (ConstIterator it=mOutControls.begin(); it!=mOutControls.end(); it++)
+	{
+		OutControl & control = *(*it);
+		result += separator + "'" + control.GetName() + "'";
+		separator = ",";
+	}
+	return result;
+}
 } // namespace CLAM
 
