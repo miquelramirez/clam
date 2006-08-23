@@ -58,7 +58,7 @@ public:
 			.arg(CLAM::GetFullVersion())
 			);
 
-		int frameSize = 512;
+		int frameSize = 2048;
 	    _network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
 		_networkPlayer = new CLAM::BlockingNetworkPlayer();
 		_networkPlayer->SetNetwork(_network);
