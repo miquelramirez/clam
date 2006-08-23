@@ -45,10 +45,10 @@ namespace CLAM
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SpectrumPortMonitor> regtSpectrumPortMonitor("SpectrumPortMonitor");
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::AudioPortMonitor> regtAudioPortMonitor("AudioPortMonitor");
 	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::FundamentalPortMonitor> regtFundamentalPortMonitor("FundamentalPortMonitor");
-        static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::AudioBuffPortMonitor> regtAudioBuffPortMonitor("AudioBuffPortMonitor");
-        static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SpecgramPortMonitor> regtSpecgramPortMonitor("SpecgramPortMonitor");
-        static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::FundTrackPortMonitor> regtFundTrackPortMonitor("FundTrackPortMonitor");
-        static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SinTracksPortMonitor> regtSinTracksPortMonitor("SinTracksPortMonitor");
+	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::AudioBuffPortMonitor> regtAudioBuffPortMonitor("AudioBuffPortMonitor");
+	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SpecgramPortMonitor> regtSpecgramPortMonitor("SpecgramPortMonitor");
+	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::FundTrackPortMonitor> regtFundTrackPortMonitor("FundTrackPortMonitor");
+	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SinTracksPortMonitor> regtSinTracksPortMonitor("SinTracksPortMonitor");
 #endif
 	
 }
