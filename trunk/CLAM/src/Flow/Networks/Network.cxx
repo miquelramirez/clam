@@ -26,6 +26,7 @@
 #include "ProcessingDefinitionAdapter.hxx"
 #include "ConnectionDefinitionAdapter.hxx"
 #include "Factory.hxx"
+#include "XmlStorageErr.hxx"
 
 
 namespace CLAM
@@ -46,19 +47,16 @@ namespace CLAM
 
 	void Network::StoreOn( Storage & storage) const
 	{
-		// Storing an standard library string as an attribute
-		std::string name = mName;
-		XMLAdapter<std::string> strAdapter( name, "id");
+		XMLAdapter<std::string> strAdapter( mName, "id");
 		storage.Store(strAdapter);
 
 		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings();it!=EndProcessings();it++)
 		{
 			Processing * proc = it->second;
-			std::string name(it->first);
-			ProcessingDefinitionAdapter procDefinitionAdapter(proc, name);
-			XMLComponentAdapter procComponentAdapter(procDefinitionAdapter, "processing", true);
-			storage.Store(procComponentAdapter);
+			ProcessingDefinitionAdapter procDefinition(proc, it->first);
+			XMLComponentAdapter xmlAdapter(procDefinition, "processing", true);
+			storage.Store(xmlAdapter);
 		}
 
 		// second iteration to store ports. 
@@ -67,7 +65,7 @@ namespace CLAM
 
 		for(it=BeginProcessings();it!=EndProcessings();it++)
 		{
-			std::string name(it->first);
+			const std::string & name = it->first;
 			Processing * proc = it->second;
 			OutPortRegistry::Iterator itOutPort;
 			for (itOutPort=proc->GetOutPorts().Begin(); 
@@ -77,50 +75,42 @@ namespace CLAM
 				if (!(*itOutPort)->HasConnections())
 					continue;
 	
-				std::string outPortName(name);
-				outPortName += ".";
-				outPortName += (*itOutPort)->GetName();
-
+				std::string outPortName = name + "." + (*itOutPort)->GetName();
 				NamesList namesInPorts = GetInPortsConnectedTo(outPortName);
 				NamesList::iterator namesIterator;
 				for(namesIterator=namesInPorts.begin();
 				    namesIterator!=namesInPorts.end();
 				    namesIterator++)
 				{
-					ConnectionDefinitionAdapter connectionDefinitionAdapter( outPortName, *namesIterator );
-					XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "port_connection", true);
-					storage.Store(connectionComponentAdapter);
+					ConnectionDefinitionAdapter connectionDefinition( outPortName, *namesIterator );
+					XMLComponentAdapter xmlAdapter(connectionDefinition, "port_connection", true);
+					storage.Store(xmlAdapter);
 				}
 			}
 		}
 
 		for(it=BeginProcessings();it!=EndProcessings();it++)
 		{
-			std::string name(it->first);
+			const std::string & name = it->first;
 			Processing * proc = it->second;
 			OutControlRegistry::Iterator itOutControl;
 			for (itOutControl=proc->GetOutControls().Begin(); 
 			     itOutControl!=proc->GetOutControls().End(); 
 			     itOutControl++)
 			{
-				std::string outControlName(name);
-				outControlName += ".";
-				outControlName += (*itOutControl)->GetName();
-
+				std::string outControlName = name+ "." + (*itOutControl)->GetName();
 				NamesList namesInControls = GetInControlsConnectedTo(outControlName);
 				NamesList::iterator namesIterator;
 				for(namesIterator=namesInControls.begin();
 				    namesIterator!=namesInControls.end();
 				    namesIterator++)
 				{
-					ConnectionDefinitionAdapter connectionDefinitionAdapter( outControlName, *namesIterator );
-					XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "control_connection", true);
-					storage.Store(connectionComponentAdapter);
+					ConnectionDefinitionAdapter connectionDefinition( outControlName, *namesIterator );
+					XMLComponentAdapter xmlAdapter(connectionDefinition, "control_connection", true);
+					storage.Store(xmlAdapter);
 				}
 			}
 		}
-
-
 	}
 
 	void Network::LoadFrom( Storage & storage)
@@ -130,30 +120,39 @@ namespace CLAM
 
 		while(1)
 		{
-			ProcessingDefinitionAdapter procDefinitionAdapter;
-			XMLComponentAdapter procComponentAdapter(procDefinitionAdapter, "processing", true);
-			if(storage.Load(procComponentAdapter) == false)
-				break;
+			ProcessingDefinitionAdapter procDefinition;
+			XMLComponentAdapter xmlAdapter(procDefinition, "processing", true);
+			if(storage.Load(xmlAdapter) == false) break;
 			
-			AddProcessing(procDefinitionAdapter.GetName(), procDefinitionAdapter.GetProcessing()); 
+			AddProcessing(procDefinition.GetName(), procDefinition.GetProcessing()); 
 		}
 
 		while(1)
 		{
-			ConnectionDefinitionAdapter connectionDefinitionAdapter;
-			XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "port_connection", true);
-			if(storage.Load(connectionComponentAdapter)==false)
-				break;
-			ConnectPorts( connectionDefinitionAdapter.GetOutName(), connectionDefinitionAdapter.GetInName() );			
+			ConnectionDefinitionAdapter connectionDefinition;
+			XMLComponentAdapter xmlAdapter(connectionDefinition, "port_connection", true);
+			if (!storage.Load(xmlAdapter)) break;
+			const std::string & fullOut = connectionDefinition.GetOutName();
+			const std::string & fullIn = connectionDefinition.GetInName();
+			try
+			{
+				ConnectPorts( fullOut, fullIn );
+			}
+			catch (Err & e) { throw XmlStorageErr(e.what()); }
 		}
 
 		while(1)
 		{
-			ConnectionDefinitionAdapter connectionDefinitionAdapter;
-			XMLComponentAdapter connectionComponentAdapter(connectionDefinitionAdapter, "control_connection", true);
-			if(storage.Load(connectionComponentAdapter)==false)
-				break;
-			ConnectControls( connectionDefinitionAdapter.GetOutName(), connectionDefinitionAdapter.GetInName() );			
+			ConnectionDefinitionAdapter connectionDefinition;
+			XMLComponentAdapter xmlAdapter(connectionDefinition, "control_connection", true);
+			if (!storage.Load(xmlAdapter)) break;
+			const std::string & fullOut = connectionDefinition.GetOutName();
+			const std::string & fullIn = connectionDefinition.GetInName();
+			try 
+			{
+				ConnectControls( fullOut, fullIn );
+			}
+			catch (Err & e) { throw XmlStorageErr(e.what()); }
 		}
 
 	}
@@ -169,7 +168,8 @@ namespace CLAM
 
 	Processing& Network::GetProcessing( const std::string & name ) const
 	{
-		CLAM_ASSERT( HasProcessing(name), "No Processing with the given name");
+		CLAM_ASSERT( HasProcessing(name), 
+			("No processing in the network has the name '"+name+"'.").c_str());
 
 		ProcessingsMap::const_iterator it = mProcessings.find( name );
 		return *it->second;
