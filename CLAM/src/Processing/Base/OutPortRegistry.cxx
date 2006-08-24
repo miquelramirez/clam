@@ -30,15 +30,7 @@ OutPortBase & OutPortRegistry::GetByNumber(int index) const
 	CLAM_ASSERT(index>=0, "index for Port must be >=0");
 	CLAM_ASSERT(index<Size(), "index for Port must be < than Size");
 
-	ConstIterator it;
-	int i;
-	for (it=mOutPorts.begin(), i=0; it!=mOutPorts.end(); it++, i++)
-	{
-		if (i==index) return *(*it);
-	}
-	CLAM_ASSERT(false, "OutPortRegistry::GetByNumber() index out of range");
-	
-	return *(OutPortBase*)NULL; // just to get rid of warnings
+	return *mOutPorts[index];
 }
 	
 OutPortBase & OutPortRegistry::Get(const std::string & name) const

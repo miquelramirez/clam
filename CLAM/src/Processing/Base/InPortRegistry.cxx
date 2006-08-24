@@ -29,16 +29,8 @@ InPortBase& InPortRegistry::GetByNumber(int index) const
 {
 	CLAM_ASSERT(index>=0, "index for Port must be >=0");
 	CLAM_ASSERT(index<Size(), "index for Port must be < than Size");
-	ConstIterator it;
-	int i;
-	for (it=mInPorts.begin(), i=0; it!=mInPorts.end(); it++, i++)
-	{
-		if (i==index) return *(*it);
-	}
 
-	CLAM_ASSERT(false, "InPortRegistry::GetByNumber() index out of range");
-
-	return *(InPortBase*)NULL; // just to get rid of warnings
+	return *mInPorts[index];
 }
 	
 InPortBase& InPortRegistry::Get(const std::string & name) const
