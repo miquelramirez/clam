@@ -72,7 +72,7 @@ namespace CLAM
 			if(mAudio0) mSamplingRate = mAudio0->GetSampleRate();
 			else mSamplingRate=44100;
 
-			unsigned frameSize = 1024;     
+			unsigned frameSize = 4092;     
 			AudioManager manager(mSamplingRate,(int)frameSize);  
 
 			manager.Start();
@@ -107,7 +107,7 @@ namespace CLAM
 			Audio silence;
 			silence.SetSize(frameSize);
 
-		    unsigned firstIndex = FirstIndex();
+			unsigned firstIndex = FirstIndex();
 			unsigned k = firstIndex;
 
 			unsigned start = unsigned(mBeginTime*mSamplingRate);
@@ -120,7 +120,7 @@ namespace CLAM
 
 			for(unsigned i=start; i < nSamples; i+=frameSize)
 			{
-				if(!mIsPlaying) break;
+				if (mPlayStatus!=Playing) break;
 				if(mBPF && mBPF->Size() && k+1<mBPF->Size() && mBPF->GetXValue(k+1)<= i/mSamplingRate) k++;
 
 				if(mAudio0 && rightIndex < unsigned(mAudio0->GetSize()))
@@ -152,15 +152,15 @@ namespace CLAM
 				}
 				emit playingTime(double(leftIndex)/mSamplingRate);
 				leftIndex += frameSize;
-				rightIndex += frameSize;				
+				rightIndex += frameSize;
 			}
 			osc.Stop();
 			channel0.Stop();
 			channel1.Stop();
 
-			(mIsPaused) ? mBeginTime = double(leftIndex)/mSamplingRate : mBeginTime = mTimeBounds.min;
-			emit stopTime(double(leftIndex)/mSamplingRate,mIsPaused);
-			mIsPlaying = false;
+			if (mPlayStatus==Playing) mPlayStatus=Stoped;
+			mBeginTime = (mPlayStatus==Paused) ? double(leftIndex)/mSamplingRate : mTimeBounds.min;
+			emit stopTime(double(leftIndex)/mSamplingRate,mPlayStatus==Paused);
 		}
 
 		unsigned BPFPlayer::FirstIndex()

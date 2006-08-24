@@ -33,6 +33,7 @@ namespace CLAM
 		{
 			Q_OBJECT
 		public:
+			enum PlayStatus {Stoped, Paused, Playing};
 			Player(QObject* parent=0);
 			virtual ~Player();
 
@@ -55,8 +56,7 @@ namespace CLAM
 
 		protected:
 			int           mPlayingFlags;
-			volatile bool mIsPlaying;
-			volatile bool mIsPaused;
+			volatile PlayStatus    mPlayStatus;
 			double        mSamplingRate;
 			double        mBeginTime;
 			Range         mTimeBounds;

@@ -91,8 +91,8 @@ namespace CLAM
 
 			while(leftIndex < unsigned(mTimeBounds.max*mSamplingRate))
 			{
-				if(!mIsPlaying) break;
-				if(mPlayingFlags & CLAM::VM::eAudio)
+				if (mPlayStatus!=Playing) break;
+				if (mPlayingFlags & CLAM::VM::eAudio)
 				{
 					mSegment->GetAudio().GetAudioChunk(int(leftIndex),int(rightIndex),samples0);
 				}
@@ -112,7 +112,7 @@ namespace CLAM
 				{
 					channel0.Do(samples1);
 					channel1.Do(samples1);
-				}			   
+				}
 				emit playingTime(double(leftIndex)/mSamplingRate);
 				leftIndex += frameSize;
 				rightIndex += frameSize;
@@ -121,9 +121,9 @@ namespace CLAM
 			channel0.Stop();
 			channel1.Stop();
 
-			(mIsPaused) ? mBeginTime = double(leftIndex)/mSamplingRate : mBeginTime = mTimeBounds.min;
-			emit stopTime(double(leftIndex)/mSamplingRate,mIsPaused);
-			mIsPlaying = false;
+			if (mPlayStatus==Playing) mPlayStatus=Stoped;
+			mBeginTime = (mPlayStatus==Paused) ? double(leftIndex)/mSamplingRate : mTimeBounds.min;
+			emit stopTime(double(leftIndex)/mSamplingRate,mPlayStatus==Paused);
 		}
 	}
 }
