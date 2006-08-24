@@ -28,8 +28,7 @@ namespace CLAM
 	{
 		Player::Player(QObject* parent)
 			: QThread(parent)
-			, mIsPlaying(false)
-			, mIsPaused(false)
+			, mPlayStatus(Stoped)
 			, mSamplingRate(44100.0)
 			, mBeginTime(0.0)
 			, mTimeBounds(0.0,1.0)
@@ -40,9 +39,9 @@ namespace CLAM
 		Player::~Player()
 		{
 			PlayList::Remove(this);
-			if(mIsPlaying)
+			if (mPlayStatus == Playing)
 			{
-				mIsPlaying = false;
+				mPlayStatus = Stoped;
 				terminate();
 				wait();
 			}
@@ -68,27 +67,24 @@ namespace CLAM
 
 		bool Player::IsPlaying() const
 		{
-			return mIsPlaying;
+			return mPlayStatus == Playing;
 		}
 
 		void Player::play()
 		{
 			PlayList::Stop();
-			mIsPlaying = true;
-			mIsPaused = false;
+			mPlayStatus = Playing;
 			start();
 		}
 
 		void Player::pause()
 		{
-			mIsPaused = true;
-			mIsPlaying = false;
+			mPlayStatus = Paused;
 		}
 
 		void Player::stop()
 		{
-			mIsPlaying = false;
-			mIsPaused = false;
+			mPlayStatus = Stoped;
 			wait();
 		}
 
