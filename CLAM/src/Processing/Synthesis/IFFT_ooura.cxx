@@ -166,7 +166,7 @@ namespace CLAM {
 		
 	for (i=1; i<mSize/2; i++) {
 	  ifftbuffer[2*i] = inbuffer[i].Real();  
-	  ifftbuffer[2*i+1] = inbuffer[i].Imag();
+	  ifftbuffer[2*i+1] = -inbuffer[i].Imag();
 	}
   }
   
@@ -174,7 +174,7 @@ namespace CLAM {
 	{
 		SpecTypeFlags flags;
 		in.GetType(flags);
-		if(flags.bMagPhase)
+	/*	if(flags.bMagPhase)
 		{
 			DataArray& inMag = in.GetMagBuffer();
 			DataArray& inPhase = in.GetPhaseBuffer();
@@ -193,13 +193,13 @@ namespace CLAM {
 		}
 		else
 		{
-			Spectrum tmpSpec = in;
+	*/		Spectrum tmpSpec = in;
 			if (!in.HasComplexArray()) {
 				flags.bComplex=1;
 				tmpSpec.SetTypeSynchronize(flags);
 			}
 			ComplexToIFFTOoura(tmpSpec);
-		}
+	//	}
 
 	}
 	
