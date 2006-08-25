@@ -393,16 +393,16 @@ namespace CLAM {
 		
 			r3 = r1+r2;
 			i3 = i1+i2;
-#ifdef CLAM_OPTIMIZE
-			const float insignificant = 0.0001;
+/*#ifdef CLAM_OPTIMIZE
+			const float insignificant = 0.000001;
 			TData absIm = Abs(i3);
 			TData absRe = Abs(r3);
-			if(absIm<insignificant) mo[i] = absRe;
-			else if(absRe<insignificant) mo[i] = absIm;
+			if(absIm<insignificant && absRe>insignificant) mo[i] = absRe;
+			else if(absRe<insignificant && absIm>insignificant) mo[i] = absIm;
 			else mo[i] = CLAM_sqrt (r3*r3 + i3*i3);
 #else
-			mo[i] = CLAM_sqrt (r3*r3 + i3*i3);
-#endif
+*/			mo[i] = CLAM_sqrt (r3*r3 + i3*i3);
+//#endif
 			fo[i] = CLAM_atan2 (i3,r3);
 			
 			//Polar po=Polar(m1[i],f1[i])+Polar(m2[i],f2[i]);
@@ -410,7 +410,7 @@ namespace CLAM {
 			//fo[i]=po.Ang();
 		}
 
-#ifndef CLAM_OPTIMIZE
+//#ifndef CLAM_OPTIMIZE
 //if optimizations are on we asume the spectrums do not need to be converted back
 		f.bComplex=f.bPolar=f.bMagPhaseBPF=false;
 		f.bMagPhase=true;
@@ -431,7 +431,7 @@ namespace CLAM {
 			out.RemovePhaseBuffer();
 			out.UpdateData();
 		}
-#endif
+//#endif
 	}
 
 	void SpectrumAdder2::AddComplex(Spectrum& in1, Spectrum& in2, Spectrum& out)

@@ -50,11 +50,11 @@ namespace CLAM
 		const T Mag() const
 		{
 #ifdef CLAM_OPTIMIZE
-			const float insignificant = 0.0001;
+			const float insignificant = 0.000001;
 			T absIm = Abs(mIm);
 			T absRe = Abs(mRe);
-			if(absIm<insignificant) return absRe;
-			if(absRe<insignificant) return absIm;
+			if(absIm<insignificant && absRe>insignificant) return absRe;
+			if(absRe<insignificant && absIm>insignificant) return absIm;
 #endif
 			return CLAM_sqrt(mRe*mRe + mIm*mIm);
 		}
