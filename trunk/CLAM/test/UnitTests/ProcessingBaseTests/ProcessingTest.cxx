@@ -41,6 +41,8 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testConnectPorts_usingNumbers );
 	CPPUNIT_TEST( testConnectControls_usingNames );
 	CPPUNIT_TEST( testConnectControls_usingNumbers );
+
+	CPPUNIT_TEST( testIsSyncSource_default );	
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -199,6 +201,7 @@ private:
 		const char* GetClassName() const { return ""; }
 		bool ConcreteConfigure(const CLAM::ProcessingConfig & ) { return false; }
 		const CLAM::ProcessingConfig & GetConfig() const { throw 0;}
+		virtual bool IsSyncSource() const { return true; }
 
 		
 	};
@@ -237,7 +240,13 @@ private:
 		sender.outControl.SendControl(event);
 		CPPUNIT_ASSERT_EQUAL(event, receiver.inControl.GetLastValue() );
 	}
-
+	void testIsSyncSource_default()
+	{
+		DummyIOProcessing proc;
+		std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!111" << std::endl;
+		CPPUNIT_FAIL("falla!");
+		CPPUNIT_ASSERT_EQUAL( false, proc.IsSyncSource() );
+	}
 
 
 };
