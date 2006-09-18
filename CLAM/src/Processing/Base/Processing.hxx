@@ -337,7 +337,11 @@ namespace CLAM {
 
 		/** Returns a string describing configuration errors if any */
 		const std::string& GetConfigErrorMessage() const { return mConfigErrorMessage; }
-	
+
+		/** Wether the processing is a sync source such as audio i/o device,
+		 * or an audio callback hook (i.e. Externalizer) */
+		virtual bool IsSyncSource() const { return false; }
+
 // Helpers only for subclasses
 	protected:
 		
