@@ -301,8 +301,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in InPorts collection: 'NonExistingPort'. "
-					"In ports availables: 'Dummy In'"),
+				std::string( "No in port named 'NonExistingPort'.\nTry with: 'Dummy In'"),
 				std::string( expected.what() ) );
 
 		}
@@ -320,9 +319,8 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "No Processing with the given name" ), 
+				std::string( "No processing in the network has the name 'NonExistingProcessing'." ), 
 				std::string( expected.what() ) );
-
 		}
 	}
 
@@ -401,7 +399,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in OutPorts collection: NonExistingPort" ), 
+				std::string( "No out port named 'NonExistingPort'.\nTry with: "), 
 				std::string( expected.what() ) );
 
 		}
@@ -419,7 +417,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "No Processing with the given name" ), 
+				std::string( "No processing in the network has the name 'NonExistingProcessing'." ), 
 				std::string( expected.what() ) );
 
 		}
@@ -503,7 +501,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in InControls collection: 'NonExistingControl'. In ports availables: " ), 
+				std::string( "No in control named 'NonExistingControl'.\nTry with: " ), 
 				std::string( expected.what() ) );
 
 		}
@@ -521,7 +519,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "No Processing with the given name" ), 
+				std::string( "No processing in the network has the name 'NonExistingProcessing'." ), 
 				std::string( expected.what() ) );
 
 		}
@@ -611,7 +609,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "name not found in OutControls collection: NonExistingControl" ), 
+				std::string( "No out control named 'NonExistingControl'.\nTry with: " ), 
 				std::string( expected.what() ) );
 
 		}
@@ -629,7 +627,7 @@ class NetworkTest : public CppUnit::TestFixture
 		}
 		catch( CLAM::ErrAssertionFailed& expected) {
 			CPPUNIT_ASSERT_EQUAL( 
-				std::string( "No Processing with the given name" ), 
+				std::string( "No processing in the network has the name 'NonExistingProcessing'." ), 
 				std::string( expected.what() ) );
 
 		}
