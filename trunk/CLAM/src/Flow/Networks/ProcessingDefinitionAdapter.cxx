@@ -66,13 +66,12 @@ namespace CLAM
 		try
 		{
 			mAdaptee = ProcessingFactory::GetInstance().CreateSafe(className);
-		}
-		catch (ErrFactory & e)
+		} catch (ErrFactory & e)
 		{
-			std::string message = 
-				"Trying to create a processing of type '" +
+			std::string msg = 
+				"Error creating a processing object of type '" +
 				className + "' which is not available.";
-			throw XmlStorageErr(message.c_str());
+			throw XmlStorageErr(msg);
 		}
 		ProcessingConfig&  cfg = (ProcessingConfig&)mAdaptee->GetConfig();
 		XMLComponentAdapter configAdapter( cfg );
