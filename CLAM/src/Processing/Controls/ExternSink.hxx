@@ -39,6 +39,10 @@ namespace CLAM
 		{
 			return mConf;
 		}
+		
+		/** Wether the processing is a sync source such as audio i/o device,
+		 * or an audio callback hook (i.e. Externalizer) */
+		bool IsSyncSource() const { return true; }
 	};
 } //namespace CLAM
 
