@@ -100,6 +100,11 @@ class NetworkTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testStopNetworkStopsProcessings_WhenAreRunning );
 	CPPUNIT_TEST( testStopNetworkDoesntStopProcessings_WhenAreNotRunning );
 
+	CPPUNIT_TEST( testIsEmpty_whenEmpty );
+	CPPUNIT_TEST( testIsEmpty_whenNotEmpty );
+	CPPUNIT_TEST( testHasMisconfiguredProcessings_whenAllConfigured );
+	CPPUNIT_TEST( testHasMisconfiguredProcessings_whenMisconfigured );
+
 	CPPUNIT_TEST( testUseOfString_substr );
 	CPPUNIT_TEST_SUITE_END();
 
@@ -955,6 +960,41 @@ class NetworkTest : public CppUnit::TestFixture
 
 		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Ready, oscillator->GetExecState() );
 		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Unconfigured, filein->GetExecState() );		
+	}
+
+	void testIsEmpty_whenEmpty()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+		CPPUNIT_ASSERT_EQUAL( true, net.IsEmpty() );
+	}
+
+	void testIsEmpty_whenNotEmpty()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+		net.AddProcessing( "Oscillator", new CLAM::Oscillator ) ;
+		CPPUNIT_ASSERT_EQUAL( false, net.IsEmpty() );
+	}
+
+	void testHasMisconfiguredProcessings_whenAllConfigured()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+		net.AddProcessing( "Oscillator", new CLAM::Oscillator ) ;
+		CPPUNIT_ASSERT_EQUAL( false, net.HasMisconfiguredProcessings() );
+	}
+	void testHasMisconfiguredProcessings_whenMisconfigured()
+	{
+		CLAM::Network net;
+		const int nodeSize=1;
+		net.AddFlowControl( new CLAM::BasicFlowControl(nodeSize) );
+		net.AddProcessing( "Oscillator", new CLAM::Oscillator ) ;
+		net.AddProcessing( "FileIn", new CLAM::AudioFileIn ) ;
+		CPPUNIT_ASSERT_EQUAL( true, net.HasMisconfiguredProcessings() );
 	}
 };
    
