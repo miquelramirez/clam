@@ -1,3 +1,5 @@
+#ifdef USE_OSCPACK
+
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "OSCEnabledNetwork.hxx"
@@ -146,3 +148,5 @@ private:
 };
 	
 } // namespace 
+
+#endif //USE_OSCPACK
