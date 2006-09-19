@@ -201,7 +201,6 @@ private:
 		const char* GetClassName() const { return ""; }
 		bool ConcreteConfigure(const CLAM::ProcessingConfig & ) { return false; }
 		const CLAM::ProcessingConfig & GetConfig() const { throw 0;}
-		virtual bool IsSyncSource() const { return true; }
 
 		
 	};
@@ -243,8 +242,6 @@ private:
 	void testIsSyncSource_default()
 	{
 		DummyIOProcessing proc;
-		std::cout << "!!!!!!!!!!!!!!!!!!!!!!!!!111" << std::endl;
-		CPPUNIT_FAIL("falla!");
 		CPPUNIT_ASSERT_EQUAL( false, proc.IsSyncSource() );
 	}
 
