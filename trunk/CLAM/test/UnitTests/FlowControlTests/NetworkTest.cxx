@@ -34,6 +34,10 @@
 #include "Oscillator.hxx" // CLAM
 #include "AudioMultiplier.hxx" // CLAM
 #include "AudioFileIn.hxx" // CLAM
+#include "ExternSink.hxx" // CLAM
+#include "ExternGenerator.hxx" // CLAM
+#include "AudioOut.hxx" // CLAM
+#include "AudioIn.hxx" // CLAM
 
 namespace CLAMTest {
 
@@ -105,9 +109,14 @@ class NetworkTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testHasMisconfiguredProcessings_whenAllConfigured );
 	CPPUNIT_TEST( testHasMisconfiguredProcessings_whenMisconfigured );
 
+	CPPUNIT_TEST( testHasSyncSource_whenEmpty );
+	CPPUNIT_TEST( testHasSyncSource_withExternalizer );
+	CPPUNIT_TEST( testSyncSourceProcessings );
+	
 	CPPUNIT_TEST( testUseOfString_substr );
-	CPPUNIT_TEST_SUITE_END();
 
+
+	CPPUNIT_TEST_SUITE_END();
 
 	void testGetProcessing_WhenNoProcessings()
 	{
@@ -995,6 +1004,25 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "Oscillator", new CLAM::Oscillator ) ;
 		net.AddProcessing( "FileIn", new CLAM::AudioFileIn ) ;
 		CPPUNIT_ASSERT_EQUAL( true, net.HasMisconfiguredProcessings() );
+	}
+	void testHasSyncSource_whenEmpty()
+	{	
+		CLAM::Network net;
+		CPPUNIT_ASSERT_EQUAL( false, net.HasSyncSource() );
+	}
+	void testHasSyncSource_withExternalizer()
+	{	
+		CLAM::Network net;
+		net.AddFlowControl( new CLAM::BasicFlowControl(1) );
+		net.AddProcessing( "ExternSink", new CLAM::ExternSink  );
+		CPPUNIT_ASSERT_EQUAL( true, net.HasSyncSource() );
+	}
+	void testSyncSourceProcessings()
+	{
+		CPPUNIT_ASSERT_EQUAL( true, CLAM::ExternSink().IsSyncSource() );
+		CPPUNIT_ASSERT_EQUAL( true, CLAM::ExternGenerator().IsSyncSource() );
+		CPPUNIT_ASSERT_EQUAL( true, CLAM::AudioIn().IsSyncSource() );
+		CPPUNIT_ASSERT_EQUAL( true, CLAM::AudioOut().IsSyncSource() );
 	}
 };
    

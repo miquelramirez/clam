@@ -584,7 +584,11 @@ namespace CLAM
 
 	bool Network::HasSyncSource() const
 	{
-		return true;
+		ProcessingsMap::const_iterator it;
+		for(it=BeginProcessings(); it!=EndProcessings(); it++)
+			if(it->second->IsSyncSource())
+				return true;
+		return false;
 	}
 
 }
