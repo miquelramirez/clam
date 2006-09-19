@@ -554,5 +554,38 @@ namespace CLAM
 		mProcessings.insert( ProcessingsMap::value_type( newName, proc ) );
 		return true;
 	}
+
+	bool Network::IsReady() const
+	{
+		if (IsEmpty()) return false;
+		if (HasMisconfiguredProcessings()) return false;
+		if (HasUnconnectedInPorts()) return false;
+		return true;
+	}
+
+	bool Network::IsEmpty() const
+	{
+		return mProcessings.empty();
+	}
+
+	bool Network::HasMisconfiguredProcessings() const
+	{
+		ProcessingsMap::const_iterator it;
+		for(it=BeginProcessings(); it!=EndProcessings(); it++)
+			if(it->second->GetExecState() == CLAM::Processing::Unconfigured )
+				return true;
+		return false;
+	}
+
+	bool Network::HasUnconnectedInPorts() const
+	{
+		return true;
+	}
+
+	bool Network::HasSyncSource() const
+	{
+		return true;
+	}
+
 }
 

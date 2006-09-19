@@ -118,7 +118,28 @@ public:
 
 	std::string GetConnectorIdentifier( const std::string& ) const;
 	std::string GetProcessingIdentifier( const std::string& ) const;
-	
+
+	/** Tells whether the network is ready to rock. A network is ready when:
+	 * - it contains any processing,
+	 * - all processings are properly configured, and
+	 * - all in ports are connected,
+	 */ 
+	bool IsReady() const;
+
+	/** Returns true when it has no processings */
+	bool IsEmpty() const;
+
+	/** Returns true when some processing is misconfigured */
+	bool HasMisconfiguredProcessings() const;
+
+	/** Returns true when a processing has an inport that is not connected */
+	bool HasUnconnectedInPorts() const;
+
+	/** Tell whether the network contains any processing which
+	 * limits the cpu usage such as file or device interfaces.
+	 * This is needed when executing a network in a real time process.
+	 */
+	bool HasSyncSource() const;
 
 private:
 	
