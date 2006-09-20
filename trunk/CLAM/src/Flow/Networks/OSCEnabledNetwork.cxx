@@ -29,7 +29,7 @@
 
 namespace CLAM
 {
-	OSCEnabledNetwork::OscReceivePacketListener::OscReceivePacketListener(Network * network)
+	OSCControlDispatcher::OSCControlDispatcher(Network * network)
 		: mParentNetwork(network)
 		, mPort(7000)
 		, mThread (/*realtime*/false)
@@ -43,12 +43,12 @@ namespace CLAM
 		mThread.SetThreadCode( makeMemberFunctor0( *mReceiveSocket, UdpListeningReceiveSocket, Run ) );
 		mThread.SetupPriorityPolicy();
 	}
-	OSCEnabledNetwork::OscReceivePacketListener::~OscReceivePacketListener()
+	OSCControlDispatcher::~OSCControlDispatcher()
 	{
 		Stop();
 		if ( mReceiveSocket ) delete mReceiveSocket;
 	}
-	void OSCEnabledNetwork::OscReceivePacketListener::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
+	void OSCControlDispatcher::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 	{
 		std::ostringstream log;
 		std::string path;
@@ -95,12 +95,11 @@ namespace CLAM
 			AddLogMessage(log.str());
 		}
 	}
-	void OSCEnabledNetwork::OscReceivePacketListener::AddLogMessage(const std::string& message)
+	void OSCControlDispatcher::AddLogMessage(const std::string& message)
 	{
-//		mParentNetwork->AddLogMessage(message);
 		mMessageLog.push(message);
 	}
-	const std::string OSCEnabledNetwork::OscReceivePacketListener::GetLogMessage(void)
+	const std::string OSCControlDispatcher::GetLogMessage(void)
 	{
 		//Maybe it would be interesting to 'ask' how many messages we want in a single call (param)
 		std::string message="";
@@ -113,26 +112,5 @@ namespace CLAM
 		return message;
 	}
 
-	OSCEnabledNetwork::OSCEnabledNetwork()
-		: mListener(this)
-	{
-		//Rename the network, as it's OSC enabled!
-		SetName("Unnamed OSCEnabledNetwork");
-	}
-
-	void OSCEnabledNetwork::StartListeningOSC()
-	{
-		mListener.Start();
-	}
-
-	void OSCEnabledNetwork::StopListeningOSC()
-	{
-		mListener.Stop();
-	}
-
-	const std::string OSCEnabledNetwork::GetLogMessage(void)
-	{
-		return mListener.GetLogMessage();
-	}
 }
 
