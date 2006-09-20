@@ -42,60 +42,40 @@
 
 namespace CLAM
 {
-	class OSCEnabledNetwork : public CLAM::Network
+	class OSCControlDispatcher : public osc::OscPacketListener
 	{
-		public:
-		//Listener that will process every incoming packet
-		class OscReceivePacketListener : public osc::OscPacketListener
-		{
-			virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
+		virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
 
-			Network* mParentNetwork;
-			int mPort;
-			CLAM::Thread mThread;
-			UdpListeningReceiveSocket *mReceiveSocket;
-			bool mIsListening;
-			std::queue<std::string> mMessageLog;
-			
-		public:
-			OscReceivePacketListener(Network * network);
-			~OscReceivePacketListener();
-			void Start()
-			{
-				if ( IsListening() )
-					return;
-				mThread.Start();
-				mIsListening = true;
-			}
-			void Stop()
-			{
-				if (not IsListening() )
-					return;
-				mReceiveSocket->AsynchronousBreak();
-				mThread.Stop();
-				mIsListening = false;
-			}
-			bool IsListening() const { return mIsListening; }
-			const std::string GetLogMessage();
-		private:
-			void AddLogMessage(const std::string& message);
-		};
-
-	private:
-		OscReceivePacketListener mListener;
-
+		Network* mParentNetwork;
+		int mPort;
+		CLAM::Thread mThread;
+		UdpListeningReceiveSocket *mReceiveSocket;
+		bool mIsListening;
+		std::queue<std::string> mMessageLog;
+		
 	public:
-		OSCEnabledNetwork();
-		virtual ~OSCEnabledNetwork() { }
-
-		virtual void StartListeningOSC();
-		virtual void StopListeningOSC();
-		virtual bool IsListeningOSC() const { return mListener.IsListening(); }
-		//Gets the first message in the log queue
-		const std::string GetLogMessage(void);
-};
-
-typedef OSCEnabledNetwork::OscReceivePacketListener OscControlDispatcher;
+		OSCControlDispatcher(Network * network);
+		~OSCControlDispatcher();
+		void Start()
+		{
+			if ( IsListening() )
+				return;
+			mThread.Start();
+			mIsListening = true;
+		}
+		void Stop()
+		{
+			if (not IsListening() )
+				return;
+			mReceiveSocket->AsynchronousBreak();
+			mThread.Stop();
+			mIsListening = false;
+		}
+		bool IsListening() const { return mIsListening; }
+		const std::string GetLogMessage();
+	private:
+		void AddLogMessage(const std::string& message);
+	};
 
 } // namespace CLAM
 

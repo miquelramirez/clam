@@ -40,7 +40,7 @@ class OSCEnabledNetworkTest : public CppUnit::TestFixture
 	osc::OutboundPacketStream *p;
 	UdpTransmitSocket *transmitPort;
 	CLAM::Network *mNet;
-	CLAM::OscControlDispatcher * mDispatcher;
+	CLAM::OSCControlDispatcher * mDispatcher;
  
 public: 
 
@@ -52,7 +52,7 @@ public:
 		mNet = new CLAM::Network(); // Port 7000 by default
 		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
 		mNet->Start();
-		mDispatcher = new CLAM::OscControlDispatcher(mNet);
+		mDispatcher = new CLAM::OSCControlDispatcher(mNet);
 		mDispatcher->Start();
 		usleep(1500);
 	}
