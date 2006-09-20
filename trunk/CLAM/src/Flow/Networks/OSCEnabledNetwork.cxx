@@ -27,81 +27,31 @@
 #include <signal.h>
 #endif
 
-using namespace std;
-
-//Inner class of the Network the OSC Listener
-
-using namespace osc;
-
 namespace CLAM
 {
-	OSCEnabledNetwork::OSCEnabledNetwork(const int port)
-		: mThread (/*realtime*/false)
+	OSCEnabledNetwork::OscReceivePacketListener::OscReceivePacketListener(Network * network)
+		: mParentNetwork(network)
+		, mPort(7000)
+		, mThread (/*realtime*/false)
 		, mReceiveSocket(NULL)
+		, mIsListening(false)
 	{
-		//Rename the network, as it's OSC enabled!
-		SetName("Unnamed OSCEnabledNetwork");
-		
-		mListener.AttachToNetwork(this);
-		SetPort(port);
-
 		//Init receiver socket
-		mReceiveSocket = new UdpListeningReceiveSocket( GetPort(), &mListener );
+		mReceiveSocket = new UdpListeningReceiveSocket( mPort, this );
 
 		//Init thread
 		mThread.SetThreadCode( makeMemberFunctor0( *mReceiveSocket, UdpListeningReceiveSocket, Run ) );
 		mThread.SetupPriorityPolicy();
-	
-		mListeningOSC=false;
 	}
-	
-	void OSCEnabledNetwork::StartListeningOSC()
+	OSCEnabledNetwork::OscReceivePacketListener::~OscReceivePacketListener()
 	{
-		if ( IsListeningOSC() )
-			return;
-
-		mThread.Start();
-		mListeningOSC=true;
+		Stop();
+		if ( mReceiveSocket ) delete mReceiveSocket;
 	}
-	
-	void OSCEnabledNetwork::StopListeningOSC()
-	{
-		if ( !IsListeningOSC() )
-			return;
-
-		mReceiveSocket->AsynchronousBreak();
-
-		mThread.Stop();
-
-		mListeningOSC=false;
-	}
-	
-	const string OSCEnabledNetwork::GetLogMessage(void)
-	{
-		//Maybe it would be interesting to 'ask' how many messages we want in a single call (param)
-		string message="";
-		
-		if (mMessageLog.size()>0)
-		{
-			message=mMessageLog.front();
-			mMessageLog.pop();
-		}
-		return message;
-	}
-
-	//Adds the specified message to the log queue
-	void OSCEnabledNetwork::AddLogMessage(const std::string& message)
-	{
-		//std::cout << "[LOG]Adding <"<<message<<">\n";
-		mMessageLog.push(message);
-	}
-
-
-	//Inner class OscReceivePacketListener methods
 	void OSCEnabledNetwork::OscReceivePacketListener::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 	{
-		ostringstream log;
-		string path;
+		std::ostringstream log;
+		std::string path;
 		float controlvalue=0;
 
 		try {
@@ -117,38 +67,72 @@ namespace CLAM
 
 			log << "[RECEIVED] "<<path<<" "<<controlvalue;
 
-			string processingname=mParentNetwork->GetProcessingIdentifier(path);
-			string controlname=mParentNetwork->GetConnectorIdentifier(path);
+			std::string processingname=mParentNetwork->GetProcessingIdentifier(path);
+			std::string controlname=mParentNetwork->GetConnectorIdentifier(path);
 
-			if (mParentNetwork->HasProcessing(processingname))
+			if (not mParentNetwork->HasProcessing(processingname))
 			{
-				Processing &p=mParentNetwork->GetProcessing(processingname);
-
-				if (p.HasInControl(controlname))
-				{
-					p.GetInControl(controlname).DoControl(controlvalue);
-					log << " - Delivered";
-				}
-				else
-					log << " - No such control in processing";
-			}
-			else
 				log << " - No such processing";
+				AddLogMessage(log.str());
+				return;
+			}
 
-			//std::cout << std::endl<<log.str() << std::endl;			
-			mParentNetwork->AddLogMessage(log.str());
-			
-		}catch( Exception& e ){
+			Processing &p=mParentNetwork->GetProcessing(processingname);
+			if (not p.HasInControl(controlname))
+			{
+				log << " - No such control in processing";
+				AddLogMessage(log.str());
+				return;
+			}
+			p.GetInControl(controlname).DoControl(controlvalue);
+			log << " - Delivered";
+			AddLogMessage(log.str());
+		}
+		catch( osc::Exception& e )
+		{
 			
 			log << "[RECEIVED] ERROR Parsing: " << path<<" "<<controlvalue << " : " << e.what();
-			mParentNetwork->AddLogMessage(log.str());
-			//std::cout << log.str()<< std::endl;
-			
+			AddLogMessage(log.str());
 		}
 	}
-
-	void OSCEnabledNetwork::OscReceivePacketListener::AttachToNetwork(OSCEnabledNetwork* net)
+	void OSCEnabledNetwork::OscReceivePacketListener::AddLogMessage(const std::string& message)
 	{
-		mParentNetwork=net;
+//		mParentNetwork->AddLogMessage(message);
+		mMessageLog.push(message);
+	}
+	const std::string OSCEnabledNetwork::OscReceivePacketListener::GetLogMessage(void)
+	{
+		//Maybe it would be interesting to 'ask' how many messages we want in a single call (param)
+		std::string message="";
+		
+		if (mMessageLog.size()>0)
+		{
+			message=mMessageLog.front();
+			mMessageLog.pop();
+		}
+		return message;
+	}
+
+	OSCEnabledNetwork::OSCEnabledNetwork()
+		: mListener(this)
+	{
+		//Rename the network, as it's OSC enabled!
+		SetName("Unnamed OSCEnabledNetwork");
+	}
+
+	void OSCEnabledNetwork::StartListeningOSC()
+	{
+		mListener.Start();
+	}
+
+	void OSCEnabledNetwork::StopListeningOSC()
+	{
+		mListener.Stop();
+	}
+
+	const std::string OSCEnabledNetwork::GetLogMessage(void)
+	{
+		return mListener.GetLogMessage();
 	}
 }
+

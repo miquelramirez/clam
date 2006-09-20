@@ -6,12 +6,7 @@
 #include <string>
 #include "NetworkPlayer.hxx"
 
-#ifdef USE_OSC
-#include "OSCEnabledNetwork.hxx"
-#else
 #include "Network.hxx"
-#endif
-
 #include "ExternGenerator.hxx"
 #include "ExternSink.hxx"
 
@@ -80,7 +75,7 @@ public:
 	virtual void Stop();
 
 	void Do(const jack_nframes_t nframes);
-	
+
 	//Saves/loads the connections made to our local in/out jack ports
 	void StoreConnections();
 	void RestoreConnections();

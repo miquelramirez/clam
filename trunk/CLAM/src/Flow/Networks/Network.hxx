@@ -66,7 +66,7 @@ public:
 	void Clear();
 
 	//Methods related to OSClistening, needed to keep independance in NetEditor
-	virtual const bool IsListeningOSC() const { return false;}
+	virtual bool IsListeningOSC() const { return false;}
 	virtual void StartListeningOSC() {}
 	virtual void StopListeningOSC(){}
 

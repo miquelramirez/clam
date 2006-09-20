@@ -26,7 +26,7 @@ public:
 	
 	virtual void Start();
 	virtual void Stop();
-	
+
 	void Do();
 
 
