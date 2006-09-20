@@ -15,32 +15,28 @@
 namespace CLAM
 {
 
-//Callbacks to be called from the JACK server
-int JackProcessingCallback (jack_nframes_t, void *);
-void JackShutdownCallback (void *);
-
-//Structures to keep information about every external input and output processing
-typedef struct
-{
-	std::string portName;
-	jack_port_t* jackOutPort;
-	ExternGenerator* clamReceiver;
-	const char** connectedTo;
-} JACKOutPortCouple;
-
-typedef struct
-{
-	std::string portName;
-	jack_port_t* jackInPort;
-	ExternSink* clamSender;
-	const char** connectedTo;
-} JACKInPortCouple;
-
-typedef std::vector<JACKOutPortCouple> JACKOutPortList;
-typedef std::vector<JACKInPortCouple> JACKInPortList;
-
 class JACKNetworkPlayer : public NetworkPlayer
 {
+private:
+	//Structures to keep information about every external input and output processing
+	struct JACKOutPortCouple
+	{
+		std::string portName;
+		jack_port_t* jackOutPort;
+		ExternGenerator* clamReceiver;
+		const char** connectedTo;
+	};
+
+	struct JACKInPortCouple
+	{
+		std::string portName;
+		jack_port_t* jackInPort;
+		ExternSink* clamSender;
+		const char** connectedTo;
+	};
+	typedef std::vector<JACKOutPortCouple> JACKOutPortList;
+	typedef std::vector<JACKInPortCouple> JACKInPortList;
+private:
 	int mJackSampleRate, mJackBufferSize, mClamBufferSize;
 	bool mAutoConnect;
 
