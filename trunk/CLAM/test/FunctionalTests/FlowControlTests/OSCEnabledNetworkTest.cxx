@@ -39,7 +39,8 @@ class OSCEnabledNetworkTest : public CppUnit::TestFixture
 	char buffer[IP_MTU_SIZE];
 	osc::OutboundPacketStream *p;
 	UdpTransmitSocket *transmitPort;
-	CLAM::OSCEnabledNetwork *mNet;
+	CLAM::Network *mNet;
+	CLAM::OscControlDispatcher * mDispatcher;
  
 public: 
 
@@ -48,17 +49,19 @@ public:
 		p= new osc::OutboundPacketStream(buffer, IP_MTU_SIZE );
 		transmitPort = new UdpTransmitSocket( IpEndpointName("localhost", 7000 ) );
 		
-		mNet = new CLAM::OSCEnabledNetwork(7000);
+		mNet = new CLAM::Network(); // Port 7000 by default
 		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
 		mNet->Start();
-		mNet->StartListeningOSC();
+		mDispatcher = new CLAM::OscControlDispatcher(mNet);
+		mDispatcher->Start();
 		usleep(1500);
 	}
 	
 	void tearDown(void)
 	{
-		mNet->StopListeningOSC();
+		mDispatcher->Stop();
 		mNet->Stop();
+		delete mDispatcher;
 		delete mNet;
 
 		delete transmitPort;
@@ -87,14 +90,14 @@ private:
 
 	void testEmptyLog()
 	{
-		CPPUNIT_ASSERT_EQUAL ( std::string(""), mNet->GetLogMessage() );
+		CPPUNIT_ASSERT_EQUAL ( std::string(""), mDispatcher->GetLogMessage() );
 	}
 	
 	void testReceivedPacket_WhenNoSuchProcessing()
 	{
 		Send("processing1","input",1983);
 		usleep(1500);
-		CPPUNIT_ASSERT_EQUAL ( std::string("[RECEIVED] processing1.input 1983 - No such processing"), mNet->GetLogMessage() );
+		CPPUNIT_ASSERT_EQUAL ( std::string("[RECEIVED] processing1.input 1983 - No such processing"), mDispatcher->GetLogMessage() );
 	}
 
 	void testReceivedPacket_WhenProcessingHasNoSuchControl()
@@ -111,7 +114,7 @@ private:
 		usleep(500);
 		
 		std::string expected("[RECEIVED] processing1.wronginput 1983 - No such control in processing");
-		CPPUNIT_ASSERT_EQUAL (expected, mNet->GetLogMessage() );
+		CPPUNIT_ASSERT_EQUAL (expected, mDispatcher->GetLogMessage() );
 
 	}
 
@@ -128,7 +131,7 @@ private:
 		usleep(1500);
 		
 		std::string expectedLog("[RECEIVED] processing1.input 1983 - Delivered");
-		CPPUNIT_ASSERT_EQUAL ( expectedLog, mNet->GetLogMessage() );
+		CPPUNIT_ASSERT_EQUAL ( expectedLog, mDispatcher->GetLogMessage() );
 
 		CLAM::TControlData resultCtl = mNet->GetProcessing("processing1").GetInControl("input").GetLastValue();
 		CPPUNIT_ASSERT_EQUAL (  CLAM::TControlData(1983), resultCtl );
@@ -141,7 +144,7 @@ private:
 		Send("processing1","input",0);
 		usleep(1500);
 		std::string expected("[RECEIVED] ERROR Parsing:  0 : missing argument");
-		CPPUNIT_ASSERT_EQUAL ( expected, mNet->GetLogMessage() );
+		CPPUNIT_ASSERT_EQUAL ( expected, mDispatcher->GetLogMessage() );
 
 	}
 
