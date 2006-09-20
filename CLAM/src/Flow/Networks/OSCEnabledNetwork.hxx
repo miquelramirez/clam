@@ -44,61 +44,58 @@ namespace CLAM
 {
 	class OSCEnabledNetwork : public CLAM::Network
 	{
-		//Inner classes of OSCEnabledNetwork:
-		
+		public:
 		//Listener that will process every incoming packet
 		class OscReceivePacketListener : public osc::OscPacketListener
 		{
 			virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
 
-			OSCEnabledNetwork* mParentNetwork;
+			Network* mParentNetwork;
+			int mPort;
+			CLAM::Thread mThread;
+			UdpListeningReceiveSocket *mReceiveSocket;
+			bool mIsListening;
+			std::queue<std::string> mMessageLog;
 			
 		public:
-			void AttachToNetwork(OSCEnabledNetwork* net);
+			OscReceivePacketListener(Network * network);
+			~OscReceivePacketListener();
+			void Start()
+			{
+				if ( IsListening() )
+					return;
+				mThread.Start();
+				mIsListening = true;
+			}
+			void Stop()
+			{
+				if (not IsListening() )
+					return;
+				mReceiveSocket->AsynchronousBreak();
+				mThread.Stop();
+				mIsListening = false;
+			}
+			bool IsListening() const { return mIsListening; }
+			const std::string GetLogMessage();
+		private:
+			void AddLogMessage(const std::string& message);
 		};
 
 	private:
-		CLAM::Thread mThread;
-		
-		UdpListeningReceiveSocket *mReceiveSocket;
 		OscReceivePacketListener mListener;
-		
-		int mPort;
-		std::queue<std::string> mMessageLog;
-		bool mListeningOSC;
-
-		int GetPort(void) const
-		{
-			return mPort;
-		}
 
 	public:
-		OSCEnabledNetwork(const int port=7000);
+		OSCEnabledNetwork();
+		virtual ~OSCEnabledNetwork() { }
 
 		virtual void StartListeningOSC();
 		virtual void StopListeningOSC();
+		virtual bool IsListeningOSC() const { return mListener.IsListening(); }
 		//Gets the first message in the log queue
 		const std::string GetLogMessage(void);
-
-		void SetPort(const int p)
-		{
-			mPort=p;
-		}
-		
-		virtual ~OSCEnabledNetwork()
-		{
-			StopListeningOSC();
-			Stop();
-			if ( mReceiveSocket != NULL )
-				delete mReceiveSocket;
-		}
-		
-		virtual const bool IsListeningOSC() const { return mListeningOSC; }
-
-	protected:
-		//Adds the specified message to the log queue
-		void AddLogMessage(const std::string& message);
 };
+
+typedef OSCEnabledNetwork::OscReceivePacketListener OscControlDispatcher;
 
 } // namespace CLAM
 

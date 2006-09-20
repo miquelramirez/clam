@@ -19,6 +19,7 @@ inline int JackProcessingCallback (jack_nframes_t nframes, void *arg)
 inline void JackShutdownCallback (void *arg)
 {
 	JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
+	// TODO: Do clearing jack stuff but do not delete the player!!!!!
 	delete player;
 }
 
@@ -26,12 +27,7 @@ JACKNetworkPlayer::JACKNetworkPlayer(const std::string & networkFile, std::list<
 {
 	mClamBufferSize=512;
 
-#ifdef USE_OSC
-	SetNetwork( *( new OSCEnabledNetwork() ) );
-#else
 	SetNetwork( *( new Network() ) );
-#endif
-
 	GetNetwork().AddFlowControl( new PushFlowControl(mClamBufferSize) );
 
 	XmlStorage::Restore(GetNetwork(), networkFile);

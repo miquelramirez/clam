@@ -23,11 +23,7 @@ PANetworkPlayer::PANetworkPlayer(const std::string & networkFile)
 {
 	InitClient();
 
-#ifdef USE_OSC
-	SetNetwork( *( new OSCEnabledNetwork() ) );
-#else
 	SetNetwork( *( new Network() ) );
-#endif
 
 	PushFlowControl * fc = new PushFlowControl(mClamBufferSize);
 	GetNetwork().AddFlowControl( fc );
