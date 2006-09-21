@@ -90,7 +90,7 @@ applications from the source tarballs.
    libjack-dev)
 
  Update: packages needed for Ubuntu 06.10 "Edgy":
- sudo apt-get install libxerces27-dev fftw-dev sfftw-dev libfltk1.1-dev libqt3-mt-dev libasound2-devibvorbis-dev libsndfile1-dev libmad0-dev libxerces27-dev fftw-dev sfftw-dev libfltk1.1-dev libqt3-mt-dev libasound2-dev libvorbis-dev libsndfile1-dev libmad0-dev libqt4-debug-dev qt4-qtconfig scons ladspa-sdk portaudio libid3-3.8.3-dev libjack0.100.0-dev
+ sudo apt-get install libxerces27-dev fftw-dev sfftw-dev libfltk1.1-dev libqt3-mt-dev libasound2-devibvorbis-dev libsndfile1-dev libmad0-dev libxerces27-dev fftw-dev sfftw-dev libfltk1.1-dev libqt3-mt-dev libasound2-dev libvorbis-dev libsndfile1-dev libmad0-dev libqt4-debug-dev qt4-qtconfig scons ladspa-sdk portaudio libid3-3.8.3-dev libjack0.100.0-dev libcppunit-dev
 
  Redhad / Fedora Core packages list (tested with FC5)
    gcc-c++ scons fftw2-devel fltk-devel libvorbis-devel libogg-devel qt-devel
