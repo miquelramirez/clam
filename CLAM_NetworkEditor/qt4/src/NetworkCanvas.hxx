@@ -150,12 +150,12 @@ public:
 		double tooltipWidth = _metrics.width(_tooltipText)+2*margin;
 		double x = _tooltipPos.x()+cursorSize;
 		if (x + tooltipWidth > width())
-		x = _tooltipPos.x() - _metrics.width(_tooltipText) - 2*margin;
+			x = _tooltipPos.x() - _metrics.width(_tooltipText) - 2*margin;
 
 		double tooltipHeight = _metrics.height()+2*margin;
 		double y = _tooltipPos.y() +cursorSize;
 		if (y + tooltipHeight > height())
-		y = _tooltipPos.y() - tooltipHeight;
+			y = _tooltipPos.y() - tooltipHeight;
 
 		QRectF tooltip(x, y, _metrics.width(_tooltipText)+2*margin, tooltipHeight)  ;
 		painter.setBrush(QColor(0xff,0xff,0x90,0xa0));
@@ -307,16 +307,16 @@ public:
 			switch (region)
 			{
 			case ProcessingBox::incontrolsRegion:
-				setWhatsThis(connectionText.arg(tr("Incontrol")).arg(tr("outcontrol")));
+				setWhatsThis(connectionText.arg(tr("In control")).arg(tr("out control")));
 			break;
 			case ProcessingBox::outcontrolsRegion:
-				setWhatsThis(connectionText.arg(tr("Outcontrol")).arg(tr("incontrol")));
+				setWhatsThis(connectionText.arg(tr("Out control")).arg(tr("in control")));
 			break;
 			case ProcessingBox::inportsRegion:
-				setWhatsThis(connectionText.arg(tr("Inport")).arg(tr("outport")));
+				setWhatsThis(connectionText.arg(tr("In port")).arg(tr("out port")));
 			break;
 			case ProcessingBox::outportsRegion:
-				setWhatsThis(connectionText.arg(tr("Outport")).arg(tr("inport")));
+				setWhatsThis(connectionText.arg(tr("Out port")).arg(tr("in port")));
 			break;
 			case ProcessingBox::resizeHandleRegion:
 			case ProcessingBox::nameRegion:
