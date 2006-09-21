@@ -205,7 +205,7 @@ public slots:
 		if (not _networkPlayer->IsCallbackBased() and not _network.HasSyncSource() )
 		{
 			QMessageBox::critical(this, tr("Unable to play the network"), 
-					tr("<p>A network without a stream source of sink (AudioIn, AudioOut, Externalizer...) is not playable.</p>"));
+				tr("<p>The network needs an AudioIn or AudioOut in order to be playable.</p>"));
 			return;
 		}
 		_networkPlayer->Start();
