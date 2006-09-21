@@ -196,13 +196,13 @@ public slots:
 				"<p>To have a playable network, create a new network or load an existing one.</p>"));
 			return;
 		}
-		if (_network.IsEmpty())
+		if (  _network.IsEmpty() )
 		{
 			QMessageBox::critical(this, tr("Unable to play the network"), 
 					tr("<p>A network without processings is not playable.</p>"));
 			return;
 		}
-		if (not _network.HasSyncSource() )
+		if (not _networkPlayer->IsCallbackBased() and not _network.HasSyncSource() )
 		{
 			QMessageBox::critical(this, tr("Unable to play the network"), 
 					tr("<p>A network without a stream source of sink (AudioIn, AudioOut, Externalizer...) is not playable.</p>"));
