@@ -35,10 +35,10 @@ public:
 		ui.setupUi(this);
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
 
-		QScrollArea * w = new QScrollArea(this);
+		QScrollArea * scroll = new QScrollArea(this);
 		_canvas = new NetworkCanvas;
-		setCentralWidget(w);
-		w->setWidget(_canvas);
+		setCentralWidget(scroll);
+		scroll->setWidget(_canvas);
 		
 		QDockWidget * dock = new QDockWidget(this);
 		NetworkGUI::ProcessingTree * processingTree = new NetworkGUI::ProcessingTree(dock);
@@ -60,7 +60,7 @@ public:
 
 		int frameSize = 2048;
 	    _network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
-		_networkPlayer = new CLAM::BlockingNetworkPlayer();
+		_networkPlayer = new CLAM::BlockingNetworkPlayer(); // TODO: Delete this on destruction
 		_networkPlayer->SetNetwork(_network);
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));
@@ -72,7 +72,7 @@ public:
 
 	QString networkFilter() {return tr("CLAM Network files (*.clamnetwork)"); }
 
-	bool checkUnsavedChanges()
+	bool askUserSaveChanges()
 	{
 		bool goOn = true;
 		bool abort = false;
@@ -106,7 +106,6 @@ public:
 		_canvas->loadPositions(filename+".pos");
 		_networkFile = filename;
 		updateCaption();
-		// TODO: Error on load
 		// TODO: Update canvas
 	}
 	void save(const QString & filename)
@@ -129,7 +128,7 @@ public:
 
 	void closeEvent(QCloseEvent *event)
 	{
-		if (checkUnsavedChanges()) event->accept();
+		if (askUserSaveChanges()) event->accept();
 		else event->ignore();
 	}
 public slots:
@@ -158,19 +157,19 @@ public slots:
 	}
 	void on_action_New_triggered()
 	{
-		if (!checkUnsavedChanges()) return;
+		if (!askUserSaveChanges()) return;
 		clear();
 	}
 	void on_action_Open_triggered()
 	{
-		if (!checkUnsavedChanges()) return;
+		if (!askUserSaveChanges()) return;
 		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", "", networkFilter());
 		if (file==QString::null) return;
 		load(file);
 	}
 	void on_action_Open_example_triggered()
 	{
-		if (!checkUnsavedChanges()) return;
+		if (!askUserSaveChanges()) return;
 		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", DATA_EXAMPLES_PATH, networkFilter());
 		if (file==QString::null) return;
 		load(file);
@@ -188,6 +187,13 @@ public slots:
 	}
 	void on_action_Play_triggered()
 	{
+		if (_network.IsEmpty())
+		{
+			statusBar()->showMessage(tr("<p style='background-color:red; color: yellow'>Error</p>"),2000);
+			QMessageBox::critical(this, tr("Unable to play the network"), 
+					tr("<p>A network without processings is not playable.<p>"));
+			return;
+		}
 		_networkPlayer->Start();
 	}
 	void on_action_Stop_triggered()
