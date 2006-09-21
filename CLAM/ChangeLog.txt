@@ -1,10 +1,12 @@
 
-
 2006-??-?? CLAM 0.91.1 CVS
 ''
  * Version information taken from changelog is available for apps.
-
-
+ * Network and NetworkPlayer usability
+   * OSCEnabledNetwork was removed. Use OSCControlDispatcher and bind it to
+     a plain Network instead.
+   * Network errors now can be catched by applications
+   * Diagnosis methods
 
 2006-06-14 CLAM 0.91.0
 'Spectral transformations, annotator, packaging, and desktop integration release'
