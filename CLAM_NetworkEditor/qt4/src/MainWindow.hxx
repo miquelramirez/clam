@@ -190,9 +190,10 @@ public slots:
 		if (_canvas->networkIsDummy() )
 		{
 			QMessageBox::critical(this, tr("Unable to play the network"), 
-				tr("<p>The current network is not playable because is only for testing 'dummy' purposes: "
-				"Configuring a processing you can change the number of ports and controls.</p>"
-				"<p>To have a playable network create a new network or load an existing one.</p>"));
+				tr("<p>Dummy networks are not playable.</p>"
+				"<p>Dummy networks are used to draw arbitrary networks without"
+				" real processings under the boxes, so you cannot play them.</p>"
+				"<p>To have a playable network, create a new network or load an existing one.</p>"));
 			return;
 		}
 		if (_network.IsEmpty())
