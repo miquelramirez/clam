@@ -633,7 +633,11 @@ public:
 		delete processing;
 		_processings.erase(std::find(_processings.begin(), _processings.end(), processing));
 	}
-
+	
+	bool networkIsDummy() const
+	{
+		return _network == 0;
+	}
 	void loadNetwork(CLAM::Network * network)
 	{
 		clear();

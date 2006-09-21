@@ -187,11 +187,24 @@ public slots:
 	}
 	void on_action_Play_triggered()
 	{
+		if (_canvas->networkIsDummy() )
+		{
+			QMessageBox::critical(this, tr("Unable to play the network"), 
+				tr("<p>The current network is not playable because is only for testing 'dummy' purposes: "
+				"Configuring a processing you can change the number of ports and controls.</p>"
+				"<p>To have a playable network create a new network or load an existing one.</p>"));
+			return;
+		}
 		if (_network.IsEmpty())
 		{
-			statusBar()->showMessage(tr("<p style='background-color:red; color: yellow'>Error</p>"),2000);
 			QMessageBox::critical(this, tr("Unable to play the network"), 
-					tr("<p>A network without processings is not playable.<p>"));
+					tr("<p>A network without processings is not playable.</p>"));
+			return;
+		}
+		if (not _network.HasSyncSource() )
+		{
+			QMessageBox::critical(this, tr("Unable to play the network"), 
+					tr("<p>A network without a stream source of sink (AudioIn, AudioOut, Externalizer...) is not playable.</p>"));
 			return;
 		}
 		_networkPlayer->Start();
