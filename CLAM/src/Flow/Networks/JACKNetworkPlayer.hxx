@@ -70,6 +70,7 @@ public:
 	virtual ~JACKNetworkPlayer();
 
 	void InitClient();
+	bool IsConnectedToServer() const;
 	
 	//JACK sever (un)registration methods
 	void RegisterPorts();
