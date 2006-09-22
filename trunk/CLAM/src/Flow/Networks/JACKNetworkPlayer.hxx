@@ -22,7 +22,7 @@ private:
 	struct JACKOutPortCouple
 	{
 		std::string portName;
-		jack_port_t* jackOutPort;
+		jack_port_t* jackPort;
 		ExternGenerator* clamReceiver;
 		const char** connectedTo;
 	};
@@ -30,16 +30,24 @@ private:
 	struct JACKInPortCouple
 	{
 		std::string portName;
-		jack_port_t* jackInPort;
+		jack_port_t* jackPort;
 		ExternSink* clamSender;
 		const char** connectedTo;
 	};
 	typedef std::vector<JACKOutPortCouple> JACKOutPortList;
 	typedef std::vector<JACKInPortCouple> JACKInPortList;
+	struct JackConnection
+	{
+		std::string processingName;
+		const char ** outsideConnections;
+	};
+	typedef std::list<JackConnection> JackConnections;
 private:
 	int mJackSampleRate, mJackBufferSize, mClamBufferSize;
 	bool mAutoConnect;
 
+	JackConnections mIncomingJackConnections;
+	JackConnections mOutgoingJackConnections;
 	JACKOutPortList mReceiverList;
 	JACKInPortList mSenderList;
 	std::string mJackOutPortAutoConnectList, mJackInPortAutoConnectList;
