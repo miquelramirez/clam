@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM OSCEnabledNetwork">
 
-  <processing id="ExternGenerator_0" type="ExternGenerator"/>
+  <processing id="AudioSource_0" type="AudioSource"/>
 
-  <processing id="ExternSink_0" type="ExternSink"/>
+  <processing id="AudioSink_0" type="AudioSink"/>
 
   <processing id="SMSAnalysisCore_0" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
@@ -154,7 +154,7 @@
   </processing>
 
   <port_connection>
-    <out>ExternGenerator_0.AudioOut</out>
+    <out>AudioSource_0.AudioOut</out>
     <in>SMSAnalysisCore_0.Input Audio</in>
   </port_connection>
 
@@ -185,7 +185,7 @@
 
   <port_connection>
     <out>SMSSynthesis_0.OutputAudio</out>
-    <in>ExternSink_0.AudioIn</in>
+    <in>AudioSink_0.AudioIn</in>
   </port_connection>
 
 </network>

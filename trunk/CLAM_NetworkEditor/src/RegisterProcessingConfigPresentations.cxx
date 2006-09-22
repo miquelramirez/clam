@@ -72,8 +72,8 @@
 #include <CLAM/ControlPrinter.hxx>
 #include <CLAM/ControlScaler.hxx>
 #include <CLAM/ControlMapper.hxx>
-#include <CLAM/ExternInControl.hxx>
-#include <CLAM/ExternOutControl.hxx>
+#include <CLAM/ControlSource.hxx>
+#include <CLAM/ControlSink.hxx>
 
 //MIDI
 #include <CLAM/MIDIKeyboard.hxx>
@@ -196,10 +196,10 @@ static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPrese
        regtControlPrinterConfig("ControlPrinterConfig");
 static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ControlScalerConfig> >
        regtControlScalerConfig("ControlScalerConfig");
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ExternInControlConfig> >
-       regtExternInControlConfig("ExternInControlConfig");
-static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ExternOutControlConfig> >
-       regtExternOutControlConfig("ExternOutControlConfig");
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ControlSourceConfig> >
+       regtControlSourceConfig("ControlSourceConfig");
+static ProcessingConfigPresentationFactory::Registrator< NetworkGUI::ConfigPresentationTmpl<CLAM::ControlSinkConfig> >
+       regtControlSinkConfig("ControlSinkConfig");
 
 // MIDI
 

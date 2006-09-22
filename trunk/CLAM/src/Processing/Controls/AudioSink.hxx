@@ -7,15 +7,15 @@
 
 namespace CLAM
 {
-	class ExternSink : public Processing
+	class AudioSink : public Processing
 	{
 	private:
 		AudioInPort mIn;
 		NullProcessingConfig mConf;
 
 	public:
-		ExternSink();
-		ExternSink(const ProcessingConfig & conf);
+		AudioSink();
+		AudioSink(const ProcessingConfig & conf);
 
 		void SetFrameAndHopSize(const int val)
 		{
@@ -23,12 +23,12 @@ namespace CLAM
 			mIn.SetHop(val);
 		}
 
-		~ExternSink();
+		~AudioSink();
 
 		bool Do();
 		bool Do( CLAM::TData* buf, int nframes);
 		
-		const char* GetClassName() const { return "ExternSink";}
+		const char* GetClassName() const { return "AudioSink";}
 
 		bool ConcreteConfigure(const ProcessingConfig &c)
 		{

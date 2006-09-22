@@ -5,8 +5,8 @@
 #include <string>
 #include "NetworkPlayer.hxx"
 
-#include "ExternGenerator.hxx"
-#include "ExternSink.hxx"
+#include "AudioSource.hxx"
+#include "AudioSink.hxx"
 
 #include <portaudio.h>
 
@@ -15,8 +15,8 @@ namespace CLAM
 
 int portaudio_process (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void *);
 
-typedef std::vector<ExternGenerator*> PAOutPortList;
-typedef std::vector<ExternSink*> PAInPortList;
+typedef std::vector<AudioSource*> PAOutPortList;
+typedef std::vector<AudioSink*> PAInPortList;
 
 class PANetworkPlayer : public NetworkPlayer
 {

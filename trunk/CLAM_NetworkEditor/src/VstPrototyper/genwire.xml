@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="ExternGenerator_0" type="ExternGenerator"/>
+  <processing id="AudioSource_0" type="AudioSource"/>
 
-  <processing id="OutOutOut" type="ExternOutControl">
+  <processing id="OutOutOut" type="ControlSink">
     <MinValue>0</MinValue>
     <MaxValue>800</MaxValue>
     <Step>1</Step>
@@ -16,13 +16,13 @@
     <SamplingRate>44100</SamplingRate>
   </processing>
 
-  <processing id="in1" type="ExternGenerator"/>
+  <processing id="in1" type="AudioSource"/>
 
-  <processing id="out1" type="ExternSink"/>
+  <processing id="out1" type="AudioSink"/>
 
-  <processing id="out2" type="ExternSink"/>
+  <processing id="out2" type="AudioSink"/>
 
-  <processing id="pitch" type="ExternInControl">
+  <processing id="pitch" type="ControlSource">
     <MinValue>100</MinValue>
     <MaxValue>800</MaxValue>
     <Step>2</Step>

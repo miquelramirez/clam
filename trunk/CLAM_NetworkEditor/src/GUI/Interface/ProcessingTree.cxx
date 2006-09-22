@@ -66,10 +66,10 @@ ProcessingTree::ProcessingTree( Qt_NetworkPresentation & network, QWidget * pare
 #endif	
 
 	QListViewItem * externalizers = new QListViewItem( this, "Externalizers" );
-	new ProcessingItem( externalizers, "ExternInControl" );
-	new ProcessingItem( externalizers, "ExternOutControl" );
-	new ProcessingItem( externalizers, "ExternGenerator" );
-	new ProcessingItem( externalizers, "ExternSink" );
+	new ProcessingItem( externalizers, "ControlSource" );
+	new ProcessingItem( externalizers, "ControlSink" );
+	new ProcessingItem( externalizers, "AudioSource" );
+	new ProcessingItem( externalizers, "AudioSink" );
 
 	QListViewItem * inputoutput = new QListViewItem( this,"Input/Output" );
 	new ProcessingItem( inputoutput, "AudioOut" );

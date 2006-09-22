@@ -4,9 +4,9 @@
 #include "audioeffectx.h"
 
 #include <CLAM/Network.hxx>
-#include <CLAM/ExternInControl.hxx>
-#include <CLAM/ExternGenerator.hxx>
-#include <CLAM/ExternSink.hxx>
+#include <CLAM/ControlSource.hxx>
+#include <CLAM/AudioSource.hxx>
+#include <CLAM/AudioSink.hxx>
 
 namespace CLAM
 {
@@ -23,13 +23,13 @@ namespace CLAM
 	{
 	public:
 		std::string name;
-		ExternInControl* processing;
+		ControlSource* processing;
 		float lastvalue, min, max;
 	};
 
 	typedef std::vector< ExternControlInfo > VSTInControlList;
-	typedef std::vector< DataInfo< CLAM::ExternGenerator > > VSTInPortList;
-	typedef std::vector< DataInfo< CLAM::ExternSink > > VSTOutPortList;
+	typedef std::vector< DataInfo< CLAM::AudioSource > > VSTInPortList;
+	typedef std::vector< DataInfo< CLAM::AudioSink > > VSTOutPortList;
 
 }
 

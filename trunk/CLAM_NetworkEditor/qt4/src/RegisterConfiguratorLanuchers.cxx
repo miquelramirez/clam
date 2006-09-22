@@ -72,8 +72,8 @@
 #include <CLAM/ControlPrinter.hxx>
 #include <CLAM/ControlScaler.hxx>
 #include <CLAM/ControlMapper.hxx>
-#include <CLAM/ExternInControl.hxx>
-#include <CLAM/ExternOutControl.hxx>
+#include <CLAM/ControlSource.hxx>
+#include <CLAM/ControlSource.hxx>
 
 //MIDI
 #include <CLAM/MIDIKeyboard.hxx>
@@ -133,8 +133,7 @@ STANDARD_PROCESSING_CONFIG_REGISTER(OSCSenderConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(Fundamental2ControlConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ControlPrinterConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ControlScalerConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(ExternInControlConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(ExternOutControlConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(ControlSourceConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(OutControlSenderConfig);
 // MIDI
 STANDARD_PROCESSING_CONFIG_REGISTER(MIDIKeyboardConfig);

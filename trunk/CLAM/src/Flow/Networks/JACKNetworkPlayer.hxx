@@ -7,8 +7,8 @@
 #include "NetworkPlayer.hxx"
 
 #include "Network.hxx"
-#include "ExternGenerator.hxx"
-#include "ExternSink.hxx"
+#include "AudioSource.hxx"
+#include "AudioSink.hxx"
 
 #include <jack/jack.h>
 
@@ -26,7 +26,7 @@ private:
 			return jack_port_name(jackPort);
 		}
 		jack_port_t* jackPort;
-		ExternGenerator* source;
+		AudioSource* source;
 	};
 
 	struct SinkJackBinding
@@ -36,7 +36,7 @@ private:
 			return jack_port_name(jackPort);
 		}
 		jack_port_t* jackPort;
-		ExternSink* sink;
+		AudioSink* sink;
 	};
 	typedef std::vector<SourceJackBinding> SourceJackBindings;
 	typedef std::vector<SinkJackBinding> SinkJackBindings;

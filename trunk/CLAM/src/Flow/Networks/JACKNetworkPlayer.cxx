@@ -112,10 +112,10 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 	{
 		std::string processingClass = it->second->GetClassName();
-		if (processingClass != "ExternGenerator") continue;
+		if (processingClass != "AudioSource") continue;
 
 		//Get Processing address
-		pair.source=(ExternGenerator*)it->second;
+		pair.source=(AudioSource*)it->second;
 		pair.source->SetFrameAndHopSize(mJackBufferSize);
 
 		//Register port on the JACK server
@@ -139,10 +139,10 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 	{
 		std::string processingClass = it->second->GetClassName();
-		if (processingClass != "ExternSink") continue;
+		if (processingClass != "AudioSink") continue;
 
 		//Get Processing address
-		pair.sink=(ExternSink*)it->second;
+		pair.sink=(AudioSink*)it->second;
 		pair.sink->SetFrameAndHopSize(mJackBufferSize);
 
 		//Register port on the JACK server
@@ -186,7 +186,7 @@ void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes
 		//Retrieve JACK buffer location
 		jack_default_audio_sample_t *jackInBuffer = 
 			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
-		//Tell the ExternGenerator to put JACK's buffer info into CLAM
+		//Tell the AudioSource to put JACK's buffer info into CLAM
 		it->source->Do( (TData*)jackInBuffer, nframes );
 
 	}
@@ -200,7 +200,7 @@ void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 		//Retrieve JACK buffer location
 		jack_default_audio_sample_t *jackOutBuffer = 
 			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
-		//Tell the ExternGenerator to put CLAM's buffer info JACK
+		//Tell the AudioSource to put CLAM's buffer info JACK
 		it->sink->Do( (TData*)jackOutBuffer, nframes);	
 	}
 }
@@ -330,7 +330,7 @@ void JACKNetworkPlayer::AutoConnectPorts()
 	{
 		int i=0;
 
-		//Double iterate ExternGenerators & found JACK out ports
+		//Double iterate AudioSources & found JACK out ports
 		for ( SourceJackBindings::iterator it= mSourceJackBindings.begin(); it!=mSourceJackBindings.end(); it++)
 		{
 			std::cout << "- Connecting " << portnames[i] << " -> " 

@@ -16,7 +16,7 @@ class QWidget;
 namespace NetworkGUI
 {
 
-class Qt_ExternSinkPresentation :  public Qt_ProcessingPresentation
+class Qt_AudioSinkPresentation :  public Qt_ProcessingPresentation
 {
 protected:
 	QColor GetColorOfState()
@@ -45,10 +45,10 @@ protected:
 	}
 		
 public:
-	Qt_ExternSinkPresentation(){}
+	Qt_AudioSinkPresentation(){}
 };
 
-class Qt_ExternGeneratorPresentation :  public Qt_ProcessingPresentation
+class Qt_AudioSourcePresentation :  public Qt_ProcessingPresentation
 {
 protected:
 	virtual QColor GetColorOfState()
@@ -77,10 +77,10 @@ protected:
 	}
 
 public:
-	Qt_ExternGeneratorPresentation(){}
+	Qt_AudioSourcePresentation(){}
 };
 
-class Qt_ExternInControlPresentation :  public Qt_ProcessingPresentation
+class Qt_ControlSourcePresentation :  public Qt_ProcessingPresentation
 {
 protected:
 	virtual QColor GetColorOfState()
@@ -109,10 +109,10 @@ protected:
 	}
 
 public:
-	Qt_ExternInControlPresentation(){}
+	Qt_ControlSourcePresentation(){}
 };
 
-class Qt_ExternOutControlPresentation :  public Qt_ProcessingPresentation
+class Qt_ControlSinkPresentation :  public Qt_ProcessingPresentation
 {
 protected:
 	virtual QColor GetColorOfState()
@@ -141,22 +141,22 @@ protected:
 	}
 
 public:
-	Qt_ExternOutControlPresentation(){}
+	Qt_ControlSinkPresentation(){}
 };
 
 }
 #include <CLAM/Factory.hxx>
 typedef CLAM::Factory<NetworkGUI::Qt_ProcessingPresentation> Qt_ProcessingPresentationFactory;
 
-static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ExternSinkPresentation > 
-	regtExternSink( "ExternSink" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_AudioSinkPresentation > 
+	regtAudioSink( "AudioSink" );
 
-static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ExternGeneratorPresentation > 
-	regtExternGenerator( "ExternGenerator" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_AudioSourcePresentation > 
+	regtAudioSource( "AudioSource" );
 
-static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ExternInControlPresentation > 
-	regtExternInControl( "ExternInControl" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ControlSourcePresentation > 
+	regtControlSource( "ControlSource" );
 
-static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ExternOutControlPresentation > 
-	regtExternOutControl( "ExternOutControl" );
+static Qt_ProcessingPresentationFactory::Registrator< NetworkGUI::Qt_ControlSinkPresentation > 
+	regtControlSink( "ControlSink" );
 #endif
