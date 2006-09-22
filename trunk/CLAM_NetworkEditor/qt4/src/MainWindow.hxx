@@ -196,7 +196,7 @@ public slots:
 		if (_canvas->networkIsDummy() )
 		{
 			QMessageBox::critical(this, tr("Unable to play the network"), 
-				tr("<p>Dummy networks are not playable.</p>"
+				tr("<p><b>Dummy networks are not playable.</b></p>"
 				"<p>Dummy networks are used to draw arbitrary networks without"
 				" real processings under the boxes, so you cannot play them.</p>"
 				"<p>To have a playable network, create a new network or load an existing one.</p>"));
@@ -205,7 +205,16 @@ public slots:
 		if (  _network.IsEmpty() )
 		{
 			QMessageBox::critical(this, tr("Unable to play the network"), 
-					tr("<p>A network without processings is not playable.</p>"));
+					tr("<p><b>A network without processings is not playable.</b></p>"));
+			return;
+		}
+		// TODO: Activate this once it works
+		if ( false and _network.HasUnconnectedInPorts() )
+		{
+			QMessageBox::critical(this, tr("Unable to play the network"), 
+					tr("<p><b>The network has some in ports which are not connected.</b></p>"
+					"<p>All in ports must be feeded in order to play the network</p>"
+					));
 			return;
 		}
 		if (not _networkPlayer->IsCallbackBased() and not _network.HasSyncSource() )
