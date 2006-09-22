@@ -62,12 +62,26 @@ public:
 
 		int frameSize = 2048;
 		_network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
-		if (0) //use Blocking? TODO just testing
-			_networkPlayer = new CLAM::BlockingNetworkPlayer();
+
+		QString backend = "Jack";
+		CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
+		if ( jackPlayer->IsConnectedToServer())
+		{
+			_networkPlayer = jackPlayer;
+		}
 		else
-			_networkPlayer = new CLAM::JACKNetworkPlayer();
+		{
+			delete jackPlayer;
+			backend = "Alsa";
+			_networkPlayer = new CLAM::BlockingNetworkPlayer();
+		}
 
 		_networkPlayer->SetNetwork(_network);
+
+
+		_backendLabel = new QLabel;
+		_backendLabel->setText(tr("Backend: %1").arg(backend));
+		statusBar()->addWidget(_backendLabel);
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
@@ -247,6 +261,7 @@ private:
 	CLAM::Network _network;
 	CLAM::NetworkPlayer * _networkPlayer;
 	QString _networkFile;
+	QLabel * _backendLabel;
 };
 
 
