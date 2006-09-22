@@ -20,6 +20,7 @@ inline void JackShutdownCallback (void *arg)
 {
 	JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
 	// TODO: Do clearing jack stuff but do not delete the player!!!!!
+	std::cout << "Shuting down jack client" << std::endl;
 	delete player;
 }
 
@@ -381,4 +382,5 @@ void JACKNetworkPlayer::AutoConnectPorts()
 
 
 } //namespace CLAM
+
 
