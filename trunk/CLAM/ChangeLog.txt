@@ -2,6 +2,10 @@
 2006-??-?? CLAM 0.91.1 CVS
 ''
  * Version information taken from changelog is available for apps.
+ * MacOSX DMG packages are back
+ * Graceful loading of network (catchable exception instead aborting)
+ * Using optimized versions (CLAM_func) for math functions
+ * Ooura fft is now limited to power of two sizes
  * Network and NetworkPlayer usability
    * OSCEnabledNetwork was removed. Use OSCControlDispatcher and bind it to
      a plain Network instead.
