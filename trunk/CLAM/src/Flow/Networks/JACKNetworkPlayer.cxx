@@ -311,10 +311,11 @@ void JACKNetworkPlayer::RestoreConnections()
 			if (error)
 				std::cerr << "JACK WARNING: could not reconnect ports ( " <<
 					it->processingName << " , " << it->outsideConnections[i] << " )" <<std::endl;
-			free(it->outsideConnections[i]);
 		}
 		free(it->outsideConnections);
 	}
+	mIncomingJackConnections.clear();
+
 	for (JackConnections::iterator it=mOutgoingJackConnections.begin(); it!=mOutgoingJackConnections.end(); it++)
 	{
 		if (not it->outsideConnections) continue;
@@ -324,43 +325,10 @@ void JACKNetworkPlayer::RestoreConnections()
 			if (error)
 				std::cerr << "JACK WARNING: could not reconnect ports ( " <<
 					it->outsideConnections[i] << " , " << it->processingName << " )" <<std::endl;
-			free(it->outsideConnections[i]);
 		}
 		free(it->outsideConnections);
 	}
-	/*
-	for (JACKOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-	{
-		if (it->connectedTo==NULL)
-			continue;
-
-		for (int i=0; it->connectedTo[i]!=NULL; i++)
-		{
-			//std::cout <<it->portName<<" connected to "<<con[i]<<std::endl;
-			if ( jack_connect ( mJackClient, it->connectedTo[i], it->portName.c_str() ) != 0)
-				std::cout << "JACK WARNING: could not reconnect ports ( " << 
-					it->portName << " , " << it->connectedTo[i] << " )" <<std::endl;
-		}
-		
-		free(it->connectedTo);
-	}
-	
-	for (JACKInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-	{
-		if (it->connectedTo==NULL)
-			continue;
-
-		for (int i=0; it->connectedTo[i]!=NULL; i++)
-		{
-			//std::cout <<it->portName<<" connected to "<<con[i]<<std::endl;
-			if ( jack_connect ( mJackClient, it->portName.c_str(), it->connectedTo[i] ) != 0)
-				std::cout << "JACK WARNING: could not reconnect ports ( " << 
-					it->connectedTo[i] << " , " << it->portName << " )" <<std::endl;
-		}
-		
-		free(it->connectedTo);
-	}
-	*/
+	mOutgoingJackConnections.clear();
 }
 
 void JACKNetworkPlayer::AutoConnectPorts()
