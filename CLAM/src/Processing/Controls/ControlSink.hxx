@@ -27,10 +27,10 @@
 
 namespace CLAM{
 	
-	class ExternOutControlConfig : public ProcessingConfig
+	class ControlSinkConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ExternOutControlConfig,3,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (ControlSinkConfig,3,ProcessingConfig);
 		DYN_ATTRIBUTE(0,public,TData, MinValue);
 		DYN_ATTRIBUTE(1,public,TData, MaxValue);
 		DYN_ATTRIBUTE(2,public,TData, Step);
@@ -45,30 +45,30 @@ namespace CLAM{
 		}
 	};
 
-	class ExternOutControl : public Processing
+	class ControlSink : public Processing
 	{
 	private:
-		ExternOutControlConfig mConf;
+		ControlSinkConfig mConf;
 		InControl mInput;
 		
 	public:
-		ExternOutControl() 
+		ControlSink() 
 		: mInput("input",this)
 		{
 		}
 		
-		ExternOutControl(const ExternOutControlConfig & c)
+		ControlSink(const ControlSinkConfig & c)
 		: mInput("input",this)
 		{
 			ConcreteConfigure(c);
 		}
 		
-		~ExternOutControl() {}
+		~ControlSink() {}
 	
 		bool Do();
 		float GetControlValue();
 		
-		const char* GetClassName() const { return "ExternOutControl";}
+		const char* GetClassName() const { return "ControlSink";}
 		
 		bool ConcreteConfigure(const ProcessingConfig &c);
 		

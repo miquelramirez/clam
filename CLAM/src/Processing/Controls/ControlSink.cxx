@@ -19,7 +19,7 @@
  *
  */
 
-#include "ExternOutControl.hxx"
+#include "ControlSink.hxx"
 #include "Factory.hxx"
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
@@ -28,20 +28,20 @@ namespace CLAM
 {
 	namespace detail
 	{
-		static ProcessingFactory::Registrator<ExternOutControl> regtExternOutControl( "ExternOutControl" );
+		static ProcessingFactory::Registrator<ControlSink> regtControlSink( "ControlSink" );
 	}
 	
-	bool ExternOutControl::Do( )
+	bool ControlSink::Do( )
 	{
 		return true;
 	}
 
-	float ExternOutControl::GetControlValue()
+	float ControlSink::GetControlValue()
 	{
 		return (float)mInput.GetLastValue();
 	}
 	
-	bool ExternOutControl::ConcreteConfigure(const ProcessingConfig &c)
+	bool ControlSink::ConcreteConfigure(const ProcessingConfig &c)
 	{
 		CopyAsConcreteConfig(mConf,c);
 		return true;

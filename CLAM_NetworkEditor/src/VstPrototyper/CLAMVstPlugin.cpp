@@ -81,7 +81,7 @@ int CLAMTest::GetNumberOfParameters( char* file )
 
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 	{
-		if (std::string("ExternInControl")==std::string(it->second->GetClassName()))
+		if (std::string("ControlSource")==std::string(it->second->GetClassName()))
 			count++;
 	}
 
@@ -132,8 +132,8 @@ void CLAMTest::getParameterDisplay (long index, char *text)
 void CLAMTest::getParameterLabel(long index, char *label)
 {
 	//strcpy (label, "db");
-	ExternInControlConfig& conf=const_cast<ExternInControlConfig&>(
-		dynamic_cast<const ExternInControlConfig&>(
+	ControlSourceConfig& conf=const_cast<ControlSourceConfig&>(
+		dynamic_cast<const ControlSourceConfig&>(
 			mInControlList.at(index).processing->GetConfig() ));
 	strcpy (label, conf.GetUnitName().c_str() );
 }
@@ -192,13 +192,13 @@ void CLAMTest::process (float **inputs, float **outputs, long sampleFrames)
 void CLAMTest::FillNetwork()
 {
 	GetNetwork().SetName("VST net");
-	GetNetwork().AddProcessing("Gen1", "ExternGenerator");
-	GetNetwork().AddProcessing("Gen2", "ExternGenerator");
-	GetNetwork().AddProcessing("Sink1", "ExternSink");
-	GetNetwork().AddProcessing("Sink2", "ExternSink");
+	GetNetwork().AddProcessing("Gen1", "AudioSource");
+	GetNetwork().AddProcessing("Gen2", "AudioSource");
+	GetNetwork().AddProcessing("Sink1", "AudioSink");
+	GetNetwork().AddProcessing("Sink2", "AudioSink");
 	GetNetwork().ConnectPorts("Gen1.AudioOut","Sink1.AudioIn");
 	GetNetwork().ConnectPorts("Gen2.AudioOut","Sink2.AudioIn");
-	GetNetwork().AddProcessing("Ctrl","ExternInControl");
+	GetNetwork().AddProcessing("Ctrl","ControlSource");
 }
 
 void CLAMTest::ProcessInputControls()
@@ -210,17 +210,17 @@ void CLAMTest::ProcessInputControls()
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
 	{
-		if (std::string("ExternInControl")==std::string(it->second->GetClassName()))
+		if (std::string("ControlSource")==std::string(it->second->GetClassName()))
 		{
-			ExternInControlConfig& conf=const_cast<ExternInControlConfig&>(
-				dynamic_cast<const ExternInControlConfig&>(
+			ControlSourceConfig& conf=const_cast<ControlSourceConfig&>(
+				dynamic_cast<const ControlSourceConfig&>(
 					it->second->GetConfig() ));
 
 			//Store Processing name
 			info.name=it->first;
 			
 			//Get Processing address
-			info.processing=(ExternInControl*)it->second;
+			info.processing=(ControlSource*)it->second;
 
 			//Store range data
 			info.min=conf.GetMinValue();
@@ -237,18 +237,18 @@ void CLAMTest::ProcessInputPorts()
 {
 	CLAM_ASSERT( mReceiverList.empty(), "CLAMTest::ProcessInputPorts() : there are already registered input ports");
 
-	DataInfo<ExternGenerator> info;
+	DataInfo<AudioSource> info;
 
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
 	{
-		if (std::string("ExternGenerator")==std::string(it->second->GetClassName()))
+		if (std::string("AudioSource")==std::string(it->second->GetClassName()))
 		{
 			//Store Processing name
 			info.name=it->first;
 			
 			//Get Processing address
-			info.processing=(ExternGenerator*)it->second;
+			info.processing=(AudioSource*)it->second;
 			info.processing->SetFrameAndHopSize( mExternBufferSize );
 
 			//Add the info 
@@ -261,18 +261,18 @@ void CLAMTest::ProcessOutputPorts()
 {
 	CLAM_ASSERT( mSenderList.empty(), "CLAMTest::ProcessInputPorts() : there are already registered output ports");
 
-	DataInfo<ExternSink> info;
+	DataInfo<AudioSink> info;
 
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
 	{
-		if (std::string("ExternSink")==std::string(it->second->GetClassName()))
+		if (std::string("AudioSink")==std::string(it->second->GetClassName()))
 		{
 			//Store Processing name
 			info.name=it->first;
 			
 			//Get Processing address
-			info.processing=(ExternSink*)it->second;
+			info.processing=(AudioSink*)it->second;
 			info.processing->SetFrameAndHopSize( mExternBufferSize );
 
 			//Add the info 
@@ -283,11 +283,11 @@ void CLAMTest::ProcessOutputPorts()
 
 void CLAMTest::UpdatePortFrameAndHopSize()
 {
-	//ExternGenerators
+	//AudioSources
 	for (VSTInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
 		it->processing->SetFrameAndHopSize( mExternBufferSize );
 		
-	//ExternSinks
+	//AudioSinks
 	for (VSTOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
 		it->processing->SetFrameAndHopSize( mExternBufferSize );
 }

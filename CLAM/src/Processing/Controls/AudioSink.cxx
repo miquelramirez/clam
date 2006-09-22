@@ -1,4 +1,4 @@
-#include "ExternSink.hxx"
+#include "AudioSink.hxx"
 #include "Factory.hxx"
 #include "Audio.hxx"
 
@@ -10,33 +10,33 @@ namespace CLAM
 {
 	namespace detail
 	{
-		static ProcessingFactory::Registrator<ExternSink> regtExternSink( "ExternSink" );
+		static ProcessingFactory::Registrator<AudioSink> regtAudioSink( "AudioSink" );
 	}
 	
-	ExternSink::ExternSink()
+	AudioSink::AudioSink()
 		: mIn("AudioIn",this)
 	{
 		//After being dropped it is ready to run as it does not need any configuration at all
 		mExecState=Ready;
 	}
 
-	ExternSink::ExternSink(const ProcessingConfig & conf)
+	AudioSink::AudioSink(const ProcessingConfig & conf)
 		: mIn("AudioIn",this)
 	{
 		//After being dropped it is ready to run as it does not need any configuration at all
 		mExecState=Ready;
 	}
 
-	ExternSink::~ExternSink()
+	AudioSink::~AudioSink()
 	{
 	}
 
-	bool ExternSink::Do()
+	bool AudioSink::Do()
 	{
 		return true;
 	}
 
-	bool ExternSink::Do( TData* buf, int nframes)
+	bool AudioSink::Do( TData* buf, int nframes)
 	{
 		if (!mIn.CanConsume())
 		{

@@ -27,10 +27,10 @@
 
 namespace CLAM{
 	
-	class ExternInControlConfig : public ProcessingConfig
+	class ControlSourceConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE ( ExternInControlConfig, 4, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE ( ControlSourceConfig, 4, ProcessingConfig);
 		DYN_ATTRIBUTE(0,public,TData, MinValue);
 		DYN_ATTRIBUTE(1,public,TData, MaxValue);
 		DYN_ATTRIBUTE(2,public,TData, Step);
@@ -47,25 +47,25 @@ namespace CLAM{
 		}
 	};
 
-	class ExternInControl : public Processing
+	class ControlSource : public Processing
 	{
 	private:
-		ExternInControlConfig mConf;
+		ControlSourceConfig mConf;
 		OutControl mOutput;
 		
 	public:
-		ExternInControl() 
+		ControlSource() 
 		: mOutput("output",this)
 		{
 		}
 		
-		ExternInControl(const ExternInControlConfig & c)
+		ControlSource(const ControlSourceConfig & c)
 		: mOutput("output",this)
 		{
 			ConcreteConfigure(c);
 		}
 		
-		~ExternInControl() {}
+		~ControlSource() {}
 	
 		bool Do()
 		{
@@ -74,7 +74,7 @@ namespace CLAM{
 		
 		bool Do( const float value );
 		
-		const char* GetClassName() const { return "ExternInControl";}
+		const char* GetClassName() const { return "ControlSource";}
 		
 		bool ConcreteConfigure(const ProcessingConfig &c);
 		

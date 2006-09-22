@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="Amount" type="ExternInControl">
+  <processing id="Amount" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>100</MaxValue>
     <Step>1</Step>
     <UnitName>Am</UnitName>
   </processing>
 
-  <processing id="JACK_Input" type="ExternGenerator"/>
+  <processing id="JACK_Input" type="AudioSource"/>
 
-  <processing id="JACK_Input2" type="ExternGenerator"/>
+  <processing id="JACK_Input2" type="AudioSource"/>
 
-  <processing id="JACK_Out_Original" type="ExternSink"/>
+  <processing id="JACK_Out_Original" type="AudioSink"/>
 
-  <processing id="JACK_Out_Synth" type="ExternSink"/>
+  <processing id="JACK_Out_Synth" type="AudioSink"/>
 
   <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
     <SinSpectralAnalysis>

@@ -35,28 +35,28 @@
       <Height>126</Height>
     </Widget>
     <Widget>
-      <Name>ExternInControl_0</Name>
+      <Name>ControlSource_0</Name>
       <X>126</X>
       <Y>211</Y>
       <Width>135</Width>
       <Height>58</Height>
     </Widget>
     <Widget>
-      <Name>ExternInControl_1</Name>
+      <Name>ControlSource_1</Name>
       <X>655</X>
       <Y>18</Y>
       <Width>135</Width>
       <Height>58</Height>
     </Widget>
     <Widget>
-      <Name>ExternGenerator_0</Name>
+      <Name>AudioSource_0</Name>
       <X>157</X>
       <Y>87</Y>
       <Width>142</Width>
       <Height>58</Height>
     </Widget>
     <Widget>
-      <Name>ExternSink_0</Name>
+      <Name>AudioSink_0</Name>
       <X>688</X>
       <Y>218</Y>
       <Width>108</Width>

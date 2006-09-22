@@ -58,36 +58,36 @@ void PANetworkPlayer::OpenStream(const Network& net)
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 	{
-		if ( std::string("ExternGenerator") == std::string(it->second->GetClassName()) )
+		if ( std::string("AudioSource") == std::string(it->second->GetClassName()) )
 		{
 			//Make sure all frame sizes are the same
-			ExternGenerator* gen=(ExternGenerator*)it->second;
+			AudioSource* gen=(AudioSource*)it->second;
 			gen->SetFrameAndHopSize( mClamBufferSize );
 				
 			//Using PortAudio we only accept 2 channels max
 			if ( mReceiverList.size() == 2 )
 			{
-				std::cout << "WARNING: more than two ExternGenerators detected, ignoring '" << it->first << "'" << std::endl;
+				std::cout << "WARNING: more than two AudioSources detected, ignoring '" << it->first << "'" << std::endl;
 				continue;
 			}
 				
 			//Get Processing address
-			mReceiverList.push_back( (ExternGenerator*)it->second );
+			mReceiverList.push_back( (AudioSource*)it->second );
 		}
-		else if ( std::string("ExternSink") == std::string(it->second->GetClassName()) )
+		else if ( std::string("AudioSink") == std::string(it->second->GetClassName()) )
 		{
 			//Make sure all frame sizes are the same
-			ExternSink* sink=(ExternSink*)it->second;
+			AudioSink* sink=(AudioSink*)it->second;
 			sink->SetFrameAndHopSize(mClamBufferSize);
 
 			//Using PortAudio we only accept 2 channels max
 			if ( mSenderList.size() == 2 )
 			{
-				std::cout << "WARNING: more than two ExternSinks detected, ignoring '" << it->first << "'" << std::endl;
+				std::cout << "WARNING: more than two AudioSinks detected, ignoring '" << it->first << "'" << std::endl;
 				continue;
 			}
 			//Get Processing address
-			mSenderList.push_back( (ExternSink*)it->second );
+			mSenderList.push_back( (AudioSink*)it->second );
 		}
 	}
 
@@ -164,7 +164,7 @@ void PANetworkPlayer::DoInPorts(TData** input, unsigned long nframes)
 	for ( PAOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++ )
 	{
 		//Retrieve PA buffer location
-		//Tell the ExternGenerator to put PA's buffer info into CLAM
+		//Tell the AudioSource to put PA's buffer info into CLAM
 		(*it)->Do( input[i], nframes );
 		i++;
 
@@ -178,7 +178,7 @@ void PANetworkPlayer::DoOutPorts(TData** output, unsigned long nframes)
 	for (PAInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
 	{
 		//Retrieve PA buffer location
-		//Tell the ExternGenerator to put CLAM's buffer info PA
+		//Tell the AudioSource to put CLAM's buffer info PA
 		(*it)->Do(output[i], nframes);
 		i++;
 	}

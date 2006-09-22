@@ -7,15 +7,15 @@
 
 namespace CLAM
 {
-	class ExternGenerator : public Processing
+	class AudioSource : public Processing
 	{
 	private:
 		AudioOutPort mOut;
 		NullProcessingConfig mConf;
 
 	public:
-		ExternGenerator();
-		ExternGenerator(const ProcessingConfig & conf);
+		AudioSource();
+		AudioSource(const ProcessingConfig & conf);
 
 		void SetFrameAndHopSize(const int val)
 		{
@@ -23,12 +23,12 @@ namespace CLAM
 			mOut.SetHop(val);
 		}
 		
-		~ExternGenerator();
+		~AudioSource();
 
 		bool Do();
 		bool Do( CLAM::TData* buf, int nframes);
 		
-		const char* GetClassName() const { return "ExternGenerator";}
+		const char* GetClassName() const { return "AudioSource";}
 
 		bool ConcreteConfigure(const ProcessingConfig &c)
 		{

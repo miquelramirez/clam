@@ -1,4 +1,4 @@
-#include "ExternGenerator.hxx"
+#include "AudioSource.hxx"
 #include "Factory.hxx"
 #include "Audio.hxx"
 
@@ -8,33 +8,33 @@ namespace CLAM
 {
 	namespace detail
 	{
-		static ProcessingFactory::Registrator<ExternGenerator> regtExternGenerator( "ExternGenerator" );
+		static ProcessingFactory::Registrator<AudioSource> regtAudioSource( "AudioSource" );
 	}
 	
-	ExternGenerator::ExternGenerator()
+	AudioSource::AudioSource()
 		: mOut("AudioOut",this)
 	{
 		//After being dropped it is ready to run as it does not need any configuration at all
 		mExecState=Ready;
 	}
 
-	ExternGenerator::ExternGenerator(const ProcessingConfig & conf)
+	AudioSource::AudioSource(const ProcessingConfig & conf)
 		: mOut("AudioOut",this)
 	{
 		//After being dropped it is ready to run as it does not need any configuration at all
 		mExecState=Ready;
 	}
 
-	ExternGenerator::~ExternGenerator()
+	AudioSource::~AudioSource()
 	{
 	}
 
-	bool ExternGenerator::Do()
+	bool AudioSource::Do()
 	{
 		return true;
 	}
 
-	bool ExternGenerator::Do( TData* buf, int nframes)
+	bool AudioSource::Do( TData* buf, int nframes)
 	{		
 		if (!mOut.CanProduce())
 		{

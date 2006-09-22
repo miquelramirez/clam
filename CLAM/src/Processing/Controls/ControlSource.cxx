@@ -19,7 +19,7 @@
  *
  */
 
-#include "ExternInControl.hxx"
+#include "ControlSource.hxx"
 #include "Factory.hxx"
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
@@ -28,16 +28,16 @@ namespace CLAM
 {
 	namespace detail
 	{
-		static ProcessingFactory::Registrator<ExternInControl> regtExternInControl( "ExternInControl" );
+		static ProcessingFactory::Registrator<ControlSource> regtControlSource( "ControlSource" );
 	}
 	
-	bool ExternInControl::Do( const float value )
+	bool ControlSource::Do( const float value )
 	{	
 		mOutput.SendControl( (TControlData)value);
 		return true;
 	}
 
-	bool ExternInControl::ConcreteConfigure(const ProcessingConfig &c)
+	bool ControlSource::ConcreteConfigure(const ProcessingConfig &c)
 	{
 		CopyAsConcreteConfig(mConf,c);
 		return true;

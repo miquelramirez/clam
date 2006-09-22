@@ -108,7 +108,7 @@ CLAM::NetworkPlayer* CreateNetworkPlayerFromName(const string name)
 	else if ( name == string("portaudio") )
 	{
 		std::cout << " Using PortAudio input/output driver. \
-			\n  Don't use any AudioOut. You must have the same amount of ExternSinks as ExternGenerators, a number between 1 and 2" << std::endl;
+			\n  Don't use any AudioOut. You must have the same amount of AudioSinks as AudioSources, a number between 1 and 2" << std::endl;
 
 		return new CLAM::PANetworkPlayer();
 	}
