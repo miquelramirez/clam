@@ -19,23 +19,27 @@ class JACKNetworkPlayer : public NetworkPlayer
 {
 private:
 	//Structures to keep information about every external input and output processing
-	struct JACKOutPortCouple
+	struct SourceJackBinding
 	{
-		std::string portName;
+		const char* PortName() 
+		{
+			return jack_port_name(jackPort);
+		}
 		jack_port_t* jackPort;
-		ExternGenerator* clamReceiver;
-		const char** connectedTo;
+		ExternGenerator* source;
 	};
 
-	struct JACKInPortCouple
+	struct SinkJackBinding
 	{
-		std::string portName;
+		const char* PortName() 
+		{
+			return jack_port_name(jackPort);
+		}
 		jack_port_t* jackPort;
-		ExternSink* clamSender;
-		const char** connectedTo;
+		ExternSink* sink;
 	};
-	typedef std::vector<JACKOutPortCouple> JACKOutPortList;
-	typedef std::vector<JACKInPortCouple> JACKInPortList;
+	typedef std::vector<SourceJackBinding> SourceJackBindings;
+	typedef std::vector<SinkJackBinding> SinkJackBindings;
 	struct JackConnection
 	{
 		std::string processingName;
@@ -48,8 +52,10 @@ private:
 
 	JackConnections mIncomingJackConnections;
 	JackConnections mOutgoingJackConnections;
-	JACKOutPortList mReceiverList;
-	JACKInPortList mSenderList;
+
+	SourceJackBindings mSourceJackBindings;
+	SinkJackBindings mSinkJackBindigs;
+
 	std::string mJackOutPortAutoConnectList, mJackInPortAutoConnectList;
 	
 	//JACK CODE

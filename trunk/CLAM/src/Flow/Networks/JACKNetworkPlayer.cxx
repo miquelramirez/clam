@@ -103,9 +103,9 @@ void JACKNetworkPlayer::RegisterPorts()
 
 void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 {
-	CLAM_ASSERT( mReceiverList.empty(), "JACKNetworkPlayer::RegisterInputPorts() : there are already registered input ports");
+	CLAM_ASSERT( mSourceJackBindings.empty(), "JACKNetworkPlayer::RegisterInputPorts() : there are already registered input ports");
 	
-	JACKOutPortCouple pair;
+	SourceJackBinding pair;
 	
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
@@ -113,12 +113,9 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 		std::string processingClass = it->second->GetClassName();
 		if (processingClass != "ExternGenerator") continue;
 
-		//Store Processing name
-		pair.portName=mJackClientname+std::string(":")+it->first;
-		
 		//Get Processing address
-		pair.clamReceiver=(ExternGenerator*)it->second;
-		pair.clamReceiver->SetFrameAndHopSize(mJackBufferSize);
+		pair.source=(ExternGenerator*)it->second;
+		pair.source->SetFrameAndHopSize(mJackBufferSize);
 
 		//Register port on the JACK server
 		const std::string & processingName = it->first;
@@ -126,18 +123,16 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 			processingName.c_str(),
 			JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
 
-		pair.connectedTo=NULL;
-		
 		//Add the pair (jack port, clam jack receiver) to the list
-		mReceiverList.push_back(pair);
+		mSourceJackBindings.push_back(pair);
 	}
 }
 
 void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 {
-	CLAM_ASSERT( mSenderList.empty(), "JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");
+	CLAM_ASSERT( mSinkJackBindigs.empty(), "JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");
 	
-	JACKInPortCouple pair;
+	SinkJackBinding pair;
 	
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
@@ -145,12 +140,9 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 		std::string processingClass = it->second->GetClassName();
 		if (processingClass != "ExternSink") continue;
 
-		//Store Processing name
-		pair.portName=mJackClientname+":"+it->first;
-
 		//Get Processing address
-		pair.clamSender=(ExternSink*)it->second;
-		pair.clamSender->SetFrameAndHopSize(mJackBufferSize);
+		pair.sink=(ExternSink*)it->second;
+		pair.sink->SetFrameAndHopSize(mJackBufferSize);
 
 		//Register port on the JACK server
 		const std::string & processingName = it->first;
@@ -158,45 +150,43 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 			processingName.c_str(),
 			JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 
-		pair.connectedTo=NULL;
-
 		//Add the pair (jack port, clam jack receiver) to the list
-		mSenderList.push_back(pair);
+		mSinkJackBindigs.push_back(pair);
 	}
 }
 
 void JACKNetworkPlayer::UnRegisterPorts()
 {
-	for (JACKInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+	for (SinkJackBindings::iterator it=mSinkJackBindigs.begin(); it!=mSinkJackBindigs.end(); it++)
 	{
 		if ( jack_port_unregister ( mJackClient, it->jackPort) )
 		{
-			std::cerr << "JACK ERROR: unregistering port " << it->portName << std::endl;
+			std::cerr << "JACK ERROR: unregistering port " << it->PortName() << std::endl;
 			exit(1);
 		}
 	}
-	mSenderList.clear();
+	mSinkJackBindigs.clear();
 	
-	for (JACKOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+	for (SourceJackBindings::iterator it=mSourceJackBindings.begin(); it!=mSourceJackBindings.end(); it++)
 	{
 		if ( jack_port_unregister ( mJackClient, it->jackPort) )
 		{
-			std::cerr << "JACK ERROR: unregistering port " << it->portName << std::endl;
+			std::cerr << "JACK ERROR: unregistering port " << it->PortName() << std::endl;
 			exit(1);
 		}
 	}
-	mReceiverList.clear();
+	mSourceJackBindings.clear();
 }
 
 void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes)
 {
-	for (JACKOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+	for (SourceJackBindings::iterator it=mSourceJackBindings.begin(); it!=mSourceJackBindings.end(); it++)
 	{
 		//Retrieve JACK buffer location
 		jack_default_audio_sample_t *jackInBuffer = 
 			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
 		//Tell the ExternGenerator to put JACK's buffer info into CLAM
-		(*it).clamReceiver->Do( (TData*)jackInBuffer, nframes );
+		it->source->Do( (TData*)jackInBuffer, nframes );
 
 	}
 
@@ -204,13 +194,13 @@ void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes
 
 void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 {
-	for (JACKInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+	for (SinkJackBindings::iterator it=mSinkJackBindigs.begin(); it!=mSinkJackBindigs.end(); it++)
 	{
 		//Retrieve JACK buffer location
 		jack_default_audio_sample_t *jackOutBuffer = 
 			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
 		//Tell the ExternGenerator to put CLAM's buffer info JACK
-		it->clamSender->Do( (TData*)jackOutBuffer, nframes);	
+		it->sink->Do( (TData*)jackOutBuffer, nframes);	
 	}
 }
 
@@ -221,12 +211,9 @@ void JACKNetworkPlayer::Start()
 	
 	SetStopped(false);
 	
-	if (IsModified())
-	{
-		UnRegisterPorts();
-		RegisterPorts();
-	}
-	
+	UnRegisterPorts();
+	RegisterPorts();
+		
 	GetNetwork().Start();
 
 	//JACK CODE (the init order of network, ... should be decided)
@@ -276,24 +263,18 @@ void JACKNetworkPlayer::Do(const jack_nframes_t nframes)
 //Saves the connections made to our local in/out jack ports
 void JACKNetworkPlayer::StoreConnections()
 {
-	for (JACKOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+	for (SourceJackBindings::iterator it=mSourceJackBindings.begin(); it!=mSourceJackBindings.end(); it++)
 	{
-		const char** con = jack_port_get_connections ( it->jackPort );
-		it->connectedTo=con;
-
 		JackConnection connection;
-		connection.processingName = it->portName;
+		connection.processingName = it->PortName();
 		connection.outsideConnections = jack_port_get_connections ( it->jackPort );
 		mIncomingJackConnections.push_back(connection);
 	}
 	
-	for (JACKInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+	for (SinkJackBindings::iterator it=mSinkJackBindigs.begin(); it!=mSinkJackBindigs.end(); it++)
 	{
-		const char** con = jack_port_get_connections ( it->jackPort );
-		it->connectedTo=con;
-
 		JackConnection connection;
-		connection.processingName = it->portName;
+		connection.processingName = it->PortName();
 		connection.outsideConnections = jack_port_get_connections ( it->jackPort );
 		mOutgoingJackConnections.push_back(connection);
 	}
@@ -349,13 +330,13 @@ void JACKNetworkPlayer::AutoConnectPorts()
 		int i=0;
 
 		//Double iterate ExternGenerators & found JACK out ports
-		for ( JACKOutPortList::iterator it= mReceiverList.begin(); it!=mReceiverList.end(); it++)
+		for ( SourceJackBindings::iterator it= mSourceJackBindings.begin(); it!=mSourceJackBindings.end(); it++)
 		{
 			std::cout << "- Connecting " << portnames[i] << " -> " 
-				<< it->portName << std::endl;
+				<< it->PortName() << std::endl;
 
 			if ( jack_connect( mJackClient, portnames[i], 
-						it->portName.c_str() ) !=0 )
+						it->PortName() ) !=0 )
 			{
 				std::cerr << " -WARNING: couldn't connect" << std::endl;
 			}
@@ -379,12 +360,12 @@ void JACKNetworkPlayer::AutoConnectPorts()
 		int i=0;
 
 		//Double iterate found JACK in ports & ExterSinks
-		for (JACKInPortList::iterator it= mSenderList.begin(); it!=mSenderList.end(); it++)
+		for (SinkJackBindings::iterator it= mSinkJackBindigs.begin(); it!=mSinkJackBindigs.end(); it++)
 		{
-			std::cout << "- Connecting "<< it->portName
+			std::cout << "- Connecting "<< it->PortName()
 				<< " -> " << portnames[i] << std::endl;
 
-			if ( jack_connect( mJackClient, it->portName.c_str(),
+			if ( jack_connect( mJackClient, it->PortName(),
 						portnames[i]) != 0)
 			{
 				std::cerr << " -WARNING: couldn't connect" << std::endl;
