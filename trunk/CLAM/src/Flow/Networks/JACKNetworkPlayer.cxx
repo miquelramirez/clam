@@ -43,13 +43,13 @@ JACKNetworkPlayer::JACKNetworkPlayer(const std::string & networkFile, std::list<
 	else
 		mAutoConnect=true;
 
-
 	InitClient();
 
 }
 
 JACKNetworkPlayer::JACKNetworkPlayer()
 {
+	mClamBufferSize=512;
 	mAutoConnect=false;
 	InitClient();
 }
@@ -58,33 +58,35 @@ JACKNetworkPlayer::~JACKNetworkPlayer()
 {
 	Stop();
 	
-	//JACK CODE
-	if ( jack_client_close (mJackClient) )
+	if (not mJackClient) return;
+	bool error = jack_client_close (mJackClient);
+	if (error)
 	{
 		std::cerr << "JACK ERROR: cannot close client" << std::endl;
 		exit(1);
 	}
 }
 
+bool JACKNetworkPlayer::IsConnectedToServer() const
+{
+	return mJackClient != 0;
+}
+
 void JACKNetworkPlayer::InitClient()
 {
 	NotifyModification();
 
-	//JACK CODE: init client
-	
 	mJackClientname="CLAM_client";		
-	if ((mJackClient = jack_client_new ( mJackClientname.c_str() )) == 0)
+	mJackClient = jack_client_new ( mJackClientname.c_str() );
+	if (not mJackClient)
 	{
 		std::cerr << "JACK ERROR: server not running?"<< std::endl;
-		exit(1);
+		return;
 	}
 	
 	//Register callback method for processing
-	if ( jack_set_process_callback (mJackClient, JackProcessingCallback, this) )
-	{
-		std::cerr << "JACK ERROR: registering process callbacks"<< std::endl;
-		exit(1);
-	}
+	bool err = jack_set_process_callback (mJackClient, JackProcessingCallback, this);
+	CLAM_ASSERT(not err, "JACK ERROR: registering process callbacks");
 	
 	//Register shutdown callback
 	jack_on_shutdown (mJackClient, JackShutdownCallback, this);
@@ -207,8 +209,9 @@ void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 
 void JACKNetworkPlayer::Start()
 {
-	if (!IsStopped()) 
-		return;
+	if (!IsStopped()) return;
+
+	if (!mJackClient) return;
 	
 	SetStopped(false);
 	
@@ -231,14 +234,13 @@ void JACKNetworkPlayer::Start()
 
 void JACKNetworkPlayer::Stop()
 {
-	if (IsStopped())
-		return;
+	if (IsStopped()) return;
+	if (not mJackClient) return;
 	
 	SetStopped(true);
 
 	StoreConnections();
 	
-	//JACK CODE (the init order of network, ... should be decided)
 	if ( jack_deactivate (mJackClient) )
 	{
 		std::cerr << "JACK ERROR: cannot deactivate client" << std::endl;
@@ -250,8 +252,7 @@ void JACKNetworkPlayer::Stop()
 
 void JACKNetworkPlayer::Do(const jack_nframes_t nframes)
 {
-	if (IsStopped())
-		return;
+	if (IsStopped()) return;
 
 	CopyJackBuffersToGenerators(nframes);
 	
