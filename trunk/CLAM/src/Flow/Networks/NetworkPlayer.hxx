@@ -30,6 +30,7 @@ namespace CLAM
 			if (mNetwork)
 				delete mNetwork;
 		}
+		virtual bool IsCallbackBased() const = 0;
 		
 		virtual void Start()=0;
 		virtual void Stop()=0;

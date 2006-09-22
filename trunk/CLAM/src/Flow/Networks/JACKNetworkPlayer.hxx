@@ -70,6 +70,8 @@ public:
 	virtual void Start();
 	virtual void Stop();
 
+	virtual bool IsCallbackBased() const { return true; }
+
 	void Do(const jack_nframes_t nframes);
 
 	//Saves/loads the connections made to our local in/out jack ports

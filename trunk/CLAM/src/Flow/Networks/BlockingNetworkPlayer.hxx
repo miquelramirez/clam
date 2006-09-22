@@ -23,6 +23,7 @@ public:
 	BlockingNetworkPlayer();
 	
 	virtual ~BlockingNetworkPlayer();
+	virtual bool IsCallbackBased() const { return false; }
 	
 	virtual void Start();
 	virtual void Stop();
