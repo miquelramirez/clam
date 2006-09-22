@@ -46,6 +46,7 @@ public:
 	void DoInPorts(TData** input, unsigned long nframes);
 	void DoOutPorts(TData** output, unsigned long nframes);
 	
+	virtual bool IsCallbackBased() const { return true; }
 	virtual void Start();
 	virtual void Stop();
 
