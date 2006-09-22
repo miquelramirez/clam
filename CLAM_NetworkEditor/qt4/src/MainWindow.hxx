@@ -13,6 +13,7 @@
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/PushFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
+#include <CLAM/JACKNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
@@ -30,6 +31,7 @@ class MainWindow : public QMainWindow
 	Ui::MainWindow ui;
 public:
 	virtual ~MainWindow();
+
 	MainWindow()
 	{
 		ui.setupUi(this);
@@ -59,8 +61,12 @@ public:
 			);
 
 		int frameSize = 2048;
-	    _network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
-		_networkPlayer = new CLAM::BlockingNetworkPlayer(); // TODO: Delete this on destruction
+		_network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
+		if (0) //use Blocking? TODO just testing
+			_networkPlayer = new CLAM::BlockingNetworkPlayer();
+		else
+			_networkPlayer = new CLAM::JACKNetworkPlayer();
+
 		_networkPlayer->SetNetwork(_network);
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));

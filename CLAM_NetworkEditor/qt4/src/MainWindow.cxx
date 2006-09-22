@@ -3,5 +3,6 @@
 
 MainWindow::~MainWindow()
 {
+	if ( _networkPlayer) delete _networkPlayer;
 }
 
