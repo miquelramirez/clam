@@ -1,45 +1,91 @@
 #include "PrototypeLoader.hxx"
+#include "QtSlot2Control.hxx"
+//#include <QtUiTools/QUiLoader>
+#include <QtDesigner/QFormBuilder>
+#include <QtGui/QDialog>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QMessageBox>
+#include <QtCore/QRegExp>
+#include <QtCore/QFile>
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/PushFlowControl.hxx>
+
+//#include "NetAudioPlot.hxx" // QT4PORT
+//#include "NetPeaksPlot.hxx" // QT4PORT
+//#include "NetSpectrumPlot.hxx" // QT4PORT
+//#include "NetFundPlot.hxx" // QT4PORT
+//#include "NetAudioBuffPlot.hxx" // QT4PORT
+//#include "NetSpecgramPlot.hxx" // QT4PORT
+//#include "NetFundTrackPlot.hxx" // QT4PORT
+//#include "NetSinTracksPlot.hxx" // QT4PORT
+
+static std::string getMonitorNumber()
+{
+	static unsigned number = 0;
+	std::stringstream os;
+	os << number++;
+	return os.str();
+}
 
 namespace CLAM
 {
 	
 PrototypeLoader::PrototypeLoader(std::string networkFile)
 	: mNetworkFile(networkFile)
+	, mPlayer(NULL)
 {
-	mPlayer=NULL;	
+	int frameSize = 2048;
+	mNetwork.AddFlowControl(new CLAM::PushFlowControl(frameSize));
+	try
+   	{
+		CLAM::XMLStorage::Restore(mNetwork, mNetworkFile);
+	}
+	catch (CLAM::XmlStorageErr & e)
+	{
+		QMessageBox::critical(this, tr("Error loading the network"),
+			tr("<p>An occurred while loading the network file.<p>"
+				"<p><b>%1</b></p>").arg(e.what()));
+		mNetwork.Clear();
+	}
 }
 
 PrototypeLoader::~PrototypeLoader()
 {
-	delete mPlayer;
+	if (mPlayer) delete mPlayer;
 	
-	delete mMainWidget;
-
-	// mPortMonitors isn't used yet, but nevermind
-	for (std::list<CLAM::VM::NetPlot*>::iterator it=mPortMonitors.begin(); it!=mPortMonitors.end(); it++)
-		delete *it;
+	// QT4PORT
+//	for (std::list<CLAM::VM::NetPlot*>::iterator it=mPortMonitors.begin(); it!=mPortMonitors.end(); it++)
+//		delete *it;
 }
 
 void PrototypeLoader::SetNetworkPlayer( NetworkPlayer& player)
 {
 	mPlayer=&player;
+	mPlayer->SetNetwork(mNetwork);
 }
 
-QWidget * PrototypeLoader::LoadPrototype(std::string uiFile)
+bool PrototypeLoader::LoadPrototype(const QString & uiFile)
 {
-	mMainWidget = (QWidget *) QWidgetFactory::create( uiFile.c_str() );
-	return mMainWidget;
+	QFile file(uiFile);
+	file.open(QFile::ReadOnly);
+	QFormBuilder loader; // TODO: Change this to a QUiLoader
+	QWidget * widget = loader.load(&file, this );
+	file.close();
+	if (not widget) return false;
+	QVBoxLayout *layout = new QVBoxLayout;
+	layout->addWidget(widget);
+	setLayout(layout);
+	return true;
 }
 
 void PrototypeLoader::ConnectWithNetwork()
 {
 	CLAM_ASSERT( mPlayer!=NULL , "PrototypeLoader::ConnectWithNetwork() : no NetworkPlayer assigned. Do it with SetNetworkPlayer(..)");
 	
-	CLAM::Network & network = mPlayer->GetNetwork();
-	QWidget * prototype = mMainWidget;
-	ConnectWidgetsWithControls(network,prototype);
-	ConnectWidgetsWithMappedControls(network,prototype);
-
+	ConnectWidgetsWithControls();
+	ConnectWidgetsWithMappedControls();
+/*
+	// QT4PORT
 	ConnectWidgetsWithPorts<CLAM::VM::NetAudioPlot>
 		("OutPort__.*", "CLAM::VM::NetAudioPlot");
 	ConnectWidgetsWithPorts<CLAM::VM::NetSpectrumPlot>
@@ -57,15 +103,44 @@ void PrototypeLoader::ConnectWithNetwork()
 	// TODO: Still not ported
 	//ConnectWidgetsWithPorts<CLAM::VM::NetSinTracksPlot>
 	//	("OutPort__.*", "CLAM::VM::NetSinTracksPlot");
-	QObject * playButton = mMainWidget->child("PlayButton");
-	connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
-	QObject * stopButton = mMainWidget->child("StopButton");
-	connect(stopButton, SIGNAL(clicked()), this, SLOT(Stop()));  
+*/
+	QObject * playButton = findChild<QObject*>("PlayButton");
+	if (playButton) connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
+
+	QObject * stopButton = findChild<QObject*>("StopButton");
+	if (stopButton) connect(stopButton, SIGNAL(clicked()), this, SLOT(Stop()));  
 }
 
 void PrototypeLoader::Start()
 {
-	CLAM_ASSERT( mPlayer!=NULL , "PrototypeLoader::ConnectWithNetwork() : no NetworkPlayer assigned. Do it with SetNetworkPlayer(..)");
+	if ( not mPlayer )
+	{
+		QMessageBox::critical(this, tr("Unable to play the network"), 
+				tr("<p><b>Audio output unavailable or busy.</b></p>"));
+		return;
+	}
+	
+	if (  mNetwork.IsEmpty() )
+	{
+		QMessageBox::critical(this, tr("Unable to play the network"), 
+				tr("<p><b>A network without processings is not playable.</b></p>"));
+		return;
+	}
+	// TODO: Activate this once it works
+	if ( false and mNetwork.HasUnconnectedInPorts() )
+	{
+		QMessageBox::critical(this, tr("Unable to play the network"), 
+				tr("<p><b>The network has some in ports which are not connected.</b></p>"
+				"<p>All in ports must be feeded in order to play the network</p>"
+				));
+		return;
+	}
+	if (not mPlayer->IsCallbackBased() and not mNetwork.HasSyncSource() )
+	{
+		QMessageBox::critical(this, tr("Unable to play the network"), 
+			tr("<p>The network needs an AudioIn or AudioOut in order to be playable.</p>"));
+		return;
+	}
 	std::cout << "starting" << std::endl;
 	mPlayer->Start();
 	std::cout << "started" << std::endl;
@@ -94,35 +169,35 @@ std::string PrototypeLoader::GetNetworkNameFromWidgetName(const char * widgetNam
 	return networkName;
 }
 
-void PrototypeLoader::ConnectWidgetsWithControls(CLAM::Network & network, QWidget * prototype)
+void PrototypeLoader::ConnectWidgetsWithControls()
 {
-	QObjectList * widgets = prototype->queryList(0,"InControl__.*");
-	for (QObjectListIt it(*widgets); it.current(); ++it)
+	QList<QWidget*> widgets = findChildren<QWidget*>(QRegExp("InControl__.*"));
+	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
-		QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
-		std::string controlName=GetNetworkNameFromWidgetName(aWidget->name() + 11);
-
+		QWidget * aWidget = *it;
+		std::string controlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(11).toAscii());
 		std::cout << "* Control: " << controlName << std::endl;
 
-		CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
+		// TODO: It may not be present
+		CLAM::InControl & receiver = mNetwork.GetInControlByCompleteName(controlName);
 		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
 				  SLOT(sendControl(int)));
 	}
-
 }
 
-void PrototypeLoader::ConnectWidgetsWithMappedControls(CLAM::Network & network, QWidget * prototype)
+void PrototypeLoader::ConnectWidgetsWithMappedControls()
 {
-	QObjectList * widgets = prototype->queryList(0,"InControlFloat__.*");
-	for (QObjectListIt it(*widgets); it.current(); ++it)
+	QList<QWidget*> widgets = findChildren<QWidget*>(QRegExp("InControlFloat__.*"));
+	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
-		QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
-		std::string controlName=GetNetworkNameFromWidgetName(aWidget->name() + 16);
+		QWidget * aWidget = *it;
+		std::string controlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(16).toAscii());
 		std::cout << "* Mapped Control (100:1): " << controlName << std::endl;
 
-		CLAM::InControl & receiver = network.GetInControlByCompleteName(controlName);
+		// TODO: It may not be present
+		CLAM::InControl & receiver = mNetwork.GetInControlByCompleteName(controlName);
 		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
@@ -133,24 +208,26 @@ void PrototypeLoader::ConnectWidgetsWithMappedControls(CLAM::Network & network, 
 template < typename PlotClass >
 void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 {
-	if (!QWidgetFactory::supportsWidget(plotClassName))
-		qWarning(tr("No support for widgets %1. Maybe the CLAM qt plugins has not been loaded").arg(plotClassName));
-	CLAM::Network & network = mPlayer->GetNetwork();
-	QWidget * prototype = mMainWidget;
-	QObjectList * widgets = prototype->queryList(plotClassName,prefix);
-	for (QObjectListIt it(*widgets); it.current(); ++it)
+	// QT4PORT
+//	if (!QWidgetFactory::supportsWidget(plotClassName))
+//		qWarning(tr("No support for widgets %1. Maybe the CLAM qt plugins has not been loaded").arg(plotClassName));
+	QList<PlotClass*> widgets = findChildren<PlotClass*>(QRegExp(prefix));
+	for (typename QList<PlotClass*>::Iterator it=widgets.begin();
+			it!=widgets.end();
+		   	it++)
 	{
-		QWidget * aWidget = dynamic_cast<QWidget*>(it.current());
-		std::string controlName=GetNetworkNameFromWidgetName(aWidget->name() + 9);
-		std::cout << "* " << plotClassName << ": " << controlName << std::endl;
+		PlotClass * aWidget = *it;
+		std::string portName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(9).toAscii());
+		std::cout << "* " << plotClassName << ": " << portName << std::endl;
 
 		typedef typename PlotClass::MonitorType MonitorType;
 		MonitorType * portMonitor = new MonitorType;
 
 		std::string monitorName = "PrototyperMonitor"+getMonitorNumber();
-		network.AddProcessing(monitorName,portMonitor);
+		mNetwork.AddProcessing(monitorName,portMonitor);
 
-		network.ConnectPorts(controlName,monitorName+".Input");
+		// TODO: It may not be present
+		mNetwork.ConnectPorts(portName,monitorName+".Input");
 		PlotClass * plot = (PlotClass*) aWidget;
 		plot->SetMonitor(*portMonitor);
 	}

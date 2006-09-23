@@ -59,9 +59,9 @@
 
 // local processings
 #include <CLAM/FlagControl.hxx>
-//#include "Random.hxx" // QT4PORT
-//#include "OneOverF.hxx" // QT4PORT
-//#include "SquareWave.hxx" //QT4PORT
+#include "Random.hxx"
+#include "OneOverF.hxx"
+#include "SquareWave.hxx"
 
 #if USE_OSCPACK
 #include <CLAM/OSCSender.hxx>
@@ -121,9 +121,9 @@ STANDARD_PROCESSING_CONFIG_REGISTER(PhaseManagementConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(WindowGeneratorConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(CircularShiftConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(FlagControlConfig);
-//STANDARD_PROCESSING_CONFIG_REGISTER(RandomConfig) // QT4PORT;
-//STANDARD_PROCESSING_CONFIG_REGISTER(OneOverFConfig); // QT4PORT
-//STANDARD_PROCESSING_CONFIG_REGISTER(SquareWaveConfig); // QT4PORT
+STANDARD_PROCESSING_CONFIG_REGISTER(RandomConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(OneOverFConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(SquareWaveConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(NullProcessingConfig);
 #if USE_OSCPACK
 STANDARD_PROCESSING_CONFIG_REGISTER(OSCSenderConfig);

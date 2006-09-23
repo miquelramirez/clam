@@ -37,20 +37,6 @@
      <height>29</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_File" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="action_New" />
-    <addaction name="action_Open" />
-    <addaction name="action_Open_example" />
-    <addaction name="action_Save" />
-    <addaction name="action_Save_as" />
-    <addaction name="separator" />
-    <addaction name="action_Print" />
-    <addaction name="separator" />
-    <addaction name="action_Quit" />
-   </widget>
    <widget class="QMenu" name="menu_Interface" >
     <property name="title" >
      <string>&amp;Interface</string>
@@ -81,6 +67,21 @@
     <addaction name="action_Default_zoom" />
     <addaction name="action_Zoom_in" />
     <addaction name="action_Zoom_out" />
+   </widget>
+   <widget class="QMenu" name="menu_File" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_New" />
+    <addaction name="action_New_dummy" />
+    <addaction name="action_Open" />
+    <addaction name="action_Open_example" />
+    <addaction name="action_Save" />
+    <addaction name="action_Save_as" />
+    <addaction name="separator" />
+    <addaction name="action_Print" />
+    <addaction name="separator" />
+    <addaction name="action_Quit" />
    </widget>
    <addaction name="menu_File" />
    <addaction name="menu_Network" />
@@ -284,6 +285,9 @@
    <property name="text" >
     <string>Zoom &amp;in</string>
    </property>
+   <property name="shortcut" >
+    <string>+</string>
+   </property>
   </action>
   <action name="action_Zoom_out" >
    <property name="icon" >
@@ -292,6 +296,9 @@
    <property name="text" >
     <string>Zoom &amp;out</string>
    </property>
+   <property name="shortcut" >
+    <string>-</string>
+   </property>
   </action>
   <action name="action_Default_zoom" >
    <property name="icon" >
@@ -299,6 +306,14 @@
    </property>
    <property name="text" >
     <string>&amp;Default zoom</string>
+   </property>
+  </action>
+  <action name="action_New_dummy" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/filenew.png</iconset>
+   </property>
+   <property name="text" >
+    <string>New dummy</string>
    </property>
   </action>
  </widget>

@@ -4,11 +4,14 @@
 #endif
 
 #include "PrototypeLoader.hxx"
-#include "BlockingNetworkPlayer.hxx"
+#include <CLAM/BlockingNetworkPlayer.hxx>
+#include <CLAM/JACKNetworkPlayer.hxx>
 
 #include "Utils.hxx"
 #include <iostream>
-#include <qfiledialog.h>
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
+#include <QtGui/QApplication>
 
 int main( int argc, char *argv[] )
 {
@@ -26,12 +29,16 @@ int main( int argc, char *argv[] )
 
 	QApplication app( argc, argv );
 
-	std::string networkFile, uiFile;
+	std::string networkFile;
+	std::string uiFile;
 	if (argc<2)
 	{
-		QString file = QFileDialog::getOpenFileName( QString::null, "CLAM Network files(*.clamnetwork)", 0, 0, "Choose a Network to run");
-		if (!file) return -1;
-		networkFile=file.ascii();
+		QString file = QFileDialog::getOpenFileName(0,
+			"Choose a Network to run",
+			QString::null,
+			"CLAM Network files(*.clamnetwork)");
+		if (file.isEmpty()) return -1;
+		networkFile=file.toStdString();
 	}
 	else
 	{
@@ -40,25 +47,41 @@ int main( int argc, char *argv[] )
 
 	uiFile= argc>2 ? argv[2] : GetUiFromXmlFile(networkFile);
 
-	if ( !FileExists(networkFile) || !FileExists(uiFile) )
-		return -1;
+	if ( not FileExists(networkFile) )
+		return QMessageBox::critical(0,
+			QString("Error loading the network"),
+			QString("Network file '%1' not found.").arg(networkFile.c_str()));
+
+	if ( not FileExists(uiFile))
+		return QMessageBox::critical(0,
+			QString("Error loading the interface"),
+			QString("Interface file '%1' not found.").arg(uiFile.c_str()));
+
+	CLAM::NetworkPlayer * networkPlayer;
+	CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
+	if ( jackPlayer->IsConnectedToServer())
+	{
+		networkPlayer = jackPlayer;
+	}
+	else
+	{
+		delete jackPlayer;
+		networkPlayer = new CLAM::BlockingNetworkPlayer();
+	}
+	CLAM::PrototypeLoader prototype( networkFile );
+	prototype.SetNetworkPlayer( *networkPlayer );
 	
-	CLAM::PrototypeLoader loader( networkFile );
-	loader.SetNetworkPlayer( *(new CLAM::BlockingNetworkPlayer(networkFile)) );
-	
-	QWidget * prototype = loader.LoadPrototype( uiFile );
-	if (!prototype) return -1;
-	loader.ConnectWithNetwork();
+	bool loaded = prototype.LoadPrototype( uiFile.c_str() );
+	if (not loaded)
+		return QMessageBox::critical(0,
+			QString("Error loading the interface"),
+			QString("Interface file '%1' had errors.").arg(uiFile.c_str()));
 
-	// Set up the dynamic dialog here
-	app.setMainWidget( prototype );
-
-	prototype->show();
-
-
-	loader.Start();
+	prototype.ConnectWithNetwork();
+	prototype.show();
+	prototype.Start();
 	int result = app.exec();
-	loader.Stop();
+	prototype.Stop();
 
 	return result;
 }
