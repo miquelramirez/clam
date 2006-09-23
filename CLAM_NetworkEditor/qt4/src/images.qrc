@@ -3,6 +3,8 @@
         <file>images/GeneLogo.png</file>
         <file>images/NetworkEditor-icon.png</file>
         <file>images/NetworkEditor-icon.svg</file>
+        <file>images/alsalogo-mini.png</file>
+        <file>images/alsalogo.png</file>
         <file>images/clamlogo.png</file>
         <file>images/configure.png</file>
         <file>images/contexthelp.png</file>
@@ -17,6 +19,8 @@
         <file>images/filesave.png</file>
         <file>images/filesaveas.png</file>
         <file>images/help.png</file>
+        <file>images/jacklogo-mini.png</file>
+        <file>images/jacklogo.png</file>
         <file>images/newprocessing.png</file>
         <file>images/newprocessing.svg</file>
         <file>images/player_play.png</file>
