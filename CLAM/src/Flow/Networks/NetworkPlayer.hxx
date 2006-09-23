@@ -16,7 +16,8 @@ namespace CLAM
 	class NetworkPlayer
 	{
 		Network *mNetwork;
-		bool mModified, mStopped;	
+		bool mModified;
+		bool mStopped;
 	public:
 		NetworkPlayer()
 		{
@@ -27,8 +28,6 @@ namespace CLAM
 
 		virtual ~NetworkPlayer()
 		{
-			if (mNetwork)
-				delete mNetwork;
 		}
 		virtual bool IsCallbackBased() const = 0;
 		
