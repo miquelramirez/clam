@@ -63,7 +63,8 @@ public:
 		int frameSize = 2048;
 		_network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
 
-		QString backend = "Jack";
+		QString backend = "JACK";
+		QString backendLogo = ":/icons/images/jacklogo-mini.png";
 		CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
 		if ( jackPlayer->IsConnectedToServer())
 		{
@@ -72,16 +73,20 @@ public:
 		else
 		{
 			delete jackPlayer;
-			backend = "Alsa";
+			backend = "ALSA";
+			backendLogo = ":/icons/images/alsalogo-mini.png";
 			_networkPlayer = new CLAM::BlockingNetworkPlayer();
 		}
 
 		_networkPlayer->SetNetwork(_network);
 
-
+		_playingLabel = new QLabel;
+		statusBar()->addPermanentWidget(_playingLabel);
 		_backendLabel = new QLabel;
-		_backendLabel->setText(tr("Backend: %1").arg(backend));
-		statusBar()->addWidget(_backendLabel);
+		statusBar()->addPermanentWidget(_backendLabel);
+		_backendLabel->setToolTip(tr("<p>Audio Backend: %1</p>").arg(backend));
+		_backendLabel->setPixmap(QPixmap(backendLogo));
+		updatePlayStatusIndicator();
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
@@ -89,8 +94,18 @@ public:
 		updateCaption();
 
 	}
+	void updatePlayStatusIndicator()
+	{
+		if (not _networkPlayer->IsStopped())
+			_playingLabel->setText(tr("<p style='color:green'>Playing...</p>"));
+		else
+			_playingLabel->setText(tr("<p style='color:red'>Stopped</p>"));
+	}
 
-	QString networkFilter() {return tr("CLAM Network files (*.clamnetwork)"); }
+	QString networkFilter() {return tr(
+		"CLAM Network files (*.clamnetwork)"
+//		";;Dummy Network files (*.dummynetwork)"
+		); }
 
 	bool askUserSaveChanges()
 	{
@@ -180,6 +195,12 @@ public slots:
 		if (!askUserSaveChanges()) return;
 		clear();
 	}
+	void on_action_New_dummy_triggered()
+	{
+		if (!askUserSaveChanges()) return;
+		clear();
+		_canvas->loadNetwork(0);
+	}
 	void on_action_Open_triggered()
 	{
 		if (!askUserSaveChanges()) return;
@@ -238,10 +259,12 @@ public slots:
 			return;
 		}
 		_networkPlayer->Start();
+		updatePlayStatusIndicator();
 	}
 	void on_action_Stop_triggered()
 	{
 		_networkPlayer->Stop();
+		updatePlayStatusIndicator();
 	}
 	void on_action_Zoom_in_triggered()
 	{
@@ -262,6 +285,7 @@ private:
 	CLAM::NetworkPlayer * _networkPlayer;
 	QString _networkFile;
 	QLabel * _backendLabel;
+	QLabel * _playingLabel;
 };
 
 
