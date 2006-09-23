@@ -243,6 +243,13 @@ public slots:
 					tr("<p><b>A network without processings is not playable.</b></p>"));
 			return;
 		}
+		if (_network.HasMisconfiguredProcessings())
+		{
+			QMessageBox::critical(this, tr("Unable to play the network"), 
+					tr("<p><b>Not all the processings are properly configured.</b></p>"
+					));
+			return;
+		}
 		// TODO: Activate this once it works
 		if ( false and _network.HasUnconnectedInPorts() )
 		{
