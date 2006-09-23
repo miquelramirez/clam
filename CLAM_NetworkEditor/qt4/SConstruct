@@ -65,18 +65,23 @@ env.EnableQt4Modules([
 #	'QtSql',
 #	'QtNetwork',
 #	'QtTest',
-#	'QtXml',
+	'QtXml',
 #	'QtSvg',
+#	'QtUiTools',
+	'QtDesigner',
 #	'Qt3Support',
-	], debug=False)
+	], debug=True)
 
 mainSources = {
 	'NetworkEditor' : os.path.join('src','main.cxx'),
+	'Prototyper' : os.path.join('src','prototyper','BlockingPrototyper.cxx'),
 }
 
 sourcePaths = [
 	'src',
 	os.path.join('src','generated'),
+	os.path.join('..','src','Processings'),
+	os.path.join('src','prototyper'),
 ]
 extraPaths = []
 
