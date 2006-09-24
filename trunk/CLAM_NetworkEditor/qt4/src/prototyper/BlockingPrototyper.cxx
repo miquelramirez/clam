@@ -4,19 +4,19 @@
 #endif
 
 #include "PrototypeLoader.hxx"
-#include <CLAM/BlockingNetworkPlayer.hxx>
-#include <CLAM/JACKNetworkPlayer.hxx>
 #include <QtGui/QApplication>
 #include <iostream>
 
+int usage(const std::string & program)
+{
+		std::cout << " Usage: " << program
+			<< " <networkfile> [ <uifile> ] [-b <ALSA|JACK> ]"
+			<< std::endl;
+		return -1;
+}
+
 int main( int argc, char *argv[] )
 {
-	if (argc>3)
-	{
-		std::cout << " Usage: " 
-			<< argv[0] << " <networkfile> [ <uifile> ]" << std::endl;
-		return -1;
-	}
 
 #ifdef WIN32
 	CLAM::ProcessingModule::init();
@@ -26,27 +26,51 @@ int main( int argc, char *argv[] )
 	QApplication app( argc, argv );
 
 	std::string networkFile;
-	if (argc>1) networkFile = argv[1];
 	std::string uiFile;
-	if (argc>2) uiFile = argv[2];
+	std::list<std::string> backends;
+
+	enum { none, backend } optionArgument = none;
+	int argument=0;
+	for (int i=1; i<argc; i++)
+	{
+		std::string arg = argv[i];
+		if (optionArgument!=none)
+		{
+			if (optionArgument==backend)
+			   	backends.push_back(arg);
+			optionArgument=none;
+			continue;
+		}
+		if (arg[0]=='-')
+		{
+			if (arg=="-b")
+			{
+				optionArgument=backend;
+				continue;
+			}
+			std::cerr << "Invalid option '" << arg << "'." << std::endl;
+			return usage(argv[0]);
+		}
+		switch (argument++)
+		{
+			case 0:
+				networkFile = arg;
+			break;
+			case 1:
+				uiFile = arg;
+			break;
+			default:
+				std::cerr << "Too much arguments." << std::endl;
+				return usage(argv[0]);
+		}
+	}
 
 	CLAM::PrototypeLoader prototype;
 
 	bool ok = prototype.LoadNetwork(networkFile);
 	if (not ok) return -1;
 
-	CLAM::NetworkPlayer * networkPlayer;
-	CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
-	if ( jackPlayer->IsConnectedToServer())
-	{
-		networkPlayer = jackPlayer;
-	}
-	else
-	{
-		delete jackPlayer;
-		networkPlayer = new CLAM::BlockingNetworkPlayer();
-	}
-	prototype.SetNetworkPlayer( *networkPlayer );
+	prototype.SetNetworkPlayer( backends );
 	
 	QWidget * interface = prototype.LoadInterface( uiFile.c_str() );
 	if (not interface) return -1;
@@ -60,3 +84,4 @@ int main( int argc, char *argv[] )
 
 	return result;
 }
+
