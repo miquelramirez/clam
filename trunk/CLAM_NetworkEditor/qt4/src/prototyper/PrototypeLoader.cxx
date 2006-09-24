@@ -1,15 +1,16 @@
 #include "PrototypeLoader.hxx"
 #include "QtSlot2Control.hxx"
-#include "Utils.hxx"
 //#include <QtUiTools/QUiLoader>
 #include <QtDesigner/QFormBuilder>
 #include <QtGui/QDialog>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QMessageBox>
+#include <QtGui/QFileDialog>
 #include <QtCore/QRegExp>
 #include <QtCore/QFile>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/PushFlowControl.hxx>
+#include <fstream>
 
 //#include "NetAudioPlot.hxx" // QT4PORT
 //#include "NetPeaksPlot.hxx" // QT4PORT
@@ -28,6 +29,14 @@ static std::string getMonitorNumber()
 	return os.str();
 }
 
+inline bool FileExists( const std::string filename )
+{
+	//Check for existence of XML Network file
+	std::ifstream file( filename.c_str() );
+	if( !file ) return false;
+	return true;
+}
+
 namespace CLAM
 {
 	
@@ -41,18 +50,28 @@ PrototypeLoader::PrototypeLoader()
 
 bool PrototypeLoader::LoadNetwork(std::string networkFile)
 {
+	_networkFile = networkFile;
+	if (_networkFile=="")
+	{
+		QString file = QFileDialog::getOpenFileName(0,
+			"Choose a Network to run",
+			QString::null,
+			"CLAM Network files (*.clamnetwork)");
+		if (file.isEmpty()) return false;
+		_networkFile=file.toStdString();
+	}
 	QString errorMessage;
 	try
    	{
-		CLAM::XMLStorage::Restore(_network, networkFile);
+		CLAM::XMLStorage::Restore(_network, _networkFile);
 		return true;
 	}
 	catch (CLAM::XmlStorageErr & e)
 	{
-		errorMessage = FileExists(networkFile) ?
+		errorMessage = FileExists(_networkFile) ?
 			tr("<p>An occurred while loading the network file %1.<p>"
-				"<p><b>%2</b></p>").arg(networkFile.c_str()).arg(e.what()) :
-			tr("<p>Network file '%1' not found.</p>").arg(networkFile.c_str());
+				"<p><b>%2</b></p>").arg(_networkFile.c_str()).arg(e.what()) :
+			tr("<p>Network file '%1' not found.</p>").arg(_networkFile.c_str());
 	}
 	QMessageBox::critical(0, tr("Error loading the network"), errorMessage);
 	_network.Clear();
@@ -88,9 +107,17 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 	return interface;
 }
 
-QWidget * PrototypeLoader::LoadInterface(const QString & uiFile)
+QWidget * PrototypeLoader::LoadInterface(QString uiFile)
 {
 	if (_interface) delete _interface;
+	if (uiFile.isEmpty())
+	{
+		QString networkExtension = ".clamnetwork";
+		uiFile = _networkFile.c_str();
+		if (uiFile.endsWith(networkExtension))
+			uiFile.chop(networkExtension.length());
+		uiFile += ".ui";
+	}
 	_interface = DoLoadInterface(uiFile);
 	if (_interface) return _interface;
 
