@@ -378,9 +378,11 @@ def enable_modules(self, modules, debug=False) :
 		'QtTest',
 		'QtXml',
 		'QtUiTools',
+		'QtDesigner',
 		]
 	pclessModules = [
 		'QtUiTools',
+		'QtDesigner',
 	]
 	invalidModules=[]
 	for module in modules:
