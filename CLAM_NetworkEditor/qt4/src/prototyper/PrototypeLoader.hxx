@@ -1,7 +1,7 @@
 #ifndef _PROTOTYPE_LOADER_HXX_
 #define _PROTOTYPE_LOADER_HXX_
 
-#include <QtGui/QWidget>
+#include <QtGui/QDialog>
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/PortMonitor.hxx>
 
@@ -13,24 +13,26 @@
 namespace CLAM
 {
 
-class PrototypeLoader : public QWidget
+class PrototypeLoader : public QObject
 {
 	Q_OBJECT
 private:
 	std::string mNetworkFile;
-	NetworkPlayer * mPlayer;
-	Network mNetwork;
+	Network _network;
+	NetworkPlayer * _player;
+	QWidget * _interface;
 //	std::list<CLAM::VM::NetPlot * > mPortMonitors; //QT4PORT
 public:
-	PrototypeLoader(std::string networkFile);
+	PrototypeLoader();
 
 	~PrototypeLoader();
 
+	bool LoadNetwork(std::string networkFile);
 	void SetNetworkPlayer( NetworkPlayer& player);
-	
-	bool LoadPrototype(const QString & uiFile);
+	QWidget * LoadInterface(const QString & uiFile);
 	
 	void ConnectWithNetwork();
+	void Show();
 
 public slots:
 	void Start();

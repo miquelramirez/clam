@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 
-bool FileExists( const std::string filename )
+inline bool FileExists( const std::string filename )
 {
 	//Check for existence of XML Network file
 	std::ifstream file( filename.c_str() );
@@ -17,7 +17,7 @@ bool FileExists( const std::string filename )
 	return true;
 }
 
-std::string GetUiFromXmlFile(const std::string& xmlfile)
+inline std::string GetUiFromXmlFile(const std::string& xmlfile)
 {
 	std::string filename = xmlfile;
 	filename.erase( filename.size()-12, 12 );
