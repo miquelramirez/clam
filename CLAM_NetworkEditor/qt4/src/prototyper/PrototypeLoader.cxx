@@ -10,6 +10,8 @@
 #include <QtCore/QFile>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/PushFlowControl.hxx>
+#include <CLAM/BlockingNetworkPlayer.hxx>
+#include <CLAM/JACKNetworkPlayer.hxx>
 #include <fstream>
 
 //#include "NetAudioPlot.hxx" // QT4PORT
@@ -89,6 +91,22 @@ PrototypeLoader::~PrototypeLoader()
 void PrototypeLoader::Show()
 {
 	_interface->show();
+}
+
+void PrototypeLoader::SetNetworkPlayer( const std::list<std::string> & backends )
+{
+	CLAM::NetworkPlayer * networkPlayer;
+	CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
+	if ( jackPlayer->IsConnectedToServer())
+	{
+		networkPlayer = jackPlayer;
+	}
+	else
+	{
+		delete jackPlayer;
+		networkPlayer = new CLAM::BlockingNetworkPlayer();
+	}
+	SetNetworkPlayer( *networkPlayer );
 }
 
 void PrototypeLoader::SetNetworkPlayer( NetworkPlayer& player)

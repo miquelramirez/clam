@@ -9,6 +9,8 @@
 #include <CLAM/Network.hxx>
 
 #include <iostream>
+#include <list>
+#include <string>
 
 namespace CLAM
 {
@@ -28,6 +30,7 @@ public:
 	~PrototypeLoader();
 
 	bool LoadNetwork(std::string networkFile);
+	void SetNetworkPlayer( const std::list<std::string> & backends );
 	void SetNetworkPlayer( NetworkPlayer& player);
 	QWidget * LoadInterface(QString uiFile);
 	
