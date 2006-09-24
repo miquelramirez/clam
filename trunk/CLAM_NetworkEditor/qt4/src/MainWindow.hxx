@@ -96,7 +96,9 @@ public:
 	}
 	void updatePlayStatusIndicator()
 	{
-		if (not _networkPlayer->IsStopped())
+		if (_canvas->networkIsDummy() )
+			_playingLabel->setText(tr("<p style='color:blue'>Dummy</p>"));
+		else if (not _networkPlayer->IsStopped())
 			_playingLabel->setText(tr("<p style='color:green'>Playing...</p>"));
 		else
 			_playingLabel->setText(tr("<p style='color:red'>Stopped</p>"));
@@ -152,12 +154,12 @@ public:
 		_networkFile = filename;
 		updateCaption();
 	}
-	void clear()
+	void clear(bool isDummy=false)
 	{
 		_networkPlayer->Stop();
 		_networkFile = QString();
 		_network.Clear();
-		_canvas->loadNetwork(&_network);
+		_canvas->loadNetwork(isDummy?0:&_network);
 		updateCaption();
 	}
 
@@ -173,6 +175,7 @@ public slots:
 				.arg(_networkFile.isNull()?tr("Untitled"):_networkFile)
 				.arg(_canvas->isChanged()?tr(" [modified]"):"")
 				);
+		updatePlayStatusIndicator();
 	}
 	void on_action_Whats_this_triggered()
 	{
@@ -198,8 +201,7 @@ public slots:
 	void on_action_New_dummy_triggered()
 	{
 		if (!askUserSaveChanges()) return;
-		clear();
-		_canvas->loadNetwork(0);
+		clear(true);
 	}
 	void on_action_Open_triggered()
 	{

@@ -30,7 +30,6 @@ int main( int argc, char *argv[] )
 	QApplication app( argc, argv );
 
 	std::string networkFile;
-	std::string uiFile;
 	if (argc<2)
 	{
 		QString file = QFileDialog::getOpenFileName(0,
@@ -45,17 +44,7 @@ int main( int argc, char *argv[] )
 		networkFile=argv[1];
 	}
 
-	uiFile= argc>2 ? argv[2] : GetUiFromXmlFile(networkFile);
-
-	if ( not FileExists(networkFile) )
-		return QMessageBox::critical(0,
-			QString("Error loading the network"),
-			QString("Network file '%1' not found.").arg(networkFile.c_str()));
-
-	if ( not FileExists(uiFile))
-		return QMessageBox::critical(0,
-			QString("Error loading the interface"),
-			QString("Interface file '%1' not found.").arg(uiFile.c_str()));
+	std::string uiFile = argc>2 ? argv[2] : GetUiFromXmlFile(networkFile);
 
 	CLAM::NetworkPlayer * networkPlayer;
 	CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
@@ -68,17 +57,20 @@ int main( int argc, char *argv[] )
 		delete jackPlayer;
 		networkPlayer = new CLAM::BlockingNetworkPlayer();
 	}
-	CLAM::PrototypeLoader prototype( networkFile );
+
+	CLAM::PrototypeLoader prototype;
+
+	bool ok = prototype.LoadNetwork(networkFile);
+	if (not ok) return -1;
+
 	prototype.SetNetworkPlayer( *networkPlayer );
 	
-	bool loaded = prototype.LoadPrototype( uiFile.c_str() );
-	if (not loaded)
-		return QMessageBox::critical(0,
-			QString("Error loading the interface"),
-			QString("Interface file '%1' had errors.").arg(uiFile.c_str()));
+	QWidget * interface = prototype.LoadInterface( uiFile.c_str() );
+	if (not interface) return -1;
 
 	prototype.ConnectWithNetwork();
-	prototype.show();
+
+	prototype.Show();
 	prototype.Start();
 	int result = app.exec();
 	prototype.Stop();
