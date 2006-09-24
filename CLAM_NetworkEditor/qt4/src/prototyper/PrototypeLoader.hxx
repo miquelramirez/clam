@@ -17,7 +17,7 @@ class PrototypeLoader : public QObject
 {
 	Q_OBJECT
 private:
-	std::string mNetworkFile;
+	std::string _networkFile;
 	Network _network;
 	NetworkPlayer * _player;
 	QWidget * _interface;
@@ -29,7 +29,7 @@ public:
 
 	bool LoadNetwork(std::string networkFile);
 	void SetNetworkPlayer( NetworkPlayer& player);
-	QWidget * LoadInterface(const QString & uiFile);
+	QWidget * LoadInterface(QString uiFile);
 	
 	void ConnectWithNetwork();
 	void Show();

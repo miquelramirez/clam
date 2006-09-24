@@ -6,12 +6,8 @@
 #include "PrototypeLoader.hxx"
 #include <CLAM/BlockingNetworkPlayer.hxx>
 #include <CLAM/JACKNetworkPlayer.hxx>
-
-#include "Utils.hxx"
-#include <iostream>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
 #include <QtGui/QApplication>
+#include <iostream>
 
 int main( int argc, char *argv[] )
 {
@@ -30,21 +26,14 @@ int main( int argc, char *argv[] )
 	QApplication app( argc, argv );
 
 	std::string networkFile;
-	if (argc<2)
-	{
-		QString file = QFileDialog::getOpenFileName(0,
-			"Choose a Network to run",
-			QString::null,
-			"CLAM Network files(*.clamnetwork)");
-		if (file.isEmpty()) return -1;
-		networkFile=file.toStdString();
-	}
-	else
-	{
-		networkFile=argv[1];
-	}
+	if (argc>1) networkFile = argv[1];
+	std::string uiFile;
+	if (argc>2) uiFile = argv[2];
 
-	std::string uiFile = argc>2 ? argv[2] : GetUiFromXmlFile(networkFile);
+	CLAM::PrototypeLoader prototype;
+
+	bool ok = prototype.LoadNetwork(networkFile);
+	if (not ok) return -1;
 
 	CLAM::NetworkPlayer * networkPlayer;
 	CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
@@ -57,12 +46,6 @@ int main( int argc, char *argv[] )
 		delete jackPlayer;
 		networkPlayer = new CLAM::BlockingNetworkPlayer();
 	}
-
-	CLAM::PrototypeLoader prototype;
-
-	bool ok = prototype.LoadNetwork(networkFile);
-	if (not ok) return -1;
-
 	prototype.SetNetworkPlayer( *networkPlayer );
 	
 	QWidget * interface = prototype.LoadInterface( uiFile.c_str() );
