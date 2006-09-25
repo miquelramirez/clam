@@ -67,14 +67,9 @@ int main( int argc, char *argv[] )
 
 	CLAM::PrototypeLoader prototype;
 
-	bool ok = prototype.LoadNetwork(networkFile);
-	if (not ok) return -1;
-
-	prototype.SetNetworkPlayer( backends );
-	
-	QWidget * interface = prototype.LoadInterface( uiFile.c_str() );
-	if (not interface) return -1;
-
+	if (not prototype.LoadNetwork( networkFile ) ) return -1;
+	if (not prototype.ChooseBackend( backends ) ) return -1;
+	if (not prototype.LoadInterface( uiFile.c_str() ) ) return -1;
 	prototype.ConnectWithNetwork();
 
 	prototype.Show();

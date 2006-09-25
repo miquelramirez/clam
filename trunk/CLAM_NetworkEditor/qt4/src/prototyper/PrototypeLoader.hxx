@@ -20,6 +20,7 @@ class PrototypeLoader : public QObject
 	Q_OBJECT
 private:
 	std::string _networkFile;
+	std::string _backendName;
 	Network _network;
 	NetworkPlayer * _player;
 	QWidget * _interface;
@@ -30,7 +31,7 @@ public:
 	~PrototypeLoader();
 
 	bool LoadNetwork(std::string networkFile);
-	void SetNetworkPlayer( const std::list<std::string> & backends );
+	bool ChooseBackend( std::list<std::string> backends );
 	void SetNetworkPlayer( NetworkPlayer& player);
 	QWidget * LoadInterface(QString uiFile);
 	
@@ -53,6 +54,8 @@ private:
 	
 	template < typename PlotClass >
 	void ConnectWidgetsWithPorts(char* prefix, char* plotClassName);
+
+	void UpdatePlayStatus();
 };
 
 } //end namespace CLAM

@@ -6,6 +6,8 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
+#include <QtGui/QLabel>
+#include <QtGui/QPixmap>
 #include <QtCore/QRegExp>
 #include <QtCore/QFile>
 #include <CLAM/XMLStorage.hxx>
@@ -93,26 +95,50 @@ void PrototypeLoader::Show()
 	_interface->show();
 }
 
-void PrototypeLoader::SetNetworkPlayer( const std::list<std::string> & backends )
+
+CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend)
 {
-	CLAM::NetworkPlayer * networkPlayer;
-	CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
-	if ( jackPlayer->IsConnectedToServer())
+	if (backend=="jack")
 	{
-		networkPlayer = jackPlayer;
-	}
-	else
-	{
+		CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
+		if ( jackPlayer->IsConnectedToServer()) return jackPlayer;
 		delete jackPlayer;
-		networkPlayer = new CLAM::BlockingNetworkPlayer();
+		return 0;
 	}
-	SetNetworkPlayer( *networkPlayer );
+	else if (backend=="alsa")
+	{
+		return new CLAM::BlockingNetworkPlayer();
+	}
+	return 0;
 }
 
-void PrototypeLoader::SetNetworkPlayer( NetworkPlayer& player)
+bool PrototypeLoader::ChooseBackend( std::list<std::string> backends )
 {
-	_player=&player;
-	_player->SetNetwork(_network);
+	// If no backends specified, do the standard backend waterfall
+	if (backends.empty())
+	{
+		backends.push_back("jack");
+		backends.push_back("alsa");
+	}
+	for (std::list<std::string>::iterator it = backends.begin();
+			it!=backends.end();
+			it++)
+	{
+		_player = tryNetworkPlayer(*it);
+		if (not _player)
+		{
+			std::cerr << "Backend '" << *it << "' unavailable." << std::endl;
+			continue;
+		}
+		_backendName = *it;
+		std::cout << "Backend '" << *it << "' selected." << std::endl;
+		_player->SetNetwork(_network);
+		return true;
+	}
+	QMessageBox::critical(0,
+		tr("Error chosing a backend"),
+		tr("No audio backend was available."));
+	return false;
 }
 
 static QWidget * DoLoadInterface(const QString & uiFile)
@@ -154,7 +180,7 @@ QWidget * PrototypeLoader::LoadInterface(QString uiFile)
 
 void PrototypeLoader::ConnectWithNetwork()
 {
-	CLAM_ASSERT( _player!=NULL , "PrototypeLoader::ConnectWithNetwork() : no NetworkPlayer assigned. Do it with SetNetworkPlayer(..)");
+	CLAM_ASSERT( _player, "Connecting interface without having chosen a backend");
 	
 	ConnectWidgetsWithControls();
 	ConnectWidgetsWithMappedControls();
@@ -182,11 +208,25 @@ void PrototypeLoader::ConnectWithNetwork()
 	if (playButton) connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
 
 	QObject * stopButton = _interface->findChild<QObject*>("StopButton");
-	if (stopButton) connect(stopButton, SIGNAL(clicked()), this, SLOT(Stop()));  
+	if (stopButton) connect(stopButton, SIGNAL(clicked()), this, SLOT(Stop()));
+
+	QLabel * backendIndicator = _interface->findChild<QLabel*>("BackendIndicator");
+	if (backendIndicator)
+	{
+		QString backendIcon = ":/icons/images/";
+		backendIcon+=_backendName.c_str();
+		backendIcon+="logo-mini.png";
+		backendIndicator->setPixmap(backendIcon);
+		backendIndicator->setToolTip(
+			tr("<p>Using '%1' backend</p><p><img src='%2'/></p>")
+			.arg(_backendName.c_str())
+			.arg(backendIcon));
+	}
 }
 
 void PrototypeLoader::Start()
 {
+	UpdatePlayStatus();
 	if ( not _player )
 	{
 		QMessageBox::critical(0, tr("Unable to play the network"), 
@@ -222,14 +262,28 @@ void PrototypeLoader::Start()
 			tr("<p>The network needs an AudioIn or AudioOut in order to be playable.</p>"));
 		return;
 	}
-	std::cout << "starting" << std::endl;
+	std::cout << "Starting..." << std::endl;
 	_player->Start();
-	std::cout << "started" << std::endl;
+	UpdatePlayStatus();
 }
 
 void PrototypeLoader::Stop()
 {
+	std::cout << "Stopping..." << std::endl;
 	_player->Stop();
+	UpdatePlayStatus();
+}
+
+void PrototypeLoader::UpdatePlayStatus()
+{
+	QLabel * playbackIndicator = _interface->findChild<QLabel*>("PlaybackIndicator");
+	if (playbackIndicator)
+	{
+		if (not _player->IsStopped())
+			playbackIndicator->setText("<p style='color:green'>Playing...</p>");
+		else
+			playbackIndicator->setText("<p style='color:red'>Stopped</p>");
+	}
 }
 
 void PrototypeLoader::Substitute(std::string & subject, const char * pattern, const char * substitution)
