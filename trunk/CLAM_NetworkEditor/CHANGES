@@ -1,5 +1,57 @@
-2006-??-?? NetworkEditor 0.3.2 CVS
-''
+2006-??-?? NetworkEditor 0.4.0 CVS
+'California release'
+ * Ported to Qt4 and fully rewritten
+ * New network canvas engine
+   ** Scrollbars and zoom
+   ** Big connectors to ease the connections
+   ** Consistent sizes of drawn elements
+   ** Hovering a connector highlights it
+   ** Hovering a connector displays a tooltip with its name
+   ** Connector tooltips and highlights helps to figure out were you are going
+      to drop the wire
+   ** Dropping wire highlight color tells whether it will drop or not 
+     (redish: wrong; greenish correct)
+   ** Missconfigured processings show a tooltip with the error
+   ** Context menus for processings and connectors
+   ** Dragging from the processing toolbox displays a processing icon
+   ** Semitransparent processing boxes
+   ** Copying connector names for their use in the Prototyper
+   ** Printing networks and exporting ps/pdf
+   ** Dummy mode for free drawing without underlying processings
+      *** Dropping whatever text to create a processing
+      *** Configuring whatever number of connectors for a processing
+      *** Connecting whatever complementary connectors
+ * Backends
+   ** Just one binary for all backends in a platform
+   ** By default, cascade try
+   ** You can specify one by command line
+   ** Backend indications on the status bar
+ * Reliability
+   ** Errors on load a network are reported without crash
+   ** Unplayable networks are reported (used to hang realtime kernels)
+   ** Errors on bad processing drops are reported without crash
+   ** Errors on  are reported without crash
+   ** 'Modified' flag is set properly and checked before discarding changes
+ * Other interface enhancements
+   ** Common actions available on the toolbar
+   ** Playback and backend indicators
+   ** Open examples
+   ** Menu options to open recent netwoks
+ * Help
+   ** Generic context help for canvas, processings and connectors
+   ** One click access to the online tutorial
+ * Prototyper (network runner)
+   ** Just one binary for all backends in a platform
+   ** Cascade backend try (command line list or implicit default list)
+   ** Errors on loading are reported graphically
+   ** Unplayable network errors are reported and the playback declined
+   ** Default interface when missing, no implicit (adding .ui) or failed
+   ** QLabel named BackendIndicator is filled with backend information
+   ** QLabel named PlaybacIndicator is filled with the playback status
+
+2006-06-?? NetworkEditor 0.3.2
+'Unreleased release'
+ * Still qt3, not released but tagged on CVS
  * Network files extension is now .clamnetwork
  * Prototypers ask for a network when none given or launched from the menu
  * Mime types and actions added
