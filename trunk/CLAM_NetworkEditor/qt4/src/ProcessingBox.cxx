@@ -24,7 +24,7 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, _embeded(0)
 {
 //	embed(new QSlider(Qt::Horizontal));
-	rename(name);
+	setName(name);
 	recomputeMinimumSizes();
 }
 
@@ -85,7 +85,7 @@ void ProcessingBox::move(const QPoint & point)
 	_pos=point;
 }
 
-void ProcessingBox::rename(const QString & newName)
+void ProcessingBox::setName(const QString & newName)
 {
 	_name=newName;
 	recomputeMinimumSizes();
@@ -257,12 +257,12 @@ ProcessingBox::Region ProcessingBox::getRegion(const QPoint & point) const
 }
 
 
-int ProcessingBox::portIndexByYPos(const QPoint & point)
+int ProcessingBox::portIndexByYPos(const QPoint & point) const
 {
 	int y = point.y()-_pos.y();
 	return (y-portOffset)/portStep;
 }
-int ProcessingBox::controlIndexByXPos(const QPoint & point)
+int ProcessingBox::controlIndexByXPos(const QPoint & point) const
 {
 	int x = point.x()-_pos.x();
 	return (x-controlOffset)/controlStep;
@@ -449,20 +449,24 @@ void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 {
 	Region region = getRegion(_canvas->translatedPos(event));
-	if (region==nameRegion) 
+	if (region==nameRegion) rename();
+}
+
+bool ProcessingBox::rename()
+{
+	bool ok;
+	QString newName = QInputDialog::getText(_canvas, QObject::tr("Rename the processing"), QObject::tr("New name"), QLineEdit::Normal, _name);
+	if (!ok) return false;
+	if (newName.isEmpty()) return false;
+	if (!_canvas->renameProcessing(_name, newName))
 	{
-		bool ok;
-		QString newName = QInputDialog::getText(_canvas, QObject::tr("Rename the processing"), QObject::tr("New name"), QLineEdit::Normal, _name);
-		if (!ok) return;
-		if (newName.isEmpty()) return;
-		if (!_canvas->renameProcessing(_name, newName))
-		{
-			QMessageBox::critical(_canvas, QObject::tr("Naming processing"),
-				QObject::tr("A processing already exists with this name."));
-			return;
-		}
-	   	rename(newName);
+		QMessageBox::critical(_canvas, QObject::tr("Naming processing"),
+			QObject::tr("A processing already exists with this name."));
+		return false;
 	}
+	setName(newName);
+	_canvas->markAsChanged();
+	return true;
 }
 
 QString ProcessingBox::getName() const
@@ -493,6 +497,30 @@ QString ProcessingBox::getIncontrolName(unsigned index) const
 	if (!_processing) return QString("Incontrol_%1").arg(index);
 	CLAM::InControlRegistry & inControls = _processing->GetInControls();
 	return inControls.GetByNumber(index).GetName().c_str();
+}
+QString ProcessingBox::getPrototyperInportName(const QPoint & point) const
+{
+	return QString("Inport__%1__%2")
+		.arg(getName())
+		.arg(getInportName(portIndexByYPos(point)));
+}
+QString ProcessingBox::getPrototyperOutportName(const QPoint & point) const
+{
+	return QString("Outport__%1__%2")
+		.arg(getName())
+		.arg(getOutportName(portIndexByYPos(point)));
+}
+QString ProcessingBox::getPrototyperIncontrolName(const QPoint & point) const
+{
+	return QString("Incontrol__%1__%2")
+		.arg(getName())
+		.arg(getIncontrolName(controlIndexByXPos(point)));
+}
+QString ProcessingBox::getPrototyperOutcontrolName(const QPoint & point) const
+{
+	return QString("Outcontrol__%1__%2")
+		.arg(getName())
+		.arg(getOutcontrolName(controlIndexByXPos(point)));
 }
 
 #include "ConfiguratorLauncher.hxx"
