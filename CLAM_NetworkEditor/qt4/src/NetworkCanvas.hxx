@@ -259,6 +259,8 @@ public:
 			{
 				menu.addAction(QIcon(":/icons/images/configure.png"), "Configure",
 					this, SLOT(onConfigure()))->setData(translatedPos(event));
+				menu.addAction(QIcon(":/icons/images/rename.png"), "Rename",
+					this, SLOT(onRename()))->setData(translatedPos(event));
 				menu.addAction(QIcon(":/icons/images/editdelete.png"), "Remove",
 					this, SLOT(onDeleteProcessing()))->setData(translatedPos(event));
 			}
@@ -306,6 +308,7 @@ public:
 					"for copying the connection name for using it on Qt Designer.\n");
 			switch (region)
 			{
+			case ProcessingBox::noRegion: break; // To avoid warning
 			case ProcessingBox::incontrolsRegion:
 				setWhatsThis(connectionText.arg(tr("In control")).arg(tr("out control")));
 			break;
@@ -482,7 +485,10 @@ public:
 		if (!_network) return true;
 		return true;
 	}
-
+	/**
+	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
+	 * @pre The processing box has checked that connection is the proper one for the canvas _dragStatus.
+	 */
 	void endConnectionDragTo(ProcessingBox * processing, int connection)
 	{
 		switch (_dragStatus) 
@@ -503,8 +509,11 @@ public:
 			{
 				addControlConnection(_dragProcessing, _dragConnection, processing, connection);
 			} break;
+			default:
+			{
+				CLAM_ASSERT(false, "Ending a wire drag but not in wire drag status");
+			} return;
 		}
-		markAsChanged();
 	}
 	void addPortConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
@@ -512,9 +521,10 @@ public:
 		{
 			QString out = source->getName() + "." + source->getOutportName(outlet);
 			QString in = target->getName() + "." + target->getInportName(inlet);
-			if (!_network->ConnectPorts(out.toStdString(), in.toStdString())) return;
+			if (not _network->ConnectPorts(out.toStdString(), in.toStdString())) return;
 		}
 		addPortWire(source, outlet, target, inlet);
+		markAsChanged();
 	}
 	void addControlConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
@@ -522,9 +532,10 @@ public:
 		{
 			QString out = source->getName() + "." + source->getOutcontrolName(outlet);
 			QString in = target->getName() + "." + target->getIncontrolName(inlet);
-			if (!_network->ConnectControls(out.toStdString(), in.toStdString())) return;
+			if (not _network->ConnectControls(out.toStdString(), in.toStdString())) return;
 		}
 		addControlWire(source, outlet, target, inlet);
+		markAsChanged();
 	}
 	void addPortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
@@ -541,7 +552,7 @@ public:
 			   	it<_controlWires.end();)
 		{
 			ControlWire * wire = *it;
-			if (!wire->goesTo(processing, index)) it++;
+			if (not wire->goesTo(processing, index)) it++;
 			else
 			{
 				if (_network)
@@ -558,7 +569,7 @@ public:
 			   	it<_controlWires.end();)
 		{
 			ControlWire * wire = *it;
-			if (!wire->comesFrom(processing, index)) it++;
+			if (not wire->comesFrom(processing, index)) it++;
 			else
 			{
 				if (_network)
@@ -575,7 +586,7 @@ public:
 			   	it<_portWires.end();)
 		{
 			PortWire * wire = *it;
-			if (!wire->goesTo(processing, index)) it++;
+			if (not wire->goesTo(processing, index)) it++;
 			else
 			{
 				if (_network)
@@ -592,7 +603,7 @@ public:
 			   	it<_portWires.end();)
 		{
 			PortWire * wire = *it;
-			if (!wire->comesFrom(processing, index)) it++;
+			if (not wire->comesFrom(processing, index)) it++;
 			else
 			{
 				if (_network)
@@ -612,7 +623,7 @@ public:
 			   	it<_controlWires.end(); )
 		{
 			ControlWire * wire = *it;
-			if (!wire->involves(processing)) it++;
+			if (not wire->involves(processing)) it++;
 			else
 			{
 				delete wire;
@@ -623,7 +634,7 @@ public:
 			   	it<_portWires.end(); )
 		{
 			PortWire * wire = *it;
-			if (!wire->involves(processing)) it++;
+			if (not wire->involves(processing)) it++;
 			else
 			{
 				delete wire;
@@ -663,7 +674,7 @@ public:
 			std::string producerName = _processings[p]->getName().toStdString();
 			CLAM::Processing & producer = _network->GetProcessing(producerName);
 			CLAM::OutPortRegistry & outPorts = producer.GetOutPorts();
-			for (unsigned op = 0; op<outPorts.Size(); op++)
+			for (int op = 0; op<outPorts.Size(); op++)
 			{
 				CLAM::OutPortBase & outPort = outPorts.GetByNumber(op);
 				std::string completeOutName = producerName + "." + outPort.GetName();
@@ -678,7 +689,7 @@ public:
 					std::string peerConnection = _network->GetConnectorIdentifier(*inName);
 					CLAM::Processing & consumer = _network->GetProcessing(consumerName);
 					CLAM::InPortRegistry & inPorts = consumer.GetInPorts();
-					for (unsigned ip=0; ip<inPorts.Size(); ip++)
+					for (int ip=0; ip<inPorts.Size(); ip++)
 					{
 						CLAM::InPortBase & inPort = inPorts.GetByNumber(ip);
 						if (inPort.GetName()!=peerConnection) continue;
@@ -688,7 +699,7 @@ public:
 				}
 			}
 			CLAM::OutControlRegistry & outControls = producer.GetOutControls();
-			for (unsigned op = 0; op<outControls.Size(); op++)
+			for (int op = 0; op<outControls.Size(); op++)
 			{
 				CLAM::OutControl & outControl = outControls.GetByNumber(op);
 				std::string completeOutName = producerName + "." + outControl.GetName();
@@ -703,7 +714,7 @@ public:
 					std::string peerConnection = _network->GetConnectorIdentifier(*inName);
 					CLAM::Processing & consumer = _network->GetProcessing(consumerName);
 					CLAM::InControlRegistry & inControls = consumer.GetInControls();
-					for (unsigned ip=0; ip<inControls.Size(); ip++)
+					for (int ip=0; ip<inControls.Size(); ip++)
 					{
 						CLAM::InControl & inControl = inControls.GetByNumber(ip);
 						if (inControl.GetName()!=peerConnection) continue;
@@ -786,38 +797,31 @@ private slots:
 	void onCopyConnection()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
-		QString toCopy;
 		for (unsigned i = _processings.size(); i--; )
 		{
 			ProcessingBox::Region region = _processings[i]->getRegion(point);
 			if (region==ProcessingBox::noRegion) continue;
+			QString toCopy;
 			switch (region)
 			{
 				case ProcessingBox::outportsRegion: 
-					toCopy = QString("Outport__%1__%2")
-						.arg(_processings[i]->getName())
-						.arg(_processings[i]->getOutportName(_processings[i]->portIndexByYPos(point)));
+					toCopy = _processings[i]->getPrototyperOutportName(point);
 					break;
 				case ProcessingBox::inportsRegion: 
-					toCopy = QString("Inport__%1__%2")
-						.arg(_processings[i]->getName())
-						.arg(_processings[i]->getInportName(_processings[i]->portIndexByYPos(point)));
+					toCopy = _processings[i]->getPrototyperInportName(point);
 					break;
 				case ProcessingBox::incontrolsRegion: 
-					toCopy = QString("Incontrol__%1__%2")
-						.arg(_processings[i]->getName())
-						.arg(_processings[i]->getIncontrolName(_processings[i]->controlIndexByXPos(point)));
+					toCopy = _processings[i]->getPrototyperIncontrolName(point);
 					break;
 				case ProcessingBox::outcontrolsRegion: 
-					toCopy = QString("Outcontrol__%1__%2")
-						.arg(_processings[i]->getName())
-						.arg(_processings[i]->getOutcontrolName(_processings[i]->controlIndexByXPos(point)));
+					toCopy = _processings[i]->getPrototyperOutcontrolName(point);
 					break;
 				default:
 					return; // Matches a region but not a connector one
 			}
+			QApplication::clipboard()->setText(toCopy);
+			return;
 		}
-		QApplication::clipboard()->setText(toCopy);
 	}
 	void onConfigure()
 	{
@@ -828,6 +832,18 @@ private slots:
 			if (region==ProcessingBox::noRegion) continue;
 			if (not _processings[i]->configure()) return;
 			if (_network) refreshWires();
+			markAsChanged();
+			return;
+		}
+	}
+	void onRename()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(point);
+			if (region==ProcessingBox::noRegion) continue;
+			if (not _processings[i]->rename()) return;
 			markAsChanged();
 			return;
 		}
@@ -854,6 +870,8 @@ private slots:
 				case ProcessingBox::outcontrolsRegion:
 					disconnectOutcontrol(_processings[i], _processings[i]->controlIndexByXPos(point));
 				break;
+				default:
+					CLAM_ASSERT(false, "Not a port to disconnect.");
 			}
 			return;
 		}

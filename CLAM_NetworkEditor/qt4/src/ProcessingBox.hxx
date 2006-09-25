@@ -54,33 +54,44 @@ public:
 
 	void setProcessing(CLAM::Processing * processing);
 	void paintFromParent(QPainter & painter);
+	// Returns the region at a parent pos
 	Region getRegion(const QPoint & point) const;
-	int portIndexByYPos(const QPoint & point);
-	int controlIndexByXPos(const QPoint & point);
-	// returns the inport connect point in parent coords
+	// Returns the connector index given a parent pos
+	int portIndexByYPos(const QPoint & point) const;
+	int controlIndexByXPos(const QPoint & point) const;
+	// Returns the inport connect point in parent coords
 	QPoint getInportPos(unsigned i) const;
 	QPoint getOutportPos(unsigned i) const;
 	QPoint getIncontrolPos(unsigned i) const;
 	QPoint getOutcontrolPos(unsigned i) const;
+	/// Returns the processing box name
 	QString getName() const;
+	/// Get the full connector name
 	QString getInportName(unsigned i) const;
 	QString getOutportName(unsigned i) const;
 	QString getIncontrolName(unsigned i) const;
 	QString getOutcontrolName(unsigned i) const;
+	/// Get the connector prototyper name at the given parent pos
+	QString getPrototyperInportName(const QPoint & point) const;
+	QString getPrototyperOutportName(const QPoint & point) const;
+	QString getPrototyperIncontrolName(const QPoint & point) const;
+	QString getPrototyperOutcontrolName(const QPoint & point) const;
 
 	void mousePressEvent(QMouseEvent * event);
 	void mouseMoveEvent(QMouseEvent * event);
 	void mouseReleaseEvent(QMouseEvent * event);
 	void mouseDoubleClickEvent(QMouseEvent * event);
-	void rename(const QString & newName);
+
 	void move(const QPoint & newPosition);
 	void resize(const QSize & newSize);
 	void startMoving(const QPoint & initialGlobalPos);
-	QPoint pos() { return _pos; }
-	QSize size() { return _size; }
+	QPoint pos() const { return _pos; }
+	QSize size() const { return _size; }
 	void embed(QWidget * widget);
 	bool configure();
+	bool rename();
 private:
+	void setName(const QString & newName);
 	void recomputeMinimumSizes();
 	void paintBox(QPainter & painter);
 	void drawConnector(QPainter & painter, Region region, unsigned index);
