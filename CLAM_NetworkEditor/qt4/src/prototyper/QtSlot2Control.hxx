@@ -1,6 +1,6 @@
 #ifndef _QtSlot2Control_hxx_
 #define _QtSlot2Control_hxx_
-#include <qobject.h>
+#include <QtCore/QObject>
 #include <iostream>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/InControl.hxx>
