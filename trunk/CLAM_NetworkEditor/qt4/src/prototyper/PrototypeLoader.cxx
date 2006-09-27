@@ -146,6 +146,13 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 	QFile file(uiFile);
 	file.open(QFile::ReadOnly);
 	QFormBuilder loader; // TODO: Change this to a QUiLoader
+//	loader.addPluginPath("src/clamwidgetsplugin/plugins");
+	QStringList paths = QString(getenv("QT_PLUGIN_PATH")).split(":");
+	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
+	{
+		std::cout << "Adding plugin path: " << it->toStdString() << std::endl;
+		loader.addPluginPath(*it);
+	}
 	QWidget * interface = loader.load(&file, 0 );
 	file.close();
 	return interface;
