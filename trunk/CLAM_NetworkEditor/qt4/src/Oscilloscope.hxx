@@ -8,12 +8,12 @@
 #include <CLAM/DataTypes.hxx>
 
 
-class Oscilloscope : public QWidget
+class OscilloscopeWidget : public QWidget
 {
 	enum Dimensions {
 	};
 public:
-	Oscilloscope(CLAM::Processing * processing, QWidget * parent=0)
+	OscilloscopeWidget(CLAM::Processing * processing, QWidget * parent=0)
 		: QWidget(parent)
 		, _monitor(dynamic_cast<CLAM::AudioPortMonitor*>(processing))
 	{

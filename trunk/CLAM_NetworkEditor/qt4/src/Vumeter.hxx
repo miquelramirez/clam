@@ -8,13 +8,13 @@
 #include <CLAM/DataTypes.hxx>
 
 
-class Vumeter : public QWidget
+class VumeterWidget : public QWidget
 {
 	enum Dimensions {
 		margin=4
 	};
 public:
-	Vumeter(CLAM::Processing * processing, QWidget * parent=0)
+	VumeterWidget(CLAM::Processing * processing, QWidget * parent=0)
 		: QWidget(parent)
 		, _monitor(dynamic_cast<CLAM::AudioPortMonitor*>(processing))
 		, _energy(0)
