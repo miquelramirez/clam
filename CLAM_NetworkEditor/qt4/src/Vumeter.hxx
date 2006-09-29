@@ -6,14 +6,14 @@
 #include <CLAM/Processing.hxx>
 
 
-class Vumeter : public QGLWidget
+class Vumeter : public QWidget
 {
 	enum {
 		margin=4
 	};
 public:
 	Vumeter(CLAM::Processing * processing, QWidget * parent=0)
-		: QGLWidget(parent)
+		: QWidget(parent)
 	{
 		new QLabel("Hola",this);
 		startTimer(50);
