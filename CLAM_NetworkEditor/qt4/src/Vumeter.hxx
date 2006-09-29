@@ -10,7 +10,7 @@
 
 class Vumeter : public QWidget
 {
-	enum {
+	enum Dimensions {
 		margin=4
 	};
 public:
@@ -54,11 +54,9 @@ public:
 	}
 	void timerEvent(QTimerEvent *event)
 	{
-		if (_monitor->GetExecState() == CLAM::Processing::Running)
-		{
-			update();
+		if (_monitor->GetExecState() != CLAM::Processing::Running)
 			return;
-		}
+		update();
 	}
 private:
 	CLAM::AudioPortMonitor * _monitor;
