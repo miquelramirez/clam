@@ -54,6 +54,6 @@ int main( int argc, char ** argv )
 	QCoreApplication::setApplicationName("Network Editor");
 	MainWindow w;
 	w.show();
-	if (argc>1) w.load(arg[1]);
+	if (argc>1) w.load(argv[1]);
 	return app.exec();
 }
