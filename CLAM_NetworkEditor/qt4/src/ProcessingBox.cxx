@@ -68,6 +68,8 @@ void ProcessingBox::setProcessing(CLAM::Processing * processing)
 		embeded = new VumeterWidget(_processing);
 	if (_processing and _processing->GetClassName()==std::string("Oscilloscope"))
 		embeded = new OscilloscopeWidget(_processing);
+	if (_processing and _processing->GetClassName()==std::string("ProcessingView"))
+		embeded = new ProcessingViewWidget(_processing);
 	embed(embeded);
 	refreshConnectors();
 }
