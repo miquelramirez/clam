@@ -26,7 +26,7 @@ public:
 		QPainter painter(this);
 		painter.setPen(QColor(0x77,0x77,0x77,0x77));
 		painter.translate(0,height()/2);
-		painter.scale(width(),height()/2);
+		painter.scale(width(),-height()/2);
 		painter.drawLine(0,0,1,0);
 
 		painter.setPen(Qt::black);
