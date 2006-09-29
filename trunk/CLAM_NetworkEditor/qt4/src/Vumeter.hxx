@@ -4,6 +4,8 @@
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QLabel>
 #include <CLAM/Processing.hxx>
+#include <CLAM/PortMonitor.hxx>
+#include <CLAM/DataTypes.hxx>
 
 
 class Vumeter : public QWidget
@@ -14,8 +16,9 @@ class Vumeter : public QWidget
 public:
 	Vumeter(CLAM::Processing * processing, QWidget * parent=0)
 		: QWidget(parent)
+		, _monitor(dynamic_cast<CLAM::AudioPortMonitor*>(processing))
+		, _energy(0)
 	{
-		new QLabel("Hola",this);
 		startTimer(50);
 	}
 	void paintEvent(QPaintEvent * event)
@@ -23,22 +26,30 @@ public:
 		QPainter painter(this);
 		painter.setBrush(Qt::red);
 		painter.setPen(Qt::black);
-		int vumeterHeight = int(height()*(energy()));
-		std::cout << "painting.."  << vumeterHeight << std::endl;
+		int vumeterHeight = int(height()*(energy()*10.));
+//		std::cout << "painting.."  << vumeterHeight << std::endl;
 		painter.drawRect(margin,height()-vumeterHeight,width()-2*margin,height());
-		painter.drawLine(0,3,3,0);
 	}
 	double energy()
 	{
+		_energy*=0.5;
+		const CLAM::Audio & audio = _monitor->FreezeAndGetData();
+		const CLAM::Array<CLAM::TData> & data = audio.GetBuffer();
+		for (int i=0; i<data.Size(); i++)
+		{
+			const CLAM::TData & bin = data[i];
+			_energy+=bin*bin;
+		}
+		_energy/=data.Size();
+		_monitor->UnfreezeData();
 		return _energy;
 	}
 	void timerEvent(QTimerEvent *event)
 	{
-		_energy+=.7443;
-		_energy=std::fmod(_energy,1.);
 		update();
 	}
 private:
+	CLAM::AudioPortMonitor * _monitor;
 	double _energy;
 };
 
