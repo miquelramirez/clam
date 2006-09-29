@@ -10,8 +10,7 @@
 
 class Oscilloscope : public QWidget
 {
-	enum {
-		margin=4
+	enum Dimensions {
 	};
 public:
 	Oscilloscope(CLAM::Processing * processing, QWidget * parent=0)
@@ -35,15 +34,14 @@ public:
 		const CLAM::Array<CLAM::TData> & data = audio.GetBuffer();
 		int size = data.Size();
 		for (int i=0; i<size; i++)
-		{
-			const CLAM::TData & bin = data[i];
-			_line << QPointF(double(i)/size, bin);
-		}
+			_line << QPointF(double(i)/size, data[i]);
 		_monitor->UnfreezeData();
 		painter.drawPolyline(_line);
 	}
 	void timerEvent(QTimerEvent *event)
 	{
+		if (_monitor->GetExecState() != CLAM::Processing::Running)
+			return;
 		update();
 	}
 private:
