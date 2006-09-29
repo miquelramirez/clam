@@ -1,8 +1,12 @@
 #include "ProcessingBox.hxx"
 #include "NetworkCanvas.hxx"
+
+//TODO move this group to a factory
 #include "Vumeter.hxx"
 #include "Oscilloscope.hxx"
+#include "SpectrumView.hxx"
 #include "ControlSenderWidget.hxx"
+
 #include <QtGui/QSlider>
 #include <QtDebug>
 
@@ -68,8 +72,8 @@ void ProcessingBox::setProcessing(CLAM::Processing * processing)
 		embeded = new VumeterWidget(_processing);
 	if (_processing and _processing->GetClassName()==std::string("Oscilloscope"))
 		embeded = new OscilloscopeWidget(_processing);
-	if (_processing and _processing->GetClassName()==std::string("ProcessingView"))
-		embeded = new ProcessingViewWidget(_processing);
+	if (_processing and _processing->GetClassName()==std::string("SpectrumView"))
+		embeded = new SpectrumViewWidget(_processing);
 	embed(embeded);
 	refreshConnectors();
 }
