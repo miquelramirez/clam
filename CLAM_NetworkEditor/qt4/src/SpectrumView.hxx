@@ -15,7 +15,7 @@ class SpectrumViewWidget : public QWidget
 public:
 	SpectrumViewWidget(CLAM::Processing * processing, QWidget * parent=0)
 		: QWidget(parent)
-		, _monitor(dynamic_cast<CLAM::SpectrumPortMonitor*>(processing))
+		, _monitor(dynamic_cast<CLAM::PortMonitor<CLAM::Spectrum>*>(processing))
 	{
 		startTimer(50);
 	}
@@ -23,17 +23,14 @@ public:
 	{
 		QPolygonF _line;
 		QPainter painter(this);
-		painter.setPen(QColor(0x77,0x77,0x77,0x77));
-		painter.translate(0,height()/2);
-		painter.scale(width(),height()/2);
-		painter.drawLine(0,0,1,0);
-
+		painter.scale(width(),height()/7.0);
 		painter.setPen(Qt::black);
-		const CLAM::Spectrum & audio = _monitor->FreezeAndGetData();
-		const CLAM::Array<CLAM::TData> & data = audio.GetMagBuffer();
+		const CLAM::Spectrum & spectrum = _monitor->FreezeAndGetData();
+		const CLAM::Array<CLAM::TData> & data = spectrum.GetMagBuffer();
+		std::cout << &data << std::endl;
 		int size = data.Size();
 		for (int i=0; i<size; i++)
-			_line << QPointF(double(i)/size, data[i]);
+			_line << QPointF(double(i)/size, -std::log10(data[i]));
 		_monitor->UnfreezeData();
 		painter.drawPolyline(_line);
 	}
@@ -44,7 +41,7 @@ public:
 		update();
 	}
 private:
-	CLAM::SpectrumPortMonitor * _monitor;
+	CLAM::PortMonitor<CLAM::Spectrum> * _monitor;
 	std::vector<CLAM::TData> _data;
 };
 
