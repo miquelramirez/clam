@@ -548,7 +548,7 @@ bool ProcessingBox::configure()
 			return false;
 		}
 		if (not launcher->Launch(*_processing,_name)) return false;
-		setProcessing(_processing);
+		refreshConnectors();
 		return true;
 	}
 	else
