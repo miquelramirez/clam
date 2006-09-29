@@ -1,5 +1,6 @@
 #include "ProcessingBox.hxx"
 #include "NetworkCanvas.hxx"
+#include "Vumeter.hxx"
 #include "ControlSenderWidget.hxx"
 #include <QtGui/QSlider>
 #include <QtDebug>
@@ -62,6 +63,8 @@ void ProcessingBox::setProcessing(CLAM::Processing * processing)
 	QWidget * embeded = 0;
 	if (_processing and _processing->GetClassName()==std::string("OutControlSender"))
 		embeded = new ControlSenderWidget(_processing);
+	if (_processing and _processing->GetClassName()==std::string("AudioPortMonitor"))
+		embeded = new Vumeter(_processing);
 	embed(embeded);
 	refreshConnectors();
 }
