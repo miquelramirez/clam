@@ -54,7 +54,11 @@ public:
 	}
 	void timerEvent(QTimerEvent *event)
 	{
-		update();
+		if (_monitor->GetExecState() == CLAM::Processing::Running)
+		{
+			update();
+			return;
+		}
 	}
 private:
 	CLAM::AudioPortMonitor * _monitor;
