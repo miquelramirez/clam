@@ -32,7 +32,6 @@ public:
 
 	bool LoadNetwork(std::string networkFile);
 	bool ChooseBackend( std::list<std::string> backends );
-	void SetNetworkPlayer( NetworkPlayer& player);
 	QWidget * LoadInterface(QString uiFile);
 	
 	void ConnectWithNetwork();
