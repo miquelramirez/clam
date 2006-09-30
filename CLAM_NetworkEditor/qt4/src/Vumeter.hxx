@@ -33,6 +33,7 @@ public:
 	double energy()
 	{
 		_energy*=0.5;
+		if (not _monitor) return _energy;
 		const CLAM::Audio & audio = _monitor->FreezeAndGetData();
 		const CLAM::Array<CLAM::TData> & data = audio.GetBuffer();
 		unsigned size = data.Size();
@@ -54,6 +55,7 @@ public:
 	}
 	void timerEvent(QTimerEvent *event)
 	{
+		if (not _monitor) return;
 		if (_monitor->GetExecState() != CLAM::Processing::Running)
 			return;
 		update();

@@ -21,8 +21,7 @@ public:
 	}
 	void paintEvent(QPaintEvent * event)
 	{
-		std::cout << "Painting..." << std::endl;
-		QPolygonF _line;
+		if (not _monitor) return;
 		QPainter painter(this);
 		painter.setPen(QColor(0x77,0x77,0x77,0x77));
 		painter.translate(0,height()/2);
@@ -33,6 +32,7 @@ public:
 		const CLAM::Audio & audio = _monitor->FreezeAndGetData();
 		const CLAM::Array<CLAM::TData> & data = audio.GetBuffer();
 		int size = data.Size();
+		QPolygonF _line;
 		for (int i=0; i<size; i++)
 			_line << QPointF(double(i)/size, data[i]);
 		_monitor->UnfreezeData();
@@ -40,6 +40,7 @@ public:
 	}
 	void timerEvent(QTimerEvent *event)
 	{
+		if (not _monitor) return;
 		if (_monitor->GetExecState() != CLAM::Processing::Running)
 			return;
 		update();
