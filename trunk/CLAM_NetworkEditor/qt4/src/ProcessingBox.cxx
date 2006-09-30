@@ -5,6 +5,7 @@
 #include "Vumeter.hxx"
 #include "Oscilloscope.hxx"
 #include "SpectrumView.hxx"
+#include "PeakView.hxx"
 #include "ControlSenderWidget.hxx"
 
 #include <QtGui/QSlider>
@@ -74,6 +75,8 @@ void ProcessingBox::setProcessing(CLAM::Processing * processing)
 		embeded = new OscilloscopeWidget(_processing);
 	if (_processing and _processing->GetClassName()==std::string("SpectrumView"))
 		embeded = new SpectrumViewWidget(_processing);
+	if (_processing and _processing->GetClassName()==std::string("PeakView"))
+		embeded = new PeakViewWidget(_processing);
 	embed(embeded);
 	refreshConnectors();
 }
@@ -557,7 +560,7 @@ bool ProcessingBox::configure()
 			return false;
 		}
 		if (not launcher->Launch(*_processing,_name)) return false;
-		refreshConnectors();
+		setProcessing(_processing);
 		return true;
 	}
 	else

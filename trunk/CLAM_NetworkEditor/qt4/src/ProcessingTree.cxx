@@ -116,6 +116,7 @@ const static char * processingClasses[] = {
 	"Vumeter",
 	"Oscilloscope",
 	"SpectrumView",
+	"PeakView",
 	0,
 	"Plots in canvas (Deprecated) ",
 	"AudioPortMonitor",

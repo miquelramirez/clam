@@ -6,6 +6,7 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/PortMonitor.hxx>
 #include <CLAM/DataTypes.hxx>
+#include <CLAM/SpecTypeFlags.hxx>
 
 
 class SpectrumViewWidget : public QWidget
@@ -21,21 +22,30 @@ public:
 	}
 	void paintEvent(QPaintEvent * event)
 	{
+		if (not _monitor) return;
+		CLAM::Spectrum spectrum = _monitor->FreezeAndGetData();
+		_monitor->UnfreezeData();
+		if (not spectrum.HasMagBuffer())
+		{
+			CLAM::SpecTypeFlags flags;
+			flags.bMagPhase=true;
+			spectrum.SetType(flags);
+			spectrum.SetTypeSynchronize(flags);
+		}
+		const CLAM::Array<CLAM::TData> & data = spectrum.GetMagBuffer();
+		int size = data.Size();
+
 		QPolygonF _line;
 		QPainter painter(this);
 		painter.scale(width(),height()/7.0);
 		painter.setPen(Qt::black);
-		const CLAM::Spectrum & spectrum = _monitor->FreezeAndGetData();
-		const CLAM::Array<CLAM::TData> & data = spectrum.GetMagBuffer();
-		std::cout << &data << std::endl;
-		int size = data.Size();
 		for (int i=0; i<size; i++)
 			_line << QPointF(double(i)/size, -std::log10(data[i]));
-		_monitor->UnfreezeData();
 		painter.drawPolyline(_line);
 	}
 	void timerEvent(QTimerEvent *event)
 	{
+		if (not _monitor) return;
 		if (_monitor->GetExecState() != CLAM::Processing::Running)
 			return;
 		update();
