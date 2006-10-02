@@ -29,10 +29,12 @@
 
 CLAM::VM::Tonnetz::~Tonnetz()
 {
+	if (_dataSource) delete _dataSource;
 }
 CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 	InstantView(parent)
 {
+	_dataSource = new FloatArrayDataSource; //TODO remove
 	_font.setFamily("sans-serif");
 	_font.setPointSize(11);
 	_updatePending=0;
@@ -228,32 +230,38 @@ void CLAM::VM::Tonnetz::DrawChordsShapes()
 
 void CLAM::VM::Tonnetz::setCurrentTime(double timeMiliseconds)
 {
-	bool mustUpdate = _dataSource.setCurrentTime(timeMiliseconds);
+	bool mustUpdate = _dataSource->setCurrentTime(timeMiliseconds);
 	if (!mustUpdate) return;
 	if (!_updatePending++) update();
 }
 
 const std::string & CLAM::VM::Tonnetz::getLabel(unsigned bin) const
 {
-	return _dataSource.getLabel(bin);
+	return _dataSource->getLabel(bin);
 }
 
 void CLAM::VM::Tonnetz::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
 {
-	_dataSource.setSource(project, scope, name);
-	const std::list<std::string> & binLabels=project.GetAttributeScheme(scope,name).GetBinLabels();
-	_nBins = binLabels.size();
+	_dataSource->setSource(project, scope, name);
+	_nBins = _dataSource->nBins();
+}
+
+void CLAM::VM::Tonnetz::setSource( FloatArrayDataSource * dataSource )
+{
+	if (_dataSource) delete _dataSource;
+	_dataSource = dataSource;
+	_nBins = _dataSource->nBins();
 }
 
 void CLAM::VM::Tonnetz::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
 {
-	_dataSource.updateData(data, samplingRate);
+	_dataSource->updateData(data, samplingRate);
 }
 
 
 void CLAM::VM::Tonnetz::clearData()
 {
-	_dataSource.clearData();
+	_dataSource->clearData();
 	_maxValue=1;
 }
 

@@ -64,7 +64,9 @@ class TonnetzPlugin : public InstantViewPlugin
 	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
 		CLAM::VM::Tonnetz * view =  new CLAM::VM::Tonnetz(parent);
-		view->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
+		CLAM::VM::FloatArrayDataSource * dataSource = new CLAM::VM::FloatArrayDataSource;
+		dataSource->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
+		view->setSource( dataSource );
 		return view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
@@ -105,6 +107,9 @@ class KeySpacePlugin : public InstantViewPlugin
 	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
 		CLAM::VM::KeySpace * view = new CLAM::VM::KeySpace(parent);
+		CLAM::VM::FloatArrayDataSource * dataSource = new CLAM::VM::FloatArrayDataSource;
+		dataSource->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
+		view->setSource( dataSource );
 		view->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
 		return view;
 	}
