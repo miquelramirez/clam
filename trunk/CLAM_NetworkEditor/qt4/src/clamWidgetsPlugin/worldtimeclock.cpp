@@ -26,7 +26,7 @@
 #include "worldtimeclock.h"
 
 WorldTimeClock2::WorldTimeClock2(QWidget *parent)
-    : QGLWidget(parent)
+    : QWidget(parent)
 {
     timeZoneOffset = 0;
 

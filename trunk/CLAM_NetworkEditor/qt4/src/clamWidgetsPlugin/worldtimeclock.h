@@ -26,10 +26,10 @@
 
 #include <QTime>
 #include <QWidget>
-#include <QtOpenGL/QGLWidget>
+#include <QtGui/QWidget>
 #include <QtDesigner/QDesignerExportWidget>
 
-class QDESIGNER_WIDGET_EXPORT WorldTimeClock2 : public QGLWidget
+class QDESIGNER_WIDGET_EXPORT WorldTimeClock2 : public QWidget
 {
     Q_OBJECT
 

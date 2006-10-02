@@ -29,7 +29,7 @@
 #include <QtOpenGL/QGLWidget>
 #include <QtDesigner/QDesignerExportWidget>
 
-class QDESIGNER_WIDGET_EXPORT Plot : public QGLWidget
+class QDESIGNER_WIDGET_EXPORT Plot : public QWidget
 {
     Q_OBJECT
 

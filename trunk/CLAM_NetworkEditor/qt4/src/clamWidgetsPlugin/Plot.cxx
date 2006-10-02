@@ -26,7 +26,7 @@
 #include "Plot.hxx"
 
 Plot::Plot(QWidget *parent)
-    : QGLWidget(parent)
+    : QWidget(parent)
 {
     timeZoneOffset = 0;
 
