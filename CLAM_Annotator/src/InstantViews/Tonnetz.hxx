@@ -68,13 +68,11 @@ namespace VM
 		public slots:
 			virtual void setCurrentTime(double timeMiliseconds);
 		protected:
-			const std::string & getLabel(unsigned bin) const;
 			const double *frameData() const
 			{
 				return _dataSource->frameData();
 			}
 		public:
-			void setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
 			void setSource( FloatArrayDataSource * dataSource );
 			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
 			void clearData();

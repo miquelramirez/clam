@@ -136,7 +136,7 @@ void CLAM::VM::Tonnetz::DrawLabel(int x, int y)
 	const double posx = x*2*cos30+y*cos30;
 	const double posy = y*(1+sin30);
 	unsigned bin=BinAtPosition(x,y);
-	renderText(posx, posy, .6, getLabel(bin).c_str(), _font);
+	renderText(posx, posy, .6, _dataSource->getLabel(bin).c_str(), _font);
 }
 void CLAM::VM::Tonnetz::DrawTile(int x, int y)
 {
@@ -232,17 +232,6 @@ void CLAM::VM::Tonnetz::setCurrentTime(double timeMiliseconds)
 	bool mustUpdate = _dataSource->setCurrentTime(timeMiliseconds);
 	if (!mustUpdate) return;
 	if (!_updatePending++) update();
-}
-
-const std::string & CLAM::VM::Tonnetz::getLabel(unsigned bin) const
-{
-	return _dataSource->getLabel(bin);
-}
-
-void CLAM::VM::Tonnetz::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
-{
-	_dataSource->setSource(project, scope, name);
-	_nBins = _dataSource->nBins();
 }
 
 void CLAM::VM::Tonnetz::setSource( FloatArrayDataSource * dataSource )
