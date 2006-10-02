@@ -94,11 +94,6 @@ namespace CLAM{
 			buttons->setMargin(5);
 			buttons->setSpacing(3);
 			
-			QPushButton * applyButton = new QPushButton("Apply", this);
-			buttons->addWidget(applyButton);
-			applyButton->setAutoDefault(false);
-			connect( applyButton, SIGNAL(clicked()), this, SLOT(Apply()) );
-
 			QPushButton * discardButton = new QPushButton("Discard", this);
 			discardButton->setAutoDefault(false);
 			buttons->addWidget(discardButton);
@@ -108,7 +103,6 @@ namespace CLAM{
 			buttons->addWidget(okButton);
 			connect( okButton, SIGNAL(clicked()), this, SLOT(Ok()) );
 
-			buttons->setStretchFactor(applyButton,2);
 			buttons->setStretchFactor(discardButton,2);
 			buttons->setStretchFactor(okButton,2);
 
@@ -308,6 +302,7 @@ namespace CLAM{
 			connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
 			connect( fd, SIGNAL(currentChanged( const QString & )), mInput, SLOT( setText( const QString & )));
 			fd->selectFile(value.c_str());
+			std::cout << "Filename: selectFile : " << value.c_str() << std::endl;
 
 			QHBoxLayout * cell = new QHBoxLayout;
 			mLayout->addLayout(cell);
@@ -327,7 +322,7 @@ namespace CLAM{
 
 		template <typename T>
 		void AddWidget(const char *name, CLAM::AudioFile *foo, T& value) {
-
+			
 			QLineEdit * mInput = new QLineEdit(value.GetLocation().c_str());
 			mInput->setMinimumWidth(300);
 			mInput->setReadOnly(true);
@@ -337,7 +332,7 @@ namespace CLAM{
 			QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
 			fd->setFileMode( QFileDialog::AnyFile );
 			fd->selectFile(value.GetLocation().c_str());
-			fd->setDirectory(value.GetLocation().c_str());
+			fd->setDirectory( QFileInfo( value.GetLocation().c_str() ).path() );
 			connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
 			connect( fd, SIGNAL(currentChanged( const QString & )), mInput, SLOT( setText( const QString & )));
 
