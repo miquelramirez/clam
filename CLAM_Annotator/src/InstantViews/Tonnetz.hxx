@@ -71,6 +71,10 @@ namespace VM
 			{
 				return _nFrames;
 			}
+			unsigned nBins() const
+			{
+				return _binLabels.size();
+			}
 		private:
 			const CLAM_Annotator::Project * _project;
 			std::string _scope;
@@ -107,17 +111,18 @@ namespace VM
 			const std::string & getLabel(unsigned bin) const;
 			const double *frameData() const
 			{
-				return _dataSource.frameData();
+				return _dataSource->frameData();
 			}
 		public:
 			void setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
+			void setSource( FloatArrayDataSource * dataSource );
 			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
 			void clearData();
 		protected:
 			int _updatePending;
 			double _maxValue;
 			unsigned _nBins;
-			FloatArrayDataSource _dataSource;
+			FloatArrayDataSource * _dataSource;
 		private:
 			QFont _font;
 	};
