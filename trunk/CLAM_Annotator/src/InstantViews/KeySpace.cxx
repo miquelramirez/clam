@@ -222,6 +222,6 @@ void CLAM::VM::KeySpace::DrawLabels()
 		if (value>.6) glColor3d(0,0,0);
 		else          glColor3d(1,1,1);
 
-		renderText(x1, y1, -1, getLabel(i).c_str());
+		renderText(x1, y1, -1, _dataSource->getLabel(i).c_str());
 	}
 }

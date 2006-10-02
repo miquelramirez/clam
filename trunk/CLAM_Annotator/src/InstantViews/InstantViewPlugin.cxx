@@ -110,7 +110,6 @@ class KeySpacePlugin : public InstantViewPlugin
 		CLAM::VM::FloatArrayDataSource * dataSource = new CLAM::VM::FloatArrayDataSource;
 		dataSource->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
 		view->setSource( dataSource );
-		view->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
 		return view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
