@@ -24,8 +24,10 @@
 
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
-#include "Project.hxx"
+#include "FloatArrayDataSource.hxx"
+
 #include <vector>
+
 
 namespace CLAM_Annotator { class FrameDivision; }
 
@@ -45,48 +47,6 @@ namespace VM
 			virtual void setCurrentTime(double timeMiliseconds)=0;
 	};
 
-	class FloatArrayDataSource 
-	{
-		public:
-			FloatArrayDataSource();
-			void setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
-			void clearData();
-			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
-			bool setCurrentTime(double timeMiliseconds);
-
-			const std::string & getLabel(unsigned bin) const
-			{
-				return _binLabels[bin];
-			}
-			const double * getData() const
-			{
-				if (_data.empty()) return 0;
-				return &_data[0];
-			}
-			const double * frameData() const
-			{
-				return _frameData;
-			}
-			unsigned nFrames() const
-			{
-				return _nFrames;
-			}
-			unsigned nBins() const
-			{
-				return _binLabels.size();
-			}
-		private:
-			const CLAM_Annotator::Project * _project;
-			std::string _scope;
-			std::string _name;
-			std::vector<std::string> _binLabels;
-			std::vector<double> _data;
-			unsigned _nFrames;
-			const CLAM_Annotator::FrameDivision * _frameDivision;
-			CLAM::TData _samplingRate;
-			const double *_frameData;
-			unsigned _currentFrame;
-	};
 
 	class Tonnetz : public InstantView
 	{
