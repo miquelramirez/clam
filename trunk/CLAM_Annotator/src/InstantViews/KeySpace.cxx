@@ -22,6 +22,7 @@
 
 #include "KeySpace.hxx"
 #include <cmath>
+#include <iostream>
 
 struct TKeyNode
 {
