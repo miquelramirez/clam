@@ -40,7 +40,12 @@ namespace VM
 
 	class DummyFloatArrayDataSource : public FloatArrayDataSource
 	{
+			unsigned _nBins;
 		public:
+			DummyFloatArrayDataSource(unsigned nBins=12)
+			{
+				_nBins = nBins;
+			}
 			const std::string & getLabel(unsigned bin) const
 			{
 				static std::string a("A");
@@ -48,12 +53,18 @@ namespace VM
 			}
 			const double * frameData() const
 			{
-				static double data[] = {0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5};
+				static double data[] = {
+					0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5,
+					0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5,
+					0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5,
+					0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5,
+					0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5
+					};
 				return data;
 			}
 			unsigned nBins() const
 			{
-				return 12;
+				return _nBins;
 			}
 	};
 }

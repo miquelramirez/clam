@@ -88,7 +88,7 @@ void ProcessingBox::setProcessing(CLAM::Processing * processing)
 	}
 	if (_processing and _processing->GetClassName()==std::string("AudioSink"))
 	{
-		static CLAM::VM::DummyFloatArrayDataSource dataSource;
+		static CLAM::VM::DummyFloatArrayDataSource dataSource(24);
 		CLAM::VM::KeySpace * tonnetz = new CLAM::VM::KeySpace(_canvas);
 		tonnetz->setSource( dataSource );
 		embeded = tonnetz;
