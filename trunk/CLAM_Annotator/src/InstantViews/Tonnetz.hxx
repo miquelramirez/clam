@@ -52,22 +52,21 @@ namespace VM
 			void DrawTile(int x, int y);
 			void DrawLabel(int x, int y);
 			void DrawChordsShapes();
-
-		public slots:
-			virtual void setCurrentTime(double timeMiliseconds);
 		protected:
 			const double *frameData() const
 			{
+				if (not _dataSource) return 0;
 				return _dataSource->frameData();
 			}
 		public:
-			void setSource( FloatArrayDataSource * dataSource );
+			void updateIfNeeded();
+			void setSource( const FloatArrayDataSource & dataSource );
 			void clearData();
 		protected:
 			int _updatePending;
 			double _maxValue;
 			unsigned _nBins;
-			FloatArrayDataSource * _dataSource;
+			const FloatArrayDataSource * _dataSource;
 		private:
 			QFont _font;
 	};
