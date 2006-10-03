@@ -48,26 +48,23 @@ std::list<std::string> InstantViewPlugin::availablePlugins()
 	return list;
 }
 
-InstantViewPlugin * InstantViewPlugin::getPlugin(const std::string & type)
-{
-	try { return plugins[type]; }
-	catch (...) { return 0; }
-}
-
 /// Concrete plugins
 
 
 class TonnetzPlugin : public InstantViewPlugin
 {
+private:
+	CLAM::VM::Tonnetz * _view;
+private:
 	virtual const char * id() const { return "Tonnetz"; }
 	virtual QString name() const { return QObject::tr("Tonnezt"); }
 	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
-		CLAM::VM::Tonnetz * view =  new CLAM::VM::Tonnetz(parent);
+		_view =  new CLAM::VM::Tonnetz(parent);
 		CLAM::VM::FloatArrayDataSource * dataSource = new CLAM::VM::FloatArrayDataSource;
 		dataSource->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
-		view->setSource( dataSource );
-		return view;
+		_view->setSource( dataSource );
+		return _view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
@@ -102,15 +99,18 @@ class TonnetzPlugin : public InstantViewPlugin
 
 class KeySpacePlugin : public InstantViewPlugin
 {
+private:
+	CLAM::VM::KeySpace * _view;
+private:
 	virtual const char * id() const { return "KeySpace"; }
 	virtual QString name() const { return QObject::tr("Key Space"); }
 	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
-		CLAM::VM::KeySpace * view = new CLAM::VM::KeySpace(parent);
+		_view = new CLAM::VM::KeySpace(parent);
 		CLAM::VM::FloatArrayDataSource * dataSource = new CLAM::VM::FloatArrayDataSource;
 		dataSource->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
-		view->setSource( dataSource );
-		return view;
+		_view->setSource( dataSource );
+		return _view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
@@ -147,6 +147,13 @@ Initializer::Initializer()
 {
 	plugins["KeySpace"] = new KeySpacePlugin;
 	plugins["Tonnetz"] = new TonnetzPlugin;
+}
+
+InstantViewPlugin * InstantViewPlugin::createPlugin(const std::string & type)
+{
+	if (type=="KeySpace") return new KeySpacePlugin;
+	if (type=="Tonnetz") return new TonnetzPlugin;
+	return 0;
 }
 
 

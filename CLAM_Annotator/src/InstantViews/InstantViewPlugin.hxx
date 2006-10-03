@@ -43,7 +43,7 @@ public:
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config) = 0;
 	virtual CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)=0;
 public:
-	static InstantViewPlugin * getPlugin(const std::string & id);
+	static InstantViewPlugin * createPlugin(const std::string & id);
 	static std::list<std::string> availablePlugins();
 };
 
