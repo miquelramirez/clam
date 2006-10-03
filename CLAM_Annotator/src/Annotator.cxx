@@ -284,6 +284,8 @@ Annotator::~Annotator()
 	saveSettings();
 	abortLoader();
 	if (mSegmentation) delete mSegmentation;
+	for (InstantViewPlugins::iterator it=mInstantViewPlugins.begin(); it!=mInstantViewPlugins.end(); it++)
+		delete *it;
 }
 
 void Annotator::initInterface()
@@ -392,9 +394,9 @@ void Annotator::adaptInterfaceToCurrentSchema()
 }
 void Annotator::adaptInstantViewsToSchema()
 {
-	for (unsigned i=0; i<mInstantViews.size(); i++)
-		delete mInstantViews[i];
-	mInstantViews.clear();
+	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
+		delete mInstantViewPlugins[i];
+	mInstantViewPlugins.clear();
 
 	if (!mProject.HasViews()) return;
 
@@ -414,7 +416,6 @@ void Annotator::adaptInstantViewsToSchema()
 		}
 		mInstantViewPlugins.push_back(plugin);
 		CLAM::VM::InstantView * view = plugin->createView(mVSplit, mProject, instantViews[i]);
-		mInstantViews.push_back(view);
 	}
 }
 
@@ -684,14 +685,14 @@ void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 {
 	mSegmentEditor->updateLocator(timeMilliseconds);
 	mBPFEditor->updateLocator(timeMilliseconds);
-	for (unsigned i=0; i<mInstantViews.size(); i++)
-		mInstantViews[i]->setCurrentTime(timeMilliseconds);
+	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
+		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 }
 
 void Annotator::setCurrentStopTime(double timeMilliseconds, bool paused)
 {
-	for (unsigned i=0; i<mInstantViews.size(); i++)
-		mInstantViews[i]->setCurrentTime(timeMilliseconds);
+	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
+		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 	mSegmentEditor->updateLocator(timeMilliseconds, paused);
 	mBPFEditor->updateLocator(timeMilliseconds, paused);
 }
@@ -702,8 +703,8 @@ void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMilisecond
 	if (updating) return;
 	updating=true;
 	mPlayer->timeBounds(timeMilliseconds,endTimeMiliseconds);
-	for (unsigned i=0; i<mInstantViews.size(); i++)
-		mInstantViews[i]->setCurrentTime(timeMilliseconds);
+	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
+		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 	mSegmentEditor->updateLocator(timeMilliseconds, true);
 	mBPFEditor->updateLocator(timeMilliseconds, true);
 	updating=false;
@@ -721,7 +722,6 @@ void Annotator::addInstantView()
 	config.SetType(viewType);
 	if (!plugin->configureDialog(mProject, config)) return;
 	CLAM::VM::InstantView * view = plugin->createView(mVSplit, mProject, config);
-	mInstantViews.push_back(view);
 	mProject.GetViews().push_back(config);
 	markProjectChanged(true);
 	if (mpDescriptorPool)
@@ -992,15 +992,13 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 void Annotator::refreshInstantViews()
 {
 	mStatusBar << tr("Loading instant views data...") << mStatusBar;
-	for (unsigned i=0; i<mInstantViews.size(); i++)
+	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 	{
 		if (mpDescriptorPool)
-			mInstantViews[i]->updateData(*mpDescriptorPool, mCurrentAudio.GetSampleRate());
+			mInstantViewPlugins[i]->updateData(*mpDescriptorPool, mCurrentAudio.GetSampleRate());
 		else
-			mInstantViews[i]->clearData();
+			mInstantViewPlugins[i]->clearData();
 	}
-	for (unsigned i=0; i<mInstantViews.size(); i++)
-		mInstantViews[i]->update();
 }
 
 void Annotator::refreshEnvelopes()
