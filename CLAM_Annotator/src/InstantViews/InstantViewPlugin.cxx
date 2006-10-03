@@ -23,6 +23,8 @@
 #include "Project.hxx"
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
+#include "PoolFloatArrayDataSource.hxx"
+
 
 #include <string>
 #include <map>
