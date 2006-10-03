@@ -22,57 +22,39 @@
 #ifndef FloatArrayDataSource_hxx
 #define FloatArrayDataSource_hxx
 
-#include "Project.hxx"
-#include <vector>
-
-namespace CLAM_Annotator { class FrameDivision; }
+#include <string>
 
 namespace CLAM
 {
 namespace VM
 {
 
-	class FloatArrayDataSource 
+	class FloatArrayDataSource
 	{
 		public:
-			FloatArrayDataSource();
-			void setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
-			void clearData();
-			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
-			bool setCurrentTime(double timeMiliseconds);
+			virtual ~FloatArrayDataSource() {}
+			virtual const std::string & getLabel(unsigned bin) const = 0;
+			virtual const double * frameData() const = 0;
+			virtual unsigned nBins() const = 0;
+	};
 
+	class DummyFloatArrayDataSource : public FloatArrayDataSource
+	{
+		public:
 			const std::string & getLabel(unsigned bin) const
 			{
-				return _binLabels[bin];
-			}
-			const double * getData() const
-			{
-				if (_data.empty()) return 0;
-				return &_data[0];
+				static std::string a("A");
+				return a;
 			}
 			const double * frameData() const
 			{
-				return _frameData;
-			}
-			unsigned nFrames() const
-			{
-				return _nFrames;
+				static double data[] = {0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5};
+				return data;
 			}
 			unsigned nBins() const
 			{
-				return _binLabels.size();
+				return 12;
 			}
-		private:
-			const CLAM_Annotator::Project * _project;
-			std::string _scope;
-			std::string _name;
-			std::vector<std::string> _binLabels;
-			std::vector<double> _data;
-			unsigned _nFrames;
-			const CLAM_Annotator::FrameDivision * _frameDivision;
-			CLAM::TData _samplingRate;
-			const double *_frameData;
-			unsigned _currentFrame;
 	};
 }
 }

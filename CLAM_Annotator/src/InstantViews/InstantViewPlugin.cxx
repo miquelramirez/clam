@@ -55,7 +55,7 @@ class TonnetzPlugin : public InstantViewPlugin
 {
 private:
 	CLAM::VM::Tonnetz * _view;
-	CLAM::VM::FloatArrayDataSource _dataSource;
+	CLAM::VM::PoolFloatArrayDataSource _dataSource;
 public:
 	TonnetzPlugin()
 		: _view(0)
@@ -127,7 +127,7 @@ class KeySpacePlugin : public InstantViewPlugin
 {
 private:
 	CLAM::VM::KeySpace * _view;
-	CLAM::VM::FloatArrayDataSource _dataSource;
+	CLAM::VM::PoolFloatArrayDataSource _dataSource;
 public:
 	KeySpacePlugin()
 		: _view(0)
