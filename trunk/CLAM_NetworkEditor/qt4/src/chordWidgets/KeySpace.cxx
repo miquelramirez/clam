@@ -120,6 +120,10 @@ void CLAM::VM::KeySpace::initializeGL()
 {
 	glShadeModel(GL_SMOOTH);
 	glClearColor(0,0,0,0); // rgba
+	glEnable(GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glEnable (GL_LINE_SMOOTH);
+//	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 	glEnable(GL_CULL_FACE);
 }
 void CLAM::VM::KeySpace::resizeGL(int width, int height)
@@ -223,6 +227,6 @@ void CLAM::VM::KeySpace::DrawLabels()
 		if (value>.6) glColor3d(0,0,0);
 		else          glColor3d(1,1,1);
 
-		renderText(x1, y1, -1, _dataSource->getLabel(i).c_str());
+		renderText(x1, y1, .6, _dataSource->getLabel(i).c_str(), _font);
 	}
 }
