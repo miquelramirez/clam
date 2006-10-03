@@ -67,8 +67,8 @@ env.EnableQt4Modules([
 #	'QtTest',
 	'QtXml',
 #	'QtSvg',
-#	'QtUiTools',
-	'QtDesigner',
+	'QtUiTools',
+#	'QtDesigner',
 #	'Qt3Support',
 	], debug=False)
 
@@ -82,6 +82,8 @@ sourcePaths = [
 	os.path.join('src','generated'),
 	os.path.join('..','src','Processings'),
 	os.path.join('src','prototyper'),
+	os.path.join('src','chordWidgets'),
+	os.path.join('src','chordWidgets','generated'),
 ]
 extraPaths = []
 
