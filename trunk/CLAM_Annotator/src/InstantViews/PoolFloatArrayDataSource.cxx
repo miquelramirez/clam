@@ -22,9 +22,9 @@
 #include "FrameDivision.hxx"
 #include <CLAM/Pool.hxx>
 #include <CLAM/Array.hxx>
-#include "FloatArrayDataSource.hxx"
+#include "PoolFloatArrayDataSource.hxx"
 
-CLAM::VM::FloatArrayDataSource::FloatArrayDataSource()
+CLAM::VM::PoolFloatArrayDataSource::PoolFloatArrayDataSource()
 	: _nFrames(0)
 	, _frameDivision(0)
 	, _samplingRate(44100)
@@ -33,7 +33,7 @@ CLAM::VM::FloatArrayDataSource::FloatArrayDataSource()
 {
 }
 
-void CLAM::VM::FloatArrayDataSource::clearData()
+void CLAM::VM::PoolFloatArrayDataSource::clearData()
 {
 	_data.resize(0);
 	_nFrames=0;
@@ -42,7 +42,7 @@ void CLAM::VM::FloatArrayDataSource::clearData()
 	_currentFrame=0;
 }
 
-void CLAM::VM::FloatArrayDataSource::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
+void CLAM::VM::PoolFloatArrayDataSource::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
 {
 	_name = name;
 	_scope = scope;
@@ -52,7 +52,7 @@ void CLAM::VM::FloatArrayDataSource::setSource(const CLAM_Annotator::Project & p
 	_binLabels.assign(binLabels.begin(), binLabels.end());
 }
 
-void CLAM::VM::FloatArrayDataSource::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
+void CLAM::VM::PoolFloatArrayDataSource::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
 {
 	_frameData = 0;
 	_samplingRate = samplingRate;
@@ -81,7 +81,7 @@ void CLAM::VM::FloatArrayDataSource::updateData(const CLAM::DescriptionDataPool 
 	_frameData = &_data[0];
 }
 
-bool CLAM::VM::FloatArrayDataSource::setCurrentTime(double timeMiliseconds)
+bool CLAM::VM::PoolFloatArrayDataSource::setCurrentTime(double timeMiliseconds)
 {
 	unsigned newFrame = _frameDivision ? _frameDivision->GetItem(timeMiliseconds*_samplingRate): 0;
 	if (_nFrames==0) newFrame = 0;
