@@ -63,7 +63,6 @@
 #include <vmAudioPlot.hxx>
 #include <vmBPFPlayer.hxx>
 #include "InstantViewPlugin.hxx"
-#include "InstantView.hxx"
 
 #ifndef VERSION
 #define VERSION "0.3.2-CVS"

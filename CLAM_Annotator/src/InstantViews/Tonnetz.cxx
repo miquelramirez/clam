@@ -28,12 +28,11 @@
 
 CLAM::VM::Tonnetz::~Tonnetz()
 {
-	if (_dataSource) delete _dataSource;
 }
 CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 	QGLWidget(parent)
 {
-	_dataSource = new FloatArrayDataSource; //TODO remove
+	_dataSource = 0;
 	_font.setFamily("sans-serif");
 	_font.setPointSize(11);
 	_updatePending=0;
@@ -100,6 +99,7 @@ void CLAM::VM::Tonnetz::paintGL()
 }
 void CLAM::VM::Tonnetz::Draw()
 {
+	if (!_dataSource) return;
 	if (!_nBins) return;
 	_maxValue*=0.95;
 	if (_maxValue<1e-5) _maxValue=1;
@@ -226,18 +226,14 @@ void CLAM::VM::Tonnetz::DrawChordsShapes()
 	glEnd();
 	glPopMatrix();
 }
-
-void CLAM::VM::Tonnetz::setCurrentTime(double timeMiliseconds)
+void CLAM::VM::Tonnetz::updateIfNeeded()
 {
-	bool mustUpdate = _dataSource->setCurrentTime(timeMiliseconds);
-	if (!mustUpdate) return;
 	if (!_updatePending++) update();
 }
 
-void CLAM::VM::Tonnetz::setSource( FloatArrayDataSource * dataSource )
+void CLAM::VM::Tonnetz::setSource(const FloatArrayDataSource & dataSource )
 {
-	if (_dataSource) delete _dataSource;
-	_dataSource = dataSource;
+	_dataSource = &dataSource;
 	_nBins = _dataSource->nBins();
 }
 
