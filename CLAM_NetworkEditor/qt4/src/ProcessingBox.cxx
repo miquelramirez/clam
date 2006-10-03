@@ -6,6 +6,8 @@
 #include "Oscilloscope.hxx"
 #include "SpectrumView.hxx"
 #include "PeakView.hxx"
+#include "Tonnetz.hxx"
+#include "KeySpace.hxx"
 #include "ControlSenderWidget.hxx"
 
 #include <QtGui/QSlider>
@@ -77,6 +79,20 @@ void ProcessingBox::setProcessing(CLAM::Processing * processing)
 		embeded = new SpectrumViewWidget(_processing);
 	if (_processing and _processing->GetClassName()==std::string("PeakView"))
 		embeded = new PeakViewWidget(_processing);
+	if (_processing and _processing->GetClassName()==std::string("AudioOut"))
+	{
+		static CLAM::VM::DummyFloatArrayDataSource dataSource;
+		CLAM::VM::Tonnetz * tonnetz = new CLAM::VM::Tonnetz(_canvas);
+		tonnetz->setSource( dataSource );
+		embeded = tonnetz;
+	}
+	if (_processing and _processing->GetClassName()==std::string("AudioSink"))
+	{
+		static CLAM::VM::DummyFloatArrayDataSource dataSource;
+		CLAM::VM::KeySpace * tonnetz = new CLAM::VM::KeySpace(_canvas);
+		tonnetz->setSource( dataSource );
+		embeded = tonnetz;
+	}
 	embed(embeded);
 	refreshConnectors();
 }
