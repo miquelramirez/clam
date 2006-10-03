@@ -3,6 +3,9 @@ makeSnapshot=./makeSnapshot.sh
 
 #####  CVS-module			CVS-tag         Filename    			tar 	zip limit-in-k  needs-clam-version
 
+$makeSnapshot CLAM_Voice2MIDI		HEAD		CLAM-Voice2MIDI-0.3.1		1	0 300 CLAM-0.91
+
+exit
 # CVS snapshots
 $makeSnapshot CLAM_NetworkEditor 	HEAD		CLAM-NetworkEditor-cvs		1	0 300 CLAM-cvs
 $makeSnapshot CLAM_Annotator		HEAD		CLAM-Annotator-cvs		1	0 300 CLAM-cvs
