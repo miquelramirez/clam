@@ -40,15 +40,15 @@ if [ $7 ]; then
 	cp tmp/$3/CLAM-version-needed.txt out/$3.txt
 fi
 
-if [ $4 == "1" ]; then 
-  echo == Creating out/$3.tar.gz
+if [ $4 = "1" ]; then 
+  echo "== Creating out/$3.tar.gz"
 
   ( cd tmp ; tar zcf $3.tar.gz $3 )
 
   mv tmp/$3.tar.gz out/
 fi
 
-if [ $5 == "1" ]; then 
+if [ $5 = "1" ]; then 
   echo == Converting CR/LFs for cxx,hxx,dsp and txt files
 
   find tmp/$3 -type f -iname "Makefile" -exec flip -b -m {} \;
