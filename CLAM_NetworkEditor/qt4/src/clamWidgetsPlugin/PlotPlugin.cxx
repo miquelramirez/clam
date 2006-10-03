@@ -100,5 +100,5 @@ QString PlotPlugin::includeFile() const
 }
 
 // This is just for a singleton widget plugin
-// Q_EXPORT_PLUGIN2(worldtimeclockplugin2, PlotPlugin)
+// Q_EXPORT_PLUGIN2(clamwidgets, PlotPlugin)
 

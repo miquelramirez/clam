@@ -2,8 +2,6 @@
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 #include <QtDesigner/QDesignerCustomWidgetCollectionInterface>
 #include <QtCore/QtPlugin>
-#include "PlotPlugin.hxx"
-#include "worldtimeclockplugin.h"
 
 class CLAMWidgets : public QObject,
 	public QDesignerCustomWidgetCollectionInterface

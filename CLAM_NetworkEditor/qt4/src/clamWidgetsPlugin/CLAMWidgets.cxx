@@ -3,12 +3,14 @@
 #include <QtCore/QtPlugin>
 #include "PlotPlugin.hxx"
 #include "worldtimeclockplugin.h"
+#include <iostream>
 
 #include "CLAMWidgets.hxx"
 
 CLAMWidgets::CLAMWidgets(QObject* parent)
 	: QObject(parent)
 {
+	std::cout << "Loading CLAM widgets..." << std::endl;
 	_widgetPlugins
 		<< new PlotPlugin(this)
 		<< new WorldTimeClockPlugin2(this)
@@ -28,7 +30,7 @@ QList<QDesignerCustomWidgetInterface*> CLAMWidgets::customWidgets() const
 	return _widgetPlugins;
 }
 
-Q_EXPORT_PLUGIN2(clamwidgetsplugin, CLAMWidgets)
+Q_EXPORT_PLUGIN2(clamwidgets, CLAMWidgets)
 
 
 
