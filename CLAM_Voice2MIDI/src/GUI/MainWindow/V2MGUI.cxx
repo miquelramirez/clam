@@ -91,7 +91,7 @@ V2MGUI::~V2MGUI()
 
 void V2MGUI::load_audio()
 {
-    QString fn = QFileDialog::getOpenFileName(QString::null,"*.wav",this);
+    QString fn = QFileDialog::getOpenFileName(QString::null,"Audio files (*.wav *.mp3 *.ogg)",this);
     if (!fn.isEmpty())
     {
 			int err = v2mFacade->LoadAudio((fn));
@@ -117,7 +117,7 @@ void V2MGUI::load_audio()
 
 void V2MGUI::save_audio()
 {
-    QString fn = QFileDialog::getSaveFileName("audio_out.wav","*.wav",this);
+    QString fn = QFileDialog::getSaveFileName("audio_out.wav","Audio files (*.wav *.mp3 *.ogg)",this);
     if(!fn.isEmpty()) 
     {
 			FILE* fp;
