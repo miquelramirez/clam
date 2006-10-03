@@ -62,6 +62,8 @@ namespace CLAM {
 namespace CLAM_Annotator {
 	class FrameDivision;
 }
+class InstantViewPlugin;
+
 class StatusBarDumper 
 {
 		QStatusBar * mStatusBar;
@@ -218,6 +220,7 @@ private:
     QTextBrowser* mProjectDocumentation;
 	CLAM::VM::BPFPlayer* mPlayer;
 	std::vector<CLAM::VM::InstantView *> mInstantViews;
+	std::vector<InstantViewPlugin *> mInstantViewPlugins;
 	std::deque<std::string> mRecentOpenedProjects;
 	StatusBarDumper mStatusBar;
 	QDialog * mAbout;

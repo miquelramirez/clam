@@ -401,7 +401,7 @@ void Annotator::adaptInstantViewsToSchema()
 	std::vector<CLAM_Annotator::InstantView> & instantViews = mProject.GetViews();
 	for (unsigned i=0; i<instantViews.size(); i++)
 	{
-		InstantViewPlugin * plugin = InstantViewPlugin::getPlugin(instantViews[i].GetType());
+		InstantViewPlugin * plugin = InstantViewPlugin::createPlugin(instantViews[i].GetType());
 		if (!plugin)
 		{
 			QMessageBox::warning(this,
@@ -412,6 +412,7 @@ void Annotator::adaptInstantViewsToSchema()
 			);
 			continue;
 		}
+		mInstantViewPlugins.push_back(plugin);
 		CLAM::VM::InstantView * view = plugin->createView(mVSplit, mProject, instantViews[i]);
 		mInstantViews.push_back(view);
 	}
@@ -611,7 +612,7 @@ void Annotator::makeConnections()
 			pluginId != pluginIds.end(); pluginId++)
 	{
 		QAction * viewAction = new QAction(this);
-		viewAction->setText(InstantViewPlugin::getPlugin(*pluginId)->name());
+		viewAction->setText(InstantViewPlugin::createPlugin(*pluginId)->name());
 		viewAction->setData(pluginId->c_str());
 		connect(viewAction, SIGNAL(triggered()), this, SLOT(addInstantView()));
 		menuAddInstantView->addAction(viewAction);
@@ -714,7 +715,8 @@ void Annotator::addInstantView()
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (!action) return;
 	std::string viewType = action->data().toString().toStdString();
-	InstantViewPlugin * plugin = InstantViewPlugin::getPlugin(viewType);
+	InstantViewPlugin * plugin = InstantViewPlugin::createPlugin(viewType);
+	mInstantViewPlugins.push_back(plugin);
 	CLAM_Annotator::InstantView config;
 	config.SetType(viewType);
 	if (!plugin->configureDialog(mProject, config)) return;
