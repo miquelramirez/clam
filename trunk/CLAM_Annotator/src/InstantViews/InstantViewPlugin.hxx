@@ -36,12 +36,19 @@ class InstantViewPlugin
 {
 public:
 	typedef std::map<std::string, InstantViewPlugin *> PluginMap;
+			
+
 public:
 	virtual ~InstantViewPlugin();
 	virtual const char * id() const = 0;
 	virtual QString name() const = 0;
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config) = 0;
 	virtual CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)=0;
+
+	virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)=0;
+	virtual void clearData()=0;
+	virtual void setCurrentTime(double timeMiliseconds)=0;
+
 public:
 	static InstantViewPlugin * createPlugin(const std::string & id);
 	static std::list<std::string> availablePlugins();

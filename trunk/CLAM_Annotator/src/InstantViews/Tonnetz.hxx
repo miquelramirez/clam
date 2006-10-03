@@ -43,7 +43,6 @@ namespace VM
 			InstantView(QWidget *parent) : QGLWidget(parent) { }
 			virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)=0;
 			virtual void clearData()=0;
-		public slots:
 			virtual void setCurrentTime(double timeMiliseconds)=0;
 	};
 

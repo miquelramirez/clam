@@ -55,6 +55,14 @@ class TonnetzPlugin : public InstantViewPlugin
 {
 private:
 	CLAM::VM::Tonnetz * _view;
+public:
+	TonnetzPlugin()
+		: _view(0)
+	{}
+	~TonnetzPlugin()
+	{
+		if (_view) delete _view;
+	}
 private:
 	virtual const char * id() const { return "Tonnetz"; }
 	virtual QString name() const { return QObject::tr("Tonnezt"); }
@@ -95,12 +103,33 @@ private:
 		config.SetAttributeName(splitted[1].toStdString());
 		return true;
 	}
+
+	virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
+	{
+		_view->updateData(data, samplingRate);
+	}
+	virtual void clearData()
+	{
+		_view->clearData();
+	}
+	virtual void setCurrentTime(double timeMiliseconds)
+	{
+		_view->setCurrentTime(timeMiliseconds);
+	}
 };
 
 class KeySpacePlugin : public InstantViewPlugin
 {
 private:
 	CLAM::VM::KeySpace * _view;
+public:
+	KeySpacePlugin()
+		: _view(0)
+	{}
+	~KeySpacePlugin()
+	{
+		if (_view) delete _view;
+	}
 private:
 	virtual const char * id() const { return "KeySpace"; }
 	virtual QString name() const { return QObject::tr("Key Space"); }
@@ -140,6 +169,19 @@ private:
 		config.SetAttributeScope(splitted[0].toStdString());
 		config.SetAttributeName(splitted[1].toStdString());
 		return true;
+	}
+
+	virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
+	{
+		_view->updateData(data, samplingRate);
+	}
+	virtual void clearData()
+	{
+		_view->clearData();
+	}
+	virtual void setCurrentTime(double timeMiliseconds)
+	{
+		_view->setCurrentTime(timeMiliseconds);
 	}
 };
 

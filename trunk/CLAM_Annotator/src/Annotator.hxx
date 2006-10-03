@@ -217,10 +217,12 @@ private:
 	std::vector<CLAM::EquidistantPointsFunction> mEPFs; // Cached LLD's
 	CLAM::Segmentation * mSegmentation;
 
-    QTextBrowser* mProjectDocumentation;
+  	QTextBrowser* mProjectDocumentation;
 	CLAM::VM::BPFPlayer* mPlayer;
-	std::vector<CLAM::VM::InstantView *> mInstantViews;
-	std::vector<InstantViewPlugin *> mInstantViewPlugins;
+	
+	typedef std::vector<InstantViewPlugin *> InstantViewPlugins;
+	InstantViewPlugins mInstantViewPlugins;
+
 	std::deque<std::string> mRecentOpenedProjects;
 	StatusBarDumper mStatusBar;
 	QDialog * mAbout;
