@@ -67,7 +67,6 @@ namespace VM
 			double _maxValue;
 			unsigned _nBins;
 			const FloatArrayDataSource * _dataSource;
-		private:
 			QFont _font;
 	};
 
