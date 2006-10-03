@@ -415,7 +415,7 @@ void Annotator::adaptInstantViewsToSchema()
 			continue;
 		}
 		mInstantViewPlugins.push_back(plugin);
-		CLAM::VM::InstantView * view = plugin->createView(mVSplit, mProject, instantViews[i]);
+		plugin->createView(mVSplit, mProject, instantViews[i]);
 	}
 }
 
@@ -721,13 +721,13 @@ void Annotator::addInstantView()
 	CLAM_Annotator::InstantView config;
 	config.SetType(viewType);
 	if (!plugin->configureDialog(mProject, config)) return;
-	CLAM::VM::InstantView * view = plugin->createView(mVSplit, mProject, config);
+	plugin->createView(mVSplit, mProject, config);
 	mProject.GetViews().push_back(config);
 	markProjectChanged(true);
 	if (mpDescriptorPool)
-		view->updateData(*mpDescriptorPool, mCurrentAudio.GetSampleRate());
+		plugin->updateData(*mpDescriptorPool, mCurrentAudio.GetSampleRate());
 	else
-		view->clearData();
+		plugin->clearData();
 	// TODO: Set current time
 }
 void Annotator::fileOpenRecent()

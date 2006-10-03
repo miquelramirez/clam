@@ -31,7 +31,7 @@ CLAM::VM::Tonnetz::~Tonnetz()
 	if (_dataSource) delete _dataSource;
 }
 CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
-	InstantView(parent)
+	QGLWidget(parent)
 {
 	_dataSource = new FloatArrayDataSource; //TODO remove
 	_font.setFamily("sans-serif");
@@ -241,15 +241,8 @@ void CLAM::VM::Tonnetz::setSource( FloatArrayDataSource * dataSource )
 	_nBins = _dataSource->nBins();
 }
 
-void CLAM::VM::Tonnetz::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
-{
-	_dataSource->updateData(data, samplingRate);
-}
-
-
 void CLAM::VM::Tonnetz::clearData()
 {
-	_dataSource->clearData();
 	_maxValue=1;
 }
 

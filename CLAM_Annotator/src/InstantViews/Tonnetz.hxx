@@ -36,18 +36,7 @@ namespace CLAM
 namespace VM
 {
 
-	class InstantView : public QGLWidget
-	{
-		Q_OBJECT
-		public:
-			InstantView(QWidget *parent) : QGLWidget(parent) { }
-			virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)=0;
-			virtual void clearData()=0;
-			virtual void setCurrentTime(double timeMiliseconds)=0;
-	};
-
-
-	class Tonnetz : public InstantView
+	class Tonnetz : public QGLWidget
 	{
 		Q_OBJECT
 
@@ -73,7 +62,6 @@ namespace VM
 			}
 		public:
 			void setSource( FloatArrayDataSource * dataSource );
-			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
 			void clearData();
 		protected:
 			int _updatePending;

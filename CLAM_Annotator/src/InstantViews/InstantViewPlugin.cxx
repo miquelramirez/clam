@@ -55,23 +55,26 @@ class TonnetzPlugin : public InstantViewPlugin
 {
 private:
 	CLAM::VM::Tonnetz * _view;
+	CLAM::VM::FloatArrayDataSource * _dataSource;
 public:
 	TonnetzPlugin()
 		: _view(0)
+		, _dataSource(0)
 	{}
 	~TonnetzPlugin()
 	{
 		if (_view) delete _view;
+	//	if (_dataSource) delete _dataSource;
 	}
 private:
 	virtual const char * id() const { return "Tonnetz"; }
 	virtual QString name() const { return QObject::tr("Tonnezt"); }
-	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
+	QWidget * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
 		_view =  new CLAM::VM::Tonnetz(parent);
-		CLAM::VM::FloatArrayDataSource * dataSource = new CLAM::VM::FloatArrayDataSource;
-		dataSource->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
-		_view->setSource( dataSource );
+		_dataSource = new CLAM::VM::FloatArrayDataSource;
+		_dataSource->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
+		_view->setSource( _dataSource );
 		return _view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
@@ -106,10 +109,11 @@ private:
 
 	virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
 	{
-		_view->updateData(data, samplingRate);
+		_dataSource->updateData(data, samplingRate);
 	}
 	virtual void clearData()
 	{
+		_dataSource->clearData();
 		_view->clearData();
 	}
 	virtual void setCurrentTime(double timeMiliseconds)
@@ -122,23 +126,26 @@ class KeySpacePlugin : public InstantViewPlugin
 {
 private:
 	CLAM::VM::KeySpace * _view;
+	CLAM::VM::FloatArrayDataSource * _dataSource;
 public:
 	KeySpacePlugin()
 		: _view(0)
+		, _dataSource(0)
 	{}
 	~KeySpacePlugin()
 	{
 		if (_view) delete _view;
+	//	if (_dataSource) delete _dataSource;
 	}
 private:
 	virtual const char * id() const { return "KeySpace"; }
 	virtual QString name() const { return QObject::tr("Key Space"); }
-	CLAM::VM::InstantView * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
+	QWidget * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
 		_view = new CLAM::VM::KeySpace(parent);
-		CLAM::VM::FloatArrayDataSource * dataSource = new CLAM::VM::FloatArrayDataSource;
-		dataSource->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
-		_view->setSource( dataSource );
+		_dataSource = new CLAM::VM::FloatArrayDataSource;
+		_dataSource->setSource(project, config.GetAttributeScope(), config.GetAttributeName());
+		_view->setSource( _dataSource );
 		return _view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
@@ -173,11 +180,12 @@ private:
 
 	virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
 	{
-		_view->updateData(data, samplingRate);
+		_dataSource->updateData(data, samplingRate);
 	}
 	virtual void clearData()
 	{
 		_view->clearData();
+		_dataSource->clearData();
 	}
 	virtual void setCurrentTime(double timeMiliseconds)
 	{
