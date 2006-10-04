@@ -94,6 +94,7 @@ namespace VM
 			virtual void initializeGL();
 			virtual void resizeGL(int width, int height);
 			virtual void paintGL();
+			virtual void timerEvent(QTimerEvent * event);
 		private:
 			unsigned BinAtPosition(int x, int y);
 			void Draw();

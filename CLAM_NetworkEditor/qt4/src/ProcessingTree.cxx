@@ -112,6 +112,7 @@ const static char * processingClasses[] = {
 	"ControlPrinter",
 	"ControlScaler",
 //	"ControlMapper" //	TODO register
+	"RandomPitches",
 	0,
 	"Graphical Monitors",
 	"Vumeter",
@@ -120,16 +121,6 @@ const static char * processingClasses[] = {
 	"PeakView",
 	"Tonnetz",
 	"KeySpace",
-	0,
-	"Plots in canvas (Deprecated) ",
-	"AudioPortMonitor",
-	"SpectrumPortMonitor",
-	"PeaksPortMonitor",
-	"FundamentalPortMonitor",
-	"AudioBuffPortMonitor",
-	"SpecgramPortMonitor",
-	"FundTrackPortMonitor",
-	"SinTracksPortMonitor",
 	0,
 	0
 };

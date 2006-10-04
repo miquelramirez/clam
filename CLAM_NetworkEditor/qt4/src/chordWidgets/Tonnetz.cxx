@@ -65,6 +65,7 @@ CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 				"<li>6/9: Five horizontal. The root is the lefter note.</li>\n"
 				"</ul>\n"
 				));
+	startTimer(50);
 }
 
 void CLAM::VM::Tonnetz::initializeGL()
@@ -244,5 +245,12 @@ void CLAM::VM::Tonnetz::setSource(FloatArrayDataSource & dataSource )
 void CLAM::VM::Tonnetz::clearData()
 {
 	_maxValue=1;
+}
+
+void CLAM::VM::Tonnetz::timerEvent(QTimerEvent *event)
+{
+	if (not _dataSource) return;
+	if (not _dataSource->isEnabled()) return;
+	update();
 }
 
