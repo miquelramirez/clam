@@ -99,6 +99,20 @@ namespace CLAM
 		SigSlot::Signalv0 mSigNewData;
 	};
 
+	namespace Implementation
+	{
+		template <typename T>
+		static void initData(DynamicType * selector, T & data)
+		{
+			data.AddAll();
+			data.UpdateData();
+		}
+		template <typename T>
+		static void initData(void * selector, T & data)
+		{
+		}
+	}
+
 	template <typename PortDataType, typename PortType>
 	PortMonitor<PortDataType,PortType>::PortMonitor() 
 		: mInput("Input", this)
@@ -106,10 +120,8 @@ namespace CLAM
 	{
 		PortMonitorConfig cfg;
 		Configure(cfg);
-		mData[0].AddAll();
-		mData[0].UpdateData();
-		mData[1].AddAll();
-		mData[1].UpdateData();
+		Implementation::initData(&mData[0],mData[0]);
+		Implementation::initData(&mData[1],mData[1]);
 	}
 
 	template <typename PortDataType, typename PortType>
@@ -118,10 +130,8 @@ namespace CLAM
 		, mWhichDataToRead(0)
 	{
 		Configure(cfg);
-		mData[0].AddAll();
-		mData[0].UpdateData();
-		mData[1].AddAll();
-		mData[1].UpdateData();
+		Implementation::initData(&mData[0],mData[0]);
+		Implementation::initData(&mData[1],mData[1]);
 	}
 
 	template <typename PortDataType, typename PortType>
