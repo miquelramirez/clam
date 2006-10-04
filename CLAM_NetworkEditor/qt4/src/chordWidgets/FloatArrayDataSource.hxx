@@ -62,6 +62,7 @@ namespace VM
 					};
 				return data;
 			}
+			virtual void release() {}
 			unsigned nBins() const
 			{
 				return _nBins;
