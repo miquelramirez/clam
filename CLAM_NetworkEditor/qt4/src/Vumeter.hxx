@@ -1,10 +1,15 @@
 #ifndef Vumeter_hxx
 #define Vumeter_hxx
 
+#include "Oscilloscope.hxx"
+class Vumeter : public Oscilloscope
+{
+	const char* GetClassName() const { return "Vumeter"; };
+};
+
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QLabel>
 #include <CLAM/Processing.hxx>
-#include <CLAM/PortMonitor.hxx>
 #include <CLAM/DataTypes.hxx>
 
 
@@ -14,9 +19,9 @@ class VumeterWidget : public QWidget
 		margin=4
 	};
 public:
-	VumeterWidget(CLAM::Processing * processing, QWidget * parent=0)
+	VumeterWidget(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
 		: QWidget(parent)
-		, _monitor(dynamic_cast<CLAM::AudioPortMonitor*>(processing))
+		, _dataSource(dynamic_cast<Vumeter*>(dataSource))
 		, _energy(0)
 	{
 		startTimer(50);
@@ -33,13 +38,12 @@ public:
 	double energy()
 	{
 		_energy*=0.5;
-		if (not _monitor) return _energy;
-		const CLAM::Audio & audio = _monitor->FreezeAndGetData();
-		const CLAM::Array<CLAM::TData> & data = audio.GetBuffer();
-		unsigned size = data.Size();
+		if (not _dataSource) return _energy;
+		const CLAM::TData * data = _dataSource->frameData();
+		unsigned size = _dataSource->nBins();
 		if (not size)
 		{
-			_monitor->UnfreezeData();
+			_dataSource->release();
 			_energy = 0;
 			return _energy;
 		}
@@ -49,19 +53,19 @@ public:
 			_energy+=bin*bin*0.5;
 		}
 		_energy /= size;
-		_monitor->UnfreezeData();
+		_dataSource->release();
 
 		return _energy;
 	}
 	void timerEvent(QTimerEvent *event)
 	{
-		if (not _monitor) return;
-		if (_monitor->GetExecState() != CLAM::Processing::Running)
+		if (not _dataSource) return;
+		if (not _dataSource->isEnabled()) return;
 			return;
 		update();
 	}
 private:
-	CLAM::AudioPortMonitor * _monitor;
+	CLAM::VM::FloatArrayDataSource * _dataSource;
 	double _energy;
 };
 

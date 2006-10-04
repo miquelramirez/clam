@@ -19,6 +19,11 @@
  *
  */
 
+#include <CLAM/Factory.hxx>
+#include "Tonnetz.hxx"
+
+static CLAM::Factory<CLAM::Processing>::Registrator<TonnetzView> registrator("Tonnetz");
+
 #include "Tonnetz.hxx"
 #include <QtGui/QPixmap>
 #include <QtCore/QTimer>
@@ -230,7 +235,7 @@ void CLAM::VM::Tonnetz::updateIfNeeded()
 	if (!_updatePending++) update();
 }
 
-void CLAM::VM::Tonnetz::setSource(const FloatArrayDataSource & dataSource )
+void CLAM::VM::Tonnetz::setSource(FloatArrayDataSource & dataSource )
 {
 	_dataSource = &dataSource;
 	_nBins = _dataSource->nBins();
