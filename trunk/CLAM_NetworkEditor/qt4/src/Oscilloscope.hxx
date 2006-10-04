@@ -9,26 +9,35 @@
 
 class Oscilloscope : public CLAM::AudioPortMonitor, public CLAM::VM::FloatArrayDataSource
 {
+public:
+	Oscilloscope()
+		: _size(0)
+		{ }
+private:
 	const char* GetClassName() const { return "Oscilloscope"; };
 	const std::string & getLabel(unsigned bin) const
 	{
 		static std::string a("A");
 		return a;
 	}
-	const double * frameData() const
+	const CLAM::TData * frameData()
 	{
-		const CLAM::Audio & audio = _monitor->FreezeAndGetData();
+		const CLAM::Audio & audio = FreezeAndGetData();
 		const CLAM::Array<CLAM::TData> & data = audio.GetBuffer();
 		_size = data.Size();
 		return &data[0];
 	}
 	void release()
 	{
-		_monitor->UnfreezeData();
+		UnfreezeData();
 	}
 	unsigned nBins() const
 	{
 		return _size;
+	}
+	bool isEnabled() const
+	{
+		return GetExecState() == CLAM::Processing::Running;
 	}
 private:
 	unsigned _size;
@@ -52,13 +61,11 @@ public:
 	OscilloscopeWidget(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
 		: QWidget(parent)
 		, _dataSource(dataSource)
-		, _monitor(dynamic_cast<Oscilloscope*>(dataSource)) //TODO remove
 	{
 		startTimer(50);
 	}
 	void paintEvent(QPaintEvent * event)
 	{
-		if (not _monitor) return;
 		if (not _dataSource) return;
 
 		QPainter painter(this);
@@ -68,23 +75,21 @@ public:
 		painter.drawLine(0,0,1,0);
 
 		painter.setPen(Qt::black);
-		const double * data = _dataSource->frameData();
-		int size = _dataSource.nBins();
+		const CLAM::TData * data = _dataSource->frameData();
+		int size = _dataSource->nBins();
 		QPolygonF _line;
 		for (int i=0; i<size; i++)
-			_line << QPointF(double(i)/size, data[i]);
+			_line << QPointF(float(i)/size, data[i]);
 		_dataSource->release();
 		painter.drawPolyline(_line);
 	}
 	void timerEvent(QTimerEvent *event)
 	{
 		if (not _dataSource) return;
-		if (_monitor->GetExecState() != CLAM::Processing::Running)
-			return;
+		if (not _dataSource->isEnabled()) return;
 		update();
 	}
 private:
-	Oscilloscope * _monitor;
 	CLAM::VM::FloatArrayDataSource * _dataSource;
 };
 

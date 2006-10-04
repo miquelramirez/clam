@@ -3,10 +3,56 @@
 
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QLabel>
+#include <QtGui/QPolygonF>
+#include <QtGui/QPainter>
 #include <CLAM/Processing.hxx>
 #include <CLAM/PortMonitor.hxx>
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/SpecTypeFlags.hxx>
+#include <CLAM/Spectrum.hxx>
+#include "FloatArrayDataSource.hxx"
+
+
+//TODO move to a clam lib
+
+class SpectrumView : public CLAM::PortMonitor<CLAM::Spectrum>, public CLAM::VM::FloatArrayDataSource
+{
+	const char* GetClassName() const { return "SpectrumView"; };
+	const std::string & getLabel(unsigned bin) const
+	{
+		static std::string a("A");
+		return a;
+	}
+	const CLAM::TData * frameData()
+	{
+		_spectrum = FreezeAndGetData();
+		if (not _spectrum.HasMagBuffer())
+		{
+			CLAM::SpecTypeFlags flags;
+			flags.bMagPhase=true;
+			_spectrum.SetType(flags);
+			_spectrum.SetTypeSynchronize(flags);
+		}
+		const CLAM::Array<CLAM::TData> & data = _spectrum.GetMagBuffer();
+		_size = data.Size();
+		return &data[0];
+	}
+	void release()
+	{
+		UnfreezeData();
+	}
+	unsigned nBins() const
+	{
+		return _size;
+	}
+	bool isEnabled() const
+	{
+		return GetExecState() == CLAM::Processing::Running;
+	}
+private:
+	unsigned _size;
+	CLAM::Spectrum _spectrum;
+};
 
 
 class SpectrumViewWidget : public QWidget
@@ -14,26 +60,17 @@ class SpectrumViewWidget : public QWidget
 	enum Dimensions {
 	};
 public:
-	SpectrumViewWidget(CLAM::Processing * processing, QWidget * parent=0)
+	SpectrumViewWidget(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
 		: QWidget(parent)
-		, _monitor(dynamic_cast<CLAM::PortMonitor<CLAM::Spectrum>*>(processing))
+		, _dataSource(dataSource)
 	{
 		startTimer(50);
 	}
 	void paintEvent(QPaintEvent * event)
 	{
-		if (not _monitor) return;
-		CLAM::Spectrum spectrum = _monitor->FreezeAndGetData();
-		_monitor->UnfreezeData();
-		if (not spectrum.HasMagBuffer())
-		{
-			CLAM::SpecTypeFlags flags;
-			flags.bMagPhase=true;
-			spectrum.SetType(flags);
-			spectrum.SetTypeSynchronize(flags);
-		}
-		const CLAM::Array<CLAM::TData> & data = spectrum.GetMagBuffer();
-		int size = data.Size();
+		if (not _dataSource) return;
+		const CLAM::TData * data = _dataSource->frameData();
+		int size = _dataSource->nBins();
 
 		QPolygonF _line;
 		QPainter painter(this);
@@ -41,18 +78,17 @@ public:
 		painter.setPen(Qt::black);
 		for (int i=0; i<size; i++)
 			_line << QPointF(double(i)/size, -std::log10(data[i]));
+		_dataSource->release();
 		painter.drawPolyline(_line);
 	}
 	void timerEvent(QTimerEvent *event)
 	{
-		if (not _monitor) return;
-		if (_monitor->GetExecState() != CLAM::Processing::Running)
-			return;
+		if (not _dataSource) return;
+		if (not _dataSource->isEnabled()) return;
 		update();
 	}
 private:
-	CLAM::PortMonitor<CLAM::Spectrum> * _monitor;
-	std::vector<CLAM::TData> _data;
+	CLAM::VM::FloatArrayDataSource * _dataSource;
 };
 
 

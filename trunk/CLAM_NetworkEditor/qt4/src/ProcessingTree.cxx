@@ -118,7 +118,7 @@ const static char * processingClasses[] = {
 	"Oscilloscope",
 	"SpectrumView",
 	"PeakView",
-	"TonnetzView",
+	"Tonnetz",
 	"KeySpace",
 	0,
 	"Plots in canvas (Deprecated) ",

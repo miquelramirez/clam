@@ -25,11 +25,59 @@
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
 #include "FloatArrayDataSource.hxx"
+#include <CLAM/PortMonitor.hxx>
 
 #include <vector>
 
-
-namespace CLAM_Annotator { class FrameDivision; }
+class TonnetzView : public CLAM::PortMonitor<std::vector<CLAM::TData> >, public CLAM::VM::FloatArrayDataSource
+{
+public:
+	TonnetzView()
+		: _size(12)
+	{
+	}
+private:
+	const char* GetClassName() const { return "Tonnetz"; };
+	const std::string & getLabel(unsigned bin) const
+	{
+		static std::string a[] = {
+			"A",
+			"A#",
+			"B",
+			"C",
+			"C#",
+			"D",
+			"D#",
+			"E",
+			"F",
+			"F#",
+			"G",
+			"G#",
+			};
+		return a[bin];
+	}
+	const CLAM::TData * frameData()
+	{
+		_pcp = FreezeAndGetData();
+		UnfreezeData();
+		_size = _pcp.size();
+		return &_pcp[0];
+	}
+	void release()
+	{
+	}
+	unsigned nBins() const
+	{
+		return _size;
+	}
+	bool isEnabled() const
+	{
+		return GetExecState() == CLAM::Processing::Running;
+	}
+private:
+	unsigned _size;
+	std::vector<CLAM::TData> _pcp;
+};
 
 namespace CLAM
 {
@@ -53,20 +101,20 @@ namespace VM
 			void DrawLabel(int x, int y);
 			void DrawChordsShapes();
 		protected:
-			const double *frameData() const
+			const CLAM::TData *frameData()
 			{
 				if (not _dataSource) return 0;
 				return _dataSource->frameData();
 			}
 		public:
 			void updateIfNeeded();
-			void setSource( const FloatArrayDataSource & dataSource );
+			void setSource( FloatArrayDataSource & dataSource );
 			void clearData();
 		protected:
 			int _updatePending;
 			double _maxValue;
 			unsigned _nBins;
-			const FloatArrayDataSource * _dataSource;
+			FloatArrayDataSource * _dataSource;
 			QFont _font;
 	};
 

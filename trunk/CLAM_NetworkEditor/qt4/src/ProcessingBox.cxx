@@ -65,36 +65,48 @@ void ProcessingBox::paintFromParent(QPainter & painter)
 	paintBox(painter);
 	painter.restore();
 }
+
+QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas)
+{
+	if (!processing) return 0;
+	std::string className = processing->GetClassName();
+
+	if (className=="OutControlSender")
+		return new ControlSenderWidget(processing);
+
+	if (className=="Vumeter")
+		return new VumeterWidget( dynamic_cast<Vumeter*>(processing) );
+
+	if (className=="Oscilloscope")
+		return new OscilloscopeWidget( dynamic_cast<Oscilloscope*>(processing) );
+
+	if (className=="SpectrumView")
+		return new SpectrumViewWidget( dynamic_cast<SpectrumView*>(processing) );
+
+	if (className=="PeakView")
+		return new PeakViewWidget(processing);
+
+	if (className=="Tonnetz")
+	{
+		CLAM::VM::Tonnetz * tonnetz = new CLAM::VM::Tonnetz(canvas);
+		tonnetz->setSource( *dynamic_cast<TonnetzView*>(processing) );
+		return tonnetz;
+	}
+	if (className=="AudioSink")
+	{
+		static CLAM::VM::DummyFloatArrayDataSource dataSource(24);
+		CLAM::VM::KeySpace * tonnetz = new CLAM::VM::KeySpace(canvas);
+		tonnetz->setSource( dataSource );
+		return tonnetz;
+	}
+
+	return 0;
+}
+
 void ProcessingBox::setProcessing(CLAM::Processing * processing)
 {
 	_processing = processing;
-	QWidget * embeded = 0;
-	if (_processing and _processing->GetClassName()==std::string("OutControlSender"))
-		embeded = new ControlSenderWidget(_processing);
-	if (_processing and _processing->GetClassName()==std::string("Vumeter"))
-		embeded = new VumeterWidget(_processing);
-	if (_processing and _processing->GetClassName()==std::string("Oscilloscope"))
-	{
-		embeded = new OscilloscopeWidget( dynamic_cast<Oscilloscope*>(_processing) );
-	}
-	if (_processing and _processing->GetClassName()==std::string("SpectrumView"))
-		embeded = new SpectrumViewWidget(_processing);
-	if (_processing and _processing->GetClassName()==std::string("PeakView"))
-		embeded = new PeakViewWidget(_processing);
-	if (_processing and _processing->GetClassName()==std::string("AudioOut"))
-	{
-		static CLAM::VM::DummyFloatArrayDataSource dataSource;
-		CLAM::VM::Tonnetz * tonnetz = new CLAM::VM::Tonnetz(_canvas);
-		tonnetz->setSource( dataSource );
-		embeded = tonnetz;
-	}
-	if (_processing and _processing->GetClassName()==std::string("AudioSink"))
-	{
-		static CLAM::VM::DummyFloatArrayDataSource dataSource(24);
-		CLAM::VM::KeySpace * tonnetz = new CLAM::VM::KeySpace(_canvas);
-		tonnetz->setSource( dataSource );
-		embeded = tonnetz;
-	}
+	QWidget * embeded = embededWidgetFor(processing,_canvas);
 	embed(embeded);
 	refreshConnectors();
 }
