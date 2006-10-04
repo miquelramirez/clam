@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioOut_0" type="AudioOut">
+    <Device>default:default</Device>
+    <ChannelID>0</ChannelID>
+    <FrameSize>512</FrameSize>
+    <SampleRate>44100</SampleRate>
+  </processing>
+
+  <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
+    <SourceFile>
+      <URI>/home/vokimon/CajitasDeArena/CLAM_NetworkEditor/example-data/Guillamino_CitiusAltiusFortius.mp3</URI>
+      <Header>
+        <SampleRate>44100</SampleRate>
+        <Samples>1443392</Samples>
+        <Channels>1</Channels>
+        <Length>32730</Length>
+        <Format>Mpeg Audio Layer 3</Format>
+        <Encoding>Format Default</Encoding>
+        <Endianess>Format Default</Endianess>
+      </Header>
+      <TextualDescriptors/>
+    </SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
+  </processing>
+
+  <processing id="RandomPitches_0" type="RandomPitches"/>
+
+  <processing id="Tonnetz_0" type="Tonnetz"/>
+
+  <port_connection>
+    <out>MonoAudioFileReader_0.Samples Read</out>
+    <in>RandomPitches_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MonoAudioFileReader_0.Samples Read</out>
+    <in>AudioOut_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>RandomPitches_0.Pitch Profile</out>
+    <in>Tonnetz_0.Input</in>
+  </port_connection>
+
+</network>
