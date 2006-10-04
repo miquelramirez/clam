@@ -74,7 +74,9 @@ void ProcessingBox::setProcessing(CLAM::Processing * processing)
 	if (_processing and _processing->GetClassName()==std::string("Vumeter"))
 		embeded = new VumeterWidget(_processing);
 	if (_processing and _processing->GetClassName()==std::string("Oscilloscope"))
-		embeded = new OscilloscopeWidget(_processing);
+	{
+		embeded = new OscilloscopeWidget( dynamic_cast<Oscilloscope*>(_processing) );
+	}
 	if (_processing and _processing->GetClassName()==std::string("SpectrumView"))
 		embeded = new SpectrumViewWidget(_processing);
 	if (_processing and _processing->GetClassName()==std::string("PeakView"))
