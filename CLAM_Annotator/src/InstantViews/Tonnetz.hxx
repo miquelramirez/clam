@@ -55,7 +55,7 @@ namespace VM
 		protected:
 			const double *frameData() const
 			{
-				if (not _dataSource) return 0;
+				if (! _dataSource) return 0;
 				return _dataSource->frameData();
 			}
 		public:

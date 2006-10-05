@@ -118,9 +118,9 @@ private:
 	}
 	virtual void setCurrentTime(double timeMiliseconds)
 	{
-		if (not _view) return;
+		if ( !_view) return;
 		bool mustUpdate = _dataSource.setCurrentTime(timeMiliseconds);
-		if (not mustUpdate) return;
+		if ( !mustUpdate) return;
 		_view->updateIfNeeded();
 	}
 };
@@ -190,9 +190,9 @@ private:
 	}
 	virtual void setCurrentTime(double timeMiliseconds)
 	{
-		if (not _view) return;
+		if ( !_view) return;
 		bool mustUpdate = _dataSource.setCurrentTime(timeMiliseconds);
-		if (not mustUpdate) return;
+		if ( !mustUpdate) return;
 		_view->updateIfNeeded();
 	}
 };
