@@ -81,7 +81,7 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 		return new OscilloscopeWidget( dynamic_cast<Oscilloscope*>(processing) );
 
 	if (className=="SpectrumView")
-		return new SpectrumViewWidget( dynamic_cast<SpectrumView*>(processing) );
+		return new SpectrumView( dynamic_cast<SpectrumViewMonitor*>(processing) );
 
 	if (className=="PeakView")
 		return new PeakViewWidget(processing);
@@ -89,7 +89,7 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 	if (className=="Tonnetz")
 	{
 		CLAM::VM::Tonnetz * tonnetz = new CLAM::VM::Tonnetz(canvas);
-		tonnetz->setSource( *dynamic_cast<TonnetzView*>(processing) );
+		tonnetz->setSource( *dynamic_cast<TonnetzMonitor*>(processing) );
 		return tonnetz;
 	}
 	if (className=="AudioSink")

@@ -29,10 +29,10 @@
 
 #include <vector>
 
-class TonnetzView : public CLAM::PortMonitor<std::vector<CLAM::TData> >, public CLAM::VM::FloatArrayDataSource
+class TonnetzMonitor : public CLAM::PortMonitor<std::vector<CLAM::TData> >, public CLAM::VM::FloatArrayDataSource
 {
 public:
-	TonnetzView()
+	TonnetzMonitor()
 		: _size(12)
 	{
 	}

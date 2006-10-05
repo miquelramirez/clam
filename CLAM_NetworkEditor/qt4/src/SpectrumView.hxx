@@ -15,7 +15,7 @@
 
 //TODO move to a clam lib
 
-class SpectrumView : public CLAM::PortMonitor<CLAM::Spectrum>, public CLAM::VM::FloatArrayDataSource
+class SpectrumViewMonitor : public CLAM::PortMonitor<CLAM::Spectrum>, public CLAM::VM::FloatArrayDataSource
 {
 	const char* GetClassName() const { return "SpectrumView"; };
 	const std::string & getLabel(unsigned bin) const
@@ -55,12 +55,12 @@ private:
 };
 
 
-class SpectrumViewWidget : public QWidget
+class SpectrumView : public QWidget
 {
 	enum Dimensions {
 	};
 public:
-	SpectrumViewWidget(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
+	SpectrumView(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
 		: QWidget(parent)
 		, _dataSource(dataSource)
 	{

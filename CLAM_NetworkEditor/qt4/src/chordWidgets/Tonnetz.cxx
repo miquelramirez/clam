@@ -22,7 +22,7 @@
 #include <CLAM/Factory.hxx>
 #include "Tonnetz.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<TonnetzView> registrator("Tonnetz");
+static CLAM::Factory<CLAM::Processing>::Registrator<TonnetzMonitor> registrator("Tonnetz");
 
 #include "Tonnetz.hxx"
 #include <QtGui/QPixmap>
