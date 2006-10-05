@@ -74,6 +74,7 @@ const static char * processingClasses[] = {
 	"FFT_rfftw",
 	"SpectralAnalysis",
 	"SMSAnalysisCore",
+	"TonalAnalysis",
 	0,
 	"Synthesis",
 	"IFFT_rfftw",
