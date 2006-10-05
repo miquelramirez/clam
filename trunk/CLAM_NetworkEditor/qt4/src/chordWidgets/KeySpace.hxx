@@ -65,13 +65,13 @@ private:
 	}
 	const CLAM::TData * frameData()
 	{
-		_pcp = FreezeAndGetData();
-		UnfreezeData();
-		_size = _pcp.size()-1;
-		return &_pcp[1];
+		const std::vector<CLAM::TData> & pcp = FreezeAndGetData();
+		_size = pcp.size()? pcp.size()-1: 0;
+		return pcp.size()? &pcp[1] : 0;
 	}
 	void release()
 	{
+		UnfreezeData();
 	}
 	unsigned nBins() const
 	{
