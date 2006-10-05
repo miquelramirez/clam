@@ -40,7 +40,8 @@ void TonalAnalysisConfig::DefaultInit(void)
 
 TonalAnalysis::TonalAnalysis( const TonalAnalysisConfig& cfg )
 	: _input("Audio Input",this)
-	, _output("Pitch Profile",this)
+	, _pcp("Pitch Profile",this)
+	, _chordCorrelation("Chord Correlation",this)
 	, _implementation(new Simac::ChordExtractor )
 {
 	Configure( cfg );
@@ -67,13 +68,20 @@ bool TonalAnalysis::Do()
 	for (unsigned i = 0; i < _implementation->frameSize(); i++)
 		_floatBuffer[i] = input[i];
 	_implementation->doIt(&_floatBuffer[0]);
-	std::vector<TData> & output = _output.GetData();
-	output.resize(_implementation->pcp().size());
+
+	std::vector<TData> & pcp = _pcp.GetData();
+	pcp.resize(_implementation->pcp().size());
 	for (unsigned i = 0; i < _implementation->pcp().size(); i++)
-		output[i] = _implementation->pcp()[i];
+		pcp[i] = _implementation->pcp()[i];
+	_pcp.Produce();
+
+	std::vector<TData> & chordCorrelation = _chordCorrelation.GetData();
+	chordCorrelation.resize(_implementation->chordCorrelation().size());
+	for (unsigned i = 0; i < _implementation->chordCorrelation().size(); i++)
+		chordCorrelation[i] = _implementation->chordCorrelation()[i];
+	_chordCorrelation.Produce();
 
 	_input.Consume();
-	_output.Produce();
 	return true;
 }
 

@@ -81,23 +81,26 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 		return new Oscilloscope( dynamic_cast<OscilloscopeMonitor*>(processing) );
 
 	if (className=="SpectrumView")
-		return new SpectrumView( dynamic_cast<SpectrumViewMonitor*>(processing) );
+	{
+		SpectrumView * widget = new SpectrumView(canvas);
+		widget->setDataSource( *dynamic_cast<SpectrumViewMonitor*>(processing) );
+		return widget;
+	}
 
 	if (className=="PeakView")
 		return new PeakViewWidget(processing);
 
 	if (className=="Tonnetz")
 	{
-		CLAM::VM::Tonnetz * tonnetz = new CLAM::VM::Tonnetz(canvas);
-		tonnetz->setSource( *dynamic_cast<TonnetzMonitor*>(processing) );
-		return tonnetz;
+		CLAM::VM::Tonnetz * widget = new CLAM::VM::Tonnetz(canvas);
+		widget->setDataSource( *dynamic_cast<TonnetzMonitor*>(processing) );
+		return widget;
 	}
-	if (className=="AudioSink")
+	if (className=="KeySpace")
 	{
-		static CLAM::VM::DummyFloatArrayDataSource dataSource(24);
-		CLAM::VM::KeySpace * tonnetz = new CLAM::VM::KeySpace(canvas);
-		tonnetz->setSource( dataSource );
-		return tonnetz;
+		CLAM::VM::KeySpace * widget = new CLAM::VM::KeySpace(canvas);
+		widget->setDataSource( *dynamic_cast<KeySpaceMonitor*>(processing) );
+		return widget;
 	}
 
 	return 0;
