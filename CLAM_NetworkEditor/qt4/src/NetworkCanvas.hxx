@@ -19,6 +19,7 @@
 #include "ProcessingBox.hxx"
 #include "Wires.hxx"
 #include <vector>
+#include <algorithm>
 #include <CLAM/Network.hxx>
 
 class NetworkCanvas : public QWidget

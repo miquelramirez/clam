@@ -3,6 +3,7 @@
 #include <QtUiTools/QUiLoader>
 #include <QtDesigner/QFormBuilder>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
+#include <QtGui/QWidget>
 #include <QtGui/QDialog>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QMessageBox>
@@ -14,8 +15,10 @@
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/PushFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
-#include <CLAM/JACKNetworkPlayer.hxx>
 #include <fstream>
+#ifdef USE_JACK
+#include <CLAM/JACKNetworkPlayer.hxx>
+#endif
 
 //#include "NetAudioPlot.hxx" // QT4PORT
 //#include "NetPeaksPlot.hxx" // QT4PORT
@@ -98,7 +101,8 @@ void PrototypeLoader::Show()
 
 
 CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend)
-{
+{	
+#ifdef USE_JACK		
 	if (backend=="jack")
 	{
 		CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
@@ -106,7 +110,8 @@ CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend)
 		delete jackPlayer;
 		return 0;
 	}
-	else if (backend=="alsa")
+#endif
+	if (backend=="alsa")
 	{
 		return new CLAM::BlockingNetworkPlayer();
 	}
@@ -126,7 +131,7 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends )
 			it++)
 	{
 		_player = tryNetworkPlayer(*it);
-		if (not _player)
+		if ( !_player)
 		{
 			std::cerr << "Backend '" << *it << "' unavailable." << std::endl;
 			continue;
@@ -236,7 +241,7 @@ void PrototypeLoader::ConnectWithNetwork()
 void PrototypeLoader::Start()
 {
 	UpdatePlayStatus();
-	if ( not _player )
+	if (  !_player )
 	{
 		QMessageBox::critical(0, tr("Unable to play the network"), 
 				tr("<p><b>Audio output unavailable or busy.</b></p>"));
@@ -257,7 +262,7 @@ void PrototypeLoader::Start()
 		return;
 	}
 	// TODO: Activate this once it works
-	if ( false and _network.HasUnconnectedInPorts() )
+	if ( false && _network.HasUnconnectedInPorts() )
 	{
 		QMessageBox::critical(0, tr("Unable to play the network"), 
 				tr("<p><b>The network has some in ports which are not connected.</b></p>"
@@ -265,7 +270,7 @@ void PrototypeLoader::Start()
 				));
 		return;
 	}
-	if (not _player->IsCallbackBased() and not _network.HasSyncSource() )
+	if ( !_player->IsCallbackBased() && !_network.HasSyncSource() )
 	{
 		QMessageBox::critical(0, tr("Unable to play the network"), 
 			tr("<p>The network needs an AudioIn or AudioOut in order to be playable.</p>"));
@@ -288,7 +293,7 @@ void PrototypeLoader::UpdatePlayStatus()
 	QLabel * playbackIndicator = _interface->findChild<QLabel*>("PlaybackIndicator");
 	if (playbackIndicator)
 	{
-		if (not _player->IsStopped())
+		if ( !_player->IsStopped())
 			playbackIndicator->setText("<p style='color:green'>Playing...</p>");
 		else
 			playbackIndicator->setText("<p style='color:red'>Stopped</p>");

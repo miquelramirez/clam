@@ -46,6 +46,7 @@ private:
 
 
 #include <QtOpenGL/QGLWidget>
+#undef GetClassName
 #include <QtGui/QLabel>
 #include <QtGui/QPainter>
 #include <CLAM/Processing.hxx>
@@ -66,7 +67,7 @@ public:
 	}
 	void paintEvent(QPaintEvent * event)
 	{
-		if (not _dataSource) return;
+		if ( !_dataSource) return;
 
 		QPainter painter(this);
 		painter.setPen(QColor(0x77,0x77,0x77,0x77));
@@ -85,8 +86,8 @@ public:
 	}
 	void timerEvent(QTimerEvent *event)
 	{
-		if (not _dataSource) return;
-		if (not _dataSource->isEnabled()) return;
+		if ( !_dataSource) return;
+		if ( !_dataSource->isEnabled()) return;
 		update();
 	}
 private:

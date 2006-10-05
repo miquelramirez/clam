@@ -2,6 +2,7 @@
 #define SpectrumView_hxx
 
 #include <QtOpenGL/QGLWidget>
+#undef GetClassName
 #include <QtGui/QLabel>
 #include <QtGui/QPolygonF>
 #include <QtGui/QPainter>
