@@ -249,8 +249,8 @@ void CLAM::VM::Tonnetz::clearData()
 
 void CLAM::VM::Tonnetz::timerEvent(QTimerEvent *event)
 {
-	if (not _dataSource) return;
-	if (not _dataSource->isEnabled()) return;
+	if ( !_dataSource) return;
+	if ( !_dataSource->isEnabled()) return;
 	update();
 }
 
