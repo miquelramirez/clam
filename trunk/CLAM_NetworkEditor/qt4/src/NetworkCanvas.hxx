@@ -521,7 +521,7 @@ public:
 		{
 			QString out = source->getName() + "." + source->getOutportName(outlet);
 			QString in = target->getName() + "." + target->getInportName(inlet);
-			if (not _network->ConnectPorts(out.toStdString(), in.toStdString())) return;
+			if ( !_network->ConnectPorts(out.toStdString(), in.toStdString())) return;
 		}
 		addPortWire(source, outlet, target, inlet);
 		markAsChanged();
@@ -532,7 +532,7 @@ public:
 		{
 			QString out = source->getName() + "." + source->getOutcontrolName(outlet);
 			QString in = target->getName() + "." + target->getIncontrolName(inlet);
-			if (not _network->ConnectControls(out.toStdString(), in.toStdString())) return;
+			if ( !_network->ConnectControls(out.toStdString(), in.toStdString())) return;
 		}
 		addControlWire(source, outlet, target, inlet);
 		markAsChanged();
@@ -552,7 +552,7 @@ public:
 			   	it<_controlWires.end();)
 		{
 			ControlWire * wire = *it;
-			if (not wire->goesTo(processing, index)) it++;
+			if ( !wire->goesTo(processing, index)) it++;
 			else
 			{
 				if (_network)
@@ -569,7 +569,7 @@ public:
 			   	it<_controlWires.end();)
 		{
 			ControlWire * wire = *it;
-			if (not wire->comesFrom(processing, index)) it++;
+			if ( !wire->comesFrom(processing, index)) it++;
 			else
 			{
 				if (_network)
@@ -586,7 +586,7 @@ public:
 			   	it<_portWires.end();)
 		{
 			PortWire * wire = *it;
-			if (not wire->goesTo(processing, index)) it++;
+			if ( !wire->goesTo(processing, index)) it++;
 			else
 			{
 				if (_network)
@@ -603,7 +603,7 @@ public:
 			   	it<_portWires.end();)
 		{
 			PortWire * wire = *it;
-			if (not wire->comesFrom(processing, index)) it++;
+			if ( !wire->comesFrom(processing, index)) it++;
 			else
 			{
 				if (_network)
@@ -623,7 +623,7 @@ public:
 			   	it<_controlWires.end(); )
 		{
 			ControlWire * wire = *it;
-			if (not wire->involves(processing)) it++;
+			if ( !wire->involves(processing)) it++;
 			else
 			{
 				delete wire;
@@ -634,7 +634,7 @@ public:
 			   	it<_portWires.end(); )
 		{
 			PortWire * wire = *it;
-			if (not wire->involves(processing)) it++;
+			if ( !wire->involves(processing)) it++;
 			else
 			{
 				delete wire;
@@ -830,7 +830,7 @@ private slots:
 		{
 			ProcessingBox::Region region = _processings[i]->getRegion(point);
 			if (region==ProcessingBox::noRegion) continue;
-			if (not _processings[i]->configure()) return;
+			if ( !_processings[i]->configure()) return;
 			if (_network) refreshWires();
 			markAsChanged();
 			return;
@@ -843,7 +843,7 @@ private slots:
 		{
 			ProcessingBox::Region region = _processings[i]->getRegion(point);
 			if (region==ProcessingBox::noRegion) continue;
-			if (not _processings[i]->rename()) return;
+			if ( !_processings[i]->rename()) return;
 			markAsChanged();
 			return;
 		}
