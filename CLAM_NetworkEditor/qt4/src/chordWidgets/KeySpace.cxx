@@ -48,8 +48,8 @@ TKeyNode * getKeyNodes()
 }
 unsigned nKeyNodes=24;
 // The number of 'pixels'
-unsigned nX = 150;
-unsigned nY = 100;
+unsigned nX = 50;
+unsigned nY = 125;
 std::vector<float> weights;
 
 
@@ -127,9 +127,9 @@ void CLAM::VM::KeySpace::initializeGL()
 	glClearColor(0,0,0,0); // rgba
 	glEnable(GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable (GL_LINE_SMOOTH);
-	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-	glEnable(GL_CULL_FACE);
+//	glEnable (GL_LINE_SMOOTH);
+//	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+//	glEnable(GL_CULL_FACE);
 }
 void CLAM::VM::KeySpace::resizeGL(int width, int height)
 {
@@ -142,7 +142,10 @@ void CLAM::VM::KeySpace::resizeGL(int width, int height)
 void CLAM::VM::KeySpace::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	if (frameData()) DrawTiles();
+	if (!_dataSource) return;
+	_data = _dataSource->frameData();
+	if (_data) DrawTiles();
+	_dataSource->release();
 	DrawLabels();
 
 	_updatePending=0;
@@ -174,19 +177,23 @@ void CLAM::VM::KeySpace::DrawTiles()
 			}
 		}
 	}
+	float mean = 0;
 	_maxValue*=.5;
 	for (unsigned i=0; i<_nBins; i++)
 	{
-		if (_maxValue<frameData()[i]) _maxValue=frameData()[i];
+		mean+=_data[i];
+		if (_maxValue<_data[i]) _maxValue=_data[i];
 	}
 	if (_maxValue<1e-10) _maxValue=1e-10;
+	if (_maxValue<1e-10) _maxValue=1e-10;
+	if (_maxValue<1.5*mean/_nBins) _maxValue=1.5*mean/_nBins;
 
 	if (_nBins!=nKeyNodes) return;
 	float xStep = x_res/nX;
 	float yStep = y_res/nY;
-	glBegin(GL_QUAD_STRIP);
 	for(unsigned k=0; k<nY; k++)
 	{
+		glBegin(GL_QUAD_STRIP);
 		float y1 = k*yStep;
 		for(unsigned i=0; i<nX; i++)
 		{
@@ -196,7 +203,7 @@ void CLAM::VM::KeySpace::DrawTiles()
 			for(unsigned m=0; m<nKeyNodes; m++)
 			{
 				unsigned weightIndex = m+nKeyNodes*(k+nY*i);
-				num += frameData()[m] * weights[weightIndex] /_maxValue;
+				num += _data[m] * weights[weightIndex] /_maxValue;
 				den += weights[weightIndex];
 			}
 			double value = (den != 0.) ? num / den : 0;
@@ -213,8 +220,8 @@ void CLAM::VM::KeySpace::DrawTiles()
 		}
 		glVertex2f( 1,   y1 );
 		glVertex2f( 1,   y1+yStep );
+		glEnd();
 	}
-	glEnd();
 }
 
 void CLAM::VM::KeySpace::DrawLabels()
@@ -228,7 +235,7 @@ void CLAM::VM::KeySpace::DrawLabels()
 		if (y1 < 4.*y_res/nY)
 			y1 = 4.*y_res/nY;
 
-		float value = frameData() ? frameData()[i]/_maxValue : 0; 
+		float value = _data ? _data[i]/_maxValue : 0; 
 		if (value>.6) glColor3d(0,0,0);
 		else          glColor3d(1,1,1);
 
