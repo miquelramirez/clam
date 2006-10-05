@@ -72,10 +72,10 @@ void CLAM::VM::Tonnetz::initializeGL()
 {
 	glShadeModel(GL_FLAT);
 	glClearColor(0,0,0,0); // rgba
-	glEnable(GL_BLEND);
-	glEnable (GL_LINE_SMOOTH);
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+//	glEnable(GL_BLEND);
+//	glEnable (GL_LINE_SMOOTH);
+//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 	glEnable(GL_CULL_FACE);
 }
 void CLAM::VM::Tonnetz::resizeGL(int width, int height)
