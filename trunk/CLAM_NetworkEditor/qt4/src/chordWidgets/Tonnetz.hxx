@@ -41,6 +41,8 @@ private:
 	const std::string & getLabel(unsigned bin) const
 	{
 		static std::string a[] = {
+			"G",
+			"G#",
 			"A",
 			"A#",
 			"B",
@@ -51,20 +53,18 @@ private:
 			"E",
 			"F",
 			"F#",
-			"G",
-			"G#",
 			};
 		return a[bin];
 	}
 	const CLAM::TData * frameData()
 	{
-		_pcp = FreezeAndGetData();
-		UnfreezeData();
-		_size = _pcp.size();
-		return &_pcp[0];
+		const std::vector<CLAM::TData> & pcp = FreezeAndGetData();
+		_size = pcp.size();
+		return &pcp[0];
 	}
 	void release()
 	{
+		UnfreezeData();
 	}
 	unsigned nBins() const
 	{
@@ -76,7 +76,6 @@ private:
 	}
 private:
 	unsigned _size;
-	std::vector<CLAM::TData> _pcp;
 };
 
 namespace CLAM
@@ -101,12 +100,6 @@ namespace VM
 			void DrawTile(int x, int y);
 			void DrawLabel(int x, int y);
 			void DrawChordsShapes();
-		protected:
-			const CLAM::TData *frameData()
-			{
-				if ( !_dataSource) return 0;
-				return _dataSource->frameData();
-			}
 		public:
 			void updateIfNeeded();
 			void setDataSource( FloatArrayDataSource & dataSource );
@@ -116,6 +109,7 @@ namespace VM
 			double _maxValue;
 			unsigned _nBins;
 			FloatArrayDataSource * _dataSource;
+			const CLAM::TData * _data;
 			QFont _font;
 	};
 

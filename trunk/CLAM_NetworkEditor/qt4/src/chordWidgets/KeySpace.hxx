@@ -36,6 +36,8 @@ private:
 	const std::string & getLabel(unsigned bin) const
 	{
 		static std::string a[] = {
+			"G",
+			"G#",
 			"A",
 			"A#",
 			"B",
@@ -46,8 +48,8 @@ private:
 			"E",
 			"F",
 			"F#",
-			"G",
-			"G#",
+			"g",
+			"g#",
 			"a",
 			"a#",
 			"b",
@@ -58,8 +60,6 @@ private:
 			"e",
 			"f",
 			"f#",
-			"g",
-			"g#",
 			};
 		return a[bin];
 	}
@@ -67,8 +67,8 @@ private:
 	{
 		_pcp = FreezeAndGetData();
 		UnfreezeData();
-		_size = _pcp.size();
-		return &_pcp[0];
+		_size = _pcp.size()-1;
+		return &_pcp[1];
 	}
 	void release()
 	{
@@ -114,6 +114,7 @@ private:
 	float pKeySpaceValue_[24];
 	float pRColor[201],pGColor[201],pBColor[201];
 	int ColorsIndex[6];
+	void RecomputeWeigths();
 };
 
 }
