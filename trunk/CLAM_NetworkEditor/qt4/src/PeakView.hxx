@@ -2,6 +2,7 @@
 #define PeakView_hxx
 
 #include <QtOpenGL/QGLWidget>
+#undef GetClassName
 #include <QtGui/QLabel>
 #include <CLAM/Processing.hxx>
 #include <CLAM/PortMonitor.hxx>

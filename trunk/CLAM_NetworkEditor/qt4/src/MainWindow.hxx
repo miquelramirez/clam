@@ -13,11 +13,14 @@
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/PushFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
-#include <CLAM/JACKNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
+
+#ifdef USE_JACK
+#include <CLAM/JACKNetworkPlayer.hxx>
+#endif
 
 #ifndef DATA_EXAMPLES_PATH
 // TODO: QT4PORT without the ../
@@ -62,7 +65,7 @@ public:
 
 		int frameSize = 2048;
 		_network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
-
+ #ifdef USE_JACK
 		QString backend = "JACK";
 		QString backendLogo = ":/icons/images/jacklogo-mini.png";
 		CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
@@ -77,7 +80,7 @@ public:
 			backendLogo = ":/icons/images/alsalogo-mini.png";
 			_networkPlayer = new CLAM::BlockingNetworkPlayer();
 		}
-
+#endif
 		_networkPlayer->SetNetwork(_network);
 
 		_playingLabel = new QLabel;

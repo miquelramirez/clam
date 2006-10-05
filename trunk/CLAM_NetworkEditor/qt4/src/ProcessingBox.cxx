@@ -143,9 +143,9 @@ void ProcessingBox::recomputeMinimumSizes()
 	QFontMetrics metrics(_canvas->font());
 	textHeight = metrics.height();
 	int embededMinHeight = 2*margin;
-	if (_embeded and embededMinHeight<_embeded->minimumHeight())
+	if (_embeded && embededMinHeight<_embeded->minimumHeight())
 		embededMinHeight = _embeded->minimumHeight();
-	if (_embeded and embededMinHeight<_embeded->minimumSizeHint().height())
+	if (_embeded && embededMinHeight<_embeded->minimumSizeHint().height())
 		embededMinHeight = _embeded->minimumSizeHint().height();
 	int minimumHeight = textHeight+embededMinHeight;
 	int inportsHeight = _nInports*portStep;
@@ -155,9 +155,9 @@ void ProcessingBox::recomputeMinimumSizes()
 	minimumHeight += 2*portOffset;
 
 	int minimumWidth = metrics.width(_name);
-	if (_embeded and minimumWidth<_embeded->minimumWidth())
+	if (_embeded && minimumWidth<_embeded->minimumWidth())
 		minimumWidth = _embeded->minimumWidth();
-	if (_embeded and minimumWidth<_embeded->minimumSizeHint().width())
+	if (_embeded && minimumWidth<_embeded->minimumSizeHint().width())
 		minimumWidth = _embeded->minimumSizeHint().width();
 	int incontrolsWidth = _nIncontrols*controlStep;
 	int outcontrolsWidth = _nOutcontrols*controlStep;
@@ -171,7 +171,7 @@ void ProcessingBox::recomputeMinimumSizes()
 }
 QColor execBodyColor(QColor defaultColor, CLAM::Processing * processing)
 {
-	if (not processing) return defaultColor;
+	if ( !processing) return defaultColor;
 	if (processing->GetExecState() == CLAM::Processing::Unconfigured)
 		return QColor(0xff,0xa0,0xa0,0x70);
 	return defaultColor;
@@ -179,7 +179,7 @@ QColor execBodyColor(QColor defaultColor, CLAM::Processing * processing)
 
 QColor execFrameColor(QColor defaultColor, CLAM::Processing * processing)
 {
-	if (not processing) return defaultColor;
+	if ( !processing) return defaultColor;
 	if (processing->GetExecState() == CLAM::Processing::Unconfigured)
 		return QColor(0xff,0x00,0x00,0xa0);
 	return defaultColor;
@@ -447,14 +447,14 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	}
 	if (region==bodyRegion)
 	{
-		if (_processing and _processing->GetExecState()==CLAM::Processing::Unconfigured)
+		if (_processing && _processing->GetExecState()==CLAM::Processing::Unconfigured)
 			_canvas->setToolTip(_processing->GetConfigErrorMessage().c_str());
 		_canvas->setStatusTip(QObject::tr("Double click: configure. Left click: Processing menu"));
 		return;
 	}
 	if (region==nameRegion)
 	{
-		if (_processing and _processing->GetExecState()==CLAM::Processing::Unconfigured)
+		if (_processing && _processing->GetExecState()==CLAM::Processing::Unconfigured)
 			_canvas->setToolTip(_processing->GetConfigErrorMessage().c_str());
 		_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
 		return;
@@ -592,7 +592,7 @@ bool ProcessingBox::configure()
 				   	_canvas->tr("No configuration dialog available for this processing"));
 			return false;
 		}
-		if (not launcher->Launch(*_processing,_name)) return false;
+		if ( !launcher->Launch(*_processing,_name)) return false;
 		setProcessing(_processing);
 		return true;
 	}
@@ -605,7 +605,7 @@ bool ProcessingBox::configure()
 		ui.outports->setValue(_nOutports);
 		ui.incontrols->setValue(_nIncontrols);
 		ui.outcontrols->setValue(_nOutcontrols);
-		if (not configDialog->exec()) return false;
+		if ( !configDialog->exec()) return false;
 		// TODO: clear connections
 		_nInports= ui.inports->value();
 		_nOutports= ui.outports->value();

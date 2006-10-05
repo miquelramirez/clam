@@ -8,6 +8,7 @@ class VumeterMonitor : public OscilloscopeMonitor
 };
 
 #include <QtOpenGL/QGLWidget>
+#undef GetClassName
 #include <QtGui/QLabel>
 #include <CLAM/Processing.hxx>
 #include <CLAM/DataTypes.hxx>
@@ -38,10 +39,10 @@ public:
 	double energy()
 	{
 		_energy*=0.5;
-		if (not _dataSource) return _energy;
+		if ( !_dataSource) return _energy;
 		const CLAM::TData * data = _dataSource->frameData();
 		unsigned size = _dataSource->nBins();
-		if (not size)
+		if ( !size)
 		{
 			_dataSource->release();
 			_energy = 0;
@@ -59,8 +60,8 @@ public:
 	}
 	void timerEvent(QTimerEvent *event)
 	{
-		if (not _dataSource) return;
-		if (not _dataSource->isEnabled()) return;
+		if ( !_dataSource) return;
+		if ( !_dataSource->isEnabled()) return;
 			return;
 		update();
 	}

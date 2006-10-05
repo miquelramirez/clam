@@ -29,6 +29,7 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.Tool('nsis', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
 version, fullVersion = versionInfo.takeFromChangeLog("../CHANGES", "NetworkEditor")
@@ -87,6 +88,8 @@ sourcePaths = [
 	os.path.join('src','chordWidgets','generated'),
 ]
 extraPaths = [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 	os.path.join(env['annotator_path'],'src','ChordExtractor'),
 ]
 
@@ -149,6 +152,8 @@ installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
 if sys.platform=='win32' : 
+	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
+
 	installTargets += [
 		env.Install(
 			env['install_prefix']+"/bin", 
