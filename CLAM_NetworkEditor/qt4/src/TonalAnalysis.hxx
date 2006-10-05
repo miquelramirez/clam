@@ -27,9 +27,9 @@ class TonalAnalysis : public Processing
 {
 private:
 	
-	TonalAnalysisConfig mConfig;
-	AudioInPort mInput;
-	OutPort<std::vector<CLAM::TData> > mOutput;
+	TonalAnalysisConfig _config;
+	AudioInPort _input;
+	OutPort<std::vector<CLAM::TData> > _output;
 
 public:
 	TonalAnalysis( const TonalAnalysisConfig & config = TonalAnalysisConfig() );
@@ -38,10 +38,11 @@ public:
 	virtual ~TonalAnalysis();
 	const char * GetClassName() const {return "TonalAnalysis";}
 	
-	inline const ProcessingConfig &GetConfig() const { return mConfig;}
+	inline const ProcessingConfig &GetConfig() const { return _config;}
 	bool ConcreteConfigure(const ProcessingConfig& c);
 private:
-	Simac::ChordExtractor * mImplementation;
+	Simac::ChordExtractor * _implementation;
+	std::vector<float> _floatBuffer;
 
 };
 

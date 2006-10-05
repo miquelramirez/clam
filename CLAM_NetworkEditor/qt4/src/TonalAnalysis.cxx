@@ -39,30 +39,41 @@ void TonalAnalysisConfig::DefaultInit(void)
 
 
 TonalAnalysis::TonalAnalysis( const TonalAnalysisConfig& cfg )
-	: mInput("Audio Input",this)
-	, mOutput("Pitch Profile",this)
-	, mImplementation(new Simac::ChordExtractor )
+	: _input("Audio Input",this)
+	, _output("Pitch Profile",this)
+	, _implementation(new Simac::ChordExtractor )
 {
 	Configure( cfg );
 }
 
 TonalAnalysis::~TonalAnalysis()
 {
-	delete mImplementation;
+	delete _implementation;
 }
 
 bool TonalAnalysis::ConcreteConfigure( const ProcessingConfig& c )
 {
-	CopyAsConcreteConfig(mConfig, c);
+	CopyAsConcreteConfig(_config, c);
+	_input.SetSize( _implementation->frameSize() );
+	_input.SetHop( _implementation->hop() );
+	_floatBuffer.resize(_implementation->frameSize());
 	return true;
 }
 
 bool TonalAnalysis::Do()
 {
 	if( !AbleToExecute() ) return true;
-//	mOutput.GetData() = _lastValues;
-	mInput.Consume();
-	mOutput.Produce();
+	CLAM::TData * input = &(_input.GetAudio().GetBuffer()[0]);
+	for (unsigned i = 0; i < _implementation->frameSize(); i++)
+		_floatBuffer[i] = input[i];
+	_implementation->doIt(&_floatBuffer[0]);
+	std::vector<TData> & output = _output.GetData();
+	output.resize(_implementation->pcp().size());
+	for (unsigned i = 0; i < _implementation->pcp().size(); i++)
+		output[i] = _implementation->pcp()[i];
+
+	_input.Consume();
+	_output.Produce();
 	return true;
 }
 
