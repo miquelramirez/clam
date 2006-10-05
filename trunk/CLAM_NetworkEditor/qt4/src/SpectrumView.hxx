@@ -60,11 +60,15 @@ class SpectrumView : public QWidget
 	enum Dimensions {
 	};
 public:
-	SpectrumView(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
+	SpectrumView(QWidget * parent=0)
 		: QWidget(parent)
-		, _dataSource(dataSource)
+		, _dataSource(0)
 	{
 		startTimer(50);
+	}
+	void setDataSource( CLAM::VM::FloatArrayDataSource & dataSource)
+	{
+		_dataSource = &dataSource;
 	}
 	void paintEvent(QPaintEvent * event)
 	{

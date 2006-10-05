@@ -236,7 +236,7 @@ void CLAM::VM::Tonnetz::updateIfNeeded()
 	if (!_updatePending++) update();
 }
 
-void CLAM::VM::Tonnetz::setSource(FloatArrayDataSource & dataSource )
+void CLAM::VM::Tonnetz::setDataSource(FloatArrayDataSource & dataSource )
 {
 	_dataSource = &dataSource;
 	_nBins = _dataSource->nBins();

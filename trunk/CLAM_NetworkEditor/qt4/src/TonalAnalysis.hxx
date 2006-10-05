@@ -29,7 +29,8 @@ private:
 	
 	TonalAnalysisConfig _config;
 	AudioInPort _input;
-	OutPort<std::vector<CLAM::TData> > _output;
+	OutPort<std::vector<CLAM::TData> > _pcp;
+	OutPort<std::vector<CLAM::TData> > _chordCorrelation;
 
 public:
 	TonalAnalysis( const TonalAnalysisConfig & config = TonalAnalysisConfig() );

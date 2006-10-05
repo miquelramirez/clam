@@ -19,10 +19,72 @@
  *
  */
 
-#ifndef _KEYSPACE_
-#define _KEISPACE_
+#ifndef KeySpace_hxx
+#define KeySpace_hxx
 
 #include "Tonnetz.hxx"
+
+class KeySpaceMonitor : public CLAM::PortMonitor<std::vector<CLAM::TData> >, public CLAM::VM::FloatArrayDataSource
+{
+public:
+	KeySpaceMonitor()
+		: _size(24)
+	{
+	}
+private:
+	const char* GetClassName() const { return "KeySpace"; };
+	const std::string & getLabel(unsigned bin) const
+	{
+		static std::string a[] = {
+			"A",
+			"A#",
+			"B",
+			"C",
+			"C#",
+			"D",
+			"D#",
+			"E",
+			"F",
+			"F#",
+			"G",
+			"G#",
+			"a",
+			"a#",
+			"b",
+			"c",
+			"c#",
+			"d",
+			"d#",
+			"e",
+			"f",
+			"f#",
+			"g",
+			"g#",
+			};
+		return a[bin];
+	}
+	const CLAM::TData * frameData()
+	{
+		_pcp = FreezeAndGetData();
+		UnfreezeData();
+		_size = _pcp.size();
+		return &_pcp[0];
+	}
+	void release()
+	{
+	}
+	unsigned nBins() const
+	{
+		return _size;
+	}
+	bool isEnabled() const
+	{
+		return GetExecState() == CLAM::Processing::Running;
+	}
+private:
+	unsigned _size;
+	std::vector<CLAM::TData> _pcp;
+};
 namespace CLAM {
 namespace VM {
 

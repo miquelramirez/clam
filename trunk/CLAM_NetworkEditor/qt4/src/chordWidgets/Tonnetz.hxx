@@ -109,7 +109,7 @@ namespace VM
 			}
 		public:
 			void updateIfNeeded();
-			void setSource( FloatArrayDataSource & dataSource );
+			void setDataSource( FloatArrayDataSource & dataSource );
 			void clearData();
 		protected:
 			int _updatePending;

@@ -19,6 +19,11 @@
  *
  */
 
+#include <CLAM/Factory.hxx>
+#include "KeySpace.hxx"
+
+static CLAM::Factory<CLAM::Processing>::Registrator<KeySpaceMonitor> registrator("KeySpace");
+
 
 #include "KeySpace.hxx"
 #include <cmath>
