@@ -2,7 +2,7 @@
 #define Vumeter_hxx
 
 #include "Oscilloscope.hxx"
-class Vumeter : public Oscilloscope
+class VumeterMonitor : public OscilloscopeMonitor
 {
 	const char* GetClassName() const { return "Vumeter"; };
 };
@@ -13,15 +13,15 @@ class Vumeter : public Oscilloscope
 #include <CLAM/DataTypes.hxx>
 
 
-class VumeterWidget : public QWidget
+class Vumeter : public QWidget
 {
 	enum Dimensions {
 		margin=4
 	};
 public:
-	VumeterWidget(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
+	Vumeter(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
 		: QWidget(parent)
-		, _dataSource(dynamic_cast<Vumeter*>(dataSource))
+		, _dataSource( dataSource)
 		, _energy(0)
 	{
 		startTimer(50);

@@ -7,10 +7,10 @@
 
 //TODO move to a clam lib
 
-class Oscilloscope : public CLAM::AudioPortMonitor, public CLAM::VM::FloatArrayDataSource
+class OscilloscopeMonitor : public CLAM::AudioPortMonitor, public CLAM::VM::FloatArrayDataSource
 {
 public:
-	Oscilloscope()
+	OscilloscopeMonitor()
 		: _size(0)
 		{ }
 private:
@@ -53,12 +53,12 @@ private:
 #include <CLAM/DataTypes.hxx>
 
 
-class OscilloscopeWidget : public QWidget
+class Oscilloscope : public QWidget
 {
 	enum Dimensions {
 	};
 public:
-	OscilloscopeWidget(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
+	Oscilloscope(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
 		: QWidget(parent)
 		, _dataSource(dataSource)
 	{

@@ -75,10 +75,10 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 		return new ControlSenderWidget(processing);
 
 	if (className=="Vumeter")
-		return new VumeterWidget( dynamic_cast<Vumeter*>(processing) );
+		return new Vumeter( dynamic_cast<VumeterMonitor*>(processing) );
 
 	if (className=="Oscilloscope")
-		return new OscilloscopeWidget( dynamic_cast<Oscilloscope*>(processing) );
+		return new Oscilloscope( dynamic_cast<OscilloscopeMonitor*>(processing) );
 
 	if (className=="SpectrumView")
 		return new SpectrumView( dynamic_cast<SpectrumViewMonitor*>(processing) );
