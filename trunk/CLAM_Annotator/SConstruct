@@ -155,7 +155,15 @@ example_data = [
 chordSources = scanFiles("*.cxx", ["src/ChordExtractor"])
 chordSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  chordSources )
 chordSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  chordSources )
-programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
+chordNoLibSources = [
+	os.path.join('src','ChordExtractor',file) for file in [
+			'MainClam.cxx',
+		]
+]
+chordLibSources = [chordSource for chordSource in chordSources if not chordSource in chordNoLibSources ]
+
+chordLib = [ env.StaticLibrary(target='ChordExtractor', source = chordLibSources) ]
+programs += [ env.Program(target='ChordExtractor', source = chordNoLibSources + chordLib) ]
 
 env.Uic4(source="SimacServicesClient/GUI.ui")
 bocaClientSources = [
