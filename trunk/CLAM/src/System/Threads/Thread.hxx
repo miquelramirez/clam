@@ -49,7 +49,6 @@ public:
 
 	void WakeUp();
 
-	virtual void SetupPriorityPolicy();
 
 	void SetThreadCode( const CBL::Functor0& thread_code );
 
@@ -67,6 +66,8 @@ public:
 		return mRunning;
 	}
 
+private:
+	virtual void SetupPriorityPolicy();
 private:
 	bool               mRealtime;
 	bool               mHasCode;
