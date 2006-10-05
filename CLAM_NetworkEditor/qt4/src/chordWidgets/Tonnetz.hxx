@@ -104,7 +104,7 @@ namespace VM
 		protected:
 			const CLAM::TData *frameData()
 			{
-				if (not _dataSource) return 0;
+				if ( !_dataSource) return 0;
 				return _dataSource->frameData();
 			}
 		public:
