@@ -1,7 +1,8 @@
 #include "PrototypeLoader.hxx"
 #include "QtSlot2Control.hxx"
-//#include <QtUiTools/QUiLoader>
+#include <QtUiTools/QUiLoader>
 #include <QtDesigner/QFormBuilder>
+#include <QtDesigner/QDesignerCustomWidgetInterface>
 #include <QtGui/QDialog>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QMessageBox>
@@ -146,7 +147,8 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 	QFile file(uiFile);
 	file.open(QFile::ReadOnly);
 	QFormBuilder loader; // TODO: Change this to a QUiLoader
-//	loader.addPluginPath("src/clamwidgetsplugin/plugins");
+//	QUiLoader loader;
+	loader.addPluginPath("src/clamwidgetsplugin/plugins");
 	QStringList paths = QString(getenv("QT_PLUGIN_PATH")).split(":");
 	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
 	{
