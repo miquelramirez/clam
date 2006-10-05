@@ -26,7 +26,7 @@ class SpectrumViewMonitor : public CLAM::PortMonitor<CLAM::Spectrum>, public CLA
 	const CLAM::TData * frameData()
 	{
 		_spectrum = FreezeAndGetData();
-		if (not _spectrum.HasMagBuffer())
+		if ( !_spectrum.HasMagBuffer())
 		{
 			CLAM::SpecTypeFlags flags;
 			flags.bMagPhase=true;
@@ -72,7 +72,7 @@ public:
 	}
 	void paintEvent(QPaintEvent * event)
 	{
-		if (not _dataSource) return;
+		if ( !_dataSource) return;
 		const CLAM::TData * data = _dataSource->frameData();
 		int size = _dataSource->nBins();
 
@@ -87,8 +87,8 @@ public:
 	}
 	void timerEvent(QTimerEvent *event)
 	{
-		if (not _dataSource) return;
-		if (not _dataSource->isEnabled()) return;
+		if ( !_dataSource) return;
+		if ( !_dataSource->isEnabled()) return;
 		update();
 	}
 private:

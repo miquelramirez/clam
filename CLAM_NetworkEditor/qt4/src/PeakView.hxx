@@ -20,11 +20,11 @@ public:
 	}
 	void paintEvent(QPaintEvent * event)
 	{
-		if (not _monitor) return;
+		if ( !_monitor) return;
 		CLAM::SpectralPeakArray peaks = _monitor->FreezeAndGetData();
 		_monitor->UnfreezeData();
-		if (not peaks.HasMagBuffer()) return;
-		if (not peaks.HasFreqBuffer()) return;
+		if ( !peaks.HasMagBuffer()) return;
+		if ( !peaks.HasFreqBuffer()) return;
 		const CLAM::DataArray & mag = peaks.GetMagBuffer();
 		const CLAM::DataArray & freq = peaks.GetFreqBuffer();
 		int size = mag.Size();
@@ -48,7 +48,7 @@ public:
 	}
 	void timerEvent(QTimerEvent *event)
 	{
-		if (not _monitor) return;
+		if ( !_monitor) return;
 		if (_monitor->GetExecState() != CLAM::Processing::Running)
 			return;
 		update();
