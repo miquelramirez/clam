@@ -19,7 +19,6 @@ BlockingNetworkPlayer::BlockingNetworkPlayer(const std::string & networkFile)
 	GetNetwork().AddFlowControl( new PushFlowControl( /*frameSize*/ 512 ));
 	XmlStorage::Restore( GetNetwork() ,networkFile);
 	mThread.SetThreadCode( makeMemberFunctor0( *this, BlockingNetworkPlayer, Do ) );
-	mThread.SetupPriorityPolicy();
 }
 
 //Called by NetworController
@@ -30,7 +29,6 @@ BlockingNetworkPlayer::BlockingNetworkPlayer()
 {
 	mAudioManager.Start();
 	mThread.SetThreadCode( makeMemberFunctor0( *this, BlockingNetworkPlayer, Do ) );
-	mThread.SetupPriorityPolicy();		
 }
 
 BlockingNetworkPlayer::~BlockingNetworkPlayer()
