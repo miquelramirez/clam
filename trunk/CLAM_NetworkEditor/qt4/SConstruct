@@ -7,6 +7,7 @@ options = Options('options.cache', ARGUMENTS)
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 options.Add(PathOption('install_prefix', 'Display the full command line instead a short command description', '/usr/local') )
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('annotator_path', 'The root path for the Annotator source', ''))
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -85,7 +86,9 @@ sourcePaths = [
 	os.path.join('src','chordWidgets'),
 	os.path.join('src','chordWidgets','generated'),
 ]
-extraPaths = []
+extraPaths = [
+	os.path.join(env['annotator_path'],'src','ChordExtractor'),
+]
 
 includePaths = sourcePaths + extraPaths
 
@@ -114,6 +117,8 @@ for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
 env.Append(LIBS=['cppunit'])
 programs += [ env.Program(target='UnitTests', source = sources+testsources) ]
+env.Append(LIBS=['ChordExtractor'])
+env.Append(LIBPATH=[ env['annotator_path'] ])
 
 # Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
