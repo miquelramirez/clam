@@ -21,19 +21,19 @@
 **
 ****************************************************************************/
 
-#ifndef PlotPlugin_hxx
-#define PlotPlugin_hxx
+#ifndef OscilloscopePlugin_hxx
+#define OscilloscopePlugin_hxx
 
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
-class PlotPlugin : public QObject,
+class OscilloscopePlugin : public QObject,
                              public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
-    PlotPlugin(QObject *parent = 0);
+    OscilloscopePlugin(QObject *parent = 0);
 
     bool isContainer() const;
     bool isInitialized() const;

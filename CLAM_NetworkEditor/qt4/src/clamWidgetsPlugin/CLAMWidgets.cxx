@@ -1,8 +1,9 @@
 #include <QtDesigner/QDesignerContainerExtension>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 #include <QtCore/QtPlugin>
+#include "OscilloscopePlugin.hxx"
 #include "PlotPlugin.hxx"
-#include "worldtimeclockplugin.h"
+#include "worldtimeclockplugin.hxx"
 #include <iostream>
 
 #include "CLAMWidgets.hxx"
@@ -10,8 +11,9 @@
 CLAMWidgets::CLAMWidgets(QObject* parent)
 	: QObject(parent)
 {
-	std::cout << "Loading CLAM widgets..." << std::endl;
+	std::cout << "Loading CLAM widgets " << VERSION << "..." << std::endl;
 	_widgetPlugins
+		<< new OscilloscopePlugin(this)
 		<< new PlotPlugin(this)
 		<< new WorldTimeClockPlugin2(this)
 		;

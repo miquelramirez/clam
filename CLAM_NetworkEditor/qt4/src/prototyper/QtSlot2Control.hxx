@@ -1,9 +1,9 @@
 #ifndef _QtSlot2Control_hxx_
 #define _QtSlot2Control_hxx_
-#include <QtCore/QObject>
 #include <iostream>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/InControl.hxx>
+#include <QtCore/QObject>
 
 
 class QtSlot2Control : public QObject
