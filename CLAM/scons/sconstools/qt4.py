@@ -402,11 +402,11 @@ def enable_modules(self, modules, debug=False) :
 		for module in modules :
 			if module not in pclessModules : continue
 			self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
-			self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib",module)])
+			self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib")])
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4")])
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
-			modules.remove(module)
-		if debug : modules = [module+debugSuffix for module in modules]
-		self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(modules))
+		pcmodules = [module+debugSuffix for module in modules if module not in pclessModules ]
+		self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
 		return
 	if sys.platform == "win32" :
 		if debug : debugSuffix = 'd'
