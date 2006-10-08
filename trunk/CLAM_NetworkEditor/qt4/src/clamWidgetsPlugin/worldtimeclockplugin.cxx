@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#include "worldtimeclock.h"
-#include "worldtimeclockplugin.h"
+#include "worldtimeclock.hxx"
+#include "worldtimeclockplugin.hxx"
 
 #include <QtPlugin>
 

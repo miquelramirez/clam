@@ -70,7 +70,7 @@ env.EnableQt4Modules([
 	'QtXml',
 #	'QtSvg',
 	'QtUiTools',
-#	'QtDesigner',
+	'QtDesigner',
 #	'Qt3Support',
 	], debug=False)
 
@@ -86,6 +86,8 @@ sourcePaths = [
 	os.path.join('src','prototyper'),
 	os.path.join('src','chordWidgets'),
 	os.path.join('src','chordWidgets','generated'),
+	os.path.join('src','clamWidgetsPlugins'),
+	os.path.join('src','clamWidgetsPlugins','generated'),
 ]
 extraPaths = [
 	CLAMInstallDir+'/include',
@@ -108,12 +110,20 @@ if qrcfiles : sources += env.Qrc(source=qrcfiles)
 uifiles = scanFiles("*.ui", sourcePaths)
 if uifiles: uiheaders = env.Uic4(source=uifiles)
 
-env.Append(CPPPATH=includePaths)
-
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
 testsources = scanFiles('*.cxx', ['test'])
+plugindirs = [
+	os.path.join('src','clamWidgetsPlugin'),
+	os.path.join('src','clamWidgetsPlugin','generated'),
+]
+pluginsources = scanFiles('*.cxx', plugindirs)
+pluginsources = filter( (lambda a : a.rfind( "moc_")==-1 ),  pluginsources )
+pluginsources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  pluginsources )
+pluginsources = dict.fromkeys(pluginsources).keys()
+pluginsources.append(os.path.join('src','','generated','moc_Oscilloscope.cxx'))
+env.Append(CPPPATH=includePaths+plugindirs)
 
 programs = []
 for main in mainSources.items() :
@@ -122,6 +132,18 @@ env.Append(LIBS=['cppunit'])
 programs += [ env.Program(target='UnitTests', source = sources+testsources) ]
 env.Append(LIBS=['ChordExtractor'])
 env.Append(LIBPATH=[ env['annotator_path'] ])
+
+pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQT_OPENGL_LIB','-DQT_XML_LIB','-DQDESIGNER_EXPORT_WIDGETS','-D_REENTRANT']
+env.AppendUnique(CPPFLAGS=pluginDefines)
+
+#env.AppendUnique(CPPFLAGS=['-fPIC']) # qtPlugin examples were compiled with this option
+env.AppendUnique(QT4_MOCFROMHFLAGS=['-I/usr/include/qt4']) # TODO: Move this to the qt4 tool
+env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I/usr/include/qt4']) # TODO: Move this to the qt4 tool
+
+env.Append(CPPFLAGS=['-DVERSION=\'"%s"\''%fullVersion]) # to have M_PI defined
+
+qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources)
+
 
 # Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
@@ -188,5 +210,5 @@ if sys.platform=='macosx' : # not really tested!!!
 
 env.Alias('install', installTargets )
 
-env.Default(programs, translations)
+env.Default(programs, translations, qtplugin)
 

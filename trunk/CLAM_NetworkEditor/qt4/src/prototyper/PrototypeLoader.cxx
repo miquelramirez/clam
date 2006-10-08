@@ -3,7 +3,6 @@
 #include <QtUiTools/QUiLoader>
 #include <QtDesigner/QFormBuilder>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
-#include <QtGui/QWidget>
 #include <QtGui/QDialog>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QMessageBox>
@@ -20,6 +19,7 @@
 #include <CLAM/JACKNetworkPlayer.hxx>
 #endif
 
+#include "Oscilloscope.hxx"
 //#include "NetAudioPlot.hxx" // QT4PORT
 //#include "NetPeaksPlot.hxx" // QT4PORT
 //#include "NetSpectrumPlot.hxx" // QT4PORT
@@ -89,10 +89,6 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 PrototypeLoader::~PrototypeLoader()
 {
 	if (_player) delete _player;
-	
-	// QT4PORT
-//	for (std::list<CLAM::VM::NetPlot*>::iterator it=mPortMonitors.begin(); it!=mPortMonitors.end(); it++)
-//		delete *it;
 }
 void PrototypeLoader::Show()
 {
@@ -147,13 +143,14 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends )
 	return false;
 }
 
+#include <dlfcn.h>
+
 static QWidget * DoLoadInterface(const QString & uiFile)
 {
 	QFile file(uiFile);
 	file.open(QFile::ReadOnly);
-	QFormBuilder loader; // TODO: Change this to a QUiLoader
-//	QUiLoader loader;
-	loader.addPluginPath("src/clamwidgetsplugin/plugins");
+//	QFormBuilder loader; // TODO: Change this to a QUiLoader
+	QUiLoader loader;
 	QStringList paths = QString(getenv("QT_PLUGIN_PATH")).split(":");
 	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
 	{
@@ -198,6 +195,9 @@ void PrototypeLoader::ConnectWithNetwork()
 	
 	ConnectWidgetsWithControls();
 	ConnectWidgetsWithMappedControls();
+
+	ConnectWidgetsWithPorts<Oscilloscope,OscilloscopeMonitor>
+		("OutPort__.*", "Oscilloscope");
 /*
 	// QT4PORT
 	ConnectWidgetsWithPorts<CLAM::VM::NetAudioPlot>
@@ -354,22 +354,24 @@ void PrototypeLoader::ConnectWidgetsWithMappedControls()
 	}
 }
 
-template < typename PlotClass >
+template < typename PlotClass, typename MonitorType>
 void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 {
+	std::cout << "Looking for " << plotClassName << " widgets..." << std::endl;
 	// QT4PORT
 //	if (!QWidgetFactory::supportsWidget(plotClassName))
 //		qWarning(tr("No support for widgets %1. Maybe the CLAM qt plugins has not been loaded").arg(plotClassName));
-	QList<PlotClass*> widgets = _interface->findChildren<PlotClass*>(QRegExp(prefix));
-	for (typename QList<PlotClass*>::Iterator it=widgets.begin();
+//	QList<PlotClass*> widgets = _interface->findChildren<PlotClass*>(QRegExp(prefix));
+	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp(".*"));
+	for (typename QList<QWidget*>::Iterator it=widgets.begin();
 			it!=widgets.end();
 		   	it++)
 	{
-		PlotClass * aWidget = *it;
+		QWidget * aWidget = *it;
+		if (aWidget->metaObject()->className() != std::string(plotClassName)) continue;
 		std::string portName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(9).toAscii());
-		std::cout << "* " << plotClassName << ": " << portName << std::endl;
+		std::cout << "* " << plotClassName << " connected to port " << portName << std::endl;
 
-		typedef typename PlotClass::MonitorType MonitorType;
 		MonitorType * portMonitor = new MonitorType;
 
 		std::string monitorName = "PrototyperMonitor"+getMonitorNumber();
@@ -378,7 +380,7 @@ void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 		// TODO: It may not be present
 		_network.ConnectPorts(portName,monitorName+".Input");
 		PlotClass * plot = (PlotClass*) aWidget;
-		plot->SetMonitor(*portMonitor);
+		plot->setSource(portMonitor);
 	}
 }
 	

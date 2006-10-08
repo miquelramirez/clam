@@ -20,6 +20,9 @@ SOURCES     = worldtimeclock.cpp \
 			  PlotPlugin.cxx  \
 			  CLAMWidgets.cxx
 
+CPPPATH=../ 
+DEFINES=VERSION='"QMAKE"'
+
 # install
 target.path = $$[QT_INSTALL_PLUGINS]/designer
 sources.files = $$SOURCES $$HEADERS *.pro

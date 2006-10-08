@@ -51,7 +51,7 @@ private:
 
 	void ConnectWidgetsWithMappedControls();
 	
-	template < typename PlotClass >
+	template < typename PlotClass, typename MonitorType >
 	void ConnectWidgetsWithPorts(char* prefix, char* plotClassName);
 
 	void UpdatePlayStatus();

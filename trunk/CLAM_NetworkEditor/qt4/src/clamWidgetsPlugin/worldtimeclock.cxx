@@ -23,7 +23,7 @@
 
 #include <QtGui>
 
-#include "worldtimeclock.h"
+#include "worldtimeclock.hxx"
 
 WorldTimeClock2::WorldTimeClock2(QWidget *parent)
     : QWidget(parent)
