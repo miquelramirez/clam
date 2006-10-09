@@ -42,6 +42,7 @@ TonalAnalysis::TonalAnalysis( const TonalAnalysisConfig& cfg )
 	: _input("Audio Input",this)
 	, _pcp("Pitch Profile",this)
 	, _chordCorrelation("Chord Correlation",this)
+	, _chromaPeaks("Chroma Peaks",this)
 	, _implementation(new Simac::ChordExtractor )
 {
 	Configure( cfg );
@@ -80,6 +81,12 @@ bool TonalAnalysis::Do()
 	for (unsigned i = 0; i < _implementation->chordCorrelation().size(); i++)
 		chordCorrelation[i] = _implementation->chordCorrelation()[i];
 	_chordCorrelation.Produce();
+
+	std::vector<std::pair<TData,TData> > & chromaPeaks = _chromaPeaks.GetData();
+	chromaPeaks.resize(_implementation->peaks().size());
+	for (unsigned i = 0; i < _implementation->peaks().size(); i++)
+		chromaPeaks[i] = _implementation->peaks()[i];
+	_chromaPeaks.Produce();
 
 	_input.Consume();
 	return true;

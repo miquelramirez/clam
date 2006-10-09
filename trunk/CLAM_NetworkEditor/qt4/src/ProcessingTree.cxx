@@ -122,6 +122,7 @@ const static char * processingClasses[] = {
 	"PeakView",
 	"Tonnetz",
 	"KeySpace",
+	"PolarChromaPeaks",
 	0,
 	0
 };
