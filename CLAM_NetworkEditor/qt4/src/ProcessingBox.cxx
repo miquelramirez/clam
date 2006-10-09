@@ -6,6 +6,7 @@
 #include "Oscilloscope.hxx"
 #include "SpectrumView.hxx"
 #include "PeakView.hxx"
+#include "PolarChromaPeaks.hxx"
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
 #include "ControlSenderWidget.hxx"
@@ -91,6 +92,13 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 	{
 		PeakView * widget = new PeakView(canvas);
 		widget->setDataSource( *dynamic_cast<PeakViewMonitor*>(processing) );
+		return widget;
+	}
+
+	if (className=="PolarChromaPeaks")
+	{
+		PolarChromaPeaks * widget = new PolarChromaPeaks(canvas);
+		widget->setDataSource( *dynamic_cast<PolarChromaPeaksMonitor*>(processing) );
 		return widget;
 	}
 
