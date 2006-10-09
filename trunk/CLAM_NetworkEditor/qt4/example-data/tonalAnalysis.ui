@@ -2,8 +2,8 @@
  <author></author>
  <comment></comment>
  <exportmacro></exportmacro>
- <class>SMS_Mess</class>
- <widget class="QDialog" name="SMS_Mess" >
+ <class>Tonal_Analysis</class>
+ <widget class="QDialog" name="Tonal_Analysis" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -13,10 +13,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>SMS Mess</string>
-  </property>
-  <property name="windowIcon" >
-   <iconset/>
+   <string>Tonal Analysis</string>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -52,7 +49,7 @@
        <number>6</number>
       </property>
       <item rowspan="3" row="0" column="1" >
-       <widget class="Vumeter" name="OutPort__AudioSource_0__AudioOut" >
+       <widget class="Vumeter" name="OutPort__AudioSource_0__Samples___Read" >
         <property name="sizePolicy" >
          <sizepolicy>
           <hsizetype>5</hsizetype>
@@ -64,7 +61,7 @@
        </widget>
       </item>
       <item row="0" column="0" >
-       <widget class="Oscilloscope" name="OutPort__AudioSource_0__AudioOut" >
+       <widget class="Oscilloscope" name="OutPort__AudioSource_0__Samples___Read" >
         <property name="sizePolicy" >
          <sizepolicy>
           <hsizetype>5</hsizetype>
@@ -368,46 +365,6 @@
       <number>6</number>
      </property>
      <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" >
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="PlaybackIndicator" >
-       <property name="text" >
-        <string>Playback</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="BackendIndicator" >
-       <property name="text" >
-        <string>Backend</string>
-       </property>
-       <property name="alignment" >
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
       <widget class="QPushButton" name="PlayButton" >
        <property name="sizePolicy" >
         <sizepolicy>
@@ -438,6 +395,46 @@
       </widget>
      </item>
      <item>
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="PlaybackIndicator" >
+         <property name="text" >
+          <string>Playback</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="BackendIndicator" >
+         <property name="text" >
+          <string>Backend</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
       <widget class="QPushButton" name="CloseButton" >
        <property name="sizePolicy" >
         <sizepolicy>
@@ -460,13 +457,6 @@
  <pixmapfunction></pixmapfunction>
  <customwidgets>
   <customwidget>
-   <class>Oscilloscope</class>
-   <extends>QWidget</extends>
-   <header>Oscilloscope.hxx</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
    <class>CLAM::VM::Tonnetz</class>
    <extends>QWidget</extends>
    <header>Tonnetz.hxx</header>
@@ -477,6 +467,13 @@
    <class>Vumeter</class>
    <extends>QWidget</extends>
    <header>Vumeter.hxx</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>Oscilloscope.hxx</header>
    <container>0</container>
    <pixmap></pixmap>
   </customwidget>
@@ -493,14 +490,12 @@
   <tabstop>StopButton</tabstop>
   <tabstop>CloseButton</tabstop>
  </tabstops>
- <resources>
-  <include location="src/images.qrc" />
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>CloseButton</sender>
    <signal>clicked()</signal>
-   <receiver>SMS_Mess</receiver>
+   <receiver>Tonal_Analysis</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel" >
