@@ -381,7 +381,7 @@ void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 //	if (!QWidgetFactory::supportsWidget(plotClassName))
 //		qWarning(tr("No support for widgets %1. Maybe the CLAM qt plugins has not been loaded").arg(plotClassName));
 //	QList<PlotClass*> widgets = _interface->findChildren<PlotClass*>(QRegExp(prefix));
-	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp(".*"));
+	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp(prefix));
 	for (typename QList<QWidget*>::Iterator it=widgets.begin();
 			it!=widgets.end();
 		   	it++)
