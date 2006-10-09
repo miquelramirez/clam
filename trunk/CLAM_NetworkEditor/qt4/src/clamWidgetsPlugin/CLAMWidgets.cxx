@@ -2,6 +2,7 @@
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 #include <QtCore/QtPlugin>
 #include "OscilloscopePlugin.hxx"
+#include "VumeterPlugin.hxx"
 #include "PlotPlugin.hxx"
 #include "worldtimeclockplugin.hxx"
 #include <iostream>
@@ -14,6 +15,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 	std::cout << "Loading CLAM widgets " << VERSION << "..." << std::endl;
 	_widgetPlugins
 		<< new OscilloscopePlugin(this)
+		<< new VumeterPlugin(this)
 		<< new PlotPlugin(this)
 		<< new WorldTimeClockPlugin2(this)
 		;

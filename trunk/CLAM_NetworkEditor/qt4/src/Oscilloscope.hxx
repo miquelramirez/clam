@@ -4,7 +4,6 @@
 
 #include <CLAM/PortMonitor.hxx>
 #include "FloatArrayDataSource.hxx"
-#include <QtDesigner/QDesignerExportWidget>
 
 
 //TODO move to a clam lib
@@ -89,22 +88,21 @@ private:
 
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
-#include <QtGui/QLabel>
 #include <QtGui/QPainter>
-#include <CLAM/Processing.hxx>
-#include <CLAM/PortMonitor.hxx>
 #include <CLAM/DataTypes.hxx>
-
+#include <QtDesigner/QDesignerExportWidget>
 
 class QDESIGNER_WIDGET_EXPORT Oscilloscope : public QWidget
 {
 	Q_OBJECT
+	Q_PROPERTY(QColor lineColor READ lineColor WRITE setLineColor)
 	enum Dimensions {
 	};
 public:
 	Oscilloscope(QWidget * parent=0)
 		: QWidget(parent)
 		, _dataSource(0)
+		, _lineColor(Qt::black)
 	{
 		if (!_dataSource) _dataSource = new OscilloscopeDummySource;
 		startTimer(50);
@@ -116,7 +114,7 @@ public:
 		if (!_dataSource) _dataSource = new OscilloscopeDummySource;
 		startTimer(50);
 	}
-	void setSource(CLAM::VM::FloatArrayDataSource * dataSource)
+	void setDataSource(CLAM::VM::FloatArrayDataSource * dataSource)
 	{
 		_dataSource=dataSource;
 	}
@@ -128,7 +126,7 @@ public:
 		painter.scale(width(),-height()/2);
 		painter.drawLine(0,0,1,0);
 
-		painter.setPen(Qt::black);
+		painter.setPen(_lineColor);
 		const CLAM::TData * data = _dataSource->frameData();
 		int size = _dataSource->nBins();
 		QPolygonF _line;
@@ -136,6 +134,14 @@ public:
 			_line << QPointF(float(i)/size, data[i]);
 		_dataSource->release();
 		painter.drawPolyline(_line);
+	}
+	void setLineColor(const QColor & color)
+	{
+		_lineColor = color;
+	}
+	QColor lineColor() const
+	{
+		return _lineColor;
 	}
 	void timerEvent(QTimerEvent *event)
 	{
@@ -145,6 +151,7 @@ public:
 	}
 private:
 	CLAM::VM::FloatArrayDataSource * _dataSource;
+	QColor _lineColor;
 };
 
 

@@ -20,6 +20,7 @@
 #endif
 
 #include "Oscilloscope.hxx"
+#include "Vumeter.hxx"
 //#include "NetAudioPlot.hxx" // QT4PORT
 //#include "NetPeaksPlot.hxx" // QT4PORT
 //#include "NetSpectrumPlot.hxx" // QT4PORT
@@ -198,6 +199,8 @@ void PrototypeLoader::ConnectWithNetwork()
 
 	ConnectWidgetsWithPorts<Oscilloscope,OscilloscopeMonitor>
 		("OutPort__.*", "Oscilloscope");
+	ConnectWidgetsWithPorts<Vumeter,VumeterMonitor>
+		("OutPort__.*", "Vumeter");
 /*
 	// QT4PORT
 	ConnectWidgetsWithPorts<CLAM::VM::NetAudioPlot>
@@ -380,7 +383,7 @@ void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 		// TODO: It may not be present
 		_network.ConnectPorts(portName,monitorName+".Input");
 		PlotClass * plot = (PlotClass*) aWidget;
-		plot->setSource(portMonitor);
+		plot->setDataSource(portMonitor);
 	}
 }
 	
