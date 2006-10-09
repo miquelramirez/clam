@@ -4,9 +4,10 @@ import glob
 import sys
 
 options = Options('options.cache', ARGUMENTS)
-options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
-options.Add(PathOption('install_prefix', 'Display the full command line instead a short command description', '/usr/local') )
+options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt3/plugins/designer)','/bin/designer'))
+options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 options.Add(PathOption('annotator_path', 'The root path for the Annotator source', ''))
 
 def scanFiles(pattern, paths) :
@@ -30,6 +31,7 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
+env.Tool('dmg', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
 version, fullVersion = versionInfo.takeFromChangeLog("../CHANGES", "NetworkEditor")
@@ -80,7 +82,7 @@ mainSources = {
 }
 
 sourcePaths = [
-	'src',
+	os.path.join('src'),
 	os.path.join('src','generated'),
 	os.path.join('..','src','Processings'),
 	os.path.join('src','prototyper'),
@@ -110,6 +112,19 @@ if qrcfiles : sources += env.Qrc(source=qrcfiles)
 uifiles = scanFiles("*.ui", sourcePaths)
 if uifiles: uiheaders = env.Uic4(source=uifiles)
 
+if sys.platform=="win32" :
+	sources += env.RES(source=["resources/NetworkEditor.rc"])
+
+if sys.platform=='darwin' :
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"NetworkEditor.app/Contents/Resources\\""')
+else :
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
+if sys.platform=='win32' :
+	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
+else:
+	# TODO: This should not be hardcoded neither install_prefix (because package intall)
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
+
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
@@ -131,6 +146,9 @@ pluginsources.append(os.path.join('src','chordWidgets','Tonnetz.cxx'))
 pluginsources.append(os.path.join('src','chordWidgets','KeySpace.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
 
+if sys.platform == 'darwin' :
+	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
+
 programs = []
 for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
@@ -150,6 +168,9 @@ env.Append(CPPFLAGS=['-DVERSION=\'"%s"\''%fullVersion]) # to have M_PI defined
 
 qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources)
 
+manpages = [
+	'resources/man/man1/NetworkEditor.1',
+	]
 
 # Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
@@ -163,25 +184,28 @@ if len(tsfiles) :
 #	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
 	translations = env.Qm(source = tsfiles)
 
-
+qtpluginsInstallationPath = env['qt_plugins_install_path']
 examples = []
-
+for ext in ['clamnetwork', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
+	examples += scanFiles('*.%s'%ext, ['example-data'])
 
 menuEntries = glob.glob('resources/*.desktop')
+mimeEntries = 'resources/clam-network.xml'
 
 installation = {
 	'/bin' : programs,
+	qtpluginsInstallationPath : [qtplugin],
 	'/share/applications': menuEntries,
-	'/share/annotator/i18n': translations,
-	'/share/annotator/example-data': examples,
+#	'/share/mime/packages': mimeEntries,
+#	'/share/man/man1' : manpages, # TODO Uncomment this
+	'/share/networkeditor/i18n': translations,
+	'/share/networkeditor/example-data': examples,
 }
 
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
 if sys.platform=='win32' : 
-	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
-
 	installTargets += [
 		env.Install(
 			env['install_prefix']+"/bin", 
@@ -197,21 +221,19 @@ if sys.platform=='win32' :
 		if os.access(os.path.join(vcRuntimeDir,"msvcr71.dll"),os.R_OK) :
 			break
 	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
-	win_packages = [env.Nsis( source='scons\\clam_annotator.nsi')]
+	win_packages = [env.Nsis( source='resources\\clam_networkeditor.nsi')]
+	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % clam_sconstoolspath)
 	env.Alias('package', win_packages)
 
-if sys.platform=='macosx' : # not really tested!!!
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
-	#Binaries: annotator + sample extractor
-	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
+if sys.platform=='darwin' :
 
 	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
 	installTargets = [
-		env.Install( 'Annotator.app/Contents/MacOS', programs ),
-		env.Install( 'Annotator.app/Contents', 'resources/Info.plist'),
-		env.Install( 'Annotator.app/Contents/Resources', 'resources/CLAM.icns'),
+		env.Install( 'NetworkEditor.app/Contents/MacOS', programs ),
+		env.Install( 'NetworkEditor.app/Contents', 'resources/Info.plist'),
+		env.Install( 'NetworkEditor.app/Contents/Resources', 'resources/CLAM.icns'),
 		]
-	mac_packages = env.Dmg('notused', installTargets )
+	mac_packages = env.Dmg('CLAM_NetworkEditor-%s.dmg'%fullVersion, [env.Dir('NetworkEditor.app/')]+installTargets )
 	env.Alias('package', mac_packages)
 
 env.Alias('install', installTargets )
