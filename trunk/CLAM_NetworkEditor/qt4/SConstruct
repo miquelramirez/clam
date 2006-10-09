@@ -125,6 +125,7 @@ pluginsources = dict.fromkeys(pluginsources).keys()
 # //TODO: review this
 pluginsources.append(os.path.join('src','generated','moc_Oscilloscope.cxx'))
 pluginsources.append(os.path.join('src','generated','moc_Vumeter.cxx'))
+pluginsources.append(os.path.join('src','generated','moc_SpectrumView.cxx'))
 pluginsources.append(os.path.join('src','chordWidgets','Tonnetz.cxx'))
 pluginsources.append(os.path.join('src','chordWidgets','KeySpace.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
