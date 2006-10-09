@@ -58,12 +58,15 @@ private:
 
 class SpectrumView : public QWidget
 {
+	Q_OBJECT
+	Q_PROPERTY(QColor lineColor READ lineColor WRITE setLineColor)
 	enum Dimensions {
 	};
 public:
 	SpectrumView(QWidget * parent=0)
 		: QWidget(parent)
 		, _dataSource(0)
+		, _lineColor(Qt::black)
 	{
 		startTimer(50);
 	}
@@ -79,12 +82,20 @@ public:
 
 		QPolygonF _line;
 		QPainter painter(this);
-		painter.scale(width(),height()/7.0);
-		painter.setPen(Qt::black);
+		painter.scale(width(),height()/5.0);
+		painter.setPen(_lineColor);
 		for (int i=0; i<size; i++)
 			_line << QPointF(double(i)/size, -std::log10(data[i]));
 		_dataSource->release();
 		painter.drawPolyline(_line);
+	}
+	void setLineColor(const QColor & color)
+	{
+		_lineColor = color;
+	}
+	QColor lineColor() const
+	{
+		return _lineColor;
 	}
 	void timerEvent(QTimerEvent *event)
 	{
@@ -94,6 +105,7 @@ public:
 	}
 private:
 	CLAM::VM::FloatArrayDataSource * _dataSource;
+	QColor _lineColor;
 };
 
 

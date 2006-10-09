@@ -3,6 +3,7 @@
 #include <QtCore/QtPlugin>
 #include "OscilloscopePlugin.hxx"
 #include "VumeterPlugin.hxx"
+#include "SpectrumViewPlugin.hxx"
 #include "TonnetzPlugin.hxx"
 #include "KeySpacePlugin.hxx"
 #include "PlotPlugin.hxx"
@@ -17,6 +18,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 	_widgetPlugins
 		<< new OscilloscopePlugin(this)
 		<< new VumeterPlugin(this)
+		<< new SpectrumViewPlugin(this)
 		<< new TonnetzPlugin(this)
 		<< new KeySpacePlugin(this)
 		<< new PlotPlugin(this)
