@@ -22,6 +22,7 @@
 #include "Oscilloscope.hxx"
 #include "Vumeter.hxx"
 #include "SpectrumView.hxx"
+#include "PeakView.hxx"
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
 //#include "NetAudioPlot.hxx" // QT4PORT
@@ -210,6 +211,8 @@ void PrototypeLoader::ConnectWithNetwork()
 		("OutPort__.*", "Vumeter");
 	ConnectWidgetsWithPorts<SpectrumView,SpectrumViewMonitor>
 		("OutPort__.*", "SpectrumView");
+	ConnectWidgetsWithPorts<PeakView,PeakViewMonitor>
+		("OutPort__.*", "PeakView");
 	ConnectWidgetsWithPorts<CLAM::VM::Tonnetz,TonnetzMonitor>
 		("OutPort__.*", "CLAM::VM::Tonnetz");
 	ConnectWidgetsWithPorts<CLAM::VM::KeySpace,KeySpaceMonitor>

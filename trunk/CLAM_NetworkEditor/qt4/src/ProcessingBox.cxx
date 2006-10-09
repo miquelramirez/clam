@@ -88,7 +88,11 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 	}
 
 	if (className=="PeakView")
-		return new PeakViewWidget(processing);
+	{
+		PeakView * widget = new PeakView(canvas);
+		widget->setDataSource( *dynamic_cast<PeakViewMonitor*>(processing) );
+		return widget;
+	}
 
 	if (className=="Tonnetz")
 	{
