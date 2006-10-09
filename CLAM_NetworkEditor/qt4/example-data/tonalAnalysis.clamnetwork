@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network id="Unnamed Network">
+<network id="Unnamed">
 
-  <processing id="AudioSource_0" type="AudioSource"/>
+  <processing id="AudioSink_0" type="AudioSink"/>
+
+  <processing id="AudioSource_0" type="MonoAudioFileReader">
+    <SourceFile>
+      <URI>/home/Limbus/The Killer Barbies - [1995] Dressed To Kiss/The Killer Barbies - [1995] Dressed To Kiss - 05 - Kissing Cousins.mp3</URI>
+      <Header>
+        <SampleRate>44100</SampleRate>
+        <Samples>5492214</Samples>
+        <Channels>2</Channels>
+        <Length>124540</Length>
+        <Format>Mpeg Audio Layer 3</Format>
+        <Encoding>Format Default</Encoding>
+        <Endianess>Format Default</Endianess>
+      </Header>
+      <TextualDescriptors>
+        <Artist>The Killer Barbies</Artist>
+        <Title>Kissing Cousins</Title>
+        <Album>Dressed To Kiss</Album>
+        <TrackNumber>05/13</TrackNumber>
+      </TextualDescriptors>
+    </SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
+  </processing>
 
   <processing id="KeySpace_0" type="KeySpace"/>
 
@@ -10,8 +33,13 @@
   <processing id="Tonnetz_0" type="Tonnetz"/>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.Samples Read</out>
     <in>TonalAnalysis_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource_0.Samples Read</out>
+    <in>AudioSink_0.AudioIn</in>
   </port_connection>
 
   <port_connection>
