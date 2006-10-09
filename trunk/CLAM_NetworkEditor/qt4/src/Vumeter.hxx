@@ -64,9 +64,9 @@ public:
 	{
 		return QSize(2*margin+10,2*margin+2*ledHeight);
 	}
-	void setDataSource(CLAM::VM::FloatArrayDataSource * source)
+	void setDataSource(CLAM::VM::FloatArrayDataSource & source)
 	{
-		_dataSource = source;
+		_dataSource = &source;
 	}
 	double energy()
 	{

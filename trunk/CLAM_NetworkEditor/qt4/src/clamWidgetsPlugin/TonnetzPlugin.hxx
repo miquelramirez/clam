@@ -21,19 +21,19 @@
 **
 ****************************************************************************/
 
-#ifndef WorldTimeClockPlugin_hxx
-#define WorldTimeClockPlugin_hxx
+#ifndef TonnetzPlugin_hxx
+#define TonnetzPlugin_hxx
 
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 
-class WorldTimeClockPlugin2 : public QObject,
+class TonnetzPlugin : public QObject,
                              public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
-    WorldTimeClockPlugin2(QObject *parent = 0);
+    TonnetzPlugin(QObject *parent = 0);
 
     bool isContainer() const;
     bool isInitialized() const;

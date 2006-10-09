@@ -21,18 +21,18 @@
 **
 ****************************************************************************/
 
-#include "worldtimeclock.hxx"
-#include "worldtimeclockplugin.hxx"
+#include "KeySpacePlugin.hxx"
+#include "KeySpace.hxx"
 
 #include <QtPlugin>
 
-WorldTimeClockPlugin2::WorldTimeClockPlugin2(QObject *parent)
+KeySpacePlugin::KeySpacePlugin(QObject *parent)
     : QObject(parent)
 {
     initialized = false;
 }
 
-void WorldTimeClockPlugin2::initialize(QDesignerFormEditorInterface * /* core */)
+void KeySpacePlugin::initialize(QDesignerFormEditorInterface * /* core */)
 {
     if (initialized)
         return;
@@ -40,49 +40,49 @@ void WorldTimeClockPlugin2::initialize(QDesignerFormEditorInterface * /* core */
     initialized = true;
 }
 
-bool WorldTimeClockPlugin2::isInitialized() const
+bool KeySpacePlugin::isInitialized() const
 {
     return initialized;
 }
 
-QWidget *WorldTimeClockPlugin2::createWidget(QWidget *parent)
+QWidget *KeySpacePlugin::createWidget(QWidget *parent)
 {
-    return new WorldTimeClock2(parent);
+    return new CLAM::VM::KeySpace(parent);
 }
 
-QString WorldTimeClockPlugin2::name() const
+QString KeySpacePlugin::name() const
 {
-    return "WorldTimeClock2";
+    return "CLAM::VM::KeySpace";
 }
 
-QString WorldTimeClockPlugin2::group() const
+QString KeySpacePlugin::group() const
 {
-    return "CLAM";
+    return "CLAM Widgets";
 }
 
-QIcon WorldTimeClockPlugin2::icon() const
+QIcon KeySpacePlugin::icon() const
 {
     return QIcon();
 }
 
-QString WorldTimeClockPlugin2::toolTip() const
+QString KeySpacePlugin::toolTip() const
 {
     return "";
 }
 
-QString WorldTimeClockPlugin2::whatsThis() const
+QString KeySpacePlugin::whatsThis() const
 {
     return "";
 }
 
-bool WorldTimeClockPlugin2::isContainer() const
+bool KeySpacePlugin::isContainer() const
 {
     return false;
 }
 
-QString WorldTimeClockPlugin2::domXml() const
+QString KeySpacePlugin::domXml() const
 {
-    return "<widget class=\"WorldTimeClock2\" name=\"worldTimeClock\">\n"
+    return "<widget class=\"CLAM::VM::KeySpace\" name=\"keySpace\">\n"
            " <property name=\"geometry\">\n"
            "  <rect>\n"
            "   <x>0</x>\n"
@@ -94,11 +94,11 @@ QString WorldTimeClockPlugin2::domXml() const
            "</widget>\n";
 }
 
-QString WorldTimeClockPlugin2::includeFile() const
+QString KeySpacePlugin::includeFile() const
 {
-    return "worldtimeclock.h";
+    return "KeySpace.hxx";
 }
 
 // This is just for a singleton widget plugin
-//Q_EXPORT_PLUGIN2(clamwidgetsplugin, WorldTimeClockPlugin2)
+// Q_EXPORT_PLUGIN2(clamwidgets, KeySpacePlugin)
 

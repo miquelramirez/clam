@@ -90,6 +90,7 @@ namespace VM {
 
 class KeySpace : public Tonnetz
 {
+	Q_OBJECT
 protected:
 	float x_res, y_res;
 

@@ -21,6 +21,8 @@
 
 #include "Oscilloscope.hxx"
 #include "Vumeter.hxx"
+#include "Tonnetz.hxx"
+#include "KeySpace.hxx"
 //#include "NetAudioPlot.hxx" // QT4PORT
 //#include "NetPeaksPlot.hxx" // QT4PORT
 //#include "NetSpectrumPlot.hxx" // QT4PORT
@@ -159,6 +161,10 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 		loader.addPluginPath(*it);
 	}
 	QWidget * interface = loader.load(&file, 0 );
+	if (interface)
+	{
+		interface->setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
+	}
 	file.close();
 	return interface;
 }
@@ -201,6 +207,10 @@ void PrototypeLoader::ConnectWithNetwork()
 		("OutPort__.*", "Oscilloscope");
 	ConnectWidgetsWithPorts<Vumeter,VumeterMonitor>
 		("OutPort__.*", "Vumeter");
+	ConnectWidgetsWithPorts<CLAM::VM::Tonnetz,TonnetzMonitor>
+		("OutPort__.*", "CLAM::VM::Tonnetz");
+	ConnectWidgetsWithPorts<CLAM::VM::KeySpace,KeySpaceMonitor>
+		("OutPort__.*", "CLAM::VM::KeySpace");
 /*
 	// QT4PORT
 	ConnectWidgetsWithPorts<CLAM::VM::NetAudioPlot>
@@ -383,7 +393,7 @@ void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 		// TODO: It may not be present
 		_network.ConnectPorts(portName,monitorName+".Input");
 		PlotClass * plot = (PlotClass*) aWidget;
-		plot->setDataSource(portMonitor);
+		plot->setDataSource(*portMonitor);
 	}
 }
 	

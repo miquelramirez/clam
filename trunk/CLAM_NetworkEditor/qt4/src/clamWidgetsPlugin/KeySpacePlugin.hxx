@@ -21,32 +21,34 @@
 **
 ****************************************************************************/
 
-#ifndef WORLDTIMECLOCK_H
-#define WORLDTIMECLOCK_H
+#ifndef KeySpacePlugin_hxx
+#define KeySpacePlugin_hxx
 
-#include <QTime>
-#include <QWidget>
-#include <QtGui/QWidget>
-#include <QtDesigner/QDesignerExportWidget>
+#include <QtDesigner/QDesignerCustomWidgetInterface>
 
-class QDESIGNER_WIDGET_EXPORT WorldTimeClock2 : public QWidget
+class KeySpacePlugin : public QObject,
+                             public QDesignerCustomWidgetInterface
 {
     Q_OBJECT
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
 
 public:
-    WorldTimeClock2(QWidget *parent = 0);
+    KeySpacePlugin(QObject *parent = 0);
 
-public slots:
-    void setTimeZone(int hourOffset);
-
-signals:
-    void updated(QTime currentTime);
-
-protected:
-    void paintEvent(QPaintEvent *event);
+    bool isContainer() const;
+    bool isInitialized() const;
+    QIcon icon() const;
+    QString domXml() const;
+    QString group() const;
+    QString includeFile() const;
+    QString name() const;
+    QString toolTip() const;
+    QString whatsThis() const;
+    QWidget *createWidget(QWidget *parent);
+    void initialize(QDesignerFormEditorInterface *core);
 
 private:
-    int timeZoneOffset;
+    bool initialized;
 };
 
 #endif

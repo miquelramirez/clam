@@ -114,9 +114,9 @@ public:
 		if (!_dataSource) _dataSource = new OscilloscopeDummySource;
 		startTimer(50);
 	}
-	void setDataSource(CLAM::VM::FloatArrayDataSource * dataSource)
+	void setDataSource(CLAM::VM::FloatArrayDataSource & dataSource)
 	{
-		_dataSource=dataSource;
+		_dataSource=&dataSource;
 	}
 	void paintEvent(QPaintEvent * event)
 	{
