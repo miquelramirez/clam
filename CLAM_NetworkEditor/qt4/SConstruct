@@ -123,8 +123,10 @@ pluginsources = filter( (lambda a : a.rfind( "moc_")==-1 ),  pluginsources )
 pluginsources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  pluginsources )
 pluginsources = dict.fromkeys(pluginsources).keys()
 # //TODO: review this
-pluginsources.append(os.path.join('src','','generated','moc_Oscilloscope.cxx'))
-pluginsources.append(os.path.join('src','','generated','moc_Vumeter.cxx'))
+pluginsources.append(os.path.join('src','generated','moc_Oscilloscope.cxx'))
+pluginsources.append(os.path.join('src','generated','moc_Vumeter.cxx'))
+pluginsources.append(os.path.join('src','chordWidgets','Tonnetz.cxx'))
+pluginsources.append(os.path.join('src','chordWidgets','KeySpace.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
 
 programs = []
