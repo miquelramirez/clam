@@ -76,6 +76,8 @@ public:
 	void paintEvent(QPaintEvent * event)
 	{
 		const char * label[] = {
+			"G",
+			"G#",
 			"A",
 			"A#",
 			"B",
@@ -86,15 +88,13 @@ public:
 			"E",
 			"F",
 			"F#",
-			"G",
-			"G#",
 		};
 		QPainter painter(this);
 		painter.translate(width()/2,height()/2);
 		for (int i=0; i<12; i++)
 		{
-			double angle = M_PI*i/6;
-			painter.drawText(QPointF(.4*width()*sin(angle), .4*height()*cos(angle)), label[i]);
+			double angle = -M_PI*i/6;
+			painter.drawText(QPointF(.4*width()*cos(angle), .4*height()*sin(angle)), label[i]);
 		}
 		painter.scale(width()/2.,-height()/2.);
 		painter.setPen(QColor(0x77,0x77,0x77,0x77));
@@ -119,14 +119,14 @@ public:
 			double angle = M_PI*freq[i]/6;
 			lines 
 				<< QPointF(0,0)
-				<< QPointF(10*mag[i]*sin(angle), 10*mag[i]*cos(angle));
+				<< QPointF(10*mag[i]*cos(angle), 10*mag[i]*sin(angle));
 		}
 		painter.drawLines(lines);
 		painter.setPen(QPen(_pointColor,5./width()));
 		for (int i=0; i<size; i++)
 		{
 			double angle = M_PI*freq[i]/6;
-			painter.drawPoint(QPointF(10*mag[i]*sin(angle), 10*mag[i]*cos(angle)));
+			painter.drawPoint(QPointF(10*mag[i]*cos(angle), 10*mag[i]*sin(angle)));
 		}
 	}
 	void setDataSource(PeakDataSource & dataSource)
