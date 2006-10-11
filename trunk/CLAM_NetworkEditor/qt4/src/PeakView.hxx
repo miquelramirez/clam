@@ -74,9 +74,9 @@ class PeakView : public QWidget
 public:
 	PeakView(QWidget * parent=0)
 		: QWidget(parent)
+		, _dataSource(0)
 		, _lineColor(Qt::black)
 		, _pointColor(Qt::red)
-		, _dataSource(0)
 	{
 		startTimer(50);
 	}
