@@ -25,6 +25,11 @@
 
 #include "MainWindow.hxx"
 
+#ifdef WIN32
+#include <CLAM/InitAudioIO.hxx>
+#include <CLAM/InitProcessing.hxx>
+#endif
+
 
 #ifndef I18N_PATH
 #ifdef WIN32
@@ -37,6 +42,12 @@
 
 int main( int argc, char ** argv )
 {
+
+#ifdef WIN32
+	CLAM::ProcessingModule::init();
+	CLAM::AudioIOModule::init();
+#endif
+
 	QApplication app( argc, argv );
 
 	QString locale = QLocale::system().name();
