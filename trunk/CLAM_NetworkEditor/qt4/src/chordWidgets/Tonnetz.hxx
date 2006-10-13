@@ -78,12 +78,15 @@ private:
 	unsigned _size;
 };
 
+
+#include <QtDesigner/QDesignerExportWidget>
+
 namespace CLAM
 {
 namespace VM
 {
 
-	class Tonnetz : public QGLWidget
+	class QDESIGNER_WIDGET_EXPORT Tonnetz : public QGLWidget
 	{
 		Q_OBJECT
 
