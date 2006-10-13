@@ -85,10 +85,14 @@ private:
 	unsigned _size;
 	std::vector<CLAM::TData> _pcp;
 };
+
+
+#include <QtDesigner/QDesignerExportWidget>
+
 namespace CLAM {
 namespace VM {
 
-class KeySpace : public Tonnetz
+class QDESIGNER_WIDGET_EXPORT KeySpace : public Tonnetz
 {
 	Q_OBJECT
 protected:
@@ -113,7 +117,7 @@ private:
 
 	float centroidx_,centroidy_;
 	float pKeySpaceValue_[24];
-	float pRColor[201],pGColor[201],pBColor[201];
+	unsigned pRColor[201],pGColor[201],pBColor[201];
 	int ColorsIndex[6];
 	void RecomputeWeigths();
 };

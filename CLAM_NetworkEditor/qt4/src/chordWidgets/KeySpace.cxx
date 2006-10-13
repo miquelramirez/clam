@@ -52,7 +52,6 @@ unsigned nX = 50;
 unsigned nY = 125;
 std::vector<float> weights;
 
-
 CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
 	: Tonnetz(parent)
 {
@@ -62,55 +61,41 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 	centroidx_ = 0;
 	centroidy_ = 0; 
 
-	ColorsIndex[0] = 0; 
-	ColorsIndex[1] = 30;
-	ColorsIndex[2] = 70; 
-	ColorsIndex[3] = 110;
-	ColorsIndex[4] = 145;
-	ColorsIndex[5] = 200;
-	pRColor[ColorsIndex[0]] = 0;//RGB(0,0,0);
-	pRColor[ColorsIndex[1]] = 58/4;//RGB(58/4,68/4,65/4);
-	pRColor[ColorsIndex[2]] = 80;//RGB(80,100,153);
-	pRColor[ColorsIndex[3]] = 90;//RGB(90,180,100);
-	pRColor[ColorsIndex[4]] = 224;//RGB(224,224,44);
-	pRColor[ColorsIndex[5]] = 255;//RGB(255,60,30);//RGB(255,155,80);
-	pGColor[ColorsIndex[0]] = 0;//RGB(0,0,0);
-	pGColor[ColorsIndex[1]] = 68/4;//RGB(58/4,68/4,65/4);
-	pGColor[ColorsIndex[2]] = 100;//RGB(80,100,153);
-	pGColor[ColorsIndex[3]] = 180;//RGB(90,180,100);
-	pGColor[ColorsIndex[4]] = 224;//RGB(224,224,44);
-	pGColor[ColorsIndex[5]] = 60;//RGB(255,60,30);//RGB(255,155,80);
-	pBColor[ColorsIndex[0]] = 0;//RGB(0,0,0);
-	pBColor[ColorsIndex[1]] = 65/4;//RGB(58/4,68/4,65/4);
-	pBColor[ColorsIndex[2]] = 153;//RGB(80,100,153);
-	pBColor[ColorsIndex[3]] = 100;//RGB(90,180,100);
-	pBColor[ColorsIndex[4]] = 44;//RGB(224,224,44);
-	pBColor[ColorsIndex[5]] = 30;//RGB(255,60,30);//RGB(255,155,80);
-	int n = 0;
-	int nDif = 0;
-	int i,k;
-	for(k=0; k<200; k+=nDif,n++)
+	static const struct GradientPoint 
 	{
-		nDif = ColorsIndex[n+1] - ColorsIndex[n];
-		for(i=1; i<nDif; i++)
+		unsigned index;
+		unsigned R;
+		unsigned G;
+		unsigned B;
+	} gradient[] =
+	{
+		{  0,0x00,0x00,0x00},
+		{ 30,0x0e,0x11,0x16},
+		{ 70,0x50,0x64,0x99},
+		{110,0x5a,0xb4,0x64},
+		{145,0xe0,0xe0,0x2c},
+		{200,0xff,0x3c,0x1e},
+	};
+	for (unsigned i=0; i<6-1; i++)
+	{
+		unsigned index0 = gradient[i].index;
+		unsigned index1 = gradient[i+1].index;
+		unsigned indexStep = gradient[i+1].index - index0;
+		float R = gradient[i].R;
+		float G = gradient[i].G;
+		float B = gradient[i].B;
+		float Rstep = (gradient[i+1].R-R)/indexStep;
+		float Gstep = (gradient[i+1].G-G)/indexStep;
+		float Bstep = (gradient[i+1].B-B)/indexStep;
+		for (unsigned k=index0; k<index1; k++)
 		{
-			float Factor = (float)i / nDif;
-			/*unsigned char R = GetRValue(pColor[k]) + (GetRValue(pColor[k+nDif]) - GetRValue(pColor[k]))*Factor;
-			unsigned char G = GetGValue(pColor[k]) + (GetGValue(pColor[k+nDif]) - GetGValue(pColor[k]))*Factor;
-			unsigned char B = GetBValue(pColor[k]) + (GetBValue(pColor[k+nDif]) - GetBValue(pColor[k]))*Factor;*/
-			float R = pRColor[k] + (pRColor[k+nDif] - pRColor[k])*Factor;
-			float G = pGColor[k] + (pGColor[k+nDif] - pGColor[k])*Factor;
-			float B = pBColor[k] + (pBColor[k+nDif] - pBColor[k])*Factor;
-			pRColor[k+i] = R;
-			pGColor[k+i] = G;
-			pBColor[k+i] = B;
+			pRColor[k] = (unsigned) R;
+			pGColor[k] = (unsigned) G;
+			pBColor[k] = (unsigned) B;
+			R += Rstep;
+			G += Gstep;
+			B += Bstep;
 		}
-	}
-	for(k=0; k<=200; k++)
-	{
-		pRColor[k] /= 255.;
-		pGColor[k] /= 255.;
-		pBColor[k] /= 255.;
 	}
 	_maxValue = 1;
 	setWhatsThis(tr(
@@ -153,10 +138,10 @@ void CLAM::VM::KeySpace::paintGL()
 
 void CLAM::VM::KeySpace::DrawTiles()
 {
-	TKeyNode *pKeyNodes = getKeyNodes();
 	if (weights.size()!=nX*nY*nKeyNodes)
 	{
 		std::cout << "Precomputing KeySpace weights" << std::endl;
+		TKeyNode *pKeyNodes = getKeyNodes();
 		weights.resize(nX*nY*nKeyNodes);
 		for(unsigned i=0; i<nX; i++)
 		{
@@ -216,7 +201,7 @@ void CLAM::VM::KeySpace::DrawTiles()
 			int cidx = floorf(ColorIndex);
 			glVertex2f( x1,   y1 );
 			glVertex2f( x1,   y1+yStep );
-			glColor3d(pRColor[cidx],pGColor[cidx],pBColor[cidx]);
+			glColor3d(pRColor[cidx]/256.,pGColor[cidx]/255.,pBColor[cidx]/255.);
 		}
 		glVertex2f( 1,   y1 );
 		glVertex2f( 1,   y1+yStep );
@@ -239,6 +224,6 @@ void CLAM::VM::KeySpace::DrawLabels()
 		if (value>.6) glColor3d(0,0,0);
 		else          glColor3d(1,1,1);
 
-		renderText(x1, y1, .6, _dataSource->getLabel(i).c_str(), _font);
+		renderText(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(), _font);
 	}
 }
