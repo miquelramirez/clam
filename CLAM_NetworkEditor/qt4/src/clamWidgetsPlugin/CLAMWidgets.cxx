@@ -7,6 +7,7 @@
 #include "PeakViewPlugin.hxx"
 #include "TonnetzPlugin.hxx"
 #include "KeySpacePlugin.hxx"
+#include "PolarChromaPeaksPlugin.hxx"
 #include "PlotPlugin.hxx"
 #include <iostream>
 
@@ -23,6 +24,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new PeakViewPlugin(this)
 		<< new TonnetzPlugin(this)
 		<< new KeySpacePlugin(this)
+		<< new PolarChromaPeaksPlugin(this)
 		<< new PlotPlugin(this)
 		;
 }
@@ -40,7 +42,7 @@ QList<QDesignerCustomWidgetInterface*> CLAMWidgets::customWidgets() const
 	return _widgetPlugins;
 }
 
-Q_EXPORT_PLUGIN2(clamwidgets, CLAMWidgets)
+Q_EXPORT_PLUGIN2(clamwidets, CLAMWidgets)
 
 
 

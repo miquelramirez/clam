@@ -11,6 +11,7 @@
 #include <QtGui/QPixmap>
 #include <QtCore/QRegExp>
 #include <QtCore/QFile>
+#include <QtCore/QCoreApplication>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/PushFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
@@ -25,6 +26,7 @@
 #include "PeakView.hxx"
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
+#include "PolarChromaPeaks.hxx"
 //#include "NetAudioPlot.hxx" // QT4PORT
 //#include "NetPeaksPlot.hxx" // QT4PORT
 //#include "NetSpectrumPlot.hxx" // QT4PORT
@@ -156,11 +158,11 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 	file.open(QFile::ReadOnly);
 //	QFormBuilder loader; // TODO: Change this to a QUiLoader
 	QUiLoader loader;
-	QStringList paths = QString(getenv("QT_PLUGIN_PATH")).split(":");
+	loader.addPath();
+	QStringList paths = QCoreApplication::libraryPaths();
 	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
 	{
-		std::cout << "Adding plugin path: " << it->toStdString() << std::endl;
-		loader.addPluginPath(*it);
+		std::cout << "Looking for plugins at path: " << it->toStdString() << std::endl;
 	}
 	QWidget * interface = loader.load(&file, 0 );
 	if (interface)
@@ -217,6 +219,8 @@ void PrototypeLoader::ConnectWithNetwork()
 		("OutPort__.*", "CLAM::VM::Tonnetz");
 	ConnectWidgetsWithPorts<CLAM::VM::KeySpace,KeySpaceMonitor>
 		("OutPort__.*", "CLAM::VM::KeySpace");
+	ConnectWidgetsWithPorts<PolarChromaPeaks,PolarChromaPeaksMonitor>
+		("OutPort__.*", "PolarChromaPeaks");
 /*
 	// QT4PORT
 	ConnectWidgetsWithPorts<CLAM::VM::NetAudioPlot>

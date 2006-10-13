@@ -138,10 +138,11 @@ pluginsources = filter( (lambda a : a.rfind( "moc_")==-1 ),  pluginsources )
 pluginsources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  pluginsources )
 pluginsources = dict.fromkeys(pluginsources).keys()
 # //TODO: review this
-pluginsources.append(os.path.join('src','generated','moc_Oscilloscope.cxx'))
-pluginsources.append(os.path.join('src','generated','moc_Vumeter.cxx'))
-pluginsources.append(os.path.join('src','generated','moc_SpectrumView.cxx'))
-pluginsources.append(os.path.join('src','generated','moc_PeakView.cxx'))
+pluginsources.append(os.path.join('src','chordWidgets','generated','moc_Oscilloscope.cxx'))
+pluginsources.append(os.path.join('src','chordWidgets','generated','moc_Vumeter.cxx'))
+pluginsources.append(os.path.join('src','chordWidgets','generated','moc_SpectrumView.cxx'))
+pluginsources.append(os.path.join('src','chordWidgets','generated','moc_PeakView.cxx'))
+pluginsources.append(os.path.join('src','chordWidgets','generated','moc_PolarChromaPeaks.cxx'))
 pluginsources.append(os.path.join('src','chordWidgets','Tonnetz.cxx'))
 pluginsources.append(os.path.join('src','chordWidgets','KeySpace.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
@@ -189,8 +190,8 @@ examples = []
 for ext in ['clamnetwork', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
 	examples += scanFiles('*.%s'%ext, ['example-data'])
 
-menuEntries = glob.glob('resources/*.desktop')
-mimeEntries = 'resources/clam-network.xml'
+menuEntries = glob.glob('../resources/*.desktop')
+mimeEntries = '../resources/clam-network.xml'
 
 installation = {
 	'/bin' : programs,

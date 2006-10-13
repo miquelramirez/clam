@@ -5,21 +5,21 @@
 
   <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
     <SourceFile>
-      <URI>/home/Limbus/Siouxsie and the Banshees - [1978] The Scream/Siouxsie and the Banshees - [1978] The Scream - 05 - Helter skelter.mp3</URI>
+      <URI>/home/Limbus/Deftones - [1997] Around the fur/Deftones - [1997] Around the fur - 06 - Be Quiet And Drive (Far Away).ogg</URI>
       <Header>
         <SampleRate>44100</SampleRate>
-        <Samples>10088757</Samples>
+        <Samples>13494600</Samples>
         <Channels>2</Channels>
-        <Length>228770</Length>
-        <Format>Mpeg Audio Layer 3</Format>
+        <Length>306000</Length>
+        <Format>VorbisMk1</Format>
         <Encoding>Format Default</Encoding>
         <Endianess>Format Default</Endianess>
       </Header>
       <TextualDescriptors>
-        <Artist>Siouxsie and the Banshees</Artist>
-        <Title>Helter skelter</Title>
-        <Album>The Scream</Album>
-        <TrackNumber>05/10</TrackNumber>
+        <Artist>Deftones</Artist>
+        <Title>Be Quiet And Drive (Far Away)</Title>
+        <Album>Around the fur</Album>
+        <TrackNumber>06</TrackNumber>
       </TextualDescriptors>
     </SourceFile>
     <SelectedChannel>0</SelectedChannel>

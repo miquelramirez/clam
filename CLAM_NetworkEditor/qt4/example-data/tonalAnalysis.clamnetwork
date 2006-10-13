@@ -1,45 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSource_0" type="AudioSource"/>
 
-  <processing id="AudioSource_0" type="MonoAudioFileReader">
-    <SourceFile>
-      <URI>/home/Limbus/The Killer Barbies - [1995] Dressed To Kiss/The Killer Barbies - [1995] Dressed To Kiss - 05 - Kissing Cousins.mp3</URI>
-      <Header>
-        <SampleRate>44100</SampleRate>
-        <Samples>5492214</Samples>
-        <Channels>2</Channels>
-        <Length>124540</Length>
-        <Format>Mpeg Audio Layer 3</Format>
-        <Encoding>Format Default</Encoding>
-        <Endianess>Format Default</Endianess>
-      </Header>
-      <TextualDescriptors>
-        <Artist>The Killer Barbies</Artist>
-        <Title>Kissing Cousins</Title>
-        <Album>Dressed To Kiss</Album>
-        <TrackNumber>05/13</TrackNumber>
-      </TextualDescriptors>
-    </SourceFile>
-    <SelectedChannel>0</SelectedChannel>
-    <Loop>1</Loop>
-  </processing>
-
-  <processing id="KeySpace_0" type="KeySpace"/>
+  <processing id="PolarChromaPeaks_0" type="PolarChromaPeaks"/>
 
   <processing id="TonalAnalysis_0" type="TonalAnalysis"/>
 
   <processing id="Tonnetz_0" type="Tonnetz"/>
 
   <port_connection>
-    <out>AudioSource_0.Samples Read</out>
+    <out>AudioSource_0.AudioOut</out>
     <in>TonalAnalysis_0.Audio Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioSource_0.Samples Read</out>
-    <in>AudioSink_0.AudioIn</in>
   </port_connection>
 
   <port_connection>
@@ -48,8 +20,8 @@
   </port_connection>
 
   <port_connection>
-    <out>TonalAnalysis_0.Chord Correlation</out>
-    <in>KeySpace_0.Input</in>
+    <out>TonalAnalysis_0.Chroma Peaks</out>
+    <in>PolarChromaPeaks_0.Input</in>
   </port_connection>
 
 </network>
