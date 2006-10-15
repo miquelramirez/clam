@@ -158,8 +158,9 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 	file.open(QFile::ReadOnly);
 //	QFormBuilder loader; // TODO: Change this to a QUiLoader
 	QUiLoader loader;
-	loader.addPath();
-	QStringList paths = QCoreApplication::libraryPaths();
+	loader.addPluginPath("/user/share/NetworkEditor/qtplugins"); //TODO Make that an option
+//	QStringList paths = QCoreApplication::libraryPaths();
+	QStringList paths = loader.pluginPaths();
 	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
 	{
 		std::cout << "Looking for plugins at path: " << it->toStdString() << std::endl;
