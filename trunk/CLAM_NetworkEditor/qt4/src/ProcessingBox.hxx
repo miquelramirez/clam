@@ -90,6 +90,10 @@ public:
 	void embed(QWidget * widget);
 	bool configure();
 	bool rename();
+
+	bool isSelected() { return _selected; }
+	void select() { _selected=true; }
+	void deselect() { _selected=false; }
 private:
 	void setName(const QString & newName);
 	void recomputeMinimumSizes();
@@ -116,6 +120,7 @@ private:
 	unsigned _highLightConnection;
 	CLAM::Processing * _processing;
 	QWidget * _embeded;
+	bool _selected;
 };
 
 

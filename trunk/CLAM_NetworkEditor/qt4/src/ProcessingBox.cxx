@@ -32,6 +32,7 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, _highLightRegion(noRegion)
 	, _processing(0)
 	, _embeded(0)
+	, _selected(false)
 {
 //	embed(new QSlider(Qt::Horizontal));
 	setName(name);
@@ -204,7 +205,7 @@ void ProcessingBox::paintBox(QPainter & painter)
 	QColor boxBodyColor = execBodyColor(_canvas->colorBoxBody(),_processing);
 	QColor boxFrameColor = execFrameColor(_canvas->colorBoxFrame(),_processing);
 	// Box
-	painter.setPen(_canvas->colorBoxFrameOutline());
+	painter.setPen( _canvas->colorBoxFrameOutline());
 	painter.setBrush(boxFrameColor);
 	painter.drawRect(portWidth, controlHeight,
 		   	_size.width()-2*portWidth, _size.height()-2*controlHeight);
@@ -241,6 +242,18 @@ void ProcessingBox::paintBox(QPainter & painter)
 	painter.setPen(_canvas->colorBoxFrameText());
 	painter.drawText(QRect(controlOffset, portOffset,
 			_size.width()-2*controlOffset, textHeight), _name);
+	//Selection
+	if (_selected)
+	{
+		painter.setPen( Qt::black );
+		painter.setBrush( Qt::black );
+		painter.drawRect(0, 0, margin, margin);
+		painter.drawRect(0, _size.height(), margin, -margin);
+		painter.drawRect(_size.width(), 0,  -margin, margin);
+		painter.drawRect(_size.width(), _size.height(), -margin, -margin);
+		
+	}
+		
 }
 
 void ProcessingBox::drawConnector(QPainter & painter, Region region, unsigned index)
@@ -363,6 +376,18 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 		startMoving(_canvas->translatedGlobalPos(event));
 		_canvas->setCursor(Qt::SizeAllCursor);
 		return;
+	}
+	if (region==bodyRegion)
+	{
+		if (event->modifiers() & Qt::ControlModifier )
+		{
+			_selected=!_selected;
+		}
+		else
+		{
+			_canvas->clearSelections();
+			_selected=true;
+		}
 	}
 	// Resize corner
 	if (region==resizeHandleRegion)

@@ -786,6 +786,19 @@ public:
 		if (!_network) return true;
 		return _network->ChangeKeyMap(oldName.toStdString(), newName.toStdString());
 	}
+	void clearSelections()
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+			_processings[i]->deselect();
+	}
+	void removeSelectedProcessings()
+	{
+		std::vector<ProcessingBox *> toRemove;
+		for (unsigned i=0; i<_processings.size(); i++)
+			if (_processings[i]->isSelected()) toRemove.push_back(_processings[i]) ;
+		for (unsigned i=0; i<toRemove.size(); i++)
+			removeProcessing( toRemove[i] );
+	}
 private:
 	ProcessingBox * getBox(const QString & name)
 	{
@@ -879,6 +892,9 @@ private slots:
 	}
 	void onDeleteProcessing()
 	{
+		removeSelectedProcessings();
+		return;
+
 		QPoint point = ((QAction*)sender())->data().toPoint();
 		for (unsigned i = _processings.size(); i--; )
 		{
