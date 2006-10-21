@@ -3,6 +3,10 @@
 
   <processing id="AudioSource_0" type="AudioSource"/>
 
+  <processing id="ChordRanking_0" type="ChordRanking"/>
+
+  <processing id="KeySpace_0" type="KeySpace"/>
+
   <processing id="PolarChromaPeaks_0" type="PolarChromaPeaks"/>
 
   <processing id="TonalAnalysis_0" type="TonalAnalysis"/>
@@ -17,6 +21,16 @@
   <port_connection>
     <out>TonalAnalysis_0.Pitch Profile</out>
     <in>Tonnetz_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>TonalAnalysis_0.Chord Correlation</out>
+    <in>KeySpace_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>TonalAnalysis_0.Chord Correlation</out>
+    <in>ChordRanking_0.Input</in>
   </port_connection>
 
   <port_connection>
