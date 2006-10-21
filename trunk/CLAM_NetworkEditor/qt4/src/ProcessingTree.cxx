@@ -123,6 +123,7 @@ const static char * processingClasses[] = {
 	"Tonnetz",
 	"KeySpace",
 	"PolarChromaPeaks",
+	"ChordRanking",
 	0,
 	0
 };

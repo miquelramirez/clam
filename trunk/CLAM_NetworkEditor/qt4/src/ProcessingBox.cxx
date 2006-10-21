@@ -9,6 +9,7 @@
 #include "PolarChromaPeaks.hxx"
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
+#include "ChordRanking.hxx"
 #include "ControlSenderWidget.hxx"
 
 #include <QtGui/QSlider>
@@ -113,6 +114,12 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 	{
 		CLAM::VM::KeySpace * widget = new CLAM::VM::KeySpace(canvas);
 		widget->setDataSource( *dynamic_cast<KeySpaceMonitor*>(processing) );
+		return widget;
+	}
+	if (className=="ChordRanking")
+	{
+		CLAM::VM::ChordRanking * widget = new CLAM::VM::ChordRanking(canvas);
+		widget->setDataSource( *dynamic_cast<ChordRankingMonitor*>(processing) );
 		return widget;
 	}
 
