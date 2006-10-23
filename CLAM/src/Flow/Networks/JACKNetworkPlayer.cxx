@@ -19,38 +19,15 @@ inline int JackProcessingCallback (jack_nframes_t nframes, void *arg)
 inline void JackShutdownCallback (void *arg)
 {
 	JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
-	// TODO: Do clearing jack stuff but do not delete the player!!!!!
-	std::cout << "Shuting down jack client" << std::endl;
-	delete player;
+	player->OnShutdown();
 }
 
-JACKNetworkPlayer::JACKNetworkPlayer(const std::string & networkFile, std::list<std::string> portlist)
-{
-	mClamBufferSize=512;
-
-	SetNetwork( *( new Network() ) );
-	GetNetwork().AddFlowControl( new PushFlowControl(mClamBufferSize) );
-
-	XmlStorage::Restore(GetNetwork(), networkFile);
-
-	mJackOutPortAutoConnectList=portlist.front();
-	portlist.pop_front();
-	mJackInPortAutoConnectList=portlist.front();
-
-	//If neither input or output connections specified, we don't want any attempt of automatic connection
-	if (mJackOutPortAutoConnectList=="NULL" && mJackInPortAutoConnectList==std::string("NULL"))
-		mAutoConnect=false;
-	else
-		mAutoConnect=true;
-
-	InitClient();
-
-}
-
-JACKNetworkPlayer::JACKNetworkPlayer()
+JACKNetworkPlayer::JACKNetworkPlayer(const std::string & name)
+	: mJackClientname(name)
 {
 	mClamBufferSize=512;
 	mAutoConnect=false;
+	mJackClient=0;
 	InitClient();
 }
 
@@ -75,11 +52,11 @@ bool JACKNetworkPlayer::IsConnectedToServer() const
 void JACKNetworkPlayer::InitClient()
 {
 	NotifyModification();
-
-	mJackClientname="CLAM_client";		
-	mJackClient = jack_client_new ( mJackClientname.c_str() );
+	jack_status_t jackStatus;
+	mJackClient = jack_client_open ( mJackClientname.c_str(), JackNullOption, &jackStatus );
 	if (not mJackClient)
 	{
+		// TODO: Check jackStatus to be more informative
 		std::cerr << "JACK ERROR: server not running?"<< std::endl;
 		return;
 	}
@@ -211,6 +188,7 @@ void JACKNetworkPlayer::Start()
 {
 	if (!IsStopped()) return;
 
+	if (!mJackClient) InitClient();
 	if (!mJackClient) return;
 	
 	SetStopped(false);
@@ -232,11 +210,19 @@ void JACKNetworkPlayer::Start()
 		RestoreConnections();
 }
 
+void JACKNetworkPlayer::OnShutdown()
+{
+	if (not mJackClient) return;
+	SetStopped(true);
+	GetNetwork().Stop();
+	mSinkJackBindigs.clear(); // TODO: May we save them?
+	mSourceJackBindings.clear(); // TODO: May we save them?;
+	mJackClient=0;
+}
+
 void JACKNetworkPlayer::Stop()
 {
 	if (IsStopped()) return;
-	if (not mJackClient) return;
-	
 	SetStopped(true);
 
 	StoreConnections();
@@ -246,7 +232,6 @@ void JACKNetworkPlayer::Stop()
 		std::cerr << "JACK ERROR: cannot deactivate client" << std::endl;
 		exit(1);
 	}
-
 	GetNetwork().Stop();
 }
 
