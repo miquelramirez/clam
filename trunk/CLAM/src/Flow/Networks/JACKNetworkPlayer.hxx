@@ -14,7 +14,6 @@
 
 namespace CLAM
 {
-
 class JACKNetworkPlayer : public NetworkPlayer
 {
 private:
@@ -63,10 +62,7 @@ private:
 	std::string mJackClientname;
 
 public:
-	//When created in the prototyper
-	JACKNetworkPlayer(const std::string & networkFile, std::list<std::string> portlist);
-	//When created in neteditor
-	JACKNetworkPlayer();
+	JACKNetworkPlayer(const std::string & name="CLAM network player");
 	virtual ~JACKNetworkPlayer();
 
 	void InitClient();
@@ -77,6 +73,7 @@ public:
 	void RegisterInputPorts(const Network& net);
 	void RegisterOutputPorts(const Network& net);
 	void UnRegisterPorts();
+	void OnShutdown();
 
 	//Buffer copying methods
 	void CopyJackBuffersToGenerators(const jack_nframes_t nframes);
