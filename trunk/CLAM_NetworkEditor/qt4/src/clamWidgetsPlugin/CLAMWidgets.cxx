@@ -8,7 +8,6 @@
 #include "TonnetzPlugin.hxx"
 #include "KeySpacePlugin.hxx"
 #include "PolarChromaPeaksPlugin.hxx"
-#include "PlotPlugin.hxx"
 #include <iostream>
 
 #include "CLAMWidgets.hxx"
@@ -25,7 +24,6 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new TonnetzPlugin(this)
 		<< new KeySpacePlugin(this)
 		<< new PolarChromaPeaksPlugin(this)
-		<< new PlotPlugin(this)
 		;
 }
 
