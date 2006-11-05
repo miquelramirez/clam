@@ -173,6 +173,7 @@ public:
 	}
 	double tunning() const {return _instantTunningEstimator.output().first; }
 	double tunningStrength() const {return _instantTunningEstimator.output().second; }
+	std::pair<double,double> instantTunning() const {return _instantTunningEstimator.instantTunning(); }
 	double energy() const {return _squaredRootEnergy; }
 	unsigned firstCandidate() const {return _estimatedChord;}
 	unsigned secondCandidate() const {return _secondCandidate;}
