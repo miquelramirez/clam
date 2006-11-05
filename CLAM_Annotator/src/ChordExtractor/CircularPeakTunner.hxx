@@ -46,11 +46,13 @@ public:
 private:
 	double _referenceTunning;
 	PeakList _output;
+	static const unsigned nSemitones = 12;
+	static const unsigned binsPerSemitone = 3;
 public:
 	CircularPeakTunner(double referenceTunning)
 		: _referenceTunning(referenceTunning)
 	{
-		
+		_output.reserve(nSemitones*binsPerSemitone);
 	}
 	~CircularPeakTunner()
 	{
@@ -65,8 +67,6 @@ public:
 	 **/
 	unsigned chromagramToSemitone(double tunning, double peakPosition)
 	{
-		const unsigned nSemitones = 12;
-		const unsigned binsPerSemitone = 3;
 		double scaledPosition = peakPosition/binsPerSemitone;
 		double scaledTunning = tunning/binsPerSemitone;
 		double scaledReference = _referenceTunning/binsPerSemitone;
@@ -85,7 +85,6 @@ public:
 	}
 	static double tune(double peakPosition, double shift)
 	{
-		const unsigned nSemitones = 12;
 		double tunnedPosition = peakPosition + shift;
 		while (tunnedPosition<0) tunnedPosition += nSemitones;
 		while (tunnedPosition>= nSemitones) tunnedPosition -= nSemitones;

@@ -57,8 +57,8 @@ public:
 	}
 	void doIt(const PeakList & peaks)
 	{
-		_output.resize(0);
-		_output.resize(nSemitones);
+		for (unsigned i=0; i<nSemitones; i++)
+			_output[i]=0;
 		const unsigned nPeaks=peaks.size();
 		for (unsigned i=0; i<nPeaks; i++)
 		{
