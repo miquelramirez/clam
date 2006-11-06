@@ -27,6 +27,7 @@
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
 #include "PolarChromaPeaks.hxx"
+#include "ChordRanking.hxx"
 //#include "NetAudioPlot.hxx" // QT4PORT
 //#include "NetPeaksPlot.hxx" // QT4PORT
 //#include "NetSpectrumPlot.hxx" // QT4PORT
@@ -222,6 +223,8 @@ void PrototypeLoader::ConnectWithNetwork()
 		("OutPort__.*", "CLAM::VM::KeySpace");
 	ConnectWidgetsWithPorts<PolarChromaPeaks,PolarChromaPeaksMonitor>
 		("OutPort__.*", "PolarChromaPeaks");
+	ConnectWidgetsWithPorts<CLAM::VM::ChordRanking,ChordRankingMonitor>
+		("OutPort__.*", "CLAM::VM::ChordRanking");
 /*
 	// QT4PORT
 	ConnectWidgetsWithPorts<CLAM::VM::NetAudioPlot>

@@ -13,6 +13,8 @@
 
   <processing id="Tonnetz_0" type="Tonnetz"/>
 
+  <processing id="Tunner_0" type="Tunner"/>
+
   <port_connection>
     <out>AudioSource_0.AudioOut</out>
     <in>TonalAnalysis_0.Audio Input</in>
@@ -36,6 +38,11 @@
   <port_connection>
     <out>TonalAnalysis_0.Chroma Peaks</out>
     <in>PolarChromaPeaks_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>TonalAnalysis_0.Tunning</out>
+    <in>Tunner_0.Input</in>
   </port_connection>
 
 </network>

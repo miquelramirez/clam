@@ -8,6 +8,7 @@
 #include "TonnetzPlugin.hxx"
 #include "KeySpacePlugin.hxx"
 #include "PolarChromaPeaksPlugin.hxx"
+#include "ChordRankingPlugin.hxx"
 #include <iostream>
 
 #include "CLAMWidgets.hxx"
@@ -24,6 +25,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new TonnetzPlugin(this)
 		<< new KeySpacePlugin(this)
 		<< new PolarChromaPeaksPlugin(this)
+		<< new ChordRankingPlugin(this)
 		;
 }
 

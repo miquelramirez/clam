@@ -124,6 +124,7 @@ const static char * processingClasses[] = {
 	"KeySpace",
 	"PolarChromaPeaks",
 	"ChordRanking",
+	"Tunner",
 	0,
 	0
 };

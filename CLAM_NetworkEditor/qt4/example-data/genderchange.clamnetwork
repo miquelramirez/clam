@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network id="CLAM">
+<network id="Unnamed Network">
+
+  <processing id="AudioSink_0" type="AudioSink"/>
 
   <processing id="AudioSource_0" type="AudioSource"/>
 
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
 
-  <processing id="Output" type="AudioSink"/>
-
-  <processing id="PeakView_0" type="PeakView"/>
-
-  <processing id="PeakView_1" type="PeakView"/>
-
-  <processing id="Residual" type="AudioSink"/>
-
-  <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
+  <processing id="SMSAnalysisCore_0" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -88,7 +82,7 @@
       <IsHarmonic>0</IsHarmonic>
     </SinTracking>
     <prSamplingRate>44100</prSamplingRate>
-    <prFFTSize>1024</prFFTSize>
+    <prFFTSize>0</prFFTSize>
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -100,7 +94,7 @@
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="SMSSynthesis" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -109,7 +103,7 @@
     <PhaseMan>
       <MaxSines>100</MaxSines>
       <SamplingRate>44100</SamplingRate>
-      <Type>Continuation</Type>
+      <Type>Align</Type>
     </PhaseMan>
     <SpectralSynth>
       <AnalWindowGenerator>
@@ -153,66 +147,44 @@
     <prSamplingRate>44100</prSamplingRate>
   </processing>
 
-  <processing id="Sinusoidal" type="AudioSink"/>
-
   <port_connection>
     <out>AudioSource_0.AudioOut</out>
-    <in>SMSAnalysisCore.Input Audio</in>
+    <in>SMSAnalysisCore_0.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
-    <in>Oscilloscope_0.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>SMSAnalysisCore.Sinusoidal Peaks</out>
+    <out>SMSAnalysisCore_0.Sinusoidal Peaks</out>
     <in>SMSGenderChange_0.In SpectralPeaks</in>
   </port_connection>
 
   <port_connection>
-    <out>SMSAnalysisCore.Sinusoidal Peaks</out>
-    <in>PeakView_0.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>SMSAnalysisCore.Fundamental</out>
+    <out>SMSAnalysisCore_0.Fundamental</out>
     <in>SMSGenderChange_0.In Fundamental</in>
   </port_connection>
 
   <port_connection>
-    <out>SMSAnalysisCore.Residual Spectrum</out>
+    <out>SMSAnalysisCore_0.Residual Spectrum</out>
     <in>SMSGenderChange_0.In Spectrum</in>
   </port_connection>
 
   <port_connection>
     <out>SMSGenderChange_0.Out SpectralPeaks</out>
-    <in>SMSSynthesis.InputSinPeaks</in>
-  </port_connection>
-
-  <port_connection>
-    <out>SMSGenderChange_0.Out SpectralPeaks</out>
-    <in>PeakView_1.Input</in>
+    <in>SMSSynthesis_0.InputSinPeaks</in>
   </port_connection>
 
   <port_connection>
     <out>SMSGenderChange_0.Out Spectrum</out>
-    <in>SMSSynthesis.InputResSpectrum</in>
+    <in>SMSSynthesis_0.InputResSpectrum</in>
   </port_connection>
 
   <port_connection>
-    <out>SMSSynthesis.OutputAudio</out>
-    <in>Output.AudioIn</in>
+    <out>SMSSynthesis_0.OutputAudio</out>
+    <in>AudioSink_0.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>SMSSynthesis.OutputResAudio</out>
-    <in>Residual.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>SMSSynthesis.OutputSinAudio</out>
-    <in>Sinusoidal.AudioIn</in>
+    <out>SMSSynthesis_0.OutputAudio</out>
+    <in>Oscilloscope_0.Input</in>
   </port_connection>
 
 </network>

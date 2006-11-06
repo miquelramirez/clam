@@ -41,7 +41,7 @@ private:
 	const std::string & getLabel(unsigned bin) const
 	{
 		static std::vector<std::string> a = initBinLabelVector();
-		if (bin>a.size()) return "Bad bin";
+		if (bin>a.size()) throw "Bad bin";
 		return a[bin];
 	}
 	std::vector<std::string> initBinLabelVector() const

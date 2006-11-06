@@ -44,7 +44,7 @@ CLAM::VM::ChordRanking::ChordRanking(QWidget * parent) :
 	_updatePending=0;
 	_nBins=0;
 	_maxValue=1;
-//	setWhatsThis(tr("TODOI"));
+//	setWhatsThis(tr("TODO"));
 	startTimer(50);
 }
 
@@ -92,26 +92,37 @@ void CLAM::VM::ChordRanking::paintEvent(QPaintEvent * event)
 		_dataSource->release();
 		return;
 	}
-	int size = _dataSource->nBins();
-	unsigned barSize = QFontMetrics(_font).height()+4;
-	const unsigned margin=2;
-	unsigned barOffset = barSize+margin;
 	
-	QPainter painter(this);
+	int size = _dataSource->nBins();
 	_maxValue*=0.95;
+	double minValue=1;
 	if (_maxValue<1e-5) _maxValue=1;
 	for (unsigned i = 0; i < size; i++)
+	{
 		if (_data[i]>=_maxValue) _maxValue=_data[i];
+		if (_data[i]<minValue) minValue=_data[i];
+	}
 	std::vector<unsigned> indexes(size);
 	for (unsigned i=0; i<size; i++)
 		indexes[i]=i;
 	std::sort(indexes.begin(), indexes.end(), IndirectSorter(_data));
 
+	QPainter painter(this);
+	unsigned barSize = painter.fontMetrics().height();
+	const unsigned margin=2;
+	unsigned barOffset = barSize+margin;
 	for (unsigned i=0; i<size; i++)
 	{
-		QRect barRect(margin,i*barOffset+margin, (width()-2*margin)*_data[indexes[i]]/_maxValue,barSize);
+		int maxBarSize=width()-2*margin;
+		double normalizedValue = (_data[indexes[i]]-minValue)/(_maxValue-minValue);
+		QRect barRect(margin,i*barOffset+margin, maxBarSize*normalizedValue, barSize);
+		QLinearGradient linearGrad(QPointF(margin+maxBarSize*normalizedValue, 0), QPointF(margin+maxBarSize*(normalizedValue-1), 0));
+		linearGrad.setColorAt(0, Qt::black);
+		linearGrad.setColorAt(1, Qt::white);
+//		painter.setBrush(QColor(0xff, int(0xff*(1-normalizedValue)), 0x00));
+		painter.setBrush(linearGrad);
 		painter.drawRect(barRect);
-		painter.drawText(margin, (i+1)*barOffset,_dataSource->getLabel(indexes[i]).c_str());
+		painter.drawText(margin, (1+i)*barOffset,_dataSource->getLabel(indexes[i]).c_str());
 	}
 	_dataSource->release();
 }
