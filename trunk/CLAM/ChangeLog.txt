@@ -5,7 +5,7 @@
  * MacOSX DMG packages are back
  * Graceful loading of network (catchable exception instead aborting)
  * Using optimized versions (CLAM_func) for math functions
- * Ooura fft is now limited to power of two sizes
+ * Ooura fft is now enforced to be power of two sizes
  * Network and NetworkPlayer usability
    * OSCEnabledNetwork was removed. Use OSCControlDispatcher and bind it to
      a plain Network instead.
