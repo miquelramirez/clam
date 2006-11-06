@@ -57,8 +57,9 @@ namespace CLAM{
 		mOutFund("Out Fundamental", this),
 		mInSpectrum("In Spectrum", this),
 		mOutSpectrum("Out Spectrum", this)
-		{}
-
+		{
+			Configure( SegmentTransformationConfig() );
+		}
  		~SMSGenderChange() {}
 
 		bool Do() 
@@ -71,6 +72,12 @@ namespace CLAM{
 						 mOutSpectrum.GetData() 
 						 );
 
+			mInPeaks.Consume(); 
+			mInFund.Consume(); 
+			mInSpectrum.Consume(); 
+			mOutPeaks.Produce(); 
+			mOutFund.Produce();
+			mOutSpectrum.Produce();
 			return result;
 		}
 		
