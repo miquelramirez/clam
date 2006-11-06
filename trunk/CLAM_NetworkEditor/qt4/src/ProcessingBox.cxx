@@ -10,6 +10,7 @@
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
 #include "ChordRanking.hxx"
+#include "Tunner.hxx"
 #include "ControlSenderWidget.hxx"
 
 #include <QtGui/QSlider>
@@ -120,6 +121,12 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 	{
 		CLAM::VM::ChordRanking * widget = new CLAM::VM::ChordRanking(canvas);
 		widget->setDataSource( *dynamic_cast<ChordRankingMonitor*>(processing) );
+		return widget;
+	}
+	if (className=="Tunner")
+	{
+		Tunner * widget = new Tunner(canvas);
+		widget->setDataSource( *dynamic_cast<TunnerMonitor*>(processing) );
 		return widget;
 	}
 

@@ -82,6 +82,7 @@ public:
 		if (search==_processings.end()) return;
 		_processings.erase(search);
 		_processings.push_back(toRaise);
+		// TODO: Raise the embedded widget too
 	}
 
 	void paintEvent(QPaintEvent * event)
@@ -892,8 +893,8 @@ private slots:
 	}
 	void onDeleteProcessing()
 	{
-		removeSelectedProcessings();
-		return;
+//		removeSelectedProcessings();
+//		return;
 
 		QPoint point = ((QAction*)sender())->data().toPoint();
 		for (unsigned i = _processings.size(); i--; )

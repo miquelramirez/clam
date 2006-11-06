@@ -32,6 +32,7 @@ private:
 	OutPort<std::vector<CLAM::TData> > _pcp;
 	OutPort<std::vector<CLAM::TData> > _chordCorrelation;
 	OutPort<std::vector<std::pair<CLAM::TData, CLAM::TData> > > _chromaPeaks;
+	OutPort<std::pair<CLAM::TData, CLAM::TData> > _tunning;
 
 public:
 	TonalAnalysis( const TonalAnalysisConfig & config = TonalAnalysisConfig() );
