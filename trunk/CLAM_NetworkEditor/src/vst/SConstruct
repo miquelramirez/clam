@@ -1,0 +1,141 @@
+#!/usr/bin/python
+import os
+import glob
+import sys
+
+version='testing-version'
+options = Options('options.cache', ARGUMENTS)
+options.Add(PathOption('install_prefix', 'The prefix where the networkeditor will be installed', ''))
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('clam_sconstools', 'The path to the scons tools provided by clam', ''))
+options.Add(PathOption('vstsdk_path', 'The path to vstsdk (root dir)', ''))
+options.Add(BoolOption('release', 'Build CLAM NetworkEditor enabling compiler optimizations', 'no') )
+options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
+
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(path+"/"+pattern)
+	return files
+
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+
+env = Environment(ENV=os.environ, tools=['default'], options=options)
+options.Save('options.cache', env)
+
+env.Help(options.GenerateHelpText(env))
+
+env.SConsignFile() # Single signature file
+
+	
+env.Tool('clam', toolpath=[env['clam_sconstools']])
+
+CLAMInstallDir = env['clam_prefix']
+
+env['CXXFILESUFFIX'] = '.cxx'
+if not env['verbose']:
+	env['CXXCOMSTR'] = '== Compiling $SOURCE'
+	env['LINKCOMSTR'] = '== Linking $TARGET'
+	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
+
+env.EnableClamModules([
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	] , CLAMInstallDir)
+
+mainSources = {
+}
+blacklist = [
+]
+
+#vstsdk_path ='F:\\clam-external-libs\\vstsdk2.3' 
+vstsdk_common_path = os.path.join( env['vstsdk_path'], 'source', 'common' )
+
+sourcePaths = [
+	os.path.join('.'),
+	os.path.join( vstsdk_common_path )
+]
+extraPaths = []
+extraPaths += [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+]
+
+includePaths = sourcePaths + extraPaths
+
+#sources = scanFiles('*.cpp', os.path.join(vstsdk_common_path, 'ADelay')
+sources = scanFiles('*.cpp', '.')
+sources.append( os.path.join(vstsdk_common_path, 'AudioEffect.cpp') )
+sources.append( os.path.join(vstsdk_common_path, 'audioeffectx.cpp') )
+
+for mainSource in mainSources.values() :
+	sources.remove(mainSource)
+for blacksheep in blacklist :
+	sources.remove( blacksheep )
+
+#env.Append(LIBS=['vstgui'])
+env.Append(CPPPATH=includePaths)
+env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
+env.Append(CPPDEFINES=[ ('FFTW_HEADER','"<rfftw.h>"') ])
+
+if sys.platform=='linux2' :
+	if env['release'] :
+		env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
+	else :
+		env.Append( CCFLAGS=['-g', '-Wall'] )
+elif sys.platform=='win32':
+#	env.Append(LIBPATH=[ os.path.join(env['vstsdk_path,'] 'win','library')])
+	env.Append(LINKFLAGS=['/subsystem:windows','/machine:i386', ''])
+	env['WIN32_INSERT_DEF'] = 1
+	if env['release'] :
+		env.Append(CPPDEFINES=['NDEBUG'])
+	else :
+		env.Append(CPPDEFINES=['_DEBUG'])
+else:
+	print 'platform "%s" not suported' % sys.platform
+	sys.exit()
+
+#	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
+
+
+programs = []
+for main in mainSources.items() :
+	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
+
+vstplugin = env.SharedLibrary("CLAMVstPlugin", source = sources )
+#vstplugin = env.SharedLibrary("ADelay", source = sources )
+
+
+# Manual step: lupdate-
+installation = {
+	'/bin' : programs,
+	'/bin' : vstplugin,
+}
+
+installTargets = [
+	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
+
+
+if sys.platform=='macosx' : # not really tested!!!
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"NetworkEditor.app/Contents/Resources\\""')
+	#Binaries: networkeditor + sample extractor
+	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
+
+	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
+	installTargets = [
+		env.Install( 'NetworkEditor.app/Contents/MacOS', programs ),
+		env.Install( 'NetworkEditor.app/Contents', 'resources/Info.plist'),
+		env.Install( 'NetworkEditor.app/Contents/Resources', 'resources/CLAM.icns'),
+		]
+	mac_packages = env.Dmg('notused', installTargets )
+	env.Alias('package', mac_packages)
+
+env.Alias('install', installTargets )
+
+#env.Default(programs+[vstplugin])
+env.Default([vstplugin])
+
