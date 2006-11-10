@@ -34,7 +34,7 @@ env.Tool('nsis', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
-version, fullVersion = versionInfo.takeFromChangeLog("../CHANGES", "NetworkEditor")
+version, fullVersion = versionInfo.takeFromChangeLog("CHANGES", "NetworkEditor")
 print "Version: ", version
 print "Package version: ", fullVersion
 versionInfo.generateVersionSources(os.path.join('src','NetworkEditorVersion'), "NetworkEditor", fullVersion)
@@ -84,7 +84,7 @@ mainSources = {
 sourcePaths = [
 	os.path.join('src'),
 	os.path.join('src','generated'),
-	os.path.join('..','src','Processings'),
+	os.path.join('src','processing'),
 	os.path.join('src','prototyper'),
 	os.path.join('src','chordWidgets'),
 	os.path.join('src','chordWidgets','generated'),
@@ -191,8 +191,8 @@ examples = []
 for ext in ['clamnetwork', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
 	examples += scanFiles('*.%s'%ext, ['example-data'])
 
-menuEntries = glob.glob('../resources/*.desktop')
-mimeEntries = '../resources/clam-network.xml'
+menuEntries = glob.glob('resources/*.desktop')
+mimeEntries = 'resources/clam-network.xml'
 
 installation = {
 	'/bin' : programs,
