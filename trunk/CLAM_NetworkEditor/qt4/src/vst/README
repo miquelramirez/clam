@@ -1,9 +1,0 @@
-
-You need to download the VST SDK directly from
-Steinberg, since its licence doesn't allow us to
-do it.
-
-We provide a scons option with the path to 
-the vst stk.
-
-It has been tested with vstsdk2.3
