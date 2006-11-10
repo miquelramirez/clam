@@ -299,7 +299,7 @@ void Annotator::initInterface()
 	mBPFEditor->SetZoomSteps(5,5);
 	mBPFEditor->SetXRange(0.0,2.0);
 
-	mCurrentAudio.SetDuration(2.0);
+	mCurrentAudio.ResizeToDuration(2.0);
 	mSegmentEditor->SetData(mCurrentAudio);
 
 #if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport

@@ -74,7 +74,7 @@ env.EnableQt4Modules([
 #	'QtXml',
 #	'QtSvg',
 #	'Qt3Support',
-	])
+	], debug=False)
 
 mainSources = {
 	'Annotator' : os.path.join('src','main.cxx'),
@@ -164,6 +164,11 @@ chordLibSources = [chordSource for chordSource in chordSources if not chordSourc
 
 chordLib = [ env.StaticLibrary(target='ChordExtractor', source = chordLibSources) ]
 programs += [ env.Program(target='ChordExtractor', source = chordNoLibSources + chordLib) ]
+
+onsetSources = scanFiles("*.cpp", ["src/OnsetExtractor"])
+onsetSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  onsetSources )
+onsetSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  onsetSources )
+programs += [ env.Program(target='OnsetExtractor', source = onsetSources, LIBS=['fftw3','sndfile']) ]
 
 env.Uic4(source="SimacServicesClient/GUI.ui")
 bocaClientSources = [
