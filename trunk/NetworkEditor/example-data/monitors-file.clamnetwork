@@ -5,13 +5,13 @@
 
   <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
     <SourceFile>
-      <URI>/home/Limbus/Deftones - [1997] Around the fur/Deftones - [1997] Around the fur - 06 - Be Quiet And Drive (Far Away).ogg</URI>
+      <URI>example-data/Guillamino_CitiusAltiusFortius.mp3</URI>
       <Header>
         <SampleRate>44100</SampleRate>
-        <Samples>13494600</Samples>
-        <Channels>2</Channels>
-        <Length>306000</Length>
-        <Format>VorbisMk1</Format>
+        <Samples>1443393</Samples>
+        <Channels>1</Channels>
+        <Length>32730</Length>
+        <Format>Mpeg Audio Layer 3</Format>
         <Encoding>Format Default</Encoding>
         <Endianess>Format Default</Endianess>
       </Header>
