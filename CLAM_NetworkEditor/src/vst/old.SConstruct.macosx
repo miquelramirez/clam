@@ -1,0 +1,72 @@
+import sys,os,glob
+
+version='0.2'
+
+def create_dmg( target, source, env) :
+	os.system( "mkdir DMG" )
+	os.system( "cp README.txt DMG" )
+	os.system( "cp -r CLAMTest.vst DMG" )
+	os.system( "sudo hdiutil create -srcfolder DMG -volname VSTCLAMTest -uid 0 VSTCLAMTest-%s.dmg"%version )
+	os.system( "rm -rf DMG" )
+
+def create_dmg_message( target, source, env):
+	return "Creating DMG package"
+							
+def install_plugin( target, source, env):
+	os.system('rm -rf ~/Library/Audio/Plug-Ins/VST/CLAMTest.vst; cp -R CLAMTest.vst ~/Library/Audio/Plug-Ins/VST' )
+
+def install_plugin_message( target, source, env):
+	return "Installing plugin in default VST plugin directory ~/Library/Audio/Plug-Ins/VST"
+
+if sys.platform != 'darwin':
+	print "ERROR: you must build this example under Mac OS X"
+	sys.exit(1)
+
+vst_env = Environment( tools=['default']) 
+
+opts = Options('VSTNetwork.conf')
+
+opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '/usr/local') )
+opts.Add( BoolOption( 'release', 'Build CLAM VSTNetwork enabling compiler optimizations', 'yes') )
+opts.Update(vst_env)
+opts.Save('VSTCLAMTest.conf', vst_env)
+Help(opts.GenerateHelpText(vst_env))
+
+if vst_env['release'] :
+	vst_env.Append( CPPFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
+else :
+	vst_env.Append( CPPFLAGS=['-g', '-Wall'] )
+
+export_pkg_config = 'export PKG_CONFIG_PATH='+vst_env['clam_prefix']+'/lib/pkgconfig'
+execute_pkg_config = 'pkg-config --cflags --libs clam_core clam_processing clam_audioio' 
+vst_env.ParseConfig( export_pkg_config + ' && ' + execute_pkg_config  )
+
+sourcefiles=['CLAMTestMain.cpp', 'CLAMTest.cpp', './common/AudioEffect.cpp', './common/audioeffectx.cpp']
+
+bin_objects = [ vst_env.Object(source) for source in sourcefiles ]
+
+vst_env.Append(CPPPATH='.')
+
+vst_env.Append(CPPFLAGS=['-include', 'CLAM/preinclude.hxx', '-include', './common/vstplugsmacho.h','-I./common'])
+vst_env.Append(LINKFLAGS=['-bundle','-dynamic','-bind_at_load'])
+
+vst_bin_pre = vst_env.Program( 'CLAMTest', bin_objects )
+
+bundle_bin = vst_env.Install( 'CLAMTest.vst/Contents/MacOS', vst_bin_pre )
+bundle_data = vst_env.Install( 'CLAMTest.vst/Contents', ['Info.plist','PkgInfo'])
+
+vst_bin = [ bundle_bin + bundle_data ]
+		
+#DMG creation process
+dmg_bld = Builder( action=Action( create_dmg, create_dmg_message ))
+vst_env.Append( BUILDERS={'CreateDMG' : dmg_bld} )
+dmg = vst_env.CreateDMG('notused', vst_bin )
+vst_env.Alias('dmg', [vst_bin, dmg])
+
+#Installation process (in default MacOSX VST plugin directory)
+install_bld = Builder( action=Action(install_plugin, install_plugin_message ))
+vst_env.Append( BUILDERS={'InstallPlugin' : install_bld} )
+install = vst_env.InstallPlugin('notused2', None )
+vst_env.Alias('install', [vst_bin, install])
+
+Default(vst_bin)
