@@ -204,7 +204,7 @@ def setup_build_options( env ) :
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
 	if sys.platform != 'win32' :
 		opts.Add( BoolOption( 'with_ladspa_support', 'Ladspa plugin support', 'yes') )
-		opts.Add( BoolOption( 'with_osc_support', 'Enables/Disables OSC support', 'yes') )
+		opts.Add( BoolOption( 'with_osc_support', 'Enables/Disables OSC support', 'no') )
 		opts.Add( BoolOption( 'with_jack_support', 'Enables/Disable JACK support', 'yes') )
 	
 	# clam_processing options
