@@ -142,17 +142,6 @@ directoryBasedExamples = [
 	"../../examples/ControlArrayExamples",
 ]
 
-prototypers = [
-#	"../../examples/Prototyper/PAPrototyper.cxx",
-	"../../examples/Prototyper/BlockingPrototyper.cxx",
-]
-if sys.platform != "win32" :
-	prototypers += "../../examples/Prototyper/JACKPrototyper.cxx",
-prototyperHelpers = [
-	"../../examples/Prototyper/PrototypeLoader.cxx",
-	"../../examples/Prototyper/QtSlot2Control.cxx",
-]
-
 examples = []
 
 for main in singleSourceExamples :
@@ -168,11 +157,6 @@ for folder in directoryBasedExamples :
 	exampleSources = glob.glob(folder+"/*.cxx")
 	executable = os.path.basename(folder)
 	examples += [ env.Program(target=executable, source = sources + exampleSources ) ]
-
-env.AppendUnique(LIBS=["qui"])
-for main in prototypers :
-	executable = os.path.splitext(os.path.basename(main))[0]
-	examples += [ env.Program(target=executable, source = sources + [main] + prototyperHelpers) ]
 
 
 env.Alias('examples',examples)
