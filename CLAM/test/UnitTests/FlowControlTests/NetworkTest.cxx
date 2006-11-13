@@ -34,8 +34,8 @@
 #include "Oscillator.hxx" // CLAM
 #include "AudioMultiplier.hxx" // CLAM
 #include "AudioFileIn.hxx" // CLAM
-#include "ExternSink.hxx" // CLAM
-#include "ExternGenerator.hxx" // CLAM
+#include "AudioSink.hxx" // CLAM
+#include "AudioSource.hxx" // CLAM
 #include "AudioOut.hxx" // CLAM
 #include "AudioIn.hxx" // CLAM
 
@@ -1014,13 +1014,13 @@ class NetworkTest : public CppUnit::TestFixture
 	{	
 		CLAM::Network net;
 		net.AddFlowControl( new CLAM::BasicFlowControl(1) );
-		net.AddProcessing( "ExternSink", new CLAM::ExternSink  );
+		net.AddProcessing( "AudioSink", new CLAM::AudioSink  );
 		CPPUNIT_ASSERT_EQUAL( true, net.HasSyncSource() );
 	}
 	void testSyncSourceProcessings()
 	{
-		CPPUNIT_ASSERT_EQUAL( true, CLAM::ExternSink().IsSyncSource() );
-		CPPUNIT_ASSERT_EQUAL( true, CLAM::ExternGenerator().IsSyncSource() );
+		CPPUNIT_ASSERT_EQUAL( true, CLAM::AudioSink().IsSyncSource() );
+		CPPUNIT_ASSERT_EQUAL( true, CLAM::AudioSource().IsSyncSource() );
 		CPPUNIT_ASSERT_EQUAL( true, CLAM::AudioIn().IsSyncSource() );
 		CPPUNIT_ASSERT_EQUAL( true, CLAM::AudioOut().IsSyncSource() );
 	}
