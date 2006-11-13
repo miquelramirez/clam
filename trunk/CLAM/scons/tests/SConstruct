@@ -14,7 +14,7 @@ options.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going
 if sys.platform == 'win32' :
 	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '' ))
 options.Add( BoolOption( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )
-options.Add( PathOption( 'test_data_path', 'Path to the TestDataPrefix', '/usr/local') )
+options.Add( PathOption( 'test_data_path', 'Path to the TestDataPrefix', '') )
 
 env = Environment( ENV=os.environ, tools=['default', 'clam'], toolpath=[clamToolPath], options=options)
 
