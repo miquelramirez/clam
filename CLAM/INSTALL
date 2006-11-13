@@ -22,8 +22,8 @@ applications from the source tarballs.
 
  (update 13 Nov 06: a bug in the scons script prevents to create the library links
  links in LINUX. As a work-around, change dir to the /usr/local/lib, or whatever
- is your install path, and execute:
- $ for a in core processing vmqt vmfl audioio; do ln -s libclam_$a.so.0.91.0 libclam_$a.so.0.91; ln -s libclam_$a.so.0.91.0 libclam_$a.so.0; ln -s libclam_$a.so.0.91.0 libclam_$a.so; done"
+ is your install path, and execute (maybe changing the 0.91.1 version):
+ $ for a in core processing vmqt vmfl audioio; do ln -s libclam_$a.so.0.91.1 libclam_$a.so.0.91; ln -s libclam_$a.so.0.91.1 libclam_$a.so.0; ln -s libclam_$a.so.0.91.1 libclam_$a.so; done"
  )
 
  This will compile all the libraries with default options, and install
