@@ -45,6 +45,10 @@ print "Version: ", version
 print "Package version: ", fullVersion
 versionInfo.generateVersionSources(os.path.join('src','SMSToolsVersion'), "SMSTools", fullVersion)
 
+# KLUDGE!!!!!!!!!!!!!!!!!!
+#env['RCCOM'] = '$RC $_CPPDEFFLAGS $_CPPINCFLAGS $RCFLAGS /fo$TARGET $SOURCES' # the original one
+env['RCCOM'] = '$RC $_CPPDEFFLAGS $RCFLAGS /fo$TARGET $SOURCES'
+
 
 
 env['CXXFILESUFFIX'] = '.cxx'
