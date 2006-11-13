@@ -84,15 +84,8 @@ applications from the source tarballs.
 
 1.1 Install CLAM dependencies on Linux
 
- As a hint, in an Ubuntu Breezy (Debian based) distribution these 
- are the needed packages:
-   libxerces26-dev, fftw-dev, sfftw-dev, libfltk1.1-dev, libqt3-mt-dev, 
-   libasound2-dev, libvorbis-dev, libsndfile1-dev, libmad0-dev, 
-   libid3-3.8.3-dev, ladspa-sdk, (optional: libxml++2.6-dev >=2.10,
-   libjack-dev)
-
  Update: packages needed for Ubuntu 06.10 "Edgy":
- sudo apt-get install libxerces27-dev fftw-dev sfftw-dev libfltk1.1-dev libqt3-mt-dev libasound2-devibvorbis-dev libsndfile1-dev libmad0-dev libxerces27-dev fftw-dev sfftw-dev libfltk1.1-dev libqt3-mt-dev libasound2-dev libvorbis-dev libsndfile1-dev libmad0-dev libqt4-debug-dev qt4-qtconfig scons ladspa-sdk portaudio libid3-3.8.3-dev libjack0.100.0-dev libcppunit-dev
+ $ sudo apt-get install libxerces27-dev fftw-dev sfftw-dev fftw3-dev libfltk1.1-dev libqt3-mt-dev libasound2-devibvorbis-dev libsndfile1-dev libmad0-dev libxerces27-dev fftw-dev sfftw-dev libfltk1.1-dev libqt3-mt-dev libasound2-dev libvorbis-dev libsndfile1-dev libmad0-dev libqt4-debug-dev qt4-qtconfig scons ladspa-sdk portaudio libid3-3.8.3-dev libjack0.100.0-dev libcppunit-dev
 
  Redhad / Fedora Core packages list (tested with FC5)
    gcc-c++ scons fftw2-devel fltk-devel libvorbis-devel libogg-devel qt-devel
