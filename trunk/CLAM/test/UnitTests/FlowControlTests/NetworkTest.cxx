@@ -1015,14 +1015,14 @@ class NetworkTest : public CppUnit::TestFixture
 		CLAM::Network net;
 		net.AddFlowControl( new CLAM::BasicFlowControl(1) );
 		net.AddProcessing( "AudioSink", new CLAM::AudioSink  );
-		CPPUNIT_ASSERT_EQUAL( true, net.HasSyncSource() );
+		CPPUNIT_ASSERT_EQUAL( false, net.HasSyncSource() );
 	}
 	void testSyncSourceProcessings()
 	{
-		CPPUNIT_ASSERT_EQUAL( true, CLAM::AudioSink().IsSyncSource() );
-		CPPUNIT_ASSERT_EQUAL( true, CLAM::AudioSource().IsSyncSource() );
-		CPPUNIT_ASSERT_EQUAL( true, CLAM::AudioIn().IsSyncSource() );
-		CPPUNIT_ASSERT_EQUAL( true, CLAM::AudioOut().IsSyncSource() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE( "AudioSink", false, CLAM::AudioSink().IsSyncSource() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE( "AudioSource", false, CLAM::AudioSource().IsSyncSource() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE( "AudioIn", true, CLAM::AudioIn().IsSyncSource() );
+		CPPUNIT_ASSERT_EQUAL_MESSAGE( "AudioOut", true, CLAM::AudioOut().IsSyncSource() );
 	}
 };
    
