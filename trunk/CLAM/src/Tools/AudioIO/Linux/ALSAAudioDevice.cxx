@@ -194,7 +194,7 @@ namespace CLAM {
 		
 		if (mReadBufSize==0) mReadBufSize=audio.GetSize();
 		else{
-			CLAM_ASSERT(mReadBufSize==audio.GetSize(),"Inconsistent Audio size");
+			CLAM_ASSERT(mReadBufSize==audio.GetSize(),"ALSADevice: Inconsistent Audio size");
 		}
 		if (mReadBufSize>mSndpcm->latency) 
 			throw Err("You are trying to read audio in blocks bigger than the latency");
@@ -232,9 +232,11 @@ namespace CLAM {
 		short* ptrB = mWriteBuf.GetPtr() + channelID;
 		int i,n;
 
+		//printf("alsaauduiodevice write. audio size: %d mWriteBufSize: %d\n", audio.GetSize(), mWriteBufSize);
+
 		if (mWriteBufSize==0) mWriteBufSize=audio.GetSize();
 		else{
-			CLAM_ASSERT(mWriteBufSize==audio.GetSize(),"Inconsistent Audio size");
+			CLAM_ASSERT(mWriteBufSize==audio.GetSize(),"ALSADevice Write: Inconsistent Audio size");
 		}
 			
 		if (mWriteBufSize>mSndpcm->latency) 
