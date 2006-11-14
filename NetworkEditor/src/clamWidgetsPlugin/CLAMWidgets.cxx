@@ -16,7 +16,7 @@
 CLAMWidgets::CLAMWidgets(QObject* parent)
 	: QObject(parent)
 {
-	std::cout << "Loading CLAM widgets " << VERSION << "..." << std::endl;
+	std::cout << "Loading CLAM widgets " << ##VERSION << "..." << std::endl;
 	_widgetPlugins
 		<< new OscilloscopePlugin(this)
 		<< new VumeterPlugin(this)
