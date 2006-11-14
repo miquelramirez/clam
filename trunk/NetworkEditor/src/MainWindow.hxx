@@ -23,8 +23,7 @@
 #endif
 
 #ifndef DATA_EXAMPLES_PATH
-// TODO: QT4PORT without the ../
-#define DATA_EXAMPLES_PATH "../example-data"
+#define DATA_EXAMPLES_PATH "example-data"
 #endif
 
 
@@ -65,22 +64,25 @@ public:
 
 		int frameSize = 2048;
 		_network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
- #ifdef USE_JACK
-		QString backend = "JACK";
-		QString backendLogo = ":/icons/images/jacklogo-mini.png";
+		QString backend = "None";
+		QString backendLogo = ":/icons/images/editdelete.png"; // TODO: Change this icon
+		if (_networkPlayer) delete _networkPlayer;
+		_networkPlayer = 0;
+#ifdef USE_JACK
 		CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
+		backend = "JACK";
+		backendLogo = ":/icons/images/jacklogo-mini.png";
 		if ( jackPlayer->IsConnectedToServer())
-		{
 			_networkPlayer = jackPlayer;
-		}
 		else
-		{
 			delete jackPlayer;
+#endif
+		if (! _networkPlayer)
+		{
 			backend = "ALSA";
 			backendLogo = ":/icons/images/alsalogo-mini.png";
 			_networkPlayer = new CLAM::BlockingNetworkPlayer();
 		}
-#endif
 		_networkPlayer->SetNetwork(_network);
 
 		_playingLabel = new QLabel;
@@ -101,7 +103,7 @@ public:
 	{
 		if (_canvas->networkIsDummy() )
 			_playingLabel->setText(tr("<p style='color:blue'>Dummy</p>"));
-		else if (not _networkPlayer->IsStopped())
+		else if (! _networkPlayer->IsStopped())
 			_playingLabel->setText(tr("<p style='color:green'>Playing...</p>"));
 		else
 			_playingLabel->setText(tr("<p style='color:red'>Stopped</p>"));
@@ -116,7 +118,7 @@ public:
 	{
 		bool goOn = true;
 		bool abort = false;
-		if (not _canvas->isChanged()) return goOn;
+		if (! _canvas->isChanged()) return goOn;
 		int reply = QMessageBox::question(this, tr("Unsaved changes"),
 				tr("The network has been modified. Do you want to save it?"),
 			   	tr("Save"), tr("Discard"), tr("Abort"));
@@ -256,7 +258,7 @@ public slots:
 			return;
 		}
 		// TODO: Activate this once it works
-		if ( false and _network.HasUnconnectedInPorts() )
+		if ( false && _network.HasUnconnectedInPorts() )
 		{
 			QMessageBox::critical(this, tr("Unable to play the network"), 
 					tr("<p><b>The network has some in ports which are not connected.</b></p>"
@@ -264,7 +266,7 @@ public slots:
 					));
 			return;
 		}
-		if (not _networkPlayer->IsCallbackBased() and not _network.HasSyncSource() )
+		if (! _networkPlayer->IsCallbackBased() && ! _network.HasSyncSource() )
 		{
 			QMessageBox::critical(this, tr("Unable to play the network"), 
 				tr("<p>The network needs an AudioIn or AudioOut in order to be playable.</p>"));

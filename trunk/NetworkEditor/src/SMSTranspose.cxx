@@ -28,7 +28,7 @@ namespace CLAM
 
 bool SMSTranspose::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 {
-	static const TData toneFactor = std::pow(2,1./12.);
+	static const TData toneFactor = std::pow(2.,1./12.);
 
 	//TODO big cludge for streaming
 	if ( !mConfig.GetPreserveOuts() ) out = in;

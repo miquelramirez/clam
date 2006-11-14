@@ -89,10 +89,10 @@ public:
 		painter.setPen(QColor(0x77,0x77,0x77,0x77));
 		painter.drawEllipse(-1,-1,2,2);
 		painter.drawEllipse(QRectF(-.5,-.5,1,1));
-		painter.drawLine(QLineF(10,10*sqrt(3),-10,-10*sqrt(3)));
-		painter.drawLine(QLineF(10*sqrt(3),10,-10*sqrt(3),-10));
-		painter.drawLine(QLineF(10,-10*sqrt(3),-10,10*sqrt(3)));
-		painter.drawLine(QLineF(10*sqrt(3),-10,-10*sqrt(3),10));
+		painter.drawLine(QLineF(10,10*sqrt(3.),-10,-10*sqrt(3.)));
+		painter.drawLine(QLineF(10*sqrt(3.),10,-10*sqrt(3.),-10));
+		painter.drawLine(QLineF(10,-10*sqrt(3.),-10,10*sqrt(3.)));
+		painter.drawLine(QLineF(10*sqrt(3.),-10,-10*sqrt(3.),10));
 		painter.drawLine(QLineF(10,0,-10,0));
 		painter.drawLine(QLineF(0,10,0,-10));
 		if ( !_dataSource) return;

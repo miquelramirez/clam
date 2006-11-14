@@ -30,6 +30,7 @@ static CLAM::Factory<CLAM::Processing>::Registrator<ChordRankingMonitor> registr
 #include <QtCore/QTimer>
 #include <iostream>
 #include <CLAM/Pool.hxx>
+#include <algorithm>
 
 CLAM::VM::ChordRanking::~ChordRanking()
 {

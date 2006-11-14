@@ -19,6 +19,7 @@
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
 #endif
+#include <QtGui/QWidget>
 
 #include "Oscilloscope.hxx"
 #include "Vumeter.hxx"
@@ -151,8 +152,6 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends )
 	return false;
 }
 
-#include <dlfcn.h>
-
 static QWidget * DoLoadInterface(const QString & uiFile)
 {
 	QFile file(uiFile);
@@ -160,19 +159,19 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 //	QFormBuilder loader; // TODO: Change this to a QUiLoader
 	QUiLoader loader;
 	loader.addPluginPath("/user/share/NetworkEditor/qtplugins"); //TODO Make that an option
-//	QStringList paths = QCoreApplication::libraryPaths();
 	QStringList paths = loader.pluginPaths();
 	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
 	{
 		std::cout << "Looking for plugins at path: " << it->toStdString() << std::endl;
 	}
-	QWidget * interface = loader.load(&file, 0 );
-	if (interface)
+	QWidget * userInterface = loader.load(&file, 0 );
+	if (userInterface)
 	{
-		interface->setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
+		// TODO: Do this just when no icon set.
+		userInterface->setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
 	}
 	file.close();
-	return interface;
+	return userInterface;
 }
 
 QWidget * PrototypeLoader::LoadInterface(QString uiFile)

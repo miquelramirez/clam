@@ -24,7 +24,7 @@ public:
 		CLAM::Qt4Configurator configurator;
 		configurator.setWindowTitle(name);
 		configurator.SetConfig(config);
-		if (not configurator.exec()) return false;
+		if (! configurator.exec()) return false;
 		processing.Configure(config);
 		return true;
 	}

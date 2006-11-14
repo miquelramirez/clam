@@ -9,6 +9,8 @@ options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', '')
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt3/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 options.Add(PathOption('annotator_path', 'The root path for the Annotator source', ''))
+if sys.platform == 'win32' :
+	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '' ))
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -154,7 +156,12 @@ if sys.platform == 'darwin' :
 programs = []
 for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
-env.Append(LIBS=['cppunit'])
+if sys.platform == "win32" :
+	env.Append( LIBS=['cppunit_vc7'] )
+	env.Append( CPPPATH=[env['cppunit_prefix']+'/include'] )
+	env.Append( LIBPATH=[env['cppunit_prefix']+'/lib'] )
+else :
+	env.Append(LIBS=['cppunit'])
 programs += [ env.Program(target='UnitTests', source = sources+testsources) ]
 env.Append(LIBS=['ChordExtractor'])
 env.Append(LIBPATH=[ env['annotator_path'] ])
@@ -166,7 +173,7 @@ env.AppendUnique(CPPFLAGS=pluginDefines)
 env.AppendUnique(QT4_MOCFROMHFLAGS=['-I/usr/include/qt4']) # TODO: Move this to the qt4 tool
 env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I/usr/include/qt4']) # TODO: Move this to the qt4 tool
 
-env.Append(CPPFLAGS=['-DVERSION=\'"%s"\''%fullVersion]) # to have M_PI defined
+env.Append(CPPFLAGS=['-DVERSION="%s"'%fullVersion]) # to have M_PI defined
 
 qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources)
 
@@ -174,7 +181,7 @@ manpages = [
 	'resources/man/man1/NetworkEditor.1',
 	]
 
-# Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
+# Manual step: lupdate-qt4 *xx *ui -ts NetworkEditor_ca.ts
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
 #env.NoClean(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
 translatableSources = scanFiles('*.cxx', sourcePaths);
@@ -198,8 +205,8 @@ installation = {
 	'/bin' : programs,
 	qtpluginsInstallationPath : [qtplugin],
 	'/share/applications': menuEntries,
-#	'/share/mime/packages': mimeEntries,
-#	'/share/man/man1' : manpages, # TODO Uncomment this
+	'/share/mime/packages': mimeEntries,
+	'/share/man/man1' : manpages,
 	'/share/networkeditor/i18n': translations,
 	'/share/networkeditor/example-data': examples,
 }
