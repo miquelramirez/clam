@@ -170,8 +170,13 @@ pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQ
 env.AppendUnique(CPPFLAGS=pluginDefines)
 
 #env.AppendUnique(CPPFLAGS=['-fPIC']) # qtPlugin examples were compiled with this option
-env.AppendUnique(QT4_MOCFROMHFLAGS=['-I/usr/include/qt4']) # TODO: Move this to the qt4 tool
-env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I/usr/include/qt4']) # TODO: Move this to the qt4 tool
+if sys.platform != "win32" :
+	# TODO: Move this to the qt4 tool
+	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I/usr/include/qt4'])
+	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I/usr/include/qt4'])
+else :
+	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
+	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
 
 env.Append(CPPFLAGS=['-DVERSION="%s"'%fullVersion]) # to have M_PI defined
 
@@ -235,7 +240,6 @@ if sys.platform=='win32' :
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' :
-
 	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
 	installTargets = [
 		env.Install( 'NetworkEditor.app/Contents/MacOS', programs ),
