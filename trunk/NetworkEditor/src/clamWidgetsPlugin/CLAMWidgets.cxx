@@ -10,13 +10,14 @@
 #include "PolarChromaPeaksPlugin.hxx"
 #include "ChordRankingPlugin.hxx"
 #include <iostream>
+#include <CLAM/CLAMVersion.hxx>
 
 #include "CLAMWidgets.hxx"
 
 CLAMWidgets::CLAMWidgets(QObject* parent)
 	: QObject(parent)
 {
-	std::cout << "Loading CLAM widgets " << ##VERSION << "..." << std::endl;
+	std::cout << "Loading CLAM widgets " << CLAM::GetFullVersion() << "..." << std::endl;
 	_widgetPlugins
 		<< new OscilloscopePlugin(this)
 		<< new VumeterPlugin(this)
