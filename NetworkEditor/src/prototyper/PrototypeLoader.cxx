@@ -118,7 +118,7 @@ CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend)
 #endif
 	if (backend=="alsa")
 	{
-		return new CLAM::BlockingNetworkPlayer();
+		return new CLAM::BlockingNetworkPlayer;
 	}
 	return 0;
 }
