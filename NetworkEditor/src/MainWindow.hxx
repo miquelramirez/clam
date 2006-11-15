@@ -35,6 +35,7 @@ public:
 	virtual ~MainWindow();
 
 	MainWindow()
+		: _networkPlayer(0)
 	{
 		ui.setupUi(this);
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
