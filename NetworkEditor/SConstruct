@@ -184,6 +184,7 @@ qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources)
 
 manpages = [
 	'resources/man/man1/NetworkEditor.1',
+	'resources/man/man1/Prototyper.1',
 	]
 
 # Manual step: lupdate-qt4 *xx *ui -ts NetworkEditor_ca.ts
