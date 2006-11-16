@@ -15,12 +15,14 @@
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/PushFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
+#include <CLAM/MonoAudioFileReaderConfig.hxx>
 #include <fstream>
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
 #endif
 #include <QtGui/QWidget>
 
+// Designer widgets
 #include "Oscilloscope.hxx"
 #include "Vumeter.hxx"
 #include "SpectrumView.hxx"
@@ -29,14 +31,6 @@
 #include "KeySpace.hxx"
 #include "PolarChromaPeaks.hxx"
 #include "ChordRanking.hxx"
-//#include "NetAudioPlot.hxx" // QT4PORT
-//#include "NetPeaksPlot.hxx" // QT4PORT
-//#include "NetSpectrumPlot.hxx" // QT4PORT
-//#include "NetFundPlot.hxx" // QT4PORT
-//#include "NetAudioBuffPlot.hxx" // QT4PORT
-//#include "NetSpecgramPlot.hxx" // QT4PORT
-//#include "NetFundTrackPlot.hxx" // QT4PORT
-//#include "NetSinTracksPlot.hxx" // QT4PORT
 
 static std::string getMonitorNumber()
 {
@@ -81,6 +75,7 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 	try
    	{
 		CLAM::XMLStorage::Restore(_network, _networkFile);
+		_player->SetNetwork(_network);
 		return true;
 	}
 	catch (CLAM::XmlStorageErr & e)
@@ -143,7 +138,6 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends )
 		}
 		_backendName = *it;
 		std::cout << "Backend '" << *it << "' selected." << std::endl;
-		_player->SetNetwork(_network);
 		return true;
 	}
 	QMessageBox::critical(0,
@@ -156,7 +150,6 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 {
 	QFile file(uiFile);
 	file.open(QFile::ReadOnly);
-//	QFormBuilder loader; // TODO: Change this to a QUiLoader
 	QUiLoader loader;
 	loader.addPluginPath("/user/share/NetworkEditor/qtplugins"); //TODO Make that an option
 	QStringList paths = loader.pluginPaths();
@@ -224,26 +217,7 @@ void PrototypeLoader::ConnectWithNetwork()
 		("OutPort__.*", "PolarChromaPeaks");
 	ConnectWidgetsWithPorts<CLAM::VM::ChordRanking,ChordRankingMonitor>
 		("OutPort__.*", "CLAM::VM::ChordRanking");
-/*
-	// QT4PORT
-	ConnectWidgetsWithPorts<CLAM::VM::NetAudioPlot>
-		("OutPort__.*", "CLAM::VM::NetAudioPlot");
-	ConnectWidgetsWithPorts<CLAM::VM::NetSpectrumPlot>
-		("OutPort__.*", "CLAM::VM::NetSpectrumPlot");
-	ConnectWidgetsWithPorts<CLAM::VM::NetPeaksPlot>
-		("OutPort__.*", "CLAM::VM::NetPeaksPlot");
-	ConnectWidgetsWithPorts<CLAM::VM::NetFundPlot>
-		("OutPort__.*", "CLAM::VM::NetFundPlot");
-	ConnectWidgetsWithPorts<CLAM::VM::NetAudioBuffPlot>
-		("OutPort__.*", "CLAM::VM::NetAudioBuffPlot");
-	ConnectWidgetsWithPorts<CLAM::VM::NetSpecgramPlot>
-		("OutPort__.*", "CLAM::VM::NetSpecgramPlot");
-	ConnectWidgetsWithPorts<CLAM::VM::NetFundTrackPlot>
-		("OutPort__.*", "CLAM::VM::NetFundTrackPlot");
-	// TODO: Still not ported
-	//ConnectWidgetsWithPorts<CLAM::VM::NetSinTracksPlot>
-	//	("OutPort__.*", "CLAM::VM::NetSinTracksPlot");
-*/
+
 	QObject * playButton = _interface->findChild<QObject*>("PlayButton");
 	if (playButton) connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
 
@@ -262,7 +236,39 @@ void PrototypeLoader::ConnectWithNetwork()
 			.arg(_backendName.c_str())
 			.arg(backendIcon));
 	}
+
+	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("AudioFile__.*"));
+	for (QList<QWidget*>::Iterator it=widgets.begin();
+			it!=widgets.end();
+		   	it++)
+	{
+		QWidget * loadButton = *it;
+		std::string processingName = loadButton->objectName().mid(12).toStdString();
+		std::cout << "* Load Audio File Button connected to Audio file reader '" << processingName << "'" << std::endl;
+		connect(loadButton, SIGNAL(clicked()), this, SLOT(OpenAudioFile()));
+	}
 }
+
+void PrototypeLoader::OpenAudioFile()
+{
+	QObject * loadButton = sender();
+	std::string processingName = loadButton->objectName().mid(12).toStdString();
+	std::cout << "Loading audio for " << processingName << std::endl;
+	CLAM::Processing & processing = _network.GetProcessing(processingName);
+	CLAM::MonoAudioFileReaderConfig config = dynamic_cast<const CLAM::MonoAudioFileReaderConfig &> (processing.GetConfig());
+	QString filename = 
+		QFileDialog::getOpenFileName(_interface, 
+			tr("Choose an audio file"),
+			config.GetSourceFile().GetLocation().c_str(),
+			tr("Audio files (*.wav *.ogg *.mp3)")
+			);
+	if (filename.isEmpty()) return;
+	config.GetSourceFile().OpenExisting(filename.toStdString());
+	Stop();
+	processing.Configure(config);
+	Start();
+}
+
 
 void PrototypeLoader::Start()
 {
@@ -384,10 +390,6 @@ template < typename PlotClass, typename MonitorType>
 void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 {
 	std::cout << "Looking for " << plotClassName << " widgets..." << std::endl;
-	// QT4PORT
-//	if (!QWidgetFactory::supportsWidget(plotClassName))
-//		qWarning(tr("No support for widgets %1. Maybe the CLAM qt plugins has not been loaded").arg(plotClassName));
-//	QList<PlotClass*> widgets = _interface->findChildren<PlotClass*>(QRegExp(prefix));
 	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp(prefix));
 	for (typename QList<QWidget*>::Iterator it=widgets.begin();
 			it!=widgets.end();

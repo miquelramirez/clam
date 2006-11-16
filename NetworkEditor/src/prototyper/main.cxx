@@ -67,8 +67,8 @@ int main( int argc, char *argv[] )
 
 	CLAM::PrototypeLoader prototype;
 
-	if (! prototype.LoadNetwork( networkFile ) ) return -1;
 	if (! prototype.ChooseBackend( backends ) ) return -1;
+	if (! prototype.LoadNetwork( networkFile ) ) return -1;
 	if (! prototype.LoadInterface( uiFile.c_str() ) ) return -1;
 	prototype.ConnectWithNetwork();
 

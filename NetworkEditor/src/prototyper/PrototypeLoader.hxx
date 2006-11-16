@@ -39,8 +39,8 @@ public:
 
 public slots:
 	void Start();
-	
 	void Stop();
+	void OpenAudioFile();
 
 private:
 	void Substitute(std::string & subject, const char * pattern, const char * substitution);
