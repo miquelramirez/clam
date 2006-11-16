@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioOut_0" type="AudioOut">
+    <Device>default:default</Device>
+    <ChannelID>0</ChannelID>
+    <FrameSize>512</FrameSize>
+    <SampleRate>0</SampleRate>
+  </processing>
+
+  <processing id="ChordRanking_0" type="ChordRanking"/>
+
+  <processing id="KeySpace_0" type="KeySpace"/>
+
+  <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
+    <SourceFile>
+      <URI>example-data/Guillamino_CitiusAltiusFortius.mp3</URI>
+      <Header>
+        <SampleRate>44100</SampleRate>
+        <Samples>1443393</Samples>
+        <Channels>1</Channels>
+        <Length>32730</Length>
+        <Format>Mpeg Audio Layer 3</Format>
+        <Encoding>Format Default</Encoding>
+        <Endianess>Format Default</Endianess>
+      </Header>
+      <TextualDescriptors/>
+    </SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
+  </processing>
+
+  <processing id="PolarChromaPeaks_0" type="PolarChromaPeaks"/>
+
+  <processing id="TonalAnalysis_0" type="TonalAnalysis"/>
+
+  <processing id="Tonnetz_0" type="Tonnetz"/>
+
+  <processing id="Tunner_0" type="Tunner"/>
+
+  <port_connection>
+    <out>MonoAudioFileReader_0.Samples Read</out>
+    <in>TonalAnalysis_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MonoAudioFileReader_0.Samples Read</out>
+    <in>AudioOut_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>TonalAnalysis_0.Pitch Profile</out>
+    <in>Tonnetz_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>TonalAnalysis_0.Chord Correlation</out>
+    <in>KeySpace_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>TonalAnalysis_0.Chord Correlation</out>
+    <in>ChordRanking_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>TonalAnalysis_0.Chroma Peaks</out>
+    <in>PolarChromaPeaks_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>TonalAnalysis_0.Tunning</out>
+    <in>Tunner_0.Input</in>
+  </port_connection>
+
+</network>
