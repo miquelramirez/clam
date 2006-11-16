@@ -141,6 +141,12 @@ public:
 	 */
 	bool HasSyncSource() const;
 
+	/**
+	 * Returns an string containing configuration errors.
+	 * Don't rely on the format because is subject to change.
+	 */
+	std::string GetConfigurationErrors() const;
+
 private:
 	
 	// fields

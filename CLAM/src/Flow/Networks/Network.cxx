@@ -591,5 +591,20 @@ namespace CLAM
 		return false;
 	}
 
+	// TODO: Test GetConfigurationErrors
+	std::string Network::GetConfigurationErrors() const
+	{
+		std::ostringstream errorMessage;
+		ProcessingsMap::const_iterator it;
+		for(it=BeginProcessings(); it!=EndProcessings(); it++)
+		{
+			if(it->second->GetExecState() != CLAM::Processing::Unconfigured ) continue;
+			errorMessage << "* Processing '" <<  it->first  << "' is misconfigured:\n";
+			errorMessage << it->second->GetConfigErrorMessage() << std::endl;
+		}
+
+		return errorMessage.str();
+	}
+
 }
 
