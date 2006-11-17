@@ -44,10 +44,24 @@
    ** Just one binary for all backends in a platform
    ** Cascade backend try (command line list or implicit default list)
    ** Errors on loading are reported graphically
+   ** Errors on binding the interface are reported graphically
    ** Unplayable network errors are reported and the playback declined
-   ** Default interface when missing, no implicit (adding .ui) or failed
+   ** Asking the network when
+   ** Default interface when missing, when no implicit (adding .ui) or failed
    ** QLabel named BackendIndicator is filled with backend information
    ** QLabel named PlaybacIndicator is filled with the playback status
+   ** QPushButton named AudioFile_<ProcessingName> will configure the
+        file that an MonoAudioFileReader will load.
+ * NetworkEditor plots and qt widgets plugins:
+   ** Ported to Qt4 designer
+   ** Some properties can be changed on the designer such as colors,
+        refresh time...
+   ** Faster oscilloscope, spectrum and peaks views
+   ** Tonal analysis widgets: Tonnetz, KeySpace ChordRanking, Tunner,
+        PolarChromaPeaks...
+ * Desktop integration
+   ** Menu entries
+   ** Experimental mime bindings in windowns and Linux (freedesktop).
 
 2006-06-?? NetworkEditor 0.3.2
 'Unreleased release'
