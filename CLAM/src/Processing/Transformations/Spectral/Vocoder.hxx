@@ -71,6 +71,7 @@ namespace CLAM{
 		bool InitControls()
 		{
 			GetInControl("NumBands").DoControl(50);
+			return true;
 		}
 		
 		bool Do(const Frame& in, Frame& out)
