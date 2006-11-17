@@ -206,7 +206,8 @@ namespace CLAM
 		mFlowControl->ProcessingAddedToNetwork(*proc);
 	}
 
-	std::string Network::AddProcessing( const std::string & key) // returns the name that was used so the same one can be used when calling CreateProcessingController (hack)
+	// returns the name that was used so the same one can be used when calling CreateProcessingController (hack)
+	std::string Network::AddProcessing( const std::string & key)
 	{
 		AssertFlowControlNotNull();
 
