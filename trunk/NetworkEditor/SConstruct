@@ -61,7 +61,6 @@ env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-#	'clam_vmqt',
 	] , CLAMInstallDir)
 
 env.EnableQt4Modules([
@@ -74,7 +73,7 @@ env.EnableQt4Modules([
 	'QtXml',
 #	'QtSvg',
 	'QtUiTools',
-	'QtDesigner',
+#	'QtDesigner',
 #	'Qt3Support',
 	], debug=False)
 
@@ -205,7 +204,9 @@ for ext in ['clamnetwork', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
 	examples += scanFiles('*.%s'%ext, ['example-data'])
 
 menuEntries = glob.glob('resources/*.desktop')
-mimeEntries = 'resources/clam-network.xml'
+mimeEntries = [
+	'resources/clam-network.xml',
+]
 
 installation = {
 	'/bin' : programs,
@@ -253,6 +254,4 @@ if sys.platform=='darwin' :
 env.Alias('install', installTargets )
 
 env.Default(programs, translations, qtplugin)
-
-
 
