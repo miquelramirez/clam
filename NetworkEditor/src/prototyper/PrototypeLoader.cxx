@@ -455,7 +455,7 @@ void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 		if (ReportMissingOutPort(portName)) continue;
 
 		MonitorType * portMonitor = new MonitorType;
-		std::string monitorName = _network.GetUnusedName("PrototypeLoader");
+		std::string monitorName = _network.GetUnusedName("PrototyperMonitor");
 		_network.AddProcessing(monitorName, portMonitor);
 		_network.ConnectPorts(portName, monitorName+".Input");
 		PlotClass * plot = (PlotClass*) aWidget;
