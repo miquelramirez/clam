@@ -50,9 +50,15 @@ private:
 	void ConnectWidgetsWithControls();
 
 	void ConnectWidgetsWithMappedControls();
+
+	void ConnectWidgetsWithAudioFileReaders();
 	
 	template < typename PlotClass, typename MonitorType >
 	void ConnectWidgetsWithPorts(char* prefix, char* plotClassName);
+
+	bool ReportMissingProcessing(const std::string & processingName);
+	bool ReportMissingInControl(const std::string & fullControlName);
+	bool ReportMissingOutPort(const std::string & fullControlName);
 
 	void UpdatePlayStatus();
 };

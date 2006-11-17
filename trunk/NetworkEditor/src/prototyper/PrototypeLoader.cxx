@@ -200,6 +200,7 @@ void PrototypeLoader::ConnectWithNetwork()
 	
 	ConnectWidgetsWithControls();
 	ConnectWidgetsWithMappedControls();
+	ConnectWidgetsWithAudioFileReaders();
 
 	ConnectWidgetsWithPorts<Oscilloscope,OscilloscopeMonitor>
 		("OutPort__.*", "Oscilloscope");
@@ -235,17 +236,6 @@ void PrototypeLoader::ConnectWithNetwork()
 			tr("<p>Using '%1' backend</p><p><img src='%2'/></p>")
 			.arg(_backendName.c_str())
 			.arg(backendIcon));
-	}
-
-	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("AudioFile__.*"));
-	for (QList<QWidget*>::Iterator it=widgets.begin();
-			it!=widgets.end();
-		   	it++)
-	{
-		QWidget * loadButton = *it;
-		std::string processingName = loadButton->objectName().mid(12).toStdString();
-		std::cout << "* Load Audio File Button connected to Audio file reader '" << processingName << "'" << std::endl;
-		connect(loadButton, SIGNAL(clicked()), this, SLOT(OpenAudioFile()));
 	}
 }
 
@@ -350,6 +340,53 @@ std::string PrototypeLoader::GetNetworkNameFromWidgetName(const char * widgetNam
 	return networkName;
 }
 
+bool PrototypeLoader::ReportMissingProcessing(const std::string & processingName)
+{
+	if (! _network.HasProcessing(processingName))
+	{
+		QMessageBox::warning(0,
+			tr("Error connecting controls"),
+			tr("The interface asked to connect to the processing '%1' which is not in the network.")
+				.arg(processingName.c_str()));
+		return true;
+	}
+	return false;
+}
+bool PrototypeLoader::ReportMissingOutPort(const std::string & portName)
+{
+	std::string processingName = _network.GetProcessingIdentifier(portName);
+	if (ReportMissingProcessing(processingName)) return true;
+	std::string shortPortName = _network.GetConnectorIdentifier(portName);
+	if (! _network.GetProcessing(processingName).HasOutPort(shortPortName))
+	{
+		QMessageBox::warning(0,
+			tr("Error connecting controls"),
+			tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
+				.arg(shortPortName.c_str())
+				.arg(processingName.c_str()
+				));
+		return true;
+	}
+	return false;
+}
+bool PrototypeLoader::ReportMissingInControl(const std::string & controlName)
+{
+	std::string processingName = _network.GetProcessingIdentifier(controlName);
+	if (ReportMissingProcessing(processingName)) return true;
+	std::string shortControlName = _network.GetConnectorIdentifier(controlName);
+	if (! _network.GetProcessing(processingName).HasInControl(shortControlName))
+	{
+		QMessageBox::warning(0,
+			tr("Error connecting controls"),
+			tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
+				.arg(shortControlName.c_str())
+				.arg(processingName.c_str()
+				));
+		return true;
+	}
+	return false;
+}
+
 void PrototypeLoader::ConnectWidgetsWithControls()
 {
 	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("InControl__.*"));
@@ -359,9 +396,9 @@ void PrototypeLoader::ConnectWidgetsWithControls()
 		std::string controlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(11).toAscii());
 		std::cout << "* Control: " << controlName << std::endl;
 
-		// TODO: It may not be present
+		if (ReportMissingInControl(controlName)) continue;
 		CLAM::InControl & receiver = _network.GetInControlByCompleteName(controlName);
-		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
+		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str()); // TODO: Memory leak here
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
 				  SLOT(sendControl(int)));
@@ -374,15 +411,30 @@ void PrototypeLoader::ConnectWidgetsWithMappedControls()
 	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
 		QWidget * aWidget = *it;
-		std::string controlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(16).toAscii());
-		std::cout << "* Mapped Control (100:1): " << controlName << std::endl;
+		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(16).toAscii());
+		std::cout << "* Mapped Control (100:1): " << fullControlName << std::endl;
 
-		// TODO: It may not be present
-		CLAM::InControl & receiver = _network.GetInControlByCompleteName(controlName);
-		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str());
+		if (ReportMissingInControl(fullControlName)) continue;
+		CLAM::InControl & receiver = _network.GetInControlByCompleteName(fullControlName);
+		QtSlot2Control * notifier = new QtSlot2Control(fullControlName.c_str()); // TODO: Memory leak here
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
 				  SLOT(sendMappedControl(int)));
+	}
+}
+
+void PrototypeLoader::ConnectWidgetsWithAudioFileReaders()
+{
+	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("AudioFile__.*"));
+	for (QList<QWidget*>::Iterator it=widgets.begin();
+			it!=widgets.end();
+		   	it++)
+	{
+		QWidget * loadButton = *it;
+		std::string processingName = loadButton->objectName().mid(12).toStdString();
+		std::cout << "* Load Audio File Button connected to Audio file reader '" << processingName << "'" << std::endl;
+		if (ReportMissingProcessing(processingName)) continue;
+		connect(loadButton, SIGNAL(clicked()), this, SLOT(OpenAudioFile()));
 	}
 }
 
@@ -400,16 +452,16 @@ void PrototypeLoader::ConnectWidgetsWithPorts(char* prefix, char* plotClassName)
 		std::string portName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(9).toAscii());
 		std::cout << "* " << plotClassName << " connected to port " << portName << std::endl;
 
+		if (ReportMissingOutPort(portName)) continue;
+
 		MonitorType * portMonitor = new MonitorType;
-
-		std::string monitorName = "PrototyperMonitor"+getMonitorNumber();
-		_network.AddProcessing(monitorName,portMonitor);
-
-		// TODO: It may not be present
-		_network.ConnectPorts(portName,monitorName+".Input");
+		std::string monitorName = _network.GetUnusedName("PrototypeLoader");
+		_network.AddProcessing(monitorName, portMonitor);
+		_network.ConnectPorts(portName, monitorName+".Input");
 		PlotClass * plot = (PlotClass*) aWidget;
 		plot->setDataSource(*portMonitor);
 	}
 }
 	
 } //end namespace CLAM
+
