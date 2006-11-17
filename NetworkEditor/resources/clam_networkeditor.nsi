@@ -64,6 +64,14 @@ Section "Principal" SEC01
   File "..\NetworkEditor.exe"
   File "..\Prototyper.exe"
   File '${QTDIR}\bin\designer.exe'
+  File '${QTDIR}\lib\QtCore4.dll'
+  File '${QTDIR}\lib\QtGui4.dll'
+  File '${QTDIR}\lib\QtOpenGL4.dll'
+  File '${QTDIR}\lib\QtXml4.dll'
+  File '${QTDIR}\lib\QtNetwork4.dll'
+  File '${QTDIR}\lib\QtDesigner4.dll'
+  File '${QTDIR}\lib\QtDesignerComponents4.dll'
+  File '${QTDIR}\lib\QtAssistantClient4.dll'
   File '${EXTERNALDLLDIR}\libsndfile.dll'
   File '${EXTERNALDLLDIR}\ogg.dll'
   File '${EXTERNALDLLDIR}\pthreadVCE.dll'
@@ -76,9 +84,32 @@ Section "Principal" SEC01
   File '${VCRUNTIMEDIR}\msvcr71.dll'
   SetOutPath "$INSTDIR\bin\designer"
   File "..\CLAMWidgets.dll"
-
   SetOutPath "$INSTDIR\example-data\"
   File "..\example-data\*"
+  SetOutPath "$INSTDIR\share\networkeditor\i18n"
+  File "..\src\i18n\NetworkEditor_ca.qm"
+  File "..\src\i18n\NetworkEditor_es.qm"
+
+!define Index "Line${__LINE__}"
+  ReadRegStr $1 HKCR ".clamnetwork" ""
+  StrCmp $1 "" "${Index}-NoBackup"
+    StrCmp $1 "CLAM-NetworkEditor.Network" "${Index}-NoBackup"
+    WriteRegStr HKCR ".clamnetwork" "backup_val" $1
+"${Index}-NoBackup:"
+  WriteRegStr HKCR ".clamnetwork" "" "CLAM-NetworkEditor.Network"
+  ReadRegStr $0 HKCR "CLAM-NetworkEditor.Network" ""
+  StrCmp $0 "" 0 "${Index}-Skip"
+	WriteRegStr HKCR "CLAM-NetworkEditor.Network" "" "CLAM processing network definition"
+	WriteRegStr HKCR "CLAM-NetworkEditor.Network\shell" "" "open"
+	WriteRegStr HKCR "CLAM-NetworkEditor.Network\DefaultIcon" "" "$INSTDIR\bin\NetworkEditor.exe,0"
+"${Index}-Skip:"
+  WriteRegStr HKCR "CLAM-NetworkEditor.Network\shell\open\command" "" '$INSTDIR\bin\Prototyper.exe "%1"'
+  WriteRegStr HKCR "CLAM-NetworkEditor.Network\shell\edit" "" "Edit "
+  WriteRegStr HKCR "CLAM-NetworkEditor.Network\shell\edit\command" "" '$INSTDIR\bin\NetworkEditor.exe "%1"'
+ 
+  System::Call 'Shell32::SHChangeNotify(i 0x8000000, i 0, i 0, i 0)'
+!undef Index
+
 
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
@@ -131,25 +162,35 @@ Section Uninstall
 
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\bin\NetworkEditor.exe"
-  Delete "$INSTDIR\bin\Prototyper.exe"
-  Delete "$INSTDIR\bin\designer\CLAMWidgets.dll"
-  Delete "$INSTDIR\bin\designer.exe"
-  Delete "$INSTDIR\bin\libsndfile.dll"
-  Delete "$INSTDIR\bin\ogg.dll"
-  Delete "$INSTDIR\bin\pthreadVCE.dll"
-  Delete "$INSTDIR\bin\qt-mt322.dll"
-  Delete "$INSTDIR\bin\vorbis.dll"
-  Delete "$INSTDIR\bin\vorbisenc.dll"
-  Delete "$INSTDIR\bin\vorbisfile.dll"
-  Delete "$INSTDIR\bin\xerces-c_2_3_0.dll"
-  Delete "$INSTDIR\bin\msvcp71.dll"
-  Delete "$INSTDIR\bin\msvcr71.dll"
+
   Delete "$INSTDIR\example-data\*"
-  RMDir "$INSTDIR\bin\designer"
-  RMDir "$INSTDIR\bin"
   RMDir "$INSTDIR\example-data"
+  Delete "$INSTDIR\share\networkeditor\i18n\*"
+  RMDir "$INSTDIR\share\networkeditor\i18n"
+  RMDir "$INSTDIR\share\networkeditor"
+  RMDir "$INSTDIR\share"
+  Delete "$INSTDIR\bin\designer\*"
+  RMDir "$INSTDIR\bin\designer"
+  Delete "$INSTDIR\bin\*"
+  RMDir "$INSTDIR\bin"
   RMDir "$INSTDIR"
+
+!define Index "Line${__LINE__}"
+  ReadRegStr $1 HKCR ".clamnetwork" ""
+  StrCmp $1 "CLAM-NetworkEditor.Network" 0 "${Index}-NoOwn" ; only do this if we own it
+    ReadRegStr $1 HKCR ".clamnetwork" "backup_val"
+    StrCmp $1 "" 0 "${Index}-Restore" ; if backup="" then delete the whole key
+      DeleteRegKey HKCR ".clamnetwork"
+    Goto "${Index}-NoOwn"
+"${Index}-Restore:"
+      WriteRegStr HKCR ".clamnetwork" "" $1
+      DeleteRegValue HKCR ".clamnetwork" "backup_val"
+   
+    DeleteRegKey HKCR "CLAM-NetworkEditor.Network" ;Delete key with association settings
+ 
+    System::Call 'Shell32::SHChangeNotify(i 0x8000000, i 0, i 0, i 0)'
+"${Index}-NoOwn:"
+!undef Index
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
