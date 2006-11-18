@@ -85,7 +85,8 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 				"<p><b>%2</b></p>").arg(_networkFile.c_str()).arg(e.what()) :
 			tr("<p>Network file '%1' not found.</p>").arg(_networkFile.c_str());
 	}
-	QMessageBox::critical(0, tr("Error loading the network"), errorMessage);
+	QMessageBox::critical(_interface,
+			tr("Error loading the network"), errorMessage);
 	_network.Clear();
 	return false;
 }
@@ -140,7 +141,7 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends )
 		std::cout << "Backend '" << *it << "' selected." << std::endl;
 		return true;
 	}
-	QMessageBox::critical(0,
+	QMessageBox::critical(_interface,
 		tr("Error chosing a backend"),
 		tr("No audio backend was available."));
 	return false;
@@ -184,7 +185,7 @@ QWidget * PrototypeLoader::LoadInterface(QString uiFile)
 	QString error = FileExists(uiFile.toStdString()) ?
 		tr("Interface file '%1' had errors."):
 		tr("Interface file '%1' not found.") ;
-	QMessageBox::warning(0,
+	QMessageBox::warning(_interface,
 		tr("Error loading the interface"),
 		tr("<p><b>%1</b></p>"
 			"<p>Using a default interface.</p>").arg(error.arg(uiFile)));
@@ -265,20 +266,23 @@ void PrototypeLoader::Start()
 	UpdatePlayStatus();
 	if (  !_player )
 	{
-		QMessageBox::critical(0, tr("Unable to play the network"), 
+		QMessageBox::critical(_interface,
+				tr("Unable to play the network"), 
 				tr("<p><b>Audio output unavailable or busy.</b></p>"));
 		return;
 	}
 	
 	if (  _network.IsEmpty() )
 	{
-		QMessageBox::critical(0, tr("Unable to play the network"), 
+		QMessageBox::critical(_interface,
+				tr("Unable to play the network"), 
 				tr("<p><b>A network without processings is not playable.</b></p>"));
 		return;
 	}
 	if (_network.HasMisconfiguredProcessings())
 	{
-		QMessageBox::critical(0, tr("Unable to play the network"), 
+		QMessageBox::critical(_interface,
+				tr("Unable to play the network"), 
 				tr("<p><b>Not all the processings are properly configured.</b></p><pre>%1</pre>"
 				).arg(_network.GetConfigurationErrors().c_str()));
 		return;
@@ -286,7 +290,8 @@ void PrototypeLoader::Start()
 	// TODO: Activate this once it works
 	if ( false && _network.HasUnconnectedInPorts() )
 	{
-		QMessageBox::critical(0, tr("Unable to play the network"), 
+		QMessageBox::critical(_interface,
+				tr("Unable to play the network"), 
 				tr("<p><b>The network has some in ports which are not connected.</b></p>"
 				"<p>All in ports must be feeded in order to play the network</p>"
 				));
@@ -294,7 +299,8 @@ void PrototypeLoader::Start()
 	}
 	if ( !_player->IsCallbackBased() && !_network.HasSyncSource() )
 	{
-		QMessageBox::critical(0, tr("Unable to play the network"), 
+		QMessageBox::critical(_interface,
+			tr("Unable to play the network"), 
 			tr("<p>The network needs an AudioIn or AudioOut in order to be playable.</p>"));
 		return;
 	}
@@ -344,7 +350,7 @@ bool PrototypeLoader::ReportMissingProcessing(const std::string & processingName
 {
 	if (! _network.HasProcessing(processingName))
 	{
-		QMessageBox::warning(0,
+		QMessageBox::warning(_interface,
 			tr("Error connecting controls"),
 			tr("The interface asked to connect to the processing '%1' which is not in the network.")
 				.arg(processingName.c_str()));
@@ -359,7 +365,7 @@ bool PrototypeLoader::ReportMissingOutPort(const std::string & portName)
 	std::string shortPortName = _network.GetConnectorIdentifier(portName);
 	if (! _network.GetProcessing(processingName).HasOutPort(shortPortName))
 	{
-		QMessageBox::warning(0,
+		QMessageBox::warning(_interface,
 			tr("Error connecting controls"),
 			tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
 				.arg(shortPortName.c_str())
@@ -376,7 +382,7 @@ bool PrototypeLoader::ReportMissingInControl(const std::string & controlName)
 	std::string shortControlName = _network.GetConnectorIdentifier(controlName);
 	if (! _network.GetProcessing(processingName).HasInControl(shortControlName))
 	{
-		QMessageBox::warning(0,
+		QMessageBox::warning(_interface,
 			tr("Error connecting controls"),
 			tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
 				.arg(shortControlName.c_str())
