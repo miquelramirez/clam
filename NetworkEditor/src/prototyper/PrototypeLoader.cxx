@@ -246,7 +246,8 @@ void PrototypeLoader::OpenAudioFile()
 	std::string processingName = loadButton->objectName().mid(12).toStdString();
 	std::cout << "Loading audio for " << processingName << std::endl;
 	CLAM::Processing & processing = _network.GetProcessing(processingName);
-	CLAM::MonoAudioFileReaderConfig config = dynamic_cast<const CLAM::MonoAudioFileReaderConfig &> (processing.GetConfig());
+	CLAM::MonoAudioFileReaderConfig config =
+		dynamic_cast<const CLAM::MonoAudioFileReaderConfig &> (processing.GetConfig());
 	QString filename = 
 		QFileDialog::getOpenFileName(_interface, 
 			tr("Choose an audio file"),

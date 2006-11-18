@@ -179,7 +179,7 @@ else :
 
 env.Append(CPPFLAGS=['-DVERSION="%s"'%fullVersion]) # to have M_PI defined
 
-qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources)
+qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources + env.Qrc(qrcfiles))
 
 manpages = [
 	'resources/man/man1/NetworkEditor.1',
