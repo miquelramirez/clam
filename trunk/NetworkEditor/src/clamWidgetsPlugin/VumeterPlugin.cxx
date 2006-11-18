@@ -62,7 +62,7 @@ QString VumeterPlugin::group() const
 
 QIcon VumeterPlugin::icon() const
 {
-    return QIcon();
+    return QIcon(":/icons/images/vumeter.svg");
 }
 
 QString VumeterPlugin::toolTip() const

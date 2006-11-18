@@ -62,7 +62,7 @@ QString SpectrumViewPlugin::group() const
 
 QIcon SpectrumViewPlugin::icon() const
 {
-    return QIcon();
+    return QIcon(":/icons/images/spectrumview.svg");
 }
 
 QString SpectrumViewPlugin::toolTip() const

@@ -62,7 +62,7 @@ QString TonnetzPlugin::group() const
 
 QIcon TonnetzPlugin::icon() const
 {
-    return QIcon();
+    return QIcon(":/icons/images/tonnetz.svg");
 }
 
 QString TonnetzPlugin::toolTip() const

@@ -62,7 +62,7 @@ QString PeakViewPlugin::group() const
 
 QIcon PeakViewPlugin::icon() const
 {
-    return QIcon();
+    return QIcon(":/icons/images/peakview.svg");
 }
 
 QString PeakViewPlugin::toolTip() const

@@ -62,7 +62,7 @@ QString KeySpacePlugin::group() const
 
 QIcon KeySpacePlugin::icon() const
 {
-    return QIcon();
+    return QIcon(":/icons/images/keyspace.svg");
 }
 
 QString KeySpacePlugin::toolTip() const

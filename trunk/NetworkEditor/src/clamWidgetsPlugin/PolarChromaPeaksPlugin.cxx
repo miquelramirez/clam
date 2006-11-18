@@ -62,7 +62,7 @@ QString PolarChromaPeaksPlugin::group() const
 
 QIcon PolarChromaPeaksPlugin::icon() const
 {
-    return QIcon();
+    return QIcon(":/icons/images/polarchromapeaks.svg");
 }
 
 QString PolarChromaPeaksPlugin::toolTip() const

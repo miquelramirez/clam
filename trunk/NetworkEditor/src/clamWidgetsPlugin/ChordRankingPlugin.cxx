@@ -62,7 +62,7 @@ QString ChordRankingPlugin::group() const
 
 QIcon ChordRankingPlugin::icon() const
 {
-    return QIcon();
+    return QIcon(":/icons/images/chordranking.svg");
 }
 
 QString ChordRankingPlugin::toolTip() const

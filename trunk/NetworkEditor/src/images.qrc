@@ -5,6 +5,7 @@
         <file>images/NetworkEditor-icon.svg</file>
         <file>images/alsalogo-mini.png</file>
         <file>images/alsalogo.png</file>
+        <file>images/chordranking.svg</file>
         <file>images/clamlogo.png</file>
         <file>images/configure.png</file>
         <file>images/contexthelp.png</file>
@@ -21,17 +22,24 @@
         <file>images/help.png</file>
         <file>images/jacklogo-mini.png</file>
         <file>images/jacklogo.png</file>
+        <file>images/keyspace.svg</file>
         <file>images/newprocessing.png</file>
         <file>images/newprocessing.svg</file>
+        <file>images/oscilloscope.svg</file>
+        <file>images/peakview.svg</file>
         <file>images/player_play.png</file>
         <file>images/player_stop.png</file>
+        <file>images/polarchromapeaks.svg</file>
         <file>images/processing.png</file>
         <file>images/remove.png</file>
+        <file>images/spectrumview.svg</file>
+        <file>images/tonnetz.svg</file>
         <file>images/upf-mtg-logo.png</file>
         <file>images/view_tree.png</file>
         <file>images/viewmag+.png</file>
         <file>images/viewmag-.png</file>
         <file>images/viewmag1.png</file>
+        <file>images/vumeter.svg</file>
     </qresource>
     <qresource prefix="/interfaces" >
         <file>prototyper/DefaultInterface.ui</file>

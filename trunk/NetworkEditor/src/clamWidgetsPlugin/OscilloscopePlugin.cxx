@@ -62,7 +62,7 @@ QString OscilloscopePlugin::group() const
 
 QIcon OscilloscopePlugin::icon() const
 {
-    return QIcon();
+    return QIcon(":/icons/images/oscilloscope.svg");
 }
 
 QString OscilloscopePlugin::toolTip() const
