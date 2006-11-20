@@ -109,7 +109,8 @@ public:
 	bool IsSyncSource() const { return true; }
 
 protected:
-	bool ConcreteStart(void);
+	bool ConcreteStart();
+	bool ConcreteStop();
 };
 
 };//CLAM
