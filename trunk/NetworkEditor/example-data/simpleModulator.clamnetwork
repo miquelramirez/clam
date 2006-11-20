@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioOut_0" type="AudioOut">
+    <Device>default:default</Device>
+    <ChannelID>0</ChannelID>
+    <FrameSize>512</FrameSize>
+    <SampleRate>44100</SampleRate>
+  </processing>
+
+  <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
+    <SourceFile>
+      <URI>F:/clam-sandboxes/CLAM-TestData/longSounds/wooden_mono.wav</URI>
+      <Header>
+        <SampleRate>44100</SampleRate>
+        <Samples>4311041</Samples>
+        <Channels>1</Channels>
+        <Length>97756</Length>
+        <Format>WAV</Format>
+        <Encoding>signed 16-bit</Encoding>
+        <Endianess>Format Default</Endianess>
+      </Header>
+      <TextualDescriptors/>
+    </SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
+  </processing>
+
+  <processing id="Oscillator_0" type="Oscillator">
+    <Frequency>440</Frequency>
+    <Amplitude>1</Amplitude>
+    <ModIndex>1</ModIndex>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <processing id="SimpleOscillator_0" type="SimpleOscillator">
+    <Frequency>10</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <port_connection>
+    <out>MonoAudioFileReader_0.Samples Read</out>
+    <in>Oscillator_0.Input Phase Modulation</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Oscillator_0.Audio Output</out>
+    <in>AudioOut_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SimpleOscillator_0.Audio Output</out>
+    <in>Oscillator_0.Input Frequency Modulation</in>
+  </port_connection>
+
+</network>
