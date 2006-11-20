@@ -104,7 +104,7 @@ Section "Principal" SEC01
 	WriteRegStr HKCR "CLAM-NetworkEditor.Network\DefaultIcon" "" "$INSTDIR\bin\NetworkEditor.exe,0"
 "${Index}-Skip:"
   WriteRegStr HKCR "CLAM-NetworkEditor.Network\shell\open\command" "" '$INSTDIR\bin\Prototyper.exe "%1"'
-  WriteRegStr HKCR "CLAM-NetworkEditor.Network\shell\edit" "" "Edit "
+  WriteRegStr HKCR "CLAM-NetworkEditor.Network\shell\edit" "" "Edit"
   WriteRegStr HKCR "CLAM-NetworkEditor.Network\shell\edit\command" "" '$INSTDIR\bin\NetworkEditor.exe "%1"'
  
   System::Call 'Shell32::SHChangeNotify(i 0x8000000, i 0, i 0, i 0)'

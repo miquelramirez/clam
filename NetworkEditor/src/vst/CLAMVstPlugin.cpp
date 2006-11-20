@@ -8,11 +8,13 @@
 #include <sstream>
 #include <cmath>
 
+#define NO_NETWORK_FILE
+
 using namespace CLAM;
 
 //char* xmlfile="wire.xml"; //2
 //char* xmlfile="externSMSmess.xml"; //1
-char* xmlfile="jackcombo.xml"; //1
+char* xmlfile="../../example-data/externalSimpleModulator.clamnetwork"; 
 //char* xmlfile="inputMultiplier.xml"; //2
 
 
@@ -25,9 +27,10 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 	mExternBufferSize=mClamBufferSize;
 
 	GetNetwork().AddFlowControl( new PushFlowControl( mClamBufferSize ) );
-	
+#ifdef NO_NETWORK_FILE
 	FillNetwork(); //Testing interest
-/*
+#else 
+
 	try
 	{
 		XmlStorage::Restore( *mNet, xmlfile );
@@ -36,9 +39,9 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 	{
 		std::cerr << "CLAMTest WARNING: error opening file <"
 			<< xmlfile << "> . Plugin not loaded" <<std::endl;
-		return;
+		FillNetwork();
 	}
-*/	
+#endif	
 	GetNetwork().Start();
 
 	ProcessInputPorts();
@@ -64,6 +67,10 @@ CLAMTest::~CLAMTest ()
 //---------------------------------------------------------------------
 int CLAMTest::GetNumberOfParameters( char* file )
 {
+#ifdef NO_NETWORK_FILE
+	return 1; 
+#endif
+
 	Network net;
 	net.AddFlowControl( new PushFlowControl( mClamBufferSize ) );
 	int count=0;
