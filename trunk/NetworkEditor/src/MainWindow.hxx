@@ -1,14 +1,17 @@
 #include "uic_MainWindow.hxx"
 #include "NetworkCanvas.hxx"
 #include "ProcessingTree.hxx"
+#if QT_VERSION >= 0x040200
 #include <QtGui/QDesktopServices>
+#else
+#include <QtCore/QProcess>
+#endif
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QScrollArea>
 #include <QtGui/QDockWidget>
 #include <QtGui/QWhatsThis>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
-#include <QtCore/QProcess>
 #include "uic_About.hxx"
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
@@ -191,8 +194,11 @@ public slots:
 	void on_action_Online_tutorial_triggered()
 	{
 		QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Network_Editor_tutorial";
+		#if QT_VERSION >= 0x040200
 		QDesktopServices::openUrl(helpUrl);
-//		QProcess::startDetached( "x-www-browser", QStringList() << helpUrl); // TODO: Remove this 4.1 unix only version
+		#else
+		QProcess::startDetached( "x-www-browser", QStringList() << helpUrl); // TODO: Remove this 4.1 unix only version
+		#endif
 	}
 	void on_action_About_triggered()
 	{
