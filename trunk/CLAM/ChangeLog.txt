@@ -1,5 +1,5 @@
 
-2006-??-?? CLAM 0.91.1 CVS
+2006-??-?? CLAM 0.92.0 CVS
 ''
  * Version information taken from changelog is available for apps.
  * MacOSX DMG packages are back
@@ -11,6 +11,7 @@
      a plain Network instead.
    * Network errors now can be catched by applications
    * Diagnosis methods
+ * Tonal analysis (chord extraction) moved to the library from the Annotator
 
 2006-06-14 CLAM 0.91.0
 'Spectral transformations, annotator, packaging, and desktop integration release'
