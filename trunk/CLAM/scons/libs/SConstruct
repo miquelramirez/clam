@@ -342,7 +342,7 @@ else :
 clam_env['CXXFILESUFFIX'] = '.cxx'
 
 if sys.platform=='win32' :
-	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
+	clam_env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 
 if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() :
     configureModules(clam_env)
