@@ -1,6 +1,7 @@
 #include "uic_MainWindow.hxx"
 #include "NetworkCanvas.hxx"
 #include "ProcessingTree.hxx"
+#include <QtGui/QDesktopServices>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QScrollArea>
 #include <QtGui/QDockWidget>
@@ -190,10 +191,8 @@ public slots:
 	void on_action_Online_tutorial_triggered()
 	{
 		QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Network_Editor_tutorial";
-
-		// TODO: To be multiplatform, enable this when migrating to 4.2
-		// QDesktopServices::openUrl(helpUrl);
-		QProcess::startDetached( "x-www-browser", QStringList() << helpUrl);
+		QDesktopServices::openUrl(helpUrl);
+//		QProcess::startDetached( "x-www-browser", QStringList() << helpUrl); // TODO: Remove this 4.1 unix only version
 	}
 	void on_action_About_triggered()
 	{
