@@ -8,7 +8,6 @@ options.Add(PathOption('install_prefix', 'The prefix where the application will 
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt3/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
-options.Add(PathOption('annotator_path', 'The root path for the Annotator source', ''))
 if sys.platform == 'win32' :
 	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '' ))
 
@@ -95,7 +94,6 @@ sourcePaths = [
 extraPaths = [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
-	os.path.join(env['annotator_path'],'src','ChordExtractor'),
 ]
 
 includePaths = sourcePaths + extraPaths
@@ -162,8 +160,6 @@ if sys.platform == "win32" :
 else :
 	env.Append(LIBS=['cppunit'])
 #programs += [ env.Program(target='UnitTests', source = sources+testsources) ]
-env.Append(LIBS=['ChordExtractor'])
-env.Append(LIBPATH=[ env['annotator_path'] ])
 
 pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQT_OPENGL_LIB','-DQT_XML_LIB','-DQDESIGNER_EXPORT_WIDGETS','-D_REENTRANT']
 env.AppendUnique(CPPFLAGS=pluginDefines)
