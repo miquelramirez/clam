@@ -21,7 +21,7 @@
 
 #include "TonalAnalysis.hxx"
 #include <CLAM/Factory.hxx>
-#include <ChordExtractor.hxx>
+#include <CLAM/ChordExtractor.hxx>
 
 
 namespace CLAM
