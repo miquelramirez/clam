@@ -1,5 +1,6 @@
 2006-??-?? NetworkEditor 0.4.0 CVS
 'California release'
+ * Using CLAM 0.92.0
  * Ported to Qt4 and fully rewritten
  * New network canvas engine
    ** Scrollbars and zoom
