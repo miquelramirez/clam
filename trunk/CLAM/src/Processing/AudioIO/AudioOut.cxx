@@ -113,6 +113,7 @@ bool AudioOut::ConcreteStart(void)
 bool AudioOut::ConcreteStop()
 {
 	mpDevice->Stop();
+	return true;
 }
 
 void AudioOut::GetDeviceInfo(AudioDevice::TInfo &info) const
