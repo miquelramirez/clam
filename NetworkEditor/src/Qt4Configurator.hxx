@@ -164,7 +164,7 @@ namespace CLAM{
 		}
 
 		template <typename T>
-		void AddWidget(const char *name, TData *foo, T& value) {
+		void AddWidget(const char *name, float *foo, T& value) {
 			QDoubleSpinBox * mInput = new QDoubleSpinBox;
 			mInput->setRange(-1e16,1e16);
 			mInput->setValue(value);
@@ -176,7 +176,26 @@ namespace CLAM{
 			PushWidget(name, mInput);
 		}
 		template <typename T>
-		void RetrieveValue(const char *name, TData *foo, T& value) {
+		void RetrieveValue(const char *name, float *foo, T& value) {
+			QDoubleSpinBox * mInput = dynamic_cast<QDoubleSpinBox*>(GetWidget(name));
+			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+			value = mInput->value();
+		}
+
+		template <typename T>
+		void AddWidget(const char *name, double *foo, T& value) {
+			QDoubleSpinBox * mInput = new QDoubleSpinBox;
+			mInput->setRange(-1e16,1e16);
+			mInput->setValue(value);
+
+			QHBoxLayout * cell = new QHBoxLayout;
+			mLayout->addLayout(cell);
+			cell->addWidget(new QLabel(name));
+			cell->addWidget(mInput);
+			PushWidget(name, mInput);
+		}
+		template <typename T>
+		void RetrieveValue(const char *name, double *foo, T& value) {
 			QDoubleSpinBox * mInput = dynamic_cast<QDoubleSpinBox*>(GetWidget(name));
 			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
 			value = mInput->value();
