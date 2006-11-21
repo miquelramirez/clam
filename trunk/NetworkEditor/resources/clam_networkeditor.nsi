@@ -112,6 +112,8 @@ Section "Principal" SEC01
 
 
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
+  CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor\Examples"
+  CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Examples\Tonal Analysis.lnk" "$INSTDIR\example-data\tonalAnalysis-file.clamnetwork"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Prototyper.lnk" "$INSTDIR\bin\Prototyper.exe"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\QtDesigner.lnk" "$INSTDIR\bin\designer.exe"
@@ -152,11 +154,13 @@ FunctionEnd
 Section Uninstall
   Delete "$DESKTOP\NetworkEditor.lnk"
   Delete "$DESKTOP\Prototyper.lnk"
+  Delete "$SMPROGRAMS\CLAM\NetworkEditor\Examples\*"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\Uninstall.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\Website.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\Prototyper.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\QtDesigner.lnk"
+  RMDir "$SMPROGRAMS\CLAM\NetworkEditor\Examples"
   RMDir "$SMPROGRAMS\CLAM\NetworkEditor"
   RMDir "$SMPROGRAMS\CLAM"
 
