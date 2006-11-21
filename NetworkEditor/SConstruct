@@ -161,7 +161,7 @@ if sys.platform == "win32" :
 	env.Append( LIBPATH=[env['cppunit_prefix']+'/lib'] )
 else :
 	env.Append(LIBS=['cppunit'])
-programs += [ env.Program(target='UnitTests', source = sources+testsources) ]
+#programs += [ env.Program(target='UnitTests', source = sources+testsources) ]
 env.Append(LIBS=['ChordExtractor'])
 env.Append(LIBPATH=[ env['annotator_path'] ])
 
