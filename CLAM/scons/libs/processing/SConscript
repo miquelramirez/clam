@@ -22,6 +22,7 @@ def define_module_contents(env) :
 		'src/Data/Descriptors',
 		'src/Data/Descriptors/Melody',
 		'src/Processing/Analysis',
+		'src/Processing/Analysis/Tonal',
 		'src/Processing/ArithOps',
 		'src/Processing/Generators/',
 		'src/Processing/Synthesis',
