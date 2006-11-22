@@ -145,7 +145,9 @@ class _Automoc:
 				# c or fortran source
 				continue
 			#cpp_contents = comment.sub('', cpp.get_contents())
-			cpp_contents = cpp.get_contents()
+			try:
+				cpp_contents = cpp.get_contents()
+			except: continue # may be an still not generated source
 			h=None
 			for h_ext in header_extensions:
 				# try to find the header file in the corresponding source
