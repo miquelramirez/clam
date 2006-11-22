@@ -2,19 +2,23 @@
 .SH NAME
 Prototyper \- Runs CLAM networks with a Qt interface
 .SH SYNOPSIS
-.B Prototyper [Network.xml [Interface.ui]] [-d backend1 [-d backend2]...]
+.B Prototyper [Network.clamnetwork [Interface.ui]] [-d backend1 [-d backend2]...]
 .SH DESCRIPTION
 The Prototyper runs audio processing networks created by the
-CLAM NetworkEditor (.clamnetwork) using a Qt user interface (.ui)
-created by the Qt Designer to control it.
+CLAM NetworkEditor (.clamnetwork) which can be controlled using
+a Qt user interface (.ui) created by the Qt Designer to control it.
+.PP
 Qt widget names on the interface will be used to connect the widgets
 the proper network elements.
 See the CLAM NetworkEditor tutorial for more detailed explanation.
+on how to specify such binding. 
+.PP
 If no interface is provided on the command line, the Prototyper
 will look for an interface with the same name than the network
 and the proper extension.
 If anything else fails then a minimalistic default interface
 will be used.
+.PP
 You can also provide a list of audio backends to try.
 Most common backends are 'alsa', 'jack', 'portaudio'...
 They will be probed in order and the first one working will be 
@@ -25,3 +29,6 @@ of backends for the platform will be tried.
 CLAM development team (clam (at) iua.upf.es)
 .SH SEE ALSO
 NetworkEditor(1), designer-qt4(1), QtSMSTools(1), Annotator(1) 
+.PP
+http://iua-share.upf.edu/wikis/clam/Network_Editor_tutorial
+(Network Editor Tutorial)

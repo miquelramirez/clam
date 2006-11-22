@@ -3,6 +3,7 @@ clam-networkeditor (0.4.0-1) unstable; urgency=low
   * New upstream release
   * Updated to depend on qt4 instead qt3
   * Removed build dependency on libjack-dev (inherited by clam-dev)
+  * Removed Jack-Prototyper menu entries
 
  -- CLAM Team <clam@iua.upf.es>  Wed, 22 Nov 2006 10:22:34 +0100
 
