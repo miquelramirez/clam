@@ -34,7 +34,7 @@
 #include <CLAM/Filename.hxx>
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/AudioFile.hxx>
-#include <CLAM/QtEnvelopeEditor.hxx>
+// #include <CLAM/QtEnvelopeEditor.hxx> // TODO: Still not Qt4
 
 #include <QtGui/QDialog>
 #include <QtGui/QPushButton>
