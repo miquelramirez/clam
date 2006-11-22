@@ -282,7 +282,8 @@ namespace CLAM{
 		template <typename T>
 		void RetrieveValue(const char *name, DynamicType *foo, T&value) {
 		}
-
+/*
+		// TODO: The QtEnvelopeEditor must be ported
 		template <typename T>
 		void AddWidget(const char *name, BPF *foo, T& value) {
 			QtEnvelopeEditor* mInput = new QtEnvelopeEditor;
@@ -307,7 +308,7 @@ namespace CLAM{
 			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
 			value = mInput->GetValue();
 		}
-
+*/
 		template <typename T>
 		void AddWidget(const char *name, CLAM::Filename *foo, T& value) {
 
