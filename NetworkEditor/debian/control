@@ -2,7 +2,7 @@ Source: clam-networkeditor
 Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
-Build-Depends: debhelper (>= 4.0.0), scons, g++, make, libclam-core-dev (>= 0.92.0), libclam-processing-dev (>= 0.92.0), libclam-audioio-dev (>= 0.92.0), qt4-dev-tools, libqt4-dev, docbook-to-man, imagemagick, libjack-dev
+Build-Depends: debhelper (>= 4.0.0), scons, g++, libclam-core-dev (>= 0.92.0), libclam-processing-dev (>= 0.92.0), libclam-audioio-dev (>= 0.92.0), qt4-dev-tools, libqt4-dev, docbook-to-man, imagemagick
 Standards-Version: 3.6.1
 
 Package: clam-networkeditor

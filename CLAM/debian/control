@@ -1,7 +1,7 @@
 Source: clam
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
-Build-Depends: debhelper (>= 4.0.0), scons, ladspa-sdk, libxerces26-dev, fftw-dev, sfftw-dev, libjack-dev, libmad0-dev, libogg-dev, libsndfile1-dev, libvorbis-dev, libid3-3.8.3-dev, libasound2-dev, libfltk1.1-dev, libjpeg62-dev, libpng12-dev, libxext-dev, libxft-dev,  libqt3-headers, libqt3-mt-dev, doxygen
+Build-Depends: debhelper (>= 4.0.0), scons, ladspa-sdk, libxerces27-dev, fftw-dev, sfftw-dev, libjack-dev, libmad0-dev, libogg-dev, libsndfile1-dev, libvorbis-dev, libid3-3.8.3-dev, libasound2-dev, libfltk1.1-dev, libjpeg62-dev, libpng12-dev, libxext-dev, libxft-dev,  libqt3-headers, libqt3-mt-dev, doxygen
 Standards-Version: 3.6.1
 
 Package: libclam
@@ -46,7 +46,7 @@ Description: CLAM framework documentation package
 Package: libclam-core-dev
 Section: libdevel
 Architecture: any
-Depends: libclam-core0 (= ${Source-Version}), ladspa-sdk (>= 1.1), pkg-config (>= 0.15), libxerces26-dev
+Depends: libclam-core0 (= ${Source-Version}), ladspa-sdk (>= 1.1), pkg-config (>= 0.15)
 Recommends: scons, python
 Suggests: libclam-doc (= ${Source-Version})
 Conflicts: libclam-core-dev (<< ${Source-Version})
