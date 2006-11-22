@@ -10,7 +10,7 @@
 int usage(const std::string & program)
 {
 		std::cout << " Usage: " << program
-			<< " <networkfile> [ <uifile> ] [-b <ALSA|JACK> ]"
+			<< " <networkfile> [ <uifile> ] [-b <alsa|jack> ]"
 			<< std::endl;
 		return -1;
 }
