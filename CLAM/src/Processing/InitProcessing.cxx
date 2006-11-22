@@ -2,6 +2,12 @@
 #include "InitProcessing.hxx"
 #include <iostream>
 
+#include <CLAM/AudioSource.hxx>
+#include <CLAM/AudioSink.hxx>
+#include <CLAM/ControlSource.hxx>
+#include <CLAM/ControlSink.hxx>
+
+#include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/SimpleOscillator.hxx>
 #include <CLAM/Oscillator.hxx>
 #include <CLAM/ADSR.hxx>
@@ -54,48 +60,54 @@ namespace CLAM
 	void ProcessingModule::init()
 	{
 		std::cout << "Initiating processing module...";
-		CLAM::FFT_rfftw fft_rfftw;
-		CLAM::SMSAnalysisCore smsAnalysisCore;
-		CLAM::AudioAdder audioAdder;
-		CLAM::AudioMixer audioMixer;
-		CLAM::AudioMultiplier audioMultiplier;
-		CLAM::AutoPanner autoPanner;
-		CLAM::ControlMapper controlMapper;
-		CLAM::ControlPrinter controlPrinter;
-		CLAM::ControlScaler controlScaler;
+		//Extern Sinks and Sources
+		CLAM::AudioSink();
+		CLAM::AudioSource();
+		CLAM::ControlSink();
+		CLAM::ControlSource();
+		CLAM::TonalAnalysis(); 
+		CLAM::FFT_rfftw();
+		CLAM::SMSAnalysisCore();
+		CLAM::AudioAdder();
+		CLAM::AudioMixer();
+		CLAM::AudioMultiplier();
+		CLAM::AutoPanner();
+		CLAM::ControlMapper();
+		CLAM::ControlPrinter();
+		CLAM::ControlScaler();
 		// crashes
 		// CLAM::Controller controller;
-		CLAM::FlagControl flagControl;
-		CLAM::Fundamental2Control fundamental2Control;
+		CLAM::FlagControl();
+		CLAM::Fundamental2Control();
 		// linux only 
 		// CLAM::OSCSender oscSender;
-		CLAM::OutControlSender outControlSender;
-		CLAM::ADSR adsr;;
-		CLAM::Oscillator oscillator;;
-		CLAM::SimpleOscillator simpleOscillator;;
-		CLAM::WaveGenerator waveGenerator;
+		CLAM::OutControlSender();
+		CLAM::ADSR();
+		CLAM::Oscillator();
+		CLAM::SimpleOscillator();
+		CLAM::WaveGenerator();
 
 		// linux only
 		// CLAM::LadspaLoader ladspaLoader;
 		
-		CLAM::IFFT_rfftw ifft_rfftw;
-		CLAM::SMSSynthesis smsSynthesis;
-		CLAM::SMSFreqShift smsFreqShift;
-		CLAM::SMSGenderChange smsGenderChange;
-		CLAM::SMSHarmonizer smsHarmonizer;
-		CLAM::SMSMorph smsMorph;		
-		CLAM::SMSOddEvenHarmonicRatio smsOddEvenHarmonicRatio;
-		CLAM::SMSPitchDiscretization smsPitchDiscretization;
-		CLAM::SMSPitchShift smsPitchShift;
-		CLAM::SMSResidualGain smsResidualGain;
-		CLAM::SMSSineFilter smsSineFilter;
-		CLAM::SMSSinusoidalGain smsSinusoidalGain;
-		CLAM::SMSSpectralShapeShift smsSpectralShapeShift;
-		CLAM::SMSTimeStretch smsTimeStretch;
-		CLAM::SMSTransformationChainIO smsTransformationChainIO;
-		CLAM::SpectralPeakArrayAdder spectralPeakArrayAdder;
-		CLAM::SpectrumAdder spectrumAdder;
-		CLAM::SpectrumAdder2 spectrumAdder2;
+		CLAM::IFFT_rfftw();
+		CLAM::SMSSynthesis();
+		CLAM::SMSFreqShift();
+		CLAM::SMSGenderChange();
+		CLAM::SMSHarmonizer();
+		CLAM::SMSMorph();
+		CLAM::SMSOddEvenHarmonicRatio();
+		CLAM::SMSPitchDiscretization();
+		CLAM::SMSPitchShift();
+		CLAM::SMSResidualGain();
+		CLAM::SMSSineFilter();
+		CLAM::SMSSinusoidalGain();
+		CLAM::SMSSpectralShapeShift();
+		CLAM::SMSTimeStretch();
+		CLAM::SMSTransformationChainIO();
+		CLAM::SpectralPeakArrayAdder();
+		CLAM::SpectrumAdder();
+		CLAM::SpectrumAdder2();
 		//CLAM::AudioOut audioOut;
 		//CLAM::MonoAudioFileReader monoReader;
 		//CLAM::MonoAudioFileWriter monoWriter;
