@@ -16,12 +16,3 @@
 	icon="/usr/share/pixmaps/clam-networkeditor.xpm" \
 	command="/usr/bin/Prototyper"
 
-?package(clam-networkeditor): \
-	needs="X11" \
-	section="Apps/Sound" \
-	hints="Qt,CLAM" \
-	title="CLAM Jack Prototyper" \
-	longtitle="CLAM Jack Prototyper (Jack enabled CLAM network runner)" \
-	icon="/usr/share/pixmaps/clam-networkeditor.xpm" \
-	command="/usr/bin/Prototyper-jack"
-
