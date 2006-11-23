@@ -30,6 +30,7 @@ def setup_global_environment( clam_env, conf ) :
 		if clam_env['release'] :
 			clam_env.Append( CPPFLAGS = ['-DWIN32'] )
 			clam_env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /Og /G7 /GL /W3 /Zm1000' )	
+			clam_env.Append( LINKFLAGS = ['/OPT:NOREF'] )
 		else :
 			clam_env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
 			clam_env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
