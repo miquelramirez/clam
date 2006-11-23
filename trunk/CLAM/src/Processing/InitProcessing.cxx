@@ -65,7 +65,7 @@ namespace CLAM
 		CLAM::AudioSource();
 		CLAM::ControlSink();
 		CLAM::ControlSource();
-		if (&CLAM::TonalAnalysis::GetClassName==0) throw "ups!"; 
+		CLAM::TonalAnalysis(); 
 		CLAM::FFT_rfftw();
 		CLAM::SMSAnalysisCore();
 		CLAM::AudioAdder();
