@@ -142,6 +142,7 @@ if sys.platform=='linux2' :
 
 programs = []
 for main in mainSources.items() :
+	print sources , main
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
 
 manpages = [

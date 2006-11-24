@@ -39,6 +39,12 @@
 #include <QtGui/QSplashScreen>
 #include <QtGui/QWhatsThis>
 
+#if QT_VERSION >= 0x040200
+#include <QtGui/QDesktopServices>
+#else
+#include <QtCore/QProcess>
+#endif
+
 #include <algorithm>
 #include <iostream>
 #include <fstream>
@@ -1233,5 +1239,15 @@ void Annotator::on_browseSchemaAction_triggered()
 	mMainTabWidget->setCurrentWidget(mSchemaBrowser);
 }
 
+
+void Annotator::on_actionOnline_Tutorial_triggered()
+{
+	QString helpUrl = "http://iua-share.upf.edu/wikis/clam/index.php/Manual_Annotator";
+	#if QT_VERSION >= 0x040200
+	QDesktopServices::openUrl(helpUrl);
+	#else
+	QProcess::startDetached( "x-www-browser", QStringList() << helpUrl); // TODO: Remove this 4.1 unix only version
+	#endif
+}
 
 
