@@ -153,6 +153,7 @@ private slots:
 	void on_newProjectAction_triggered();
 	void on_editProjectPropertiesAction_triggered();
 	void on_browseSchemaAction_triggered();
+	void on_actionOnline_Tutorial_triggered();
 	void syncronizeSplits();
 
 private:

@@ -27,6 +27,7 @@
         <file>images/view_tree.png</file>
         <file>images/window_new.png</file>
         <file>images/xkill.png</file>
+        <file>images/help.png</file>
     </qresource>
     <qresource prefix="/logos" >
         <file>images/GeneLogo.png</file>

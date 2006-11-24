@@ -1,11 +1,12 @@
 2006-??-?? MusicAnnotator 0.3.3 CVS
 ''
  * Using CLAM 0.91.1
+ * Button to open the online tutorial
  * Added OnsetExtractor by Antonio Pertusa
  * Fix: Some video cards displayed fonts as boxes
  * Internal refactoring to share code with NetworkEditor
- * Chord extraction as library
- * Reallocations removed from main loop for realtime
+ * Chord extraction core moved to CLAM library
+ * Reallocations removed out of main loop for realtime
 
 2006-06-18 MusicAnnotator 0.3.2
 'Linux binary packaging release'

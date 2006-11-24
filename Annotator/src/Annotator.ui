@@ -1,15 +1,12 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>Annotator</class>
  <widget class="QMainWindow" name="Annotator" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>979</width>
-    <height>611</height>
+    <width>983</width>
+    <height>626</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -205,6 +202,9 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
            <property name="midLineWidth" >
             <number>4</number>
            </property>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
            <widget class="CLAM::VM::AudioPlot" name="mSegmentEditor" >
             <property name="sizePolicy" >
              <sizepolicy>
@@ -317,6 +317,7 @@ to the proper cell.&lt;/p></string>
    <addaction name="songComputeDescriptorsAction" />
    <addaction name="songSaveDescriptorsAction" />
    <addaction name="separator" />
+   <addaction name="actionOnline_Tutorial" />
    <addaction name="helpWhatsThisAction" />
   </widget>
   <widget class="QToolBar" name="TransportToolbar" >
@@ -338,8 +339,8 @@ to the proper cell.&lt;/p></string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>979</width>
-     <height>31</height>
+     <width>983</width>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="mSongMenu" >
@@ -369,15 +370,6 @@ to the proper cell.&lt;/p></string>
     <addaction name="separator" />
     <addaction name="fileExitAction" />
    </widget>
-   <widget class="QMenu" name="help" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="helpWhatsThisAction" />
-    <addaction name="separator" />
-    <addaction name="helpAboutQtAction" />
-    <addaction name="helpAboutAction" />
-   </widget>
    <widget class="QMenu" name="mPlaybackMenu" >
     <property name="title" >
      <string>&amp;Playback</string>
@@ -402,6 +394,16 @@ to the proper cell.&lt;/p></string>
     <addaction name="actionAddSegmentationView" />
     <addaction name="actionAddFrameEvolutionView" />
     <addaction name="menuAddInstantView" />
+   </widget>
+   <widget class="QMenu" name="help" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionOnline_Tutorial" />
+    <addaction name="helpWhatsThisAction" />
+    <addaction name="separator" />
+    <addaction name="helpAboutQtAction" />
+    <addaction name="helpAboutAction" />
    </widget>
    <addaction name="mFileMenu" />
    <addaction name="mProjectMenu" />
@@ -715,28 +717,26 @@ to the proper cell.&lt;/p></string>
     <string>Edit project properties</string>
    </property>
   </action>
-  <action name="actionPrueba" >
+  <action name="actionOnline_Tutorial" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/help.png</iconset>
+   </property>
    <property name="text" >
-    <string>Prueba</string>
+    <string>Online &amp;Tutorial</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>CLAM::VM::BPFPlot</class>
-   <extends>QFrame</extends>
-   <header>vmBPFPlot.hxx</header>
-   <container>0</container>
-   <pixmap></pixmap>
-  </customwidget>
   <customwidget>
    <class>CLAM::VM::AudioPlot</class>
    <extends>QFrame</extends>
    <header>vmAudioPlot.hxx</header>
-   <container>0</container>
-   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::BPFPlot</class>
+   <extends>QFrame</extends>
+   <header>vmBPFPlot.hxx</header>
   </customwidget>
  </customwidgets>
  <tabstops>
