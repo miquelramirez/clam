@@ -76,7 +76,7 @@ namespace CLAM
 		// Check that the given file can be opened
 		if ( ! mConfig.GetSourceFile().IsReadable() )
 		{
-			AddConfigErrorMessage("The Source file could not be opened");
+			AddConfigErrorMessage("The audio file could not be opened");
 			return false;
 		}
 
@@ -146,19 +146,14 @@ namespace CLAM
 		mCurrentBeginTime += mDeltaTime;
 		outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
 		
-		if ( mEOFReached )
-		{
-			if (mConfig.GetLoop() )
-			{
-				ConcreteStop();
-				mNativeStream = mConfig.GetSourceFile().GetStream();
-				mNativeStream->DeactivateStrictStreaming();
-				ConcreteStart();
-			}
-			else
-				return false;
-		}
-		
+		if ( ! mEOFReached ) return true;
+		if ( ! mConfig.GetLoop() ) return false;
+
+		// Reseting the playback to the begining
+		ConcreteStop();
+		mNativeStream = mConfig.GetSourceFile().GetStream();
+		mNativeStream->DeactivateStrictStreaming();
+		ConcreteStart();
 		return true;
 	}
 	
