@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os.path
 import glob
 import sys
@@ -19,7 +21,7 @@ repositories = [
 ]
 
 hooks = {
-'D70publishResults' : '''
+'d70publishResults' : '''
 #!/bin/bash
 /usr/bin/apt-get update
 ''',
@@ -35,15 +37,16 @@ hooks = {
 aptconfiguration = "APT::Get::AllowUnauthenticated 1;"
 
 def run(command) :
-	print ":: ", command
+	print "\033[32m:: ", command, "\033[0m"
+	return os.system(command)
 	for line in os.popen(command) :
 		print line,
 		sys.stdout.flush()
 def norun(command) :
-	print "XX ", command
+	print "\033[31m:: ", command, "\033[0m"
 
 print "== Setting up the environment"
-
+norun("echo Trying norun")
 run ("mkdir -p hooks")
 run ("mkdir -p aptcache")
 run ("mkdir -p apt.config/apt.conf.d")
@@ -86,7 +89,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 	if os.access("%s.tgz"%distribution, os.F_OK) :
 		command = "update"
 
-	run( ("COMPONENTS='%(components)s' pbuilder %(command)s " +
+	norun( ("COMPONENTS='%(components)s' pbuilder %(command)s " +
 		" --othermirror 'deb file:%(resultdir)s ./' " +
 		" --buildplace . " +
 		" --basetgz ./%(distro)s.tgz " +
@@ -135,21 +138,17 @@ for (maindistro, distribution, mirror, components) in distributions :
 		})
 
 	print "== Uploading packages for '%s'"%distribution
-	norun("slogin clamadm@www.iua.upf.edu mkdir -p download/linux-%(maindistro)s-%(distro)s")
-	norun("scp %(resultdir)s/* clamadm@www.iua.upf.edu:download/linux-%(maindistro)s-%(distro)s/"%{
+	targetWebDir = "download/linux-%(maindistro)s-%(distro)s/cvssnapshots/"%{
 		'resultdir' : resultdir,
 		'maindistro' : maindistro,
 		'distro': distribution,
-		})
-	norun("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
-	
-"""
-cd /var/cache/pbuilder/result/
-/usr/bin/dpkg-scanpackages . /dev/null > Packages
-gzip -c Packages > Packages.gz
-scp /var/cache/pbuilder/result/* clamadm@www.iua.upf.edu:download/linux-debian-sid/
-slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py
-"""
+	}
+
+	run("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
+	run("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
+	run("slogin clamadm@www.iua.upf.edu gzip -c %s/Packages > %s/Packages.gz" %( resultdir, resultdir ) )
+	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
+
 
 
 
