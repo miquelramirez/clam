@@ -11,11 +11,6 @@ the CLAM Prototyper to link the network to a Qt Designer interface.
 See the CLAM doxygen documentation on how to use the CLAM::NetworkPlayer
 class.
 
-The CLAM Prototyper comes into several flawours depending on the audio
-subsystem you want to use: Prototyper (for native sound application),
-Prototyper-jack (for jack support on linux and macosx) and Prototyper-pa
-(for using the PortAudio abstraction layer).
-
 == Installation ==
 
 The INSTALL file contains instructions about compiling and installing.
