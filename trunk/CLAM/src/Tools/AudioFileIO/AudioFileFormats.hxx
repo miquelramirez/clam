@@ -35,39 +35,46 @@
 namespace CLAM
 {
 
-	class EAudioFileKind
-		: public Enum
+	class EAudioFileKind : public Enum
 	{
 	public:
-		static tEnumValue sEnumValues[];
-		static tValue     sDefault;
-
-		EAudioFileKind();
-		EAudioFileKind( tValue val );
-		EAudioFileKind( std::string s );
+		EAudioFileKind() : Enum(EnumValues(), DefaultValue()) {}
+		EAudioFileKind( tValue val ) : Enum(EnumValues(), val) {}
+		EAudioFileKind( std::string s ) : Enum(EnumValues(), s) {}
+		virtual Component* Species() const { return new EAudioFileKind; }
 
 		typedef enum {
 			ePCM,  /* String value: "PCM". Some variant of good ol' Pulse Code Modulation */
 			eOggVorbis, /* String value: "Ogg/Vorbis". Compressed with OggVorbis scheme */
-			eMpeg,        /* String value: "Mpeg Audio". Compressed with MPEG-1 Layer 3 scheme */			
+			eMpeg,        /* String value: "Mpeg Audio". Compressed with MPEG-1 Layer 3 scheme */
 			eUnknown /* For error handling */
 		};
 
-		virtual Component* Species() const;
+		static tValue     DefaultValue() { return ePCM; }
+		static tEnumValue * EnumValues() 
+		{
+			static tEnumValue sEnumValues[] = {
+				{ ePCM,         "PCM" },
+				{ eOggVorbis,   "Ogg/Vorbis" },
+				{ eMpeg,        "Mpeg Audio" },
+				{ eUnknown,     "Unknown" },
+				{ 0,            NULL }
+			};
+			return sEnumValues;
+		}
+
 	};
 
-	class EAudioFileFormat
-		: public Enum
+	class EAudioFileFormat : public Enum
 	{
 	public:
-		static tEnumValue sEnumValues[];
-		static tValue     sDefault;
+		EAudioFileFormat() : Enum(EnumValues(), DefaultValue()) {}
+		EAudioFileFormat( tValue val ) : Enum(EnumValues(), val) {}
+		EAudioFileFormat( std::string s ) : Enum(EnumValues(), s) {}
+		virtual Component* Species() const { return new EAudioFileFormat; }
 
-		EAudioFileFormat();
-		EAudioFileFormat( tValue val );
-		EAudioFileFormat( std::string s );
-
-		typedef enum {
+		typedef enum
+		{
 			eWAV = SF_FORMAT_WAV,   /* Microsoft WAV  (little endian)*/
 			eAIFF = SF_FORMAT_AIFF,  /* Apple/SGI AIFF (big endian)*/
 			eAU = SF_FORMAT_AU,    /* Sun/NeXT AU (big endian)*/
@@ -86,12 +93,35 @@ namespace CLAM
 			eMpegLayer3 = 1003 + SF_FORMAT_MAT5
 		};
 
-		virtual Component* Species() const;
+		static tValue     DefaultValue() { return eWAV; }
+		static tEnumValue * EnumValues()
+		{
+			static tEnumValue sEnumValues[] = {
+				{ eWAV,       "WAV" },
+				{ eAIFF,      "AIFF" },
+				{ eAU,        "AU"   },
+				{ eRAW,       "RAW"  },
+				{ ePAF,       "PAF"  },
+				{ eSVX,       "SVX"  },
+				{ eNIST,      "NIST" },
+				{ eVOC,       "VOC"  },
+				{ eIRCAM,     "IRCAM" },
+				{ eW64,       "W64"  },
+				{ eMAT4,      "MAT4" },
+				{ eMAT5,      "MAT5" },
+				{ eVorbisMk1, "VorbisMk1"},
+				{ eMpegLayer1, "Mpeg Audio Layer 1"},
+				{ eMpegLayer2, "Mpeg Audio Layer 2"},
+				{ eMpegLayer3, "Mpeg Audio Layer 3"},
+				{ 0, 0 }
+			};
+			return sEnumValues;
+		}
 
 	public:
 
 		static  EAudioFileFormat FormatFromFilename( std::string filename );
-		
+
 		typedef std::pair< std::string, std::string >              FormatFilter;
 		typedef std::list< FormatFilter >                          FormatFilterList;
 
@@ -101,18 +131,16 @@ namespace CLAM
 
 	};
 
-	class EAudioFileEncoding
-		: public Enum
+	class EAudioFileEncoding : public Enum
 	{
 	public:
-		static tEnumValue  sEnumValues[];
-		static tValue      sDefault;
-		
-		EAudioFileEncoding();
-		EAudioFileEncoding( tValue val );
-		EAudioFileEncoding( std::string s );
-		
-		typedef enum {
+		EAudioFileEncoding() : Enum(EnumValues(), DefaultValue()) {}
+		EAudioFileEncoding( tValue val ) : Enum(EnumValues(), val) {}
+		EAudioFileEncoding( std::string s ) : Enum(EnumValues(), s) {}
+		virtual Component* Species() const { return new EAudioFileEncoding; }
+
+		enum
+		{
 			ePCM_S8 = SF_FORMAT_PCM_S8,  /* Signed 8-bit PCM */
 			ePCM_16 = SF_FORMAT_PCM_16,  /* Signed 16-bit PCM */
 			ePCM_24 = SF_FORMAT_PCM_24,  /* Signed 24-bit PCM */
@@ -137,29 +165,66 @@ namespace CLAM
 			e5015US = 1001 + SF_FORMAT_DWVW_N,
 			eCCITTJ17 = 1002 + SF_FORMAT_DWVW_N			
 		};
-
-		virtual Component* Species() const;
+		static tValue      DefaultValue() { return ePCM_16; }
+		static tEnumValue * EnumValues()
+		{
+			static tEnumValue sEnumValues[] = {
+				{ ePCM_S8, "signed 8-bit" },
+				{ ePCM_16, "signed 16-bit" },
+				{ ePCM_24, "signed 24-bit" },
+				{ ePCM_32, "signed 32-bit" },
+				{ ePCM_U8, "unsigned 8-bit" },
+				{ eFLOAT, "float 32-bit"},
+				{ eDOUBLE, "float 64-bit"},
+				{ eU_LAW, "u-law"},
+				{ eA_LAW, "a-law"},
+				{ eIMA_ADPCM, "IMA ADPCM" },
+				{ eMS_ADPCM, "MS ADPCM "},
+				{ eGSM610, "GSM 6.10"},
+				{ eVOX_ADPCM, "Oki ADPCM"},
+				{ eG721_32, "32k G721 ADPCM"},
+				{ eG723_24, "24k G723 ADPCM"},
+				{ eG723_40, "40k G723 ADPCM"},
+				{ eDWVW_12, "DWVW 12-bit"},
+				{ eDWVW_16, "DWVW 16-bit"},
+				{ eDWVW_24, "DWVW 24-bit"},
+				{ eDWVW_N,  "DWVW N-bit"},
+				{ eDefault, "Format Default"},
+				{ e5015US, "Emphasis 50/15 US"},
+				{ eCCITTJ17, "Emphasis CCITT J.17"},
+				{ 0, NULL }
+			};
+			return sEnumValues;
+		}
 	};
 
-	class EAudioFileEndianess
-		: public Enum
+	class EAudioFileEndianess : public Enum
 	{
 	public:
-		static tEnumValue  sEnumValues[];
-		static tValue      sDefault;
+		EAudioFileEndianess() : Enum(EnumValues(), DefaultValue()) {}
+		EAudioFileEndianess( tValue val ) : Enum(EnumValues(), val) {}
+		EAudioFileEndianess( std::string s ) : Enum(EnumValues(), s) {}
+		virtual Component* Species() const { return new EAudioFileEndianess; }
 
-		EAudioFileEndianess();
-		EAudioFileEndianess( tValue val );
-		EAudioFileEndianess( std::string s );
-
-		typedef enum {
+		enum
+		{
 			eDefault = SF_ENDIAN_FILE, /* Default format endianess */
 			eLittle = SF_ENDIAN_LITTLE,  /* Force little endianess (if supported by format)*/
 			eBig = SF_ENDIAN_BIG,     /* Force big endianess (if supported by format)*/
 			eHost = SF_ENDIAN_CPU     /* Force host CPU endianess (if supported by format)*/
 		};
-		
-		virtual Component* Species() const;
+		static tValue      DefaultValue() { return eDefault; }
+		static tEnumValue * EnumValues()
+		{
+			static tEnumValue sEnumValues[] = {
+				{ eDefault, "Format Default" },
+				{ eLittle,  "Little Endian"},
+				{ eBig,     "Big Endian"},
+				{ eHost,    "Host CPU Endianess"},
+				{ 0, NULL }
+			};
+			return sEnumValues;
+		}
 	};
 
 }
