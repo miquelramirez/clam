@@ -39,8 +39,8 @@ namespace CLAM
 		class Stream; // forward declaration
 	}
 
-	class AudioFile 
-		: public Component
+	/** @ingroup AudioFileIO */
+	class AudioFile : public Component
 	{
 	public:
 

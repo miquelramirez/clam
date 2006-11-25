@@ -27,6 +27,7 @@
 
 namespace CLAM
 {
+	/** @ingroup AudioFileIO */
 	class AudioFileHeader
 		: public DynamicType
 	{

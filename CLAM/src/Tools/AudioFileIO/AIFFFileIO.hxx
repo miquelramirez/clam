@@ -26,6 +26,7 @@
 
 namespace CLAM{
 
+/** @ingroup AudioFileIO */
 class AIFFFileIO:public SoundFileIO
 {
 public:
