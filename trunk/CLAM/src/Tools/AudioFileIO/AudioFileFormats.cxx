@@ -71,8 +71,12 @@ namespace CLAM
 		const char * extensions;
 	} filters [] = {
 		{true,  "Microsoft RIFF/WAVE files",        "*.wav"},
-		{true,  "Apple/SGI AIFF files",             "*.aiff,*.aif"},
-		{true,  "Sun/Next AU files",                "*.snd,*.au"},
+		{true,  "Vorbis I files (Ogg/Vorbis)",      "*.ogg"},
+		{false, "Mpeg Audio Layer 1",               "*.mp1 *.mpg"},
+		{false, "Mpeg Audio Layer 2",               "*.mp2 *.mpg"},
+		{false, "Mpeg Audio Layer 3",               "*.mp3 *.mpg"},
+		{true,  "Apple/SGI AIFF files",             "*.aiff *.aif"},
+		{true,  "Sun/Next AU files",                "*.snd *.au"},
 		{true,  "RAW PCM files",                    "*.raw"},
 		{true,  "Ensoniq's PARIS Files",            "*.paf"},
 		{true,  "Amiga IFF files",                  "*.svx"},
@@ -80,11 +84,7 @@ namespace CLAM
 		{true,  "Creative's VOC files",             "*.voc"},
 		{true,  "Berkeley/IRCAM/CARL files",        "*.ircam"},
 		{true,  "Sonic Foundry's 64 RIFF/WAV files","*.w64"},
-		{true,  "Matlab/GNU Octave files",          "*.mat4,*.mat5,*.mat"},
-		{true,  "Vorbis I files (Ogg/Vorbis)",      "*.ogg"},
-		{false, "Mpeg Audio Layer 1",               "*.mp1,*.mpg"},
-		{false, "Mpeg Audio Layer 2",               "*.mp2,*.mpg"},
-		{false, "Mpeg Audio Layer 3",               "*.mp3,*.mpg"},
+		{true,  "Matlab/GNU Octave files",          "*.mat4 *.mat5 *.mat"},
 		{false, 0,0}
 	};
 
