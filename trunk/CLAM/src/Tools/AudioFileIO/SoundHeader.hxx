@@ -24,6 +24,7 @@
 
 namespace CLAM {
 
+/** @ingroup AudioFileIO */
 class SoundHeader
 {
 public:

@@ -26,7 +26,8 @@
 
 namespace CLAM{
 
-class WaveFileIO:public SoundFileIO
+/** @ingroup AudioFileIO */
+class WaveFileIO : public SoundFileIO
 {
 public:
 	~WaveFileIO()

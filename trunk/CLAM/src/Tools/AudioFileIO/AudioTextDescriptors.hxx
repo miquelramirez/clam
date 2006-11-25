@@ -27,8 +27,8 @@
 
 namespace CLAM
 {
-	class AudioTextDescriptors
-		: public DynamicType
+	/** @ingroup AudioFileIO */
+	class AudioTextDescriptors : public DynamicType
 	{
 	public:
 		DYNAMIC_TYPE( AudioTextDescriptors, 6 );

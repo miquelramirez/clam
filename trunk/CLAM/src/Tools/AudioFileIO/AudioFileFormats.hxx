@@ -35,6 +35,7 @@
 namespace CLAM
 {
 
+	/** @ingroup AudioFileIO */
 	class EAudioFileKind : public Enum
 	{
 	public:
@@ -65,6 +66,7 @@ namespace CLAM
 
 	};
 
+	/** @ingroup AudioFileIO */
 	class EAudioFileFormat : public Enum
 	{
 	public:
@@ -131,6 +133,7 @@ namespace CLAM
 
 	};
 
+	/** @ingroup AudioFileIO */
 	class EAudioFileEncoding : public Enum
 	{
 	public:
@@ -198,6 +201,7 @@ namespace CLAM
 		}
 	};
 
+	/** @ingroup AudioFileIO */
 	class EAudioFileEndianess : public Enum
 	{
 	public:

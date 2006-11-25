@@ -42,6 +42,7 @@
 
 namespace CLAM{
 
+/** @ingroup AudioFileIO */
 class SoundFileIO
 {
 public:
