@@ -21,3 +21,6 @@ Description: CLAM audio annotation tool
  The application adapts to user defined description schemes, auralizes
  annotations and provides import and export support for wavesurfer formats.
  It also has support for collaborative and distributed annotation campaigns.
+ .
+ Homepage: http://clam.iua.upf.edu
+
