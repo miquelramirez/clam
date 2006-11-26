@@ -21,6 +21,7 @@
 
 #include "AudioFileFormats.hxx"
 #include <algorithm>
+#include <cctype>
 
 namespace CLAM
 {
