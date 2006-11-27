@@ -17,7 +17,6 @@
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/PushFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
-#include <CLAM/PANetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
@@ -25,6 +24,9 @@
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
+#endif
+#ifdef USE_PORTAUDIO
+#include <CLAM/PANetworkPlayer.hxx>
 #endif
 
 #ifndef DATA_EXAMPLES_PATH
