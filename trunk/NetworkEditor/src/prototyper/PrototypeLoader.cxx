@@ -20,6 +20,9 @@
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
 #endif
+#ifdef USE_PORTAUDIO
+#include <CLAM/PANetworkPlayer.hxx>
+#endif
 #include <QtGui/QWidget>
 
 // Designer widgets
@@ -106,10 +109,16 @@ CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend)
 #ifdef USE_JACK		
 	if (backend=="jack")
 	{
-		CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
-		if ( jackPlayer->IsConnectedToServer()) return jackPlayer;
-		delete jackPlayer;
+		CLAM::JACKNetworkPlayer * player = new CLAM::JACKNetworkPlayer();
+		if ( player->IsConnectedToServer()) return player;
+		delete player;
 		return 0;
+	}
+#endif
+#ifdef USE_PORTAUDIO
+	if (backend=="portaudio")
+	{
+		return new CLAM::PANetworkPlayer();
 	}
 #endif
 	if (backend=="alsa")
@@ -125,6 +134,7 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends )
 	if (backends.empty())
 	{
 		backends.push_back("jack");
+		backends.push_back("portaudio");
 		backends.push_back("alsa");
 	}
 	for (std::list<std::string>::iterator it = backends.begin();
