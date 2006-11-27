@@ -39,13 +39,14 @@ namespace CLAM
 		: public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE
-		( MultiChannelAudioFileWriterConfig, 1, ProcessingConfig );
+		( MultiChannelAudioFileWriterConfig, 2, ProcessingConfig );
 		
 		/**
 		 *  The file where samples are to be stored
 		 */
 
-		DYN_ATTRIBUTE( 0, public, AudioFile, TargetFile );
+		DYN_ATTRIBUTE( 0, public, AudioFileTarget, TargetFile );
+		DYN_ATTRIBUTE( 1, public, unsigned, NChannels );
 
 	protected:
 

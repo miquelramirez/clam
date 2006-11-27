@@ -45,6 +45,7 @@ namespace CLAM
 		virtual bool Do();
 		virtual bool Do( std::vector<Audio>& outputs );
 		bool ModifiesPortsAndControlsAtConfiguration();
+		const Array<TIndex> & GetSelectedChannels() const {return mSelectedChannels;}
 	
 	protected: // methods
 		
@@ -61,6 +62,7 @@ namespace CLAM
 
 		MultiChannelAudioFileReaderConfig   mConfig;
 		OutputVector                        mOutputs;
+		Array< TIndex >                     mSelectedChannels;
 		Array< TData* >                     mSamplesMatrix;
 		AudioCodecs::Stream*                mNativeStream;
 		TTime                               mCurrentBeginTime;

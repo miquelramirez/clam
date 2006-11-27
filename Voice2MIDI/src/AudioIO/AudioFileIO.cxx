@@ -18,7 +18,7 @@ AudioFileIO::~AudioFileIO(){}
 
 int AudioFileIO::Load(const char* fileName,Audio& out)
 {
-    AudioFile file;
+    AudioFileSource file;
     file.OpenExisting(fileName);
 
     if((!file.IsReadable()) | (file.GetHeader().GetChannels() > 1))
@@ -41,7 +41,7 @@ int AudioFileIO::Load(const char* fileName,Audio& out)
 
 int AudioFileIO::Save(const char* fileName,Audio& in)
 {
-    AudioFile file;
+    AudioFileTarget file;
     AudioFileHeader header;
     header.SetValues(in.GetSampleRate(),1,EAudioFileFormat::eWAV);
 	

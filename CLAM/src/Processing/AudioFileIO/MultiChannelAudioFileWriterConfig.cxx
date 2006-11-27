@@ -27,5 +27,6 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
+		SetNChannels(2);
 	}
 }

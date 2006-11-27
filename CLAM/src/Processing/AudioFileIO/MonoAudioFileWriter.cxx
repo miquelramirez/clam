@@ -38,6 +38,7 @@ namespace CLAM
 		: mInput( "Samples Write", this ),
 		  mOutStream( NULL )
 	{
+		Configure( MonoAudioFileWriterConfig() );
 	}
 
 	MonoAudioFileWriter::MonoAudioFileWriter( const ProcessingConfig& cfg )
@@ -88,7 +89,18 @@ namespace CLAM
 		CopyAsConcreteConfig( mConfig, cfg );
 
 		AudioFile& targetFile = mConfig.GetTargetFile();
+		const std::string & location = targetFile.GetLocation();
 
+		if ( location == "")
+		{
+			AddConfigErrorMessage("No file selected");
+			return false;
+		}
+		if ( ! targetFile.GetHeader().HasChannels())
+		{
+			AddConfigErrorMessage("The file is not writeable");
+			return false;
+		}
 		if ( targetFile.GetHeader().GetChannels() != 1 ) // this is the 'mono' file writer...
 		{
 			AddConfigErrorMessage("Too many channels!");
@@ -97,8 +109,7 @@ namespace CLAM
 
 		if ( !targetFile.IsWritable() )
 		{
-			AddConfigErrorMessage("There is an incompatibility between the 'Format', 'Encoding' and 'Endianess'  "
-				"configuration parameter values");
+			AddConfigErrorMessage("The format does not support such number of channels, endiannes or sampling rate.");
 			return false;
 		}
 

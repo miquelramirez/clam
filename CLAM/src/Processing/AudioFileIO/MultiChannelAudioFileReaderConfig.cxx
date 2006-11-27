@@ -26,6 +26,7 @@ namespace CLAM
 	void MultiChannelAudioFileReaderConfig::DefaultInit()
 	{
 		AddSourceFile();
+		RemoveSelectedChannels();
 		UpdateData();
 	}
 }

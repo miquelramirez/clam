@@ -25,6 +25,7 @@
 #include "AudioInPort.hxx"
 #include "Audio.hxx"
 #include "Factory.hxx"
+#include "XMLStorage.hxx" // TODO: jsut for testing
 
 
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
@@ -41,6 +42,7 @@ namespace CLAM
 	MultiChannelAudioFileWriter::MultiChannelAudioFileWriter()
 		: mNativeStream( NULL )
 	{
+		Configure(MultiChannelAudioFileWriterConfig());
 	}
 
 	MultiChannelAudioFileWriter::MultiChannelAudioFileWriter( const ProcessingConfig& cfg )
@@ -168,37 +170,48 @@ namespace CLAM
 		if ( mConfig.HasTargetFile() )
 			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile().GetLocation() );
 
-
 		CopyAsConcreteConfig( mConfig, cfg );
 
 		AudioFile& targetFile = mConfig.GetTargetFile();
-
-		if ( !targetFile.GetHeader().HasChannels() )
+		const std::string & location =targetFile.GetLocation();
+		if (location=="")
 		{
-			AddConfigErrorMessage("Channels field was not added to header");
+			AddConfigErrorMessage("No file selected");
 			return false;
 		}
 
-		if ( targetFile.GetHeader().GetChannels() < 2 )
+		unsigned nChannels = mConfig.HasNChannels()? mConfig.GetNChannels() : 1;
+		if ( nChannels < 1 )
 		{
-			AddConfigErrorMessage("Too few channels. This processing is meant for handling files with two or more channels.");
+			AddConfigErrorMessage("Channels should be, at least, 1.");
 			return false;
 		}
-
+		AudioFileHeader header = targetFile.GetHeader();
+		if (!header.HasFormat())
+		{
+			header.AddFormat();
+			header.UpdateData();
+			header.SetFormat(CLAM::EAudioFileFormat::FormatFromFilename(location) );
+		}
+		if (!header.HasChannels())
+		{
+			header.AddChannels();
+			header.UpdateData();
+		}
+		header.SetChannels(nChannels);
+		targetFile.CreateNew(location,header);
 		if ( !targetFile.IsWritable() )
 		{
-			AddConfigErrorMessage("Settings were not supported by selected output format. "
-				"Check that the sample rate, endianess and number of "
-				"channels conform the format specification.");
+			AddConfigErrorMessage("The format does not support such number of channels, endiannes or sampling rate.");
 
 			return false;
 		}
 
 		if ( FileSystem::GetInstance().IsFileLocked( mConfig.GetTargetFile().GetLocation() ) )
 		{
-			AddConfigErrorMessage("File: ");
+			AddConfigErrorMessage("The file '");
 			AddConfigErrorMessage( mConfig.GetTargetFile().GetLocation() );
-			AddConfigErrorMessage(" has been locked by another Processing");
+			AddConfigErrorMessage("' has been locked by another Processing");
 
 			return false;
 		}
@@ -209,12 +222,12 @@ namespace CLAM
 		if ( !mInputs.empty() )
 			DestroyOldInputs();
 
-		mChannelsToWrite.Resize( targetFile.GetHeader().GetChannels() );
-		mChannelsToWrite.SetSize( targetFile.GetHeader().GetChannels() );
-		mSamplesMatrix.Resize( targetFile.GetHeader().GetChannels() );
-		mSamplesMatrix.SetSize( targetFile.GetHeader().GetChannels() );
+		mChannelsToWrite.Resize( nChannels );
+		mChannelsToWrite.SetSize( nChannels );
+		mSamplesMatrix.Resize( nChannels );
+		mSamplesMatrix.SetSize( nChannels );
 
-		for ( int i = 0; i < targetFile.GetHeader().GetChannels(); i++ )
+		for ( int i = 0; i < nChannels; i++ )
 		{
 			mChannelsToWrite[ i ] = i;
 			mSamplesMatrix[ i ] = NULL;

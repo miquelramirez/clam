@@ -34,7 +34,7 @@ class AudioLoadThread : public QThread
 	CLAM::Audio & mAudio;
 	const CLAM::TSize readSize;
 	unsigned nSamples;
-	CLAM::AudioFile file;
+	CLAM::AudioFileSource file;
 	std::vector<CLAM::Audio> audioFrameVector;
 	unsigned mNumber;
 public:

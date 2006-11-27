@@ -39,7 +39,7 @@ namespace CLAM
 		 *  The file that will be the source of audio samples
 		 */
 
-		DYN_ATTRIBUTE( 0, public, AudioFile,     SourceFile );
+		DYN_ATTRIBUTE( 0, public, AudioFileSource,     SourceFile );
 
 		/**
 		 *  Tells the processing which n0, n1, ..., nf channels

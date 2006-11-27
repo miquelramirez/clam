@@ -16,7 +16,6 @@ namespace CLAMTest
 		: public CppUnit::TestFixture
 	{
 		CPPUNIT_TEST_SUITE( MultiChannelAudioFileWriterFunctionalTest );
-		CPPUNIT_TEST( testConfigure_ReturnsFalse_WithJustFilename );
 		CPPUNIT_TEST( testDo_PCM_WritesRightAKnownSignal );
 		CPPUNIT_TEST( testDo_DoubleWriting_Is_Not_Allowed );
 		CPPUNIT_TEST( testDo_PCM_WritesTheSameThatWasRead );
@@ -39,28 +38,9 @@ namespace CLAMTest
 
 	private:
 		
-		void testConfigure_ReturnsFalse_WithJustFilename()
-		{
-			CLAM::AudioFile file;
-			CLAM::AudioFileHeader header;
-			file.CreateNew( std::string( "NewFile.wav" ), header );
-
-
-			CLAM::MultiChannelAudioFileWriterConfig cfg;
-			cfg.AddTargetFile();
-			cfg.UpdateData();
-			cfg.SetTargetFile( file );
-
-			CLAM::MultiChannelAudioFileWriter proc;
-			bool configResult = proc.Configure( cfg );
-
-			CPPUNIT_ASSERT_EQUAL( false,
-					      configResult );
-		}
-
 		void testDo_PCM_WritesRightAKnownSignal()
 		{
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 						
 			outputFileHeader.SetValues( 44100, 2, "WAV" );
@@ -128,7 +108,7 @@ namespace CLAMTest
 
 		void testDo_DoubleWriting_Is_Not_Allowed()
 		{
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 						
 			outputFileHeader.SetValues( 44100, 2, "WAV" );
@@ -150,11 +130,11 @@ namespace CLAMTest
 
 		void testDo_PCM_WritesTheSameThatWasRead()
 		{
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding.wav" ) );
 
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 						
 			outputFileHeader.AddAll();
@@ -246,10 +226,10 @@ namespace CLAMTest
 		void testDo_OggVorbis_WritesTheSameThatWasRead()
 		{
 			
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "ElvisStereo.wav" ) );
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),

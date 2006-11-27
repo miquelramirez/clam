@@ -22,12 +22,6 @@
 #include <CLAM/Factory.hxx>
 #include "ConfiguratorLauncher.hxx"
 
-// concrete configs
-//#include "MonoAudioFileWriterConfigPresentation.hxx" // QT4PORT
-//#include "MultiChannelAudioFileWriterConfigPresentation.hxx" // QT4PORT
-#ifndef WIN32
-//#include "LadspaLoaderConfigPresentation.hxx" // QT4PORT
-#endif
 #include <CLAM/AudioFileConfig.hxx>
 #include <CLAM/AutoPanner.hxx>
 #include <CLAM/AudioIO.hxx>
@@ -41,7 +35,9 @@
 #include <CLAM/FFTConfig.hxx>
 #include <CLAM/IFFTConfig.hxx>
 #include <CLAM/MonoAudioFileReaderConfig.hxx>
+#include <CLAM/MonoAudioFileWriterConfig.hxx>
 #include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
+#include <CLAM/MultiChannelAudioFileWriterConfig.hxx>
 #include <CLAM/SpectralAnalysisConfig.hxx>
 #include <CLAM/SpectralSynthesisConfig.hxx>
 #include <CLAM/OverlapAddConfig.hxx>
@@ -80,15 +76,22 @@
 #include <CLAM/MIDIIOConfig.hxx>
 #include <CLAM/MIDIDispatcher.hxx>
 
+// concrete configs dialogs
+#ifndef WIN32
+//#include "LadspaLoaderConfigPresentation.hxx" // QT4PORT
+#endif
+
 typedef CLAM::Factory<ConfiguratorLauncher> ProcessingConfigPresentationFactory;
 
 // Convenient macros (Not to use widely)
 #define STANDARD_PROCESSING_CONFIG_REGISTER(configName) \
    	static ProcessingConfigPresentationFactory::Registrator<  \
-		TypedConfiguratorLauncher< CLAM::configName > > reg##configName(#configName)
-#define SPECIAL_PROCESSING_CONFIG_REGISTER(configName, confingurator) \
-	static ProcessingConfigPresentationFactory::Registrator<configurator> \
-		regt##configName( #configName)
+		TypedConfiguratorLauncher< CLAM::configName > > \
+		 reg##configName(#configName)
+#define SPECIAL_PROCESSING_CONFIG_REGISTER(configName, configurator) \
+	static ProcessingConfigPresentationFactory::Registrator< \
+		WidgetTypedConfiguratorLauncher<configurator> > \
+		 regt##configName( #configName)
 
 STANDARD_PROCESSING_CONFIG_REGISTER(SimpleOscillatorConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(OscillatorConfig);
@@ -105,9 +108,9 @@ STANDARD_PROCESSING_CONFIG_REGISTER(IFFTConfig);
 //SPECIAL_PROCESSING_CONFIG_REGISTER(LadspaLoaderConfig, NetworkGUI::LadspaLoaderConfigPresentation);
 #endif
 STANDARD_PROCESSING_CONFIG_REGISTER(MonoAudioFileReaderConfig);
-//SPECIAL_PROCESSING_CONFIG_REGISTER(MonoAudioFileWriterConfig, NetworkGUI::MonoAudioFileWriterConfigPresentation);
+STANDARD_PROCESSING_CONFIG_REGISTER(MonoAudioFileWriterConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(MultiChannelAudioFileReaderConfig);
-//SPECIAL_PROCESSING_CONFIG_REGISTER(MultiChannelAudioFileWriterConfigPresentation, NetworkGUI::MultiChannelAudioFileWriterConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(MultiChannelAudioFileWriterConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(SpectralAnalysisConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(SpectralSynthesisConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(OverlapAddConfig);

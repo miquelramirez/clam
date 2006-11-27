@@ -60,7 +60,7 @@ int main( int argc, char** argv )
 		// Now we will prepare file playback very similarly as the first half of the
 		// "AudioFileReading" example
 
-		CLAM::AudioFile file;
+		CLAM::AudioFileSource file;
 		file.OpenExisting( argv[1] );
 		
 		// And now check that the given file can be read

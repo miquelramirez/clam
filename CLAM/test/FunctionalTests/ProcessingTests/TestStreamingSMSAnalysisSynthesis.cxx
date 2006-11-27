@@ -95,7 +95,7 @@ private:
 		CLAM::MonoAudioFileReaderConfig readercfg;
 		CLAM::MonoAudioFileWriter audioWriter;
 		CLAM::MonoAudioFileWriterConfig writercfg;
-		CLAM::AudioFile file;
+		CLAM::AudioFileSource file;
 		file.OpenExisting(GetTestDataDirectory("sine.wav"));
 		readercfg.SetSourceFile(file);
 		audioProvider.GetOutPort("Samples Read").SetSize( frameSize );
@@ -105,8 +105,9 @@ private:
 		audioProvider.Configure( readercfg );
 		CLAM::AudioFileHeader header;
 		header.SetValues(44100, 1, "WAV");
-		file.CreateNew(storedResult+"_result.wav", header);
-		writercfg.SetTargetFile(file);
+		CLAM::AudioFileTarget fileOut;
+		fileOut.CreateNew(storedResult+"_result.wav", header);
+		writercfg.SetTargetFile(fileOut);
 		audioWriter.Configure( writercfg );
 		
 		CLAM::SMSAnalysisCore analysis;
@@ -209,18 +210,19 @@ private:
 		
 
 		CLAM::MonoAudioFileReaderConfig audioInCfg;
-		CLAM::AudioFile file;
+		CLAM::AudioFileSource file;
 		file.OpenExisting(GetTestDataDirectory("Elvis.wav"));
 		audioInCfg.SetSourceFile(file);
 
 		net.ConfigureProcessing("AudioIn", audioInCfg);
 		
-		CLAM::MonoAudioFileWriterConfig writercfg;		
+		CLAM::MonoAudioFileWriterConfig writercfg;
+		CLAM::AudioFileTarget fileOut;		
 		CLAM::AudioFileHeader header;
 		header.SetValues(44100, 1, "WAV");
 		std::string storedResult=GetTestDataDirectory("SMSTests/out_sms_net_stream");
-		file.CreateNew( storedResult+"_result.wav", header);
-		writercfg.SetTargetFile(file);
+		fileOut.CreateNew( storedResult+"_result.wav", header);
+		writercfg.SetTargetFile(fileOut);
 		
 		net.ConfigureProcessing("AudioOut", writercfg );
 		net.ConfigureProcessing("Analysis", helperAnalysisConfigInstance() );

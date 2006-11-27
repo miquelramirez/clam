@@ -78,7 +78,7 @@ namespace CLAMTest
 
 		void testConfigure_ReturnsTrueWithJustFilename()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -105,7 +105,7 @@ namespace CLAMTest
 
 		void testConfigure_ReturnsTrueWhenFileExists()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -119,7 +119,7 @@ namespace CLAMTest
 
 		void testConfigure_ReturnsFalseWhenFileDoesNotExist()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile-false.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -133,7 +133,7 @@ namespace CLAMTest
 
 		void  testConfigure_DefaultChannelSelection_ChannelsOK()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -145,28 +145,21 @@ namespace CLAMTest
 			CLAM::MultiChannelAudioFileReaderConfig cfgToBeChecked =
 				dynamic_cast< const CLAM::MultiChannelAudioFileReaderConfig& > ( proc.GetConfig() );
 			
-			CLAM::Array< CLAM::TIndex >& channels =
-				cfgToBeChecked.GetSelectedChannels();
+			const CLAM::Array< CLAM::TIndex >& channels = proc.GetSelectedChannels();
+
+			CPPUNIT_ASSERT_EQUAL ( channels.Size(), file.GetHeader().GetChannels() );
 
 			bool allChannelsPresent = true;
+			for ( int i = 0; i < channels.Size(); i++ )
+				allChannelsPresent &= (channels[i] == i);
 
-
-			if ( channels.Size() == file.GetHeader().GetChannels() )
-			{
-				for ( int i = 0; i < channels.Size(); i++ )
-					allChannelsPresent &= (channels[i] == i);
-			}
-			else
-				allChannelsPresent = false;
-
-			CPPUNIT_ASSERT_EQUAL( true,
-					      allChannelsPresent );
+			CPPUNIT_ASSERT_EQUAL( true, allChannelsPresent );
 			
 		}
 
 		void testConfigure_DefaultChannelSelection_PortNumberIsOK()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( file );
@@ -174,7 +167,6 @@ namespace CLAMTest
 			CLAM::MultiChannelAudioFileReader proc;
 
 			proc.Configure( cfg );
-
 
 			CPPUNIT_ASSERT_EQUAL( 2,
 					      std::distance( proc.GetOutPorts().Begin(),
@@ -184,7 +176,7 @@ namespace CLAMTest
 		
 		void testConfigure_ManualChannelSelection_ChannelsOK()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.AddSelectedChannels();
@@ -202,28 +194,20 @@ namespace CLAMTest
 			CLAM::MultiChannelAudioFileReaderConfig cfgToBeChecked =
 				dynamic_cast< const CLAM::MultiChannelAudioFileReaderConfig& > ( proc.GetConfig() );
 			
-			CLAM::Array< CLAM::TIndex >& channels =
-				cfgToBeChecked.GetSelectedChannels();
+			const CLAM::Array< CLAM::TIndex >& channels = proc.GetSelectedChannels();
+
+			CPPUNIT_ASSERT_EQUAL ( channels.Size(), cfg.GetSelectedChannels().Size() );
 
 			bool allChannelsPresent = true;
-
-
-			if ( channels.Size() == cfg.GetSelectedChannels().Size() )
-			{
-				for ( int i = 0; i < channels.Size(); i++ )
-					allChannelsPresent &= (channels[i] == cfg.GetSelectedChannels()[i] );
-			}
-			else
-				allChannelsPresent = false;
-
+			for ( int i = 0; i < channels.Size(); i++ )
+				allChannelsPresent &= (channels[i] == cfg.GetSelectedChannels()[i] );
 			CPPUNIT_ASSERT_EQUAL( true,
 					      allChannelsPresent );
-			
 		}
 
 		void testConfigure_ManualChannelSelection_PortNumberIsOK()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
@@ -250,7 +234,7 @@ namespace CLAMTest
 
 		void testConfigure_ReturnsFalse_ManualChannelSelection_TooMany()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.AddSelectedChannels();
@@ -273,7 +257,7 @@ namespace CLAMTest
 
 		void testConfigure_ReturnsFalse_ManualChannelSelection_InvalidChannel()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.AddSelectedChannels();
@@ -296,7 +280,7 @@ namespace CLAMTest
 
 		void testDo_PCM_JustOneFrame ()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
@@ -327,7 +311,7 @@ namespace CLAMTest
 		
 		void testDo_PCM_JustTwoFrames()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
@@ -389,7 +373,7 @@ namespace CLAMTest
 
 		void testDo_JustOneFrame_SampleRateIsOK()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
@@ -417,7 +401,7 @@ namespace CLAMTest
 
 		void testDo_JustTwoFrames_BeginTimesAreOK()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
@@ -465,7 +449,7 @@ namespace CLAMTest
 
 		void testDo_OggVorbis_JustOneFrame ()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
@@ -495,7 +479,7 @@ namespace CLAMTest
 		
 		void testDo_OggVorbis_JustTwoFrames()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
 			
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
@@ -561,12 +545,12 @@ namespace CLAMTest
 
 		void test_MpegAudioFiles_128kbps_44kHz_AreDecoded_OK()
 		{
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-128_44.mp3" ) );
 			CLAM_ASSERT( inputFile.IsReadable(), "can't find: test-stereo-decoding-128_44.mp3" );
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
@@ -719,10 +703,10 @@ namespace CLAMTest
 
 		void test_MpegAudioFiles_192kbps_44kHz_AreDecoded_OK()
 		{
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-192_44.mp3" ) );
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    inputFile.GetHeader().GetChannels(),
@@ -874,10 +858,10 @@ namespace CLAMTest
 
 		void test_MpegAudioFiles_64kbps_44kHz_AreDecoded_OK()
 		{
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-64_44.mp3" ) );
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
@@ -1028,10 +1012,10 @@ namespace CLAMTest
 
 		void test_MpegAudioFiles_320kbps_44kHz_AreDecoded_OK()
 		{
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-320_44.mp3" ) );
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
@@ -1181,10 +1165,10 @@ namespace CLAMTest
 
 		void test_MpegAudioFiles_LowVBR_44kHz_AreDecoded_OK()
 		{
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-LowVBR_44.mp3" ) );
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
@@ -1334,10 +1318,10 @@ namespace CLAMTest
 
 		void test_MpegAudioFiles_HighVBR_44kHz_AreDecoded_OK()
 		{
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-HighVBR_44.mp3" ) );
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			outputFile.OpenExisting( "test-mp3-HighVBR-44.wav" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
@@ -1490,10 +1474,10 @@ namespace CLAMTest
 		
 		void test_MpegAudioFiles_AvgVBR_44kHz_AreDecoded_OK()
 		{
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-AvgVBR_44.mp3" ) );
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),

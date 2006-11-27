@@ -37,6 +37,7 @@ namespace CLAM
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader()
 		: mNativeStream( NULL )
 	{
+		Configure(MultiChannelAudioFileReaderConfig());
 	}
 
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader( const ProcessingConfig& cfg )
@@ -111,8 +112,8 @@ namespace CLAM
 
 		// read the data
 		
-		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannels().GetPtr(),
-						       mConfig.GetSelectedChannels().Size(),
+		mEOFReached = mNativeStream->ReadData( mSelectedChannels.GetPtr(),
+						       mSelectedChannels.Size(),
 						       mSamplesMatrix.GetPtr(),
 						       sizeTmp );
 		// Audio 'simple meta-data' setup
@@ -179,8 +180,8 @@ namespace CLAM
 
 		// read the data
 		
-		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannels().GetPtr(),
-						       mConfig.GetSelectedChannels().Size(),
+		mEOFReached = mNativeStream->ReadData( mSelectedChannels.GetPtr(),
+						       mSelectedChannels.Size(),
 						       mSamplesMatrix.GetPtr(),
 						       sizeTmp );
 
@@ -211,33 +212,32 @@ namespace CLAM
 	{
 		CopyAsConcreteConfig( mConfig, cfgObj );
 
-		if ( !mConfig.HasSourceFile() )			
+		if ( !mConfig.HasSourceFile() )
 		{
 			AddConfigErrorMessage("No 'source file' was specified in the configuration!");
+			return false;
+		}
 
+		if ( mConfig.GetSourceFile().GetLocation() == "" )
+		{
+			AddConfigErrorMessage("No file selected");
 			return false;
 		}
 
 		if ( !mConfig.GetSourceFile().IsReadable() )
 		{
-			AddConfigErrorMessage("The source file could not be opened!");
-
+			AddConfigErrorMessage("The audio file could not be opened!");
 			return false;
 		}
 
 		if ( !mConfig.HasSelectedChannels() )
 		{
-			mConfig.AddSelectedChannels();
-			mConfig.UpdateData();
-
-			Array< TIndex >& channelsToRead  = mConfig.GetSelectedChannels();
-
-			channelsToRead.Resize( mConfig.GetSourceFile().GetHeader().GetChannels() );
-			channelsToRead.SetSize( mConfig.GetSourceFile().GetHeader().GetChannels() );
+			mSelectedChannels.Resize( mConfig.GetSourceFile().GetHeader().GetChannels() );
+			mSelectedChannels.SetSize( mConfig.GetSourceFile().GetHeader().GetChannels() );
 
 			DestroyOldOutputs();
 
-			for ( int i = 0; i < channelsToRead.Size(); i++ )
+			for ( int i = 0; i < mSelectedChannels.Size(); i++ )
 			{
 				std::stringstream sstr;
 				sstr << i;
@@ -246,30 +246,29 @@ namespace CLAM
 					new AudioOutPort( "Channel #" + sstr.str(), this )
 					);
 
-				channelsToRead[ i ] = i;
+				mSelectedChannels[ i ] = i;
 			}
 
-			mSamplesMatrix.Resize( channelsToRead.Size() );
-			mSamplesMatrix.SetSize( channelsToRead.Size() );
+			mSamplesMatrix.Resize( mSelectedChannels.Size() );
+			mSamplesMatrix.SetSize( mSelectedChannels.Size() );
 
 		}
 		else
 		{
 			// Checking selected channels validity
-			Array< TIndex >& channelsToRead =
-				mConfig.GetSelectedChannels();
+			mSelectedChannels = mConfig.GetSelectedChannels();
 
-			if ( channelsToRead.Size() != mConfig.GetSourceFile().GetHeader().GetChannels() )
+			if ( mSelectedChannels.Size() != mConfig.GetSourceFile().GetHeader().GetChannels() )
 			{
-				AddConfigErrorMessage("There are not so many channels in the source file. Check configuration");
+				AddConfigErrorMessage("The configuration asked for more channels than the audio file has.");
 				return false;
 			}
 
 			int maxChannels = mConfig.GetSourceFile().GetHeader().GetChannels();
 
-			for ( int i = 0; i < channelsToRead.Size(); i++ )
-				if ( channelsToRead[i] < 0
-				     || channelsToRead[i] >= maxChannels )
+			for ( int i = 0; i < mSelectedChannels.Size(); i++ )
+				if ( mSelectedChannels[i] < 0
+				     || mSelectedChannels[i] >= maxChannels )
 				{
 					AddConfigErrorMessage("Invalid channel index in configuration!");
 					return false;
@@ -278,10 +277,10 @@ namespace CLAM
 
 			DestroyOldOutputs();
 
-			for ( int i = 0; i < channelsToRead.Size(); i++ )
+			for ( int i = 0; i < mSelectedChannels.Size(); i++ )
 			{
 				std::stringstream sstr;
-				sstr << channelsToRead[i];
+				sstr << mSelectedChannels[i];
 
 				mOutputs.push_back(
 					new AudioOutPort( "Channel #" + sstr.str(), this )

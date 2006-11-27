@@ -48,6 +48,8 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
 
+#include "QFileLineEdit.hxx"
+
 
 namespace CLAM{
 	/**
@@ -83,8 +85,13 @@ namespace CLAM{
 			mLayout->setMargin(5);
 			//mLayout->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding));
 			setMinimumWidth(400);
-			GetInfo();
 
+			GetInfo();
+			AddButtons();
+		}
+	protected:
+		void AddButtons()
+		{
 			QFrame * frame = new QFrame(this);
 			mLayout->addWidget(frame);
 			frame->setMinimumHeight(10);
@@ -100,6 +107,7 @@ namespace CLAM{
 			connect( discardButton, SIGNAL(clicked()), this, SLOT(Discard()) );
 
 			QPushButton * okButton = new QPushButton("Ok", this);
+			okButton->setDefault(true);
 			buttons->addWidget(okButton);
 			connect( okButton, SIGNAL(clicked()), this, SLOT(Ok()) );
 
@@ -109,7 +117,6 @@ namespace CLAM{
 			adjustSize();
 		}
 	private:
-
 		void GetInfo() {
 			CLAM_ASSERT(mGetter,"Configurator: No config to set");
 			mGetter->VisitConfig();
@@ -204,7 +211,7 @@ namespace CLAM{
 		template <typename T>
 		void AddWidget(const char *name, TSize *foo, T& value) {
 			QSpinBox * mInput = new QSpinBox;
-			mInput->setRange(0,1e16);
+			mInput->setRange(0,0xffffff);
 			mInput->setValue(value);
 
 			QHBoxLayout * cell = new QHBoxLayout;
@@ -215,6 +222,25 @@ namespace CLAM{
 		}
 		template <typename T>
 		void RetrieveValue(const char *name, TSize *foo, T& value) {
+			QSpinBox * mInput = dynamic_cast<QSpinBox*>(GetWidget(name));
+			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+			value = mInput->value();
+		}
+
+		template <typename T>
+		void AddWidget(const char *name, unsigned *foo, T& value) {
+			QSpinBox * mInput = new QSpinBox;
+			mInput->setRange(0,0xffffff);
+			mInput->setValue(value);
+
+			QHBoxLayout * cell = new QHBoxLayout;
+			mLayout->addLayout(cell);
+			cell->addWidget(new QLabel(name));
+			cell->addWidget(mInput);
+			PushWidget(name, mInput);
+		}
+		template <typename T>
+		void RetrieveValue(const char *name, unsigned *foo, T& value) {
 			QSpinBox * mInput = dynamic_cast<QSpinBox*>(GetWidget(name));
 			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
 			value = mInput->value();
@@ -340,36 +366,81 @@ namespace CLAM{
 			value = mInput->text().toStdString();
 		}
 
+		QString audioFilterString(bool read)
+		{
+			QString qtfilter;
+			typedef const CLAM::EAudioFileFormat::FormatFilterList Filters;
+			Filters & filters = read?
+				CLAM::EAudioFileFormat::ReadableFormats():
+				CLAM::EAudioFileFormat::WritableFormats();
+			QString allfilter;
+			char * separator = "";
+			for (Filters::const_iterator it = filters.begin(); it!=filters.end(); it++)
+			{
+				qtfilter += QString("%1%2 (%3)")
+					.arg(separator)
+					.arg(it->first.c_str())
+					.arg(it->second.c_str())
+					;
+				separator = ";;";
+				allfilter += (it->second+" ").c_str();
+			}
+			if (read) return tr("Audio files (%1)").arg(allfilter);
+			return qtfilter + tr(";;Audio files (%1)").arg(allfilter);
+		}
 		template <typename T>
-		void AddWidget(const char *name, CLAM::AudioFile *foo, T& value) {
-			
-			QLineEdit * mInput = new QLineEdit(value.GetLocation().c_str());
-			mInput->setMinimumWidth(300);
-			mInput->setReadOnly(true);
-
-			QPushButton * fileBrowserLauncher = new QPushButton("...");
-			fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-			QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
-			fd->setFileMode( QFileDialog::AnyFile );
-			fd->selectFile(value.GetLocation().c_str());
-			fd->setDirectory( QFileInfo( value.GetLocation().c_str() ).path() );
-			connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
-			connect( fd, SIGNAL(currentChanged( const QString & )), mInput, SLOT( setText( const QString & )));
+		void AddWidget(const char *name, CLAM::AudioFileSource *foo, T& value)
+		{
+			QFileLineEdit * mInput = new QFileLineEdit(this);
+			mInput->setLocation(value.GetLocation().c_str());
+			mInput->setWriteMode(false);
+			mInput->setFilters(audioFilterString(true));
+//			mInput->setFilters(tr("Audio File (*.wav *.ogg *.mp3)"));
+			mInput->setDialogCaption(tr("Select the input audio file"));
+			mInput->setLocation(value.GetLocation().c_str());
 
 			QHBoxLayout * cell = new QHBoxLayout;
 			mLayout->addLayout(cell);
 			cell->addWidget(new QLabel(name));
 			cell->addWidget(mInput);
-			cell->addWidget(fileBrowserLauncher);
 			cell->setSpacing(5);
 			PushWidget(name, mInput);
 		}
 
 		template <typename T>
-		void RetrieveValue(const char *name, CLAM::AudioFile *foo, T& value) {
-			QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+		void RetrieveValue(const char *name, CLAM::AudioFileSource *foo, T& value) {
+			QFileLineEdit * mInput = dynamic_cast<QFileLineEdit*>(GetWidget(name));
 			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-			value.OpenExisting(mInput->text().toStdString());
+			value.OpenExisting(mInput->location().toStdString());
+		}
+		template <typename T>
+		void AddWidget(const char *name, CLAM::AudioFileTarget *foo, T& value) {
+			
+			QFileLineEdit * mInput = new QFileLineEdit(this);
+			mInput->setLocation(value.GetLocation().c_str());
+			mInput->setWriteMode(true);
+			mInput->setFilters(audioFilterString(false));
+//			mInput->setFilters(tr("Audio File (*.wav *.ogg *.mp3)"));
+			mInput->setDialogCaption(tr("Select the output audio file"));
+			mInput->setLocation(value.GetLocation().c_str());
+
+			QHBoxLayout * cell = new QHBoxLayout;
+			mLayout->addLayout(cell);
+			cell->addWidget(new QLabel(name));
+			cell->addWidget(mInput);
+			cell->setSpacing(5);
+			PushWidget(name, mInput);
+		}
+
+		template <typename T>
+		void RetrieveValue(const char *name, CLAM::AudioFileTarget *foo, T& value) {
+			QFileLineEdit * mInput = dynamic_cast<QFileLineEdit*>(GetWidget(name));
+			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
+
+			std::string location = mInput->location().toStdString();
+			CLAM::AudioFileHeader header;
+			header.SetValues(44100, 1, CLAM::EAudioFileFormat::FormatFromFilename(location));
+			value.CreateNew( location, header );
 		}
 	public slots:
 
