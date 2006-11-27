@@ -13,8 +13,6 @@
 namespace CLAM
 {
 
-int portaudio_process (const void *, void *, unsigned long, const PaStreamCallbackTimeInfo*, PaStreamCallbackFlags, void *);
-
 typedef std::vector<AudioSource*> PAOutPortList;
 typedef std::vector<AudioSink*> PAInPortList;
 

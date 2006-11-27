@@ -6,7 +6,6 @@
 namespace CLAM
 {
 
-//PA CODE
 inline int portaudio_process (const void *inputBuffers, void *outputBuffers,
                             unsigned long framesPerBuffer,
                             const PaStreamCallbackTimeInfo* timeInfo,
@@ -65,7 +64,7 @@ void PANetworkPlayer::OpenStream(const Network& net)
 			gen->SetFrameAndHopSize( mClamBufferSize );
 				
 			//Using PortAudio we only accept 2 channels max
-			if ( mReceiverList.size() == 2 )
+			if (false && mReceiverList.size() == 2 )
 			{
 				std::cout << "WARNING: more than two AudioSources detected, ignoring '" << it->first << "'" << std::endl;
 				continue;
@@ -81,7 +80,7 @@ void PANetworkPlayer::OpenStream(const Network& net)
 			sink->SetFrameAndHopSize(mClamBufferSize);
 
 			//Using PortAudio we only accept 2 channels max
-			if ( mSenderList.size() == 2 )
+			if (false && mSenderList.size() == 2 )
 			{
 				std::cout << "WARNING: more than two AudioSinks detected, ignoring '" << it->first << "'" << std::endl;
 				continue;
@@ -92,34 +91,27 @@ void PANetworkPlayer::OpenStream(const Network& net)
 	}
 
 	//Create configuration for input&output and then register the stream
-	PaStreamParameters inputParameters, outputParameters, *inParams, *outParams;
-
+	PaStreamParameters inputParameters;
 	inputParameters.device = Pa_GetDefaultInputDevice(); /* default output device */
 	CLAM_ASSERT ( inputParameters.device!=paNoDevice, "PortAudio Error: getting default input device");
-			
 	inputParameters.channelCount = mReceiverList.size();       /* stereo output */
 	inputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples*/
 	inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowOutputLatency;
 	inputParameters.hostApiSpecificStreamInfo = NULL;
+	PaStreamParameters * inParams = mReceiverList.size() ? &inputParameters : 0;
 
+	PaStreamParameters outputParameters;
 	outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
 	CLAM_ASSERT ( outputParameters.device!=paNoDevice, "PortAudio Error: getting default output device");
-	
 	outputParameters.channelCount = mSenderList.size();       /* stereo output */
 	outputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples */
 	outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
 	outputParameters.hostApiSpecificStreamInfo = NULL;
-
-	if ( mReceiverList.size() == 0 ) inParams=NULL;
-	else inParams=&inputParameters;
+	PaStreamParameters * outParams = mSenderList.size() ? &outputParameters : 0;
 	
-	if ( mSenderList.size() == 0 ) outParams=NULL;
-	else outParams=&outputParameters;
-
-	CLAM_ASSERT ( mReceiverList.size()!=0 && mSenderList.size()!=0,
+	// TODO: Gracefull error, please
+	CLAM_ASSERT ( inParams || outParams,
 			"PortAudio Error: no input or output ports defined at all");
-	CLAM_ASSERT ( mReceiverList.size()==mSenderList.size(),
-			"PortAudio Error: number of input ports must be equal to number of output ports");
 	
 	ControlIfPortAudioError(
 		Pa_OpenStream(
@@ -163,10 +155,7 @@ void PANetworkPlayer::DoInPorts(TData** input, unsigned long nframes)
 	
 	for ( PAOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++ )
 	{
-		//Retrieve PA buffer location
-		//Tell the AudioSource to put PA's buffer info into CLAM
-		(*it)->Do( input[i], nframes );
-		i++;
+		(*it)->Do( input[i++], nframes );
 
 	}
 }
@@ -174,13 +163,9 @@ void PANetworkPlayer::DoInPorts(TData** input, unsigned long nframes)
 void PANetworkPlayer::DoOutPorts(TData** output, unsigned long nframes)
 {
 	int i=0;
-	
 	for (PAInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
 	{
-		//Retrieve PA buffer location
-		//Tell the AudioSource to put CLAM's buffer info PA
-		(*it)->Do(output[i], nframes);
-		i++;
+		(*it)->Do(output[i++], nframes);
 	}
 }
 
