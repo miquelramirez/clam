@@ -206,11 +206,10 @@ void PANetworkPlayer::ControlIfPortAudioError(int result)
 	//If everything ok, return now
 	if( result == paNoError ) return;
 
-	//If there has been an error, inform and quit!
-	std::cerr <<"PortAudio Error #"<<result<<": "<< Pa_GetErrorText( result )<<std::endl;
+	std::ostringstream msg;
+	msg <<"PortAudio Error #"<<result<<": "<< Pa_GetErrorText( result )<<std::flush;
 
-	CLAM_ASSERT(false, "ASSERT!");
-	exit(result);
+	CLAM_ASSERT(false, msg.str().c_str());
 }
 
 } //end namespace CLAM
