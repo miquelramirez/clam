@@ -17,6 +17,7 @@
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/PushFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
+#include <CLAM/PANetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
@@ -81,6 +82,14 @@ public:
 			_networkPlayer = jackPlayer;
 		else
 			delete jackPlayer;
+#endif
+#ifdef USE_PORTAUDIO
+		if (! _networkPlayer)
+		{
+			backend = "PortAudio";
+			backendLogo = ":/icons/images/portaudiologo-mini.png";
+			_networkPlayer = new CLAM::PANetworkPlayer();
+		}
 #endif
 		if (! _networkPlayer)
 		{
