@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="89"
+   height="20"
+   id="svg1870"
+   sodipodi:version="0.32"
+   inkscape:version="0.44.1"
+   version="1.0"
+   sodipodi:docbase="/home/vokimon/CajitasDeArena/svnclam/NetworkEditor/src/images"
+   sodipodi:docname="portaudiologo.svg"
+   inkscape:export-filename="/home/vokimon/CajitasDeArena/svnclam/NetworkEditor/src/images/portaudiologo-mini.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs1872" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.2"
+     inkscape:cx="234"
+     inkscape:cy="30"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     width="89px"
+     height="20px"
+     inkscape:window-width="919"
+     inkscape:window-height="578"
+     inkscape:window-x="0"
+     inkscape:window-y="215" />
+  <metadata
+     id="metadata1875">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <rect
+       style="fill:white;fill-opacity:0.74271845;stroke:none;stroke-width:6.84499979;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2789"
+       width="88.333374"
+       height="21.666664"
+       x="0.83333343"
+       y="-0.83333331" />
+    <rect
+       style="fill:#dcec79;fill-opacity:0.74271846;stroke:none;stroke-width:6.84499979;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect1900"
+       width="75.833336"
+       height="10.833333"
+       x="-3.9736435e-08"
+       y="1.6666666" />
+    <text
+       xml:space="preserve"
+       style="font-size:16.17757416px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="3.4437129"
+       y="16.769547"
+       id="text1878"
+       transform="scale(1.062198,0.941444)"><tspan
+         sodipodi:role="line"
+         id="tspan1880"
+         x="3.4437129"
+         y="16.769547">PortAudio</tspan></text>
+  </g>
+</svg>
