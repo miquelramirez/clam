@@ -142,7 +142,8 @@ namespace CLAM {
 			{
 				mExecState=Unconfigured;
 				mPreconfigureExecuted = false;
-				mConfigErrorMessage+=" Configuration failed.";
+				if (mConfigErrorMessage=="")
+					mConfigErrorMessage = "Configuration failed.";
 				mExecState = Unconfigured;
 				return false;
 			}
