@@ -145,26 +145,29 @@ public:
 	void drawTooltip(QPainter & painter)
 	{
 		if (_tooltipText.isNull()) return;
-		QFontMetrics _metrics(font());
+		QFontMetrics metrics(font());
 		int margin =3;
 		int cursorSize = 8;
 
-		double tooltipWidth = _metrics.width(_tooltipText)+2*margin;
+		QRect boundingRect = metrics.boundingRect(QRect(0,0,width(),height()), Qt::AlignLeft, _tooltipText);
+		double tooltipWidth = boundingRect.width()+2*margin;
 		double x = _tooltipPos.x()+cursorSize;
 		if (x + tooltipWidth > width())
-			x = _tooltipPos.x() - _metrics.width(_tooltipText) - 2*margin;
+			x = _tooltipPos.x() - tooltipWidth;
+		if (x<0) x=0;
 
-		double tooltipHeight = _metrics.height()+2*margin;
+		double tooltipHeight = boundingRect.height()+2*margin;
 		double y = _tooltipPos.y() +cursorSize;
 		if (y + tooltipHeight > height())
 			y = _tooltipPos.y() - tooltipHeight;
+		if (y<0) y=0;
 
-		QRectF tooltip(x, y, _metrics.width(_tooltipText)+2*margin, tooltipHeight)  ;
+		QRectF tooltip(x, y, tooltipWidth, tooltipHeight)  ;
 		painter.setBrush(QColor(0xff,0xff,0x90,0xa0));
 		painter.setPen(QColor(0xff,0xff,0x90,0xff));
 		painter.drawRect(tooltip);
 		painter.setPen(Qt::black);
-		painter.drawText(tooltip, Qt::AlignCenter, _tooltipText);
+		painter.drawText(tooltip, Qt::AlignLeft, _tooltipText);
 	}
 
 	void setToolTip(const QString & text)
