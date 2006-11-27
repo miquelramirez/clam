@@ -27,6 +27,7 @@ def define_module_contents(env) :
 		'src/Tools/AudioIO',
 		'src/Tools/AudioFileIO',
 		'src/Processing/AudioIO*.*xx',
+		'src/Flow/Networks/PANetworkPlayer*.*xx',
 		'src/Flow/Networks/BlockingNetworkPlayer*.*xx',
 		'src/System/Application',
 		]
@@ -69,7 +70,7 @@ def define_module_contents(env) :
 			env.Append( LINKFLAGS=['-framework','CoreAudio'] )
 		elif audioio_env['audio_backend'] == 'portaudio' :
 			print('using portaudio')
-			folders += ['src/Flow/Networks/PANetworkPlayer*.*xx']
+#			folders += ['src/Flow/Networks/PANetworkPlayer*.*xx']
 
 	blacklist = [
 		'foo.cxx',
