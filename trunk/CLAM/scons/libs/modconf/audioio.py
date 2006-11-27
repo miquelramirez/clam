@@ -202,40 +202,45 @@ def test_portmidi( audioio_env, conf ) :
 def setup_audioio_environment( audioio_env, conf ) :
 
 	if audioio_env['with_sndfile'] :
-		result = test_sndfile( audioio_env, conf )
-		if not result : return False
+		if not test_sndfile( audioio_env, conf ) : return False
+
 	if audioio_env['with_oggvorbis'] :
-		result = test_oggvorbis( audioio_env, conf )
-		if not result : return False
+		if not test_oggvorbis( audioio_env, conf ) : return False
+
 	if audioio_env['with_mad'] :
-		result = test_mad( audioio_env, conf )
-		if not result : return False
+		if not test_mad( audioio_env, conf ) : return False
+
 	if audioio_env['with_id3'] :
-		result = test_id3lib( audioio_env, conf ) 
-		if not result : return False
+		if not test_id3lib( audioio_env, conf ) : return False
+
 	if sys.platform == 'linux2' and audioio_env['with_alsa'] :
-		result = test_alsa_sdk( audioio_env, conf )
-		if not result : return False
+		if not test_alsa_sdk( audioio_env, conf ) : return False
+
 	if sys.platform != 'win32' and audioio_env['with_jack_support'] :
 		if not test_jack (audioio_env, conf): return False
+
+	if audioio_env['with_portmidi'] :
+		if not test_portmidi( audioio_env, conf ) : return False
+
+	if audioio_env['with_portaudio'] :
+		if not test_portaudio( audioio_env, conf ) : return False
+
 	if not sys.platform == 'linux2' :
 		if sys.platform == 'win32' :
-			result = test_directx_sdk( audioio_env, conf )			
-			if not result : return False
+			if not test_directx_sdk( audioio_env, conf ) : return False
+
 		if audioio_env['audio_backend'] == 'directx' :
-			audioio_env.Append( CPPFLAGS=['-DUSE_DIRECTX=1'] )		
-		if audioio_env['audio_backend'] == 'portaudio' :
-			#raise RuntimeError, "Not implemented yet!" --> Now implemented!
-			result = test_portaudio( audioio_env, conf )
-			if not result : return False
+			audioio_env.Append( CPPFLAGS=['-DUSE_DIRECTX=1'] )
+
+		if audioio_env['audio_backend'] == 'portaudio' and not audioio_env['with_portaudio']:
+			if not test_portaudio( audioio_env, conf ) : return False
+
 		if audioio_env['audio_backend'] == 'rtaudio' :
 			if sys.platform == 'win32' :
 				audioio_env.Append( CPPFLAGS=['-D__WINDOWS_DS__'])
 			else :
 				audioio_env.Append( CPPFLAGS=['-D__MACOSX_CORE__'])
-			audioio_env.Append( CPPFLAGS=['-DUSE_RTAUDIO=1'] )	
-	if audioio_env['with_portmidi'] :
-		result = test_portmidi( audioio_env, conf )
-		if not result : return False
-	
+			audioio_env.Append( CPPFLAGS=['-DUSE_RTAUDIO=1'] )
+
 	return True
+

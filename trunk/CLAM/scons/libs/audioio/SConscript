@@ -27,7 +27,6 @@ def define_module_contents(env) :
 		'src/Tools/AudioIO',
 		'src/Tools/AudioFileIO',
 		'src/Processing/AudioIO*.*xx',
-		'src/Flow/Networks/PANetworkPlayer*.*xx',
 		'src/Flow/Networks/BlockingNetworkPlayer*.*xx',
 		'src/System/Application',
 		]
@@ -37,6 +36,9 @@ def define_module_contents(env) :
 	else :
 		if env.has_key('with_jack_support') and env['with_jack_support'] == True:
 			folders.append('src/Flow/Networks/JACKNetworkPlayer*.*xx')
+
+	if env['with_portaudio'] :
+		'src/Flow/Networks/PANetworkPlayer*.*xx',
 
 	if env['with_portmidi'] :
 		folders.append( 'src/Tools/PortMIDI' )
