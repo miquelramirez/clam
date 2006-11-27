@@ -214,6 +214,8 @@ installation = {
 	'/share/networkeditor/example-data': examples,
 }
 
+env.AppendUnique(LIBS=['portaudio'])
+
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
