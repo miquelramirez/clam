@@ -38,7 +38,7 @@ def define_module_contents(env) :
 			folders.append('src/Flow/Networks/JACKNetworkPlayer*.*xx')
 
 	if env['with_portaudio'] :
-		'src/Flow/Networks/PANetworkPlayer*.*xx',
+		folder += 'src/Flow/Networks/PANetworkPlayer*.*xx',
 
 	if env['with_portmidi'] :
 		folders.append( 'src/Tools/PortMIDI' )
