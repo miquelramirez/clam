@@ -103,7 +103,7 @@ namespace QtSMS
 	bool Engine::HasValidAudioInput()
 	{
 		CLAM::Filename filename= mGlobalConfig.GetInputSoundFile();
-		CLAM::AudioFile selectedFile;
+		CLAM::AudioFileSource selectedFile;
 		selectedFile.OpenExisting( filename );
 
 		if ( !selectedFile.IsReadable() )
@@ -158,7 +158,7 @@ namespace QtSMS
 	{
 		if ( filename.length() <= 0 ) return false;
 		
-		CLAM::AudioFile selectedFile;
+		CLAM::AudioFileSource selectedFile;
 		selectedFile.OpenExisting( filename );
 
 		if ( !selectedFile.IsReadable() )
@@ -225,7 +225,7 @@ namespace QtSMS
 		CLAM::EAudioFileFormat desiredOutputFmt = 
 			CLAM::EAudioFileFormat::FormatFromFilename( filename );
 
-		CLAM::AudioFile outputFile;
+		CLAM::AudioFileTarget outputFile;
 		CLAM::AudioFileHeader fileHeader;
 		fileHeader.SetValues( audio.GetSampleRate(), 1, desiredOutputFmt );
 

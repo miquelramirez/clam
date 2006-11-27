@@ -606,7 +606,7 @@ void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment,
 void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text & artist, CLAM::Text & title)
 {
 	const CLAM::TSize readSize = 1024;
-	CLAM::AudioFile file;
+	CLAM::AudioFileSource file;
 	file.OpenExisting(filename);
 	CLAM_ASSERT(file.IsReadable(), ("Error opening '" + filename +"'").c_str());
 	const CLAM::AudioTextDescriptors & textDescriptors = file.GetTextDescriptors();

@@ -36,7 +36,6 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 	, _embeded(0)
 	, _selected(false)
 {
-//	embed(new QSlider(Qt::Horizontal));
 	setName(name);
 	recomputeMinimumSizes();
 }
@@ -553,7 +552,7 @@ void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 
 bool ProcessingBox::rename()
 {
-	bool ok;
+	bool ok=false;
 	QString newName = QInputDialog::getText(_canvas, QObject::tr("Rename the processing"), QObject::tr("New name"), QLineEdit::Normal, _name);
 	if (!ok) return false;
 	if (newName.isEmpty()) return false;
@@ -644,6 +643,7 @@ bool ProcessingBox::configure()
 			return false;
 		}
 		if ( !launcher->Launch(*_processing,_name)) return false;
+		launcher->Apply(*_processing);
 		setProcessing(_processing);
 		return true;
 	}

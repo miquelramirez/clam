@@ -44,7 +44,7 @@ namespace CLAMTest
 		
 		void testConfigure_ReturnsFalse_WithJustFilename()
 		{
-			CLAM::AudioFile file;
+			CLAM::AudioFileTarget file;
 			CLAM::AudioFileHeader header;
 
 			file.CreateNew( std::string( "NewFile.wav" ), header );
@@ -63,7 +63,7 @@ namespace CLAMTest
 
 		void testDo_DoubleWriting_Is_Not_Allowed()
 		{
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 			outputFileHeader.SetValues( 44100, 1, "WAV" );
 			outputFile.CreateNew( "twosines-stereo.wav", outputFileHeader );			
@@ -79,11 +79,11 @@ namespace CLAMTest
 
 		void testDo_PCM_WritesTheSameItWasRead()
 		{
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 
 			CLAM::AudioFileHeader outputFileHeader;
 
@@ -164,11 +164,11 @@ namespace CLAMTest
 		{
 
 
-			CLAM::AudioFile inputFile;
+			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 
 
-			CLAM::AudioFile outputFile;
+			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),

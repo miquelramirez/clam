@@ -54,13 +54,15 @@ const static char * processingClasses[] = {
 //	"SpectrumAdder2", TODO register
 	0,
 	"Controls",
+	"OutControlSender",
 	"ControlSource",
 	"ControlSink",
+	"ControlPrinter",
+	"ControlScaler", 
 	"AutoPanner",
 	"FlagControl",
 	"Random",
 	"OneOverF",
-	"OutControlSender",
 #if USE_OSCPACK
 	"OSCSender",
 #endif	
@@ -104,16 +106,14 @@ const static char * processingClasses[] = {
 	"ThreeBandCompressor",
 	"Peakalizer",
 	"ThreeBandAM",
+	"Deeser",
 	0,	
 	"Utils",
 #ifndef WIN32
-	"LadspaLoader",
+//	"LadspaLoader", // TODO: Not working because lack of custom configuration
 #endif
 	"Fundamental2Control",
-	"ControlPrinter",
-	"ControlScaler",
 //	"ControlMapper" //	TODO register
-	"RandomPitches",
 	0,
 	"Graphical Monitors",
 	"Vumeter",

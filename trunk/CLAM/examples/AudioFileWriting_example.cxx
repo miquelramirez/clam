@@ -94,7 +94,7 @@ int main( int argc, char** argv )
 	// As we can be quite sure that we have one parameter at argv[1] we can
 	// set the Audio file location, as well as the header we want the new
 	// file to feature.
-	CLAM::AudioFile file;
+	CLAM::AudioFileTarget file;
 	file.CreateNew( argv[1], header );
 
 	// Finally, we must check if the header settings are compatible with the

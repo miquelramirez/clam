@@ -37,7 +37,7 @@ namespace CLAM
 		: mOutput( "Samples Read", this  ),
 		  mNativeStream( NULL )
 	{
-		
+		Configure( MonoAudioFileReaderConfig() );
 	}
 
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )
@@ -73,6 +73,12 @@ namespace CLAM
 			return false;
 		}
 
+		const std::string & location = mConfig.GetSourceFile().GetLocation();
+		if ( location == "")
+		{
+			AddConfigErrorMessage("No file selected");
+			return false;
+		}
 		// Check that the given file can be opened
 		if ( ! mConfig.GetSourceFile().IsReadable() )
 		{

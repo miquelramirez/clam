@@ -377,7 +377,7 @@ int main(int argc, char* argv[])			// access command line arguments
 			it++)
 	{
 		const std::string & waveFile = *it;
-		CLAM::AudioFile file;
+		CLAM::AudioFileSource file;
 		file.OpenExisting( waveFile );
 
 		if ( !file.IsReadable() )

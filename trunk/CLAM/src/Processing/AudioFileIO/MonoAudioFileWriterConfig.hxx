@@ -43,7 +43,7 @@ namespace CLAM
 		/** 
 		 *  The file where samples will be stored
 		 */
-		DYN_ATTRIBUTE( 0, public, AudioFile, TargetFile );
+		DYN_ATTRIBUTE( 0, public, AudioFileTarget, TargetFile );
 
 	protected:
 		

@@ -62,7 +62,7 @@ int main( int argc, char** argv )
 	
 	// Now we are pretty sure that argv[1] holds a parameter. We set the file 
 	// location:
-	CLAM::AudioFile file;
+	CLAM::AudioFileSource file;
 	file.OpenExisting( argv[1] );
 
 	// And now check that the given file can be read

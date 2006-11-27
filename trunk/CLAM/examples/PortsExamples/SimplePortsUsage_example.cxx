@@ -68,11 +68,11 @@ int main( int argc, char** argv )
 		CLAM::IFFT_rfftw myifft;
 		myifft.Configure( ifconfig );
 	
-		CLAM::AudioFile file;
+		CLAM::AudioFileTarget file;
 
 		CLAM::AudioFileHeader header;
 		CLAM::EAudioFileFormat outputFormat = 
-			CLAM::EAudioFileFormat::FormatFromFilename( file.GetLocation() );
+			CLAM::EAudioFileFormat::FormatFromFilename( "test.wav" );
 		header.SetValues( sampleRate, 1, outputFormat );
 
 

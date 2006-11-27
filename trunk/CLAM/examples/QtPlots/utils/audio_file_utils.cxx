@@ -8,7 +8,7 @@ namespace qtvm_examples_utils
 {
     int load_audio(const char* fileName,Audio& out)
     {
-		AudioFile file;
+		AudioFileSource file;
 		file.OpenExisting(fileName);
 		if((!file.IsReadable()) | (file.GetHeader().GetChannels() > 1)) return 1; 
 		out.SetSize(file.GetHeader().GetSamples());
@@ -27,7 +27,7 @@ namespace qtvm_examples_utils
 
     int load_audio_st(const char* fileName,std::vector<Audio>& outputs)
     {
-		AudioFile file;
+		AudioFileSource file;
 		file.OpenExisting(fileName);
 
 		if((!file.IsReadable()) | (file.GetHeader().GetChannels() != 2)) return 1;

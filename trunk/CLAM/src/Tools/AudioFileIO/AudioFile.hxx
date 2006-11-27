@@ -87,6 +87,17 @@ namespace CLAM
 
 	};
 
+	class AudioFileSource : public AudioFile
+	{
+	public:
+		const char* GetClassName() const {return "AudioFileSource";}
+	};
+	class AudioFileTarget : public AudioFile
+	{
+	public:
+		const char* GetClassName() const {return "AudioFileTarget";}
+	};
+
 
 // inlines
 
