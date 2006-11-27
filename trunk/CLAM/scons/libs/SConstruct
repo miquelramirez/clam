@@ -53,14 +53,14 @@ def configure_clam(clam_env) :
 	# Sandbox setup
 	clam_env.Replace( QT_LIB = '' )
 	if sys.platform == 'win32' : #!= 'linux2' :
-		libbasenames = [ 'fltk', 'xercesc', 'fftw', 'dxsdk', 'id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','pthreads']
+		libbasenames = [ 'fltk', 'xercesc', 'fftw', 'dxsdk', 'id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','portaudio','pthreads']
 		for basename in libbasenames :
 			if sys.platform == 'win32' : path_sep = '\\'
 			if sys.platform == 'darwin' : path_sep = '/'
 
-			include_path = "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'include')
+			include_path = os.path.join(clam_env['sandbox_path'], basename, 'include')
 			print( 'include path: ' + include_path )
-			lib_path =  "%s%s%s%s%s"%(clam_env['sandbox_path'],path_sep,basename,path_sep,'lib')
+			lib_path =  os.path.join(clam_env['sandbox_path'], basename, 'lib')
 			print( 'lib path: ' + lib_path)
 			clam_env.Append( CPPPATH= include_path )
 			clam_env.Append( LIBPATH = lib_path )
