@@ -28,6 +28,7 @@ int main( int argc, char *argv[] )
 	std::string networkFile;
 	std::string uiFile;
 	std::list<std::string> backends;
+	bool isInteractive = true;
 
 	enum { none, backend } optionArgument = none;
 	int argument=0;
@@ -46,6 +47,11 @@ int main( int argc, char *argv[] )
 			if (arg=="-b")
 			{
 				optionArgument=backend;
+				continue;
+			}
+			if (arg=="-o")
+			{
+				isInteractive=false;
 				continue;
 			}
 			std::cerr << "Invalid option '" << arg << "'." << std::endl;
@@ -69,6 +75,11 @@ int main( int argc, char *argv[] )
 
 	if (! prototype.ChooseBackend( backends ) ) return -1;
 	if (! prototype.LoadNetwork( networkFile ) ) return -1;
+	if (!isInteractive) 
+	{
+		prototype.Start();
+		while (true) ; // Until Ctrl-C
+	}
 	if (! prototype.LoadInterface( uiFile.c_str() ) ) return -1;
 	prototype.Show();
 	prototype.ConnectWithNetwork();
