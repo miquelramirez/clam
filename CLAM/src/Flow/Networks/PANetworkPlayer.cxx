@@ -141,15 +141,15 @@ void PANetworkPlayer::CloseStream()
 void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 		    unsigned long framesPerBuffer)
 {
-	DoInPorts( (TData**) inputBuffers, framesPerBuffer);
+	DoInPorts( (float**) inputBuffers, framesPerBuffer);
 	
 	//for (int stepcount=0; stepcount < (int(nframes)/int(mClamBufferSize)); stepcount++)
 	GetNetwork().Do();
 
-	DoOutPorts( (TData**) outputBuffers, framesPerBuffer);
+	DoOutPorts( (float**) outputBuffers, framesPerBuffer);
 }
 
-void PANetworkPlayer::DoInPorts(TData** input, unsigned long nframes)
+void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 {
 	int i=0;
 	
@@ -160,7 +160,7 @@ void PANetworkPlayer::DoInPorts(TData** input, unsigned long nframes)
 	}
 }
 
-void PANetworkPlayer::DoOutPorts(TData** output, unsigned long nframes)
+void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 {
 	int i=0;
 	for (PAInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
