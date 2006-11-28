@@ -26,7 +26,8 @@ namespace CLAM
 		~AudioSource();
 
 		bool Do();
-		bool Do( CLAM::TData* buf, int nframes);
+		bool Do( float* buf, int nframes);
+		bool Do( double* buf, int nframes);
 		
 		const char* GetClassName() const { return "AudioSource";}
 
