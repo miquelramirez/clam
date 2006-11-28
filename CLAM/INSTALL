@@ -7,24 +7,28 @@ applications from the source tarballs.
  Please, refere to the specific instructions below.
  
    
- 2. Compile CLAM libraries from the tarball
+ 2. Compile CLAM libraries from the source
 
- Download the CLAM tarball (stable release or cvs snapshot) from the 
+ Checkout the subversion repository
+ $ svn co http://iua-share.upf.edu/svn/clam/trunk 
+
+ Or download the CLAM tarball (stable release or cvs snapshot) from the 
  web: [http://clam.iua.upf.es/download.html] 
- and extract it : "tar xvzf CLAM-X.Y.Z.tar.gz"
+ 
  Change directory to CLAM/scons/libs/
-
+ 
  The simplest way to build and install the libraries is issuing :
 
         $ scons configure
         $ scons
         $ sudo scons install
 
- (update 13 Nov 06: a bug in the scons script prevents to create the library links
- links in LINUX. As a work-around, change dir to the /usr/local/lib, or whatever
- is your install path, and execute (maybe changing the 0.91.1 version):
- $ for a in core processing vmqt vmfl audioio; do ln -s libclam_$a.so.0.91.1 libclam_$a.so.0.91; ln -s libclam_$a.so.0.91.1 libclam_$a.so.0; ln -s libclam_$a.so.0.91.1 libclam_$a.so; done"
- )
+    Update 13 Nov 06: a bug in the scons script prevents to create the library links
+    links in LINUX. As a work-around, change dir to the /usr/local/lib, or whatever
+    is your install path, and execute (maybe changing the 0.92.0 version):
+
+    $ for a in core processing vmqt vmfl audioio; do ln -s libclam_$a.so.0.92.0 libclam_$a.so.0.92; ln -s libclam_$a.so.0.92.0 libclam_$a.so.0; ln -s libclam_$a.so.0.92.0 libclam_$a.so; done
+
 
  This will compile all the libraries with default options, and install
  them to the default dirs ( /usr/lib/ and /usr/include/ )
