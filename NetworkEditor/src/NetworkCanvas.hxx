@@ -54,7 +54,7 @@ public:
 		resize(600,300);
 	   	// Overwritten latter. But some text is needed to enable it.
 		setWhatsThis("Dummy");
-		example1();
+//		example1();
 	}
 
 	void example1()
@@ -82,7 +82,7 @@ public:
 		if (search==_processings.end()) return;
 		_processings.erase(search);
 		_processings.push_back(toRaise);
-		// TODO: Raise the embedded widget too
+		toRaise->raiseEmbeded();
 	}
 
 	void paintEvent(QPaintEvent * event)
@@ -141,7 +141,7 @@ public:
 			ControlWire::draw(painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
 		drawTooltip(painter);
 	}
-
+private:
 	void drawTooltip(QPainter & painter)
 	{
 		if (_tooltipText.isNull()) return;
@@ -169,7 +169,7 @@ public:
 		painter.setPen(Qt::black);
 		painter.drawText(tooltip, Qt::AlignLeft, _tooltipText);
 	}
-
+public:
 	void setToolTip(const QString & text)
 	{
 		_tooltipText = text;
@@ -196,6 +196,7 @@ public:
 		_dragPoint = translatedPos(event);
 		setToolTip(0);
 		setStatusTip(0);
+		setCursor(Qt::ArrowCursor);
 		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->mouseMoveEvent(event);
 		update();
@@ -379,7 +380,7 @@ public:
 				tr("<p>The processing type '<tt>%1</tt>' is not supported.</p>").arg(type));
 		}
 	}
-
+private:
 	void addProcessingBox(const QString & name, CLAM::Processing * processing, QPoint point=QPoint(), QSize size=QSize())
 	{
 		if (!processing)
@@ -390,7 +391,7 @@ public:
 		_processings.back()->move(point);
 		_processings.back()->resize(size);
 	}
-
+public:
 	QColor colorBoxFrameText() const
 	{
 		if (_printing) return QColor(0x00,0x00,0x00);
@@ -823,16 +824,16 @@ private slots:
 			switch (region)
 			{
 				case ProcessingBox::outportsRegion: 
-					toCopy = _processings[i]->getPrototyperOutportName(point);
+					toCopy = _processings[i]->getOutportPrototyperName(point);
 					break;
 				case ProcessingBox::inportsRegion: 
-					toCopy = _processings[i]->getPrototyperInportName(point);
+					toCopy = _processings[i]->getInportPrototyperName(point);
 					break;
 				case ProcessingBox::incontrolsRegion: 
-					toCopy = _processings[i]->getPrototyperIncontrolName(point);
+					toCopy = _processings[i]->getIncontrolPrototyperName(point);
 					break;
 				case ProcessingBox::outcontrolsRegion: 
-					toCopy = _processings[i]->getPrototyperOutcontrolName(point);
+					toCopy = _processings[i]->getOutcontrolPrototyperName(point);
 					break;
 				default:
 					return; // Matches a region but not a connector one
