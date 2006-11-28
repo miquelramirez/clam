@@ -66,5 +66,6 @@ int main( int argc, char ** argv )
 	MainWindow w;
 	w.show();
 	if (argc>1) w.load(argv[1]);
+	else w.clear();
 	return app.exec();
 }

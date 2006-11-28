@@ -441,12 +441,14 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	_highLightRegion=noRegion;;
 	if (_actionMode==Moving || _canvas->dragStatus()==NetworkCanvas::PanDrag)
 	{
+		_canvas->setCursor(Qt::SizeAllCursor);
 		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;
 		move(originalPosition + dragDelta);
 		return;
 	}
 	if (_actionMode==Resizing)
 	{
+		_canvas->setCursor(Qt::SizeFDiagCursor);
 		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;
 		resize(QSize(
 			originalSize.width() + dragDelta.x(),
@@ -596,29 +598,30 @@ QString ProcessingBox::getIncontrolName(unsigned index) const
 	CLAM::InControlRegistry & inControls = _processing->GetInControls();
 	return inControls.GetByNumber(index).GetName().c_str();
 }
-QString ProcessingBox::getPrototyperInportName(const QPoint & point) const
+
+QString ProcessingBox::getInportPrototyperName(const QPoint & point) const
 {
-	return QString("Inport__%1__%2")
-		.arg(getName())
-		.arg(getInportName(portIndexByYPos(point)));
+	return getConnectionPrototyperName("Inport", getInportName(portIndexByYPos(point)));
 }
-QString ProcessingBox::getPrototyperOutportName(const QPoint & point) const
+QString ProcessingBox::getOutportPrototyperName(const QPoint & point) const
 {
-	return QString("Outport__%1__%2")
-		.arg(getName())
-		.arg(getOutportName(portIndexByYPos(point)));
+	return getConnectionPrototyperName("Outport", getOutportName(portIndexByYPos(point)));
 }
-QString ProcessingBox::getPrototyperIncontrolName(const QPoint & point) const
+QString ProcessingBox::getIncontrolPrototyperName(const QPoint & point) const
 {
-	return QString("Incontrol__%1__%2")
-		.arg(getName())
-		.arg(getIncontrolName(controlIndexByXPos(point)));
+	return getConnectionPrototyperName("Incontrol", getIncontrolName(controlIndexByXPos(point)));
 }
-QString ProcessingBox::getPrototyperOutcontrolName(const QPoint & point) const
+QString ProcessingBox::getOutcontrolPrototyperName(const QPoint & point) const
 {
-	return QString("Outcontrol__%1__%2")
-		.arg(getName())
-		.arg(getOutcontrolName(controlIndexByXPos(point)));
+	return getConnectionPrototyperName("Outcontrol", getOutcontrolName(controlIndexByXPos(point)));
+}
+
+QString ProcessingBox::getConnectionPrototyperName(QString kind, QString connectionName) const
+{
+	return QString("%1__%2__%3")
+		.arg(kind)
+		.arg(getName().replace(" ","___"))
+		.arg(connectionName.replace(" ","___"));
 }
 
 #include "ConfiguratorLauncher.hxx"
