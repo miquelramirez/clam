@@ -43,6 +43,9 @@ public:
 	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withIncorrectInPort );
 	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withProperInPort );
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withIncorrectOutPort );
+	
+	CPPUNIT_TEST( testOutPortPublisher_destructor );
+	CPPUNIT_TEST( testAudioOutPortPublisher_beginDeletingPublished );
 	CPPUNIT_TEST( testOutPortPublisher_PublishOutPort_withProperOutPort );
 	CPPUNIT_TEST( testInPortPublisher_PublishInPort_withSomeInPorts );
 	CPPUNIT_TEST( testOutPort_GetConnectedInPorts_whenConnectedToInPortPublisher );
@@ -61,6 +64,8 @@ public:
 	CPPUNIT_TEST( testPortPublisher_deleteSequence_Out_InPub_In );
 	CPPUNIT_TEST( testAudioInPortPublisher_deleteSequence_Out_InPub_In ); 
 
+	CPPUNIT_TEST( testOutPortPublisher_getsVisuallyAttached );
+	CPPUNIT_TEST( testOutPortPublisher_getsDisconnected );
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -79,7 +84,7 @@ public:
 
 		outBase.ConnectToIn(inBase);
 
-		CPPUNIT_ASSERT_EQUAL( true, outBase.IsDirectlyConnectedTo(inBase) );
+		CPPUNIT_ASSERT_EQUAL( true, outBase.IsVisuallyConnectedTo(inBase) );
 	}
 	
 	void testOutPortConnect()
@@ -89,7 +94,7 @@ public:
 		out.ConnectToIn(in);
 		//TODO check that stream has been initialized (as soon as is implemented)
 
-		CPPUNIT_ASSERT_EQUAL( true, out.IsDirectlyConnectedTo( in ) );
+		CPPUNIT_ASSERT_EQUAL( true, out.IsVisuallyConnectedTo( in ) );
 	}
 
 	void testOutPortConnect_whenMoreThanOneInPort()
@@ -99,8 +104,8 @@ public:
 		out.ConnectToIn(in1);
 		out.ConnectToIn(in2);
 
-		CPPUNIT_ASSERT_EQUAL( true, out.IsDirectlyConnectedTo(in1) );
-		CPPUNIT_ASSERT_EQUAL( true, out.IsDirectlyConnectedTo(in2) );
+		CPPUNIT_ASSERT_EQUAL( true, out.IsVisuallyConnectedTo(in1) );
+		CPPUNIT_ASSERT_EQUAL( true, out.IsVisuallyConnectedTo(in2) );
 	}
 
 	void testOutPortConnect_whenPortsAlreadyConnected()
@@ -139,9 +144,9 @@ public:
 	{
 		CLAM::OutPort<int> out;
 		CLAM::InPort<int> in; 
-		CPPUNIT_ASSERT( 0 == in.GetAttachedOutPort() );
+		CPPUNIT_ASSERT( 0 == in.GetVisuallyConnectedOutPort() );
 		out.ConnectToConcreteIn(in);
-		CPPUNIT_ASSERT( &out == in.GetAttachedOutPort() );
+		CPPUNIT_ASSERT( &out == in.GetVisuallyConnectedOutPort() );
 	}
 	void testOutPortDisconnect_whenPortsAreConnected()
 	{
@@ -150,8 +155,8 @@ public:
 		out.ConnectToConcreteIn(in);
 
 		out.DisconnectFromConcreteIn( in );
-		CPPUNIT_ASSERT(0 ==  in.GetAttachedOutPort() );
-		CPPUNIT_ASSERT( out.BeginConnectedInPorts() == out.EndConnectedInPorts() );
+		CPPUNIT_ASSERT(0 ==  in.GetVisuallyConnectedOutPort() );
+		CPPUNIT_ASSERT( out.BeginVisuallyConnectedInPorts() == out.EndVisuallyConnectedInPorts() );
 	}
 
 	void testOutPortDisconnect_whenPortsAreConnected_usingBaseClass()
@@ -164,7 +169,7 @@ public:
 
 		outBase.DisconnectFromIn(inBase);
 
-		CPPUNIT_ASSERT_EQUAL( false, outBase.IsDirectlyConnectedTo(inBase) );
+		CPPUNIT_ASSERT_EQUAL( false, outBase.IsVisuallyConnectedTo(inBase) );
 	}
 
 	void testOutPortDisconnect_whenPortsAreNotConnected_throwsException()
@@ -192,7 +197,7 @@ public:
 
 		out.DisconnectFromConcreteIn(in2);
 
-		CPPUNIT_ASSERT_EQUAL( false, out.IsDirectlyConnectedTo(in2) );
+		CPPUNIT_ASSERT_EQUAL( false, out.IsVisuallyConnectedTo(in2) );
 	}
 
 	void testOutPortDisconnectNotifiesInPort()
@@ -203,7 +208,7 @@ public:
 
 		out.DisconnectFromConcreteIn(in);
 
-		CPPUNIT_ASSERT( 0 == in.GetAttachedOutPort() );
+		CPPUNIT_ASSERT( 0 == in.GetVisuallyConnectedOutPort() );
 	}
 
 	void testPortChangeSizeResizesRegion()
@@ -266,10 +271,10 @@ public:
 		CLAM::InPort<int> in;
 		out.ConnectToIn( in );
 		
-		CLAM::OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
-		CPPUNIT_ASSERT( it != out.EndConnectedInPorts() );
+		CLAM::OutPortBase::InPortsList::iterator it = out.BeginVisuallyConnectedInPorts(); 
+		CPPUNIT_ASSERT( it != out.EndVisuallyConnectedInPorts() );
 		CPPUNIT_ASSERT( *(it++) = &in );
-		CPPUNIT_ASSERT( it == out.EndConnectedInPorts() );
+		CPPUNIT_ASSERT( it == out.EndVisuallyConnectedInPorts() );
 		
 	}
 	
@@ -281,12 +286,12 @@ public:
 		out.ConnectToIn( in2 );
 		out.ConnectToIn( in3 );
 		
-		CLAM::OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
-		CPPUNIT_ASSERT( it != out.EndConnectedInPorts() );
+		CLAM::OutPortBase::InPortsList::iterator it = out.BeginVisuallyConnectedInPorts(); 
+		CPPUNIT_ASSERT( it != out.EndVisuallyConnectedInPorts() );
 		CPPUNIT_ASSERT( *(it++) = &in1 );
 		CPPUNIT_ASSERT( *(it++) = &in2 );
 		CPPUNIT_ASSERT( *(it++) = &in3 );
-		CPPUNIT_ASSERT( it == out.EndConnectedInPorts() );
+		CPPUNIT_ASSERT( it == out.EndVisuallyConnectedInPorts() );
 
 	}
 	void testInPortGetConnectedOutPort()
@@ -296,8 +301,8 @@ public:
 		out.ConnectToIn( in1 );
 		out.ConnectToIn( in2 );
 
-		CPPUNIT_ASSERT( &out == in1.GetAttachedOutPort() );
-		CPPUNIT_ASSERT( &out == in2.GetAttachedOutPort() );
+		CPPUNIT_ASSERT( &out == in1.GetVisuallyConnectedOutPort() );
+		CPPUNIT_ASSERT( &out == in2.GetVisuallyConnectedOutPort() );
 	}
 
 	void testOutPortDisconnectFromAll()
@@ -310,7 +315,7 @@ public:
 
 		out.DisconnectFromAll();
 
-		CPPUNIT_ASSERT( out.BeginConnectedInPorts() == out.EndConnectedInPorts() );
+		CPPUNIT_ASSERT( out.BeginVisuallyConnectedInPorts() == out.EndVisuallyConnectedInPorts() );
 		CPPUNIT_ASSERT( !in1.HasProcessing() );
 		CPPUNIT_ASSERT( !in2.HasProcessing() );
 		CPPUNIT_ASSERT( !in3.HasProcessing() );
@@ -368,7 +373,7 @@ public:
 	
 	void testInPortPublisher_PublishInPort_withProperInPort()
 	{
-		CLAM::OutPort<int> out;
+		CLAM::OutPort<int> out;;
 		CLAM::InPort<int> in;
 		CLAM::InPortPublisher<int> inPublisher;
 
@@ -398,6 +403,29 @@ public:
 		}
 	}
 	
+	void testOutPortPublisher_destructor()
+	{
+		CLAM::OutPort<int> *out = new CLAM::OutPort<int> ;
+		CLAM::InPort<int> *in = new CLAM::InPort<int>;
+		CLAM::OutPortPublisher<int> *outPublisher = new CLAM::OutPortPublisher<int>;
+		outPublisher->PublishOutPort( *out );
+		outPublisher->ConnectToIn( *in );
+		delete outPublisher;
+		delete in;
+		delete out;
+	}
+	void testAudioOutPortPublisher_beginDeletingPublished()
+	{
+		CLAM::AudioOutPort *out = new CLAM::AudioOutPort;
+		CLAM::AudioInPort *in = new CLAM::AudioInPort;
+		CLAM::AudioOutPortPublisher *outPublisher = new CLAM::AudioOutPortPublisher;
+		outPublisher->PublishOutPort( *out );
+		outPublisher->ConnectToIn( *in );
+		delete out;
+		delete outPublisher;
+		delete in;
+	}
+
 	void testOutPortPublisher_PublishOutPort_withProperOutPort()
 	{
 		
@@ -453,10 +481,10 @@ public:
 		
 		// let's check that the connected list of pubOut have a unique
 		// entry (which is &pubIn)
-		CLAM::OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
-		CPPUNIT_ASSERT( it != out.EndConnectedInPorts() );
+		CLAM::OutPortBase::InPortsList::iterator it = out.BeginVisuallyConnectedInPorts(); 
+		CPPUNIT_ASSERT( it != out.EndVisuallyConnectedInPorts() );
 		CPPUNIT_ASSERT( *(it++) = &pubIn );
-		CPPUNIT_ASSERT( it == out.EndConnectedInPorts() );
+		CPPUNIT_ASSERT( it == out.EndVisuallyConnectedInPorts() );
 		
 	}
 	void testOutPortPublisher_SetSize_assertsWhenDoesntPublishAnyPort()
@@ -592,8 +620,8 @@ public:
 		delete in2;
 		delete pubIn;
 
-		CLAM::OutPortBase::InPortsList::iterator it = out.BeginConnectedInPorts(); 
-		CPPUNIT_ASSERT(it == out.EndConnectedInPorts() );
+		CLAM::OutPortBase::InPortsList::iterator it = out.BeginVisuallyConnectedInPorts(); 
+		CPPUNIT_ASSERT(it == out.EndVisuallyConnectedInPorts() );
 	}
 	void testPortPublisher_deleteSequence_Out_InPub_In()
 	{
@@ -605,7 +633,7 @@ public:
 		out->ConnectToIn( *pubIn );
 		
 		delete out;
-		CPPUNIT_ASSERT( 0 == pubIn->GetAttachedOutPort() );
+		CPPUNIT_ASSERT( 0 == pubIn->GetVisuallyConnectedOutPort() );
 		delete pubIn;
 		delete in;
 	}
@@ -620,6 +648,28 @@ public:
 		delete out;
 		delete pub;
 		delete in;
+	}
+	void testOutPortPublisher_getsVisuallyAttached()
+	{
+		CLAM::AudioOutPortPublisher pub;
+		CLAM::AudioOutPort out;
+		CLAM::AudioInPort in;
+		pub.PublishOutPort( out );
+		pub.ConnectToIn( in );
+		CLAM::OutPortBase *basePub = &pub;
+		CPPUNIT_ASSERT( basePub == in.GetVisuallyConnectedOutPort() );
+	}
+	void testOutPortPublisher_getsDisconnected()
+	{
+		CLAM::AudioOutPortPublisher pub;
+		CLAM::AudioOutPort out;
+		CLAM::AudioInPort in;
+		pub.PublishOutPort( out );
+		pub.ConnectToIn( in );
+		in.Disconnect();
+		CPPUNIT_ASSERT( false == out.HasConnections() );
+		CPPUNIT_ASSERT( 0 == in.GetVisuallyConnectedOutPort() );
+		CPPUNIT_ASSERT( false == pub.HasConnections() );
 	}
 };
 
