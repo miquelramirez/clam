@@ -36,20 +36,28 @@ namespace CLAM
 		return true;
 	}
 
-	bool AudioSink::Do( TData* buf, int nframes)
+	bool AudioSink::Do( float* buf, int nframes)
 	{
 		if (!mIn.CanConsume())
-		{
-			//std::cout << "_inport cant consume" << std::endl;
 			return true;
-		}
 
 		const CLAM::Audio& so=mIn.GetAudio();
-		
-		//We assume that external audio type is the same as ours, range (-1,1) in a float
-		std::copy(so.GetBuffer().GetPtr(),so.GetBuffer().GetPtr()+nframes, buf);
+		for (int i=0; i<nframes; i++)
+			*(buf+i) = *(so.GetBuffer().GetPtr()+i) ;
+	
 		mIn.Consume();
+		return true;
+	}
+	bool AudioSink::Do( double* buf, int nframes)
+	{
+		if (!mIn.CanConsume())
+			return true;
 
+		const CLAM::Audio& so=mIn.GetAudio();
+		for (int i=0; i<nframes; i++)
+			*(buf+i) = *(so.GetBuffer().GetPtr()+i) ;
+	
+		mIn.Consume();
 		return true;
 	}
 } //namespace CLAM

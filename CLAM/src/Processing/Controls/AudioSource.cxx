@@ -33,21 +33,28 @@ namespace CLAM
 	{
 		return true;
 	}
-
-	bool AudioSource::Do( TData* buf, int nframes)
+	bool AudioSource::Do( double* buf, int nframes)
 	{		
 		if (!mOut.CanProduce())
-		{
-			//std::cout << "_outport cant produce" << std::endl;
 			return true;
-		}
 
 		CLAM::Audio& so=mOut.GetAudio();
+		for (int i=0; i<nframes; i++)
+			*(so.GetBuffer().GetPtr()+i) = *(buf+i);
 
-		//We assume that external audio type is the same as ours, range (-1,1) in a float
-		std::copy(buf, buf+nframes, so.GetBuffer().GetPtr());
 		mOut.Produce();
+		return true;
+	}
+	bool AudioSource::Do( float* buf, int nframes)
+	{		
+		if (!mOut.CanProduce())
+			return true;
 
+		CLAM::Audio& so=mOut.GetAudio();
+		for (int i=0; i<nframes; i++)
+			*(so.GetBuffer().GetPtr()+i) = *(buf+i);
+
+		mOut.Produce();
 		return true;
 	}
 } //namespace CLAM
