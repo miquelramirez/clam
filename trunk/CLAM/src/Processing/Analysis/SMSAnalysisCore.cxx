@@ -151,25 +151,25 @@ void SMSAnalysisCore::AttachChildren()
 
 bool SMSAnalysisCore::ConcreteStart()
 {
-	CLAM_ASSERT( mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort(), 
+	CLAM_ASSERT( mSinSpectralAnalysis.GetInPort("Input").GetVisuallyConnectedOutPort(), 
 			"SMSAnalysisCore::ConcreteStart in port 'Input' needs an attached out port, to start");
 
 	// TODO: port sizes negitiation should be managed by the flow control
-	if (mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->GetSize()%2!=0)
+	if (mSinSpectralAnalysis.GetInPort("Input").GetVisuallyConnectedOutPort()->GetSize()%2!=0)
 	{
 		
 		int sinSize = mSinSpectralAnalysis.GetInPort("Input").GetSize();
-		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetSize( sinSize );
+		mSinSpectralAnalysis.GetInPort("Input").GetVisuallyConnectedOutPort()->SetSize( sinSize );
 		std::cout << "SMSAnalysisCore::ConcreteStart() Alert!! setting size mSinSpec... : "<< sinSize <<"\n";
 
-		mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->SetHop( sinSize ); 
+		mSinSpectralAnalysis.GetInPort("Input").GetVisuallyConnectedOutPort()->SetHop( sinSize ); 
 
-//		mInputAudio.GetAttachedOutPort()->SetSize( mInputAudio.GetSize() );
-//		mInputAudio.GetAttachedOutPort()->SetHop( mInputAudio.GetSize() );
+//		mInputAudio.GetVisuallyConnectedOutPort()->SetSize( mInputAudio.GetSize() );
+//		mInputAudio.GetVisuallyConnectedOutPort()->SetHop( mInputAudio.GetSize() );
 	}
 
-//	mSinSpectralAnalysis.GetInPort("Input").GetAttachedOutPort()->CenterEvenRegions();
-	mInputAudio.GetAttachedOutPort()->CenterEvenRegions();
+//	mSinSpectralAnalysis.GetInPort("Input").GetVisuallyConnectedOutPort()->CenterEvenRegions();
+	mInputAudio.GetVisuallyConnectedOutPort()->CenterEvenRegions();
 		
 	return ProcessingComposite::ConcreteStart();
 }

@@ -27,7 +27,7 @@ namespace CLAM
 {
 
 InPortBase::InPortBase( const std::string & name, Processing * proc )
-	: mAttachedOutPort(0),
+	: mVisuallyConnectedOutPort(0),
 	  mName(name),
 	  mProcessing(proc)
 {
@@ -39,14 +39,14 @@ InPortBase::~InPortBase()
 {
 }
 
-OutPortBase * InPortBase::GetAttachedOutPort() 
+OutPortBase * InPortBase::GetVisuallyConnectedOutPort() 
 {
-	return mAttachedOutPort;
+	return mVisuallyConnectedOutPort;
 }
 
-void InPortBase::SetAttachedOutPort( OutPortBase* out )
+void InPortBase::SetVisuallyConnectedOutPort( OutPortBase* out )
 {
-	mAttachedOutPort = out;
+	mVisuallyConnectedOutPort = out;
 }
 
 const std::string & InPortBase::GetName()
@@ -67,8 +67,8 @@ Processing * InPortBase::GetProcessing()
 
 void InPortBase::Disconnect()
 {	
-	CLAM_DEBUG_ASSERT(mAttachedOutPort, "InPortBase::Disconnect() - InPort is not connected" );
-	mAttachedOutPort->DisconnectFromIn( *this );
+	CLAM_DEBUG_ASSERT(mVisuallyConnectedOutPort, "InPortBase::Disconnect() - InPort is not connected" );
+	mVisuallyConnectedOutPort->DisconnectFromIn( *this );
 }
 
 } // namespace CLAM

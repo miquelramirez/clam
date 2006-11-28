@@ -41,27 +41,29 @@ public:
 	virtual ~OutPortBase();
 	const std::string & GetName();
 	Processing * GetProcessing();
-	InPortsList::iterator BeginConnectedInPorts();
-	InPortsList::iterator EndConnectedInPorts();
+	InPortsList::iterator BeginVisuallyConnectedInPorts();
+	InPortsList::iterator EndVisuallyConnectedInPorts();
 	
 	virtual void ConnectToIn(InPortBase& in) = 0;
 	virtual void DisconnectFromIn(InPortBase & in) = 0;
 	virtual void DisconnectFromAll()=0;
-	virtual bool IsDirectlyConnectedTo(InPortBase & in) = 0;
+	virtual bool IsVisuallyConnectedTo(InPortBase & in) = 0;
 	virtual bool IsConnectableTo(InPortBase & ) = 0;
 	virtual bool CanProduce()=0;
 	virtual int GetSize()=0;
 	virtual void SetSize(int newSize)=0;
 	virtual int GetHop()=0;
 	virtual void SetHop(int newHop)=0;
-	bool HasConnections(){return mConnectedInPortsList.size()!=0;}
+	bool HasConnections(){return mVisuallyConnectedPorts.size()!=0;}
 	virtual void CenterEvenRegions()=0;
-
+	void SetPublisher( OutPortBase& publisher); 
+	void UnsetPublisher(); 
+	virtual void UnpublishOutPort() =0;
 protected:
-	
-	InPortsList mConnectedInPortsList;	
+	InPortsList mVisuallyConnectedPorts;	
 	std::string mName;
 	Processing * mProcessing;
+	OutPortBase* mPublisher;
 };
 
 
@@ -81,7 +83,7 @@ public:
 	void DisconnectFromIn( InPortBase& in);
 	void DisconnectFromConcreteIn(InPort<Token>& in);
 	bool IsConnectableTo(InPortBase & in);
-	bool IsDirectlyConnectedTo(InPortBase & in);
+	bool IsVisuallyConnectedTo(InPortBase & in);
 	bool IsPhysicallyConnectedToIn(InPort<Token>& ); 
 	InPortPublisher<Token>* GetPublisherContaining(InPort<Token>&);
 
@@ -95,6 +97,7 @@ public:
 	void CenterEvenRegions();
 	
 	static Token & GetLastWrittenData( OutPortBase &, int offset = 0);
+	void UnpublishOutPort() {} 
 
 protected:	
 	bool TryConnectToPublisher( InPortBase & in );
@@ -117,12 +120,12 @@ OutPort<Token>::OutPort( const std::string & name, Processing * proc )
 template<class Token>
 void OutPort<Token>::DisconnectFromAll()
 {
-	InPortsList::iterator it = mConnectedInPortsList.begin();
-	for( it=BeginConnectedInPorts(); it!=EndConnectedInPorts(); it++ )	
+	InPortsList::iterator it = mVisuallyConnectedPorts.begin();
+	for( it=BeginVisuallyConnectedInPorts(); it!=EndVisuallyConnectedInPorts(); it++ )	
 	{ 
 		(*it)->UnAttachRegion();
 	}
-	mConnectedInPortsList.clear();
+	mVisuallyConnectedPorts.clear();
 }
 
 template<class Token>
@@ -153,11 +156,11 @@ bool OutPort<Token>::TryConnectToPublisher( InPortBase & in )
 		return false;
 	
 	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
-	mConnectedInPortsList.push_back( &in );
+	mVisuallyConnectedPorts.push_back( &in );
 	for( it=publisher->BeginPublishedInPortsList(); it!=publisher->EndPublishedInPortsList(); it++)
 		(*it)->AttachRegionToOutPort(this, mRegion );
 
-	in.SetAttachedOutPort(this);
+	in.SetVisuallyConnectedOutPort(this);
 
 	return true;
 }
@@ -175,11 +178,11 @@ void OutPort<Token>::ConnectToIn( InPortBase& in)
 template<class Token>
 void OutPort<Token>::ConnectToConcreteIn(InPort<Token>& in)
 {
-	CLAM_ASSERT( !in.GetAttachedOutPort(), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an inport "
+	CLAM_ASSERT( !in.GetVisuallyConnectedOutPort(), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an inport "
 						    "already connected to another out port" );
-	CLAM_ASSERT( !IsDirectlyConnectedTo(in), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an in port "
+	CLAM_ASSERT( !IsVisuallyConnectedTo(in), "OutPort<Token>::ConnectToConcreteIn - Trying to connect an in port "
 					"already connected to this out port" );
-	mConnectedInPortsList.push_back(&in);
+	mVisuallyConnectedPorts.push_back(&in);
 	in.AttachRegionToOutPort(this, mRegion );
 }
 
@@ -212,10 +215,10 @@ bool OutPort<Token>::TryDisconnectFromPublisher( InPortBase & in )
 		return false;
 	
 	typename InPortPublisher<Token>::ProperInPortsList::iterator it;
-	mConnectedInPortsList.remove( &in );
+	mVisuallyConnectedPorts.remove( &in );
 	for( it=publisher->BeginPublishedInPortsList(); it!=publisher->EndPublishedInPortsList(); it++)
 	{
-		if( (*it)->GetAttachedOutPort())
+		if( (*it)->GetVisuallyConnectedOutPort())
 			(*it)->UnAttachRegion();
 	}
 	return true;
@@ -224,12 +227,12 @@ bool OutPort<Token>::TryDisconnectFromPublisher( InPortBase & in )
 template<class Token>
 void OutPort<Token>::DisconnectFromConcreteIn(InPort<Token>& in)
 {
-	CLAM_ASSERT( IsDirectlyConnectedTo(in) || IsPhysicallyConnectedToIn(in), 
+	CLAM_ASSERT( IsVisuallyConnectedTo(in) || IsPhysicallyConnectedToIn(in), 
 			"OutPort::DisconnectFromConcreteIn() in port is not directly neither physically connected" );
-	if (IsDirectlyConnectedTo(in) )
+	if (IsVisuallyConnectedTo(in) )
 	{
 		// is directly connected
-		mConnectedInPortsList.remove(&in);
+		mVisuallyConnectedPorts.remove(&in);
 	}
 	else // then IsPhysicallyConnected()
 	{
@@ -292,7 +295,7 @@ bool OutPort<Token>::IsConnectableTo(InPortBase & in)
 template<class Token>
 bool OutPort<Token>::IsPhysicallyConnectedToIn(InPort<Token>& in)
 { 
-	if (IsDirectlyConnectedTo(in))
+	if (IsVisuallyConnectedTo(in))
 		return true;
 	
 	return ( 0!=GetPublisherContaining(in) );
@@ -305,7 +308,7 @@ InPortPublisher<Token>* OutPort<Token>::GetPublisherContaining(InPort<Token>& in
 	
 	InPortPublisher<Token> *result=0;
 	InPortsList::iterator it;
-	for( it=mConnectedInPortsList.begin(); it!=mConnectedInPortsList.end(); it++ )
+	for( it=mVisuallyConnectedPorts.begin(); it!=mVisuallyConnectedPorts.end(); it++ )
 		if ( (*it)->IsPublisherOf(in) )
 		{
 			result=dynamic_cast<InPortPublisher<Token> *>(*it);
@@ -318,10 +321,10 @@ InPortPublisher<Token>* OutPort<Token>::GetPublisherContaining(InPort<Token>& in
 }
 
 template<class Token>
-bool OutPort<Token>::IsDirectlyConnectedTo(InPortBase & in)
+bool OutPort<Token>::IsVisuallyConnectedTo(InPortBase & in)
 {
 	InPortsList::iterator it;
-	for( it=mConnectedInPortsList.begin(); it!=mConnectedInPortsList.end(); it++ )
+	for( it=mVisuallyConnectedPorts.begin(); it!=mVisuallyConnectedPorts.end(); it++ )
 		if(*it == &in) return true;
 	return false;
 }

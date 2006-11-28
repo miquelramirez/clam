@@ -37,8 +37,8 @@ class InPortBase
 public:
 	InPortBase( const std::string & name = "unnamed in port", Processing * proc = 0 );
 	virtual ~InPortBase();
-	OutPortBase * GetAttachedOutPort(); 
-	void SetAttachedOutPort( OutPortBase* );
+	OutPortBase * GetVisuallyConnectedOutPort(); 
+	void SetVisuallyConnectedOutPort( OutPortBase* );
 	const std::string & GetName();
 	bool HasProcessing();
 	Processing * GetProcessing();
@@ -51,7 +51,7 @@ public:
 	void Disconnect();	
 	virtual bool IsPublisherOf( InPortBase& ) { return false; }
 protected:
-	OutPortBase * mAttachedOutPort;
+	OutPortBase * mVisuallyConnectedOutPort;
 	std::string mName;
 	Processing * mProcessing;
 };
@@ -105,7 +105,7 @@ InPort<Token>::InPort( const std::string & name, Processing * proc )
 template<class Token> 
 InPort<Token>::~InPort()
 {
-	if(mAttachedOutPort)
+	if(mVisuallyConnectedOutPort)
 		Disconnect();
 }
 
@@ -156,15 +156,15 @@ template<class Token>
 void InPort<Token>::AttachRegionToOutPort( OutPortBase * out, ProperWritingRegion & writer )
 {
 	writer.LinkRegions( mRegion );
-	mAttachedOutPort = out;
+	mVisuallyConnectedOutPort = out;
 }
 
 template<class Token>
 void InPort<Token>::UnAttachRegion()
 {
-	CLAM_DEBUG_ASSERT( mAttachedOutPort, "InPort<T>::UnAttachRegion() - InPort is not connected" );
+	CLAM_DEBUG_ASSERT( mVisuallyConnectedOutPort, "InPort<T>::UnAttachRegion() - InPort is not connected" );
 	mRegion.ProducerRegion()->RemoveRegion( mRegion );
-	mAttachedOutPort = 0;
+	mVisuallyConnectedOutPort = 0;
 }
 
 } // namespace CLAM

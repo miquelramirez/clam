@@ -258,7 +258,7 @@ namespace CLAM
 		InPortRegistry::Iterator itInPort;
 		for(itInPort=proc->GetInPorts().Begin(); itInPort!=proc->GetInPorts().End(); itInPort++)
 		{
-			if((*itInPort)->GetAttachedOutPort())
+			if((*itInPort)->GetVisuallyConnectedOutPort())
 				(*itInPort)->Disconnect();
 		}
 
@@ -306,13 +306,13 @@ namespace CLAM
 		OutPortBase & outport = GetOutPortByCompleteName(producer);
 		InPortBase & inport = GetInPortByCompleteName(consumer);
 
-		if ( outport.IsDirectlyConnectedTo(inport) ) 
+		if ( outport.IsVisuallyConnectedTo(inport) ) 
 			return false;
 			
 		if ( !outport.IsConnectableTo(inport) ) //they have different type
 			return false;
 
-		if( inport.GetAttachedOutPort())
+		if( inport.GetVisuallyConnectedOutPort())
 			return false;
 
 		outport.ConnectToIn( inport );
@@ -341,7 +341,7 @@ namespace CLAM
 		OutPortBase & outport = GetOutPortByCompleteName(producer);
 		InPortBase & inport = GetInPortByCompleteName(consumer);
 
-		if ( !outport.IsDirectlyConnectedTo(inport))
+		if ( !outport.IsVisuallyConnectedTo(inport))
 			return false;
 
 		outport.DisconnectFromIn( inport );
@@ -496,7 +496,7 @@ namespace CLAM
 			return consumers;
 
 		OutPortBase::InPortsList::iterator it;
-		for(it=out.BeginConnectedInPorts(); it!=out.EndConnectedInPorts(); it++)
+		for(it=out.BeginVisuallyConnectedInPorts(); it!=out.EndVisuallyConnectedInPorts(); it++)
 		{
 			std::string completeName(GetNetworkId((*it)->GetProcessing()));
 			completeName += ".";
@@ -528,7 +528,7 @@ namespace CLAM
 	{		
 		InPortsList consumers;
 		OutPortBase::InPortsList::iterator it;
-		for(it=producer.BeginConnectedInPorts(); it!=producer.EndConnectedInPorts(); it++)
+		for(it=producer.BeginVisuallyConnectedInPorts(); it!=producer.EndVisuallyConnectedInPorts(); it++)
 			consumers.push_back(*it);
 		return consumers;
 	}
