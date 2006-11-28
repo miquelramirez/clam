@@ -51,7 +51,7 @@ public:
 	
 	virtual ~InPortPublisher()
 	{	
-		if ( GetAttachedOutPort() )
+		if ( GetVisuallyConnectedOutPort() )
 			Disconnect();
 	}
 
@@ -104,7 +104,7 @@ public:
 	/** Do nothing, since a publisher itself don't have any region */
 	void UnAttachRegion() 
 	{
-		SetAttachedOutPort( 0 );
+		SetVisuallyConnectedOutPort( 0 );
 		typename ProperInPortsList::iterator it;
 		for(it=mPublishedInPortsList.begin(); it!=mPublishedInPortsList.end(); it++)
 		{

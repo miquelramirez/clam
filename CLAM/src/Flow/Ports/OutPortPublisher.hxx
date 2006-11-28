@@ -40,20 +40,33 @@ public:
 
 	virtual ~OutPortPublisher()
 	{
-		mPublishedOutPort = 0;
+		//disconnect published port
+		if (mPublishedOutPort) 
+		{
+			mPublishedOutPort->UnsetPublisher();
+			mPublishedOutPort->DisconnectFromAll();
+			mPublishedOutPort = 0;
+		}
+		//disconnect visually connected inports
+		for (InPortsList::iterator it = BeginVisuallyConnectedInPorts();
+			it != EndVisuallyConnectedInPorts();
+			it++ )
+		(*it)->SetVisuallyConnectedOutPort(0);
+		
 	}
 
 	void DisconnectFromAll()
 	{
 		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
 		mPublishedOutPort->DisconnectFromAll();
-		mConnectedInPortsList.clear();
+		mVisuallyConnectedPorts.clear();
 	}
 	void ConnectToIn( InPortBase& in)
 	{
 		CLAM_DEBUG_ASSERT( mPublishedOutPort != 0, "OutPortPublisher - no out port published" );
 		mPublishedOutPort->ConnectToIn( in );
-		mConnectedInPortsList.push_back(&in);
+		in.SetVisuallyConnectedOutPort( this );
+		mVisuallyConnectedPorts.push_back(&in);
 	}
 	
 	void PublishOutPort( OutPortBase & out )
@@ -69,10 +82,14 @@ public:
 		}
 
 	}
-
+	void UnpublishOutPort()
+	{
+		mPublishedOutPort = 0;
+	}
 	void ConcretePublishOutPort( ProperOutPort & out )
 	{
 		mPublishedOutPort = &out;
+		out.SetPublisher( *this );
 	}
 	
 	void DisconnectFromIn( InPortBase& in)
@@ -80,7 +97,7 @@ public:
 		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher::DisconnectFromIn() A published port is missing. "
 				"Consider using the method PublishOutPort( OutPortBase& out) ");
 		mPublishedOutPort->DisconnectFromIn( in );
-		mConnectedInPortsList.remove(&in);
+		mVisuallyConnectedPorts.remove(&in);
 	}
 	
 	bool IsConnectableTo(InPortBase & in)
@@ -90,11 +107,11 @@ public:
 		return mPublishedOutPort->IsConnectableTo( in );
 	}
 	
-	bool IsDirectlyConnectedTo(InPortBase & in)
+	bool IsVisuallyConnectedTo(InPortBase & in)
 	{
-		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher:IsDirectlyConnectedTo() A published port is missing. "
+		CLAM_ASSERT(mPublishedOutPort, "OutPortPublisher:IsVisuallyConnectedTo() A published port is missing. "
 				"Consider using the method PublishOutPort( OutPortBase& out) ");
-		return mPublishedOutPort->IsDirectlyConnectedTo( in );
+		return mPublishedOutPort->IsVisuallyConnectedTo( in );
 	}
 	
 	Token & GetData(int offset=0)

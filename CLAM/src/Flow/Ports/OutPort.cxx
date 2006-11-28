@@ -27,7 +27,8 @@ namespace CLAM
 
 OutPortBase::OutPortBase( const std::string & name, Processing * proc )
 	: mName(name),
-	  mProcessing(proc)
+	  mProcessing(proc),
+	mPublisher(0)
 {
 	if(proc)
 		proc->PublishOutPort(this);
@@ -35,6 +36,8 @@ OutPortBase::OutPortBase( const std::string & name, Processing * proc )
 
 OutPortBase::~OutPortBase()
 {
+	if (mPublisher) 
+		mPublisher->UnpublishOutPort();
 }
 
 const std::string & OutPortBase::GetName()
@@ -47,15 +50,24 @@ Processing * OutPortBase::GetProcessing()
 	return mProcessing;
 }
 
-OutPortBase::InPortsList::iterator OutPortBase::BeginConnectedInPorts()
+OutPortBase::InPortsList::iterator OutPortBase::BeginVisuallyConnectedInPorts()
 {
-	return mConnectedInPortsList.begin();
+	return mVisuallyConnectedPorts.begin();
 }
 
-OutPortBase::InPortsList::iterator OutPortBase::EndConnectedInPorts()
+OutPortBase::InPortsList::iterator OutPortBase::EndVisuallyConnectedInPorts()
 {
-	return mConnectedInPortsList.end();
+	return mVisuallyConnectedPorts.end();
 }
+
+void OutPortBase::SetPublisher( OutPortBase& publisher) 
+{
+	mPublisher = &publisher; 
+};
+void OutPortBase::UnsetPublisher( ) 
+{
+	mPublisher = 0;
+};
 
 } // namespace CLAM
 
