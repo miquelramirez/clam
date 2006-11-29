@@ -80,6 +80,7 @@ Section "Principal" SEC01
   File '${EXTERNALDLLDIR}\vorbisenc.dll'
   File '${EXTERNALDLLDIR}\vorbisfile.dll'
   File '${EXTERNALDLLDIR}\xerces-c_2_3_0.dll'
+  File '${EXTERNALDLLDIR}\portaudio.dll'
   File '${VCRUNTIMEDIR}\msvcp71.dll'
   File '${VCRUNTIMEDIR}\msvcr71.dll'
   SetOutPath "$INSTDIR\bin\designer"
