@@ -56,7 +56,7 @@ public:
 	   	// Overwritten latter. But some text is needed to enable it.
 		setWhatsThis("Dummy");
 		QAction * deleteAction = new QAction("Delete", this);
-		deleteAction->setShortcuts(QKeySequence::Delete);
+		deleteAction->setShortcut(QKeySequence(tr("Del")));
 		this->addAction(deleteAction);
 		connect(deleteAction, SIGNAL(triggered()), this, SLOT(removeSelectedProcessings()));
 	}
