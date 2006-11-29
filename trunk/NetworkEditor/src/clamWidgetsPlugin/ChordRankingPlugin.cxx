@@ -82,7 +82,7 @@ bool ChordRankingPlugin::isContainer() const
 
 QString ChordRankingPlugin::domXml() const
 {
-    return "<widget class=\"ChordRanking\" name=\"chordRanking\">\n"
+    return "<widget class=\"CLAM::VM::ChordRanking\" name=\"chordRanking\">\n"
            " <property name=\"geometry\">\n"
            "  <rect>\n"
            "   <x>0</x>\n"
