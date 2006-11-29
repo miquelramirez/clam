@@ -72,10 +72,11 @@ public:
 	QString getIncontrolName(unsigned i) const;
 	QString getOutcontrolName(unsigned i) const;
 	/// Get the connector prototyper name at the given parent pos
-	QString getPrototyperInportName(const QPoint & point) const;
-	QString getPrototyperOutportName(const QPoint & point) const;
-	QString getPrototyperIncontrolName(const QPoint & point) const;
-	QString getPrototyperOutcontrolName(const QPoint & point) const;
+	QString getInportPrototyperName(const QPoint & point) const;
+	QString getOutportPrototyperName(const QPoint & point) const;
+	QString getIncontrolPrototyperName(const QPoint & point) const;
+	QString getOutcontrolPrototyperName(const QPoint & point) const;
+	QString getConnectionPrototyperName(QString kind, QString connectionName) const;
 
 	void mousePressEvent(QMouseEvent * event);
 	void mouseMoveEvent(QMouseEvent * event);
@@ -90,6 +91,8 @@ public:
 	void embed(QWidget * widget);
 	bool configure();
 	bool rename();
+
+	void raiseEmbeded() {if (_embeded) _embeded->raise();}
 
 	bool isSelected() { return _selected; }
 	void select() { _selected=true; }

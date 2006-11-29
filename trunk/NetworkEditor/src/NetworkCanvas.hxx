@@ -24,7 +24,6 @@
 
 class NetworkCanvas : public QWidget
 {
-
 	Q_OBJECT
 public:
 	enum DragStatus 
@@ -111,19 +110,19 @@ public slots:
 public:
 	void paint(QPainter & painter)
 	{
-		_outbox=QRect(0,0,1,1);
+		_boundingBox=QRect(0,0,1,1);
 		for (unsigned i = 0; i<_processings.size(); i++)
-			_outbox = _outbox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
+			_boundingBox = _boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
 		for (unsigned i = 0; i<_controlWires.size(); i++)
-			_controlWires[i]->expand(_outbox);
+			_controlWires[i]->expand(_boundingBox);
 		for (unsigned i = 0; i<_portWires.size(); i++)
-			_portWires[i]->expand(_outbox);
-		_outbox = _outbox.unite(QRect(_outbox.topLeft(),((QWidget*)parent())->size()/_zoomFactor));
-		resize(_outbox.size()*_zoomFactor);
+			_portWires[i]->expand(_boundingBox);
+		_boundingBox = _boundingBox.unite(QRect(_boundingBox.topLeft(),((QWidget*)parent())->size()/_zoomFactor));
+		resize(_boundingBox.size()*_zoomFactor);
 
 		painter.setRenderHint(QPainter::Antialiasing);
 		painter.scale(_zoomFactor,_zoomFactor);
-		painter.translate(-_outbox.topLeft());
+		painter.translate(-_boundingBox.topLeft());
 
 		for (unsigned i = 0; i<_controlWires.size(); i++)
 			_controlWires[i]->draw(painter);
@@ -179,12 +178,12 @@ public:
 	QRect translatedRect(QRect rect)
 	{
 		rect.setSize(rect.size()*_zoomFactor);
-		rect.moveTopLeft((rect.topLeft()-_outbox.topLeft())*_zoomFactor);
+		rect.moveTopLeft((rect.topLeft()-_boundingBox.topLeft())*_zoomFactor);
 		return rect;
 	}
 	template <class Event> QPoint translatedPos(Event * event)
 	{
-		return event->pos()/_zoomFactor+_outbox.topLeft();
+		return event->pos()/_zoomFactor+_boundingBox.topLeft();
 	}
 	template <class Event> QPoint translatedGlobalPos(Event * event)
 	{
@@ -199,8 +198,8 @@ public:
 		setCursor(Qt::ArrowCursor);
 		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->mouseMoveEvent(event);
-		update();
 		_tooltipPos=_dragPoint;
+		update();
 	}
 
 	void mousePressEvent(QMouseEvent * event)
@@ -214,7 +213,7 @@ public:
 			return;
 		}
 		if (!(event->modifiers()&Qt::ControlModifier)) return;
-		startDrag(PanDrag,0,0);
+		startWireDrag(PanDrag,0,0);
 		for (unsigned i = _processings.size(); i--; )
 		{
 			_processings[i]->startMoving(translatedGlobalPos(event));
@@ -276,7 +275,6 @@ public:
 		menu.addAction(QIcon(":/icons/images/newprocessing.png"), "Add processing",
 			this, SLOT(onNewProcessing()))->setData(translatedPos(event));
 		menu.exec();
-
 	}
 
 	void dragEnterEvent(QDragEnterEvent *event)
@@ -467,7 +465,7 @@ public:
 		}
 	}
 
-	void startDrag(DragStatus status, ProcessingBox * processing, int connection)
+	void startWireDrag(DragStatus status, ProcessingBox * processing, int connection)
 	{
 		_dragStatus=status;
 		_dragProcessing=processing;
@@ -495,7 +493,7 @@ public:
 	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
 	 * @pre The processing box has checked that connection is the proper one for the canvas _dragStatus.
 	 */
-	void endConnectionDragTo(ProcessingBox * processing, int connection)
+	void endWireDrag(ProcessingBox * processing, int connection)
 	{
 		switch (_dragStatus) 
 		{
@@ -945,9 +943,9 @@ private:
 	QString _tooltipText;
 	bool _printing;
 	double _zoomFactor;
+	QRect _boundingBox;
 	CLAM::Network * _network;
 	bool _changed;
-	QRect _outbox;
 };
 
 
