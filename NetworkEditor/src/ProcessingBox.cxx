@@ -414,25 +414,25 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 	if (region==inportsRegion)
 	{
 		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_canvas->startDrag(NetworkCanvas::InportDrag, this, index);
+		_canvas->startWireDrag(NetworkCanvas::InportDrag, this, index);
 		return;
 	}
 	if (region==outportsRegion)
 	{
 		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_canvas->startDrag(NetworkCanvas::OutportDrag, this, index);
+		_canvas->startWireDrag(NetworkCanvas::OutportDrag, this, index);
 		return;
 	}
 	if (region==incontrolsRegion)
 	{
 		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_canvas->startDrag(NetworkCanvas::IncontrolDrag, this, index);
+		_canvas->startWireDrag(NetworkCanvas::IncontrolDrag, this, index);
 		return;
 	}
 	if (region==outcontrolsRegion)
 	{
 		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_canvas->startDrag(NetworkCanvas::OutcontrolDrag, this, index);
+		_canvas->startWireDrag(NetworkCanvas::OutcontrolDrag, this, index);
 		return;
 	}
 }
@@ -528,22 +528,22 @@ void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 	if (_canvas->dragStatus()==NetworkCanvas::OutportDrag && region==inportsRegion)
 	{
 		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_canvas->endConnectionDragTo(this, index);
+		_canvas->endWireDrag(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::InportDrag &&  region==outportsRegion)
 	{
 		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_canvas->endConnectionDragTo(this, index);
+		_canvas->endWireDrag(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::OutcontrolDrag && region==incontrolsRegion)
 	{
 		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_canvas->endConnectionDragTo(this, index);
+		_canvas->endWireDrag(this, index);
 	}
 	if (_canvas->dragStatus()==NetworkCanvas::IncontrolDrag && region==outcontrolsRegion)
 	{
 		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_canvas->endConnectionDragTo(this, index);
+		_canvas->endWireDrag(this, index);
 	}
 }
 void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
