@@ -414,25 +414,25 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 	if (region==inportsRegion)
 	{
 		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_canvas->startWireDrag(NetworkCanvas::InportDrag, this, index);
+		_canvas->startDrag(NetworkCanvas::InportDrag, this, index);
 		return;
 	}
 	if (region==outportsRegion)
 	{
 		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_canvas->startWireDrag(NetworkCanvas::OutportDrag, this, index);
+		_canvas->startDrag(NetworkCanvas::OutportDrag, this, index);
 		return;
 	}
 	if (region==incontrolsRegion)
 	{
 		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_canvas->startWireDrag(NetworkCanvas::IncontrolDrag, this, index);
+		_canvas->startDrag(NetworkCanvas::IncontrolDrag, this, index);
 		return;
 	}
 	if (region==outcontrolsRegion)
 	{
 		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_canvas->startWireDrag(NetworkCanvas::OutcontrolDrag, this, index);
+		_canvas->startDrag(NetworkCanvas::OutcontrolDrag, this, index);
 		return;
 	}
 }

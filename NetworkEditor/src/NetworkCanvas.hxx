@@ -15,6 +15,7 @@
 #include <QtGui/QPushButton>
 #include <QtCore/QFile>
 #include <QtGui/QMessageBox>
+#include <QtGui/QAction>
 #include <QtCore/QTextStream>
 #include "ProcessingBox.hxx"
 #include "Wires.hxx"
@@ -35,7 +36,8 @@ public:
 		OutcontrolDrag,
 		MoveDrag,
 		ResizeDrag,
-		PanDrag
+		PanDrag,
+		SelectionDrag
 	};
 	NetworkCanvas(QWidget * parent=0)
 		: QWidget(parent)
@@ -53,7 +55,10 @@ public:
 		resize(600,300);
 	   	// Overwritten latter. But some text is needed to enable it.
 		setWhatsThis("Dummy");
-//		example1();
+		QAction * deleteAction = new QAction("Delete", this);
+		deleteAction->setShortcuts(QKeySequence::Delete);
+		this->addAction(deleteAction);
+		connect(deleteAction, SIGNAL(triggered()), this, SLOT(removeSelectedProcessings()));
 	}
 
 	void example1()
@@ -138,9 +143,17 @@ public:
 			ControlWire::draw(painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnection));
 		if (_dragStatus==OutcontrolDrag)
 			ControlWire::draw(painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
+		drawSelectBox(painter);
 		drawTooltip(painter);
 	}
 private:
+	void drawSelectBox(QPainter & painter)
+	{
+		if (_dragStatus!=SelectionDrag) return;
+		painter.setBrush(QColor(0x77, 0xff, 0x88, 0x37));
+		painter.setPen(QColor(0x77, 0xff, 0x88, 0xf7));
+		painter.drawRect(QRect(_dragPoint, _selectionDragOrigin));
+	}
 	void drawTooltip(QPainter & painter)
 	{
 		if (_tooltipText.isNull()) return;
@@ -212,16 +225,29 @@ public:
 			update();
 			return;
 		}
-		if (!(event->modifiers()&Qt::ControlModifier)) return;
-		startWireDrag(PanDrag,0,0);
-		for (unsigned i = _processings.size(); i--; )
+		if ((event->modifiers()&Qt::ControlModifier))
 		{
-			_processings[i]->startMoving(translatedGlobalPos(event));
+				startDrag(PanDrag,0,0);
+				for (unsigned i = _processings.size(); i--; )
+				{
+					_processings[i]->startMoving(translatedGlobalPos(event));
+				}
+				update();
+				return;
 		}
+		_selectionDragOrigin=translatedPos(event);
+		startDrag(SelectionDrag,0,0);
 		update();
 	}
 	void mouseReleaseEvent(QMouseEvent * event)
 	{
+		if (_dragStatus == SelectionDrag)
+		{
+			QRect selectionBox (_selectionDragOrigin, _dragPoint);
+			for (unsigned i = _processings.size(); i--; )
+				if (selectionBox.contains(QRect(_processings[i]->pos(),_processings[i]->size())))
+					_processings[i]->select();
+		}
 		for (unsigned i = _processings.size(); i--; )
 			_processings[i]->mouseReleaseEvent(event);
 		_dragStatus=NoDrag;
@@ -465,7 +491,7 @@ public:
 		}
 	}
 
-	void startWireDrag(DragStatus status, ProcessingBox * processing, int connection)
+	void startDrag(DragStatus status, ProcessingBox * processing, int connection)
 	{
 		_dragStatus=status;
 		_dragProcessing=processing;
@@ -794,14 +820,6 @@ public:
 		for (unsigned i=0; i<_processings.size(); i++)
 			_processings[i]->deselect();
 	}
-	void removeSelectedProcessings()
-	{
-		std::vector<ProcessingBox *> toRemove;
-		for (unsigned i=0; i<_processings.size(); i++)
-			if (_processings[i]->isSelected()) toRemove.push_back(_processings[i]) ;
-		for (unsigned i=0; i<toRemove.size(); i++)
-			removeProcessing( toRemove[i] );
-	}
 private:
 	ProcessingBox * getBox(const QString & name)
 	{
@@ -811,6 +829,15 @@ private:
 	}
 
 private slots:
+	void removeSelectedProcessings()
+	{
+		std::vector<ProcessingBox *> toRemove;
+		for (unsigned i=0; i<_processings.size(); i++)
+			if (_processings[i]->isSelected()) toRemove.push_back(_processings[i]) ;
+		for (unsigned i=0; i<toRemove.size(); i++)
+			removeProcessing( toRemove[i] );
+		update();
+	}
 	void onCopyConnection()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
@@ -895,9 +922,6 @@ private slots:
 	}
 	void onDeleteProcessing()
 	{
-//		removeSelectedProcessings();
-//		return;
-
 		QPoint point = ((QAction*)sender())->data().toPoint();
 		for (unsigned i = _processings.size(); i--; )
 		{
@@ -939,6 +963,7 @@ private:
 	ProcessingBox * _dragProcessing;
 	unsigned _dragConnection;
 	QPoint _dragPoint;
+	QPoint _selectionDragOrigin;
 	QPoint _tooltipPos;
 	QString _tooltipText;
 	bool _printing;
