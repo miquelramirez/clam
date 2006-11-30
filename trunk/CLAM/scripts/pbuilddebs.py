@@ -8,13 +8,13 @@ proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 #proxyoption = ""
 distributions = [
 #	('ubuntu', 'feisty', "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
-#	('ubuntu', 'edgy',   "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'edgy',   "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('debian', 'etch',   "http://ftp.de.debian.org/debian/", ['main']),
-	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
+#	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
-	( repositoryBase+'CLAM',          'clam',               '0.92.0'),
+	( repositoryBase+'CLAM',          'clam',               '0.95.0'),
 	( repositoryBase+'Annotator',     'clam-annotator',     '0.3.3'),
 	( repositoryBase+'NetworkEditor', 'clam-networkeditor', '0.4.0'),
 	( repositoryBase+'SMSTools',      'clam-smstools',      '0.4.2'),
@@ -89,7 +89,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 	if os.access("%s.tgz"%distribution, os.F_OK) :
 		command = "update"
 
-	norun( ("COMPONENTS='%(components)s' pbuilder %(command)s " +
+	run( ("COMPONENTS='%(components)s' pbuilder %(command)s " +
 		" --othermirror 'deb file:%(resultdir)s ./' " +
 		" --buildplace . " +
 		" --basetgz ./%(distro)s.tgz " +

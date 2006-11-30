@@ -2,7 +2,7 @@ Source: clam-smstools
 Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
-Build-Depends: debhelper (>= 4.0.0), scons, g++, libclam-core-dev (>= 0.92.0), libclam-processing-dev (>= 0.92.0), libclam-audioio-dev (>= 0.92.0), libclam-vmqt-dev (>= 0.92.0), libqt3-headers, libqt3-mt-dev, docbook-to-man, imagemagick
+Build-Depends: debhelper (>= 4.0.0), scons, g++, libclam-core-dev (>= 0.95.0), libclam-processing-dev (>= 0.95.0), libclam-audioio-dev (>= 0.95.0), libclam-vmqt-dev (>= 0.95.0), libqt3-headers, libqt3-mt-dev, docbook-to-man, imagemagick
 Standards-Version: 3.6.1
 
 Package: clam-smstools

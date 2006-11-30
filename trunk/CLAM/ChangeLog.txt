@@ -1,5 +1,5 @@
 
-2006-??-?? CLAM 0.92.0 CVS
+2006-??-?? CLAM 0.95.0 CVS
 ''
  * Version information taken from changelog is available for apps.
  * MacOSX DMG packages are back
