@@ -91,6 +91,11 @@ applications from the source tarballs.
  Packages needed for Debian/Ubuntu 06.10 "Edgy":
  $ sudo apt-get install libxerces27-dev fftw-dev sfftw-dev fftw3-dev libfltk1.1-dev libqt3-mt-dev libasound2-dev libvorbis-dev libsndfile1-dev libmad0-dev libxerces27-dev fftw-dev sfftw-dev libfltk1.1-dev libqt3-mt-dev libasound2-dev libvorbis-dev libsndfile1-dev libmad0-dev libqt4-debug-dev qt4-qtconfig scons ladspa-sdk libportaudio-dev libid3-3.8.3-dev libjack0.100.0-dev libcppunit-dev
 
+portaudio19-dev is not in ubuntu-edgy, you can get .debs here: http://clam.iua.upf.edu/download/linux-ubuntu-edgy/
+or easier, add this line in your /etc/apt/sources.list
+deb http://clam.iua.upf.edu/download/linux-ubuntu-edgy/ ./
+
+
  Redhad / Fedora Core packages list (tested with FC5)
    gcc-c++ scons fftw2-devel fltk-devel libvorbis-devel libogg-devel qt-devel
    qt-designer libxml++-devel alsa-lib-devel libsndfile-devel ladspa-devel 
