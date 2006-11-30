@@ -165,9 +165,9 @@ def test_portaudio( audioio_env, conf ) :
 	if not result :
 		print "Could not find portaudio header! Please check your portaudio installation"
 		return False
-	result = conf.CheckLib( library='portaudio', symbol='Pa_GetVersion' )
+	result = conf.CheckLib( library='portaudio', symbol='Pa_GetHostApiInfo' )
 	if not result :
-		print "Could not find portaudio binary! Please check your portaudio installation"
+		print "Could not find portaudio binary v19 or higher! (v18 wont work) Please check your portaudio installation"
 		return False
 	result = conf.check_portaudio()
 	if not result :
