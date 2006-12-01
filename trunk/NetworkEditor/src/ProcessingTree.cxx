@@ -70,8 +70,8 @@ const static char * processingClasses[] = {
 #endif	
 	0,
 	"MIDI",
-	"MIDIKeyboard",
-	"MIDIInControl",
+//	"MIDIKeyboard",
+//	"MIDIInControl",
 	"MIDIDispatcher",
 	0,
 	"Analysis",
@@ -108,7 +108,7 @@ const static char * processingClasses[] = {
 	"ThreeBandCompressor",
 	"Peakalizer",
 	"ThreeBandAM",
-	"Deeser",
+//	"Deeser",
 	0,	
 	"Utils",
 #ifndef WIN32
