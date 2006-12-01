@@ -10,7 +10,10 @@
 int usage(const std::string & program)
 {
 		std::cout << " Usage: " << program
-			<< " <networkfile> [ <uifile> ] [-b <alsa|jack> ]"
+			<< " <networkfile> [ <uifile> ] [-o] [-b <backend> [-b <backend> ...]]\n"
+			<< "Options:\n"
+			<< " -o             Non interactive mode\n"
+			<< " -b <backend>   Try backend (portaudio, alsa, jack).\n"
 			<< std::endl;
 		return -1;
 }
