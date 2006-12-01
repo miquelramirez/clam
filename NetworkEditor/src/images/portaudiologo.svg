@@ -62,6 +62,13 @@
        x="0.83333343"
        y="-0.83333331" />
     <rect
+       style="fill:red;fill-opacity:0.74271845;stroke:none;stroke-width:6.84499979;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2791"
+       width="56.666668"
+       height="11.666667"
+       x="31.666666"
+       y="8.333333" />
+    <rect
        style="fill:#dcec79;fill-opacity:0.74271846;stroke:none;stroke-width:6.84499979;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect1900"
        width="75.833336"
@@ -71,13 +78,13 @@
     <text
        xml:space="preserve"
        style="font-size:16.17757416px;font-style:normal;font-weight:normal;fill:black;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="3.4437129"
+       x="3.4437127"
        y="16.769547"
        id="text1878"
        transform="scale(1.062198,0.941444)"><tspan
          sodipodi:role="line"
          id="tspan1880"
-         x="3.4437129"
+         x="3.4437127"
          y="16.769547">PortAudio</tspan></text>
   </g>
 </svg>
