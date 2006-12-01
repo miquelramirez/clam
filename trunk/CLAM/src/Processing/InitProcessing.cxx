@@ -65,7 +65,7 @@ namespace CLAM
 		CLAM::AudioSource();
 		CLAM::ControlSink();
 		CLAM::ControlSource();
-		CLAM::TonalAnalysis(); 
+		CLAM::TonalAnalysis(false); 
 		CLAM::FFT_rfftw();
 		CLAM::SMSAnalysisCore();
 		CLAM::AudioAdder();

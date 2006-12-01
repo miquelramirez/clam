@@ -49,6 +49,12 @@ TonalAnalysis::TonalAnalysis( const TonalAnalysisConfig& cfg )
 	Configure( cfg );
 }
 
+#ifdef __MSVC__
+TonalAnalysis::TonalAnalysis( bool callThisAsFakeConstructorToBeCalledToAvoidWindowsInstantiationBug )
+{
+}
+#endif
+
 TonalAnalysis::~TonalAnalysis()
 {
 	delete _implementation;
