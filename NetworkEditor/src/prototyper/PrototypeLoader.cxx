@@ -183,10 +183,9 @@ QWidget * PrototypeLoader::LoadInterface(QString uiFile)
 	if (_interface) delete _interface;
 	if (uiFile.isEmpty())
 	{
-		QString networkExtension = ".clamnetwork";
 		uiFile = _networkFile.c_str();
-		if (uiFile.endsWith(networkExtension))
-			uiFile.chop(networkExtension.length());
+		int pos = uiFile.lastIndexOf(".");
+		uiFile.truncate(pos); // if not found nothing happens
 		uiFile += ".ui";
 	}
 	_interface = DoLoadInterface(uiFile);
