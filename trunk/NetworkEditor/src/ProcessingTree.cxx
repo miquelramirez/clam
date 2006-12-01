@@ -126,7 +126,7 @@ const static char * processingClasses[] = {
 	"KeySpace",
 	"PolarChromaPeaks",
 	"ChordRanking",
-	"Tunner",
+//	"Tunner", // Commented until the next release
 	0,
 	0
 };
