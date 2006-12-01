@@ -12,9 +12,9 @@
   </processing>
 
   <processing id="Output" type="AudioSink"/>
-
+<!--
   <processing id="Residual" type="AudioSink"/>
-
+-->
   <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
@@ -162,9 +162,9 @@
     </OverlapAddGlobal>
     <prSamplingRate>0</prSamplingRate>
   </processing>
-
+<!--
   <processing id="Sinusoidal" type="AudioSink"/>
-
+-->
   <port_connection>
     <out>AudioSource_0.AudioOut</out>
     <in>SMSAnalysisCore.Input Audio</in>
@@ -199,7 +199,7 @@
     <out>SMSSynthesis.OutputAudio</out>
     <in>Output.AudioIn</in>
   </port_connection>
-
+<!--
   <port_connection>
     <out>SMSSynthesis.OutputResAudio</out>
     <in>Residual.AudioIn</in>
@@ -209,7 +209,7 @@
     <out>SMSSynthesis.OutputSinAudio</out>
     <in>Sinusoidal.AudioIn</in>
   </port_connection>
-
+-->
   <control_connection>
     <out>OutControlSender.out</out>
     <in>SMSFreqShift.Amount</in>
