@@ -49,7 +49,7 @@ TonalAnalysis::TonalAnalysis( const TonalAnalysisConfig& cfg )
 	Configure( cfg );
 }
 
-#ifdef __MSVC__
+#ifdef _MSC_VER
 TonalAnalysis::TonalAnalysis( bool callThisAsFakeConstructorToBeCalledToAvoidWindowsInstantiationBug )
 {
 }
