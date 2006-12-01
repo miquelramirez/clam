@@ -29,7 +29,9 @@ const static char * processingClasses[] = {
 	"Audio Input/Output",
 	"AudioSource",
 	"AudioSink",
+#ifndef WIN32
 	"AudioOut",
+#endif
 //	"AudioIn",
 	0,
 	"Audio File I/O",
