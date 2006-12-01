@@ -111,7 +111,7 @@ Section "Principal" SEC01
   System::Call 'Shell32::SHChangeNotify(i 0x8000000, i 0, i 0, i 0)'
 !undef Index
 
-
+  SetOutPath "$INSTDIR\example-data\"
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor\Examples"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Examples\Tonal Analysis.lnk" "$INSTDIR\example-data\tonalAnalysis-file.clamnetwork"
