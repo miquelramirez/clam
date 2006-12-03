@@ -87,7 +87,7 @@ QString KeySpacePlugin::domXml() const
            "  <rect>\n"
            "   <x>0</x>\n"
            "   <y>0</y>\n"
-           "   <width>100</width>\n"
+           "   <width>200</width>\n"
            "   <height>100</height>\n"
            "  </rect>\n"
            " </property>\n"

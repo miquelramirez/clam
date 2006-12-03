@@ -104,6 +104,8 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 				"Tonally close key/chords are displayed closer so normally you have a color stain covering several chords\n"
 				"with the most probable chord as a central color spot.</p>\n"
 				));
+	static KeySpaceDummySource dummy;
+	setDataSource(dummy);
 }
 
 void CLAM::VM::KeySpace::initializeGL()

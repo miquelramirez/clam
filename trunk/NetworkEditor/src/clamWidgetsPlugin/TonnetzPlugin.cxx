@@ -34,6 +34,7 @@ TonnetzPlugin::TonnetzPlugin(QObject *parent)
 
 void TonnetzPlugin::initialize(QDesignerFormEditorInterface * /* core */)
 {
+	std::cout << "initializing Tonnetz" << std::endl;
     if (initialized)
         return;
 
@@ -82,12 +83,12 @@ bool TonnetzPlugin::isContainer() const
 
 QString TonnetzPlugin::domXml() const
 {
-    return "<widget class=\"CLAM::VM::Tonnetz\" name=\"oscilloscope\">\n"
+    return "<widget class=\"CLAM::VM::Tonnetz\" name=\"tonnetz\">\n"
            " <property name=\"geometry\">\n"
            "  <rect>\n"
            "   <x>0</x>\n"
            "   <y>0</y>\n"
-           "   <width>100</width>\n"
+           "   <width>300</width>\n"
            "   <height>100</height>\n"
            "  </rect>\n"
            " </property>\n"
