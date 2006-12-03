@@ -65,25 +65,25 @@ public:
 	void paintEvent(QPaintEvent * event)
 	{
 		const char * label[] = {
-			"G",
-			"G#",
-			"A",
-			"A#",
-			"B",
-			"C",
-			"C#",
-			"D",
-			"D#",
-			"E",
-			"F",
-			"F#",
+			"+50",
+			"+40",
+			"+30",
+			"+20",
+			"+10",
+			"0",
+			"-10",
+			"-20",
+			"-30",
+			"-40",
+			"-50",
+			0
 		};
 		QPainter painter(this);
 		painter.translate(width()/2,height());
-		for (int i=0; i<12; i++)
+		for (int i=0; label[i]; i++)
 		{
-			double angle = -M_PI*i/6;
-			painter.drawText(QPointF(.4*width()*cos(angle), .4*height()*sin(angle)), label[i]);
+			double angle = -M_PI*i/10;
+			painter.drawText(QPointF(.4*width()*cos(angle), .8*height()*sin(angle)), label[i]);
 		}
 		painter.scale(width()/2.,-height());
 		painter.setPen(QColor(0x77,0x77,0x77,0x77));
@@ -100,7 +100,7 @@ public:
 		if ( !freq) return;
 		const CLAM::TData * mag = _dataSource->magnitudeData();
 		if ( !mag) return;
-		std::cout << *freq << " " << *mag << std::endl;
+//		std::cout << *freq << " " << *mag << std::endl;
 		int size = _dataSource->nBins();
 		painter.setPen(_lineColor);
 		QVector<QPointF> lines;

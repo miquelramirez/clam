@@ -36,6 +36,7 @@ CLAM::VM::Tonnetz::~Tonnetz()
 CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 	QGLWidget(parent)
 {
+	static TonnetzDummySource dummy;
 	_data = 0;
 	_dataSource = 0;
 	_font.setFamily("sans-serif");
@@ -66,6 +67,7 @@ CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 				"<li>6/9: Five horizontal. The root is the lefter note.</li>\n"
 				"</ul>\n"
 				));
+	setDataSource(dummy);
 	startTimer(50);
 }
 
