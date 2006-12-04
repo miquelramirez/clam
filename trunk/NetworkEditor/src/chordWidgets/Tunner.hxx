@@ -65,36 +65,43 @@ public:
 	void paintEvent(QPaintEvent * event)
 	{
 		const char * label[] = {
-			"+50",
-			"+40",
-			"+30",
-			"+20",
-			"+10",
-			"0",
-			"-10",
-			"-20",
-			"-30",
-			"-40",
-			"-50",
+			"-50%",
+			"-40%",
+			"-30%",
+			"-20%",
+			"-10%",
+			"0%",
+			"+10%",
+			"+20%",
+			"+30%",
+			"+40%",
+			"+50%",
 			0
 		};
 		QPainter painter(this);
 		painter.translate(width()/2,height());
+		painter.save();
+		painter.rotate(-90);
 		for (int i=0; label[i]; i++)
 		{
-			double angle = -M_PI*i/10;
-			painter.drawText(QPointF(.4*width()*cos(angle), .8*height()*sin(angle)), label[i]);
+			QRectF rect = painter.fontMetrics().boundingRect(label[i]);
+			rect.translate(-rect.width()/2,-rect.height()/2);
+			float x = width()*cos(M_PI*(i)/10)/2;
+			float y = height()*sin(M_PI*(i)/10);
+			rect.translate(0,-sqrt(x*x+y*y)+rect.height());
+			painter.drawText(rect,Qt::AlignTop|Qt::AlignHCenter, label[i]);
+			painter.rotate(180/10);
 		}
+		painter.restore();
 		painter.scale(width()/2.,-height());
 		painter.setPen(QColor(0x77,0x77,0x77,0x77));
 		painter.drawEllipse(-1,-1,2,2);
 		painter.drawEllipse(QRectF(-.5,-.5,1,1));
-		painter.drawLine(QLineF(10,10*sqrt(3.),-10,-10*sqrt(3.)));
-		painter.drawLine(QLineF(10*sqrt(3.),10,-10*sqrt(3.),-10));
-		painter.drawLine(QLineF(10,-10*sqrt(3.),-10,10*sqrt(3.)));
-		painter.drawLine(QLineF(10*sqrt(3.),-10,-10*sqrt(3.),10));
-		painter.drawLine(QLineF(10,0,-10,0));
-		painter.drawLine(QLineF(0,10,0,-10));
+		painter.drawLine(QLineF(0,10,0,0));
+		for (unsigned i=0; i<=10; i++)
+		{
+			painter.drawLine(QLineF(0,0,10*cos(i*M_PI/10),10*sin(i*M_PI/10)));
+		}
 		if ( !_dataSource) return;
 		const CLAM::TData * freq = _dataSource->orderData();
 		if ( !freq) return;
@@ -106,7 +113,7 @@ public:
 		QVector<QPointF> lines;
 		for (int i=0; i<size; i++)
 		{
-			double angle = M_PI*(freq[i]+.5);
+			double angle = M_PI*(-freq[i]+.5);
 			lines 
 				<< QPointF(0,0)
 				<< QPointF(10*mag[i]*cos(angle), 10*mag[i]*sin(angle));
@@ -115,7 +122,7 @@ public:
 		painter.setPen(QPen(_pointColor,5./width()));
 		for (int i=0; i<size; i++)
 		{
-			double angle = M_PI*(freq[i]+.5);
+			double angle = M_PI*(-freq[i]+.5);
 			painter.drawPoint(QPointF(10*mag[i]*cos(angle), 10*mag[i]*sin(angle)));
 		}
 	}
