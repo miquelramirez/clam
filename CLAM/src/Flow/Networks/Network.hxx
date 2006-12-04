@@ -88,7 +88,7 @@ public:
 	//! add method using a key to get the new processing from factory
 	void AddProcessing( const std::string & name, const std::string & key );
 	std::string AddProcessing( const std::string& key );
-	std::string GetUnusedName( const std::string& prefix );
+	std::string GetUnusedName( const std::string& prefix ) const;
 	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name ) const;
 	/** It configures the processing with the given processing id and config object and
@@ -97,7 +97,7 @@ public:
 	void ConfigureProcessing( const std::string &, const ProcessingConfig & );
 	/** Calls Configure() for each processing with its current configuration  */
 	void ReconfigureAllProcessings();
-	bool ChangeKeyMap( const std::string & oldName, const std::string & newName );	
+	bool RenameProcessing( const std::string & oldName, const std::string & newName );	
 	
 	const std::string & GetNetworkId(const Processing * proc) const;
 	

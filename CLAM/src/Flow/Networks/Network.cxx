@@ -224,7 +224,7 @@ namespace CLAM
 		return name;
 	}
 
-	std::string Network::GetUnusedName( const std::string& prefix )
+	std::string Network::GetUnusedName( const std::string& prefix ) const
 	{
 		std::string name;
 
@@ -326,7 +326,6 @@ namespace CLAM
 
 		if ( outcontrol.IsConnectedTo(incontrol) ) 
 			return false;
-			
 
 		outcontrol.AddLink( &incontrol );
 		return true;
@@ -350,7 +349,6 @@ namespace CLAM
 
 	bool Network::DisconnectControls( const std::string & producer, const std::string & consumer)
 	{
-
 		OutControl & outcontrol = GetOutControlByCompleteName(producer);
 		InControl & incontrol = GetInControlByCompleteName(consumer);
 
@@ -387,7 +385,7 @@ namespace CLAM
 		return '.'; 	
 	}
 
-	std::size_t Network::PositionOfLastIdentifier( const std::string & str ) 
+	std::size_t Network::PositionOfLastIdentifier( const std::string & str )
 	{
 		std::size_t result = str.find_last_of( NamesIdentifiersSeparator() );
 		CLAM_ASSERT( result!=std::string::npos, "Malformed port/control name. It should be ProcessingName.[Port/Control]Name");
@@ -544,7 +542,7 @@ namespace CLAM
 		throw 0; // To avoid warning message
 	}
 
-	bool Network::ChangeKeyMap( const std::string & oldName, const std::string & newName )
+	bool Network::RenameProcessing( const std::string & oldName, const std::string & newName )
 	{
 		if (oldName==newName) return true;
 		if( mProcessings.find( newName ) != mProcessings.end() ) // newName is being used

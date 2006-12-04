@@ -813,7 +813,7 @@ public:
 	bool renameProcessing(QString oldName, QString newName)
 	{
 		if (!_network) return true;
-		return _network->ChangeKeyMap(oldName.toStdString(), newName.toStdString());
+		return _network->RenameProcessing(oldName.toStdString(), newName.toStdString());
 	}
 	void clearSelections()
 	{
