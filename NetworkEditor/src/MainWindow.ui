@@ -38,7 +38,7 @@
     <property name="title" >
      <string>&amp;Interface</string>
     </property>
-    <addaction name="action_Edit_Interface" />
+    <addaction name="action_Edit_interface" />
     <addaction name="action_Run_prototyper" />
    </widget>
    <widget class="QMenu" name="menu_Network" >
@@ -105,7 +105,7 @@
    <addaction name="action_Play" />
    <addaction name="action_Stop" />
    <addaction name="separator" />
-   <addaction name="action_Edit_Interface" />
+   <addaction name="action_Edit_interface" />
    <addaction name="action_Run_prototyper" />
    <addaction name="separator" />
    <addaction name="action_Show_processing_toolbox" />
@@ -258,12 +258,12 @@
     <string>Print</string>
    </property>
   </action>
-  <action name="action_Edit_Interface" >
+  <action name="action_Edit_interface" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/designer.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Edit Interface</string>
+    <string>&amp;Edit interface</string>
    </property>
   </action>
   <action name="action_Zoom_in" >
