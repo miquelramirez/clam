@@ -7,7 +7,6 @@
 #include <CLAM/ControlSource.hxx>
 #include <CLAM/ControlSink.hxx>
 
-#include <CLAM/OscillatingSpectralNotch.hxx>
 #include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/SimpleOscillator.hxx>
 #include <CLAM/Oscillator.hxx>
@@ -43,25 +42,21 @@
 #include <CLAM/SMSMorph.hxx>
 #include <CLAM/SMSTimeStretch.hxx>
 #include <CLAM/SMSTransformationChainIO.hxx>
-//#include <CLAM/Controller.hxx>
-
-
-//#include <CLAM/AudioPlotProcessing.hxx>
-//#include <CLAM/SpectrumPlotProcessing.hxx>
-//#include <CLAM/PeaksPlotProcessing.hxx>
-//#include <CLAM/FundPlotProcessing.hxx>
-//#include <CLAM/SinTracksPlotProcessing.hxx>
-//#include <CLAM/FundTrackPlotProcessing.hxx>
-//#include <CLAM/SpecgramPlotProcessing.hxx>
-//#include <CLAM/AudioBuffPlotProcessing.hxx>
-//#include <CLAM/PortMonitor.hxx>
+#include <CLAM/OscillatingSpectralNotch.hxx>
+#include <CLAM/SpectralDelay.hxx>
+#include <CLAM/Vocoder.hxx>
+#include <CLAM/ThreeBandFilter.hxx>
+#include <CLAM/Robotization.hxx>
+#include <CLAM/SampleAndHold.hxx>
+#include <CLAM/ThreeBandCompressor.hxx>
+#include <CLAM/Peakalizer.hxx>
+#include <CLAM/ThreeBandAM.hxx>
 
 namespace CLAM
 {
 	void ProcessingModule::init()
 	{
 		std::cout << "Initiating processing module...";
-		CLAM::OscillatingSpectralNotch();
 		CLAM::AudioSink();
 		CLAM::AudioSource();
 		CLAM::ControlSink();
@@ -109,27 +104,17 @@ namespace CLAM
 		CLAM::SpectralPeakArrayAdder();
 		CLAM::SpectrumAdder();
 		CLAM::SpectrumAdder2();
-		//CLAM::AudioOut audioOut;
-		//CLAM::MonoAudioFileReader monoReader;
-		//CLAM::MonoAudioFileWriter monoWriter;
-		//CLAM::MultiChannelAudioFileReader multiReader;
-		//CLAM::MultiChannelAudioFileWriter multiWriter;
-		//CLAM::AudioPlotProcessing audioPlotProcessing;
-		//CLAM::SpectrumPlotProcessing spectrumPlotProcessing;
-		//CLAM::PeaksPlotProcessing peaksPlotProcessing;
-		//CLAM::FundPlotProcessing fundPlotProcessing;
-		//CLAM::SinTracksPlotProcessing sinTracksPlotProcessing;
-		//CLAM::FundTrackPlotProcessing fundTrackPlotProcessing;
-		//CLAM::SpecgramPlotProcessing specgramPlotProcessing;
-		//CLAM::AudioBuffPlotProcessing audioBuffPlotProcessing;
-		//CLAM::AudioPortMonitor audioPortMonitor;
-		//CLAM::SpectrumPortMonitor spectrumPortMonitor;
-		//CLAM::PeaksPortMonitor peaksPortMonitor;
-		//CLAM::FundamentalPortMonitor fundamentalPortMonitor;
-		//CLAM::AudioBuffPortMonitor audioBuffPortMonitor;
-		//CLAM::SpecgramPortMonitor specgramPortMonitor;
-		//CLAM::FundTrackPortMonitor fundTrackPortMonitor;
-		//CLAM::SinTracksPortMonitor sinTracksPortMonitor;
+
+		CLAM::OscillatingSpectralNotch();
+		CLAM::SpectralDelay();
+		CLAM::Vocoder();
+		CLAM::ThreeBandFilter();
+		CLAM::Robotization();
+		CLAM::SampleAndHold();
+		CLAM::ThreeBandCompressor();
+		CLAM::Peakalizer();
+		CLAM::ThreeBandAM();
+
 		std::cout << "done!" << std::endl;
 	}
 }
