@@ -50,7 +50,7 @@
 #include <CLAM/SampleAndHold.hxx>
 #include <CLAM/3BandCompressor.hxx>
 #include <CLAM/Peakalizer.hxx>
-#include <CLAM/3BandAM.hxx>
+#include <CLAM/3BandSpectralAM.hxx>
 
 namespace CLAM
 {
