@@ -309,6 +309,23 @@ public slots:
 	{
 		_canvas->resetZoom();
 	}
+	void on_action_Edit_interface_triggered()
+	{
+		QMessageBox::warning(this, tr("Feature not implemented"),
+			tr(
+				"<p>Current NetworkEditor version does not implement launching the Qt designer from this buttom.</p>\n"
+				"<p>Run the Qt designer and build an interface with the same filename than"
+				" the network but changing the '.clamnetwork' extension to '.ui'</p>\n"
+			));
+	}
+	void on_action_Run_prototyper_triggered()
+	{
+		QMessageBox::warning(this, tr("Feature not implemented"),
+			tr(
+				"<p>Current NetworkEditor version does not implement launching the Prototyper from this buttom.</p>\n"
+				"<p>Run the Prototyper and open the same network you are editing</p>\n"
+			));
+	}
 private:
 	NetworkCanvas * _canvas;
 	QDialog * _aboutDialog;
