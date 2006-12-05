@@ -1,17 +1,29 @@
 
-2006-??-?? CLAM 0.95.0 CVS
+2006-12-04 CLAM 0.95.0
 ''
  * Version information taken from changelog is available for apps.
- * MacOSX DMG packages are back
  * Graceful loading of network (catchable exception instead aborting)
  * Using optimized versions (CLAM_func) for math functions
- * Ooura fft is now enforced to be power of two sizes
- * Network and NetworkPlayer usability
-   * OSCEnabledNetwork was removed. Use OSCControlDispatcher and bind it to
-     a plain Network instead.
-   * Network errors now can be catched by applications
-   * Diagnosis methods
  * Tonal analysis (chord extraction) moved to the library from the Annotator
+ * Network and NetworkPlayer usability
+    ** OSCEnabledNetwork was removed. Use OSCControlDispatcher and bind it to
+      a plain Network instead.
+    ** Network errors now can be catched by applications
+    ** Diagnosis methods
+ * Most configuration errors are now addressed to user instead to developer
+ * Audio IO
+    ** ExternalAudioSink/Source -> AudioSink/Source
+    ** PortAudio based NetworkPlayer is working again
+    ** Handling properly Jack server disconnections
+    ** On JACK server disconnections the connection state is kept
+ * AudioFile review
+    ** User friendly errors for AudioFile related processings
+    ** AudioFile formats can be configurated
+    ** AudioFileTarget and AudioFileSource instead using AudioFile
+ * Ooura fft size is now enforced to be power of two
+ * Fix: High priority was given to both the processing and gui threads
+ * Fix: Disconnecting processing composites did not cleared lowlevel connections
+ * Small bugfixes and refactorings
 
 2006-06-14 CLAM 0.91.0
 'Spectral transformations, annotator, packaging, and desktop integration release'

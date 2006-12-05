@@ -1,5 +1,6 @@
 This file explains how to compile and install the CLAM libraries and 
-applications from the source tarballs.
+applications from the source tarballs. Alternatively, CLAM website
+provides already compiled packages for several platforms.
 
  1. Install CLAM dependencies
 
@@ -22,42 +23,19 @@ applications from the source tarballs.
         $ scons configure
         $ scons
         $ sudo scons install
-
-    Update 13 Nov 06: a bug in the scons script prevents to create the library links
-    links in LINUX. As a work-around, change dir to the /usr/local/lib, or whatever
-    is your install path, and execute (maybe changing the 0.95.0 version):
-
-    $ for a in core processing vmqt vmfl audioio; do ln -s libclam_$a.so.0.95.0 libclam_$a.so.0.95; ln -s libclam_$a.so.0.95.0 libclam_$a.so.0; ln -s libclam_$a.so.0.95.0 libclam_$a.so; done
-
-
+ 
  This will compile all the libraries with default options, and install
  them to the default dirs ( /usr/lib/ and /usr/include/ )
 
- To obtain all the available options and its current values, issue:
+ In Linux, you should also go to the path where the libraries are installed and run:
+
+        $ for v in "" .0 .0.95; do for a in core processing vmqt vmfl audioio; do ln -s libclam_$a.so.0.95.0 libclam_$a.so$v; done; done
+
+ To see available build options run:
 
         $ scons --help
 
- Example:
-
-        $ scons configure release=no prefix=~/mylibs/
-        $ scons
-        $ scons install
-
- This will compile the libraries in debug mode and install them in
- ~/mylibs/lib/ and ~/mylibs/include/
- Notice that if you are using a non-standard prefix, you might need to
- make the LD_LIBRARY_PATH to point to the lib directory.
-
- | IMPORTANT WHEN INSTALLING IN LOCAL: At this moment it is incompatible |
- | installing in a local dir when it's already instaled in system-wide   |
- | prefixes (/usr/lib and /usr/include). So make sure that CLAM is not   |
- | installed there.                                                      |
- 
- Another example:
-
-        $ scons configure with_osc_support=no
-
- Note that scons saves the last used options in the .conf file. 
+ Note that scons saves the last used options in the clam.conf file. 
  These options will be used by default in further "scons" commands.
 
  MacOSX specific: default prefix is set to /usr/local. Our tests using
@@ -67,10 +45,11 @@ applications from the source tarballs.
 
  3. Compile the CLAM application.
 
- Applications comes in separate tarballs. You'll need to download them
- from the CLAM web. Then go into their scons/ directory and issue
+ Applications can be download from the CLAM website in separate tarballs.
+ If you are using svn they are folders at the CLAM trunk.
+ Go to the root of the application source tree and issue:
 
-	$ scons
+        $ scons
 
  If you wish to use CLAM libs installed in a non-standard dir, you 
  will need to specify the clam_prefix :
@@ -79,7 +58,7 @@ applications from the source tarballs.
  
  For further building options do :
 
-	$ scons --help
+        $ scons --help
 
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -88,31 +67,16 @@ applications from the source tarballs.
 
 1.1 Install CLAM dependencies on Linux
 
- Packages needed for Debian/Ubuntu 06.10 "Edgy":
- $ sudo apt-get install libxerces27-dev fftw-dev sfftw-dev fftw3-dev libfltk1.1-dev libqt3-mt-dev libasound2-dev libvorbis-dev libsndfile1-dev libmad0-dev libxerces27-dev fftw-dev sfftw-dev libfltk1.1-dev libqt3-mt-dev libasound2-dev libvorbis-dev libsndfile1-dev libmad0-dev libqt4-debug-dev qt4-qtconfig scons ladspa-sdk libportaudio-dev libid3-3.8.3-dev libjack0.100.0-dev libcppunit-dev
-
-portaudio19-dev is not in ubuntu-edgy, you can get .debs here: http://clam.iua.upf.edu/download/linux-ubuntu-edgy/
-or easier, add this line in your /etc/apt/sources.list
-deb http://clam.iua.upf.edu/download/linux-ubuntu-edgy/ ./
-
-
- Redhad / Fedora Core packages list (tested with FC5)
+ Packages needed for Debian or Ubuntu 06.10 "Edgy":
+ $ sudo apt-get install scons ladspa-sdk libxerces27-dev fftw-dev sfftw-dev libjack-dev libmad0-dev libogg-dev libsndfile1-dev libvorbis-dev libid3-3.8.3-dev libasound2-dev libfltk1.1-dev libjpeg62-dev libpng12-dev libxext-dev libxft-dev libqt3-headers libqt3-mt-dev doxygen qt4-dev-tools libqt4-dev libcppunit-dev
+ 
+ Redhat / Fedora Core packages list (tested with FC5)
    gcc-c++ scons fftw2-devel fltk-devel libvorbis-devel libogg-devel qt-devel
    qt-designer libxml++-devel alsa-lib-devel libsndfile-devel ladspa-devel 
    id3lib-devel libXi-devel 
    Unofficial Pakages:
    libmad-devel (lvn5) jack-audio-connection-kit-devel (rhfc5.ccrma)
    qt4-devel, qt4 
-
- Non-packaged libraries : oscpack. 
-   There is no official Debian package for oscpack, so if you want to 
-   use it you'll need to install it from sources. 
-   [ http://www.audiomulch.com/~rossb/code/oscpack/ ]
-   or use the direct download link:
-   wget http://www.audiomulch.com/~rossb/code/oscpack/oscpack_1_0_1.zip
-
- Some of the previous libraries are optional, and there exist 
- command-line options for disabling them at configure time.
 
 
 

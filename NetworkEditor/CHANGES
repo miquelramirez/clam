@@ -1,4 +1,4 @@
-2006-??-?? NetworkEditor 0.4.0 CVS
+2006-12-04 NetworkEditor 0.4.0
 'California release'
  * Using CLAM 0.95.0
  * Ported to Qt4 and fully rewritten
@@ -62,7 +62,11 @@
         PolarChromaPeaks...
  * Desktop integration
    ** Menu entries
-   ** Experimental mime bindings in windowns and Linux (freedesktop).
+   ** File type association in windows to open (Prototyper)
+   ** File type association in windows to edit (NetworkEditor)
+   ** Windows menu access for some examples
+   ** Designer installed in windows setup
+   ** Experimental mime bindings for Linux (freedesktop).
 
 2006-06-?? NetworkEditor 0.3.2
 'Unreleased release'
