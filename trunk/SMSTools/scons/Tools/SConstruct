@@ -82,9 +82,9 @@ if sys.platform != 'win32' :
 else :
 	opts.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', 'G:\projects\CLAM-bin' ) )
 if sys.platform != 'win32' :
-	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr') )
+	opts.Add( PathOption( 'install_prefix', 'Prefix where the program is going to be installed', '/usr') )
 else :
-	opts.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', 'G:\projects\CLAM-bin\\bin') )
+	opts.Add( PathOption( 'install_prefix', 'Prefix where the program is going to be installed', 'G:\projects\CLAM-bin\\bin') )
 opts.Add( BoolOption( 'release', 'Build SMS Tools enabling compiler optimizations', 'no' ) )
 opts.Update( tools_env )
 opts.Save( 'SMSTools.conf', tools_env )
