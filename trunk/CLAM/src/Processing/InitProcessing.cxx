@@ -45,12 +45,12 @@
 #include <CLAM/OscillatingSpectralNotch.hxx>
 #include <CLAM/SpectralDelay.hxx>
 #include <CLAM/Vocoder.hxx>
-#include <CLAM/ThreeBandFilter.hxx>
+#include <CLAM/3BandFilter.hxx>
 #include <CLAM/Robotization.hxx>
 #include <CLAM/SampleAndHold.hxx>
-#include <CLAM/ThreeBandCompressor.hxx>
+#include <CLAM/3BandCompressor.hxx>
 #include <CLAM/Peakalizer.hxx>
-#include <CLAM/ThreeBandAM.hxx>
+#include <CLAM/3BandAM.hxx>
 
 namespace CLAM
 {
