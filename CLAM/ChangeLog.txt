@@ -1,6 +1,6 @@
 
 2006-12-04 CLAM 0.95.0
-''
+'California release'
  * Version information taken from changelog is available for apps.
  * Graceful loading of network (catchable exception instead aborting)
  * Using optimized versions (CLAM_func) for math functions
