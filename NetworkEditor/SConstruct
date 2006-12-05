@@ -173,8 +173,6 @@ else :
 	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
 	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
 
-env.Append(CPPFLAGS=['-DVERSION="%s"'%fullVersion]) # to have M_PI defined
-
 qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources + env.Qrc(qrcfiles))
 
 manpages = [
