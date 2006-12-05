@@ -172,6 +172,7 @@ if sys.platform != "win32" :
 else :
 	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
 	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
+	env.AppendUnique(LINKFLAGS='/OPT:NOREF')
 
 qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources + env.Qrc(qrcfiles))
 
