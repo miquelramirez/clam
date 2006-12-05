@@ -18,8 +18,6 @@
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 
 !define ALL_USERS
-!include WriteEnvStr.nsh # or the name you chose
-
 
 ; Language Selection Dialog Settings
 !define MUI_LANGDLL_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
@@ -163,55 +161,27 @@ Function un.onInit
 FunctionEnd
 
 Section Uninstall
-  Delete "$INSTDIR\${PRODUCT_NAME}.url"
-  Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\example-data\SongsTest\Debaser-WoodenHouse.mp3"
-  Delete "$INSTDIR\example-data\SongsTest\Debaser-WoodenHouse.mp3.pool"
-  Delete "$INSTDIR\example-data\SongsTest\Debaser-WoodenHouse.mp3.chords"
-  Delete "$INSTDIR\example-data\SongsTest\Debaser-CoffeeSmell.mp3"
-  Delete "$INSTDIR\example-data\SongsTest\Debaser-CoffeeSmell.mp3.pool"
-  Delete "$INSTDIR\example-data\SongsTest\Debaser-CoffeeSmell.mp3.chords"
-  Delete "$INSTDIR\example-data\SongsTest\urls.txt"
-  Delete "$INSTDIR\example-data\CLAMDescriptors.pro"
-  Delete "$INSTDIR\example-data\CLAMDescriptors.sc"
-  Delete "$INSTDIR\example-data\Chords.pro"
-  Delete "$INSTDIR\example-data\Chords.sc"
-  Delete "$INSTDIR\bin\QtCore4.dll"
-  Delete "$INSTDIR\bin\QtGui4.dll"
-  Delete "$INSTDIR\bin\QtOpenGL4.dll"
-  Delete "$INSTDIR\bin\libsndfile.dll"
-  Delete "$INSTDIR\bin\ogg.dll"
-  Delete "$INSTDIR\bin\pthreadVCE.dll"
-  Delete "$INSTDIR\bin\qt-mt322.dll"
-  Delete "$INSTDIR\bin\vorbis.dll"
-  Delete "$INSTDIR\bin\vorbisenc.dll"
-  Delete "$INSTDIR\bin\vorbisfile.dll"
-  Delete "$INSTDIR\bin\xerces-c_2_3_0.dll"
-  Delete "$INSTDIR\bin\msvcp71.dll"
-  Delete "$INSTDIR\bin\msvcr71.dll"
-  Delete "$INSTDIR\bin\BocaTaskManager.exe"
-  Delete "$INSTDIR\bin\library.zip"
-  Delete "$INSTDIR\bin\w9xpopen.exe"
-  Delete "$INSTDIR\bin\Annotator.exe"
-  Delete "$INSTDIR\bin\ClamExtractorExample.exe"
-  Delete "$INSTDIR\bin\ChordExtractor.exe"
-  Delete "$INSTDIR\bin\BocaClient.exe"
-
-  Delete "$INSTDIR\share\annotator\i18n\Annotator_ca.qm"
-  Delete "$INSTDIR\share\annotator\i18n\Annotator_es.qm"
+  Delete "$DESKTOP\Annotator.lnk"
   Delete "$SMPROGRAMS\CLAM\Annotator\Uninstall.lnk"
   Delete "$SMPROGRAMS\CLAM\Annotator\Website.lnk"
-  Delete "$DESKTOP\Annotator.lnk"
   Delete "$SMPROGRAMS\CLAM\Annotator\Annotator.lnk"
-
   RMDir "$SMPROGRAMS\CLAM\Annotator"
   RMDir "$SMPROGRAMS\CLAM"
-  RMDir "$INSTDIR\example-data\SongsTest"
+
+  Delete "$INSTDIR\${PRODUCT_NAME}.url"
+  Delete "$INSTDIR\uninst.exe"
+
+  Delete "$INSTDIR\example-data\SongsTest\*"
+  RMDir "$INSTDIR\example-data\SongsTest" 
+  Delete "$INSTDIR\example-data\*"
   RMDir "$INSTDIR\example-data"
-  RMDir "$INSTDIR\bin"
+  Delete "$INSTDIR\share\annotator\i18n\*"
   RMDir "$INSTDIR\share\annotator\i18n"
   RMDir "$INSTDIR\share\annotator"
   RMDir "$INSTDIR\share"
+  Delete "$INSTDIR\bin\*"
+  RMDir "$INSTDIR\bin"
+  RMDir "$INSTDIR"
 
 !define Index "Line${__LINE__}"
   ReadRegStr $1 HKCR ".task" ""
