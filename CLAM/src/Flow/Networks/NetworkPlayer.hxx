@@ -34,40 +34,27 @@ namespace CLAM
 		virtual void Start()=0;
 		virtual void Stop()=0;
 		
-		virtual void Clear()
-		{
-			Stop();
-			GetNetwork().Clear();
-			NotifyModification();
-		}
-	
 		void SetNetwork( Network& net )
 		{
 			mNetwork=&net;
-			NotifyModification();
+			SetModified(true);
 		}
-		
+	protected:
 		Network& GetNetwork()
 		{
 			CLAM_ASSERT( (mNetwork!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
 			return *mNetwork;
 		}
-
-		void NotifyModification()
-		{
-			SetModified(true);
-		}
-		bool IsModified()
-		{
-			return mModified;
-		}
-
+	public:
 		bool IsStopped()
 		{
 			return mStopped;
 		}
-		
 	protected:
+		bool IsModified()
+		{
+			return mModified;
+		}
 		void SetStopped(const bool val)
 		{
 			mStopped=val;
