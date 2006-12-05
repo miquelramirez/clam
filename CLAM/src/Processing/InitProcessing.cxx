@@ -7,7 +7,7 @@
 #include <CLAM/ControlSource.hxx>
 #include <CLAM/ControlSink.hxx>
 
-#include <CLAM/SpectralNotch.hxx>
+#include <CLAM/OscillatingSpectralNotch.hxx>
 #include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/SimpleOscillator.hxx>
 #include <CLAM/Oscillator.hxx>
@@ -61,7 +61,7 @@ namespace CLAM
 	void ProcessingModule::init()
 	{
 		std::cout << "Initiating processing module...";
-		CLAM::SpectralNotch();
+		CLAM::OscillatingSpectralNotch();
 		CLAM::AudioSink();
 		CLAM::AudioSource();
 		CLAM::ControlSink();
