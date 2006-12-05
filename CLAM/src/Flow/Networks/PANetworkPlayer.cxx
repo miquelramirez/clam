@@ -110,8 +110,11 @@ void PANetworkPlayer::OpenStream(const Network& net)
 	PaStreamParameters * outParams = mSenderList.size() ? &outputParameters : 0;
 	
 	// TODO: Gracefull error, please
-	CLAM_ASSERT ( inParams || outParams,
-			"PortAudio Error: no input or output ports defined at all");
+	//CLAM_ASSERT ( inParams || outParams,
+	//		"PortAudio Error: no input or output ports defined at all");
+	// Till not cracefull error: lets allow PA to start.
+	if (!inParams && !outParams)
+		outParams = &outputParameters;
 	
 	ControlIfPortAudioError(
 		Pa_OpenStream(
