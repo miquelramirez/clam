@@ -1,8 +1,7 @@
-2006-??-?? SMSTools 0.4.2 CVS
-''
+2006-12-04 SMSTools 0.4.2
+'California release'
+ * Updated to CLAM 0.95.0
  * Taking the version from the changelog file (CHANGES)
-
-
 
 For previous releases see the CLAM changelog
 
