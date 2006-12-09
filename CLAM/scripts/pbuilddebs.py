@@ -7,8 +7,8 @@ import sys
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 #proxyoption = ""
 distributions = [
-#	('ubuntu', 'feisty', "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
-	('ubuntu', 'edgy',   "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'feisty', "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
+#	('ubuntu', 'edgy',   "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('debian', 'etch',   "http://ftp.de.debian.org/debian/", ['main']),
 #	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 ]
