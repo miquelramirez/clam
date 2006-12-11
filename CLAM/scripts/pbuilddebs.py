@@ -5,7 +5,7 @@ import glob
 import sys
 
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
-#proxyoption = ""
+proxyoption = ""
 distributions = [
 	('ubuntu', 'feisty', "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('ubuntu', 'edgy',   "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
@@ -21,7 +21,7 @@ repositories = [
 ]
 
 hooks = {
-'d70publishResults' : '''
+'D70publishResults' : '''
 #!/bin/bash
 /usr/bin/apt-get update
 ''',
@@ -43,9 +43,11 @@ def run(command) :
 		print line,
 		sys.stdout.flush()
 def norun(command) :
-	print "\033[31m:: ", command, "\033[0m"
+	print "\033[31mXX ", command, "\033[0m"
+def phase(desc) :
+	print "\033[33m== ", desc, "\033[0m"
 
-print "== Setting up the environment"
+phase( "Setting up the environment" )
 norun("echo Trying norun")
 run ("mkdir -p hooks")
 run ("mkdir -p aptcache")
@@ -56,14 +58,14 @@ aptconf.write(aptconfiguration)
 aptconf.close()
 
 for (name, content) in hooks.items() :
-	print "Generating %s"%name
+	phase( "Generating %s"%name )
 	hookfile = file("hooks/"+name,'w')
 	hookfile.write(content)
 	hookfile.close()
 
 run ("chmod a+x hooks/*")
 
-print "== Obtaining latest sources"
+phase( "Obtaining latest sources" )
 
 for (module, srcpackage, version) in repositories :
 	srcdir = srcpackage + "-" + version
@@ -75,7 +77,7 @@ for (module, srcpackage, version) in repositories :
 
 
 for (maindistro, distribution, mirror, components) in distributions :
-	print "== Preparing chroot for '%s'"%distribution
+	phase( "Preparing chroot for '%s'"%distribution )
 	resultdir = '/var/cache/pbuilder/result'
 	resultdir = os.path.abspath('./result-%(maindistro)s-%(distro)s' % {
 		'maindistro' : maindistro,
@@ -109,7 +111,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 			'proxyoption': proxyoption,
 		})
 
-	print "== Building packages for '%s'"%distribution
+	phase( "Building packages for '%s'"%distribution )
 	for (foo, srcpackage, version) in repositories :
 		dscbase = srcpackage+"_"+version
 		dscfiles = glob.glob(dscbase + "*.dsc")
@@ -136,8 +138,9 @@ for (maindistro, distribution, mirror, components) in distributions :
 		run("cd %(resultdir)s; /usr/bin/dpkg-scanpackages . /dev/null > Packages; cd -" %{
 			'resultdir': resultdir,
 		})
+		run("gzip -c %s/Packages > %s/Packages.gz" %( resultdir, resultdir ) )
 
-	print "== Uploading packages for '%s'"%distribution
+	phase( "Uploading packages for '%s'"%distribution )
 	targetWebDir = "download/linux-%(maindistro)s-%(distro)s/cvssnapshots/"%{
 		'resultdir' : resultdir,
 		'maindistro' : maindistro,
@@ -146,7 +149,6 @@ for (maindistro, distribution, mirror, components) in distributions :
 
 	run("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
 	run("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
-	run("slogin clamadm@www.iua.upf.edu gzip -c %s/Packages > %s/Packages.gz" %( resultdir, resultdir ) )
 	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
 
 
