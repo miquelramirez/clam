@@ -601,19 +601,19 @@ QString ProcessingBox::getIncontrolName(unsigned index) const
 
 QString ProcessingBox::getInportPrototyperName(const QPoint & point) const
 {
-	return getConnectionPrototyperName("Inport", getInportName(portIndexByYPos(point)));
+	return getConnectionPrototyperName("InPort", getInportName(portIndexByYPos(point)));
 }
 QString ProcessingBox::getOutportPrototyperName(const QPoint & point) const
 {
-	return getConnectionPrototyperName("Outport", getOutportName(portIndexByYPos(point)));
+	return getConnectionPrototyperName("OutPort", getOutportName(portIndexByYPos(point)));
 }
 QString ProcessingBox::getIncontrolPrototyperName(const QPoint & point) const
 {
-	return getConnectionPrototyperName("Incontrol", getIncontrolName(controlIndexByXPos(point)));
+	return getConnectionPrototyperName("InControl", getIncontrolName(controlIndexByXPos(point)));
 }
 QString ProcessingBox::getOutcontrolPrototyperName(const QPoint & point) const
 {
-	return getConnectionPrototyperName("Outcontrol", getOutcontrolName(controlIndexByXPos(point)));
+	return getConnectionPrototyperName("OutControl", getOutcontrolName(controlIndexByXPos(point)));
 }
 
 QString ProcessingBox::getConnectionPrototyperName(QString kind, QString connectionName) const
