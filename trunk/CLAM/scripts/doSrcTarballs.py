@@ -26,7 +26,7 @@ for app, version in versions.iteritems() :
 	if app == "CLAM" :
 		#sandbox = "CLAM-%s-svn%s" % (version, svnRevision)
 		sandbox = "CLAM-%s" % (version)
-		run("svn co http://iua-share.upf.edu/svn/clam/trunk/CLAM %s"% sandbox)
+		run("svn export http://iua-share.upf.edu/svn/clam/trunk/CLAM %s"% sandbox)
 	else:
 		dict =  { 
 		"app" : app,
@@ -35,7 +35,7 @@ for app, version in versions.iteritems() :
 		}
 		#sandbox = "%(app)s-%(ver)s_using_CLAM-%(clamver)s" % dict
 		sandbox = "%(app)s-%(ver)s" % dict
-		run("svn co http://iua-share.upf.edu/svn/clam/trunk/%s %s" % (app, sandbox))
+		run("svn export http://iua-share.upf.edu/svn/clam/trunk/%s %s" % (app, sandbox))
 	tarball = "%s.tar.gz" % sandbox
 	run("echo '%s' > %s/SVN_REVISION" % (svnRevision, sandbox) )
 	run("tar czf %s %s " % (tarball, sandbox) )
