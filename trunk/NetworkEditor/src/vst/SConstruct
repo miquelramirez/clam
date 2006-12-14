@@ -47,10 +47,6 @@ env.EnableClamModules([
 	'clam_processing',
 	] , CLAMInstallDir)
 
-mainSources = {
-}
-blacklist = [
-]
 
 #vstsdk_path ='F:\\clam-external-libs\\vstsdk2.3' 
 vstsdk_common_path = os.path.join( env['vstsdk_path'], 'source', 'common' )
@@ -67,47 +63,34 @@ extraPaths += [
 
 includePaths = sourcePaths + extraPaths
 
-#sources = scanFiles('*.cpp', os.path.join(vstsdk_common_path, 'ADelay')
-sources = scanFiles('*.cpp', '.')
-sources.append( os.path.join(vstsdk_common_path, 'AudioEffect.cpp') )
-sources.append( os.path.join(vstsdk_common_path, 'audioeffectx.cpp') )
+#commonSources = scanFiles('*.cpp', os.path.join(vstsdk_common_path, 'ADelay')
+#commonSources = scanFiles('*.cpp', '.')
+commonSources = ["CLAMVstPlugin.cpp"]
+commonSources.append( os.path.join(vstsdk_common_path, 'AudioEffect.cpp') )
+commonSources.append( os.path.join(vstsdk_common_path, 'audioeffectx.cpp') )
 
-for mainSource in mainSources.values() :
-	sources.remove(mainSource)
-for blacksheep in blacklist :
-	sources.remove( blacksheep )
 
 #env.Append(LIBS=['vstgui'])
 env.Append(CPPPATH=includePaths)
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
 env.Append(CPPDEFINES=[ ('FFTW_HEADER','"<rfftw.h>"') ])
 
-if sys.platform=='linux2' :
-	if env['release'] :
-		env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
-	else :
-		env.Append( CCFLAGS=['-g', '-Wall'] )
-elif sys.platform=='win32':
-#	env.Append(LIBPATH=[ os.path.join(env['vstsdk_path,'] 'win','library')])
-	env.Append(LINKFLAGS=['/subsystem:windows','/machine:i386', ''])
-	env['WIN32_INSERT_DEF'] = 1
-	if env['release'] :
-		env.Append(CPPDEFINES=['NDEBUG'])
-	else :
-		env.Append(CPPDEFINES=['_DEBUG'])
-else:
-	print 'platform "%s" not suported' % sys.platform
-	sys.exit()
+env['WIN32_INSERT_DEF'] = 1
+if env['release'] :
+	env.Append(CPPDEFINES=['NDEBUG'])
+else :
+	env.Append(CPPDEFINES=['_DEBUG'])
+#	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed for MacOSX?
 
-#	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
-
+envConsole = env.Copy()
+envPlugin = env.Copy()
+envPlugin.Append( LINKFLAGS=['/subsystem:windows','/machine:i386'] )
 
 programs = []
-for main in mainSources.items() :
-	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
+programs += [ envConsole.Program(target="TestPlugin", source = commonSources+["TestPlugin.cxx"]) ]
 
-vstplugin = env.SharedLibrary("CLAMVstPlugin", source = sources )
-#vstplugin = env.SharedLibrary("ADelay", source = sources )
+vstplugin = envPlugin.SharedLibrary("CLAMVstPlugin", source = commonSources+["CLAMVstPluginMain.cpp"] )
+#vstplugin = envPlugin.SharedLibrary("ADelay", source = commonSources )
 
 
 # Manual step: lupdate-
@@ -117,7 +100,7 @@ installation = {
 }
 
 installTargets = [
-	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
+	envPlugin.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
 
 if sys.platform=='macosx' : # not really tested!!!
@@ -134,8 +117,8 @@ if sys.platform=='macosx' : # not really tested!!!
 	mac_packages = env.Dmg('notused', installTargets )
 	env.Alias('package', mac_packages)
 
-env.Alias('install', installTargets )
+envPlugin.Alias('install', installTargets )
 
-#env.Default(programs+[vstplugin])
-env.Default([vstplugin])
+envPlugin.Default([vstplugin])
+envConsole.Default(programs)
 

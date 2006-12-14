@@ -8,13 +8,15 @@
 #include <sstream>
 #include <cmath>
 
-#define NO_NETWORK_FILE
+#include "SimpleOscillator.hxx" //TODO remove
+#include "Oscillator.hxx" //TODO remove
+//#define NO_NETWORK_FILE
 
 using namespace CLAM;
 
 //char* xmlfile="wire.xml"; //2
 //char* xmlfile="externSMSmess.xml"; //1
-char* xmlfile="../../example-data/externalSimpleModulator.clamnetwork"; 
+char* xmlfile="../../example-data/simpleModulator.clamnetwork"; 
 //char* xmlfile="inputMultiplier.xml"; //2
 
 
@@ -27,18 +29,19 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 	mExternBufferSize=mClamBufferSize;
 
 	GetNetwork().AddFlowControl( new PushFlowControl( mClamBufferSize ) );
-#ifdef NO_NETWORK_FILE
-	FillNetwork(); //Testing interest
-#else 
-
 	try
 	{
+
+#ifdef NO_NETWORK_FILE
+		FillNetwork(); //Testing interest
+#else 
 		XmlStorage::Restore( *mNet, xmlfile );
 	}
-	catch ( XmlStorageErr err)
+	catch ( std::exception& err)
 	{
 		std::cerr << "CLAMTest WARNING: error opening file <"
-			<< xmlfile << "> . Plugin not loaded" <<std::endl;
+			<< xmlfile << "> . Plugin not loaded" << std::endl
+		        << "exception.what() " << err.what() << std::endl;
 		FillNetwork();
 	}
 #endif	
@@ -70,9 +73,8 @@ int CLAMTest::GetNumberOfParameters( char* file )
 #ifdef NO_NETWORK_FILE
 	return 1; 
 #endif
-
 	Network net;
-	net.AddFlowControl( new PushFlowControl( mClamBufferSize ) );
+	net.AddFlowControl( new PushFlowControl( 512 ) );
 	int count=0;
 	
 	try
@@ -83,15 +85,20 @@ int CLAMTest::GetNumberOfParameters( char* file )
 	{
 		std::cerr << "CLAMTest WARNING: error opening file <"
 			<< file << "> . Plugin not loaded" <<std::endl;
-		return -1;
+		return -2;
 	}
 
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 	{
-		if (std::string("ControlSource")==std::string(it->second->GetClassName()))
+		std::cout << "proc: " << it->second->GetClassName() << std::endl;
+		if (std::string("ControlSource")==std::string(it->second->GetClassName())) {
 			count++;
+			std::cout << "Found ControlSource: " << it->second->GetClassName() << std::endl;
+			
+		}
 	}
 
+	std::cout << "returning : " << count << std::endl;
 	return count;
 }
 	
@@ -169,10 +176,16 @@ bool CLAMTest::getVendorString (char* text)
 //---------------------------------------------------------------------
 void CLAMTest::process (float **inputs, float **outputs, long sampleFrames)
 {
+	const bool mono = true;
 	float *in1  =  inputs[0];
-	float *in2  =  inputs[1];
 	float *out1 = outputs[0];
-	float *out2 = outputs[1];
+	float *in2  = 0;
+	float *out2 = 0;
+	if (! mono) 
+	{
+		in2  =  inputs[1];
+		out2 = outputs[1];
+	}
 
 	if (sampleFrames!=mExternBufferSize)
 	{
@@ -183,29 +196,33 @@ void CLAMTest::process (float **inputs, float **outputs, long sampleFrames)
 
 
 	//buffer2clam
-	mReceiverList.at(0).processing->Do( (TData*) in1 , sampleFrames );
-	mReceiverList.at(1).processing->Do( (TData*) in2 , sampleFrames );
+	mReceiverList.at(0).processing->Do( in1 , sampleFrames );
+	if (! mono) mReceiverList.at(1).processing->Do( in2 , sampleFrames );
 	
 	//Do() as much as it is needed
 	for (int stepcount=0; stepcount < (int(mExternBufferSize)/int(mClamBufferSize)); stepcount++)
 		GetNetwork().Do();
 	
 	//clam2buffer
-	mSenderList.at(0).processing->Do( (TData*) out1 , sampleFrames );
-	mSenderList.at(1).processing->Do( (TData*) out2 , sampleFrames );
+	mSenderList.at(0).processing->Do( out1 , sampleFrames );
+	if (! mono) mSenderList.at(1).processing->Do( out2 , sampleFrames );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
 void CLAMTest::FillNetwork()
 {
+	CLAM::SimpleOscillator();
+	CLAM::Oscillator();
 	GetNetwork().SetName("VST net");
-	GetNetwork().AddProcessing("Gen1", "AudioSource");
-	GetNetwork().AddProcessing("Gen2", "AudioSource");
-	GetNetwork().AddProcessing("Sink1", "AudioSink");
-	GetNetwork().AddProcessing("Sink2", "AudioSink");
-	GetNetwork().ConnectPorts("Gen1.AudioOut","Sink1.AudioIn");
-	GetNetwork().ConnectPorts("Gen2.AudioOut","Sink2.AudioIn");
-	GetNetwork().AddProcessing("Ctrl","ControlSource");
+	GetNetwork().AddProcessing("AudioSink", "AudioSink");
+	GetNetwork().AddProcessing("AudioSource", "AudioSource");
+	GetNetwork().AddProcessing("Oscillator", "SimpleOscillator");
+	GetNetwork().AddProcessing("Modulator", "Oscillator");
+	GetNetwork().AddProcessing("ControlSource_0", "ControlSource");
+	GetNetwork().ConnectPorts("AudioSource.AudioOut","Modulator.Input Phase Modulation");
+	GetNetwork().ConnectPorts("Modulator.Audio Output","AudioSink.AudioIn");
+	GetNetwork().ConnectPorts("Oscillator.Audio Output","Modulator.Input Frequency Modulation");
+	GetNetwork().ConnectControls("ControlSource_0.output","Modulator.Pitch");
 }
 
 void CLAMTest::ProcessInputControls()
