@@ -1,27 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink" type="AudioSink"/>
 
-  <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
-    <SourceFile>
-      <URI>/home/vokimon/CajitasDeArena/svnclam/NetworkEditor/example-data/Guillamino_CitiusAltiusFortius.mp3</URI>
-      <Header>
-        <SampleRate>44100</SampleRate>
-        <Samples>1443393</Samples>
-        <Channels>1</Channels>
-        <Length>32730</Length>
-        <Format>Mpeg Audio Layer 3</Format>
-        <Encoding>Format Default</Encoding>
-        <Endianess>Format Default</Endianess>
-      </Header>
-      <TextualDescriptors/>
-    </SourceFile>
-    <SelectedChannel>0</SelectedChannel>
-    <Loop>1</Loop>
+  <processing id="AudioSource" type="AudioSource"/>
+
+  <processing id="ControlSource_0" type="ControlSource">
+    <MinValue>200</MinValue>
+    <MaxValue>4000</MaxValue>
+    <Step>1</Step>
+    <UnitName>Hz</UnitName>
   </processing>
 
-  <processing id="Oscillator_0" type="Oscillator">
+  <processing id="Modulator" type="Oscillator">
     <Frequency>440</Frequency>
     <Amplitude>1</Amplitude>
     <ModIndex>1</ModIndex>
@@ -29,7 +20,7 @@
     <SamplingRate>44100</SamplingRate>
   </processing>
 
-  <processing id="SimpleOscillator_0" type="SimpleOscillator">
+  <processing id="Oscillator" type="SimpleOscillator">
     <Frequency>10</Frequency>
     <Amplitude>1</Amplitude>
     <Phase>0</Phase>
@@ -37,18 +28,23 @@
   </processing>
 
   <port_connection>
-    <out>MonoAudioFileReader_0.Samples Read</out>
-    <in>Oscillator_0.Input Phase Modulation</in>
+    <out>AudioSource.AudioOut</out>
+    <in>Modulator.Input Phase Modulation</in>
   </port_connection>
 
   <port_connection>
-    <out>Oscillator_0.Audio Output</out>
-    <in>AudioSink_0.AudioIn</in>
+    <out>Modulator.Audio Output</out>
+    <in>AudioSink.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>SimpleOscillator_0.Audio Output</out>
-    <in>Oscillator_0.Input Frequency Modulation</in>
+    <out>Oscillator.Audio Output</out>
+    <in>Modulator.Input Frequency Modulation</in>
   </port_connection>
+
+  <control_connection>
+    <out>ControlSource_0.output</out>
+    <in>Modulator.Pitch</in>
+  </control_connection>
 
 </network>
