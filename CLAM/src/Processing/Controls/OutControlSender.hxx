@@ -54,6 +54,8 @@ class OutControlSender : public Processing
 {
 	OutControlSenderConfig mConfig;
 	OutControl mOutput;
+	TControlData mLastValue;
+	bool mFirstDoAfterStart;
 public:
 	OutControlSender();
 	OutControlSender( const OutControlSenderConfig & );
@@ -62,7 +64,10 @@ public:
 	const char * GetClassName() const {return "OutControlSender";}
 
 	const ProcessingConfig &GetConfig() const { return mConfig;}
+	void SendControl(TControlData value);
+protected:
 	bool ConcreteConfigure(const ProcessingConfig& c);
+	bool ConcreteStart();
 };
 
 } //namespace CLAM

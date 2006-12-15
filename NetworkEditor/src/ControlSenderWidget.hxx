@@ -56,13 +56,13 @@ private slots:
 		double dvalue = _min + value*_step;
 		_slider->setValue(value);
 		_spinBox->setValue(dvalue);
-		_sender->GetOutControls().Get( "out" ).SendControl( dvalue );
+		_sender->SendControl(dvalue);
 	}
 	void continuousControlChanged(double value)
 	{
 		_slider->setValue((value-_min)/_step);
 		_spinBox->setValue(value);
-		_sender->GetOutControls().Get( "out" ).SendControl( value );
+		_sender->SendControl(value);
 	}
 private:
 	QSlider * _slider;
