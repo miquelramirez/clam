@@ -34,6 +34,7 @@ void OutControlSenderConfig::DefaultInit(void)
 
 OutControlSender::OutControlSender()
 	: mOutput("out", this)
+	, mFirstDoAfterStart(true)
 {
 	OutControlSenderConfig cfg;
 	Configure(cfg);
@@ -41,15 +42,36 @@ OutControlSender::OutControlSender()
 
 OutControlSender::OutControlSender( const OutControlSenderConfig & cfg)
 	: mOutput( "out", this )
+	, mFirstDoAfterStart(true)
 {
 	Configure(cfg);
 }
 
 
+bool OutControlSender::ConcreteStart()
+{
+	mFirstDoAfterStart=true;
+	std::cout << "Start" << std::endl;
+	return true;
+}
+
 bool OutControlSender::Do()
 {
 	if( !AbleToExecute() ) return true;
+	if (mFirstDoAfterStart)
+	{
+		std::cout << "First do" << std::endl;
+		mFirstDoAfterStart=false;
+		mOutput.SendControl( mLastValue );
+	}
 	return true;
+}
+
+void OutControlSender::SendControl(TControlData value)
+{
+	// TODO: Solve thread boundary here
+	mLastValue=value;
+	mOutput.SendControl( mLastValue );
 }
 
 bool OutControlSender::ConcreteConfigure(const ProcessingConfig& c)
@@ -70,8 +92,7 @@ bool OutControlSender::ConcreteConfigure(const ProcessingConfig& c)
 		AddConfigErrorMessage(" step value equal to 0");
 		return false;
 	}
-
-	mOutput.SendControl( mConfig.GetDefault() );
+	mLastValue = mConfig.GetDefault();
 	return true;
 }
 
