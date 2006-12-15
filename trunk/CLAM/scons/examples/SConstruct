@@ -111,7 +111,6 @@ singleSourceExamples = [
 #	"../../examples/CLAMRemoteController/LADSPAHandler.cxx",
 #	"../../examples/NetworkLADSPAPlugin/LADSPAHandler.cxx",
 #	"../../examples/NetworkLADSPAPlugin/NetworkLADSPAPlugin.cxx",
-#	"../../examples/QtDesignerPlugins/CLAMWidgetsPlugin.cxx",
 qtPlotUtils = [
 	"../../examples/QtPlots/utils/analysis_utils.cxx",
 	"../../examples/QtPlots/utils/audio_file_utils.cxx",
