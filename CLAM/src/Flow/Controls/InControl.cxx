@@ -44,7 +44,7 @@ bool InControl::IsConnectedTo( OutControl & out)
 
 bool InControl::IsConnected() const
 {
-	return true;
+	return false;
 }
 
 void InControl::OutControlInterface_AddLink(OutControl & outControl)
