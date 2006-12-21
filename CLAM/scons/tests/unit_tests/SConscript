@@ -17,7 +17,7 @@ def unique(list) :
 folders = [
 	os.path.join('UnitTests'),
 	os.path.join('UnitTests','CommonHelpers'),
-	os.path.join('UnitTests','ControlTests'),
+	os.path.join('UnitTests','ControlsTests'),
 	os.path.join('UnitTests','DescriptorsTests'),
 	os.path.join('UnitTests','DynamicTypeTests'),
 	os.path.join('UnitTests','FactoryTest'),
