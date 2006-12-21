@@ -81,6 +81,7 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	CPPUNIT_TEST( testInControlIsConnected_whenDisconnected );
 	// Destructor disconnections
 	CPPUNIT_TEST( testInControlDestructor_disconnectsOutControl );
+	CPPUNIT_TEST( testOutControlDestructor_disconnectsInControl );
 
 	
 	
@@ -383,6 +384,15 @@ private:
 			out.AddLink(in);
 		}
 		CPPUNIT_ASSERT_EQUAL(false, out.IsConnected());
+	}
+	void testOutControlDestructor_disconnectsInControl()
+	{
+		CLAM::InControl in("Receiver");
+		{
+			CLAM::OutControl out("Sender");
+			out.AddLink(in);
+		}
+		CPPUNIT_ASSERT_EQUAL(false, in.IsConnected());
 	}
 
 };

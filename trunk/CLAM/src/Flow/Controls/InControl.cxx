@@ -35,8 +35,8 @@ InControl::InControl(const std::string &name, Processing* parent, const bool pub
 
 InControl::~InControl() 
 {
-//	for (std::list<OutControl*>::iterator it = mLinks.begin(); it!=mLinks.end(); it++)
-//		(*it)->RemoveLink(*this);
+	while (!mLinks.empty())
+		mLinks.front()->RemoveLink(*this);
 }
 
 bool InControl::IsConnectedTo( OutControl & out)
