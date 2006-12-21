@@ -70,10 +70,12 @@ std::list<InControl*>::iterator OutControl::EndInControlsConnected()
 void OutControl::AddLink(InControl& in)
 {
 	mLinks.push_back(&in);
+	in.OutControlInterface_AddLink(*this);
 }
 void OutControl::RemoveLink(InControl& in)
 {
 	mLinks.remove( &in );
+	in.OutControlInterface_RemoveLink(*this);
 }
 int OutControl::SendControl(TControlData val)
 {
@@ -89,7 +91,7 @@ int OutControl::SendControl(TControlData val)
 
 bool OutControl::IsConnected()
 {
-	return (mLinks.size()!=0);
+	return ! mLinks.empty();
 }
 
 bool OutControl::IsConnectedTo( InControl & in)
