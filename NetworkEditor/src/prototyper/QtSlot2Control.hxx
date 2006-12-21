@@ -18,7 +18,7 @@ public:
 	virtual ~QtSlot2Control(){}
 	void linkControl(CLAM::InControl & receiver)
 	{
-		_sender.AddLink(& receiver);
+		_sender.AddLink(receiver);
 	}
 public slots:
 	void sendMappedControl(int value)
