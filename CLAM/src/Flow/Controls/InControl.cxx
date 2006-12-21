@@ -42,6 +42,19 @@ bool InControl::IsConnectedTo( OutControl & out)
 	return out.IsConnectedTo( *this );
 }
 
+bool InControl::IsConnected() const
+{
+	return true;
+}
+
+void InControl::OutControlInterface_AddLink(OutControl & outControl)
+{
+}
+
+void InControl::OutControlInterface_RemoveLink(OutControl & outControl)
+{
+}
+
 
 //  InControl::OutControlIterator InControl::GetOutControls() const
 //  {
