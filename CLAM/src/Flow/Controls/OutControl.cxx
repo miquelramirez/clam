@@ -47,7 +47,11 @@ OutControl::OutControl(const std::string& name, Processing* parent, const bool p
 {
 }
 */
-OutControl::~OutControl() {}
+OutControl::~OutControl()
+{
+	while (!mLinks.empty())
+		RemoveLink(*mLinks.front());
+}
 /*OutControl::OutControl(const OutControl& src)
 {
 	MTG_ASSERT(false, "long text saying that you are in the wrong way... (todo)")
