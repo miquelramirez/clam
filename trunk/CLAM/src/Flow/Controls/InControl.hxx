@@ -25,6 +25,7 @@
 #include "ControlLinker.hxx"
 #include <sstream>
 #include <string>
+#include <list>
 
 namespace CLAM {
 
@@ -42,6 +43,7 @@ class InControl
 {
 // Attributes:
 protected:
+	std::list<OutControl*> mLinks;
 	TControlData mLastValue;
 	std::string mName;
 	Processing * mParent;
@@ -56,7 +58,13 @@ public:
 	virtual TControlData GetLastValue() const { return mLastValue; };
 	const std::string& GetName() const { return mName; }
 	bool IsConnectedTo( OutControl & );
+	bool IsConnected() const;
 	Processing * GetProcessing() const { return mParent;}
+	
+	/// Implementation detail just to be used from OutControl
+	void OutControlInterface_AddLink(OutControl & outControl);
+	/// Implementation detail just to be used from OutControl
+	void OutControlInterface_RemoveLink(OutControl & outControl);
 
 //Constructor/Destructor
 	/**
