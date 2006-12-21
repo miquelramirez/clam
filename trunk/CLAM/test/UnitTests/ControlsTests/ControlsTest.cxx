@@ -76,7 +76,7 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	CPPUNIT_TEST( testInControlPublisher_DoControlWhenNothingPublished );
 
 	// Destructor disconnections
-	CPPUNIT_TEST( testInControlIsConnected_byDefault )
+	CPPUNIT_TEST( testInControlIsConnected_byDefault );
 //	CPPUNIT_TEST( testInControlDestructor_disconnectsOutControl );
 
 	
