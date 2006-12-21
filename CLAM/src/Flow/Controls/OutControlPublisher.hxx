@@ -32,7 +32,7 @@ namespace CLAM
 				mPublished = &out;
 			}
 
-			void AddLink( InControl* in )
+			void AddLink( InControl& in )
 			{
 				OutControl::AddLink( in );
 				if(mPublished) mPublished->AddLink( in );

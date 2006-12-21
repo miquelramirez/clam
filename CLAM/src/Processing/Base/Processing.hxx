@@ -61,14 +61,14 @@ namespace CLAM {
 			Processing & receiver, unsigned inPortNumber );
 	/**
 	 * Free function that connects two controls.
-	 * Short hand for sender.GetOutControls().GetByNumber(outControlNumber).AddLink(&receiver.GetOutControls().GetByNumber(inControlNumber))
+	 * Short hand for sender.GetOutControls().GetByNumber(outControlNumber).AddLink( receiver.GetOutControls().GetByNumber(inControlNumber))
 	 */
 	void ConnectControls(
 			Processing & sender, unsigned outControlNumber, 
 			Processing & receiver, unsigned inControlNumber );
 	/**
 	 * Connects two controls of two processings selecting them by the control name.
-	 * Short hand for sender.GetOutControls().GetByName(outControlName).AddLink(&receiver.GetOutControls().GetByName(inControlName))
+	 * Short hand for sender.GetOutControls().GetByName(outControlName).AddLink( receiver.GetOutControls().GetByName(inControlName))
 	 */
 	void ConnectControls(
 			Processing & sender, const std::string & outControlName, 

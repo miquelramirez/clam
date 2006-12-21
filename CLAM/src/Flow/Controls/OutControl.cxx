@@ -21,7 +21,6 @@
 
 #include "OutControl.hxx"
 #include "InControl.hxx"
-#include "ControlLinker.hxx"
 #include "Processing.hxx"
 
 namespace CLAM {
@@ -33,7 +32,7 @@ namespace CLAM {
 //		OutControl* out = &(outProc->GetOutControls().Get(outControl));
 //		InControl* in = &(inProc->GetInControls().Get(inControl));
 //		
-//		out->AddLink(in);
+//		out->AddLink(*in);
 //	}
 
 // Creation/Destruction
@@ -68,13 +67,13 @@ std::list<InControl*>::iterator OutControl::EndInControlsConnected()
 
 
 
-void OutControl::AddLink(InControl* in)
+void OutControl::AddLink(InControl& in)
 {
-	mLinks.push_back(in);
+	mLinks.push_back(&in);
 }
-void OutControl::RemoveLink(InControl* in)
+void OutControl::RemoveLink(InControl& in)
 {
-	mLinks.remove(in);
+	mLinks.remove( &in );
 }
 int OutControl::SendControl(TControlData val)
 {

@@ -47,7 +47,7 @@ namespace CLAMVM
 		
 		bool ControlAdapter::BindTo( InControl& adaptee )
 		{
-				mEmitter.mControl.AddLink( &adaptee );
+				mEmitter.mControl.AddLink( adaptee );
 
 				mIsBound = true;
 

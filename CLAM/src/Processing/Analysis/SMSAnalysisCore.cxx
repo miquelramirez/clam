@@ -215,7 +215,7 @@ void SMSAnalysisCore::ConnectAndPublishPorts()
 	mSinSpectralAnalysis.GetOutPort("Output").ConnectToIn( mPeakDetect.GetInPort("Input spectrum"));
 	mPeakDetect.GetOutPort( "Output spectral peak array" ).ConnectToIn( mFundDetect.GetInPort("Input"));
 	mPeakDetect.GetOutPort( "Output spectral peak array" ).ConnectToIn( mSinTracking.GetInPort( "Input" ));
-	mFundDetect.GetOutControl( "Fund Freq Value").AddLink( &(mSinTracking.GetInControl( "Fund Freq Value" )));
+	mFundDetect.GetOutControl( "Fund Freq Value").AddLink( mSinTracking.GetInControl( "Fund Freq Value" ));
 	mSinTracking.GetOutPort( "Output").ConnectToIn( mSynthSineSpectrum.GetInPort( "Input" ));
 
 	mResSpectralAnalysis.GetOutPort("Output").ConnectToIn( mSpecSubstracter.GetInPort( "Input 1"));

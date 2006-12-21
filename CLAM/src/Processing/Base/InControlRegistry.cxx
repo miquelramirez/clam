@@ -21,6 +21,7 @@
 
 #include "InControlRegistry.hxx"
 #include "InControl.hxx"
+#include "Assert.hxx"
 
 namespace CLAM
 {

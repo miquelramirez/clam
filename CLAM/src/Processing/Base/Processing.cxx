@@ -49,7 +49,7 @@ namespace CLAM {
 	{
 		OutControl & out = sender.GetOutControls().Get(outControlName);
 		InControl & in = receiver.GetInControls().Get(inControlName);
-		out.AddLink(&in);
+		out.AddLink(in);
 	}
 	void ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
@@ -66,7 +66,7 @@ namespace CLAM {
 	{
 		OutControl & out = sender.GetOutControls().GetByNumber(outControlNumber);
 		InControl & in = receiver.GetInControls().GetByNumber(inControlNumber);
-		out.AddLink(&in);
+		out.AddLink(in);
 	}
 	
 	void ConnectPorts(

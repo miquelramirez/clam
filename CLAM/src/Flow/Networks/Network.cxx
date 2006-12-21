@@ -327,7 +327,7 @@ namespace CLAM
 		if ( outcontrol.IsConnectedTo(incontrol) ) 
 			return false;
 
-		outcontrol.AddLink( &incontrol );
+		outcontrol.AddLink( incontrol );
 		return true;
 	}
 
@@ -355,7 +355,7 @@ namespace CLAM
 		if ( !outcontrol.IsConnectedTo( incontrol )) 
 			return false;
 
-		outcontrol.RemoveLink( &incontrol );
+		outcontrol.RemoveLink( incontrol );
 		return true;
 	}
 

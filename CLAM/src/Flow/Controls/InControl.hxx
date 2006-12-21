@@ -22,7 +22,6 @@
 #ifndef _InControl_
 #define _InControl_
 
-#include "ControlLinker.hxx"
 #include <sstream>
 #include <string>
 #include <list>

@@ -86,10 +86,10 @@ bool MIDIKeyboard::ConcreteConfigure( const ProcessingConfig& cfg )
 	mPitchBendOut.PublishOutControl( outPitchBend );
 	mModulationOut.PublishOutControl( outModulation );	
 
-	mNoteOut.AddLink( &mNoteInControl );
-	mVelocityOut.AddLink( &mVelocityInControl );
-	mPitchBendOut.AddLink( &mPitchBendInControl );
-	mModulationOut.AddLink( &mModulationInControl );
+	mNoteOut.AddLink( mNoteInControl );
+	mVelocityOut.AddLink( mVelocityInControl );
+	mPitchBendOut.AddLink( mPitchBendInControl );
+	mModulationOut.AddLink( mModulationInControl );
 
 	mClockerConfig.SetDevice( mConfig.GetMidiDevice() );
 	mClocker.Configure( mClockerConfig );
