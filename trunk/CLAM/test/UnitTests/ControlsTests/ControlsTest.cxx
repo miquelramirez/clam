@@ -107,7 +107,7 @@ private:
 	{
 		CLAM::InControl in("in");
 		CLAM::OutControl out("out");
-		out.AddLink(&in);
+		out.AddLink(in);
 		out.SendControl(1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f , in.GetLastValue() );
 	}
@@ -215,7 +215,7 @@ private:
 	{	
 		CLAM::InControl in("in");
 		CLAM::OutControl out("out");
-		out.AddLink(&in);
+		out.AddLink(in);
 		CPPUNIT_ASSERT_EQUAL( true, out.IsConnected() );
 	}
 
@@ -230,7 +230,7 @@ private:
 	{
 		CLAM::InControl in("in");
 		CLAM::OutControl out("out");
-		out.AddLink(&in);
+		out.AddLink(in);
 		CPPUNIT_ASSERT_EQUAL( true, in.IsConnectedTo(out) );
 
 	}
@@ -249,7 +249,7 @@ private:
 	{
 		CLAM::InControl in("in");
 		CLAM::OutControl out("out");
-		out.AddLink(&in);
+		out.AddLink(in);
 		CPPUNIT_ASSERT_EQUAL( true, out.IsConnectedTo(in) );
 	}
 
@@ -267,7 +267,7 @@ private:
 		CLAM::OutControlPublisher outPublisher;
 		outPublisher.PublishOutControl( out );
 		CLAM::OutControl& publisherBaseRef = outPublisher;
-		publisherBaseRef.AddLink( &in );
+		publisherBaseRef.AddLink(in);
 		out.SendControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
 	}
@@ -279,7 +279,7 @@ private:
 		CLAM::InControlPublisher inPublisher;
 		inPublisher.PublishInControl( in );
 		CLAM::InControl& publisherBaseRef = inPublisher;
-		out.AddLink( &publisherBaseRef );
+		out.AddLink( publisherBaseRef );
 		out.SendControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
 	}
@@ -321,7 +321,7 @@ private:
 		CLAM::OutControl innerControlPublished("published"); // does the role of a "hidden" inner control
 		CLAM::InControl receiver("receiver");
 		proc.outControlPublisher.PublishOutControl( innerControlPublished );
-		proc.outControlPublisher.AddLink( &receiver );
+		proc.outControlPublisher.AddLink( receiver );
 		innerControlPublished.SendControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 1.f, receiver.GetLastValue() );
 	}
@@ -332,7 +332,7 @@ private:
 		CLAM::InControl innerControlPublished("published"); // does the role of a "hidden" inner control
 		CLAM::OutControl sender("sender");
 		proc.inControlPublisher.PublishInControl( innerControlPublished );
-		sender.AddLink( &proc.inControlPublisher );
+		sender.AddLink( proc.inControlPublisher );
 		sender.SendControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 1.f, innerControlPublished.GetLastValue() );
 	}
@@ -341,7 +341,7 @@ private:
 	{
 		CLAM::OutControlPublisher publisher;
 		CLAM::InControl receiver("receiver");
-		publisher.AddLink(&receiver);
+		publisher.AddLink(receiver);
 		publisher.SendControl(1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f, receiver.GetLastValue() );		
 	}
@@ -362,7 +362,7 @@ private:
 		CLAM::OutControl out("Sender");
 		{
 			CLAM::InControl in("Receiver");
-			out.AddLink(&in);
+			out.AddLink(in);
 		}
 		CPPUNIT_ASSERT_EQUAL(false, out.IsConnected());
 	}

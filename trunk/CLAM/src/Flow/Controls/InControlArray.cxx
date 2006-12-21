@@ -19,9 +19,10 @@
  *
  */
 
- #include "InControlArray.hxx"
+#include "InControlArray.hxx"
+#include "Assert.hxx"
  
- namespace CLAM{
+namespace CLAM{
  	
 InControlArray::InControlArray(int size, const std::string &name, Processing *parent)
 {
