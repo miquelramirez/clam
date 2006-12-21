@@ -74,6 +74,10 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	CPPUNIT_TEST( testInControlPublisher_GetsRegisteredToAProcessing );
 	CPPUNIT_TEST( testInControlPublisher_ConnectControlsFromPublisher );
 	CPPUNIT_TEST( testInControlPublisher_DoControlWhenNothingPublished );
+
+	// Destructor disconnections
+	CPPUNIT_TEST( testInControlDestructor_disconnectsOutControl );
+
 	
 	
 	CPPUNIT_TEST_SUITE_END();
@@ -347,7 +351,16 @@ private:
 		publisher.DoControl(1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f, publisher.GetLastValue() );
 	}
-	
+	void testInControlDestructor_disconnectsOutControl()
+	{
+		CLAM::OutControl out("Sender");
+		{
+			CLAM::InControl in("Receiver");
+			out.AddLink(in);
+		}
+		CPPUNIT_ASSERT_EQUAL(false, out.IsConnected());
+	}
+
 };
 
 
