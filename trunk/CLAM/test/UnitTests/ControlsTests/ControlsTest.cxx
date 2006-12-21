@@ -356,7 +356,7 @@ private:
 		CLAM::OutControl out("Sender");
 		{
 			CLAM::InControl in("Receiver");
-			out.AddLink(in);
+			out.AddLink(&in);
 		}
 		CPPUNIT_ASSERT_EQUAL(false, out.IsConnected());
 	}
