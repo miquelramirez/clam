@@ -10,7 +10,6 @@ class ConfiguratorLauncher : public CLAM::Qt4Configurator // Inherits just to ac
 public:
 	virtual ~ConfiguratorLauncher() {}
 	virtual bool Launch(CLAM::Processing & processing, const QString & name)=0;
-	virtual void Apply(CLAM::Processing & processing)=0;
 	virtual const CLAM::ProcessingConfig& GetConfiguration() const=0;
 };
 
@@ -28,10 +27,6 @@ public:
 		configurator.setWindowTitle(name);
 		configurator.SetConfig(_config);
 		return configurator.exec();
-	}
-	void Apply(CLAM::Processing & processing)
-	{
-		processing.Configure(_config);
 	}
 	const CLAM::ProcessingConfig& GetConfiguration() const
 	{
@@ -55,10 +50,6 @@ public:
 		configurator.setWindowTitle(name);
 		configurator.SetConfig(_config);
 		return configurator.exec();
-	}
-	void Apply(CLAM::Processing & processing)
-	{
-		processing.Configure(_config);
 	}
 	const CLAM::ProcessingConfig& GetConfiguration() const
 	{
