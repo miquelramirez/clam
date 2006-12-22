@@ -230,7 +230,6 @@ void JACKNetworkPlayer::Stop()
 		std::cerr << "JACK ERROR: cannot deactivate client" << std::endl;
 		exit(1);
 	}
-	GetNetwork().Stop();
 }
 
 void JACKNetworkPlayer::Do(const jack_nframes_t nframes)

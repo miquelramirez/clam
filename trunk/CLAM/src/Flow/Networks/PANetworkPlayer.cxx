@@ -200,8 +200,6 @@ void PANetworkPlayer::Stop()
 	
 	//PA CODE (the init order of network, ... should be decided) : deactivate
 	Pa_StopStream( mPortAudioStream );
-	
-	GetNetwork().Stop();
 }
 
 void PANetworkPlayer::ControlIfPortAudioError(int result)

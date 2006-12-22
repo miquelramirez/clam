@@ -321,7 +321,7 @@ void PrototypeLoader::Start()
 void PrototypeLoader::Stop()
 {
 	std::cout << "Stopping..." << std::endl;
-	_player->Stop();
+	_network.Stop();
 	UpdatePlayStatus();
 }
 
