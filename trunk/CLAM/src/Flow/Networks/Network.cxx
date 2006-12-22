@@ -22,6 +22,7 @@
 
 #include "Network.hxx"
 #include "FlowControl.hxx"
+#include "NetworkPlayer.hxx"
 #include <algorithm>
 #include "ProcessingDefinitionAdapter.hxx"
 #include "ConnectionDefinitionAdapter.hxx"
@@ -35,7 +36,8 @@ namespace CLAM
 
 	Network::Network() :
 		mName("Unnamed Network"),
-		mFlowControl(0)
+		mFlowControl(0),
+		mPlayer(0)
 	{}
 	
 	Network::~Network()
@@ -43,6 +45,7 @@ namespace CLAM
 		//std::cerr <<" *\t\t\t~NETWORK"<<std::endl;
 		Clear();
 		if (mFlowControl) delete mFlowControl;
+		if (mPlayer) delete mPlayer;
 	}
 
 	void Network::StoreOn( Storage & storage) const
@@ -157,13 +160,18 @@ namespace CLAM
 
 	}
 
-	/** Gets the ownership of the FlowControl passed. So it will be deleted by the destructor */
 	void Network::AddFlowControl(FlowControl* flowControl)
 	{
 
 		if (mFlowControl) delete mFlowControl;
 		mFlowControl = flowControl;
 		mFlowControl->AttachToNetwork(this);
+	}
+	void Network::SetPlayer(NetworkPlayer* player)
+	{
+		if (mPlayer) delete mPlayer;
+		mPlayer = player;
+		mPlayer->SetNetworkBackLink(*this);	
 	}
 
 	Processing& Network::GetProcessing( const std::string & name ) const
@@ -431,6 +439,12 @@ namespace CLAM
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetOutControls().Get( GetConnectorIdentifier(name) );
+	}
+
+	bool Network::IsStopped() const
+	{
+		if (! mPlayer) return true;
+		return mPlayer->IsStopped();
 	}
 
 	void Network::Start()

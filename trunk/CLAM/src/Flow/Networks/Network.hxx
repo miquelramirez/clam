@@ -38,11 +38,12 @@
 
 namespace CLAM
 {
-
+class NetworkPlayer;
 class FlowControl;
 
 class Network : public Component
 {
+
 public:
 	typedef std::map< std::string, Processing* > ProcessingsMap;
 	typedef std::list<std::string> NamesList;
@@ -59,12 +60,15 @@ public:
 	{
 		return "Network";
 	}
+	bool IsStopped() const;
 	void Start();
 	void Stop();
 	void Do();
+	/** Gets the ownership of the FlowControl passed. So it will be deleted by the destructor */
 	void AddFlowControl( FlowControl* );
 	void Clear();
-
+	/** Set the object in charge of managing the processing thread. Receives property of the player. */
+	void SetPlayer( NetworkPlayer* player);
 	//Methods related to OSClistening, needed to keep independance in NetEditor
 	virtual bool IsListeningOSC() const { return false;}
 	virtual void StartListeningOSC() {}
@@ -158,6 +162,7 @@ private:
 	static std::size_t PositionOfProcessingIdentifier( const std::string& );
 	static char NamesIdentifiersSeparator();
 	FlowControl* mFlowControl;
+	NetworkPlayer* mPlayer;
 };
 
 }// namespace

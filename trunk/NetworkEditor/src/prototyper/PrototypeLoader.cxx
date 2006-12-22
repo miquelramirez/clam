@@ -78,7 +78,7 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 	try
    	{
 		CLAM::XMLStorage::Restore(_network, _networkFile);
-		_player->SetNetwork(_network);
+		_network.SetPlayer(_player);
 		return true;
 	}
 	catch (CLAM::XmlStorageErr & e)
@@ -96,7 +96,6 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 
 PrototypeLoader::~PrototypeLoader()
 {
-	if (_player) delete _player;
 }
 void PrototypeLoader::Show()
 {
@@ -331,7 +330,7 @@ void PrototypeLoader::UpdatePlayStatus()
 	QLabel * playbackIndicator = _interface->findChild<QLabel*>("PlaybackIndicator");
 	if (playbackIndicator)
 	{
-		if ( !_player->IsStopped())
+		if ( !_network.IsStopped())
 			playbackIndicator->setText("<p style='color:green'>Playing...</p>");
 		else
 			playbackIndicator->setText("<p style='color:red'>Stopped</p>");

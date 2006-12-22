@@ -17,8 +17,6 @@ private:
 	Thread mThread;
 	
 public:
-	//When created in the prototyper
-	BlockingNetworkPlayer(const std::string & networkFile);
 	//When created in neteditor
 	BlockingNetworkPlayer();
 	
