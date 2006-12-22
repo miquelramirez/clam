@@ -219,11 +219,11 @@ namespace CLAM
 	{
 		std::string name;
 
-		for ( int i = 0; i<9999999; i++ ) // 9999999 is just an arbitrary large value
+		for ( int i = 0; i<9999999; i++ ) 
 		{
 			std::stringstream tmp; 
 			tmp << i;
-			name = prefix + "_" + tmp.str(); // pseudo code ofcourse
+			name = prefix + "_" + tmp.str(); 
 			if (!this->HasProcessing( name ) ) return name;
 		}
 		CLAM_ASSERT(false, "All valid id's for given prefix are exhausted");
