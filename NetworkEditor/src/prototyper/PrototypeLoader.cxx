@@ -314,7 +314,7 @@ void PrototypeLoader::Start()
 		return;
 	}
 	std::cout << "Starting..." << std::endl;
-	_player->Start();
+	_network.Start();
 	UpdatePlayStatus();
 }
 

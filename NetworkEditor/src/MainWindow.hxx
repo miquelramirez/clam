@@ -289,7 +289,7 @@ public slots:
 				tr("<p>The network needs an AudioIn or AudioOut in order to be playable.</p>"));
 			return;
 		}
-		_networkPlayer->Start();
+		_network.Start();
 		updatePlayStatusIndicator();
 	}
 	void on_action_Stop_triggered()

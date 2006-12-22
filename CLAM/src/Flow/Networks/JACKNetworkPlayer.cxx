@@ -196,8 +196,6 @@ void JACKNetworkPlayer::Start()
 	UnRegisterPorts();
 	RegisterPorts();
 		
-	GetNetwork().Start();
-
 	//JACK CODE (the init order of network, ... should be decided)
 	if (jack_activate (mJackClient)) {
 		std::cerr << "JACK ERROR: cannot activate client" << std::endl;
