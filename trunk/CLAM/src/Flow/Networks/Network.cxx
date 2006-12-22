@@ -247,22 +247,8 @@ namespace CLAM
 		Processing * proc = i->second;
 		mProcessings.erase( name );
 
-		InPortRegistry::Iterator itInPort;
-		for(itInPort=proc->GetInPorts().Begin(); itInPort!=proc->GetInPorts().End(); itInPort++)
-		{
-			if((*itInPort)->GetVisuallyConnectedOutPort())
-				(*itInPort)->Disconnect();
-		}
-
-		OutPortRegistry::Iterator itOutPort;
-		for(itOutPort=proc->GetOutPorts().Begin(); itOutPort!=proc->GetOutPorts().End(); itOutPort++)
-		{
-			if((*itOutPort)->HasConnections())
-				(*itOutPort)->DisconnectFromAll();
-		}
-
-		mFlowControl->ProcessingRemovedFromNetwork(*proc);
 		delete proc;		
+		mFlowControl->ProcessingRemovedFromNetwork(*proc);
 	}
 
 	bool Network::HasProcessing( const std::string& name ) const
