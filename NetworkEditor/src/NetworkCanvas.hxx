@@ -404,6 +404,10 @@ public:
 				tr("<p>The processing type '<tt>%1</tt>' is not supported.</p>").arg(type));
 		}
 	}
+	void configure( const QString& name, const CLAM::ProcessingConfig& config )
+	{
+		_network->ConfigureProcessing( name.toStdString(), config);	
+	}
 private:
 	void addProcessingBox(const QString & name, CLAM::Processing * processing, QPoint point=QPoint(), QSize size=QSize())
 	{

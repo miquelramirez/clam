@@ -9,28 +9,33 @@ class ConfiguratorLauncher : public CLAM::Qt4Configurator // Inherits just to ac
 {
 public:
 	virtual ~ConfiguratorLauncher() {}
-	virtual bool Launch(CLAM::Processing & processing, const QString & name) =0;
+	virtual bool Launch(CLAM::Processing & processing, const QString & name)=0;
 	virtual void Apply(CLAM::Processing & processing)=0;
+	virtual const CLAM::ProcessingConfig& GetConfiguration() const=0;
 };
 
 template <typename Config>
 class TypedConfiguratorLauncher : public ConfiguratorLauncher
 {
-	Config config;
+	Config _config;
 public:
 	bool Launch(CLAM::Processing & processing, const QString & name)
 	{
 		const CLAM::ProcessingConfig & originalConfig = processing.GetConfig();
-		config = dynamic_cast<const Config&> (originalConfig);
+		_config = dynamic_cast<const Config&> (originalConfig);
 
 		CLAM::Qt4Configurator configurator;
 		configurator.setWindowTitle(name);
-		configurator.SetConfig(config);
+		configurator.SetConfig(_config);
 		return configurator.exec();
 	}
 	void Apply(CLAM::Processing & processing)
 	{
-		processing.Configure(config);
+		processing.Configure(_config);
+	}
+	const CLAM::ProcessingConfig& GetConfiguration() const
+	{
+		return _config;
 	}
 	
 };
@@ -39,21 +44,25 @@ template <typename Widget>
 class WidgetTypedConfiguratorLauncher : public ConfiguratorLauncher
 {
 	typedef typename Widget::Config Config;
-	Config config;
+	Config _config;
 public:
 	bool Launch(CLAM::Processing & processing, const QString & name)
 	{
 		const CLAM::ProcessingConfig & originalConfig = processing.GetConfig();
-		config = dynamic_cast<const Config&> (originalConfig);
+		_config = dynamic_cast<const Config&> (originalConfig);
 
 		Widget configurator;
 		configurator.setWindowTitle(name);
-		configurator.SetConfig(config);
+		configurator.SetConfig(_config);
 		return configurator.exec();
 	}
 	void Apply(CLAM::Processing & processing)
 	{
-		processing.Configure(config);
+		processing.Configure(_config);
+	}
+	const CLAM::ProcessingConfig& GetConfiguration() const
+	{
+		return _config;
 	}
 	
 };
