@@ -99,7 +99,7 @@ public:
 			backendLogo = ":/icons/images/alsalogo-mini.png";
 			_networkPlayer = new CLAM::BlockingNetworkPlayer();
 		}
-		_networkPlayer->SetNetwork(_network);
+		_network.SetPlayer( _networkPlayer );
 
 		_playingLabel = new QLabel;
 		statusBar()->addPermanentWidget(_playingLabel);
@@ -119,7 +119,7 @@ public:
 	{
 		if (_canvas->networkIsDummy() )
 			_playingLabel->setText(tr("<p style='color:blue'>Dummy</p>"));
-		else if (! _networkPlayer->IsStopped())
+		else if (! _network.IsStopped())
 			_playingLabel->setText(tr("<p style='color:green'>Playing...</p>"));
 		else
 			_playingLabel->setText(tr("<p style='color:red'>Stopped</p>"));

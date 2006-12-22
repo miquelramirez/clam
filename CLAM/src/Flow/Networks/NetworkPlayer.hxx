@@ -34,7 +34,7 @@ namespace CLAM
 		virtual void Start()=0;
 		virtual void Stop()=0;
 		
-		void SetNetwork( Network& net )
+		void SetNetworkBackLink( Network& net )
 		{
 			mNetwork=&net;
 			SetModified(true);
