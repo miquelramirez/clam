@@ -646,7 +646,7 @@ bool ProcessingBox::configure()
 			return false;
 		}
 		if ( !launcher->Launch(*_processing,_name)) return false;
-		launcher->Apply(*_processing);
+		_canvas->configure( _name, launcher->GetConfiguration() );
 		setProcessing(_processing);
 		return true;
 	}
