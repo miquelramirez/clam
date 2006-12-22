@@ -14,10 +14,10 @@ distributions = [
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
-	( repositoryBase+'CLAM',          'clam',               '0.95.0'),
-	( repositoryBase+'Annotator',     'clam-annotator',     '0.3.3'),
-	( repositoryBase+'NetworkEditor', 'clam-networkeditor', '0.4.0'),
-	( repositoryBase+'SMSTools',      'clam-smstools',      '0.4.2'),
+	( repositoryBase+'CLAM',          'clam',               '0.96.0'),
+	( repositoryBase+'Annotator',     'clam-annotator',     '0.3.4'),
+	( repositoryBase+'NetworkEditor', 'clam-networkeditor', '0.4.1'),
+	( repositoryBase+'SMSTools',      'clam-smstools',      '0.4.3'),
 ]
 
 hooks = {

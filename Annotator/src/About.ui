@@ -63,7 +63,7 @@
        </property>
        <property name="text" >
         <string>&lt;p>&lt;b>Music Annotator v 0.3.1&lt;/b>&lt;/p>
-		&lt;p>Based on CLAM v0.90&lt;/p></string>
+		&lt;p>Based on CLAM &lt;/p></string>
        </property>
       </widget>
      </item>
