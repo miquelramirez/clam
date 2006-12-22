@@ -22,7 +22,7 @@ PANetworkPlayer::PANetworkPlayer(const std::string & networkFile)
 {
 	InitClient();
 
-	SetNetwork( *( new Network() ) );
+	SetNetworkBackLink( *( new Network() ) );
 
 	PushFlowControl * fc = new PushFlowControl(mClamBufferSize);
 	GetNetwork().AddFlowControl( fc );
@@ -185,11 +185,8 @@ void PANetworkPlayer::Start()
 		CloseStream();
 		OpenStream( GetNetwork() );
 	}
-	
 	SetStopped(false);
 	
-	GetNetwork().Start();
-
 	//PA CODE (the init order of network, ... should be decided) : activate
 	Pa_StartStream( mPortAudioStream );
 }
