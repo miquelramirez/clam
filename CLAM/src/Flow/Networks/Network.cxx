@@ -193,8 +193,8 @@ namespace CLAM
 	void Network::AddProcessing( const std::string & name, Processing* proc)
 	{
 		AssertFlowControlNotNull();
+		if (!IsStopped()) Stop();
 
-		// returns false if the key was repeated.
 		if (!mProcessings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
 
@@ -203,32 +203,15 @@ namespace CLAM
 
 	void Network::AddProcessing( const std::string & name, const std::string & key)
 	{
-		AssertFlowControlNotNull();
-
 		Processing * proc = ProcessingFactory::GetInstance().CreateSafe( key );
-
-		// returns false if the key was repeated.
-		if (!mProcessings.insert( ProcessingsMap::value_type( name, proc ) ).second )
-			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
-
-		mFlowControl->ProcessingAddedToNetwork(*proc);
+		AddProcessing(name, proc);
 	}
 
 	// returns the name that was used so the same one can be used when calling CreateProcessingController (hack)
 	std::string Network::AddProcessing( const std::string & key)
 	{
-		AssertFlowControlNotNull();
-
 		std::string name = GetUnusedName( key ); // this won't be needed in the future
-		
-		Processing * proc = ProcessingFactory::GetInstance().CreateSafe( key );
-
-		// returns false if the key was repeated.
-		if (!mProcessings.insert( ProcessingsMap::value_type( name , proc ) ).second )
-			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
-
-		mFlowControl->ProcessingAddedToNetwork(*proc);
-
+		AddProcessing(name, key);
 		return name;
 	}
 
@@ -260,6 +243,7 @@ namespace CLAM
 			msg += name;
 			CLAM_ASSERT(false, msg.c_str() );
 		}
+		if ( !IsStopped() ) Stop(); 
 		Processing * proc = i->second;
 		mProcessings.erase( name );
 
@@ -292,6 +276,7 @@ namespace CLAM
 		AssertFlowControlNotNull();
 		ProcessingsMap::iterator it = mProcessings.find( name );
 		Processing * proc = it->second;
+		if ( !IsStopped() ) Stop(); 
 		proc->Configure( newConfig );
 		mFlowControl->ProcessingConfigured(*proc);
 	}
@@ -323,6 +308,8 @@ namespace CLAM
 		if( inport.GetVisuallyConnectedOutPort())
 			return false;
 
+		if (!IsStopped()) Stop();
+
 		outport.ConnectToIn( inport );
 		return true;
 	}
@@ -334,6 +321,8 @@ namespace CLAM
 
 		if ( outcontrol.IsConnectedTo(incontrol) ) 
 			return false;
+
+		if (!IsStopped()) Stop();
 
 		outcontrol.AddLink( incontrol );
 		return true;
@@ -351,6 +340,8 @@ namespace CLAM
 		if ( !outport.IsVisuallyConnectedTo(inport))
 			return false;
 
+		if (!IsStopped()) Stop();
+
 		outport.DisconnectFromIn( inport );
 		return true;
 	}
@@ -363,30 +354,11 @@ namespace CLAM
 		if ( !outcontrol.IsConnectedTo( incontrol )) 
 			return false;
 
+		if (!IsStopped()) Stop();
+
 		outcontrol.RemoveLink( incontrol );
 		return true;
 	}
-
-	void Network::DisconnectAllPorts()
-	{
-		AssertFlowControlNotNull();
-		mFlowControl->NetworkTopologyChanged();
-
-		ProcessingsMap::iterator it;
-		// pass trough all the processing
-		for( it=mProcessings.begin(); it!=mProcessings.end(); it++)
-		{
-			Processing* proc = it->second;
-			InPortRegistry::Iterator iteratorInPorts;
-
-			//unattach all the inports of each processing
-			for(iteratorInPorts=proc->GetInPorts().Begin();
-			    iteratorInPorts!=proc->GetInPorts().End();
-			    iteratorInPorts++)
-				(*iteratorInPorts)->Disconnect();
-		}
-	}
-
 
 	char Network::NamesIdentifiersSeparator()
 	{ 	

@@ -83,7 +83,6 @@ public:
 	bool ConnectControls( const std::string &, const std::string & );
 	bool DisconnectPorts( const std::string &, const std::string & );
 	bool DisconnectControls( const std::string &, const std::string & );
-	void DisconnectAllPorts();
 
 	//! methods used to create processings and get them
 	Processing& GetProcessing( const std::string & name ) const;
