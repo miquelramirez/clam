@@ -1,5 +1,12 @@
 2006-12-22 CLAM 0.96.0
 'The most stable NetworkEditor ever'
+ * Network takes now the ownership of NetworkPlayer and applications
+   use the Network interface instead NetworkPlayer for Stoping, Playing...
+ * Fix: Networks stop if playing on 'letal' ops such processing 
+   add/rm/cfg, and control/port connection/Disconnection.
+ * Fix: Lost control link when a processing were removed
+ * Refactored dupplicated code on Network::AddProcessing overloads
+ * Ligther doxygen (source browser disabled by default)
 
 2006-12-04 CLAM 0.95.0
 'California release'
