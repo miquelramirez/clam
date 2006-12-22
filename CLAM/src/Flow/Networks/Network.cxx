@@ -453,7 +453,7 @@ namespace CLAM
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
 			if (it->second->GetExecState() == Processing::Ready)
 				it->second->Start();
-		mPlayer->Start();
+		if (mPlayer) mPlayer->Start();
 	}
 	
 	void Network::Stop()
