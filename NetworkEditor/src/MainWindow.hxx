@@ -177,7 +177,7 @@ public:
 	}
 	void clear(bool isDummy=false)
 	{
-		_networkPlayer->Stop();
+		_network.Stop();
 		_networkFile = QString();
 		_network.Clear();
 		_canvas->loadNetwork(isDummy?0:&_network);
@@ -294,7 +294,7 @@ public slots:
 	}
 	void on_action_Stop_triggered()
 	{
-		_networkPlayer->Stop();
+		_network.Stop();
 		updatePlayStatusIndicator();
 	}
 	void on_action_Zoom_in_triggered()

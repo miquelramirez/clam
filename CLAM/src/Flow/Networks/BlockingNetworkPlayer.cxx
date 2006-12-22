@@ -40,7 +40,6 @@ void BlockingNetworkPlayer::Stop()
 
 	SetStopped(true);
 	mThread.Stop();
-	GetNetwork().Stop();
 }
 
 void BlockingNetworkPlayer::Do()

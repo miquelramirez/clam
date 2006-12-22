@@ -458,6 +458,7 @@ namespace CLAM
 	
 	void Network::Stop()
 	{
+		if (mPlayer) mPlayer->Stop();
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
 			if (it->second->GetExecState() == Processing::Running)

@@ -8,9 +8,9 @@ proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
 distributions = [
 	('ubuntu', 'feisty', "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
-#	('ubuntu', 'edgy',   "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'edgy',   "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('debian', 'etch',   "http://ftp.de.debian.org/debian/", ['main']),
-#	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
+	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
@@ -141,7 +141,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 		run("gzip -c %s/Packages > %s/Packages.gz" %( resultdir, resultdir ) )
 
 	phase( "Uploading packages for '%s'"%distribution )
-	targetWebDir = "download/linux-%(maindistro)s-%(distro)s/cvssnapshots/"%{
+	targetWebDir = "download/linux-%(maindistro)s-%(distro)s/"%{
 		'resultdir' : resultdir,
 		'maindistro' : maindistro,
 		'distro': distribution,
