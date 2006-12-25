@@ -1,3 +1,9 @@
+clam (0.96.1-1) unstable; urgency=low
+
+  * Collapsed multiple libclam-* packages in libclam0 andn libclam-dev
+
+ -- CLAM Team <clam@iua.upf.es>  Wed, 26 Dec 2006 10:22:34 +0100
+
 clam (0.96.0-1) unstable; urgency=low
 
   * New upstream release

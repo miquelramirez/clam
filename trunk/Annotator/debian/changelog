@@ -1,3 +1,9 @@
+clam-annotator (0.3.4-2) unstable; urgency=low
+
+  * Only one libclam0 package 
+
+ -- CLAM Team <clam@iua.upf.es>  Sat, 26 Dec 2006 10:22:34 +0100
+
 clam-annotator (0.3.4-1) unstable; urgency=low
 
   * New upstream release

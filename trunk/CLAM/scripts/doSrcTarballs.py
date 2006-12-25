@@ -12,7 +12,7 @@ def phase(desc) :
 	print "\033[33m== ", desc, "\033[0m"
 
 versions = {
- "CLAM": "0.96",
+ "CLAM": "0.96.1",
  "NetworkEditor": "0.4.1",
  "Annotator" : "0.3.2",
  "SMSTools" : "0.4.3",
