@@ -30,12 +30,17 @@ def define_module_contents(env) :
 		'src/Flow/Networks/BlockingNetworkPlayer*.*xx',
 		'src/System/Application',
 		]
-
+	blacklist = []
 	if sys.platform == 'win32' :
 		folders.append('src/Processing/InitAudioIO*.*xx')
 	else :
 		if env.has_key('with_jack_support') and env['with_jack_support'] == True:
 			folders.append('src/Flow/Networks/JACKNetworkPlayer*.*xx')
+
+	if not env.has_key('with_mad') or not env['with_mad']:
+		blacklist += ['Mpeg']
+	if not env.has_key('with_vorbis') or not env['with_vorbis']:
+		blacklist += ['Vorbis']
 
 	if env['with_portaudio'] :
 		folders.append('src/Flow/Networks/PANetworkPlayer*.*xx')
@@ -74,7 +79,7 @@ def define_module_contents(env) :
 			print('using portaudio')
 #			folders += ['src/Flow/Networks/PANetworkPlayer*.*xx']
 
-	blacklist = [
+	blacklist += [
 		'foo.cxx',
 		'main.cxx',
 		'GUIAudioApplication.*xx',

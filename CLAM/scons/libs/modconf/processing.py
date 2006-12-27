@@ -134,13 +134,13 @@ def test_fftw_win32( processing_env, conf ) :
 
 
 def setup_processing_environment( processing_env, conf ) :
+	result = ''
 	if processing_env['with_fftw'] :
 		if sys.platform == 'win32' :
 			result = test_fftw_win32( processing_env, conf )
 		else :
 			result = test_fftw_linux( processing_env, conf )
 		
-	if result :
 		return True
 	else :
 		return False

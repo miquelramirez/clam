@@ -70,8 +70,11 @@ def configure_clam(clam_env) :
 		for include in environmentIncludesList :
 			print( 'adding include dir from windows config: ' + include )
 			clam_env.Append( CPPPATH = include)
-	else:
+	elif sys.platform == 'linux2':
 		clam_env.Append( CPPPATH= '/usr/local/include' )
+	else:
+		clam_env.Append( CPPPATH= ['/usr/local/include', '/opt/local/include/qt3'] )
+		
 
 	conf = Configure( clam_env, custom_tests = custom_check_routines )
 	if not setup_global_environment( clam_env, conf ) :
@@ -126,6 +129,10 @@ def configure_audioio(processing_env) :
 	conf = Configure( audioio_env, custom_check_routines )
 	if not setup_audioio_environment( audioio_env, conf ) :
 		Exit(1)
+	if audioio_env['with_mad'] :
+		audioio_env.Append( CPPFLAGS=['-DWITH_MAD=1'] )
+	if audioio_env['with_oggvorbis'] :
+		audioio_env.Append( CPPFLAGS=['-DWITH_VORBIS=1'] )
 	audioio_env = conf.Finish()
 	return audioio_env
 
@@ -298,8 +305,8 @@ def config_file_missing():
 	func_and = lambda x,y : x and y
 	result = not reduce( func_and, map(os.path.exists, files) ) 
 
-	if result == False:
-		print "\n WARNING: at least one module configuration file is missing. Running automatically as a 'scons configure'\n"
+#	if result == False:
+#		print "\n WARNING: at least one module configuration file is missing. Running automatically as a 'scons configure'\n"
 
 	return result
 
