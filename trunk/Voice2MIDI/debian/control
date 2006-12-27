@@ -2,7 +2,7 @@ Source: clam-voice2midi
 Section: x11
 Priority: optional
 Maintainer: parumi <parumi@iua.upf.es>
-Build-Depends: debhelper (>= 4.0.0), scons (>= 0.96.1), g++, make (>= 3.80), libclamcore-dev (>= 0.96.0), libclamprocessing-dev (>= 0.96.0), libclamaudioio-dev (>= 0.96.0), libclamvmqt-dev (>= 0.96.0), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
+Build-Depends: debhelper (>= 5.0.0), scons (>= 0.96.1), g++, make (>= 3.80), libclamcore-dev (>= 0.96.0), libclamprocessing-dev (>= 0.96.0), libclamaudioio-dev (>= 0.96.0), libclamvmqt-dev (>= 0.96.0), libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3)
 
 Standards-Version: 3.6.1
 Package: clam-voice2midi
