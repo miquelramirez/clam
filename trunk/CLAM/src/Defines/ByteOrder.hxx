@@ -22,6 +22,9 @@
 #ifndef __ByteOrder__
 #define __ByteOrder__
 
+//TODO this breakes ppc:
+#define CLAM_LITTLE_ENDIAN
+
 #ifdef macintosh
 # define CLAM_BIG_ENDIAN
 #endif
@@ -51,13 +54,13 @@
 
 #ifdef CLAM_LITTLE_ENDIAN
 # ifdef CLAM_BIG_ENDIAN
-Error: confused about endianity
+#  error confused about endianity
 # endif
 #endif
 
 #ifndef CLAM_LITTLE_ENDIAN
 # ifndef CLAM_BIG_ENDIAN
-Error: could not determine endianity
+#  error could not determine endianity
 # endif
 #endif
 

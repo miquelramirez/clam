@@ -22,8 +22,13 @@
 #include "AudioFile.hxx"
 #include "Assert.hxx"
 #include "PCMCodec.hxx"
-#include "OggVorbisCodec.hxx"
-#include "MpegCodec.hxx"
+#if USE_VORBIS == 1
+#  include "OggVorbisCodec.hxx"
+#endif
+
+#if USE_MAD == 1
+#  include "MpegCodec.hxx"
+#endif
 
 namespace CLAM
 {
@@ -82,6 +87,7 @@ namespace CLAM
 			}
 // TODO ov_open crashes when opening from MSWindows			
 #ifndef WIN32
+#if USE_VORBIS == 1
 			else if ( AudioCodecs::OggVorbisCodec::Instantiate().IsReadable( mLocation ) )
 			{
 				SetKind( EAudioFileKind::eOggVorbis );
@@ -89,11 +95,14 @@ namespace CLAM
 				
 			}
 #endif		
+#endif		
+#if USE_MAD == 1
 			else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( mLocation ) )
 			{
 				SetKind( EAudioFileKind::eMpeg );
 				mActiveCodec = &AudioCodecs::MpegCodec::Instantiate();
 			}
+#endif
 			else
 				SetKind( EAudioFileKind::eUnknown );		
 		}
@@ -162,7 +171,9 @@ namespace CLAM
 			else if ( newHeader.GetFormat() == EAudioFileFormat::eVorbisMk1 )
 			{
 				mKind = EAudioFileKind::eOggVorbis;
+#if USE_VORBIS==1		
 				mActiveCodec= &AudioCodecs::OggVorbisCodec::Instantiate();
+#endif		
 			}
 			else
 				CLAM_ASSERT( false, "The Enum contained and invalid value!" );
