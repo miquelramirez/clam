@@ -12,6 +12,8 @@
 #include <QtGui/QWhatsThis>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <QtCore/QSettings>
+#include <QtCore/QStringList>
 #include "uic_About.hxx"
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
@@ -70,6 +72,10 @@ public:
 			.arg(CLAM::GetFullVersion())
 			);
 
+		QSettings settings;
+		_recentFiles=settings.value("RecentFiles").toStringList();
+		updateRecentMenu();
+
 		int frameSize = 2048;
 		_network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
 		QString backend = "None";
@@ -124,6 +130,27 @@ public:
 		else
 			_playingLabel->setText(tr("<p style='color:red'>Stopped</p>"));
 	}
+	void updateRecentMenu()
+	{
+		ui.menuOpen_recent->clear();
+		int i=0;
+		for (QStringList::iterator it = _recentFiles.begin(); it!=_recentFiles.end(); it++)
+		{
+			QString text = QString("&%1 %2").arg(++i).arg(*it);
+			QAction * recentFileAction = new QAction(text,this);
+			recentFileAction->setData(*it);
+			ui.menuOpen_recent->addAction(recentFileAction);
+			connect(recentFileAction, SIGNAL(triggered()), this, SLOT(on_action_Open_recent_triggered()));
+		}
+	}
+	void appendRecentFile(const QString & recentFile)
+	{
+		_recentFiles.removeAll(recentFile);
+		_recentFiles.push_front(recentFile);
+		while (_recentFiles.size()> 8)
+			_recentFiles.pop_back();
+		updateRecentMenu();
+	}
 
 	QString networkFilter() {return tr(
 		"CLAM Network files (*.clamnetwork)"
@@ -162,6 +189,7 @@ public:
 		}
 		_canvas->loadNetwork(&_network);
 		_canvas->loadPositions(filename+".pos");
+		appendRecentFile(filename);
 		_networkFile = filename;
 		updateCaption();
 		// TODO: Update canvas
@@ -173,6 +201,7 @@ public:
 		_canvas->savePositions(filename+".pos");
 		_canvas->clearChanges();
 		_networkFile = filename;
+		appendRecentFile(filename);
 		updateCaption();
 	}
 	void clear(bool isDummy=false)
@@ -237,6 +266,15 @@ public slots:
 		if (!askUserSaveChanges()) return;
 		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", DATA_EXAMPLES_PATH, networkFilter());
 		if (file==QString::null) return;
+		load(file);
+	}
+	void on_action_Open_recent_triggered()
+	{
+		QAction *action = qobject_cast<QAction *>(sender());
+		if (!action) return;
+		QString file = action->data().toString();
+		if (file==QString::null) return;
+		if (!askUserSaveChanges()) return;
 		load(file);
 	}
 	void on_action_Save_triggered()
@@ -334,6 +372,7 @@ private:
 	QString _networkFile;
 	QLabel * _backendLabel;
 	QLabel * _playingLabel;
+	QStringList _recentFiles;
 };
 
 

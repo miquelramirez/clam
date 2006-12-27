@@ -31,7 +31,7 @@
      <x>0</x>
      <y>0</y>
      <width>746</width>
-     <height>29</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Interface" >
@@ -69,9 +69,19 @@
     <property name="title" >
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="menuOpen_recent" >
+     <property name="title" >
+      <string>Open &amp;Recent</string>
+     </property>
+     <property name="icon" >
+      <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
+     </property>
+     <addaction name="separator" />
+    </widget>
     <addaction name="action_New" />
     <addaction name="action_New_dummy" />
     <addaction name="action_Open" />
+    <addaction name="menuOpen_recent" />
     <addaction name="action_Open_example" />
     <addaction name="action_Save" />
     <addaction name="action_Save_as" />
