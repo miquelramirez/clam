@@ -68,6 +68,6 @@ def setup_global_environment( clam_env, conf ) :
 	if sys.platform == 'linux2' :
 		clam_env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
 	elif sys.platform == 'darwin' :
-		clam_env.Append(LIBPATH=['/usr/local/lib','/usr/lib'])
+		clam_env.Append(LIBPATH=['/usr/local/lib','/usr/lib','/opt/local/lib'])
 
 	return True

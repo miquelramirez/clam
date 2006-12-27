@@ -58,13 +58,14 @@ def define_module_contents(env) :
 		'FDFilterController',
 		'SupportedToolkits',
 		]
-
-	if not processing_env.has_key('with_osc_support') or env['with_osc_support'] == False :
+	if not env.has_key('with_mad') or not env['with_mad'] :
+		blacklist.append('MpegAudioStream')
+	if not processing_env.has_key('with_osc_support') or not env['with_osc_support'] :
 		blacklist.append('OSCSender')
 
-	if not env.has_key('with_fftw') or env['with_fftw'] == False :
+	if not env.has_key('with_fftw') or not env['with_fftw'] :
 		blacklist.append('.+rfftw.+')
-	if not env.has_key('with_nr_fft') or env['with_nr_fft'] == False :
+	if not env.has_key('with_nr_fft') or not env['with_nr_fft'] :
 		blacklist.append('.*numrecipes.+')
 		blacklist.append('.+numrec.+')
 	
@@ -85,7 +86,6 @@ def define_module_contents(env) :
 	for orig,target in file_retriever.origTargetSources:
 		env.CopyFileAndUpdateIncludes(target,orig)
 		realSources.append(target)
-
 	return realHeaders, realSources
 
 realHeaders, realSources = define_module_contents(processing_env)
