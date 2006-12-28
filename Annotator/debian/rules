@@ -76,6 +76,7 @@ install: build
 	scons install $(OPTIONS)
 	cp $(CURDIR)/clam-annotator.xpm ${CURDIR}/debian/clam-annotator/usr/share/pixmaps
 	/usr/share/clam/sconstools/changeExampleDataPath.py debian/clam-annotator/usr/share/annotator /usr/share/annotator
+	mv $(CURDIR)/debian/clam-annotator/usr/share/annotator/example-data $(CURDIR)/debian/clam-annotator-examples/usr/share/annotator/
 
 # Build architecture-independent files here.
 binary-indep: build install
