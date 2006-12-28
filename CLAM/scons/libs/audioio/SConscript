@@ -39,7 +39,7 @@ def define_module_contents(env) :
 
 	if not env.has_key('with_mad') or not env['with_mad']:
 		blacklist += ['Mpeg']
-	if not env.has_key('with_vorbis') or not env['with_vorbis']:
+	if not env.has_key('with_oggvorbis') or not env['with_oggvorbis']:
 		blacklist += ['Vorbis']
 
 	if env['with_portaudio'] :
