@@ -133,6 +133,8 @@ public:
 	void updateRecentMenu()
 	{
 		ui.menuOpen_recent->clear();
+		QMenu * toolBarOpenMenu = new QMenu(this);
+		ui.action_OpenToolbar->setMenu(toolBarOpenMenu);
 		int i=0;
 		for (QStringList::iterator it = _recentFiles.begin(); it!=_recentFiles.end(); it++)
 		{
@@ -140,7 +142,8 @@ public:
 			QAction * recentFileAction = new QAction(text,this);
 			recentFileAction->setData(*it);
 			ui.menuOpen_recent->addAction(recentFileAction);
-			connect(recentFileAction, SIGNAL(triggered()), this, SLOT(on_action_Open_recent_triggered()));
+			toolBarOpenMenu->addAction(recentFileAction);
+			connect(recentFileAction, SIGNAL(triggered()), this, SLOT(openRecentTriggered()));
 		}
 	}
 	void appendRecentFile(const QString & recentFile)
@@ -268,7 +271,7 @@ public slots:
 		if (file==QString::null) return;
 		load(file);
 	}
-	void on_action_Open_recent_triggered()
+	void openRecentTriggered()
 	{
 		QAction *action = qobject_cast<QAction *>(sender());
 		if (!action) return;
