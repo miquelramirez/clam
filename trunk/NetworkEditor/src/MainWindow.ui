@@ -108,7 +108,7 @@
     <number>4</number>
    </attribute>
    <addaction name="action_New" />
-   <addaction name="action_Open" />
+   <addaction name="action_OpenToolbar" />
    <addaction name="action_Save" />
    <addaction name="action_Print" />
    <addaction name="separator" />
@@ -312,6 +312,14 @@
    </property>
    <property name="text" >
     <string>New dummy</string>
+   </property>
+  </action>
+  <action name="action_OpenToolbar" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Open</string>
    </property>
   </action>
  </widget>
