@@ -3,21 +3,23 @@
 import os.path
 import glob
 import sys
+sys.path.append("../scons/sconstools/")
+from versionInfo import packageVersionFromSvn
 
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
 distributions = [
-	('ubuntu', 'feisty', "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
-#	('ubuntu', 'edgy',   "http://ad.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'feisty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+#	('ubuntu', 'edgy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('debian', 'etch',   "http://ftp.de.debian.org/debian/", ['main']),
 #	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
-	( repositoryBase+'CLAM',          'clam',               '0.96.1'),
-	( repositoryBase+'Annotator',     'clam-annotator',     '0.3.4'),
-	( repositoryBase+'NetworkEditor', 'clam-networkeditor', '0.4.1'),
-	( repositoryBase+'SMSTools',      'clam-smstools',      '0.4.3'),
+	( 'CLAM',          'clam',               '0.96.1'),
+	( 'Annotator',     'clam-annotator',     '0.3.4'),
+	( 'NetworkEditor', 'clam-networkeditor', '0.4.1'),
+	( 'SMSTools',      'clam-smstools',      '0.4.3'),
 ]
 
 hooks = {
@@ -31,7 +33,7 @@ hooks = {
 # do here whatever you want to see after a failed build
 # clam build directory is /tmp/buildd/%(srcpackage)s/
 #cat /tmp/buildd/%(srcpackage)s/scons/libs/config.log
-'''%{'srcpackage':repositories[0][1]+"-"+repositories[0][2]},
+'''%{'srcpackage':repositories[0][1]+"-" + packageVersionFromSvn("CLAM")},
 }
 
 aptconfiguration = "APT::Get::AllowUnauthenticated 1;"
@@ -67,9 +69,11 @@ run ("chmod a+x hooks/*")
 
 phase( "Obtaining latest sources" )
 
-for (module, srcpackage, version) in repositories :
+for (package, srcpackage, _) in repositories :
+	module = repositoryBase + package
+	version = packageVersionFromSvn(package)
 	srcdir = srcpackage + "-" + version
-	run( "svn export %s %s"%(module, srcdir) )
+	run( "svn export --force %s %s"%(module, srcdir) )
 #	if os.path.isdir(srcdir) :
 #		run( "svn up %s"%(srcdir) )
 #	else :
@@ -113,7 +117,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 		})
 
 	phase( "Building packages for '%s'"%distribution )
-	for (foo, srcpackage, version) in repositories :
+	for (_, srcpackage, version) in repositories :
 		dscbase = srcpackage+"_"+version
 		dscfiles = glob.glob(dscbase + "*.dsc")
 		if not dscfiles:
