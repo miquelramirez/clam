@@ -1,3 +1,6 @@
+import os
+repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
+
 def takeFromChangeLog(changelogFile, product='CLAM') :
 	import re
 	import datetime
@@ -10,6 +13,21 @@ def takeFromChangeLog(changelogFile, product='CLAM') :
 		today = datetime.date.today()
 		if not isCvs : return versionString, versionString
 		return versionString, "%s-CVS-%04i%02i%02i"%(versionString, today.year, today.month, today.day)
+
+def svnRevision():
+	w, r = os.popen2( "LANG='' svn info "+repositoryBase+" | awk '/^Revision:/ { print $2}'")
+	lastRevision = r.readline().strip()
+	w.close()
+ 	r.close()
+	return lastRevision
+
+def packageVersionFromSvn( package ) :
+	os.system("rm CHANGES*" )
+	os.system("wget "+ repositoryBase + package + "/CHANGES" )
+	version, longVersion = takeFromChangeLog( "CHANGES", package )
+	return version
+
+
 
 def generateVersionSources(fileBase, namespace, versionString) :
 	header = file(fileBase+".hxx", "w")
