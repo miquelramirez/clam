@@ -22,7 +22,7 @@
 #include "AudioFile.hxx"
 #include "Assert.hxx"
 #include "PCMCodec.hxx"
-#if USE_VORBIS == 1
+#if USE_OGGVORBIS == 1
 #  include "OggVorbisCodec.hxx"
 #endif
 
@@ -87,7 +87,7 @@ namespace CLAM
 			}
 // TODO ov_open crashes when opening from MSWindows			
 #ifndef WIN32
-#if USE_VORBIS == 1
+#if USE_OGGVORBIS == 1
 			else if ( AudioCodecs::OggVorbisCodec::Instantiate().IsReadable( mLocation ) )
 			{
 				SetKind( EAudioFileKind::eOggVorbis );
@@ -171,7 +171,7 @@ namespace CLAM
 			else if ( newHeader.GetFormat() == EAudioFileFormat::eVorbisMk1 )
 			{
 				mKind = EAudioFileKind::eOggVorbis;
-#if USE_VORBIS==1		
+#if USE_OGGVORBIS==1		
 				mActiveCodec= &AudioCodecs::OggVorbisCodec::Instantiate();
 #endif		
 			}
