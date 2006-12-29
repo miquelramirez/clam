@@ -425,13 +425,14 @@ def enable_modules(self, modules, debug=False) :
 		self.AppendUnique(LIBPATH=[os.path.join('$QTDIR','lib')])
 		return
 	if sys.platform=="darwin" :
-		if debug : debugSuffix = '_debug'
+		# TODO: Test debug version on Mac
+		if debug : debugSuffix = 'd'
 		for module in modules :
 			if module not in pclessModules : continue
 			self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
 			self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib")])
-			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4")])
-			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include")])
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include",module)])
 		return
 
 
