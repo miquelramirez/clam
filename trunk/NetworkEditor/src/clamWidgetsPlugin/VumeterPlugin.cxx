@@ -24,7 +24,7 @@
 #include "VumeterPlugin.hxx"
 #include "Vumeter.hxx"
 
-#include <QtPlugin>
+#include <QtCore/QtPlugin>
 
 VumeterPlugin::VumeterPlugin(QObject *parent)
     : QObject(parent)

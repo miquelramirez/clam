@@ -24,7 +24,7 @@
 #include "PeakViewPlugin.hxx"
 #include "PeakView.hxx"
 
-#include <QtPlugin>
+#include <QtCore/QtPlugin>
 
 PeakViewPlugin::PeakViewPlugin(QObject *parent)
     : QObject(parent)
