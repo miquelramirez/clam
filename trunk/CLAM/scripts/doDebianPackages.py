@@ -154,7 +154,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 	}
 
 	run("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
-	run("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
+	norun("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
 	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
 
 
