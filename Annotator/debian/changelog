@@ -1,6 +1,7 @@
 clam-annotator (0.3.4-2) unstable; urgency=low
 
-  * Only one libclam0 package 
+  * Only one libclam0 package
+  * Splitted clam-annotator-examples to contain data
 
  -- CLAM Team <clam@iua.upf.es>  Sat, 26 Dec 2006 10:22:34 +0100
 
