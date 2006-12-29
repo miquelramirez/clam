@@ -423,6 +423,16 @@ def enable_modules(self, modules, debug=False) :
 		self.AppendUnique(CPPPATH=[ '$QTDIR/include/'+module
 			for module in modules])
 		self.AppendUnique(LIBPATH=[os.path.join('$QTDIR','lib')])
+		return
+	if sys.platform=="darwin" :
+		if debug : debugSuffix = '_debug'
+		for module in modules :
+			if module not in pclessModules : continue
+			self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
+			self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib")])
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4")])
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
+		return
 
 
 def exists(env):
