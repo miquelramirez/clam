@@ -3,7 +3,8 @@
 import os.path
 import glob
 import sys
-sys.path.append("../scons/sconstools/")
+sconstoolspath = os.path.split(sys.argv[0])[0] + "/../scons/sconstools"
+sys.path.append( sconstoolspath )
 from versionInfo import packageVersionFromSvn
 
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
