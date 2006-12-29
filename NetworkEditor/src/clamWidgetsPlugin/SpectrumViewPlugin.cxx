@@ -24,7 +24,7 @@
 #include "SpectrumViewPlugin.hxx"
 #include "SpectrumView.hxx"
 
-#include <QtPlugin>
+#include <QtCore/QtPlugin>
 
 SpectrumViewPlugin::SpectrumViewPlugin(QObject *parent)
     : QObject(parent)

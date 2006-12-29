@@ -24,7 +24,7 @@
 #include "OscilloscopePlugin.hxx"
 #include "Oscilloscope.hxx"
 
-#include <QtPlugin>
+#include <QtCore/QtPlugin>
 
 OscilloscopePlugin::OscilloscopePlugin(QObject *parent)
     : QObject(parent)
