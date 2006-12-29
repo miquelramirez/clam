@@ -426,15 +426,18 @@ def enable_modules(self, modules, debug=False) :
 		return
 	if sys.platform=="darwin" :
 		# TODO: Test debug version on Mac
-		self.AppendUnique(CXXFLAGS="-F"+os.path.join(self['QTDIR'],'lib'))
+		self.AppendUnique(LIBPATH=[os.path.join('$QTDIR','lib')])
+		self.AppendUnique(LINKFLAGS="-F$QTDIR/lib")
+		self.AppendUnique(LINKFLAGS="-L$QTDIR/lib") #TODO clean!
 		if debug : debugSuffix = 'd'
 		for module in modules :
-			self.AppendUnique(LINKFLAGS='-framework '+module)
-		#	if module not in pclessModules : continue
-			self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
-			self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib")])
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include")])
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include",module)])
+			if module in pclessModules :
+				self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
+				self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib")])
+			else :
+				self.AppendUnique(LINKFLAGS='-framework '+module)
 		if 'QtOpenGL' in modules:
 			self.AppendUnique(LINKFLAGS="-F/System/Library/Frameworks")
 			self.AppendUnique(LINKFLAGS='-framework AGL')
