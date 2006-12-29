@@ -89,10 +89,15 @@ provides already compiled packages for several platforms.
  * Pkgconfig : install it from Fink or from source code taken from 
    [http://pkgconfig.freedesktop.org/wiki/ here].
  * scons : take the source code from [http://www.scons.org/ here]. 
-   After decompressing it go to its directory and issue 
+   Extract, go to its directory and do the following (as in its README):
+   $ export SCONS_LIB_DIR=`pwd`/src/engine
+   $ python src/script/scons.py build/scons
+   $ cd build/scons
+   $ sudo python setup.py install
+
    "scons setup.py install". Then add the following line to your 
-   ~/.bashrc and ./profile files:
-        export PATH=$PATH:/System/Library/Frameworks/Python.framework/Versions/2.3/bin
+   ~/.bashrc :
+        export PATH=$PATH:/System/Library/Frameworks/Python.framework/Versions/Current/bin
  * Qt/Mac : download the binary package from [http://naranja.umh.es/~atg/software-qt3.html].
    Get the 10.4.X version since development must be done with gcc v4.
    Decompress and install. 
