@@ -167,11 +167,15 @@ pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQ
 env.AppendUnique(CPPFLAGS=pluginDefines)
 
 #env.AppendUnique(CPPFLAGS=['-fPIC']) # qtPlugin examples were compiled with this option
-if sys.platform != "win32" :
+if sys.platform == "linux2" :
 	# TODO: Move this to the qt4 tool
 	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I/usr/include/qt4'])
 	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I/usr/include/qt4'])
-else :
+if sys.platform == "darwin":
+	# TODO: Move this to the qt4 tool
+	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I$QTDIR/include/'])
+	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I$QTDIR/include/'])
+if sys.platform == "win32":
 	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
 	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
 	env.AppendUnique(LINKFLAGS='/OPT:NOREF')
@@ -251,10 +255,6 @@ if sys.platform=='win32' :
 	win_packages = [env.Nsis( source='resources\\clam_networkeditor.nsi')]
 	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % clam_sconstoolspath)
 	env.Alias('package', win_packages)
-
-if sys.platform=='darwin' :
-	# TODO: Review why those flags were added# TODO: Review why those flags were added# TODO: Review why those flags were added
-	env.AppendUnique( LINKFLAGS=['-bind_at_load'])
 
 	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
 	installTargets = [
