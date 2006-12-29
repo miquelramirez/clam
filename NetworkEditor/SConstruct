@@ -1,4 +1,4 @@
-#!/usr/bin/scons
+#!/usr/bin/python
 import os
 import glob
 import sys
@@ -10,6 +10,8 @@ options.Add(('qt_plugins_install_path', 'Path component (without the install pre
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 if sys.platform == 'win32' :
 	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '' ))
+if sys.platform == 'darwin' :
+	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '/opt/local/' ))
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -95,7 +97,6 @@ extraPaths = [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 ]
-
 includePaths = sourcePaths + extraPaths
 
 sources = scanFiles('*.cxx', sourcePaths)
@@ -147,9 +148,6 @@ pluginsources.append(os.path.join('src','chordWidgets','Tonnetz.cxx'))
 pluginsources.append(os.path.join('src','chordWidgets','KeySpace.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
 
-if sys.platform == 'darwin' :
-	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
-
 programs = []
 for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
@@ -157,8 +155,12 @@ if sys.platform == "win32" :
 	env.Append( LIBS=['cppunit_vc7'] )
 	env.Append( CPPPATH=[env['cppunit_prefix']+'/include'] )
 	env.Append( LIBPATH=[env['cppunit_prefix']+'/lib'] )
+elif sys.platform == "darwin" :
+	env.Append( CPPPATH=[env['cppunit_prefix']+'/include'] )
+	env.Append( LIBPATH=[env['cppunit_prefix']+'/lib'] )
+	env.Append( LIBS=['cppunit'] )
 else :
-	env.Append(LIBS=['cppunit'])
+	env.Append( LIBS=['cppunit'] )
 #programs += [ env.Program(target='UnitTests', source = sources+testsources) ]
 
 pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQT_OPENGL_LIB','-DQT_XML_LIB','-DQDESIGNER_EXPORT_WIDGETS','-D_REENTRANT']
@@ -213,7 +215,20 @@ installation = {
 	'/share/networkeditor/example-data': examples,
 }
 
-
+if sys.platform=='darwin' :
+	env.AppendUnique(CXXFLAGS="-F"+os.path.join(env['QTDIR'],'lib'))
+	env.AppendUnique(LINKFLAGS="-F"+os.path.join(env['QTDIR'],'lib'))
+	env.AppendUnique(LINKFLAGS="-F/System/Library/Frameworks")
+	env.AppendUnique(LINKFLAGS='-framework QtCore')
+	env.AppendUnique(LINKFLAGS='-framework QtGui')
+	env.AppendUnique(LINKFLAGS='-framework QtOpenGL')
+#	env.AppendUnique(LINKFLAGS='-framework QtUiTools')
+	env.AppendUnique(LINKFLAGS='-framework QtXml')
+	env.AppendUnique(LINKFLAGS='-framework AGL')
+	env.AppendUnique(LINKFLAGS='-framework OpenGL')
+	env.AppendUnique(LINKFLAGS='-dynamic')
+#	env.AppendUnique(FRAMEWORKPATH=[os.path.join(env['QTDIR'],'lib')])
+#	env.AppendUnique(FRAMEWORKS=['QtCore','QtGui','QtOpenGL', 'AGL'])
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
@@ -238,6 +253,9 @@ if sys.platform=='win32' :
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' :
+	# TODO: Review why those flags were added# TODO: Review why those flags were added# TODO: Review why those flags were added
+	env.AppendUnique( LINKFLAGS=['-bind_at_load'])
+
 	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
 	installTargets = [
 		env.Install( 'NetworkEditor.app/Contents/MacOS', programs ),
