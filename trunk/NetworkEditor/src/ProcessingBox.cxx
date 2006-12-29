@@ -14,7 +14,7 @@
 #include "ControlSenderWidget.hxx"
 
 #include <QtGui/QSlider>
-#include <QtDebug>
+#include <QtCore/QtDebug>
 
 ProcessingBox::~ProcessingBox()
 {
