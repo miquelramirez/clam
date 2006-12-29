@@ -210,13 +210,15 @@ installation = {
 if sys.platform=='darwin' :
 	env.AppendUnique(CXXFLAGS="-F"+os.path.join(env['QTDIR'],'lib'))
 	env.AppendUnique(LINKFLAGS="-F"+os.path.join(env['QTDIR'],'lib'))
+	env.AppendUnique(LINKFLAGS="-F/System/Library/Frameworks")
 	env.AppendUnique(LINKFLAGS='-framework QtCore')
 	env.AppendUnique(LINKFLAGS='-framework QtGui')
 	env.AppendUnique(LINKFLAGS='-framework QtOpenGL')
+	env.AppendUnique(LINKFLAGS='-framework AGL')
+	env.AppendUnique(LINKFLAGS='-framework OpenGL')
 	env.AppendUnique(LINKFLAGS='-dynamic')
-	env.AppendUnique(LIBS=['System','Gl'])
-	env.AppendUnique(FRAMEWORKPATH=[os.path.join(env['QTDIR'],'lib')])
-	env.AppendUnique(FRAMEWORKS=['QtCore','QtGui','QtOpenGL'])
+#	env.AppendUnique(FRAMEWORKPATH=[os.path.join(env['QTDIR'],'lib')])
+#	env.AppendUnique(FRAMEWORKS=['QtCore','QtGui','QtOpenGL', 'AGL'])
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 

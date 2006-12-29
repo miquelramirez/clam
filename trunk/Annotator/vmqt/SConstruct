@@ -122,9 +122,8 @@ if sys.platform=='darwin' :
 	env.AppendUnique(LINKFLAGS='-framework QtGui')
 	env.AppendUnique(LINKFLAGS='-framework QtOpenGL')
 	env.AppendUnique(LINKFLAGS='-dynamic')
-	env.AppendUnique(LIBS=['System','Gl'])
-	env.AppendUnique(FRAMEWORKPATH=[os.path.join(env['QTDIR'],'lib')])
-	env.AppendUnique(FRAMEWORKS=['QtCore','QtGui','QtOpenGL'])
+#	env.AppendUnique(FRAMEWORKPATH=[os.path.join(env['QTDIR'],'lib')])
+#	env.AppendUnique(FRAMEWORKS=['QtCore','QtGui','QtOpenGL'])
 
 exampleSources = scanFiles('*.cxx', ['examples/utils'])
 
