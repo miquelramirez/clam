@@ -73,7 +73,7 @@ def configure_clam(clam_env) :
 	elif sys.platform == 'linux2':
 		clam_env.Append( CPPPATH= '/usr/local/include' )
 	else:
-		clam_env.Append( CPPPATH= ['/usr/local/include', '/opt/local/include/qt3'] )
+		clam_env.Append( CPPPATH= ['/usr/local/include'] )
 		
 
 	conf = Configure( clam_env, custom_tests = custom_check_routines )
