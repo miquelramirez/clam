@@ -38,9 +38,7 @@ provides already compiled packages for several platforms.
  Note that scons saves the last used options in the clam.conf file. 
  These options will be used by default in further "scons" commands.
 
- MacOSX specific: default prefix is set to /usr/local. Our tests using
- /usr didn't succeed. Another important issue is that in OSX there is
- no LD_LIBRARY_PATH, as the equivalent variable is called DYLD_LIBRARY_PATH.
+ MacOSX specific: the equivalent to LD_LIBRARY_PATH in mac is DYLD_LIBRARY_PATH.
    
 
  3. Compile the CLAM application.
