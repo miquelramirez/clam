@@ -22,20 +22,19 @@
 #ifndef __ByteOrder__
 #define __ByteOrder__
 
-//TODO this breakes ppc:
-#define CLAM_LITTLE_ENDIAN
+// --------------------------------------
+// Mac OS X
 
-#ifdef macintosh
+#ifdef __BIG_ENDIAN__
 # define CLAM_BIG_ENDIAN
 #endif
 
-#ifdef __powerpc__
-# define CLAM_BIG_ENDIAN
+#ifdef __LITTLE_ENDIAN__
+# define CLAM_LITTLE_ENDIAN
 #endif
 
-#ifdef __POWERPC__
-# define CLAM_BIG_ENDIAN
-#endif
+// --------------------------------------
+// Linux
 
 #ifdef linux
 # include <sys/param.h>
@@ -47,10 +46,15 @@
 # endif
 #endif
 
+// --------------------------------------
+// Win32
+
 #ifdef WIN32
 # define CLAM_LITTLE_ENDIAN
 #endif
 
+// --------------------------------------
+// Error Check
 
 #ifdef CLAM_LITTLE_ENDIAN
 # ifdef CLAM_BIG_ENDIAN
@@ -64,4 +68,5 @@
 # endif
 #endif
 
+// --------------------------------------
 #endif
