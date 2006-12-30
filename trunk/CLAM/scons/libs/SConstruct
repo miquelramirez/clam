@@ -328,7 +328,7 @@ clam_env.Append( CPPFLAGS = '' )
 
 sys.path.append('../sconstools')
 import versionInfo
-version, fullVersion = versionInfo.takeFromChangeLog(os.path.join(top,"ChangeLog.txt"),"CLAM")
+version, fullVersion = versionInfo.takeFromChangeLog(os.path.join(top,"CHANGES"),"CLAM")
 Export('version')
 print "Version: ", version
 print "Package version: ", fullVersion

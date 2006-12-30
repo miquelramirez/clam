@@ -82,94 +82,11 @@ provides already compiled packages for several platforms.
 
 1.2 Install CLAM dependencies on Mac OSX
 
-  Required tools:
-  ---------------
+Build instructions for CLAM in Mac OSX are currently in this wiki:
 
- * Apple's Mac OS X Developer Tools. 
- * Pkgconfig : install it from Fink or from source code taken from 
-   [http://pkgconfig.freedesktop.org/wiki/ here].
- * scons : take the source code from [http://www.scons.org/ here]. 
-   Extract, go to its directory and do the following (as in its README):
-   $ export SCONS_LIB_DIR=`pwd`/src/engine
-   $ python src/script/scons.py build/scons
-   $ cd build/scons
-   $ sudo python setup.py install
+http://iua-share.upf.edu/wikis/clam_draft/Mac_OSX_BUILD 
 
-   "scons setup.py install". Then add the following line to your 
-   ~/.bashrc :
-        export PATH=$PATH:/System/Library/Frameworks/Python.framework/Versions/Current/bin
- * Qt/Mac : download the binary package from [http://naranja.umh.es/~atg/software-qt3.html].
-   Get the 10.4.X version since development must be done with gcc v4.
-   Decompress and install. 
-   Add these lines to your ~/.bashrc and ~/.profile files:
-
-   export QTDIR=/Developer/qt
-   export PATH=$PATH:/Developer/qt/bin
-   
-   Finally, open a console and execute the following commands 
-
-   $ sudo cp /Developer/qt/lib/libqt-mt.3.3.5.dylib /usr/local/lib/
-   $ sudo cp /Developer/qt/lib/libqui.1.0.0.dylib /usr/local/lib/
-
-   (this is for workaround for a bug already communicated to the 
-   binary package manager that hasn't been solved yet)
-
-  Installing the 3rd party libraries with the dmg package
-  -------------------------------------------------------
-  This is the easy way. Download and install this file
-  external-libraries-for-CLAM-X.Y.Z.dmg . Chapter 2.2 covers this
-  simple process.
-
-  Exceptions: Qt is not provided with this package. You'll need
-  to get it from their web. See instructions below:
-
-  Installing the 3rd party libraries from source
-  ----------------------------------------------
-  Alternatively, you can install the libraries form source.
-
-  Where not specified, download latest version. The installation 
-  process of these 3rd party libraries is the typical in Unix systems. 
-  Special configuration phases are sometimes needed, in that case it 
-  will be specified:
- 
-        $ tar xvzf library-X.Y.Z.tar.gz
-        $ cd library-X.Y.Z
-        $ ./configure --prefix=/usr/local
-        $ make
-        $ sudo make install
-
-  * cppunit [http://cppunit.sourceforge.net/]
-    default compilation procedure. Install it for unit testing issues 
-    only.
-  * id3 [http://id3lib.sourceforge.net/]
-    default compilation procedure.
-  * jack [http://jackit.sourceforge.net/]
-    default compilation procedure.
-  * fftw [http://www.fftw.org/]
-    Download version 2.XX. Default compilation procedure.
-
-        $ ./configure --prefix=/usr/local --enable-shared --enable-float --enable-type-prefix
-
-  * sndfile [http://www.mega-nerd.com/libsndfile sndfile] 
-    default compilation procedure.
-  * mad [http://www.underbit.com/products/mad/]
-    default compilation procedure.
-  * ogg-vorbis [http://www.vorbis.com/]
-    Download libogg and libvorbis. Default compilation procedure.
-  * oscpack [http://www.audiomulch.com/~rossb/code/oscpack/ ] 
-    Warning: the mac dynamic library creation makefile is not still 
-    included in the main release. Deactivate oscpack or get the binary 
-    dependencies.
-  * portaudio [http://www.portaudio.com/]
-    Get devel version (V19) from the CVS snapshot. 
-    Default compilation procedure.
-  * xerces-c [http://xml.apache.org/xerces-c/]
-    it has special needs, as detailed here:
-
-        $ export XERCESCROOT=$PWD
-        $ cd $XERCESCROOT/src/xercesc
-        $ autoconf
-        $ ./runConfigure -pmacosx -rpthread -P/usr/local
+Please report to clam-devel any problem or improvement you might find.
 
 
 
