@@ -1,10 +1,10 @@
-clam (0.96.1-1) unstable; urgency=low
+clam (0.97.0-1) unstable; urgency=low
 
   * Collapsed multiple libclam-* packages in libclam0 and libclam-dev
   * Disabled doxygen source browsing to reduce libclam-doc size
   * Added conflict with old splitted clam packages
 
- -- CLAM Team <clam@iua.upf.es>  Wed, 26 Dec 2006 10:22:34 +0100
+ -- CLAM Team <clam@iua.upf.es>  Sat, 30 Dec 2006 10:22:34 +0100
 
 clam (0.96.0-1) unstable; urgency=low
 
