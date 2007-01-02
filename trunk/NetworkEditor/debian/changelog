@@ -3,8 +3,7 @@ clam-networkeditor (0.4.2-1) unstable; urgency=low
   * Only one libclam0 package 
   * Splitted clam-networkeditor-examples to contain data
 
- -- CLAM Team <clam@iua.upf.es>  Sat,
-303030303030303030303030303030303030303030303030303030303030 Dec 2006 10:22:34 +0100
+ -- CLAM Team <clam@iua.upf.es>  Sat, 30 Dec 2006 10:22:34 +0100
 
 clam-networkeditor (0.4.1-1) unstable; urgency=low
 
