@@ -17,10 +17,10 @@ distributions = [
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
-	( 'CLAM',          'clam',               '0.96.1'),
-	( 'Annotator',     'clam-annotator',     '0.3.4'),
-	( 'NetworkEditor', 'clam-networkeditor', '0.4.1'),
-	( 'SMSTools',      'clam-smstools',      '0.4.3'),
+	( 'CLAM',          'clam',               packageVersionFromSvn('CLAM')),
+	( 'Annotator',     'clam-annotator',     packageVersionFromSvn('Annotator')),
+	( 'NetworkEditor', 'clam-networkeditor', packageVersionFromSvn('NetworkEditor')),
+	( 'SMSTools',      'clam-smstools',      packageVersionFromSvn('SMSTools')),
 ]
 
 hooks = {
@@ -70,9 +70,10 @@ run ("chmod a+x hooks/*")
 
 phase( "Obtaining latest sources" )
 
-for (package, srcpackage, _) in repositories :
+print repositories
+for repository in repositories :
+	(package, srcpackage, version) = repository
 	module = repositoryBase + package
-	version = packageVersionFromSvn(package)
 	srcdir = srcpackage + "-" + version
 	run( "svn export --force %s %s"%(module, srcdir) )
 #	if os.path.isdir(srcdir) :
@@ -121,10 +122,8 @@ for (maindistro, distribution, mirror, components) in distributions :
 	for (_, srcpackage, version) in repositories :
 		dscbase = srcpackage+"_"+version
 		dscfiles = glob.glob(dscbase + "*.dsc")
-		if not dscfiles:
-			dscfile = dscbase+"-666.dsc"
-		else :
-			dscfile = dscfiles[-1]
+		if not dscfiles: raise "No dsc file found for %s"%dscbase
+		dscfile = dscfiles[-1]
 		run( ("pbuilder build "+
 			" --buildplace . " +
 			" --buildresult %(resultdir)s " +
