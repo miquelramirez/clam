@@ -28,6 +28,7 @@ folders = [
 	os.path.join('UnitTests','ProcessingDataTests'),
 	os.path.join('UnitTests','ProcessingsTests'),
 	os.path.join('UnitTests','StandardTests'),
+#	os.path.join('UnitTests','TonalAnalysis'),
 	os.path.join('UnitTests','ToolsTests'),
 	os.path.join('UnitTests','XMLAdaptersTests'),
 	os.path.join('UnitTests','VisualizationTests'),
@@ -36,6 +37,7 @@ blacklist = [
 	os.path.join('UnitTests','TestRunnerQt.cxx'),
 	os.path.join('UnitTests','FactoryTest','PolymorphicTest.cxx'),
 	os.path.join('UnitTests','ProcessingsTests','AudioMixerTest.cxx'),
+#	os.path.join('UnitTests','TonalAnalysis','ChordCorrelatorTest.cxx'),
 	# TODO see for libxml?
 	os.path.join('UnitTests','XMLAdaptersTests','LibXmlDomDocumentHandlerTest.cxx'),
 	os.path.join('UnitTests','XMLAdaptersTests','LibXmlDomReaderTest.cxx'),
