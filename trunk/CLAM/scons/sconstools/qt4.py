@@ -437,11 +437,11 @@ def enable_modules(self, modules, debug=False) :
 				self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
 				self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib")])
 			else :
-				self.AppendUnique(LINKFLAGS='-framework '+module)
+				self.Append(LINKFLAGS=['-framework', module])
 		if 'QtOpenGL' in modules:
 			self.AppendUnique(LINKFLAGS="-F/System/Library/Frameworks")
-			self.AppendUnique(LINKFLAGS='-framework AGL')
-			self.AppendUnique(LINKFLAGS='-framework OpenGL')
+			self.Append(LINKFLAGS=['-framework', 'AGL']) #TODO ughly kludge to avoid quotes
+			self.Append(LINKFLAGS=['-framework', 'OpenGL'])
 		return
 # This should work for mac but doesn't
 #	env.AppendUnique(FRAMEWORKPATH=[os.path.join(env['QTDIR'],'lib')])
