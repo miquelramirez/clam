@@ -56,7 +56,6 @@ def addDependentLibs( bundle ) :
 	for current, _ in libs :
 		for lib, libpath in libs :
 			run("install_name_tool -change %(libpath)s @executable_path/../Frameworks/%(lib)s %(bundle)s/Contents/Frameworks/%(current)s" % locals() )
-	sys.exit()
 
 if __name__ == "__main__":
 	addDependentLibs( "Annotator.app" )

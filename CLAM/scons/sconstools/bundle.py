@@ -2,7 +2,7 @@ import SCons.Util, os
 from addDependentLibsToBundle import addDependentLibs
 
 def run(command) :
-#	print "\033[32m:: ", command, "\033[0m"
+	print "\033[32m:: ", command, "\033[0m"
 	return os.system(command)
 def norun(command) :
 	print "\033[31mXX ", command, "\033[0m"
@@ -39,7 +39,7 @@ def createBundleMessage(target, source, env) :
 	return out
 
 def bundleEmitter(target, source, env):
-	target = "nullTarget"
+	target = env.Dir(env['BUNDLE_NAME']+".app")
 	source = env['BUNDLE_BINARIES']
 	return target, source
 
