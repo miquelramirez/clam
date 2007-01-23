@@ -117,7 +117,7 @@ uifiles = scanFiles("*.ui", sourcePaths)
 if uifiles: uiheaders = env.Uic4(source=uifiles)
 
 if sys.platform=="win32" :
-	sources += env.RES(source=["scons/Annotator.rc"])
+	sources += env.RES(source=["resources/Annotator.rc"])
 
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=[CLAMVmQtPath])
@@ -226,7 +226,7 @@ if sys.platform=='win32' :
 		if os.access(os.path.join(vcRuntimeDir,"msvcr71.dll"),os.R_OK) :
 			break
 	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
-	win_packages = [env.Nsis( source='scons\\clam_annotator.nsi')]
+	win_packages = [env.Nsis( source='resources\\clam_annotator.nsi')]
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' :
