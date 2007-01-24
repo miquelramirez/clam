@@ -12,6 +12,7 @@
 #include <QtCore/QRegExp>
 #include <QtCore/QFile>
 #include <QtCore/QCoreApplication>
+#include <QtGui/QApplication>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/PushFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
@@ -162,6 +163,9 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 	file.open(QFile::ReadOnly);
 	QUiLoader loader;
 	loader.addPluginPath("/user/share/NetworkEditor/qtplugins"); //TODO Make that an option
+	QDir dir(QApplication::applicationDirPath());
+	loader.addPluginPath( QString(dir.absolutePath())+"/../plugins" ); //TODO do only for mac?
+
 	QStringList paths = loader.pluginPaths();
 	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
 	{
