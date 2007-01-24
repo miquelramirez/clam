@@ -33,6 +33,7 @@ CLAMVmQtPath = 'vmqt'
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
+env.Tool('bundle', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
@@ -142,7 +143,7 @@ if sys.platform=='linux2' :
 
 programs = []
 for main in mainSources.items() :
-	print sources , main
+#	print sources , main
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
 
 manpages = [
@@ -234,12 +235,19 @@ if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
 
-	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
-	installTargets = [
-		env.Install( 'Annotator.app/Contents/MacOS', programs ),
-		env.Install( 'Annotator.app/Contents', 'resources/Info.plist'),
-		env.Install( 'Annotator.app/Contents/Resources', 'resources/CLAM-MusicAnnotator.icns'),
-		]
+	#TODO install resources
+	installTargets = []
+	
+	mac_bundle = env.Bundle( 
+		BUNDLE_NAME='Annotator', 
+		BUNDLE_BINARIES=programs,
+		BUNDLE_RESOURCEDIRS=['foo','bar'],
+		BUNDLE_PLIST='resources/Info.plist',
+		BUNDLE_ICON='resources/CLAM-MusicAnnotator.icns',
+	 )
+	env.Alias('bundle', mac_bundle)
+
+	#TODO mac_bundle should be dependency of Dmga:	
 	mac_packages = env.Dmg('CLAM_Annotator-%s.dmg'%fullVersion, [env.Dir('Annotator.app/')]+installTargets )
 	env.Alias('package', mac_packages)
 
