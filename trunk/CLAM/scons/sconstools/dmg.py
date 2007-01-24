@@ -1,11 +1,11 @@
 import os
 
 def create_dmg( target, source, env) :
-	bundle = 'NetworkEditor.app'
 	volume = str(target[0]).replace('.dmg', '')
 
 	os.system( "mkdir DMG" )
-	os.system( "cp -r %s DMG"%source[0] )
+	for s in source :
+		os.system( "cp -r %s DMG"%s )
 	os.system( "hdiutil create -srcfolder DMG -volname %s %s"%(volume, target[0]) )
 	#os.system( "sudo hdiutil create -srcfolder DMG -volname %s -uid 0 %s"%(volume, target[0]) )
 	os.system( "rm -rf DMG" )
