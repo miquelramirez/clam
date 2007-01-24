@@ -28,7 +28,7 @@ def createBundle(target, source, env) :
 		run('cp -r %s %s/Contents/Resources/' % (str(resdir), bundleDir) )
 	# write Info.plist -- TODO actually write it not copy it
 	plistFile = env['BUNDLE_PLIST']
-	run('cp %s %s/Contents/' % (plistFile, bundleDir) )
+	run('cp %s %s/Contents/Info.plist' % (plistFile, bundleDir) )
 	# add icon -- TODO generate .icns file from png or svg
 	iconFile = env['BUNDLE_ICON']
 	run('cp %s %s/Contents/Resources' % (iconFile, bundleDir) )
