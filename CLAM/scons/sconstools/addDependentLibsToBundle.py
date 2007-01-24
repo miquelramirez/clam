@@ -14,12 +14,12 @@ def needsChange(binary, blacklist) :
 	#with python2.5 we could just return all([not binary.startswith(blacksheep) for blacksheep in blacklist])
 	for blacksheep in blacklist :
 		if binary.startswith( blacksheep ) : 
-			print "found blackseep", binary
+#			print "found blackseep", binary
 			return False
 	return True
 
 def libDependencies(binary, visited, blacklist) :
-	print "examining", binary
+#	print "examining", binary
 	for line in os.popen("otool -L "+binary).readlines()[1:] :
 		entry = line.split()[0]
 		if entry in visited : continue
@@ -27,9 +27,9 @@ def libDependencies(binary, visited, blacklist) :
 		visited.append( entry )
 		libDependencies( entry, visited, blacklist )
 
-def addDependentLibs( bundle ) :
+def addDependentLibsToBundle( bundle ) :
 	binaries = glob.glob(bundle+"/Contents/MacOS/*") 
-
+	binaries += glob.glob(bundle+"/Contents/plugins/*") 
 	doNotChange = [
 		"/System/",
 		"/usr/lib/",
@@ -38,7 +38,7 @@ def addDependentLibs( bundle ) :
 	libsPath = []
 	for binary in binaries :
 		libDependencies(binary, libsPath, doNotChange)
-	print libsPath
+#	print libsPath
 
 	libs = [ (os.path.basename(path), path) for path in libsPath ] 
 	run("mkdir -p %(bundle)s/Contents/Frameworks/" % locals() )
@@ -58,4 +58,4 @@ def addDependentLibs( bundle ) :
 			run("install_name_tool -change %(libpath)s @executable_path/../Frameworks/%(lib)s %(bundle)s/Contents/Frameworks/%(current)s" % locals() )
 
 if __name__ == "__main__":
-	addDependentLibs( "Annotator.app" )
+	addDependentLibsToBundle( "Annotator.app" )

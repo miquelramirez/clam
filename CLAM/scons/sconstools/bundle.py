@@ -1,5 +1,5 @@
 import SCons.Util, os
-from addDependentLibsToBundle import addDependentLibs
+from addDependentLibsToBundle import addDependentLibsToBundle
 
 def run(command) :
 	print "\033[32m:: ", command, "\033[0m"
@@ -15,9 +15,13 @@ def createBundle(target, source, env) :
 	run("mkdir -p %s/Contents/Resources" % bundleDir )
 	run("mkdir -p %s/Contents/Frameworks" % bundleDir )
 	run("mkdir -p %s/Contents/MacOS" % bundleDir )
+	if env['BUNDLE_PLUGINS'] :
+		run("mkdir -p %s/Contents/plugins" % bundleDir )
 	# add binaries
-	for bin in env['BUNDLE_BINARIES'] :
-		run('cp %s %s/Contents/MacOS/' % (str(bin[0]), bundleDir) )
+	for bin in env.Flatten( env['BUNDLE_BINARIES'] ) :
+		run('cp %s %s/Contents/MacOS/' % (str(bin), bundleDir) )
+	for bin in env.Flatten( env['BUNDLE_PLUGINS'] ) :
+		run('cp %s %s/Contents/plugins/' % (str(bin), bundleDir) )
 	# add resources
 	for resdir in env['BUNDLE_RESOURCEDIRS'] :
 		# TODO act sensitive to resdir being a scons target. now assuming a string
@@ -29,7 +33,7 @@ def createBundle(target, source, env) :
 	iconFile = env['BUNDLE_ICON']
 	run('cp %s %s/Contents/Resources' % (iconFile, bundleDir) )
 	# add dependent libraries, fixing all absolute paths
-	addDependentLibs( bundleDir )
+	addDependentLibsToBundle( bundleDir )
 	
 
 def createBundleMessage(target, source, env) :
@@ -52,6 +56,7 @@ def generate(env) :
 		emitter = bundleEmitter,
 	)
 	env['BUNDLE_RESOURCEDIRS'] = []
+	env['BUNDLE_PLUGINS'] = []
 	env.Append( BUILDERS={'Bundle' : bundleBuilder } )
 
 def exists(env) :
