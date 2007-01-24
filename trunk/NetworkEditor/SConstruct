@@ -34,6 +34,7 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
+env.Tool('bundle', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
@@ -219,20 +220,6 @@ installation = {
 	'/share/networkeditor/example-data': examples,
 }
 
-if sys.platform=='darwin' :
-	env.AppendUnique(CXXFLAGS="-F"+os.path.join(env['QTDIR'],'lib'))
-	env.AppendUnique(LINKFLAGS="-F"+os.path.join(env['QTDIR'],'lib'))
-	env.AppendUnique(LINKFLAGS="-F/System/Library/Frameworks")
-	env.AppendUnique(LINKFLAGS='-framework QtCore')
-	env.AppendUnique(LINKFLAGS='-framework QtGui')
-	env.AppendUnique(LINKFLAGS='-framework QtOpenGL')
-#	env.AppendUnique(LINKFLAGS='-framework QtUiTools')
-	env.AppendUnique(LINKFLAGS='-framework QtXml')
-	env.AppendUnique(LINKFLAGS='-framework AGL')
-	env.AppendUnique(LINKFLAGS='-framework OpenGL')
-	env.AppendUnique(LINKFLAGS='-dynamic')
-#	env.AppendUnique(FRAMEWORKPATH=[os.path.join(env['QTDIR'],'lib')])
-#	env.AppendUnique(FRAMEWORKS=['QtCore','QtGui','QtOpenGL', 'AGL'])
 installTargets = [
 	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
 
@@ -256,12 +243,22 @@ if sys.platform=='win32' :
 	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % clam_sconstoolspath)
 	env.Alias('package', win_packages)
 
-	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
-	installTargets = [
-		env.Install( 'NetworkEditor.app/Contents/MacOS', programs ),
-		env.Install( 'NetworkEditor.app/Contents', 'resources/Info.plist'),
-		env.Install( 'NetworkEditor.app/Contents/Resources', 'resources/CLAM.icns'),
-		]
+if sys.platform=='darwin' :
+
+	
+	#TODO install resources
+	installTargets = []
+
+	mac_bundle = env.Bundle( 
+		BUNDLE_NAME='NetworkEditor', 
+		BUNDLE_BINARIES=programs,
+		BUNDLE_RESOURCEDIRS=['foo','bar'],
+		BUNDLE_PLIST='resources/Info.plist',
+		BUNDLE_ICON='resources/CLAM.icns',
+	 )
+	env.Alias('bundle', mac_bundle)
+
+	#TODO mac_bundle should be dependency of Dmga:	
 	mac_packages = env.Dmg('CLAM_NetworkEditor-%s.dmg'%fullVersion, [env.Dir('NetworkEditor.app/')]+installTargets )
 	env.Alias('package', mac_packages)
 
