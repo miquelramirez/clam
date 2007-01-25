@@ -240,9 +240,6 @@ if sys.platform=='win32' :
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' :
-	#TODO install resources
-	installTargets = []
-
 	mac_networkeditor_bundle = env.Bundle( 
 		BUNDLE_NAME='NetworkEditor', 
 		BUNDLE_BINARIES=["NetworkEditor"],
@@ -269,7 +266,7 @@ if sys.platform=='darwin' :
 	env.Alias('bundle', [mac_networkeditor_bundle, mac_prototyper_bundle, mac_designer_bundle])
 
 	#TODO mac_bundle should be dependency of Dmga:	
-	mac_packages = env.Dmg('CLAM_NetworkEditor-%s.dmg'%fullVersion, [env.Dir('NetworkEditor.app/'), env.Dir('Prototyper.app')]+installTargets )
+	mac_packages = env.Dmg('CLAM_NetworkEditor-%s.dmg'%fullVersion, [env.Dir('NetworkEditor.app/'), env.Dir('Prototyper.app')] )
 	env.Alias('package', mac_packages)
 
 env.Alias('install', installTargets )
