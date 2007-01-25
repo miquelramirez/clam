@@ -272,7 +272,7 @@ public slots:
 		QDir dir(QApplication::applicationDirPath()+"/../Resources/example-data/");
 		examplesPath =QString(dir.absolutePath());
 #else
-		examplesPath = DATA_EXAMPLES_PATH
+		examplesPath = DATA_EXAMPLES_PATH;
 #endif
 		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", examplesPath, networkFilter());
 		if (file==QString::null) return;
