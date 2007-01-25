@@ -116,14 +116,10 @@ if uifiles: uiheaders = env.Uic4(source=uifiles)
 if sys.platform=="win32" :
 	sources += env.RES(source=["resources/NetworkEditor.rc"])
 
-if sys.platform=='darwin' :
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"NetworkEditor.app/Contents/Resources\\""')
-else :
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
-else:
-	# TODO: This should not be hardcoded neither install_prefix (because package intall)
+if sys.platform=='linux2' :
+	# TODO: This should not be hardcoded neither install_prefix (because package install)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
 
 if sys.platform=='linux2' :
@@ -244,15 +240,13 @@ if sys.platform=='win32' :
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' :
-
-	
 	#TODO install resources
 	installTargets = []
 
 	mac_networkeditor_bundle = env.Bundle( 
 		BUNDLE_NAME='NetworkEditor', 
 		BUNDLE_BINARIES=["NetworkEditor"],
-		BUNDLE_RESOURCEDIRS=[],
+		BUNDLE_RESOURCEDIRS=["example-data"],
 		BUNDLE_PLIST='resources/NetworkEditor-Info.plist',
 		BUNDLE_ICON='resources/CLAM.icns',
 	 )
@@ -264,7 +258,15 @@ if sys.platform=='darwin' :
 		BUNDLE_PLIST='resources/Prototyper-Info.plist',
 		BUNDLE_ICON='resources/CLAM.icns',
 	 )
-	env.Alias('bundle', [mac_networkeditor_bundle, mac_prototyper_bundle])
+	mac_designer_bundle = env.Bundle( 
+		BUNDLE_NAME='QtDesigner', 
+		BUNDLE_BINARIES=["/usr/local/Trolltech/Qt-4.2.2/bin/Designer.app/Contents/MacOS/Designer"],
+		BUNDLE_PLUGINS=["libCLAMWidgets.dylib"],
+		BUNDLE_RESOURCEDIRS=[],
+		BUNDLE_PLIST='resources/QtDesigner-Info.plist',
+		BUNDLE_ICON='resources/QtDesigner.icns',
+	 )
+	env.Alias('bundle', [mac_networkeditor_bundle, mac_prototyper_bundle, mac_designer_bundle])
 
 	#TODO mac_bundle should be dependency of Dmga:	
 	mac_packages = env.Dmg('CLAM_NetworkEditor-%s.dmg'%fullVersion, [env.Dir('NetworkEditor.app/'), env.Dir('Prototyper.app')]+installTargets )

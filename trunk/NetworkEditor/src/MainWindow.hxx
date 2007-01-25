@@ -267,7 +267,14 @@ public slots:
 	void on_action_Open_example_triggered()
 	{
 		if (!askUserSaveChanges()) return;
-		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", DATA_EXAMPLES_PATH, networkFilter());
+		QString examplesPath;
+#ifdef __APPLE__
+		QDir dir(QApplication::applicationDirPath()+"/../Resources/example-data/");
+		examplesPath =QString(dir.absolutePath());
+#else
+		examplesPath = DATA_EXAMPLES_PATH
+#endif
+		QString file = QFileDialog::getOpenFileName(this, "Choose a network file to open", examplesPath, networkFilter());
 		if (file==QString::null) return;
 		load(file);
 	}
