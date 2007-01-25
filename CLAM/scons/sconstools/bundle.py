@@ -1,4 +1,6 @@
 import SCons.Util, os
+import sys
+sys.path.append( os.path.dirname(__file__) )
 from addDependentLibsToBundle import addDependentLibsToBundle
 
 def run(command) :
@@ -26,6 +28,9 @@ def createBundle(target, source, env) :
 	for resdir in env['BUNDLE_RESOURCEDIRS'] :
 		# TODO act sensitive to resdir being a scons target. now assuming a string
 		run('cp -r %s %s/Contents/Resources/' % (str(resdir), bundleDir) )
+	# clean .svn and CVS files
+	run('find %s -name ".svn" -exec  rm -rf {} \;' % bundleDir)
+	run('find %s -name "CVS" -exec  rm -rf {} \;' % bundleDir)
 	# write Info.plist -- TODO actually write it not copy it
 	plistFile = env['BUNDLE_PLIST']
 	run('cp %s %s/Contents/Info.plist' % (plistFile, bundleDir) )
