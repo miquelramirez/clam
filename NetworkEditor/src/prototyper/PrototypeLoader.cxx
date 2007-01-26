@@ -175,7 +175,7 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 	if (userInterface)
 	{
 		// TODO: Do this just when no icon set.
-		userInterface->setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
+		userInterface->setWindowIcon(QIcon(":/icons/images/Prototyper-icon.svg"));
 	}
 	file.close();
 	return userInterface;
