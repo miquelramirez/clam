@@ -253,11 +253,11 @@ if sys.platform=='darwin' :
 		BUNDLE_PLUGINS=["libCLAMWidgets.dylib"],
 		BUNDLE_RESOURCEDIRS=[],
 		BUNDLE_PLIST='resources/Prototyper-Info.plist',
-		BUNDLE_ICON='resources/CLAM.icns',
+		BUNDLE_ICON='resources/Prototyper.icns',
 	 )
 	mac_designer_bundle = env.Bundle( 
 		BUNDLE_NAME='QtDesigner', 
-		BUNDLE_BINARIES=["/usr/local/Trolltech/Qt-4.2.2/bin/Designer.app/Contents/MacOS/Designer"],
+		BUNDLE_BINARIES=["$QTDIR/bin/Designer.app/Contents/MacOS/Designer"],
 		BUNDLE_PLUGINS=["libCLAMWidgets.dylib"],
 		BUNDLE_RESOURCEDIRS=[],
 		BUNDLE_PLIST='resources/QtDesigner-Info.plist',
@@ -266,7 +266,11 @@ if sys.platform=='darwin' :
 	env.Alias('bundle', [mac_networkeditor_bundle, mac_prototyper_bundle, mac_designer_bundle])
 
 	#TODO mac_bundle should be dependency of Dmga:	
-	mac_packages = env.Dmg('CLAM_NetworkEditor-%s.dmg'%fullVersion, [env.Dir('NetworkEditor.app/'), env.Dir('Prototyper.app')] )
+	mac_packages = env.Dmg('CLAM_NetworkEditor-%s.dmg'%fullVersion, [
+		env.Dir('NetworkEditor.app/'), 
+		env.Dir('Prototyper.app'),
+		env.Dir('QtDesigner.app'),
+	] )
 	env.Alias('package', mac_packages)
 
 env.Alias('install', installTargets )
