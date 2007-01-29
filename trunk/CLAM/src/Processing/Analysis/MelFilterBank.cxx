@@ -51,7 +51,7 @@ namespace CLAM
 		return true;
 	}
 
-	bool MelFilterBank::Do( Spectrum& spec, MelSpectrum& melSpec )
+	bool MelFilterBank::Do( const Spectrum& spec, MelSpectrum& melSpec )
 	{
 		if ( !AbleToExecute() ) return false; // Object is disabled
 		
@@ -116,12 +116,12 @@ namespace CLAM
 	bool MelFilterBank::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
 		CopyAsConcreteConfig( mConfig, cfg );
+		InitializeTables();
 		return true;
 	}
 	
 	bool MelFilterBank::ConcreteStart()
 	{
-		InitializeTables();
 		return true;
 	}
 	

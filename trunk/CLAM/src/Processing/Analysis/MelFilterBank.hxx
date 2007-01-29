@@ -82,7 +82,7 @@ namespace CLAM
 		 *
 		 * @return True is computation was successfull, false otherwise
 		 */
-		bool Do( Spectrum& s, MelSpectrum& ms );
+		bool Do(const Spectrum& s, MelSpectrum& ms );
 
 		const ProcessingConfig& GetConfig() const
 		{
