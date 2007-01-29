@@ -12,6 +12,10 @@ def setup_vmqt_environment( vmqt_env, conf ) :
 		vmqt_env.Append( CPPPATH=['%s/include/qt3'%vmqt_env['QTDIR']] )
 		vmqt_env.Append( LIBPATH=['%s/lib'%vmqt_env['QTDIR']] )
 
+	if sys.platform == "darwin" :
+		vmqt_env.ParseConfig('pkg-config qt-mt --libs --cflags', unique=0)
+		print vmqt_env.Dump()
+
 	result = conf.CheckCXXHeader( 'qapplication.h' )
 	if not result :
 		print "Could not find Qt 3 headers! Check your Qt 3 installation..."
