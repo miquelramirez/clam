@@ -54,6 +54,7 @@ void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text &
 void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s);
 void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment, 
 		    CLAM::SegmentDescriptors& segmentD);
+void MFCC2Pool(const CLAM::Segment& segment, CLAM::DescriptionDataPool& pool);
 void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDataPool& pool);
 void ComputeSegmentationMarks(CLAM::Segment& segment,CLAM::SegmentDescriptors& segmentD);
 void Segment2Marks(const CLAM::Segment& segment, CLAM::DataArray & marks);
@@ -99,7 +100,9 @@ const char * projectDescription =
 	"</p>\n"
 	;
 
-   
+unsigned fftSize = 512;
+unsigned frameSize = 1023;
+ 
    
 int main(int argc, char ** argv)
 {
@@ -324,6 +327,23 @@ void BuildSchema(CLAM_Annotator::Project & project)
 	for (const char ** name = lowLevelDescriptorsNames; *name; name++)
 		schema.AddFrameFloatAttribute(*name);
 
+	const char * mfccLabels[] = {
+		"MFCC1",
+		"MFCC2",
+		"MFCC3",
+		"MFCC4",
+		"MFCC5",
+		"MFCC6",
+		"MFCC7",
+		"MFCC8",
+		"MFCC9",
+		"MFCC10",
+		"MFCC11",
+		"MFCC12",
+		0
+	};
+	schema.AddFloatArray("Frame", "MelFrequencyCepstrumCoefficients", mfccLabels);
+
 	struct 
 	{
 		const char * scope;
@@ -375,6 +395,7 @@ void PopulatePool(const std::string & song,
 	frames.SetInterCenterGap((secondCenter-firstCenter)*sampleRate);
 
 	SegmentD2Pool(segmentD,pool);
+	MFCC2Pool(segment,pool);
 
 	// Write Song level descriptors
 	pool.GetWritePool<CLAM::Text>("Song","Artist")[0] = artist;
@@ -534,6 +555,35 @@ unsigned GenerateOverlappingSegments(CLAM::DataArray & segmentation,
 	return nSegments;
 }
 
+#include <CLAM/MelFilterBank.hxx>
+
+void MFCC2Pool(const CLAM::Segment& segment, CLAM::DescriptionDataPool& pool)
+{
+	unsigned nFrames = segment.GetnFrames();
+	CLAM::MelFilterBankConfig melFilterBankConfig;
+	melFilterBankConfig.SetSpectrumSize(fftSize);
+	melFilterBankConfig.SetNumBands(20);
+	melFilterBankConfig.SetSpectralRange(nFrames? segment.GetFrame(0).GetSpectrum().GetSpectralRange():0);
+	melFilterBankConfig.SetLowCutoff(0);
+	melFilterBankConfig.SetHighCutoff(11025);
+	CLAM::MelFilterBank melFilterBank(melFilterBankConfig);
+
+	CLAM::MelSpectrum melSpectrum;
+	melFilterBank.Start();
+	
+	CLAM::DataArray* values= pool.GetWritePool<CLAM::DataArray>("Frame","MelFrequencyCepstrumCoefficients");
+	for(int i=0; i<nFrames; i++)
+	{
+		const CLAM::Frame & frame = segment.GetFrame(i);
+		const CLAM::Spectrum & spectrum = frame.GetSpectrum();
+		melFilterBank.Do(spectrum, melSpectrum);
+		values[i].Resize(12);
+		values[i].SetSize(12);
+		for (int j=0; j<values[i].Size(); j++)
+			values[i][j]=melSpectrum.GetCoefficients()[j];
+	}
+}
+
 void SegmentD2Pool(const CLAM::SegmentDescriptors& segmentD, CLAM::DescriptionDataPool& pool)
 {
 	int nFrames = segmentD.GetFramesD().Size();
@@ -634,13 +684,12 @@ void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text &
 
 void FFTAnalysis(const CLAM::Audio& audio, CLAM::Segment& s)
 {
-	int frameSize = 1023;
 	CLAM::FFTConfig cfg;
 	cfg.SetAudioSize(frameSize);
 	CLAM::FFT fft(cfg);
 	fft.Start();
 	CLAM::SpectrumConfig spcfg;
-	spcfg.SetSize(512);
+	spcfg.SetSize(fftSize);
 	int audioSize = audio.GetSize();
 	int samplingRate = audio.GetSampleRate();
 	int duration = 1000*frameSize/samplingRate;
