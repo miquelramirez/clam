@@ -70,9 +70,9 @@ def configure_clam(clam_env) :
 		for include in environmentIncludesList :
 			print( 'adding include dir from windows config: ' + include )
 			clam_env.Append( CPPPATH = include)
-	elif sys.platform == 'linux2':
+	if sys.platform == 'linux2':
 		clam_env.Append( CPPPATH= '/usr/local/include' )
-	else: #darwin
+	if sys.platform == 'darwin' :
 		clam_env.Append( CPPPATH= ['/usr/local/include', '/opt/local/include'] )
 		
 
@@ -102,13 +102,8 @@ def configure_processing(core_env) :
 ###############################################
 ### CLAM PROCESSING DEPENDENCIES CHECKING   ###
 ###############################################"""
-	#if sys.platform == 'win32' or sys.platform == 'darwin' :
-		#Added 'darwin' because due to some strange reasons, the LIBS added in the previous setup_core_environment were not used anymore (but CPPFLAGS did).
-		# In Linux it works fine without having to manually copy them --> done before every module process in this file
 	processing_env = core_env.Copy()
 	processing_env.Replace( QT_LIB = '')
-	#if sys.platform == 'win32' or sys.platform == 'darwin' :
-	#	processing_env.AppendUnique( LIBS=copy.copy(core_env['LIBS']) )
 	conf = Configure( processing_env, custom_check_routines )	
 	if not setup_processing_environment( processing_env, conf ) :
 		Exit(1)
@@ -122,9 +117,6 @@ def configure_audioio(processing_env) :
 ############################################"""
 	audioio_env = processing_env.Copy()
 	audioio_env.Replace( QT_LIB = '')
-	#if sys.platform == 'win32' or sys.platform == 'darwin' :
-	#	audioio_env.AppendUnique( LIBS=copy.copy(processing_env['LIBS']) )
-	#	audioio_env.AppendUnique( LINKFLAGS=copy.copy(core_env['LINKFLAGS']) )
 
 	conf = Configure( audioio_env, custom_check_routines )
 	if not setup_audioio_environment( audioio_env, conf ) :
@@ -162,8 +154,6 @@ def configure_vmqt(audioio_env) :
 		vmqt_env.Replace( QT_LIB = 'qt-mt322')
 	else :
 		vmqt_env.Replace( QT_LIB = 'qt-mt' )
-	#if sys.platform == 'win32' or sys.platform == 'darwin' :
-	#	vmqt_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
 	vmqt_env.Replace( QT_DEBUG='0' )
 	conf = Configure( vmqt_env, custom_check_routines )
 	if not setup_vmqt_environment( vmqt_env, conf ) :
@@ -249,10 +239,12 @@ def setup_build_options( env ) :
 				% (qt_includes, qt_libs)
 			opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', qt_includes ) )
 			opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', qt_libs ) )
-	elif sys.platform == 'win32' : 
+	if sys.platform == 'win32' : 
 		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', 'G:\projects\qt\include' ) )
 		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', 'G:\projects\qt\lib' ) )
-		
+
+	if sys.platform == "darwin" :	
+		pass
 	
 	opts.Update(env)
 	opts.Save('clam.conf', env) # Save, so user doesn't have to 
