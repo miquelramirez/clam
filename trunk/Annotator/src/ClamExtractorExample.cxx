@@ -556,20 +556,30 @@ unsigned GenerateOverlappingSegments(CLAM::DataArray & segmentation,
 }
 
 #include <CLAM/MelFilterBank.hxx>
+#include <CLAM/CepstralTransform.hxx>
 
 void MFCC2Pool(const CLAM::Segment& segment, CLAM::DescriptionDataPool& pool)
 {
 	unsigned nFrames = segment.GetnFrames();
+
 	CLAM::MelFilterBankConfig melFilterBankConfig;
 	melFilterBankConfig.SetSpectrumSize(fftSize);
 	melFilterBankConfig.SetNumBands(20);
-	melFilterBankConfig.SetSpectralRange(nFrames? segment.GetFrame(0).GetSpectrum().GetSpectralRange():0);
+	melFilterBankConfig.SetSpectralRange(
+		nFrames? segment.GetFrame(0).GetSpectrum().GetSpectralRange():0);
 	melFilterBankConfig.SetLowCutoff(0);
 	melFilterBankConfig.SetHighCutoff(11025);
 	CLAM::MelFilterBank melFilterBank(melFilterBankConfig);
 
+	CLAM::CepstralTransformConfig cepstralTransformConfig;
+	cepstralTransformConfig.SetNumMelCoefficients(20);
+	cepstralTransformConfig.SetNumCepstrumCoefficients(20);
+	CLAM::CepstralTransform cepstralTransform(cepstralTransformConfig);
+
 	CLAM::MelSpectrum melSpectrum;
+	CLAM::MelCepstrum melCepstrum;
 	melFilterBank.Start();
+	cepstralTransform.Start();
 	
 	CLAM::DataArray* values= pool.GetWritePool<CLAM::DataArray>("Frame","MelFrequencyCepstrumCoefficients");
 	for(int i=0; i<nFrames; i++)
@@ -577,10 +587,8 @@ void MFCC2Pool(const CLAM::Segment& segment, CLAM::DescriptionDataPool& pool)
 		const CLAM::Frame & frame = segment.GetFrame(i);
 		const CLAM::Spectrum & spectrum = frame.GetSpectrum();
 		melFilterBank.Do(spectrum, melSpectrum);
-		values[i].Resize(12);
-		values[i].SetSize(12);
-		for (int j=0; j<values[i].Size(); j++)
-			values[i][j]=melSpectrum.GetCoefficients()[j];
+		cepstralTransform.Do(melSpectrum, melCepstrum);
+		values[i] = melCepstrum.GetCoefficients();
 	}
 }
 
