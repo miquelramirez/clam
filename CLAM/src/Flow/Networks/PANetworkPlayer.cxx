@@ -18,18 +18,6 @@ inline int portaudio_process (const void *inputBuffers, void *outputBuffers,
 	return 0;
 }
 
-PANetworkPlayer::PANetworkPlayer(const std::string & networkFile)
-{
-	InitClient();
-
-	SetNetworkBackLink( *( new Network() ) );
-
-	PushFlowControl * fc = new PushFlowControl(mClamBufferSize);
-	GetNetwork().AddFlowControl( fc );
-
-	XmlStorage::Restore(GetNetwork(),networkFile);
-}
-
 PANetworkPlayer::PANetworkPlayer()
 {
 	InitClient();
@@ -50,6 +38,28 @@ void PANetworkPlayer::InitClient()
 	mPortAudioStream=NULL;
 
 	ControlIfPortAudioError( Pa_Initialize() );
+	int howManiApis = Pa_GetHostApiCount();
+	int defaultApi = Pa_GetDefaultHostApi();
+	for (int api=0; api<howManiApis; api++)
+	{
+		const PaHostApiInfo * apiInfo = Pa_GetHostApiInfo( api );
+		std::cout 
+			<< (api==defaultApi?"  ":"* ")
+			<< apiInfo->name 
+			<< std::endl;
+		for (int device=0; device<apiInfo->deviceCount; device++)
+		{
+			int fullDevice = Pa_HostApiDeviceIndexToDeviceIndex(api, device);
+			const PaDeviceInfo * deviceInfo = Pa_GetDeviceInfo(fullDevice);
+			std::cout << "\t"
+				<< (device == apiInfo->defaultInputDevice?"*<":"  ")
+				<< (device == apiInfo->defaultOutputDevice?"*>":"  ")
+				<< deviceInfo->name
+				<< " Inputs: " << deviceInfo->maxInputChannels
+				<< " Outputs: " << deviceInfo->maxOutputChannels
+				<< std::endl;
+		}
+	}
 }
 
 void PANetworkPlayer::OpenStream(const Network& net)
