@@ -1,3 +1,10 @@
+2007-01-?? CLAM 0.98.0 CVS
+'Mac is here to stay'
+ * Mac build based mostly on mac ports
+ * MelFilterBank do initialization on Configure instead of Start
+ * CepstralTransform do initialization on Configure instead of Start
+ * Ogg and mp3 are enable by default in mac
+
 2006-12-30 CLAM 0.97.0 
 'Debian Packages: less is more'
  * All library debian packages collapsed in one: libclam0 and libclam-dev
