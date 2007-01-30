@@ -47,6 +47,9 @@ namespace CLAM
   bool CepstralTransform::ConcreteConfigure( const ProcessingConfig& cfg )
   {
     CopyAsConcreteConfig( mConfig, cfg );
+
+    mLogBuffer.Resize(mConfig.GetNumMelCoefficients());
+    mLogBuffer.SetSize(mConfig.GetNumMelCoefficients());
     
     return true;
   }
@@ -59,9 +62,6 @@ namespace CLAM
   
   bool CepstralTransform::ConcreteStart()
   {
-    mLogBuffer.Resize(mConfig.GetNumMelCoefficients());
-    mLogBuffer.SetSize(mConfig.GetNumMelCoefficients());
-    
     return true;
   }
    
