@@ -106,7 +106,7 @@ Please report to clam-devel any problem or improvement you might find.
   -------------------
   
   You can download the needed external libraries to build CLAM library 
-  on the official CLAM webpage [http://www.iua.upf.es/mtg/clam/]. 
+  on the CLAM web [http://clam.iua.upf.edu/download/win/other/windows-external-libs.tar.gz]
   Please make sure that they are installed on a common base directory. 
   i.e:
         devel\CLAM\
