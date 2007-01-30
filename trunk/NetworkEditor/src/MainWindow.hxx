@@ -278,6 +278,10 @@ public slots:
 		if (file==QString::null) return;
 		load(file);
 	}
+	void on_action_OpenToolbar_triggered()
+	{
+		on_action_Open_triggered();
+	}
 	void openRecentTriggered()
 	{
 		QAction *action = qobject_cast<QAction *>(sender());

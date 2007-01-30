@@ -31,7 +31,7 @@
      <x>0</x>
      <y>0</y>
      <width>746</width>
-     <height>32</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Interface" >
@@ -316,7 +316,7 @@
   </action>
   <action name="action_OpenToolbar" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/fileopen_draggable.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open</string>
