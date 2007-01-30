@@ -38,7 +38,8 @@ build-stamp: configure-stamp
 	#$(MAKE) 
 	mkdir -p $(CURDIR)/debian/clam-networkeditor/usr
 	scons $(OPTIONS)
-	convert -resize 32x32 -colors 24 resources/NetworkEditor-icon.png $(CURDIR)/clam-networkeditor.xpm
+	convert -resize 32x32 -colors 24 src/images/NetworkEditor-icon.png $(CURDIR)/clam-networkeditor.xpm
+	convert -resize 32x32 -colors 24 src/images/Prototyper-icon.png $(CURDIR)/clam-prototyper.xpm
 	docbook-to-man debian/Prototyper.sgml > Prototyper.1
 	touch $@
 
