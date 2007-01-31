@@ -269,7 +269,7 @@ if sys.platform=='darwin' :
 	mac_packages = env.Dmg('CLAM_NetworkEditor-%s.dmg'%fullVersion, [
 		env.Dir('NetworkEditor.app/'), 
 		env.Dir('Prototyper.app'),
-		env.Dir('QtDesigner.app'),
+#		env.Dir('QtDesigner.app'),
 	] )
 	env.Alias('package', mac_packages)
 
