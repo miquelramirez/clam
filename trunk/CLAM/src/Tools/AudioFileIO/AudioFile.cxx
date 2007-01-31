@@ -86,7 +86,7 @@ namespace CLAM
 				mActiveCodec = & AudioCodecs::PCMCodec::Instantiate();
 			}
 // TODO ov_open crashes when opening from MSWindows			
-#ifndef WIN32
+//#ifndef WIN32
 #if USE_OGGVORBIS == 1
 			else if ( AudioCodecs::OggVorbisCodec::Instantiate().IsReadable( mLocation ) )
 			{
@@ -95,7 +95,7 @@ namespace CLAM
 				
 			}
 #endif		
-#endif		
+//#endif		
 #if USE_MAD == 1
 			else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( mLocation ) )
 			{
