@@ -3,6 +3,7 @@
 #include <qaction.h>
 #include <qlabel.h>
 #include <qstatusbar.h>
+#include <qapplication.h>
 #include <CLAM/Message.hxx>
 #include "Engine.hxx"
 #include "ViewManager.hxx"
@@ -55,7 +56,14 @@ namespace QtSMS
 
 	void QtSMSTools::loadConfiguration()
 	{
-		QString filename = QFileDialog::getOpenFileName(DATA_EXAMPLES_PATH,"(*.xml *.sdif)",this);
+		QString examplesPath;
+#ifdef __APPLE__
+		QDir dir(qApp->applicationDirPath()+"/../Resources/example-data/");
+		examplesPath =QString(dir.absPath());
+#else
+		examplesPath = DATA_EXAMPLES_PATH;
+#endif
+		QString filename = QFileDialog::getOpenFileName(examplesPath, "(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
 		if(mEngine->LoadConfiguration(filename.ascii()))
 		{
