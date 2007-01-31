@@ -37,6 +37,7 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 #env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
+env.Tool('bundle', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
@@ -139,14 +140,14 @@ if sys.platform=="win32" :
 
 env.Append(CPPPATH=includePaths)
 if sys.platform=='darwin' :
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"SMSTools.app/Contents/Resources\\""')
-else :
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/smstools\\""')
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"@executable_path/../Resources/example-data\\""')
+if sys.platform=='linux2' :
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"' + env['install_prefix'] + '/share/smstools/example-data\\""')
+if sys.platform=='win32' :
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"' + env['install_prefix'] + '/share/smstools/example-data\\""')
+
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
-else:
-	# TODO: This should not be hardcoded neither install_prefix (because package intall)
-	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/smstools/example-data\\""')
 
 if sys.platform=='linux2' :
 	if env['release'] :
@@ -222,17 +223,22 @@ if sys.platform=='win32' :
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' :
-	# TODO: Review why those flags were added# TODO: Review why those flags were added# TODO: Review why those flags were added
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
+	env.AppendUnique(LIBPATH=['/opt/local/lib'])
 
-	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
-	installTargets = [
-		env.Install( 'SMSTools.app/Contents/MacOS', programs ),
-		env.Install( 'SMSTools.app/Contents', 'resources/Info.plist'),
-		env.Install( 'SMSTools.app/Contents/Resources', 'resources/CLAM.icns'),
-		]
-	mac_packages = env.Dmg('CLAM_SMSTools-%s.dmg'%fullVersion, [env.Dir('SMSTools.app/')]+installTargets )
+	mac_bundle = env.Bundle(
+		BUNDLE_NAME='SMSTools', 
+		BUNDLE_BINARIES=["SMSTools"],
+		BUNDLE_RESOURCEDIRS=["example-data"],
+		BUNDLE_PLIST='resources/Info.plist',
+		BUNDLE_ICON='resources/CLAM.icns',
+	 )
+	env.Alias('bundle', mac_bundle)
+
+	mac_packages = env.Dmg('CLAM_SMSTools-%s.dmg'%fullVersion, [env.Dir('SMSTools.app/')] )
 	env.Alias('package', mac_packages)
+
+	installTargets = []
 
 env.Alias('install', installTargets )
 
