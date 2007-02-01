@@ -10,10 +10,10 @@ from versionInfo import packageVersionFromSvn
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
 distributions = [
-#	('ubuntu', 'feisty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'feisty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('ubuntu', 'edgy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('debian', 'etch',   "http://ftp.de.debian.org/debian/", ['main']),
-	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
+#	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
@@ -80,6 +80,7 @@ for repository in repositories :
 #		run( "svn up %s"%(srcdir) )
 #	else :
 #		run( "svn co %s %s"%(module, srcdir) )
+	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='clam@iua.upf.edu' dch -d 'Autobuilt package'"%(srcdir) )
 	run ( "dpkg-source -b %s"%(srcdir))
 
 
@@ -152,9 +153,9 @@ for (maindistro, distribution, mirror, components) in distributions :
 		'distro': distribution,
 	}
 
-	run("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
+	norun("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
 	norun("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
-	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
+	norun("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
 
 
 
