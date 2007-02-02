@@ -5,7 +5,7 @@
 
   <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
     <SourceFile>
-      <URI>/home/vokimon/CajitasDeArena/svnclam/NetworkEditor/example-data/Guillamino_CitiusAltiusFortius.mp3</URI>
+      <URI>example-data/Guillamino_CitiusAltiusFortius.mp3</URI>
       <Header>
         <SampleRate>44100</SampleRate>
         <Samples>1443393</Samples>
