@@ -201,9 +201,15 @@ examples = []
 for ext in ['clamnetwork', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
 	examples += scanFiles('*.%s'%ext, ['example-data'])
 
-menuEntries = glob.glob('resources/*.desktop')
+menuEntries = [
+	'resources/Prototyper.desktop',
+	'resources/NetworkEditor.desktop',
+]
 mimeEntries = [
 	'resources/clam-network.xml',
+]
+kdeMimeEntries = [
+	'resources/vnd.clam.network.desktop'
 ]
 
 installation = {
@@ -211,7 +217,9 @@ installation = {
 	qtpluginsInstallationPath : [qtplugin],
 	'/share/applications': menuEntries,
 	'/share/mime/packages': mimeEntries,
+	'/share/mimelnk/application': kdeMimeEntries,
 	'/share/man/man1' : manpages,
+	'/share/networkeditor': ['resources/NetworkEditor-icon.svg'],
 	'/share/networkeditor/i18n': translations,
 	'/share/networkeditor/example-data': examples,
 }
