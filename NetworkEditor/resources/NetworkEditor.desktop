@@ -8,7 +8,7 @@ Type=Application
 Categories=Application;AudioVideo;Audio;Qt;
 Exec=NetworkEditor
 Terminal=false
-MimeType=application/x-clamnetwork;
+MimeType=application/vnd.clam.network;
 
 [Desktop Action Edit]
 Exec=NetworkEditor %f

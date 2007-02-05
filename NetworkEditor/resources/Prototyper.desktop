@@ -8,7 +8,7 @@ Type=Application
 Categories=Application;AudioVideo;Audio;Development;GUIDesigner;Qt;
 Exec=Prototyper
 Terminal=false
-MimeType=application/x-clamnetwork;
+MimeType=application/vnd.clam.network;
 
 [Desktop Action Run]
 Exec=Prototyper %f
