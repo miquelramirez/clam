@@ -5,6 +5,10 @@
  * New icon for Prototyper
  * Fix: Open toolbox button did't work after the recent files modification
  * Down arrow hint on the open toolbox button icon
+ * Fix: On quit action quit
+ * Shortcuts for printing and quiting
+ * Oscilloscope added to the FilePlayer example
+ * KDE3 desktop integration (Mime actions, file icons)
 
 2006-12-30 NetworkEditor 0.4.2 
 'Debian Packages: less is more'
