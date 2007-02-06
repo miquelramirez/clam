@@ -29,7 +29,7 @@ void BlockingNetworkPlayer::Start()
 		return;
 	
 	SetStopped(false);
-	GetNetwork().ReconfigureAllProcessings();//TODO try to remove this	
+//	GetNetwork().ReconfigureAllProcessings();//TODO try to remove this	
 	mThread.Start();
 }
 
