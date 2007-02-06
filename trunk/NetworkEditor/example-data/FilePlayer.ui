@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>265</width>
-    <height>232</height>
+    <height>307</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -31,7 +31,28 @@
       <number>6</number>
      </property>
      <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QLabel" name="playStatus" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>0</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text" >
         <string/>
        </property>
@@ -44,7 +65,28 @@
       </widget>
      </item>
      <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QLabel" name="label" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>0</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text" >
         <string/>
        </property>
@@ -53,38 +95,71 @@
        </property>
       </widget>
      </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
     </layout>
    </item>
    <item>
-    <widget class="QFrame" name="frame" >
+    <widget class="QPushButton" name="AudioFile___MonoAudioFileReader_0" >
+     <property name="icon" >
+      <iconset resource="../src/images.qrc" >:/icons/images/fileopen.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame_2" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>1</hsizetype>
+       <vsizetype>1</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="frameShape" >
       <enum>QFrame::StyledPanel</enum>
      </property>
      <property name="frameShadow" >
       <enum>QFrame::Sunken</enum>
      </property>
-     <layout class="QHBoxLayout" >
+     <layout class="QVBoxLayout" >
       <property name="margin" >
        <number>0</number>
       </property>
       <property name="spacing" >
-       <number>6</number>
+       <number>0</number>
       </property>
       <item>
-       <widget class="QLabel" name="PlaybackIndicator" />
-      </item>
-      <item>
-       <widget class="QLabel" name="BackendIndicator" >
-        <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>1</hsizetype>
-          <vsizetype>5</vsizetype>
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="Oscilloscope" name="OutPort__MonoAudioFileReader_0__Samples___Read" >
+        <property name="minimumSize" >
+         <size>
+          <width>100</width>
+          <height>50</height>
+         </size>
         </property>
-        <property name="alignment" >
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        <property name="autoFillBackground" >
+         <bool>true</bool>
+        </property>
+        <property name="styleSheet" >
+         <string>background-color:#def;</string>
+        </property>
+        <property name="lineColor" >
+         <color>
+          <red>100</red>
+          <green>200</green>
+          <blue>234</blue>
+         </color>
         </property>
        </widget>
       </item>
@@ -138,13 +213,6 @@
     </layout>
    </item>
    <item>
-    <widget class="QPushButton" name="AudioFile___MonoAudioFileReader_0" >
-     <property name="icon" >
-      <iconset resource="../src/images.qrc" >:/icons/images/fileopen.png</iconset>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QPushButton" name="CloseButton" >
      <property name="sizePolicy" >
       <sizepolicy>
@@ -162,9 +230,60 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QFrame" name="frame" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>0</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="PlaybackIndicator" />
+      </item>
+      <item>
+       <widget class="QLabel" name="BackendIndicator" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>1</hsizetype>
+          <vsizetype>5</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
+ <customwidgets>
+  <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>Oscilloscope.hxx</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>PlayButton</tabstop>
   <tabstop>StopButton</tabstop>
