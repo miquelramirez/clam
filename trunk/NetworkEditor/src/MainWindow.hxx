@@ -378,6 +378,10 @@ public slots:
 				"<p>Run the Prototyper and open the same network you are editing</p>\n"
 			));
 	}
+	void on_action_Quit_triggered()
+	{
+		close();
+	}
 private:
 	NetworkCanvas * _canvas;
 	QDialog * _aboutDialog;
