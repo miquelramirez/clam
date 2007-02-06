@@ -31,7 +31,7 @@
      <x>0</x>
      <y>0</y>
      <width>746</width>
-     <height>29</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_Interface" >
@@ -210,6 +210,9 @@
    <property name="text" >
     <string>&amp;Quit</string>
    </property>
+   <property name="shortcut" >
+    <string>Ctrl+Q</string>
+   </property>
   </action>
   <action name="action_About" >
    <property name="icon" >
@@ -266,6 +269,9 @@
    </property>
    <property name="text" >
     <string>Print</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="action_Edit_interface" >
