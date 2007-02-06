@@ -2,7 +2,6 @@
 Encoding=UTF-8
 Type=MimeType
 MimeType=application/vnd.clam.network
-X-KDE-IsAlso=text/xml
 Icon=/usr/share/networkeditor/NetworkEditor-icon.svg
 Patterns=*.clamnetwork
 Comment=CLAM Processing Network
