@@ -309,14 +309,13 @@ namespace CLAMTest
 			readSamples.SetSampleRate( file.GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 
-			CLAM::TTime previousBeginTime = 0.0;
 			proc.Start();
 			proc.Do(readSamples);
-			previousBeginTime = readSamples.GetBeginTime();
+			CLAM::TTime previousBeginTime = readSamples.GetBeginTime();
 			proc.Do(readSamples);
 			proc.Stop();
 			
-			CLAM::TTime truth = CLAM::TTime( readSamples.GetSize() ) / file.GetHeader().GetSampleRate();
+			CLAM::TTime truth = CLAM::TTime( readSamples.GetSize() ) / file.GetHeader().GetSampleRate() *1000;
 			CLAM::TTime valueObtained = readSamples.GetBeginTime() - previousBeginTime;
 
 			CPPUNIT_ASSERT( fabs( truth - valueObtained ) < 1e-4 );
