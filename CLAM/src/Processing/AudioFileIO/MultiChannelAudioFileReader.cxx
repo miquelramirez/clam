@@ -126,7 +126,7 @@ namespace CLAM
 		}
 		
 		
-		mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
+		mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate()*1000;
 		mCurrentBeginTime += mDeltaTime;	
 		
 		return mNativeStream->WasSomethingRead();
