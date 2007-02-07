@@ -148,7 +148,7 @@ namespace CLAM
 						       outputSamples.GetSize() );
 		
 		outputSamples.SetBeginTime( mCurrentBeginTime );
-		mDeltaTime = outputSamples.GetSize() / mConfig.GetSourceFile().GetHeader().GetSampleRate();
+		mDeltaTime = outputSamples.GetSize() / mConfig.GetSourceFile().GetHeader().GetSampleRate()*1000;
 		mCurrentBeginTime += mDeltaTime;
 		outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
 		
