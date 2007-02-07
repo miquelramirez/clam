@@ -414,12 +414,7 @@ namespace CLAMTest
 			std::vector<CLAM::Audio> samples(2);
 			
 			samples[0].SetSize( 256 );
-
-			CLAM::TTime firstLeftBeginTime = 0.0;
-
 			samples[1].SetSize( 256 );
-
-			CLAM::TTime firstRightBeginTime = 0.0;
 
 			proc.Start();
 
@@ -427,20 +422,20 @@ namespace CLAMTest
 			
 			// Save Begin Time's
 
-			firstLeftBeginTime = samples[0].GetBeginTime();
-			firstRightBeginTime = samples[1].GetBeginTime();
+			CLAM::TTime firstLeftBeginTime = samples[0].GetBeginTime();
+			CLAM::TTime firstRightBeginTime = samples[1].GetBeginTime();
 
 			// call the Do again
 			proc.Do(samples);
 
 			proc.Stop();
 
-			CLAM::TTime truthLeft = CLAM::TTime( samples[0].GetSize() ) / file.GetHeader().GetSampleRate();
+			CLAM::TTime truthLeft = CLAM::TTime( samples[0].GetSize() ) / file.GetHeader().GetSampleRate() * 1000;
 			CLAM::TTime yieldLeft = samples[0].GetBeginTime() - firstLeftBeginTime; 
 
 			CPPUNIT_ASSERT( fabs( truthLeft - yieldLeft ) < 1e-4 );
 
-			CLAM::TTime truthRight = CLAM::TTime( samples[1].GetSize() ) / file.GetHeader().GetSampleRate(); 
+			CLAM::TTime truthRight = CLAM::TTime( samples[1].GetSize() ) / file.GetHeader().GetSampleRate() * 1000; 
 			CLAM::TTime yieldRight = samples[1].GetBeginTime() - firstRightBeginTime;
 			
 			CPPUNIT_ASSERT( fabs( truthRight - yieldRight ) < 1e-4 );
