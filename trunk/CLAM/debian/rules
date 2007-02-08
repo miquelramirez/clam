@@ -47,7 +47,7 @@ build-stamp: configure-stamp
 
 	# Add here commands to compile the package.
 	cd $(CURDIR)/scons/libs; scons $(OPTIONS) configure
-	cd $(CURDIR)/scons/libs; scons $(OPTIONS) core processing audioio vmfl vmqt
+	cd $(CURDIR)/scons/libs; scons $(OPTIONS) core processing audioio vmqt
 	cd $(CURDIR)
 
 	# First, tarballize the examples folder
@@ -96,31 +96,19 @@ install: build
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam0/usr install_core_runtime
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_core_dev
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_sconstools
-	rm -rf $(CURDIR)/debian/libclam0/usr/lib/*.so
-	rm -rf $(CURDIR)/debian/libclam-dev/usr/lib/*.so.*
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam0/usr install_processing_runtime
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_processing_dev
-	rm -rf $(CURDIR)/debian/libclam0/usr/lib/*.so
-	rm -rf $(CURDIR)/debian/libclam-dev/usr/lib/*.so.*
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam0/usr install_audioio_runtime
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_audioio_dev
-	rm -rf $(CURDIR)/debian/libclam0/usr/lib/*.so
-	rm -rf $(CURDIR)/debian/libclam-dev/usr/lib/*.so.*
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam0/usr install_vmfl_runtime
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_vmfl_dev
-	rm -rf $(CURDIR)/debian/libclam0/usr/lib/*.so
-	rm -rf $(CURDIR)/debian/libclam-dev/usr/lib/*.so.*
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam0/usr install_vmqt_runtime
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_vmqt_dev
 	rm -rf $(CURDIR)/debian/libclam0/usr/lib/*.so
 	rm -rf $(CURDIR)/debian/libclam-dev/usr/lib/*.so.*
-	find $(CURDIR)/debian -type f -name .sconsign | xargs rm -rf
 	# remove macOS script with /opt path to python
 	rm -f $(CURDIR)/debian/libclam-dev/usr/share/clam/sconstools/addDependentLibsToBundle.py
-	# and copy it to the libclam-doc folder
+
 	mkdir -p $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
 	cp clam-doxydocs.tar.gz $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
-	# and copy it to the libclam-doc folder
 	cp examples.tar.gz $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
 
 
