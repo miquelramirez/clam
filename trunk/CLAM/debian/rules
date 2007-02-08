@@ -115,6 +115,8 @@ install: build
 	rm -rf $(CURDIR)/debian/libclam0/usr/lib/*.so
 	rm -rf $(CURDIR)/debian/libclam-dev/usr/lib/*.so.*
 	find $(CURDIR)/debian -type f -name .sconsign | xargs rm -rf
+	# remove macOS script with /opt path to python
+	rm -f $(CURDIR)/debian/libclam-dev/usr/share/clam/sconstools/addDependentLibsToBundle.py
 	# and copy it to the libclam-doc folder
 	mkdir -p $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
 	cp clam-doxydocs.tar.gz $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
