@@ -103,7 +103,7 @@ def configure_processing(core_env) :
 ###############################################"""
 	processing_env = core_env.Copy()
 	processing_env.Replace( QT_LIB = '')
-	conf = Configure( processing_env, custom_check_routines )	
+	conf = Configure( processing_env, custom_check_routines )
 	if not setup_processing_environment( processing_env, conf ) :
 		Exit(1)
 	processing_env = conf.Finish()
