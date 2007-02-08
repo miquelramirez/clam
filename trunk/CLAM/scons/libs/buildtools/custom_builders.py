@@ -36,5 +36,5 @@ def generate_linker_name( target, source, env ) :
 	return None
 
 def generate_linker_name_message( target, source, env ) :
-	return "creating soft link to %s with linker name %s"%(source[0], target[0])
+	return "Linking linker name %s to %s"%(target[0], source[0])
 
