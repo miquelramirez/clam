@@ -54,7 +54,6 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 		soname_lib = env.LinkerNameLink( middle_linker_name, lib )		# lib***.X.Y.dylib -> lib***.X.Y.Z.dylib
 		middlelinkername_lib = env.LinkerNameLink( soname, soname_lib )		# lib***.so.X -> lib***.so.X.Y
 		linkername_lib = env.LinkerNameLink( linker_name, middlelinkername_lib)		# lib***.dylib -> lib***.X.dylib
-	tgt = env.Alias( name, linkername_lib )
 
 	env.Append(CPPDEFINES="CLAM_MODULE='\"%s\"'"%name)
 
@@ -63,10 +62,11 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 	install_lib = env.Install( install_dirs.lib, lib)
 	install_descriptor = env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 	install_soname = env.SonameLink( install_dirs.lib + '/' + soname, install_lib )
-	install_linkername =  env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
+	install_linkername =  env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_lib) 
 #	static_lib = env.Library( 'clam_'+name, sources )
 #	install_static = env.Install( install_dirs.lib, static_lib )
 
+	tgt = env.Alias( name, linkername_lib )
 	env.Alias( 'install_'+name+'_runtime', [
 		install_lib, 
 		install_soname

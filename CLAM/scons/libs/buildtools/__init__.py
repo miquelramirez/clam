@@ -18,7 +18,7 @@ def make_lib_names( source, target, env ) :
 		soname = '.'.join( pieces[0:2]) + '.dylib'
 		biglinkername = '.'.join( pieces[0:3] ) + '.dylib'
 
-	if False: #TODO remove this debugging aid
+	if True: #TODO remove this debugging aid
 		print 'soname', soname
 		print 'linkername', linkername
 		print 'biglinkername', biglinkername
