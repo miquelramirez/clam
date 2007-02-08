@@ -56,27 +56,32 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 		linkername_lib = env.LinkerNameLink( linker_name, middlelinkername_lib)		# lib***.dylib -> lib***.X.dylib
 	tgt = env.Alias( name, linkername_lib )
 
-	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
-	env.AddPostAction( install_headers, "chmod 644 $TARGET" )
-
-	install_lib = env.Install( install_dirs.lib, lib)
-	env.AddPostAction( install_lib, Action(make_lib_names, make_lib_names_message ) )
-
-	install_descriptor = env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
-
-	install_tgt = env.Alias( 'install_' + name, [install_headers, install_lib, install_descriptor] )
-
-	runtime_lib = env.Install( install_dirs.lib, lib )
-	runtime_soname = env.SonameLink( install_dirs.lib + '/' + soname, runtime_lib )
-
-	env.Alias( 'install_'+name+'_runtime', [runtime_lib, runtime_soname] )
 	env.Append(CPPDEFINES="CLAM_MODULE='\"%s\"'"%name)
 
+	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
+	env.AddPostAction( install_headers, "chmod 644 $TARGET" )
+	install_lib = env.Install( install_dirs.lib, lib)
+	install_descriptor = env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
+	install_soname = env.SonameLink( install_dirs.lib + '/' + soname, install_lib )
+	install_linkername =  env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
 #	static_lib = env.Library( 'clam_'+name, sources )
 #	install_static = env.Install( install_dirs.lib, static_lib )
 
-	dev_linkername =  env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_dirs.lib+'/'+soname) 
-	env.Alias( 'install_'+name+'_dev', [install_headers,dev_linkername, install_descriptor]) #, install_static] )
+	env.Alias( 'install_'+name+'_runtime', [
+		install_lib, 
+		install_soname
+	])
+	env.Alias( 'install_'+name+'_dev', [
+		install_headers,
+		install_linkername,
+		install_descriptor,
+# 		install_static,
+	])
+
+	install_tgt = env.Alias( 'install_' + name, [
+		'install_'+name+'_dev',
+		'install_'+name+'_runtime',
+	])
 
 	return tgt, install_tgt
 
