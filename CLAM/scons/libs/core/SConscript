@@ -4,8 +4,6 @@ from buildtools import *
 from buildtools.file_retriever import FileRetriever
 from buildtools.rulesets import *
 
-from buildtools.custom_builders import *
-
 import os, sys
 
 Import('core_env version top install_dirs header_db')
@@ -74,9 +72,6 @@ def define_module_contents(env) :
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
 
 	file_retriever.scan_without_copy()
-
-	builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
-	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
 
 	realHeaders = []
 	for orig,target in file_retriever.origTargetHeaders :

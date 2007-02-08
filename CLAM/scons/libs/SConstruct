@@ -348,6 +348,9 @@ if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() :
     print "Finished. Invoke 'scons' now."
     Exit(0)
 
+builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
+clam_env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
+
 core_env = clam_env.Copy()
 processing_env = clam_env.Copy()
 audioio_env = clam_env.Copy()
@@ -372,6 +375,7 @@ Export('vmqt_env')
 # install dirs composition
 
 compose_install_dirnames(clam_env)
+
 
 if clam_env.GetOption('clean') :
 	if os.path.exists( 'header.db' ) :
