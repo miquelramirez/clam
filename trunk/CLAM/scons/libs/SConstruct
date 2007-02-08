@@ -377,13 +377,8 @@ compose_install_dirnames(clam_env)
 if clam_env.GetOption('clean') :
 	if os.path.exists( 'header.db' ) :
 		os.remove('header.db')
-
-
-core_tgt, core_install_tgt = SConscript('core/SConscript')
-processing_tgt, processing_install_tgt = SConscript('processing/SConscript')
-audioio_tgt, audioio_install_tgt = SConscript('audioio/SConscript')
-vmfl_tgt, vmfl_install_tgt = SConscript('vmfl/SConscript')
-vmqt_tgt, vmqt_install_tgt = SConscript('vmqt/SConscript')
+for module in ['core', 'processing', 'audioio', 'vmqt', 'vmfl'] :
+	SConscript(module+'/SConscript')
 
 import glob, os
 install_dirs = InstallDirs()
@@ -391,17 +386,15 @@ install_dirs.compose(clam_env)
 sconstoolsTargetDir = os.path.join(install_dirs.data, 'clam', 'sconstools')
 sconstoolsInstall = clam_env.Install(sconstoolsTargetDir, glob.glob('../sconstools/*.py'))
 clam_env.Alias('install_sconstools', sconstoolsInstall)
-Depends(core_install_tgt, sconstoolsInstall)
+Depends('install_core', sconstoolsInstall)
 
-# Module dependencies
-if sys.platform != 'darwin':
-	all_alias = Alias( 'all', [core_tgt, processing_tgt, audioio_tgt, vmfl_tgt, vmqt_tgt] )
-	install_alias = Alias( 'install', [core_install_tgt, processing_install_tgt, audioio_install_tgt, vmfl_install_tgt, vmqt_install_tgt] )
+# Module dependenciesa
+modules = [ 'core', 'processing', 'audioio', 'vmqt']
 
-else:
-	all_alias = Alias( 'all', [core_tgt, processing_tgt, audioio_tgt, vmqt_tgt] )
-	install_alias = Alias( 'install', [core_install_tgt, processing_install_tgt, audioio_install_tgt, vmqt_install_tgt] )
+all_alias = Alias( 'all', modules)
+install_alias = Alias( 'install', ['install_%s'%module for module in modules])
 
+if sys.platform == 'darwin':
 	#DMG creation process
 	dmg_bld = Builder( action=Action( create_dmg, create_dmg_message ))
 	clam_env.Append( BUILDERS={'CreateDMG' : dmg_bld} )
