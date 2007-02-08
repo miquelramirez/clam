@@ -33,14 +33,12 @@ libraries = [
 env.SConsignFile() # Single signature file
 
 env.EnableClamModules(libs=libraries, path=env['clam_prefix'])
-if sys.platform != 'win32' :
-#	env.ParseConfig( 'pkg-config --cflags --libs cppunit') #cppunit.pc doesn't exist in ubuntu
-	env.Append( LIBS=['cppunit'])
-	if env['release'] :
-		env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
-	else :
-		env.Append( CCFLAGS=['-g', '-Wall'] )
-else :
+env.Append( CCFLAGS=['-O3', '-fomit-frame-pointer', '-g','-Wall'] )
+
+if sys.platform in ['linux2', "darwin"] :
+	env.ParseConfig( 'pkg-config --cflags --libs cppunit')
+
+if sys.platform == 'win32' :
 	env.Append( LIBS=['cppunit_vc7'] )
 	env.Append( CPPPATH=[env['cppunit_prefix']+'/include'] )
 	env.Append( LIBPATH=[env['cppunit_prefix']+'/lib'] )
