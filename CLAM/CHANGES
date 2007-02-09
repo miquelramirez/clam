@@ -4,6 +4,10 @@
  * MelFilterBank do initialization on Configure instead of Start
  * CepstralTransform do initialization on Configure instead of Start
  * Ogg and mp3 are enable by default in mac
+ * Fix: SCons was not generating sonames and linker names for libraries
+ * Fix: Lintian errors cleared
+ * Fix: MultiChannel/MonoAudioFile reader were setting wrongly SetBeginTime
+ * Fltk dropped from default build
 
 2006-12-30 CLAM 0.97.0 
 'Debian Packages: less is more'
