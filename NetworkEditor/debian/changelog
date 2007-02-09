@@ -1,3 +1,9 @@
+clam-networkeditor (0.4.3-1) feisty; urgency=low
+
+  * Upstream release
+
+ -- CLAM Team <clam@iua.upf.edu>  Fri,  9 Feb 2007 15:26:15 +0100
+
 clam-networkeditor (0.4.2-1) unstable; urgency=low
 
   * Only one libclam0 package 
