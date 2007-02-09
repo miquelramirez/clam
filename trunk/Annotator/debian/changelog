@@ -1,3 +1,10 @@
+clam-annotator (0.3.6-1) feisty; urgency=low
+
+  * New uptream release
+  * lintian advice: fixed hyphens in man page for ClamExtractorExample
+
+ -- CLAM Team <clam@iua.upf.edu>  Fri,  9 Feb 2007 14:16:46 +0100
+
 clam-annotator (0.3.5-1) unstable; urgency=low
 
   * Only one libclam0 package

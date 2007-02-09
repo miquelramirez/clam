@@ -2,7 +2,7 @@ Source: clam-annotator
 Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
-Build-Depends: debhelper (>= 5.0.0), scons, g++, libclam-dev (>= 0.95.1), qt4-dev-tools, libqt4-dev, docbook-to-man, imagemagick
+Build-Depends: debhelper (>= 5.0.0), scons, g++, libclam-dev, qt4-dev-tools, libqt4-dev, docbook-to-man, imagemagick
 Standards-Version: 3.6.1
 
 Package: clam-annotator
