@@ -1,4 +1,3 @@
-#! /opt/local/bin/python
 
 import os, glob
 import sys
