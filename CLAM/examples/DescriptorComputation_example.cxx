@@ -23,18 +23,19 @@
 #include "XMLStorage.hxx"
 #include "SegmentDescriptors.hxx"
 #include "DescriptorComputation.hxx"
-#include "FileChooser.hxx"
+#include <qfiledialog.h>
 
 int main( int argc, char** argv )
 {
 	CLAM::Segment segment;
 
-	CLAMVM::FileChooserDialog dlg;
 
-	dlg.SetTitle( "Please select an XML analysis file" );
-	dlg.AddFileType( "*.xml" );
+	QString file = QFileDialog::getOpenFileName(
+		QString::null, "*.xml", 0,
+		"name",
+		"Please select an XML analysis file");
 
-	if ( !dlg.Show() )
+	if (file.isEmpty())
 	{
 		std::cerr << "No analuysis file was selected!" << std::endl;
 		exit(0);
@@ -42,7 +43,7 @@ int main( int argc, char** argv )
 
 
 	std::cout<<"Loading Analysis File. Please Wait."<<"\n";
-	CLAM::XMLStorage::Restore(segment, dlg.GetSelectedFilename() );
+	CLAM::XMLStorage::Restore(segment, file );
 	std::cout<<"Analysis File Loaded Successfully"<<"\n";
 
 	std::cout<<"Computing Descriptors. Please Wait."<<"\n";
@@ -78,16 +79,16 @@ int main( int argc, char** argv )
 		
 	std::cout<<"Descriptors Computed Successfully"<<"\n";
 		
-	dlg.SetTitle( "Please enter name of where you want your output descriptors to be stored" );
-	std::string outFilename;
-	
-	if ( !dlg.Show() )
+	QString outFilename = QFileDialog::getOpenFileName(
+		QString::null, "*.xml", 0,
+		"name",
+		"Please enter name of where you want your output descriptors to be stored" );
+
+	if (file.isEmpty())
 	{
 		std::cerr << "No file was specified defaulting to: 'Descriptors.xml'" << std::endl;
 		outFilename = "Descriptors.xml";
 	}
-	else
-		outFilename = dlg.GetSelectedFilename();
 	
 
 	std::cout<<"Storing Results into xml file. Please Wait."<<"\n";

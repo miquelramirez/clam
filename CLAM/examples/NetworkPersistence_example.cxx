@@ -41,10 +41,13 @@
 
 #include "AudioFile.hxx"
 #include <iostream>
-#include <FL/fl_file_chooser.H>
+#include <qfiledialog.h>
+#include <qstring.h>
+#include <qapplication.h>
 
 int main( int argc, char** argv )
 {	
+	QApplication a(argc,argv);
 	try
 	{
  		// The first steps of this example are equals to NetworkUsage_example.cxx, so please
@@ -102,7 +105,10 @@ int main( int argc, char** argv )
 
 		// Now that we have the network created with our desired processing and connections, we will store it to an xml file.
 
-		const char* networkFileName = fl_file_chooser(  "Please, specify the xml where network will be stored", "*.xml", NULL );
+		QString networkFileName = QFileDialog::getSaveFileName(
+			QObject::tr("MyNetwork.clamnetwork"), "*.clamnetwork", 0,
+			"Save file as",
+			"Please, specify the xml where network will be stored");
 		if ( networkFileName == NULL )
 		{
 			std::cout << "User cancelled" << std::endl;

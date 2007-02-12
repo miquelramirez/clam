@@ -55,7 +55,7 @@ env.EnableClamModules(libs=[
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-	'clam_vmfl',
+#	'clam_vmfl',
 	'clam_vmqt',
 	], path=CLAMInstallDir)
 
@@ -75,7 +75,7 @@ singleSourceExamples = [
 	"../../examples/FileInfo_example.cxx",
 	"../../examples/FilePlayback_example.cxx",
 	"../../examples/FundamentalDetect.cxx",
-	"../../examples/LPCAnalysis_example.cxx",
+#	"../../examples/LPCAnalysis_example.cxx", # TODO FLTK Dependencies
 	"../../examples/Midi2XmlExample.cxx",
 	"../../examples/MIDIFileReadWriteExample.cxx",
 	"../../examples/MIDIIOExample.cxx",
@@ -91,7 +91,7 @@ singleSourceExamples = [
 	"../../examples/PortsExamples/SimplePortsUsage_example.cxx",
 	"../../examples/ProcessingLifeCycle_example.cxx",
 	"../../examples/ProcessingObject_controls_example.cxx",
-	"../../examples/SDIF_And_Segment_example.cxx",
+#	"../../examples/SDIF_And_Segment_example.cxx", # TODO: FLTK Dependencies
 	"../../examples/Spectrum_example.cxx",
 	"../../examples/StereoToMonoFile.cxx",
 #	"../../examples/StreamBufferExample.cxx", # TODO: Deprecated?
