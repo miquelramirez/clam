@@ -34,7 +34,7 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
-env.Tool('bundle', toolpath=[clam_sconstoolspath])
+if sys.platform=='darwin' : env.Tool('bundle', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
