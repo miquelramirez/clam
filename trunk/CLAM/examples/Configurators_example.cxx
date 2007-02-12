@@ -145,14 +145,24 @@ namespace CLAMTest
 
 }
 
-#include "FLTKConfigurator.hxx"
-#include "QTConfigurator.hxx"
+using namespace CLAMTest;
 
+#ifdef FLTK_library_removed
 #include <FL/Fl.H>
+#include "FLTKConfigurator.hxx"
+int DisplayFLTKConfigurator(DummyConfig & config)
+{
+	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
+	configurator->SetConfig(config);
+	configurator->show();
+	return Fl::run();
+}
+#endif
+
+#include "QTConfigurator.hxx"
 #include <qapplication.h>
 
 
-using namespace CLAMTest;
 
 int DisplayQTConfigurator(DummyConfig & config, int argc, char**argv)
 {
@@ -163,15 +173,6 @@ int DisplayQTConfigurator(DummyConfig & config, int argc, char**argv)
 	a.setMainWidget( &configurator );
 	return a.exec();
 }
-
-int DisplayFLTKConfigurator(DummyConfig & config)
-{
-	CLAM::FLTKConfigurator * configurator = new CLAM::FLTKConfigurator;
-	configurator->SetConfig(config);
-	configurator->show();
-	return Fl::run();
-}
-
 
 int main(int argc, char** argv)
 {
@@ -192,8 +193,9 @@ int main(int argc, char** argv)
 
 	// Use the configurators
 	DisplayQTConfigurator(config,argc,argv);
+#ifdef FLTK_library_removed
 	DisplayFLTKConfigurator(config);
-
+#endif
 	// Display and store the results
 	CLAM::XmlStorage::Dump(config,"DummyConfig", xmlfilename);
 	CLAM::XmlStorage::Dump(config,"DummyConfig", std::cout);
