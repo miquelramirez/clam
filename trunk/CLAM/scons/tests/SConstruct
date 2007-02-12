@@ -36,7 +36,9 @@ env.EnableClamModules(libs=libraries, path=env['clam_prefix'])
 env.Append( CCFLAGS=['-O3', '-fomit-frame-pointer', '-g','-Wall'] )
 
 if sys.platform in ['linux2', "darwin"] :
-	env.ParseConfig( 'pkg-config --cflags --libs cppunit')
+	if not env.ParseConfig( 'pkg-config --cflags --libs cppunit')
+		print "Warning: No pkg-config for cppunit, trying manual options"
+		env.AppendUnique('-lcppunit')
 
 if sys.platform == 'win32' :
 	env.Append( LIBS=['cppunit_vc7'] )
