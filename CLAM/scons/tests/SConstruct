@@ -36,11 +36,8 @@ env.EnableClamModules(libs=libraries, path=env['clam_prefix'])
 env.Append( CCFLAGS=['-O3', '-fomit-frame-pointer', '-g','-Wall'] )
 
 if sys.platform in ['linux2', "darwin"] :
-	try:
-		env.ParseConfig( 'pkg-config --cflags --libs cppunit')
-	except:
-		print "Warning: No pkg-config for cppunit, trying manual options"
-		env.AppendUnique(LIBS=['cppunit'])
+	env.ParseConfig( 'pkg-config --cflags --libs cppunit')
+	env.AppendUnique(LIBS=['cppunit']) # TODO: Dapper only hack
 
 if sys.platform == 'win32' :
 	env.Append( LIBS=['cppunit_vc7'] )
