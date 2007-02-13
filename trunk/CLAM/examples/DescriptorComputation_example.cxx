@@ -43,7 +43,7 @@ int main( int argc, char** argv )
 
 
 	std::cout<<"Loading Analysis File. Please Wait."<<"\n";
-	CLAM::XMLStorage::Restore(segment, file );
+	CLAM::XMLStorage::Restore(segment, file.latin1() );
 	std::cout<<"Analysis File Loaded Successfully"<<"\n";
 
 	std::cout<<"Computing Descriptors. Please Wait."<<"\n";
@@ -92,7 +92,7 @@ int main( int argc, char** argv )
 	
 
 	std::cout<<"Storing Results into xml file. Please Wait."<<"\n";
-	CLAM::XMLStorage::Dump(segmentDescriptors,"segmentDescriptors",outFilename);
+	CLAM::XMLStorage::Dump(segmentDescriptors,"segmentDescriptors",outFilename.latin1());
 
 	std::cout<<"Program finished Successfully"<<"\n";
 	return 0;

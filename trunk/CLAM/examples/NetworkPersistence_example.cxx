@@ -116,7 +116,7 @@ int main( int argc, char** argv )
 		}
 
 		// the first step to passivate the network is create an storage object
-		CLAM::XMLStorage::Dump( *network, "network", networkFileName );
+		CLAM::XMLStorage::Dump( *network, "network", networkFileName.latin1() );
 
 		// ok, we just stored it. You can take a look to the file you specified, read the contents and modify it if you want
 		// (to your own risk, of course).
