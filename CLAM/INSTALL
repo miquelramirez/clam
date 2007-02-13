@@ -27,10 +27,6 @@ provides already compiled packages for several platforms.
  This will compile all the libraries with default options, and install
  them to the default dirs ( /usr/lib/ and /usr/include/ )
 
- In Linux, you should also go to the path where the libraries are installed and run:
-
-        $ for v in "" .0 .0.95; do for a in core processing vmqt vmfl audioio; do ln -s libclam_$a.so.0.95.1 libclam_$a.so$v; done; done
-
  To see available build options run:
 
         $ scons --help
