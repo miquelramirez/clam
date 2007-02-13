@@ -129,7 +129,7 @@ int main( int argc, char** argv )
 		network2->SetName("Network Loaded");
 		network2->AddFlowControl( new CLAM::PushFlowControl( size ));
 
-		CLAM::XMLStorage::Restore( *network2, networkFileName );
+		CLAM::XMLStorage::Restore( *network2, networkFileName.latin1() );
 
 		// With these few lines we have in "network2" the same connections and processings (with his configs) that we had in "network".
 
