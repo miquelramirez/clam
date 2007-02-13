@@ -30,11 +30,11 @@ def packageVersionFromSvn( package ) :
 	return version
 
 versions = {
- "CLAM": "0.96.1",
- "NetworkEditor": "0.4.1",
- "Annotator" : "0.3.2",
- "SMSTools" : "0.4.3",
- "Voice2MIDI": "0.3.1",
+ "CLAM": "---",
+ "NetworkEditor": "---",
+ "Annotator" : "---",
+ "SMSTools" : "---",
+ "Voice2MIDI": "---",
 }
 for package, _ in versions.iteritems():
 	versions[package] = versionInfo.packageVersionFromSvn(package)
