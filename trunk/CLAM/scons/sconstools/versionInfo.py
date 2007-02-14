@@ -4,15 +4,15 @@ repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 def takeFromChangeLog(changelogFile, product='CLAM') :
 	import re
 	import datetime
-	versionExtractor = re.compile(r'[0-9?]+-[0-9?]+-[0-9?]+ %s (?P<Major>[0-9]+)\.(?P<Minor>[0-9]+)\.(?P<Patch>[0-9]+)(?P<CVS>.*CVS.*)?'%product)
+	versionExtractor = re.compile(r'[0-9?]+-[0-9?]+-[0-9?]+ %s (?P<Major>[0-9]+)\.(?P<Minor>[0-9]+)\.(?P<Patch>[0-9]+)(?P<SVN>.*SVN.*)?'%product)
 	for line in file(changelogFile) :
 		match = versionExtractor.match(line)
 		if match is None: continue
-		major, minor, patch, isCvs = [ match.group(tag) for tag in ('Major', 'Minor', 'Patch', 'CVS') ]
+		major, minor, patch, isSvn = [ match.group(tag) for tag in ('Major', 'Minor', 'Patch', 'SVN') ]
 		versionString = "%s.%s.%s"%(major,minor,patch)
 		today = datetime.date.today()
-		if not isCvs : return versionString, versionString
-		return versionString, "%s-CVS-%04i%02i%02i"%(versionString, today.year, today.month, today.day)
+		if not isSvn : return versionString, versionString
+		return versionString, "%s~svn%05i"%(versionString, int(svnRevision()))
 
 def svnRevision():
 	w, r = os.popen2( "LANG='' svn info "+repositoryBase+" | awk '/^Revision:/ { print $2}'")

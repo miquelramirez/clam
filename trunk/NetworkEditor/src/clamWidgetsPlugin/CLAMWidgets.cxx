@@ -28,6 +28,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new PolarChromaPeaksPlugin(this)
 		<< new ChordRankingPlugin(this)
 		;
+	std::cout << "All CLAM widgets plugins created" << std::endl;
 }
 
 CLAMWidgets::~CLAMWidgets()
