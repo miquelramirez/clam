@@ -23,6 +23,10 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QHeaderView>
 
+#include <iostream> //TODO remnovemove to extracted cxx
+#include <ladspa.h> //TODO move to extracted cxx
+#include <dlfcn.h> //TODO move as well
+
 namespace NetworkGUI
 {
 const static char * processingClasses[] = {
@@ -139,6 +143,7 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	setRootIsDecorated( true );
 	header()->hide();
 
+	//TODO refactor two fors in one ?
 	for (unsigned i=0; processingClasses[i]; i++)
 	{
 		QTreeWidgetItem * group = new QTreeWidgetItem( this, QStringList() << processingClasses[i] );
@@ -153,15 +158,16 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 /** DUMMY
  * process the LADSPA plugins and add them to the QTreeWidget
  **/
-	const static char ** LADSPAPlugins = ProcessingLADSPA();
-	
-	for (unsigned i=0; LADSPAPlugins[i]; i++)
+	LadspaPlugins plugins = SearchLadspaPlugins();
+	LadspaPlugins::const_iterator it=plugins.begin();
+	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (dummy)" );
+	for (; it != plugins.end(); it++)
 	{
-		QTreeWidgetItem * group = new QTreeWidgetItem( this, QStringList() << LADSPAPlugins[i] );
-		i++;
-		for (; LADSPAPlugins[i]; i++)
+		QTreeWidgetItem * group = new QTreeWidgetItem( ladspaTree, QStringList() << it->c_str() );
+		it++;
+		for (; *it != ""; it++)
 		{
-			QTreeWidgetItem * item = new QTreeWidgetItem( group, QStringList() << LADSPAPlugins[i]);
+			QTreeWidgetItem * item = new QTreeWidgetItem( group, QStringList() << it->c_str() );
 			item->setIcon(0, QIcon(":/icons/images/processing.png"));
 		}
 		
@@ -176,26 +182,34 @@ ProcessingTree::ProcessingTree( QWidget * parent)
  * follow structure of ProcessingClasses 
  * This will end up being a LADSPA loader
  **/
-const char** ProcessingTree::ProcessingLADSPA( void )
+ProcessingTree::LadspaPlugins ProcessingTree::SearchLadspaPlugins() 
 {
-	/** DUMMY :: TODO
-	 * get list of plugins from LADSPA_PATH
-	 **/
-	static const char* result[] = {
-		"DUMMY: Filters",
-		"LowPass",
-		"HighPass",
-		0,
-		"DUMMY: Amplifier",
-		"Mono",
-		"Stereo",
-		0,
-		"DUMMY: Oscillators",
-		"Simple",
-		"Sine",
-		0,		
-		0
-	};
+//TODO extract typedef of return type
+	LadspaPlugins result;
+	result.push_back("Filters");
+	result.push_back("LowPass");
+	result.push_back("HighPass");
+	result.push_back("");
+	result.push_back("Amplifier");
+	result.push_back("Mono");
+	result.push_back("Stereo");
+	result.push_back("");
+	result.push_back("Oscillators");
+	result.push_back("Simple");
+	result.push_back("Sine");
+	result.push_back("");
+
+	LADSPA_Descriptor_Function descriptorTable = 0;
+	void* handle = dlopen( "/usr/lib/ladspa/caps.so", RTLD_NOW);
+	descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
+	for (unsigned long i=0; descriptorTable(i); i++)
+	{
+		std::cout << i << std::endl;
+		LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
+		result.push_back(descriptor->Name);
+	}	
+	result.push_back("");
+
 	return result;
 	
 }
