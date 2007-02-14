@@ -25,7 +25,7 @@ provides already compiled packages for several platforms.
         $ sudo scons install
  
  This will compile all the libraries with default options, and install
- them to the default dirs ( /usr/lib/ and /usr/include/ )
+ them to the default dirs ( /usr/local/lib/ and /usr/local/include/ )
 
  To see available build options run:
 
@@ -46,9 +46,9 @@ provides already compiled packages for several platforms.
         $ scons
 
  If you wish to use CLAM libs installed in a non-standard dir, you 
- will need to specify the clam_prefix :
+ will need to specify the prefix :
 
-        $ scons clam_prefix=~/mylibs/ install
+        $ scons prefix=~/mylibs/ install
  
  For further building options do :
 
