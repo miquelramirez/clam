@@ -38,6 +38,7 @@ Q_OBJECT
 public:
 	/** TODO: this tree should be derived from the CLAM::Factory instance */
 	ProcessingTree( QWidget * parent = 0);
+	const char** ProcessingLADSPA();
 	virtual ~ProcessingTree();
 public slots:
 	void PressProcessing(QTreeWidgetItem *, int column);
