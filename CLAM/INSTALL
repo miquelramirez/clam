@@ -41,15 +41,10 @@ provides already compiled packages for several platforms.
 
  Applications can be download from the CLAM website in separate tarballs.
  If you are using svn they are folders at the CLAM trunk.
- Go to the root of the application source tree and issue:
+ Go to the root of the application source tree and issue: (maybe changing the prefix)
 
-        $ scons
+        $ scons install_prefix=/usr/local clam_prefix=/usr/local
 
- If you wish to use CLAM libs installed in a non-standard dir, you 
- will need to specify the prefix :
-
-        $ scons prefix=~/mylibs/ install
- 
  For further building options do :
 
         $ scons --help
