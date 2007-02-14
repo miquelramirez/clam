@@ -27,7 +27,14 @@ provides already compiled packages for several platforms.
  This will compile all the libraries with default options, and install
  them to the default dirs ( /usr/local/lib/ and /usr/local/include/ )
 
- To see available build options run:
+ To install clam non system-wide (usefull when developing) use scons configure
+ with these options:
+
+	$ scons configure prefix=~/local
+ 
+ Then export LD_LIBRARY_PATH=~/local before running the apps with these libs
+ 
+ To see all available build options run:
 
         $ scons --help
 
