@@ -60,10 +60,10 @@ for package, version in versions.iteritems() :
 	run("echo '%s' > %s/SVN_REVISION" % (svnRevision(), sandbox) )
 	run("tar czf %s %s " % (tarball, sandbox) )
 	run("rm -rf %s/" % sandbox)
-	run("scp %s clamadm@www.iua.upf.edu:download/src/ " % tarball )
+	norun("scp %s clamadm@www.iua.upf.edu:download/src/ " % tarball )
 
 phase("regenerating web download dirs")
-run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
+norun("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
 
 print "Remove created tarballs in local? [y/n]"
 if raw_input().strip() in ['y', 'Y', 'yes']:
