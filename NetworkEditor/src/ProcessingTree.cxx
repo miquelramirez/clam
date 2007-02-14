@@ -149,8 +149,55 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			item->setIcon(0, QIcon(":/icons/images/processing.png"));
 		}
 	}
+	
+/** DUMMY
+ * process the LADSPA plugins and add them to the QTreeWidget
+ **/
+	const static char ** LADSPAPlugins = ProcessingLADSPA();
+	
+	for (unsigned i=0; LADSPAPlugins[i]; i++)
+	{
+		QTreeWidgetItem * group = new QTreeWidgetItem( this, QStringList() << LADSPAPlugins[i] );
+		i++;
+		for (; LADSPAPlugins[i]; i++)
+		{
+			QTreeWidgetItem * item = new QTreeWidgetItem( group, QStringList() << LADSPAPlugins[i]);
+			item->setIcon(0, QIcon(":/icons/images/processing.png"));
+		}
+		
+	}
+ 
+	
 	connect( this, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),
 		 this, SLOT( PressProcessing(QTreeWidgetItem *,int) ));
+}
+
+/** DUMB: easy way to generate a new tree 
+ * follow structure of ProcessingClasses 
+ * This will end up being a LADSPA loader
+ **/
+const char** ProcessingTree::ProcessingLADSPA( void )
+{
+	/** DUMMY :: TODO
+	 * get list of plugins from LADSPA_PATH
+	 **/
+	static const char* result[] = {
+		"DUMMY: Filters",
+		"LowPass",
+		"HighPass",
+		0,
+		"DUMMY: Amplifier",
+		"Mono",
+		"Stereo",
+		0,
+		"DUMMY: Oscillators",
+		"Simple",
+		"Sine",
+		0,		
+		0
+	};
+	return result;
+	
 }
 
 ProcessingTree::~ProcessingTree()
