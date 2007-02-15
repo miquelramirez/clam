@@ -19,13 +19,29 @@
  *
  */
 
-#include "Factory.hxx"
-#include "IFFT.hxx"
 
-namespace CLAM
-{
-	namespace detail
+#include "IFFT_base.hxx"
+#include <string>
+#include "Audio.hxx"
+#include "Spectrum.hxx"
+
+namespace CLAM {
+
+	IFFT_base::IFFT_base() :
+		mSize(CLAM_DEFAULT_IFFT_SIZE),
+		mInput("Spectrum Input",this),
+		mOutput("Audio Output",this)
 	{
-		static Factory<Processing>::Registrator<IFFT> regtIFFT("IFFT");
+	}
+
+	IFFT_base::~IFFT_base()
+	{
+	}
+
+	void IFFT_base::ChangeSize(int n)
+	{
+		CLAM_ASSERT(n>=0,"Wrong (negative) Size in control input.");
+
+		CLAM_ASSERT(false,"Controls not yet implemented.");
 	}
 }

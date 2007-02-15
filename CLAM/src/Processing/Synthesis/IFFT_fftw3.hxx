@@ -20,95 +20,79 @@
  */
 
 
-#ifndef _IFFT_ooura_
-#define _IFFT_ooura_
+#ifndef _IFFT_fftw3_
+#define _IFFT_fftw3_
 
 #include "IFFT_base.hxx"
-#include "DataTypes.hxx"
-#include "SpecTypeFlags.hxx"
 #include "ErrDynamicType.hxx"
+#include "SpectrumConfig.hxx"
+
+#include <fftw3.h>
 
 namespace CLAM {
 
-	struct IFFTConfig;
-	class Spectrum;
-	class Audio;
-	class ProcessingConfig;
-
-	/** Implementation of the IFFT using the algorithm from Takuya OOURA
-	 * in C.
-	 * @see <a HREF="http://momonga.t.u-tokyo.ac.jp/~ooura/fft.html">
-	 *      Ooura's IFFT Homepage</a>
-	 */
-	class IFFT_ooura: public IFFT_base
+	/** Implementation of the IFFT using the Fastest Fourier in the West version 3
+	* @see <a HREF="http://www.fftw.org/"> FFTW Home Page</a>
+	*/
+	class IFFT_fftw3: public IFFT_base
 	{
-	  /** Internal bit reversal, cos & sin tables */
-		int *ip;
-		TData *w;
-		
-		/** Internal output buffer */
-		TData* ifftbuffer;
-		/** Auxiliary flags structure, used to add the complex attribute. */
+		fftw_plan * _plan;
+		fftw_complex * _complexInput;
+		double * _realOutput;
 		SpecTypeFlags mComplexflags;
 
 		/* IFFT possible execution states.
-		*/
+		 */
 		typedef enum {
 			sComplex, // We just need to read the complex array.
 			sOther // The complex array is not present.
 		} IFFTState;
 
 		/** Execution state of the IFFT object. It includes I/O
-	    prototypes state */
+		    prototypes state */
 		IFFTState mState;
-	
-		bool IFFTConfigure();
 
-		/** Configuration change method
-		 */
-		bool ConcreteConfigure(const ProcessingConfig&);
-
-		// Memory Management (for work areas and stuff)
-
-		void ReleaseMemory();
-
-		void SetupMemory();
-
-		// Output conversions
-
-		void ComplexToIFFTOoura(const Spectrum &in) const;
-		void OtherToIFFTOoura(const Spectrum &in) const;
+		void DefaultInit();
 
 		inline void CheckTypes(const Spectrum& in, const Audio &out) const;
 
+		// Output conversions
+
+		/** Converts a complex array to the RIFFTW input format.
+		 * @param The spectrum object from which the complex array is taken. It 
+		 *  must have its ComplexArray attribute instantiated.
+		 * @see the <a HREF="http://www.fftw.org/doc/fftw_2.html#SEC5"> RFFTW docs </a>
+		 * for a description of this format.
+		 */
+		inline void ComplexToRIFFTW(const Spectrum &in) const;
+		inline void OtherToRIFFTW(const Spectrum &in) const;
+		void ReleaseMemory();
+		void SetupMemory();
+
+		/** Configuration change method
+		 * @pre argument should be a IFFTConfig
+		 */
+		bool ConcreteConfigure(const ProcessingConfig&);
+
 	public:
 
-		IFFT_ooura();
-
-		IFFT_ooura(const IFFTConfig &c) throw(ErrDynamicType);
-
-		~IFFT_ooura();
-
-		const char * GetClassName() const {return "IFFT_ooura";}
-
-		// Execution methods
+		IFFT_fftw3();
+		IFFT_fftw3(const IFFTConfig &c) throw(ErrDynamicType);
+		~IFFT_fftw3();
+		const char * GetClassName() const {return "IFFT_fftw3";}
 
 		bool Do();
-
 		bool Do(const Spectrum& in, Audio &out) const;
+		bool MayDisableExecution() const {return true;}
 
 		// Port interfaces.
-
 		bool SetPrototypes(const Spectrum& in,const Audio &out);
-
 		bool SetPrototypes();
-
 		bool UnsetPrototypes();
-		
-		bool MayDisableExecution() const {return true;}
 
 	};
 
-};//namespace CLAM
+}
 
-#endif // _IFFT_numrec_
+#endif // _IFFT_fftw3_
+

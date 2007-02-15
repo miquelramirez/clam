@@ -23,7 +23,7 @@
 #ifndef _IFFT_rfftw_
 #define _IFFT_rfftw_
 
-#include "IFFT.hxx"
+#include "IFFT_base.hxx"
 #include "ErrDynamicType.hxx"
 #include "SpectrumConfig.hxx"
 

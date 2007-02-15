@@ -6,6 +6,6 @@ namespace CLAM
 	{
 		AddAudioSize();
 		UpdateData();
-		SetAudioSize(0);
+		SetAudioSize(1024);
 	}	
 }

@@ -7,34 +7,13 @@
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include "XMLStorage.hxx"
+#include "Factory.hxx"
 
 namespace CLAMTest
 {
-	class FFTFunctionalTest;
-
-	CPPUNIT_TEST_SUITE_REGISTRATION( FFTFunctionalTest );
-
 	class FFTFunctionalTest
 		: public CppUnit::TestFixture
 	{
-		CPPUNIT_TEST_SUITE( FFTFunctionalTest );
-		CPPUNIT_TEST( test_FFTW_WithPowerOfTwoInput );
-		CPPUNIT_TEST( test_NumRec_WithPowerOfTwoInput );
-		CPPUNIT_TEST( test_Ooura_WithPowerOfTwoInput );
-		CPPUNIT_TEST( test_FFTW_WithNonPowerOfTwoInput );
-		CPPUNIT_TEST( test_NumRec_WithNonPowerOfTwoInput );
-		CPPUNIT_TEST( test_Ooura_WithNonPowerOfTwoInput );
-		CPPUNIT_TEST( test_NumRec_WithComplex );
-		CPPUNIT_TEST( test_NumRec_WithPolar );
-		CPPUNIT_TEST( test_NumRec_WithBPF );
-		CPPUNIT_TEST( test_Ooura_WithComplex );
-		CPPUNIT_TEST( test_Ooura_WithPolar );
-		CPPUNIT_TEST( test_Ooura_WithBPF );
-		CPPUNIT_TEST( test_FFTW_WithComplex );
-		CPPUNIT_TEST( test_FFTW_WithPolar );
-		CPPUNIT_TEST( test_FFTW_WithBPF );
-		CPPUNIT_TEST_SUITE_END();
-
 	protected:
 
 		static double         smEqualityThreshold;
@@ -44,30 +23,7 @@ namespace CLAMTest
 
 		std::string mPathToTestData;
 
-		CLAM::FFT_base& createFFTObject( const std::string& implementation )
-		{
-			if ( implementation == "FFTW" )
-			{
-				static CLAM::FFT_rfftw obj;
-
-				return obj;
-			}
-			else if ( implementation == "NumRec" )
-			{
-				static CLAM::FFT_numrec obj;
-				
-				return obj;
-			}
-			else if ( implementation == "Ooura" )
-			{
-				static CLAM::FFT_ooura obj;
-
-				return obj;
-			}
-			else
-				return *(CLAM::FFT_base*)NULL;
-		}
-
+		virtual CLAM::FFT_base & getProcessing()=0;
 		void setupSine_F0400Hz_SR8kHz( CLAM::Audio& audio, int nSamples ) 
 		{
 			const CLAM::TSize sampleRate = 8000;
@@ -127,15 +83,14 @@ namespace CLAMTest
 		{
 		}
 
-	private:
-		
-		void test_FFTW_WithPowerOfTwoInput()
+	protected:
+		void test_WithPowerOfTwoInput()
 		{
 			CLAM::Audio     input;
 			CLAM::Spectrum  output;
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "FFTW" );
+			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
 			setupSpectrumToStoreFFTOutput( output );
@@ -155,7 +110,42 @@ namespace CLAMTest
 					== output.GetSpectralRange() );
 		}
 		
-		void test_NumRec_WithBPF()
+		
+		void test_WithComplex()
+		{
+			CLAM::Audio     input;
+			CLAM::SpecTypeFlags flg;
+			flg.bMagPhase=0;
+			flg.bComplex=1;
+			CLAM::Spectrum  output;
+			output.SetType(flg);
+
+			CLAM::FFTConfig processingConfig;
+			CLAM::FFT_base&      processing = getProcessing();
+
+			setupSine_F0400Hz_SR8kHz_1024samples( input );
+
+			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
+
+			processingConfig.SetAudioSize( input.GetSize() );
+
+			processing.Configure( processingConfig );
+			
+			processing.Start();
+			processing.Do(input,output);
+			processing.Stop();
+
+			flg.bMagPhase=1;
+			output.SetTypeSynchronize(flg);
+			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
+								output.GetMagBuffer() );
+
+			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
+			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
+					== output.GetSpectralRange() );
+		}
+
+		void test_WithBPF()
 		{
 			CLAM::Audio     input;
 			CLAM::SpecTypeFlags flg;
@@ -165,7 +155,7 @@ namespace CLAMTest
 			output.SetType(flg);
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "NumRec" );
+			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
 
@@ -189,12 +179,9 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSize() 
 					== output.GetSize() );
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			
-
-			
 		}
 
-		void test_NumRec_WithPolar()
+		void test_WithPolar()
 		{
 			CLAM::Audio     input;
 			CLAM::SpecTypeFlags flg;
@@ -204,107 +191,7 @@ namespace CLAMTest
 			output.SetType(flg);
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "NumRec" );
-
-			setupSine_F0400Hz_SR8kHz_1024samples( input );
-
-			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
-			processingConfig.SetAudioSize( input.GetSize() );
-
-			processing.Configure( processingConfig );
-			processing.Start();
-			processing.Do( input, output );
-			processing.Stop();
-
-			flg.bMagPhase=1;
-			output.SetTypeSynchronize(flg);
-			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
-								output.GetMagBuffer() );
-
-			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
-					== output.GetSpectralRange() );
-
-			
-		}
-		void test_NumRec_WithComplex()
-		{
-			CLAM::Audio     input;
-			CLAM::SpecTypeFlags flg;
-			flg.bMagPhase=0;
-			flg.bComplex=1;
-			CLAM::Spectrum  output;
-			output.SetType(flg);
-
-			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "NumRec" );
-
-			setupSine_F0400Hz_SR8kHz_1024samples( input );
-
-			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
-			processingConfig.SetAudioSize( input.GetSize() );
-
-			processing.Configure( processingConfig );
-			
-			processing.Start();
-			processing.Do( input, output );
-			processing.Stop();
-
-			flg.bMagPhase=1;
-			output.SetTypeSynchronize(flg);
-			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
-								output.GetMagBuffer() );
-
-			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
-					== output.GetSpectralRange() );
-
-			
-		}
-		
-		void test_NumRec_WithPowerOfTwoInput()
-		{
-			CLAM::Audio     input;
-			CLAM::Spectrum  output;
-
-			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "NumRec" );
-
-			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			setupSpectrumToStoreFFTOutput( output );
-
-			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
-			processingConfig.SetAudioSize( input.GetSize() );
-
-			processing.Configure( processingConfig );
-			processing.Start();
-			processing.Do( input, output );
-			processing.Stop();
-
-			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
-								output.GetMagBuffer() );
-
-			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
-					== output.GetSpectralRange() );
-
-			
-		}
-
-		void test_Ooura_WithBPF()
-		{
-			CLAM::Audio     input;
-			CLAM::SpecTypeFlags flg;
-			flg.bMagPhase=0;
-			flg.bMagPhaseBPF=1;
-			CLAM::Spectrum  output;
-			output.SetType(flg);
-
-			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
+			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
 
@@ -323,235 +210,18 @@ namespace CLAMTest
 			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
 								output.GetMagBuffer() );
 
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
-					== output.GetSpectralRange() );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSize() 
-					== output.GetSize() );
-			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			
-
-			
-		}
-
-		void test_Ooura_WithPolar()
-		{
-			CLAM::Audio     input;
-			CLAM::SpecTypeFlags flg;
-			flg.bMagPhase=0;
-			flg.bPolar=1;
-			CLAM::Spectrum  output;
-			output.SetType(flg);
-
-			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
-
-			setupSine_F0400Hz_SR8kHz_1024samples( input );
-
-			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
-			processingConfig.SetAudioSize( input.GetSize() );
-
-			processing.Configure( processingConfig );
-			processing.Start();
-			processing.Do(input,output);
-			processing.Stop();
-
-			flg.bMagPhase=1;
-			output.SetTypeSynchronize(flg);
-			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
-								output.GetMagBuffer() );
-
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
-
-			
 		}
-		void test_Ooura_WithComplex()
-		{
-			CLAM::Audio     input;
-			CLAM::SpecTypeFlags flg;
-			flg.bMagPhase=0;
-			flg.bComplex=1;
-			CLAM::Spectrum  output;
-			output.SetType(flg);
 
-			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
-
-			setupSine_F0400Hz_SR8kHz_1024samples( input );
-
-			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
-			processingConfig.SetAudioSize( input.GetSize() );
-
-			processing.Configure( processingConfig );
-			processing.Start();
-			processing.Do(input,output);
-			processing.Stop();
-
-			flg.bMagPhase=1;
-			output.SetTypeSynchronize(flg);
-			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
-								output.GetMagBuffer() );
-
-			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
-					== output.GetSpectralRange() );
-
-			
-		}
-		
-
-		void test_Ooura_WithPowerOfTwoInput()
+		void test_WithNonPowerOfTwoInput()
 		{
 			CLAM::Audio     input;
 			CLAM::Spectrum  output;
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
-
-			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			setupSpectrumToStoreFFTOutput( output );
-
-			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
-			processingConfig.SetAudioSize( input.GetSize() );
-
-			processing.Configure( processingConfig );
-			
-			processing.Start();
-			processing.Do( input, output );
-			processing.Stop();
-
-			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
-								output.GetMagBuffer() );
-
-			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
-					== output.GetSpectralRange() );
-
-
-		}
-
-		void test_FFTW_WithBPF()
-		{
-			CLAM::Audio     input;
-			CLAM::SpecTypeFlags flg;
-			flg.bMagPhase=0;
-			flg.bMagPhaseBPF=1;
-			CLAM::Spectrum  output;
-			output.SetType(flg);
-
-			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "FFTW" );
-
-			setupSine_F0400Hz_SR8kHz_1024samples( input );
-			//setupSpectrumToStoreFFTOutput( output );
-
-			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
-			processingConfig.SetAudioSize( input.GetSize() );
-
-			processing.Configure( processingConfig );
-			
-			processing.Start();
-			processing.Do(input,output);
-			processing.Stop();
-
-			flg.bMagPhase=1;
-			output.SetTypeSynchronize(flg);
-			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
-								output.GetMagBuffer() );
-
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
-					== output.GetSpectralRange() );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSize() 
-					== output.GetSize() );
-			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			
-
-			
-		}
-
-		void test_FFTW_WithPolar()
-		{
-			CLAM::Audio     input;
-			CLAM::SpecTypeFlags flg;
-			flg.bMagPhase=0;
-			flg.bPolar=1;
-			CLAM::Spectrum  output;
-			output.SetType(flg);
-
-			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "FFTW" );
-
-			setupSine_F0400Hz_SR8kHz_1024samples( input );
-
-			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
-			processingConfig.SetAudioSize( input.GetSize() );
-
-			processing.Configure( processingConfig );
-			
-			processing.Start();
-			processing.Do(input,output);
-			processing.Stop();
-
-			flg.bMagPhase=1;
-			output.SetTypeSynchronize(flg);
-			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
-								output.GetMagBuffer() );
-
-			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
-					== output.GetSpectralRange() );
-
-			
-		}
-		void test_FFTW_WithComplex()
-		{
-			CLAM::Audio     input;
-			CLAM::SpecTypeFlags flg;
-			flg.bMagPhase=0;
-			flg.bComplex=1;
-			CLAM::Spectrum  output;
-			output.SetType(flg);
-
-			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "FFTW" );
-
-			setupSine_F0400Hz_SR8kHz_1024samples( input );
-
-			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
-			processingConfig.SetAudioSize( input.GetSize() );
-
-			processing.Configure( processingConfig );
-			
-			processing.Start();
-			processing.Do(input,output);
-			processing.Stop();
-
-			flg.bMagPhase=1;
-			output.SetTypeSynchronize(flg);
-			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
-								output.GetMagBuffer() );
-
-			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
-			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
-					== output.GetSpectralRange() );
-
-			
-		}
-
-		void test_FFTW_WithNonPowerOfTwoInput()
-		{
-			CLAM::Audio     input;
-			CLAM::Spectrum  output;
-
-			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "FFTW" );
+			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_884samples( input );
 			setupSpectrumToStoreFFTOutput( output );
@@ -572,17 +242,15 @@ namespace CLAMTest
 			CPPUNIT_ASSERT( smEqualityThreshold <= similarity );
 			CPPUNIT_ASSERT( smReferenceP2Spectrum.GetSpectralRange() 
 					== output.GetSpectralRange() );
-
-			
 		}
 
-		void test_NumRec_WithNonPowerOfTwoInput()
+		void test_WithNonPowerOfTwoInput_fails()
 		{
 			CLAM::Audio     input;
 			CLAM::Spectrum  output;
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "NumRec" );
+			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_884samples( input );
 			setupSpectrumToStoreFFTOutput( output );
@@ -592,30 +260,93 @@ namespace CLAMTest
 			processingConfig.SetAudioSize( input.GetSize() );
 
 			CPPUNIT_ASSERT_EQUAL( false, processing.Configure( processingConfig ) );
-			
-		}
-
-		void test_Ooura_WithNonPowerOfTwoInput()
-		{
-			CLAM::Audio     input;
-			CLAM::Spectrum  output;
-
-			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = createFFTObject( "Ooura" );
-
-			setupSine_F0400Hz_SR8kHz_884samples( input );
-			setupSpectrumToStoreFFTOutput( output );
-
-			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
-
-			processingConfig.SetAudioSize( input.GetSize() );
-
-			CPPUNIT_ASSERT_EQUAL( false, processing.Configure( processingConfig ) );	
 		}
 	};
 
-	double FFTFunctionalTest::smEqualityThreshold = 0.9999;
+	double FFTFunctionalTest::smEqualityThreshold = 0.99999999999; // More accurate as close to 1
 	bool FFTFunctionalTest::smBack2BackDataLoaded = false;
 	CLAM::Spectrum FFTFunctionalTest::smReferenceP2Spectrum;
 	CLAM::Spectrum FFTFunctionalTest::smReferenceNP2Spectrum;
+
+
+	class FFTW3FunctionalTest;
+	CPPUNIT_TEST_SUITE_REGISTRATION( FFTW3FunctionalTest );
+	class FFTW3FunctionalTest : public FFTFunctionalTest
+	{
+		CPPUNIT_TEST_SUITE( FFTW3FunctionalTest );
+		CPPUNIT_TEST( test_WithPowerOfTwoInput );
+		CPPUNIT_TEST( test_WithNonPowerOfTwoInput );
+		CPPUNIT_TEST( test_WithComplex );
+		CPPUNIT_TEST( test_WithPolar );
+		CPPUNIT_TEST( test_WithBPF );
+		CPPUNIT_TEST_SUITE_END();
+
+	protected:
+		virtual CLAM::FFT_base & getProcessing()
+		{
+			return *(CLAM::FFT_base*)CLAM::Factory<CLAM::Processing>::GetInstance().Create("FFT_fftw3");
+		}
+	};
+
+	class FFTWFunctionalTest;
+	CPPUNIT_TEST_SUITE_REGISTRATION( FFTWFunctionalTest );
+	class FFTWFunctionalTest : public FFTFunctionalTest
+	{
+		CPPUNIT_TEST_SUITE( FFTWFunctionalTest );
+		CPPUNIT_TEST( test_WithPowerOfTwoInput );
+		CPPUNIT_TEST( test_WithNonPowerOfTwoInput );
+		CPPUNIT_TEST( test_WithComplex );
+		CPPUNIT_TEST( test_WithPolar );
+		CPPUNIT_TEST( test_WithBPF );
+		CPPUNIT_TEST_SUITE_END();
+
+	protected:
+		virtual CLAM::FFT_base & getProcessing()
+		{
+			static CLAM::FFT_rfftw fft;
+			return fft;
+		}
+	};
+
+	class FFTOouraFunctionalTest;
+	CPPUNIT_TEST_SUITE_REGISTRATION( FFTOouraFunctionalTest );
+	class FFTOouraFunctionalTest : public FFTFunctionalTest
+	{
+		CPPUNIT_TEST_SUITE( FFTOouraFunctionalTest );
+		CPPUNIT_TEST( test_WithPowerOfTwoInput );
+		CPPUNIT_TEST( test_WithNonPowerOfTwoInput_fails );
+		CPPUNIT_TEST( test_WithComplex );
+		CPPUNIT_TEST( test_WithPolar );
+		CPPUNIT_TEST( test_WithBPF );
+		CPPUNIT_TEST_SUITE_END();
+
+	protected:
+		virtual CLAM::FFT_base & getProcessing()
+		{
+			static CLAM::FFT_ooura fft;
+			return fft;
+		}
+	};
+
+	class FFTNumRecFunctionalTest;
+	CPPUNIT_TEST_SUITE_REGISTRATION( FFTNumRecFunctionalTest );
+	class FFTNumRecFunctionalTest : public FFTFunctionalTest
+	{
+		CPPUNIT_TEST_SUITE( FFTNumRecFunctionalTest );
+		CPPUNIT_TEST( test_WithPowerOfTwoInput );
+		CPPUNIT_TEST( test_WithNonPowerOfTwoInput_fails );
+		CPPUNIT_TEST( test_WithComplex );
+		CPPUNIT_TEST( test_WithPolar );
+		CPPUNIT_TEST( test_WithBPF );
+		CPPUNIT_TEST_SUITE_END();
+
+	protected:
+		virtual CLAM::FFT_base & getProcessing()
+		{
+			static CLAM::FFT_numrec fft;
+			return fft;
+		}
+	};
+
+
 }
