@@ -23,9 +23,11 @@
 #include <QtGui/QMouseEvent>
 #include <QtGui/QHeaderView>
 
-#include <iostream> //TODO remnovemove to extracted cxx
-#include <ladspa.h> //TODO move to extracted cxx
-#include <dlfcn.h> //TODO move as well
+#ifdef USE_LADSPA
+#	include <iostream> //TODO remnove
+#	include <ladspa.h> //TODO move to extracted cxx
+#	include <dlfcn.h> //TODO move as well
+#endif
 
 namespace NetworkGUI
 {
@@ -117,9 +119,6 @@ const static char * processingClasses[] = {
 //	"Deeser",
 	0,	
 	"Utils",
-#ifndef WIN32
-//	"LadspaLoader", // TODO: Not working because lack of custom configuration
-#endif
 	"Fundamental2Control",
 //	"ControlMapper" //	TODO register
 	0,
@@ -157,9 +156,8 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 		}
 	}
 	
-/** DUMMY
- * process the LADSPA plugins and add them to the QTreeWidget
- **/
+#ifdef USE_LADSPA
+// TODO: Ladspa is still work in progress 
 	LadspaPlugins plugins = SearchLadspaPlugins();
 	LadspaPlugins::const_iterator it=plugins.begin();
 	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (dummy)" );
@@ -172,8 +170,8 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			QTreeWidgetItem * item = new QTreeWidgetItem( group, QStringList() << it->c_str() );
 			item->setIcon(0, QIcon(":/icons/images/processing.png"));
 		}
-		
 	}
+#endif //USE_LADSPA
  
 	
 	connect( this, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),
@@ -201,6 +199,7 @@ ProcessingTree::LadspaPlugins ProcessingTree::SearchLadspaPlugins()
 	result.push_back("Sine");
 	result.push_back("");
 
+#ifdef USE_LADSPA
 	LADSPA_Descriptor_Function descriptorTable = 0;
 	void* handle = dlopen( "/usr/lib/ladspa/caps.so", RTLD_NOW);
 	descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
@@ -211,7 +210,7 @@ ProcessingTree::LadspaPlugins ProcessingTree::SearchLadspaPlugins()
 		result.push_back(descriptor->Name);
 	}	
 	result.push_back("");
-
+#endif
 	return result;
 	
 }
