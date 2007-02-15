@@ -23,9 +23,9 @@
 #ifndef _IFFT_
 #define _IFFT_
 
-//#if defined USE_FFTW3
-//#include "IFFT_fftw3.hxx"
-//#define CLAM_FFT_IMPLEMENTATION IFFT_fftw3
+#if defined USE_FFTW3
+#include "IFFT_fftw3.hxx"
+#define CLAM_FFT_IMPLEMENTATION IFFT_fftw3
 #if defined USE_FFTW
 #include "IFFT_rfftw.hxx"
 #define CLAM_FFT_IMPLEMENTATION IFFT_rfftw
