@@ -23,7 +23,7 @@
 #ifndef _FFT_numrec_
 #define _FFT_numrec_
 
-#include "FFT.hxx"
+#include "FFT_base.hxx"
 #include "DataTypes.hxx"
 #include "SpecTypeFlags.hxx"
 

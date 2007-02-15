@@ -23,9 +23,10 @@
 #ifndef _FFT_ooura_
 #define _FFT_ooura_
 
-#include "FFT.hxx"
+#include "FFT_base.hxx"
 #include "DataTypes.hxx"
 #include "SpecTypeFlags.hxx"
+#include "ErrDynamicType.hxx"
 
 namespace CLAM {
 

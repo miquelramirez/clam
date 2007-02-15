@@ -167,7 +167,6 @@ def configureModules( clam_env ) :
 	audioio_env = configure_audioio(processing_env)
 	vmfl_env = configure_vmfl(audioio_env)
 	vmqt_env = configure_vmqt(audioio_env)
-
 	save_config_file_from_env(clam_env, '.')
 	save_config_file_from_env(core_env, 'core')
 	save_config_file_from_env(processing_env, 'processing')
@@ -204,6 +203,7 @@ def setup_build_options( env ) :
 		opts.Add( BoolOption( 'with_jack_support', 'Enables/Disable JACK support', 'yes') )
 	
 	# clam_processing options
+	opts.Add( BoolOption( 'with_fftw3', 'Selects whether to use fftw or not', 'no'))
 	opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))
 	opts.Add( BoolOption( 'with_nr_fft', 'Selects whether to use Numerical Recipes fft algorithm implementation or not', 'yes') )
 
