@@ -15,11 +15,14 @@ def takeFromChangeLog(changelogFile, product='CLAM') :
 		return versionString, "%s~svn%05i"%(versionString, int(svnRevision()))
 
 def svnRevision():
-	w, r = os.popen2( "LANG='C' svn info "+repositoryBase+" | awk '/^Revision:/ { print $2}'")
-	lastRevision = r.readline().strip()
-	w.close()
- 	r.close()
-	return lastRevision
+	import re
+	output = os.popen("LANG='C' svn info "+repositoryBase)
+	revisionLocator = re.compile(r'^Revision:(?P<revision>.*)')
+	for line in output :
+		match = revisionLocator.match(line)
+		if not match: continue
+		return match.group('revision').strip()
+	raise "No revision found"
 
 def packageVersionFromSvn( package ) :
 	os.system("rm CHANGES*" )
