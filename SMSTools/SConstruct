@@ -235,7 +235,10 @@ if sys.platform=='darwin' :
 	 )
 	env.Alias('bundle', mac_bundle)
 
-	mac_packages = env.Dmg('CLAM_SMSTools-%s.dmg'%fullVersion, [env.Dir('SMSTools.app/')] )
+	arch = os.popen("uname -p").read().strip()
+	mac_packages = env.Dmg('CLAM_SMSTools-%s-%s.dmg'% (fullVersion, arch), [
+		env.Dir('SMSTools.app/')
+	] )
 	env.Alias('package', mac_packages)
 
 	installTargets = []
