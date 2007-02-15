@@ -160,7 +160,7 @@ private:
 		assertXmlBodyEquals(
 			"<network id=\"FooNetworkWithMoreThanOneProcessing\">"
 			"<processing id=\"fftw\" type=\"FFT_rfftw\">"
-			"<AudioSize>0</AudioSize>"
+			"<AudioSize>1024</AudioSize>"
 			"</processing>"
 			"<processing id=\"multiplier\" type=\"AudioMultiplier\"/>"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"

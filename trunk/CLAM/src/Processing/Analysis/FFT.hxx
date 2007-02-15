@@ -43,5 +43,6 @@ public:
 	const char *GetClassName() const {return "FFT";}
 };
 }
+#undef CLAM_FFT_IMPLEMENTATION
 
 #endif // _FFT_

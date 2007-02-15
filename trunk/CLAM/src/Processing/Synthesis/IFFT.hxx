@@ -23,95 +23,26 @@
 #ifndef _IFFT_
 #define _IFFT_
 
-#include <typeinfo> // for bad_cast definition
-#include "Processing.hxx"
-#include "ProcessingData.hxx"
-#include "InPort.hxx"
-#include "AudioOutPort.hxx"
-#include "DataTypes.hxx"
-
-
-#include "IFFTConfig.hxx"
-
-namespace CLAM {
-
-    class IFFT_rfftw;
-    class Audio;
-    class Spectrum;
-
-    /** Default IFFT implemntation. 
-     * In order to use it, only the IFFT.hxx file needs to be included;
-     * it will include any other necesary header.
-     */
-    typedef IFFT_rfftw IFFT;
-
-
-    /** Configuration class for IFFT classes
-     */
-    /* IFFTConfig moved to IFFTConfig.hxx */
-
-
-    /** Abstract base class for IFFT classes */
-    class IFFT_base: public Processing
-    {
-    protected:
-	enum {CLAM_DEFAULT_IFFT_SIZE=1024};
-		
-	/** IFFT Configuration */
-	IFFTConfig mConfig;
-	/** IFFT size */
-	int mSize;
-
-	InPort<Spectrum> mInput;
-	AudioOutPort   mOutput;
-
-	// Control change callback function
-	void ChangeSize(int n);
-	int GetSize() {return mSize;}
-		
-	virtual bool ConcreteConfigure(const ProcessingConfig&) = 0;
-
-    public:
-
-	IFFT_base();
-
-	virtual ~IFFT_base();
-
-	const char *GetClassName() const {return "IFFT";}
-		
-	/** Config access:
-	 */
-	virtual const ProcessingConfig &GetConfig() const { return mConfig;}
-
-	/** Supervised-mode Do function.
-	 */
-	virtual bool Do(void) = 0;
-
-	/** Standard IFFT Do function, with storage class references as
-	 * arguments. This method implements the old conversor routines.
-	 */
-	virtual bool Do(const Spectrum& in, Audio &out) const = 0;
-
-	// Input/Output configuration methods
-
-	/** IFFT non-supervised mode SetPrototypes function */
-	virtual bool SetPrototypes(const Spectrum& in,const Audio &out) = 0;
-
-	/** Standard supervised-mode SetPrototypes function. */
-	virtual bool SetPrototypes() {return false;}
-
-	/** Standard UnsetPrototypes function. */
-	virtual bool UnsetPrototypes() {return false;}
-
-	// Enable/Disable methods. Maybe we should not be deriving
-	// these ones in IFFT subclasses. (IFFT implementations will
-	// probably be always memoryless.
-
-	virtual bool MayDisableExecution() const {return false;}
-
-    };
-}
-
+//#if defined USE_FFTW3
+//#include "IFFT_fftw3.hxx"
+//#define CLAM_FFT_IMPLEMENTATION IFFT_fftw3
+#if defined USE_FFTW
 #include "IFFT_rfftw.hxx"
+#define CLAM_FFT_IMPLEMENTATION IFFT_rfftw
+#else
+#include "IFFT_ooura.hxx"
+#define CLAM_FFT_IMPLEMENTATION IFFT_ooura
+#endif
+namespace CLAM
+{
+class IFFT : public  CLAM_FFT_IMPLEMENTATION
+{
+public:
+	IFFT() : CLAM_FFT_IMPLEMENTATION() {}
+	IFFT(const IFFTConfig & config) : CLAM_FFT_IMPLEMENTATION(config) {}
+	const char *GetClassName() const {return "IFFT";}
+};
+}
+#undef CLAM_FFT_IMPLEMENTATION
 
 #endif // _IFFT
