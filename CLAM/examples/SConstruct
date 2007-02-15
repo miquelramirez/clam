@@ -1,0 +1,164 @@
+#!/usr/bin/python
+import os
+import glob
+import sys
+
+options = Options('options.cache', ARGUMENTS)
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(path+"/"+pattern)
+	return files
+
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+def unique(list) :
+	return dict.fromkeys(list).keys()
+
+env = Environment(tools=['default', 'qt'], options=options)
+options.Save('options.cache', env)
+env.Tool('clam', toolpath=['../scons/sconstools'])
+
+env.SConsignFile() # Single signature file
+
+env['CXXFILESUFFIX'] = '.cxx'
+env['QT_MOCHPREFIX'] = 'generated/moc_'
+env['QT_UICDECLPREFIX'] = 'generated/ui_'
+env['QT_UICDECLSUFFIX'] = '.hxx'
+if (sys.platform == 'linux2') :
+	env['QT_LIB'] = 'qt-mt'
+if (sys.platform == 'win32') :
+	env['QT_LIB'] = 'qt-mt322'
+
+
+CLAMInstallDir = env['clam_prefix']
+
+sourcePaths = []
+extraPaths = []
+extraPaths += [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes	
+]
+includePaths = sourcePaths + extraPaths
+
+sources = scanFiles('*.cxx', sourcePaths)
+sources = unique(sources)
+
+env.Append(CPPPATH=includePaths)
+
+env.EnableClamModules(libs=[
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+#	'clam_vmfl',
+	'clam_vmqt',
+	], path=CLAMInstallDir)
+
+env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
+
+singleSourceExamples = [
+	"NetworkPersistence_example.cxx",
+	"NetworkUsage_example.cxx",
+#	"AudioApplicationExample.cxx", # TODO: Windows lacks GUIAudioApplication
+	"AudioFileReading_example.cxx",
+	"AudioFileWriting_example.cxx",
+	"AudioIOExample.cxx",
+	"Configurators_example.cxx",
+	"DescriptorComputation_example.cxx",
+	"FDFilterExample.cxx",
+	"FFT_example.cxx",
+	"FileInfo_example.cxx",
+	"FilePlayback_example.cxx",
+	"FundamentalDetect.cxx",
+#	"LPCAnalysis_example.cxx", # TODO FLTK Dependencies
+	"Midi2XmlExample.cxx",
+	"MIDIFileReadWriteExample.cxx",
+	"MIDIIOExample.cxx",
+	"MIDIOut_example.cxx",
+#	"MIDI_Synthesizer_example/MIDI_Synthesizer_example.cxx", # TODO: Windows lacks GUIAudioApplication
+	"NetworkPersistence_example.cxx",
+	"NetworkUsage_example.cxx",
+	"PersistenceThroughDTs_example.cxx",
+#	"MultiPlot_example.cxx",
+#	"PlotExamplesHelper.cxx",
+#	"SinglePlot_example.cxx",
+	"POCompositeExample.cxx",
+	"PortsExamples/SimplePortsUsage_example.cxx",
+	"ProcessingLifeCycle_example.cxx",
+	"ProcessingObject_controls_example.cxx",
+#	"SDIF_And_Segment_example.cxx", # TODO: FLTK Dependencies
+	"Spectrum_example.cxx",
+	"StereoToMonoFile.cxx",
+#	"StreamBufferExample.cxx", # TODO: Deprecated?
+#	"ThreadedProcessing_example.cxx", # TODO: Depends on Resample
+	"Tutorial/UserTutorial1.cxx",
+	"Tutorial/UserTutorial2.cxx",
+	"Tutorial/UserTutorial3.cxx",
+	"Tutorial/UserTutorial4.cxx",
+	"Tutorial/UserTutorial5.cxx",
+	"Tutorial/UserTutorial6.cxx",
+]
+# TODO: Weird ones (libraries, client server...)
+#	"CLT/LadspaAudioMultiplier.cxx",
+#	"CLT/LadspaSimpleOscillator.cxx",
+# TODO: Files to be integred on the Network editor
+#	"CLAMRemoteController/CLAMRemoteController.cxx",
+#	"CLAMRemoteController/LADSPAHandler.cxx",
+#	"NetworkLADSPAPlugin/LADSPAHandler.cxx",
+#	"NetworkLADSPAPlugin/NetworkLADSPAPlugin.cxx",
+qtPlotUtils = [
+	"QtPlots/utils/analysis_utils.cxx",
+	"QtPlots/utils/audio_file_utils.cxx",
+	"QtPlots/utils/wave_utils.cxx",
+]
+qtPlotMains = [
+	"QtPlots/DirectPlotsExamples/DPAudioExample.cxx",
+	"QtPlots/DirectPlotsExamples/DPAudioStereoExample.cxx",
+	"QtPlots/DirectPlotsExamples/DPFundamentalExample.cxx",
+	"QtPlots/DirectPlotsExamples/DPMultiPlotExample.cxx",
+	"QtPlots/DirectPlotsExamples/DPSpectrumAndPeaksExample.cxx",
+	"QtPlots/QtPlotsExamples/QtAudioPlotExample.cxx",
+	"QtPlots/QtPlotsExamples/QtSinTracksPlotExample.cxx",
+	"QtPlots/QtPlotsExamples/QtSpectrogramExample.cxx",
+	"QtPlots/QtPlotsExamples/QtSpectrumPlotExample.cxx",
+	"QtPlots/SegmentEditorExample/SegmentEditorExample.cxx",
+]
+if sys.platform != 'win32':
+	qtPlotMains += [
+	"QtPlots/BPFEditorExample/BPFEditorExample.cxx", #TODO: Windows needs PortMidi
+	"QtPlots/DirectPlotsExamples/MultiBPFViewerExample.cxx", #TODO: Windows needs PortMidi
+	"QtPlots/ListPlotExample/ListPlotExample.cxx", #TODO: Windows needs PortMidi
+]
+
+directoryBasedExamples = [
+#	"TickExtractor", # TODO: Files left to be compilable
+	"PortsAndControlsUsageExample",
+	"ControlArrayExamples",
+]
+
+examples = []
+
+for main in singleSourceExamples :
+	executable = os.path.splitext(os.path.basename(main))[0]
+	examples += [ env.Program(target=executable, source = sources + [main] ) ]
+	
+env.AppendUnique(CPPPATH=["QtPlots/utils"])
+for main in qtPlotMains :
+	executable = os.path.splitext(os.path.basename(main))[0]
+	examples += [ env.Program(target=executable, source = sources + [main] + qtPlotUtils) ]
+
+for folder in directoryBasedExamples :
+	exampleSources = glob.glob(folder+"/*.cxx")
+	executable = os.path.basename(folder)+"Exe"
+	examples += [ env.Program(target=executable, source = sources + exampleSources ) ]
+
+
+env.Alias('examples',examples)
+
+env.Default(examples)
+
+
+
