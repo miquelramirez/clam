@@ -274,7 +274,8 @@ if sys.platform=='darwin' :
 	env.Alias('bundle', [mac_networkeditor_bundle, mac_prototyper_bundle, mac_designer_bundle])
 
 	#TODO mac_bundle should be dependency of Dmga:	
-	mac_packages = env.Dmg('CLAM_NetworkEditor-%s.dmg'%fullVersion, [
+	arch = os.popen("uname -p").read().strip()
+	mac_packages = env.Dmg('CLAM_NetworkEditor-%s-%s.dmg'% (fullVersion, arch), [
 		env.Dir('NetworkEditor.app/'), 
 		env.Dir('Prototyper.app'),
 #		env.Dir('QtDesigner.app'),
