@@ -111,12 +111,11 @@ namespace CLAM {
 	inline void FFT_rfftw::ToComplex(Spectrum &out)
 	{
 		Array<Complex>& outbuffer = out.GetComplexArray();
-		int i;
 
 		outbuffer[0].SetReal(fftbuffer[0]);   // Real Values
 		outbuffer[mSize/2].SetReal(fftbuffer[mSize/2]);
 		outbuffer[0].SetImag(0);   // Real Values
-		for (i=1; i< mSize/2; i++) {
+		for (int i=1; i< mSize/2; i++) {
 			outbuffer[i].SetReal(fftbuffer[i]);
 			outbuffer[i].SetImag(fftbuffer[mSize-i]);
 		}
@@ -125,7 +124,7 @@ namespace CLAM {
 		else
 			outbuffer[mSize/2].SetImag(0);
 
-		outbuffer.SetSize(mSize/2+1);
+		outbuffer.SetSize(mSize/2+1); // TOOD: Any sense?
 	}
 
 	

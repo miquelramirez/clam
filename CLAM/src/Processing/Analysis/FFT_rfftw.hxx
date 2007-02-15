@@ -23,7 +23,11 @@
 #ifndef _FFT_rfftw_
 #define _FFT_rfftw_
 
-#include "FFT.hxx"
+#if !defined USE_FFTW
+#error This header should not be compiled without the USE_FFTW option
+#endif
+
+#include "FFT_base.hxx"
 #include "DataTypes.hxx"
 #include "SpecTypeFlags.hxx"
 #include "ErrDynamicType.hxx"

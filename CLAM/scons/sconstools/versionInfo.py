@@ -15,7 +15,7 @@ def takeFromChangeLog(changelogFile, product='CLAM') :
 		return versionString, "%s~svn%05i"%(versionString, int(svnRevision()))
 
 def svnRevision():
-	w, r = os.popen2( "LANG='C' svn info -r9674 "+repositoryBase+" | awk '/^Revision:/ { print $2}'")
+	w, r = os.popen2( "LANG='C' svn info "+repositoryBase+" | awk '/^Revision:/ { print $2}'")
 	lastRevision = r.readline().strip()
 	w.close()
  	r.close()
@@ -23,7 +23,7 @@ def svnRevision():
 
 def packageVersionFromSvn( package ) :
 	os.system("rm CHANGES*" )
-	os.system("svn export -r 9674 "+ repositoryBase + package + "/CHANGES" )
+	os.system("svn export "+ repositoryBase + package + "/CHANGES" )
 	version, longVersion = takeFromChangeLog( "CHANGES", package )
 	return version
 
