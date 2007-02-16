@@ -47,7 +47,7 @@ namespace CLAM
 #define CLAM_BREAKPOINT {_asm {int 3}}
 
 // GNU GCC
-#elif defined (__GNUC__) && defined  (__i386__)
+#elif defined (__GNUC__) && (defined  (__i386__) || defined(__x86_64__))
 #define CLAM_BREAKPOINT {__asm__ (" int $3 "); }
 
 /* g++ on powerpc linux */
