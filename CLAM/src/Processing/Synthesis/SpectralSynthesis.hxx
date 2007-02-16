@@ -34,13 +34,6 @@
 #include "Err.hxx"
 #include "IFFT.hxx"
 
-
-#ifdef CLAM_OOURA
-	#include "IFFT_ooura.hxx"
-#else
-	#include "IFFT_rfftw.hxx"
-#endif
-
 #include "Frame.hxx"
 #include "Segment.hxx"
 #include "InControl.hxx"
@@ -92,11 +85,7 @@ private:
 		//internal Processing Objects
 		WindowGenerator			mPO_AnalWindowGen;
 		WindowGenerator			mPO_SynthWindowGen;
-#ifdef CLAM_OOURA
-		IFFT_ooura				mPO_IFFT;
-#else
-		IFFT_rfftw				mPO_IFFT;
-#endif
+		IFFT				mPO_IFFT;
 		AudioMultiplier            mPO_AudioProduct;
 		CircularShift			mPO_CircularShift;
 			
