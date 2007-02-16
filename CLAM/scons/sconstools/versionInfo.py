@@ -29,7 +29,9 @@ def packageVersionFromSvn( package ) :
 	os.system("rm CHANGES*" )
 	os.system("svn export "+ repositoryBase + package + "/CHANGES" )
 	version, longVersion = takeFromChangeLog( "CHANGES", package )
-	return version
+	if version==longVersion: return version
+	# CHANGES file revision may not be the repository last revision
+	return versionString, "%s~svn%05i"%(versionString, int(svnRevision()))
 
 
 
