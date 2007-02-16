@@ -201,27 +201,32 @@ void LadspaLoader::ConfigurePortsAndControls()
 {
 	for(unsigned int i=0;i<mDescriptor->PortCount;i++)
 	{
-		if(LADSPA_IS_PORT_INPUT(mDescriptor->PortDescriptors[i]) && LADSPA_IS_PORT_AUDIO(mDescriptor->PortDescriptors[i])) // in port
+		// in port
+		if(LADSPA_IS_PORT_INPUT(mDescriptor->PortDescriptors[i]) && LADSPA_IS_PORT_AUDIO(mDescriptor->PortDescriptors[i])) 
 		{
 			AudioInPort * port = new AudioInPort(mDescriptor->PortNames[i],this );
 			port->SetSize( mConfig.GetSize());
 			mInputPorts.push_back(port);
 		}
-		if(LADSPA_IS_PORT_INPUT(mDescriptor->PortDescriptors[i]) && LADSPA_IS_PORT_CONTROL(mDescriptor->PortDescriptors[i])) // in control
-		{
-			InControl * control = new InControl(mDescriptor->PortNames[i], this);
-			mInputControlValues.push_back(LADSPA_Data());
-			mDescriptor->connect_port(mInstance, i, &mInputControlValues[mInputControlValues.size()-1]);
-			mInputControls.push_back(control);
-		}			
-		if(LADSPA_IS_PORT_OUTPUT(mDescriptor->PortDescriptors[i]) && LADSPA_IS_PORT_AUDIO(mDescriptor->PortDescriptors[i])) // out port
+		// out port
+		if(LADSPA_IS_PORT_OUTPUT(mDescriptor->PortDescriptors[i]) && LADSPA_IS_PORT_AUDIO(mDescriptor->PortDescriptors[i])) 
 		{
 			AudioOutPort * port = new AudioOutPort(mDescriptor->PortNames[i],this );
 			port->SetSize( mConfig.GetSize() );
 			mOutputPorts.push_back(port);
 			
 		}
-		if(LADSPA_IS_PORT_OUTPUT(mDescriptor->PortDescriptors[i]) && LADSPA_IS_PORT_CONTROL(mDescriptor->PortDescriptors[i])) // in control
+
+		// in control
+		if(LADSPA_IS_PORT_INPUT(mDescriptor->PortDescriptors[i]) && LADSPA_IS_PORT_CONTROL(mDescriptor->PortDescriptors[i])) 
+		{
+			InControl * control = new InControl(mDescriptor->PortNames[i], this);
+			mInputControlValues.push_back(LADSPA_Data());
+			mDescriptor->connect_port(mInstance, i, &mInputControlValues[mInputControlValues.size()-1]);
+			mInputControls.push_back(control);
+		}			
+		// out control
+		if(LADSPA_IS_PORT_OUTPUT(mDescriptor->PortDescriptors[i]) && LADSPA_IS_PORT_CONTROL(mDescriptor->PortDescriptors[i])) 
 		{
 			OutControl * control = new OutControl(mDescriptor->PortNames[i], this);
 			mOutputControlValues.push_back(LADSPA_Data());
