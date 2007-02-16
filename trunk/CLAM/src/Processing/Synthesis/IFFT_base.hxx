@@ -29,6 +29,7 @@
 #include "AudioOutPort.hxx"
 #include "ProcessingData.hxx"
 #include "DataTypes.hxx"
+#include "Spectrum.hxx"
 
 #include "IFFTConfig.hxx"
 
