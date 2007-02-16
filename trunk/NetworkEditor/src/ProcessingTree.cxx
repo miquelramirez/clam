@@ -24,9 +24,11 @@
 #include <QtGui/QHeaderView>
 
 #ifdef USE_LADSPA
-#	include <iostream> //TODO remnove
+#	include <iostream> //TODO move
 #	include <ladspa.h> //TODO move to extracted cxx
 #	include <dlfcn.h> //TODO move as well
+#      include <dirent.h> //TODO move
+#      include <sys/types.h>
 #endif
 
 namespace NetworkGUI
@@ -189,7 +191,6 @@ ProcessingTree::ProcessingTree( QWidget * parent)
  **/
 ProcessingTree::LadspaPlugins ProcessingTree::SearchLadspaPlugins() 
 {
-//TODO extract typedef of return type
 	LadspaPlugins result;
 	result.push_back("Filters");
 	result.push_back("LowPass");
@@ -203,20 +204,32 @@ ProcessingTree::LadspaPlugins ProcessingTree::SearchLadspaPlugins()
 	result.push_back("Simple");
 	result.push_back("Sine");
 	result.push_back("");
-
+	
 #ifdef USE_LADSPA
-	result.push_back("TAPS plugins");
-	LADSPA_Descriptor_Function descriptorTable = 0;
-	void* handle = dlopen( "/usr/lib/ladspa/caps.so", RTLD_NOW);
-	descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
-	for (unsigned long i=0; descriptorTable(i); i++)
+	//TODO search all user path
+	char* ladspaPath = getenv("LADSPA_PATH");
+	if(!ladspaPath)
 	{
-		std::cout << i << std::endl;
-		LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
-		result.push_back(descriptor->Name);
-	}	
-	result.push_back("");
-#endif
+	        ladspaPath = "/usr/lib/ladspa";
+	}
+	DIR* ladspaDir = opendir(ladspaPath);
+	struct dirent * ladspaFile;
+	while((ladspaFile = readdir(ladspaDir)))
+	{
+		LADSPA_Descriptor_Function descriptorTable = 0;
+		std::string pluginFileName(ladspaPath + std::string("/") + ladspaFile->d_name);
+		void* handle = dlopen( pluginFileName.c_str(), RTLD_NOW);
+		descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
+		for (unsigned long i=0; descriptorTable(i); i++)
+		{
+			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
+			result.push_back(descriptor->Name);
+		}
+		result.push_back("");
+	}
+	closedir(ladspaDir);
+#endif // USE_LADSPA
+
 	return result;
 	
 }
