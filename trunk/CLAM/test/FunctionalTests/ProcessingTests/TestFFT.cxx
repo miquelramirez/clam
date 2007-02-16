@@ -268,7 +268,7 @@ namespace CLAMTest
 	CLAM::Spectrum FFTFunctionalTest::smReferenceP2Spectrum;
 	CLAM::Spectrum FFTFunctionalTest::smReferenceNP2Spectrum;
 
-
+#ifdef USE_FFTW3
 	class FFTW3FunctionalTest;
 	CPPUNIT_TEST_SUITE_REGISTRATION( FFTW3FunctionalTest );
 	class FFTW3FunctionalTest : public FFTFunctionalTest
@@ -287,7 +287,8 @@ namespace CLAMTest
 			return *(CLAM::FFT_base*)CLAM::Factory<CLAM::Processing>::GetInstance().Create("FFT_fftw3");
 		}
 	};
-
+#endif
+#ifdef USE_FFTW
 	class FFTWFunctionalTest;
 	CPPUNIT_TEST_SUITE_REGISTRATION( FFTWFunctionalTest );
 	class FFTWFunctionalTest : public FFTFunctionalTest
@@ -307,7 +308,7 @@ namespace CLAMTest
 			return fft;
 		}
 	};
-
+#endif
 	class FFTOouraFunctionalTest;
 	CPPUNIT_TEST_SUITE_REGISTRATION( FFTOouraFunctionalTest );
 	class FFTOouraFunctionalTest : public FFTFunctionalTest
