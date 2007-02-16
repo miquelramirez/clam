@@ -31,7 +31,7 @@ def packageVersionFromSvn( package ) :
 	version, longVersion = takeFromChangeLog( "CHANGES", package )
 	if version==longVersion: return version
 	# CHANGES file revision may not be the repository last revision
-	return versionString, "%s~svn%05i"%(versionString, int(svnRevision()))
+	return "%s~svn%05i"%(version, int(svnRevision()))
 
 
 
