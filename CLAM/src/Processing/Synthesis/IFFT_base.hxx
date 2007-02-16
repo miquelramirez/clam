@@ -27,6 +27,8 @@
 #include "Processing.hxx"
 #include "InPort.hxx"
 #include "AudioOutPort.hxx"
+#include "ProcessingData.hxx"
+#include "DataTypes.hxx"
 
 #include "IFFTConfig.hxx"
 
