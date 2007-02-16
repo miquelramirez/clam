@@ -205,6 +205,7 @@ ProcessingTree::LadspaPlugins ProcessingTree::SearchLadspaPlugins()
 	result.push_back("");
 
 #ifdef USE_LADSPA
+	result.push_back("TAPS plugins");
 	LADSPA_Descriptor_Function descriptorTable = 0;
 	void* handle = dlopen( "/usr/lib/ladspa/caps.so", RTLD_NOW);
 	descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
