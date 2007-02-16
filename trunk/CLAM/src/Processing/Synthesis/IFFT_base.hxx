@@ -25,11 +25,8 @@
 
 #include <typeinfo> // for bad_cast definition
 #include "Processing.hxx"
-#include "ProcessingData.hxx"
 #include "InPort.hxx"
 #include "AudioOutPort.hxx"
-#include "DataTypes.hxx"
-
 
 #include "IFFTConfig.hxx"
 

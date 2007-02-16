@@ -32,11 +32,7 @@
 #include "AudioMultiplier.hxx"
 #include "ProcessingComposite.hxx"
 
-#ifdef CLAM_OOURA
-	#include "FFT_ooura.hxx"
-#else
-	#include "FFT_rfftw.hxx"
-#endif
+#include "FFT.hxx"
 
 #include "Spectrum.hxx"
 #include "AudioInPort.hxx"
@@ -110,11 +106,7 @@ private:
 /** Child FFT Processing 
  *  @see FFT
  */
-#ifdef CLAM_OOURA
-	FFT_ooura		mPO_FFT;
-#else
-	FFT_rfftw		mPO_FFT;
-#endif
+	FFT		mPO_FFT;
 /** Internal Circular Buffer Processing for overlap 
  *  @see AudioCircularBuffer  */
 //	AudioCircularBuffer mCircularBuffer;
