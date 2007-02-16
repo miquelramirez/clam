@@ -16,7 +16,8 @@ def takeFromChangeLog(changelogFile, product='CLAM') :
 
 def svnRevision():
 	import re
-	output = os.popen("LANG='C' svn info "+repositoryBase)
+	os.environ['LANG']='C'
+	output = os.popen("svn info "+repositoryBase)
 	revisionLocator = re.compile(r'^Revision:(?P<revision>.*)')
 	for line in output :
 		match = revisionLocator.match(line)
