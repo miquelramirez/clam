@@ -1,4 +1,4 @@
-2007-??-?? CLAM 0.99.0 SVN $Revision: 444$
+2007-??-?? CLAM 0.99.0 SVN $Revision 444$
 ''
  * Support for FFTW3 as FFTW_fftw3
  * FFT and IFFT processings renders to the faster enabled implementation
