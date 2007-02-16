@@ -13,11 +13,11 @@ def takeFromChangeLog(changelogFile, product='CLAM') :
 		versionString = "%s.%s.%s"%(major,minor,patch)
 		today = datetime.date.today()
 		if not isSvn : return versionString, versionString # release!
-		if os.access(".svn", os.F_OK):
-			try :
-				revision = svnRevision( changelogFile )
-			except:
-				pass
+		try :
+			# try local svn info. we prefer this before CHANGES
+			revision = svnRevision( changelogFile )
+		except:
+			pass
 		return versionString, "%s~svn%05i"%(versionString, int(revision))
 
 def svnRevision( whatToCheck=repositoryBase ):
@@ -29,7 +29,7 @@ def svnRevision( whatToCheck=repositoryBase ):
 		match = revisionLocator.match(line)
 		if not match: continue
 		return match.group('revision').strip()
-	raise "No revision found"
+	raise "No svn revision found for "+ whatToCheck
 
 # Used by doDebian and doSourcePackages ... (non svn dir)
 def packageVersionFromSvn( package ) :
