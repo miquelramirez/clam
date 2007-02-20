@@ -192,6 +192,9 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 ProcessingTree::LadspaPlugins ProcessingTree::SearchLadspaPlugins() 
 {
 	LadspaPlugins result;
+	result.push_back("Just for developing");
+	result.push_back("DummyLadspa");
+	result.push_back("");
 	result.push_back("Filters");
 	result.push_back("LowPass");
 	result.push_back("HighPass");
@@ -207,7 +210,8 @@ ProcessingTree::LadspaPlugins ProcessingTree::SearchLadspaPlugins()
 	
 #ifdef USE_LADSPA
 	//TODO search all user path
-	std::string ladspaPath( getenv("LADSPA_PATH") );
+	char* path = getenv("LADSPA_PATH");
+	std::string ladspaPath = path? path : "";
 	if(ladspaPath == "")
 	{
 	        ladspaPath = "/usr/lib/ladspa";
