@@ -41,7 +41,7 @@ env.Tool('nsis', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
-version, fullVersion = versionInfo.takeFromChangeLog("CHANGES", "Voice2MIDI")
+version, fullVersion = versionInfo.versionFromLocalInfo("Voice2MIDI")
 print "Version: ", version
 print "Package version: ", fullVersion
 versionInfo.generateVersionSources(os.path.join('src','Voice2MIDIVersion'), "Voice2MIDI", fullVersion)

@@ -38,7 +38,7 @@ if sys.platform=='darwin' : env.Tool('bundle', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
-version, fullVersion = versionInfo.takeFromChangeLog("CHANGES", "NetworkEditor")
+version, fullVersion = versionInfo.versionFromLocalInfo("NetworkEditor")
 print "Version: ", version
 print "Package version: ", fullVersion
 versionInfo.generateVersionSources(os.path.join('src','NetworkEditorVersion'), "NetworkEditor", fullVersion)
