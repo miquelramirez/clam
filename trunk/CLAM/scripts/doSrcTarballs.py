@@ -7,9 +7,6 @@ import versionInfo
 def run(command) :
 	print "\033[32m:: ", command, "\033[0m"
 	return os.system(command)
-	for line in os.popen(command) :
-		print line,
-		sys.stdout.flush()
 def norun(command) :
 	print "\033[31mXX ", command, "\033[0m"
 def phase(desc) :
@@ -24,14 +21,13 @@ versions = {
  "Voice2MIDI": "---",
 }
 for package, _ in versions.iteritems():
-	versions[package] = versionInfo.packageVersionFromSvn(package)
+	versions[package] = versionInfo.versionFromRemoteSvn(package)[0]
 
 print versions
-print "svnRevision: ", versionInfo.svnRevision()
+print "remoteSvnRevision: ", versionInfo.remoteSvnRevision()
 
 for package, version in versions.iteritems() : 
 	if package == "CLAM" :
-		#sandbox = "CLAM-%s-svn%s" % (version, versionInfo.svnRevision() )
 		sandbox = "CLAM-%s" % (version)
 		run("svn export http://iua-share.upf.edu/svn/clam/trunk/CLAM %s"% sandbox)
 	else:
@@ -44,7 +40,7 @@ for package, version in versions.iteritems() :
 		sandbox = "%(package)s-%(ver)s" % dict
 		run("svn export http://iua-share.upf.edu/svn/clam/trunk/%s %s" % (package, sandbox))
 	tarball = "%s.tar.gz" % sandbox
-	run("echo '%s' > %s/SVN_REVISION" % (versionInfo.svnRevision(), sandbox) )
+	run("echo '%s' > %s/SVN_REVISION" % (versionInfo.remoteSvnRevision(), sandbox) )
 	run("tar czf %s %s " % (tarball, sandbox) )
 	run("rm -rf %s/" % sandbox)
 	run("scp %s clamadm@www.iua.upf.edu:download/src/ " % tarball )
@@ -52,7 +48,7 @@ for package, version in versions.iteritems() :
 phase("regenerating web download dirs")
 run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
 
-print "Remove created tarballs in local? [y/n]"
+print "Remove created tarballs in local (rm *.tar.gz) ? [y/n]"
 if raw_input().strip() in ['y', 'Y', 'yes']:
 	run("rm *.tar.gz")
 
