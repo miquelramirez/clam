@@ -5,7 +5,7 @@ import glob
 import sys
 sconstoolspath = os.path.split(sys.argv[0])[0] + "/../scons/sconstools"
 sys.path.append( sconstoolspath )
-from versionInfo import packageVersionFromSvn
+from versionInfo import versionFromRemoteSvn
 
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
@@ -17,10 +17,10 @@ distributions = [
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
-	( 'CLAM',          'clam',               packageVersionFromSvn('CLAM')),
-	( 'Annotator',     'clam-annotator',     packageVersionFromSvn('Annotator')),
-	( 'NetworkEditor', 'clam-networkeditor', packageVersionFromSvn('NetworkEditor')),
-	( 'SMSTools',      'clam-smstools',      packageVersionFromSvn('SMSTools')),
+	( 'CLAM',          'clam',               versionFromRemoteSvn('CLAM')[0] ),
+	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[0] ),
+	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[0] ),
+	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[0] ),
 ]
 
 hooks = {
@@ -34,7 +34,7 @@ hooks = {
 # do here whatever you want to see after a failed build
 # clam build directory is /tmp/buildd/%(srcpackage)s/
 #cat /tmp/buildd/%(srcpackage)s/scons/libs/config.log
-'''%{'srcpackage':repositories[0][1]+"-" + packageVersionFromSvn("CLAM")},
+'''%{'srcpackage':repositories[0][1]+"-" + repositories[0][2] },
 }
 
 aptconfiguration = "APT::Get::AllowUnauthenticated 1;"
