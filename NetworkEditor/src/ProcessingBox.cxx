@@ -554,7 +554,7 @@ void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 
 bool ProcessingBox::rename()
 {
-	bool ok=false;
+	bool ok=true;
 	QString newName = QInputDialog::getText(_canvas, QObject::tr("Rename the processing"), QObject::tr("New name"), QLineEdit::Normal, _name);
 	if (!ok) return false;
 	if (newName.isEmpty()) return false;
