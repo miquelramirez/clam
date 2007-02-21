@@ -78,7 +78,7 @@ bool IFFT_fftw3::ConcreteConfigure(const ProcessingConfig& c)
 	mComplexflags.bComplex=1;
 	mComplexflags.bMagPhase=0;
 	SetupMemory();
-	return false;
+	return true;
 }
 
 
