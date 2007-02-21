@@ -34,16 +34,14 @@ namespace CLAM
   {
   public:
     
-    DYNAMIC_TYPE_USING_INTERFACE( CepstralTransformConfig, 4, ProcessingConfig );
+    DYNAMIC_TYPE_USING_INTERFACE( CepstralTransformConfig, 3, ProcessingConfig );
     
-    /** Name of the Processing Object**/
-    DYN_ATTRIBUTE( 0, public, std::string, Name );
     /** Number of input samples **/
-    DYN_ATTRIBUTE( 1, public, TSize,       NumMelCoefficients );
+    DYN_ATTRIBUTE( 0, public, TSize, NumMelCoefficients );
     /** Number of output samples **/
-    DYN_ATTRIBUTE( 2, public, TSize,       NumCepstrumCoefficients );
+    DYN_ATTRIBUTE( 1, public, TSize, NumCepstrumCoefficients );
     /** Use base 10 or natural logarithm for computation (false by default) **/
-    DYN_ATTRIBUTE( 3, public, bool,        UseBase10 );
+    DYN_ATTRIBUTE( 2, public, bool,  UseBase10 );
     
   protected:
     void DefaultInit();
