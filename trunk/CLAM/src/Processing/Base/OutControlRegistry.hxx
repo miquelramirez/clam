@@ -43,7 +43,7 @@ public:
 	int Size() const;
 	void Publish( OutControl *);
 	void Clear(){ mOutControls.clear(); }
-        Iterator Begin();
+	Iterator Begin();
 	Iterator End();	
 	ConstIterator Begin() const;
 	ConstIterator End() const;
