@@ -67,12 +67,8 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectrumSubstracter2::Do(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-		                  GetExecState() != Ready,
-		                  "SpectrumSubstracter2::Do(): Not in execution mode");
-
-		if (GetExecState() == Disabled)
-			return true;
+		CLAM_DEBUG_ASSERT(GetExecState() == Running,
+			"SpectrumSubstracter2::Do(): Not in execution mode");
 
 		switch (mProtoState) {
 		// Fast prototype configurations

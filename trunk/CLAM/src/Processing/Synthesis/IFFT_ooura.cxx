@@ -116,15 +116,11 @@ namespace CLAM {
 	TData* outbuffer = out.GetBuffer().GetPtr();
 	int i;
 
-	CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-					  GetExecState() != Ready,
+	CLAM_DEBUG_ASSERT(GetExecState() == Running,
 					  "IFFT_ooura: Do(): Not in execution mode");
 	
 	CLAM_DEBUG_ASSERT(isPowerOfTwo(mSize),
 					  "IFFT_ooura: Do(): Not a power of two");
-
-	if (GetExecState() == Disabled)
-	  return true;
 
 	out.SetSampleRate(in.GetSpectralRange()*2);
 

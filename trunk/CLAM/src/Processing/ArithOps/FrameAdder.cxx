@@ -63,12 +63,8 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool FrameAdder::Do(const Frame& in1, const Frame& in2, Frame& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-		                  GetExecState() != Ready,
-		                  "FrameAdder::Do(): Not in execution mode");
-
-		if (GetExecState() == Disabled)
-			return true;
+		CLAM_DEBUG_ASSERT(GetExecState() == Running,
+			"FrameAdder::Do(): Not in execution mode");
 
 		/** we set the output fundamental to zero. Note that when adding two frames
 		 * we have a polyphonic signal and the representation of the resulting

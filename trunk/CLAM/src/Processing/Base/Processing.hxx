@@ -137,7 +137,6 @@ namespace CLAM {
 		/** Processing Object possible execution states. */
 		typedef enum {
 			Unconfigured=0,
-			Disabled, ///< @deprecated The disabled state is not used any more
 			Ready,
 			Running
 		} ExecState;
@@ -391,8 +390,7 @@ namespace CLAM {
 inline bool Processing::AbleToExecute(void) const
 {
 	CLAM_BEGIN_DEBUG_CHECK
-		if (GetExecState() == Unconfigured ||
-		    GetExecState() == Ready)
+		if (GetExecState() != Running)
 		{
 			std::string err(GetClassName());
 			err += ": Do(): Not in execution mode - did you call Start on this "
@@ -400,7 +398,7 @@ inline bool Processing::AbleToExecute(void) const
 				CLAM_DEBUG_ASSERT( false, err.c_str() );
 		}
 	CLAM_END_DEBUG_CHECK
-	return GetExecState() != Disabled;
+	return GetExecState() == Running;
 }
 
 template <typename ConcreteConfig>

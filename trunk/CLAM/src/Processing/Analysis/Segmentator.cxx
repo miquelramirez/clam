@@ -208,9 +208,6 @@ bool Segmentator::Do()
 	                  GetExecState() != Ready,
 	                  "FFT_rfftw: Do(): Not in execution mode");
 
-		if (GetExecState() == Disabled)
-			return true;
-
 	CLAM_ASSERT(false, "Segmentator: Do(): Supervised mode not implemented");
 
 	return false;
