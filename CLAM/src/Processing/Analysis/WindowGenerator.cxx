@@ -24,9 +24,16 @@
 #include "Spectrum.hxx"
 #include "Audio.hxx"
 #include "WindowGenerator.hxx"
+#include "Factory.hxx"
 
 namespace CLAM
 {
+	
+	namespace detail
+	{
+		static Factory<Processing>::Registrator<WindowGenerator>
+			regtWindowGenerator("WindowGenerator");
+	}
 
 	/* Processing  object Method  implementations */
 
@@ -55,8 +62,8 @@ namespace CLAM
 		CopyAsConcreteConfig(mConfig, c);
 		mSize.DoControl(TControlData(mConfig.GetSize()));
 
-		if (mConfig.HasUseTable())
-			if (!mConfig.GetUseTable()) return true;
+		if (!mConfig.HasUseTable()) return true;
+		if (!mConfig.GetUseTable()) return true;
 
 
 		/* Fill the table */
@@ -65,10 +72,9 @@ namespace CLAM
 		mTable.SetSize(mConfig.GetSize());
 		mSize.DoControl(TControlData(mConfig.GetSize()));
 
-		EWindowType type;
-		if (mConfig.HasType())
-			type = mConfig.GetType();
-		else type = EWindowType::eHamming;
+		EWindowType type = mConfig.HasType()?
+			mConfig.GetType() :
+			EWindowType::eHamming;
 
 		CreateTable(mTable,type,mConfig.GetSize());
 
@@ -95,7 +101,7 @@ namespace CLAM
 
 	/* The supervised Do() function */
 
-	bool  WindowGenerator::Do(void)
+	bool  WindowGenerator::Do()
 	{
 		CLAM_ASSERT( AbleToExecute(), "This processing is not ready to do anything" );
 		
@@ -108,23 +114,18 @@ namespace CLAM
 
 	bool  WindowGenerator::Do(DataArray& out)
 	{
-		bool useTable;
 		const int winsize = (int) mSize.GetLastValue();
 		const int audiosize = out.Size();
 
-		if (mConfig.HasUseTable())
-			useTable = mConfig.GetUseTable();
-		else  useTable = true;
+		bool useTable = mConfig.HasUseTable() && mConfig.GetUseTable();
 
-		if (!useTable) {
-			EWindowType type;
-			if (mConfig.HasType())
-				type = mConfig.GetType();
-			else type = EWindowType::eHamming;
-			CreateTable(out,type,int(mSize.GetLastValue()));
-		}
-		else {
+		if (useTable)
 			CreateWindowFromTable(out);
+		else {
+			EWindowType type = mConfig.HasType()?
+				mConfig.GetType() :
+				EWindowType::eHamming;
+			CreateTable(out,type,winsize);
 		}
 
 		//zero padding is applied if audiosize is greater than window size
@@ -268,7 +269,7 @@ void WindowGenerator::CreateWindowFromTable(DataArray &array) const
 	CLAM_ASSERT(size<=array.Size(),"WindowGenerator::CreateWindowFromTable:output array does not have a valid size");
 	for (int i=0;i<size;i++)
 	{
-		TData val = mTable[index>>16];
+		const TData & val = mTable[index>>16];
 		array[i] = val;
 		index += increment;
 	}

@@ -83,12 +83,9 @@ namespace CLAM {
 		
 		virtual bool DoChildren()
 		{
-			CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-		                  GetExecState() != Ready,
-		                  "SMSTransformationChain: Do(): Not in execution mode");
+			CLAM_DEBUG_ASSERT(GetExecState() == Running,
+				"SMSTransformationChain: Do(): Not in execution mode");
 
-			if (GetExecState() == Disabled)	return true;
-			
 			bool result=true;
 			int i=0;
 			//We iterate through all chainees and call their Do()

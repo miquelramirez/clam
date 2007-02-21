@@ -88,14 +88,9 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectralPeakArrayInterpolator::Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2, SpectralPeakArray& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-		                  GetExecState() != Ready,
-		                  "SpectralPeakArrayInterpolator::Do(): Not in execution mode");
+		CLAM_DEBUG_ASSERT(GetExecState() == Running,
+			"SpectralPeakArrayInterpolator::Do(): Not in execution mode");
 
-		if (GetExecState() == Disabled)
-			return true;
-
-		
 		//First, we get values of the internal controls
 		TData magFactor=mMagInterpolationFactorCtl.GetLastValue();
 		TData freqFactor=mFreqInterpolationFactorCtl.GetLastValue();
@@ -225,14 +220,9 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectralPeakArrayInterpolator::Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2,const Spectrum& spectralShape, SpectralPeakArray& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-		                  GetExecState() != Ready,
-		                  "SpectralPeakArrayInterpolator::Do(): Not in execution mode");
+		CLAM_DEBUG_ASSERT(GetExecState() == Running,
+			"SpectralPeakArrayInterpolator::Do(): Not in execution mode");
 
-		if (GetExecState() == Disabled)
-			return true;
-
-		
 		//First, we get values of the internal controls
 		TData freqFactor=mFreqInterpolationFactorCtl.GetLastValue();
 

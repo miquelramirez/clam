@@ -162,12 +162,8 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectrumAdder::Do(Spectrum **inputs, Spectrum& out)
 	{
-		CLAM_DEBUG_ASSERT( GetExecState() != Unconfigured &&
-		                   GetExecState() != Ready,
-		                   "SpectrumAdder::Do(): Not in execution mode");
-
-		if (GetExecState() == Disabled)
-			return true;
+		CLAM_DEBUG_ASSERT( GetExecState() == Running,
+			"SpectrumAdder::Do(): Not in execution mode");
 
 		switch (mProtoState) {
 		// Fast prototype configurations

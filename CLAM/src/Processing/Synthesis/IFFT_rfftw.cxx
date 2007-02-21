@@ -118,9 +118,7 @@ namespace CLAM {
 	bool IFFT_rfftw::Do()
 	{
 
-/*	if (GetExecState() == Disabled)
-			return true;
-
+/*
 		switch(mState) {
 		case sOther:
 		case sComplex:
@@ -168,18 +166,9 @@ namespace CLAM {
 	{
 		// TODO: Avoid copy, this solution is provisional
 		Spectrum in = inFoo;
-		if (GetExecState() == Disabled)
-			return true;
-		CLAM_ASSERT(GetExecState()!=Unconfigured&&GetExecState()!=Ready,"IFFT_rfftw: Do(): Not in execution mode");
+		CLAM_ASSERT(GetExecState()==Running,
+			"IFFT_rfftw: Do(): Not in execution mode");
 		
-		CLAM_BEGIN_CHECK
-			if ( GetExecState() == Unconfigured ||
-				 GetExecState() == Ready )
-				CLAM_ASSERT(0,"IFFT_rfftw: Do(): Not in execution mode");
-		CLAM_END_CHECK
-
-		if (GetExecState() == Disabled)
-			return true;
 		TData *outbuffer;
 
 		switch(mState) {

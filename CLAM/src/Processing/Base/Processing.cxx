@@ -111,7 +111,6 @@ namespace CLAM {
 	void Processing::PreConcreteConfigure( const ProcessingConfig& c )
 	{
 		CLAM_ASSERT(mExecState != Running, "Configuring an already running Processing.");
-		CLAM_ASSERT(mExecState != Disabled, "Configuring a disabled Processing.");
 		mConfigErrorMessage = "";
 
 		if (!mpParent) 
@@ -123,7 +122,6 @@ namespace CLAM {
 	void Processing::PostConcreteConfigure()
 	{
 		CLAM_ASSERT(mExecState != Running, "Configuring an already running Processing.");
-		CLAM_ASSERT(mExecState != Disabled, "Configuring a disabled Processing.");
 		CLAM_ASSERT(mPreconfigureExecuted, "PreConcreteConfigure was not being called" );
 
 		mExecState=Ready;
@@ -169,7 +167,6 @@ namespace CLAM {
 	{
 		if ( mpParent )
 			mpParent->Remove(*this);
-		
 	}
 
 	void Processing::Start(void) 
@@ -189,7 +186,7 @@ namespace CLAM {
 	
 	void Processing::Stop(void)
 	{
-		CLAM_ASSERT( mExecState==Running ||	mExecState==Disabled, "Stop(): Object not running." );
+		CLAM_ASSERT( mExecState==Running, "Stop(): Object not running." );
 
 		try {
 			if(ConcreteStop())

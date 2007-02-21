@@ -93,16 +93,11 @@ namespace CLAM {
 
   bool FFT_ooura::Do(const Audio& in, Spectrum &out){
 	TData *inbuffer;
-	int i;
 
-	CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-					  GetExecState() != Ready,
+	CLAM_DEBUG_ASSERT(GetExecState() == Running,
 					  "FFT_ooura: Do(): Not in execution mode");
 	CLAM_DEBUG_ASSERT(isPowerOfTwo(mSize),
 					  "FFT_ooura: Do(): Not a power of two");
-
-	if (GetExecState() == Disabled)
-	  return true;
 
 	out.SetSpectralRange(in.GetSampleRate()/2);
 
@@ -112,7 +107,7 @@ namespace CLAM {
 	  // Buffer dump. This is a kludge; the right way to do this
 	  // is using a non-inplace version of rdft (which would
 	  // not reduce performance).
-	  for (i=0; i<mSize; i++)
+	  for (int i=0; i<mSize; i++)
 		fftbuffer[i] = inbuffer[i];
 	  rdft(mSize, 1, fftbuffer, ip, w);
 	  ToComplex(out);
@@ -122,7 +117,7 @@ namespace CLAM {
 	  // Buffer dump. This is a kludge; the right way to do this
 	  // is using a non-inplace version of rdft (which would
 	  // not reduce performance).
-	  for (i=0; i<mSize; i++)
+	  for (int i=0; i<mSize; i++)
 		fftbuffer[i]=inbuffer[i];
 	  rdft(mSize, 1, fftbuffer, ip, w);
 	  ToComplex(out);
@@ -134,7 +129,7 @@ namespace CLAM {
 	  // Buffer dump. This is a kludge; the right way to do this
 	  // is using a non-inplace version of rdft (which would
 	  // not reduce performance).
-	  for (i=0; i<mSize; i++)
+	  for (int i=0; i<mSize; i++)
 		fftbuffer[i]=inbuffer[i];
 	  rdft(mSize, 1, fftbuffer, ip, w);
 	  
@@ -149,7 +144,6 @@ namespace CLAM {
 
 
   void FFT_ooura::ToComplex(Spectrum &out) {
-	int i;
 	Array<Complex>& outbuffer = out.GetComplexArray();
 
 	outbuffer[0].SetReal(fftbuffer[0]);   // Real Values
@@ -157,7 +151,7 @@ namespace CLAM {
 	outbuffer[mSize/2].SetReal(fftbuffer[1]);
 	outbuffer[mSize/2].SetImag(0);
 		
-	for (i=1; i<mSize/2; i++) {
+	for (int i=1; i<mSize/2; i++) {
 	  outbuffer[i].SetReal(fftbuffer[2*i]);  
 	  outbuffer[i].SetImag(-fftbuffer[2*i+1]);
 	}

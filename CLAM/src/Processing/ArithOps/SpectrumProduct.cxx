@@ -66,12 +66,8 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectrumProduct::Do(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-		                  GetExecState() != Ready,
+		CLAM_DEBUG_ASSERT(GetExecState() == Running,
 		                  "SpectrumProduct::Do(): Not in execution mode");
-
-		if (GetExecState() == Disabled)
-			return true;
 
 		switch (mProtoState) {
 		// Fast prototype configurations
