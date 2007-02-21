@@ -236,7 +236,6 @@ inline void IFFT_fftw3::OtherToRIFFTW(const Spectrum &in) const
 		ComplexToRIFFTW(in);
 		return;
 	}
-	CLAM_ASSERT(false, "Oh, no, it has no complex");
 	SpecTypeFlags flags;
 	Spectrum spec = in;
 	spec.GetType(flags);
