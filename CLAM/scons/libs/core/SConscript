@@ -54,10 +54,10 @@ def define_module_contents(env) :
 
 	if core_env['xmlbackend'] == 'xercesc' :
 		blacklist.append( 'LibXml.+')
-		blacklist.append( 'Null.+' )
+		blacklist.append( 'NullDom.+' )
 	elif env['xmlbackend'] == 'xmlpp' :
 		blacklist.append( 'Xerces.+')
-		blacklist.append( 'Null.+' )
+		blacklist.append( 'NullDom.+' )
 	elif env['xmlbackend'] == 'none' :
 		blacklist.append( 'Xerces.+' )
 		blacklist.append( 'LibXml.+' )
