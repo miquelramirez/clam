@@ -33,7 +33,6 @@ def define_module_contents(env) :
 		'src/Processing/Transformations/SMS',
 		'src/Processing/Transformations/Spectral',
 		'src/Processing/Controls',
-		'src/Processing/Base/NullProcessingConfig.hxx',
 		'src/Visualization/Base',
 		'src/Visualization/View',
 		'src/Visualization/Util',
