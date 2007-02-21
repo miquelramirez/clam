@@ -40,7 +40,7 @@ namespace CLAM
 
 		CLAM::Audio& so=mOut.GetAudio();
 		for (int i=0; i<nframes; i++)
-			*(so.GetBuffer().GetPtr()+i) = *(buf+i);
+			so.GetBuffer().GetPtr()[i] = buf[i];
 
 		mOut.Produce();
 		return true;
@@ -52,7 +52,7 @@ namespace CLAM
 
 		CLAM::Audio& so=mOut.GetAudio();
 		for (int i=0; i<nframes; i++)
-			*(so.GetBuffer().GetPtr()+i) = *(buf+i);
+			so.GetBuffer().GetPtr()[i] = buf[i];
 
 		mOut.Produce();
 		return true;
