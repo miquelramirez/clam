@@ -2,7 +2,7 @@
 .SH NAME
 Prototyper \- Runs CLAM networks with a Qt interface
 .SH SYNOPSIS
-.B Prototyper [Network.clamnetwork [Interface.ui]] [-d backend1 [-d backend2]...]
+.B Prototyper [Network.clamnetwork [Interface.ui]] [-o] [-d backend1 [-d backend2]...]
 .SH DESCRIPTION
 The Prototyper runs audio processing networks created by the
 CLAM NetworkEditor (.clamnetwork) which can be controlled using
@@ -24,6 +24,8 @@ Most common backends are 'alsa', 'jack', 'portaudio'...
 They will be probed in order and the first one working will be 
 selected. If none of the selected works then the default list
 of backends for the platform will be tried.
+.PP
+The \-o option executes the network without any interface
 
 .SH AUTHOR
 CLAM development team (clam (at) iua.upf.es)
