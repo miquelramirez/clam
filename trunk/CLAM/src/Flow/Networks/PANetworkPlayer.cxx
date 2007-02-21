@@ -12,6 +12,19 @@ inline int portaudio_process (const void *inputBuffers, void *outputBuffers,
                             PaStreamCallbackFlags statusFlags,
                             void *userData)
 {
+	if (statusFlags)
+	{
+		if (statusFlags & paOutputUnderflow)
+			std::cerr << "Portaudio backend: Output Underflow" << std::endl;
+		if (statusFlags & paInputUnderflow)
+			std::cerr << "Portaudio backend: Input Underflow" << std::endl;
+		if (statusFlags & paOutputOverflow)
+			std::cerr << "Portaudio backend: Output Overflow" << std::endl;
+		if (statusFlags & paInputOverflow)
+			std::cerr << "Portaudio backend: Input Overflow" << std::endl;
+		if (statusFlags & paPrimingOutput)
+			std::cerr << "Portaudio backend: Priming Output" << std::endl;
+	}
 	PANetworkPlayer* player=(PANetworkPlayer*)userData;
 	player->Do(inputBuffers, outputBuffers, framesPerBuffer);
 
@@ -67,7 +80,8 @@ void PANetworkPlayer::OpenStream(const Network& net)
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 	{
-		if ( std::string("AudioSource") == std::string(it->second->GetClassName()) )
+		std::string processingType = it->second->GetClassName();
+		if ( processingType == "AudioSource" )
 		{
 			//Make sure all frame sizes are the same
 			AudioSource* gen=(AudioSource*)it->second;
@@ -83,7 +97,7 @@ void PANetworkPlayer::OpenStream(const Network& net)
 			//Get Processing address
 			mReceiverList.push_back( (AudioSource*)it->second );
 		}
-		else if ( std::string("AudioSink") == std::string(it->second->GetClassName()) )
+		else if ( processingType == "AudioSink" )
 		{
 			//Make sure all frame sizes are the same
 			AudioSink* sink=(AudioSink*)it->second;
