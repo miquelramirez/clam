@@ -31,7 +31,7 @@ public:
 	~PrototypeLoader();
 
 	bool LoadNetwork(std::string networkFile);
-	bool ChooseBackend( std::list<std::string> backends );
+	bool ChooseBackend( std::list<std::string> backends, const std::string & name);
 	QWidget * LoadInterface(QString uiFile);
 	
 	void ConnectWithNetwork();

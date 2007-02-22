@@ -104,12 +104,12 @@ void PrototypeLoader::Show()
 }
 
 
-CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend)
+CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend, const std::string & name)
 {	
 #ifdef USE_JACK		
 	if (backend=="jack")
 	{
-		CLAM::JACKNetworkPlayer * player = new CLAM::JACKNetworkPlayer();
+		CLAM::JACKNetworkPlayer * player = new CLAM::JACKNetworkPlayer(name);
 		if ( player->IsConnectedToServer()) return player;
 		delete player;
 		return 0;
@@ -118,7 +118,7 @@ CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend)
 #ifdef USE_PORTAUDIO
 	if (backend=="portaudio")
 	{
-		return new CLAM::PANetworkPlayer();
+		return new CLAM::PANetworkPlayer;
 	}
 #endif
 	if (backend=="alsa")
@@ -128,7 +128,7 @@ CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend)
 	return 0;
 }
 
-bool PrototypeLoader::ChooseBackend( std::list<std::string> backends )
+bool PrototypeLoader::ChooseBackend( std::list<std::string> backends, const std::string & name)
 {
 	// If no backends specified, do the standard backend waterfall
 	if (backends.empty())
@@ -141,7 +141,7 @@ bool PrototypeLoader::ChooseBackend( std::list<std::string> backends )
 			it!=backends.end();
 			it++)
 	{
-		_player = tryNetworkPlayer(*it);
+		_player = tryNetworkPlayer(*it, name);
 		if ( !_player)
 		{
 			std::cerr << "Backend '" << *it << "' unavailable." << std::endl;

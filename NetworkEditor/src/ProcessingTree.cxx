@@ -52,7 +52,8 @@ const static char * processingClasses[] = {
 	"SimpleOscillator",
 	"Oscillator",
 	"ADSR",
-	"SquareWave",	
+	"SquareWave",
+	"WindowGenerator",
 //	"WaveGenerator",	TODO register
 	0,
 	"Arithmetic operations",
@@ -62,6 +63,7 @@ const static char * processingClasses[] = {
 //	"SpectralPeakArrayAdder", TODO register
 //	"SpectrumAdder", TODO register
 //	"SpectrumAdder2", TODO register
+	"SpectrumSubstracter2",
 	0,
 	"Controls",
 	"OutControlSender",
