@@ -8,10 +8,12 @@ options.Add(PathOption('install_prefix', 'The prefix where the application will 
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt3/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
+"""
 if sys.platform == 'win32' :
 	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '' ))
 if sys.platform == 'darwin' :
 	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '/opt/local/' ))
+"""
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -148,6 +150,7 @@ env.Append(CPPPATH=includePaths+plugindirs)
 programs = []
 for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
+"""
 if sys.platform == "win32" :
 	env.Append( LIBS=['cppunit_vc7'] )
 	env.Append( CPPPATH=[env['cppunit_prefix']+'/include'] )
@@ -159,22 +162,21 @@ elif sys.platform == "darwin" :
 else :
 	env.Append( LIBS=['cppunit'] )
 #programs += [ env.Program(target='UnitTests', source = sources+testsources) ]
+"""
 
 pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQT_OPENGL_LIB','-DQT_XML_LIB','-DQDESIGNER_EXPORT_WIDGETS','-D_REENTRANT']
 env.AppendUnique(CPPFLAGS=pluginDefines)
 
 #env.AppendUnique(CPPFLAGS=['-fPIC']) # qtPlugin examples were compiled with this option
-if sys.platform == "linux2" :
-	# TODO: Move this to the qt4 tool
-	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I/usr/include/qt4'])
-	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I/usr/include/qt4'])
-if sys.platform == "darwin":
-	# TODO: Move this to the qt4 tool
-	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I$QTDIR/include/'])
-	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I$QTDIR/include/'])
-if sys.platform == "win32":
+# TODO: Move this to the qt4 tool
+if env['QTDIR'] :
 	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
 	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
+else:
+	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I/usr/include/qt4'])
+	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I/usr/include/qt4'])
+
+if sys.platform == "win32":
 	env.AppendUnique(LINKFLAGS='/OPT:NOREF')
 
 qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources + env.Qrc(qrcfiles))
