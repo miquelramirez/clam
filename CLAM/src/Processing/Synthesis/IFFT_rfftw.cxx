@@ -40,16 +40,17 @@ namespace CLAM {
 	{
 		CopyAsConcreteConfig(mConfig, c);
 		if (mConfig.HasAudioSize()) {
-			CLAM_ASSERT (mConfig.GetAudioSize()>=0,"Wrong (negative) Size in IFFT Configuration.");
-			mSize = mConfig.GetAudioSize();	
-			if(mSize>0)
+			if (mConfig.GetAudioSize()<=1)
 			{
-				mOutput.SetSize( mSize );
-				mOutput.SetHop( mSize );
+				AddConfigErrorMessage("Wrong Size, should be greater than 1");
+				return false;
 			}
+			mSize = mConfig.GetAudioSize();	
 		}
 		else
 			mSize = CLAM_DEFAULT_IFFT_SIZE;
+		mOutput.SetSize( mSize );
+		mOutput.SetHop( mSize );
 
 		mState=sOther;
 		mComplexflags.bComplex=1;
@@ -128,7 +129,7 @@ namespace CLAM {
 		}
 
 		
-*/	
+*/
 		bool toReturn = Do(mInput.GetData(),mOutput.GetAudio());
 		mInput.Consume();
 		mOutput.Produce();
@@ -164,10 +165,12 @@ namespace CLAM {
 
 	bool IFFT_rfftw::Do( const Spectrum& inFoo, Audio &out) const
 	{
-		// TODO: Avoid copy, this solution is provisional
-		Spectrum in = inFoo;
 		CLAM_ASSERT(GetExecState()==Running,
 			"IFFT_rfftw: Do(): Not in execution mode");
+		CLAM_ASSERT(out.GetSize() == mSize,
+			"Not proper IFFT output size");
+		// TODO: Avoid copy, this solution is provisional
+		Spectrum in = inFoo;
 		
 		TData *outbuffer;
 
