@@ -183,6 +183,8 @@ bool IFFT_fftw3::UnsetPrototypes()
 bool IFFT_fftw3::Do( const Spectrum& in, Audio &out) const
 {
 	CLAM_ASSERT(GetExecState() == Running ,"IFFT_fftw3: Do(): Not in execution mode");
+	CLAM_ASSERT(out.GetSize() == mSize,
+		"Not proper IFFT output size");
 
 	if (mState==sComplex)
 		ComplexToRIFFTW(in);
