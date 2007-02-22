@@ -26,10 +26,13 @@ inline int portaudio_process (const void *inputBuffers, void *outputBuffers,
 			std::cerr << "Portaudio backend: Priming Output" << std::endl;
 	}
 	PANetworkPlayer* player=(PANetworkPlayer*)userData;
+	
 	player->Do(inputBuffers, outputBuffers, framesPerBuffer);
 
 	return 0;
 }
+
+
 
 PANetworkPlayer::PANetworkPlayer()
 {
@@ -149,11 +152,15 @@ void PANetworkPlayer::OpenStream(const Network& net)
 			inParams,
 			outParams,
 			double(mClamFrameRate),
-			mClamBufferSize,			
+			mClamBufferSize,
 			paClipOff,      /* we won't output out of range samples so don't bother clipping them */
 			portaudio_process,
 			this )
 		);
+	const PaStreamInfo * streamInfo = Pa_GetStreamInfo(mPortAudioStream);
+	std::cout << "Sample rate: " << streamInfo->sampleRate << std::endl;
+	std::cout << "Input latency: " << streamInfo->inputLatency << std::endl;
+	std::cout << "Output latency: " << streamInfo->outputLatency << std::endl;
 
 }
 
