@@ -73,10 +73,13 @@ int main( int argc, char *argv[] )
 				return usage(argv[0]);
 		}
 	}
+	QString undottedName = networkFile.c_str();
+	undottedName= undottedName.mid(undottedName.lastIndexOf("/")+1, -1);
+	undottedName.truncate(undottedName.indexOf("."));
 
 	CLAM::PrototypeLoader prototype;
 
-	if (! prototype.ChooseBackend( backends ) ) return -1;
+	if (! prototype.ChooseBackend( backends, undottedName.toStdString() ) ) return -1;
 	if (! prototype.LoadNetwork( networkFile ) ) return -1;
 	if (!isInteractive) 
 	{
