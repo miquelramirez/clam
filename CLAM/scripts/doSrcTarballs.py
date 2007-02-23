@@ -21,7 +21,7 @@ versions = {
  "Voice2MIDI": "---",
 }
 for package, _ in versions.iteritems():
-	versions[package] = versionInfo.versionFromRemoteSvn(package)[0]
+	versions[package] = versionInfo.versionFromRemoteSvn(package)[1]
 
 print versions
 print "remoteSvnRevision: ", versionInfo.remoteSvnRevision()
@@ -43,10 +43,15 @@ for package, version in versions.iteritems() :
 	run("echo '%s' > %s/SVN_REVISION" % (versionInfo.remoteSvnRevision(), sandbox) )
 	run("tar czf %s %s " % (tarball, sandbox) )
 	run("rm -rf %s/" % sandbox)
-	run("scp %s clamadm@www.iua.upf.edu:download/src/ " % tarball )
 
-phase("regenerating web download dirs")
-run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
+print "Upload all tarballs found in local (*.tar.gz) ? [y/n]"
+if raw_input().strip() in ['y', 'Y', 'yes']:
+
+	if "~svn" in versions["CLAM"]: destDir = "src/svnsnapshots/"
+	else : destDir = "src/"
+	run("scp *.tar.gz clamadm@www.iua.upf.edu:download/src/"+destDir )
+	phase("regenerating web download dirs")
+	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
 
 print "Remove created tarballs in local (rm *.tar.gz) ? [y/n]"
 if raw_input().strip() in ['y', 'Y', 'yes']:
