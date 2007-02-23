@@ -92,6 +92,7 @@ def test_id3lib( audioio_env, conf ) :
 	if sys.platform == 'win32' :
 		result = conf.CheckLibWithHeader( 'id3lib_vc7', 'id3/tag.h', 'cxx', call='ID3_Tag myTag;' )
 	else :
+		audioio_env.Append( LIBS=['z'] )
 		result = conf.CheckLibWithHeader( 'id3', 'id3/tag.h', 'cxx', call='ID3_Tag myTag;' )
 		
 	if not result :
