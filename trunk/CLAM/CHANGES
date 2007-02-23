@@ -1,5 +1,6 @@
 2007-??-?? CLAM 0.99.0 SVN $Revision$
 ''
+ * Fixes in the modconf to work in suse (thanks Toni)
  * Support for FFTW3 as FFTW_fftw3
  * FFT and IFFT processings renders to the faster enabled implementation
    and can be used now as types in a Network.
