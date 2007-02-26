@@ -8,7 +8,7 @@ from buildtools.custom_builders import *
 
 import os, sys
 
-Import('audioio_env version top install_dirs header_db')
+Import('audioio_env version top install_dirs')
 
 def define_module_contents(env) :
 	if not os.path.exists('src') :

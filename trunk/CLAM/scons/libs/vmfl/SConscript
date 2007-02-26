@@ -6,7 +6,7 @@ from buildtools.rulesets import *
 
 import os, sys
 
-Import('vmfl_env version top install_dirs header_db')
+Import('vmfl_env version top install_dirs')
 
 def define_module_contents(env) :
 	if not os.path.exists('src') :

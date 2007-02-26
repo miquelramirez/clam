@@ -307,12 +307,6 @@ Export('top')
 clam_env = Environment( ENV=os.environ, tools=['default','qt'])
 clam_env.SConsignFile()
 
-if not clam_env.GetOption("clean") :
-	header_db = shelve.open( 'header.db' )
-else :
-	header_db = None
-Export('header_db')
-
 setup_build_options( clam_env )
 
 clam_env.Append( CPPFLAGS = '' )
@@ -323,6 +317,7 @@ version, fullVersion = versionInfo.versionFromLocalInfo("CLAM", os.path.join(top
 Export('version')
 print "Version: ", version
 print "Package version: ", fullVersion
+
 
 versionInfo.generateVersionSources(os.path.join(top,'src','Defines','CLAMVersion'), "CLAM", fullVersion)
 

@@ -6,7 +6,7 @@ from buildtools.rulesets import *
 
 import os, sys
 
-Import('vmqt_env version top install_dirs header_db')
+Import('vmqt_env version top install_dirs')
 
 def define_module_contents(env) :
 	'''
