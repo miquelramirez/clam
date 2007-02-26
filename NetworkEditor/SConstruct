@@ -169,7 +169,7 @@ env.AppendUnique(CPPFLAGS=pluginDefines)
 
 #env.AppendUnique(CPPFLAGS=['-fPIC']) # qtPlugin examples were compiled with this option
 # TODO: Move this to the qt4 tool
-if env['QTDIR'] :
+if os.getenv('QTDIR') :
 	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
 	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
 else:
