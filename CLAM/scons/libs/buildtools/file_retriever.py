@@ -61,7 +61,7 @@ class FileRetriever :
 				return True
 		return False
 
-	def scan_without_copy( self, header_db = None ) :
+	def scan_without_copy( self ) :
 		for target in self.scantargets :
 			if not os.path.isdir( target ) : # is a file
 				base = os.path.dirname(target)
