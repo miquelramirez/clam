@@ -80,6 +80,7 @@ class TestsCallbackBasedNetwork : public CppUnit::TestFixture
 	CPPUNIT_TEST( testSourceFilterSink_sameSize );
 	CPPUNIT_TEST( testSourceFilterSink_smallerSize );
 	CPPUNIT_TEST( testSourceFilterSink_biggerSize );
+	CPPUNIT_TEST( testSourceFilterSink_biggerNonDivisorSize );
 
 	CPPUNIT_TEST_SUITE_END();
 	float _inFloat[2048];
@@ -205,6 +206,37 @@ private:
 		sink->SetExternalBuffer(_outFloat+6, 2);
 		network.Do();
 		assertSamplesTransferred(6,2);
+		network.Stop();
+	}
+	void testSourceFilterSink_biggerNonDivisorSize()
+	{
+		CLAM::Network network;
+		network.AddFlowControl(new CLAM::PullFlowControl);
+		CLAM::AudioSource * source = new CLAM::AudioSource;
+		CLAM::AudioSink * sink = new CLAM::AudioSink;
+		DummyFilter * filter = new DummyFilter(5);
+		network.AddProcessing("Source", source);
+		network.AddProcessing("Sink", sink);
+		network.AddProcessing("Filter", filter);
+		network.ConnectPorts("Source.AudioOut", "Filter.in");
+		network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		network.Start();
+		source->SetExternalBuffer(_inFloat, 2);
+		sink->SetExternalBuffer(_outFloat, 2);
+		network.Do();
+		assertSamplesTransferred(0,2);
+		source->SetExternalBuffer(_inFloat+2, 2);
+		sink->SetExternalBuffer(_outFloat+2, 2);
+		network.Do();
+		assertSamplesTransferred(0,4);
+		source->SetExternalBuffer(_inFloat+4, 2);
+		sink->SetExternalBuffer(_outFloat+4, 2);
+		network.Do();
+		assertSamplesTransferred(2,4);
+		source->SetExternalBuffer(_inFloat+6, 2);
+		sink->SetExternalBuffer(_outFloat+6, 2);
+		network.Do();
+		assertSamplesTransferred(4,4);
 		network.Stop();
 	}
 	// source -> sink
