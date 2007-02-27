@@ -231,10 +231,6 @@ private:
 		assertSamplesTransferred(4,4);
 		_network.Stop();
 	}
-	// source -> sink
-	
-	// source-> filter -> sink
-	// net.AddProcessing( Dummy(1,1)
 };
 
 } // namespace
