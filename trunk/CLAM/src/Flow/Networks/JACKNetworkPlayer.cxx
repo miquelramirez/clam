@@ -51,7 +51,6 @@ bool JACKNetworkPlayer::IsConnectedToServer() const
 
 void JACKNetworkPlayer::InitClient()
 {
-	SetModified(true);
 	jack_status_t jackStatus;
 	mJackClient = jack_client_open ( mJackClientname.c_str(), JackNullOption, &jackStatus );
 	if (not mJackClient)
@@ -78,7 +77,6 @@ void JACKNetworkPlayer::RegisterPorts()
 {
 	RegisterInputPorts( GetNetwork() );
 	RegisterOutputPorts( GetNetwork() );
-	SetModified(false);
 }
 
 void JACKNetworkPlayer::RegisterInputPorts(const Network& net)

@@ -16,13 +16,11 @@ namespace CLAM
 	class NetworkPlayer
 	{
 		Network *mNetwork;
-		bool mModified;
 		bool mStopped;
 	public:
 		NetworkPlayer()
 		{
 			SetStopped(true);
-			SetModified(true);
 			mNetwork=NULL;
 		}
 
@@ -37,7 +35,6 @@ namespace CLAM
 		void SetNetworkBackLink( Network& net )
 		{
 			mNetwork=&net;
-			SetModified(true);
 		}
 	protected:
 		Network& GetNetwork()
@@ -51,18 +48,9 @@ namespace CLAM
 			return mStopped;
 		}
 	protected:
-		bool IsModified()
-		{
-			return mModified;
-		}
 		void SetStopped(const bool val)
 		{
 			mStopped=val;
-		}
-		
-		void SetModified(const bool mod)
-		{
-			mModified=mod;
 		}
 
 	};

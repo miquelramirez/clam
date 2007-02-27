@@ -211,11 +211,8 @@ void PANetworkPlayer::Start()
 	if ( !IsStopped() )
 		return;
 
-	if ( IsModified() )
-	{
-		CloseStream();
-		OpenStream( GetNetwork() );
-	}
+	CloseStream();
+	OpenStream( GetNetwork() );
 	SetStopped(false);
 	
 	//PA CODE (the init order of network, ... should be decided) : activate
