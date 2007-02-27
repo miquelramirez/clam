@@ -210,7 +210,7 @@ namespace CLAM
 	// returns the name that was used so the same one can be used when calling CreateProcessingController (hack)
 	std::string Network::AddProcessing( const std::string & factoryName )
 	{
-		std::string name = GetUnusedName( factoryName  ); // this won't be needed in the future
+		std::string name = GetUnusedName( factoryName  ); 
 		AddProcessing(name, factoryName );
 		return name;
 	}
