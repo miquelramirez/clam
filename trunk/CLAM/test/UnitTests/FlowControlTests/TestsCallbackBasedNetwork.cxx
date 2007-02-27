@@ -20,25 +20,50 @@
 */
 
 #include <cppunit/extensions/HelperMacros.h>
+#include <CLAM/Network.hxx>
+#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/AudioSource.hxx>
+#include <CLAM/AudioSink.hxx>
 
 namespace CLAMTest {
 
+
 class TestsCallbackBasedNetwork;
 CPPUNIT_TEST_SUITE_REGISTRATION( TestsCallbackBasedNetwork );
+
 
 
 class TestsCallbackBasedNetwork : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( TestsCallbackBasedNetwork );
 		
-	CPPUNIT_TEST( foo );
-
+	CPPUNIT_TEST( testSourceAndSink );
 
 	CPPUNIT_TEST_SUITE_END();
-
-	void foo()
+	float _inFloatBuffer[2048];
+	float _outFloatBuffer[2048];
+	void setUp()
 	{
-		CPPUNIT_ASSERT_MESSAGE("false", false);
+		for (unsigned i=0; i<2048; i++)
+		{
+			_inFloatBuffer[i]=i;
+			_outFloatBuffer[i]=-1;
+		}
+	}
+	void testSourceAndSink()
+	{
+		CLAM::Network network;
+		network.AddFlowControl(new CLAM::PushFlowControl);
+		CLAM::Processing * source = new CLAM::AudioSource;
+		CLAM::Processing * sink = new CLAM::AudioSink;
+		network.AddProcessing("Source", source);
+		network.AddProcessing("Sink", sink);
+		network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
+		network.Start();
+		source.SetExternalBuffer(_inFloatBuffer, 2);
+		sink.SetExternalBuffer(_outFloatBuffer, 2);
+		network.Do();
+		network.Stop();
 	}
 	// source -> sink
 	
