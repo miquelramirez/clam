@@ -21,7 +21,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <CLAM/Network.hxx>
-#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/PullFlowControl.hxx>
 #include <CLAM/AudioSource.hxx>
 #include <CLAM/AudioSink.hxx>
 
@@ -35,6 +35,7 @@ class DummyFilter : public CLAM::Processing
 {
 	CLAM::AudioInPort _in;
 	CLAM::AudioOutPort _out;
+public:
 	DummyFilter(unsigned portSize)
 		: _in("in", this)
 		, _out("out", this)
@@ -43,6 +44,9 @@ class DummyFilter : public CLAM::Processing
 		_in.SetHop(portSize);
 		_out.SetSize(portSize);
 		_out.SetHop(portSize);
+
+		mExecState=Ready; //PAU: don¡t understand. it should be done automatically by Configure
+
 	}
 	bool ConcreteConfigure(const CLAM::ProcessingConfig &c)
 	{
@@ -59,7 +63,11 @@ class DummyFilter : public CLAM::Processing
 	{
 		const CLAM::Audio & in = _in.GetAudio();
 		CLAM::Audio & out = _out.GetAudio();
-		out = in;
+		out.GetBuffer()[0]=0;
+		out.GetBuffer()[1]=1;
+		out.GetBuffer()[2]=2;
+		_in.Consume();
+		_out.Produce();
 		return true;
 	}
 };
@@ -68,7 +76,7 @@ class TestsCallbackBasedNetwork : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( TestsCallbackBasedNetwork );
 		
-	CPPUNIT_TEST( testSourceAndSink );
+	//CPPUNIT_TEST( testSourceAndSink );
 	CPPUNIT_TEST( testSourceFilterSink_sameSize );
 
 	CPPUNIT_TEST_SUITE_END();
@@ -87,13 +95,16 @@ private:
 	void assertSamplesTransferred(unsigned howMany)
 	{
 		for (unsigned i=0; i<howMany; i++)
+		{
+			std::cout << "in " << _inFloat[i] << " out " << _outFloat[i] << std::flush;
 			CPPUNIT_ASSERT_DOUBLES_EQUAL(_inFloat[i], _outFloat[i], 1e-14);
+		}
 		CPPUNIT_ASSERT_DOUBLES_EQUAL(-1, _outFloat[howMany], 1e-14);
 	}
 	void testSourceAndSink()
 	{
 		CLAM::Network network;
-		network.AddFlowControl(new CLAM::PushFlowControl);
+		network.AddFlowControl(new CLAM::PullFlowControl);
 		CLAM::AudioSource * source = new CLAM::AudioSource;
 		CLAM::AudioSink * sink = new CLAM::AudioSink;
 		network.AddProcessing("Source", source);
@@ -109,10 +120,11 @@ private:
 	void testSourceFilterSink_sameSize()
 	{
 		CLAM::Network network;
-		network.AddFlowControl(new CLAM::PushFlowControl);
+		network.AddFlowControl(new CLAM::PullFlowControl);
 		CLAM::AudioSource * source = new CLAM::AudioSource;
 		CLAM::AudioSink * sink = new CLAM::AudioSink;
 		DummyFilter * filter = new DummyFilter(2);
+		filter->Start();
 		network.AddProcessing("Source", source);
 		network.AddProcessing("Sink", sink);
 		network.AddProcessing("Filter", filter);
