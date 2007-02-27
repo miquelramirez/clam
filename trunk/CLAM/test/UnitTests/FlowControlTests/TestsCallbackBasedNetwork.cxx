@@ -63,9 +63,9 @@ public:
 	{
 		const CLAM::Audio & in = _in.GetAudio();
 		CLAM::Audio & out = _out.GetAudio();
-		out.GetBuffer()[0]=0;
-		out.GetBuffer()[1]=1;
-		out.GetBuffer()[2]=2;
+		CLAM_ASSERT(in.GetSize()==out.GetSize(), "DummyFilter: sizes missmatch");
+		for (unsigned i=0; i<in.GetSize(); i++)
+			out.GetBuffer()[i] = in.GetBuffer()[i];
 		_in.Consume();
 		_out.Produce();
 		return true;
@@ -76,8 +76,10 @@ class TestsCallbackBasedNetwork : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( TestsCallbackBasedNetwork );
 		
-	//CPPUNIT_TEST( testSourceAndSink );
+	CPPUNIT_TEST( testSourceAndSink );
 	CPPUNIT_TEST( testSourceFilterSink_sameSize );
+	CPPUNIT_TEST( testSourceFilterSink_smallerSize );
+	CPPUNIT_TEST( testSourceFilterSink_biggerSize );
 
 	CPPUNIT_TEST_SUITE_END();
 	float _inFloat[2048];
@@ -87,19 +89,38 @@ public:
 	{
 		for (unsigned i=0; i<2048; i++)
 		{
-			_inFloat[i]=i;
+			_inFloat[i]=i+1;
 			_outFloat[i]=-1;
 		}
 	}
 private:
-	void assertSamplesTransferred(unsigned howMany)
+	void assertSamplesTransferred(unsigned howMany, unsigned lag=0)
 	{
-		for (unsigned i=0; i<howMany; i++)
-		{
-			std::cout << "in " << _inFloat[i] << " out " << _outFloat[i] << std::flush;
-			CPPUNIT_ASSERT_DOUBLES_EQUAL(_inFloat[i], _outFloat[i], 1e-14);
+		try {
+			for (unsigned i=0; i<lag; i++)
+				CPPUNIT_ASSERT_DOUBLES_EQUAL(-1, _outFloat[i], 1e-14);
+			for (unsigned i=0; i<howMany; i++)
+				CPPUNIT_ASSERT_DOUBLES_EQUAL(_inFloat[i], _outFloat[i+lag], 1e-14);
+			CPPUNIT_ASSERT_DOUBLES_EQUAL(-1, _outFloat[howMany+lag], 1e-14);
 		}
-		CPPUNIT_ASSERT_DOUBLES_EQUAL(-1, _outFloat[howMany], 1e-14);
+		catch (...)
+		{
+			std::cerr << std::endl;
+			std::cerr << "Expected: ";
+			for (unsigned i=0; i<lag; i++)
+				std::cerr << "-1 ";
+			for (unsigned i=0; i<howMany; i++)
+				std::cerr << _inFloat[i] << " ";
+			std::cerr << "-1 ";
+			std::cerr << std::endl;
+			std::cerr << "Actual:   ";
+			for (unsigned i=0; i<howMany+lag; i++)
+				std::cerr << _outFloat[i] << " ";
+			std::cerr << _outFloat[howMany] << " ";
+			std::cerr << std::endl;
+			throw;
+		}
+	
 	}
 	void testSourceAndSink()
 	{
@@ -124,7 +145,6 @@ private:
 		CLAM::AudioSource * source = new CLAM::AudioSource;
 		CLAM::AudioSink * sink = new CLAM::AudioSink;
 		DummyFilter * filter = new DummyFilter(2);
-		filter->Start();
 		network.AddProcessing("Source", source);
 		network.AddProcessing("Sink", sink);
 		network.AddProcessing("Filter", filter);
@@ -136,6 +156,56 @@ private:
 		network.Do();
 		network.Stop();
 		assertSamplesTransferred(2);
+	}
+	void testSourceFilterSink_smallerSize()
+	{
+		CLAM::Network network;
+		network.AddFlowControl(new CLAM::PullFlowControl);
+		CLAM::AudioSource * source = new CLAM::AudioSource;
+		CLAM::AudioSink * sink = new CLAM::AudioSink;
+		DummyFilter * filter = new DummyFilter(1);
+		network.AddProcessing("Source", source);
+		network.AddProcessing("Sink", sink);
+		network.AddProcessing("Filter", filter);
+		network.ConnectPorts("Source.AudioOut", "Filter.in");
+		network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		network.Start();
+		source->SetExternalBuffer(_inFloat, 2);
+		sink->SetExternalBuffer(_outFloat, 2);
+		network.Do();
+		network.Stop();
+		assertSamplesTransferred(2);
+	}
+	void testSourceFilterSink_biggerSize()
+	{
+		CLAM::Network network;
+		network.AddFlowControl(new CLAM::PullFlowControl);
+		CLAM::AudioSource * source = new CLAM::AudioSource;
+		CLAM::AudioSink * sink = new CLAM::AudioSink;
+		DummyFilter * filter = new DummyFilter(4);
+		network.AddProcessing("Source", source);
+		network.AddProcessing("Sink", sink);
+		network.AddProcessing("Filter", filter);
+		network.ConnectPorts("Source.AudioOut", "Filter.in");
+		network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		network.Start();
+		source->SetExternalBuffer(_inFloat, 2);
+		sink->SetExternalBuffer(_outFloat, 2);
+		network.Do();
+		assertSamplesTransferred(0,2);
+		source->SetExternalBuffer(_inFloat+2, 2);
+		sink->SetExternalBuffer(_outFloat+2, 2);
+		network.Do();
+		assertSamplesTransferred(2,2);
+		source->SetExternalBuffer(_inFloat+4, 2);
+		sink->SetExternalBuffer(_outFloat+4, 2);
+		network.Do();
+		assertSamplesTransferred(4,2);
+		source->SetExternalBuffer(_inFloat+6, 2);
+		sink->SetExternalBuffer(_outFloat+6, 2);
+		network.Do();
+		assertSamplesTransferred(6,2);
+		network.Stop();
 	}
 	// source -> sink
 	

@@ -74,33 +74,49 @@ void PullFlowControl::Do()
 	for (ProcessingList::iterator it=mSources.begin(); it!=mSources.end(); it++)
 	{
 		Processing* proc = *it;
-		CLAM_DEBUG_ASSERT(proc->CanConsumeAndProduce(), "a Source should be able to produce");
+		CLAM_ASSERT(proc->CanConsumeAndProduce(), "a Source should be able to produce");
 		proc->Do();
 		std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 	}
-	for (ProcessingList::iterator it=mNormalProcessings.begin(); it!=mNormalProcessings.end(); it++)
+	ProcessingList pendingSinks(mSinks);
+	while (!pendingSinks.empty())
 	{
-		Processing* proc = *it;
-		if (proc->CanConsumeAndProduce() )
+		bool noProcessingRun = true;
+		for (ProcessingList::iterator it=mNormalProcessings.begin(); it!=mNormalProcessings.end(); it++)
 		{
-			proc->Do();
+			Processing* proc = *it;
+			if (proc->CanConsumeAndProduce() )
+			{
+				std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+				noProcessingRun = false;
+				proc->Do();
+			}
+			else
+			{
+				std::cerr << "could NOT Do: "<<proc->GetClassName() 
+					<< " port size: "<<proc->GetInPort("in").GetSize() << std::endl;
+				
+			}
+		}
+		for (ProcessingList::iterator it=pendingSinks.begin(); it!=pendingSinks.end(); )
+		{
+			Processing* proc = *it;
+			if (!proc->CanConsumeAndProduce())
+			{
+				it++;
+				continue;
+			}
 			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			proc->Do();
+			it = pendingSinks.erase(it);
+			noProcessingRun = false;
 		}
-		else
+		if (noProcessingRun) 
 		{
-			std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
-			std::cerr << "port size: "<<proc->GetInPort("in").GetSize() << std::endl;
-			
+			std::cerr << "Bad luck all stuck" << std::endl;
+			break;
 		}
 	}
-	for (ProcessingList::iterator it=mSinks.begin(); it!=mSinks.end(); it++)
-	{
-		Processing* proc = *it;
-		CLAM_DEBUG_ASSERT(proc->CanConsumeAndProduce(), "a Sink should be able to produce");
-		proc->Do();
-		std::cerr << "Do: "<<proc->GetClassName() << std::endl;
-	}
-
 }
 
 
