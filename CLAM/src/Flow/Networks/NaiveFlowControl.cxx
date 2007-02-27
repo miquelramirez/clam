@@ -20,7 +20,7 @@
  */
 
 
-#include "PullFlowControl.hxx"
+#include "NaiveFlowControl.hxx"
 #include "Processing.hxx"
 #include "OutPort.hxx"
 #include "InPort.hxx"
@@ -29,12 +29,12 @@
 namespace CLAM
 {
 
-PullFlowControl::PullFlowControl( int frameSize )
+NaiveFlowControl::NaiveFlowControl( int frameSize )
 	: FlowControl (frameSize)
 {
 }
 
-void PullFlowControl::ProcessingAddedToNetwork( Processing & added )
+void NaiveFlowControl::ProcessingAddedToNetwork( Processing & added )
 {
 	NetworkTopologyChanged();
 
@@ -51,7 +51,7 @@ void PullFlowControl::ProcessingAddedToNetwork( Processing & added )
 	mNormalProcessings.push_back ( &added );
 }
 
-void PullFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
+void NaiveFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 {
 	NetworkTopologyChanged();
 	if ( std::string(removed.GetClassName()) == std::string("AudioSource") )
@@ -67,7 +67,7 @@ void PullFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 	mNormalProcessings.push_back ( &removed );
 }
 
-void PullFlowControl::Do()
+void NaiveFlowControl::Do()
 {
 	// by now it have nothing of pulling
 	// a naive approach: do sources, do normal processings, do sinks

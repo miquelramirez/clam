@@ -21,7 +21,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <CLAM/Network.hxx>
-#include <CLAM/PullFlowControl.hxx>
+#include <CLAM/NaiveFlowControl.hxx>
 #include <CLAM/AudioSource.hxx>
 #include <CLAM/AudioSink.hxx>
 
@@ -85,9 +85,11 @@ class TestsCallbackBasedNetwork : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 	float _inFloat[2048];
 	float _outFloat[2048];
+	CLAM::Network _network;
 public:
 	void setUp()
 	{
+		_network.AddFlowControl(new CLAM::NaiveFlowControl);
 		for (unsigned i=0; i<2048; i++)
 		{
 			_inFloat[i]=i+1;
@@ -125,119 +127,109 @@ private:
 	}
 	void testSourceAndSink()
 	{
-		CLAM::Network network;
-		network.AddFlowControl(new CLAM::PullFlowControl);
 		CLAM::AudioSource * source = new CLAM::AudioSource;
 		CLAM::AudioSink * sink = new CLAM::AudioSink;
-		network.AddProcessing("Source", source);
-		network.AddProcessing("Sink", sink);
-		network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
-		network.Start();
+		_network.AddProcessing("Source", source);
+		_network.AddProcessing("Sink", sink);
+		_network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
+		_network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
-		network.Do();
-		network.Stop();
+		_network.Do();
+		_network.Stop();
 		assertSamplesTransferred(2);
 	}
 	void testSourceFilterSink_sameSize()
 	{
-		CLAM::Network network;
-		network.AddFlowControl(new CLAM::PullFlowControl);
 		CLAM::AudioSource * source = new CLAM::AudioSource;
 		CLAM::AudioSink * sink = new CLAM::AudioSink;
 		DummyFilter * filter = new DummyFilter(2);
-		network.AddProcessing("Source", source);
-		network.AddProcessing("Sink", sink);
-		network.AddProcessing("Filter", filter);
-		network.ConnectPorts("Source.AudioOut", "Filter.in");
-		network.ConnectPorts("Filter.out", "Sink.AudioIn");
-		network.Start();
+		_network.AddProcessing("Source", source);
+		_network.AddProcessing("Sink", sink);
+		_network.AddProcessing("Filter", filter);
+		_network.ConnectPorts("Source.AudioOut", "Filter.in");
+		_network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		_network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
-		network.Do();
-		network.Stop();
+		_network.Do();
+		_network.Stop();
 		assertSamplesTransferred(2);
 	}
 	void testSourceFilterSink_smallerSize()
 	{
-		CLAM::Network network;
-		network.AddFlowControl(new CLAM::PullFlowControl);
 		CLAM::AudioSource * source = new CLAM::AudioSource;
 		CLAM::AudioSink * sink = new CLAM::AudioSink;
 		DummyFilter * filter = new DummyFilter(1);
-		network.AddProcessing("Source", source);
-		network.AddProcessing("Sink", sink);
-		network.AddProcessing("Filter", filter);
-		network.ConnectPorts("Source.AudioOut", "Filter.in");
-		network.ConnectPorts("Filter.out", "Sink.AudioIn");
-		network.Start();
+		_network.AddProcessing("Source", source);
+		_network.AddProcessing("Sink", sink);
+		_network.AddProcessing("Filter", filter);
+		_network.ConnectPorts("Source.AudioOut", "Filter.in");
+		_network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		_network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
-		network.Do();
-		network.Stop();
+		_network.Do();
+		_network.Stop();
 		assertSamplesTransferred(2);
 	}
 	void testSourceFilterSink_biggerSize()
 	{
-		CLAM::Network network;
-		network.AddFlowControl(new CLAM::PullFlowControl);
 		CLAM::AudioSource * source = new CLAM::AudioSource;
 		CLAM::AudioSink * sink = new CLAM::AudioSink;
 		DummyFilter * filter = new DummyFilter(4);
-		network.AddProcessing("Source", source);
-		network.AddProcessing("Sink", sink);
-		network.AddProcessing("Filter", filter);
-		network.ConnectPorts("Source.AudioOut", "Filter.in");
-		network.ConnectPorts("Filter.out", "Sink.AudioIn");
-		network.Start();
+		_network.AddProcessing("Source", source);
+		_network.AddProcessing("Sink", sink);
+		_network.AddProcessing("Filter", filter);
+		_network.ConnectPorts("Source.AudioOut", "Filter.in");
+		_network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		_network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
-		network.Do();
+		_network.Do();
 		assertSamplesTransferred(0,2);
 		source->SetExternalBuffer(_inFloat+2, 2);
 		sink->SetExternalBuffer(_outFloat+2, 2);
-		network.Do();
+		_network.Do();
 		assertSamplesTransferred(2,2);
 		source->SetExternalBuffer(_inFloat+4, 2);
 		sink->SetExternalBuffer(_outFloat+4, 2);
-		network.Do();
+		_network.Do();
 		assertSamplesTransferred(4,2);
 		source->SetExternalBuffer(_inFloat+6, 2);
 		sink->SetExternalBuffer(_outFloat+6, 2);
-		network.Do();
+		_network.Do();
 		assertSamplesTransferred(6,2);
-		network.Stop();
+		_network.Stop();
 	}
 	void testSourceFilterSink_biggerNonDivisorSize()
 	{
-		CLAM::Network network;
-		network.AddFlowControl(new CLAM::PullFlowControl);
 		CLAM::AudioSource * source = new CLAM::AudioSource;
 		CLAM::AudioSink * sink = new CLAM::AudioSink;
 		DummyFilter * filter = new DummyFilter(5);
-		network.AddProcessing("Source", source);
-		network.AddProcessing("Sink", sink);
-		network.AddProcessing("Filter", filter);
-		network.ConnectPorts("Source.AudioOut", "Filter.in");
-		network.ConnectPorts("Filter.out", "Sink.AudioIn");
-		network.Start();
+		_network.AddProcessing("Source", source);
+		_network.AddProcessing("Sink", sink);
+		_network.AddProcessing("Filter", filter);
+		_network.ConnectPorts("Source.AudioOut", "Filter.in");
+		_network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		_network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
-		network.Do();
+		_network.Do();
 		assertSamplesTransferred(0,2);
 		source->SetExternalBuffer(_inFloat+2, 2);
 		sink->SetExternalBuffer(_outFloat+2, 2);
-		network.Do();
+		_network.Do();
 		assertSamplesTransferred(0,4);
 		source->SetExternalBuffer(_inFloat+4, 2);
 		sink->SetExternalBuffer(_outFloat+4, 2);
-		network.Do();
+		_network.Do();
 		assertSamplesTransferred(2,4);
 		source->SetExternalBuffer(_inFloat+6, 2);
 		sink->SetExternalBuffer(_outFloat+6, 2);
-		network.Do();
+		_network.Do();
 		assertSamplesTransferred(4,4);
-		network.Stop();
+		_network.Stop();
 	}
 	// source -> sink
 	

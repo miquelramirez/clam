@@ -64,7 +64,7 @@ void PushFlowControl::Do()
 		if(next->CanConsumeAndProduce())
 		{			
 			next->Do();
-			//std::cerr << "Consume "<<next->GetClassName() << std::endl;
+			std::cerr << "Consume "<<next->GetClassName() << std::endl;
 		}
 		else
 		{
