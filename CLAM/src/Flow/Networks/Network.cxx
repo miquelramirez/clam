@@ -201,17 +201,17 @@ namespace CLAM
 		mFlowControl->ProcessingAddedToNetwork(*proc);
 	}
 
-	void Network::AddProcessing( const std::string & name, const std::string & key)
+	void Network::AddProcessing( const std::string & name, const std::string & factoryName )
 	{
-		Processing * proc = ProcessingFactory::GetInstance().CreateSafe( key );
+		Processing * proc = ProcessingFactory::GetInstance().CreateSafe( factoryName  );
 		AddProcessing(name, proc);
 	}
 
 	// returns the name that was used so the same one can be used when calling CreateProcessingController (hack)
-	std::string Network::AddProcessing( const std::string & key)
+	std::string Network::AddProcessing( const std::string & factoryName )
 	{
-		std::string name = GetUnusedName( key ); // this won't be needed in the future
-		AddProcessing(name, key);
+		std::string name = GetUnusedName( factoryName  ); // this won't be needed in the future
+		AddProcessing(name, factoryName );
 		return name;
 	}
 
