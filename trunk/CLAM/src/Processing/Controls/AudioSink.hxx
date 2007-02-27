@@ -12,6 +12,9 @@ namespace CLAM
 	private:
 		AudioInPort mIn;
 		NullProcessingConfig mConf;
+		float* mFloatBuffer;
+		double* mDoubleBuffer;
+		unsigned mBufferSize;
 
 	public:
 		AudioSink();
@@ -24,6 +27,9 @@ namespace CLAM
 		}
 
 		~AudioSink();
+
+		void SetExternalBuffer(float* buf, unsigned nframes );
+		void SetExternalBuffer(double* buf, unsigned nframes );
 
 		bool Do();
 		bool Do( float* buf, int nframes);

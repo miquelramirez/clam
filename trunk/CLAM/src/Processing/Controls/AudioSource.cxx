@@ -11,8 +11,11 @@ namespace CLAM
 		static ProcessingFactory::Registrator<AudioSource> regtAudioSource( "AudioSource" );
 	}
 	
-	AudioSource::AudioSource()
+	AudioSource::AudioSource() 
 		: mOut("AudioOut",this)
+		, mFloatBuffer(0)
+		, mDoubleBuffer(0)
+		, mBufferSize(0)
 	{
 		//After being dropped it is ready to run as it does not need any configuration at all
 		mExecState=Ready;
@@ -20,6 +23,9 @@ namespace CLAM
 
 	AudioSource::AudioSource(const ProcessingConfig & conf)
 		: mOut("AudioOut",this)
+		, mFloatBuffer(0)
+		, mDoubleBuffer(0)
+		, mBufferSize(0)
 	{
 		//After being dropped it is ready to run as it does not need any configuration at all
 		mExecState=Ready;
@@ -33,6 +39,20 @@ namespace CLAM
 	{
 		return true;
 	}
+
+	bool AudioSource::SetExternalBuffer( float* buf, int nframes)
+	{
+		mFloatBuffer = buf;
+		mBufferSize = nframes;
+		mDoubleBuffer = 0;
+	}
+	bool AudioSource::SetExternalBuffer( double* buf, int nframes)
+	{
+		mDoubleBuffer = buf;
+		mBufferSize = nframes;
+		mFloatBuffer = 0;
+	}
+
 	bool AudioSource::Do( double* buf, int nframes)
 	{		
 		if (!mOut.CanProduce())

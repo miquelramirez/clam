@@ -12,7 +12,9 @@ namespace CLAM
 	private:
 		AudioOutPort mOut;
 		NullProcessingConfig mConf;
-
+		float* mFloatBuffer;
+		double* mDoubleBuffer;
+		unsigned mBufferSize;
 	public:
 		AudioSource();
 		AudioSource(const ProcessingConfig & conf);
@@ -24,9 +26,13 @@ namespace CLAM
 		}
 		
 		~AudioSource();
+		void SetExternalBuffer(float* buf, unsigned nframes );
+		void SetExternalBuffer(double* buf, unsigned nframes );
 
 		bool Do();
+		//TODO deprecate
 		bool Do( float* buf, int nframes);
+		//TODO deprecate
 		bool Do( double* buf, int nframes);
 		
 		const char* GetClassName() const { return "AudioSource";}
