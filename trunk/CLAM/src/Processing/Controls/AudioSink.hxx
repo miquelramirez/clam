@@ -20,6 +20,7 @@ namespace CLAM
 		AudioSink();
 		AudioSink(const ProcessingConfig & conf);
 
+		/// @deprecated Delegated to SetExternalBuffer
 		void SetFrameAndHopSize(const int val)
 		{
 			mIn.SetSize(val);
