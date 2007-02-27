@@ -40,30 +40,39 @@ class TestsCallbackBasedNetwork : public CppUnit::TestFixture
 	CPPUNIT_TEST( testSourceAndSink );
 
 	CPPUNIT_TEST_SUITE_END();
-	float _inFloatBuffer[2048];
-	float _outFloatBuffer[2048];
+	float _inFloat[2048];
+	float _outFloat[2048];
+public:
 	void setUp()
 	{
 		for (unsigned i=0; i<2048; i++)
 		{
-			_inFloatBuffer[i]=i;
-			_outFloatBuffer[i]=-1;
+			_inFloat[i]=i;
+			_outFloat[i]=-1;
 		}
+	}
+private:
+	bool assertSamplesTransferred(unsigned howMany)
+	{
+		for (unsigned i=0; i<howMany; i++)
+			CPPUNIT_ASSERT_DOUBLES_EQUAL(_inFloat[i], _outFloat[i], 1e-14);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(-1, _outFloat[howMany], 1e-14);
 	}
 	void testSourceAndSink()
 	{
 		CLAM::Network network;
 		network.AddFlowControl(new CLAM::PushFlowControl);
-		CLAM::Processing * source = new CLAM::AudioSource;
-		CLAM::Processing * sink = new CLAM::AudioSink;
+		CLAM::AudioSource * source = new CLAM::AudioSource;
+		CLAM::AudioSink * sink = new CLAM::AudioSink;
 		network.AddProcessing("Source", source);
 		network.AddProcessing("Sink", sink);
 		network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
 		network.Start();
-		source.SetExternalBuffer(_inFloatBuffer, 2);
-		sink.SetExternalBuffer(_outFloatBuffer, 2);
+		source->SetExternalBuffer(_inFloat, 2);
+		sink->SetExternalBuffer(_outFloat, 2);
 		network.Do();
 		network.Stop();
+		assertSamplesTransferred(2);
 	}
 	// source -> sink
 	
