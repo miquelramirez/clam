@@ -31,13 +31,45 @@ namespace CLAMTest {
 class TestsCallbackBasedNetwork;
 CPPUNIT_TEST_SUITE_REGISTRATION( TestsCallbackBasedNetwork );
 
-
+class DummyFilter : public CLAM::Processing
+{
+	CLAM::AudioInPort _in;
+	CLAM::AudioOutPort _out;
+	DummyFilter(unsigned portSize)
+		: _in("in", this)
+		, _out("out", this)
+	{
+		_in.SetSize(portSize);
+		_in.SetHop(portSize);
+		_out.SetSize(portSize);
+		_out.SetHop(portSize);
+	}
+	bool ConcreteConfigure(const CLAM::ProcessingConfig &c)
+	{
+		return true;
+	}
+	const CLAM::ProcessingConfig & GetConfig() const
+	{
+		static CLAM::NullProcessingConfig config;
+		return config;
+	}
+	const char * GetClassName() const { return "DummyFilter";}
+	
+	bool Do()
+	{
+		const CLAM::Audio & in = _in.GetAudio();
+		CLAM::Audio & out = _out.GetAudio();
+		out = in;
+		return true;
+	}
+};
 
 class TestsCallbackBasedNetwork : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( TestsCallbackBasedNetwork );
 		
 	CPPUNIT_TEST( testSourceAndSink );
+	CPPUNIT_TEST( testSourceFilterSink_sameSize );
 
 	CPPUNIT_TEST_SUITE_END();
 	float _inFloat[2048];
@@ -52,7 +84,7 @@ public:
 		}
 	}
 private:
-	bool assertSamplesTransferred(unsigned howMany)
+	void assertSamplesTransferred(unsigned howMany)
 	{
 		for (unsigned i=0; i<howMany; i++)
 			CPPUNIT_ASSERT_DOUBLES_EQUAL(_inFloat[i], _outFloat[i], 1e-14);
@@ -67,6 +99,25 @@ private:
 		network.AddProcessing("Source", source);
 		network.AddProcessing("Sink", sink);
 		network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
+		network.Start();
+		source->SetExternalBuffer(_inFloat, 2);
+		sink->SetExternalBuffer(_outFloat, 2);
+		network.Do();
+		network.Stop();
+		assertSamplesTransferred(2);
+	}
+	void testSourceFilterSink_sameSize()
+	{
+		CLAM::Network network;
+		network.AddFlowControl(new CLAM::PushFlowControl);
+		CLAM::AudioSource * source = new CLAM::AudioSource;
+		CLAM::AudioSink * sink = new CLAM::AudioSink;
+		DummyFilter * filter = new DummyFilter(2);
+		network.AddProcessing("Source", source);
+		network.AddProcessing("Sink", sink);
+		network.AddProcessing("Filter", filter);
+		network.ConnectPorts("Source.AudioOut", "Filter.in");
+		network.ConnectPorts("Filter.out", "Sink.AudioIn");
 		network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
