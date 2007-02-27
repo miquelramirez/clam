@@ -37,6 +37,12 @@ namespace CLAM
 
 	bool AudioSource::Do()
 	{
+		CLAM::Audio& so=mOut.GetAudio();
+		CLAM_DEBUG_ASSERT(mFloatBuffer, "No float buffer");
+		CLAM_DEBUG_ASSERT(!mDoubleBuffer, "There should not be double buffer");
+		for (int i=0; i<mBufferSize; i++)
+			so.GetBuffer().GetPtr()[i] = mFloatBuffer[i];
+		mOut.Produce();
 		return true;
 	}
 
@@ -45,12 +51,16 @@ namespace CLAM
 		mFloatBuffer = buf;
 		mBufferSize = nframes;
 		mDoubleBuffer = 0;
+		mOut.SetSize(nframes);
+		mOut.SetHop(nframes);
 	}
 	void AudioSource::SetExternalBuffer( double* buf, unsigned nframes)
 	{
 		mDoubleBuffer = buf;
 		mBufferSize = nframes;
 		mFloatBuffer = 0;
+		mOut.SetSize(nframes);
+		mOut.SetHop(nframes);
 	}
 
 	bool AudioSource::Do( double* buf, int nframes)
