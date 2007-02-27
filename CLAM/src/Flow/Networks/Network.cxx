@@ -247,8 +247,8 @@ namespace CLAM
 		Processing * proc = i->second;
 		mProcessings.erase( name );
 
-		delete proc;		
 		mFlowControl->ProcessingRemovedFromNetwork(*proc);
+		delete proc;		
 	}
 
 	bool Network::HasProcessing( const std::string& name ) const
@@ -410,7 +410,13 @@ namespace CLAM
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
 			if (it->second->GetExecState() == Processing::Ready)
+			{
 				it->second->Start();
+			}
+			else
+			{	
+				std::cerr << "Warning: could not start processing for not being in Ready state: " << it->second->GetClassName() << std::endl;
+			}
 		if (mPlayer) mPlayer->Start();
 	}
 	

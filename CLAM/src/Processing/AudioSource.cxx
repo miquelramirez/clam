@@ -43,6 +43,7 @@ namespace CLAM
 		for (int i=0; i<mBufferSize; i++)
 			so.GetBuffer().GetPtr()[i] = mFloatBuffer[i];
 		mOut.Produce();
+		std::cerr << "AudioSource Done. Size :" << mOut.GetSize() << std::endl;
 		return true;
 	}
 
@@ -64,7 +65,8 @@ namespace CLAM
 	}
 
 	bool AudioSource::Do( double* buf, int nframes)
-	{		
+	{
+		std::cerr << "~~~ "<< std::flush;
 		if (!mOut.CanProduce())
 			return true;
 
@@ -77,6 +79,7 @@ namespace CLAM
 	}
 	bool AudioSource::Do( float* buf, int nframes)
 	{		
+		std::cerr << "~~~ "<< std::flush;
 		if (!mOut.CanProduce())
 			return true;
 

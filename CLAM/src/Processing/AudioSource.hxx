@@ -30,9 +30,9 @@ namespace CLAM
 		void SetExternalBuffer(double* buf, unsigned nframes );
 
 		bool Do();
-		//TODO deprecate
+		/// @deprecated now use SetExternalBuffer
 		bool Do( float* buf, int nframes);
-		//TODO deprecate
+		/// @deprecated now use SetExternalBuffer
 		bool Do( double* buf, int nframes);
 		
 		const char* GetClassName() const { return "AudioSource";}

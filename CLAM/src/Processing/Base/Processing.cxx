@@ -246,8 +246,14 @@ namespace CLAM {
 	
 	bool Processing::CanConsumeAndProduce()
 	{	
+		std::cerr << "In CanConsumeAndProduce" << std::endl;
 		if(GetExecState()!=Running)
+		{
+			std::cerr << "Cannot execute because not Running!" << std::endl;
 			return false;
+		}
+		std::cerr<< "inports ready? " << GetInPorts().AreReadyForReading() << std::endl;
+		std::cerr << "outports ready? " << GetOutPorts().AreReadyForWriting() << std::endl;
 		return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
 	}
 

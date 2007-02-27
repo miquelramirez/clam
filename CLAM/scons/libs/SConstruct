@@ -226,9 +226,9 @@ def setup_build_options( env ) :
 
 	# clam_vmqt options 
 	# TODO check if this hardcoded path can be removed also in Windows and Mac
+	'''
 	if sys.platform == 'linux2' :
 		pass
-
 		if os.environ.has_key("QTDIR") and os.environ["QTDIR"] : 
 			print "Using existing QTDIR"
 		else :
@@ -238,13 +238,11 @@ def setup_build_options( env ) :
 				% (qt_includes, qt_libs)
 			opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', qt_includes ) )
 			opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', qt_libs ) )
+	'''	
 	if sys.platform == 'win32' : 
 		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', 'G:\projects\qt\include' ) )
 		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', 'G:\projects\qt\lib' ) )
 
-	if sys.platform == "darwin" :	
-		pass
-	
 	opts.Update(env)
 	opts.Save('clam.conf', env) # Save, so user doesn't have to 
 				  				# specify PREFIX every time
