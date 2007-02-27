@@ -15,6 +15,9 @@ namespace CLAM
 	
 	AudioSink::AudioSink()
 		: mIn("AudioIn",this)
+		, mFloatBuffer(0)
+		, mDoubleBuffer(0)
+		, mBufferSize(0)
 	{
 		//After being dropped it is ready to run as it does not need any configuration at all
 		mExecState=Ready;
@@ -22,6 +25,9 @@ namespace CLAM
 
 	AudioSink::AudioSink(const ProcessingConfig & conf)
 		: mIn("AudioIn",this)
+		, mFloatBuffer(0)
+		, mDoubleBuffer(0)
+		, mBufferSize(0)
 	{
 		//After being dropped it is ready to run as it does not need any configuration at all
 		mExecState=Ready;
@@ -36,6 +42,19 @@ namespace CLAM
 		return true;
 	}
 
+	bool AudioSource::SetExternalBuffer( float* buf, int nframes)
+	{
+		mFloatBuffer = buf;
+		mBufferSize = nframes;
+		mDoubleBuffer = 0;
+	}
+	bool AudioSource::SetExternalBuffer( double* buf, int nframes)
+	{
+		mDoubleBuffer = buf;
+		mBufferSize = nframes;
+		mFloatBuffer = 0;
+	}
+	//TODO deprecate
 	bool AudioSink::Do( float* buf, int nframes)
 	{
 		if (!mIn.CanConsume())
@@ -48,6 +67,7 @@ namespace CLAM
 		mIn.Consume();
 		return true;
 	}
+	//TODO deprecate
 	bool AudioSink::Do( double* buf, int nframes)
 	{
 		if (!mIn.CanConsume())
