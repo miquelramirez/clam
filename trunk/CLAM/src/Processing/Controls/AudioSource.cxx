@@ -40,13 +40,13 @@ namespace CLAM
 		return true;
 	}
 
-	bool AudioSource::SetExternalBuffer( float* buf, int nframes)
+	void AudioSource::SetExternalBuffer( float* buf, unsigned nframes)
 	{
 		mFloatBuffer = buf;
 		mBufferSize = nframes;
 		mDoubleBuffer = 0;
 	}
-	bool AudioSource::SetExternalBuffer( double* buf, int nframes)
+	void AudioSource::SetExternalBuffer( double* buf, unsigned nframes)
 	{
 		mDoubleBuffer = buf;
 		mBufferSize = nframes;
