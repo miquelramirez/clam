@@ -20,8 +20,8 @@
  */
 
 
-#ifndef  _PullFlowControl_hxx_
-#define  _PullFlowControl_hxx_
+#ifndef  _NaiveFlowControl_hxx_
+#define  _NaiveFlowControl_hxx_
 
 #include "FlowControl.hxx"
 #include <list>
@@ -31,11 +31,11 @@ namespace CLAM
 
 class Processing;
 
-class PullFlowControl : public FlowControl
+class NaiveFlowControl : public FlowControl
 {
 public:
-	PullFlowControl( int frameSize = 512 );
-	virtual ~PullFlowControl(){}
+	NaiveFlowControl( int frameSize = 512 );
+	virtual ~NaiveFlowControl(){}
 
 	void ProcessingAddedToNetwork( Processing & added );
 	void ProcessingRemovedFromNetwork( Processing & removed );
@@ -55,4 +55,4 @@ private:
 
 } // namespace CLAM
 
-#endif //  _PullFlowControl_hxx_
+#endif //  _NaiveFlowControl_hxx_
