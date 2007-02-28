@@ -71,17 +71,24 @@ void NaiveFlowControl::Do()
 {
 	// by now it have nothing of pulling
 	// a naive approach: do sources, do normal processings, do sinks
-	for (ProcessingList::iterator it=mSources.begin(); it!=mSources.end(); it++)
-	{
-		Processing* proc = *it;
-		CLAM_ASSERT(proc->CanConsumeAndProduce(), "a Source should be able to produce");
-		proc->Do();
-		std::cerr << "Do: "<<proc->GetClassName() << std::endl;
-	}
 	ProcessingList pendingSinks(mSinks);
+	ProcessingList pendingSources(mSources);
 	while (!pendingSinks.empty())
 	{
 		bool noProcessingRun = true;
+		for (ProcessingList::iterator it=pendingSources.begin(); it!=pendingSources.end(); )
+		{
+			Processing* proc = *it;
+			if (!proc->CanConsumeAndProduce())
+			{
+				it++;
+				continue;
+			}
+			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			proc->Do();
+			it = pendingSources.erase(it);
+			noProcessingRun = false;
+		}
 		for (ProcessingList::iterator it=mNormalProcessings.begin(); it!=mNormalProcessings.end(); it++)
 		{
 			Processing* proc = *it;
