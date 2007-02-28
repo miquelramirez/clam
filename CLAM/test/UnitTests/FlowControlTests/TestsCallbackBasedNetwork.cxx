@@ -81,16 +81,17 @@ class TestsCallbackBasedNetwork : public CppUnit::TestFixture
 	CPPUNIT_TEST( testSourceFilterSink_smallerSize );
 	CPPUNIT_TEST( testSourceFilterSink_biggerSize );
 	CPPUNIT_TEST( testSourceFilterSink_biggerNonDivisorSize );
+	CPPUNIT_TEST( testSlowSinkLessBranch );
 
 	CPPUNIT_TEST_SUITE_END();
-	float _inFloat[2048];
-	float _outFloat[2048];
+	float _inFloat[2048000];
+	float _outFloat[2048000];
 	CLAM::Network _network;
 public:
 	void setUp()
 	{
 		_network.AddFlowControl(new CLAM::NaiveFlowControl);
-		for (unsigned i=0; i<2048; i++)
+		for (unsigned i=0; i<204800; i++)
 		{
 			_inFloat[i]=i+1;
 			_outFloat[i]=-1;
@@ -231,6 +232,30 @@ private:
 		assertSamplesTransferred(4,4);
 		_network.Stop();
 	}
+	void testSlowSinkLessBranch()
+	{
+		const unsigned dummyStep = 1;
+		const unsigned callbackStep = 100;
+		const unsigned iterations = 15;
+		CLAM::AudioSource * source = new CLAM::AudioSource;
+		CLAM::AudioSink * sink = new CLAM::AudioSink;
+		DummyFilter * filter = new DummyFilter(dummyStep);
+		_network.AddProcessing("Source", source);
+		_network.AddProcessing("Sink", sink);
+		_network.AddProcessing("Filter", filter);
+		_network.ConnectPorts("Source.AudioOut", "Filter.in");
+		_network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
+		_network.Start();
+		for (int i=0; i<iterations; i++)
+		{
+			source->SetExternalBuffer(_inFloat+i*callbackStep, callbackStep);
+			sink->SetExternalBuffer(_outFloat+i*callbackStep, callbackStep);
+			_network.Do();
+		}
+		assertSamplesTransferred(iterations*callbackStep);
+		_network.Stop();
+	}
+
 };
 
 } // namespace
