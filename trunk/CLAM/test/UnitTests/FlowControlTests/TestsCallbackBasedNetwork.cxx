@@ -31,21 +31,68 @@ namespace CLAMTest {
 class TestsCallbackBasedNetwork;
 CPPUNIT_TEST_SUITE_REGISTRATION( TestsCallbackBasedNetwork );
 
+
+
+class DummyGenerator : public CLAM::Processing
+{
+	CLAM::AudioOutPort _out;
+	unsigned _next;
+public:
+	DummyGenerator(unsigned portSize)
+		: _out("out", this)
+		, _next(0)
+	{
+		_out.SetSize(portSize);
+		_out.SetHop(portSize);
+
+		mExecState=Ready;
+
+	}
+	bool ConcreteConfigure(const CLAM::ProcessingConfig &c)
+	{
+		return true;
+	}
+	const CLAM::ProcessingConfig & GetConfig() const
+	{
+		static CLAM::NullProcessingConfig config;
+		return config;
+	}
+	const char * GetClassName() const { return "DummyGenerator";}
+	
+	bool Do()
+	{
+		CLAM::Audio & out = _out.GetAudio();
+		for (unsigned i=0; i<out.GetSize(); i++)
+		{
+			out.GetBuffer()[i] = ++_next;
+		}
+		_out.Produce();
+		return true;
+	}
+	unsigned GetNext() const
+	{
+		return _next;
+	}
+};
 class DummyFilter : public CLAM::Processing
 {
 	CLAM::AudioInPort _in;
 	CLAM::AudioOutPort _out;
+	std::vector<float> _log;
+	unsigned _iLog;
 public:
 	DummyFilter(unsigned portSize)
 		: _in("in", this)
 		, _out("out", this)
+		, _log(204800, -1.0)
+		, _iLog(0)
 	{
 		_in.SetSize(portSize);
 		_in.SetHop(portSize);
 		_out.SetSize(portSize);
 		_out.SetHop(portSize);
 
-		mExecState=Ready; //PAU: don¡t understand. it should be done automatically by Configure
+		mExecState=Ready;
 
 	}
 	bool ConcreteConfigure(const CLAM::ProcessingConfig &c)
@@ -65,23 +112,33 @@ public:
 		CLAM::Audio & out = _out.GetAudio();
 		CLAM_ASSERT(in.GetSize()==out.GetSize(), "DummyFilter: sizes missmatch");
 		for (unsigned i=0; i<in.GetSize(); i++)
+		{
 			out.GetBuffer()[i] = in.GetBuffer()[i];
+			_log[_iLog++] = in.GetBuffer()[i];
+		}
 		_in.Consume();
 		_out.Produce();
 		return true;
+	}
+	const float * GetLog() const
+	{
+		return &(_log[0]);
 	}
 };
 
 class TestsCallbackBasedNetwork : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( TestsCallbackBasedNetwork );
-		
+/*
 	CPPUNIT_TEST( testSourceAndSink );
 	CPPUNIT_TEST( testSourceFilterSink_sameSize );
 	CPPUNIT_TEST( testSourceFilterSink_smallerSize );
 	CPPUNIT_TEST( testSourceFilterSink_biggerSize );
 	CPPUNIT_TEST( testSourceFilterSink_biggerNonDivisorSize );
 	CPPUNIT_TEST( testSlowSinkLessBranch );
+	CPPUNIT_TEST( testSlowSinkLessBranch_doNotAccomulate );
+*/
+	CPPUNIT_TEST( testGeneratorProducesOnlyWhatSinkNeeds );
 
 	CPPUNIT_TEST_SUITE_END();
 	float _inFloat[2048000];
@@ -100,12 +157,16 @@ public:
 private:
 	void assertSamplesTransferred(unsigned howMany, unsigned lag=0)
 	{
+		assertSamplesTransferredToBuffer(_outFloat, howMany, lag);
+	}
+	void assertSamplesTransferredToBuffer(const float * buffer, unsigned howMany, unsigned lag=0)
+	{
 		try {
 			for (unsigned i=0; i<lag; i++)
-				CPPUNIT_ASSERT_DOUBLES_EQUAL(-1, _outFloat[i], 1e-14);
+				CPPUNIT_ASSERT_DOUBLES_EQUAL(-1, buffer[i], 1e-14);
 			for (unsigned i=0; i<howMany; i++)
-				CPPUNIT_ASSERT_DOUBLES_EQUAL(_inFloat[i], _outFloat[i+lag], 1e-14);
-			CPPUNIT_ASSERT_DOUBLES_EQUAL(-1, _outFloat[howMany+lag], 1e-14);
+				CPPUNIT_ASSERT_DOUBLES_EQUAL(_inFloat[i], buffer[i+lag], 1e-14);
+			CPPUNIT_ASSERT_DOUBLES_EQUAL(-1, buffer[howMany+lag], 1e-14);
 		}
 		catch (...)
 		{
@@ -119,8 +180,8 @@ private:
 			std::cerr << std::endl;
 			std::cerr << "Actual:   ";
 			for (unsigned i=0; i<howMany+lag; i++)
-				std::cerr << _outFloat[i] << " ";
-			std::cerr << _outFloat[howMany] << " ";
+				std::cerr << buffer[i] << " ";
+			std::cerr << buffer[howMany] << " ";
 			std::cerr << std::endl;
 			throw;
 		}
@@ -253,6 +314,39 @@ private:
 			_network.Do();
 		}
 		assertSamplesTransferred(iterations*callbackStep);
+		_network.Stop();
+	}
+	void testSlowSinkLessBranch_doNotAccomulate()
+	{
+		const unsigned callbackStep = 100;
+		CLAM::AudioSource * source = new CLAM::AudioSource;
+		CLAM::AudioSink * sink = new CLAM::AudioSink;
+		DummyFilter * filter = new DummyFilter(1);
+		_network.AddProcessing("Source", source);
+		_network.AddProcessing("Sink", sink);
+		_network.AddProcessing("Filter", filter);
+		_network.ConnectPorts("Source.AudioOut", "Filter.in");
+		_network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
+		_network.Start();
+		source->SetExternalBuffer(_inFloat, callbackStep);
+		sink->SetExternalBuffer(_outFloat, callbackStep);
+		_network.Do();
+		assertSamplesTransferredToBuffer(filter->GetLog(), 100);
+		_network.Stop();
+	}
+	void testGeneratorProducesOnlyWhatSinkNeeds()
+	{
+		const unsigned callbackStep = 4;
+		CLAM::AudioSink * sink = new CLAM::AudioSink;
+		DummyGenerator * generator = new DummyGenerator(3);
+		_network.AddProcessing("Sink", sink);
+		_network.AddProcessing("Generator", generator);
+		_network.ConnectPorts("Generator.out", "Sink.AudioIn");
+		_network.Start();
+		sink->SetExternalBuffer(_outFloat, callbackStep);
+		_network.Do();
+		CPPUNIT_ASSERT_EQUAL(6u, generator->GetNext());
+		assertSamplesTransferred(4);
 		_network.Stop();
 	}
 

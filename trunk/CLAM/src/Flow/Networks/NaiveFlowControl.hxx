@@ -46,6 +46,7 @@ private:
 	typedef std::list< Processing* > ProcessingList;
 	ProcessingList mSources;
 	ProcessingList mSinks;
+	ProcessingList mGenerators;
 	ProcessingList mNormalProcessings; // not Sources not Sinks
 
 

@@ -43,6 +43,11 @@ void NaiveFlowControl::ProcessingAddedToNetwork( Processing & added )
 		mSources.push_back( &added );
 		return;
 	}
+	if (added.GetInPorts().Size()==0)
+	{
+		mGenerators.push_back( &added);
+		return;
+	}
 	if ( std::string(added.GetClassName()) == std::string("AudioSink") )
 	{
 		mSinks.push_back( &added );
@@ -59,6 +64,11 @@ void NaiveFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 		mSources.remove( &removed );
 		return;
 	}
+	if (removed.GetInPorts().Size()==0)
+	{
+		mGenerators.remove( &removed);
+		return;
+	}
 	if ( std::string(removed.GetClassName()) == std::string("AudioSink") )
 	{
 		mSinks.push_back( &removed );
@@ -72,38 +82,27 @@ void NaiveFlowControl::Do()
 	// by now it have nothing of pulling
 	// a naive approach: do sources, do normal processings, do sinks
 	ProcessingList pendingSinks(mSinks);
-	ProcessingList pendingSources(mSources);
-	while (!pendingSinks.empty())
+	for (ProcessingList::iterator it=mSources.begin(); it!=mSources.end(); it++ )
+	{
+		Processing* proc = *it;
+		CLAM_ASSERT(proc->CanConsumeAndProduce(), "Sources should be able to execute once on each Network do");
+		std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+		proc->Do();
+	}
+	while (true)
 	{
 		bool noProcessingRun = true;
-		for (ProcessingList::iterator it=pendingSources.begin(); it!=pendingSources.end(); )
-		{
-			Processing* proc = *it;
-			if (!proc->CanConsumeAndProduce())
-			{
-				it++;
-				continue;
-			}
-			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
-			proc->Do();
-			it = pendingSources.erase(it);
-			noProcessingRun = false;
-		}
 		for (ProcessingList::iterator it=mNormalProcessings.begin(); it!=mNormalProcessings.end(); it++)
 		{
 			Processing* proc = *it;
-			if (proc->CanConsumeAndProduce() )
+			if (!proc->CanConsumeAndProduce() )
 			{
-				std::cerr << "Do: "<<proc->GetClassName() << std::endl;
-				noProcessingRun = false;
-				proc->Do();
+				std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
+				continue;
 			}
-			else
-			{
-				std::cerr << "could NOT Do: "<<proc->GetClassName() 
-					<< " port size: "<<proc->GetInPort("in").GetSize() << std::endl;
-				
-			}
+			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			noProcessingRun = false;
+			proc->Do();
 		}
 		for (ProcessingList::iterator it=pendingSinks.begin(); it!=pendingSinks.end(); )
 		{
@@ -118,12 +117,25 @@ void NaiveFlowControl::Do()
 			it = pendingSinks.erase(it);
 			noProcessingRun = false;
 		}
-		if (noProcessingRun) 
+		if (noProcessingRun && !pendingSinks.empty())
 		{
-			std::cerr << "Bad luck all stuck" << std::endl;
-			break;
+			for (ProcessingList::iterator it=mGenerators.begin(); it!=mGenerators.end(); it++)
+			{
+				Processing* proc = *it;
+				if (!proc->CanConsumeAndProduce() )
+				{
+					std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
+					continue;
+				}
+				std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+				noProcessingRun = false;
+				proc->Do();
+			}
 		}
+		if (noProcessingRun) break;
 	}
+	if (!pendingSinks.empty())
+		std::cerr << "Warning: " << pendingSinks.size() << " sinks were not fed" << std::endl;
 }
 
 
