@@ -1,5 +1,5 @@
-#ifndef _EXTERN_SINK_HXX_
-#define _EXTERN_SINK_HXX_
+#ifndef AudioSink_hxx
+#define AudioSink_hxx
 
 #include "Processing.hxx"
 #include "NullProcessingConfig.hxx"

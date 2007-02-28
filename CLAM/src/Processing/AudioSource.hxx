@@ -1,5 +1,5 @@
-#ifndef _EXTERN_GENERATOR_HXX_
-#define _EXTERN_GENERATOR_HXX_
+#ifndef AudioSource_hxx
+#define AudioSource_hxx
 
 #include "Processing.hxx"
 #include "NullProcessingConfig.hxx"
