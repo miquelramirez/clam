@@ -43,8 +43,6 @@ public:
 	void Do();
 
 private:
-	void AddNewPossibleProcessingsToDo( Processing * father, 
-					    std::list<Processing*> &);
 	typedef std::list< Processing* > ProcessingList;
 	ProcessingList mSources;
 	ProcessingList mSinks;
