@@ -107,7 +107,7 @@ namespace CLAMTest
 
 			CLAM::AudioFileIn processing;
 			bool result = processing.Configure( processingConfig );
-			CPPUNIT_ASSERT_EQUAL_MESSAGE( false, result, "Configuration should have failed" );
+			CPPUNIT_ASSERT_EQUAL_MESSAGE( "Configuration should have failed", false, result);
 		}
 
 		void testConfigureAndStart_BadFormedWAVEFails() 
