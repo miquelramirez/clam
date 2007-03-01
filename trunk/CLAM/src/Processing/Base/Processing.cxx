@@ -102,64 +102,37 @@ namespace CLAM {
 	}
 	
 	Processing::Processing() 
-		: mpParent(0),
-		mPreconfigureExecuted( false )
+		: mpParent(0)
 	{
 		mExecState = Unconfigured;
 	}
 
-	void Processing::PreConcreteConfigure( const ProcessingConfig& c )
+	bool Processing::Configure(const ProcessingConfig &c)
 	{
 		CLAM_ASSERT(mExecState != Running, "Configuring an already running Processing.");
 		mConfigErrorMessage = "";
-
 		if (!mpParent) 
 			TopLevelProcessing::GetInstance().Insert(*this);
-		mPreconfigureExecuted = true;
-
-	}
-
-	void Processing::PostConcreteConfigure()
-	{
-		CLAM_ASSERT(mExecState != Running, "Configuring an already running Processing.");
-		CLAM_ASSERT(mPreconfigureExecuted, "PreConcreteConfigure was not being called" );
-
-		mExecState=Ready;
-		mConfigErrorMessage="Ready to be started";
-
-	}
-
-	bool Processing::Configure(const ProcessingConfig &c)
-	{
-		PreConcreteConfigure( c );
-		
+		mExecState = Unconfigured;
 		try
 		{
-
 			if (!ConcreteConfigure(c)) 
 			{
-				mExecState=Unconfigured;
-				mPreconfigureExecuted = false;
 				if (mConfigErrorMessage=="")
 					mConfigErrorMessage = "Configuration failed.";
-				mExecState = Unconfigured;
 				return false;
 			}
 		}
 		catch( ErrProcessingObj& error ) ///TODO we should use here an ErrConfiguring class. PA
 		{
-			mExecState = Unconfigured;
-			mPreconfigureExecuted = false;
 			mConfigErrorMessage += "Exception thrown during ConcreteConfigure:\n";
 			mConfigErrorMessage += error.what();
 			mConfigErrorMessage += "\n";
 			mConfigErrorMessage += "Configuration failed.";
-
 			return false;
 		}
-		
-		PostConcreteConfigure();
-		
+		mExecState = Ready;
+		mConfigErrorMessage="Ready to be started";
 		return true;
 	}
 
@@ -187,11 +160,9 @@ namespace CLAM {
 	void Processing::Stop(void)
 	{
 		CLAM_ASSERT( mExecState==Running, "Stop(): Object not running." );
-
 		try {
 			if(ConcreteStop())
 				mExecState = Ready; 
-			//	mExecState = Unconfigured; //TODO simplify number of states
 		}
 		catch (ErrProcessingObj &e) {
 			mConfigErrorMessage += "Stop(): Object failed to stop properly.\n";
@@ -248,7 +219,7 @@ namespace CLAM {
 	{	
 		if(GetExecState()!=Running)
 		{
-			std::cerr << "Cannot execute because not Running!" << std::endl;
+			std::cerr << "Cannot execute '" << GetClassName() << "' because not Running!" << std::endl;
 			return false;
 		}
 //		std::cerr<< "inports ready? " << GetInPorts().AreReadyForReading() << std::endl;

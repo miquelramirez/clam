@@ -233,24 +233,6 @@ namespace CLAM {
 		/** Check that Supervised Do() can be safely called */
 		bool CanConsumeAndProduce();
 
-		/**
-		 *  This method, is temporary, very prone to disappear
-		 *  soon, for enabling clients that know concrete Processing object
-		 *  type to call safely the ConcreteConfigure(). See the functional
-		 *  test of AudioFileIn and and its usage example for more details
-		 *  on when and how to use them.
-		 */
-		void PreConcreteConfigure( const ProcessingConfig& c); //TODO depracate it
-		
-		/**
-		 *  This method, is temporary, very prone to disappear
-		 *  soon, for enabling clients that know concrete Processing object
-		 *  type to call safely the ConcreteConfigure(). See the functional
-		 *  test of AudioFileIn and and its usage example for more details
-		 *  on when and how to use them.
-		 */
-		void PostConcreteConfigure(); //TODO depracate it
-
 		/** Configuration getter.
 		 * Gets the configuration parameters used to create the object.
 		 * @return Const reference to the configuration object. The
@@ -379,7 +361,6 @@ namespace CLAM {
 		OutControlRegistry mOutControlRegistry;
 		InPortRegistry mInPortRegistry;
 		OutPortRegistry mOutPortRegistry;
-		bool  mPreconfigureExecuted;
 	};
 
 	
