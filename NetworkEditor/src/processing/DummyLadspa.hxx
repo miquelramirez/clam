@@ -2,6 +2,8 @@
 #ifndef _DummyLadspa_hxx_
 #define _DummyLadspa_hxx_
 
+#ifdef USE_LADSPA
+
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/InControl.hxx>
@@ -69,6 +71,8 @@ public:
 };
 
 } //namespace CLAM
+
+#endif // USE_LADSPA
 
 #endif
 

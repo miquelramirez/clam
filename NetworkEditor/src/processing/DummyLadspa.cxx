@@ -1,3 +1,4 @@
+#ifdef USE_LADSPA
 
 #include "DummyLadspa.hxx"
 //#include <ladspa.h>
@@ -179,3 +180,4 @@ void DummyLadspa::UpdatePointers()
 
 } // namespace CLAM
 
+#endif // USE_LADSPA
