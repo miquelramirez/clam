@@ -14,7 +14,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtGui/QApplication>
 #include <CLAM/XMLStorage.hxx>
-#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/NaiveFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
 #include <CLAM/MonoAudioFileReaderConfig.hxx>
 #include <fstream>
@@ -59,7 +59,7 @@ PrototypeLoader::PrototypeLoader()
 	: _player(0)
 	, _interface(0)
 {
-	_network.AddFlowControl(new CLAM::PushFlowControl);
+	_network.AddFlowControl(new CLAM::NaiveFlowControl);
 }
 
 bool PrototypeLoader::LoadNetwork(std::string networkFile)
