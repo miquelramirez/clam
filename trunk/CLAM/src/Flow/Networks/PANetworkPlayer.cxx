@@ -179,11 +179,8 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 		    unsigned long framesPerBuffer)
 {
 	DoInPorts( (float**) inputBuffers, framesPerBuffer);
-	
-	//for (int stepcount=0; stepcount < (int(nframes)/int(mClamBufferSize)); stepcount++)
-	GetNetwork().Do();
-
 	DoOutPorts( (float**) outputBuffers, framesPerBuffer);
+	GetNetwork().Do();
 }
 
 void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
@@ -192,7 +189,7 @@ void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 	
 	for ( PAOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++ )
 	{
-		(*it)->Do( input[i++], nframes );
+		(*it)->SetExternalBuffer( input[i++], nframes );
 
 	}
 }
@@ -202,7 +199,7 @@ void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 	int i=0;
 	for (PAInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
 	{
-		(*it)->Do(output[i++], nframes);
+		(*it)->SetExternalBuffer(output[i++], nframes);
 	}
 }
 
