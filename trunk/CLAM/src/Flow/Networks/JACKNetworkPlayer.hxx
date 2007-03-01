@@ -46,7 +46,7 @@ private:
 	};
 	typedef std::list<JackConnection> JackConnections;
 private:
-	int mJackSampleRate, mJackBufferSize, mClamBufferSize;
+	int mJackSampleRate, mJackBufferSize;
 	bool mAutoConnect;
 
 	JackConnections mIncomingJackConnections;

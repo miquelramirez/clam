@@ -42,8 +42,6 @@ void FlowControl::AttachToNetwork( Network* network)
 
 void FlowControl::ProcessingConfigured( Processing & configured )
 {
-	if(!configured.ModifiesPortsAndControlsAtConfiguration())
-		return;
 }
 
 void FlowControl::ProcessingAddedToNetwork( Processing& added )
