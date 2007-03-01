@@ -59,8 +59,7 @@ PrototypeLoader::PrototypeLoader()
 	: _player(0)
 	, _interface(0)
 {
-	int frameSize = 2048;
-	_network.AddFlowControl(new CLAM::PushFlowControl(frameSize));
+	_network.AddFlowControl(new CLAM::PushFlowControl);
 }
 
 bool PrototypeLoader::LoadNetwork(std::string networkFile)

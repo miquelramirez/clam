@@ -76,8 +76,7 @@ public:
 		_recentFiles=settings.value("RecentFiles").toStringList();
 		updateRecentMenu();
 
-		int frameSize = 2048;
-		_network.AddFlowControl( new CLAM::NaiveFlowControl( frameSize ));
+		_network.AddFlowControl( new CLAM::NaiveFlowControl );
 		QString backend = "None";
 		QString backendLogo = ":/icons/images/editdelete.png"; // TODO: Change this icon
 		if (_networkPlayer) delete _networkPlayer;
