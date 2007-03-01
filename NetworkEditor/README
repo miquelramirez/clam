@@ -11,13 +11,14 @@ the CLAM Prototyper to link the network to a Qt Designer interface.
 See the CLAM doxygen documentation on how to use the CLAM::NetworkPlayer
 class.
 
-== Installation ==
 
-The INSTALL file contains instructions about compiling and installing.
+== Usage ==
 
-== License ==
+Note: this is valid for Linux and Mac OSX:
 
-The COPYING file contains the license terms to use, modify and 
-redistribute this software.
-
-
+NetworkEditor will try to start jackd if it is installed in the system 
+To use PortAudio instead of jack do the following:
+- Make sure that jackd is not running
+- Define JACK_NO_START_SERVER environment variable to avoid starting jackd automatically.
+  for example:
+  $ JACK_NO_START_SERVER=1 ./NetworkEditor

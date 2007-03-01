@@ -29,8 +29,7 @@
 namespace CLAM
 {
 
-PushFlowControl::PushFlowControl( int frameSize )
-	: FlowControl (frameSize)
+PushFlowControl::PushFlowControl()
 {
 }
 
@@ -38,7 +37,6 @@ void PushFlowControl::ProcessingAddedToNetwork( Processing & added )
 {
 	NetworkTopologyChanged();
 
-	ConfigurePorts( added );
 	if (added.GetInPorts().Size() == 0) // if it's a generator
 		mGenerators.push_back( &added );
 }

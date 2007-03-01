@@ -34,7 +34,7 @@ class Processing;
 class NaiveFlowControl : public FlowControl
 {
 public:
-	NaiveFlowControl( int frameSize = 512 );
+	NaiveFlowControl();
 	virtual ~NaiveFlowControl(){}
 
 	void ProcessingAddedToNetwork( Processing & added );

@@ -34,7 +34,7 @@ class Processing;
 class PushFlowControl : public FlowControl
 {
 public:
-	PushFlowControl( int frameSize = 512 );
+	PushFlowControl();
 	virtual ~PushFlowControl(){}
 
 	void ProcessingAddedToNetwork( Processing & added );

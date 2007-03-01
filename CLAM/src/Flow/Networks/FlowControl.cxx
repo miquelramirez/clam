@@ -29,9 +29,8 @@
 namespace CLAM
 {
 
-FlowControl::FlowControl(  int frameSize )
+FlowControl::FlowControl()
 	: mNetworkChanged(false)
-	, mFrameSize(frameSize)
 	, mNetwork(0)
 {
 }      
@@ -41,37 +40,14 @@ void FlowControl::AttachToNetwork( Network* network)
 	mNetwork = network;
 }
 
-void FlowControl::ConfigurePorts(Processing& toConfigure) const
-{
-	/*
-	 *
-	 * TODO: rethink the way ports size must be decided
-	InPortsRegistry::Iterator itin; // todo : should be a typdef of InPortsRegistry
-	for (itin = toConfigure.GetInPorts().Begin(); itin != toConfigure.GetInPorts().End(); itin++)
-	{
-		(*itin)->SetSize(mFrameSize);
-		(*itin)->SetHop(mFrameSize);
-	}
-		
-	OutPortsRegistry::Iterator itout; // todo: idem
-	for (itout = toConfigure.GetOutPorts().Begin(); itout != toConfigure.GetOutPorts().End(); itout++)
-	{
-		(*itout)->SetSize(mFrameSize);
-	(*itout)->SetHop(mFrameSize);
-	}
-	*/
-}
-
 void FlowControl::ProcessingConfigured( Processing & configured )
 {
 	if(!configured.ModifiesPortsAndControlsAtConfiguration())
 		return;
-	ConfigurePorts( configured );
 }
 
 void FlowControl::ProcessingAddedToNetwork( Processing& added )
 {
-	ConfigurePorts( added );
 	NetworkTopologyChanged();
 }
 
