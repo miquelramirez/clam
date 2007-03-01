@@ -43,7 +43,7 @@ namespace CLAM
 		for (int i=0; i<mBufferSize; i++)
 			so.GetBuffer().GetPtr()[i] = mFloatBuffer[i];
 		mOut.Produce();
-		std::cerr << "AudioSource Done. Size :" << mOut.GetSize() << std::endl;
+		// std::cerr << "AudioSource Done. Size :" << mOut.GetSize() << std::endl;
 		return true;
 	}
 

@@ -95,7 +95,7 @@ void NaiveFlowControl::Do()
 	{
 		Processing* proc = *it;
 		CLAM_ASSERT(proc->CanConsumeAndProduce(), "Sources should be able to execute once on each Network do");
-		std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+		// std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 		proc->Do();
 	}
 	while (true)
@@ -106,10 +106,10 @@ void NaiveFlowControl::Do()
 			Processing* proc = *it;
 			if (!proc->CanConsumeAndProduce() )
 			{
-				std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
+				// std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
 				continue;
 			}
-			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			// std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 			noProcessingRun = false;
 			proc->Do();
 		}
@@ -121,7 +121,7 @@ void NaiveFlowControl::Do()
 				it++;
 				continue;
 			}
-			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			// std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 			proc->Do();
 			it = pendingSinks.erase(it);
 			noProcessingRun = false;
@@ -133,10 +133,10 @@ void NaiveFlowControl::Do()
 				Processing* proc = *it;
 				if (!proc->CanConsumeAndProduce() )
 				{
-					std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
+					// std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
 					continue;
 				}
-				std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+				// std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 				noProcessingRun = false;
 				proc->Do();
 			}
