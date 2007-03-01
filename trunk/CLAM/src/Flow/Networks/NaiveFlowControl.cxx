@@ -94,9 +94,15 @@ void NaiveFlowControl::Do()
 	for (ProcessingList::iterator it=mSources.begin(); it!=mSources.end(); it++ )
 	{
 		Processing* proc = *it;
-		CLAM_ASSERT(proc->CanConsumeAndProduce(), "Sources should be able to execute once on each Network do");
-		// std::cerr << "Do: "<<proc->GetClassName() << std::endl;
-		proc->Do();
+		if (proc->CanConsumeAndProduce())
+		{
+			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			proc->Do();
+		}
+		else 
+		{
+			std::cerr << "Warning: some AudioSource was not able to consume incoming audio from the call-back.";
+		}
 	}
 	while (true)
 	{
@@ -106,10 +112,10 @@ void NaiveFlowControl::Do()
 			Processing* proc = *it;
 			if (!proc->CanConsumeAndProduce() )
 			{
-				// std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
+				//std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
 				continue;
 			}
-			// std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 			noProcessingRun = false;
 			proc->Do();
 		}
@@ -121,7 +127,7 @@ void NaiveFlowControl::Do()
 				it++;
 				continue;
 			}
-			// std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 			proc->Do();
 			it = pendingSinks.erase(it);
 			noProcessingRun = false;
@@ -136,7 +142,7 @@ void NaiveFlowControl::Do()
 					// std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
 					continue;
 				}
-				// std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+				std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 				noProcessingRun = false;
 				proc->Do();
 			}
@@ -144,7 +150,9 @@ void NaiveFlowControl::Do()
 		if (noProcessingRun) break;
 	}
 	if (!pendingSinks.empty())
-		std::cerr << "Warning: " << pendingSinks.size() << " sinks were not fed" << std::endl;
+		std::cerr << "Warning: " << pendingSinks.size() << " sinks were not fed, so could not send audio to the callback." << std::endl;
+
+	std::cerr << "<<< Network is Done" << std::endl;
 }
 
 
