@@ -21,7 +21,7 @@
 
 
 #include "Network.hxx"
-#include "FlowControl.hxx"
+#include "NaiveFlowControl.hxx"
 #include "NetworkPlayer.hxx"
 #include <algorithm>
 #include "ProcessingDefinitionAdapter.hxx"
@@ -36,7 +36,7 @@ namespace CLAM
 
 	Network::Network() :
 		mName("Unnamed Network"),
-		mFlowControl(0),
+		mFlowControl(new NaiveFlowControl),
 		mPlayer(0)
 	{}
 	
@@ -162,7 +162,6 @@ namespace CLAM
 
 	void Network::AddFlowControl(FlowControl* flowControl)
 	{
-
 		if (mFlowControl) delete mFlowControl;
 		mFlowControl = flowControl;
 		mFlowControl->AttachToNetwork(this);
@@ -183,16 +182,8 @@ namespace CLAM
 		return *it->second;
 	}
 
-	void Network::AssertFlowControlNotNull() const
-	{
-		CLAM_ASSERT( 
-			mFlowControl, 
-			"the Network should have a FlowControl. Use Network::AddFlowControl(FlowControl*)");
-	}
-
 	void Network::AddProcessing( const std::string & name, Processing* proc)
 	{
-		AssertFlowControlNotNull();
 		if (!IsStopped()) Stop();
 
 		if (!mProcessings.insert( ProcessingsMap::value_type( name, proc ) ).second )
@@ -259,7 +250,6 @@ namespace CLAM
 	
 	void Network::ConfigureProcessing( const std::string & name, const ProcessingConfig & newConfig )	
 	{
-		AssertFlowControlNotNull();
 		ProcessingsMap::iterator it = mProcessings.find( name );
 		Processing * proc = it->second;
 		if ( !IsStopped() ) Stop(); 
@@ -279,7 +269,6 @@ namespace CLAM
 
 	bool Network::ConnectPorts( const std::string & producer, const std::string & consumer )
 	{
-		AssertFlowControlNotNull();
 		mFlowControl->NetworkTopologyChanged();
 
 		OutPortBase & outport = GetOutPortByCompleteName(producer);
@@ -317,7 +306,6 @@ namespace CLAM
 
 	bool Network::DisconnectPorts( const std::string & producer, const std::string & consumer)
 	{
-		AssertFlowControlNotNull();
 		mFlowControl->NetworkTopologyChanged();
 
 		OutPortBase & outport = GetOutPortByCompleteName(producer);
@@ -431,7 +419,6 @@ namespace CLAM
 	
 	void Network::Do()
 	{
-		AssertFlowControlNotNull();
 		mFlowControl->Do();
 	}
 

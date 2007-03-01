@@ -156,7 +156,6 @@ private:
 	std::string mName;
 	ProcessingsMap mProcessings;
 	
-	void AssertFlowControlNotNull() const;
 	static std::size_t PositionOfLastIdentifier( const std::string& );
 	static std::size_t PositionOfProcessingIdentifier( const std::string& );
 	static char NamesIdentifiersSeparator();
