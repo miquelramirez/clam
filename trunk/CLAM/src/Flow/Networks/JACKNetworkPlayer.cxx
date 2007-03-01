@@ -235,11 +235,8 @@ void JACKNetworkPlayer::Do(const jack_nframes_t nframes)
 	if (IsStopped()) return;
 
 	CopyJackBuffersToGenerators(nframes);
-	
-	for (int stepcount=0; stepcount < (int(nframes)/int(mClamBufferSize)); stepcount++)
-		GetNetwork().Do();
-
 	CopySinksToJackBuffers(nframes);
+	GetNetwork().Do();
 }
 
 //Saves the connections made to our local in/out jack ports
