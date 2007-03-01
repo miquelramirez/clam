@@ -9,7 +9,6 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin()
 
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
-	GetNetwork().AddFlowControl( new PushFlowControl( mClamBufferSize ) );
 	GetNetwork().SetName("Testing name");
 
 	std::cerr << " constructor" << std::endl;

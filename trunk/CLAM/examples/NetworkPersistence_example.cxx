@@ -63,8 +63,6 @@ int main( int argc, char** argv )
 		CLAM::AudioManager audioManager( sampleRate, size );
 		CLAM::Network * network = new CLAM::Network;
 		network->SetName("Network To Store");
-		network->AddFlowControl( new CLAM::PushFlowControl );
-
 
 		CLAM::SimpleOscillatorConfig osc1Cfg;
 		osc1Cfg.SetFrequency(220.0);
@@ -127,7 +125,6 @@ int main( int argc, char** argv )
 
 		CLAM::Network * network2 = new CLAM::Network; 
 		network2->SetName("Network Loaded");
-		network2->AddFlowControl( new CLAM::PushFlowControl );
 
 		CLAM::XMLStorage::Restore( *network2, networkFileName.latin1() );
 

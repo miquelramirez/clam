@@ -28,7 +28,6 @@
 #include "AutoPanner.hxx" // CLAM
 #include "FFT_rfftw.hxx" // CLAM
 #include "XMLStorage.hxx" // CLAM
-#include "BasicFlowControl.hxx" // CLAM
 #include "cppUnitHelper.hxx"
 
 namespace CLAMTest {
@@ -94,7 +93,6 @@ private:
 	{	
 		CLAM::Network foo;
 		std::string procName("oscillator");
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
 
 		CLAM::XMLStorage::Restore(foo, mPathToTestData+"networkwithoneproc.xml");
 		
@@ -110,7 +108,6 @@ private:
 		CLAM::Oscillator* osc = new CLAM::Oscillator;
 
 		foo.SetName(name);
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
 		foo.AddProcessing("oscillator", osc);
 
 		CLAM::XMLStorage::Dump(foo, "network",_output, false);
@@ -134,7 +131,6 @@ private:
 		std::string procName("oscillator");
 		std::string procName2("fftw");
 		std::string procName3("multiplier");
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
 
 		CLAM::XMLStorage::Restore(foo, mPathToTestData+"networkwithmorethanoneproc.xml");
 		
@@ -150,7 +146,6 @@ private:
 
 		
 		foo.SetName(name);
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
 		foo.AddProcessing("oscillator", new CLAM::Oscillator );
 		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
 		foo.AddProcessing("fftw", new CLAM::FFT_rfftw );
@@ -178,7 +173,6 @@ private:
 	{		
 		CLAM::Network foo;
 		CLAM::XMLStorage storage;
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
 
 		storage.Restore(foo, mPathToTestData+"networkwithportconnections.xml");
 		
@@ -192,7 +186,6 @@ private:
 		std::string name("FooNetworkWithPortsConnection");
 		
 		foo.SetName(name);
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
 		foo.AddProcessing("oscillator", new CLAM::Oscillator );
 		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
 		foo.ConnectPorts("oscillator.Audio Output", "multiplier.First Audio Input");
@@ -219,7 +212,6 @@ private:
 	void TestLoadNetworkWithControlsConnection()
 	{		
 		CLAM::Network foo;
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
 
 		CLAM::XMLStorage::Restore(foo, mPathToTestData+"networkwithcontrolconnections.xml");
 		
@@ -237,7 +229,6 @@ private:
 		std::string name("FooNetworkWithControlsConnection");
 		
 		foo.SetName(name);
-		foo.AddFlowControl( new CLAM::BasicFlowControl );
 		foo.AddProcessing("oscillator", new CLAM::Oscillator );
 		foo.AddProcessing("panner", new CLAM::AutoPanner );
 		foo.ConnectControls("panner.Left Control","oscillator.Amplitude");
