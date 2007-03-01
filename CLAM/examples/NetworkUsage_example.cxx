@@ -56,7 +56,7 @@ int main( int argc, char** argv )
 		// Now we need to add a flow control to the network, because CLAM network needs a flow control
 		// to manage the connections, data communication, etc.
 
-		network.AddFlowControl( new CLAM::PushFlowControl( size ));
+		network.AddFlowControl( new CLAM::PushFlowControl );
 
 		// We have added a FlowControl that implements a push mechanism. There are others, like BasicFlowControl
 	
