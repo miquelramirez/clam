@@ -106,17 +106,8 @@ namespace CLAMTest
 			processingConfig.SetFilename( "idonotexist.wav" );
 
 			CLAM::AudioFileIn processing;
-			try
-			{				
-				bool result = processing.Configure( processingConfig );
-			}
-			catch( CLAM::UnavailableSoundFile& thrownError )
-			{
-				thrownError.what();				
-				return;
-			}
-
-			CPPUNIT_FAIL( "An exception should have been thrown" );
+			bool result = processing.Configure( processingConfig );
+			CPPUNIT_ASSERT_EQUAL_MESSAGE( false, result, "Configuration should have failed" );
 		}
 
 		void testConfigureAndStart_BadFormedWAVEFails() 
