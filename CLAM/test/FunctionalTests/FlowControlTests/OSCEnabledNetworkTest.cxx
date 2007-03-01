@@ -4,7 +4,6 @@
 
 #include "OSCEnabledNetwork.hxx"
 #include "Processing.hxx"
-#include "PushFlowControl.hxx"
 #include "PrintControl.hxx"
 #include <iostream>
 #include <string>
@@ -49,8 +48,7 @@ public:
 		p= new osc::OutboundPacketStream(buffer, IP_MTU_SIZE );
 		transmitPort = new UdpTransmitSocket( IpEndpointName("localhost", 7000 ) );
 		
-		mNet = new CLAM::Network(); // Port 7000 by default
-		mNet->AddFlowControl(new CLAM::PushFlowControl);
+		mNet = new CLAM::Network; // Port 7000 by default
 		mNet->Start();
 		mDispatcher = new CLAM::OSCControlDispatcher(mNet);
 		mDispatcher->Start();
