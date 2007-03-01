@@ -25,7 +25,6 @@ inline void JackShutdownCallback (void *arg)
 JACKNetworkPlayer::JACKNetworkPlayer(const std::string & name)
 	: mJackClientname(name)
 {
-	mClamBufferSize=512;
 	mAutoConnect=false;
 	mJackClient=0;
 	InitClient();

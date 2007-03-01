@@ -86,11 +86,6 @@ void PANetworkPlayer::OpenStream(const Network& net)
 		std::string processingType = it->second->GetClassName();
 		if ( processingType == "AudioSource" )
 		{
-			//Make sure all frame sizes are the same
-			AudioSource* gen=(AudioSource*)it->second;
-			gen->SetFrameAndHopSize( mClamBufferSize );
-				
-			//Using PortAudio we only accept 2 channels max
 			if (false && mReceiverList.size() == 2 )
 			{
 				std::cout << "WARNING: more than two AudioSources detected, ignoring '" << it->first << "'" << std::endl;
@@ -102,11 +97,6 @@ void PANetworkPlayer::OpenStream(const Network& net)
 		}
 		else if ( processingType == "AudioSink" )
 		{
-			//Make sure all frame sizes are the same
-			AudioSink* sink=(AudioSink*)it->second;
-			sink->SetFrameAndHopSize(mClamBufferSize);
-
-			//Using PortAudio we only accept 2 channels max
 			if (false && mSenderList.size() == 2 )
 			{
 				std::cout << "WARNING: more than two AudioSinks detected, ignoring '" << it->first << "'" << std::endl;
@@ -186,7 +176,6 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 {
 	int i=0;
-	
 	for ( PAOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++ )
 	{
 		(*it)->SetExternalBuffer( input[i++], nframes );
