@@ -92,9 +92,7 @@ namespace CLAMTest
 
 			CLAM::AudioFileIn processing;
 			
-			processing.PreConcreteConfigure( processingConfig );
-			bool result = processing.ConcreteConfigure( processingConfig );
-			processing.PostConcreteConfigure();
+			bool result = processing.Configure( processingConfig );
 			
 			processing.Start();
 
@@ -110,9 +108,7 @@ namespace CLAMTest
 			CLAM::AudioFileIn processing;
 			try
 			{				
-				processing.PreConcreteConfigure( processingConfig );
-				bool result = processing.ConcreteConfigure( processingConfig );
-				processing.PostConcreteConfigure();
+				bool result = processing.Configure( processingConfig );
 			}
 			catch( CLAM::UnavailableSoundFile& thrownError )
 			{
@@ -133,9 +129,7 @@ namespace CLAMTest
 			
 			try
 			{
-				processing.PreConcreteConfigure( processingConfig );
-				processing.ConcreteConfigure( processingConfig );
-				processing.PostConcreteConfigure();
+				processing.Configure( processingConfig );
 			}
 			catch( CLAM::UnsupportedSoundFileFormat& error )
 			{
@@ -155,9 +149,7 @@ namespace CLAMTest
 			
 			try
 			{
-				processing.PreConcreteConfigure( processingConfig );
-				processing.ConcreteConfigure( processingConfig );
-				processing.PostConcreteConfigure();
+				processing.Configure( processingConfig );
 			}
 			catch( CLAM::UnsupportedSoundFileFormat& error )
 			{
@@ -175,9 +167,7 @@ namespace CLAMTest
 
 			CLAM::AudioFileIn processing;
 
-			processing.PreConcreteConfigure( processingConfig );
-			bool result = processing.ConcreteConfigure( processingConfig );
-			processing.PostConcreteConfigure();
+			bool result = processing.Configure( processingConfig );
 			
 			processing.Start();
 
@@ -199,9 +189,7 @@ namespace CLAMTest
 
 			CLAM::AudioFileIn processing;
 
-			processing.PreConcreteConfigure( processingConfig );
-			bool result = processing.ConcreteConfigure( processingConfig );
-			processing.PostConcreteConfigure();
+			bool result = processing.Configure( processingConfig );
 			
 			processing.Start();
 
@@ -223,9 +211,7 @@ namespace CLAMTest
 
 			CLAM::AudioFileIn processing;
 
-			processing.PreConcreteConfigure( processingConfig );
-			bool result = processing.ConcreteConfigure( processingConfig );
-			processing.PostConcreteConfigure();
+			bool result = processing.Configure( processingConfig );
 
 			processing.Start();
 
@@ -249,9 +235,7 @@ namespace CLAMTest
 			
 			CLAM::AudioFileIn processing;
 
-			processing.PreConcreteConfigure( processingConfig );
-			processing.ConcreteConfigure( processingConfig );
-			processing.PostConcreteConfigure();
+			processing.Configure( processingConfig );
 
 			processing.Start();
 
@@ -273,9 +257,7 @@ namespace CLAMTest
 
 			CPPUNIT_ASSERT_EQUAL( true, processing.Configure( processingConfig ) );
 			
-			processing.PreConcreteConfigure( processingConfig );
-			processing.ConcreteConfigure( processingConfig );
-			processing.PostConcreteConfigure();
+			processing.Configure( processingConfig );
 
 			processing.Start();
 
@@ -291,9 +273,7 @@ namespace CLAMTest
 			
 			CLAM::AudioFileIn processing;
 
-			processing.PreConcreteConfigure( processingConfig );
-			processing.ConcreteConfigure( processingConfig );
-			processing.PostConcreteConfigure();
+			processing.Configure( processingConfig );
 
 			processing.Start();
 
@@ -311,9 +291,7 @@ namespace CLAMTest
 
 			CPPUNIT_ASSERT_EQUAL( true, processing.Configure( processingConfig ) );
 
-			processing.PreConcreteConfigure( processingConfig );
-			processing.ConcreteConfigure( processingConfig );
-			processing.PostConcreteConfigure();
+			processing.Configure( processingConfig );
 			
 			processing.Start();
 
