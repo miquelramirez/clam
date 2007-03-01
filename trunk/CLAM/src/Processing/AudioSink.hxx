@@ -33,8 +33,6 @@ namespace CLAM
 		void SetExternalBuffer(double* buf, unsigned nframes );
 
 		bool Do();
-		bool Do( float* buf, int nframes);
-		bool Do( double* buf, int nframes);
 		
 		const char* GetClassName() const { return "AudioSink";}
 

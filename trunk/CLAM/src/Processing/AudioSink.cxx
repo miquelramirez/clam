@@ -64,30 +64,4 @@ namespace CLAM
 		mIn.SetSize(nframes);
 		mIn.SetHop(nframes);
 	}
-	/// @deprecate Use SetExternalBuffer
-	bool AudioSink::Do( float* buf, int nframes)
-	{
-		if (!mIn.CanConsume())
-			return true;
-
-		const CLAM::Audio& so=mIn.GetAudio();
-		for (int i=0; i<nframes; i++)
-			buf[i] = so.GetBuffer().GetPtr()[i];
-	
-		mIn.Consume();
-		return true;
-	}
-	/// @deprecate Use SetExternalBuffer
-	bool AudioSink::Do( double* buf, int nframes)
-	{
-		if (!mIn.CanConsume())
-			return true;
-
-		const CLAM::Audio& so=mIn.GetAudio();
-		for (int i=0; i<nframes; i++)
-			buf[i] = so.GetBuffer().GetPtr()[i];
-	
-		mIn.Consume();
-		return true;
-	}
 } //namespace CLAM
