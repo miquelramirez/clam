@@ -17,7 +17,7 @@
 #include "uic_About.hxx"
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
-#include <CLAM/PushFlowControl.hxx>
+#include <CLAM/NaiveFlowControl.hxx>
 #include <CLAM/BlockingNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/XmlStorageErr.hxx>
@@ -77,7 +77,7 @@ public:
 		updateRecentMenu();
 
 		int frameSize = 2048;
-		_network.AddFlowControl( new CLAM::PushFlowControl( frameSize ));
+		_network.AddFlowControl( new CLAM::NaiveFlowControl( frameSize ));
 		QString backend = "None";
 		QString backendLogo = ":/icons/images/editdelete.png"; // TODO: Change this icon
 		if (_networkPlayer) delete _networkPlayer;

@@ -163,8 +163,8 @@ void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes
 		//Retrieve JACK buffer location
 		jack_default_audio_sample_t *jackInBuffer = 
 			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
-		//Tell the AudioSource to put JACK's buffer info into CLAM
-		it->source->Do( (TData*)jackInBuffer, nframes );
+		//Tell the AudioSource where to look for data in its Do()
+		it->source->SetExternalBuffer( jackInBuffer, nframes );
 
 	}
 
@@ -177,8 +177,8 @@ void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 		//Retrieve JACK buffer location
 		jack_default_audio_sample_t *jackOutBuffer = 
 			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
-		//Tell the AudioSource to put CLAM's buffer info JACK
-		it->sink->Do( (TData*)jackOutBuffer, nframes);	
+		//Tell the AudioSource where to copy data consumed in its Do()
+		it->sink->SetExternalBuffer( jackOutBuffer, nframes);	
 	}
 }
 
