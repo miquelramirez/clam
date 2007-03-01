@@ -29,8 +29,7 @@
 namespace CLAM
 {
 
-NaiveFlowControl::NaiveFlowControl( int frameSize )
-	: FlowControl (frameSize)
+NaiveFlowControl::NaiveFlowControl()
 {
 }
 
@@ -43,7 +42,12 @@ void NaiveFlowControl::ProcessingAddedToNetwork( Processing & added )
 		mSources.push_back( &added );
 		return;
 	}
-	if (added.GetInPorts().Size()==0)
+	if (added.GetInPorts().Size()==0 && added.GetOutPorts().Size()==0) //isolated processings
+	{
+		mSources.push_back( &added);
+		return;
+	}
+	if (added.GetInPorts().Size()==0 && added.GetOutPorts().Size()!=0)
 	{
 		mGenerators.push_back( &added);
 		return;
@@ -64,7 +68,12 @@ void NaiveFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 		mSources.remove( &removed );
 		return;
 	}
-	if (removed.GetInPorts().Size()==0)
+	if (removed.GetInPorts().Size()==0 && removed.GetOutPorts().Size()==0) //isolated processings
+	{
+		mSources.remove( &removed );
+		return;
+	}
+	if (removed.GetInPorts().Size()==0 && removed.GetOutPorts().Size()!=0)
 	{
 		mGenerators.remove( &removed);
 		return;

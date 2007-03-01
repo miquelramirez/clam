@@ -37,7 +37,7 @@ class FlowControl
 	bool mNetworkChanged;
 
 public:
-	FlowControl( int frameSize = 512 );
+	FlowControl();
 	virtual ~FlowControl(){}
 	virtual void AttachToNetwork( Network* );
 	
@@ -53,9 +53,7 @@ public:
 
 protected:
 	bool HasNetworkTopologyChanged() const { return mNetworkChanged; }
-	void ConfigurePorts(Processing &toConfigure) const;
-	
-	int mFrameSize;
+
 	Network * mNetwork;
 
 };

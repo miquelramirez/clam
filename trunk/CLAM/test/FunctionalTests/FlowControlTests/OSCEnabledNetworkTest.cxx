@@ -50,7 +50,7 @@ public:
 		transmitPort = new UdpTransmitSocket( IpEndpointName("localhost", 7000 ) );
 		
 		mNet = new CLAM::Network(); // Port 7000 by default
-		mNet->AddFlowControl(new CLAM::PushFlowControl(512));
+		mNet->AddFlowControl(new CLAM::PushFlowControl);
 		mNet->Start();
 		mDispatcher = new CLAM::OSCControlDispatcher(mNet);
 		mDispatcher->Start();

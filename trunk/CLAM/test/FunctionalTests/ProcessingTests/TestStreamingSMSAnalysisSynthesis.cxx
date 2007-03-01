@@ -197,7 +197,7 @@ private:
 		
 		CLAM::Network net;
 		const int audioFrameSize = 256; //!! test with different framesizes
-		net.AddFlowControl( new CLAM::BasicFlowControl( audioFrameSize ) );
+		net.AddFlowControl( new CLAM::BasicFlowControl() );
 		net.AddProcessing( "AudioIn", new CLAM::MonoAudioFileReader );
 		net.AddProcessing( "AudioOut",new CLAM::MonoAudioFileWriter );
 		net.AddProcessing( "Analysis", new CLAM::SMSAnalysisCore );

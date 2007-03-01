@@ -32,6 +32,29 @@ class TestsCallbackBasedNetwork;
 CPPUNIT_TEST_SUITE_REGISTRATION( TestsCallbackBasedNetwork );
 
 
+class DummyIsolated : public CLAM::Processing
+{
+	unsigned _next;
+public:
+	DummyIsolated(unsigned portSize)
+		: _next(0)
+	{
+		mExecState=Ready;
+	}
+	bool ConcreteConfigure(const CLAM::ProcessingConfig &c) { return true; }
+	const CLAM::ProcessingConfig & GetConfig() const
+	{
+		static CLAM::NullProcessingConfig config;
+		return config;
+	}
+	const char * GetClassName() const { return "DummyIsolated";}
+	bool Do() 
+	{ 
+		++_next;
+		return true;
+	}
+	unsigned GetNext() const { return _next; }
+};
 
 class DummyGenerator : public CLAM::Processing
 {
@@ -48,10 +71,7 @@ public:
 		mExecState=Ready;
 
 	}
-	bool ConcreteConfigure(const CLAM::ProcessingConfig &c)
-	{
-		return true;
-	}
+	bool ConcreteConfigure(const CLAM::ProcessingConfig &c) { return true; }
 	const CLAM::ProcessingConfig & GetConfig() const
 	{
 		static CLAM::NullProcessingConfig config;
@@ -69,10 +89,7 @@ public:
 		_out.Produce();
 		return true;
 	}
-	unsigned GetNext() const
-	{
-		return _next;
-	}
+	unsigned GetNext() const { return _next; }
 };
 class DummyFilter : public CLAM::Processing
 {
@@ -129,16 +146,17 @@ public:
 class TestsCallbackBasedNetwork : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( TestsCallbackBasedNetwork );
-/*
+
 	CPPUNIT_TEST( testSourceAndSink );
+	CPPUNIT_TEST( testUnconnectedSourceAndSink );
 	CPPUNIT_TEST( testSourceFilterSink_sameSize );
 	CPPUNIT_TEST( testSourceFilterSink_smallerSize );
 	CPPUNIT_TEST( testSourceFilterSink_biggerSize );
 	CPPUNIT_TEST( testSourceFilterSink_biggerNonDivisorSize );
 	CPPUNIT_TEST( testSlowSinkLessBranch );
 	CPPUNIT_TEST( testSlowSinkLessBranch_doNotAccomulate );
-*/
 	CPPUNIT_TEST( testGeneratorProducesOnlyWhatSinkNeeds );
+	CPPUNIT_TEST( testIsolatedGetsExecutedOnlyOnce );
 
 	CPPUNIT_TEST_SUITE_END();
 	float _inFloat[2048000];
@@ -200,6 +218,19 @@ private:
 		_network.Do();
 		_network.Stop();
 		assertSamplesTransferred(2);
+	}
+	void testUnconnectedSourceAndSink()
+	{
+		CLAM::AudioSource * source = new CLAM::AudioSource;
+		CLAM::AudioSink * sink = new CLAM::AudioSink;
+		_network.AddProcessing("Source", source);
+		_network.AddProcessing("Sink", sink);
+		_network.Start();
+		source->SetExternalBuffer(_inFloat, 2);
+		sink->SetExternalBuffer(_outFloat, 2);
+		_network.Do();
+		_network.Stop();
+		assertSamplesTransferred(0);
 	}
 	void testSourceFilterSink_sameSize()
 	{
@@ -336,20 +367,35 @@ private:
 	}
 	void testGeneratorProducesOnlyWhatSinkNeeds()
 	{
-		const unsigned callbackStep = 4;
 		CLAM::AudioSink * sink = new CLAM::AudioSink;
 		DummyGenerator * generator = new DummyGenerator(3);
 		_network.AddProcessing("Sink", sink);
 		_network.AddProcessing("Generator", generator);
 		_network.ConnectPorts("Generator.out", "Sink.AudioIn");
 		_network.Start();
-		sink->SetExternalBuffer(_outFloat, callbackStep);
+		sink->SetExternalBuffer(_outFloat, 4);
 		_network.Do();
 		CPPUNIT_ASSERT_EQUAL(6u, generator->GetNext());
 		assertSamplesTransferred(4);
 		_network.Stop();
 	}
-
+	void testIsolatedGetsExecutedOnlyOnce()
+	{
+		CLAM::AudioSink * sink = new CLAM::AudioSink;
+		CLAM::AudioSource * source = new CLAM::AudioSource;
+		DummyIsolated * isolated = new DummyIsolated(1);
+		_network.AddProcessing("Source", source);
+		_network.AddProcessing("Sink", sink);
+		_network.AddProcessing("IsolatedGenerator", isolated);
+		_network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
+		_network.Start();
+		sink->SetExternalBuffer(_outFloat, 4);
+		source->SetExternalBuffer(_inFloat, 4);
+		_network.Do();
+		CPPUNIT_ASSERT_EQUAL(1u, isolated->GetNext());
+		assertSamplesTransferred(4);
+		_network.Stop();
+	}
 };
 
 } // namespace

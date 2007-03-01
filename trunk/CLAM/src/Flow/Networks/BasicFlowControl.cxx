@@ -28,8 +28,7 @@
 namespace CLAM
 {
 
-BasicFlowControl::BasicFlowControl( int frameSize )
-	: FlowControl( frameSize )
+BasicFlowControl::BasicFlowControl()
 {
 }
 
