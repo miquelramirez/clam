@@ -96,7 +96,7 @@ void NaiveFlowControl::Do()
 		Processing* proc = *it;
 		if (proc->CanConsumeAndProduce())
 		{
-			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			//std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 			proc->Do();
 		}
 		else 
@@ -115,7 +115,7 @@ void NaiveFlowControl::Do()
 				//std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
 				continue;
 			}
-			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			//std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 			noProcessingRun = false;
 			proc->Do();
 		}
@@ -127,7 +127,7 @@ void NaiveFlowControl::Do()
 				it++;
 				continue;
 			}
-			std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+			//std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 			proc->Do();
 			it = pendingSinks.erase(it);
 			noProcessingRun = false;
@@ -142,7 +142,7 @@ void NaiveFlowControl::Do()
 					// std::cerr << "could NOT Do: "<<proc->GetClassName() << std::endl;
 					continue;
 				}
-				std::cerr << "Do: "<<proc->GetClassName() << std::endl;
+				//std::cerr << "Do: "<<proc->GetClassName() << std::endl;
 				noProcessingRun = false;
 				proc->Do();
 			}
@@ -152,7 +152,7 @@ void NaiveFlowControl::Do()
 	if (!pendingSinks.empty())
 		std::cerr << "Warning: " << pendingSinks.size() << " sinks were not fed, so could not send audio to the callback." << std::endl;
 
-	std::cerr << "<<< Network is Done" << std::endl;
+	//std::cerr << "<<< Network is Done" << std::endl;
 }
 
 
