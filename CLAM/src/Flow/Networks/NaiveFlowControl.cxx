@@ -152,7 +152,8 @@ void NaiveFlowControl::Do()
 	if (!pendingSinks.empty())
 		std::cerr << "Warning: " << pendingSinks.size() << " sinks were not fed, so could not send audio to the callback." << std::endl;
 
-	//std::cerr << "<<< Network is Done" << std::endl;
+	std::cerr << "<<< Network.Do() is Done" << std::endl;
+
 }
 
 

@@ -195,20 +195,6 @@ std::string PANetworkPlayer::NonWorkingReason() const
 	return mErrorMessage;
 }
 
-void PANetworkPlayer::CollectSourcesAndSinks()
-{
-	mSources.clear();
-	mSinks.clear();
-	Network & net = GetNetwork();
-	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
-	{
-		std::string processingType = it->second->GetClassName();
-		if ( processingType == "AudioSource" )
-			mSources.push_back( (AudioSource*)it->second );
-		else if ( processingType == "AudioSink" )
-			mSinks.push_back( (AudioSink*)it->second );
-	}
-}
 
 bool PANetworkPlayer::CheckPaError(PaError result)
 {

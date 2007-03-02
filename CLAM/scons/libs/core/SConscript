@@ -26,6 +26,7 @@ def define_module_contents(env) :
 		'src/Flow/Networks',
 		'src/Flow/Controls',
 		'src/Processing/Base',
+		'src/Processing/Audio*.*xx',
 		'src/Processing/Plugins',
 		'src/Standard',
 		'src/Storage',
@@ -47,6 +48,7 @@ def define_module_contents(env) :
 		'BlockingNetworkPlayer',
 		'JACKNetworkPlayer',
 		'PANetworkPlayer',
+		'FreewheelingNetworkPlayer',
 		]
 
 	if sys.platform == 'win32' :
