@@ -50,8 +50,8 @@ PANetworkPlayer::~PANetworkPlayer()
 
 void PANetworkPlayer::InitClient()
 {
-	mClamBufferSize=512;
-	mClamFrameRate=44100;
+	mPreferredBufferSize=512;
+	mSamplingRate=44100;
 	mPortAudioStream=NULL;
 
 	ControlIfPortAudioError( Pa_Initialize() );
@@ -97,24 +97,24 @@ void PANetworkPlayer::OpenStream(const Network& net)
 		std::string processingType = it->second->GetClassName();
 		if ( processingType == "AudioSource" )
 		{
-			if (false && mReceiverList.size() == 2 )
+			if (false && mSources.size() == 2 )
 			{
 				std::cout << "WARNING: more than two AudioSources detected, ignoring '" << it->first << "'" << std::endl;
 				continue;
 			}
 				
 			//Get Processing address
-			mReceiverList.push_back( (AudioSource*)it->second );
+			mSources.push_back( (AudioSource*)it->second );
 		}
 		else if ( processingType == "AudioSink" )
 		{
-			if (false && mSenderList.size() == 2 )
+			if (false && mSinks.size() == 2 )
 			{
 				std::cout << "WARNING: more than two AudioSinks detected, ignoring '" << it->first << "'" << std::endl;
 				continue;
 			}
 			//Get Processing address
-			mSenderList.push_back( (AudioSink*)it->second );
+			mSinks.push_back( (AudioSink*)it->second );
 		}
 	}
 
@@ -122,20 +122,20 @@ void PANetworkPlayer::OpenStream(const Network& net)
 	PaStreamParameters inputParameters;
 	inputParameters.device = Pa_GetDefaultInputDevice(); /* default output device */
 	CLAM_ASSERT ( inputParameters.device!=paNoDevice, "PortAudio Error: getting default input device");
-	inputParameters.channelCount = mReceiverList.size();       /* stereo output */
+	inputParameters.channelCount = mSources.size();       /* stereo output */
 	inputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples*/
 	inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowOutputLatency;
 	inputParameters.hostApiSpecificStreamInfo = NULL;
-	PaStreamParameters * inParams = mReceiverList.size() ? &inputParameters : 0;
+	PaStreamParameters * inParams = mSources.size() ? &inputParameters : 0;
 
 	PaStreamParameters outputParameters;
 	outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
 	CLAM_ASSERT ( outputParameters.device!=paNoDevice, "PortAudio Error: getting default output device");
-	outputParameters.channelCount = mSenderList.size();       /* stereo output */
+	outputParameters.channelCount = mSinks.size();       /* stereo output */
 	outputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples */
 	outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
 	outputParameters.hostApiSpecificStreamInfo = NULL;
-	PaStreamParameters * outParams = mSenderList.size() ? &outputParameters : 0;
+	PaStreamParameters * outParams = mSinks.size() ? &outputParameters : 0;
 	
 	// TODO: Gracefull error, please
 	//CLAM_ASSERT ( inParams || outParams,
@@ -152,8 +152,8 @@ void PANetworkPlayer::OpenStream(const Network& net)
 			&mPortAudioStream,
 			inParams,
 			outParams,
-			double(mClamFrameRate),
-			mClamBufferSize,
+			double(mSamplingRate),
+			mPreferredBufferSize,
 			paClipOff,      /* we won't output out of range samples so don't bother clipping them */
 			ProcessCallback,
 			this )
@@ -169,8 +169,8 @@ void PANetworkPlayer::CloseStream()
 {
 	Stop();
 	
-	mReceiverList.clear();
-	mSenderList.clear();
+	mSources.clear();
+	mSinks.clear();
 
 	if ( mPortAudioStream!=NULL )
 		ControlIfPortAudioError( Pa_CloseStream( mPortAudioStream ) );
@@ -187,7 +187,7 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 {
 	int i=0;
-	for ( PAOutPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++ )
+	for ( AudioSources::iterator it=mSources.begin(); it!=mSources.end(); it++ )
 	{
 		(*it)->SetExternalBuffer( input[i++], nframes );
 
@@ -197,7 +197,7 @@ void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 {
 	int i=0;
-	for (PAInPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
+	for (AudioSinks::iterator it=mSinks.begin(); it!=mSinks.end(); it++)
 	{
 		(*it)->SetExternalBuffer(output[i++], nframes);
 	}
