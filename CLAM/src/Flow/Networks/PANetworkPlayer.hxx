@@ -13,17 +13,17 @@
 namespace CLAM
 {
 
-typedef std::vector<AudioSource*> PAOutPortList;
-typedef std::vector<AudioSink*> PAInPortList;
+typedef std::vector<AudioSource*> AudioSources;
+typedef std::vector<AudioSink*> AudioSinks;
 
 class PANetworkPlayer : public NetworkPlayer
 {
-	int mClamBufferSize, mClamFrameRate;
+	int mPreferredBufferSize, 
+	int mSamplingRate;
 
-	PAOutPortList mReceiverList;
-	PAInPortList mSenderList;
+	AudioSources mSources;
+	AudioSinks mSinks;
 	
-	//PA CODE : declare client (stream)
 	PaStream * mPortAudioStream;
 
 public:
@@ -33,9 +33,9 @@ public:
 	PANetworkPlayer();
 	virtual ~PANetworkPlayer();
 
+	// base class (virtual) interface:
 	bool IsWorking() const;
 	std::string NonWorkingReason() const;
-	
 	virtual bool IsCallbackBased() const { return true; }
 	virtual void Start();
 	virtual void Stop();
