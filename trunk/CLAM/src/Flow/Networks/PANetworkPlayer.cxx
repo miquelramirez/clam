@@ -42,17 +42,6 @@ PANetworkPlayer::PANetworkPlayer()
 	, mError(paNoError)
 
 {
-	InitClient();
-}
-
-PANetworkPlayer::~PANetworkPlayer()
-{
-	CloseStream();
-	Pa_Terminate();
-}
-
-void PANetworkPlayer::InitClient()
-{
 	if (CheckPaError(Pa_Initialize())) return;
 
 	int howManiApis = Pa_GetHostApiCount();
@@ -69,6 +58,8 @@ void PANetworkPlayer::InitClient()
 			int fullDevice = Pa_HostApiDeviceIndexToDeviceIndex(api, device);
 			const PaDeviceInfo * deviceInfo = Pa_GetDeviceInfo(fullDevice);
 			std::cout << "\t"
+				<< (fullDevice == Pa_GetDefaultInputDevice()? "*<": "  ")
+				<< (fullDevice == Pa_GetDefaultOutputDevice()? "*>": "  ")
 				<< (device == apiInfo->defaultInputDevice?"*<":"  ")
 				<< (device == apiInfo->defaultOutputDevice?"*>":"  ")
 				<< deviceInfo->name
@@ -77,6 +68,111 @@ void PANetworkPlayer::InitClient()
 				<< std::endl;
 		}
 	}
+}
+
+PANetworkPlayer::~PANetworkPlayer()
+{
+	Stop();
+	Pa_Terminate();
+}
+
+void PANetworkPlayer::Start()
+{
+	if ( !IsStopped() )
+		return;
+
+	CollectSourcesAndSinks();
+
+	unsigned nInChannels = mSources.size();
+	unsigned nOutChannels = mSinks.size();
+
+	int defaultApi = Pa_GetDefaultHostApi();
+	const PaHostApiInfo * apiInfo = Pa_GetHostApiInfo( defaultApi );
+	//Create configuration for input&output and then register the stream
+	PaStreamParameters inputParameters;
+	PaStreamParameters * inParams = 0;
+	if (nInChannels)
+	{
+		inputParameters.device = apiInfo->defaultInputDevice;
+		if ( inputParameters.device == paNoDevice )
+		{
+			mErrorMessage = "No free default input device";
+			std::cerr << "PortAudio Error: " << mErrorMessage << std::endl;
+			return;
+		}
+		const PaDeviceInfo * info = Pa_GetDeviceInfo( inputParameters.device );
+		std::cerr << "PortAudio: Chosen Input: " << info->name << std::endl;
+		if (nInChannels > Pa_GetDeviceInfo( inputParameters.device )->maxInputChannels)
+		{
+			mErrorMessage = "Too many input channels for the default device";
+			std::cerr << "PortAudio Error: " << mErrorMessage << std::endl;
+			return;
+		}
+		inputParameters.channelCount = nInChannels;
+		inputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples*/
+		inputParameters.suggestedLatency = info->defaultLowOutputLatency;
+		inputParameters.hostApiSpecificStreamInfo = NULL;
+		inParams = &inputParameters;
+	}
+
+	PaStreamParameters outputParameters;
+	PaStreamParameters * outParams = 0;
+	if (nOutChannels)
+	{
+		outputParameters.device = apiInfo->defaultOutputDevice;
+		if ( outputParameters.device == paNoDevice )
+		{
+			mErrorMessage = "No free default output device";
+			std::cerr << "PortAudio Error: " << mErrorMessage << std::endl;
+			return;
+		}
+		const PaDeviceInfo * info = Pa_GetDeviceInfo( outputParameters.device );
+		std::cerr << "PortAudio: Chosen Output: " << info->name << std::endl;
+		if (nOutChannels > Pa_GetDeviceInfo( outputParameters.device )->maxOutputChannels)
+		{
+			mErrorMessage = "Too many output channels for the default device";
+			std::cerr << "PortAudio Error: " << mErrorMessage << std::endl;
+			return;
+		}
+		outputParameters.channelCount = nOutChannels;
+		outputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples */
+		outputParameters.suggestedLatency = info->defaultLowOutputLatency;
+		outputParameters.hostApiSpecificStreamInfo = NULL;
+		outParams = &outputParameters;
+	}
+
+	if (CheckPaError(
+		Pa_OpenStream(
+			&mPortAudioStream,
+			inParams,
+			outParams,
+			double(mSamplingRate),
+			mPreferredBufferSize,
+			paClipOff,      /* we won't output out of range samples so don't bother clipping them */
+			ProcessCallback,
+			this )
+		)) 
+	{
+		mErrorMessage = "Audio i/o devices requirements not fullfilled";
+		return;
+	}
+	const PaStreamInfo * streamInfo = Pa_GetStreamInfo(mPortAudioStream);
+	std::cout << "Sample rate: " << streamInfo->sampleRate << std::endl;
+	std::cout << "Input latency: " << streamInfo->inputLatency << std::endl;
+	std::cout << "Output latency: " << streamInfo->outputLatency << std::endl;
+
+	SetStopped(false);
+	Pa_StartStream( mPortAudioStream );
+}
+
+void PANetworkPlayer::Stop()
+{
+	if ( IsStopped() )
+		return;
+	SetStopped(true);
+	if ( !mPortAudioStream ) return;
+	Pa_StopStream( mPortAudioStream );
+	CheckPaError( Pa_CloseStream( mPortAudioStream ) );
 }
 
 bool PANetworkPlayer::IsWorking() const
@@ -104,77 +200,15 @@ void PANetworkPlayer::CollectSourcesAndSinks()
 	}
 }
 
-void PANetworkPlayer::OpenStream()
+bool PANetworkPlayer::CheckPaError(PaError result)
 {
-	CollectSourcesAndSinks();
-
-	unsigned nInChannels = mSources.size();
-	unsigned nOutChannels = mSinks.size();
-
-	//Create configuration for input&output and then register the stream
-	PaStreamParameters inputParameters;
-	PaStreamParameters * inParams = 0;
-	if (nInChannels)
-	{
-		inputParameters.device = Pa_GetDefaultInputDevice(); /* default output device */
-		if ( inputParameters.device == paNoDevice )
-		{
-			mErrorMessage = "No free default input device";
-			std::cerr << "PortAudio Error: " << mErrorMessage << std::endl;
-			return;
-		}
-		inputParameters.channelCount = nInChannels;
-		inputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples*/
-		inputParameters.suggestedLatency = Pa_GetDeviceInfo( inputParameters.device )->defaultLowOutputLatency;
-		inputParameters.hostApiSpecificStreamInfo = NULL;
-		inParams = &inputParameters;
-	}
-
-	PaStreamParameters outputParameters;
-	PaStreamParameters * outParams = 0;
-	if (nOutChannels)
-	{
-		outputParameters.device = Pa_GetDefaultOutputDevice(); /* default output device */
-		if ( outputParameters.device == paNoDevice )
-		{
-			mErrorMessage = "No free default output device";
-			std::cerr << "PortAudio Error: " << mErrorMessage << std::endl;
-			return;
-		}
-		outputParameters.channelCount = nOutChannels;
-		outputParameters.sampleFormat = paFloat32 | paNonInterleaved ; /* 32 bit floating point output, having non-interleaved samples */
-		outputParameters.suggestedLatency = Pa_GetDeviceInfo( outputParameters.device )->defaultLowOutputLatency;
-		outputParameters.hostApiSpecificStreamInfo = NULL;
-		outParams = &outputParameters;
-	}
-
-	if (CheckPaError(
-		Pa_OpenStream(
-			&mPortAudioStream,
-			inParams,
-			outParams,
-			double(mSamplingRate),
-			mPreferredBufferSize,
-			paClipOff,      /* we won't output out of range samples so don't bother clipping them */
-			ProcessCallback,
-			this )
-		)) return;
-	const PaStreamInfo * streamInfo = Pa_GetStreamInfo(mPortAudioStream);
-	std::cout << "Sample rate: " << streamInfo->sampleRate << std::endl;
-	std::cout << "Input latency: " << streamInfo->inputLatency << std::endl;
-	std::cout << "Output latency: " << streamInfo->outputLatency << std::endl;
-
-}
-
-void PANetworkPlayer::CloseStream()
-{
-	Stop();
-	
-	mSources.clear();
-	mSinks.clear();
-
-	if ( mPortAudioStream )
-		CheckPaError( Pa_CloseStream( mPortAudioStream ) );
+	mError = result;
+	if( result == paNoError ) return false;
+	mErrorMessage = Pa_GetErrorText(mError);
+	std::cerr 
+		<< "PortAudio Error #" << result << ": " 
+		<< Pa_GetErrorText( result ) << std::endl;
+	return true;
 }
 
 void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
@@ -201,41 +235,6 @@ void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 	{
 		(*it)->SetExternalBuffer(output[i++], nframes);
 	}
-}
-
-void PANetworkPlayer::Start()
-{
-	if ( !IsStopped() )
-		return;
-
-	CloseStream();
-	OpenStream();
-	SetStopped(false);
-	
-	//PA CODE (the init order of network, ... should be decided) : activate
-	Pa_StartStream( mPortAudioStream );
-}
-
-void PANetworkPlayer::Stop()
-{
-	if ( IsStopped() )
-		return;
-	
-	SetStopped(true);
-	
-	//PA CODE (the init order of network, ... should be decided) : deactivate
-	Pa_StopStream( mPortAudioStream );
-}
-
-bool PANetworkPlayer::CheckPaError(PaError result)
-{
-	mError = result;
-	if( result == paNoError ) return false;
-	mErrorMessage = Pa_GetErrorText(mError);
-	std::cerr 
-		<< "PortAudio Error #" << result << ": " 
-		<< Pa_GetErrorText( result ) << std::endl;
-	return true;
 }
 
 } //end namespace CLAM

@@ -56,10 +56,6 @@ private:
 	void Do(const void *inputBuffers, void *outputBuffers, unsigned long framesPerBuffer);
 	void DoInPorts(float** input, unsigned long nframes);
 	void DoOutPorts(float** output, unsigned long nframes);
-	//PA stream manipulation methods
-	void OpenStream();
-	void CloseStream();
-	void InitClient();
 };
 
 } //end namespace CLAM
