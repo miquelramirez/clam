@@ -34,30 +34,25 @@ int PANetworkPlayer::ProcessCallback (const void *inputBuffers, void *outputBuff
 }
 
 
-
-PANetworkPlayer::PANetworkPlayer()
-	: mPreferredBufferSize(512)
-	, mSamplingRate(44100)
-	, mPortAudioStream(0)
-	, mError(paNoError)
-
+void displayPADevices()
 {
-	if (CheckPaError(Pa_Initialize())) return;
-
 	int howManiApis = Pa_GetHostApiCount();
 	int defaultApi = Pa_GetDefaultHostApi();
+	std::cout << "Default API " << defaultApi << std::endl;
 	for (int api=0; api<howManiApis; api++)
 	{
 		const PaHostApiInfo * apiInfo = Pa_GetHostApiInfo( api );
 		std::cout 
-			<< (api==defaultApi?"  ":"* ")
+			<< (api==defaultApi?"* ":"  ")
 			<< apiInfo->name 
+			<< " (" << api << ")"
 			<< std::endl;
 		for (int device=0; device<apiInfo->deviceCount; device++)
 		{
 			int fullDevice = Pa_HostApiDeviceIndexToDeviceIndex(api, device);
 			const PaDeviceInfo * deviceInfo = Pa_GetDeviceInfo(fullDevice);
 			std::cout << "\t"
+				<< " (" << fullDevice << "/" << device << ") "
 				<< (fullDevice == Pa_GetDefaultInputDevice()? "*<": "  ")
 				<< (fullDevice == Pa_GetDefaultOutputDevice()? "*>": "  ")
 				<< (device == apiInfo->defaultInputDevice?"*<":"  ")
@@ -70,16 +65,26 @@ PANetworkPlayer::PANetworkPlayer()
 	}
 }
 
+PANetworkPlayer::PANetworkPlayer()
+	: mPreferredBufferSize(512)
+	, mSamplingRate(44100)
+	, mPortAudioStream(0)
+	, mError(paNoError)
+
+{
+}
+
 PANetworkPlayer::~PANetworkPlayer()
 {
 	Stop();
-	Pa_Terminate();
 }
 
 void PANetworkPlayer::Start()
 {
 	if ( !IsStopped() )
 		return;
+	if (CheckPaError(Pa_Initialize())) return;
+	displayPADevices();
 
 	CollectSourcesAndSinks();
 
@@ -88,6 +93,7 @@ void PANetworkPlayer::Start()
 
 	int defaultApi = Pa_GetDefaultHostApi();
 	const PaHostApiInfo * apiInfo = Pa_GetHostApiInfo( defaultApi );
+	std::cerr << "Portaudio Chosen API: " << apiInfo->name << " " << defaultApi << std::endl;
 	//Create configuration for input&output and then register the stream
 	PaStreamParameters inputParameters;
 	PaStreamParameters * inParams = 0;
@@ -140,7 +146,7 @@ void PANetworkPlayer::Start()
 		outputParameters.hostApiSpecificStreamInfo = NULL;
 		outParams = &outputParameters;
 	}
-
+	CLAM_ASSERT(!mPortAudioStream, "Portaudio: Previous stream not closed");
 	if (CheckPaError(
 		Pa_OpenStream(
 			&mPortAudioStream,
@@ -156,12 +162,12 @@ void PANetworkPlayer::Start()
 		mErrorMessage = "Audio i/o devices requirements not fullfilled";
 		return;
 	}
+	SetStopped(false);
 	const PaStreamInfo * streamInfo = Pa_GetStreamInfo(mPortAudioStream);
 	std::cout << "Sample rate: " << streamInfo->sampleRate << std::endl;
 	std::cout << "Input latency: " << streamInfo->inputLatency << std::endl;
 	std::cout << "Output latency: " << streamInfo->outputLatency << std::endl;
 
-	SetStopped(false);
 	Pa_StartStream( mPortAudioStream );
 }
 
@@ -169,10 +175,14 @@ void PANetworkPlayer::Stop()
 {
 	if ( IsStopped() )
 		return;
+	if ( mPortAudioStream )
+	{
+		Pa_StopStream( mPortAudioStream );
+		CheckPaError( Pa_CloseStream( mPortAudioStream ) );
+		mPortAudioStream=0;
+	}
 	SetStopped(true);
-	if ( !mPortAudioStream ) return;
-	Pa_StopStream( mPortAudioStream );
-	CheckPaError( Pa_CloseStream( mPortAudioStream ) );
+	Pa_Terminate();
 }
 
 bool PANetworkPlayer::IsWorking() const
@@ -214,6 +224,7 @@ bool PANetworkPlayer::CheckPaError(PaError result)
 void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 		    unsigned long framesPerBuffer)
 {
+	if (IsStopped()) return;
 	DoInPorts( (float**) inputBuffers, framesPerBuffer);
 	DoOutPorts( (float**) outputBuffers, framesPerBuffer);
 	GetNetwork().Do();
