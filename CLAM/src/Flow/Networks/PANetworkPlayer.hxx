@@ -18,13 +18,15 @@ typedef std::vector<AudioSink*> AudioSinks;
 
 class PANetworkPlayer : public NetworkPlayer
 {
-	int mPreferredBufferSize, 
+	int mPreferredBufferSize;
 	int mSamplingRate;
 
 	AudioSources mSources;
 	AudioSinks mSinks;
 	
 	PaStream * mPortAudioStream;
+	PaError mError;
+	std::string mErrorMessage;
 
 public:
 	//When created in the prototyper
@@ -48,13 +50,14 @@ private:
                             const PaStreamCallbackTimeInfo* timeInfo,
                             PaStreamCallbackFlags statusFlags,
                             void *userData);
-	inline void ControlIfPortAudioError(int result);
+	void CollectSourcesAndSinks();
+	inline bool CheckPaError(PaError result);
 	//Buffer copying methods
 	void Do(const void *inputBuffers, void *outputBuffers, unsigned long framesPerBuffer);
 	void DoInPorts(float** input, unsigned long nframes);
 	void DoOutPorts(float** output, unsigned long nframes);
 	//PA stream manipulation methods
-	void OpenStream(const Network& net);
+	void OpenStream();
 	void CloseStream();
 	void InitClient();
 };
