@@ -22,6 +22,8 @@ public:
 	
 	virtual ~BlockingNetworkPlayer();
 	virtual bool IsCallbackBased() const { return false; }
+	virtual bool IsWorking() const { return true; }
+	virtual std::string NonWorkingReason() const { return ""; }
 	
 	virtual void Start();
 	virtual void Stop();

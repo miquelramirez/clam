@@ -28,6 +28,10 @@ namespace CLAM
 		{
 		}
 		virtual bool IsCallbackBased() const = 0;
+		/// Should return true when the backend is able to run the network
+		virtual bool IsWorking() const = 0;
+		/// Whenever the backend is not working, this method returns the reason
+		virtual std::string NonWorkingReason() const = 0;
 		
 		virtual void Start()=0;
 		virtual void Stop()=0;

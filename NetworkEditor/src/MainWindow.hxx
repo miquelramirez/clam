@@ -85,7 +85,7 @@ public:
 		CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
 		backend = "JACK";
 		backendLogo = ":/icons/images/jacklogo-mini.png";
-		if ( jackPlayer->IsConnectedToServer())
+		if ( jackPlayer->IsWorking())
 			_networkPlayer = jackPlayer;
 		else
 			delete jackPlayer;

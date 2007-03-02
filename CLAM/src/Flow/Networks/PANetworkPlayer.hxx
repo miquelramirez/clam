@@ -32,23 +32,31 @@ public:
 	//When created in neteditor
 	PANetworkPlayer();
 	virtual ~PANetworkPlayer();
-	
-	void InitClient();
-	
-	//PA stream manipulation methods
-	void OpenStream(const Network& net);
-	void CloseStream();
 
-	//Buffer copying methods
-	void Do(const void *inputBuffers, void *outputBuffers, unsigned long framesPerBuffer);
-	void DoInPorts(float** input, unsigned long nframes);
-	void DoOutPorts(float** output, unsigned long nframes);
+	bool IsWorking() const;
+	std::string NonWorkingReason() const;
 	
 	virtual bool IsCallbackBased() const { return true; }
 	virtual void Start();
 	virtual void Stop();
-
+	
+private:
+	static int ProcessCallback (
+							const void *inputBuffers,
+							void *outputBuffers,
+                            unsigned long framesPerBuffer,
+                            const PaStreamCallbackTimeInfo* timeInfo,
+                            PaStreamCallbackFlags statusFlags,
+                            void *userData);
 	inline void ControlIfPortAudioError(int result);
+	//Buffer copying methods
+	void Do(const void *inputBuffers, void *outputBuffers, unsigned long framesPerBuffer);
+	void DoInPorts(float** input, unsigned long nframes);
+	void DoOutPorts(float** output, unsigned long nframes);
+	//PA stream manipulation methods
+	void OpenStream(const Network& net);
+	void CloseStream();
+	void InitClient();
 };
 
 } //end namespace CLAM
