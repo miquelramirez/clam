@@ -24,7 +24,6 @@ def define_module_contents(env) :
 		'src/Processing/Generators/',
 		'src/Processing/Synthesis',
 		'src/Processing/Transformations',
-		'src/Processing/Audio*.*xx',
 		'externals/numrec',
 		'src/Processing/SDIFIO',
 		'src/Tools/SDIF',

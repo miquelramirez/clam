@@ -1,29 +1,42 @@
+/*
+ * Copyright (c) 2001-2007 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
+ */
+
+
 #ifndef _PORTAUDIO_NETWORK_PLAYER_HXX_
 #define _PORTAUDIO_NETWORK_PLAYER_HXX_
 
 #include <iostream>
 #include <string>
 #include "NetworkPlayer.hxx"
-
-#include "AudioSource.hxx"
-#include "AudioSink.hxx"
-
 #include <portaudio.h>
 
 namespace CLAM
 {
 
-typedef std::vector<AudioSource*> AudioSources;
-typedef std::vector<AudioSink*> AudioSinks;
 
 class PANetworkPlayer : public NetworkPlayer
 {
 	int mPreferredBufferSize;
 	int mSamplingRate;
 
-	AudioSources mSources;
-	AudioSinks mSinks;
-	
 	PaStream * mPortAudioStream;
 	PaError mError;
 	std::string mErrorMessage;
@@ -50,7 +63,6 @@ private:
                             const PaStreamCallbackTimeInfo* timeInfo,
                             PaStreamCallbackFlags statusFlags,
                             void *userData);
-	void CollectSourcesAndSinks();
 	inline bool CheckPaError(PaError result);
 	//Buffer copying methods
 	void Do(const void *inputBuffers, void *outputBuffers, unsigned long framesPerBuffer);

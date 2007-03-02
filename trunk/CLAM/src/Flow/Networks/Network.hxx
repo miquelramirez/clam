@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2005 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2001-2007 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *

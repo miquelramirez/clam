@@ -63,8 +63,8 @@ provides already compiled packages for several platforms.
 
 1.1 Install CLAM dependencies on Linux
 
- Packages needed for Debian or Ubuntu 06.10 "Edgy":
- $ sudo apt-get install build-essential scons ladspa-sdk libxerces27-dev fftw-dev sfftw-dev libjack-dev libmad0-dev libogg-dev libsndfile1-dev libvorbis-dev libid3-3.8.3-dev libasound2-dev libfltk1.1-dev libjpeg62-dev libpng12-dev libxext-dev libxft-dev libqt3-headers libqt3-mt-dev doxygen qt4-dev-tools libqt4-dev libcppunit-dev
+ Packages needed for Debian or Ubuntu 06.10 "Edgy" and 07.04 "Feisty":
+ $ sudo apt-get install build-essential scons ladspa-sdk libxerces27-dev fftw-dev sfftw-dev libjack-dev libmad0-dev libogg-dev libsndfile1-dev libvorbis-dev libid3-3.8.3-dev libasound2-dev libfltk1.1-dev libjpeg62-dev libpng12-dev libxext-dev libxft-dev libqt3-headers libqt3-mt-dev doxygen qt4-dev-tools libqt4-dev libcppunit-dev portaudio19-dev 
  
  Redhat / Fedora Core packages list (tested with FC5)
    gcc-c++ scons fftw2-devel fltk-devel libvorbis-devel libogg-devel qt-devel

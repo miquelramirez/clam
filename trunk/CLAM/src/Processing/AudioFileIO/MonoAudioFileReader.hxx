@@ -40,8 +40,9 @@ namespace CLAM
 		virtual const ProcessingConfig& GetConfig() const;
 		virtual bool Do( Audio & outputSamples );
 		virtual bool Do();	
-
 		virtual ~MonoAudioFileReader();
+
+		AudioOutPort& GetAudioOutPort();
 
 	protected: // methods
 

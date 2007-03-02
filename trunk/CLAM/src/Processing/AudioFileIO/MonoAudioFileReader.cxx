@@ -52,6 +52,11 @@ namespace CLAM
 		if ( mNativeStream )
 			delete mNativeStream;
 	}
+	
+	AudioOutPort& MonoAudioFileReader::GetAudioOutPort()
+	{
+		return mOutput;
+	}
 
 	const char* MonoAudioFileReader::GetClassName() const
 	{

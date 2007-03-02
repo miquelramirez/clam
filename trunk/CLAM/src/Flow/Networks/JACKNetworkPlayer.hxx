@@ -5,11 +5,7 @@
 #include <iostream>
 #include <string>
 #include "NetworkPlayer.hxx"
-
 #include "Network.hxx"
-#include "AudioSource.hxx"
-#include "AudioSink.hxx"
-
 #include <jack/jack.h>
 
 namespace CLAM
@@ -18,7 +14,7 @@ class JACKNetworkPlayer : public NetworkPlayer
 {
 private:
 	//Structures to keep information about every external input and output processing
-	struct SourceJackBinding
+	struct SourceJackBinding //TODO use mAudioSources/Sinks in the parent class instead.
 	{
 		const char* PortName() 
 		{
