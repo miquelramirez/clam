@@ -212,10 +212,7 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'with_oggvorbis', 'Enables ogg/vorbis reading and writing support', 'yes' ) )
 	opts.Add( BoolOption( 'with_mad', 'Enables mpeg 1 layer 3 files reading and writing support', 'yes' ) )
 	opts.Add( BoolOption( 'with_id3', 'Enables support for accesing ID3 tags on mpeg audio streams', 'yes') )
-	if sys.platform == 'linux2' :
-		opts.Add( BoolOption( 'with_portaudio', 'Enables audio device I/O using PortAudio', 'no') )
-	else:
-		opts.Add( BoolOption( 'with_portaudio', 'Enables audio device I/O using PortAudio', 'yes') )
+	opts.Add( BoolOption( 'with_portaudio', 'Enables audio device I/O using PortAudio', 'yes') )
 	if sys.platform == 'linux2' :
 		opts.Add( BoolOption( 'with_alsa', 'Enables PCM and MIDI device I/O through ALSA', 'yes' ) )
 	elif sys.platform == 'darwin' :
