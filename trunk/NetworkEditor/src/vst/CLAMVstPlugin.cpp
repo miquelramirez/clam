@@ -196,16 +196,14 @@ void CLAMTest::process (float **inputs, float **outputs, long sampleFrames)
 
 
 	//buffer2clam
-	mReceiverList.at(0).processing->Do( in1 , sampleFrames );
-	if (! mono) mReceiverList.at(1).processing->Do( in2 , sampleFrames );
-	
-	//Do() as much as it is needed
-	for (int stepcount=0; stepcount < (int(mExternBufferSize)/int(mClamBufferSize)); stepcount++)
-		GetNetwork().Do();
+	mReceiverList.at(0).processing->SetExternalBuffer( in1 , sampleFrames );
+	if (! mono) mReceiverList.at(1).processing->SetExternalBuffer( in2 , sampleFrames );
 	
 	//clam2buffer
-	mSenderList.at(0).processing->Do( out1 , sampleFrames );
-	if (! mono) mSenderList.at(1).processing->Do( out2 , sampleFrames );
+	mSenderList.at(0).processing->SetExternalBuffer( out1 , sampleFrames );
+	if (! mono) mSenderList.at(1).processing->SetExternalBuffer( out2 , sampleFrames );
+
+	GetNetwork().Do();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
