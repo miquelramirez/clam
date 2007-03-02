@@ -15,9 +15,9 @@
 #include <QtGui/QApplication>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/NaiveFlowControl.hxx>
-#include <CLAM/BlockingNetworkPlayer.hxx>
 #include <CLAM/MonoAudioFileReaderConfig.hxx>
 #include <fstream>
+#include <CLAM/BlockingNetworkPlayer.hxx>
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
 #endif
@@ -35,14 +35,6 @@
 #include "KeySpace.hxx"
 #include "PolarChromaPeaks.hxx"
 #include "ChordRanking.hxx"
-
-static std::string getMonitorNumber()
-{
-	static unsigned number = 0;
-	std::stringstream os;
-	os << number++;
-	return os.str();
-}
 
 inline bool FileExists( const std::string filename )
 {
@@ -109,7 +101,7 @@ CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend, const std::s
 	if (backend=="jack")
 	{
 		CLAM::JACKNetworkPlayer * player = new CLAM::JACKNetworkPlayer(name);
-		if ( player->IsConnectedToServer()) return player;
+		if ( player->IsWorking()) return player;
 		delete player;
 		return 0;
 	}

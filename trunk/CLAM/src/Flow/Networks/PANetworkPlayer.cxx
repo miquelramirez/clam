@@ -6,7 +6,8 @@
 namespace CLAM
 {
 
-inline int portaudio_process (const void *inputBuffers, void *outputBuffers,
+
+int PANetworkPlayer::ProcessCallback (const void *inputBuffers, void *outputBuffers,
                             unsigned long framesPerBuffer,
                             const PaStreamCallbackTimeInfo* timeInfo,
                             PaStreamCallbackFlags statusFlags,
@@ -78,6 +79,16 @@ void PANetworkPlayer::InitClient()
 	}
 }
 
+bool PANetworkPlayer::IsWorking() const
+{
+	return true;
+}
+
+std::string PANetworkPlayer::NonWorkingReason() const
+{
+	return "Still not implemented";
+}
+
 void PANetworkPlayer::OpenStream(const Network& net)
 {
 	//Get them from the Network and add it to local list		
@@ -144,7 +155,7 @@ void PANetworkPlayer::OpenStream(const Network& net)
 			double(mClamFrameRate),
 			mClamBufferSize,
 			paClipOff,      /* we won't output out of range samples so don't bother clipping them */
-			portaudio_process,
+			ProcessCallback,
 			this )
 		);
 	const PaStreamInfo * streamInfo = Pa_GetStreamInfo(mPortAudioStream);

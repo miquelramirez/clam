@@ -43,9 +43,15 @@ JACKNetworkPlayer::~JACKNetworkPlayer()
 	}
 }
 
-bool JACKNetworkPlayer::IsConnectedToServer() const
+bool JACKNetworkPlayer::IsWorking() const
 {
 	return mJackClient != 0;
+}
+
+std::string JACKNetworkPlayer::NonWorkingReason() const
+{
+	if (mJackClient) return "";
+	return "No connection to JACK server available";
 }
 
 void JACKNetworkPlayer::InitClient()
