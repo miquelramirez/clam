@@ -55,8 +55,8 @@ void displayPADevices()
 				<< " (" << fullDevice << "/" << device << ") "
 				<< (fullDevice == Pa_GetDefaultInputDevice()? "*<": "  ")
 				<< (fullDevice == Pa_GetDefaultOutputDevice()? "*>": "  ")
-				<< (device == apiInfo->defaultInputDevice?"*<":"  ")
-				<< (device == apiInfo->defaultOutputDevice?"*>":"  ")
+				<< (fullDevice == apiInfo->defaultInputDevice?"*<":"  ")
+				<< (fullDevice == apiInfo->defaultOutputDevice?"*>":"  ")
 				<< deviceInfo->name
 				<< " Inputs: " << deviceInfo->maxInputChannels
 				<< " Outputs: " << deviceInfo->maxOutputChannels
@@ -66,8 +66,8 @@ void displayPADevices()
 }
 
 PANetworkPlayer::PANetworkPlayer()
-	: mPreferredBufferSize(512)
-	, mSamplingRate(44100)
+	: mPreferredBufferSize(paFramesPerBufferUnspecified)
+	, mSamplingRate(48000)
 	, mPortAudioStream(0)
 	, mError(paNoError)
 
@@ -88,12 +88,38 @@ void PANetworkPlayer::Start()
 
 	CollectSourcesAndSinks();
 
-	unsigned nInChannels = mSources.size();
-	unsigned nOutChannels = mSinks.size();
+	int nInChannels = mSources.size();
+	int nOutChannels = mSinks.size();
 
-	int defaultApi = Pa_GetDefaultHostApi();
-	const PaHostApiInfo * apiInfo = Pa_GetHostApiInfo( defaultApi );
-	std::cerr << "Portaudio Chosen API: " << apiInfo->name << " " << defaultApi << std::endl;
+	PaHostApiTypeId apiTryList[] = {
+		paDirectSound,
+		paMME, 
+		paASIO, 
+		paSoundManager,
+		paCoreAudio,
+		paALSA, 
+		paAL,
+		paBeOS,
+		paWDMKS,
+		paJACK,
+		paWASAPI,
+		paAudioScienceHPI,
+		paOSS,
+		paInDevelopment
+	};
+//	int defaultApi = Pa_GetDefaultHostApi();
+//	const PaHostApiInfo * apiInfo = Pa_GetHostApiInfo( defaultApi );
+	const PaHostApiInfo * apiInfo = 0;
+	for (unsigned i=0; apiTryList[i]!=paInDevelopment; i++)
+	{
+		PaHostApiIndex apiIndex = Pa_HostApiTypeIdToHostApiIndex(apiTryList[i]);
+		std::cerr << apiIndex << std::endl;
+		if (apiIndex<0) continue;
+		apiInfo = Pa_GetHostApiInfo( apiIndex );
+		std::cerr << "Portaudio Chosen API: " << apiInfo->name << " " << apiIndex << std::endl;
+		break;
+	}
+	CLAM_ASSERT(apiInfo, "PortAudio: No API available.");
 	//Create configuration for input&output and then register the stream
 	PaStreamParameters inputParameters;
 	PaStreamParameters * inParams = 0;
