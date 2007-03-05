@@ -212,9 +212,11 @@ bool IFFT_fftw3::SetPrototypes()
 
 inline void IFFT_fftw3::ComplexToRIFFTW(const Spectrum &in) const
 {
-	const Array<Complex> & inbuffer = in.GetComplexArray();		
-	for (int i=1; i< mSize; i++) {
-		_complexInput[i][0] = inbuffer[i].Real()/mSize;  
+	CLAM_ASSERT(in.HasComplexArray(), "Input spectrum has no complex array");
+	const Array<Complex> & inbuffer = in.GetComplexArray();
+	CLAM_ASSERT(inbuffer.Size() == mSize/2+1, "IFFT_fftw3::ComplexToRIFFTW: sizes doesn't match.");
+	for (int i=0; i< inbuffer.Size(); i++) {
+		_complexInput[i][0] = inbuffer[i].Real()/mSize;
 		_complexInput[i][1] = inbuffer[i].Imag()/mSize;
 	}
 /*
