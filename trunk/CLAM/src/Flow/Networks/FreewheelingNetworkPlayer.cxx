@@ -60,15 +60,18 @@ void FreewheelingNetworkPlayer::Start()
 	fileWriter.Start();
 	
 	// start freewheeling!
-	Audio& incoming = fileReader.GetAudioOutPort().GetAudio();
-//	Audio& outgoing = fileWritter.GetAudioOutPort().GetAudio(); TODO
-//	TODO use audios not ports
-	while ( false && fileReader.Do() )
+	Audio incomingAudio;
+	Audio outgoingAudio;
+	//incomingAudio.SetSampleRate( file.GetHeader().GetSampleRate() );
+        incomingAudio.SetSize( frameSize );
+        outgoingAudio.SetSize( frameSize );
+	
+	source.SetExternalBuffer( &(incomingAudio.GetBuffer()[0]) ,frameSize);
+	sink.SetExternalBuffer( &(outgoingAudio.GetBuffer()[0]) ,frameSize); 
+	while ( fileReader.Do(incomingAudio) )
 	{
-		
-		source.SetExternalBuffer( &(incoming.GetBuffer()[0]) ,100);
-		sink.SetExternalBuffer( &(incoming.GetBuffer()[0]) ,100); //TODO
-		//TODO run network.Do()
+		GetNetwork().Do();
+		fileWriter.Do( outgoingAudio );
 	}
 	
 	// close files (stop processings)
