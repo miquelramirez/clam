@@ -1,4 +1,5 @@
 Source: clam
+Section: libs
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
 Build-Depends: debhelper (>= 5.0.0), scons, ladspa-sdk, libxerces26-dev | libxerces27-dev, fftw-dev, sfftw-dev, libjack-dev, libmad0-dev, libogg-dev, libsndfile1-dev, libvorbis-dev, libid3-3.8.3-dev, libasound2-dev, libfltk1.1-dev, libjpeg62-dev, libpng12-dev, libxext-dev, libxft-dev,  libqt3-headers, libqt3-mt-dev, doxygen
