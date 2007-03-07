@@ -192,7 +192,6 @@ private:
 	
 	void testAnalysisSynthesisInaNetwork()
 	{
-		return; //TODO finish Freewheeling
 		//CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
 		CLAM::Network net;
 		CLAM::FreewheelingNetworkPlayer * player =  new CLAM::FreewheelingNetworkPlayer;
@@ -211,15 +210,15 @@ private:
 		net.ConfigureProcessing("Synthesis", helperSynthesisConfigInstance() );
 
 		std::string inputFile = GetTestDataDirectory("Elvis.wav");
-		std::string outputFile = GetTestDataDirectory("SMSTests/out_sms_net_stream");
+		std::string baseOutputFile = GetTestDataDirectory("SMSTests/out_sms_net_stream");
 		player->InputFile(inputFile);
-		player->OutputFile(outputFile);
+		player->OutputFile(baseOutputFile+"_result.wav");
 		net.Start();
 		net.Stop();
 
 		std::string  whyDifferents;
 		bool equals=helperCompareTwoAudioFiles(
-				outputFile+".wav", outputFile+"_result.wav", 
+				baseOutputFile+".wav", baseOutputFile+"_result.wav", 
 				whyDifferents);
 		CPPUNIT_ASSERT_MESSAGE(whyDifferents, equals);
 
