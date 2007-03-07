@@ -90,19 +90,9 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp
-	mkdir -p $(CURDIR)/debian/libclam0/usr
-	mkdir -p $(CURDIR)/debian/libclam-dev/usr
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam0/usr install_core_runtime
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_core_dev
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_sconstools
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam0/usr install_processing_runtime
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_processing_dev
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam0/usr install_audioio_runtime
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_audioio_dev
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam0/usr install_vmqt_runtime
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_vmqt_dev
-	rm -rf $(CURDIR)/debian/libclam0/usr/lib/*.so
-	rm -rf $(CURDIR)/debian/libclam-dev/usr/lib/*.so.*
+	mkdir -p $(CURDIR)/debian/tmp/usr
+	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/tmp/usr install
+	dh_install --sourcedir=debian/tmp
 
 # Build architecture-independent files here.
 binary-indep: build install
