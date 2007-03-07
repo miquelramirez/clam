@@ -27,6 +27,9 @@ provides already compiled packages for several platforms.
  This will compile all the libraries with default options, and install
  them to the default dirs ( /usr/local/lib/ and /usr/local/include/ )
 
+ Troubleshooting: in some scenarios, the first scons command ends with error
+ and is necessary to re-run scons a second time.
+
  To install clam in a non system-wide place (usefull when developing) use 
  scons configure with these options: (you must create the destination dir before)
 
