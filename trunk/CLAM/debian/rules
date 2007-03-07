@@ -13,7 +13,7 @@
 
 
 CFLAGS = -Wall -g
-OPTIONS= prefix=/usr xmlbackend=xercesc release=yes with_osc_support=no double=0
+OPTIONS= prefix=/usr xmlbackend=xercesc release=yes with_osc_support=no with_alsa=yes with_portaudio=no double=0
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -46,8 +46,8 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	cd $(CURDIR)/scons/libs; scons $(OPTIONS) configure
-	cd $(CURDIR)/scons/libs; scons $(OPTIONS) core processing audioio vmqt
+	cd $(CURDIR)/scons/libs; QTDIR=/usr scons $(OPTIONS) configure
+	cd $(CURDIR)/scons/libs; QTDIR=/usr scons $(OPTIONS) core processing audioio vmqt
 	cd $(CURDIR)
 
 	# First, tarballize the examples folder
@@ -65,8 +65,7 @@ clean:
 	rm -f build-stamp configure-stamp
 
 	# Add here commands to clean up after the build process.
-	rm -rf $(CURDIR)/scons/libs/*.conf
-	-cd $(CURDIR)/scons/libs && scons -c
+	-cd $(CURDIR)/scons/libs && QTDIR=/usr scons -c $(OPTIONS)
 
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
@@ -76,11 +75,11 @@ clean:
 	find $(CURDIR) -type f -name .*.swp | xargs rm -rf
 	find $(CURDIR) -type f -name .sconsign | xargs rm -rf
 	find $(CURDIR) -type f -name *.db | xargs rm -rf
-	rm -rf $(CURDIR)/scons/libs/*.conf
-	rm -rf $(CURDIR)/debian/libclam0/usr
-	rm -rf $(CURDIR)/debian/libclam-dev/usr
-	rm -rf $(CURDIR)/CLAM.tag
-	rm -rf $(CURDIR)/*.tar.gz
+	-rm -rf $(CURDIR)/CLAM.tag $(CURDIR)/*.tar.gz $(CURDIR)/doxygen \
+	  $(CURDIR)/src/Defines/CLAMVersion.cxx src/Defines/CLAMVersion.hxx \
+		$(CURDIR)/scons/libs/.sconsign.dblite scons/libs/config.log \
+		$(CURDIR)/scons/libs/*/{*.conf,include,src,*.so*,*.pc,CLAM} \
+		$(CURDIR)/scons/libs/*.conf
 
 	dh_clean 
 
