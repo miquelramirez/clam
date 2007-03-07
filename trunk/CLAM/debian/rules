@@ -103,12 +103,6 @@ install: build
 	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/libclam-dev/usr install_vmqt_dev
 	rm -rf $(CURDIR)/debian/libclam0/usr/lib/*.so
 	rm -rf $(CURDIR)/debian/libclam-dev/usr/lib/*.so.*
-	# remove macOS script with /opt path to python
-
-	mkdir -p $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
-	cp clam-doxydocs.tar.gz $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
-	cp examples.tar.gz $(CURDIR)/debian/libclam-doc/usr/share/doc/libclam-doc
-
 
 # Build architecture-independent files here.
 binary-indep: build install
