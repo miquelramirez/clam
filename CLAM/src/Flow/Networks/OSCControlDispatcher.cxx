@@ -41,7 +41,6 @@ namespace CLAM
 
 		//Init thread
 		mThread.SetThreadCode( makeMemberFunctor0( *mReceiveSocket, UdpListeningReceiveSocket, Run ) );
-		mThread.SetupPriorityPolicy();
 	}
 	OSCControlDispatcher::~OSCControlDispatcher()
 	{
