@@ -36,8 +36,9 @@ NaiveFlowControl::NaiveFlowControl()
 void NaiveFlowControl::ProcessingAddedToNetwork( Processing & added )
 {
 	NetworkTopologyChanged();
+	std::string processingType = added.GetClassName();
 
-	if ( std::string(added.GetClassName()) == std::string("AudioSource") )
+	if ( processingType == "AudioSource" )
 	{
 		mSources.push_back( &added );
 		return;
@@ -52,7 +53,7 @@ void NaiveFlowControl::ProcessingAddedToNetwork( Processing & added )
 		mGenerators.push_back( &added);
 		return;
 	}
-	if ( std::string(added.GetClassName()) == std::string("AudioSink") )
+	if ( processingType == "AudioSink" )
 	{
 		mSinks.push_back( &added );
 		return;
@@ -63,7 +64,8 @@ void NaiveFlowControl::ProcessingAddedToNetwork( Processing & added )
 void NaiveFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 {
 	NetworkTopologyChanged();
-	if ( std::string(removed.GetClassName()) == std::string("AudioSource") )
+	std::string processingType = removed.GetClassName();
+	if ( processingType == "AudioSource" )
 	{
 		mSources.remove( &removed );
 		return;
@@ -78,12 +80,12 @@ void NaiveFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 		mGenerators.remove( &removed);
 		return;
 	}
-	if ( std::string(removed.GetClassName()) == std::string("AudioSink") )
+	if ( processingType == "AudioSink" )
 	{
-		mSinks.push_back( &removed );
+		mSinks.remove( &removed );
 		return;
 	}
-	mNormalProcessings.push_back ( &removed );
+	mNormalProcessings.remove ( &removed );
 }
 
 void NaiveFlowControl::Do()
