@@ -24,7 +24,7 @@ Description: runtime package for the CLAM framework
 Package: libclam-dev
 Section: libdevel
 Architecture: any
-Depends: libclam0 (= ${Source-Version}) ladspa-sdk (>= 1.1), pkg-config (>= 0.15), fftw-dev, sfftw-dev, libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3), libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8), libjack-dev, libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, scons
+Depends: libclam0 (= ${Source-Version}), ladspa-sdk (>= 1.1), pkg-config (>= 0.15), fftw-dev, sfftw-dev, libqt3-headers (>= 3:3.3.3), libqt3-mt-dev (>= 3:3.3.3), libmad0-dev (>= 0.15.1b), libogg-dev (>= 1.1.2), libsndfile1-dev (>= 1.0.2-1), libvorbis-dev (>= 1.0.1), libid3-3.8.3-dev, libasound2-dev (>= 1.0.8), libjack-dev, libfltk1.1-dev (>= 1.1.6), libjpeg62-dev, libpng12-dev, libxext-dev (>> 4.1.0), libxft-dev (>> 2.1.1), libgl1-mesa-dev | libgl-dev, libglu1-mesa-dev | libglu-dev, scons
 Suggests: libclam-doc (= ${Source-Version})
 Description: development package for the CLAM framework
  CLAM is a framework to develop audio and music applications in C++.
