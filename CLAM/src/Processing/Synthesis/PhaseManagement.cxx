@@ -98,6 +98,10 @@ bool PhaseManagement::Do(SpectralPeakArray& in)
 			DoRandomPhases(in);
 			break;
 		}
+		case (EPhaseGeneration::eNone):
+		{
+			break;
+		}
 	}
 	return true;
 }
