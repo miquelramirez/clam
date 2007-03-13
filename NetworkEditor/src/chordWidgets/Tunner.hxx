@@ -14,7 +14,7 @@ class TunnerMonitor : public CLAM::PortMonitor<std::pair<CLAM::TData,CLAM::TData
 		static std::string a("A");
 		return a;
 	}
-	const CLAM::TData * orderData()
+	const CLAM::TData * positionData()
 	{
 		_fasor = FreezeAndGetData();
 		UnfreezeData();
@@ -103,7 +103,7 @@ public:
 			painter.drawLine(QLineF(0,0,10*cos(i*M_PI/10),10*sin(i*M_PI/10)));
 		}
 		if ( !_dataSource) return;
-		const CLAM::TData * freq = _dataSource->orderData();
+		const CLAM::TData * freq = _dataSource->positionData();
 		if ( !freq) return;
 		const CLAM::TData * mag = _dataSource->magnitudeData();
 		if ( !mag) return;
