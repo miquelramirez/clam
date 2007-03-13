@@ -62,7 +62,6 @@ void SpectralPeakArray::DefaultInit()
 	mIsIndexUpToDate=false;
 }
  
-
 void SpectralPeakArray::InitPeak(SpectralPeak& spectralPeak) const
 {
 	if (HasMagBuffer())
@@ -263,15 +262,13 @@ TIndex SpectralPeakArray::GetPositionFromIndex(TIndex index) const
 
 TIndex SpectralPeakArray::GetMaxMagPos() const// returns position of mag maximum
 { 
-	TIndex maxPos=0;
-	double mag, max;
-	DataArray peakMagBuffer=GetMagBuffer();
+	const DataArray & peakMagBuffer=GetMagBuffer();
 	// initialize to the first element
-	max = peakMagBuffer[0];
-	maxPos = 0;
+	double max = peakMagBuffer[0];
+	TIndex maxPos=0;
 	for (TIndex i=1;i<GetnPeaks();i++)
 	{
-		mag = peakMagBuffer[i];
+		const double & mag = peakMagBuffer[i];
 		if (mag>max)
 		{
 			max = mag;
@@ -285,20 +282,18 @@ TIndex SpectralPeakArray::GetMaxMagPos() const// returns position of mag maximum
 
 TIndex SpectralPeakArray::GetMaxMagIndex() const// returns position of mag maximum
 { 
-	TIndex i,maxPos=0;
-	double mag, max;
-	DataArray peakMagBuffer=GetMagBuffer();
+	const DataArray & peakMagBuffer=GetMagBuffer();
 	// only indexed peaks. It returns the max position 
 	
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetMaxMagPosition: Index array is not instantiated");
 	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::GetMaxMagPosition: IndexTable is not up to date");
-	IndexArray indexArray=GetIndexArray();
+	const IndexArray & indexArray = GetIndexArray();
+	TIndex maxPos=0;
+	double max = peakMagBuffer[indexArray[0]];
 	// initialize to the first element
-	max = peakMagBuffer[indexArray[0]];
-	maxPos = 0;
-	for (i=1; i<indexArray.Size(); i++)
+	for (TIndex i=1; i<indexArray.Size(); i++)
 	{
-		mag = peakMagBuffer[indexArray[i]];
+		const double & mag = peakMagBuffer[indexArray[i]];
 		if (mag>max)
 		{
 			max = mag;
@@ -488,37 +483,30 @@ void SpectralPeakArray::SetThruIndexBinWidth(TIndex pos,TSize binWidth)
 
 void SpectralPeakArray::TodB()
 {
-	if(GetScale()==EScale::eLinear)//else we need to do nothing
-	{
-		DataArray &mag = GetMagBuffer();
-		int nPeaks=GetnPeaks();
-		int i;
-		for (i=0; i<nPeaks; i++)
-		{
-			if(mag[i]==0) mag[i]=TData(0.0001);
-			mag[i]= CLAM_20log10(mag[i]); 
-		}
-		SetScale(EScale::eLog);
-	}
+	if(GetScale()==EScale::eLog) return;
 
+	DataArray & mag = GetMagBuffer();
+	const int nPeaks=GetnPeaks();
+	for (int i=0; i<nPeaks; i++)
+	{
+		if(mag[i]==0) mag[i]=TData(0.0001);
+		mag[i]= CLAM_20log10(mag[i]); 
+	}
+	SetScale(EScale::eLog);
 }
 
 void SpectralPeakArray::ToLinear()
 {
-	if(GetScale()==EScale::eLog)//else we need to do nothing
+	if(GetScale()==EScale::eLinear) return;
+
+	DataArray & mag = GetMagBuffer();
+	const int nPeaks=GetnPeaks();
+	for (int i=0; i<nPeaks; i++)
 	{
-		DataArray &mag = GetMagBuffer();
-		int nPeaks=GetnPeaks();
-		int i;
-		for (i=0; i<nPeaks; i++)
-		{
-			if(mag[i]==0.0001) mag[i]=0;
-			mag[i]= log2lin(mag[i]); 
-		}
-		SetScale(EScale::eLinear);
+		if(mag[i]==0.0001) mag[i]=0;
+		mag[i]= log2lin(mag[i]); 
 	}
-
-
+	SetScale(EScale::eLinear);
 }
 
 //xamat: this operator is bound to fail if operands have different attributes, should add checking?
