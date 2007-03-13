@@ -27,12 +27,8 @@ blacklist = [
 	os.path.join('FunctionalTests','ProcessingTests','TestOnsetDetector.cxx'),
 	os.path.join('FunctionalTests','ProcessingTests','TestSpectralPeakDetect.cxx'),
 	os.path.join('FunctionalTests','ProcessingTests','TestSMSAnalysis.cxx'),
+	os.path.join('FunctionalTests','FlowControlTests','OSCEnabledNetworkTest.cxx'),
 #	'TestAudioFileIn',
-	]
-
-if sys.platform == 'win32' :
-	blacklist += [
-		os.path.join('FunctionalTests','FlowControlTests','OSCEnabledNetworkTest.cxx'),
 	]
 
 folders = [ os.path.join('..','..','..','test', folder) for folder in folders ]
