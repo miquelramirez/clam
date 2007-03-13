@@ -40,6 +40,7 @@ class PANetworkPlayer : public NetworkPlayer
 	PaStream * mPortAudioStream;
 	PaError mError;
 	std::string mErrorMessage;
+	bool mNeedsPriority;
 
 public:
 	//When created in the prototyper

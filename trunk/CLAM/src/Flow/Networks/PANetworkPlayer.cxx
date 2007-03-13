@@ -2,6 +2,8 @@
 
 #include "PushFlowControl.hxx"
 #include "XMLStorage.hxx"
+#include <pthread.h>
+
 
 namespace CLAM
 {
@@ -194,6 +196,7 @@ void PANetworkPlayer::Start()
 	std::cout << "Input latency: " << streamInfo->inputLatency << std::endl;
 	std::cout << "Output latency: " << streamInfo->outputLatency << std::endl;
 
+	mNeedsPriority=true;
 	Pa_StartStream( mPortAudioStream );
 }
 
@@ -237,6 +240,28 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 		    unsigned long framesPerBuffer)
 {
 	if (IsStopped()) return;
+	if (mNeedsPriority)
+	{
+		mNeedsPriority = false;
+	#ifdef WIN32
+		BOOL res;
+		DWORD err;
+
+		res = SetPriorityClass(GetCurrentProcess(),NORMAL_PRIORITY_CLASS );
+		err = GetLastError();
+		res = SetThreadPriority( GetCurrentThread(), THREAD_PRIORITY_NORMAL );
+		err = GetLastError();
+	#else
+		struct sched_param sched_param;
+		int policy;
+
+		if (pthread_getschedparam(pthread_self(), &policy, &sched_param) < 0)
+			std::cerr << "Scheduler getparam failed..." << std::endl;
+		sched_param.sched_priority = sched_get_priority_max(SCHED_RR)-1;
+		if (!pthread_setschedparam(pthread_self(), SCHED_RR, &sched_param))
+			std::cerr << "Scheduler set to Round Robin with priority "<< sched_param.sched_priority << std::endl;
+	#endif
+	}
 	DoInPorts( (float**) inputBuffers, framesPerBuffer);
 	DoOutPorts( (float**) outputBuffers, framesPerBuffer);
 	GetNetwork().Do();
