@@ -14,7 +14,7 @@ class PolarChromaPeaksMonitor : public CLAM::PortMonitor<std::vector<std::pair<C
 		static std::string a("A");
 		return a;
 	}
-	const CLAM::TData * orderData()
+	const CLAM::TData * positionData()
 	{
 		_peaks = FreezeAndGetData();
 		UnfreezeData();
@@ -107,7 +107,7 @@ public:
 		painter.drawLine(QLineF(10,0,-10,0));
 		painter.drawLine(QLineF(0,10,0,-10));
 		if ( !_dataSource) return;
-		const CLAM::TData * freq = _dataSource->orderData();
+		const CLAM::TData * freq = _dataSource->positionData();
 		if ( !freq) return;
 		const CLAM::TData * mag = _dataSource->magnitudeData();
 		if ( !mag) return;
