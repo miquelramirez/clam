@@ -40,7 +40,8 @@ public:
 	typedef enum {
 		eAlign,
 		eRandom,
-		eContinuation
+		eContinuation,
+		eNone
 	} tEnum;
 
 	virtual Component* Species() const
@@ -53,6 +54,7 @@ public:
 			{eAlign,"Align"},
 			{eRandom,"Random"},
 			{eContinuation,"Continuation"},
+			{eNone,"None"},
 			{0,NULL}
 		};
 		return sEnumValues;

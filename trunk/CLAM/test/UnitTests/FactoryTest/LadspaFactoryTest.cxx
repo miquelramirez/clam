@@ -11,7 +11,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( LadspaFactoryTest );
 class LadspaFactoryTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( LadspaFactoryTest );
-	CPPUNIT_TEST( test );
+	CPPUNIT_TEST( testCreate_existing );
 	CPPUNIT_TEST_SUITE_END();
 protected:
 	class Processing //TODO delete. it should be CLAM::Processing 
