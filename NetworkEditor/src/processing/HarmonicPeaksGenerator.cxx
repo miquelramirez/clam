@@ -31,9 +31,12 @@ bool HarmonicPeaksGenerator::Do(SpectralPeakArray& out)
 	out.AddAll();
 	out.UpdateData();
 	out.InitIndices();
-	float spectralRange = 22050;
+	float sampleRate = 44100;
+	float spectralRange = sampleRate/2;
+	unsigned nBins =1024;
+	unsigned hopSize =512;
 	TData fundamental=mFundamental.GetLastValue();
-	unsigned nHarmonics = std::min(20u,unsigned(spectralRange/fundamental));
+	unsigned nHarmonics = std::min(30u,unsigned(spectralRange/fundamental));
 	out.SetnMaxPeaks(nHarmonics);
 	out.SetnPeaks(0);
 	out.SetScale(EScale::eLog);
@@ -44,14 +47,14 @@ bool HarmonicPeaksGenerator::Do(SpectralPeakArray& out)
 	DataArray& outPhaseBuffer=out.GetPhaseBuffer();
 	DataArray& outBinPosBuffer=out.GetBinPosBuffer();
 	DataArray& outBinWidthBuffer=out.GetBinWidthBuffer();
-	unsigned firstBin = fundamental/22050;
+	unsigned firstBin = fundamental*nBins/spectralRange;
 	static unsigned t = 0;
-	for (unsigned i=1; i<nHarmonics; i++)
+	for (unsigned i=1; i<=nHarmonics; i++)
 	{
 		outIndexBuffer.AddElem(i-1);
 		outFreqBuffer.AddElem(i*fundamental);
-		outMagBuffer.AddElem(-20-2.*i);
-		outPhaseBuffer.AddElem(i*fundamental*t*512*2*M_PI/44100);
+		outMagBuffer.AddElem(-20.-20*std::log(i));
+		outPhaseBuffer.AddElem(i*fundamental*t*hopSize*2*M_PI/sampleRate);
 		outBinPosBuffer.AddElem(i*firstBin);
 		outBinWidthBuffer.AddElem(firstBin/2);
 	}
