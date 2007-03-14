@@ -243,7 +243,7 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 	if (mNeedsPriority)
 	{
 		mNeedsPriority = false;
-	#ifdef WIN32
+	#ifdef TODO__was_WIN32
 		BOOL res;
 		DWORD err;
 
