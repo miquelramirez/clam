@@ -118,6 +118,7 @@ namespace CLAM
 
 	void Network::LoadFrom( Storage & storage)
 	{
+		Clear();
 		XMLAdapter<std::string> strAdapter( mName, "id");
 		storage.Load(strAdapter);
 
@@ -424,7 +425,7 @@ namespace CLAM
 
 	void Network::Clear()
 	{
-		Stop();
+		if ( !IsStopped() ) Stop(); 
 		
 		while( !mProcessings.empty() )
 		{
