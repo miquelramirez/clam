@@ -104,8 +104,8 @@ void PANetworkPlayer::Start()
 		paBeOS,
 		paWDMKS,
 		paJACK,
-		paWASAPI,
-		paAudioScienceHPI,
+//		paWASAPI,
+//		paAudioScienceHPI,
 		paOSS,
 		paInDevelopment
 	};
