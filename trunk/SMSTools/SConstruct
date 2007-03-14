@@ -90,6 +90,7 @@ env.EnableClamModules([
 mainSources = {
 	'SMSTools' : os.path.join('src','QtImpl','main.cxx'),
 	'SMSBatch' : os.path.join('src','SMSBatch.cxx'),
+	'SMSConsole' : os.path.join('src','SMS.cxx'),
 }
 
 
@@ -127,6 +128,8 @@ sources.append(os.path.join('src','SMSBatch.cxx'))
 sources.append(os.path.join('src','StdOutWaitMessage.cxx'))
 sources.append(os.path.join('src','StdOutProgress.cxx'))
 
+#for SMSConsole binary
+sources.append(os.path.join('src','SMS.cxx'))
 
 for mainSource in mainSources.values() :
 	sources.remove(mainSource)
