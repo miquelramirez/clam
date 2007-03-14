@@ -19,16 +19,13 @@
  *
  */
 
-#include "ProcessingTree.hxx"
+#include "ProcessingTree.hxx" 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QHeaderView>
+#include <iostream> 
 
 #ifdef USE_LADSPA
-#	include <iostream> //TODO move
-#	include <ladspa.h> //TODO move to extracted cxx
-#	include <dlfcn.h> //TODO move as well
-#      include <dirent.h> //TODO move
-#      include <sys/types.h>
+#	include <CLAM/LadspaPluginsExplorer.hxx> 
 #endif
 
 namespace NetworkGUI
@@ -167,92 +164,25 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	
 #ifdef USE_LADSPA
 // TODO: Ladspa is still work in progress 
-	LadspaPlugins plugins = SearchLadspaPlugins();
-	LadspaPlugins::const_iterator it=plugins.begin();
 	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (dummy)" );
+
+	CLAM::LadspaPlugins plugins = CLAM::LadspaPluginsExplorer::GetList();
+	CLAM::LadspaPlugins::const_iterator it=plugins.begin();
 	for (; it != plugins.end(); it++)
 	{
-		QTreeWidgetItem * group = new QTreeWidgetItem( ladspaTree, QStringList() << it->c_str() );
-		it++;
-		for (; *it != ""; it++)
-		{
-			QTreeWidgetItem * item = new QTreeWidgetItem( group, QStringList() << it->c_str() );
-			item->setIcon(0, QIcon(":/icons/images/processing.png"));
-		}
+		const CLAM::LadspaPlugin& plugin = *it;
+		std::cout << "+++ " << plugin.description << std::endl;
+		std::cout << "+++ \t" << plugin.index << std::endl;
+		std::cout << "+++ \t" << plugin.libraryFileName << std::endl;
+		QTreeWidgetItem * item = new QTreeWidgetItem( ladspaTree, QStringList() << plugin.description.c_str() );
+		item->setIcon(0, QIcon(":/icons/images/processing.png"));
 	}
+	
 #endif //USE_LADSPA
  
 	
 	connect( this, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),
 		 this, SLOT( PressProcessing(QTreeWidgetItem *,int) ));
-}
-
-/** DUMB: easy way to generate a new tree 
- * follow structure of ProcessingClasses 
- * This will end up being a LADSPA loader
- **/
-ProcessingTree::LadspaPlugins ProcessingTree::SearchLadspaPlugins() 
-{
-	LadspaPlugins result;
-	result.push_back("Just for developing");
-	result.push_back("DummyLadspa");
-	result.push_back("");
-	result.push_back("Filters");
-	result.push_back("LowPass");
-	result.push_back("HighPass");
-	result.push_back("");
-	result.push_back("Amplifier");
-	result.push_back("Mono");
-	result.push_back("Stereo");
-	result.push_back("");
-	result.push_back("Oscillators");
-	result.push_back("Simple");
-	result.push_back("Sine");
-	result.push_back("");
-	
-#ifdef USE_LADSPA
-	//TODO search all user path
-	char* path = getenv("LADSPA_PATH");
-	std::string ladspaPath = path? path : "";
-	if(ladspaPath == "")
-	{
-	        ladspaPath = "/usr/lib/ladspa";
-	}
-	std::cout << ladspaPath << std::endl;
-	DIR* ladspaDir = opendir(ladspaPath.c_str());
-	if (!ladspaDir)
-	{
-		std::cout << "warning: could not open ladspa dir: " << ladspaPath << std::endl;
-		return result; //TODO something different when we'll be exploring several paths
-	}
-	struct dirent * dirEntry;
-	while( (dirEntry = readdir(ladspaDir)) )
-	{
-		std::string pluginFilename(dirEntry->d_name);
-		if(pluginFilename == "." || pluginFilename == "..")
-			continue;
-		LADSPA_Descriptor_Function descriptorTable = 0;
-		std::string pluginFullFilename(ladspaPath + std::string("/") + pluginFilename);
-		void* handle = dlopen( pluginFullFilename.c_str(), RTLD_NOW);
-		descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
-		if (!descriptorTable)
-		{
-			std::cout << "warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
-			continue;
-		}
-		std::cout << "opened plugin: " << pluginFullFilename << std::endl;
-		for (unsigned long i=0; descriptorTable(i); i++)
-		{
-			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
-			result.push_back(descriptor->Name);
-		}
-		result.push_back("");
-	}
-	closedir(ladspaDir);
-#endif // USE_LADSPA
-
-	return result;
-	
 }
 
 ProcessingTree::~ProcessingTree()

@@ -12,54 +12,106 @@ class LadspaFactoryTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( LadspaFactoryTest );
 	CPPUNIT_TEST( testCreate_existing );
+	CPPUNIT_TEST( testCreate_nonExistingKey_throws );
+	CPPUNIT_TEST( testCreate_withTwoCreators );
 	CPPUNIT_TEST_SUITE_END();
 protected:
 	class Processing //TODO delete. it should be CLAM::Processing 
 	{
-	protected:
+	public:
 		virtual ~Processing() {};
 	};
 	class LadspaWrapper : public Processing //TODO move to CLAM/src/Processing/Plugins (in namespace CLAM)
 	{
-	};
-	class AbstractProductCreator //TODO move next to Factory
-	{
+		std::string _libraryFileName;
+		unsigned _index;
 	public:
-		virtual Processing* Create() = 0; //TODO integrate with Factory so it returns AbstractProduct
-		virtual ~AbstractProductCreator() {};
-	};
-	class LadspaWrapperCreator : public AbstractProductCreator //TODO move to CLAM/src/Processing/Plugins
-	{
-	public:
-		Processing* Create()
+		LadspaWrapper( const std::string& libraryFileName, unsigned index ) 
+			: _libraryFileName( libraryFileName )
+			, _index( index )
 		{
-			return new LadspaWrapper;
 		}
+		const std::string& LibraryFileName() 
+		{ 
+			return _libraryFileName; 
+		}
+		unsigned Index()
+		{
+			return _index;
+		}
+	};
+	class LadspaWrapperCreator  //TODO move to CLAM/src/Processing/Plugins
+	{
+		std::string _libraryFileName;
+		unsigned _index;
+	public:
+		LadspaWrapperCreator( const std::string& libraryFileName, unsigned index ) 
+			: _libraryFileName( libraryFileName )
+			, _index( index )
+		{
+		}
+		virtual Processing* Create()
+		{
+			return new LadspaWrapper(_libraryFileName, _index);
+		}
+		virtual ~LadspaWrapperCreator() {};
 	};
 	class LadspaFactory
 	{
 		std::string _key;
-		AbstractProductCreator* _creator;
+		LadspaWrapperCreator* _creator;
 	public:
+		LadspaFactory() : _creator(0)
+		{
+		}
+		class NonExistingKeyError
+		{
+		};
 		Processing* Create(const std::string& key)
 		{
+			if (!_creator)
+				throw NonExistingKeyError();
+		
 			return _creator->Create();
 		}
-		void AddCreator( const std::string& key, AbstractProductCreator* creator )
+		void AddCreator( const std::string& key, LadspaWrapperCreator* creator )
 		{
 			_key = key;
 			_creator = creator;
 		}
 	};
+
 	void testCreate_existing()
 	{
 		LadspaFactory factory;
-		factory.AddCreator( "foo", new LadspaWrapperCreator );
-		Processing* product = factory.Create("foo");
-		CLAMTEST_ASSERT_EQUAL_RTTYPES( LadspaWrapper, *product );
+		factory.AddCreator( "foo", new LadspaWrapperCreator("lib.so", 1) );
+		Processing* processing = factory.Create("foo");
+		LadspaWrapper* wrapper = dynamic_cast<LadspaWrapper*>(processing);
+		CPPUNIT_ASSERT_EQUAL( std::string("lib.so"), wrapper->LibraryFileName() );
+		CPPUNIT_ASSERT_EQUAL( 1u, wrapper->Index() );
 	}
-//	void testCreate_nonExistingKey_throws()
-//	void testCreate_withTwoCreators()
+	void testCreate_nonExistingKey_throws()
+	{
+		LadspaFactory factory;
+		try
+		{
+			factory.Create("non-existing");
+			CPPUNIT_FAIL("expected an exception");
+		} catch ( LadspaFactory::NonExistingKeyError& )
+		{
+		}
+	}
+	void testCreate_withTwoCreators()
+	{
+		LadspaFactory factory;
+		factory.AddCreator( "foo", new LadspaWrapperCreator("libfoo.so", 1) );
+		factory.AddCreator( "bar", new LadspaWrapperCreator("libbar.so", 2) );
+		Processing* processing = factory.Create("foo");
+		LadspaWrapper* wrapper = dynamic_cast<LadspaWrapper*>(processing);
+		CPPUNIT_ASSERT_EQUAL( std::string("libfoo.so"), wrapper->LibraryFileName() );
+		CPPUNIT_ASSERT_EQUAL( 1u, wrapper->Index() );
+		
+	}
 	
 };
 

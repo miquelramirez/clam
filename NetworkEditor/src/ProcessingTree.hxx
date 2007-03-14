@@ -35,11 +35,9 @@ namespace NetworkGUI
 class ProcessingTree : public QTreeWidget
 {
 Q_OBJECT
-	typedef std::list<std::string> LadspaPlugins;
 public:
 	/** TODO: this tree should be derived from the CLAM::Factory instance */
 	ProcessingTree( QWidget * parent = 0);
-	LadspaPlugins SearchLadspaPlugins();
 	virtual ~ProcessingTree();
 public slots:
 	void PressProcessing(QTreeWidgetItem *, int column);
