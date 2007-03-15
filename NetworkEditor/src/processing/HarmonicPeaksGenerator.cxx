@@ -53,7 +53,7 @@ bool HarmonicPeaksGenerator::Do(SpectralPeakArray& out)
 	{
 		outIndexBuffer.AddElem(i-1);
 		outFreqBuffer.AddElem(i*fundamental);
-		outMagBuffer.AddElem(-20.-20*std::log(i));
+		outMagBuffer.AddElem(-20.-20*std::log( float(i) ));
 		outPhaseBuffer.AddElem(i*fundamental*t*hopSize*2*M_PI/sampleRate);
 		outBinPosBuffer.AddElem(i*firstBin);
 		outBinWidthBuffer.AddElem(firstBin/2);
