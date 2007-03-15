@@ -1,6 +1,11 @@
 #include <CLAM/FreewheelingNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 
+#ifdef WIN32
+#include <CLAM/InitAudioIO.hxx>
+#include <CLAM/InitProcessing.hxx>
+#endif
+
 int usage(const std::string & program)
 {
 		std::cout << " Usage: " << program
