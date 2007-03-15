@@ -7,9 +7,8 @@ version='testing-version'
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the networkeditor will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(PathOption('clam_sconstools', 'The path to the scons tools provided by clam', ''))
 options.Add(PathOption('vstsdk_path', 'The path to vstsdk (root dir)', ''))
-options.Add(BoolOption('release', 'Build CLAM NetworkEditor enabling compiler optimizations', 'no') )
+options.Add(BoolOption('release', 'Build CLAM Vst plugin enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
 
@@ -30,10 +29,11 @@ env.Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
-	
-env.Tool('clam', toolpath=[env['clam_sconstools']])
-
 CLAMInstallDir = env['clam_prefix']
+
+clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.Tool('qt4', toolpath=[clam_sconstoolspath])
 
 env['CXXFILESUFFIX'] = '.cxx'
 if not env['verbose']:
@@ -47,8 +47,21 @@ env.EnableClamModules([
 	'clam_processing',
 	] , CLAMInstallDir)
 
+env.EnableQt4Modules([
+	'QtCore',
+	'QtGui',
+	'QtOpenGL',
+#	'QtSql',
+#	'QtNetwork',
+#	'QtTest',
+	'QtXml',
+#	'QtSvg',
+	'QtUiTools',
+#	'QtDesigner',
+#	'Qt3Support',
+	], debug=False)
 
-#vstsdk_path ='F:\\clam-external-libs\\vstsdk2.3' 
+#vstsdk_path ='F:\\clam-external-libs\\vstsdk2.3'
 vstsdk_common_path = os.path.join( env['vstsdk_path'], 'source', 'common' )
 
 sourcePaths = [
@@ -75,8 +88,7 @@ env.Append(CPPPATH=includePaths)
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/networkeditor\\""')
 env.Append(CPPDEFINES=[ ('FFTW_HEADER','"<rfftw.h>"') ])
 
-if sys.platform=='win32' :
-	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
+env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined TESTING - bug-fix: Load Simple Clam Networks
 
 env['WIN32_INSERT_DEF'] = 1
 if env['release'] :
@@ -87,7 +99,9 @@ else :
 
 envConsole = env.Copy()
 envPlugin = env.Copy()
-envPlugin.Append( LINKFLAGS=['/subsystem:windows','/machine:i386'] )
+
+if sys.platform == "win32" :
+	envPlugin.Append( LINKFLAGS=['/subsystem:windows','/machine:i386'] )
 
 programs = []
 programs += [ envConsole.Program(target="TestPlugin", source = commonSources+["TestPlugin.cxx"]) ]
@@ -107,15 +121,15 @@ installTargets = [
 
 
 if sys.platform=='macosx' : # not really tested!!!
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"NetworkEditor.app/Contents/Resources\\""')
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"CLAMVst.app/Contents/Resources\\""')
 	#Binaries: networkeditor + sample extractor
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
 
 	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
 	installTargets = [
-		env.Install( 'NetworkEditor.app/Contents/MacOS', programs ),
-		env.Install( 'NetworkEditor.app/Contents', 'resources/Info.plist'),
-		env.Install( 'NetworkEditor.app/Contents/Resources', 'resources/CLAM.icns'),
+		env.Install( 'CLAMVst.app/Contents/MacOS', programs ),
+		env.Install( 'CLAMVst.app/Contents', 'resources/Info.plist'),
+		env.Install( 'CLAMVst.app/Contents/Resources', 'resources/CLAM.icns'),
 		]
 	mac_packages = env.Dmg('notused', installTargets )
 	env.Alias('package', mac_packages)
@@ -124,4 +138,3 @@ envPlugin.Alias('install', installTargets )
 
 envPlugin.Default([vstplugin])
 envConsole.Default(programs)
-

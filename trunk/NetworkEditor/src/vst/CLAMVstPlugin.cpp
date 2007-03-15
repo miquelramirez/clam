@@ -2,7 +2,6 @@
 #include "CLAMVstPlugin.hpp"
 #endif
 
-#include <CLAM/PushFlowControl.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <iostream>
 #include <sstream>
@@ -28,7 +27,6 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
 
-	GetNetwork().AddFlowControl( new PushFlowControl( mClamBufferSize ) );
 	try
 	{
 
@@ -74,7 +72,6 @@ int CLAMTest::GetNumberOfParameters( char* file )
 	return 1; 
 #endif
 	Network net;
-	net.AddFlowControl( new PushFlowControl( 512 ) );
 	int count=0;
 	
 	try
