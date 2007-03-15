@@ -657,9 +657,9 @@ namespace QtSMS
 			InitMenuViewItems();
 			ShowIncomingAudio();
 		}
-		CLAMGUI::QtWaitMessage* msg = new CLAMGUI::QtWaitMessage("Building Graphic Data....");
+//		CLAMGUI::QtWaitMessage* msg = new CLAMGUI::QtWaitMessage("Building Graphic Data....");
 		Engine::DisplayManager()->SetAnalyzedData();
-		delete msg;
+//		delete msg;
 		UpdateState();
 	}
 
