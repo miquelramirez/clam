@@ -164,16 +164,13 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	
 #ifdef USE_LADSPA
 // TODO: Ladspa is still work in progress 
-	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (dummy)" );
+	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (still won't work)" );
 
 	CLAM::LadspaPlugins plugins = CLAM::LadspaPluginsExplorer::GetList();
 	CLAM::LadspaPlugins::const_iterator it=plugins.begin();
 	for (; it != plugins.end(); it++)
 	{
 		const CLAM::LadspaPlugin& plugin = *it;
-		std::cout << "+++ " << plugin.description << std::endl;
-		std::cout << "+++ \t" << plugin.index << std::endl;
-		std::cout << "+++ \t" << plugin.libraryFileName << std::endl;
 		QTreeWidgetItem * item = new QTreeWidgetItem( ladspaTree, QStringList() << plugin.description.c_str() );
 		item->setIcon(0, QIcon(":/icons/images/processing.png"));
 	}
