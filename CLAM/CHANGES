@@ -1,12 +1,54 @@
 2007-??-?? CLAM 0.99.0 SVN $Revision$
-''
+'That will be CLAM 1.0 release'
  * New binary in NetworkEditor/ called OfflinePlayer to batch-process
    clam network files given an input and output audio file.
  * Fixes in the modconf to work in suse (thanks Toni)
- * Support for FFTW3 as FFTW_fftw3
- * FFT and IFFT processings renders to the faster enabled implementation
-   and can be used now as types in a Network.
- * FFT and IFFT sizes are default to 1024
+ * Updated Fedora Core packaging
+ * PortAudio network player backend:
+   * PortAudio available in all platforms, including Linux.
+   * Network player gets priority boost in Linux.
+   * Discarded OSS API so in linux it uses Alsa (#Closes 200).
+   * Xruns are notified on the console.
+   * Available apis and devices are notified on the console.
+   * Stream is closed and open on network start and stop.
+ * All network players
+   * AudioSink/Sources does the copy on the Network 'Do' instead
+     of an explicit one.
+   * The player just sets the device buffer using the new 
+   * XNetworkPlayer::IsWorking to test whether a given NP is available.
+   * Backends uses the framesize set by the backend
+   * TopologyChanged protocol removed (Closes #174).
+ * Flow control
+   * Added a NaiveFlowControl which is less than optimal but
+     it has been developed in a test driven way considering 
+     most of the cases PushFlowControl was failing and some
+     others. See the test cases for more info. (Closes #175)
+   * No need to explicitly set the flow control to a network; by
+     default it has a Naive one. Now all CLAM code uses the default.
+ * FFTW3
+   * Support for FFTW3 as FFTW_fftw3 and IFFTW_fftw3 classes.
+   * FFT and IFFT processings inherits from the faster enabled 
+     implementation on the compile options (fftw3, fftw2, oura).
+   * All the FFT implementations including the generic 'FFT' are
+     available to the Processing Factory (and thus in NetEditor).
+   * FFT and IFFT default sizes are set to 1024 instead 0.
+ * Examples folder can be moved arround and build with a local SConstruct
+ * Release automatization:
+   * Version information includes svn revision
+   * Version information is propagated to packages and tarballs
+   * Build scripts take the svn revision from the server if available.
+   * Mac Build: PPC/intel dmg names are selected automatically
+ * Ladpa support:
+   * New class LadspaPluginExplorer
+ * Added experimental HarmonicPeaksGenerator and VowelResonator
+ * SpectralPeakArray: optimizations by not copying certain buffers
+ * Removed XXNetworkPlayer::IsModified/SetModified methods.
+ * Removed Processing::Pre/PostConcreteConfigure and associated state.
+ * Applied eNone patch from Giulio Paci in PhaseManagement (thanks!)
+ * Fix: NullProcessingConfig was duplicated on core and processing
+ * Fix: 'NoneType' error on scons cleaned
+ * CLAM_TEST_DATA environment var is not used any more for tests
+   just the scons option
 
 2007-02-09 CLAM 0.98.0
 'Mac is here to stay'

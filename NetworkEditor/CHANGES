@@ -1,10 +1,14 @@
 2007-??-?? NetworkEditor 0.4.4 SVN $Revision$
-''
+'That will be CLAM 1.0 release'
  * Using CLAM 0.99.0
  * Prototyper sets the name of the network as JACK client name
  * More processings: Different IFFT and FFT implementations,
    SpectrumSubstracter2, ...
- * Fix: Can't change name of a processing (#166)
+ * Fix: Can't change name of a processing (#166 #194 #173)
+ * Added ladspa plugins browsing (not still droppable).
+ * PeaksView adjust to the minimum magnitude.
+ * OfflinePlayer program to apply batch processing to
+   audio files.
 
 2006-02-09 NetworkEditor 0.4.3
 'Mac is back to stay'
