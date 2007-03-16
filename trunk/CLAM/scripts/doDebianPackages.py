@@ -17,10 +17,10 @@ distributions = [
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
-	( 'CLAM',          'clam',               versionFromRemoteSvn('CLAM')[0] ),
-	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[0] ),
-	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[0] ),
-	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[0] ),
+	( 'CLAM',          'clam',               versionFromRemoteSvn('CLAM')[1] ),
+	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
+	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
+	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
 ]
 
 hooks = {
@@ -153,9 +153,12 @@ for (maindistro, distribution, mirror, components) in distributions :
 		'distro': distribution,
 	}
 
-	run("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
-	run("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
-	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
+	if "~svn" in repositories[0][2]:
+		targetWebDir += "svnsnapshots/"
+
+	norun("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
+	norun("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
+	norun("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
 
 
 
