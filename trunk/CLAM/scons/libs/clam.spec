@@ -282,7 +282,7 @@ scons -j$numprocs configure \
 	with_mad=1 \
 	with_id3=1 \
 	with_alsa=1 \
-	with_portaudio=0 \
+	with_portaudio=1 \
 	with_portmidi=1 \
 
 scons -j$numprocs \
