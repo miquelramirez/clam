@@ -6,6 +6,7 @@ clam (0.98.0-1) feisty; urgency=low
   * lintian advice: Added dependency to python
   * lintian advice: scons/sconstools/addDependentLibsToBundle.py is not
     installed
+  * Enabling portaudio and fftw3
 
  -- CLAM Team <clam@iua.upf.edu>  Fri,  9 Feb 2007 14:01:51 +0100
 
