@@ -1,3 +1,23 @@
+clam (0.99.0-1) feisty; urgency=low
+
+  * debian/control: python dependency required for libclam-dev
+  * debian/rules,control: Enabling portaudio and fftw3
+  * Paul Brossier contributed changes:
+    * debian/watch: add debian watch file, to use with uscan. please update tarball names (e.g. clam-0.99.tar.gz)
+    * debian/rules: do not use QTDIR
+    * debian/copyright: add download url
+    * debian/rules: fix typo in SCONS_ENV
+    * debian/dirs: remove dirs file (nothing in /usr/*bin and *.install files do the work)
+    * debian/rules: always use the same scons options, remove blank lines, move scons configure to configure rules
+    * debian/rules: remove commented lines from dh_make template
+    * debian/*.install: add install files, use dh_install --sourcedir=debian/tmp
+    * debian/rules: make use of dh_installdocs to install files in /u/s/d/libclam-doc
+    * debian/*.ex: deleted useless dh_make templates
+    * debian/control: add Section: libs to source package
+    * debian/rules: make sure we build with alsa, and not with portaudio, clean cleaner
+
+ -- CLAM Team <clam@iua.upf.edu>  Fri,  9 Feb 2007 14:01:51 +0100
+
 clam (0.98.0-1) feisty; urgency=low
 
   * New upstream release 
@@ -6,7 +26,6 @@ clam (0.98.0-1) feisty; urgency=low
   * lintian advice: Added dependency to python
   * lintian advice: scons/sconstools/addDependentLibsToBundle.py is not
     installed
-  * Enabling portaudio and fftw3
 
  -- CLAM Team <clam@iua.upf.edu>  Fri,  9 Feb 2007 14:01:51 +0100
 
