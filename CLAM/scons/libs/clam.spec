@@ -13,7 +13,7 @@
 
 %define _prefix					/usr
 
-%define svn_revision ~svn09819
+%define svn_revision ~svn09846
 %define CLAM_version			0.99.0%{svn_revision}
 %define NetworkEditor_version	0.4.4%{svn_revision}
 %define SMSTools_version		0.4.6%{svn_revision}
@@ -41,6 +41,7 @@ BuildRoot:		%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:	alsa-lib-devel
 BuildRequires:	doxygen
 BuildRequires:	fftw-devel
+BuildRequires:	fftw2-devel
 BuildRequires:	fltk-devel
 BuildRequires:	gcc-c++
 #BuildRequires:	ghostscript-library # SuSe
@@ -68,6 +69,7 @@ BuildRequires:	scons
 BuildRequires:  ladspa-devel
 Requires:			alsa
 Requires:			fftw
+Requires:			fftw2
 Requires:			fltk
 Requires:			jack
 Requires:			mad
@@ -276,6 +278,7 @@ scons -j$numprocs configure \
 	with_osc_support=0 \
 	with_jack_support=1 \
 	with_fftw=1 \
+	with_fftw3=1 \
 	with_nr_fft=1 \
 	with_sndfile=1 \
 	with_oggvorbis=1 \
@@ -476,7 +479,8 @@ done
 %doc SMSTools-%{SMSTools_version}/INSTALL
 %{_bindir}/SMSTools
 %{_bindir}/SMSBatch
-%{_mandir}/man1/SMSTools*
+%{_bindir}/SMSConsole
+%{_mandir}/man1/SMS*
 %{_datadir}/applications/SMSTools.desktop
 %{_datadir}/pixmaps/clam-smstools.png
 
