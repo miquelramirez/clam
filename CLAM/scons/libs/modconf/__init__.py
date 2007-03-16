@@ -23,7 +23,7 @@ def setup_global_environment( clam_env, conf ) :
 
 	if sys.platform != 'win32' :
 		if clam_env['release'] :
-			clam_env.Append( CCFLAGS='-O2 -fomit-frame-pointer -Wall'.split(' ') )
+			clam_env.Append( CCFLAGS='-g -O2 -fomit-frame-pointer -Wall'.split(' ') )
 		else :
 			clam_env.Append( CCFLAGS='-g -Wall'.split(' ') )
 	else :
