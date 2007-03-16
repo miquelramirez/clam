@@ -13,7 +13,7 @@
 
 
 CFLAGS = -Wall -g
-SCONS_OPTIONS= prefix=/usr xmlbackend=xercesc release=yes with_osc_support=no with_alsa=yes with_portaudio=no double=0
+SCONS_OPTIONS= prefix=/usr xmlbackend=xercesc release=yes with_osc_support=no double=0 with_fftw3=yes
 SCONS= scons $(SCONS_OPTIONS)
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
