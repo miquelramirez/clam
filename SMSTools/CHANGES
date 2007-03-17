@@ -1,5 +1,6 @@
-2007-??-?? SMSTools 0.4.6 SVN $Revision$
+2007-03-18 SMSTools 0.4.6
 'That will be CLAM 1.0 release'
+ * SVN $Revision$
  * Using CLAM 0.99.0
  * SMSConsole and SMSBatch are built again
  * Fix: Not blocking when 'Building Graphic Data (Closes #190)
