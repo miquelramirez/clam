@@ -1,5 +1,6 @@
-2007-??-?? CLAM 0.99.0 SVN $Revision$
+2007-03-18 CLAM 0.99.0
 'That will be CLAM 1.0 release'
+ * SVN $Revision$
  * New binary in NetworkEditor/ called OfflinePlayer to batch-process
    clam network files given an input and output audio file.
  * Fixes in the modconf to work in suse (thanks Toni)
