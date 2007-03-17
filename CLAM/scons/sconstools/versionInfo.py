@@ -48,7 +48,8 @@ def versionFromLocalInfo( product='CLAM', changesFile="CHANGES" ):
 def versionFromRemoteSvn( product="CLAM" ) :
 	os.system("rm CHANGES*" )
 	os.system("svn export "+ remoteRepository + product + "/CHANGES" )
-	version, _ = _parseChangesFile( "CHANGES", product ) 
+	version, revision = _parseChangesFile( "CHANGES", product ) 
+	if version==revision : return version, version
 	revision = _svnRevisionOf( remoteRepository )
 	return version, _svnVersion(version, revision)
 	
