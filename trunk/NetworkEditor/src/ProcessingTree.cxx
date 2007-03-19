@@ -35,7 +35,6 @@ const static char * processingClasses[] = {
 	"Audio Input/Output",
 	"AudioSource",
 	"AudioSink",
-//	"AudioIn",
 	0,
 	"Audio File I/O",
 	"MonoAudioFileReader",
