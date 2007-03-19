@@ -35,9 +35,6 @@ const static char * processingClasses[] = {
 	"Audio Input/Output",
 	"AudioSource",
 	"AudioSink",
-#ifndef WIN32
-	"AudioOut",
-#endif
 //	"AudioIn",
 	0,
 	"Audio File I/O",
@@ -168,7 +165,7 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 // TODO: Ladspa is still work in progress 
 	CLAM::LadspaPlugins plugins = CLAM::LadspaPluginsExplorer::GetList();
 	CLAM::LadspaPlugins::const_iterator it=plugins.begin();
-	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (still won't work)" );
+	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA" );
 	for (; it != plugins.end(); it++)
 	{
 		const CLAM::LadspaPlugin& plugin = *it;
