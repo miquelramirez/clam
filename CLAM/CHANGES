@@ -41,6 +41,8 @@
    * Mac Build: PPC/intel dmg names are selected automatically
  * Ladpa support:
    * New class LadspaPluginExplorer
+   * New class LadspaFactory 
+   * New class LadspaWrapper
  * Added experimental HarmonicPeaksGenerator and VowelResonator
  * SpectralPeakArray: optimizations by not copying certain buffers
  * Removed XXNetworkPlayer::IsModified/SetModified methods.
