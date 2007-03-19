@@ -18,5 +18,8 @@ To use PortAudio instead of jack do the following:
 
 == Prototyper usage ==
 
-TODO
+ Usage: ./Prototyper <networkfile> [ <uifile> ] [-o] [-b <backend> [-b <backend> ...]]
+Options:
+ -o             Non interactive mode
+ -b <backend>   Try backend (portaudio, alsa, jack).
 
