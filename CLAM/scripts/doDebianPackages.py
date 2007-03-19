@@ -51,7 +51,7 @@ def phase(desc) :
 	print "\033[33m== ", desc, "\033[0m"
 
 phase( "Setting up the environment" )
-norun("echo Remember: run this as root, and configure proxy settings (both in the script and ~/.subversion/servers)")
+run("echo Remember: run this as root, and configure proxy settings (both in the script and ~/.subversion/servers)")
 run ("mkdir -p hooks")
 run ("mkdir -p aptcache")
 run ("mkdir -p apt.config/apt.conf.d")
@@ -156,9 +156,9 @@ for (maindistro, distribution, mirror, components) in distributions :
 	if "~svn" in repositories[0][2]:
 		targetWebDir += "svnsnapshots/"
 
-	norun("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
-	norun("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
-	norun("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
+	run("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
+	run("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
+	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
 
 
 

@@ -20,15 +20,16 @@ namespace CLAM
 	class InControl;
 	class OutControl;
 
-class LadspaWrapperConfig : public ProcessingConfig
+class LadspaWrapperConfig : public ProcessingConfig //TODO remove this config. pass params to constructor
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (LadspaWrapperConfig, 5, ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (LadspaWrapperConfig, 6, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, std::string, Name);
 	DYN_ATTRIBUTE (1, public, std::string, LibraryFileName);
-	DYN_ATTRIBUTE (2, public, int, Index);
-	DYN_ATTRIBUTE (3, public, int, SampleRate);
-	DYN_ATTRIBUTE (4, public, int, Size);
+	DYN_ATTRIBUTE (2, public, std::string, FactoryKey);
+	DYN_ATTRIBUTE (3, public, int, Index);
+	DYN_ATTRIBUTE (4, public, int, SampleRate);
+	DYN_ATTRIBUTE (5, public, int, Size);
 
 protected:
 	void DefaultInit(void);
@@ -58,12 +59,12 @@ private:
 public:
 	LadspaWrapper();
 	LadspaWrapper( const LadspaWrapperConfig & );
-	LadspaWrapper( const std::string& libraryFileName, unsigned index );
+	LadspaWrapper( const std::string& libraryFileName, unsigned index, const std::string& factoryKey );
 
 	bool Do();
 	virtual ~LadspaWrapper(){}
 
-	const char * GetClassName() const {return "LadspaWrapper";}
+	const char * GetClassName() const;
 	
 	inline const ProcessingConfig &GetConfig() const { return mConfig; }
 	bool ConcreteConfigure(const ProcessingConfig& c);

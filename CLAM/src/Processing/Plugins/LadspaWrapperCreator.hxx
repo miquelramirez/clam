@@ -10,15 +10,17 @@ class LadspaWrapperCreator  //TODO move to CLAM/src/Processing/Plugins
 private:
 	std::string _libraryFileName;
 	unsigned _index;
+	std::string _factoryKey;
 public:
-	LadspaWrapperCreator( const std::string& libraryFileName, unsigned index ) 
+	LadspaWrapperCreator( const std::string& libraryFileName, unsigned index, const std::string& key ) 
 		: _libraryFileName( libraryFileName )
 		, _index( index )
+		, _factoryKey( key )
 	{
 	}
 	virtual Processing* Create()
 	{
-		return new CLAM::LadspaWrapper(_libraryFileName, _index);
+		return new CLAM::LadspaWrapper(_libraryFileName, _index, _factoryKey);
 	}
 	virtual ~LadspaWrapperCreator() {};
 };
