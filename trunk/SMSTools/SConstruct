@@ -240,7 +240,7 @@ if sys.platform=='darwin' :
 	mac_bundle = env.Bundle(
 		BUNDLE_NAME='SMSTools', 
 		BUNDLE_BINARIES=["SMSTools"],
-		BUNDLE_RESOURCEDIRS=["example-data"],
+#		BUNDLE_RESOURCEDIRS=["example-data"],
 		BUNDLE_PLIST='resources/Info.plist',
 		BUNDLE_ICON='resources/CLAM.icns',
 	 )
@@ -248,7 +248,8 @@ if sys.platform=='darwin' :
 
 	arch = os.popen("uname -p").read().strip()
 	mac_packages = env.Dmg('CLAM_SMSTools-%s-%s.dmg'% (fullVersion, arch), [
-		env.Dir('SMSTools.app/')
+		env.Dir('SMSTools.app/'), 
+		env.Dir('example-data'),
 	] )
 	env.Alias('package', mac_packages)
 
