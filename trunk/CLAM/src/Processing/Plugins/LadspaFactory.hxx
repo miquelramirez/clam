@@ -75,11 +75,6 @@ public:
 
 	Processing* CreateSafe(const std::string& key)
 	{
-		if( GetCreator( key ) == NULL )
-		{
-			throw NonExistingKeyError();
-		}
-
 		return GetCreator( key )->Create();
 	}
 	void AddCreator( const std::string& key, LadspaWrapperCreator* creator )
@@ -95,7 +90,7 @@ public:
 
 		LadspaCreatorMap::const_iterator it = _creators.find( key );
 		if(it == _creators.end())
-			return NULL;
+			throw NonExistingKeyError();
 		return it->second;
 	}
 	std::string RegisteredKeys()

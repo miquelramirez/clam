@@ -18,7 +18,6 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 	{
 	        ladspaPath = "/usr/lib/ladspa";
 	}
-	std::cout << ladspaPath << std::endl;
 	DIR* ladspaDir = opendir(ladspaPath.c_str());
 	if (!ladspaDir)
 	{
@@ -40,7 +39,7 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 			std::cout << "EXPLORER warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
 			continue;
 		}
-		std::cout << "EXPLORER opened plugin: " << pluginFullFilename << std::endl;
+		//std::cout << "EXPLORER opened plugin: " << pluginFullFilename << std::endl;
 		for (unsigned long i=0; descriptorTable(i); i++)
 		{
 			LadspaPlugin plugin;
@@ -52,7 +51,6 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 			std::ostringstream oss;
 			oss << plugin.label << i;
 			plugin.factoryID = oss.str();
-			std::cout << "\tfactoryID: " << plugin.factoryID << std::endl;
 			result.push_back(plugin);
 		}
 	}

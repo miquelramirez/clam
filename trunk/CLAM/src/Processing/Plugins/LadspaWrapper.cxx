@@ -82,7 +82,6 @@ bool LadspaWrapper::ConcreteConfigure(const ProcessingConfig& c)
 	CopyAsConcreteConfig(mConfig, c);
 
 	mSharedObject = dlopen(mConfig.GetLibraryFileName().c_str(), RTLD_LAZY);
-	std::cout << "loaded ladspa lugin" << std::endl;
 	
 	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)dlsym(mSharedObject, "ladspa_descriptor");
 
