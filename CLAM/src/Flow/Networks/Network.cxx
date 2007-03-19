@@ -205,13 +205,7 @@ namespace CLAM
 		}
 		catch (ErrFactory&)
 		{
-			std::cout << "Network::AddProcessing: couldn't create processing using the clam factory" 
-			<< "trying with Ladpas. Available: " << LadspaFactory::GetInstance().RegisteredKeys()
-			<< std::endl;
-			proc == LadspaFactory::GetInstance().CreateSafe( factoryKey );
-			std::cout << "Network::AddProcessing: LadspaWrapper created" << std::endl;
-			std::cout << "LadspaWrapper In Ports: " << proc->GetInPorts().Size() << std::endl;
-			std::cout << "LadspaWrapper Out Ports: " << proc->GetOutPorts().Size() << std::endl;
+			proc = LadspaFactory::GetInstance().CreateSafe( factoryKey );
 		}
 #else 
 		proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
