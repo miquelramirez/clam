@@ -28,7 +28,7 @@
 #include "ConnectionDefinitionAdapter.hxx"
 #include "Factory.hxx"
 #include "XmlStorageErr.hxx"
-#ifdef USE_LADSPA
+#ifdef USE_LADSPA //TODO alway include it. move conditional code in LFactory.hxx
 #	include "LadspaFactory.hxx"
 #endif
 
@@ -202,6 +202,7 @@ namespace CLAM
 		{
 			proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
 		}
+#ifdef USE_LADSPA //TODO move conditional code inside LadspaFactory
 		catch (ErrFactory&)
 		{
 			std::cout << "Network::AddProcessing: couldn't create processing using the clam factory" 
@@ -210,6 +211,7 @@ namespace CLAM
 			proc == LadspaFactory::GetInstance().CreateSafe( factoryKey );
 			std::cout << "Network::AddProcessing: LadspaWrapper created" << std::endl;
 		}
+#endif
 		AddProcessing(name, proc);
 	}
 
