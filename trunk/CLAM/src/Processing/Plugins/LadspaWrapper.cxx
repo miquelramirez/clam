@@ -129,6 +129,7 @@ void LadspaWrapper::RemovePortsAndControls()
 
 void LadspaWrapper::ConfigurePortsAndControls()
 {
+	RemovePortsAndControls();
 	for(unsigned int i=0;i<mDescriptor->PortCount;i++)
 	{
 		// in port
