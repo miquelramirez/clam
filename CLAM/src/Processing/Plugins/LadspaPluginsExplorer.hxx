@@ -12,7 +12,8 @@ struct LadspaPlugin
 	std::string libraryFileName;
 	unsigned index;
 	std::string description;
-	std::string factoryID;
+	std::string label; // store a short name to create the factory ID
+	std::string factoryID; 
 };
 
 typedef std::list<LadspaPlugin> LadspaPlugins;

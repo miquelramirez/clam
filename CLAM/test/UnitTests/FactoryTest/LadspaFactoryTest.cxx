@@ -13,7 +13,8 @@ class LadspaFactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( LadspaFactoryTest );
 	CPPUNIT_TEST( testCreate_existing );
 	CPPUNIT_TEST( testCreate_nonExistingKey_throws );
-//	CPPUNIT_TEST( testCreate_withTwoCreators );
+	CPPUNIT_TEST( testCreate_withTwoCreators );
+	CPPUNIT_TEST( testCreate_emptyCreatorMap_throws );
 	CPPUNIT_TEST_SUITE_END();
 protected:
 	class Processing //TODO delete. it should be CLAM::Processing 
@@ -58,27 +59,45 @@ protected:
 	};
 	class LadspaFactory
 	{
-		std::string _key;
-		LadspaWrapperCreator* _creator;
 	public:
-		LadspaFactory() : _creator(0)
+		typedef std::map< std::string, LadspaWrapperCreator* > LadspaCreatorMap;
+
+		LadspaFactory()
 		{
 		}
 		class NonExistingKeyError
 		{
 		};
+		class EmptyCreatorListError
+		{
+		};
 		Processing* Create(const std::string& key)
 		{
-			if (!_creator)
+			if( GetCreator( key ) == NULL )
+			{
 				throw NonExistingKeyError();
-		
-			return _creator->Create();
+			}
+
+			return GetCreator( key )->Create();
 		}
 		void AddCreator( const std::string& key, LadspaWrapperCreator* creator )
 		{
-			_key = key;
-			_creator = creator;
+			_creators[key] = creator;
 		}
+		LadspaWrapperCreator* GetCreator( const std::string& key )
+		{
+			if(_creators.begin() == _creators.end())
+			{
+				throw EmptyCreatorListError();
+			}
+
+			LadspaCreatorMap::const_iterator it = _creators.find( key );
+			if(it == _creators.end())
+				return NULL;
+			return it->second;
+		}
+	private:
+		LadspaCreatorMap _creators;
 	};
 
 	void testCreate_existing()
@@ -93,6 +112,7 @@ protected:
 	void testCreate_nonExistingKey_throws()
 	{
 		LadspaFactory factory;
+		factory.AddCreator( "foo", new LadspaWrapperCreator("libfoo.so", 1) );
 		try
 		{
 			factory.Create("non-existing");
@@ -103,10 +123,6 @@ protected:
 	}
 	void testCreate_withTwoCreators()
 	{
-//TODO
-//
-//  this test is still in RED. just enable-it from above
-//
 		LadspaFactory factory;
 		factory.AddCreator( "foo", new LadspaWrapperCreator("libfoo.so", 1) );
 		factory.AddCreator( "bar", new LadspaWrapperCreator("libbar.so", 2) );
@@ -116,6 +132,17 @@ protected:
 		CPPUNIT_ASSERT_EQUAL( 1u, wrapper->Index() );
 		
 	}
+	void testCreate_emptyCreatorMap_throws()
+	{
+		LadspaFactory factory;
+		try {
+			factory.Create("non-existing");
+			CPPUNIT_FAIL("expected an exception");
+		} catch ( LadspaFactory::EmptyCreatorListError& )
+		{
+		}
+	}
+
 	
 };
 
