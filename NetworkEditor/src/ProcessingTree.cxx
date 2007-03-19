@@ -26,6 +26,7 @@
 
 #ifdef USE_LADSPA
 #	include <CLAM/LadspaPluginsExplorer.hxx> 
+#	include <CLAM/LadspaFactory.hxx> 
 #endif
 
 namespace NetworkGUI
