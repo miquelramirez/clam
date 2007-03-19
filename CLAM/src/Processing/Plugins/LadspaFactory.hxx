@@ -106,6 +106,7 @@ public:
 		{
 			result += it->first +" ";
 		}
+		return result;
 	}
 private:
 	typedef std::map< std::string, LadspaWrapperCreator* > LadspaCreatorMap;
