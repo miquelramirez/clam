@@ -28,7 +28,9 @@
 #include "ConnectionDefinitionAdapter.hxx"
 #include "Factory.hxx"
 #include "XmlStorageErr.hxx"
-
+#ifdef USE_LADSPA
+#	include "LadspaFactory.hxx"
+#endif
 
 namespace CLAM
 {	
@@ -193,17 +195,29 @@ namespace CLAM
 		mFlowControl->ProcessingAddedToNetwork(*proc);
 	}
 
-	void Network::AddProcessing( const std::string & name, const std::string & factoryName )
+	void Network::AddProcessing( const std::string & name, const std::string & factoryKey )
 	{
-		Processing * proc = ProcessingFactory::GetInstance().CreateSafe( factoryName  );
+		Processing * proc=0;
+		try
+		{
+			proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
+		}
+		catch (ErrFactory&)
+		{
+			std::cout << "Network::AddProcessing: couldn't create processing using the clam factory" 
+			<< "trying with Ladpas. Available: " << LadspaFactory::GetInstance().RegisteredKeys()
+			<< std::endl;
+			proc == LadspaFactory::GetInstance().CreateSafe( factoryKey );
+			std::cout << "Network::AddProcessing: LadspaWrapper created" << std::endl;
+		}
 		AddProcessing(name, proc);
 	}
 
 	// returns the name that was used so the same one can be used when calling CreateProcessingController (hack)
-	std::string Network::AddProcessing( const std::string & factoryName )
+	std::string Network::AddProcessing( const std::string & factoryKey )
 	{
-		std::string name = GetUnusedName( factoryName  ); 
-		AddProcessing(name, factoryName );
+		std::string name = GetUnusedName( factoryKey  ); 
+		AddProcessing(name, factoryKey );
 		return name;
 	}
 

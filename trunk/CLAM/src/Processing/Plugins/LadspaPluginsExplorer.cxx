@@ -4,6 +4,7 @@
 #include <dlfcn.h> //TODO move as well
 #include <dirent.h> //TODO move
 #include <sys/types.h>
+#include <sstream>
 
 namespace CLAM
 {
@@ -47,6 +48,11 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 			plugin.index = i;
 			plugin.description = descriptor->Name;
 			plugin.libraryFileName = pluginFullFilename;
+			plugin.label = descriptor->Label;
+			std::ostringstream oss;
+			oss << plugin.label << i;
+			plugin.factoryID = oss.str();
+			std::cout << "\tfactoryID: " << plugin.factoryID << std::endl;
 			result.push_back(plugin);
 		}
 	}

@@ -23,6 +23,7 @@
 #define __PROCESSINGTREE_HXX__
 
 #include <QtGui/QTreeWidget>
+#include "LadspaFactory.hxx"
 
 namespace CLAM
 {
@@ -39,6 +40,7 @@ public:
 	/** TODO: this tree should be derived from the CLAM::Factory instance */
 	ProcessingTree( QWidget * parent = 0);
 	virtual ~ProcessingTree();
+private:
 public slots:
 	void PressProcessing(QTreeWidgetItem *, int column);
 };

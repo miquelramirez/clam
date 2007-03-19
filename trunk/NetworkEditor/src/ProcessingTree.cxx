@@ -158,21 +158,26 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 		for (; processingClasses[i]; i++)
 		{
 			QTreeWidgetItem * item = new QTreeWidgetItem( group, QStringList() << processingClasses[i]);
+			item->setText(1, processingClasses[i]); // processing factory key
 			item->setIcon(0, QIcon(":/icons/images/processing.png"));
 		}
 	}
 	
 #ifdef USE_LADSPA
 // TODO: Ladspa is still work in progress 
-	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (still won't work)" );
-
 	CLAM::LadspaPlugins plugins = CLAM::LadspaPluginsExplorer::GetList();
 	CLAM::LadspaPlugins::const_iterator it=plugins.begin();
+	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (still won't work)" );
 	for (; it != plugins.end(); it++)
 	{
 		const CLAM::LadspaPlugin& plugin = *it;
+		std::cout << "\tplugin: " << plugin.label << " index: " << plugin.index << " factoryID: " << plugin.factoryID << std::endl;
+		const std::string factoryID(plugin.factoryID);
+		CLAM::LadspaFactory::GetInstance().AddCreator(factoryID, new CLAM::LadspaWrapperCreator(plugin.libraryFileName, plugin.index) );
 		QTreeWidgetItem * item = new QTreeWidgetItem( ladspaTree, QStringList() << plugin.description.c_str() );
 		item->setIcon(0, QIcon(":/icons/images/processing.png"));
+		item->setText(1, plugin.factoryID.c_str());
+		
 	}
 	
 #endif //USE_LADSPA
@@ -192,6 +197,9 @@ void ProcessingTree::PressProcessing(QTreeWidgetItem * item, int column)
 	if (!item->parent()) return;
 
 	QString className = item->text(0);
+#ifdef USE_LADSPA
+	className = item->text(1);
+#endif
 	QDrag *drag = new QDrag( this);
 	QMimeData * data = new QMimeData;
 	data->setText(className);
