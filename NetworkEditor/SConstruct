@@ -269,19 +269,28 @@ if sys.platform=='darwin' :
 	mac_designer_bundle = env.Bundle( 
 		BUNDLE_NAME='QtDesigner', 
 		BUNDLE_BINARIES=["$QTDIR/bin/Designer.app/Contents/MacOS/Designer"],
-		BUNDLE_PLUGINS=["libCLAMWidgets.dylib"],
+		BUNDLE_PLUGINS=[
+			"libCLAMWidgets.dylib",
+			"$QTDIR/plugins/designer/libarthurplugin.dylib",
+		],
 		BUNDLE_RESOURCEDIRS=[],
 		BUNDLE_PLIST='resources/QtDesigner-Info.plist',
 		BUNDLE_ICON='resources/QtDesigner.icns',
 	 )
+	# Kludge to fix the plugins location for Designer
+	env.AddPostAction( mac_designer_bundle, env.Action( [
+		'mv QtDesigner.app/Contents/MacOS/Designer QtDesigner.app/Contents/MacOS/QtDesigner',
+		'mkdir QtDesigner.app/Contents/MacOS/designer',
+		'mv QtDesigner.app/Contents/PlugIns/* QtDesigner.app/Contents/MacOS/designer',
+	]))
 	env.Alias('bundle', [mac_networkeditor_bundle, mac_prototyper_bundle, mac_designer_bundle])
 
-	#TODO mac_bundle should be dependency of Dmga:	
+	#TODO mac_bundle should be dependency of Dmg:	
 	arch = os.popen("uname -p").read().strip()
 	mac_packages = env.Dmg('CLAM_NetworkEditor-%s-%s.dmg'% (fullVersion, arch), [
 		env.Dir('NetworkEditor.app/'), 
 		env.Dir('Prototyper.app'),
-#		env.Dir('QtDesigner.app'),
+		env.Dir('QtDesigner.app'),
 	] )
 	env.Alias('package', mac_packages)
 
