@@ -23,7 +23,6 @@
 #define __PROCESSINGTREE_HXX__
 
 #include <QtGui/QTreeWidget>
-#include "LadspaFactory.hxx"
 
 namespace CLAM
 {
