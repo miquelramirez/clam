@@ -198,11 +198,11 @@ namespace CLAM
 	void Network::AddProcessing( const std::string & name, const std::string & factoryKey )
 	{
 		Processing * proc=0;
+#ifdef USE_LADSPA //TODO move conditional code inside LadspaFactory
 		try
 		{
 			proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
 		}
-#ifdef USE_LADSPA //TODO move conditional code inside LadspaFactory
 		catch (ErrFactory&)
 		{
 			std::cout << "Network::AddProcessing: couldn't create processing using the clam factory" 
@@ -211,6 +211,8 @@ namespace CLAM
 			proc == LadspaFactory::GetInstance().CreateSafe( factoryKey );
 			std::cout << "Network::AddProcessing: LadspaWrapper created" << std::endl;
 		}
+#else 
+		proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
 #endif
 		AddProcessing(name, proc);
 	}
