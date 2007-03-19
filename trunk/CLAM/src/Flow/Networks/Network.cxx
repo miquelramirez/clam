@@ -210,6 +210,8 @@ namespace CLAM
 			<< std::endl;
 			proc == LadspaFactory::GetInstance().CreateSafe( factoryKey );
 			std::cout << "Network::AddProcessing: LadspaWrapper created" << std::endl;
+			std::cout << "LadspaWrapper In Ports: " << proc->GetInPorts().Size() << std::endl;
+			std::cout << "LadspaWrapper Out Ports: " << proc->GetOutPorts().Size() << std::endl;
 		}
 #else 
 		proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
