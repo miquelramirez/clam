@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2007 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -28,21 +28,10 @@
 //#include <iostream>
 
 #include "Assert.hxx"
+#include "ErrFactory.hxx"
 
 namespace CLAM {
 
-/// Error type thrown by Factory classes (Factory, FactoryRegistry)
-class ErrFactory : public Err
-{
-public:
-	ErrFactory(const char* msg) : Err(msg)
-	{}
-
-};
-
-#ifndef CLAM_MODULE
-#define CLAM_MODULE "Application"
-#endif
 
 template <typename AbstractProductType>
 class Factory

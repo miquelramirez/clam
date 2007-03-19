@@ -24,10 +24,11 @@ void LadspaWrapperConfig::DefaultInit(void)
 	AddAll();
 	UpdateData();
 	SetName("LadspaWrapper");
-	SetIndex(0);
 	SetSampleRate(44100);
 	SetSize(512);
 	SetLibraryFileName("");
+	SetIndex(0);
+	SetFactoryKey("");
 }
 
 LadspaWrapper::LadspaWrapper()
@@ -47,7 +48,7 @@ LadspaWrapper::LadspaWrapper( const LadspaWrapperConfig & cfg )
 	Configure(cfg);
 }
 
-LadspaWrapper::LadspaWrapper( const std::string& libraryFileName, unsigned index )
+LadspaWrapper::LadspaWrapper( const std::string& libraryFileName, unsigned index, const std::string& key )
 	: mInstance(0),
 	  mDescriptor(0),
 	  mSharedObject(0)
@@ -55,6 +56,7 @@ LadspaWrapper::LadspaWrapper( const std::string& libraryFileName, unsigned index
 	LadspaWrapperConfig cfg;
 	cfg.SetLibraryFileName(libraryFileName);
 	cfg.SetIndex(index);
+	cfg.SetFactoryKey(key);
 	Configure(cfg);
 }
 
@@ -178,6 +180,10 @@ void LadspaWrapper::UpdatePointers()
 			mDescriptor->connect_port(mInstance, i, mOutputPorts[outPortIndex]->GetAudio().GetBuffer().GetPtr());
 	}
 
+}
+const char * LadspaWrapper::GetClassName() const
+{
+	return mConfig.GetFactoryKey().c_str();
 }
 
 } // namespace CLAM
