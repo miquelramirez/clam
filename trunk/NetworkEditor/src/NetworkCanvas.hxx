@@ -159,7 +159,7 @@ private:
 		if (_tooltipText.isNull()) return;
 		QFontMetrics metrics(font());
 		int margin =3;
-		int cursorSize = 8;
+		int cursorSize = 16;
 
 		QRect boundingRect = metrics.boundingRect(QRect(0,0,width(),height()), Qt::AlignLeft, _tooltipText);
 		double tooltipWidth = boundingRect.width()+2*margin;
