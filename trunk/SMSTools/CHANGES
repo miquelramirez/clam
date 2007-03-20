@@ -1,6 +1,12 @@
+2007-03-20 SMSTools 0.4.7
+''
+ * SVN $Revision$
+ * Using CLAM 1.0
+ * Functional Ladspa support
+
 2007-03-18 SMSTools 0.4.6
 'That will be CLAM 1.0 release'
- * SVN $Revision$
+ * SVN Revision: 9864
  * Using CLAM 0.99.0
  * SMSConsole and SMSBatch are built again
  * Fix: Not blocking when 'Building Graphic Data (Closes #190)
