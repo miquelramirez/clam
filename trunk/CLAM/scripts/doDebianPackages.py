@@ -13,7 +13,7 @@ distributions = [
 	('ubuntu', 'feisty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 	('ubuntu', 'edgy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('debian', 'etch',   "http://ftp.de.debian.org/debian/", ['main']),
-	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
+#	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
