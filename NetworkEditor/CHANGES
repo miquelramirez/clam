@@ -1,6 +1,12 @@
+2007-03-20 NetworkEditor 1.0
+''
+ * SVN $Revision$
+ * Using CLAM 1.0
+ * Functional Ladspa support
+
 2007-03-18 NetworkEditor 0.4.4
 'That will be CLAM 1.0 release'
- * SVN $Revision$
+ * SVN Revision: 9864
  * Using CLAM 0.99.0
  * Prototyper sets the name of the network as JACK client name
  * More processings: Different IFFT and FFT implementations,

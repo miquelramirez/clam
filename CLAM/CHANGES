@@ -1,7 +1,11 @@
+2007-03-20 CLAM 1.0
+''
+ * SVN $Revision$
+ * Funtional Ladspa host
 
 2007-03-18 CLAM 0.99.0
 'That will be CLAM 1.0 release'
- * SVN $Revision$
+ * SVN Revision: 9864
  * New binary in NetworkEditor/ called OfflinePlayer to batch-process
    clam network files given an input and output audio file.
  * Fixes in the modconf to work in suse (thanks Toni)

@@ -1,6 +1,11 @@
+2007-03-20 Voice2MIDI 0.3.6
+''
+ * SVN $Revision$
+ * Using CLAM 1.0
+
 2007-03-18 Voice2MIDI 0.3.5
 'That will be CLAM 1.0 release'
- * SVN $Revision$
+ * SVN Revision: 9864
  * Using CLAM 0.99.0
 
 2007-01-?? Voice2MIDI 0.3.4
