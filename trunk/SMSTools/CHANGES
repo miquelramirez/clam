@@ -1,7 +1,11 @@
+2007-??-?? SMSTools 0.4.8 SVN $Revision$
+''
+ * Using CLAM 1.0.1
+
 2007-03-20 SMSTools 0.4.7
 'The Berlin release'
- * SVN $Revision$
- * Using CLAM 1.0
+ * SVN Revision: 9881
+ * Using CLAM 1.0.0
  * Functional Ladspa support
 
 2007-03-18 SMSTools 0.4.6

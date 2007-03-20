@@ -1,7 +1,11 @@
+2007-??-?? Voice2MIDI 0.3.7 SVN $Revision$
+''
+ * Using CLAM 1.0.1
+
 2007-03-20 Voice2MIDI 0.3.6
 'The Berlin release'
- * SVN $Revision$
- * Using CLAM 1.0
+ * SVN Revision: 9881
+ * Using CLAM 1.0.0
 
 2007-03-18 Voice2MIDI 0.3.5
 'That will be CLAM 1.0 release'
