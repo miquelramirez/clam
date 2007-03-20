@@ -62,7 +62,10 @@ public:
 	LadspaWrapper( const std::string& libraryFileName, unsigned index, const std::string& factoryKey );
 
 	bool Do();
-	virtual ~LadspaWrapper(){}
+	virtual ~LadspaWrapper()
+	{
+		RemovePortsAndControls();
+	}
 
 	const char * GetClassName() const;
 	
