@@ -5,7 +5,7 @@
 
 namespace CLAM {
 
-class LadspaWrapperCreator  //TODO move to CLAM/src/Processing/Plugins
+class LadspaWrapperCreator  
 {
 private:
 	std::string _libraryFileName;
