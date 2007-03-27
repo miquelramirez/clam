@@ -13,48 +13,72 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 {
 	LadspaPlugins result;
 	char* path = getenv("LADSPA_PATH");
-	std::string ladspaPath = path ? path : "";
-	if(ladspaPath == "")
+	std::string ladspaPath;
+	if(!path)
 	{
-	        ladspaPath = "/usr/lib/ladspa";
+		std::cout << "[LADSPA] LADSPA_PATH empty! Using defaults." << std::endl;
+		ladspaPath = std::string("/usr/lib/ladspa:/usr/local/lib/ladspa:");
+		ladspaPath += getenv("HOME");
+		ladspaPath += "/.ladspa";
+	} 
+	else 
+	{
+		ladspaPath = path;
 	}
-	DIR* ladspaDir = opendir(ladspaPath.c_str());
-	if (!ladspaDir)
+	//std::cout << "[LADSPA] Parsed LADSPA library path: " << ladspaPath << std::endl;
+	std::string dir;
+	while (!ladspaPath.empty())
 	{
-		std::cout << "EXPLORER warning: could not open ladspa dir: " << ladspaPath << std::endl;
-		return result; //TODO something different when we'll be exploring several paths
-	}
-	struct dirent * dirEntry;
-	while( (dirEntry = readdir(ladspaDir)) )
-	{
-		std::string pluginFilename(dirEntry->d_name);
-		if(pluginFilename == "." || pluginFilename == "..")
-			continue;
-		LADSPA_Descriptor_Function descriptorTable = 0;
-		std::string pluginFullFilename(ladspaPath + std::string("/") + pluginFilename);
-		void* handle = dlopen( pluginFullFilename.c_str(), RTLD_NOW);
-		descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
-		if (!descriptorTable)
+		//std::cout << "[LADSPA] ladspaPath = " << ladspaPath << " size = " << ladspaPath.size() << std::endl;
+		dir = ladspaPath.substr(0, ladspaPath.find(":"));
+		if (ladspaPath.find(":") != std::string::npos)
 		{
-			std::cout << "EXPLORER warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
+			ladspaPath = ladspaPath.substr(ladspaPath.find(":")+1);
+		} 
+		else 
+		{
+			ladspaPath = "";
+		}
+
+		//std::cout << "[LADSPA] Reading dir: " << dir << std::endl;
+		DIR* ladspaDir = opendir(dir.c_str());
+		if (!ladspaDir)
+		{
+			std::cout << "[LADSPA] warning: could not open ladspa dir: " << ladspaPath << std::endl;
 			continue;
 		}
-		//std::cout << "EXPLORER opened plugin: " << pluginFullFilename << std::endl;
-		for (unsigned long i=0; descriptorTable(i); i++)
+		struct dirent * dirEntry;
+		while ( (dirEntry = readdir(ladspaDir)) )
 		{
-			LadspaPlugin plugin;
-			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
-			plugin.index = i;
-			plugin.description = descriptor->Name;
-			plugin.libraryFileName = pluginFullFilename;
-			plugin.label = descriptor->Label;
-			std::ostringstream oss;
-			oss << plugin.label << i;
-			plugin.factoryID = oss.str();
-			result.push_back(plugin);
+			std::string pluginFilename(dirEntry->d_name);
+			if(pluginFilename == "." || pluginFilename == "..")
+				continue;
+			LADSPA_Descriptor_Function descriptorTable = 0;
+			std::string pluginFullFilename(dir + std::string("/") + pluginFilename);
+			void* handle = dlopen( pluginFullFilename.c_str(), RTLD_NOW);
+			descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
+			if (!descriptorTable)
+			{
+				std::cout << "[LADSPA] warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
+				continue;
+			}
+			//std::cout << "[LADSPA] \topened plugin: " << pluginFullFilename << std::endl;
+			for (unsigned long i=0; descriptorTable(i); i++)
+			{
+				LadspaPlugin plugin;
+				LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
+				plugin.index = i;
+				plugin.description = descriptor->Name;
+				plugin.libraryFileName = pluginFullFilename;
+				plugin.label = descriptor->Label;
+				std::ostringstream oss;
+				oss << plugin.label << i;
+				plugin.factoryID = oss.str();
+				result.push_back(plugin);
+			}
 		}
+		closedir(ladspaDir);
 	}
-	closedir(ladspaDir);
 
 	return result;
 }
