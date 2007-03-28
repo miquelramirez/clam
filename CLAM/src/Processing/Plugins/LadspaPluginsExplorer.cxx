@@ -17,8 +17,8 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 	if(!path)
 	{
 		std::cout << "[LADSPA] LADSPA_PATH empty! Using defaults." << std::endl;
-		ladspaPath = std::string("/usr/lib/ladspa:/usr/local/lib/ladspa:");
-		ladspaPath += getenv("HOME");
+		ladspaPath = "/usr/lib/ladspa:/usr/local/lib/ladspa:";
+		ladspaPath += getenv("HOME"); // TODO: Could be NULL in theory
 		ladspaPath += "/.ladspa";
 	} 
 	else 
@@ -26,11 +26,10 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 		ladspaPath = path;
 	}
 	//std::cout << "[LADSPA] Parsed LADSPA library path: " << ladspaPath << std::endl;
-	std::string dir;
 	while (!ladspaPath.empty())
 	{
 		//std::cout << "[LADSPA] ladspaPath = " << ladspaPath << " size = " << ladspaPath.size() << std::endl;
-		dir = ladspaPath.substr(0, ladspaPath.find(":"));
+		std::string dir = ladspaPath.substr(0, ladspaPath.find(":"));
 		if (ladspaPath.find(":") != std::string::npos)
 		{
 			ladspaPath = ladspaPath.substr(ladspaPath.find(":")+1);
