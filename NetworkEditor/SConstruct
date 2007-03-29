@@ -148,9 +148,12 @@ pluginsources.append(os.path.join('src','chordWidgets','Tonnetz.cxx'))
 pluginsources.append(os.path.join('src','chordWidgets','KeySpace.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
 
+commonObject = env.StaticLibrary(target="networkeditor", source=sources)
+env.Append(LIBS=commonObject)
+
 programs = []
 for main in mainSources.items() :
-	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
+	programs += [ env.Program(target=main[0], source = [main[1]]) ]
 """
 if sys.platform == "win32" :
 	env.Append( LIBS=['cppunit_vc7'] )
