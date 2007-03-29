@@ -64,7 +64,11 @@ namespace SDIF
   	mode |= O_BINARY;
 	#endif
 
-		mFile = open(mpName,mode,0644);
+		if (mFile==-1)												// if open file error
+		{
+			//Open the file only if unopened
+			mFile = open(mpName,mode,0644);
+		}
 		if (mFile==-1)												// if open file error
 		{
 			throw CLAM::ErrOpenFile(mpName); 			// throw filename
@@ -76,7 +80,12 @@ namespace SDIF
 	/* close audio file */
 	void File::Close(void)
 	{
-		close(mFile);
+		if (mFile!=-1)												// if open file error
+		{
+			//Close the file only if unopened
+			close(mFile);
+			mFile=-1;
+		}
 	}
 
 	void File::Read(Storage& storage)
