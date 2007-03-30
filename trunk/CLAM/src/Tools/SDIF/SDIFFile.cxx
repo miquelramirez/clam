@@ -68,10 +68,11 @@ namespace SDIF
 		{
 			//Open the file only if unopened
 			mFile = open(mpName,mode,0644);
-		}
-		if (mFile==-1)												// if open file error
-		{
-			throw CLAM::ErrOpenFile(mpName); 			// throw filename
+		
+			if (mFile==-1)												// if open file error
+			{
+				throw CLAM::ErrOpenFile(mpName); 			// throw filename
+			}
 		}
 		mSize = lseek(mFile,0,SEEK_END);
 		lseek(mFile,0,SEEK_SET);
