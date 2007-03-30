@@ -31,40 +31,9 @@
      <x>0</x>
      <y>0</y>
      <width>746</width>
-     <height>28</height>
+     <height>25</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_Interface" >
-    <property name="title" >
-     <string>&amp;Interface</string>
-    </property>
-    <addaction name="action_Edit_interface" />
-    <addaction name="action_Run_prototyper" />
-   </widget>
-   <widget class="QMenu" name="menu_Network" >
-    <property name="title" >
-     <string>&amp;Network</string>
-    </property>
-    <addaction name="action_Play" />
-    <addaction name="action_Stop" />
-   </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="action_Whats_this" />
-    <addaction name="action_Online_tutorial" />
-    <addaction name="action_About" />
-   </widget>
-   <widget class="QMenu" name="menu_View" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <addaction name="action_Show_processing_toolbox" />
-    <addaction name="action_Default_zoom" />
-    <addaction name="action_Zoom_in" />
-    <addaction name="action_Zoom_out" />
-   </widget>
    <widget class="QMenu" name="menu_File" >
     <property name="title" >
      <string>&amp;File</string>
@@ -89,6 +58,39 @@
     <addaction name="action_Print" />
     <addaction name="separator" />
     <addaction name="action_Quit" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="action_Whats_this" />
+    <addaction name="action_Online_tutorial" />
+    <addaction name="action_About" />
+   </widget>
+   <widget class="QMenu" name="menu_View" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Show_processing_toolbox" />
+    <addaction name="action_Default_zoom" />
+    <addaction name="action_Zoom_in" />
+    <addaction name="action_Zoom_out" />
+   </widget>
+   <widget class="QMenu" name="menu_Network" >
+    <property name="title" >
+     <string>&amp;Network</string>
+    </property>
+    <addaction name="action_Play" />
+    <addaction name="action_Stop" />
+   </widget>
+   <widget class="QMenu" name="menu_Interface" >
+    <property name="title" >
+     <string>&amp;Interface</string>
+    </property>
+    <addaction name="action_Edit_interface" />
+    <addaction name="action_Run_prototyper" />
+    <addaction name="separator" />
+    <addaction name="action_Compile_Faust" />
    </widget>
    <addaction name="menu_File" />
    <addaction name="menu_Network" />
@@ -117,6 +119,7 @@
    <addaction name="separator" />
    <addaction name="action_Edit_interface" />
    <addaction name="action_Run_prototyper" />
+   <addaction name="action_Compile_Faust" />
    <addaction name="separator" />
    <addaction name="action_Show_processing_toolbox" />
    <addaction name="action_Zoom_in" />
@@ -326,6 +329,14 @@
    </property>
    <property name="text" >
     <string>&amp;Open</string>
+   </property>
+  </action>
+  <action name="action_Compile_Faust" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/exec.png</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Compile Faust</string>
    </property>
   </action>
  </widget>
