@@ -148,9 +148,11 @@ pluginsources.append(os.path.join('src','chordWidgets','Tonnetz.cxx'))
 pluginsources.append(os.path.join('src','chordWidgets','KeySpace.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
 
-commonObjects = env.StaticLibrary(target="networkeditor", source=sources)
+#commonObjects = env.StaticLibrary(target="networkeditor", source=sources)
+#programs = [ env.Program(target=program, source = [main, commonObjects]) 
+#	for program, main in mainSources.items()]
 
-programs = [ env.Program(target=program, source = [main, commonObjects]) 
+programs = [ env.Program(target=program, source = [main] + sources) 
 	for program, main in mainSources.items()]
 
 """

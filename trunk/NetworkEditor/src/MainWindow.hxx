@@ -377,6 +377,14 @@ public slots:
 				"<p>Run the Prototyper and open the same network you are editing</p>\n"
 			));
 	}
+	void on_action_Compile_Faust_triggered()
+	{
+		QMessageBox::warning(this, tr("Feature not implemented"),
+			tr(
+				"<p>Compile and load Faust</p>\n"
+				"<p>Compile all .dsp (Faust) files in the faust_dir and load all generated Ladspa plugins.</p>\n"
+			));
+	}
 	void on_action_Quit_triggered()
 	{
 		close();
