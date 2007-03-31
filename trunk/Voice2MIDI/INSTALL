@@ -1,10 +1,26 @@
+ IMPORTANT (1 april 2007) ubuntu qt4-dev does not install libmysql correctly.
+ if linkage of Voice2MIDI gives this problem
+ /usr/bin/ld: cannot find -lmysqlclient_r
+
+ do the following:
+ $ cd /usr/lib
+ $ sudo ln -s libmysqlclient_r.so.15.0.0 libmysqlclient_r.so
+
+ or install mysql devel package.
+
+ the issue has been notified upstream (qt) so is expected to be solved
+ in next releases.
+
+----
+
 This file explains how to compile and install the CLAM applications 
 from the source tarballs.
 
  1. Install CLAM dependencies
 
  Please refere to the INSTALL file in the CLAM (library) tarball.
- 
+
+
    
  2. Compile CLAM libraries from the tarball
  
