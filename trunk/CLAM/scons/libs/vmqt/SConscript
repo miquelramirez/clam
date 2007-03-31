@@ -47,7 +47,6 @@ def define_module_contents(env) :
 		] 
 
 	blacklist = [
-		'PortMonitor',
 		]
 
 	file_retriever = FileRetriever( top+'/..', folders, blacklist )
