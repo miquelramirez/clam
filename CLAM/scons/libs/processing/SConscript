@@ -24,6 +24,7 @@ def define_module_contents(env) :
 		'src/Processing/Generators/',
 		'src/Processing/Synthesis',
 		'src/Processing/Transformations',
+		'src/Processing/Monitors/',
 		'externals/numrec',
 		'src/Processing/SDIFIO',
 		'src/Tools/SDIF',
@@ -36,7 +37,6 @@ def define_module_contents(env) :
 		'src/Visualization/Base',
 		'src/Visualization/View',
 		'src/Visualization/Util',
-		'src/Visualization/QTVM/Network/Processings/PortMonitor*xx',
 		]
 
 	if sys.platform == 'win32':
