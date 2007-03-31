@@ -340,6 +340,7 @@ if not clam_env.GetOption('clean') :
 	if clam_env['with_fltk'] : 
 		load_config_file_to_env(vmfl_env, 'vmfl')
 	if clam_env['with_qt3'] : 
+		vmqt_env.Tool("qt")
 		load_config_file_to_env(vmqt_env, 'vmqt')
 
 modules = [ 'core', 'processing', 'audioio']
