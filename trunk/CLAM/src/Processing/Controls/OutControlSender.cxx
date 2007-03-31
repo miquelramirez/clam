@@ -20,7 +20,8 @@ Enum::tEnumValue OutControlSenderConfig::EControlRepresentation::sEnumValues[] =
 		{ 0, NULL }
 	};
 
-Enum::tValue OutControlSenderConfig::EControlRepresentation::sDefault = OutControlSenderConfig::EControlRepresentation::eVerticalSlider;
+Enum::tValue OutControlSenderConfig::EControlRepresentation::sDefault =
+	OutControlSenderConfig::EControlRepresentation::eHorizontalSlider;
 
 void OutControlSenderConfig::DefaultInit(void)
 {
