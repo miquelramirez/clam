@@ -4,7 +4,7 @@
 #include <qlabel.h>
 #include <qstatusbar.h>
 #include <qapplication.h>
-#include <CLAM/Message.hxx>
+#include <qmessagebox.h>
 #include "Engine.hxx"
 #include "ViewManager.hxx"
 #include "SMSConfigDlg.hxx"
@@ -84,7 +84,7 @@ namespace QtSMS
 		}
 		else
 		{
-			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Load configuration failed.");
+			QMessageBox::critical(0,"SMS Tools 2","Load configuration failed.");
 		}
 	}
 
@@ -202,7 +202,7 @@ namespace QtSMS
 			}
 			else
 			{
-				CLAM::VM::Message(QMessageBox::Information,"SMS Tools 2","The score has not been changed or it's empty.");
+				QMessageBox::information(0,"SMS Tools 2","The score has not been changed or it's empty.");
 			}
 
 		}
@@ -430,7 +430,7 @@ namespace QtSMS
 		sysCall.addArgument(url.c_str());
 		if(!sysCall.start())
 		{
-			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to open a web browser.");
+			QMessageBox::critical(0,"SMS Tools 2","Unable to open a web browser.");
 		}
     #else
 		// try to open the url on a web browser between several common ones
@@ -453,7 +453,7 @@ namespace QtSMS
 					sysCall.addArgument(url.c_str());
 					if(!sysCall.start())
 					{
-						CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to open a web browser.");
+						QMessageBox::critical(0,"SMS Tools 2","Unable to open a web browser.");
 					}
 				}
 			}
@@ -462,7 +462,7 @@ namespace QtSMS
 #else
 		if((unsigned int)(ShellExecute(NULL,"open",url.c_str(),NULL,NULL,SW_SHOW)) <= 32)
 		{
-			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to open a web browser.");
+			QMessageBox::critical(0,"SMS Tools 2","Unable to open a web browser.");
 		}
 #endif
 	}
@@ -695,7 +695,7 @@ namespace QtSMS
 
 	void QtSMSTools::NotImplemented()
 	{
-		CLAM::VM::Message(QMessageBox::Information,"SMS Tools 2","Sorry, not implemented yet.");
+		QMessageBox::information(0,"SMS Tools 2","Sorry, not implemented yet.");
 	}
 }
 
