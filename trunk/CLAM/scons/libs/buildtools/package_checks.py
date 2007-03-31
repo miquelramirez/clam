@@ -325,20 +325,6 @@ int main()
 
 package_checks['check_id3lib'] = ThoroughPackageCheck( 'id3lib', 'c++', None, id3lib_test_code )
 
-fltk_test_code = """\
-#include<FL/Fl_Gl_Window.H>
-#include<FL/Fl_PNG_Image.H>
-#include<FL/fl_draw.H>
-int main()
-{
-	Fl_Gl_Window w(0,0);
-	//Fl_PNG_Image png("");
-	return 0;
-}
-"""
-
-package_checks['check_fltk'] = ThoroughPackageCheck( 'fltk', 'c++', None, fltk_test_code )
-
 opengl_test_code = """\
 #ifdef WIN32
 #include <windows.h>
