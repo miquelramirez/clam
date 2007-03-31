@@ -5,6 +5,7 @@
  *	Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include "V2MDataEditDisplay.hxx"
+#include <qevent.h>
 
 V2MDataEditDisplay::V2MDataEditDisplay(QWidget* parent) : V2MDataDisplay(parent)
 {
@@ -89,7 +90,7 @@ void V2MDataEditDisplay::RightButtonMousePressedSlot(Slotv0& slot)
 
 void V2MDataEditDisplay::mousePressEvent(QMouseEvent* e)
 {
-	if(e->button() == RightButton)
+	if(e->button() == Qt::RightButton)
 		_sendRightButtonPressed.Emit();
 }
 

@@ -16,11 +16,11 @@
 #include "SharedTypes.hxx"
 #include "V2MPREditDisplay.hxx"
 
-class QFrame;
+class Q3Frame;
 class QScrollBar;
 class QPushButton;
 class QLabel;
-class QPopupMenu;
+class Q3PopupMenu;
 
 using CLAM::Melody;
 using CLAM::MIDIMelody;
@@ -111,7 +111,7 @@ private slots:
 	void updateViewport(int);
 
 private:
-	QFrame *displayContainer,*leftPanel,*bottomPanel;
+	Q3Frame *displayContainer,*leftPanel,*bottomPanel;
 	QScrollBar *scrollBar;
 	DisplayList _displayList;
 	DispData _displayData;
@@ -135,7 +135,7 @@ private:
 		   *midiKeyLabel,*velocityLabel,*midiPitchLabel,
 		   *time1Label,*time2Label,*durationLabel;
 
-	QPopupMenu *popupMenu;
+	Q3PopupMenu *popupMenu;
 
 	void InitLeftPanel();
 	void InitBottomPanel();

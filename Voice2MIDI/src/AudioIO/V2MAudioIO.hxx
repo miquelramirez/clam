@@ -11,7 +11,7 @@
 #include "AudioFileIO.hxx"
 #include <CLAM/AudioPlayer.hxx>
 #include "AudioRecorder.hxx"
-#include <CLAM/FundPlayer.hxx>
+#include "FundPlayer.hxx"
 #include "FundSegPlayer.hxx"
 
 #endif

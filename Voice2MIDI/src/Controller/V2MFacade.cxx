@@ -6,8 +6,7 @@
 */
 #include <vector>
 #include <CLAM/MIDIManager.hxx>
-#include <CLAM/MIDISettings.hxx>
-#include <CLAM/ShowMessage.hxx>
+#include "MIDISettings.hxx"
 #include "V2MFacade.hxx"
 
 #ifdef WIN32

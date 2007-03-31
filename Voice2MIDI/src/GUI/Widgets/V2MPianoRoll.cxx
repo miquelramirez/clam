@@ -4,13 +4,13 @@
  *
  *	Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
-#include <qframe.h>
+#include <q3frame.h>
 #include <qscrollbar.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qfont.h>
 #include <qcursor.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qtooltip.h>
 #include <CLAM/List.hxx>
 #include "V2MPianoRoll.hxx"
@@ -143,8 +143,8 @@ const DataArray V2MPianoRoll::GetSegmentationInfo()
 
 void V2MPianoRoll::InitDisplayContainer(int w,int h)
 {
-	displayContainer = new QFrame(this);
-	displayContainer->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+	displayContainer = new Q3Frame(this);
+	displayContainer->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
     displayContainer->setFixedSize(w,h+20);
 	displayContainer->setGeometry(40,0,w,h+20);
 	scrollBar = new QScrollBar(displayContainer);
@@ -320,9 +320,9 @@ void V2MPianoRoll::AddXCoordInfo()
 void V2MPianoRoll::InitLeftPanel()
 {
 	//////// frame ////////////////////////////////////////
-	leftPanel = new QFrame(this,"left_panel");
+	leftPanel = new Q3Frame(this,"left_panel");
 	leftPanel->setGeometry(0,0,37,displayContainer->height()-2); 
-	leftPanel->setFrameStyle(QFrame::Panel | QFrame::Plain);
+	leftPanel->setFrameStyle(Q3Frame::Panel | Q3Frame::Plain);
 	////////////////////////////////////////////////////////
 
 	/////// buttons ////////////////////////////////////////
@@ -413,9 +413,9 @@ void V2MPianoRoll::InitLeftPanel()
 
 void V2MPianoRoll::InitBottomPanel()
 {
-	bottomPanel = new QFrame(this,"bottom_panel");
+	bottomPanel = new Q3Frame(this,"bottom_panel");
 	bottomPanel->setGeometry(0,320,width(),56); 
-	bottomPanel->setFrameStyle(QFrame::Panel | QFrame::Plain);
+	bottomPanel->setFrameStyle(Q3Frame::Panel | Q3Frame::Plain);
 	
 	midiKeyLabel = new QLabel(bottomPanel,"midikey_tag");
 	midiKeyLabel->setGeometry(16,6,80,15);
@@ -515,7 +515,7 @@ void V2MPianoRoll::show_fund()
 
 void V2MPianoRoll::SetSizeHorCursor()
 {
-	QCursor cursor(SizeHorCursor);
+	QCursor cursor(Qt::SizeHorCursor);
 	DisplayList::iterator list_it = _displayList.begin();
 	for(;list_it != _displayList.end();list_it++)
 		(*list_it)->setCursor(cursor);
@@ -524,7 +524,7 @@ void V2MPianoRoll::SetSizeHorCursor()
 
 void V2MPianoRoll::SetArrowCursor()
 {
-	QCursor cursor(ArrowCursor);
+	QCursor cursor(Qt::ArrowCursor);
 	DisplayList::iterator list_it = _displayList.begin();
 	for(;list_it != _displayList.end();list_it++)
 		(*list_it)->setCursor(cursor);
@@ -832,7 +832,7 @@ void V2MPianoRoll::Synchronize(float xcoord)
 
 void V2MPianoRoll::InitPopupMenu()
 {
-	popupMenu = new QPopupMenu();
+	popupMenu = new Q3PopupMenu();
 	popupMenu->insertItem("Undo",this,SLOT(undo()),0,0);
 	popupMenu->insertItem("Save",this,SLOT(save()),0,1);
 	popupMenu->insertItem("Discard",this,SLOT(discard()),0,2);

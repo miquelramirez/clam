@@ -10,8 +10,8 @@
 
 #include <qwidget.h>
 
-class QTextBrowser;
-class QFrame;
+class Q3TextBrowser;
+class Q3Frame;
 class QPushButton;
 
 class V2MHelpViewer : public QWidget
@@ -30,10 +30,10 @@ private slots:
     void textChanged();
 
 private:
-	QTextBrowser *browser;
+	Q3TextBrowser *browser;
 
-	QFrame* topPanel;
-	QFrame* container;
+	Q3Frame* topPanel;
+	Q3Frame* container;
 
 	QPushButton *buttonBackward,*buttonForward,*buttonHome,*buttonClose;
 
