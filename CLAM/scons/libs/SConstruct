@@ -21,14 +21,14 @@ from modconf.vmfl import *
 
 def load_config_file_to_env( env, dir ):
 	opts = Options(dir+'/flags.conf')
-	opts.Add( 'CPPPATH', 'CPP PATH', env['CPPPATH'])
-	opts.Add( 'CCFLAGS', 'CC FLAGS', env['CCFLAGS'])
-	opts.Add( 'CPPFLAGS', 'CPP FLAGS', env['CPPFLAGS'])
-	opts.Add( 'LIBPATH', 'LIB PATH', env['LIBPATH'])
-	opts.Add( 'LIBS', 'libs to link', env['LIBS'])
-	opts.Add( 'LINKFLAGS', 'LINKFLAGS', env['LINKFLAGS']) # This one added because on Mac OS X we need additional '-framework OpenGL && AGL'
+	opts.Add( 'CPPPATH', 'CPP PATH')
+	opts.Add( 'CCFLAGS', 'CC FLAGS')
+	opts.Add( 'CPPFLAGS', 'CPP FLAGS')
+	opts.Add( 'LIBPATH', 'LIB PATH')
+	opts.Add( 'LIBS', 'libs to link')
+	opts.Add( 'LINKFLAGS', 'LINKFLAGS') # This one added because on Mac OS X we need additional '-framework OpenGL && AGL'
 	opts.Add( 'pkg_config_available', 'PKG Config Available', 'False')
-	opts.Add( 'QT_LIB', 'QT lib name', '')
+	opts.Add( 'QT_LIB', 'QT lib name')
 	opts.Update(env)
 
 def save_config_file_from_env( env, dir ):
@@ -70,7 +70,7 @@ def configure_clam(clam_env) :
 			print( 'adding include dir from windows config: ' + include )
 			clam_env.Append( CPPPATH = include)
 	if sys.platform == 'linux2':
-		clam_env.Append( CPPPATH= '/usr/local/include' )
+		clam_env.Append( CPPPATH= ['/usr/local/include'] )
 	if sys.platform == 'darwin' :
 		clam_env.Append( CPPPATH= ['/usr/local/include', '/opt/local/include'] )
 		
@@ -86,7 +86,6 @@ def configure_core(clam_env) :
 ### CLAM CORE DEPENDENCIES CHECKING   ###
 #########################################"""
 	core_env = clam_env.Copy()
-	core_env.Replace( QT_LIB = '')
 	conf = Configure( core_env, custom_tests = custom_check_routines )
 	if not setup_core_environment( core_env, conf ) :
 		Exit(1)
@@ -102,7 +101,6 @@ def configure_processing(core_env) :
 ### CLAM PROCESSING DEPENDENCIES CHECKING   ###
 ###############################################"""
 	processing_env = core_env.Copy()
-	processing_env.Replace( QT_LIB = '')
 	conf = Configure( processing_env, custom_check_routines )
 	if not setup_processing_environment( processing_env, conf ) :
 		Exit(1)
@@ -133,7 +131,6 @@ def configure_vmfl(audioio_env) :
 ### CLAM VMFL DEPENDENCIES CHECKING   ###
 #########################################"""
 	vmfl_env = audioio_env.Copy()
-	vmfl_env.Replace( QT_LIB = '')
 	if sys.platform != 'darwin':  # FLTK configuration bypass under Mac OSX
 	#	if sys.platform == 'win32' or sys.platform == 'darwin' :
 	#		vmfl_env.AppendUnique( LIBS=copy.copy(audioio_env['LIBS']) )
@@ -149,6 +146,8 @@ def configure_vmqt(audioio_env) :
 ### CLAM VMQT DEPENDENCIES CHECKING   ###
 #########################################"""
 	vmqt_env = audioio_env.Copy()
+	if not vmqt_env['with_qt3'] : return vmqt_env
+	vmqt_env.Tool("qt")
 	if sys.platform == 'win32' :
 		vmqt_env.Replace( QT_LIB = 'qt-mt322')
 	else :
@@ -162,18 +161,19 @@ def configure_vmqt(audioio_env) :
 
 def configureModules( clam_env ) :
 	configure_clam(clam_env)
-	core_env = configure_core(clam_env)
-	processing_env = configure_processing(core_env)
-	audioio_env = configure_audioio(processing_env)
-	vmfl_env = configure_vmfl(audioio_env)
-	vmqt_env = configure_vmqt(audioio_env)
 	save_config_file_from_env(clam_env, '.')
+	core_env = configure_core(clam_env)
 	save_config_file_from_env(core_env, 'core')
+	processing_env = configure_processing(core_env)
 	save_config_file_from_env(processing_env, 'processing')
+	audioio_env = configure_audioio(processing_env)
 	save_config_file_from_env(audioio_env, 'audioio')
-	save_config_file_from_env(vmfl_env, 'vmfl')
-	save_config_file_from_env(vmqt_env, 'vmqt')
-	#return core_env, processing_env, audioio_env, vmfl_env, vmqt_env
+	if clam_env['with_fltk'] :
+		vmfl_env = configure_vmfl(audioio_env)
+		save_config_file_from_env(vmfl_env, 'vmfl')
+	if clam_env['with_qt3'] : 
+		vmqt_env = configure_vmqt(audioio_env)
+		save_config_file_from_env(vmqt_env, 'vmqt')
 
 # helper functions
 def setup_build_options( env ) :
@@ -220,22 +220,9 @@ def setup_build_options( env ) :
 	elif sys.platform == 'win32' :
 		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
 	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
+	opts.Add( BoolOption( 'with_qt3', 'Enables the compilation of the clam_vmqt module based on qt3', 'yes') )
+	opts.Add( BoolOption( 'with_fltk', 'Enables the compilation of the clam_vmqt module based on qt3', 'no') )
 
-	# clam_vmqt options 
-	# TODO check if this hardcoded path can be removed also in Windows and Mac
-	'''
-	if sys.platform == 'linux2' :
-		pass
-		if os.environ.has_key("QTDIR") and os.environ["QTDIR"] : 
-			print "Using existing QTDIR"
-		else :
-			qt_includes = '/usr/include/qt3'
-			qt_libs = '/usr/lib'
-			print "QTDIR not found, so assuming these are the paths for qt: qt_includes=%s qt_libs=%s" \
-				% (qt_includes, qt_libs)
-			opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', qt_includes ) )
-			opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', qt_libs ) )
-	'''	
 	if sys.platform == 'win32' : 
 		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', 'G:\projects\qt\include' ) )
 		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', 'G:\projects\qt\lib' ) )
@@ -293,13 +280,15 @@ def config_file_missing():
 
 	return result
 
+
+
 # SConstruct file for CLAM
 # Main section
 
 top = '../..'
 Export('top')
 
-clam_env = Environment( ENV=os.environ, tools=['default','qt'])
+clam_env = Environment( ENV=os.environ, tools=['default'])
 clam_env.SConsignFile()
 
 setup_build_options( clam_env )
@@ -324,10 +313,6 @@ custom_check_routines = gather_custom_checks()
 #registering custom_builders
 create_custom_builders(clam_env)
 
-if sys.platform == 'win32' :
-	clam_env.Replace( QT_LIB = 'qt-mt322')
-else :
-	clam_env.Replace( QT_LIB = 'qt-mt' )
 clam_env['CXXFILESUFFIX'] = '.cxx'
 
 if sys.platform=='win32' :
@@ -352,15 +337,16 @@ if not clam_env.GetOption('clean') :
 	load_config_file_to_env(core_env, 'core')
 	load_config_file_to_env(processing_env, 'processing')
 	load_config_file_to_env(audioio_env, 'audioio')
-	load_config_file_to_env(vmfl_env, 'vmfl')
-	load_config_file_to_env(vmqt_env, 'vmqt')
+	if clam_env['with_fltk'] : 
+		load_config_file_to_env(vmfl_env, 'vmfl')
+	if clam_env['with_qt3'] : 
+		load_config_file_to_env(vmqt_env, 'vmqt')
 
+modules = [ 'core', 'processing', 'audioio']
+if clam_env['with_qt3'] : modules.append('vmqt')
+if clam_env['with_fltk'] : modules.append('vmfl')
 
-Export('core_env')
-Export('processing_env')
-Export('audioio_env')
-Export('vmfl_env')
-Export('vmqt_env')
+for module in modules: Export(module+'_env')
 
 # install dirs composition
 
@@ -370,7 +356,8 @@ compose_install_dirnames(clam_env)
 if clam_env.GetOption('clean') :
 	if os.path.exists( 'header.db' ) :
 		os.remove('header.db')
-for module in ['core', 'processing', 'audioio', 'vmqt', 'vmfl'] :
+
+for module in modules :
 	SConscript(module+'/SConscript')
 
 import glob, os
@@ -382,8 +369,6 @@ clam_env.Alias('install_sconstools', sconstoolsInstall)
 Depends('install_core', sconstoolsInstall)
 
 # Module dependenciesa
-modules = [ 'core', 'processing', 'audioio', 'vmqt']
-
 all_alias = Alias( 'all', modules)
 install_alias = Alias( 'install', ['install_%s'%module for module in modules])
 
