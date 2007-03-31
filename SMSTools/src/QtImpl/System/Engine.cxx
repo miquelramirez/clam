@@ -1,9 +1,9 @@
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
 #include <CLAM/MonoAudioFileWriter.hxx>
-#include <CLAM/Message.hxx>
 #include "ViewManager.hxx"
 #include "Engine.hxx"
+#include "qmessagebox.h"
 
 namespace QtSMS
 {
@@ -114,7 +114,7 @@ namespace QtSMS
 			messageShown += " \ncannot be used: \n";
 			messageShown += "Unable to open or unrecognized format";
 
-			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2",messageShown.c_str());
+			QMessageBox::critical(0, "SMS Tools 2",messageShown.c_str());
 
 			return false;
 		}
@@ -129,7 +129,7 @@ namespace QtSMS
 			messageShown += "the channel to be analyzed will be the first\n";
 			messageShown +="channel in the file.\n";
 
-			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2",messageShown.c_str());
+			QMessageBox::critical(0, "SMS Tools 2",messageShown.c_str());
 			
 			return false;
 		}
@@ -146,8 +146,7 @@ namespace QtSMS
 		GetState().SetHasAudioIn(LoadSound(mGlobalConfig.GetInputSoundFile(),GetOriginalSegment()));
 		if(!GetState().GetHasAudioIn())
 		{
-			CLAM::VM::Message( QMessageBox::Critical,
-							   "SMS Tools 2",
+			QMessageBox::critical(0, "SMS Tools 2",
 							   "Unable to get the input sound." );
 		}
 		GetState().SetHasAudioMorph (LoadSound(mGlobalConfig.GetMorphSoundFile(),mMorphSegment));
@@ -169,7 +168,7 @@ namespace QtSMS
 			messageShown += " \ncannot be used: \n";
 			messageShown += "Unable to open or unrecognized format";
 
-			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2",messageShown.c_str());
+			QMessageBox::critical(0, "SMS Tools 2",messageShown.c_str());
 
 			return false;
 		}
@@ -184,7 +183,7 @@ namespace QtSMS
 			messageShown += "the channel to be analyzed will be the first\n";
 			messageShown +="channel in the file.\n";
 
-			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2",messageShown.c_str());
+			QMessageBox::critical(0, "SMS Tools 2",messageShown.c_str());
 			
 			return false;
 		}
@@ -267,7 +266,7 @@ namespace QtSMS
 		}
 		else
 		{
-			CLAM::VM::Message(QMessageBox::Critical,"SMS Tools 2","Unable to load analysis data.");
+			QMessageBox::critical(0, "SMS Tools 2","Unable to load analysis data.");
 		}
 	}
 

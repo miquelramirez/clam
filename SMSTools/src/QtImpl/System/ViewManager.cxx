@@ -1,7 +1,6 @@
 #include <qlayout.h>
 #include <qsplitter.h>
 #include <qframe.h>
-#include <CLAM/Message.hxx>
 #include <CLAM/Navigator.hxx>
 #include <CLAM/SMSTimeMultiDisplay.hxx>
 #include <CLAM/SMSFreqMultiDisplay.hxx>
