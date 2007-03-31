@@ -28,7 +28,9 @@ Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 if sys.platform in ["linux2","darwin"] :
+	env.ParseConfig("pkg-config qt-mt --cflags --libs")
 	env['QT_LIB']='qt-mt'
+	env.Append(LIBS="GL")
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
 
@@ -67,7 +69,6 @@ env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-	'clam_vmqt',
 	] , CLAMInstallDir)
 
 #env.EnableQt4Modules([
