@@ -5,19 +5,20 @@
 *	Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include <qmenubar.h>
-#include <qpopupmenu.h>
-#include <qkeycode.h>
+#include <q3popupmenu.h>
+#include <qnamespace.h>
 #include <qapplication.h>
-#include <qbuttongroup.h>
-#include <qframe.h>
+#include <q3buttongroup.h>
+#include <q3frame.h>
+#include <qevent.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
-#include <qfiledialog.h>
+#include <q3filedialog.h>
 #include <qcombobox.h>
 #include <qlabel.h>
-#include <qgroupbox.h>
+#include <q3groupbox.h>
 #include <qstatusbar.h>
-#include <qprogressdialog.h>
+#include <q3progressdialog.h>
 #include "V2MGUI.hxx"
 #include "V2MAnalysisDisplay.hxx"
 #include "V2MSegmentationEditor.hxx"
@@ -26,7 +27,7 @@
 #include "V2MHelpViewer.hxx"
 
 V2MGUI::V2MGUI()
-	: QMainWindow(0,"main window",WStyle_Customize|WStyle_Title|WStyle_SysMenu|WStyle_Minimize|WDestructiveClose)
+	: Q3MainWindow(0,"main window",Qt::WStyle_Customize|Qt::WStyle_Title|Qt::WStyle_SysMenu|Qt::WStyle_Minimize|Qt::WDestructiveClose)
 {
     setFixedSize(640,480);
     setGeometry(100,100,640,480);
@@ -41,9 +42,9 @@ V2MGUI::V2MGUI()
 	InitPushButtons();
     InitRadioGroup();
       
-    wLine = new QFrame(this,"line_separator");
+    wLine = new Q3Frame(this,"line_separator");
     wLine->setGeometry(430,35,2,415); 
-    wLine->setFrameStyle(QFrame::VLine | QFrame::Sunken);
+    wLine->setFrameStyle(Q3Frame::VLine | Q3Frame::Sunken);
 
     InitAnalysisProgressDialog();
     
@@ -91,7 +92,7 @@ V2MGUI::~V2MGUI()
 
 void V2MGUI::load_audio()
 {
-    QString fn = QFileDialog::getOpenFileName(QString::null,"Audio files (*.wav *.mp3 *.ogg)",this);
+    QString fn = Q3FileDialog::getOpenFileName(QString::null,"Audio files (*.wav *.mp3 *.ogg)",this);
     if (!fn.isEmpty())
     {
 			int err = v2mFacade->LoadAudio((fn));
@@ -117,7 +118,7 @@ void V2MGUI::load_audio()
 
 void V2MGUI::save_audio()
 {
-    QString fn = QFileDialog::getSaveFileName("audio_out.wav","Audio files (*.wav *.mp3 *.ogg)",this);
+    QString fn = Q3FileDialog::getSaveFileName("audio_out.wav","Audio files (*.wav *.mp3 *.ogg)",this);
     if(!fn.isEmpty()) 
     {
 			FILE* fp;
@@ -139,7 +140,7 @@ void V2MGUI::save_audio()
 
 void V2MGUI::save_melody()
 {
-    QString fn = QFileDialog::getSaveFileName("melody_out.xml","*.xml",this);
+    QString fn = Q3FileDialog::getSaveFileName("melody_out.xml","*.xml",this);
     if(!fn.isEmpty()) 
     {
 			FILE* fp;
@@ -159,7 +160,7 @@ void V2MGUI::save_melody()
 
 void V2MGUI::save_midi_melody()
 {
-    QString fn = QFileDialog::getSaveFileName("midi_melody_out.xml","*.xml",this);
+    QString fn = Q3FileDialog::getSaveFileName("midi_melody_out.xml","*.xml",this);
     if(!fn.isEmpty()) 
     {
 			FILE* fp;
@@ -179,7 +180,7 @@ void V2MGUI::save_midi_melody()
 
 void V2MGUI::save_midi()
 {
-    QString fn = QFileDialog::getSaveFileName("midi_out.mid","*.mid",this);
+    QString fn = Q3FileDialog::getSaveFileName("midi_out.mid","*.mid",this);
     if(!fn.isEmpty()) 
     {
 			FILE* fp;
@@ -599,7 +600,7 @@ void V2MGUI::UpdateEnabled(EUpdateEnabled event)
 
 void V2MGUI::InitAnalysisProgressDialog()
 {
-	progress = new QProgressDialog(this,"progress",true,Qt::WStyle_Customize|Qt::WStyle_Title);
+	progress = new Q3ProgressDialog(this,"progress",true,Qt::WStyle_Customize|Qt::WStyle_Title);
 	progress->setFixedSize(250,60);
 	progress->setCaption("Please Wait");
 	progress->setLabelText("Analysing...");
@@ -617,7 +618,7 @@ void V2MGUI::UpdateAnalysisProgressBar(int value)
 void V2MGUI::InitRadioGroup()
 {
 	////////////// RADIO BUTTONS ////////////////////////////// 
-    PlayButtonGroup = new QButtonGroup(this,"PlayButtonGroup");
+    PlayButtonGroup = new Q3ButtonGroup(this,"PlayButtonGroup");
     PlayButtonGroup->setGeometry(446,height()-140,180,110); 
     PlayButtonGroup->setTitle("Play");
 
@@ -662,24 +663,26 @@ void V2MGUI::InitPushButtons()
     ////////////// END PUSH BUTTONS //////////////////////////
 }
 
+#define CHECK_PTR(x) CLAM_ASSERT(NULL != x, "V2MGUI: allocation failure")
+
 void V2MGUI::InitMenu()
 {
 	///////////// MENU //////////////////////////////////////
-    audio = new QPopupMenu(this);
+    audio = new Q3PopupMenu(this);
     CHECK_PTR(audio);
-    audio->insertItem("Load...",this,SLOT(load_audio()),CTRL+Key_L);
-    audio->insertItem("Save...",this,SLOT(save_audio()),CTRL+Key_S,0);
+    audio->insertItem("Load...",this,SLOT(load_audio()),Qt::CTRL+Qt::Key_L);
+    audio->insertItem("Save...",this,SLOT(save_audio()),Qt::CTRL+Qt::Key_S,0);
 
-    midi = new QPopupMenu(this);
+    midi = new Q3PopupMenu(this);
     CHECK_PTR(midi);
-    midi->insertItem("Save MIDI file...",this,SLOT(save_midi()),CTRL+Key_M,0);
+    midi->insertItem("Save MIDI file...",this,SLOT(save_midi()),Qt::CTRL+Qt::Key_M,0);
 
-    melody = new QPopupMenu(this);
+    melody = new Q3PopupMenu(this);
     CHECK_PTR(melody);
-    melody->insertItem("Save melody...",this,SLOT(save_melody()),CTRL+Key_Y,0);
-	melody->insertItem("Save MIDI melody...",this,SLOT(save_midi_melody()),CTRL+Key_D,1);
+    melody->insertItem("Save melody...",this,SLOT(save_melody()),Qt::CTRL+Qt::Key_Y,0);
+	melody->insertItem("Save MIDI melody...",this,SLOT(save_midi_melody()),Qt::CTRL+Qt::Key_D,1);
 
-    file = new QPopupMenu(this);
+    file = new Q3PopupMenu(this);
     CHECK_PTR(file);
     file->insertItem("Audio",audio);
     file->insertSeparator();
@@ -687,28 +690,28 @@ void V2MGUI::InitMenu()
 	file->insertSeparator();
     file->insertItem("Melody",melody);
     file->insertSeparator();
-    file->insertItem("Exit",qApp,SLOT(quit()),CTRL+Key_E);
+    file->insertItem("Exit",qApp,SLOT(quit()),Qt::CTRL+Qt::Key_E);
 	
 
-    analysis = new QPopupMenu(this);
+    analysis = new Q3PopupMenu(this);
     CHECK_PTR(analysis);
-    analysis->insertItem("Analyze",this,SLOT(analyze()),CTRL+Key_A,0);
+    analysis->insertItem("Analyze",this,SLOT(analyze()),Qt::CTRL+Qt::Key_A,0);
     analysis->insertSeparator();
-    analysis->insertItem("Extract melody\t",this,SLOT(analyze_melody()),CTRL+Key_X,1);
+    analysis->insertItem("Extract melody\t",this,SLOT(analyze_melody()),Qt::CTRL+Qt::Key_X,1);
 
-	viewAnalysis = new QPopupMenu(this);
+	viewAnalysis = new Q3PopupMenu(this);
     CHECK_PTR(viewAnalysis);
-    viewAnalysis->insertItem("Full",this,SLOT(plot_analysis_full()),CTRL+Key_F,0);
-    viewAnalysis->insertItem("Step by Step",this,SLOT(plot_analysis()),CTRL+Key_N,1);
+    viewAnalysis->insertItem("Full",this,SLOT(plot_analysis_full()),Qt::CTRL+Qt::Key_F,0);
+    viewAnalysis->insertItem("Step by Step",this,SLOT(plot_analysis()),Qt::CTRL+Qt::Key_N,1);
 
-    view = new QPopupMenu(this);
+    view = new Q3PopupMenu(this);
     CHECK_PTR(view);
-    view->insertItem("Original audio",this,SLOT(plot_audio()),CTRL+Key_O,0);
+    view->insertItem("Original audio",this,SLOT(plot_audio()),Qt::CTRL+Qt::Key_O,0);
 	view->insertItem("Analysis",viewAnalysis,1);
-	view->insertItem("Segmentation",this,SLOT(plot_segmentation()),CTRL+Key_G,2);
-	view->insertItem("Piano Roll",this,SLOT(piano_roll()),CTRL+Key_P,3);
+	view->insertItem("Segmentation",this,SLOT(plot_segmentation()),Qt::CTRL+Qt::Key_G,2);
+	view->insertItem("Piano Roll",this,SLOT(piano_roll()),Qt::CTRL+Qt::Key_P,3);
 
-    help = new QPopupMenu(this);
+    help = new Q3PopupMenu(this);
     CHECK_PTR(help);
 	help->insertItem("Help...",this,SLOT(show_help()));
 	help->insertSeparator();
@@ -811,7 +814,7 @@ void V2MGUI::InitMIDIGroup()
 	std::list<std::string> lst;
 	std::string str;
 	int index = 0;
-	MIDIGroup = new QGroupBox(this,"MIDIGroup");
+	MIDIGroup = new Q3GroupBox(this,"MIDIGroup");
     MIDIGroup->setGeometry(446,PlayButtonGroup->y()-200,180,160); 
     MIDIGroup->setTitle("MIDI");
 
@@ -862,7 +865,7 @@ void V2MGUI::InitMIDIGroup()
 void V2MGUI::InitStatusBar()
 {
 	StatusBarLabel = new QLabel(statusBar(),"status_bar_label");
-	StatusBarLabel->setAlignment(AlignLeft);
+	StatusBarLabel->setAlignment(Qt::AlignLeft);
     statusBar()->addWidget(StatusBarLabel,1);
 }
 
@@ -872,11 +875,13 @@ void V2MGUI::Message(QMessageBox::Icon icon,const std::string& title,const std::
 		                m.c_str(),
 						icon,
 						QMessageBox::Ok,
-						QMessageBox::NoButton,
-						QMessageBox::NoButton); 
+						Qt::NoButton,
+						Qt::NoButton); 
 
 	QPixmap iconApp((const char**)icon_data);
-	message.setIcon(iconApp);
+	//QMessageBox::Icon newIcon(iconApp);
+	//message.setIcon(newIcon);
+	//aboutBox.setIconPixmap(iconApp);
 	message.exec();
 }
 
@@ -901,7 +906,7 @@ void V2MGUI::AboutBox()
 						QMessageBox::NoButton); 
 
 	QPixmap iconApp((const char**)icon_data);
-	aboutBox.setIcon(iconApp);
+	//aboutBox.setIcon(iconApp);
 	aboutBox.setIconPixmap(iconApp);
 	aboutBox.exec();
 }

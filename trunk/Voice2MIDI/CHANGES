@@ -1,6 +1,8 @@
 2007-??-?? Voice2MIDI 0.3.7 SVN $Revision$
 ''
  * Using CLAM 1.0.1
+ * Not depending on clam_vmqt
+ * Ported to qt4 using Qt3Support
 
 2007-03-20 Voice2MIDI 0.3.6
 'The Berlin release'

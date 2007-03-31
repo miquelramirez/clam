@@ -11,27 +11,27 @@
 
 #include <string>
 #include <list>
-#include <qmainwindow.h>
+#include <q3mainwindow.h>
 #include <qmessagebox.h>
 #include "V2MFacade.hxx"
 
 class QMenuBar;
-class QPopupMenu;
-class QButtonGroup;
-class QFrame;
+class Q3PopupMenu;
+class Q3ButtonGroup;
+class Q3Frame;
 class QPushButton;
 class QRadioButton;
 class QComboBox;
 class QLabel;
-class QGroupBox;
-class QProgressDialog;
+class Q3GroupBox;
+class Q3ProgressDialog;
 	
 class V2MAnalysisDisplay;
 class V2MSegmentationEditor;
 class V2MPianoRoll;
 class V2MHelpViewer;
 
-class V2MGUI : public QMainWindow
+class V2MGUI : public Q3MainWindow
 { 
 	enum EUpdateEnabled {	eInit=0,
 							eLoadAudio,
@@ -96,21 +96,21 @@ private slots:
 
 private:
 	QMenuBar* menu;
-	QPopupMenu *file,*audio,*midi,*melody,*analysis,*view,*viewAnalysis,*help;
+	Q3PopupMenu *file,*audio,*midi,*melody,*analysis,*view,*viewAnalysis,*help;
 
 	QPushButton* ButtonRec;
 	QPushButton* ButtonStop;
 	QPushButton* ButtonPlay;
 	
-	QButtonGroup* PlayButtonGroup;
+	Q3ButtonGroup* PlayButtonGroup;
 	QRadioButton* RadioPlayAudio;
 	QRadioButton* RadioPlayMIDI;
 	QRadioButton* RadioPlayFundamental;
 	QRadioButton* RadioPlayFundamentalSeg;
     
-	QFrame* wLine;
+	Q3Frame* wLine;
 
-	QGroupBox* MIDIGroup;
+	Q3GroupBox* MIDIGroup;
 	QComboBox* MIDIDevices;
 	QComboBox* MIDIPrograms;
 	QLabel* m_dev_label;
@@ -118,7 +118,7 @@ private:
 	
 	QLabel* StatusBarLabel;    // etiqueta para la barra de estado
 
-	QProgressDialog* progress; // barra de progreso para analisis
+	Q3ProgressDialog* progress; // barra de progreso para analisis
 	
 	V2MFacade* v2mFacade;
 	Slotv0 mStopSlot;

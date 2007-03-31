@@ -6,7 +6,6 @@ import sys
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt3/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
@@ -21,23 +20,16 @@ def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind(".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
 
-env = Environment(ENV=os.environ, tools=['default','qt'], options=options)
+env = Environment(ENV=os.environ, tools=['default'], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
-if sys.platform in ["linux2","darwin"] :
-	env.ParseConfig("pkg-config qt-mt --cflags --libs")
-	env['QT_LIB']='qt-mt'
-	env.Append(LIBS="GL")
-elif sys.platform=="win32" :
-	env['QT_LIB']='qt-mt322'
-
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
-#env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
@@ -71,18 +63,20 @@ env.EnableClamModules([
 	'clam_processing',
 	] , CLAMInstallDir)
 
-#env.EnableQt4Modules([
-#	'QtCore',
-#	'QtGui',
-#	'QtOpenGL',
+env.EnableQt4Modules([
+	'QtCore',
+	'QtGui',
+	'QtOpenGL',
 #	'QtSvg',
 #	'QtSql',
 #	'QtNetwork',
 #	'QtTest',
 #	'QtXml',
 #	'QtSvg',
-#	'Qt3Support',
-#	])
+	'Qt3Support',
+	])
+
+env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
 
 mainSources = {
 	'Voice2MIDI' : os.path.join('src','main.cxx'),
@@ -135,7 +129,6 @@ sources += [ os.path.join( os.path.dirname(uiccpp),
 if sys.platform=="win32" :
 	sources += env.RES(source=["resources/Voice2MIDI.rc"])
 
-env.Append(LIBS=['qui'])
 env.Append(CPPPATH=includePaths)
 if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Voice2MIDI.app/Contents/Resources\\""')
@@ -153,7 +146,6 @@ if sys.platform=='linux2' :
 	else :
 		env.Append( CCFLAGS=['-g', '-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
-
 
 extralinkFlags = []
 if sys.platform == 'darwin' :

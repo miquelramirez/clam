@@ -17,10 +17,10 @@
 #include "V2MDataEditDisplay.hxx"
 
 class QScrollBar;
-class QFrame;
+class Q3Frame;
 class QLabel;
 class QPushButton;
-class QPopupMenu;
+class Q3PopupMenu;
 
 using CLAM::Melody;
 using CLAM::MIDIMelody;
@@ -103,7 +103,7 @@ private slots:
 	void updateViewport(int);
 
 private:
-	QFrame *displayContainer,*panel;
+	Q3Frame *displayContainer,*panel;
 	QScrollBar* scrollBar;
 	DisplayList _displayList;
 	DispData _displayData;
@@ -122,7 +122,7 @@ private:
 		   *energy2Label,*pitch2Label,*segLabel; // etiquetas del panel
 
 	QPushButton *saveButton;
-	QPopupMenu *popupMenu;
+	Q3PopupMenu *popupMenu;
 
 	void InitPanel();
 	int GetFrameWidth(int wt,int wref);

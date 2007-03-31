@@ -5,7 +5,7 @@
  *	Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
 #include <math.h>
-#include <qframe.h>
+#include <q3frame.h>
 #include <qpushbutton.h>
 #include <qlabel.h>
 #include <qlcdnumber.h>
@@ -65,9 +65,9 @@ void V2MAnalysisDisplay::InitDisplay()
 	}
 	
 	// labels and buttons for the analysis display
-	infoAnalysisPanel = new QFrame(this,"info_analysis_box");
+	infoAnalysisPanel = new Q3Frame(this,"info_analysis_box");
 	infoAnalysisPanel->setGeometry(left,top+303,width,65); 
-	infoAnalysisPanel->setFrameStyle(QFrame::Panel | QFrame::Plain);
+	infoAnalysisPanel->setFrameStyle(Q3Frame::Panel | Q3Frame::Plain);
 	
 	amplitudeLabel = new QLabel(infoAnalysisPanel,"amplitude_lab");
 	amplitudeLabel->setGeometry(12,6,60,15);

@@ -11,10 +11,13 @@
 #define _V2MANALYSISDISPLAY_
 
 #include <qwidget.h>
+//Added by qt3to4:
+#include <QLabel>
+#include <Q3Frame>
 #include "SharedTypes.hxx"
 #include <CLAM/Slotv1.hxx>
 
-class QFrame;
+class Q3Frame;
 class QPushButton;
 class QLabel;
 class QLCDNumber;
@@ -77,7 +80,7 @@ private slots:
 private:
 	FramesInfo framesInfo; // structure for info frame
 
-	QFrame* infoAnalysisPanel; // panel
+	Q3Frame* infoAnalysisPanel; // panel
 	
 	QLabel *timeLabel,*totalTimeLabel,*amplitudeLabel,*energyLabel,*fundLabel; // labels of the panel
 	QPushButton *first,*last,*prior,*next; 

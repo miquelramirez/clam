@@ -4,11 +4,11 @@
  *
  *	Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
-#include <qframe.h>
+#include <q3frame.h>
 #include <qscrollbar.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
-#include <qpopupmenu.h>
+#include <q3popupmenu.h>
 #include <qcursor.h>
 #include <qtooltip.h>
 #include <CLAM/List.hxx>
@@ -164,9 +164,9 @@ const DataArray V2MSegmentationEditor::GetSegmentationInfo()
 
 void V2MSegmentationEditor::InitPanel()
 {
-	panel = new QFrame(this,"panel");
+	panel = new Q3Frame(this,"panel");
 	panel->setGeometry(0,320,width(),56); 
-	panel->setFrameStyle(QFrame::Panel | QFrame::Plain);
+	panel->setFrameStyle(Q3Frame::Panel | Q3Frame::Plain);
 
 	amplitudeLabel = new QLabel(panel,"amplitude_lab");
 	amplitudeLabel->setGeometry(12,6,80,15);
@@ -210,7 +210,7 @@ void V2MSegmentationEditor::InitPanel()
 
 void V2MSegmentationEditor::InitPopupMenu()
 {
-	popupMenu = new QPopupMenu();
+	popupMenu = new Q3PopupMenu();
 	popupMenu->insertItem("Undo",this,SLOT(undo()),0,0);
 	popupMenu->insertItem("Save",this,SLOT(save()),0,1);
 	popupMenu->insertItem("Discard",this,SLOT(discard()),0,2);
@@ -277,7 +277,7 @@ void V2MSegmentationEditor::ComputeFundAndEnergyPoints()
 
 void V2MSegmentationEditor::InitDisplayContainer(int w,int h)
 {
-	displayContainer = new QFrame(this);
+	displayContainer = new Q3Frame(this);
     displayContainer->setFixedSize(w,h+20);
 	scrollBar = new QScrollBar(displayContainer);
 	scrollBar->setFixedSize(displayContainer->width(),20);
@@ -439,7 +439,7 @@ void V2MSegmentationEditor::SetSizeHorCursor()
 	DisplayList::iterator list_it = _displayList.begin();
 	for(;list_it != _displayList.end();list_it++)
 	{
-		QCursor cursor(SizeHorCursor);
+		QCursor cursor(Qt::SizeHorCursor);
 		(*list_it)->setCursor(cursor);
 	}
 }
@@ -449,7 +449,7 @@ void V2MSegmentationEditor::SetArrowCursor()
 	DisplayList::iterator list_it = _displayList.begin();
 	for(;list_it != _displayList.end();list_it++)
 	{
-		QCursor cursor(ArrowCursor);
+		QCursor cursor(Qt::ArrowCursor);
 		(*list_it)->setCursor(cursor);
 	}
 	

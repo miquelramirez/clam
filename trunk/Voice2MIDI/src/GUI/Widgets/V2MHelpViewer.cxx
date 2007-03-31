@@ -4,14 +4,15 @@
  *
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
-#include <qtextbrowser.h>
+#include <q3textbrowser.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
 #include <qfont.h>
+#include <q3frame.h>
 #include "V2MIconData.hxx"
 #include "V2MHelpViewer.hxx"
 
-V2MHelpViewer::V2MHelpViewer() : QWidget(0,"help window",WStyle_Customize|WStyle_Title|WStyle_SysMenu|WStyle_Minimize|WDestructiveClose)
+V2MHelpViewer::V2MHelpViewer() : QWidget(0,"help window",Qt::WStyle_Customize|Qt::WStyle_Title|Qt::WStyle_SysMenu|Qt::WStyle_Minimize|Qt::WDestructiveClose)
 {
 	setFixedSize(640,480);
 	setGeometry(100,100,width(),height());
@@ -26,15 +27,15 @@ V2MHelpViewer::V2MHelpViewer() : QWidget(0,"help window",WStyle_Customize|WStyle
 
 void V2MHelpViewer::InitBrowser()
 {
-	container = new QFrame(this);
+	container = new Q3Frame(this);
 	container->setFixedSize(width(),440);
 	container->setGeometry(0,40,container->width(),container->height());
 
-	browser = new QTextBrowser(container);
+	browser = new Q3TextBrowser(container);
 	browser->setFixedSize(container->width(),container->height());
 
     browser->mimeSourceFactory()->setFilePath("doc/");
-    browser->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    browser->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
     connect(browser,SIGNAL(textChanged()),this,SLOT(textChanged()));
 
 	browser->setSource("index.htm");
@@ -43,10 +44,10 @@ void V2MHelpViewer::InitBrowser()
 void V2MHelpViewer::InitPanel()
 {
 	// top panel //////////////////////////////////////////
-	topPanel = new QFrame(this);
+	topPanel = new Q3Frame(this);
 	topPanel->setFixedSize(width(),40);
     topPanel->setGeometry(0,0,width(),40); 
-    topPanel->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    topPanel->setFrameStyle(Q3Frame::Panel | Q3Frame::Sunken);
 
 	// icons /////////////////////////////////////////////
 	QPixmap icon_backward((const char**)icon_back_data);
