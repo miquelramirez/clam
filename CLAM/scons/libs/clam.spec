@@ -7,7 +7,7 @@
 # Packmangroup: Multimedia
 # Packmanpackagename: clam
 # Packman: Toni Graffy
-# Packmandepends: alsa fltk jack ladspa libsndfile mad
+# Packmandepends: alsa jack ladspa libsndfile mad
 
 # norootforbuild
 
@@ -42,7 +42,6 @@ BuildRequires:	alsa-lib-devel
 BuildRequires:	doxygen
 BuildRequires:	fftw-devel
 BuildRequires:	fftw2-devel
-BuildRequires:	fltk-devel
 BuildRequires:	gcc-c++
 #BuildRequires:	ghostscript-library # SuSe
 BuildRequires:	graphviz
@@ -70,7 +69,6 @@ BuildRequires:  ladspa-devel
 Requires:			alsa
 Requires:			fftw
 Requires:			fftw2
-Requires:			fltk
 Requires:			jack
 Requires:			mad
 #Requires:			portaudio
@@ -102,7 +100,6 @@ Group:		Development/Libraries/C and C++
 Version:	%{CLAM_version}
 Requires:	%{name} = %{CLAM_version}
 Requires:	fftw-devel
-Requires:	fltk-devel
 Requires:	gcc-c++
 Requires:	id3lib-devel
 Requires:	jack-devel
@@ -124,7 +121,7 @@ useful to abstract target platform for most tasks in an audio applications
 such as audio devices, file formats, threading...
 
 This package contains the files needed to develop with the following libraries:
-clam-core, clam-processing, clam-audioio, clam-vmfl and clam-vmqt.
+clam-core, clam-processing, clam-audioio and clam-vmqt.
 
 ##########################################
 ##########################################
