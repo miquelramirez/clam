@@ -121,7 +121,6 @@ sources.append(os.path.join('src','SerializationController.cxx'))
 sources.append(os.path.join('src','SMSAnalysisSynthesisConfig.cxx'))
 sources.append(os.path.join('src','SDIFSerializer.cxx'))
 sources.append(os.path.join('src','XMLSerializer.cxx'))
-sources.append(os.path.join('src','GUI','ScoreEditor','SMS_ScoreEditor_Helper.cxx'))
 
 # for SMSBatch binary:
 sources.append(os.path.join('src','SMSBatch.cxx'))
@@ -133,7 +132,6 @@ sources.append(os.path.join('src','SMS.cxx'))
 
 for mainSource in mainSources.values() :
 	sources.remove(mainSource)
-
 
 qrcfiles = scanFiles("*.qrc", sourcePaths)
 if qrcfiles : sources += env.Qrc(source=qrcfiles)
