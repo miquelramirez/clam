@@ -54,7 +54,6 @@ namespace QtSMS
 		void backgroundWhite( bool );
 		// menu help
 		void showOnlineHelp();
-		void showLicense();
 		void showAboutBox();
 
 		// status bar
