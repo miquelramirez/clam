@@ -14,7 +14,6 @@ from modconf import *
 from modconf.core import * 
 from modconf.processing import *
 from modconf.audioio import *
-from modconf.vmqt import *
 
 
 
@@ -124,25 +123,6 @@ def configure_audioio(processing_env) :
 	audioio_env = conf.Finish()
 	return audioio_env
 
-def configure_vmqt(audioio_env) :	
-	print """\
-#########################################
-### CLAM VMQT DEPENDENCIES CHECKING   ###
-#########################################"""
-	vmqt_env = audioio_env.Copy()
-	if not vmqt_env['with_qt3'] : return vmqt_env
-	vmqt_env.Tool("qt")
-	if sys.platform == 'win32' :
-		vmqt_env.Replace( QT_LIB = 'qt-mt322')
-	else :
-		vmqt_env.Replace( QT_LIB = 'qt-mt' )
-	vmqt_env.Replace( QT_DEBUG='0' )
-	conf = Configure( vmqt_env, custom_check_routines )
-	if not setup_vmqt_environment( vmqt_env, conf ) :
-		Exit(1)
-	vmqt_env = conf.Finish()
-	return vmqt_env
-
 def configureModules( clam_env ) :
 	configure_clam(clam_env)
 	save_config_file_from_env(clam_env, '.')
@@ -152,9 +132,6 @@ def configureModules( clam_env ) :
 	save_config_file_from_env(processing_env, 'processing')
 	audioio_env = configure_audioio(processing_env)
 	save_config_file_from_env(audioio_env, 'audioio')
-	if clam_env['with_qt3'] : 
-		vmqt_env = configure_vmqt(audioio_env)
-		save_config_file_from_env(vmqt_env, 'vmqt')
 
 # helper functions
 def setup_build_options( env ) :
@@ -201,11 +178,6 @@ def setup_build_options( env ) :
 	elif sys.platform == 'win32' :
 		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
 	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
-	opts.Add( BoolOption( 'with_qt3', 'Enables the compilation of the clam_vmqt module based on qt3', 'yes') )
-
-	if sys.platform == 'win32' : 
-		opts.Add( PathOption( 'qt_includes', 'Path to the directory where qt includes are located', 'G:\projects\qt\include' ) )
-		opts.Add( PathOption( 'qt_libs', 'Path to the directory where qt binaries are located', 'G:\projects\qt\lib' ) )
 
 	opts.Update(env)
 	opts.Save('clam.conf', env) # Save, so user doesn't have to 
@@ -250,7 +222,7 @@ def create_custom_builders( env ) :
 	env.Append( BUILDERS={'LinkerNameLink' : bld} )
 
 def config_file_missing():
-	dirs = ". core audioio processing vmqt"
+	dirs = ". core audioio processing"
 	files = [ dir+"/flags.conf" for dir in dirs.split()]
 	func_and = lambda x,y : x and y
 	result = not reduce( func_and, map(os.path.exists, files) ) 
@@ -309,19 +281,14 @@ clam_env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )
 core_env = clam_env.Copy()
 processing_env = clam_env.Copy()
 audioio_env = clam_env.Copy()
-vmqt_env = clam_env.Copy()
 
 #building
 if not clam_env.GetOption('clean') :
 	load_config_file_to_env(core_env, 'core')
 	load_config_file_to_env(processing_env, 'processing')
 	load_config_file_to_env(audioio_env, 'audioio')
-	if clam_env['with_qt3'] : 
-		vmqt_env.Tool("qt")
-		load_config_file_to_env(vmqt_env, 'vmqt')
 
 modules = [ 'core', 'processing', 'audioio']
-if clam_env['with_qt3'] : modules.append('vmqt')
 
 for module in modules: Export(module+'_env')
 

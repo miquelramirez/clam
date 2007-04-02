@@ -361,18 +361,6 @@ int main( int argc, char** argv )
 
 package_checks['check_glu'] = ThoroughPackageCheck( 'glu', 'c', None, glu_test_code )
 
-libqt_test_code = r"""\
-#include <qstring.h>
-
-int main()
-{
-	QString foo = "foo";
-	return 0;	
-}
-"""
-
-package_checks['check_qt'] = ThoroughPackageCheck( 'qt', 'c++', None, libqt_test_code )
-
 directx_test_code = r"""\
 #include <windows.h>
 #include <dsound.h>
