@@ -8,12 +8,6 @@ options.Add(PathOption('install_prefix', 'The prefix where the application will 
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt4/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
-"""
-if sys.platform == 'win32' :
-	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '' ))
-if sys.platform == 'darwin' :
-	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '/opt/local/' ))
-"""
 
 def scanFiles(pattern, paths) :
 	files = []

@@ -48,6 +48,7 @@ const static char * processingClasses[] = {
 	"ADSR",
 	"SquareWave",
 	"WindowGenerator",
+	"HarmonicPeaksGenerator",
 //	"WaveGenerator",	TODO register
 	0,
 	"Arithmetic operations",
@@ -108,6 +109,7 @@ const static char * processingClasses[] = {
 	"SMSPitchDiscretization",
 	"SMSGenderChange",
 	"SMSTranspose",
+	"VowelResonator",
 	0,
 	"Spectral Transformations",
 	"OscillatingSpectralNotch",
