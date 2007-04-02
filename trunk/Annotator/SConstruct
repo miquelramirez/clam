@@ -74,6 +74,8 @@ env.EnableQt4Modules([
 #	'QtTest',
 #	'QtXml',
 #	'QtSvg',
+#	'QtUiTools',
+#	'QtDesigner',
 #	'Qt3Support',
 	], debug=False)
 
@@ -140,11 +142,9 @@ if sys.platform=='linux2' :
 		env.Append( CCFLAGS=['-g', '-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
 
-
-programs = []
-for main in mainSources.items() :
-#	print sources , main
-	programs += [ env.Program(target=main[0], source = sources+[main[1]]) ]
+#commonObjects = env.StaticLibrary(target="annotator", source=sources)
+programs = [ env.Program(target=program, source = [main] + sources) 
+	for program, main in mainSources.items()]
 
 manpages = [
 	'resources/man/man1/Annotator.1',
