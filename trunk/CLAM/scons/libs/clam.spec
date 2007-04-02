@@ -110,8 +110,6 @@ Requires:	libvorbis-devel
 Requires:	mad-devel
 Requires:	pkgconfig
 #Requires:	portaudio-devel
-Requires:	qt3-devel
-Requires:	qt-devel
 
 %description devel
 CLAM is a framework to develop audio and music applications in C++.
@@ -175,6 +173,8 @@ Summary:	CLAM SMSTools, SMS based audio authoring tool
 Group:		Productivity/Multimedia/Sound/Utilites
 Version:	%{SMSTools_version}
 Requires:	%{name} = %{CLAM_version}
+Requires:	qt3-devel
+Requires:	qt-devel
 
 %description smstools
 CLAM SMSTools, SMS based audio authoring tool.
