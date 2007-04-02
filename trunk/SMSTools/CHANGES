@@ -1,6 +1,7 @@
 2007-??-?? SMSTools 0.4.8 SVN $Revision$
 ''
  * Using CLAM 1.0.1
+ * Dropped all the obsolete FLTK code
 
 2007-03-20 SMSTools 0.4.7
 'The Berlin release'
