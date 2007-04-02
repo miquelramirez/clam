@@ -69,7 +69,7 @@ void InControlArray::Resize(int size, const std::list<std::string>& names, Proce
 		Shrink(size);
 		return;
 	}
-	CLAM_ASSERT(size-previousSize <= names.size(), "InControlArray::Resize: error, not enough labels provided");
+	CLAM_ASSERT(size-previousSize <= int(names.size()), "InControlArray::Resize: error, not enough labels provided");
 	mControls.resize(size);
 	std::list<std::string>::const_iterator name = names.begin();
 	for (int i = previousSize; i<size; i++, name++) {
@@ -80,6 +80,7 @@ void InControlArray::Resize(int size, const std::list<std::string>& names, Proce
 void InControlArray::Shrink(int size)
 {
 	int previousSize = mControls.size();
+	if (size == previousSize) return;
 	CLAM_ASSERT(size < previousSize, "InControlArray::Cannot Shrink a Control Array to a larger size");
 	for (int i = previousSize-1; i >= size; i--) {
 		delete mControls[i];	

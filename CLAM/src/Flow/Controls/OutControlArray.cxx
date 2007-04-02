@@ -24,11 +24,9 @@
 namespace CLAM{
 	
 
-OutControlArray::OutControlArray(int size,
-								 const std::string &name,
-								 Processing *wtp)
+OutControlArray::OutControlArray(int size, const std::string &name, Processing *parent)
 {
-	Resize(size,name,wtp);
+	Resize(size, name, parent);
 }
 
 OutControlArray::OutControlArray()
@@ -50,7 +48,7 @@ OutControlArray::~OutControlArray()
 }
 
 
-void OutControlArray::Resize(int size, const std::string &name, Processing* parent)
+void OutControlArray::Resize(int size, const std::string& name, Processing* parent)
 {
 	int previousSize = mControls.size();
 	if(size < previousSize) 
