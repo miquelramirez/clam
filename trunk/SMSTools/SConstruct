@@ -28,6 +28,7 @@ env.SConsignFile() # Single signature file
 
 if sys.platform in ["linux2","darwin"] :
 	env['QT_LIB']='qt-mt'
+	env.AppendUnique(LIBS='GL')
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
 
@@ -71,7 +72,7 @@ env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-	'clam_vmqt',
+#	'clam_vmqt',
 	] , CLAMInstallDir)
 
 #env.EnableQt4Modules([
@@ -95,13 +96,15 @@ mainSources = {
 
 
 sourcePaths=recursiveDirs(os.path.join('src','QtImpl'))
+sourcePaths+=recursiveDirs(os.path.join('vmqt'))
 
 extraPaths = []
 extraPaths += [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 	'src',
-	os.path.join('src','GUI','ScoreEditor')
+	os.path.join('src','GUI','ScoreEditor'),
+	'/usr/include/qt3', # qt3 tools should add this
 ]
 includePaths = sourcePaths + extraPaths
 
