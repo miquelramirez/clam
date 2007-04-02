@@ -85,6 +85,7 @@ void OutControlArray::Resize(int size, const std::list<std::string>& names, Proc
 void OutControlArray::Shrink(int size)
 {
 	int previousSize = mControls.size();
+	if (size==previousSize) return;
 	CLAM_ASSERT(size < previousSize, "OutControlArray::Cannot Shrink a Control Array to a larger size");
 	for (int i = previousSize-1; i >= size; i--) {
 		delete mControls[i];	
