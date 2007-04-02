@@ -1,4 +1,4 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
 <class>SMSToolsBase</class>
 <widget class="QMainWindow">
     <property name="name">
@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>824</width>
-            <height>502</height>
+            <width>819</width>
+            <height>504</height>
         </rect>
     </property>
     <property name="caption">
@@ -24,56 +24,43 @@
         <cstring>mMenuBar</cstring>
     </property>
     <item text="&amp;File" name="mMenuFile">
-        <action name="fileConfig"/>
-        <item text="Configuration" name="popupMenu" accel="">
-            <action name="mMenuFileNewCfg"/>
-            <action name="mMenuFileLoadCfg"/>
-        </item>
-        <action name="fileSMSAnalysis"/>
-        <item text="SMS Analysis" name="popupMenu_4" accel="">
-            <action name="mMenuFileLoadAnalysis"/>
-            <action name="mMenuFileStoreAnalysis"/>
-        </item>
-        <action name="fileMelody"/>
-        <item text="Melody" name="popupMenu_7" accel="">
-            <action name="mMenuFileSaveMelody"/>
-        </item>
-        <action name="fileSMSTransform"/>
-        <item text="SMS Transformation" name="popupMenu_9" accel="">
-            <action name="mMenuFileNewScore"/>
-            <action name="mMenuFileLoadScore"/>
-        </item>
-        <action name="fileSMSSynthesis"/>
-        <item text="SMS Synthesis" name="popupMenu_12" accel="">
-            <action name="mMenuFileSaveSynSound"/>
-            <action name="mMenuFileSaveSynSinusoidal"/>
-            <action name="mMenuFileSaveSynResidual"/>
-        </item>
+        <action name="mMenuFileNewCfg"/>
+        <action name="mMenuFileLoadCfg"/>
         <separator/>
         <action name="fileExitAction"/>
     </item>
-    <item text="SMS &amp;Analysis" name="mMenuAnalysis">
+    <item text="SMS &amp;Analysis" name="SMS_Analysis">
         <action name="mMenuAnalysisAnalyze"/>
+        <action name="mMenuFileLoadAnalysis"/>
+        <action name="mMenuFileStoreAnalysis"/>
+        <separator/>
         <action name="mMenuAnalysisExtractMelody"/>
+        <action name="mMenuFileSaveMelody"/>
+        <separator/>
     </item>
-    <item text="SMS &amp;Transformation" name="mMenuTransformation">
+    <item text="SMS &amp;Transformation" name="SMS_Transformation">
+        <action name="mMenuFileNewScore"/>
+        <action name="mMenuFileLoadScore"/>
         <action name="mMenuTransformApply"/>
         <action name="mMenuTransformUndo"/>
     </item>
-    <item text="SMS &amp;Synthesis" name="mMenuSynthesis">
+    <item text="SMS &amp;Synthesis" name="SMS_Synthesis">
         <action name="mMenuSynthSinthesize"/>
+        <action name="mMenuFileSaveSynSound"/>
+        <action name="mMenuFileSaveSynSinusoidal"/>
+        <action name="mMenuFileSaveSynResidual"/>
     </item>
     <item text="&amp;View" name="mMenuView">
         <action name="mMenuViewOriginalAudio"/>
         <action name="mMenuViewFundFreq"/>
         <action name="mMenuViewSinTracks"/>
         <action name="viewSonogram"/>
-        <item text="Sonogram" name="popupMenu_26" accel="">
+        <item text="Sonogram" name="popupMenu_24" accel="">
             <action name="mMenuViewColorSonogram"/>
             <action name="mMenuViewBWSonogram"/>
         </item>
         <action name="viewFrameData"/>
-        <item text="Frame Data" name="popupMenu_29" accel="">
+        <item text="Frame Data" name="popupMenu_27" accel="">
             <action name="mMenuViewSpecPeaks"/>
             <action name="mMenuViewSinSpec"/>
             <action name="mMenuViewResSpec"/>
@@ -84,14 +71,13 @@
         <action name="mMenuViewSynResidual"/>
         <separator/>
         <action name="viewSchemeAction"/>
-        <item text="Scheme" name="popupMenu_38" accel="">
+        <item text="Scheme" name="popupMenu_36" accel="">
             <action name="mBackgroundBlack"/>
             <action name="mBackgroundWhite"/>
         </item>
     </item>
-    <item text="&amp;?" name="mMenuHelp">
+    <item text="&amp;Help" name="Help">
         <action name="mMenuOnlineHelp"/>
-        <action name="mMenuLicense"/>
         <action name="mMenuAbout"/>
     </item>
 </menubar>
@@ -114,10 +100,10 @@
             <cstring>mMenuFileNewCfg</cstring>
         </property>
         <property name="text">
-            <string>New...</string>
+            <string>New Configuration...</string>
         </property>
         <property name="menuText">
-            <string>New...</string>
+            <string>New Configuration...</string>
         </property>
     </action>
     <action>
@@ -125,10 +111,10 @@
             <cstring>mMenuFileLoadCfg</cstring>
         </property>
         <property name="text">
-            <string>Load...</string>
+            <string>Load Configuration...</string>
         </property>
         <property name="menuText">
-            <string>Load...</string>
+            <string>Load Configuration...</string>
         </property>
     </action>
     <action>
@@ -644,6 +630,14 @@
         </property>
         <property name="menuText">
             <string>Background white</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>Action</cstring>
+        </property>
+        <property name="text">
+            <string>Unnamed</string>
         </property>
     </action>
 </actions>

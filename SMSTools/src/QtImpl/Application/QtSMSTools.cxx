@@ -11,7 +11,6 @@
 #include "ScoreEditorDlg.hxx"
 #include "QtWaitMessage.hxx"
 #include "QtSMSTools.hxx"
-#include "LicenseDlg.hxx"
 #include "AboutBox.hxx"
 #include <CLAM/CLAMVersion.hxx>
 #include "SMSToolsVersion.hxx"
@@ -467,12 +466,6 @@ namespace QtSMS
 #endif
 	}
 
-	void QtSMSTools::showLicense()
-	{
-		LicenseDlg* licenseDlg = new LicenseDlg(this);
-		licenseDlg->exec();
-	}
-
 	void QtSMSTools::showAboutBox()
 	{
 		AboutBox* aboutBox = new AboutBox(this);
@@ -544,7 +537,6 @@ namespace QtSMS
 		mMenuViewSynResidual->setEnabled(false);
 		// menu Help
 		mMenuOnlineHelp->setEnabled(true);
-		mMenuLicense->setEnabled(true);
 		mMenuAbout->setEnabled(true); 
 	}
 
