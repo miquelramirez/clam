@@ -35,7 +35,8 @@ bool SMSSpectralShapeShift::Do(const SpectralPeakArray&
 
 	mSpectralEnvelope.SetSpectralRange(mSpectralRange);
  	
-	mSpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope);
+	if (!mSpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope))
+		return true; // Not enough peaks for an envelope
 
 	TData amount=mAmount.GetLastValue();
 
