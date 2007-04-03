@@ -72,7 +72,7 @@ env.EnableQt4Modules([
 singleSourceExamples = [
 	"NetworkPersistence_example.cxx",
 	"NetworkUsage_example.cxx",
-#	"AudioApplicationExample.cxx", # TODO: Windows lacks GUIAudioApplication
+	"AudioApplicationExample.cxx", # TODO: Windows lacks GUIAudioApplication
 	"AudioFileReading_example.cxx",
 	"AudioFileWriting_example.cxx",
 	"AudioIOExample.cxx",
@@ -83,27 +83,23 @@ singleSourceExamples = [
 	"FileInfo_example.cxx",
 	"FilePlayback_example.cxx",
 	"FundamentalDetect.cxx",
-	"LPCAnalysis_example.cxx", # TODO FLTK Dependencies
+	"LPCAnalysis_example.cxx", # TODO FLTK Dependencies -> Qt4
 	"Midi2XmlExample.cxx",
 	"MIDIFileReadWriteExample.cxx",
 	"MIDIIOExample.cxx",
 	"MIDIOut_example.cxx",
-#	"MIDI_Synthesizer_example/MIDI_Synthesizer_example.cxx", # TODO: Windows lacks GUIAudioApplication
+	"MIDI_Synthesizer_example.cxx", # TODO: Windows lacks GUIAudioApplication
 	"NetworkPersistence_example.cxx",
 	"NetworkUsage_example.cxx",
 	"PersistenceThroughDTs_example.cxx",
-#	"MultiPlot_example.cxx",
-#	"PlotExamplesHelper.cxx",
-#	"SinglePlot_example.cxx",
 	"POCompositeExample.cxx",
-	"PortsExamples/SimplePortsUsage_example.cxx",
+	"SimplePortsUsage_example.cxx",
 	"ProcessingLifeCycle_example.cxx",
 	"ProcessingObject_controls_example.cxx",
-#	"SDIF_And_Segment_example.cxx", # TODO: FLTK Dependencies
+	"SDIF_And_Segment_example.cxx", # TODO: FLTK Dependencies
 	"Spectrum_example.cxx",
 	"StereoToMonoFile.cxx",
-#	"StreamBufferExample.cxx", # TODO: Deprecated?
-#	"ThreadedProcessing_example.cxx", # TODO: Depends on Resample
+#	"ThreadedProcessing_example.cxx", # TODO: Depends on Resample and FLTK
 	"Tutorial/UserTutorial1.cxx",
 	"Tutorial/UserTutorial2.cxx",
 	"Tutorial/UserTutorial3.cxx",
@@ -119,29 +115,6 @@ singleSourceExamples = [
 #	"CLAMRemoteController/LADSPAHandler.cxx",
 #	"NetworkLADSPAPlugin/LADSPAHandler.cxx",
 #	"NetworkLADSPAPlugin/NetworkLADSPAPlugin.cxx",
-qtPlotUtils = [
-	"QtPlots/utils/analysis_utils.cxx",
-	"QtPlots/utils/audio_file_utils.cxx",
-	"QtPlots/utils/wave_utils.cxx",
-]
-qtPlotMains = [
-	"QtPlots/DirectPlotsExamples/DPAudioExample.cxx",
-	"QtPlots/DirectPlotsExamples/DPAudioStereoExample.cxx",
-	"QtPlots/DirectPlotsExamples/DPFundamentalExample.cxx",
-	"QtPlots/DirectPlotsExamples/DPMultiPlotExample.cxx",
-	"QtPlots/DirectPlotsExamples/DPSpectrumAndPeaksExample.cxx",
-	"QtPlots/QtPlotsExamples/QtAudioPlotExample.cxx",
-	"QtPlots/QtPlotsExamples/QtSinTracksPlotExample.cxx",
-	"QtPlots/QtPlotsExamples/QtSpectrogramExample.cxx",
-	"QtPlots/QtPlotsExamples/QtSpectrumPlotExample.cxx",
-	"QtPlots/SegmentEditorExample/SegmentEditorExample.cxx",
-]
-if sys.platform != 'win32':
-	qtPlotMains += [
-	"QtPlots/BPFEditorExample/BPFEditorExample.cxx", #TODO: Windows needs PortMidi
-	"QtPlots/DirectPlotsExamples/MultiBPFViewerExample.cxx", #TODO: Windows needs PortMidi
-	"QtPlots/ListPlotExample/ListPlotExample.cxx", #TODO: Windows needs PortMidi
-]
 
 directoryBasedExamples = [
 #	"TickExtractor", # TODO: Files left to be compilable
@@ -155,13 +128,6 @@ for main in singleSourceExamples :
 	executable = os.path.splitext(os.path.basename(main))[0]
 	examples += [ env.Program(target=executable, source = sources + [main] ) ]
 	
-env.AppendUnique(CPPPATH=["QtPlots/utils"])
-"""
-for main in qtPlotMains :
-	executable = os.path.splitext(os.path.basename(main))[0]
-	examples += [ env.Program(target=executable, source = sources + [main] + qtPlotUtils) ]
-"""
-
 for folder in directoryBasedExamples :
 	exampleSources = glob.glob(folder+"/*.cxx")
 	executable = os.path.basename(folder)+"Exe"
