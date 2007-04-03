@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network id="Unnamed Network">
+<network id="Unnamed">
 
   <processing id="AudioSink_0" type="AudioSink"/>
 
   <processing id="AudioSource_0" type="AudioSource"/>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="OutControlSender_0" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
 
   <processing id="SMSAnalysisCore_0" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
@@ -79,7 +85,7 @@
     <SinTracking>
       <Threshold>40</Threshold>
       <nMaxSines>200</nMaxSines>
-      <IsHarmonic>0</IsHarmonic>
+      <IsHarmonic>1</IsHarmonic>
     </SinTracking>
     <prSamplingRate>44100</prSamplingRate>
     <prFFTSize>0</prFFTSize>
@@ -103,7 +109,7 @@
     <PhaseMan>
       <MaxSines>100</MaxSines>
       <SamplingRate>44100</SamplingRate>
-      <Type>Align</Type>
+      <Type>Continuation</Type>
     </PhaseMan>
     <SpectralSynth>
       <AnalWindowGenerator>
@@ -144,8 +150,10 @@
     <OverlapAddGlobal>
       <FrameSize>512</FrameSize>
     </OverlapAddGlobal>
-    <prSamplingRate>44100</prSamplingRate>
+    <prSamplingRate>0</prSamplingRate>
   </processing>
+
+  <processing id="SpectrumView_0" type="SpectrumView"/>
 
   <port_connection>
     <out>AudioSource_0.AudioOut</out>
@@ -174,6 +182,11 @@
 
   <port_connection>
     <out>SMSGenderChange_0.Out Spectrum</out>
+    <in>SpectrumView_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSGenderChange_0.Out Spectrum</out>
     <in>SMSSynthesis_0.InputResSpectrum</in>
   </port_connection>
 
@@ -182,9 +195,9 @@
     <in>AudioSink_0.AudioIn</in>
   </port_connection>
 
-  <port_connection>
-    <out>SMSSynthesis_0.OutputAudio</out>
-    <in>Oscilloscope_0.Input</in>
-  </port_connection>
+  <control_connection>
+    <out>OutControlSender_0.out</out>
+    <in>SMSGenderChange_0.Amount</in>
+  </control_connection>
 
 </network>
