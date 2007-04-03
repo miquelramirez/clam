@@ -70,6 +70,7 @@ env.EnableQt4Modules([
 
 
 singleSourceExamples = [
+	"WritingProcessings.cxx",
 	"NetworkPersistence_example.cxx",
 	"NetworkUsage_example.cxx",
 	"AudioApplicationExample.cxx", # TODO: Windows lacks GUIAudioApplication
