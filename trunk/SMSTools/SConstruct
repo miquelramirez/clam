@@ -72,7 +72,6 @@ env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-#	'clam_vmqt',
 	] , CLAMInstallDir)
 
 #env.EnableQt4Modules([
