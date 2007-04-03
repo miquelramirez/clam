@@ -27,8 +27,8 @@
 #include "SpectrumConfig.hxx"      // imports CLAM::Spectrum auxiliar datatypes declaration
 #include "WindowGenerator.hxx"     // imports CLAM::WindowGenerator Processing declaration
 #include "AudioMultiplier.hxx"     // imports CLAM::AudioMultiplier Processing declaration
-#include "MultiPlot.hxx"           // imports CLAMVM::MultiPlot declaration
-#include "SystemPlots.hxx"         // imports CLAMVM::SystemPlots declaration
+//#include "MultiPlot.hxx"           // imports CLAMVM::MultiPlot declaration
+//#include "SystemPlots.hxx"         // imports CLAMVM::SystemPlots declaration
 #include "Err.hxx"                 // imports CLAM::Err declaration
 #include <iostream>
 
@@ -184,6 +184,8 @@ int main( int argc, char** argv )
 		myfft.Do( windowedAudio, ftSpectrum );
 		myfft.Stop();
 		ftSpectrum.ToDB();
+/*
+ 		// TODO: Port this to qt4
 
 		// Now we create the MultiPlot that will hold the drawings
 		// of the spectrum we have obtained - refer to MultiPlot_example.cxx
@@ -199,6 +201,7 @@ int main( int argc, char** argv )
 		thePlot.AddData( "FT spectrum", ftSpectrum.GetMagBuffer(), 0, 22050 );
 		
 		CLAMVM::SystemPlots::Display( "multiplot" );
+*/
 	}
 	catch( CLAM::Err& e ) // we handle here CLAM exceptions
 	{

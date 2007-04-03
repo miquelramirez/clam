@@ -83,7 +83,7 @@ singleSourceExamples = [
 	"FileInfo_example.cxx",
 	"FilePlayback_example.cxx",
 	"FundamentalDetect.cxx",
-#	"LPCAnalysis_example.cxx", # TODO FLTK Dependencies
+	"LPCAnalysis_example.cxx", # TODO FLTK Dependencies
 	"Midi2XmlExample.cxx",
 	"MIDIFileReadWriteExample.cxx",
 	"MIDIIOExample.cxx",
