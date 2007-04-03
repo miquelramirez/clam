@@ -3,6 +3,12 @@ import os
 import glob
 import sys
 
+print 
+print "** This SConstruct file is deprecated!!!"
+print "** The one to use is on the examples folder itself."
+print "*****************************************************"
+print 
+
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 
