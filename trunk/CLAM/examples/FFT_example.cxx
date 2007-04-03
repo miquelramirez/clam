@@ -23,7 +23,7 @@
 #include "Spectrum.hxx"         // imports CLAM::Spectrum declaration
 #include "SpectrumConfig.hxx"	// imports CLAM::SpectrumConfig and CLAM::SpecTypeFlags
 								// declarations
-#include "FFT_rfftw.hxx"        // imports CLAM::FFT_rfftw Processing declaration
+#include "FFT.hxx"        	// imports CLAM::FFT Processing declaration
 #include "XMLStorage.hxx"       // imports CLAM XML interface
 #include "DataTypes.hxx"        // imports CLAM-defined types declarations
 #include "Err.hxx"              // imports CLAM::Err exception declaration
@@ -46,7 +46,7 @@ int main(int argc, char* argv[])
 		// as FFT - Fast Fourier Transform. CLAM borrows the algorithm from FFTW, 
 		// a library implementing it in a very efficient way. We have encapsulated
 		// the FFTW library implementation of the FFTW algorithm inside a Processing object,
-		// CLAM::FFT_rfftw.
+		// CLAM::FFT.
 		// So transforming an Audio object into a Spectrum object brokes down to just:
 		// 1) Obtain the signal from wherever it suits
 		// 2) Create an instance of CLAM::Spectrum and configure it
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
 		fconfig.SetAudioSize(samples);
 
 		// Processing object creation
-		CLAM::FFT_rfftw myfft;
+		CLAM::FFT myfft;
 
 		// we configure the object
 		myfft.Configure( fconfig );
