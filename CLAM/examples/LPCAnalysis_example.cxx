@@ -20,7 +20,7 @@
  */
 
 #include "LPC_AutoCorrelation.hxx" // imports CLAM LPC_AutoCorrelation Processing declaration
-#include "FFT_rfftw.hxx"           // imports CLAM::FFT_rfftw Processing declaration
+#include "FFT.hxx"           // imports CLAM::FFT Processing declaration
 #include "LPModel.hxx"             // imports CLAM::LPModel ProcessingData declaration
 #include "Audio.hxx"               // imports CLAM::Audio ProcessingData declaration
 #include "Spectrum.hxx"            // imports CLAM::Spectrum ProcessingData declaration
@@ -178,7 +178,7 @@ int main( int argc, char** argv )
 		
 		CLAM::FFTConfig fconfig;
 		fconfig.SetAudioSize(samples);
-		CLAM::FFT_rfftw myfft;
+		CLAM::FFT myfft;
 		myfft.Configure( fconfig );
 		myfft.Start();
 		myfft.Do( windowedAudio, ftSpectrum );

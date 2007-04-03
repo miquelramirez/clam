@@ -35,8 +35,8 @@
 #include "AudioFile.hxx"
 #include "AudioManager.hxx"
 #include "AudioOut.hxx"
-#include "FFT_rfftw.hxx"
-#include "IFFT_rfftw.hxx"
+#include "FFT.hxx"
+#include "IFFT.hxx"
 
 int main( int argc, char** argv )
 {	
@@ -63,9 +63,9 @@ int main( int argc, char** argv )
 		CLAM::IFFTConfig ifconfig;
 		ifconfig.SetAudioSize(size);
 
-		CLAM::FFT_rfftw myfft;
+		CLAM::FFT myfft;
 		myfft.Configure( fconfig );
-		CLAM::IFFT_rfftw myifft;
+		CLAM::IFFT myifft;
 		myifft.Configure( ifconfig );
 	
 		CLAM::AudioFileTarget file;
