@@ -22,6 +22,8 @@
 #define __LPC_AUTOCORRELATION__
 
 #include "Processing.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 #include "ProcessingConfig.hxx"
 #include "LPModel.hxx"
 
@@ -61,6 +63,8 @@ namespace CLAM
 		bool  Do( const Audio& in, DataArray& A, DataArray& K, TData& E );
 
 	protected:
+		InPort<Audio> mAudioIn;
+		OutPort<LPModel> mLPModelOut;
 
 		LPCConfig            mCurrentConfig;
 		
