@@ -5,6 +5,7 @@ import sys
 
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -32,21 +33,17 @@ env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
 env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
-env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
+env['QT4_UICDECLPREFIX'] = os.path.join('generated','uic_')
 env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
-
-sourcePaths = []
-extraPaths = []
-extraPaths += [
-	CLAMInstallDir+'/include',
-	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes	
-]
-includePaths = sourcePaths + extraPaths
-
-sources = scanFiles('*.cxx', sourcePaths)
-sources = unique(sources)
-
-env.Append(CPPPATH=includePaths)
+if not env['verbose']:
+	env['CXXCOMSTR'] = '== Compiling $SOURCE'
+	env['LINKCOMSTR'] = '== Linking $TARGET'
+	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
+	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
+	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
+	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
+	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
 
 env.EnableClamModules(libs=[
 	'clam_core',
@@ -67,6 +64,16 @@ env.EnableQt4Modules([
 #	'QtDesigner',
 #	'Qt3Support',
 	], debug=False)
+
+sourcePaths = []
+extraPaths = [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+]
+includePaths = sourcePaths + extraPaths
+
+sources = scanFiles('*.cxx', sourcePaths)
+sources = unique(sources)
 
 
 singleSourceExamples = [
@@ -109,11 +116,11 @@ singleSourceExamples = [
 	"Tutorial/UserTutorial6.cxx",
 ]
 # TODO: Weird ones (libraries, client server...)
-#	"CLT/LadspaAudioMultiplier.cxx",
-#	"CLT/LadspaSimpleOscillator.cxx",
+#	"ProcessingClass2Ladpsa/LadspaAudioMultiplier.cxx",
+#	"ProcessingClass2Ladpsa/LadspaSimpleOscillator.cxx",
 # TODO: Files to be integred on the Network editor
-#	"CLAMRemoteController/CLAMRemoteController.cxx",
-#	"CLAMRemoteController/LADSPAHandler.cxx",
+#	"LadspaOSCRemoteController/CLAMRemoteController.cxx",
+#	"LadspaOSCRemoteController/LADSPAHandler.cxx",
 #	"NetworkLADSPAPlugin/LADSPAHandler.cxx",
 #	"NetworkLADSPAPlugin/NetworkLADSPAPlugin.cxx",
 
@@ -122,6 +129,9 @@ directoryBasedExamples = [
 	"PortsAndControlsUsageExample",
 	"ControlArrayExamples",
 ]
+
+env.Append(CPPPATH=includePaths)
+
 
 examples = []
 
