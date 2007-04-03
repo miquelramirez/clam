@@ -24,9 +24,15 @@
 #include "Audio.hxx"
 #include "Assert.hxx"
 #include "CLAM_Math.hxx"
+#include "Factory.hxx"
 
 namespace CLAM
 {
+	namespace detail 
+	{
+		static Factory<Processing>::Registrator<LPC_AutoCorrelation> 
+			registrator("LPC_AutoCorrelation");
+	}
 	void LPCConfig::DefaultInit()
 	{
 		AddAll();
@@ -36,7 +42,10 @@ namespace CLAM
 	}
 
 	LPC_AutoCorrelation::LPC_AutoCorrelation()
+		: mAudioIn("AudioIn",this)
+		, mLPModelOut("LPModelOut",this)
 	{
+		Configure(LPCConfig());
 	}
 
 	LPC_AutoCorrelation::~LPC_AutoCorrelation()
