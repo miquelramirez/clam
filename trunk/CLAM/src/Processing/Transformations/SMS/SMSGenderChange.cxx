@@ -33,56 +33,50 @@ bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks,
 				Spectrum& outSpectrum)
 {
 
-	if(inFund.GetFreq(0))//we only transform voiced frames
-	{	
-		TData minPitch = 100;
-		TData maxPitch = 800;
-
-		//Maximum spectral shift
-		TData maxSss = 200;
-
-		//amount for spectral shape shift
-		TData sssAmount;
-
-		TData pitch = inFund.GetFreq(0);
-
-		if(pitch<minPitch) sssAmount = 0;
-		else if (pitch>maxPitch) sssAmount = maxSss;
-		else sssAmount = (pitch-minPitch) / ( (maxPitch-minPitch)/maxSss);
-
-		
-		//if amount is zero it means from male to female, else from female to male
-		TData amount=mAmount.GetLastValue();
-
-		TData pitchTransposition;
-
-		if(amount) //female to male
-		{
-			sssAmount=-sssAmount;
-			pitchTransposition=0.5;
-		}
-		else //male to female
-		{
-			pitchTransposition=2;
-		}
-
-		mSpectralShapeShift.GetInControl("Amount").DoControl(sssAmount);
-
-		mPitchShift.GetInControl("Amount").DoControl(pitchTransposition);
-
-		SpectralPeakArray tmpSpectralPeaks;
-		mSpectralShapeShift.Do(inPeaks,tmpSpectralPeaks);
-
-		mPitchShift.Do( tmpSpectralPeaks, inFund, inSpectrum, 
-				outPeaks, outFund, outSpectrum);
+	//we only transform voiced frames
+	if(!inFund.GetFreq(0))
+	{
+		outFund = inFund;
+		outSpectrum = inSpectrum;
+		outPeaks = inPeaks;
+		return true;
 	}
+	TData minPitch = 100;
+	TData maxPitch = 800;
+
+	//Maximum spectral shift
+	TData maxSss = 200;
+
+	//amount for spectral shape shift
+	TData sssAmount;
+
+	TData pitch = inFund.GetFreq(0);
+
+	if(pitch<minPitch) sssAmount = 0;
+	else if (pitch>maxPitch) sssAmount = maxSss;
+	else sssAmount = (pitch-minPitch) / ( (maxPitch-minPitch)/maxSss);
+	TData pitchTransposition=2;
+
+	bool femaleToMale = mAmount.GetLastValue()>0;
+	if(femaleToMale)
+	{
+		// Invert the transformations
+		sssAmount=-sssAmount;
+		pitchTransposition=1/pitchTransposition;
+	}
+
+	mSpectralShapeShift.GetInControl("Amount").DoControl(sssAmount);
+	mPitchShift.GetInControl("Amount").DoControl(pitchTransposition);
+
+	SpectralPeakArray tmpSpectralPeaks;
+	mSpectralShapeShift.Do(inPeaks,tmpSpectralPeaks);
+	mPitchShift.Do( tmpSpectralPeaks, inFund, inSpectrum, 
+			outPeaks, outFund, outSpectrum);
 	return true;
 }
 
 bool SMSGenderChange::Do(const Frame& in, Frame& out)
 {
-	out=in;	// TODO most likely this copy is not necessary
-
 	return Do( in.GetSpectralPeakArray(),
 				in.GetFundamental(), 
 				in.GetResidualSpec(), 
