@@ -33,9 +33,9 @@ def define_module_contents(env) :
 	blacklist = []
 	if sys.platform == 'win32' :
 		folders.append('src/Processing/InitAudioIO*.*xx')
-	else :
-		if env.has_key('with_jack_support') and env['with_jack_support'] == True:
-			folders.append('src/Flow/Networks/JACKNetworkPlayer*.*xx')
+
+	if env.has_key('with_jack') and env['with_jack'] == True:
+		folders.append('src/Flow/Networks/JACKNetworkPlayer*.*xx')
 
 	if not env.has_key('with_mad') or not env['with_mad']:
 		blacklist += ['Mpeg']

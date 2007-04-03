@@ -64,10 +64,10 @@ def define_module_contents(env) :
 		blacklist.append( 'Xerces.+' )
 		blacklist.append( 'LibXml.+' )
 
-	if not env.has_key('with_ladspa_support') or env['with_ladspa_support'] == False :
+	if not env.has_key('with_ladspa') or env['with_ladspa'] == False :
 		blacklist.append( 'Ladspa.+' )
 
-	if not env.has_key('with_osc_support') or env['with_osc_support'] == False :
+	if not env.has_key('with_osc') or env['with_osc'] == False :
 		blacklist.append( 'OSC.+')
 
 	

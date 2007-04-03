@@ -1,6 +1,9 @@
 2007-??-?? NetworkEditor 1.0.1 SVN $Revision$
 ''
  * Using CLAM 1.0.1
+ * Working genderChange.clamnetwork example with interface
+ * Vowel Synthesis added and related examples
+ * Added an option to compile Faust based processing
 
 2007-03-20 NetworkEditor 1.0.0
 'The Berlin release'

@@ -1,6 +1,13 @@
 2007-??-?? CLAM 1.0.1 SVN $Revision$
 ''
  * FLTK fully dropped
+ * Qt3 based vmqt dropped and some files moved to SMSTools
+ * '_support' ending for scons configure options removed:
+   with_jack_support, with_ladspa_support, with_osc_support
+   became with_jack, with_ladspa, with_osc
+ * Examples clean up
+ * Realtime port to some processings:
+   * SMSGenderChange, SMSPitchShift, SMSShapeShift
  
 2007-03-20 CLAM 1.0.0
 'The Berlin release'
