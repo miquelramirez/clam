@@ -41,9 +41,9 @@
 
 #include "AudioFile.hxx"
 #include <iostream>
-#include <qfiledialog.h>
-#include <qstring.h>
-#include <qapplication.h>
+#include <QtGui/QFileDialog>
+#include <QtCore/QString>
+#include <QApplication>
 
 int main( int argc, char** argv )
 {	
@@ -103,10 +103,10 @@ int main( int argc, char** argv )
 
 		// Now that we have the network created with our desired processing and connections, we will store it to an xml file.
 
-		QString networkFileName = QFileDialog::getSaveFileName(
-			QObject::tr("MyNetwork.clamnetwork"), "*.clamnetwork", 0,
-			"Save file as",
-			"Please, specify the xml where network will be stored");
+		QString networkFileName = QFileDialog::getSaveFileName(0,
+			QObject::tr("Please, specify the xml where network will be stored"),
+			QObject::tr("MyNetwork.clamnetwork"),
+			"*.clamnetwork");
 		if ( networkFileName == NULL )
 		{
 			std::cout << "User cancelled" << std::endl;
@@ -114,7 +114,7 @@ int main( int argc, char** argv )
 		}
 
 		// the first step to passivate the network is create an storage object
-		CLAM::XMLStorage::Dump( *network, "network", networkFileName.latin1() );
+		CLAM::XMLStorage::Dump( *network, "network", networkFileName.toStdString().c_str() );
 
 		// ok, we just stored it. You can take a look to the file you specified, read the contents and modify it if you want
 		// (to your own risk, of course).
@@ -126,7 +126,7 @@ int main( int argc, char** argv )
 		CLAM::Network * network2 = new CLAM::Network; 
 		network2->SetName("Network Loaded");
 
-		CLAM::XMLStorage::Restore( *network2, networkFileName.latin1() );
+		CLAM::XMLStorage::Restore( *network2, networkFileName.toStdString().c_str() );
 
 		// With these few lines we have in "network2" the same connections and processings (with his configs) that we had in "network".
 

@@ -23,7 +23,7 @@
 #include "XMLStorage.hxx"
 #include "SegmentDescriptors.hxx"
 #include "DescriptorComputation.hxx"
-#include <qfiledialog.h>
+#include <QtGui/QFileDialog>
 
 int main( int argc, char** argv )
 {
@@ -31,9 +31,10 @@ int main( int argc, char** argv )
 
 
 	QString file = QFileDialog::getOpenFileName(
-		QString::null, "*.xml", 0,
-		"name",
-		"Please select an XML analysis file");
+		0,
+		"Please select an XML analysis file",
+		QString::null,
+		"*.xml");
 
 	if (file.isEmpty())
 	{
@@ -43,7 +44,7 @@ int main( int argc, char** argv )
 
 
 	std::cout<<"Loading Analysis File. Please Wait."<<"\n";
-	CLAM::XMLStorage::Restore(segment, file.latin1() );
+	CLAM::XMLStorage::Restore(segment, file.toStdString().c_str());
 	std::cout<<"Analysis File Loaded Successfully"<<"\n";
 
 	std::cout<<"Computing Descriptors. Please Wait."<<"\n";
@@ -80,9 +81,10 @@ int main( int argc, char** argv )
 	std::cout<<"Descriptors Computed Successfully"<<"\n";
 		
 	QString outFilename = QFileDialog::getOpenFileName(
-		QString::null, "*.xml", 0,
-		"name",
-		"Please enter name of where you want your output descriptors to be stored" );
+		0,
+		"Please enter name of where you want your output descriptors to be stored",
+		QString::null,
+		"*.xml");
 
 	if (file.isEmpty())
 	{
@@ -92,7 +94,7 @@ int main( int argc, char** argv )
 	
 
 	std::cout<<"Storing Results into xml file. Please Wait."<<"\n";
-	CLAM::XMLStorage::Dump(segmentDescriptors,"segmentDescriptors",outFilename.latin1());
+	CLAM::XMLStorage::Dump(segmentDescriptors,"segmentDescriptors",outFilename.toStdString().c_str());
 
 	std::cout<<"Program finished Successfully"<<"\n";
 	return 0;

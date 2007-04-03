@@ -18,24 +18,22 @@ def recursiveDirs(root) :
 def unique(list) :
 	return dict.fromkeys(list).keys()
 
-env = Environment(tools=['default', 'qt'], options=options)
+env = Environment(tools=['default'], options=options)
 options.Save('options.cache', env)
 
 env.SConsignFile() # Single signature file
-
-env['CXXFILESUFFIX'] = '.cxx'
-env['QT_MOCHPREFIX'] = 'generated/moc_'
-env['QT_UICDECLPREFIX'] = 'generated/ui_'
-env['QT_UICDECLSUFFIX'] = '.hxx'
-if (sys.platform == 'linux2') :
-	env['QT_LIB'] = 'qt-mt'
-if (sys.platform == 'win32') :
-	env['QT_LIB'] = 'qt-mt322'
 
 
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.Tool('qt4', toolpath=[clam_sconstoolspath])
+
+env['CXXFILESUFFIX'] = '.cxx'
+env['QT4_UICDECLSUFFIX'] = '.hxx'
+env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
+env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
+env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 
 sourcePaths = []
 extraPaths = []
@@ -54,9 +52,22 @@ env.EnableClamModules(libs=[
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-#	'clam_vmfl',
-	'clam_vmqt',
 	], path=CLAMInstallDir)
+
+env.EnableQt4Modules([
+	'QtCore',
+	'QtGui',
+	'QtOpenGL',
+#	'QtSql',
+#	'QtNetwork',
+#	'QtTest',
+#	'QtXml',
+#	'QtSvg',
+#	'QtUiTools',
+#	'QtDesigner',
+#	'Qt3Support',
+	], debug=False)
+
 
 singleSourceExamples = [
 	"NetworkPersistence_example.cxx",
@@ -65,7 +76,7 @@ singleSourceExamples = [
 	"AudioFileReading_example.cxx",
 	"AudioFileWriting_example.cxx",
 	"AudioIOExample.cxx",
-	"Configurators_example.cxx",
+#	"Configurators_example.cxx", # QT4Port
 	"DescriptorComputation_example.cxx",
 	"FDFilterExample.cxx",
 	"FFT_example.cxx",
@@ -145,9 +156,11 @@ for main in singleSourceExamples :
 	examples += [ env.Program(target=executable, source = sources + [main] ) ]
 	
 env.AppendUnique(CPPPATH=["QtPlots/utils"])
+"""
 for main in qtPlotMains :
 	executable = os.path.splitext(os.path.basename(main))[0]
 	examples += [ env.Program(target=executable, source = sources + [main] + qtPlotUtils) ]
+"""
 
 for folder in directoryBasedExamples :
 	exampleSources = glob.glob(folder+"/*.cxx")
