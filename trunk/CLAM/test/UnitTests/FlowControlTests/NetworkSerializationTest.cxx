@@ -26,7 +26,7 @@
 #include "Oscillator.hxx" // CLAM
 #include "AudioMultiplier.hxx" // CLAM
 #include "AutoPanner.hxx" // CLAM
-#include "FFT_rfftw.hxx" // CLAM
+#include "FFT.hxx" // CLAM
 #include "XMLStorage.hxx" // CLAM
 #include "cppUnitHelper.hxx"
 
@@ -148,13 +148,13 @@ private:
 		foo.SetName(name);
 		foo.AddProcessing("oscillator", new CLAM::Oscillator );
 		foo.AddProcessing("multiplier", new CLAM::AudioMultiplier );
-		foo.AddProcessing("fftw", new CLAM::FFT_rfftw );
+		foo.AddProcessing("fftw", new CLAM::FFT );
 
 		CLAM::XMLStorage::Dump(foo, "network", _output, false );
 		
 		assertXmlBodyEquals(
 			"<network id=\"FooNetworkWithMoreThanOneProcessing\">"
-			"<processing id=\"fftw\" type=\"FFT_rfftw\">"
+			"<processing id=\"fftw\" type=\"FFT\">"
 			"<AudioSize>1024</AudioSize>"
 			"</processing>"
 			"<processing id=\"multiplier\" type=\"AudioMultiplier\"/>"
