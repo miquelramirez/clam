@@ -265,15 +265,14 @@ numprocs=1
 #################
 cd scons/libs
 
-export QTDIR=%{Qt3dir}
 scons -j$numprocs configure \
 	prefix=%{buildroot}%{_prefix} \
 	release=1 \
 	double=0 \
 	xmlbackend=xercesc \
-	with_ladspa_support=1 \
-	with_osc_support=0 \
-	with_jack_support=1 \
+	with_ladspa=1 \
+	with_osc=0 \
+	with_jack=1 \
 	with_fftw=1 \
 	with_fftw3=1 \
 	with_nr_fft=1 \

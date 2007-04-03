@@ -56,7 +56,7 @@ def define_module_contents(env) :
 		]
 	if not env.has_key('with_mad') or not env['with_mad'] :
 		blacklist.append('MpegAudioStream')
-	if not processing_env.has_key('with_osc_support') or not env['with_osc_support'] :
+	if not processing_env.has_key('with_osc') or not env['with_osc'] :
 		blacklist.append('OSCSender')
 
 	if not env.has_key('with_fftw3') or not env['with_fftw3'] :

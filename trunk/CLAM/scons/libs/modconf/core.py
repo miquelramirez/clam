@@ -49,9 +49,9 @@ def test_ladspa ( core_env, conf ) :
 	if not result :
 		print "ladspa SDK header was not found"
 		print "Either install ladspa SDK or disable the option by issuing the option"
-		print "$ scons with_ladspa_support=no"
+		print "$ scons with_ladspa=no"
 		return False
-		#core_env['with_ladspa_support'] = False
+		#core_env['with_ladspa'] = False
 	result = conf.check_ladspa()
 	if not result :
 		print "ladspa SDK compile test failed! Check config.log for details"
@@ -67,19 +67,19 @@ def test_oscpack ( core_env, conf ) :
 	if not result :	
 		print "liboscpack headers not found!"
 		print "Either install liboscpack or disable OSC support by issuing"
-		print "$scons with_osc_support=no"
+		print "$scons with_osc=no"
 		return False
 	result = conf.CheckLibWithHeader( 'oscpack', 'oscpack/ip/IpEndpointName.h', 'cxx', call='IpEndpointName("localhost",9999);')
 	if not result :
 		print "liboscpack binaries not found!"
 		print "Either install liboscpack or disable OSC support by issuing"
-		print "$scons with_osc_support=no"
+		print "$scons with_osc=no"
 		return False
 	result = conf.check_oscpack()
 	if not result :
 		print "liboscpack compile/link/run test failed! check config.log for details..."
 		print "Either install liboscpack or disable OSC support by issuing"
-		print "$scons with_osc_support=no"
+		print "$scons with_osc=no"
 		return False
 	core_env.Append( CPPFLAGS=['-DUSE_OSCPACK=1'] )
 	return True
@@ -87,11 +87,11 @@ def test_oscpack ( core_env, conf ) :
 def setup_core_environment ( core_env, conf) :
 	if not test_xml_backend( core_env, conf): return False
 
-	if core_env.has_key('with_ladspa_support')  and core_env['with_ladspa_support'] == True and sys.platform == 'linux2':
+	if core_env.has_key('with_ladspa')  and core_env['with_ladspa'] == True and sys.platform == 'linux2':
 		if not test_ladspa ( core_env, conf): return False
 		
 	
-	if core_env.has_key('with_osc_support') and core_env['with_osc_support'] == True and sys.platform != 'win32':
+	if core_env.has_key('with_osc') and core_env['with_osc'] == True and sys.platform != 'win32':
 		if not test_oscpack (core_env, conf): return False
 	
 

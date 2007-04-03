@@ -144,19 +144,19 @@ def test_jack ( core_env, conf ) :
 	if not result :
 		print "jack headers not found!"
 		print "Either install jack or disable jack support by issuing"
-		print "$scons with_jack_support=no"
+		print "$scons with_jack=no"
 		return False
 	result = conf.CheckLib( library='jack', symbol='jack_cpu_load' )
 	if not result :
 		print "jack binaries not found!"
 		print "Either install jack or disable jack support by issuing"
-		print "$scons with_jack_support=no"
+		print "$scons with_jack=no"
 		return False
 	result = conf.check_jack()
 	if not result :
 		print "jack compile/link/run test failed! check config.log for details..."
 		print "Either install jack or disable jack support by issuing"
-		print "$scons with_jack_support=no"
+		print "$scons with_jack=no"
 		return False
 	core_env.Append(CPPFLAGS=['-DUSE_JACK=1'])
 	return True
@@ -217,7 +217,7 @@ def setup_audioio_environment( audioio_env, conf ) :
 	if sys.platform == 'linux2' and audioio_env['with_alsa'] :
 		if not test_alsa_sdk( audioio_env, conf ) : return False
 
-	if sys.platform != 'win32' and audioio_env['with_jack_support'] :
+	if audioio_env['with_jack'] :
 		if not test_jack (audioio_env, conf): return False
 
 	if audioio_env['with_portmidi'] :
