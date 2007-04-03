@@ -36,24 +36,23 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 		Fundamental& outFund,
 		Spectrum& outRes)
 {
+	bool ignoreResidual = mIgnoreResidual.GetLastValue()>0.01;
 	if (!mConfig.GetPreserveOuts()) //TODO big cludge for streaming
 	{
 		outPeaks = inPeaks; 
 		outFund = inFund;
-		if(mIgnoreResidual.GetLastValue()<0.01)//if it is zero...
-		{
+		if (!ignoreResidual)
 			outRes = inRes;
-		}
 	}
-
-	TData spectralRange = 22050; // default for SampleRate = 44100;
 
 	TData amount=mAmount.GetLastValue();
 	if(amount==1)//no pitch shift
 		return true;
 	
-	spectralRange = inRes.GetSpectralRange();
-	mIsHarmonic.DoControl( inFund.GetFreq(0) );
+	TData spectralRange = inRes.GetSpectralRange();
+	TData fundamental = inFund.GetFreq(0);
+	bool isHarmonic = fundamental > .5;
+	mIsHarmonic.DoControl( isHarmonic );
 
 	for (int i=0;i<inFund.GetnCandidates();i++)
 		outFund.SetFreq(i,inFund.GetFreq(i)*amount);
@@ -63,7 +62,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 	bool haveEnvelope=false;
 
 	//First extract spectral envelope
-	if(mIsHarmonic.GetLastValue()>0)
+	if(isHarmonic)
 		haveEnvelope = mSpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope);
 
 	if(&outPeaks!=&inPeaks)//TODO: this is already solved inPeaks new DT
@@ -73,30 +72,27 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 	DataArray& iBinPosArray=inPeaks.GetBinPosBuffer();
 	DataArray& oBinPosArray=outPeaks.GetBinPosBuffer();
 	TSize nPeaks=inPeaks.GetnPeaks();
-	TData newFreq;
 	
 	//Shift all peaks
 	for(int i=0;i<nPeaks;i++)
 	{
-		newFreq=iFreqArray[i]*amount;
-		if(newFreq<spectralRange)
-		{
-			oFreqArray[i]=newFreq;
-			oBinPosArray[i]=iBinPosArray[i]*amount;
-		}
-		else
+		TData newFreq=iFreqArray[i]*amount;
+		if (newFreq>=spectralRange)
 		{
 			outPeaks.SetnPeaks(i);
 			break;
 		}
+		oFreqArray[i]=newFreq;
+		oBinPosArray[i]=iBinPosArray[i]*amount;
 	}
 	//Apply original spectral shape and comb filter the residual
-	if(mIsHarmonic.GetLastValue()>0)
+	if (isHarmonic)
 	{
-		if(haveEnvelope) mSpectralEnvelopeApply.Do(outPeaks,mSpectralEnvelope,outPeaks);
-		if(mIgnoreResidual.GetLastValue()<0.01)//if it is zero...
+		if (haveEnvelope)
+			mSpectralEnvelopeApply.Do(outPeaks,mSpectralEnvelope,outPeaks);
+		if (false && !ignoreResidual)
 		{
-			mFDCombFilter.mFreq.DoControl(mIsHarmonic.GetLastValue()*amount);
+			mFDCombFilter.mFreq.DoControl(fundamental*amount);
 			mFDCombFilter.Do(inRes,outRes);
 		}
 	}
@@ -105,15 +101,12 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 
 bool SMSPitchShift::Do(const Frame& in, Frame& out)
 {
-	//out=in;	// TODO most likely this copy is not necessary
-
 	return Do( in.GetSpectralPeakArray(),
 			in.GetFundamental(), 
 			in.GetResidualSpec(), 
 			out.GetSpectralPeakArray(),
 			out.GetFundamental(), 
 			out.GetResidualSpec());
-
 }
 
 namespace detail
