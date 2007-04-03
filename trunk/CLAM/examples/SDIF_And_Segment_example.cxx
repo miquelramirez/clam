@@ -21,9 +21,10 @@
 #include "SDIFIn.hxx"  // imports CLAM::SDIFIn declaration
 #include "Segment.hxx" // imports CLAM::Segment ProcessingData object declaration
 #include "Err.hxx"     // imports CLAM::Err exception class declaration
-#include "Plots.hxx"   // imports various CLAM Visualization Module plots declarations
-#include "SystemPlots.hxx" // imports CLAMVM::SystemPlots declaration
-#include <FL/fl_file_chooser.H> // imports FLTK file choose dialog function
+//#include "Plots.hxx"   // imports various CLAM Visualization Module plots declarations
+//#include "SystemPlots.hxx" // imports CLAMVM::SystemPlots declaration
+#include <QtGui/QFileDialog> // imports Qt file choose dialog
+#include <QtGui/QApplication> // imports Qt application object
 #include <iostream>
 
 // CLAM supports two ways of representing an audio signal:
@@ -58,15 +59,20 @@
 
 int main ( int argc, char** argv )
 {
+	QApplication a(argc,argv);
 	try
 	{
-		// We will use FLTK file choosing dialog for letting making the process
+		// We will use Qt file dialog for letting making the process
 		// of acquiring an SDIF file easier
-		const char* filename = fl_file_chooser( "Please select an .sdif file", "*.sdif", NULL );
+		QString filename = QFileDialog::getSaveFileName(0,
+			QObject::tr("Choose an sdif file"),
+			QString::null,
+			QObject::tr("(*.sdif)")
+		);
 
 		// If the user presses the 'Cancel' button that appears on the dialog we will
 		// assume he wants to 'cancel' the execution
-		if ( filename == NULL )
+		if ( filename.isEmpty() )
 		{
 			std::cout << "User cancelled" << std::endl;
 			exit(0);
@@ -75,7 +81,7 @@ int main ( int argc, char** argv )
 		// Now we will instante the config object for the SDIFIn Processing
 		CLAM::SDIFInConfig   sdifLoaderConfig;
 		// and we set the filename to the one selected by the user
-		sdifLoaderConfig.SetFileName( filename );
+		sdifLoaderConfig.SetFileName( filename.toStdString().c_str() );
 
 		// And now we instantiate the SDIFIn Processing object
 		CLAM::SDIFIn sdifLoader;
@@ -97,7 +103,7 @@ int main ( int argc, char** argv )
 		sdifLoader.Start();
 
 		// we place the data stored in the file onto the newly created segment
-	       sdifLoader.Do( loadedSegment );
+	    sdifLoader.Do( loadedSegment );
 
 		// and we stop the SDIF loader
 		sdifLoader.Stop();
@@ -113,6 +119,9 @@ int main ( int argc, char** argv )
 		// types that trascend from simple Array's or BPF's.
 		// The first of them is the FundFreqPlot, which as its name implies plots
 		// the fundamental frequency of a given segment
+
+// TODO: Port this to qt4 vmqt
+/*
 		CLAMVM::FundFreqPlot         theFundFreqPlot( "f0_plot");
 		// We set the plot window label
 		theFundFreqPlot.SetLabel( "Fundamental frequency in a segment" );
@@ -156,6 +165,7 @@ int main ( int argc, char** argv )
 		theSpecAndPeaksPlot.SetData( peakArrayInTheMiddle, loadedSegment.GetSamplingRate()/2 );
 
 		CLAMVM::SystemPlots::Display( "peaks_plot");
+*/
 
 	}
 	catch( CLAM::Err& e)
