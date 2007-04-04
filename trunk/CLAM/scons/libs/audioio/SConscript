@@ -8,7 +8,7 @@ from buildtools.custom_builders import *
 
 import os, sys
 
-Import('audioio_env version top install_dirs')
+Import('audioio_env version install_dirs')
 
 def define_module_contents(env) :
 	if not os.path.exists('src') :
@@ -85,7 +85,7 @@ def define_module_contents(env) :
 		'GUIAudioApplication.*xx',
 		]
 
-	file_retriever = FileRetriever( top+'/..', folders, blacklist )
+	file_retriever = FileRetriever( '../../..', folders, blacklist )
 
 	file_retriever.scan_without_copy()
 
