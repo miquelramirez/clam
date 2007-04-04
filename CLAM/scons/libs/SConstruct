@@ -3,7 +3,10 @@ import sys
 import os
 import shelve
 import copy
+
+sys.path.append( os.path.abspath("scons/libs/") )
 # tools for build configuration
+from buildtools.file_retriever import FileRetriever #TODO remove
 from buildtools.custom_builders import * 
 from buildtools.tool_checks import *
 from buildtools.package_checks import *
@@ -125,13 +128,13 @@ def configure_audioio(processing_env) :
 
 def configureModules( clam_env ) :
 	configure_clam(clam_env)
-	save_config_file_from_env(clam_env, '.')
+	save_config_file_from_env(clam_env, 'scons/libs')
 	core_env = configure_core(clam_env)
-	save_config_file_from_env(core_env, 'core')
+	save_config_file_from_env(core_env, 'scons/libs/core')
 	processing_env = configure_processing(core_env)
-	save_config_file_from_env(processing_env, 'processing')
+	save_config_file_from_env(processing_env, 'scons/libs/processing')
 	audioio_env = configure_audioio(processing_env)
-	save_config_file_from_env(audioio_env, 'audioio')
+	save_config_file_from_env(audioio_env, 'scons/libs/audioio')
 
 # helper functions
 def setup_build_options( env ) :
@@ -227,7 +230,7 @@ def create_custom_builders( env ) :
 
 def config_file_missing():
 	dirs = ". core audioio processing"
-	files = [ dir+"/flags.conf" for dir in dirs.split()]
+	files = [ "scons/libs/"+dir+"/flags.conf" for dir in dirs.split()]
 	func_and = lambda x,y : x and y
 	result = not reduce( func_and, map(os.path.exists, files) ) 
 
@@ -241,8 +244,6 @@ def config_file_missing():
 # SConstruct file for CLAM
 # Main section
 
-top = '../..'
-Export('top')
 
 clam_env = Environment( ENV=os.environ, tools=['default'])
 clam_env.SConsignFile()
@@ -256,15 +257,15 @@ if clam_env['distcc_hosts'] :
 	clam_env['ENV']['DISTCC_HOSTS'] = clam_env['distcc_hosts']
 	SetOption('num_jobs', len( clam_env['distcc_hosts'].split() ))
 
-sys.path.append('../sconstools')
+sys.path.append('scons/sconstools')
 import versionInfo
-version, fullVersion = versionInfo.versionFromLocalInfo("CLAM", os.path.join(top,"CHANGES"))
+version, fullVersion = versionInfo.versionFromLocalInfo("CLAM", "CHANGES")
 Export('version')
 print "Version: ", version
 print "Package version: ", fullVersion
 
 
-versionInfo.generateVersionSources(os.path.join(top,'src','Defines','CLAMVersion'), "CLAM", fullVersion)
+versionInfo.generateVersionSources(os.path.join('src','Defines','CLAMVersion'), "CLAM", fullVersion)
 
 Export('clam_env')
 
@@ -293,9 +294,9 @@ audioio_env = clam_env.Copy()
 
 #building
 if not clam_env.GetOption('clean') :
-	load_config_file_to_env(core_env, 'core')
-	load_config_file_to_env(processing_env, 'processing')
-	load_config_file_to_env(audioio_env, 'audioio')
+	load_config_file_to_env(core_env, 'scons/libs/core')
+	load_config_file_to_env(processing_env, 'scons/libs/processing')
+	load_config_file_to_env(audioio_env, 'scons/libs/audioio')
 
 modules = [ 'core', 'processing', 'audioio']
 
@@ -311,13 +312,13 @@ if clam_env.GetOption('clean') :
 		os.remove('header.db')
 
 for module in modules :
-	SConscript(module+'/SConscript')
+	SConscript('scons/libs/'+module+'/SConscript')
 
 import glob, os
 install_dirs = InstallDirs()
 install_dirs.compose(clam_env)
 sconstoolsTargetDir = os.path.join(install_dirs.data, 'clam', 'sconstools')
-sconstoolsInstall = clam_env.Install(sconstoolsTargetDir, glob.glob('../sconstools/*.py'))
+sconstoolsInstall = clam_env.Install(sconstoolsTargetDir, glob.glob('scons/sconstools/*.py'))
 clam_env.Alias('install_sconstools', sconstoolsInstall)
 Depends('install_core', sconstoolsInstall)
 

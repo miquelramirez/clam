@@ -6,7 +6,7 @@ from buildtools.rulesets import *
 
 import os, sys
 
-Import('processing_env version top install_dirs')
+Import('processing_env version install_dirs')
 
 def define_module_contents(env) :
 	if not os.path.exists('src') :
@@ -67,7 +67,7 @@ def define_module_contents(env) :
 		blacklist.append('.*numrecipes.+')
 		blacklist.append('.+numrec.+')
 	
-	file_retriever = FileRetriever( top+'/..', folders, blacklist )
+	file_retriever = FileRetriever( '../../..', folders, blacklist )
 
 	file_retriever.scan_without_copy()
 
