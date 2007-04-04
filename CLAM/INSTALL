@@ -16,8 +16,9 @@ provides already compiled packages for several platforms.
  Or download the CLAM tarball (stable release or cvs snapshot) from the 
  web: [http://clam.iua.upf.es/download.html] 
  
- Change directory to CLAM/scons/libs/
- 
+ Change directory to CLAM/
+ NEW! (April 4th) build directory is now CLAM/ instead of CLAM/scons/libs
+
  The simplest way to build and install the libraries is issuing :
 
         $ scons configure
