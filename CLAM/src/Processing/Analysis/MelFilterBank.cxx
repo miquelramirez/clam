@@ -34,8 +34,12 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
-
 		SetUsePower(false);
+		SetSpectrumSize(1024);
+		SetNumBands(20);
+		SetSpectralRange(22050);
+		SetLowCutoff(0);
+		SetHighCutoff(11025);
 	}
 	
 	MelFilterBank::MelFilterBank()
@@ -72,6 +76,7 @@ namespace CLAM
 		
 		const DataArray& specMag = spec.GetMagBuffer();
 
+		std::cout << specMag.Size() << " " << mConfig.GetSpectrumSize() << std::endl;
 		CLAM_ASSERT( specMag.Size() == mConfig.GetSpectrumSize(),
 		 "Spectrum doesn't have the expected size!" );
 		CLAM_ASSERT( spec.GetSpectralRange() == mConfig.GetSpectralRange(),
@@ -84,37 +89,30 @@ namespace CLAM
 		melSpec.SetNumBands(numBands);
 		melSpec.SetLowCutoff(mConfig.GetLowCutoff());
 		melSpec.SetHighCutoff(mConfig.GetHighCutoff());
-		melSpec.SetSpectralRange(mConfig.GetSpectralRange());
+		melSpec.SetSpectralRange(spec.GetSpectralRange());
 
 		DataArray& melCoeffs = melSpec.GetCoefficients();
 		
-		if ( melCoeffs.Size() < numBands ) {
+		if ( melCoeffs.Size() != numBands ) {
 			melCoeffs.Resize( numBands );
 			melCoeffs.SetSize( numBands );
 		}
 		for( int i = 0; i < numBands; i++)
 			melCoeffs[i] = 0;
 		
-		TData  mag         = 0;
-		TData  weightedMag = 0;
-		TIndex bandIdx     = 0;
-
 		const bool usePower = mConfig.GetUsePower();
 
 		for (TIndex i=mLowIdx; i<=mHighIdx; i++) {
 
 			// NOTE: What is the significance of using square?
-			if (usePower) {
-				mag = specMag[i]*specMag[i];
-			} else {
-				mag = specMag[i];
-			}
+			TData mag = specMag[i];
+			if (usePower) mag *=mag;
 
 			// Get the Mel band number.
-			bandIdx = mMelBand[i];
+			TIndex bandIdx = mMelBand[i];
 
 			// Weight spectrum sample with triangular window.
-			weightedMag = mFilterWeights[i] * mag;
+			TData weightedMag = mFilterWeights[i] * mag;
 
 			// Add spectrum sample contribution to apropriate bands.
 			if (bandIdx >= 0) {
