@@ -5,6 +5,7 @@
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/OutControlSender.hxx>
+#include <QtGui/QWidget>
 
 class QDial;
 class QSlider;
