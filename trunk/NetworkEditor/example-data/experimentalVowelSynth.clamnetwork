@@ -10,7 +10,7 @@
     <Default>700</Default>
     <Max>800</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="F2" type="OutControlSender">
@@ -18,14 +18,12 @@
     <Default>1000</Default>
     <Max>2500</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="HarmonicPeaksGenerator_0" type="HarmonicPeaksGenerator"/>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
-
-  <processing id="Oscilloscope_1" type="Oscilloscope"/>
+  <processing id="Mic Audio" type="Oscilloscope"/>
 
   <processing id="PeakView_0" type="PeakView"/>
 
@@ -38,7 +36,7 @@
     <Default>110</Default>
     <Max>440</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="SMSAnalysisCore_0" type="SMSAnalysisCore">
@@ -211,6 +209,8 @@
 
   <processing id="SpectrumView_1" type="SpectrumView"/>
 
+  <processing id="Synth Audio" type="Oscilloscope"/>
+
   <processing id="VowelResonator_0" type="VowelResonator"/>
 
   <port_connection>
@@ -220,7 +220,7 @@
 
   <port_connection>
     <out>AudioSource_0.AudioOut</out>
-    <in>Oscilloscope_1.Input</in>
+    <in>Mic Audio.Input</in>
   </port_connection>
 
   <port_connection>
@@ -255,7 +255,7 @@
 
   <port_connection>
     <out>SMSSynthesis_0.OutputAudio</out>
-    <in>Oscilloscope_0.Input</in>
+    <in>Synth Audio.Input</in>
   </port_connection>
 
   <port_connection>

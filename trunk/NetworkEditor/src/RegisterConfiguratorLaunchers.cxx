@@ -51,6 +51,8 @@
 #include <CLAM/WindowGeneratorConfig.hxx>
 #include <CLAM/CircularShiftConfig.hxx>
 #include <CLAM/NullProcessingConfig.hxx>
+#include <CLAM/LPC_AutoCorrelation.hxx>
+#include <CLAM/AudioWindowingConfig.hxx>
 #include <CLAM/OutControlSender.hxx>
 
 // local processings
@@ -128,6 +130,8 @@ STANDARD_PROCESSING_CONFIG_REGISTER(RandomConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(OneOverFConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(SquareWaveConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(NullProcessingConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(AudioWindowingConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(LPCConfig);
 #if USE_OSCPACK
 STANDARD_PROCESSING_CONFIG_REGISTER(OSCSenderConfig);
 #endif

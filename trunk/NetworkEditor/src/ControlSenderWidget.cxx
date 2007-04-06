@@ -1,35 +1,27 @@
 #include "ControlSenderWidget.hxx"
+#include <QtGui/QSlider>
+#include <QtGui/QDial>
+#include <QtGui/QLabel>
+#include <QtGui/QDoubleSpinBox>
+#include <QtGui/QHBoxLayout>
 
-class ControlSenderWidgetParams {
-public:
-	ControlSenderWidgetParams() : label(false), dial(false),
-		slider(false), spinBox(false), align(Qt::Horizontal) { }
-
-	bool label, dial, slider, spinBox;
-	Qt::Orientation align;
-};
-
-ControlSenderWidget::ControlSenderWidget(CLAM::Processing * processing) :
-	_dial(NULL), _slider(NULL), _spinBox(NULL), _updating(false)
+ControlSenderWidget::ControlSenderWidget(CLAM::Processing * processing)
+	: _dial(0)
+	, _slider(0)
+	, _spinBox(0)
+	, _updating(false)
 {
 	_sender = dynamic_cast<CLAM::OutControlSender* >(processing);
 	CLAM_ASSERT(_sender, "ControlSenderWidget only works "
 				"with OutControlSender processings.");
-
-	ControlSenderWidgetParams params;
-	init(params);
-
-	createLabel(params);
-	createDial(params);
-	createSlider(params);
-	createSpinBox(params);
+	init();
 }
 
 ControlSenderWidget::~ControlSenderWidget()
 {
 }
 
-void ControlSenderWidget::init(ControlSenderWidgetParams &params)
+void ControlSenderWidget::init()
 {
 	const CLAM::OutControlSenderConfig * config = 
 		dynamic_cast<const CLAM::OutControlSenderConfig *>(&_sender->GetConfig());
@@ -42,35 +34,32 @@ void ControlSenderWidget::init(ControlSenderWidgetParams &params)
 
 	switch (config->GetControlRepresentation().GetValue()) {
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eUndetermined:
-		params.label = true;
+		createLabel();
 		break;
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eKnot:
-		params.spinBox = params.dial = true;
-		params.align = Qt::Vertical;
+		createDial();
+		setLayout(new QVBoxLayout);
 		break;
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eHorizontalSlider:
-		params.spinBox = params.slider = true;
+		createSlider(Qt::Horizontal);
+		createSpinBox();
+		setLayout(new QHBoxLayout);
 		break;
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eVerticalSlider:
-		params.spinBox = params.slider = true;
-		params.align = Qt::Vertical;
+		createSlider(Qt::Horizontal);
+		createSpinBox();
+		setLayout(new QVBoxLayout);
 		break;
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eSpinBox:
-		params.spinBox = true;
+		createSpinBox();
+		setLayout(new QHBoxLayout);
 		break;
 	}
-	if (params.align == Qt::Vertical) 
-		setLayout(new QVBoxLayout);
-	else
-		setLayout(new QHBoxLayout);
 	layout()->setMargin(1);
 }
 
-void ControlSenderWidget::createLabel(const ControlSenderWidgetParams &params)
+void ControlSenderWidget::createLabel()
 {
-	if (!params.label)
-		return;
-
 	QLabel *label = new QLabel();
 	label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	label->setNum(_default);
@@ -78,25 +67,19 @@ void ControlSenderWidget::createLabel(const ControlSenderWidgetParams &params)
 	layout()->addWidget(label);
 }
 
-void ControlSenderWidget::createDial(const ControlSenderWidgetParams &params)
+void ControlSenderWidget::createDial()
 {
-	if (!params.dial)
-		return;
-
 	_dial = new QDial();
 	setupSlider(_dial);
 	_dial->setNotchesVisible(true);
 	layout()->addWidget(_dial);
 }
 
-void ControlSenderWidget::createSlider(const ControlSenderWidgetParams &params)
+void ControlSenderWidget::createSlider(Qt::Orientation align)
 {
-	if (!params.slider)
-		return;
-
-	_slider = new QSlider(params.align);
+	_slider = new QSlider(align);
 	setupSlider(_slider);
-	if (params.align == Qt::Vertical) {
+	if (align == Qt::Vertical) {
 		QWidget *hbox = new QWidget;
 		hbox->setLayout(new QHBoxLayout);
 		hbox->layout()->addWidget(_slider);
@@ -119,11 +102,8 @@ void ControlSenderWidget::setupSlider(QAbstractSlider *slider)
 			this, SLOT(stepControlChanged(int)));
 }
 
-void ControlSenderWidget::createSpinBox(const ControlSenderWidgetParams &params)
+void ControlSenderWidget::createSpinBox()
 {
-	if (!params.spinBox)
-		return;
-
 	_spinBox = new QDoubleSpinBox();
 	layout()->addWidget(_spinBox);
 

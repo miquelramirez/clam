@@ -25,6 +25,7 @@
 #include "Assert.hxx"
 #include "CLAM_Math.hxx"
 #include "Factory.hxx"
+#include "SpecTypeFlags.hxx"
 
 namespace CLAM
 {
@@ -44,6 +45,7 @@ namespace CLAM
 	LPC_AutoCorrelation::LPC_AutoCorrelation()
 		: mAudioIn("AudioIn",this)
 		, mLPModelOut("LPModelOut",this)
+		, mSpectrumOut("SpectrumOut",this)
 	{
 		Configure(LPCConfig());
 	}
@@ -54,7 +56,24 @@ namespace CLAM
 
 	bool LPC_AutoCorrelation::Do()
 	{
-		return true;
+		const Audio & audio = mAudioIn.GetData();
+		LPModel & lpc = mLPModelOut.GetData();
+		Spectrum & spectrum = mSpectrumOut.GetData();
+
+		lpc.UpdateModelOrder(mCurrentConfig.GetOrder());
+		bool ok = Do(audio, lpc);
+		CLAM::SpecTypeFlags flags;
+		flags.bMagPhase=1;
+		flags.bComplex = 0;
+		spectrum.SetSize( audio.GetSize()/2+1 );
+		spectrum.SetSpectralRange( audio.GetSampleRate()/2 );
+		spectrum.SetType(flags);
+		lpc.ToSpectrum(spectrum);
+
+		mAudioIn.Consume();
+		mLPModelOut.Produce();
+		mSpectrumOut.Produce();
+		return ok;
 	}
 
 	bool LPC_AutoCorrelation::Do( const Audio& in, LPModel& out )
@@ -86,20 +105,15 @@ namespace CLAM
 	/*  this is the "clean" version: 
 	bool LPC_AutoCorrelation::Do( const Audio& in, DataArray& A, DataArray& K, TData& E )
 	{
-		TData *inBuffer, *outBuffer;
-		TData norm, N;
-		int k, n;
-		
+	
   		if( !AbleToExecute() ) return true;
 		
-		CheckTypes( in, out );
-
-  		inBuffer = in.GetBuffer().GetPtr();
-		outBuffer = out.GetBuffer().GetPtr();
-
-		for( k = 0; k < out.GetSize(); k++ )
+  		TData * inBuffer = in.GetBuffer().GetPtr();
+		TData * outBuffer = out.GetBuffer().GetPtr();
+		TData norm = 1 / outBuffer[0];
+		for (int k = 0; k < out.GetSize(); k++ )
 		{
-			for( n = 0; n < in.GetSize(); n++ )
+			for (int n = 0; n < in.GetSize(); n++ )
 			{
 				if( n < k )	// k is out of the segment
 					outBuffer[ k ] += 0;
@@ -108,8 +122,6 @@ namespace CLAM
 			}
 
 			outBuffer[ k ] *= in.GetSize() ;
-			if (k==0)
-				norm = 1 / outBuffer[0];
 			outBuffer[ k ] *= norm;
 		}
 	}
@@ -157,12 +169,8 @@ namespace CLAM
 						const CLAM::TData* endIn )
 	{
 		CLAM::TData accum = 0.0;
-		
 		while ( in1 != endIn )
-		{
 			accum+= (*in1++)*(*in2++);
-		}
-
 		return accum;
 	}
 
@@ -171,7 +179,7 @@ namespace CLAM
 	{
 		//unsigned size = pow(2.,Round(log10(2.*signal.GetSize()-1.)/log10(2.)));
 		int k = 0;
-		TData norm, N = TData( signal.Size() );
+		TData N = TData( signal.Size() );
 		const TData *inBuffer = signal.GetPtr();
 		const TData *endInBuffer = signal.GetPtr() + signal.Size();
 		TData *outBuffer = acCoeffs.GetPtr();
@@ -181,10 +189,10 @@ namespace CLAM
 
 		*outBuffer = dot_product( inBuffer, inBuffer, endInBuffer );
 		*outBuffer *= N;
-		norm = 1.0/ *outBuffer;
+		TData norm = 1.0/ *outBuffer;
 		*outBuffer *= norm;
-		k++;
 		outBuffer++;
+		k++;
 		
 		while( outBuffer != endOutBuffer )
 		{
@@ -199,8 +207,6 @@ namespace CLAM
 			outBuffer++;
 			k++;
 		}
-
-
 	}
 
 	void LPC_AutoCorrelation::SolveSystemByLevinsonDurbin( const Array<TData>& R,
@@ -208,36 +214,31 @@ namespace CLAM
 							       Array<TData>& K,
 							       TData&        E)
 	{
-		CLAM_ASSERT( A.Size() == mCurrentConfig.GetOrder(), 
+		unsigned order = mCurrentConfig.GetOrder();
+		CLAM_ASSERT( A.Size() == order,
 					"A coefficient array size mismatch!" );
-		CLAM_ASSERT( K.Size() == mCurrentConfig.GetOrder(), 
+		CLAM_ASSERT( K.Size() == order,
 					"K coefficient array size mismatch!" );
-		unsigned j;
-		DataArray Ap;
-		Ap.Resize( mCurrentConfig.GetOrder() );
-		Ap.SetSize( mCurrentConfig.GetOrder() );
 
+		std::vector <TData> Ap(order);
 		E = R[0];
-		A[ 0 ] = 1;
-
-		for( unsigned i = 1 ; i < mCurrentConfig.GetOrder(); i++ )	
+		A[0] = 1;
+		for( unsigned i = 1 ; i < order; i++ )	
 		{
-			K[ i ] = R[ i ];
-			for( j = 1; j < i; j++ )
-				K[ i ] += A[ j ] * R[ i - j ];
+			K[i] = R[i];
+			for(unsigned j=1; j<i; j++ )
+				K[i] += A[j] * R[i-j];
 
-			K[ i ] = - K[ i ] / E;
+			K[i] = - K[i] / E;
 
-			for( j = 1; j < i; j++ )
-				Ap[ j ] = A[ i - j ];
+			for( unsigned j=1; j<i; j++ )
+				Ap[j] = A[i-j];
 
-			for( j = 1; j < i; j++ )
-				A[ j ] += K[ i ] * Ap[ j ];
+			for( unsigned j=1; j<i; j++ )
+				A[j] += K[i] * Ap[j];
 
-			A[ i ] = K[ i ];
-
-			E *= (1-K[ i ]*K[ i ]);
+			A[i] = K[i];
+			E *= (1-K[i]*K[i]);
 		}
-		
 	}
 }

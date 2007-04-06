@@ -24,6 +24,7 @@
 
 #include <string>
 #include <CLAM/DataTypes.hxx>
+#include <CLAM/Assert.hxx>
 
 namespace CLAM
 {
@@ -37,6 +38,10 @@ namespace VM
 			virtual const std::string & getLabel(unsigned bin) const = 0;
 			virtual const CLAM::TData * frameData() = 0;
 			virtual unsigned nBins() const = 0;
+			virtual bool hasUpperBound() const { return false; }
+			virtual bool hasLowerBound() const { return false; }
+			virtual CLAM::TData upperBound() const {return 1;}
+			virtual CLAM::TData lowerBound() const {return 0;}
 			virtual void release() {}
 			virtual bool isEnabled() const
 			{
@@ -47,30 +52,38 @@ namespace VM
 	class DummyFloatArrayDataSource : public FloatArrayDataSource
 	{
 			unsigned _nBins;
+			CLAM::TData * _data;
 		public:
-			DummyFloatArrayDataSource(unsigned nBins=12)
+			DummyFloatArrayDataSource(unsigned nBins, CLAM::TData * data=0)
 			{
-				_nBins = nBins;
-			}
-			const std::string & getLabel(unsigned bin) const
-			{
-				static std::string a("A");
-				return a;
-			}
-			const CLAM::TData * frameData()
-			{
-				static CLAM::TData data[] = {
+				static CLAM::TData defaultData[] = {
 					0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5,
 					0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5,
 					0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5,
 					0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5,
 					0, 0.2, 0, 0.4, 0, 0.6, 0.9, 0.1,0, 0.1, 1, 0.5
 					};
-				return data;
+				_data = data ? data : defaultData;
+				CLAM_ASSERT(data||nBins<60,
+					"No so many dummy data for the bins you asked");
+				_nBins = nBins;
+			}
+			const std::string & getLabel(unsigned bin) const
+			{
+				static std::string a("");
+				return a;
+			}
+			const CLAM::TData * frameData()
+			{
+				return _data;
 			}
 			unsigned nBins() const
 			{
 				return _nBins;
+			}
+			bool isEnabled() const
+			{
+				return false;
 			}
 	};
 }

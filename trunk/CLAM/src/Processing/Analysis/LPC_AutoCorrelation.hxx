@@ -26,6 +26,7 @@
 #include "OutPort.hxx"
 #include "ProcessingConfig.hxx"
 #include "LPModel.hxx"
+#include "Spectrum.hxx"
 
 namespace CLAM
 {
@@ -65,6 +66,7 @@ namespace CLAM
 	protected:
 		InPort<Audio> mAudioIn;
 		OutPort<LPModel> mLPModelOut;
+		OutPort<Spectrum> mSpectrumOut;
 
 		LPCConfig            mCurrentConfig;
 		
@@ -85,7 +87,7 @@ namespace CLAM
 
 	inline const char* LPC_AutoCorrelation::GetClassName() const
 	{
-		return "LPC_Autocorrelation"; 
+		return "LPC_AutoCorrelation"; 
 	}
 
 	inline const ProcessingConfig& LPC_AutoCorrelation::GetConfig() const

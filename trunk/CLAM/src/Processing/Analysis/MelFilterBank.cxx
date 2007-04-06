@@ -20,9 +20,15 @@
  */
 
 #include "MelFilterBank.hxx"
+#include "Factory.hxx"
 
 namespace CLAM
 {
+	namespace detail
+	{
+		static Factory<Processing>::Registrator<MelFilterBank>
+			regtMelFilterBank( "MelFilterBank" );
+	}
 
 	void MelFilterBankConfig::DefaultInit()
 	{
@@ -33,11 +39,15 @@ namespace CLAM
 	}
 	
 	MelFilterBank::MelFilterBank()
+		: mIn("Spectrum", this)
+		, mOut("Mel Spectrum", this)
 	{
 		Configure(MelFilterBankConfig()); 
 	}
 
 	MelFilterBank::MelFilterBank( const MelFilterBankConfig& cfg )
+		: mIn("Spectrum", this)
+		, mOut("Mel Spectrum", this)
 	{
 		Configure( cfg );
 	}
@@ -48,7 +58,12 @@ namespace CLAM
 
 	bool MelFilterBank::Do()
 	{
-		return true;
+		const Spectrum & spectrum = mIn.GetData();
+		MelSpectrum & melSpectrum = mOut.GetData();
+		bool ok = Do(spectrum,melSpectrum);
+		mIn.Consume();
+		mOut.Produce();
+		return ok;
 	}
 
 	bool MelFilterBank::Do( const Spectrum& spec, MelSpectrum& melSpec )

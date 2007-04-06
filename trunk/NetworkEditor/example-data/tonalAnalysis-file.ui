@@ -10,7 +10,10 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Tonal Analysis</string>
+   <string>CLAM Tonal Analysis (file version)</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../src/images.qrc" >:/icons/images/keyspace.svg</iconset>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -1151,9 +1154,9 @@
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
-   <class>Vumeter</class>
+   <class>PolarChromaPeaks</class>
    <extends>QWidget</extends>
-   <header>Vumeter.hxx</header>
+   <header>PolarChromaPeaks.hxx</header>
   </customwidget>
   <customwidget>
    <class>Oscilloscope</class>
@@ -1161,19 +1164,19 @@
    <header>Oscilloscope.hxx</header>
   </customwidget>
   <customwidget>
-   <class>CLAM::VM::KeySpace</class>
-   <extends>CLAM::VM::Tonnetz</extends>
-   <header>KeySpace.hxx</header>
-  </customwidget>
-  <customwidget>
    <class>CLAM::VM::ChordRanking</class>
    <extends>QWidget</extends>
    <header>ChordRanking.hxx</header>
   </customwidget>
   <customwidget>
-   <class>PolarChromaPeaks</class>
+   <class>CLAM::VM::KeySpace</class>
+   <extends>CLAM::VM::Tonnetz</extends>
+   <header>KeySpace.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>Vumeter</class>
    <extends>QWidget</extends>
-   <header>PolarChromaPeaks.hxx</header>
+   <header>Vumeter.hxx</header>
   </customwidget>
   <customwidget>
    <class>CLAM::VM::Tonnetz</class>
@@ -1186,7 +1189,9 @@
   <tabstop>StopButton</tabstop>
   <tabstop>CloseButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../src/images.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>CloseButton</sender>

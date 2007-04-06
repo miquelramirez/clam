@@ -6,7 +6,7 @@
     <Default>1000</Default>
     <Max>5000</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Band Width" type="OutControlSender">
@@ -14,7 +14,7 @@
     <Default>1000</Default>
     <Max>5000</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Gain" type="OutControlSender">
@@ -22,7 +22,7 @@
     <Default>0</Default>
     <Max>60</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="High Cutoff" type="OutControlSender">
@@ -30,7 +30,7 @@
     <Default>5000</Default>
     <Max>10000</Max>
     <Step>100</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="High Gain" type="OutControlSender">
@@ -38,7 +38,7 @@
     <Default>0</Default>
     <Max>0</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Low Cutoff" type="OutControlSender">
@@ -46,7 +46,7 @@
     <Default>0</Default>
     <Max>1000</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Low Gain" type="OutControlSender">
@@ -54,7 +54,7 @@
     <Default>0</Default>
     <Max>0</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Mid Gain" type="OutControlSender">
@@ -62,7 +62,7 @@
     <Default>0</Default>
     <Max>0</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Osc Amount" type="OutControlSender">
@@ -70,7 +70,7 @@
     <Default>200</Default>
     <Max>500</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Osc Freq" type="OutControlSender">
@@ -78,7 +78,7 @@
     <Default>5</Default>
     <Max>20</Max>
     <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Osc Width" type="OutControlSender">
@@ -86,7 +86,7 @@
     <Default>0.5</Default>
     <Max>1</Max>
     <Step>0.01</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="OscillatingSpectralNotch_0" type="OscillatingSpectralNotch">
@@ -104,7 +104,7 @@
     <Default>0</Default>
     <Max>100</Max>
     <Step>1</Step>
-    <ControlRepresentation>Knot</ControlRepresentation>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Robotization_0" type="Robotization">

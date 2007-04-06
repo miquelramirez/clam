@@ -34,6 +34,7 @@
 #include "KeySpace.hxx"
 #include "PolarChromaPeaks.hxx"
 #include "ChordRanking.hxx"
+#include "LPModelView.hxx"
 
 inline bool FileExists( const std::string filename )
 {
@@ -163,8 +164,8 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 	QWidget * userInterface = loader.load(&file, 0 );
 	if (userInterface)
 	{
-		// TODO: Do this just when no icon set.
-		userInterface->setWindowIcon(QIcon(":/icons/images/Prototyper-icon.svg"));
+		if (userInterface->windowIcon().isNull())
+			userInterface->setWindowIcon(QIcon(":/icons/images/Prototyper-icon.svg"));
 	}
 	file.close();
 	return userInterface;
@@ -220,6 +221,8 @@ void PrototypeLoader::ConnectWithNetwork()
 		("OutPort__.*", "PolarChromaPeaks");
 	ConnectWidgetsWithPorts<CLAM::VM::ChordRanking,ChordRankingMonitor>
 		("OutPort__.*", "CLAM::VM::ChordRanking");
+	ConnectWidgetsWithPorts<CLAM::VM::LPModelView,LPModelViewMonitor>
+		("OutPort__.*", "CLAM::VM::LPModelView");
 
 	QObject * playButton = _interface->findChild<QObject*>("PlayButton");
 	if (playButton) connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
@@ -350,49 +353,43 @@ std::string PrototypeLoader::GetNetworkNameFromWidgetName(const char * widgetNam
 
 bool PrototypeLoader::ReportMissingProcessing(const std::string & processingName)
 {
-	if (! _network.HasProcessing(processingName))
-	{
-		QMessageBox::warning(_interface,
-			tr("Error connecting controls"),
-			tr("The interface asked to connect to the processing '%1' which is not in the network.")
-				.arg(processingName.c_str()));
-		return true;
-	}
-	return false;
+	if (_network.HasProcessing(processingName))
+		return false;
+	QMessageBox::warning(_interface,
+		tr("Error connecting controls"),
+		tr("The interface asked to connect to the processing '%1' which is not in the network.")
+			.arg(processingName.c_str()));
+	return true;
 }
 bool PrototypeLoader::ReportMissingOutPort(const std::string & portName)
 {
 	std::string processingName = _network.GetProcessingIdentifier(portName);
 	if (ReportMissingProcessing(processingName)) return true;
 	std::string shortPortName = _network.GetConnectorIdentifier(portName);
-	if (! _network.GetProcessing(processingName).HasOutPort(shortPortName))
-	{
-		QMessageBox::warning(_interface,
-			tr("Error connecting controls"),
-			tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
-				.arg(shortPortName.c_str())
-				.arg(processingName.c_str()
-				));
-		return true;
-	}
-	return false;
+	if (_network.GetProcessing(processingName).HasOutPort(shortPortName))
+		return false; // no problem :-)
+	QMessageBox::warning(_interface,
+		tr("Error connecting controls"),
+		tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
+			.arg(shortPortName.c_str())
+			.arg(processingName.c_str()
+			));
+	return true;
 }
 bool PrototypeLoader::ReportMissingInControl(const std::string & controlName)
 {
 	std::string processingName = _network.GetProcessingIdentifier(controlName);
 	if (ReportMissingProcessing(processingName)) return true;
 	std::string shortControlName = _network.GetConnectorIdentifier(controlName);
-	if (! _network.GetProcessing(processingName).HasInControl(shortControlName))
-	{
-		QMessageBox::warning(_interface,
-			tr("Error connecting controls"),
-			tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
-				.arg(shortControlName.c_str())
-				.arg(processingName.c_str()
-				));
-		return true;
-	}
-	return false;
+	if (_network.GetProcessing(processingName).HasInControl(shortControlName))
+		return false; // no problem :-)
+	QMessageBox::warning(_interface,
+		tr("Error connecting controls"),
+		tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
+			.arg(shortControlName.c_str())
+			.arg(processingName.c_str()
+			));
+	return true;
 }
 
 void PrototypeLoader::ConnectWidgetsWithControls()

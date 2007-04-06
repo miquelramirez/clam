@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>623</width>
-    <height>501</height>
+    <width>592</width>
+    <height>506</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -2537,7 +2537,7 @@
         <number>3</number>
        </property>
        <property name="segmentStyle" >
-        <enum>QLCDNumber::Filled</enum>
+        <enum>QLCDNumber::Flat</enum>
        </property>
       </widget>
      </item>
@@ -2547,7 +2547,7 @@
         <number>3</number>
        </property>
        <property name="segmentStyle" >
-        <enum>QLCDNumber::Filled</enum>
+        <enum>QLCDNumber::Flat</enum>
        </property>
       </widget>
      </item>

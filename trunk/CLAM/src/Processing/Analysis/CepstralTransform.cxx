@@ -22,9 +22,15 @@
 #include "CepstralTransform.hxx"
 #include "OSDefines.hxx"
 #include "Assert.hxx"
+#include "Factory.hxx"
 
 namespace CLAM
 {
+	namespace detail 
+	{
+		static CLAM::Factory<CLAM::Processing>::Registrator<CepstralTransform>
+			regtCepstralTransform( "CepstralTransform" );
+	}
 		
   void CepstralTransformConfig::DefaultInit()
   {
@@ -35,11 +41,15 @@ namespace CLAM
   }
   
   CepstralTransform::CepstralTransform(  )
+	: mIn("Mel Spectrum", this)
+	, mOut("Mel Cepstrum", this)
   {
     Configure(CepstralTransformConfig());
   }
   
   CepstralTransform::CepstralTransform( const CepstralTransformConfig& cfg )
+	: mIn("Mel Spectrum", this)
+	, mOut("Mel Cepstrum", this)
   {
     Configure( cfg );
   }
@@ -56,8 +66,12 @@ namespace CLAM
   
   bool CepstralTransform::Do()
   {
-     CLAM_ASSERT(false, "Supervised Do() not implemented");
-     return false;
+     const MelSpectrum & spectrum = mIn.GetData();
+     MelCepstrum & cepstrum = mOut.GetData();
+     bool ok = Do(spectrum, cepstrum);
+     mIn.Consume();
+     mOut.Produce();
+     return ok;
   }
   
   bool CepstralTransform::ConcreteStart()

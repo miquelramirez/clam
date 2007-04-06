@@ -5,12 +5,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>579</width>
+    <width>544</width>
     <height>557</height>
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Tonal Analysis</string>
+   <string>CLAM Tonal Analysis</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../src/images.qrc" >:/icons/images/keyspace.svg</iconset>
   </property>
   <property name="sizeGripEnabled" >
    <bool>true</bool>
@@ -141,7 +144,7 @@
        <number>6</number>
       </property>
       <item row="3" column="0" colspan="2" >
-       <widget class="CLAM::VM::ChordRanking" native="1" name="OutPort__TonalAnalysis_0__Chord___Correlation" />
+       <widget class="CLAM::VM::ChordRanking" name="OutPort__TonalAnalysis_0__Chord___Correlation" />
       </item>
       <item rowspan="4" row="0" column="2" >
        <widget class="Vumeter" name="OutPort__AudioSource_0__AudioOut" >
@@ -1144,15 +1147,24 @@
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
+   <class>CLAM::VM::Tonnetz</class>
+   <extends>QWidget</extends>
+   <header>Tonnetz.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::ChordRanking</class>
+   <extends>QWidget</extends>
+   <header>ChordRanking.hxx</header>
+  </customwidget>
+  <customwidget>
    <class>PolarChromaPeaks</class>
    <extends>QWidget</extends>
    <header>PolarChromaPeaks.hxx</header>
   </customwidget>
   <customwidget>
-   <class>CLAM::VM::ChordRanking</class>
+   <class>Oscilloscope</class>
    <extends>QWidget</extends>
-   <header>chordranking.h</header>
-   <container>1</container>
+   <header>Oscilloscope.hxx</header>
   </customwidget>
   <customwidget>
    <class>Vumeter</class>
@@ -1164,23 +1176,15 @@
    <extends>CLAM::VM::Tonnetz</extends>
    <header>KeySpace.hxx</header>
   </customwidget>
-  <customwidget>
-   <class>CLAM::VM::Tonnetz</class>
-   <extends>QWidget</extends>
-   <header>Tonnetz.hxx</header>
-  </customwidget>
-  <customwidget>
-   <class>Oscilloscope</class>
-   <extends>QWidget</extends>
-   <header>Oscilloscope.hxx</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>PlayButton</tabstop>
   <tabstop>StopButton</tabstop>
   <tabstop>CloseButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../src/images.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>CloseButton</sender>

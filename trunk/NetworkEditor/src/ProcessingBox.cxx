@@ -11,6 +11,7 @@
 #include "KeySpace.hxx"
 #include "ChordRanking.hxx"
 #include "Tunner.hxx"
+#include "LPModelView.hxx"
 #include "ControlSenderWidget.hxx"
 
 #include <QtGui/QSlider>
@@ -78,17 +79,13 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 		return new ControlSenderWidget(processing);
 
 	if (className=="Vumeter")
-		return new Vumeter( dynamic_cast<VumeterMonitor*>(processing) );
+		return new Vumeter( canvas, dynamic_cast<VumeterMonitor*>(processing) );
 
 	if (className=="Oscilloscope")
-		return new Oscilloscope( dynamic_cast<OscilloscopeMonitor*>(processing) );
+		return new Oscilloscope( canvas, dynamic_cast<OscilloscopeMonitor*>(processing) );
 
 	if (className=="SpectrumView")
-	{
-		SpectrumView * widget = new SpectrumView(canvas);
-		widget->setDataSource( *dynamic_cast<SpectrumViewMonitor*>(processing) );
-		return widget;
-	}
+		return new SpectrumView(canvas, dynamic_cast<SpectrumViewMonitor*>(processing) );
 
 	if (className=="PeakView")
 	{
@@ -128,6 +125,8 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 		widget->setDataSource( *dynamic_cast<TunnerMonitor*>(processing) );
 		return widget;
 	}
+	if (className=="LPModelView")
+		return new CLAM::VM::LPModelView(canvas, dynamic_cast<LPModelViewMonitor*>(processing));
 
 	return 0;
 }

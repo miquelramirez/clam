@@ -1,0 +1,288 @@
+<ui version="4.0" >
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>550</width>
+    <height>501</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>LPC Analysis</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../src/images.qrc" >:/icons/images/lpmodel.svg</iconset>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="CLAM::VM::LPModelView" name="OutPort__LPC_AutoCorrelation_0__LPModelOut" >
+       <property name="toolTip" >
+        <string>LPC Coeficients</string>
+       </property>
+       <property name="autoFillBackground" >
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet" >
+        <string>background-color:#444</string>
+       </property>
+       <property name="barGradientBegin" >
+        <color>
+         <red>255</red>
+         <green>200</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="barGradientEnd" >
+        <color>
+         <red>255</red>
+         <green>100</green>
+         <blue>50</blue>
+        </color>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="Oscilloscope" name="OutPort__AudioSource_0__AudioOut" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>1</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="autoFillBackground" >
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet" >
+          <string>background-color:#444;</string>
+         </property>
+         <property name="lineColor" >
+          <color>
+           <red>255</red>
+           <green>150</green>
+           <blue>50</blue>
+          </color>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="SpectrumView" name="OutPort__LPC_AutoCorrelation_0__SpectrumOut" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>1</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip" >
+          <string>LPC Envelope</string>
+         </property>
+         <property name="autoFillBackground" >
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet" >
+          <string>background-color:#444</string>
+         </property>
+         <property name="lineColor" >
+          <color>
+           <red>255</red>
+           <green>150</green>
+           <blue>50</blue>
+          </color>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="SpectrumView" name="OutPort__FFT_0__Spectrum___Output" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>1</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip" >
+          <string>FFT Spectrum</string>
+         </property>
+         <property name="autoFillBackground" >
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet" >
+          <string>background-color:#444</string>
+         </property>
+         <property name="lineColor" >
+          <color>
+           <red>255</red>
+           <green>150</green>
+           <blue>50</blue>
+          </color>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="PlayButton" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Play</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="StopButton" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Stop</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="PlaybackIndicator" >
+         <property name="text" >
+          <string>Playback</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="BackendIndicator" >
+         <property name="text" >
+          <string>Backend</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CloseButton" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>5</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CLAM::VM::LPModelView</class>
+   <extends>QWidget</extends>
+   <header>LPModelView.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>Oscilloscope.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>SpectrumView</class>
+   <extends>QWidget</extends>
+   <header>SpectrumView.hxx</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../src/images.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>CloseButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>539</x>
+     <y>490</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>435</x>
+     <y>306</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -59,6 +59,7 @@ const static char * processingClasses[] = {
 //	"SpectrumAdder", TODO register
 //	"SpectrumAdder2", TODO register
 	"SpectrumSubstracter2",
+	"SpectrumProduct",
 	0,
 	"Controls",
 	"OutControlSender",
@@ -85,17 +86,21 @@ const static char * processingClasses[] = {
 	"FFT_fftw3",
 	"FFT_ooura",
 	"FFT_numrec",
+	"AudioWindowing",
 	"SpectralAnalysis",
 	"SMSAnalysisCore",
+	"LPC_AutoCorrelation",
 	"TonalAnalysis",
+	"MelFilterBank",
+	"CepstralTransform",
 	0,
 	"Synthesis",
 	"IFFT",
 	"IFFT_rfftw",
 	"IFFT_fftw3",
 	"IFFT_ooura",
-	"SpectralSynthesis",
 	"OverlapAdd",
+	"SpectralSynthesis",
 	"SMSSynthesis",
 	0,
 	"SMS Transformations",
@@ -136,7 +141,8 @@ const static char * processingClasses[] = {
 	"KeySpace",
 	"PolarChromaPeaks",
 	"ChordRanking",
-//	"Tunner", // Commented until the next release
+	"LPModelView",
+	"Tunner",
 	0,
 	0
 };
