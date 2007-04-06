@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioSource_0" type="AudioSource"/>
+
+  <processing id="AudioWindowing_0" type="AudioWindowing">
+    <WindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>1025</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>0</Invert>
+    </WindowGenerator>
+    <CircularShift>
+      <Amount>-512</Amount>
+    </CircularShift>
+    <prHopSize>512</prHopSize>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>1024</prFFTSize>
+    <prWindowSize>1025</prWindowSize>
+    <prWindowType>BlackmanHarris92</prWindowType>
+  </processing>
+
+  <processing id="FFT_0" type="FFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="LPC_AutoCorrelation_0" type="LPC_AutoCorrelation">
+    <Order>33</Order>
+  </processing>
+
+  <processing id="LPModelView_0" type="LPModelView"/>
+
+  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+
+  <processing id="SpectrumView_0" type="SpectrumView"/>
+
+  <processing id="SpectrumView_1" type="SpectrumView"/>
+
+  <port_connection>
+    <out>AudioSource_0.AudioOut</out>
+    <in>AudioWindowing_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource_0.AudioOut</out>
+    <in>Oscilloscope_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource_0.AudioOut</out>
+    <in>FFT_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioWindowing_0.Output</out>
+    <in>LPC_AutoCorrelation_0.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT_0.Spectrum Output</out>
+    <in>SpectrumView_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LPC_AutoCorrelation_0.LPModelOut</out>
+    <in>LPModelView_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LPC_AutoCorrelation_0.SpectrumOut</out>
+    <in>SpectrumView_0.Input</in>
+  </port_connection>
+
+</network>

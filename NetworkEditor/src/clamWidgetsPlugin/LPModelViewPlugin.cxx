@@ -21,68 +21,67 @@
 **
 ****************************************************************************/
 
-#include "SpectrumViewPlugin.hxx"
-#include "SpectrumView.hxx"
+#include "LPModelViewPlugin.hxx"
+#include "LPModelView.hxx"
 
 #include <QtCore/QtPlugin>
 
-SpectrumViewPlugin::SpectrumViewPlugin(QObject *parent)
+LPModelViewPlugin::LPModelViewPlugin(QObject *parent)
     : QObject(parent)
 {
     initialized = false;
 }
 
-void SpectrumViewPlugin::initialize(QDesignerFormEditorInterface * /* core */)
+void LPModelViewPlugin::initialize(QDesignerFormEditorInterface * /* core */)
 {
     if (initialized)
         return;
-
     initialized = true;
 }
 
-bool SpectrumViewPlugin::isInitialized() const
+bool LPModelViewPlugin::isInitialized() const
 {
     return initialized;
 }
 
-QWidget *SpectrumViewPlugin::createWidget(QWidget *parent)
+QWidget *LPModelViewPlugin::createWidget(QWidget *parent)
 {
-    return new SpectrumView(parent);
+    return new CLAM::VM::LPModelView(parent);
 }
 
-QString SpectrumViewPlugin::name() const
+QString LPModelViewPlugin::name() const
 {
-    return "SpectrumView";
+    return "CLAM::VM::LPModelView";
 }
 
-QString SpectrumViewPlugin::group() const
+QString LPModelViewPlugin::group() const
 {
     return "CLAM Widgets";
 }
 
-QIcon SpectrumViewPlugin::icon() const
+QIcon LPModelViewPlugin::icon() const
 {
-    return QIcon(":/icons/images/spectrumview.svg");
+    return QIcon(":/icons/images/lpmodel.svg");
 }
 
-QString SpectrumViewPlugin::toolTip() const
-{
-    return "";
-}
-
-QString SpectrumViewPlugin::whatsThis() const
+QString LPModelViewPlugin::toolTip() const
 {
     return "";
 }
 
-bool SpectrumViewPlugin::isContainer() const
+QString LPModelViewPlugin::whatsThis() const
+{
+    return "";
+}
+
+bool LPModelViewPlugin::isContainer() const
 {
     return false;
 }
 
-QString SpectrumViewPlugin::domXml() const
+QString LPModelViewPlugin::domXml() const
 {
-    return "<widget class=\"SpectrumView\" name=\"spectrumView\">\n"
+    return "<widget class=\"CLAM::VM::LPModelView\" name=\"lpmodel\">\n"
            " <property name=\"geometry\">\n"
            "  <rect>\n"
            "   <x>0</x>\n"
@@ -94,11 +93,11 @@ QString SpectrumViewPlugin::domXml() const
            "</widget>\n";
 }
 
-QString SpectrumViewPlugin::includeFile() const
+QString LPModelViewPlugin::includeFile() const
 {
-    return "SpectrumView.hxx";
+    return "LPModelView.hxx";
 }
 
 // This is just for a singleton widget plugin
-// Q_EXPORT_PLUGIN2(clamwidgets, SpectrumViewPlugin)
+// Q_EXPORT_PLUGIN2(clamwidgets, LPModelViewPlugin)
 

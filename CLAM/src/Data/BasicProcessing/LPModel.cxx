@@ -43,7 +43,7 @@ namespace CLAM
 		GetReflectionCoefficients().SetSize( order );
 	}
 
-	void LPModel::ToSpectrum( Spectrum& spec )
+	void LPModel::ToSpectrum( Spectrum& spec ) const
 	{
 		SpecTypeFlags specFlags;
 		spec.GetType( specFlags );
@@ -51,15 +51,16 @@ namespace CLAM
 		
 		spec.SetSpectralRange( GetSpectralRange() );
 
+		const DataArray& ak_vec = GetFilterCoefficients();
+		int order = ak_vec.Size();
+
 		// we build the array of polarCoeffs from the filter poles
 		Array< Complex > spectrumCoeffs;
 		Array< Complex > cmplxCoeffs;
 		spectrumCoeffs.Resize( spec.GetSize() );
 		spectrumCoeffs.SetSize( spec.GetSize() );
-		cmplxCoeffs.Resize( GetFilterCoefficients().Size() );
-		cmplxCoeffs.SetSize( GetFilterCoefficients().Size() );
-
-		DataArray& ak_vec = GetFilterCoefficients();
+		cmplxCoeffs.Resize( order );
+		cmplxCoeffs.SetSize( order );
 
 		const TData dw = PI/TData(spec.GetSize()-1);
 		TData w =0.0;
@@ -72,16 +73,14 @@ namespace CLAM
 			spectrumCoeffs[j].SetReal( 1.0 );
 			spectrumCoeffs[j].SetImag( 0.0 );
 
-			for ( int i = 0; i < GetFilterCoefficients().Size(); i++ )
+			for ( int i = 0; i < order; i++ )
 			{
 				cmplxCoeffs[i].SetReal( ak_vec[i]*cos( -1.0*(float)(i+1)*w ) );
 				cmplxCoeffs[i].SetImag( ak_vec[i]*sin( 1.0*(float)(i+1)*w ) );
 
 				spectrumCoeffs[j] += cmplxCoeffs[i];
 			}
-			
 			spectrumCoeffs[j] = unitComplex / spectrumCoeffs[j];
-
 			w += dw;
 		}
 		

@@ -2515,7 +2515,7 @@
         <number>3</number>
        </property>
        <property name="segmentStyle" >
-        <enum>QLCDNumber::Filled</enum>
+        <enum>QLCDNumber::Flat</enum>
        </property>
       </widget>
      </item>
@@ -2575,7 +2575,7 @@
         <number>3</number>
        </property>
        <property name="segmentStyle" >
-        <enum>QLCDNumber::Filled</enum>
+        <enum>QLCDNumber::Flat</enum>
        </property>
       </widget>
      </item>
@@ -2620,7 +2620,7 @@
         <number>3</number>
        </property>
        <property name="segmentStyle" >
-        <enum>QLCDNumber::Filled</enum>
+        <enum>QLCDNumber::Flat</enum>
        </property>
       </widget>
      </item>
@@ -2741,6 +2741,11 @@
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
+   <class>SpectrumView</class>
+   <extends>QWidget</extends>
+   <header>SpectrumView.hxx</header>
+  </customwidget>
+  <customwidget>
    <class>Oscilloscope</class>
    <extends>QWidget</extends>
    <header>Oscilloscope.hxx</header>
@@ -2749,11 +2754,6 @@
    <class>Vumeter</class>
    <extends>QWidget</extends>
    <header>Vumeter.hxx</header>
-  </customwidget>
-  <customwidget>
-   <class>SpectrumView</class>
-   <extends>QWidget</extends>
-   <header>SpectrumView.hxx</header>
   </customwidget>
   <customwidget>
    <class>PeakView</class>
@@ -2770,7 +2770,7 @@
   <tabstop>CloseButton</tabstop>
  </tabstops>
  <resources>
-  <include location="src/images.qrc" />
+  <include location="../src/images.qrc" />
   <include location="../src/images.qrc" />
  </resources>
  <connections>

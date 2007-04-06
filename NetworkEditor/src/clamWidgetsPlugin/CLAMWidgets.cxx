@@ -9,6 +9,7 @@
 #include "KeySpacePlugin.hxx"
 #include "PolarChromaPeaksPlugin.hxx"
 #include "ChordRankingPlugin.hxx"
+#include "LPModelViewPlugin.hxx"
 #include <iostream>
 #include <CLAM/CLAMVersion.hxx>
 
@@ -27,6 +28,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new KeySpacePlugin(this)
 		<< new PolarChromaPeaksPlugin(this)
 		<< new ChordRankingPlugin(this)
+		<< new LPModelViewPlugin(this)
 		;
 	std::cout << "All CLAM widgets plugins created" << std::endl;
 }

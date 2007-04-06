@@ -15,80 +15,44 @@ class VumeterMonitor : public OscilloscopeMonitor
 class QDESIGNER_WIDGET_EXPORT Vumeter : public QWidget
 {
 	Q_OBJECT
+	Q_PROPERTY(int ledHeight READ ledHeight WRITE setLedHeight)
+	Q_PROPERTY(int interLedGap READ interLedGap WRITE setInterLedGap)
+	Q_PROPERTY(int peakMemory READ peakMemory WRITE setPeakMemory)
+	Q_PROPERTY(int peakDecay READ peakDecay WRITE setPeakDecay)
+	Q_PROPERTY(QColor color0 READ color0 WRITE setColor0)
+	Q_PROPERTY(QColor color1 READ color1 WRITE setColor1)
+	Q_PROPERTY(QColor color2 READ color2 WRITE setColor2)
+	Q_PROPERTY(QColor color3 READ color3 WRITE setColor3)
+	Q_PROPERTY(QBrush outlineBrush READ outlineBrush WRITE setOutlineBrush)
 	enum Dimensions {
 		margin=4,
-		ledHeight=10
 	};
 public:
-	Vumeter(QWidget * parent=0)
-		: QWidget(parent)
-		, _dataSource( 0)
-		, _energy(0)
-	{
-		if (!_dataSource) _dataSource = new OscilloscopeDummySource;
-		startTimer(50);
-	}
-	Vumeter(CLAM::VM::FloatArrayDataSource * dataSource, QWidget * parent=0)
+	Vumeter(QWidget * parent=0, CLAM::VM::FloatArrayDataSource * dataSource=0)
 		: QWidget(parent)
 		, _dataSource( dataSource)
-		, _energy(0)
+		, _memorizedPeak(0)
+		, _remainingPeakMemory(0)
+		, _ledHeight(10)
+		, _interLedGap(4)
+		, _peakMemory(10)
+		, _peakDecay(5)
+		, _color0(Qt::green)
+		, _color1(Qt::yellow)
+		, _color2(QColor(0xff,0x77,0x00))
+		, _color3(Qt::red)
 	{
-		if (!_dataSource) _dataSource = new OscilloscopeDummySource;
+		setDataSource(dataSource ? *dataSource : Oscilloscope::dummySource());
 		startTimer(50);
 	}
-	void paintEvent(QPaintEvent * event)
-	{
-		unsigned nLeds=height()/ledHeight;
-		double ledStep = 1.0/nLeds;
-		unsigned actualLedHeight = height()/nLeds;
-		
-		double logEnergy = energy()*10;
-		QPainter painter(this);
-		painter.setPen(Qt::black);
-		painter.setBrush(Qt::red);
-		for (unsigned i=0; i<nLeds; i++)
-		{
-			QColor color = Qt::green;
-			if (i>3*nLeds/8) color=Qt::yellow;
-			if (i>5*nLeds/8) color=QColor(0xff,0x77,0x00);
-			if (i>=7*nLeds/8) color=Qt::red;
-			if (logEnergy<=ledStep*i)
-				painter.setBrush(color.dark());
-			else
-				painter.setBrush(color);
-			painter.drawRect(margin,height()-actualLedHeight*i-margin,width()-2*margin,-actualLedHeight+margin);
-		}
-
-	}
+	void paintEvent(QPaintEvent * event);
 	QSize minimumSizeHint() const
 	{
-		return QSize(2*margin+10,2*margin+2*ledHeight);
+		return QSize(2*margin+10,2*margin+2*_ledHeight);
 	}
 	void setDataSource(CLAM::VM::FloatArrayDataSource & source)
 	{
 		_dataSource = &source;
-	}
-	double energy()
-	{
-		_energy*=0.5;
-		if ( !_dataSource) return _energy;
-		const CLAM::TData * data = _dataSource->frameData();
-		unsigned size = _dataSource->nBins();
-		if ( !size)
-		{
-			_dataSource->release();
-			_energy = 0;
-			return _energy;
-		}
-		for (unsigned i=0; i<size; i++)
-		{
-			const CLAM::TData & bin = data[i];
-			_energy+=bin*bin*0.5;
-		}
-		_energy /= size;
-		_dataSource->release();
-
-		return _energy;
 	}
 	void timerEvent(QTimerEvent *event)
 	{
@@ -96,9 +60,38 @@ public:
 		if ( !_dataSource->isEnabled()) return;
 		update();
 	}
+	int ledHeight() const { return _ledHeight;}
+	void setLedHeight(int height) { _ledHeight=height;}
+	int interLedGap() const { return _interLedGap;}
+	void setInterLedGap(int gap) { _interLedGap=gap;}
+	int peakMemory() const { return _peakMemory;}
+	void setPeakMemory(int memory) { _peakMemory=memory;}
+	int peakDecay() const { return _peakDecay;}
+	void setPeakDecay(int decay) { _peakDecay=decay>1?decay:1;}
+	const QColor & color0() const {return _color0;}
+	void setColor0(const QColor & color) { _color0=color; }
+	const QColor & color1() const {return _color1;}
+	void setColor1(const QColor & color) { _color1=color; }
+	const QColor & color2() const {return _color2;}
+	void setColor2(const QColor & color) { _color2=color; }
+	const QColor & color3() const {return _color3;}
+	void setColor3(const QColor & color) { _color3=color; }
+	const QBrush & outlineBrush() const {return _oulineBrush;}
+	void setOutlineBrush(const QBrush & brush) { _oulineBrush=brush; }
 private:
+	double energy();
 	CLAM::VM::FloatArrayDataSource * _dataSource;
-	double _energy;
+	double _memorizedPeak;
+	int _remainingPeakMemory;
+	int _ledHeight;
+	int _interLedGap;
+	int _peakMemory;
+	int _peakDecay;
+	QColor _color0;
+	QColor _color1;
+	QColor _color2;
+	QColor _color3;
+	QBrush _oulineBrush;
 };
 
 

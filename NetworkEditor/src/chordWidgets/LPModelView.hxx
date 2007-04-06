@@ -19,94 +19,39 @@
  *
  */
 
-#ifndef ChordRanking_hxx
-#define ChordRanking_hxx
+#ifndef LPModelView_hxx
+#define LPModelView_hxx
 
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
 #include "FloatArrayDataSource.hxx"
 #include <CLAM/PortMonitor.hxx>
 
-#include <vector>
+#include <CLAM/LPModel.hxx>
 
-class ChordRankingMonitor :
-	public CLAM::PortMonitor<std::vector<CLAM::TData> >,
+class LPModelViewMonitor :
+	public CLAM::PortMonitor<CLAM::LPModel>,
 	public CLAM::VM::FloatArrayDataSource
 {
 public:
-	ChordRankingMonitor()
+	LPModelViewMonitor()
 		: _size(0)
 	{
 	}
 private:
-	const char* GetClassName() const { return "ChordRanking"; };
+	const char* GetClassName() const { return "LPModelView"; };
 	const std::string & getLabel(unsigned bin) const
 	{
-		static std::vector<std::string> a = initBinLabelVector();
-		if (bin>a.size()) throw "Bad bin";
-		return a[bin];
-	}
-	std::vector<std::string> initBinLabelVector() const
-	{
-		static char * roots[] = {
-			"G#",
-			"A",
-			"A#",
-			"B",
-			"C",
-			"C#",
-			"D",
-			"D#",
-			"E",
-			"F",
-			"F#",
-			"G",
-			};
-		static struct Modes {
-			const char * name;
-			unsigned nRoots;
-		} modes[] =
-		{
-			{"None",        1},
-			{"Major",      12},
-			{"Minor",      12},
-			{"Major7",     12}, // Cmaj7
-			{"Dominant7",  12}, // C7
-			{"MinorMajor7",12}, // Cm/maj7
-			{"Minor7",     12}, // Cm7
-//			{"Suspended2", 12}, // Csus2
-//			{"Suspended4", 12}, // Csus4
-//			{"Major6",     12}, // C6
-//			{"Minor6",     12}, // Cm6
-//			{"6/9",        12}, // C6/9
-			{"Augmented",   4}, // Caug
-			{"Diminished", 12}, // Cdim
-			{"Diminished7",12}, // Cdim7
-//			{"Fifth",      12}, // C5
-			{0, 0}
-		};
-		std::vector<std::string> chordNames;
-		for (unsigned i = 0; modes[i].name; i++)
-		{
-			std::string mode=modes[i].name;
-			if (modes[i].nRoots == 1)
-			{
-				chordNames.push_back(mode);
-				continue;
-			}
-			for (unsigned root=0; root<modes[i].nRoots; root++)
-			{
-				std::string rootName(roots[root]);
-				chordNames.push_back(rootName+mode);
-			}
-		}
-		return chordNames;
+		static std::string dummyLabel;
+		return dummyLabel;
 	}
 	const CLAM::TData * frameData()
 	{
-		const std::vector<CLAM::TData> & chords = FreezeAndGetData();
-		_size = chords.size();
-		return &chords[0];
+		const CLAM::LPModel & data = FreezeAndGetData();
+		const CLAM::Array<CLAM::TData> & buffer = data.GetFilterCoefficients();
+//		const CLAM::Array<CLAM::TData> & buffer = data.GetReflectionCoefficients();
+		_size = buffer.Size();
+		return & buffer[0];
 	}
 	void release()
 	{
@@ -116,6 +61,10 @@ private:
 	{
 		return _size;
 	}
+	virtual bool hasUpperBound() const { return true; }
+	virtual bool hasLowerBound() const { return true; }
+	virtual CLAM::TData upperBound() const {return 11;}
+	virtual CLAM::TData lowerBound() const {return -11;}
 	bool isEnabled() const
 	{
 		return GetExecState() == CLAM::Processing::Running;
@@ -132,16 +81,15 @@ namespace CLAM
 namespace VM
 {
 
-	class QDESIGNER_WIDGET_EXPORT ChordRanking : public QWidget
+	class QDESIGNER_WIDGET_EXPORT LPModelView : public QWidget
 	{
 		Q_OBJECT
 		Q_PROPERTY(QColor barGradientBegin READ barGradientBegin WRITE setBarGradientBegin)
 		Q_PROPERTY(QColor barGradientEnd READ barGradientEnd WRITE setBarGradientEnd)
-		Q_PROPERTY(QFont labelFont READ labelFont WRITE setLabelFont)
 
 		public:
-			ChordRanking(QWidget * parent);
-			~ChordRanking();
+			LPModelView(QWidget * parent, FloatArrayDataSource * dataSource = 0);
+			~LPModelView();
 		public:
 			virtual void paintEvent(QPaintEvent * event);
 			virtual void timerEvent(QTimerEvent *event);
@@ -153,15 +101,10 @@ namespace VM
 			void setBarGradientBegin(const QColor & color) { _barGradientBegin=color; }
 			const QColor & barGradientEnd() const { return _barGradientEnd; }
 			void setBarGradientEnd(const QColor & color) { _barGradientEnd=color; }
-			const QFont & labelFont() const { return _font; }
-			void setLabelFont(const QFont & font) { _font=font; }
 		protected:
 			int _updatePending;
-			double _maxValue;
-			unsigned _nBins;
 			FloatArrayDataSource * _dataSource;
 			const CLAM::TData * _data;
-			QFont _font;
 			QColor _barGradientBegin;
 			QColor _barGradientEnd;
 	};
@@ -172,4 +115,4 @@ namespace VM
 
 
 
-#endif// ChordRanking_hxx
+#endif// LPModelView_hxx

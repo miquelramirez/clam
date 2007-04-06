@@ -26,6 +26,8 @@
 #include "Spectrum.hxx"
 #include "MelSpectrum.hxx"
 #include "Array.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 
 namespace CLAM
 {
@@ -121,6 +123,8 @@ namespace CLAM
 		DataArray           mFilterWeights;
 		TIndex              mLowIdx;
 		TIndex              mHighIdx;
+		InPort<Spectrum> mIn;
+		OutPort<MelSpectrum> mOut;
 	};
 }
 

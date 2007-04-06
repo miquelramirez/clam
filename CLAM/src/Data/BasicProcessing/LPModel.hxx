@@ -42,7 +42,7 @@ namespace CLAM
 		DYN_ATTRIBUTE( 4, protected, unsigned, Order );
 
 	public:
-		void ToSpectrum( Spectrum& spec );
+		void ToSpectrum( Spectrum& spec ) const;
 		void UpdateModelOrder( TSize order );
 
 	protected:

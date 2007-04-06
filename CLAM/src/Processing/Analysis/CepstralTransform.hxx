@@ -26,6 +26,8 @@
 #include "MelSpectrum.hxx"
 #include "MelCepstrum.hxx"
 #include "Array.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
 
 namespace CLAM
 {
@@ -98,6 +100,8 @@ namespace CLAM
   private:
     CepstralTransformConfig mConfig;
     DataArray               mLogBuffer;
+    InPort<MelSpectrum> mIn;
+	OutPort<MelCepstrum> mOut;
     
   };
   

@@ -4,14 +4,12 @@
 #include <math.h>
 
 #include <CLAM/Processing.hxx>
-#include <QtGui/QSlider>
-#include <QtGui/QDial>
-#include <QtGui/QLabel>
-#include <QtGui/QDoubleSpinBox>
-#include <QtGui/QHBoxLayout>
 #include <CLAM/OutControlSender.hxx>
 
-class ControlSenderWidgetParams;
+class QDial;
+class QSlider;
+class QDoubleSpinBox;
+class QAbstractSlider;
 
 class ControlSenderWidget : public QWidget
 {
@@ -21,13 +19,12 @@ public:
 	~ControlSenderWidget();
 
 protected:
-	void init(ControlSenderWidgetParams &params);
+	void init();
 
-	void createLabel(const ControlSenderWidgetParams &params);
-	void createDial(const ControlSenderWidgetParams &params);
-	void createSlider(const ControlSenderWidgetParams &params);
-	void createSpinBox(const ControlSenderWidgetParams &params);
-
+	void createLabel();
+	void createDial();
+	void createSlider(Qt::Orientation);
+	void createSpinBox();
 	void setupSlider(QAbstractSlider *slider);
 
 private slots:
