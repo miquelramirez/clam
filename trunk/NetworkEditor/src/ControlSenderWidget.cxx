@@ -34,37 +34,27 @@ void ControlSenderWidget::init()
 
 	switch (config->GetControlRepresentation().GetValue()) {
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eUndetermined:
-		createLabel();
 		break;
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eKnot:
-		createDial();
 		setLayout(new QVBoxLayout);
+		createDial();
 		break;
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eHorizontalSlider:
+		setLayout(new QHBoxLayout);
 		createSlider(Qt::Horizontal);
 		createSpinBox();
-		setLayout(new QHBoxLayout);
 		break;
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eVerticalSlider:
-		createSlider(Qt::Horizontal);
-		createSpinBox();
 		setLayout(new QVBoxLayout);
+		createSlider(Qt::Vertical);
+		createSpinBox();
 		break;
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eSpinBox:
-		createSpinBox();
 		setLayout(new QHBoxLayout);
+		createSpinBox();
 		break;
 	}
 	layout()->setMargin(1);
-}
-
-void ControlSenderWidget::createLabel()
-{
-	QLabel *label = new QLabel();
-	label->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-	label->setNum(_default);
-	label->setAlignment(Qt::AlignVCenter | Qt::AlignHCenter);
-	layout()->addWidget(label);
 }
 
 void ControlSenderWidget::createDial()
