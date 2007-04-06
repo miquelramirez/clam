@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
+    <width>524</width>
     <height>501</height>
    </rect>
   </property>
@@ -31,31 +31,56 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="CLAM::VM::LPModelView" name="OutPort__LPC_AutoCorrelation_0__LPModelOut" >
-       <property name="toolTip" >
-        <string>LPC Coeficients</string>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
        </property>
-       <property name="autoFillBackground" >
-        <bool>true</bool>
+       <property name="spacing" >
+        <number>6</number>
        </property>
-       <property name="styleSheet" >
-        <string>background-color:#444</string>
-       </property>
-       <property name="barGradientBegin" >
-        <color>
-         <red>255</red>
-         <green>200</green>
-         <blue>0</blue>
-        </color>
-       </property>
-       <property name="barGradientEnd" >
-        <color>
-         <red>255</red>
-         <green>100</green>
-         <blue>50</blue>
-        </color>
-       </property>
-      </widget>
+       <item>
+        <widget class="CLAM::VM::LPModelView" name="OutPort__LPC_AutoCorrelation_0__LPModelOut" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip" >
+          <string>LPC Coeficients</string>
+         </property>
+         <property name="autoFillBackground" >
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet" >
+          <string>background-color:#444</string>
+         </property>
+         <property name="barGradientBegin" >
+          <color>
+           <red>255</red>
+           <green>200</green>
+           <blue>0</blue>
+          </color>
+         </property>
+         <property name="barGradientEnd" >
+          <color>
+           <red>255</red>
+           <green>100</green>
+           <blue>50</blue>
+          </color>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_3" >
+         <property name="text" >
+          <string>LPC Coefficients</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <layout class="QVBoxLayout" >
@@ -91,6 +116,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="label_4" >
+         <property name="text" >
+          <string>Input audio</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="SpectrumView" name="OutPort__LPC_AutoCorrelation_0__SpectrumOut" >
          <property name="sizePolicy" >
           <sizepolicy>
@@ -119,6 +151,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QLabel" name="label_2" >
+         <property name="text" >
+          <string>LPC envelope</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="SpectrumView" name="OutPort__FFT_0__Spectrum___Output" >
          <property name="sizePolicy" >
           <sizepolicy>
@@ -143,6 +182,13 @@
            <green>150</green>
            <blue>50</blue>
           </color>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label" >
+         <property name="text" >
+          <string>FFT Spectrum</string>
          </property>
         </widget>
        </item>
@@ -249,14 +295,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>CLAM::VM::LPModelView</class>
-   <extends>QWidget</extends>
-   <header>LPModelView.hxx</header>
-  </customwidget>
-  <customwidget>
    <class>Oscilloscope</class>
    <extends>QWidget</extends>
    <header>Oscilloscope.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::LPModelView</class>
+   <extends>QWidget</extends>
+   <header>LPModelView.hxx</header>
   </customwidget>
   <customwidget>
    <class>SpectrumView</class>
