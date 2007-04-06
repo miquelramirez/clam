@@ -22,7 +22,6 @@ public:
 protected:
 	void init();
 
-	void createLabel();
 	void createDial();
 	void createSlider(Qt::Orientation);
 	void createSpinBox();
