@@ -20,6 +20,8 @@ def setup_global_environment( clam_env, conf ) :
 
 	if clam_env['release_asserts'] :
 		clam_env.Append( CPPFLAGS=['-DCLAM_USE_RELEASE_ASSERTS'] )
+	if clam_env['optimize_and_lose_precision'] :
+		clam_env.Append( CPPFLAGS=['-DCLAM_OPTIMIZE'] )
 
 	if sys.platform != 'win32' :
 		if clam_env['release'] :

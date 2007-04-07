@@ -1,11 +1,10 @@
 #! /usr/bin/python
-import sys
-sys.path.append('../src')
+import os, sys, time
+sys.path.append('%s/testfarm/src' % os.environ['HOME'])
 from task import *
 from project import Project
 from client import Client
 from runner import Runner
-import os, time
 from commands import getoutput
 
 def countLines( path ):
