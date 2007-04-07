@@ -38,7 +38,6 @@ bool VowelResonator::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	double F1=mF1.GetLastValue();
 	double F2=mF2.GetLastValue();
 	double F3=2500;
-	std::cerr << F1 << " " << F2 << std::endl;
 	for(int i=0;i<nPeaks;i++)
 	{
 		const double & f = frequencies[i];
