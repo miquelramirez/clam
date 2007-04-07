@@ -35,7 +35,7 @@ namespace CLAM
 		AddAll();
 		UpdateData();
 		SetUsePower(false);
-		SetSpectrumSize(1024);
+		SetSpectrumSize(513);
 		SetNumBands(20);
 		SetSpectralRange(22050);
 		SetLowCutoff(0);
@@ -130,16 +130,6 @@ namespace CLAM
 	{
 		CopyAsConcreteConfig( mConfig, cfg );
 		InitializeTables();
-		return true;
-	}
-	
-	bool MelFilterBank::ConcreteStart()
-	{
-		return true;
-	}
-	
-	bool MelFilterBank::ConcreteStop()
-	{
 		return true;
 	}
 	
