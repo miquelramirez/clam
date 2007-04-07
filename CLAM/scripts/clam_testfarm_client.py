@@ -68,9 +68,9 @@ clam.add_deployment( [
 clam.add_subtask("Unit Tests", [
 	{CMD: "echo setting QTDIR to qt3 path ", INFO: unset_qtdir},
 	"cd $HOME/clam/CLAM",
-	"cd scons/tests",
+	"cd test",
 	"scons test_data_path=$HOME/clam/testdata  install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
-	"cd unit_tests",
+	"cd UnitTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD: "./UnitTests", INFO: lambda x:x},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
@@ -78,9 +78,9 @@ clam.add_subtask("Unit Tests", [
 clam.add_subtask("Functional Tests", [
 	{CMD: "echo setting QTDIR to qt3 path ", INFO: unset_qtdir},
 	"cd $HOME/clam/CLAM",
-	"cd scons/tests",
+	"cd test",
 	"scons test_data_path=$HOME/clam/testdata  install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
-	"cd functional_tests",
+	"cd FunctionalTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD:"./FunctionalTests", INFO: lambda x:x},
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
@@ -93,7 +93,7 @@ clam.add_subtask("CLAM Examples", [
 clam.add_subtask("SMSTools installation", [
 	{CMD: "echo setting QTDIR to qt3 path ", INFO: unset_qtdir},
 	"cd $HOME/clam/SMSTools",
-	"scons  install_prefix=$HOME/local clam_prefix=$HOME/local",
+	"scons install_prefix=$HOME/local clam_prefix=$HOME/local",
 	"scons install",
 	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
 ] )
