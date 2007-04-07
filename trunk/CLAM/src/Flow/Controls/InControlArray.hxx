@@ -22,45 +22,12 @@
 #ifndef _InControlArray_hxx_
 #define _InControlArray_hxx_
 
+#include "ControlArray.hxx"
 #include "InControl.hxx"
-#include <vector>
-#include <list>
-#include <string>
 
 namespace CLAM
 {
-/**
- * This class wrapps a vector (array) of InControls and gives its InControl automatic
- * names at construction
- */ 
-class InControlArray
-{
-	typedef std::vector<InControl*> Controls;
-	Controls mControls;
-public:
-//Constructors
-	InControlArray();
-	InControlArray(int size, const std::string &name, Processing* parent);
-	InControlArray(int size, const std::list<std::string> &names, Processing* parent);
-	
-
-	~InControlArray();
-
-	InControl       &operator[](int i)        { return *mControls[i]; }
-	const InControl &operator[](int i) const  { return *mControls[i]; }
-
-	void Resize(int size, const std::string &name, Processing* parent);
-	void Resize(int size, const std::list<std::string>& names, Processing* parent);
-				
-
-	int Size() const {return mControls.size();}
-
-protected:
-	void Shrink(int size);
+	typedef ControlArray<InControl> InControlArray;
 };
-
-
-
-}; //namespace CLAM
 
 #endif
