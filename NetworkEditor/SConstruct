@@ -86,8 +86,8 @@ sourcePaths = [
 	os.path.join('src','generated'),
 	os.path.join('src','processing'),
 	os.path.join('src','prototyper'),
-	os.path.join('src','chordWidgets'),
-	os.path.join('src','chordWidgets','generated'),
+	os.path.join('src','monitors'),
+	os.path.join('src','monitors','generated'),
 	os.path.join('src','clamWidgetsPlugins'),
 	os.path.join('src','clamWidgetsPlugins','generated'),
 ]
@@ -132,15 +132,15 @@ pluginsources = filter( (lambda a : a.rfind( "moc_")==-1 ),  pluginsources )
 pluginsources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  pluginsources )
 pluginsources = dict.fromkeys(pluginsources).keys()
 # //TODO: review this
-pluginsources.append(os.path.join('src','chordWidgets','generated','moc_Oscilloscope.cxx'))
-pluginsources.append(os.path.join('src','chordWidgets','generated','moc_SpectrumView.cxx'))
-pluginsources.append(os.path.join('src','chordWidgets','generated','moc_PeakView.cxx'))
-pluginsources.append(os.path.join('src','chordWidgets','generated','moc_PolarChromaPeaks.cxx'))
-pluginsources.append(os.path.join('src','chordWidgets','Vumeter.cxx'))
-pluginsources.append(os.path.join('src','chordWidgets','ChordRanking.cxx'))
-pluginsources.append(os.path.join('src','chordWidgets','Tonnetz.cxx'))
-pluginsources.append(os.path.join('src','chordWidgets','KeySpace.cxx'))
-pluginsources.append(os.path.join('src','chordWidgets','LPModelView.cxx'))
+pluginsources.append(os.path.join('src','monitors','generated','moc_Oscilloscope.cxx'))
+pluginsources.append(os.path.join('src','monitors','generated','moc_SpectrumView.cxx'))
+pluginsources.append(os.path.join('src','monitors','generated','moc_PeakView.cxx'))
+pluginsources.append(os.path.join('src','monitors','generated','moc_PolarChromaPeaks.cxx'))
+pluginsources.append(os.path.join('src','monitors','Vumeter.cxx'))
+pluginsources.append(os.path.join('src','monitors','ChordRanking.cxx'))
+pluginsources.append(os.path.join('src','monitors','Tonnetz.cxx'))
+pluginsources.append(os.path.join('src','monitors','KeySpace.cxx'))
+pluginsources.append(os.path.join('src','monitors','LPModelView.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
 
 #commonObjects = env.StaticLibrary(target="networkeditor", source=sources)
