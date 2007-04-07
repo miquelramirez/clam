@@ -49,6 +49,7 @@ private:
 	std::vector<std::string> initBinLabelVector() const
 	{
 		static char * roots[] = {
+			"G",
 			"G#",
 			"A",
 			"A#",
@@ -60,7 +61,6 @@ private:
 			"E",
 			"F",
 			"F#",
-			"G",
 			};
 		static struct Modes {
 			const char * name;
