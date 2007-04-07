@@ -20,18 +20,11 @@
  */
 
 #include <CLAM/Factory.hxx>
-#include "LPModelView.hxx"
+#include "MelCepstrumView.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<LPModelViewMonitor> registrator("LPModelView");
+static CLAM::Factory<CLAM::Processing>::Registrator<MelCepstrumViewMonitor> registrator("MelCepstrumView");
 
-#include <QtGui/QPixmap>
-#include <QtGui/QPainter>
-#include <QtCore/QTimer>
-#include <iostream>
-#include <CLAM/Pool.hxx>
-#include <algorithm>
-
-CLAM::VM::LPModelView::~LPModelView()
+CLAM::VM::MelCepstrumView::~MelCepstrumView()
 {
 }
 

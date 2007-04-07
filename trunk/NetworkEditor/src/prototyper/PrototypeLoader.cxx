@@ -35,6 +35,8 @@
 #include "PolarChromaPeaks.hxx"
 #include "ChordRanking.hxx"
 #include "LPModelView.hxx"
+#include "MelSpectrumView.hxx"
+#include "MelCepstrumView.hxx"
 
 inline bool FileExists( const std::string filename )
 {
@@ -223,6 +225,10 @@ void PrototypeLoader::ConnectWithNetwork()
 		("OutPort__.*", "CLAM::VM::ChordRanking");
 	ConnectWidgetsWithPorts<CLAM::VM::LPModelView,LPModelViewMonitor>
 		("OutPort__.*", "CLAM::VM::LPModelView");
+	ConnectWidgetsWithPorts<CLAM::VM::MelCepstrumView,MelCepstrumViewMonitor>
+		("OutPort__.*", "CLAM::VM::MelCepstrumView");
+	ConnectWidgetsWithPorts<CLAM::VM::MelSpectrumView,MelSpectrumViewMonitor>
+		("OutPort__.*", "CLAM::VM::MelSpectrumView");
 
 	QObject * playButton = _interface->findChild<QObject*>("PlayButton");
 	if (playButton) connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
