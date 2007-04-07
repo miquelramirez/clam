@@ -5,20 +5,13 @@
 
   <processing id="AudioSource_0" type="AudioSource"/>
 
-  <processing id="F1" type="OutControlSender">
-    <Min>200</Min>
-    <Default>700</Default>
-    <Max>800</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
-  <processing id="F2" type="OutControlSender">
-    <Min>800</Min>
-    <Default>1000</Default>
-    <Max>2500</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  <processing id="F1 F2" type="ControlSurface">
+    <Min1>200</Min1>
+    <Default1>700</Default1>
+    <Max1>800</Max1>
+    <Min2>800</Min2>
+    <Default2>1000</Default2>
+    <Max2>2500</Max2>
   </processing>
 
   <processing id="HarmonicPeaksGenerator_0" type="HarmonicPeaksGenerator"/>
@@ -36,7 +29,7 @@
     <Default>110</Default>
     <Max>440</Max>
     <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <ControlRepresentation>Knot</ControlRepresentation>
   </processing>
 
   <processing id="SMSAnalysisCore_0" type="SMSAnalysisCore">
@@ -279,12 +272,12 @@
   </port_connection>
 
   <control_connection>
-    <out>F1.out</out>
+    <out>F1 F2.out1</out>
     <in>VowelResonator_0.F1</in>
   </control_connection>
 
   <control_connection>
-    <out>F2.out</out>
+    <out>F1 F2.out2</out>
     <in>VowelResonator_0.F2</in>
   </control_connection>
 

@@ -13,6 +13,7 @@
 #include "Tunner.hxx"
 #include "LPModelView.hxx"
 #include "ControlSenderWidget.hxx"
+#include "ControlSurfaceWidget.hxx"
 
 #include <QtGui/QSlider>
 #include <QtCore/QtDebug>
@@ -77,6 +78,9 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 
 	if (className=="OutControlSender")
 		return new ControlSenderWidget(processing);
+
+	if (className=="ControlSurface")
+		return new ControlSurfaceWidget(processing);
 
 	if (className=="Vumeter")
 		return new Vumeter( canvas, dynamic_cast<VumeterMonitor*>(processing) );

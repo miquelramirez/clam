@@ -63,6 +63,7 @@ const static char * processingClasses[] = {
 	0,
 	"Controls",
 	"OutControlSender",
+	"ControlSurface",
 	"ControlSource",
 	"ControlSink",
 	"ControlPrinter",
