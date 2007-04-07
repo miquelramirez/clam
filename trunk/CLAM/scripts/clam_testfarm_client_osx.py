@@ -67,9 +67,9 @@ clam.add_deployment( [
 clam.add_subtask("Unit Tests (with scons)", [
 	{CMD: "echo unset QTDIR ", INFO: unset_qtdir},
 	"cd $HOME/clam/CLAM",
-	"cd scons/tests",
+	"cd test",
 	"scons test_data_path=$HOME/clam/testdata clam_sconstools=$HOME/clam/CLAM/scons/sconstools install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
-	"cd unit_tests",
+	"cd UnitTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD: "./UnitTests", INFO: lambda x:x},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
@@ -77,9 +77,9 @@ clam.add_subtask("Unit Tests (with scons)", [
 clam.add_subtask("Functional Tests (with scons)", [
 	{CMD: "echo unset QTDIR", INFO: unset_qtdir},
 	"cd $HOME/clam/CLAM",
-	"cd scons/tests",
+	"cd test",
 	"scons test_data_path=$HOME/clam/testdata clam_sconstools=$HOME/clam/CLAM/scons/sconstools install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
-	"cd functional_tests",
+	"cd FunctionalTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD:"./FunctionalTests", INFO: lambda x:x},
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
