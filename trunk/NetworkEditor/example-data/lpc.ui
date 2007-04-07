@@ -5,7 +5,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>524</width>
+    <width>652</width>
     <height>501</height>
    </rect>
   </property>
@@ -194,6 +194,94 @@
        </item>
       </layout>
      </item>
+     <item>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="CLAM::VM::MelSpectrumView" name="OutPort__MelFilterBank_0__Mel___Spectrum" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>1</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="autoFillBackground" >
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet" >
+          <string>background-color:#444</string>
+         </property>
+         <property name="barGradientBegin" >
+          <color>
+           <red>255</red>
+           <green>200</green>
+           <blue>0</blue>
+          </color>
+         </property>
+         <property name="barGradientEnd" >
+          <color>
+           <red>255</red>
+           <green>100</green>
+           <blue>50</blue>
+          </color>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_5" >
+         <property name="text" >
+          <string>Mel Spectrum</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="CLAM::VM::MelCepstrumView" name="OutPort__CepstralTransform_0__Mel___Cepstrum" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>1</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="autoFillBackground" >
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet" >
+          <string>background-color:#444</string>
+         </property>
+         <property name="barGradientBegin" >
+          <color>
+           <red>255</red>
+           <green>200</green>
+           <blue>0</blue>
+          </color>
+         </property>
+         <property name="barGradientEnd" >
+          <color>
+           <red>255</red>
+           <green>100</green>
+           <blue>50</blue>
+          </color>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_6" >
+         <property name="text" >
+          <string>Mel Cepstrum</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
    </item>
    <item>
@@ -295,9 +383,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Oscilloscope</class>
+   <class>SpectrumView</class>
    <extends>QWidget</extends>
-   <header>Oscilloscope.hxx</header>
+   <header>SpectrumView.hxx</header>
   </customwidget>
   <customwidget>
    <class>CLAM::VM::LPModelView</class>
@@ -305,9 +393,19 @@
    <header>LPModelView.hxx</header>
   </customwidget>
   <customwidget>
-   <class>SpectrumView</class>
+   <class>CLAM::VM::MelCepstrumView</class>
    <extends>QWidget</extends>
-   <header>SpectrumView.hxx</header>
+   <header>MelCepstrumView.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>Oscilloscope.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::MelSpectrumView</class>
+   <extends>QWidget</extends>
+   <header>MelSpectrumView.hxx</header>
   </customwidget>
  </customwidgets>
  <resources>
