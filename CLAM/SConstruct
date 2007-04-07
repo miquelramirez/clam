@@ -147,15 +147,16 @@ def setup_build_options( env ) :
 	if sys.platform == 'win32' : #!= 'linux2' :
 		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
 	if sys.platform == 'win32' :
-		opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no' ))
+		release_option = 'no'
 	else :
-		opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'yes'))
+		release_option = 'yes'
+	opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', release_option))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
 	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ))
 
 	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
-	
+	opts.Add( BoolOption( 'optimize_and_lose_precision', 'Use tabulated trigonometric functions and the like', 'no' )) 
 	# clam_core options
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
 	if sys.platform != 'win32' :

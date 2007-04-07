@@ -54,7 +54,7 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 				continue;
 			LADSPA_Descriptor_Function descriptorTable = 0;
 			std::string pluginFullFilename(dir + std::string("/") + pluginFilename);
-			void* handle = dlopen( pluginFullFilename.c_str(), RTLD_NOW);
+			void* handle = dlopen( pluginFullFilename.c_str(), RTLD_LAZY);
 			descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
 			if (!descriptorTable)
 			{
