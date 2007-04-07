@@ -1,3 +1,9 @@
+clam (1.0.1-1) unstable; urgency=low
+
+  * debian/rules: Updated to follow Sconstruct changes (changed location and removed vmqt module)
+
+ -- Giulio Paci <giuliopaci@interfree.it>  Sat,  7 Apr 2007 15:06:32 +0200
+
 clam (0.99.0-1) feisty; urgency=low
 
   * debian/control: python dependency required for libclam-dev

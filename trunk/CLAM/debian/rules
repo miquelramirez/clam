@@ -37,15 +37,14 @@ major=2
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	cd $(CURDIR)/scons/libs; $(SCONS) configure
+	cd $(CURDIR); $(SCONS) configure
 	touch configure-stamp
 
 
 build: build-stamp
 build-stamp: configure-stamp 
 	dh_testdir
-	cd $(CURDIR)/scons/libs; $(SCONS) core processing audioio vmqt
-	cd $(CURDIR)
+	cd $(CURDIR); $(SCONS) core processing audioio
 	# First, tarballize the examples folder
 	tar zcvf examples.tar.gz examples
 	# and now doxygenate CLAM stuff
@@ -58,7 +57,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
-	-cd $(CURDIR)/scons/libs && $(SCONS) -c
+	-cd $(CURDIR) && $(SCONS) -c
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
@@ -69,9 +68,9 @@ clean:
 	find $(CURDIR) -type f -name *.db | xargs rm -rf
 	-rm -rf $(CURDIR)/CLAM.tag $(CURDIR)/*.tar.gz $(CURDIR)/doxygen \
 	  $(CURDIR)/src/Defines/CLAMVersion.cxx src/Defines/CLAMVersion.hxx \
-		$(CURDIR)/scons/libs/.sconsign.dblite scons/libs/config.log \
-		$(CURDIR)/scons/libs/*/{*.conf,include,src,*.so*,*.pc,CLAM} \
-		$(CURDIR)/scons/libs/*.conf
+		$(CURDIR)/.sconsign.dblite config.log \
+		$(CURDIR)/*/{*.conf,include,src,*.so*,*.pc,CLAM} \
+		$(CURDIR)/*.conf
 	dh_clean 
 
 install: build
@@ -80,7 +79,7 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/tmp/usr
-	cd $(CURDIR)/scons/libs && scons install_prefix=$(CURDIR)/debian/tmp/usr install
+	cd $(CURDIR) && scons install_prefix=$(CURDIR)/debian/tmp/usr install
 	dh_install --sourcedir=debian/tmp
 
 # Build architecture-independent files here.
