@@ -35,12 +35,8 @@ folders = [ os.path.join('..','..','..','test', folder) for folder in folders ]
 blacklist = [ os.path.join('..','..','..','test', blacksheep) for blacksheep in blacklist ]
 sources = scanFiles('*.cxx', folders)
 headers = scanFiles('*.hxx', folders)
-print sources
 for blacksheep in blacklist :
 	sources.remove(blacksheep) 
-
-print headers
-print sources
 
 if sys.platform != 'win32'  :
 	env.Append( CPPPATH=['include'] )
