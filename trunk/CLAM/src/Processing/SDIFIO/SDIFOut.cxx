@@ -73,23 +73,8 @@ SDIFOut::~SDIFOut()
 
 bool SDIFOut::ConcreteStart()
 {
-	mpFile->Open();
 
-	return true;
-}
-
-bool SDIFOut::ConcreteStop()
-{
-	mpFile->Close();
-
-	return true;
-}
-
-bool SDIFOut::ConcreteConfigure(const ProcessingConfig& c)
-{
-	CopyAsConcreteConfig(mConfig, c);
 	if(mpFile) delete mpFile;
-
 	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eOutput);
 
 	try
@@ -104,6 +89,22 @@ bool SDIFOut::ConcreteConfigure(const ProcessingConfig& c)
 
 		return false;
 	}
+
+	return true;
+}
+
+bool SDIFOut::ConcreteStop()
+{
+	mpFile->Close();
+
+	return true;
+}
+
+bool SDIFOut::ConcreteConfigure(const ProcessingConfig& c)
+{
+	CopyAsConcreteConfig(mConfig, c);
+
+	return true;
 }
 
 

@@ -21,6 +21,7 @@
 
 #include "SDIFIn.hxx"
 #include "SpectrumConfig.hxx"
+#include "ErrOpenFile.hxx"
 #include "Frame.hxx"
 #include "Segment.hxx"
 #include "SpectralPeakArray.hxx"
@@ -78,31 +79,29 @@ SDIFIn::~SDIFIn()
 bool SDIFIn::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
-	
-	if ( mConfig.GetFileName() == "nofile") // MRJ: default configuration provided, we just left the object "Unconfigured"
-	  return false;
-
-	if(mpFile) delete mpFile;
-	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eInput);
-
-	try
-	  {
-	    mpFile->Open();
-	  }
-	catch( Err& e )
-	{
-	  e.Print();
-	  return false;
-	}
-
-	mpFile->Close();//must leave closed file ready to start()
 
 	return true;
 }
 
 bool SDIFIn::ConcreteStart()
 {
-	mpFile->Open();
+
+	if(mpFile) delete mpFile;
+	mpFile = new SDIF::File(mConfig.GetFileName().c_str(),SDIF::File::eInput);
+
+	try
+	{
+		mpFile->Open();
+		return true;
+	}
+	catch ( ErrOpenFile& e )
+	{
+		AddConfigErrorMessage("Inner exception thrown: File could not be opened");
+		AddConfigErrorMessage( e.what() );
+
+		return false;
+	}
+
 	return true;
 }
 
