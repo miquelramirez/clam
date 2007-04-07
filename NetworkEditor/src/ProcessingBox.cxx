@@ -12,6 +12,8 @@
 #include "ChordRanking.hxx"
 #include "Tunner.hxx"
 #include "LPModelView.hxx"
+#include "MelSpectrumView.hxx"
+#include "MelCepstrumView.hxx"
 #include "ControlSenderWidget.hxx"
 #include "ControlSurfaceWidget.hxx"
 
@@ -131,6 +133,12 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 	}
 	if (className=="LPModelView")
 		return new CLAM::VM::LPModelView(canvas, dynamic_cast<LPModelViewMonitor*>(processing));
+
+	if (className=="MelSpectrumView")
+		return new CLAM::VM::MelSpectrumView(canvas, dynamic_cast<MelSpectrumViewMonitor*>(processing));
+
+	if (className=="MelCepstrumView")
+		return new CLAM::VM::MelCepstrumView(canvas, dynamic_cast<MelCepstrumViewMonitor*>(processing));
 
 	return 0;
 }

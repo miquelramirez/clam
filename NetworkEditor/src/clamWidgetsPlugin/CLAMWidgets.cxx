@@ -10,6 +10,8 @@
 #include "PolarChromaPeaksPlugin.hxx"
 #include "ChordRankingPlugin.hxx"
 #include "LPModelViewPlugin.hxx"
+#include "MelSpectrumViewPlugin.hxx"
+#include "MelCepstrumViewPlugin.hxx"
 #include <iostream>
 #include <CLAM/CLAMVersion.hxx>
 
@@ -29,6 +31,8 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new PolarChromaPeaksPlugin(this)
 		<< new ChordRankingPlugin(this)
 		<< new LPModelViewPlugin(this)
+		<< new MelCepstrumViewPlugin(this)
+		<< new MelSpectrumViewPlugin(this)
 		;
 	std::cout << "All CLAM widgets plugins created" << std::endl;
 }

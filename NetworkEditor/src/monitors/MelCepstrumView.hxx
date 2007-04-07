@@ -19,27 +19,27 @@
  *
  */
 
-#ifndef LPModelView_hxx
-#define LPModelView_hxx
+#ifndef MelCepstrumView_hxx
+#define MelCepstrumView_hxx
 
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
 #include "FloatArrayDataSource.hxx"
 #include <CLAM/PortMonitor.hxx>
 
-#include <CLAM/LPModel.hxx>
+#include <CLAM/MelCepstrum.hxx>
 
-class LPModelViewMonitor :
-	public CLAM::PortMonitor<CLAM::LPModel>,
+class MelCepstrumViewMonitor :
+	public CLAM::PortMonitor<CLAM::MelCepstrum>,
 	public CLAM::VM::FloatArrayDataSource
 {
 public:
-	LPModelViewMonitor()
+	MelCepstrumViewMonitor()
 		: _size(0)
 	{
 	}
 private:
-	const char* GetClassName() const { return "LPModelView"; };
+	const char* GetClassName() const { return "MelCepstrumView"; };
 	const std::string & getLabel(unsigned bin) const
 	{
 		static std::string dummyLabel;
@@ -47,9 +47,8 @@ private:
 	}
 	const CLAM::TData * frameData()
 	{
-		const CLAM::LPModel & data = FreezeAndGetData();
-//		const CLAM::Array<CLAM::TData> & buffer = data.GetFilterCoefficients();
-		const CLAM::Array<CLAM::TData> & buffer = data.GetReflectionCoefficients();
+		const CLAM::MelCepstrum & data = FreezeAndGetData();
+		const CLAM::Array<CLAM::TData> & buffer = data.GetCoefficients();
 		_size = buffer.Size();
 		return & buffer[0];
 	}
@@ -63,8 +62,8 @@ private:
 	}
 	virtual bool hasUpperBound() const { return true; }
 	virtual bool hasLowerBound() const { return true; }
-	virtual CLAM::TData upperBound() const {return 11;}
-	virtual CLAM::TData lowerBound() const {return -11;}
+	virtual CLAM::TData upperBound() const {return .5;}
+	virtual CLAM::TData lowerBound() const {return -.5;}
 	bool isEnabled() const
 	{
 		return GetExecState() == CLAM::Processing::Running;
@@ -74,27 +73,25 @@ private:
 };
 
 
-#include "BarGraph.hxx"
 #include <QtDesigner/QDesignerExportWidget>
+#include "BarGraph.hxx"
 
 namespace CLAM
 {
 namespace VM
 {
-
-	class QDESIGNER_WIDGET_EXPORT LPModelView : public BarGraph
+	class QDESIGNER_WIDGET_EXPORT MelCepstrumView : public BarGraph
 	{
 		Q_OBJECT
 		public:
-			LPModelView(QWidget * parent, FloatArrayDataSource * dataSource = 0)
-				: BarGraph(parent, dataSource)
+			MelCepstrumView(QWidget * parent, FloatArrayDataSource * dataSource = 0)
+				: BarGraph(parent,dataSource)
 			{}
-			~LPModelView();
+			~MelCepstrumView();
 	};
-
 }
 }
 
 
 
-#endif// LPModelView_hxx
+#endif// MelCepstrumView_hxx

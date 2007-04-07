@@ -143,6 +143,8 @@ const static char * processingClasses[] = {
 	"PolarChromaPeaks",
 	"ChordRanking",
 	"LPModelView",
+	"MelSpectrumView",
+	"MelCesptrumView",
 	"Tunner",
 	0,
 	0
