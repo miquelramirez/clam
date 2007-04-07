@@ -23,6 +23,12 @@
     <prWindowType>BlackmanHarris92</prWindowType>
   </processing>
 
+  <processing id="CepstralTransform_0" type="CepstralTransform">
+    <NumMelCoefficients>20</NumMelCoefficients>
+    <NumCepstrumCoefficients>20</NumCepstrumCoefficients>
+    <UseBase10>0</UseBase10>
+  </processing>
+
   <processing id="FFT_0" type="FFT">
     <AudioSize>1024</AudioSize>
   </processing>
@@ -33,7 +39,39 @@
 
   <processing id="LPModelView_0" type="LPModelView"/>
 
+  <processing id="MelFilterBank_0" type="MelFilterBank">
+    <SpectrumSize>513</SpectrumSize>
+    <SpectralRange>22050</SpectralRange>
+    <LowCutoff>0</LowCutoff>
+    <HighCutoff>11025</HighCutoff>
+    <NumBands>20</NumBands>
+    <UsePower>0</UsePower>
+  </processing>
+
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
+
+  <processing id="SpectralAnalysis_0" type="SpectralAnalysis">
+    <WindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>1025</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>0</Invert>
+    </WindowGenerator>
+    <CircularShift>
+      <Amount>-512</Amount>
+    </CircularShift>
+    <FFT>
+      <AudioSize>1024</AudioSize>
+    </FFT>
+    <prHopSize>512</prHopSize>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>1024</prFFTSize>
+    <prWindowSize>1025</prWindowSize>
+    <prWindowType>BlackmanHarris92</prWindowType>
+  </processing>
 
   <processing id="SpectrumView_0" type="SpectrumView"/>
 
@@ -55,6 +93,11 @@
   </port_connection>
 
   <port_connection>
+    <out>AudioSource_0.AudioOut</out>
+    <in>SpectralAnalysis_0.Input</in>
+  </port_connection>
+
+  <port_connection>
     <out>AudioWindowing_0.Output</out>
     <in>LPC_AutoCorrelation_0.AudioIn</in>
   </port_connection>
@@ -72,6 +115,16 @@
   <port_connection>
     <out>LPC_AutoCorrelation_0.SpectrumOut</out>
     <in>SpectrumView_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MelFilterBank_0.Mel Spectrum</out>
+    <in>CepstralTransform_0.Mel Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralAnalysis_0.Output</out>
+    <in>MelFilterBank_0.Spectrum</in>
   </port_connection>
 
 </network>
