@@ -18,28 +18,32 @@ namespace CLAM
 	}
 
 	ControlScaler::ControlScaler()
-		: mInControl( "Control In", this ),
-		mOutControl( "Control Out", this )
+		: mInControl( "Control In", this )
+		, mGainControl( "Gain Amount", this )
+		, mOutControl( "Control Out", this )
 	{
 		Configure( mConfig );	
 	}
 
 	ControlScaler::ControlScaler( const ControlScalerConfig& cfg ) 
-	:	mInControl( "Control In", this ),
-		mOutControl( "Control Out", this )
+		: mInControl( "Control In", this )
+		, mGainControl( "Gain Amount", this )
+		, mOutControl( "Control Out", this )
 	{ 
 		Configure( cfg );
 	}
 
 	bool ControlScaler::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
-			CopyAsConcreteConfig( mConfig, cfg );
-			return true; 		
+		CopyAsConcreteConfig( mConfig, cfg );
+		mGainControl.DoControl(mConfig.GetAmount());
+		return true; 		
 	}
 
 	bool ControlScaler::Do()
 	{
-		return mOutControl.SendControl( mInControl.GetLastValue() * mConfig.GetAmount() );		
+		TControlData in = mInControl.GetLastValue();
+		TControlData gain = mGainControl.GetLastValue();
+		return mOutControl.SendControl(in * gain);
 	}
-	
 }
