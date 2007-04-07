@@ -104,7 +104,7 @@
     <SinTracking>
       <Threshold>40</Threshold>
       <nMaxSines>200</nMaxSines>
-      <IsHarmonic>0</IsHarmonic>
+      <IsHarmonic>1</IsHarmonic>
     </SinTracking>
     <prSamplingRate>44100</prSamplingRate>
     <prFFTSize>0</prFFTSize>
