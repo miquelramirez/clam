@@ -38,6 +38,7 @@ void ControlSenderWidget::init()
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eKnot:
 		setLayout(new QVBoxLayout);
 		createDial();
+		createSpinBox();
 		break;
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eHorizontalSlider:
 		setLayout(new QHBoxLayout);
