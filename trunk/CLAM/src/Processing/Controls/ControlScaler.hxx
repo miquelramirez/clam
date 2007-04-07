@@ -45,6 +45,7 @@ class ControlScaler : public Processing
 {
 	ControlScalerConfig mConfig;
 	InControl mInControl;
+	InControl mGainControl;
 	OutControl mOutControl;
 
 	public:
