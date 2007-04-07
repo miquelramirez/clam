@@ -48,6 +48,7 @@ public:
 	const std::string & getLabel(unsigned bin) const
 	{
 		static std::string a[] = {
+			"G",
 			"G#",
 			"A",
 			"A#",
@@ -59,7 +60,7 @@ public:
 			"E",
 			"F",
 			"F#",
-			"G",
+			"g",
 			"g#",
 			"a",
 			"a#",
@@ -71,7 +72,6 @@ public:
 			"e",
 			"f",
 			"f#",
-			"g",
 			};
 		return a[bin];
 	}
@@ -105,6 +105,7 @@ private:
 	const std::string & getLabel(unsigned bin) const
 	{
 		static std::string a[] = {
+			"G",
 			"G#",
 			"A",
 			"A#",
@@ -116,7 +117,7 @@ private:
 			"E",
 			"F",
 			"F#",
-			"G",
+			"g",
 			"g#",
 			"a",
 			"a#",
@@ -128,7 +129,6 @@ private:
 			"e",
 			"f",
 			"f#",
-			"g",
 			};
 		return a[bin];
 	}
