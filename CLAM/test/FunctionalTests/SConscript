@@ -1,0 +1,57 @@
+#!/usr/bin/python
+Import('env')
+import sys, os, glob
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(os.path.join(path,pattern))
+	return files
+
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+def unique(list) :
+	return dict.fromkeys(list).keys()
+
+folders = [
+	os.path.join('..','UnitTests'),
+	os.path.join('..','UnitTests','CommonHelpers'),
+	os.path.join('CommonHelpers'),
+	os.path.join('FlowControlTests'),
+	os.path.join('ProcessingTests'),
+	]
+blacklist = [
+	os.path.join('..','UnitTests','TestRunnerQt.cxx'),
+	os.path.join('ProcessingTests','TestMIDIIO.cxx'),
+	os.path.join('ProcessingTests','TestOnsetDetector.cxx'),
+	os.path.join('ProcessingTests','TestSpectralPeakDetect.cxx'),
+	os.path.join('ProcessingTests','TestSMSAnalysis.cxx'),
+	os.path.join('FlowControlTests','OSCEnabledNetworkTest.cxx'),
+#	'TestAudioFileIn',
+	]
+
+#folders = [ os.path.join('..','..','..','test', folder) for folder in folders ]
+#blacklist = [ os.path.join('..','..','..','test', blacksheep) for blacksheep in blacklist ]
+sources = scanFiles('*.cxx', folders)
+headers = scanFiles('*.hxx', folders)
+print sources
+for blacksheep in blacklist :
+	print blacksheep
+	sources.remove(blacksheep) 
+
+print headers
+print sources
+
+if sys.platform != 'win32'  :
+	env.Append( CPPPATH=['include'] )
+else :
+	env.Append( CCFLAGS = ['/EHsc'] )
+	env.Append( LINKFLAGS = ['/subsystem:console','/machine:x86'] )	
+
+functional_tests = env.Program( 'FunctionalTests', sources )
+
+test_alias = Alias( 'run_functional_tests', [functional_tests], functional_tests[0].abspath )
+
+AlwaysBuild( test_alias )
+
