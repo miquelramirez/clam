@@ -1,6 +1,12 @@
 #!/usr/bin/python
 import sys, os
 
+print 
+print "** This SConstruct file is deprecated!!!"
+print "** The one to use is on the CLAM/test folder."
+print "*****************************************************"
+print 
+
 sys.path.append('../libs')
 from buildtools import *
 # CLAM unit tests build
