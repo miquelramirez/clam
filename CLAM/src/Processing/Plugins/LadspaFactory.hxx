@@ -50,6 +50,10 @@ public:
 		}
 		return result;
 	}
+	void Clear()
+	{
+		_creators.clear();
+	}
 private:
 	typedef std::map< std::string, LadspaWrapperCreator* > LadspaCreatorMap;
 	LadspaCreatorMap _creators;

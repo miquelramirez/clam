@@ -24,6 +24,9 @@
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
 
+// faust testing
+#include <CLAM/LadspaFactory.hxx>
+
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
 #endif
@@ -54,8 +57,8 @@ public:
 		setCentralWidget(scroll);
 		scroll->setWidget(_canvas);
 		
-		QDockWidget * dock = new QDockWidget(this);
-		NetworkGUI::ProcessingTree * processingTree = new NetworkGUI::ProcessingTree(dock);
+		dock = new QDockWidget(this);
+		processingTree = new NetworkGUI::ProcessingTree(dock);
 		dock->setWindowTitle("Processing Toolbox");
 		dock->setWidget(processingTree);
 		addDockWidget(Qt::LeftDockWidgetArea, dock);
@@ -384,6 +387,13 @@ public slots:
 				"<p>Compile and load Faust</p>\n"
 				"<p>Compile all .dsp (Faust) files in the faust_dir and load all generated Ladspa plugins.</p>\n"
 			));
+		//removeDockWidget(dock);
+		//dock = new QDockWidget(this);
+		CLAM::LadspaFactory::GetInstance().Clear();
+		delete(processingTree);
+		processingTree = new NetworkGUI::ProcessingTree(dock);
+		dock->setWidget(processingTree);
+		addDockWidget(Qt::LeftDockWidgetArea, dock);
 	}
 	void on_action_Quit_triggered()
 	{
@@ -398,6 +408,10 @@ private:
 	QLabel * _backendLabel;
 	QLabel * _playingLabel;
 	QStringList _recentFiles;
+
+	// faust testing
+	QDockWidget * dock;
+	NetworkGUI::ProcessingTree * processingTree;
 };
 
 
