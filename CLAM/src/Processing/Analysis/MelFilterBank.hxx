@@ -100,10 +100,6 @@ namespace CLAM
 
 		virtual bool ConcreteConfigure( const ProcessingConfig& cfg );
 
-		virtual bool ConcreteStart();
-
-		virtual bool ConcreteStop();
-
 	protected:
 
 		/**
