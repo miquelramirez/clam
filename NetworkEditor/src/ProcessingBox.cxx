@@ -14,6 +14,7 @@
 #include "LPModelView.hxx"
 #include "MelSpectrumView.hxx"
 #include "MelCepstrumView.hxx"
+#include "ControlPrinterWidget.hxx"
 #include "ControlSenderWidget.hxx"
 #include "ControlSurfaceWidget.hxx"
 
@@ -83,6 +84,9 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 
 	if (className=="ControlSurface")
 		return new ControlSurfaceWidget(processing);
+
+	if (className=="ControlPrinter")
+		return new ControlPrinterWidget(processing);
 
 	if (className=="Vumeter")
 		return new Vumeter( canvas, dynamic_cast<VumeterMonitor*>(processing) );
