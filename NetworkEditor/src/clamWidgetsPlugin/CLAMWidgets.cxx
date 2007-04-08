@@ -12,6 +12,7 @@
 #include "LPModelViewPlugin.hxx"
 #include "MelSpectrumViewPlugin.hxx"
 #include "MelCepstrumViewPlugin.hxx"
+#include "PixmapWidgetsPlugin.hxx"
 #include <iostream>
 #include <CLAM/CLAMVersion.hxx>
 
@@ -22,8 +23,8 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 {
 	std::cout << "Loading CLAM widgets " << CLAM::GetFullVersion() << "..." << std::endl;
 	_widgetPlugins
-		<< new OscilloscopePlugin(this)
 		<< new VumeterPlugin(this)
+		<< new OscilloscopePlugin(this)
 		<< new SpectrumViewPlugin(this)
 		<< new PeakViewPlugin(this)
 		<< new TonnetzPlugin(this)
@@ -33,6 +34,9 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new LPModelViewPlugin(this)
 		<< new MelCepstrumViewPlugin(this)
 		<< new MelSpectrumViewPlugin(this)
+		<< new PixmapSliderPlugin(this)
+		<< new ThinPixmapButtonPlugin(this)
+
 		;
 	std::cout << "All CLAM widgets plugins created" << std::endl;
 }
