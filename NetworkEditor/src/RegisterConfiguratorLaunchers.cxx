@@ -19,9 +19,6 @@
  *
  */
 
-#include <CLAM/Factory.hxx>
-#include "ConfiguratorLauncher.hxx"
-
 #include <CLAM/AudioFileConfig.hxx>
 #include <CLAM/AutoPanner.hxx>
 #include <CLAM/AudioIO.hxx>
@@ -55,8 +52,6 @@
 #include <CLAM/AudioWindowingConfig.hxx>
 #include <CLAM/MelFilterBank.hxx>
 #include <CLAM/CepstralTransform.hxx>
-#include <CLAM/OutControlSender.hxx>
-#include "ControlSurface.hxx"
 
 // local processings
 #include <CLAM/FlagControl.hxx>
@@ -64,17 +59,14 @@
 #include "OneOverF.hxx"
 #include "SquareWave.hxx"
 
-#if USE_OSCPACK
-#include <CLAM/OSCSender.hxx>
-#endif
-
 // Controls
 #include <CLAM/Fundamental2Control.hxx>
+#include <CLAM/ControlMapper.hxx>
 #include <CLAM/ControlPrinter.hxx>
 #include <CLAM/ControlScaler.hxx>
-#include <CLAM/ControlMapper.hxx>
+#include <CLAM/ControlSurface.hxx>
 #include <CLAM/ControlSource.hxx>
-#include <CLAM/ControlSource.hxx>
+#include <CLAM/OutControlSender.hxx>
 
 //MIDI
 #include <CLAM/MIDIKeyboard.hxx>
@@ -82,74 +74,80 @@
 #include <CLAM/MIDIDispatcher.hxx>
 
 // concrete configs dialogs
-#ifndef WIN32
-//#include "LadspaLoaderConfigPresentation.hxx" // QT4PORT
-#endif
 
-typedef CLAM::Factory<ConfiguratorLauncher> ProcessingConfigPresentationFactory;
+#include "RegisterConfiguratorLaunchers.hxx"
 
-// Convenient macros (Not to use widely)
-#define STANDARD_PROCESSING_CONFIG_REGISTER(configName) \
-   	static ProcessingConfigPresentationFactory::Registrator<  \
-		TypedConfiguratorLauncher< CLAM::configName > > \
-		 reg##configName(#configName)
-#define SPECIAL_PROCESSING_CONFIG_REGISTER(configName, configurator) \
-	static ProcessingConfigPresentationFactory::Registrator< \
-		WidgetTypedConfiguratorLauncher<configurator> > \
-		 regt##configName( #configName)
-
+// generators
 STANDARD_PROCESSING_CONFIG_REGISTER(SimpleOscillatorConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(OscillatorConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ADSRConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(AutoPannerConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(AudioIOConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(WindowGeneratorConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(SquareWaveConfig);
+
+// arithmetic
+STANDARD_PROCESSING_CONFIG_REGISTER(AudioMultiplierConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(AudioAdderConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(AudioMixerConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(BinaryAudioOpConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(AudioMultiplierConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(FFTConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(IFFTConfig);
-#ifndef WIN32
-//SPECIAL_PROCESSING_CONFIG_REGISTER(LadspaLoaderConfig, NetworkGUI::LadspaLoaderConfigPresentation);
-#endif
+
+// audio
 STANDARD_PROCESSING_CONFIG_REGISTER(MonoAudioFileReaderConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(MonoAudioFileWriterConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(MultiChannelAudioFileReaderConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(MultiChannelAudioFileWriterConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(SpectralAnalysisConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(SpectralSynthesisConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(OverlapAddConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(SMSAnalysisConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(SMSSynthesisConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(SpectralPeakDetectConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(FundFreqDetectConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(SinTrackingConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(SynthSineSpectrumConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(PhaseManagementConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(WindowGeneratorConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(CircularShiftConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(FlagControlConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(RandomConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(OneOverFConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(SquareWaveConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(NullProcessingConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(AudioIOConfig);
+
+// analysis
+STANDARD_PROCESSING_CONFIG_REGISTER(FFTConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(AudioWindowingConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(SpectralAnalysisConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(SMSAnalysisConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(LPCConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(MelFilterBankConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(CepstralTransformConfig);
-#if USE_OSCPACK
-STANDARD_PROCESSING_CONFIG_REGISTER(OSCSenderConfig);
-#endif
+
+// systhesis
+STANDARD_PROCESSING_CONFIG_REGISTER(IFFTConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(SpectralSynthesisConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(OverlapAddConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(SMSSynthesisConfig);
+
+// sms transforms
+STANDARD_PROCESSING_CONFIG_REGISTER(SpectralPeakDetectConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(FundFreqDetectConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(CircularShiftConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(PhaseManagementConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(SinTrackingConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(SynthSineSpectrumConfig);
+
+// misc transforms
+STANDARD_PROCESSING_CONFIG_REGISTER(BinaryAudioOpConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(NullProcessingConfig);
 
 // Controls
-STANDARD_PROCESSING_CONFIG_REGISTER(Fundamental2ControlConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(AutoPannerConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ControlPrinterConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ControlScalerConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ControlSourceConfig);
-STANDARD_PROCESSING_CONFIG_REGISTER(OutControlSenderConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ControlSurfaceConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(FlagControlConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(Fundamental2ControlConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(OneOverFConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(OutControlSenderConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(RandomConfig);
+
 // MIDI
 STANDARD_PROCESSING_CONFIG_REGISTER(MIDIKeyboardConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(MIDIIOConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(MIDIDispatcherConfig);
+
+#if USE_OSCPACK
+#include <CLAM/OSCSender.hxx>
+STANDARD_PROCESSING_CONFIG_REGISTER(OSCSenderConfig);
+#endif
+
+#ifndef WIN32
+//#include "LadspaLoaderConfigPresentation.hxx" // QT4PORT
+//SPECIAL_PROCESSING_CONFIG_REGISTER(LadspaLoaderConfig, NetworkGUI::LadspaLoaderConfigPresentation);
+#endif
+
 
