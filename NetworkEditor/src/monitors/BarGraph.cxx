@@ -26,6 +26,13 @@
 #include <iostream>
 #include <algorithm>
 
+static CLAM::VM::FloatArrayDataSource & dummySource()
+{
+	static CLAM::TData dummyData[] = {.4, .3, .5, .7, .8, .9, .6, .3, .2, .1, .0};
+	static CLAM::VM::DummyFloatArrayDataSource dummy(11, dummyData);
+	return dummy;
+}
+
 CLAM::VM::BarGraph::~BarGraph()
 {
 }
@@ -35,7 +42,7 @@ CLAM::VM::BarGraph::BarGraph(QWidget * parent, FloatArrayDataSource * source)
 	, _barGradientEnd(Qt::black)
 {
 	_data = 0;
-	setDataSource(*source);
+	setDataSource(source ? *source : dummySource());
 	_updatePending=0;
 	startTimer(50);
 }
