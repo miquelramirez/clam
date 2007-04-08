@@ -1,0 +1,1573 @@
+<ui version="4.0" >
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>936</width>
+    <height>537</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy>
+    <hsizetype>1</hsizetype>
+    <vsizetype>1</vsizetype>
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <layout class="QHBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <layout class="QVBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="pushButton_2" >
+       <property name="text" >
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton" >
+       <property name="text" >
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_3" >
+       <property name="text" >
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_4" >
+       <property name="text" >
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_5" >
+       <property name="text" >
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_6" >
+       <property name="text" >
+        <string>PushButton</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QFrame" name="frame_3" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>0</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="autoFillBackground" >
+      <bool>true</bool>
+     </property>
+     <property name="styleSheet" >
+      <string>background-color:#f00;</string>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="lineWidth" >
+      <number>6</number>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>1</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QFrame" name="frame_6" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet" >
+             <string>background-color:#777;</string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>2</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="CLAM::VM::MelCepstrumView" name="melCepstrum_9" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>5</hsizetype>
+                 <vsizetype>3</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>1</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="autoFillBackground" >
+                <bool>true</bool>
+               </property>
+               <property name="styleSheet" >
+                <string>background-color:#99f;</string>
+               </property>
+               <property name="barGradientBegin" >
+                <color>
+                 <red>255</red>
+                 <green>255</green>
+                 <blue>0</blue>
+                </color>
+               </property>
+               <property name="barGradientEnd" >
+                <color>
+                 <red>255</red>
+                 <green>0</green>
+                 <blue>0</blue>
+                </color>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_38" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_39" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_40" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_7" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet" >
+             <string>background-color:#777;</string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>2</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="Oscilloscope" name="oscilloscope_9" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>0</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>0</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="autoFillBackground" >
+                <bool>true</bool>
+               </property>
+               <property name="styleSheet" >
+                <string>background-color:#99f;</string>
+               </property>
+               <property name="lineColor" >
+                <color>
+                 <red>50</red>
+                 <green>50</green>
+                 <blue>100</blue>
+                </color>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapButton" name="button" >
+            <property name="text" >
+             <string>Mute</string>
+            </property>
+            <property name="checkable" >
+             <bool>true</bool>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+            <property name="ButtonColor" stdset="0" >
+             <number>2</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapButton" name="button_5" >
+            <property name="text" >
+             <string>CLAM</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="Vumeter" name="vumeter_10" >
+              <property name="autoFillBackground" >
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet" >
+               <string>background-color:#777;</string>
+              </property>
+              <property name="interLedGap" >
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPixmapRange" name="slider_10" >
+              <property name="value" >
+               <number>100</number>
+              </property>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/thinMixerSlider_</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QFrame" name="frame_8" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet" >
+             <string>background-color:#777;</string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>2</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="CLAM::VM::MelCepstrumView" name="melCepstrum_10" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>5</hsizetype>
+                 <vsizetype>3</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>1</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="autoFillBackground" >
+                <bool>true</bool>
+               </property>
+               <property name="styleSheet" >
+                <string>background-color:#99f; color:#755;</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_41" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_42" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_43" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_9" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet" >
+             <string>background-color:#777;</string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>2</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="Oscilloscope" name="oscilloscope_10" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>0</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>0</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="autoFillBackground" >
+                <bool>true</bool>
+               </property>
+               <property name="styleSheet" >
+                <string>background-color:#99f;</string>
+               </property>
+               <property name="lineColor" >
+                <color>
+                 <red>50</red>
+                 <green>50</green>
+                 <blue>100</blue>
+                </color>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapButton" name="button_2" >
+            <property name="text" >
+             <string>Mute</string>
+            </property>
+            <property name="checkable" >
+             <bool>true</bool>
+            </property>
+            <property name="ButtonColor" stdset="0" >
+             <number>2</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapButton" name="button_6" >
+            <property name="text" >
+             <string>PK</string>
+            </property>
+            <property name="ButtonColor" stdset="0" >
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="Vumeter" name="vumeter_11" >
+              <property name="autoFillBackground" >
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet" >
+               <string>background-color:#777;</string>
+              </property>
+              <property name="interLedGap" >
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPixmapRange" name="slider_11" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/thinMixerSlider_</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QFrame" name="frame_4" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet" >
+             <string>background-color:#777;</string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>2</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="CLAM::VM::MelCepstrumView" name="melCepstrum_8" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>5</hsizetype>
+                 <vsizetype>3</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>1</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="autoFillBackground" >
+                <bool>true</bool>
+               </property>
+               <property name="styleSheet" >
+                <string>background-color:#99f; color:#755;</string>
+               </property>
+               <property name="barGradientEnd" >
+                <color>
+                 <red>255</red>
+                 <green>130</green>
+                 <blue>0</blue>
+                </color>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_35" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_36" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="value" >
+             <number>106</number>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_37" >
+            <property name="value" >
+             <number>36</number>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_5" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet" >
+             <string>background-color:#777;</string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>2</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="Oscilloscope" name="oscilloscope_8" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>0</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>0</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="autoFillBackground" >
+                <bool>true</bool>
+               </property>
+               <property name="styleSheet" >
+                <string>background-color:#99f;</string>
+               </property>
+               <property name="lineColor" >
+                <color>
+                 <red>50</red>
+                 <green>50</green>
+                 <blue>100</blue>
+                </color>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapButton" name="button_3" >
+            <property name="text" >
+             <string>Mute</string>
+            </property>
+            <property name="checkable" >
+             <bool>true</bool>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+            <property name="ButtonColor" stdset="0" >
+             <number>2</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapButton" name="button_7" >
+            <property name="text" >
+             <string>CLAM</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="Vumeter" name="vumeter_9" >
+              <property name="autoFillBackground" >
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet" >
+               <string>background-color:#777;</string>
+              </property>
+              <property name="interLedGap" >
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPixmapRange" name="slider_9" >
+              <property name="pageStep" >
+               <number>34</number>
+              </property>
+              <property name="value" >
+               <number>43</number>
+              </property>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/thinMixerSlider_</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QFrame" name="frame_2" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet" >
+             <string>background-color:#777;</string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>2</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="CLAM::VM::MelCepstrumView" name="melCepstrum_7" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>5</hsizetype>
+                 <vsizetype>3</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>1</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="autoFillBackground" >
+                <bool>true</bool>
+               </property>
+               <property name="styleSheet" >
+                <string>background-color:#99f</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_32" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_33" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="value" >
+             <number>34</number>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_34" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet" >
+             <string>background-color:#777;</string>
+            </property>
+            <property name="frameShape" >
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <layout class="QVBoxLayout" >
+             <property name="margin" >
+              <number>2</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="Oscilloscope" name="oscilloscope_7" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>0</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>1</horstretch>
+                 <verstretch>1</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>0</width>
+                 <height>50</height>
+                </size>
+               </property>
+               <property name="autoFillBackground" >
+                <bool>true</bool>
+               </property>
+               <property name="styleSheet" >
+                <string>background-color:#99f;</string>
+               </property>
+               <property name="lineColor" >
+                <color>
+                 <red>50</red>
+                 <green>50</green>
+                 <blue>100</blue>
+                </color>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapButton" name="button_4" >
+            <property name="text" >
+             <string>Mute</string>
+            </property>
+            <property name="checkable" >
+             <bool>true</bool>
+            </property>
+            <property name="ButtonColor" stdset="0" >
+             <number>2</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapButton" name="button_8" >
+            <property name="text" >
+             <string>PK</string>
+            </property>
+            <property name="ButtonColor" stdset="0" >
+             <number>1</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="Vumeter" name="vumeter_8" >
+              <property name="autoFillBackground" >
+               <bool>true</bool>
+              </property>
+              <property name="styleSheet" >
+               <string>background-color:#777;</string>
+              </property>
+              <property name="ledHeight" >
+               <number>10</number>
+              </property>
+              <property name="interLedGap" >
+               <number>0</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPixmapRange" name="slider_8" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/thinMixerSlider_</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="CLAM::VM::Tonnetz" name="tonnetz" >
+          <property name="minimumSize" >
+           <size>
+            <width>300</width>
+            <height>100</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="CLAM::VM::KeySpace" name="keySpace" />
+        </item>
+        <item>
+         <widget class="CLAM::VM::ChordRanking" name="chordRanking" >
+          <property name="autoFillBackground" >
+           <bool>true</bool>
+          </property>
+          <property name="styleSheet" >
+           <string>background-color:black</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>0</number>
+          </property>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPixmapRange" name="slider_22" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPixmapRange" name="slider_23" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPixmapRange" name="slider_18" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPixmapRange" name="slider_19" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPixmapRange" name="slider_26" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPixmapRange" name="slider_27" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPixmapRange" name="slider_16" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPixmapRange" name="slider_17" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPixmapRange" name="slider_20" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPixmapRange" name="slider_21" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QPixmapRange" name="slider_24" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPixmapRange" name="slider_25" >
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="BasePath" >
+               <string>:/pkwidgets/searchSlider_</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QFrame" name="frame_19" >
+          <property name="autoFillBackground" >
+           <bool>true</bool>
+          </property>
+          <property name="styleSheet" >
+           <string>background-color:#777;</string>
+          </property>
+          <property name="frameShape" >
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow" >
+           <enum>QFrame::Sunken</enum>
+          </property>
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>2</number>
+           </property>
+           <property name="spacing" >
+            <number>0</number>
+           </property>
+           <item>
+            <layout class="QHBoxLayout" >
+             <property name="margin" >
+              <number>0</number>
+             </property>
+             <property name="spacing" >
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QPixmapButton" name="button_9" >
+               <property name="styleSheet" >
+                <string>background-color:#777;</string>
+               </property>
+               <property name="text" >
+                <string>Boost</string>
+               </property>
+               <property name="BasePath" >
+                <string>:/pkwidgets/button_</string>
+               </property>
+               <property name="ButtonColor" stdset="0" >
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPixmapButton" name="button_10" >
+               <property name="styleSheet" >
+                <string>background-color:#777</string>
+               </property>
+               <property name="text" >
+                <string>Boost</string>
+               </property>
+               <property name="BasePath" >
+                <string>:/pkwidgets/button_</string>
+               </property>
+               <property name="ButtonColor" stdset="0" >
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="CLAM::VM::MelCepstrumView" name="melCepstrum_15" >
+             <property name="sizePolicy" >
+              <sizepolicy>
+               <hsizetype>5</hsizetype>
+               <vsizetype>3</vsizetype>
+               <horstretch>0</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize" >
+              <size>
+               <width>1</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="autoFillBackground" >
+              <bool>true</bool>
+             </property>
+             <property name="styleSheet" >
+              <string>background-color:#99f</string>
+             </property>
+             <property name="barGradientEnd" >
+              <color>
+               <red>200</red>
+               <green>50</green>
+               <blue>1</blue>
+              </color>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QPixmapRange" name="slider_61" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_60" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_59" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>0</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/knob_</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QFrame" name="frame_20" >
+          <property name="autoFillBackground" >
+           <bool>true</bool>
+          </property>
+          <property name="styleSheet" >
+           <string>background-color:#777;</string>
+          </property>
+          <property name="frameShape" >
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow" >
+           <enum>QFrame::Sunken</enum>
+          </property>
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>2</number>
+           </property>
+           <property name="spacing" >
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="Oscilloscope" name="oscilloscope_15" >
+             <property name="sizePolicy" >
+              <sizepolicy>
+               <hsizetype>0</hsizetype>
+               <vsizetype>0</vsizetype>
+               <horstretch>1</horstretch>
+               <verstretch>1</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize" >
+              <size>
+               <width>0</width>
+               <height>50</height>
+              </size>
+             </property>
+             <property name="autoFillBackground" >
+              <bool>true</bool>
+             </property>
+             <property name="styleSheet" >
+              <string>background-color:#99f;</string>
+             </property>
+             <property name="lineColor" >
+              <color>
+               <red>100</red>
+               <green>50</green>
+               <blue>50</blue>
+              </color>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QPixmapRange" name="slider_29" >
+            <property name="value" >
+             <number>110</number>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/wideMixerSlider_</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Vumeter" name="vumeter_16" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet" >
+             <string>background-color:#777;</string>
+            </property>
+            <property name="ledHeight" >
+             <number>6</number>
+            </property>
+            <property name="interLedGap" >
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Vumeter" name="vumeter_17" >
+            <property name="autoFillBackground" >
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet" >
+             <string>background-color:#777;</string>
+            </property>
+            <property name="ledHeight" >
+             <number>6</number>
+            </property>
+            <property name="interLedGap" >
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPixmapRange" name="slider_28" >
+            <property name="value" >
+             <number>110</number>
+            </property>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="BasePath" >
+             <string>:/pkwidgets/wideMixerSlider_</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>Oscilloscope.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>QPixmapRange</class>
+   <extends>QWidget</extends>
+   <header>PixmapWidgets.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::MelCepstrumView</class>
+   <extends>QWidget</extends>
+   <header>MelCepstrumView.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>Vumeter</class>
+   <extends>QWidget</extends>
+   <header>Vumeter.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>QPixmapButton</class>
+   <extends>QWidget</extends>
+   <header>PixmapWidgets.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::Tonnetz</class>
+   <extends>QWidget</extends>
+   <header>Tonnetz.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::ChordRanking</class>
+   <extends>QWidget</extends>
+   <header>ChordRanking.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::KeySpace</class>
+   <extends>CLAM::VM::Tonnetz</extends>
+   <header>KeySpace.hxx</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
