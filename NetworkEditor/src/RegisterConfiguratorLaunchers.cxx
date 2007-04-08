@@ -64,7 +64,7 @@
 #include <CLAM/ControlMapper.hxx>
 #include <CLAM/ControlPrinter.hxx>
 #include <CLAM/ControlScaler.hxx>
-#include <CLAM/ControlSurface.hxx>
+#include "ControlSurface.hxx"
 #include <CLAM/ControlSource.hxx>
 #include <CLAM/OutControlSender.hxx>
 
