@@ -136,6 +136,7 @@ pluginsources.append(os.path.join('src','monitors','generated','moc_Oscilloscope
 pluginsources.append(os.path.join('src','monitors','generated','moc_SpectrumView.cxx'))
 pluginsources.append(os.path.join('src','monitors','generated','moc_PeakView.cxx'))
 pluginsources.append(os.path.join('src','monitors','generated','moc_PolarChromaPeaks.cxx'))
+pluginsources.append(os.path.join('src','monitors','PixmapWidgets.cxx'))
 pluginsources.append(os.path.join('src','monitors','Vumeter.cxx'))
 pluginsources.append(os.path.join('src','monitors','ChordRanking.cxx'))
 pluginsources.append(os.path.join('src','monitors','Tonnetz.cxx'))
