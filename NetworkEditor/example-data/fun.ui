@@ -106,7 +106,7 @@
       <bool>true</bool>
      </property>
      <property name="styleSheet" >
-      <string>background-color:#f00;</string>
+      <string>background-color:#777;</string>
      </property>
      <property name="frameShape" >
       <enum>QFrame::StyledPanel</enum>
@@ -746,6 +746,9 @@
             <property name="text" >
              <string>CLAM</string>
             </property>
+            <property name="ButtonColor" stdset="0" >
+             <number>0</number>
+            </property>
            </widget>
           </item>
           <item>
@@ -1276,7 +1279,7 @@
                 <string>:/pkwidgets/button_</string>
                </property>
                <property name="ButtonColor" stdset="0" >
-                <number>0</number>
+                <number>5</number>
                </property>
               </widget>
              </item>
@@ -1292,7 +1295,7 @@
                 <string>:/pkwidgets/button_</string>
                </property>
                <property name="ButtonColor" stdset="0" >
-                <number>0</number>
+                <number>4</number>
                </property>
               </widget>
              </item>
@@ -1528,9 +1531,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Oscilloscope</class>
+   <class>QPixmapButton</class>
    <extends>QWidget</extends>
-   <header>Oscilloscope.hxx</header>
+   <header>PixmapWidgets.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::KeySpace</class>
+   <extends>CLAM::VM::Tonnetz</extends>
+   <header>KeySpace.hxx</header>
   </customwidget>
   <customwidget>
    <class>QPixmapRange</class>
@@ -1538,24 +1546,9 @@
    <header>PixmapWidgets.hxx</header>
   </customwidget>
   <customwidget>
-   <class>CLAM::VM::MelCepstrumView</class>
-   <extends>QWidget</extends>
-   <header>MelCepstrumView.hxx</header>
-  </customwidget>
-  <customwidget>
    <class>Vumeter</class>
    <extends>QWidget</extends>
    <header>Vumeter.hxx</header>
-  </customwidget>
-  <customwidget>
-   <class>QPixmapButton</class>
-   <extends>QWidget</extends>
-   <header>PixmapWidgets.hxx</header>
-  </customwidget>
-  <customwidget>
-   <class>CLAM::VM::Tonnetz</class>
-   <extends>QWidget</extends>
-   <header>Tonnetz.hxx</header>
   </customwidget>
   <customwidget>
    <class>CLAM::VM::ChordRanking</class>
@@ -1563,9 +1556,19 @@
    <header>ChordRanking.hxx</header>
   </customwidget>
   <customwidget>
-   <class>CLAM::VM::KeySpace</class>
-   <extends>CLAM::VM::Tonnetz</extends>
-   <header>KeySpace.hxx</header>
+   <class>CLAM::VM::MelCepstrumView</class>
+   <extends>QWidget</extends>
+   <header>MelCepstrumView.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>Oscilloscope.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::Tonnetz</class>
+   <extends>QWidget</extends>
+   <header>Tonnetz.hxx</header>
   </customwidget>
  </customwidgets>
  <resources/>
