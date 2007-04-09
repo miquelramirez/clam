@@ -136,16 +136,16 @@ public:
 	}
 	void paintEvent(QPaintEvent * event)
 	{
+		if (!_animation) _position=isChecked()||isDown()?down:up;
 		QPainter painter(this);
 		if (_nColors)
 			painter.drawPixmap(0,0,getPixmap());
-
-		int off = _position*3;
+		int off = _position*1;
 		painter.setPen(Qt::black);
-		QRect rect1(off, off, width()-2*off, height()-2*off);
+		QRect rect1(off-1, off-1, width()-1, height()-1);
 		painter.drawText(rect1, Qt::AlignCenter, text());
 		painter.setPen(Qt::white);
-		QRect rect2(off+1, off+1, width()-2*off+1, height()-2*off+1);
+		QRect rect2(off, off, width(), height());
 		painter.drawText(rect2, Qt::AlignCenter, text());
 
 	}
