@@ -96,8 +96,6 @@ sources = unique(sources)
 
 env.Append(CPPPATH=includePaths)
 
-env.Append(CPPFLAGS=['-DFFTW_HEADER="<rfftw.h>"'])
-
 examplesMainSources = [
 	"examples/src/audio_plot_example.cxx",
 	"examples/src/fundamental_plot_example.cxx",
