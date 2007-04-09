@@ -15,12 +15,12 @@ class ControlSurfaceConfig : public ProcessingConfig
 {	
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (ControlSurfaceConfig, 6, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, TControlData, Min1 );
-	DYN_ATTRIBUTE (1, public, TControlData, Default1 );
-	DYN_ATTRIBUTE (2, public, TControlData, Max1 );
-	DYN_ATTRIBUTE (3, public, TControlData, Min2 );
-	DYN_ATTRIBUTE (4, public, TControlData, Default2 );
-	DYN_ATTRIBUTE (5, public, TControlData, Max2 );
+	DYN_ATTRIBUTE (0, public, TControlData, MinX );
+	DYN_ATTRIBUTE (1, public, TControlData, DefaultX );
+	DYN_ATTRIBUTE (2, public, TControlData, MaxX );
+	DYN_ATTRIBUTE (3, public, TControlData, MinY );
+	DYN_ATTRIBUTE (4, public, TControlData, DefaultY );
+	DYN_ATTRIBUTE (5, public, TControlData, MaxY );
 
 
 protected:
@@ -30,10 +30,10 @@ protected:
 class ControlSurface : public Processing
 {
 	ControlSurfaceConfig mConfig;
-	OutControl mOutput1;
-	OutControl mOutput2;
-	TControlData mLastValue1;
-	TControlData mLastValue2;
+	OutControl mOutputX;
+	OutControl mOutputY;
+	TControlData mLastValueX;
+	TControlData mLastValueY;
 	bool mFirstDoAfterStart;
 public:
 	ControlSurface();
@@ -43,7 +43,7 @@ public:
 	const char * GetClassName() const {return "ControlSurface";}
 
 	const ProcessingConfig &GetConfig() const { return mConfig;}
-	void SendControl(TControlData value1, TControlData value2);
+	void SendControl(TControlData valueX, TControlData valueY);
 protected:
 	bool ConcreteConfigure(const ProcessingConfig& c);
 	bool ConcreteStart();

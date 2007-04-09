@@ -154,19 +154,6 @@ env.Append(CPPPATH=includePaths+plugindirs)
 programs = [ env.Program(target=program, source = [main] + sources) 
 	for program, main in mainSources.items()]
 
-"""
-if sys.platform == "win32" :
-	env.Append( LIBS=['cppunit_vc7'] )
-	env.Append( CPPPATH=[env['cppunit_prefix']+'/include'] )
-	env.Append( LIBPATH=[env['cppunit_prefix']+'/lib'] )
-elif sys.platform == "darwin" :
-	env.Append( CPPPATH=[env['cppunit_prefix']+'/include'] )
-	env.Append( LIBPATH=[env['cppunit_prefix']+'/lib'] )
-	env.Append( LIBS=['cppunit'] )
-else :
-	env.Append( LIBS=['cppunit'] )
-#programs += [ env.Program(target='UnitTests', source = sources+testsources) ]
-"""
 
 pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQT_OPENGL_LIB','-DQT_XML_LIB','-DQDESIGNER_EXPORT_WIDGETS','-D_REENTRANT']
 env.AppendUnique(CPPFLAGS=pluginDefines)
