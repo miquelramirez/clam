@@ -7,10 +7,13 @@
 
 
 ControlSurfaceWidget::ControlSurfaceWidget(CLAM::Processing * processing)
-	: _spinBox1(0)
-	, _spinBox2(0)
+	: _spinBoxX(0)
+	, _spinBoxY(0)
 	, _updating(false)
 	, _dragging(false)
+	, _areSpinBoxesHidden(false)
+	, _pointPenColor(Qt::black)
+	, _pointBrushColor(Qt::red)
 {
 	_sender = dynamic_cast<CLAM::ControlSurface* >(processing);
 	CLAM_ASSERT(_sender, "ControlSurfaceWidget only works "
@@ -22,12 +25,12 @@ ControlSurfaceWidget::ControlSurfaceWidget(CLAM::Processing * processing)
 	QVBoxLayout * mainLayout= new QVBoxLayout;
 	setLayout(mainLayout);
 
-	_min1 = config->GetMin1();
-	_default1 = config->GetDefault1();
-	_max1 = config->GetMax1();
-	_min2 = config->GetMin2();
-	_default2 = config->GetDefault2();
-	_max2 = config->GetMax2();
+	_minX = config->GetMinX();
+	_defaultX = config->GetDefaultX();
+	_maxX = config->GetMaxX();
+	_minY = config->GetMinY();
+	_defaultY = config->GetDefaultY();
+	_maxY = config->GetMaxY();
 	mainLayout->setMargin(1);
 
 	_surface = new QLabel;
@@ -37,27 +40,50 @@ ControlSurfaceWidget::ControlSurfaceWidget(CLAM::Processing * processing)
 
 	QHBoxLayout * spinLayout = new QHBoxLayout;
 	mainLayout->addLayout(spinLayout);
-	_spinBox1 = new QDoubleSpinBox;
-	spinLayout->addWidget(_spinBox1);
+	_spinBoxX = new QDoubleSpinBox;
+	spinLayout->addWidget(_spinBoxX);
 
-	_spinBox1->setMinimum(_min1);
-	_spinBox1->setMaximum(_max1);
-	_spinBox1->setValue(_default1);
-	_spinBox1->setSingleStep((_max1-_min1)/100);
+	_spinBoxX->setMinimum(_minX);
+	_spinBoxX->setMaximum(_maxX);
+	_spinBoxX->setValue(_defaultX);
+	_spinBoxX->setSingleStep((_maxX-_minX)/100);
 
-	connect(_spinBox1, SIGNAL(valueChanged(double)), 
+	connect(_spinBoxX, SIGNAL(valueChanged(double)), 
 		this, SLOT(spinBoxChanged()));
 
-	_spinBox2 = new QDoubleSpinBox();
-	spinLayout->addWidget(_spinBox2);
+	_spinBoxY = new QDoubleSpinBox();
+	spinLayout->addWidget(_spinBoxY);
 
-	_spinBox2->setMinimum(_min2);
-	_spinBox2->setMaximum(_max2);
-	_spinBox2->setValue(_default2);
-	_spinBox2->setSingleStep((_max2-_min2)/100);
+	_spinBoxY->setMinimum(_minY);
+	_spinBoxY->setMaximum(_maxY);
+	_spinBoxY->setValue(_defaultY);
+	_spinBoxY->setSingleStep((_maxY-_minY)/100);
 
-	connect(_spinBox2, SIGNAL(valueChanged(double)), 
+	hideSpinBoxes(false);
+
+	connect(_spinBoxY, SIGNAL(valueChanged(double)), 
 		this, SLOT(spinBoxChanged()));
+}
+
+void ControlSurfaceWidget::hideSpinBoxes(bool hide)
+{
+	_areSpinBoxesHidden=hide;
+	if (_areSpinBoxesHidden)
+	{
+		_spinBoxX->hide();
+		_spinBoxY->hide();
+	}
+	else
+	{
+		_spinBoxX->show();
+		_spinBoxY->show();
+	}
+	update();
+}
+
+bool ControlSurfaceWidget::spinBoxesHidden()
+{
+	return _areSpinBoxesHidden;
 }
 
 
@@ -65,20 +91,20 @@ ControlSurfaceWidget::~ControlSurfaceWidget()
 {
 }
 
-void ControlSurfaceWidget::moveSurface(int pos1, int pos2)
+void ControlSurfaceWidget::moveSurface(int posX, int posY)
 {
 	if (_updating) return;
 	_updating = true;
 
-	double value1 = mapX(pos1);
-	double value2 = mapY(pos2);
-	_spinBox1->setValue(value1);
-	_spinBox2->setValue(value2);
-	_sender->SendControl(value1, value2);
+	double valueX = mapX(posX);
+	double valueY = mapY(posY);
+	_spinBoxX->setValue(valueX);
+	_spinBoxY->setValue(valueY);
+	_sender->SendControl(valueX, valueY);
 
 	_updating = false;
 	update();
-	emit surfaceMoved(value1, value2);
+	emit surfaceMoved(valueX, valueY);
 }
 
 void ControlSurfaceWidget::spinBoxChanged()
@@ -86,31 +112,31 @@ void ControlSurfaceWidget::spinBoxChanged()
 	if (_updating) return;
 	_updating = true;
 
-	double value1 = _spinBox1->value(); 
-	double value2 = _spinBox2->value();
-	_sender->SendControl(value1, value2);
+	double valueX = _spinBoxX->value(); 
+	double valueY = _spinBoxY->value();
+	_sender->SendControl(valueX, valueY);
 
 	_updating = false;
 	update();
-	emit surfaceMoved(value1, value1);
+	emit surfaceMoved(valueX, valueY);
 }
 
 void ControlSurfaceWidget::paintEvent(QPaintEvent * event)
 {
 	const unsigned xSize = width()-pointSize;
-	const unsigned ySize = _spinBox1->y()-pointSize;
+	const unsigned ySize = (_spinBoxX->isHidden() ? height() : _spinBoxX->y())-pointSize;
 	QPainter painter(this);
-	painter.setBrush(Qt::red);
-	painter.setPen(Qt::black);
+	painter.setBrush(_pointBrushColor);
+	painter.setPen(_pointPenColor);
 	QPointF point(
-		pointSize/2+(_spinBox1->value()-_min1)*xSize/(_max1-_min1),
-		pointSize/2+(_spinBox2->value()-_min2)*ySize/(_max2-_min2));
+		pointSize/2+(_spinBoxX->value()-_minX)*xSize/(_maxX-_minX),
+		pointSize/2+(_spinBoxY->value()-_minY)*ySize/(_maxY-_minY));
 	painter.drawRoundRect(point.x()-pointSize/2, point.y()-pointSize/2,pointSize,pointSize,2,2);
 }
 
 void ControlSurfaceWidget::mousePressEvent(QMouseEvent * event)
 {
-	if (event->y()>_spinBox1->y()) return;
+	if (event->y()>_spinBoxX->y()) return;
 	moveSurface(event->x(), event->y());
 }
 void ControlSurfaceWidget::mouseMoveEvent(QMouseEvent * event)
@@ -124,15 +150,16 @@ void ControlSurfaceWidget::mouseReleaseEvent(QMouseEvent * event)
 
 double ControlSurfaceWidget::mapX(int x) const
 {
-	if (x<pointSize/2) return _min1;
-	if (x>width()-pointSize/2) return _max1;
-	return _min1+(x-pointSize/2)*(_max1-_min1)/(width()-pointSize);
+	if (x<pointSize/2) return _minX;
+	if (x>width()-pointSize/2) return _maxX;
+	return _minX+(x-pointSize/2)*(_maxX-_minX)/(width()-pointSize);
 }
 double ControlSurfaceWidget::mapY(int y) const
 {
-	if (y<pointSize/2) return _min2;
-	if (y>_spinBox1->y()-pointSize/2) return _max2;
-	return _min2+(y-pointSize/2)*(_max2-_min2)/(_spinBox1->y()-pointSize);
+	int enabledHeight= _spinBoxX->isHidden() ? height() : _spinBoxX->y();
+	if (y<pointSize/2) return _minY;
+	if (y>enabledHeight-pointSize/2) return _maxY;
+	return _minY+(y-pointSize/2)*(_maxY-_minY)/(enabledHeight-pointSize);
 }
 
 

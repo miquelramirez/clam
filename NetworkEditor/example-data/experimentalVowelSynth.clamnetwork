@@ -6,12 +6,12 @@
   <processing id="AudioSource_0" type="AudioSource"/>
 
   <processing id="F1 F2" type="ControlSurface">
-    <Min1>200</Min1>
-    <Default1>700</Default1>
-    <Max1>800</Max1>
-    <Min2>800</Min2>
-    <Default2>1000</Default2>
-    <Max2>2500</Max2>
+    <MinX>200</MinX>
+    <DefaultX>700</DefaultX>
+    <MaxX>800</MaxX>
+    <MinY>800</MinY>
+    <DefaultY>1000</DefaultY>
+    <MaxY>3000</MaxY>
   </processing>
 
   <processing id="HarmonicPeaksGenerator_0" type="HarmonicPeaksGenerator"/>
@@ -272,12 +272,12 @@
   </port_connection>
 
   <control_connection>
-    <out>F1 F2.out1</out>
+    <out>F1 F2.outX</out>
     <in>VowelResonator_0.F1</in>
   </control_connection>
 
   <control_connection>
-    <out>F1 F2.out2</out>
+    <out>F1 F2.outY</out>
     <in>VowelResonator_0.F2</in>
   </control_connection>
 

@@ -14,17 +14,17 @@ void ControlSurfaceConfig::DefaultInit(void)
 {
 	AddAll();
 	UpdateData();
-	SetMin1( 0.0 );
-	SetDefault1( 0.0 );
-	SetMax1( 1.0 );
-	SetMin2( 0.0 );
-	SetDefault2( 0.0 );
-	SetMax2( 1.0 );
+	SetMinX( 0.0 );
+	SetDefaultX( 0.0 );
+	SetMaxX( 1.0 );
+	SetMinY( 0.0 );
+	SetDefaultY( 0.0 );
+	SetMaxY( 1.0 );
 }
 
 ControlSurface::ControlSurface()
-	: mOutput1("out1", this)
-	, mOutput2("out2", this)
+	: mOutputX("outX", this)
+	, mOutputY("outY", this)
 	, mFirstDoAfterStart(true)
 {
 	ControlSurfaceConfig cfg;
@@ -32,8 +32,8 @@ ControlSurface::ControlSurface()
 }
 
 ControlSurface::ControlSurface( const ControlSurfaceConfig & cfg)
-	: mOutput1("out1", this)
-	, mOutput2("out2", this)
+	: mOutputX("outX", this)
+	, mOutputY("outY", this)
 	, mFirstDoAfterStart(true)
 {
 	Configure(cfg);
@@ -52,46 +52,46 @@ bool ControlSurface::Do()
 	if (mFirstDoAfterStart)
 	{
 		mFirstDoAfterStart=false;
-		mOutput1.SendControl( mLastValue1 );
-		mOutput2.SendControl( mLastValue2 );
+		mOutputX.SendControl( mLastValueX );
+		mOutputY.SendControl( mLastValueY );
 	}
 	return true;
 }
 
-void ControlSurface::SendControl(TControlData value1, TControlData value2)
+void ControlSurface::SendControl(TControlData valueX, TControlData valueY)
 {
 	// TODO: Solve thread boundary here
-	mLastValue1=value1;
-	mLastValue2=value2;
-	mOutput1.SendControl( mLastValue1 );
-	mOutput2.SendControl( mLastValue2 );
+	mLastValueX=valueX;
+	mLastValueY=valueY;
+	mOutputX.SendControl( mLastValueX );
+	mOutputY.SendControl( mLastValueY );
 }
 
 bool ControlSurface::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
-	if (mConfig.GetMin1() > mConfig.GetMax1() )
+	if (mConfig.GetMinX() > mConfig.GetMaxX() )
 	{
 		AddConfigErrorMessage("Control 1 min value greater than max. ");
 		return false;
 	}
-	if (mConfig.GetMin2() > mConfig.GetMax2() )
+	if (mConfig.GetMinY() > mConfig.GetMaxY() )
 	{
 		AddConfigErrorMessage("Control 2 min value greater than max. ");
 		return false;
 	}
-	if ((mConfig.GetDefault1() > mConfig.GetMax1()) || (mConfig.GetDefault1() < mConfig.GetMin1()))
+	if ((mConfig.GetDefaultX() > mConfig.GetMaxX()) || (mConfig.GetDefaultX() < mConfig.GetMinX()))
 	{
 		AddConfigErrorMessage("Default value for control 1 is out of range. ");
 		return false;
 	}
-	if ((mConfig.GetDefault2() > mConfig.GetMax2()) || (mConfig.GetDefault2() < mConfig.GetMin2()))
+	if ((mConfig.GetDefaultY() > mConfig.GetMaxY()) || (mConfig.GetDefaultY() < mConfig.GetMinY()))
 	{
 		AddConfigErrorMessage("Default value for control 2 is out of range. ");
 		return false;
 	}
-	mLastValue1 = mConfig.GetDefault1();
-	mLastValue2 = mConfig.GetDefault2();
+	mLastValueX = mConfig.GetDefaultX();
+	mLastValueY = mConfig.GetDefaultY();
 	return true;
 }
 
