@@ -1,8 +1,6 @@
 #!/usr/bin/python
 import sys, os
 
-sys.path.append('../scons/libs')
-from buildtools import *
 # CLAM unit tests build
 
 clamToolPath="../scons/sconstools"
