@@ -5,18 +5,8 @@ import shelve
 import copy
 
 sys.path.append( os.path.abspath("scons/libs/") )
-# tools for build configuration
-from buildtools.file_retriever import FileRetriever #TODO remove
-from buildtools.custom_builders import * 
-from buildtools.tool_checks import *
-from buildtools.package_checks import *
-from buildtools.generic_checks import *
-from buildtools.installdirs import * 
-# module check sequences
-from modconf import *
-from modconf.core import * 
-from modconf.processing import *
-from modconf.audioio import *
+from clam_build_helpers import *
+from clam_dependent_libs_checks import *
 
 
 
