@@ -1,11 +1,5 @@
 #!/usr/bin/python
-# SConstruct file for CLAM i/o
-from buildtools import *
-from buildtools.file_retriever import FileRetriever
-from buildtools.rulesets import *
-
-from buildtools.custom_builders import *
-
+from clam_build_helpers import *
 import os, sys
 
 Import('audioio_env version install_dirs')
