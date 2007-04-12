@@ -36,7 +36,6 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new MelSpectrumViewPlugin(this)
 		<< new PixmapSliderPlugin(this)
 		<< new ThinPixmapButtonPlugin(this)
-
 		;
 	std::cout << "All CLAM widgets plugins created" << std::endl;
 }

@@ -205,6 +205,7 @@ void PrototypeLoader::ConnectWithNetwork()
 	
 	ConnectWidgetsWithControls();
 	ConnectWidgetsWithMappedControls();
+	ConnectWidgetsWithBooleanControls();
 	ConnectWidgetsWithAudioFileReaders();
 
 	ConnectWidgetsWithPorts<Oscilloscope,OscilloscopeMonitor>
@@ -431,6 +432,24 @@ void PrototypeLoader::ConnectWidgetsWithMappedControls()
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
 				  SLOT(sendMappedControl(int)));
+	}
+}
+
+void PrototypeLoader::ConnectWidgetsWithBooleanControls()
+{
+	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("InControlBool__.*"));
+	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
+	{
+		QWidget * aWidget = *it;
+		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(15).toAscii());
+		std::cout << "* Bool Control (100:1): " << fullControlName << std::endl;
+
+		if (ReportMissingInControl(fullControlName)) continue;
+		CLAM::InControl & receiver = _network.GetInControlByCompleteName(fullControlName);
+		QtSlot2Control * notifier = new QtSlot2Control(fullControlName.c_str()); // TODO: Memory leak here
+		notifier->linkControl(receiver);
+		notifier->connect(aWidget,SIGNAL(toggled(bool)),
+				  SLOT(sendBooleanControl(bool)));
 	}
 }
 
