@@ -21,6 +21,11 @@ public:
 		_sender.AddLink(receiver);
 	}
 public slots:
+	void sendBooleanControl(bool value)
+	{
+		CLAM::TControlData mappedValue = CLAM::TControlData(value?0.0:1.0);
+		_sender.SendControl(mappedValue);
+	}
 	void sendMappedControl(int value)
 	{
 		CLAM::TControlData mappedValue = CLAM::TControlData(value)/99.0;

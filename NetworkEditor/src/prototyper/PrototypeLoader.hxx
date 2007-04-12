@@ -48,10 +48,9 @@ private:
 	std::string GetNetworkNameFromWidgetName(const char * widgetName);
 
 	void ConnectWidgetsWithControls();
-
 	void ConnectWidgetsWithMappedControls();
-
 	void ConnectWidgetsWithAudioFileReaders();
+	void ConnectWidgetsWithBooleanControls();
 	
 	template < typename PlotClass, typename MonitorType >
 	void ConnectWidgetsWithPorts(char* prefix, char* plotClassName);
