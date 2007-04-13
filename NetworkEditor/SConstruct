@@ -69,7 +69,7 @@ env.EnableQt4Modules([
 #	'QtNetwork',
 #	'QtTest',
 	'QtXml',
-#	'QtSvg',
+	'QtSvg',
 	'QtUiTools',
 #	'QtDesigner',
 #	'Qt3Support',
