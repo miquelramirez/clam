@@ -28,6 +28,7 @@
 
 #include <sndfile.h>
 #include "Enum.hxx"
+#include <CLAM/ConfigurableFile.hxx>
 #include <string>
 #include <list>
 #include <utility>
@@ -124,11 +125,8 @@ namespace CLAM
 
 		static  EAudioFileFormat FormatFromFilename( std::string filename );
 
-		typedef std::pair< std::string, std::string >              FormatFilter;
-		typedef std::list< FormatFilter >                          FormatFilterList;
-
-		static  const FormatFilterList& ReadableFormats( );
-		static  const FormatFilterList& WritableFormats( );
+		static  const FileFormatFilterList& ReadableFormats( );
+		static  const FileFormatFilterList& WritableFormats( );
 
 
 	};

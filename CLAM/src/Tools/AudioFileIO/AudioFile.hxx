@@ -22,14 +22,11 @@
 #ifndef __AUDIOFILE__
 #define __AUDIOFILE__
 
-#include "Component.hxx"
+#include <CLAM/ConfigurableFile.hxx>
 #include "DataTypes.hxx"
-#include "Filename.hxx"
 #include "AudioFileFormats.hxx"
 #include "AudioFileHeader.hxx"
 #include "AudioTextDescriptors.hxx"
-#include "Filename.hxx"
-#include <string>
 
 namespace CLAM
 {
@@ -40,14 +37,16 @@ namespace CLAM
 	}
 
 	/** @ingroup AudioFileIO */
-	class AudioFile : public Component
+	class AudioFile : public ConfigurableFile
 	{
 	public:
 
 		AudioFile();
 		AudioFile( const AudioFile& );
 		const AudioFile& operator=( const AudioFile& );
-		~AudioFile();
+		virtual ~AudioFile();
+
+		const char *GetGroupName() const { return "audio"; }
 
 		const AudioFileHeader&        GetHeader() const;
 		
@@ -55,11 +54,7 @@ namespace CLAM
 		AudioTextDescriptors&         GetTextDescriptors();
 		const AudioTextDescriptors&   GetTextDescriptors() const;
 
-		const std::string &           GetLocation() const;
 		EAudioFileKind                GetKind() const;
-
-		void                          OpenExisting( const std::string& uri );
-		bool                          CreateNew( const std::string& uri, const AudioFileHeader& );
 
 		bool                          IsValid() const;
 		bool                          IsReadable() const;
@@ -69,17 +64,16 @@ namespace CLAM
 		void                   LoadFrom( Storage& storage);
 		void                   StoreOn( Storage& storage ) const;
 
-		const char*            GetClassName() const;
-
 	protected:
 		//! Usually the header is set into the file using CreateNew or OpenExistig (public) methods 
 		bool                   SetHeader( const AudioFileHeader& );
 		void                   ResolveCodec();
-		void		       VerifyLocation();
 		void                   SetKind( EAudioFileKind newKind );
 
-	protected:
-		Filename	      mLocation;
+		void ActivateCodec();
+		void ResetHeaderData();
+
+	private:
 		EAudioFileKind        mKind;
 		AudioCodecs::Codec*   mActiveCodec;
 		AudioFileHeader       mHeaderData;
@@ -90,12 +84,24 @@ namespace CLAM
 	class AudioFileSource : public AudioFile
 	{
 	public:
-		const char* GetClassName() const {return "AudioFileSource";}
+		void OpenExisting(const std::string &location);
+		bool GetWriteMode() { return false; }
+		const char* GetClassName() const;
+		const FileFormatFilterList &GetFormatFilterList() const;
+	protected:
+		void LocationUpdated();
 	};
+
 	class AudioFileTarget : public AudioFile
 	{
 	public:
-		const char* GetClassName() const {return "AudioFileTarget";}
+		bool CreateNew(const std::string &location,
+				const AudioFileHeader &header);
+		bool GetWriteMode() { return true; }
+		const char* GetClassName() const;
+		const FileFormatFilterList &GetFormatFilterList() const;
+	protected:
+		void LocationUpdated();
 	};
 
 

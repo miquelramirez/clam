@@ -31,9 +31,8 @@
 #include <CLAM/BPF.hxx>
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/DynamicType.hxx>
+#include <CLAM/ConfigurableFile.hxx>
 #include <CLAM/Filename.hxx>
-#include <CLAM/DataTypes.hxx>
-#include <CLAM/AudioFile.hxx>
 // #include <CLAM/QtEnvelopeEditor.hxx> // TODO: Still not Qt4
 
 #include <QtGui/QDialog>
@@ -43,7 +42,6 @@
 #include <QtGui/QSpinBox>
 #include <QtGui/QComboBox>
 #include <QtGui/QFileDialog>
-//Added by qt3to4:
 #include <QtGui/QFrame>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QHBoxLayout>
@@ -366,16 +364,18 @@ namespace CLAM{
 			value = mInput->text().toStdString();
 		}
 
-		QString audioFilterString(bool read)
+		QString filterString(const char *group,
+				const CLAM::FileFormatFilterList &filters,
+				bool inWrite)
 		{
-			QString qtfilter;
-			typedef const CLAM::EAudioFileFormat::FormatFilterList Filters;
-			Filters & filters = read?
-				CLAM::EAudioFileFormat::ReadableFormats():
-				CLAM::EAudioFileFormat::WritableFormats();
-			QString allfilter;
-			char * separator = "";
-			for (Filters::const_iterator it = filters.begin(); it!=filters.end(); it++)
+			if (!group[0])
+				group = "visible";
+			if (filters.empty())
+				return tr("All %1 files (* *.*)").arg(group);
+			QString qtfilter, allfilter;
+			char *separator = "";
+			CLAM::FileFormatFilterList::const_iterator it;
+			for (it = filters.begin(); it != filters.end(); it++)
 			{
 				qtfilter += QString("%1%2 (%3)")
 					.arg(separator)
@@ -385,44 +385,34 @@ namespace CLAM{
 				separator = ";;";
 				allfilter += (it->second+" ").c_str();
 			}
-			if (read) return tr("Audio files (%1)").arg(allfilter);
-			return qtfilter + tr(";;Audio files (%1)").arg(allfilter);
+			QString allfiles(tr("All %1 files (%2)")
+					.arg(group)
+					.arg(allfilter) );
+			if (inWrite)
+				allfiles = qtfilter + separator + allfiles;
+			return allfiles;
 		}
+
 		template <typename T>
-		void AddWidget(const char *name, CLAM::AudioFileSource *foo, T& value)
+		void AddWidget(const char *name, CLAM::ConfigurableFile *foo, T& value)
 		{
-			QFileLineEdit * mInput = new QFileLineEdit(this);
-			mInput->setLocation(value.GetLocation().c_str());
-			mInput->setWriteMode(false);
-			mInput->setFilters(audioFilterString(true));
-//			mInput->setFilters(tr("Audio File (*.wav *.ogg *.mp3)"));
-			mInput->setDialogCaption(tr("Select the input audio file"));
-			mInput->setLocation(value.GetLocation().c_str());
-
-			QHBoxLayout * cell = new QHBoxLayout;
-			mLayout->addLayout(cell);
-			cell->addWidget(new QLabel(name));
-			cell->addWidget(mInput);
-			cell->setSpacing(5);
-			PushWidget(name, mInput);
-		}
-
-		template <typename T>
-		void RetrieveValue(const char *name, CLAM::AudioFileSource *foo, T& value) {
-			QFileLineEdit * mInput = dynamic_cast<QFileLineEdit*>(GetWidget(name));
-			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-			value.OpenExisting(mInput->location().toStdString());
-		}
-		template <typename T>
-		void AddWidget(const char *name, CLAM::AudioFileTarget *foo, T& value) {
+			const char *groupStr = value.GetGroupName();
+			bool writeMode = value.GetWriteMode();
+			QString filters(filterString(groupStr,
+				  value.GetFormatFilterList(), writeMode) );
 			
 			QFileLineEdit * mInput = new QFileLineEdit(this);
+			mInput->setWriteMode(writeMode);
+			mInput->setFilters(filters);
 			mInput->setLocation(value.GetLocation().c_str());
-			mInput->setWriteMode(true);
-			mInput->setFilters(audioFilterString(false));
-//			mInput->setFilters(tr("Audio File (*.wav *.ogg *.mp3)"));
-			mInput->setDialogCaption(tr("Select the output audio file"));
-			mInput->setLocation(value.GetLocation().c_str());
+
+			const char *modeStr = writeMode ? "output" : "input";
+			const char *sep = groupStr[0] ? " " : "";
+			mInput->setDialogCaption(
+				tr("Select an %1%2%3 file")
+					.arg(modeStr)
+					.arg(sep)
+					.arg(groupStr) );
 
 			QHBoxLayout * cell = new QHBoxLayout;
 			mLayout->addLayout(cell);
@@ -433,14 +423,10 @@ namespace CLAM{
 		}
 
 		template <typename T>
-		void RetrieveValue(const char *name, CLAM::AudioFileTarget *foo, T& value) {
+		void RetrieveValue(const char *name, CLAM::ConfigurableFile *foo, T& value) {
 			QFileLineEdit * mInput = dynamic_cast<QFileLineEdit*>(GetWidget(name));
 			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-
-			std::string location = mInput->location().toStdString();
-			CLAM::AudioFileHeader header;
-			header.SetValues(44100, 1, CLAM::EAudioFileFormat::FormatFromFilename(location));
-			value.CreateNew( location, header );
+			value.SetLocation(mInput->location().toStdString());
 		}
 	public slots:
 
