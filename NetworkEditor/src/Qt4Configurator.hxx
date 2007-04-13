@@ -334,36 +334,70 @@ namespace CLAM{
 		}
 */
 		template <typename T>
-		void AddWidget(const char *name, CLAM::Filename *foo, T& value) {
+		void AddWidget(const char *name, CLAM::OutFilename *foo, T& value) {
+			AddFilenameWidget(name, value, true);
+		}
+		template <typename T>
+		void AddWidget(const char *name, CLAM::InFilename *foo, T& value) {
+			AddFilenameWidget(name, value, false);
+		}
 
-			QLineEdit * mInput = new QLineEdit(value.c_str());
-			mInput->setMinimumWidth(300);
+		void AddFilenameWidget(const char *name, CLAM::Filename & value, bool writeMode) {
+			const char *typeFamily = value.TypeFamily();
+			QFileLineEdit * mInput = new QFileLineEdit(this);
+			mInput->setWriteMode(writeMode);
+			mInput->setFilters(filterString(typeFamily, value.Filters(), writeMode));
+			mInput->setLocation(value.c_str());
 
-			QPushButton * fileBrowserLauncher = new QPushButton("...");
-			fileBrowserLauncher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
-			QFileDialog * fd = new QFileDialog(this, "file dialog", FALSE );
-			fd->setFileMode( QFileDialog::ExistingFile );
-			connect( fileBrowserLauncher, SIGNAL(clicked()), fd, SLOT(exec()) );
-			connect( fd, SIGNAL(currentChanged( const QString & )), mInput, SLOT( setText( const QString & )));
-			fd->selectFile(value.c_str());
-			std::cout << "Filename: selectFile : " << value.c_str() << std::endl;
+			const char *modeStr = writeMode ? "output" : "input";
+			const char *sep = typeFamily[0] ? " " : "";
+			mInput->setDialogCaption(
+				tr("Select an %1%2%3 file")
+					.arg(modeStr)
+					.arg(sep)
+					.arg(typeFamily) );
 
 			QHBoxLayout * cell = new QHBoxLayout;
 			mLayout->addLayout(cell);
 			cell->addWidget(new QLabel(name));
 			cell->addWidget(mInput);
-			cell->addWidget(fileBrowserLauncher);
 			cell->setSpacing(5);
 			PushWidget(name, mInput);
 		}
 
 		template <typename T>
 		void RetrieveValue(const char *name, CLAM::Filename *foo, T& value) {
-			QLineEdit * mInput = dynamic_cast<QLineEdit*>(GetWidget(name));
+			QFileLineEdit * mInput = dynamic_cast<QFileLineEdit*>(GetWidget(name));
 			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-			value = mInput->text().toStdString();
+			value = mInput->location().toStdString();
 		}
 
+		QString filterString(const char *typeFamily,
+				const Filename::Filter * filters,
+				bool inWrite)
+		{
+			if (!filters[0].description)
+				return tr("All %1 files (*.*)").arg(typeFamily);
+			QString qtfilter, allfilter;
+			char *separator = "";
+			for (const Filename::Filter* filter = filters; filter->description; filter++)
+			{
+				qtfilter += QString("%1%2 (%3)")
+					.arg(separator)
+					.arg(filter->description)
+					.arg(filter->wildcard)
+					;
+				separator = ";;";
+				allfilter += filter->wildcard;
+				allfilter += " ";
+			}
+			QString allfiles(tr("All %1 files (%2)")
+					.arg(typeFamily)
+					.arg(allfilter) );
+			if (inWrite)
+				allfiles = qtfilter + separator + allfiles;
+			return allfiles;
+		}
 		QString filterString(const char *group,
 				const CLAM::FileFormatFilterList &filters,
 				bool inWrite)
