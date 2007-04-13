@@ -122,7 +122,6 @@ namespace CLAM {
 		ALSAMIDIDeviceList()
 			:MIDIDeviceList(std::string("alsa"))
 		{
-			std::stringstream name;
 			int card, dev;
 			snd_ctl_t *handle;
 			snd_ctl_card_info_t *info;
@@ -132,9 +131,12 @@ namespace CLAM {
 			if (snd_card_next(&card) < 0 || card < 0)
 				return; // No cards found
 			while (card >= 0) {
-				name << "hw:" << card;	
-				if (snd_ctl_open(&handle, name.str().c_str(), 0) < 0)
+				std::stringstream namestr;
+				namestr << "hw:" << card;	
+				std::string name(namestr.str());
+				if (snd_ctl_open(&handle, name.c_str(), 0) < 0)
 					continue; // Card control open error!
+
 				if (snd_ctl_card_info(handle, info) < 0) {
 					snd_ctl_close(handle); // Card control read error!
 					continue;
@@ -144,8 +146,9 @@ namespace CLAM {
 					snd_ctl_rawmidi_next_device(handle, &dev);
 					if (dev < 0)
 						break;
-					name << "," << dev;
-					mAvailableDevices.push_back(name.str());
+					std::stringstream dname;
+					dname << name << "," << dev;
+					mAvailableDevices.push_back(dname.str());
 				}
 				snd_ctl_close(handle);
 				if (snd_card_next(&card) < 0)
