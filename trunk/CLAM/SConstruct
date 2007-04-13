@@ -188,7 +188,6 @@ configure : Configures clam libraries. This is a mandatory step
 def compose_install_dirnames( env ) :
 	install_dirs = InstallDirs()
 	install_dirs.compose( env )
-	Export('install_dirs')
 	print """\
 #############################################
 ### INSTALL DIRECTORY INFORMATION         ###
@@ -198,19 +197,14 @@ def compose_install_dirnames( env ) :
 	print "\tExecutable files will be installed at:", install_dirs.bin
 	print "\tInclude files will be installed at:", install_dirs.inc
 	print "\tDocumentation, data and examples will be installed at:", install_dirs.data
+	return install_dirs
 
 def gather_custom_checks() :
 	custom_check_routines = dict()
 
-	for check_name, check_routine in package_checks.items() :
-		custom_check_routines[check_name] = check_routine
-
-	for check_name, check_routine in tool_checks.items() :
-		custom_check_routines[check_name] = check_routine
-
-	for check_name, check_routine in generic_checks.items() :
-		custom_check_routines[check_name] = check_routine
-
+	for checks_collection in package_checks, tool_checks, generic_checks :
+		for check_name, check_routine in checks_collection.items() :
+			custom_check_routines[check_name] = check_routine
 	return custom_check_routines
 
 def create_custom_builders( env ) :
@@ -295,8 +289,8 @@ for module in modules: Export(module+'_env')
 
 # install dirs composition
 
-compose_install_dirnames(clam_env)
-
+install_dirs = compose_install_dirnames(clam_env)
+Export('install_dirs')
 
 if clam_env.GetOption('clean') :
 	if os.path.exists( 'header.db' ) :
@@ -305,9 +299,11 @@ if clam_env.GetOption('clean') :
 for module in modules :
 	SConscript('scons/libs/'+module+'/SConscript')
 
+doxygen = clam_env.Command("DoxyLog", "doxygen.cfg",
+	'(cat $SOURCE; echo "PROJECT_NUMBER = %s" ) | doxygen - 2>&1 | tee $TARGET'%fullVersion)
+clam_env.Alias("doxygen", doxygen)
+
 import glob, os
-install_dirs = InstallDirs()
-install_dirs.compose(clam_env)
 sconstoolsTargetDir = os.path.join(install_dirs.data, 'clam', 'sconstools')
 sconstoolsInstall = clam_env.Install(sconstoolsTargetDir, glob.glob('scons/sconstools/*.py'))
 clam_env.Alias('install_sconstools', sconstoolsInstall)
