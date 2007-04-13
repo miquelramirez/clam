@@ -34,7 +34,6 @@
 #include <CLAM/Segment.hxx>
 #include <CLAM/SegmentDescriptors.hxx>
 #include <CLAM/DescriptorComputation.hxx>
-#include <CLAM/AudioFile.hxx>
 #include <CLAM/MultiChannelAudioFileReader.hxx>
 #include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
 #include <CLAM/FFT.hxx>
@@ -496,7 +495,7 @@ void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
 
 CLAM::TData GetDurationInSeconds(const std::string& fileName)
 {
-	CLAM::AudioFile file;
+	CLAM::AudioFileSource file;
 	file.OpenExisting(fileName);
 	return file.GetHeader().GetLength()/1000;
 }
