@@ -26,6 +26,7 @@
 
 // faust testing
 #include <CLAM/LadspaFactory.hxx>
+#include <QtSvg/QSvgWidget>
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -387,11 +388,35 @@ public slots:
 				"<p>Compile and load Faust</p>\n"
 				"<p>Compile all .dsp (Faust) files in the faust_dir and load all generated Ladspa plugins.</p>\n"
 			));
-		//removeDockWidget(dock);
-		//dock = new QDockWidget(this);
+		// clear the current map of ladspa's
 		CLAM::LadspaFactory::GetInstance().Clear();
+
+		// compile all faust files
+		// ugly...
+		std::cout << "[FAUST] compiling" << std::endl;
+		system("cd ~/local/lib/faust/ && make clean && make && make svg && mv *.so *svg ~/local/lib/ladspa/");
+		//system("mv svg /usr/local/lib/ladspa/");
+
+		// generate svg for faust code
+		// QString svgFilename = "/home/parumi/local/lib/ladspa/freeverb.dsp-svg/process.svg";
+		system("firefox /home/parumi/local/lib/ladspa/freeverb.dsp-svg/process.svg &");
+		/*
+		#if QT_VERSION >= 0x040200
+		QDesktopServices::openUrl(svgFilename);
+		#else
+		QProcess::startDetached( "x-www-browser", QStringList() << svgFilename); // TODO: Remove this 4.1 unix only version
+		#endif
+*/
+		//QDockWidget * svgDockWidget = new QDockWidget(this);
+		//QSvgWidget * svgWidget = new QSvgWidget(svgFilename, svgDockWidget);
+		//svgDockWidget->setWidget(svgWidget);
+		//addDockWidget(Qt::RightDockWidgetArea, svgDockWidget);
+
+		// delete the previous instance of processingtree
 		delete(processingTree);
+		// and generate a new one
 		processingTree = new NetworkGUI::ProcessingTree(dock);
+		// attach it to the dock
 		dock->setWidget(processingTree);
 		addDockWidget(Qt::LeftDockWidgetArea, dock);
 	}
