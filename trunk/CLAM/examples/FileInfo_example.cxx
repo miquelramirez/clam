@@ -53,7 +53,7 @@ int main( int argc, char** argv )
 	// Now we take argv[1] ( the second token in the command used to invoke this
 	// program ) as the 'File Location'
 
-	CLAM::AudioFile  file;
+	CLAM::AudioFileSource  file;
 	file.OpenExisting( argv[1] );
 
 	// Once set the location, the AudioFile object internally does several things:
