@@ -42,13 +42,36 @@ class Filename : public Text
 {
 public:
 		Filename() {}
-
 		Filename(const std::string & s) : Text(s) {} 
-
 		Filename(const char * s) : Text(s) {}
+		virtual ~Filename() {}
+		virtual const char * TypeFamily() const { return "file"; }
+		virtual const char ** Filters() const {
+			static const char * filters[] = {
+				"*.*",
+				0
+			}; 
+			return filters; }
 };
 
+class InFilename : public Filename
+{
+public:
+		InFilename(const std::string & s="") : Filename(s) {} 
+		InFilename(const char * s) : Filename(s) {}
+};
+
+class OutFilename : public Filename
+{
+public:
+		OutFilename(const std::string & s="") : Filename(s) {} 
+		OutFilename(const char * s) : Filename(s) {}
+};
+
+
 CLAM_TYPEINFOGROUP(BasicCTypeInfo, Filename);
+CLAM_TYPEINFOGROUP(BasicCTypeInfo, InFilename);
+CLAM_TYPEINFOGROUP(BasicCTypeInfo, OutFilename);
 
 }
 
