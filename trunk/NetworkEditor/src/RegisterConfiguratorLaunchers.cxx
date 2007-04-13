@@ -73,6 +73,9 @@
 #include <CLAM/MIDIIOConfig.hxx>
 #include <CLAM/MIDIDispatcher.hxx>
 
+// Examples
+#include "FilenameUsageExample.hxx"
+
 // concrete configs dialogs
 
 #include "RegisterConfiguratorLaunchers.hxx"
@@ -150,4 +153,5 @@ STANDARD_PROCESSING_CONFIG_REGISTER(OSCSenderConfig);
 //SPECIAL_PROCESSING_CONFIG_REGISTER(LadspaLoaderConfig, NetworkGUI::LadspaLoaderConfigPresentation);
 #endif
 
-
+// Examples 
+STANDARD_PROCESSING_CONFIG_REGISTER(FilenameUsageExampleConfig);
