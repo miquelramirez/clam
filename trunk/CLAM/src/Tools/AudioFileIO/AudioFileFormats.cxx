@@ -89,22 +89,22 @@ namespace CLAM
 		{false, 0,0}
 	};
 
-	const EAudioFileFormat::FormatFilterList& EAudioFileFormat::ReadableFormats( )
+	const FileFormatFilterList& EAudioFileFormat::ReadableFormats( )
 	{
-		static FormatFilterList mReadableFormatsList;
+		static FileFormatFilterList mReadableFormatsList;
 		
 		if ( mReadableFormatsList.empty() )
 		{
 			for (unsigned i=0; filters[i].description; i++)
 				mReadableFormatsList.push_back(
-					FormatFilter( filters[i].description, filters[i].extensions));
+					FileFormatFilter( filters[i].description, filters[i].extensions));
 		}
 		return mReadableFormatsList;
 	}
 
-	const EAudioFileFormat::FormatFilterList& EAudioFileFormat::WritableFormats( )
+	const FileFormatFilterList& EAudioFileFormat::WritableFormats( )
 	{
-		static FormatFilterList mWritableFormatsList;
+		static FileFormatFilterList mWritableFormatsList;
 		
 		if ( mWritableFormatsList.empty() )
 		{
@@ -112,7 +112,7 @@ namespace CLAM
 			{
 				if (! filters[i].writeable) continue;
 				mWritableFormatsList.push_back(
-					FormatFilter( filters[i].description, filters[i].extensions));
+					FileFormatFilter( filters[i].description, filters[i].extensions));
 			}
 		}
 		return mWritableFormatsList;
