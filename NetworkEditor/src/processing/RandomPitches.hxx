@@ -8,6 +8,7 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/Audio.hxx>
 #include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/Filename.hxx> // TODO: Remove this line
 #include <string>
 
 namespace CLAM
@@ -16,7 +17,8 @@ namespace CLAM
 class RandomPitchesConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (RandomPitchesConfig, 0, ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (RandomPitchesConfig, 1, ProcessingConfig);
+	DYN_ATTRIBUTE(0, public, CLAM::InFilename, Foo);
 protected:
 	void DefaultInit(void);
 };

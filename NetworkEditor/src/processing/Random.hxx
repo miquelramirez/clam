@@ -8,6 +8,7 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/Mapping.hxx>
+#include <CLAM/Filename.hxx> // TODO: Remove this line
 #include <string>
 
 namespace CLAM
@@ -16,11 +17,12 @@ namespace CLAM
 class RandomConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (RandomConfig, 4, ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (RandomConfig, 5, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, std::string, Name);
 	DYN_ATTRIBUTE (1, public, int, DelayFactor); // To be improved...
 	DYN_ATTRIBUTE (2, public, int, MinNote); // Tessitura (min)
 	DYN_ATTRIBUTE (3, public, int, MaxNote); // Tessitura (max)
+	DYN_ATTRIBUTE (4, public, CLAM::InFilename, Foo);
 
 protected:
 	void DefaultInit(void);

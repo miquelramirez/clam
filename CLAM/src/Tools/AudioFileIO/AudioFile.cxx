@@ -48,7 +48,7 @@ namespace CLAM
 
 	const AudioFile& AudioFile::operator=( const AudioFile& obj )
 	{
-		this->ConfigurableFile::operator=(obj);
+		ConfigurableFile::operator=(obj);
 		mActiveCodec = obj.mActiveCodec;
 		mKind = obj.mKind;
 		mHeaderData = obj.mHeaderData;
@@ -197,7 +197,7 @@ namespace CLAM
 
 	void AudioFile::LoadFrom( Storage& storage )
 	{
-		this->ConfigurableFile::LoadFrom(storage);
+		ConfigurableFile::LoadFrom(storage);
 
 		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
 		storage.Load( xmlHeader );
@@ -208,7 +208,7 @@ namespace CLAM
 
 	void AudioFile::StoreOn( Storage& storage ) const
 	{
-		this->ConfigurableFile::StoreOn(storage);
+		ConfigurableFile::StoreOn(storage);
 
 		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
 		storage.Store( xmlHeader );
