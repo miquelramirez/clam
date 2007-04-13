@@ -41,17 +41,21 @@ namespace CLAM {
 class Filename : public Text
 {
 public:
+		struct Filter {
+			char * description;
+			char * wildcard;
+		};
 		Filename() {}
 		Filename(const std::string & s) : Text(s) {} 
 		Filename(const char * s) : Text(s) {}
 		virtual ~Filename() {}
-		virtual const char * TypeFamily() const { return "file"; }
-		virtual const char ** Filters() const {
-			static const char * filters[] = {
-				"*.*",
-				0
+		virtual const char * TypeFamily() const { return ""; }
+		virtual const Filter * Filters() const {
+			static const Filter filters[] = {
+				{0, 0}
 			}; 
-			return filters; }
+			return filters;
+		}
 };
 
 class InFilename : public Filename
