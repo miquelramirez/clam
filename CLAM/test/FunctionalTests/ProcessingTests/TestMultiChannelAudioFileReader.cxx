@@ -1316,15 +1316,13 @@ namespace CLAMTest
 			CLAM::AudioFileSource inputFile;
 			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding-HighVBR_44.mp3" ) );
 
-			CLAM::AudioFileTarget outputFile;
-			outputFile.OpenExisting( "test-mp3-HighVBR-44.wav" );			
 
 			CLAM::AudioFileHeader outputFileHeader;
-					
 			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
 						    inputFile.GetHeader().GetChannels(),
 						    "WAV" );
 	
+			CLAM::AudioFileTarget outputFile;
 			outputFile.CreateNew( "test-mp3-HighVBR-44.wav", outputFileHeader );			
 
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;

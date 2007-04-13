@@ -172,7 +172,7 @@ namespace CLAM
 
 		CopyAsConcreteConfig( mConfig, cfg );
 
-		AudioFile& targetFile = mConfig.GetTargetFile();
+		AudioFileTarget& targetFile = mConfig.GetTargetFile();
 		const std::string & location =targetFile.GetLocation();
 		if (location=="")
 		{
@@ -227,7 +227,7 @@ namespace CLAM
 		mSamplesMatrix.Resize( nChannels );
 		mSamplesMatrix.SetSize( nChannels );
 
-		for ( int i = 0; i < nChannels; i++ )
+		for ( unsigned i = 0; i < nChannels; i++ )
 		{
 			mChannelsToWrite[ i ] = i;
 			mSamplesMatrix[ i ] = NULL;
