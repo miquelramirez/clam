@@ -26,10 +26,11 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 		ladspaPath = path;
 	}
 	//std::cout << "[LADSPA] Parsed LADSPA library path: " << ladspaPath << std::endl;
-	while (!ladspaPath.empty())
-	{
+	//while (!ladspaPath.empty())
+	//{
+		std::string dir = "/usr/lib";
 		//std::cout << "[LADSPA] ladspaPath = " << ladspaPath << " size = " << ladspaPath.size() << std::endl;
-		std::string dir = ladspaPath.substr(0, ladspaPath.find(":"));
+	/*	std::string dir = ladspaPath.substr(0, ladspaPath.find(":"));
 		if (ladspaPath.find(":") != std::string::npos)
 		{
 			ladspaPath = ladspaPath.substr(ladspaPath.find(":")+1);
@@ -38,14 +39,15 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 		{
 			ladspaPath = "";
 		}
-
+*/
 		//std::cout << "[LADSPA] Reading dir: " << dir << std::endl;
 		DIR* ladspaDir = opendir(dir.c_str());
-		if (!ladspaDir)
+		/*if (!ladspaDir)
 		{
 			std::cout << "[LADSPA] warning: could not open ladspa dir: " << ladspaPath << std::endl;
 			continue;
-		}
+		}*/
+		std::cout << "before reading dir" << std::endl;
 		struct dirent * dirEntry;
 		while ( (dirEntry = readdir(ladspaDir)) )
 		{
@@ -54,7 +56,9 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 				continue;
 			LADSPA_Descriptor_Function descriptorTable = 0;
 			std::string pluginFullFilename(dir + std::string("/") + pluginFilename);
+			std::cout << "dlopen:" << pluginFullFilename << std::endl;
 			void* handle = dlopen( pluginFullFilename.c_str(), RTLD_LAZY);
+			std::cout << "descriptorTable" << std::endl;
 			descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
 			if (!descriptorTable)
 			{
@@ -77,7 +81,7 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 			}
 		}
 		closedir(ladspaDir);
-	}
+	//}
 
 	return result;
 }
