@@ -147,6 +147,9 @@ const static char * processingClasses[] = {
 	"MelCesptrumView",
 	"Tunner",
 	0,
+	"Usage Examples",
+	"FilenameUsageExample",
+	0,
 	0
 };
 
