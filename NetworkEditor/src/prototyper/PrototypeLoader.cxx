@@ -262,11 +262,11 @@ void PrototypeLoader::OpenAudioFile()
 	QString filename = 
 		QFileDialog::getOpenFileName(_interface, 
 			tr("Choose an audio file"),
-			config.GetSourceFile().GetLocation().c_str(),
+			config.GetSourceFile().c_str(),
 			tr("Audio files (*.wav *.ogg *.mp3)")
 			);
 	if (filename.isEmpty()) return;
-	config.GetSourceFile().OpenExisting(filename.toStdString());
+	config.SetSourceFile(filename.toStdString());
 	Stop();
 	processing.Configure(config);
 	Start();

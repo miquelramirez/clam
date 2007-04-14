@@ -35,7 +35,7 @@ namespace CLAMTest
 
 	static double evaluateCovariance( const CLAM::DataArray& left,
 					  double leftAverage,
-					  CLAM::DataArray& right,
+					  const CLAM::DataArray& right,
 					  double rightAverage )
 	{
 		if ( left.Size() != right.Size() )
@@ -74,7 +74,7 @@ namespace CLAMTest
 	}
 
 	double evaluateSimilarity( const CLAM::DataArray& left,
-				   CLAM::DataArray& right ) throw( DataSizeMismatch )
+				   const CLAM::DataArray& right ) throw( DataSizeMismatch )
 	{
 		double leftAverage = evaluateAverage( left );
 		double rightAverage = evaluateAverage( right );

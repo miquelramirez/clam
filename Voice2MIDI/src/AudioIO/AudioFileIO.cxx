@@ -18,19 +18,14 @@ AudioFileIO::~AudioFileIO(){}
 
 int AudioFileIO::Load(const char* fileName,Audio& out)
 {
-    AudioFileSource file;
-    file.OpenExisting(fileName);
-
-    if((!file.IsReadable()) | (file.GetHeader().GetChannels() > 1))
-	return -1; 
-
-    out.SetSize(file.GetHeader().GetSamples());
-
     MonoAudioFileReaderConfig cfg;
-    cfg.SetSourceFile(file);
+    cfg.SetSourceFile(fileName);
 
     MonoAudioFileReader infile;
-    infile.Configure(cfg);
+    if (!infile.Configure(cfg))
+        return -1;
+
+    out.SetSize(infile.GetAudioFile().GetHeader().GetSamples());
 
     infile.Start();
     infile.Do(out);

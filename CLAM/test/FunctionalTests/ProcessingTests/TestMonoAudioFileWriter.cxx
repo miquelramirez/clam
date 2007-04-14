@@ -79,9 +79,13 @@ namespace CLAMTest
 
 		void testDo_PCM_WritesTheSameItWasRead()
 		{
-			CLAM::AudioFileSource inputFile;
-			inputFile.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
+			CLAM::MonoAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( mPathToTestData + std::string( "Elvis.wav" ) );
+			cfgReader.SetSelectedChannel( 0 );
 
+			CLAM::MonoAudioFileReader procReader;
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procReader.Configure( cfgReader ) );		
 
 			CLAM::AudioFileTarget outputFile;
 
@@ -90,26 +94,19 @@ namespace CLAMTest
 			outputFileHeader.AddAll();
 			outputFileHeader.UpdateData();
 
-			outputFileHeader.SetChannels( inputFile.GetHeader().GetChannels() );
-			outputFileHeader.SetSampleRate( inputFile.GetHeader().GetSampleRate() );
-			outputFileHeader.SetFormat( inputFile.GetHeader().GetFormat() );
-			outputFileHeader.SetEncoding( inputFile.GetHeader().GetEncoding() );
-			outputFileHeader.SetEndianess( inputFile.GetHeader().GetEndianess() );
+			outputFileHeader.SetChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
+			outputFileHeader.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			outputFileHeader.SetFormat( procReader.GetAudioFile().GetHeader().GetFormat() );
+			outputFileHeader.SetEncoding( procReader.GetAudioFile().GetHeader().GetEncoding() );
+			outputFileHeader.SetEndianess( procReader.GetAudioFile().GetHeader().GetEndianess() );
 
 			outputFile.CreateNew( "CopyOfElvis.wav.wav", outputFileHeader );
-
-			CLAM::MonoAudioFileReaderConfig cfgReader;
-			cfgReader.SetSourceFile( inputFile );
-			cfgReader.SetSelectedChannel( 0 );
 
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( outputFile );
 			
-			CLAM::MonoAudioFileReader procReader;
 			CLAM::MonoAudioFileWriter procWriter;
 
-			CPPUNIT_ASSERT_EQUAL( true,
-					      procReader.Configure( cfgReader ) );		
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
@@ -134,8 +131,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MonoAudioFileReader procReader2;
-			inputFile.OpenExisting( "CopyOfElvis.wav.wav" );
-			cfgReader.SetSourceFile( inputFile );
+			cfgReader.SetSourceFile( "CopyOfElvis.wav.wav" );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
 			CLAM::Audio readSamples2;
@@ -164,31 +160,27 @@ namespace CLAMTest
 		{
 
 
-			CLAM::AudioFileSource inputFile;
-			inputFile.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
-
+			CLAM::MonoAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( mPathToTestData + std::string( "Elvis.wav" ) );
+			cfgReader.SetSelectedChannel( 0 );
+			CLAM::MonoAudioFileReader procReader;
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procReader.Configure( cfgReader ) );
 
 			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 
-			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
-						    inputFile.GetHeader().GetChannels(),
+			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
+						    procReader.GetAudioFile().GetHeader().GetChannels(),
 						    "VorbisMk1" );
 
 			outputFile.CreateNew( "CopyOfElvis.ogg", outputFileHeader );
 
-			CLAM::MonoAudioFileReaderConfig cfgReader;
-			cfgReader.SetSourceFile( inputFile );
-			cfgReader.SetSelectedChannel( 0 );
-
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( outputFile );
 			
-			CLAM::MonoAudioFileReader procReader;
 			CLAM::MonoAudioFileWriter procWriter;
 
-			CPPUNIT_ASSERT_EQUAL( true,
-					      procReader.Configure( cfgReader ) );		
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
@@ -213,9 +205,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MonoAudioFileReader procReader2;
-			inputFile.OpenExisting( "CopyOfElvis.ogg" );
-			cfgReader.SetSourceFile( inputFile );
-
+			cfgReader.SetSourceFile( "CopyOfElvis.ogg" );
 
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 

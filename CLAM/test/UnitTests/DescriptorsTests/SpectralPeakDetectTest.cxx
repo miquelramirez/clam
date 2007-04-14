@@ -111,17 +111,13 @@ private:
 
 	CLAM::Audio ReadAudio(const std::string & fileName, int audioBlockSize=1024)
 	{
-		CLAM::AudioFileSource audioFile;
-		audioFile.OpenExisting(fileName);
-		CPPUNIT_ASSERT_MESSAGE( 
-			"Unable to load file "+ audioFile.GetLocation(),
-			audioFile.IsReadable());
 		CLAM::MonoAudioFileReaderConfig cfg;
-		cfg.SetSourceFile(audioFile);
+		cfg.SetSourceFile(fileName);
 		CLAM::MonoAudioFileReader reader;
+		bool configOk = reader.Configure(cfg);
 		CPPUNIT_ASSERT_MESSAGE(
 			"configuration failed " + reader.GetConfigErrorMessage(),
-			reader.Configure(cfg));
+			configOk);
 
 		CLAM::Audio buf;
 		buf.SetSize(audioBlockSize);

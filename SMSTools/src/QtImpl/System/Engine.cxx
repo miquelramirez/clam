@@ -157,61 +157,55 @@ namespace QtSMS
 	{
 		if ( filename.length() <= 0 ) return false;
 		
-		CLAM::AudioFileSource selectedFile;
-		selectedFile.OpenExisting( filename );
-
-		if ( !selectedFile.IsReadable() )
-		{
-			std::string messageShown;
-			messageShown = "Sorry, but the file ";
-			messageShown += filename;
-			messageShown += " \ncannot be used: \n";
-			messageShown += "Unable to open or unrecognized format";
-
-			QMessageBox::critical(0, "SMS Tools 2",messageShown.c_str());
-
-			return false;
-		}
-
-		if ( selectedFile.GetHeader().GetChannels() > 1 )
-		{
-			std::string messageShown;
-			messageShown = "The file ";
-			messageShown += filename;
-			messageShown += " \nhas several channels, but SMSTools only \n";
-			messageShown += "can process mono channel signals. By default\n";
-			messageShown += "the channel to be analyzed will be the first\n";
-			messageShown +="channel in the file.\n";
-
-			QMessageBox::critical(0, "SMS Tools 2",messageShown.c_str());
-			
-			return false;
-		}
-		
 		int selectedChannel = 0;
-		
 		CLAM::MonoAudioFileReaderConfig cfg;
-		cfg.SetSourceFile( selectedFile );
+		cfg.SetSourceFile( filename );
 		cfg.SetSelectedChannel( selectedChannel );
 
 		CLAM::MonoAudioFileReader fileReader;
 		fileReader.Configure( cfg );
 
+		const CLAM::AudioFileSource & selectedFile = fileReader.GetAudioFile();
+
+		if ( !selectedFile.IsReadable() )
+		{
+			QMessageBox::critical(0, "SMS Tools 2",QObject::tr(
+				"Sorry, but the file %1\n"
+				"cannot be used: \n"
+				"Unable to open or unrecognized format")
+				.arg(filename));
+			return false;
+		}
+
+		if ( selectedFile.GetHeader().GetChannels() > 1 )
+		{
+			QMessageBox::warning(0, "SMS Tools 2",QObject::tr(
+				"The file %1\n"
+				"has several channels, but SMSTools only \n"
+				"can process mono channel signals. By default\n"
+				"the channel to be analyzed will be the first\n"
+				"channel in the file.\n")
+				.arg(filename));
+		}
+		
+
 		fileReader.Start();
+
+		CLAM::TData sampleRate = selectedFile.GetHeader().GetSampleRate();
+		CLAM::TData length = selectedFile.GetHeader().GetLength();
 
 		/////////////////////////////////////////////////////////////////////////////
 		// Initialization of the processing data objects :
-		CLAM::TSize samplesInFile=int( (selectedFile.GetHeader().GetLength()/1000.)*
-			selectedFile.GetHeader().GetSampleRate() );
+		CLAM::TSize samplesInFile=int( (length/1000.)* sampleRate );
 
-		SetSamplingRate(int(selectedFile.GetHeader().GetSampleRate()));
+		SetSamplingRate(int(sampleRate));
 		
 		// Spectral Segment that will actually hold data
-		segment.SetEndTime(selectedFile.GetHeader().GetLength());
-		segment.SetSamplingRate(selectedFile.GetHeader().GetSampleRate());
+		segment.SetEndTime(length);
+		segment.SetSamplingRate(sampleRate);
 		segment.mCurrentFrameIndex=0;
 		segment.GetAudio().SetSize(samplesInFile);
-		segment.GetAudio().SetSampleRate(selectedFile.GetHeader().GetSampleRate());
+		segment.GetAudio().SetSampleRate(sampleRate);
 
 		fileReader.Do(segment.GetAudio());
 		fileReader.Stop();

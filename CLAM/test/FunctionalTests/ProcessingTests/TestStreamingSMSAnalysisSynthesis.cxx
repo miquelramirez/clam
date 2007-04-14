@@ -94,9 +94,7 @@ private:
 		CLAM::MonoAudioFileReaderConfig readercfg;
 		CLAM::MonoAudioFileWriter audioWriter;
 		CLAM::MonoAudioFileWriterConfig writercfg;
-		CLAM::AudioFileSource file;
-		file.OpenExisting(GetTestDataDirectory("sine.wav"));
-		readercfg.SetSourceFile(file);
+		readercfg.SetSourceFile(GetTestDataDirectory("sine.wav"));
 		audioProvider.GetOutPort("Samples Read").SetSize( frameSize );
 		audioProvider.GetOutPort("Samples Read").SetHop(frameSize);
 		
