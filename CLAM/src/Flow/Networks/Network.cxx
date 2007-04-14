@@ -263,14 +263,15 @@ namespace CLAM
 		return i!=mProcessings.end();
 	}
 	
-	void Network::ConfigureProcessing( const std::string & name, const ProcessingConfig & newConfig )	
+	bool Network::ConfigureProcessing( const std::string & name, const ProcessingConfig & newConfig )	
 	{
 		ProcessingsMap::iterator it = mProcessings.find( name );
 		CLAM_ASSERT(it!=mProcessings.end(),"Wrong processing name to configure in a network");
 		Processing * proc = it->second;
-		if ( !IsStopped() ) Stop(); 
-		proc->Configure( newConfig );
+		if ( !IsStopped() ) Stop();
+		bool ok = proc->Configure( newConfig );
 		mFlowControl->ProcessingConfigured(*proc);
+		return ok;
 	}
 
 	void Network::ReconfigureAllProcessings()
