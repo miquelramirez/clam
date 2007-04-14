@@ -97,7 +97,7 @@ public:
 	/** It configures the processing with the given processing id and config object and
 	 *  notifies this to the network. So use this method instead of getting the processing
 	 *  with GetProcessing and calling Configure on it. **/
-	void ConfigureProcessing( const std::string &, const ProcessingConfig & );
+	bool ConfigureProcessing( const std::string &, const ProcessingConfig & );
 	/** Calls Configure() for each processing with its current configuration  */
 	void ReconfigureAllProcessings();
 	bool RenameProcessing( const std::string & oldName, const std::string & newName );	
