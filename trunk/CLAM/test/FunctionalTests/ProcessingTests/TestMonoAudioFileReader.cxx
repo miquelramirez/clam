@@ -70,10 +70,8 @@ namespace CLAMTest
 
 		void testConfigure_ReturnsTrueWithJustFilename()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"Elvis.wav" );
 
 			CLAM::MonoAudioFileReader proc;
 
@@ -97,10 +95,8 @@ namespace CLAMTest
 		
 		void testConfigure_ReturnsTrueWhenFileExists()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"Elvis.wav" );
 
 			CLAM::MonoAudioFileReader proc;
 			
@@ -111,10 +107,8 @@ namespace CLAMTest
 
 		void testConfigure_ReturnsFalseWhenFileDoesNotExist()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "QWERTY.wav" ) );
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"QWERTY.wav" );
 
 			CLAM::MonoAudioFileReader proc;
 
@@ -125,11 +119,8 @@ namespace CLAMTest
 		
 		void testConfigure_ReturnsTrueWhenSelectedChannelExists()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
-			
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"Elvis.wav" );
 			cfg.SetSelectedChannel( 0 );
 
 			CLAM::MonoAudioFileReader proc;
@@ -141,11 +132,8 @@ namespace CLAMTest
 
 		void testConfigure_ReturnsFalseWhenSelectedChannelIsOutOfRange()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
-			
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"Elvis.wav" );
 			cfg.SetSelectedChannel( 32768 );
 
 			CLAM::MonoAudioFileReader proc;
@@ -158,11 +146,8 @@ namespace CLAMTest
 
 		void testDo_PCM_JustOneFrameFromMonoFile()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
-			
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"Elvis.wav" );
 			cfg.SetSelectedChannel( 0 );
 
 			CLAM::MonoAudioFileReader proc;
@@ -170,14 +155,14 @@ namespace CLAMTest
 			proc.Configure( cfg );
 			
 			CLAM::Audio readSamples;
-			readSamples.SetSampleRate( file.GetHeader().GetSampleRate() );
+			readSamples.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 
 			proc.Start();
 			proc.Do(readSamples);
 			proc.Stop();
 
-			double similarity = fileSimilarity( file, 0, readSamples );
+			double similarity = fileSimilarity( proc.GetAudioFile(), 0, readSamples );
 						
 			CPPUNIT_ASSERT(  similarity >= 0.9999 );
 			
@@ -185,11 +170,8 @@ namespace CLAMTest
 
 		void testDo_PCM_JustTwoFramesFromMonoFile()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "Elvis.wav" ) );
-			
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"Elvis.wav" );
 			cfg.SetSelectedChannel( 0 );
 
 			CLAM::MonoAudioFileReader proc;
@@ -197,7 +179,7 @@ namespace CLAMTest
 			proc.Configure( cfg );
 			
 			CLAM::Audio readSamples_1;
-			readSamples_1.SetSampleRate( file.GetHeader().GetSampleRate() );
+			readSamples_1.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
 			readSamples_1.SetSize( 256 );
 
 			CLAM::DataArray previous;
@@ -226,11 +208,8 @@ namespace CLAMTest
 
 		void testDo_PCM_JustOneFrameFromStereoFile()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
-			
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"StereoTestFile.wav" );
 			cfg.SetSelectedChannel( 1 );
 
 			CLAM::MonoAudioFileReader proc;
@@ -238,7 +217,7 @@ namespace CLAMTest
 			proc.Configure( cfg );
 			
 			CLAM::Audio readSamples;
-			readSamples.SetSampleRate( file.GetHeader().GetSampleRate() );
+			readSamples.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 			
 
@@ -246,7 +225,7 @@ namespace CLAMTest
 			proc.Do(readSamples);
 			proc.Stop();
 
-			double similarity = fileSimilarity( file, 1, readSamples );
+			double similarity = fileSimilarity( proc.GetAudioFile(), 1, readSamples );
 						
 			CPPUNIT_ASSERT(  similarity >= 0.9999 );
 			
@@ -254,11 +233,8 @@ namespace CLAMTest
 
 		void testDo_PCM_JustTwoFramesFromStereoFile()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
-			
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"StereoTestFile.wav" );
 			cfg.SetSelectedChannel( 1 );
 
 			CLAM::MonoAudioFileReader proc;
@@ -266,7 +242,7 @@ namespace CLAMTest
 			proc.Configure( cfg );
 			
 			CLAM::Audio readSamples_1;
-			readSamples_1.SetSampleRate( file.GetHeader().GetSampleRate() );
+			readSamples_1.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
 			readSamples_1.SetSize( 256 );
 
 			CLAM::DataArray previous;
@@ -294,11 +270,8 @@ namespace CLAMTest
 
 		void testDo_JustTwoFramesBeginTimesAreRight()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
-			
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"StereoTestFile.wav" );
 			cfg.SetSelectedChannel( 1 );
 
 			CLAM::MonoAudioFileReader proc;
@@ -306,7 +279,7 @@ namespace CLAMTest
 			proc.Configure( cfg );
 			
 			CLAM::Audio readSamples;
-			readSamples.SetSampleRate( file.GetHeader().GetSampleRate() );
+			readSamples.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 
 			proc.Start();
@@ -315,7 +288,7 @@ namespace CLAMTest
 			proc.Do(readSamples);
 			proc.Stop();
 			
-			CLAM::TTime truth = CLAM::TTime( readSamples.GetSize() ) / file.GetHeader().GetSampleRate() *1000;
+			CLAM::TTime truth = CLAM::TTime( readSamples.GetSize() ) / proc.GetAudioFile().GetHeader().GetSampleRate() *1000;
 			CLAM::TTime valueObtained = readSamples.GetBeginTime() - previousBeginTime;
 
 			CPPUNIT_ASSERT( fabs( truth - valueObtained ) < 1e-4 );
@@ -323,11 +296,8 @@ namespace CLAMTest
 
 		void testDo_JustOneFrame_SampleRateIsOK()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "StereoTestFile.wav" ) );
-			
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"StereoTestFile.wav" );
 			cfg.SetSelectedChannel( 1 );
 
 			CLAM::MonoAudioFileReader proc;
@@ -342,18 +312,15 @@ namespace CLAMTest
 			proc.Do(readSamples);
 			proc.Stop();
 
-			CPPUNIT_ASSERT_EQUAL( file.GetHeader().GetSampleRate(),
+			CPPUNIT_ASSERT_EQUAL( proc.GetAudioFile().GetHeader().GetSampleRate(),
 					      readSamples.GetSampleRate() );
 
 		}
 
 		void testDo_OggVorbis_JustOneFrameFromStereoFile()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
-			
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"ElvisStereo.ogg" );
 			cfg.SetSelectedChannel( 1 );
 
 			CLAM::MonoAudioFileReader proc;
@@ -361,28 +328,22 @@ namespace CLAMTest
 			proc.Configure( cfg );
 			
 			CLAM::Audio readSamples;
-			readSamples.SetSampleRate( file.GetHeader().GetSampleRate() );
+			readSamples.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 			
 			proc.Start();
 			proc.Do(readSamples);
 			proc.Stop();
 
-			double similarity = fileSimilarity( file, 1, readSamples );
+			double similarity = fileSimilarity( proc.GetAudioFile(), 1, readSamples );
 						
 			CPPUNIT_ASSERT(  similarity >= 0.9999 );
-			
-
-
 		}
 
 		void testDo_OggVorbis_JustTwoFramesFromStereoFile()
 		{
-			CLAM::AudioFileSource file;
-			file.OpenExisting( mPathToTestData + std::string( "ElvisStereo.ogg" ) );
-			
 			CLAM::MonoAudioFileReaderConfig cfg;
-			cfg.SetSourceFile( file );
+			cfg.SetSourceFile( mPathToTestData+"ElvisStereo.ogg" );
 			cfg.SetSelectedChannel( 1 );
 
 			CLAM::MonoAudioFileReader proc;
@@ -390,7 +351,7 @@ namespace CLAMTest
 			proc.Configure( cfg );
 			
 			CLAM::Audio readSamples_1;
-			readSamples_1.SetSampleRate( file.GetHeader().GetSampleRate() );
+			readSamples_1.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
 			readSamples_1.SetSize( 4096 );
 
 			CLAM::DataArray previous;
@@ -433,9 +394,12 @@ namespace CLAMTest
 
 		void test_MpegAudioFiles_AreDecoded_OK()
 		{
-			CLAM::AudioFileSource inputFile;
-			inputFile.OpenExisting( mPathToTestData + std::string( "trumpet.mp3" ) );
-
+			CLAM::MonoAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( mPathToTestData+"trumpet.mp3" );
+			cfgReader.SetSelectedChannel( 0 );
+			CLAM::MonoAudioFileReader procReader;
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procReader.Configure( cfgReader ) );		
 
 			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
@@ -443,23 +407,16 @@ namespace CLAMTest
 			outputFileHeader.AddAll();
 			outputFileHeader.UpdateData();
 
-			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
+			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
 						    1,
 						    "WAV" );
 			outputFile.CreateNew( "trumpet-copy.wav", outputFileHeader );
 
-			CLAM::MonoAudioFileReaderConfig cfgReader;
-			cfgReader.SetSourceFile( inputFile );
-			cfgReader.SetSelectedChannel( 0 );
-
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( outputFile );
 			
-			CLAM::MonoAudioFileReader procReader;
 			CLAM::MonoAudioFileWriter procWriter;
 
-			CPPUNIT_ASSERT_EQUAL( true,
-					      procReader.Configure( cfgReader ) );		
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
@@ -484,8 +441,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MonoAudioFileReader procReader2;
-			inputFile.OpenExisting( "trumpet-copy.wav" );
-			cfgReader.SetSourceFile( inputFile );
+			cfgReader.SetSourceFile( "trumpet-copy.wav" );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
 			CLAM::Audio readSamples2;

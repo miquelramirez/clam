@@ -73,14 +73,15 @@ namespace CLAM
 			return false;
 		}
 
-		const std::string & location = mConfig.GetSourceFile().GetLocation();
+		const std::string & location = mConfig.GetSourceFile();
 		if ( location == "")
 		{
 			AddConfigErrorMessage("No file selected");
 			return false;
 		}
+		mAudioFile.OpenExisting(location);
 		// Check that the given file can be opened
-		if ( ! mConfig.GetSourceFile().IsReadable() )
+		if ( ! mAudioFile.IsReadable() )
 		{
 			AddConfigErrorMessage("The audio file could not be opened");
 			return false;
@@ -88,13 +89,13 @@ namespace CLAM
 
 
 		if ( mConfig.GetSelectedChannel() < 0
-		     || mConfig.GetSelectedChannel() >= mConfig.GetSourceFile().GetHeader().GetChannels() )
+		     || mConfig.GetSelectedChannel() >= mAudioFile.GetHeader().GetChannels() )
 		{
 			AddConfigErrorMessage("The channel selected for reading does not exist");
 			return false;
 		}
 
-		mNativeStream = mConfig.GetSourceFile().GetStream();
+		mNativeStream = mAudioFile.GetStream();
 
 		mNativeStream->DeactivateStrictStreaming();
 
@@ -105,7 +106,7 @@ namespace CLAM
 	{
 		if ( mNativeStream == NULL )
 		{
-			mNativeStream = mConfig.GetSourceFile().GetStream();
+			mNativeStream = mAudioFile.GetStream();
 			mNativeStream->DeactivateStrictStreaming();
 		}
 
@@ -148,16 +149,16 @@ namespace CLAM
 						       outputSamples.GetSize() );
 		
 		outputSamples.SetBeginTime( mCurrentBeginTime );
-		mDeltaTime = outputSamples.GetSize() / mConfig.GetSourceFile().GetHeader().GetSampleRate()*1000;
+		mDeltaTime = outputSamples.GetSize() / mAudioFile.GetHeader().GetSampleRate()*1000;
 		mCurrentBeginTime += mDeltaTime;
-		outputSamples.SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+		outputSamples.SetSampleRate( mAudioFile.GetHeader().GetSampleRate() );
 		
 		if ( ! mEOFReached ) return true;
 		if ( ! mConfig.GetLoop() ) return false;
 
 		// Reseting the playback to the begining
 		ConcreteStop();
-		mNativeStream = mConfig.GetSourceFile().GetStream();
+		mNativeStream = mAudioFile.GetStream();
 		mNativeStream->DeactivateStrictStreaming();
 		ConcreteStart();
 		return true;

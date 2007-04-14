@@ -23,7 +23,7 @@
 #define __MONOAUDIOFILEREADERCONFIG__
 
 #include "ProcessingConfig.hxx" // For CLAM::ProcessingConfig interface
-#include "AudioFile.hxx" // For CLAM::AudioFile interface
+#include "AudioInFilename.hxx" // For CLAM::AudioInFilename interface
 #include "DataTypes.hxx" // For common CLAM types
 
 namespace CLAM
@@ -42,7 +42,7 @@ namespace CLAM
 		/**
 		 *  The file that will be the source of audio samples
 		 */
-		DYN_ATTRIBUTE( 0, public, AudioFileSource, SourceFile );
+		DYN_ATTRIBUTE( 0, public, AudioInFilename, SourceFile );
 		
 		/**
 		 *  Tells the MonoAudioFileReader processing to extract

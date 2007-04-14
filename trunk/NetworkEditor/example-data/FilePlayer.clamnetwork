@@ -4,19 +4,7 @@
   <processing id="AudioSink_0" type="AudioSink"/>
 
   <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
-    <SourceFile>
-      <URI>example-data/Guillamino_CitiusAltiusFortius.mp3</URI>
-      <Header>
-        <SampleRate>44100</SampleRate>
-        <Samples>1443393</Samples>
-        <Channels>1</Channels>
-        <Length>32730</Length>
-        <Format>Mpeg Audio Layer 3</Format>
-        <Encoding>Format Default</Encoding>
-        <Endianess>Format Default</Endianess>
-      </Header>
-      <TextualDescriptors/>
-    </SourceFile>
+    <SourceFile>example-data/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>

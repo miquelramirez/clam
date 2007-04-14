@@ -27,7 +27,7 @@ namespace CLAMTest
 	 *  r(x,y) = Cov( x,y ) / stdDeviation(x)*stdDeviation(y);
 	 */
 	double evaluateSimilarity( const CLAM::DataArray& left,
-				   CLAM::DataArray& right ) throw ( DataSizeMismatch );
+				   const CLAM::DataArray& right ) throw ( DataSizeMismatch );
 
 	/**
 	 *  Flattens the input spectral peak array into a floating-point values

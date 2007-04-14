@@ -36,14 +36,12 @@ void FreewheelingNetworkPlayer::Start()
 
 	// configure file reader and writer
 	int frameSize = 512;
-	AudioFileSource file;
-	file.OpenExisting( mInFilename );
 
 	MonoAudioFileReader fileReader;
 	fileReader.GetOutPort("Samples Read").SetSize( frameSize );
 	fileReader.GetOutPort("Samples Read").SetHop( frameSize );
 	MonoAudioFileReaderConfig readercfg;
-	readercfg.SetSourceFile(file);
+	readercfg.SetSourceFile(mInFilename);
 	fileReader.Configure( readercfg );
 
 	AudioFileHeader header;
@@ -63,8 +61,8 @@ void FreewheelingNetworkPlayer::Start()
 	Audio incomingAudio;
 	Audio outgoingAudio;
 	//incomingAudio.SetSampleRate( file.GetHeader().GetSampleRate() );
-        incomingAudio.SetSize( frameSize );
-        outgoingAudio.SetSize( frameSize );
+	incomingAudio.SetSize( frameSize );
+	outgoingAudio.SetSize( frameSize );
 	
 	source.SetExternalBuffer( &(incomingAudio.GetBuffer()[0]) ,frameSize);
 	sink.SetExternalBuffer( &(outgoingAudio.GetBuffer()[0]) ,frameSize); 
