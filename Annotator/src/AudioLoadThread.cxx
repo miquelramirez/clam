@@ -37,13 +37,14 @@ AudioLoadThread::AudioLoadThread(CLAM::Audio & audio, const std::string audioFil
 	, mNumber(number())
 {
 	std::cout << "AudioLoader " << mNumber << " created..." << std::endl;
-	file.OpenExisting(audioFileName);
 	mAudio.SetSize(0);
-	if (!file.IsReadable()) return; // Exits with audio size = 0;
+	CLAM::MultiChannelAudioFileReaderConfig cfg;
+	cfg.SetSourceFile( audioFileName );
+	if (!mReader.Configure(cfg)) return; // Exits with audio size = 0;
 
-	CLAM::TData samplingRate = file.GetHeader().GetSampleRate();
-	nSamples = unsigned( file.GetHeader().GetLength()/1000.0*samplingRate );
-	int nChannels = file.GetHeader().GetChannels();
+	CLAM::TData samplingRate = mReader.GetAudioFile().GetHeader().GetSampleRate();
+	nSamples = unsigned( mReader.GetAudioFile().GetHeader().GetLength()/1000.0*samplingRate );
+	int nChannels = mReader.GetAudioFile().GetHeader().GetChannels();
 	audioFrameVector.resize(nChannels);
 	for (int i=0;i<nChannels;i++)
 		audioFrameVector[i].SetSize(readSize);
@@ -60,12 +61,9 @@ AudioLoadThread::~AudioLoadThread()
 void AudioLoadThread::run()
 {
 	std::cout << "AudioLoader " << mNumber << " running..." << std::endl;
-	CLAM::MultiChannelAudioFileReaderConfig cfg;
-	cfg.SetSourceFile( file );
-	CLAM::MultiChannelAudioFileReader reader(cfg);
-	reader.Start();
+	mReader.Start();
 	int beginSample=0;
-	while(reader.Do(audioFrameVector))
+	while(mReader.Do(audioFrameVector))
 	{
 		mAudio.SetAudioChunk(beginSample,audioFrameVector[0]);
 		beginSample+=readSize;
@@ -73,7 +71,7 @@ void AudioLoadThread::run()
 		if ( beginSample+readSize > nSamples ) break;
 	}
 //		mAudio.SetSize(beginSample);
-	reader.Stop();
+	mReader.Stop();
 	std::cout << "AudioLoader " << mNumber << " finished..." << std::endl;
 }
 

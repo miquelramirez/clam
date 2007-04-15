@@ -23,7 +23,7 @@
 #define __MULTICHANNELAUDIOFILEREADERCONFIG__
 
 #include "ProcessingConfig.hxx"
-#include "AudioFile.hxx"
+#include "AudioInFilename.hxx"
 #include "Array.hxx"
 #include "DataTypes.hxx"
 
@@ -39,7 +39,7 @@ namespace CLAM
 		 *  The file that will be the source of audio samples
 		 */
 
-		DYN_ATTRIBUTE( 0, public, AudioFileSource,     SourceFile );
+		DYN_ATTRIBUTE( 0, public, AudioInFilename, SourceFile );
 
 		/**
 		 *  Tells the processing which n0, n1, ..., nf channels

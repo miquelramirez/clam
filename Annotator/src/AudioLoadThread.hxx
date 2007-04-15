@@ -27,6 +27,7 @@
 #include <vector>
 #include <CLAM/Audio.hxx>
 #include <CLAM/AudioFile.hxx>
+#include <CLAM/MultiChannelAudioFileReader.hxx>
 
 class AudioLoadThread : public QThread
 {	
@@ -37,6 +38,7 @@ class AudioLoadThread : public QThread
 	CLAM::AudioFileSource file;
 	std::vector<CLAM::Audio> audioFrameVector;
 	unsigned mNumber;
+	CLAM::MultiChannelAudioFileReader mReader;
 public:
 	static unsigned number();
 	AudioLoadThread(CLAM::Audio & audio, const std::string audioFileName);

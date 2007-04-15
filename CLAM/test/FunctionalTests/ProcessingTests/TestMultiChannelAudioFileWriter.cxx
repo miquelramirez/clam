@@ -130,9 +130,9 @@ namespace CLAMTest
 
 		void testDo_PCM_WritesTheSameThatWasRead()
 		{
-			CLAM::AudioFileSource inputFile;
-			inputFile.OpenExisting( mPathToTestData + std::string( "test-stereo-decoding.wav" ) );
-
+			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( mPathToTestData+"test-stereo-decoding.wav" );
+			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
 
 			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
@@ -140,25 +140,19 @@ namespace CLAMTest
 			outputFileHeader.AddAll();
 			outputFileHeader.UpdateData();
 
-			outputFileHeader.SetChannels( inputFile.GetHeader().GetChannels() );
-			outputFileHeader.SetSampleRate( inputFile.GetHeader().GetSampleRate() );
-			outputFileHeader.SetFormat( inputFile.GetHeader().GetFormat() );
-			outputFileHeader.SetEncoding( inputFile.GetHeader().GetEncoding() );
-			outputFileHeader.SetEndianess( inputFile.GetHeader().GetEndianess() );
+			outputFileHeader.SetChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
+			outputFileHeader.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			outputFileHeader.SetFormat( procReader.GetAudioFile().GetHeader().GetFormat() );
+			outputFileHeader.SetEncoding( procReader.GetAudioFile().GetHeader().GetEncoding() );
+			outputFileHeader.SetEndianess( procReader.GetAudioFile().GetHeader().GetEndianess() );
 
 			outputFile.CreateNew( "test-stereo-decoding-copy.wav", outputFileHeader );
-
-			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
-			cfgReader.SetSourceFile( inputFile );
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( outputFile );
 			
-			CLAM::MultiChannelAudioFileReader procReader;
 			CLAM::MultiChannelAudioFileWriter procWriter;
 
-			CPPUNIT_ASSERT_EQUAL( true,
-					      procReader.Configure( cfgReader ) );		
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
@@ -185,8 +179,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.OpenExisting( "test-stereo-decoding-copy.wav" );
-			cfgReader.SetSourceFile( inputFile );
+			cfgReader.SetSourceFile( "test-stereo-decoding-copy.wav" );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
 			std::vector<CLAM::Audio> samples2(2);
@@ -226,29 +219,26 @@ namespace CLAMTest
 		void testDo_OggVorbis_WritesTheSameThatWasRead()
 		{
 			
-			CLAM::AudioFileSource inputFile;
-			inputFile.OpenExisting( mPathToTestData + std::string( "ElvisStereo.wav" ) );
+			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
+			cfgReader.SetSourceFile( mPathToTestData+"ElvisStereo.wav" );
+			CLAM::MultiChannelAudioFileReader procReader;
+			CPPUNIT_ASSERT_EQUAL( true,
+					      procReader.Configure( cfgReader ) );		
 
 			CLAM::AudioFileTarget outputFile;
 			CLAM::AudioFileHeader outputFileHeader;
 					
-			outputFileHeader.SetValues( inputFile.GetHeader().GetSampleRate(),
-						    inputFile.GetHeader().GetChannels(),
+			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
+						    procReader.GetAudioFile().GetHeader().GetChannels(),
 						    "VorbisMk1" );
 	
 			outputFile.CreateNew( "ElvisStereo-copy.ogg", outputFileHeader );			
 
-			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
-			cfgReader.SetSourceFile( inputFile );
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( outputFile );
 			
-			CLAM::MultiChannelAudioFileReader procReader;
 			CLAM::MultiChannelAudioFileWriter procWriter;
 
-			CPPUNIT_ASSERT_EQUAL( true,
-					      procReader.Configure( cfgReader ) );		
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
@@ -276,8 +266,7 @@ namespace CLAMTest
 			// check it is the same frame by frame
 			
 			CLAM::MultiChannelAudioFileReader procReader2;
-			inputFile.OpenExisting( "ElvisStereo-copy.ogg" );
-			cfgReader.SetSourceFile( inputFile );
+			cfgReader.SetSourceFile( "ElvisStereo-copy.ogg" );
 			CPPUNIT_ASSERT_EQUAL( true, procReader2.Configure( cfgReader ) );
 
 			std::vector<CLAM::Audio> samples2(2);
