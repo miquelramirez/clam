@@ -4,6 +4,8 @@
 #include <QtGui/QLabel>
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QHBoxLayout>
+#include "AudioDial.hxx"
+#include "QSynthKnob.hxx"
 
 ControlSenderWidget::ControlSenderWidget(CLAM::Processing * processing)
 	: _dial(0)
@@ -60,7 +62,7 @@ void ControlSenderWidget::init()
 
 void ControlSenderWidget::createDial()
 {
-	_dial = new QDial();
+	_dial = new QSynthKnob;
 	setupSlider(_dial);
 	_dial->setNotchesVisible(true);
 	layout()->addWidget(_dial);

@@ -145,6 +145,7 @@ pluginsources.append(os.path.join('src','monitors','LPModelView.cxx'))
 pluginsources.append(os.path.join('src','monitors','MelSpectrumView.cxx'))
 pluginsources.append(os.path.join('src','monitors','MelCepstrumView.cxx'))
 pluginsources.append(os.path.join('src','monitors','BarGraph.cxx'))
+pluginsources.append(os.path.join('src','monitors','QSynthKnob.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
 
 #commonObjects = env.StaticLibrary(target="networkeditor", source=sources)

@@ -13,6 +13,7 @@
 #include "MelSpectrumViewPlugin.hxx"
 #include "MelCepstrumViewPlugin.hxx"
 #include "PixmapWidgetsPlugin.hxx"
+#include "QSynthKnobPlugin.hxx"
 #include <iostream>
 #include <CLAM/CLAMVersion.hxx>
 
@@ -36,6 +37,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new MelSpectrumViewPlugin(this)
 		<< new PixmapSliderPlugin(this)
 		<< new ThinPixmapButtonPlugin(this)
+		<< new QSynthKnobPlugin(this)
 		;
 	std::cout << "All CLAM widgets plugins created" << std::endl;
 }
