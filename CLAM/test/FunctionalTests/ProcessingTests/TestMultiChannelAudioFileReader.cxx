@@ -279,7 +279,7 @@ namespace CLAMTest
 
 			double similarityLeft = 0.0, similarityRight = 0.0;
 
-			fileSimilarity( proc.GetAudioFile(), samples[0], samples[1],
+			fileSimilarity( cfg.GetSourceFile(), samples[0], samples[1],
 					similarityLeft, similarityRight );
 						
 			CPPUNIT_ASSERT(  similarityLeft  >= 0.9999 );
@@ -415,10 +415,7 @@ namespace CLAMTest
 		{
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( mPathToTestData+"ElvisStereo.ogg" );
-
-			CLAM::MultiChannelAudioFileReader proc;
-
-			proc.Configure( cfg );
+			CLAM::MultiChannelAudioFileReader proc( cfg );
 			
 			std::vector<CLAM::Audio> samples(2);
 			samples[0].SetSize( 256 );
@@ -430,7 +427,7 @@ namespace CLAMTest
 
 			double similarityLeft = 0.0, similarityRight = 0.0;
 
-			fileSimilarity( proc.GetAudioFile(), samples[0], samples[1],
+			fileSimilarity( cfg.GetSourceFile(), samples[0], samples[1],
 					similarityLeft, similarityRight );
 						
 			CPPUNIT_ASSERT(  similarityLeft  >= 0.9999 );
@@ -442,10 +439,7 @@ namespace CLAMTest
 		{
 			CLAM::MultiChannelAudioFileReaderConfig cfg;
 			cfg.SetSourceFile( mPathToTestData+"ElvisStereo.ogg" );
-
-			CLAM::MultiChannelAudioFileReader proc;
-
-			proc.Configure( cfg );
+			CLAM::MultiChannelAudioFileReader proc( cfg );
 			
 			std::vector<CLAM::Audio> samples(2);
 			samples[0].SetSize( 256 );
@@ -461,7 +455,6 @@ namespace CLAMTest
 			prevRightSamples.SetSize( 256 );
 
 			proc.Start();
-
 			proc.Do(samples);
 			
 			// Save this frame to arrays

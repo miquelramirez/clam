@@ -379,19 +379,17 @@ int main(int argc, char* argv[])			// access command line arguments
 		const std::string & waveFile = *it;
 		CLAM::MonoAudioFileReaderConfig cfg;
 		cfg.SetSourceFile( waveFile );
-		CLAM::MonoAudioFileReader reader(cfg);
-		const CLAM::AudioFileSource & file = reader.GetAudioFile();
-
-		if ( !file.IsReadable() )
+		CLAM::MonoAudioFileReader reader;
+		if (!reader.Configure(cfg))
 		{
-			std::cerr << "Error: file " << file.GetLocation() << " cannot be opened ";
-			std::cerr << "or is encoded in an unrecognized format" << std::endl;
+			std::cerr << "Error reading file '" << waveFile << "'" << std::endl;
+			std::cerr << reader.GetConfigErrorMessage() << std::endl;
 			return -1;
 		}
-		CLAM::TData samplingRate = file.GetHeader().GetSampleRate();
-		unsigned long nsamples = file.GetHeader().GetLength()*samplingRate/1000.0;
+		CLAM::TData samplingRate = reader.GetAudioFile().GetHeader().GetSampleRate();
+		unsigned long nsamples = reader.GetAudioFile().GetHeader().GetLength()*samplingRate/1000.0;
 
-		CLAM::XMLStorage::Dump(file, "Header", std::cout);
+		CLAM::XMLStorage::Dump(reader.GetAudioFile(), "Header", std::cout);
 		
 		int factor=1;							// downsampling factor
 		float minf = 98;						// (MIDI note G1)

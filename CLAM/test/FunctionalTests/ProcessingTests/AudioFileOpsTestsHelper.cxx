@@ -4,10 +4,11 @@
 
 namespace CLAMTest
 {
-	double fileSimilarity( const CLAM::AudioFileSource& file, int channel,
+	double fileSimilarity( const std::string & file, int channel,
 			       const CLAM::Audio& rhs )
 	{
-		CLAM::AudioFileSource source = file;
+		CLAM::AudioFileSource source;
+		source.OpenExisting(file);
 		CLAM::AudioCodecs::Stream* stream = source.GetStream();
 		CLAM::DataArray samplesExtracted;
 		samplesExtracted.Resize( rhs.GetSize() );
@@ -29,11 +30,12 @@ namespace CLAMTest
 					   rhs.GetBuffer() );
 	}
 
-	void fileSimilarity( const CLAM::AudioFileSource& file,
+	void fileSimilarity( const std::string & file,
 			     const CLAM::Audio& left, const CLAM::Audio& right,
 			     double& similarityLeft, double& similarityRight )
 	{
-		CLAM::AudioFileSource source = file;
+		CLAM::AudioFileSource source;
+		source.OpenExisting(file);
 		CLAM::AudioCodecs::Stream* stream = source.GetStream();
 
 		CLAM::DataArray samplesExtractedLeft;
