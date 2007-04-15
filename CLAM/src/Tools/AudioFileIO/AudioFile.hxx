@@ -66,9 +66,9 @@ namespace CLAM
 
 	protected:
 		//! Usually the header is set into the file using CreateNew or OpenExistig (public) methods 
-		bool                   SetHeader( const AudioFileHeader& );
-		void                   ResolveCodec();
-		void                   SetKind( EAudioFileKind newKind );
+		bool SetHeader( const AudioFileHeader& );
+		void ResolveCodec();
+		void SetKind( EAudioFileKind newKind );
 
 		void ActivateCodec();
 		void ResetHeaderData();

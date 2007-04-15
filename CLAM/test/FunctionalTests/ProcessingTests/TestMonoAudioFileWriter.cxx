@@ -20,7 +20,7 @@ namespace CLAMTest
 	{
 		CPPUNIT_TEST_SUITE( MonoAudioFileWriterFunctionalTest );
 		
-		CPPUNIT_TEST( testDo_DoubleWriting_Is_Not_Allowed );
+		CPPUNIT_TEST( testConfigure_twoOnTheSameFileFail );
 		CPPUNIT_TEST( testDo_PCM_WritesTheSameItWasRead );
 		CPPUNIT_TEST( testDo_OggVorbis_WritesTheSameItWasRead );
 
@@ -44,15 +44,8 @@ namespace CLAMTest
 		
 		void testConfigure_ReturnsFalse_WithJustFilename()
 		{
-			CLAM::AudioFileTarget file;
-			CLAM::AudioFileHeader header;
-
-			file.CreateNew( std::string( "NewFile.wav" ), header );
-
 			CLAM::MonoAudioFileWriterConfig cfg;
-			cfg.AddTargetFile();
-			cfg.UpdateData();
-			cfg.SetTargetFile( file );
+			cfg.SetTargetFile( "NewFile.wav" );
 
 			CLAM::MonoAudioFileWriter proc;
 			bool configResult = proc.Configure( cfg );
@@ -61,14 +54,10 @@ namespace CLAMTest
 					      configResult );
 		}
 
-		void testDo_DoubleWriting_Is_Not_Allowed()
+		void testConfigure_twoOnTheSameFileFail()
 		{
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-			outputFileHeader.SetValues( 44100, 1, "WAV" );
-			outputFile.CreateNew( "twosines-stereo.wav", outputFileHeader );			
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
+			cfgWriter.SetTargetFile( "twosines-stereo.wav" );			
 
 			CLAM::MonoAudioFileWriter procWriter;
 			CLAM::MonoAudioFileWriter procWriter2;
@@ -87,26 +76,14 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procReader.Configure( cfgReader ) );		
 
-			CLAM::AudioFileTarget outputFile;
-
-			CLAM::AudioFileHeader outputFileHeader;
-
-			outputFileHeader.AddAll();
-			outputFileHeader.UpdateData();
-
-			outputFileHeader.SetChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
-			outputFileHeader.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
-			outputFileHeader.SetFormat( procReader.GetAudioFile().GetHeader().GetFormat() );
-			outputFileHeader.SetEncoding( procReader.GetAudioFile().GetHeader().GetEncoding() );
-			outputFileHeader.SetEndianess( procReader.GetAudioFile().GetHeader().GetEndianess() );
-
-			outputFile.CreateNew( "CopyOfElvis.wav.wav", outputFileHeader );
-
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "CopyOfElvis.wav.wav" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			// TODO: Those parameters have not been moved from the header to configuration
+//			cfgWriter.SetFormat( procReader.GetAudioFile().GetHeader().GetFormat() );
+//			cfgWriter.SetEncoding( procReader.GetAudioFile().GetHeader().GetEncoding() );
+//			cfgWriter.SetEndianess( procReader.GetAudioFile().GetHeader().GetEndianess() );
 			CLAM::MonoAudioFileWriter procWriter;
-
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
@@ -158,8 +135,6 @@ namespace CLAMTest
 
 		void testDo_OggVorbis_WritesTheSameItWasRead()
 		{
-
-
 			CLAM::MonoAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( mPathToTestData + std::string( "Elvis.wav" ) );
 			cfgReader.SetSelectedChannel( 0 );
@@ -167,20 +142,10 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procReader.Configure( cfgReader ) );
 
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-
-			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
-						    procReader.GetAudioFile().GetHeader().GetChannels(),
-						    "VorbisMk1" );
-
-			outputFile.CreateNew( "CopyOfElvis.ogg", outputFileHeader );
-
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "CopyOfElvis.ogg" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
 			CLAM::MonoAudioFileWriter procWriter;
-
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 

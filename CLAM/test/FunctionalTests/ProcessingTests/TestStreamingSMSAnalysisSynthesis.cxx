@@ -100,11 +100,7 @@ private:
 		
 		const std::string outputFile(GetTestDataDirectory("SMSTests/out_analysis-synthesis-streaming_sine"));
 		audioProvider.Configure( readercfg );
-		CLAM::AudioFileHeader header;
-		header.SetValues(44100, 1, "WAV");
-		CLAM::AudioFileTarget fileOut;
-		fileOut.CreateNew(outputFile+"_result.wav", header);
-		writercfg.SetTargetFile(fileOut);
+		writercfg.SetTargetFile(outputFile+"_result.wav");
 		audioWriter.Configure( writercfg );
 		
 		CLAM::SMSAnalysisCore analysis;

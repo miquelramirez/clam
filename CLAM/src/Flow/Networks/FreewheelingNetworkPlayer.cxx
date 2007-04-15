@@ -44,12 +44,9 @@ void FreewheelingNetworkPlayer::Start()
 	readercfg.SetSourceFile(mInFilename);
 	fileReader.Configure( readercfg );
 
-	AudioFileHeader header;
-	header.SetValues( 44100, 1, "WAV" );
-	AudioFileTarget fileOut;
-	fileOut.CreateNew( mOutFilename, header );
 	MonoAudioFileWriterConfig writercfg;
-	writercfg.SetTargetFile(fileOut);
+	writercfg.SetTargetFile(mOutFilename);
+	writercfg.SetSampleRate(fileReader.GetAudioFile().GetHeader().GetSampleRate());
 	MonoAudioFileWriter fileWriter;
 	fileWriter.Configure( writercfg );
 	

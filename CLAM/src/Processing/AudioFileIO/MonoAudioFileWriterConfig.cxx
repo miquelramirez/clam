@@ -28,5 +28,6 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
+		SetSampleRate(44100);
 	}
 }

@@ -23,7 +23,7 @@
 #define __MONOAUDIOFILEWRITERCONFIG__
 
 #include "ProcessingConfig.hxx"
-#include "AudioFile.hxx"
+#include "AudioOutFilename.hxx"
 #include "DataTypes.hxx"
 
 namespace CLAM
@@ -38,12 +38,13 @@ namespace CLAM
 		: public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE
-		( MonoAudioFileWriterConfig, 1, ProcessingConfig );
+		( MonoAudioFileWriterConfig, 2, ProcessingConfig );
 		
 		/** 
 		 *  The file where samples will be stored
 		 */
-		DYN_ATTRIBUTE( 0, public, AudioFileTarget, TargetFile );
+		DYN_ATTRIBUTE( 0, public, AudioOutFilename, TargetFile );
+		DYN_ATTRIBUTE( 1, public, CLAM::TData, SampleRate );
 
 	protected:
 		

@@ -36,19 +36,11 @@ int AudioFileIO::Load(const char* fileName,Audio& out)
 
 int AudioFileIO::Save(const char* fileName,Audio& in)
 {
-    AudioFileTarget file;
-    AudioFileHeader header;
-    header.SetValues(in.GetSampleRate(),1,EAudioFileFormat::eWAV);
-	
-    file.CreateNew(fileName, header);
-
-    if(!file.IsWritable()) return -1;
-
     MonoAudioFileWriterConfig cfg;
-    cfg.SetTargetFile(file);
-
+    cfg.SetTargetFile(fileName);
+	cfg.SetSampleRate(in.GetSampleRate());
     MonoAudioFileWriter outfile;
-    outfile.Configure(cfg);
+    if (!outfile.Configure(cfg)) return -1;
 	
     outfile.Start();
     outfile.Do(in);

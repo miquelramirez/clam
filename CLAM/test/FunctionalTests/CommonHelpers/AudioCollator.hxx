@@ -44,16 +44,10 @@ namespace CLAMTest
 	/// Saves audio to file using processig AudioFileOut
 	inline void helperSaveAudioToFile( CLAM::Audio& audio, const std::string filename )
 	{
-		CLAM::AudioFileTarget file;
-		CLAM::AudioFileHeader outputFileHeader;
-		outputFileHeader.SetValues( audio.GetSampleRate(), 1, "WAV" );
-		file.CreateNew(filename, outputFileHeader);
 		CLAM::MonoAudioFileWriterConfig cfg;
-		CLAM::MonoAudioFileWriter writer;
-		cfg.AddAll();
-		cfg.UpdateData();
-		cfg.SetTargetFile(file);
-		writer.Configure( cfg );
+		cfg.SetTargetFile(filename);
+		cfg.SetSampleRate(audio.GetSampleRate());
+		CLAM::MonoAudioFileWriter writer(cfg);
 		writer.Start();
 		writer.Do(audio);
 		writer.Stop();

@@ -53,9 +53,7 @@ namespace CLAM
 		if ( mOutStream )
 			delete mOutStream;
 		if ( mConfig.HasTargetFile() )
-			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile().GetLocation() );
-
-	
+			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile() );
 	}
 
 	const char* MonoAudioFileWriter::GetClassName() const
@@ -84,47 +82,49 @@ namespace CLAM
 	bool MonoAudioFileWriter::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
 		if ( mConfig.HasTargetFile() )
-			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile().GetLocation() );
+			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile() );
 
 		CopyAsConcreteConfig( mConfig, cfg );
 
-		AudioFile& targetFile = mConfig.GetTargetFile();
-		const std::string & location = targetFile.GetLocation();
+		const std::string & location = mConfig.GetTargetFile();
 
 		if ( location == "")
 		{
 			AddConfigErrorMessage("No file selected");
 			return false;
 		}
-		if ( ! targetFile.GetHeader().HasChannels())
+		AudioFileHeader header;
+		header.SetValues( mConfig.GetSampleRate(), 1, EAudioFileFormat::FormatFromFilename(location));
+		mFile.CreateNew(location, header);
+		if ( ! mFile.GetHeader().HasChannels())
 		{
 			AddConfigErrorMessage("The file is not writeable");
 			return false;
 		}
-		if ( targetFile.GetHeader().GetChannels() != 1 ) // this is the 'mono' file writer...
+		if ( mFile.GetHeader().GetChannels() != 1 ) // this is the 'mono' file writer...
 		{
 			AddConfigErrorMessage("Too many channels!");
 			return false;
 		}
 
-		if ( !targetFile.IsWritable() )
+		if ( !mFile.IsWritable() )
 		{
 			AddConfigErrorMessage("The format does not support such number of channels, endiannes or sampling rate.");
 			return false;
 		}
 
-		if ( FileSystem::GetInstance().IsFileLocked( mConfig.GetTargetFile().GetLocation() ) )
+		if ( FileSystem::GetInstance().IsFileLocked( mConfig.GetTargetFile() ) )
 		{
 			AddConfigErrorMessage("File: ");
-			AddConfigErrorMessage(mConfig.GetTargetFile().GetLocation() );
+			AddConfigErrorMessage(mConfig.GetTargetFile() );
 			AddConfigErrorMessage(" has been locked by another Processing");
 
 			return false;
 		}
 
-		FileSystem::GetInstance().LockFile( mConfig.GetTargetFile().GetLocation() );
+		FileSystem::GetInstance().LockFile( mConfig.GetTargetFile() );
 
-		mOutStream = targetFile.GetStream();
+		mOutStream = mFile.GetStream();
 
 		if ( !mOutStream )
 		{
