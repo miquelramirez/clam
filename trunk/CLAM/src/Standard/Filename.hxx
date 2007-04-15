@@ -42,8 +42,8 @@ class Filename : public Text
 {
 public:
 		struct Filter {
-			char * description;
-			char * wildcard;
+			const char * description;
+			const char * wildcard;
 		};
 		Filename() {}
 		Filename(const std::string & s) : Text(s) {} 
