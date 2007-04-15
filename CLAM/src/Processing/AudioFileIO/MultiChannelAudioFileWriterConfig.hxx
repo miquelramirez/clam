@@ -23,7 +23,7 @@
 #define __MULTICHANNELAUDIOFILEWRITERCONFIG__
 
 #include "ProcessingConfig.hxx"
-#include "AudioFile.hxx"
+#include "AudioOutFilename.hxx"
 #include "DataTypes.hxx"
 
 namespace CLAM
@@ -39,14 +39,15 @@ namespace CLAM
 		: public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE
-		( MultiChannelAudioFileWriterConfig, 2, ProcessingConfig );
+		( MultiChannelAudioFileWriterConfig, 3, ProcessingConfig );
 		
 		/**
 		 *  The file where samples are to be stored
 		 */
 
-		DYN_ATTRIBUTE( 0, public, AudioFileTarget, TargetFile );
-		DYN_ATTRIBUTE( 1, public, unsigned, NChannels );
+		DYN_ATTRIBUTE( 0, public, AudioOutFilename, TargetFile );
+		DYN_ATTRIBUTE( 1, public, TData, SampleRate );
+		DYN_ATTRIBUTE( 2, public, unsigned, NChannels );
 
 	protected:
 

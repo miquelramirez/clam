@@ -24,6 +24,7 @@
 
 #include "MultiChannelAudioFileWriterConfig.hxx"
 #include "Processing.hxx"
+#include "AudioFile.hxx"
 #include <vector>
 #include "Array.hxx"
 
@@ -64,7 +65,7 @@ namespace CLAM
 		AudioCodecs::Stream*                 mNativeStream;
 		Array<TIndex>                        mChannelsToWrite;
 		Array<TData*>                        mSamplesMatrix;
-
+		AudioFileTarget                      mAudioFile;
 	};
 }
 

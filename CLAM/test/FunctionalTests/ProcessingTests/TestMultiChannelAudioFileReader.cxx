@@ -507,18 +507,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( mPathToTestData+"test-stereo-decoding-128_44.mp3" );
 			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
 
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-					
-			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
-						    procReader.GetAudioFile().GetHeader().GetChannels(),
-						    "WAV" );
-	
-			outputFile.CreateNew( "test-mp3-128-44.wav", outputFileHeader );			
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "test-mp3-128-44.wav" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);
@@ -653,17 +645,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( mPathToTestData+"test-stereo-decoding-192_44.mp3" );
 			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
 
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
-						    procReader.GetAudioFile().GetHeader().GetChannels(),
-						    "WAV" );
-	
-			outputFile.CreateNew( "test-mp3-192-44.wav", outputFileHeader );			
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "test-mp3-192-44.wav" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);
@@ -799,19 +784,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( mPathToTestData+"test-stereo-decoding-64_44.mp3" );
 			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
 
-
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-					
-			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
-						    procReader.GetAudioFile().GetHeader().GetChannels(),
-						    "WAV" );
-	
-			outputFile.CreateNew( "test-mp3-64-44.wav", outputFileHeader );			
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "test-mp3-64-44.wav" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);
@@ -945,22 +921,15 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( mPathToTestData+"test-stereo-decoding-320_44.mp3" );
 			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
 
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-					
-			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
-						    procReader.GetAudioFile().GetHeader().GetChannels(),
-						    "WAV" );
-			outputFile.CreateNew( "test-mp3-320-44.wav", outputFileHeader );			
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "test-mp3-320-44.wav" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
+
 			std::vector<CLAM::Audio> samples(2);
 			samples[0].SetSize( 4096 );
 			samples[1].SetSize( 4096 );
-
 
 			procReader.Start();
 			procWriter.Start();
@@ -1088,18 +1057,12 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( mPathToTestData+"test-stereo-decoding-LowVBR_44.mp3" );
 			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
 
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-					
-			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
-						    procReader.GetAudioFile().GetHeader().GetChannels(),
-						    "WAV" );
-	
-			outputFile.CreateNew( "test-mp3-LowVBR-44.wav", outputFileHeader );			
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
+			cfgWriter.SetTargetFile( "test-mp3-LowVBR-44.wav" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
+
 			std::vector<CLAM::Audio> samples(2);
 			samples[0].SetSize( 4096 );
 			samples[1].SetSize( 4096 );
@@ -1230,17 +1193,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( mPathToTestData+"test-stereo-decoding-HighVBR_44.mp3" );
 			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
 
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
-						    procReader.GetAudioFile().GetHeader().GetChannels(),
-						    "WAV" );
-	
-			outputFile.CreateNew( "test-mp3-HighVBR-44.wav", outputFileHeader );			
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "test-mp3-HighVBR-44.wav" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);
@@ -1374,18 +1330,10 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( mPathToTestData+"test-stereo-decoding-AvgVBR_44.mp3" );
 			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
 
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-					
-			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
-						    procReader.GetAudioFile().GetHeader().GetChannels(),
-						    "WAV" );
-	
-			outputFile.CreateNew( "test-mp3-AvgVBR-44.wav", outputFileHeader );			
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "test-mp3-AvgVBR-44.wav" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);

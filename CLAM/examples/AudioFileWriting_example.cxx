@@ -63,65 +63,27 @@ int main( int argc, char** argv )
 		
 		exit( -1 );
 	}
-
-	// When we write on to an audio file it is our responsability to define
-	// its header: the output format, the number of channels in the file, etc.
-	// So let's first create a CLAM::AudioFileHeader object:
-	CLAM::AudioFileHeader header;
-
-	// Some usual thing to do, is to deduce the file format from the file extension.
-	// You can obtain the file format from a given filename with the static method:
-	// CLAM::EAudioFileFormat::FileFormatFromFilename() which takes as a parameter a std::string and returns
-	// a CLAM::AudioFileFormat object.
-
-	CLAM::EAudioFileFormat outputFormat = 
-		CLAM::EAudioFileFormat::FormatFromFilename( argv[1] );
-
-	std::cout << "Desired output format: " << outputFormat << std::endl;
-
-	// Besides the output format, we also must to decide the output sample rate and
-	// number of channels
+	// As we can be quite sure that we have one parameter at argv[1].
+	// Lets prepare the configuration for our file writer.
 	const CLAM::TData sampleRate = 44100.; // Hz
 	const CLAM::TSize nChannels = 2;
-
-	// Now, to set the header values we can use the method AudioFileHeader::SetValues,
-	// whose parameters in order are: the file sample rate, the number of channels and
-	// the target format
-
-	header.SetValues( sampleRate, nChannels, outputFormat );
-
-	
-	// As we can be quite sure that we have one parameter at argv[1] we can
-	// set the Audio file location, as well as the header we want the new
-	// file to feature.
-	CLAM::AudioFileTarget file;
-	file.CreateNew( argv[1], header );
-
-	// Finally, we must check if the header settings are compatible with the
-	// output format we specified:
-
-	if ( !file.IsWritable() )
-	{
-		std::cerr << "The desired format " << outputFormat;
-		std::cerr << "does not support current header parameters" << std::endl;
-		exit(-1);
-	}
-
-	// Much like in the "AudioFileReading" example, now we must create a 
-	// MultiChannelAudioFileWriterConfig object, for configuring the 'writer' processing
 	CLAM::MultiChannelAudioFileWriterConfig configObject;
-
-	// We add the 'Target File' attribute to the config
-	configObject.AddTargetFile();
-	configObject.UpdateData();
-	
-	// And we set the 'Target File' attribute to the AudioFile object
-	// we have been working on
-	configObject.SetTargetFile( file );
+	// File format (ogg, wav, aiff...) is deduced from the file name extension.
+	configObject.SetTargetFile( argv[1] );
+	// This is an example on how to change the number of channels
+	// and the sample rate. 
+	// As we are using the defaults (2 channels and 44100 Hz)
+	// we don't need to do it but just as an example on how  to do it.
+	configObject.SetSampleRate( sampleRate );
+	configObject.SetNChannels( nChannels );
 
 	// Now we can instantiate the MultiChannelAudioFileWriter and configure it
 	CLAM::MultiChannelAudioFileWriter writer;
-	writer.Configure( configObject );
+	if ( ! writer.Configure( configObject ) )
+	{
+		std::cerr << writer.GetConfigErrorMessage() << std::endl;
+		exit(-1);
+	}
 
 	// Finally, we must set the data we want to write on to the file. We will just implement
 	// a simple sinusoidal synthesis, where in each channel there is a sinusoid with the same
