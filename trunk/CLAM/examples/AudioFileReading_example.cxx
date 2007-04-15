@@ -66,14 +66,15 @@ int main( int argc, char** argv )
 	CLAM::MultiChannelAudioFileReaderConfig cfg;
 	// We set the 'SourceFile' config attribute to the parameter we received
 	cfg.SetSourceFile( argv[1] );
-	// Intantiate the processing using such configuration
-	CLAM::MultiChannelAudioFileReader reader( cfg );
+	// Intantiate the processing
+	CLAM::MultiChannelAudioFileReader reader;
 
-	// And now check that the given file can be read
-	if ( !reader.GetAudioFile().IsReadable() )
+	// And configure it
+	if ( !reader.Configure(cfg) ) 
 	{
-		std::cerr << "Error: file " << cfg.GetSourceFile() << " cannot be opened ";
-		std::cerr << "or is encoded in an unrecognized format" << std::endl;
+		std::cerr
+			<< "Error opening file: " << cfg.GetSourceFile() << std::endl
+			<< reader.GetConfigErrorMessage() << std::endl;
 		exit(-1);
 	}
 

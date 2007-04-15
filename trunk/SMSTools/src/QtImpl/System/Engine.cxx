@@ -163,11 +163,7 @@ namespace QtSMS
 		cfg.SetSelectedChannel( selectedChannel );
 
 		CLAM::MonoAudioFileReader fileReader;
-		fileReader.Configure( cfg );
-
-		const CLAM::AudioFileSource & selectedFile = fileReader.GetAudioFile();
-
-		if ( !selectedFile.IsReadable() )
+		if (!fileReader.Configure( cfg ))
 		{
 			QMessageBox::critical(0, "SMS Tools 2",QObject::tr(
 				"Sorry, but the file %1\n"
@@ -177,7 +173,7 @@ namespace QtSMS
 			return false;
 		}
 
-		if ( selectedFile.GetHeader().GetChannels() > 1 )
+		if ( fileReader.GetAudioFile().GetHeader().GetChannels() > 1 )
 		{
 			QMessageBox::warning(0, "SMS Tools 2",QObject::tr(
 				"The file %1\n"
@@ -191,8 +187,8 @@ namespace QtSMS
 
 		fileReader.Start();
 
-		CLAM::TData sampleRate = selectedFile.GetHeader().GetSampleRate();
-		CLAM::TData length = selectedFile.GetHeader().GetLength();
+		CLAM::TData sampleRate = fileReader.GetAudioFile().GetHeader().GetSampleRate();
+		CLAM::TData length = fileReader.GetAudioFile().GetHeader().GetLength();
 
 		/////////////////////////////////////////////////////////////////////////////
 		// Initialization of the processing data objects :

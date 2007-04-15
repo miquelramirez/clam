@@ -6,11 +6,11 @@
 
 namespace CLAMTest
 {
-	double fileSimilarity( const CLAM::AudioFileSource& filename, 
+	double fileSimilarity( const std::string & filename, 
 			       int channel, 
 			       const CLAM::Audio& rhs );
 	
-	void fileSimilarity( const CLAM::AudioFileSource& filename,
+	void fileSimilarity( const std::string & filename,
 			     const CLAM::Audio& left, const CLAM::Audio& right,
 			     double& similarityLeft, double& similarityRight );
 
