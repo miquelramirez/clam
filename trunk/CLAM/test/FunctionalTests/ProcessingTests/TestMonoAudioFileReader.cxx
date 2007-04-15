@@ -401,22 +401,10 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procReader.Configure( cfgReader ) );		
 
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-
-			outputFileHeader.AddAll();
-			outputFileHeader.UpdateData();
-
-			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
-						    1,
-						    "WAV" );
-			outputFile.CreateNew( "trumpet-copy.wav", outputFileHeader );
-
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "trumpet-copy.wav" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate());
 			CLAM::MonoAudioFileWriter procWriter;
-
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 

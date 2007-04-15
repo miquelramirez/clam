@@ -52,40 +52,29 @@ int main( int argc, char** argv )
 		CLAM::AudioManager manager(sampleRate, size);
 		manager.Start();
 
-		// In this example, we will produce a sine signal with an oscillator, sending the sine to the audio out. 
-
-
+		// In this example, we will produce a sine signal with an oscillator,
+		// convert it into frequency domain spectrum with an FFT (Fast Fourier
+		// Transform), way back to audio with an IFFT (Inverse FFT), then
+		// the output is both sent to the speakers and an ouput file.
 		CLAM::SimpleOscillator osc;
-		CLAM::AudioOut audioOut;
 	
 		CLAM::FFTConfig fconfig;
 		fconfig.SetAudioSize(size);	
+		CLAM::FFT myfft( fconfig );
+
 		CLAM::IFFTConfig ifconfig;
 		ifconfig.SetAudioSize(size);
-
-		CLAM::FFT myfft;
-		myfft.Configure( fconfig );
-		CLAM::IFFT myifft;
-		myifft.Configure( ifconfig );
+		CLAM::IFFT myifft( ifconfig );
 	
-		CLAM::AudioFileTarget file;
-
-		CLAM::AudioFileHeader header;
-		CLAM::EAudioFileFormat outputFormat = 
-			CLAM::EAudioFileFormat::FormatFromFilename( "test.wav" );
-		header.SetValues( sampleRate, 1, outputFormat );
-
-
-		file.CreateNew( "test.wav", header );
 		CLAM::MonoAudioFileWriterConfig configWriter;
-		configWriter.AddTargetFile();
-		configWriter.UpdateData();
-		configWriter.SetTargetFile( file );
-		CLAM::MonoAudioFileWriter writer;
-		writer.Configure( configWriter );
+		configWriter.SetTargetFile( "test.wav" );
+		CLAM::MonoAudioFileWriter writer( configWriter );
 
-		// we need to configure the ports with the correct size in order to get the data automatically.
-		// the way of accessing the ports is by name, specifying before which kind of port you need.
+		CLAM::AudioOut audioOut;
+
+		// If we configure audio ports the same size than the FFT
+		// then all the processings can be run at the same rate
+		// and there is no need of a complex flow control.
 		osc.GetOutPort("Audio Output").SetSize( size );
 		osc.GetOutPort("Audio Output").SetHop( size );
 
@@ -95,12 +84,11 @@ int main( int argc, char** argv )
 		writer.GetInPort("Samples Write").SetSize( size );
 		writer.GetInPort("Samples Write").SetHop( size );
 
-		// after this, is needed to attach the different ports to their respective nodes.
-//		CLAM::ConnectPorts( osc, "Audio Output", audioOut, "Audio Input");
+		// Connecting the ports of each processing
 		CLAM::ConnectPorts( osc, "Audio Output", myfft, "Audio Input");
 		CLAM::ConnectPorts( myfft, "Spectrum Output", myifft, "Spectrum Input");
 		CLAM::ConnectPorts( myifft, "Audio Output", audioOut, "Audio Input");
-		CLAM::ConnectPorts( osc, "Audio Output", writer, "Samples Write");
+		CLAM::ConnectPorts( myifft, "Audio Output", writer, "Samples Write");
 
 	
 		osc.Start();

@@ -25,9 +25,12 @@
 #include "Processing.hxx"
 #include "MonoAudioFileWriterConfig.hxx"
 #include "AudioInPort.hxx"
+#include "AudioFile.hxx"
 
 namespace CLAM
 {
+	namespace AudioCodecs { class Stream;}
+
 	class MonoAudioFileWriter
 		: public Processing
 	{
@@ -50,9 +53,10 @@ namespace CLAM
 
 	protected: // attributes
 		
-		MonoAudioFileWriterConfig      mConfig;
+		MonoAudioFileWriterConfig  mConfig;
 		AudioInPort 		       mInput;
-		AudioCodecs::Stream*           mOutStream;
+		AudioCodecs::Stream*       mOutStream;
+		AudioFileTarget            mFile;
 	};
 }
 

@@ -215,17 +215,9 @@ namespace QtSMS
 
 	void Engine::StoreSound(const CLAM::Audio& audio, const std::string& filename)
 	{
-		CLAM::EAudioFileFormat desiredOutputFmt = 
-			CLAM::EAudioFileFormat::FormatFromFilename( filename );
-
-		CLAM::AudioFileTarget outputFile;
-		CLAM::AudioFileHeader fileHeader;
-		fileHeader.SetValues( audio.GetSampleRate(), 1, desiredOutputFmt );
-
-		outputFile.CreateNew( filename, fileHeader );
-
 		CLAM::MonoAudioFileWriterConfig cfgWriter;
-		cfgWriter.SetTargetFile(outputFile);
+		cfgWriter.SetTargetFile(filename);
+		cfgWriter.SetSampleRate(audio.GetSampleRate());
 
 		CLAM::MonoAudioFileWriter proc;
 		proc.Configure( cfgWriter );
