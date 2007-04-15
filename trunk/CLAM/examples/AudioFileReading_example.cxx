@@ -60,15 +60,19 @@ int main( int argc, char** argv )
 		exit( -1 );
 	}
 	
-	// Now we are pretty sure that argv[1] holds a parameter. We set the file 
-	// location:
-	CLAM::AudioFileSource file;
-	file.OpenExisting( argv[1] );
+	// Now we are pretty sure that argv[1] holds a parameter.
+	// We create a configuration for the MultiChannelAudioFileReader,
+	// which will read the samples from the file
+	CLAM::MultiChannelAudioFileReaderConfig cfg;
+	// We set the 'SourceFile' config attribute to the parameter we received
+	cfg.SetSourceFile( argv[1] );
+	// Intantiate the processing using such configuration
+	CLAM::MultiChannelAudioFileReader reader( cfg );
 
 	// And now check that the given file can be read
-	if ( !file.IsReadable() )
+	if ( !reader.GetAudioFile().IsReadable() )
 	{
-		std::cerr << "Error: file " << file.GetLocation() << " cannot be opened ";
+		std::cerr << "Error: file " << cfg.GetSourceFile() << " cannot be opened ";
 		std::cerr << "or is encoded in an unrecognized format" << std::endl;
 		exit(-1);
 	}
@@ -80,28 +84,13 @@ int main( int argc, char** argv )
 	// And now we must setup the CLAM::Audio to hold the incoming samples from
 	// each file channel.
 	std::vector<CLAM::Audio> outputs;
-	outputs.resize( file.GetHeader().GetChannels() );
+	outputs.resize( reader.GetAudioFile().GetHeader().GetChannels() );
 
 	// And now we set the size of each Audio object to our intended 'read size'
 	for ( unsigned i = 0; i < outputs.size(); i++ )
 	{
 		outputs[i].SetSize( readSize );
 	}
-
-	// Once done this we create a MultiChannelAudioFileReaderConfig object
-	// for configuring the MultiChannelAudioFileReader that will actually
-	// read the samples from the file
-	CLAM::MultiChannelAudioFileReaderConfig cfg;
-
-	// We set the 'Source File' config attribute to the AudioFile object
-	// we created before
-	cfg.SetSourceFile( file );
-
-	// Now we instantiate the MultiChannelAudioFileReader processing
-	// and configure it:
-	CLAM::MultiChannelAudioFileReader reader;
-
-	reader.Configure( cfg );
 
 	// Now we can safely Start() the processing
 	reader.Start();
@@ -123,7 +112,6 @@ int main( int argc, char** argv )
 	// cannot generate any more Audio objects.
 	while ( reader.Do( outputs ) )
 	{
-
 		std::cout << "At frame #" << frameCount << std::endl;
 
 		for ( unsigned int i = 0; i < outputs.size(); i++ )

@@ -60,28 +60,19 @@ int main( int argc, char** argv )
 		// Now we will prepare file playback very similarly as the first half of the
 		// "AudioFileReading" example
 
-		CLAM::AudioFileSource file;
-		file.OpenExisting( argv[1] );
-		
-		// And now check that the given file can be read
-		if ( !file.IsReadable() )
+		CLAM::MultiChannelAudioFileReaderConfig cfg;
+		cfg.SetSourceFile( argv[1] );
+		CLAM::MultiChannelAudioFileReader reader;
+		if (!reader.Configure( cfg ))
 		{
-			std::cerr << "Error: file " << file.GetLocation() << " cannot be opened ";
+			std::cerr << "Error: file " << cfg.GetSourceFile() << " cannot be opened ";
 			std::cerr << "or is encoded in an unrecognized format" << std::endl;
 			exit(-1);
 		}
 
 		std::vector<CLAM::Audio> incomingAudioChannels;
-		incomingAudioChannels.resize( file.GetHeader().GetChannels() );
-			
-		CLAM::MultiChannelAudioFileReaderConfig cfg;
-		
-		cfg.SetSourceFile( file );
-		
-		CLAM::MultiChannelAudioFileReader reader;
-		
-		reader.Configure( cfg );
-		
+		incomingAudioChannels.resize( reader.GetAudioFile().GetHeader().GetChannels() );
+
 		// Once we made sure we can start playing the file, it's time to access and configure the audio hardware devices
 		// present in our computer. We will do this through the 'AudioManager': a global, unique object that
 		// mediates between your program and the underlying Operating System sound hardware services.
@@ -102,7 +93,7 @@ int main( int argc, char** argv )
 		// of reasons, not being the only one the fact it is a power of two :)
 
 		
-		const CLAM::TData playbackSampleRate = file.GetHeader().GetSampleRate();
+		const CLAM::TData playbackSampleRate = reader.GetAudioFile().GetHeader().GetSampleRate();
 		const CLAM::TSize frameSize = 1024; // this is also our read size
 
 		// And now we set the size of each Audio object to our intended 'read size'
@@ -111,7 +102,6 @@ int main( int argc, char** argv )
 		{
 			incomingAudioChannels[i].SetSize( frameSize );
 		}
-
 
 		CLAM::AudioManager theAudioManager( (int)playbackSampleRate, frameSize );
 

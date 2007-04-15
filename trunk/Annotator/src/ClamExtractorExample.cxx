@@ -34,8 +34,8 @@
 #include <CLAM/Segment.hxx>
 #include <CLAM/SegmentDescriptors.hxx>
 #include <CLAM/DescriptorComputation.hxx>
-#include <CLAM/MultiChannelAudioFileReader.hxx>
-#include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/MonoAudioFileReaderConfig.hxx>
 #include <CLAM/FFT.hxx>
 #include <CLAM/Spectrum.hxx>
 #include <CLAM/SpectrumConfig.hxx>
@@ -663,26 +663,24 @@ void ComputeSegment(const CLAM::Audio& audio,CLAM::Segment& segment,
 void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text & artist, CLAM::Text & title)
 {
 	const CLAM::TSize readSize = 1024;
-	CLAM::AudioFileSource file;
-	file.OpenExisting(filename);
-	CLAM_ASSERT(file.IsReadable(), ("Error opening '" + filename +"'").c_str());
-	const CLAM::AudioTextDescriptors & textDescriptors = file.GetTextDescriptors();
+	CLAM::MonoAudioFileReaderConfig cfg;
+	cfg.SetSourceFile( filename );
+	CLAM::MonoAudioFileReader reader;
+	if (!reader.Configure(cfg))
+		CLAM_ASSERT(false, ("Error opening '" + filename +"'").c_str());
+	const CLAM::AudioTextDescriptors & textDescriptors = reader.GetAudioFile().GetTextDescriptors();
 	if (textDescriptors.HasArtist()) artist = textDescriptors.GetArtist();
 	if (textDescriptors.HasTitle()) title = textDescriptors.GetTitle();
-	int nChannels = file.GetHeader().GetChannels();
-	std::vector<CLAM::Audio> audioFrameVector(nChannels);
-	for (int i=0;i<nChannels;i++)
-		audioFrameVector[i].SetSize(readSize);
-	CLAM::MultiChannelAudioFileReaderConfig cfg;
-	cfg.SetSourceFile( file );
-	CLAM::MultiChannelAudioFileReader reader(cfg);
+	int nChannels = reader.GetAudioFile().GetHeader().GetChannels();
+	CLAM::Audio audioFrame;
+	audioFrame.SetSize(readSize);
 	reader.Start();
 	int beginSample=0;
-	int nSamples = file.GetHeader().GetSamples(); 
+	int nSamples = reader.GetAudioFile().GetHeader().GetSamples(); 
 	audio.SetSize(nSamples);
-	while(reader.Do(audioFrameVector))
+	while(reader.Do(audioFrame))
 	{
-		audio.SetAudioChunk(beginSample,audioFrameVector[0]);
+		audio.SetAudioChunk(beginSample,audioFrame);
 		beginSample+=readSize;
 		if(beginSample+readSize>nSamples) break;
 	}

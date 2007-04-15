@@ -121,12 +121,12 @@ namespace CLAM
 		for ( OutputVec::iterator i = outputs.begin();
 				i != outputs.end(); i++ )
 		{
-			(*i).SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+			(*i).SetSampleRate( mAudioFile.GetHeader().GetSampleRate() );
 			(*i).SetBeginTime( mCurrentBeginTime );
 		}
 		
 		
-		mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate()*1000;
+		mDeltaTime = TData(sizeTmp) / mAudioFile.GetHeader().GetSampleRate()*1000;
 		mCurrentBeginTime += mDeltaTime;	
 		
 		return mNativeStream->WasSomethingRead();
@@ -190,12 +190,12 @@ namespace CLAM
 		for ( OutRefsVector::iterator i = outRefs.begin();
 				i != outRefs.end(); i++ )
 		{
-			(*i)->SetSampleRate( mConfig.GetSourceFile().GetHeader().GetSampleRate() );
+			(*i)->SetSampleRate( mAudioFile.GetHeader().GetSampleRate() );
 			(*i)->SetBeginTime( mCurrentBeginTime );
 		}
 		
 		
-		mDeltaTime = TData(sizeTmp) / mConfig.GetSourceFile().GetHeader().GetSampleRate();
+		mDeltaTime = TData(sizeTmp) / mAudioFile.GetHeader().GetSampleRate();
 		mCurrentBeginTime += mDeltaTime;
 			
 		
@@ -218,13 +218,14 @@ namespace CLAM
 			return false;
 		}
 
-		if ( mConfig.GetSourceFile().GetLocation() == "" )
+		if ( mConfig.GetSourceFile() == "" )
 		{
 			AddConfigErrorMessage("No file selected");
 			return false;
 		}
 
-		if ( !mConfig.GetSourceFile().IsReadable() )
+		mAudioFile.OpenExisting(mConfig.GetSourceFile());
+		if ( !mAudioFile.IsReadable() )
 		{
 			AddConfigErrorMessage("The audio file could not be opened!");
 			return false;
@@ -232,8 +233,8 @@ namespace CLAM
 
 		if ( !mConfig.HasSelectedChannels() )
 		{
-			mSelectedChannels.Resize( mConfig.GetSourceFile().GetHeader().GetChannels() );
-			mSelectedChannels.SetSize( mConfig.GetSourceFile().GetHeader().GetChannels() );
+			mSelectedChannels.Resize( mAudioFile.GetHeader().GetChannels() );
+			mSelectedChannels.SetSize( mAudioFile.GetHeader().GetChannels() );
 
 			DestroyOldOutputs();
 
@@ -258,13 +259,13 @@ namespace CLAM
 			// Checking selected channels validity
 			mSelectedChannels = mConfig.GetSelectedChannels();
 
-			if ( mSelectedChannels.Size() != mConfig.GetSourceFile().GetHeader().GetChannels() )
+			if ( mSelectedChannels.Size() != mAudioFile.GetHeader().GetChannels() )
 			{
 				AddConfigErrorMessage("The configuration asked for more channels than the audio file has.");
 				return false;
 			}
 
-			int maxChannels = mConfig.GetSourceFile().GetHeader().GetChannels();
+			int maxChannels = mAudioFile.GetHeader().GetChannels();
 
 			for ( int i = 0; i < mSelectedChannels.Size(); i++ )
 				if ( mSelectedChannels[i] < 0
@@ -291,7 +292,7 @@ namespace CLAM
 			mSamplesMatrix.SetSize( maxChannels );
 		}
 
-		mNativeStream = mConfig.GetSourceFile().GetStream();
+		mNativeStream = mAudioFile.GetStream();
 
 		if (!mNativeStream )
 		{
@@ -315,7 +316,7 @@ namespace CLAM
 	bool MultiChannelAudioFileReader::ConcreteStart()
 	{
 		if (mNativeStream == NULL) 
-			mNativeStream = mConfig.GetSourceFile().GetStream();
+			mNativeStream = mAudioFile.GetStream();
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
 		mEOFReached = false;

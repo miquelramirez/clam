@@ -24,6 +24,7 @@
 
 #include "Processing.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
+#include "AudioFile.hxx"
 #include "Audio.hxx"
 #include <vector>
 
@@ -46,6 +47,7 @@ namespace CLAM
 		virtual bool Do( std::vector<Audio>& outputs );
 		bool ModifiesPortsAndControlsAtConfiguration();
 		const Array<TIndex> & GetSelectedChannels() const {return mSelectedChannels;}
+		const AudioFileSource & GetAudioFile() const { return mAudioFile; }
 	
 	protected: // methods
 		
@@ -68,6 +70,7 @@ namespace CLAM
 		TTime                               mCurrentBeginTime;
 		TTime                               mDeltaTime;
 		bool                                mEOFReached;
+		AudioFileSource                     mAudioFile;
 	};
 }
 
