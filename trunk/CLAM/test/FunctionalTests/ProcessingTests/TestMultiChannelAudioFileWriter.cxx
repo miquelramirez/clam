@@ -40,26 +40,15 @@ namespace CLAMTest
 		
 		void testDo_PCM_WritesRightAKnownSignal()
 		{
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-						
-			outputFileHeader.SetValues( 44100, 2, "WAV" );
-
-			outputFile.CreateNew( "twosines-stereo.wav", outputFileHeader );			
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
-
-			CLAM::MultiChannelAudioFileWriter procWriter;
+			cfgWriter.SetTargetFile( "twosines-stereo.wav" );
+			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			CPPUNIT_ASSERT_EQUAL( true, procWriter.Configure( cfgWriter ) );
 
 			std::vector<CLAM::Audio> samples(2);
 			samples[0].SetSize( 256 );
 			samples[1].SetSize( 256 );
-
-
 
 			procWriter.Start();
 
@@ -108,19 +97,11 @@ namespace CLAMTest
 
 		void testDo_DoubleWriting_Is_Not_Allowed()
 		{
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-						
-			outputFileHeader.SetValues( 44100, 2, "WAV" );
-			outputFile.CreateNew( "twosines-stereo.wav", outputFileHeader );			
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "twosines-stereo.wav" );
 
 			CLAM::MultiChannelAudioFileWriter procWriter;
-			
 			CLAM::MultiChannelAudioFileWriter procWriter2;
-
 			
 			procWriter.Configure( cfgWriter );
 
@@ -134,25 +115,16 @@ namespace CLAMTest
 			cfgReader.SetSourceFile( mPathToTestData+"test-stereo-decoding.wav" );
 			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
 
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-						
-			outputFileHeader.AddAll();
-			outputFileHeader.UpdateData();
-
-			outputFileHeader.SetChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
-			outputFileHeader.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
-			outputFileHeader.SetFormat( procReader.GetAudioFile().GetHeader().GetFormat() );
-			outputFileHeader.SetEncoding( procReader.GetAudioFile().GetHeader().GetEncoding() );
-			outputFileHeader.SetEndianess( procReader.GetAudioFile().GetHeader().GetEndianess() );
-
-			outputFile.CreateNew( "test-stereo-decoding-copy.wav", outputFileHeader );
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
-			CLAM::MultiChannelAudioFileWriter procWriter;
+			cfgWriter.SetTargetFile( "test-stereo-decoding-copy.wav" );
+			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			// Not yet supported
+//			cfgWriter.SetFormat( procReader.GetAudioFile().GetHeader().GetFormat() );
+//			cfgWriter.SetEncoding( procReader.GetAudioFile().GetHeader().GetEncoding() );
+//			cfgWriter.SetEndianess( procReader.GetAudioFile().GetHeader().GetEndianess() );
 
+			CLAM::MultiChannelAudioFileWriter procWriter;
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 
@@ -225,20 +197,11 @@ namespace CLAMTest
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procReader.Configure( cfgReader ) );		
 
-			CLAM::AudioFileTarget outputFile;
-			CLAM::AudioFileHeader outputFileHeader;
-					
-			outputFileHeader.SetValues( procReader.GetAudioFile().GetHeader().GetSampleRate(),
-						    procReader.GetAudioFile().GetHeader().GetChannels(),
-						    "VorbisMk1" );
-	
-			outputFile.CreateNew( "ElvisStereo-copy.ogg", outputFileHeader );			
-
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
-			cfgWriter.SetTargetFile( outputFile );
-			
+			cfgWriter.SetTargetFile( "ElvisStereo-copy.ogg" );
+			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate());
+			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels());
 			CLAM::MultiChannelAudioFileWriter procWriter;
-
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
 

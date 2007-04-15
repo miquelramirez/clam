@@ -59,7 +59,7 @@ namespace CLAM
 		DestroyOldInputs();
 
 		if ( mConfig.HasTargetFile() )
-			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile().GetLocation() );
+			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile() );
 
 	}
 
@@ -167,56 +167,47 @@ namespace CLAM
 
 	bool MultiChannelAudioFileWriter::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
+		const AudioOutFilename & filename = mConfig.GetTargetFile();
 		if ( mConfig.HasTargetFile() )
-			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile().GetLocation() );
+			FileSystem::GetInstance().UnlockFile( filename );
 
 		CopyAsConcreteConfig( mConfig, cfg );
 
-		AudioFileTarget& targetFile = mConfig.GetTargetFile();
-		const std::string & location =targetFile.GetLocation();
-		if (location=="")
+		if (filename=="")
 		{
 			AddConfigErrorMessage("No file selected");
 			return false;
 		}
-
+		
 		unsigned nChannels = mConfig.HasNChannels()? mConfig.GetNChannels() : 1;
 		if ( nChannels < 1 )
 		{
 			AddConfigErrorMessage("Channels should be, at least, 1.");
 			return false;
 		}
-		AudioFileHeader header = targetFile.GetHeader();
-		if (!header.HasFormat())
-		{
-			header.AddFormat();
-			header.UpdateData();
-			header.SetFormat(CLAM::EAudioFileFormat::FormatFromFilename(location) );
-		}
-		if (!header.HasChannels())
-		{
-			header.AddChannels();
-			header.UpdateData();
-		}
-		header.SetChannels(nChannels);
-		targetFile.CreateNew(location,header);
-		if ( !targetFile.IsWritable() )
+		AudioFileHeader header;
+		header.SetValues(
+			mConfig.GetSampleRate(),
+			nChannels,
+			CLAM::EAudioFileFormat::FormatFromFilename(filename) );
+		mAudioFile.CreateNew(filename, header);
+		if ( !mAudioFile.IsWritable() )
 		{
 			AddConfigErrorMessage("The format does not support such number of channels, endiannes or sampling rate.");
 
 			return false;
 		}
 
-		if ( FileSystem::GetInstance().IsFileLocked( mConfig.GetTargetFile().GetLocation() ) )
+		if ( FileSystem::GetInstance().IsFileLocked( filename ) )
 		{
 			AddConfigErrorMessage("The file '");
-			AddConfigErrorMessage( mConfig.GetTargetFile().GetLocation() );
+			AddConfigErrorMessage( filename );
 			AddConfigErrorMessage("' has been locked by another Processing");
 
 			return false;
 		}
 
-		FileSystem::GetInstance().LockFile( mConfig.GetTargetFile().GetLocation() );
+		FileSystem::GetInstance().LockFile( filename );
 
 
 		if ( !mInputs.empty() )
@@ -238,7 +229,7 @@ namespace CLAM
 				new AudioInPort( "Channel #" + sstr.str(), this) );
 		}
 
-		mNativeStream = targetFile.GetStream();
+		mNativeStream = mAudioFile.GetStream();
 
 		if ( !mNativeStream )
 		{
@@ -252,7 +243,7 @@ namespace CLAM
 	bool MultiChannelAudioFileWriter::ConcreteStart()
 	{
 		if (mNativeStream == NULL )
-			mNativeStream = mConfig.GetTargetFile().GetStream();
+			mNativeStream = mAudioFile.GetStream();
 		mNativeStream->PrepareWriting();
 
 		return true;
