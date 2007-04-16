@@ -111,3 +111,4 @@ namespace CLAM
 }
 
 #endif // AubioOnsetDetector.hxx
+

@@ -108,3 +108,4 @@ void AudioPlayer::StopFromGUIThread(  )
 		sCurrentPlayer = NULL;
 	}
 }
+

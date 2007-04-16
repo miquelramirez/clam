@@ -560,3 +560,4 @@ namespace CLAMTest
 	};
 	
 }
+

@@ -215,3 +215,4 @@ protected:
 
 
 } // namespace CLAMTest
+

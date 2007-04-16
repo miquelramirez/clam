@@ -307,3 +307,4 @@ private:
 }; // class DynamicTypeBasicTest
 
 } //namespace
+

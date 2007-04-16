@@ -81,3 +81,4 @@ namespace CLAMGUI
 
 
 #endif // MinMaxFinder.hxx
+

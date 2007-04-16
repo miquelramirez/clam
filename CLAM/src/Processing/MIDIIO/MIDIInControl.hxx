@@ -53,3 +53,4 @@ private:
 } // namespace CLAM
 
 #endif // MIDIInControl.hxx
+

@@ -943,3 +943,4 @@ void V2MGUI::closeEvent(QCloseEvent *e)
 }
 
 // END
+

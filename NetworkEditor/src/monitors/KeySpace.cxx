@@ -229,3 +229,4 @@ void CLAM::VM::KeySpace::DrawLabels()
 		renderText(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(), _font);
 	}
 }
+

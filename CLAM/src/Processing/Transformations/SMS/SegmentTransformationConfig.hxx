@@ -60,3 +60,4 @@ namespace CLAM
 
 
 #endif // _SegmentTransformetionConfig_
+

@@ -172,3 +172,4 @@ private:
 
 
 #endif // Signalv2ImplVC6.hxx
+

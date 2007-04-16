@@ -148,3 +148,4 @@ protected:
 }; // namespace CLAM
 
 #endif // _Control2Data_
+

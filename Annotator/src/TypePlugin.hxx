@@ -47,3 +47,4 @@ namespace CLAM_Annotator
 }
 
 #endif//_TypePlugin_hxx_
+

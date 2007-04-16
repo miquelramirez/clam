@@ -248,3 +248,4 @@ inline void IFFT_fftw3::OtherToRIFFTW(const Spectrum &in) const
 	ComplexToRIFFTW(spec);
 }
 }
+

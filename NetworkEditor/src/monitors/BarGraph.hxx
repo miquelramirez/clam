@@ -66,3 +66,4 @@ namespace VM
 
 
 #endif// BarGraph_hxx
+

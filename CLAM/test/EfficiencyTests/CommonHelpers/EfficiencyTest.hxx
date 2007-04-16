@@ -13,3 +13,4 @@ protected:
 
 
 #endif//EfficiencyTest_hxx
+

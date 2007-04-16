@@ -145,3 +145,4 @@ void FFT_fftw3::ToComplex(Spectrum &out)
 }
 
 }; // CLAM
+

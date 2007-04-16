@@ -119,3 +119,4 @@ public:
 
 }
 #endif//_XMLAdapter_
+

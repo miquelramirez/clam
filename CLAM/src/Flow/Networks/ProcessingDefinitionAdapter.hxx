@@ -63,3 +63,4 @@ public:
 } // namespace CLAM
 
 #endif // __PROCESSINGDEFINITIONADAPTER_HXX__
+

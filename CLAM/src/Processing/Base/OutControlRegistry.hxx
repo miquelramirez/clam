@@ -55,3 +55,4 @@ private:
 } // namespace CLAM
 
 #endif
+

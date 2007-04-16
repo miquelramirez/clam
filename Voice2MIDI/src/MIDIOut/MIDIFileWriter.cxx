@@ -171,3 +171,4 @@ unsigned long MIDIFileWriter::Sec2Ticks(float secs,int division,unsigned tempo)
 } // namespace V2M
 
 // END
+

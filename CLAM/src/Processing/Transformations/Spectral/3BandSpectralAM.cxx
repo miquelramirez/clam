@@ -78,3 +78,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<ThreeBandAM> regtThreeBandAM( "ThreeBandAM" );
 
 }
+

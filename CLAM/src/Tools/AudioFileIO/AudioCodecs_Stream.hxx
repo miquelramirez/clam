@@ -123,3 +123,4 @@ namespace AudioCodecs
 }
 
 #endif // AudioCodecs_Stream.hxx
+

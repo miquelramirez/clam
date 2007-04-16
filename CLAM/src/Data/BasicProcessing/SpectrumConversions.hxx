@@ -58,3 +58,4 @@ namespace CLAM
 
 
 #endif // SpectrumConversions.hxx
+

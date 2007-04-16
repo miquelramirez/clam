@@ -634,3 +634,4 @@ template <class T> inline bool List<T>::FulfillsInvariant(void) const
 };
 
 #endif
+

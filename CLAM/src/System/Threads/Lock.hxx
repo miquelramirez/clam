@@ -270,3 +270,4 @@ namespace CLAM
 } // end of namespace CLAM
 
 #endif // Lock.hxx
+

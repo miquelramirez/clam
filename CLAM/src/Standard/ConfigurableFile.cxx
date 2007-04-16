@@ -74,3 +74,4 @@ const FileFormatFilterList &ConfigurableFile::GetFormatFilterList() const
 }
 
 }
+

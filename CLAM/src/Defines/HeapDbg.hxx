@@ -35,3 +35,4 @@ CLAM_ASSERT( _CrtCheckMemory(), msg )
 #endif
 
 #endif // HeapDbg.hxx
+

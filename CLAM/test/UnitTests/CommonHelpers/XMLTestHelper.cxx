@@ -265,3 +265,4 @@ XmlUniformiser::copyElementContent()
 
 
 }  // namespace CppUnitTest
+

@@ -226,3 +226,4 @@ void ProcessingTree::PressProcessing(QTreeWidgetItem * item, int column)
 
 
 } // namespace NetworkGUI
+

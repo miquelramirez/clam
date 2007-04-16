@@ -56,3 +56,4 @@ public:
 
 }; //namespace CLAM
 #endif // _ProcessingDataConfig_
+

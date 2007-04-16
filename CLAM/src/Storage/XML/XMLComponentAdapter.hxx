@@ -140,3 +140,4 @@ public:
 }
 
 #endif//_XMLComponentAdapter_h
+

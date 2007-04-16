@@ -70,3 +70,4 @@ namespace CLAM
 }
 
 #endif // MultiChannelAudioFileWriter.hxx
+

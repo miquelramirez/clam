@@ -205,3 +205,4 @@ namespace CLAM {
 }
 
 #endif // _SPECTRUM_ADDER_
+

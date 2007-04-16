@@ -90,3 +90,4 @@ namespace CLAM {
 }
 
 #endif // _Frame_Adder_
+

@@ -81,3 +81,4 @@ namespace CLAM
 
 
 #endif // OSCControlDispatcher_hxx
+

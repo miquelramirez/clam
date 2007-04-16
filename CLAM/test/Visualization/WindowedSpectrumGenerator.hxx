@@ -90,3 +90,4 @@ namespace CLAMTest
 }
 
 #endif // WindowedSpectrumGenerator.hxx
+

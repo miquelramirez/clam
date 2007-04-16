@@ -336,3 +336,4 @@ private:
 
 
 } // namespace CLAMTest
+

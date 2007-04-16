@@ -61,3 +61,4 @@ public:
 
 
 #endif//InstantViewPlugin_hxx
+

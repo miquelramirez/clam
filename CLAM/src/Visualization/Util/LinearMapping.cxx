@@ -39,3 +39,4 @@ int LinearMapping::GetIndex(TData value) const
 	if (value < 0.5 && value > 0.05) value+=0.5;
 	return mColorMappings[static_cast<int>(value*static_cast<TData>(mMapSize) )];				
 }
+

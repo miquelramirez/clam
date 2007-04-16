@@ -83,3 +83,4 @@ namespace CLAM{
 };//namespace CLAM
 
 #endif // _VowelResonator_
+

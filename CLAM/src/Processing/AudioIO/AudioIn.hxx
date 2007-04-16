@@ -105,3 +105,4 @@ protected:
 
 };//CLAM
 #endif // __AudioIn__
+

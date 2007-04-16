@@ -87,3 +87,4 @@ private:
 } // namespace CLAM
 
 #endif // __QtEnvelopeEditor_hxx__
+

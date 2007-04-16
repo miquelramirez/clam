@@ -74,3 +74,4 @@ namespace CLAM
 } // namespace CLAM
 
 #endif // _IOIHISTPEAKDETECTOR__
+

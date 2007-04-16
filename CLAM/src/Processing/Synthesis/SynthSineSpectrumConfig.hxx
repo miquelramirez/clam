@@ -61,3 +61,4 @@ public:
 } // namespace CLAM
 
 #endif
+

@@ -78,3 +78,4 @@ private:
 }
 
 #endif // QtGLPort.hxx
+

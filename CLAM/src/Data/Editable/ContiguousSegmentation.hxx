@@ -171,3 +171,4 @@ namespace CLAM
 
 
 #endif//ContiguousSegmentation_hxx
+

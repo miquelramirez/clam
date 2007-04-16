@@ -574,3 +574,4 @@ const char* Array<T>::msgDeleteOutOfRange =
 }
 
 #endif//_Array_
+

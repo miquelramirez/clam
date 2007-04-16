@@ -160,3 +160,4 @@ namespace CLAM
 }
 
 #endif //	_BINARY_AUDIO_OP_H_
+

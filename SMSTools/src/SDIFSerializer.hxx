@@ -48,3 +48,4 @@ namespace CLAM {
 }
 
 #endif //__SDIFSERIALIZER__
+

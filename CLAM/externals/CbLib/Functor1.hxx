@@ -175,3 +175,4 @@ makeFunctor ( Functor1<Parm1Type>* , const Callee &c, TypeOfReturn ( CallType::*
 }
 
 #endif // Functor1.hxx
+

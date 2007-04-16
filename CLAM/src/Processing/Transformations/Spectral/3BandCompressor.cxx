@@ -70,3 +70,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<ThreeBandCompressor> regtThreeBandCompressor( "ThreeBandCompressor" );
 
 }
+

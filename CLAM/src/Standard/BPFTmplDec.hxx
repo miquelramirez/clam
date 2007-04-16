@@ -377,3 +377,4 @@ protected:
 } // namespace CLAM
 
 #endif // _BPFTmplDec_
+

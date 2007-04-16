@@ -149,3 +149,4 @@ InControlTmplArray<TProcessing>::~InControlTmplArray()
 } //namespace CLAM
 
 #endif
+

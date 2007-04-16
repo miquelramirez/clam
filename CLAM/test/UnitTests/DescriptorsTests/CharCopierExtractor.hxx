@@ -116,3 +116,4 @@ private:
 } // namespace CLAMTest
 
 #endif// _CharCopierExtractor_hxx_
+

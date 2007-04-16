@@ -46,3 +46,4 @@ namespace RhythmIR
 }
 
 #endif // rhythmir_process.hxx
+

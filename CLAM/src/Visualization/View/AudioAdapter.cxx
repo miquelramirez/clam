@@ -69,3 +69,4 @@ namespace CLAMVM
 				return true;
 		}
 }
+

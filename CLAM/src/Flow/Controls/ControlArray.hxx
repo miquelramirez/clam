@@ -141,3 +141,4 @@ void ControlArray<ControlT>::Shrink(int size)
 }; //namespace CLAM
 
 #endif
+

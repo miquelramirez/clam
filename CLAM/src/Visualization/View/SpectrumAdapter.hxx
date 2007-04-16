@@ -81,3 +81,4 @@ namespace CLAMVM
 }
 
 #endif // SpectrumAdapter.hxx
+

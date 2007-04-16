@@ -88,3 +88,4 @@ bool SDIFSerializer::DoStore( const char* fileName, Segment& segment )
 
 	return true;
 }
+

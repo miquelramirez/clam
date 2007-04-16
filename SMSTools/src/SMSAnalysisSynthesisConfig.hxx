@@ -81,3 +81,4 @@ public:
 };//namespace
 
 #endif //_SMSAnalysisSynthesisConfig_
+

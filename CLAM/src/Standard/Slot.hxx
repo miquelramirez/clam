@@ -92,3 +92,4 @@ namespace SigSlot
 }
 
 #endif // Slot.hxx
+

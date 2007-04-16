@@ -12,6 +12,7 @@
 #include <QtCore/QRegExp>
 #include <QtCore/QFile>
 #include <QtCore/QCoreApplication>
+#include <QtCore/QList>
 #include <QtGui/QApplication>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/MonoAudioFileReaderConfig.hxx>

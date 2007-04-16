@@ -74,3 +74,4 @@ namespace CLAMVM
 				mSampleRate = rate;
 		}
 }
+

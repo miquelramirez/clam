@@ -272,3 +272,4 @@ MIDIDeviceList* MIDIManager::FindList(const std::string& arch)
 
 
 }
+

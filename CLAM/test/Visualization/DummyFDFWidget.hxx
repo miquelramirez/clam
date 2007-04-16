@@ -47,3 +47,4 @@ namespace CLAMVM
 }
 
 #endif // DummyFDFWidget.hxx
+

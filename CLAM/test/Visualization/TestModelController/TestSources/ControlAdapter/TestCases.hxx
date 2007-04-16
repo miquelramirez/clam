@@ -15,3 +15,4 @@ void TestSeveralControlsUpdating();
 }
 
 #endif // TestCases.hxx
+

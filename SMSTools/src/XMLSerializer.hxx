@@ -43,3 +43,4 @@ namespace CLAM {
 }
 
 #endif //__XMLSERIALIZER__
+

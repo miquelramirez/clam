@@ -63,3 +63,4 @@ QtWrapper::QtWrapper()
 	mSignaler = new QtAppSignaler( mqApp );
 
 }
+

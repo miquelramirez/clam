@@ -52,3 +52,4 @@ struct ScreenBoundBox
 }
 
 #endif // BoundingBoxes.hxx
+

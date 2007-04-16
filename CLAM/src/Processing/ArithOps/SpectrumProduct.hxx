@@ -208,3 +208,4 @@ namespace CLAM {
 }
 
 #endif // _SPECTRUM_PRODUCT_
+

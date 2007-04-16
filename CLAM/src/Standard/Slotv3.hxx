@@ -82,3 +82,4 @@ private:
 }
 
 #endif // SlottedMethod.hxx
+

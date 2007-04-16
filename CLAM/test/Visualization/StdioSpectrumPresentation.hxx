@@ -57,3 +57,4 @@ namespace CLAMVM
 
 
 #endif // StdioSpectrumPresentation.hxx
+

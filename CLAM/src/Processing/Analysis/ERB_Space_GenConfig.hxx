@@ -42,3 +42,4 @@ namespace CLAM
 }
 
 #endif // ERB_Space_Gen_Config.hxx
+

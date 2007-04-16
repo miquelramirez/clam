@@ -18,3 +18,4 @@ namespace CLAMTest
 
 
 #endif // AudioFileOpsTestsHelper.hxx
+

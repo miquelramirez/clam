@@ -186,3 +186,4 @@ private:
 	bool            CepstralTransformTest::mBack2BackInit = false;
 
 } // namespace CLAMTest
+

@@ -66,3 +66,4 @@ class ControlScaler : public Processing
 }
 
 #endif
+

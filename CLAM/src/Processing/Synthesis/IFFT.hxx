@@ -46,3 +46,4 @@ public:
 #undef CLAM_FFT_IMPLEMENTATION
 
 #endif // _IFFT_
+

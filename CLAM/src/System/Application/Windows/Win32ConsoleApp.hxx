@@ -86,3 +86,4 @@ private:
 }
 
 #endif // Win32ConsoleApp.hxx
+

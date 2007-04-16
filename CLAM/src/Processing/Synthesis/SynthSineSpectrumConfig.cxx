@@ -47,3 +47,4 @@ void SynthSineSpectrumConfig::DefaultValues()
 
 
 }
+

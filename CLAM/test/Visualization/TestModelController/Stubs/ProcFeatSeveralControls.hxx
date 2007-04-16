@@ -79,3 +79,4 @@ namespace CLAMDraft
 }
 
 #endif // ProcFeatSeveralControls.hxx
+

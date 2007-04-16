@@ -147,3 +147,4 @@ class XercesDomReader : private xercesc::HandlerBase
 
 }
 #endif//XercesDomReader_hxx
+

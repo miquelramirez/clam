@@ -82,3 +82,4 @@ namespace SigSlot
 }
 
 #endif // SlottedMethod.hxx
+

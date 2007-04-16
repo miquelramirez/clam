@@ -31,3 +31,4 @@ namespace CLAM
 		SetSampleRate(44100);
 	}
 }
+

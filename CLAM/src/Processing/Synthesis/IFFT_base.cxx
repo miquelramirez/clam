@@ -45,3 +45,4 @@ namespace CLAM {
 		CLAM_ASSERT(false,"Controls not yet implemented.");
 	}
 }
+

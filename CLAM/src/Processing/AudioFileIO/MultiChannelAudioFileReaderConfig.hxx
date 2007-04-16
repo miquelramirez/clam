@@ -60,3 +60,4 @@ namespace CLAM
 
 
 #endif // MultiChannelAudioFileReaderConfig.hxx
+

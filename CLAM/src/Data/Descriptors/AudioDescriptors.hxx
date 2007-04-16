@@ -237,3 +237,4 @@ inline AudioDescriptors CLAM_max (const AudioDescriptors & a,const AudioDescript
 
 
 #endif /* __AUDIODescriptors_H__ */
+

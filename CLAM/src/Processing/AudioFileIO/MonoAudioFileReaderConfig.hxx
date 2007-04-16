@@ -62,3 +62,4 @@ namespace CLAM
 }
 
 #endif // MonoAudioFileReaderConfig.hxx
+

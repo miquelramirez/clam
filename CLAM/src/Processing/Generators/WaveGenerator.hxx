@@ -182,3 +182,4 @@ namespace CLAM {
 }//namespace CLAM
 
 #endif // _WaveGenerator_
+

@@ -98,3 +98,4 @@ public:
 }
 
 #endif//_BasicXMLable_h
+

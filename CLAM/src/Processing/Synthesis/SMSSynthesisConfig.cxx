@@ -166,3 +166,4 @@ TInt32 SMSSynthesisConfig::PowerOfTwo(TInt32 size)
 
 
 } // namespace CLAM
+

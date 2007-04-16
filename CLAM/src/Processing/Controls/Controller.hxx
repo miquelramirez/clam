@@ -155,3 +155,4 @@ private:
 }; // namespace CLAM
 
 #endif // _Controller_
+

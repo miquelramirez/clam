@@ -230,3 +230,4 @@ private:
 }; // namespace CLAM
 
 #endif
+

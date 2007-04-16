@@ -108,3 +108,4 @@ std::string OutPortRegistry::AvailableNames() const
 	return result;
 }
 }// namespace CLAM
+

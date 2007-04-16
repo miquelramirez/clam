@@ -54,3 +54,4 @@ namespace CLAMVM
 }
 
 #endif // LogMagSpectrumAdapter.hxx
+

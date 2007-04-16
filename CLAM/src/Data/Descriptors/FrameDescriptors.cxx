@@ -302,3 +302,4 @@ FrameDescriptors operator / (const FrameDescriptors& a,TData div)
 
 
 }//CLAM
+

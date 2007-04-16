@@ -28,3 +28,4 @@ public:
 } // namespace CLAM
 
 #endif // __LadspaWrapperCreator_hxx__
+

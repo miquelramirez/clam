@@ -204,3 +204,4 @@ namespace SigSlot
 }
 
 #endif //ConnectionHandler.hxx
+

@@ -192,3 +192,4 @@ bool SMSTimeStretch::IsLastFrame()
 	}
 
 }
+

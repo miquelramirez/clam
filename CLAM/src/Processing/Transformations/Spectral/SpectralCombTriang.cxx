@@ -93,3 +93,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralCombTriang> regtSpectralCombTriang( "SpectralCombTriang" );
 
 }
+

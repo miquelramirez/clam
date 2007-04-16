@@ -427,3 +427,4 @@ int SoundFileIO::TellFrame(void)
 {
 	return mPos/mHeader.mChannels;
 }
+

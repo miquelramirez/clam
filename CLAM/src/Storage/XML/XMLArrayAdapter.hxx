@@ -132,3 +132,4 @@ public:
 
 
 #endif//_XMLArrayAdapter_h
+

@@ -88,3 +88,4 @@ namespace CLAMVM
 }
 
 #endif // TimeFreqMagPoint.hxx
+

@@ -75,3 +75,4 @@ namespace CLAM {
 }; //end of namespace
 
 #endif //_AudioCircularBuffer_
+

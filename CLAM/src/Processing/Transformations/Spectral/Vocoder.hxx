@@ -95,3 +95,4 @@ namespace CLAM{
 };//namespace CLAM
 
 #endif // _Vocoder_
+

@@ -70,3 +70,4 @@ void InControl::OutControlInterface_RemoveLink(OutControl & outControl)
 //  }
 
 }; // namespace CLAM
+

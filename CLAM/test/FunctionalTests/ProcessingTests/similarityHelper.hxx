@@ -40,3 +40,4 @@ namespace CLAMTest
 }
 
 #endif // similarityHelper.hxx
+

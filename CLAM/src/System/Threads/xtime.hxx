@@ -156,3 +156,4 @@ namespace CLAM
 } // end of namespace CLAM
 
 #endif // XTime.hxx
+

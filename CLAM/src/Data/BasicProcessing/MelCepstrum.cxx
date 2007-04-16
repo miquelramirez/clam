@@ -33,3 +33,4 @@ namespace CLAM
     SetHighCutoff(0);
   }
 }
+

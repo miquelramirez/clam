@@ -133,3 +133,4 @@ namespace CLAM {
 }
 
 #endif // _Frame_Interpolator_
+

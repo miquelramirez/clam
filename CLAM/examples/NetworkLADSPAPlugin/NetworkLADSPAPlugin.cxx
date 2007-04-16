@@ -274,3 +274,4 @@ void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
 }
 
 } //end namespace CLAM
+

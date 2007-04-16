@@ -55,3 +55,4 @@ public:
 }
 
 #endif //_ERRGUI_
+

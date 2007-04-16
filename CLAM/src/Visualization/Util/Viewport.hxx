@@ -54,3 +54,4 @@ namespace CLAMGUI
 }
 
 #endif // Viewport.hxx
+

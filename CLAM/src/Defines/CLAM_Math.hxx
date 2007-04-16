@@ -473,3 +473,4 @@ T CLAM_min(const T& x, const T& y)
 }
 
 #endif // CLAM_Math.hxx
+

@@ -100,3 +100,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralFocus> regtSpectralFocus( "SpectralFocus" );
 
 }
+

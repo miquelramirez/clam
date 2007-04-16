@@ -113,3 +113,4 @@ friend class MIDIDevice;
 }
 
 #endif
+

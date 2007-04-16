@@ -164,3 +164,4 @@ int InControlTmpl<ProcObj>::DoControl(TControlData val)
 } // namespace CLAM
 
 #endif //_InControl_
+

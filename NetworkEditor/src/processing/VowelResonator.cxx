@@ -59,3 +59,4 @@ bool VowelResonator::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 static Factory<Processing>::Registrator<VowelResonator> regtFreqShift( "VowelResonator" );
 
 }
+

@@ -76,3 +76,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<FreqShift> regtFreqShift( "FreqShift" );
 
 }
+

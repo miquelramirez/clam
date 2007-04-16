@@ -171,3 +171,4 @@ private:
 
 
 #endif // Signalv4ImplVC6.hxx
+

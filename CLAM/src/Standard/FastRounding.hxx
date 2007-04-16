@@ -198,3 +198,4 @@ inline int Round( float a )
 
 
 #endif // FastRounding.hxx
+

@@ -33,3 +33,4 @@ void Melody::DefaultInit()
 }
 
 } // namespace CLAM
+

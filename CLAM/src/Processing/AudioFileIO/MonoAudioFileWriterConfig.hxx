@@ -53,3 +53,4 @@ namespace CLAM
 }
 
 #endif // MonoAudioFileWriterConfig.hxx
+

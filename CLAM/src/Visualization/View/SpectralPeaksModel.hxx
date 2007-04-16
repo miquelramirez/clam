@@ -49,3 +49,4 @@ namespace CLAMVM
 }
 
 #endif // SpectralPeakArrayAspect.hxx
+

@@ -63,3 +63,4 @@ public:
 } // namespace CLAM
 
 #endif // __CONNECTIONDEFINITIONADAPTER_HXX__
+

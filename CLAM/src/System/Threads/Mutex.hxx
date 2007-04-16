@@ -149,3 +149,4 @@ private:
 } // end of namespace CLAM
 
 #endif // Mutex.hxx
+

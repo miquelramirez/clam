@@ -81,3 +81,4 @@ namespace SigSlot
 }
 
 #endif // Slotv0.hxx
+

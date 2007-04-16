@@ -377,3 +377,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SMSMorph> regtSMSMorph( "SMSMorph" );
 
 }
+

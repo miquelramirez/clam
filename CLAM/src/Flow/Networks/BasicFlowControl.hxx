@@ -42,3 +42,4 @@ public:
 } // namespace CLAM
 
 #endif // _BasicFlowControl_hxx_
+

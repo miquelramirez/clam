@@ -79,3 +79,4 @@ namespace SigSlot
 }
 
 #endif // Signal.hxx
+

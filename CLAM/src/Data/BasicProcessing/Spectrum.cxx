@@ -842,3 +842,4 @@ TIndex Spectrum::IndexFromFreq(TData freq) const
 {
 	return Round(freq*((GetSize()-1)/GetSpectralRange()));
 }
+

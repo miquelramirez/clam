@@ -285,3 +285,4 @@ namespace CLAM {
 	DirectXAudioDeviceList DirectXAudioDeviceList::sDevices;
 
 }
+

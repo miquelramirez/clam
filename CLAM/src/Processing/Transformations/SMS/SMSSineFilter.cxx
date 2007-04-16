@@ -52,3 +52,4 @@ bool SMSSineFilter::Do(const SpectralPeakArray& in, SpectralPeakArray& out) // T
 	}
 
 }
+

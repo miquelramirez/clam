@@ -37,3 +37,4 @@ namespace CLAM
 	std::ostream& operator << (std::ostream &stream, const PolarTmpl<TData> &a);
 
 }
+

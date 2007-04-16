@@ -40,3 +40,4 @@ Recti GridLayout::operator<< (const Recti& r)
 
 	return newRect;
 }
+

@@ -29,3 +29,4 @@ namespace CLAM
 		static Factory<Processing>::Registrator<IFFT> regtIFFT("IFFT");
 	}
 }
+

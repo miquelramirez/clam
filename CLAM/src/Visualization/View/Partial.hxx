@@ -39,3 +39,4 @@ namespace CLAMVM
 }
 
 #endif // Partial.hxx
+

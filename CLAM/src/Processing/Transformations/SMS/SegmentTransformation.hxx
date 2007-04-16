@@ -163,3 +163,4 @@ namespace CLAM {
 };//namespace CLAM
 
 #endif // _SegmentTransformation_
+

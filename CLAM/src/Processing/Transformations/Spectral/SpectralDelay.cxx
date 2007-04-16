@@ -95,3 +95,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralDelay> regtSpectralDelay( "SpectralDelay" );
 
 }
+

@@ -375,3 +375,4 @@ inline SpectralDescriptors CLAM_min (const SpectralDescriptors& a,const Spectral
 }
 
 #endif /* __SpectralDescriptors_H__ */
+

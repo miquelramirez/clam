@@ -97,3 +97,4 @@ private:
 }
 
 #endif // CLAM_FILE_HXX
+

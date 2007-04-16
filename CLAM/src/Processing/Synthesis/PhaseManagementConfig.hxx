@@ -44,3 +44,4 @@ public:
 } // namespace CLAM
 
 #endif
+

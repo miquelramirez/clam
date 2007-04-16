@@ -163,3 +163,4 @@ namespace CLAMTest
 	bool FundamentalAdapterTest::smSegmentLoaded = false;
 	CLAM::Segment FundamentalAdapterTest::smTestSegment;
 }
+

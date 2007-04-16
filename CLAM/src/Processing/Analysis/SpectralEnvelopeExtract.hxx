@@ -113,3 +113,4 @@ namespace CLAM {
 };//namespace CLAM
 
 #endif // _SpectralEnvelope_Extract_
+

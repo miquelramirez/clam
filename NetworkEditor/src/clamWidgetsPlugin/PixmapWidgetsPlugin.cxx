@@ -175,3 +175,4 @@ QString ThinPixmapButtonPlugin::includeFile() const
 {
     return "PixmapWidgets.hxx";
 }
+

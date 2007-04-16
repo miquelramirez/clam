@@ -480,3 +480,4 @@ namespace CLAM
 }; //end of namespace
 
 #endif //_CircularBuffer_
+

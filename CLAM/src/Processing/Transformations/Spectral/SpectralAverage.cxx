@@ -62,3 +62,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralAverage> regtSpectralAverage( "SpectralAverage" );
 
 }
+

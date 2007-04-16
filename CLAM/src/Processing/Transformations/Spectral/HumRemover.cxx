@@ -64,3 +64,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<HumRemover> regtHumRemover( "HumRemover" );
 
 }
+

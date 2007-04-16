@@ -111,3 +111,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<Vocoder> regtVocoder( "Vocoder" );
 
 }
+

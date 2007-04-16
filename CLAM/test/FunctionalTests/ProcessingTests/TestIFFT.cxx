@@ -163,3 +163,4 @@ namespace CLAMTest
 	CLAM::Spectrum IFFTFunctionalTest::smReferenceP2Spectrum;
 	CLAM::Spectrum IFFTFunctionalTest::smReferenceNP2Spectrum;	
 }
+

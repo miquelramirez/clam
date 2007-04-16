@@ -158,3 +158,4 @@ private:
 }; //end of namespace
 
 #endif //_SMSSynthesis_
+

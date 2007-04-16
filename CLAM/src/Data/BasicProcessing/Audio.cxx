@@ -198,3 +198,4 @@ void Audio::SetAudioChunk(TIndex beginIndex,const Audio& chunk)
 	nBytesToCopy=(endIndex-beginIndex)*sizeof(TData);
 	memcpy(GetBuffer().GetPtr()+beginIndex,chunk.GetBuffer().GetPtr()+offset,nBytesToCopy);
 }
+
