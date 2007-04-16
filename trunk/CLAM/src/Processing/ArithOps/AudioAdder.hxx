@@ -38,3 +38,4 @@ namespace CLAM
 }
 
 #endif // AudioAdder.hxx
+

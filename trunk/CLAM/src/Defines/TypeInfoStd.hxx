@@ -33,3 +33,4 @@ namespace CLAM
 	CLAM_TYPEINFOGROUP( BasicCTypeInfo, std::string );
 }
 #endif//_TYPEINFOSTD_H_
+

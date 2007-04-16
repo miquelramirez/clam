@@ -69,3 +69,4 @@ namespace CLAM
 	CLAM_TYPEINFOGROUP(CLAM::BasicCTypeInfo, CLAM_Annotator::Enumerated);
 }
 #endif//Enumerated_hxx
+

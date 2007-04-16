@@ -48,3 +48,4 @@ namespace CLAMDraft
 
 
 #endif // FakeCompositeControlWidget.hxx
+

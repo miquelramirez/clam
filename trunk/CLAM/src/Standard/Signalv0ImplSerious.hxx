@@ -83,3 +83,4 @@ namespace SigSlot
 }
 
 #endif // Signalv0ImplSerious.hxx
+

@@ -231,3 +231,4 @@ void DynamicTypeAdvancedTest::VisitorsToDTTrees()
 }
 
 } //namespace
+

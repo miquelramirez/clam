@@ -129,3 +129,4 @@ void CLAM::VM::ChordRanking::paintEvent(QPaintEvent * event)
 	}
 	_dataSource->release();
 }
+

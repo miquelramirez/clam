@@ -97,3 +97,4 @@ int main()
 	// send value 110 to volume control change on channel 1
 	volCtrl.GetInControls().GetByNumber(0).DoControl(110);
 }
+

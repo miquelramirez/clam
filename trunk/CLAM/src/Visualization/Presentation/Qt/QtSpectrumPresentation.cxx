@@ -121,3 +121,4 @@ void QtSpectrumPresentation::Init( const Geometry& g, const char* label )
 	mGetScale = makeMemberFunctor2( unsigned int, EScale, *this, QtSpectrumPresentation, UpdateScale );
 
 }
+

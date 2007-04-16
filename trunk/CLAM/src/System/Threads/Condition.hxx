@@ -123,3 +123,4 @@ namespace CLAM
 } // end of namespace CLAM
 
 #endif // Condition.hxx
+

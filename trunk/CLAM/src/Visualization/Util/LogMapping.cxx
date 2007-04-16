@@ -49,3 +49,4 @@ int LogMapping::GetIndex(TData value) const
 {
 	return mColorMappings[static_cast<int>(value*static_cast<TData>(mMapSize) )];				
 }
+

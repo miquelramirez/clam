@@ -103,3 +103,4 @@ namespace CLAMTest
 }
 
 #endif // RhythmDescriptionHelpers.hxx
+

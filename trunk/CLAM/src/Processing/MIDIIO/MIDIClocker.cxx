@@ -86,3 +86,4 @@ void MIDIClocker::GetDeviceInfo(MIDIDevice::TInfo &info) const
 }
 
 } // namespace CLAM
+

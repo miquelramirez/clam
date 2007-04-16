@@ -152,3 +152,4 @@ inline SpectralPeak DB(SpectralPeak& inPeak,int scalingFactor=20)
 };//namespace
 
 #endif
+

@@ -9,3 +9,4 @@ namespace CLAM
 		SetAudioSize(1024);
 	}	
 }
+

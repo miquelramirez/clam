@@ -90,3 +90,4 @@ public:
 }; // namespace CLAM
 
 #endif //_OutControl_
+

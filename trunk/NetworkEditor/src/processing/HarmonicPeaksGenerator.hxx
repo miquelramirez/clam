@@ -77,3 +77,4 @@ namespace CLAM{
 };//namespace CLAM
 
 #endif // _HarmonicPeaksGenerator_
+

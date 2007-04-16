@@ -545,3 +545,4 @@ void WindowGenerator::NormalizeWindow(DataArray& window) const
 }
 
 }
+

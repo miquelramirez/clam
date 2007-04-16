@@ -137,3 +137,4 @@ void MIDI2Melody::ModifyVelocity(int key,int newVelocity)
 }
 
 } // namespace CLAM
+

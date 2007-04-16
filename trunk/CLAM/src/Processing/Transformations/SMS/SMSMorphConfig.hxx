@@ -78,3 +78,4 @@ namespace CLAM
 }
 
 #endif // SMSMorphConfig.hxx
+

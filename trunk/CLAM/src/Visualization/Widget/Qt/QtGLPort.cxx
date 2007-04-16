@@ -113,3 +113,4 @@ void QtGLPort::paintGL( )
 	if (mIsConf )
 		mDrawCb();
 }
+

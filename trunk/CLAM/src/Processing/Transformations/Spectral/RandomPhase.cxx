@@ -51,3 +51,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<RandomPhase> regtRandomPhase( "RandomPhase" );
 
 }
+

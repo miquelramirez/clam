@@ -174,3 +174,4 @@ TSize SMSAnalysisConfig::GetHopsInBiggerWindow() const
 
 	
 } // namespace CLAM
+

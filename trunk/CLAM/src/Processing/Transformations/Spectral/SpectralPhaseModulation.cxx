@@ -55,3 +55,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralPhaseModulation> regtSpectralPhaseModulation( "SpectralPM" );
 
 }
+

@@ -64,3 +64,4 @@ namespace CLAMVM
 
 
 #endif // AudioAdapter.hxx
+

@@ -219,3 +219,4 @@ namespace TestAssert {
 CPPUNIT_NS_END
 
 #endif
+

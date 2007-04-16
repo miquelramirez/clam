@@ -68,3 +68,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<ThreeBandFilter> regtThreeBandFilter( "ThreeBandFilter" );
 
 }
+

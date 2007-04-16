@@ -110,3 +110,4 @@ namespace CLAM
 } // namespace CLAM
 
 #endif // _PointTmplDec_
+

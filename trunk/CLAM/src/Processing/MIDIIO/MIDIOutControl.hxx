@@ -79,3 +79,4 @@ class MIDIOutControl:public MIDIOut
 } // namespace CLAM
 
 #endif // MIDIOutControl.hxx
+

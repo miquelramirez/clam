@@ -146,3 +146,4 @@ private:
 
 
 #endif//SpectrumView_hxx
+

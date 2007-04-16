@@ -135,3 +135,4 @@ namespace CLAM
 } // namespace CLAM
 
 #endif // _PolarTmplDec_
+

@@ -60,3 +60,4 @@ namespace CLAM_Annotator
 }
 
 #endif//_DescriptorTablePlugin_hxx_
+

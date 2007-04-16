@@ -99,3 +99,4 @@ struct FullDuplexDoubleBuffer
 }
 
 #endif // DoubleBuffer.hxx
+

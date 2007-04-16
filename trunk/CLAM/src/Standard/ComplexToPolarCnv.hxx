@@ -74,3 +74,4 @@ typedef ComplexToPolarCnv<TData> ComplexToPolarCnv_;
 }
 
 #endif
+

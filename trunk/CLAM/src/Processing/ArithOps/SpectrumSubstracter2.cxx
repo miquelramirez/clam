@@ -1099,3 +1099,4 @@ namespace CLAM {
 		CLAM_ASSERT(false,"SubstractBPFMagPhaseLinLog: Not implemented");
 	}
 }
+

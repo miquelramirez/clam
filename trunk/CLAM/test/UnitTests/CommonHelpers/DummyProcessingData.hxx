@@ -21,3 +21,4 @@ public:
 	
 } // namespace CLAMTest	
 #endif
+

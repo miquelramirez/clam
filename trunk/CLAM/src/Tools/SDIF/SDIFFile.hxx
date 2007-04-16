@@ -205,3 +205,4 @@ inline void File::FixByteOrder(CLAM::TByte* ptr,
 }
 
 #endif
+

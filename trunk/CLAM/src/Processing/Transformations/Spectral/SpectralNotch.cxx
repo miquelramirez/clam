@@ -59,3 +59,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralNotch> regtSpectralNotch( "SpectralNotch" );
 
 }
+

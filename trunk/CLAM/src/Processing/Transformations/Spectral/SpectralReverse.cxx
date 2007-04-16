@@ -66,3 +66,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralReverse> regtSpectralReverse( "SpectralReverse" );
 
 }
+

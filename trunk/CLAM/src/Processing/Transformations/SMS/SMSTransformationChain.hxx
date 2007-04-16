@@ -381,3 +381,4 @@ namespace CLAM {
 } // namespace CLAM
 
 #endif // _SMSTransformationChain_
+

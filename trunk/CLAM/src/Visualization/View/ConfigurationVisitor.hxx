@@ -137,3 +137,4 @@ namespace CLAM{
 
 }
 #endif//__CONFIGURATIONVISITOR__
+

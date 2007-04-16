@@ -240,3 +240,4 @@ namespace CLAMTest
 	CLAM::SpectralPeakArray SpectralPeakDetectFunctionalTest::smReferenceSpectralPeakArray;
 	CLAMExamples::SpectralPeaksSet  SpectralPeakDetectFunctionalTest::smReferenceSpectralPeaksSet;
 }
+

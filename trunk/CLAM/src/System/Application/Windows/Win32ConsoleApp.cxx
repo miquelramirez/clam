@@ -65,3 +65,4 @@ void Win32ConsoleApp::UserMain()
 			Sleep(10);
 		}
 }
+

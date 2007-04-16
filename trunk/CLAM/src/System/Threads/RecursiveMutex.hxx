@@ -132,3 +132,4 @@ namespace CLAM
 
 
 #endif // RecursiveMutex.hxx
+

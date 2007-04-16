@@ -47,3 +47,4 @@ void SMSAnalysisSynthesisConfig::DefaultValues()
 	SetMorphSoundFile("");
 
 }
+

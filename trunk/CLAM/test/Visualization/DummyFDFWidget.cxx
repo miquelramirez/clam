@@ -63,3 +63,4 @@ namespace CLAMVM
 		std::cout << "\t + { " << min << ", " << max << std::endl;		
 	}
 }
+

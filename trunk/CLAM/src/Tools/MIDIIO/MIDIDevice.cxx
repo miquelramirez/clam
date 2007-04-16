@@ -263,3 +263,4 @@ void MIDIDevice::HandleRawByte(unsigned char byte)
 		mIndex = 0;
 	}
 }
+

@@ -529,3 +529,4 @@ namespace CLAM {
 		CLAM_ASSERT(false,"AddPolarLog: Not implemented");
 	}
 }
+

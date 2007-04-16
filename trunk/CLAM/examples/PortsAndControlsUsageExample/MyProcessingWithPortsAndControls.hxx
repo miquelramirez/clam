@@ -70,3 +70,4 @@ public:
 } // namespace CLAM
 
 #endif // __MyProcessingWithPorts_hxx__
+

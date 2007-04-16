@@ -980,3 +980,4 @@ private:
 
 
 #endif//NetworkCanvas_hxx
+

@@ -120,3 +120,4 @@ namespace CLAM
 } //namespace CLAM
 
 #endif // _SpectralPeak_Detect_
+

@@ -232,3 +232,4 @@ namespace CLAM
 }
 
 #endif // AudioFileFormats.hxx
+

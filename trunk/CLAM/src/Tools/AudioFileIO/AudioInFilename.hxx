@@ -43,3 +43,4 @@ CLAM_TYPEINFOGROUP(BasicCTypeInfo, AudioInFilename);
 
 
 #endif//AudioInFilename_hxx
+

@@ -20,3 +20,4 @@ namespace CLAMGUI
 }
 
 #endif // StdOutProgress.hxx
+

@@ -15,3 +15,4 @@ namespace CLAMGUI
 }
 
 #endif // WaitMessage.hxx
+

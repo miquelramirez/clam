@@ -56,3 +56,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SampleAndHold> regtSampleAndHold( "SampleAndHold" );
 
 }
+

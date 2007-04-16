@@ -38,3 +38,4 @@ typedef CLAM::Factory<ConfiguratorLauncher> ProcessingConfigPresentationFactory;
 		 regt##configName( #configName)
 
 #endif
+

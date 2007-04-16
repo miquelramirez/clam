@@ -54,3 +54,4 @@ bool SMSSinusoidalGain::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	}
 
 }
+

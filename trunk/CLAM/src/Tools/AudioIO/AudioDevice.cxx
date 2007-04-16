@@ -173,3 +173,4 @@ void AudioDevice::SetNChannels(int channels)
 	mForceNChannels = true;
 	mNChannels = channels;
 }
+

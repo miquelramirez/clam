@@ -62,3 +62,4 @@ private:
 } //namespace
 
 #endif // __Factory_LADSPA_hxx
+

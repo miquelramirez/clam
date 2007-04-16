@@ -92,3 +92,4 @@ namespace CLAM {
 }
 
 #endif // _CIRCULAR_SHIFT_H_
+

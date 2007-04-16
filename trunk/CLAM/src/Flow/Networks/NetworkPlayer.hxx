@@ -89,3 +89,4 @@ private:
 } //namespace CLAM
 
 #endif // _NETWORK_PLAYER_HXX_
+

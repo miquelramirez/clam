@@ -162,3 +162,4 @@ public:
 }
 
 #endif //_GlobalEnums_
+

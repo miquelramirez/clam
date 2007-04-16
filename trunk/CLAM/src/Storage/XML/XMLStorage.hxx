@@ -688,3 +688,4 @@ void ConcreteDT::LoadOn(CLAM::Storage & storage)
  */
 
 #endif//_XMLStorage_hxx_
+

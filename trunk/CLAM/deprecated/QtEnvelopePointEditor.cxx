@@ -583,3 +583,4 @@ QtEnvelopePointEditor::~QtEnvelopePointEditor()
 }
 
 } // namespace CLAM
+

@@ -70,3 +70,4 @@ int main( int argc, char ** argv )
 	else w.clear();
 	return app.exec();
 }
+

@@ -859,3 +859,4 @@ void DynamicType::Debug() const
 }
 
 }; //namespace CLAM
+

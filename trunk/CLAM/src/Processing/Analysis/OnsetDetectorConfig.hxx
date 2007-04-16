@@ -53,3 +53,4 @@ namespace CLAM
 
 
 #endif // OnsetDetectorConfig.hxx
+

@@ -18,3 +18,4 @@ bool Fundamental2Control::Do( const Fundamental& inFund )
 
 
 }
+

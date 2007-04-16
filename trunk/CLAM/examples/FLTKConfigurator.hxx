@@ -490,3 +490,4 @@ namespace CLAM{
 	};
 }
 #endif//__FLTKCONFIGURATOR__
+

@@ -579,3 +579,4 @@ private:
 
 
 } // namespace CLAMTest
+

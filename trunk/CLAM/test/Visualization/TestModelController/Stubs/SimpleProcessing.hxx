@@ -66,3 +66,4 @@ namespace CLAMDraft
 }
 
 #endif // SimpleProcessing.hxx
+

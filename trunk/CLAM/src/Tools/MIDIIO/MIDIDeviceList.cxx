@@ -37,3 +37,4 @@ void MIDIDeviceList::AddMe(void)
 {
 	MIDIManager::DeviceLists().push_back(this);
 }
+

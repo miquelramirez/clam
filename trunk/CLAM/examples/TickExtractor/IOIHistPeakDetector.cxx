@@ -194,3 +194,4 @@ namespace CLAM
 
 	} // namespace RhythmDescription
 } // namespace CLAM
+

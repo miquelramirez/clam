@@ -14,3 +14,4 @@ namespace CLAMGUI
 		delete[] mTitle;
 	}
 }
+

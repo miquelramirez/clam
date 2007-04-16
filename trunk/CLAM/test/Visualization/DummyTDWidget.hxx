@@ -27,3 +27,4 @@ namespace CLAMVM
 }
 
 #endif // DummyTDWidget.hxx
+

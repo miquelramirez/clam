@@ -38,3 +38,4 @@ namespace CLAMVM
 			Publish();
 		}
 }
+

@@ -308,3 +308,4 @@ namespace CLAM{
 	};
 }
 #endif//__QTCONFIGURATOR__
+

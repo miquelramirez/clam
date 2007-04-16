@@ -34,3 +34,4 @@ namespace QtSMS
 
 
 #endif // SMSOddEvenHarmonicRatio.hxx
+

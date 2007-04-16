@@ -11,3 +11,4 @@ namespace CLAMVM
 
 
 #endif // SMS_ScoreEditor_Helper.hxx
+

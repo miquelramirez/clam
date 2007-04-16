@@ -86,3 +86,4 @@ bool SMSPitchDiscretization::Do( 	const SpectralPeakArray& inPeaks,
 	}
 
 }
+

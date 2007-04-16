@@ -117,3 +117,4 @@ bool operator<( const Slice_iter< T, SliceType >&p, const Slice_iter< T, SliceTy
 };//CLAMGUI
 
 #endif // Slice_iter.hxx
+

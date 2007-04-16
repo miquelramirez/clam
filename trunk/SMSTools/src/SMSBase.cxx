@@ -922,3 +922,4 @@ void SMSBase::SetSamplingRate(TSize samplingRate)
 }
 
 } //namespace CLAM
+

@@ -97,3 +97,4 @@ namespace CLAMTest
 }
 
 #endif // TestSignalv1Classes.hxx
+

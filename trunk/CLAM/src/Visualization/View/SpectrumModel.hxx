@@ -53,3 +53,4 @@ namespace CLAMVM
 }
 
 #endif // SpectrumModel.hxx
+

@@ -67,3 +67,4 @@ public:
 }
 
 #endif//_XercesInitializer_hxx_
+

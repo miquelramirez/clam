@@ -95,3 +95,4 @@ namespace CLAMVM
 }
 
 #endif // ControlAdapter.hxx
+

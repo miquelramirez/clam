@@ -84,3 +84,4 @@ namespace CLAM {
 };//namespace CLAM
 
 #endif // _AudioFileOut_
+

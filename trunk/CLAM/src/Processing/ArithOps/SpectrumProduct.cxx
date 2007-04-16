@@ -1057,3 +1057,4 @@ namespace CLAM {
 		CLAM_ASSERT(false,"MultiplyBPFMagPhaseLinLog: Not implemented");
 	}
 }
+

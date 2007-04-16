@@ -108,3 +108,4 @@ namespace CLAM {
 }
 
 #endif // _SpectralPeakArray_Interpolator_
+

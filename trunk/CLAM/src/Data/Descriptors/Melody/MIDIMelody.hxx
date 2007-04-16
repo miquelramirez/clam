@@ -54,3 +54,4 @@ namespace CLAM{
 }; // namespace CLAM
 
 #endif // _Melody _
+

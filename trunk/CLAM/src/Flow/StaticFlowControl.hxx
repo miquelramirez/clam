@@ -57,3 +57,4 @@ private:
 } // namespace CLAM
 
 #endif //  _StaticFlowControl_hxx_
+

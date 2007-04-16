@@ -56,3 +56,4 @@ std::istream & operator >> (std::istream & os, Enum & e) throw (IllegalValue) {
 }
 
 }
+

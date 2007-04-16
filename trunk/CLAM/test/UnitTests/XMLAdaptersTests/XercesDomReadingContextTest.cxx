@@ -723,3 +723,4 @@ private:
 } // namespace Cuidado
 
 #endif // USE_XERCES_TRUE
+

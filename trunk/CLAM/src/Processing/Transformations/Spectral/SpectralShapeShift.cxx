@@ -67,3 +67,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralShapeShift> regtSpectralShapeShift( "SpectralShapeShift" );
 
 }
+

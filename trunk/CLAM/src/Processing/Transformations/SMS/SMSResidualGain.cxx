@@ -58,3 +58,4 @@ bool SMSResidualGain::Do(const Spectrum& in, Spectrum& out)
 	}
 
 }
+

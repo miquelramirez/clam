@@ -489,3 +489,4 @@ namespace CLAM{
 	};
 }
 #endif//Qt4Configurator_hxx
+

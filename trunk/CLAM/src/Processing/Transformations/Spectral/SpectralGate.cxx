@@ -53,3 +53,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralGate> regtSpectralGate( "SpectralGate" );
 
 }
+

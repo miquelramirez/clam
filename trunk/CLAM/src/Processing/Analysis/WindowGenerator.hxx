@@ -155,3 +155,4 @@ class ProcessingConfig;
 };//namespace CLAM
 
 #endif //_WINDOW_GENERATOR_
+

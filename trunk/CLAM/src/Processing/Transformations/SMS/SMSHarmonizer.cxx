@@ -85,3 +85,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SMSHarmonizer> regtSMSHarmonizer( "SMSHarmonizer" );
 
 }
+

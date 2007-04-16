@@ -90,3 +90,4 @@ namespace CLAM {
 };//namespace CLAM
 
 #endif // _AudioFileConfig_
+

@@ -408,3 +408,4 @@ SpectralPeakDescriptors operator * (TData mult, const SpectralPeakDescriptors& a
 }
 
 }//CLAM
+

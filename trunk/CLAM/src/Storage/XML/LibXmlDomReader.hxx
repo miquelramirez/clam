@@ -82,3 +82,4 @@ class LibXmlDomReader
 
 }
 #endif//LibXmlDomReader_hxx
+

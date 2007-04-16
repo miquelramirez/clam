@@ -63,3 +63,4 @@ namespace CLAM
 		return pos != mLockedFiles.end() && pos->second==true;
 	}
 }
+

@@ -84,3 +84,4 @@ namespace CLAM
 
 
 #endif // AdjustBeatWRTOnsets.hxx
+

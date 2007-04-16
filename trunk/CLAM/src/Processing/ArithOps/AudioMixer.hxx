@@ -81,3 +81,4 @@ public:
 } // namespace CLAM
 
 #endif // __AudioMixer_hxx__
+

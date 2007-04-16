@@ -57,3 +57,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralAmplitudeModulation> regtSpectralAmplitudeModulation( "SpectralAM" );
 
 }
+

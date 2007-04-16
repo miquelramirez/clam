@@ -35,3 +35,4 @@ ThreadResourceError::ThreadResourceError( const char* msg )
 }
 
 } // end of namespace CLAM
+

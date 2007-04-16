@@ -135,3 +135,4 @@ namespace SDIF
 }
 
 #endif//_SdifMatrix_hxx_
+

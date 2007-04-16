@@ -213,3 +213,4 @@ namespace CLAM {
 }
 
 #endif // _SPECTRUM_InterpolateER_
+

@@ -248,3 +248,4 @@ bool XMLIterableAdapter<T>::FulfilsInvariant()
 }
 
 #endif//_XMLIterableAdapter_h
+

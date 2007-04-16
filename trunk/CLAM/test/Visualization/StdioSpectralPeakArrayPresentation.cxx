@@ -51,3 +51,4 @@ namespace CLAMVM
 				std::copy( array.GetPtr(), array.GetPtr()+array.Size(), mPartialsToDraw.GetPtr() );
 		}
 }
+

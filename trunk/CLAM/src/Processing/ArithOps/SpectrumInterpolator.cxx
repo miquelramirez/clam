@@ -1147,3 +1147,4 @@ namespace CLAM {
 		CLAM_ASSERT(false,"InterpolateBPFMagPhaseLinLog: Not implemented");
 	}
 }
+

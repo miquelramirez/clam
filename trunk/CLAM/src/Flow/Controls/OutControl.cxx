@@ -124,3 +124,4 @@ bool OutControl::IsConnectedTo( InControl & in)
 
 
 }; //namespace CLAM
+

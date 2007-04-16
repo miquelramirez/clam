@@ -270,3 +270,4 @@ namespace CLAM
 		GetInPorts().Clear();
 	}
 }
+

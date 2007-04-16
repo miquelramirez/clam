@@ -84,3 +84,4 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 }
 
 }
+

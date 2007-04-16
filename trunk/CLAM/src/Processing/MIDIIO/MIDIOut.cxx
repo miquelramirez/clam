@@ -87,3 +87,4 @@ void MIDIOut::GetDeviceInfo(MIDIDevice::TInfo &info) const
 }
 
 } // namespace CLAM
+

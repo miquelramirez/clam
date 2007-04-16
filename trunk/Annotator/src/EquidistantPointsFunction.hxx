@@ -122,3 +122,4 @@ namespace CLAM
 
 
 #endif // EquidistantPointsFunction_hxx
+

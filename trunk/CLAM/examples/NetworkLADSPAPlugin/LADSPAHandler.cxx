@@ -141,3 +141,4 @@ void ConnectTo(LADSPA_Handle instance, unsigned long port, LADSPA_Data * dataLoc
 {
 	((CLAM::NetworkLADSPAPlugin *)instance)->ConnectTo( port, dataLocation );
 }
+

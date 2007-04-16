@@ -94,3 +94,4 @@ namespace CLAM
 		mAdaptee->Configure(cfg);
 	}
 } // namespace CLAM
+

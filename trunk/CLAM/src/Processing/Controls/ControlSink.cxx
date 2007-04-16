@@ -47,3 +47,4 @@ namespace CLAM
 		return true;
 	}
 }
+

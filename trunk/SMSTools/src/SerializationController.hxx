@@ -55,3 +55,4 @@ namespace CLAM
 		SDIFSerializer mSDIFSer;
 	};
 }
+

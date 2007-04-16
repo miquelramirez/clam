@@ -48,3 +48,4 @@ namespace CLAM_Annotator{
 };
 
 #endif
+

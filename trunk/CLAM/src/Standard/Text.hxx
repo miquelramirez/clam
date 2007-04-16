@@ -70,3 +70,4 @@ namespace CLAM
 
 
 #endif // _TEXT_HXX_
+

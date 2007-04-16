@@ -44,3 +44,4 @@ namespace RhythmIR
 }
 
 #endif // rhythmir_dumper.hxx
+

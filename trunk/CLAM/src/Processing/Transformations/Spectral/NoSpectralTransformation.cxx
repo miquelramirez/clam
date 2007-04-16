@@ -52,3 +52,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<NoSpectralTransformation> regtNoSpectralTransformation( "NoSpectralTransformation" );
 
 }
+

@@ -31,3 +31,4 @@ namespace CLAM
 		SetSelectedChannel( 0 );
 	}
 }
+

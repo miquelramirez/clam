@@ -128,3 +128,4 @@ void SpectrumRasterizer::BuildSegment(int LUTstartIdx, int segmentSize, const Pi
 	}
 
 }
+

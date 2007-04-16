@@ -228,3 +228,4 @@ namespace CLAM
 
 
 #endif// _DescriptionAttributes_hxx_
+

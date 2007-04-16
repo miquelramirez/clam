@@ -39,3 +39,4 @@ struct Color
 
 }
 #endif // Color.hxx
+

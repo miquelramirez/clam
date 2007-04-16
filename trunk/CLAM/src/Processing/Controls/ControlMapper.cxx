@@ -77,3 +77,4 @@ static ProcessingFactory::Registrator<CLAM::ControlMapper> regtControlMapper( "C
 
 
 } // namespace CLAM
+

@@ -33,3 +33,4 @@ bool CLAMTest::DynAlt::sTraceStatus= verbose || (!quiet && false);
 // B: A clone of A but with values 9
 // Dyn: A dynamicType contaning A and B as DynAttributes
 */
+

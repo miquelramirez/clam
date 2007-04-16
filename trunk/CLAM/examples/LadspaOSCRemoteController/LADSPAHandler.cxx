@@ -123,3 +123,4 @@ void ConnectTo(LADSPA_Handle instance, unsigned long port, LADSPA_Data * dataLoc
 {
 	((CLAM::CLAMRemoteController *)instance)->ConnectTo( port, dataLocation );
 }
+

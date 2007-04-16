@@ -76,3 +76,4 @@ public:
 }
 
 #endif // ProcessingDataAdapter.hxx
+

@@ -47,3 +47,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SMSTranspose> regtFreqShift( "SMSTranspose" );
 
 }
+

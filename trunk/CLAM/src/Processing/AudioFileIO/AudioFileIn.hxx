@@ -116,3 +116,4 @@ class SoundFileIO;
 }//namespace CLAM
 
 #endif // _AudioFileIn_
+

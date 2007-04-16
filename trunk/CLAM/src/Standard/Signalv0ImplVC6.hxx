@@ -160,3 +160,4 @@ namespace SigSlot
 }
 
 #endif // Signalv0ImplVC6.hxx
+

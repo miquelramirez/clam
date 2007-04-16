@@ -298,3 +298,4 @@ void QtDataDisplay::ViewState::ResetDisplacement()
 {
 	mPrevXf = mPrevYf = 0;
 }
+

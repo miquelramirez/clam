@@ -74,3 +74,4 @@ class SignalsSlotsTest : public CppUnit::TestFixture
 };
 
 } // namespace CLAMTest
+

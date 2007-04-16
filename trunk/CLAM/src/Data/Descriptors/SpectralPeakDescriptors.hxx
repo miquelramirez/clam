@@ -271,3 +271,4 @@ inline SpectralPeakDescriptors CLAM_min (const SpectralPeakDescriptors& a,const 
 
 
 #endif /* __SpectralPeakDescriptors_H__ */
+

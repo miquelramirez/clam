@@ -192,3 +192,4 @@ namespace CLAM {
 }
 
 #endif // _SPECTRUM_Substracter_
+

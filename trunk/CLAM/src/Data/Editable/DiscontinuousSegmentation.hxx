@@ -246,3 +246,4 @@ namespace CLAM
 
 
 #endif//DiscontinuousSegmentation_hxx
+

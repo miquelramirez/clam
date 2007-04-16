@@ -70,3 +70,4 @@ namespace CLAMVM
 }
 
 #endif // SpectralPeakArrayAdapter.hxx
+

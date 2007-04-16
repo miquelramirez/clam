@@ -41,3 +41,4 @@ int main(void)
 	// And this finally creates the FFT object.
 	CLAM::FFT my_fft(my_fft_config);
 }
+

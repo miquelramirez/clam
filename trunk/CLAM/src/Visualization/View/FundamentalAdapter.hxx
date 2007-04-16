@@ -75,3 +75,4 @@ namespace CLAMVM
 }
 
 #endif // FundamentalAdapter.hxx
+

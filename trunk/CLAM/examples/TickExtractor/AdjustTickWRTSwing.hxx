@@ -76,3 +76,4 @@ namespace CLAM
 }
 
 #endif // AdjustTickWRTSwing.hxx
+

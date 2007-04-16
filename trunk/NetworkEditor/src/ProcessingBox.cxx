@@ -684,3 +684,4 @@ bool ProcessingBox::configure()
 		return true;
 	}
 }
+

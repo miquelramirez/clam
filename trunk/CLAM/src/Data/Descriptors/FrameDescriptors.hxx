@@ -184,3 +184,4 @@ inline FrameDescriptors CLAM_min (const FrameDescriptors& a,const FrameDescripto
 
 
 #endif
+

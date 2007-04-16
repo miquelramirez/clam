@@ -42,3 +42,4 @@ class XmlStorageErr : public Err
 }
 
 #endif//_XMLStorageErr_
+

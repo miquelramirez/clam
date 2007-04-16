@@ -105,3 +105,4 @@ typedef Factory<Processing> ProcessingFactory;
 static ProcessingFactory::Registrator<SpectralCombDelta> regtSpectralCombDelta( "SpectralCombDelta" );
 
 }
+

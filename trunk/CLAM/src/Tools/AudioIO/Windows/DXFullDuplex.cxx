@@ -387,3 +387,4 @@ HRESULT DXFullDuplex::RestoreBuffer( LPDIRECTSOUNDBUFFER pDSBuffer, bool& pbRest
 		return S_FALSE;
 	}
 }
+

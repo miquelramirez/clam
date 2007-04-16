@@ -71,3 +71,4 @@ class TmplSlice
 };
 
 #endif // TmplSlice.hxx
+

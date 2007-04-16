@@ -75,3 +75,4 @@ namespace CLAM{
 };//namespace CLAM
 
 #endif // _SMSTranspose_
+

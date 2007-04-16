@@ -135,3 +135,4 @@ private:
 } //end of namespace
 
 #endif //_SpectralSynthesis_
+

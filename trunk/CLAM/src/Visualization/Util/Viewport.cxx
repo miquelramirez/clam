@@ -39,3 +39,4 @@ void Viewport::Dump() const
 {
 	std::cout << "Viewport:" << "(" << left << "," << right << "," << top << "," << bottom << ")" << std::endl;
 }
+

@@ -126,3 +126,4 @@ namespace CLAM {
 }
 
 #endif // BinaryControlOp.hxx
+

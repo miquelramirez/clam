@@ -43,3 +43,4 @@ namespace CLAMVM
 }
 
 #endif // StdioSpectralPeakArrayPresentation.hxx
+

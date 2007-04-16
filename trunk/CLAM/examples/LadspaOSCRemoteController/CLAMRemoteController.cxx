@@ -154,3 +154,4 @@ void CLAMRemoteController::ConnectTo(unsigned long port, LADSPA_Data * data)
 }
 
 } //end namespace CLAM
+

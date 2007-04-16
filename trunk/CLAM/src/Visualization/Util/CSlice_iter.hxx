@@ -116,3 +116,4 @@ bool operator<( const CSlice_iter< T, SliceType >&p, const CSlice_iter< T, Slice
 
 
 #endif // CSlice_iter.hxx
+

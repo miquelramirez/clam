@@ -15,3 +15,4 @@ int main()
 	delete effect;
 	return 0;
 }
+

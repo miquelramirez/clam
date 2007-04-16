@@ -70,3 +70,4 @@ int SerializationController::GetExtension(const char* fileName )
 
 	else return 0;
 }
+

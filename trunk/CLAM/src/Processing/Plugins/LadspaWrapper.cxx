@@ -219,3 +219,4 @@ const char * LadspaWrapper::GetClassName() const
 } // namespace CLAM
 
 #endif // USE_LADSPA
+

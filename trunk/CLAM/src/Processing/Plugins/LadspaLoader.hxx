@@ -120,3 +120,4 @@ public:
 } // namespace CLAM
 
 #endif // __LadspaLoader_hxx__
+

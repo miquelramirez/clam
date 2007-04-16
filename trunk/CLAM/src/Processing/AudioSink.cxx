@@ -65,3 +65,4 @@ namespace CLAM
 		mIn.SetHop(nframes);
 	}
 } //namespace CLAM
+

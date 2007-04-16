@@ -14,3 +14,4 @@ typedef CLAM::Factory< A > FactoryOfAs;
   static     FactoryOfAs::Registrator<B> DummyRegt( "B" );
 
 }
+
