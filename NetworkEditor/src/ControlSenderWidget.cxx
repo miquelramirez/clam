@@ -4,7 +4,6 @@
 #include <QtGui/QLabel>
 #include <QtGui/QDoubleSpinBox>
 #include <QtGui/QHBoxLayout>
-#include "AudioDial.hxx"
 #include "QSynthKnob.hxx"
 
 ControlSenderWidget::ControlSenderWidget(CLAM::Processing * processing)
