@@ -105,3 +105,4 @@ typedef QSynthKnob QSynthKnob;
 #endif  // __QSynthKnob_h
 
 // end of QSynthKnob.h
+
