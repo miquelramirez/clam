@@ -36,43 +36,6 @@
 
 #include "QSynthKnob.hxx"
 
-
-struct QSynthKnobCacheIndex
-{
-	// Constructor.
-	QSynthKnobCacheIndex(int s = 0, int kc = 0, int mc = 0,
-		int a = 0, int n = 0, int c = 0) :
-			size(s), knobColor(kc), meterColor(mc),
-			angle(a), numTicks(n), centered(c) {}
-
-	bool operator<(const QSynthKnobCacheIndex &i) const {
-		// woo!
-		if (size < i.size) return true;
-		else if (size > i.size) return false;
-		else if (knobColor < i.knobColor) return true;
-		else if (knobColor > i.knobColor) return false;
-		else if (meterColor < i.meterColor) return true;
-		else if (meterColor > i.meterColor) return false;
-		else if (angle < i.angle) return true;
-		else if (angle > i.angle) return false;
-		else if (numTicks < i.numTicks) return true;
-		else if (numTicks > i.numTicks) return false;
-		else if (centered == i.centered) return false;
-		else if (!centered) return true;
-		return false;
-	}
-
-	int          size;
-	unsigned int knobColor;
-	unsigned int meterColor;
-	int          angle;
-	int          numTicks;
-	bool         centered;
-};
-
-typedef QMap<QSynthKnobCacheIndex, QPixmap> QSynthKnobPixmapCache;
-
-
 //-------------------------------------------------------------------------
 // QSynthKnob - Instance knob widget class.
 //
@@ -100,8 +63,6 @@ QSynthKnob::~QSynthKnob (void)
 
 void QSynthKnob::paintEvent ( QPaintEvent * event )
 {
-	static QSynthKnobPixmapCache s_pixmaps;
-
 	double angle = QSYNTHKNOB_MIN // offset
 		+ (QSYNTHKNOB_RANGE *
 			(double(value() - minimum()) /
@@ -140,7 +101,7 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	// The bright metering bit...
 
 	QConicalGradient meterShadow(xcenter,ycenter,-90);
-	meterShadow.setColorAt(0,meterColor.dark().dark());
+	meterShadow.setColorAt(0,meterColor.dark());
 	meterShadow.setColorAt(0.5,meterColor);
 	meterShadow.setColorAt(1,meterColor.light().light());
 	paint.setBrush(meterShadow);
@@ -355,3 +316,4 @@ void QSynthKnob::sliderChange (SliderChange change)
 */
 
 // end of QSynthKnob.cpp
+
