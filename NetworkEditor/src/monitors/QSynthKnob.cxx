@@ -48,7 +48,6 @@
 // Constructor.
 QSynthKnob::QSynthKnob ( QWidget *pParent)
 	: QDial(pParent),
-	m_knobColor(Qt::black), m_meterColor(Qt::white),
 	m_bMouseDial(false), m_bMousePressed(false),
 	m_iDefaultValue(-1)
 {
@@ -81,17 +80,19 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	int numTicks = 1 + (maximum() + ns - minimum()) / ns;
 	int indent = side * 0.15 + 2;
 	int knobWidth = side-2*indent;
-	int darkWidth = knobWidth * 3 / 4;
+	int shineFocus     = knobWidth*0.25;
+	int shineCenter    = knobWidth*0.2;
+	int shineExtension = knobWidth*0.8;
 	int meterWidth = side-2*scaleShadowWidth;
 	
 	QColor knobColor(m_knobColor);
-	if (knobColor == Qt::black)
+	if (! knobColor.isValid())
 		knobColor =  palette().mid().color();
 
 	QColor meterColor(m_meterColor);
 	if (!isEnabled())
 		meterColor = palette().mid().color();
-	else if (m_meterColor == Qt::white)
+	else if (!m_meterColor.isValid())
 		meterColor = palette().highlight().color();
 	QColor background = palette().window().color();
 
@@ -116,9 +117,13 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	pen.setWidth(knobBorderWidth);
 	paint.setPen(pen);
 
-	QRadialGradient gradient(xcenter,ycenter,side/2,xcenter-darkWidth/3,ycenter-darkWidth/3);
-	gradient.setColorAt(0,knobColor.light().light());
-	gradient.setColorAt(1,knobColor.dark());
+	QRadialGradient gradient(
+		xcenter-shineCenter,ycenter-shineCenter,
+		shineExtension,
+		xcenter-shineFocus,ycenter-shineFocus);
+	gradient.setColorAt(0.2,knobColor.light().light());
+	gradient.setColorAt(.5,knobColor);
+	gradient.setColorAt(1,knobColor.dark(150));
 	QBrush knobBrush(gradient);
 	paint.setBrush(knobBrush);
 	paint.drawEllipse(xcenter-knobWidth/2, ycenter-knobWidth/2, knobWidth, knobWidth);
@@ -152,15 +157,18 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	// Shadowing...
 
 	// Knob shadow...
+	QColor borderColor = m_borderColor;
+	if (!borderColor.isValid())
+		borderColor=knobColor;
 	QLinearGradient inShadow(xcenter-side/4,ycenter-side/4,xcenter+side/4,ycenter+side/4);
-	inShadow.setColorAt(0,knobColor.light().light());
-	inShadow.setColorAt(1,knobColor.dark());
-	paint.setPen(QPen(QBrush(inShadow),knobBorderWidth*3/4));
+	inShadow.setColorAt(0,borderColor.light().light());
+	inShadow.setColorAt(1,borderColor.dark());
+	paint.setPen(QPen(QBrush(inShadow),knobBorderWidth*7/8));
 	paint.drawEllipse(xcenter-side/2+indent, ycenter-side/2+indent,
 		side-2*indent, side-2*indent);
 
 	// Scale shadow...
-	QLinearGradient outShadow(xcenter-side/4,ycenter-side/4,xcenter+side/4,ycenter+side/4);
+	QLinearGradient outShadow(xcenter-side/3,ycenter-side/3,xcenter+side/3,ycenter+side/3);
 	outShadow.setColorAt(0,background.dark());
 	outShadow.setColorAt(1,background.light().light());
 	paint.setPen(QPen(QBrush(outShadow),scaleShadowWidth));
@@ -175,43 +183,43 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	double x = xcenter - len * sin(angle);
 	double y = ycenter + len * cos(angle);
 
-	QColor c = palette().dark().color();
+	QColor c = m_pointerColor;
+	if (!c.isValid()) 
+		c= palette().dark().color();
 	pen.setColor(isEnabled() ? c.dark(130) : c);
-	pen.setWidth(pointerWidth);
+	pen.setWidth(pointerWidth+2);
 	paint.setPen(pen);
 	paint.drawLine(QLineF(xcenter, ycenter, x, y));
-}
-
-
-void QSynthKnob::drawTick ( QPainter& paint,
-	double angle, int size, bool internal )
-{
-	double xcenter = width()/2;
-	double ycenter = height()/2;
-	double hyp = double(size) / 2.0;
-	double len = hyp / 4;
-	double dir = internal? -1 : len;
-	double sinAngle = sin(angle);
-	double cosAngle = cos(angle);
-	double x0 = xcenter - (hyp - len) * sinAngle;
-	double y0 = ycenter + (hyp - len) * cosAngle;
-	double x1 = xcenter - (hyp + dir) * sinAngle;
-	double y1 = ycenter + (hyp + dir) * cosAngle;
-	paint.drawLine(QPointF(x0,y0), QPointF(x1,y1));
+	pen.setColor(isEnabled() ? c.light() : c);
+	pen.setWidth(pointerWidth);
+	paint.setPen(pen);
+	paint.drawLine(QLineF(xcenter-1, ycenter-1, x-1, y-1));
 }
 
 
 void QSynthKnob::setKnobColor ( const QColor& color )
 {
 	m_knobColor = color;
-	repaint();
+	update();
 }
 
 
 void QSynthKnob::setMeterColor ( const QColor& color )
 {
 	m_meterColor = color;
-	repaint();
+	update();
+}
+
+void QSynthKnob::setPointerColor ( const QColor& color )
+{
+	m_pointerColor = color;
+	update();
+}
+
+void QSynthKnob::setBorderColor ( const QColor& color )
+{
+	m_borderColor = color;
+	update();
 }
 
 
