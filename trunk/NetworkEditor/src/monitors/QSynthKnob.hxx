@@ -40,6 +40,8 @@ class QSynthKnob : public QDial
 	Q_OBJECT
 	Q_PROPERTY( QColor knobColor READ getKnobColor WRITE setKnobColor )
 	Q_PROPERTY( QColor meterColor READ getMeterColor WRITE setMeterColor )
+	Q_PROPERTY( QColor pointerColor READ getPointerColor WRITE setPointerColor )
+	Q_PROPERTY( QColor borderColor READ getBorderColor WRITE setBorderColor )
 	Q_PROPERTY( bool mouseDial READ getMouseDial WRITE setMouseDial )
 	Q_PROPERTY( int defaultValue READ getDefaultValue WRITE setDefaultValue )
 
@@ -52,6 +54,8 @@ public:
 
 	const QColor& getKnobColor()  const { return m_knobColor;  }
 	const QColor& getMeterColor() const { return m_meterColor; }
+	const QColor& getPointerColor() const { return m_pointerColor; }
+	const QColor& getBorderColor() const { return m_borderColor; }
 
 	bool getMouseDial() const { return m_bMouseDial; }
 
@@ -64,6 +68,12 @@ public slots:
 
 	// Set the colour of the meter
 	void setMeterColor(const QColor& color);
+
+	// Set the colour of the pointer
+	void setPointerColor(const QColor& color);
+
+	// Set the colour of the border
+	void setBorderColor(const QColor& color);
 
 	// (old) QDial mouse behavior.
 	void setMouseDial(bool bMouseDial);
@@ -90,6 +100,8 @@ private:
 
 	QColor m_knobColor;
 	QColor m_meterColor;
+	QColor m_pointerColor;
+	QColor m_borderColor;
 
 	// Alternate mouse behavior tracking.
 	bool   m_bMouseDial;
