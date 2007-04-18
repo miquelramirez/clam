@@ -18,17 +18,15 @@ namespace CLAM
 		UpdateData();
 		SetIdentifier( "ControlPrinter" );
 		SetNumberOfInputs(1.);
-		SetGuiOnly(false);
+		SetGuiOnly(true);
 	}
 
 	ControlPrinter::ControlPrinter()
-		: mGuiOnly(false)
 	{
 		Configure( mConfig );	
 	}
 	
 	ControlPrinter::ControlPrinter( const ControlPrinterConfig& cfg )
-		: mGuiOnly(false)
 	{ 
 		Configure( cfg );
 	}
@@ -40,15 +38,18 @@ namespace CLAM
 	bool ControlPrinter::ConcreteConfigure( const ProcessingConfig& cfg )
 	{ 
 		RemoveOldControls();
+
 		CopyAsConcreteConfig( mConfig, cfg );
-		if (!mConfig.HasNumberOfInputs())
-		{
-			mConfig.AddNumberOfInputs();
-			mConfig.UpdateData();
-			mConfig.SetNumberOfInputs(1.);
-		}
+
+		mConfig.AddAll();
+		mConfig.UpdateData();
+
 		int nInputs = int(mConfig.GetNumberOfInputs());
-		if (nInputs < 1) nInputs = 1;
+		if (nInputs < 1)
+		{
+			mConfig.SetNumberOfInputs(1.);
+			nInputs = 1;
+		}
 		if (nInputs == 1) 
 		{
 			// preserve old port name 
@@ -63,20 +64,13 @@ namespace CLAM
 				mConfig.GetIdentifier(), this);
 		}
 
-		if (!mConfig.HasGuiOnly())
-		{
-			mConfig.AddGuiOnly();
-			mConfig.UpdateData();
-		}
-		if (mConfig.GetGuiOnly())
-			mGuiOnly = true;
 
 		return true; 
 	}
 	
 	bool ControlPrinter::Do()
 	{
-		if (mGuiOnly)
+		if (mConfig.GetGuiOnly())
 			return true;
 		
 		std::string separator = "";
