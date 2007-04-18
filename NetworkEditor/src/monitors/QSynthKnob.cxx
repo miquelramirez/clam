@@ -194,6 +194,8 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	pen.setWidth(pointerWidth);
 	paint.setPen(pen);
 	paint.drawLine(QLineF(xcenter-1, ycenter-1, x-1, y-1));
+	if (m_bMousePressed)
+		paint.drawLine(QLineF(xcenter, ycenter, m_posMouse.x(), m_posMouse.y()));
 }
 
 
@@ -238,9 +240,9 @@ void QSynthKnob::setDefaultValue ( int iDefaultValue )
 // Mouse angle determination.
 double QSynthKnob::mouseAngle ( const QPoint& pos )
 {
-	int dx = pos.x() - (QDial::width() / 2);
-	int dy = (QDial::height() / 2) - pos.y();
-	return (dx ? atan((double) dy / (double) dx) : 0.0);
+	int dx = pos.x() - width()/2;
+	int dy = height()/2 - pos.y();
+	return 360*atan2(dx,dy)/M_PI/2;
 }
 
 
@@ -252,6 +254,7 @@ void QSynthKnob::mousePressEvent ( QMouseEvent *pMouseEvent )
 	} else if (pMouseEvent->button() == Qt::LeftButton) {
 		m_bMousePressed = true;
 		m_posMouse = pMouseEvent->pos();
+		m_lastPos = value();
 		emit sliderPressed();
 	} else if (pMouseEvent->button() == Qt::MidButton) {
 		// Reset to default value...
@@ -261,7 +264,7 @@ void QSynthKnob::mousePressEvent ( QMouseEvent *pMouseEvent )
 	}
 }
 
-
+#include <iostream>
 void QSynthKnob::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
 	if (m_bMouseDial) {
@@ -269,16 +272,19 @@ void QSynthKnob::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 	} else if (m_bMousePressed) {
 		// Dragging by x or y axis when clicked modifies value.
 		const QPoint& posMouse = pMouseEvent->pos();
-		int iValue = value()
-			+ (mouseAngle(m_posMouse) < mouseAngle(posMouse) ? -1 : +1)
-			* singleStep();
+		double angleDelta =  mouseAngle(posMouse) - mouseAngle(m_posMouse);
+		std::cout << mouseAngle(posMouse) << " "<< angleDelta << std::endl;
+		if (angleDelta>180) angleDelta=angleDelta-360;
+		if (angleDelta<-180) angleDelta=angleDelta+360;
+		m_lastPos +=  (maximum()-minimum())*angleDelta/270;
+		if (m_lastPos>maximum())
+			m_lastPos=maximum();
+		if (m_lastPos<minimum())
+			m_lastPos=minimum();
+		int iValue=m_lastPos+.5; // rounding
 		m_posMouse = posMouse;
-		if (iValue > maximum())
-			iValue = maximum();
-		else
-		if (iValue < minimum())
-			iValue = minimum();
 		setValue(iValue);
+		update();
 		emit sliderMoved(value());
 	}
 }

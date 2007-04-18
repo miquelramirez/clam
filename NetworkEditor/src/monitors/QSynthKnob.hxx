@@ -110,6 +110,7 @@ private:
 
 	// Default (mid) value.
 	int m_iDefaultValue;
+	double m_lastDragValue; // just for more precission on the movement
 };
 
 typedef QSynthKnob QSynthKnob;
