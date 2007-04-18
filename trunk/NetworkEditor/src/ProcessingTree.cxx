@@ -212,10 +212,8 @@ void ProcessingTree::PressProcessing(QTreeWidgetItem * item, int column)
 	if (!item) return;
 	if (!item->parent()) return;
 
-	QString className = item->text(0);
-#ifdef USE_LADSPA
-	className = item->text(1);
-#endif
+	// always use column 1
+	QString className = item->text(1);
 	QDrag *drag = new QDrag( this);
 	QMimeData * data = new QMimeData;
 	data->setText(className);
