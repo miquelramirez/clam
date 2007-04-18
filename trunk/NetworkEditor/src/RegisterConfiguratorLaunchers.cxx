@@ -66,6 +66,7 @@
 #include <CLAM/ControlScaler.hxx>
 #include "ControlSurface.hxx"
 #include <CLAM/ControlSource.hxx>
+#include <CLAM/ControlTrace.hxx>
 #include <CLAM/OutControlSender.hxx>
 
 //MIDI
@@ -132,6 +133,8 @@ STANDARD_PROCESSING_CONFIG_REGISTER(ControlPrinterConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ControlScalerConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ControlSourceConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(ControlSurfaceConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(ControlTraceReaderConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(ControlTraceWriterConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(FlagControlConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(Fundamental2ControlConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(OneOverFConfig);
