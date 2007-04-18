@@ -390,17 +390,14 @@ public slots:
 			));
 		// clear the current map of ladspa's
 		CLAM::LadspaFactory::GetInstance().Clear();
-
+/*
 		// compile all faust files
-		// ugly...
+		// TODO now it's ugly...
 		std::cout << "[FAUST] compiling" << std::endl;
 		system("cd ~/local/lib/faust/ && make clean && make && make svg && mv *.so *svg ~/local/lib/ladspa/");
-		//system("mv svg /usr/local/lib/ladspa/");
 
 		// generate svg for faust code
-		// QString svgFilename = "/home/parumi/local/lib/ladspa/freeverb.dsp-svg/process.svg";
-		system("firefox /home/parumi/local/lib/ladspa/freeverb.dsp-svg/process.svg &");
-		/*
+		QString svgFilename = "/home/parumi/local/lib/ladspa/freeverb.dsp-svg/process.svg";
 		#if QT_VERSION >= 0x040200
 		QDesktopServices::openUrl(svgFilename);
 		#else
