@@ -47,9 +47,10 @@
 
 // Constructor.
 QSynthKnob::QSynthKnob ( QWidget *pParent)
-	: QDial(pParent),
-	m_bMouseDial(false), m_bMousePressed(false),
-	m_iDefaultValue(-1)
+	: QDial(pParent)
+	, m_bMousePressed(false)
+	, m_knobMode(LinearMode)
+	, m_iDefaultValue(-1)
 {
 }
 
@@ -74,7 +75,7 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	int notchWidth = 2+side/400;
 	int pointerWidth = 2+side/30;
 	int scaleShadowWidth = 1+side/100;
-	int knobBorderWidth = 4+side/400;
+	int knobBorderWidth = 4+side/50;
 
 	int ns = notchSize();
 	int numTicks = 1 + (maximum() + ns - minimum()) / ns;
@@ -83,6 +84,7 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	int shineFocus     = knobWidth*0.25;
 	int shineCenter    = knobWidth*0.2;
 	int shineExtension = knobWidth*0.8;
+	int shadowShift = knobWidth*0.4;
 	int meterWidth = side-2*scaleShadowWidth;
 	
 	QColor knobColor(m_knobColor);
@@ -109,6 +111,17 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	paint.setPen(Qt::transparent);
 	paint.drawPie(xcenter-meterWidth/2, ycenter-meterWidth/2,
 		meterWidth, meterWidth, (180 + 45) * 16, -(degrees - 45) * 16);
+
+	// Knob projected shadow
+	QRadialGradient projectionGradient(
+		xcenter+shineCenter,ycenter+shineCenter,
+		shineExtension,
+		xcenter+shadowShift,ycenter+shadowShift);
+	projectionGradient.setColorAt(0,QColor(0,0,0,100));
+	projectionGradient.setColorAt(1,QColor(200,0,0,10));
+	QBrush shadowBrush(projectionGradient);
+	paint.setBrush(shadowBrush);
+	paint.drawEllipse(xcenter-shadowShift, ycenter-shadowShift, knobWidth, knobWidth);
 
 	// Knob body and face...
 
@@ -194,8 +207,6 @@ void QSynthKnob::paintEvent ( QPaintEvent * event )
 	pen.setWidth(pointerWidth);
 	paint.setPen(pen);
 	paint.drawLine(QLineF(xcenter-1, ycenter-1, x-1, y-1));
-	if (m_bMousePressed)
-		paint.drawLine(QLineF(xcenter, ycenter, m_posMouse.x(), m_posMouse.y()));
 }
 
 
@@ -225,12 +236,6 @@ void QSynthKnob::setBorderColor ( const QColor& color )
 }
 
 
-void QSynthKnob::setMouseDial ( bool bMouseDial )
-{
-	m_bMouseDial = bMouseDial;
-}
-
-
 void QSynthKnob::setDefaultValue ( int iDefaultValue )
 {
 	m_iDefaultValue = iDefaultValue;
@@ -249,12 +254,14 @@ double QSynthKnob::mouseAngle ( const QPoint& pos )
 // Alternate mouse behavior event handlers.
 void QSynthKnob::mousePressEvent ( QMouseEvent *pMouseEvent )
 {
-	if (m_bMouseDial) {
+	if (m_knobMode==QDialMode) {
 		QDial::mousePressEvent(pMouseEvent);
-	} else if (pMouseEvent->button() == Qt::LeftButton) {
+		return;
+	}
+	if (pMouseEvent->button() == Qt::LeftButton) {
 		m_bMousePressed = true;
 		m_posMouse = pMouseEvent->pos();
-		m_lastPos = value();
+		m_lastDragValue = value();
 		emit sliderPressed();
 	} else if (pMouseEvent->button() == Qt::MidButton) {
 		// Reset to default value...
@@ -264,34 +271,47 @@ void QSynthKnob::mousePressEvent ( QMouseEvent *pMouseEvent )
 	}
 }
 
-#include <iostream>
 void QSynthKnob::mouseMoveEvent ( QMouseEvent *pMouseEvent )
 {
-	if (m_bMouseDial) {
+	if (m_knobMode==QDialMode)
+	{
 		QDial::mouseMoveEvent(pMouseEvent);
-	} else if (m_bMousePressed) {
-		// Dragging by x or y axis when clicked modifies value.
-		const QPoint& posMouse = pMouseEvent->pos();
-		double angleDelta =  mouseAngle(posMouse) - mouseAngle(m_posMouse);
-		std::cout << mouseAngle(posMouse) << " "<< angleDelta << std::endl;
-		if (angleDelta>180) angleDelta=angleDelta-360;
-		if (angleDelta<-180) angleDelta=angleDelta+360;
-		m_lastPos +=  (maximum()-minimum())*angleDelta/270;
-		if (m_lastPos>maximum())
-			m_lastPos=maximum();
-		if (m_lastPos<minimum())
-			m_lastPos=minimum();
-		int iValue=m_lastPos+.5; // rounding
-		m_posMouse = posMouse;
-		setValue(iValue);
-		update();
-		emit sliderMoved(value());
+		return;
 	}
+	if (! m_bMousePressed) return;
+	const QPoint& posMouse = pMouseEvent->pos();
+	int xdelta = posMouse.x() - m_posMouse.x();
+	int ydelta = posMouse.y() - m_posMouse.y();
+	double angleDelta =  mouseAngle(posMouse) - mouseAngle(m_posMouse);
+	int newValue = value();
+	switch (m_knobMode)
+	{
+		case LinearMode:
+		{
+			newValue = m_lastDragValue + xdelta - ydelta;
+		} break;
+		case AngularMode:
+		{
+			// Forget about the drag origin to be robust on full rotations
+			if (angleDelta>180) angleDelta=angleDelta-360;
+			if (angleDelta<-180) angleDelta=angleDelta+360;
+			m_lastDragValue +=  (maximum()-minimum())*angleDelta/270;
+			if (m_lastDragValue>maximum())
+				m_lastDragValue=maximum();
+			if (m_lastDragValue<minimum())
+				m_lastDragValue=minimum();
+			m_posMouse = posMouse;
+			newValue = m_lastDragValue+.5;
+		} break;
+	}
+	setValue(newValue);
+	update();
+	emit sliderMoved(value());
 }
 
 void QSynthKnob::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 {
-	if (m_bMouseDial) {
+	if (m_knobMode==QDialMode) {
 		QDial::mouseReleaseEvent(pMouseEvent);
 	} else if (m_bMousePressed) {
 		m_bMousePressed = false;
@@ -301,7 +321,7 @@ void QSynthKnob::mouseReleaseEvent ( QMouseEvent *pMouseEvent )
 
 void QSynthKnob::wheelEvent ( QWheelEvent *pWheelEvent )
 {
-	if (m_bMouseDial) {
+	if (m_knobMode==QDialMode) {
 		QDial::wheelEvent(pWheelEvent);
 	} else {
 		int iValue = value();

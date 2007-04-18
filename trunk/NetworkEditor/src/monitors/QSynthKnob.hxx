@@ -42,10 +42,16 @@ class QSynthKnob : public QDial
 	Q_PROPERTY( QColor meterColor READ getMeterColor WRITE setMeterColor )
 	Q_PROPERTY( QColor pointerColor READ getPointerColor WRITE setPointerColor )
 	Q_PROPERTY( QColor borderColor READ getBorderColor WRITE setBorderColor )
-	Q_PROPERTY( bool mouseDial READ getMouseDial WRITE setMouseDial )
 	Q_PROPERTY( int defaultValue READ getDefaultValue WRITE setDefaultValue )
-
+	Q_PROPERTY( KnobMode knobMode READ knobMode WRITE setKnobMode )
+	Q_ENUMS(KnobMode)
 public:
+	enum KnobMode
+	{
+		QDialMode, ///< Old QDial behaviour
+		AngularMode, ///< Knob moves angularly as the mouse around the widget center
+		LinearMode ///< Knob moves proportonally to drag distance in one ortogonal axis
+	};
 
 	// Constructor.
 	QSynthKnob(QWidget *pParent = 0);
@@ -56,8 +62,6 @@ public:
 	const QColor& getMeterColor() const { return m_meterColor; }
 	const QColor& getPointerColor() const { return m_pointerColor; }
 	const QColor& getBorderColor() const { return m_borderColor; }
-
-	bool getMouseDial() const { return m_bMouseDial; }
 
 	int getDefaultValue() const { return m_iDefaultValue; }
 
@@ -75,11 +79,11 @@ public slots:
 	// Set the colour of the border
 	void setBorderColor(const QColor& color);
 
-	// (old) QDial mouse behavior.
-	void setMouseDial(bool bMouseDial);
-
 	// Set default (mid) value.
 	void setDefaultValue(int iDefaultValue);
+
+	void setKnobMode(KnobMode mode) { m_knobMode=mode; }
+	KnobMode knobMode() const { return m_knobMode; }
 
 protected:
 
@@ -104,13 +108,14 @@ private:
 	QColor m_borderColor;
 
 	// Alternate mouse behavior tracking.
-	bool   m_bMouseDial;
 	bool   m_bMousePressed;
 	QPoint m_posMouse;
+	KnobMode m_knobMode;
 
 	// Default (mid) value.
 	int m_iDefaultValue;
-	double m_lastDragValue; // just for more precission on the movement
+	// just for more precission on the movement
+	double m_lastDragValue;
 };
 
 typedef QSynthKnob QSynthKnob;
