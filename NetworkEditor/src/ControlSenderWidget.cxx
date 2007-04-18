@@ -70,6 +70,8 @@ void ControlSenderWidget::createDial()
 void ControlSenderWidget::createSlider(Qt::Orientation align)
 {
 	_slider = new QSlider(align);
+	_slider->setMinimumHeight(_slider->sizeHint().height());
+	_slider->setMinimumWidth(_slider->sizeHint().width());
 	setupSlider(_slider);
 	if (align == Qt::Vertical) {
 		QWidget *hbox = new QWidget;
@@ -83,9 +85,6 @@ void ControlSenderWidget::createSlider(Qt::Orientation align)
 
 void ControlSenderWidget::setupSlider(QAbstractSlider *slider)
 {
-	slider->setMinimumHeight(slider->sizeHint().height());
-	slider->setMinimumWidth(slider->sizeHint().width());
-
 	slider->setMinimum(0);
 	slider->setMaximum(int(ceil((_max - _min) / _step)));
 	slider->setValue(int(round((_default - _min) / _step)));
