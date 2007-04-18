@@ -57,8 +57,6 @@ class ControlPrinter : public Processing
 		bool Do();
 	protected:
 		void RemoveOldControls();
-	private:
-		bool mGuiOnly;
 };
 
 }
