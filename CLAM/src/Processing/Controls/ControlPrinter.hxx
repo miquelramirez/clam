@@ -33,9 +33,10 @@ namespace CLAM
 class ControlPrinterConfig : public ProcessingConfig
 {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ControlPrinterConfig, 2, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (ControlPrinterConfig, 3, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Identifier);
 		DYN_ATTRIBUTE (1, public, TData, NumberOfInputs);
+		DYN_ATTRIBUTE (2, public, bool, GuiOnly );
 
 	private:
 		void DefaultInit();
@@ -56,6 +57,8 @@ class ControlPrinter : public Processing
 		bool Do();
 	protected:
 		void RemoveOldControls();
+	private:
+		bool mGuiOnly;
 };
 
 }

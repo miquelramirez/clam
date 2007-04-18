@@ -18,14 +18,17 @@ namespace CLAM
 		UpdateData();
 		SetIdentifier( "ControlPrinter" );
 		SetNumberOfInputs(1.);
+		SetGuiOnly(false);
 	}
 
 	ControlPrinter::ControlPrinter()
+		: mGuiOnly(false)
 	{
 		Configure( mConfig );	
 	}
 	
 	ControlPrinter::ControlPrinter( const ControlPrinterConfig& cfg )
+		: mGuiOnly(false)
 	{ 
 		Configure( cfg );
 	}
@@ -39,7 +42,11 @@ namespace CLAM
 		RemoveOldControls();
 		CopyAsConcreteConfig( mConfig, cfg );
 		if (!mConfig.HasNumberOfInputs())
+		{
+			mConfig.AddNumberOfInputs();
+			mConfig.UpdateData();
 			mConfig.SetNumberOfInputs(1.);
+		}
 		int nInputs = int(mConfig.GetNumberOfInputs());
 		if (nInputs < 1) nInputs = 1;
 		if (nInputs == 1) 
@@ -55,11 +62,23 @@ namespace CLAM
 			mInControls.Resize(nInputs,
 				mConfig.GetIdentifier(), this);
 		}
+
+		if (!mConfig.HasGuiOnly())
+		{
+			mConfig.AddGuiOnly();
+			mConfig.UpdateData();
+		}
+		if (mConfig.GetGuiOnly())
+			mGuiOnly = true;
+
 		return true; 
 	}
 	
 	bool ControlPrinter::Do()
 	{
+		if (mGuiOnly)
+			return true;
+		
 		std::string separator = "";
 		std::stringstream values;
 		for (int i = 0; i < mInControls.Size(); i++) 
