@@ -23,8 +23,8 @@
 #define __SPECTRALPEAKSRENDERER__
 
 #include <vector>
-#include "FreqMagPoint.hxx"
-#include "Renderer.hxx"
+#include <CLAM/FreqMagPoint.hxx>
+#include <CLAM/Renderer.hxx>
 
 namespace CLAM
 {

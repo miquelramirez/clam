@@ -1,6 +1,6 @@
 #include <vector>
-#include "CLAMGL.hxx"
-#include "SegmentEditor.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/SegmentEditor.hxx>
 
 namespace CLAM
 {

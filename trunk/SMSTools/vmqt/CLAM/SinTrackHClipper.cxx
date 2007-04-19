@@ -20,8 +20,8 @@
  */
 
 #include <algorithm>
-#include "Assert.hxx"
-#include "SinTrackHClipper.hxx"
+#include <CLAM/Assert.hxx>
+#include <CLAM/SinTrackHClipper.hxx>
 
 namespace CLAM
 {

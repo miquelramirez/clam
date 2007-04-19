@@ -2,7 +2,7 @@
 #define __QTMULTIPLAYER__
 
 #include <vector>
-#include "QtPlayer.hxx"
+#include <CLAM/QtPlayer.hxx>
 
 namespace CLAM
 {

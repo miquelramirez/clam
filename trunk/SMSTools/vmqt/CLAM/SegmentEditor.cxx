@@ -1,6 +1,6 @@
-#include "CLAMGL.hxx"
-#include "Segmentation.hxx"
-#include "SegmentEditor.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/Segmentation.hxx>
+#include <CLAM/SegmentEditor.hxx>
 #include <iostream>
 
 /*

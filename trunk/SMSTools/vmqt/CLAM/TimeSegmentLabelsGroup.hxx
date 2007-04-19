@@ -23,7 +23,7 @@
 #define __TIMESEGMENTLABELSGROUP__
 
 #include <qwidget.h>
-#include "MediaTime.hxx"
+#include <CLAM/MediaTime.hxx>
 
 class QLabel;
 

@@ -1,5 +1,5 @@
-#include "CLAMGL.hxx"
-#include "BPFEditorRenderer.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/BPFEditorRenderer.hxx>
 
 namespace CLAM
 {

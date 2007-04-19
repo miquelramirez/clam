@@ -23,7 +23,7 @@
 #define __APLAYER__ 
  
 #include <vector>
-#include "Player.hxx"
+#include <CLAM/Player.hxx>
  
 namespace CLAM
 {

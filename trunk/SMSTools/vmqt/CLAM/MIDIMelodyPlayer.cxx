@@ -1,9 +1,9 @@
 #include <iostream>
-#include "xtime.hxx"
-#include "MIDIManager.hxx"
-#include "MIDIIOConfig.hxx"
-#include "MIDIOutControl.hxx"
-#include "MIDIMelodyPlayer.hxx" 
+#include <CLAM/xtime.hxx>
+#include <CLAM/MIDIManager.hxx>
+#include <CLAM/MIDIIOConfig.hxx>
+#include <CLAM/MIDIOutControl.hxx>
+#include <CLAM/MIDIMelodyPlayer.hxx> 
 
 namespace CLAM
 {

@@ -22,11 +22,11 @@
 #ifndef __SINTRACKSPLOTCONTROLLER__
 #define __SINTRACKSPLOTCONTROLLER__
 
-#include "Segment.hxx"
-#include "SinTrackHClipper.hxx"
-#include "SinTrackVClipper.hxx"
-#include "SinTracksRenderer.hxx"
-#include "PlotController.hxx"
+#include <CLAM/Segment.hxx>
+#include <CLAM/SinTrackHClipper.hxx>
+#include <CLAM/SinTrackVClipper.hxx>
+#include <CLAM/SinTracksRenderer.hxx>
+#include <CLAM/PlotController.hxx>
 
 namespace CLAM
 {

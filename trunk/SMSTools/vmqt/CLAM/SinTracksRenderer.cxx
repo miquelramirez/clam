@@ -20,9 +20,9 @@
  */
 
 #include <iostream>
-#include "Assert.hxx"
-#include "CLAMGL.hxx"
-#include "SinTracksRenderer.hxx"
+#include <CLAM/Assert.hxx>
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/SinTracksRenderer.hxx>
 
 namespace CLAM
 {

@@ -20,8 +20,8 @@
  */
 
 #include <algorithm>
-#include "SpecTypeFlags.hxx"
-#include "SpectrumPlotController.hxx"
+#include <CLAM/SpecTypeFlags.hxx>
+#include <CLAM/SpectrumPlotController.hxx>
 
 namespace CLAM
 {

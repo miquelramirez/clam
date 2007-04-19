@@ -22,7 +22,7 @@
 #ifndef __RENDERER__
 #define __RENDERER__
 
-#include "VMColor.hxx"
+#include <CLAM/VMColor.hxx>
 
 namespace CLAM
 {

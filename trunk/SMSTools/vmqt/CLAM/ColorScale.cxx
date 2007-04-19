@@ -1,5 +1,5 @@
 #include <qpainter.h>
-#include "ColorScale.hxx"
+#include <CLAM/ColorScale.hxx>
 
 namespace CLAM
 {

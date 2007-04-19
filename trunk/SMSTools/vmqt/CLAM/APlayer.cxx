@@ -19,10 +19,10 @@
  *
  */
 
-#include "AudioIO.hxx"
-#include "AudioManager.hxx"
-#include "AudioOut.hxx"
-#include "APlayer.hxx"
+#include <CLAM/AudioIO.hxx>
+#include <CLAM/AudioManager.hxx>
+#include <CLAM/AudioOut.hxx>
+#include <CLAM/APlayer.hxx>
 
 namespace CLAM
 {

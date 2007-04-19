@@ -1,11 +1,11 @@
 #ifndef __SMSTIMEMULTIDISPLAY__
 #define __SMSTIMEMULTIDISPLAY__
 
-#include "Segment.hxx"
-#include "MediaTime.hxx"
-#include "PlayablePlot.hxx"
-#include "MultiDisplayPlot.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Segment.hxx>
+#include <CLAM/MediaTime.hxx>
+#include <CLAM/PlayablePlot.hxx>
+#include <CLAM/MultiDisplayPlot.hxx>
+#include <CLAM/Slotv1.hxx>
 
 using SigSlot::Slotv1;
 

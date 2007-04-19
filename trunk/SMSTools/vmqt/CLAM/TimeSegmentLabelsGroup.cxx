@@ -22,7 +22,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qtooltip.h>
-#include "TimeSegmentLabelsGroup.hxx"
+#include <CLAM/TimeSegmentLabelsGroup.hxx>
 
 namespace CLAM
 {

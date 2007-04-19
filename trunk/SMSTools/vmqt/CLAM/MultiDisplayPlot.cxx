@@ -1,13 +1,13 @@
 #include <qframe.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
-#include "Assert.hxx"
-#include "Ruler.hxx"
-#include "HScrollGroup.hxx"
-#include "PlotController.hxx"
-#include "DisplaySurface.hxx"
-#include "EditTagDialog.hxx"
-#include "MultiDisplayPlot.hxx"
+#include <CLAM/Assert.hxx>
+#include <CLAM/Ruler.hxx>
+#include <CLAM/HScrollGroup.hxx>
+#include <CLAM/PlotController.hxx>
+#include <CLAM/DisplaySurface.hxx>
+#include <CLAM/EditTagDialog.hxx>
+#include <CLAM/MultiDisplayPlot.hxx>
 
 namespace CLAM
 {

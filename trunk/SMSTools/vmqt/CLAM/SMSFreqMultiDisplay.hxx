@@ -1,9 +1,9 @@
 #ifndef __SMSFREQMULTIDISPLAY__
 #define __SMSFREQMULTIDISPLAY__
 
-#include "Spectrum.hxx"
-#include "SpectralPeakArray.hxx"
-#include "MultiDisplayPlot.hxx"
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/SpectralPeakArray.hxx>
+#include <CLAM/MultiDisplayPlot.hxx>
 
 namespace CLAM
 {

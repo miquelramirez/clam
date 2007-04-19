@@ -19,7 +19,7 @@
  *
  */
 
-#include "TTimeFreqMagPoint.hxx"
+#include <CLAM/TTimeFreqMagPoint.hxx>
 
 namespace CLAM
 {

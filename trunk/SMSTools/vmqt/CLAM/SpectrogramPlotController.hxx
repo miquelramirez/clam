@@ -1,10 +1,10 @@
 #ifndef __SPECTROGRAMPLOTCONTROLLER__
 #define __SPECTROGRAMPLOTCONTROLLER__
 
-#include "Spectrum.hxx"
-#include "QtPalette.hxx"
-#include "SpectrogramRenderer.hxx"
-#include "PlotController.hxx"
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/QtPalette.hxx>
+#include <CLAM/SpectrogramRenderer.hxx>
+#include <CLAM/PlotController.hxx>
 
 namespace CLAM
 {

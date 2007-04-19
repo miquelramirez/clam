@@ -1,7 +1,7 @@
 #include <qtimer.h>
 #include <qpainter.h>
-#include "Message.hxx"
-#include "WaitMsgIndicator.hxx"
+#include <CLAM/Message.hxx>
+#include <CLAM/WaitMsgIndicator.hxx>
 
 namespace CLAM
 {

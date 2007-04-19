@@ -19,7 +19,7 @@
  *
  */
 
-#include "VMColor.hxx"
+#include <CLAM/VMColor.hxx>
 
 namespace CLAM
 {

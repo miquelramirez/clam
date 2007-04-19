@@ -19,8 +19,8 @@
  *
  */
 
-#include "CLAMGL.hxx"
-#include "RegionMarker.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/RegionMarker.hxx>
 
 namespace CLAM
 {

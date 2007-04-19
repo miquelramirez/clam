@@ -2,7 +2,7 @@
 #define __SPECTROGRAMRENDERER__
 
 #include <vector>
-#include "Renderer.hxx"
+#include <CLAM/Renderer.hxx>
 
 namespace CLAM
 {

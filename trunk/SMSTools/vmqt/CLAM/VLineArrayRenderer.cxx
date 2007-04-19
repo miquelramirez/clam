@@ -19,8 +19,8 @@
  *
  */
 
-#include "CLAMGL.hxx"
-#include "VLineArrayRenderer.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/VLineArrayRenderer.hxx>
 
 namespace CLAM
 {

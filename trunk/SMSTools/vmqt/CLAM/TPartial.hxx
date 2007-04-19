@@ -22,7 +22,7 @@
 #ifndef __TPARTIAL__
 #define __TPARTIAL__
 
-#include "DataTypes.hxx"
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAM
 {

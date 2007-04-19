@@ -1,9 +1,9 @@
 #include <iostream>
-#include "AudioIO.hxx" 
-#include "AudioManager.hxx" 
-#include "AudioOut.hxx" 
-#include "SimpleOscillator.hxx" 
-#include "MelodyPlayer.hxx" 
+#include <CLAM/AudioIO.hxx> 
+#include <CLAM/AudioManager.hxx> 
+#include <CLAM/AudioOut.hxx> 
+#include <CLAM/SimpleOscillator.hxx> 
+#include <CLAM/MelodyPlayer.hxx> 
 
 namespace CLAM
 {

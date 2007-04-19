@@ -20,8 +20,8 @@
  */
 
 #include <iterator>
-#include "Assert.hxx"
-#include "SinTrackVClipper.hxx"
+#include <CLAM/Assert.hxx>
+#include <CLAM/SinTrackVClipper.hxx>
 
 namespace CLAM
 {

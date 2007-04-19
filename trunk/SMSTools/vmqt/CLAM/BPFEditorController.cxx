@@ -1,8 +1,8 @@
 #include <iostream>
 #include <qpixmap.h>
-#include "CLAMGL.hxx"
-#include "IconData.hxx"
-#include "BPFEditorController.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/IconData.hxx>
+#include <CLAM/BPFEditorController.hxx>
 
 namespace CLAM
 {

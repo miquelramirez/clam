@@ -1,4 +1,4 @@
-#include "PlayablePlotController.hxx"
+#include <CLAM/PlayablePlotController.hxx>
 
 namespace CLAM
 {

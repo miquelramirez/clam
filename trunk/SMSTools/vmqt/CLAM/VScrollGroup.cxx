@@ -22,10 +22,10 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
-#include "IconData.hxx"
-#include "VZLabel.hxx"
-#include "ScrollBar.hxx"
-#include "VScrollGroup.hxx"
+#include <CLAM/IconData.hxx>
+#include <CLAM/VZLabel.hxx>
+#include <CLAM/ScrollBar.hxx>
+#include <CLAM/VScrollGroup.hxx>
 
 namespace CLAM
 {

@@ -1,7 +1,7 @@
 #ifndef __FREQMAGPOINT__
 #define __FREQMAGPOINT__
 
-#include "DataTypes.hxx"
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAM
 {

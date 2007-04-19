@@ -23,11 +23,11 @@
 #define __SPECTRUMPLOTCONTROLLER__
 
 #include <vector>
-#include "Spectrum.hxx"
-#include "DataRenderer.hxx"
-#include "SpectralPeakArray.hxx"
-#include "SpectralPeaksRenderer.hxx"
-#include "PlotController.hxx"
+#include <CLAM/Spectrum.hxx>
+#include <CLAM/DataRenderer.hxx>
+#include <CLAM/SpectralPeakArray.hxx>
+#include <CLAM/SpectralPeaksRenderer.hxx>
+#include <CLAM/PlotController.hxx>
 
 namespace CLAM
 {

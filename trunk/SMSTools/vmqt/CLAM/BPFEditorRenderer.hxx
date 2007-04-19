@@ -1,8 +1,8 @@
 #ifndef __BPFEDITORRENDERER__
 #define __BPFEDITORRENDERER__
 
-#include "BPF.hxx"
-#include "Renderer.hxx"
+#include <CLAM/BPF.hxx>
+#include <CLAM/Renderer.hxx>
 
 namespace CLAM
 {

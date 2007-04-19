@@ -23,9 +23,9 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
-#include "IconData.hxx"
-#include "ScrollBar.hxx"
-#include "HScrollGroup.hxx"
+#include <CLAM/IconData.hxx>
+#include <CLAM/ScrollBar.hxx>
+#include <CLAM/HScrollGroup.hxx>
 
 namespace CLAM
 {

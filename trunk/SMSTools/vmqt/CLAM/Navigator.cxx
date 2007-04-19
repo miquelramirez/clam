@@ -2,8 +2,8 @@
 #include <qpushbutton.h>
 #include <qlcdnumber.h>
 #include <qtooltip.h>
-#include "Message.hxx"
-#include "Navigator.hxx"
+#include <CLAM/Message.hxx>
+#include <CLAM/Navigator.hxx>
 
 namespace CLAM
 {

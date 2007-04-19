@@ -1,10 +1,10 @@
 #include <qlayout.h>
 #include <qframe.h>
-#include "Ruler.hxx"
-#include "VScrollGroup.hxx"
-#include "DisplaySurface.hxx"
-#include "SpectrumPlotController.hxx"
-#include "SMSFreqMultiDisplay.hxx"
+#include <CLAM/Ruler.hxx>
+#include <CLAM/VScrollGroup.hxx>
+#include <CLAM/DisplaySurface.hxx>
+#include <CLAM/SpectrumPlotController.hxx>
+#include <CLAM/SMSFreqMultiDisplay.hxx>
 
 namespace CLAM
 {

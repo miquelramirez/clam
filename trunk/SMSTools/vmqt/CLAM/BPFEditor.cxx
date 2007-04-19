@@ -2,14 +2,14 @@
 #include <qlabel.h>
 #include <qframe.h>
 #include <qpopupmenu.h>
-#include "VScrollGroup.hxx"
-#include "HScrollGroup.hxx"
-#include "Ruler.hxx"
-#include "BPFEditorController.hxx"
-#include "BPFEditorDisplaySurface.hxx"
-#include "QtBPFPlayer.hxx"
-#include "ListItemChooser.hxx"
-#include "BPFEditor.hxx"
+#include <CLAM/VScrollGroup.hxx>
+#include <CLAM/HScrollGroup.hxx>
+#include <CLAM/Ruler.hxx>
+#include <CLAM/BPFEditorController.hxx>
+#include <CLAM/BPFEditorDisplaySurface.hxx>
+#include <CLAM/QtBPFPlayer.hxx>
+#include <CLAM/ListItemChooser.hxx>
+#include <CLAM/BPFEditor.hxx>
 
 namespace CLAM
 {

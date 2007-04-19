@@ -19,7 +19,7 @@
  *
  */
 
-#include "SineTracksAdapter.hxx"
+#include <CLAM/SineTracksAdapter.hxx>
 
 namespace CLAM
 {

@@ -22,8 +22,8 @@
 #ifndef __VLINEARRAYRENDERER__
 #define __VLINEARRAYRENDERER__
 
-#include "Array.hxx"
-#include "Renderer.hxx"
+#include <CLAM/Array.hxx>
+#include <CLAM/Renderer.hxx>
 
 namespace CLAM
 {

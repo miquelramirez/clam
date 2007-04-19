@@ -22,8 +22,8 @@
 #ifndef __FUNDPLAYER__
 #define __FUNDPLAYER__
 
-#include "Segment.hxx"
-#include "Player.hxx"
+#include <CLAM/Segment.hxx>
+#include <CLAM/Player.hxx>
 
 namespace CLAM
 {

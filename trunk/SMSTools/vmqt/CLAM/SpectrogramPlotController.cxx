@@ -1,7 +1,7 @@
 #include <numeric>
-#include "SpecTypeFlags.hxx"
-#include "CLAM_Math.hxx"
-#include "SpectrogramPlotController.hxx"
+#include <CLAM/SpecTypeFlags.hxx>
+#include <CLAM/CLAM_Math.hxx>
+#include <CLAM/SpectrogramPlotController.hxx>
 
 namespace CLAM
 {

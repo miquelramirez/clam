@@ -1,7 +1,7 @@
-#include "Message.hxx"
-#include "APlayer.hxx"
-#include "FundPlayer.hxx"
-#include "QtSMSPlayer.hxx"
+#include <CLAM/Message.hxx>
+#include <CLAM/APlayer.hxx>
+#include <CLAM/FundPlayer.hxx>
+#include <CLAM/QtSMSPlayer.hxx>
 
 namespace CLAM
 {

@@ -19,9 +19,9 @@
  *
  */
 
-#include "QtPlayer.hxx"
-#include "PlayableList.hxx"
-#include "PlayablePlot.hxx"
+#include <CLAM/QtPlayer.hxx>
+#include <CLAM/PlayableList.hxx>
+#include <CLAM/PlayablePlot.hxx>
 
 namespace CLAM
 {

@@ -19,8 +19,8 @@
  *
  */
 
-#include "CLAMGL.hxx"
-#include "DataRenderer.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/DataRenderer.hxx>
 
 namespace CLAM
 {

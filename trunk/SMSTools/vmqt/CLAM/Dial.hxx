@@ -22,7 +22,7 @@
 #ifndef __DIAL__
 #define __DIAL__
 
-#include "Renderer.hxx"
+#include <CLAM/Renderer.hxx>
 
 namespace CLAM
 {

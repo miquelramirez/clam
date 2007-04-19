@@ -19,9 +19,9 @@
  *
  */
 
-#include "QtPalette.hxx"
-#include "SineTracksAdapter.hxx"
-#include "SinTracksPlotController.hxx"
+#include <CLAM/QtPalette.hxx>
+#include <CLAM/SineTracksAdapter.hxx>
+#include <CLAM/SinTracksPlotController.hxx>
 
 namespace CLAM
 {

@@ -21,8 +21,8 @@
 
 #include <qtimer.h>
 #include <qtooltip.h>
-#include "PlotController.hxx"
-#include "DisplaySurface.hxx"
+#include <CLAM/PlotController.hxx>
+#include <CLAM/DisplaySurface.hxx>
 
 namespace CLAM
 {

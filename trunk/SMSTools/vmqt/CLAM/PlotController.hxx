@@ -26,10 +26,10 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <qcursor.h>
-#include "GLView.hxx"
-#include "VLineArrayRenderer.hxx"
-#include "Dial.hxx"
-#include "SegmentEditor.hxx"
+#include <CLAM/GLView.hxx>
+#include <CLAM/VLineArrayRenderer.hxx>
+#include <CLAM/Dial.hxx>
+#include <CLAM/SegmentEditor.hxx>
 
 namespace CLAM
 {

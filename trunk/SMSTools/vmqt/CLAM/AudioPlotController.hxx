@@ -22,9 +22,9 @@
 #ifndef __AUDIOPLOTCONTROLLER__
 #define __AUDIOPLOTCONTROLLER__
 
-#include "Audio.hxx"
-#include "DataRenderer.hxx"
-#include "PlayablePlotController.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/DataRenderer.hxx>
+#include <CLAM/PlayablePlotController.hxx>
 
 namespace CLAM
 {
