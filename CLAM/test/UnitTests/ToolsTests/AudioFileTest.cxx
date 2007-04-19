@@ -446,19 +446,6 @@ namespace CLAMTest
 
 			const CLAM::AudioFileHeader& header = file.GetHeader();
 
-			
-
-// 			std::cout << std::endl;
-// 			std::cout << header.GetSampleRate() << std::endl;
-// 			std::cout << header.GetChannels() << std::endl;
-// 			std::cout << header.GetLength() << std::endl;
-// 			std::cout << header.GetFormat().GetString() << std::endl;
-// 			std::cout << header.GetEncoding().GetString() << std::endl;
-// 			std::cout << header.GetEndianess().GetString() << std::endl;
-// 			std::cout << std::endl;
-
-
-
 			CPPUNIT_ASSERT_EQUAL( int(22050),
 					      (int)header.GetSampleRate() );
 			CPPUNIT_ASSERT_EQUAL( int(1),
@@ -481,35 +468,14 @@ namespace CLAMTest
 
 			const CLAM::AudioTextDescriptors& txtDesc = file.GetTextDescriptors();
 			
-			/**
-			std::cout << std::endl;
-			if ( txtDesc.HasArtist() )
-				std::cout << "Artist: " << txtDesc.GetArtist() << std::endl;
-			if ( txtDesc.HasTitle() )
-				std::cout << "Title: " << txtDesc.GetTitle() << std::endl;
-			if ( txtDesc.HasAlbum() )
-				std::cout << "Album: " << txtDesc.GetAlbum() << std::endl;
-			if ( txtDesc.HasTrackNumber() )
-				std::cout << "Track Number: " << txtDesc.GetTrackNumber() << std::endl;
-			if ( txtDesc.HasComposer() )
-				std::cout << "Composer: " << txtDesc.GetComposer() << std::endl;
-			if ( txtDesc.HasPerformer() )
-				std::cout << "Performer: " << txtDesc.GetPerformer() << std::endl;
-			std::cout << std::endl;
-			*/
-
 			CPPUNIT_ASSERT_EQUAL( CLAM::Text("Elvis Presley"),
 					      txtDesc.GetArtist() );
-
 			CPPUNIT_ASSERT_EQUAL( CLAM::Text("My Love Complete"),
 					      txtDesc.GetTitle() );
-					      
 			CPPUNIT_ASSERT_EQUAL( CLAM::Text("Unknown"),
 					      txtDesc.GetAlbum() );
-
 			CPPUNIT_ASSERT_EQUAL( CLAM::Text("1"),
 					      txtDesc.GetTrackNumber() );
-
 		}
 		
 		void testTextDescriptorsExtraction_From_Mpeg()
@@ -517,35 +483,8 @@ namespace CLAMTest
 			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + CLAM::Text( "trumpet.mp3" ) );
 
-			CLAM::XMLStorage::Dump( file, "AudioFileSource", "AudioFile_0001.xml" );
-
-			CLAM::AudioFileSource file2;
-
-			CLAM::XMLStorage::Restore( file2, "AudioFile_0001.xml" );
-
-			CLAM::XMLStorage::Dump( file2, file2.GetClassName(),"AudioFile_0001.xml" );
-			
 			const CLAM::AudioTextDescriptors& txtDesc = file.GetTextDescriptors();
 			
-			/*
-			std::cout << std::endl;
-			if ( txtDesc.HasArtist() )
-				std::cout << "Artist: " << txtDesc.GetArtist() << std::endl;
-			if ( txtDesc.HasTitle() )
-				std::cout << "Title: " << txtDesc.GetTitle() << std::endl;
-			if ( txtDesc.HasAlbum() )
-				std::cout << "Album: " << txtDesc.GetAlbum() << std::endl;
-			if ( txtDesc.HasTrackNumber() )
-				std::cout << "Track Number: " << txtDesc.GetTrackNumber() << std::endl;
-			if ( txtDesc.HasComposer() )
-				std::cout << "Composer: " << txtDesc.GetComposer() << std::endl;
-			if ( txtDesc.HasPerformer() )
-				std::cout << "Performer: " << txtDesc.GetPerformer() << std::endl;
-			std::cout << std::endl;
-			*/
-			
-			
-
 			CPPUNIT_ASSERT_EQUAL( CLAM::Text("The Trumpeteers"),
 					      txtDesc.GetArtist() );
 			CPPUNIT_ASSERT_EQUAL( CLAM::Text("A Trumpet"),
@@ -554,7 +493,6 @@ namespace CLAMTest
 					      txtDesc.GetAlbum() );
 			CPPUNIT_ASSERT_EQUAL( CLAM::Text("1"),
 					      txtDesc.GetTrackNumber() );
-
 		}
 
 	};

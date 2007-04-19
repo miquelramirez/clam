@@ -68,36 +68,31 @@ namespace CLAM
 		const std::string &location = mLocation;
 		if ( !AudioCodecs::Codec::FileExists( location ) )
 		{		
-			SetKind( EAudioFileKind::eUnknown );
+			mKind = EAudioFileKind::eUnknown;
 			return;
 		}
 
 		if ( AudioCodecs::PCMCodec::Instantiate().IsReadable( location ) )
 		{
-			SetKind( EAudioFileKind::ePCM );
+			mKind = EAudioFileKind::ePCM;
 			mActiveCodec = &AudioCodecs::PCMCodec::Instantiate();
 		}
 #if USE_OGGVORBIS == 1
 		else if ( AudioCodecs::OggVorbisCodec::Instantiate().IsReadable( location ) )
 		{
-			SetKind( EAudioFileKind::eOggVorbis );
+			mKind = EAudioFileKind::eOggVorbis;
 			mActiveCodec = &AudioCodecs::OggVorbisCodec::Instantiate();		
 		}
 #endif		
 #if USE_MAD == 1
 		else if ( AudioCodecs::MpegCodec::Instantiate().IsReadable( location ) )
 		{
-			SetKind( EAudioFileKind::eMpeg );
+			mKind = EAudioFileKind::eMpeg;
 			mActiveCodec = &AudioCodecs::MpegCodec::Instantiate();
 		}
 #endif
 		else
-			SetKind( EAudioFileKind::eUnknown );		
-	}
-
-	const AudioFileHeader& AudioFile::GetHeader() const
-	{
-		return mHeaderData;
+			mKind = EAudioFileKind::eUnknown;		
 	}
 
 	bool AudioFile::SetHeader( const AudioFileHeader& newHeader )
@@ -135,7 +130,7 @@ namespace CLAM
 
 		if ( !newHeader.HasFormat() )
 		{
-			if ( GetKind() == EAudioFileKind::ePCM )
+			if ( mKind == EAudioFileKind::ePCM )
 			{
 				if ( mHeaderData.GetFormat() == EAudioFileFormat::eWAV )
 					mHeaderData.SetEncoding( EAudioFileEncoding::ePCM_24 );
@@ -144,7 +139,7 @@ namespace CLAM
 				else
 					return false;
 			}
-			else if ( GetKind() == EAudioFileKind::eOggVorbis )
+			else if ( mKind == EAudioFileKind::eOggVorbis )
 			{
 				mHeaderData.SetEncoding( EAudioFileEncoding::eDefault );
 			}
@@ -174,114 +169,52 @@ namespace CLAM
 
 	bool AudioFile::IsReadable() const
 	{
-		if (mActiveCodec == NULL )
-			return false;
-		
-		return mActiveCodec->IsReadable(mLocation);
+		return mActiveCodec && mActiveCodec->IsReadable(mLocation);
 	}
 
 	bool AudioFile::IsWritable() const
 	{
-		if ( mActiveCodec == NULL )
-			return false;
-
-		return mActiveCodec->IsWritable(mLocation, GetHeader() );
+		return mActiveCodec && mActiveCodec->IsWritable(mLocation, mHeaderData );
 	}
 
 	AudioCodecs::Stream*  AudioFile::GetStream()
 	{
-		if ( !mActiveCodec )
-			return NULL;
-		
+		if ( !mActiveCodec ) return 0;
 		return mActiveCodec->GetStreamFor( *this );
 	}
 
-	void AudioFile::LoadFrom( Storage& storage )
+	void AudioFile::ActivateCodec()
 	{
-		CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
-		storage.Load( xmlLocation );
-		LocationUpdated();
-
-		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
-		storage.Load( xmlHeader );
-
-		CLAM::XMLComponentAdapter xmlTxtDescriptors( mTextDescriptors, "TextualDescriptors", true );
-		storage.Load( xmlTxtDescriptors );
-	}
-
-	void AudioFile::StoreOn( Storage& storage ) const
-	{
-		CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
-		storage.Store( xmlLocation );
-
-		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
-		storage.Store( xmlHeader );
-
-		CLAM::XMLComponentAdapter xmlTxtDescriptors( mTextDescriptors, "TextualDescriptors", true );
-		storage.Store( xmlTxtDescriptors );
-	}
-
-void AudioFile::ActivateCodec()
-{
-	if ( NULL == mActiveCodec )
-		return;
-
-	mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
-	
-	if ( GetKind() == EAudioFileKind::eOggVorbis ||
-	     GetKind() == EAudioFileKind::eMpeg )
-	{
+		if (!mActiveCodec) return;
+		mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
 		mActiveCodec->RetrieveTextDescriptors( mLocation, mTextDescriptors );				
 	}
-}
-	
-void AudioFile::ResetHeaderData()
-{
-	mHeaderData.RemoveAll();
-	mHeaderData.UpdateData();
-}
+		
+	void AudioFile::ResetHeaderData()
+	{
+		mHeaderData.RemoveAll();
+		mHeaderData.UpdateData();
+	}
 
-/* =============================================================== */
+	/* =============================================================== */
 
-void AudioFileSource::OpenExisting(const std::string &location)
-{
-	mLocation = location;
-	LocationUpdated();
-}
+	void AudioFileSource::OpenExisting(const std::string &location)
+	{
+		mLocation = location;
+		ResolveCodec();
+		ActivateCodec();
+		if ( mKind == EAudioFileKind::eUnknown )
+			ResetHeaderData();
+	}
 
-const char* AudioFileSource::GetClassName() const
-{
-	return "AudioFileSource";
-}
-void AudioFileSource::LocationUpdated()
-{
-	ResolveCodec();			
-	ActivateCodec();
-	if ( GetKind() == EAudioFileKind::eUnknown )
-		ResetHeaderData();
-}
+	/* =============================================================== */
 
-/* =============================================================== */
+	bool AudioFileTarget::CreateNew(const std::string &location,
+			const AudioFileHeader &header)
+	{
+		mLocation = location;
+		return SetHeader(header);
+	}
 
-bool AudioFileTarget::CreateNew(const std::string &location,
-		const AudioFileHeader &header)
-{
-	mLocation = location;
-	LocationUpdated();
-	return SetHeader(header);
-}
-
-const char* AudioFileTarget::GetClassName() const
-{
-	return "AudioFileTarget";
-}
-void AudioFileTarget::LocationUpdated()
-{
-	EAudioFileFormat format(
-			EAudioFileFormat::FormatFromFilename(mLocation));
-	AudioFileHeader header;
-	header.SetValues(44100, 1, format);
-	SetHeader(header);
-}
 }
 

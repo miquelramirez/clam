@@ -389,7 +389,8 @@ int main(int argc, char* argv[])			// access command line arguments
 		CLAM::TData samplingRate = reader.GetAudioFile().GetHeader().GetSampleRate();
 		unsigned long nsamples = reader.GetAudioFile().GetHeader().GetLength()*samplingRate/1000.0;
 
-		CLAM::XMLStorage::Dump(reader.GetAudioFile(), "Header", std::cout);
+		CLAM::XMLStorage::Dump(reader.GetAudioFile().GetHeader(), "Header", std::cout);
+		CLAM::XMLStorage::Dump(reader.GetAudioFile().GetTextDescriptors(), "TextDescriptors", std::cout);
 		
 		int factor=1;							// downsampling factor
 		float minf = 98;						// (MIDI note G1)
