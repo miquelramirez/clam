@@ -125,10 +125,6 @@ namespace CLAM
 
 		static  EAudioFileFormat FormatFromFilename( std::string filename );
 
-		static  const FileFormatFilterList& ReadableFormats( );
-		static  const FileFormatFilterList& WritableFormats( );
-
-
 	};
 
 	/** @ingroup AudioFileIO */

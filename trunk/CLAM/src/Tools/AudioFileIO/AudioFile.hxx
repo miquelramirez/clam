@@ -22,11 +22,11 @@
 #ifndef __AUDIOFILE__
 #define __AUDIOFILE__
 
-#include <CLAM/ConfigurableFile.hxx>
 #include "DataTypes.hxx"
 #include "AudioFileFormats.hxx"
 #include "AudioFileHeader.hxx"
 #include "AudioTextDescriptors.hxx"
+#include "Filename.hxx"
 
 namespace CLAM
 {
@@ -37,7 +37,7 @@ namespace CLAM
 	}
 
 	/** @ingroup AudioFileIO */
-	class AudioFile : public ConfigurableFile
+	class AudioFile : public Component
 	{
 	public:
 
@@ -66,6 +66,7 @@ namespace CLAM
 		AudioCodecs::Stream*   GetStream();
 		void                   LoadFrom( Storage& storage);
 		void                   StoreOn( Storage& storage ) const;
+		virtual bool GetWriteMode() = 0;
 
 	protected:
 		//! Usually the header is set into the file using CreateNew or OpenExistig (public) methods 
@@ -76,6 +77,8 @@ namespace CLAM
 		void ActivateCodec();
 		void ResetHeaderData();
 
+		virtual void LocationUpdated()=0;
+		Filename mLocation;
 	private:
 		EAudioFileKind        mKind;
 		AudioCodecs::Codec*   mActiveCodec;
@@ -90,7 +93,6 @@ namespace CLAM
 		void OpenExisting(const std::string &location);
 		bool GetWriteMode() { return false; }
 		const char* GetClassName() const;
-		const FileFormatFilterList &GetFormatFilterList() const;
 	protected:
 		void LocationUpdated();
 	};
@@ -102,7 +104,6 @@ namespace CLAM
 				const AudioFileHeader &header);
 		bool GetWriteMode() { return true; }
 		const char* GetClassName() const;
-		const FileFormatFilterList &GetFormatFilterList() const;
 	protected:
 		void LocationUpdated();
 	};
