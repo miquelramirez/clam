@@ -37,7 +37,7 @@ namespace CLAM
 	}
 
 	/** @ingroup AudioFileIO */
-	class AudioFile : public Component
+	class AudioFile
 	{
 	public:
 
@@ -46,16 +46,12 @@ namespace CLAM
 		const AudioFile& operator=( const AudioFile& );
 		virtual ~AudioFile();
 
-		const char *GetGroupName() const { return "audio"; }
+		const Filename & GetLocation() const { return mLocation; }
+		const AudioFileHeader & GetHeader() const { return mHeaderData; }
+		const AudioTextDescriptors &   GetTextDescriptors() const { return mTextDescriptors; }
+		AudioTextDescriptors & GetTextDescriptors() { return mTextDescriptors; }
 
-		const AudioFileHeader&        GetHeader() const;
-		const std::string &GetLocation() const {
-			return mLocation;
-		}
-		
-		void                          SetTextDescriptors( const AudioTextDescriptors& );
-		AudioTextDescriptors&         GetTextDescriptors();
-		const AudioTextDescriptors&   GetTextDescriptors() const;
+		void SetTextDescriptors( const AudioTextDescriptors & descriptors ) { mTextDescriptors=descriptors; }
 
 		EAudioFileKind                GetKind() const;
 
@@ -64,20 +60,15 @@ namespace CLAM
 		bool                          IsWritable() const;
 
 		AudioCodecs::Stream*   GetStream();
-		void                   LoadFrom( Storage& storage);
-		void                   StoreOn( Storage& storage ) const;
-		virtual bool GetWriteMode() = 0;
 
 	protected:
 		//! Usually the header is set into the file using CreateNew or OpenExistig (public) methods 
 		bool SetHeader( const AudioFileHeader& );
 		void ResolveCodec();
-		void SetKind( EAudioFileKind newKind );
 
 		void ActivateCodec();
 		void ResetHeaderData();
 
-		virtual void LocationUpdated()=0;
 		Filename mLocation;
 	private:
 		EAudioFileKind        mKind;
@@ -91,10 +82,6 @@ namespace CLAM
 	{
 	public:
 		void OpenExisting(const std::string &location);
-		bool GetWriteMode() { return false; }
-		const char* GetClassName() const;
-	protected:
-		void LocationUpdated();
 	};
 
 	class AudioFileTarget : public AudioFile
@@ -102,35 +89,9 @@ namespace CLAM
 	public:
 		bool CreateNew(const std::string &location,
 				const AudioFileHeader &header);
-		bool GetWriteMode() { return true; }
-		const char* GetClassName() const;
-	protected:
-		void LocationUpdated();
 	};
 
 
-// inlines
-
-	inline void AudioFile::SetKind( EAudioFileKind newKind )
-	{
-		mKind = newKind;
-	}
-
-	inline void AudioFile::SetTextDescriptors( const AudioTextDescriptors& txtDesc )
-	{
-		mTextDescriptors = txtDesc;
-	}
-
-	inline AudioTextDescriptors& AudioFile::GetTextDescriptors()
-	{
-		return mTextDescriptors;
-	}
-
-	inline const AudioTextDescriptors& AudioFile::GetTextDescriptors() const
-	{
-		return mTextDescriptors;
-	}
-	
 }
 
 
