@@ -45,29 +45,27 @@ namespace qtvm_examples_utils
 
     int load_audio_st(const char* fileName,std::vector<Audio>& outputs)
     {
-		AudioFileSource file;
-		file.OpenExisting(fileName);
+		MultiChannelAudioFileReaderConfig cfg;
+		cfg.SetSourceFile(fileName);
+		MultiChannelAudioFileReader reader;
+		if (!reader.Configure(cfg)) return 1;
 
-		if((!file.IsReadable()) | (file.GetHeader().GetChannels() != 2)) return 1;
+		const AudioFileHeader & header = reader.GetAudioFile().GetHeader();
+		if (header.GetChannels() != 2) return 1;
 
-		TSize readSize = TSize(TData(file.GetHeader().GetLength()/1000.0)*file.GetHeader().GetSampleRate());
-		if(file.GetKind() == EAudioFileKind::ePCM)
+		TSize readSize = TSize(TData(header.GetLength()/1000.0)*header.GetSampleRate());
+		if(reader.GetAudioFile().GetKind() == EAudioFileKind::ePCM)
 		{
 			readSize*=2;
 		}
 
-		outputs.resize(file.GetHeader().GetChannels());
+		outputs.resize(header.GetChannels());
 
 		for(unsigned i = 0; i < outputs.size(); i++)
 		{
 			outputs[i].SetSize(readSize);
 		}
 
-		MultiChannelAudioFileReaderConfig cfg;
-		cfg.SetSourceFile(file);
-
-		MultiChannelAudioFileReader reader;
-		reader.Configure(cfg);
 
 		reader.Start();
 		reader.Do(outputs); 
