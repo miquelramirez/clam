@@ -54,7 +54,7 @@ public:
 	 * using \c GetLastValue
 	 */
 	virtual int DoControl(TControlData val) { mLastValue = val; return 0;};
-	virtual TControlData GetLastValue() const { return mLastValue; };
+	virtual const TControlData& GetLastValue() const { return mLastValue; };
 	const std::string& GetName() const { return mName; }
 	bool IsConnectedTo( OutControl & );
 	bool IsConnected() const;

@@ -62,12 +62,8 @@ LadspaWrapper::LadspaWrapper( const std::string& libraryFileName, unsigned index
 
 bool LadspaWrapper::Do()
 {
-	UpdatePointers();
+	UpdatePortsPointers();
 	
-//	for(unsigned int i=0;i<mInputControlValues.size();i++)
-//		mInputControlValues[i]=1;//GetInControls().GetByNumber(i).GetLastValue();
-		
-
 	mDescriptor->run(mInstance, mConfig.GetSize());
 
 	for(unsigned int i=0;i<mOutputControlValues.size();i++)
@@ -83,16 +79,13 @@ bool LadspaWrapper::Do()
 bool LadspaWrapper::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
-
 	mSharedObject = dlopen(mConfig.GetLibraryFileName().c_str(), RTLD_LAZY);
-	
 	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)dlsym(mSharedObject, "ladspa_descriptor");
-
 	mDescriptor = function(mConfig.GetIndex());
-
 	mInstance = mDescriptor->instantiate(mDescriptor, mConfig.GetSampleRate());
 
 	ConfigurePortsAndControls();
+	UpdateControlsPointers();
 
 	return true;
 }
@@ -119,7 +112,6 @@ void LadspaWrapper::RemovePortsAndControls()
 		delete *itOutControl;
 	mOutputControls.clear();
 	
-	mInputControlValues.clear();
 	mOutputControlValues.clear();
 
 	GetInPorts().Clear();
@@ -153,7 +145,7 @@ void LadspaWrapper::ConfigurePortsAndControls()
 		if(LADSPA_IS_PORT_INPUT(portDescriptor) && LADSPA_IS_PORT_CONTROL(portDescriptor)) 
 		{
 			InControl * control = new InControl(mDescriptor->PortNames[i], this);
-			mInputControlValues.push_back(LADSPA_Data());
+			control->DoControl( DefautLadspaInControlValue(i) );
 			mInputControls.push_back(control);
 		}			
 		// out control
@@ -172,7 +164,7 @@ LADSPA_Data LadspaWrapper::DefautLadspaInControlValue( unsigned portId )
 	if ( !LADSPA_IS_HINT_BOUNDED_ABOVE(hint.HintDescriptor) ||
 		!LADSPA_IS_HINT_BOUNDED_BELOW(hint.HintDescriptor) )
 	{
-		std::cout << "Warning: Ladspa in-control "<< mDescriptor->PortNames[portId] << " is not bouded" << std::endl;
+		std::cout << "Warning: Ladspa in-control "<< mDescriptor->PortNames[portId] << " is not bounded" << std::endl;
 		return 1;
 	}
 	std::cout << mDescriptor->PortNames[portId]<< std::endl;
@@ -181,10 +173,8 @@ LADSPA_Data LadspaWrapper::DefautLadspaInControlValue( unsigned portId )
 	return (hint.UpperBound + hint.LowerBound) / 2.;
 }
 
-void LadspaWrapper::UpdatePointers()
+void LadspaWrapper::UpdateControlsPointers()
 {
-	int inPortIndex = 0;
-	int outPortIndex = 0;
 	int inControlIndex = 0;
 	int outControlIndex = 0;
 	for(unsigned int i=0;i<mDescriptor->PortCount;i++)
@@ -194,14 +184,25 @@ void LadspaWrapper::UpdatePointers()
 		{
 			if (LADSPA_IS_PORT_INPUT(portDescriptor))
 			{
-				mDescriptor->connect_port(mInstance, i, & mInputControlValues[inControlIndex]);
-				mInputControlValues[inControlIndex] = DefautLadspaInControlValue(i);
+				LADSPA_Data* inControlValue = const_cast<LADSPA_Data*>( &(mInputControls[inControlIndex]->GetLastValue()) );
+				mDescriptor->connect_port(mInstance, i, inControlValue);
 				inControlIndex++;
 			}
 			else
 				mDescriptor->connect_port(mInstance, i, & mOutputControlValues[outControlIndex++]);
 		}
-		else // AUDIO
+	}
+
+}
+
+void LadspaWrapper::UpdatePortsPointers()
+{
+	int inPortIndex = 0;
+	int outPortIndex = 0;
+	for(unsigned int i=0;i<mDescriptor->PortCount;i++)
+	{
+		const LADSPA_PortDescriptor portDescriptor = mDescriptor->PortDescriptors[i];
+		if (!LADSPA_IS_PORT_CONTROL(portDescriptor)) // is audio port
 		{
 			if (LADSPA_IS_PORT_INPUT(portDescriptor)) 
 				mDescriptor->connect_port(mInstance, i, mInputPorts[inPortIndex++]->GetAudio().GetBuffer().GetPtr());
@@ -210,7 +211,9 @@ void LadspaWrapper::UpdatePointers()
 		}
 	}
 
+	
 }
+
 const char * LadspaWrapper::GetClassName() const
 {
 	return mConfig.GetFactoryKey().c_str();
