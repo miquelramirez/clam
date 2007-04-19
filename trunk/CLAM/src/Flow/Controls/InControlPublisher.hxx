@@ -37,7 +37,7 @@ namespace CLAM
 				else
 					return InControl::DoControl(val);
 			}
-			TControlData GetLastValue() const 
+			const TControlData& GetLastValue() const 
 			{ 
 				if(mPublished)
 					return mPublished->GetLastValue();

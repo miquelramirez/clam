@@ -49,13 +49,13 @@ private:
 
 	std::vector< InControl* > mInputControls;
 	std::vector< OutControl* > mOutputControls;
-	std::vector< LADSPA_Data > mInputControlValues;
 	std::vector< LADSPA_Data > mOutputControlValues;
 
 	void ConfigurePortsAndControls();
 	void RemovePortsAndControls();
 	LADSPA_Data DefautLadspaInControlValue( unsigned portId );
-	void UpdatePointers();
+	void UpdateControlsPointers();
+	void UpdatePortsPointers();
 
 public:
 	LadspaWrapper();
