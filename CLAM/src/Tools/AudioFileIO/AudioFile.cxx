@@ -64,7 +64,7 @@ namespace CLAM
 	{
 		mActiveCodec = NULL;
 
-		const std::string &location = GetLocation();
+		const std::string &location = mLocation;
 		if ( !AudioCodecs::Codec::FileExists( location ) )
 		{		
 			SetKind( EAudioFileKind::eUnknown );
@@ -176,7 +176,7 @@ namespace CLAM
 		if (mActiveCodec == NULL )
 			return false;
 		
-		return mActiveCodec->IsReadable(GetLocation());
+		return mActiveCodec->IsReadable(mLocation);
 	}
 
 	bool AudioFile::IsWritable() const
@@ -184,7 +184,7 @@ namespace CLAM
 		if ( mActiveCodec == NULL )
 			return false;
 
-		return mActiveCodec->IsWritable(GetLocation(), GetHeader() );
+		return mActiveCodec->IsWritable(mLocation, GetHeader() );
 	}
 
 	AudioCodecs::Stream*  AudioFile::GetStream()
@@ -197,7 +197,9 @@ namespace CLAM
 
 	void AudioFile::LoadFrom( Storage& storage )
 	{
-		ConfigurableFile::LoadFrom(storage);
+		CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
+		storage.Load( xmlLocation );
+		LocationUpdated();
 
 		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
 		storage.Load( xmlHeader );
@@ -208,11 +210,11 @@ namespace CLAM
 
 	void AudioFile::StoreOn( Storage& storage ) const
 	{
-		ConfigurableFile::StoreOn(storage);
+		CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
+		storage.Store( xmlLocation );
 
 		CLAM::XMLComponentAdapter xmlHeader( mHeaderData, "Header", true );
 		storage.Store( xmlHeader );
-		
 
 		CLAM::XMLComponentAdapter xmlTxtDescriptors( mTextDescriptors, "TextualDescriptors", true );
 		storage.Store( xmlTxtDescriptors );
@@ -223,12 +225,12 @@ void AudioFile::ActivateCodec()
 	if ( NULL == mActiveCodec )
 		return;
 
-	mActiveCodec->RetrieveHeaderData( GetLocation(), mHeaderData );
+	mActiveCodec->RetrieveHeaderData( mLocation, mHeaderData );
 	
 	if ( GetKind() == EAudioFileKind::eOggVorbis ||
 	     GetKind() == EAudioFileKind::eMpeg )
 	{
-		mActiveCodec->RetrieveTextDescriptors( GetLocation(), mTextDescriptors );				
+		mActiveCodec->RetrieveTextDescriptors( mLocation, mTextDescriptors );				
 	}
 }
 	
@@ -278,7 +280,7 @@ const char* AudioFileTarget::GetClassName() const
 void AudioFileTarget::LocationUpdated()
 {
 	EAudioFileFormat format(
-			EAudioFileFormat::FormatFromFilename(GetLocation()));
+			EAudioFileFormat::FormatFromFilename(mLocation));
 	AudioFileHeader header;
 	header.SetValues(44100, 1, format);
 	SetHeader(header);

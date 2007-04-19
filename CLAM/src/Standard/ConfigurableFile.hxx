@@ -52,11 +52,7 @@ public:
 	const ConfigurableFile& operator=( const ConfigurableFile& );
 	virtual ~ConfigurableFile();
 
-	const std::string &GetLocation() const;
 	void SetLocation(const std::string& uri);
-
-	virtual void LoadFrom( Storage& storage);
-	virtual void StoreOn( Storage& storage ) const;
 
 	virtual const char* GetClassName() const = 0;
 
@@ -89,8 +85,6 @@ public:
 protected:
 	/// subclasses may override this method
 	virtual void LocationUpdated();
-
-private:
 	Filename mLocation;
 };
 
