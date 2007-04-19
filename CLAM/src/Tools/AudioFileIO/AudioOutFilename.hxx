@@ -11,7 +11,7 @@ class AudioOutFilename : public OutFilename
 public:
 	AudioOutFilename(const std::string & s="") : OutFilename(s) {}
 	AudioOutFilename(const char * s) : OutFilename(s) {}
-	virtual const char * TypeFamily() const { return "Image"; }
+	virtual const char * TypeFamily() const { return "Audio"; }
 	virtual const Filter * Filters() const
 	{
 		static const Filter filters[] = {
