@@ -11,7 +11,7 @@ class AudioInFilename : public InFilename
 public:
 	AudioInFilename(const std::string & s="") : InFilename(s) {}
 	AudioInFilename(const char * s) : InFilename(s) {}
-	virtual const char * TypeFamily() const { return "Image"; }
+	virtual const char * TypeFamily() const { return "Audio"; }
 	virtual const Filter * Filters() const
 	{
 		static const Filter filters[] = {
