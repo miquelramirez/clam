@@ -40,26 +40,10 @@ ConfigurableFile::~ConfigurableFile()
 {
 }
 
-const std::string &ConfigurableFile::GetLocation() const {
-	return mLocation;
-}
 void ConfigurableFile::SetLocation(const std::string& uri)
 {
 	mLocation = uri;
 	LocationUpdated();
-}
-
-void ConfigurableFile::LoadFrom( Storage& storage )
-{
-	CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
-	storage.Load( xmlLocation );
-	LocationUpdated();
-}
-
-void ConfigurableFile::StoreOn( Storage& storage ) const
-{
-	CLAM::XMLAdapter< Filename > xmlLocation( mLocation, "URI", true );
-	storage.Store( xmlLocation );
 }
 
 void ConfigurableFile::LocationUpdated()

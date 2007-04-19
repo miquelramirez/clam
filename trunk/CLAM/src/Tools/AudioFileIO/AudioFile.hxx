@@ -49,6 +49,9 @@ namespace CLAM
 		const char *GetGroupName() const { return "audio"; }
 
 		const AudioFileHeader&        GetHeader() const;
+		const std::string &GetLocation() const {
+			return mLocation;
+		}
 		
 		void                          SetTextDescriptors( const AudioTextDescriptors& );
 		AudioTextDescriptors&         GetTextDescriptors();
