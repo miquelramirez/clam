@@ -38,8 +38,9 @@ namespace CLAM
 	{
 	}
 
-	AudioFile::AudioFile( const AudioFile& obj ) : ConfigurableFile(obj)
+	AudioFile::AudioFile( const AudioFile& obj )
 	{
+		mLocation = obj.mLocation;
 		mActiveCodec = obj.mActiveCodec;
 		mKind = obj.mKind;
 		mHeaderData = obj.mHeaderData;
@@ -48,7 +49,7 @@ namespace CLAM
 
 	const AudioFile& AudioFile::operator=( const AudioFile& obj )
 	{
-		ConfigurableFile::operator=(obj);
+		mLocation = obj.mLocation;
 		mActiveCodec = obj.mActiveCodec;
 		mKind = obj.mKind;
 		mHeaderData = obj.mHeaderData;
@@ -244,7 +245,8 @@ void AudioFile::ResetHeaderData()
 
 void AudioFileSource::OpenExisting(const std::string &location)
 {
-	SetLocation(location);
+	mLocation = location;
+	LocationUpdated();
 }
 
 const char* AudioFileSource::GetClassName() const
@@ -259,17 +261,13 @@ void AudioFileSource::LocationUpdated()
 		ResetHeaderData();
 }
 
-const FileFormatFilterList &AudioFileSource::GetFormatFilterList() const
-{
-	return EAudioFileFormat::ReadableFormats();
-}
-
 /* =============================================================== */
 
 bool AudioFileTarget::CreateNew(const std::string &location,
 		const AudioFileHeader &header)
 {
-	SetLocation(location);
+	mLocation = location;
+	LocationUpdated();
 	return SetHeader(header);
 }
 
@@ -285,10 +283,5 @@ void AudioFileTarget::LocationUpdated()
 	header.SetValues(44100, 1, format);
 	SetHeader(header);
 }
-const FileFormatFilterList &AudioFileTarget::GetFormatFilterList() const
-{
-	return EAudioFileFormat::WritableFormats();
-}
-
 }
 

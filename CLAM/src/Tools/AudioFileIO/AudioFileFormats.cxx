@@ -66,57 +66,6 @@ namespace CLAM
 		return eWAV;
 	}
 
-	static struct {
-		bool writeable;
-		const char * description;
-		const char * extensions;
-	} filters [] = {
-		{true,  "Microsoft RIFF/WAVE files",        "*.wav"},
-		{true,  "Vorbis I files (Ogg/Vorbis)",      "*.ogg"},
-		{false, "Mpeg Audio Layer 1",               "*.mp1 *.mpg"},
-		{false, "Mpeg Audio Layer 2",               "*.mp2 *.mpg"},
-		{false, "Mpeg Audio Layer 3",               "*.mp3 *.mpg"},
-		{true,  "Apple/SGI AIFF files",             "*.aiff *.aif"},
-		{true,  "Sun/Next AU files",                "*.snd *.au"},
-		{true,  "RAW PCM files",                    "*.raw"},
-		{true,  "Ensoniq's PARIS Files",            "*.paf"},
-		{true,  "Amiga IFF files",                  "*.svx"},
-		{true,  "Sphere NIST files",                "*.nist"},
-		{true,  "Creative's VOC files",             "*.voc"},
-		{true,  "Berkeley/IRCAM/CARL files",        "*.ircam"},
-		{true,  "Sonic Foundry's 64 RIFF/WAV files","*.w64"},
-		{true,  "Matlab/GNU Octave files",          "*.mat4 *.mat5 *.mat"},
-		{false, 0,0}
-	};
-
-	const FileFormatFilterList& EAudioFileFormat::ReadableFormats( )
-	{
-		static FileFormatFilterList mReadableFormatsList;
-		
-		if ( mReadableFormatsList.empty() )
-		{
-			for (unsigned i=0; filters[i].description; i++)
-				mReadableFormatsList.push_back(
-					FileFormatFilter( filters[i].description, filters[i].extensions));
-		}
-		return mReadableFormatsList;
-	}
-
-	const FileFormatFilterList& EAudioFileFormat::WritableFormats( )
-	{
-		static FileFormatFilterList mWritableFormatsList;
-		
-		if ( mWritableFormatsList.empty() )
-		{
-			for (unsigned i=0; filters[i].description; i++)
-			{
-				if (! filters[i].writeable) continue;
-				mWritableFormatsList.push_back(
-					FileFormatFilter( filters[i].description, filters[i].extensions));
-			}
-		}
-		return mWritableFormatsList;
-	}
 
 }
 
