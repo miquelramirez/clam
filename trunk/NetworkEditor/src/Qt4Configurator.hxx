@@ -31,7 +31,6 @@
 #include <CLAM/BPF.hxx>
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/DynamicType.hxx>
-#include <CLAM/ConfigurableFile.hxx>
 #include <CLAM/Filename.hxx>
 // #include <CLAM/QtEnvelopeEditor.hxx> // TODO: Still not Qt4
 
@@ -398,70 +397,7 @@ namespace CLAM{
 				allfiles = qtfilter + separator + allfiles;
 			return allfiles;
 		}
-		QString filterString(const char *group,
-				const CLAM::FileFormatFilterList &filters,
-				bool inWrite)
-		{
-			if (!group[0])
-				group = "visible";
-			if (filters.empty())
-				return tr("All %1 files (* *.*)").arg(group);
-			QString qtfilter, allfilter;
-			char *separator = "";
-			CLAM::FileFormatFilterList::const_iterator it;
-			for (it = filters.begin(); it != filters.end(); it++)
-			{
-				qtfilter += QString("%1%2 (%3)")
-					.arg(separator)
-					.arg(it->first.c_str())
-					.arg(it->second.c_str())
-					;
-				separator = ";;";
-				allfilter += (it->second+" ").c_str();
-			}
-			QString allfiles(tr("All %1 files (%2)")
-					.arg(group)
-					.arg(allfilter) );
-			if (inWrite)
-				allfiles = qtfilter + separator + allfiles;
-			return allfiles;
-		}
 
-		template <typename T>
-		void AddWidget(const char *name, CLAM::ConfigurableFile *foo, T& value)
-		{
-			const char *groupStr = value.GetGroupName();
-			bool writeMode = value.GetWriteMode();
-			QString filters(filterString(groupStr,
-				  value.GetFormatFilterList(), writeMode) );
-			
-			QFileLineEdit * mInput = new QFileLineEdit(this);
-			mInput->setWriteMode(writeMode);
-			mInput->setFilters(filters);
-			mInput->setLocation(value.GetLocation().c_str());
-
-			const char *modeStr = writeMode ? "output" : "input";
-			const char *sep = groupStr[0] ? " " : "";
-			mInput->setDialogCaption(
-				tr("Select an %1%2%3 file")
-					.arg(modeStr)
-					.arg(sep)
-					.arg(groupStr) );
-
-			QHBoxLayout * cell = new QHBoxLayout;
-			mLayout->addLayout(cell);
-			cell->addWidget(new QLabel(name));
-			cell->addWidget(mInput);
-			cell->setSpacing(5);
-			PushWidget(name, mInput);
-		}
-
-		template <typename T>
-		void RetrieveValue(const char *name, CLAM::ConfigurableFile *foo, T& value) {
-			QFileLineEdit * mInput = dynamic_cast<QFileLineEdit*>(GetWidget(name));
-			CLAM_ASSERT(mInput,"Configurator: Retrieving a value/type pair not present");
-			value.SetLocation(mInput->location().toStdString());
-		}
 	public slots:
 
 		void Apply() {
