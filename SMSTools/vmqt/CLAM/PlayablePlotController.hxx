@@ -1,9 +1,9 @@
 #ifndef __PLAYABLEPLOTCONTROLLER__
 #define __PLAYABLEPLOTCONTROLLER__
 
-#include "MediaTime.hxx"
-#include "RegionMarker.hxx"
-#include "PlotController.hxx"
+#include <CLAM/MediaTime.hxx>
+#include <CLAM/RegionMarker.hxx>
+#include <CLAM/PlotController.hxx>
 
 namespace CLAM
 {

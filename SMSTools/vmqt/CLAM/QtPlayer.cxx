@@ -22,8 +22,8 @@
 #include <qframe.h>
 #include <qpushbutton.h>
 #include <qtooltip.h>
-#include "IconData.hxx"
-#include "QtPlayer.hxx"
+#include <CLAM/IconData.hxx>
+#include <CLAM/QtPlayer.hxx>
 
 namespace CLAM
 {

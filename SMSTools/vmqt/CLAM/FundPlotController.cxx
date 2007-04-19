@@ -19,7 +19,7 @@
  *
  */
 
-#include "FundPlotController.hxx"
+#include <CLAM/FundPlotController.hxx>
 
 namespace CLAM
 {

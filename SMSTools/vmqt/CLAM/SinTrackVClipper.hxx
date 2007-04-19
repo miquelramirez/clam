@@ -22,7 +22,7 @@
 #ifndef __SINTRACKVCLIPPER__
 #define __SINTRACKVCLIPPER__
 
-#include "SinTracksDef.hxx"
+#include <CLAM/SinTracksDef.hxx>
 
 namespace CLAM
 {

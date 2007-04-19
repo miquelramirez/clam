@@ -19,8 +19,8 @@
  *
  */
 
-#include "CLAMGL.hxx"
-#include "Dial.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/Dial.hxx>
 
 namespace CLAM
 {

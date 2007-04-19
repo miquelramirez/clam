@@ -1,7 +1,7 @@
 #include <qtimer.h>
-#include "DataTypes.hxx"
-#include "BPFEditorController.hxx"
-#include "BPFEditorDisplaySurface.hxx"
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/BPFEditorController.hxx>
+#include <CLAM/BPFEditorDisplaySurface.hxx>
 
 namespace CLAM
 {

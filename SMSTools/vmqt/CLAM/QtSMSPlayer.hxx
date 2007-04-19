@@ -1,8 +1,8 @@
 #ifndef __QTSMSPLAYER__
 #define __QTSMSPLAYER__
 
-#include "Segment.hxx"
-#include "QtMultiPlayer.hxx"
+#include <CLAM/Segment.hxx>
+#include <CLAM/QtMultiPlayer.hxx>
 
 namespace CLAM
 {

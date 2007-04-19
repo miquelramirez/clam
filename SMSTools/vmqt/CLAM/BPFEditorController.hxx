@@ -8,11 +8,11 @@
 #include <qobject.h>
 #include <qstring.h>
 #include <qcursor.h>
-#include "BPF.hxx"
-#include "Point.hxx"
-#include "GLView.hxx"
-#include "BPFEditorRenderer.hxx"
-#include "Dial.hxx"
+#include <CLAM/BPF.hxx>
+#include <CLAM/Point.hxx>
+#include <CLAM/GLView.hxx>
+#include <CLAM/BPFEditorRenderer.hxx>
+#include <CLAM/Dial.hxx>
 
 namespace CLAM
 {

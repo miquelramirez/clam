@@ -1,5 +1,5 @@
-#include "CLAMGL.hxx"
-#include "SpectrogramRenderer.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/SpectrogramRenderer.hxx>
 
 namespace CLAM
 {

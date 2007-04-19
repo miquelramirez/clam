@@ -1,7 +1,7 @@
 #include <qlayout.h>
 #include <qlistview.h>
 #include <qpushbutton.h>
-#include "ListItemChooser.hxx"
+#include <CLAM/ListItemChooser.hxx>
 
 namespace CLAM
 {

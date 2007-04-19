@@ -20,8 +20,8 @@
  */
 #include <iostream>
 #include <stdlib.h>
-#include "CLAMGL.hxx"
-#include "Renderer.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/Renderer.hxx>
 
 namespace CLAM
 {

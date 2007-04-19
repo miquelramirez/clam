@@ -22,9 +22,9 @@
 #ifndef __FUNDPLOTCONTROLLER__
 #define __FUNDPLOTCONTROLLER__
 
-#include "Segment.hxx"
-#include "DataRenderer.hxx"
-#include "PlayablePlotController.hxx"
+#include <CLAM/Segment.hxx>
+#include <CLAM/DataRenderer.hxx>
+#include <CLAM/PlayablePlotController.hxx>
 
 namespace CLAM
 {

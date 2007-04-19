@@ -20,7 +20,7 @@
  */
 
 #include <algorithm>
-#include "PlotController.hxx"
+#include <CLAM/PlotController.hxx>
 
 namespace CLAM
 {

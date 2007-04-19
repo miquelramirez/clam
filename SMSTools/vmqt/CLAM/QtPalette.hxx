@@ -23,8 +23,8 @@
 #define __QTPALETTE__
 
 #include <qglcolormap.h>
-#include "Assert.hxx"
-#include "DataTypes.hxx"
+#include <CLAM/Assert.hxx>
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAM
 {

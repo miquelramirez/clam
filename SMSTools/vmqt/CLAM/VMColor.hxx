@@ -22,7 +22,7 @@
 #ifndef __VMCOLOR__
 #define __VMCOLOR__
 
-#include "DataTypes.hxx"
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAM
 {

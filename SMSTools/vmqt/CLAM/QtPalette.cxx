@@ -20,8 +20,8 @@
  */
 
 #include <cstdlib>
-#include "CLAM_Math.hxx"
-#include "QtPalette.hxx"
+#include <CLAM/CLAM_Math.hxx>
+#include <CLAM/QtPalette.hxx>
 
 namespace CLAM
 {

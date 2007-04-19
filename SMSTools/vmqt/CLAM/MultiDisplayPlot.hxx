@@ -1,9 +1,9 @@
 #ifndef __MULTIDISPLAYPLOT__
 #define __MULTIDISPLAYPLOT__
 
-#include "PlotController.hxx"
-#include "DisplaySurface.hxx"
-#include "QtPlot.hxx"
+#include <CLAM/PlotController.hxx>
+#include <CLAM/DisplaySurface.hxx>
+#include <CLAM/QtPlot.hxx>
 
 class QFrame;
 class QPushButton;

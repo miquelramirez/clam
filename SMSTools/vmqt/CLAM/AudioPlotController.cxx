@@ -20,9 +20,9 @@
  */
 
 #include <algorithm>
-#include "CLAMGL.hxx"
-#include "CLAM_Math.hxx"
-#include "AudioPlotController.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/CLAM_Math.hxx>
+#include <CLAM/AudioPlotController.hxx>
 
 namespace CLAM
 {

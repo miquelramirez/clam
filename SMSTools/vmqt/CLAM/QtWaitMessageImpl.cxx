@@ -1,8 +1,8 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qtimer.h>
-#include "WaitMsgIndicator.hxx"
-#include "QtWaitMessageImpl.hxx"
+#include <CLAM/WaitMsgIndicator.hxx>
+#include <CLAM/QtWaitMessageImpl.hxx>
 
 namespace CLAM
 {

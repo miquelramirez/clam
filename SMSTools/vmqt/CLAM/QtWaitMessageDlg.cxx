@@ -1,5 +1,5 @@
-#include "QtWaitMessageDlg.hxx"
-#include "QtWaitMessageImpl.hxx"
+#include <CLAM/QtWaitMessageDlg.hxx>
+#include <CLAM/QtWaitMessageImpl.hxx>
 
 namespace CLAM
 {

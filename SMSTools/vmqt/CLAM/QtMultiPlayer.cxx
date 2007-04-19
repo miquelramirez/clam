@@ -1,6 +1,6 @@
-#include "Player.hxx"
-#include "PlayableList.hxx"
-#include "QtMultiPlayer.hxx"
+#include <CLAM/Player.hxx>
+#include <CLAM/PlayableList.hxx>
+#include <CLAM/QtMultiPlayer.hxx>
 
 namespace CLAM
 {

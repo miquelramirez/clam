@@ -3,7 +3,7 @@
 
 #include <qobject.h>
 #include <qcursor.h>
-#include "SegmentRenderer.hxx"
+#include <CLAM/SegmentRenderer.hxx>
 
 namespace CLAM
 {

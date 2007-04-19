@@ -21,7 +21,7 @@
 
 #include <qpainter.h>
 #include <qtooltip.h>
-#include "VZLabel.hxx"
+#include <CLAM/VZLabel.hxx>
 
 namespace CLAM
 {

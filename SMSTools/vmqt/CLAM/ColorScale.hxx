@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <qwidget.h>
-#include "VMColor.hxx"
+#include <CLAM/VMColor.hxx>
 
 namespace CLAM
 {

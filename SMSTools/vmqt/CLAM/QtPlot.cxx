@@ -19,7 +19,7 @@
  *
  */
 
-#include "QtPlot.hxx"
+#include <CLAM/QtPlot.hxx>
 
 namespace CLAM
 {

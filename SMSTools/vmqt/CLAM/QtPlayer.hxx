@@ -23,8 +23,8 @@
 #define __QTPLAYER__
 
 #include <qwidget.h>
-#include "MediaTime.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/MediaTime.hxx>
+#include <CLAM/Slotv1.hxx>
 
 using SigSlot::Slotv1;
 

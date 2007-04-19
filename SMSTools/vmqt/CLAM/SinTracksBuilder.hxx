@@ -23,10 +23,10 @@
 #define __SINTRACKSBUILDER__
 
 #include <map>
-#include "Assert.hxx"
-#include "Array.hxx"
-#include "TPartial.hxx"
-#include "SinTracksDef.hxx"
+#include <CLAM/Assert.hxx>
+#include <CLAM/Array.hxx>
+#include <CLAM/TPartial.hxx>
+#include <CLAM/SinTracksDef.hxx>
 
 namespace CLAM
 {

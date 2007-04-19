@@ -23,8 +23,8 @@
 #define __SINTRACKHCLIPPER__
 
 #include <vector>
-#include "DataTypes.hxx"
-#include "SinTracksDef.hxx"
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/SinTracksDef.hxx>
 
 namespace CLAM
 {

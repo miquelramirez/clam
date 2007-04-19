@@ -3,11 +3,11 @@
 #include <qradiobutton.h>
 #include <qcombobox.h>
 #include <qtooltip.h>
-#include "MelodyPlayer.hxx"
-#include "MIDIMelodyPlayer.hxx"
-#include "MIDISettings.hxx"
-#include "ShowMessage.hxx"
-#include "QtBPFPlayer.hxx"
+#include <CLAM/MelodyPlayer.hxx>
+#include <CLAM/MIDIMelodyPlayer.hxx>
+#include <CLAM/MIDISettings.hxx>
+#include <CLAM/ShowMessage.hxx>
+#include <CLAM/QtBPFPlayer.hxx>
 
 namespace CLAM
 {

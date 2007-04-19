@@ -19,7 +19,7 @@
  *
  */
 
-#include "ScrollBar.hxx"
+#include <CLAM/ScrollBar.hxx>
 
 namespace CLAM
 {

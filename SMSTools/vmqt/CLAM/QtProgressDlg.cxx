@@ -1,5 +1,5 @@
 #include <qprogressdialog.h>
-#include "QtProgressDlg.hxx"
+#include <CLAM/QtProgressDlg.hxx>
 
 namespace CLAM
 {

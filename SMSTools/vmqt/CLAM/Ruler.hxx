@@ -2,8 +2,8 @@
 #define __RULER__
 
 #include <qwidget.h>
-#include "GlobalEnums.hxx"
-#include "VMColor.hxx"
+#include <CLAM/GlobalEnums.hxx>
+#include <CLAM/VMColor.hxx>
 
 namespace CLAM
 {

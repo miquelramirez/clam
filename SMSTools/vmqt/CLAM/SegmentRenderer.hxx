@@ -2,8 +2,8 @@
 #define __SEGMENTRENDERER__
 
 #include <vector>
-#include "Renderer.hxx"
-#include "Segmentation.hxx"
+#include <CLAM/Renderer.hxx>
+#include <CLAM/Segmentation.hxx>
 
 namespace CLAM
 {

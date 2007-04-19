@@ -22,9 +22,9 @@
 #ifndef __SINTRACKSRENDERER__
 #define __SINTRACKSRENDERER__
 
-#include "QtPalette.hxx"
-#include "SinTracksDef.hxx"
-#include "Renderer.hxx"
+#include <CLAM/QtPalette.hxx>
+#include <CLAM/SinTracksDef.hxx>
+#include <CLAM/Renderer.hxx>
 
 namespace CLAM
 {

@@ -3,12 +3,12 @@
 
 #include <string>
 #include <qwidget.h>
-#include "Melody.hxx"
-#include "MIDIMelody.hxx"
-#include "MediaTime.hxx"
-#include "PlayablePlot.hxx"
-#include "BPFEditorController.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/Melody.hxx>
+#include <CLAM/MIDIMelody.hxx>
+#include <CLAM/MediaTime.hxx>
+#include <CLAM/PlayablePlot.hxx>
+#include <CLAM/BPFEditorController.hxx>
+#include <CLAM/Slotv1.hxx>
 
 using SigSlot::Slotv1;
 

@@ -2,7 +2,7 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
-#include "EditTagDialog.hxx"
+#include <CLAM/EditTagDialog.hxx>
 
 namespace CLAM
 {

@@ -22,7 +22,7 @@
 #ifndef __TTIMEFREQMAGPOINT__
 #define __TTIMEFREQMAGPOINT__
 
-#include "DataTypes.hxx"
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAM
 {

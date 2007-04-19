@@ -19,7 +19,7 @@
  *
  */
 
-#include "Player.hxx"
+#include <CLAM/Player.hxx>
 
 namespace CLAM
 {

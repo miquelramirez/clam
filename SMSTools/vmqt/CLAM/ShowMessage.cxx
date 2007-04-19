@@ -1,5 +1,5 @@
 #include <qmessagebox.h>
-#include "ShowMessage.hxx"
+#include <CLAM/ShowMessage.hxx>
 
 namespace CLAM
 {

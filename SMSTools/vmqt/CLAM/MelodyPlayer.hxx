@@ -4,8 +4,8 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "Melody.hxx"
-#include "Player.hxx"
+#include <CLAM/Melody.hxx>
+#include <CLAM/Player.hxx>
 
 namespace CLAM
 {

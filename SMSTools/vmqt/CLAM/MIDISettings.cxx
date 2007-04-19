@@ -1,5 +1,5 @@
-#include "MIDIManager.hxx"
-#include "MIDISettings.hxx"
+#include <CLAM/MIDIManager.hxx>
+#include <CLAM/MIDISettings.hxx>
 
 #ifdef WIN32
 #include <portmidi.h>

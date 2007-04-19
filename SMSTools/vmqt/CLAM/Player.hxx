@@ -22,10 +22,10 @@
 #ifndef __PLAYER__
 #define __PLAYER__
 
-#include "MediaTime.hxx"
-#include "Thread.hxx"
-#include "Signalv1.hxx"
-#include "Slotv1.hxx"
+#include <CLAM/MediaTime.hxx>
+#include <CLAM/Thread.hxx>
+#include <CLAM/Signalv1.hxx>
+#include <CLAM/Slotv1.hxx>
 
 using SigSlot::Signalv1;
 using SigSlot::Slotv1;

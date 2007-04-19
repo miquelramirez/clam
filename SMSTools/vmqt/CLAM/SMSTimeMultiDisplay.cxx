@@ -4,17 +4,17 @@
 #include <qlabel.h>
 #include <qcombobox.h>
 #include <qtooltip.h>
-#include "Ruler.hxx"
-#include "VScrollGroup.hxx"
-#include "TimeSegmentLabelsGroup.hxx"
-#include "ColorScale.hxx"
-#include "DisplaySurface.hxx"
-#include "QtSMSPlayer.hxx"
-#include "AudioPlotController.hxx"
-#include "FundPlotController.hxx"
-#include "SinTracksPlotController.hxx"
-#include "SpectrogramPlotController.hxx"
-#include "SMSTimeMultiDisplay.hxx"
+#include <CLAM/Ruler.hxx>
+#include <CLAM/VScrollGroup.hxx>
+#include <CLAM/TimeSegmentLabelsGroup.hxx>
+#include <CLAM/ColorScale.hxx>
+#include <CLAM/DisplaySurface.hxx>
+#include <CLAM/QtSMSPlayer.hxx>
+#include <CLAM/AudioPlotController.hxx>
+#include <CLAM/FundPlotController.hxx>
+#include <CLAM/SinTracksPlotController.hxx>
+#include <CLAM/SpectrogramPlotController.hxx>
+#include <CLAM/SMSTimeMultiDisplay.hxx>
 
 namespace CLAM
 {

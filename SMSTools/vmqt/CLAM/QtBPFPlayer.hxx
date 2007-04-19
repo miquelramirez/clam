@@ -3,11 +3,11 @@
 
 #include <queue>
 #include <string>
-#include "Thread.hxx"
-#include "BPF.hxx"
-#include "Melody.hxx"
-#include "MIDIMelody.hxx"
-#include "QtMultiPlayer.hxx"
+#include <CLAM/Thread.hxx>
+#include <CLAM/BPF.hxx>
+#include <CLAM/Melody.hxx>
+#include <CLAM/MIDIMelody.hxx>
+#include <CLAM/QtMultiPlayer.hxx>
 
 class QRadioButton;
 class QComboBox;

@@ -22,7 +22,7 @@
 #ifndef __REGIONMARKER__
 #define __REGIONMARKER__
 
-#include "Renderer.hxx"
+#include <CLAM/Renderer.hxx>
 
 namespace CLAM
 {

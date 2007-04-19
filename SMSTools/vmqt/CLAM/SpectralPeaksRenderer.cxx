@@ -19,8 +19,8 @@
  *
  */
 
-#include "CLAMGL.hxx"
-#include "SpectralPeaksRenderer.hxx"
+#include <CLAM/CLAMGL.hxx>
+#include <CLAM/SpectralPeaksRenderer.hxx>
 
 namespace CLAM
 {

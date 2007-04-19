@@ -22,8 +22,8 @@
 #ifndef __SINETRACKSADAPTER__
 #define __SINETRACKSADAPTER__
 
-#include "Segment.hxx"
-#include "SinTracksBuilder.hxx"
+#include <CLAM/Segment.hxx>
+#include <CLAM/SinTracksBuilder.hxx>
 
 namespace CLAM
 {

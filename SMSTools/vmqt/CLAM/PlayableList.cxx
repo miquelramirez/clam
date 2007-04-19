@@ -19,8 +19,8 @@
  *
  */
 
-#include "PlayablePlot.hxx"
-#include "PlayableList.hxx"
+#include <CLAM/PlayablePlot.hxx>
+#include <CLAM/PlayableList.hxx>
 
 namespace CLAM
 {

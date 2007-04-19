@@ -24,7 +24,7 @@
 
 #include <qgl.h>
 #include <qcursor.h>
-#include "GLView.hxx"
+#include <CLAM/GLView.hxx>
 
 #ifdef WIN32
 	#undef GetClassName
