@@ -233,16 +233,19 @@ public:
 	void setBasePath(const QString & path)
 	{
 		_basePath = path;
-		PixmapCache::GetInstance().fillBitMaps(_pixmaps, 128, getBasePath(), 3, ".png");
+		_nFrames = PixmapCache::GetInstance().fillBitMaps(_pixmaps, 128, getBasePath(), 3, ".png");
 		setFixedSize(_pixmaps[0]->size());
+		setMinimumSize(_pixmaps[0]->size());
 		sliderChange(SliderValueChange);
 	}
 	void sliderChange(SliderChange change)
 	{
 		if (change==SliderValueChange)
 		{
+			unsigned frame = (maximum()==minimum())? 0: 
+				(_nFrames-1) * (value()-minimum()) / (maximum()-minimum());
 			QPalette palette;
-			palette.setBrush(backgroundRole(), QBrush(*_pixmaps[value()]));
+			palette.setBrush(backgroundRole(), QBrush(*_pixmaps[frame]));
 			setPalette(palette);
 		}
 		QAbstractSlider::sliderChange(change);
@@ -269,7 +272,7 @@ public:
 	{
 		if (!_dragging) return;
 
-		int newValue = value() - (event->y() - _lastY) - (_lastX - event->x() );
+		int newValue = value() - ((event->y() - _lastY) + (_lastX - event->x() ))*singleStep();
 		_lastX = event->x();
 		_lastY = event->y();
 		setValue(newValue);
@@ -286,6 +289,7 @@ private:
 	std::vector<QPixmap*> _pixmaps;
 	int _lastX, _lastY;
 	bool _dragging;
+	int _nFrames;
 
 };
 
