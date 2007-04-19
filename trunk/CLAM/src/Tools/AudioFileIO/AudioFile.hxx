@@ -70,8 +70,8 @@ namespace CLAM
 		void ResetHeaderData();
 
 		Filename mLocation;
-	private:
 		EAudioFileKind        mKind;
+	private:
 		AudioCodecs::Codec*   mActiveCodec;
 		AudioFileHeader       mHeaderData;
 		AudioTextDescriptors  mTextDescriptors;
