@@ -14,6 +14,7 @@
 #include "MelCepstrumViewPlugin.hxx"
 #include "PixmapWidgetsPlugin.hxx"
 #include "QSynthKnobPlugin.hxx"
+#include "ControlSurfaceWidgetPlugin.hxx"
 #include <iostream>
 #include <CLAM/CLAMVersion.hxx>
 
@@ -38,6 +39,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new PixmapSliderPlugin(this)
 		<< new ThinPixmapButtonPlugin(this)
 		<< new QSynthKnobPlugin(this)
+		<< new ControlSurfaceWidgetPlugin(this)
 		;
 	std::cout << "All CLAM widgets plugins created" << std::endl;
 }
