@@ -14,8 +14,10 @@ class ControlSurfaceWidget : public QWidget
 	Q_PROPERTY(bool spinBoxesHidden READ spinBoxesHidden WRITE hideSpinBoxes)
 	Q_PROPERTY(QColor pointBrushColor READ pointBrushColor WRITE setPointBrushColor)
 	Q_PROPERTY(QColor pointPenColor READ pointPenColor WRITE setPointPenColor)
+	Q_PROPERTY(QString nameX READ nameX WRITE setNameX)
+	Q_PROPERTY(QString nameY READ nameY WRITE setNameY)
 public:
-	ControlSurfaceWidget(CLAM::Processing * processing);
+	ControlSurfaceWidget(QWidget * parent=0, CLAM::Processing * processing=0);
 	~ControlSurfaceWidget();
 	void paintEvent(QPaintEvent * event); 
 	void mousePressEvent(QMouseEvent * event); 
@@ -27,12 +29,18 @@ public:
 	void setPointBrushColor(const QColor & color) { _pointBrushColor=color; }
 	const QColor & pointPenColor() const { return _pointPenColor; }
 	void setPointPenColor(const QColor & color) { _pointPenColor=color; }
+	const QString & nameX() const { return _nameX; }
+	void setNameX(const QString & name) { _nameX=name; }
+	const QString & nameY() const { return _nameY; }
+	void setNameY(const QString & name) { _nameY=name; }
 
 private slots:
 	void moveSurface(int posX, int posY);
 	void spinBoxChanged();
 signals:
-	void surfaceMoved(int posX, int posY);
+	void surfaceMoved(double posX, double posY);
+	void updatedX(double posX);
+	void updatedY(double posY);
 
 private:
 	double mapX(int x) const;
@@ -55,6 +63,8 @@ private:
 	bool _areSpinBoxesHidden;
 	QColor _pointPenColor;
 	QColor _pointBrushColor;
+	QString _nameX;
+	QString _nameY;
 };
 
 #endif//ControlSurfaceWidget_hxx

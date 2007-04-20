@@ -83,7 +83,7 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 		return new ControlSenderWidget(processing);
 
 	if (className=="ControlSurface")
-		return new ControlSurfaceWidget(processing);
+		return new ControlSurfaceWidget(canvas, processing);
 
 	if (className=="ControlPrinter" || className=="ControlTraceWriter")
 		return new ControlPrinterWidget(processing);
