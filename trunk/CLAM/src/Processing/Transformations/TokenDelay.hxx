@@ -35,6 +35,8 @@
 
 using std::string;
 
+#include "Array.hxx"
+
 namespace CLAM  
 {
 
@@ -174,11 +176,14 @@ private:
 	 * delay.
 	 */
 	void UpdateBuffersToDelay();
-
-
+	void WriteNewSample(const T& in);
+	void ReadCurrentSample(T& out);
+	
 // Implementation Details:
 
-	std::deque<T> mTokenQueue;
+	std::vector<T> mTokenQueue;
+	unsigned mReadPointer;
+	unsigned mWritePointer;
 	/** The maximun number of elements in the queue. */
 	unsigned mCapacity;
 	/** The control value read on the last started Do */
@@ -209,6 +214,9 @@ bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c)
 	mCapacity = mConfig.GetMaxDelay();
 	mDelayControl.DoControl(TControlData(mConfig.GetDelay()));
 	mGivenDelay = CastDelayControlValue(mDelayControl.GetLastValue());
+	mTokenQueue.resize(mCapacity);
+	mWritePointer = 0;
+	mReadPointer = -mGivenDelay;
 	return true;
 }
 
@@ -237,25 +245,40 @@ bool TokenDelay<T>::Do(const T& in, T& out)
 	// If the value is different make the difference efective
 	if (mLastDelay != mGivenDelay)
 		UpdateBuffersToDelay();
-	
-	mTokenQueue.push_back(in);
-	out=mTokenQueue.front();
-	if (mTokenQueue.size()>mGivenDelay)
-		mTokenQueue.pop_front();
+	WriteNewSample(in);
+	ReadCurrentSample(out);
 	return true;
 
 }
+
+template <class T> 
+void TokenDelay<T>::WriteNewSample(const T& in)
+{
+	mTokenQueue[mWritePointer] = in;
+	mWritePointer++;
+	if(mWritePointer==mCapacity) mWritePointer=0;
+
+}
+
+
+template <class T>
+void TokenDelay<T>::ReadCurrentSample(T& out)
+{
+	CLAM_DEBUG_ASSERT(mReadPointer>0, "Trying to read outside buffer");
+	int oldReadPointer = mReadPointer;
+	mReadPointer++;
+	if(mReadPointer==mCapacity) mReadPointer=0;
+	out = mTokenQueue[oldReadPointer];
+}
+
 
 
 // Delay change
 template <class T> 
 void TokenDelay<T>::UpdateBuffersToDelay()
 {
-	while (mTokenQueue.size()>mGivenDelay) {
-		//T* toDelete=mTokenQueue.front();
-		mTokenQueue.pop_front();
-		//this->Discard(toDelete);
-	}
+	mWritePointer =  mReadPointer + CastDelayControlValue(mGivenDelay);
+	if(mWritePointer>=mCapacity) mWritePointer-=mCapacity;
 	return;
 }
 
@@ -326,4 +349,3 @@ public:
 
 
 #endif //_TokenDelay_
-
