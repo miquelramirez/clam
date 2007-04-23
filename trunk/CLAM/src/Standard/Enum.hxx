@@ -61,34 +61,34 @@ class IllegalValue : public std::exception {
  * values, and an initialization value, than can be both a 
  * symbol (char* or std::string) or an integer.
  * 
- * @code
- * // EMyEnum.hxx
- *	class EMyEnum : public CLAM::Enum {
- *	public:
- *		EMyEnum() : CLAM::Enum(ValueTable(), eTwo) {}
- *		EMyEnum(tValue v) : CLAM::Enum(ValueTable(), v) {};
- *		EMyEnum(const std::string & s) : CLAM::Enum(ValueTable(), s) {};
- *
- *		virtual CLAM::Component * Species() const {return new EMyEnum();}
- *
- *		typedef enum {
- *			eZero=0,
- *			eTwo=2,
- *			eHundred=100
- *		} tEnum;
- *		static tEnumValue * ValueTable()
- *		{
- *			static tEnumValue sValueTable[] = 
- *			{
- *				{eZero,"zero"},
- *				{eTwo,"two"},
- *				{eHundred,"hundred"},
- *				{0,NULL}
- *			};
- *			return sValueTable;
- *		}
- *	};
- * @endcode
+@code
+// EMyEnum.hxx
+class EMyEnum : public CLAM::Enum {
+public:
+	EMyEnum() : CLAM::Enum(ValueTable(), eTwo) {}
+	EMyEnum(tValue v) : CLAM::Enum(ValueTable(), v) {};
+	EMyEnum(const std::string & s) : CLAM::Enum(ValueTable(), s) {};
+
+	virtual CLAM::Component * Species() const {return new EMyEnum();}
+
+	typedef enum {
+		eZero=0,
+		eTwo=2,
+		eHundred=100
+	} tEnum;
+	static tEnumValue * ValueTable()
+	{
+		static tEnumValue sValueTable[] = 
+		{
+			{eZero,"zero"},
+			{eTwo,"two"},
+			{eHundred,"hundred"},
+			{0,NULL}
+		};
+		return sValueTable;
+	}
+};
+@endcode
  */
 class Enum : public Component {
 
