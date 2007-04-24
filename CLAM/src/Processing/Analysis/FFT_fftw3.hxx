@@ -39,7 +39,6 @@ namespace CLAM {
 	class Spectrum;
 	class Audio;
 	class ProcessingConfig;
-	class IFFT_fftw3;
 
 	/** Implementation of the FFT using the Fastest Fourier Transform of the West version 3
 	 */
