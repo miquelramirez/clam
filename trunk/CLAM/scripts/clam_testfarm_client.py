@@ -24,10 +24,7 @@ HOME = os.environ['HOME']
 os.environ['LD_LIBRARY_PATH']='%s/local/lib:/usr/local/lib' % HOME
 os.environ['CLAM_TEST_DATA']='%s/clam/testdata' % HOME
 
-def set_qtdir_to_qt4(x) :
-	os.environ['QTDIR']='/usr/local/Trolltech/Qt-4.1.0/'
-	os.environ['PKG_CONFIG_PATH']=os.environ['QTDIR']+'lib/pkgconfig'
-def unset_qtdir(x) :
+def erase_QTDIR(x) :
 	os.environ['QTDIR']=""
 
 client = Client("linux_ubuntu_feisty")
@@ -56,7 +53,7 @@ clam.add_subtask("count lines of code", [
 	{CMD:"echo $HOME/clam/NetworkEditor", STATS: lambda x: {"networkeditor_loc": countLines(x) } }
 ] )
 clam.add_deployment( [
-	{CMD: "echo setting QTDIR to qt3 path ", INFO: unset_qtdir},
+#	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/CLAM",
 	"rm -rf $HOME/local/*",
 	"cd $HOME/clam/CLAM/",
@@ -65,7 +62,7 @@ clam.add_deployment( [
 	"scons install",
 ] )
 clam.add_subtask("Unit Tests", [
-	{CMD: "echo setting QTDIR to qt3 path ", INFO: unset_qtdir},
+#	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/CLAM",
 	"cd test",
 	"scons test_data_path=$HOME/clam/testdata  install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
@@ -75,7 +72,7 @@ clam.add_subtask("Unit Tests", [
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
 clam.add_subtask("Functional Tests", [
-	{CMD: "echo setting QTDIR to qt3 path ", INFO: unset_qtdir},
+#	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/CLAM",
 	"cd test",
 	"scons test_data_path=$HOME/clam/testdata  install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
@@ -85,12 +82,12 @@ clam.add_subtask("Functional Tests", [
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
 ] )
 clam.add_subtask("CLAM Examples", [
-	{CMD: "echo setting QTDIR to qt3 path ", INFO: unset_qtdir},
+#	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/CLAM/examples",
 	"scons clam_prefix=$HOME/local",
 ] )
 clam.add_subtask("SMSTools installation", [
-	{CMD: "echo setting QTDIR to qt3 path ", INFO: unset_qtdir},
+#	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/SMSTools",
 	"scons install_prefix=$HOME/local clam_prefix=$HOME/local",
 	"scons install",
@@ -99,20 +96,18 @@ clam.add_subtask("SMSTools installation", [
 
 
 clam.add_subtask('vmqt4 compilation and examples', [
-	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd $HOME/clam/Annotator/vmqt",
 	'scons  install_prefix=$HOME/local clam_prefix=$HOME/local release=1 double=1',
 	'scons examples',
 ] )
 clam.add_subtask("Annotator installation", [
-	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd $HOME/clam/Annotator",
 	"scons clam_vmqt4_path=vmqt  install_prefix=$HOME/local clam_prefix=$HOME/local",
 	"scons install",
 ] )
 
 clam.add_subtask("NetworkEditor installation", [
-	{CMD: "echo setting QTDIR to qt3 path ", INFO: unset_qtdir},
+#	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/NetworkEditor",
 	"scons install_prefix=$HOME/local clam_prefix=$HOME/local",
 	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
@@ -120,7 +115,7 @@ clam.add_subtask("NetworkEditor installation", [
 
 Runner( clam, 
 	continuous = True,
-#	remote_server_url = 'http://10.55.0.50/testfarm_server'
-	local_base_dir='/tmp'
+	remote_server_url = 'http://efpc072.upf.es/testfarm_server'
+#	local_base_dir='/tmp'
 )
 
