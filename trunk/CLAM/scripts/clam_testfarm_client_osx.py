@@ -1,12 +1,10 @@
 #! /usr/bin/python
-
-import sys
-sys.path.append('../src')
+import os, sys, time
+sys.path.append('%s/testfarm/src' % os.environ['HOME'])
 from task import *
 from project import Project
 from client import Client
 from runner import Runner
-import os, time
 from commands import getoutput
 
 def countLines( path ):
@@ -31,12 +29,12 @@ def set_qtdir_to_qt4(x) :
 def unset_qtdir(x) :
 	os.environ['QTDIR']=""
 
-client = Client("mac-10.4.8-ppc")
-client.brief_description = '<img src="http://clam.iua.upf.es/images/apple_icon.png"/> <img src="http://clam.iua.upf.es/images/ubuntu_icon.png"/>'
+client = Client("mac-10.4.8-intel-macbook")
+client.brief_description = '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>'
 	
 
 clam = Task(
-	project = Project("CLAM-osx-local"), 
+	project = Project("CLAM"), 
 	client = client, 
 	task_name="with svn update" 
 	)
@@ -58,12 +56,12 @@ clam.add_deployment( [
 	{CMD: "unset QTDIR", INFO: unset_qtdir},
 	"cd $HOME/clam/CLAM",
 	"rm -rf $HOME/local/*",
-	"cd $HOME/clam/CLAM/scons/libs",
+	"cd $HOME/clam/CLAM/",
 	"scons configure prefix=$HOME/local",
 	"scons",
 	"scons install",
 ] )
-'''
+
 clam.add_subtask("Unit Tests (with scons)", [
 	{CMD: "echo unset QTDIR ", INFO: unset_qtdir},
 	"cd $HOME/clam/CLAM",
@@ -90,7 +88,7 @@ clam.add_subtask("CLAM Examples (with scons)", [
 	"cd scons/examples",
 	"scons clam_prefix=$HOME/local",
 ] )
-'''
+
 clam.add_subtask("SMSTools packaging", [
 	{CMD: "echo unset  QTDIR  ", INFO: unset_qtdir},
 	"cd $HOME/clam/SMSTools",
@@ -129,7 +127,7 @@ clam.add_subtask("NetworkEditor packaging", [
 
 Runner( clam, 
 	continuous = True,
-#	remote_server_url = 'http://10.55.0.50/testfarm_server'
-	local_base_dir='/tmp'
+	remote_server_url = 'http://efpc072.upf.es/testfarm_server'
+#	local_base_dir='/tmp'
 )
 
