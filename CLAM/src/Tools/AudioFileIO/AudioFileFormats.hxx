@@ -28,7 +28,6 @@
 
 #include <sndfile.h>
 #include "Enum.hxx"
-#include <CLAM/ConfigurableFile.hxx>
 #include <string>
 #include <list>
 #include <utility>
