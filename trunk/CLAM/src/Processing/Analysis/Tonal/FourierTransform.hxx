@@ -27,7 +27,6 @@ class FourierTransform {
 	std::vector<double> datah; //(=insegment)
 	unsigned long mFrameSize;
 	bool mIsComplex;
-	double mDataNorm;
 public:
 	FourierTransform(unsigned long int frameSize, double normalizationFactor, bool isComplex);
 	~FourierTransform();
