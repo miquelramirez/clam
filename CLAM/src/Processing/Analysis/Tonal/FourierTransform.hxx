@@ -22,11 +22,16 @@
 #ifndef FourierTransform_hxx
 #define FourierTransform_hxx
 #include <vector>
+#include <fftw3.h>
 
 class FourierTransform {
 	std::vector<double> datah; //(=insegment)
 	unsigned long mFrameSize;
 	bool mIsComplex;
+	double mDataNorm;
+	double * _realInput;
+	fftw_complex * _complexOutput;
+	fftw_plan _plan;
 public:
 	FourierTransform(unsigned long int frameSize, double normalizationFactor, bool isComplex);
 	~FourierTransform();
