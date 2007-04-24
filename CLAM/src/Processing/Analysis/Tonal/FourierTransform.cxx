@@ -25,7 +25,6 @@
 
 #define SWAP(a,b) do {double swaptemp=(a); (a)=(b); (b)=swaptemp;} while(false)
 
-
 //  constructor
 // inpointer points to the input data. n is twice the frame size
 // complex = 0 -> augmentation with 0s is necessary
@@ -34,10 +33,20 @@ FourierTransform::FourierTransform(unsigned long int framesize, double datanorm,
 	, mIsComplex(isComplex)
 {
 	datah.resize(2*mFrameSize);
+	_realInput = (double*) fftw_malloc(sizeof(double) * mFrameSize);
+    _complexOutput = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * mFrameSize);
+
+	if (isComplex)
+		_plan = fftw_plan_dft_1d(framesize, _complexOutput, _complexOutput, 1, FFTW_ESTIMATE);
+	else
+		_plan = fftw_plan_dft_r2c_1d(framesize, _realInput, _complexOutput, FFTW_ESTIMATE);
 }
 
 FourierTransform::~FourierTransform()
 {
+	fftw_destroy_plan(_plan);
+	fftw_free(_realInput);
+	fftw_free(_complexOutput);
 }
 
 //----------------------------------------------------------------------------------------
@@ -99,16 +108,37 @@ void FourierTransform::doIt(const float * inpointer)
 		for (unsigned long k=0; k<mFrameSize*2; k++) {
 			datah[k] = inpointer[k];
 		}
+	/* // FFTW3
+		for (unsigned long k=0; k<mFrameSize; k++) {
+			_complexOutput[k][0] = inpointer[k<<1];
+			_complexOutput[k][1] = inpointer[(k<<1)+1];
+		}
+	*/
 	}
 	else {
 		for (unsigned long k=0; k<mFrameSize; k++) {
 			datah[k<<1] = inpointer[k];
 			datah[(k<<1)+1] = 0.0;
 		}
+	/* // FFTW3
+		for (unsigned long k=0; k<mFrameSize; k++) {
+			_realInput[k] = inpointer[k];
+		}
+	*/
 	}
 
 	double * data = &(datah[0])-1; // Hack to use Matlab indeces TOREMOVE?
 	doFourierTransform(data, mFrameSize);
+/*	// FFTW3
+	fftw_execute(_plan);
+	for (int i=0; i<mFrameSize; i++)
+	{
+//		std::cout << datah[i<<1] << " " << _complexOutput[i][0] << " ";
+//		std::cout << datah[(i<<1)+1] << " " << _complexOutput[i][1] << std::endl;
+		datah[i<<1] = _complexOutput[i][0];
+		datah[(i<<1)+1] = -_complexOutput[i][1];
+	}
+*/
 }
 
 void FourierTransform::doIt(const double * inpointer)
