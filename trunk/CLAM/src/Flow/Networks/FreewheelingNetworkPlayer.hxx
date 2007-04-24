@@ -14,6 +14,7 @@ class FreewheelingNetworkPlayer : public NetworkPlayer
 	int mBufferSize;
 	std::string mInFilename;
 	std::string mOutFilename;
+	std::vector<std::string> mFilenames;
 
 public:
 	FreewheelingNetworkPlayer();
