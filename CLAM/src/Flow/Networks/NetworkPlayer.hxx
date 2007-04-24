@@ -76,6 +76,8 @@ protected:
 	}
 	void SetStopped(const bool val)	{ mStopped=val; }
 	void CollectSourcesAndSinks();
+	const AudioSources& GetAudioSources() const { return mSources; }
+	const AudioSinks& GetAudioSinks() const { return mSinks; }
 	AudioSources& GetAudioSources() { return mSources; }
 	AudioSinks& GetAudioSinks() { return mSinks; }
 
