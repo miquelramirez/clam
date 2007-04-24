@@ -33,7 +33,7 @@ public:
 
 	void doIt(const float * input);
 	void doIt(const double * input);
-	const std::vector<double> & spectrum() {return datah;};
+	const std::vector<double> & spectrum() const {return datah;};
 };
 
 #endif//FourierTransform_hxx
