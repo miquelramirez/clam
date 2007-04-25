@@ -26,13 +26,14 @@
 #define SWAP(a,b) do {double swaptemp=(a); (a)=(b); (b)=swaptemp;} while(false)
 
 //  constructor
-// inpointer points to the input data. n is twice the frame size
+// input points to the input data. n is twice the frame size
 // complex = 0 -> augmentation with 0s is necessary
 FourierTransform::FourierTransform(unsigned long int framesize, double datanorm, bool isComplex)
 	: mFrameSize(framesize)
 	, mIsComplex(isComplex)
 {
-	datah.resize(2*mFrameSize);
+	_spectrum.resize(2*mFrameSize);
+	#if USE_FFTW3
 	_realInput = (double*) fftw_malloc(sizeof(double) * mFrameSize);
     _complexOutput = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * mFrameSize);
 
@@ -40,13 +41,16 @@ FourierTransform::FourierTransform(unsigned long int framesize, double datanorm,
 		_plan = fftw_plan_dft_1d(framesize, _complexOutput, _complexOutput, 1, FFTW_ESTIMATE);
 	else
 		_plan = fftw_plan_dft_r2c_1d(framesize, _realInput, _complexOutput, FFTW_ESTIMATE);
+	#endif
 }
 
 FourierTransform::~FourierTransform()
 {
+	#if USE_FFTW3
 	fftw_destroy_plan(_plan);
 	fftw_free(_realInput);
 	fftw_free(_complexOutput);
+	#endif
 }
 
 //----------------------------------------------------------------------------------------
@@ -99,65 +103,67 @@ void doFourierTransform(double * data, unsigned frameSize)
 		}
 	}
 }
-
-void FourierTransform::doIt(const float * inpointer)
+template <typename T>
+void FourierTransform::doItGeneric(const T * input)
 {
-	//fill array "data" with data
+	#if USE_FFTW3
 	if (mIsComplex)
 	{
-		for (unsigned long k=0; k<mFrameSize*2; k++) {
-			datah[k] = inpointer[k];
+		for (unsigned long i=0; i<mFrameSize; i++)
+		{
+			_complexOutput[i][0] = input[i<<1];
+			_complexOutput[i][1] = input[(i<<1)+1];
 		}
-	/* // FFTW3
-		for (unsigned long k=0; k<mFrameSize; k++) {
-			_complexOutput[k][0] = inpointer[k<<1];
-			_complexOutput[k][1] = inpointer[(k<<1)+1];
+		fftw_execute(_plan);
+		for (unsigned long i=0; i<mFrameSize*2; i+=2)
+		{
+			_spectrum[i] = _complexOutput[i/2][0];
+			_spectrum[i+1] = _complexOutput[i/2][1];
 		}
-	*/
 	}
 	else {
-		for (unsigned long k=0; k<mFrameSize; k++) {
-			datah[k<<1] = inpointer[k];
-			datah[(k<<1)+1] = 0.0;
+		for (unsigned long i=0; i<mFrameSize; i++) {
+			_realInput[i] = input[i];
 		}
-	/* // FFTW3
-		for (unsigned long k=0; k<mFrameSize; k++) {
-			_realInput[k] = inpointer[k];
+		fftw_execute(_plan);
+		for (int i=0; i<mFrameSize; i+=2)
+		{
+			_spectrum[i] = _complexOutput[i/2][0];
+			_spectrum[i+1] = _complexOutput[i/2][1];
 		}
-	*/
+		for (int i=1; i<mFrameSize; i+=2)
+		{
+			unsigned j = mFrameSize*2-i;
+			_spectrum[j] = _complexOutput[i/2][0];
+			_spectrum[j+1] = -_complexOutput[i/2][1];
+		}
 	}
-
-	double * data = &(datah[0])-1; // Hack to use Matlab indeces TOREMOVE?
-	doFourierTransform(data, mFrameSize);
-/*	// FFTW3
-	fftw_execute(_plan);
-	for (int i=0; i<mFrameSize; i++)
+	#else
+	if (mIsComplex)
 	{
-//		std::cout << datah[i<<1] << " " << _complexOutput[i][0] << " ";
-//		std::cout << datah[(i<<1)+1] << " " << _complexOutput[i][1] << std::endl;
-		datah[i<<1] = _complexOutput[i][0];
-		datah[(i<<1)+1] = -_complexOutput[i][1];
+		for (unsigned long i=0; i<mFrameSize*2; i++)
+			_spectrum[i] = input[i];
 	}
-*/
+	else
+	{
+		for (unsigned long i=0; i<mFrameSize*2; i+=2)
+		{
+			_spectrum[i] = input[i/2];
+			_spectrum[i+1] = 0.0;
+		}
+	}
+	double * data = &(_spectrum[0])-1; // Hack to use Matlab indeces TOREMOVE?
+	doFourierTransform(data, mFrameSize);
+	#endif
 }
 
-void FourierTransform::doIt(const double * inpointer)
+void FourierTransform::doIt(const float * input)
 {
-	//fill array "data" with data
-	if (mIsComplex)
-	{
-		for (unsigned long k=0; k<mFrameSize*2; k++) {
-			datah[k] = inpointer[k];
-		}
-	}
-	else {
-		for (unsigned long k=0; k<mFrameSize; k++) {
-			datah[k<<1] = inpointer[k];
-			datah[(k<<1)+1] = 0.0;
-		}
-	}
-	double * data = &(datah[0])-1; // Hack to use Matlab indeces TOREMOVE?
-	doFourierTransform(data, mFrameSize);
+	doItGeneric(input);
+}
+void FourierTransform::doIt(const double * input)
+{
+	doItGeneric(input);
 }
 
 

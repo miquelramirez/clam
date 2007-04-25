@@ -22,23 +22,29 @@
 #ifndef FourierTransform_hxx
 #define FourierTransform_hxx
 #include <vector>
+#if USE_FFTW3
 #include <fftw3.h>
+#endif
 
 class FourierTransform {
-	std::vector<double> datah; //(=insegment)
+	std::vector<double> _spectrum;
 	unsigned long mFrameSize;
 	bool mIsComplex;
-	double mDataNorm;
+#if USE_FFTW3
 	double * _realInput;
 	fftw_complex * _complexOutput;
 	fftw_plan _plan;
+#endif
 public:
 	FourierTransform(unsigned long int frameSize, double normalizationFactor, bool isComplex);
 	~FourierTransform();
 
 	void doIt(const float * input);
 	void doIt(const double * input);
-	const std::vector<double> & spectrum() const {return datah;};
+	const std::vector<double> & spectrum() const {return _spectrum;};
+private:
+	template <typename T>
+	void doItGeneric(const T * input);
 };
 
 #endif//FourierTransform_hxx
