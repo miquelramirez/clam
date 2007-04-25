@@ -103,10 +103,11 @@ void doFourierTransform(double * data, unsigned frameSize)
 		}
 	}
 }
+
 template <typename T>
 void FourierTransform::doItGeneric(const T * input)
 {
-	#if USE_FFTW3
+#if USE_FFTW3
 	if (mIsComplex)
 	{
 		for (unsigned long i=0; i<mFrameSize; i++)
@@ -121,8 +122,10 @@ void FourierTransform::doItGeneric(const T * input)
 			_spectrum[i+1] = _complexOutput[i/2][1];
 		}
 	}
-	else {
-		for (unsigned long i=0; i<mFrameSize; i++) {
+	else
+	{
+		for (unsigned long i=0; i<mFrameSize; i++)
+		{
 			_realInput[i] = input[i];
 		}
 		fftw_execute(_plan);
@@ -138,7 +141,7 @@ void FourierTransform::doItGeneric(const T * input)
 			_spectrum[j+1] = -_complexOutput[i/2][1];
 		}
 	}
-	#else
+#else
 	if (mIsComplex)
 	{
 		for (unsigned long i=0; i<mFrameSize*2; i++)
@@ -154,7 +157,7 @@ void FourierTransform::doItGeneric(const T * input)
 	}
 	double * data = &(_spectrum[0])-1; // Hack to use Matlab indeces TOREMOVE?
 	doFourierTransform(data, mFrameSize);
-	#endif
+#endif
 }
 
 void FourierTransform::doIt(const float * input)
@@ -165,7 +168,6 @@ void FourierTransform::doIt(const double * input)
 {
 	doItGeneric(input);
 }
-
 
 //-------------------------------------------------------------------------
 
