@@ -80,7 +80,7 @@ void ConstantQTransform::sparsekernel(double thresh)
 	//calculate the spectral kernel then threshold it to make it sparse and 
 	//add it to the sparse kernels matrix
 	double squareThreshold = thresh * thresh;
-	FourierTransform fft(mSpectrumSize, 1, 1);
+	FourierTransform fft(mSpectrumSize, 1, true);
 	for (unsigned k=K; k--; ) {
 		// Computing a hamming window
 		const unsigned hammingLength = (int) ceil(Q * FS / (fmin * std::pow(2.,((double)(k))/(double)_binsPerOctave)));
