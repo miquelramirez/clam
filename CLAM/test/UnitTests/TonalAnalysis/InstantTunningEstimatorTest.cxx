@@ -174,7 +174,7 @@ private:
 		std::pair<double,double> centerAndStrength = tunningEstimator.output();
 
 		CPPUNIT_ASSERT_DOUBLES_EQUAL(1.5, centerAndStrength.first, 1e-14);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL(16-16*.4, centerAndStrength.second, 1e-14);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(9.44, centerAndStrength.second, 1e-14);
 	}
 };
 
