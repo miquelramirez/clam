@@ -28,7 +28,7 @@ folders = [
 	os.path.join('ProcessingDataTests'),
 	os.path.join('ProcessingsTests'),
 	os.path.join('StandardTests'),
-#	os.path.join('TonalAnalysis'),
+	os.path.join('TonalAnalysis'),
 	os.path.join('ToolsTests'),
 	os.path.join('XMLAdaptersTests'),
 	os.path.join('VisualizationTests'),
@@ -37,7 +37,8 @@ blacklist = [
 	os.path.join('.','TestRunnerQt.cxx'),
 	os.path.join('FactoryTest','PolymorphicTest.cxx'),
 	os.path.join('ProcessingsTests','AudioMixerTest.cxx'),
-#	os.path.join('TonalAnalysis','ChordCorrelatorTest.cxx'),
+	os.path.join('TonalAnalysis','ChordCorrelatorTest.cxx'), # recognized labels not the current ones
+	os.path.join('TonalAnalysis','ChordExtractorTest.cxx'), # last too long
 	# TODO see for libxml?
 	os.path.join('XMLAdaptersTests','LibXmlDomDocumentHandlerTest.cxx'),
 	os.path.join('XMLAdaptersTests','LibXmlDomReaderTest.cxx'),
