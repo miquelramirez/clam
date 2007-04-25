@@ -76,7 +76,6 @@ namespace CLAM
 		
 		const DataArray& specMag = spec.GetMagBuffer();
 
-		std::cout << specMag.Size() << " " << mConfig.GetSpectrumSize() << std::endl;
 		CLAM_ASSERT( specMag.Size() == mConfig.GetSpectrumSize(),
 		 "Spectrum doesn't have the expected size!" );
 		CLAM_ASSERT( spec.GetSpectralRange() == mConfig.GetSpectralRange(),
