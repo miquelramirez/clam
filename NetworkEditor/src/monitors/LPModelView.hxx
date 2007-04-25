@@ -48,8 +48,8 @@ private:
 	const CLAM::TData * frameData()
 	{
 		const CLAM::LPModel & data = FreezeAndGetData();
-//		const CLAM::Array<CLAM::TData> & buffer = data.GetFilterCoefficients();
-		const CLAM::Array<CLAM::TData> & buffer = data.GetReflectionCoefficients();
+		const CLAM::Array<CLAM::TData> & buffer = data.GetFilterCoefficients();
+//		const CLAM::Array<CLAM::TData> & buffer = data.GetReflectionCoefficients();
 		_size = buffer.Size();
 		return & buffer[0];
 	}
