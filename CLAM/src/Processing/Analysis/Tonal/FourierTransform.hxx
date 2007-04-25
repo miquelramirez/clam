@@ -43,8 +43,7 @@ public:
 	void doIt(const double * input);
 	const std::vector<double> & spectrum() const {return _spectrum;};
 private:
-	template <typename T>
-	void doItGeneric(const T * input);
+	template <typename T> void doItGeneric(const T * input);
 };
 
 #endif//FourierTransform_hxx
