@@ -177,6 +177,7 @@ public:
 	double energy() const {return _squaredRootEnergy; }
 	unsigned firstCandidate() const {return _estimatedChord;}
 	unsigned secondCandidate() const {return _secondCandidate;}
+	std::vector<double> spectrum() const {return _fourierTransform.spectrum(); }
 
 };
 }
