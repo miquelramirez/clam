@@ -27,7 +27,6 @@ class ControlTraceReaderFunctionalTest : public CppUnit::TestFixture
 
 protected: // Attributes
 
-	std::string mPathToTestData;
 	std::string mInputFileName;
 	std::string mEmptyFileName;
 
@@ -37,9 +36,9 @@ public: // TestFixture interface
 
 	void setUp()
 	{
-		mPathToTestData = GetTestDataDirectory() + "ControlTraceReader";
-		mInputFileName = mPathToTestData + "Input.clamtrace";
-		mEmptyFileName = mPathToTestData + "Empty.clamtrace";
+		std::string filesPrefix = GetTestDataDirectory() + "controlTraces/ControlTraceReader";
+		mInputFileName = filesPrefix + "Input.clamtrace";
+		mEmptyFileName = filesPrefix + "Empty.clamtrace";
 	}
 
 	void tearDown()
@@ -85,6 +84,8 @@ private: // tests cases
 		CLAM::ControlTraceReader proc;
 		
 		bool configResult = proc.Configure( cfg );
+		if  (!configResult)
+			std::cout << proc.GetConfigErrorMessage() << std::endl;
 
 		CPPUNIT_ASSERT_EQUAL( true, configResult );
 	}
@@ -93,8 +94,8 @@ private: // tests cases
 	{
 		CLAM::ControlTraceReaderConfig cfg;
 
-		CLAM::ControlTraceInFilename file(mPathToTestData + 
-				std::string( "missing-file.clamtrace" ) );
+		CLAM::ControlTraceInFilename file( GetTestDataDirectory() + 
+				std::string( "/missing-file.clamtrace" ) );
 		cfg.SetTraceFile( file );
 
 		CLAM::ControlTraceReader proc;
@@ -153,7 +154,6 @@ class ControlTraceWriterFunctionalTest : public CppUnit::TestFixture
 
 protected: // Attributes
 
-	std::string mPathToTestData;
 	std::string mOutputFileName;
 
 protected: // Auxiliary methods
@@ -162,8 +162,8 @@ public: // TestFixture interface
 
 	void setUp()
 	{
-		mPathToTestData = GetTestDataDirectory() + "ControlTraceWriter";
-		mOutputFileName = mPathToTestData + "Output.clamtrace";
+		std::string filesPrefix = GetTestDataDirectory() + "ControlTraceWriter";
+		mOutputFileName = filesPrefix + "Output.clamtrace";
 	}
 
 	void tearDown()
