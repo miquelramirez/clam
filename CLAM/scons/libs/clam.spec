@@ -263,7 +263,6 @@ numprocs=1
 #################
 # build core-libs
 #################
-cd scons/libs
 
 scons -j$numprocs configure \
 	prefix=%{buildroot}%{_prefix} \
@@ -291,7 +290,6 @@ scons -j$numprocs \
 	install \
 	prefix=%{buildroot}%{_prefix}
 
-cd ../..
 
 # and now doxygenate CLAM stuff
 doxygen ./doxygen.cfg
