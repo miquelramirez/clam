@@ -9,10 +9,18 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Band Width" type="OutControlSender">
+  <processing id="Band width" type="OutControlSender">
+    <Min>5</Min>
+    <Default>200</Default>
+    <Max>500</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Freq" type="OutControlSender">
     <Min>20</Min>
     <Default>1000</Default>
-    <Max>5000</Max>
+    <Max>10000</Max>
     <Step>1</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
@@ -65,14 +73,6 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Osc Amount" type="OutControlSender">
-    <Min>5</Min>
-    <Default>200</Default>
-    <Max>500</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
   <processing id="Osc Freq" type="OutControlSender">
     <Min>0</Min>
     <Default>5</Default>
@@ -84,8 +84,8 @@
   <processing id="Osc Width" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.01</Step>
+    <Max>1000</Max>
+    <Step>1</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
@@ -233,7 +233,12 @@
   </control_connection>
 
   <control_connection>
-    <out>Band Width.out</out>
+    <out>Band width.out</out>
+    <in>OscillatingSpectralNotch_0.Bandwidth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Freq.out</out>
     <in>OscillatingSpectralNotch_0.Amount</in>
   </control_connection>
 
@@ -265,11 +270,6 @@
   <control_connection>
     <out>Mid Gain.out</out>
     <in>ThreeBandFilter_0.MidGain</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Osc Amount.out</out>
-    <in>OscillatingSpectralNotch_0.Bandwidth</in>
   </control_connection>
 
   <control_connection>
