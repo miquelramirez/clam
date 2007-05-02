@@ -28,7 +28,7 @@ env.SConsignFile() # Single signature file
 
 if sys.platform in ["linux2","darwin"] :
 	env['QT_LIB']='qt-mt'
-	env.AppendUnique(LIBS='GL')
+	env.AppendUnique(LIBS=['GL'])
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
 
