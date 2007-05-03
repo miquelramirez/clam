@@ -52,14 +52,14 @@ def configure_clam(clam_env) :
 			print( 'include path: ' + include_path )
 			lib_path =  os.path.join(clam_env['sandbox_path'], basename, 'lib')
 			print( 'lib path: ' + lib_path)
-			clam_env.Append( CPPPATH= include_path )
-			clam_env.Append( LIBPATH = lib_path )
+			clam_env.Append( CPPPATH= [include_path] )
+			clam_env.Append( LIBPATH = [lib_path] )
 			# if flags is not defined it will crash while loading flags.conf
 		environmentIncludes = os.environ['INCLUDE']
 		environmentIncludesList = environmentIncludes.split(';')
 		for include in environmentIncludesList :
 			print( 'adding include dir from windows config: ' + include )
-			clam_env.Append( CPPPATH = include)
+			clam_env.Append( CPPPATH = [include] )
 	if sys.platform == 'linux2':
 		clam_env.Append( CPPPATH= ['/usr/local/include'] )
 	if sys.platform == 'darwin' :

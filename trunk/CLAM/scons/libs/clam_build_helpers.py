@@ -293,15 +293,10 @@ class PackageData :
 		libnames = [self.name] + self.extra 
 		# extract libs from env
 		libnames += edict['LIBS']
-		libnames.remove( '$QT_LIB' )
-		if len( env['QT_LIB'] ) > 0 :
-			libnames.append( env['QT_LIB'] )
 		libnames = [ '%s.lib'%name for name in libnames ]
 		libnames_str = " ".join( libnames )
 		libpaths = [ '%s\\lib'%env['prefix'] ]
 		libpaths += edict['LIBPATH']
-		#print libpaths
-		libpaths = [ path.replace( "$QTDIR", env['ENV']['QTDIR'] ) for path in libpaths ]
 		#print libpaths
 		libpaths = [ '/LIBPATH:%s'%libpath for libpath in libpaths ]
 		libpaths_str = ' '.join( libpaths )
