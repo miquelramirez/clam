@@ -41,7 +41,7 @@ def define_module_contents(env) :
 	blacklist = [
 		'GT_FilterBank',
 		'OnsetDetector',
-		r'Audio\..+' ,
+		r'^Audio\..xx',
 		'FileChooser',
 		'MessageBox',
 		'FLTKConfigurator',
