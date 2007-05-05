@@ -38,7 +38,8 @@ provides already compiled packages for several platforms.
 
 	$ scons configure prefix=~/local
  
- Then export LD_LIBRARY_PATH=~/local before running the apps with these libs
+ Then export LD_LIBRARY_PATH=~/local/lib before running the apps with these libs.
+ (Probably you also want to add this export line into your .bashrc)
  
  To see all available build options run:
 
