@@ -59,7 +59,7 @@ cd_clam = 'cd f:\\clam-sandboxes'
 install_path = 'f:\\clam-sandboxes\\tlocal'
 sconstools_path = 'f:\\clam-sandboxes\\trunk-testfarm\\CLAM\\scons\\sconstools'
 
-windows = Client("windows_xp")
+windows = Client("windows_xp-msvc")
 windows.brief_description = '<img src="http://clam.iua.upf.es/images/windows_icon.png"/>'
 
 clam = Task(
