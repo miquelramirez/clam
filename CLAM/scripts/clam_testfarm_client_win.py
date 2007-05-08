@@ -77,7 +77,7 @@ clam.add_deployment([
 	cd_clam,
 	"cd trunk-testfarm\\CLAM",
 	{ CMD: "svn up", INFO: filter_svn_update },
-	cd_clam = 'cd f:\\clam-sandboxes',
+	cd_clam,
 	"rm -rf tlocal\\*",
 	'cd trunk-testfarm\\CLAM\\scons\\libs',
 	set_qtdir_to_qt3,
