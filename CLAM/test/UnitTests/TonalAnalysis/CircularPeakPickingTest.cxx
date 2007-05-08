@@ -85,7 +85,7 @@ private:
 		const CircularPeakPicking::PeakList & peakList = peakPicker.output();
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Different number of peaks detected",
-			nPeaks, peakList.size());
+			nPeaks, (unsigned int)peakList.size());
 		for (unsigned i=0; i<nPeaks; i++)
 		{
 			CPPUNIT_ASSERT_DOUBLES_EQUAL(peakPositions[i], peakList[i].first, 1e-10);
@@ -280,7 +280,7 @@ private:
 		const CircularPeakPicking::PeakList & peakList = peakPicker.output();
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Different number of peaks detected",
-			nPeaks, peakList.size());
+			nPeaks, (unsigned int)peakList.size());
 		for (unsigned i=0; i<nPeaks; i++)
 		{
 			CPPUNIT_ASSERT_EQUAL(positions[i], peakList[i].first);
@@ -302,7 +302,7 @@ private:
 		const CircularPeakPicking::PeakList & peakList = peakPicker.output();
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Different number of peaks detected",
-			nPeaks, peakList.size());
+			nPeaks, (unsigned int)peakList.size());
 		for (unsigned i=0; i<nPeaks; i++)
 		{
 			CPPUNIT_ASSERT_EQUAL(positions[i], peakList[i].first);
@@ -324,7 +324,7 @@ private:
 		const CircularPeakPicking::PeakList & peakList = peakPicker.output();
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Different number of peaks detected",
-			nPeaks, peakList.size());
+			nPeaks, (unsigned int)peakList.size());
 		for (unsigned i=0; i<nPeaks; i++)
 		{
 			CPPUNIT_ASSERT_EQUAL(positions[i], peakList[i].first);
@@ -349,7 +349,7 @@ private:
 		const CircularPeakPicking::PeakList & peakList = peakPicker.output();
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Different number of peaks detected",
-			nPeaks, peakList.size());
+			nPeaks, (unsigned int)peakList.size());
 		for (unsigned i=0; i<nPeaks; i++)
 		{
 			CPPUNIT_ASSERT_EQUAL(positions[i], peakList[i].first);
