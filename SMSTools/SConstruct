@@ -104,6 +104,7 @@ extraPaths += [
 	'src',
 	os.path.join('src','GUI','ScoreEditor'),
 	'/usr/include/qt3', # qt3 tools should add this
+	'/opt/local/include/qt3', # mac port.
 ]
 includePaths = sourcePaths + extraPaths
 
