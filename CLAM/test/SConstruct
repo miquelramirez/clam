@@ -22,21 +22,24 @@ Help(options.GenerateHelpText(env))
 
 env['project'] = 'CLAMTests'
 
-libraries = [
-	'clam_core',
-	'clam_processing',
-	'clam_audioio',
-]
 
 env.SConsignFile() # Single signature file
 
-env.EnableClamModules(libs=libraries, path=env['clam_prefix'])
+env.EnableClamModules([
+	'clam_core',
+	'clam_audioio',
+	'clam_processing'
+	], env['clam_prefix'] )
+
 env.Append( CCFLAGS=['-O3', '-fomit-frame-pointer', '-g','-Wall'] )
 env.Append( CPPFLAGS = ['-DTEST_DATA_PATH="\\"%s\\""' % env['test_data_path'] ] )
 
 if sys.platform in ['linux2', "darwin"] :
 	env.ParseConfig( 'pkg-config --cflags --libs cppunit')
 	env.AppendUnique(LIBS=['cppunit']) # TODO: Dapper only hack
+if sys.platform == 'darwin':
+	env.AppendUnique( LIBS=['xerces-c'] )
+	env.AppendUnique( LIBPATH=['/opt/local/lib'] )
 
 if sys.platform == 'win32' :
 	env.Append( LIBS=['cppunit_vc7'] )
