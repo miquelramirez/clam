@@ -23,9 +23,10 @@
 #include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
-
-// faust testing
+#if USE_LADSPA
 #include <CLAM/LadspaFactory.hxx>
+#endif
+// for faust testing
 #include <QtSvg/QSvgWidget>
 
 #ifdef USE_JACK
@@ -389,7 +390,9 @@ public slots:
 				"<p>Compile all .dsp (Faust) files in the faust_dir and load all generated Ladspa plugins.</p>\n"
 			));
 		// clear the current map of ladspa's
+#if USE_LADSPA
 		CLAM::LadspaFactory::GetInstance().Clear();
+#endif
 /*
 		// compile all faust files
 		// TODO now it's ugly...
