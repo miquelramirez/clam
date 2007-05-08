@@ -79,7 +79,7 @@ private:
 		const CircularPeaksToPCP::PCP & pcp = peaks2pcp.output();
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Different number of peaks detected",
-			nPCPbins, pcp.size());
+			nPCPbins, (unsigned int)pcp.size());
 		for (unsigned i=0; i<nPCPbins; i++)
 		{
 			CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedPCP[i], pcp[i], 1e-10);
@@ -186,7 +186,7 @@ private:
 		const CircularPeaksToPCP::PCP & pcp = peaks2pcp.output();
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Different number of peaks detected",
-			nPCPbins, pcp.size());
+			nPCPbins, (unsigned int)pcp.size());
 		for (unsigned i=0; i<nPCPbins; i++)
 		{
 			CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedPCP[i], pcp[i], 1e-10);
@@ -237,7 +237,7 @@ private:
 		const CircularPeaksToPCP::PCP & pcp = peaks2pcp.output();
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Different number of peaks detected",
-			nPCPbins, pcp.size());
+			nPCPbins, (unsigned int)pcp.size());
 		for (unsigned i=0; i<nPCPbins; i++)
 		{
 			CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedPCP[i], pcp[i], 1e-10);

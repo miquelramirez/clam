@@ -214,7 +214,7 @@ private:
 		const CircularPeakTunner::PeakList & tunnedPeaks = tunner.output();
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Different number of peaks detected",
-			nPeaks, tunnedPeaks.size());
+			nPeaks, (unsigned int)tunnedPeaks.size());
 		for (unsigned i=0; i<nPeaks; i++)
 		{
 			CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedPositions[i], tunnedPeaks[i].first, 1e-10);
