@@ -1,15 +1,16 @@
 #! /usr/bin/python
 #
-# IMPORTANT: maintained (so up-to-date) clam-testfarm scripts can be
-# found in the clam repo, in CLAM/scripts. Checkout command:
-# svn co http://iua-share.upf.edu/svn/clam/trunk clam
-# So it's possible this script won't work.
-#
 
+
+# IMPORTANT
 # vcvars32.bat must be run in windows before this script
+# to get testfarm:
+# $ svn co https://testfarm.svn.sourceforge.net/svnroot/testfarm/trunk testfarm 
 
 import sys
-sys.path.append('../src')
+sys.path.append('../src') #XXX write your path to testfarm/src here.
+
+
 from task import *
 from project import Project
 from client import Client
@@ -64,7 +65,7 @@ windows.brief_description = '<img src="http://clam.iua.upf.es/images/windows_ico
 clam = Task(
 	project = Project("CLAM"), 
 	client = windows, 
-	task_name="with cvs update" 
+	task_name="with svn update" 
 	)
 
 clam.set_check_for_new_commits(
@@ -75,22 +76,22 @@ clam.set_check_for_new_commits(
 clam.add_deployment([
 	cd_clam,
 	"cd trunk-testfarm\\CLAM",
-	update_command,
-	cd_clam,
+	{ CMD: "svn up", INFO: filter_svn_update },
+	cd_clam = 'cd f:\\clam-sandboxes',
 	"rm -rf tlocal\\*",
 	'cd trunk-testfarm\\CLAM\\scons\\libs',
 	set_qtdir_to_qt3,
 	'scons configure'+
 	' prefix=%s'%install_path +
 	' sandbox_path=f:\\clam-external-libs' +
-	' qt_includes=f:\\clam-external-libs\\qt\\include' +
-	' qt_libs=f:\\clam-external-libs\\qt\\lib' +
+#	' qt_includes=f:\\clam-external-libs\\qt\\include' +
+#	' qt_libs=f:\\clam-external-libs\\qt\\lib' +
 	' with_portmidi=1 release=1 double=1',
 	'scons',
 	'scons install',
 #	'scons install', #TODO bug? check if repeating scons install is really necessary.
 ] )
-
+'''
 clam.add_subtask('unit tests', [
 	cd_clam,
 	'cd trunk-testfarm\\CLAM\\scons\\tests',
@@ -128,7 +129,9 @@ clam.add_subtask('clam examples compilation', [
 	' release=1 double=1',
 	])
 
+'''
 
+'''
 clam.add_subtask('smstools compilation', [
 	cd_clam,
 	'cd trunk-testfarm\\SMSTools',
@@ -139,11 +142,6 @@ clam.add_subtask('smstools compilation', [
 	' install_prefix=%s'%install_path +
 	' clam_sconstools=%s'%sconstools_path +
 	' release=1 double=1'
-] )
-clam.add_subtask('smstools install', [
-	cd_clam,
-	'cd trunk-testfarm\\SMSTools',
-	'scons install'
 ] )
 clam.add_subtask('smstools package', [
 	cd_clam,
@@ -224,13 +222,12 @@ clam.add_subtask('VstPrototyper', [
 	' clam_sconstools=%s'%sconstools_path +
 	' vstsdk_path=f:\\clam-external-libs\\\\vstsdk2.3'
 ] )
+'''
 
 
-
-Runner( 
-	clam,  
-	remote_server_url="http://10.55.0.50/testfarm_server",
-	local_base_dir="f:\\tmp\\",
+Runner( clam, 
 	continuous = True,
-	verbose = True,
+	remote_server_url = 'http://efpc072.upf.es/testfarm_server'
+#	local_base_dir='f:\\tmp'
 )
+
