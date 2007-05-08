@@ -1,7 +1,7 @@
 #include "recursedir.h"
 #include "strfuncs.h"
 
-#ifdef WIN32
+#ifdef _MSVC_VER
 
 #include <windows.h>
 
@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#ifdef WIN32
+#ifdef _MSVC_VER
 int _recursedir(
   const char* dir,int l,int m,on_file_func f,on_dir_func d,void* ptr)
 {
