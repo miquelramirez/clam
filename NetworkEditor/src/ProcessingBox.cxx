@@ -496,7 +496,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		int index = controlIndexByXPos(_canvas->translatedPos(event));
 		_highLightRegion=region;
 		_highLightConnection=index;
-		_canvas->setToolTip(getIncontrolName(index));
+		_canvas->setToolTip(getIncontrolNameAndBounds(index));
 		return;
 	}
 	if (region==outcontrolsRegion)
@@ -566,6 +566,16 @@ void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 {
 	Region region = getRegion(_canvas->translatedPos(event));
 	if (region==nameRegion) rename();
+	if (region==incontrolsRegion)
+	{
+		//XXXXX
+		QPoint point =_canvas->translatedPos(event);
+		unsigned controlIndex = controlIndexByXPos(point);
+		QString inControlName = getIncontrolName(controlIndex);
+		float lower = getIncontrolLowerBound(controlIndex);
+		float upper = getIncontrolUpperBound(controlIndex);
+		_canvas->addOutControlSenderProcessing(point, inControlName, getName(), controlIndex, lower, upper);
+	}
 }
 
 bool ProcessingBox::rename()
@@ -608,6 +618,14 @@ QString ProcessingBox::getOutcontrolName(unsigned index) const
 	CLAM::OutControlRegistry & outControls = _processing->GetOutControls();
 	return outControls.GetByNumber(index).GetName().c_str();
 }
+QString ProcessingBox::getIncontrolNameAndBounds(unsigned index) const
+{
+	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
+	QString boundInfo = inControl.IsBounded() ? 
+		QString(" (bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
+		" (not bounded)";
+	return getIncontrolName(index)+boundInfo;
+}
 QString ProcessingBox::getIncontrolName(unsigned index) const
 {
 
@@ -615,10 +633,17 @@ QString ProcessingBox::getIncontrolName(unsigned index) const
 
 	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
 	QString name = inControl.GetName().c_str();
-	QString boundInfo = inControl.IsBounded() ? 
-		QString(" (bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
-		" (not bounded)";
-	return name+boundInfo;
+	return name;
+}
+float ProcessingBox::getIncontrolLowerBound(unsigned index) const
+{
+	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
+	return inControl.LowerBound();
+}
+float ProcessingBox::getIncontrolUpperBound(unsigned index) const
+{
+	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
+	return inControl.UpperBound();
 }
 
 QString ProcessingBox::getInportPrototyperName(const QPoint & point) const
@@ -631,7 +656,7 @@ QString ProcessingBox::getOutportPrototyperName(const QPoint & point) const
 }
 QString ProcessingBox::getIncontrolPrototyperName(const QPoint & point) const
 {
-	return getConnectionPrototyperName("InControl", getIncontrolName(controlIndexByXPos(point)));
+	return getConnectionPrototyperName("InControl", getIncontrolNameAndBounds(controlIndexByXPos(point)));
 }
 QString ProcessingBox::getOutcontrolPrototyperName(const QPoint & point) const
 {
