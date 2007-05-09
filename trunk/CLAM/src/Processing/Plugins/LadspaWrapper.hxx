@@ -53,7 +53,6 @@ private:
 
 	void ConfigurePortsAndControls();
 	void RemovePortsAndControls();
-	LADSPA_Data DefautLadspaInControlValue( unsigned portId );
 	void UpdateControlsPointers();
 	void UpdatePortsPointers();
 

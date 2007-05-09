@@ -479,6 +479,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		int index = portIndexByYPos(_canvas->translatedPos(event));
 		_highLightRegion=region;
 		_highLightConnection=index;
+		
 		_canvas->setToolTip(getInportName(index));
 		return;
 	}
@@ -609,9 +610,15 @@ QString ProcessingBox::getOutcontrolName(unsigned index) const
 }
 QString ProcessingBox::getIncontrolName(unsigned index) const
 {
+
 	if (!_processing) return QString("Incontrol_%1").arg(index);
-	CLAM::InControlRegistry & inControls = _processing->GetInControls();
-	return inControls.GetByNumber(index).GetName().c_str();
+
+	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
+	QString name = inControl.GetName().c_str();
+	QString boundInfo = inControl.IsBounded() ? 
+		QString(" (bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
+		" (not bounded)";
+	return name+boundInfo;
 }
 
 QString ProcessingBox::getInportPrototyperName(const QPoint & point) const

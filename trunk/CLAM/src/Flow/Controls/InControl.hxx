@@ -46,6 +46,9 @@ protected:
 	TControlData mLastValue;
 	std::string mName;
 	Processing * mParent;
+	TControlData mUpperBound;
+	TControlData mLowerBound;
+	bool mBounded;
 
 // Methods:
 public:
@@ -58,6 +61,14 @@ public:
 	const std::string& GetName() const { return mName; }
 	bool IsConnectedTo( OutControl & );
 	bool IsConnected() const;
+	bool IsBounded() const;
+	void BeBounded();
+	TControlData UpperBound() const;
+	TControlData LowerBound() const;
+	TControlData DefaultValue() const;
+	void UpperBound( TControlData );
+	void LowerBound( TControlData );
+
 	Processing * GetProcessing() const { return mParent;}
 	
 	/// Implementation detail just to be used from OutControl

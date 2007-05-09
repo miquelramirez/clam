@@ -25,8 +25,13 @@
 
 namespace CLAM {
 
-InControl::InControl(const std::string &name, Processing* parent, const bool publish) :
-	mLastValue(0), mName(name), mParent(parent)
+InControl::InControl(const std::string &name, Processing* parent, const bool publish)
+	: mLastValue(0)
+	, mName(name)
+	, mParent(parent)
+	, mUpperBound(1)
+	, mLowerBound(0)
+	, mBounded(false)
 
 {
 	if (parent && publish) parent->GetInControls().Publish(this);
@@ -47,6 +52,35 @@ bool InControl::IsConnectedTo( OutControl & out)
 bool InControl::IsConnected() const
 {
 	return !mLinks.empty();
+}
+
+bool InControl::IsBounded() const
+{
+	return mBounded;
+}
+void InControl::BeBounded()
+{
+	mBounded = true;
+}
+TControlData InControl::UpperBound() const
+{
+	return mUpperBound;
+}
+TControlData InControl::LowerBound() const
+{
+	return mLowerBound;
+}
+void InControl::UpperBound( TControlData value )
+{
+	mUpperBound = value;
+}
+void InControl::LowerBound( TControlData value )
+{
+	mLowerBound = value;
+}
+TControlData InControl::DefaultValue() const
+{
+	return (mUpperBound+mLowerBound)/2;
 }
 
 void InControl::OutControlInterface_AddLink(OutControl & outControl)
