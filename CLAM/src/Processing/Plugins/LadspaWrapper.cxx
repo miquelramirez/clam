@@ -13,9 +13,6 @@
 #include <cstdlib>
 #include <dlfcn.h>
 
-#define DEFAULTDELAYFACTOR 10
-
-
 namespace CLAM
 {
 	
@@ -145,32 +142,31 @@ void LadspaWrapper::ConfigurePortsAndControls()
 		if(LADSPA_IS_PORT_INPUT(portDescriptor) && LADSPA_IS_PORT_CONTROL(portDescriptor)) 
 		{
 			InControl * control = new InControl(mDescriptor->PortNames[i], this);
-			control->DoControl( DefautLadspaInControlValue(i) );
+
+			const LADSPA_PortRangeHint & hint = mDescriptor->PortRangeHints[i];
+			bool isBounded = (
+				LADSPA_IS_HINT_BOUNDED_ABOVE(hint.HintDescriptor) &&
+				LADSPA_IS_HINT_BOUNDED_BELOW(hint.HintDescriptor) 
+				);
+			if (isBounded)
+			{
+				control->BeBounded(); 
+				control->UpperBound( hint.UpperBound );
+				control->LowerBound( hint.LowerBound );
+				control->DoControl( control->DefaultValue() );
+//				std::cout << mDescriptor->PortNames[i] << " is bounded "<<std::endl;
+//				std::cout << "(" << control->LowerBound()<<", "<< control->UpperBound() << ")" << std::endl;
+			}
 			mInputControls.push_back(control);
 		}			
 		// out control
-		if(LADSPA_IS_PORT_OUTPUT(portDescriptor) && LADSPA_IS_PORT_CONTROL(portDescriptor)) 
+		if (LADSPA_IS_PORT_OUTPUT(portDescriptor) && LADSPA_IS_PORT_CONTROL(portDescriptor)) 
 		{
 			OutControl * control = new OutControl(mDescriptor->PortNames[i], this);
 			mOutputControlValues.push_back(LADSPA_Data());
 			mOutputControls.push_back(control);
 		}				
 	}
-}
-
-LADSPA_Data LadspaWrapper::DefautLadspaInControlValue( unsigned portId )
-{
-	const LADSPA_PortRangeHint & hint = mDescriptor->PortRangeHints[portId];
-	if ( !LADSPA_IS_HINT_BOUNDED_ABOVE(hint.HintDescriptor) ||
-		!LADSPA_IS_HINT_BOUNDED_BELOW(hint.HintDescriptor) )
-	{
-		std::cout << "Warning: Ladspa in-control "<< mDescriptor->PortNames[portId] << " is not bounded" << std::endl;
-		return 1;
-	}
-	std::cout << mDescriptor->PortNames[portId]<< std::endl;
-	std::cout << "up bound: " << hint.UpperBound << std::endl;
-	std::cout << "low bound: " << hint.LowerBound << std::endl;
-	return (hint.UpperBound + hint.LowerBound) / 2.;
 }
 
 void LadspaWrapper::UpdateControlsPointers()

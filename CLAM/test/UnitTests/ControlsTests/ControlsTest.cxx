@@ -83,6 +83,12 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	CPPUNIT_TEST( testInControlDestructor_disconnectsOutControl );
 	CPPUNIT_TEST( testOutControlDestructor_disconnectsInControl );
 
+	// Testing bounds
+	CPPUNIT_TEST( testInControl_doesntHaveBoundsBydefault );
+	CPPUNIT_TEST( testInControl_defaultBounds );
+	CPPUNIT_TEST( testInControl_settingBounds );
+	CPPUNIT_TEST( testInControl_defaultValue );
+	CPPUNIT_TEST( testInControl_isBoundedWhenTrue );
 	
 	
 	CPPUNIT_TEST_SUITE_END();
@@ -394,7 +400,41 @@ private:
 		}
 		CPPUNIT_ASSERT_EQUAL(false, in.IsConnected());
 	}
+	void testInControl_doesntHaveBoundsBydefault()
+	{
+		CLAM::InControl inControl("inControl");
+		CPPUNIT_ASSERT_EQUAL( false, inControl.IsBounded() );
+	}
+	void testInControl_defaultBounds()
+	{
+		CLAM::InControl inControl("inControl");
+		CPPUNIT_ASSERT_EQUAL( 0.0f, inControl.LowerBound() );
+		CPPUNIT_ASSERT_EQUAL( 1.0f, inControl.UpperBound() );
+	}
+	void testInControl_settingBounds()
+	{
+		CLAM::InControl inControl("inControl");
+		inControl.BeBounded();
+		inControl.LowerBound(-1.f);
+		inControl.UpperBound(2.f);
+		CPPUNIT_ASSERT_EQUAL( -1.f, inControl.LowerBound() );
+		CPPUNIT_ASSERT_EQUAL( 2.f, inControl.UpperBound() );
 
+	}
+	void testInControl_defaultValue()
+	{
+		CLAM::InControl inControl("inControl");
+		inControl.BeBounded();
+		inControl.LowerBound(0.f);
+		inControl.UpperBound(10.f);
+		CPPUNIT_ASSERT_EQUAL( 5.f, inControl.DefaultValue() );
+	}
+	void testInControl_isBoundedWhenTrue()
+	{
+		CLAM::InControl inControl("inControl");
+		inControl.BeBounded();
+		CPPUNIT_ASSERT_EQUAL( true, inControl.IsBounded() );
+	}
 };
 
 
