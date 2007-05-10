@@ -62,12 +62,10 @@ public:
 	bool IsConnectedTo( OutControl & );
 	bool IsConnected() const;
 	bool IsBounded() const;
-	void BeBounded();
 	TControlData UpperBound() const;
 	TControlData LowerBound() const;
 	TControlData DefaultValue() const;
-	void UpperBound( TControlData );
-	void LowerBound( TControlData );
+	void SetBounds( TControlData lower, TControlData upper);
 
 	Processing * GetProcessing() const { return mParent;}
 	

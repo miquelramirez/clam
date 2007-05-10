@@ -58,10 +58,6 @@ bool InControl::IsBounded() const
 {
 	return mBounded;
 }
-void InControl::BeBounded()
-{
-	mBounded = true;
-}
 TControlData InControl::UpperBound() const
 {
 	return mUpperBound;
@@ -70,13 +66,11 @@ TControlData InControl::LowerBound() const
 {
 	return mLowerBound;
 }
-void InControl::UpperBound( TControlData value )
+void InControl::SetBounds( TControlData lower, TControlData upper )
 {
-	mUpperBound = value;
-}
-void InControl::LowerBound( TControlData value )
-{
-	mLowerBound = value;
+	mLowerBound = lower;
+	mUpperBound = upper;
+	mBounded = true;
 }
 TControlData InControl::DefaultValue() const
 {

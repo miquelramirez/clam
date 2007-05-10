@@ -150,9 +150,7 @@ void LadspaWrapper::ConfigurePortsAndControls()
 				);
 			if (isBounded)
 			{
-				control->BeBounded(); 
-				control->UpperBound( hint.UpperBound );
-				control->LowerBound( hint.LowerBound );
+				control->SetBounds( hint.LowerBound, hint.UpperBound ); 
 				control->DoControl( control->DefaultValue() );
 //				std::cout << mDescriptor->PortNames[i] << " is bounded "<<std::endl;
 //				std::cout << "(" << control->LowerBound()<<", "<< control->UpperBound() << ")" << std::endl;
