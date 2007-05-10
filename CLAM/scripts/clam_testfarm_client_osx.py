@@ -29,7 +29,7 @@ def set_qtdir_to_qt4(x) :
 def unset_qtdir(x) :
 	os.environ['QTDIR']=""
 
-client = Client("mac-10.4.8-intel-macbook")
+client = Client("mac-10.4.8-ppc-desktop")
 client.brief_description = '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>'
 	
 
@@ -69,7 +69,7 @@ clam.add_subtask("Unit Tests (with scons)", [
 	"scons test_data_path=$HOME/clam/testdata clam_sconstools=$HOME/clam/CLAM/scons/sconstools install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
 	"cd UnitTests",
 	{INFO : lambda x:startTimer() }, 
-	{CMD: "./UnitTests", INFO: lambda x:x},
+	{CMD: "./UnitTests", INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
 clam.add_subtask("Functional Tests (with scons)", [
@@ -79,13 +79,12 @@ clam.add_subtask("Functional Tests (with scons)", [
 	"scons test_data_path=$HOME/clam/testdata clam_sconstools=$HOME/clam/CLAM/scons/sconstools install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
 	"cd FunctionalTests",
 	{INFO : lambda x:startTimer() }, 
-	{CMD:"./FunctionalTests", INFO: lambda x:x},
+	{CMD:"./FunctionalTests", INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
 ] )
 clam.add_subtask("CLAM Examples (with scons)", [
-	{CMD: "echo unset QTDIR ", INFO: unset_qtdir},
-	"cd $HOME/clam/CLAM",
-	"cd scons/examples",
+	{CMD: "echo set QTDIR to qt4", INFO: set_qtdir_to_qt4},
+	"cd $HOME/clam/CLAM/examples",
 	"scons clam_prefix=$HOME/local",
 ] )
 
