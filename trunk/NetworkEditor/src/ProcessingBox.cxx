@@ -568,7 +568,6 @@ void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 	if (region==nameRegion) rename();
 	if (region==incontrolsRegion)
 	{
-		//XXXXX
 		QPoint point =_canvas->translatedPos(event);
 		unsigned controlIndex = controlIndexByXPos(point);
 		QString inControlName = getIncontrolName(controlIndex);
