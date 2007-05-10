@@ -400,6 +400,7 @@ private:
 		}
 		CPPUNIT_ASSERT_EQUAL(false, in.IsConnected());
 	}
+
 	void testInControl_doesntHaveBoundsBydefault()
 	{
 		CLAM::InControl inControl("inControl");
@@ -414,9 +415,7 @@ private:
 	void testInControl_settingBounds()
 	{
 		CLAM::InControl inControl("inControl");
-		inControl.BeBounded();
-		inControl.LowerBound(-1.f);
-		inControl.UpperBound(2.f);
+		inControl.SetBounds(-1.f, 2.f);
 		CPPUNIT_ASSERT_EQUAL( -1.f, inControl.LowerBound() );
 		CPPUNIT_ASSERT_EQUAL( 2.f, inControl.UpperBound() );
 
@@ -424,15 +423,13 @@ private:
 	void testInControl_defaultValue()
 	{
 		CLAM::InControl inControl("inControl");
-		inControl.BeBounded();
-		inControl.LowerBound(0.f);
-		inControl.UpperBound(10.f);
+		inControl.SetBounds(0.f, 10.f);
 		CPPUNIT_ASSERT_EQUAL( 5.f, inControl.DefaultValue() );
 	}
 	void testInControl_isBoundedWhenTrue()
 	{
 		CLAM::InControl inControl("inControl");
-		inControl.BeBounded();
+		inControl.SetBounds(0.f, 0.f);
 		CPPUNIT_ASSERT_EQUAL( true, inControl.IsBounded() );
 	}
 };
