@@ -414,31 +414,28 @@ public:
 			float upper
 			)
 	{
-		QString controlSenderType="OutControlSender";
-		try
-		{
-			std::string controlSenderName  =  inControlName.toStdString();
-			// add control-sender processing to network
-			_network->AddProcessing( controlSenderName, controlSenderType.toStdString());
-			CLAM::Processing & processing = _network->GetProcessing( controlSenderName );
-			// configure 
-			CLAM::OutControlSenderConfig config;
-			config.SetMin(lower);
-			config.SetMax(upper);
-			config.SetStep( (upper-lower)/200 ); 
-			config.SetDefault( (lower+upper)/2 );
-			processing.Configure( config );
-			// add box to canvas and connect
-			addProcessingBox( controlSenderName.c_str(), &processing, point+QPoint(0,-100));
-			addControlConnection( getBox(inControlName), 0, getBox(controlledProcessing), controlIndex );
+		if (!_network) return;
 
-			markAsChanged();
-		}
-		catch (CLAM::Err & e)
+		std::string controlSenderName  =  inControlName.toStdString();
+		// add control-sender processing to network
+		if (_network->HasProcessing(controlSenderName) )
 		{
-			QMessageBox::critical(this, tr("Error creating a processing"),
-				tr("<p>The processing type '<tt>%1</tt>' is not supported.</p>").arg(controlSenderType));
+			controlSenderName = _network->GetUnusedName(controlSenderName);
 		}
+		_network->AddProcessing( controlSenderName, "OutControlSender");
+		CLAM::Processing & processing = _network->GetProcessing( controlSenderName );
+		// configure 
+		CLAM::OutControlSenderConfig config;
+		config.SetMin(lower);
+		config.SetMax(upper);
+		config.SetStep( (upper-lower)/200 ); 
+		config.SetDefault( (lower+upper)/2 );
+		processing.Configure( config );
+		// add box to canvas and connect
+		addProcessingBox( controlSenderName.c_str(), &processing, point+QPoint(0,-100));
+		addControlConnection( getBox(controlSenderName.c_str()), 0, getBox(controlledProcessing), controlIndex );
+
+		markAsChanged();
 	}
 	void configure( const QString& name, const CLAM::ProcessingConfig& config )
 	{
