@@ -564,16 +564,12 @@ void ProcessingBox::mouseReleaseEvent(QMouseEvent * event)
 }
 void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 {
-	Region region = getRegion(_canvas->translatedPos(event));
+	QPoint point =_canvas->translatedPos(event);
+	Region region = getRegion(point);
 	if (region==nameRegion) rename();
 	if (region==incontrolsRegion)
 	{
-		QPoint point =_canvas->translatedPos(event);
-		unsigned controlIndex = controlIndexByXPos(point);
-		QString inControlName = getIncontrolName(controlIndex);
-		float lower = getIncontrolLowerBound(controlIndex);
-		float upper = getIncontrolUpperBound(controlIndex);
-		_canvas->addOutControlSenderProcessing(point, inControlName, getName(), controlIndex, lower, upper);
+		_canvas->addControlSenderProcessing(this, point);
 	}
 }
 

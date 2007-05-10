@@ -284,6 +284,11 @@ public:
 					this, SLOT(onDisconnect()))->setData(translatedPos(event));
 				menu.addAction(QIcon(":/icons/images/editcopy.png"), "Copy connection name",
 					this, SLOT(onCopyConnection()))->setData(translatedPos(event));
+				if (region==ProcessingBox::incontrolsRegion)
+				{
+					menu.addAction(QIcon(":/icons/images/hslider.png"), "Add slider",
+						this, SLOT(onAddSlider()))->setData(translatedPos(event));
+				}
 			}
 			if (region==ProcessingBox::nameRegion || 
 				region==ProcessingBox::bodyRegion ||
@@ -405,16 +410,17 @@ public:
 				tr("<p>The processing type '<tt>%1</tt>' is not supported.</p>").arg(type));
 		}
 	}
-	void addOutControlSenderProcessing(  //TODO move to cxx
-			QPoint point, 
-			QString inControlName, 
-			QString controlledProcessing, 
-			unsigned controlIndex,
-			float lower,
-			float upper
+	void addControlSenderProcessing(
+			ProcessingBox * processing,
+			QPoint point
 			)
 	{
 		if (!_network) return;
+
+		unsigned controlIndex = processing->controlIndexByXPos(point);
+		QString inControlName = processing->getIncontrolName(controlIndex);
+		float lower = processing->getIncontrolLowerBound(controlIndex);
+		float upper = processing->getIncontrolUpperBound(controlIndex);
 
 		std::string controlSenderName  =  inControlName.toStdString();
 		// add control-sender processing to network
@@ -423,17 +429,17 @@ public:
 			controlSenderName = _network->GetUnusedName(controlSenderName);
 		}
 		_network->AddProcessing( controlSenderName, "OutControlSender");
-		CLAM::Processing & processing = _network->GetProcessing( controlSenderName );
+		CLAM::Processing & controlSender = _network->GetProcessing( controlSenderName );
 		// configure 
 		CLAM::OutControlSenderConfig config;
 		config.SetMin(lower);
 		config.SetMax(upper);
 		config.SetStep( (upper-lower)/200 ); 
 		config.SetDefault( (lower+upper)/2 );
-		processing.Configure( config );
+		controlSender.Configure( config );
 		// add box to canvas and connect
-		addProcessingBox( controlSenderName.c_str(), &processing, point+QPoint(0,-100));
-		addControlConnection( getBox(controlSenderName.c_str()), 0, getBox(controlledProcessing), controlIndex );
+		addProcessingBox( controlSenderName.c_str(), &controlSender, point+QPoint(0,-100));
+		addControlConnection( getBox(controlSenderName.c_str()), 0, processing, controlIndex );
 
 		markAsChanged();
 	}
@@ -901,6 +907,19 @@ private slots:
 					return; // Matches a region but not a connector one
 			}
 			QApplication::clipboard()->setText(toCopy);
+			return;
+		}
+	}
+	void onAddSlider()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(point);
+			if (region==ProcessingBox::noRegion) continue;
+			if (region!=ProcessingBox::incontrolsRegion) return;
+
+			addControlSenderProcessing(_processings[i], point);
 			return;
 		}
 	}

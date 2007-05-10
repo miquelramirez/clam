@@ -19,3 +19,5 @@ qt4-exmamples/examples/widgets/icons/images/designer.png
 /usr/share/icons/crystalsvg/22x22/actions/viewmag-.png
 /usr/share/icons/crystalsvg/22x22/actions/viewmag+.png
 /usr/share/icons/crystalsvg/22x22/actions/viewmag1.png
+qt-mac-opensource-src-4.2.2/tools/designer/src/components/formeditor/images/widgets/hslider.png
+
