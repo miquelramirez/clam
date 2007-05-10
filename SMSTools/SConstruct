@@ -28,6 +28,7 @@ env.SConsignFile() # Single signature file
 
 if sys.platform in ["linux2","darwin"] :
 	env['QT_LIB']='qt-mt'
+if sys.platform=="linux2":
 	env.AppendUnique(LIBS=['GL'])
 elif sys.platform=="win32" :
 	env['QT_LIB']='qt-mt322'
@@ -153,6 +154,10 @@ if sys.platform=="win32" :
 env.Append(CPPPATH=includePaths)
 if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"@executable_path/../Resources/example-data\\""')
+	env.AppendUnique(LINKFLAGS="-F/System/Library/Frameworks")
+	env.Append(LINKFLAGS=['-framework', 'AGL']) # kludge to avoid quotes
+	env.Append(LINKFLAGS=['-framework', 'OpenGL'])
+
 if sys.platform=='linux2' :
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"' + env['install_prefix'] + '/share/smstools/example-data\\""')
 if sys.platform=='win32' :
