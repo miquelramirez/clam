@@ -75,12 +75,11 @@ clam.set_check_for_new_commits(
 
 clam.add_deployment([
 	cd_clam,
-	"cd trunk-testfarm\\CLAM",
+	"cd trunk-testfarm",
 	{ CMD: "svn up", INFO: filter_svn_update },
 	cd_clam,
 	"rm -rf tlocal\\*",
 	'cd trunk-testfarm\\CLAM\\scons\\libs',
-	set_qtdir_to_qt3,
 	'scons configure'+
 	' prefix=%s'%install_path +
 	' sandbox_path=f:\\clam-external-libs' +
@@ -89,7 +88,6 @@ clam.add_deployment([
 	' with_portmidi=1 release=1 double=1',
 	'scons',
 	'scons install',
-#	'scons install', #TODO bug? check if repeating scons install is really necessary.
 ] )
 '''
 clam.add_subtask('unit tests', [
@@ -131,34 +129,30 @@ clam.add_subtask('clam examples compilation', [
 
 '''
 
-'''
 clam.add_subtask('smstools compilation', [
 	cd_clam,
 	'cd trunk-testfarm\\SMSTools',
-	update_command,
 	set_qtdir_to_qt3,
 	'scons' +
 	' clam_prefix=%s'%install_path +
 	' install_prefix=%s'%install_path +
-	' clam_sconstools=%s'%sconstools_path +
 	' release=1 double=1'
 ] )
+'''
 clam.add_subtask('smstools package', [
 	cd_clam,
 	'cd trunk-testfarm\\SMSTools',
 	'scons package'
 ])
-
+'''
 
 clam.add_subtask('vmqt compilation and examples', [
 	cd_clam,
 	'cd trunk-testfarm\\Annotator\\vmqt',
-	update_command,
 	set_qtdir_to_qt4,
 	'scons ' +
 	' clam_prefix=%s'%install_path +
 	' install_prefix=%s'%install_path +
-	' clam_sconstools=%s'%sconstools_path +
 	' release=1 double=1',
 	'scons examples'
 ] )
@@ -167,15 +161,15 @@ clam.add_subtask('vmqt compilation and examples', [
 clam.add_subtask('annotator compilation', [
 	cd_clam,
 	'cd trunk-testfarm\\Annotator',
-	update_command,
 	set_qtdir_to_qt4,
 	'scons' +
 	' clam_prefix=%s'%install_path +
 	' install_prefix=%s'%install_path +
-	' clam_sconstools=%s'%sconstools_path +
 	' release=1 double=1'
 ] )
 
+
+'''
 clam.add_subtask('annotator install', [
 	cd_clam,
 	'cd trunk-testfarm\\Annotator',
@@ -188,20 +182,19 @@ clam.add_subtask('annotator package', [
 	'cd ..',
 	'scons package'
 ] )
+'''
 
 clam.add_subtask('network editor compilation', [
 	cd_clam,
 	'cd trunk-testfarm\\NetworkEditor',
-	update_command,
 	set_qtdir_to_qt4,
 	'scons' +
 	' clam_prefix=%s'%install_path +
 	' install_prefix=%s'%install_path +
-	' clam_sconstools=%s'%sconstools_path +
-	' annotator_path=..\\Annotator' +
-	' cppunit_prefix=f:\\clam-external-libs\\cppunit' +
 	' release=1 double=1'
 ] )
+
+'''
 clam.add_subtask('neteditor install', [
 	cd_clam,
 	'cd trunk-testfarm\\NetworkEditor',
@@ -212,7 +205,10 @@ clam.add_subtask('neteditor package', [
 	'cd trunk-testfarm\\NetworkEditor',
 	'scons package'
 ])
+'''
 
+
+'''
 clam.add_subtask('VstPrototyper', [
 	cd_clam,
 	'cd trunk-testfarm\\NetworkEditor\\src\\\\vstprototyper',
