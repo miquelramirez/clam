@@ -739,6 +739,7 @@
         <file>images/viewmag-.png</file>
         <file>images/viewmag1.png</file>
         <file>images/vumeter.svg</file>
+        <file>images/hslider.png</file>
     </qresource>
     <qresource prefix="/interfaces" >
         <file>prototyper/DefaultInterface.ui</file>
