@@ -8,6 +8,7 @@ options.Add(PathOption('install_prefix', 'The prefix where the application will 
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
+options.Add(BoolOption('crossmingw', 'Enable mingw crosscompiling', 'no') )
 
 
 def scanFiles(pattern, paths) :
@@ -23,12 +24,14 @@ def recursiveDirs(root) :
 env = Environment(ENV=os.environ, tools=['default'], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
-
 env.SConsignFile() # Single signature file
 
+crosscompiling=env['crossmingw']
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
+if crosscompiling :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
@@ -126,8 +129,10 @@ sources += [ os.path.join( os.path.dirname(uiccpp),
 sources += [ os.path.join( os.path.dirname(uiccpp),
 		'moc_'+os.path.splitext(os.path.basename(uiccpp))[0]+'.cxx') for uiccpp in uifiles ]
 
-if sys.platform=="win32" :
+""" # Not available yet
+if sys.platform=="win32" or crosscompiling :
 	sources += env.RES(source=["resources/Voice2MIDI.rc"])
+"""
 
 env.Append(CPPPATH=includePaths)
 if sys.platform=='darwin' :
@@ -147,10 +152,14 @@ if sys.platform=='linux2' :
 		env.Append( CCFLAGS=['-g', '-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
 
+if crosscompiling :
+	env.AppendUnique(LIBS=['pthreadGCE2']);
+	env.AppendUnique(LIBPATH=['../../pthreads/lib'])
+
 extralinkFlags = []
 if sys.platform == 'darwin' :
 	extralinkFlags=['-dynamic','-bind_at_load']
-	
+
 programs = []
 for main in mainSources.items() :
 	programs += [ env.Program(target=main[0], source = sources+[main[1]], LINKFLAGS=extralinkFlags) ]
