@@ -26,6 +26,10 @@
 
 namespace CLAM {
 
+	Enum::~Enum()
+	{
+	}
+
 	void Enum::StoreOn( Storage& storage ) const
 	{
 		std::string s = GetString();
