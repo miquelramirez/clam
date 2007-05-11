@@ -6,6 +6,7 @@ import sys
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
+options.Add(BoolOption('crossmingw', 'Enables MinGW crosscompilation from linux', 'yes') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -24,11 +25,14 @@ options.Save('options.cache', env)
 
 env.SConsignFile() # Single signature file
 
+crosscompiling=env['crossmingw']
 
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
+if crosscompiling :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
