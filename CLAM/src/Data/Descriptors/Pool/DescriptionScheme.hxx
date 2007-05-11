@@ -71,13 +71,7 @@ namespace CLAM
 		{
 		}
 
-		~DescriptionScheme()
-		{
-			Scopes::iterator it = _scopes.begin();
-			Scopes::iterator end = _scopes.end();
-			for (; it!=end; it++)
-				delete *it;
-		}
+		~DescriptionScheme();
 
 		/**
 		 * Adds a new attribute to the description scheme.

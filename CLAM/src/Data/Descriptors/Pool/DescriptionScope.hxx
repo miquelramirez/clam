@@ -59,13 +59,7 @@ namespace CLAM
 		std::string _scopeName;
 	public:
 		DescriptionScope(const std::string & name) : _scopeName(name) {}
-		~DescriptionScope()
-		{
-			Attributes::iterator it = _attributes.begin();
-			Attributes::iterator end = _attributes.end();
-			for (; it!=end; it++)
-				delete *it;
-		}
+		~DescriptionScope();
 
 		/** @return the scope name */
 		const std::string & GetName() const

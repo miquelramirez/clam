@@ -24,6 +24,13 @@
 
 namespace CLAM
 {
+	DescriptionScheme::~DescriptionScheme()
+	{
+			Scopes::iterator it = _scopes.begin();
+			Scopes::iterator end = _scopes.end();
+			for (; it!=end; it++)
+				delete *it;
+	}
 	namespace Implementation
 	{
 		class AttributeInserter : public Component

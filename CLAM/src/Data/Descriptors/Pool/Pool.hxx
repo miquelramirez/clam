@@ -49,13 +49,7 @@ namespace CLAM
 			: _scheme(scheme), _scopePools(_scheme.GetNScopes(),(ScopePool*)0)
 		{
 			}
-			~DescriptionDataPool()
-		{
-			ScopePools::iterator it = _scopePools.begin();
-			ScopePools::iterator end = _scopePools.end();
-			for (; it != end; it++)
-				if (*it) delete *it;
-		}
+		~DescriptionDataPool();
 
 		/**
 		 * Sets how many values will the attributes on the specified scope have.
