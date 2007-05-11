@@ -11,6 +11,7 @@
 #define _FUNDSEGPLAYER_
 
 #include <pthread.h>
+#undef GetClassName // Visual defines such macro
 #include <CLAM/Array.hxx>
 #include <CLAM/Melody.hxx>
 #include <CLAM/Signalv0.hxx>

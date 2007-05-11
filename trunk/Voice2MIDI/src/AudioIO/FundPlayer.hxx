@@ -9,6 +9,7 @@
 #define _FUNDPLAYER_
 
 #include <pthread.h>
+#undef GetClassName
 #include <CLAM/Array.hxx>
 #include <CLAM/Segment.hxx>
 #include <CLAM/Signalv0.hxx>
