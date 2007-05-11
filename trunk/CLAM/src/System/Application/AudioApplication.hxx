@@ -22,18 +22,6 @@
 #ifndef __AudioApplication__
 #define __AudioApplication__
 
-#ifdef WIN32
-
-#include "GUIAudioApplication.hxx"
-
-namespace CLAM {
-	class AudioApplication:public GUIAudioApplication
-	{
-	};
-}
-
-#else
-
 #include "BaseAudioApplication.hxx"
 
 namespace CLAM {
@@ -46,9 +34,6 @@ namespace CLAM {
 		}
 	};
 }
-
-#endif
-
 
 #endif
 
