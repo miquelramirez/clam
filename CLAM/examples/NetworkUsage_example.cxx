@@ -37,6 +37,7 @@
 #include "AudioOut.hxx"
 #include <iostream>
 #include "AudioManager.hxx"
+#include <CLAM/PANetworkPlayer.hxx>
 
 int main( int argc, char** argv )
 {	
@@ -66,18 +67,13 @@ int main( int argc, char** argv )
 
 		CLAM::BinaryAudioOpConfig audioMultiplierCfg;
 			
-		CLAM::AudioIOConfig audioOutCfg;
-		audioOutCfg.SetFrameSize( size );
-		audioOutCfg.SetSampleRate( sampleRate );
-		audioOutCfg.SetChannelID( 0 );
-		
 		// Ok, we have the configurations created. Why not to create the processing that will use them?
 		// Because we will add them directly to the network, in this way:
 
 		network.AddProcessing( "Generator", new CLAM::SimpleOscillator( osc1Cfg ) );
 		network.AddProcessing( "Modulator", new CLAM::SimpleOscillator( osc2Cfg ) );
 		network.AddProcessing( "Audio Multiplier", new CLAM::AudioMultiplier( audioMultiplierCfg ) );
-		network.AddProcessing( "Audio Mono Out", new CLAM::AudioOut( audioOutCfg ) );
+		network.AddProcessing( "Audio Out", new CLAM::AudioSink );
 
 		// so we see that for each processing we add, it receives a particular name. We can acces the processings
 		// of the network using this name, as we will see with the connections in a few moments.
@@ -87,17 +83,16 @@ int main( int argc, char** argv )
 		network.ConnectPorts( "Modulator.Audio Output", "Audio Multiplier.Second Audio Input" );
 		// as you can see, the interface is ("processing_producer.out_port", "processing_consumer.in_port").
 		// Now the final connection from the multiplier to the audio output:
-		network.ConnectPorts( "Audio Multiplier.Audio Output", "Audio Mono Out.Audio Input" );
+		network.ConnectPorts( "Audio Multiplier.Audio Output", "Audio Out.AudioIn" );
+
+		network.SetPlayer(new CLAM::PANetworkPlayer );
 
 		network.Start();
-		// we begin a loop in which Do() method of network is called in order to execute the processings,
-		// communicating between them the data, following the connections we have decided.
-		for(int i=0;i<100;i++)
-			network.Do();
+
+		std::cout << "Press return to stop the noise" << std::endl;
+		std::cin.get();
 
 		network.Stop();
-
-//		network.Clear();
 
 		std::cout << "ok, now I know how the CLAM network works!" << std::endl;
 	}
