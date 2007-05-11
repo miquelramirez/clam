@@ -47,7 +47,7 @@ namespace CLAM
 			: _attributeName(attributeName) {}
 		AbstractAttribute(const std::string & scopeName, const std::string & attributeName)
 			: _scopeName(scopeName), _attributeName(attributeName) {}
-		virtual ~AbstractAttribute() {}
+		virtual ~AbstractAttribute();
 
 		const char * GetClassName() const { return "AbstractAttribute"; }
 		void StoreOn(Storage & storage) const

@@ -79,13 +79,7 @@ namespace CLAM
 				it->SetDefinition(_spec.GetAttribute(i));
 			}
 		}
-		~ScopePool()
-		{
-			AttributesData::iterator it = _attributePools.begin();
-			AttributesData::iterator end = _attributePools.end();
-			for (; it!=end; it++) it->Deallocate();
-			_size=0;
-		}
+		~ScopePool();
 		const char * GetClassName() const { return "ScopePool"; }
 		void StoreOn(Storage & storage) const
 		{
