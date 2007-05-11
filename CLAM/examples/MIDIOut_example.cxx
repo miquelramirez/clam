@@ -24,7 +24,7 @@
 #include "MIDIOutControl.hxx"
 
 #ifdef WIN32
-	#include "Windows.h"
+	#include "windows.h"
 #endif
 
 using namespace CLAM;
