@@ -9,7 +9,7 @@
 #include "MIDISettings.hxx"
 #include "V2MFacade.hxx"
 
-#ifdef WIN32
+#ifdef USE_PORTMIDI
 #include <portmidi.h>
 #endif
 using namespace CLAM;
@@ -324,7 +324,7 @@ void V2MFacade::GetMIDIDevices()
 		std::vector<std::string>::iterator v_it = midiDevices.begin();
 		for(;v_it != midiDevices.end();v_it++,i++) 
 		{
-#ifdef WIN32			
+#ifdef USE_PORTMIDI
         		const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
 			if(info->output)
 			{
@@ -349,7 +349,7 @@ void V2MFacade::GetMIDIDevices()
 	std::vector<std::string>::iterator v_it = lst.begin();
 	for(;v_it != lst.end();v_it++,i++) 
 	{
-#ifdef WIN32			
+#ifdef USE_PORTMIDI			
         const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
 		if(info->output)
 		{

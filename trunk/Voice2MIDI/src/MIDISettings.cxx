@@ -1,7 +1,7 @@
 #include "MIDIManager.hxx"
 #include "MIDISettings.hxx"
 
-#ifdef WIN32
+#ifdef USE_PORTMIDI
 #include <portmidi.h>
 #endif
 
@@ -54,7 +54,7 @@ namespace CLAM
 			std::vector<std::string>::iterator it = availableDevices.begin();
 			for(int i=0; it != availableDevices.end(); it++, i++) 
 			{
-#ifdef WIN32			
+#ifdef USE_PORTMIDI
 				const PmDeviceInfo *info = Pm_GetDeviceInfo(i);
 				if(info->output)
 				{
