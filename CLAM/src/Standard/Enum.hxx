@@ -130,8 +130,7 @@ protected:
 	};
 public:
 	/** The required virtual destructor */
-	virtual ~Enum ()  {
-	};
+	virtual ~Enum ();
 	const char * GetClassName() const {return NULL;}
 //@}
 
