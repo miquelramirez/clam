@@ -273,8 +273,7 @@ void ProcessingBox::paintBox(QPainter & painter)
 	//Selection
 	if (_selected)
 	{
-		painter.setPen( Qt::black );
-		painter.setBrush( Qt::black );
+		painter.setBrush( _canvas->palette().highlight() );
 		painter.drawRect(0, 0, margin, margin);
 		painter.drawRect(0, _size.height(), margin, -margin);
 		painter.drawRect(_size.width(), 0,  -margin, margin);
@@ -401,8 +400,17 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 	// Head
 	if (region==nameRegion)
 	{
-		startMoving(_canvas->translatedGlobalPos(event));
-		_canvas->setCursor(Qt::SizeAllCursor);
+		if (event->modifiers() & Qt::ControlModifier )
+		{
+			_selected=!_selected;
+			if (!_selected) return;
+		}
+		if (!_selected)
+		{
+			_canvas->clearSelections();
+			_selected=true;
+		}
+		_canvas->startMovingSelected(event);
 		return;
 	}
 	if (region==bodyRegion)
@@ -454,7 +462,7 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 {
 	_highLightRegion=noRegion;;
-	if (_actionMode==Moving || _canvas->dragStatus()==NetworkCanvas::PanDrag)
+	if (_actionMode==Moving)
 	{
 		_canvas->setCursor(Qt::SizeAllCursor);
 		QPoint dragDelta = _canvas->translatedGlobalPos(event) - dragOrigin;

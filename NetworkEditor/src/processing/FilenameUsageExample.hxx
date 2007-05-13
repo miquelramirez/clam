@@ -28,6 +28,7 @@ public:
 		return filters;
 	}
 };
+CLAM_TYPEINFOGROUP(BasicCTypeInfo, InImageFilename);
 
 class OutImageFilename : public OutFilename
 {
@@ -46,7 +47,6 @@ public:
 	}
 };
 CLAM_TYPEINFOGROUP(BasicCTypeInfo, OutImageFilename);
-CLAM_TYPEINFOGROUP(BasicCTypeInfo, InImageFilename);
 
 
 class FilenameUsageExampleConfig : public ProcessingConfig
