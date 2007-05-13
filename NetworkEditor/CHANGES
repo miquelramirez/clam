@@ -1,9 +1,22 @@
 2007-??-?? NetworkEditor 1.0.1 SVN $Revision$
 ''
  * Using CLAM 1.0.1
- * Working genderChange.clamnetwork example with interface
- * Vowel Synthesis added and related examples
+ * New examples
+   * Working genderChange.clamnetwork example with interface
+   * Experimental Vowel Synthesis example
+   * Interface for the Spectral Transformation
+ * ControlSender widget is configurable now (vertical, horizotal, knob)
+ * New resizable knob widget (QSynth knobs with enhancements)
+ * Pixmap based control widgets (idea and pixmaps taken from PKSampler)
+ * New ControlSurface processing and widget to control two parameters
  * Added an option to compile Faust based processing
+ * Automatic ControlSender creation on input control double click
+ * Automatic ControlSender creation on input control context menu
+ * Selection Move
+ * Starting a selection drag without control key pressed clears previous selections
+ * As side effect, clicking on the canvas without control key clears selections
+ * Clicking on the name also selects
+ * Pan drag feature has been removed (it did a move, not a real pan)
 
 2007-03-20 NetworkEditor 1.0.0
 'The Berlin release'
