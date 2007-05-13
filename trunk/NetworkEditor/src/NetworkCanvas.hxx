@@ -37,7 +37,6 @@ public:
 		OutcontrolDrag,
 		MoveDrag,
 		ResizeDrag,
-		PanDrag,
 		SelectionDrag
 	};
 	NetworkCanvas(QWidget * parent=0)
@@ -58,8 +57,16 @@ public:
 		setWhatsThis("Dummy");
 		QAction * deleteAction = new QAction("Delete", this);
 		deleteAction->setShortcut(QKeySequence(tr("Del")));
-		this->addAction(deleteAction);
+		addAction(deleteAction);
 		connect(deleteAction, SIGNAL(triggered()), this, SLOT(removeSelectedProcessings()));
+		QAction * selectAllAction = new QAction("Select all", this);
+		selectAllAction->setShortcut(QKeySequence(tr("Ctrl+A")));
+		addAction(selectAllAction);
+		connect(selectAllAction, SIGNAL(triggered()), this, SLOT(onSelectAll()));
+		QAction * clearSelectionAction = new QAction("Clear selection", this);
+		clearSelectionAction->setShortcut(QKeySequence(tr("Ctrl+Shift+A")));
+		addAction(clearSelectionAction);
+		connect(clearSelectionAction, SIGNAL(triggered()), this, SLOT(onClearSelections()));
 	}
 
 	void example1()
@@ -182,12 +189,11 @@ private:
 		painter.setPen(Qt::black);
 		painter.drawText(tooltip, Qt::AlignLeft, _tooltipText);
 	}
-public:
+public: // Helpers
 	void setToolTip(const QString & text)
 	{
 		_tooltipText = text;
 	}
-
 
 	QRect translatedRect(QRect rect)
 	{
@@ -204,6 +210,8 @@ public:
 		return event->globalPos()/_zoomFactor;
 	}
 
+public: // Event Handlers
+
 	void mouseMoveEvent(QMouseEvent * event)
 	{
 		_dragPoint = translatedPos(event);
@@ -215,28 +223,20 @@ public:
 		_tooltipPos=_dragPoint;
 		update();
 	}
-
 	void mousePressEvent(QMouseEvent * event)
 	{
 		if (event->button()!=Qt::LeftButton) return;
+		QPoint translatedPoint = translatedPos(event);
 		for (unsigned i = _processings.size(); i--; )
 		{
-			if (_processings[i]->getRegion(translatedPos(event))==ProcessingBox::noRegion) continue;
+			if (_processings[i]->getRegion(translatedPoint)==ProcessingBox::noRegion) continue;
 			_processings[i]->mousePressEvent(event);
 			update();
 			return;
 		}
-		if ((event->modifiers()&Qt::ControlModifier))
-		{
-				startDrag(PanDrag,0,0);
-				for (unsigned i = _processings.size(); i--; )
-				{
-					_processings[i]->startMoving(translatedGlobalPos(event));
-				}
-				update();
-				return;
-		}
-		_selectionDragOrigin=translatedPos(event);
+		if (! (event->modifiers() & Qt::ControlModifier) )
+			clearSelections();
+		_selectionDragOrigin=translatedPoint;
 		startDrag(SelectionDrag,0,0);
 		update();
 	}
@@ -256,9 +256,10 @@ public:
 	}
 	void mouseDoubleClickEvent(QMouseEvent * event)
 	{
+		QPoint translatedPoint = translatedPos(event);
 		for (unsigned i = _processings.size(); i--; )
 		{
-			if (_processings[i]->getRegion(translatedPos(event))==ProcessingBox::noRegion) continue;
+			if (_processings[i]->getRegion(translatedPoint)==ProcessingBox::noRegion) continue;
 			_processings[i]->mouseDoubleClickEvent(event);
 			update();
 			return;
@@ -270,9 +271,10 @@ public:
 	{
 		QMenu menu(this);
 		menu.move(event->globalPos());
+		QPoint translatedPoint = translatedPos(event);
 		for (unsigned i = _processings.size(); i--; )
 		{
-			ProcessingBox::Region region = _processings[i]->getRegion(translatedPos(event));
+			ProcessingBox::Region region = _processings[i]->getRegion(translatedPoint);
 			if (region==ProcessingBox::noRegion) continue;
 			if (
 				region==ProcessingBox::inportsRegion ||
@@ -281,13 +283,13 @@ public:
 				region==ProcessingBox::outcontrolsRegion )
 			{
 				menu.addAction(QIcon(":/icons/images/remove.png"), "Disconnect",
-					this, SLOT(onDisconnect()))->setData(translatedPos(event));
+					this, SLOT(onDisconnect()))->setData(translatedPoint);
 				menu.addAction(QIcon(":/icons/images/editcopy.png"), "Copy connection name",
-					this, SLOT(onCopyConnection()))->setData(translatedPos(event));
+					this, SLOT(onCopyConnection()))->setData(translatedPoint);
 				if (region==ProcessingBox::incontrolsRegion)
 				{
 					menu.addAction(QIcon(":/icons/images/hslider.png"), "Add slider",
-						this, SLOT(onAddSlider()))->setData(translatedPos(event));
+						this, SLOT(onAddSlider()))->setData(translatedPoint);
 				}
 			}
 			if (region==ProcessingBox::nameRegion || 
@@ -295,17 +297,17 @@ public:
 				region==ProcessingBox::resizeHandleRegion)
 			{
 				menu.addAction(QIcon(":/icons/images/configure.png"), "Configure",
-					this, SLOT(onConfigure()))->setData(translatedPos(event));
+					this, SLOT(onConfigure()))->setData(translatedPoint);
 				menu.addAction(QIcon(":/icons/images/rename.png"), "Rename",
-					this, SLOT(onRename()))->setData(translatedPos(event));
+					this, SLOT(onRename()))->setData(translatedPoint);
 				menu.addAction(QIcon(":/icons/images/editdelete.png"), "Remove",
-					this, SLOT(onDeleteProcessing()))->setData(translatedPos(event));
+					this, SLOT(onDeleteProcessing()))->setData(translatedPoint);
 			}
 			menu.exec();
 			return;
 		}
 		menu.addAction(QIcon(":/icons/images/newprocessing.png"), "Add processing",
-			this, SLOT(onNewProcessing()))->setData(translatedPos(event));
+			this, SLOT(onNewProcessing()))->setData(translatedPoint);
 		menu.exec();
 	}
 
@@ -389,9 +391,31 @@ public:
 		return QWidget::event(event);
 	}
 
+public: // Actions
+
+	void startMovingSelected(QMouseEvent * event)
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+		{
+			if (!_processings[i]->isSelected()) continue;
+			_processings[i]->startMoving(translatedGlobalPos(event));
+		}
+		setCursor(Qt::SizeAllCursor);
+	}
+
+	void clearSelections()
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+			_processings[i]->deselect();
+	}
+	void selectAll()
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+			_processings[i]->select();
+	}
 	void addProcessing(QPoint point, QString type)
 	{
-		if (!_network)
+		if (networkIsDummy())
 		{
 			addProcessingBox(type, 0, point);
 			markAsChanged();
@@ -415,7 +439,7 @@ public:
 			QPoint point
 			)
 	{
-		if (!_network) return;
+		if (networkIsDummy()) return;
 
 		unsigned controlIndex = processing->controlIndexByXPos(point);
 		QString inControlName = processing->getIncontrolName(controlIndex);
@@ -546,7 +570,7 @@ public:
 	}
 	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
-		if (!_network) return true;
+		if (networkIsDummy()) return true;
 		QString outName = source->getName() + "." + source->getOutportName(outlet);
 		QString inName = target->getName() + "." + target->getInportName(inlet);
 		CLAM::OutPortBase & out = _network->GetOutPortByCompleteName(outName.toStdString());
@@ -555,7 +579,7 @@ public:
 	}
 	bool canConnectControls(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
-		if (!_network) return true;
+		if (networkIsDummy()) return true;
 		return true;
 	}
 	/**
@@ -590,7 +614,7 @@ public:
 	}
 	void addPortConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
-		if (_network)
+		if (!networkIsDummy())
 		{
 			QString out = source->getName() + "." + source->getOutportName(outlet);
 			QString in = target->getName() + "." + target->getInportName(inlet);
@@ -601,7 +625,7 @@ public:
 	}
 	void addControlConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
-		if (_network)
+		if (!networkIsDummy())
 		{
 			QString out = source->getName() + "." + source->getOutcontrolName(outlet);
 			QString in = target->getName() + "." + target->getIncontrolName(inlet);
@@ -628,7 +652,7 @@ public:
 			if ( !wire->goesTo(processing, index)) it++;
 			else
 			{
-				if (_network)
+				if (!networkIsDummy())
 					_network->DisconnectControls(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_controlWires.erase(it);
@@ -645,7 +669,7 @@ public:
 			if ( !wire->comesFrom(processing, index)) it++;
 			else
 			{
-				if (_network)
+				if (!networkIsDummy())
 					_network->DisconnectControls(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_controlWires.erase(it);
@@ -662,7 +686,7 @@ public:
 			if ( !wire->goesTo(processing, index)) it++;
 			else
 			{
-				if (_network)
+				if (!networkIsDummy())
 					_network->DisconnectPorts(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_portWires.erase(it);
@@ -679,7 +703,7 @@ public:
 			if ( !wire->comesFrom(processing, index)) it++;
 			else
 			{
-				if (_network)
+				if (!networkIsDummy())
 					_network->DisconnectPorts(wire->getSourceId(), wire->getTargetId());
 				delete wire;
 				it=_portWires.erase(it);
@@ -691,7 +715,7 @@ public:
 	void removeProcessing(ProcessingBox * processing)
 	{
 		markAsChanged();
-		if (_network) _network->RemoveProcessing(processing->getName().toStdString());
+		if (!networkIsDummy()) _network->RemoveProcessing(processing->getName().toStdString());
 		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
 			   	it<_controlWires.end(); )
 		{
@@ -727,7 +751,7 @@ public:
 		clear();
 		_network = network;
 		clearChanges();
-		if (!_network) return;
+		if (networkIsDummy()) return;
 		CLAM::Network::ProcessingsMap::const_iterator it;
 		for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
 		{
@@ -855,13 +879,8 @@ public:
 	}
 	bool renameProcessing(QString oldName, QString newName)
 	{
-		if (!_network) return true;
+		if (networkIsDummy()) return true;
 		return _network->RenameProcessing(oldName.toStdString(), newName.toStdString());
-	}
-	void clearSelections()
-	{
-		for (unsigned i=0; i<_processings.size(); i++)
-			_processings[i]->deselect();
 	}
 private:
 	ProcessingBox * getBox(const QString & name)
@@ -872,6 +891,16 @@ private:
 	}
 
 private slots:
+	void onClearSelections()
+	{
+		clearSelections();
+		update();
+	}
+	void onSelectAll()
+	{
+		selectAll();
+		update();
+	}
 	void removeSelectedProcessings()
 	{
 		std::vector<ProcessingBox *> toRemove;
