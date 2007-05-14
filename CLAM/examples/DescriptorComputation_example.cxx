@@ -24,11 +24,13 @@
 #include "SegmentDescriptors.hxx"
 #include "DescriptorComputation.hxx"
 #include <QtGui/QFileDialog>
+#include <QtGui/QApplication>
 
 int main( int argc, char** argv )
 {
-	CLAM::Segment segment;
+	QApplication app(argc, argv);
 
+	CLAM::Segment segment;
 
 	QString file = QFileDialog::getOpenFileName(
 		0,
