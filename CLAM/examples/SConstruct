@@ -6,7 +6,7 @@ import sys
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
-options.Add(BoolOption('crossmingw', 'Enables MinGW crosscompilation from linux', 'yes') )
+options.Add(BoolOption('crossmingw', 'Enables MinGW crosscompilation from linux', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
