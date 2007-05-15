@@ -169,7 +169,7 @@ namespace QtSMS
 				"Sorry, but the file %1\n"
 				"cannot be used: \n"
 				"Unable to open or unrecognized format")
-				.arg(filename));
+				.arg(filename.c_str()));
 			return false;
 		}
 
@@ -181,7 +181,7 @@ namespace QtSMS
 				"can process mono channel signals. By default\n"
 				"the channel to be analyzed will be the first\n"
 				"channel in the file.\n")
-				.arg(filename));
+				.arg(filename.c_str()));
 		}
 		
 

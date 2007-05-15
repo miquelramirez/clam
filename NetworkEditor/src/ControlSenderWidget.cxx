@@ -87,7 +87,7 @@ void ControlSenderWidget::setupSlider(QAbstractSlider *slider)
 {
 	slider->setMinimum(0);
 	slider->setMaximum(int(ceil((_max - _min) / _step)));
-	slider->setValue(int(round((_default - _min) / _step)));
+	slider->setValue(int(floor(((_default - _min) / _step)-0.5)));
 
 	connect(slider, SIGNAL(valueChanged(int)), 
 			this, SLOT(stepControlChanged(int)));
