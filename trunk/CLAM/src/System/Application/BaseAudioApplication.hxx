@@ -25,6 +25,7 @@
 #include "Application.hxx"
 
 #include <pthread.h>
+#undef GetClassName
 
 namespace CLAM {
 
