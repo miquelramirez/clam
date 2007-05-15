@@ -139,7 +139,7 @@ def setup_build_options( env ) :
 	if sys.platform == 'win32' :
 		release_option = 'no'
 	else :
-		release_option = 'yes'
+		release_option = 'no'
 	opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', release_option))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
@@ -265,7 +265,7 @@ clam_env['CXXFILESUFFIX'] = '.cxx'
 if sys.platform=='win32' :
 	clam_env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 
-if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() :
+if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() or ARGUMENTS :
     configureModules(clam_env)
     print "Finished. Invoke 'scons' now."
     Exit(0)
