@@ -245,8 +245,8 @@ void QSynthKnob::setDefaultValue ( int iDefaultValue )
 // Mouse angle determination.
 double QSynthKnob::mouseAngle ( const QPoint& pos )
 {
-	int dx = pos.x() - width()/2;
-	int dy = height()/2 - pos.y();
+	float dx = pos.x() - width()/2;
+	float dy = height()/2 - pos.y();
 	return 360*atan2(dx,dy)/M_PI/2;
 }
 
