@@ -30,7 +30,7 @@
 #include "InPortRegistry.hxx"
 #include "OutPortRegistry.hxx"
 #include "ProcessingConfig.hxx"
-
+#include "NullProcessingConfig.hxx"
 
 #include <list>
 #include <typeinfo>
@@ -137,9 +137,11 @@ namespace CLAM {
 		/** Processing Object possible execution states. */
 		typedef enum {
 			Unconfigured=0,
-			Ready,
+			Ready, 
 			Running
 		} ExecState;
+
+		typedef NullProcessingConfig Config;
 
 // Basic usage interface:
 
@@ -239,8 +241,9 @@ namespace CLAM {
 		 * usual way to perform a configuration change in the
 		 * processing object is to take a copy of this reference, to
 		 * change it and to send it with the Configure method.
+		 * If not overriden, it returns a NullProcessingConfig.
 		 */
-		virtual const ProcessingConfig &GetConfig() const = 0;
+		virtual const ProcessingConfig &GetConfig() const;
 
 		/** State getter.
 		 * Returns the object execution state. This may be used for
@@ -249,6 +252,21 @@ namespace CLAM {
 		 * in running or in disabled state.
 		 */
 		ExecState GetExecState() const {return mExecState;}
+		
+		std::string GetExecStateString() const 
+		{
+			switch (mExecState)
+			{
+				case Unconfigured:
+					return "Unconfigured";
+				case Ready:
+					return "Ready";
+				case Running:
+					return "Running";
+				default:
+					return "Unknown state";
+			}
+		}
 		
 
 		void PublishOutPort(OutPortBase* out);

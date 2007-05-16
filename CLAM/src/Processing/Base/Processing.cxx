@@ -101,10 +101,10 @@ namespace CLAM {
 		out.ConnectToIn(in);
 	}
 	
-	Processing::Processing() 
-		: mpParent(0)
+	Processing::Processing() :
+		mpParent(0),
+		mExecState(Unconfigured)
 	{
-		mExecState = Unconfigured;
 	}
 
 	bool Processing::Configure(const ProcessingConfig &c)
@@ -226,6 +226,26 @@ namespace CLAM {
 //		std::cerr << "outports ready? " << GetOutPorts().AreReadyForWriting() << std::endl;
 		return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
 	}
+	const ProcessingConfig& Processing::GetConfig() const
+	{
+		static NullProcessingConfig nullConfig;
+		return nullConfig;
+	}
+	std::string Processing::GetExecStateString() const 
+	{
+		switch (mExecState)
+		{
+			case Unconfigured:
+				return "Unconfigured";
+			case Ready:
+				return "Ready";
+			case Running:
+				return "Running";
+			default:
+				return "Unknown state";
+		}
+	}
+		
 
 
 };//namespace CLAM
