@@ -27,14 +27,6 @@ public:
 		Configure( Config() );
 	}
  
-	~MyProcessing() {}
-
-	// Configuration to the minimal expression
-	bool ConcreteConfigure(const CLAM::ProcessingConfig&)
-	{
-		return true; // I got proper configuration
-	}
-	
 	bool Do()
 	{
 		bool result = Do(mIn.GetData(), mOut.GetData()); 

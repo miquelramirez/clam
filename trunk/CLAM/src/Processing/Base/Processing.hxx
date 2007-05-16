@@ -193,6 +193,7 @@ namespace CLAM {
 		/** Override this method if your processing cannot process inplace*/
 		virtual bool CanProcessInplace() { return true; }
 
+	protected:
 		/** Configuration method interface.
 		 * The Processing base class forces all the concrete
 		 * classes derived from it to implement this method, which
@@ -211,11 +212,9 @@ namespace CLAM {
 		 * consistent state, and can be executed.
 		 * @throw This method must throw a bad_cast exception if the
 		 * argument is not an object of the expected configuration class.
-		 * @todo ConcreteConfig should be protected
 		 * */
-		virtual bool ConcreteConfigure(const ProcessingConfig&) = 0; //TODO should be protected
+		virtual bool ConcreteConfigure(const ProcessingConfig&) = 0; 
 		
-	protected:
 		/**
 		 * Processing objects have to redefine this method when starting
 		 * them implies some internal changes. ie: adquiring resources.
@@ -253,21 +252,7 @@ namespace CLAM {
 		 */
 		ExecState GetExecState() const {return mExecState;}
 		
-		std::string GetExecStateString() const 
-		{
-			switch (mExecState)
-			{
-				case Unconfigured:
-					return "Unconfigured";
-				case Ready:
-					return "Ready";
-				case Running:
-					return "Running";
-				default:
-					return "Unknown state";
-			}
-		}
-		
+		std::string GetExecStateString() const;
 
 		void PublishOutPort(OutPortBase* out);
 		void PublishInPort(InPortBase* in);
