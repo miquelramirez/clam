@@ -8,7 +8,7 @@ from runner import Runner
 from commands import getoutput
 
 def countLines( path ):
-	print "loc foro path:", path
+	print "loc for path:", path
 	lines =  getoutput("find %s -name '*.?xx' -exec wc -l {} \;" % path.strip() ).split("\n")
 	return reduce( lambda x,y: x+y , map( lambda x: int(x.split()[0]), lines) )
 
