@@ -52,7 +52,9 @@ class DataDelay:public TokenDelay<TData>
 * Configuration of the DataDelay processing object. It includes tree
 * dynamic type attributes: Name, Delay and MaxDelay
 */
-/*class DataDelayConfig : public ProcessingConfig 
+
+#if 0
+class DataDelayConfig : public ProcessingConfig 
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE (DataDelayConfig, 2, ProcessingConfig);
@@ -64,7 +66,7 @@ protected:
 	* ActualDelay is set to 0 and MaxDelay to a default value (i.e. 1000 tokens)
 	* 
 	*/
-/*	void DefaultInit(void)
+	void DefaultInit(void)
 	{
 		AddDelay();
 		AddMaxDelay();
@@ -87,12 +89,12 @@ protected:
  * get out. And these tokens will be deleted by the delay object.
  * 
  */
-/*class DataDelay : public Processing
+class DataDelay : public Processing
 {
 
 private:
 	/** DataDelay Configuration */
-/*	DataDelayConfig mConfig;
+	DataDelayConfig mConfig;
 	// Ports and control
 	InPort<TData> mInput;
 	OutPort<TData> mOutput;
@@ -114,12 +116,12 @@ public:
 	* this one. It will accept such changes when not in running mode.
 	* @pre argument should be a DataDelayConfig
 	*/
-/*	bool ConcreteConfigure(const ProcessingConfig& c);
+	bool ConcreteConfigure(const ProcessingConfig& c);
 
 	/**
 	* Configuration access
 	*/
-/*	virtual const ProcessingConfig &GetConfig() const { return mConfig;}
+	virtual const ProcessingConfig &GetConfig() const { return mConfig;}
 	/**
 	* Supervised-mode execution method. Because this class only works in non-supervised
 	* mode, it hrows an error
@@ -148,7 +150,7 @@ public:
 //	void FulfillsInvariant() const;
 
 
-/*	const char *GetClassName() const {return "DataDelay";}
+	const char *GetClassName() const {return "DataDelay";}
 
 	unsigned MaxDelay() const {
 		return mCapacity;
@@ -190,7 +192,7 @@ private:
 
 // Control Enumeration
 
-/*class EDataDelayControls
+class EDataDelayControls
 : public Enum
 {
 
@@ -222,7 +224,7 @@ public:
 
 }; //namespace CLAM
 
+#endif //commented out code
 
-*/
 #endif //DataDelay_hxx
 
