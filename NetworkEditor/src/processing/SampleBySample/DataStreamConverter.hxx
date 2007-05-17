@@ -1,5 +1,5 @@
-#ifndef _Data2Audio_
-#define _Data2Audio_
+#ifndef DataStreamConverter_hxx
+#define DataStreamConverter_hxx
 
 #include "Processing.hxx"
 #include "DummyConfig.hxx"
@@ -28,6 +28,5 @@ protected:
 
 };
 
-
-
 #endif
+

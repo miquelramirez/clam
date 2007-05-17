@@ -1,3 +1,6 @@
+#ifndef SampleBySampleConfig_hxx
+#define SampleBySampleConfig_hxx
+
 #include "InPort.hxx"
 #include "OutPort.hxx"
 
@@ -23,3 +26,5 @@ protected:
 };
 
 };
+#endif
+

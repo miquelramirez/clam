@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __BINARYAUDIOAdd__
-#define __BINARYAUDIOAdd__
+#ifndef DataAdder_hxx
+#define DataAdder_hxx
 
 #include "BinaryDataOp.hxx"
 #include "CommonOps.hxx"
@@ -37,4 +37,5 @@ namespace CLAM
 	}
 }
 
-#endif // AudioAdder.hxx
+#endif // AudioAdder_hxx
+

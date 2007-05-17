@@ -37,7 +37,5 @@ bool DataGain::Do()
 }
 
 	static CLAM::Factory<CLAM::Processing>::Registrator<DataGain> DataGainRegistrator("DataGain");
-
-
-	
 }
+

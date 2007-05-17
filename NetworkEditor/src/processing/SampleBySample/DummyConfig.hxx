@@ -1,5 +1,5 @@
-#ifndef _DummyConfig_
-#define _DummyConfig_
+#ifndef DummyConfig_hxx
+#define DummyConfig_hxx
 
 #include "ProcessingConfig.hxx"
 
@@ -22,3 +22,4 @@ protected:
 };
 
 #endif
+

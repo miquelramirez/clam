@@ -28,9 +28,6 @@ typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 namespace CLAM
 {
 	typedef BinaryDataOp< Multiply<TData> > DataMultiplier;
-	
 	static CLAM::Factory<CLAM::Processing>::Registrator<DataMultiplier> DataMultiplierRegistrator("DataMultiplier");
-
-
-	
 }
+

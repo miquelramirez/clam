@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _BINARY_DATA_OP_H_
-#define _BINARY_DATA_OP_H_
+#ifndef BinaryDataOp_hxx
+#define BinaryDataOp_hxx
 
 #include "Processing.hxx"
 #include "DynamicType.hxx"
@@ -123,4 +123,5 @@ namespace CLAM
 	
 }
 
-#endif //	_BINARY_Data_OP_H_
+#endif 
+

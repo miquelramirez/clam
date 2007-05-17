@@ -1,5 +1,5 @@
-#ifndef _SilentSource_
-#define _SilentSource_
+#ifndef DataSilentSource_hxx
+#define DataSilentSource_hxx
 
 #include "Processing.hxx"
 #include "SampleBySampleConfig.hxx"
@@ -22,6 +22,5 @@ protected:
 
 };
 
-
-
 #endif
+

@@ -19,10 +19,8 @@
  *
  */
 
-// DataDelay.hxx
-
-#ifndef _DataDelay_
-#define _DataDelay_
+#ifndef DataDelay_hxx
+#define DataDelay_hxx
 
 /*#include "Processing.hxx"
 #include "InControl.hxx"
@@ -226,4 +224,5 @@ public:
 
 
 */
-#endif //_DataDelay_
+#endif //DataDelay_hxx
+
