@@ -27,6 +27,11 @@ public:
 		Configure( Config() );
 	}
  
+	bool ConcreteConfigure(const CLAM::ProcessingConfig&)
+	{
+		return true; // Always gets properly configurated
+	}
+	
 	bool Do()
 	{
 		bool result = Do(mIn.GetData(), mOut.GetData()); 
