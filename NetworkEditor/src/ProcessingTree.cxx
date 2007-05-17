@@ -152,6 +152,15 @@ const static char * processingClasses[] = {
 	"Usage Examples",
 	"FilenameUsageExample",
 	0,
+	"Sample by Sample (Experimental)",
+	"Data2Audio",
+	"AudioStreamer",
+	"DataAdder",
+	"DataMultiplier",
+	"DataGain",
+	"DataSink",
+	"DataDelay",
+	"SilentSource",
 	0
 };
 

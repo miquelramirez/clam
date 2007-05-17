@@ -58,6 +58,8 @@
 #include "Random.hxx"
 #include "OneOverF.hxx"
 #include "SquareWave.hxx"
+#include "SampleBySampleConfig.hxx"
+#include "DataDelay.hxx"
 
 // Controls
 #include <CLAM/Fundamental2Control.hxx>
@@ -159,3 +161,6 @@ STANDARD_PROCESSING_CONFIG_REGISTER(OSCSenderConfig);
 // Examples 
 STANDARD_PROCESSING_CONFIG_REGISTER(FilenameUsageExampleConfig);
 
+//SAMPLEBYSAMPLE
+STANDARD_PROCESSING_CONFIG_REGISTER(SampleBySampleConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(TokenDelayConfig);

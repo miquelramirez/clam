@@ -85,6 +85,7 @@ sourcePaths = [
 	os.path.join('src'),
 	os.path.join('src','generated'),
 	os.path.join('src','processing'),
+	os.path.join('src','processing','SampleBySample'),
 	os.path.join('src','prototyper'),
 	os.path.join('src','monitors'),
 	os.path.join('src','monitors','generated'),
