@@ -213,7 +213,7 @@ namespace CLAM {
 		 * @throw This method must throw a bad_cast exception if the
 		 * argument is not an object of the expected configuration class.
 		 * */
-		virtual bool ConcreteConfigure(const ProcessingConfig&) = 0; 
+		virtual bool ConcreteConfigure(const ProcessingConfig&) { return true; }; 
 		
 		/**
 		 * Processing objects have to redefine this method when starting
