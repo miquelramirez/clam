@@ -79,7 +79,7 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/tmp/usr
-	cd $(CURDIR) && scons install_prefix=$(CURDIR)/debian/tmp/usr install
+	cd $(CURDIR) && scons prefix_for_packaging=$(CURDIR)/debian/tmp/usr install
 	dh_install --sourcedir=debian/tmp
 
 # Build architecture-independent files here.

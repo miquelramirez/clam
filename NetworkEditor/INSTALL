@@ -15,7 +15,7 @@ from the source tarballs.
  From the root of NetworkEditor source, suposing that CLAM binaries
  were installed at prefix /usr/local:
 
-     $ scons install install_prefix=/usr/local clam_prefix=/usr/local
+     $ scons install prefix=/usr/local clam_prefix=/usr/local
 
  if you are not using Linux/Debian (or Ubuntu) you'll need to define QTDIR
  hint: in Fedora Core 6 use QTDIR=/usr

@@ -4,7 +4,7 @@ import glob
 import sys
 
 options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
+options.Add(PathOption('prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
@@ -150,6 +150,7 @@ sources += [ os.path.join( os.path.dirname(uiccpp),
 
 if sys.platform=="win32" :
 	sources += env.RES(source=["resources/SMSTools.rc"])
+	self.AppendUnique(LIBS=['opengl32'])
 
 env.Append(CPPPATH=includePaths)
 if sys.platform=='darwin' :
@@ -159,9 +160,9 @@ if sys.platform=='darwin' :
 	env.Append(LINKFLAGS=['-framework', 'OpenGL'])
 
 if sys.platform=='linux2' :
-	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"' + env['install_prefix'] + '/share/smstools/example-data\\""')
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"' + env['prefix'] + '/share/smstools/example-data\\""')
 if sys.platform=='win32' :
-	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"' + env['install_prefix'] + '/share/smstools/example-data\\""')
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"' + env['prefix'] + '/share/smstools/example-data\\""')
 
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
@@ -215,13 +216,13 @@ installation = {
 }
 
 installTargets = [
-	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
+	env.Install( env['prefix']+path, files ) for path, files in installation.items() ]
 
 if sys.platform=='win32' : 
 	"""
 	installTargets += [
 		env.Install(
-			env['install_prefix']+"/bin", 
+			env['prefix']+"/bin", 
 			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
 			) for dll in 'Core', 'Gui', 'OpenGL']
 	"""

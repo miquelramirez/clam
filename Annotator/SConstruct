@@ -4,7 +4,7 @@ import glob
 import sys
 
 options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
+options.Add(PathOption('prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
@@ -128,12 +128,12 @@ env.Append(LIBS="clam_vmqt4")
 if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
 else :
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['install_prefix'] + '/share/annotator\\""')
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['prefix'] + '/share/annotator\\""')
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 else:
-	# TODO: This should not be hardcoded neither install_prefix (because package intall)
-	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"%s\\""'%env['install_prefix'] + '/share/annotator/example-data')
+	# TODO: This should not be hardcoded neither prefix (because package intall)
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"%s\\""'%env['prefix'] + '/share/annotator/example-data')
 
 if sys.platform=='linux2' :
 	if env['release'] :
@@ -209,12 +209,12 @@ installation = {
 }
 
 installTargets = [
-	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
+	env.Install( env['prefix']+path, files ) for path, files in installation.items() ]
 
 if sys.platform=='win32' : 
 	installTargets += [
 		env.Install(
-			env['install_prefix']+"/bin", 
+			env['prefix']+"/bin", 
 			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
 			) for dll in 'Core', 'Gui', 'OpenGL']
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])

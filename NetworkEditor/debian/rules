@@ -12,7 +12,7 @@
 #export DH_VERBOSE=1
 
 
-OPTIONS= clam_prefix=/usr install_prefix=$(CURDIR)/debian/clam-networkeditor/usr qt_plugins_install_path=/lib/qt4/plugins/designer release=1 verbose=1 double=0
+OPTIONS= clam_prefix=/usr prefix=$(CURDIR)/debian/clam-networkeditor/usr qt_plugins_install_path=/lib/qt4/plugins/designer release=1 verbose=1 double=0
 
 CFLAGS = -Wall -g
 
