@@ -1,7 +1,6 @@
 #include "DataStreamConverter.hxx"
 #include "Factory.hxx"
 
-
 typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 namespace CLAM
 {
@@ -52,3 +51,4 @@ namespace detail
 
 
 };
+

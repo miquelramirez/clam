@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __BINARYAUDIOAdd__
-#define __BINARYAUDIOAdd__
+#ifndef DataGain_hxx
+#define DataGain_hxx
 
 #include "SampleDefines.hxx"
 #include "Processing.hxx"
@@ -49,4 +49,5 @@ namespace CLAM
 	};
 }
 
-#endif // AudioAdder.hxx
+#endif 
+

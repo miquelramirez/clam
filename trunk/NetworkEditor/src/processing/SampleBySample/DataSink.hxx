@@ -1,5 +1,5 @@
-#ifndef _DataSink_
-#define _DataSink_
+#ifndef DataSink_hxx
+#define DataSink_hxx
 
 #include "Processing.hxx"
 #include "SampleBySampleConfig.hxx"
@@ -22,6 +22,5 @@ protected:
 
 };
 
-
-
 #endif
+

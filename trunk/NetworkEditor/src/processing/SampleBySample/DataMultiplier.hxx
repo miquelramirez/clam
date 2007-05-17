@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __BINARYAUDIOAdd__
-#define __BINARYAUDIOAdd__
+#ifndef DataMultiplier_hxx
+#define DataMultiplier_hxx
 
 #include "BinaryDataOp.hxx"
 #include "CommonOps.hxx"
@@ -37,4 +37,5 @@ namespace CLAM
 	}
 }
 
-#endif // DataMultiplier.hxx
+#endif 
+

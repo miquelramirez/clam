@@ -1,12 +1,13 @@
-#ifndef _AudioStreamer_
-#define _AudioStreamer_
+#ifndef DataAudioStreamer_hxx
+#define DataAudioStreamer_hxx
 
 #include "Processing.hxx"
 #include "DummyConfig.hxx"
 #include "AudioInPort.hxx"
 #include "SampleBySampleConfig.hxx"
 
-namespace CLAM{
+namespace CLAM
+{
 
 class AudioStreamer:public CLAM::Processing
 {
@@ -23,11 +24,8 @@ protected:
 
 	int mCounter;
 	CLAM::DataArray mBuffer;
-
 };
 
 };
-
-
-
 #endif
+
