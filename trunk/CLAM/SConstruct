@@ -136,7 +136,6 @@ def setup_build_options( env ) :
 	opts.Add( PathOption( 'prefix_for_packaging', 'Install location when packaging (just for .deb creation)', '.'))
 	if sys.platform == 'win32' : #!= 'linux2' :
 		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
-	if sys.platform == 'win32' :
 		release_option = 'no'
 	else :
 		release_option = 'no'
@@ -149,12 +148,17 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'optimize_and_lose_precision', 'Use tabulated trigonometric functions and the like', 'no' )) 
 	# clam_core options
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
-	if sys.platform != 'win32' :
-		opts.Add( BoolOption( 'with_ladspa', 'Ladspa plugin support', 'yes') )
+	if sys.platform == 'linux2' or sys.platform == 'darwin' :
 		opts.Add( BoolOption( 'with_osc', 'Enables/Disables OSC support', 'no') )
 		opts.Add( BoolOption( 'with_jack', 'Enables/Disable JACK support', 'yes') )
 	else :
 		opts.Add( BoolOption( 'with_jack', 'Enables/Disable JACK support', 'no') )
+	
+	if sys.platform == 'linux2' :
+		ladspa_option=1
+	else:
+		ladspa_option=0
+	opts.Add( BoolOption( 'with_ladspa', 'Ladspa plugin support', ladspa_option) )
 	
 	# clam_processing options
 	opts.Add( BoolOption( 'with_fftw3', 'Selects whether to use fftw3 or not', 'no'))
@@ -265,7 +269,7 @@ clam_env['CXXFILESUFFIX'] = '.cxx'
 if sys.platform=='win32' :
 	clam_env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 
-if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() or ARGUMENTS :
+if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() or ARGUMENTS and not "--help" in COMMAND_LINE_TARGETS:
     configureModules(clam_env)
     print "Finished. Invoke 'scons' now."
     Exit(0)
