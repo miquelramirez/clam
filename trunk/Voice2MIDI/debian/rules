@@ -75,7 +75,7 @@ install: build
 	# Add here commands to install the arch part of the package into 
 	# debian/tmp.
 	mkdir -p $(CURDIR)/debian/tmp/usr
-	cd scons && scons install_prefix=$(CURDIR)/debian/tmp/usr install
+	cd scons && scons prefix=$(CURDIR)/debian/tmp/usr install
 	find . -type f -name .sconsign* | xargs rm -rf
 
 binary: build install

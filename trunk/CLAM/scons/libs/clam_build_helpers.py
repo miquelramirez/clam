@@ -184,13 +184,13 @@ class InstallDirs :
 		self.doc = ''
 	
 	def compose( self, environ ) :
-		if environ['install_prefix'] != '.' :
-			self.prefix = environ['install_prefix']
-			self.lib =  environ['install_prefix']+'/lib'
-			self.bin    = environ['install_prefix']+'/bin'
-			self.inc    = environ['install_prefix']+'/include'
-			self.data   = environ['install_prefix']+'/share'
-			self.doc    =environ['install_prefix']+'/share/doc'
+		if environ['prefix_for_packaging'] != '.' :
+			self.prefix = environ['prefix_for_packaging']
+			self.lib =  environ['prefix_for_packaging']+'/lib'
+			self.bin    = environ['prefix_for_packaging']+'/bin'
+			self.inc    = environ['prefix_for_packaging']+'/include'
+			self.data   = environ['prefix_for_packaging']+'/share'
+			self.doc    =environ['prefix_for_packaging']+'/share/doc'
 		else:
 			self.prefix = environ['prefix']
 			self.lib =  environ['prefix']+'/lib'

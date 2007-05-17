@@ -12,7 +12,7 @@
 #export DH_VERBOSE=1
 
 
-OPTIONS= clam_prefix=/usr install_prefix=$(CURDIR)/debian/clam-smstools/usr release=1 verbose=0 double=0
+OPTIONS= clam_prefix=/usr prefix=$(CURDIR)/debian/clam-smstools/usr release=1 verbose=0 double=0
 
 CFLAGS = -Wall -g
 

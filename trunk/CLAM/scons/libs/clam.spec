@@ -301,7 +301,7 @@ cd NetworkEditor-%{NetworkEditor_version}
 
 export QTDIR=%{Qt4dir}
 scons -j$numprocs \
-	install_prefix=%{buildroot}%{_prefix} \
+	prefix=%{buildroot}%{_prefix} \
 	clam_prefix=%{buildroot}%{_prefix} \
 	clam_sconstools=%{buildroot}%{_datadir}/%{name}/sconstools \
 	qt_plugins_install_path=/lib/qt4/plugins/designer \
@@ -314,7 +314,7 @@ cd ..
 cd SMSTools-%{SMSTools_version}
 export QTDIR=%{Qt3dir}
 scons -j$numprocs \
-	install_prefix=%{buildroot}%{_prefix} \
+	prefix=%{buildroot}%{_prefix} \
 	clam_prefix=%{buildroot}%{_prefix} \
 	clam_sconstools=%{buildroot}%{_datadir}/%{name}/sconstools \
 	release=1
@@ -326,12 +326,12 @@ cd ..
 cd Annotator-%{Annotator_version}
 export QTDIR=%{Qt4dir}
 scons -C./vmqt \
-	install_prefix=%{buildroot}%{_prefix} \
+	prefix=%{buildroot}%{_prefix} \
 	clam_prefix=%{buildroot}%{_prefix} \
 	clam_sconstools=%{buildroot}%{_datadir}/%{name}/sconstools \
 	release=1
 scons -j$numprocs \
-	install_prefix=%{buildroot}%{_prefix} \
+	prefix=%{buildroot}%{_prefix} \
 	clam_prefix=%{buildroot}%{_prefix} \
 	clam_sconstools=%{buildroot}%{_datadir}/%{name}/sconstools \
 	release=1

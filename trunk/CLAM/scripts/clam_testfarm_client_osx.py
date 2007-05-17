@@ -66,7 +66,7 @@ clam.add_subtask("Unit Tests (with scons)", [
 	{CMD: "echo unset QTDIR ", INFO: unset_qtdir},
 	"cd $HOME/clam/CLAM",
 	"cd test",
-	"scons test_data_path=$HOME/clam/testdata clam_sconstools=$HOME/clam/CLAM/scons/sconstools install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
+	"scons test_data_path=$HOME/clam/testdata clam_sconstools=$HOME/clam/CLAM/scons/sconstools clam_prefix=$HOME/local", # TODO: test_data_path and release
 	"cd UnitTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD: "./UnitTests", INFO: lambda x:x, STATUS_OK: lambda x:True},
@@ -76,7 +76,7 @@ clam.add_subtask("Functional Tests (with scons)", [
 	{CMD: "echo unset QTDIR", INFO: unset_qtdir},
 	"cd $HOME/clam/CLAM",
 	"cd test",
-	"scons test_data_path=$HOME/clam/testdata clam_sconstools=$HOME/clam/CLAM/scons/sconstools install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
+	"scons test_data_path=$HOME/clam/testdata clam_sconstools=$HOME/clam/CLAM/scons/sconstools clam_prefix=$HOME/local", 
 	"cd FunctionalTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD:"./FunctionalTests", INFO: lambda x:x, STATUS_OK: lambda x:True},
@@ -91,7 +91,7 @@ clam.add_subtask("CLAM Examples (with scons)", [
 clam.add_subtask("SMSTools packaging", [
 	{CMD: "echo unset  QTDIR  ", INFO: unset_qtdir},
 	"cd $HOME/clam/SMSTools",
-	"scons clam_sconstools=$HOME/clam/CLAM/scons/sconstools install_prefix=$HOME/local clam_prefix=$HOME/local",
+	"scons clam_sconstools=$HOME/clam/CLAM/scons/sconstools prefix=$HOME/local clam_prefix=$HOME/local",
 	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
 	"rm -f *.dmg",
 	"scons package",
@@ -102,13 +102,13 @@ clam.add_subtask("SMSTools packaging", [
 clam.add_subtask('vmqt4 compilation and examples', [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd $HOME/clam/Annotator/vmqt",
-	'scons clam_sconstools=$HOME/clam/CLAM/scons/sconstools install_prefix=$HOME/local clam_prefix=$HOME/local release=1 double=1',
+	'scons clam_sconstools=$HOME/clam/CLAM/scons/sconstools prefix=$HOME/local clam_prefix=$HOME/local release=1 double=1',
 	'scons examples',
 ] )
 clam.add_subtask("Annotator packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd $HOME/clam/Annotator",
-	"scons clam_vmqt4_path=vmqt clam_sconstools=$HOME/clam/CLAM/scons/sconstools install_prefix=$HOME/local clam_prefix=$HOME/local",
+	"scons clam_vmqt4_path=vmqt clam_sconstools=$HOME/clam/CLAM/scons/sconstools prefix=$HOME/local clam_prefix=$HOME/local",
 	"rm -f *.dmg",
 	"scons package",
 	"scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/"
@@ -117,7 +117,7 @@ clam.add_subtask("Annotator packaging", [
 clam.add_subtask("NetworkEditor packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd $HOME/clam/NetworkEditor",
-	"scons install_prefix=$HOME/local clam_prefix=$HOME/local",
+	"scons prefix=$HOME/local clam_prefix=$HOME/local",
 	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
 	"rm -f *.dmg",
 	"scons package",

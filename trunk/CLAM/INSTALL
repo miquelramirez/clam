@@ -45,7 +45,7 @@ provides already compiled packages for several platforms.
 
         $ scons --help
 
- Note that scons saves the last used options in the clam.conf file. 
+ Note that scons saves the last used options in the options.cache file. 
  These options will be used by default in further "scons" commands.
 
  MacOSX specific: the equivalent to LD_LIBRARY_PATH in mac is DYLD_LIBRARY_PATH.
@@ -57,7 +57,7 @@ provides already compiled packages for several platforms.
  If you are using svn they are folders at the CLAM trunk.
  Go to the root of the application source tree and issue: (maybe changing the prefix)
 
-        $ scons install_prefix=/usr/local clam_prefix=/usr/local
+        $ scons prefix=/usr/local clam_prefix=/usr/local
 
  For further building options do :
 

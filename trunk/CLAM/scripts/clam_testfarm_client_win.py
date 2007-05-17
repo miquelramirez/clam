@@ -96,7 +96,6 @@ clam.add_subtask('unit tests', [
 	set_qtdir_to_qt3,
 	'scons unit_tests'+
 	' clam_prefix=%s'%install_path +
-	' install_prefix=%s'%install_path +
 	' cppunit_prefix=f:\\clam-external-libs\\cppunit' +
 	' test_data_path=f:\\clam-sandboxes\\CLAM-TestData' +
 	' release=1 double=1',
@@ -110,7 +109,6 @@ clam.add_subtask('functional test', [
 	set_qtdir_to_qt3,
 	'scons functional_tests' +
 	' clam_prefix=%s'%install_path +
-	' install_prefix=%s'%install_path +
 	' cppunit_prefix=f:\\clam-external-libs\\cppunit' +
 	' test_data_path=f:\\clam-sandboxes\\CLAM-TestData' +
 	' release=1 double=1',
@@ -135,7 +133,7 @@ clam.add_subtask('smstools compilation', [
 	set_qtdir_to_qt3,
 	'scons' +
 	' clam_prefix=%s'%install_path +
-	' install_prefix=%s'%install_path +
+	' prefix=%s'%install_path +
 	' release=1 double=1'
 ] )
 '''
@@ -152,7 +150,7 @@ clam.add_subtask('vmqt compilation and examples', [
 	set_qtdir_to_qt4,
 	'scons ' +
 	' clam_prefix=%s'%install_path +
-	' install_prefix=%s'%install_path +
+	' prefix=%s'%install_path +
 	' release=1 double=1',
 	'scons examples'
 ] )
@@ -164,7 +162,7 @@ clam.add_subtask('annotator compilation', [
 	set_qtdir_to_qt4,
 	'scons' +
 	' clam_prefix=%s'%install_path +
-	' install_prefix=%s'%install_path +
+	' prefix=%s'%install_path +
 	' release=1 double=1'
 ] )
 
@@ -190,7 +188,7 @@ clam.add_subtask('network editor compilation', [
 	set_qtdir_to_qt4,
 	'scons' +
 	' clam_prefix=%s'%install_path +
-	' install_prefix=%s'%install_path +
+	' prefix=%s'%install_path +
 	' release=1 double=1'
 ] )
 
@@ -213,8 +211,7 @@ clam.add_subtask('VstPrototyper', [
 	cd_clam,
 	'cd trunk-testfarm\\NetworkEditor\\src\\\\vstprototyper',
 	'scons' +
-	' install_prefix=%s'%install_path +
-	' clam_prefix=%s'%install_path +
+	' prefix=%s'%install_path +
 	' clam_sconstools=%s'%sconstools_path +
 	' vstsdk_path=f:\\clam-external-libs\\\\vstsdk2.3'
 ] )

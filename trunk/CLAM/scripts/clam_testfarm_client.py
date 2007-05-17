@@ -65,7 +65,7 @@ clam.add_subtask("Unit Tests", [
 #	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/CLAM",
 	"cd test",
-	"scons test_data_path=$HOME/clam/testdata  install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
+	"scons test_data_path=$HOME/clam/testdata  clam_prefix=$HOME/local", # TODO: test_data_path and release
 	"cd UnitTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD: "./UnitTests", INFO: lambda x:x},
@@ -75,7 +75,7 @@ clam.add_subtask("Functional Tests", [
 #	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/CLAM",
 	"cd test",
-	"scons test_data_path=$HOME/clam/testdata  install_prefix=$HOME/local clam_prefix=$HOME/local", # TODO: test_data_path and release
+	"scons test_data_path=$HOME/clam/testdata  clam_prefix=$HOME/local", # TODO: test_data_path and release
 	"cd FunctionalTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD:"./FunctionalTests", INFO: lambda x:x},
@@ -89,7 +89,7 @@ clam.add_subtask("CLAM Examples", [
 clam.add_subtask("SMSTools installation", [
 #	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/SMSTools",
-	"scons install_prefix=$HOME/local clam_prefix=$HOME/local",
+	"scons prefix=$HOME/local clam_prefix=$HOME/local",
 	"scons install",
 	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
 ] )
@@ -97,19 +97,19 @@ clam.add_subtask("SMSTools installation", [
 
 clam.add_subtask('vmqt4 compilation and examples', [
 	"cd $HOME/clam/Annotator/vmqt",
-	'scons  install_prefix=$HOME/local clam_prefix=$HOME/local release=1 double=1',
+	'scons  prefix=$HOME/local clam_prefix=$HOME/local release=1 double=1',
 	'scons examples',
 ] )
 clam.add_subtask("Annotator installation", [
 	"cd $HOME/clam/Annotator",
-	"scons clam_vmqt4_path=vmqt  install_prefix=$HOME/local clam_prefix=$HOME/local",
+	"scons clam_vmqt4_path=vmqt  prefix=$HOME/local clam_prefix=$HOME/local",
 	"scons install",
 ] )
 
 clam.add_subtask("NetworkEditor installation", [
 #	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/NetworkEditor",
-	"scons install_prefix=$HOME/local clam_prefix=$HOME/local",
+	"scons prefix=$HOME/local clam_prefix=$HOME/local",
 	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
 ] )
 

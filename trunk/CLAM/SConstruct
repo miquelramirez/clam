@@ -129,11 +129,11 @@ def configureModules( clam_env ) :
 # helper functions
 def setup_build_options( env ) :
 	# configuration options:
-	opts = Options('clam.conf')
+	opts = Options('options.cache')
 	
 	# global options
 	opts.Add( PathOption( 'prefix', 'Install location for CLAM', '/usr/local'))
-	opts.Add( PathOption( 'install_prefix', 'Install location when packaging (just for .deb creation)', '.'))
+	opts.Add( PathOption( 'prefix_for_packaging', 'Install location when packaging (just for .deb creation)', '.'))
 	if sys.platform == 'win32' : #!= 'linux2' :
 		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
 	if sys.platform == 'win32' :
@@ -178,8 +178,8 @@ def setup_build_options( env ) :
 	opts.Add( 'distcc_hosts', 'Defines compiling hosts, if defined enables the distcc compiler', '')
 	
 	opts.Update(env)
-	opts.Save('clam.conf', env) # Save, so user doesn't have to 
-				  				# specify PREFIX every time
+	opts.Save('options.cache', env) # Save, so user doesn't have to 
+	  				# specify prefix and other options every time
 
 	Help("""
 configure : Configures clam libraries. This is a mandatory step

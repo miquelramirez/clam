@@ -8,7 +8,6 @@ clamToolPath="../scons/sconstools"
 options = Options('options.cache')
 
 options.Add( PathOption( 'clam_prefix', 'Prefix were CLAM was installed', '') )
-options.Add( PathOption( 'install_prefix', 'Prefix where Network editor is going to be installed', '/usr/local') )
 if sys.platform == 'win32' :
 	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '' ))
 options.Add( BoolOption( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )

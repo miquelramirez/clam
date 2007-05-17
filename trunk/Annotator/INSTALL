@@ -14,7 +14,7 @@ from the source tarballs.
  3. Compile the CLAM Music Annotator.
 
     From the CLAM-Annotator source root type:
-	$ scons clam_prefix=/usr/local install_prefix=/usr/local
+	$ scons clam_prefix=/usr/local prefix=/usr/local
 
  4. Install the CLAM-Annotator
 

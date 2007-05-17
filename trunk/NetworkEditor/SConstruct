@@ -4,7 +4,7 @@ import glob
 import sys
 
 options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('install_prefix', 'The prefix where the application will be installed', ''))
+options.Add(PathOption('prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt4/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
@@ -116,7 +116,7 @@ if sys.platform=="win32" :
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 if sys.platform=='linux2' :
-	# TODO: This should not be hardcoded neither install_prefix (because package install)
+	# TODO: This should not be hardcoded neither prefix (because package install)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
 
 if sys.platform=='linux2' :
@@ -221,12 +221,12 @@ installation = {
 }
 
 installTargets = [
-	env.Install( env['install_prefix']+path, files ) for path, files in installation.items() ]
+	env.Install( env['prefix']+path, files ) for path, files in installation.items() ]
 
 if sys.platform=='win32' : 
 	installTargets += [
 		env.Install(
-			env['install_prefix']+"/bin", 
+			env['prefix']+"/bin", 
 			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
 			) for dll in 'Core', 'Gui', 'OpenGL']
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
