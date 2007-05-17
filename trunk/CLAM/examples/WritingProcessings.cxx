@@ -5,7 +5,6 @@
 #include <CLAM/InPort.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
-#include <CLAM/NullProcessingConfig.hxx>
 
 // Those two configuration types could be the ones you choose.
 // Your own ones or any type already in CLAM.
@@ -20,18 +19,13 @@ class MyProcessing : public CLAM::Processing
 	CLAM::OutPort<MyOutputDataType> mOut;
 public:
 	const char* GetClassName() const { return "MyProcessing"; }
-	MyProcessing() 
+	MyProcessing(const Config& config = Config()) 
 		: mIn("My Input", this)
 		, mOut("My Output", this) 
 	{
-		Configure( Config() );
+		Configure( config );
 	}
  
-	bool ConcreteConfigure(const CLAM::ProcessingConfig&)
-	{
-		return true; // Always gets properly configurated
-	}
-	
 	bool Do()
 	{
 		bool result = Do(mIn.GetData(), mOut.GetData()); 
