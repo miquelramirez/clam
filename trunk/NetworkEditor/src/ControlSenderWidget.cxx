@@ -87,7 +87,7 @@ void ControlSenderWidget::setupSlider(QAbstractSlider *slider)
 {
 	slider->setMinimum(0);
 	slider->setMaximum(int(ceil((_max - _min) / _step)));
-	slider->setValue(int(floor(((_default - _min) / _step)-0.5)));
+	slider->setValue(int(floor(((_default - _min) / _step)+0.5)));
 
 	connect(slider, SIGNAL(valueChanged(int)), 
 			this, SLOT(stepControlChanged(int)));
@@ -124,7 +124,7 @@ void ControlSenderWidget::continuousControlChanged(double value)
 	if (_updating) return;
 	_updating = true;
 
-	int svalue = int(round((value - _min) / _step));
+	int svalue = int(floor(((value - _min) / _step)+0.5));
 	if (_slider) _slider->setValue(svalue);
 	if (_dial) _dial->setValue(svalue);
 	_sender->SendControl(value);
