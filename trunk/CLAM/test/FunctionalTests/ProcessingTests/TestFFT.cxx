@@ -1,14 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 #include "similarityHelper.hxx"
-#ifdef USE_FFTW
-#include "FFT_rfftw.hxx"
-#endif
-#ifdef USE_FFTW3
-#include "FFT_fftw3.hxx"
-#endif
-#include "FFT_numrec.hxx"
-#include "FFT_ooura.hxx"
+#include "FFT_base.hxx"
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include "XMLStorage.hxx"
@@ -28,7 +21,8 @@ namespace CLAMTest
 
 		std::string mPathToTestData;
 
-		virtual CLAM::FFT_base & getProcessing()=0;
+		CLAM::FFT_base * mProcessing;
+		virtual const std::string getProcessing()=0;
 		void setupSine_F0400Hz_SR8kHz( CLAM::Audio& audio, int nSamples ) 
 		{
 			const CLAM::TSize sampleRate = 8000;
@@ -80,12 +74,14 @@ namespace CLAMTest
 	public:
 		void setUp()
 		{
+			mProcessing = (CLAM::FFT_base*)CLAM::Factory<CLAM::Processing>::GetInstance().Create(getProcessing());
 			mPathToTestData = GetTestDataDirectory("spectralData/");
 			loadBack2BackDataset( mPathToTestData );
 		}
 
 		void tearDown()
 		{
+			delete mProcessing;
 		}
 
 	protected:
@@ -95,7 +91,6 @@ namespace CLAMTest
 			CLAM::Spectrum  output;
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
 			setupSpectrumToStoreFFTOutput( output );
@@ -103,10 +98,10 @@ namespace CLAMTest
 			output.SetSize( CLAM::TSize(input.GetSize()/2 + 1) );
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Configure( processingConfig );
-			processing.Start();
-			processing.Do( input, output );
-			processing.Stop();
+			mProcessing->Configure( processingConfig );
+			mProcessing->Start();
+			mProcessing->Do( input, output );
+			mProcessing->Stop();
 
 			double similarity = evaluateSimilarity( smReferenceP2Spectrum.GetMagBuffer(),
 								output.GetMagBuffer() );
@@ -126,7 +121,6 @@ namespace CLAMTest
 			output.SetType(flg);
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
 
@@ -134,11 +128,11 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Configure( processingConfig );
+			mProcessing->Configure( processingConfig );
 			
-			processing.Start();
-			processing.Do(input,output);
-			processing.Stop();
+			mProcessing->Start();
+			mProcessing->Do(input,output);
+			mProcessing->Stop();
 
 			flg.bMagPhase=1;
 			output.SetTypeSynchronize(flg);
@@ -160,7 +154,6 @@ namespace CLAMTest
 			output.SetType(flg);
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
 
@@ -169,10 +162,10 @@ namespace CLAMTest
 			processingConfig.SetAudioSize( input.GetSize() );
 
 			
-			processing.Configure( processingConfig );
-			processing.Start();
-			processing.Do(input,output);
-			processing.Stop();
+			mProcessing->Configure( processingConfig );
+			mProcessing->Start();
+			mProcessing->Do(input,output);
+			mProcessing->Stop();
 
 			flg.bMagPhase=1;
 			output.SetTypeSynchronize(flg);
@@ -196,7 +189,6 @@ namespace CLAMTest
 			output.SetType(flg);
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_1024samples( input );
 
@@ -204,11 +196,11 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Configure( processingConfig );
+			mProcessing->Configure( processingConfig );
 			
-			processing.Start();
-			processing.Do(input,output);
-			processing.Stop();
+			mProcessing->Start();
+			mProcessing->Do(input,output);
+			mProcessing->Stop();
 
 			flg.bMagPhase=1;
 			output.SetTypeSynchronize(flg);
@@ -226,7 +218,6 @@ namespace CLAMTest
 			CLAM::Spectrum  output;
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_884samples( input );
 			setupSpectrumToStoreFFTOutput( output );
@@ -235,11 +226,11 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			processing.Configure( processingConfig );
+			mProcessing->Configure( processingConfig );
 			
-			processing.Start();
-			processing.Do( input, output );
-			processing.Stop();
+			mProcessing->Start();
+			mProcessing->Do( input, output );
+			mProcessing->Stop();
 
 			double similarity = evaluateSimilarity( smReferenceNP2Spectrum.GetMagBuffer(),
 								output.GetMagBuffer() );
@@ -255,7 +246,6 @@ namespace CLAMTest
 			CLAM::Spectrum  output;
 
 			CLAM::FFTConfig processingConfig;
-			CLAM::FFT_base&      processing = getProcessing();
 
 			setupSine_F0400Hz_SR8kHz_884samples( input );
 			setupSpectrumToStoreFFTOutput( output );
@@ -264,7 +254,7 @@ namespace CLAMTest
 
 			processingConfig.SetAudioSize( input.GetSize() );
 
-			CPPUNIT_ASSERT_EQUAL( false, processing.Configure( processingConfig ) );
+			CPPUNIT_ASSERT_EQUAL( false, mProcessing->Configure( processingConfig ) );
 		}
 	};
 
@@ -287,10 +277,9 @@ namespace CLAMTest
 		CPPUNIT_TEST_SUITE_END();
 
 	protected:
-		virtual CLAM::FFT_base & getProcessing()
+		virtual const std::string getProcessing()
 		{
-			static CLAM::FFT_fftw3 fft;
-			return fft;
+			return "FFT_fftw3";
 		}
 	};
 #endif
@@ -308,10 +297,9 @@ namespace CLAMTest
 		CPPUNIT_TEST_SUITE_END();
 
 	protected:
-		virtual CLAM::FFT_base & getProcessing()
+		virtual const std::string getProcessing()
 		{
-			static CLAM::FFT_rfftw fft;
-			return fft;
+			return "FFT_rfftw";
 		}
 	};
 #endif
@@ -328,10 +316,9 @@ namespace CLAMTest
 		CPPUNIT_TEST_SUITE_END();
 
 	protected:
-		virtual CLAM::FFT_base & getProcessing()
+		virtual const std::string getProcessing()
 		{
-			static CLAM::FFT_ooura fft;
-			return fft;
+			return "FFT_ooura";
 		}
 	};
 
@@ -348,10 +335,9 @@ namespace CLAMTest
 		CPPUNIT_TEST_SUITE_END();
 
 	protected:
-		virtual CLAM::FFT_base & getProcessing()
+		virtual const std::string getProcessing()
 		{
-			static CLAM::FFT_numrec fft;
-			return fft;
+			return "FFT_numrec";
 		}
 	};
 
