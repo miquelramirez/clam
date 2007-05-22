@@ -1,7 +1,12 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 #include "similarityHelper.hxx"
+#ifdef USE_FFTW
 #include "FFT_rfftw.hxx"
+#endif
+#ifdef USE_FFTW3
+#include "FFT_fftw3.hxx"
+#endif
 #include "FFT_numrec.hxx"
 #include "FFT_ooura.hxx"
 #include "Audio.hxx"
@@ -284,7 +289,8 @@ namespace CLAMTest
 	protected:
 		virtual CLAM::FFT_base & getProcessing()
 		{
-			return *(CLAM::FFT_base*)CLAM::Factory<CLAM::Processing>::GetInstance().Create("FFT_fftw3");
+			static CLAM::FFT_fftw3 fft;
+			return fft;
 		}
 	};
 #endif
