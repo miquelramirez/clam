@@ -198,15 +198,17 @@ clam.add_subtask('neteditor install', [
 	'cd trunk-testfarm\\NetworkEditor',
 	'scons install'
 ])
+'''
 clam.add_subtask('neteditor package', [
 	cd_clam,
 	'cd trunk-testfarm\\NetworkEditor',
-	'scons package'
+	'rm -f *.exe',
+	'scons package',
+	'scp *.exe clamadm@www.iua.upf.edu:download/win/svnsnapshots/'
 ])
-'''
 
 
-'''
+
 clam.add_subtask('VstPrototyper', [
 	cd_clam,
 	'cd trunk-testfarm\\NetworkEditor\\src\\\\vstprototyper',
@@ -215,7 +217,6 @@ clam.add_subtask('VstPrototyper', [
 	' clam_sconstools=%s'%sconstools_path +
 	' vstsdk_path=f:\\clam-external-libs\\\\vstsdk2.3'
 ] )
-'''
 
 
 Runner( clam, 
