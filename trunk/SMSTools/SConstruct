@@ -151,6 +151,9 @@ sources += [ os.path.join( os.path.dirname(uiccpp),
 if sys.platform=="win32" :
 	sources += env.RES(source=["resources/SMSTools.rc"])
 	env.AppendUnique(LIBS=['opengl32'])
+	env.Append( CPPFLAGS=['-DQT_DLL', '-DQT_THREAD_SUPPORT', '-DVISUAL'] )
+	env.Append( LIBS=['advapi32', 'comctl32', 'comdlg32', 'gdi32', 'kernel32', 'ole32', 'oleaut32', 'shell32', 'user32', 'uuid', 'winspool','wsock32'] )
+
 
 env.Append(CPPPATH=includePaths)
 if sys.platform=='darwin' :
