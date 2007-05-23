@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2001-2007 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -20,24 +20,26 @@
  */
 
 
-#ifndef _BasicFlowControl_hxx_
-#define _BasicFlowControl_hxx_
+#ifndef _BalanceEquationsStaticFlowControl_hxx_
+#define _BalanceEquationsStaticFlowControl_hxx_
 
 #include "FlowControl.hxx"
 
 namespace CLAM
 {
 
-class BasicFlowControl : public FlowControl
+
+class BalanceEquationsStaticFlowControl : public FlowControl
 {
 public:
-	BasicFlowControl();
-	virtual ~BasicFlowControl(){}
+	BalanceEquationsStaticFlowControl();
+	virtual ~BalanceEquationsStaticFlowControl(){}
 
 	void Do();
 };
 
 } // namespace CLAM
 
-#endif // _BasicFlowControl_hxx_
+
+#undef
 
