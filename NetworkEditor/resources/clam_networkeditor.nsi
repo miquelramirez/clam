@@ -75,7 +75,6 @@ Section "Principal" SEC01
   File '${EXTERNALDLLDIR}\libsndfile.dll'
   File '${EXTERNALDLLDIR}\ogg.dll'
   File '${EXTERNALDLLDIR}\pthreadVCE.dll'
-  File '${EXTERNALDLLDIR}\qt-mt322.dll'
   File '${EXTERNALDLLDIR}\vorbis.dll'
   File '${EXTERNALDLLDIR}\vorbisenc.dll'
   File '${EXTERNALDLLDIR}\vorbisfile.dll'
