@@ -71,7 +71,7 @@ env.EnableQt4Modules([
 	'QtXml',
 	'QtSvg',
 	'QtUiTools',
-#	'QtDesigner',
+	'QtDesigner',
 #	'Qt3Support',
 	], debug=False)
 
