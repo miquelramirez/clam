@@ -22,7 +22,7 @@
 #ifndef __XMLWRITECONTEXT_HXX__
 #define __XMLWRITECONTEXT_HXX__
 
-#include <iosfwd>
+#include <ostream>
 #include <string>
 #include "Assert.hxx"
 
