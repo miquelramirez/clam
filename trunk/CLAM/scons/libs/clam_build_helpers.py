@@ -313,9 +313,9 @@ class PackageData :
 	def linux_create_pkg_descriptor( self, env, out_file ) :
 		out = open(out_file, 'w')
 	
-		print >> out, "prefix = /%s"%env['prefix']
-		print >> out, "libdir = /%s/lib"%env['prefix']
-		print >> out, "includedir = /%s/include"%env['prefix']
+		print >> out, "prefix = %s"%env['prefix']
+		print >> out, "libdir = ${prefix}/lib"
+		print >> out, "includedir = ${prefix}/include"
 		print >> out
 		print >> out, "Name: %s"%self.name	
 		print >> out, "Version: %s"%self.version
