@@ -433,7 +433,7 @@ def enable_modules(self, modules, debug=False) :
 		for module in modules :
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include")])
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include",module)])
-			if module in pclessModules :
+			if module in staticModules :
 				self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
 				self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib")])
 			else :
