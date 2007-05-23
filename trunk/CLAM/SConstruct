@@ -8,7 +8,11 @@ sys.path.append( os.path.abspath("scons/libs/") )
 from clam_build_helpers import *
 from clam_dependent_libs_checks import *
 
-
+# TODO: Must solve the dependency loop of options and platforms
+crosscompiling = True
+isWindowsPlatform = sys.platform=='win32' or crosscompiling
+isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isDarwinPlatform = sys.platform=='darwin'
 
 def load_config_file_to_env( env, dir ):
 	opts = Options(dir+'/flags.conf')
@@ -42,12 +46,9 @@ def configure_clam(clam_env) :
 ############################################"""
 	# Sandbox setup
 	clam_env.Replace( QT_LIB = '' )
-	if sys.platform == 'win32' : #!= 'linux2' :
-		libbasenames = [ 'xercesc', 'fftw', 'dxsdk', 'id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','portaudio','pthreads']
+	if isWindowsPlatform :
+		libbasenames = [ 'xercesc', 'fftw', 'fftw3', 'dxsdk', 'id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','portaudio','pthreads']
 		for basename in libbasenames :
-			if sys.platform == 'win32' : path_sep = '\\'
-			if sys.platform == 'darwin' : path_sep = '/'
-
 			include_path = os.path.join(clam_env['sandbox_path'], basename, 'include')
 			print( 'include path: ' + include_path )
 			lib_path =  os.path.join(clam_env['sandbox_path'], basename, 'lib')
@@ -55,14 +56,16 @@ def configure_clam(clam_env) :
 			clam_env.Append( CPPPATH= [include_path] )
 			clam_env.Append( LIBPATH = [lib_path] )
 			# if flags is not defined it will crash while loading flags.conf
-		environmentIncludes = os.environ['INCLUDE']
+		environmentIncludes = ""
+		if os.environ.has_key('INCLUDE') : environmentIncludes = os.environ['INCLUDE']
 		environmentIncludesList = environmentIncludes.split(';')
 		for include in environmentIncludesList :
+			if not include : continue
 			print( 'adding include dir from windows config: ' + include )
 			clam_env.Append( CPPPATH = [include] )
-	if sys.platform == 'linux2':
+	if isLinuxPlatform :
 		clam_env.Append( CPPPATH= ['/usr/local/include'] )
-	if sys.platform == 'darwin' :
+	if isDarwinPlatform :
 		clam_env.Append( CPPPATH= ['/usr/local/include', '/opt/local/include'] )
 		
 
@@ -134,30 +137,26 @@ def setup_build_options( env ) :
 	# global options
 	opts.Add( PathOption( 'prefix', 'Install location for CLAM', '/usr/local'))
 	opts.Add( PathOption( 'prefix_for_packaging', 'Install location when packaging (just for .deb creation)', '.'))
-	if sys.platform == 'win32' : #!= 'linux2' :
+	if isWindowsPlatform :
 		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
-		release_option = 'no'
-	else :
-		release_option = 'no'
-	opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', release_option))
+	opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no'))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
 	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ))
+	if sys.platform == "linux2" :
+		opts.Add( BoolOption( 'crossmingw', '', 'no' ))
 
 	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
 	opts.Add( BoolOption( 'optimize_and_lose_precision', 'Use tabulated trigonometric functions and the like', 'no' )) 
 	# clam_core options
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
-	if sys.platform == 'linux2' or sys.platform == 'darwin' :
+	if not isWindowsPlatform :
 		opts.Add( BoolOption( 'with_osc', 'Enables/Disables OSC support', 'no') )
 		opts.Add( BoolOption( 'with_jack', 'Enables/Disable JACK support', 'yes') )
 	else :
 		opts.Add( BoolOption( 'with_jack', 'Enables/Disable JACK support', 'no') )
-	
-	if sys.platform == 'linux2' :
-		ladspa_option=1
-	else:
-		ladspa_option=0
+
+	ladspa_option = (sys.platform == 'linux2' and not crosscompiling)
 	opts.Add( BoolOption( 'with_ladspa', 'Ladspa plugin support', ladspa_option) )
 	
 	# clam_processing options
@@ -171,11 +170,11 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'with_mad', 'Enables mpeg 1 layer 3 files reading and writing support', 'yes' ) )
 	opts.Add( BoolOption( 'with_id3', 'Enables support for accesing ID3 tags on mpeg audio streams', 'yes') )
 	opts.Add( BoolOption( 'with_portaudio', 'Enables audio device I/O using PortAudio', 'yes') )
-	if sys.platform == 'linux2' :
+	if isLinuxPlatform :
 		opts.Add( BoolOption( 'with_alsa', 'Enables PCM and MIDI device I/O through ALSA', 'yes' ) )
-	elif sys.platform == 'darwin' :
+	elif isDarwinPlatform :
 		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','portaudio') ) )
-	elif sys.platform == 'win32' :
+	elif isWindowsPlatform :
 		opts.Add( EnumOption( 'audio_backend', 'Selects audio PCM i/o library used by CLAM backend', 'rtaudio', ('rtaudio','directx','portaudio') ) )
 	opts.Add( BoolOption( 'with_portmidi', 'Enables MIDI device I/O through portmidi', 'no' ) )
 
@@ -240,6 +239,9 @@ clam_env.SConsignFile()
 setup_build_options( clam_env )
 
 clam_env.Append( CPPFLAGS = '' )
+crosscompiling = clam_env.has_key('crossmingw') and clam_env['crossmingw']
+if crosscompiling :
+	clam_env.Tool('crossmingw',toolpath=['scons/sconstools'])
 
 if clam_env['distcc_hosts'] :
 	clam_env['CXX'] = 'distcc g++'
@@ -266,7 +268,7 @@ create_custom_builders(clam_env)
 
 clam_env['CXXFILESUFFIX'] = '.cxx'
 
-if sys.platform=='win32' :
+if isWindowsPlatform :
 	clam_env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 
 if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() or ARGUMENTS and not "--help" in COMMAND_LINE_TARGETS:
