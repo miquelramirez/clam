@@ -11,7 +11,7 @@ from clam_dependent_libs_checks import *
 # TODO: Must solve the dependency loop of options and platforms
 crosscompiling = False
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 def load_config_file_to_env( env, dir ):
