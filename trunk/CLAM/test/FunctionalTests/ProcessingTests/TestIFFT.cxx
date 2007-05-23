@@ -1,10 +1,10 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 #include "similarityHelper.hxx"
-#include "IFFT_rfftw.hxx"
-#include "Audio.hxx"
-#include "Spectrum.hxx"
 #include "XMLStorage.hxx"
+
+#ifdef USE_FFTW
+#include "IFFT_rfftw.hxx"
 
 namespace CLAMTest
 {
@@ -92,7 +92,7 @@ namespace CLAMTest
 		{
 			// The signal that should be
 			CLAM::Audio  expectedOutput;
-			// The signal synthesized by the IFFT_rfftw processing
+			// The signal synthesized by the IFFT processing
 			CLAM::Audio  actualOutput;
 
 			setupSine_F0400Hz_SR8kHz_1024samples( expectedOutput );
@@ -126,7 +126,7 @@ namespace CLAMTest
 		{
 			// The signal that should be
 			CLAM::Audio  expectedOutput;
-			// The signal synthesized by the IFFT_rfftw processing
+			// The signal synthesized by the IFFT processing
 			CLAM::Audio  actualOutput;
 
 			setupSine_F0400Hz_SR8kHz_884samples( expectedOutput );
@@ -163,4 +163,7 @@ namespace CLAMTest
 	CLAM::Spectrum IFFTFunctionalTest::smReferenceP2Spectrum;
 	CLAM::Spectrum IFFTFunctionalTest::smReferenceNP2Spectrum;	
 }
+
+#endif
+
 
