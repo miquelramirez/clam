@@ -24,18 +24,18 @@
 #ifndef _TokenDelay_
 #define _TokenDelay_
 
-#include "Processing.hxx"
-#include "InControl.hxx"
-#include "InPort.hxx"
-#include "OutPort.hxx"
-#include "Component.hxx"
-#include "Enum.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/InPort.hxx>
+#include <CLAM/OutPort.hxx>
+#include <CLAM/Component.hxx>
+#include <CLAM/Enum.hxx>
 #include <string>
 #include <deque>
 
 using std::string;
 
-#include "Array.hxx"
+#include <CLAM/Array.hxx>
 
 namespace CLAM  
 {
@@ -63,7 +63,7 @@ protected:
 		AddMaxDelay();
 		UpdateData();
 		SetDelay(0);
-		SetMaxDelay(0);  
+		SetMaxDelay(1);  
 	}
 
 };
@@ -140,7 +140,6 @@ public:
 	* are not fulfilled. Very usefull when developing or maintaining this class. */
 	void FulfillsInvariant() const;
 
-
 	const char *GetClassName() const {return "TokenDelay";}
 
 	/**
@@ -199,7 +198,7 @@ private:
 // Class implementation
 
 
-#include "Err.hxx"
+#include <CLAM/Err.hxx>
 
 template <class T> 
 void TokenDelay<T>::Discard(T* toDiscard) {
@@ -224,7 +223,9 @@ bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c)
 template <class T> 
 bool TokenDelay<T>::Do(void)
 {
-	CLAM_ASSERT(false,"TokenDelay : the Do() with parameters should be used instead of this one.");
+	Do(mInput.GetData(), mOutput.GetData());
+	mInput.Consume();
+	mOutput.Produce();
 	return false;
 }
 
