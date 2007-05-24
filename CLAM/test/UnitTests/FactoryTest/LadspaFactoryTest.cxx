@@ -1,3 +1,7 @@
+#ifndef USE_LADSPA
+#warning "LADSPA tests disabled by CLAM linking options"
+#else
+
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 #include <string>
@@ -75,4 +79,5 @@ protected:
 
 } //namespace
 
+#endif
 
