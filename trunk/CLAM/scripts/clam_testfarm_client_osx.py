@@ -96,6 +96,7 @@ clam.add_subtask("SMSTools packaging", [
 	"rm -f *.dmg",
 	"scons package",
 	"scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/"
+	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py'
 ] )
 
 
@@ -112,6 +113,7 @@ clam.add_subtask("Annotator packaging", [
 	"rm -f *.dmg",
 	"scons package",
 	"scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/"
+	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py'
 ] )
 
 clam.add_subtask("NetworkEditor packaging", [
@@ -122,6 +124,7 @@ clam.add_subtask("NetworkEditor packaging", [
 	"rm -f *.dmg",
 	"scons package",
 	"scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/"
+	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py'
 ] )
 
 Runner( clam, 
