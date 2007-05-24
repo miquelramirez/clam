@@ -27,9 +27,14 @@
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
 #include "CLAM_Math.hxx"
+#include "Factory.hxx"
 
 namespace CLAM {
 
+	namespace detail
+	{
+		static Factory<Processing>::Registrator<FFT_ooura> regtFFT_ooura( "FFT_ooura" );
+	}
  
   bool FFT_ooura::ConcreteConfigure(const ProcessingConfig& c) {
 		  int oldSize=mSize;

@@ -27,12 +27,18 @@
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
 #include "CLAM_Math.hxx"
+#include "Factory.hxx"
 
 extern "C" {
 #include "numrecipes_fft.h"
 }
 
 namespace CLAM {
+
+	namespace detail
+	{
+		static Factory<Processing>::Registrator<FFT_numrec> regtFFT_numrec( "FFT_numrec" );
+	}
 
 
 	bool FFT_numrec::ConcreteConfigure(const ProcessingConfig& c)
