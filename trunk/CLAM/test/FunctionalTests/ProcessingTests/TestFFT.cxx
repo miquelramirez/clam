@@ -72,9 +72,13 @@ namespace CLAMTest
 		}
 
 	public:
+		FFTFunctionalTest()
+			: mProcessing(0)
+		{
+		}
 		void setUp()
 		{
-			mProcessing = (CLAM::FFT_base*)CLAM::Factory<CLAM::Processing>::GetInstance().Create(getProcessing());
+			mProcessing = (CLAM::FFT_base*)CLAM::Factory<CLAM::Processing>::GetInstance().CreateSafe(getProcessing());
 			mPathToTestData = GetTestDataDirectory("spectralData/");
 			loadBack2BackDataset( mPathToTestData );
 		}
@@ -82,6 +86,7 @@ namespace CLAMTest
 		void tearDown()
 		{
 			delete mProcessing;
+			mProcessing = 0;
 		}
 
 	protected:
