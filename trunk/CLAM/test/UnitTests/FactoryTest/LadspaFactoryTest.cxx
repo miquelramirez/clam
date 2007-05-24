@@ -1,6 +1,10 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 #include <string>
+#include "Processing.hxx"
+#include "LadspaFactory.hxx"
+#include "LadspaWrapper.hxx"
+#include "LadspaWrapperCreator.hxx"
 
 namespace CLAMTest
 {
@@ -13,134 +17,57 @@ class LadspaFactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE( LadspaFactoryTest );
 	CPPUNIT_TEST( testCreate_existing );
 	CPPUNIT_TEST( testCreate_nonExistingKey_throws );
+	CPPUNIT_TEST( testCreate_nonExistingFileName_throws );
 	CPPUNIT_TEST( testCreate_withTwoCreators );
 	CPPUNIT_TEST( testCreate_emptyCreatorMap_throws );
 	CPPUNIT_TEST_SUITE_END();
 protected:
-	class Processing //TODO delete. it should be CLAM::Processing 
-	{
-	public:
-		virtual ~Processing() {};
-	};
-	class LadspaWrapper : public Processing //TODO move to CLAM/src/Processing/Plugins (in namespace CLAM)
-	{
-		std::string _libraryFileName;
-		unsigned _index;
-	public:
-		LadspaWrapper( const std::string& libraryFileName, unsigned index ) 
-			: _libraryFileName( libraryFileName )
-			, _index( index )
-		{
-		}
-		const std::string& LibraryFileName() 
-		{ 
-			return _libraryFileName; 
-		}
-		unsigned Index()
-		{
-			return _index;
-		}
-	};
-	class LadspaWrapperCreator  //TODO move to CLAM/src/Processing/Plugins
-	{
-		std::string _libraryFileName;
-		unsigned _index;
-	public:
-		LadspaWrapperCreator( const std::string& libraryFileName, unsigned index ) 
-			: _libraryFileName( libraryFileName )
-			, _index( index )
-		{
-		}
-		virtual Processing* Create()
-		{
-			return new LadspaWrapper(_libraryFileName, _index);
-		}
-		virtual ~LadspaWrapperCreator() {};
-	};
-	class LadspaFactory
-	{
-	public:
-		typedef std::map< std::string, LadspaWrapperCreator* > LadspaCreatorMap;
-
-		LadspaFactory()
-		{
-		}
-		class NonExistingKeyError
-		{
-		};
-		class EmptyCreatorListError
-		{
-		};
-		Processing* Create(const std::string& key)
-		{
-			if( GetCreator( key ) == NULL )
-			{
-				throw NonExistingKeyError();
-			}
-
-			return GetCreator( key )->Create();
-		}
-		void AddCreator( const std::string& key, LadspaWrapperCreator* creator )
-		{
-			_creators[key] = creator;
-		}
-		LadspaWrapperCreator* GetCreator( const std::string& key )
-		{
-			if(_creators.begin() == _creators.end())
-			{
-				throw EmptyCreatorListError();
-			}
-
-			LadspaCreatorMap::const_iterator it = _creators.find( key );
-			if(it == _creators.end())
-				return NULL;
-			return it->second;
-		}
-	private:
-		LadspaCreatorMap _creators;
-	};
-
 	void testCreate_existing()
 	{
-		LadspaFactory factory;
-		factory.AddCreator( "foo", new LadspaWrapperCreator("lib.so", 1) );
-		Processing* processing = factory.Create("foo");
-		LadspaWrapper* wrapper = dynamic_cast<LadspaWrapper*>(processing);
-		CPPUNIT_ASSERT_EQUAL( std::string("lib.so"), wrapper->LibraryFileName() );
-		CPPUNIT_ASSERT_EQUAL( 1u, wrapper->Index() );
+		CLAM::LadspaFactory factory;
+		const std::string libName = "factoryID";
+		factory.AddCreator( "sine", new CLAM::LadspaWrapperCreator("/usr/lib/ladspa/sine.so", 1, libName) ) ;
+		CLAM::Processing* processing = factory.CreateSafe("sine");
+		CLAM::LadspaWrapper* wrapper = dynamic_cast<CLAM::LadspaWrapper*>(processing);
+		CPPUNIT_ASSERT_EQUAL( libName, std::string(wrapper->GetClassName()) );
 	}
 	void testCreate_nonExistingKey_throws()
 	{
-		LadspaFactory factory;
-		factory.AddCreator( "foo", new LadspaWrapperCreator("libfoo.so", 1) );
+		CLAM::LadspaFactory factory;
+		factory.AddCreator( "foo", new CLAM::LadspaWrapperCreator("lib.so", 1, "factoryID") );
 		try
 		{
-			factory.Create("non-existing");
+			factory.CreateSafe("non-existing");
 			CPPUNIT_FAIL("expected an exception");
-		} catch ( LadspaFactory::NonExistingKeyError& )
+		} catch ( CLAM::ErrFactory& ) {}
+	}
+	void testCreate_nonExistingFileName_throws()
+	{
+		CLAM::LadspaFactory factory;
+		factory.AddCreator( "foo", new CLAM::LadspaWrapperCreator("lib.so", 1, "factoryID") );
+		try
 		{
-		}
+			factory.CreateSafe("non-existing");
+			CPPUNIT_FAIL("expected an exception");
+		} catch ( CLAM::ErrFactory& ) {}
 	}
 	void testCreate_withTwoCreators()
 	{
-		LadspaFactory factory;
-		factory.AddCreator( "foo", new LadspaWrapperCreator("libfoo.so", 1) );
-		factory.AddCreator( "bar", new LadspaWrapperCreator("libbar.so", 2) );
-		Processing* processing = factory.Create("foo");
-		LadspaWrapper* wrapper = dynamic_cast<LadspaWrapper*>(processing);
-		CPPUNIT_ASSERT_EQUAL( std::string("libfoo.so"), wrapper->LibraryFileName() );
-		CPPUNIT_ASSERT_EQUAL( 1u, wrapper->Index() );
+		CLAM::LadspaFactory factory;
+		factory.AddCreator( "noise", new CLAM::LadspaWrapperCreator("/usr/lib/ladspa/noise.so", 1, "noiseLibName") );
+		factory.AddCreator( "sine", new CLAM::LadspaWrapperCreator("/usr/lib/ladspa/sine.so", 1, "sineLibName") );
+		CLAM::Processing* processing = factory.CreateSafe("sine");
+		CLAM::LadspaWrapper* wrapper = dynamic_cast<CLAM::LadspaWrapper*>(processing);
+		CPPUNIT_ASSERT_EQUAL( std::string("sineLibName"), std::string(wrapper->GetClassName()) );
 		
 	}
 	void testCreate_emptyCreatorMap_throws()
 	{
-		LadspaFactory factory;
+		CLAM::LadspaFactory factory;
 		try {
-			factory.Create("non-existing");
+			factory.CreateSafe("non-existing");
 			CPPUNIT_FAIL("expected an exception");
-		} catch ( LadspaFactory::EmptyCreatorListError& )
-		{
-		}
+		} catch ( CLAM::ErrFactory& ) {}
 	}
 
 	

@@ -16,28 +16,16 @@
 namespace CLAM
 {
 	
-void LadspaWrapperConfig::DefaultInit(void)
-{
-	AddAll();
-	UpdateData();
-	SetName("LadspaWrapper");
-	SetSampleRate(44100);
-	SetSize(512);
-	SetLibraryFileName("");
-	SetIndex(0);
-	SetFactoryKey("");
-}
-
 LadspaWrapper::LadspaWrapper()
 	: mInstance(0),
 	  mDescriptor(0),
 	  mSharedObject(0)
 {
-	LadspaWrapperConfig cfg;
+	Config cfg;
 	Configure(cfg);
 }
 
-LadspaWrapper::LadspaWrapper( const LadspaWrapperConfig & cfg )
+LadspaWrapper::LadspaWrapper( const Config & cfg = Config())
 	: mInstance(0),
 	  mDescriptor(0),
 	  mSharedObject(0)
@@ -50,10 +38,8 @@ LadspaWrapper::LadspaWrapper( const std::string& libraryFileName, unsigned index
 	  mDescriptor(0),
 	  mSharedObject(0)
 {
-	LadspaWrapperConfig cfg;
-	cfg.SetLibraryFileName(libraryFileName);
-	cfg.SetIndex(index);
-	cfg.SetFactoryKey(key);
+	Config cfg;
+	ConcreteConfigure( libraryFileName, index, key);
 	Configure(cfg);
 }
 
@@ -61,7 +47,7 @@ bool LadspaWrapper::Do()
 {
 	UpdatePortsPointers();
 	
-	mDescriptor->run(mInstance, mConfig.GetSize());
+	mDescriptor->run(mInstance, 512 );
 
 	for(unsigned int i=0;i<mOutputControlValues.size();i++)
 		GetOutControls().GetByNumber(i).SendControl(mOutputControlValues[i]);
@@ -72,21 +58,24 @@ bool LadspaWrapper::Do()
 		mOutputPorts[i]->Produce();
 	return true;
 }
-
-bool LadspaWrapper::ConcreteConfigure(const ProcessingConfig& c)
+bool LadspaWrapper::ConcreteConfigure(const std::string& libraryFileName, unsigned index, const std::string& factoryKey)
 {
-	CopyAsConcreteConfig(mConfig, c);
-	mSharedObject = dlopen(mConfig.GetLibraryFileName().c_str(), RTLD_LAZY);
+	mSharedObject = dlopen(libraryFileName.c_str(), RTLD_LAZY);
 	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)dlsym(mSharedObject, "ladspa_descriptor");
-	mDescriptor = function(mConfig.GetIndex());
-	mInstance = mDescriptor->instantiate(mDescriptor, mConfig.GetSampleRate());
+	if(!function)
+	{
+		std::string error = "[LADSPA] can't open library: " + libraryFileName;
+		throw ErrFactory(error.c_str());
+	}
+	mDescriptor = function(index);
+	mInstance = mDescriptor->instantiate(mDescriptor, 44100);
+	mFactoryKey = factoryKey;
 
 	ConfigurePortsAndControls();
 	UpdateControlsPointers();
 
 	return true;
 }
-
 void LadspaWrapper::RemovePortsAndControls()
 {
 	std::vector< AudioInPort* >::iterator itInPort;
@@ -127,14 +116,14 @@ void LadspaWrapper::ConfigurePortsAndControls()
 		if(LADSPA_IS_PORT_INPUT(portDescriptor) && LADSPA_IS_PORT_AUDIO(portDescriptor)) 
 		{
 			AudioInPort * port = new AudioInPort(mDescriptor->PortNames[i],this );
-			port->SetSize( mConfig.GetSize());
+			port->SetSize( 512 );
 			mInputPorts.push_back(port);
 		}
 		// out port
 		if(LADSPA_IS_PORT_OUTPUT(portDescriptor) && LADSPA_IS_PORT_AUDIO(portDescriptor)) 
 		{
 			AudioOutPort * port = new AudioOutPort(mDescriptor->PortNames[i],this );
-			port->SetSize( mConfig.GetSize() );
+			port->SetSize( 512 );
 			mOutputPorts.push_back(port);
 		}
 
@@ -210,7 +199,7 @@ void LadspaWrapper::UpdatePortsPointers()
 
 const char * LadspaWrapper::GetClassName() const
 {
-	return mConfig.GetFactoryKey().c_str();
+	return mFactoryKey.c_str();
 }
 
 } // namespace CLAM
