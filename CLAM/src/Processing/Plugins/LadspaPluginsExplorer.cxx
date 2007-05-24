@@ -46,7 +46,6 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 			std::cout << "[LADSPA] warning: could not open ladspa dir: " << ladspaPath << std::endl;
 			continue;
 		}
-		std::cout << "before reading dir" << std::endl;
 		struct dirent * dirEntry;
 		while ( (dirEntry = readdir(ladspaDir)) )
 		{
