@@ -8,7 +8,7 @@
 # $ svn co https://testfarm.svn.sourceforge.net/svnroot/testfarm/trunk testfarm 
 
 import sys
-sys.path.append('../src') #XXX write your path to testfarm/src here.
+sys.path.append('D:\\CLAM-sandboxes\\testfarm\\src') #XXX write your path to testfarm/src here.
 
 
 from task import *
@@ -43,21 +43,21 @@ def filter_svn_update( text ):
 update_command = { CMD: "svn up", INFO: filter_svn_update }
 
 def set_qtdir_to_qt4_fn(x) : 
-	os.environ['QTDIR']='f:\\Qt4.1.1\\'
+	os.environ['QTDIR']='D:\\CLAM-sandboxes\\Qt\\4.2.1'
 	return 'QTDIR set to ' + os.environ['QTDIR']
 set_qtdir_to_qt4 = {CMD: "echo seting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4_fn}
 
 def set_qtdir_to_qt3_fn(x) : 
-	os.environ['QTDIR']='f:\\clam-external-libs\\qt\\'
+	os.environ['QTDIR']='D:\\CLAM-sandboxes\\Qt\\3.3.4'
 	return 'QTDIR set to ' + os.environ['QTDIR']
 set_qtdir_to_qt3 = {CMD: "echo seting QTDIR to qt3 path ", INFO: set_qtdir_to_qt3_fn}
 
-os.environ['EXTERNALDLLDIR']='f:\\clam-external-libs\dlls'
-os.environ['CLAM_TEST_DATA']='f:\\clam-sandboxes\\CLAM-TestData'
+os.environ['EXTERNALDLLDIR']='D:\\CLAM-sandboxes\\CLAM\\externals\dlls'
+os.environ['CLAM_TEST_DATA']='D:\\CLAM-sandboxes\\CLAM\\test'
 
-cd_clam = 'cd f:\\clam-sandboxes'
-install_path = 'f:\\clam-sandboxes\\tlocal'
-sconstools_path = 'f:\\clam-sandboxes\\trunk-testfarm\\CLAM\\scons\\sconstools'
+cd_clam = 'cd D:\\CLAM-sandboxes'
+install_path = 'D:\\CLAM-sandboxes\\CLAM-bin'
+sconstools_path = 'D:\\CLAM-sandboxes\\CLAM\\scons\\sconstools'
 
 windows = Client("windows_xp-msvc")
 windows.brief_description = '<img src="http://clam.iua.upf.es/images/windows_icon.png"/>'
@@ -69,30 +69,30 @@ clam = Task(
 	)
 
 clam.set_check_for_new_commits(
-	checking_cmd = "cd f:\\clam-sandboxes\\trunk-testfarm\\ && svn status -u | grep \\*",
+	checking_cmd = "cd D:\\CLAM-sandboxes\\ && svn status -u | grep \\*",
 	minutes_idle=5
 )
 
 clam.add_deployment([
 	cd_clam,
-	"cd trunk-testfarm",
 	{ CMD: "svn up", INFO: filter_svn_update },
 	cd_clam,
-	"rm -rf tlocal\\*",
-	'cd trunk-testfarm\\CLAM\\scons\\libs',
+	"rm -rf CLAM-bin\\*",
+	'cd CLAM',
+	set_qtdir_to_qt3,
 	'scons configure'+
 	' prefix=%s'%install_path +
-	' sandbox_path=f:\\clam-external-libs' +
+	' sandbox_path=D:\\CLAM-sandboxes' +
 #	' qt_includes=f:\\clam-external-libs\\qt\\include' +
 #	' qt_libs=f:\\clam-external-libs\\qt\\lib' +
-	' with_portmidi=1 release=1 double=1',
+	' release=1 double=1 sandbox=1 checks=1 release_asserts=0 optimize_and_lose_precision=0 with_jack=0 with_fftw3=0 with_fftw=1 with_nr_fft=1 with_sndfile=1 with_oggvorbis=1 with_mad=1 with_id3=1 with_portaudio=1 with_portmidi=1',
 	'scons',
 	'scons install',
 ] )
 '''
 clam.add_subtask('unit tests', [
 	cd_clam,
-	'cd trunk-testfarm\\CLAM\\scons\\tests',
+	'cd CLAM\\tests',
 	set_qtdir_to_qt3,
 	'scons unit_tests'+
 	' clam_prefix=%s'%install_path +
@@ -105,7 +105,7 @@ clam.add_subtask('unit tests', [
 
 clam.add_subtask('functional test', [
 	cd_clam,
-	'cd trunk-testfarm\\CLAM\\scons\\tests',
+	'cd CLAM\\tests',
 	set_qtdir_to_qt3,
 	'scons functional_tests' +
 	' clam_prefix=%s'%install_path +
@@ -118,7 +118,7 @@ clam.add_subtask('functional test', [
 
 clam.add_subtask('clam examples compilation', [
 	cd_clam,
-	'cd trunk-testfarm\\CLAM\\scons\\examples',
+	'cd CLAM\\examples',
 	set_qtdir_to_qt3,
 	'scons' +
 	' clam_prefix=%s'%install_path +
@@ -129,7 +129,7 @@ clam.add_subtask('clam examples compilation', [
 
 clam.add_subtask('smstools compilation', [
 	cd_clam,
-	'cd trunk-testfarm\\SMSTools',
+	'cd SMSTools',
 	set_qtdir_to_qt3,
 	'scons' +
 	' clam_prefix=%s'%install_path +
@@ -139,14 +139,14 @@ clam.add_subtask('smstools compilation', [
 '''
 clam.add_subtask('smstools package', [
 	cd_clam,
-	'cd trunk-testfarm\\SMSTools',
+	'cd SMSTools',
 	'scons package'
 ])
 '''
 
 clam.add_subtask('vmqt compilation and examples', [
 	cd_clam,
-	'cd trunk-testfarm\\Annotator\\vmqt',
+	'cd Annotator\\vmqt',
 	set_qtdir_to_qt4,
 	'scons ' +
 	' clam_prefix=%s'%install_path +
@@ -158,7 +158,7 @@ clam.add_subtask('vmqt compilation and examples', [
 
 clam.add_subtask('annotator compilation', [
 	cd_clam,
-	'cd trunk-testfarm\\Annotator',
+	'cd Annotator',
 	set_qtdir_to_qt4,
 	'scons' +
 	' clam_prefix=%s'%install_path +
@@ -170,12 +170,12 @@ clam.add_subtask('annotator compilation', [
 '''
 clam.add_subtask('annotator install', [
 	cd_clam,
-	'cd trunk-testfarm\\Annotator',
+	'cd Annotator',
 	'scons install'
 ] )
 clam.add_subtask('annotator package', [
 	cd_clam,
-	'cd trunk-testfarm\\Annotator\\SimacServicesClient',
+	'cd Annotator\\SimacServicesClient',
 	'buildExeFromPython.py',
 	'cd ..',
 	'scons package'
@@ -184,7 +184,7 @@ clam.add_subtask('annotator package', [
 
 clam.add_subtask('network editor compilation', [
 	cd_clam,
-	'cd trunk-testfarm\\NetworkEditor',
+	'cd NetworkEditor',
 	set_qtdir_to_qt4,
 	'scons' +
 	' clam_prefix=%s'%install_path +
@@ -195,23 +195,25 @@ clam.add_subtask('network editor compilation', [
 '''
 clam.add_subtask('neteditor install', [
 	cd_clam,
-	'cd trunk-testfarm\\NetworkEditor',
+	'cd NetworkEditor',
 	'scons install'
 ])
 '''
 clam.add_subtask('neteditor package', [
 	cd_clam,
-	'cd trunk-testfarm\\NetworkEditor',
+	'cd NetworkEditor',
 	'rm -f *.exe',
 	'scons package',
-	'scp *.exe clamadm@www.iua.upf.edu:download/win/svnsnapshots/'
+	'scp *.exe clamadm@www.iua.upf.edu:download/win/svnsnapshots/',
+	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py'
+
 ])
 
 
 
 clam.add_subtask('VstPrototyper', [
 	cd_clam,
-	'cd trunk-testfarm\\NetworkEditor\\src\\\\vstprototyper',
+	'cd NetworkEditor\\src\\\\vstprototyper',
 	'scons' +
 	' prefix=%s'%install_path +
 	' clam_sconstools=%s'%sconstools_path +
