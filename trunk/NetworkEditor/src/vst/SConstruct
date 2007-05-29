@@ -79,8 +79,8 @@ includePaths = sourcePaths + extraPaths
 #commonSources = scanFiles('*.cpp', os.path.join(vstsdk_common_path, 'ADelay')
 #commonSources = scanFiles('*.cpp', '.')
 commonSources = ["CLAMVstPlugin.cxx"]
-#commonSources.append( os.path.join(vstsdk_common_path, 'AudioEffect.cpp') )
-#commonSources.append( os.path.join(vstsdk_common_path, 'audioeffectx.cpp') )
+commonSources.append( os.path.join(vstsdk_common_path, 'AudioEffect.cpp') )
+commonSources.append( os.path.join(vstsdk_common_path, 'audioeffectx.cpp') )
 
 
 #env.Append(LIBS=['vstgui'])
