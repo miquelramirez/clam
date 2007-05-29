@@ -34,7 +34,7 @@ CLAMInstallDir = env['clam_prefix']
 
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 env.Tool('clam', toolpath=[clam_sconstoolspath])
-env.Tool('qt4', toolpath=[clam_sconstoolspath])
+#env.Tool('qt4', toolpath=[clam_sconstoolspath])
 
 env['CXXFILESUFFIX'] = ['.cxx','.cpp']
 if not env['verbose']:
@@ -47,7 +47,7 @@ env.EnableClamModules([
 	'clam_audioio',
 	'clam_processing',
 	] , CLAMInstallDir)
-
+'''
 env.EnableQt4Modules([
 	'QtCore',
 	'QtGui',
@@ -61,7 +61,7 @@ env.EnableQt4Modules([
 #	'QtDesigner',
 #	'Qt3Support',
 	], debug=False)
-
+'''
 #vstsdk_path ='F:\\clam-external-libs\\vstsdk2.3'
 vstsdk_common_path = os.path.join( env['vstsdk_path'], 'source', 'common' )
 
