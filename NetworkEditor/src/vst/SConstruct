@@ -3,8 +3,6 @@ import os
 import glob
 import sys
 
-sys.exit()  #PAU: added this to get windows in green for 1.0!!!!!!!!!!!!!!!!!!!!!
-
 
 version='testing-version'
 options = Options('options.cache', ARGUMENTS)
@@ -81,7 +79,7 @@ includePaths = sourcePaths + extraPaths
 
 #commonSources = scanFiles('*.cpp', os.path.join(vstsdk_common_path, 'ADelay')
 #commonSources = scanFiles('*.cpp', '.')
-commonSources = ["CLAMVstPlugin.cpp"]
+commonSources = ["CLAMVstPlugin.cxx"]
 commonSources.append( os.path.join(vstsdk_common_path, 'AudioEffect.cpp') )
 commonSources.append( os.path.join(vstsdk_common_path, 'audioeffectx.cpp') )
 
@@ -109,7 +107,7 @@ if sys.platform == "win32" :
 programs = []
 programs += [ envConsole.Program(target="TestPlugin", source = commonSources+["TestPlugin.cxx"]) ]
 
-vstplugin = envPlugin.SharedLibrary("CLAMVstPlugin", source = commonSources+["CLAMVstPluginMain.cpp"] )
+vstplugin = envPlugin.SharedLibrary("CLAMVstPlugin", source = commonSources+["CLAMVstPluginMain.cxx"] )
 #vstplugin = envPlugin.SharedLibrary("ADelay", source = commonSources )
 
 
