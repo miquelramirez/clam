@@ -36,7 +36,7 @@ clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 
-env['CXXFILESUFFIX'] = '.cxx'
+env['CXXFILESUFFIX'] = ['.cxx','.cpp']
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
