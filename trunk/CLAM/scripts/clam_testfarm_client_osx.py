@@ -95,8 +95,8 @@ clam.add_subtask("SMSTools packaging", [
 	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
 	"rm -f *.dmg",
 	"scons package",
-	"scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/"
-	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py'
+	"scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/",
+	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 
@@ -112,8 +112,8 @@ clam.add_subtask("Annotator packaging", [
 	"scons clam_vmqt4_path=vmqt clam_sconstools=$HOME/clam/CLAM/scons/sconstools prefix=$HOME/local clam_prefix=$HOME/local",
 	"rm -f *.dmg",
 	"scons package",
-	"scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/"
-	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py'
+	"scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/",
+	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 clam.add_subtask("NetworkEditor packaging", [
@@ -123,8 +123,8 @@ clam.add_subtask("NetworkEditor packaging", [
 	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
 	"rm -f *.dmg",
 	"scons package",
-	"scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/"
-	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py'
+	"scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/",
+	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 Runner( clam, 
