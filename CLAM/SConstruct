@@ -1,4 +1,5 @@
 #!/usr/bin/python
+EnsureSConsVersion(0, 96, 92)
 import sys
 import os
 import shelve
@@ -7,7 +8,6 @@ import copy
 sys.path.append( os.path.abspath("scons/libs/") )
 from clam_build_helpers import *
 from clam_dependent_libs_checks import *
-
 # TODO: Must solve the dependency loop of options and platforms
 crosscompiling = False
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
