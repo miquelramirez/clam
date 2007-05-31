@@ -98,7 +98,11 @@ public:
 	}
 
 public: // Inner classes. Public for better testing
-
+	/**
+	 * This class is an implementation class of the Factory. It is basically
+	 * a container that maps keys with creators. It is not ment to be used
+	 * directly by the user.
+	 */
 	class Registry
 	{
 	private:
@@ -217,7 +221,15 @@ public: // Inner classes. Public for better testing
 		}
 
 	};
-
+	/**
+ 	* This class provides a convenient way to add items (creators) into a factory.
+ 	* To add class A (subclass of Base) to the factory it's useful to declare a static 
+ 	* Registrator object like this: static Factory<Base>::Registrator<A> reg("key");
+ 	* The Registrator constructor called at load-time is in charge to insert the creator
+ 	* to the factory.
+ 	* Various constructors exists giving the user options like using either 
+ 	* the singleton factory or a given one.
+ 	*/
 	template< typename ConcreteProductType>
 	class Registrator
 	{
