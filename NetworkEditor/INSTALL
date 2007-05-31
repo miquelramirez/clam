@@ -31,3 +31,15 @@ from the source tarballs.
  Single command to recompile and install clam and then this application:
 
  $ (cd ../CLAM/scons/libs && scons && scons install) && scons && ./NetworkEditor
+
+ When doing development the recommended procedure to run designer and
+ prototyper with plugins without installing is:
+
+    $ cd NetworkEditor
+    $ export QT_PLUGIN_PATH=.
+    $ mkdir designer
+    $ scons && cp libCLAMWidgets.so designer
+    $ designer-qt4
+    $ ./Prototyper
+
+
