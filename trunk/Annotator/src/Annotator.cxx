@@ -726,6 +726,11 @@ void Annotator::addInstantView()
 	CLAM_Annotator::InstantView config;
 	config.SetType(viewType);
 	if (!plugin->configureDialog(mProject, config)) return;
+	if (!mProject.HasViews())
+	{
+		mProject.AddViews();
+		mProject.UpdateData();
+	}
 	plugin->createView(mVSplit, mProject, config);
 	mProject.GetViews().push_back(config);
 	markProjectChanged(true);
