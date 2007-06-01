@@ -22,11 +22,13 @@ Consider that such descriptors are computed every 2048 samples so their precissi
 
   <Songs>
     <Song>
-      <SoundFile>SongsTest/Debaser-WoodenHouse.mp3</SoundFile>
+      <SoundFile>SongsTest/Debaser-CoffeeSmell.mp3</SoundFile>
     </Song>
     <Song>
       <SoundFile>SongsTest/Debaser-WoodenHouse.mp3</SoundFile>
     </Song>
   </Songs>
+
+  <Views/>
 
 </Project>
