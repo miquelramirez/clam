@@ -11,7 +11,7 @@
     </Attribute>
     <Attribute name="Danceability" scope="Song" type="Float">
       <Documentation>&lt;p&gt;The &lt;em&gt;Danceability&lt;/em&gt; is a 0 to 10 score that depends on how much defined is the rhythm&lt;/p&gt;
-&lt;p&gt;Data for this data is not the one in Simac but randomly generated.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;Data for this data is not the one in Simac but randomly generated.&lt;/b&gt;&lt;/p&gt;
 </Documentation>
       <MinValue>0</MinValue>
       <MaxValue>10</MaxValue>
@@ -104,6 +104,9 @@ The unit of this measure can be dB or none, depending on the scale set for the m
     <Attribute name="Rolloff" scope="Frame" type="Float"/>
     <Attribute name="Slope" scope="Frame" type="Float"/>
     <Attribute name="HighFrequencyContent" scope="Frame" type="Float"/>
+    <Attribute name="MelFrequencyCepstrumCoefficients" scope="Frame" type="FloatArray">
+      <BinLabels>MFCC1 MFCC2 MFCC3 MFCC4 MFCC5 MFCC6 MFCC7 MFCC8 MFCC9 MFCC10 MFCC11 MFCC12</BinLabels>
+    </Attribute>
   </Attributes>
 
 </DescriptionScheme>
