@@ -148,6 +148,7 @@ def setup_build_options( env ) :
 
 	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
 	opts.Add( BoolOption( 'optimize_and_lose_precision', 'Use tabulated trigonometric functions and the like', 'no' )) 
+	opts.Add( BoolOption( 'force_avoid_configure', 'Avoid configure phase. Useful for Eclipse scons plugin. Enable it only if you know what you are doing', 'no' ) )
 	# clam_core options
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
 	if not isWindowsPlatform :
@@ -271,10 +272,17 @@ clam_env['CXXFILESUFFIX'] = '.cxx'
 if isWindowsPlatform :
 	clam_env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 
-if 'configure' in COMMAND_LINE_TARGETS or config_file_missing() or ARGUMENTS and not "--help" in COMMAND_LINE_TARGETS:
-    configureModules(clam_env)
-    print "Finished. Invoke 'scons' now."
-    Exit(0)
+
+#needs configure?
+avoid_configure_option=ARGUMENTS.get('force_avoid_configure',0)
+needs_configure = ('configure' in COMMAND_LINE_TARGETS) or config_file_missing() or len(ARGUMENTS)>0
+avoid_configure = '--help' in COMMAND_LINE_TARGETS or avoid_configure_option==1 or avoid_configure_option=='yes'
+
+if needs_configure and not avoid_configure :
+	print 'Configure phase...'
+	configureModules(clam_env)
+	print "Finished. Invoke 'scons' now."
+	Exit(0)
 
 builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
 clam_env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
