@@ -1,7 +1,16 @@
 /**
- @defgroup AudioFileIO Audio File I/O
- @ingroup Tools
+@defgroup AudioFileIO Audio File I/O
+@ingroup Tools
 
- @brief This group includes those classes involved in audio file input output.
+@brief This group includes those classes involved in audio file input output.
 
 */
+
+/**
+@namespace CLAM::AudioCodecs
+@ingroup AudioFileIO
+
+@brief This namespace includes classes to support different audio file formats.
+ 
+*/
+

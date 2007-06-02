@@ -35,15 +35,25 @@ namespace AudioCodecs
 {
 	class Stream;
 
+	/**
+	 * A codec implements a file audio format support.
+	 * Subclasses should reimplement its methods to support
+	 * a concrete audio file format.
+	 */
 	class Codec
 	{
 	public:
 		virtual          ~Codec();
 		static bool      FileExists( std::string filename );
+		/** Returns whether the filename is readable by the codec */
 		virtual bool     IsReadable( std::string filename ) const = 0;
+		/** Returns whether codec can write a file with such name and header parameters */
 		virtual bool     IsWritable( std::string filename, const AudioFileHeader& ) const = 0;
+		/** Returns an Stream object to read or write on */
 		virtual Stream*  GetStreamFor( const AudioFile& ) = 0;
+		/** Returns a header structure containing file information (length, encoding...) */
 		virtual void     RetrieveHeaderData( std::string uri, AudioFileHeader& ) = 0;
+		/** Returns textual meta information embedded on the audio file such ID3 tags */
 		virtual void     RetrieveTextDescriptors( std::string uri, AudioTextDescriptors& );
 	};
 }
