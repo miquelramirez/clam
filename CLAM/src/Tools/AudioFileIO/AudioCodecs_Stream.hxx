@@ -34,6 +34,13 @@ namespace CLAM
 
 namespace AudioCodecs
 {
+	/**
+	 * Streams provide I/O to and from an audio file of a given format.
+	 * You can get a stream by using a Codec.
+	 * To add support for a different format you must subclass both
+	 * the Codec and the Stream.
+	 * @todo Document Stream methods
+	 */
 	class Stream
 	{
 	public:
