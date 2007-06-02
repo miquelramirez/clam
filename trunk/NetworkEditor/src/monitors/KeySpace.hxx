@@ -188,7 +188,7 @@ private:
 	float pKeySpaceValue_[24];
 	unsigned pRColor[201],pGColor[201],pBColor[201];
 	int ColorsIndex[6];
-	void RecomputeWeigths();
+	void RecomputeWeights();
 };
 
 }
