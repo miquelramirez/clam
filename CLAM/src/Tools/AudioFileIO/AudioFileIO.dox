@@ -2,7 +2,12 @@
 @defgroup AudioFileIO Audio File I/O
 @ingroup Tools
 
-@brief This group includes those classes involved in audio file input output.
+@brief This group includes classes involved in audio file input output implementation.
+
+You normally don't want to use those classes directly.
+Instead you should use one of the audio file related processings.
+
+@sa MonoAudioFileReader, MonoAudioFileWriter, MultiChannelAudioFileReader MultiChannelAudioFileWriter
 
 */
 
