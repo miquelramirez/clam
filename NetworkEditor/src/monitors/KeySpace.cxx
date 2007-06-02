@@ -138,32 +138,35 @@ void CLAM::VM::KeySpace::paintGL()
 	_updatePending=0;
 }
 
-void CLAM::VM::KeySpace::DrawTiles()
+void CLAM::VM::KeySpace::RecomputeWeights()
 {
-	if (weights.size()!=nX*nY*nKeyNodes)
+	std::cout << "Precomputing KeySpace weights" << std::endl;
+	TKeyNode *pKeyNodes = getKeyNodes();
+	weights.resize(nX*nY*nKeyNodes);
+	for(unsigned i=0; i<nX; i++)
 	{
-		std::cout << "Precomputing KeySpace weights" << std::endl;
-		TKeyNode *pKeyNodes = getKeyNodes();
-		weights.resize(nX*nY*nKeyNodes);
-		for(unsigned i=0; i<nX; i++)
+		float x1 = i / float(nX) * x_res;
+		for(unsigned k=0; k<nY; k++)
 		{
-			float x1 = i / float(nX) * x_res;
-			for(unsigned k=0; k<nY; k++)
+			float y1 = k / float(nY) * y_res;
+			for(unsigned m=0; m<nKeyNodes; m++)
 			{
-				float y1 = k / float(nY) * y_res;
-				for(unsigned m=0; m<nKeyNodes; m++)
-				{
-					double d1 = wdist(x1,pKeyNodes[m].x);
-					double d2 = wdist(y1,pKeyNodes[m].y);
-					double dist = d1*d1+d2*d2;											   
-					double g = dist*dist;
-					if (g < 1E-5)
-						g = 1E-5;
-					weights[m+nKeyNodes*(k+nY*i)] = 1. / g;
-				}
+				double d1 = wdist(x1,pKeyNodes[m].x);
+				double d2 = wdist(y1,pKeyNodes[m].y);
+				double dist = d1*d1+d2*d2;											   
+				double g = dist*dist;
+				if (g < 1E-5)
+					g = 1E-5;
+				weights[m+nKeyNodes*(k+nY*i)] = 1. / g;
 			}
 		}
 	}
+}
+
+void CLAM::VM::KeySpace::DrawTiles()
+{
+	if (weights.size()!=nX*nY*nKeyNodes)
+		RecomputeWeights();
 	float mean = 0;
 	_maxValue*=.5;
 	for (unsigned i=0; i<_nBins; i++)
@@ -203,7 +206,7 @@ void CLAM::VM::KeySpace::DrawTiles()
 			int cidx = floorf(ColorIndex);
 			glVertex2f( x1,   y1 );
 			glVertex2f( x1,   y1+yStep );
-			glColor3d(pRColor[cidx]/256.,pGColor[cidx]/255.,pBColor[cidx]/255.);
+			glColor3d(pRColor[cidx]/255.,pGColor[cidx]/255.,pBColor[cidx]/255.);
 		}
 		glVertex2f( 1,   y1 );
 		glVertex2f( 1,   y1+yStep );

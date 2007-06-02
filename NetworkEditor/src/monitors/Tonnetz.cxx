@@ -36,7 +36,6 @@ CLAM::VM::Tonnetz::~Tonnetz()
 CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 	QGLWidget(parent)
 {
-	static TonnetzDummySource dummy;
 	_data = 0;
 	_dataSource = 0;
 	_font.setFamily("sans-serif");
@@ -67,6 +66,7 @@ CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 				"<li>6/9: Five horizontal. The root is the lefter note.</li>\n"
 				"</ul>\n"
 				));
+	static TonnetzDummySource dummy;
 	setDataSource(dummy);
 	startTimer(50);
 }
@@ -106,7 +106,6 @@ void CLAM::VM::Tonnetz::paintGL()
 	_dataSource->release();
 	swapBuffers(); // TODO: This should not be needed
 	_updatePending=0;
-
 }
 void CLAM::VM::Tonnetz::Draw()
 {
