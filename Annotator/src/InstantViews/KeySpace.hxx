@@ -19,15 +19,18 @@
  *
  */
 
-#ifndef _KEYSPACE_
-#define _KEISPACE_
+#ifndef KeySpace_hxx
+#define KeySpace_hxx
 
 #include "Tonnetz.hxx"
+#include <QtDesigner/QDesignerExportWidget>
+
 namespace CLAM {
 namespace VM {
 
-class KeySpace : public Tonnetz
+class QDESIGNER_WIDGET_EXPORT KeySpace : public Tonnetz
 {
+	Q_OBJECT
 protected:
 	float x_res, y_res;
 
@@ -50,8 +53,9 @@ private:
 
 	float centroidx_,centroidy_;
 	float pKeySpaceValue_[24];
-	float pRColor[201],pGColor[201],pBColor[201];
+	unsigned pRColor[201],pGColor[201],pBColor[201];
 	int ColorsIndex[6];
+	void RecomputeWeights();
 };
 
 }

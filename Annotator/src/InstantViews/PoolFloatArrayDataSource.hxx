@@ -37,7 +37,7 @@ namespace VM
 	{
 		public:
 			PoolFloatArrayDataSource();
-			void setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
+			void setDataSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name);
 			void clearData();
 			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
 			bool setCurrentTime(double timeMiliseconds);
@@ -46,12 +46,12 @@ namespace VM
 			{
 				return _binLabels[bin];
 			}
-			const double * getData() const
+			const TData * getData() const
 			{
 				if (_data.empty()) return 0;
 				return &_data[0];
 			}
-			const double * frameData() const
+			const CLAM::TData * frameData()
 			{
 				return _frameData;
 			}
@@ -68,11 +68,11 @@ namespace VM
 			std::string _scope;
 			std::string _name;
 			std::vector<std::string> _binLabels;
-			std::vector<double> _data;
+			std::vector<TData> _data;
 			unsigned _nFrames;
 			const CLAM_Annotator::FrameDivision * _frameDivision;
 			CLAM::TData _samplingRate;
-			const double *_frameData;
+			const CLAM::TData *_frameData;
 			unsigned _currentFrame;
 	};
 }

@@ -25,18 +25,18 @@
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
 #include "FloatArrayDataSource.hxx"
+#include <CLAM/PortMonitor.hxx>
 
 #include <vector>
 
-
-namespace CLAM_Annotator { class FrameDivision; }
+#include <QtDesigner/QDesignerExportWidget>
 
 namespace CLAM
 {
 namespace VM
 {
 
-	class Tonnetz : public QGLWidget
+	class QDESIGNER_WIDGET_EXPORT Tonnetz : public QGLWidget
 	{
 		Q_OBJECT
 
@@ -46,28 +46,23 @@ namespace VM
 			virtual void initializeGL();
 			virtual void resizeGL(int width, int height);
 			virtual void paintGL();
+			virtual void timerEvent(QTimerEvent * event);
 		private:
 			unsigned BinAtPosition(int x, int y);
 			void Draw();
 			void DrawTile(int x, int y);
 			void DrawLabel(int x, int y);
 			void DrawChordsShapes();
-		protected:
-			const double *frameData() const
-			{
-				if (! _dataSource) return 0;
-				return _dataSource->frameData();
-			}
 		public:
 			void updateIfNeeded();
-			void setSource( const FloatArrayDataSource & dataSource );
+			void setDataSource( FloatArrayDataSource & dataSource );
 			void clearData();
 		protected:
 			int _updatePending;
 			double _maxValue;
 			unsigned _nBins;
-			const FloatArrayDataSource * _dataSource;
-		private:
+			FloatArrayDataSource * _dataSource;
+			const CLAM::TData * _data;
 			QFont _font;
 	};
 

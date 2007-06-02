@@ -23,7 +23,6 @@
 #include <QtGui/QPixmap>
 #include <QtCore/QTimer>
 #include <iostream>
-#include "FrameDivision.hxx"
 #include <CLAM/Pool.hxx>
 
 CLAM::VM::Tonnetz::~Tonnetz()
@@ -32,6 +31,7 @@ CLAM::VM::Tonnetz::~Tonnetz()
 CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 	QGLWidget(parent)
 {
+	_data = 0;
 	_dataSource = 0;
 	_font.setFamily("sans-serif");
 	_font.setPointSize(11);
@@ -61,6 +61,8 @@ CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 				"<li>6/9: Five horizontal. The root is the lefter note.</li>\n"
 				"</ul>\n"
 				));
+//	static TonnetzDummySource dummy;
+//	setDataSource(dummy);
 }
 
 void CLAM::VM::Tonnetz::initializeGL()
@@ -68,10 +70,10 @@ void CLAM::VM::Tonnetz::initializeGL()
 	glShadeModel(GL_FLAT);
 	glClearColor(0,0,0,0); // rgba
 	glEnable(GL_BLEND);
-	glEnable (GL_LINE_SMOOTH);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-	glEnable(GL_CULL_FACE);
+//	glEnable (GL_LINE_SMOOTH);
+//	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+//	glEnable(GL_CULL_FACE);
 }
 void CLAM::VM::Tonnetz::resizeGL(int width, int height)
 {
@@ -92,10 +94,12 @@ void CLAM::VM::Tonnetz::resizeGL(int width, int height)
 void CLAM::VM::Tonnetz::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
+	if (!_dataSource) return;
+	_data = _dataSource->frameData();
 	Draw();
+	_dataSource->release();
 	swapBuffers(); // TODO: This should not be needed
 	_updatePending=0;
-
 }
 void CLAM::VM::Tonnetz::Draw()
 {
@@ -103,9 +107,9 @@ void CLAM::VM::Tonnetz::Draw()
 	if (!_nBins) return;
 	_maxValue*=0.95;
 	if (_maxValue<1e-5) _maxValue=1;
-	if (frameData())
+	if (_data)
 		for (unsigned i = 0; i < _nBins; i++)
-			if (frameData()[i]>=_maxValue) _maxValue=frameData()[i];
+			if (_data[i]>=_maxValue) _maxValue=_data[i];
 	for (int y = 0; y<4; y++)
 		for (int x = 0-y/2; x<10; x++)
 			DrawTile(x,y);
@@ -145,7 +149,7 @@ void CLAM::VM::Tonnetz::DrawTile(int x, int y)
 	const double posx = x*2*cos30+y*cos30;
 	const double posy = y*(1+sin30);
 	unsigned bin=BinAtPosition(x,y);
-	double pitchLevel = frameData()? frameData()[bin]/_maxValue: 0;
+	double pitchLevel = _data? _data[bin]/_maxValue: 0;
 	double hexsize=pitchLevel;
 	if (hexsize>1) hexsize = 1;
 	glPushMatrix();
@@ -231,7 +235,7 @@ void CLAM::VM::Tonnetz::updateIfNeeded()
 	if (!_updatePending++) update();
 }
 
-void CLAM::VM::Tonnetz::setSource(const FloatArrayDataSource & dataSource )
+void CLAM::VM::Tonnetz::setDataSource(FloatArrayDataSource & dataSource )
 {
 	_dataSource = &dataSource;
 	_nBins = _dataSource->nBins();
@@ -240,5 +244,12 @@ void CLAM::VM::Tonnetz::setSource(const FloatArrayDataSource & dataSource )
 void CLAM::VM::Tonnetz::clearData()
 {
 	_maxValue=1;
+}
+
+void CLAM::VM::Tonnetz::timerEvent(QTimerEvent *event)
+{
+	if ( !_dataSource) return;
+	if ( !_dataSource->isEnabled()) return;
+	updateIfNeeded();
 }
 

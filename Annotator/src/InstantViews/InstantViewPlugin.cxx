@@ -72,8 +72,8 @@ private:
 	QWidget * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
 		_view = new CLAM::VM::Tonnetz(parent);
-		_dataSource.setSource(project, config.GetAttributeScope(), config.GetAttributeName());
-		_view->setSource( _dataSource );
+		_dataSource.setDataSource(project, config.GetAttributeScope(), config.GetAttributeName());
+		_view->setDataSource( _dataSource );
 		_view->resize(-1,300);
 		return _view;
 	}
@@ -144,8 +144,8 @@ private:
 	QWidget * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
 		_view = new CLAM::VM::KeySpace(parent);
-		_dataSource.setSource(project, config.GetAttributeScope(), config.GetAttributeName());
-		_view->setSource( _dataSource );
+		_dataSource.setDataSource(project, config.GetAttributeScope(), config.GetAttributeName());
+		_view->setDataSource( _dataSource );
 		_view->resize(-1,300);
 		return _view;
 	}
