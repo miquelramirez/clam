@@ -54,10 +54,16 @@ dataTemplate = """<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
 </Description>
 """
 
-
+import sys
 for audiofile in args:
+	if audiofile.endswith(".ogg") :
+		os.popen('ogg123 -d wav -f lala.wav %s'%audiofile).read()
+		audiofile="lala.wav"
+	if audiofile.endswith(".mp3") :
+		os.popen('mpg123 -w lala.wav %s'%audiofile).read()
+		audiofile="lala.wav"
 	f=os.popen('./OnsetExtractor %s'%audiofile,'r')
-	onsets = [ onset for onset in f ]
+	onsets = [ str(float(onset)/2) for onset in f ]
 	target = open(audiofile+options.suffix,'w')
 	print >> target, dataTemplate%(len(onsets), " ".join(onsets))
 	target.close()
