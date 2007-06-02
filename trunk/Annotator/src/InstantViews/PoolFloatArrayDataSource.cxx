@@ -42,7 +42,7 @@ void CLAM::VM::PoolFloatArrayDataSource::clearData()
 	_currentFrame=0;
 }
 
-void CLAM::VM::PoolFloatArrayDataSource::setSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
+void CLAM::VM::PoolFloatArrayDataSource::setDataSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
 {
 	_name = name;
 	_scope = scope;
