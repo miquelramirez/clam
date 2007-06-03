@@ -58,7 +58,7 @@ private:
 public:
 	NullDomDocumentHandler()
 	{
-		CLAM_ASSERT(false, "Using XML support, but it is disabled on compile time (CLAM_USE_XML=0).");
+		CLAM_ASSERT(false, "Using XML support with no xmlbackend. Reconfigure CLAM using the 'xmlbackend' option.");
 	}
 	~NullDomDocumentHandler()
 	{

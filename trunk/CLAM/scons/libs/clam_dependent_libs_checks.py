@@ -277,7 +277,7 @@ def test_xml_backend( env, conf ) :
 		if not conf.check_xerces_c( conf ) :
 			return config_error( "xerces c code compile/link/run test failed!" )
 		
-		env.Append( CPPFLAGS=['-DUSE_XERCES_TRUE', '-DCLAM_USE_XML'] )
+		env.Append( CPPFLAGS=['-DUSE_XERCES=1', '-DCLAM_USE_XML'] )
 
 	if env['xmlbackend'] in ('both','xmlpp') :
 		if env['pkg_config_available'] :
@@ -288,7 +288,7 @@ def test_xml_backend( env, conf ) :
 				return config_error( "Error: pkg-config could not find libxml options." )
 		if not conf.check_xmlpp( conf ) : 
 			return config_error( "libxml++ code compile/link/run test failed!" )
-		env.Append( CPPFLAGS=['-DUSE_XMLPP_TRUE','-DCLAM_USE_XML'] )
+		env.Append( CPPFLAGS=['-DUSE_XMLPP=1','-DCLAM_USE_XML'] )
 	return True
 
 def test_ladspa ( env, conf ) :

@@ -27,16 +27,6 @@ namespace CLAMTest {
 CPPUNIT_TEST_SUITE_REGISTRATION( DynamicTypeAdvancedTest );
 
 
-void DynamicTypeAdvancedTest::CheckCLAM_USE_XML()
-{
-	bool defined =
-#	ifndef CLAM_USE_XML
-		false;
-#	else 
-		true;
-#	endif
-	CPPUNIT_ASSERT_MESSAGE("CLAM_USE_XML compilation flag is not #defined. It must be.", defined);
-}
 void DynamicTypeAdvancedTest::SimpleXMLSupport()
 {
 	Dyn p;
