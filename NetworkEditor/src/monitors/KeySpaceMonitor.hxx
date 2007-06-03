@@ -19,32 +19,21 @@
  *
  */
 
-#ifndef KeySpace_hxx
-#define KeySpace_hxx
+#ifndef KeySpaceMonitor_hxx
+#define KeySpaceMonitor_hxx
 
-#include "Tonnetz.hxx"
+#include "FloatArrayDataSource.hxx"
+#include <CLAM/PortMonitor.hxx>
 
-class KeySpaceDummySource : public CLAM::VM::FloatArrayDataSource
+class KeySpaceMonitor : public CLAM::PortMonitor<std::vector<CLAM::TData> >, public CLAM::VM::FloatArrayDataSource
 {
-	std::vector<CLAM::TData> _data;
 public:
-	KeySpaceDummySource()
-		: _data(nBins())
+	KeySpaceMonitor()
+		: _size(24)
 	{
-		_data[5]=1; // C
-		_data[17]=.8; // c
-		_data[21]=.8; // e
-		_data[14]=.8; // a
-		_data[10]=.6; // F
-		_data[9]=.6; // E
-		_data[1]=.6; // G#
-		_data[8]=.6; // D#
-		_data[22]=.6; // f
-		_data[2]=.6; // A
-		_data[0]=.6; // G
-		_data[12]=.6; // g
-		_data[18]=.6; // c#
 	}
+private:
+	const char* GetClassName() const { return "KeySpace"; };
 	const std::string & getLabel(unsigned bin) const
 	{
 		static std::string a[] = {
@@ -77,59 +66,27 @@ public:
 	}
 	const CLAM::TData * frameData()
 	{
-		return &_data[0];
+		const std::vector<CLAM::TData> & pcp = FreezeAndGetData();
+		_size = pcp.size()? pcp.size()-1: 0;
+		return pcp.size()? &pcp[1] : 0;
 	}
 	void release()
 	{
+		UnfreezeData();
 	}
 	unsigned nBins() const
 	{
-		return 24;
+		return _size;
 	}
 	bool isEnabled() const
 	{
-		return false;
+		return GetExecState() == CLAM::Processing::Running;
 	}
-	
-};
-
-#include <QtDesigner/QDesignerExportWidget>
-
-namespace CLAM {
-namespace VM {
-
-class QDESIGNER_WIDGET_EXPORT KeySpace : public Tonnetz
-{
-	Q_OBJECT
-protected:
-	float x_res, y_res;
-
-public:
-	KeySpace(QWidget * parent);
-
-	virtual void initializeGL();
-	virtual void resizeGL(int width, int height);
-	virtual void paintGL();
 private:
-	void DrawTiles();
-	void DrawLabels();
-	double wdist(double x1,double x2)
-	{
-		if (x2 > x1+.5) return 1. - (x2-x1);
-		if (x2 < x1-.5) return 1. - (x1-x2);
-		if (x2 >= x1)   return x2-x1;
-		else            return x1-x2;
-	}
-
-	float centroidx_,centroidy_;
-	float pKeySpaceValue_[24];
-	unsigned pRColor[201],pGColor[201],pBColor[201];
-	int ColorsIndex[6];
-	void RecomputeWeights();
+	unsigned _size;
+	std::vector<CLAM::TData> _pcp;
 };
 
-}
-}
 
 #endif
 

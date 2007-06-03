@@ -9,6 +9,7 @@
 #include "PolarChromaPeaks.hxx"
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
+#include "KeySpaceMonitor.hxx"
 #include "ChordRanking.hxx"
 #include "Tunner.hxx"
 #include "LPModelView.hxx"
