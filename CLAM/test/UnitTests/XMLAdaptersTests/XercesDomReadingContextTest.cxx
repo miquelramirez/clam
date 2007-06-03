@@ -1,4 +1,4 @@
-#ifdef USE_XERCES_TRUE
+#ifdef USE_XERCES
 
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
@@ -722,5 +722,5 @@ private:
 } // namespace Test
 } // namespace Cuidado
 
-#endif // USE_XERCES_TRUE
+#endif // USE_XERCE
 

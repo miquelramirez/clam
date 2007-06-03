@@ -25,18 +25,17 @@
  * @class CLAM::DomDocumentHandler
  * @ingroup XmlBackends
  * @brief This class subclasses from the proper DomDocumentHandler depending
- * on the build time configuration (configure parameters and settings.cfg directives).
+ * on the build time configuration 'xmlbackend' option.
  *
- * If you have defined CLAM_USE_XML on your project settings.cfg,
- * then an XML implementation is choosen depending on the USE_XXXXXX
+ * An XML implementation is choosen depending on the USE_XXXXXX
  * directives concerning XML libraries.
  * The current USE_XXXXXX variables that affect this class in priority order are:
  * - USE_XERCES: Chooses XercesDomDocumentHandler (Apache's Xerces-C++)
  * - USE_XMLPP:  Chooses LibXmlDomDocumentHandler (Gnome's libxml++)
  *
- * If you have not defined CLAM_USE_XML in your settings.cfg,
- * then a Null implementation will be used that fails an assertion
- * whenever you try to use the XML serialization.
+ * If you choose 'none' as backend, then a Null implementation will 
+ * be used that fails an assertion whenever you try to use the XML
+ * serialization.
  *
  * @see XercesDomDocumentHandler
  * @see LibXmlDomDocumentHandler
@@ -44,32 +43,28 @@
  * @author David Garcia.
  */
 
-#ifndef CLAM_USE_XML
-#include "NullDomDocumentHandler.hxx"
-namespace CLAM 
-{
-	class DomDocumentHandler : public NullDomDocumentHandler {};
-}
-#else
-#ifdef USE_XERCES_TRUE
+#if defined USE_XERCES
 #include "XercesDomDocumentHandler.hxx"
 namespace CLAM 
 {
 	class DomDocumentHandler : public XercesDomDocumentHandler {};
 }
-#else
-#ifdef USE_XMLPP_TRUE
+#elif defined USE_XMLPP
 #include "LibXmlDomDocumentHandler.hxx"
 namespace CLAM 
 {
 	class DomDocumentHandler : public LibXmlDomDocumentHandler {};
 }
 
+#elif !defined CLAM_USE_XML
+#include "NullDomDocumentHandler.hxx"
+namespace CLAM 
+{
+	class DomDocumentHandler : public NullDomDocumentHandler {};
+}
 #else
 #error CLAM_USE_XML active but no backend available (libxml++, xerces...)
 #endif//USE_XMLPP
-#endif//USE_XERCES
-#endif//CLAM_USE_XML
 
 /**
  * @defgroup XmlBackends XML Implementation Backends

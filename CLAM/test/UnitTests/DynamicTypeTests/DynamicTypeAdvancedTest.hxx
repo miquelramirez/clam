@@ -32,7 +32,6 @@ namespace CLAMTest
 class DynamicTypeAdvancedTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( DynamicTypeAdvancedTest );
-	CPPUNIT_TEST( CheckCLAM_USE_XML );
 	CPPUNIT_TEST( SimpleXMLSupport );
 	CPPUNIT_TEST( XMLCustomizationByRedefinition );
 	CPPUNIT_TEST( XMLCustomizationBySubclassing );
@@ -48,7 +47,6 @@ public:
 	void tearDown() {};
 
 private:
-	void CheckCLAM_USE_XML();
 	void SimpleXMLSupport();
 	void XMLCustomizationByRedefinition();
 	void XMLCustomizationBySubclassing();
