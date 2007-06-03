@@ -33,6 +33,7 @@
 #include "PeakView.hxx"
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
+#include "KeySpaceMonitor.hxx"
 #include "PolarChromaPeaks.hxx"
 #include "ChordRanking.hxx"
 #include "LPModelView.hxx"

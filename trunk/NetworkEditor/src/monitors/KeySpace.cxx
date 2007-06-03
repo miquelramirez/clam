@@ -19,12 +19,6 @@
  *
  */
 
-#include <CLAM/Factory.hxx>
-#include "KeySpace.hxx"
-
-static CLAM::Factory<CLAM::Processing>::Registrator<KeySpaceMonitor> registrator("KeySpace");
-
-
 #include "KeySpace.hxx"
 #include <cmath>
 #include <iostream>
@@ -114,9 +108,9 @@ void CLAM::VM::KeySpace::initializeGL()
 	glClearColor(0,0,0,0); // rgba
 	glEnable(GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_CULL_FACE);
 //	glEnable (GL_LINE_SMOOTH);
 //	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-//	glEnable(GL_CULL_FACE);
 }
 void CLAM::VM::KeySpace::resizeGL(int width, int height)
 {
@@ -140,7 +134,7 @@ void CLAM::VM::KeySpace::paintGL()
 
 void CLAM::VM::KeySpace::RecomputeWeights()
 {
-	std::cout << "Precomputing KeySpace weights" << std::endl;
+	std::cout << "Precomputing KeySpace weights... " << std::flush;
 	TKeyNode *pKeyNodes = getKeyNodes();
 	weights.resize(nX*nY*nKeyNodes);
 	for(unsigned i=0; i<nX; i++)
@@ -161,6 +155,7 @@ void CLAM::VM::KeySpace::RecomputeWeights()
 			}
 		}
 	}
+	std::cout << "done" << std::endl;
 }
 
 void CLAM::VM::KeySpace::DrawTiles()
