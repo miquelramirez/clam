@@ -25,6 +25,25 @@
 #include <iostream>
 #include <CLAM/Pool.hxx>
 
+CLAM::VM::FloatArrayDataSource & getDummySource()
+{
+	unsigned nBins=12;
+	static std::vector<CLAM::TData> data(nBins);
+	data[0]=.5;
+	data[4]=.3;
+	data[9]=.2;
+	data[7]=.4;
+	static const char * labels[] = {
+		"G", "G#", "A", "A#",
+		"B", "C", "C#", "D",
+		"D#", "E", "F", "F#",
+		0
+		};
+	static CLAM::VM::DummyFloatArrayDataSource dataSource(nBins, &data[0]);
+	dataSource.setLabels(labels);
+	return dataSource;
+}
+
 CLAM::VM::Tonnetz::~Tonnetz()
 {
 }
@@ -61,8 +80,7 @@ CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 				"<li>6/9: Five horizontal. The root is the lefter note.</li>\n"
 				"</ul>\n"
 				));
-//	static TonnetzDummySource dummy;
-//	setDataSource(dummy);
+	setDataSource(getDummySource());
 }
 
 void CLAM::VM::Tonnetz::initializeGL()

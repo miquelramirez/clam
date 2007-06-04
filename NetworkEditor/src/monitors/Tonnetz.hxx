@@ -29,54 +29,6 @@
 
 #include <vector>
 
-class TonnetzDummySource : public CLAM::VM::FloatArrayDataSource
-{
-	std::vector<CLAM::TData> _data;
-public:
-	TonnetzDummySource()
-		: _data(nBins())
-	{
-		_data[0]=.5;
-		_data[4]=.3;
-		_data[9]=.2;
-		_data[7]=.4;
-	}
-	const std::string & getLabel(unsigned bin) const
-	{
-		static std::string a[] = {
-			"G",
-			"G#",
-			"A",
-			"A#",
-			"B",
-			"C",
-			"C#",
-			"D",
-			"D#",
-			"E",
-			"F",
-			"F#",
-			};
-		return a[bin];
-	}
-	const CLAM::TData * frameData()
-	{
-		return &_data[0];
-	}
-	void release()
-	{
-	}
-	unsigned nBins() const
-	{
-		return 12;
-	}
-	bool isEnabled() const
-	{
-		return false;
-	}
-	
-};
-
 class TonnetzMonitor : public CLAM::PortMonitor<std::vector<CLAM::TData> >, public CLAM::VM::FloatArrayDataSource
 {
 public:
