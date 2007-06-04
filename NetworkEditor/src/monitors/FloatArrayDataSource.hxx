@@ -23,6 +23,7 @@
 #define FloatArrayDataSource_hxx
 
 #include <string>
+#include <vector>
 #include <CLAM/DataTypes.hxx>
 #include <CLAM/Assert.hxx>
 
@@ -53,6 +54,7 @@ namespace VM
 	{
 			unsigned _nBins;
 			CLAM::TData * _data;
+			std::vector<std::string> _labels;
 		public:
 			DummyFloatArrayDataSource(unsigned nBins, CLAM::TData * data=0)
 			{
@@ -71,6 +73,8 @@ namespace VM
 			const std::string & getLabel(unsigned bin) const
 			{
 				static std::string a("");
+				if (bin<_labels.size())
+					return _labels[bin];
 				return a;
 			}
 			const CLAM::TData * frameData()
@@ -84,6 +88,16 @@ namespace VM
 			bool isEnabled() const
 			{
 				return false;
+			}
+			void setLabels(const std::vector<std::string> & labels)
+			{
+				_labels = labels;
+			}
+			void setLabels(const char ** labels)
+			{
+				_labels.clear();
+				for (const char * label = *labels; *label; label++)
+					_labels.push_back(label);
 			}
 	};
 }
