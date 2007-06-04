@@ -22,6 +22,39 @@
 #include "KeySpace.hxx"
 
 
+/// Returns dummy data source for unbinded widget
+static CLAM::VM::FloatArrayDataSource & getDummySource()
+{
+	// Data simulating a C major
+	unsigned nBins=24;
+	static std::vector<CLAM::TData> data(nBins);
+	data[5]=1; // C
+	data[17]=.8; // c
+	data[21]=.8; // e
+	data[14]=.8; // a
+	data[10]=.6; // F
+	data[9]=.6; // E
+	data[1]=.6; // G#
+	data[8]=.6; // D#
+	data[22]=.6; // f
+	data[2]=.6; // A
+	data[0]=.6; // G
+	data[12]=.6; // g
+	data[18]=.6; // c#
+	static CLAM::VM::DummyFloatArrayDataSource source(nBins, &data[0]);
+	static const char * labels[] = {
+		"G", "G#", "A", "A#",
+		"B", "C", "C#", "D",
+		"D#", "E", "F", "F#",
+		"g", "g#", "a", "a#",
+		"b", "c", "c#", "d",
+		"d#", "e", "f", "f#",
+		0
+		};
+	source.setLabels(labels);
+	return source;
+}
+
 
 struct TKeyNode
 {
@@ -98,8 +131,7 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 				"Tonally close key/chords are displayed closer so normally you have a color stain covering several chords\n"
 				"with the most probable chord as a central color spot.</p>\n"
 				));
-//	static KeySpaceDummySource dummy;
-//	setDataSource(dummy);
+	setDataSource(getDummySource());
 }
 
 void CLAM::VM::KeySpace::initializeGL()
@@ -108,9 +140,9 @@ void CLAM::VM::KeySpace::initializeGL()
 	glClearColor(0,0,0,0); // rgba
 	glEnable(GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_CULL_FACE);
 //	glEnable (GL_LINE_SMOOTH);
 //	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-//	glEnable(GL_CULL_FACE);
 }
 void CLAM::VM::KeySpace::resizeGL(int width, int height)
 {
@@ -134,7 +166,7 @@ void CLAM::VM::KeySpace::paintGL()
 
 void CLAM::VM::KeySpace::RecomputeWeights()
 {
-	std::cout << "Precomputing KeySpace weights" << std::endl;
+	std::cout << "Precomputing KeySpace weights... " << std::flush;
 	TKeyNode *pKeyNodes = getKeyNodes();
 	weights.resize(nX*nY*nKeyNodes);
 	for(unsigned i=0; i<nX; i++)
@@ -155,6 +187,7 @@ void CLAM::VM::KeySpace::RecomputeWeights()
 			}
 		}
 	}
+	std::cout << "done" << std::endl;
 }
 
 void CLAM::VM::KeySpace::DrawTiles()

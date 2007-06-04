@@ -20,8 +20,41 @@
  */
 
 #include "KeySpace.hxx"
-#include <cmath>
-#include <iostream>
+
+
+/// Returns dummy data source for unbinded widget
+static CLAM::VM::FloatArrayDataSource & getDummySource()
+{
+	// Data simulating a C major
+	unsigned nBins=24;
+	static std::vector<CLAM::TData> data(nBins);
+	data[5]=1; // C
+	data[17]=.8; // c
+	data[21]=.8; // e
+	data[14]=.8; // a
+	data[10]=.6; // F
+	data[9]=.6; // E
+	data[1]=.6; // G#
+	data[8]=.6; // D#
+	data[22]=.6; // f
+	data[2]=.6; // A
+	data[0]=.6; // G
+	data[12]=.6; // g
+	data[18]=.6; // c#
+	static CLAM::VM::DummyFloatArrayDataSource source(nBins, &data[0]);
+	static const char * labels[] = {
+		"G", "G#", "A", "A#",
+		"B", "C", "C#", "D",
+		"D#", "E", "F", "F#",
+		"g", "g#", "a", "a#",
+		"b", "c", "c#", "d",
+		"d#", "e", "f", "f#",
+		0
+		};
+	source.setLabels(labels);
+	return source;
+}
+
 
 struct TKeyNode
 {
@@ -98,8 +131,7 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 				"Tonally close key/chords are displayed closer so normally you have a color stain covering several chords\n"
 				"with the most probable chord as a central color spot.</p>\n"
 				));
-	static KeySpaceDummySource dummy;
-	setDataSource(dummy);
+	setDataSource(getDummySource());
 }
 
 void CLAM::VM::KeySpace::initializeGL()
