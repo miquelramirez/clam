@@ -39,6 +39,7 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 		
+		InControl mFreqCtl;	
 		InControl mBandwidthCtl;
 		InControl mGainCtl;
 		InControl mOscFreqCtl;
@@ -54,6 +55,7 @@ namespace CLAM{
 			: 
 			mIn("In Spectrum", this), 
 			mOut("Out Spectrum", this),
+			mFreqCtl("Freq", this),
 			mBandwidthCtl("Bandwidth", this),
 			mGainCtl("Gain",this),
 			mOscFreqCtl("OscFreq", this),
@@ -63,14 +65,27 @@ namespace CLAM{
 		}
 
  		~OscillatingSpectralNotch() {}	
+		bool ConcreteConfigure( const ProcessingConfig& config )
+		{
+			mFreqCtl.SetBounds(80,15000);
+			mFreqCtl.DoControl(1000);
+			
+			mBandwidthCtl.SetBounds(1,1000);
+			mBandwidthCtl.DoControl(100);
+			
+			mGainCtl.SetBounds(-60,60);
+			mGainCtl.DoControl(0);
+			
+			mOscFreqCtl.SetBounds(0.1,5);
+			mOscFreqCtl.DoControl(1);
+
+			mOscWidthCtl.SetBounds(5,200);
+			mOscWidthCtl.DoControl(50);
+			return true;
+		}
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Amount").DoControl(1000);
-			GetInControl("Bandwidth").DoControl(100);
-			GetInControl("Gain").DoControl(0);
-			GetInControl("OscFreq").DoControl(1);
-			GetInControl("OscWidth").DoControl(50);
 			return true;
 		}
 		

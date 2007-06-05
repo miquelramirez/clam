@@ -25,6 +25,7 @@
 #include <CLAM/PANetworkPlayer.hxx>
 #endif
 #include <QtGui/QWidget>
+#include <QtCore/QVariant>
 
 // Designer widgets
 #include "Oscilloscope.hxx"
@@ -205,8 +206,9 @@ void PrototypeLoader::ConnectWithNetwork()
 {
 	CLAM_ASSERT( _player, "Connecting interface without having chosen a backend");
 	
-	ConnectWidgetsWithControls();
+	ConnectWidgetsWithIntegerControls();
 	ConnectWidgetsWithMappedControls();
+	ConnectWidgetsUsingControlBounds();
 	ConnectWidgetsWithBooleanControls();
 	ConnectWidgetsWithAudioFileReaders();
 
@@ -401,13 +403,13 @@ bool PrototypeLoader::ReportMissingInControl(const std::string & controlName)
 	return true;
 }
 
-void PrototypeLoader::ConnectWidgetsWithControls()
+void PrototypeLoader::ConnectWidgetsWithIntegerControls()
 {
-	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("InControl__.*"));
+	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("InControlInteger__.*"));
 	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
 	{
 		QWidget * aWidget = *it;
-		std::string controlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(11).toAscii());
+		std::string controlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(18).toAscii());
 		std::cout << "* Control: " << controlName << std::endl;
 
 		if (ReportMissingInControl(controlName)) continue;
@@ -431,6 +433,40 @@ void PrototypeLoader::ConnectWidgetsWithMappedControls()
 		if (ReportMissingInControl(fullControlName)) continue;
 		CLAM::InControl & receiver = _network.GetInControlByCompleteName(fullControlName);
 		QtSlot2Control * notifier = new QtSlot2Control(fullControlName.c_str()); // TODO: Memory leak here
+		notifier->linkControl(receiver);
+		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
+				  SLOT(sendMappedControl(int)));
+	}
+}
+
+void PrototypeLoader::ConnectWidgetsUsingControlBounds()
+{
+	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("InControl__.*"));
+	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
+	{
+		QWidget * aWidget = *it;
+		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(11).toAscii());
+		std::cout << "* Widget using control bounds (map: 100:1->bounds): " << fullControlName << std::endl;
+
+		if (ReportMissingInControl(fullControlName)) continue;
+
+		if (aWidget->metaObject()->indexOfProperty("minimum") >= 0)
+			aWidget->setProperty("minimum", QVariant(0));
+		if (aWidget->metaObject()->indexOfProperty("maximum") >= 0)
+			aWidget->setProperty("maximum", QVariant(200));
+		if (aWidget->metaObject()->indexOfProperty("maximum") >= 0)
+			aWidget->setProperty("singleStep", QVariant(1));
+		if (aWidget->metaObject()->indexOfProperty("pageStep") >= 0)
+			aWidget->setProperty("pageStep", QVariant(5));
+		if (aWidget->metaObject()->indexOfProperty("value") >= 0)
+			aWidget->setProperty("value", QVariant(100));
+
+		CLAM::InControl & receiver = _network.GetInControlByCompleteName(fullControlName);
+		QtSlot2Control * notifier = new QtSlot2Control(
+					fullControlName.c_str(), 
+					receiver.LowerBound(),
+					receiver.UpperBound()
+				); // TODO: Memory leak here
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
 				  SLOT(sendMappedControl(int)));

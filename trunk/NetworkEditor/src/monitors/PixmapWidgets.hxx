@@ -272,7 +272,7 @@ public:
 	{
 		if (!_dragging) return;
 
-		int newValue = value() - ((event->y() - _lastY) + (_lastX - event->x() ))*singleStep();
+		int newValue = value() - ((event->y() - _lastY) + (_lastX - event->x() ));
 		_lastX = event->x();
 		_lastY = event->y();
 		setValue(newValue);

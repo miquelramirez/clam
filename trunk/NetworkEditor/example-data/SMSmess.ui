@@ -2520,7 +2520,7 @@
       </widget>
      </item>
      <item row="0" column="1" >
-      <widget class="QSlider" name="InControl__SMSFreqShift__Amount" >
+      <widget class="QSlider" name="InControlInteger__SMSFreqShift__Amount" >
        <property name="minimum" >
         <number>-400</number>
        </property>
@@ -2610,7 +2610,7 @@
         <string>SMS Freq Shift</string>
        </property>
        <property name="buddy" >
-        <cstring>InControl__SMSFreqShift__Amount</cstring>
+        <cstring>InControlInteger__SMSFreqShift__Amount</cstring>
        </property>
       </widget>
      </item>
@@ -2762,7 +2762,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>InControl__SMSFreqShift__Amount</tabstop>
+  <tabstop>InControlInteger__SMSFreqShift__Amount</tabstop>
   <tabstop>InControlFloat__SMSResidualGain__Amount</tabstop>
   <tabstop>InControlFloat__SMSSinusoidalGain__Amount</tabstop>
   <tabstop>PlayButton</tabstop>
@@ -2823,7 +2823,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>InControl__SMSFreqShift__Amount</sender>
+   <sender>InControlInteger__SMSFreqShift__Amount</sender>
    <signal>valueChanged(int)</signal>
    <receiver>lCDNumber1_2_2</receiver>
    <slot>display(int)</slot>

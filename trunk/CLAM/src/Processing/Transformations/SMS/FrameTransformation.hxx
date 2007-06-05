@@ -18,8 +18,6 @@ namespace CLAM
 			
 			const ProcessingConfig& GetConfig() const { return mConfig; }
 
-			virtual bool ConcreteConfigure(const ProcessingConfig& c) { return true; }
-			
 			virtual bool ConcreteStart(){ return InitControls();}
 			
 			/** Virtual function to override when needing to give different default values to the controls*/
