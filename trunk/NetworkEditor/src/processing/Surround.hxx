@@ -4,6 +4,7 @@
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/Audio.hxx>
+#include <CLAM/InControl.hxx>
 #include <cmath>
 
 class Surround : public CLAM::Processing
@@ -16,6 +17,7 @@ class Surround : public CLAM::Processing
 	CLAM::AudioOutPort _right;
 	CLAM::AudioOutPort _surroundLeft;
 	CLAM::AudioOutPort _surroundRight;
+	CLAM::InControl _beta;
 public:
 	const char* GetClassName() const { return "Surround"; }
 	Surround(const Config& config = Config()) 
@@ -27,13 +29,15 @@ public:
 		, _right("right", this)
 		, _surroundLeft("surroundLeft", this)
 		, _surroundRight("surroundRight", this)
+		, _beta("beta", this)
 	{
 		Configure( config );
+		_beta.SetBounds(-180,180);
 	}
  
 	bool Do()
 	{
-		const double beta=0.f;
+		const double beta=_beta.GetLastValue();
 		const double cosBeta=std::cos(beta);
 		const double sinBeta=std::sin(beta);
 		const double sin30 = .5;
