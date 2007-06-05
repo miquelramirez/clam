@@ -9,11 +9,19 @@
 class QtSlot2Control : public QObject
 {
 	Q_OBJECT
+
+	CLAM::OutControl _sender;
+	const char * _name;
+	float _controlMinBound;
+	float _controlMaxBound;
 public:
-	QtSlot2Control(const char * name)
+	QtSlot2Control(const char * name, float min=0.f, float max=1.f)
 		: _sender(name)
 		, _name(name)
+		, _controlMinBound(min)
+		, _controlMaxBound(max)
 	{
+
 	}
 	virtual ~QtSlot2Control(){}
 	void linkControl(CLAM::InControl & receiver)
@@ -28,16 +36,13 @@ public slots:
 	}
 	void sendMappedControl(int value)
 	{
-		CLAM::TControlData mappedValue = CLAM::TControlData(value)/99.0;
+		CLAM::TControlData mappedValue = CLAM::TControlData(value)*(_controlMaxBound-_controlMinBound)/199.0 + _controlMinBound;
 		_sender.SendControl(mappedValue);
 	}
 	void sendControl(int value)
 	{
 		_sender.SendControl(value);
 	}
-private:
-	CLAM::OutControl _sender;
-	const char * _name;
 	
 };
 

@@ -2489,7 +2489,7 @@
         <string>Transposition 1</string>
        </property>
        <property name="buddy" >
-        <cstring>InControl__SMSTranspose_1__Amount</cstring>
+        <cstring>InControlInteger__SMSTranspose_1__Amount</cstring>
        </property>
       </widget>
      </item>
@@ -2509,7 +2509,7 @@
       </widget>
      </item>
      <item row="1" column="1" >
-      <widget class="QSlider" name="InControl__SMSTranspose_1__Amount" >
+      <widget class="QSlider" name="InControlInteger__SMSTranspose_1__Amount" >
        <property name="minimum" >
         <number>-24</number>
        </property>
@@ -2527,7 +2527,7 @@
         <string>Transposition 2</string>
        </property>
        <property name="buddy" >
-        <cstring>InControl__SMSTranspose_1__Amount</cstring>
+        <cstring>InControlInteger__SMSTranspose_1__Amount</cstring>
        </property>
       </widget>
      </item>
@@ -2552,7 +2552,7 @@
       </widget>
      </item>
      <item row="0" column="1" >
-      <widget class="QSlider" name="InControl__SMSTranspose_0__Amount" >
+      <widget class="QSlider" name="InControlInteger__SMSTranspose_0__Amount" >
        <property name="minimum" >
         <number>-24</number>
        </property>
@@ -2700,7 +2700,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>InControl__SMSTranspose_1__Amount</tabstop>
+  <tabstop>InControlInteger__SMSTranspose_1__Amount</tabstop>
   <tabstop>PlayButton</tabstop>
   <tabstop>StopButton</tabstop>
   <tabstop>CloseButton</tabstop>
@@ -2726,7 +2726,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>InControl__SMSTranspose_1__Amount</sender>
+   <sender>InControlInteger__SMSTranspose_1__Amount</sender>
    <signal>valueChanged(int)</signal>
    <receiver>lCDNumber1_2</receiver>
    <slot>display(int)</slot>
@@ -2742,7 +2742,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>InControl__SMSTranspose_0__Amount</sender>
+   <sender>InControlInteger__SMSTranspose_0__Amount</sender>
    <signal>valueChanged(int)</signal>
    <receiver>lCDNumber1_3</receiver>
    <slot>display(int)</slot>

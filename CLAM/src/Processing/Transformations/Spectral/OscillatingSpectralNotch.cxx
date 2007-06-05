@@ -44,7 +44,7 @@ bool OscillatingSpectralNotch::Do(const Spectrum& in, Spectrum& out)
 	mOscillator.Do(currentOscAmp);
 	
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
-	int centerFreq= Round(mAmount.GetLastValue()*spectralResolution*(1+currentOscAmp));
+	int centerFreq= Round(mFreqCtl.GetLastValue()*spectralResolution*(1+currentOscAmp));
 	int band = Round(mBandwidthCtl.GetLastValue()*spectralResolution);
 	TData gain = log2lin(mGainCtl.GetLastValue());
 	int n;

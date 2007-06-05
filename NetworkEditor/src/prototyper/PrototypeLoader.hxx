@@ -47,8 +47,9 @@ private:
 	
 	std::string GetNetworkNameFromWidgetName(const char * widgetName);
 
-	void ConnectWidgetsWithControls();
+	void ConnectWidgetsWithIntegerControls();
 	void ConnectWidgetsWithMappedControls();
+	void ConnectWidgetsUsingControlBounds();
 	void ConnectWidgetsWithAudioFileReaders();
 	void ConnectWidgetsWithBooleanControls();
 	
