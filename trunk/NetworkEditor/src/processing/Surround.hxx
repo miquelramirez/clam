@@ -4,6 +4,7 @@
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/Audio.hxx>
+#include <cmath>
 
 class Surround : public CLAM::Processing
 { 
@@ -32,7 +33,13 @@ public:
  
 	bool Do()
 	{
-		float beta=0.f;
+		const double beta=0.f;
+		const double cosBeta=std::cos(beta);
+		const double sinBeta=std::sin(beta);
+		const double sin30 = .5;
+		const double cos30 = 0.8660254037844387076;
+		const double sin110 = 0.9396926207859084279;
+		const double cos110 = -0.3420201433256687129;
 		const CLAM::DataArray& p =_p.GetAudio().GetBuffer();
 		const CLAM::DataArray& vx =_vx.GetAudio().GetBuffer();
 		const CLAM::DataArray& vy =_vy.GetAudio().GetBuffer();
@@ -43,6 +50,14 @@ public:
 		CLAM::DataArray& surroundRight =_surroundRight.GetAudio().GetBuffer();
 		for (int i=0; i<p.Size(); i++)
 		{
+			double ux = vx[i] * cosBeta - vy[i] * sinBeta;
+			double uy = vx[i] * sinBeta + vy[i] * cosBeta;
+			// General C_i = p - ux * cos(alpha_i) - uy * sin(alpha_i)
+			center[i] = p[i] - ux; // alpha_center = 0 
+			left[i] = p[i] - ux * cos30 - uy * sin30;
+			right[i] = p[i] - ux * cos30 + uy * sin30;
+			surroundLeft[i] = p[i] - ux * cos110 - uy * sin110;
+			surroundRight[i] = p[i] - ux * cos110 + uy * sin110;
 			std::cout << "." << std::flush;
 		}
 		std::cout << "|" << std::flush;
