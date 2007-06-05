@@ -1,6 +1,6 @@
 
 
-2007-??-?? CLAM 1.0.1 SVN $Revision$
+2007-??-?? CLAM 1.1.0 SVN $Revision$
 ''
  * loading of faust (ladspa) modules
  * FLTK fully dropped
