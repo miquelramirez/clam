@@ -161,6 +161,9 @@ const static char * processingClasses[] = {
 	"DataSink",
 	"DataDelay",
 	"SilentSource",
+	0,
+	"3D Audio",
+	"Surround",
 	0
 };
 
