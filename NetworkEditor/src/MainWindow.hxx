@@ -393,20 +393,23 @@ public slots:
 #if USE_LADSPA
 		CLAM::LadspaFactory::GetInstance().Clear();
 #endif
-/*
 		// compile all faust files
 		// TODO now it's ugly...
 		std::cout << "[FAUST] compiling" << std::endl;
-		system("cd ~/local/lib/faust/ && make clean && make && make svg && mv *.so *svg ~/local/lib/ladspa/");
+		std::string faustDir="~/src/faust/examples";
+		std::string compileFaustsCmd = "cd "+faustDir+
+			" && make clean && make ladspa && make svg";
 
 		// generate svg for faust code
-		QString svgFilename = "/home/parumi/local/lib/ladspa/freeverb.dsp-svg/process.svg";
+		QString svgFilename;
+		svgFilename += faustDir.c_str();
+		svgFilename += "/freeverb.dsp-svg/process.svg";
 		#if QT_VERSION >= 0x040200
+		std::cout << "opening "<<svgFilename.toStdString() << std::endl;
 		QDesktopServices::openUrl(svgFilename);
 		#else
 		QProcess::startDetached( "x-www-browser", QStringList() << svgFilename); // TODO: Remove this 4.1 unix only version
 		#endif
-*/
 		//QDockWidget * svgDockWidget = new QDockWidget(this);
 		//QSvgWidget * svgWidget = new QSvgWidget(svgFilename, svgDockWidget);
 		//svgDockWidget->setWidget(svgWidget);
