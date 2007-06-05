@@ -1,10 +1,9 @@
-
-
 2007-??-?? CLAM 1.1.0 SVN $Revision$
 ''
- * loading of faust (ladspa) modules
+ * New concise task oriented documentation (on the wiki)
+ * Loading of faust (ladspa) modules
  * FLTK fully dropped
- * Qt3 based vmqt dropped and some files moved to SMSTools
+ * Qt3 based vmqt dropped (some files moved to SMSTools)
  * '_support' ending for scons configure options removed:
    with_jack_support, with_ladspa_support, with_osc_support
    became with_jack, with_ladspa, with_osc
