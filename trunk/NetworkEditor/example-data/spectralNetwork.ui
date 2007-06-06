@@ -452,18 +452,18 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QPixmapRange" name="InControlFloat__OscillatingSpectralNotch_0__Amount" >
+          <widget class="QPixmapRange" name="InControl__OscillatingSpectralNotch_0__Freq" >
            <property name="minimum" >
-            <number>10000</number>
+            <number>0</number>
            </property>
            <property name="maximum" >
-            <number>1000000</number>
+            <number>100</number>
            </property>
            <property name="singleStep" >
-            <number>5000</number>
+            <number>1</number>
            </property>
            <property name="pageStep" >
-            <number>5000</number>
+            <number>5</number>
            </property>
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
@@ -511,19 +511,7 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QPixmapRange" name="InControlFloat__OscillatingSpectralNotch_0__Bandwidth" >
-           <property name="minimum" >
-            <number>2000</number>
-           </property>
-           <property name="maximum" >
-            <number>200000</number>
-           </property>
-           <property name="singleStep" >
-            <number>1000</number>
-           </property>
-           <property name="pageStep" >
-            <number>3000</number>
-           </property>
+          <widget class="QPixmapRange" name="InControl__OscillatingSpectralNotch_0__Bandwidth" >
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
@@ -570,7 +558,7 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QPixmapRange" name="InControlFloat__OscillatingSpectralNotch_0__Gain" >
+          <widget class="QPixmapRange" name="InControl__OscillatingSpectralNotch_0__Gain" >
            <property name="minimum" >
             <number>-2000</number>
            </property>
@@ -629,10 +617,7 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QPixmapRange" name="slider_28" >
-           <property name="maximum" >
-            <number>0</number>
-           </property>
+          <widget class="QPixmapRange" name="InControl__OscillatingSpectralNotch_0__OscFreq" >
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
@@ -672,10 +657,7 @@
           <number>6</number>
          </property>
          <item>
-          <widget class="QPixmapRange" name="InControlFloat__OscillatingSpectralNotch_0__OscWidth" >
-           <property name="maximum" >
-            <number>0</number>
-           </property>
+          <widget class="QPixmapRange" name="InControl__OscillatingSpectralNotch_0__OscWidth" >
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
            </property>
@@ -863,7 +845,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>InControlFloat__OscillatingSpectralNotch_0__Amount</sender>
+   <sender>InControl__OscillatingSpectralNotch_0__Freq</sender>
    <signal>valueChanged(int)</signal>
    <receiver>spinBox_3</receiver>
    <slot>setValue(int)</slot>
@@ -879,7 +861,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>InControlFloat__OscillatingSpectralNotch_0__Bandwidth</sender>
+   <sender>InControl__OscillatingSpectralNotch_0__Bandwidth</sender>
    <signal>valueChanged(int)</signal>
    <receiver>spinBox_5</receiver>
    <slot>setValue(int)</slot>
@@ -895,7 +877,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>InControlFloat__OscillatingSpectralNotch_0__Gain</sender>
+   <sender>InControl__OscillatingSpectralNotch_0__Gain</sender>
    <signal>valueChanged(int)</signal>
    <receiver>spinBox_4</receiver>
    <slot>setValue(int)</slot>
@@ -911,7 +893,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>slider_28</sender>
+   <sender>InControl__OscillatingSpectralNotch_0__OscFreq</sender>
    <signal>valueChanged(int)</signal>
    <receiver>spinBox_7</receiver>
    <slot>setValue(int)</slot>
@@ -927,7 +909,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>InControlFloat__OscillatingSpectralNotch_0__OscWidth</sender>
+   <sender>InControl__OscillatingSpectralNotch_0__OscWidth</sender>
    <signal>valueChanged(int)</signal>
    <receiver>spinBox_6</receiver>
    <slot>setValue(int)</slot>
