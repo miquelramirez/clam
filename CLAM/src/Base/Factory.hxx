@@ -30,13 +30,7 @@
 #include "Assert.hxx"
 #include "ErrFactory.hxx"
 
-#include "LadspaWrapper.hxx"
-#include "LadspaWrapperCreator.hxx"
-
 namespace CLAM {
-
-
-
 
 template <typename AbstractProductType>
 class Factory
