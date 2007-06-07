@@ -1,6 +1,6 @@
-
-2007-??-?? CLAM 1.1.0 SVN $Revision$
-''
+2007-06-07 CLAM 1.1.0
+'Life after 1.0'
+ * SVN $Revision$
  * New concise task oriented documentation (on the wiki)
  * Loading of faust (ladspa) modules
  * FLTK fully dropped

@@ -1,6 +1,7 @@
-2007-??-?? SMSTools 0.4.8 SVN $Revision$
-''
- * Using CLAM 1.0.1
+2007-06-08 SMSTools 0.4.8
+'Life after 1.0'
+ * SVN $Revision$
+ * Using CLAM 1.1.0
  * Dropped all the obsolete FLTK code
  * Adopted needed files from the deprecated vmqt CLAM module
  * File menu items redistributed on others
