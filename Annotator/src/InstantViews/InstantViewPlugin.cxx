@@ -23,8 +23,8 @@
 #include "Project.hxx"
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
+#include "BarGraph.hxx"
 #include "PoolFloatArrayDataSource.hxx"
-
 
 #include <string>
 #include <map>
@@ -68,7 +68,7 @@ public:
 	}
 private:
 	virtual const char * id() const { return "Tonnetz"; }
-	virtual QString name() const { return QObject::tr("Tonnezt"); }
+	virtual QString name() const { return QObject::tr("Tonnetz"); }
 	QWidget * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
 	{
 		_view = new CLAM::VM::Tonnetz(parent);
@@ -197,16 +197,90 @@ private:
 	}
 };
 
+class BarGraphPlugin : public InstantViewPlugin
+{
+private:
+	CLAM::VM::BarGraph * _view;
+	CLAM::VM::PoolFloatArrayDataSource _dataSource;
+public:
+	BarGraphPlugin()
+		: _view(0)
+	{}
+	~BarGraphPlugin()
+	{
+		if (_view) delete _view;
+	}
+private:
+	virtual const char * id() const { return "BarGraph"; }
+	virtual QString name() const { return QObject::tr("BarGraph"); }
+	QWidget * createView(QWidget * parent, const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
+	{
+		_view = new CLAM::VM::BarGraph(parent);
+		_dataSource.setDataSource(project, config.GetAttributeScope(), config.GetAttributeName());
+		_view->setDataSource( _dataSource );
+		_view->resize(-1,300);
+		return _view;
+	}
+	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
+	{
+		QStringList attributeList;
+		const std::list<std::string>& divisionNames = project.GetNamesByScopeAndType("Song", "FrameDivision");
+		std::list<std::string>::const_iterator divisionName;
+		for(divisionName = divisionNames.begin();divisionName != divisionNames.end(); divisionName++)
+		{
+			const std::string & frameDivisionChildScope = project.GetAttributeScheme("Song", *divisionName).GetChildScope();
+			const std::list<std::string>& descriptorsNames = project.GetNamesByScopeAndType(frameDivisionChildScope, "FloatArray");
+			std::list<std::string>::const_iterator it;
+			for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++)
+			{
+				const CLAM_Annotator::SchemaAttribute & attribute = project.GetAttributeScheme(frameDivisionChildScope,*it);
+				if (!attribute.HasBinLabels()) continue;
+				unsigned binSize = attribute.GetBinLabels().size();
+				if (binSize!=12 && binSize!=24) continue; 
+				attributeList << (frameDivisionChildScope+"::"+*it).c_str();
+			}
+		}
+		if (attributeList.size()==0) return false;
+		bool ok=false;
+		QString chosen = QInputDialog::getItem(0, QObject::tr("Choose the attribute to display in BarGraph view:"),
+				QObject::tr("Attribute:"), attributeList, 0, false, &ok);
+		if (!ok) return false;
+		QStringList splitted = chosen.split("::");
+		config.SetAttributeScope(splitted[0].toStdString());
+		config.SetAttributeName(splitted[1].toStdString());
+		return true;
+	}
+
+	virtual void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
+	{
+		_dataSource.updateData(data, samplingRate);
+	}
+	virtual void clearData()
+	{
+		_dataSource.clearData();
+		_view->clearData();
+	}
+	virtual void setCurrentTime(double timeMiliseconds)
+	{
+		if ( !_view) return;
+		bool mustUpdate = _dataSource.setCurrentTime(timeMiliseconds);
+		if ( !mustUpdate) return;
+		_view->updateIfNeeded();
+	}
+};
+
 Initializer::Initializer()
 {
 	plugins["KeySpace"] = new KeySpacePlugin;
 	plugins["Tonnetz"] = new TonnetzPlugin;
+	plugins["BarGraph"] = new BarGraphPlugin;
 }
 
 InstantViewPlugin * InstantViewPlugin::createPlugin(const std::string & type)
 {
 	if (type=="KeySpace") return new KeySpacePlugin;
 	if (type=="Tonnetz") return new TonnetzPlugin;
+	if (type=="BarGraph") return new BarGraphPlugin;
 	return 0;
 }
 
