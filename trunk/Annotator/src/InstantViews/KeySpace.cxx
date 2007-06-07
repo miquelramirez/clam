@@ -62,6 +62,7 @@ struct TKeyNode
 	float y;
 };
 
+
 TKeyNode * getKeyNodes()
 {
 	static TKeyNode keyNodes[] = 
@@ -75,8 +76,10 @@ TKeyNode * getKeyNodes()
 }
 unsigned nKeyNodes=24;
 // The number of 'pixels'
-unsigned nX = 50;
-unsigned nY = 125;
+unsigned nX = 128;
+unsigned nY = 64;
+//unsigned nX = 50;
+//unsigned nY = 125;
 std::vector<float> weights;
 
 CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
@@ -102,6 +105,7 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 		{110,0x5a,0xb4,0x64},
 		{145,0xe0,0xe0,0x2c},
 		{200,0xff,0x3c,0x1e},
+		{255,0xff,0x5c,0x1e},
 	};
 	for (unsigned i=0; i<6-1; i++)
 	{
@@ -134,13 +138,16 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 	setDataSource(getDummySource());
 }
 
+GLuint textureId;
 void CLAM::VM::KeySpace::initializeGL()
 {
-	glShadeModel(GL_SMOOTH);
 	glClearColor(0,0,0,0); // rgba
-	glEnable(GL_BLEND);
-	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glShadeModel(GL_FLAT);
+//	glShadeModel(GL_SMOOTH);
+//	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
+	glGenTextures(1,&textureId);
 //	glEnable (GL_LINE_SMOOTH);
 //	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 }
@@ -206,15 +213,13 @@ void CLAM::VM::KeySpace::DrawTiles()
 	if (_maxValue<1.5*mean/_nBins) _maxValue=1.5*mean/_nBins;
 
 	if (_nBins!=nKeyNodes) return;
-	float xStep = x_res/nX;
-	float yStep = y_res/nY;
+
+	std::vector<float> texture(nY*nX*3);
+	unsigned texel=0;
 	for(unsigned k=0; k<nY; k++)
 	{
-		glBegin(GL_QUAD_STRIP);
-		float y1 = k*yStep;
 		for(unsigned i=0; i<nX; i++)
 		{
-			float x1 = i*xStep;
 			double num = 0.;
 			double den = 0.;
 			for(unsigned m=0; m<nKeyNodes; m++)
@@ -231,14 +236,29 @@ void CLAM::VM::KeySpace::DrawTiles()
 			ColorIndex *= ColorIndex;
 			ColorIndex *= 200.f;
 			int cidx = floorf(ColorIndex);
-			glVertex2f( x1,   y1 );
-			glVertex2f( x1,   y1+yStep );
-			glColor3d(pRColor[cidx]/255.,pGColor[cidx]/255.,pBColor[cidx]/255.);
+			texture[texel++] = pRColor[cidx]/255.;
+			texture[texel++] = pGColor[cidx]/255.;
+			texture[texel++] = pBColor[cidx]/255.;
 		}
-		glVertex2f( 1,   y1 );
-		glVertex2f( 1,   y1+yStep );
-		glEnd();
 	}
+	glBindTexture(GL_TEXTURE_2D, textureId);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, nX, nY, /*border*/ 0,
+		GL_RGB, GL_FLOAT, &texture[0]);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+	float vertexes[] = {0,0,0,1,1,1,1,0};
+	glEnable(GL_TEXTURE_2D);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2,GL_FLOAT,0,vertexes);
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_QUADS,0,5);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void CLAM::VM::KeySpace::DrawLabels()
@@ -253,10 +273,10 @@ void CLAM::VM::KeySpace::DrawLabels()
 			y1 = 4.*y_res/nY;
 
 		float value = _data ? _data[i]/_maxValue : 0; 
-		if (value>.6) glColor3d(0,0,0);
+		if (value>.6) glColor3d(.1,0,0);
 		else          glColor3d(1,1,1);
 
-		renderText(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(), _font);
+		renderText(x1, y1+.02, -.6, _dataSource->getLabel(i).c_str(), _font);
 	}
 }
 
