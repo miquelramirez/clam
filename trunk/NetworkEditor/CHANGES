@@ -1,6 +1,7 @@
-2007-??-?? NetworkEditor 1.0.1 SVN $Revision$
-''
- * Using CLAM 1.0.1
+2007-06-08 NetworkEditor 1.1.0
+'Life after 1.0'
+ * SVN $Revision$
+ * Using CLAM 1.1.0
  * New examples
    * genderChange: fully working now and with an interface
    * experimentalVowelSynth: Synthesize vowels by controling F1 and 

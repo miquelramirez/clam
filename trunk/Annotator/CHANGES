@@ -1,6 +1,12 @@
-2007-??-?? Annotator 0.3.9 SVN $Revision$
-''
- * Using CLAM 1.0.1
+2007-06-08 Annotator 0.3.9
+'Live after 1.0'
+ * SVN $Revision$
+ * Using CLAM 1.1.0
+ * KeySpace and Tonnetz code synced with NetworkEditor
+ * Speedup KeySpace Widget
+ * Regenerated ClamExampleExtractor project data with MFCC's
+ * Custom icons added shadows and borders to be seen on dark backgrounds
+ * Fix: Assert 'Views attribute not added or updated'
 
 2007-03-20 Annotator 0.3.8
 'The Berlin release'

@@ -1,6 +1,7 @@
-2007-??-?? Voice2MIDI 0.3.7 SVN $Revision$
-''
- * Using CLAM 1.0.1
+2007-06-08 Voice2MIDI 0.3.7
+'Life after 1.0'
+ * SVN $Revision$
+ * Using CLAM 1.1.0
  * Not depending on clam_vmqt
  * Ported to qt4 using Qt3Support
 
