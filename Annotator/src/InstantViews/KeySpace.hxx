@@ -53,7 +53,7 @@ private:
 
 	float centroidx_,centroidy_;
 	float pKeySpaceValue_[24];
-	unsigned pRColor[201],pGColor[201],pBColor[201];
+	unsigned pRColor[256],pGColor[256],pBColor[256];
 	int ColorsIndex[6];
 	void RecomputeWeights();
 };
