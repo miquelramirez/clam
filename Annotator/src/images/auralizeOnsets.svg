@@ -7,18 +7,19 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="64px"
    height="64px"
    id="svg2214"
    sodipodi:version="0.32"
-   inkscape:version="0.43"
-   sodipodi:docbase="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images"
+   inkscape:version="0.45.1"
+   sodipodi:docbase="/home/vokimon/CajitasDeArena/clam/Annotator/src/images"
    sodipodi:docname="auralizeOnsets.svg"
-   inkscape:export-filename="/home/vokimon/CajitasDeArena/CLAM_Annotator/qt4src/images/auralizeOnsets.png"
+   inkscape:export-filename="/home/vokimon/CajitasDeArena/clam/Annotator/src/images/auralizeOnsets.png"
    inkscape:export-xdpi="90"
-   inkscape:export-ydpi="90">
+   inkscape:export-ydpi="90"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs2216">
     <linearGradient
@@ -72,15 +73,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="60.284271"
-     inkscape:cy="32"
+     inkscape:zoom="2.8284271"
+     inkscape:cx="4.1261015"
+     inkscape:cy="39.552995"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      inkscape:window-width="959"
-     inkscape:window-height="555"
+     inkscape:window-height="584"
      inkscape:window-x="50"
      inkscape:window-y="244" />
   <metadata
@@ -105,6 +106,26 @@
        height="45"
        x="28"
        y="10.545455" />
+    <g
+       id="g3154"
+       transform="matrix(1.026094,0,0,0.8827353,-54.123663,-37.420843)"
+       style="stroke:#ff9f0c;stroke-opacity:1">
+      <path
+         transform="matrix(1.6173741,0,0,1.494125,20.986325,13.764963)"
+         d="M 30.181818 54 A 3.4545455 3.8181818 0 1 1  23.272727,54 A 3.4545455 3.8181818 0 1 1  30.181818 54 z"
+         sodipodi:ry="3.8181818"
+         sodipodi:rx="3.4545455"
+         sodipodi:cy="54"
+         sodipodi:cx="26.727272"
+         id="path2176"
+         style="color:#000000;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ff9f0c;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible"
+         sodipodi:type="arc" />
+      <path
+         sodipodi:nodetypes="ccc"
+         id="path2178"
+         d="M 70.344514,94.448588 L 64.26035,56.687974 C 64.26035,56.687974 82.056529,62.528644 83.729674,72.987519"
+         style="fill:none;fill-opacity:0.75;fill-rule:evenodd;stroke:#ff9f0c;stroke-width:5.37594843;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    </g>
     <g
        id="g2228"
        transform="matrix(1.575814,0,0,1.347695,-54.88004,-5.229987)">
