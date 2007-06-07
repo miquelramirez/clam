@@ -92,7 +92,11 @@ public:
 	}
 
 
-	void Clear() { _registry.RemoveAllCreators(); }
+	void Clear()
+	{ 
+		_registry.RemoveAllCreators();
+		_newregistry.RemoveAllCreators();
+	}
 
 
 	void AddCreator(const RegistryKey name, CreatorMethod creator)
@@ -396,6 +400,7 @@ public: // Inner classes. Public for better testing
 			mKey=key;
 //			std::cout << CLAM_MODULE << "Registrator(key,factory) " << mKey << std::endl;
 			fact.AddCreatorWarningRepetitions( mKey, Create );
+			fact.NewAddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
 		}
 
 		Registrator( TheFactoryType& fact ) {
@@ -403,12 +408,14 @@ public: // Inner classes. Public for better testing
 			mKey=dummy.GetClassName();
 //			std::cout << CLAM_MODULE << "Registrator(factory) " << dummy.GetClassName() << std::endl;
 			fact.AddCreatorWarningRepetitions( dummy.GetClassName(), Create );
+			fact.NewAddCreatorWarningRepetitions( dummy.GetClassName(), new ConcreteCreator() );
 		}
 
 		Registrator( RegistryKey key ) {
 			mKey=key;
 //			std::cout << CLAM_MODULE << "Registrator(key) " << mKey << std::endl;
 			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, Create );
+			TheFactoryType::GetInstance().NewAddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
 		}
 
 		Registrator( ) {
@@ -416,6 +423,7 @@ public: // Inner classes. Public for better testing
 			mKey=dummy.GetClassName();
 //			std::cout << CLAM_MODULE << "Registrator() " << mKey << std::endl;
 			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, Create );
+			TheFactoryType::GetInstance().NewAddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
 		}
 		~Registrator() {
 //			std::cout << CLAM_MODULE << "~Registrator() " << mKey << std::endl;
@@ -424,7 +432,6 @@ public: // Inner classes. Public for better testing
 		static AbstractProduct* Create() {
 			return new ConcreteProductType;
 		}
-
 		class ConcreteCreator : public Creator
 		{
 		public:
@@ -439,7 +446,6 @@ public: // Inner classes. Public for better testing
 		RegistryKey mKey;
 
 	};
-
 	int Count() { return _registry.Count(); }
 
 private:
