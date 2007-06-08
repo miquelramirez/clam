@@ -13,7 +13,10 @@ namespace CLAM
 	class FrameTransformation : public Processing
 	{
 		public:
-			FrameTransformation():mAmount("Amount", this){}
+			FrameTransformation()
+				: mAmount("Amount", this)
+			{
+			}
 			virtual bool Do(const Frame& in,Frame& out) = 0; 
 			
 			const ProcessingConfig& GetConfig() const { return mConfig; }
