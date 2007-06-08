@@ -62,9 +62,7 @@ public:
 			right[i] = p[i] - ux * cos30 + uy * sin30;
 			surroundLeft[i] = p[i] - ux * cos110 - uy * sin110;
 			surroundRight[i] = p[i] - ux * cos110 + uy * sin110;
-			std::cout << "." << std::flush;
 		}
-		std::cout << "|" << std::flush;
 
 		// Tell the ports this is done
 		_p.Consume();
