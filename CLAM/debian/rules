@@ -13,8 +13,8 @@
 
 
 CFLAGS = -Wall -g
-SCONS_OPTIONS= prefix=/usr xmlbackend=xercesc release=yes with_osc=no double=0 with_fftw3=yes
-SCONS= scons $(SCONS_OPTIONS)
+SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr xmlbackend=xercesc release=yes with_osc=no double=0 with_fftw3=yes
+SCONS= scons
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -37,7 +37,7 @@ major=2
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
-	cd $(CURDIR); $(SCONS) configure
+	cd $(CURDIR); $(SCONS) configure $(SCONS_OPTIONS)
 	touch configure-stamp
 
 
@@ -79,7 +79,7 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/tmp/usr
-	cd $(CURDIR) && scons prefix_for_packaging=$(CURDIR)/debian/tmp/usr install
+	cd $(CURDIR) && $(SCONS) install
 	dh_install --sourcedir=debian/tmp
 
 # Build architecture-independent files here.
