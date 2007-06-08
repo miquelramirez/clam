@@ -37,6 +37,7 @@ major=2
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
+	mkdir -p $(CURDIR)/debian/tmp/usr
 	cd $(CURDIR); $(SCONS) configure $(SCONS_OPTIONS)
 	touch configure-stamp
 
