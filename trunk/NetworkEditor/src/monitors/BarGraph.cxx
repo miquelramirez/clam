@@ -41,7 +41,6 @@ CLAM::VM::BarGraph::BarGraph(QWidget * parent, FloatArrayDataSource * source)
 	, _barGradientBegin(Qt::white)
 	, _barGradientEnd(Qt::black)
 {
-	_data = 0;
 	setDataSource(source ? *source : dummySource());
 	_updatePending=0;
 	startTimer(50);
@@ -67,41 +66,101 @@ void CLAM::VM::BarGraph::timerEvent(QTimerEvent *event)
 	if ( !_dataSource->isEnabled()) return;
 	updateIfNeeded();
 }
+void CLAM::VM::BarGraph::findBounds(double & min, double & max, unsigned size, const CLAM::TData * data)
+{
+	// First try to use the ones provided by the data source
+	if (_dataSource->hasUpperBound() && _dataSource->hasLowerBound())
+	{
+		min=_dataSource->lowerBound();
+		max=_dataSource->upperBound();
+		return;
+	}
+	// No data, keep default value
+	if (!data) return;
+	if (!size) return;
+	min=+1e10;
+	max=-1e10;
+	for (unsigned i=0; i<size; i++)
+	{
+		if (data[i]!=data[i]) continue; // NaN
+		if (data[i]<min) min=data[i];
+		if (data[i]>max) max=data[i];
+	}
+	// If positive, 0 as reference
+	if (min>0) min=0;
+	// If also negative, make it simetrical
+	if (min*max<0)
+	{
+		if (min>-max) min=-max;
+		if (max<-min) max=-min;
+	}
+	// No valid number found
+	if (min>max)
+	{
+		max=-5;
+		min=0;
+	}
+	// if constant 0, wide the scope
+	if (min==max) max=1;
+}
 
 void CLAM::VM::BarGraph::paintEvent(QPaintEvent * event)
 {
 	_updatePending=0;
 	if ( !_dataSource) return;
-	const CLAM::TData * _data = _dataSource->frameData();
-	if ( !_data)
+	const TData * data = _dataSource->frameData();
+	if ( !data)
 	{
 		_dataSource->release();
 		return;
 	}
 	int size = _dataSource->nBins();
-	double minValue=_dataSource->lowerBound();
-	double maxValue=_dataSource->upperBound();
+	double minValue=0;
+	double maxValue=1;
+	findBounds(minValue, maxValue, size, data);
 	const unsigned margin=2;
 	float barWidth = (width()-margin)/float(size);
 	float maxBarSize = height()-2*margin;
 	float zeroPos = margin + maxBarSize*maxValue/(maxValue-minValue);
 	QPainter painter(this);
-	painter.drawLine(0,zeroPos,width(),zeroPos);
-	for (unsigned i=0; i<size; i++)
+	if (barWidth<margin+5)
 	{
-		if (_data[i]!=_data[i])
-			continue; // NaN
-		double valuePosition = margin + maxBarSize*(maxValue-_data[i])/(maxValue-minValue);
-		QRectF barRect(
-			i*barWidth+margin, zeroPos,
-			barWidth-margin, valuePosition-zeroPos);
+		QPolygonF polygon;
+		for (unsigned i=0; i<size; i++)
+		{
+			if (data[i]!=data[i]) continue; // NaN
+			double valuePosition = margin + maxBarSize*(maxValue-data[i])/(maxValue-minValue);
+			polygon << QPointF(i*barWidth+margin, valuePosition);
+		}
+		polygon << QPointF((size-1)*barWidth+margin, zeroPos);
+		polygon << QPointF(margin, zeroPos);
 		QLinearGradient linearGrad(
-			QPointF(0,zeroPos),
-			QPointF(0,valuePosition));
-		linearGrad.setColorAt(0, _barGradientBegin);
+			QPointF(0,height()-margin),
+			QPointF(0,margin));
+		linearGrad.setColorAt(0, _barGradientEnd);
+		linearGrad.setColorAt(zeroPos/height(), _barGradientBegin);
 		linearGrad.setColorAt(1, _barGradientEnd);
 		painter.setBrush(linearGrad);
-		painter.drawRect(barRect);
+		painter.drawPolygon(polygon);
+	}
+	else
+	{
+		painter.drawLine(0,zeroPos,width(),zeroPos);
+		for (unsigned i=0; i<size; i++)
+		{
+			if (data[i]!=data[i]) continue; // NaN
+			double valuePosition = margin + maxBarSize*(maxValue-data[i])/(maxValue-minValue);
+			QRectF barRect(
+				i*barWidth+margin, zeroPos,
+				barWidth-margin, valuePosition-zeroPos);
+			QLinearGradient linearGrad(
+				QPointF(0,zeroPos),
+				QPointF(0,valuePosition));
+			linearGrad.setColorAt(0, _barGradientBegin);
+			linearGrad.setColorAt(1, _barGradientEnd);
+			painter.setBrush(linearGrad);
+			painter.drawRect(barRect);
+		}
 	}
 	_dataSource->release();
 }
