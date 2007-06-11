@@ -74,7 +74,7 @@ private:
 		_view = new CLAM::VM::Tonnetz(parent);
 		_dataSource.setDataSource(project, config.GetAttributeScope(), config.GetAttributeName());
 		_view->setDataSource( _dataSource );
-		_view->resize(-1,300);
+		_view->resize(10,300);
 		return _view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
@@ -146,7 +146,7 @@ private:
 		_view = new CLAM::VM::KeySpace(parent);
 		_dataSource.setDataSource(project, config.GetAttributeScope(), config.GetAttributeName());
 		_view->setDataSource( _dataSource );
-		_view->resize(-1,300);
+		_view->resize(10,300);
 		return _view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
@@ -218,7 +218,7 @@ private:
 		_view = new CLAM::VM::BarGraph(parent);
 		_dataSource.setDataSource(project, config.GetAttributeScope(), config.GetAttributeName());
 		_view->setDataSource( _dataSource );
-		_view->resize(-1,300);
+//		_view->resize(20,300);
 		return _view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
@@ -236,7 +236,6 @@ private:
 				const CLAM_Annotator::SchemaAttribute & attribute = project.GetAttributeScheme(frameDivisionChildScope,*it);
 				if (!attribute.HasBinLabels()) continue;
 				unsigned binSize = attribute.GetBinLabels().size();
-				if (binSize!=12 && binSize!=24) continue; 
 				attributeList << (frameDivisionChildScope+"::"+*it).c_str();
 			}
 		}
