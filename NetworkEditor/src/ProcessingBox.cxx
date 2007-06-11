@@ -15,6 +15,7 @@
 #include "LPModelView.hxx"
 #include "MelSpectrumView.hxx"
 #include "MelCepstrumView.hxx"
+#include "VectorView.hxx"
 #include "ControlPrinterWidget.hxx"
 #include "ControlSenderWidget.hxx"
 #include "ControlSurfaceWidget.hxx"
@@ -144,6 +145,9 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 
 	if (className=="MelCepstrumView")
 		return new CLAM::VM::MelCepstrumView(canvas, dynamic_cast<MelCepstrumViewMonitor*>(processing));
+
+	if (className=="VectorView")
+		return new CLAM::VM::VectorView(canvas, dynamic_cast<VectorViewMonitor*>(processing));
 
 	return 0;
 }
