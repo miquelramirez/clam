@@ -29,6 +29,12 @@ Consider that such descriptors are computed every 2048 samples so their precissi
     </Song>
   </Songs>
 
-  <Views/>
+  <Views>
+    <View>
+      <Type>BarGraph</Type>
+      <AttributeScope>Frame</AttributeScope>
+      <AttributeName>MelFrequencyCepstrumCoefficients</AttributeName>
+    </View>
+  </Views>
 
 </Project>
