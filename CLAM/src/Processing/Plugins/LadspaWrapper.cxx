@@ -15,7 +15,9 @@
 
 namespace CLAM
 {
-	
+
+static int sPortSize = 512;
+
 LadspaWrapper::LadspaWrapper()
 	: mInstance(0),
 	  mDescriptor(0),
@@ -47,7 +49,7 @@ bool LadspaWrapper::Do()
 {
 	UpdatePortsPointers();
 	
-	mDescriptor->run(mInstance, 512 );
+	mDescriptor->run(mInstance, sPortSize );
 
 	for(unsigned int i=0;i<mOutputControlValues.size();i++)
 		GetOutControls().GetByNumber(i).SendControl(mOutputControlValues[i]);
@@ -116,14 +118,14 @@ void LadspaWrapper::ConfigurePortsAndControls()
 		if(LADSPA_IS_PORT_INPUT(portDescriptor) && LADSPA_IS_PORT_AUDIO(portDescriptor)) 
 		{
 			AudioInPort * port = new AudioInPort(mDescriptor->PortNames[i],this );
-			port->SetSize( 512 );
+			port->SetSize( sPortSize );
 			mInputPorts.push_back(port);
 		}
 		// out port
 		if(LADSPA_IS_PORT_OUTPUT(portDescriptor) && LADSPA_IS_PORT_AUDIO(portDescriptor)) 
 		{
 			AudioOutPort * port = new AudioOutPort(mDescriptor->PortNames[i],this );
-			port->SetSize( 512 );
+			port->SetSize( sPortSize );
 			mOutputPorts.push_back(port);
 		}
 
