@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="CLAM">
+
+  <processing id="Amount" type="OutControlSender">
+    <Min>100</Min>
+    <Default>1000</Default>
+    <Max>5000</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Bandwidth" type="OutControlSender">
+    <Min>1</Min>
+    <Default>500.5</Default>
+    <Max>1000</Max>
+    <Step>4.995</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Freq" type="OutControlSender">
+    <Min>80</Min>
+    <Default>7540</Default>
+    <Max>15000</Max>
+    <Step>74.6</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Gain" type="OutControlSender">
+    <Min>-60</Min>
+    <Default>0</Default>
+    <Max>60</Max>
+    <Step>0.6</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="High Cutoff" type="OutControlSender">
+    <Min>1000</Min>
+    <Default>5000</Default>
+    <Max>10000</Max>
+    <Step>100</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="High Gain" type="OutControlSender">
+    <Min>-60</Min>
+    <Default>0</Default>
+    <Max>0</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Low Cutoff" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1000</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Low Gain" type="OutControlSender">
+    <Min>-60</Min>
+    <Default>0</Default>
+    <Max>0</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Mid Gain" type="OutControlSender">
+    <Min>-60</Min>
+    <Default>0</Default>
+    <Max>0</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OscFreq" type="OutControlSender">
+    <Min>0.1</Min>
+    <Default>2.55</Default>
+    <Max>5</Max>
+    <Step>0.0245</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OscWidth" type="OutControlSender">
+    <Min>5</Min>
+    <Default>102.5</Default>
+    <Max>200</Max>
+    <Step>0.975</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="OscillatingSpectralNotch_0" type="OscillatingSpectralNotch">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
+
+  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+
+  <processing id="OverlapAdd_0" type="OverlapAdd">
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Robotization Amount" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>100</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Robotization_0" type="Robotization">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
+
+  <processing id="Spectral Input" type="AudioSource"/>
+
+  <processing id="Spectral Output" type="AudioSink"/>
+
+  <processing id="SpectralAnalysis_0" type="SpectralAnalysis">
+    <WindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>2049</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>0</Invert>
+    </WindowGenerator>
+    <CircularShift>
+      <Amount>-1024</Amount>
+    </CircularShift>
+    <FFT>
+      <AudioSize>2048</AudioSize>
+    </FFT>
+    <prHopSize>512</prHopSize>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>2048</prFFTSize>
+    <prWindowSize>2049</prWindowSize>
+    <prWindowType>BlackmanHarris92</prWindowType>
+  </processing>
+
+  <processing id="SpectralSynthesis_0" type="SpectralSynthesis">
+    <AnalWindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>2049</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>1</Invert>
+    </AnalWindowGenerator>
+    <SynthWindowGenerator>
+      <Type>Triangular</Type>
+      <Size>1025</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NoNormalization</Normalize>
+      <Invert>0</Invert>
+    </SynthWindowGenerator>
+    <CircularShift>
+      <Amount>1024</Amount>
+    </CircularShift>
+    <IFFT>
+      <AudioSize>2048</AudioSize>
+    </IFFT>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <Residual>0</Residual>
+    <prAnalWindowSize>2049</prAnalWindowSize>
+    <prAnalWindowType>BlackmanHarris92</prAnalWindowType>
+    <prHopSize>512</prHopSize>
+  </processing>
+
+  <processing id="SpectrumView_0" type="SpectrumView"/>
+
+  <processing id="SpectrumView_1" type="SpectrumView"/>
+
+  <processing id="ThreeBandFilter_0" type="ThreeBandFilter">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
+
+  <processing id="TonalAnalysis_0" type="TonalAnalysis"/>
+
+  <port_connection>
+    <out>OscillatingSpectralNotch_0.Out Spectrum</out>
+    <in>SpectralSynthesis_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>OscillatingSpectralNotch_0.Out Spectrum</out>
+    <in>SpectrumView_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>OverlapAdd_0.Audio Output</out>
+    <in>Spectral Output.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Robotization_0.Out Spectrum</out>
+    <in>OscillatingSpectralNotch_0.In Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Spectral Input.AudioOut</out>
+    <in>SpectralAnalysis_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Spectral Input.AudioOut</out>
+    <in>Oscilloscope_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Spectral Input.AudioOut</out>
+    <in>TonalAnalysis_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralAnalysis_0.Output</out>
+    <in>ThreeBandFilter_0.In Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralAnalysis_0.Output</out>
+    <in>SpectrumView_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralSynthesis_0.Output</out>
+    <in>OverlapAdd_0.Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ThreeBandFilter_0.Out Spectrum</out>
+    <in>Robotization_0.In Spectrum</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Amount.out</out>
+    <in>ThreeBandFilter_0.Amount</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Bandwidth.out</out>
+    <in>OscillatingSpectralNotch_0.Bandwidth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Freq.out</out>
+    <in>OscillatingSpectralNotch_0.Freq</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain.out</out>
+    <in>OscillatingSpectralNotch_0.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>High Cutoff.out</out>
+    <in>ThreeBandFilter_0.HighCutoff</in>
+  </control_connection>
+
+  <control_connection>
+    <out>High Gain.out</out>
+    <in>ThreeBandFilter_0.HighGain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Low Cutoff.out</out>
+    <in>ThreeBandFilter_0.LowCutoff</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Low Gain.out</out>
+    <in>ThreeBandFilter_0.LowGain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Mid Gain.out</out>
+    <in>ThreeBandFilter_0.MidGain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OscFreq.out</out>
+    <in>OscillatingSpectralNotch_0.OscFreq</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OscWidth.out</out>
+    <in>OscillatingSpectralNotch_0.OscWidth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Robotization Amount.out</out>
+    <in>Robotization_0.Amount</in>
+  </control_connection>
+
+</network>

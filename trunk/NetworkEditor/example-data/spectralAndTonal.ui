@@ -1,0 +1,918 @@
+<ui version="4.0" >
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>604</width>
+    <height>521</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Spectral Network</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QPixmapRange" name="InControlFloat__ThreeBandFilter_0__LowGain" >
+           <property name="minimum" >
+            <number>-6000</number>
+           </property>
+           <property name="maximum" >
+            <number>0</number>
+           </property>
+           <property name="singleStep" >
+            <number>30</number>
+           </property>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="BasePath" >
+            <string>:/pkwidgets/thinMixerSlider_</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPixmapRange" name="InControlFloat__ThreeBandFilter_0__MidGain" >
+           <property name="minimum" >
+            <number>-6000</number>
+           </property>
+           <property name="maximum" >
+            <number>0</number>
+           </property>
+           <property name="singleStep" >
+            <number>30</number>
+           </property>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="BasePath" >
+            <string>:/pkwidgets/thinMixerSlider_</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPixmapRange" name="InControlFloat__ThreeBandFilter_0__HighGain" >
+           <property name="minimum" >
+            <number>-6000</number>
+           </property>
+           <property name="maximum" >
+            <number>0</number>
+           </property>
+           <property name="singleStep" >
+            <number>30</number>
+           </property>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="BasePath" >
+            <string>:/pkwidgets/thinMixerSlider_</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QPixmapRange" name="InControlInteger__ThreeBandFilter_0__LowCutoff" >
+           <property name="maximum" >
+            <number>10000</number>
+           </property>
+           <property name="singleStep" >
+            <number>30</number>
+           </property>
+           <property name="pageStep" >
+            <number>200</number>
+           </property>
+           <property name="value" >
+            <number>1000</number>
+           </property>
+           <property name="sliderPosition" >
+            <number>1000</number>
+           </property>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="BasePath" >
+            <string>:/pkwidgets/knob_</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPixmapRange" name="InControlInteger__ThreeBandFilter_0__HighCutoff" >
+           <property name="minimum" >
+            <number>1000</number>
+           </property>
+           <property name="maximum" >
+            <number>10000</number>
+           </property>
+           <property name="singleStep" >
+            <number>50</number>
+           </property>
+           <property name="pageStep" >
+            <number>1000</number>
+           </property>
+           <property name="value" >
+            <number>5000</number>
+           </property>
+           <property name="sliderPosition" >
+            <number>5000</number>
+           </property>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="BasePath" >
+            <string>:/pkwidgets/knob_</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="label" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>Three band</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+         </property>
+         <property name="wordWrap" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSynthKnob" name="InControlInteger__Robotization_0__Amount" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="autoFillBackground" >
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet" >
+          <string>background-color:#999</string>
+         </property>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="notchesVisible" >
+          <bool>true</bool>
+         </property>
+         <property name="knobColor" >
+          <color>
+           <red>90</red>
+           <green>90</green>
+           <blue>90</blue>
+          </color>
+         </property>
+         <property name="meterColor" >
+          <color>
+           <red>0</red>
+           <green>50</green>
+           <blue>0</blue>
+          </color>
+         </property>
+         <property name="pointerColor" >
+          <color>
+           <red>30</red>
+           <green>70</green>
+           <blue>49</blue>
+          </color>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_7" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>0</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>Robotization</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QSplitter" name="splitter" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QWidget" name="layoutWidget" >
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="SpectrumView" name="OutPort__SpectralAnalysis_0__Output" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>3</hsizetype>
+             <vsizetype>5</vsizetype>
+             <horstretch>4</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="autoFillBackground" >
+            <bool>true</bool>
+           </property>
+           <property name="styleSheet" >
+            <string>background-color:#ddd</string>
+           </property>
+           <property name="lineColor" >
+            <color>
+             <red>0</red>
+             <green>50</green>
+             <blue>0</blue>
+            </color>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_12" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>5</hsizetype>
+             <vsizetype>0</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Input</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget" >
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="SpectrumView" name="OutPort__ThreeBandFilter_0__Out___Spectrum" >
+           <property name="autoFillBackground" >
+            <bool>true</bool>
+           </property>
+           <property name="styleSheet" >
+            <string>background-color:#bbd</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_11" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>5</hsizetype>
+             <vsizetype>0</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Three band output</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget" >
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="SpectrumView" name="OutPort__Robotization_0__Out___Spectrum" >
+           <property name="autoFillBackground" >
+            <bool>true</bool>
+           </property>
+           <property name="styleSheet" >
+            <string>background-color:#bbd</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_10" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>5</hsizetype>
+             <vsizetype>0</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Robotization output</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="layoutWidget" >
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="CLAM::VM::KeySpace" name="OutPort__TonalAnalysis_0__Chord___Correlation" />
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>5</hsizetype>
+             <vsizetype>0</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Oscillating spectral notch output</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="Oscilloscope" name="OutPort__OverlapAdd_0__Audio___Output" >
+         <property name="autoFillBackground" >
+          <bool>true</bool>
+         </property>
+         <property name="styleSheet" >
+          <string>background:gray;</string>
+         </property>
+         <property name="lineColor" >
+          <color>
+           <red>250</red>
+           <green>250</green>
+           <blue>250</blue>
+          </color>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QPixmapRange" name="InControl__OscillatingSpectralNotch_0__Freq" >
+           <property name="minimum" >
+            <number>0</number>
+           </property>
+           <property name="maximum" >
+            <number>100</number>
+           </property>
+           <property name="singleStep" >
+            <number>1</number>
+           </property>
+           <property name="pageStep" >
+            <number>5</number>
+           </property>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="BasePath" >
+            <string>:/pkwidgets/searchSlider_</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_4" >
+             <property name="text" >
+              <string>Center freq</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="spinBox_3" >
+             <property name="maximum" >
+              <number>1000000</number>
+             </property>
+             <property name="minimum" >
+              <number>10000</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QPixmapRange" name="InControl__OscillatingSpectralNotch_0__Bandwidth" >
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="BasePath" >
+            <string>:/pkwidgets/searchSlider_</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_6" >
+             <property name="text" >
+              <string>Band Width</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="spinBox_5" >
+             <property name="maximum" >
+              <number>200000</number>
+             </property>
+             <property name="minimum" >
+              <number>2000</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QPixmapRange" name="InControl__OscillatingSpectralNotch_0__Gain" >
+           <property name="minimum" >
+            <number>-2000</number>
+           </property>
+           <property name="maximum" >
+            <number>3000</number>
+           </property>
+           <property name="singleStep" >
+            <number>30</number>
+           </property>
+           <property name="pageStep" >
+            <number>100</number>
+           </property>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="BasePath" >
+            <string>:/pkwidgets/searchSlider_</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_5" >
+             <property name="text" >
+              <string>Gain</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="spinBox_4" >
+             <property name="maximum" >
+              <number>3000</number>
+             </property>
+             <property name="minimum" >
+              <number>-2000</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QPixmapRange" name="InControl__OscillatingSpectralNotch_0__OscFreq" >
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="BasePath" >
+            <string>:/pkwidgets/searchSlider_</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_9" >
+             <property name="text" >
+              <string>Osc. Freq</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="spinBox_7" />
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="QPixmapRange" name="InControl__OscillatingSpectralNotch_0__OscWidth" >
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="BasePath" >
+            <string>:/pkwidgets/searchSlider_</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" >
+           <property name="margin" >
+            <number>0</number>
+           </property>
+           <property name="spacing" >
+            <number>6</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_8" >
+             <property name="text" >
+              <string>Osc. Width</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="spinBox_6" />
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>0</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string>Oscillating spectral notch</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="PlayButton" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Play</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="StopButton" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Stop</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>0</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="PlaybackIndicator" >
+         <property name="text" >
+          <string>Playback</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="BackendIndicator" >
+         <property name="text" >
+          <string>Backend</string>
+         </property>
+         <property name="alignment" >
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="CloseButton" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>5</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QSynthKnob</class>
+   <extends>QDial</extends>
+   <header>QSynthKnob.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>CLAM::VM::KeySpace</class>
+   <extends>CLAM::VM::Tonnetz</extends>
+   <header>KeySpace.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>QPixmapRange</class>
+   <extends>QWidget</extends>
+   <header>PixmapWidgets.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>SpectrumView</class>
+   <extends>QWidget</extends>
+   <header>SpectrumView.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>Oscilloscope.hxx</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>CloseButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>593</x>
+     <y>509</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>484</x>
+     <y>516</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>InControl__OscillatingSpectralNotch_0__Freq</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_3</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>528</x>
+     <y>159</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>538</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>InControl__OscillatingSpectralNotch_0__Bandwidth</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_5</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>509</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>527</x>
+     <y>248</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>InControl__OscillatingSpectralNotch_0__Gain</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_4</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>501</x>
+     <y>285</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>558</x>
+     <y>306</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>InControl__OscillatingSpectralNotch_0__OscFreq</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_7</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>509</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>538</x>
+     <y>370</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>InControl__OscillatingSpectralNotch_0__OscWidth</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_6</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>504</x>
+     <y>406</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>520</x>
+     <y>435</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
