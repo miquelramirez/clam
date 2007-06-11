@@ -51,10 +51,11 @@ namespace VM
 			void setBarGradientBegin(const QColor & color) { _barGradientBegin=color; }
 			const QColor & barGradientEnd() const { return _barGradientEnd; }
 			void setBarGradientEnd(const QColor & color) { _barGradientEnd=color; }
+		private:
+			void findBounds(double & min, double & max, unsigned size, const CLAM::TData * data);
 		protected:
 			int _updatePending;
 			FloatArrayDataSource * _dataSource;
-			const CLAM::TData * _data;
 			QColor _barGradientBegin;
 			QColor _barGradientEnd;
 	};
