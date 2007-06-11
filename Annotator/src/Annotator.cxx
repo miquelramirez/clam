@@ -403,8 +403,6 @@ void Annotator::adaptInstantViewsToSchema()
 		delete mInstantViewPlugins[i];
 	mInstantViewPlugins.clear();
 
-	if (!mProject.HasViews()) return;
-
 	std::vector<CLAM_Annotator::InstantView> & instantViews = mProject.GetViews();
 	for (unsigned i=0; i<instantViews.size(); i++)
 	{
@@ -726,13 +724,8 @@ void Annotator::addInstantView()
 	CLAM_Annotator::InstantView config;
 	config.SetType(viewType);
 	if (!plugin->configureDialog(mProject, config)) return;
-	if (!mProject.HasViews())
-	{
-		mProject.AddViews();
-		mProject.UpdateData();
-	}
-	plugin->createView(mVSplit, mProject, config);
 	mProject.GetViews().push_back(config);
+	plugin->createView(mVSplit, mProject, config);
 	markProjectChanged(true);
 	if (mpDescriptorPool)
 		plugin->updateData(*mpDescriptorPool, mCurrentAudio.GetSampleRate());
@@ -762,6 +755,12 @@ void Annotator::loadProject(const std::string & projectName)
 		return;
 	}
 	mProject = temporaryProject;
+	// To cope with old projects
+	if (!mProject.HasViews())
+	{
+		mProject.AddViews();
+		mProject.UpdateData();
+	}
 	mProject.SetProjectPath(projectName);
 	initProject();
 }
