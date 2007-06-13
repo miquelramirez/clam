@@ -162,6 +162,10 @@ const static char * processingClasses[] = {
 	"DataSink",
 	"DataDelay",
 	"SilentSource",
+	0,
+	"Ebow Synthesizer",
+	"AudioDatabaseReader",
+	0,
 	0
 };
 
