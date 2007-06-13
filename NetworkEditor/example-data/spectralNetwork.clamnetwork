@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="Amount" type="OutControlSender">
-    <Min>100</Min>
-    <Default>1000</Default>
-    <Max>5000</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
   <processing id="Bandwidth" type="OutControlSender">
     <Min>1</Min>
     <Default>500.5</Default>
@@ -99,11 +91,11 @@
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Robotization Amount" type="OutControlSender">
+  <processing id="Robotization factor" type="OutControlSender">
     <Min>0</Min>
-    <Default>0</Default>
+    <Default>50</Default>
     <Max>100</Max>
-    <Step>1</Step>
+    <Step>0.5</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
@@ -228,11 +220,6 @@
   </port_connection>
 
   <control_connection>
-    <out>Amount.out</out>
-    <in>ThreeBandFilter_0.Amount</in>
-  </control_connection>
-
-  <control_connection>
     <out>Bandwidth.out</out>
     <in>OscillatingSpectralNotch_0.Bandwidth</in>
   </control_connection>
@@ -283,8 +270,8 @@
   </control_connection>
 
   <control_connection>
-    <out>Robotization Amount.out</out>
-    <in>Robotization_0.Amount</in>
+    <out>Robotization factor.out</out>
+    <in>Robotization_0.Robotization factor</in>
   </control_connection>
 
 </network>

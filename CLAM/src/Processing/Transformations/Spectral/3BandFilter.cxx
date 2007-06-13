@@ -40,7 +40,7 @@ bool ThreeBandFilter::Do(const Spectrum& in, Spectrum& out)
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
 	
 	int lowCutoff = Round(mLowCutoffFreqCtl.GetLastValue()* spectralResolution);
-	int highCutoff = 	Round(mHighCutoffFreqCtl.GetLastValue()* spectralResolution);
+	int highCutoff = Round(mHighCutoffFreqCtl.GetLastValue()* spectralResolution);
 
 	//note: control is supposed to be sent as dB's
 	TData lowGain = 	log2lin(mLowGainCtl.GetLastValue());

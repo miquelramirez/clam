@@ -64,15 +64,22 @@ namespace CLAM{
 
  		~ThreeBandFilter() {}	
 		
-		virtual bool InitControls()
-		{ 
-			GetInControl("LowCutoff").DoControl(1000.);
-			GetInControl("HighCutoff").DoControl(5000.);
+		bool ConcreteConfigure( const ProcessingConfig& config )
+		{
+			mLowCutoffFreqCtl.SetBounds(0.,1000000.);
+			mLowCutoffFreqCtl.DoControl(1000.);
 			
-			GetInControl("LowGain").DoControl(0);
-			GetInControl("MidGain").DoControl(0);
-			GetInControl("MidGain").DoControl(0);
+			mHighCutoffFreqCtl.SetBounds(0.,1000000.);
+			mHighCutoffFreqCtl.DoControl(5000.);
 			
+			mLowGainCtl.SetBounds(0,100);
+			mLowGainCtl.DoControl(0);
+			
+			mMidGainCtl.SetBounds(0,100);
+			mMidGainCtl.DoControl(0);
+
+			mHighGainCtl.SetBounds(0,100);
+			mHighGainCtl.DoControl(0);
 			return true;
 		}
 		

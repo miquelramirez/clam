@@ -28,10 +28,9 @@ namespace CLAM
 
 bool Robotization::Do(const Spectrum& in, Spectrum& out)
 {
-
 	out = in; 
 
-	float amount = mAmount.GetLastValue()*0.01;
+	float amount = mRFactor.GetLastValue()*0.01;
 	DataArray& oPhase = out.GetPhaseBuffer();
 	
 	int spectrumSize = in.GetSize();

@@ -84,11 +84,11 @@ namespace CLAM{
 			return true;
 		}
 		
-		virtual bool InitControls()
+/*		virtual bool InitControls()
 		{ 
 			return true;
 		}
-		
+*/		
 		bool Do(const Frame& in, Frame& out)
 		{
 			return Do(in.GetSpectrum(), 
