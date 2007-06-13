@@ -91,6 +91,7 @@ sourcePaths = [
 	os.path.join('src','monitors','generated'),
 	os.path.join('src','clamWidgetsPlugins'),
 	os.path.join('src','clamWidgetsPlugins','generated'),
+	os.path.join('src','ebowSynthesizer'),
 ]
 extraPaths = [
 	CLAMInstallDir+'/include',
