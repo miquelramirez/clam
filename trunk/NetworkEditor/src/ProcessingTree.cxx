@@ -163,7 +163,7 @@ const static char * processingClasses[] = {
 	"DataDelay",
 	"SilentSource",
 	0,
-	"Ebow Synthesizer",
+	"Ebow Synthesizer (Experimental - GSoC)",
 	"AudioDatabaseReader",
 	0,
 	0
