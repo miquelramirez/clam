@@ -1,6 +1,10 @@
+2007-??-?? SMSTools 0.4.9 SVN $Revision$
+''
+ *
+
 2007-06-08 SMSTools 0.4.8
 'More eye-candy, please'
- * SVN $Revision$
+ * SVN Revision: 10216
  * Using CLAM 1.1.0
  * Dropped all the obsolete FLTK code
  * Adopted needed files from the deprecated vmqt CLAM module
