@@ -31,9 +31,10 @@ namespace CLAM
 {
 
 typedef int (*PortAudioCallback)(
-           void *inputBuffer, void *outputBuffer,
+           const void *inputBuffer, void *outputBuffer,
            unsigned long framesPerBuffer,
-           PaTimestamp outTime, void *userData ) ;
+           const PaStreamCallbackTimeInfo *timeInfo, 
+           PaStreamCallbackFlags statusFlags, void *userData ) ;
 
 
 

@@ -98,12 +98,12 @@ public:
 		return &mBuffer;
 	}
 
-	inline void SetDeviceID( PaDeviceID devID )
+	inline void SetDeviceID( PaDeviceIndex devID )
 	{
 		mDevID = devID;
 	}
 
-	inline PaDeviceID GetDeviceID( ) const
+	inline PaDeviceIndex GetDeviceID( ) const
 	{
 		return mDevID;
 	}
@@ -112,7 +112,7 @@ private:
 	
 	unsigned                 mSampleRate;
 	unsigned char            mNChannels;
-	PaDeviceID               mDevID;
+	PaDeviceIndex               mDevID;
 	PortAudioCallback        mCallback;
 	FullDuplexDoubleBuffer   mBuffer;
 
@@ -136,7 +136,7 @@ protected:
 
 	
 	PAAudioStreamConfig  mConfig;
-	PortAudioStream*     mStream;
+	PaStream*     mStream;
 };
 
 }

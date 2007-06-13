@@ -33,33 +33,33 @@ namespace CLAM
                PaTimestamp outTime, void *userData );
 	*/
 	
-	int monoOutCallback( void *inputBuffer, void *outputBuffer, 
+	int monoOutCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData );
+						 const PaStreamCallbackTimeInfo *timeInfo, PaStreamCallbackFlags statusFlags, void *userData );
 
-	int stereoOutCallback( void *inputBuffer, void *outputBuffer, 
+	int stereoOutCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData );
+						 const PaStreamCallbackTimeInfo *timeInfo, PaStreamCallbackFlags statusFlags, void *userData );
 
-	int multiOutCallback( void *inputBuffer, void *outputBuffer, 
+	int multiOutCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData );
+						 const PaStreamCallbackTimeInfo *timeInfo, PaStreamCallbackFlags statusFlags, void *userData );
 
-	int monoInCallback( void *inputBuffer, void *outputBuffer, 
+	int monoInCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData );
+						 const PaStreamCallbackTimeInfo *timeInfo, PaStreamCallbackFlags statusFlags, void *userData );
 
-	int stereoInCallback( void *inputBuffer, void *outputBuffer, 
+	int stereoInCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData );
+						 const PaStreamCallbackTimeInfo *timeInfo, PaStreamCallbackFlags statusFlags, void *userData );
 
-	int multiInCallback( void *inputBuffer, void *outputBuffer, 
+	int multiInCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData );
+						 const PaStreamCallbackTimeInfo *timeInfo, PaStreamCallbackFlags statusFlags, void *userData );
 
-	int stereoFDCallback(void *inputBuffer, void *outputBuffer, 
+	int stereoFDCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData );
+						 const PaStreamCallbackTimeInfo *timeInfo, PaStreamCallbackFlags statusFlags, void *userData );
 }
 
 #endif // PACLAMCallbacks.hxx

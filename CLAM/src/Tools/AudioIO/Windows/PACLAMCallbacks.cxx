@@ -22,14 +22,16 @@
 #include "PACLAMCallbacks.hxx"
 #include "DoubleBuffer.hxx"
 #include "CLAM_windows.h"
+#include "PAAudioStream.hxx"
 #undef GetClassName
 #include <iostream>
 
 namespace CLAM
 {
-	int monoOutCallback( void *inputBuffer, void *outputBuffer, 
+	int monoOutCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData )
+						 const PaStreamCallbackTimeInfo *timeInfo, 
+             PaStreamCallbackFlags statusFlags, void *userData )
 	{
 		DoubleBuffer* dblBuff = ( DoubleBuffer* ) userData;
 		static unsigned short last_time_token = 1;
@@ -54,9 +56,10 @@ namespace CLAM
 		return 0;
 	}
 	
-	int stereoOutCallback( void *inputBuffer, void *outputBuffer, 
+	int stereoOutCallback( const void *inputBuffer, void *outputBuffer, 
 						   unsigned long framesPerBuffer, 
-						   PaTimestamp outTime, void *userData )
+						   const PaStreamCallbackTimeInfo *timeInfo, 
+               PaStreamCallbackFlags statusFlags, void *userData )
 	{
 		DoubleBuffer* dblBuff = ( DoubleBuffer* ) userData;
 
@@ -85,9 +88,10 @@ namespace CLAM
 		return 0;
 	}
 	
-	int multiOutCallback( void *inputBuffer, void *outputBuffer, 
+	int multiOutCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						  PaTimestamp outTime, void *userData )
+						 const PaStreamCallbackTimeInfo *timeInfo, 
+             PaStreamCallbackFlags statusFlags, void *userData )
 	{
 		DoubleBuffer* dblBuff = ( DoubleBuffer* ) userData;
 
@@ -111,11 +115,12 @@ namespace CLAM
 
 	}
 	
-	int monoInCallback( void *inputBuffer, void *outputBuffer, 
+	int monoInCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData )
+						 const PaStreamCallbackTimeInfo *timeInfo, 
+             PaStreamCallbackFlags statusFlags, void *userData )
 	{
-		DoubleBuffer* dblBuff = (DoubleBuffer*) userData;
+    DoubleBuffer* dblBuff = ((PAAudioStreamConfig*) userData)->GetInputDblBuffer();
 
 		short* src = (short*) inputBuffer;
 		short* dst = (short*) dblBuff->mFrontBuffer;
@@ -125,16 +130,17 @@ namespace CLAM
 		while ( bufflen-- )
 			*dst++ = *src++;
 
-		dblBuff->SwapBuffers();
+    dblBuff->SwapBuffers();
 		
 		return 0;
 	}
 
-	int stereoInCallback( void *inputBuffer, void *outputBuffer, 
+	int stereoInCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData )
+						 const PaStreamCallbackTimeInfo *timeInfo, 
+             PaStreamCallbackFlags statusFlags, void *userData )
 	{
-		DoubleBuffer* dblBuff = (DoubleBuffer*) userData;
+    DoubleBuffer* dblBuff = ((PAAudioStreamConfig*) userData)->GetInputDblBuffer();
 
 		short* src = (short*) inputBuffer;
 		short* dst = (short*) dblBuff->mFrontBuffer;
@@ -153,32 +159,27 @@ namespace CLAM
 		return 0;
 	}
 
-	int multiInCallback( void *inputBuffer, void *outputBuffer, 
+	int multiInCallback( const void *inputBuffer, void *outputBuffer, 
 						 unsigned long framesPerBuffer, 
-						 PaTimestamp outTime, void *userData )
+						 const PaStreamCallbackTimeInfo *timeInfo, 
+             PaStreamCallbackFlags statusFlags, void *userData )
 	{
-		DoubleBuffer* dblBuff = (DoubleBuffer*) userData;
+    PAAudioStreamConfig *stream = (PAAudioStreamConfig*) userData;
 
-		short* src = (short*) inputBuffer;
-		short* dst = (short*) dblBuff->mFrontBuffer;
+		short* dst = (short*) stream->GetInputDblBuffer()->mFrontBuffer;
+    unsigned long bufferSize = framesPerBuffer;
+    bufferSize *= (stream->GetChannelNumber() << 1); // 2 bytes per sample
 
-		unsigned bufflen = dblBuff->mLen;
+    memcpy(dst, inputBuffer, bufferSize);
+		stream->GetInputDblBuffer()->SwapBuffers();
 
-
-		while ( framesPerBuffer-- )
-			{
-				*dst++ = *src++;
-			}
-
-		dblBuff->SwapBuffers();
-		
-		return 0;
-		
+		return paContinue;
 	}
 
-	int stereoFDCallback(void *inputBuffer, void *outputBuffer, 
+	int stereoFDCallback( const void *inputBuffer, void *outputBuffer, 
 					 unsigned long framesPerBuffer, 
-					 PaTimestamp outTime, void *userData )
+					 const PaStreamCallbackTimeInfo *timeInfo, 
+           PaStreamCallbackFlags statusFlags, void *userData )
 	{
 
 		FullDuplexDoubleBuffer* buff = ( FullDuplexDoubleBuffer*) userData;
@@ -200,7 +201,7 @@ namespace CLAM
 
 		WaitForSingleObject( buff->mOutputDblBuff->mBackBufferReady, INFINITE );
 
-		buff->mOutputDblBuff->mBackBufferReady = false;
+		//buff->mOutputDblBuff->mBackBufferReady = false;
 
 		dst = (short*) outputBuffer;
 		src = (short*) buff->mInputDblBuff->mBackBuffer;

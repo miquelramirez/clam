@@ -226,6 +226,8 @@ TIndex SinTracking::GetCandidate(TData currentPeakFreq,
   //xamat: test!
   SearchArray<TData> mySearch(peakFreqBuffer);
   TIndex found=mySearch.Find(currentPeakFreq);
+  if (found<0)
+	  return found;
   TIndex originalFound = found;
   distance = Abs(peakFreqBuffer[found]-currentPeakFreq);
   //make sure that the two surrounding peaks are not in fact closer
