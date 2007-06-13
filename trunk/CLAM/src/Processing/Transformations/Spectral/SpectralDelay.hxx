@@ -69,24 +69,31 @@ namespace CLAM{
 			mHFDelay.Configure(cfg);
 		}
 
- 		~SpectralDelay() {}	
-		
+ 		~SpectralDelay() {}
+	
+		bool ConcreteConfigure( const ProcessingConfig& config )
+		{
+			mLowCutoffFreqCtl.SetBounds(0,1000000);
+			mLowCutoffFreqCtl.DoControl(1000);
+			
+			mHighCutoffFreqCtl.SetBounds(0,1000000);
+			mHighCutoffFreqCtl.DoControl(5000);
+			
+			mLowDelayCtl.SetBounds(0,100);
+			mLowDelayCtl.DoControl(0);
+			
+			mMidDelayCtl.SetBounds(0,100);
+			mMidDelayCtl.DoControl(0);
+
+			mHighDelayCtl.SetBounds(0,100);
+			mHighDelayCtl.DoControl(0);
+			return true;
+		}
+
 		bool Do(const Frame& in, Frame& out)
 		{
 			return Do(in.GetSpectrum(), 
 				  out.GetSpectrum());
-		}
-		
-		virtual bool InitControls()
-		{ 
-			GetInControl("LowCutoff").DoControl(1000);
-			GetInControl("HighCutoff").DoControl(5000);
-			
-			GetInControl("LowDelay").DoControl(0);
-			GetInControl("MidDelay").DoControl(0);
-			GetInControl("HighDelay").DoControl(0);
-			
-			return true;
 		}
 		
 		bool Do(const Spectrum& in, Spectrum& out);

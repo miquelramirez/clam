@@ -38,6 +38,7 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
+		InControl mRFactor;
 	public:
 		const char* GetClassName() const
 		{
@@ -46,14 +47,22 @@ namespace CLAM{
 
 		Robotization() 
 			: 
-			mIn("In Spectrum", this), 
-			mOut("Out Spectrum", this) 
+			mIn("In Spectrum", this),
+			mOut("Out Spectrum", this),
+			mRFactor("Robotization factor",this)
 		{
 			Configure( FrameTransformationConfig() );
 		}
 
- 		~Robotization() {}	
-		
+ 		~Robotization() {}
+
+		bool ConcreteConfigure( const ProcessingConfig& config )
+		{
+			mRFactor.SetBounds(0,100);
+			mRFactor.DoControl(0);	
+			return true;
+		}
+
 		bool Do(const Frame& in, Frame& out)
 		{
 			return Do(in.GetSpectrum(), 
