@@ -33,18 +33,18 @@ namespace CLAM
 		static ProcessingFactory::Registrator<AudioDatabaseReader> regtAudioDatabaseReader( "AudioDatabaseReader" );
 	}
 
-    AudioDatabaseReader::AudioDatabaseReader()
-    {
-        Configure(AudioDatabaseReaderConfig());
-    };
-    
-    AudioDatabaseReader::AudioDatabaseReader(const AudioDatabaseReaderConfig &c)
-    { 
-        myMonoAudioFileReaderConfig = new MonoAudioFileReaderConfig();
-        myMonoAudioFileReaderConfig->SetSourceFile( c.GetFilename() );
-        //myMonoAudioFileReaderConfig->SetLoop( true );
-        myMonoAudioFileReader = new MonoAudioFileReader( *myMonoAudioFileReaderConfig );
-    		
+AudioDatabaseReader::AudioDatabaseReader()
+{
+	Configure(AudioDatabaseReaderConfig());
+};
+
+AudioDatabaseReader::AudioDatabaseReader(const AudioDatabaseReaderConfig &c)
+{ 
+	myMonoAudioFileReaderConfig = new MonoAudioFileReaderConfig();
+	myMonoAudioFileReaderConfig->SetSourceFile( c.GetFilename() );
+	//myMonoAudioFileReaderConfig->SetLoop( true );
+	myMonoAudioFileReader = new MonoAudioFileReader( *myMonoAudioFileReaderConfig );
+		
 		// SMS Analysis configuration 
 		static CLAM::SMSAnalysisConfig analConfig;	
 		analConfig.SetSinWindowSize( 2049 );
@@ -52,12 +52,12 @@ namespace CLAM
 		analConfig.SetSinZeroPadding(2);
 		analConfig.SetResWindowSize( 1025 );
 
-        mySMSAnalysisCore = new SMSAnalysisCore( analConfig );
+	mySMSAnalysisCore = new SMSAnalysisCore( analConfig );
 
-        ConnectAndPublishPorts();
-        
-        Configure(c);
-    };
+	ConnectAndPublishPorts();
+	
+	Configure(c);
+};
 
 	// helper methods for the network tests
 	const CLAM::SMSAnalysisConfig& helperAnalysisConfigInstance()
@@ -88,80 +88,78 @@ namespace CLAM
 		return analConfig;
 	}
 
-    
-    bool AudioDatabaseReader::ConcreteConfigure(const ProcessingConfig& c)
-    {
-        CopyAsConcreteConfig(mConfig, c);
-    
-        //myMonoAudioFileReader->Configure(*myMonoAudioFileReaderConfig);
-        //myMonoAudioFileReader->Start();
-        
-        return true;
-    }
-    
-    AudioDatabaseReader::~AudioDatabaseReader()
-    {
-        if (myMonoAudioFileReader)
-        {
-            delete myMonoAudioFileReader;
-            myMonoAudioFileReader = 0;
-        }
-        
-        if (myMonoAudioFileReaderConfig)
-        {
-            delete myMonoAudioFileReaderConfig;
-            myMonoAudioFileReaderConfig = 0;
-        }
-    }
 
-    void AudioDatabaseReader::ConnectAndPublishPorts()
-    {
-		CLAM::ConnectPorts(*myMonoAudioFileReader, "Samples Read", *mySMSAnalysisCore, "Input Audio");
-        
-        GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Residual Branch Spectrum") );        
-        GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Sinusoidal Branch Spectrum") );
-        GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Sinusoidal Peaks") );
-        GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Fundamental") );
-        GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Residual Spectrum") );
-    }
-    
-    bool AudioDatabaseReader::Do(Audio& in)
-    {
-        CLAM_ASSERT( AbleToExecute(), "This processing is not allowed to be executed!" );
-    
-        return myMonoAudioFileReader->Do(in);
-    }
-    
-    bool AudioDatabaseReader::Do(Audio& inL,Audio& inR)
-    {
-        CLAM_ASSERT( AbleToExecute(), "This processing is not allowed to be executed!" );
-    
-        return myMonoAudioFileReader->Do(inL);    
-    }
-    
-    bool AudioDatabaseReader::Do(void)
-    {
-        bool response = myMonoAudioFileReader->Do();
-        mySMSAnalysisCore->Do();
-        
-        return response;
-    }
-    
-    bool AudioDatabaseReader::ConcreteStart()
-    {    
-        myMonoAudioFileReader->Start();
-        mySMSAnalysisCore->Start();
-        
-        return true;
-    }
-    
-    bool AudioDatabaseReader::ConcreteStop()
-    {
-        myMonoAudioFileReader->Stop();
-        mySMSAnalysisCore->Stop();
-    
-        return true;
-    }
+bool AudioDatabaseReader::ConcreteConfigure(const ProcessingConfig& c)
+{
+	CopyAsConcreteConfig(mConfig, c);
+
+	//myMonoAudioFileReader->Configure(*myMonoAudioFileReaderConfig);
+	//myMonoAudioFileReader->Start();
+	
+	return true;
+}
+
+AudioDatabaseReader::~AudioDatabaseReader()
+{
+	if (myMonoAudioFileReader)
+	{
+		delete myMonoAudioFileReader;
+		myMonoAudioFileReader = 0;
+	}
+	
+	if (myMonoAudioFileReaderConfig)
+	{
+		delete myMonoAudioFileReaderConfig;
+		myMonoAudioFileReaderConfig = 0;
+	}
+}
+
+void AudioDatabaseReader::ConnectAndPublishPorts()
+{
+	CLAM::ConnectPorts(*myMonoAudioFileReader, "Samples Read", *mySMSAnalysisCore, "Input Audio");
+	
+	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Residual Branch Spectrum") );
+	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Sinusoidal Branch Spectrum") );
+	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Sinusoidal Peaks") );
+	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Fundamental") );
+	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Residual Spectrum") );
+}
+ 
+bool AudioDatabaseReader::Do(Audio& in)
+{
+	CLAM_ASSERT( AbleToExecute(), "This processing is not allowed to be executed!" );
+	return myMonoAudioFileReader->Do(in);
+}
+
+bool AudioDatabaseReader::Do(Audio& inL,Audio& inR)
+{
+	CLAM_ASSERT( AbleToExecute(), "This processing is not allowed to be executed!" );
+	return myMonoAudioFileReader->Do(inL); 
+}
+ 
+bool AudioDatabaseReader::Do(void)
+{
+	bool response = myMonoAudioFileReader->Do();
+	mySMSAnalysisCore->Do();
+	
+	return response;
+}
+ 
+bool AudioDatabaseReader::ConcreteStart()
+{ 
+	myMonoAudioFileReader->Start();
+	mySMSAnalysisCore->Start();
+	
+	return true;
+}
+
+bool AudioDatabaseReader::ConcreteStop()
+{
+	myMonoAudioFileReader->Stop();
+	mySMSAnalysisCore->Stop();
+
+return true;
+}
 
 }
 

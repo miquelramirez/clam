@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _AudioDatabaseReader_
-#define _AudioDatabaseReader_
+#ifndef AudioDatabaseReader_hxx
+#define AudioDatabaseReader_hxx
 
 #include "Audio.hxx"
 #include "ErrSoundFileIO.hxx"
@@ -38,64 +38,64 @@
 
 namespace CLAM {
 
-class SoundFileIO;
 
-	/**
-	 * Processing for audio file input. It can be configured 
-	 * using an AudioFileConfig Config class. Only file name 
-	 * and optionally file type must be configured, other 
-	 * fields will be set by the Processing itself once 
-	 * Start() has been called.
-	 */
-	class AudioDatabaseReader : public ProcessingComposite
-	{
+/**
+ * Processing for audio file input. It can be configured 
+ * using an AudioFileConfig Config class. Only file name 
+ * and optionally file type must be configured, other 
+ * fields will be set by the Processing itself once 
+ * Start() has been called.
+ */
+class AudioDatabaseReader : public ProcessingComposite
+{
+public:
+	class AudioDatabaseReaderConfig: public ProcessingConfig {
 	public:
-
-		AudioDatabaseReader();
-
-		AudioDatabaseReader(const AudioDatabaseReaderConfig &c);
-
-		virtual ~AudioDatabaseReader();
-
-		/** Configuration change method
-		 * @pre argument should be a AudioFileInConfig
-		 * NOTE: the fact that AudioFileIn::ConcreteConfigure is
-		 * a public method is just a temporary measure
-		 */
-		bool ConcreteConfigure(const ProcessingConfig&);
-
-		/** Configuration access:
-		 */
-		const ProcessingConfig &GetConfig() const { return mConfig;}
-
-		/** Supervised-mode Do function.
-		 */
-		bool Do(void);
-
-		/** Standard Do function, with storage class references as
-		 * arguments. This method implements the old conversor routines.
-		 */
-		bool Do(Audio& in);
-
-		bool Do(Audio& inL,Audio& inR);
-
-    protected:
-   		bool ConcreteStart();
-		bool ConcreteStop();
-        
-   	private:
-        AudioDatabaseReaderConfig mConfig;
-        MonoAudioFileReaderConfig* myMonoAudioFileReaderConfig;
-        MonoAudioFileReader* myMonoAudioFileReader;
-        SMSAnalysisConfig* mySMSAnalysisConfig;        
-        SMSAnalysisCore* mySMSAnalysisCore;
-//		AudioOutPort mOutput;
-
-        const char *GetClassName() const {return "AudioDatabaseReader";}
-        void ConnectAndPublishPorts();        
-
+		DYNAMIC_TYPE_USING_INTERFACE(AudioDatabaseReaderConfig, 1, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, Filename, Filename);
+	protected:
+		/** Dynamic type initialization: All attributes are instantiated. */
+		void DefaultInit(void)
+		{
+			AddAll();
+			UpdateData();
+			SetFilename( "" );
+		}
 	};
+
+
+	AudioDatabaseReader();
+
+	AudioDatabaseReader(const AudioDatabaseReaderConfig &c);
+
+	virtual ~AudioDatabaseReader();
+
+	bool ConcreteConfigure(const ProcessingConfig&);
+
+	const ProcessingConfig &GetConfig() const { return mConfig;}
+
+	bool Do(void);
+	bool Do(Audio& in);
+	bool Do(Audio& inL,Audio& inR);
+
+protected:
+	bool ConcreteStart();
+	bool ConcreteStop();
+
+private:
+	AudioDatabaseReaderConfig mConfig;
+	MonoAudioFileReaderConfig* myMonoAudioFileReaderConfig;
+	MonoAudioFileReader* myMonoAudioFileReader;
+	SMSAnalysisConfig* mySMSAnalysisConfig;
+	SMSAnalysisCore* mySMSAnalysisCore;
+	AudioOutPort mOutput;
+
+	const char *GetClassName() const {return "AudioDatabaseReader";}
+	void ConnectAndPublishPorts();
+
+};
+
 }//namespace CLAM
 
-#endif // _AudioDatabaseReader_
+#endif // AudioDatabaseReader_hxx
 
