@@ -31,21 +31,28 @@ namespace CLAM
 	{
 		PaError errval;
 
-//		CheckConsistency();
+		CheckConsistency();
+
+   PaStreamParameters in_stream_params;
+   in_stream_params.device = mConfig.GetDeviceID();
+   in_stream_params.channelCount = mConfig.GetChannelNumber();
+   in_stream_params.sampleFormat = paInt16;
+   in_stream_params.suggestedLatency = Pa_GetDeviceInfo(in_stream_params.device)->defaultLowInputLatency;
+   in_stream_params.hostApiSpecificStreamInfo = NULL;
+
+   PaStreamParameters out_stream_params;
+   out_stream_params.device = mConfig.GetDeviceID();
+   out_stream_params.channelCount = mConfig.GetChannelNumber();
+   out_stream_params.sampleFormat = paInt16;
+   out_stream_params.suggestedLatency = Pa_GetDeviceInfo(out_stream_params.device)->defaultLowOutputLatency;
+   out_stream_params.hostApiSpecificStreamInfo = NULL;
 
 		errval = Pa_OpenStream( 
 							   &mStream,
-							   mConfig.GetDeviceID(),
-							   mConfig.GetChannelNumber(),
-							   paInt16,
-							   NULL,
-							   mConfig.GetDeviceID(),
-							   mConfig.GetChannelNumber(),
-							   paInt16,
-							   NULL,
+							   &in_stream_params,
+                 &out_stream_params,
 							   mConfig.GetSampleRate(),
 							   mConfig.GetDblBuffer()->GetSize()/mConfig.GetChannelNumber(),
-							   0,
 							   0,
 							   mConfig.GetCallback(),
 							   mConfig.GetDblBuffer() );
@@ -60,32 +67,14 @@ namespace CLAM
 		if ( devnfo == NULL )
 			throw ErrPortAudio("Error opening stream\nThe device id is not valid");
 
-		// MRJ: Let's check if the capabilities of the selected
-		// device meet the requirements expressed in the stream
-		// configuration object
+    PaStreamParameters params;
+    params.device = mConfig.GetDeviceID();
+    params.channelCount = mConfig.GetChannelNumber();
+    params.sampleFormat = paInt16;
+    params.suggestedLatency = 0;
+    params.hostApiSpecificStreamInfo = 0;
 
-		// I don't like much this but I don't see clearly the
-		// utility of using CLAM_ASSERT's beyond saving me
-		// of typing the conditionals... Besides, this could be
-		// a recoverable error on some scenarios, such as a 
-		// plugin host
-
-		// Check number of channels
-	//	if ( mConfig.GetChannelNumber() > devnfo->maxInputChannels )
-	//		throw ErrPortAudio("Error opening the stream:\nNumber of input channels requested is not supported by the device\n" );
-
-		// Check the sample rate. Let's determine wether
-		// the requested sample rate is supported
-
-		unsigned supportedSr;
-		bool isSupported = false;
-
-		for ( int k = devnfo->numSampleRates - 1; k >= 0; k-- )
-			{
-				supportedSr = (unsigned)devnfo->sampleRates[k];
-				if ( mConfig.GetSampleRate() == supportedSr )
-					isSupported = true;
-			}
+    bool isSupported = (Pa_IsFormatSupported(&params, &params, mConfig.GetSampleRate()) ? false : true);
 
 		// Requested sample rate is not supported
 		if ( !isSupported ) 

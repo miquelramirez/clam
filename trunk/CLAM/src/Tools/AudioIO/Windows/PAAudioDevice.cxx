@@ -27,6 +27,8 @@ using std::cout;
 using std::endl;
 
 #include "AudioIO.hxx"
+#include "AudioDevice.hxx"
+#include "AudioDeviceList.hxx"
 #include <portaudio.h>
 #include "PortAudioUtils.hxx"
 #include "PAAudioInputStream.hxx"
@@ -50,7 +52,7 @@ namespace CLAM
 
 	public:
 
-		PAAudioDevice( const std::string& str, PaDeviceID devID );
+		PAAudioDevice( const std::string& str, PaDeviceIndex devID );
 		~PAAudioDevice( );
 
 		void Start() throw( ErrPortAudio );
@@ -81,7 +83,7 @@ namespace CLAM
 		unsigned                 mWriteBuffSize;
 		unsigned                 mReadBuffSize;
 
-		PaDeviceID               mDevID;
+		PaDeviceIndex               mDevID;
 
 		DoubleBuffer             mInputIntBuffer;
 		DoubleBuffer             mOutputIntBuffer;
@@ -103,7 +105,7 @@ namespace CLAM
 
 		PAAudioDeviceList();
 
-		std::vector< PaDeviceID > mDevIDs;
+		std::vector< PaDeviceIndex > mDevIDs;
 
 	protected:
 
@@ -122,7 +124,7 @@ namespace CLAM
 
 	};
 
-	PAAudioDevice::PAAudioDevice( const std::string& name, PaDeviceID devID )
+	PAAudioDevice::PAAudioDevice( const std::string& name, PaDeviceIndex devID )
 		: AudioDevice(name), mDevID( devID ), 
 		  mInStream( NULL ), mOutStream( NULL ), mIOModel( eNoneYet ),mStarted(false)
 	{
@@ -161,6 +163,31 @@ namespace CLAM
 
 	void PAAudioDevice::Start() throw( Err )
 	{
+    if ( mStarted && (((mInputs.size() | mOutputs.size()) != mNChannels) || 
+      (mInputIntBuffer.GetSize() != mInputs.size()*Latency()) || 
+      (mOutputIntBuffer.GetSize() != mOutputs.size()*Latency()))) // evil workaround start
+    {
+		  switch ( mIOModel )
+			  {
+			  case eFullDuplex:
+				  mFullDuplexStream->Stop();
+          delete mFullDuplexStream;
+				  break;
+			  case eHalfDuplexIn:
+				  mInStream->Stop();
+          delete mInStream;
+				  break;
+			  case eHalfDuplexOut:
+				  mOutStream->Stop();
+          delete mOutStream;
+				  break;
+			  case eNoneYet:
+				  CLAM_ASSERT( false, "You cannot stop what hasn't been started" );
+				  break;
+			  }
+		  mStarted = false;     
+    } // evil workaround end
+
 		if ( mStarted )
 			return;
 
@@ -326,11 +353,11 @@ namespace CLAM
 	{
 		PAAudioStreamConfig cfg;
 		cfg.SetSampleRate( SampleRate() );
-		cfg.SetChannelNumber( mNChannels );
+		cfg.SetChannelNumber( mInputs.size() );
 		cfg.SetCallback( multiInCallback );
 		cfg.SetDeviceID( mDevID );
 		mInputIntBuffer.DeAllocate();
-		mInputIntBuffer.Allocate( mNChannels*Latency() );
+		mInputIntBuffer.Allocate( mInputs.size()*Latency() );
 		cfg.SetInputDblBuffer( &mInputIntBuffer);
 		
 		mInStream = new PAAudioInputStream( cfg );
@@ -385,7 +412,7 @@ namespace CLAM
 	{
 		TData* dst = samples.GetBuffer().GetPtr();
 		short* src = NULL;
-		unsigned samples_to_read = (mInputIntBuffer.GetSize()/mNChannels);
+		unsigned samples_to_read = (mInputIntBuffer.GetSize()/mInputs.size());
 
 		// Some error checking - proof of concepts
 		CLAM_ASSERT( !mChannelsRead[channelID], "Tried to read twice from the same channel in single time frame!" );
@@ -406,11 +433,12 @@ namespace CLAM
 		mChannelsRead[channelID] = true;
 		mNChannelsRead++;
 
-		if (mNChannelsRead==mNChannels)
+		if (mNChannelsRead==mInputs.size())
 		{
 			mNChannelsRead = 0;
-			for (int i=0;i<mNChannels;i++)
-				mChannelsRead[i] = false;
+//			for (int i=0;i<mInputs.size();i++)
+	//			mChannelsRead[i] = false;
+      std::fill(mChannelsRead, mChannelsRead + mInputs.size(), false);
 			ResetEvent( mInputIntBuffer.mBackBufferReady );
 		}
 
@@ -436,13 +464,14 @@ namespace CLAM
 		mChannelsWritten[channelID] = true;
 		mNChannelsWritten++;
 
-		if (mNChannelsWritten==mNChannels)
+		if (mNChannelsWritten==mOutputs.size())
 		{
 		
 			
 			mNChannelsWritten = 0;
-			for (int i=0;i<mNChannels;i++)
-				mChannelsWritten[i] = false;
+//			for (int i=0;i<mOutputs.size();i++)
+//				mChannelsWritten[i] = false;
+      std::fill(mChannelsWritten, mChannelsWritten + mOutputs.size(), false);
 
 			mOutputIntBuffer.SwapBuffers();
 		}
@@ -467,7 +496,7 @@ namespace CLAM
 
 	void PAAudioDeviceList::EnumerateAvailableDevices()
 	{
-		int numDevs = Pa_CountDevices();
+		int numDevs = Pa_GetDeviceCount();
 		int k = 0;
 		const PaDeviceInfo* devnfo = NULL;
 
