@@ -65,14 +65,7 @@ public:
 	 */
 	AbstractProduct* Create( const RegistryKey name )
 	{
-		// it asserts that name is in the registry
-		CreatorMethod creator =	_registry.GetCreator( name );
-		return (*creator)();
-	}
-
-	AbstractProduct* NewCreate( const RegistryKey name )
-	{
-		Creator& creator = _newregistry.GetCreator( name );
+		Creator& creator = _registry.GetCreator( name );
 		return creator.Create();
 	}
 
@@ -84,47 +77,28 @@ public:
 	 */
 	AbstractProduct* CreateSafe( const RegistryKey name ) throw (ErrFactory)
 	{
-		return  _registry.GetCreatorSafe(name)();
-	}
-	AbstractProduct* NewCreateSafe( const RegistryKey name ) throw (ErrFactory)
-	{
-		return  _newregistry.GetCreatorSafe(name).Create();
+		return  _registry.GetCreatorSafe(name).Create();
 	}
 
 
 	void Clear()
 	{ 
 		_registry.RemoveAllCreators();
-		_newregistry.RemoveAllCreators();
 	}
 
-
-	void AddCreator(const RegistryKey name, CreatorMethod creator)
+	void AddCreator(const RegistryKey name, Creator* creator)
 	{
 		_registry.AddCreator(name, creator);
 	}
-	void NewAddCreator(const RegistryKey name, Creator* creator)
-	{
-		_newregistry.AddCreator(name, creator);
-	}
-	
-	void AddCreatorWarningRepetitions(const RegistryKey name, CreatorMethod creator)
+
+	void AddCreatorWarningRepetitions(const RegistryKey name, Creator* creator)
 	{
 		_registry.AddCreatorWarningRepetitions(name, creator);
 	}
-	void NewAddCreatorWarningRepetitions(const RegistryKey name, Creator* creator)
-	{
-		_newregistry.AddCreatorWarningRepetitions(name, creator);
-	}
 
-
-	void AddCreatorSafe(const RegistryKey name, CreatorMethod creator) throw (ErrFactory)
+	void AddCreatorSafe(const RegistryKey name, Creator* creator) throw (ErrFactory)
 	{
 		_registry.AddCreatorSafe(name, creator);
-	}
-	void NewAddCreatorSafe(const RegistryKey name, Creator* creator) throw (ErrFactory)
-	{
-		_newregistry.AddCreatorSafe(name, creator);
 	}
 
 
@@ -139,8 +113,7 @@ public: // Inner classes. Public for better testing
 	 * a container that maps keys with creators. It is not ment to be used
 	 * directly by the user.
 	 */
-//	BEGIN CLASS BASED REGISTRY
-	class NewRegistry
+	class Registry
 	{
 	private:
 		typedef typename std::map<std::string, Creator*> CreatorMap;
@@ -261,126 +234,6 @@ public: // Inner classes. Public for better testing
 
 	};
 
-// 	END CLASS BASED REGISTRY
-
-	class Registry
-	{
-	private:
-		typedef typename std::map<std::string, CreatorMethod> CreatorMap;
-
-	public:
-		CreatorMethod GetCreator( RegistryKey creatorId) 
-		{
-			CLAM_ASSERT(_creators.begin() != _creators.end(),
-				"the Factory Registry shouldn't be empty");
-
-			CreatorMethod res = CommonGetCreator(creatorId);
-			if (!res)
-			{
-				std::string errmsg("GetCreator invoked with a non existent key: ");
-				errmsg += creatorId + "\nRegistered keys are:\n";
-				errmsg += GetRegisteredNames();
-				CLAM_ASSERT(res,errmsg.c_str());
-			}
-
-			return res;
-		}
-
-		CreatorMethod GetCreatorSafe( RegistryKey creatorId) throw (ErrFactory) 
-		{
-			if ( _creators.begin() == _creators.end() )
-				throw ErrFactory("GetCreatorSafe invoked on an empty registry");
-
-			CreatorMethod res = CommonGetCreator(creatorId);
-			if (!res)
-			{
-				std::string msg("GetCreatorSafe invoked with a non existent key: ");
-				msg += creatorId;
-				msg += "\nRegistered keys are:\n";
-				msg += GetRegisteredNames();
-				throw ErrFactory(msg.c_str());
-			}
-			return res;
-		}
-
-		void AddCreator( RegistryKey creatorId, CreatorMethod creator ) 
-		{
-			bool res = CommonAddCreator(creatorId, creator);
-			if (!res)
-			{
-				std::string errmsg("Adding creator method in the factory: CreatorId '");
-				errmsg += creatorId + "' was already registered.\nRegistered keys are:\n";
-				errmsg += GetRegisteredNames();
-				CLAM_ASSERT(res, errmsg.c_str());
-			}
-		}
-		void AddCreatorWarningRepetitions( RegistryKey creatorId, CreatorMethod creator ) 
-		{
-			bool res = CommonAddCreator(creatorId, creator);
-			if (!res)
-			{
-				std::string errmsg("WARNING. While adding a creator method in the factory, id '");
-				errmsg += creatorId + "' was already registered.";
-//				errmsg += "\n Registered keys: " + GetRegisteredNames();
-				CLAM_WARNING(false, errmsg.c_str() );
-			}
-		}
-
-		void AddCreatorSafe( RegistryKey creatorId, CreatorMethod creator ) throw (ErrFactory) 
-		{
-			if( !CommonAddCreator( creatorId, creator ) ) 
-				throw ErrFactory("A repeated key was passed");
-		}
-
-		void RemoveAllCreators() 
-		{
-			_creators.clear();
-		}
-
-		std::size_t Count() { return _creators.size(); }
-
-		void GetRegisteredNames( std::list<RegistryKey>& namesList )
-		{
-			typename CreatorMap::const_iterator i;
-
-			for ( i = _creators.begin(); i != _creators.end(); i++ )
-			{
-				namesList.push_back( i->first );
-			}
-		}
-		std::string GetRegisteredNames()
-		{
-			std::string result;
-			typedef std::list<RegistryKey> Names;
-			Names names;
-			GetRegisteredNames(names);
-			for(Names::iterator it=names.begin(); it!=names.end(); it++)
-			{
-				result += (*it)+", ";
-			}
-			return result;
-			
-		}
-
-	private: // data
-		CreatorMap _creators;
-
-		// helper methods:
-		CreatorMethod CommonGetCreator( RegistryKey& creatorId ) {
-			typename CreatorMap::const_iterator i = 
-				_creators.find(creatorId);
-			if ( i==_creators.end() ) // not found
-				return NULL;
-			return i->second;
-		}
-
-		bool CommonAddCreator( RegistryKey& creatorId, CreatorMethod creator) {
-			// returns false if the key was repeated.
-			typedef typename CreatorMap::value_type ValueType;
-			return  _creators.insert( ValueType( creatorId, creator ) ).second;
-		}
-
-	};
 	/**
  	* This class provides a convenient way to add items (creators) into a factory.
  	* To add class A (subclass of Base) to the factory it's useful to declare a static 
@@ -399,39 +252,32 @@ public: // Inner classes. Public for better testing
 		Registrator( RegistryKey key, TheFactoryType& fact ) {
 			mKey=key;
 //			std::cout << CLAM_MODULE << "Registrator(key,factory) " << mKey << std::endl;
-			fact.AddCreatorWarningRepetitions( mKey, Create );
-			fact.NewAddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
+			fact.AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
 		}
 
 		Registrator( TheFactoryType& fact ) {
 			ConcreteProductType dummy;
 			mKey=dummy.GetClassName();
 //			std::cout << CLAM_MODULE << "Registrator(factory) " << dummy.GetClassName() << std::endl;
-			fact.AddCreatorWarningRepetitions( dummy.GetClassName(), Create );
-			fact.NewAddCreatorWarningRepetitions( dummy.GetClassName(), new ConcreteCreator() );
+			fact.AddCreatorWarningRepetitions( dummy.GetClassName(), new ConcreteCreator() );
 		}
 
 		Registrator( RegistryKey key ) {
 			mKey=key;
 //			std::cout << CLAM_MODULE << "Registrator(key) " << mKey << std::endl;
-			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, Create );
-			TheFactoryType::GetInstance().NewAddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
+			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
 		}
 
 		Registrator( ) {
 			ConcreteProductType dummy;
 			mKey=dummy.GetClassName();
 //			std::cout << CLAM_MODULE << "Registrator() " << mKey << std::endl;
-			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, Create );
-			TheFactoryType::GetInstance().NewAddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
+			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
 		}
 		~Registrator() {
 //			std::cout << CLAM_MODULE << "~Registrator() " << mKey << std::endl;
 		}
 
-		static AbstractProduct* Create() {
-			return new ConcreteProductType;
-		}
 		class ConcreteCreator : public Creator
 		{
 		public:
@@ -450,7 +296,6 @@ public: // Inner classes. Public for better testing
 
 private:
 	Registry _registry;
-	NewRegistry _newregistry;
 
 };
 

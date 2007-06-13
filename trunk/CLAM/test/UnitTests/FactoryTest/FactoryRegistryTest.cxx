@@ -41,14 +41,24 @@ protected:
 private:
 
 	// helper methods:
-	MyFactoryType::CreatorMethod FooCreator() {
-		return MyFactoryType::Registrator<DummyProductFoo>::Create;
-	}
+	class FooCreator : public MyFactoryType::Creator
+	{
+	public:
+		DummyProduct *Create()
+		{	
+			return new DummyProductFoo();
+		}
 
-	MyFactoryType::CreatorMethod BarCreator() {
-		return MyFactoryType::Registrator<DummyProductBar>::Create;
-	}
+	};
+	class BarCreator : public MyFactoryType::Creator
+	{
+	public:
+		DummyProduct *Create()
+		{	
+			return new DummyProductBar();
+		}
 
+	};	
 	// tests definition
 	void testGetCreator_WhenIsEmpty()
 	{
@@ -81,7 +91,7 @@ private:
 	{
 		MyFactoryType::Registry reg;
 		// set up:
-		reg.AddCreator( "DummyProductFoo", FooCreator() );
+		reg.AddCreator( "DummyProductFoo", new FooCreator() );
 
 		try{
 			reg.GetCreator("non existent key");
@@ -93,7 +103,7 @@ private:
 	{
 		MyFactoryType::Registry reg;
 		// set up:
-		reg.AddCreator( "DummyProductFoo", FooCreator() );
+		reg.AddCreator( "DummyProductFoo", new FooCreator() );
 
 		try{
 			reg.GetCreatorSafe("non existent key");
@@ -105,52 +115,52 @@ private:
 	{
 		MyFactoryType::Registry reg;
 		// set up:
-		MyFactoryType::CreatorMethod inserted;
-		inserted = FooCreator();
+		MyFactoryType::Creator* inserted;
+		inserted = new FooCreator();
 
 		reg.AddCreator( "DummyProductFoo", inserted);
-		CPPUNIT_ASSERT( inserted == reg.GetCreator("DummyProductFoo") );
+		CPPUNIT_ASSERT( inserted == &reg.GetCreator("DummyProductFoo") );
 	}
 
 	void testGetCreatorSafe_CorrectKeyWithASingleCreator()
 	{
 		MyFactoryType::Registry reg;
 		// set up:
-		MyFactoryType::CreatorMethod inserted;
-		inserted = FooCreator();
+		MyFactoryType::Creator* inserted;
+		inserted = new FooCreator();
 
 		reg.AddCreator( "DummyProductFoo", inserted);
-		CPPUNIT_ASSERT( inserted == reg.GetCreatorSafe("DummyProductFoo") );
+		CPPUNIT_ASSERT( inserted == &reg.GetCreatorSafe("DummyProductFoo") );
 	}
 
 	void testGetCreator_CorrectKeyWithTwoCreators()
 	{
 		MyFactoryType::Registry reg;
 		// set up
-		reg.AddCreator( "DummyProductFoo", FooCreator() );
-		reg.AddCreator( "DummyProductBar", BarCreator() );
+		MyFactoryType::Creator * fooCreator = new FooCreator();
+		reg.AddCreator( "DummyProductFoo", fooCreator );
+		reg.AddCreator( "DummyProductBar", new BarCreator() );
 
-		MyFactoryType::CreatorMethod fooCreator = FooCreator();
-		CPPUNIT_ASSERT( fooCreator == reg.GetCreator("DummyProductFoo") );
+		CPPUNIT_ASSERT( fooCreator == &reg.GetCreator("DummyProductFoo") );
 	}
 
 	void testGetCreatorSafe_CorrectKeyWithTwoCreators()
 	{
 		MyFactoryType::Registry reg;
 		// set up
-		reg.AddCreator( "DummyProductFoo", FooCreator() );
-		reg.AddCreator( "DummyProductBar", BarCreator() );
+		MyFactoryType::Creator* fooCreator = new FooCreator();
+		reg.AddCreator( "DummyProductFoo", fooCreator );
+		reg.AddCreator( "DummyProductBar", new BarCreator() );
 
-		MyFactoryType::CreatorMethod fooCreator = FooCreator();
-		CPPUNIT_ASSERT( fooCreator == reg.GetCreatorSafe("DummyProductFoo") );
+		CPPUNIT_ASSERT( fooCreator == &reg.GetCreatorSafe("DummyProductFoo") );
 	}
 
 	void testGetCreator_WrongKeyWithTwoCreators()
 	{
 		MyFactoryType::Registry reg;
 		// set up
-		reg.AddCreator( "DummyProductFoo", FooCreator() );
-		reg.AddCreator( "DummyProductBar", BarCreator() );
+		reg.AddCreator( "DummyProductFoo", new FooCreator() );
+		reg.AddCreator( "DummyProductBar", new BarCreator() );
 		try{
 			reg.GetCreator("wrong name");
 			CPPUNIT_FAIL( "Assert expected to happen" );
@@ -161,8 +171,8 @@ private:
 	{
 		MyFactoryType::Registry reg;
 		// set up
-		reg.AddCreator( "DummyProductFoo", FooCreator() );
-		reg.AddCreator( "DummyProductBar", BarCreator() );
+		reg.AddCreator( "DummyProductFoo", new FooCreator() );
+		reg.AddCreator( "DummyProductBar", new BarCreator() );
 
 		try{
 			reg.GetCreatorSafe("incorrect as well");
@@ -173,10 +183,10 @@ private:
 	void testAddCreator_RepeatedKey()
 	{
 		MyFactoryType::Registry reg;
-		reg.AddCreator( "DummyProductFoo", FooCreator() );
+		reg.AddCreator( "DummyProductFoo", new FooCreator() );
 
 		try {
-			reg.AddCreator( "DummyProductFoo", BarCreator() );
+			reg.AddCreator( "DummyProductFoo", new BarCreator() );
 			CPPUNIT_FAIL( "Assert expected to happen" );
 
 		} catch (CLAM::ErrAssertionFailed& ) {}
@@ -185,10 +195,10 @@ private:
 	void testAddCreatorSafe_RepeatedKey()
 	{
 		MyFactoryType::Registry reg;
-		reg.AddCreator( "DummyProductFoo", FooCreator() );
+		reg.AddCreator( "DummyProductFoo", new FooCreator() );
 
 		try {
-			reg.AddCreatorSafe( "DummyProductFoo", BarCreator() );
+			reg.AddCreatorSafe( "DummyProductFoo", new BarCreator() );
 			CPPUNIT_FAIL( "CLAM::ErrFactory expected" );
 
 		} catch (CLAM::ErrFactory& expected) {
@@ -210,8 +220,8 @@ private:
 	void testRemoveCreators_WhenNotEmtpy()
 	{
 		MyFactoryType::Registry reg;
-		reg.AddCreator("foo", FooCreator() );
-		reg.AddCreator("bar", BarCreator() );
+		reg.AddCreator("foo", new FooCreator() );
+		reg.AddCreator("bar", new BarCreator() );
 
 		reg.RemoveAllCreators();
 		CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -228,8 +238,8 @@ private:
 	void testCount_WithTwoCreators()
 	{
 		MyFactoryType::Registry reg;
-		reg.AddCreator("foo", FooCreator() );
-		reg.AddCreator("bar", BarCreator() );
+		reg.AddCreator("foo", new FooCreator() );
+		reg.AddCreator("bar", new BarCreator() );
 		CPPUNIT_ASSERT_EQUAL( std::size_t(2), reg.Count() );
 	}
 
@@ -249,8 +259,8 @@ private:
 		MyFactoryType::Registry reg;
 		std::list<MyFactoryType::RegistryKey> namesList;
 
-		reg.AddCreator( "foo", FooCreator() );
-		reg.AddCreator( "bar", BarCreator() );
+		reg.AddCreator( "foo", new FooCreator() );
+		reg.AddCreator( "bar", new BarCreator() );
 
 		reg.GetRegisteredNames( namesList );
 
