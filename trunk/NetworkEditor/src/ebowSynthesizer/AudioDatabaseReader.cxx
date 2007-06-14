@@ -117,12 +117,17 @@ AudioDatabaseReader::~AudioDatabaseReader()
 void AudioDatabaseReader::ConnectAndPublishPorts()
 {
 	CLAM::ConnectPorts(*myMonoAudioFileReader, "Samples Read", *mySMSAnalysisCore, "Input Audio");
-	
-	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Residual Branch Spectrum") );
-	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Sinusoidal Branch Spectrum") );
-	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Sinusoidal Peaks") );
-	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Fundamental") );
-	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Residual Spectrum") );
+	// TODO	
+	// change this. you need to declare portpublisher (i.e. mFundamental) and do
+	// mFundamental.Publish( mSMSAnalysisCore.GetOutPort("Fundamental") );
+	// where mFundamental is a OutPortPublisher<Fundamental>
+	//
+	// note: use mAttribut not myAttribut
+//	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Residual Branch Spectrum") );
+//	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Sinusoidal Branch Spectrum") );
+//	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Sinusoidal Peaks") );
+//	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Fundamental") );
+//	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Residual Spectrum") );
 }
  
 bool AudioDatabaseReader::Do(Audio& in)
