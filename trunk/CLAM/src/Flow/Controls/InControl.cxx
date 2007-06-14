@@ -34,7 +34,7 @@ InControl::InControl(const std::string &name, Processing* parent, const bool pub
 	, mBounded(false)
 
 {
-	if (parent && publish) parent->GetInControls().Register(this);
+	if (parent && publish) parent->RegisterInControl(this);
 }
 
 
@@ -87,15 +87,6 @@ void InControl::OutControlInterface_RemoveLink(OutControl & outControl)
 	mLinks.remove(&outControl);
 }
 
-
-//  InControl::OutControlIterator InControl::GetOutControls() const
-//  {
-//  	return 0; //TODO
-//  }
-//  InControl::InControlIterator InControl::GetInControls() const
-//  {
-//  	return 0; //TODO
-//  }
 
 }; // namespace CLAM
 

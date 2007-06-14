@@ -43,8 +43,7 @@ public:
 	bool Has(const std::string& name) const;
 	int Size() const;
 	bool AreReadyForWriting();
-	/** Registers a new port in the registry */
-	void Register( OutPortBase * );
+	void ProcessingInterface_Register( OutPortBase * );
 	void Clear(){ mOutPorts.clear(); }
 	Iterator Begin();
 	Iterator End();
