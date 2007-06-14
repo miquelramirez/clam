@@ -118,6 +118,7 @@ singleSourceExamples = [
 	"Tutorial/UserTutorial4.cxx",
 	"Tutorial/UserTutorial5.cxx",
 	"Tutorial/UserTutorial6.cxx",
+	"OfflineAudioConvolution.cxx",
 ]
 # TODO: Weird ones (libraries, client server...)
 #	"ProcessingClass2Ladpsa/LadspaAudioMultiplier.cxx",
