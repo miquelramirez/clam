@@ -40,7 +40,7 @@ public:
 	InControl& Get(const std::string & name) const;
 	bool Has(const std::string& name) const;
 	int Size() const;
-	void Register(InControl *);
+	void ProcessingInterface_Register(InControl *);
 	void Clear(){ mInControls.clear(); }
 	Iterator Begin();
 	Iterator End();

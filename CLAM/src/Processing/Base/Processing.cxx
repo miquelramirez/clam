@@ -172,20 +172,20 @@ namespace CLAM {
 
 	void Processing::RegisterOutPort(OutPortBase* out) 
 	{
-		mOutPortRegistry.Register(out);
+		mOutPortRegistry.ProcessingInterface_Register(out);
 	}
 	void Processing::RegisterInPort(InPortBase* in)
 	{
-		mInPortRegistry.Register(in);
+		mInPortRegistry.ProcessingInterface_Register(in);
 	}
 
 	void Processing::RegisterOutControl(OutControl* out) 
 	{
-		mOutControlRegistry.Register(out);
+		mOutControlRegistry.ProcessingInterface_Register(out);
 	}
 	void Processing::RegisterInControl(InControl* in)
 	{
-		mInControlRegistry.Register(in);
+		mInControlRegistry.ProcessingInterface_Register(in);
 	}
 	
 	void Processing::SetParent(Processing *o)

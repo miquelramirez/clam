@@ -25,38 +25,19 @@
 
 namespace CLAM {
 
-
-//	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
-//				  Processing* inProc, std::string inControl)
-//	{
-//		OutControl* out = &(outProc->GetOutControls().Get(outControl));
-//		InControl* in = &(inProc->GetInControls().Get(inControl));
-//		
-//		out->AddLink(*in);
-//	}
-
 // Creation/Destruction
 
 OutControl::OutControl(const std::string& name, Processing* parent, const bool publish) :
 	mName(name), mParent(parent)
 {
-	if (parent && publish) 	parent->GetOutControls().Register(this);
+	if (parent && publish) 	parent->RegisterOutControl(this);
 }
 		
-/*OutControl::OutControlIterator()()
-{
-}
-*/
 OutControl::~OutControl()
 {
 	while (!mLinks.empty())
 		RemoveLink(*mLinks.front());
 }
-/*OutControl::OutControl(const OutControl& src)
-{
-	MTG_ASSERT(false, "long text saying that you are in the wrong way... (todo)")
-}
-*/
 // Methods
 
 std::list<InControl*>::iterator OutControl::BeginInControlsConnected()
@@ -107,18 +88,6 @@ bool OutControl::IsConnectedTo( InControl & in)
 
 	return false;
 }
-
-
-//Redefined Methods
-//  OutControl::OutControlIterator OutControl::GetOutControls() const
-//  {
-//  	return 0;  //TODO: return a single element iterator?
-//  }
-//  OutControl::InControlIterator OutControl::GetInControls() const
-//  {
-//  	return 0;  //TODO: works well as a null iterator?
-//  }
-
 
 
 

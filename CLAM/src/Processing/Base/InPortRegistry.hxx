@@ -43,7 +43,7 @@ public:
 	bool Has(const std::string& name) const;
 	int Size() const;
 	bool AreReadyForReading();
-	void Register(InPortBase *);
+	void ProcessingInterface_Register(InPortBase *);
 	void Clear(){ mInPorts.clear(); }
 	Iterator Begin();
 	Iterator End();
