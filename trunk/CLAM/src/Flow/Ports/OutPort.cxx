@@ -31,7 +31,7 @@ OutPortBase::OutPortBase( const std::string & name, Processing * proc )
 	mPublisher(0)
 {
 	if(proc)
-		proc->PublishOutPort(this);
+		proc->RegisterOutPort(this);
 }
 
 OutPortBase::~OutPortBase()

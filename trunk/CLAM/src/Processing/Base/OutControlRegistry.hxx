@@ -41,7 +41,7 @@ public:
 	OutControl& Get(const std::string & name) const;
 	bool Has(const std::string& name) const;
 	int Size() const;
-	void Publish( OutControl *);
+	void Register( OutControl *);
 	void Clear(){ mOutControls.clear(); }
 	Iterator Begin();
 	Iterator End();	

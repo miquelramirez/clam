@@ -92,7 +92,7 @@ bool InPortRegistry::AreReadyForReading()
 	return true;
 }
 
-void InPortRegistry::Publish( InPortBase * in )
+void InPortRegistry::Register( InPortBase * in )
 {
 	mInPorts.push_back( in );
 }

@@ -254,10 +254,10 @@ namespace CLAM {
 		
 		std::string GetExecStateString() const;
 
-		void PublishOutPort(OutPortBase* out);
-		void PublishInPort(InPortBase* in);
-		void PublishOutControl(OutControl* out);
-		void PublishInControl(InControl* in);
+		void RegisterOutPort(OutPortBase* out);
+		void RegisterInPort(InPortBase* in);
+		void RegisterOutControl(OutControl* out);
+		void RegisterInControl(InControl* in);
 
 		void SetParent(Processing *p);
 

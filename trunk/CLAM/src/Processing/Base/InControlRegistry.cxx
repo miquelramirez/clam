@@ -96,7 +96,7 @@ InControlRegistry::ConstIterator InControlRegistry::End() const
 	return mInControls.end();
 }
 
-void InControlRegistry::Publish( InControl * in )
+void InControlRegistry::Register( InControl * in )
 {
 	mInControls.push_back( in );
 }

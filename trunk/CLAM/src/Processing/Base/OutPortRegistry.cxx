@@ -90,7 +90,7 @@ OutPortRegistry::ConstIterator OutPortRegistry::End() const
 	return mOutPorts.end();
 }
 
-void OutPortRegistry::Publish( OutPortBase * out )
+void OutPortRegistry::Register( OutPortBase * out )
 {
 	mOutPorts.push_back( out );
 }
