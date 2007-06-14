@@ -32,7 +32,7 @@ InPortBase::InPortBase( const std::string & name, Processing * proc )
 	  mProcessing(proc)
 {
 	if(proc)
-		proc->PublishInPort(this);
+		proc->RegisterInPort(this);
 }
 
 InPortBase::~InPortBase()

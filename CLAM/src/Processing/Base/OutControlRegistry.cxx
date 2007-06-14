@@ -82,7 +82,7 @@ OutControlRegistry::ConstIterator OutControlRegistry::End() const
 	return mOutControls.end();
 }
 
-void OutControlRegistry::Publish( OutControl * out )
+void OutControlRegistry::Register( OutControl * out )
 {
 	mOutControls.push_back( out );
 }

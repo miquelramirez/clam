@@ -34,7 +34,7 @@ InControl::InControl(const std::string &name, Processing* parent, const bool pub
 	, mBounded(false)
 
 {
-	if (parent && publish) parent->GetInControls().Publish(this);
+	if (parent && publish) parent->GetInControls().Register(this);
 }
 
 
