@@ -26,7 +26,6 @@
 #include "ErrSoundFileIO.hxx"
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileReaderConfig.hxx"
-#include "AudioDatabaseReaderConfig.hxx"
 #include "ProcessingComposite.hxx"
 #include "AudioOutPort.hxx"
 #include "SMSAnalysisConfig.hxx"
