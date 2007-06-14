@@ -38,10 +38,17 @@ namespace CLAM
 	bool AudioSource::Do()
 	{
 		CLAM::Audio& so=mOut.GetAudio();
+#ifdef CLAM_DOUBLE
+		CLAM_DEBUG_ASSERT(mDoubleBuffer, "No double buffer");
+		CLAM_DEBUG_ASSERT(!mFloatBuffer, "There should not be float buffer");
+		for (int i=0; i<mBufferSize; i++)
+			so.GetBuffer().GetPtr()[i] = mDoubleBuffer[i];
+#else
 		CLAM_DEBUG_ASSERT(mFloatBuffer, "No float buffer");
 		CLAM_DEBUG_ASSERT(!mDoubleBuffer, "There should not be double buffer");
 		for (int i=0; i<mBufferSize; i++)
 			so.GetBuffer().GetPtr()[i] = mFloatBuffer[i];
+#endif
 		mOut.Produce();
 		// std::cerr << "AudioSource Done. Size :" << mOut.GetSize() << std::endl;
 		return true;
