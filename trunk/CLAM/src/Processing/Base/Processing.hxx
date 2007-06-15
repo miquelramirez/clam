@@ -250,10 +250,12 @@ namespace CLAM {
 		 * execution (Do) methods to confirm that the object is either
 		 * in running or in disabled state.
 		 */
-		ExecState GetExecState() const {return mExecState;}
-		
+		ExecState GetExecState() const {return mExecState;} //TODO make private. Use other bool getters instead
 		std::string GetExecStateString() const;
+		bool IsConfigured() const { return mExecState != Unconfigured; }
+		bool IsRunning() const { return mExecState == Running; }
 
+		
 		void RegisterOutPort(OutPortBase* out);
 		void RegisterInPort(InPortBase* in);
 		void RegisterOutControl(OutControl* out);
