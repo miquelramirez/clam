@@ -38,7 +38,7 @@ class PolarChromaPeaksMonitor : public CLAM::PortMonitor<std::vector<std::pair<C
 	}
 	bool isEnabled() const
 	{
-		return GetExecState() == CLAM::Processing::Running;
+		return IsRunning();
 	}
 private:
 	unsigned _size;

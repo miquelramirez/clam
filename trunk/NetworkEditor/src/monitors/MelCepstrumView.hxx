@@ -66,7 +66,7 @@ private:
 	virtual CLAM::TData lowerBound() const {return -.5;}
 	bool isEnabled() const
 	{
-		return GetExecState() == CLAM::Processing::Running;
+		return IsRunning();
 	}
 private:
 	unsigned _size;
