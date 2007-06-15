@@ -33,13 +33,6 @@ namespace CLAM
 	}
 	
 	
-	MonoAudioFileReader::MonoAudioFileReader()
-		: mOutput( "Samples Read", this  ),
-		  mNativeStream( NULL )
-	{
-		Configure( MonoAudioFileReaderConfig() );
-	}
-
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )
 		: mOutput( "Samples Read", this ),
 		  mNativeStream( NULL )

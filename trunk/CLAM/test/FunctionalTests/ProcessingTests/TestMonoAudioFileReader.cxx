@@ -151,7 +151,7 @@ namespace CLAMTest
 			CLAM::MonoAudioFileReader proc( cfg );
 			
 			CLAM::Audio readSamples;
-			readSamples.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
+			readSamples.SetSampleRate( proc.GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 
 			proc.Start();
@@ -171,7 +171,7 @@ namespace CLAMTest
 			CLAM::MonoAudioFileReader proc( cfg );
 			
 			CLAM::Audio readSamples_1;
-			readSamples_1.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
+			readSamples_1.SetSampleRate( proc.GetHeader().GetSampleRate() );
 			readSamples_1.SetSize( 256 );
 
 			CLAM::DataArray previous;
@@ -206,7 +206,7 @@ namespace CLAMTest
 			CLAM::MonoAudioFileReader proc( cfg );
 			
 			CLAM::Audio readSamples;
-			readSamples.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
+			readSamples.SetSampleRate( proc.GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 			
 
@@ -227,7 +227,7 @@ namespace CLAMTest
 			CLAM::MonoAudioFileReader proc( cfg );
 			
 			CLAM::Audio readSamples_1;
-			readSamples_1.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
+			readSamples_1.SetSampleRate( proc.GetHeader().GetSampleRate() );
 			readSamples_1.SetSize( 256 );
 
 			CLAM::DataArray previous;
@@ -261,7 +261,7 @@ namespace CLAMTest
 			CLAM::MonoAudioFileReader proc( cfg );
 			
 			CLAM::Audio readSamples;
-			readSamples.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
+			readSamples.SetSampleRate( proc.GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 
 			proc.Start();
@@ -270,7 +270,7 @@ namespace CLAMTest
 			proc.Do(readSamples);
 			proc.Stop();
 			
-			CLAM::TTime truth = CLAM::TTime( readSamples.GetSize() ) / proc.GetAudioFile().GetHeader().GetSampleRate() *1000;
+			CLAM::TTime truth = CLAM::TTime( readSamples.GetSize() ) / proc.GetHeader().GetSampleRate() *1000;
 			CLAM::TTime valueObtained = readSamples.GetBeginTime() - previousBeginTime;
 
 			CPPUNIT_ASSERT( fabs( truth - valueObtained ) < 1e-4 );
@@ -291,7 +291,7 @@ namespace CLAMTest
 			proc.Do(readSamples);
 			proc.Stop();
 
-			CPPUNIT_ASSERT_EQUAL( proc.GetAudioFile().GetHeader().GetSampleRate(),
+			CPPUNIT_ASSERT_EQUAL( proc.GetHeader().GetSampleRate(),
 					      readSamples.GetSampleRate() );
 
 		}
@@ -304,7 +304,7 @@ namespace CLAMTest
 			CLAM::MonoAudioFileReader proc( cfg );
 			
 			CLAM::Audio readSamples;
-			readSamples.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
+			readSamples.SetSampleRate( proc.GetHeader().GetSampleRate() );
 			readSamples.SetSize( 256 );
 			
 			proc.Start();
@@ -324,7 +324,7 @@ namespace CLAMTest
 			CLAM::MonoAudioFileReader proc( cfg );
 			
 			CLAM::Audio readSamples_1;
-			readSamples_1.SetSampleRate( proc.GetAudioFile().GetHeader().GetSampleRate() );
+			readSamples_1.SetSampleRate( proc.GetHeader().GetSampleRate() );
 			readSamples_1.SetSize( 4096 );
 
 			CLAM::DataArray previous;
@@ -375,7 +375,7 @@ namespace CLAMTest
 
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "trumpet-copy.wav" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate());
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate());
 			CLAM::MonoAudioFileWriter procWriter;
 			procWriter.Configure( cfgWriter );
 

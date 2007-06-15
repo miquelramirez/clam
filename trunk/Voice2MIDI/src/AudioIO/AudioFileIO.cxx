@@ -25,7 +25,7 @@ int AudioFileIO::Load(const char* fileName,Audio& out)
     if (!infile.Configure(cfg))
         return -1;
 
-    out.SetSize(infile.GetAudioFile().GetHeader().GetSamples());
+    out.SetSize(infile.GetHeader().GetSamples());
 
     infile.Start();
     infile.Do(out);

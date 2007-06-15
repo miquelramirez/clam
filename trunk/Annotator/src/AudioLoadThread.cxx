@@ -42,9 +42,9 @@ AudioLoadThread::AudioLoadThread(CLAM::Audio & audio, const std::string audioFil
 	cfg.SetSourceFile( audioFileName );
 	if (!mReader.Configure(cfg)) return; // Exits with audio size = 0;
 
-	CLAM::TData samplingRate = mReader.GetAudioFile().GetHeader().GetSampleRate();
-	nSamples = unsigned( mReader.GetAudioFile().GetHeader().GetLength()/1000.0*samplingRate );
-	int nChannels = mReader.GetAudioFile().GetHeader().GetChannels();
+	CLAM::TData samplingRate = mReader.GetHeader().GetSampleRate();
+	nSamples = unsigned( mReader.GetHeader().GetLength()/1000.0*samplingRate );
+	int nChannels = mReader.GetHeader().GetChannels();
 	audioFrameVector.resize(nChannels);
 	for (int i=0;i<nChannels;i++)
 		audioFrameVector[i].SetSize(readSize);

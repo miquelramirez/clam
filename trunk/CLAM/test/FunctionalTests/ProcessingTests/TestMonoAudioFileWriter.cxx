@@ -78,11 +78,11 @@ namespace CLAMTest
 
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "CopyOfElvis.wav.wav" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
 			// TODO: Those parameters have not been moved from the header to configuration
-//			cfgWriter.SetFormat( procReader.GetAudioFile().GetHeader().GetFormat() );
-//			cfgWriter.SetEncoding( procReader.GetAudioFile().GetHeader().GetEncoding() );
-//			cfgWriter.SetEndianess( procReader.GetAudioFile().GetHeader().GetEndianess() );
+//			cfgWriter.SetFormat( procReader.GetHeader().GetFormat() );
+//			cfgWriter.SetEncoding( procReader.GetHeader().GetEncoding() );
+//			cfgWriter.SetEndianess( procReader.GetHeader().GetEndianess() );
 			CLAM::MonoAudioFileWriter procWriter;
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );
@@ -144,7 +144,7 @@ namespace CLAMTest
 
 			CLAM::MonoAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "CopyOfElvis.ogg" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
 			CLAM::MonoAudioFileWriter procWriter;
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );

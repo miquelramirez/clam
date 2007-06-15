@@ -34,7 +34,7 @@ namespace qtvm_examples_utils
 		MonoAudioFileReader infile;
 		if (!infile.Configure(cfg)) return 1;
 
-		out.SetSize(infile.GetAudioFile().GetHeader().GetSamples());
+		out.SetSize(infile.GetHeader().GetSamples());
 
 		infile.Start();
 		infile.Do(out);
@@ -50,11 +50,11 @@ namespace qtvm_examples_utils
 		MultiChannelAudioFileReader reader;
 		if (!reader.Configure(cfg)) return 1;
 
-		const AudioFileHeader & header = reader.GetAudioFile().GetHeader();
+		const AudioFileHeader & header = reader.GetHeader();
 		if (header.GetChannels() != 2) return 1;
 
 		TSize readSize = TSize(TData(header.GetLength()/1000.0)*header.GetSampleRate());
-		if(reader.GetAudioFile().GetKind() == EAudioFileKind::ePCM)
+		if(reader.GetKind() == EAudioFileKind::ePCM)
 		{
 			readSize*=2;
 		}

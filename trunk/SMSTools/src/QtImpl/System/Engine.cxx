@@ -173,7 +173,7 @@ namespace QtSMS
 			return false;
 		}
 
-		if ( fileReader.GetAudioFile().GetHeader().GetChannels() > 1 )
+		if ( fileReader.GetHeader().GetChannels() > 1 )
 		{
 			QMessageBox::warning(0, "SMS Tools 2",QObject::tr(
 				"The file %1\n"
@@ -187,8 +187,8 @@ namespace QtSMS
 
 		fileReader.Start();
 
-		CLAM::TData sampleRate = fileReader.GetAudioFile().GetHeader().GetSampleRate();
-		CLAM::TData length = fileReader.GetAudioFile().GetHeader().GetLength();
+		CLAM::TData sampleRate = fileReader.GetHeader().GetSampleRate();
+		CLAM::TData length = fileReader.GetHeader().GetLength();
 
 		/////////////////////////////////////////////////////////////////////////////
 		// Initialization of the processing data objects :

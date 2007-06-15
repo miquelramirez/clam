@@ -668,15 +668,15 @@ void OpenSoundFile(const std::string& filename, CLAM::Audio& audio, CLAM::Text &
 	CLAM::MonoAudioFileReader reader;
 	if (!reader.Configure(cfg))
 		CLAM_ASSERT(false, ("Error opening '" + filename +"'").c_str());
-	const CLAM::AudioTextDescriptors & textDescriptors = reader.GetAudioFile().GetTextDescriptors();
+	const CLAM::AudioTextDescriptors & textDescriptors = reader.GetTextDescriptors();
 	if (textDescriptors.HasArtist()) artist = textDescriptors.GetArtist();
 	if (textDescriptors.HasTitle()) title = textDescriptors.GetTitle();
-	int nChannels = reader.GetAudioFile().GetHeader().GetChannels();
+	int nChannels = reader.GetHeader().GetChannels();
 	CLAM::Audio audioFrame;
 	audioFrame.SetSize(readSize);
 	reader.Start();
 	int beginSample=0;
-	int nSamples = reader.GetAudioFile().GetHeader().GetSamples(); 
+	int nSamples = reader.GetHeader().GetSamples(); 
 	audio.SetSize(nSamples);
 	while(reader.Do(audioFrame))
 	{
