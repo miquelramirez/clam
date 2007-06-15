@@ -250,8 +250,10 @@ namespace CLAM {
 		 * execution (Do) methods to confirm that the object is either
 		 * in running or in disabled state.
 		 */
+	private:
 		ExecState GetExecState() const {return mExecState;} //TODO make private. Use other bool getters instead
 		std::string GetExecStateString() const;
+	public:
 		bool IsConfigured() const { return mExecState != Unconfigured; }
 		bool IsRunning() const { return mExecState == Running; }
 
@@ -376,7 +378,7 @@ namespace CLAM {
 inline bool Processing::AbleToExecute(void) const
 {
 	CLAM_BEGIN_DEBUG_CHECK
-		if (GetExecState() != Running)
+		if (!IsRunning())
 		{
 			std::string err(GetClassName());
 			err += ": Do(): Not in execution mode - did you call Start on this "
@@ -384,7 +386,7 @@ inline bool Processing::AbleToExecute(void) const
 				CLAM_DEBUG_ASSERT( false, err.c_str() );
 		}
 	CLAM_END_DEBUG_CHECK
-	return GetExecState() == Running;
+	return IsRunning();
 }
 
 template <typename ConcreteConfig>

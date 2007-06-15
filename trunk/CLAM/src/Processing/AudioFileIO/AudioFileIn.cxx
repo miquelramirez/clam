@@ -179,11 +179,9 @@ bool AudioFileIn::Do(Audio& inL,Audio& inR)
 {
 	CLAM_ASSERT( AbleToExecute(), "This processing is not allowed to be executed!" );
 
-	float tmp[256];
+	CLAM_ASSERT(IsRunning(), "AudioFileOut: Do(): Not in execution mode");
 
-	if ( GetExecState() == Unconfigured ||
-	     GetExecState() == Ready )
-		throw(ErrProcessingObj("AudioFileOut: Do(): Not in execution mode",this));
+	float tmp[256];
 
 	if (mpSoundFileIO->Header().mChannels!=2)
 		throw(ErrProcessingObj("AudioFileIn: Do(): Not a stereo file",this));

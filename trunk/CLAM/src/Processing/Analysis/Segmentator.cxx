@@ -204,9 +204,7 @@ bool Segmentator::ConcreteConfigure(const ProcessingConfig& c)
 
 bool Segmentator::Do()
 {
-	CLAM_DEBUG_ASSERT(GetExecState() != Unconfigured &&
-	                  GetExecState() != Ready,
-	                  "FFT_rfftw: Do(): Not in execution mode");
+	CLAM_DEBUG_ASSERT(IsRunning(), "Segmentator: Do(): Not in execution mode");
 
 	CLAM_ASSERT(false, "Segmentator: Do(): Supervised mode not implemented");
 
