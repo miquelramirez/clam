@@ -39,7 +39,7 @@ namespace CLAM {
 					(*obj2)->Stop();
 				throw e;
 			}
-			if ((*obj)->IsRunning())
+			if (!(*obj)->IsRunning())
 			{
 				iterator obj2;
 				for (obj2 = composite_begin(); obj2 != obj; obj2++)
