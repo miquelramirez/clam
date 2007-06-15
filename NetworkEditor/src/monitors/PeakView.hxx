@@ -47,7 +47,7 @@ class PeakViewMonitor : public CLAM::PortMonitor<CLAM::SpectralPeakArray>, publi
 	}
 	bool isEnabled() const
 	{
-		return GetExecState() == CLAM::Processing::Running;
+		return IsRunning();
 	}
 private:
 	unsigned _size;

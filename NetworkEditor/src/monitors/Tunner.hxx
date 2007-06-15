@@ -30,7 +30,7 @@ class TunnerMonitor : public CLAM::PortMonitor<std::pair<CLAM::TData,CLAM::TData
 	}
 	bool isEnabled() const
 	{
-		return GetExecState() == CLAM::Processing::Running;
+		return IsRunning();
 	}
 private:
 	std::pair<CLAM::TData,CLAM::TData> _fasor;

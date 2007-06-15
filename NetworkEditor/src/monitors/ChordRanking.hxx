@@ -118,7 +118,7 @@ private:
 	}
 	bool isEnabled() const
 	{
-		return GetExecState() == CLAM::Processing::Running;
+		return IsRunning();
 	}
 private:
 	unsigned _size;
