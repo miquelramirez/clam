@@ -162,7 +162,7 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectrumAdder::Do(Spectrum **inputs, Spectrum& out)
 	{
-		CLAM_DEBUG_ASSERT( GetExecState() == Running,
+		CLAM_DEBUG_ASSERT( IsRunning(),
 			"SpectrumAdder::Do(): Not in execution mode");
 
 		switch (mProtoState) {
@@ -199,7 +199,7 @@ namespace CLAM {
 	// For the sum computation. 
 	bool SpectrumAdder::SetPrototypes(Spectrum **inputs,const Spectrum& out)
 	{
-		CLAM_ASSERT(GetExecState() != Unconfigured,
+		CLAM_ASSERT(IsConfigured(),
 		            "SpectrumAdder::SetPrototypes(): Not configured");
 		CLAM_ASSERT(mNInputs > 0,
 		            "SpectrumAdder::SetPrototypes(): Inconsistent mNInputs");

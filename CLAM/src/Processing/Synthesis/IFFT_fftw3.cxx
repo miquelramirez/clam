@@ -133,20 +133,6 @@ void IFFT_fftw3::Attach(Spectrum &in, Audio& out)
 
 bool IFFT_fftw3::Do()
 {
-
-/*	if (GetExecState() == Disabled)
-		return true;
-
-	switch(mState) {
-	case sOther:
-	case sComplex:
-		CLAM_ASSERT(false,"IFFT_fftw3: Do(IFFTInputOutput&,IFFTInputOutput&): Not implemented");
-	default:
-		CLAM_ASSERT(false,"IFFT_fftw3: Do(): Inconsistent state");
-	}
-
-	
-*/	
 	bool toReturn = Do(mInput.GetData(),mOutput.GetAudio());
 	mInput.Consume();
 	mOutput.Produce();
@@ -182,7 +168,7 @@ bool IFFT_fftw3::UnsetPrototypes()
 
 bool IFFT_fftw3::Do( const Spectrum& in, Audio &out) const
 {
-	CLAM_ASSERT(GetExecState() == Running ,"IFFT_fftw3: Do(): Not in execution mode");
+	CLAM_ASSERT(IsRunning() ,"IFFT_fftw3: Do(): Not in execution mode");
 	CLAM_ASSERT(out.GetSize() == mSize,
 		"Not proper IFFT output size");
 

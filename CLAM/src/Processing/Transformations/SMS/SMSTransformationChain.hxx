@@ -83,7 +83,7 @@ namespace CLAM {
 		
 		virtual bool DoChildren()
 		{
-			CLAM_DEBUG_ASSERT(GetExecState() == Running,
+			CLAM_DEBUG_ASSERT(IsRunning(),
 				"SMSTransformationChain: Do(): Not in execution mode");
 
 			bool result=true;
@@ -99,7 +99,7 @@ namespace CLAM {
 				//Note: First and last chainee's will always be active regartheless the value
 				//of their On control.
 				{
-					CLAM_DEBUG_ASSERT(proc.GetExecState()==Running, "child is not running" );
+					CLAM_DEBUG_ASSERT(proc.IsRunning(), "child is not running" );
 					result &= trans.DoWithSegments();
 				}
 			}

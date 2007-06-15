@@ -175,7 +175,7 @@ namespace CLAM {
 	{
 		short tmp[256];
 
-		CLAM_ASSERT(GetExecState() == Running, 
+		CLAM_ASSERT(IsRunning(),
 			"AudioFileOut: Do(): Not in execution mode");
 
 		CLAM_ASSERT(mpSoundFileIO->Header().mChannels==2,

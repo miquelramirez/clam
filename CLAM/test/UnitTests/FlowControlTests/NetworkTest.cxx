@@ -857,8 +857,8 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "multiplier", multiplier );
 		net.Start();
 
-		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Running, oscillator->GetExecState() );
-		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Running, multiplier->GetExecState() );
+		CPPUNIT_ASSERT( oscillator->IsRunning() );
+		CPPUNIT_ASSERT( multiplier->IsRunning() );
 		
 
 	}
@@ -873,8 +873,8 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "filein", filein );
 		net.Start();
 
-		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Running, oscillator->GetExecState() );
-		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Unconfigured, filein->GetExecState() );		
+		CPPUNIT_ASSERT( oscillator->IsRunning() );
+		CPPUNIT_ASSERT( !filein->IsConfigured() );
 	}
 
 	void testStopNetworkStopsProcessings_WhenAreRunning()
@@ -887,8 +887,11 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "multiplier", multiplier );
 		net.Start();
 		net.Stop();
-		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Ready, oscillator->GetExecState() );
-		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Ready, multiplier->GetExecState() );
+		
+		CPPUNIT_ASSERT( !oscillator->IsRunning() );
+		CPPUNIT_ASSERT( oscillator->IsConfigured() );
+		CPPUNIT_ASSERT( !multiplier->IsRunning() );
+		CPPUNIT_ASSERT( multiplier->IsConfigured() );
 
 	}
 
@@ -903,8 +906,9 @@ class NetworkTest : public CppUnit::TestFixture
 		net.Start();
 		net.Stop();
 
-		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Ready, oscillator->GetExecState() );
-		CPPUNIT_ASSERT_EQUAL( CLAM::Processing::Unconfigured, filein->GetExecState() );		
+		CPPUNIT_ASSERT( !oscillator->IsRunning() );
+		CPPUNIT_ASSERT( oscillator->IsConfigured() );
+		CPPUNIT_ASSERT( !filein->IsConfigured() );
 	}
 
 	void testIsEmpty_whenEmpty()

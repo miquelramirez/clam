@@ -126,7 +126,7 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool FrameInterpolator::Do(const Frame& in1, const Frame& in2, Frame& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() == Running,
+		CLAM_DEBUG_ASSERT(IsRunning(),
 			"FrameInterpolator::Do(): Not in execution mode");
 
 		if(in1.GetFundamentalFreq()!=0 && in2.GetFundamentalFreq()!=0 && mConfig.GetHarmonic())
