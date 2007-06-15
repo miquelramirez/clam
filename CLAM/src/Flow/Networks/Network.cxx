@@ -414,6 +414,7 @@ namespace CLAM
 	{
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
+		{
 			if (it->second->IsRunning()) continue;
 			if (it->second->IsConfigured())
 			{
@@ -423,6 +424,7 @@ namespace CLAM
 			{	
 				std::cerr << "Warning: could not start processing for not being Configured: '" << it->first<< "' of class " << it->second->GetClassName() << std::endl;
 			}
+		}
 		if (mPlayer) mPlayer->Start();
 	}
 	
