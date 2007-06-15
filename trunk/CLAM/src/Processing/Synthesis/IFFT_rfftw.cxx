@@ -165,7 +165,7 @@ namespace CLAM {
 
 	bool IFFT_rfftw::Do( const Spectrum& inFoo, Audio &out) const
 	{
-		CLAM_ASSERT(GetExecState()==Running,
+		CLAM_ASSERT(IsRunning(),
 			"IFFT_rfftw: Do(): Not in execution mode");
 		CLAM_ASSERT(out.GetSize() == mSize,
 			"Not proper IFFT output size");

@@ -99,7 +99,7 @@ namespace CLAM {
   bool FFT_ooura::Do(const Audio& in, Spectrum &out){
 	TData *inbuffer;
 
-	CLAM_DEBUG_ASSERT(GetExecState() == Running,
+	CLAM_DEBUG_ASSERT(IsRunning(),
 					  "FFT_ooura: Do(): Not in execution mode");
 	CLAM_DEBUG_ASSERT(isPowerOfTwo(mSize),
 					  "FFT_ooura: Do(): Not a power of two");

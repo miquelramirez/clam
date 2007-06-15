@@ -88,7 +88,7 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectralPeakArrayInterpolator::Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2, SpectralPeakArray& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() == Running,
+		CLAM_DEBUG_ASSERT(IsRunning(),
 			"SpectralPeakArrayInterpolator::Do(): Not in execution mode");
 
 		//First, we get values of the internal controls
@@ -220,7 +220,7 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectralPeakArrayInterpolator::Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2,const Spectrum& spectralShape, SpectralPeakArray& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() == Running,
+		CLAM_DEBUG_ASSERT(IsRunning(),
 			"SpectralPeakArrayInterpolator::Do(): Not in execution mode");
 
 		//First, we get values of the internal controls

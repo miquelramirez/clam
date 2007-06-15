@@ -68,7 +68,7 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectrumAdder2::Do(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() == Running,
+		CLAM_DEBUG_ASSERT(IsRunning(),
 			"SpectrumAdder2::Do(): Not in execution mode");
 
 		switch (mProtoState) {

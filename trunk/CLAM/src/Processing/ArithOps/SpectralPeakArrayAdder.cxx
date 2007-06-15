@@ -56,7 +56,7 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool SpectralPeakArrayAdder::Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2, SpectralPeakArray& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() == Running,
+		CLAM_DEBUG_ASSERT(IsRunning(),
 			"SpectralPeakArrayAdder::Do(): Not in execution mode");
 
 		CLAM_ASSERT((&out)!=(&in1) && (&out)!=(&in1), "SpectralPeakAdder cannot process inplace");

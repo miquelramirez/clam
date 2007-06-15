@@ -63,7 +63,7 @@ namespace CLAM {
 	// Unsupervised Do() function.
 	bool FrameAdder::Do(const Frame& in1, const Frame& in2, Frame& out)
 	{
-		CLAM_DEBUG_ASSERT(GetExecState() == Running,
+		CLAM_DEBUG_ASSERT(IsRunning(),
 			"FrameAdder::Do(): Not in execution mode");
 
 		/** we set the output fundamental to zero. Note that when adding two frames

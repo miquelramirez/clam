@@ -157,7 +157,7 @@ namespace CLAMTest {
 		TData max_err = 0.00001;
 		SpecAdderConfig cfg;
 		cfg.SetNInputs(2);
-		if (adder.GetExecState()==Processing::Running)
+		if (adder.IsRunning())
 			adder.Stop();
 		adder.Configure(cfg);
 		adder.Start();

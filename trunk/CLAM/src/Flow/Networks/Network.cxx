@@ -414,13 +414,14 @@ namespace CLAM
 	{
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
-			if (it->second->GetExecState() == Processing::Ready)
+			if (it->second->IsRunning()) continue;
+			if (it->second->IsConfigured())
 			{
 				it->second->Start();
 			}
 			else
 			{	
-				std::cerr << "Warning: could not start processing for not being in Ready state: " << it->second->GetClassName() << std::endl;
+				std::cerr << "Warning: could not start processing for not being Configured: '" << it->first<< "' of class " << it->second->GetClassName() << std::endl;
 			}
 		if (mPlayer) mPlayer->Start();
 	}
@@ -430,7 +431,7 @@ namespace CLAM
 		if (mPlayer) mPlayer->Stop();
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
-			if (it->second->GetExecState() == Processing::Running)
+			if (it->second->IsRunning())
 				it->second->Stop();
 	}
 	
@@ -555,7 +556,7 @@ namespace CLAM
 	{
 		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings(); it!=EndProcessings(); it++)
-			if(it->second->GetExecState() == CLAM::Processing::Unconfigured )
+			if(!it->second->IsConfigured())
 				return true;
 		return false;
 	}
@@ -581,7 +582,7 @@ namespace CLAM
 		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings(); it!=EndProcessings(); it++)
 		{
-			if(it->second->GetExecState() != CLAM::Processing::Unconfigured ) continue;
+			if(it->second->IsConfigured()) continue;
 			errorMessage << "* Processing '" <<  it->first  << "' is misconfigured:\n";
 			errorMessage << it->second->GetConfigErrorMessage() << std::endl;
 		}

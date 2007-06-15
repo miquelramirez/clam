@@ -82,8 +82,7 @@ namespace CLAM {
 	{
 		TData *inbuffer;
 
-		CLAM_DEBUG_ASSERT(GetExecState() == Running,
-		                  "FFT_numrec: Do(): Not in execution mode");
+		CLAM_DEBUG_ASSERT(IsRunning(), "FFT_numrec: Do(): Not in execution mode");
 
 		out.SetSpectralRange(in.GetSampleRate()/2);
 
