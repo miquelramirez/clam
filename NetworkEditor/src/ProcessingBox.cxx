@@ -218,17 +218,15 @@ void ProcessingBox::recomputeMinimumSizes()
 QColor execBodyColor(QColor defaultColor, CLAM::Processing * processing)
 {
 	if ( !processing) return defaultColor;
-	if (processing->GetExecState() == CLAM::Processing::Unconfigured)
-		return QColor(0xff,0xa0,0xa0,0x70);
-	return defaultColor;
+	if ( processing->IsConfigured()) return defaultColor;
+	return QColor(0xff,0xa0,0xa0,0x70);
 }
 
 QColor execFrameColor(QColor defaultColor, CLAM::Processing * processing)
 {
 	if ( !processing) return defaultColor;
-	if (processing->GetExecState() == CLAM::Processing::Unconfigured)
-		return QColor(0xff,0x00,0x00,0xa0);
-	return defaultColor;
+	if ( processing->IsConfigured()) return defaultColor;
+	return QColor(0xff,0x00,0x00,0xa0);
 }
 
 void ProcessingBox::paintBox(QPainter & painter)
@@ -528,14 +526,14 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	}
 	if (region==bodyRegion)
 	{
-		if (_processing && _processing->GetExecState()==CLAM::Processing::Unconfigured)
+		if (_processing && ! _processing->IsConfigured())
 			_canvas->setToolTip(_processing->GetConfigErrorMessage().c_str());
 		_canvas->setStatusTip(QObject::tr("Double click: configure. Left click: Processing menu"));
 		return;
 	}
 	if (region==nameRegion)
 	{
-		if (_processing && _processing->GetExecState()==CLAM::Processing::Unconfigured)
+		if (_processing && ! _processing->IsConfigured())
 			_canvas->setToolTip(_processing->GetConfigErrorMessage().c_str());
 		_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
 		return;
