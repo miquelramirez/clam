@@ -71,7 +71,7 @@ int main( int argc, char** argv )
 		}
 
 		std::vector<CLAM::Audio> incomingAudioChannels;
-		incomingAudioChannels.resize( reader.GetAudioFile().GetHeader().GetChannels() );
+		incomingAudioChannels.resize( reader.GetHeader().GetChannels() );
 
 		// Once we made sure we can start playing the file, it's time to access and configure the audio hardware devices
 		// present in our computer. We will do this through the 'AudioManager': a global, unique object that
@@ -93,7 +93,7 @@ int main( int argc, char** argv )
 		// of reasons, not being the only one the fact it is a power of two :)
 
 		
-		const CLAM::TData playbackSampleRate = reader.GetAudioFile().GetHeader().GetSampleRate();
+		const CLAM::TData playbackSampleRate = reader.GetHeader().GetSampleRate();
 		const CLAM::TSize frameSize = 1024; // this is also our read size
 
 		// And now we set the size of each Audio object to our intended 'read size'

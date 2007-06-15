@@ -117,12 +117,12 @@ namespace CLAMTest
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "test-stereo-decoding-copy.wav" );
-			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels() );
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
 			// Not yet supported
-//			cfgWriter.SetFormat( procReader.GetAudioFile().GetHeader().GetFormat() );
-//			cfgWriter.SetEncoding( procReader.GetAudioFile().GetHeader().GetEncoding() );
-//			cfgWriter.SetEndianess( procReader.GetAudioFile().GetHeader().GetEndianess() );
+//			cfgWriter.SetFormat( procReader.GetHeader().GetFormat() );
+//			cfgWriter.SetEncoding( procReader.GetHeader().GetEncoding() );
+//			cfgWriter.SetEndianess( procReader.GetHeader().GetEndianess() );
 
 			CLAM::MultiChannelAudioFileWriter procWriter;
 			CPPUNIT_ASSERT_EQUAL( true,
@@ -199,8 +199,8 @@ namespace CLAMTest
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "ElvisStereo-copy.ogg" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate());
-			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels());
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate());
+			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels());
 			CLAM::MultiChannelAudioFileWriter procWriter;
 			CPPUNIT_ASSERT_EQUAL( true,
 					      procWriter.Configure( cfgWriter ) );

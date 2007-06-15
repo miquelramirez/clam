@@ -1,17 +1,22 @@
-
 #include <iostream>
 #include <CLAM/Audio.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
 int main()
 {
-	std::string impulseResponseFile = "~/acustica-bm/Carnel_3P.wav";
+	std::string impulseResponseFile = "/home/parumi/acustica-bm/Carnel_3P.wav";
 	CLAM::MonoAudioFileReaderConfig config;
 	config.SetSourceFile(impulseResponseFile);
 
 	CLAM::MonoAudioFileReader reader(config);
+	if (!reader.IsConfigured()) 
+	{
+		std::cout << reader.GetConfigErrorMessage() << std::endl;
+		return -1;
+	}
 	reader.Start();
-	std::cout << "samples of file: "<< impulseResponseFile << " "
-		<< reader.GetAudioFile().GetHeader().GetSamples() << std::endl;
+
+	long int nSamples = reader.GetHeader().GetSamples();
+	std::cout << "samples of file: "<< impulseResponseFile << " " << nSamples << std::endl;
 
 	CLAM::Audio impulseResponse;
 	CLAM::Audio input;

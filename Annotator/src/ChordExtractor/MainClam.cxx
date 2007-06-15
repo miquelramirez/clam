@@ -386,11 +386,11 @@ int main(int argc, char* argv[])			// access command line arguments
 			std::cerr << reader.GetConfigErrorMessage() << std::endl;
 			return -1;
 		}
-		CLAM::TData samplingRate = reader.GetAudioFile().GetHeader().GetSampleRate();
-		unsigned long nsamples = reader.GetAudioFile().GetHeader().GetLength()*samplingRate/1000.0;
+		CLAM::TData samplingRate = reader.GetHeader().GetSampleRate();
+		unsigned long nsamples = reader.GetHeader().GetLength()*samplingRate/1000.0;
 
-		CLAM::XMLStorage::Dump(reader.GetAudioFile().GetHeader(), "Header", std::cout);
-		CLAM::XMLStorage::Dump(reader.GetAudioFile().GetTextDescriptors(), "TextDescriptors", std::cout);
+		CLAM::XMLStorage::Dump(reader.GetHeader(), "Header", std::cout);
+		CLAM::XMLStorage::Dump(reader.GetTextDescriptors(), "TextDescriptors", std::cout);
 		
 		int factor=1;							// downsampling factor
 		float minf = 98;						// (MIDI note G1)

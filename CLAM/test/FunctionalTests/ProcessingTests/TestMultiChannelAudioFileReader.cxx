@@ -139,7 +139,7 @@ namespace CLAMTest
 			
 			const CLAM::Array< CLAM::TIndex >& channels = proc.GetSelectedChannels();
 
-			CPPUNIT_ASSERT_EQUAL ( channels.Size(), proc.GetAudioFile().GetHeader().GetChannels() );
+			CPPUNIT_ASSERT_EQUAL ( channels.Size(), proc.GetHeader().GetChannels() );
 
 			bool allChannelsPresent = true;
 			for ( int i = 0; i < channels.Size(); i++ )
@@ -365,9 +365,9 @@ namespace CLAMTest
 			proc.Stop();
 
 			
-			CPPUNIT_ASSERT_EQUAL( proc.GetAudioFile().GetHeader().GetSampleRate(),
+			CPPUNIT_ASSERT_EQUAL( proc.GetHeader().GetSampleRate(),
 					      samples[0].GetSampleRate() );
-			CPPUNIT_ASSERT_EQUAL( proc.GetAudioFile().GetHeader().GetSampleRate(),
+			CPPUNIT_ASSERT_EQUAL( proc.GetHeader().GetSampleRate(),
 					      samples[1].GetSampleRate() );
 		}
 
@@ -399,12 +399,12 @@ namespace CLAMTest
 
 			proc.Stop();
 
-			CLAM::TTime truthLeft = CLAM::TTime( samples[0].GetSize() ) / proc.GetAudioFile().GetHeader().GetSampleRate() * 1000;
+			CLAM::TTime truthLeft = CLAM::TTime( samples[0].GetSize() ) / proc.GetHeader().GetSampleRate() * 1000;
 			CLAM::TTime yieldLeft = samples[0].GetBeginTime() - firstLeftBeginTime; 
 
 			CPPUNIT_ASSERT( fabs( truthLeft - yieldLeft ) < 1e-4 );
 
-			CLAM::TTime truthRight = CLAM::TTime( samples[1].GetSize() ) / proc.GetAudioFile().GetHeader().GetSampleRate() * 1000; 
+			CLAM::TTime truthRight = CLAM::TTime( samples[1].GetSize() ) / proc.GetHeader().GetSampleRate() * 1000; 
 			CLAM::TTime yieldRight = samples[1].GetBeginTime() - firstRightBeginTime;
 			
 			CPPUNIT_ASSERT( fabs( truthRight - yieldRight ) < 1e-4 );
@@ -502,8 +502,8 @@ namespace CLAMTest
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "test-mp3-128-44.wav" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
-			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);
@@ -640,8 +640,8 @@ namespace CLAMTest
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "test-mp3-192-44.wav" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
-			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);
@@ -779,8 +779,8 @@ namespace CLAMTest
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "test-mp3-64-44.wav" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
-			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);
@@ -916,8 +916,8 @@ namespace CLAMTest
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "test-mp3-320-44.wav" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
-			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);
@@ -1052,8 +1052,8 @@ namespace CLAMTest
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "test-mp3-LowVBR-44.wav" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
-			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);
@@ -1188,8 +1188,8 @@ namespace CLAMTest
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "test-mp3-HighVBR-44.wav" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
-			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);
@@ -1325,8 +1325,8 @@ namespace CLAMTest
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "test-mp3-AvgVBR-44.wav" );
-			cfgWriter.SetSampleRate( procReader.GetAudioFile().GetHeader().GetSampleRate() );
-			cfgWriter.SetNChannels( procReader.GetAudioFile().GetHeader().GetChannels() );
+			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
+			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
 
 			std::vector<CLAM::Audio> samples(2);

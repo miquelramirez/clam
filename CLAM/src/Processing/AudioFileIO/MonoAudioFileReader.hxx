@@ -34,15 +34,16 @@ namespace CLAM
 		: public Processing
 	{
 	public: 
-		MonoAudioFileReader();
-		MonoAudioFileReader( const ProcessingConfig& cfg );
+		MonoAudioFileReader( const ProcessingConfig& cfg = MonoAudioFileReaderConfig() );
    
 		virtual const char* GetClassName() const;
 		virtual const ProcessingConfig& GetConfig() const;
 		virtual bool Do( Audio & outputSamples );
 		virtual bool Do();	
 		virtual ~MonoAudioFileReader();
-		const AudioFileSource & GetAudioFile() const { return mAudioFile; }
+		const AudioFileHeader & GetHeader() const { return mAudioFile.GetHeader(); }
+		const AudioTextDescriptors & GetTextDescriptors () const { return mAudioFile.GetTextDescriptors(); }
+
 
 	protected: // methods
 

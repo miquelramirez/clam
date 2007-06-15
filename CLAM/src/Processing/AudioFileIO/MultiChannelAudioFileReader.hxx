@@ -47,7 +47,8 @@ namespace CLAM
 		virtual bool Do( std::vector<Audio>& outputs );
 		bool ModifiesPortsAndControlsAtConfiguration();
 		const Array<TIndex> & GetSelectedChannels() const {return mSelectedChannels;}
-		const AudioFileSource & GetAudioFile() const { return mAudioFile; }
+		const AudioFileHeader & GetHeader() const { return mAudioFile.GetHeader(); }
+		const AudioTextDescriptors & GetTextDescriptors () const { return mAudioFile.GetTextDescriptors(); }
 	
 	protected: // methods
 		

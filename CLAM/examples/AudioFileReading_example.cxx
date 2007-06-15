@@ -85,7 +85,7 @@ int main( int argc, char** argv )
 	// And now we must setup the CLAM::Audio to hold the incoming samples from
 	// each file channel.
 	std::vector<CLAM::Audio> outputs;
-	outputs.resize( reader.GetAudioFile().GetHeader().GetChannels() );
+	outputs.resize( reader.GetHeader().GetChannels() );
 
 	// And now we set the size of each Audio object to our intended 'read size'
 	for ( unsigned i = 0; i < outputs.size(); i++ )
