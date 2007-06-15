@@ -109,7 +109,7 @@ namespace CLAM {
 
 	bool Processing::Configure(const ProcessingConfig &c)
 	{
-		CLAM_ASSERT(mExecState != Running, "Configuring an already running Processing.");
+		CLAM_ASSERT(!IsRunning(), "Configuring an already running Processing.");
 		mConfigErrorMessage = "";
 		if (!mpParent) 
 			TopLevelProcessing::GetInstance().Insert(*this);
@@ -144,28 +144,27 @@ namespace CLAM {
 
 	void Processing::Start(void) 
 	{
-		AddConfigErrorMessage( GetClassName() );
-		AddConfigErrorMessage( "::Start() Object not ready" );
-		CLAM_ASSERT( mExecState==Ready, GetConfigErrorMessage().c_str() );
+		CLAM_ASSERT(!IsRunning(), "Starting an already started processing");
+		CLAM_ASSERT(IsConfigured(), "Starting an unconfigured processing");
 		try {
 			if (ConcreteStart())
 				mExecState = Running;
 		}
 		catch (ErrProcessingObj &e) {
-			mConfigErrorMessage += "Start(): Object failed to start properly.\n";
+			mConfigErrorMessage += "Exception thrown while starting.\n";
 			mConfigErrorMessage += e.what();
 		}
 	}
 	
 	void Processing::Stop(void)
 	{
-		CLAM_ASSERT( mExecState==Running, "Stop(): Object not running." );
+		CLAM_ASSERT(IsRunning(), "Stop(): Object not running." );
 		try {
 			if(ConcreteStop())
 				mExecState = Ready; 
 		}
 		catch (ErrProcessingObj &e) {
-			mConfigErrorMessage += "Stop(): Object failed to stop properly.\n";
+			mConfigErrorMessage += "Exception thrown while stoping.\n";
 			mConfigErrorMessage += e.what();
 		}
 	}
@@ -216,8 +215,8 @@ namespace CLAM {
 	}
 	
 	bool Processing::CanConsumeAndProduce()
-	{	
-		if(GetExecState()!=Running)
+	{
+		if(!IsRunning())
 		{
 			std::cerr << "Cannot execute '" << GetClassName() << "' because not Running!" << std::endl;
 			return false;
@@ -241,9 +240,8 @@ namespace CLAM {
 				return "Ready";
 			case Running:
 				return "Running";
-			default:
-				return "Unknown state";
 		}
+		CLAM_ASSERT(false, "Unknown processing exec state found");
 	}
 		
 
