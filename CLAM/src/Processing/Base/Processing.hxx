@@ -251,9 +251,9 @@ namespace CLAM {
 		 * in running or in disabled state.
 		 */
 	private:
-		ExecState GetExecState() const {return mExecState;} //TODO make private. Use other bool getters instead
-		std::string GetExecStateString() const;
+		ExecState GetExecState() const {return mExecState;} 
 	public:
+		std::string GetExecStateString() const;
 		bool IsConfigured() const { return mExecState != Unconfigured; }
 		bool IsRunning() const { return mExecState == Running; }
 
