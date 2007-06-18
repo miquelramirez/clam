@@ -54,7 +54,7 @@ namespace qtvm_examples_utils
 		if (header.GetChannels() != 2) return 1;
 
 		TSize readSize = TSize(TData(header.GetLength()/1000.0)*header.GetSampleRate());
-		if(reader.GetKind() == EAudioFileKind::ePCM)
+		if(reader.GetCodec() == EAudioFileCodec::ePCM)
 		{
 			readSize*=2;
 		}

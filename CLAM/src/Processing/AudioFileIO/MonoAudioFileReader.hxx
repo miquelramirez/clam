@@ -43,6 +43,7 @@ namespace CLAM
 		virtual ~MonoAudioFileReader();
 		const AudioFileHeader & GetHeader() const { return mAudioFile.GetHeader(); }
 		const AudioTextDescriptors & GetTextDescriptors () const { return mAudioFile.GetTextDescriptors(); }
+		const EAudioFileCodec & GetCodec() const { return mAudioFile.GetCodec(); }
 
 
 	protected: // methods

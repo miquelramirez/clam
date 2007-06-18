@@ -53,7 +53,7 @@ namespace CLAM
 
 		void SetTextDescriptors( const AudioTextDescriptors & descriptors ) { mTextDescriptors=descriptors; }
 
-		EAudioFileKind                GetKind() const;
+		EAudioFileCodec                GetCodec() const;
 
 		bool                          IsValid() const;
 		bool                          IsReadable() const;
@@ -70,7 +70,7 @@ namespace CLAM
 		void ResetHeaderData();
 
 		Filename mLocation;
-		EAudioFileKind        mKind;
+		EAudioFileCodec        mCodec;
 	private:
 		AudioCodecs::Codec*   mActiveCodec;
 		AudioFileHeader       mHeaderData;
