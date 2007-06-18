@@ -180,7 +180,7 @@ void TDFilterGenExample::ConfigureTDFilterGen( const DataArray &a )
 	cfg.SetSpectralRange( mNewSamplingRate );
 	cfg.SetACoefficients( a );
 
-	if( mTDFilterGen.GetExecState() == Running )	mTDFilterGen.Stop();
+	if( mTDFilterGen.IsRunning() ) mTDFilterGen.Stop();
 
 	mTDFilterGen.Configure( cfg );
 }
