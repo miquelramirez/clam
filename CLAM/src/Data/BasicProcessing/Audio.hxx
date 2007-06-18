@@ -74,6 +74,8 @@ namespace CLAM {
 		TTime GetDuration() const {return GetTimeFromIndex(GetSize());}
 
 		/** Resizes the array buffers to a size in samples.
+		 *  Increases or shrinks by the end of the buffer preserving the data.
+		 *  If size increases, new samples are set to 0.
 		 *  @todo Document how data in the buffer is discarded
 		 *  @param s The new size in samples */
 		void SetSize(int s);
