@@ -152,7 +152,7 @@ namespace CLAMTest
 			file.OpenExisting( mPathToTestData + std::string("Elvis.wav") );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("PCM"),
-					      file.GetKind().GetString() );
+					      file.GetCodec().GetString() );
 		}
 
 		void testOpenExisting_FileExists_and_Is_OggVorbis()
@@ -161,7 +161,7 @@ namespace CLAMTest
 			file.OpenExisting( mPathToTestData + std::string( "Elvis.ogg" ) );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("Ogg/Vorbis"),
-					      file.GetKind().GetString() );			
+					      file.GetCodec().GetString() );			
 		}
 
 		void testOpenExisting_FileDoesNotExist_UnrecognizedFormat()
@@ -170,7 +170,7 @@ namespace CLAMTest
 			file.OpenExisting( mPathToTestData + std::string("nikora") );
 
 			CPPUNIT_ASSERT_EQUAL( std::string( "Unknown" ),
-					      file.GetKind().GetString() );
+					      file.GetCodec().GetString() );
 		}
 
 		void testGetHeader_HeaderIsRight_PCM()
@@ -263,7 +263,7 @@ namespace CLAMTest
 			file.CreateNew( "newFile.wav", fileHeader );		
 
 			CPPUNIT_ASSERT_EQUAL( std::string( "PCM" ),
-					      file.GetKind().GetString() );
+					      file.GetCodec().GetString() );
 		}
 
 		void testCreateNew_UserDefinesHeaderForWriting_Ogg_RightCodecIsDeduced()
@@ -284,7 +284,7 @@ namespace CLAMTest
 			file.CreateNew( "newFile.wav", fileHeader );		
 
 			CPPUNIT_ASSERT_EQUAL( std::string( "Ogg/Vorbis" ),
-					      file.GetKind().GetString() );
+					      file.GetCodec().GetString() );
 
 		}
 
@@ -426,7 +426,7 @@ namespace CLAMTest
 			file.OpenExisting( mPathToTestData + std::string( "trumpet.mp3" ) );
 
 			CPPUNIT_ASSERT_EQUAL( std::string("Mpeg Audio"),
-					      file.GetKind().GetString() );			
+					      file.GetCodec().GetString() );			
 
 		}
 
@@ -436,7 +436,7 @@ namespace CLAMTest
 			CLAM::AudioFileSource file;
 			file.OpenExisting( mPathToTestData + std::string( "ElvisStereo.wav" ) );
 
-			CPPUNIT_ASSERT( std::string("Mpeg Audio") != file.GetKind().GetString() );						
+			CPPUNIT_ASSERT( std::string("Mpeg Audio") != file.GetCodec().GetString() );						
 		}
 
 		void testGetHeader_HeaderIsRight_Mpeg()
