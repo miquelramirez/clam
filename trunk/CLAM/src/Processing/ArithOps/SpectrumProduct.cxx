@@ -22,48 +22,26 @@
 #include "Complex.hxx"
 #include "SpectrumProduct.hxx"
 #include "SpectrumConfig.hxx"
+#include "Factory.hxx"
 
-namespace CLAM {
+namespace CLAM 
+{
 
-	SpectrumProduct::SpectrumProduct()
-		: mSize(0),
-		  mProtoState(SOther),
-		  Input1("Input 1",this),
-		  Input2("Input 2",this),
-		  Output("Output",this)
+	namespace detail
 	{
-		Configure(SpecProductConfig());
+		static Factory<Processing>::Registrator<SpectrumProduct> regSpectrumProduct("SpectrumProduct");
 	}
 
-	SpectrumProduct::SpectrumProduct(const SpecProductConfig &c)
+	SpectrumProduct::SpectrumProduct(const Config &c)
 		: mSize(0),
 		  mProtoState(SOther),
-		  Input1("Input 1",this),
-		  Input2("Input 2",this),
-		  Output("Output",this)
+		  mInput1("Input 1",this),
+		  mInput2("Input 2",this),
+		  mOutput("Output",this)
 	{
 		Configure(c);
 	}
 
-	std::string SpectrumProduct::NewUniqueName()
-	{
-		static int ObjectCount=0;
-
-		std::stringstream name;
-		name << "SpectrumProduct_" << ObjectCount++;
-
-		return name.str();
-	}
-
-	bool SpectrumProduct::ConcreteConfigure(const ProcessingConfig&c)
-	{
-		// Nothing specific to configure here...
-		CopyAsConcreteConfig(mConfig, c);
-
-		return true;
-	}
-
-	// Unsupervised Do() function.
 	bool SpectrumProduct::Do(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
 		CLAM_DEBUG_ASSERT(IsRunning(),
@@ -114,10 +92,10 @@ namespace CLAM {
 
 	bool SpectrumProduct::Do(void)
 	{
-		bool res = Do(Input1.GetData(),Input2.GetData(),Output.GetData());
-		Input1.Consume();
-		Input2.Consume();
-		Output.Produce();
+		bool res = Do(mInput1.GetData(),mInput2.GetData(),mOutput.GetData());
+		mInput1.Consume();
+		mInput2.Consume();
+		mOutput.Produce();
 		return res;
 	}
 

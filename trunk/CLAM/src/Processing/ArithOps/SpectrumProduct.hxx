@@ -30,13 +30,6 @@
 
 namespace CLAM {
 
-
-	class SpecProductConfig: public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (SpecProductConfig, 0,ProcessingConfig);
-	};
-
 /** This class performs the product of two Spectrum processing data
  * objects. Its primary use will be to allow frecuency domain
  * filtering, by taking the frecuency response as one of its inputs.
@@ -48,7 +41,7 @@ namespace CLAM {
  * the data is specified using SetPrototypes(...), in certain
  * situations:
  * <ul>
- * <li> When all the inputs and the outputs have a common attirbute
+ * <li> When all the inputs and the outputs have a common attribute
  *      (not the BPF), and the same scale.
  * <li> When one of the inputs has just a BPF attribute, and both the
  *      other input and the output have a common (non-BPF) attribute
@@ -73,9 +66,8 @@ namespace CLAM {
  * range and point possition, the way to go is obvious, but in other
  * situations it is not so simple. Whe should probably merge both
  * BPFs, into a new BPF.  */
-	class SpectrumProduct: public Processing {
-		SpecProductConfig mConfig;
-
+	class SpectrumProduct: public Processing 
+	{
 		/** Size of the input/output vectors */
 		int mSize;
 
@@ -111,9 +103,6 @@ namespace CLAM {
 		/** Scale combination state */
 		ScaleState mScaleState;
 
-		/** OBSOLETE */
-		std::string NewUniqueName();
-
 		const char *GetClassName() const {return "SpectrumProduct";}
 
 
@@ -124,17 +113,14 @@ namespace CLAM {
 
 	public:
 
-		InPort<Spectrum> Input1;
-		InPort<Spectrum> Input2;
-		OutPort<Spectrum> Output;
+		InPort<Spectrum> mInput1;
+		InPort<Spectrum> mInput2;
+		OutPort<Spectrum> mOutput;
 
-		SpectrumProduct();
-
-		SpectrumProduct(const SpecProductConfig &c);
+		SpectrumProduct(const Config &c=Config());
 
 		~SpectrumProduct() {};
 
-		const ProcessingConfig &GetConfig() const { return mConfig;}
 
 		bool Do(void);
 

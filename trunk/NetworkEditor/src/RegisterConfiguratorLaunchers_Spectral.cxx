@@ -25,6 +25,8 @@
 #include <CLAM/SpectralAnalysisConfig.hxx>
 #include <CLAM/SpectralSynthesisConfig.hxx>
 #include <CLAM/OverlapAddConfig.hxx>
+#include <CLAM/SpectrumProduct.hxx>
 STANDARD_PROCESSING_CONFIG_REGISTER(SpectralAnalysisConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(SpectralSynthesisConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(OverlapAddConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(SpectrumProductConfig);

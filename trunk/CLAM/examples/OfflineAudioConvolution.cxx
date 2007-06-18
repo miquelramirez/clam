@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include <CLAM/Audio.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
 #include <CLAM/MonoAudioFileWriter.hxx>
@@ -58,6 +59,12 @@ int main()
 			reverberedArray[i+j] += inputArray[i]*impulseArray[j];
 	}
 	std::cout << std::endl << "Done." << std::endl;
+	// limiter:
+	for (long i=0; i<reverberedSize; i++)
+	{
+		if (reverberedArray[i]>1.0) reverberedArray[i]=1.0;
+		if (reverberedArray[i]<-1.0) reverberedArray[i]=-1.0;
+	}
 /*
 	for (long i=0; i<impulseSamples; i++)
 		std::cout << impulseResponse.GetBuffer()[i] << " ";
