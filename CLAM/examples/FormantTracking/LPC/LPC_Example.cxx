@@ -32,11 +32,10 @@ using namespace CLAM;
 class LPCExampleConfig : public ProcessingConfig {
 public:
 
-		DYNAMIC_TYPE_USING_INTERFACE (LPCExampleConfig, 3, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (LPCExampleConfig, 2, ProcessingConfig);
 
-		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, std::string, Filename);
-		DYN_ATTRIBUTE (2, public, int, Order);
+		DYN_ATTRIBUTE (0, public, std::string, Filename);
+		DYN_ATTRIBUTE (1, public, int, Order);
 private:
 	void DefaultInit();
 };
@@ -183,8 +182,7 @@ int main( int argc, char* argv[] )
 
 		// Processing composite configuration
 		LPCExampleConfig myAppConfig;
-		myAppConfig.SetName( "My_LPC" );
-		myAppConfig.SetFilename( "C:\\aeiou_low.wav" );
+		myAppConfig.SetFilename( "/home/vokimon/CajitasDeArena/CLAM-TestData/SMSTests/aeiou_lowpass.wav" );
 		myAppConfig.SetOrder( LPC_order );
 
 		// Processing composite creation

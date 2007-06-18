@@ -209,7 +209,7 @@ namespace CLAM
 		cfg.SetSamplingRate( mSamplingRate );
 		cfg.SetACoefficients( a );
 
-		if( mTDFilterGen.GetExecState() == Running )	mTDFilterGen.Stop();
+		if( mTDFilterGen.IsRunning() ) mTDFilterGen.Stop();
 
 		mTDFilterGen.Configure( cfg ) ;	
 	}
