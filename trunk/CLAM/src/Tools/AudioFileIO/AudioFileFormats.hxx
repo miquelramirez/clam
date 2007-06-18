@@ -36,13 +36,13 @@ namespace CLAM
 {
 
 	/** @ingroup AudioFileIO */
-	class EAudioFileKind : public Enum
+	class EAudioFileCodec : public Enum
 	{
 	public:
-		EAudioFileKind() : Enum(EnumValues(), DefaultValue()) {}
-		EAudioFileKind( tValue val ) : Enum(EnumValues(), val) {}
-		EAudioFileKind( std::string s ) : Enum(EnumValues(), s) {}
-		virtual Component* Species() const { return new EAudioFileKind; }
+		EAudioFileCodec() : Enum(EnumValues(), DefaultValue()) {}
+		EAudioFileCodec( tValue val ) : Enum(EnumValues(), val) {}
+		EAudioFileCodec( std::string s ) : Enum(EnumValues(), s) {}
+		virtual Component* Species() const { return new EAudioFileCodec; }
 
 		typedef enum {
 			ePCM,  /* String value: "PCM". Some variant of good ol' Pulse Code Modulation */
