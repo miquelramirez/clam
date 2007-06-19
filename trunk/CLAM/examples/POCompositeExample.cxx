@@ -50,9 +50,9 @@ class BigProcessing : public ProcessingComposite {
 	Spectrum SpectralOutput;
 
 	// The internal Processing Objects
-	FFT InputFFT;
-	SpectrumProduct Filter;
-	IFFT OutputIFFT;
+	FFT mInputFFT;
+	SpectrumProduct mFilter;
+	IFFT mOutputIFFT;
 
 	// And the interfaces with the outside world.
 
@@ -91,9 +91,9 @@ public:
 
 void BigProcessing::AdoptChildren()
 {
-	InputFFT.SetParent(this);
-	Filter.SetParent(this);
-	OutputIFFT.SetParent(this);
+	mInputFFT.SetParent(this);
+	mFilter.SetParent(this);
+	mOutputIFFT.SetParent(this);
 }
 
 BigProcessing::BigProcessing() :
@@ -114,27 +114,17 @@ BigProcessing::BigProcessing(BigConfiguration& cfg) :
 
 bool BigProcessing::ConfigureChildren(int size)
 {
-	// Unused variable: static const char *fft_name = "Input FFT";
-	// Unused variable: static const char *ifft_name = "Output IFFT";
-	// Unused variable: static const char *filter_name = "Filter product";
-
 	FFTConfig cfg_fft;
-	SpecProductConfig cfg_prod;
-	IFFTConfig cfg_ifft;
-
 	cfg_fft.SetAudioSize(size);
+	if (!mInputFFT.Configure(cfg_fft))
+		return false;
 
-
+	IFFTConfig cfg_ifft;
 	cfg_ifft.SetAudioSize(size);
-
-	if (!InputFFT.Configure(cfg_fft))
+	if (!mOutputIFFT.Configure(cfg_ifft))
 		return false;
 
-	if (!Filter.Configure(cfg_prod))
-		return false;
-
-	if (!OutputIFFT.Configure(cfg_ifft))
-		return false;
+	// Note: mFilter has not config parameters.
 
 	return true;
 
@@ -165,7 +155,7 @@ bool BigProcessing::ConcreteConfigure(const ProcessingConfig& c)
 	return true;
 }
 
-bool BigProcessing::Do(void)
+bool BigProcessing::Do()
 {
 	return false;
 }
@@ -173,11 +163,11 @@ bool BigProcessing::Do(void)
 
 bool BigProcessing::Do(Audio& in, Audio &out)
 {
-	InputFFT.Do(in,SpectralInput);
+	mInputFFT.Do(in,SpectralInput);
 
-	Filter.Do(SpectralInput,ImpulseResponse,SpectralOutput);
+	mFilter.Do(SpectralInput,ImpulseResponse,SpectralOutput);
 
-	OutputIFFT.Do(SpectralOutput,out);
+	mOutputIFFT.Do(SpectralOutput,out);
 
 	return true;
 }
