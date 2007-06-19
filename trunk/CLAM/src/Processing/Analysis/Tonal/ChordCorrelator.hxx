@@ -29,6 +29,15 @@
 namespace Simac
 {
 
+/**
+ * Correlates PCP's with different ideal chord PCP's.
+ * ChordCorrelator correlates an input Pitch Class Profile (PCP)
+ * with a set stereotypic PCP for ideal chords having the energy 
+ * concentrated on the pitches that form the chord.
+ * The output is an array of the correlation for each chord model.
+ * chordRepresentation(i), root(i) and mode(i) can be used to know
+ * the chord which corresponds to the ith bin on the output.
+ */
 class ChordCorrelator
 {
 public:
