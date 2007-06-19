@@ -105,12 +105,6 @@ namespace CLAM {
 
 		const char *GetClassName() const {return "SpectrumProduct";}
 
-
-		/** Configuration change method
-		 * @pre argument should be an SpectrumProductConfig
-		 */
-		bool ConcreteConfigure(const ProcessingConfig&);
-
 	public:
 
 		InPort<Spectrum> mInput1;
@@ -118,11 +112,10 @@ namespace CLAM {
 		OutPort<Spectrum> mOutput;
 
 		SpectrumProduct(const Config &c=Config());
+		virtual ~SpectrumProduct();
 
-		~SpectrumProduct() {};
 
-
-		bool Do(void);
+		bool Do();
 
 		bool Do(Spectrum& in1, Spectrum& in2, Spectrum& out);
 
