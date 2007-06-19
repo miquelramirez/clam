@@ -28,7 +28,16 @@
 namespace Simac
 {
 
-
+/**
+ * This processing estimates the most probable tunning of a set of chromatic peaks.
+ * It does it by mapping the chromatic peaks as fasors
+ * in a semitone wheel and vectorially adding them.
+ * The inertia sets how much of the previous computed
+ * value it kept for the next execution.
+ * The instantTunning output doesn't take into account the inertia.
+ * @todo Explain how binsPerSemitone affects the input and the output.
+ * @todo Explain which are the reference values the tunning is expressed relative to.
+ */
 class InstantTunningEstimator
 {
 public:
