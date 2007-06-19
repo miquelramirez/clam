@@ -20,17 +20,15 @@
  */
 
 #include "RandomPitches.hxx"
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<RandomPitches> regtSquareWave( "RandomPitches" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, RandomPitches> regRandomPitches("RandomPitches");
+}
 	
 
 // RandomPitchesConfig method definition

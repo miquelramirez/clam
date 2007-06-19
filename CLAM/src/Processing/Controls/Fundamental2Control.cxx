@@ -1,14 +1,12 @@
 #include "Fundamental2Control.hxx"
-#include "Factory.hxx"
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<CLAM::Fundamental2Control> regtFundamental2Control( "Fundamental2Control" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, Fundamental2Control> regFundamental2Control("Fundamental2Control");
+}
 
 bool Fundamental2Control::Do( const Fundamental& inFund ) 
 {	

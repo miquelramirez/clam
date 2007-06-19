@@ -22,16 +22,17 @@
 #include "MonoAudioFileWriter.hxx"
 #include "AudioCodecs_Stream.hxx"
 #include "FileSystem.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<MonoAudioFileWriter> regtMonoAudioFileWriter( "MonoAudioFileWriter" );
-	}
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, MonoAudioFileWriter> regMonoAudioFileWriter("MonoAudioFileWriter");
+
+}
 	
 	
 	MonoAudioFileWriter::MonoAudioFileWriter()

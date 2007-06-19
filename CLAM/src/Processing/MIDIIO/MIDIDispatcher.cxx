@@ -19,19 +19,17 @@
  *
  */
 
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 #include "MIDIDispatcher.hxx"
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM 
 {
 
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<CLAM::MIDIDispatcher> regtMIDIDispatcher( "MIDIDispatcher" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, MIDIDispatcher> regMIDIDispatcher("MIDIDispatcher");
+}
 
 void MIDIDispatcherConfig::DefaultInit()
 {

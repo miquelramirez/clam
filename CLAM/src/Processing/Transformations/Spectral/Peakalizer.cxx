@@ -20,11 +20,15 @@
  */
 
 #include "Peakalizer.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, Peakalizer> regPeakalizer("Peakalizer");
+}
 
 bool Peakalizer::Do(const Spectrum& in, Spectrum& out)
 {
@@ -65,9 +69,7 @@ bool Peakalizer::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
 
-static ProcessingFactory::Registrator<Peakalizer> regtPeakalizer( "Peakalizer" );
 
 }
 

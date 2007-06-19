@@ -20,27 +20,28 @@
  */
 
 #include "ControlSource.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<ControlSource> regtControlSource( "ControlSource" );
-	}
-	
-	bool ControlSource::Do( const float value )
-	{	
-		mOutput.SendControl( (TControlData)value);
-		return true;
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, ControlSource> regControlSource("ControlSource");
+}
 
-	bool ControlSource::ConcreteConfigure(const ProcessingConfig &c)
-	{
-		CopyAsConcreteConfig(mConf,c);
-		return true;
-	}
+
+bool ControlSource::Do( const float value )
+{	
+	mOutput.SendControl( (TControlData)value);
+	return true;
+}
+
+bool ControlSource::ConcreteConfigure(const ProcessingConfig &c)
+{
+	CopyAsConcreteConfig(mConf,c);
+	return true;
+}
+
 }
 

@@ -22,21 +22,20 @@
 #include "OneOverF.hxx"
 #include <CLAM/OSDefines.hxx>
 #include <CLAM/CLAM_Math.hxx>
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include <ctime>
 #include <cstdlib>
 
 #define DEFAULTDELAYFACTOR 10
 
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<OneOverF> regtOneOverF( "OneOverF" );
-	}
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, OneOverF> regOneOverF("OneOverF");
+}
 	
 
 void OneOverFConfig::DefaultInit(void)

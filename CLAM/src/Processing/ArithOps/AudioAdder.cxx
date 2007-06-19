@@ -20,19 +20,18 @@
  */
 
 #include "AudioAdder.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	template class BinaryAudioOp< Add<TData> >;
+
+template class BinaryAudioOp< Add<TData> >;
 	
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<AudioAdder> regtAudioAdder( "AudioAdder" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, AudioAdder> regAudioAdder("AudioAdder");
+}
 
 	
 }

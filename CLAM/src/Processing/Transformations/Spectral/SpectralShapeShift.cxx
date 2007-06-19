@@ -20,10 +20,14 @@
  */
 
 #include "SpectralShapeShift.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralShapeShift> regSpectralShapeShift("SpectralShapeShift");
+}
 	
 bool SpectralShapeShift::Do(const Spectrum& 
 			inSpec,Spectrum& outSpec)
@@ -63,8 +67,6 @@ bool SpectralShapeShift::Do(const Spectrum&
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<SpectralShapeShift> regtSpectralShapeShift( "SpectralShapeShift" );
 
 }
 

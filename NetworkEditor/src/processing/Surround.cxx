@@ -1,8 +1,7 @@
 #include "Surround.hxx"
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 
 namespace detail
 {
-	static CLAM::Factory<CLAM::Processing>::Registrator<Surround>
-		myProcessingRegistrator("Surround");
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, Surround> regSurround("Surround");
 }

@@ -19,10 +19,13 @@
  *
  */
 
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "LPModelView.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<LPModelViewMonitor> registrator("LPModelView");
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, LPModelViewMonitor> regLPModelViewMonitor("LPModelView");
+}
 
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>

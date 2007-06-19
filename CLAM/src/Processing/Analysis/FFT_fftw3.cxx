@@ -27,15 +27,16 @@
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
 #include "CLAM_Math.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-namespace CLAM {
+namespace CLAM 
+{
 
- 
-	namespace detail
-	{
-		static Factory<Processing>::Registrator<FFT_fftw3> regtFFT_fftw3( "FFT_fftw3" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, FFT_fftw3> regFFT_fftw3("FFT_fftw3");
+}
+
 
 bool FFT_fftw3::ConcreteConfigure(const ProcessingConfig& c)
 {

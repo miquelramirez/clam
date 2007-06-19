@@ -1,7 +1,10 @@
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "Vumeter.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<VumeterMonitor> registrator("Vumeter");
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VumeterMonitor> regVumeterMonitor("Vumeter");
+}
 
 void Vumeter::paintEvent(QPaintEvent * event)
 {

@@ -1,8 +1,13 @@
 #include "DataSilentSource.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SilentSource> regSilentSource("SilentSource");
+}
 
 SilentSource::SilentSource():
 mOutput("Output", this)
@@ -17,12 +22,6 @@ bool SilentSource::Do()
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-namespace detail
-{
-	static ProcessingFactory::Registrator<SilentSource> regtSilentSource( "SilentSource" );
-}
 
 };
 

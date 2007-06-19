@@ -20,10 +20,16 @@
  */
 
 #include "SpectralDelay.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralDelay> regSpectralDelay("SpectralDelay");
+}
+
 
 
 bool SpectralDelay::Do(const Spectrum& in, Spectrum& out)
@@ -90,9 +96,6 @@ bool SpectralDelay::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<SpectralDelay> regtSpectralDelay( "SpectralDelay" );
 
 }
 

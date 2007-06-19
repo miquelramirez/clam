@@ -1,16 +1,15 @@
 #include "ControlPrinter.hxx"
-#include "Factory.hxx"
 #include <iostream>
 #include <sstream>
+#include "ProcessingFactory.hxx"
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<CLAM::ControlPrinter> regtControlPrinter( "ControlPrinter" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, ControlPrinter> regControlPrinter("ControlPrinter");
+}
 
 	void ControlPrinterConfig::DefaultInit()
 	{

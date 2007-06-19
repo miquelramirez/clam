@@ -20,17 +20,16 @@
  */
 
 #include "Controller.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+namespace CLAM 
+{
 
-namespace CLAM {
-
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<Controller> regtController( "Controller" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, Controller> regController("Controller");
+}
 	
 Controller::Controller()
 {

@@ -20,11 +20,17 @@
  */
 
 #include "VowelResonator.hxx"
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include <cmath>
 
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, VowelResonator> regVowelResonator("VowelResonator");
+}
+
 
 bool VowelResonator::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 {
@@ -55,8 +61,6 @@ bool VowelResonator::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	return true;
 
 }
-
-static Factory<Processing>::Registrator<VowelResonator> regtFreqShift( "VowelResonator" );
 
 }
 

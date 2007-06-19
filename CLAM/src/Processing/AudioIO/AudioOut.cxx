@@ -21,18 +21,17 @@
 
 #include "AudioOut.hxx"
 #include "AudioManager.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
 
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<AudioOut> regtAudioOut( "AudioOut" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, AudioOut> regAudioOut("AudioOut");
+}
 	
 AudioOut::AudioOut() 
 	: mInput( "Audio Input", this )

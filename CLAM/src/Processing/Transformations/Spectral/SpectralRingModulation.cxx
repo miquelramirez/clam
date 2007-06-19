@@ -20,11 +20,15 @@
  */
 
 #include "SpectralRingModulation.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralRingModulation> regSpectralRingModulation("SpectralRingModulation");
+}
 
 bool SpectralRingModulation::Do(const Spectrum& in, Spectrum& out)
 {
@@ -52,9 +56,7 @@ bool SpectralRingModulation::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
 
-static ProcessingFactory::Registrator<SpectralRingModulation> regtSpectralRingModulation( "SpectralRingMod" );
 
 }
 

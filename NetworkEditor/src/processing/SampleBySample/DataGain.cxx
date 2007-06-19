@@ -20,13 +20,16 @@
  */
 
 #include "DataGain.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, DataGain> regDataGain("DataGain");
+}
 
 bool DataGain::Do()
 {
@@ -36,6 +39,6 @@ bool DataGain::Do()
 	return true;
 }
 
-	static CLAM::Factory<CLAM::Processing>::Registrator<DataGain> DataGainRegistrator("DataGain");
+
 }
 

@@ -24,16 +24,14 @@
 #include "Fundamental.hxx"
 #include "SpectrumConfig.hxx"
 #include "SMSAnalysisCore.hxx"
-#include "Factory.hxx"
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
-	namespace detail 
-	{
-		static ProcessingFactory::Registrator<SMSAnalysisCore> regtSMSAnalysisCore( "SMSAnalysisCore" );
-	}
+namespace detail 
+{
+	static FactoryRegistrator<ProcessingFactory, SMSAnalysisCore> regSMSAnalysisCore("SMSAnalysisCore");
+}
 
 	
 SMSAnalysisCore::SMSAnalysisCore()

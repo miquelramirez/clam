@@ -1,7 +1,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
-#include "Factory.hxx" // CLAM
-#include "Processing.hxx" // CLAM
+#include "ProcessingFactory.hxx"
+#include "Processing.hxx"
 
 	
 
@@ -30,12 +30,8 @@ private:
 	void testCreate_LibraryRegisteredProduct()
 	{
 
-		typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-		
-		ProcessingFactory& factory = ProcessingFactory::GetInstance();
-
+		CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
 		CLAM::Processing* product = factory.Create("SimpleOscillator");
-	
 		CPPUNIT_ASSERT_MESSAGE("Could not find SimpleOscillator on the library ProcessingFactory!",  product != NULL);
 		
 	}

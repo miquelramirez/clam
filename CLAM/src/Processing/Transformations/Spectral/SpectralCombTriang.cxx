@@ -20,10 +20,15 @@
  */
 
 #include "SpectralCombTriang.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralCombTriang> regSpectralCombTriang("SpectralCombTriang");
+}
 
 
 bool SpectralCombTriang::Do(const Spectrum& in, Spectrum& out)
@@ -88,9 +93,6 @@ TData SpectralCombTriang::GetGain(int fundamental, int binPos, int bandNum)
 	return a*x + b;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<SpectralCombTriang> regtSpectralCombTriang( "SpectralCombTriang" );
 
 }
 

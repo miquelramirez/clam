@@ -20,10 +20,14 @@
  */
 
 #include "RandomPhase.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, RandomPhase> regRandomPhase("RandomPhase");
+}
 
 
 bool RandomPhase::Do(const Spectrum& in, Spectrum& out)
@@ -46,9 +50,7 @@ bool RandomPhase::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
 
-static ProcessingFactory::Registrator<RandomPhase> regtRandomPhase( "RandomPhase" );
 
 }
 

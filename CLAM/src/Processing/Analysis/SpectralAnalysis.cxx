@@ -23,10 +23,15 @@
 #include "Frame.hxx"
 #include "SpectrumConfig.hxx"
 #include "SpectralAnalysis.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail 
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralAnalysis> regSpectralAnalysis("SpectralAnalysis");
+}
 
 SpectralAnalysis::SpectralAnalysis()
 	: mInput("Input",this ),
@@ -156,10 +161,6 @@ bool SpectralAnalysis::Do(Segment& in)
 	return Do(in.GetFrame(in.mCurrentFrameIndex++));
 }
 
-namespace detail 
-{
-	static CLAM::Factory<CLAM::Processing>::Registrator<SpectralAnalysis> regtSpectralAnalysis( "SpectralAnalysis" );
-}
 
 } // namespace CLAM
 

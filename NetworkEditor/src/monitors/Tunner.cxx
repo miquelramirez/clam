@@ -1,7 +1,9 @@
 
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "Tunner.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<TunnerMonitor> registrator("Tunner");
-
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, TunnerMonitor> regTunnerMonitor("Tunner");
+}
 

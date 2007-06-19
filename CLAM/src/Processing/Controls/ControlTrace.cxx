@@ -21,16 +21,21 @@
  */
 
 #include "ControlTrace.hxx"
-#include "Factory.hxx"
 #include "XMLAdapter.hxx"
 #include "XMLStorage.hxx"
 #include "XMLIterableAdapter.hxx"
 #include "XMLAdapter.hxx"
 #include "XmlStorageErr.hxx"
 #include <sstream>
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, ControlTraceReader> regControlTraceReader("ControlTraceReader");
+	static FactoryRegistrator<ProcessingFactory, CLAM::ControlTraceWriter> regControlTraceWriter("ControlTraceWriter");
+}
 
 ControlTraceEvent::ControlTraceEvent()
 	: mRepeats(0)
@@ -332,14 +337,6 @@ void ControlTraceReader::RemoveOldControls()
 
 /* ================================================================== */
 
-namespace detail
-{
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<CLAM::ControlTraceReader>
-		regtControlTraceReader("ControlTraceReader");
-static ProcessingFactory::Registrator<CLAM::ControlTraceWriter>
-		regtControlTraceWriter("ControlTraceWriter");
-}
 
 
 } // CLAM namespace

@@ -22,17 +22,16 @@
 #include "AutoPanner.hxx"
 #include "OSDefines.hxx"
 #include "CLAM_Math.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
 
 namespace detail
 {
-	static ProcessingFactory::Registrator<AutoPanner> regtAutoPanner( "AutoPanner" );
+	static FactoryRegistrator<ProcessingFactory, AutoPanner> regAutoPanner("AutoPanner");
 }
 
 void AutoPannerConfig::DefaultInit(void)

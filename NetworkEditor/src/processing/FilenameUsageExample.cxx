@@ -2,21 +2,20 @@
 #include "FilenameUsageExample.hxx"
 #include <CLAM/OSDefines.hxx>
 #include <CLAM/CLAM_Math.hxx>
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include <ctime>
 #include <cstdlib>
 
 #define DEFAULTDELAYFACTOR 10
 
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<FilenameUsageExample> regtFilenameUsageExample( "FilenameUsageExample" );
-	}
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, FilenameUsageExample> regFilenameUsageExample("FilenameUsageExample");
+}
 	
 	
 void FilenameUsageExampleConfig::DefaultInit(void)

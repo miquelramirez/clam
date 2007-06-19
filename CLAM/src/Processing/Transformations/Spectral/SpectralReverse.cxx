@@ -20,11 +20,15 @@
  */
 
 #include "SpectralReverse.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralReverse> regSpectralReverse("SpectralReverse");
+}
 
 bool SpectralReverse::Do(const Spectrum& in, Spectrum& out)
 {
@@ -61,9 +65,6 @@ bool SpectralReverse::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<SpectralReverse> regtSpectralReverse( "SpectralReverse" );
 
 }
 

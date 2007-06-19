@@ -1,6 +1,6 @@
 #include "InPort.hxx"
 #include "OutPort.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 #include "TokenDelay.hxx"
 
 #ifndef SampleDefines_hxx

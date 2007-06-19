@@ -20,11 +20,14 @@
  */
 
 #include "SpectralAverage.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
-
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralAverage> regSpectralAverage("SpectralAverage");
+}
 
 bool SpectralAverage::Do(const Spectrum& in, Spectrum& out)
 {
@@ -57,9 +60,6 @@ bool SpectralAverage::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<SpectralAverage> regtSpectralAverage( "SpectralAverage" );
 
 }
 

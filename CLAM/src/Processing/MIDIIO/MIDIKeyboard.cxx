@@ -1,19 +1,17 @@
 #include "AudioManager.hxx"
 #include "MIDIManager.hxx"
 
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 #include "MIDIKeyboard.hxx"
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM 
 {
 
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<CLAM::MIDIKeyboard> regtMIDIKeyboard( "MIDIKeyboard" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, MIDIKeyboard> regMIDIKeyboard("MIDIKeyboard");
+}
 
 void MIDIKeyboardConfig::DefaultInit(void)
 {

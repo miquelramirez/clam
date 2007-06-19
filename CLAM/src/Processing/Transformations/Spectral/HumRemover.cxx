@@ -20,11 +20,15 @@
  */
 
 #include "HumRemover.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, HumRemover> regHumRemover("HumRemover");
+}
 
 bool HumRemover::Do(const Spectrum& in, Spectrum& out)
 {
@@ -59,9 +63,7 @@ bool HumRemover::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
 
-static ProcessingFactory::Registrator<HumRemover> regtHumRemover( "HumRemover" );
 
 }
 

@@ -24,15 +24,15 @@
 #include "BPF.hxx"
 #include "Point.hxx"
 #include "SpecTypeFlags.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-namespace CLAM {
+namespace CLAM 
+{
 
-	namespace detail 
-	{
-		static CLAM::Factory<CLAM::Processing>::Registrator<SpectrumSubstracter2>
-			regtSpectrumSubstracter2( "SpectrumSubstracter2" );
-	}
+namespace detail 
+{
+	static FactoryRegistrator<ProcessingFactory, SpectrumSubstracter2> regSpectrumSubstracter2("SpectrumSubstracter2");
+}
 
 	SpectrumSubstracter2::SpectrumSubstracter2()
 		: mSize(0),

@@ -20,11 +20,15 @@
  */
 
 #include "NoSpectralTransformation.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, NoSpectralTransformation> regNoSpectralTransformation("NoSpectralTransformation");
+}
 
 bool NoSpectralTransformation::Do(const Spectrum& in, Spectrum& out)
 {
@@ -47,9 +51,6 @@ bool NoSpectralTransformation::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<NoSpectralTransformation> regtNoSpectralTransformation( "NoSpectralTransformation" );
 
 }
 

@@ -20,13 +20,17 @@
  */
 
 #include "SMSSinusoidalGain.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+
+namespace detail
+{	
+	static FactoryRegistrator<ProcessingFactory, SMSSinusoidalGain> regSMSSinusoidalGain("SMSSinusoidalGain");
+}
+
 
 bool SMSSinusoidalGain::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 {
@@ -47,11 +51,6 @@ bool SMSSinusoidalGain::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	}
 	return true;
 }
-
-	namespace detail
-	{	
-		static ProcessingFactory::Registrator<SMSSinusoidalGain> regtSMSSinusoidalGain( "SMSSinusoidalGain" );
-	}
 
 }
 

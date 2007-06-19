@@ -19,10 +19,13 @@
  *
  */
 
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "MelCepstrumView.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<MelCepstrumViewMonitor> registrator("MelCepstrumView");
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MelCepstrumViewMonitor> regMelCepstrumViewMonitor("MelCepstrumView");
+}
 
 CLAM::VM::MelCepstrumView::~MelCepstrumView()
 {

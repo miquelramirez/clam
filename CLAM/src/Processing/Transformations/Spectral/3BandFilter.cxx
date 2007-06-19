@@ -20,10 +20,14 @@
  */
 
 #include "3BandFilter.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, ThreeBandFilter> regThreeBandFilter("ThreeBandFilter");
+}
 
 
 bool ThreeBandFilter::Do(const Spectrum& in, Spectrum& out)
@@ -63,9 +67,6 @@ bool ThreeBandFilter::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<ThreeBandFilter> regtThreeBandFilter( "ThreeBandFilter" );
 
 }
 

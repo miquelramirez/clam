@@ -24,14 +24,15 @@
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-namespace CLAM {
+namespace CLAM 
+{
 
-	namespace detail
-	{
-		static Factory<Processing>::Registrator<FFT> regtFFT_fftw3( "FFT" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, FFT> regFFT("FFT");
+}
 
 	SpecTypeFlags FFT_base::mComplexflags;
 

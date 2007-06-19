@@ -1,5 +1,8 @@
 #include "Oscilloscope.hxx"
-#include <CLAM/Factory.hxx>
-static CLAM::Factory<CLAM::Processing>::Registrator<OscilloscopeMonitor> registrator("Oscilloscope");
+#include <CLAM/ProcessingFactory.hxx>
 
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, OscilloscopeMonitor> regOscilloscopeMonitor("Oscilloscope");
+}
 

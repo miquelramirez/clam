@@ -19,14 +19,16 @@
  *
  */
 
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 #include "IFFT.hxx"
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static Factory<Processing>::Registrator<IFFT> regtIFFT("IFFT");
-	}
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, IFFT> regIFFT("IFFT");
+}
+
 }
 

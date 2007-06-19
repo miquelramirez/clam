@@ -20,20 +20,16 @@
  */
 
 #include "Oscillator.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	
 
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<Oscillator> regtOscillator( "Oscillator" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, Oscillator> regOscillator("Oscillator");
+}
 
 void OscillatorConfig::DefaultInit(void)
 {

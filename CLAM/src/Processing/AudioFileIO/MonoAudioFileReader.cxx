@@ -21,16 +21,16 @@
 
 #include "MonoAudioFileReader.hxx"
 #include "AudioCodecs_Stream.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<MonoAudioFileReader> regtMonoAudioFileReader( "MonoAudioFileReader" );
-	}
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, MonoAudioFileReader> regMonoAudioFileReader("MonoAudioFileReader");
+}
 	
 	
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )

@@ -1,6 +1,8 @@
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "SpectrumView.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<SpectrumViewMonitor> registrator("SpectrumView");
-
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, SpectrumViewMonitor> regSpectrumViewMonitor("SpectrumView");
+}
 

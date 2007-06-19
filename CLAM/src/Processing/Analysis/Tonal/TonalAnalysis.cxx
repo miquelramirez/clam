@@ -20,16 +20,17 @@
  */
 
 #include "TonalAnalysis.hxx"
-#include <CLAM/Factory.hxx>
-#include <CLAM/ChordExtractor.hxx>
+#include "ChordExtractor.hxx"
+#include "ProcessingFactory.hxx"
 
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static Factory<Processing>::Registrator<TonalAnalysis> regtTonalAnalysis( "TonalAnalysis" );
-	}
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, TonalAnalysis> regTonalAnalysis("TonalAnalysis");
+}
 	
 
 // TonalAnalysisConfig method definition

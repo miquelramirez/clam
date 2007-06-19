@@ -20,11 +20,15 @@
  */
 
 #include "Deesser.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, Deesser> regDeesser("Deesser");
+}
 
 bool Deesser::Do(const Spectrum& in, Spectrum& out)
 {
@@ -62,9 +66,6 @@ bool Deesser::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<Deesser> regtDeesser( "Deesser" );
 
 }
 

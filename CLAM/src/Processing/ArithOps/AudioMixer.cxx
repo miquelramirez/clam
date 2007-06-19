@@ -20,18 +20,16 @@
  */
 
 #include "AudioMixer.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
 
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<AudioMixer> regtAudioMixer( "AudioMixer" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, AudioMixer> regAudioMixer("AudioMixer");
+}
 	
 AudioMixer::AudioMixer() : mOutputPort("Output Audio",this)
 {

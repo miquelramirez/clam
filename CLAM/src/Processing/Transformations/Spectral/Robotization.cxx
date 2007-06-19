@@ -20,11 +20,15 @@
  */
 
 #include "Robotization.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, Robotization> regRobotization("Robotization");
+}
 
 bool Robotization::Do(const Spectrum& in, Spectrum& out)
 {
@@ -41,9 +45,6 @@ bool Robotization::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<Robotization> regtRobotization( "Robotization" );
 
 }
 

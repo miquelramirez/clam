@@ -1,14 +1,14 @@
 #include "ControlSurface.hxx"
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<ControlSurface> regtControlSurface( "ControlSurface" );
-	}
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, ControlSurface> regControlSurface("ControlSurface");
+}
 	
 void ControlSurfaceConfig::DefaultInit(void)
 {

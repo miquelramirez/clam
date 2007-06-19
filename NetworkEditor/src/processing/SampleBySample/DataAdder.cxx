@@ -20,17 +20,17 @@
  */
 
 #include "DataAdder.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	typedef BinaryDataOp< Multiply<TData> > DataMultiplier;
-	
-	static CLAM::Factory<CLAM::Processing>::Registrator<DataAdder> DataAdderRegistrator("DataAdder");
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, DataAdder> regDataAdder("DataAdder");
+}
+	
 
 	
 }

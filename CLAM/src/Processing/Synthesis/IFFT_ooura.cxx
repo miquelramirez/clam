@@ -28,8 +28,14 @@
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
 #include "CLAM_Math.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, IFFT_ooura> regFFT_ooura("IFFT_ooura");
+}
 
  
   bool IFFT_ooura::ConcreteConfigure(const ProcessingConfig& c) {

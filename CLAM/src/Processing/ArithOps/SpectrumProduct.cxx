@@ -22,15 +22,15 @@
 #include "Complex.hxx"
 #include "SpectrumProduct.hxx"
 #include "SpectrumConfig.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM 
 {
 
-	namespace detail
-	{
-		static Factory<Processing>::Registrator<SpectrumProduct> regSpectrumProduct("SpectrumProduct");
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectrumProduct> regSpectrumProduct("SpectrumProduct");
+}
 
 	SpectrumProduct::SpectrumProduct(const Config &c)
 		: mSize(0),
