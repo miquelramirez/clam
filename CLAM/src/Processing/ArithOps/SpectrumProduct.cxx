@@ -42,6 +42,10 @@ namespace CLAM
 		Configure(c);
 	}
 
+	SpectrumProduct::~SpectrumProduct() 
+	{
+	}
+
 	bool SpectrumProduct::Do(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
 		CLAM_DEBUG_ASSERT(IsRunning(),
@@ -90,7 +94,7 @@ namespace CLAM
 		return true;
 	}
 
-	bool SpectrumProduct::Do(void)
+	bool SpectrumProduct::Do()
 	{
 		bool res = Do(mInput1.GetData(),mInput2.GetData(),mOutput.GetData());
 		mInput1.Consume();
