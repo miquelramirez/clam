@@ -4,12 +4,6 @@
 namespace CLAM
 {
 
-	void PortMonitorConfig::DefaultInit()
-	{
-		AddAll();
-		UpdateData();
-	}
-
     template <>
 	bool PortMonitor<Audio,AudioInPort>::Do()
 	{
@@ -27,16 +21,9 @@ namespace CLAM
 	}
 
 	template <>
-	PortMonitor<Audio,AudioInPort>::PortMonitor()
-	    : mInput("Input", this),mWhichDataToRead(0)
-	{
-		PortMonitorConfig cfg;
-		Configure(cfg);
-	}
-
-	template <>
-	PortMonitor<Audio,AudioInPort>::PortMonitor(const PortMonitorConfig& cfg)
-	    : mInput("Input", this),mWhichDataToRead(0)
+	PortMonitor<Audio,AudioInPort>::PortMonitor(const Config& cfg)
+	    : mInput("Input", this)
+		, mWhichDataToRead(0)
 	{
 		Configure(cfg);
 	}
