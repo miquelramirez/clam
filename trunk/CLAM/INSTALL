@@ -48,6 +48,9 @@ provides already compiled packages for several platforms.
  Note that scons saves the last used options in the options.cache file. 
  These options will be used by default in further "scons" commands.
 
+ If you plan to use your CLAM build for performance-sensitive applications consult the
+ tips below (4. Tips for increasing performance).
+ 
  MacOSX specific: the equivalent to LD_LIBRARY_PATH in mac is DYLD_LIBRARY_PATH.
    
 
@@ -134,5 +137,43 @@ http://clam.iua.upf.edu/mailinglist.html
         devel\fftw\
         devel\...
 
+ 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+ 
+ 
+ 4. Tips for increasing performance
 
+ If you plan to use CLAM in performance-sensitive applications it's a good idea to
+ compile with the release flag set, as this tells the compiler to use optimizations:
+ 	
+	$ scons configure release=1
 
+ Also if you use the fourier transform a lot in CLAM, try using the fast fftw3 
+ implementation:
+
+ 	$ scons configure with-fftw3=1
+
+ Of course you can do both:
+
+ 	$ scons configure release=1 with-fftw3=1
+ 
+ If you decide to use the fftw3 library you can further improve the fft performance
+ by precomputing wisdom. The fftw3 tries to optimize the algorithms it uses for your
+ system, this takes a long time at first but allows the transforms to be later 
+ computed much faster. To calculate the wisdom for the transforms most often used in
+ CLAM issue these commands (you need the fftw3 package):
+
+ 	$ fftw-wisdom -v -x -o wisdom rof32768 cif32768
+
+ And then move the resulting wisdom file to the default system wisdom location (you
+ need root access for this):
+
+ 	$ sudo mv wisdom /etc/fftw/
+
+ Don't worry if the file /etc/fftw/wisdom already exists - you do not lose any
+ information previously stored in it, because fftw-wisdom reads this file first and
+ includes it in the new wisdom file it generates.
+
+ Generating fftw wisdom has been tested under linux, for using wisdom on other 
+ operating systems consult your fftw3 user documentation.
