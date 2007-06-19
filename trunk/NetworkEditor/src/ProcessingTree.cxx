@@ -146,7 +146,7 @@ const static char * processingClasses[] = {
 	"ChordRanking",
 	"LPModelView",
 	"MelSpectrumView",
-	"MelCesptrumView",
+	"MelCepstrumView",
 	"VectorView",
 	"Tunner",
 	0,

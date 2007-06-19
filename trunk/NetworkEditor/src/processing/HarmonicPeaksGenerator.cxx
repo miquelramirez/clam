@@ -20,11 +20,15 @@
  */
 
 #include "HarmonicPeaksGenerator.hxx"
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include <cmath>
 
 namespace CLAM
 {
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, HarmonicPeaksGenerator> regHarmonicPeaksGenerator("HarmonicPeaksGenerator");
+}
 
 bool HarmonicPeaksGenerator::Do(SpectralPeakArray& out)
 {
@@ -63,9 +67,6 @@ bool HarmonicPeaksGenerator::Do(SpectralPeakArray& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<HarmonicPeaksGenerator> regtFreqShift( "HarmonicPeaksGenerator" );
 
 }
 

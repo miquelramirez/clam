@@ -24,7 +24,7 @@
 #include "Assert.hxx"
 #include "Processing.hxx"
 #include "ProcessingConfig.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 #include "XMLAdapter.hxx"
 #include "XmlStorageErr.hxx"
 #ifdef USE_LADSPA
@@ -33,9 +33,6 @@
 
 namespace CLAM
 {
-
-	typedef Factory<CLAM::Processing> ProcessingFactory;
-
 	ProcessingDefinitionAdapter::ProcessingDefinitionAdapter( Processing * adaptee, const std::string & name )
 		:  mAdaptee(adaptee), mName(name)
 	{

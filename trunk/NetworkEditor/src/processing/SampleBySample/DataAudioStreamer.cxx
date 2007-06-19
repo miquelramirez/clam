@@ -1,9 +1,13 @@
 #include "DataAudioStreamer.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, AudioStreamer> regAudioStreamer("AudioStreamer");
+}
 
 AudioStreamer::AudioStreamer():
 	mInput("Input", this),
@@ -43,10 +47,6 @@ bool AudioStreamer::Do()
 	return true;
 }
 
-namespace detail
-{
-	static ProcessingFactory::Registrator<AudioStreamer> regtAudioStreamer( "AudioStreamer" );
-}
 
 };
 

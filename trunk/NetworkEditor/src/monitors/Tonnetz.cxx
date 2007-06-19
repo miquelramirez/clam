@@ -19,10 +19,13 @@
  *
  */
 
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "Tonnetz.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<TonnetzMonitor> registrator("Tonnetz");
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, TonnetzMonitor> regTonnetzMonitor("Tonnetz");
+}
 
 #include "Tonnetz.hxx"
 #include <QtGui/QPixmap>

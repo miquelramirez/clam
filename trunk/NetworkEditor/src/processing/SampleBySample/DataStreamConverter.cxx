@@ -1,9 +1,13 @@
 #include "DataStreamConverter.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, Data2Audio> regData2Audio("Data2Audio");
+}
 
 Data2Audio::Data2Audio():
 	mInput("Input", this),
@@ -44,10 +48,6 @@ bool Data2Audio::Do()
 	return true;
 }
 
-namespace detail
-{
-	static ProcessingFactory::Registrator<Data2Audio> regtData2Audio( "Data2Audio" );
-}
 
 
 };

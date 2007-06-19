@@ -24,14 +24,14 @@
 
 #include "Audio.hxx"
 #include "Spectrum.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 
 namespace CLAM {
 
 namespace detail
 {
-	static Factory<Processing>::Registrator<IFFT_fftw3> regtIFFT_fftw3( "IFFT_fftw3" );
+	static FactoryRegistrator<ProcessingFactory, IFFT_fftw3> regIFFT_fftw3("IFFT_fftw3");
 }
 	
 void IFFT_fftw3::ReleaseMemory()

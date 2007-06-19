@@ -20,10 +20,15 @@
  */
 
 #include "3BandGate.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, ThreeBandGate> regThreeBandGate("ThreeBandGate");
+}
 
 
 bool ThreeBandGate::Do(const Spectrum& in, Spectrum& out)
@@ -65,9 +70,7 @@ bool ThreeBandGate::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
 
-static ProcessingFactory::Registrator<ThreeBandGate> regtThreeBandGate( "ThreeBandGate" );
 
 }
 

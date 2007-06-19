@@ -299,6 +299,64 @@ private:
 
 };
 
+/**
+* This class provides a convenient way to add items (creators) into a factory.
+* To add class A (subclass of Base) to the factory it's useful to declare a static 
+* FactoryRegistrator object like this: static FactoryRegistrator<MyTypeFactory, MyConcreteType> reg("key");
+* The FactoryRegistrator constructor called at load-time is in charge to insert the creator
+* to the factory.
+* Various constructors exists giving the user options like using either 
+* the singleton factory or a given one.
+*/
+template< typename TheFactoryType, typename ConcreteProductType>
+class FactoryRegistrator
+{
+	typedef typename TheFactoryType::AbstractProduct AbstractProduct;
+	typedef typename TheFactoryType::RegistryKey RegistryKey;
+public:
+	FactoryRegistrator( RegistryKey key, TheFactoryType& fact ) {
+		mKey=key;
+//		std::cout << CLAM_MODULE << "FactoryRegistrator(key,factory) " << mKey << std::endl;
+		fact.AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
+	}
+
+	FactoryRegistrator( TheFactoryType& fact ) {
+		ConcreteProductType dummy;
+		mKey=dummy.GetClassName();
+//		std::cout << CLAM_MODULE << "FactoryRegistrator(factory) " << dummy.GetClassName() << std::endl;
+		fact.AddCreatorWarningRepetitions( dummy.GetClassName(), new ConcreteCreator() );
+	}
+
+	FactoryRegistrator( RegistryKey key ) {
+		mKey=key;
+//		std::cout << CLAM_MODULE << "FactoryRegistrator(key) " << mKey << std::endl;
+		TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
+	}
+
+	FactoryRegistrator( ) {
+		ConcreteProductType dummy;
+		mKey=dummy.GetClassName();
+//		std::cout << CLAM_MODULE << "FactoryRegistrator() " << mKey << std::endl;
+		TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
+	}
+	~FactoryRegistrator() {
+//		std::cout << CLAM_MODULE << "~FactoryRegistrator() " << mKey << std::endl;
+	}
+	
+	class ConcreteCreator : public TheFactoryType::Creator
+	{
+	public:
+		AbstractProduct *Create()
+		{	
+			return new ConcreteProductType();
+		}
+
+	};
+
+private:
+	RegistryKey mKey;
+
+};
 
 } // namespace
 

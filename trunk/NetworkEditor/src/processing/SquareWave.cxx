@@ -20,17 +20,16 @@
  */
 
 #include "SquareWave.hxx"
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<SquareWave> regtSquareWave( "SquareWave" );
-	}
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SquareWave> regSquareWave("SquareWave");
+}
 	
 	
 

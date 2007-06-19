@@ -20,15 +20,15 @@
  */
 
 #include "MelFilterBank.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static Factory<Processing>::Registrator<MelFilterBank>
-			regtMelFilterBank( "MelFilterBank" );
-	}
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, MelFilterBank> regMelFilterBank("MelFilterBank");
+}
 
 	void MelFilterBankConfig::DefaultInit()
 	{

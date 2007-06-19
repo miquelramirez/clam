@@ -20,11 +20,15 @@
  */
 
 #include "SMSTranspose.hxx"
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include <cmath>
 
 namespace CLAM
 {
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SMSTranspose> regSMSTranspose("SMSTranspose");
+}
 
 bool SMSTranspose::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 {
@@ -42,9 +46,6 @@ bool SMSTranspose::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<SMSTranspose> regtFreqShift( "SMSTranspose" );
 
 }
 

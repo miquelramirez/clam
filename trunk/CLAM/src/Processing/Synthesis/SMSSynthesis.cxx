@@ -21,18 +21,17 @@
 
 #include "SpectrumConfig.hxx"
 #include "SMSSynthesis.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
 
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<SMSSynthesis> regtSMSSynthesis( "SMSSynthesis" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SMSSynthesis> regSMSSynthesis("SMSSynthesis");
+}
 	
 
 void SMSSynthesis::AttachChildren()

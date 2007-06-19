@@ -20,10 +20,15 @@
  */
 
 #include "FreqShift.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, FreqShift> regFreqShift("FreqShift");
+}
 
 
 bool FreqShift::Do(const Spectrum& in, Spectrum& out)
@@ -71,9 +76,6 @@ bool FreqShift::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<FreqShift> regtFreqShift( "FreqShift" );
 
 }
 

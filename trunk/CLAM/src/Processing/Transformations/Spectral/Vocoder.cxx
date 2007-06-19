@@ -20,11 +20,14 @@
  */
 
 #include "Vocoder.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
-
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, Vocoder> regVocoder("Vocoder");
+}
 
 bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 {
@@ -106,9 +109,6 @@ bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<Vocoder> regtVocoder( "Vocoder" );
 
 }
 

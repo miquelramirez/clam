@@ -1,8 +1,13 @@
 #include "DataSink.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, DataSink> regDataSink("DataSink");
+}
 
 DataSink::DataSink():
 mInput("Input", this)
@@ -16,12 +21,6 @@ bool DataSink::Do()
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-namespace detail
-{
-	static ProcessingFactory::Registrator<DataSink> regtDataSink( "DataSink" );
-}
 
 };
 

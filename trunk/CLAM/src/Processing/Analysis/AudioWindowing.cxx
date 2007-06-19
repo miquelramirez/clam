@@ -23,10 +23,15 @@
 #include "Frame.hxx"
 #include "SpectrumConfig.hxx"
 #include "AudioWindowing.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail 
+{
+	static FactoryRegistrator<ProcessingFactory, AudioWindowing> regAudioWindowing("AudioWindowing");
+}
 
 AudioWindowing::AudioWindowing()
 	: mInput("Input",this ),
@@ -159,10 +164,6 @@ bool AudioWindowing::Do(const Audio& in,Audio& out)
 }
 
 
-namespace detail 
-{
-	static CLAM::Factory<CLAM::Processing>::Registrator<AudioWindowing> regtAudioWindowing( "AudioWindowing" );
-}
 
 } // namespace CLAM
 

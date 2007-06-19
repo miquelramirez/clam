@@ -20,11 +20,15 @@
  */
 
 #include "SpectralAmplitudeModulation.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralAmplitudeModulation> regSpectralAmplitudeModulation("SpectralAmplitudeModulation");
+}
 
 bool SpectralAmplitudeModulation::Do(const Spectrum& in, Spectrum& out)
 {
@@ -52,9 +56,7 @@ bool SpectralAmplitudeModulation::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
 
-static ProcessingFactory::Registrator<SpectralAmplitudeModulation> regtSpectralAmplitudeModulation( "SpectralAM" );
 
 }
 

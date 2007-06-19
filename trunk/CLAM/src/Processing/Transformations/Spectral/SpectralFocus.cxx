@@ -20,10 +20,15 @@
  */
 
 #include "SpectralFocus.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralFocus> regSpectralFocus("SpectralFocus");
+}
 	
 bool SpectralFocus::Do(const Spectrum& 
 			inSpec,Spectrum& outSpec)
@@ -96,8 +101,6 @@ bool SpectralFocus::Do(const Spectrum&
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<SpectralFocus> regtSpectralFocus( "SpectralFocus" );
 
 }
 

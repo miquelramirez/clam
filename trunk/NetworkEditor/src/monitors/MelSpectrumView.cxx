@@ -19,10 +19,13 @@
  *
  */
 
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "MelSpectrumView.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<MelSpectrumViewMonitor> registrator("MelSpectrumView");
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MelSpectrumViewMonitor> regMelSpectrumViewMonitor("MelSpectrumView");
+}
 
 CLAM::VM::MelSpectrumView::~MelSpectrumView()
 {

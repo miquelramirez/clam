@@ -20,31 +20,31 @@
  */
 
 #include "ControlSink.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<ControlSink> regtControlSink( "ControlSink" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, ControlSink> regControlSink("ControlSink");
+}
 	
-	bool ControlSink::Do( )
-	{
-		return true;
-	}
+bool ControlSink::Do( )
+{
+	return true;
+}
 
-	float ControlSink::GetControlValue()
-	{
-		return (float)mInput.GetLastValue();
-	}
-	
-	bool ControlSink::ConcreteConfigure(const ProcessingConfig &c)
-	{
-		CopyAsConcreteConfig(mConf,c);
-		return true;
-	}
+float ControlSink::GetControlValue()
+{
+	return (float)mInput.GetLastValue();
+}
+
+bool ControlSink::ConcreteConfigure(const ProcessingConfig &c)
+{
+	CopyAsConcreteConfig(mConf,c);
+	return true;
+}
+
 }
 

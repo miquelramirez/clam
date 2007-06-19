@@ -20,18 +20,18 @@
  */
 
 #include "AudioMultiplier.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	template class BinaryAudioOp< Multiply<TData> >;
 
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<AudioMultiplier> regtAudioMultiplier( "AudioMultiplier" );
-	}
+template class BinaryAudioOp< Multiply<TData> >;
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, AudioMultiplier> regAudioMultiplier("AudioMultiplier");
+}
 
 	
 }

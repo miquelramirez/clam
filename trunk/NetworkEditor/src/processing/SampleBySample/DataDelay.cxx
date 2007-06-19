@@ -26,12 +26,15 @@
 
 
 #include "Err.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 	
-	static Factory<Processing> ::Registrator<DataDelay> regtDataDelay( "DataDelay" );
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, DataDelay> regDataDelay("DataDelay");
+}
 
 /*bool DataDelay::ConcreteConfigure(const ProcessingConfig& c)
 {

@@ -20,11 +20,15 @@
  */
 
 #include "SpectralCombDelta.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralCombDelta> regSpectralCombDelta("SpectralCombDelta");
+}
 
 bool SpectralCombDelta::Do(const Spectrum& in, Spectrum& out)
 {
@@ -100,9 +104,6 @@ bool SpectralCombDelta::Do(const Spectrum& in, Spectrum& out)
 }
 */
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<SpectralCombDelta> regtSpectralCombDelta( "SpectralCombDelta" );
 
 }
 

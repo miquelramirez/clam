@@ -19,10 +19,13 @@
  *
  */
 
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "ChordRanking.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<ChordRankingMonitor> registrator("ChordRanking");
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ChordRankingMonitor> regChordRankingMonitor("ChordRanking");
+}
 
 #include "ChordRanking.hxx"
 #include <QtGui/QPixmap>

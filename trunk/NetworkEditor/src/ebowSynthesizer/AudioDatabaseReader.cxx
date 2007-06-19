@@ -21,17 +21,15 @@
 
 #include "AudioDatabaseReader.hxx"
 #include <iostream>
-#include "Factory.hxx"
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<AudioDatabaseReader> regtAudioDatabaseReader( "AudioDatabaseReader" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, AudioDatabaseReader> regAudioDatabaseReader("AudioDatabaseReader");
+}
 
 AudioDatabaseReader::AudioDatabaseReader()
 {

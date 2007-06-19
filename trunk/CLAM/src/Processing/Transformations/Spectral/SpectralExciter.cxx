@@ -20,10 +20,14 @@
  */
 
 #include "SpectralExciter.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralExciter> regSpectralExciter("SpectralExciter");
+}
 
 
 bool SpectralExciter::Do(const Spectrum& in, Spectrum& out)
@@ -59,9 +63,6 @@ bool SpectralExciter::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<SpectralExciter> regtSpectralExciter( "SpectralExciter" );
 
 }
 

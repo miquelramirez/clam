@@ -20,11 +20,15 @@
  */
 
 #include "SpectralLimiter.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralLimiter> regSpectralLimiter("SpectralLimiter");
+}
 
 bool SpectralLimiter::Do(const Spectrum& in, Spectrum& out)
 {
@@ -48,9 +52,6 @@ bool SpectralLimiter::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<SpectralLimiter> regtSpectralLimiter( "SpectralLimiter" );
 
 }
 

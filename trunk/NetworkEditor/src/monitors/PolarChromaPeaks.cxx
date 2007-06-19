@@ -1,7 +1,10 @@
 
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "PolarChromaPeaks.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<PolarChromaPeaksMonitor> registrator("PolarChromaPeaks");
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, PolarChromaPeaksMonitor> regPolarChromaPeaksMonitor("PolarChromaPeaks");
+}
 
 

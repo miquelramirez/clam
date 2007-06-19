@@ -1,5 +1,5 @@
 #include "PortMonitor.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
@@ -41,17 +41,15 @@ namespace CLAM
 		Configure(cfg);
 	}
 #ifndef QT_PLUGIN
-	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::PeaksPortMonitor> regtPeaksPortMonitor("PeaksPortMonitor");
-	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SpectrumPortMonitor> regtSpectrumPortMonitor("SpectrumPortMonitor");
-	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::AudioPortMonitor> regtAudioPortMonitor("AudioPortMonitor");
-	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::FundamentalPortMonitor> regtFundamentalPortMonitor("FundamentalPortMonitor");
-	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::AudioBuffPortMonitor> regtAudioBuffPortMonitor("AudioBuffPortMonitor");
-	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SpecgramPortMonitor> regtSpecgramPortMonitor("SpecgramPortMonitor");
-	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::FundTrackPortMonitor> regtFundTrackPortMonitor("FundTrackPortMonitor");
-	static CLAM::Factory<CLAM::Processing>::Registrator<CLAM::SinTracksPortMonitor> regtSinTracksPortMonitor("SinTracksPortMonitor");
+	static FactoryRegistrator<ProcessingFactory, PeaksPortMonitor> regPeaksPortMonitor("PeaksPortMonitor");
+	static FactoryRegistrator<ProcessingFactory, SpectrumPortMonitor> regSpectrumPortMonitor("SpectrumPortMonitor");
+	static FactoryRegistrator<ProcessingFactory, AudioPortMonitor> regAudioPortMonitor("AudioPortMonitor");
+	static FactoryRegistrator<ProcessingFactory, FundamentalPortMonitor> regFundamentalPortMonitor("FundamentalPortMonitor");
+	static FactoryRegistrator<ProcessingFactory, AudioBuffPortMonitor> regAudioBuffPortMonitor("AudioBuffPortMonitor");
+	static FactoryRegistrator<ProcessingFactory, SpecgramPortMonitor> regSpecgramPortMonitor("SpecgramPortMonitor");
+	static FactoryRegistrator<ProcessingFactory, FundTrackPortMonitor> regFundTrackPortMonitor("FundTrackPortMonitor");
+	static FactoryRegistrator<ProcessingFactory, SinTracksPortMonitor> regSinTracksPortMonitor("SinTracksPortMonitor");
 #endif
 	
-}
-
-// END
+} // namespace CLAM
 

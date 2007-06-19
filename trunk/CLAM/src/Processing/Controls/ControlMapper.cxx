@@ -20,10 +20,14 @@
  */
 
 #include "ControlMapper.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
  
 namespace CLAM 
 {
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, ControlMapper> regControlMapper("ControlMapper");
+}
 
 void ControlMapperConfig::DefaultInit(void)
 {
@@ -72,8 +76,6 @@ bool ControlMapper::ConcreteConfigure( const ProcessingConfig& c )
 }
 
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<CLAM::ControlMapper> regtControlMapper( "ControlMapper" );
 
 
 } // namespace CLAM

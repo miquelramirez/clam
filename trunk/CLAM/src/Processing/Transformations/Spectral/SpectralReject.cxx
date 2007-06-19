@@ -20,11 +20,15 @@
  */
 
 #include "SpectralReject.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralReject> regSpectralReject("SpectralReject");
+}
 
 bool SpectralReject::Do(const Spectrum& in, Spectrum& out)
 {
@@ -48,9 +52,6 @@ bool SpectralReject::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<SpectralReject> regtSpectralReject( "SpectralReject" );
 
 }
 

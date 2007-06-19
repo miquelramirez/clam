@@ -20,10 +20,15 @@
  */
 
 #include "SMSGenderChange.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SMSGenderChange> regSMSGenderChange("SMSGenderChange");
+}
 
 bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks, 
 				const Fundamental& inFund,
@@ -87,8 +92,6 @@ bool SMSGenderChange::Do(const Frame& in, Frame& out)
 
 }
 
-typedef Factory<Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<SMSGenderChange> regtSMSGenderChange( "SMSGenderChange" );
 
 }
 

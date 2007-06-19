@@ -24,255 +24,254 @@
 #include "Spectrum.hxx"
 #include "Audio.hxx"
 #include "WindowGenerator.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 	
-	namespace detail
-	{
-		static Factory<Processing>::Registrator<WindowGenerator>
-			regtWindowGenerator("WindowGenerator");
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, WindowGenerator> regWindowGenerator("WindowGenerator");
+}
 
-	/* Processing  object Method  implementations */
+/* Processing  object Method  implementations */
 
-	WindowGenerator::WindowGenerator():
-		mOutput( "Generated window function samples", this ),
-		mSize("Size",this)
-	{
-		Configure(WindowGeneratorConfig());
-	}
+WindowGenerator::WindowGenerator():
+	mOutput( "Generated window function samples", this ),
+	mSize("Size",this)
+{
+	Configure(WindowGeneratorConfig());
+}
 
-	WindowGenerator::WindowGenerator(const WindowGeneratorConfig &c) :
-		mOutput( "Generated window function samples", this ),
-		mSize("Size",this)
-	{
-		Configure(c);
-	}
+WindowGenerator::WindowGenerator(const WindowGeneratorConfig &c) :
+	mOutput( "Generated window function samples", this ),
+	mSize("Size",this)
+{
+	Configure(c);
+}
 
-	WindowGenerator::~WindowGenerator()
-	{}
-
-
-	/* Configure the Processing Object according to the Config object */
-
-	bool WindowGenerator::ConcreteConfigure(const ProcessingConfig& c)
-	{
-		CopyAsConcreteConfig(mConfig, c);
-		mSize.DoControl(TControlData(mConfig.GetSize()));
-
-		if (!mConfig.HasUseTable()) return true;
-		if (!mConfig.GetUseTable()) return true;
+WindowGenerator::~WindowGenerator()
+{}
 
 
-		/* Fill the table */
+/* Configure the Processing Object according to the Config object */
 
-		mTable.Resize(mConfig.GetSize());
-		mTable.SetSize(mConfig.GetSize());
-		mSize.DoControl(TControlData(mConfig.GetSize()));
+bool WindowGenerator::ConcreteConfigure(const ProcessingConfig& c)
+{
+	CopyAsConcreteConfig(mConfig, c);
+	mSize.DoControl(TControlData(mConfig.GetSize()));
 
+	if (!mConfig.HasUseTable()) return true;
+	if (!mConfig.GetUseTable()) return true;
+
+
+	/* Fill the table */
+
+	mTable.Resize(mConfig.GetSize());
+	mTable.SetSize(mConfig.GetSize());
+	mSize.DoControl(TControlData(mConfig.GetSize()));
+
+	EWindowType type = mConfig.HasType()?
+		mConfig.GetType() :
+		EWindowType::eHamming;
+
+	CreateTable(mTable,type,mConfig.GetSize());
+
+	return true;
+
+}
+
+/* Setting Prototypes for faster processing */
+
+bool WindowGenerator::SetPrototypes(const DataArray& out)
+{
+	return false;
+}
+
+bool WindowGenerator::SetPrototypes()
+{
+	return false;
+}
+
+bool WindowGenerator::UnsetPrototypes()
+{
+	return false;
+}
+
+/* The supervised Do() function */
+
+bool  WindowGenerator::Do()
+{
+	CLAM_ASSERT( AbleToExecute(), "This processing is not ready to do anything" );
+	
+	bool result = Do( mOutput.GetAudio() );
+	mOutput.Produce();
+	return result;
+}
+
+/* The  unsupervised Do() function */
+
+bool  WindowGenerator::Do(DataArray& out)
+{
+	const int winsize = (int) mSize.GetLastValue();
+	const int audiosize = out.Size();
+
+	bool useTable = mConfig.HasUseTable() && mConfig.GetUseTable();
+
+	if (useTable)
+		CreateWindowFromTable(out);
+	else {
 		EWindowType type = mConfig.HasType()?
 			mConfig.GetType() :
 			EWindowType::eHamming;
-
-		CreateTable(mTable,type,mConfig.GetSize());
-
-		return true;
-
+		CreateTable(out,type,winsize);
 	}
 
-	/* Setting Prototypes for faster processing */
-
-	bool WindowGenerator::SetPrototypes(const DataArray& out)
-	{
-		return false;
+	//zero padding is applied if audiosize is greater than window size
+	if (winsize < audiosize) {
+		TData* audio = out.GetPtr();
+		memset(audio+winsize,0,(audiosize-winsize)*sizeof(TData));
 	}
 
-	bool WindowGenerator::SetPrototypes()
-	{
-		return false;
-	}
+	NormalizeWindow(out);
+	if (mConfig.GetInvert())
+		InvertWindow(out);
 
-	bool WindowGenerator::UnsetPrototypes()
-	{
-		return false;
-	}
+	return true;
+}
 
-	/* The supervised Do() function */
+bool  WindowGenerator::Do(Audio& out)
+{
+	Do(out.GetBuffer());
 
-	bool  WindowGenerator::Do()
-	{
-		CLAM_ASSERT( AbleToExecute(), "This processing is not ready to do anything" );
-		
-		bool result = Do( mOutput.GetAudio() );
-		mOutput.Produce();
-		return result;
-	}
-
-	/* The  unsupervised Do() function */
-
-	bool  WindowGenerator::Do(DataArray& out)
-	{
-		const int winsize = (int) mSize.GetLastValue();
-		const int audiosize = out.Size();
-
-		bool useTable = mConfig.HasUseTable() && mConfig.GetUseTable();
-
-		if (useTable)
-			CreateWindowFromTable(out);
-		else {
-			EWindowType type = mConfig.HasType()?
-				mConfig.GetType() :
-				EWindowType::eHamming;
-			CreateTable(out,type,winsize);
-		}
-
-		//zero padding is applied if audiosize is greater than window size
-		if (winsize < audiosize) {
-			TData* audio = out.GetPtr();
-			memset(audio+winsize,0,(audiosize-winsize)*sizeof(TData));
-		}
-
-		NormalizeWindow(out);
-		if (mConfig.GetInvert())
-			InvertWindow(out);
-
-		return true;
-	}
-
-	bool  WindowGenerator::Do(Audio& out)
-	{
-		Do(out.GetBuffer());
-
-		return true;
-	}
+	return true;
+}
 
 
-	bool  WindowGenerator::Do(Spectrum& out)
-	{
+bool  WindowGenerator::Do(Spectrum& out)
+{
 
-		CLAM_ASSERT(out.HasMagBuffer(),
-			    "WindowGenerator::Do(): Spectral Window exists only for type MagPhase");
+	CLAM_ASSERT(out.HasMagBuffer(),
+		    "WindowGenerator::Do(): Spectral Window exists only for type MagPhase");
 
-		Do(out.GetMagBuffer());
-		return true;
-	}
+	Do(out.GetMagBuffer());
+	return true;
+}
 
 
 
-	/*Create Table or window 'on the fly'*/
-	void WindowGenerator::CreateTable(DataArray& table,EWindowType windowType,
-	                                  long windowsize) const
-	{
-		switch(windowType)//use mathematical function according to type
+/*Create Table or window 'on the fly'*/
+void WindowGenerator::CreateTable(DataArray& table,EWindowType windowType,
+				  long windowsize) const
+{
+	switch(windowType)//use mathematical function according to type
+		{
+		case EWindowType::eKaiserBessel17:
 			{
-			case EWindowType::eKaiserBessel17:
-				{
-				 	KaiserBessel(windowsize,table,1.7);
-					break;
-				}
-			case EWindowType::eKaiserBessel18:
-				{
-					KaiserBessel(windowsize,table,1.8);
-					break;
-				}
-			case EWindowType::eKaiserBessel19:
-				{
-					KaiserBessel(windowsize,table,1.9);
-					break;
-				}
-			case EWindowType::eKaiserBessel20:
-				{
-					KaiserBessel(windowsize,table,2.0);
-					break;
-				}
-			case EWindowType::eKaiserBessel25:
-				{
-					KaiserBessel(windowsize,table,2.5);
-					break;
-				}
-			case EWindowType::eKaiserBessel30:
-				{
-					KaiserBessel(windowsize,table,3.0);
-					break;
-				}
-			case EWindowType::eKaiserBessel35:
-				{
-					KaiserBessel(windowsize,table,3.5);
-					break;
-				}
-			case EWindowType::eBlackmanHarris62:
-				{
-					BlackmanHarris62(windowsize,table);
-					break;
-				}
-			case EWindowType::eBlackmanHarris70:
-				{
-					BlackmanHarris70(windowsize,table);
-					break;
-				}
-			case EWindowType::eBlackmanHarris74:
-				{
-					BlackmanHarris74(windowsize,table);
-					break;
-				}
-			case EWindowType::eBlackmanHarris92:
-				{
-					BlackmanHarris92(windowsize,table);
-					break;
-				}
-			case EWindowType::eHamming:
-				{
-					Hamming(windowsize,table);
-					break;
-				}
-			case EWindowType::eTriangular:
-				{
-					Triangular(windowsize,table);
-					break;
-				}
-			case EWindowType::eBlackmanHarris92TransMainLobe:
-				{
-					BlackmanHarris92TransMainLobe(windowsize,table);
-					break;
-				}
-			case EWindowType::eGaussian:
-				{
-					Gaussian(windowsize,table);
-					break;
-				}
-			case EWindowType::eBlackmanHarrisLike:
-				{
-					BlackmanHarrisLike(windowsize,table);
-					break;
-				}
-			case EWindowType::eSine:
-			        {
-				  Sine(windowsize, table);
-				  break;
-			        }
-
+				KaiserBessel(windowsize,table,1.7);
+				break;
 			}
-	}
-	
-	/*Create window from table*/
+		case EWindowType::eKaiserBessel18:
+			{
+				KaiserBessel(windowsize,table,1.8);
+				break;
+			}
+		case EWindowType::eKaiserBessel19:
+			{
+				KaiserBessel(windowsize,table,1.9);
+				break;
+			}
+		case EWindowType::eKaiserBessel20:
+			{
+				KaiserBessel(windowsize,table,2.0);
+				break;
+			}
+		case EWindowType::eKaiserBessel25:
+			{
+				KaiserBessel(windowsize,table,2.5);
+				break;
+			}
+		case EWindowType::eKaiserBessel30:
+			{
+				KaiserBessel(windowsize,table,3.0);
+				break;
+			}
+		case EWindowType::eKaiserBessel35:
+			{
+				KaiserBessel(windowsize,table,3.5);
+				break;
+			}
+		case EWindowType::eBlackmanHarris62:
+			{
+				BlackmanHarris62(windowsize,table);
+				break;
+			}
+		case EWindowType::eBlackmanHarris70:
+			{
+				BlackmanHarris70(windowsize,table);
+				break;
+			}
+		case EWindowType::eBlackmanHarris74:
+			{
+				BlackmanHarris74(windowsize,table);
+				break;
+			}
+		case EWindowType::eBlackmanHarris92:
+			{
+				BlackmanHarris92(windowsize,table);
+				break;
+			}
+		case EWindowType::eHamming:
+			{
+				Hamming(windowsize,table);
+				break;
+			}
+		case EWindowType::eTriangular:
+			{
+				Triangular(windowsize,table);
+				break;
+			}
+		case EWindowType::eBlackmanHarris92TransMainLobe:
+			{
+				BlackmanHarris92TransMainLobe(windowsize,table);
+				break;
+			}
+		case EWindowType::eGaussian:
+			{
+				Gaussian(windowsize,table);
+				break;
+			}
+		case EWindowType::eBlackmanHarrisLike:
+			{
+				BlackmanHarrisLike(windowsize,table);
+				break;
+			}
+		case EWindowType::eSine:
+			{
+			  Sine(windowsize, table);
+			  break;
+			}
+
+		}
+}
+
+/*Create window from table*/
 void WindowGenerator::CreateWindowFromTable(DataArray &array) const
 {
-	unsigned int index = 0x00000000; 
-	unsigned int increment = (unsigned int)((double) (0x00010000) * mConfig.GetSize()/
-		(mSize.GetLastValue()));
+unsigned int index = 0x00000000; 
+unsigned int increment = (unsigned int)((double) (0x00010000) * mConfig.GetSize()/
+	(mSize.GetLastValue()));
 
-	//fix point increment [ 16bit | 16bit ] --> 1 = [ 0x0001 | 0x0000 ]
+//fix point increment [ 16bit | 16bit ] --> 1 = [ 0x0001 | 0x0000 ]
 
-	int size = int(mSize.GetLastValue());
-	CLAM_ASSERT(size<=array.Size(),"WindowGenerator::CreateWindowFromTable:output array does not have a valid size");
-	for (int i=0;i<size;i++)
-	{
-		const TData & val = mTable[index>>16];
-		array[i] = val;
-		index += increment;
-	}
+int size = int(mSize.GetLastValue());
+CLAM_ASSERT(size<=array.Size(),"WindowGenerator::CreateWindowFromTable:output array does not have a valid size");
+for (int i=0;i<size;i++)
+{
+	const TData & val = mTable[index>>16];
+	array[i] = val;
+	index += increment;
+}
 }
 
 

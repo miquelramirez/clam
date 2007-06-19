@@ -20,13 +20,17 @@
  */
 
 #include "SMSTimeStretch.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
+
+namespace detail
+{	
+	static FactoryRegistrator<ProcessingFactory, SMSTimeStretch> regSMSTimeStretch("SMSTimeStretch");
+}
 
 SMSTimeStretch::SMSTimeStretch():mAmount("Amount",this)
 {
@@ -186,10 +190,6 @@ bool SMSTimeStretch::IsLastFrame()
 	return isLast;
 }
 
-	namespace detail
-	{	
-		static ProcessingFactory::Registrator<SMSTimeStretch> regtSMSTimeStretch( "SMSTimeStretch" );
-	}
 
 }
 

@@ -20,11 +20,15 @@
  */
 
 #include "3BandCompressor.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, ThreeBandCompressor> regThreeBandCompressor("ThreeBandCompressor");
+}
 
 bool ThreeBandCompressor::Do(const Spectrum& in, Spectrum& out)
 {
@@ -65,9 +69,6 @@ bool ThreeBandCompressor::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<ThreeBandCompressor> regtThreeBandCompressor( "ThreeBandCompressor" );
 
 }
 

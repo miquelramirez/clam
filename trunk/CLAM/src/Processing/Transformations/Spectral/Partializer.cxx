@@ -20,10 +20,15 @@
  */
 
 #include "Partializer.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace details
+{
+	static FactoryRegistrator<ProcessingFactory, Partializer> regPartializer("Partializer");
+}
 
 bool Partializer::Do(const Spectrum& in, Spectrum& out)
 {
@@ -63,9 +68,7 @@ bool Partializer::Do(const Spectrum& in, Spectrum& out)
 }
 
 
-typedef Factory<Processing> ProcessingFactory;
 
-static ProcessingFactory::Registrator<Partializer> regtPartializer( "Partializer" );
 
 }
 

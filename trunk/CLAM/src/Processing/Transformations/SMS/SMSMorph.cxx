@@ -19,12 +19,16 @@
  *
  */
 #include "SMSMorph.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 #include "SpectrumConfig.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SMSMorph> regSMSMorph("SMSMorph");
+}
 
 SMSMorph::SMSMorph():
 	mHybBPF("MorphFactor",this),
@@ -373,8 +377,6 @@ void SMSMorph::SetSegmentToMorph(Segment& segmentToMorph)
 	mHaveInternalSegment=true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-static ProcessingFactory::Registrator<SMSMorph> regtSMSMorph( "SMSMorph" );
 
 }
 

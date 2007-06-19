@@ -20,14 +20,17 @@
  */
 
 #include "DataMultiplier.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	typedef BinaryDataOp< Multiply<TData> > DataMultiplier;
-	static CLAM::Factory<CLAM::Processing>::Registrator<DataMultiplier> DataMultiplierRegistrator("DataMultiplier");
+
+typedef BinaryDataOp< Multiply<TData> > DataMultiplier;
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, DataMultiplier> regDataMultiplier("DataMultiplier");
+}
+
 }
 

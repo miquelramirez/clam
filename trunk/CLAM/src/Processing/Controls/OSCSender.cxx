@@ -20,46 +20,45 @@
  */
 
 #include "OSCSender.hxx"
-#include "Factory.hxx"
 #include <oscpack/ip/IpEndpointName.h>
+#include "ProcessingFactory.hxx"
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<OSCSender> regtOSCSender( "OSCSender" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, OSCSender> regOSCSender("OSCSender");
+}
 	
 	
-	int OSCSender::InputControlCB(TControlData val)
-	{
-		osc::OutboundPacketStream p( mBuffer, IP_MTU_SIZE);
-		p.Clear();
-		std::ostringstream header;
-		header <<mConf.GetPath();
+int OSCSender::InputControlCB(TControlData val)
+{
+	osc::OutboundPacketStream p( mBuffer, IP_MTU_SIZE);
+	p.Clear();
+	std::ostringstream header;
+	header <<mConf.GetPath();
 
-		p << osc::BeginMessage ( header.str().c_str() ) 
-			<< val
-			<< osc::EndMessage;
+	p << osc::BeginMessage ( header.str().c_str() ) 
+		<< val
+		<< osc::EndMessage;
 
-		mTransmitSocket->Send ( p.Data(), p.Size() );
-		
-		return 0;
-	}
-
-	bool OSCSender::ConcreteConfigure(const ProcessingConfig &c)
-	{
-		CopyAsConcreteConfig(mConf,c);
-
-		if (mTransmitSocket)
-			delete mTransmitSocket;
-		
-		unsigned long hostAddress=GetHostByName(mConf.GetHostName().c_str());
-		mTransmitSocket=new UdpTransmitSocket ( IpEndpointName( hostAddress, mConf.GetPort() ) );
+	mTransmitSocket->Send ( p.Data(), p.Size() );
 	
-		return true;
-	}
+	return 0;
+}
+
+bool OSCSender::ConcreteConfigure(const ProcessingConfig &c)
+{
+	CopyAsConcreteConfig(mConf,c);
+
+	if (mTransmitSocket)
+		delete mTransmitSocket;
+	
+	unsigned long hostAddress=GetHostByName(mConf.GetHostName().c_str());
+	mTransmitSocket=new UdpTransmitSocket ( IpEndpointName( hostAddress, mConf.GetPort() ) );
+
+	return true;
+}
 }
 

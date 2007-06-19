@@ -20,20 +20,25 @@
  */
 
 #include "SMSPitchDiscretization.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
 
+
+namespace detail
+{	
+	static FactoryRegistrator<ProcessingFactory, SMSPitchDiscretization> regSMSPitchDiscretization("SMSPitchDiscretization");
+}
 
 bool SMSPitchDiscretization::Do(const Frame& in, Frame& out)
 {
 	return Do( in.GetSpectralPeakArray(), 
 		in.GetFundamental(), 
 		in.GetSpectrum(), 
+		
 		out.GetSpectralPeakArray(), 
 		out.GetFundamental(), 
 		out.GetSpectrum() 
@@ -80,10 +85,6 @@ bool SMSPitchDiscretization::Do( 	const SpectralPeakArray& inPeaks,
 
 }
 
-	namespace detail
-	{	
-		static ProcessingFactory::Registrator<SMSPitchDiscretization> regtSMSPitchDiscretization( "SMSPitchDiscretization" );
-	}
 
 }
 

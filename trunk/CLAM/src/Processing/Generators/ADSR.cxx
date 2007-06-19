@@ -21,18 +21,16 @@
 
 
 #include "ADSR.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
-
-typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
 
-	namespace detail
-	{
-		static ProcessingFactory::Registrator<ADSR> regtADSR( "ADSR" );
-	}
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, ADSR> regADSR("ADSR");
+}
 
 void ADSRConfig::DefaultInit(void)
 {

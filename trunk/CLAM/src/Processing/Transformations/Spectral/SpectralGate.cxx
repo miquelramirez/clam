@@ -20,11 +20,15 @@
  */
 
 #include "SpectralGate.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
 
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralGate> regSpectralGate("SpectralGate");
+}
 
 bool SpectralGate::Do(const Spectrum& in, Spectrum& out)
 {
@@ -48,9 +52,7 @@ bool SpectralGate::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
 
-static ProcessingFactory::Registrator<SpectralGate> regtSpectralGate( "SpectralGate" );
 
 }
 

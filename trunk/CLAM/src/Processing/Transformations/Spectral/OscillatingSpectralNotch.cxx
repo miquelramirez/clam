@@ -20,11 +20,14 @@
  */
 
 #include "OscillatingSpectralNotch.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
-
+namespace detail
+{
+	static FactoryRegistrator<ProcessingFactory, OscillatingSpectralNotch> regOscillatingSpectralNotch("OscillatingSpectralNotch");
+}
 
 bool OscillatingSpectralNotch::Do(const Spectrum& in, Spectrum& out)
 {
@@ -59,9 +62,6 @@ bool OscillatingSpectralNotch::Do(const Spectrum& in, Spectrum& out)
 	return true;
 }
 
-typedef Factory<Processing> ProcessingFactory;
-
-static ProcessingFactory::Registrator<OscillatingSpectralNotch> regtOscillatingSpectralNotch( "OscillatingSpectralNotch" );
 
 }
 

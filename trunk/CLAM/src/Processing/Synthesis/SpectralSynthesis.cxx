@@ -20,12 +20,17 @@
  */
 
 #include "SpectralSynthesis.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 #include <iostream>
 
 namespace CLAM
 {
+
+namespace detail 
+{
+	static FactoryRegistrator<ProcessingFactory, SpectralSynthesis> regSpectralSynthesis("SpectralSynthesis");
+}
 
 void SpectralSynthesis::AttachChildren()
 {
@@ -206,10 +211,6 @@ TInt32 SpectralSynthesis::CalculatePowerOfTwo(TInt32 size)
 	return outputSize;
 }
 
-namespace detail 
-{
-	static CLAM::Factory<CLAM::Processing>::Registrator<SpectralSynthesis> regtSpectralSynthesis( "SpectralSynthesis" );
-}
 
 }
 

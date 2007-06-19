@@ -20,10 +20,15 @@
  */
 
 #include "OverlapAdd.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAM
 {
+
+namespace detail 
+{
+	static FactoryRegistrator<ProcessingFactory, OverlapAdd> regOverlapAdd("OverlapAdd");
+}
 
 /* processing object method implementations */
 
@@ -117,10 +122,6 @@ bool OverlapAdd::Do( const Audio &in, Audio & out)
 	return true;
 } 
 
-namespace detail 
-{
-	static CLAM::Factory<CLAM::Processing>::Registrator<OverlapAdd> regtOverlapAdd( "OverlapAdd" );
-}
 
 } // namespace CLAM
 

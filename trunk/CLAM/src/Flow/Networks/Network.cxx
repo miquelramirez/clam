@@ -26,7 +26,7 @@
 #include <algorithm>
 #include "ProcessingDefinitionAdapter.hxx"
 #include "ConnectionDefinitionAdapter.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 #include "XmlStorageErr.hxx"
 #ifdef USE_LADSPA //TODO alway include it. move conditional code in LFactory.hxx
 #	include "LadspaFactory.hxx"
@@ -34,8 +34,6 @@
 
 namespace CLAM
 {	
-	typedef Factory<CLAM::Processing> ProcessingFactory;
-
 	Network::Network() :
 		mName("Unnamed Network"),
 		mFlowControl(new NaiveFlowControl),

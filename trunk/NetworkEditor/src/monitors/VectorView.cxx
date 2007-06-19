@@ -19,10 +19,13 @@
  *
  */
 
-#include <CLAM/Factory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "VectorView.hxx"
 
-static CLAM::Factory<CLAM::Processing>::Registrator<VectorViewMonitor> registrator("VectorView");
+namespace detail
+{
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VectorViewMonitor> regVectorViewMonitor("VectorView");
+}
 
 CLAM::VM::VectorView::~VectorView()
 {
