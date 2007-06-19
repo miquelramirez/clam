@@ -62,11 +62,11 @@ bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks,
 	else sssAmount = (pitch-minPitch) / ( (maxPitch-minPitch)/maxSss);
 	TData pitchTransposition=2;
 
-	bool femaleToMale = mAmount.GetLastValue()>0;
+	bool femaleToMale = mControl.GetLastValue()>0;
 	if(femaleToMale)
 	{
 		// Invert the transformations
-		sssAmount=-sssAmount;
+		sssAmount = -sssAmount;
 		pitchTransposition=1/pitchTransposition;
 	}
 
