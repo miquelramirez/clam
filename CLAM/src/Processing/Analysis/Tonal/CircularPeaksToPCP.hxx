@@ -28,7 +28,14 @@
 namespace Simac
 {
 
-
+/**
+ * This processing constructs a PCP doing the weighted histogram
+ * of the energy of a set of circular chromatic peaks.
+ * It sums the energy of each peak to the corresponding pitch.
+ * If windowing is activated by calling activateWindowing(),
+ * then peaks on the center of the pitch get more relevance
+ * while peaks in between the center of two pitch are attenuated.
+ */
 class CircularPeaksToPCP
 {
 public:
