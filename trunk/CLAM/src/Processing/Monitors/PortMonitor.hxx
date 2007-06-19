@@ -19,15 +19,6 @@
 
 namespace CLAM
 {
-
-	class PortMonitorConfig : public ProcessingConfig
-	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE (PortMonitorConfig, 0, ProcessingConfig);
-	protected:
-		void DefaultInit();
-	};
-
 	/**
 	 * A processing that allows other (GUI) thread to monitor a port in a thread safe way.
 	 * Subclass specializations of this template in order to use it.
@@ -65,15 +56,12 @@ namespace CLAM
 		typedef TheDataType DataType;
 		typedef ThePortType PortType;
 
-		PortMonitor();
-		inline PortMonitor(const PortMonitorConfig& cfg);
+		inline PortMonitor(const Config & cfg= Config() );
 		inline virtual ~PortMonitor();
 
 		inline bool Do();
 
 		const char * GetClassName() const {return "PortMonitor";}
-
-		inline const ProcessingConfig &GetConfig() const { return mConfig;}
 
 		inline const DataType & FreezeAndGetData();
 		inline void UnfreezeData();
@@ -83,13 +71,11 @@ namespace CLAM
 		void AttachSlotNewData(SigSlot::Slotv0& slot) { mSigNewData.Connect(slot);}
 
 	protected:
-		bool ConcreteConfigure(const ProcessingConfig& c) {return true;}
 		bool ConcreteStart() { mSigStart.Emit(); return true;}
 		bool ConcreteStop() { mSigStop.Emit(); return true;}
 
 
 	private:
-		PortMonitorConfig mConfig;
 		PortType          mInput;
 		DataType          mData[2];
 		TryMutex          mSwitchMutex;
@@ -99,7 +85,7 @@ namespace CLAM
 		SigSlot::Signalv0 mSigNewData;
 	};
 
-	namespace Implementation
+	namespace Hidden
 	{
 		template <typename T>
 		static void initData(DynamicType * selector, T & data)
@@ -114,24 +100,13 @@ namespace CLAM
 	}
 
 	template <typename PortDataType, typename PortType>
-	PortMonitor<PortDataType,PortType>::PortMonitor() 
-		: mInput("Input", this)
-		, mWhichDataToRead(0)
-	{
-		PortMonitorConfig cfg;
-		Configure(cfg);
-		Implementation::initData(&mData[0],mData[0]);
-		Implementation::initData(&mData[1],mData[1]);
-	}
-
-	template <typename PortDataType, typename PortType>
-	PortMonitor<PortDataType,PortType>::PortMonitor(const PortMonitorConfig& cfg)
+	PortMonitor<PortDataType,PortType>::PortMonitor(const Config& cfg)
 		: mInput("Input", this)
 		, mWhichDataToRead(0)
 	{
 		Configure(cfg);
-		Implementation::initData(&mData[0],mData[0]);
-		Implementation::initData(&mData[1],mData[1]);
+		Hidden::initData(&mData[0],mData[0]);
+		Hidden::initData(&mData[1],mData[1]);
 	}
 
 	template <typename PortDataType, typename PortType>
@@ -142,14 +117,14 @@ namespace CLAM
 	template <typename PortDataType, typename PortType>
 	const typename PortMonitor<PortDataType,PortType>::DataType & PortMonitor<PortDataType,PortType>::FreezeAndGetData()
 	{
-		Detail::LockOps<TryMutex>::Lock(mSwitchMutex);
+		Hidden::LockOps<TryMutex>::Lock(mSwitchMutex);
 		return mData[mWhichDataToRead];
 	}
 
 	template <typename PortDataType, typename PortType>
 	void PortMonitor<PortDataType,PortType>::UnfreezeData()
 	{
-		Detail::LockOps<TryMutex>::Unlock(mSwitchMutex);
+		Hidden::LockOps<TryMutex>::Unlock(mSwitchMutex);
 	}
 
 	template <typename PortDataType, typename PortType>
@@ -205,10 +180,7 @@ namespace CLAM
 	bool PortMonitor<Audio,AudioInPort>::Do();
 
 	template <>
-	PortMonitor<Audio,AudioInPort>::PortMonitor();
-
-	template <>
-	PortMonitor<Audio,AudioInPort>::PortMonitor(const PortMonitorConfig& cfg);
+	PortMonitor<Audio,AudioInPort>::PortMonitor(const Config& cfg);
 
 	class AudioPortMonitor : public PortMonitor <Audio,AudioInPort>
 	{
