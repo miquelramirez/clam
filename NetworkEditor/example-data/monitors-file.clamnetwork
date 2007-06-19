@@ -21,17 +21,17 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="OutControlSender_1" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0</Default>
-    <Max>30</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
   <processing id="PeakView_0" type="PeakView"/>
 
   <processing id="PeakView_1" type="PeakView"/>
+
+  <processing id="Robotization factor" type="OutControlSender">
+    <Min>0</Min>
+    <Default>50</Default>
+    <Max>100</Max>
+    <Step>0.5</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
 
   <processing id="Robotization_0" type="Robotization">
     <PreserveOuts>0</PreserveOuts>
@@ -261,8 +261,8 @@
   </control_connection>
 
   <control_connection>
-    <out>OutControlSender_1.out</out>
-    <in>Robotization_0.Amount</in>
+    <out>Robotization factor.out</out>
+    <in>Robotization_0.Robotization factor</in>
   </control_connection>
 
 </network>

@@ -187,7 +187,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QSynthKnob" name="InControlInteger__Robotization_0__Amount" >
+        <widget class="QSynthKnob" name="InControl__Robotization_0__Robotization___factor" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>5</hsizetype>
@@ -253,7 +253,7 @@
        <property name="orientation" >
         <enum>Qt::Vertical</enum>
        </property>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <layout class="QVBoxLayout" >
          <property name="margin" >
           <number>0</number>
@@ -303,7 +303,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <layout class="QVBoxLayout" >
          <property name="margin" >
           <number>0</number>
@@ -338,7 +338,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <layout class="QVBoxLayout" >
          <property name="margin" >
           <number>0</number>
@@ -373,7 +373,7 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="" >
+       <widget class="QWidget" name="layoutWidget" >
         <layout class="QVBoxLayout" >
          <property name="margin" >
           <number>0</number>
@@ -806,6 +806,16 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QSynthKnob</class>
+   <extends>QDial</extends>
+   <header>QSynthKnob.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>SpectrumView</class>
+   <extends>QWidget</extends>
+   <header>SpectrumView.hxx</header>
+  </customwidget>
+  <customwidget>
    <class>Oscilloscope</class>
    <extends>QWidget</extends>
    <header>Oscilloscope.hxx</header>
@@ -814,16 +824,6 @@
    <class>QPixmapRange</class>
    <extends>QWidget</extends>
    <header>PixmapWidgets.hxx</header>
-  </customwidget>
-  <customwidget>
-   <class>SpectrumView</class>
-   <extends>QWidget</extends>
-   <header>SpectrumView.hxx</header>
-  </customwidget>
-  <customwidget>
-   <class>QSynthKnob</class>
-   <extends>QDial</extends>
-   <header>QSynthKnob.hxx</header>
   </customwidget>
  </customwidgets>
  <resources/>

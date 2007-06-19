@@ -49,7 +49,7 @@ namespace CLAM{
 			: 
 			mIn("In Spectrum", this),
 			mOut("Out Spectrum", this),
-			mRFactor("Robotization factor",this)
+			mRFactor("Robotization factor", this)
 		{
 			Configure( FrameTransformationConfig() );
 		}

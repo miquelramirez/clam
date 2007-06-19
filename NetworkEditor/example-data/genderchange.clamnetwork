@@ -5,11 +5,11 @@
 
   <processing id="AudioSource_0" type="AudioSource"/>
 
-  <processing id="OutControlSender_0" type="OutControlSender">
+  <processing id="Control" type="OutControlSender">
     <Min>0</Min>
-    <Default>0</Default>
+    <Default>0.5</Default>
     <Max>1</Max>
-    <Step>1</Step>
+    <Step>0.005</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
@@ -203,8 +203,8 @@
   </port_connection>
 
   <control_connection>
-    <out>OutControlSender_0.out</out>
-    <in>SMSGenderChange_0.Amount</in>
+    <out>Control.out</out>
+    <in>SMSGenderChange_0.Control</in>
   </control_connection>
 
 </network>

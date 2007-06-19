@@ -75,7 +75,7 @@ public:
 	DYN_ATTRIBUTE (0, public, TData, Frequency);
 	DYN_ATTRIBUTE (1, public, TData, Amplitude);
 	DYN_ATTRIBUTE (2, public, TData, Phase);
-	DYN_ATTRIBUTE (3, public, TData , SamplingRate);
+	DYN_ATTRIBUTE (3, public, TData, SamplingRate);
 	
 protected:
 	void DefaultInit(void);

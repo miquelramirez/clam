@@ -47,6 +47,7 @@ namespace CLAM{
 		InPort<Spectrum> mInSpectrum;
 		OutPort<Spectrum> mOutSpectrum;
 
+		InControl mControl;
 	public:
 
 		SMSGenderChange()
@@ -56,7 +57,8 @@ namespace CLAM{
 		mInFund("In Fundamental", this),
 		mOutFund("Out Fundamental", this),
 		mInSpectrum("In Spectrum", this),
-		mOutSpectrum("Out Spectrum", this)
+		mOutSpectrum("Out Spectrum", this),
+		mControl("Control", this)
 		{
 			Configure( SegmentTransformationConfig() );
 		}
@@ -83,9 +85,9 @@ namespace CLAM{
 		
 		bool Do(const Frame& in, Frame& out);
 
-		bool Do(const SpectralPeakArray& inPeaks, 
+		bool Do(const SpectralPeakArray& inPeaks,
 				const Fundamental& inFund,
-				const Spectrum& inSpectrum, 
+				const Spectrum& inSpectrum,
 				SpectralPeakArray& outPeaks,
 				Fundamental& outFund,
 				Spectrum& outSpectrum);
