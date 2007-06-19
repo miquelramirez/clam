@@ -35,8 +35,9 @@ FourierTransform::FourierTransform(unsigned long int framesize, double datanorm,
 	_spectrum.resize(2*mFrameSize);
 	#if USE_FFTW3
 	_realInput = (double*) fftw_malloc(sizeof(double) * mFrameSize);
-    _complexOutput = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * mFrameSize);
-
+    	_complexOutput = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * mFrameSize);
+	
+	fftw_import_system_wisdom();
 	if (isComplex)
 		_plan = fftw_plan_dft_1d(framesize, _complexOutput, _complexOutput, 1, FFTW_ESTIMATE);
 	else
