@@ -3,7 +3,7 @@
 
 namespace CLAM
 {
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, ControlScaler> regControlScaler("ControlScaler");
 }

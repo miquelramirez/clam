@@ -25,7 +25,7 @@
 namespace CLAM
 {
 
-namespace details
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, Partializer> regPartializer("Partializer");
 }

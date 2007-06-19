@@ -4,7 +4,7 @@
 
 namespace CLAM
 {
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, OutControlSender> regOutControlSender("OutControlSender");
 }

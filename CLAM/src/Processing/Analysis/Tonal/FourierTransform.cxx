@@ -132,13 +132,13 @@ void FourierTransform::doItGeneric(const T * input)
 		for (int i=0; i<mFrameSize; i+=2)
 		{
 			_spectrum[i] = _complexOutput[i/2][0];
-			_spectrum[i+1] = _complexOutput[i/2][1];
+			_spectrum[i+1] = - _complexOutput[i/2][1];
 		}
 		for (int i=1; i<mFrameSize; i+=2)
 		{
 			unsigned j = mFrameSize*2-i;
 			_spectrum[j] = _complexOutput[i/2][0];
-			_spectrum[j+1] = -_complexOutput[i/2][1];
+			_spectrum[j+1] = _complexOutput[i/2][1];
 		}
 	}
 #else

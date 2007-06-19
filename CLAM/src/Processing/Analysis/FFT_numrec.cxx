@@ -36,7 +36,7 @@ extern "C" {
 namespace CLAM 
 {
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, FFT_numrec> regFFT_numrec("FFT_numrec");
 }

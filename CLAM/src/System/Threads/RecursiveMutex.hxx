@@ -34,10 +34,10 @@ namespace CLAM
 	{
 	public:
 		
-		friend class Detail::LockOps<RecursiveMutex>;
+		friend class Hidden::LockOps<RecursiveMutex>;
 
-		typedef Detail::LockOps<RecursiveMutex> LockOps;
-		typedef Detail::ScopedLock<RecursiveMutex> ScopedLock;
+		typedef Hidden::LockOps<RecursiveMutex> LockOps;
+		typedef Hidden::ScopedLock<RecursiveMutex> ScopedLock;
 
 		RecursiveMutex();
 
@@ -65,10 +65,10 @@ namespace CLAM
 	class RecursiveTryMutex
 	{
 	public:
-		friend class Detail::LockOps<RecursiveTryMutex>;
+		friend class Hidden::LockOps<RecursiveTryMutex>;
 
-		typedef Detail::ScopedLock<RecursiveTryMutex> ScopedLock;
-		typedef Detail::ScopedTryLock<RecursiveTryMutex> ScopedTryLock;
+		typedef Hidden::ScopedLock<RecursiveTryMutex> ScopedLock;
+		typedef Hidden::ScopedTryLock<RecursiveTryMutex> ScopedTryLock;
 
 		RecursiveTryMutex();
 
@@ -97,11 +97,11 @@ namespace CLAM
 	class RecursiveTimedMutex
 	{
 	public:
-		friend class Detail::LockOps<RecursiveTimedMutex>;
+		friend class Hidden::LockOps<RecursiveTimedMutex>;
 
-		typedef Detail::ScopedLock<RecursiveTimedMutex> ScopedLock;
-		typedef Detail::ScopedTryLock<RecursiveTimedMutex> ScopedTryLock;
-		typedef Detail::ScopedTimedLock<RecursiveTimedMutex> ScopedTimedLock;
+		typedef Hidden::ScopedLock<RecursiveTimedMutex> ScopedLock;
+		typedef Hidden::ScopedTryLock<RecursiveTimedMutex> ScopedTryLock;
+		typedef Hidden::ScopedTimedLock<RecursiveTimedMutex> ScopedTimedLock;
 
 		RecursiveTimedMutex();
 

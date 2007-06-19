@@ -29,7 +29,7 @@
 
 namespace CLAM {
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, IFFT_fftw3> regIFFT_fftw3("IFFT_fftw3");
 }

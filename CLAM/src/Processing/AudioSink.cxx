@@ -7,7 +7,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, AudioSink> regAudioSink("AudioSink");
 }

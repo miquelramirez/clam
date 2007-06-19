@@ -31,7 +31,7 @@ namespace CLAM
 			for (; it!=end; it++)
 				delete *it;
 	}
-	namespace Implementation
+	namespace Hidden
 	{
 		class AttributeInserter : public Component
 		{
@@ -82,7 +82,7 @@ namespace CLAM
 	{
 		for (; true; )
 		{
-			Implementation::AttributeInserter inserter(*this);
+			Hidden::AttributeInserter inserter(*this);
 			XMLComponentAdapter adapter(inserter, "Attribute", true);
 			if (!storage.Load(adapter)) break;
 		}

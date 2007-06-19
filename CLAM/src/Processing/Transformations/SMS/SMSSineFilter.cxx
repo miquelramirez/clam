@@ -26,7 +26,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, SMSSineFilter> regSMSSineFilter("SMSSineFilter");
 }

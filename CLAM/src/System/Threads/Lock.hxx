@@ -29,7 +29,7 @@ namespace CLAM
 {
 	class Condition;
 	
-	namespace Detail
+	namespace Hidden
 	{
 		
 		using CLAM::xtime;
@@ -92,7 +92,7 @@ namespace CLAM
 				if (mLocked) 
 					throw LockError( "Trying to Lock already locked Mutex" );
 				
-				Detail::LockOps<mutex_type>::Lock(mMutex);
+				Hidden::LockOps<mutex_type>::Lock(mMutex);
 				mLocked = true;
 			}
 			
@@ -265,7 +265,7 @@ namespace CLAM
 			bool mLocked;
 		};
 	
-	} // End of namespace detail
+	} // End of namespace Hidden
 
 } // end of namespace CLAM
 

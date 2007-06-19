@@ -24,7 +24,7 @@
 
 namespace CLAM
 {
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, Vocoder> regVocoder("Vocoder");
 }

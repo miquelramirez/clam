@@ -8,7 +8,7 @@
 namespace CLAM 
 {
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, MIDIKeyboard> regMIDIKeyboard("MIDIKeyboard");
 }
