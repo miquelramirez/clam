@@ -273,7 +273,8 @@ if isWindowsPlatform :
 	clam_env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 	
 #if you define no audio architecture for rtaudio, you cannot compile, so this workaround sets ASIO as default
-if sys.platform=='win32' :
+#TODO clean this:
+if sys.platform=='win32' and clam_env.has_key('audio_backend') and clam_env['audio_backend']=='rtaudio' :
 	clam_env.Append(CPPFLAGS=['-D__WINDOWS_ASIO__'])
 
 
