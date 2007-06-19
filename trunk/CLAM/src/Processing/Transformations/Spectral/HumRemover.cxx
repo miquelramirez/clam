@@ -25,7 +25,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, HumRemover> regHumRemover("HumRemover");
 }

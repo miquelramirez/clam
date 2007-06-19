@@ -28,7 +28,7 @@ namespace CLAM
 
 template class BinaryAudioOp< Add<TData> >;
 	
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, AudioAdder> regAudioAdder("AudioAdder");
 }

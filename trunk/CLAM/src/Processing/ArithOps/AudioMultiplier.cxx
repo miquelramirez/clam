@@ -28,7 +28,7 @@ namespace CLAM
 
 template class BinaryAudioOp< Multiply<TData> >;
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, AudioMultiplier> regAudioMultiplier("AudioMultiplier");
 }

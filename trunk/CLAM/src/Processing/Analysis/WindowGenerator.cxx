@@ -29,7 +29,7 @@
 namespace CLAM
 {
 	
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, WindowGenerator> regWindowGenerator("WindowGenerator");
 }

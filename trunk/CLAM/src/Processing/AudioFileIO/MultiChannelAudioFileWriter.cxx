@@ -32,7 +32,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, MultiChannelAudioFileWriter> regMultiChannelAudioFileWriter("MultiChannelAudioFileWriter");
 }

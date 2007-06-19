@@ -88,7 +88,7 @@ namespace CLAM
 		template <typename M>
 		void DoWait( M& mutex )
 		{
-			typedef typename Detail::LockOps<M> LockOps;
+			typedef typename Hidden::LockOps<M> LockOps;
 			typename LockOps::LockState state;
 
 			LockOps::Unlock( mutex, state );
@@ -99,7 +99,7 @@ namespace CLAM
 		template <typename M>
 		bool DoTimedWait( M& mutex, const xtime& xt )
 		{
-			typedef typename Detail::LockOps<M> LockOps;
+			typedef typename Hidden::LockOps<M> LockOps;
 			typename LockOps::LockState state;
 			
 			LockOps::Unlock( mutex, state );

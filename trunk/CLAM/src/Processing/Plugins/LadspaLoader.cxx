@@ -31,7 +31,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, LadspaLoader> regLadspaLoader("LadspaLoader");
 }

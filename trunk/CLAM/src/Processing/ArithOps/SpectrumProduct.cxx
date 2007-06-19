@@ -27,7 +27,7 @@
 namespace CLAM 
 {
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, SpectrumProduct> regSpectrumProduct("SpectrumProduct");
 }

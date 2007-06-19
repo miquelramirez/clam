@@ -32,7 +32,7 @@
 namespace CLAM 
 {
 
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, FFT_ooura> regFFT_ooura("FFT_ooura");
 }

@@ -30,7 +30,7 @@
 namespace CLAM
 {
 
-namespace detail 
+namespace Hidden 
 {
 	static FactoryRegistrator<ProcessingFactory, LPC_AutoCorrelation> regLPC_AutoCorrelation("LPC_AutoCorrelation");
 }

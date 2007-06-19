@@ -31,7 +31,7 @@
 
 namespace CLAM
 {
-namespace detail
+namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, ControlTraceReader> regControlTraceReader("ControlTraceReader");
 	static FactoryRegistrator<ProcessingFactory, CLAM::ControlTraceWriter> regControlTraceWriter("ControlTraceWriter");

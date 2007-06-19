@@ -49,10 +49,10 @@ class Mutex
 {
 public:
 
-	friend class Detail::LockOps<Mutex>;
-	friend class Detail::ScopedLock<Mutex>;
+	friend class Hidden::LockOps<Mutex>;
+	friend class Hidden::ScopedLock<Mutex>;
 
-	typedef Detail::ScopedLock<Mutex> ScopedLock;
+	typedef Hidden::ScopedLock<Mutex> ScopedLock;
 
 	Mutex();
 
@@ -80,10 +80,10 @@ private:
 class TryMutex
 {
 public:
-	friend class Detail::LockOps<TryMutex>;
+	friend class Hidden::LockOps<TryMutex>;
 
-	typedef Detail::ScopedLock<TryMutex> ScopedLock;
-	typedef Detail::ScopedTryLock<TryMutex> ScopedTryLock;
+	typedef Hidden::ScopedLock<TryMutex> ScopedLock;
+	typedef Hidden::ScopedTryLock<TryMutex> ScopedTryLock;
 
 	TryMutex();
 	~TryMutex();
@@ -111,11 +111,11 @@ private:
 class TimedMutex
 {
 public:
-	friend class Detail::LockOps<TimedMutex>;
+	friend class Hidden::LockOps<TimedMutex>;
 
-	typedef Detail::ScopedLock<TimedMutex> ScopedLock;
-	typedef Detail::ScopedTryLock<TimedMutex> ScopedTryLock;
-	typedef Detail::ScopedTimedLock<TimedMutex> ScopedTimedLock;
+	typedef Hidden::ScopedLock<TimedMutex> ScopedLock;
+	typedef Hidden::ScopedTryLock<TimedMutex> ScopedTryLock;
+	typedef Hidden::ScopedTimedLock<TimedMutex> ScopedTimedLock;
 
 	TimedMutex();
 	~TimedMutex();
