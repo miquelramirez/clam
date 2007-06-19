@@ -5,7 +5,7 @@
 #include "Audio.hxx"
 #include "Spectrum.hxx"
 #include "XMLStorage.hxx"
-#include "Factory.hxx"
+#include "ProcessingFactory.hxx"
 
 namespace CLAMTest
 {
@@ -78,7 +78,7 @@ namespace CLAMTest
 		}
 		void setUp()
 		{
-			mProcessing = (CLAM::FFT_base*)CLAM::Factory<CLAM::Processing>::GetInstance().CreateSafe(getProcessing());
+			mProcessing = (CLAM::FFT_base*)CLAM::ProcessingFactory::GetInstance().CreateSafe(getProcessing());
 			mPathToTestData = GetTestDataDirectory("spectralData/");
 			loadBack2BackDataset( mPathToTestData );
 		}
