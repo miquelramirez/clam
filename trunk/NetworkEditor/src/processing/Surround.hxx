@@ -32,7 +32,7 @@ public:
 		, _beta("beta", this)
 	{
 		Configure( config );
-		_beta.SetBounds(-180,180);
+		_beta.SetBounds(-2*M_PI,2*M_PI); //a complete spin on each slider direction
 	}
  
 	bool Do()
