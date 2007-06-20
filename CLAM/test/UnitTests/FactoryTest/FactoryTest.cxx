@@ -27,7 +27,16 @@ class FactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
-	typedef CLAM::Factory<DummyProduct> MyFactoryType;
+	class MyFactoryType : public CLAM::Factory<DummyProduct>
+	{
+		public:
+		static MyFactoryType& GetInstance()
+		{
+			static MyFactoryType theInstance;
+			return theInstance;
+		}
+
+	};
 
 	MyFactoryType* mTheFactory;
 

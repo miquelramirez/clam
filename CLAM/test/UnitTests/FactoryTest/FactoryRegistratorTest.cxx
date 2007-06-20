@@ -10,8 +10,6 @@ namespace CLAMTest
 {
 
 
-typedef CLAM::Factory< A > FactoryOfAs;
-
 class FactoryRegistratorTest;
 
 CPPUNIT_TEST_SUITE_REGISTRATION( FactoryRegistratorTest );
@@ -29,13 +27,22 @@ class FactoryRegistratorTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
-	typedef CLAM::Factory<DummyProduct> MyFactoryType;
+	class MyFactoryType : public CLAM::Factory<DummyProduct>
+	{
+		public:
+		static MyFactoryType& GetInstance()
+		{
+			static MyFactoryType theInstance;
+			return theInstance;
+		}
+
+	};
 
 private:
 	void testCreate_ReturnsAnObjectOfTheTemplateType()
 	{
 		 DummyProduct* created =
-			 MyFactoryType::Registrator<DummyProductFoo>::ConcreteCreator().Create();
+			 CLAM::FactoryRegistrator<MyFactoryType, DummyProductFoo>::ConcreteCreator().Create();
 
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *created );
 		delete created;
@@ -46,7 +53,7 @@ private:
 		MyFactoryType fact;
 		const char* fooClassName = "DummyProductFoo";
 
-		MyFactoryType::Registrator<DummyProductFoo> regt( fooClassName, fact );
+		CLAM::FactoryRegistrator<MyFactoryType, DummyProductFoo> regt( fooClassName, fact );
 
 		DummyProduct *created =
 			fact.Create( fooClassName );
@@ -63,7 +70,7 @@ private:
 
 		MyFactoryType fact;
 		// passing just the factory to the constructor
-		MyFactoryType::Registrator<DummyProductFoo> regt( fact );
+		CLAM::FactoryRegistrator<MyFactoryType, DummyProductFoo> regt( fact );
 
 		DummyProduct *created =
 			fact.Create( fooClassName );
@@ -78,7 +85,7 @@ private:
 		theFactory.Clear();
 
 		DummyProductFoo dummy;
-		MyFactoryType::Registrator<DummyProductFoo> regt( dummy.GetClassName() );
+		CLAM::FactoryRegistrator<MyFactoryType, DummyProductFoo> regt( dummy.GetClassName() );
 
 		DummyProduct *created =
 			theFactory.Create( dummy.GetClassName() );
@@ -96,7 +103,7 @@ private:
 		MyFactoryType &theFactory = MyFactoryType::GetInstance();
 		theFactory.Clear();
 
-		MyFactoryType::Registrator<DummyProductFoo> DummyRegt;
+		CLAM::FactoryRegistrator<MyFactoryType, DummyProductFoo> DummyRegt;
 
 		DummyProductFoo dummy;
 		DummyProduct *created =

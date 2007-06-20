@@ -25,7 +25,7 @@
 #include <map>
 #include <string>
 #include <list>
-//#include <iostream>
+#include <iostream> //TODO only for debugging
 
 #include "Assert.hxx"
 #include "ErrFactory.hxx"
@@ -52,12 +52,12 @@ public:
 
 	Factory() {};
 	~Factory() {};
-
+/*
 	static Factory& GetInstance()	{
 		static Factory theInstance;
 		return theInstance;
 	}
-
+*/
 	/**
 	 * Gives ownership of the new created Product registered with
 	 * the given name.
@@ -234,70 +234,13 @@ public: // Inner classes. Public for better testing
 
 	};
 
-	/**
- 	* This class provides a convenient way to add items (creators) into a factory.
- 	* To add class A (subclass of Base) to the factory it's useful to declare a static 
- 	* Registrator object like this: static Factory<Base>::Registrator<A> reg("key");
- 	* The Registrator constructor called at load-time is in charge to insert the creator
- 	* to the factory.
- 	* Various constructors exists giving the user options like using either 
- 	* the singleton factory or a given one.
- 	*/
-	template< typename ConcreteProductType>
-	class Registrator
-	{
-		typedef Factory<AbstractProductType> TheFactoryType;
-
-	public:
-		Registrator( RegistryKey key, TheFactoryType& fact ) {
-			mKey=key;
-//			std::cout << CLAM_MODULE << "Registrator(key,factory) " << mKey << std::endl;
-			fact.AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
-		}
-
-		Registrator( TheFactoryType& fact ) {
-			ConcreteProductType dummy;
-			mKey=dummy.GetClassName();
-//			std::cout << CLAM_MODULE << "Registrator(factory) " << dummy.GetClassName() << std::endl;
-			fact.AddCreatorWarningRepetitions( dummy.GetClassName(), new ConcreteCreator() );
-		}
-
-		Registrator( RegistryKey key ) {
-			mKey=key;
-//			std::cout << CLAM_MODULE << "Registrator(key) " << mKey << std::endl;
-			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
-		}
-
-		Registrator( ) {
-			ConcreteProductType dummy;
-			mKey=dummy.GetClassName();
-//			std::cout << CLAM_MODULE << "Registrator() " << mKey << std::endl;
-			TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
-		}
-		~Registrator() {
-//			std::cout << CLAM_MODULE << "~Registrator() " << mKey << std::endl;
-		}
-
-		class ConcreteCreator : public Creator
-		{
-		public:
-			AbstractProduct *Create()
-			{	
-				return new ConcreteProductType();
-			}
-
-		};
-
-	private:
-		RegistryKey mKey;
-
-	};
 	int Count() { return _registry.Count(); }
 
 private:
 	Registry _registry;
 
 };
+
 
 /**
 * This class provides a convenient way to add items (creators) into a factory.
@@ -315,32 +258,30 @@ class FactoryRegistrator
 	typedef typename TheFactoryType::RegistryKey RegistryKey;
 public:
 	FactoryRegistrator( RegistryKey key, TheFactoryType& fact ) {
-		mKey=key;
-//		std::cout << CLAM_MODULE << "FactoryRegistrator(key,factory) " << mKey << std::endl;
-		fact.AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
+		std::cout << CLAM_MODULE << "FactoryRegistrator(key,factory) " << key << std::endl;
+		fact.AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 
 	FactoryRegistrator( TheFactoryType& fact ) {
 		ConcreteProductType dummy;
-		mKey=dummy.GetClassName();
-//		std::cout << CLAM_MODULE << "FactoryRegistrator(factory) " << dummy.GetClassName() << std::endl;
-		fact.AddCreatorWarningRepetitions( dummy.GetClassName(), new ConcreteCreator() );
+		RegistryKey key=dummy.GetClassName();
+		std::cout << CLAM_MODULE << "FactoryRegistrator(factory) " << dummy.GetClassName() << std::endl;
+		fact.AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 
 	FactoryRegistrator( RegistryKey key ) {
-		mKey=key;
-//		std::cout << CLAM_MODULE << "FactoryRegistrator(key) " << mKey << std::endl;
-		TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
+		std::cout << CLAM_MODULE << "FactoryRegistrator(key) " << key << std::endl;
+		TheFactoryType::GetInstance().AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 
 	FactoryRegistrator( ) {
 		ConcreteProductType dummy;
-		mKey=dummy.GetClassName();
-//		std::cout << CLAM_MODULE << "FactoryRegistrator() " << mKey << std::endl;
-		TheFactoryType::GetInstance().AddCreatorWarningRepetitions( mKey, new ConcreteCreator() );
+		RegistryKey key=dummy.GetClassName();
+		std::cout << CLAM_MODULE << "FactoryRegistrator() " << key << std::endl;
+		TheFactoryType::GetInstance().AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 	~FactoryRegistrator() {
-//		std::cout << CLAM_MODULE << "~FactoryRegistrator() " << mKey << std::endl;
+		std::cout << CLAM_MODULE << "~FactoryRegistrator() " << std::endl;
 	}
 	
 	class ConcreteCreator : public TheFactoryType::Creator
@@ -352,10 +293,6 @@ public:
 		}
 
 	};
-
-private:
-	RegistryKey mKey;
-
 };
 
 } // namespace

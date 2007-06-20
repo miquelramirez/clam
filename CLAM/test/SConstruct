@@ -32,6 +32,7 @@ env.EnableClamModules([
 
 env.Append( CCFLAGS=['-O3', '-fomit-frame-pointer', '-g','-Wall'] )
 env.Append( CPPFLAGS = ['-DTEST_DATA_PATH="\\"%s\\""' % env['test_data_path'] ] )
+env.Append( CPPFLAGS = ['-DCLAM_MODULE="\\"tests\\""'] )
 
 if sys.platform in ['linux2', "darwin"] :
 	env.ParseConfig( 'pkg-config --cflags --libs cppunit')
