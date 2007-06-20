@@ -57,11 +57,12 @@ public:
 			double ux = vx[i] * cosBeta - vy[i] * sinBeta;
 			double uy = vx[i] * sinBeta + vy[i] * cosBeta;
 			// General C_i = p - ux * cos(alpha_i) - uy * sin(alpha_i)
+			// TODO C_i = 0.5 ...
 			center[i] = p[i] - ux; // alpha_center = 0 
 			left[i] = p[i] - ux * cos30 - uy * sin30;
-			right[i] = p[i] - ux * cos30 + uy * sin30;
+			right[i] = p[i] - ux * cos30 - uy * sin30;
 			surroundLeft[i] = p[i] - ux * cos110 - uy * sin110;
-			surroundRight[i] = p[i] - ux * cos110 + uy * sin110;
+			surroundRight[i] = p[i] - ux * cos110 - uy * sin110;
 		}
 
 		// Tell the ports this is done
