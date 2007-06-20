@@ -85,7 +85,7 @@ namespace QtSMS
 		return mConfig;
 	}
 
-	static SMSConfiguratorFactory::Registrator<SMSResidualGainConfigurator> regtPitchShiftCfg("SMSResidualGain");
+	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSResidualGainConfigurator> regtPitchShiftCfg("SMSResidualGain");
 }
 
 // END

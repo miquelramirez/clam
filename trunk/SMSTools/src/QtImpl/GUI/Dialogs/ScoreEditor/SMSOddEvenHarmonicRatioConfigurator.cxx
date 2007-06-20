@@ -5,6 +5,7 @@
 
 namespace QtSMS
 {
+	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSOddEvenHarmonicRatioConfigurator> regtPitchShiftCfg("SMSOddEvenHarmonicRatio");
 	const char* SMSOddEvenHarmonicRatioConfigurator::mHelpText = "<html><body><h2>Odd/Even Harmonic Ratio</h2><p><strong>Usage:</strong> Indicate in dB's the gain applied to odd harmonics in relation to even. E.g. A value of 6 means that a 6dB difference will be introduced, thus, odd harmonics will be 3dB higher and even harmonic 3dB lower.(X axis = time)</p><p><strong>Explanation:</strong> Harmonics are modified according to their harmonic number. </p></body></html>";
 
 	SMSOddEvenHarmonicRatioConfigurator::SMSOddEvenHarmonicRatioConfigurator()
@@ -83,7 +84,6 @@ namespace QtSMS
 		return mConfig;
 	}
 
-	static SMSConfiguratorFactory::Registrator<SMSOddEvenHarmonicRatioConfigurator> regtPitchShiftCfg("SMSOddEvenHarmonicRatio");
 
 }
 

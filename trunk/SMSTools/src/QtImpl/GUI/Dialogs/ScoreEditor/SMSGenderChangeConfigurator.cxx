@@ -5,6 +5,7 @@
 
 namespace QtSMS
 {
+	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSGenderChangeConfigurator> regtPitchShiftCfg("SMSGenderChange");
 	const char* SMSGenderChangeConfigurator::mHelpText = "<html><body><h2>Gender Change</h2><p><strong>Usage:</strong> If amount is 0 it means from male to female. If it is 1 (or anything different than 0) it means from female to male. </p><p><strong>Explanation:</strong> Gender change works by making a pitch shift with timbre preservation an octave and then shifting the spectral shape.</p></body></html>";
 
 	SMSGenderChangeConfigurator::SMSGenderChangeConfigurator()
@@ -63,7 +64,6 @@ namespace QtSMS
 		emit configurationChanged();
 	}
 
-	static SMSConfiguratorFactory::Registrator<SMSGenderChangeConfigurator> regtPitchShiftCfg("SMSGenderChange");
 }
 
 // END

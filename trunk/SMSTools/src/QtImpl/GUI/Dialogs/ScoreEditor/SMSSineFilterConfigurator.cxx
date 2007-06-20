@@ -5,6 +5,7 @@
 
 namespace QtSMS
 {
+	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSSineFilterConfigurator> regtPitchShiftCfg("SMSSineFilter");
 	const char* SMSSineFilterConfigurator::mHelpText = "<html><body><h2>Sinusoidal Filter</h2><p><strong>Usage:</strong> Introduce the frequency response of the filter you want to apply to the sinusoidal component. (X axis = frequency, Y axis = gain in dB's)</p><p><strong>Explanation:</strong> Sinusoidal component is filtered according to   the frequency response introduced.</p></body></html>";
 
 	SMSSineFilterConfigurator::SMSSineFilterConfigurator()
@@ -83,7 +84,6 @@ namespace QtSMS
 		return mConfig;
 	}
 
-	static SMSConfiguratorFactory::Registrator<SMSSineFilterConfigurator> regtPitchShiftCfg("SMSSineFilter");
 
 }
 

@@ -41,7 +41,12 @@ namespace QtSMS
 
 	};
 
-	typedef CLAM::Factory<SMSConfigurator> SMSConfiguratorFactory;
+	class SMSConfiguratorFactory : public CLAM::Factory<SMSConfigurator>
+	{
+	public:
+		static SMSConfiguratorFactory& GetInstance();
+	};
+
 
 }
 
