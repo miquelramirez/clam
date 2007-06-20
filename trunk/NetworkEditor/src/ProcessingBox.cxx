@@ -689,7 +689,7 @@ bool ProcessingBox::configure()
 		ConfiguratorLauncher * launcher=0;
 	   	try
 		{
-			launcher = CLAM::Factory<ConfiguratorLauncher>::GetInstance()
+			launcher = ConfiguratorLauncherFactory::GetInstance()
 				.CreateSafe(config.GetClassName());
 		}
 		catch (CLAM::ErrFactory & e)

@@ -32,6 +32,37 @@
 
 namespace CLAM {
 
+/**
+Factory usage example. 
+To define a factory for your types you should create your own factory subclass.
+
+@code
+// MyFactory.hxx
+class MyFactory : public CLAM::Factory<MyAbstractProduct>
+{
+public:
+	static MyFactory& GetInstance();
+};
+@endcode
+
+You must define GetInstance() method in a .cxx 
+@code
+// MyFactory.cxx
+#include "MyFactory.hxx"
+MyFactory& MyFactory::GetInstance()
+{	
+	static MyFactory theInstance;
+	return theInstance;
+}
+@endcode
+
+To automatically register concrete products into the factory at program loading time 
+(before "main()"), declare a registrator object like this:
+@code
+// put this in a .cxx (not in a header)
+static CLAM::FactoryRegistrator<MyFactory, MyConcreteProduct> regMyConcreteProduct("MyConcreteProduct");
+@endcode
+ */
 template <typename AbstractProductType>
 class Factory
 {
@@ -42,7 +73,7 @@ public:
 
 	typedef AbstractProduct* (*CreatorMethod)(void); //TODO drop after refactoring
 
-	//TODO document
+	/** Abstract class for Creator objects which are stored in the Factory::Registry */
 	class Creator
 	{
 	public:

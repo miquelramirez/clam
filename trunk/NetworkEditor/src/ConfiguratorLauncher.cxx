@@ -19,23 +19,14 @@
  *
  */
 
-#ifndef REGISTER_CONFIGURATOR_LAUNCHER_HXX
-#define REGISTER_CONFIGURATOR_LAUNCHER_HXX
-
-#include <CLAM/Factory.hxx>
 #include "ConfiguratorLauncher.hxx"
 
-typedef CLAM::Factory<ConfiguratorLauncher> ProcessingConfigPresentationFactory;
 
-// Convenient macros (Not to use widely)
-#define STANDARD_PROCESSING_CONFIG_REGISTER(configName) \
-   	static ProcessingConfigPresentationFactory::Registrator<  \
-		TypedConfiguratorLauncher< CLAM::configName > > \
-		 reg##configName(#configName)
-#define SPECIAL_PROCESSING_CONFIG_REGISTER(configName, configurator) \
-	static ProcessingConfigPresentationFactory::Registrator< \
-		WidgetTypedConfiguratorLauncher<configurator> > \
-		 regt##configName( #configName)
+ConfiguratorLauncherFactory& ConfiguratorLauncherFactory::GetInstance()
+{	
+	static ConfiguratorLauncherFactory theInstance;
+	return theInstance;
+}
 
-#endif
+
 
