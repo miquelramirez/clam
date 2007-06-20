@@ -7,7 +7,11 @@
 namespace CLAMTest
 {
 
-  typedef CLAM::Factory< A > FactoryOfAs;
+class FactoryOfAs : public CLAM::Factory< A >
+{
+public:
+	static FactoryOfAs& GetInstance();	
+};
 
 class RegistratorStub
 {

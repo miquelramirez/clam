@@ -39,20 +39,20 @@ protected:
 	typedef CLAM::Factory<DummyProduct> MyFactoryType;
 	typedef CLAM::Polymorphic<MyFactoryType> MyPolymorphicType;
 
-	MyFactoryType* mTheFactory;
+//	MyFactoryType* mTheFactory;
 
 public:
 	void setUp()
 	{
-		mTheFactory = &MyFactoryType::GetInstance();
-		mTheFactory->Clear();
+//		mTheFactory = &MyFactoryType::GetInstance();
+//		mTheFactory->Clear();
 		MyFactoryType::Registrator<DummyProductFoo> dummyRegtFoo;
 		MyFactoryType::Registrator<DummyProductBar> dummyRegtBar;
 	}
 
 	void tearDown()
 	{
-		mTheFactory->Clear();
+//		mTheFactory->Clear();
 	}
 
 private:
