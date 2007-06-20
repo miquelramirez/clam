@@ -69,6 +69,7 @@ void FFT_fftw3::ReleaseMemory() {
 		fftw_free(_complexOutput);
 		_complexOutput=0;
 	}
+	fftw_forget_wisdom();	
 }
 
 void FFT_fftw3::SetupMemory() {
@@ -76,6 +77,7 @@ void FFT_fftw3::SetupMemory() {
 	// Special malloc which aligns to SIMD segment boundaries
 	_realInput = (double*) fftw_malloc(sizeof(double) * mSize);
 	_complexOutput = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * mSize);
+	fftw_import_system_wisdom();
 	_plan = new fftw_plan;
 	*_plan = fftw_plan_dft_r2c_1d(mSize, _realInput, _complexOutput, FFTW_ESTIMATE);
 	}

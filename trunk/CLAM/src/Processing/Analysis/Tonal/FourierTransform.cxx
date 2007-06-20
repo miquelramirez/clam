@@ -51,6 +51,7 @@ FourierTransform::~FourierTransform()
 	fftw_destroy_plan(_plan);
 	fftw_free(_realInput);
 	fftw_free(_complexOutput);
+	fftw_forget_wisdom();
 	#endif
 }
 
