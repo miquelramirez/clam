@@ -35,7 +35,6 @@ protected:
 			static MyFactoryType theInstance;
 			return theInstance;
 		}
-
 	};
 
 	MyFactoryType* mTheFactory;
