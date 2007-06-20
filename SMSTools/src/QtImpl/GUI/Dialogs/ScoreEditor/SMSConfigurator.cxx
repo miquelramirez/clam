@@ -4,6 +4,12 @@
 namespace QtSMS
 {
 
+SMSConfiguratorFactory& SMSConfiguratorFactory::GetInstance()
+{	
+	static SMSConfiguratorFactory theInstance;
+	return theInstance;
+}
+
 SMSConfigurator::SMSConfigurator()
 {
 }

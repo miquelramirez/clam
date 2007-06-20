@@ -5,6 +5,8 @@
 
 namespace QtSMS
 {
+	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSMorphConfigurator> regtPitchShiftCfg("SMSMorph");
+
 	const char* SMSMorphConfigurator::mHelpText = 
 	"<html>"
 	"<body>"
@@ -165,7 +167,6 @@ namespace QtSMS
 		mMorphEditor->RetrieveResShapeEnvelope(mConfig.GetHybResSpectralShape());
 	}
 
-	static SMSConfiguratorFactory::Registrator<SMSMorphConfigurator> regtPitchShiftCfg("SMSMorph");
 }
 
 // END

@@ -6,6 +6,9 @@
 
 namespace QtSMS
 {
+
+	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSPitchShiftConfigurator> regtPitchShiftCfg("SMSPitchShift");
+
 	const char* SMSPitchShiftConfigurator::mHelpText = "<html><body><h2>Pitch Shift with Timbre Preservation</h2><p><strong>Usage:</strong> Factor to apply to current pitch. The default 1 value means no change, a factor of 0.5 means an octave lower. (X axis = time)</p><p><strong>Explanation:</strong> Pitch shift with timbre preservation works by first extracting spectral envelope of the sinusoidal component. Then peaks are moved multiplying their original frequency by the value of the transformation. After that, the original spectral envelope is applied back. Residual component is just comb-filtered using a filter with maximums at new fundamental and harmonics.</p></body></html>";
 
 	SMSPitchShiftConfigurator::SMSPitchShiftConfigurator()
@@ -98,7 +101,6 @@ namespace QtSMS
 		return mConfig;
 	}
 
-	static SMSConfiguratorFactory::Registrator<SMSPitchShiftConfigurator> regtPitchShiftCfg("SMSPitchShift");
 }
 
 // END
