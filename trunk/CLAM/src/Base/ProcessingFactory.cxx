@@ -1,13 +1,13 @@
 #include "ProcessingFactory.hxx"
 
-#include <iostream> //TODO remove
+//#include <iostream> //TODO only when debugging
 namespace CLAM
 {
 
 ProcessingFactory& ProcessingFactory::GetInstance()	
 {
 	static ProcessingFactory theInstance;
-	std::cout << "ProcessingFactory Singleton accessed: "<< (void *) &theInstance << std::endl;
+//	std::cout << "ProcessingFactory Singleton accessed: "<< (void *) &theInstance << std::endl;
 	return theInstance;
 }
 

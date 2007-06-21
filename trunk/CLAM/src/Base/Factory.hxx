@@ -25,7 +25,7 @@
 #include <map>
 #include <string>
 #include <list>
-#include <iostream> //TODO only for debugging
+//#include <iostream> //TODO only for debugging
 
 #include "Assert.hxx"
 #include "ErrFactory.hxx"
@@ -289,30 +289,30 @@ class FactoryRegistrator
 	typedef typename TheFactoryType::RegistryKey RegistryKey;
 public:
 	FactoryRegistrator( RegistryKey key, TheFactoryType& fact ) {
-		std::cout << "FactoryRegistrator(key,factory) " << key << std::endl;
+//		std::cout << "FactoryRegistrator(key,factory) " << key << std::endl;
 		fact.AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 
 	FactoryRegistrator( TheFactoryType& fact ) {
 		ConcreteProductType dummy;
 		RegistryKey key=dummy.GetClassName();
-		std::cout << "FactoryRegistrator(factory) " << dummy.GetClassName() << std::endl;
+//		std::cout << "FactoryRegistrator(factory) " << dummy.GetClassName() << std::endl;
 		fact.AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 
 	FactoryRegistrator( RegistryKey key ) {
-		std::cout << "FactoryRegistrator(key) " << key << std::endl;
+//		std::cout << "FactoryRegistrator(key) " << key << std::endl;
 		TheFactoryType::GetInstance().AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 
 	FactoryRegistrator( ) {
 		ConcreteProductType dummy;
 		RegistryKey key=dummy.GetClassName();
-		std::cout << "FactoryRegistrator() " << key << std::endl;
+//		std::cout << "FactoryRegistrator() " << key << std::endl;
 		TheFactoryType::GetInstance().AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 	~FactoryRegistrator() {
-		std::cout << "~FactoryRegistrator() " << std::endl;
+//		std::cout << "~FactoryRegistrator() " << std::endl;
 	}
 	
 	class ConcreteCreator : public TheFactoryType::Creator
