@@ -78,20 +78,20 @@ class ProcessingConfig;
 	 */
 
 	class WindowGenerator: public Processing {
-		WindowGeneratorConfig mConfig;
+	public:
+		typedef WindowGeneratorConfig Config;
+	private:
+		Config mConfig;
 
 		const char *GetClassName() const {return "WindowGenerator";}
 
 		/** Config change method
 		 * @pre the argument should be an WindowGeneratorConfig object.
 		 */
-		bool ConcreteConfigure(const ProcessingConfig&);
+		bool ConcreteConfigure(const ProcessingConfig& c);
 
 	public:
-
-		WindowGenerator();
-
-		WindowGenerator(const WindowGeneratorConfig &c);
+		WindowGenerator(const WindowGeneratorConfig &c=Config());
 
 		~WindowGenerator();
 
@@ -102,14 +102,6 @@ class ProcessingConfig;
 		bool Do(DataArray& output);
 		bool Do(Spectrum& output);
 		bool Do(Audio& output);
-
-		// Port interfaces.
-
-		bool SetPrototypes(const DataArray& out);
-
-		bool SetPrototypes();
-
-		bool UnsetPrototypes();
 
 		bool MayDisableExecution() const {return true;}
 
@@ -142,7 +134,8 @@ class ProcessingConfig;
 		void Triangular(long size,DataArray& window) const;
 		void BlackmanHarris92TransMainLobe(long size,DataArray& window) const;
 		void Gaussian(long size,DataArray& window) const;
-	        void Sine(long size,DataArray& window) const;
+		void Sine(long size,DataArray& window) const;
+		void Square(long size,DataArray& window) const;
 	  
 		void InvertWindow(const DataArray& originalWindow,
 		                  DataArray& invertedWindow) const;
