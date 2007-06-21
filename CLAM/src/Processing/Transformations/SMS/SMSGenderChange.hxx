@@ -64,6 +64,13 @@ namespace CLAM{
 		}
  		~SMSGenderChange() {}
 
+		bool ConcreteConfigure( const ProcessingConfig& config )
+		{
+			mControl.SetBounds(0,1);
+			mControl.DoControl(0);
+			return true;
+		}
+
 		bool Do() 
 		{
 			bool result = Do(mInPeaks.GetData(), 
