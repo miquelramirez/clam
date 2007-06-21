@@ -79,6 +79,7 @@ mainSources = {
 	'NetworkEditor' : os.path.join('src','main.cxx'),
 	'Prototyper' : os.path.join('src','prototyper','main.cxx'),
 	'OfflinePlayer' : os.path.join('src','OfflinePlayerMain.cxx'),
+	'TestAudioDatabaseReader' : os.path.join('src','ebowSynthesizer','TestAudioDatabaseReader.cxx'), #TODO provisinal. Will move to CLAM/example
 }
 
 sourcePaths = [
