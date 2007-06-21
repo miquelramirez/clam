@@ -127,7 +127,8 @@ public:
 		eBlackmanHarris92TransMainLobe,
 		eGaussian,
 		eBlackmanHarrisLike,
-		eSine
+		eSine,
+		eSquare
 	};
 
 	static tEnumValue * ValueTable()
@@ -151,6 +152,7 @@ public:
 			{eGaussian,"Gaussian"},
 			{eBlackmanHarrisLike,"BlackmanHarrisLike"},
 			{eSine,"Sine"},
+			{eSquare,"Square"},
 			{0,NULL}
 		};
 		return sValueTable;
