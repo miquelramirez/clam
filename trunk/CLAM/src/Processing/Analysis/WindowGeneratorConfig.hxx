@@ -46,7 +46,7 @@ namespace CLAM {
 
 		virtual Component* Species() const
 		{
-			return (Component*) new EWindowNormalize(eAnalysis);
+			return new EWindowNormalize(eAnalysis);
 		};
 		static tEnumValue * ValueTable()
 		{
