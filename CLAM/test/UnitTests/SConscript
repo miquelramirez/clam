@@ -9,7 +9,7 @@ def scanFiles(pattern, paths) :
 	return files
 
 def recursiveDirs(root) :
-	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
+	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
 def unique(list) :
 	return dict.fromkeys(list).keys()

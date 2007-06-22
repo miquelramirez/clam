@@ -107,10 +107,16 @@ clam.add_subtask("Annotator installation", [
 ] )
 
 clam.add_subtask("NetworkEditor installation", [
-#	{CMD: "echo setting QTDIR to qt3 path ", INFO: erase_QTDIR},
 	"cd $HOME/clam/NetworkEditor",
 	"scons prefix=$HOME/local clam_prefix=$HOME/local",
 	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
+] )
+
+clam.add_subtask("Padova Speech SMS (external repository)", [
+	"cd $HOME/clam/padova-speech-sms/src",
+	{CMD:"svn log -r BASE:HEAD", INFO: lambda x:x },
+	{CMD: "svn up", INFO: lambda x:x },
+	"make",
 ] )
 
 Runner( clam, 
