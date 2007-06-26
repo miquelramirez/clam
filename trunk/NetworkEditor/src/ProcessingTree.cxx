@@ -26,7 +26,8 @@
 
 #ifdef USE_LADSPA
 #	include <CLAM/LadspaPluginsExplorer.hxx> 
-#	include <CLAM/LadspaFactory.hxx> 
+#	include <CLAM/ProcessingFactory.hxx> 
+#	include <CLAM/LadspaWrapperCreator.hxx>
 #endif
 
 namespace NetworkGUI
@@ -194,12 +195,14 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 // TODO: Ladspa is still work in progress 
 	CLAM::LadspaPlugins plugins = CLAM::LadspaPluginsExplorer::GetList();
 	CLAM::LadspaPlugins::const_iterator it=plugins.begin();
+	CLAM::ProcessingFactory & pFactory = CLAM::ProcessingFactory::GetInstance();
 	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (Experimental)" );
 	for (; it != plugins.end(); it++)
 	{
 		const CLAM::LadspaPlugin& plugin = *it;
 		const std::string factoryID(plugin.factoryID);
-		CLAM::LadspaFactory::GetInstance().AddCreator(
+		//std::cout << "[LADSPA] registering " << factoryID << " from " << plugin.libraryFileName << std::endl;
+		pFactory.AddCreator(
 				factoryID, 
 				new CLAM::LadspaWrapperCreator(
 					plugin.libraryFileName, 

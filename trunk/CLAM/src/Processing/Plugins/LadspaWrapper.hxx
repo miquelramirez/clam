@@ -6,8 +6,6 @@
 #include <CLAM/OutControl.hxx>
 #include <CLAM/InControl.hxx>
 #include <CLAM/Processing.hxx>
-#include <CLAM/ProcessingConfig.hxx>
-#include <CLAM/Mapping.hxx>
 
 #include <ladspa.h>
 
