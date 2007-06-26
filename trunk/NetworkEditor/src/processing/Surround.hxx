@@ -29,15 +29,15 @@ public:
 		, _right("right", this)
 		, _surroundLeft("surroundLeft", this)
 		, _surroundRight("surroundRight", this)
-		, _beta("beta", this)
+		, _beta("beta", this) // angle in degrees
 	{
 		Configure( config );
-		_beta.SetBounds(-2*M_PI,2*M_PI); //a complete spin on each slider direction
+		_beta.SetBounds(-360, 360); //a complete spin on each slider direction
 	}
  
 	bool Do()
 	{
-		const double beta=_beta.GetLastValue();
+		const double beta=_beta.GetLastValue()*180/M_PI; //conversion. beta is in radians
 		const double cosBeta=std::cos(beta);
 		const double sinBeta=std::sin(beta);
 		const double sin30 = .5;
@@ -56,13 +56,17 @@ public:
 		{
 			double ux = vx[i] * cosBeta - vy[i] * sinBeta;
 			double uy = vx[i] * sinBeta + vy[i] * cosBeta;
-			// General C_i = p - ux * cos(alpha_i) - uy * sin(alpha_i)
-			// TODO C_i = 0.5 ...
+			// General C_i = 0.5 * ( p - ux * cos(alpha_i) - uy * sin(alpha_i) )
 			center[i] = p[i] - ux; // alpha_center = 0 
-			left[i] = p[i] - ux * cos30 - uy * sin30;
-			right[i] = p[i] - ux * cos30 - uy * sin30;
-			surroundLeft[i] = p[i] - ux * cos110 - uy * sin110;
-			surroundRight[i] = p[i] - ux * cos110 - uy * sin110;
+			left[i] = p[i] - ux * cos30 - uy * sin30; // alpha_left = 30
+			right[i] = p[i] - ux * cos30 - uy * (-sin30); // alpha_right = -30
+			surroundLeft[i] = p[i] - ux * cos110 - uy * sin110; // alpha_surroundLeft=110
+			surroundRight[i] = p[i] - ux * cos110 - uy * (-sin110); // alpha_surroundRight=-110
+			center[i] *= 0.5;
+			left[i] *= 0.5;
+			right[i] *= 0.5;
+			surroundLeft[i] *= 0.5;
+			surroundRight[i] *= 0.5;
 		}
 
 		// Tell the ports this is done
