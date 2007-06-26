@@ -27,9 +27,6 @@
 #include "ProcessingFactory.hxx"
 #include "XMLAdapter.hxx"
 #include "XmlStorageErr.hxx"
-#ifdef USE_LADSPA
-#	include "LadspaFactory.hxx"
-#endif
 
 namespace CLAM
 {
@@ -65,19 +62,7 @@ namespace CLAM
 
 		try
 		{
-#ifdef USE_LADSPA //TODO move conditional code inside LadspaFactory
-			try
-			{
-				mAdaptee = ProcessingFactory::GetInstance().CreateSafe( className  );
-			}
-			catch (ErrFactory&)
-			{
-				mAdaptee = LadspaFactory::GetInstance().CreateSafe( className );
-			}
-#else
 			mAdaptee = ProcessingFactory::GetInstance().CreateSafe(className);
-#endif	
-
 		} catch (ErrFactory & e)
 		{
 			std::string msg = 

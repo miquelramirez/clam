@@ -5,7 +5,7 @@
 
 namespace CLAM {
 
-class LadspaWrapperCreator  
+class LadspaWrapperCreator : public CLAM::Factory<Processing>::Creator 
 {
 private:
 	std::string _libraryFileName;

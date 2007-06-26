@@ -24,7 +24,7 @@
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
 #if USE_LADSPA
-#include <CLAM/LadspaFactory.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #endif
 // for faust testing
 #include <QtSvg/QSvgWidget>
@@ -386,10 +386,12 @@ public slots:
 	{
 		QMessageBox::warning(this, tr("Feature not implemented"),
 			tr(
-				"<p>Compile and load Faust</p>\n"
-				"<p>Compile all .dsp (Faust) files in the faust_dir and load all generated Ladspa plugins.</p>\n"
+				"<p>FAUST: WORK IN PROGRESS</p>\n"
+//				"<p>Compile and load Faust</p>\n"
+//				"<p>Compile all .dsp (Faust) files in the faust_dir and load all generated Ladspa plugins.</p>\n"
 			));
 		// clear the current map of ladspa's
+		/*
 #if USE_LADSPA
 		CLAM::LadspaFactory::GetInstance().Clear();
 #endif
@@ -422,6 +424,7 @@ public slots:
 		// attach it to the dock
 		dock->setWidget(processingTree);
 		addDockWidget(Qt::LeftDockWidgetArea, dock);
+		*/
 	}
 	void on_action_Quit_triggered()
 	{

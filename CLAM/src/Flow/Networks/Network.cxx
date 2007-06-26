@@ -29,7 +29,7 @@
 #include "ProcessingFactory.hxx"
 #include "XmlStorageErr.hxx"
 #ifdef USE_LADSPA //TODO alway include it. move conditional code in LFactory.hxx
-#	include "LadspaFactory.hxx"
+#	include "ProcessingFactory.hxx"
 #endif
 
 namespace CLAM
@@ -196,18 +196,7 @@ namespace CLAM
 	void Network::AddProcessing( const std::string & name, const std::string & factoryKey )
 	{
 		Processing * proc=0;
-#ifdef USE_LADSPA //TODO move conditional code inside LadspaFactory
-		try
-		{
-			proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
-		}
-		catch (ErrFactory&)
-		{
-			proc = LadspaFactory::GetInstance().CreateSafe( factoryKey );
-		}
-#else 
 		proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
-#endif
 		AddProcessing(name, proc);
 	}
 
