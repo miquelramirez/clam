@@ -67,5 +67,6 @@ public:
 	}
 };
 
-static __q_clam_assert_handler_registrator__ _theAssertHandlerRegistrator;
+//TODO make it work in NetworkEditor: save the BT in the Network and notify Qt thread
+//static __q_clam_assert_handler_registrator__ _theAssertHandlerRegistrator;
 
