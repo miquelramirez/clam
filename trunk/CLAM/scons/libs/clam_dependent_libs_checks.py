@@ -43,7 +43,7 @@ def setup_global_environment( env, conf ) :
 		env.Append( CPPDEFINES=[
 			'_USE_MATH_DEFINES',
 			'WIN32',
-			)
+			])
 		if env['release'] :
 			env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /Og /G7 /GL /W3 /Zm1000' )
 			env.Append( LINKFLAGS = ['/OPT:NOREF'] )
