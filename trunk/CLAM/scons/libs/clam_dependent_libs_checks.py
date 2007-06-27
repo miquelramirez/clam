@@ -40,12 +40,15 @@ def setup_global_environment( env, conf ) :
 		else :
 			env.Append( CCFLAGS='-g -Wall'.split(' ') )
 	else :
+		env.Append( CPPDEFINES=[
+			'_USE_MATH_DEFINES',
+			'WIN32',
+			)
 		if env['release'] :
-			env.Append( CPPFLAGS = ['-DWIN32'] )
 			env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /Og /G7 /GL /W3 /Zm1000' )
 			env.Append( LINKFLAGS = ['/OPT:NOREF'] )
 		else :
-			env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
+			env.Append( CPPDEFINES = ['_DEBUG'] )
 			env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
 			env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
