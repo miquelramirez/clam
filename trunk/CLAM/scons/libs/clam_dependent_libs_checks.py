@@ -41,7 +41,7 @@ def setup_global_environment( env, conf ) :
 			env.Append( CCFLAGS='-g -Wall'.split(' ') )
 	else :
 		env.Append( CPPDEFINES=[
-			'_USE_MATH_DEFINES',
+			'_USE_MATH_DEFINES', # Math Posix compatibility for MSVC
 			'WIN32',
 			])
 		if env['release'] :
