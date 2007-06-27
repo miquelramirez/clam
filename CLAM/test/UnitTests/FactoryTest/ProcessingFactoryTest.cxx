@@ -13,10 +13,17 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ProcessingFactoryTest );
 class ProcessingFactoryTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( ProcessingFactoryTest );
-//	CPPUNIT_TEST( test );
+	CPPUNIT_TEST( testGetListOfKeys_empty );
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
+	class DummyCreator : public CLAM::Factory<CLAM::Processing>::Creator
+	{
+		CLAM::Processing* Create()
+		{
+			return 0;
+		}
+	};
 public:
 	void setUp()
 	{
@@ -28,10 +35,32 @@ public:
 	// Tests definition :
 protected:
 
-	void test()
+	void testGetListOfKeys_empty()
 	{
-		CPPUNIT_FAIL("RED");
+		CLAM::ProcessingFactory factory;
+		CLAM::ProcessingFactory::Key result = factory.GetListOfKeys("category");
+		CPPUNIT_ASSERT_EQUAL(0, result.size() );
 	}
+
+	void testGetListOfKeys_twoElements()
+	{
+		CLAM::ProcessingFactory factory;
+		factory.AddCreator("the key", new DummyCreator());
+	//	factory.AddAttribute("first", "category", "spectral");
+	//	factory.AddAttribute("second", "category", "time-domain");
+		CLAM::ProcessingFactory::Key result = factory.GetListOfKeys("category", "spectral");
+		CPPUNIT_ASSERT_EQUAL(1, result.size() );
+		CPPUNIT_ASSERT_EQUAL(std::string("first"), result.head() );
+	}
+	void testGetValuesOf_empty()
+	{
+	}
+	/*
+	 *
+	 * vendors = GetValuesFor("category")
+	for a in vendors
+		keys = GetListOfKeys("category", a)
+		*/
 };
 
 
