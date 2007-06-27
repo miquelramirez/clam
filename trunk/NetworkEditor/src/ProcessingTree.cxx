@@ -202,7 +202,7 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 		const CLAM::LadspaPlugin& plugin = *it;
 		const std::string factoryID(plugin.factoryID);
 		//std::cout << "[LADSPA] registering " << factoryID << " from " << plugin.libraryFileName << std::endl;
-		pFactory.AddCreator(
+		pFactory.AddCreatorWarningRepetitions(
 				factoryID, 
 				new CLAM::LadspaWrapperCreator(
 					plugin.libraryFileName, 
