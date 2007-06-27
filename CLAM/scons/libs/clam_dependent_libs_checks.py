@@ -40,15 +40,15 @@ def setup_global_environment( env, conf ) :
 		else :
 			env.Append( CCFLAGS='-g -Wall'.split(' ') )
 	else :
-		env.Append( CPPDEFINES=[
-			'_USE_MATH_DEFINES', # Math Posix compatibility for MSVC
-			'WIN32',
+		env.Append( CPPFLAGS=[
+			'-D_USE_MATH_DEFINES', # Math Posix compatibility for MSVC
+			'-DWIN32',
 			])
 		if env['release'] :
 			env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /Og /G7 /GL /W3 /Zm1000' )
 			env.Append( LINKFLAGS = ['/OPT:NOREF'] )
 		else :
-			env.Append( CPPDEFINES = ['_DEBUG'] )
+			env.Append( CPPFLAGS = ['-D_DEBUG'] )
 			env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
 			env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
@@ -285,7 +285,7 @@ def test_xml_backend( env, conf ) :
 	if env['xmlbackend'] in ('both','xmlpp') :
 		if env['pkg_config_available'] :
 			pkgconfig='pkg-config'
-			if crosscompiling : pkgconfig='PKG_CONFIG_PATH=%s/gtk/lib/pkg-config wine pkg-config'%env["clam_sandbox"]
+			if crosscompiling : pkgconfig='PKG_CONFIG_PATH=%s/gtk/lib/pkgconfig %s/gtk/bin/pkg-config.exe'%(env["sandbox_path"],env["sandbox_path"])
 			try : env.ParseConfig( pkgconfig+' --cflags --libs libxml++-2.6' )
 			except:
 				return config_error( "Error: pkg-config could not find libxml options." )
