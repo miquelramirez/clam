@@ -192,8 +192,7 @@ public: // Inner classes. Public for better testing
 				std::string errmsg("Adding creator method in the factory: CreatorId '");
 				errmsg += creatorId + "' was already registered.\nRegistered keys are:\n";
 				errmsg += GetRegisteredNames();
-				//CLAM_ASSERT(res, errmsg.c_str());
-				CLAM_WARNING(false, errmsg.c_str());
+				CLAM_ASSERT(res, errmsg.c_str());
 			}
 		}
 		void AddCreatorWarningRepetitions( RegistryKey creatorId, Creator* creator ) 
