@@ -167,12 +167,12 @@ namespace CLAM
 		{
 			bool vertical = (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight);
 			int size = vertical? mViewport.h : mViewport.w;
-			int labelSpan = vertical ? mLabelHeight+6 : GetMaxLabelWidth()+6;
+			int labelSpan = 6 + (vertical? mLabelHeight: GetMaxLabelWidth()); 
 			mValuesToDraw.clear();
 			int nTicks = GetTicks();
 			if(nTicks <= 0) return;
 			_majorTicks.setWidth(size);
-			_majorTicks.setMinGap(labelSpan+6);
+			_majorTicks.setMinGap(labelSpan);
 			_majorTicks.setRange(mCurrentRange.min,mCurrentRange.max);
 			double markGap = _majorTicks.markGap();
 			for (double tick = _majorTicks.markOffset();
@@ -312,7 +312,7 @@ namespace CLAM
 			int decimals = mShowFloats? 2 : 0;
 			QString minLabel = QString::number(mCurrentRange.min,'f',decimals);
 			QString maxLabel = QString::number(mCurrentRange.max,'f',decimals);
-			return std::max(fm.width(minLabel), fm.width(maxLabel));
+			return fm.maxWidth() * std::max(minLabel.length(), maxLabel.length());
 		}
 
 		bool Ruler::IsVisible(double value)
