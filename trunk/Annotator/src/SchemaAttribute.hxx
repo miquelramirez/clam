@@ -71,7 +71,7 @@ namespace CLAM_Annotator{
 	
 	class SchemaAttribute:public CLAM::DynamicType
 	{
-		DYNAMIC_TYPE(SchemaAttribute,11);
+		DYNAMIC_TYPE(SchemaAttribute,14);
 		DYN_ATTRIBUTE(0, public, std::string, Name); ///< The attribute name, unique within the scope.
 		DYN_ATTRIBUTE(1, public, std::string, Scope); ///< The scope name at which the attribute sticks.
 		DYN_ATTRIBUTE(2, public, std::string, Type); ///< The type name. Should be at the Type factory.
@@ -88,7 +88,14 @@ namespace CLAM_Annotator{
 		DYN_ATTRIBUTE(9, public, SegmentationPolicy, SegmentationPolicy);
 		/// To be added when you have a float array
 		DYN_CONTAINER_ATTRIBUTE(10, public, std::list<std::string>, BinLabels, Value);
-
+		/// To be added when you have a float array and are looking to store MFCC or Spectrum data
+		/// Store First Bin Frequency
+		DYN_ATTRIBUTE(11, public, CLAM::TData, FirstBinFreq);
+		/// Store Frequency Gap between Bins
+		DYN_ATTRIBUTE(12, public, CLAM::TData, BinGap);
+		/// Store Number of Bins
+		DYN_ATTRIBUTE(13, public, CLAM::TData, NBins);
+		
 		
 		void DefaultInit();
 	public:
@@ -124,6 +131,9 @@ namespace CLAM_Annotator{
 			StoreChildScope(storage);
 			StoreSegmentationPolicy(storage);
 			StoreBinLabels(storage);
+			StoreFirstBinFreq(storage);
+			StoreBinGap(storage);
+			StoreNBins(storage);
 		}
 		
 		void LoadFrom(CLAM::Storage & storage)
@@ -145,6 +155,9 @@ namespace CLAM_Annotator{
 			LoadChildScope(storage);
 			LoadSegmentationPolicy(storage);
 			LoadBinLabels(storage);
+			LoadFirstBinFreq(storage);
+			LoadBinGap(storage);
+			LoadNBins(storage);
 			UpdateData();
 			UpdateTypePlugin();
 		}
