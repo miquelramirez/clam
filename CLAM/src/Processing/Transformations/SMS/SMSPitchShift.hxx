@@ -56,25 +56,33 @@ namespace CLAM{
 		OutPort<Spectrum> mOutSpectrum;
 
 		InControl mIsHarmonic;
-		
-
+		InControl mPitchSteps;
 	public:
 		SMSPitchShift()
-			: 
-			mInPeaks("In SpectralPeaks", this), 
-			mOutPeaks("Out SpectralPeaks", this), 
+			:
+			mInPeaks("In SpectralPeaks", this),
+			mOutPeaks("Out SpectralPeaks", this),
 			mInFundamental("In Fundamental", this),
 			mOutFundamental("Out Fundamental", this),
-			mInSpectrum("In Spectrum", this), 
-			mOutSpectrum("Out Spectrum", this), 
-			mIsHarmonic("Harmonic",this),
-			mIgnoreResidual("IgnoreResidual,this")
+			mInSpectrum("In Spectrum", this),
+			mOutSpectrum("Out Spectrum", this),
+			mIsHarmonic("Harmonic", this),
+			mIgnoreResidual("IgnoreResidual", this),
+			mPitchSteps("PitchSteps", this)
 		{
 			Configure( SegmentTransformationConfig() );
-			mIgnoreResidual.DoControl(0.);
 		}
 
  		~SMSPitchShift() {}
+
+		bool ConcreteConfigure( const ProcessingConfig& config )
+		{
+			mPitchSteps.SetBounds(1,100);
+			mPitchSteps.DoControl(1);
+
+			mIgnoreResidual.DoControl(0.);
+			return true;
+		}
 
 		bool Do(const SpectralPeakArray& inPeaks,
 		        const Fundamental& inFund,
@@ -87,11 +95,11 @@ namespace CLAM{
 
 		bool Do()
 		{
-			bool result = Do(mInPeaks.GetData(), 
-					mInFundamental.GetData(), 
-					mInSpectrum.GetData(), 
-					mOutPeaks.GetData(), 
-					mOutFundamental.GetData(), 
+			bool result = Do(mInPeaks.GetData(),
+					mInFundamental.GetData(),
+					mInSpectrum.GetData(),
+					mOutPeaks.GetData(),
+					mOutFundamental.GetData(),
 					mOutSpectrum.GetData()
 					);
 
