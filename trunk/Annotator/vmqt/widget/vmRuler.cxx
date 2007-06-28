@@ -167,6 +167,7 @@ namespace CLAM
 		{
 			bool vertical = (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight);
 			int size = vertical? mViewport.h : mViewport.w;
+			mShowFloats=mCurrentRange.Span()<10;
 			int labelSpan = 6 + (vertical? mLabelHeight: GetMaxLabelWidth()); 
 			mValuesToDraw.clear();
 			int nTicks = GetTicks();
@@ -308,11 +309,8 @@ namespace CLAM
 		int Ruler::GetMaxLabelWidth()
 		{
 			QFontMetrics fm(mFont);
-			if(mScale==CLAM::VM::eLogScale) return fm.width("-0.0e+00");
-			int decimals = mShowFloats? 2 : 0;
-			QString minLabel = QString::number(mCurrentRange.min,'f',decimals);
-			QString maxLabel = QString::number(mCurrentRange.max,'f',decimals);
-			return fm.maxWidth() * std::max(minLabel.length(), maxLabel.length());
+			if(mScale==CLAM::VM::eLogScale) return fm.width("-00.0e+00");
+			return 8*fm.width('0');
 		}
 
 		bool Ruler::IsVisible(double value)
