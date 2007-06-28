@@ -5,13 +5,14 @@ import os
 # $HOME/manyclams/10216local/
 # $HOME/manyclams/10216clam/
 # etc.
+print "WARNING: each sandbox can weight around 1GB!!"
 for rev in range(10216,10220) :
 	vars = {
 			"rev": rev, 
 			"prefix": "%s/manyclams/%slocal" % (os.environ["HOME"], rev),
 			"sandbox": "%s/manyclams/%sclam" % (os.environ["HOME"], rev)
 		}
-	print vars
+
 	print "\n\n __  Checkout %s\n\n" % rev
 	print os.popen("""
 		cd ~/manyclams
@@ -29,7 +30,7 @@ for rev in range(10216,10220) :
 
 	print "\n\n __  NetworkEditor compilation %s \n\n"% rev
 	print os.popen("""
-		cd %(sandbox)/NetworkEditor
+		cd %(sandbox)s/NetworkEditor
 		scons -j3 clam_prefix=%(prefix)s prefix=%(prefix)s
 		""" % vars ).read()
 
