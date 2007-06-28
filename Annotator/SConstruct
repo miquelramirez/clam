@@ -129,9 +129,7 @@ if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
 else :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['prefix'] + '/share/annotator\\""')
-if sys.platform=='win32' :
-	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
-else:
+if sys.platform!='win32' :
 	# TODO: This should not be hardcoded neither prefix (because package intall)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"%s\\""'%env['prefix'] + '/share/annotator/example-data')
 
