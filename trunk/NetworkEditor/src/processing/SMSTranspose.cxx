@@ -40,7 +40,7 @@ bool SMSTranspose::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	DataArray& ifreqArray=in.GetFreqBuffer();
 	DataArray& ofreqArray=out.GetFreqBuffer();
 	TSize nPeaks=in.GetnPeaks();
-	TData amount=mAmount.GetLastValue();
+	TData amount=mControl.GetLastValue();
 	for(int i=0;i<nPeaks;i++)
 		ofreqArray[i]=ifreqArray[i]*std::pow(toneFactor,amount);
 	return true;

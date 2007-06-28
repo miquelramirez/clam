@@ -35,23 +35,23 @@ namespace Hidden
 
 bool SMSPitchDiscretization::Do(const Frame& in, Frame& out)
 {
-	return Do( in.GetSpectralPeakArray(), 
-		in.GetFundamental(), 
-		in.GetSpectrum(), 
+	return Do(in.GetSpectralPeakArray(), 
+		  in.GetFundamental(), 
+		  in.GetSpectrum(), 
 		
-		out.GetSpectralPeakArray(), 
-		out.GetFundamental(), 
-		out.GetSpectrum() 
+		  out.GetSpectralPeakArray(), 
+		  out.GetFundamental(), 
+		  out.GetSpectrum() 
 	);
 }
 
-bool SMSPitchDiscretization::Do( 	const SpectralPeakArray& inPeaks, 
-									const Fundamental& inFund, 
-									const Spectrum& inSpectrum, 
-									SpectralPeakArray& outPeaks, 
-									Fundamental& outFund,
-									Spectrum& outSpectrum
-								)
+bool SMSPitchDiscretization::Do(const SpectralPeakArray& inPeaks, 
+				const Fundamental& inFund, 
+				const Spectrum& inSpectrum, 
+				SpectralPeakArray& outPeaks, 
+				Fundamental& outFund,
+				Spectrum& outSpectrum
+				)
 {
 	outPeaks = inPeaks;
 	outFund = inFund;
@@ -69,7 +69,7 @@ bool SMSPitchDiscretization::Do( 	const SpectralPeakArray& inPeaks,
 		
 		TData amount=discPitch/pitch;
 
-		mPitchShift.GetInControl("Amount").DoControl(amount);
+		mPitchShift.GetInControl("PitchSteps").DoControl(amount);
 		mPitchShift.Do( inPeaks, 
 		                inFund, 
 		                inSpectrum, 
@@ -82,9 +82,7 @@ bool SMSPitchDiscretization::Do( 	const SpectralPeakArray& inPeaks,
 		outFund = tmpFund;
 	}
 	return true;
-
 }
 
 
 }
-

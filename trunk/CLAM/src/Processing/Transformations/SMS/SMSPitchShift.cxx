@@ -47,7 +47,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 			outRes = inRes;
 	}
 
-	TData amount=mAmount.GetLastValue();
+	TData amount = mPitchSteps.GetLastValue();
 	if(amount==1)//no pitch shift
 		return true;
 	

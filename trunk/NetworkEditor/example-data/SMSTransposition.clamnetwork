@@ -5,22 +5,6 @@
 
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
 
-  <processing id="OutControlSender_0" type="OutControlSender">
-    <Min>-36</Min>
-    <Default>0</Default>
-    <Max>36</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
-  <processing id="OutControlSender_1" type="OutControlSender">
-    <Min>-36</Min>
-    <Default>0</Default>
-    <Max>36</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Vertical Slider</ControlRepresentation>
-  </processing>
-
   <processing id="PeakView_0" type="PeakView"/>
 
   <processing id="PeakView_1" type="PeakView"/>
@@ -224,6 +208,22 @@
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
+  <processing id="Transpose amount" type="OutControlSender">
+    <Min>-36</Min>
+    <Default>0</Default>
+    <Max>36</Max>
+    <Step>0.36</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Transpose amount_0" type="OutControlSender">
+    <Min>-36</Min>
+    <Default>0</Default>
+    <Max>36</Max>
+    <Step>0.36</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
   <processing id="Transposed_0" type="AudioSink"/>
 
   <processing id="Transposed_1" type="AudioSink"/>
@@ -294,13 +294,13 @@
   </port_connection>
 
   <control_connection>
-    <out>OutControlSender_0.out</out>
-    <in>SMSTranspose_0.Amount</in>
+    <out>Transpose amount.out</out>
+    <in>SMSTranspose_0.Transpose amount</in>
   </control_connection>
 
   <control_connection>
-    <out>OutControlSender_1.out</out>
-    <in>SMSTranspose_1.Amount</in>
+    <out>Transpose amount_0.out</out>
+    <in>SMSTranspose_1.Transpose amount</in>
   </control_connection>
 
 </network>

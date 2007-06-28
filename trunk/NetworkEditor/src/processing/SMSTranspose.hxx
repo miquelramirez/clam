@@ -39,6 +39,7 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
+		InControl mControl;
 	public:
 		const char* GetClassName() const
 		{
@@ -47,13 +48,21 @@ namespace CLAM{
 
 		SMSTranspose() 
 			: 
-			mIn("In SpectralPeaks", this), 
-			mOut("Out SpectralPeaks", this) 
+			mIn("In SpectralPeaks", this),
+			mOut("Out SpectralPeaks", this),
+			mControl("Transpose amount", this)
 		{
 			Configure( FrameTransformationConfig() );
 		}
 
- 		~SMSTranspose() {}	
+ 		~SMSTranspose() {}
+
+		bool ConcreteConfigure( const ProcessingConfig& config )
+		{
+			mControl.SetBounds(-36,36);
+			mControl.DoControl(0);
+			return true;
+		}
 		
 		bool Do(const Frame& in, Frame& out)
 		{

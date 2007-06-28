@@ -1067,7 +1067,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QPixmapButton" name="InControlBool__SMSGenderChange_0__Amount" >
+            <widget class="QPixmapButton" name="InControlBool__SMSGenderChange_0__Control" >
              <property name="text" >
               <string>Female</string>
              </property>
@@ -1075,7 +1075,7 @@
               <bool>true</bool>
              </property>
              <property name="checked" >
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
              <property name="autoExclusive" >
               <bool>true</bool>
@@ -2229,16 +2229,6 @@
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
-   <class>QPixmapButton</class>
-   <extends>QWidget</extends>
-   <header>PixmapWidgets.hxx</header>
-  </customwidget>
-  <customwidget>
-   <class>Oscilloscope</class>
-   <extends>QWidget</extends>
-   <header>Oscilloscope.hxx</header>
-  </customwidget>
-  <customwidget>
    <class>Vumeter</class>
    <extends>QWidget</extends>
    <header>Vumeter.hxx</header>
@@ -2247,6 +2237,16 @@
    <class>PeakView</class>
    <extends>QWidget</extends>
    <header>PeakView.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>QPixmapButton</class>
+   <extends>QWidget</extends>
+   <header>PixmapWidgets.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>Oscilloscope.hxx</header>
   </customwidget>
  </customwidgets>
  <tabstops>

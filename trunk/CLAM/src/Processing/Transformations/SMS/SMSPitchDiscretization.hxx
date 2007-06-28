@@ -62,13 +62,14 @@ namespace CLAM{
  		~SMSPitchDiscretization() {}
 
 		bool Do()
-		{	bool result = Do(mInPeaks.GetData(), 
-					  		mInFund.GetData(), 
-						 	mInSpectrum.GetData(), 
-							mOutPeaks.GetData(), 
-							mOutFund.GetData(),
-							mOutSpectrum.GetData() 
-						 );
+		{	
+			bool result = Do(mInPeaks.GetData(),
+					 mInFund.GetData(),
+					 mInSpectrum.GetData(),
+					 mOutPeaks.GetData(),
+					 mOutFund.GetData(),
+					 mOutSpectrum.GetData()
+					 );
 
 			mInPeaks.Consume();
 			mOutPeaks.Produce();
@@ -82,18 +83,18 @@ namespace CLAM{
 
 		bool Do(const Frame& in, Frame& out);
 
-		bool Do(    const SpectralPeakArray& inPeaks,                                                                                                            const Fundamental& inFund,
-		                                    const Spectrum& inSpectrum,
-											SpectralPeakArray& outPeaks,
-											Fundamental& outFund,
-											Spectrum& outSpectrum
-										);
+		bool Do(const SpectralPeakArray& inPeaks,
+			const Fundamental& inFund,
+			const Spectrum& inSpectrum,
+			SpectralPeakArray& outPeaks,
+			Fundamental& outFund,
+			Spectrum& outSpectrum
+			);
 
 	private:
-
 		const char *GetClassName() const {return "SMSPitchDiscretization";}
 		
-	};		
+	};
 } //namespace CLAM
 
 #endif // _SMSPitchDiscretization_
