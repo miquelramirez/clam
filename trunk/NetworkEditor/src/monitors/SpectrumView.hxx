@@ -84,6 +84,7 @@ public:
 		int size = _dataSource->nBins();
 
 		QPainter painter(this);
+		painter.setRenderHint(QPainter::Antialiasing);
 		painter.scale(width(),height()/7.0);
 		painter.setPen(_lineColor);
 		QPolygonF _line;
