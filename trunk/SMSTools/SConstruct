@@ -167,9 +167,6 @@ if sys.platform=='linux2' :
 if sys.platform=='win32' :
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"' + env['prefix'] + '/share/smstools/example-data\\""')
 
-if sys.platform=='win32' :
-	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
-
 if sys.platform=='linux2' :
 	if env['release'] :
 		env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )

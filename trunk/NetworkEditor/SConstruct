@@ -116,8 +116,6 @@ if uifiles: uiheaders = env.Uic4(source=uifiles)
 if sys.platform=="win32" :
 	sources += env.RES(source=["resources/NetworkEditor.rc"])
 
-if sys.platform=='win32' :
-	env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined
 if sys.platform=='linux2' :
 	# TODO: This should not be hardcoded neither prefix (because package install)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
