@@ -2489,7 +2489,7 @@
         <string>Transposition 1</string>
        </property>
        <property name="buddy" >
-        <cstring>InControlInteger__SMSTranspose_1__Amount</cstring>
+        <cstring>InControl__SMSTranspose_1__Transpose___amount</cstring>
        </property>
       </widget>
      </item>
@@ -2509,7 +2509,7 @@
       </widget>
      </item>
      <item row="1" column="1" >
-      <widget class="QSlider" name="InControlInteger__SMSTranspose_1__Amount" >
+      <widget class="QSlider" name="InControl__SMSTranspose_1__Transpose___amount" >
        <property name="minimum" >
         <number>-24</number>
        </property>
@@ -2527,7 +2527,7 @@
         <string>Transposition 2</string>
        </property>
        <property name="buddy" >
-        <cstring>InControlInteger__SMSTranspose_1__Amount</cstring>
+        <cstring>InControl__SMSTranspose_1__Transpose___amount</cstring>
        </property>
       </widget>
      </item>
@@ -2552,7 +2552,7 @@
       </widget>
      </item>
      <item row="0" column="1" >
-      <widget class="QSlider" name="InControlInteger__SMSTranspose_0__Amount" >
+      <widget class="QSlider" name="InControl__SMSTranspose_0__Transpose___amount" >
        <property name="minimum" >
         <number>-24</number>
        </property>
@@ -2684,11 +2684,6 @@
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
-   <class>Oscilloscope</class>
-   <extends>QWidget</extends>
-   <header>Oscilloscope.hxx</header>
-  </customwidget>
-  <customwidget>
    <class>Vumeter</class>
    <extends>QWidget</extends>
    <header>Vumeter.hxx</header>
@@ -2698,9 +2693,14 @@
    <extends>QWidget</extends>
    <header>PeakView.hxx</header>
   </customwidget>
+  <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>Oscilloscope.hxx</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>InControlInteger__SMSTranspose_1__Amount</tabstop>
+  <tabstop>InControl__SMSTranspose_1__Transpose___amount</tabstop>
   <tabstop>PlayButton</tabstop>
   <tabstop>StopButton</tabstop>
   <tabstop>CloseButton</tabstop>
@@ -2726,7 +2726,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>InControlInteger__SMSTranspose_1__Amount</sender>
+   <sender>InControl__SMSTranspose_1__Transpose___amount</sender>
    <signal>valueChanged(int)</signal>
    <receiver>lCDNumber1_2</receiver>
    <slot>display(int)</slot>
@@ -2742,7 +2742,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>InControlInteger__SMSTranspose_0__Amount</sender>
+   <sender>InControl__SMSTranspose_0__Transpose___amount</sender>
    <signal>valueChanged(int)</signal>
    <receiver>lCDNumber1_3</receiver>
    <slot>display(int)</slot>
