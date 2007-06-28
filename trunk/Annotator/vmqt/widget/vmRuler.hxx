@@ -24,6 +24,7 @@
 
 #include <vector>
 #include <QtOpenGL/QGLWidget>
+#include <QtGui/QColor>
 #undef GetClassName
 #include "vmDataTypes.hxx"
 
@@ -43,6 +44,8 @@ namespace CLAM
 			void SetScale(ERulerScale scale);
 			ERulerScale GetScale() const;
 	    
+			void SetBackgroundColor(const QColor& c);
+			void SetForegroundColor(const QColor& c);
 			void SetBackgroundColor(const Color& c);
 			void SetForegroundColor(const Color& c);
 	
@@ -73,8 +76,8 @@ namespace CLAM
 			GLViewport  mViewport;
 			Range       mTotalRange;
 			Range       mCurrentRange;
-			Color       mBgColor;
-			Color       mFgColor;
+			QColor       mBgColor;
+			QColor       mFgColor;
 
 			std::vector<double> mValuesToDraw;
 
@@ -90,7 +93,6 @@ namespace CLAM
 			void DrawLabels();
 
 			int GetTicks();
-			int TestTicksForSpan();
 			int GetMaxLabelWidth();
 			bool IsVisible(double value);
 			double Round(double x);
