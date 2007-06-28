@@ -15,13 +15,13 @@ for rev in range(10216,10220) :
 
 	print "\n\n __  Checkout %s\n\n" % rev
 	print os.popen("""
+		mkdir -p %(prefix)s
 		cd ~/manyclams
-		svn co http://iua-share.upf.edu/svn/clam/trunk -r%(rev)s %(rev)sclam
+		svn export http://iua-share.upf.edu/svn/clam/trunk -r%(rev)s %(sandbox)s
 		""" % vars ).read()
 
 	print "\n\n __  CLAM compilation %s \n\n"% rev
 	print os.popen("""
-		mkdir -p %(prefix)s
 		cd %(sandbox)s/CLAM
 		scons configure prefix=/home/parumi/manyclams/%(rev)slocal
 		scons -j3
