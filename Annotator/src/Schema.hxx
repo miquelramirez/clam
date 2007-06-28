@@ -88,8 +88,32 @@ namespace CLAM_Annotator{
 			schemaAttribute.UpdateData();
 			for (const char ** value = keys; *value; value++)
 				schemaAttribute.GetBinLabels().push_back(*value);
+
 			AddAttribute(schemaAttribute);
 		}
+		
+		void AddFloatArray(
+				const std::string & scope,
+				const std::string & attribute,
+				double firstBin,
+				double binGap,
+				int nBins)
+		{
+			CLAM_Annotator::SchemaAttribute schemaAttribute;
+			schemaAttribute.SetScope(scope);
+			schemaAttribute.SetName(attribute);
+			schemaAttribute.SetType("FloatArray");
+			
+			schemaAttribute.AddFirstBinFreq();
+			schemaAttribute.AddBinGap();
+			schemaAttribute.AddNBins();
+			schemaAttribute.SetFirstBinFreq(firstBin);
+			schemaAttribute.SetBinGap(binGap);
+			schemaAttribute.SetNBins(nBins);
+			
+			AddAttribute(schemaAttribute);
+		}
+
 		void AddRangedInt(
 				const std::string & scope,
 				const std::string & attribute,

@@ -214,6 +214,18 @@ void SchemaBrowser::updateCurrentAttribute()
 		}
 		documentation+=".</li>";
 	}
+	if (attributeSchema.HasFirstBinFreq())
+	{
+		documentation+=tr("<li><b>First Bin Frequency:</b> %1</li>").arg(attributeSchema.GetFirstBinFreq());
+	}
+	if (attributeSchema.HasBinGap())
+	{
+		documentation+=tr("<li><b>Bin Gap:</b> %1</li>").arg(attributeSchema.GetBinGap());
+	}
+	if (attributeSchema.HasNBins())
+	{
+		documentation+=tr("<li><b>Number of Bins:</b> %1</li>").arg(attributeSchema.GetNBins());
+	}
 	if (attributeSchema.HasUnits())
 	{
 		documentation+=tr("<li><b>Units:</b> %1</li>").arg(attributeSchema.GetUnits().c_str());
