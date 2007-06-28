@@ -149,7 +149,7 @@ manpages = [
 	'resources/man/man1/ClamExtractorExample.1',
 	]
 example_data = [
-	'Samples/Chords.pro'
+	'example-data/Chords.pro'
 	]
 
 chordSources = scanFiles("*.cxx", ["src/ChordExtractor"])
@@ -189,11 +189,11 @@ if len(tsfiles) :
 
 examples = []
 for ext in ['pro', 'sc']:
-	examples += scanFiles('*.%s'%ext, ['Samples'])
+	examples += scanFiles('*.%s'%ext, ['example-data'])
 
 song_examples = []
 for ext in ['pool', 'chords', 'mp3', 'wav', 'ogg']:
-	song_examples += scanFiles('*.%s'%ext, ['Samples/SongsTest'])
+	song_examples += scanFiles('*.%s'%ext, ['example-data/SongsTest'])
 
 menuEntries = glob.glob('resources/*.desktop')
 
@@ -249,7 +249,7 @@ if sys.platform=='darwin' :
 	arch = os.popen("uname -p").read().strip()
 	mac_packages = env.Dmg('CLAM_Annotator-%s-%s.dmg'% (fullVersion, arch), [
 		env.Dir('Annotator.app/'),
-		env.Dir('Samples/'),
+		env.Dir('example-data/'),
 	]+installTargets )
 	env.Alias('package', mac_packages)
 
