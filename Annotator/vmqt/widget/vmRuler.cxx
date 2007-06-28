@@ -22,7 +22,7 @@
 #include <QtGui/QResizeEvent>
 #include "vmRuler.hxx"
 #include <CLAM/RulerTicks.hxx>
-
+#include <iostream> // TODO: Remove after debug
 namespace CLAM
 {
 	namespace VM
@@ -165,36 +165,21 @@ namespace CLAM
 
 		void Ruler::Rebuild()
 		{
+			bool vertical = (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight);
+			int size = vertical? mViewport.h : mViewport.w;
+			int labelSpan = vertical ? mLabelHeight+6 : GetMaxLabelWidth()+6;
 			mValuesToDraw.clear();
 			int nTicks = GetTicks();
 			if(nTicks <= 0) return;
-			int size = (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight)?
-				mViewport.h : mViewport.w;
-			if(mStep)
+			_majorTicks.setWidth(size);
+			_majorTicks.setMinGap(labelSpan+6);
+			_majorTicks.setRange(mCurrentRange.min,mCurrentRange.max);
+			double markGap = _majorTicks.markGap();
+			for (double tick = _majorTicks.markOffset();
+				tick<mCurrentRange.max;
+				tick+=markGap)
 			{
-				double div = Round(mCurrentRange.Span()/mStep);
-				if(!div) return;
-				// first tick
-				int tick = size/(nTicks-1);
-				double value = double(tick)*mCurrentRange.Span()/double(size)+mCurrentRange.min;;
-				mValuesToDraw.push_back(Round((value-mTotalRange.min)/mStep)*mStep+mTotalRange.min);
-				if(nTicks == 1) return;
-				double step = Ceil(div/double(nTicks-1))*mStep;
-				for(int i=1; i < nTicks-1; i++)
-				{
-					value = mValuesToDraw[0]+double(i)*step;
-					if(!IsVisible(value)) break;
-					mValuesToDraw.push_back(value);
-				}
-			}
-			else
-			{
-				for(int i=1; i < nTicks-1; i++)
-				{
-					int tick = i*(size/(nTicks-1));
-					double value = double(tick)*mCurrentRange.Span()/double(size)+mCurrentRange.min;;
-					mValuesToDraw.push_back(value);
-				}
+				mValuesToDraw.push_back(tick);
 			}
 		}
 

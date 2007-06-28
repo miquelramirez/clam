@@ -23,9 +23,11 @@
 #define __VMQT_RULER_H__
 
 #include <vector>
-#include <QtOpenGL/QGLWidget>
 #include <QtGui/QColor>
+#include <QtOpenGL/QGLWidget>
 #undef GetClassName
+#include <CLAM/RulerTicks.hxx>
+#include <vector>
 #include "vmDataTypes.hxx"
 
 namespace CLAM
@@ -99,6 +101,7 @@ namespace CLAM
 			double Ceil(double x);
 			QString GetLabel(double value);
 			std::pair<double,double> GetLabelCoords(double value);
+			CLAM::RulerTicks _majorTicks;
 		};
     }
 }
