@@ -34,7 +34,7 @@ namespace CLAM
 {
 	namespace VM
 	{
-		class Ruler : public QGLWidget
+		class Ruler : public QWidget
 		{
 			Q_OBJECT
 		public:
@@ -42,7 +42,6 @@ namespace CLAM
 			~Ruler();
 
 			void SetRange(double min, double max);
-			void SetStep(double step);
 			void SetScale(ERulerScale scale);
 			ERulerScale GetScale() const;
 	    
@@ -61,14 +60,11 @@ namespace CLAM
 			void updateRange(double, double);
 
 		protected:
-			void paintGL(); 
-			void resizeEvent(QResizeEvent* e);
+			void paintEvent(QPaintEvent * event);
 
 		private:
 			int    mLabelHeight;
-			bool   mDoResize;
 			bool   mShowFloats;
-			double mStep;
 			QFont  mFont;
 	
 			ERulerPos   mPosition;
@@ -86,19 +82,17 @@ namespace CLAM
 			void Rebuild();
 
 			void Draw();
-			void DrawLeft();
+			void DrawLeft(QPainter & painter);
 			void DrawRight();
 			void DrawBottom();
-			void DrawTop();
-			void DrawLabels();
+			void DrawTop(QPainter & painter);
+			void DrawLabels(QPainter & painter);
 
 			int GetTicks();
 			int GetMaxLabelWidth();
 			bool IsVisible(double value);
-			double Round(double x);
-			double Ceil(double x);
 			QString GetLabel(double value);
-			std::pair<double,double> GetLabelCoords(double value);
+			QPoint GetLabelCoords(double value);
 			CLAM::RulerTicks _majorTicks;
 		};
     }

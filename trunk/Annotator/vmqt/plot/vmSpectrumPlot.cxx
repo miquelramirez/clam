@@ -110,8 +110,8 @@ namespace CLAM
 			mPlot->SendToBack("peaks");
 			mPlot->SendToBack("spectrum");
 			mPlot->BringToFront("locator");
-			mXRuler->SetStep(5.0);
-			mYRuler->SetStep(1.0);
+//			mXRuler->SetStep(5.0);
+//			mYRuler->SetStep(1.0);
 			mXRuler->ShowIntegers();
 			mYRuler->ShowIntegers();
 			backgroundWhite();

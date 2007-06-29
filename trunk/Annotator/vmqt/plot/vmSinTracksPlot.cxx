@@ -56,8 +56,8 @@ namespace CLAM
 			mPlot->AddRenderer("sintracks", new SinTracksRenderer());
 			mPlot->SendToBack("sintracks");
 			mPlot->BringToFront("locator");
-			mXRuler->SetStep(0.01);
-			mYRuler->SetStep(5.0);
+//			mXRuler->SetStep(0.01);
+//			mYRuler->SetStep(5.0);
 			mYRuler->ShowIntegers();
 			backgroundWhite();
 		}

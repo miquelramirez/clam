@@ -22,24 +22,24 @@
 #include <QtGui/QResizeEvent>
 #include "vmRuler.hxx"
 #include <CLAM/RulerTicks.hxx>
-#include <iostream> // TODO: Remove after debug
+#include <QtGui/QPainter>
+#include <iostream>
+
 namespace CLAM
 {
 	namespace VM
 	{
 		Ruler::Ruler(QWidget* parent, ERulerPos pos, ERulerScale scale)
-			: QGLWidget(parent)
-			, mDoResize(false)
+			: QWidget(parent)
 			, mShowFloats(true)
-			, mStep(0.0)
+			, mFont(font())
 			, mPosition(pos)
 			, mScale(scale)
 		{
-			setAutoBufferSwap(false);
-
-			mFont.setFamily("fixed");
-			mFont.setPointSize(9);
-			mFont.setBold(true);
+//			mFont.setFamily("fixed");
+//			mFont.setPointSize(8);
+//			mFont.setBold(false);
+//			mFont.setStyleHint(QFont::Courier);
 
 			QFontMetrics font_metrics(mFont);
 			mLabelHeight = font_metrics.height();
@@ -62,18 +62,10 @@ namespace CLAM
 			updateRange(mTotalRange.min,mTotalRange.max);
 		}
 
-		void Ruler::SetStep(double step)
-		{
-			if(step < 0) return;
-			mStep = step;
-			Rebuild();
-			updateGL();
-		}
-
 		void Ruler::SetScale(ERulerScale scale)
 		{
 			mScale = scale;
-			updateGL();
+			update();
 		}
 
 		ERulerScale Ruler::GetScale() const
@@ -84,26 +76,26 @@ namespace CLAM
 		void Ruler::SetBackgroundColor(const QColor& c)
 		{
 			mBgColor = c;
-			updateGL();
+			update();
 		}
 		void Ruler::SetForegroundColor(const QColor& c)
 		{
 			mFgColor = c;
-			updateGL();
+			update();
 		}
 
 		void Ruler::ShowFloats()
 		{
 			mShowFloats = true;
 			Rebuild();
-			updateGL();
+			update();
 		}
 
 		void Ruler::ShowIntegers()
 		{
 			mShowFloats = false;
 			Rebuild();
-			updateGL();
+			update();
 		}
 
 		const QFont& Ruler::GetFont() const
@@ -118,52 +110,23 @@ namespace CLAM
 			mCurrentRange.min = min;
 			mCurrentRange.max = max;
 			Rebuild();
-			updateGL();
+			update();
 			emit valueChanged(mCurrentRange.min,mCurrentRange.max);
 		}
 	
-		void Ruler::paintGL()
+		void Ruler::paintEvent(QPaintEvent * event)
 		{
-			if(mDoResize)
-			{
-				glViewport(0,0,mViewport.w,mViewport.h);
-				mDoResize = false;
-			}
-			glMatrixMode(GL_PROJECTION);
-			glLoadIdentity();
-			(mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight)
-				? glOrtho(double(mViewport.x),double(mViewport.w),mCurrentRange.min,mCurrentRange.max,-1.0,1.0)
-				: glOrtho(mCurrentRange.min,mCurrentRange.max,double(mViewport.y),double(mViewport.h),-1.0,1.0);
-			glMatrixMode(GL_MODELVIEW);
-			glShadeModel(GL_FLAT);
-			glClearColor(double(mBgColor.red())/255.0, 
-						 double(mBgColor.green())/255.0, 
-						 double(mBgColor.blue())/255.0, 
-						 double(mBgColor.alpha())/255.0);
-			glClear(GL_COLOR_BUFFER_BIT);
-			Draw(); 
-			swapBuffers();
-		}
-
-		void Ruler::resizeEvent(QResizeEvent* e)
-		{
-			mViewport.x = 0;
-			mViewport.y = 0;
-			mViewport.w = e->size().width();
-			mViewport.h = e->size().height();
 			Rebuild();
-			mDoResize = true;
+			Draw(); 
 		}
 
 		void Ruler::Rebuild()
 		{
-			bool vertical = (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight);
-			int size = vertical? mViewport.h : mViewport.w;
-			mShowFloats=mCurrentRange.Span()<10;
-			int labelSpan = 6 + (vertical? mLabelHeight: GetMaxLabelWidth()); 
+			mShowFloats = mCurrentRange.Span()<20;
 			mValuesToDraw.clear();
-			int nTicks = GetTicks();
-			if(nTicks <= 0) return;
+			bool vertical = (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight);
+			int size = vertical? height() : width();
+			int labelSpan = 6 + (vertical? mLabelHeight: GetMaxLabelWidth()); 
 			_majorTicks.setWidth(size);
 			_majorTicks.setMinGap(labelSpan);
 			_majorTicks.setRange(mCurrentRange.min,mCurrentRange.max);
@@ -178,10 +141,13 @@ namespace CLAM
 
 		void Ruler::Draw()
 		{
+			QPainter painter(this);
+			painter.setPen(QPen(mFgColor, 1));
+//			painter.setFont(mFont);
 			switch(mPosition)
 			{
 				case CLAM::VM::eLeft:
-					DrawLeft();
+					DrawLeft(painter);
 					break;
 				case CLAM::VM::eRight:
 					DrawRight();
@@ -190,39 +156,31 @@ namespace CLAM
 					DrawBottom();
 					break;
 				case CLAM::VM::eTop:
-					DrawTop();
-					break;
-				default:
+					DrawTop(painter);
 					break;
 			}
+			DrawLabels(painter);
 		}
 
-		void Ruler::DrawLeft()
+		void Ruler::DrawLeft(QPainter & painter)
 		{
-			double x0 = double(mViewport.w)-5.0;
-			double x1 = double(mViewport.w)-1.0;
-			glLineWidth(1);
-			glColor3ub(mFgColor.red(),mFgColor.green(),mFgColor.blue());
-			glBegin(GL_LINES);
-			// draw ticks
+			double x0 = double(width())-5.0;
+			double x1 = double(width())-1.0;
+			QVector<QLineF> lines;
 			for(unsigned i=0; i < mValuesToDraw.size(); i++)
 			{
-				glVertex2d(x0,mValuesToDraw[i]);
-				glVertex2d(x1,mValuesToDraw[i]);
+				double tickPos = height()-(mValuesToDraw[i]-mCurrentRange.min)*height()/mCurrentRange.Span();
+				lines << QLineF(x0,tickPos,x1,tickPos);
 			}
-			// drqw axis
-			glVertex2d(x1,mCurrentRange.min);
-			glVertex2d(x1,mCurrentRange.max);
-			glEnd();
-			DrawLabels();
+			// draw axis
+			lines << QLineF(x1,0,x1,height());
+			painter.drawLines(lines);
 		}
 
 		void Ruler::DrawRight()
 		{
-			double x0 = 0.0;
+			double x0 = 1.0;
 			double x1 = 5.0;
-			glLineWidth(1);
-			glColor3ub(mFgColor.red(),mFgColor.green(),mFgColor.blue());
 			glBegin(GL_LINES);
 			// draw ticks
 			for(unsigned i=0; i < mValuesToDraw.size(); i++)
@@ -234,15 +192,12 @@ namespace CLAM
 			glVertex2d(x0,mCurrentRange.min);
 			glVertex2d(x0,mCurrentRange.max);
 			glEnd();		 
-			DrawLabels();
 		}
 	
 		void Ruler::DrawBottom()
 		{
-			double y0 = double(mViewport.h)-6.0;
-			double y1 = double(mViewport.h)-1.0;
-			glLineWidth(1);
-			glColor3ub(mFgColor.red(),mFgColor.green(),mFgColor.blue());
+			double y0 = double(height())-6.0;
+			double y1 = double(height())-1.0;
 			glBegin(GL_LINES);
 			// draw ticks
 			for(unsigned i=0; i < mValuesToDraw.size(); i++)
@@ -254,36 +209,32 @@ namespace CLAM
 			glVertex2d(mCurrentRange.min,y1);
 			glVertex2d(mCurrentRange.max,y1);
 			glEnd();			
-			DrawLabels();
 		}
 
-		void Ruler::DrawTop()
+		void Ruler::DrawTop(QPainter & painter)
 		{
-			double y0 = 0.0;
-			double y1 = 5.0;
-			glLineWidth(1);
-			glColor3ub(mFgColor.red(),mFgColor.green(),mFgColor.blue());
-			glBegin(GL_LINES);
+			double y0 = 5.0;
+			double y1 = height()-1;
+			QVector<QLineF> lines;
 			// draw ticks
 			for(unsigned i=0; i < mValuesToDraw.size(); i++)
 			{
-				glVertex2d(mValuesToDraw[i],y0);
-				glVertex2d(mValuesToDraw[i],y1);
+				double tickPos = (mValuesToDraw[i]-mCurrentRange.min)*width()/mCurrentRange.Span();
+				lines << QLineF(tickPos,y0,tickPos,y1);
+				std::cout << tickPos << " ";
 			}
-			// drqw axis
-			glVertex2d(mCurrentRange.min,y0);
-			glVertex2d(mCurrentRange.max,y0);
-			glEnd();		   
-			DrawLabels();
+			// draw axis
+			lines << QLineF(0,y1,width(),y1);
+			painter.drawLines(lines);
 		}
 
-		void Ruler::DrawLabels()
+		void Ruler::DrawLabels(QPainter & painter)
 		{
-			glColor3ub(mFgColor.red(),mFgColor.green(),mFgColor.blue());
 			for(unsigned i=0; i < mValuesToDraw.size(); i++)
 			{
-				std::pair<double,double> coords = GetLabelCoords(mValuesToDraw[i]);
-				renderText(coords.first,coords.second,-1.0,GetLabel(mValuesToDraw[i]),mFont);
+				painter.drawText(
+					GetLabelCoords(mValuesToDraw[i]),
+					GetLabel(mValuesToDraw[i]));
 			}
 		}
 
@@ -294,8 +245,8 @@ namespace CLAM
 				? mLabelHeight+6
 				: GetMaxLabelWidth()+6;
 			return (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight) 
-				? mViewport.h/label_span
-				: mViewport.w/label_span;
+				? height()/label_span
+				: width()/label_span;
 		}
 
 		int Ruler::GetMaxLabelWidth()
@@ -313,7 +264,7 @@ namespace CLAM
 				case CLAM::VM::eLeft:
 				case CLAM::VM::eRight:
 				{
-					double margin = double(mLabelHeight)*mCurrentRange.Span()/double(mViewport.h);
+					double margin = double(mLabelHeight)*mCurrentRange.Span()/double(height());
 					if(value+margin < mCurrentRange.max) visible = true;
 				}
 				break;
@@ -324,7 +275,7 @@ namespace CLAM
 					int label_width = (mScale==CLAM::VM::eLogScale)
 						? fm.width("-0.0e+00")
 						: fm.width(QString::number(value,'f',mShowFloats?2:0));
-					double margin = double(label_width/2)*mCurrentRange.Span()/double(mViewport.w);
+					double margin = double(label_width/2)*mCurrentRange.Span()/double(width());
 					if(value+margin < mCurrentRange.max) visible = true;
 				}
 				break;
@@ -334,20 +285,6 @@ namespace CLAM
 			return visible;
 		}
 
-		double Ruler::Round(double x) 
-		{
-			double i=double(int(x));
-			double frac=x-i;
-			return (frac >= 0.5) ? i+1.0 : i;
-		}
-	
-		double Ruler::Ceil(double x)
-		{
-			double i=double(int(x));
-			double frac=x-i;
-			return (frac) ? i+1.0 : i;
-		}
-
 		QString Ruler::GetLabel(double value)
 		{
 			if(mScale==CLAM::VM::eLinearScale)
@@ -355,7 +292,7 @@ namespace CLAM
 			return QString::number(value,'e',1);
 		}
 
-		std::pair<double,double> Ruler::GetLabelCoords(double value)
+		QPoint Ruler::GetLabelCoords(double value)
 		{
 			QFontMetrics font_metrics(mFont);
 			int label_width = font_metrics.width(QString::number(value,'f',mShowFloats?2:0));
@@ -364,36 +301,37 @@ namespace CLAM
 			{
 				case CLAM::VM::eLeft:
 				{
-					double adjust = double(mLabelHeight/4)*mCurrentRange.Span()/double(mViewport.h);
-					x = std::max(0,mViewport.w - label_width-8);
-					y = value - adjust;
+					
+					double tickPos = height() - (value-mCurrentRange.min)*height()/mCurrentRange.Span();
+					x = std::max(0,width() - label_width-8);
+					y = tickPos + mLabelHeight/4;
 				}
 				break;
 				case CLAM::VM::eRight:
 				{
-					double adjust = double(mLabelHeight/4)*mCurrentRange.Span()/double(mViewport.h);
+					double tickPos = height() - (value-mCurrentRange.min)*height()/mCurrentRange.Span();
 					x = 8;
-					y = value - adjust;
+					y = tickPos + mLabelHeight/4;
 				}
 				break;
 				case CLAM::VM::eBottom:
 				{
-					double adjust = double(label_width/2)*mCurrentRange.Span()/double(mViewport.w);
-					x = value - adjust;
-					y = mViewport.h-(mLabelHeight/2+8);
+					double tickPos = (value-mCurrentRange.min)*width()/mCurrentRange.Span();
+					x = tickPos + 3;
+					y = height() - 3;
 				}
 				break;
 				case CLAM::VM::eTop:
 				{
-					double adjust = double(label_width/2)*mCurrentRange.Span()/double(mViewport.w);
-					x = value - adjust;
-					y = 8;
+					double tickPos = (value-mCurrentRange.min)*width()/mCurrentRange.Span();
+					x = tickPos + 3;
+					y = mLabelHeight + 3;
 				}
 				break;
 				default:
 					break;
 			}
-			return std::make_pair(x,y);
+			return QPoint(x,y);
 		}
 	}
 }

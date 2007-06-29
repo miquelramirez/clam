@@ -75,8 +75,8 @@ namespace CLAM
 			mPlot->SendToBack("audio");
 			mPlot->SendToBack("grid");
 			mPlot->BringToFront("locator");
-			mXRuler->SetStep(0.01);
-			mYRuler->SetStep(0.05);
+//			mXRuler->SetStep(0.01);
+//			mYRuler->SetStep(0.05);
 			mGridRenderer->ShowGrid(true);
 			backgroundWhite();
 		}
