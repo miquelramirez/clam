@@ -19,12 +19,12 @@ class RulerTicks
 			_min = min;
 			_max = max;
 		}
-		/// Sets the width in pixes to be mapped the range into
+		/// Sets the width in pixels to be mapped the range into
 		void setWidth(double width)
 		{
 			_width = width;
 		}
-		/// Sets the minimum phisical space in pixes between between marks
+		/// Sets the minimum phisical space in pixels between between marks
 		void setMinGap(double minGap)
 		{
 			_minGap = minGap;
