@@ -28,6 +28,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 #include "vmScrollGroup.hxx"
+#include "vmIconData.hxx"
 
 namespace CLAM
 {
@@ -141,14 +142,16 @@ namespace CLAM
 			mZinButton = new QPushButton(this);
 			mZinButton->setAutoRepeat(true);
 			mZinButton->setFixedSize(20,20);
-			mZinButton->setText("+");
+//			mZinButton->setText("+");
 			mZinButton->setToolTip("Zoom In");
+			mZinButton->setIcon(QPixmap(icon_zoomin));
 		 
 			mZoutButton = new QPushButton(this);
 			mZoutButton->setAutoRepeat(true);
 			mZoutButton->setFixedSize(20,20);
-			mZoutButton->setText("-");
+//			mZoutButton->setText("-");
 			mZoutButton->setToolTip("Zoom Out");
+			mZoutButton->setIcon(QPixmap(icon_zoomout));
 			
 			mZinButton->setFocusPolicy(Qt::NoFocus);
 			mZoutButton->setFocusPolicy(Qt::NoFocus);
