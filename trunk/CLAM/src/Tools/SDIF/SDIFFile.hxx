@@ -74,6 +74,9 @@ public:
 
 	bool Done(void);
 
+	CLAM::TIndex Pos(void);
+	CLAM::TIndex Pos(CLAM::TIndex pos);
+
 private:
 	bool mSkipData;
 	bool mFirstAccess;
@@ -82,8 +85,6 @@ private:
 	int mFile;
 	CLAM::TSize mSize;
 
-	CLAM::TIndex Pos(void);
-	CLAM::TIndex Pos(CLAM::TIndex pos);
 
 /*	
   template <class T> void ReadArray(Array<T>& data)					//read from data file
@@ -160,6 +161,17 @@ private:
 		CLAM::TByte* ptr,CLAM::TUInt32 nElems,CLAM::TUInt32 elemSize);
 };
 
+inline int File::Pos(void)
+{	
+	int pos = lseek(mFile,0,SEEK_CUR);
+	return pos;
+}
+
+inline int File::Pos(int pos)
+{
+	return lseek(mFile,pos,SEEK_SET);	
+}
+
 inline void File::Read(CLAM::TByte* ptr,int n)
 {
 	if (read(mFile,(char*)ptr,n)!=n) {
@@ -172,17 +184,6 @@ inline void File::Write(const CLAM::TByte* ptr,int n)
 	if (write(mFile,(const char*)ptr,n)!=n) {
   		throw CLAM::Err("DataFileIO read error");
 	}
-}
-
-inline int File::Pos(void)
-{	
-	int pos = lseek(mFile,0,SEEK_CUR);
-	return pos;
-}
-
-inline int File::Pos(int pos)
-{
-	return lseek(mFile,pos,SEEK_SET);	
 }
 
 inline bool File::Done(void)

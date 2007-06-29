@@ -29,6 +29,7 @@
 #include "SDIFFile.hxx"
 #include "SDIFFrame.hxx"
 #include "SDIFMatrix.hxx"
+#include "SpectralAnalysis.hxx"
 
 using namespace CLAM;
 
@@ -51,17 +52,25 @@ void SDIFOutConfig::DefaultInit()
 }
 
 SDIFOut::SDIFOut():
-mPrevIndexArray(0)
+mPrevIndexArray(0),
+mInputFundamental("Fundamental", this),
+mInputSinSpectralPeaks("Sinusoidal Peaks", this),
+mInputResSpectrum("Residual Spectrum", this)
 { 
 	mpFile=NULL;
+    ConnectAndPublishPorts();
 	Configure(SDIFOutConfig());
 }
 
 SDIFOut::SDIFOut(const SDIFOutConfig& c):
-mPrevIndexArray(0)
+mPrevIndexArray(0),
+mInputFundamental("Fundamental", this),
+mInputSinSpectralPeaks("Sinusoidal Peaks", this),
+mInputResSpectrum("Residual Spectrum", this)
 { 
 	mpFile=NULL;
 
+    ConnectAndPublishPorts();
 	Configure(c);
 }
 	
@@ -69,6 +78,12 @@ SDIFOut::~SDIFOut()
 {
 	mpFile->Close();
 	delete mpFile;
+}
+
+void SDIFOut::ConnectAndPublishPorts()
+{
+    RegisterInPort( &mInputSinSpectralPeaks );
+    RegisterInPort( &mInputResSpectrum );    
 }
 
 bool SDIFOut::ConcreteStart()
@@ -113,6 +128,15 @@ const ProcessingConfig& SDIFOut::GetConfig() const
 	return mConfig;
 }
 
+bool SDIFOut::Do()
+{
+    //CLAM::Fundamental theFundamental = mInputFundamental.GetData();
+    CLAM::SpectralPeakArray sinePeaks = mInputSinSpectralPeaks.GetData();
+    CLAM::Spectrum residualSpectrum = mInputResSpectrum.GetData();
+    
+    //std::cout << "The fundamental is <" << theFundamental.GetFreq() << ">" << std::endl;
+}
+    
 bool SDIFOut::Do(const Frame& frame)
 {
 	if(!mpFile) return false;
