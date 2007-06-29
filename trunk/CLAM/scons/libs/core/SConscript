@@ -49,6 +49,7 @@ def define_module_contents(env) :
 
 	if sys.platform == 'win32' :
 		blacklist.append( 'Watchdog.+' )
+		blacklist.append( 'RunTimeProcessingLibraryLoader.+' )
 
 	if core_env['xmlbackend'] == 'xercesc' :
 		blacklist.append( 'LibXml.+')
