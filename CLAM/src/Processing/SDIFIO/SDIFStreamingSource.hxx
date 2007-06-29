@@ -19,51 +19,33 @@
  *
  */
 
-#ifndef _SDIFOut_
-#define _SDIFOut_
+#ifndef _SDIFStreamingSource_
+#define _SDIFStreamingSource_
 
+#include "Segment.hxx"
 #include "IndexArray.hxx"
 #include "Processing.hxx"
 #include "Err.hxx"
-#include "Segment.hxx"
+#include "OutPort.hxx"
 #include "Filename.hxx"
-#include <CLAM/InPort.hxx>
-#include "Fundamental.hxx"
-#include "Spectrum.hxx"
-#include "SpectralPeakArray.hxx"
+#include "OutPort.hxx" 
+#include "SDIFInConfig.hxx"
 
+namespace SDIF { class File; } //forward declaration
 
-namespace SDIF {class File;};//forward declaration
+namespace CLAM
+{
 
-namespace CLAM{
-
-class SDIFOutConfig:public ProcessingConfig
+class SDIFStreamingSource: public Processing
 {
 public:
 
-	DYNAMIC_TYPE_USING_INTERFACE (SDIFOutConfig, 9, ProcessingConfig);
-	DYN_ATTRIBUTE(0,public, TData, SpectralRange);
-	DYN_ATTRIBUTE(1,public, TIndex, MaxNumPeaks);
-	DYN_ATTRIBUTE(2,public, bool,EnableResidual);
-	DYN_ATTRIBUTE(3,public, bool,EnablePeakArray);
-	DYN_ATTRIBUTE(4,public, bool,EnableFundFreq);
-	DYN_ATTRIBUTE(5,public, Filename,FileName);
-	DYN_ATTRIBUTE(6,public, TData, SamplingRate);
-	DYN_ATTRIBUTE(7,public, TData, FrameSize);
-	DYN_ATTRIBUTE(8,public, TData, SpectrumSize);
-
-	void DefaultInit();
-};
-
-class SDIFOut: public Processing
-{
-public:
-
-	SDIFOut(const SDIFOutConfig& c);
-	SDIFOut();
+	SDIFStreamingSource(const SDIFInConfig& c);
+	SDIFStreamingSource();
 	
-	virtual ~SDIFOut();
-	const char * GetClassName() const {return "SDIFOut";}
+	virtual ~SDIFStreamingSource();
+
+	const char * GetClassName() const {return "SDIFStreamingSource";}
 	
 	bool GetEnableResidual()        {return mConfig.GetEnableResidual();}
 	bool GetEnablePeakArray()       {return mConfig.GetEnablePeakArray();}
@@ -71,35 +53,34 @@ public:
 	
 	bool Do(void);
 
-	bool Do(const Frame& frame);
+	bool Do( CLAM::Fundamental& fundamental, CLAM::Spectrum& residualSpectrum, CLAM::SpectralPeakArray& spectralPeaks );
 
 	const ProcessingConfig &GetConfig() const;
 
 	SDIF::File* mpFile;
-	
+	OutPort<Fundamental> mFundamentalOutput;
+	OutPort<Spectrum> mResidualSpectrumOutput;
+	OutPort<SpectralPeakArray> mSpectralPeakArrayOutput;
+    
 protected:
 
 	bool ConcreteStart();
 
 	bool ConcreteStop();
 
-	InPort<Fundamental>		mInputFundamental;
-    InPort<SpectralPeakArray>     mInputSinSpectralPeaks;
-	InPort<Spectrum>     mInputResSpectrum;
+	bool LoadFrameOfSDIFData( CLAM::Fundamental& fundamental, CLAM::Spectrum& residualSpectrum, CLAM::SpectralPeakArray& spectralPeaks );
 
 private:
 	
 	bool ConcreteConfigure(const ProcessingConfig& c);
-    void ConnectAndPublishPorts();
 	
-	SDIFOutConfig mConfig;
+	SDIFInConfig mConfig;
 
 // member variables
+	TTime mLastCenterTime;
 	IndexArray mPrevIndexArray;
-    Frame singletonFrame;
-		
+	
 };
-
 
 
 };//CLAM
