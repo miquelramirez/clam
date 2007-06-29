@@ -365,7 +365,7 @@ namespace CLAM
 				case CLAM::VM::eLeft:
 				{
 					double adjust = double(mLabelHeight/4)*mCurrentRange.Span()/double(mViewport.h);
-					x = mViewport.w - label_width-8;
+					x = std::max(0,mViewport.w - label_width-8);
 					y = value - adjust;
 				}
 				break;
