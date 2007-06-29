@@ -23,6 +23,7 @@
 #define __VMQT_PEAKS_RENDERER_H__
 #include "Array.hxx"
 #include "vmRenderer2D.hxx"
+#include <QtGui/QColor>
 
 namespace CLAM
 {
@@ -35,7 +36,7 @@ namespace CLAM
 			~PeaksRenderer();
 
 			void SetPeaks(const Array<Peak>& peaks);
-			void SetPeaksColor(const Color& cpoint, const Color& cline);
+			void SetPeaksColor(const QColor& cpoint, const QColor& cline);
 
 		protected:
 			void Render();
@@ -44,8 +45,8 @@ namespace CLAM
 		private:
 			Array<Peak> mCachedPeaks;
 
-			Color mCpoint;
-			Color mCline;
+			QColor mCpoint;
+			QColor mCline;
 
 			enum { LINE_WIDTH=1, POINT_SIZE=3, TOLERANCE=3 };
 

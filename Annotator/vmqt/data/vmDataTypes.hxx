@@ -21,27 +21,12 @@
 
 #ifndef __VMQT_DATA_TYPES_H__
 #define __VMQT_DATA_TYPES_H__
+#include <QtGui/QColor>
 
 namespace CLAM
 {
 	namespace VM
 	{
-		struct Color
-		{
-			unsigned short r;
-			unsigned short g;
-			unsigned short b;
-			unsigned short a;
-
-			Color();
-			Color(unsigned short red, unsigned short green, unsigned short blue, unsigned short alpha=255);
-			Color(const Color& c);
-			~Color();
-
-			const Color& operator=(const Color& c);
-			bool operator==(const Color& c);
-		};
-
 		struct GLView
 		{
 			double left;
@@ -165,10 +150,10 @@ namespace CLAM
 		{
 			double          freq;
 			unsigned        timeIndex;
-			CLAM::VM::Color color;
+			QColor color;
 
 			SinTrackNode();
-			SinTrackNode(double f, unsigned t, const CLAM::VM::Color& c);
+			SinTrackNode(double f, unsigned t, const QColor& c);
 			SinTrackNode(const SinTrackNode& node);
 			~SinTrackNode();
 

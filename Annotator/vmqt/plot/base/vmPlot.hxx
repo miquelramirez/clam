@@ -37,10 +37,10 @@ namespace CLAM
 			Plot(QWidget* parent=0);
 			virtual ~Plot();
 
-			void SetBackgroundColor(const Color& c);
+			void SetBackgroundColor(const QColor& c);
 
 		protected:
-			Color mBgColor;
+			QColor mBgColor;
 
 			virtual void Draw()=0;
 		};

@@ -48,8 +48,6 @@ namespace CLAM
 	    
 			void SetBackgroundColor(const QColor& c);
 			void SetForegroundColor(const QColor& c);
-			void SetBackgroundColor(const Color& c);
-			void SetForegroundColor(const Color& c);
 	
 			void ShowFloats();
 			void ShowIntegers();

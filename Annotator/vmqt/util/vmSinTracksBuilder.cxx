@@ -74,7 +74,7 @@ namespace CLAM
 				float mag = float(peaks.GetMagBuffer()[i]);
 				if(linear) mag = float(20.0*log10(mag));
 				int colorIndex = mPalette.Get(ClampToRange(mag));
-				mPalette.GetRGBFromIndex( colorIndex, node.color.r, node.color.g, node.color.b);
+				mPalette.GetRGBFromIndex( colorIndex, node.color);
 				unsigned trackId = int(peaks.GetIndex(i));
 				if(HasTrackId(trackId))
 				{

@@ -55,15 +55,15 @@ namespace CLAM
 		void AudioPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			mGridRenderer->SetGridColor(Color(0,0,255));
-			mAudioRenderer->SetDataColor(Color(0,0,255));
+			mGridRenderer->SetGridColor(QColor(0,0,255));
+			mAudioRenderer->SetDataColor(QColor(0,0,255));
 		}
 
 		void AudioPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
-			mGridRenderer->SetGridColor(Color(0,255,0));
-			mAudioRenderer->SetDataColor(Color(0,255,0));
+			mGridRenderer->SetGridColor(QColor(0,255,0));
+			mAudioRenderer->SetDataColor(QColor(0,255,0));
 		}
 
 		void AudioPlot::InitAudioPlot()

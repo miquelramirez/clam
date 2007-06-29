@@ -55,9 +55,9 @@ int main(int argc, char** argv)
 	plot.AddBPF("third_phase",&bpf0);
 	plot.AddBPF("happy_birthday",&bpf1);
 	plot.AddBPF("star_wars",&bpf2);
-	plot.SetColors("third_phase",CLAM::VM::Color(255,0,0),CLAM::VM::Color(0,255,255));
-	plot.SetColors("happy_birthday",CLAM::VM::Color(0,255,255),CLAM::VM::Color(255,0,0));
-	plot.SetColors("star_wars",CLAM::VM::Color(0,255,0),CLAM::VM::Color(0,0,255));
+	plot.SetColors("third_phase",QColor(255,0,0),QColor(0,255,255));
+	plot.SetColors("happy_birthday",QColor(0,255,255),QColor(255,0,0));
+	plot.SetColors("star_wars",QColor(0,255,0),QColor(0,0,255));
 	plot.show();
 
 	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));

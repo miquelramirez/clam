@@ -71,27 +71,27 @@ namespace CLAM
 		void SegmentationPlot::backgroundWhite()
 		{
 			setPalette(Qt::white);
-			mXRuler->SetBackgroundColor(Color(255,255,255));
-			mXRuler->SetForegroundColor(Color(0,0,0));
-			mYRuler->SetBackgroundColor(Color(255,255,255));
-			mYRuler->SetForegroundColor(Color(0,0,0));
+			mXRuler->SetBackgroundColor(QColor(255,255,255));
+			mXRuler->SetForegroundColor(QColor(0,0,0));
+			mYRuler->SetBackgroundColor(QColor(255,255,255));
+			mYRuler->SetForegroundColor(QColor(0,0,0));
 			mHScroll->setPalette(Qt::white);
 			mVScroll->setPalette(Qt::white);
-			mPlot->SetBackgroundColor(Color(255,255,255));
-			mLocator->SetLocatorColor(Color(250,160,30));
+			mPlot->SetBackgroundColor(QColor(255,255,255));
+			mLocator->SetLocatorColor(QColor(250,160,30));
 		}
 
 		void SegmentationPlot::backgroundBlack()
 		{
 			setPalette(Qt::black);
-			mXRuler->SetBackgroundColor(Color(0,0,0));
-			mXRuler->SetForegroundColor(Color(255,255,255));
-			mYRuler->SetBackgroundColor(Color(0,0,0));
-			mYRuler->SetForegroundColor(Color(255,255,255));
+			mXRuler->SetBackgroundColor(QColor(0,0,0));
+			mXRuler->SetForegroundColor(QColor(255,255,255));
+			mYRuler->SetBackgroundColor(QColor(0,0,0));
+			mYRuler->SetForegroundColor(QColor(255,255,255));
 			mHScroll->setPalette(Qt::darkGreen);
 			mVScroll->setPalette(Qt::darkGreen);
-			mPlot->SetBackgroundColor(Color(0,0,0));
-			mLocator->SetLocatorColor(Color(255,0,0));
+			mPlot->SetBackgroundColor(QColor(0,0,0));
+			mLocator->SetLocatorColor(QColor(255,0,0));
 		}
 
 		void SegmentationPlot::setCurrentSegmentFollowsPlay(bool active)

@@ -23,6 +23,7 @@
 #define __VMQT_GRID_H__
 
 #include "vmRenderer2D.hxx"
+#include <QtGui/QColor>
 
 namespace CLAM
 {
@@ -37,7 +38,7 @@ namespace CLAM
 			void ShowGrid(bool show);
 			void SnapToGrid(bool snap);
 			void SetGridSteps(double xstep, double ystep);
-		    void SetGridColor(const Color& color);
+		    void SetGridColor(const QColor& color);
 
 			bool ShowGrid() const;
 			bool SnapToGrid() const;
@@ -54,7 +55,7 @@ namespace CLAM
 			double mGridXStep;
 			double mGridYStep;
 			
-			Color mGridColor;
+			QColor mGridColor;
 		};
 	}
 }

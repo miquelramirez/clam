@@ -66,43 +66,43 @@ namespace CLAM
 		void AudioStereoPlot::backgroundWhite()
 		{
 			setPalette(Qt::white);
-			mXRuler->SetBackgroundColor(Color(255,255,255));
-			mXRuler->SetForegroundColor(Color(0,0,0));
-			mYRuler0->SetBackgroundColor(Color(255,255,255));
-			mYRuler0->SetForegroundColor(Color(0,0,0));
-			mYRuler1->SetBackgroundColor(Color(255,255,255));
-			mYRuler1->SetForegroundColor(Color(0,0,0));
+			mXRuler->SetBackgroundColor(QColor(255,255,255));
+			mXRuler->SetForegroundColor(QColor(0,0,0));
+			mYRuler0->SetBackgroundColor(QColor(255,255,255));
+			mYRuler0->SetForegroundColor(QColor(0,0,0));
+			mYRuler1->SetBackgroundColor(QColor(255,255,255));
+			mYRuler1->SetForegroundColor(QColor(0,0,0));
 			mHScroll->setPalette(Qt::white);
 			mVScroll->setPalette(Qt::white);
-			mDisplay[MASTER]->SetBackgroundColor(Color(255,255,255));
-			mDisplay[SLAVE]->SetBackgroundColor(Color(255,255,255));
-			static_cast<Grid*>(mDisplay[MASTER]->GetRenderer("grid0"))->SetGridColor(Color(0,0,255));
-			static_cast<Grid*>(mDisplay[SLAVE]->GetRenderer("grid1"))->SetGridColor(Color(0,0,255));
-			static_cast<DataArrayRenderer*>(mDisplay[MASTER]->GetRenderer("chn0"))->SetDataColor(Color(0,0,255));
-			static_cast<DataArrayRenderer*>(mDisplay[SLAVE]->GetRenderer("chn1"))->SetDataColor(Color(0,0,255));
-			static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0"))->SetLocatorColor(Color(250,160,30));
-			static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1"))->SetLocatorColor(Color(250,160,30));
+			mDisplay[MASTER]->SetBackgroundColor(QColor(255,255,255));
+			mDisplay[SLAVE]->SetBackgroundColor(QColor(255,255,255));
+			static_cast<Grid*>(mDisplay[MASTER]->GetRenderer("grid0"))->SetGridColor(QColor(0,0,255));
+			static_cast<Grid*>(mDisplay[SLAVE]->GetRenderer("grid1"))->SetGridColor(QColor(0,0,255));
+			static_cast<DataArrayRenderer*>(mDisplay[MASTER]->GetRenderer("chn0"))->SetDataColor(QColor(0,0,255));
+			static_cast<DataArrayRenderer*>(mDisplay[SLAVE]->GetRenderer("chn1"))->SetDataColor(QColor(0,0,255));
+			static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0"))->SetLocatorColor(QColor(250,160,30));
+			static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1"))->SetLocatorColor(QColor(250,160,30));
 		}
 
 		void AudioStereoPlot::backgroundBlack()
 		{
 			setPalette(Qt::black);
-			mXRuler->SetBackgroundColor(Color(0,0,0));
-			mXRuler->SetForegroundColor(Color(255,255,255));
-			mYRuler0->SetBackgroundColor(Color(0,0,0));
-			mYRuler0->SetForegroundColor(Color(255,255,255));
-			mYRuler1->SetBackgroundColor(Color(0,0,0));
-			mYRuler1->SetForegroundColor(Color(255,255,255));
+			mXRuler->SetBackgroundColor(QColor(0,0,0));
+			mXRuler->SetForegroundColor(QColor(255,255,255));
+			mYRuler0->SetBackgroundColor(QColor(0,0,0));
+			mYRuler0->SetForegroundColor(QColor(255,255,255));
+			mYRuler1->SetBackgroundColor(QColor(0,0,0));
+			mYRuler1->SetForegroundColor(QColor(255,255,255));
 			mHScroll->setPalette(Qt::darkGreen);
 			mVScroll->setPalette(Qt::darkGreen);
-			mDisplay[MASTER]->SetBackgroundColor(Color(0,0,0));
-			mDisplay[SLAVE]->SetBackgroundColor(Color(0,0,0));
-			static_cast<Grid*>(mDisplay[MASTER]->GetRenderer("grid0"))->SetGridColor(Color(0,255,0));
-			static_cast<Grid*>(mDisplay[SLAVE]->GetRenderer("grid1"))->SetGridColor(Color(0,255,0));
-			static_cast<DataArrayRenderer*>(mDisplay[MASTER]->GetRenderer("chn0"))->SetDataColor(Color(0,255,0));
-			static_cast<DataArrayRenderer*>(mDisplay[SLAVE]->GetRenderer("chn1"))->SetDataColor(Color(0,255,0));
-			static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0"))->SetLocatorColor(Color(255,0,0));
-			static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1"))->SetLocatorColor(Color(255,0,0));
+			mDisplay[MASTER]->SetBackgroundColor(QColor(0,0,0));
+			mDisplay[SLAVE]->SetBackgroundColor(QColor(0,0,0));
+			static_cast<Grid*>(mDisplay[MASTER]->GetRenderer("grid0"))->SetGridColor(QColor(0,255,0));
+			static_cast<Grid*>(mDisplay[SLAVE]->GetRenderer("grid1"))->SetGridColor(QColor(0,255,0));
+			static_cast<DataArrayRenderer*>(mDisplay[MASTER]->GetRenderer("chn0"))->SetDataColor(QColor(0,255,0));
+			static_cast<DataArrayRenderer*>(mDisplay[SLAVE]->GetRenderer("chn1"))->SetDataColor(QColor(0,255,0));
+			static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0"))->SetLocatorColor(QColor(255,0,0));
+			static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1"))->SetLocatorColor(QColor(255,0,0));
 		}
 
 		void AudioStereoPlot::updateLocator(double value)

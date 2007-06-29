@@ -25,6 +25,7 @@
 #include "Array.hxx"
 #include "vmRenderer2D.hxx"
 #include <vector>
+#include <QtGui/QColor>
 
 namespace CLAM
 {
@@ -38,7 +39,7 @@ namespace CLAM
 			~DataArrayRenderer();
 	
 			void SetData(const DataArray& data);
-			void SetDataColor(const Color& c);
+			void SetDataColor(const QColor& c);
 
 			void SetHugeModeEnabled(bool en);
 
@@ -58,7 +59,7 @@ namespace CLAM
 			bool mHugeModeEnabled;
 			bool mMustProcessData;
 
-			Color  mDataColor;
+			QColor  mDataColor;
 			GLView mLocalView;
 			
 			void ProcessData();

@@ -146,7 +146,7 @@ namespace CLAM
 					glVertex2d(GLdouble(k),GLdouble(i+1));
 					for(unsigned j = 0; j < mColorData.size(); j++,k++)
 					{
-						glColor3ub(mColorData[j][i].r,mColorData[j][i].g,mColorData[j][i].b);
+						glColor3ub(mColorData[j][i].red(),mColorData[j][i].green(),mColorData[j][i].blue());
 						glVertex2d(GLdouble(k+1),GLdouble(i));
 						glVertex2d(GLdouble(k+1),GLdouble(i+1));
 					}
@@ -176,7 +176,7 @@ namespace CLAM
 					glVertex2d(GLdouble(k),GLdouble(i+1));
 					for(unsigned j = 0; j < mBlackWhiteData.size(); j++,k++)
 					{
-						glColor3ub(mBlackWhiteData[j][i].r,mBlackWhiteData[j][i].g,mBlackWhiteData[j][i].b);
+						glColor3ub(mBlackWhiteData[j][i].red(),mBlackWhiteData[j][i].green(),mBlackWhiteData[j][i].blue());
 						glVertex2d(GLdouble(k+1),GLdouble(i));
 						glVertex2d(GLdouble(k+1),GLdouble(i+1));
 					}

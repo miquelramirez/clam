@@ -50,13 +50,13 @@ namespace CLAM
 		void PlayableBPFPlot::backgroundWhite()
 		{
 			PlayableMultiBPFPlot::backgroundWhite();
-			SetColors("bpf_editor",Color(0,0,0),Color(0,0,255));
+			SetColors("bpf_editor",QColor(0,0,0),QColor(0,0,255));
 		}
 
 		void PlayableBPFPlot::backgroundBlack()
 		{
 			PlayableMultiBPFPlot::backgroundBlack();
-			SetColors("bpf_editor",Color(255,255,255),Color(255,0,0));
+			SetColors("bpf_editor",QColor(255,255,255),QColor(255,0,0));
 		}
 
 		void PlayableBPFPlot::xvalue_changed(QString key, unsigned index, double value)
@@ -89,7 +89,7 @@ namespace CLAM
 			PlayableMultiBPFPlot::AddBPF(key,bpf);
 		}
 
-		void PlayableBPFPlot::SetColors(const QString& key, const Color& cline, const Color& chandler)
+		void PlayableBPFPlot::SetColors(const QString& key, const QColor& cline, const QColor& chandler)
 		{
 			PlayableMultiBPFPlot::SetColors(key,cline,chandler);
 		}

@@ -26,6 +26,7 @@
 #include "Assert.hxx"
 #include "DataTypes.hxx"
 #include "vmDataTypes.hxx"
+#include <QtGui/QColor>
 
 namespace CLAM
 {
@@ -40,7 +41,7 @@ namespace CLAM
 		 */
 		class Palette
 		{
-			typedef std::map<int,Color> Colormap;
+			typedef std::map<int,QColor> Colormap;
 			
 			static const int NCOLORMAPPING;
 			static const int FIRST_INDEX;
@@ -54,13 +55,17 @@ namespace CLAM
 
 			void Value(float v);	
 			float Value() { return mValue; }
+			void GetRGBFromIndex( int idx, QColor & c)
+			{
+				c = mColormap[idx];
+			}
 			void GetRGBFromIndex( int idx, unsigned short& r, unsigned short& g, unsigned short& b )
-				{
-					Color c = mColormap[idx];
-					r = c.r;
-					g = c.g;
-					b = c.b;
-				}
+			{
+				QColor c = mColormap[idx];
+				r = c.red();
+				g = c.green();
+				b = c.blue();
+			}
 
 			int Get(float v);
 				

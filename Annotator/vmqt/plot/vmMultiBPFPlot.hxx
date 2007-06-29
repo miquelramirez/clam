@@ -38,7 +38,7 @@ namespace CLAM
 			virtual ~MultiBPFPlot();
 
 			virtual void AddBPF(const QString& key, BPF* bpf);
-			virtual void SetColors(const QString& key, const Color& cline, const Color& chandler);
+			virtual void SetColors(const QString& key, const QColor& cline, const QColor& chandler);
 			virtual void SetFlags(const QString& key, int flags);
 			
 			void SetGridSteps(double xstep, double ystep);

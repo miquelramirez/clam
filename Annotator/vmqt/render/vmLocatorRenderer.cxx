@@ -40,12 +40,12 @@ namespace CLAM
 		{
 		}
 
-		void Locator::SetLocatorColor(const Color& c)
+		void Locator::SetLocatorColor(const QColor& c)
 		{
 			mLocatorColor = c;
 		}
 
-		void Locator::SetRegionColor(const Color& c)
+		void Locator::SetRegionColor(const QColor& c)
 		{
 			mRegionColor = c;
 		}
@@ -363,7 +363,7 @@ namespace CLAM
 			if(mRegion.min == mRegion.max) return;
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			glEnable(GL_BLEND);
-			glColor4ub(mRegionColor.r,mRegionColor.g,mRegionColor.b,175);
+			glColor4ub(mRegionColor.red(),mRegionColor.green(),mRegionColor.blue(),175);
 			glBegin(GL_QUADS);
 			switch(mode)
 			{
@@ -407,7 +407,7 @@ namespace CLAM
 		{
 			if(mLocatorPos < mView.left || mLocatorPos > mView.right) return;
 			glLineWidth(2);
-			glColor3ub(mLocatorColor.r,mLocatorColor.g,mLocatorColor.b);
+			glColor3ub(mLocatorColor.red(),mLocatorColor.green(),mLocatorColor.blue());
 			glBegin(GL_LINES);
 			glVertex2d(mLocatorPos,mView.top);
 			glVertex2d(mLocatorPos,mView.bottom);

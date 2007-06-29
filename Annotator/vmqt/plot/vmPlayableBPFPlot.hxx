@@ -57,7 +57,7 @@ namespace CLAM
 
 		private:
 			void AddBPF(const QString& key, BPF* bpf);
-			void SetColors(const QString& key, const Color& cline, const Color& chandler);
+			void SetColors(const QString& key, const QColor& cline, const QColor& chandler);
 			void SetFlags(const QString& key, int flags);
 
 			void InitPlayableBPFPlot();

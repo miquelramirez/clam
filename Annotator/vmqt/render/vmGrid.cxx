@@ -57,7 +57,7 @@ namespace CLAM
 			emit requestRefresh();
 		}
 
-		void Grid::SetGridColor(const Color& color)
+		void Grid::SetGridColor(const QColor& color)
 		{
 			mGridColor = color;
 			emit requestRefresh();
@@ -88,7 +88,7 @@ namespace CLAM
 			if(!mEnabled) return;
 			if(!mShowGrid) return;
 			
-			glColor3ub(mGridColor.r,mGridColor.g,mGridColor.b);
+			glColor3ub(mGridColor.red(),mGridColor.green(),mGridColor.blue());
 			glLineWidth(1);
 			glBegin(GL_LINES);
 			// vertical lines
