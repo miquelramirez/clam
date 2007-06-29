@@ -191,9 +191,9 @@ namespace CLAM
 			mLayout->addWidget(mVScroll,1,2,2,1);
 			mLayout->addWidget(mHScroll,3,1);
 
-			mXRuler->SetStep(0.01);
-			mYRuler0->SetStep(0.05);
-			mYRuler1->SetStep(0.05);
+//			mXRuler->SetStep(0.01);
+//			mYRuler0->SetStep(0.05);
+//			mYRuler1->SetStep(0.05);
 		   
 			// connect yrulers and vertical scroll group
 			connect(mDisplay[MASTER],SIGNAL(yRulerRange(double,double)),

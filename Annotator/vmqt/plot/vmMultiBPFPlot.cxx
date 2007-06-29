@@ -89,8 +89,8 @@ namespace CLAM
 		void MultiBPFPlot::SetGridSteps(double xstep, double ystep)
 		{
 			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridSteps(xstep,ystep);
-			mXRuler->SetStep(xstep);
-			mYRuler->SetStep(ystep);
+//			mXRuler->SetStep(xstep);
+//			mYRuler->SetStep(ystep);
 		}
 
 		void MultiBPFPlot::backgroundWhite()

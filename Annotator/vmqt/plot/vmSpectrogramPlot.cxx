@@ -95,8 +95,8 @@ namespace CLAM
 			mPlot->SendToBack("spectrogram");
 			mPlot->BringToFront("locator");
 
-			mXRuler->SetStep(0.01);
-			mYRuler->SetStep(5.0);
+//			mXRuler->SetStep(0.01);
+//			mYRuler->SetStep(5.0);
 			mYRuler->ShowIntegers();
 
 			mPanel = new SpecgramPanel(this);
