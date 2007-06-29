@@ -37,7 +37,7 @@ namespace CLAM
 		{
 		}
 
-		void ColorScale::SetScale(const std::vector<Color>& scale)
+		void ColorScale::SetScale(const std::vector<QColor>& scale)
 		{
 			mScale = scale;
 			update();
@@ -54,7 +54,7 @@ namespace CLAM
 			QPainter painter(this);
 			for(unsigned i = 0; i < mScale.size(); i++)
 			{
-				painter.setPen(QPen(QColor(mScale[i].r,mScale[i].g,mScale[i].b)));
+				painter.setPen(mScale[i]);
 				painter.drawLine(int(i),rect().bottom(),i,rect().top());
 			}
 		}

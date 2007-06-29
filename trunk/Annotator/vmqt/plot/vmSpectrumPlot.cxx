@@ -91,15 +91,15 @@ namespace CLAM
 		void SpectrumPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetDataColor(Color(0,0,255));
-			static_cast<PeaksRenderer*>(mPlot->GetRenderer("peaks"))->SetPeaksColor(Color(255,0,0),Color(8,180,70));
+			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetDataColor(QColor(0,0,255));
+			static_cast<PeaksRenderer*>(mPlot->GetRenderer("peaks"))->SetPeaksColor(QColor(255,0,0),QColor(8,180,70));
 		}
 
 		void SpectrumPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetDataColor(Color(0,255,0));
-			static_cast<PeaksRenderer*>(mPlot->GetRenderer("peaks"))->SetPeaksColor(Color(255,0,0),Color(0,255,255));
+			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetDataColor(QColor(0,255,0));
+			static_cast<PeaksRenderer*>(mPlot->GetRenderer("peaks"))->SetPeaksColor(QColor(255,0,0),QColor(0,255,255));
 
 		}
 

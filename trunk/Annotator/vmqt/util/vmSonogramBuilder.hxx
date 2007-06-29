@@ -39,11 +39,11 @@ namespace CLAM
 
 			void MakeSonogram(const Array<Spectrum>& data_in,
 							  std::vector<std::vector<float> >& data_out,
-							  std::vector<std::vector<Color> >& color_sonogram_out,
-							  std::vector<std::vector<Color> >& blackwhite_sonogram_out);
+							  std::vector<std::vector<QColor> >& color_sonogram_out,
+							  std::vector<std::vector<QColor> >& blackwhite_sonogram_out);
 
-			std::vector<Color> GetColorScale(int w);
-			std::vector<Color> GetGrayScale(int w);
+			std::vector<QColor> GetColorScale(int w);
+			std::vector<QColor> GetGrayScale(int w);
 
 		private:
 			Palette mPalette;

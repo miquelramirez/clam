@@ -37,7 +37,7 @@ namespace CLAM
 		{
 		}
 
-		void Plot::SetBackgroundColor(const Color& c)
+		void Plot::SetBackgroundColor(const QColor& c)
 		{
 			mBgColor = c;
 			updateGL();

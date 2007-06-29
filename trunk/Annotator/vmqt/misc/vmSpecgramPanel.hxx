@@ -41,7 +41,7 @@ namespace CLAM
 			SpecgramPanel(QWidget* parent=0);
 			~SpecgramPanel();
 
-			void SetColorScale(const std::vector<Color>& scale);
+			void SetColorScale(const std::vector<QColor>& scale);
 			
 		signals:
 			void colorScaleWidthChanged(int);

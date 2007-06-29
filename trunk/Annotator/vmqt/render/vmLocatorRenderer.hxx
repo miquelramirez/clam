@@ -23,6 +23,7 @@
 #define __VMQT_LOCATOR_RENDERER_H__
 
 #include "vmRenderer2D.hxx"
+#include <QtGui/QColor>
 
 namespace CLAM
 {
@@ -35,8 +36,8 @@ namespace CLAM
 			Locator();
 			~Locator();
 
-			void SetLocatorColor(const Color& c);
-			void SetRegionColor(const Color& c);
+			void SetLocatorColor(const QColor& c);
+			void SetRegionColor(const QColor& c);
 
 		signals:
 			void selectedRegion(double,double);
@@ -61,8 +62,8 @@ namespace CLAM
 			bool   mUpdatingLocator;
 			double mLocatorPos;
 			Range  mRegion;
-			Color  mLocatorColor;
-			Color  mRegionColor;
+			QColor  mLocatorColor;
+			QColor  mRegionColor;
 
 			enum { TOLERANCE=3 };
 			enum EditionMode 

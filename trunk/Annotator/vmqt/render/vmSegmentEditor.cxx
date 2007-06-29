@@ -28,6 +28,7 @@
 #ifdef __SEGMENT_EDITOR__DEBUG__
 #include <iostream>
 #endif
+#include <QtGui/QColor>
 
 namespace CLAM
 {
@@ -372,11 +373,11 @@ namespace CLAM
 
 		void SegmentEditor::Colorize()
 		{
-			mColors[NORMAL] = Color(100,200,20);
-			mColors[CURRENT] = Color(100,200,20);
-			mColors[SELECTED] = Color(140,240,60); 
-			mColors[HIGHLIGHTED] = Color(255,255,0);
-			mColors[STIPPLED] = Color(255,90,60);
+			mColors[NORMAL] = QColor(100,200,20);
+			mColors[CURRENT] = QColor(100,200,20);
+			mColors[SELECTED] = QColor(140,240,60); 
+			mColors[HIGHLIGHTED] = QColor(255,255,0);
+			mColors[STIPPLED] = QColor(255,90,60);
 		}
 
 		void SegmentEditor::PlainRect(double left, double right, double bottom, double top)
@@ -393,7 +394,7 @@ namespace CLAM
 			float vPadding = mVMargin-(2.0*(mView.top-mView.bottom)/double(mViewport.h));
 			float hPadding = 3.0*(mView.right-mView.left)/double(mViewport.w);
 			// draw stippled rect
-			glColor3ub(mColors[STIPPLED].r,mColors[STIPPLED].g,mColors[STIPPLED].b);
+			glColor3ub(mColors[STIPPLED].red(),mColors[STIPPLED].green(),mColors[STIPPLED].blue());
 			glEnable(GL_LINE_STIPPLE);
 			glLineStipple(FACTOR,PATTERN);
 			glBegin(GL_LINE_STRIP);
@@ -418,12 +419,12 @@ namespace CLAM
 			int cindex = isSelected ? SELECTED : NORMAL;
 			// fill rec
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-			glColor4ub(mColors[cindex].r,mColors[cindex].g,mColors[cindex].b,125);
+			glColor4ub(mColors[cindex].red(),mColors[cindex].green(),mColors[cindex].blue(),125);
 			glBegin(GL_QUADS);
 			PlainRect(left,right,bottom,top);
 			glEnd();
 			// draw plain
-			glColor4ub(mColors[cindex].r,mColors[cindex].g,mColors[cindex].b,200);
+			glColor4ub(mColors[cindex].red(),mColors[cindex].green(),mColors[cindex].blue(),200);
 			glBegin(GL_LINE_STRIP);
 			PlainRect(left,right,bottom,top);
 			glEnd();
@@ -439,7 +440,7 @@ namespace CLAM
 			bool isCurrent = (mHighlighted == (int)mSegmentation->current());
 		   
 			// draw vertical highlighted 
-			glColor3ub(mColors[HIGHLIGHTED].r,mColors[HIGHLIGHTED].g,mColors[HIGHLIGHTED].b);
+			glColor3ub(mColors[HIGHLIGHTED].red(),mColors[HIGHLIGHTED].green(),mColors[HIGHLIGHTED].blue());
 			glBegin(GL_LINES);
 			glVertex2d(x,top-mVMargin); 
 			glVertex2d(x,bottom+mVMargin);

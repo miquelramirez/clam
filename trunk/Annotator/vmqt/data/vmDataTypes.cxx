@@ -20,54 +20,12 @@
  */
 
 #include "vmDataTypes.hxx"
+#include <QtGui/QColor>
 
 namespace CLAM
 {
 	namespace VM
 	{
-
-/////// Color //////////////
-		Color::Color()
-			: r(0)
-			, g(0)
-			, b(0)
-			, a(255)
-		{
-		}
-
-		Color::Color(unsigned short red, unsigned short green, unsigned short blue, unsigned short alpha)
-			: r(red)
-			, g(green)
-			, b(blue)
-			, a(alpha)
-		{
-		}
-
-		Color::Color(const Color& c)
-			: r(c.r)
-			, g(c.g)
-			, b(c.b)
-			, a(c.a)
-		{
-		}
-
-		Color::~Color()
-		{
-		}
-
-		const Color& Color::operator=(const Color& c)
-		{
-			r = c.r;
-			g = c.g;
-			b = c.b;
-			a = c.a;
-			return *this;
-		}
-	
-		bool Color::operator==(const Color& c)
-		{
-			return (r==c.r && g==c.g && b==c.b && a==c.a);
-		}
 
 ///////// GLView /////////////////////
 		GLView::GLView()
@@ -242,7 +200,7 @@ namespace CLAM
 		{
 		}
 
-		SinTrackNode::SinTrackNode(double f, unsigned t, const CLAM::VM::Color& c)
+		SinTrackNode::SinTrackNode(double f, unsigned t, const QColor& c)
 			: freq(f)
 			, timeIndex(t)
 			, color(c)

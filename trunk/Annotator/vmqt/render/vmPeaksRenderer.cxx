@@ -42,7 +42,7 @@ namespace CLAM
 			requestUpdate();
 		}
 
-		void PeaksRenderer::SetPeaksColor(const Color& cpoint, const Color& cline)
+		void PeaksRenderer::SetPeaksColor(const QColor& cpoint, const QColor& cline)
 		{
 			mCpoint = cpoint;
 			mCline = cline;
@@ -55,7 +55,7 @@ namespace CLAM
 			int nElems = mCachedPeaks.Size();
 			// draw lines
 			glLineWidth(LINE_WIDTH);
-			glColor3ub(mCline.r,mCline.g,mCline.b);
+			glColor3ub(mCline.red(),mCline.green(),mCline.blue());
 			glBegin(GL_LINES);
 			for(int i=0; i < nElems; i++)
 			{
@@ -69,7 +69,7 @@ namespace CLAM
 			glEnd();
 			// drqw points
 			glPointSize(POINT_SIZE);
-			glColor3ub(mCpoint.r,mCpoint.g,mCpoint.b);
+			glColor3ub(mCpoint.red(),mCpoint.green(),mCpoint.blue());
 			glBegin(GL_POINTS);
 			for(int i=0; i < nElems; i++)
 			{

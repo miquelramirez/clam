@@ -40,7 +40,7 @@ namespace CLAM
 		{
 		}
 
-		void SpecgramPanel::SetColorScale(const std::vector<Color>& scale)
+		void SpecgramPanel::SetColorScale(const std::vector<QColor>& scale)
 		{
 			mColorScale->SetScale(scale);
 		}

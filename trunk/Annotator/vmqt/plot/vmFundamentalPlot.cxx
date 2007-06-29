@@ -54,13 +54,13 @@ namespace CLAM
 		void FundamentalPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("fundamental"))->SetDataColor(Color(0,0,255));
+			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("fundamental"))->SetDataColor(QColor(0,0,255));
 		}
 
 		void FundamentalPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("fundamental"))->SetDataColor(Color(0,255,0));
+			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("fundamental"))->SetDataColor(QColor(0,255,0));
 		}
 
 		void FundamentalPlot::InitFundamentalPlot()

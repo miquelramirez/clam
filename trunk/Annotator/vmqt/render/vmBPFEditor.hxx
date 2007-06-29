@@ -24,6 +24,7 @@
 
 #include "BPF.hxx"
 #include "vmRenderer2D.hxx"
+#include <QtGui/QColor>
 
 namespace CLAM
 {
@@ -37,7 +38,7 @@ namespace CLAM
 			~BPFEditor();
 
 			void SetData(BPF* bpf);
-			void SetColors(const Color& cline, const Color& chandler);
+			void SetColors(const QColor& cline, const QColor& chandler);
 			void SetFlags(int flags);
 			int GetFlags() const;
 			const BPF& GetData() const;
@@ -66,8 +67,8 @@ namespace CLAM
 
 			BPF* mBPF;
 			
-			Color mLineColor;
-			Color mHandlerColor;
+			QColor mLineColor;
+			QColor mHandlerColor;
 
 			enum { LINE_WIDTH=2, POINT_SIZE=2, TOLERANCE=5 };
 

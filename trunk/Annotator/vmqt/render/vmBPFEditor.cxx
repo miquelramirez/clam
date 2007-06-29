@@ -53,7 +53,7 @@ namespace CLAM
 			emit requestUpdate();
 		}
 
-		void BPFEditor::SetColors(const Color& cline, const Color& chandler)
+		void BPFEditor::SetColors(const QColor& cline, const QColor& chandler)
 		{
 			mLineColor = cline;
 			mHandlerColor = chandler;
@@ -89,7 +89,7 @@ namespace CLAM
 				glNewList(mglList,GL_COMPILE_AND_EXECUTE);
 				// lines
 				glLineWidth(LINE_WIDTH);
-				glColor3ub(mLineColor.r,mLineColor.g,mLineColor.b);
+				glColor3ub(mLineColor.red(), mLineColor.green(), mLineColor.blue());
 				glBegin(GL_LINE_STRIP);
 				for(long i=bounds.first; i < bounds.second; i++)
 				{
@@ -98,7 +98,7 @@ namespace CLAM
 				glEnd();
 				// points
 				glPointSize(POINT_SIZE);
-				glColor3ub(mHandlerColor.r,mHandlerColor.g,mHandlerColor.b);
+				glColor3ub(mHandlerColor.red(), mHandlerColor.green(), mHandlerColor.blue());
 				glBegin(GL_POINTS);
 				for(long i=bounds.first; i < bounds.second; i++)
 				{
@@ -107,8 +107,7 @@ namespace CLAM
 				glEnd();
 				if(mCurrentIndex < 0 || mCurrentIndex >= mBPF->Size()) return;
 				glPointSize(POINT_SIZE+1);
-				Color c(250,160,30);
-				glColor3ub(c.r,c.g,c.b);
+				glColor3ub(250,160,30);
 				glBegin(GL_POINTS);
 				glVertex2d(GLdouble(mBPF->GetXValue(mCurrentIndex)),
 						   GLdouble(mBPF->GetValueFromIndex(mCurrentIndex)));

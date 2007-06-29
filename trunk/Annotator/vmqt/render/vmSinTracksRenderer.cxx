@@ -68,7 +68,7 @@ namespace CLAM
 					glBegin(GL_LINE_STRIP);
 					for(unsigned j=0; j < mTracks[i].size(); j++)
 					{
-						glColor3ub(mTracks[i][j].color.r, mTracks[i][j].color.g, mTracks[i][j].color.b);
+						glColor3ub(mTracks[i][j].color.red(), mTracks[i][j].color.green(), mTracks[i][j].color.blue());
 						glVertex2d(double(mTracks[i][j].timeIndex),mTracks[i][j].freq);
 					}
 					glEnd();

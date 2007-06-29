@@ -93,7 +93,7 @@ namespace CLAM
 
 			enum BoundType { LEFT_BOUND=0, RIGHT_BOUND=1, BOTTOM_BOUND=2, TOP_BOUND=3 };
 
-			std::vector<Color> mColors; 
+			std::vector<QColor> mColors; 
 
 			int       mHighlighted;
 			double    mVMargin;

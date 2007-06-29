@@ -47,7 +47,7 @@ namespace CLAM
 			emit requestUpdate();
 		}
 
-		void DataArrayRenderer::SetDataColor(const Color& c)
+		void DataArrayRenderer::SetDataColor(const QColor& c)
 		{
 			mDataColor = c;
 			emit requestRefresh();
@@ -68,7 +68,7 @@ namespace CLAM
 			glOrtho(mLocalView.left,mLocalView.right,mLocalView.bottom,mLocalView.top,-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 			glLineWidth(1);
-			glColor3ub(mDataColor.r,mDataColor.g,mDataColor.b);
+			glColor3ub(mDataColor.red(),mDataColor.green(),mDataColor.blue());
 			(mHugeMode) ? DrawHugeMode() : DrawNormalMode();
 			glMatrixMode(GL_PROJECTION);
 			glPopMatrix();
@@ -149,7 +149,7 @@ namespace CLAM
 		void DataArrayRenderer::DrawHugeMode()
 		{
 			glBegin(GL_TRIANGLE_STRIP);
-			for(TSize i=0; i < mMaxArray.size(); i++)
+			for(unsigned i=0; i < mMaxArray.size(); i++)
 			{
 				glVertex2d(double(i),mMaxArray[i]);
 				glVertex2d(double(i),mMinArray[i]);
@@ -160,7 +160,7 @@ namespace CLAM
 		void DataArrayRenderer::DrawNormalMode()
 		{
 			glBegin(GL_LINE_STRIP);
-			for(TSize i=0; i < mProcessedData.size(); i++)
+			for(unsigned i=0; i < mProcessedData.size(); i++)
 			{
 				glVertex2d(double(i),mProcessedData[i]);
 			}

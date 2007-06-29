@@ -81,14 +81,6 @@ namespace CLAM
 			return mScale;
 		}
 
-		void Ruler::SetBackgroundColor(const Color& c)
-		{
-			SetBackgroundColor( QColor(c.r,c.g,c.b) );
-		}
-		void Ruler::SetForegroundColor(const Color& c)
-		{
-			SetForegroundColor( QColor(c.r,c.g,c.b) );
-		}
 		void Ruler::SetBackgroundColor(const QColor& c)
 		{
 			mBgColor = c;

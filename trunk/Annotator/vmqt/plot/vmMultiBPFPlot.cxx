@@ -72,7 +72,7 @@ namespace CLAM
 			}
 		}
 
-		void MultiBPFPlot::SetColors(const QString& key, const Color& cline, const Color& chandler)
+		void MultiBPFPlot::SetColors(const QString& key, const QColor& cline, const QColor& chandler)
 		{
 			if(!ExistKey(key)) return;
 			static_cast<BPFEditor*>(mPlot->GetRenderer(key))->SetColors(cline,chandler);
@@ -96,13 +96,13 @@ namespace CLAM
 		void MultiBPFPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridColor(Color(152,102,32));
+			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridColor(QColor(152,102,32));
 		}
 
 		void MultiBPFPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridColor(Color(255,255,0));
+			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridColor(QColor(255,255,0));
 		}
 
 		void MultiBPFPlot::showGrid(bool show)

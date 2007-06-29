@@ -39,9 +39,9 @@ namespace CLAM
 			, mHZoomRef(0.0)
 			, mCurrentXSpan(1.0)
 			, mCurrentYSpan(1.0)
+			, mUpdatePending(0)
 			, mXRange(-1.0,1.0)
 			, mYRange(-1.0,1.0)
-			, mUpdatePending(0)
 			, mViewport(0,0,10,10)
 		{
 			setMouseTracking(true);
@@ -232,10 +232,7 @@ namespace CLAM
 			glOrtho(mView.left,mView.right,mView.bottom,mView.top,-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 			glShadeModel(GL_FLAT);
-			glClearColor(double(mBgColor.r)/255.0, 
-						 double(mBgColor.g)/255.0, 
-						 double(mBgColor.b)/255.0, 
-						 double(mBgColor.a)/255.0);
+			qglClearColor(mBgColor);
 			glClear(GL_COLOR_BUFFER_BIT);
 			glEnable(GL_BLEND);
 			glEnable (GL_LINE_SMOOTH);

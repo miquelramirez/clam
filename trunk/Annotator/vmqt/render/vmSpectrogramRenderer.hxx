@@ -60,8 +60,8 @@ namespace CLAM
 			int mColormap;
 
 			std::vector<std::vector<float> > mComputedData;
-			std::vector<std::vector<Color> > mColorData;
-			std::vector<std::vector<Color> > mBlackWhiteData;
+			std::vector<std::vector<QColor> > mColorData;
+			std::vector<std::vector<QColor> > mBlackWhiteData;
 
 			GLView mLocalView;
 

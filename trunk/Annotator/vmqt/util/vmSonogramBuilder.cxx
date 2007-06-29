@@ -39,8 +39,8 @@ namespace CLAM
 
 		void SonogramBuilder::MakeSonogram(const Array<Spectrum>& data_in,
 										   std::vector<std::vector<float> >& data_out,
-										   std::vector<std::vector<Color> >& color_sonogram_out,
-										   std::vector<std::vector<Color> >& blackwhite_sonogram_out)
+										   std::vector<std::vector<QColor> >& color_sonogram_out,
+										   std::vector<std::vector<QColor> >& blackwhite_sonogram_out)
 		{
 			Array<Spectrum> data = data_in;
 			
@@ -146,54 +146,47 @@ namespace CLAM
 			color_sonogram_out.resize(dataSize);
 			blackwhite_sonogram_out.resize(dataSize);
 			
-			std::vector<Color> color_vector(specSize);
-			std::vector<Color> blackwhite_vector(specSize);
+			std::vector<QColor> color_vector(specSize);
+			std::vector<QColor> blackwhite_vector(specSize);
 
 			for(i=0; i < TIndex(dataSize); i++)
 			{
 				for(j = 0; j < TIndex(specSize); j++)
 				{
-					Color c;
 					float value = ClampToRange(data_out[i][j]);
 					// cplor
 					int colorIndex = mPalette.Get(value);
-					mPalette.GetRGBFromIndex( colorIndex, c.r, c.g, c.b);
-					color_vector[j]=c;
+					mPalette.GetRGBFromIndex( colorIndex, color_vector[j]);
 					// B&W
 					value = fabs(value-1.0f);
-					c.r = c.g = c.b = int(255.0*value);
-					blackwhite_vector[j]=c;
+					blackwhite_vector[j].setRgbF(value,value,value);
 				}
 				color_sonogram_out[i]=color_vector;
 				blackwhite_sonogram_out[i]=blackwhite_vector;
 			}
 		}
 
-		std::vector<Color> SonogramBuilder::GetColorScale(int w)
+		std::vector<QColor> SonogramBuilder::GetColorScale(int w)
 		{
-			std::vector<Color> scale(w);
+			std::vector<QColor> scale(w);
 			float step = -150.f/float(w);
 			for(unsigned i=0; i < scale.size(); i++)
 			{
-				Color c;
 				TIndex colorIndex = mPalette.Get( ClampToRange(float(i)*step));
-				mPalette.GetRGBFromIndex( colorIndex, c.r, c.g, c.b);
-				scale[i]=c;
+				mPalette.GetRGBFromIndex( colorIndex, scale[i]);
 			}
 			return scale;
 		}
 
-		std::vector<Color> SonogramBuilder::GetGrayScale(int w)
+		std::vector<QColor> SonogramBuilder::GetGrayScale(int w)
 		{
-			std::vector<Color> scale(w);
+			std::vector<QColor> scale(w);
 			float step = -150.0f/float(w);
 			for(unsigned i=0; i < scale.size(); i++)
 			{
-				Color c;
 				float value = ClampToRange(float(i)*step);
 				value = fabs(value-1.0f);
-				c.r = c.g = c.b = int(255.0*value);
-				scale[i]=c;
+				scale[i].setRgbF(value,value,value);
 			}
 			return scale;
 		}
