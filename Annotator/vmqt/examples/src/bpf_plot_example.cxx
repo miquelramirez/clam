@@ -20,6 +20,7 @@
  */
 
 #include <QtGui/QApplication>
+#include <QtGui/QFileDialog>
 #include "Melody.hxx"
 #include "XMLStorage.hxx"
 #include "vmBPFPlot.hxx"
@@ -28,16 +29,22 @@ void extract_data(const CLAM::Melody& in, CLAM::BPF& out, double& min, double& m
 
 int main(int argc, char** argv)
 {
+	QApplication app( argc, argv );
+	QString fn = QFileDialog::getOpenFileName(0,"Choose a mono xml file containing a BPF",".","XML file (*.xml)");
+	if(fn.isEmpty())
+	{
+		printf("No file was choosen.\n");
+		exit(1);
+	}
+
 	CLAM::Melody melody;
-	CLAM::XMLStorage::Restore(melody,"data/melody.xml");
+	CLAM::XMLStorage::Restore(melody,fn.toAscii().data());
     double duration = double(melody.GetNoteArray()[melody.GetNumberOfNotes()-1].GetTime().GetEnd());
 	double min = 1E9;
     double max = -1E9;
     CLAM::BPF bpf;
 	extract_data(melody,bpf,min,max);
     double span = max-min;
-
-	QApplication app( argc, argv );
 
 	CLAM::VM::BPFPlot plot;
 	plot.SetTitle("BPF");
