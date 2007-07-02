@@ -227,7 +227,7 @@ def generate(env):
 		]
 
 		for suffix in suffixes :
-			fullpath = os.path.join(qtdir,'bin',command + suffix),
+			fullpath = os.path.join(qtdir,'bin',command + suffix)
 			if os.access(fullpath, os.X_OK) :
 				return fullpath
 
