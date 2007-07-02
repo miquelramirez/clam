@@ -52,14 +52,11 @@ class RunTimeProcessingLibraryLoader
 			if(pluginFilename == "." || pluginFilename == "..")
 				continue;
 			std::string pluginFullFilename(path + std::string("/") + pluginFilename);
-			std::cout << "[Plugins] Loading: " << pluginFullFilename << std::endl;
+			std::cerr << "[Plugins] Loading: " << pluginFullFilename << std::endl;
 			void* handle = FullyLoadLibrary( pluginFullFilename );
-			if (!handle)
-			{
-				std::cerr << "[Plugins] Error: " << LibraryLoadError() << std::endl;
-				continue;
-			}
+			if (!handle) std::cerr << "[Plugins] Error: " << LibraryLoadError() << std::endl;
 		}
+		closedir(ladspaDir);
 	}
 public:
 	std::vector<std::string> splitPathVariable(const std::string & pathVariable)
@@ -68,7 +65,6 @@ public:
 		std::vector<std::string> result;
 		while (!content.empty())
 		{
-			std::cout << "Splitting " << content << std::endl;
 			size_t separatorPos = content.find(pathSeparator);
 			if (separatorPos == std::string::npos)
 			{
@@ -96,6 +92,7 @@ public:
 			path += std::string(path.empty()? "":pathSeparator) + envHome + "/.ladspa";
 		for (const char ** standardPath=standardPaths; *standardPath; standardPath++)
 			path += std::string(path.empty()? "":pathSeparator) + *standardPath;
+
 		std::vector <std::string> environmentPaths = splitPathVariable(path);
 		for (unsigned i=0; i<environmentPaths.size(); i++)
 			loadLibrariesFromPath(environmentPaths[i]);
