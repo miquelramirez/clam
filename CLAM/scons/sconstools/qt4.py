@@ -217,20 +217,23 @@ def generate(env):
 	print "Loading qt4 tool..."
 
 	def locateQt4Command(env, command, qtdir) :
-		fullpath1 = os.path.join(qtdir,'bin',command +'-qt4')
-		if os.access(fullpath1, os.X_OK) or \
-			os.access(fullpath1+".exe", os.X_OK):
-			return fullpath1
-		fullpath3 = os.path.join(qtdir,'bin',command +'4')
-		if os.access(fullpath3, os.X_OK) or \
-			os.access(fullpath3+".exe", os.X_OK):
-			return fullpath3
-		fullpath2 = os.path.join(qtdir,'bin',command)
-		if os.access(fullpath2, os.X_OK) or \
-			os.access(fullpath2+".exe", os.X_OK):
-			return fullpath2
+		suffixes = [
+			'-qt4',
+			'-qt4.exe',
+			'4',
+			'4.exe',
+			'',
+			'exe',
+		]
+
+		for suffix in suffixes :
+			fullpath = os.path.join(qtdir,'bin',command + suffix),
+			if os.access(fullpath, os.X_OK) :
+				return fullpath
+
 		fullpath = env.Detect([command+'-qt4', command+'4', command])
 		if not (fullpath is None) : return fullpath
+
 		raise "Qt4 command '" + command + "' not found. Tried: " + fullpath1 + " and "+ fullpath2
 		
 
@@ -420,7 +423,7 @@ def enable_modules(self, modules, debug=False) :
 	if sys.platform == "win32" :
 		if debug : debugSuffix = 'd'
 		self.AppendUnique(LIBS=[lib+'4'+debugSuffix for lib in modules if lib not in staticModules])
-		self.AppendUnique(LIBS=[lib+debugSuffix for lib in modules if lib in staticModules])
+		self.PrependUnique(LIBS=[lib+debugSuffix for lib in modules if lib in staticModules])
 		if 'QtOpenGL' in modules:
 			self.AppendUnique(LIBS=['opengl32'])
 		self.AppendUnique(CPPPATH=[ '$QTDIR/include/'+module
