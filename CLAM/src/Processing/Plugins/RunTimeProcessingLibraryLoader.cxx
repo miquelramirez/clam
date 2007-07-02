@@ -1,4 +1,9 @@
+#ifdef WIN32
+#include <windows.h>
+#undef GetClassName
+#else
 #include <dlfcn.h>
+#endif
 #include <dirent.h>
 #include <iostream>
 #include <string>
@@ -12,8 +17,8 @@ class RunTimeProcessingLibraryLoader
 	void * FullyLoadLibrary(const std::string & libraryPath)
 	{
 #ifdef WIN32
-		SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT |
-			SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX );
+//		SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT |
+//			SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX );
 		return LoadLibrary(libraryPath.c_str());
 #else
 		return dlopen( libraryPath.c_str(), RTLD_NOW);	
@@ -30,8 +35,9 @@ class RunTimeProcessingLibraryLoader
 			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
 			(LPTSTR) &lpMsgBuf,
 			0, NULL );
-		std::string message(lpMsgBuf);
+		std::string message((char*)lpMsgBuf);
 		LocalFree(lpMsgBuf);
+		return message;
 #else
 		return dlerror();
 #endif
@@ -56,7 +62,7 @@ class RunTimeProcessingLibraryLoader
 			void* handle = FullyLoadLibrary( pluginFullFilename );
 			if (!handle) std::cerr << "[Plugins] Error: " << LibraryLoadError() << std::endl;
 		}
-		closedir(ladspaDir);
+		closedir(dir);
 	}
 public:
 	std::vector<std::string> splitPathVariable(const std::string & pathVariable)
@@ -89,7 +95,7 @@ public:
 		const char * envHome = getenv("HOME");
 		std::string path = envPath ? envPath : "";
 		if (envHome) 
-			path += std::string(path.empty()? "":pathSeparator) + envHome + "/.ladspa";
+			path += std::string(path.empty()? "":pathSeparator) + envHome + "/.clam/plugins";
 		for (const char ** standardPath=standardPaths; *standardPath; standardPath++)
 			path += std::string(path.empty()? "":pathSeparator) + *standardPath;
 
