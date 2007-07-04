@@ -32,7 +32,7 @@
 #ifndef WIN32
 	#ifdef macintosh
 		#include <types.h>
-		#include <unistd.h>	
+		#include <unistd.h>
 	#else
 		#include <sys/types.h>
 		#include <unistd.h>
@@ -43,13 +43,13 @@
 #endif
 
 /** Used to read or write an SDIF file. When reading, the File
-* parses the whole files and passes the read Frames to a 
+* parses the whole files and passes the read Frames to a
 * Storage, typically a Collection to store all in memory.
-*       
-*       Note that the Storage is responsable for the 
+*
+*       Note that the Storage is responsable for the
 *       freeing memory of the read frames, though File
 *       creates them.
-*       
+*
 *       SDIF files use BIG ENDIAN byte order for the data storage.
 *       SDIFFile takes care of fixing the byte order in case
 *       the operating system is not BIG ENDIANm, @see CLAMByteOrder
@@ -86,24 +86,24 @@ private:
 	CLAM::TSize mSize;
 
 
-/*	
+/*
   template <class T> void ReadArray(Array<T>& data)					//read from data file
   {
-  	if (mFile==-1)													// check if file is opened 
-  		throw Err("DataFileIO not opened");
-  	
-  	// added (char*) typecast to compile in MCW	
-  	int size = read(mFile,(char*)data.GetPtr(),data.AllocatedSizeInBytes());
-  	data.SetSize(size/sizeof(T));
+	if (mFile==-1)													// check if file is opened
+		throw Err("DataFileIO not opened");
+
+	// added (char*) typecast to compile in MCW
+	int size = read(mFile,(char*)data.GetPtr(),data.AllocatedSizeInBytes());
+	data.SetSize(size/sizeof(T));
   }
 
   template <class T> void WriteArray(const Array<T>& data)			  //write to data file
   {
-  	if (mFile==-1)													// check if file is open
-  		throw Err("DataFileIO not opened");
+	if (mFile==-1)													// check if file is open
+		throw Err("DataFileIO not opened");
 
-  	// added (char*) typecast to compile in MCW
-  	write(mFile,(char*)data.GetPtr(),data.SizeInBytes());
+	// added (char*) typecast to compile in MCW
+	write(mFile,(char*)data.GetPtr(),data.SizeInBytes());
   }
 */
 
@@ -126,7 +126,7 @@ private:
 
 	inline void FixByteOrder(CLAM::TByte* ptr,
 		CLAM::TUInt32 nElems,CLAM::TUInt32 elemSize);
-	
+
 	void Read(DataFrameHeader& header);
 	void Write(const DataFrameHeader& header);
 
@@ -162,27 +162,27 @@ private:
 };
 
 inline int File::Pos(void)
-{	
+{
 	int pos = lseek(mFile,0,SEEK_CUR);
 	return pos;
 }
 
 inline int File::Pos(int pos)
 {
-	return lseek(mFile,pos,SEEK_SET);	
+	return lseek(mFile,pos,SEEK_SET);
 }
 
 inline void File::Read(CLAM::TByte* ptr,int n)
 {
 	if (read(mFile,(char*)ptr,n)!=n) {
-  		throw CLAM::Err("DataFileIO read error");
+		throw CLAM::Err("DataFileIO read error");
 	}
 }
 
 inline void File::Write(const CLAM::TByte* ptr,int n)
 {
 	if (write(mFile,(const char*)ptr,n)!=n) {
-  		throw CLAM::Err("DataFileIO read error");
+		throw CLAM::Err("DataFileIO read error");
 	}
 }
 

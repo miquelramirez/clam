@@ -28,8 +28,7 @@
 #include "Err.hxx"
 #include "OutPort.hxx"
 #include "SDIFInConfig.hxx"
-
-namespace SDIF { class File; } //forward declaration
+#include "SDIFFileReader.hxx"
 
 namespace CLAM
 {
@@ -40,22 +39,21 @@ public:
 
 	SDIFIn(const SDIFInConfig& c);
 	SDIFIn();
-	
+
 	virtual ~SDIFIn();
 
 	const char * GetClassName() const {return "SDIFIn";}
-	
+
 	bool GetEnableResidual()        {return mConfig.GetEnableResidual();}
 	bool GetEnablePeakArray()       {return mConfig.GetEnablePeakArray();}
 	bool GetEnableFundFreq()        {return mConfig.GetEnableFundFreq();}
-	
+
 	bool Do(void);
 
 	bool Do( CLAM::Segment& segment );
 
 	const ProcessingConfig &GetConfig() const;
 
-	SDIF::File* mpFile;
 	OutPort<Segment> mOutput;
 protected:
 
@@ -66,15 +64,14 @@ protected:
 	bool LoadSDIFDataIntoSegment( CLAM::Segment& s );
 
 private:
-	
+
 	bool ConcreteConfigure(const ProcessingConfig& c);
-	
-	SDIFInConfig mConfig;
 
 // member variables
+	SDIFInConfig mConfig;
+	SDIFFileReader mSDIFReader;
 	TTime mLastCenterTime;
 	IndexArray mPrevIndexArray;
-	
 };
 
 

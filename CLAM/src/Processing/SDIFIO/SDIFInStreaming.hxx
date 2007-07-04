@@ -19,67 +19,48 @@
  *
  */
 
-#ifndef _SDIFStreamingSource_
-#define _SDIFStreamingSource_
+#ifndef _SDIFInStreaming_
+#define _SDIFInStreaming_
 
 #include "Segment.hxx"
 #include "IndexArray.hxx"
 #include "Processing.hxx"
 #include "Err.hxx"
 #include "OutPort.hxx"
-#include "Filename.hxx"
-#include "OutPort.hxx" 
 #include "SDIFInConfig.hxx"
-
-namespace SDIF { class File; } //forward declaration
+#include "Frame.hxx"
+#include "SDIFFileReader.hxx"
 
 namespace CLAM
 {
 
-class SDIFStreamingSource: public Processing
+class SDIFInStreaming : public Processing
 {
 public:
 
-	SDIFStreamingSource(const SDIFInConfig& c);
-	SDIFStreamingSource();
-	
-	virtual ~SDIFStreamingSource();
+	SDIFInStreaming(const SDIFInConfig& c);
+	SDIFInStreaming();
 
-	const char * GetClassName() const {return "SDIFStreamingSource";}
-	
-	bool GetEnableResidual()        {return mConfig.GetEnableResidual();}
-	bool GetEnablePeakArray()       {return mConfig.GetEnablePeakArray();}
-	bool GetEnableFundFreq()        {return mConfig.GetEnableFundFreq();}
-	
+	virtual ~SDIFInStreaming();
+
+	const char * GetClassName() const {return "SDIFInStreaming";}
+
 	bool Do(void);
-
-	bool Do( CLAM::Fundamental& fundamental, CLAM::Spectrum& residualSpectrum, CLAM::SpectralPeakArray& spectralPeaks );
 
 	const ProcessingConfig &GetConfig() const;
 
-	SDIF::File* mpFile;
 	OutPort<Fundamental> mFundamentalOutput;
 	OutPort<Spectrum> mResidualSpectrumOutput;
 	OutPort<SpectralPeakArray> mSpectralPeakArrayOutput;
-    
-protected:
-
-	bool ConcreteStart();
-
-	bool ConcreteStop();
-
-	bool LoadFrameOfSDIFData( CLAM::Fundamental& fundamental, CLAM::Spectrum& residualSpectrum, CLAM::SpectralPeakArray& spectralPeaks );
 
 private:
-	
+
 	bool ConcreteConfigure(const ProcessingConfig& c);
-	
+
 	SDIFInConfig mConfig;
 
 // member variables
-	TTime mLastCenterTime;
-	IndexArray mPrevIndexArray;
-	
+	SDIFFileReader mSDIFReader;
 };
 
 
