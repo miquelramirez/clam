@@ -107,14 +107,12 @@ void FreewheelingNetworkPlayer::ProcessInputFile()
 	GetNetwork().Do();
 }
 
-void FreewheelingNetworkPlayer::InputFile( const std::string& filename )
+void FreewheelingNetworkPlayer::AddInputFile( const std::string& filename )
 {
-	mInFilename = filename;
 	mFilenames.push_back(filename);
 }
-void FreewheelingNetworkPlayer::OutputFile( const std::string& filename )
+void FreewheelingNetworkPlayer::AddOutputFile( const std::string& filename )
 {
-	mOutFilename = filename;
 	mFilenames.push_back(filename);
 }
 

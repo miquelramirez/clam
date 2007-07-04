@@ -205,8 +205,8 @@ private:
 
 		std::string inputFile = GetTestDataDirectory("Elvis.wav");
 		std::string baseOutputFile = GetTestDataDirectory("SMSTests/out_sms_net_stream");
-		player->InputFile(inputFile);
-		player->OutputFile(baseOutputFile+"_result.wav"); //TODO interface change AddOutputFile
+		player->AddInputFile(inputFile);
+		player->AddOutputFile(baseOutputFile+"_result.wav");
 		net.Start();
 		net.Stop();
 
