@@ -1,5 +1,5 @@
-#ifndef MagPhaseSpectrumProduct_hxx
-#define MagPhaseSpectrumProduct_hxx
+#ifndef MagPhaseSpectrum2Spectrum_hxx
+#define MagPhaseSpectrum2Spectrum_hxx
 
 #include <CLAM/InPort.hxx>
 #include <CLAM/OutPort.hxx>
@@ -9,6 +9,44 @@
 
 namespace CLAM
 {
+
+class Spectrum2MagPhaseSpectrum : public Processing
+{
+	InPort<Spectrum> mSpectrum;
+	OutPort<MagPhaseSpectrum> mMagPhaseSpectrum;
+public:
+	const char* GetClassName() const { return "Spectrum2MagPhaseSpectrum"; }
+	Spectrum2MagPhaseSpectrum(const Config& config = Config() )
+		: mSpectrum("Spectrum", this)
+		, mMagPhaseSpectrum("MagPhaseSpectrum", this)
+	{
+		Configure( config );
+	}
+	bool Do()
+	{
+		const Spectrum & input = mSpectrum.GetData();
+		MagPhaseSpectrum & output = mMagPhaseSpectrum.GetData();
+
+		CLAM_ASSERT(input.HasMagBuffer(), "Input should have mag buffer");
+		CLAM_ASSERT(input.HasPhaseBuffer(), "Input should have phase buffer");
+		CLAM_ASSERT(input.GetScale()==EScale::eLinear, "Input scale should be linear");
+		CLAM_ASSERT(input.GetPhaseBuffer().Size()==input.GetMagBuffer().Size(), 
+			"Phase and magnitude buffers should be equal size");
+
+		const unsigned nBins = input.GetSize(); 
+		const TData* inMagnitude = input.GetMagBuffer().GetPtr();
+		const TData* inPhase = input.GetPhaseBuffer().GetPtr();
+		output.magnitudes.assign(inMagnitude, inMagnitude+nBins);
+		output.phases.assign(inPhase, inPhase+nBins);
+		output.spectralRange = input.GetSpectralRange();
+
+		// Tell the ports this is done
+		mSpectrum.Consume();
+		mMagPhaseSpectrum.Produce();
+
+		return true;
+	}
+};
 
 class MagPhaseSpectrumProduct : public Processing
 { 
@@ -57,4 +95,4 @@ public:
 
 } // namespace CLAM
 
-#endif // MagPhaseSpectrumProduct_hxx
+#endif 
