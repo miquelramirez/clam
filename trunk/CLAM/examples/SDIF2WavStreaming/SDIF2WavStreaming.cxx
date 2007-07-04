@@ -153,7 +153,7 @@ int main(int argc,char** argv)
 	case 4:
 		sdifinput=argv[1];
 		wavoutput=(argc < 3 )?"speakers":argv[2];
-		xmlconfig=(argc < 4 )?"SDIFToWavStreaming/synthesis.xml":argv[3];
+		xmlconfig=(argc < 4 )?"SDIF2WavStreaming/synthesis.xml":argv[3];
 		isPlayOnSpeakers = (strcmp(wavoutput, "speakers") == 0) ? 1 : 0;
 		break;
 	default:
