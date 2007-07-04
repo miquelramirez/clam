@@ -3,39 +3,12 @@
 
   <processing id="AudioSink_0" type="AudioSink"/>
 
-  <processing id="AudioSource_0" type="AudioSource"/>
-
   <processing id="ConstantSpectrum_0" type="ConstantSpectrum"/>
 
   <processing id="MagPhaseSpectrum2Spectrum_0" type="MagPhaseSpectrum2Spectrum"/>
 
-  <processing id="MagPhaseSpectrumProduct_0" type="MagPhaseSpectrumProduct"/>
-
   <processing id="OverlapAdd_0" type="OverlapAdd">
     <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="SpectralAnalysis_0" type="SpectralAnalysis">
-    <WindowGenerator>
-      <Type>BlackmanHarris92</Type>
-      <Size>1025</Size>
-      <MaxSize>0</MaxSize>
-      <UseTable>1</UseTable>
-      <Normalize>NormalizationForAnalysis</Normalize>
-      <Invert>0</Invert>
-    </WindowGenerator>
-    <CircularShift>
-      <Amount>-512</Amount>
-    </CircularShift>
-    <FFT>
-      <AudioSize>1024</AudioSize>
-    </FFT>
-    <prHopSize>512</prHopSize>
-    <prZeroPadding>0</prZeroPadding>
-    <prSamplingRate>44100</prSamplingRate>
-    <prFFTSize>1024</prFFTSize>
-    <prWindowSize>1025</prWindowSize>
-    <prWindowType>BlackmanHarris92</prWindowType>
   </processing>
 
   <processing id="SpectralSynthesis_0" type="SpectralSynthesis">
@@ -69,25 +42,16 @@
     <prHopSize>512</prHopSize>
   </processing>
 
-  <processing id="Spectrum2MagPhaseSpectrum_1" type="Spectrum2MagPhaseSpectrum"/>
-
   <processing id="SpectrumView_0" type="SpectrumView"/>
-
-  <processing id="SpectrumView_1" type="SpectrumView"/>
-
-  <port_connection>
-    <out>AudioSource_0.AudioOut</out>
-    <in>SpectralAnalysis_0.Input</in>
-  </port_connection>
 
   <port_connection>
     <out>ConstantSpectrum_0.My Output</out>
-    <in>MagPhaseSpectrumProduct_0.Factor1</in>
+    <in>MagPhaseSpectrum2Spectrum_0.MagPhaseSpectrum</in>
   </port_connection>
 
   <port_connection>
     <out>MagPhaseSpectrum2Spectrum_0.Spectrum</out>
-    <in>SpectrumView_1.Input</in>
+    <in>SpectrumView_0.Input</in>
   </port_connection>
 
   <port_connection>
@@ -96,33 +60,13 @@
   </port_connection>
 
   <port_connection>
-    <out>MagPhaseSpectrumProduct_0.Product</out>
-    <in>MagPhaseSpectrum2Spectrum_0.MagPhaseSpectrum</in>
-  </port_connection>
-
-  <port_connection>
     <out>OverlapAdd_0.Audio Output</out>
     <in>AudioSink_0.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>SpectralAnalysis_0.Output</out>
-    <in>Spectrum2MagPhaseSpectrum_1.Spectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>SpectralAnalysis_0.Output</out>
-    <in>SpectrumView_0.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>SpectralSynthesis_0.Output</out>
     <in>OverlapAdd_0.Audio Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Spectrum2MagPhaseSpectrum_1.MagPhaseSpectrum</out>
-    <in>MagPhaseSpectrumProduct_0.Factor2</in>
   </port_connection>
 
 </network>
