@@ -96,6 +96,16 @@ namespace Hidden
 
 	bool SpectrumProduct::Do()
 	{
+		const Spectrum& in1 = mInput1.GetData();
+		const Spectrum& in2 = mInput2.GetData();
+		Spectrum& out = mOutput.GetData();
+		
+		if (in1.HasComplexArray())
+			std::cout << "in1.HasComplexArray()" << std::endl;
+
+		CLAM_DEBUG_ASSERT( in1.GetSize()==in2.GetSize(), "Expected two spectrums of the same size");
+		out.SetSize( in1.GetSize() );
+
 		bool res = Do(mInput1.GetData(),mInput2.GetData(),mOutput.GetData());
 		mInput1.Consume();
 		mInput2.Consume();
