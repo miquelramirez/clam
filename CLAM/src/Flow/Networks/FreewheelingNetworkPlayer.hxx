@@ -12,14 +12,12 @@ namespace CLAM
 class FreewheelingNetworkPlayer : public NetworkPlayer
 {
 	int mBufferSize;
-	std::string mInFilename;
-	std::string mOutFilename;
 	std::vector<std::string> mFilenames;
 
 public:
 	FreewheelingNetworkPlayer();
-	void InputFile( const std::string& );
-	void OutputFile( const std::string& );
+	void AddInputFile( const std::string& );
+	void AddOutputFile( const std::string& );
 	// base class (virtual) interface:
 	bool IsWorking() const;
 	std::string NonWorkingReason() const;

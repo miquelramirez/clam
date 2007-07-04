@@ -31,7 +31,7 @@ int main( int argc, char *argv[] )
 	net.SetPlayer( player ); // network owns the player memory
 	for (int i=2; i<argc; i++)
 	{
-		player->InputFile(argv[i]);
+		player->AddInputFile(argv[i]);
 	}
 	net.Start();
 	net.Stop();
