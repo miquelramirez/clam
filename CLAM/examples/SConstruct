@@ -135,7 +135,7 @@ directoryBasedExamples = [
 	"ControlArrayExamples",
 	"Wav2SDIF",
 	"SDIF2Wav",
-	"SDIFToWavStreaming",
+	"SDIF2WavStreaming",
 ]
 
 env.Append(CPPPATH=includePaths)
