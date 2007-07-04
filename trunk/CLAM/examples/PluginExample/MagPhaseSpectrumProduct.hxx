@@ -6,22 +6,12 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/Spectrum.hxx>
 #include <CLAM/SpecTypeFlags.hxx>
+#include "MagPhaseSpectrum.hxx"
 #include <vector>
 #include <algorithm>
 
 namespace CLAM
 {
-
-/**
- * Experimental light-weight spectrum
- * Linear scale is implicit.
- */
-struct MagPhaseSpectrum 
-{
-	std::vector<TData> magnitudes;
-	std::vector<TData> phases;
-	TData spectralRange;
-};
 
 class Spectrum2MagPhaseSpectrum : public Processing
 {
