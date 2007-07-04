@@ -231,8 +231,6 @@ QColor execFrameColor(QColor defaultColor, CLAM::Processing * processing)
 
 void ProcessingBox::paintBox(QPainter & painter)
 {
-	painter.setRenderHint(QPainter::Antialiasing);
-
 	QColor boxBodyColor = execBodyColor(_canvas->colorBoxBody(),_processing);
 	QColor boxFrameColor = execFrameColor(_canvas->colorBoxFrame(),_processing);
 	// Box
