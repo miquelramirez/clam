@@ -36,8 +36,6 @@ public:
 
 		product.spectralRange = factor1.spectralRange;
 		const unsigned nBins = factor1.magnitudes.size(); 
-//		product.magnitudes.reserve( nBins );
-//		product.phases.reserve( nBins );
 		product.magnitudes.resize( nBins );
 		product.phases.resize( nBins );
 		
