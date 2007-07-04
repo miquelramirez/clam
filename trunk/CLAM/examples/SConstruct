@@ -103,6 +103,7 @@ singleSourceExamples = [
 	"MIDI_Synthesizer_example.cxx", # TODO: Windows lacks GUIAudioApplication
 	"NetworkPersistence_example.cxx",
 	"NetworkUsage_example.cxx",
+	"OfflineAudioConvolution.cxx",
 	"PersistenceThroughDTs_example.cxx",
 	"POCompositeExample.cxx",
 	"SimplePortsUsage_example.cxx",
@@ -132,7 +133,9 @@ directoryBasedExamples = [
 #	"TickExtractor", # TODO: Files left to be compilable
 	"PortsAndControlsUsageExample",
 	"ControlArrayExamples",
-    "SDIFToWavStreaming",
+	"Wav2SDIF",
+	"SDIF2Wav",
+	"SDIFToWavStreaming",
 ]
 
 env.Append(CPPPATH=includePaths)
@@ -144,7 +147,7 @@ examples = []
 for main in singleSourceExamples :
 	executable = os.path.splitext(os.path.basename(main))[0]
 	examples += [ env.Program(target=executable, source = sources + [main] ) ]
-	
+
 for folder in directoryBasedExamples :
 	exampleSources = glob.glob(folder+"/*.cxx")
 	executable = os.path.basename(folder)+"Exe"
