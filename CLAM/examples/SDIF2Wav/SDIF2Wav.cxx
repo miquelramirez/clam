@@ -42,8 +42,8 @@ namespace CLAM
 			if( !synthesis.Do( segment ))
 				continue; // it is an analysis frame with negative center time and thus should not be used
 
-			audioOutput.SetAudioChunk(beginIndex,
-									  segment.GetFrame(i).GetSynthAudioFrame());
+			audioOutput.SetAudioChunk(	beginIndex,
+										segment.GetFrame(i).GetSynthAudioFrame());
 
 			beginIndex+=synthFrameSize;
 		}
@@ -64,7 +64,7 @@ int main(int argc,char** argv)
 	case 4:
 		sdifinput=argv[1];
 		wavoutput=(argc < 3 ) ? "output.wav" : argv[2];
-		xmlconfig=(argc < 4 ) ? "SDIFToWav/synthesis.xml" : argv[3];
+		xmlconfig=(argc < 4 ) ? "SDIF2Wav/synthesis.xml" : argv[3];
 		break;
 	default:
 		printf("Usage: %s input.sdif [ output.wav [ synthesis.xml ] ]\n",argv[0]);
@@ -72,7 +72,7 @@ int main(int argc,char** argv)
 		break;
 	}
 
-//	try{
+	try {
 		/** Internal structure used for storing the result of the analysis, contains all data.
 		 * @see Segment.hxx */
 		CLAM::Segment AnalysisSegment;
@@ -97,16 +97,13 @@ int main(int argc,char** argv)
 		/****************************************\
 		 * Load SDIF							*
 		\****************************************/
-		std::cout << "Calling SDIFLoad" << std::endl;
 		SDIFLoad(sdifinput, AnalysisSegment);
-		std::cout << "Finished SDIFLoad" << std::endl;
 
 		CLAM::Audio AudioOutput;
 		Synthesis.Configure(SynthesisConfig);
 		Synthesize(Synthesis, AnalysisSegment, AudioOutput);
 
 		WAVEStore( wavoutput, AudioOutput );
-/*
 	}
 	catch(CLAM::Err error)
 	{
@@ -117,7 +114,6 @@ int main(int argc,char** argv)
 	{
 		std::cout << e.what() << std::endl;
 	}
-*/
 
 	std::clog << "Finished successfully!\n";
 	return 0;
