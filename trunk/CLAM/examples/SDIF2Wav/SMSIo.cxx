@@ -103,10 +103,8 @@ namespace CLAM
 	bool
 	SDIFLoad(const std::string& filename, Segment& segment)
 	{
-/*
 		try
 		{
-*/
 			SDIFInConfig cfg;
 			SDIFIn SDIFLoader;
 
@@ -126,7 +124,7 @@ namespace CLAM
 			while(SDIFLoader.Do(segment));
 			// and we stop the SDIF loader
 			SDIFLoader.Stop();
-/*		}
+		}
 		catch( Err& e)
 		{
 			e.Print();
@@ -137,7 +135,7 @@ namespace CLAM
 			std::cerr << e.what() << std::endl;
 			return false;
 		}
-*/
+
 		return true;
 	}
 
