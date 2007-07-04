@@ -9,6 +9,24 @@
 namespace CLAM
 {
 
+class InSDIFFilename : public InFilename
+{
+public:
+	InSDIFFilename(const std::string & s="") : InFilename(s) {}
+	InSDIFFilename(const char * s) : InFilename(s) {}
+	virtual const char * TypeFamily() const { return "SDIF"; }
+	virtual const Filter * Filters() const
+	{
+		static const Filter filters[] = {
+			{"SDIF", "*.sdif"},
+			{"SDIF", "*.sdf"},
+			{0,0}
+		};
+		return filters;
+	}
+};
+CLAM_TYPEINFOGROUP(BasicCTypeInfo, InSDIFFilename);
+
 class SDIFInConfig:public ProcessingConfig
 {
 public:
@@ -19,7 +37,7 @@ public:
 	DYN_ATTRIBUTE(2,public, bool,EnableResidual);
 	DYN_ATTRIBUTE(3,public, bool,EnablePeakArray);
 	DYN_ATTRIBUTE(4,public, bool,EnableFundFreq);
-	DYN_ATTRIBUTE(5,public, Filename, FileName);
+	DYN_ATTRIBUTE(5,public, InSDIFFilename, FileName);
 /** If true, indices are treated as relative to previous frame (useful for some synthesis
 	engines like SALTO). Else index found in SDIF is loaded as is.
  */
