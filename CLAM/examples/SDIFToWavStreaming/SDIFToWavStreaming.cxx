@@ -5,7 +5,7 @@
 #include <CLAM/Audio.hxx>
 #include "Processing.hxx"
 #include "SDIFInConfig.hxx"
-#include "SDIFStreamingSource.hxx"
+#include "SDIFInStreaming.hxx"
 #include "MonoAudioFileWriter.hxx"
 #include "MonoAudioFileWriterConfig.hxx"
 #include "Spectrum.hxx"
@@ -16,9 +16,9 @@
 
 /**
 *  This example shows how to stream frames from an SDIF to a spectral modeling resynthesis algorithm
-*  in order to resynthesize the analyzed waveform in real-time. However, if you were going to use  
+*  in order to resynthesize the analyzed waveform in real-time. However, if you were going to use
 *  something like this to build a synthesizer, you would probably want to preload some of the frames
-*  into a cache to prevent glitches in the audio that occur when the SDIF file cannot be read fast 
+*  into a cache to prevent glitches in the audio that occur when the SDIF file cannot be read fast
 *  enough from disk.
 *
 *  To generate an SDIF file to use with this example, see the example WavToSDIF.
@@ -34,7 +34,7 @@
 */
 namespace CLAM
 {
-	void Synthesize(SDIFStreamingSource& sdifLoader, SMSSynthesis& synthesis, MonoAudioFileWriter& audioWriter)
+	void Synthesize(SDIFInStreaming& sdifLoader, SMSSynthesis& synthesis, MonoAudioFileWriter& audioWriter)
 	{
 		std::cout << "Writing audio to file." << std::endl;
 
@@ -42,20 +42,20 @@ namespace CLAM
 
 		CLAM::SMSSynthesisConfig theConfig = dynamic_cast<const SMSSynthesisConfig&>(synthesis.GetConfig());
 		TSize synthFrameSize = theConfig.GetFrameSize();
-		
+
 		// is this necessary?
-		//audioOutput.SetSize(sizeAudioFile);		
-		
+		//audioOutput.SetSize(sizeAudioFile);
+
 		sdifLoader.GetOutPort("Sinusoidal Peaks").ConnectToIn( synthesis.GetInPort("InputSinPeaks"));
 		sdifLoader.GetOutPort("Residual Spectrum").ConnectToIn( synthesis.GetInPort("InputResSpectrum"));
 		synthesis.GetOutPort("OutputAudio").ConnectToIn( audioWriter.GetInPort("Samples Write"));
-				
+
 		sdifLoader.Start();
 		synthesis.Start();
 		audioWriter.Start();
 		int counter;
 		while ( sdifLoader.Do() == true )
-		{			
+		{
 			if (synthesis.CanConsumeAndProduce())
 			{
 				synthesis.Do();
@@ -64,7 +64,7 @@ namespace CLAM
 			{
 				audioWriter.Do();
 			}
-			
+
 			counter++;
 		}
 		std::cout << "Wrote " << counter << " frames of audio to file." << std::endl;
@@ -75,16 +75,16 @@ namespace CLAM
 
 		CLAM_DEACTIVATE_FAST_ROUNDING;
 	}
-	
-	void SynthesizeToSpeakers(SDIFStreamingSource& sdifLoader, SMSSynthesis& synthesis)
+
+	void SynthesizeToSpeakers(SDIFInStreaming& sdifLoader, SMSSynthesis& synthesis)
 	{
 		std::cout << "Playing audio to speakers." << std::endl;
-		
+
 		CLAM_ACTIVATE_FAST_ROUNDING;
 
-   		unsigned int buffersize = 1024;
+		unsigned int buffersize = 1024;
 		int samplerate = 44100;
-		
+
 		AudioManager audioManager(samplerate,2048);
 
 		AudioIOConfig outLCfg;
@@ -96,12 +96,12 @@ namespace CLAM
 		outRCfg.SetDevice("rtaudio:default");
 		outRCfg.SetChannelID(1);
 		outRCfg.SetSampleRate(samplerate);
-		
+
 		CLAM::AudioOut outL(outLCfg);
 		CLAM::AudioOut outR(outRCfg);
 
 		CLAM::ConnectPorts(sdifLoader, "Sinusoidal Peaks", synthesis, "InputSinPeaks" );
-		CLAM::ConnectPorts(sdifLoader, "Residual Spectrum", synthesis, "InputResSpectrum" );					   
+		CLAM::ConnectPorts(sdifLoader, "Residual Spectrum", synthesis, "InputResSpectrum" );
 		CLAM::ConnectPorts(synthesis, "OutputAudio", outL, "Audio Input" );
 		CLAM::ConnectPorts(synthesis, "OutputAudio", outR, "Audio Input" );
 
@@ -111,9 +111,9 @@ namespace CLAM
 		outL.Start();
 		outR.Start();
 
-		int counter = 0;		
+		int counter = 0;
 		while ( sdifLoader.Do() == true )
-		{			
+		{
 			if (synthesis.CanConsumeAndProduce())
 			{
 				synthesis.Do();
@@ -126,18 +126,18 @@ namespace CLAM
 			{
 				outR.Do();
 			}
-			
+
 			counter++;
 		}
-		
+
 		outL.Stop();
-		outR.Stop();		
+		outR.Stop();
 		synthesis.Stop();
 		sdifLoader.Stop();
 
 		CLAM_DEACTIVATE_FAST_ROUNDING;
 
-		std::cout << "Computed audio for " << counter << " frames." << std::endl;		
+		std::cout << "Computed audio for " << counter << " frames." << std::endl;
 	}
 
 } //namespace CLAM
@@ -167,7 +167,7 @@ int main(int argc,char** argv)
 		exit(1);
 		break;
 	}
-	
+
 //	try {
 
 		/** Analysis configuration */
@@ -195,7 +195,7 @@ int main(int argc,char** argv)
 		cfg.SetEnableFundFreq(false);
 		cfg.SetEnablePeakArray(true);
 		cfg.SetEnablePeakArray(true);
-		CLAM::SDIFStreamingSource SDIFLoader;
+		CLAM::SDIFInStreaming SDIFLoader;
 
 		cfg.SetFileName( sdifinput );
 
@@ -211,11 +211,11 @@ int main(int argc,char** argv)
 		\****************************************/
 		CLAM::MonoAudioFileWriter audioWriter;
 		CLAM::MonoAudioFileWriterConfig writercfg;
-		
+
 		const std::string outputFile(wavoutput);
 		writercfg.SetTargetFile(outputFile);
 		audioWriter.Configure( writercfg );
-		
+
 		/****************************************\
 		 * Let's now synthesize the audio	   *
 		\****************************************/
