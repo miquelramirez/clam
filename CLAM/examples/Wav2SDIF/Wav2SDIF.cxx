@@ -4,10 +4,10 @@
 #include "SMSAnalysis.hxx"
 
 /**
-*  This example shows how to analyze a wave file into a representation consisting  
+*  This example shows how to analyze a wave file into a representation consisting
 *  of the sinusoidal parts, the residual part, and the fundamental frequency
 *  for each frame, and then store this analysis in an SDIF file.
-*  
+*
 *  To generate an SDIF file to use with this example, see the example WavToSDIF.
 *
 *  To run the example, type ./WavToSDIFExe from the examples directory.
@@ -56,7 +56,7 @@ int main(int argc,char** argv)
 	case 4:
 		wavinput=argv[1];
 		sdifoutput=(argc < 3 )?"output.sdif":argv[2];
-		xmlconfig=(argc < 4 )?"WavToSDIF/analysis.xml":argv[3];
+		xmlconfig=(argc < 4 )?"Wav2SDIF/analysis.xml":argv[3];
 		break;
 	default:
 		printf("Usage: %s input.wav [ output.sdif [ analysis.xml ] ]\n",argv[0]);
