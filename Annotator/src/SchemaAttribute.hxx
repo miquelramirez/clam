@@ -94,7 +94,7 @@ namespace CLAM_Annotator{
 		/// Store Frequency Gap between Bins
 		DYN_ATTRIBUTE(12, public, CLAM::TData, BinGap);
 		/// Store Number of Bins
-		DYN_ATTRIBUTE(13, public, CLAM::TData, NBins);
+		DYN_ATTRIBUTE(13, public, unsigned, NBins);
 		
 		
 		void DefaultInit();
