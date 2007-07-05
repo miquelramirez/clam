@@ -234,8 +234,8 @@ private:
 			for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++)
 			{
 				const CLAM_Annotator::SchemaAttribute & attribute = project.GetAttributeScheme(frameDivisionChildScope,*it);
-				if (!attribute.HasBinLabels()) continue;
-				unsigned binSize = attribute.GetBinLabels().size();
+				
+				if (!attribute.HasBinLabels() && !attribute.HasNBins()) continue;
 				attributeList << (frameDivisionChildScope+"::"+*it).c_str();
 			}
 		}
