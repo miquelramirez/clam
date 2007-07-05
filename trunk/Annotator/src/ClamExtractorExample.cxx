@@ -200,15 +200,17 @@ int main(int argc, char ** argv)
 		std::cout<<"Computing Descriptors for file "<< songFile <<" Please wait..."<<std::endl;
 		PopulatePool(songFile, pool);
 		//Dump Descriptors Pool
+		std::cout<<"done computing descriptors.\n dumping descriptors pool."<<std::endl;
 		std::string poolFile = songFile + myProject.PoolSuffix();
 		CLAM::XMLStorage::Dump(pool, "DescriptorsPool", poolFile);
 
 		//Now we load the Pool and validate it with the schema
+		std::cout<<"loading pool"<<std::endl;
 		CLAM::DescriptionDataPool toValidadDescription(myProject.GetDescriptionScheme());
+
 		CLAM::XMLStorage::Restore(toValidadDescription, poolFile);
 
-		std::cout << "Validating data..." << std::endl;
-
+		std::cout<<"validating data pool"<<std::endl;
 		std::ostringstream os;
 		if (!myProject.ValidateDataPool(toValidadDescription, os))
 		{
@@ -216,6 +218,7 @@ int main(int argc, char ** argv)
 			std::cerr<< os.str() << std::endl;
 		}
 	}
+	std::cout<<"done!"<<std::cout;
 	return 0;
 }
 
@@ -343,6 +346,16 @@ void BuildSchema(CLAM_Annotator::Project & project)
 	};
 	schema.AddFloatArray("Frame", "MelFrequencyCepstrumCoefficients", mfccLabels);
 
+	// calculating spectrum magnitude:
+	//  SpectralRange = 22050
+	//  SpectrumSize = 512
+	// ***KLUDGE ALERT!***
+	// this was taking forever to run and produced huge .pool files, so for now use 10 bins in the spectrummagnitude
+	// just to make sure it works...
+	int nBins = 10;
+	double binGap = 22050. / nBins;
+	schema.AddFloatArray("Frame", "SpectrumMagnitude", 0, binGap, nBins);
+
 	struct 
 	{
 		const char * scope;
@@ -394,8 +407,10 @@ void PopulatePool(const std::string & song,
 	frames.SetInterCenterGap((secondCenter-firstCenter)*sampleRate);
 
 	SegmentD2Pool(segmentD,pool);
+	std::cout<<"calling MFCC2Pool"<<std::endl;
 	MFCC2Pool(segment,pool);
-
+	
+	std::cout<<"writing song level descriptors"<<std::endl;
 	// Write Song level descriptors
 	pool.GetWritePool<CLAM::Text>("Song","Artist")[0] = artist;
 	pool.GetWritePool<CLAM::Text>("Song","Title")[0] = title;
@@ -475,7 +490,6 @@ void PopulatePool(const std::string & song,
 		partDescription[i] = partDescriptionValues[int(randomNumber(0,3.5))];
 		partGroup[i] = partGroupIds[int(randomNumber(0,9.99))];
 	}
-
 }
 
 void GenerateRandomDescriptorValues(CLAM::TData* values, int size)
@@ -581,6 +595,8 @@ void MFCC2Pool(const CLAM::Segment& segment, CLAM::DescriptionDataPool& pool)
 	cepstralTransform.Start();
 	
 	CLAM::DataArray* values= pool.GetWritePool<CLAM::DataArray>("Frame","MelFrequencyCepstrumCoefficients");
+	CLAM::DataArray* spectrumMagnitude= pool.GetWritePool<CLAM::DataArray>("Frame", "SpectrumMagnitude");
+
 	for(int i=0; i<nFrames; i++)
 	{
 		const CLAM::Frame & frame = segment.GetFrame(i);
@@ -588,6 +604,14 @@ void MFCC2Pool(const CLAM::Segment& segment, CLAM::DescriptionDataPool& pool)
 		melFilterBank.Do(spectrum, melSpectrum);
 		cepstralTransform.Do(melSpectrum, melCepstrum);
 		values[i] = melCepstrum.GetCoefficients();
+		// ** nBins here must match nBins as defined above in BuildSchema**
+		int nBins = 10;
+		spectrumMagnitude[i].Resize(nBins);
+		spectrumMagnitude[i].SetSize(nBins);
+		for (unsigned bin=0; bin<nBins; bin++) 
+		{
+			spectrumMagnitude[i][bin]=spectrum.GetMagBuffer()[bin];
+		}
 	}
 }
 
