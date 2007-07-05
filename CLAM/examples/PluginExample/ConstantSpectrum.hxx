@@ -11,16 +11,45 @@
 namespace CLAM
 {
 
+
 class ConstantSpectrum : public Processing
 { 
+	class Config : public ProcessingConfig
+	{
+	    DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
+	    DYN_ATTRIBUTE( 1, public, bool, WindowedFFT);
+
+	protected:
+	    void DefaultInit()
+	    {
+		  AddAll();
+		  UpdateData();
+		  SetFrameSize(512);
+	    };
+	};
+
 	OutPort<MagPhaseSpectrum> mOut;
 	MagPhaseSpectrum mSpectrum;
+	Config mConfig;
 public:
 	const char* GetClassName() const { return "ConstantSpectrum"; }
 	ConstantSpectrum(const Config& config = Config()) 
 		: mOut("My Output", this) 
 	{
 		Configure( config );
+	}
+	const CLAM::ProcessingConfig & GetConfig() const
+	{
+		return mConfig;
+	}
+protected:
+	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
+	{
+		CopyAsConcreteConfig(mConfig, config);
+		// Use here the config to setup you object
+		std::cout << "concrete configure!!!!" << std::endl;
+		return true; 
 	}
 
 	void FillSpectrum(MagPhaseSpectrum & spectrum)
@@ -39,7 +68,10 @@ public:
 		fft.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
 		reader.Start();
 		fft.Start();
-		reader.Do();
+		do 
+		{
+			reader.Do();
+		} while (not fft.CanConsumeAndProduce() );
 		fft.Do();
 		reader.Stop();
 		fft.Stop();

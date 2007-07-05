@@ -10,7 +10,10 @@
 
   <processing id="AudioSource_0" type="AudioSource"/>
 
-  <processing id="ConstantSpectrum_0" type="ConstantSpectrum"/>
+  <processing id="ConstantSpectrum_0" type="ConstantSpectrum">
+    <FrameSize>512</FrameSize>
+    <WindowedFFT>0</WindowedFFT>
+  </processing>
 
   <processing id="Gain 0" type="OutControlSender">
     <Min>0</Min>
