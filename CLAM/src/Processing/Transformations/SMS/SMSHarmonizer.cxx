@@ -30,61 +30,63 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, SMSHarmonizer> regSMSHarmonizer("SMSHarmonizer");
 }
 
-bool SMSHarmonizer::Do(const Frame& in, Frame& out)
+bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks, 
+			const Fundamental& inFund,
+			const Spectrum& inSpectrum, 
+			SpectralPeakArray& outPeaks,
+			Fundamental& outFund,
+			Spectrum& outSpectrum
+		      )
 {
-	BPF& voices=mConfig.GetBPF();
-	TSize nVoices=voices.Size();
-	
-	for(int i=0;i<nVoices;i++)
+	//Voice 0 (input voice)
+	outPeaks = inPeaks;
+	outFund = inFund;
+	outSpectrum = inSpectrum;
+
+	//TODO - skip if gain<0.01, check if outputs arrive clean or not
+	TData gain0 = mVoice0Gain.GetLastValue();
+	mSinusoidalGain.GetInControl("Gain").DoControl(gain0);
+	mSinusoidalGain.Do(outPeaks,outPeaks);
+
+	SpectralPeakArray mtmpPeaks;
+	Fundamental mtmpFund;
+	Spectrum mtmpSpectrum;
+
+	for (int i=0; i < mVoicesPitch.Size(); i++)
 	{
-		TData amount=voices.GetValueFromIndex(i);
-		TData gain=voices.GetXValue(i);
+		TData gain = mVoicesGain[i].GetLastValue();
+		if (gain<0.01) //means voice OFF
+			continue;
+
+		TData amount = mVoicesPitch[i].GetLastValue();
 		mPitchShift.GetInControl("PitchSteps").DoControl(amount);
-		mPitchShift.Do(in,mTmpFrame);
-		Gain(mTmpFrame,gain);
-		AddFrame(mTmpFrame,out,out);
-	}
+		mPitchShift.Do( inPeaks, 
+				inFund, 
+				inSpectrum,
+				mtmpPeaks, 
+				mtmpFund,
+				mtmpSpectrum);
 	
-	//We set fundamental value of input to zero as it is inharmonic
-	out.SetFundamental(mTmpFund);
+		mSinusoidalGain.GetInControl("Gain").DoControl(gain);
+		mSinusoidalGain.Do(mtmpPeaks,mtmpPeaks);
+
+		outPeaks = outPeaks + mtmpPeaks;
+		if (mIgnoreResidualCtl.GetLastValue()<0.01) // is 0
+			mSpectrumAdder.Do(outSpectrum, mtmpSpectrum, outSpectrum);
+	}
 	return true;
 }
 
-void SMSHarmonizer::AddFrame(const Frame& in1, const Frame& in2, Frame& out)
+bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 {
-	if(mIgnoreResidualCtl.GetLastValue()<0.01) // is 0
-	{
-		mSpectrumAdder.Start();
-		mSpectrumAdder.Do(in1.GetResidualSpec(),in2.GetResidualSpec(),out.GetResidualSpec());
-		mSpectrumAdder.Stop();
-	}
-	out.SetSpectralPeakArray(in1.GetSpectralPeakArray()+in2.GetSpectralPeakArray());
-}
-	
-void SMSHarmonizer::Gain(Frame& inputFrame, TData gain)
-{
-	SpectralPeakArray& peaks=inputFrame.GetSpectralPeakArray();
-	Spectrum& residual=inputFrame.GetResidualSpec();
-	DataArray& peakMag=peaks.GetMagBuffer();
-	int nPeaks=peaks.GetnPeaks();
-	int specSize=residual.GetSize();
-//TODO check whether spectrum is in dB or not
-	TData linGain=Lin(gain);
+	return Do( in.GetSpectralPeakArray(),
+		   in.GetFundamental(),
+		   in.GetResidualSpec(),
 
-	for(int i=0;i<nPeaks;i++)
-	{
-		peakMag[i]=std::min(peakMag[i]+gain,TData(0));
-	}
-	if(mIgnoreResidualCtl.GetLastValue()<0.01) // is 0
-	{
-		DataArray& resMag = residual.GetMagBuffer();
-		for(int i=0;i<specSize;i++)
-		{
-			resMag[i] = resMag[i]*linGain;
-		}
-	}
+		   out.GetSpectralPeakArray(),
+		   out.GetFundamental(), 
+		   out.GetResidualSpec() 
+		 );
 }
 
-
 }
-

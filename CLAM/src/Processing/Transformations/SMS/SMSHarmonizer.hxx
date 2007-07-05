@@ -23,118 +23,134 @@
 #ifndef _SMSHarmonizer_
 #define _SMSHarmonizer_
 
+#include "Frame.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "InControlArray.hxx"
+#include "FrameTransformation.hxx"
+#include "SpectralPeakArray.hxx"
 #include "SMSPitchShift.hxx"
 #include "SpectrumAdder2.hxx"
-#include "FrameTransformation.hxx"
+#include "SMSSinusoidalGain.hxx"
 
-
-// TODO: this transformation needs to be ported to inherit from FrameTransformation instead of SegmentTransformation
-// 		 also, a solution has to be figured out to make the transformation controllable via ports
 
 namespace CLAM{
 
-
 	class SMSHarmonizer: public FrameTransformation
-	{
-		
+	{		
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
 		 */
-		const char *GetClassName() const {return "SMSHarmonizer";}
+		const char *GetClassName() const { return "SMSHarmonizer"; }
 		
-		InControl mIndexCtl;//says what the amount sent as control is modifying
-		InControlTmpl<SMSHarmonizer> mUpdateBPFCtl;//"boolean" control used to say that we want to update BPF
-		InControl mTransCtl;
-		/** xamat:adding residual does not improve results much and adds a lot of overhead, there should
+		InPort<SpectralPeakArray> mInPeaks;
+		OutPort<SpectralPeakArray> mOutPeaks;
+		InPort<Fundamental> mInFund;
+		OutPort<Fundamental> mOutFund;
+		InPort<Spectrum> mInSpectrum;
+		OutPort<Spectrum> mOutSpectrum;
+
+		/** 
+		 *	xamat: adding residual does not improve results much and adds a lot of overhead, there should
 		 *	probably be a configuration parameter to control whether we want to add residual or not, but that
-		 *	would mean changing the kind of configuration. For the time being the output residual is the input.*/
-		InControlTmpl<SMSHarmonizer> mIgnoreResidualCtl;
+		 *	would mean changing the kind of configuration. For the time being the output residual is the input.
+		 */
+		InControl mIgnoreResidualCtl;
+
+		InControl mVoice0Gain; ///< Input voice gain
+
+		//TODO define it with another InControl or like a processing with configuration?
+		#define VOICES_AMOUNT 4 
+		InControlArray mVoicesPitch; ///< Voices pitch
+		InControlArray mVoicesGain; ///< Voices gain
+
 	public:
-			
-		int UpdateBPF(TControlData value)
+		SMSHarmonizer()
+			:
+			mInPeaks("In SpectralPeaks", this),
+			mOutPeaks("Out SpectralPeaks", this),
+			mInFund("In Fundamental", this),
+			mOutFund("Out Fundamental", this),
+			mInSpectrum("In Spectrum", this),
+			mOutSpectrum("Out Spectrum", this),
+
+			mIgnoreResidualCtl("IgnoreResidual", this),
+
+			mVoice0Gain("Gain 0", this),
+			mVoicesPitch(VOICES_AMOUNT, "Pitch", this),
+			mVoicesGain(VOICES_AMOUNT, "Gain", this)
 		{
-			CLAM::BPF& bpf= mConfig.GetBPF();
-			//this should never happen, it should be initialized at configuration time
-			if(bpf.Size()==0)
-			{
-				InitBPF();
-			}
-			
-			bpf.SetValue((int)mIndexCtl.GetLastValue(), mTransCtl.GetLastValue());
-			return 0;
+			Configure(  FrameTransformationConfig() );
 		}
+
+ 		~SMSHarmonizer() {}
+		
+		bool ConcreteConfigure(const ProcessingConfig& c)
+		{
+			mPitchShift.Configure( FrameTransformationConfig() );
+
+			mIgnoreResidualCtl.SetBounds(0,1);
+// 			By default we ignore residual!!
+			mIgnoreResidualCtl.DoControl(1);
+
+			mVoice0Gain.SetBounds(-10.,10.);
+			mVoice0Gain.DoControl(10.);
+
+			for (int i=0; i < mVoicesPitch.Size(); i++)
+			{
+				mVoicesPitch[i].SetBounds(-12.,12.);
+				mVoicesPitch[i].DoControl(1.);
+				mVoicesGain[i].SetBounds(-10.,10.);
+				mVoicesGain[i].DoControl(0.);
+			}
+
+			return true;
+		}
+
+		bool Do()
+		{
+			bool result = Do(mInPeaks.GetData(), 
+					 mInFund.GetData(), 
+					 mInSpectrum.GetData(), 
+					 mOutPeaks.GetData(), 
+					 mOutFund.GetData(),
+					 mOutSpectrum.GetData() 
+					 );
+
+			mInPeaks.Consume(); 
+			mInFund.Consume(); 
+			mInSpectrum.Consume(); 
+			mOutPeaks.Produce(); 
+			mOutFund.Produce();
+			mOutSpectrum.Produce();
+
+			return result;
+		}
+		
+		bool Do(const Frame& in, Frame& out);
+
+		bool Do(const SpectralPeakArray& inPeaks,
+			const Fundamental& inFund,
+			const Spectrum& inSpectrum,
+			SpectralPeakArray& outPeaks,
+			Fundamental& outFund,
+			Spectrum& outSpectrum
+			);
+
 		int IgnoreResidual(TControlData value)
 		{
 			return mPitchShift.mIgnoreResidual.DoControl(value);
 		}
-	public:
-		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
-		SMSHarmonizer():
-			mIndexCtl("Index", this),
-			mTransCtl("Transposition",this),
-			mIgnoreResidualCtl("IgnoreResidual",this, &SMSHarmonizer::IgnoreResidual, true),
-			mUpdateBPFCtl("UpdateBPF", this, &SMSHarmonizer::UpdateBPF, true)
-		{
-			Configure(FrameTransformationConfig());
-			mTmpFrame.AddAll();
-			mTmpFrame.UpdateData();
-			mTmpFund.AddElem();
-		}
-		
-		bool ConcreteConfigure(const ProcessingConfig& c)
-		{
-			CopyAsConcreteConfig( mConfig, c );
-			InitBPF();
-			mPitchShift.Configure(FrameTransformationConfig());
-			//By default we ignore residual!!
-			mIgnoreResidualCtl.DoControl(1.);
-			return true;
-		}
 
-		/** Destructor of the class*/
- 		~SMSHarmonizer()
-		{}
-		
-		bool Do()
-		{
-			CLAM_ASSERT(false, "Do with ports not implemented");
-			return false;
-		}
-		
-		bool Do(const Frame& in, Frame& out);
+
 	private:
+
 		SMSPitchShift mPitchShift;
 		SpectrumAdder2 mSpectrumAdder;
-		void AddFrame(const Frame& in1, const Frame& in2, Frame& out);
-		void Gain(Frame& inputFrame, TData gain);
-		
-		Fundamental mTmpFund;
-		Frame mTmpFrame;
-		
-		void InitBPF()
-		{
-			if (!mConfig.HasBPF())
-			{
-				mConfig.AddBPF();
-				mConfig.UpdateData();
-			}
-			if(mConfig.GetBPF().Size()==0)//else we asume that the user has initialized it before
-			{
-				BPF& bpf=mConfig.GetBPF();
-				bpf.Resize(10);
-				bpf.SetSize(10);
-				int i;
-				//we add ten voices with gain going from -30 to +30 but no transposition (note that X controls gain and Y transposition)
-				for (i=0; i< 10; i++)
-				{
-					bpf.SetValue(i,1);
-					bpf.SetXValue(i,(i-5)*6);
-				}
-			}
-		}
-		
+		SMSSinusoidalGain mSinusoidalGain;
+	};	
 	
-	};		
 };//namespace CLAM
 
 #endif // _SMSHarmonizer_
