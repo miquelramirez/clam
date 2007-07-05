@@ -42,17 +42,26 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
+		InControl mGain;
 	public:
 
 		SMSSinusoidalGain() 
-			: 
-			mIn("In SpectralPeaks", this), 
-			mOut("Out SpectralPeaks", this)
+			:
+			mIn("In SpectralPeaks", this),
+			mOut("Out SpectralPeaks", this),
+			mGain("Gain", this)
 		{
 			Configure( SegmentTransformationConfig() );
 		}
 
  		~SMSSinusoidalGain() {}
+
+		bool ConcreteConfigure(const ProcessingConfig& c)
+		{
+			mGain.SetBounds(-100.,100.);
+			mGain.DoControl(1.);
+			return true;
+		}
 
 		bool Do(const Frame& in, Frame& out)
 		{

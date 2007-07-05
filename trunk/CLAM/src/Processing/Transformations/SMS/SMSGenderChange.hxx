@@ -62,6 +62,7 @@ namespace CLAM{
 		{
 			Configure( SegmentTransformationConfig() );
 		}
+
  		~SMSGenderChange() {}
 
 		bool ConcreteConfigure( const ProcessingConfig& config )

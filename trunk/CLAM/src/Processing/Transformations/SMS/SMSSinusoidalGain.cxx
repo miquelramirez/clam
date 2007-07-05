@@ -40,7 +40,7 @@ bool SMSSinusoidalGain::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	out.SetnMaxPeaks(in.GetnMaxPeaks());
 	out.SetnPeaks(nPeaks);
 	
-	TData amount=mAmount.GetLastValue();
+	TData amount=mGain.GetLastValue();
 	SpectralPeak tmpPeak;
 	IndexArray indexArray=in.GetIndexArray();
 	for(int i=0;i<nPeaks;i++)

@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioSink_0" type="AudioSink"/>
+
+  <processing id="Gain 0" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Gain_0" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Gain_1" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Gain_2" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Gain_3" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="IgnoreResidual" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Input" type="AudioSource"/>
+
+  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_2" type="Oscilloscope"/>
+
+  <processing id="PeakView_0" type="PeakView"/>
+
+  <processing id="PeakView_1" type="PeakView"/>
+
+  <processing id="Pitch_0" type="OutControlSender">
+    <Min>0</Min>
+    <Default>6</Default>
+    <Max>12</Max>
+    <Step>0.06</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Pitch_1" type="OutControlSender">
+    <Min>0</Min>
+    <Default>6</Default>
+    <Max>12</Max>
+    <Step>0.06</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Pitch_2" type="OutControlSender">
+    <Min>0</Min>
+    <Default>6</Default>
+    <Max>12</Max>
+    <Step>0.06</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Pitch_3" type="OutControlSender">
+    <Min>0</Min>
+    <Default>6</Default>
+    <Max>12</Max>
+    <Step>0.06</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
+    <SinSpectralAnalysis>
+      <WindowGenerator>
+        <Type>Hamming</Type>
+        <Size>2049</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NormalizationForAnalysis</Normalize>
+        <Invert>0</Invert>
+      </WindowGenerator>
+      <CircularShift>
+        <Amount>-1024</Amount>
+      </CircularShift>
+      <FFT>
+        <AudioSize>2048</AudioSize>
+      </FFT>
+      <prHopSize>512</prHopSize>
+      <prZeroPadding>0</prZeroPadding>
+      <prSamplingRate>44100</prSamplingRate>
+      <prFFTSize>2048</prFFTSize>
+      <prWindowSize>2049</prWindowSize>
+      <prWindowType>Hamming</prWindowType>
+    </SinSpectralAnalysis>
+    <ResSpectralAnalysis>
+      <WindowGenerator>
+        <Type>BlackmanHarris92</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NormalizationForAnalysis</Normalize>
+        <Invert>0</Invert>
+      </WindowGenerator>
+      <CircularShift>
+        <Amount>-512</Amount>
+      </CircularShift>
+      <FFT>
+        <AudioSize>1024</AudioSize>
+      </FFT>
+      <prHopSize>512</prHopSize>
+      <prZeroPadding>0</prZeroPadding>
+      <prSamplingRate>44100</prSamplingRate>
+      <prFFTSize>1024</prFFTSize>
+      <prWindowSize>1025</prWindowSize>
+      <prWindowType>BlackmanHarris92</prWindowType>
+    </ResSpectralAnalysis>
+    <PeakDetect>
+      <MaxPeaks>500</MaxPeaks>
+      <MagThreshold>-60</MagThreshold>
+      <MaxFreq>8000</MaxFreq>
+    </PeakDetect>
+    <FundFreqDetect>
+      <ReferenceFundFreq>1000</ReferenceFundFreq>
+      <LowestFundFreq>35</LowestFundFreq>
+      <HighestFundFreq>1500</HighestFundFreq>
+      <MaxCandMagDiff>30</MaxCandMagDiff>
+      <MaxFundFreqError>10</MaxFundFreqError>
+      <PMp>0.5</PMp>
+      <PMq>1.4</PMq>
+      <PMr>0.5</PMr>
+      <MPp>0.5</MPp>
+      <MPq>1.4</MPq>
+      <MPr>0.5</MPr>
+      <PMnPeaks>10</PMnPeaks>
+      <MPnPeaks>10</MPnPeaks>
+      <PMCont>1</PMCont>
+      <MPCont>1</MPCont>
+      <NInt>5</NInt>
+      <NMaxCandidates>40</NMaxCandidates>
+    </FundFreqDetect>
+    <SinTracking>
+      <Threshold>40</Threshold>
+      <nMaxSines>200</nMaxSines>
+      <IsHarmonic>0</IsHarmonic>
+    </SinTracking>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>0</prFFTSize>
+    <SynthSineSpectrum>
+      <SpectrumSize>513</SpectrumSize>
+      <SamplingRate>44100</SamplingRate>
+      <ZeroPadding>0</ZeroPadding>
+    </SynthSineSpectrum>
+  </processing>
+
+  <processing id="SMSHarmonizer_0" type="SMSHarmonizer">
+    <PreserveOuts>0</PreserveOuts>
+    <BPF>
+      <Interpolation>Linear</Interpolation>
+      <Points size="10">{-30 1} {-24 1} {-18 1} {-12 1} {-6 1} {0 1} {6 1} {12 1} {18 1} {24 1}</Points>
+    </BPF>
+  </processing>
+
+  <processing id="SMSSynthesis_1" type="SMSSynthesis">
+    <SynthSineSpectrum>
+      <SpectrumSize>513</SpectrumSize>
+      <SamplingRate>44100</SamplingRate>
+      <ZeroPadding>0</ZeroPadding>
+    </SynthSineSpectrum>
+    <PhaseMan>
+      <MaxSines>100</MaxSines>
+      <SamplingRate>44100</SamplingRate>
+      <Type>Continuation</Type>
+    </PhaseMan>
+    <SpectralSynth>
+      <AnalWindowGenerator>
+        <Type>BlackmanHarris92</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NormalizationForAnalysis</Normalize>
+        <Invert>1</Invert>
+      </AnalWindowGenerator>
+      <SynthWindowGenerator>
+        <Type>Triangular</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NoNormalization</Normalize>
+        <Invert>0</Invert>
+      </SynthWindowGenerator>
+      <CircularShift>
+        <Amount>512</Amount>
+      </CircularShift>
+      <IFFT>
+        <AudioSize>1024</AudioSize>
+      </IFFT>
+      <prZeroPadding>0</prZeroPadding>
+      <prSamplingRate>44100</prSamplingRate>
+      <Residual>0</Residual>
+      <prAnalWindowSize>1025</prAnalWindowSize>
+      <prAnalWindowType>BlackmanHarris92</prAnalWindowType>
+      <prHopSize>512</prHopSize>
+    </SpectralSynth>
+    <OverlapAddSin>
+      <FrameSize>512</FrameSize>
+    </OverlapAddSin>
+    <OverlapAddRes>
+      <FrameSize>512</FrameSize>
+    </OverlapAddRes>
+    <OverlapAddGlobal>
+      <FrameSize>512</FrameSize>
+    </OverlapAddGlobal>
+    <prSamplingRate>0</prSamplingRate>
+  </processing>
+
+  <port_connection>
+    <out>Input.AudioOut</out>
+    <in>SMSAnalysisCore.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Input.AudioOut</out>
+    <in>Oscilloscope_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSAnalysisCore.Sinusoidal Peaks</out>
+    <in>PeakView_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSAnalysisCore.Sinusoidal Peaks</out>
+    <in>SMSHarmonizer_0.In SpectralPeaks</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSAnalysisCore.Fundamental</out>
+    <in>SMSHarmonizer_0.In Fundamental</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSAnalysisCore.Residual Spectrum</out>
+    <in>SMSHarmonizer_0.In Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSHarmonizer_0.Out SpectralPeaks</out>
+    <in>SMSSynthesis_1.InputSinPeaks</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSHarmonizer_0.Out SpectralPeaks</out>
+    <in>PeakView_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSHarmonizer_0.Out Spectrum</out>
+    <in>SMSSynthesis_1.InputResSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSSynthesis_1.OutputAudio</out>
+    <in>AudioSink_0.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSSynthesis_1.OutputAudio</out>
+    <in>Oscilloscope_2.Input</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Gain 0.out</out>
+    <in>SMSHarmonizer_0.Gain 0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain_0.out</out>
+    <in>SMSHarmonizer_0.Gain_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain_1.out</out>
+    <in>SMSHarmonizer_0.Gain_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain_2.out</out>
+    <in>SMSHarmonizer_0.Gain_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain_3.out</out>
+    <in>SMSHarmonizer_0.Gain_3</in>
+  </control_connection>
+
+  <control_connection>
+    <out>IgnoreResidual.out</out>
+    <in>SMSHarmonizer_0.IgnoreResidual</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pitch_0.out</out>
+    <in>SMSHarmonizer_0.Pitch_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pitch_1.out</out>
+    <in>SMSHarmonizer_0.Pitch_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pitch_2.out</out>
+    <in>SMSHarmonizer_0.Pitch_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pitch_3.out</out>
+    <in>SMSHarmonizer_0.Pitch_3</in>
+  </control_connection>
+
+</network>
