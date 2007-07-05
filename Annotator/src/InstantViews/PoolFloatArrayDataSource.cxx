@@ -30,6 +30,9 @@ CLAM::VM::PoolFloatArrayDataSource::PoolFloatArrayDataSource()
 	, _samplingRate(44100)
 	, _frameData(0)
 	, _currentFrame(0)
+	, _nBins(0)
+	, _firstBinFreq(0)
+	, _binGap(0)
 {
 }
 
@@ -40,6 +43,9 @@ void CLAM::VM::PoolFloatArrayDataSource::clearData()
 	_frameDivision=0;
 	_frameData=0;
 	_currentFrame=0;
+	_nBins = 0;
+	_firstBinFreq = 0;
+	_binGap = 0;
 }
 
 void CLAM::VM::PoolFloatArrayDataSource::setDataSource(const CLAM_Annotator::Project & project, const std::string & scope, const std::string & name)
@@ -66,16 +72,25 @@ void CLAM::VM::PoolFloatArrayDataSource::updateData(const CLAM::DescriptionDataP
 		);
 	const CLAM::DataArray * arrays =
 		data.GetReadPool<CLAM::DataArray>(_scope,_name);
-	unsigned nBins = _binLabels.size();
-	_data.resize(_nFrames*nBins);
+		
+	// default nBins to binLabels.size if NBins attribute isn't set
+	_nBins = parent.HasNBins() ? parent.GetNBins() : _binLabels.size();
+
+	// default FirstBinFreq to 0 if it wasn't set
+	_firstBinFreq = parent.HasFirstBinFreq()? &parent.GetFirstBinFreq() : 0;
+	
+	_binGap = parent.HasBinGap()? &parent.GetBinGap() : 0;
+
+
+	_data.resize(_nFrames*_nBins);
 	for (unsigned frame =0; frame < _nFrames; frame++)
 	{
 		const CLAM::DataArray & array = arrays[frame];
-		for (unsigned i=0; i<nBins; i++)
+		for (unsigned i=0; i<_nBins; i++)
 		{
 			// TODO: This nBins is and adhoc hack for normalization
-			double value = array[i]*nBins;
-			_data[frame*nBins+i] = value;
+			double value = array[i]*_nBins;
+			_data[frame*_nBins+i] = value;
 		}
 	}
 	_frameData = &_data[0];

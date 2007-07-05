@@ -44,7 +44,20 @@ namespace VM
 
 			const std::string & getLabel(unsigned bin) const
 			{
-				return _binLabels[bin];
+				
+				const CLAM_Annotator::SchemaAttribute & parent = _project->GetParentAttribute(_scope);
+				
+				if (bin < _binLabels.size())
+				{
+					return _binLabels[bin];
+				} else if (parent.HasNBins())
+				{
+					std::ostringstream oss;
+					oss << parent.GetNBins();
+					return oss.str();
+				} else {
+					return "ERR";
+				}
 			}
 			const TData * getData() const
 			{
@@ -61,7 +74,7 @@ namespace VM
 			}
 			unsigned nBins() const
 			{
-				return _binLabels.size();
+				return _nBins;
 			}
 		private:
 			const CLAM_Annotator::Project * _project;
@@ -73,6 +86,9 @@ namespace VM
 			const CLAM_Annotator::FrameDivision * _frameDivision;
 			CLAM::TData _samplingRate;
 			const CLAM::TData *_frameData;
+			unsigned _nBins;
+			const CLAM::TData *_binGap;
+			const CLAM::TData *_firstBinFreq;
 			unsigned _currentFrame;
 	};
 }
