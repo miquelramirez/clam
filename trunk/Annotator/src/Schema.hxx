@@ -107,6 +107,9 @@ namespace CLAM_Annotator{
 			schemaAttribute.AddFirstBinFreq();
 			schemaAttribute.AddBinGap();
 			schemaAttribute.AddNBins();
+			
+			schemaAttribute.UpdateData();
+			
 			schemaAttribute.SetFirstBinFreq(firstBin);
 			schemaAttribute.SetBinGap(binGap);
 			schemaAttribute.SetNBins(nBins);
