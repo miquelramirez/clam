@@ -16,11 +16,11 @@ class ProcessingFactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetListOfKeys_empty );
 	CPPUNIT_TEST( testGetListOfKeys_twoElements );
 	CPPUNIT_TEST( testGetValuesFor_empty );
-//	CPPUNIT_TEST( testGetValuesFor_twoElements );
-//	CPPUNIT_TEST( testAddAttribute_nonExistingKey );
-//	CPPUNIT_TEST( testGetValueFor_nonExistingKey );
-//	CPPUNIT_TEST( testGetValueFor_nonExistingAttribute );
-//	CPPUNIT_TEST( testGetValueFor_existingAttribute );
+	CPPUNIT_TEST( testGetValuesFor_twoElements );
+	CPPUNIT_TEST( testAddAttribute_nonExistingKey );
+	CPPUNIT_TEST( testGetValueFor_nonExistingKey );
+	CPPUNIT_TEST( testGetValueFor_nonExistingAttribute );
+	CPPUNIT_TEST( testGetValueFor_existingAttribute );
 
 
 	CPPUNIT_TEST_SUITE_END();
