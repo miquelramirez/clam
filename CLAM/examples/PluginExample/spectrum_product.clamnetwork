@@ -23,16 +23,12 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="MagPhaseSpectrum2Spectrum_0" type="MagPhaseSpectrum2Spectrum"/>
-
-  <processing id="MagPhaseSpectrum2Spectrum_1" type="MagPhaseSpectrum2Spectrum"/>
-
   <processing id="MagPhaseSpectrumProduct_0" type="MagPhaseSpectrumProduct"/>
 
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
 
   <processing id="OverlapAdd_0" type="OverlapAdd">
-    <FrameSize>16384</FrameSize>
+    <FrameSize>1024</FrameSize>
   </processing>
 
   <processing id="SpectralAnalysis_0" type="SpectralAnalysis">
@@ -50,7 +46,7 @@
     <FFT>
       <AudioSize>65536</AudioSize>
     </FFT>
-    <prHopSize>16384</prHopSize>
+    <prHopSize>1024</prHopSize>
     <prZeroPadding>0</prZeroPadding>
     <prSamplingRate>44100</prSamplingRate>
     <prFFTSize>65536</prFFTSize>
@@ -86,16 +82,20 @@
     <Residual>0</Residual>
     <prAnalWindowSize>65537</prAnalWindowSize>
     <prAnalWindowType>BlackmanHarris92</prAnalWindowType>
-    <prHopSize>16384</prHopSize>
+    <prHopSize>1024</prHopSize>
   </processing>
-
-  <processing id="Spectrum2MagPhaseSpectrum_1" type="Spectrum2MagPhaseSpectrum"/>
 
   <processing id="SpectrumView_0" type="SpectrumView"/>
 
   <processing id="SpectrumView_1" type="SpectrumView"/>
 
   <processing id="SpectrumView_2" type="SpectrumView"/>
+
+  <processing id="magphase" type="Spectrum2MagPhaseSpectrum"/>
+
+  <processing id="tocompl" type="MagPhaseSpectrum2Spectrum"/>
+
+  <processing id="tocomplex" type="MagPhaseSpectrum2Spectrum"/>
 
   <port_connection>
     <out>AudioMixer_0.Output Audio</out>
@@ -119,27 +119,12 @@
 
   <port_connection>
     <out>ConstantSpectrum_0.My Output</out>
-    <in>MagPhaseSpectrum2Spectrum_1.MagPhaseSpectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MagPhaseSpectrum2Spectrum_0.Spectrum</out>
-    <in>SpectrumView_1.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MagPhaseSpectrum2Spectrum_0.Spectrum</out>
-    <in>SpectralSynthesis_0.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MagPhaseSpectrum2Spectrum_1.Spectrum</out>
-    <in>SpectrumView_2.Input</in>
+    <in>tocompl.MagPhaseSpectrum</in>
   </port_connection>
 
   <port_connection>
     <out>MagPhaseSpectrumProduct_0.Product</out>
-    <in>MagPhaseSpectrum2Spectrum_0.MagPhaseSpectrum</in>
+    <in>tocomplex.MagPhaseSpectrum</in>
   </port_connection>
 
   <port_connection>
@@ -149,7 +134,7 @@
 
   <port_connection>
     <out>SpectralAnalysis_0.Output</out>
-    <in>Spectrum2MagPhaseSpectrum_1.Spectrum</in>
+    <in>magphase.Spectrum</in>
   </port_connection>
 
   <port_connection>
@@ -163,8 +148,23 @@
   </port_connection>
 
   <port_connection>
-    <out>Spectrum2MagPhaseSpectrum_1.MagPhaseSpectrum</out>
+    <out>magphase.MagPhaseSpectrum</out>
     <in>MagPhaseSpectrumProduct_0.Factor2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>tocompl.Spectrum</out>
+    <in>SpectrumView_2.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>tocomplex.Spectrum</out>
+    <in>SpectrumView_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>tocomplex.Spectrum</out>
+    <in>SpectralSynthesis_0.Input</in>
   </port_connection>
 
   <control_connection>
