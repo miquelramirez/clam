@@ -53,7 +53,8 @@ protected:
 
 	void testGetListOfKeys_twoElements()
 	{
-		//factory.AddCreator("the key", new DummyCreator());
+		factory.AddCreator("first", new DummyCreator());
+		factory.AddCreator("second", new DummyCreator());
 		factory.AddAttribute("first", "category", "spectral");
 		factory.AddAttribute("second", "category", "time-domain");
 		CLAM::ProcessingFactory::Keys result = factory.GetListOfKeys("category", "spectral");
@@ -62,11 +63,14 @@ protected:
 	}
 	void testGetValuesFor_empty()
 	{
+		factory.AddCreator("non-existing", new DummyCreator());
 		CLAM::ProcessingFactory::Values result = factory.GetValuesFor("non-existing");
 		CPPUNIT_ASSERT_EQUAL(size_t(0), result.size());
 	}
 	void testGetValuesFor_twoElements()
 	{
+		factory.AddCreator("first", new DummyCreator());
+		factory.AddCreator("second", new DummyCreator());
 		factory.AddAttribute("first", "category", "spectral");
 		factory.AddAttribute("second", "category", "time-domain");
 		CLAM::ProcessingFactory::Values result = factory.GetValuesFor("category");
@@ -76,11 +80,13 @@ protected:
 	}
 	void testGetValuesFrom_empty()
 	{
+		factory.AddCreator("key", new DummyCreator());
 		CLAM::ProcessingFactory::Values result = factory.GetValuesFrom("key","category");
 		CPPUNIT_ASSERT_EQUAL(size_t(0), result.size());
 	}
 	void testGetValuesFrom_twoElements()
 	{
+		factory.AddCreator("first", new DummyCreator());
 		factory.AddAttribute("first", "category", "spectral");
 		factory.AddAttribute("first", "category", "time-domain");
 		factory.AddAttribute("first", "description", "short description");
@@ -91,11 +97,13 @@ protected:
 	}
 	void testGetValuesOf_empty()
 	{
+		factory.AddCreator("key", new DummyCreator());
 		CLAM::ProcessingFactory::Attributes result = factory.GetValuesOf("key");
 		CPPUNIT_ASSERT_EQUAL(size_t(0), result.size());
 	}
 	void testGetValuesOf_twoElements()
 	{
+		factory.AddCreator("first", new DummyCreator());
 		factory.AddAttribute("first", "category", "spectral");
 		factory.AddAttribute("first", "category", "time-domain");
 		CLAM::ProcessingFactory::Attributes result = factory.GetValuesOf("first");
