@@ -78,8 +78,11 @@ namespace CLAM{
 		bool ConcreteConfigure( const ProcessingConfig& config )
 		{
 			mPitchSteps.SetBounds(1,100);
+			mPitchSteps.SetDefault(1); //no pitch shift
 			mPitchSteps.DoControl(1);
 
+			mIgnoreResidual.SetBounds(0.,1.);
+			mIgnoreResidual.SetDefault(0.);
 			mIgnoreResidual.DoControl(0.);
 			return true;
 		}

@@ -38,7 +38,7 @@
 namespace CLAM{
 
 	class SMSHarmonizer: public FrameTransformation
-	{		
+	{	
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
 		 */
@@ -77,7 +77,7 @@ namespace CLAM{
 
 			mIgnoreResidualCtl("IgnoreResidual", this),
 
-			mVoice0Gain("Gain 0", this),
+			mVoice0Gain("Input Voice Gain", this),
 			mVoicesPitch(VOICES_AMOUNT, "Pitch", this),
 			mVoicesGain(VOICES_AMOUNT, "Gain", this)
 		{
@@ -91,17 +91,19 @@ namespace CLAM{
 			mPitchShift.Configure( FrameTransformationConfig() );
 
 			mIgnoreResidualCtl.SetBounds(0,1);
-// 			By default we ignore residual!!
+			//By default we ignore residual!!
+			mIgnoreResidualCtl.SetDefault(1);
 			mIgnoreResidualCtl.DoControl(1);
 
-			mVoice0Gain.SetBounds(-10.,10.);
-			mVoice0Gain.DoControl(10.);
+			mVoice0Gain.SetBounds(-2.,2.);
+			mVoice0Gain.SetDefault(1.);
+			mVoice0Gain.DoControl(1.);
 
 			for (int i=0; i < mVoicesPitch.Size(); i++)
 			{
-				mVoicesPitch[i].SetBounds(-12.,12.);
-				mVoicesPitch[i].DoControl(1.);
-				mVoicesGain[i].SetBounds(-10.,10.);
+				mVoicesPitch[i].SetBounds(-3.,3.);
+				mVoicesPitch[i].DoControl(0.);
+				mVoicesGain[i].SetBounds(-2.,2.);
 				mVoicesGain[i].DoControl(0.);
 			}
 
@@ -143,6 +145,18 @@ namespace CLAM{
 			return mPitchShift.mIgnoreResidual.DoControl(value);
 		}
 
+// FIXME
+		// Configuration data
+// 		DYN_ATTRIBUTE(0,protected,int,prSamplingRate);
+// 		DYNAMIC_TYPE_USING_INTERFACE( SimpleConfig, 1, ProcessingConfig );
+// 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
+// 		protected:
+// 		void DefaultInit()
+// 		{
+// 			AddAll();
+// 			UpdateData();
+// 			SetFrameSize(512);
+// 		};
 
 	private:
 

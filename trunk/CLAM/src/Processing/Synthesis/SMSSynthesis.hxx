@@ -56,7 +56,7 @@ namespace CLAM {
 	 */
 	class SMSSynthesis : public ProcessingComposite {
 
-private:
+	private:
 		// Configuration data
 		SMSSynthesisConfig mConfig;
 

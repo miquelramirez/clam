@@ -38,7 +38,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 		Fundamental& outFund,
 		Spectrum& outRes)
 {
-	bool ignoreResidual = mIgnoreResidual.GetLastValue()>0.01;
+	bool ignoreResidual = mIgnoreResidual.GetLastValue()>0.;
 	if (!mConfig.GetPreserveOuts()) //TODO big cludge for streaming
 	{
 		outPeaks = inPeaks; 

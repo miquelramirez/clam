@@ -3,55 +3,55 @@
 
   <processing id="AudioSink_0" type="AudioSink"/>
 
-  <processing id="Gain 0" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.005</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
   <processing id="Gain_0" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.005</Step>
+    <Min>-2</Min>
+    <Default>0</Default>
+    <Max>2</Max>
+    <Step>0.02</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Gain_1" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.005</Step>
+    <Min>-2</Min>
+    <Default>0</Default>
+    <Max>2</Max>
+    <Step>0.02</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Gain_2" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.005</Step>
+    <Min>-2</Min>
+    <Default>0</Default>
+    <Max>2</Max>
+    <Step>0.02</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Gain_3" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.005</Step>
+    <Min>-2</Min>
+    <Default>0</Default>
+    <Max>2</Max>
+    <Step>0.02</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="IgnoreResidual" type="OutControlSender">
     <Min>0</Min>
-    <Default>0.5</Default>
+    <Default>1</Default>
     <Max>1</Max>
     <Step>0.005</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Input" type="AudioSource"/>
+
+  <processing id="Input Voice Gain" type="OutControlSender">
+    <Min>-2</Min>
+    <Default>1</Default>
+    <Max>2</Max>
+    <Step>0.02</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
 
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
 
@@ -62,34 +62,34 @@
   <processing id="PeakView_1" type="PeakView"/>
 
   <processing id="Pitch_0" type="OutControlSender">
-    <Min>0</Min>
-    <Default>6</Default>
-    <Max>12</Max>
-    <Step>0.06</Step>
+    <Min>-3</Min>
+    <Default>1</Default>
+    <Max>3</Max>
+    <Step>0.03</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Pitch_1" type="OutControlSender">
-    <Min>0</Min>
-    <Default>6</Default>
-    <Max>12</Max>
-    <Step>0.06</Step>
+    <Min>-3</Min>
+    <Default>1</Default>
+    <Max>3</Max>
+    <Step>0.03</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Pitch_2" type="OutControlSender">
-    <Min>0</Min>
-    <Default>6</Default>
-    <Max>12</Max>
-    <Step>0.06</Step>
+    <Min>-3</Min>
+    <Default>1</Default>
+    <Max>3</Max>
+    <Step>0.03</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Pitch_3" type="OutControlSender">
-    <Min>0</Min>
-    <Default>6</Default>
-    <Max>12</Max>
-    <Step>0.06</Step>
+    <Min>-3</Min>
+    <Default>1</Default>
+    <Max>3</Max>
+    <Step>0.03</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
@@ -293,11 +293,6 @@
   </port_connection>
 
   <control_connection>
-    <out>Gain 0.out</out>
-    <in>SMSHarmonizer_0.Gain 0</in>
-  </control_connection>
-
-  <control_connection>
     <out>Gain_0.out</out>
     <in>SMSHarmonizer_0.Gain_0</in>
   </control_connection>
@@ -320,6 +315,11 @@
   <control_connection>
     <out>IgnoreResidual.out</out>
     <in>SMSHarmonizer_0.IgnoreResidual</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Input Voice Gain.out</out>
+    <in>SMSHarmonizer_0.Input Voice Gain</in>
   </control_connection>
 
   <control_connection>

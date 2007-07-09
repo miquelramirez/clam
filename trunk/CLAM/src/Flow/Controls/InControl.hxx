@@ -46,9 +46,12 @@ protected:
 	TControlData mLastValue;
 	std::string mName;
 	Processing * mParent;
+	TControlData mDefault;
 	TControlData mUpperBound;
 	TControlData mLowerBound;
+
 	bool mBounded;
+	bool mHasDefault;
 
 // Methods:
 public:
@@ -56,18 +59,20 @@ public:
 	 * Stores the incoming control value. It can be retrieved
 	 * using \c GetLastValue
 	 */
-	virtual int DoControl(TControlData val) { mLastValue = val; return 0;};
+	virtual int DoControl(TControlData val) { mLastValue = val; return 0; };
 	virtual const TControlData& GetLastValue() const { return mLastValue; };
 	const std::string& GetName() const { return mName; }
 	bool IsConnectedTo( OutControl & );
 	bool IsConnected() const;
 	bool IsBounded() const;
+	bool HasDefault() const;
 	TControlData UpperBound() const;
 	TControlData LowerBound() const;
 	TControlData DefaultValue() const;
-	void SetBounds( TControlData lower, TControlData upper);
+	void SetDefault(TControlData val);
+	void SetBounds(TControlData lower, TControlData upper);
 
-	Processing * GetProcessing() const { return mParent;}
+	Processing * GetProcessing() const { return mParent; }
 	
 	/// Implementation detail just to be used from OutControl
 	void OutControlInterface_AddLink(OutControl & outControl);

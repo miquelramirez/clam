@@ -72,6 +72,7 @@ public:
 	QString getIncontrolNameAndBounds(unsigned i) const;
 	float getIncontrolUpperBound(unsigned index) const;
 	float getIncontrolLowerBound(unsigned index) const;
+	float getIncontrolDefault(unsigned index) const;
 	QString getIncontrolName(unsigned i) const;
 	QString getOutcontrolName(unsigned i) const;
 	/// Get the connector prototyper name at the given parent pos
