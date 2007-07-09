@@ -138,6 +138,11 @@ public:
 		_registry.GetRegisteredNames( namesList );
 	}
 
+	bool ExistsKey( const RegistryKey& key) //TODO pau: rename to KeyExists
+	{
+		return _registry.ExistsKey(key);
+	}
+
 public: // Inner classes. Public for better testing
 	/**
 	 * This class is an implementation class of the Factory. It is basically
@@ -241,6 +246,16 @@ public: // Inner classes. Public for better testing
 			}
 			return result;
 			
+		}
+
+		bool ExistsKey(const RegistryKey& key)
+		{
+			typename CreatorMap::const_iterator it = _creators.find(key);
+			if(it == _creators.end())
+			{
+				return false;
+			}
+			return true;
 		}
 
 	private: // data

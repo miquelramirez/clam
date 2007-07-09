@@ -97,6 +97,11 @@ void ProcessingFactory::AddAttribute(const std::string& key, const std::string& 
 	att.name = attribute;
 	att.value = value;
 	// TODO check if the factory has the key
+	if(!ExistsKey(key))
+	{
+		std::cout << "[ProcessingFactory] tryind to add metadata to a non-existing key \"" << key << "\"" << std::endl; 
+		return;
+	}
 	if(it == mProcessingAttributes.end()) // first check if it does not exist
 	{
 		mValue.push_back(att);
