@@ -6,6 +6,7 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
 #include <CLAM/FFT.hxx>
+#include <CLAM/SpectralAnalysis.hxx>
 #include "MagPhaseSpectrum.hxx"
 #include <iostream>
 namespace CLAM
@@ -54,6 +55,7 @@ protected:
 
 	void FillSpectrum(MagPhaseSpectrum & spectrum)
 	{
+
 		MonoAudioFileReaderConfig readerConfig;
 		readerConfig.SetSourceFile("Carnel_3P.wav");
 		MonoAudioFileReader reader(readerConfig);
@@ -63,18 +65,31 @@ protected:
 		FFTConfig fftConfig; 
 		fftConfig.SetAudioSize(65536);
 		FFT fft(fftConfig);
-		ConnectPorts(reader, 0, fft, 0);
+
+		SpectralAnalysisConfig spectralAnalysisConfig;
+		spectralAnalysisConfig.SetprHopSize( 16384 ); // 2^14
+		spectralAnalysisConfig.SetprFFTSize( 65536 ); // 2^16
+		spectralAnalysisConfig.SetprWindowSize( 65537 ); // 2^16+1
+		SpectralAnalysis spectralAnalysis( spectralAnalysisConfig );
+
+		Processing * analysis;
+	       	if (mConfig.GetWindowedFFT())
+			analysis = &spectralAnalysis;
+		else
+			analysis = &fft;
+
+		ConnectPorts(reader, 0, *analysis, 0);
 		InPort<Spectrum> fetcher;
-		fft.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
+		analysis->GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
 		reader.Start();
-		fft.Start();
+		analysis->Start();
 		do 
 		{
 			reader.Do();
-		} while (not fft.CanConsumeAndProduce() );
-		fft.Do();
+		} while (not analysis->CanConsumeAndProduce() );
+		analysis->Do();
 		reader.Stop();
-		fft.Stop();
+		analysis->Stop();
 		const Spectrum & readSpectrum = fetcher.GetData();
 		spectrum.spectralRange=readSpectrum.GetSpectralRange();
 		spectrum.magnitudes.resize(readSpectrum.GetSize());
