@@ -43,6 +43,9 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 	outFund = inFund;
 	outSpectrum = inSpectrum;
 
+	bool ignoreResidual = mIgnoreResidualCtl.GetLastValue()>0.;
+	mPitchShift.GetInControl("IgnoreResidual").DoControl(ignoreResidual?1.:0.);
+
 	//TODO - skip if gain<0.01, check if outputs arrive clean or not
 	TData gain0 = mVoice0Gain.GetLastValue();
 	mSinusoidalGain.GetInControl("Gain").DoControl(gain0);
@@ -71,7 +74,7 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 		mSinusoidalGain.Do(mtmpPeaks,mtmpPeaks);
 
 		outPeaks = outPeaks + mtmpPeaks;
-		if (mIgnoreResidualCtl.GetLastValue()<0.01) // is 0
+		if (!ignoreResidual)
 			mSpectrumAdder.Do(outSpectrum, mtmpSpectrum, outSpectrum);
 	}
 	return true;

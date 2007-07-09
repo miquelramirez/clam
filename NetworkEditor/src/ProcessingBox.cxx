@@ -639,6 +639,11 @@ QString ProcessingBox::getIncontrolName(unsigned index) const
 	QString name = inControl.GetName().c_str();
 	return name;
 }
+float ProcessingBox::getIncontrolDefault(unsigned index) const
+{
+	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
+	return inControl.DefaultValue();
+}
 float ProcessingBox::getIncontrolLowerBound(unsigned index) const
 {
 	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
@@ -660,7 +665,8 @@ QString ProcessingBox::getOutportPrototyperName(const QPoint & point) const
 }
 QString ProcessingBox::getIncontrolPrototyperName(const QPoint & point) const
 {
-	return getConnectionPrototyperName("InControl", getIncontrolNameAndBounds(controlIndexByXPos(point)));
+// 	Prototyper needs the name without bounds values, then is "getIncontrolName" and not "getIncontrolNameAndBounds"
+	return getConnectionPrototyperName("InControl", getIncontrolName(controlIndexByXPos(point)));
 }
 QString ProcessingBox::getOutcontrolPrototyperName(const QPoint & point) const
 {

@@ -93,7 +93,7 @@
 
   <processing id="Robotization factor" type="OutControlSender">
     <Min>0</Min>
-    <Default>50</Default>
+    <Default>0</Default>
     <Max>100</Max>
     <Step>0.5</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
