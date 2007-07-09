@@ -54,7 +54,7 @@ namespace CLAM {
 			Processing & receiver, const std::string & inPortName );
 	/**
 	 * Connects two ports of two processings selecting them by the port number.
-	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
+	 * Short hand for sender.GetOutPortByNumber(outPortNumber).ConnectToIn(receiver.GetOutPort(inPortNumber))
 	 */
 	void ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
