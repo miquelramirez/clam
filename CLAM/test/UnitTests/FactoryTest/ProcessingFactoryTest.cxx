@@ -21,6 +21,10 @@ class ProcessingFactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetValuesFrom_twoElements );
 	CPPUNIT_TEST( testGetValuesOf_empty );
 	CPPUNIT_TEST( testGetValuesOf_twoElements );
+//	CPPUNIT_TEST( testAddAttribute_nonExistingKey );
+//	CPPUNIT_TEST( testGetValueFor_nonExistingKey );
+//	CPPUNIT_TEST( testGetValueFor_nonExistingAttribute );
+//	CPPUNIT_TEST( testGetValueFor_existingAttribute );
 	CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -111,6 +115,55 @@ protected:
 		CPPUNIT_ASSERT_EQUAL(std::string("spectral"), result.front().value);
 		CPPUNIT_ASSERT_EQUAL(std::string("time-domain"), result.back().value);
 	}
+
+/*	void testAddAttribute_nonExistingKey()
+	{
+		CLAM::ProcessingFactory factory;
+		try
+		{
+			factory.AddAttribute("non-existing-key", "attr");
+		} 
+		catch (CLAM::AssertFailedErr& e)
+		{
+			CPPUNIT_ASSERT_EQUAL(
+				std::string("ProcessingFactory::AddAttribute: Adding an attribute with an non existing key "), 
+				std::string(e.what())
+				);
+		}
+	}
+	void testGetValueFor_nonExistingKey()
+	{
+		CLAM::ProcessingFactory factory;
+		try
+		{
+			factory.GetValueFor("non-existing-key", "attr");
+		} 
+		catch (CLAM::AssertFailedErr& e)
+		{
+			CPPUNIT_ASSERT_EQUAL(
+				std::string("ProcessingFactory::GetValueFor: Retrieving a value of an non existing key "), 
+				std::string(e.what())
+				);
+		}
+	}
+
+	void testGetValueFor_nonExistingAttribute()
+	{
+		CLAM::ProcessingFactory factory;
+		factory.AddCreator("first", new DummyCreator());
+		factory.AddAttribute("first", "category", "spectral");
+		CPPUNIT_ASSERT_EQUAL( std::string("--undefined--"), factory.GetValueFor("first", "non existing attr") );
+	}
+
+	void testGetValueFor_existingAttribute()
+	{
+		CLAM::ProcessingFactory factory;
+		factory.AddCreator("first", new DummyCreator());
+		factory.AddAttribute("first", "category", "spectral");
+		CPPUNIT_ASSERT_EQUAL( std::string("spectral"), factory.GetValueFor("category") );
+
+	}
+*/
 };
 
 
