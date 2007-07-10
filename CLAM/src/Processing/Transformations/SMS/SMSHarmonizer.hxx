@@ -92,16 +92,17 @@ namespace CLAM{
 
 			mIgnoreResidualCtl.SetBounds(0,1);
 			//By default we ignore residual!!
-			mIgnoreResidualCtl.SetDefault(1);
+			mIgnoreResidualCtl.SetDefaultValue(1);
 			mIgnoreResidualCtl.DoControl(1);
 
 			mVoice0Gain.SetBounds(-2.,2.);
-			mVoice0Gain.SetDefault(1.);
+			mVoice0Gain.SetDefaultValue(1.);
 			mVoice0Gain.DoControl(1.);
 
 			for (int i=0; i < mVoicesPitch.Size(); i++)
 			{
 				mVoicesPitch[i].SetBounds(-3.,3.);
+				mVoicesPitch[i].SetDefaultValue(1.); //no pitch shift
 				mVoicesPitch[i].DoControl(0.);
 				mVoicesGain[i].SetBounds(-2.,2.);
 				mVoicesGain[i].DoControl(0.);

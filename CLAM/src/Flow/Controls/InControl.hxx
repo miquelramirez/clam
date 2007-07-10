@@ -46,12 +46,12 @@ protected:
 	TControlData mLastValue;
 	std::string mName;
 	Processing * mParent;
-	TControlData mDefault;
+	TControlData mDefaultValue;
 	TControlData mUpperBound;
 	TControlData mLowerBound;
 
 	bool mBounded;
-	bool mHasDefault;
+	bool mHasDefaultValue;
 
 // Methods:
 public:
@@ -65,11 +65,12 @@ public:
 	bool IsConnectedTo( OutControl & );
 	bool IsConnected() const;
 	bool IsBounded() const;
-	bool HasDefault() const;
+	bool HasDefaultValue() const;
 	TControlData UpperBound() const;
 	TControlData LowerBound() const;
+	/** Returns default value if exists. If don't and bounds were set, returns the mean between them or 0 as general default */
 	TControlData DefaultValue() const;
-	void SetDefault(TControlData val);
+	void SetDefaultValue(TControlData val);
 	void SetBounds(TControlData lower, TControlData upper);
 
 	Processing * GetProcessing() const { return mParent; }

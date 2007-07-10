@@ -59,7 +59,7 @@ namespace CLAM{
 		bool ConcreteConfigure( const ProcessingConfig& config )
 		{
 			mRFactor.SetBounds(0.,100.);
-			mRFactor.SetDefault(0.);
+			mRFactor.SetDefaultValue(0.);
 			mRFactor.DoControl(0.);
 			return true;
 		}

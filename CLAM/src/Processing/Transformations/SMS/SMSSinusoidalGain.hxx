@@ -59,7 +59,7 @@ namespace CLAM{
 		bool ConcreteConfigure(const ProcessingConfig& c)
 		{
 			mGain.SetBounds(-100.,100.);
-			mGain.SetDefault(1.);
+			mGain.SetDefaultValue(1.);
 			mGain.DoControl(1.);
 			return true;
 		}

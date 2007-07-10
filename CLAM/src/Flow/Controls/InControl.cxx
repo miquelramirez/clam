@@ -32,7 +32,7 @@ InControl::InControl(const std::string &name, Processing* parent, const bool pub
 	, mUpperBound(1)
 	, mLowerBound(0)
 	, mBounded(false)
-	, mHasDefault(false)
+	, mHasDefaultValue(false)
 
 {
 	if (parent && publish) parent->RegisterInControl(this);
@@ -59,9 +59,9 @@ bool InControl::IsBounded() const
 {
 	return mBounded;
 }
-bool InControl::HasDefault() const
+bool InControl::HasDefaultValue() const
 {
-	return mHasDefault;
+	return mHasDefaultValue;
 }
 TControlData InControl::UpperBound() const
 {
@@ -77,22 +77,16 @@ void InControl::SetBounds( TControlData lower, TControlData upper )
 	mUpperBound = upper;
 	mBounded = true;
 }
-void InControl::SetDefault( TControlData val )
+void InControl::SetDefaultValue( TControlData val )
 {
-	mDefault = val;
-	mHasDefault = true;
+	mDefaultValue = val;
+	mHasDefaultValue = true;
 }
 TControlData InControl::DefaultValue() const
 {
-	if (mHasDefault)
-		return mDefault;
-	else
-	{
-		if (mBounded)
-			return (mUpperBound+mLowerBound)/2;
-		else
-			return 0.;
-	}
+	if (mHasDefaultValue) return mDefaultValue;
+	if (!mBounded) return 0;
+	return (mUpperBound+mLowerBound)/2.f;
 }
 
 void InControl::OutControlInterface_AddLink(OutControl & outControl)
