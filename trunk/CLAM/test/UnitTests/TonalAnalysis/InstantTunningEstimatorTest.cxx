@@ -64,13 +64,20 @@ private:
 	void assertFoundCenterIs(double expectedCenter, double expectedStrength,
 			unsigned nPeaks, double * peakPositions, double * peakValues)
 	{
-		InstantTunningEstimator tunningEstimator;
-		tunningEstimator.doIt(nPeaks, peakPositions, peakValues);
+		InstantTunningEstimator tunningEstimator(0.0,1);
+		
+		std::vector< std::pair<double,double> > peaks;
+		for(unsigned i=0; i<nPeaks; ++i) 
+		{
+			peaks.push_back( std::pair<double,double>(peakPositions[i],peakValues[i]));
+		}
+		
+		tunningEstimator.doIt(peaks);
 
-		std::pair<double,double> centerAndStrenght = tunningEstimator.output();
+		std::pair<double,double> centerAndStrength = tunningEstimator.output();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCenter, centerAndStrenght.first,1e-14);
-		CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedStrength, centerAndStrenght.second,1e-14);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedCenter, centerAndStrength.first,1e-14);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(expectedStrength, centerAndStrength.second,1e-14);
 	}
 
 	void testSilence()
@@ -92,7 +99,7 @@ private:
 	void testSingleTunedPeakAtSecondPitch()
 	{
 		const unsigned nPeaks=1;
-		double positions[]={3.0};
+		double positions[]={1.0};
 		double values   []={2.0};
 		
 		assertFoundCenterIs(0.0, 2.0, nPeaks, positions, values);
@@ -100,15 +107,15 @@ private:
 	void testSingleDetunedPeakAtSecondPitch()
 	{
 		const unsigned nPeaks=1;
-		double positions[]={3.1};
+		double positions[]={3.1/3.0};
 		double values   []={2.0};
 		
-		assertFoundCenterIs(0.1, 2.0, nPeaks, positions, values);
+		assertFoundCenterIs(0.1/3.0, 2.0, nPeaks, positions, values);
 	}
 	void testTwoTunedPeaksAtFirstSecondPitch()
 	{
 		const unsigned nPeaks=2;
-		double positions[]={0.0, 3.0};
+		double positions[]={0.0, 1.0};
 		double values   []={2.0, 2.0};
 		
 		assertFoundCenterIs(0.0, 4.0, nPeaks, positions, values);
@@ -116,64 +123,64 @@ private:
 	void testTwoOrthogonalTunnings()
 	{
 		const unsigned nPeaks=2;
-		double positions[]={0.0, 3.0/4.0};
+		double positions[]={0.0, 1.0/4.0};
 		double values   []={4.0, 4.0};
 		
-		assertFoundCenterIs(3.0/8.0, 4.0*std::sqrt(2.0), nPeaks, positions, values);
+		assertFoundCenterIs(1.0/8.0, 4.0*std::sqrt(2.0), nPeaks, positions, values);
 	}
 	void testTwoDetunnedPeaks()
 	{
 		const unsigned nPeaks=2;
-		double positions[]={1.5, 4.5};
+		double positions[]={0.5, 1.5};
 		double values   []={4.0, 4.0};
 		
-		assertFoundCenterIs(1.5, 8.0, nPeaks, positions, values);
+		assertFoundCenterIs(0.5, 8.0, nPeaks, positions, values);
 	}
 	void testTwoOpposedTunnings()
 	{
 		const unsigned nPeaks=2;
-		double positions[]={0.0, 1.5};
+		double positions[]={0.0, 0.5};
 		double values   []={4.0, 4.0};
 		// because strength is 0 .75 is pointless, it is just the value it gives on my machine.
-		assertFoundCenterIs(.75, 0.0, nPeaks, positions, values);
+		assertFoundCenterIs(.25, 0.0, nPeaks, positions, values);
 	}
 	void testSeveralFrames_withoutInertia()
 	{
-		const unsigned nPeaks1=2;
-		double positions1[]={0.0, 3.0};
-		double values1   []={8.0, 8.0};
+		std::vector< std::pair<double,double> > peaks1;
+		peaks1.push_back( std::pair<double,double>(0.0, 8.0) );
+		peaks1.push_back( std::pair<double,double>(1.0, 8.0) );
 		
-		const unsigned nPeaks2=2;
-		double positions2[]={1.5, 4.5};
-		double values2   []={8.0, 8.0};
-
-		InstantTunningEstimator tunningEstimator;
-		tunningEstimator.doIt(nPeaks1, positions1, values1);
-		tunningEstimator.doIt(nPeaks2, positions2, values2);
+		std::vector< std::pair<double,double> > peaks2;
+		peaks2.push_back( std::pair<double,double>(0.5, 8.0) );
+		peaks2.push_back( std::pair<double,double>(1.5, 8.0) );
+		
+		InstantTunningEstimator tunningEstimator(0.0,1);
+		tunningEstimator.doIt(peaks1);
+		tunningEstimator.doIt(peaks2);
 
 		std::pair<double,double> centerAndStrength = tunningEstimator.output();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL(1.5, centerAndStrength.first, 1e-14);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, centerAndStrength.first, 1e-14);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL(16.0, centerAndStrength.second, 1e-14);
 	}
 	void testSeveralFrames_withInertia()
 	{
-		const unsigned nPeaks1=2;
-		double positions1[]={0.0, 3.0};
-		double values1   []={8.0, 8.0};
+		std::vector< std::pair<double,double> > peaks1;
+		peaks1.push_back( std::pair<double,double>(0.0, 8.0) );
+		peaks1.push_back( std::pair<double,double>(1.0, 8.0) );
 		
-		const unsigned nPeaks2=2;
-		double positions2[]={1.5, 4.5};
-		double values2   []={8.0, 8.0};
+		std::vector< std::pair<double,double> > peaks2;
+		peaks2.push_back( std::pair<double,double>(0.5, 8.0) );
+		peaks2.push_back( std::pair<double,double>(1.5, 8.0) );
 
-		InstantTunningEstimator tunningEstimator;
+		InstantTunningEstimator tunningEstimator(0.0,1);
 		tunningEstimator.setInertia(.4);
-		tunningEstimator.doIt(nPeaks1, positions1, values1);
-		tunningEstimator.doIt(nPeaks2, positions2, values2);
+		tunningEstimator.doIt(peaks1);
+		tunningEstimator.doIt(peaks2);
 
 		std::pair<double,double> centerAndStrength = tunningEstimator.output();
 
-		CPPUNIT_ASSERT_DOUBLES_EQUAL(1.5, centerAndStrength.first, 1e-14);
+		CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, centerAndStrength.first, 1e-14);
 		CPPUNIT_ASSERT_DOUBLES_EQUAL(9.44, centerAndStrength.second, 1e-14);
 	}
 };
