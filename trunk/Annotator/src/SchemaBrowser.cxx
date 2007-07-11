@@ -214,9 +214,9 @@ void SchemaBrowser::updateCurrentAttribute()
 		}
 		documentation+=".</li>";
 	}
-	if (attributeSchema.HasFirstBinFreq())
+	if (attributeSchema.HasFirstBinOffset())
 	{
-		documentation+=tr("<li><b>First Bin Frequency:</b> %1</li>").arg(attributeSchema.GetFirstBinFreq());
+		documentation+=tr("<li><b>First Bin Offset:</b> %1</li>").arg(attributeSchema.GetFirstBinOffset());
 	}
 	if (attributeSchema.HasBinGap())
 	{

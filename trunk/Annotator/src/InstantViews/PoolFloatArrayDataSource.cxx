@@ -31,7 +31,7 @@ CLAM::VM::PoolFloatArrayDataSource::PoolFloatArrayDataSource()
 	, _frameData(0)
 	, _currentFrame(0)
 	, _nBins(0)
-	, _firstBinFreq(0)
+	, _firstBinOffset(0)
 	, _binGap(0)
 {
 }
@@ -44,7 +44,7 @@ void CLAM::VM::PoolFloatArrayDataSource::clearData()
 	_frameData=0;
 	_currentFrame=0;
 	_nBins = 0;
-	_firstBinFreq = 0;
+	_firstBinOffset = 0;
 	_binGap = 0;
 }
 
@@ -53,9 +53,23 @@ void CLAM::VM::PoolFloatArrayDataSource::setDataSource(const CLAM_Annotator::Pro
 	_name = name;
 	_scope = scope;
 	_project = & project;
-	const std::list<std::string> & binLabels=
-		project.GetAttributeScheme(scope,name).GetBinLabels();
-	_binLabels.assign(binLabels.begin(), binLabels.end());
+	const CLAM_Annotator::SchemaAttribute & attribute =	project.GetAttributeScheme(scope,name);
+
+	if (attribute.HasBinLabels())
+	{
+		const std::list<std::string> & binLabels=
+			attribute.GetBinLabels();
+		_binLabels.assign(binLabels.begin(), binLabels.end());
+	}
+	
+	// default nBins to binLabels.size if NBins attribute isn't set
+	_nBins = attribute.HasNBins() ? attribute.GetNBins() : _binLabels.size();
+
+	// default FirstBinOffset to 0 if it wasn't set
+	_firstBinOffset = attribute.HasFirstBinOffset()? attribute.GetFirstBinOffset() : 0;
+	
+	_binGap = attribute.HasBinGap()? attribute.GetBinGap() : 0;
+	
 }
 
 void CLAM::VM::PoolFloatArrayDataSource::updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate)
@@ -72,15 +86,6 @@ void CLAM::VM::PoolFloatArrayDataSource::updateData(const CLAM::DescriptionDataP
 		);
 	const CLAM::DataArray * arrays =
 		data.GetReadPool<CLAM::DataArray>(_scope,_name);
-		
-	// default nBins to binLabels.size if NBins attribute isn't set
-	_nBins = parent.HasNBins() ? parent.GetNBins() : _binLabels.size();
-
-	// default FirstBinFreq to 0 if it wasn't set
-	_firstBinFreq = parent.HasFirstBinFreq()? &parent.GetFirstBinFreq() : 0;
-	
-	_binGap = parent.HasBinGap()? &parent.GetBinGap() : 0;
-
 
 	_data.resize(_nFrames*_nBins);
 	for (unsigned frame =0; frame < _nFrames; frame++)
@@ -101,7 +106,7 @@ bool CLAM::VM::PoolFloatArrayDataSource::setCurrentTime(double timeMiliseconds)
 	unsigned newFrame = _frameDivision ? _frameDivision->GetItem(timeMiliseconds*_samplingRate): 0;
 	if (_nFrames==0) newFrame = 0;
 	else if (newFrame>=_nFrames) newFrame=_nFrames-1;
-	_frameData = getData()? getData()+_binLabels.size()*newFrame : 0;
+	_frameData = getData()? getData()+_nBins*newFrame : 0;
 	if (newFrame == _currentFrame) return false;
 	_currentFrame = newFrame;
 	return true;
