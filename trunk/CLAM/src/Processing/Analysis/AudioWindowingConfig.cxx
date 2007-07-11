@@ -36,7 +36,7 @@ void AudioWindowingConfig::DefaultInit()
 	SetWindowType(EWindowType::eBlackmanHarris92);
 	SetHopSize((GetWindowSize()-1)/2);
 	SetFFTSize(1024); // the greater or equal power of 2 of windowsize-1
-	SetDoHalfWindowShift( false );
+	SetDoHalfWindowShift( true );
 }
 
 } // namespace CLAM

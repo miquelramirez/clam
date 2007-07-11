@@ -111,6 +111,7 @@ public:
 	virtual Component* Species() const { return new EWindowType(eHamming); }
 
 	typedef enum {
+		eNone,
 		eKaiserBessel17,
 		eKaiserBessel18,
 		eKaiserBessel19,
@@ -135,6 +136,7 @@ public:
 	{
 		static tEnumValue sValueTable[] =
 		{
+			{eNone,"None"},
 			{eKaiserBessel17,"KaiserBessel17"},
 			{eKaiserBessel18,"KaiserBessel18"},
 			{eKaiserBessel19,"KaiserBessel19"},
