@@ -89,7 +89,11 @@ public:
 		painter.setPen(_lineColor);
 		QPolygonF _line;
 		for (int i=0; i<size; i++)
-			_line << QPointF(double(i)/size, -std::log10(data[i]/size));
+		{
+			double value=std::log10(data[i]/size);
+			if (value!=value) continue;
+			_line << QPointF(double(i)/size, -value);
+		}
 		_dataSource->release();
 		painter.drawPolyline(_line);
 	}
