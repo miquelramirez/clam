@@ -95,6 +95,9 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	CPPUNIT_TEST( testInControl_settingBounds );
 	CPPUNIT_TEST( testInControl_boundedDefaultValue );
 	CPPUNIT_TEST( testInControl_isBoundedWhenTrue );
+
+	// Testing default value
+	CPPUNIT_TEST( testInControl_setDefaultprevailstoBounds );
 	
 	
 	CPPUNIT_TEST_SUITE_END();
@@ -459,6 +462,14 @@ private:
 		CLAM::InControl inControl("inControl");
 		inControl.SetBounds(0.f, 0.f);
 		CPPUNIT_ASSERT_EQUAL( true, inControl.IsBounded() );
+	}
+
+	void testInControl_setDefaultprevailstoBounds()
+	{
+		CLAM::InControl inControl("inControl");
+		inControl.SetBounds(0.f, 10.f);
+		inControl.SetDefaultValue(0.0f);
+		CPPUNIT_ASSERT_EQUAL( 0.0f, inControl.DefaultValue() );
 	}
 };
 

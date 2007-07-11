@@ -65,10 +65,9 @@ public:
 	bool IsConnectedTo( OutControl & );
 	bool IsConnected() const;
 	bool IsBounded() const;
-	bool HasDefaultValue() const;
 	TControlData UpperBound() const;
 	TControlData LowerBound() const;
-	/** Returns default value if exists. If don't and bounds were set, returns the mean between them or 0 as general default */
+	/** Returns the bounds mean or the value set with SetDefaultValue() if its the case */
 	TControlData DefaultValue() const;
 	void SetDefaultValue(TControlData val);
 	void SetBounds(TControlData lower, TControlData upper);

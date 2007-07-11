@@ -59,10 +59,6 @@ bool InControl::IsBounded() const
 {
 	return mBounded;
 }
-bool InControl::HasDefaultValue() const
-{
-	return mHasDefaultValue;
-}
 TControlData InControl::UpperBound() const
 {
 	return mUpperBound;
@@ -85,7 +81,6 @@ void InControl::SetDefaultValue( TControlData val )
 TControlData InControl::DefaultValue() const
 {
 	if (mHasDefaultValue) return mDefaultValue;
-	if (!mBounded) return 0;
 	return (mUpperBound+mLowerBound)/2.f;
 }
 

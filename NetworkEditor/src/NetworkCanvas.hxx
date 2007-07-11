@@ -443,7 +443,7 @@ public: // Actions
 
 		unsigned controlIndex = processing->controlIndexByXPos(point);
 		QString inControlName = processing->getIncontrolName(controlIndex);
-		float default_value = processing->getIncontrolDefault(controlIndex);
+		float default_value = processing->getIncontrolDefaultValue(controlIndex);
 		float lower = processing->getIncontrolLowerBound(controlIndex);
 		float upper = processing->getIncontrolUpperBound(controlIndex);
 
