@@ -62,34 +62,34 @@
   <processing id="PeakView_1" type="PeakView"/>
 
   <processing id="Pitch_0" type="OutControlSender">
-    <Min>-3</Min>
-    <Default>1</Default>
-    <Max>3</Max>
-    <Step>0.03</Step>
+    <Min>-24</Min>
+    <Default>0</Default>
+    <Max>24</Max>
+    <Step>0.24</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Pitch_1" type="OutControlSender">
-    <Min>-3</Min>
-    <Default>1</Default>
-    <Max>3</Max>
-    <Step>0.03</Step>
+    <Min>-24</Min>
+    <Default>0</Default>
+    <Max>24</Max>
+    <Step>0.24</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Pitch_2" type="OutControlSender">
-    <Min>-3</Min>
-    <Default>1</Default>
-    <Max>3</Max>
-    <Step>0.03</Step>
+    <Min>-24</Min>
+    <Default>0</Default>
+    <Max>24</Max>
+    <Step>0.24</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Pitch_3" type="OutControlSender">
-    <Min>-3</Min>
-    <Default>1</Default>
-    <Max>3</Max>
-    <Step>0.03</Step>
+    <Min>-24</Min>
+    <Default>0</Default>
+    <Max>24</Max>
+    <Step>0.24</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
@@ -176,13 +176,7 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSHarmonizer_0" type="SMSHarmonizer">
-    <PreserveOuts>0</PreserveOuts>
-    <BPF>
-      <Interpolation>Linear</Interpolation>
-      <Points size="10">{-30 1} {-24 1} {-18 1} {-12 1} {-6 1} {0 1} {6 1} {12 1} {18 1} {24 1}</Points>
-    </BPF>
-  </processing>
+  <processing id="SMSHarmonizer_0" type="SMSHarmonizer"/>
 
   <processing id="SMSSynthesis_1" type="SMSSynthesis">
     <SynthSineSpectrum>

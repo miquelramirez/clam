@@ -33,12 +33,13 @@
 #include "SMSPitchShift.hxx"
 #include "SpectrumAdder2.hxx"
 #include "SMSSinusoidalGain.hxx"
-
+#include "SMSHarmonizerConfig.hxx"
 
 namespace CLAM{
 
 	class SMSHarmonizer: public FrameTransformation
 	{	
+
 		/** This method returns the name of the object
 		 *  @return Char pointer with the name of object
 		 */
@@ -81,35 +82,10 @@ namespace CLAM{
 			mVoicesPitch(VOICES_AMOUNT, "Pitch", this),
 			mVoicesGain(VOICES_AMOUNT, "Gain", this)
 		{
-			Configure(  FrameTransformationConfig() );
+			Configure( mConfig );
 		}
 
  		~SMSHarmonizer() {}
-		
-		bool ConcreteConfigure(const ProcessingConfig& c)
-		{
-			mPitchShift.Configure( FrameTransformationConfig() );
-
-			mIgnoreResidualCtl.SetBounds(0,1);
-			//By default we ignore residual!!
-			mIgnoreResidualCtl.SetDefaultValue(1);
-			mIgnoreResidualCtl.DoControl(1);
-
-			mVoice0Gain.SetBounds(-2.,2.);
-			mVoice0Gain.SetDefaultValue(1.);
-			mVoice0Gain.DoControl(1.);
-
-			for (int i=0; i < mVoicesPitch.Size(); i++)
-			{
-				mVoicesPitch[i].SetBounds(-3.,3.);
-				mVoicesPitch[i].SetDefaultValue(1.); //no pitch shift
-				mVoicesPitch[i].DoControl(0.);
-				mVoicesGain[i].SetBounds(-2.,2.);
-				mVoicesGain[i].DoControl(0.);
-			}
-
-			return true;
-		}
 
 		bool Do()
 		{
@@ -146,20 +122,18 @@ namespace CLAM{
 			return mPitchShift.mIgnoreResidual.DoControl(value);
 		}
 
-// FIXME
-		// Configuration data
-// 		DYN_ATTRIBUTE(0,protected,int,prSamplingRate);
-// 		DYNAMIC_TYPE_USING_INTERFACE( SimpleConfig, 1, ProcessingConfig );
-// 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
-// 		protected:
-// 		void DefaultInit()
-// 		{
-// 			AddAll();
-// 			UpdateData();
-// 			SetFrameSize(512);
-// 		};
+		typedef SMSHarmonizerConfig Config;
+
+		const ProcessingConfig & GetConfig() const
+		{
+			return mConfig;
+		}
+
+	protected:
+		bool ConcreteConfigure(const ProcessingConfig& config);
 
 	private:
+		Config mConfig;
 
 		SMSPitchShift mPitchShift;
 		SpectrumAdder2 mSpectrumAdder;
