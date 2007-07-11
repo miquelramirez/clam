@@ -44,16 +44,15 @@ namespace VM
 
 			const std::string & getLabel(unsigned bin) const
 			{
-				
-				const CLAM_Annotator::SchemaAttribute & parent = _project->GetParentAttribute(_scope);
+				const CLAM_Annotator::SchemaAttribute & attribute =	_project->GetAttributeScheme(_scope,_name);
 				
 				if (bin < _binLabels.size())
 				{
 					return _binLabels[bin];
-				} else if (parent.HasNBins())
+				} else if (attribute.HasBinGap())
 				{
 					std::ostringstream oss;
-					oss << parent.GetNBins();
+					oss << attribute.GetFirstBinOffset() + bin * attribute.GetBinGap();
 					return oss.str();
 				} else {
 					return "ERR";
@@ -87,8 +86,8 @@ namespace VM
 			CLAM::TData _samplingRate;
 			const CLAM::TData *_frameData;
 			unsigned _nBins;
-			const CLAM::TData *_binGap;
-			const CLAM::TData *_firstBinFreq;
+			CLAM::TData _binGap;
+			CLAM::TData _firstBinOffset;
 			unsigned _currentFrame;
 	};
 }

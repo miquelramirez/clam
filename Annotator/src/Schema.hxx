@@ -104,13 +104,13 @@ namespace CLAM_Annotator{
 			schemaAttribute.SetName(attribute);
 			schemaAttribute.SetType("FloatArray");
 			
-			schemaAttribute.AddFirstBinFreq();
+			schemaAttribute.AddFirstBinOffset();
 			schemaAttribute.AddBinGap();
 			schemaAttribute.AddNBins();
 			
 			schemaAttribute.UpdateData();
 			
-			schemaAttribute.SetFirstBinFreq(firstBin);
+			schemaAttribute.SetFirstBinOffset(firstBin);
 			schemaAttribute.SetBinGap(binGap);
 			schemaAttribute.SetNBins(nBins);
 			

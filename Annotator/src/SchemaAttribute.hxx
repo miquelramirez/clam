@@ -89,9 +89,9 @@ namespace CLAM_Annotator{
 		/// To be added when you have a float array
 		DYN_CONTAINER_ATTRIBUTE(10, public, std::list<std::string>, BinLabels, Value);
 		/// To be added when you have a float array and are looking to store MFCC or Spectrum data
-		/// Store First Bin Frequency
-		DYN_ATTRIBUTE(11, public, CLAM::TData, FirstBinFreq);
-		/// Store Frequency Gap between Bins
+		/// Store First Bin Offset (in a spectrum, this is the center frequency of the first bin)
+		DYN_ATTRIBUTE(11, public, CLAM::TData, FirstBinOffset);
+		/// Store Gap between Bins
 		DYN_ATTRIBUTE(12, public, CLAM::TData, BinGap);
 		/// Store Number of Bins
 		DYN_ATTRIBUTE(13, public, unsigned, NBins);
@@ -131,7 +131,7 @@ namespace CLAM_Annotator{
 			StoreChildScope(storage);
 			StoreSegmentationPolicy(storage);
 			StoreBinLabels(storage);
-			StoreFirstBinFreq(storage);
+			StoreFirstBinOffset(storage);
 			StoreBinGap(storage);
 			StoreNBins(storage);
 		}
@@ -155,7 +155,7 @@ namespace CLAM_Annotator{
 			LoadChildScope(storage);
 			LoadSegmentationPolicy(storage);
 			LoadBinLabels(storage);
-			LoadFirstBinFreq(storage);
+			LoadFirstBinOffset(storage);
 			LoadBinGap(storage);
 			LoadNBins(storage);
 			UpdateData();
