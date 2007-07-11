@@ -639,7 +639,7 @@ QString ProcessingBox::getIncontrolName(unsigned index) const
 	QString name = inControl.GetName().c_str();
 	return name;
 }
-float ProcessingBox::getIncontrolDefault(unsigned index) const
+float ProcessingBox::getIncontrolDefaultValue(unsigned index) const
 {
 	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
 	return inControl.DefaultValue();
