@@ -11,13 +11,11 @@
 
 # norootforbuild
 
-%define _prefix					/usr
-
-%define svn_revision ~svn09846
-%define CLAM_version			0.99.0%{svn_revision}
-%define NetworkEditor_version	0.4.4%{svn_revision}
-%define SMSTools_version		0.4.6%{svn_revision}
-%define Annotator_version		0.3.7%{svn_revision}
+%define svn_revision ~svn10065
+%define CLAM_version			1.1.1%{svn_revision}
+%define NetworkEditor_version	1.1.1%{svn_revision}
+%define SMSTools_version		0.4.8%{svn_revision}
+%define Annotator_version		0.3.9%{svn_revision}
 # /usr/lib/qt3 in SuSe
 %define Qt3dir                  /usr/lib/qt-3.3
 # /usr/lib/qt4 in FC<6
