@@ -64,7 +64,7 @@ public:
 		, _constantQFolder(_constantQTransform.getK(), binsPerOctave)
 		, _fourierTransform(_constantQTransform.getfftlength(),1,0)
 		, _circularPeakPicking(binsPerOctave, /*scaling factor*/ 12.0/binsPerOctave)
-		, _instantTunningEstimator(/*Inertia*/ 1.0, /*bins per semitone*/  1)
+		, _instantTunningEstimator(/*Inertia*/ 1.0)
 		, _circularPeakTunner(/*reference tunning*/ 0.0)
 		, _filter(0.7)
 		, _tunningEnabled(true)
