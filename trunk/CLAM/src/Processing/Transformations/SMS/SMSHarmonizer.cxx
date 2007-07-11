@@ -61,7 +61,7 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 		if (gain<0.01) //means voice OFF
 			continue;
 
-		TData amount = mVoicesPitch[i].GetLastValue();
+		TData amount = CLAM_pow( 2., mVoicesPitch[i].GetLastValue()/12. ); //value adjust to equal-tempered scale semitones
 		mPitchShift.GetInControl("PitchSteps").DoControl(amount);
 		mPitchShift.Do( inPeaks, 
 				inFund, 
@@ -92,4 +92,36 @@ bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 		 );
 }
 
+bool SMSHarmonizer::ConcreteConfigure(const ProcessingConfig& config)
+		{
+			CopyAsConcreteConfig( mConfig, config );
+
+// 			if (SomeWeirdConditionHappens)
+// 			{
+// 				AddConfigErrorMessage("Some weird condition");
+// 				return false;
+// 			}
+
+			mPitchShift.Configure( FrameTransformationConfig() );
+
+			mIgnoreResidualCtl.SetBounds(0,1);
+			//By default we ignore residual!!
+			mIgnoreResidualCtl.SetDefaultValue(1);
+			mIgnoreResidualCtl.DoControl(1);
+
+			mVoice0Gain.SetBounds(-2.,2.);
+			mVoice0Gain.SetDefaultValue(1.);
+			mVoice0Gain.DoControl(1.);
+
+			for (int i=0; i < mVoicesPitch.Size(); i++)
+			{
+				mVoicesPitch[i].SetBounds(-24.,24.);
+				mVoicesPitch[i].SetDefaultValue(0.); //no pitch shift
+				mVoicesPitch[i].DoControl(0.);
+				mVoicesGain[i].SetBounds(-2.,2.);
+				mVoicesGain[i].DoControl(0.);
+			}
+
+			return true;
+		}
 }
