@@ -227,7 +227,8 @@ void WindowGenerator::CreateTable(DataArray& table,EWindowType windowType,
 			Sine(windowsize, table);
 			break;
 		}
- 			case EWindowType::eSquare:
+		case EWindowType::eSquare:
+		case EWindowType::eNone:
  		{
  			Square(windowsize, table);
  			break;

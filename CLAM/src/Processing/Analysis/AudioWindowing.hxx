@@ -48,7 +48,6 @@ public:
 
 	const char *GetClassName() const {return "AudioWindowing";}
 
-
 	AudioWindowing(const Config& config=Config())
 		: mInput("Input",this)
 		, mOutput("Output",this)

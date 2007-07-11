@@ -139,14 +139,16 @@ bool AudioWindowing::Do(const Audio& in,Audio& out)
 	// TODO: it is wrong
 	out.SetSize(mConfig.GetWindowSize()-1);
 
-	/* Zero padding is added to audioframe */
+	// Zero padding
 	out.SetSize(mConfig.GetFFTSize());
 	
-	/* Windowing function is now applied */
-	mAudioProduct.Do(out, mWindow, out);
+	// Windowing
+	if (mConfig.GetWindowType()!=EWindowType::eNone )
+		mAudioProduct.Do(out, mWindow, out);
 	
-	/* Finally, we do the circular shift */
-	mCircularShift.Do(out,out);
+	// Half Window Shift
+	if (mConfig.GetDoHalfWindowShift())
+		mCircularShift.Do(out,out);
 
 	out.SetSampleRate(mConfig.GetSamplingRate());
 
