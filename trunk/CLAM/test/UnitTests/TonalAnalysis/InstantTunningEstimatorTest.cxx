@@ -64,12 +64,12 @@ private:
 	void assertFoundCenterIs(double expectedCenter, double expectedStrength,
 			unsigned nPeaks, double * peakPositions, double * peakValues)
 	{
-		InstantTunningEstimator tunningEstimator(0.0,1);
+		InstantTunningEstimator tunningEstimator;
 		
 		std::vector< std::pair<double,double> > peaks;
 		for(unsigned i=0; i<nPeaks; ++i) 
 		{
-			peaks.push_back( std::pair<double,double>(peakPositions[i],peakValues[i]));
+			peaks.push_back( std::make_pair(peakPositions[i],peakValues[i]));
 		}
 		
 		tunningEstimator.doIt(peaks);
@@ -147,14 +147,14 @@ private:
 	void testSeveralFrames_withoutInertia()
 	{
 		std::vector< std::pair<double,double> > peaks1;
-		peaks1.push_back( std::pair<double,double>(0.0, 8.0) );
-		peaks1.push_back( std::pair<double,double>(1.0, 8.0) );
+		peaks1.push_back( std::make_pair(0.0, 8.0) );
+		peaks1.push_back( std::make_pair(1.0, 8.0) );
 		
 		std::vector< std::pair<double,double> > peaks2;
-		peaks2.push_back( std::pair<double,double>(0.5, 8.0) );
-		peaks2.push_back( std::pair<double,double>(1.5, 8.0) );
+		peaks2.push_back( std::make_pair(0.5, 8.0) );
+		peaks2.push_back( std::make_pair(1.5, 8.0) );
 		
-		InstantTunningEstimator tunningEstimator(0.0,1);
+		InstantTunningEstimator tunningEstimator;
 		tunningEstimator.doIt(peaks1);
 		tunningEstimator.doIt(peaks2);
 
@@ -166,14 +166,14 @@ private:
 	void testSeveralFrames_withInertia()
 	{
 		std::vector< std::pair<double,double> > peaks1;
-		peaks1.push_back( std::pair<double,double>(0.0, 8.0) );
-		peaks1.push_back( std::pair<double,double>(1.0, 8.0) );
+		peaks1.push_back( std::make_pair(0.0, 8.0) );
+		peaks1.push_back( std::make_pair(1.0, 8.0) );
 		
 		std::vector< std::pair<double,double> > peaks2;
-		peaks2.push_back( std::pair<double,double>(0.5, 8.0) );
-		peaks2.push_back( std::pair<double,double>(1.5, 8.0) );
+		peaks2.push_back( std::make_pair(0.5, 8.0) );
+		peaks2.push_back( std::make_pair(1.5, 8.0) );
 
-		InstantTunningEstimator tunningEstimator(0.0,1);
+		InstantTunningEstimator tunningEstimator;
 		tunningEstimator.setInertia(.4);
 		tunningEstimator.doIt(peaks1);
 		tunningEstimator.doIt(peaks2);
