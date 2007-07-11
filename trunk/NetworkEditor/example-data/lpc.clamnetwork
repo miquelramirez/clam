@@ -4,23 +4,12 @@
   <processing id="AudioSource_0" type="AudioSource"/>
 
   <processing id="AudioWindowing_0" type="AudioWindowing">
-    <WindowGenerator>
-      <Type>BlackmanHarris92</Type>
-      <Size>1025</Size>
-      <MaxSize>0</MaxSize>
-      <UseTable>1</UseTable>
-      <Normalize>NormalizationForAnalysis</Normalize>
-      <Invert>0</Invert>
-    </WindowGenerator>
-    <CircularShift>
-      <Amount>-512</Amount>
-    </CircularShift>
-    <prHopSize>512</prHopSize>
-    <prZeroPadding>0</prZeroPadding>
-    <prSamplingRate>44100</prSamplingRate>
-    <prFFTSize>1024</prFFTSize>
-    <prWindowSize>1025</prWindowSize>
-    <prWindowType>BlackmanHarris92</prWindowType>
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
   </processing>
 
   <processing id="CepstralTransform_0" type="CepstralTransform">
@@ -39,6 +28,8 @@
 
   <processing id="LPModelView_0" type="LPModelView"/>
 
+  <processing id="MelCepstrumView_0" type="MelCepstrumView"/>
+
   <processing id="MelFilterBank_0" type="MelFilterBank">
     <SpectrumSize>513</SpectrumSize>
     <SpectralRange>22050</SpectralRange>
@@ -47,6 +38,8 @@
     <NumBands>20</NumBands>
     <UsePower>0</UsePower>
   </processing>
+
+  <processing id="MelSpectrumView_0" type="MelSpectrumView"/>
 
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
 
@@ -103,6 +96,11 @@
   </port_connection>
 
   <port_connection>
+    <out>CepstralTransform_0.Mel Cepstrum</out>
+    <in>MelCepstrumView_0.Input</in>
+  </port_connection>
+
+  <port_connection>
     <out>FFT_0.Spectrum Output</out>
     <in>SpectrumView_1.Input</in>
   </port_connection>
@@ -120,6 +118,11 @@
   <port_connection>
     <out>MelFilterBank_0.Mel Spectrum</out>
     <in>CepstralTransform_0.Mel Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MelFilterBank_0.Mel Spectrum</out>
+    <in>MelSpectrumView_0.Input</in>
   </port_connection>
 
   <port_connection>

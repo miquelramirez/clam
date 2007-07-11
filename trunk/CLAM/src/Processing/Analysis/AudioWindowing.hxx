@@ -43,34 +43,28 @@ class AudioWindowing : public ProcessingComposite
 {
 
 public:
-	
+	typedef AudioWindowingConfig Config;
 // Processing Object compliance methods.
 
 	const char *GetClassName() const {return "AudioWindowing";}
 
 
-	AudioWindowing(AudioWindowingConfig& config);
-	AudioWindowing();
+	AudioWindowing(const Config& config=Config())
+		: mInput("Input",this)
+		, mOutput("Output",this)
+	{
+		AttachChildren();
+		Configure(config);
+	}
 	~AudioWindowing();
 	
-			
 	const ProcessingConfig &GetConfig() const {return mConfig;}
-
-/** Supervised mode execution */
 	bool Do(void);
-
-/** Basic unsupervised Do method. It returns an output spectrum using an input audio frame*/
 	bool Do(const Audio & in,Audio & out);
 
-/** Unsupervised Do method that uses an incoming CLAM Segment as input and
- *  output. It processes the frame that is indicated by the current frame index
- *  in the segment and increments that index.
- *  @see Segment*/
-	bool Do(Segment& in);
 private:
-
 	// Internal configuration data
-	AudioWindowingConfig mConfig;
+	Config mConfig;
 
 	// The internal Processing Objects
 	WindowGenerator mWindowGenerator;

@@ -33,22 +33,6 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, AudioWindowing> regAudioWindowing("AudioWindowing");
 }
 
-AudioWindowing::AudioWindowing()
-	: mInput("Input",this ),
-	  mOutput("Output",this )
-{
-	AttachChildren();
-	Configure(AudioWindowingConfig());
-}
-
-AudioWindowing::AudioWindowing(AudioWindowingConfig& cfg)
-	: mInput("Input",this),
-   	  mOutput("Output",this)
-{
-	AttachChildren();
-	Configure(cfg);
-}
-
 AudioWindowing::~AudioWindowing()
 {
 }
@@ -57,34 +41,43 @@ bool AudioWindowing::ConcreteConfigure(const ProcessingConfig& cfg)
 {
 	CopyAsConcreteConfig(mConfig,cfg);
  
-	mConfig.Sync();
 	ConfigureChildren();
 	ConfigureData();
 	return true;
 }
 
-
 bool AudioWindowing::ConfigureChildren()
 {
-	int windowSize = mConfig.GetprWindowSize();
-	int zeroPadding = mConfig.GetprZeroPadding();
-	EWindowType windowType = mConfig.GetprWindowType();
-	int hopSize = mConfig.GetprHopSize();
-	int sampleRate = mConfig.GetprSamplingRate();
-	int fftSize = nextPowerOfTwo(int((windowSize-1)*CLAM_pow(TData(2),TData(zeroPadding))));
+	int windowSize = mConfig.GetWindowSize();
+	EWindowType windowType = mConfig.GetWindowType();
+	int hopSize = mConfig.GetHopSize();
+	int sampleRate = mConfig.GetSamplingRate();
+	if (not windowSize&1)
+	{
+		AddConfigErrorMessage("FFT Restriction:");
+		AddConfigErrorMessage("Window size should be odd.");
+		return false;
+	}
 	if(windowSize<2*hopSize+1)
-		hopSize=(windowSize-1)/2;
+	{
+		AddConfigErrorMessage("FFT Restriction:");
+		AddConfigErrorMessage("This condition is not met: WindowSize < 2*HopSize+1");
+		return false;
+	}
 
-	CLAM_ASSERT(windowSize&1, "Configuring an even window in AudioWindowing");
-	CLAM_ASSERT(fftSize==mConfig.GetprFFTSize(),
-		"Configured and computed fftSize missmatch");
-
+	if (not isPowerOfTwo(mConfig.GetFFTSize()))
+	{
+		AddConfigErrorMessage("FFT Restriction:");
+		AddConfigErrorMessage("FFT Size should be a power of two.");
+		return false;
+	}
 	WindowGeneratorConfig windowGeneratorConfig;
 	windowGeneratorConfig.SetSize(windowSize);
 	windowGeneratorConfig.SetType(windowType);
 	if (! mWindowGenerator.Configure(windowGeneratorConfig) )
 	{
-		// TODO: retrieve the error message
+		AddConfigErrorMessage("Window Generator configuration failed.");
+		AddConfigErrorMessage(mWindowGenerator.GetConfigErrorMessage());
 		return false;
 	}
 
@@ -92,7 +85,8 @@ bool AudioWindowing::ConfigureChildren()
 	circularShiftConfig.SetAmount(-((windowSize-1)/TData(2))); 
 	if (! mCircularShift.Configure(circularShiftConfig) )
 	{
-		// TODO: retrieve the error message
+		AddConfigErrorMessage("Circular Shift configuration failed.");
+		AddConfigErrorMessage(mCircularShift.GetConfigErrorMessage());
 		return false;
 	}
 
@@ -101,9 +95,6 @@ bool AudioWindowing::ConfigureChildren()
 
 void AudioWindowing::ConfigureData()
 {
-	TData samplingRate=mConfig.GetSamplingRate();
-
-	mInput.SetSampleRate( samplingRate );
 	mInput.SetSize(mConfig.GetWindowSize());
 	mInput.SetHop(mConfig.GetHopSize());
 
@@ -116,7 +107,7 @@ void AudioWindowing::ConfigureData()
 	mWindow.SetSize(mWindow.GetSize()-1);
 
 	/* Adding zero padding to windowing function */
-	mWindow.SetSize(mConfig.GetprFFTSize());
+	mWindow.SetSize(mConfig.GetFFTSize());
 }
 
 void AudioWindowing::AttachChildren()
@@ -138,12 +129,9 @@ bool AudioWindowing::Do(void)
 
 bool AudioWindowing::Do(const Audio& in,Audio& out)
 {
-//	out.SetSize(mConfig.GetprFFTSize());
-//	out.SetSampleRate(mConfig.GetSamplingRate());
-
 	in.GetAudioChunk(0,in.GetSize()-1 ,out,true );
 
-	CLAM_ASSERT(out.GetSize()==mConfig.GetprFFTSize(),
+	CLAM_ASSERT(out.GetSize()==mConfig.GetFFTSize(),
 		"Configuration output size differs");
 	CLAM_ASSERT(out.GetSampleRate()==mConfig.GetSamplingRate(),
 		"Configuration output samplerate differs");
@@ -152,13 +140,15 @@ bool AudioWindowing::Do(const Audio& in,Audio& out)
 	out.SetSize(mConfig.GetWindowSize()-1);
 
 	/* Zero padding is added to audioframe */
-	out.SetSize(mConfig.GetprFFTSize());
+	out.SetSize(mConfig.GetFFTSize());
 	
 	/* Windowing function is now applied */
 	mAudioProduct.Do(out, mWindow, out);
 	
 	/* Finally, we do the circular shift */
 	mCircularShift.Do(out,out);
+
+	out.SetSampleRate(mConfig.GetSamplingRate());
 
 	return true;
 }
