@@ -4,6 +4,7 @@
 //TODO move this group to a factory
 #include "Vumeter.hxx"
 #include "Oscilloscope.hxx"
+#include "BufferOscilloscope.hxx"
 #include "SpectrumView.hxx"
 #include "PeakView.hxx"
 #include "PolarChromaPeaks.hxx"
@@ -95,6 +96,9 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas
 
 	if (className=="Oscilloscope")
 		return new Oscilloscope( canvas, dynamic_cast<OscilloscopeMonitor*>(processing) );
+
+	if (className=="BufferOscilloscope")
+		return new BufferOscilloscope( canvas, dynamic_cast<BufferOscilloscopeMonitor*>(processing) );
 
 	if (className=="SpectrumView")
 		return new SpectrumView(canvas, dynamic_cast<SpectrumViewMonitor*>(processing) );

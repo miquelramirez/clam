@@ -140,6 +140,7 @@ const static char * processingClasses[] = {
 	"Graphical Monitors",
 	"Vumeter",
 	"Oscilloscope",
+	"BufferOscilloscope",
 	"SpectrumView",
 	"PeakView",
 	"Tonnetz",
