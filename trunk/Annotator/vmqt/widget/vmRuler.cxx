@@ -130,6 +130,9 @@ namespace CLAM
 			_majorTicks.setWidth(size);
 			_majorTicks.setMinGap(labelSpan);
 			_majorTicks.setRange(mCurrentRange.min,mCurrentRange.max);
+			_minorTicks.setWidth(size);
+			_minorTicks.setMinGap(std::max(6.,_majorTicks.markGap()*.1*size/mCurrentRange.Span()));
+			_minorTicks.setRange(mCurrentRange.min,mCurrentRange.max);
 			double markGap = _majorTicks.markGap();
 			for (double tick = _majorTicks.markOffset();
 				tick<mCurrentRange.max;
@@ -221,7 +224,14 @@ namespace CLAM
 			{
 				double tickPos = (mValuesToDraw[i]-mCurrentRange.min)*width()/mCurrentRange.Span();
 				lines << QLineF(tickPos,y0,tickPos,y1);
-				std::cout << tickPos << " ";
+			}
+			double markGap = _minorTicks.markGap();
+			for (double tick = _minorTicks.markOffset();
+				tick<mCurrentRange.max;
+				tick+=markGap)
+			{
+				double tickPos = (tick-mCurrentRange.min)*width()/mCurrentRange.Span();
+				lines << QLineF(tickPos,height()-10,tickPos,y1);
 			}
 			// draw axis
 			lines << QLineF(0,y1,width(),y1);
@@ -292,7 +302,7 @@ namespace CLAM
 			return QString::number(value,'e',1);
 		}
 
-		QPoint Ruler::GetLabelCoords(double value)
+		QPointF Ruler::GetLabelCoords(double value)
 		{
 			QFontMetrics font_metrics(mFont);
 			int label_width = font_metrics.width(QString::number(value,'f',mShowFloats?2:0));
@@ -331,7 +341,7 @@ namespace CLAM
 				default:
 					break;
 			}
-			return QPoint(x,y);
+			return QPointF(x,y);
 		}
 	}
 }
