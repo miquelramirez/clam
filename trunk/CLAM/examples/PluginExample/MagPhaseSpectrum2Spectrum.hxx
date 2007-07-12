@@ -1,5 +1,5 @@
-#ifndef Spectrum2MagPhaseSpectrum_hxx
-#define Spectrum2MagPhaseSpectrum_hxx
+#ifndef MagPhaseSpectrum2Spectrum_hxx
+#define MagPhaseSpectrum2Spectrum_hxx
 
 #include <CLAM/InPort.hxx>
 #include <CLAM/OutPort.hxx>
