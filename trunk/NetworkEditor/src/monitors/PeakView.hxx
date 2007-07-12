@@ -105,7 +105,7 @@ public:
 		
 		for (int i=0; i<size; i++)
 			// TODO: Take the scaling from the datasource
-			painter.drawPoint(freq[i]*width()/11050+2, mag[i]*height()/min);
+			painter.drawPoint(QPointF(freq[i]*width()/11050+2, mag[i]*height()/min));
 		painter.scale(width()/11025.,height()/min);
 		painter.translate(10,0);
 		painter.drawLines(lines);
