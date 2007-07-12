@@ -28,6 +28,7 @@
 #include "SpectrumConfig.hxx"
 #include "CLAM_Math.hxx"
 #include "ProcessingFactory.hxx"
+#include <fftw3.h>
 
 namespace CLAM 
 {
@@ -35,6 +36,31 @@ namespace CLAM
 namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, FFT_fftw3> regFFT_fftw3("FFT_fftw3");
+}
+
+namespace Hidden
+{
+	struct FFT_fftw3_Implementation
+	{
+		FFT_fftw3_Implementation(unsigned size)
+		{
+			// Special malloc which aligns to SIMD segment boundaries
+			realInput = (double*) fftw_malloc(sizeof(double) * size);
+			complexOutput = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
+			fftw_import_system_wisdom();
+			plan = fftw_plan_dft_r2c_1d(size, realInput, complexOutput, FFTW_ESTIMATE);
+		}
+		~FFT_fftw3_Implementation()
+		{
+			fftw_destroy_plan(plan);
+			fftw_free(realInput);
+			fftw_free(complexOutput);
+			fftw_forget_wisdom();	
+		}
+		double * realInput;
+		fftw_complex * complexOutput;
+		fftw_plan plan;
+	};
 }
 
 
@@ -52,48 +78,19 @@ bool FFT_fftw3::ConcreteConfigure(const ProcessingConfig& c)
 	return true;
 }
 
-void FFT_fftw3::ReleaseMemory() {
-	if (_plan)
-	{
-		fftw_destroy_plan(*_plan);
-		delete _plan;
-		_plan=0;
-	}
-	if (_realInput)
-	{
-		fftw_free(_realInput);
-		_realInput=0;
-	}
-	if (_complexOutput)
-	{
-		fftw_free(_complexOutput);
-		_complexOutput=0;
-	}
-	fftw_forget_wisdom();	
-}
-
-void FFT_fftw3::SetupMemory() {
-	ReleaseMemory();
-	// Special malloc which aligns to SIMD segment boundaries
-	_realInput = (double*) fftw_malloc(sizeof(double) * mSize);
-	_complexOutput = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * mSize);
-	fftw_import_system_wisdom();
-	_plan = new fftw_plan;
-	*_plan = fftw_plan_dft_r2c_1d(mSize, _realInput, _complexOutput, FFTW_ESTIMATE);
-	}
-
-FFT_fftw3::FFT_fftw3()
-	: _realInput(0)
-	, _complexOutput(0)
-	, _plan(0)
+void FFT_fftw3::ReleaseMemory()
 {
-	Configure(FFTConfig());
+	if (_fftw3) delete _fftw3;
 }
 
-FFT_fftw3::FFT_fftw3(const FFTConfig &c) throw(ErrDynamicType)
-	: _realInput(0)
-	, _complexOutput(0)
-	, _plan(0)
+void FFT_fftw3::SetupMemory()
+{
+	ReleaseMemory();
+	_fftw3 = new Hidden::FFT_fftw3_Implementation(mSize);
+}
+
+FFT_fftw3::FFT_fftw3(const FFTConfig &c)
+	: _fftw3(0)
 { 
 	Configure(c);
 }
@@ -123,8 +120,8 @@ bool FFT_fftw3::Do(const Audio& in, Spectrum &out)
 	if (mState==sOther) CheckTypes(in,out);
 	TData * inbuffer = in.GetBuffer().GetPtr();
 	for (int i=0; i<mSize; i++)
-		_realInput[i] = inbuffer[i];
-	fftw_execute(*_plan);
+		_fftw3->realInput[i] = inbuffer[i];
+	fftw_execute(_fftw3->plan);
 	if (mState!=sOther)
 		ToComplex(out);
 	else
@@ -141,9 +138,10 @@ void FFT_fftw3::ToComplex(Spectrum &out)
 	Array<Complex>& outbuffer = out.GetComplexArray();
 	outbuffer.Resize(mSize/2+1); // TODO: Any sense?
 	outbuffer.SetSize(mSize/2+1); // TODO: Any sense?
-	for (int i=0; i<mSize/2+1; i++) {
-		outbuffer[i].SetReal(_complexOutput[i][0]);
-		outbuffer[i].SetImag(_complexOutput[i][1]);
+	for (int i=0; i<mSize/2+1; i++)
+	{
+		outbuffer[i].SetReal(_fftw3->complexOutput[i][0]);
+		outbuffer[i].SetImag(_fftw3->complexOutput[i][1]);
 	}
 }
 

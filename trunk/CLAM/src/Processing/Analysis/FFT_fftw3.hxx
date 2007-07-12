@@ -20,8 +20,8 @@
  */
 
 
-#ifndef _FFT_fftw3
-#define _FFT_fftw3
+#ifndef FFT_fftw3_hxx
+#define FFT_fftw3_hxx
 
 #ifndef USE_FFTW3
 #error This header should not be used without the USE_FFTW3 macro defined
@@ -31,52 +31,42 @@
 #include "DataTypes.hxx"
 #include "SpecTypeFlags.hxx"
 #include "ErrDynamicType.hxx"
-#include <fftw3.h>
 
-namespace CLAM {
+namespace CLAM
+{
 
-	struct FFTConfig;
+	class FFTConfig;
 	class Spectrum;
 	class Audio;
-	class ProcessingConfig;
+	namespace Hidden { struct FFT_fftw3_Implementation; }
 
 	/** Implementation of the FFT using the Fastest Fourier Transform of the West version 3
 	 */
 	class FFT_fftw3: public FFT_base
 	{
-		double * _realInput;
-		fftw_complex * _complexOutput;
-		fftw_plan * _plan;
-
-//		bool FFTConfigure();
-
-		/** Configuration change method
-		 */
-		bool ConcreteConfigure(const ProcessingConfig&);
-
-		// Memory Management (for work areas and stuff)
-		void ReleaseMemory();
-		void SetupMemory();
-
-		// Output conversions
-
-		void ToComplex(Spectrum &out);
-
 	public:
-
-		FFT_fftw3();
-		FFT_fftw3(const FFTConfig &c) throw(ErrDynamicType);
+		FFT_fftw3(const FFTConfig &c=FFTConfig());
 		~FFT_fftw3();
 		const char * GetClassName() const {return "FFT_fftw3";}
 
 		// Execution methods
 		bool Do();
 		bool Do(const Audio& in, Spectrum &out);
-		bool MayDisableExecution() const {return true;}
+	protected:
+		bool ConcreteConfigure(const ProcessingConfig&);
 
+	private:
+		Hidden::FFT_fftw3_Implementation * _fftw3;
+	private:
+		// Memory Management (for work areas and stuff)
+		void ReleaseMemory();
+		void SetupMemory();
+
+		// Output conversions
+		void ToComplex(Spectrum &out);
 	};
 
-};//namespace CLAM
+}//namespace CLAM
 
-#endif // _FFT_numrec_
+#endif//FFT_fftw3_hxx
 
