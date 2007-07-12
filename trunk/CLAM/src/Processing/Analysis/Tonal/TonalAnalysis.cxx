@@ -36,6 +36,11 @@ namespace Hidden
 // TonalAnalysisConfig method definition
 void TonalAnalysisConfig::DefaultInit(void)
 {
+	AddAll();
+
+	UpdateData();
+
+	SetTunningEnabled(true);
 }
 
 
@@ -64,6 +69,12 @@ TonalAnalysis::~TonalAnalysis()
 bool TonalAnalysis::ConcreteConfigure( const ProcessingConfig& c )
 {
 	CopyAsConcreteConfig(_config, c);
+	
+	if(_config.GetTunningEnabled())
+		_implementation->enableTunning();
+	else
+		_implementation->disableTunning();
+	
 	_input.SetSize( _implementation->frameSize() );
 	_input.SetHop( _implementation->hop() );
 	_floatBuffer.resize(_implementation->frameSize());
