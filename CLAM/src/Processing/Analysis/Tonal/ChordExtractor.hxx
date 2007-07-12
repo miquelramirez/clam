@@ -81,6 +81,10 @@ public:
 	{
 	}
 
+	// Accessors
+	void enableTunning()  { _tunningEnabled = true; };
+	void disableTunning() { _tunningEnabled = false; };
+
 	unsigned hop() const {return _constantQTransform.getfftlength()/_hopRatio;}
 	unsigned frameSize() const {return _constantQTransform.getfftlength();}
 
