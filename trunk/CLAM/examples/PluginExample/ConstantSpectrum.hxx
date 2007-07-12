@@ -7,7 +7,10 @@
 #include <CLAM/MonoAudioFileReader.hxx>
 #include <CLAM/FFT.hxx>
 #include <CLAM/SpectralAnalysis.hxx>
+#include <CLAM/AudioWindowing.hxx>
 #include "MagPhaseSpectrum.hxx"
+#include "MyFFT.hxx"
+#include "Complex2MagPhaseSpectrum.hxx"
 #include <iostream>
 namespace CLAM
 {
@@ -17,16 +20,15 @@ class ConstantSpectrum : public Processing
 { 
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+	    DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
 	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
-	    DYN_ATTRIBUTE( 1, public, bool, WindowedFFT);
 
 	protected:
 	    void DefaultInit()
 	    {
 		  AddAll();
 		  UpdateData();
-		  SetFrameSize(512);
+		  SetFrameSize(65536/2);
 	    };
 	};
 
@@ -48,8 +50,6 @@ protected:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(mConfig, config);
-		// Use here the config to setup you object
-		std::cout << "concrete configure!!!!" << std::endl;
 		return true; 
 	}
 
@@ -62,53 +62,44 @@ protected:
 		CLAM_ASSERT(reader.IsConfigured(), "Reader Not Configured");
 		const unsigned nSamples = reader.GetHeader().GetSamples();
 		std::cout << "NSamples: " << nSamples << std::endl;
+		
+		AudioWindowingConfig windowerConfig;
+		windowerConfig.SetSamplingRate(44100);
+		windowerConfig.SetHopSize(32768);
+		windowerConfig.SetWindowSize(32769);
+		windowerConfig.SetFFTSize(65536);
+		windowerConfig.SetDoHalfWindowShift(false);
+		windowerConfig.SetWindowType(EWindowType::eNone);
+		AudioWindowing windower(windowerConfig);
 		FFTConfig fftConfig; 
 		fftConfig.SetAudioSize(65536);
-		FFT fft(fftConfig);
+		MyFFT myfft(fftConfig);
+		Complex2MagPhaseSpectrum toMagPhase;
 
-		SpectralAnalysisConfig spectralAnalysisConfig;
-		spectralAnalysisConfig.SetprHopSize( 16384 ); // 2^14
-		spectralAnalysisConfig.SetprFFTSize( 65536 ); // 2^16
-		spectralAnalysisConfig.SetprWindowSize( 65537 ); // 2^16+1
-		SpectralAnalysis spectralAnalysis( spectralAnalysisConfig );
+		ConnectPorts(reader,0,windower,0);
+		ConnectPorts(windower,0,myfft,0);
+		ConnectPorts(myfft,0,toMagPhase,0);
+		InPort<MagPhaseSpectrum> fetcher;
+		toMagPhase.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
 
-		Processing * analysis;
-	       	if (mConfig.GetWindowedFFT())
-			analysis = &spectralAnalysis;
-		else
-			analysis = &fft;
-
-		ConnectPorts(reader, 0, *analysis, 0);
-		InPort<Spectrum> fetcher;
-		analysis->GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
 		reader.Start();
-		analysis->Start();
+		windower.Start();
+		myfft.Start();
+		toMagPhase.Start();
 		do 
 		{
 			reader.Do();
-		} while (not analysis->CanConsumeAndProduce() );
-		analysis->Do();
-		reader.Stop();
-		analysis->Stop();
-		const Spectrum & readSpectrum = fetcher.GetData();
-		spectrum.spectralRange=readSpectrum.GetSpectralRange();
-		spectrum.magnitudes.resize(readSpectrum.GetSize());
-		spectrum.phases.resize(readSpectrum.GetSize());
-		const TData * readMagitudes = readSpectrum.GetMagBuffer().GetPtr();
-		const TData * readPhases = readSpectrum.GetPhaseBuffer().GetPtr();
-		const unsigned spectrumSize = readSpectrum.GetSize();
-		float magnitudeMean = 0;
-		for (unsigned i = 0; i<spectrumSize; i++)
-		{
-			magnitudeMean += readMagitudes[i]/spectrumSize;
-			spectrum.magnitudes[i]=readMagitudes[i];
-			spectrum.phases[i]=readPhases[i];
-		}
-		std::cout << "Magnitude mean: " << magnitudeMean << std::endl;
-		if (false and magnitudeMean>1e-14)
-			for (unsigned i = 0; i<spectrumSize; i++)
-				spectrum.magnitudes[i]/=magnitudeMean;
+		} while (not windower.CanConsumeAndProduce() );
+		windower.Do();
+		myfft.Do();
+		toMagPhase.Do();
 
+		spectrum = fetcher.GetData();
+
+		reader.Stop();
+		windower.Stop();
+		myfft.Stop();
+		toMagPhase.Stop();
 	}
  
 	bool Do()
