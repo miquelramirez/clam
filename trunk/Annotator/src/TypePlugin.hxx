@@ -31,6 +31,10 @@ namespace CLAM_Annotator { class SchemaAttribute; }
 
 namespace CLAM_Annotator
 {
+	/**
+	 * Abstract class to Pool data type plugins.
+	 * It implements type dependant actions that must be taken in a Pool.
+	 */
 	class TypePlugin
 	{
 	public:
