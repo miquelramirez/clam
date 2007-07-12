@@ -20,53 +20,60 @@
  */
 
 
-#ifndef FFT_fftw3_hxx
-#define FFT_fftw3_hxx
+#ifndef MyFFT_hxx
+#define MyFFT_hxx
 
 #ifndef USE_FFTW3
 #error This header should not be used without the USE_FFTW3 macro defined
 #endif
 
-#include "FFT_base.hxx"
-#include "DataTypes.hxx"
-#include "SpecTypeFlags.hxx"
-#include "ErrDynamicType.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/FFTConfig.hxx>
+#include <CLAM/InPort.hxx>
+#include <CLAM/OutPort.hxx>
+#include <CLAM/Audio.hxx>
+#include "ComplexSpectrum.hxx"
 
 namespace CLAM
 {
 
 	class FFTConfig;
-	class Spectrum;
+	class ComplexSpectrum;
 	class Audio;
-	namespace Hidden { struct FFT_fftw3_Implementation; }
 
 	/** Implementation of the FFT using the Fastest Fourier Transform of the West version 3
 	 */
-	class FFT_fftw3: public FFT_base
+	class MyFFT: public Processing
 	{
 	public:
-		FFT_fftw3(const FFTConfig &c=FFTConfig());
-		~FFT_fftw3();
-		const char * GetClassName() const {return "FFT_fftw3";}
+		typedef FFTConfig Config;
+
+		MyFFT(const FFTConfig &c=FFTConfig());
+		~MyFFT();
+		const char * GetClassName() const {return "MyFFT";}
 
 		// Execution methods
 		bool Do();
-		bool Do(const Audio& in, Spectrum &out);
+		bool Do(const Audio& in, ComplexSpectrum &out);
+		const ProcessingConfig & GetConfig() const;
 	protected:
 		bool ConcreteConfigure(const ProcessingConfig&);
 
 	private:
-		Hidden::FFT_fftw3_Implementation * _fftw3;
-	private:
-		// Memory Management (for work areas and stuff)
-		void ReleaseMemory();
 		void SetupMemory();
-
-		// Output conversions
-		void ToComplex(Spectrum &out);
+		void ReleaseMemory();
+	
+	private:
+		InPort<Audio> mInput;
+		OutPort<ComplexSpectrum> mOutput;
+		Config mConfig;
+		unsigned mSize;
+	private:
+		struct Implementation;
+		Implementation * _fftw3;
 	};
 
 }//namespace CLAM
 
-#endif//FFT_fftw3_hxx
+#endif//MyFFT_hxx
 
