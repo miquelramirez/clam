@@ -20,13 +20,14 @@ public:
 		, mOut("Audio stream", this) 
 	{
 		Configure( config );
+		mOut.SetSize( 2048 );
+		mOut.SetHop( 2048 );
 	}
  
 	bool Do()
 	{
 		const Audio& in = mIn.GetData();
-		mOut.SetSize( in.GetSize() );
-		mOut.SetHop( in.GetSize() );
+		std::cout << "doing " << in.GetSize() << std::endl;
 		Audio& out = mOut.GetAudio();
 		const TData* inpointer = in.GetBuffer().GetPtr();
 		TData* outpointer = out.GetBuffer().GetPtr();
