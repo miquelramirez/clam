@@ -4,6 +4,7 @@
 #include <CLAM/InPort.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
+#include <CLAM/Spectrum.hxx>
 #include "MagPhaseSpectrum.hxx"
 #include <algorithm>
 
