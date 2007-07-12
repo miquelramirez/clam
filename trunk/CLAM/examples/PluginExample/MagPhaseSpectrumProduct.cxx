@@ -2,7 +2,7 @@
 #include <CLAM/ProcessingFactory.hxx>
 namespace CLAM
 {
-namespace detail
+namespace Hidden
 {
 
 static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MagPhaseSpectrumProduct>
