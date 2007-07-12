@@ -8,9 +8,9 @@
   <processing id="AudioWindowing_0" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
+    <FFTSize>2048</FFTSize>
     <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
+    <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
