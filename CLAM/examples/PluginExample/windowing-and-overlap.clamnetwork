@@ -4,10 +4,10 @@
   <processing id="AudioSource_0" type="AudioSource"/>
 
   <processing id="AudioWindowing_0" type="AudioWindowing">
-    <HopSize>512</HopSize>
+    <HopSize>32768</HopSize>
     <SamplingRate>44100</SamplingRate>
-    <FFTSize>2048</FFTSize>
-    <WindowSize>1025</WindowSize>
+    <FFTSize>65536</FFTSize>
+    <WindowSize>32769</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -16,15 +16,26 @@
 
   <processing id="Complex2MagPhase" type="Complex2MagPhaseSpectrum"/>
 
+  <processing id="ConstantSpectrum_0" type="ConstantSpectrum">
+    <FrameSize>512</FrameSize>
+    <WindowedFFT>0</WindowedFFT>
+  </processing>
+
   <processing id="MagPhaseSpectrum2Spectrum_0" type="MagPhaseSpectrum2Spectrum"/>
 
+  <processing id="MagPhaseSpectrum2Spectrum_1" type="MagPhaseSpectrum2Spectrum"/>
+
+  <processing id="MagPhaseSpectrumProduct_0" type="MagPhaseSpectrumProduct"/>
+
   <processing id="MyFFT_0" type="MyFFT">
-    <AudioSize>2048</AudioSize>
+    <AudioSize>65536</AudioSize>
   </processing>
 
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
 
   <processing id="SpectrumView_0" type="SpectrumView"/>
+
+  <processing id="SpectrumView_1" type="SpectrumView"/>
 
   <port_connection>
     <out>AudioSource_0.AudioOut</out>
@@ -52,8 +63,28 @@
   </port_connection>
 
   <port_connection>
+    <out>Complex2MagPhase.MagPhaseSpectrum</out>
+    <in>MagPhaseSpectrumProduct_0.Factor1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ConstantSpectrum_0.My Output</out>
+    <in>MagPhaseSpectrumProduct_0.Factor2</in>
+  </port_connection>
+
+  <port_connection>
     <out>MagPhaseSpectrum2Spectrum_0.Spectrum</out>
     <in>SpectrumView_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MagPhaseSpectrum2Spectrum_1.Spectrum</out>
+    <in>SpectrumView_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MagPhaseSpectrumProduct_0.Product</out>
+    <in>MagPhaseSpectrum2Spectrum_1.MagPhaseSpectrum</in>
   </port_connection>
 
   <port_connection>
