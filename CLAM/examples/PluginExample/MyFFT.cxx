@@ -125,6 +125,7 @@ bool MyFFT::Do(const Audio& in, ComplexSpectrum &out)
 
 	fftw_execute(_fftw3->plan);
 
+	out.spectralRange = in.GetSampleRate()/2;
 	const unsigned spectrumSize = mSize/2+1;
 	out.bins.resize(spectrumSize);
 	for (int i=0; i<spectrumSize; i++)
