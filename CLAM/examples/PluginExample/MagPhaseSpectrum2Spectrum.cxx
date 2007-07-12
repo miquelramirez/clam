@@ -4,7 +4,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 
 static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MagPhaseSpectrum2Spectrum>
