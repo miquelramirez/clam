@@ -92,8 +92,9 @@ namespace CLAM
 			int GetMaxLabelWidth();
 			bool IsVisible(double value);
 			QString GetLabel(double value);
-			QPoint GetLabelCoords(double value);
+			QPointF GetLabelCoords(double value);
 			CLAM::RulerTicks _majorTicks;
+			CLAM::RulerTicks _minorTicks;
 		};
     }
 }
