@@ -64,15 +64,9 @@ namespace CLAM {
 	{
 	public:
 
-		/* configuration methods */
-		OverlapAdd(void);
-
-		OverlapAdd(const OverlapAddConfig &c);
-
+		OverlapAdd(const OverlapAddConfig &c=OverlapAddConfig());
 		~OverlapAdd();
-
 		const ProcessingConfig &GetConfig() const { return mConfig;}
-
 
 		/* do methods */
 

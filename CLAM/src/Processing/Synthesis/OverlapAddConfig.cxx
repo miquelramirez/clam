@@ -31,12 +31,6 @@ void OverlapAddConfig::DefaultInit()
 
 	/* all attributes are added */
 	UpdateData();
-	DefaultValues();
-}
-
-void OverlapAddConfig::DefaultValues()
-{
-	/* set default values */
 	SetFrameSize(512); // was 256
 }
 
