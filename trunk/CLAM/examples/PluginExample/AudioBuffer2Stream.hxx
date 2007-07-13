@@ -12,6 +12,7 @@ namespace CLAM
 
 class AudioBuffer2Stream : public Processing
 {
+	// TODO: This configuration is over crowed
 	typedef AudioWindowingConfig Config;
 	InPort<Audio> mIn;
 	AudioOutPort mOut;
@@ -30,7 +31,7 @@ public:
 	{
 		CopyAsConcreteConfig(mConfig, c);
 		mHopSize = mConfig.GetHopSize();
-		mWindowSize = mConfig.GetWindowSize();
+		mWindowSize = mConfig.GetFFTSize();
 		mOut.SetSize( mWindowSize );
 		mOut.SetHop( mHopSize );
 		return true;
@@ -40,7 +41,8 @@ public:
 	bool Do()
 	{
 		const Audio& in = mIn.GetData();
-		CLAM_ASSERT(mWindowSize==in.GetSize(),"AudioBuffer2Stream: Input does not provide the configured window size"); 
+		CLAM_ASSERT(mWindowSize==in.GetSize(),
+			"AudioBuffer2Stream: Input does not provide the configured window size"); 
 		Audio& out = mOut.GetAudio();
 		const TData* inpointer = in.GetBuffer().GetPtr();
 		TData* outpointer = out.GetBuffer().GetPtr();
