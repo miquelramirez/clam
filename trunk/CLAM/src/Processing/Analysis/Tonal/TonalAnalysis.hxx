@@ -18,8 +18,11 @@ namespace CLAM
 class TonalAnalysisConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (TonalAnalysisConfig, 1, ProcessingConfig);
-	DYN_ATTRIBUTE (0, public, bool, TunningEnabled);
+	DYNAMIC_TYPE_USING_INTERFACE (TonalAnalysisConfig, 4, ProcessingConfig);
+	DYN_ATTRIBUTE (0, public, double, FilterInertia);
+	DYN_ATTRIBUTE (1, public, bool, TunningEnabled);
+	DYN_ATTRIBUTE (2, public, bool, PeakWindowingEnabled);
+	DYN_ATTRIBUTE (3, public, unsigned, HopRatio);
 protected:
 	void DefaultInit(void);
 };
