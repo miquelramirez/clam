@@ -26,6 +26,8 @@
 #include "Spectrum.hxx"
 #include "ProcessingFactory.hxx"
 
+#include <fftw3.h>
+
 
 namespace CLAM {
 
@@ -34,36 +36,32 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, IFFT_fftw3> regIFFT_fftw3("IFFT_fftw3");
 }
 	
-void IFFT_fftw3::ReleaseMemory()
+struct IFFT_fftw3::Implementation
 {
-	if (_plan)
+	Implementation(unsigned size)
 	{
-		fftw_destroy_plan(*_plan);
-		delete _plan;
-		_plan=0;
+		// Special malloc which aligns to SIMD segment boundaries
+		_complexInput = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
+		_realOutput = (double*) fftw_malloc(sizeof(double) * size);
+		fftw_import_system_wisdom();
+		_plan = fftw_plan_dft_c2r_1d(size, _complexInput, _realOutput, FFTW_ESTIMATE);
 	}
-	if (_realOutput)
+	~Implementation()
 	{
+		fftw_destroy_plan(_plan);
 		fftw_free(_realOutput);
-		_realOutput=0;
-	}
-	if (_complexInput)
-	{
 		fftw_free(_complexInput);
-		_complexInput=0;
 	}
-	fftw_forget_wisdom();
-}
-void IFFT_fftw3::SetupMemory()
-{
-	ReleaseMemory();
-	// Special malloc which aligns to SIMD segment boundaries
-	_complexInput = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * mSize);
-	_realOutput = (double*) fftw_malloc(sizeof(double) * mSize);
-	fftw_import_system_wisdom();
-	_plan = new fftw_plan;
-	*_plan = fftw_plan_dft_c2r_1d(mSize, _complexInput, _realOutput, FFTW_ESTIMATE);
-}
+	fftw_plan _plan;
+	fftw_complex * _complexInput;
+	double * _realOutput;
+};
+
+IFFT_fftw3::IFFT_fftw3(const IFFTConfig &c)
+	: _fftw3(0)
+{ 
+	Configure(c);
+};
 
 bool IFFT_fftw3::ConcreteConfigure(const ProcessingConfig& c)
 {
@@ -77,32 +75,23 @@ bool IFFT_fftw3::ConcreteConfigure(const ProcessingConfig& c)
 	mOutput.SetHop( mSize );
 
 	mState=sOther;
-	mComplexflags.bComplex=1;
-	mComplexflags.bMagPhase=0;
 	SetupMemory();
 	return true;
 }
 
-
-IFFT_fftw3::IFFT_fftw3()
-	: _plan(0)
-	, _complexInput(0)
-	, _realOutput(0)
-{
-	Configure(IFFTConfig());
-}
-
-IFFT_fftw3::IFFT_fftw3(const IFFTConfig &c) throw(ErrDynamicType)
-	: _plan(0)
-	, _complexInput(0)
-	, _realOutput(0)
-{ 
-	Configure(c);
-};
-
 IFFT_fftw3::~IFFT_fftw3()
 {
 	ReleaseMemory();
+}
+
+void IFFT_fftw3::ReleaseMemory()
+{
+	if (_fftw3) delete _fftw3;
+}
+void IFFT_fftw3::SetupMemory()
+{
+	ReleaseMemory();
+	_fftw3 = new Implementation(mSize);
 }
 
 void IFFT_fftw3::CheckTypes(const Spectrum& in, const Audio &out) const
@@ -181,10 +170,10 @@ bool IFFT_fftw3::Do( const Spectrum& in, Audio &out) const
 		CheckTypes(in,out);
 		OtherToRIFFTW(in);
 	}
-	fftw_execute(*_plan);
+	fftw_execute(_fftw3->_plan);
 	TData * outbuffer = out.GetBuffer().GetPtr();
 	for (int i=0; i<mSize; i++)
-		outbuffer[i] = _realOutput[i];
+		outbuffer[i] = _fftw3->_realOutput[i];
 
 	out.SetSampleRate(TData(in.GetSpectralRange()*2));
 	return true;
@@ -203,9 +192,10 @@ inline void IFFT_fftw3::ComplexToRIFFTW(const Spectrum &in) const
 	CLAM_ASSERT(in.HasComplexArray(), "Input spectrum has no complex array");
 	const Array<Complex> & inbuffer = in.GetComplexArray();
 	CLAM_ASSERT(inbuffer.Size() == mSize/2+1, "IFFT_fftw3::ComplexToRIFFTW: sizes doesn't match.");
-	for (int i=0; i< inbuffer.Size(); i++) {
-		_complexInput[i][0] = inbuffer[i].Real()/mSize;
-		_complexInput[i][1] = inbuffer[i].Imag()/mSize;
+	for (int i=0; i< inbuffer.Size(); i++)
+	{
+		_fftw3->_complexInput[i][0] = inbuffer[i].Real()/mSize;
+		_fftw3->_complexInput[i][1] = inbuffer[i].Imag()/mSize;
 	}
 /*
  	// TODO: Use this code for the r2r format

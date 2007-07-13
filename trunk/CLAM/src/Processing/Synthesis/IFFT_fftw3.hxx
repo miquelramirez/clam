@@ -27,8 +27,6 @@
 #include "ErrDynamicType.hxx"
 #include "SpectrumConfig.hxx"
 
-#include <fftw3.h>
-
 namespace CLAM {
 
 	/** Implementation of the IFFT using the Fastest Fourier in the West version 3
@@ -36,10 +34,8 @@ namespace CLAM {
 	*/
 	class IFFT_fftw3: public IFFT_base
 	{
-		fftw_plan * _plan;
-		fftw_complex * _complexInput;
-		double * _realOutput;
-		SpecTypeFlags mComplexflags;
+		struct Implementation;
+		Implementation * _fftw3;
 
 		/* IFFT possible execution states.
 		 */
@@ -76,8 +72,7 @@ namespace CLAM {
 
 	public:
 
-		IFFT_fftw3();
-		IFFT_fftw3(const IFFTConfig &c) throw(ErrDynamicType);
+		IFFT_fftw3(const IFFTConfig &c=IFFTConfig());
 		~IFFT_fftw3();
 		const char * GetClassName() const {return "IFFT_fftw3";}
 
