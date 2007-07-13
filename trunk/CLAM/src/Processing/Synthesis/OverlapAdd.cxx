@@ -32,13 +32,6 @@ namespace Hidden
 
 /* processing object method implementations */
 
-OverlapAdd::OverlapAdd(void)
-	: mInput( "Audio Input", this ),
-	  mOutput( "Audio Output", this )
-{
-	Configure(OverlapAddConfig());
-}
-
 OverlapAdd::OverlapAdd(const OverlapAddConfig &c)
 	: mInput( "Audio Input", this ),
 	  mOutput( "Audio Output", this )

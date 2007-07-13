@@ -36,7 +36,6 @@ namespace CLAM
 		DYN_ATTRIBUTE (0, public, TSize, FrameSize);
 	protected:
 		void DefaultInit();
-		void DefaultValues();
 	};
 
 } // namespace CLAM
