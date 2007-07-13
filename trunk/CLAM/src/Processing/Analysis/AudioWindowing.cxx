@@ -130,13 +130,8 @@ bool AudioWindowing::Do(void)
 bool AudioWindowing::Do(const Audio& in,Audio& out)
 {
 	in.GetAudioChunk(0,in.GetSize()-1 ,out,true );
+	out.SetSampleRate(mConfig.GetSamplingRate());
 
-	CLAM_ASSERT(out.GetSize()==mConfig.GetFFTSize(),
-		"Configuration output size differs");
-	CLAM_ASSERT(out.GetSampleRate()==mConfig.GetSamplingRate(),
-		"Configuration output samplerate differs");
-
-	// TODO: it is wrong
 	out.SetSize(mConfig.GetWindowSize()-1);
 
 	// Zero padding
@@ -150,7 +145,6 @@ bool AudioWindowing::Do(const Audio& in,Audio& out)
 	if (mConfig.GetDoHalfWindowShift())
 		mCircularShift.Do(out,out);
 
-	out.SetSampleRate(mConfig.GetSamplingRate());
 
 	return true;
 }
