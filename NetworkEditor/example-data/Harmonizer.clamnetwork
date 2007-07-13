@@ -4,42 +4,34 @@
   <processing id="AudioSink_0" type="AudioSink"/>
 
   <processing id="Gain_0" type="OutControlSender">
-    <Min>-2</Min>
+    <Min>0</Min>
     <Default>0</Default>
     <Max>2</Max>
-    <Step>0.02</Step>
+    <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Gain_1" type="OutControlSender">
-    <Min>-2</Min>
+    <Min>0</Min>
     <Default>0</Default>
     <Max>2</Max>
-    <Step>0.02</Step>
+    <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Gain_2" type="OutControlSender">
-    <Min>-2</Min>
+    <Min>0</Min>
     <Default>0</Default>
     <Max>2</Max>
-    <Step>0.02</Step>
+    <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="Gain_3" type="OutControlSender">
-    <Min>-2</Min>
+    <Min>0</Min>
     <Default>0</Default>
     <Max>2</Max>
-    <Step>0.02</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
-  <processing id="IgnoreResidual" type="OutControlSender">
-    <Min>0</Min>
-    <Default>1</Default>
-    <Max>1</Max>
-    <Step>0.005</Step>
+    <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
@@ -47,7 +39,7 @@
 
   <processing id="Input Voice Gain" type="OutControlSender">
     <Min>-2</Min>
-    <Default>1</Default>
+    <Default>0</Default>
     <Max>2</Max>
     <Step>0.02</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
@@ -55,7 +47,7 @@
 
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
 
-  <processing id="Oscilloscope_2" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" type="Oscilloscope"/>
 
   <processing id="PeakView_0" type="PeakView"/>
 
@@ -93,7 +85,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
+  <processing id="SMSAnalysisCore_0" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -176,9 +168,12 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSHarmonizer_0" type="SMSHarmonizer"/>
+  <processing id="SMSHarmonizer_0" type="SMSHarmonizer">
+    <NumberOfVoices>4</NumberOfVoices>
+    <IgnoreResidual>1</IgnoreResidual>
+  </processing>
 
-  <processing id="SMSSynthesis_1" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -233,7 +228,7 @@
 
   <port_connection>
     <out>Input.AudioOut</out>
-    <in>SMSAnalysisCore.Input Audio</in>
+    <in>SMSAnalysisCore_0.Input Audio</in>
   </port_connection>
 
   <port_connection>
@@ -242,28 +237,28 @@
   </port_connection>
 
   <port_connection>
-    <out>SMSAnalysisCore.Sinusoidal Peaks</out>
+    <out>SMSAnalysisCore_0.Sinusoidal Peaks</out>
     <in>PeakView_0.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>SMSAnalysisCore.Sinusoidal Peaks</out>
+    <out>SMSAnalysisCore_0.Sinusoidal Peaks</out>
     <in>SMSHarmonizer_0.In SpectralPeaks</in>
   </port_connection>
 
   <port_connection>
-    <out>SMSAnalysisCore.Fundamental</out>
+    <out>SMSAnalysisCore_0.Fundamental</out>
     <in>SMSHarmonizer_0.In Fundamental</in>
   </port_connection>
 
   <port_connection>
-    <out>SMSAnalysisCore.Residual Spectrum</out>
+    <out>SMSAnalysisCore_0.Residual Spectrum</out>
     <in>SMSHarmonizer_0.In Spectrum</in>
   </port_connection>
 
   <port_connection>
     <out>SMSHarmonizer_0.Out SpectralPeaks</out>
-    <in>SMSSynthesis_1.InputSinPeaks</in>
+    <in>SMSSynthesis_0.InputSinPeaks</in>
   </port_connection>
 
   <port_connection>
@@ -273,17 +268,17 @@
 
   <port_connection>
     <out>SMSHarmonizer_0.Out Spectrum</out>
-    <in>SMSSynthesis_1.InputResSpectrum</in>
+    <in>SMSSynthesis_0.InputResSpectrum</in>
   </port_connection>
 
   <port_connection>
-    <out>SMSSynthesis_1.OutputAudio</out>
+    <out>SMSSynthesis_0.OutputAudio</out>
     <in>AudioSink_0.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>SMSSynthesis_1.OutputAudio</out>
-    <in>Oscilloscope_2.Input</in>
+    <out>SMSSynthesis_0.OutputAudio</out>
+    <in>Oscilloscope_1.Input</in>
   </port_connection>
 
   <control_connection>
@@ -304,11 +299,6 @@
   <control_connection>
     <out>Gain_3.out</out>
     <in>SMSHarmonizer_0.Gain_3</in>
-  </control_connection>
-
-  <control_connection>
-    <out>IgnoreResidual.out</out>
-    <in>SMSHarmonizer_0.IgnoreResidual</in>
   </control_connection>
 
   <control_connection>

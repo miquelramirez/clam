@@ -27,10 +27,8 @@ namespace CLAM
 	{
 		AddAll();
 		UpdateData();
-// 		SetVoicesSize(4);
-	}
 
-	void SMSHarmonizerConfig::DefaultValues( )
-	{
-	}	
+		//By default we ignore residual!!
+		SetIgnoreResidual( true );
+	}
 }
