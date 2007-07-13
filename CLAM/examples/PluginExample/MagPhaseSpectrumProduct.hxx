@@ -30,15 +30,23 @@ public:
 		const MagPhaseSpectrum & factor1 = mFactor1.GetData();
 		const MagPhaseSpectrum & factor2 = mFactor2.GetData();
 		MagPhaseSpectrum & product = mProduct.GetData();
-	
-		CLAM_ASSERT(factor1.magnitudes.size()==factor2.magnitudes.size(), "Factors should be of equal size");
+
+		if ( factor1.magnitudes.size()!=factor2.magnitudes.size())
+		{
+			std::ostringstream os;
+			os
+				<< "Factors should be of equal size:"
+				<< " Factor 1: " << factor1.magnitudes.size()
+				<< " Factor 2: " << factor2.magnitudes.size()
+				<< std::flush;
+			CLAM_ASSERT(false, os.str().c_str());
+		}
 		CLAM_ASSERT(factor1.spectralRange==factor2.spectralRange, "SpectralRanges should be equal");
 
 		product.spectralRange = factor1.spectralRange;
 		const unsigned nBins = factor1.magnitudes.size(); 
 		product.magnitudes.resize( nBins );
 		product.phases.resize( nBins );
-		
 		for (unsigned i=0; i<nBins; i++)
 		{
 			product.magnitudes[i] = factor1.magnitudes[i] * factor2.magnitudes[i];
