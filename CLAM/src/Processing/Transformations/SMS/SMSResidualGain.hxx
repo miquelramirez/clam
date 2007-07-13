@@ -34,26 +34,34 @@
 
 namespace CLAM{
 
-
 	class SMSResidualGain: public FrameTransformation
 	{
-		
 		const char *GetClassName() const {return "SMSResidualGain";}
 
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
+		InControl mGain;
 	public:
 
 		SMSResidualGain() 
 			: 
 			mIn("In Spectrum", this), 
-			mOut("Out Spectrum", this)
+			mOut("Out Spectrum", this),
+			mGain("Gain", this)
 		{
 			Configure( SegmentTransformationConfig() );
 		}
 
  		~SMSResidualGain() {}
+
+		bool ConcreteConfigure(const ProcessingConfig& c)
+		{
+			mGain.SetBounds(0.,25.);
+			mGain.SetDefaultValue(0.);
+			mGain.DoControl(0.);
+			return true;
+		}
 
 		bool Do(const Frame& in, Frame& out)
 		{

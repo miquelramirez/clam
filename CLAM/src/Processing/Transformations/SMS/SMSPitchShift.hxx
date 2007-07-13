@@ -40,9 +40,9 @@
 namespace CLAM{
 
 
-	/** 
-	 *	Pitch shift with timbre preservation using the SMS model. In order to preserve timbre, 
-	 *	the original spectral shape is extracted and then applied back.
+	/**	\brief Pitch shift with timbre preservation using the SMS model
+	 *
+	 *	In order to preserve timbre, the original spectral shape is extracted and then applied back.
 	 */
 	class SMSPitchShift: public FrameTransformation
 	{
