@@ -5,13 +5,14 @@
 #include <dirent.h> //TODO move
 #include <sys/types.h>
 #include <sstream>
+#include <CLAM/ProcessingFactory.hxx>
+#include <CLAM/LadspaWrapperCreator.hxx>
 
 namespace CLAM
 {
 
-LadspaPlugins LadspaPluginsExplorer::GetList()
+void LadspaPluginsExplorer::ExploreStandardPaths()
 {
-	LadspaPlugins result;
 	char* path = getenv("LADSPA_PATH");
 	std::string ladspaPath;
 	if(!path)
@@ -38,49 +39,58 @@ LadspaPlugins LadspaPluginsExplorer::GetList()
 		{
 			ladspaPath = "";
 		}
+		ExplorePath(dir);
+	}
+}
 
-		std::cout << "[LADSPA] Reading dir: " << dir << std::endl;
-		DIR* ladspaDir = opendir(dir.c_str());
-		if (!ladspaDir)
+void LadspaPluginsExplorer::ExplorePath(const std::string & dir)
+{
+	//std::cout << "[LADSPA] Reading dir: " << dir << std::endl;
+	DIR* ladspaDir = opendir(dir.c_str());
+	if (!ladspaDir)
+	{
+		std::cout << "[LADSPA] warning: could not open ladspa dir: " << dir << std::endl;
+		closedir(ladspaDir);
+		return;
+	}
+	struct dirent * dirEntry;
+	while ( (dirEntry = readdir(ladspaDir)) )
+	{
+		std::string pluginFilename(dirEntry->d_name);
+		if(pluginFilename == "." || pluginFilename == "..")
+			continue;
+		LADSPA_Descriptor_Function descriptorTable = 0;
+		std::string pluginFullFilename(dir + std::string("/") + pluginFilename);
+		void* handle = dlopen( pluginFullFilename.c_str(), RTLD_LAZY);
+		descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
+		if (!descriptorTable)
 		{
-			std::cout << "[LADSPA] warning: could not open ladspa dir: " << ladspaPath << std::endl;
+			std::cout << "[LADSPA] warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
 			continue;
 		}
-		struct dirent * dirEntry;
-		while ( (dirEntry = readdir(ladspaDir)) )
+		//std::cout << "[LADSPA] \topened plugin: " << pluginFullFilename << std::endl;
+		ProcessingFactory& factory = ProcessingFactory::GetInstance();
+		for (unsigned long i=0; descriptorTable(i); i++)
 		{
-			std::string pluginFilename(dirEntry->d_name);
-			if(pluginFilename == "." || pluginFilename == "..")
-				continue;
-			LADSPA_Descriptor_Function descriptorTable = 0;
-			std::string pluginFullFilename(dir + std::string("/") + pluginFilename);
-			void* handle = dlopen( pluginFullFilename.c_str(), RTLD_LAZY);
-			descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
-			if (!descriptorTable)
-			{
-				std::cout << "[LADSPA] warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
-				continue;
-			}
-			//std::cout << "[LADSPA] \topened plugin: " << pluginFullFilename << std::endl;
-			for (unsigned long i=0; descriptorTable(i); i++)
-			{
-				LadspaPlugin plugin;
-				LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
-				plugin.index = i;
-				plugin.description = descriptor->Name;
-				plugin.libraryFileName = pluginFullFilename;
-				plugin.label = descriptor->Label;
-				std::ostringstream oss;
-				oss << plugin.label << i;
-				plugin.factoryID = oss.str();
-				result.push_back(plugin);
-			}
+			LadspaPlugin plugin;
+			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
+			plugin.index = i;
+			plugin.description = descriptor->Name;
+			plugin.libraryFileName = pluginFullFilename;
+			plugin.label = descriptor->Label;
+			std::ostringstream oss;
+			oss << plugin.label << i;
+			plugin.factoryID = oss.str();
+			factory.AddCreatorWarningRepetitions(plugin.factoryID, 
+					new LadspaWrapperCreator(plugin.libraryFileName, 
+						plugin.index, 
+						plugin.factoryID));
+			factory.AddAttribute(plugin.factoryID, "category", "LADSPA");
+			factory.AddAttribute(plugin.factoryID, "description", plugin.description);
+			//std::cout << "[LADSPA] added \"" << plugin.factoryID << "\" to the Factory" << std::endl;
 		}
-		closedir(ladspaDir);
 	}
-
-	return result;
+	closedir(ladspaDir);
 }
 
 }
-

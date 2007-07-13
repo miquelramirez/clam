@@ -13,15 +13,24 @@ ProcessingFactory& ProcessingFactory::GetInstance()
 	return theInstance;
 }
 
+ProcessingFactory::Keys ProcessingFactory::GetListOfKeys()
+{
+	return GetListOfKeys("","");
+}
 ProcessingFactory::Keys ProcessingFactory::GetListOfKeys(const std::string& attribute, const std::string& value)
 {
 	Keys result;
 	ProcessingAttributes::const_iterator it;
 	for(it = mProcessingAttributes.begin(); it != mProcessingAttributes.end(); it++)
 	{
-		Attributes pAttributes = it->second;
+		if( (attribute == "") )
+		{
+			result.push_back(it->first);
+			continue;
+		}
+		Attributes attributes = it->second;
 		Attributes::const_iterator itAtt;
-		for(itAtt = pAttributes.begin(); itAtt != pAttributes.end(); itAtt++)
+		for(itAtt = attributes.begin(); itAtt != attributes.end(); itAtt++)
 		{
 			if( ((*itAtt).name == attribute) && ((*itAtt).value == value) )
 			{
@@ -50,9 +59,9 @@ ProcessingFactory::Values ProcessingFactory::GetValuesFor(const std::string& att
 	ProcessingAttributes::const_iterator it;
 	for(it = mProcessingAttributes.begin(); it != mProcessingAttributes.end(); it++)
 	{
-		Attributes pAttributes = it->second;
+		Attributes attributes = it->second;
 		Attributes::const_iterator itAtt;
-		for(itAtt = pAttributes.begin(); itAtt != pAttributes.end(); itAtt++)
+		for(itAtt = attributes.begin(); itAtt != attributes.end(); itAtt++)
 		{
 			if((*itAtt).name == attribute)
 			{

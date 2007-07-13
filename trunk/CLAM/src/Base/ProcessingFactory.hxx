@@ -28,6 +28,7 @@ public:
 
 	void AddAttribute(const std::string& key, const std::string& attribute, const std::string& value);
 	Keys GetListOfKeys(const std::string& attribute, const std::string& value);
+	Keys GetListOfKeys();
 	Values GetValuesFor(const std::string& attribute); 
 	Attributes GetValuesOf(const std::string& key); 
 	Values GetValuesFrom(const std::string& key, const std::string& attribute);
