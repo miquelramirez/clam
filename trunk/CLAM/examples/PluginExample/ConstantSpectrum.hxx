@@ -65,14 +65,14 @@ protected:
 		
 		AudioWindowingConfig windowerConfig;
 		windowerConfig.SetSamplingRate(44100);
-		windowerConfig.SetHopSize(32768);
-		windowerConfig.SetWindowSize(32769);
-		windowerConfig.SetFFTSize(65536);
+		windowerConfig.SetHopSize(mConfig.GetFrameSize()); // 0 would work, just to keep the parameter relation on a normal analysis
+		windowerConfig.SetWindowSize(mConfig.GetFrameSize()+1);
+		windowerConfig.SetFFTSize(mConfig.GetFrameSize()*2);
 		windowerConfig.SetDoHalfWindowShift(false);
 		windowerConfig.SetWindowType(EWindowType::eNone);
 		AudioWindowing windower(windowerConfig);
 		FFTConfig fftConfig; 
-		fftConfig.SetAudioSize(65536);
+		fftConfig.SetAudioSize(mConfig.GetFrameSize()*2);
 		MyFFT myfft(fftConfig);
 		Complex2MagPhaseSpectrum toMagPhase;
 
