@@ -26,9 +26,9 @@ namespace CLAM
 {
 
 OutPortBase::OutPortBase( const std::string & name, Processing * proc )
-	: mName(name),
-	  mProcessing(proc),
-	mPublisher(0)
+	: mName(name)
+	, mProcessing(proc)
+	, mPublisher(0)
 {
 	if(proc)
 		proc->RegisterOutPort(this);
