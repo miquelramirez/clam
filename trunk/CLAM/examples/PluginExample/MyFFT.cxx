@@ -107,7 +107,6 @@ MyFFT::~MyFFT()
 
 bool MyFFT::Do() 
 {
-	mOutput.GetData().bins.resize( mInput.GetData().GetSize()/2+1);
 	bool toReturn = Do(mInput.GetData(), mOutput.GetData());
 	mInput.Consume();
 	mOutput.Produce();
