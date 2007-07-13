@@ -50,6 +50,10 @@ public:
 			_output[i]+= (1-_inertia) * pcp[i];
 		}
 	}
+	void inertia(double inertia)
+	{
+		_inertia = inertia;
+	}
 	const PCP & output() const
 	{
 		return _output;

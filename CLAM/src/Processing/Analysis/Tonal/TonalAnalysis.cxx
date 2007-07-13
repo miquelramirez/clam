@@ -40,7 +40,10 @@ void TonalAnalysisConfig::DefaultInit(void)
 
 	UpdateData();
 
+	SetFilterInertia(0.7);
 	SetTunningEnabled(true);
+	SetPeakWindowingEnabled(true);
+	SetHopRatio(8.0);
 }
 
 
@@ -70,10 +73,10 @@ bool TonalAnalysis::ConcreteConfigure( const ProcessingConfig& c )
 {
 	CopyAsConcreteConfig(_config, c);
 	
-	if(_config.GetTunningEnabled())
-		_implementation->enableTunning();
-	else
-		_implementation->disableTunning();
+	_implementation->filterInertia( _config.GetFilterInertia() );
+	_implementation->enableTunning( _config.GetTunningEnabled() );
+	_implementation->enablePeakWindowing( _config.GetPeakWindowingEnabled() );
+	_implementation->hopRatio( _config.GetHopRatio() );
 	
 	_input.SetSize( _implementation->frameSize() );
 	_input.SetHop( _implementation->hop() );

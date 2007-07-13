@@ -82,9 +82,14 @@ public:
 	}
 
 	// Accessors
-	void enableTunning()  { _tunningEnabled = true; };
-	void disableTunning() { _tunningEnabled = false; };
-
+	void filterInertia(double inertia)
+	{
+		_filter.inertia(inertia);
+	}
+	void enableTunning(bool tunningEnabled=true)  { _tunningEnabled=tunningEnabled; }
+	void enablePeakWindowing(bool peakWindowingEnabled=true)  { _peakWindowingEnabled=peakWindowingEnabled; }
+	void hopRatio(double hopRatio) { _hopRatio=hopRatio; }
+	
 	unsigned hop() const {return _constantQTransform.getfftlength()/_hopRatio;}
 	unsigned frameSize() const {return _constantQTransform.getfftlength();}
 
