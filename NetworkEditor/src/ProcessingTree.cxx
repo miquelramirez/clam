@@ -27,7 +27,7 @@
 #ifdef USE_LADSPA
 #	include <CLAM/LadspaPluginsExplorer.hxx> 
 #	include <CLAM/ProcessingFactory.hxx> 
-#	include <CLAM/LadspaWrapperCreator.hxx>
+//#	include <CLAM/LadspaWrapperCreator.hxx>
 #endif
 
 namespace NetworkGUI
@@ -194,8 +194,49 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	}
 	
 #ifdef USE_LADSPA
+	//TODO make static
+	CLAM::LadspaPluginsExplorer exp;
+	exp.ExploreStandardPaths();
+#endif //USE_LADSPA
+
 // TODO: Ladspa is still work in progress 
-	CLAM::LadspaPlugins plugins = CLAM::LadspaPluginsExplorer::GetList();
+
+	CLAM::ProcessingFactory::Keys::const_iterator itK;
+	CLAM::ProcessingFactory::Keys keys = CLAM::ProcessingFactory::GetInstance().GetListOfKeys("category", "LADSPA");
+	if( keys.size() > 0)
+	{
+		QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA" );
+		for (	itK = keys.begin(); itK != keys.end(); itK++)
+		{
+			std::string description = CLAM::ProcessingFactory::GetInstance().GetValuesFrom(*itK, "description").front();
+			std::string factoryID = (*itK);
+			std::cout << "[LADSPA] key: " << factoryID << std::endl;
+			std::cout << "[LADSPA] description: " << description << std::endl; 
+			QTreeWidgetItem * item = new QTreeWidgetItem( ladspaTree, QStringList() << description.c_str() );
+			item->setIcon(0, QIcon(":/icons/images/processing.png"));
+			item->setText(1, factoryID.c_str());
+		}
+	}
+	
+	keys = CLAM::ProcessingFactory::GetInstance().GetListOfKeys("category", "CLAM");
+	std::cout << "keys size: "<< keys.size() << std::endl;
+	if( keys.size() > 0)
+	{
+		QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "CLAM Plugins" );
+		for (	itK = keys.begin(); itK != keys.end(); itK++)
+		{
+			std::string description = CLAM::ProcessingFactory::GetInstance().GetValuesFrom(*itK, "description").front();
+			std::string factoryID = (*itK);
+			std::cout << "[CLAM Plugin] key: " << factoryID << std::endl;
+			std::cout << "[CLAM Plugin] description: " << description << std::endl; 
+			QTreeWidgetItem * item = new QTreeWidgetItem( ladspaTree, QStringList() << description.c_str() );
+			item->setIcon(0, QIcon(":/icons/images/processing.png"));
+			item->setText(1, factoryID.c_str());
+		}
+	}
+
+	
+/*	CLAM::LadspaPlugins plugins = CLAM::LadspaPluginsExplorer::GetList();
 	CLAM::LadspaPlugins::const_iterator it=plugins.begin();
 	CLAM::ProcessingFactory & pFactory = CLAM::ProcessingFactory::GetInstance();
 	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (Experimental)" );
@@ -216,8 +257,7 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 		item->setText(1, plugin.factoryID.c_str());
 		
 	}
-	
-#endif //USE_LADSPA
+*/	
  
 	
 	connect( this, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),

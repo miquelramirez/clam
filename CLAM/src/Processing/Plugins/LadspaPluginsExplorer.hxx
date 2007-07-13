@@ -7,6 +7,7 @@
 namespace CLAM 
 {
 
+//TODO remove.
 struct LadspaPlugin
 {
 	std::string libraryFileName;
@@ -16,11 +17,11 @@ struct LadspaPlugin
 	std::string factoryID; 
 };
 
-typedef std::list<LadspaPlugin> LadspaPlugins;
 
 class LadspaPluginsExplorer {
 	public:
-		static LadspaPlugins GetList();
+		void ExploreStandardPaths();
+		void ExplorePath(const std::string & path);
 };
 
 } // namespace CLAM
