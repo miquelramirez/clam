@@ -5,14 +5,19 @@
 #include <CLAM/OutPort.hxx>
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/Processing.hxx>
+#include <CLAM/AudioWindowingConfig.hxx>
 
 namespace CLAM
 {
 
 class AudioBuffer2Stream : public Processing
-{ 
+{
+	typedef AudioWindowingConfig Config;
 	InPort<Audio> mIn;
 	AudioOutPort mOut;
+	unsigned mHopSize;
+	unsigned mWindowSize;
+	Config mConfig;
 public:
 	const char* GetClassName() const { return "AudioBuffer2Stream"; }
 	AudioBuffer2Stream(const Config& config = Config()) 
@@ -20,18 +25,29 @@ public:
 		, mOut("Audio stream", this) 
 	{
 		Configure( config );
-		mOut.SetSize( 2048 );
-		mOut.SetHop( 2048 );
 	}
+	bool ConcreteConfigure(const ProcessingConfig & c)
+	{
+		CopyAsConcreteConfig(mConfig, c);
+		mHopSize = mConfig.GetHopSize();
+		mWindowSize = mConfig.GetWindowSize();
+		mOut.SetSize( mWindowSize );
+		mOut.SetHop( mHopSize );
+		return true;
+	}
+	const ProcessingConfig & GetConfig() const { return mConfig; }
  
 	bool Do()
 	{
 		const Audio& in = mIn.GetData();
-		std::cout << "doing " << in.GetSize() << std::endl;
+		CLAM_ASSERT(mWindowSize==in.GetSize(),"AudioBuffer2Stream: Input does not provide the configured window size"); 
 		Audio& out = mOut.GetAudio();
 		const TData* inpointer = in.GetBuffer().GetPtr();
 		TData* outpointer = out.GetBuffer().GetPtr();
-		std::copy(inpointer, inpointer+in.GetSize(), outpointer);
+		// Zero fill the new incomming hopSize
+		std::fill(outpointer+mWindowSize-mHopSize, outpointer+mWindowSize, 0.0);
+		// Add the input on the full window
+		std::transform(inpointer, inpointer+mWindowSize, outpointer, outpointer, std::plus<TData>());
 		
 		// Tell the ports this is done
 		mIn.Consume();
