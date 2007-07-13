@@ -23,9 +23,9 @@
 #ifndef _MyIFFT_
 #define _MyIFFT_
 
-#include "IFFT_base.hxx"
-#include "ErrDynamicType.hxx"
-#include "SpectrumConfig.hxx"
+#include <CLAM/IFFT_base.hxx>
+#include <CLAM/Audio.hxx>
+#include <CLAM/Spectrum.hxx>
 
 namespace CLAM {
 

@@ -20,11 +20,9 @@
  */
 
 #include "MyIFFT.hxx"
-#include "SpecTypeFlags.hxx"
+#include <CLAM/SpecTypeFlags.hxx>
 
-#include "Audio.hxx"
-#include "Spectrum.hxx"
-#include "ProcessingFactory.hxx"
+#include <CLAM/ProcessingFactory.hxx>
 
 #include <fftw3.h>
 
