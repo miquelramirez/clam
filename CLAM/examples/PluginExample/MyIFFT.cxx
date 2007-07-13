@@ -73,8 +73,6 @@ bool MyIFFT::ConcreteConfigure(const ProcessingConfig& c)
 		return false;
 	}
 	mSize = mConfig.GetAudioSize();	
-	mOutput.SetSize( mSize );
-	mOutput.SetHop( mSize );
 	SetupMemory();
 	return true;
 }
@@ -117,12 +115,11 @@ bool MyIFFT::Do( const ComplexSpectrum& in, Audio &out) const
 
 	fftw_execute(_fftw3->_plan);
 
+	out.SetSampleRate(TData(in.spectralRange*2));
 	out.SetSize(mSize);
 	TData * outbuffer = out.GetBuffer().GetPtr();
 	for (int i=0; i<mSize; i++)
 		outbuffer[i] = _fftw3->_realOutput[i];
-
-	out.SetSampleRate(TData(in.spectralRange*2));
 	return true;
 }
 
