@@ -35,10 +35,10 @@ namespace Hidden
 bool SMSResidualGain::Do(const Spectrum& in, Spectrum& out)
 {
 	out = in; // TODO big cludge for streaming 
-	TSize spectrumSize=in.GetSize();
+	TSize spectrumSize = in.GetSize();
 	if(in.GetScale()==EScale::eLinear)
 	{
-		TData amount=Lin(mAmount.GetLastValue());
+		TData amount = Lin(mGain.GetLastValue());
 		for(int i=0;i<spectrumSize;i++)
 		{
 			out.SetMag(i,in.GetMag(i)*amount);

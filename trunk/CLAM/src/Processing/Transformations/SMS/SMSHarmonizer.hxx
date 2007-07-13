@@ -37,6 +37,10 @@
 
 namespace CLAM{
 
+	/**	\brief Many voices harmonizer using the SMS model
+	 *
+	 *	Harmonizes many voices adding pitch-shifted gained versions of the original voice (with the same timbre)
+	 */
 	class SMSHarmonizer: public FrameTransformation
 	{	
 
