@@ -30,6 +30,44 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, SMSHarmonizer> regSMSHarmonizer("SMSHarmonizer");
 }
 
+bool SMSHarmonizer::ConcreteConfigure(const ProcessingConfig& config)
+{
+	CopyAsConcreteConfig( mConfig, config );
+
+	if ( mConfig.GetNumberOfVoices()==0 )
+	{
+		AddConfigErrorMessage("The provided config object lacked NumberOfVoices value");
+		return false;
+	}
+
+	mIgnoreResidual = mConfig.GetIgnoreResidual();
+
+	mPitchShift.Configure( FrameTransformationConfig() );
+	mPitchShift.GetInControl("IgnoreResidual").DoControl(mIgnoreResidual);
+
+	mInputVoiceGain.SetBounds(-2.,2.);
+	mInputVoiceGain.SetDefaultValue(0.);
+	mInputVoiceGain.DoControl(0.);
+
+	int n_voices = mConfig.GetNumberOfVoices();
+	//max amount of voices: adding many voices is translated into many performance issues
+	if (n_voices>6) n_voices = 6;
+
+	mVoicesPitch.Resize(n_voices, "Pitch", this);
+	mVoicesGain.Resize(n_voices, "Gain", this);
+	for (int i=0; i < mVoicesPitch.Size(); i++)
+	{
+		mVoicesPitch[i].SetBounds(-24.,24.);
+		mVoicesPitch[i].SetDefaultValue(0.); //no pitch shift
+		mVoicesPitch[i].DoControl(0.);
+		mVoicesGain[i].SetBounds(0.,2.);
+		mVoicesGain[i].SetDefaultValue(0.);
+		mVoicesGain[i].DoControl(0.);
+	}
+
+	return true;
+}
+
 bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks, 
 			const Fundamental& inFund,
 			const Spectrum& inSpectrum, 
@@ -38,16 +76,11 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 			Spectrum& outSpectrum
 		      )
 {
-	//Voice 0 (input voice)
 	outPeaks = inPeaks;
 	outFund = inFund;
 	outSpectrum = inSpectrum;
 
-	bool ignoreResidual = mIgnoreResidualCtl.GetLastValue()>0.;
-	mPitchShift.GetInControl("IgnoreResidual").DoControl(ignoreResidual?1.:0.);
-
-	//TODO - skip if gain<0.01, check if outputs arrive clean or not
-	TData gain0 = mVoice0Gain.GetLastValue();
+	TData gain0 = mInputVoiceGain.GetLastValue();
 	mSinusoidalGain.GetInControl("Gain").DoControl(gain0);
 	mSinusoidalGain.Do(outPeaks,outPeaks);
 
@@ -63,7 +96,7 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 
 		TData amount = CLAM_pow( 2., mVoicesPitch[i].GetLastValue()/12. ); //value adjust to equal-tempered scale semitones
 		mPitchShift.GetInControl("PitchSteps").DoControl(amount);
-		mPitchShift.Do( inPeaks, 
+		mPitchShift.Do( inPeaks,
 				inFund, 
 				inSpectrum,
 				mtmpPeaks, 
@@ -74,7 +107,7 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 		mSinusoidalGain.Do(mtmpPeaks,mtmpPeaks);
 
 		outPeaks = outPeaks + mtmpPeaks;
-		if (!ignoreResidual)
+		if (!mIgnoreResidual)
 			mSpectrumAdder.Do(outSpectrum, mtmpSpectrum, outSpectrum);
 	}
 	return true;
@@ -92,36 +125,4 @@ bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 		 );
 }
 
-bool SMSHarmonizer::ConcreteConfigure(const ProcessingConfig& config)
-		{
-			CopyAsConcreteConfig( mConfig, config );
-
-// 			if (SomeWeirdConditionHappens)
-// 			{
-// 				AddConfigErrorMessage("Some weird condition");
-// 				return false;
-// 			}
-
-			mPitchShift.Configure( FrameTransformationConfig() );
-
-			mIgnoreResidualCtl.SetBounds(0,1);
-			//By default we ignore residual!!
-			mIgnoreResidualCtl.SetDefaultValue(1);
-			mIgnoreResidualCtl.DoControl(1);
-
-			mVoice0Gain.SetBounds(-2.,2.);
-			mVoice0Gain.SetDefaultValue(1.);
-			mVoice0Gain.DoControl(1.);
-
-			for (int i=0; i < mVoicesPitch.Size(); i++)
-			{
-				mVoicesPitch[i].SetBounds(-24.,24.);
-				mVoicesPitch[i].SetDefaultValue(0.); //no pitch shift
-				mVoicesPitch[i].DoControl(0.);
-				mVoicesGain[i].SetBounds(-2.,2.);
-				mVoicesGain[i].DoControl(0.);
-			}
-
-			return true;
-		}
 }

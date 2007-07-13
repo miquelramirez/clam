@@ -52,20 +52,16 @@ namespace CLAM{
 		InPort<Spectrum> mInSpectrum;
 		OutPort<Spectrum> mOutSpectrum;
 
-		/** 
-		 *	xamat: adding residual does not improve results much and adds a lot of overhead, there should
-		 *	probably be a configuration parameter to control whether we want to add residual or not, but that
-		 *	would mean changing the kind of configuration. For the time being the output residual is the input.
-		 */
-		InControl mIgnoreResidualCtl;
+		InControl mInputVoiceGain; ///< Input 'clean' voice gain
 
-		InControl mVoice0Gain; ///< Input voice gain
-
-		//TODO define it with another InControl or like a processing with configuration?
-		#define VOICES_AMOUNT 4 
 		InControlArray mVoicesPitch; ///< Voices pitch
 		InControlArray mVoicesGain; ///< Voices gain
 
+		/** 
+		 *	xamat: adding residual does not improve results much and adds a lot of overhead.
+		 *	Ignoring by default (check SMSHarmonizerConfig), so the output residual is the input.
+		 */
+		bool mIgnoreResidual;
 	public:
 		SMSHarmonizer()
 			:
@@ -76,11 +72,9 @@ namespace CLAM{
 			mInSpectrum("In Spectrum", this),
 			mOutSpectrum("Out Spectrum", this),
 
-			mIgnoreResidualCtl("IgnoreResidual", this),
-
-			mVoice0Gain("Input Voice Gain", this),
-			mVoicesPitch(VOICES_AMOUNT, "Pitch", this),
-			mVoicesGain(VOICES_AMOUNT, "Gain", this)
+			mInputVoiceGain("Input Voice Gain", this),
+			mVoicesPitch(0, "Pitch", this),
+			mVoicesGain(0, "Gain", this)
 		{
 			Configure( mConfig );
 		}

@@ -33,15 +33,8 @@ class SMSHarmonizerConfig : public ProcessingConfig
 {
 public:
 	DYNAMIC_TYPE_USING_INTERFACE( SMSHarmonizerConfig, 2, ProcessingConfig );
-	DYN_ATTRIBUTE (0, public, bool, IgnoreResidual);
-	DYN_ATTRIBUTE( 1, public, int, VoicesSize ); // FIXME TSize
-
-public:
-// 	void SetVoicesSize(TSize f);
-// 	TSize GetVoicesSize();
-// 	void SetIgnoreResidual(bool value);
-
-	void DefaultValues();
+	DYN_ATTRIBUTE( 0, public, int, NumberOfVoices );
+	DYN_ATTRIBUTE( 1, public, bool, IgnoreResidual );
 
 protected:
 	void DefaultInit();
