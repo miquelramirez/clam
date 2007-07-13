@@ -27,7 +27,8 @@
 #include <fftw3.h>
 
 
-namespace CLAM {
+namespace CLAM
+{
 
 namespace Hidden
 {
@@ -56,7 +57,9 @@ struct MyIFFT::Implementation
 };
 
 MyIFFT::MyIFFT(const IFFTConfig &c)
-	: _fftw3(0)
+	: mInput("Complex Spectrum", this)
+	, mOutput("Audio Buffer", this)
+	, _fftw3(0)
 { 
 	Configure(c);
 };
@@ -64,15 +67,14 @@ MyIFFT::MyIFFT(const IFFTConfig &c)
 bool MyIFFT::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
-	mSize = CLAM_DEFAULT_IFFT_SIZE;
-	if (mConfig.HasAudioSize()) {
-		CLAM_ASSERT (mConfig.GetAudioSize()>=0,"Wrong (negative) Size in IFFT Configuration.");
-		mSize = mConfig.GetAudioSize();	
+	if (mConfig.GetAudioSize()<=0)
+	{
+		AddConfigErrorMessage("IFFT size should be greater than 0");
+		return false;
 	}
+	mSize = mConfig.GetAudioSize();	
 	mOutput.SetSize( mSize );
 	mOutput.SetHop( mSize );
-
-	mState=sOther;
 	SetupMemory();
 	return true;
 }
@@ -92,136 +94,37 @@ void MyIFFT::SetupMemory()
 	_fftw3 = new Implementation(mSize);
 }
 
-void MyIFFT::CheckTypes(const Spectrum& in, const Audio &out) const
-{
-	CLAM_ASSERT(out.HasBuffer(),"IFFT Do: Float attribute required for Audio object.");
-	CLAM_BEGIN_CHECK
-		// Input object checking
-		if (out.GetSize()!=mSize) { 
-			std::stringstream ss;
-			ss << "MyIFFT::Do: Wrong size in IFFT Audio output\n"
-			   << "  Expected: " << mSize*2+1 << ", used " << out.GetSize();
-			CLAM_ASSERT(0,ss.str().c_str());
-		}
-		if (in.GetSize() < mSize/2+1 ) { // ALGORITHM DEPENDENT CHECKING
-			std::stringstream ss;
-			ss << "MyIFFT::Do: not enough memory in input Spectrum.\n"
-			   << "  Expected: " << mSize/2+1 << ", used " << in.GetSize();
-			CLAM_ASSERT(0,ss.str().c_str());
-
-		}
-	CLAM_END_CHECK
-}
-/*
-void MyIFFT::Attach(Spectrum &in, Audio& out)
-{
-	mInput.Attach(in);
-	mOutput.Attach(out);
-}
-*/
 
 bool MyIFFT::Do()
 {
-	bool toReturn = Do(mInput.GetData(),mOutput.GetAudio());
+	bool toReturn = Do(mInput.GetData(),mOutput.GetData());
 	mInput.Consume();
 	mOutput.Produce();
 	return toReturn;
 };
 
 
-bool MyIFFT::SetPrototypes(const Spectrum& in, const Audio &out)
-{
-	CheckTypes(in,out);
-
-	SpecTypeFlags flags; 
-	in.GetType(flags);
-
-	if (flags.bComplex)
-		mState=sComplex;
-	else
-	{
-		CLAM_ASSERT(flags.bPolar || flags.bMagPhase || flags.bMagPhaseBPF,"MyIFFT: SetPrototypes(): No Spectrum Attributes!");
-		mState=sOther;
-	}
-	// TODO: Maybe should update the prototype in the port?
-
-	return true;
-}
-
-bool MyIFFT::UnsetPrototypes()
-{
-	mState=sOther;
-	return true;
-}
-
-
-bool MyIFFT::Do( const Spectrum& in, Audio &out) const
+bool MyIFFT::Do( const ComplexSpectrum& in, Audio &out) const
 {
 	CLAM_ASSERT(IsRunning() ,"MyIFFT: Do(): Not in execution mode");
-	CLAM_ASSERT(out.GetSize() == mSize,
-		"Not proper IFFT output size");
-
-	if (mState==sComplex)
-		ComplexToRIFFTW(in);
-	else
+	const std::vector<std::complex<TData> > & inbuffer = in.bins;
+	CLAM_ASSERT(inbuffer.size() == mSize/2+1, "MyIFFT: input data size doesn't match configuration.");
+	for (int i=0; i< inbuffer.size(); i++)
 	{
-		CheckTypes(in,out);
-		OtherToRIFFTW(in);
+		_fftw3->_complexInput[i][0] = std::real(inbuffer[i])/mSize;
+		_fftw3->_complexInput[i][1] = std::imag(inbuffer[i])/mSize;
 	}
+
 	fftw_execute(_fftw3->_plan);
+
+	out.SetSize(mSize);
 	TData * outbuffer = out.GetBuffer().GetPtr();
 	for (int i=0; i<mSize; i++)
 		outbuffer[i] = _fftw3->_realOutput[i];
 
-	out.SetSampleRate(TData(in.GetSpectralRange()*2));
+	out.SetSampleRate(TData(in.spectralRange*2));
 	return true;
 }
 
-bool MyIFFT::SetPrototypes()
-{
-	// @todo Check port prototypes, and set the state (or de
-	// backup state if disabled) acordingly.
-	CLAM_ASSERT(false,"MyIFFT::SetPrototypes: Not implemented.");
-	return false;
-}
-
-inline void MyIFFT::ComplexToRIFFTW(const Spectrum &in) const
-{
-	CLAM_ASSERT(in.HasComplexArray(), "Input spectrum has no complex array");
-	const Array<Complex> & inbuffer = in.GetComplexArray();
-	CLAM_ASSERT(inbuffer.Size() == mSize/2+1, "MyIFFT::ComplexToRIFFTW: sizes doesn't match.");
-	for (int i=0; i< inbuffer.Size(); i++)
-	{
-		_fftw3->_complexInput[i][0] = inbuffer[i].Real()/mSize;
-		_fftw3->_complexInput[i][1] = inbuffer[i].Imag()/mSize;
-	}
-/*
- 	// TODO: Use this code for the r2r format
-	ifftbuffer[0]=(*inbuffer)[0].Real()/mSize;   // Real Values
-	ifftbuffer[mSize/2]=(*inbuffer)[mSize/2].Real()/mSize;
-	for (int i=1; i< mSize/2; i++) {
-		ifftbuffer[i] = (*inbuffer)[i].Real()/mSize;  
-		ifftbuffer[mSize-i] = (*inbuffer)[i].Imag()/mSize;
-	}
-	if (mSize&1)
-		ifftbuffer[mSize/2+1] = (*inbuffer)[mSize/2].Imag()/mSize;
-*/
-}
-
-
-inline void MyIFFT::OtherToRIFFTW(const Spectrum &in) const
-{
-	if (in.HasComplexArray())
-	{
-		ComplexToRIFFTW(in);
-		return;
-	}
-	SpecTypeFlags flags;
-	Spectrum spec = in;
-	spec.GetType(flags);
-	flags.bComplex=1;
-	spec.SetTypeSynchronize(flags);
-	ComplexToRIFFTW(spec);
-}
 }
 

@@ -23,19 +23,26 @@
 #ifndef _MyIFFT_
 #define _MyIFFT_
 
-#include <CLAM/IFFT_base.hxx>
+#include <CLAM/Processing.hxx>
 #include <CLAM/Audio.hxx>
 #include <CLAM/Spectrum.hxx>
+#include <CLAM/InPort.hxx>
+#include <CLAM/OutPort.hxx>
+#include <CLAM/IFFTConfig.hxx>
+#include "ComplexSpectrum.hxx"
 
 namespace CLAM {
 
 	/** Implementation of the IFFT using the Fastest Fourier in the West version 3
 	* @see <a HREF="http://www.fftw.org/"> FFTW Home Page</a>
 	*/
-	class MyIFFT: public IFFT_base
+	class MyIFFT: public Processing
 	{
-		struct Implementation;
-		Implementation * _fftw3;
+		InPort<ComplexSpectrum> mInput;
+		OutPort<Audio> mOutput;
+		typedef IFFTConfig Config;
+		Config mConfig;
+		unsigned mSize;
 
 		/* IFFT possible execution states.
 		 */
@@ -50,25 +57,11 @@ namespace CLAM {
 
 		void DefaultInit();
 
-		inline void CheckTypes(const Spectrum& in, const Audio &out) const;
-
-		// Output conversions
-
-		/** Converts a complex array to the RIFFTW input format.
-		 * @param The spectrum object from which the complex array is taken. It 
-		 *  must have its ComplexArray attribute instantiated.
-		 * @see the <a HREF="http://www.fftw.org/doc/fftw_2.html#SEC5"> RFFTW docs </a>
-		 * for a description of this format.
-		 */
-		inline void ComplexToRIFFTW(const Spectrum &in) const;
-		inline void OtherToRIFFTW(const Spectrum &in) const;
 		void ReleaseMemory();
 		void SetupMemory();
 
-		/** Configuration change method
-		 * @pre argument should be a IFFTConfig
-		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
+		const ProcessingConfig & GetConfig() const { return mConfig; }
 
 	public:
 
@@ -77,13 +70,10 @@ namespace CLAM {
 		const char * GetClassName() const {return "MyIFFT";}
 
 		bool Do();
-		bool Do(const Spectrum& in, Audio &out) const;
-		bool MayDisableExecution() const {return true;}
-
-		// Port interfaces.
-		bool SetPrototypes(const Spectrum& in,const Audio &out);
-		bool SetPrototypes();
-		bool UnsetPrototypes();
+		bool Do(const ComplexSpectrum& in, Audio &out) const;
+	private:
+		struct Implementation;
+		Implementation * _fftw3;
 
 	};
 
