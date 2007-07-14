@@ -36,7 +36,7 @@ namespace VM
 	{
 		public:
 			virtual ~FloatArrayDataSource() {}
-			virtual const std::string & getLabel(unsigned bin) const = 0;
+			virtual std::string getLabel(unsigned bin) const = 0;
 			virtual const CLAM::TData * frameData() = 0;
 			virtual unsigned nBins() const = 0;
 			virtual bool hasUpperBound() const { return false; }
@@ -70,7 +70,7 @@ namespace VM
 					"No so many dummy data for the bins you asked");
 				_nBins = nBins;
 			}
-			const std::string & getLabel(unsigned bin) const
+			std::string getLabel(unsigned bin) const
 			{
 				static std::string a("");
 				if (bin<_labels.size())
