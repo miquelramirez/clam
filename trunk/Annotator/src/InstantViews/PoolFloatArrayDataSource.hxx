@@ -42,7 +42,7 @@ namespace VM
 			void updateData(const CLAM::DescriptionDataPool & data, CLAM::TData samplingRate);
 			bool setCurrentTime(double timeMiliseconds);
 
-			const std::string & getLabel(unsigned bin) const
+			std::string getLabel(unsigned bin) const
 			{
 				const CLAM_Annotator::SchemaAttribute & attribute =	_project->GetAttributeScheme(_scope,_name);
 				
