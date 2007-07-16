@@ -3,7 +3,7 @@
 
   <processing id="AudioBuffer2Stream_0" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
-    <WindowSize>1024</WindowSize>
+    <FFTSize>1024</FFTSize>
   </processing>
 
   <processing id="AudioMixer_0" type="AudioMixer">
