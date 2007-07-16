@@ -35,8 +35,8 @@ localDefinitions = {
 	'description': '<img src="http://clam.iua.upf.es/images/linux_icon.png"/> <img src="http://clam.iua.upf.es/images/ubuntu_icon.png"/>',
 	'sandbox': '$HOME/clam',
 	'installPath': '$HOME/local',
-	'qt3dir'='',
-	'qt4dir'='',
+	'qt3dir':'',
+	'qt4dir':'',
 }
 
 client = Client(localDefinitions['name'])

@@ -35,8 +35,8 @@ localDefinitions = {
 	'description': '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>',
 	'sandbox': '$HOME/clam',
 	'installPath': '$HOME/local',
-	'qt3dir'='',
-	'qt4dir'='/usr/local/Trolltech/Qt-4.2.2/',
+	'qt3dir':'',
+	'qt4dir':'/usr/local/Trolltech/Qt-4.2.2/',
 }
 
 client = Client(localDefinitions['name'])
