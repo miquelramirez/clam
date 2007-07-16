@@ -39,60 +39,59 @@ clam = Task(
 	task_name="with svn update" 
 	)
 clam.set_check_for_new_commits( 
-		checking_cmd="cd $HOME && svn status -u clam | grep \*",
-		minutes_idle=5
+		checking_cmd="cd %(sandbox)s && svn status -u | grep \*"%localDefinitions,
+		minutes_idle=15
 )
 
 clam.add_subtask( "List of new commits", [
-	"cd $HOME/clam",
+	"cd %(sandbox)s"%localDefinitions,
 	{CMD:"svn log -r BASE:HEAD", INFO: lambda x:x },
 	{CMD: "svn up", INFO: lambda x:x },
 	] )
 
 clam.add_subtask("count lines of code", [
-	{CMD:"echo $HOME/clam/CLAM", STATS: lambda x: {"clam_loc": countLines(x) } }
+	{CMD:"echo %(sandbox)s/CLAM"%localDefinitions, STATS: lambda x: {"clam_loc": countLines(x) } },
+	{CMD:"echo %(sandbox)s/SMSTools"%localDefinitions, STATS: lambda x: {"smstools_loc": countLines(x) } },
+	{CMD:"echo %(sandbox)s/NetworkEditor"%localDefinitions, STATS: lambda x: {"networkeditor_loc": countLines(x) } },
 ] )
 clam.add_deployment( [
-	{CMD: "unset QTDIR", INFO: unset_qtdir},
-	"cd $HOME/clam/CLAM",
-	"rm -rf $HOME/local/*",
-	"cd $HOME/clam/CLAM/",
-	"scons configure prefix=$HOME/local",
+	"cd %(sandbox)s/CLAM"%localDefinitions,
+	"rm -rf %(installPath)s/*"%localDefinitions,
+	"cd %(sandbox)s/CLAM/"%localDefinitions,
+	"scons configure prefix=%(installPath)s"%localDefinitions,
 	"scons",
 	"scons install",
 ] )
 
-clam.add_subtask("Unit Tests (with scons)", [
-	{CMD: "echo unset QTDIR ", INFO: unset_qtdir},
-	"cd $HOME/clam/CLAM",
+clam.add_subtask("Unit Tests", [
+	"cd %(sandbox)s/CLAM"%localDefinitions,
 	"cd test",
-	"scons test_data_path=$HOME/clam/testdata clam_sconstools=$HOME/clam/CLAM/scons/sconstools clam_prefix=$HOME/local", # TODO: test_data_path and release
+	"scons test_data_path=%(sandbox)s/testdata clam_prefix=%(installPath)s"%localDefinitions, # TODO: test_data_path and release
 	"cd UnitTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD: "./UnitTests", INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
-clam.add_subtask("Functional Tests (with scons)", [
-	{CMD: "echo unset QTDIR", INFO: unset_qtdir},
-	"cd $HOME/clam/CLAM",
+clam.add_subtask("Functional Tests", [
+	"cd %(sandbox)s/CLAM"%localDefinitions,
 	"cd test",
-	"scons test_data_path=$HOME/clam/testdata clam_sconstools=$HOME/clam/CLAM/scons/sconstools clam_prefix=$HOME/local", 
+	"scons test_data_path=%(sandbox)s/testdata clam_prefix=%(installPath)s"%localDefinitions, # TODO: test_data_path and release
 	"cd FunctionalTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD:"./FunctionalTests", INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
 ] )
-clam.add_subtask("CLAM Examples (with scons)", [
+clam.add_subtask("CLAM Examples", [
 	{CMD: "echo set QTDIR to qt4", INFO: set_qtdir_to_qt4},
-	"cd $HOME/clam/CLAM/examples",
-	"scons clam_prefix=$HOME/local",
+	"cd %(sandbox)s/CLAM/examples"%localDefinitions,
+	"scons clam_prefix=%(installPath)s"%localDefinitions,
 ] )
 
 clam.add_subtask("SMSTools packaging", [
-	{CMD: "echo unset  QTDIR  ", INFO: unset_qtdir},
-	"cd $HOME/clam/SMSTools",
-	"scons clam_sconstools=$HOME/clam/CLAM/scons/sconstools prefix=$HOME/local clam_prefix=$HOME/local",
-	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
+	{CMD: "echo setting QTDIR to qt3 path ", INFO: set_qtdir_to_qt3},
+	"cd %(sandbox)s/SMSTools"%localDefinitions,
+	"scons prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
+	"%(sandbox)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
 	"rm -f *.dmg",
 	"scons package",
 	"ls *svn1* > /dev/null || scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/",
@@ -102,14 +101,14 @@ clam.add_subtask("SMSTools packaging", [
 
 clam.add_subtask('vmqt4 compilation and examples', [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
-	"cd $HOME/clam/Annotator/vmqt",
-	'scons clam_sconstools=$HOME/clam/CLAM/scons/sconstools prefix=$HOME/local clam_prefix=$HOME/local release=1 double=1',
+	"cd %(sandbox)s/Annotator/vmqt"%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s release=1 double=1'%localDefinitions,
 	'scons examples',
 ] )
 clam.add_subtask("Annotator packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
-	"cd $HOME/clam/Annotator",
-	"scons clam_vmqt4_path=vmqt clam_sconstools=$HOME/clam/CLAM/scons/sconstools prefix=$HOME/local clam_prefix=$HOME/local",
+	"cd %(sandbox)s/Annotator"%localDefinitions,
+	"scons clam_vmqt4_path=vmqt prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
 	"rm -f *.dmg",
 	"scons package",
 	"ls *svn1* > /dev/null || scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/",
@@ -118,9 +117,9 @@ clam.add_subtask("Annotator packaging", [
 
 clam.add_subtask("NetworkEditor packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
-	"cd $HOME/clam/NetworkEditor",
-	"scons prefix=$HOME/local clam_prefix=$HOME/local",
-	"$HOME/clam/CLAM/scons/sconstools/changeExampleDataPath.py $HOME/local/share/smstools ",
+	"cd %(sandbox)s/NetworkEditor"%localDefinitions,
+	"scons prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
+	"%(sandbox)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
 	"rm -f *.dmg",
 	"scons package",
 	"ls *svn1* > /dev/null || scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/",
