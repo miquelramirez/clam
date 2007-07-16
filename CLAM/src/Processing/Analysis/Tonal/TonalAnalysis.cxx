@@ -53,7 +53,7 @@ TonalAnalysis::TonalAnalysis( const TonalAnalysisConfig& cfg )
 	, _chordCorrelation("Chord Correlation",this)
 	, _chromaPeaks("Chroma Peaks",this)
 	, _tunning("Tunning",this)
-	, _implementation(new Simac::ChordExtractor )
+	, _implementation( 0 )
 {
 	Configure( cfg );
 }
@@ -66,13 +66,16 @@ TonalAnalysis::TonalAnalysis( bool callThisAsFakeConstructorToBeCalledToAvoidWin
 
 TonalAnalysis::~TonalAnalysis()
 {
-	delete _implementation;
+	if (_implementation) delete _implementation;
 }
 
 bool TonalAnalysis::ConcreteConfigure( const ProcessingConfig& c )
 {
 	CopyAsConcreteConfig(_config, c);
-	
+
+	if (_implementation) delete _implementation;
+	_implementation = new Simac::ChordExtractor;
+
 	_implementation->filterInertia( _config.GetFilterInertia() );
 	_implementation->enableTunning( _config.GetTunningEnabled() );
 	_implementation->enablePeakWindowing( _config.GetPeakWindowingEnabled() );
