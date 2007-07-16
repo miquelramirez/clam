@@ -38,8 +38,9 @@ bool AudioSource::Do()
 	CLAM::Audio& so=mOut.GetAudio();
 	CLAM_DEBUG_ASSERT(mFloatBuffer, "No float buffer");
 	CLAM_DEBUG_ASSERT(!mDoubleBuffer, "There should not be double buffer");
+	CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
 	for (int i=0; i<mBufferSize; i++)
-		so.GetBuffer().GetPtr()[i] = mFloatBuffer[i];
+		audioBuffer[i] = mFloatBuffer[i];
 	mOut.Produce();
 	// std::cerr << "AudioSource Done. Size :" << mOut.GetSize() << std::endl;
 	return true;
