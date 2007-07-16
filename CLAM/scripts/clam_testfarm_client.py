@@ -29,8 +29,7 @@ def set_qtdir_to_qt4(x) :
 def unset_qtdir(x) :
 	os.environ['QTDIR']=""
 
-localDefinitions = 
-{
+localDefinitions = {
 	'sandBox': '$HOME/clam',
 	'installPath': '$HOME/local',
 }
