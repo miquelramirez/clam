@@ -24,18 +24,23 @@ HOME = os.environ['HOME']
 os.environ['LD_LIBRARY_PATH']='%s/local/lib:/usr/local/lib' % HOME
 
 def set_qtdir_to_qt4(x) :
-	os.environ['QTDIR']='/usr/local/Trolltech/Qt-4.2.2/'
-	os.environ['PKG_CONFIG_PATH']=os.environ['QTDIR']+'lib/pkgconfig'
+	os.environ['QTDIR']=localDefinitions['qt4dir']
+	if os.environ['QTDIR'] and sys.platform='darwin':
+		os.environ['PKG_CONFIG_PATH']=os.environ['QTDIR']+'lib/pkgconfig'
 def set_qtdir_to_qt3(x) :
-	os.environ['QTDIR']=''
+	os.environ['QTDIR']=localDefinitions['qt3dir']
 
 localDefinitions = {
+	'name': 'mac-10.4.8-ppc-desktop',
+	'description': '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>',
 	'sandbox': '$HOME/clam',
 	'installPath': '$HOME/local',
+	'qt3dir'='',
+	'qt4dir'='/usr/local/Trolltech/Qt-4.2.2/',
 }
 
-client = Client("mac-10.4.8-ppc-desktop")
-client.brief_description = '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>'
+client = Client(localDefinitions['name'])
+client.brief_description = localDefinitions['description']
 	
 
 clam = Task(

@@ -22,20 +22,25 @@ def ellapsedTime():
 
 HOME = os.environ['HOME']
 os.environ['LD_LIBRARY_PATH']='%s/local/lib:/usr/local/lib' % HOME
-os.environ['CLAM_TEST_DATA']='%s/clam/testdata' % HOME
 
 def set_qtdir_to_qt4(x) :
-	os.environ['QTDIR']=''
+	os.environ['QTDIR']=localDefinitions['qt4dir']
+	if os.environ['QTDIR'] and sys.platform='darwin':
+		os.environ['PKG_CONFIG_PATH']=os.environ['QTDIR']+'lib/pkgconfig'
 def set_qtdir_to_qt3(x) :
-	os.environ['QTDIR']=''
+	os.environ['QTDIR']=localDefinitions['qt3dir']
 
 localDefinitions = {
+	'name': 'linux_ubuntu_feisty',
+	'description': '<img src="http://clam.iua.upf.es/images/linux_icon.png"/> <img src="http://clam.iua.upf.es/images/ubuntu_icon.png"/>',
 	'sandbox': '$HOME/clam',
 	'installPath': '$HOME/local',
+	'qt3dir'='',
+	'qt4dir'='',
 }
 
-client = Client("linux_ubuntu_feisty")
-client.brief_description = '<img src="http://clam.iua.upf.es/images/linux_icon.png"/> <img src="http://clam.iua.upf.es/images/ubuntu_icon.png"/>'
+client = Client(localDefinitions['name'])
+client.brief_description = localDefinitions['description']
 	
 
 clam = Task(
@@ -44,7 +49,7 @@ clam = Task(
 	task_name="with svn update" 
 	)
 clam.set_check_for_new_commits( 
-		checking_cmd="cd %(sandbox)s && svn status -u | grep \*",
+		checking_cmd="cd %(sandbox)s && svn status -u | grep \*"%localDefinitions,
 		minutes_idle=15
 )
 
@@ -69,7 +74,7 @@ clam.add_deployment( [
 ] )
 
 clam.add_subtask("Unit Tests", [
-	"cd %(sandbox)s/CLAM",
+	"cd %(sandbox)s/CLAM"%localDefinitions,
 	"cd test",
 	"scons test_data_path=%(sandbox)s/testdata clam_prefix=%(installPath)s"%localDefinitions, # TODO: test_data_path and release
 	"cd UnitTests",
@@ -118,6 +123,7 @@ clam.add_subtask("NetworkEditor installation", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/NetworkEditor"%localDefinitions,
 	"scons prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
+	"scons install",
 	"%(sandbox)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
 ] )
 
