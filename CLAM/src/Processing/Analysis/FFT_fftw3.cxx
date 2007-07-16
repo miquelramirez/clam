@@ -55,7 +55,6 @@ namespace Hidden
 			fftw_destroy_plan(plan);
 			fftw_free(realInput);
 			fftw_free(complexOutput);
-			fftw_forget_wisdom();	
 		}
 		double * realInput;
 		fftw_complex * complexOutput;
