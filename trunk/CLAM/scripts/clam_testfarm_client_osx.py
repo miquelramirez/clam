@@ -25,7 +25,7 @@ os.environ['LD_LIBRARY_PATH']='%s/local/lib:/usr/local/lib' % HOME
 
 def set_qtdir_to_qt4(x) :
 	os.environ['QTDIR']=localDefinitions['qt4dir']
-	if os.environ['QTDIR'] and sys.platform='darwin':
+	if os.environ['QTDIR'] and sys.platform=='darwin':
 		os.environ['PKG_CONFIG_PATH']=os.environ['QTDIR']+'lib/pkgconfig'
 def set_qtdir_to_qt3(x) :
 	os.environ['QTDIR']=localDefinitions['qt3dir']
