@@ -90,17 +90,23 @@ bool AudioMixer::Do()
 	unsigned int numInPorts = mConfig.GetNumberOfInPorts();
 
 	TData normConstant = (TData)1.0 /TData(numInPorts);
-	
+	TData * output = mOutputPort.GetAudio().GetBuffer().GetPtr();
+	TData * inputs[numInPorts];
+	TControlData controls[numInPorts];
+	for (unsigned int i = 0; i<numInPorts; i++)
+	{
+		inputs[i]=mInputPorts[i]->GetAudio().GetBuffer().GetPtr();
+		controls[i]=mInputControls[i]->GetLastValue();
+	}
+
 	for (unsigned int sample=0; sample < frameSize; sample++) 
 	{
 		TData sum=0.0;
-		
 		for (unsigned int inPort=0; inPort< numInPorts; inPort++)
 		{
-			TData valueModified = mInputPorts[inPort]->GetData(sample) * mInputControls[inPort]->GetLastValue();
-			sum += valueModified;
+			sum += inputs[inPort][sample] * controls[inPort];
 		}
-		mOutputPort.GetData(sample) = sum * normConstant;
+		output[sample] = sum * normConstant;
 	}
 
 	// execute consume/produce methods	
