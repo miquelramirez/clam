@@ -26,8 +26,8 @@ os.environ['CLAM_TEST_DATA']='%s/clam/testdata' % HOME
 
 def set_qtdir_to_qt4(x) :
 	os.environ['QTDIR']=''
-def unset_qtdir(x) :
-	os.environ['QTDIR']=""
+def set_qtdir_to_qt3(x) :
+	os.environ['QTDIR']=''
 
 localDefinitions = {
 	'sandbox': '$HOME/clam',
