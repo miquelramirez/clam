@@ -26,6 +26,8 @@ os.environ['LD_LIBRARY_PATH']='%s/local/lib:/usr/local/lib' % HOME
 def set_qtdir_to_qt4(x) :
 	os.environ['QTDIR']='/usr/local/Trolltech/Qt-4.2.2/'
 	os.environ['PKG_CONFIG_PATH']=os.environ['QTDIR']+'lib/pkgconfig'
+def set_qtdir_to_qt3(x) :
+	os.environ['QTDIR']=''
 
 localDefinitions = {
 	'sandbox': '$HOME/clam',
