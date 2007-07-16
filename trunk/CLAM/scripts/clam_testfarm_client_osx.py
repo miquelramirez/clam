@@ -29,6 +29,12 @@ def set_qtdir_to_qt4(x) :
 def unset_qtdir(x) :
 	os.environ['QTDIR']=""
 
+localDefinitions = 
+{
+	'sandBox': '$HOME/clam',
+	'installPath': '$HOME/local',
+}
+
 client = Client("mac-10.4.8-ppc-desktop")
 client.brief_description = '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>'
 	
