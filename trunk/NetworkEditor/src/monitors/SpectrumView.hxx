@@ -19,7 +19,7 @@ class SpectrumViewMonitor :
 	public CLAM::VM::FloatArrayDataSource
 {
 	const char* GetClassName() const { return "SpectrumView"; };
-	const std::string & getLabel(unsigned bin) const
+	std::string getLabel(unsigned bin) const
 	{
 		static std::string a;
 		return a;

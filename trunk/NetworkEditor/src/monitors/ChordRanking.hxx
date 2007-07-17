@@ -40,7 +40,7 @@ public:
 	}
 private:
 	const char* GetClassName() const { return "ChordRanking"; };
-	const std::string & getLabel(unsigned bin) const
+	std::string getLabel(unsigned bin) const
 	{
 		static std::vector<std::string> a = initBinLabelVector();
 		if (bin>a.size()) throw "Bad bin";

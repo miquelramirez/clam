@@ -18,7 +18,7 @@ public:
 		{ }
 private:
 	const char* GetClassName() const { return "Oscilloscope"; };
-	const std::string & getLabel(unsigned bin) const
+	std::string getLabel(unsigned bin) const
 	{
 		static std::string a;
 		return a;
