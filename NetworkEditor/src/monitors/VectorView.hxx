@@ -40,7 +40,7 @@ public:
 	}
 private:
 	const char* GetClassName() const { return "VectorView"; };
-	const std::string & getLabel(unsigned bin) const
+	std::string getLabel(unsigned bin) const
 	{
 		static std::string dummyLabel;
 		return dummyLabel;

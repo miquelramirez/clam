@@ -40,7 +40,7 @@ public:
 	}
 private:
 	const char* GetClassName() const { return "MelSpectrumView"; };
-	const std::string & getLabel(unsigned bin) const
+	std::string getLabel(unsigned bin) const
 	{
 		static std::string dummyLabel;
 		return dummyLabel;

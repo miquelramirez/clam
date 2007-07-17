@@ -38,7 +38,7 @@ public:
 	}
 private:
 	const char* GetClassName() const { return "Tonnetz"; };
-	const std::string & getLabel(unsigned bin) const
+	std::string getLabel(unsigned bin) const
 	{
 		static std::string a[] = {
 			"G",
