@@ -11,6 +11,14 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
+  <processing id="Gain_0" type="OutControlSender">
+    <Min>-100</Min>
+    <Default>1</Default>
+    <Max>100</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
   <processing id="Input" type="AudioSource"/>
 
   <processing id="SMSAnalysisCore_0" type="SMSAnalysisCore">
@@ -100,6 +108,10 @@
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
+  <processing id="SMSSinusoidalGain_0" type="SMSSinusoidalGain">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
+
   <processing id="SMSSynthesis_0" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
@@ -160,7 +172,7 @@
 
   <port_connection>
     <out>SMSAnalysisCore_0.Sinusoidal Peaks</out>
-    <in>SMSSynthesis_0.InputSinPeaks</in>
+    <in>SMSSinusoidalGain_0.In SpectralPeaks</in>
   </port_connection>
 
   <port_connection>
@@ -174,6 +186,11 @@
   </port_connection>
 
   <port_connection>
+    <out>SMSSinusoidalGain_0.Out SpectralPeaks</out>
+    <in>SMSSynthesis_0.InputSinPeaks</in>
+  </port_connection>
+
+  <port_connection>
     <out>SMSSynthesis_0.OutputAudio</out>
     <in>AudioSink_0.AudioIn</in>
   </port_connection>
@@ -181,6 +198,11 @@
   <control_connection>
     <out>Gain.out</out>
     <in>SMSResidualGain_0.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain_0.out</out>
+    <in>SMSSinusoidalGain_0.Gain</in>
   </control_connection>
 
 </network>
