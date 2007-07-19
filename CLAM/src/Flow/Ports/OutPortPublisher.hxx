@@ -169,6 +169,11 @@ public:
 	}
 
 	static Token & GetLastWrittenData( OutPortBase &, int offset = 0);
+	virtual const std::type_info & GetTypeId() const 
+	{
+		return typeid(Token);
+	};
+
 	
 protected:
 	ProperOutPort * mPublishedOutPort;
