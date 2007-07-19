@@ -50,6 +50,7 @@ public:
 	virtual void UnAttachRegion()=0;
 	void Disconnect();	
 	virtual bool IsPublisherOf( InPortBase& ) { return false; }
+	virtual const std::type_info& GetTypeId() const = 0;
 protected:
 	OutPortBase * mVisuallyConnectedOutPort;
 	std::string mName;
@@ -88,6 +89,10 @@ public:
 	 *  Instead , use DisconnectFromIn method in OutPortBase.
 	 */
 	void UnAttachRegion();
+	virtual const std::type_info & GetTypeId() const 
+	{
+		return typeid(Token);
+	};
 protected:
 
 	ProperReadingRegion mRegion;

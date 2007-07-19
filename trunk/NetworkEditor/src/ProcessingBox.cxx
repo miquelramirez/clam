@@ -23,6 +23,7 @@
 
 #include <QtGui/QSlider>
 #include <QtCore/QtDebug>
+#include <typeinfo>
 
 ProcessingBox::~ProcessingBox()
 {
@@ -249,12 +250,17 @@ void ProcessingBox::paintBox(QPainter & painter)
 	painter.drawRect(_size.width()-controlOffset, _size.height()-portOffset,
 		   	margin, margin);
 	// Ports
-	painter.setBrush(_canvas->colorPort());
 	painter.setPen(_canvas->colorPortOutline());
 	for (unsigned i = 0; i<_nInports; i++)
+	{
+		painter.setBrush( getInportColor(i) );
 		drawConnector(painter, inportsRegion, i);
+	}
 	for (unsigned i = 0; i<_nOutports; i++)
+	{
+		painter.setBrush( getOutportColor(i) );
 		drawConnector(painter, outportsRegion, i);
+	}
 	// Controls
 	painter.setBrush(_canvas->colorControl());
 	painter.setPen(_canvas->colorControlOutline());
@@ -643,7 +649,7 @@ QString ProcessingBox::getIncontrolName(unsigned index) const
 	QString name = inControl.GetName().c_str();
 	return name;
 }
-float ProcessingBox::getIncontrolDefaultValue(unsigned index) const
+float ProcessingBox::getIncontrolDefaultValue(unsigned index) const //TODO remove
 {
 	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
 	return inControl.DefaultValue();
@@ -657,6 +663,40 @@ float ProcessingBox::getIncontrolUpperBound(unsigned index) const
 {
 	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
 	return inControl.UpperBound();
+}
+
+
+//TODO move to a CLAM cxx
+static const char * getColorNameFromTypeId(const std::type_info & type)
+{
+	if (type == typeid(CLAM::Spectrum) ) return "yellowgreen";
+	if (type == typeid(CLAM::Audio) ) return "lightcyan";
+	if (type == typeid(CLAM::TData) ) return "lightblue";
+	if (type == typeid(CLAM::SpectralPeakArray) ) return "lightcoral";
+	if (type == typeid(std::vector<CLAM::TData>) ) return "silver";
+	if (type == typeid(std::vector<std::pair<CLAM::TData,CLAM::TData> >) ) return "thistle";
+	
+	return "";
+}
+QColor ProcessingBox::getConnectorColorByType(const std::type_info & type) const
+{
+	const char * colorstring = getColorNameFromTypeId(type);
+	QColor color(colorstring);
+	if (color.isValid()) return color;
+	return _canvas->colorPort();
+}
+
+QColor ProcessingBox::getInportColor(unsigned index) const
+{
+	if (!_processing) return _canvas->colorPort();
+	const std::type_info& porttype = _processing->GetInPorts().GetByNumber(index).GetTypeId();
+	return getConnectorColorByType(porttype);
+}
+QColor ProcessingBox::getOutportColor(unsigned index) const
+{
+	if (!_processing) return _canvas->colorPort();
+	const std::type_info& porttype = _processing->GetOutPorts().GetByNumber(index).GetTypeId();
+	return getConnectorColorByType(porttype);
 }
 
 QString ProcessingBox::getInportPrototyperName(const QPoint & point) const

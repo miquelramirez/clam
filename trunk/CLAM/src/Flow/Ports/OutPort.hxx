@@ -54,11 +54,12 @@ public:
 	virtual void SetSize(int newSize)=0;
 	virtual int GetHop()=0;
 	virtual void SetHop(int newHop)=0;
-	bool HasConnections(){return mVisuallyConnectedPorts.size()!=0;}
+	bool HasConnections(){ return mVisuallyConnectedPorts.size()!=0; }
 	virtual void CenterEvenRegions()=0;
 	void SetPublisher( OutPortBase& publisher); 
 	void UnsetPublisher(); 
 	virtual void UnpublishOutPort() =0;
+	virtual const std::type_info & GetTypeId() const = 0;
 protected:
 	InPortsList mVisuallyConnectedPorts;	
 	std::string mName;
@@ -98,6 +99,10 @@ public:
 	
 	static Token & GetLastWrittenData( OutPortBase &, int offset = 0);
 	void UnpublishOutPort() {} 
+	virtual const std::type_info & GetTypeId() const
+        {
+                return typeid(Token);
+        };
 
 protected:	
 	bool TryConnectToPublisher( InPortBase & in );

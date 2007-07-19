@@ -64,18 +64,22 @@ public:
 	QPoint getOutportPos(unsigned i) const;
 	QPoint getIncontrolPos(unsigned i) const;
 	QPoint getOutcontrolPos(unsigned i) const;
-	/// Returns the processing box name
+	// Returns the processing box name
 	QString getName() const;
-	/// Get the full connector name
+	// Get the full connector name
 	QString getInportName(unsigned i) const;
 	QString getOutportName(unsigned i) const;
 	QString getIncontrolNameAndBounds(unsigned i) const;
 	float getIncontrolUpperBound(unsigned index) const;
 	float getIncontrolLowerBound(unsigned index) const;
 	float getIncontrolDefaultValue(unsigned index) const;
-	QString getIncontrolName(unsigned i) const;
-	QString getOutcontrolName(unsigned i) const;
-	/// Get the connector prototyper name at the given parent pos
+	QString getIncontrolName(unsigned index) const;
+	QString getOutcontrolName(unsigned index) const;
+	//Port colors
+	QColor getInportColor(unsigned index) const;
+	QColor getOutportColor(unsigned index) const;
+	QColor getConnectorColorByType(const std::type_info & type) const;
+	// Get the connector prototyper name at the given parent pos
 	QString getInportPrototyperName(const QPoint & point) const;
 	QString getOutportPrototyperName(const QPoint & point) const;
 	QString getIncontrolPrototyperName(const QPoint & point) const;

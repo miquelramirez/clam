@@ -123,6 +123,10 @@ public:
 		}
 		return false;
 	}
+	virtual const std::type_info & GetTypeId() const 
+	{
+		return typeid(Token);
+	};
  protected:
 
 	ProperInPortsList mPublishedInPortsList;
