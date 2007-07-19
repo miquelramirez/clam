@@ -14,8 +14,7 @@ else:
 	options.Add( PathOption( 'cppunit_prefix', 'Prefix were cppunit was installed', '/usr' ))
 options.Add( BoolOption( 'release', 'Build CLAM Tests enabling compiler optimizations', 'no') )
 options.Add( PathOption( 'test_data_path', 'Path to the TestDataPrefix', '') )
-if sys.platform=="linux2" :
-	options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode in linux', 'no') )
 
 env = Environment( ENV=os.environ, tools=['default', 'clam'], toolpath=[clamToolPath], options=options)
 
