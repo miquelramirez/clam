@@ -134,12 +134,6 @@ public:
 
 	void doIt(CLAM::DescriptionDataPool * pool, unsigned & lastChord, CLAM::DataArray * chordSegmentation, CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
 	{
-		const Simac::ChordExtractor & _extractor(extractor);
-		CLAM::DescriptionDataPool * _pool(pool);
-		unsigned & _lastChord(lastChord);
-		CLAM::DataArray * _chordSegmentation(chordSegmentation);
-		CLAM::TData _currentTime(currentTime);
-		
 		const std::vector<double> & correlation = extractor.chordCorrelation(); //pointer to correlation data
 
 		CLAM::TData firstCandidateWeight = correlation[extractor.firstCandidate()];
@@ -149,19 +143,19 @@ public:
 		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
 				0 : extractor.firstCandidate();
 		
-		if (currentChord!=_lastChord)
+		if (currentChord!=lastChord)
 		{
-			if (_lastChord != 0)
-				_chordSegmentation[0].AddElem(_currentTime);
+			if (lastChord != 0)
+				chordSegmentation[0].AddElem(currentTime);
 			if (currentChord != 0)
 			{
-				unsigned newSegment = _pool->GetNumberOfContexts("ExtractedChord");
-				_chordSegmentation[0].AddElem(_currentTime);
-				_pool->Insert("ExtractedChord", newSegment);
-				_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root")[newSegment]= extractor.root(extractor.firstCandidate());
-				_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode")[newSegment]= extractor.mode(extractor.firstCandidate());
+				unsigned newSegment = pool->GetNumberOfContexts("ExtractedChord");
+				chordSegmentation[0].AddElem(currentTime);
+				pool->Insert("ExtractedChord", newSegment);
+				pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root")[newSegment]= extractor.root(extractor.firstCandidate());
+				pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode")[newSegment]= extractor.mode(extractor.firstCandidate());
 			}
-			_lastChord = currentChord;
+			lastChord = currentChord;
 		}
 	}
 };
