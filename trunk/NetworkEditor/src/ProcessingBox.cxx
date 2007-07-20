@@ -78,7 +78,7 @@ void ProcessingBox::paintFromParent(QPainter & painter)
 	painter.restore();
 }
 
-QWidget * embededWidgetFor(CLAM::Processing * processing, NetworkCanvas * canvas)
+QWidget * embededWidgetFor(CLAM::Processing * processing, QWidget * canvas)
 {
 	if (!processing) return 0;
 	std::string className = processing->GetClassName();
