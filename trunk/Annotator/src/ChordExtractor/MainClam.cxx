@@ -128,24 +128,18 @@ const char * schemaContent =
 
 class ChordExtractorSegmentation
 {
-	const Simac::ChordExtractor & extractor;
-	CLAM::DescriptionDataPool * _pool;
-	unsigned & _lastChord;
-	CLAM::DataArray * _chordSegmentation;
-	CLAM::TData _currentTime;
 public:
-	ChordExtractorSegmentation(CLAM::DescriptionDataPool * pool, unsigned & lastChord, CLAM::DataArray * chordSegmentation, CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
-		: extractor(extractor)
-		, _pool(pool)
-		, _lastChord(lastChord)
-		, _chordSegmentation(chordSegmentation)
-		, _currentTime(currentTime)				      
-	{
-	}
+	ChordExtractorSegmentation() {};
 	~ChordExtractorSegmentation() {};
 
-	void doIt()
+	void doIt(CLAM::DescriptionDataPool * pool, unsigned & lastChord, CLAM::DataArray * chordSegmentation, CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
 	{
+		const Simac::ChordExtractor & _extractor(extractor);
+		CLAM::DescriptionDataPool * _pool(pool);
+		unsigned & _lastChord(lastChord);
+		CLAM::DataArray * _chordSegmentation(chordSegmentation);
+		CLAM::TData _currentTime(currentTime);
+		
 		const std::vector<double> & correlation = extractor.chordCorrelation(); //pointer to correlation data
 
 		CLAM::TData firstCandidateWeight = correlation[extractor.firstCandidate()];
@@ -175,6 +169,7 @@ public:
 class ChordExtractorDescriptionDumper
 {
 	const Simac::ChordExtractor & extractor;
+	ChordExtractorSegmentation segmentation;
 	std::ofstream outputPool;
 
 	CLAM::DescriptionScheme _schema;
@@ -297,8 +292,7 @@ public:
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 //		_debugFrameSegmentation[0].AddElem(currentTime);
 		
-		ChordExtractorSegmentation segmentation(_pool, _lastChord, _chordSegmentation, currentTime, extractor);
-		segmentation.doIt();
+		segmentation.doIt(_pool, _lastChord, _chordSegmentation, currentTime, extractor);
 
 		_currentFrame++;
 	}
