@@ -191,7 +191,6 @@ class ChordExtractorDescriptionDumper
 	CLAM::DataArray * _pcps;
 	CLAM::DataArray * _chordChorrelation;
 	CLAM::DataArray * _chordSegmentation;
-//	CLAM::DataArray * _debugFrameSegmentation;
 	unsigned _hop;
 	unsigned _firstFrameOffset;
 	CLAM::TData _samplingRate;
@@ -235,7 +234,6 @@ public:
 		_firstChordIndex = _pool->GetWritePool<CLAM::TData>("Frame","FirstChordIndex"); // TODO: Kludge!!
 		_secondChordIndex = _pool->GetWritePool<CLAM::TData>("Frame","SecondChordIndex"); // TODO: Kludge!!
 		_chordSegmentation = _pool->GetWritePool<CLAM::DataArray>("Song","Chords_Harte");
-//		_debugFrameSegmentation = _pool->GetWritePool<CLAM::DataArray>("Song","DebugFrameSegments");
 		_pcps = _pool->GetWritePool<CLAM::DataArray>("Frame","HartePcp");
 		_chordChorrelation = _pool->GetWritePool<CLAM::DataArray>("Frame","HarteChordCorrelation");
 		_energies = _pool->GetWritePool<CLAM::TData>("Frame","Energy");
@@ -250,7 +248,6 @@ public:
 			_chordChorrelation[frame].SetSize(24);
 		}
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
-//		_debugFrameSegmentation[0].AddElem(currentTime);
 		
 
 		if (_lastChord != 0)
@@ -303,20 +300,6 @@ public:
 		ChordExtractorSegmentation segmentation(_pool, _lastChord, _chordSegmentation, currentTime, extractor);
 		segmentation.doIt();
 
-		/*if (currentChord!=_lastChord)
-		{
-			if (_lastChord != 0)
-				_chordSegmentation[0].AddElem(currentTime);
-			if (currentChord != 0)
-			{
-				unsigned newSegment = _pool->GetNumberOfContexts("ExtractedChord");
-				_chordSegmentation[0].AddElem(currentTime);
-				_pool->Insert("ExtractedChord", newSegment);
-				_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root")[newSegment]= extractor.root(extractor.firstCandidate());
-				_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode")[newSegment]= extractor.mode(extractor.firstCandidate());
-			}
-			_lastChord = currentChord;
-		}*/
 		_currentFrame++;
 	}
 };
