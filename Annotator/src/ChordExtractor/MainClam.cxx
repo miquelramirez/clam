@@ -126,6 +126,52 @@ const char * schemaContent =
 "</DescriptionScheme>\n"
 ;
 
+class ChordExtractorSegmentation
+{
+	const Simac::ChordExtractor & extractor;
+	CLAM::DescriptionDataPool * _pool;
+	unsigned & _lastChord;
+	CLAM::DataArray * _chordSegmentation;
+	CLAM::TData _currentTime;
+public:
+	ChordExtractorSegmentation(CLAM::DescriptionDataPool * pool, unsigned & lastChord, CLAM::DataArray * chordSegmentation, CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
+		: extractor(extractor)
+		, _pool(pool)
+		, _lastChord(lastChord)
+		, _chordSegmentation(chordSegmentation)
+		, _currentTime(currentTime)				      
+	{
+	}
+	~ChordExtractorSegmentation() {};
+
+	void doIt()
+	{
+		const std::vector<double> & correlation = extractor.chordCorrelation(); //pointer to correlation data
+
+		CLAM::TData firstCandidateWeight = correlation[extractor.firstCandidate()];
+		CLAM::TData secondCandidateWeight = correlation[extractor.secondCandidate()];
+		CLAM::TData noCandidateWeigth = correlation[0];
+		
+		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
+				0 : extractor.firstCandidate();
+		
+		if (currentChord!=_lastChord)
+		{
+			if (_lastChord != 0)
+				_chordSegmentation[0].AddElem(_currentTime);
+			if (currentChord != 0)
+			{
+				unsigned newSegment = _pool->GetNumberOfContexts("ExtractedChord");
+				_chordSegmentation[0].AddElem(_currentTime);
+				_pool->Insert("ExtractedChord", newSegment);
+				_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root")[newSegment]= extractor.root(extractor.firstCandidate());
+				_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode")[newSegment]= extractor.mode(extractor.firstCandidate());
+			}
+			_lastChord = currentChord;
+		}
+	}
+};
+
 class ChordExtractorDescriptionDumper
 {
 	const Simac::ChordExtractor & extractor;
@@ -141,7 +187,7 @@ class ChordExtractorDescriptionDumper
 	CLAM::TData * _firstChordIndex;
 	CLAM::TData * _secondChordIndex;
 	CLAM::TData * _energies;
-	std::string _lastChord;
+	unsigned _lastChord;
 	CLAM::DataArray * _pcps;
 	CLAM::DataArray * _chordChorrelation;
 	CLAM::DataArray * _chordSegmentation;
@@ -154,7 +200,7 @@ public:
 		: extractor(extractor)
 		, outputPool((filenameBase+suffix).c_str())
 		, _currentFrame(0)
-		, _lastChord("None")
+		, _lastChord(0)
 		, _hop(hop)
 //		, _firstFrameOffset((framesize-hop)/2)
 		, _firstFrameOffset(0)
@@ -205,8 +251,12 @@ public:
 		}
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 //		_debugFrameSegmentation[0].AddElem(currentTime);
-		if (_lastChord != "None")
+		
+
+		if (_lastChord != 0)
 			_chordSegmentation[0].AddElem(currentTime);
+
+
 //		CLAM::XMLStorage::Dump(*_pool, "Description", std::cout);
 		CLAM::XMLStorage::Dump(*_pool, "Description", outputPool);
 		std::cout << "Frames " << _currentFrame << " of " <<  _pool->GetNumberOfContexts("Frame") << std::endl;
@@ -244,17 +294,20 @@ public:
 		_firstChordIndex[_currentFrame] = extractor.firstCandidate();
 		_secondChordIndex[_currentFrame] = extractor.secondCandidate();
 		_energies[_currentFrame] = extractor.energy();
-		std::string currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
-				"None":
-				extractor.chordRepresentation(extractor.firstCandidate());
+		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
+				0 : extractor.firstCandidate();
 
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 //		_debugFrameSegmentation[0].AddElem(currentTime);
-		if (currentChord!=_lastChord)
+		
+		ChordExtractorSegmentation segmentation(_pool, _lastChord, _chordSegmentation, currentTime, extractor);
+		segmentation.doIt();
+
+		/*if (currentChord!=_lastChord)
 		{
-			if (_lastChord != "None")
+			if (_lastChord != 0)
 				_chordSegmentation[0].AddElem(currentTime);
-			if (currentChord != "None")
+			if (currentChord != 0)
 			{
 				unsigned newSegment = _pool->GetNumberOfContexts("ExtractedChord");
 				_chordSegmentation[0].AddElem(currentTime);
@@ -263,7 +316,7 @@ public:
 				_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode")[newSegment]= extractor.mode(extractor.firstCandidate());
 			}
 			_lastChord = currentChord;
-		}
+		}*/
 		_currentFrame++;
 	}
 };
