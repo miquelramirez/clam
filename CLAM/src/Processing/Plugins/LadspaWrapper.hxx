@@ -41,15 +41,13 @@ private:
 	void UpdatePortsPointers();
 
 public:
-	LadspaWrapper();
-	LadspaWrapper( const Config & );
+	LadspaWrapper( const Config & c = Config());
 	LadspaWrapper( const std::string& libraryFileName, unsigned index, const std::string& factoryKey );
+	bool ConcreteStart();
+	bool ConcreteStop();
 
 	bool Do();
-	virtual ~LadspaWrapper()
-	{
-		RemovePortsAndControls();
-	}
+	virtual ~LadspaWrapper();
 
 	const char * GetClassName() const;
 	
