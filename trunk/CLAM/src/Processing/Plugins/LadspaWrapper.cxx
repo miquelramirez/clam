@@ -18,16 +18,7 @@ namespace CLAM
 
 static int sPortSize = 512;
 
-LadspaWrapper::LadspaWrapper()
-	: mInstance(0),
-	  mDescriptor(0),
-	  mSharedObject(0)
-{
-	Config cfg;
-	Configure(cfg);
-}
-
-LadspaWrapper::LadspaWrapper( const Config & cfg = Config())
+LadspaWrapper::LadspaWrapper( const Config & cfg)
 	: mInstance(0),
 	  mDescriptor(0),
 	  mSharedObject(0)
@@ -43,6 +34,28 @@ LadspaWrapper::LadspaWrapper( const std::string& libraryFileName, unsigned index
 	Config cfg;
 	ConcreteConfigure( libraryFileName, index, key);
 	Configure(cfg);
+}
+
+LadspaWrapper::~LadspaWrapper()
+{
+	if (mInstance)
+	{
+		if (mDescriptor->cleanup) mDescriptor->cleanup(mInstance);
+	}
+	RemovePortsAndControls();
+}
+
+bool LadspaWrapper::ConcreteStart()
+{
+	if (mDescriptor->activate)
+		mDescriptor->activate(mInstance);
+	return true;
+}
+bool LadspaWrapper::ConcreteStop()
+{
+	if (mDescriptor->deactivate)
+		mDescriptor->deactivate(mInstance);
+	return true;
 }
 
 bool LadspaWrapper::Do()
