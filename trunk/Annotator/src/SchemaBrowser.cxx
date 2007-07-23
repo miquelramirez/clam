@@ -144,6 +144,43 @@ void SchemaBrowser::languageChange()
 
 typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
 
+QTreeWidgetItem * SchemaBrowser::findAttributeItem(const QString & scope, const QString & name)
+{
+	QTreeWidgetItem * scopeItem = findScopeItem(scope);
+	if (!scopeItem) return 0;
+	for (int i=0; i<scopeItem->childCount(); i++)
+	{
+		QTreeWidgetItem * attributeItem = scopeItem->child(i);
+		if (attributeItem->text(0)==name) return attributeItem;
+	}
+	return 0;
+}
+
+QTreeWidgetItem * _findScopeItem( QTreeWidgetItem * item, const QString & scope)
+{
+	if (item->text(0)==scope) return item;
+	for (int i=0; i<item->childCount(); i++)
+	{
+		QTreeWidgetItem * attribute = item->child(i);
+		for (int j=0; j<attribute->childCount(); j++)
+		{
+			QTreeWidgetItem * candidate =_findScopeItem(attribute->child(j), scope);
+			if (candidate) return candidate;
+		}
+	}
+	return 0;
+}
+
+QTreeWidgetItem * SchemaBrowser::findScopeItem(const QString & scope)
+{
+	for (int i=0; i<attributeList->topLevelItemCount(); i++)
+	{
+		QTreeWidgetItem * result = _findScopeItem( attributeList->topLevelItem(i), scope );
+		if (result) return result;
+	}
+	return 0;
+}
+
 void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 {
 	attributeProperties->hide();
@@ -155,6 +192,21 @@ void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 			it++)
 	{
 		addAttribute(it->GetScope(), it->GetName(), it->GetType());
+	}
+	for (SchemaAttributes::iterator it = attributes.begin();
+			it!=attributes.end();
+			it++)
+	{
+		if (! it->HasChildScope() ) continue;
+		QTreeWidgetItem * parent = findAttributeItem(it->GetScope().c_str(), it->GetName().c_str() );
+		if (!parent) continue;
+		QTreeWidgetItem * child = findScopeItem(it->GetChildScope().c_str());
+		if (!child) continue;
+		CLAM_ASSERT(parent, "The attribute should have been inserted");
+		attributeList->takeTopLevelItem(attributeList->indexOfTopLevelItem(child));
+		parent->insertChild(0,child);
+		parent->setExpanded(true);
+		child->setExpanded(true);
 	}
 	attributeList->show();
 	attributeList->resizeColumnToContents(0);
@@ -170,14 +222,17 @@ void SchemaBrowser::updateCurrentAttribute()
 		attributeDocumentation->setHtml(tr("<p><em>(No attribute or scope selected)</em></p>"));
 		return;
 	}
-	QTreeWidgetItem * parent = current->parent();
-	if (!parent) // Scope
+	unsigned level = 0;
+	for ( QTreeWidgetItem * parent = current->parent(); parent ; level++)
+		parent=parent->parent();
+	if (! (level&1)) // Scope
 	{
 		QString documentation = tr("<h2>Scope '%1'</h2>").arg(current->text(0));
 		attributeDocumentation->setHtml(documentation);
 		return;
 	}
 	// Attribute
+	QTreeWidgetItem * parent = current->parent();
 	const CLAM_Annotator::SchemaAttribute & attributeSchema = mSchema->GetAttribute(parent->text(0).toStdString(),current->text(0).toStdString());
 	QString url = "http://mtg100.upf.es/simac/DescriptionSchemeWeb";
 	QString documentation = tr("<h2>Attribute '%1::%2'</h2>").arg(parent->text(0)).arg(current->text(0));

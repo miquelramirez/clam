@@ -39,6 +39,7 @@ class QSpinBox;
 class QLabel;
 class QTextBrowser;
 class QLineEdit;
+class QTreeWidgetItem;
 namespace CLAM_Annotator { class Schema; }
 
 class SchemaBrowser : public QWidget
@@ -70,6 +71,10 @@ protected:
 protected slots:
     virtual void languageChange();
     virtual void updateCurrentAttribute();
+
+private:
+	QTreeWidgetItem * findAttributeItem(const QString & scope, const QString & name);
+	QTreeWidgetItem * findScopeItem(const QString & scope);
 
 private:
     QPixmap scopeIcon;
