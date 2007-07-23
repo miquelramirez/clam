@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
+ *						 UNIVERSITAT POMPEU FABRA
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,15 +21,23 @@
 
 #include "AudioDatabaseReader.hxx"
 #include <iostream>
+//#include "Factory.hxx"
 #include "ProcessingFactory.hxx"
+
+typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-
-namespace detail
-{
-	static FactoryRegistrator<ProcessingFactory, AudioDatabaseReader> regAudioDatabaseReader("AudioDatabaseReader");
-}
+/*
+	namespace detail
+	{
+		static ProcessingFactory::Registrator<AudioDatabaseReader> regtAudioDatabaseReader( "AudioDatabaseReader" );
+	}
+*/
+	namespace detail
+	{
+		static FactoryRegistrator<ProcessingFactory, AudioDatabaseReader> regAudioDatabaseReader("AudioDatabaseReader");
+	}
 
 AudioDatabaseReader::AudioDatabaseReader()
 {
@@ -37,43 +45,48 @@ AudioDatabaseReader::AudioDatabaseReader()
 };
 
 AudioDatabaseReader::AudioDatabaseReader(const AudioDatabaseReaderConfig &c)
-{ 
+/* : mOutputSineBranchSpectrum( "Sinusoidal Branch Spectrum", this ),
+  mOutputResBranchSpectrum( "Residual Branch Spectrum", this ),
+  mOutputFundamental( "Fundamental", this ),
+  mOutputSinSpectralPeaks( "Sinusoidal Peaks", this ),
+  mOutputResSpectrum( "Residual Spectrum", this ) */
+{
 	myMonoAudioFileReaderConfig = new MonoAudioFileReaderConfig();
 	myMonoAudioFileReaderConfig->SetSourceFile( c.GetFilename() );
 	//myMonoAudioFileReaderConfig->SetLoop( true );
 	myMonoAudioFileReader = new MonoAudioFileReader( *myMonoAudioFileReaderConfig );
-		
-		// SMS Analysis configuration 
-		static CLAM::SMSAnalysisConfig analConfig;	
-		analConfig.SetSinWindowSize( 2049 );
-		analConfig.SetHopSize(256);
-		analConfig.SetSinZeroPadding(2);
-		analConfig.SetResWindowSize( 1025 );
 
-	mySMSAnalysisCore = new SMSAnalysisCore( analConfig );
+	// SMS Analysis configuration
+	//static CLAM::SMSAnalysisConfig analConfig;
+	//analConfig.SetSinWindowSize( 2049 );
+	//analConfig.SetHopSize(256);
+	//analConfig.SetSinZeroPadding(2);
+	//analConfig.SetResWindowSize( 1025 );
+
+	mySMSAnalysisCore = new SMSAnalysisCore( c.GetAnalysisConfig() );
 
 	ConnectAndPublishPorts();
-	
+
 	Configure(c);
 };
 
-	// helper methods for the network tests
-	const CLAM::SMSAnalysisConfig& helperAnalysisConfigInstance()
-	{
+// helper methods for the network tests
+const CLAM::SMSAnalysisConfig& helperAnalysisConfigInstance()
+{
 
-		int analHopSize = 256;
+	int analHopSize = 256;
 
 //		int synthFrameSize = analHopSize;
-		int analZeroPaddingFactor= 2;
-		
-		// SMS Analysis configuration 
-		static CLAM::SMSAnalysisConfig analConfig;
-		
-		analConfig.SetSinWindowSize( 2049 );
-		analConfig.SetHopSize(analHopSize);
+	int analZeroPaddingFactor= 2;
+
+	// SMS Analysis configuration
+	static CLAM::SMSAnalysisConfig analConfig;
+
+	analConfig.SetSinWindowSize( 2049 );
+	analConfig.SetHopSize(analHopSize);
 //		analConfig.SetSinWindowType(mGlobalConfig.GetAnalysisWindowType());
-		analConfig.SetSinZeroPadding(analZeroPaddingFactor);
-		analConfig.SetResWindowSize( 1025 );
+	analConfig.SetSinZeroPadding(analZeroPaddingFactor);
+	analConfig.SetResWindowSize( 1025 );
 //		analConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
 
 //		analConfig.GetPeakDetect().SetMagThreshold(mGlobalConfig.GetAnalysisPeakDetectMagThreshold());
@@ -83,8 +96,8 @@ AudioDatabaseReader::AudioDatabaseReader(const AudioDatabaseReaderConfig &c)
 //		analConfig.GetFundFreqDetect().SetLowestFundFreq(mGlobalConfig.GetAnalysisLowestFundFreq());
 //		analConfig.GetFundFreqDetect().SetHighestFundFreq(mGlobalConfig.GetAnalysisHighestFundFreq());
 
-		return analConfig;
-	}
+	return analConfig;
+}
 
 
 bool AudioDatabaseReader::ConcreteConfigure(const ProcessingConfig& c)
@@ -93,7 +106,7 @@ bool AudioDatabaseReader::ConcreteConfigure(const ProcessingConfig& c)
 
 	//myMonoAudioFileReader->Configure(*myMonoAudioFileReaderConfig);
 	//myMonoAudioFileReader->Start();
-	
+
 	return true;
 }
 
@@ -104,7 +117,7 @@ AudioDatabaseReader::~AudioDatabaseReader()
 		delete myMonoAudioFileReader;
 		myMonoAudioFileReader = 0;
 	}
-	
+
 	if (myMonoAudioFileReaderConfig)
 	{
 		delete myMonoAudioFileReaderConfig;
@@ -115,7 +128,7 @@ AudioDatabaseReader::~AudioDatabaseReader()
 void AudioDatabaseReader::ConnectAndPublishPorts()
 {
 	CLAM::ConnectPorts(*myMonoAudioFileReader, "Samples Read", *mySMSAnalysisCore, "Input Audio");
-	// TODO	
+	// TODO
 	// change this. you need to declare portpublisher (i.e. mFundamental) and do
 	// mFundamental.Publish( mSMSAnalysisCore.GetOutPort("Fundamental") );
 	// where mFundamental is a OutPortPublisher<Fundamental>
@@ -126,8 +139,27 @@ void AudioDatabaseReader::ConnectAndPublishPorts()
 //	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Sinusoidal Peaks") );
 //	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Fundamental") );
 //	GetOutPorts().Publish( &mySMSAnalysisCore->GetOutPort("Residual Spectrum") );
+
+//	mOutputFundamental.Publish( &mySMSAnalysisCore->GetOutPort("Fundamental") );
+//	mOutputSinSpectralPeaks.Publish( &mySMSAnalysisCore->GetOutPort("Sinusoidal Peaks") );
+//	mOutputResSpectrum.Publish( &mySMSAnalysisCore->GetOutPort("Residual Spectrum") );
+//	GetOutPorts().Register( &mySMSAnalysisCore->GetOutPort("Residual Branch Spectrum") );
+
+/*
+	mOutputSineBranchSpectrum.PublishOutPort( mySMSAnalysisCore->GetOutPort("Sinusoidal Branch Spectrum") );
+	mOutputResBranchSpectrum.PublishOutPort( mySMSAnalysisCore->GetOutPort("Residual Branch Spectrum") );
+	mOutputFundamental.PublishOutPort( mySMSAnalysisCore->GetOutPort("Fundamental") );
+	mOutputSinSpectralPeaks.PublishOutPort( mySMSAnalysisCore->GetOutPort("Sinusoidal Peaks") );
+	mOutputResSpectrum.PublishOutPort( mySMSAnalysisCore->GetOutPort("Residual Spectrum") );
+*/
+
+	RegisterOutPort( &mySMSAnalysisCore->GetOutPort("Sinusoidal Branch Spectrum") );
+	RegisterOutPort( &mySMSAnalysisCore->GetOutPort("Residual Branch Spectrum") );
+	RegisterOutPort( &mySMSAnalysisCore->GetOutPort("Fundamental") );
+	RegisterOutPort( &mySMSAnalysisCore->GetOutPort("Sinusoidal Peaks") );
+	RegisterOutPort( &mySMSAnalysisCore->GetOutPort("Residual Spectrum") );
 }
- 
+
 bool AudioDatabaseReader::Do(Audio& in)
 {
 	CLAM_ASSERT( AbleToExecute(), "This processing is not allowed to be executed!" );
@@ -137,22 +169,22 @@ bool AudioDatabaseReader::Do(Audio& in)
 bool AudioDatabaseReader::Do(Audio& inL,Audio& inR)
 {
 	CLAM_ASSERT( AbleToExecute(), "This processing is not allowed to be executed!" );
-	return myMonoAudioFileReader->Do(inL); 
+	return myMonoAudioFileReader->Do(inL);
 }
- 
+
 bool AudioDatabaseReader::Do(void)
 {
 	bool response = myMonoAudioFileReader->Do();
 	mySMSAnalysisCore->Do();
-	
+
 	return response;
 }
- 
+
 bool AudioDatabaseReader::ConcreteStart()
-{ 
+{
 	myMonoAudioFileReader->Start();
 	mySMSAnalysisCore->Start();
-	
+
 	return true;
 }
 

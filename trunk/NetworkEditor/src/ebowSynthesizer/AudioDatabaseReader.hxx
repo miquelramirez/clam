@@ -30,6 +30,7 @@
 #include "AudioOutPort.hxx"
 #include "SMSAnalysisConfig.hxx"
 #include "SMSAnalysisCore.hxx"
+#include "OutPort.hxx"
 #include "OutPortPublisher.hxx"
 #include "Spectrum.hxx"
 #include "SpectralPeakArray.hxx"
@@ -50,9 +51,10 @@ class AudioDatabaseReader : public ProcessingComposite
 public:
 	class AudioDatabaseReaderConfig: public ProcessingConfig {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE(AudioDatabaseReaderConfig, 1, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE(AudioDatabaseReaderConfig, 2, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, Filename, Filename);
-	protected:
+		DYN_ATTRIBUTE (1, public, SMSAnalysisConfig, AnalysisConfig);
+protected:
 		/** Dynamic type initialization: All attributes are instantiated. */
 		void DefaultInit(void)
 		{
@@ -89,6 +91,14 @@ private:
 	SMSAnalysisCore* mySMSAnalysisCore;
 	AudioOutPort mOutput;
 
+    /*
+    OutPortPublisher<Spectrum> mOutputSineBranchSpectrum;
+    OutPortPublisher<Spectrum> mOutputResBranchSpectrum;
+    OutPortPublisher<Fundamental> mOutputFundamental;
+    OutPortPublisher<SpectralPeakArray> mOutputSinSpectralPeaks;
+    OutPortPublisher<Spectrum> mOutputResSpectrum;
+    */
+    
 	const char *GetClassName() const {return "AudioDatabaseReader";}
 	void ConnectAndPublishPorts();
 
