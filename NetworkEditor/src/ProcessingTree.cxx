@@ -168,6 +168,8 @@ const static char * processingClasses[] = {
 	0,
 	"Ebow Synthesizer (Experimental - GSoC)",
 	"AudioDatabaseReader",
+	"SDIFDatabaseProcessing",
+	"OSCSourceProcessing",
 	0,
 	0
 };

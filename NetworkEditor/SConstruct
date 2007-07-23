@@ -8,6 +8,7 @@ options.Add(PathOption('prefix', 'The prefix where the application will be insta
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt4/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
+options.Add(BoolOption('with_osc', 'Adds OSC related processings', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -104,7 +105,7 @@ includePaths = sourcePaths + extraPaths
 sources = scanFiles('*.cxx', sourcePaths)
 sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
-sources = dict.fromkeys(sources).keys()
+sources = dict.fromkeys(sources).keys() # remove duplicates
 for mainSource in mainSources.values() :
 	sources.remove(mainSource)
 
@@ -124,6 +125,15 @@ if sys.platform=='linux2' :
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
+
+if env["with_osc"] :
+	env.Append( CPPDEFINES=['WITH_OSC'] )
+else:
+	oscDependent = scanFiles("*OSC*.cxx", [os.path.join('src','ebowSynthesizer')])
+	for oscfile in oscDependent:
+		sources.remove(oscfile)
+
+
 testsources = scanFiles('*.cxx', ['test'])
 plugindirs = [
 	os.path.join('src','clamWidgetsPlugin'),
