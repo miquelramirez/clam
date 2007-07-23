@@ -20,10 +20,16 @@
  */
 
 #include "Fundamental.hxx"
+#include "ProcessingDataPlugin.hxx"
 
 
 namespace CLAM
 {
+
+	namespace Hidden
+	{
+		static ProcessingDataPlugin::Registrator<Fundamental> dataRegistrator("sandybrown");
+	}
 	//////////////////////////////////////////////////////////////////////
 	//
 	// Fundamental

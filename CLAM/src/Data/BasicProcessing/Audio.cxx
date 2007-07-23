@@ -21,9 +21,17 @@
 
 #include "Audio.hxx"
 #include "CLAM_Math.hxx"
+#include "ProcessingDataPlugin.hxx"
 
 using namespace CLAM;
 
+namespace CLAM
+{
+	namespace Hidden
+	{
+		static ProcessingDataPlugin::Registrator<CLAM::Audio> dataRegistratorAudio("lightcyan");
+	}
+}
 
 void Audio::DefaultInit(void)
 {
