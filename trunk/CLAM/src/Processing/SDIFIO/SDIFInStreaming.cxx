@@ -36,7 +36,7 @@ namespace CLAM
 
 namespace Hidden
 {
-        static FactoryRegistrator<ProcessingFactory, SDIFInStreaming> regSDIFInStreaming ("SDIFInStreaming");
+		static FactoryRegistrator<ProcessingFactory, SDIFInStreaming> regSDIFInStreaming ("SDIFInStreaming");
 }
 
 SDIFInStreaming::SDIFInStreaming():
@@ -77,13 +77,9 @@ const ProcessingConfig& SDIFInStreaming::GetConfig() const
 
 bool SDIFInStreaming::Do(void)
 {
-	bool result;
-	while ( result = mSDIFReader.ReadFrame(	mFundamentalOutput.GetData(),
+	bool result = mSDIFReader.ReadFrame(	mFundamentalOutput.GetData(),
 											mSpectralPeakArrayOutput.GetData(),
-											mResidualSpectrumOutput.GetData() ) )
-	{
-		// nothing needs to be done here
-	}
+											mResidualSpectrumOutput.GetData() );
 
 	mFundamentalOutput.Produce();
 	mResidualSpectrumOutput.Produce();
