@@ -6,7 +6,7 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SDIFDatabaseProcessing> regSDIFDatabaseProcessing("SDIFDatabase");
+	static FactoryRegistrator<ProcessingFactory, SDIFDatabaseProcessing> regSDIFDatabaseProcessing("SDIFDatabaseProcessing");
 }
 
 SDIFDatabaseProcessing::SDIFDatabaseProcessing()
@@ -81,8 +81,10 @@ bool SDIFDatabaseProcessing::Do(void)
 	// Copy SpectralPeakArray data
 	SpectralPeakArray& sourceSpectralPeaks = aFramePtr->GetSpectralPeakArray();
 	SpectralPeakArray& targetSpectralPeaks = mOutputSpectralPeaks.GetData();
+	targetSpectralPeaks.AddAll();
+	targetSpectralPeaks.UpdateData();
 	targetSpectralPeaks.CopyMembers(sourceSpectralPeaks);
-
+	
 	// Copy ResidualSpectrum data
 	// (I would have moved this code into Spectrum as a CopyMembers method
 	//  but that class is so convoluted that it would be a massive headache
