@@ -7,6 +7,8 @@
 #include "AudioDatabaseReader.hxx"
 #include "Network.hxx"
 #include "FreewheelingNetworkPlayer.hxx"
+#include "XMLStorage.hxx"
+#include "Err.hxx"
 
 #define AUDIO_IN_FILE "/Users/greg/Music/samples/MyPatches/EBowGuitar/EBow_Guitar_A4_RS.aif"
 //#define AUDIO_OUT_FILE "/Users/greg/Musics/samples/MyPatches/EBowGuitar/EBow_Guitar_A4_RS_comp.aif"
@@ -21,50 +23,13 @@ public:
 public:
 	void setUp()
 	{
-		ConfigureAnalysisSynthesis();
 	}
 
     CLAM::AudioDatabaseReader myAudioDatabaseReader;
     CLAM::SMSSynthesis mSynthesis;
 
-	const int helperResAnalWindowSize() { return 1025; }
-	const int helperAnalWindowSize() { return 2049; }
-	const int helperAnalHopSize() {return 512;}
-
-	void ConfigureAnalysisSynthesis()
-	{
-		/*global parameters*/
-		int analWindowSize = 2049;
-		int resAnalWindowSize = 1025;
-
-		int analHopSize = 512;
-//		analHopSize= (resAnalWindowSize-1)/2 ;
-
-		int synthFrameSize = analHopSize;
-		int analZeroPaddingFactor= 2;
-		
-		// SMS Analysis configuration 
-		CLAM::SMSAnalysisConfig analConfig;
-		
-		analConfig.SetSinWindowSize(analWindowSize);
-		analConfig.SetHopSize(analHopSize);
-//		analConfig.SetSinWindowType(mGlobalConfig.GetAnalysisWindowType());
-		analConfig.SetSinZeroPadding(analZeroPaddingFactor);
-		analConfig.SetResWindowSize(resAnalWindowSize);
-
-        CLAM::AudioDatabaseReader::AudioDatabaseReaderConfig myAudioDatabaseReaderConfig;
-        char* filename = "/Users/greg/Music/samples/MyPatches/EBowGuitar/EBow_Guitar_A4_RS.aif";
-        myAudioDatabaseReaderConfig.SetFilename( filename );
-		
-		CLAM::SMSSynthesisConfig synthConfig;
-		synthConfig.SetAnalWindowSize(resAnalWindowSize);
-		synthConfig.SetFrameSize(synthFrameSize);
-		synthConfig.SetHopSize(synthFrameSize);
-		
-	}
-
 	//TODO: fix. it runs but produces a broken sinusoidal
-	void testAnalysisSynthesis() //no segment, no frame just streaming inner data
+	void runAnalysisSynthesis(const char* wavInput, const char* wavOutput, const char* xmlAnalysisConfig, const char* xmlSynthesisConfig)
 	{
 //		CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
 
@@ -72,14 +37,23 @@ public:
 		CLAM::MonoAudioFileWriter audioWriter;
 		CLAM::MonoAudioFileWriterConfig writercfg;
 		
-		const std::string outputFile(AUDIO_OUT_FILE);
+		const std::string outputFile(wavOutput);
 		writercfg.SetTargetFile(outputFile);
 		audioWriter.Configure( writercfg );
 		
-        CLAM::AudioDatabaseReader myAudioDatabaseReader(  helperAudioDatabaseConfigInstance() );
-
+        CLAM::AudioDatabaseReader myAudioDatabaseReader;
+        CLAM::AudioDatabaseReader::AudioDatabaseReaderConfig myAudioDatabaseReaderConfig;
+        myAudioDatabaseReaderConfig.SetFilename(wavInput);
+        CLAM::SMSAnalysisConfig analysisConfig;
+		CLAM::XMLStorage::Restore(analysisConfig, xmlAnalysisConfig);
+        myAudioDatabaseReaderConfig.SetAnalysisConfig(analysisConfig);
+        myAudioDatabaseReader.Configure(myAudioDatabaseReaderConfig);
+        
 		CLAM::SMSSynthesis synthesis;
-		synthesis.Configure( helperSynthesisConfigInstance() );
+		//synthesis.Configure( helperSynthesisConfigInstance() );
+        CLAM::SMSSynthesisConfig synthesisConfig;
+		CLAM::XMLStorage::Restore(synthesisConfig, xmlSynthesisConfig);
+		synthesis.Configure(synthesisConfig);
 
 		CLAM::ConnectPorts(myAudioDatabaseReader, "Sinusoidal Peaks", synthesis, "InputSinPeaks");
 		CLAM::ConnectPorts(myAudioDatabaseReader, "Residual Spectrum", synthesis, "InputResSpectrum");
@@ -103,69 +77,36 @@ public:
 		audioWriter.Stop();
 					      
 	}
-	
-	// helper methods for the network tests
-	const CLAM::SMSAnalysisConfig& helperAnalysisConfigInstance()
-	{
-
-		int analHopSize = 512;
-//		analHopSize= (resAnalWindowSize-1)/2 ;
-
-//		int synthFrameSize = analHopSize;
-		int analZeroPaddingFactor= 2;
-		
-		// SMS Analysis configuration 
-		static CLAM::SMSAnalysisConfig analConfig;
-		
-		analConfig.SetSinWindowSize(helperAnalWindowSize() );
-		analConfig.SetHopSize(analHopSize);
-//		analConfig.SetSinWindowType(mGlobalConfig.GetAnalysisWindowType());
-		analConfig.SetSinZeroPadding(analZeroPaddingFactor);
-		analConfig.SetResWindowSize( helperResAnalWindowSize() );
-//		analConfig.SetResWindowType(mGlobalConfig.GetResAnalysisWindowType());
-
-//		analConfig.GetPeakDetect().SetMagThreshold(mGlobalConfig.GetAnalysisPeakDetectMagThreshold());
-//		analConfig.GetPeakDetect().SetMaxFreq(mGlobalConfig.GetAnalysisPeakDetectMaxFreq());
-//		analConfig.GetSinTracking().SetIsHarmonic(mGlobalConfig.GetAnalysisHarmonic());
-//		analConfig.GetFundFreqDetect().SetReferenceFundFreq(mGlobalConfig.GetAnalysisReferenceFundFreq());
-//		analConfig.GetFundFreqDetect().SetLowestFundFreq(mGlobalConfig.GetAnalysisLowestFundFreq());
-//		analConfig.GetFundFreqDetect().SetHighestFundFreq(mGlobalConfig.GetAnalysisHighestFundFreq());
-
-		return analConfig;
-	}
     
-    const CLAM::AudioDatabaseReader::AudioDatabaseReaderConfig & helperAudioDatabaseConfigInstance()
-    {
-        static CLAM::AudioDatabaseReader::AudioDatabaseReaderConfig myAudioDatabaseReaderConfig;
-        char* filename = "/Users/greg/Music/samples/MyPatches/EBowGuitar/EBow_Guitar_A4_RS.aif";
-        myAudioDatabaseReaderConfig.SetFilename( filename );
-        return myAudioDatabaseReaderConfig;
-    }
-    
-	const CLAM::SMSSynthesisConfig & helperSynthesisConfigInstance()
-	{
-		static CLAM::SMSSynthesisConfig synthConfig;
-		int synthFrameSize = helperAnalHopSize();
-		synthConfig.SetAnalWindowSize( helperResAnalWindowSize() );
-		synthConfig.SetFrameSize(synthFrameSize);
-		synthConfig.SetHopSize(synthFrameSize);
-		return synthConfig;
-	}
-
-
 };
 
 int main(int argc,char** argv)
 {
-//	try
-//	{
+	try
+	{
+        const char *wavInput, *wavOutput, *xmlAnalysisConfig, *xmlSynthesisConfig;
+        switch (argc)
+        {
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            wavInput=argv[1];
+            wavOutput=(argc < 3 )?"output.wav":argv[2];
+            xmlAnalysisConfig=(argc < 4 )?"analysis.xml":argv[3];
+            xmlSynthesisConfig=(argc < 5 )?"synthesis.xml":argv[4];
+            break;
+        default:
+            printf("Usage: %s input.wav [ output.wav [ analysis.xml [ synthesis.xml ] ] ]\n",argv[0]);
+            exit(1);
+            break;
+        }
 
         TestStreamingSMSAnalysisSynthesis app;
-		app.testAnalysisSynthesis();
+		app.runAnalysisSynthesis( wavInput, wavOutput, xmlAnalysisConfig, xmlSynthesisConfig);
         std::cout << "all done" << std::endl;
-/*
 	}
-	catch(Err error)
+	catch(CLAM::Err error)
 	{
 		error.Print();
 		std::cerr << "Abnormal Program Termination" << std::endl;
@@ -176,7 +117,7 @@ int main(int argc,char** argv)
 		std::cout << e.what() << std::endl;
 		return -1;
 	}
-*/    
+
 	return 0;
 }
 
