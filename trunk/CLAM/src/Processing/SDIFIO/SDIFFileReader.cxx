@@ -177,6 +177,12 @@ void SDIFFileReader::CopyFramesDataObjects(SDIF::Frame& tmpSDIFFrame, CLAM::Fund
 	{
 		CLAM_ASSERT(pMatrix->Type() == "ISTF","SDIFIn::Add ISTF Header in Matrix expected");
 
+		// these lines are important. all objects need to be added to the residual
+		// now or later it will not be able to convert from complex format to a
+		// phase / magnitude representation
+		argResidual.AddAll();
+		argResidual.UpdateData();
+
 		// MRJ: We set the sampling rate for the segment
 		//segment.SetSamplingRate( pMatrix->GetValue( 0, 0 ) );
 		mSamplingRate = pMatrix->GetValue( 0, 0 );
@@ -284,6 +290,16 @@ void SDIFFileReader::CopyFramesDataObjects(SDIF::Frame& tmpSDIFFrame, CLAM::Fund
 			mPrevIndexArray = tmpIndexArray;
 		}
 	}
+}
+
+int SDIFFileReader::GetReadPosition()
+{
+	return mpFile->Pos();
+}
+
+void SDIFFileReader::SetReadPosition(int readPosition)
+{
+	mpFile->Pos(readPosition);
 }
 
 int SDIFFileReader::GetSamplingRate()
