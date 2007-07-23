@@ -80,6 +80,7 @@ mainSources = {
 	'Prototyper' : os.path.join('src','prototyper','main.cxx'),
 	'OfflinePlayer' : os.path.join('src','OfflinePlayerMain.cxx'),
 	'TestAudioDatabaseReader' : os.path.join('src','ebowSynthesizer','TestAudioDatabaseReader.cxx'), #TODO provisinal. Will move to CLAM/example
+	'ebowSynthesizer' : os.path.join('src','ebowSynthesizer','ebowSynthesizer.cxx'), #TODO provisinal. Will move to CLAM/example
 }
 
 sourcePaths = [
@@ -152,10 +153,10 @@ pluginsources.append(os.path.join('src','processing','ControlSurface.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
 
 #commonObjects = env.StaticLibrary(target="networkeditor", source=sources)
-#programs = [ env.Program(target=program, source = [main, commonObjects]) 
+#programs = [ env.Program(target=program, source = [main, commonObjects])
 #	for program, main in mainSources.items()]
 
-programs = [ env.Program(target=program, source = [main] + sources) 
+programs = [ env.Program(target=program, source = [main] + sources)
 	for program, main in mainSources.items()]
 
 
@@ -189,7 +190,7 @@ translatableSources+= scanFiles('*.hxx', sourcePaths);
 translatableSources+= scanFiles('*.ui', sourcePaths);
 translatableSources = filter( (lambda a : a.rfind( "generated/")==-1 ),  translatableSources )
 translations = []
-if len(tsfiles) : 
+if len(tsfiles) :
 #	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
 	translations = env.Qm(source = tsfiles)
 
@@ -224,10 +225,10 @@ installation = {
 installTargets = [
 	env.Install( env['prefix']+path, files ) for path, files in installation.items() ]
 
-if sys.platform=='win32' : 
+if sys.platform=='win32' :
 	installTargets += [
 		env.Install(
-			env['prefix']+"/bin", 
+			env['prefix']+"/bin",
 			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
 			) for dll in 'Core', 'Gui', 'OpenGL']
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
@@ -245,23 +246,23 @@ if sys.platform=='win32' :
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' :
-	mac_networkeditor_bundle = env.Bundle( 
-		BUNDLE_NAME='NetworkEditor', 
+	mac_networkeditor_bundle = env.Bundle(
+		BUNDLE_NAME='NetworkEditor',
 		BUNDLE_BINARIES=["NetworkEditor"],
 		BUNDLE_RESOURCEDIRS=["example-data"],
 		BUNDLE_PLIST='resources/NetworkEditor-Info.plist',
 		BUNDLE_ICON='resources/CLAM.icns',
 	 )
-	mac_prototyper_bundle = env.Bundle( 
-		BUNDLE_NAME='Prototyper', 
+	mac_prototyper_bundle = env.Bundle(
+		BUNDLE_NAME='Prototyper',
 		BUNDLE_BINARIES=["Prototyper"],
 		BUNDLE_PLUGINS=["libCLAMWidgets.dylib"],
 		BUNDLE_RESOURCEDIRS=[],
 		BUNDLE_PLIST='resources/Prototyper-Info.plist',
 		BUNDLE_ICON='resources/Prototyper.icns',
 	 )
-	mac_designer_bundle = env.Bundle( 
-		BUNDLE_NAME='QtDesigner', 
+	mac_designer_bundle = env.Bundle(
+		BUNDLE_NAME='QtDesigner',
 		BUNDLE_BINARIES=["$QTDIR/bin/Designer.app/Contents/MacOS/Designer"],
 		BUNDLE_PLUGINS=[
 			"libCLAMWidgets.dylib",
@@ -279,10 +280,10 @@ if sys.platform=='darwin' :
 	]))
 	env.Alias('bundle', [mac_networkeditor_bundle, mac_prototyper_bundle, mac_designer_bundle])
 
-	#TODO mac_bundle should be dependency of Dmg:	
+	#TODO mac_bundle should be dependency of Dmg:
 	arch = os.popen("uname -p").read().strip()
 	mac_packages = env.Dmg('CLAM_NetworkEditor-%s-%s.dmg'% (fullVersion, arch), [
-		env.Dir('NetworkEditor.app/'), 
+		env.Dir('NetworkEditor.app/'),
 		env.Dir('Prototyper.app'),
 		env.Dir('QtDesigner.app'),
 	] )
