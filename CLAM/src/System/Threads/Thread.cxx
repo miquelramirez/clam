@@ -23,6 +23,7 @@
 #include "Mutex.hxx"
 #include "xtime.hxx"
 #include "Assert.hxx"
+#include <sched.h>
 #ifndef WIN32
 #include <cstdio>
 #endif
@@ -40,7 +41,7 @@ namespace CLAM
 
 Thread::Thread(bool realtime):
 	mRealtime(realtime),
-	mHasCode( false ), 
+	mHasCode( false ),
 	mHasCleanup( false ),
 	mIsCancelled(false),
 	mRunning(false)
@@ -58,7 +59,7 @@ void Thread::SetupPriorityPolicy()
 	#ifdef WIN32
 		BOOL res;
 		DWORD err;
-		
+
 		res = SetPriorityClass(GetCurrentProcess(),NORMAL_PRIORITY_CLASS );
 		err = GetLastError();
 		res = SetThreadPriority( GetCurrentThread(), THREAD_PRIORITY_NORMAL );
@@ -86,7 +87,7 @@ void Thread::SetupPriorityPolicy()
 		sched_param.sched_priority = sched_get_priority_max(policy)/2;
 		pthread_setschedparam(pthread_self(), policy, &sched_param);
 	}
-	#endif  
+	#endif
 }
 
 void Thread::Start()
@@ -105,6 +106,13 @@ void Thread::Stop()
 	mRunning = false;
 }
 
+void Thread::Yield()
+{
+	int ret;
+	ret = sched_yield();
+
+	CLAM_ASSERT( ret == 0, "The thread cannot yield?!!" );
+}
 
 void Thread::SetThreadCode( const CBL::Functor0& thread_code )
 {

@@ -39,9 +39,9 @@ public:
 
 	virtual ~Thread();
 
-	void Start();
+	virtual void Start();
 
-	void Stop();
+	virtual void Stop();
 
 	void Sleep();
 
@@ -49,6 +49,7 @@ public:
 
 	void WakeUp();
 
+	void Yield();
 
 	void SetThreadCode( const CBL::Functor0& thread_code );
 
@@ -66,9 +67,9 @@ public:
 		return mRunning;
 	}
 
-private:
+protected:
 	virtual void SetupPriorityPolicy();
-private:
+
 	bool               mRealtime;
 	bool               mHasCode;
 	bool               mHasCleanup;
@@ -85,7 +86,7 @@ private:
 
 	// Pthreads needed static functions for launching and cleaning
 
-	static void* LaunchThread( void* pSelf ); 
+	static void* LaunchThread( void* pSelf );
 
 	static void  LaunchThreadCleanup( void* pSelf );
 };
