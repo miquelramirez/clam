@@ -62,7 +62,7 @@ QString ControlSurfaceWidgetPlugin::group() const
 
 QIcon ControlSurfaceWidgetPlugin::icon() const
 {
-    return QIcon(":/icons/images/oscilloscope.svg");
+    return QIcon(":/icons/images/controlsurface.svg");
 }
 
 QString ControlSurfaceWidgetPlugin::toolTip() const
