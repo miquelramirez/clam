@@ -44,7 +44,7 @@ void SpectralPeakArray::DefaultInit()
 	//Initializing minimum set of attributes (mag, freq and scale)
 	AddFreqBuffer();
 	AddMagBuffer();
-	// MRJ: More forgotten donuts here. What am I missing here? 
+	// MRJ: More forgotten donuts here. What am I missing here?
 	// SpectralPeakDetect::CheckOutputType demands all SpectralPeakArrays to comply
 	// with the following dyn attribs
 	AddBinWidthBuffer();
@@ -61,7 +61,7 @@ void SpectralPeakArray::DefaultInit()
 	SetMinimizeResizes(1);
 	mIsIndexUpToDate=false;
 }
- 
+
 void SpectralPeakArray::InitPeak(SpectralPeak& spectralPeak) const
 {
 	if (HasMagBuffer())
@@ -121,7 +121,7 @@ void SpectralPeakArray::InitSpectralPeak(SpectralPeak& spectralPeak) const
 	else spectralPeak.RemoveBinWidth();
 	if (HasBinPosBuffer()) spectralPeak.AddBinPos();
 	else spectralPeak.RemoveBinPos();
-	
+
 	spectralPeak.UpdateData();
 }
 
@@ -147,7 +147,7 @@ SpectralPeak SpectralPeakArray::GetThruIndexSpectralPeak(TIndex pos) const
 }
 
 SpectralPeak SpectralPeakArray::GetSpectralPeak(TIndex pos) const
-{ 
+{
 	SpectralPeak tmpPeak;
 	CLAM_ASSERT(pos<GetnPeaks()&&pos>=0,"SpectralPeakArray::GetSpectralPeak:Out of bounds in peak array");
 	InitSpectralPeak(tmpPeak);
@@ -162,7 +162,7 @@ SpectralPeak SpectralPeakArray::GetSpectralPeak(TIndex pos) const
 	if (HasBinPosBuffer())
 		tmpPeak.SetBinPos(GetBinPos(pos));
 	tmpPeak.SetScale(GetScale());
-		
+
 	return tmpPeak;
 }
 
@@ -172,7 +172,7 @@ void SpectralPeakArray::SetSpectralPeak(TIndex pos,const SpectralPeak& spectralP
 	CLAM_ASSERT(spectralPeak.GetScale()==GetScale(),"SpectralPeakArray::SetSpectralPeak:Incorrect scale in input SpectralPeak");
 	CLAM_ASSERT(pos<GetnPeaks(),"SpectralPeakArray::SetSpectralPeak:Out of bounds in peak array");
 	CLAM_ASSERT(IsCorrectPrototype(spectralPeak),"SpectralPeakArray::SetSpectralPeak:Incorrect prototype for Spectral Peak");
-	
+
 	if (HasMagBuffer())
 		GetMagBuffer()[pos]=spectralPeak.GetMag();
 	if (HasFreqBuffer())
@@ -248,7 +248,7 @@ TIndex SpectralPeakArray::GetPositionFromIndex(TIndex index) const
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetPositionFromIndex: Index array is not instantiated");
 	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::GetPositionFromIndex: Index table is not up to date");
-	
+
 	//Note: cannot use searching routines because index may not be sorted
 
 	IndexArray& indexArray=GetIndexArray();
@@ -257,11 +257,11 @@ TIndex SpectralPeakArray::GetPositionFromIndex(TIndex index) const
 		if(indexArray[i]==index) return	i;//index found
 	}
 	return -1;//index not found
-	
+
 }
 
 TIndex SpectralPeakArray::GetMaxMagPos() const// returns position of mag maximum
-{ 
+{
 	const DataArray & peakMagBuffer=GetMagBuffer();
 	// initialize to the first element
 	double max = peakMagBuffer[0];
@@ -276,15 +276,15 @@ TIndex SpectralPeakArray::GetMaxMagPos() const// returns position of mag maximum
 		}
 	}
 	return maxPos;
-		
+
 }
 
 
 TIndex SpectralPeakArray::GetMaxMagIndex() const// returns position of mag maximum
-{ 
+{
 	const DataArray & peakMagBuffer=GetMagBuffer();
-	// only indexed peaks. It returns the max position 
-	
+	// only indexed peaks. It returns the max position
+
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetMaxMagPosition: Index array is not instantiated");
 	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::GetMaxMagPosition: IndexTable is not up to date");
 	const IndexArray & indexArray = GetIndexArray();
@@ -301,12 +301,12 @@ TIndex SpectralPeakArray::GetMaxMagIndex() const// returns position of mag maxim
 		}
 	}
 	return maxPos;
-	
+
 }
 
-void SpectralPeakArray::ResetIndices() // reset all indices 
+void SpectralPeakArray::ResetIndices() // reset all indices
 {
-	
+
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::ResetIndices: Index array is not instantiated");
 	IndexArray& indexArray=GetIndexArray();
 	TSize nPeaks=GetnPeaks();
@@ -325,7 +325,7 @@ void SpectralPeakArray::InitIndices() // Initialize all indices to -1 and set si
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::InitIndices: Index array is not instantiated");
 	int i;
 	IndexArray& indexArray=GetIndexArray();
-	TSize nPeaks=GetnPeaks(); 
+	TSize nPeaks=GetnPeaks();
 	TSize nMaxPeaks=GetnMaxPeaks();
 	indexArray.Resize(nMaxPeaks);
 	indexArray.SetSize(nPeaks);
@@ -353,7 +353,7 @@ void SpectralPeakArray::SetIndicesTo(TIndex val) // Initialize all indices to -1
 void SpectralPeakArray::DeleteIndex (TIndex index)
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::DeleteIndex: Index array is not instantiated");
-	TIndex pos = GetPositionFromIndex(index); 
+	TIndex pos = GetPositionFromIndex(index);
 	if (pos>-1)
 		GetIndexArray().DeleteElem(pos);
 }
@@ -365,7 +365,7 @@ void SpectralPeakArray::AddIndex(TIndex index)
 }
 
 TIndex SpectralPeakArray::GetFirstNonValidIndexPosition(TIndex beginAt) const
-{	
+{
 	IndexArray& indexArray=GetIndexArray();
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetFirstNonValidIndexPosition: Index array is not instantiated");
 	CLAM_ASSERT(beginAt<indexArray.Size()&&beginAt>=0,"SpectralPeakArray::SetThruIndexFreq: Out of bounds in Index Array");
@@ -377,7 +377,7 @@ TIndex SpectralPeakArray::GetFirstNonValidIndexPosition(TIndex beginAt) const
 }
 
 int SpectralPeakArray::GetnIndexedPeaks() const
-{	
+{
 	int i, nIndexedPeaks=0;
 	IndexArray& indexArray=GetIndexArray();
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::GetFirstNonValidIndexPosition: Index array is not instantiated");
@@ -431,7 +431,7 @@ TSize SpectralPeakArray::GetThruIndexBinWidth(TIndex pos) const
 }
 
 /* Setters from index */
-void SpectralPeakArray::SetThruIndexSpectralPeak(TIndex pos,SpectralPeak& peak) 
+void SpectralPeakArray::SetThruIndexSpectralPeak(TIndex pos,SpectralPeak& peak)
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::SetThruIndexSpectralPeak: Index array is not instantiated");
 	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::SetThruIndexSpectralPeak: IndexTable is not up to date");
@@ -441,7 +441,7 @@ void SpectralPeakArray::SetThruIndexSpectralPeak(TIndex pos,SpectralPeak& peak)
 
 
 
-void SpectralPeakArray::SetThruIndexFreq(TIndex pos,double freq) 
+void SpectralPeakArray::SetThruIndexFreq(TIndex pos,double freq)
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::SetThruIndexFreq: Index array is not instantiated");
 	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::SetThruIndexFreq: IndexTable is not up to date");
@@ -449,7 +449,7 @@ void SpectralPeakArray::SetThruIndexFreq(TIndex pos,double freq)
 	SetFreq(GetIndexArray()[pos],freq);
 }
 
-void SpectralPeakArray::SetThruIndexMag(TIndex pos,double mag) 
+void SpectralPeakArray::SetThruIndexMag(TIndex pos,double mag)
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::SetThruIndexMag: Index array is not instantiated");
 	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::SetThruIndexMag: IndexTable is not up to date");
@@ -457,7 +457,7 @@ void SpectralPeakArray::SetThruIndexMag(TIndex pos,double mag)
 	SetMag(GetIndexArray()[pos],mag);
 }
 
-void SpectralPeakArray::SetThruIndexPhase(TIndex pos,double phase) 
+void SpectralPeakArray::SetThruIndexPhase(TIndex pos,double phase)
 {
 	CLAM_ASSERT(HasIndexArray(),"SpectralPeakArray::SetThruIndexPhase: Index array is not instantiated");
 	CLAM_ASSERT(mIsIndexUpToDate,"SpectralPeakArray::SetThruIndexPhase: IndexTable is not up to date");
@@ -490,7 +490,7 @@ void SpectralPeakArray::TodB()
 	for (int i=0; i<nPeaks; i++)
 	{
 		if(mag[i]==0) mag[i]=TData(0.0001);
-		mag[i]= CLAM_20log10(mag[i]); 
+		mag[i]= CLAM_20log10(mag[i]);
 	}
 	SetScale(EScale::eLog);
 }
@@ -504,9 +504,46 @@ void SpectralPeakArray::ToLinear()
 	for (int i=0; i<nPeaks; i++)
 	{
 		if(mag[i]==0.0001) mag[i]=0;
-		mag[i]= log2lin(mag[i]); 
+		mag[i]= log2lin(mag[i]);
 	}
 	SetScale(EScale::eLinear);
+}
+
+void SpectralPeakArray::CopyMembers(SpectralPeakArray& sourceSpectralPeakArray)
+{
+	SetScale( sourceSpectralPeakArray.GetScale() );
+	SetMinimizeResizes( sourceSpectralPeakArray.GetMinimizeResizes() );
+
+	SetnMaxPeaks(sourceSpectralPeakArray.GetnMaxPeaks());
+	SetnPeaks(sourceSpectralPeakArray.GetnPeaks());
+	ResetIndices();
+
+	DataArray& srcFreqBuffer = sourceSpectralPeakArray.GetFreqBuffer();
+	DataArray& srcMagBuffer = sourceSpectralPeakArray.GetMagBuffer();
+	DataArray& srcPhaseBuffer = sourceSpectralPeakArray.GetPhaseBuffer();
+	DataArray& srcBinPosBuffer = sourceSpectralPeakArray.GetBinPosBuffer();
+	DataArray& srcBinWidthBuffer = sourceSpectralPeakArray.GetBinWidthBuffer();
+	IndexArray& srcIndexArray = sourceSpectralPeakArray.GetIndexArray();
+
+	DataArray& targetFreqBuffer = GetFreqBuffer();
+	DataArray& targetMagBuffer = GetMagBuffer();
+	DataArray& targetPhaseBuffer = GetPhaseBuffer();
+	DataArray& targetBinPosBuffer = GetBinPosBuffer();
+	DataArray& targetBinWidthBuffer = GetBinWidthBuffer();
+	IndexArray& targetIndexArray = GetIndexArray();
+
+	int numberOfPeaks = sourceSpectralPeakArray.GetnPeaks();
+	for (int r=0; r < numberOfPeaks;r++)
+	{
+		// get frequency , mag and phase
+		targetFreqBuffer[r] = srcFreqBuffer[r];
+		targetMagBuffer[r] = srcMagBuffer[r];
+		targetPhaseBuffer[r] = srcPhaseBuffer[r];
+		targetBinPosBuffer[r] = srcBinPosBuffer[r];
+		targetBinWidthBuffer[r] = srcBinWidthBuffer[r];
+		targetIndexArray[r] = srcIndexArray[r];
+	}
+
 }
 
 //xamat: this operator is bound to fail if operands have different attributes, should add checking?
@@ -520,32 +557,32 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 	CLAM_ASSERT(HasFreqBuffer(), "SpectralPeakArray::operator+: first operand needs to have a Frequency Buffer");
 	CLAM_ASSERT(HasPhaseBuffer(), "SpectralPeakArray::operator+: first operand needs to have a Phase Buffer");
 	CLAM_ASSERT(HasIndexArray(), "SpectralPeakArray::operator+: first operand needs to have an Index Array");
-	
-	
+
+
 	SpectralPeakArray tmp;
 	tmp.AddIndexArray();
 	tmp.UpdateData();
 	tmp.SetScale(in.GetScale());
-	
+
 	tmp.SetnMaxPeaks(GetnMaxPeaks()+in.GetnMaxPeaks());
 	tmp.SetnPeaks(tmp.GetnMaxPeaks());
-	
+
 	int origIndex=0,inIndex=0;
 	DataArray& inPeakMagArray = in.GetMagBuffer();
 	DataArray& inPeakFreqArray = in.GetFreqBuffer();
 	DataArray& inPeakPhaseArray = in.GetPhaseBuffer();
 	IndexArray& inPeakIndexArray = in.GetIndexArray();
-	
+
 	DataArray& origPeakMagArray = GetMagBuffer();
 	DataArray& origPeakFreqArray = GetFreqBuffer();
 	DataArray& origPeakPhaseArray = GetPhaseBuffer();
 	IndexArray& origPeakIndexArray = GetIndexArray();
-	
+
 	DataArray& tmpPeakMagArray = tmp.GetMagBuffer();
 	DataArray& tmpPeakFreqArray = tmp.GetFreqBuffer();
 	DataArray& tmpPeakPhaseArray = tmp.GetPhaseBuffer();
 	IndexArray& tmpPeakIndexArray = tmp.GetIndexArray();
-		
+
 	bool finished=false,finishedOrig=false, finishedIn=false;
 	TSize origSize,inSize;
 	origSize=GetnPeaks();
@@ -566,7 +603,7 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
 				tmpPeakPhaseArray[nAddedPeaks] = inPeakMagArray[inIndex];
 				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
-							
+
 				nAddedPeaks++;
 				inIndex++;
 			}
@@ -580,7 +617,7 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
 				tmpPeakPhaseArray[nAddedPeaks] = origPeakMagArray[origIndex];
 				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
-				
+
 				nAddedPeaks++;
 				origIndex++;
 			}
@@ -603,7 +640,7 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
 				tmpPeakPhaseArray[nAddedPeaks] = inPeakMagArray[inIndex];
 				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
-			
+
 				nAddedPeaks++;
 				inIndex++;
 			}
@@ -613,14 +650,14 @@ SpectralPeakArray SpectralPeakArray::operator+(const SpectralPeakArray& in)
 				tmpPeakFreqArray[nAddedPeaks] = origPeakFreqArray[origIndex];
 				tmpPeakPhaseArray[nAddedPeaks] = origPeakMagArray[origIndex];
 				tmpPeakIndexArray[nAddedPeaks] = origPeakIndexArray[origIndex]*2;
-				
+
 				nAddedPeaks++;
 				origIndex++;
 				tmpPeakMagArray[nAddedPeaks] = inPeakMagArray[inIndex];
 				tmpPeakFreqArray[nAddedPeaks] = inPeakFreqArray[inIndex];
 				tmpPeakPhaseArray[nAddedPeaks] = inPeakMagArray[inIndex];
 				tmpPeakIndexArray[nAddedPeaks] = inPeakIndexArray[inIndex]*2+1;
-			
+
 				nAddedPeaks++;
 				inIndex++;
 			}
