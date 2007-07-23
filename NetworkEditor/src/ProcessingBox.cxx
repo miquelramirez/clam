@@ -110,14 +110,12 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, QWidget * canvas)
 		widget->setDataSource( *dynamic_cast<PeakViewMonitor*>(processing) );
 		return widget;
 	}
-
 	if (className=="PolarChromaPeaks")
 	{
 		PolarChromaPeaks * widget = new PolarChromaPeaks(canvas);
 		widget->setDataSource( *dynamic_cast<PolarChromaPeaksMonitor*>(processing) );
 		return widget;
 	}
-
 	if (className=="Tonnetz")
 	{
 		CLAM::VM::Tonnetz * widget = new CLAM::VM::Tonnetz(canvas);
@@ -665,17 +663,13 @@ float ProcessingBox::getIncontrolUpperBound(unsigned index) const
 	return inControl.UpperBound();
 }
 
+#include <ProcessingDataPlugin.hxx>
 
 //TODO move to a CLAM cxx
 static const char * getColorNameFromTypeId(const std::type_info & type)
 {
-	if (type == typeid(CLAM::Spectrum) ) return "yellowgreen";
-	if (type == typeid(CLAM::Audio) ) return "lightcyan";
-	if (type == typeid(CLAM::TData) ) return "lightblue";
-	if (type == typeid(CLAM::SpectralPeakArray) ) return "lightcoral";
-	if (type == typeid(std::vector<CLAM::TData>) ) return "silver";
-	if (type == typeid(std::vector<std::pair<CLAM::TData,CLAM::TData> >) ) return "thistle";
-	
+	CLAM::ProcessingDataPlugin * plugin = CLAM::ProcessingDataPlugin::lookUp(type);
+	if (plugin) return plugin->color().c_str();
 	return "";
 }
 QColor ProcessingBox::getConnectorColorByType(const std::type_info & type) const
