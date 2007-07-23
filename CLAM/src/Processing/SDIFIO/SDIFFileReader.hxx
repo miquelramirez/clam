@@ -62,6 +62,9 @@ public:
 					CLAM::Spectrum& argResidual,
 					TTime& argFrameCenterTime);
 
+	int GetReadPosition();
+	void SetReadPosition(int readPosition);
+
 	int GetSamplingRate();
 
 	int GetFrameCenterTime();
