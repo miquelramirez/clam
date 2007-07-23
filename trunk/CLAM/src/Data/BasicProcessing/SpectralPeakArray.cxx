@@ -20,9 +20,14 @@
  */
 
 #include "SpectralPeakArray.hxx"
+#include "ProcessingDataPlugin.hxx"
 
 namespace CLAM{
 
+namespace Hidden
+{
+	static ProcessingDataPlugin::Registrator<SpectralPeakArray> dataRegistrator("lightcoral");
+}
 
 
 

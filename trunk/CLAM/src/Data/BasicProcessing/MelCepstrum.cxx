@@ -20,17 +20,23 @@
  */
 
 #include "MelCepstrum.hxx"
+#include "ProcessingDataPlugin.hxx"
 
 namespace CLAM
 {
-  void MelCepstrum::DefaultInit()
-  {
-    AddAll();
-    UpdateData();
+	namespace Hidden
+	{
+		static ProcessingDataPlugin::Registrator<MelCepstrum> dataRegistrator("palegreen");
+	}
+	
+	void MelCepstrum::DefaultInit()
+	{
+		AddAll();
+		UpdateData();
 
-    SetCenterTime(0);
-    SetLowCutoff(0);
-    SetHighCutoff(0);
-  }
+		SetCenterTime(0);
+		SetLowCutoff(0);
+		SetHighCutoff(0);
+	}
 }
 

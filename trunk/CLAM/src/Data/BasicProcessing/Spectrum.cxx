@@ -24,9 +24,17 @@
 #include "SpecTypeFlags.hxx"
 #include "ArrayToBPFCnv.hxx"
 #include "ComplexToPolarCnv.hxx"
+#include "ProcessingDataPlugin.hxx"
 
 using namespace CLAM;
 
+namespace CLAM
+{
+	namespace Hidden
+	{
+		static ProcessingDataPlugin::Registrator<Spectrum> dataRegistrator("yellowgreen");
+	}
+}
 Flags<4>::tFlagValue SpecTypeFlags::sFlagValues[] = {
  	{SpecTypeFlags::eComplex, "Complex"},
  	{SpecTypeFlags::ePolar, "Polar"},
