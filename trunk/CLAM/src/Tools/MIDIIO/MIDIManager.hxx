@@ -35,8 +35,8 @@
 
 namespace CLAM{
 
-/** This class takes care of all the creation of the registration of 
- *  MIDIIn and MIDIOut objects, and the creation of MIDIDevice objects required. 
+/** This class takes care of all the creation of the registration of
+ *  MIDIIn and MIDIOut objects, and the creation of MIDIDevice objects required.
  * It's a singleton class (only must be an instantiation of this class) because and unique object manages all the Devices, MIDIOut and MIDIIn objects provided by the system
  * @see MIDIIn, MIDIOut, MIDIDevice
  */
@@ -53,11 +53,11 @@ private:
 
 	/** A Meyers-Singleton-style list of all DeviceList */
 	static std::vector<MIDIDeviceList*>& DeviceLists(void)
-	{ 
+	{
 		static std::vector<MIDIDeviceList*> sDeviceLists;
 		return sDeviceLists;
 	}
-	
+
 	static MIDIManager* _Current(bool set = 0,MIDIManager* m = 0)
 	{
 		static MIDIManager* sCurrent = 0;
@@ -84,9 +84,9 @@ public:
 	static MIDIManager& Current()
 	{
 		MIDIManager* p = _Current();
-		
+
 		if (p==0) throw Err("No MIDIManager current");
-		
+
 		return *p;
 	}
 
@@ -111,10 +111,11 @@ public:
 	/** Checks all devices searching data to read*/
 	void Check(void);
 
- 	/** Retrieve the list of devices available for a given architecture. You can
+	/** Retrieve the list of devices available for a given architecture. You can
 	 * then use the AvailableDevices() method to retrieve a list of the
 	 * available devices for each MIDIDeviceList.
 	 *  @param arch The name of architecture wich will be returned the devices. By default is set to "default"
+	 *              Valid values include 'portmidi' on all platforms or 'alsa' on Linux.
 	 *  @return The list of MIDIDevices
 	 */
 	MIDIDeviceList* FindList(const std::string& arch = "default");
