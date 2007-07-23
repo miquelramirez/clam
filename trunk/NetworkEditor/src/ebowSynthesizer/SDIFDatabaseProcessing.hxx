@@ -44,7 +44,7 @@ class SDIFDatabaseConfig: public ProcessingConfig
 public:
 	DYNAMIC_TYPE_USING_INTERFACE(SDIFDatabaseConfig, 1, ProcessingConfig);
 	// TODO change this to a directory name?
-	DYN_ATTRIBUTE (0, public, Filename, Filename);
+	DYN_ATTRIBUTE (0, public, InFilename, Filename);
 
 protected:
 	/** Dynamic type initialization: All attributes are instantiated. */
