@@ -17,7 +17,7 @@ def generate_copy_files( target, source, env ) :
 
 def generate_copy_files_message( target, source, env ) :
 	return "== Copying and updating includes : %s" % target[0]
-	
+
 
 def generate_so_name( target, source, env ) :
 	source_dir = os.path.dirname( str(source[0]) )
@@ -58,15 +58,15 @@ class FileRetriever :
 		self.out_inc = 'include/CLAM'
 		self.out_src = 'src'
 		self.headerREs = []
-		
+
 		for ext in self.__hdr_extensions :
 			self.headerREs.append( re.compile( r'^.+\.%s$'%ext ) )
 
-		self.sourceREs = [] 
+		self.sourceREs = []
 
-		for ext in self.__src_extensions : 
+		for ext in self.__src_extensions :
 			self.sourceREs.append( re.compile( r'^.+\.%s$'%ext  ) )
-	
+
 		self.scantargets = [ basedir+'/'+folder for folder in folders ]
 
 		self.blacklisted = []
@@ -89,7 +89,7 @@ class FileRetriever :
 	def is_blacklisted( self, filename ) :
 		for entry in self.blacklisted :
 			if entry.search(filename) is not None :
-				return True		
+				return True
 
 		return False
 
@@ -125,7 +125,7 @@ class FileRetriever :
 					if self.is_source(file) :
 						self.origTargetSources.append((target+'/'+file, '%s/%s'%(self.out_src,file)))
 
-	
+
 #---------------------------------------------------------------
 # from generic_checks.py
 generic_checks = dict()
@@ -144,12 +144,12 @@ generic_checks['pkg_config_check_existence'] = pkg_config_check_existence
 import os, re
 
 hdrNormRE = re.compile( r'(?P<prefix>.*)include\s*["](?P<hdr>.+)["].*', re.IGNORECASE )
-	
+
 def update_includes_without_db(source, target=None ) :
 
-	if target is None : 
+	if target is None :
 		target = source
-	
+
 	newFile = []
 	isDirty = False
 	fileHandle = file( source, "r" )
@@ -157,24 +157,24 @@ def update_includes_without_db(source, target=None ) :
 		match = hdrNormRE.search( line )
 		if match is not None :
 			newFile.append( hdrNormRE.sub('\g<prefix>include <CLAM/\g<hdr>>', line ))
-			isDirty = True            
+			isDirty = True
 		else :
 			newFile.append( line )
 
 	fileHandle.close()
 
 	if isDirty == True :
-		fileHandle = file( target, "w" )        
-		fileHandle.write( "".join( newFile ) )        
+		fileHandle = file( target, "w" )
+		fileHandle.write( "".join( newFile ) )
 		fileHandle.close()
-	
+
 	return target
 
 #---------------------------------------------------------------
 # from installdirs.py
 
 class InstallDirs :
-	
+
 	def __init__(self) :
 		self.prefix = ''
 		self.lib = ''
@@ -182,7 +182,7 @@ class InstallDirs :
 		self.inc = ''
 		self.data = ''
 		self.doc = ''
-	
+
 	def compose( self, environ ) :
 		if environ['prefix_for_packaging'] != '.' :
 			self.prefix = environ['prefix_for_packaging']
@@ -205,11 +205,11 @@ class InstallDirs :
 
 
 class ThoroughPackageCheck :
-	
+
 	def __init__( self, name, lang, lib, test_code ) :
-		self.name = name 
+		self.name = name
 		self.lib = lib
-		self.test_code = test_code 
+		self.test_code = test_code
 		self.lang = lang
 		self.test_code_extension = None
 		if self.lang == 'c' :
@@ -241,7 +241,7 @@ class ThoroughPackageCheck :
 
 		context.Message( 'Checking that %s sample program runs... '%self.name )
 		result, errmsg = context.TryRun( self.test_code, self.test_code_extension )
-		context.Result(result)		
+		context.Result(result)
 
 		return result
 
@@ -255,7 +255,7 @@ tool_checks = dict()
 
 def check_pkg_config(context, *args, **kwords):
 	context.Message( 'Checking for pkg-config... ' )
-	ret, _  = context.TryAction('pkg-config --help') 
+	ret, _  = context.TryAction('pkg-config --help')
 	context.Result( ret )
 	return ret
 
@@ -266,7 +266,7 @@ tool_checks['check_pkg_config'] = check_pkg_config
 import sys
 
 class PackageData :
-	
+
 	def __init__(self, name, version='0.0', extra = [], depends = [] ) :
 		self.name = name
 		self.version = version
@@ -290,7 +290,7 @@ class PackageData :
 		print >> out, "Requires: %s"%" ".join(self.depends)
 		print >> out, "Conflicts: "
 		edict = env.Dictionary()
-		libnames = [self.name] + self.extra 
+		libnames = [self.name] + self.extra
 		# extract libs from env
 		libnames += edict['LIBS']
 		libnames = [ '%s.lib'%name for name in libnames ]
@@ -306,18 +306,18 @@ class PackageData :
 		ccflags = edict.get('CCFLAGS', [''])
 		cppaths = edict.get('CPPPATH', [''])
 		cpppaths = [ '/I'+path for path in cppaths ]
-		print >> out, "Cflags: %s"%" ".join(cppflags+cpppaths+ccflags)	
+		print >> out, "Cflags: %s"%" ".join(cppflags+cpppaths+ccflags)
 
 		out.close()
 
 	def linux_create_pkg_descriptor( self, env, out_file ) :
 		out = open(out_file, 'w')
-	
+
 		print >> out, "prefix = %s"%env['prefix']
 		print >> out, "libdir = ${prefix}/lib"
 		print >> out, "includedir = ${prefix}/include"
 		print >> out
-		print >> out, "Name: %s"%self.name	
+		print >> out, "Name: %s"%self.name
 		print >> out, "Version: %s"%self.version
 		print >> out, "Description: C++ Framework for analysis, synthesis and transformation of music audio signals"
 		print >> out, "Requires: %s"%" ".join(self.depends)
@@ -395,13 +395,13 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 	install_lib = env.Install( install_dirs.lib, lib)
 	install_descriptor = env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 	install_soname = env.SonameLink( install_dirs.lib + '/' + soname, install_lib )
-	install_linkername =  env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_lib) 
+	install_linkername =  env.LinkerNameLink( install_dirs.lib+'/'+linker_name, install_lib)
 #	static_lib = env.Library( 'clam_'+name, sources )
 #	install_static = env.Install( install_dirs.lib, static_lib )
 
 	tgt = env.Alias( name, linkername_lib )
 	env.Alias( 'install_'+name+'_runtime', [
-		install_lib, 
+		install_lib,
 		install_soname
 	])
 	env.Alias( 'install_'+name+'_dev', [
@@ -620,7 +620,7 @@ int main(int argc, char** argv )
 	}
 	return 0;
 
-}	
+}
 """
 
 package_checks['check_fftw_float_wo_prefix'] = ThoroughPackageCheck( 'fftw using floats with not prefixed binaries/headers', 'c', None, float_fftw_wo_prefix_test_code )
@@ -633,7 +633,7 @@ int main(int argc, char** argv )
 
 	rfftw_create_plan(0,FFTW_FORWARD,0);
 	return 0;
-}		
+}
 """
 
 package_checks['check_rfftw_float_wo_prefix'] = ThoroughPackageCheck( 'rfftw using floats with not prefixed binaries/headers','c', None, float_rfftw_wo_prefix_test_code )
@@ -712,7 +712,7 @@ libvorbisfile_test_code = """\
 int main( int argc, char** argv )
 {
 	OggVorbis_File vf;
-	
+
 //	ov_test_open( &vf );
 
 	return 0;
@@ -803,7 +803,7 @@ int main()
 	LPGUID mGUID = 0;
 	LPDIRECTSOUND mDS;
 	HRESULT hr = DirectSoundCreate( mGUID, &mDS, NULL );
-	
+
 	return 0;
 }
 
@@ -832,7 +832,7 @@ portmidi_test_code = """\
 int main()
 {
 	PmStream* mHandleIn = NULL;
-	PmError err = Pm_OpenInput( &mHandleIn, 0, NULL, 100, NULL, NULL, 0 );
+	PmError err = Pm_OpenInput( &mHandleIn, 0, NULL, 100, NULL, NULL );
 
 	return 0;
 }
@@ -847,7 +847,7 @@ jack_test_code = """\
 jack_client_t *client;
 int main()
 {
-	
+
 	client = jack_client_new ("foo");
 
 	if ( client != NULL )

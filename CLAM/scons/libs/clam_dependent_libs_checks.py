@@ -10,7 +10,7 @@ def config_error(str) :
 	print 'Check the config.log file for details'
 	return False
 
-def setup_global_environment( env, conf ) :	
+def setup_global_environment( env, conf ) :
 	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 	# clam env
 	# check for pkg-config, compiler support, bash features, et.
@@ -115,7 +115,7 @@ def test_oggvorbis( env, conf ) :
 		return config_error( "Could not find libvorbisfile binaries! Please check your libvorbisfile installation" )
 	if not conf.check_libvorbisfile() :
 		return config_error( "libvorbisfile compile/link/run test failed!" )
-	
+
 	env.Append( CPPFLAGS=['-DUSE_OGGVORBIS=1'] )
 	return True
 
@@ -206,7 +206,9 @@ def test_portmidi( env, conf ) :
 		return True
 	if not conf.CheckHeader( 'portmidi.h' ) :
 		return config_error( "Could not find portmidi header 'portmidi.h'! Check your portmidi installation..." )
-	env.Append( LIBS=['portmidi','porttime','winmm'] )
+	env.Append( LIBS=['portmidi'] )
+	if sys.platform == 'win32' :
+		env.Append( LIBS=['winmm'] )
 	if not conf.CheckLib( library='portmidi', symbol='Pm_OpenInput' ) :
 		return config_error( "Could not find portmidi libraries! Check your portmidi installation..." )
 
@@ -271,7 +273,7 @@ def setup_audioio_environment( env, conf ) :
 
 def test_xml_backend( env, conf ) :
 	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
-	
+
 	if env['xmlbackend'] in ('both','xercesc') :
 		if not conf.CheckCXXHeader('xercesc/util/PlatformUtils.hpp') :
 			return config_error( "Could not find xerces c headers! Defaulting to the null xml backend" )
@@ -279,7 +281,7 @@ def test_xml_backend( env, conf ) :
 		print('path of app: ' + env['ENV']['PATH'])
 		if not conf.check_xerces_c( conf ) :
 			return config_error( "xerces c code compile/link/run test failed!" )
-		
+
 		env.Append( CPPFLAGS=['-DUSE_XERCES=1', '-DCLAM_USE_XML'] )
 
 	if env['xmlbackend'] in ('both','xmlpp') :
@@ -289,7 +291,7 @@ def test_xml_backend( env, conf ) :
 			try : env.ParseConfig( pkgconfig+' --cflags --libs libxml++-2.6' )
 			except:
 				return config_error( "Error: pkg-config could not find libxml options." )
-		if not conf.check_xmlpp( conf ) : 
+		if not conf.check_xmlpp( conf ) :
 			return config_error( "libxml++ code compile/link/run test failed!" )
 		env.Append( CPPFLAGS=['-DUSE_XMLPP=1','-DCLAM_USE_XML'] )
 	return True
@@ -307,6 +309,7 @@ def test_ladspa ( env, conf ) :
 
 
 def test_oscpack ( env, conf ) :
+	print('Checking that oscpack binaries are installed.')
 	if not env.has_key('with_osc') : return True
 	if not env['with_osc'] : return True
 	if not conf.CheckCXXHeader( 'oscpack/ip/IpEndpointName.h' ) :
@@ -321,11 +324,11 @@ def test_oscpack ( env, conf ) :
 def setup_core_environment ( env, conf) :
 	if not test_xml_backend( env, conf): return False
 	if not test_ladspa ( env, conf):
-		return config_error( 
+		return config_error(
 			"Either install properly ladspa SDK or disable LADSPA support by issuing\n"
 			"$scons with_ladspa=no" )
-	if not test_oscpack (env, conf): 
-		return config_error( 
+	if not test_oscpack (env, conf):
+		return config_error(
 			"Either install properly liboscpack or disable OSC support by issuing\n"
 			"$scons with_osc=no" )
 	return True
@@ -389,7 +392,7 @@ def test_fftw_linux( env, conf ) :
 		if not conf.CheckCHeader( 'sfftw.h' ) :
 			return config_error( "Could not find fftw library headers...!" )
 		if not conf.CheckCHeader( 'srfftw.h' ) :
-			return config_error( "Could not find some of the fftw library headers...!" ) 
+			return config_error( "Could not find some of the fftw library headers...!" )
 		if not conf.CheckLib( 'sfftw', 'fftw_sizeof_fftw_real') :
 			return config_error( "Could not find libsfftw" )
 		if not conf.CheckLib( 'srfftw', 'rfftw_create_plan' ) :
@@ -459,7 +462,7 @@ def check_opengl( env, conf ) :
 		env.Append( CPPFLAGS=['-DUSE_GL=1'] )
 		env.Append( LINKFLAGS=['-framework', 'OpenGL', '-framework', 'AGL'] )
 		return True
-	
+
 	if sys.platform != 'win32' :
 		if not conf.CheckCHeader('GL/gl.h') :
 			return config_error( "Could not find OpenGL headers! Please install the headers supplied by your OpenGL driver vendor" )
@@ -467,7 +470,7 @@ def check_opengl( env, conf ) :
 			return config_error( "Could not find OpenGL library! Please install the development library supplied by your OpenGL driver vendor" )
 	else :
 		env.Append( LIBS='opengl32' )
-		
+
 	if not conf.check_opengl() :
 		return config_error( "OpenGL compile/link/run test failed! Please check config.log for details..." )
 
