@@ -443,7 +443,7 @@ public: // Actions
 
 		unsigned controlIndex = processing->controlIndexByXPos(point);
 		QString inControlName = processing->getIncontrolName(controlIndex);
-		float default_value = processing->getIncontrolDefaultValue(controlIndex);
+		float defaultValue = processing->getIncontrolDefaultValue(controlIndex);
 		float lower = processing->getIncontrolLowerBound(controlIndex);
 		float upper = processing->getIncontrolUpperBound(controlIndex);
 
@@ -460,7 +460,7 @@ public: // Actions
 		config.SetMin(lower);
 		config.SetMax(upper);
 		config.SetStep( (upper-lower)/200 ); 
-		config.SetDefault( default_value );
+		config.SetDefault( defaultValue );
 		controlSender.Configure( config );
 		// add box to canvas and connect
 		addProcessingBox( controlSenderName.c_str(), &controlSender, point+QPoint(0,-100));
