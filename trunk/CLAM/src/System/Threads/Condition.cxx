@@ -25,6 +25,8 @@
 #include "Assert.hxx"
 #include "xtime.hxx"
 #include <errno.h>
+#include <cstdio>
+#include <sstream>
 
 namespace CLAM
 {
@@ -34,7 +36,7 @@ namespace CLAM
 		int res  = 0;
 
 		res = pthread_cond_init( &mCondition, 0 );
-		
+
 		CLAM_ASSERT( res == 0, "pthread_cond_init call failed" );
 	}
 
@@ -50,7 +52,7 @@ namespace CLAM
 	void Condition::NotifyAll()
 	{
 		int res = 0;
-		
+
 		res = pthread_cond_broadcast( &mCondition );
 
 		CLAM_ASSERT( res==0, "pthread_cond_broadcast call failed!" );
@@ -70,7 +72,7 @@ namespace CLAM
 		int res = 0;
 
 		res = pthread_cond_wait( &mCondition, pmutex );
-		
+
 		CLAM_ASSERT( res == 0, "pthread_cond_wait call failed" );
 	}
 
@@ -84,7 +86,9 @@ namespace CLAM
 
 		res = pthread_cond_timedwait( &mCondition, pmutex, &ts );
 
-		CLAM_ASSERT( res == 0 || res == ETIMEDOUT ,"SOmething strange has happened");
+		std::ostringstream os;
+		os << "Something strange has happened. PThread returned from timed wait with result code " << res << std::flush;
+		CLAM_ASSERT( res == 0 || res == ETIMEDOUT , os.str().c_str() );
 
 		return res != ETIMEDOUT;
 	}
