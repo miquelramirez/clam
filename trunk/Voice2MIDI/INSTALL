@@ -21,21 +21,17 @@ from the source tarballs.
  Please refere to the INSTALL file in the CLAM (library) tarball.
 
 
-   
  2. Compile CLAM libraries from the tarball
  
  Please refere to the INSTALL file in the CLAM (library) tarball.
 
 
  3. Compile the CLAM application.
+ From the root of Voice2MIDI source, suposing that CLAM binaries
+ were installed at prefix /usr/local:
 
-	$ scons
+	$ scons install prefix=/usr/local clam_prefix=/usr/local
 
- If you wish to use CLAM libs installed in a non-standard dir, you 
- will need to specify the clam_prefix :
-
-	$ scons clam_prefix=~/mylibs/ install
- 
  For further building options do :
 
 	$ scons --help
