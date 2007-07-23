@@ -115,6 +115,11 @@ bool SDIFIn::LoadSDIFDataIntoSegment( CLAM::Segment& segment )
 	{
 		aFrame.SetCenterTime(frameCenterTime);
 
+		if ( !segment.HasSamplingRate() )
+		{
+			segment.AddSamplingRate();
+			segment.UpdateData();
+		}
 		segment.SetSamplingRate(mSDIFReader.GetSamplingRate());
 
 		segment.AddFrame(aFrame);
