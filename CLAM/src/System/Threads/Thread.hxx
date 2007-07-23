@@ -26,6 +26,11 @@
 #include "CBL.hxx"
 #include "Condition.hxx"
 
+// there is a Yield method defined in a Windows API which is included by windows.h
+// this undefines the Windows Yield method
+#ifdef Yield
+#undef Yield
+#endif
 
 namespace CLAM
 {
