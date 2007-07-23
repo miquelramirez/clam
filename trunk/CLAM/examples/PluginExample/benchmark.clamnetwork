@@ -2,26 +2,26 @@
 <network id="Unnamed">
 
   <processing id="AudioBuffer2Stream_0" type="AudioBuffer2Stream">
-    <HopSize>512</HopSize>
+    <HopSize>32768</HopSize>
     <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
+    <FFTSize>65536</FFTSize>
+    <WindowSize>65537</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
   <processing id="AudioBuffer2Stream_1" type="AudioBuffer2Stream">
-    <HopSize>512</HopSize>
+    <HopSize>32768</HopSize>
     <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
+    <FFTSize>65536</FFTSize>
+    <WindowSize>65537</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
   <processing id="AudioMixer_0" type="AudioMixer">
-    <NumberOfInPorts>1</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
+    <NumberOfInPorts>2</NumberOfInPorts>
+    <FrameSize>32768</FrameSize>
   </processing>
 
   <processing id="AudioSink_0" type="AudioSink"/>
@@ -33,21 +33,21 @@
   <processing id="AudioSource_1" type="AudioSource"/>
 
   <processing id="AudioWindowing_0" type="AudioWindowing">
-    <HopSize>512</HopSize>
+    <HopSize>32768</HopSize>
     <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
+    <FFTSize>65536</FFTSize>
+    <WindowSize>65537</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
   <processing id="AudioWindowing_1" type="AudioWindowing">
-    <HopSize>512</HopSize>
+    <HopSize>32768</HopSize>
     <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
+    <FFTSize>65536</FFTSize>
+    <WindowSize>65537</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
   <processing id="ComplexProduct_0" type="ComplexSpectrumProduct"/>
@@ -63,19 +63,19 @@
   <processing id="MagPhaseProduct" type="MagPhaseSpectrumProduct"/>
 
   <processing id="MyFFT_0" type="MyFFT">
-    <AudioSize>1024</AudioSize>
+    <AudioSize>65536</AudioSize>
   </processing>
 
   <processing id="MyFFT_1" type="MyFFT">
-    <AudioSize>1024</AudioSize>
+    <AudioSize>65536</AudioSize>
   </processing>
 
   <processing id="MyIFFT_0" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
+    <AudioSize>65536</AudioSize>
   </processing>
 
   <processing id="MyIFFT_1" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
+    <AudioSize>65536</AudioSize>
   </processing>
 
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
@@ -99,8 +99,13 @@
   <processing id="ToSpectrum_0" type="MagPhaseSpectrum2Spectrum"/>
 
   <port_connection>
-    <out>AudioBuffer2Stream_1.Audio stream</out>
+    <out>AudioBuffer2Stream_0.Audio stream</out>
     <in>AudioMixer_0.Input 0</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBuffer2Stream_1.Audio stream</out>
+    <in>AudioMixer_0.Input 1</in>
   </port_connection>
 
   <port_connection>
@@ -222,6 +227,11 @@
     <out>ToSpectrum_0.Spectrum</out>
     <in>SpectrumView_0.Input</in>
   </port_connection>
+
+  <control_connection>
+    <out>Gain 0.out</out>
+    <in>AudioMixer_0.Gain 1</in>
+  </control_connection>
 
   <control_connection>
     <out>Gain 0.out</out>
