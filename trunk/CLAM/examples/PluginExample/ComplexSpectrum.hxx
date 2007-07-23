@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <complex>
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAM
 {
