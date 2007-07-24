@@ -128,9 +128,26 @@ const char * schemaContent =
 
 class ChordExtractorSegmentation
 {
+	std::vector<double> _timePositions; /// Holds the beggining and end time of each segment
+	std::vector<double> _chordIndexes;  /// Holds the chord index for each segment
 public:
 	ChordExtractorSegmentation() {};
-	~ChordExtractorSegmentation() {};
+	~ChordExtractorSegmentation() 
+	{
+		/*std::cout << std::endl;
+		std::cout << "_timePositions size: " << _timePositions.size() << std::endl;
+		for(int i=0; i<_timePositions.size(); ++i)
+		{
+			std::cout << _timePositions[i] << " " << std::flush;
+		}
+		std::cout << std::endl;
+		std::cout << "_chordIndexes size: " << _chordIndexes.size() << std::endl;
+		for(int i=0; i<_chordIndexes.size(); ++i)
+		{
+			std::cout << _chordIndexes[i] << " " << std::flush;
+		}
+		std::cout << std::endl;*/
+	};
 
 	void doIt(CLAM::DescriptionDataPool * pool, unsigned & lastChord, CLAM::DataArray * chordSegmentation, CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
 	{
@@ -143,13 +160,26 @@ public:
 		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
 				0 : extractor.firstCandidate();
 		
+		//std::cout << " time = " << currentTime  << 
+		//	" currentChord = " << currentChord <<
+		//	" lastChord = " << lastChord << std::endl << std::flush;
+
+
 		if (currentChord!=lastChord)
-		{
-			if (lastChord != 0)
+		{	
+			/// Closes a segment opened in one of the previous iterations
+			if (lastChord != 0) {
+				//std::cout << "   LOOP # 1" << std::endl << std::endl << std::flush;
+				_timePositions.push_back(currentTime);
 				chordSegmentation[0].AddElem(currentTime);
+			}
+			/// Opens a new chord segment
 			if (currentChord != 0)
 			{
+				//std::cout << std::endl << "   LOOP # 2" << std::endl << std::flush;
 				unsigned newSegment = pool->GetNumberOfContexts("ExtractedChord");
+				_timePositions.push_back(currentTime);
+				_chordIndexes.push_back(currentChord);
 				chordSegmentation[0].AddElem(currentTime);
 				pool->Insert("ExtractedChord", newSegment);
 				pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root")[newSegment]= extractor.root(extractor.firstCandidate());
