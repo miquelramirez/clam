@@ -12,15 +12,15 @@ namespace CLAM
 
 class ComplexSpectrumSum : public Processing
 { 
-	InPort<ComplexSpectrum> mTerm1;
-	InPort<ComplexSpectrum> mTerm2;
-	OutPort<ComplexSpectrum> mSum;
+	InPort<ComplexSpectrum> _term1;
+	InPort<ComplexSpectrum> _term2;
+	OutPort<ComplexSpectrum> _sum;
 public:
 	const char* GetClassName() const { return "ComplexSpectrumSum"; }
 	ComplexSpectrumSum(const Config& config = Config()) 
-		: mTerm1("Term1", this)
-		, mTerm2("Term2", this)
-		, mSum("Sum", this) 
+		: _term1("Term1", this)
+		, _term2("Term2", this)
+		, _sum("Sum", this) 
 	{
 		Configure( config );
 	}
@@ -48,18 +48,18 @@ public:
 		}
 		return true;
 	}
- 
 	bool Do()
 	{
-		const ComplexSpectrum & term1 = mTerm1.GetData();
-		const ComplexSpectrum & term2 = mTerm2.GetData();
-		ComplexSpectrum & sum = mSum.GetData();
+		const ComplexSpectrum & term1 = _term1.GetData();
+		const ComplexSpectrum & term2 = _term2.GetData();
+		ComplexSpectrum & sum = _sum.GetData();
+
 		Do(term1, term2, sum);
 
 		// Tell the ports this is done
-		mTerm1.Consume();
-		mTerm2.Consume();
-		mSum.Produce();
+		_term1.Consume();
+		_term2.Consume();
+		_sum.Produce();
 		return true;
 	}
 };
