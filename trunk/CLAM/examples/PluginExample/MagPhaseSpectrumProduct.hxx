@@ -12,24 +12,24 @@ namespace CLAM
 
 class MagPhaseSpectrumProduct : public Processing
 { 
-	InPort<MagPhaseSpectrum> mFactor1;
-	InPort<MagPhaseSpectrum> mFactor2;
-	OutPort<MagPhaseSpectrum> mProduct;
+	InPort<MagPhaseSpectrum> _factor1;
+	InPort<MagPhaseSpectrum> _factor2;
+	OutPort<MagPhaseSpectrum> _product;
 public:
 	const char* GetClassName() const { return "MagPhaseSpectrumProduct"; }
 	MagPhaseSpectrumProduct(const Config& config = Config()) 
-		: mFactor1("Factor1", this)
-		, mFactor2("Factor2", this)
-		, mProduct("Product", this) 
+		: _factor1("Factor1", this)
+		, _factor2("Factor2", this)
+		, _product("Product", this) 
 	{
 		Configure( config );
 	}
- 
+
 	bool Do()
 	{
-		const MagPhaseSpectrum & factor1 = mFactor1.GetData();
-		const MagPhaseSpectrum & factor2 = mFactor2.GetData();
-		MagPhaseSpectrum & product = mProduct.GetData();
+		const MagPhaseSpectrum & factor1 = _factor1.GetData();
+		const MagPhaseSpectrum & factor2 = _factor2.GetData();
+		MagPhaseSpectrum & product = _product.GetData();
 
 		if ( factor1.magnitudes.size()!=factor2.magnitudes.size())
 		{
@@ -54,9 +54,9 @@ public:
 		}
 
 		// Tell the ports this is done
-		mFactor1.Consume();
-		mFactor2.Consume();
-		mProduct.Produce();
+		_factor1.Consume();
+		_factor2.Consume();
+		_product.Produce();
 		return true;
 	}
 };
