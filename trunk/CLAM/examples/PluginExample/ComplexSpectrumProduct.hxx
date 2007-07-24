@@ -24,7 +24,7 @@ public:
 	{
 		Configure( config );
 	}
- 
+
 	bool Do(const ComplexSpectrum & in1, const ComplexSpectrum & in2, ComplexSpectrum & out)
 	{
 		if ( in1.bins.size()!=in2.bins.size())
