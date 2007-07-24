@@ -5,8 +5,6 @@
 #include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
-#include <CLAM/FFT.hxx>
-#include <CLAM/SpectralAnalysis.hxx>
 #include <CLAM/AudioWindowing.hxx>
 #include "MagPhaseSpectrum.hxx"
 #include "MyFFT.hxx"
@@ -53,7 +51,7 @@ protected:
 		return true; 
 	}
 
-	void FillSpectrum(MagPhaseSpectrum & spectrum)
+	void FillSpectrum(MagPhaseSpectrum & outSpectrum)
 	{
 
 		MonoAudioFileReaderConfig readerConfig;
@@ -73,32 +71,32 @@ protected:
 		AudioWindowing windower(windowerConfig);
 		FFTConfig fftConfig; 
 		fftConfig.SetAudioSize(mConfig.GetFrameSize()*2);
-		MyFFT myfft(fftConfig);
+		MyFFT fft(fftConfig);
 		Complex2MagPhaseSpectrum toMagPhase;
 
 		ConnectPorts(reader,0,windower,0);
-		ConnectPorts(windower,0,myfft,0);
-		ConnectPorts(myfft,0,toMagPhase,0);
+		ConnectPorts(windower,0,fft,0);
+		ConnectPorts(fft,0,toMagPhase,0);
 		InPort<MagPhaseSpectrum> fetcher;
 		toMagPhase.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
 
 		reader.Start();
 		windower.Start();
-		myfft.Start();
+		fft.Start();
 		toMagPhase.Start();
 		do 
 		{
 			reader.Do();
 		} while (not windower.CanConsumeAndProduce() );
 		windower.Do();
-		myfft.Do();
+		fft.Do();
 		toMagPhase.Do();
 
-		spectrum = fetcher.GetData();
+		outSpectrum = fetcher.GetData();
 
 		reader.Stop();
 		windower.Stop();
-		myfft.Stop();
+		fft.Stop();
 		toMagPhase.Stop();
 	}
  
