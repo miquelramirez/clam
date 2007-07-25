@@ -11,6 +11,7 @@
 #include "ComplexSpectrumProduct.hxx"
 #include "ComplexSpectrumSum.hxx"
 #include <algorithm>
+#include <cmath>
 
 namespace CLAM
 {
@@ -39,6 +40,8 @@ private:
 	std::vector<ComplexSpectrum> _responseSpectrums;
 	std::vector<ComplexSpectrum> _delayedSpectrums;
 	unsigned _current;
+	ComplexSpectrumProduct _product;
+	ComplexSpectrumSum _sum;
 
 public:
 	const char* GetClassName() const { return "LowLatencyConvolution"; }
@@ -83,11 +86,13 @@ public:
 		InPort<ComplexSpectrum> fetcher;
 		fft.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
 
+		_responseSpectrums.clear();
 		reader.Start();
 		windower.Start();
 		fft.Start();
 		while (reader.Do())
 		{
+			if (!windower.CanConsumeAndProduce()) continue;
 			windower.Do();
 			fft.Do();
 			_responseSpectrums.push_back(fetcher.GetData());
@@ -114,26 +119,28 @@ public:
 	{
 		const ComplexSpectrum & input = _input.GetData();
 		ComplexSpectrum & output = _output.GetData();
-		unsigned nBlocks = _responseSpectrums.size()/2;
+		unsigned nBlocks = std::min(_responseSpectrums.size(),1000u);
 
 		output.spectralRange = input.spectralRange;
 		const unsigned nBins = input.bins.size(); 
 		output.bins.resize( nBins );
 		for (unsigned i=0; i<output.bins.size(); i++)
 			output.bins[i]=0;
-		_delayedSpectrums[_current++].bins=input.bins;
-		if (_current>=nBlocks) _current=0;
-		ComplexSpectrumProduct product;
-		ComplexSpectrumSum sum;
-		unsigned delayIndex=_current;
+		_delayedSpectrums[_current].bins=input.bins;
+		unsigned delayIndex=_current+1;
 		for (unsigned i=0; i<nBlocks; i++)
 		{
 			if (delayIndex>=nBlocks) delayIndex=0;
 			ComplexSpectrum productSpectrum;
 			ComplexSpectrum sumSpectrum;
-			product.Do(_responseSpectrums[nBlocks-i-1], _delayedSpectrums[delayIndex++], productSpectrum);
-			sum.Do(productSpectrum, output, sumSpectrum);
-			output.bins=sumSpectrum.bins;
+			_product.Do(_responseSpectrums[nBlocks-i-1], _delayedSpectrums[delayIndex++], productSpectrum);
+			_sum.Do(productSpectrum, output, output);
+		}
+		_current++;
+		if (_current>=nBlocks) 
+		{
+			_current=0;
+			std::cout << "." <<std::flush;
 		}
 		// Tell the ports this is done
 		_input.Consume();
