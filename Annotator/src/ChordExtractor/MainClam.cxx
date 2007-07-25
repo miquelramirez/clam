@@ -130,11 +130,15 @@ class ChordExtractorSegmentation
 {
 	std::vector<double> _timePositions; ///< Holds the beggining and end time of each segment
 	std::vector<unsigned> _chordIndexes;  ///< Holds the chord index for each segment
+
+	unsigned _lastChord;
 public:
-	ChordExtractorSegmentation() {};
+	ChordExtractorSegmentation()
+		: _lastChord(0)
+	{};
 	~ChordExtractorSegmentation() {};
 
-	void doIt(unsigned & lastChord, CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
+	void doIt(CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
 	{
 		const std::vector<double> & correlation = extractor.chordCorrelation(); //pointer to correlation data
 
@@ -145,10 +149,10 @@ public:
 		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
 				0 : extractor.firstCandidate();
 
-		if (currentChord!=lastChord)
+		if (currentChord!=_lastChord)
 		{	
 			// Closes a segment opened in one of the previous iterations
-			if (lastChord != 0) {
+			if (_lastChord != 0) {
 				_timePositions.push_back(currentTime);
 			}
 			// Opens a new chord segment
@@ -157,13 +161,13 @@ public:
 				_timePositions.push_back(currentTime);
 				_chordIndexes.push_back(currentChord);
 			}
-			lastChord = currentChord;
+			_lastChord = currentChord;
 		}
 	}
 	
-	void closeLastSegment(unsigned & lastChord, CLAM::TData & currentTime )
+	void closeLastSegment(CLAM::TData & currentTime )
 	{
-		if (lastChord != 0 & _timePositions.size() != 0)
+		if (_lastChord != 0 & _timePositions.size() != 0)
 		{
 			CLAM_ASSERT(_timePositions.size()%2==1, "Attempting to close last segment even though all segments have been closed");
 			_timePositions.push_back(currentTime);
@@ -252,7 +256,7 @@ public:
 		}
 	
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
-		segmentation.closeLastSegment(_lastChord, currentTime);
+		segmentation.closeLastSegment(currentTime);
 
 		CLAM_ASSERT(segmentation.chordIndexes().size()==segmentation.timePositions().size()/2, "Number of chord indexes does not match number of segment time positions");
 		CLAM_ASSERT(_pool->GetNumberOfContexts("ExtractedChord")==0, "ExtractedChord pool  not empty");
@@ -311,7 +315,7 @@ public:
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 //		_debugFrameSegmentation[0].AddElem(currentTime);
 		
-		segmentation.doIt(_lastChord, currentTime, extractor);
+		segmentation.doIt(currentTime, extractor);
 
 		_currentFrame++;
 	}
