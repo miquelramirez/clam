@@ -138,16 +138,14 @@ public:
 	{};
 	~ChordExtractorSegmentation() {};
 
-	void doIt(CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
+	void doIt(CLAM::TData & currentTime, const std::vector<double> & correlation, const unsigned firstCandidate, const unsigned secondCandidate) 
 	{
-		const std::vector<double> & correlation = extractor.chordCorrelation(); //pointer to correlation data
-
-		CLAM::TData firstCandidateWeight = correlation[extractor.firstCandidate()];
-		CLAM::TData secondCandidateWeight = correlation[extractor.secondCandidate()];
+		CLAM::TData firstCandidateWeight = correlation[firstCandidate];
+		CLAM::TData secondCandidateWeight = correlation[secondCandidate];
 		CLAM::TData noCandidateWeigth = correlation[0];
 		
 		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
-				0 : extractor.firstCandidate();
+				0 : firstCandidate;
 
 		if (currentChord!=_lastChord)
 		{	
@@ -315,7 +313,7 @@ public:
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 //		_debugFrameSegmentation[0].AddElem(currentTime);
 		
-		segmentation.doIt(currentTime, extractor);
+		segmentation.doIt(currentTime, correlation, extractor.firstCandidate(), extractor.secondCandidate());
 
 		_currentFrame++;
 	}
