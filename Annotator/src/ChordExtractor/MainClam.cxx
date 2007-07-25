@@ -128,26 +128,11 @@ const char * schemaContent =
 
 class ChordExtractorSegmentation
 {
-	std::vector<double> _timePositions; /// Holds the beggining and end time of each segment
-	std::vector<double> _chordIndexes;  /// Holds the chord index for each segment
+	std::vector<double> _timePositions; ///< Holds the beggining and end time of each segment
+	std::vector<unsigned> _chordIndexes;  ///< Holds the chord index for each segment
 public:
 	ChordExtractorSegmentation() {};
-	~ChordExtractorSegmentation() 
-	{
-		/*std::cout << std::endl;
-		std::cout << "_timePositions size: " << _timePositions.size() << std::endl;
-		for(int i=0; i<_timePositions.size(); ++i)
-		{
-			std::cout << _timePositions[i] << " " << std::flush;
-		}
-		std::cout << std::endl;
-		std::cout << "_chordIndexes size: " << _chordIndexes.size() << std::endl;
-		for(int i=0; i<_chordIndexes.size(); ++i)
-		{
-			std::cout << _chordIndexes[i] << " " << std::flush;
-		}
-		std::cout << std::endl;*/
-	};
+	~ChordExtractorSegmentation() {};
 
 	void doIt(CLAM::DescriptionDataPool * pool, unsigned & lastChord, CLAM::DataArray * chordSegmentation, CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
 	{
@@ -159,35 +144,34 @@ public:
 		
 		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
 				0 : extractor.firstCandidate();
-		
-		//std::cout << " time = " << currentTime  << 
-		//	" currentChord = " << currentChord <<
-		//	" lastChord = " << lastChord << std::endl << std::flush;
-
 
 		if (currentChord!=lastChord)
 		{	
-			/// Closes a segment opened in one of the previous iterations
+			// Closes a segment opened in one of the previous iterations
 			if (lastChord != 0) {
-				//std::cout << "   LOOP # 1" << std::endl << std::endl << std::flush;
 				_timePositions.push_back(currentTime);
-				chordSegmentation[0].AddElem(currentTime);
 			}
-			/// Opens a new chord segment
+			// Opens a new chord segment
 			if (currentChord != 0)
 			{
-				//std::cout << std::endl << "   LOOP # 2" << std::endl << std::flush;
-				unsigned newSegment = pool->GetNumberOfContexts("ExtractedChord");
 				_timePositions.push_back(currentTime);
 				_chordIndexes.push_back(currentChord);
-				chordSegmentation[0].AddElem(currentTime);
-				pool->Insert("ExtractedChord", newSegment);
-				pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root")[newSegment]= extractor.root(extractor.firstCandidate());
-				pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode")[newSegment]= extractor.mode(extractor.firstCandidate());
 			}
 			lastChord = currentChord;
 		}
 	}
+	
+	void closeLastSegment(unsigned & lastChord, CLAM::TData & currentTime )
+	{
+		if (lastChord != 0 & _timePositions.size() != 0)
+		{
+			CLAM_ASSERT(_timePositions.size()%2==1, "Attempting to close last segment even though all segments have been closed");
+			_timePositions.push_back(currentTime);
+		}
+	}
+
+	const std::vector<double> timePositions() const { return _timePositions; };
+	const std::vector<unsigned> chordIndexes() const { return _chordIndexes; };
 };
 
 class ChordExtractorDescriptionDumper
@@ -266,12 +250,22 @@ public:
 			_chordChorrelation[frame].Resize(24);
 			_chordChorrelation[frame].SetSize(24);
 		}
+	
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
-		
+		segmentation.closeLastSegment(_lastChord, currentTime);
 
-		if (_lastChord != 0)
-			_chordSegmentation[0].AddElem(currentTime);
+		CLAM_ASSERT(segmentation.chordIndexes().size()==segmentation.timePositions().size()/2, "Number of chord indexes does not match number of segment time positions" );
+		for (unsigned segment=0; segment<segmentation.chordIndexes().size(); ++segment)
+		{
+			_chordSegmentation[0].AddElem(segmentation.timePositions()[2*segment]);
+			
+			unsigned newSegment = _pool->GetNumberOfContexts("ExtractedChord");
+			_pool->Insert("ExtractedChord", newSegment);
+			_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root")[newSegment]= extractor.root(segmentation.chordIndexes()[segment]);
+			_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode")[newSegment]= extractor.mode(segmentation.chordIndexes()[segment]);
 
+			_chordSegmentation[0].AddElem(segmentation.timePositions()[2*segment+1]);
+		}
 
 //		CLAM::XMLStorage::Dump(*_pool, "Description", std::cout);
 		CLAM::XMLStorage::Dump(*_pool, "Description", outputPool);
