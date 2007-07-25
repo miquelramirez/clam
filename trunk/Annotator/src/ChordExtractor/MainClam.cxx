@@ -134,7 +134,7 @@ public:
 	ChordExtractorSegmentation() {};
 	~ChordExtractorSegmentation() {};
 
-	void doIt(CLAM::DescriptionDataPool * pool, unsigned & lastChord, CLAM::DataArray * chordSegmentation, CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
+	void doIt(unsigned & lastChord, CLAM::TData & currentTime, const Simac::ChordExtractor & extractor) 
 	{
 		const std::vector<double> & correlation = extractor.chordCorrelation(); //pointer to correlation data
 
@@ -311,7 +311,7 @@ public:
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 //		_debugFrameSegmentation[0].AddElem(currentTime);
 		
-		segmentation.doIt(_pool, _lastChord, _chordSegmentation, currentTime, extractor);
+		segmentation.doIt(_lastChord, currentTime, extractor);
 
 		_currentFrame++;
 	}
