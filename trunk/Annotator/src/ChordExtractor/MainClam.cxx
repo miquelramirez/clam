@@ -254,16 +254,17 @@ public:
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 		segmentation.closeLastSegment(_lastChord, currentTime);
 
-		CLAM_ASSERT(segmentation.chordIndexes().size()==segmentation.timePositions().size()/2, "Number of chord indexes does not match number of segment time positions" );
+		CLAM_ASSERT(segmentation.chordIndexes().size()==segmentation.timePositions().size()/2, "Number of chord indexes does not match number of segment time positions");
+		CLAM_ASSERT(_pool->GetNumberOfContexts("ExtractedChord")==0, "ExtractedChord pool  not empty");
+
+		_pool->SetNumberOfContexts("ExtractedChord",segmentation.chordIndexes().size());
+		Simac::Enumerated * root = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root");
+		Simac::Enumerated * mode = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode");
 		for (unsigned segment=0; segment<segmentation.chordIndexes().size(); ++segment)
 		{
+			root[segment] = extractor.root(segmentation.chordIndexes()[segment]);
+			mode[segment] = extractor.mode(segmentation.chordIndexes()[segment]);
 			_chordSegmentation[0].AddElem(segmentation.timePositions()[2*segment]);
-			
-			unsigned newSegment = _pool->GetNumberOfContexts("ExtractedChord");
-			_pool->Insert("ExtractedChord", newSegment);
-			_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root")[newSegment]= extractor.root(segmentation.chordIndexes()[segment]);
-			_pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode")[newSegment]= extractor.mode(segmentation.chordIndexes()[segment]);
-
 			_chordSegmentation[0].AddElem(segmentation.timePositions()[2*segment+1]);
 		}
 
