@@ -37,6 +37,7 @@ private:
 	OutPort<ComplexSpectrum> _output;
 	Config _config;
 	std::vector<ComplexSpectrum> _responseSpectrums;
+	std::vector<ComplexSpectrum> _delayedSpectrums;
 	unsigned _current;
 
 public:
@@ -62,7 +63,7 @@ public:
 		AudioWindowingConfig windowerConfig;
 		windowerConfig.SetSamplingRate(44100); // TODO: Take it from the file
 		windowerConfig.SetHopSize(_config.GetFrameSize());
-		windowerConfig.SetWindowSize(_config.GetFrameSize()*2+1);
+		windowerConfig.SetWindowSize(_config.GetFrameSize()+1);
 		windowerConfig.SetFFTSize(_config.GetFrameSize()*2);
 		windowerConfig.SetDoHalfWindowShift(false);
 		windowerConfig.SetWindowType(EWindowType::eNone);
@@ -90,6 +91,7 @@ public:
 			windower.Do();
 			fft.Do();
 			_responseSpectrums.push_back(fetcher.GetData());
+			fetcher.Consume();
 		}
 		std::cout << "LowLatencyConvolution: N blocks " << _responseSpectrums.size() << std::endl; 
 
@@ -97,33 +99,41 @@ public:
 		windower.Stop();
 		fft.Stop();
 
-		_input.SetSize(_responseSpectrums.size());
-		_input.SetHop(1);
+		_delayedSpectrums.resize(_responseSpectrums.size());
+		for (unsigned i=0; i<_responseSpectrums.size(); i++)
+		{
+			ComplexSpectrum & spectrum = _delayedSpectrums[i];
+			spectrum.spectralRange=_responseSpectrums[0].spectralRange;
+			spectrum.bins.assign(_responseSpectrums[0].bins.size(),std::complex<CLAM::TData>());
+		}
 		_current=0;
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
 	bool Do()
 	{
-		const ComplexSpectrum * inputs = & _input.GetData();
+		const ComplexSpectrum & input = _input.GetData();
 		ComplexSpectrum & output = _output.GetData();
-		output = _responseSpectrums[_current++];
-		if (_current >= _responseSpectrums.size())
-			_current = 0;
-		_input.Consume();
-		_output.Produce();
-		return true;
+		unsigned nBlocks = _responseSpectrums.size()/2;
 
-		output.spectralRange = inputs[0].spectralRange;
-		const unsigned nBins = inputs[0].bins.size(); 
+		output.spectralRange = input.spectralRange;
+		const unsigned nBins = input.bins.size(); 
 		output.bins.resize( nBins );
+		for (unsigned i=0; i<output.bins.size(); i++)
+			output.bins[i]=0;
+		_delayedSpectrums[_current++].bins=input.bins;
+		if (_current>=nBlocks) _current=0;
 		ComplexSpectrumProduct product;
 		ComplexSpectrumSum sum;
-		ComplexSpectrum productSpectrum;
-		for (unsigned i=0; i<_responseSpectrums.size(); i++)
+		unsigned delayIndex=_current;
+		for (unsigned i=0; i<nBlocks; i++)
 		{
-			product.Do(_responseSpectrums[i], inputs[i], productSpectrum);
-			sum.Do(productSpectrum, output, output);
+			if (delayIndex>=nBlocks) delayIndex=0;
+			ComplexSpectrum productSpectrum;
+			ComplexSpectrum sumSpectrum;
+			product.Do(_responseSpectrums[nBlocks-i-1], _delayedSpectrums[delayIndex++], productSpectrum);
+			sum.Do(productSpectrum, output, sumSpectrum);
+			output.bins=sumSpectrum.bins;
 		}
 		// Tell the ports this is done
 		_input.Consume();
