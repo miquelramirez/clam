@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioBuffer2Stream_0" type="AudioBuffer2Stream">
+    <HopSize>1024</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>2048</FFTSize>
+    <WindowSize>2048</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioMixer_0" type="AudioMixer">
+    <NumberOfInPorts>1</NumberOfInPorts>
+    <FrameSize>1024</FrameSize>
+  </processing>
+
+  <processing id="AudioSink_0" type="AudioSink"/>
+
+  <processing id="AudioSource_0" type="AudioSource"/>
+
+  <processing id="AudioWindowing_0" type="AudioWindowing">
+    <HopSize>1024</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>2048</FFTSize>
+    <WindowSize>2049</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="BufferOscilloscope_1" type="BufferOscilloscope"/>
+
+  <processing id="Gain 0" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>200</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="LowLatencyConvolution_0" type="LowLatencyConvolution">
+    <FrameSize>1024</FrameSize>
+  </processing>
+
+  <processing id="MyFFT_0" type="MyFFT">
+    <AudioSize>2048</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_0" type="MyIFFT">
+    <AudioSize>2048</AudioSize>
+  </processing>
+
+  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+
+  <processing id="Output Envelope Decay (s)" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.01</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Pitch" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>2000</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="SpectrumView_0" type="SpectrumView"/>
+
+  <processing id="Threshold" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.1</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="limit_rms56_0" type="limit_rms56"/>
+
+  <processing id="toMP" type="Complex2MagPhaseSpectrum"/>
+
+  <processing id="toSpectrum" type="MagPhaseSpectrum2Spectrum"/>
+
+  <port_connection>
+    <out>AudioBuffer2Stream_0.Audio stream</out>
+    <in>AudioMixer_0.Input 0</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioMixer_0.Output Audio</out>
+    <in>limit_rms56_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource_0.AudioOut</out>
+    <in>AudioWindowing_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioWindowing_0.Output</out>
+    <in>MyFFT_0.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution_0.Output</out>
+    <in>MyIFFT_0.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution_0.Output</out>
+    <in>toMP.ComplexSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT_0.Complex Spectrum</out>
+    <in>LowLatencyConvolution_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_0.Audio Buffer</out>
+    <in>AudioBuffer2Stream_0.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_0.Audio Buffer</out>
+    <in>BufferOscilloscope_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>limit_rms56_0.Output</out>
+    <in>Oscilloscope_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>limit_rms56_0.Output</out>
+    <in>AudioSink_0.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toMP.MagPhaseSpectrum</out>
+    <in>toSpectrum.MagPhaseSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toSpectrum.Spectrum</out>
+    <in>SpectrumView_0.Input</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Gain 0.out</out>
+    <in>AudioMixer_0.Gain 0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Output Envelope Decay (s).out</out>
+    <in>limit_rms56_0.Output Envelope Decay (s)</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Threshold.out</out>
+    <in>limit_rms56_0.Threshold</in>
+  </control_connection>
+
+</network>
