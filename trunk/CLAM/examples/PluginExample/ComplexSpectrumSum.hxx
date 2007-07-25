@@ -41,7 +41,8 @@ public:
 
 		out.spectralRange = in1.spectralRange;
 		const unsigned nBins = in1.bins.size(); 
-		out.bins.resize( nBins );
+		if (out.bins.size()!=nBins) // Also protects against resizing when out is one of the ins
+			out.bins.resize( nBins );
 		for (unsigned i=0; i<nBins; i++)
 		{
 			out.bins[i] = in1.bins[i] + in2.bins[i];
