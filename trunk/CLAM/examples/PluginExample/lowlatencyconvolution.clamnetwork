@@ -28,15 +28,13 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BufferOscilloscope_0" type="BufferOscilloscope"/>
-
   <processing id="BufferOscilloscope_1" type="BufferOscilloscope"/>
 
   <processing id="Gain 0" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.005</Step>
+    <Max>200</Max>
+    <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
@@ -54,16 +52,37 @@
 
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
 
+  <processing id="Output Envelope Decay (s)" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.01</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Pitch" type="OutControlSender">
+    <Min>1</Min>
+    <Default>440</Default>
+    <Max>2000</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
   <processing id="SpectrumView_0" type="SpectrumView"/>
+
+  <processing id="Threshold" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.1</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="limit_rms56_0" type="limit_rms56"/>
 
   <processing id="toMP" type="Complex2MagPhaseSpectrum"/>
 
   <processing id="toSpectrum" type="MagPhaseSpectrum2Spectrum"/>
-
-  <port_connection>
-    <out>AudioBuffer2Stream_0.Audio stream</out>
-    <in>Oscilloscope_0.Input</in>
-  </port_connection>
 
   <port_connection>
     <out>AudioBuffer2Stream_0.Audio stream</out>
@@ -72,7 +91,7 @@
 
   <port_connection>
     <out>AudioMixer_0.Output Audio</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>limit_rms56_0.Input</in>
   </port_connection>
 
   <port_connection>
@@ -111,8 +130,13 @@
   </port_connection>
 
   <port_connection>
-    <out>MyIFFT_0.Audio Buffer</out>
-    <in>BufferOscilloscope_0.Input</in>
+    <out>limit_rms56_0.Output</out>
+    <in>Oscilloscope_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>limit_rms56_0.Output</out>
+    <in>AudioSink_0.AudioIn</in>
   </port_connection>
 
   <port_connection>
@@ -128,6 +152,16 @@
   <control_connection>
     <out>Gain 0.out</out>
     <in>AudioMixer_0.Gain 0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Output Envelope Decay (s).out</out>
+    <in>limit_rms56_0.Output Envelope Decay (s)</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Threshold.out</out>
+    <in>limit_rms56_0.Threshold</in>
   </control_connection>
 
 </network>
