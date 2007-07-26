@@ -109,7 +109,7 @@ void ProcessingFactory::AddAttribute(const std::string& key, const std::string& 
 	if(!ExistsKey(key))
 	{
 		std::cout << "[ProcessingFactory] tryind to add metadata to a non-existing key \"" << key << "\"" << std::endl; 
-		return;
+//		return;  //pau: debugging: add metadata anyway. maybe factory registrator is about to be instantiated.
 	}
 	if(it == mProcessingAttributes.end()) // first check if it does not exist
 	{
