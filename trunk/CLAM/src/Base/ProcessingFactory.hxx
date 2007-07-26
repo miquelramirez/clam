@@ -10,30 +10,32 @@ namespace CLAM
 class ProcessingFactory : public Factory<Processing>
 {
 public:
-	typedef RegistryKey Key;
+	typedef std::string Attribute;
 	typedef std::string Value;
-	typedef struct sValue {
-		std::string name; //pau: s/string/Attribute
+	struct Pair 
+	{
+		Attribute attribute;
 		Value value;
-	} Attribute; //pau: make this type private if possible
-	//pau: s/Attribute/Pair
+	};
+	typedef RegistryKey Key;
 	typedef std::list<Key> Keys;
-	typedef std::list<Value> Values;
-	typedef std::list<Attribute> Attributes; //pau: s/Attributes/Pairs
-	typedef std::map<Key, Attributes> ProcessingAttributes; //pau: s/ProcessingAttributes/Metadata
-
-	ProcessingAttributes mProcessingAttributes; //pau mMetadata
-
-	static ProcessingFactory& GetInstance();
+	typedef std::list<std::string> Values;
+	typedef std::list<Pair> Pairs; 
+	typedef std::map<Key, Pairs> Metadata;
 
 	void AddAttribute(const std::string& key, const std::string& attribute, const std::string& value);
-	Keys GetListOfKeys(const std::string& attribute, const std::string& value);
-	Keys GetListOfKeys();
-	Values GetValuesFor(const std::string& attribute); 
-	Attributes GetValuesOf(const std::string& key); 
-	Values GetValuesFrom(const std::string& key, const std::string& attribute);
-	void ProcessingClear(); //pau: is it used? remove if not
-	std::size_t ProcessingCount(); //pau: used?
+	Keys GetKeys(const std::string& attribute, const std::string& value);
+	Keys GetKeys();
+	Values GetSetOfValues(const std::string& attribute); 
+	Pairs GetPairsFromKey(const std::string& key); 
+	Values GetValuesFromAttribute(const std::string& key, const std::string& attribute);
+
+private:
+	Metadata _metadata;
+
+
+public:
+	static ProcessingFactory& GetInstance();
 };
 
 } //namespace CLAM
