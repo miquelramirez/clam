@@ -10,14 +10,14 @@ static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MyProcessing>
 		0
 	}
 */
-class A
-{
-public:
-	A()
+	class myProcessingRegistratorMetadata
 	{
-		CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-		factory.AddAttribute("MyProcessing", "category", "CLAM");
-		factory.AddAttribute("MyProcessing", "description", "My super brand new processing");
-	}
-};
-static A a;
+	public:
+		myProcessingRegistratorMetadata()
+		{
+			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+			factory.AddAttribute("MyProcessing", "category", "CLAM");
+			factory.AddAttribute("MyProcessing", "description", "MyProcessing: just an example");
+		}
+	};
+	static myProcessingRegistratorMetadata dummy;

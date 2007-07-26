@@ -98,11 +98,6 @@ int main(int argc,char** argv)
 
 		SDIFStore( sdifoutput, AnalysisSegment );
 	}
-	catch(CLAM::Err error)
-	{
-		error.Print();
-		std::cerr << "Abnormal Program Termination!\n" << std::endl;
-	}
 	catch (std::exception e)
 	{
 		std::cout << e.what() << std::endl;
