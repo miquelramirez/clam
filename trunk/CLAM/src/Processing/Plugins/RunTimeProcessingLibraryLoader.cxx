@@ -58,9 +58,9 @@ class RunTimeProcessingLibraryLoader
 			if(pluginFilename == "." || pluginFilename == "..")
 				continue;
 			std::string pluginFullFilename(path + std::string("/") + pluginFilename);
-			std::cerr << "[Plugins] Loading: " << pluginFullFilename << std::endl;
 			void* handle = FullyLoadLibrary( pluginFullFilename );
-			if (!handle) std::cerr << "[Plugins] Error: " << LibraryLoadError() << std::endl;
+//			if (!handle) std::cerr << "[Plugins] Error: " << LibraryLoadError() << std::endl;
+			if (handle) std::cerr << "[Plugins] Loaded: " << pluginFullFilename << std::endl;
 		}
 		closedir(dir);
 	}
