@@ -41,7 +41,7 @@ bool AudioWindowing::ConcreteConfigure(const ProcessingConfig& cfg)
 {
 	CopyAsConcreteConfig(mConfig,cfg);
  
-	ConfigureChildren();
+	if (! ConfigureChildren()) return false;
 	ConfigureData();
 	return true;
 }
@@ -58,13 +58,15 @@ bool AudioWindowing::ConfigureChildren()
 		AddConfigErrorMessage("Window size should be odd.");
 		return false;
 	}
-	if(windowSize<2*hopSize+1)
+	// TODO: Review this restriction
+	/*
+	if (windowSize<2*hopSize+1)
 	{
 		AddConfigErrorMessage("FFT Restriction:");
 		AddConfigErrorMessage("This condition is not met: WindowSize < 2*HopSize+1");
 		return false;
 	}
-
+	*/
 	if (not isPowerOfTwo(mConfig.GetFFTSize()))
 	{
 		AddConfigErrorMessage("FFT Restriction:");
