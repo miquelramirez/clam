@@ -226,6 +226,70 @@
     <prSamplingRate>0</prSamplingRate>
   </processing>
 
+  <processing id="Voice Delay_0" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Voice Delay_1" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Voice Delay_2" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Voice Delay_3" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Voice Detuning_0" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Voice Detuning_1" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Voice Detuning_2" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="Voice Detuning_3" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
   <port_connection>
     <out>Input.AudioOut</out>
     <in>SMSAnalysisCore_0.Input Audio</in>
@@ -324,6 +388,46 @@
   <control_connection>
     <out>Pitch_3.out</out>
     <in>SMSHarmonizer_0.Pitch_3</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Voice Delay_0.out</out>
+    <in>SMSHarmonizer_0.Voice Delay_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Voice Delay_1.out</out>
+    <in>SMSHarmonizer_0.Voice Delay_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Voice Delay_2.out</out>
+    <in>SMSHarmonizer_0.Voice Delay_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Voice Delay_3.out</out>
+    <in>SMSHarmonizer_0.Voice Delay_3</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Voice Detuning_0.out</out>
+    <in>SMSHarmonizer_0.Voice Detuning_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Voice Detuning_1.out</out>
+    <in>SMSHarmonizer_0.Voice Detuning_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Voice Detuning_2.out</out>
+    <in>SMSHarmonizer_0.Voice Detuning_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Voice Detuning_3.out</out>
+    <in>SMSHarmonizer_0.Voice Detuning_3</in>
   </control_connection>
 
 </network>

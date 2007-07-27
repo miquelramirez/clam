@@ -28,7 +28,6 @@ namespace CLAM
 		AddAll();
 		UpdateData();
 
-		//By default we ignore residual!!
 		SetIgnoreResidual( true );
 	}
 }
