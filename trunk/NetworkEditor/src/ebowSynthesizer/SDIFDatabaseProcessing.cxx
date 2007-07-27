@@ -95,6 +95,7 @@ bool SDIFDatabaseProcessing::Do(void)
 
 	mOutputSpectralPeaks.Produce();
 	mOutputResidualSpectrum.Produce();
+	return true;
 }
 
 void SDIFDatabaseProcessing::CopyResidualSpectrumsMembers(Spectrum& sourceResidualSpectrum,
