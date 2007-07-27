@@ -46,7 +46,6 @@ SMSTimeStretch::SMSTimeStretch(const SegmentTransformationConfig &c):SegmentTran
 	mAnalysisTime=0;
 	mCurrentInputFrame=-1;
 	Configure(c);
-
 }
 
 bool SMSTimeStretch::ConcreteConfigure(const ProcessingConfig& cfg)

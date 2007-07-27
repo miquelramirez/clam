@@ -45,8 +45,8 @@
 #include <CLAM/AudioIO.hxx>
 #include <CLAM/AudioOut.hxx>
 #include <CLAM/AudioManager.hxx>
-#include <CLAM/SMSMorphConfig.hxx>
-#include <CLAM/SMSMorph.hxx>
+#include <CLAM/SegmentSMSMorphConfig.hxx>
+#include <CLAM/SegmentSMSMorph.hxx>
 #include <CLAM/SMSTimeStretchConfig.hxx>
 
 namespace CLAM
@@ -794,7 +794,7 @@ void SMSBase::Transform()
 	DestroyProgressIndicator();	
 }
 
-void SMSBase::ConfigureSMSMorph()
+void SMSBase::ConfigureSegmentSMSMorph()
 {
 	SMSTransformationChain::iterator transIt=mTransformation.composite_begin();
 	SMSTransformationChainConfig::iterator configIt;
@@ -803,11 +803,11 @@ void SMSBase::ConfigureSMSMorph()
 		for(configIt=mTransformationScore.ConfigList_begin();configIt!=mTransformationScore.ConfigList_end();configIt++,transIt++)
 		{
 			//Note: we are supposing only one Morph is in the chain
-			if((*configIt).GetConcreteClassName()=="SMSMorph")
+			if((*configIt).GetConcreteClassName()=="SegmentSMSMorph")
 			{
 				try{
-					SMSMorph* tmpMorph= dynamic_cast<SMSMorph*>(*transIt);
-					SMSMorphConfig& tmpMorphConfig= dynamic_cast<SMSMorphConfig&>((*configIt).GetConcreteConfig());
+					SegmentSMSMorph* tmpMorph= dynamic_cast<SegmentSMSMorph*>(*transIt);
+					SegmentSMSMorphConfig& tmpMorphConfig= dynamic_cast<SegmentSMSMorphConfig&>((*configIt).GetConcreteConfig());
 					tmpMorphConfig.SetSamplingRate(mMorphSegment.GetSamplingRate());
 					tmpMorph->Configure(tmpMorphConfig);
 					tmpMorph->SetSegmentToMorph(mMorphSegment);
@@ -828,7 +828,7 @@ void SMSBase::TransformProcessing(void)
 	/* UNUSED: bool def=false; */
 	UpdateDataInTimeStretch();
 	mTransformation.Configure(mTransformationScore);
-	ConfigureSMSMorph();
+	ConfigureSegmentSMSMorph();
 	CopySegmentExceptAudio(mOriginalSegment,mTransformedSegment);	
 	
 

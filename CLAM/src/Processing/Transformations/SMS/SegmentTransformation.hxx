@@ -155,7 +155,7 @@ namespace CLAM {
 			return out.GetFrame(mCurrentInputFrame);
 		}
 
-		//TODO remove. but now is used by SMSMorph
+		//TODO remove. but now is used by SegmentSMSMorph
 		int mCurrentInputFrame;
 
 	};

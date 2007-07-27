@@ -287,7 +287,6 @@ void ProcessingBox::paintBox(QPainter & painter)
 		painter.drawRect(0, _size.height(), margin, -margin);
 		painter.drawRect(_size.width(), 0,  -margin, margin);
 		painter.drawRect(_size.width(), _size.height(), -margin, -margin);
-		
 	}
 		
 }

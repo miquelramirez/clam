@@ -242,7 +242,7 @@ namespace CLAM
 
 		void AnalysisProcessing();
 		void MorphAnalysisProcessing();
-		void SetSMSMorphFileName();
+		void SetSegmentSMSMorphFileName();
 
 		/** This method should be overridden on subclasses to provide
 		further control on how the concrete process is performed */
@@ -264,7 +264,7 @@ namespace CLAM
 
 		void TransformProcessing();
 
-		void ConfigureSMSMorph();
+		void ConfigureSegmentSMSMorph();
 
 		/** Analyze and extract melody. This feature only works on some sort of instruments
 		* for monophonic phrases */

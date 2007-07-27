@@ -118,6 +118,8 @@ const static char * processingClasses[] = {
 	"SMSPitchDiscretization",
 	"SMSGenderChange",
 	"SMSHarmonizer",
+	"SMSMorph",
+	"SMSTimeStretch",
 	"SMSTranspose",
 	"VowelResonator",
 	0,
