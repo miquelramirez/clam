@@ -196,21 +196,19 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	}
 	
 #ifdef USE_LADSPA
-	//TODO make static
-	CLAM::LadspaPluginsExplorer exp;
-	exp.ExploreStandardPaths();
+	CLAM::LadspaPluginsExplorer::ExploreStandardPaths();
 #endif //USE_LADSPA
 
 // TODO: Ladspa is still work in progress 
 
 	CLAM::ProcessingFactory::Keys::const_iterator itK;
-	CLAM::ProcessingFactory::Keys keys = CLAM::ProcessingFactory::GetInstance().GetListOfKeys("category", "LADSPA");
+	CLAM::ProcessingFactory::Keys keys = CLAM::ProcessingFactory::GetInstance().GetKeys("category", "LADSPA");
 	if( keys.size() > 0)
 	{
 		QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA" );
 		for (	itK = keys.begin(); itK != keys.end(); itK++)
 		{
-			std::string description = CLAM::ProcessingFactory::GetInstance().GetValuesFrom(*itK, "description").front();
+			std::string description = CLAM::ProcessingFactory::GetInstance().GetValuesFromAttribute(*itK, "description").front();
 			std::string factoryID = (*itK);
 //			std::cout << "[LADSPA] key: " << factoryID << std::endl;
 //			std::cout << "[LADSPA] description: " << description << std::endl; 
@@ -220,14 +218,14 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 		}
 	}
 	
-	keys = CLAM::ProcessingFactory::GetInstance().GetListOfKeys("category", "CLAM");
+	keys = CLAM::ProcessingFactory::GetInstance().GetKeys("category", "CLAM");
 //	std::cout << "keys size: "<< keys.size() << std::endl;
 	if( keys.size() > 0)
 	{
 		QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "CLAM Plugins" );
 		for (	itK = keys.begin(); itK != keys.end(); itK++)
 		{
-			std::string description = CLAM::ProcessingFactory::GetInstance().GetValuesFrom(*itK, "description").front();
+			std::string description = CLAM::ProcessingFactory::GetInstance().GetValuesFromAttribute(*itK, "description").front();
 			std::string factoryID = (*itK);
 			std::cout << "[CLAM Plugin] key: " << factoryID << std::endl;
 //			std::cout << "[CLAM Plugin] description: " << description << std::endl; 
