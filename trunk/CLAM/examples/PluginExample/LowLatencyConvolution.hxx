@@ -36,6 +36,7 @@ public:
 private:
 	InPort<ComplexSpectrum> _input;
 	OutPort<ComplexSpectrum> _output;
+
 	Config _config;
 	std::vector<ComplexSpectrum> _responseSpectrums;
 	std::vector<ComplexSpectrum> _delayedSpectrums;
@@ -43,18 +44,93 @@ private:
 	ComplexSpectrumProduct _product;
 	ComplexSpectrumSum _sum;
 
+	//TODO extract to new class
+	InControl _position;
+	double _lastPosition;
+	std::vector<ComplexSpectrum> _originResponseSpectrums;
+	std::vector<ComplexSpectrum> _finalResponseSpectrums;
+
+
 public:
 	const char* GetClassName() const { return "LowLatencyConvolution"; }
 	LowLatencyConvolution(const Config& config = Config()) 
 		: _input("Input", this)
-		, _output("Output", this) 
+		, _output("Output", this)
+		, _position("Position", this)
 	{
 		Configure( config );
+		_position.SetBounds(0,1);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
 
+		if (!ComputeSpectrums("impulse.wav", _responseSpectrums))
+			return false;		
+		const unsigned nBlocks = _responseSpectrums.size();
+		std::cout << "LowLatencyConvolution: N blocks " << nBlocks << std::endl; 
+		_delayedSpectrums.resize(nBlocks);
+		for (unsigned i=0; i<nBlocks; i++)
+		{
+			ComplexSpectrum & spectrum = _delayedSpectrums[i];
+			spectrum.spectralRange=_responseSpectrums[0].spectralRange;
+			spectrum.bins.assign(_responseSpectrums[0].bins.size(),std::complex<CLAM::TData>());
+		}
+		_current=0;
+
+		return true;
+	}
+	const ProcessingConfig & GetConfig() const { return _config; }
+
+	void InterpolateResponseSpectrums()
+	{
+		if (std::abs( _position.GetLastValue() - _lastPosition) < 0.001 )
+			return;
+		std::cout << "position changed"<<std::endl;
+		_lastPosition = _position.GetLastValue();
+	}
+	bool Do()
+	{
+
+		InterpolateResponseSpectrums();
+		const ComplexSpectrum & input = _input.GetData();
+		ComplexSpectrum & output = _output.GetData();
+		unsigned nBlocks = std::min(_responseSpectrums.size(),1000u);
+
+		output.spectralRange = input.spectralRange;
+		const unsigned nBins = input.bins.size(); 
+		output.bins.resize( nBins );
+		for (unsigned i=0; i<output.bins.size(); i++)
+			output.bins[i]=0;
+		_delayedSpectrums[_current].bins=input.bins;
+		unsigned delayIndex=_current+1;
+		ComplexSpectrum productSpectrum;
+		for (unsigned i=0; i<nBlocks; i++)
+		{
+			if (delayIndex>=nBlocks) delayIndex=0;
+			_product.Do(_responseSpectrums[nBlocks-i-1], _delayedSpectrums[delayIndex++], productSpectrum);
+			_sum.Do(productSpectrum, output, output);
+		}
+		_current++;
+		if (_current>=nBlocks) 
+		{
+			_current=0;
+			std::cout << "*" <<std::flush;
+		}
+		// Tell the ports this is done
+		_input.Consume();
+		_output.Produce();
+		return true;
+	}
+private:
+	void ComputeResponseSpectrums()
+	{
+		_lastPosition=0;
+	//	ComputeSpectrums("room1/p_emissor_4-5-1_receptor_4-1-1.wav", _originResponseSpectrums );
+	//	ComputeSpectrums("room1/p_emissor_4-5-1_receptor_4-10-1.wav", _finalResponseSpectrums );
+	}
+	bool ComputeSpectrums(const char* wavfile, std::vector<ComplexSpectrum> & responseSpectrums)
+	{
 		MonoAudioFileReaderConfig readerConfig;
 		readerConfig.SetSourceFile("impulse.wav");
 		MonoAudioFileReader reader(readerConfig);
@@ -90,7 +166,7 @@ public:
 		InPort<ComplexSpectrum> fetcher;
 		fft.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
 
-		_responseSpectrums.clear();
+		responseSpectrums.clear();
 		reader.Start();
 		windower.Start();
 		fft.Start();
@@ -99,56 +175,14 @@ public:
 			if (!windower.CanConsumeAndProduce()) continue;
 			windower.Do();
 			fft.Do();
-			_responseSpectrums.push_back(fetcher.GetData());
+			responseSpectrums.push_back(fetcher.GetData());
 //			fetcher.GetData().dump(std::cout);
 			fetcher.Consume();
 		}
-		std::cout << "LowLatencyConvolution: N blocks " << _responseSpectrums.size() << std::endl; 
 
 		reader.Stop();
 		windower.Stop();
 		fft.Stop();
-
-		_delayedSpectrums.resize(_responseSpectrums.size());
-		for (unsigned i=0; i<_responseSpectrums.size(); i++)
-		{
-			ComplexSpectrum & spectrum = _delayedSpectrums[i];
-			spectrum.spectralRange=_responseSpectrums[0].spectralRange;
-			spectrum.bins.assign(_responseSpectrums[0].bins.size(),std::complex<CLAM::TData>());
-		}
-		_current=0;
-		return true;
-	}
-	const ProcessingConfig & GetConfig() const { return _config; }
-	bool Do()
-	{
-		const ComplexSpectrum & input = _input.GetData();
-		ComplexSpectrum & output = _output.GetData();
-		unsigned nBlocks = std::min(_responseSpectrums.size(),1000u);
-
-		output.spectralRange = input.spectralRange;
-		const unsigned nBins = input.bins.size(); 
-		output.bins.resize( nBins );
-		for (unsigned i=0; i<output.bins.size(); i++)
-			output.bins[i]=0;
-		_delayedSpectrums[_current].bins=input.bins;
-		unsigned delayIndex=_current+1;
-		ComplexSpectrum productSpectrum;
-		for (unsigned i=0; i<nBlocks; i++)
-		{
-			if (delayIndex>=nBlocks) delayIndex=0;
-			_product.Do(_responseSpectrums[nBlocks-i-1], _delayedSpectrums[delayIndex++], productSpectrum);
-			_sum.Do(productSpectrum, output, output);
-		}
-		_current++;
-		if (_current>=nBlocks) 
-		{
-			_current=0;
-			std::cout << "*" <<std::flush;
-		}
-		// Tell the ports this is done
-		_input.Consume();
-		_output.Produce();
 		return true;
 	}
 
