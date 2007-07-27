@@ -2,7 +2,7 @@
 #define __SMSMORPHCONFIGURATOR__
 
 #include "SMSConfigurator.hxx"
-#include <CLAM/SMSMorphConfig.hxx>
+#include <CLAM/SegmentSMSMorphConfig.hxx>
 
 namespace QtSMS
 {
@@ -26,7 +26,7 @@ namespace QtSMS
 	private:
 		Qt_Help_View*         mHelpWidget;
 		Qt_SMS_Morph_Control* mMorphEditor;
-		CLAM::SMSMorphConfig  mConfig;
+		CLAM::SegmentSMSMorphConfig  mConfig;
 		static const char*    mHelpText;
 
 		void SetupConfigObject();

@@ -5,7 +5,7 @@
 
 namespace QtSMS
 {
-	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSMorphConfigurator> regtPitchShiftCfg("SMSMorph");
+	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSMorphConfigurator> regtPitchShiftCfg("SegmentSMSMorph");
 
 	const char* SMSMorphConfigurator::mHelpText = 
 	"<html>"
@@ -112,7 +112,7 @@ namespace QtSMS
 
 	void SMSMorphConfigurator::Initialize( CLAM::ProcessingConfig& cfg)
 	{
-		CLAM::SMSMorphConfig& conCfg = static_cast<CLAM::SMSMorphConfig&>(cfg);
+		CLAM::SegmentSMSMorphConfig& conCfg = static_cast<CLAM::SegmentSMSMorphConfig&>(cfg);
 
 		if(conCfg.HasHybBPF())
 		{
@@ -127,7 +127,7 @@ namespace QtSMS
 
 	void SMSMorphConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg)
 	{
-		mConfig = static_cast<const CLAM::SMSMorphConfig&>(cfg);
+		mConfig = static_cast<const CLAM::SegmentSMSMorphConfig&>(cfg);
 		bool ckecked = (mConfig.GetInterpolateFrame()) ? true : false;
 		mMorphEditor->FrameInterpolationChecked(ckecked);
 		mMorphEditor->SetGlobalEnvelope(mConfig.GetHybBPF());

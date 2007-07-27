@@ -30,12 +30,11 @@ namespace Hidden
 {
 	static FactoryRegistrator<ProcessingFactory, AudioMixer> regAudioMixer("AudioMixer");
 }
-	
+
 AudioMixer::AudioMixer() : mOutputPort("Output Audio",this)
 {
 	Configure( mConfig );
 }
-
 
 void AudioMixer::CreatePortsAndControls()
 {
@@ -70,7 +69,7 @@ void AudioMixer::RemovePortsAndControls()
 	std::vector< InControl* >::iterator itInControl;
 	for(itInControl=mInputControls.begin(); itInControl!=mInputControls.end(); itInControl++)
 		delete *itInControl;
-	mInputControls.clear();  
+	mInputControls.clear();
 			
 	GetInPorts().Clear();
 	GetInControls().Clear();

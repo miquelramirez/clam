@@ -13,7 +13,7 @@ namespace QtSMS
 	Qt_SMS_Morph_Control::Qt_SMS_Morph_Control(QWidget* parent)
 		: QWidget(parent)
 	{
-		InitSMSMorphControl();
+		InitSegmentSMSMorphControl();
 	}
 
 	Qt_SMS_Morph_Control::~Qt_SMS_Morph_Control()
@@ -431,7 +431,7 @@ namespace QtSMS
 		
 	}
 
-	void Qt_SMS_Morph_Control::InitSMSMorphControl()
+	void Qt_SMS_Morph_Control::InitSegmentSMSMorphControl()
 	{
 		InitEnvelopes();
 

@@ -19,123 +19,129 @@
  *
  */
 
-
 #ifndef _SMSMorph_
 #define _SMSMorph_
 
-#include "SegmentTransformation.hxx"
 #include "SMSMorphConfig.hxx"
-#include "SDIFIn.hxx"
+
+//FIXME
+#include "Frame.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
+#include "Processing.hxx"
 #include "FrameInterpolator.hxx"
 
 namespace CLAM{
 
-
-	
-	/** @todo: introduce interpolation of spectral shapes, before that, interpolations may be
-	 *	extracted to external Processing's*/
-	class SMSMorph: public SegmentTransformation
+	/**	\brief Morph using the SMS model
+	 *
+	 *	Allows to 'morph' or hybridize two sounds, so the resulting one has intermediate characteristics
+	 */
+	class SMSMorph: public Processing
 	{
-		
-		typedef InControlTmpl<SMSMorph> SMSMorphCtrl;	
-	
-	public:
-		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
-		SMSMorph();
-		/** Constructor with an object of SegmentTransformationConfig class by parameter
-		 *  @param c SegmentTransformationConfig object created by the user
-		*/
-		SMSMorph(const SMSMorphConfig &c);
-		
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
 		const char *GetClassName() const {return "SMSMorph";}
+
+		InPort<SpectralPeakArray> mInPeaks1;
+		InPort<Fundamental> mInFund1;
+		InPort<Spectrum> mInSpectrum1;
+
+		InPort<SpectralPeakArray> mInPeaks2;
+		InPort<Fundamental> mInFund2;
+		InPort<Spectrum> mInSpectrum2;
+
+		OutPort<SpectralPeakArray> mOutPeaks;
+		OutPort<Fundamental> mOutFund;
+		OutPort<Spectrum> mOutSpectrum;
+
+		/**  An interpolation factor of 0.0 means that the resulting sound sinusoidal envelope will match the source's one, and 
+		*   factor of 1.0 means that the resulting sound sinusoidal envelope matches exactly the target's one.
+		*/
+		InControl mInterpolationFactor; 
+
+		/// Adding residual does not improve results much and adds a lot of overhead (Ignoring by default)
+		bool mIgnoreResidual;
+	public:
+		SMSMorph()
+			:
+			mInPeaks1("In SpectralPeaks 1", this),
+			mInFund1("In Fundamental 1", this),
+			mInSpectrum1("In Spectrum 1", this),
+		
+			mInPeaks2("In SpectralPeaks 2", this),
+			mInFund2("In Fundamental 2", this),
+			mInSpectrum2("In Spectrum 2", this),
+		
+			mOutPeaks("Out SpectralPeaks", this),
+			mOutFund("Out Fundamental", this),
+			mOutSpectrum("Out Spectrum", this),
+
+			mInterpolationFactor("Interpolation Factor", this)
+		{
+			Configure( mConfig );
+		}
+
+ 		~SMSMorph() {}
+
+		bool Do()
+		{
+			bool result = Do(mInPeaks1.GetData(),
+					 mInFund1.GetData(),
+					 mInSpectrum1.GetData(),
+					 mInPeaks2.GetData(),
+					 mInFund2.GetData(),
+					 mInSpectrum2.GetData(),
+					 mOutPeaks.GetData(),
+					 mOutFund.GetData(),
+					 mOutSpectrum.GetData()
+					 );
+
+			mInPeaks1.Consume();
+			mInFund1.Consume();
+			mInSpectrum1.Consume();
+
+			mInPeaks2.Consume();
+			mInFund2.Consume();
+			mInSpectrum2.Consume();
+
+			mOutPeaks.Produce();
+			mOutFund.Produce();
+			mOutSpectrum.Produce();
+
+			return result;
+		}
+
+		bool Do(const SpectralPeakArray& inPeaks1,
+			const Fundamental& inFund1,
+			const Spectrum& inSpectrum1,
+			const SpectralPeakArray& inPeaks2,
+			const Fundamental& inFund2,
+			const Spectrum& inSpectrum2,
+			SpectralPeakArray& outPeaks,
+			Fundamental& outFund,
+			Spectrum& outSpectrum
+			);
+
+		//TODO - check if it's still useful
+		bool Do(const Frame& in1, const Frame& in2, Frame& out);
+
+		typedef SMSMorphConfig Config;
 
 		const ProcessingConfig& GetConfig() const
 		{
 			return mConfig;
 		}
 
-		bool ConcreteConfigure(const ProcessingConfig& c);
-		bool ConcreteStart();
-		
-		/** Destructor of the class*/
- 		~SMSMorph()
-		{}
+	private:
+		Config mConfig;
 
-		
-		bool Do(const Segment& in1, Segment& out);
-		bool Do(const Segment& in1,Segment& in2, Segment& out);
-		bool Do(const Frame& in1, Frame& out);
-		bool Do()
-		{
-			CLAM_ASSERT(false, "Do with ports not implemented");
-			return false;
-		}
-	
-		virtual bool UpdateControlValueFromBPF(TData pos);
-	
-		void SetSegmentToMorph(Segment&segmentToMorph);
-
-		bool mUseGlobalFactor;
-		SMSMorphCtrl  mHybBPF;
-
-		bool mUseSynchronizeTime;
-		SMSMorphCtrl  mSynchronizeTime;
-		
-		bool mUseSinAmp;
-		SMSMorphCtrl  mHybSinAmp;
-
-		bool mUseSinSpectralShape;
-		SMSMorphCtrl  mHybSinSpectralShape;
-		SMSMorphCtrl  mHybSinShapeW1;
-		SMSMorphCtrl  mHybSinShapeW2;
-		
-		bool mUsePitch;
-		SMSMorphCtrl  mHybPitch;
-		
-		bool mUseSinFreq;
-		SMSMorphCtrl  mHybSinFreq;
-		
-		bool mUseResAmp;
-		SMSMorphCtrl  mHybResAmp;
-		
-		bool mUseResSpectralShape;
-		SMSMorphCtrl  mHybResSpectralShape;
-		SMSMorphCtrl  mHybResShapeW1;
-		SMSMorphCtrl  mHybResShapeW2;
-						
 	protected:
-		
-		void UpdateFrameInterpolatorFactors(bool useFrameFactor);
-		bool FindInterpolatedFrameFromSegment2Morph(Frame& interpolatedFrame);
-		void UpdateSpectralShape(const BPF& weightBPF1, const BPF& weightBPF2, TData interpFactor, Spectrum& spectralShape);
-		void InitializeFactorsToUse();
-
-		bool LoadSDIF( std::string fileName, Segment& segment );
-		
-		SDIFIn mSDIFReader;
-		SMSMorphConfig mConfig;
-		
-
-		/** Input Port. Note that all SegmentTransformations will have segment as input and output, 
-		 *	regartheless on what particular "unwrapped" Processing Data they implement the 
-		 *	transformation. Here we add a second segment for the sound to morph.*/
-		Segment* mpInput2;
-		
-		bool mHarmSpectralShapeMorph;
-		bool mHaveInternalSegment;
-
-		Segment mSegment;
-
-		Spectrum mSpectralShape;
-		Spectrum mResSpectralShape;
-
+		bool ConcreteConfigure(const ProcessingConfig& c);
 
 		/** Child processings **/
 
-		FrameInterpolator mPO_FrameInterpolator;
+		SpectrumInterpolator mSpectrumInterpolator;
+		SpectralPeakArrayInterpolator mPeaksInterpolator;
 	};		
 };//namespace CLAM
 

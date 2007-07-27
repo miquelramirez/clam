@@ -90,7 +90,7 @@ namespace QtSMS
 		};
 		
 		void InitEnvelopes();
-		void InitSMSMorphControl();
+		void InitSegmentSMSMorphControl();
 	};
 }
 

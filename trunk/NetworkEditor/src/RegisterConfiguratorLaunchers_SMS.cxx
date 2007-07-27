@@ -30,6 +30,7 @@
 #include <CLAM/PhaseManagementConfig.hxx>
 #include <CLAM/CircularShiftConfig.hxx>
 #include <CLAM/SMSHarmonizerConfig.hxx>
+#include <CLAM/SMSMorphConfig.hxx>
 STANDARD_PROCESSING_CONFIG_REGISTER(SMSAnalysisConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(SMSSynthesisConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(SpectralPeakDetectConfig);
@@ -39,6 +40,7 @@ STANDARD_PROCESSING_CONFIG_REGISTER(PhaseManagementConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(SinTrackingConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(SynthSineSpectrumConfig);
 STANDARD_PROCESSING_CONFIG_REGISTER(SMSHarmonizerConfig);
+STANDARD_PROCESSING_CONFIG_REGISTER(SMSMorphConfig);
 
 
 

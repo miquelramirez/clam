@@ -49,9 +49,11 @@ namespace CLAM {
 
 	};
 
-/** This class performs the interpolation of two Frame processing data
- *	objects. Note that only spectral peak array for the sinusoidal component
- *	and  residual spectrum are interpolated.
+/**	
+ *	\brief This class performs the interpolation of two Frame processing data objects.
+ *
+ *	Note that only spectral peak array for the sinusoidal component and  residual
+ *	spectrum are interpolated.
  *	@todo: maybe other attributes in Frame could also be interpolated if so specified
  *	in the configuration.
  */

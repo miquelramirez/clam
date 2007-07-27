@@ -73,7 +73,7 @@ bool SpectralDelay::Do(const Spectrum& in, Spectrum& out)
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
 	
 	int lowCutoff = Round(mLowCutoffFreqCtl.GetLastValue()* spectralResolution);
-	int highCutoff = 	Round(mHighCutoffFreqCtl.GetLastValue()* spectralResolution);
+	int highCutoff = Round(mHighCutoffFreqCtl.GetLastValue()* spectralResolution);
 
 	for(int i = 0; i<spectrumSize; i++)
 	{

@@ -23,7 +23,7 @@
 
 //We should avoid having to include all SMS Transformations here: factory needed
 #include "SegmentTransformationConfig.hxx"
-#include "SMSMorphConfig.hxx"
+#include "SegmentSMSMorphConfig.hxx"
 #include "SMSTimeStretchConfig.hxx"
 
 namespace CLAM
@@ -76,8 +76,8 @@ namespace CLAM
 		{
 			return new CLAM::SegmentTransformationConfig();
 		}
-		if (type=="SMSMorph") 
-			return new CLAM::SMSMorphConfig();
+		if (type=="SegmentSMSMorph") 
+			return new CLAM::SegmentSMSMorphConfig();
 		if (type=="SMSTimeStretch")
 			return new CLAM::SMSTimeStretchConfig();
 
