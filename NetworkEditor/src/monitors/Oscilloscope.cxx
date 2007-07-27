@@ -11,6 +11,7 @@ namespace detail
 		{
 			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 			factory.AddAttribute("Oscilloscope", "port_monitor_type", typeid(CLAM::TData).name());
+			factory.AddAttribute("Oscilloscope", "icon", "oscilloscope.svg");
 		}
 	} dummy;
 }
