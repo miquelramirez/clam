@@ -133,10 +133,10 @@ public:
 			output.bins[i]=0;
 		_delayedSpectrums[_current].bins=input.bins;
 		unsigned delayIndex=_current+1;
+		ComplexSpectrum productSpectrum;
 		for (unsigned i=0; i<nBlocks; i++)
 		{
 			if (delayIndex>=nBlocks) delayIndex=0;
-			ComplexSpectrum productSpectrum;
 			_product.Do(_responseSpectrums[nBlocks-i-1], _delayedSpectrums[delayIndex++], productSpectrum);
 			_sum.Do(productSpectrum, output, output);
 		}
