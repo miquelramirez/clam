@@ -22,7 +22,7 @@ public:
 	typedef std::list<std::string> Values;
 	typedef std::list<Pair> Pairs; 
 	typedef std::map<Key, Pairs> Metadata;
-
+//TODO use Attribute and Value
 	void AddAttribute(const std::string& key, const std::string& attribute, const std::string& value);
 	Keys GetKeys(const std::string& attribute, const std::string& value);
 	Keys GetKeys();
