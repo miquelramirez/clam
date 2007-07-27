@@ -10,6 +10,7 @@
 #include "ComplexSpectrum.hxx"
 #include "ComplexSpectrumProduct.hxx"
 #include "ComplexSpectrumSum.hxx"
+#include "ComplexSpectrumMixer.hxx"
 #include <algorithm>
 #include <cmath>
 
@@ -65,8 +66,15 @@ public:
 	{
 		CopyAsConcreteConfig(_config, config);
 
-		if (!ComputeSpectrums("impulse.wav", _responseSpectrums))
-			return false;		
+//		if (!ComputeResponseSpectrums("impulse.wav", _responseSpectrums)) return false;		
+
+		if (!ComputeResponseSpectrums("room1/p_emissor_4-1-1_receptor_4-1-1.wav", _originResponseSpectrums )) return false;
+		if (!ComputeResponseSpectrums("room1/p_emissor_4-1-1_receptor_4-10-1.wav", _finalResponseSpectrums )) return false;
+
+		ConfigureInterpolatedResponseSpectrums();
+		_position.DoControl(_position.DefaultValue());
+		InterpolateResponseSpectrums();
+
 		const unsigned nBlocks = _responseSpectrums.size();
 		std::cout << "LowLatencyConvolution: N blocks " << nBlocks << std::endl; 
 		_delayedSpectrums.resize(nBlocks);
@@ -78,17 +86,40 @@ public:
 		}
 		_current=0;
 
+
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
 
+	void ConfigureInterpolatedResponseSpectrums()
+	{
+		const unsigned nBlocks = std::min(_originResponseSpectrums.size(), _finalResponseSpectrums.size());
+		_responseSpectrums.resize(nBlocks);
+		for (unsigned i=0; i<nBlocks; i++)
+		{
+			ComplexSpectrum & spectrum = _responseSpectrums[i];
+			spectrum.spectralRange=_finalResponseSpectrums[0].spectralRange;
+			spectrum.bins.assign(_finalResponseSpectrums[0].bins.size(),std::complex<CLAM::TData>());
+		}
+
+
+	}
 	void InterpolateResponseSpectrums()
 	{
 		if (std::abs( _position.GetLastValue() - _lastPosition) < 0.001 )
 			return;
 		std::cout << "position changed"<<std::endl;
 		_lastPosition = _position.GetLastValue();
+		ComplexSpectrumMixer mixer;
+		mixer.GetInControl("Gain1").DoControl(_lastPosition);
+		mixer.GetInControl("Gain2").DoControl(1-_lastPosition);
+		unsigned nBlocks = _responseSpectrums.size();
+		for (unsigned i=0; i<nBlocks; i++) //TODO paramter to limit the nblocks to interpolate
+		{
+			mixer.Do( _originResponseSpectrums[i], _finalResponseSpectrums[i], _responseSpectrums[i]);
+		}
 	}
+
 	bool Do()
 	{
 
@@ -126,13 +157,13 @@ private:
 	void ComputeResponseSpectrums()
 	{
 		_lastPosition=0;
-	//	ComputeSpectrums("room1/p_emissor_4-5-1_receptor_4-1-1.wav", _originResponseSpectrums );
-	//	ComputeSpectrums("room1/p_emissor_4-5-1_receptor_4-10-1.wav", _finalResponseSpectrums );
+	//	ComputeResponseSpectrums("room1/p_emissor_4-5-1_receptor_4-1-1.wav", _originResponseSpectrums );
+	//	ComputeResponseSpectrums("room1/p_emissor_4-5-1_receptor_4-10-1.wav", _finalResponseSpectrums );
 	}
-	bool ComputeSpectrums(const char* wavfile, std::vector<ComplexSpectrum> & responseSpectrums)
+	bool ComputeResponseSpectrums(const char* wavfile, std::vector<ComplexSpectrum> & responseSpectrums)
 	{
 		MonoAudioFileReaderConfig readerConfig;
-		readerConfig.SetSourceFile("impulse.wav");
+		readerConfig.SetSourceFile(wavfile);
 		MonoAudioFileReader reader(readerConfig);
 		if (!reader.IsConfigured())
 		{
@@ -170,8 +201,10 @@ private:
 		reader.Start();
 		windower.Start();
 		fft.Start();
-		while (reader.Do())
+		
+		for (bool samplesAvailable=true; samplesAvailable; )
 		{
+			samplesAvailable = reader.Do();
 			if (!windower.CanConsumeAndProduce()) continue;
 			windower.Do();
 			fft.Do();
