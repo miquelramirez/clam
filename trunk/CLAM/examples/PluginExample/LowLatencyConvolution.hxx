@@ -56,10 +56,14 @@ public:
 		CopyAsConcreteConfig(_config, config);
 
 		MonoAudioFileReaderConfig readerConfig;
-		readerConfig.SetSourceFile("Carnel_3P.wav");
+		readerConfig.SetSourceFile("impulse.wav");
 		MonoAudioFileReader reader(readerConfig);
-		// TODO: Configuration error instead
-		CLAM_ASSERT(reader.IsConfigured(), "Reader Not Configured");
+		if (!reader.IsConfigured())
+		{
+			AddConfigErrorMessage("Configuring the inner AudioFileReader:\n");
+			AddConfigErrorMessage(reader.GetConfigErrorMessage());
+			return false;
+		}
 		const unsigned nSamples = reader.GetHeader().GetSamples();
 		std::cout << "NSamples: " << nSamples << std::endl;
 
@@ -96,6 +100,7 @@ public:
 			windower.Do();
 			fft.Do();
 			_responseSpectrums.push_back(fetcher.GetData());
+//			fetcher.GetData().dump(std::cout);
 			fetcher.Consume();
 		}
 		std::cout << "LowLatencyConvolution: N blocks " << _responseSpectrums.size() << std::endl; 
@@ -132,7 +137,6 @@ public:
 		{
 			if (delayIndex>=nBlocks) delayIndex=0;
 			ComplexSpectrum productSpectrum;
-			ComplexSpectrum sumSpectrum;
 			_product.Do(_responseSpectrums[nBlocks-i-1], _delayedSpectrums[delayIndex++], productSpectrum);
 			_sum.Do(productSpectrum, output, output);
 		}
@@ -140,7 +144,7 @@ public:
 		if (_current>=nBlocks) 
 		{
 			_current=0;
-			std::cout << "." <<std::flush;
+			std::cout << "*" <<std::flush;
 		}
 		// Tell the ports this is done
 		_input.Consume();
