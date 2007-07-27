@@ -79,6 +79,8 @@ public:
 	QColor getInportColor(unsigned index) const;
 	QColor getOutportColor(unsigned index) const;
 	QColor getConnectorColorByType(const std::type_info & type) const;
+	//Port types - to add monitors by type
+	std::string getOutportTypeId(unsigned index) const;
 	// Get the connector prototyper name at the given parent pos
 	QString getInportPrototyperName(const QPoint & point) const;
 	QString getOutportPrototyperName(const QPoint & point) const;

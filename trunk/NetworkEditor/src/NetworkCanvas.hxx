@@ -22,6 +22,7 @@
 #include <vector>
 #include <algorithm>
 #include <CLAM/Network.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 #include "OutControlSender.hxx" //TODO move to cxx
 
 class NetworkCanvas : public QWidget
@@ -291,6 +292,20 @@ public: // Event Handlers
 					menu.addAction(QIcon(":/icons/images/hslider.png"), "Add slider",
 						this, SLOT(onAddSlider()))->setData(translatedPoint);
 				}
+				if (region==ProcessingBox::outportsRegion)
+				{
+					typedef CLAM::ProcessingFactory::Keys Keys;
+					menu.addSeparator();
+					CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+					unsigned portindex = _processings[i]->portIndexByYPos(translatedPoint);
+					Keys keys = factory.GetKeys("port_monitor_type", _processings[i]->getOutportTypeId(portindex));
+					for (Keys::const_iterator it=keys.begin(); it!=keys.end(); it++)
+					{
+						QString key = it->c_str();
+						QIcon icon = QIcon( QString(":/icons/images/%1.svg").arg( key.toLower() ) );
+						menu.addAction( icon, key, this, SLOT(onAddMonitor()))->setData(translatedPoint);
+					}
+				}
 			}
 			if (region==ProcessingBox::nameRegion || 
 				region==ProcessingBox::bodyRegion ||
@@ -434,10 +449,7 @@ public: // Actions
 				tr("<p>The processing type '<tt>%1</tt>' is not supported.</p>").arg(type));
 		}
 	}
-	void addControlSenderProcessing(
-			ProcessingBox * processing,
-			QPoint point
-			)
+	void addControlSenderProcessing( ProcessingBox * processing, QPoint point )
 	{
 		if (networkIsDummy()) return;
 
@@ -459,12 +471,27 @@ public: // Actions
 		CLAM::OutControlSenderConfig config;
 		config.SetMin(lower);
 		config.SetMax(upper);
-		config.SetStep( (upper-lower)/200 ); 
+		config.SetStep( std::max( (upper-lower)/200, CLAM::TControlData(0.01)) ); 
 		config.SetDefault( defaultValue );
 		controlSender.Configure( config );
 		// add box to canvas and connect
 		addProcessingBox( controlSenderName.c_str(), &controlSender, point+QPoint(0,-100));
 		addControlConnection( getBox(controlSenderName.c_str()), 0, processing, controlIndex );
+
+		markAsChanged();
+	}
+	void addPortMonitorProcessing( ProcessingBox * processing, QPoint point, const QString & monitorType )
+	{
+		if (networkIsDummy()) return;
+
+		unsigned portIndex = processing->portIndexByYPos(point);
+		QString outPortName = processing->getOutportName(portIndex);
+
+		std::string processingId = _network->AddProcessing(monitorType.toStdString() );
+		CLAM::Processing & portMonitor = _network->GetProcessing( processingId );
+		// add box to canvas and connect
+		addProcessingBox( processingId.c_str(), &portMonitor, point+QPoint(100,0));
+		addPortConnection(processing, portIndex, getBox(processingId.c_str()), 0);
 
 		markAsChanged();
 	}
@@ -950,6 +977,21 @@ private slots:
 			if (region!=ProcessingBox::incontrolsRegion) return;
 
 			addControlSenderProcessing(_processings[i], point);
+			return;
+		}
+	}
+	void onAddMonitor()
+	{
+		std::cerr << "onAddMonitor"<< std::endl;
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		QString monitorType = ((QAction*)sender())->text();
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(point);
+			if (region==ProcessingBox::noRegion) continue;
+			if (region!=ProcessingBox::outportsRegion) return;
+
+			addPortMonitorProcessing(_processings[i], point, monitorType);
 			return;
 		}
 	}

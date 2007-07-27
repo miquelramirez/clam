@@ -693,6 +693,12 @@ QColor ProcessingBox::getOutportColor(unsigned index) const
 	return getConnectorColorByType(porttype);
 }
 
+std::string ProcessingBox::getOutportTypeId(unsigned index) const
+{
+	if (!_processing) return "";
+	return _processing->GetOutPorts().GetByNumber(index).GetTypeId().name();
+}
+
 QString ProcessingBox::getInportPrototyperName(const QPoint & point) const
 {
 	return getConnectionPrototyperName("InPort", getInportName(portIndexByYPos(point)));
