@@ -1,9 +1,20 @@
 #include <CLAM/ProcessingFactory.hxx>
 #include "Vumeter.hxx"
 
-namespace detail
+namespace Hidden
 {
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VumeterMonitor> regVumeterMonitor("Vumeter");
+
+	static class VumeterMetadata
+	{
+	public:
+		VumeterMetadata()
+		{
+			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+			factory.AddAttribute("Vumeter", "port_monitor_type", typeid(CLAM::TData).name());
+			factory.AddAttribute("Vumeter", "icon", "vumeter.svg");
+		}
+	} dummy;
 }
 
 void Vumeter::paintEvent(QPaintEvent * event)

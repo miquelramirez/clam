@@ -12,6 +12,7 @@ namespace Hidden
 		{
 			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 			factory.AddAttribute("BufferOscilloscope", "port_monitor_type", typeid(CLAM::Audio).name());
+			factory.AddAttribute("BufferOscilloscope", "icon", "oscilloscope.svg");
 		}
 	} dummy;
 

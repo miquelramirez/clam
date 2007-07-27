@@ -22,9 +22,20 @@
 #include <CLAM/ProcessingFactory.hxx>
 #include "Tonnetz.hxx"
 
-namespace detail
+namespace Hidden
 {
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, TonnetzMonitor> regTonnetzMonitor("Tonnetz");
+
+	static class TonnetzMetadata
+	{
+	public:
+		TonnetzMetadata()
+		{
+			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+			factory.AddAttribute("Tonnetz", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
+			factory.AddAttribute("Tonnetz", "icon", "tonnetz.svg");
+		}
+	} dummy;
 }
 
 #include "Tonnetz.hxx"

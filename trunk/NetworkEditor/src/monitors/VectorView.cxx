@@ -22,9 +22,20 @@
 #include <CLAM/ProcessingFactory.hxx>
 #include "VectorView.hxx"
 
-namespace detail
+namespace Hidden
 {
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VectorViewMonitor> regVectorViewMonitor("VectorView");
+
+	static class VectorViewMetadata
+	{
+	public:
+		VectorViewMetadata()
+		{
+			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+			factory.AddAttribute("VectorView", "port_monitor_type", typeid(CLAM::Audio).name());
+			factory.AddAttribute("VectorView", "icon", "vectorview.svg");
+		}
+	} dummy;
 }
 
 CLAM::VM::VectorView::~VectorView()
