@@ -301,8 +301,9 @@ public: // Event Handlers
 					Keys keys = factory.GetKeys("port_monitor_type", _processings[i]->getOutportTypeId(portindex));
 					for (Keys::const_iterator it=keys.begin(); it!=keys.end(); it++)
 					{
-						QString key = it->c_str();
-						QIcon icon = QIcon( QString(":/icons/images/%1.svg").arg( key.toLower() ) );
+						const char* key = it->c_str();
+						std::string iconPath = factory.GetValueFromAttribute(key, "icon");
+						QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
 						menu.addAction( icon, key, this, SLOT(onAddMonitor()))->setData(translatedPoint);
 					}
 				}
@@ -982,7 +983,6 @@ private slots:
 	}
 	void onAddMonitor()
 	{
-		std::cerr << "onAddMonitor"<< std::endl;
 		QPoint point = ((QAction*)sender())->data().toPoint();
 		QString monitorType = ((QAction*)sender())->text();
 		for (unsigned i = _processings.size(); i--; )
