@@ -50,22 +50,45 @@ bool SMSHarmonizer::ConcreteConfigure(const ProcessingConfig& config)
 	mInputVoiceGain.DoControl(0.);
 
 	int n_voices = mConfig.GetNumberOfVoices();
-	//max amount of voices: adding many voices is translated into many performance issues
-	if (n_voices>6) n_voices = 6;
+	
+	if (n_voices>MAX_AMOUNT_OF_VOICES) n_voices = MAX_AMOUNT_OF_VOICES;
 
 	mVoicesPitch.Resize(n_voices, "Pitch", this);
 	mVoicesGain.Resize(n_voices, "Gain", this);
+	mVoicesDetuningAmount.Resize(n_voices, "Voice Detuning", this);
+	mVoicesDelay.Resize(n_voices, "Voice Delay", this);
 	for (int i=0; i < mVoicesPitch.Size(); i++)
 	{
 		mVoicesPitch[i].SetBounds(-24.,24.);
 		mVoicesPitch[i].SetDefaultValue(0.); //no pitch shift
 		mVoicesPitch[i].DoControl(0.);
+
 		mVoicesGain[i].SetBounds(0.,2.);
 		mVoicesGain[i].SetDefaultValue(0.);
 		mVoicesGain[i].DoControl(0.);
+
+		mVoicesDetuningAmount[i].SetBounds(0.,1.);
+		mVoicesDetuningAmount[i].SetDefaultValue(0.);
+		mVoicesDetuningAmount[i].DoControl(0.);
+
+		mVoicesDelay[i].SetBounds(0.,1.);
+		mVoicesDelay[i].SetDefaultValue(0.);
+		mVoicesDelay[i].DoControl(0.);
 	}
 
 	return true;
+}
+
+bool SMSHarmonizer::Do(const Frame& in, Frame& out)
+{
+	return Do( in.GetSpectralPeakArray(),
+		   in.GetFundamental(),
+		   in.GetResidualSpec(),
+
+		   out.GetSpectralPeakArray(),
+		   out.GetFundamental(), 
+		   out.GetResidualSpec() 
+		 );
 }
 
 bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks, 
@@ -93,8 +116,10 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 		TData gain = mVoicesGain[i].GetLastValue();
 		if (gain<0.01) //means voice OFF
 			continue;
+		
+		TData amount = mVoicesPitch[i].GetLastValue() + frand()*mVoicesDetuningAmount[i].GetLastValue(); //detuning
+		amount = CLAM_pow( 2., amount/12. ); //adjust to equal-tempered scale semitones
 
-		TData amount = CLAM_pow( 2., mVoicesPitch[i].GetLastValue()/12. ); //value adjust to equal-tempered scale semitones
 		mPitchShift.GetInControl("PitchSteps").DoControl(amount);
 		mPitchShift.Do( inPeaks,
 				inFund, 
@@ -106,23 +131,18 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 		mSinusoidalGain.GetInControl("Gain").DoControl(gain);
 		mSinusoidalGain.Do(mtmpPeaks,mtmpPeaks);
 
+		TData delay = mVoicesDelay[i].GetLastValue()*1000; //TODO add random sign delay?
+		if (delay>0.)
+		{
+			mPeaksDelay.GetInControl("Delay Control").DoControl(delay);
+			mPeaksDelay.Do(mtmpPeaks, mtmpPeaks);
+		}
+
 		outPeaks = outPeaks + mtmpPeaks;
 		if (!mIgnoreResidual)
 			mSpectrumAdder.Do(outSpectrum, mtmpSpectrum, outSpectrum);
 	}
 	return true;
-}
-
-bool SMSHarmonizer::Do(const Frame& in, Frame& out)
-{
-	return Do( in.GetSpectralPeakArray(),
-		   in.GetFundamental(),
-		   in.GetResidualSpec(),
-
-		   out.GetSpectralPeakArray(),
-		   out.GetFundamental(), 
-		   out.GetResidualSpec() 
-		 );
 }
 
 }

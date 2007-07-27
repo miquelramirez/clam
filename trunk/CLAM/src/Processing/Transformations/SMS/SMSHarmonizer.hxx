@@ -23,6 +23,7 @@
 #ifndef _SMSHarmonizer_
 #define _SMSHarmonizer_
 
+#include "SMSHarmonizerConfig.hxx"
 #include "Frame.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
@@ -33,7 +34,7 @@
 #include "SMSPitchShift.hxx"
 #include "SpectrumAdder2.hxx"
 #include "SMSSinusoidalGain.hxx"
-#include "SMSHarmonizerConfig.hxx"
+#include "TokenDelay.hxx"
 
 namespace CLAM{
 
@@ -58,8 +59,16 @@ namespace CLAM{
 
 		InControl mInputVoiceGain; ///< Input 'clean' voice gain
 
-		InControlArray mVoicesPitch; ///< Voices pitch
+		//(fixed) max amount of voices: adding many voices is translated into many performance issues
+		#define MAX_AMOUNT_OF_VOICES 6
+
+		InControlArray mVoicesPitch; ///< Voices pitch (in semitones)
 		InControlArray mVoicesGain; ///< Voices gain
+		InControlArray mVoicesDetuningAmount; ///< amount of randomness in voice detuning (one semitone max)
+		InControlArray mVoicesDelay; ///< delay amount of each voice
+
+		// FIXME
+		#define frand() ( float( rand() ) / float(RAND_MAX) )
 
 		/** 
 		 *	xamat: adding residual does not improve results much and adds a lot of overhead.
@@ -78,7 +87,9 @@ namespace CLAM{
 
 			mInputVoiceGain("Input Voice Gain", this),
 			mVoicesPitch(0, "Pitch", this),
-			mVoicesGain(0, "Gain", this)
+			mVoicesGain(0, "Gain", this),
+			mVoicesDetuningAmount(0, "Voice Detuning", this),
+			mVoicesDelay(0, "Voice Delay", this)
 		{
 			Configure( mConfig );
 		}
@@ -133,9 +144,13 @@ namespace CLAM{
 	private:
 		Config mConfig;
 
+		/** Child processings **/
 		SMSPitchShift mPitchShift;
 		SpectrumAdder2 mSpectrumAdder;
 		SMSSinusoidalGain mSinusoidalGain;
+
+		TokenDelay<SpectralPeakArray> mPeaksDelay;
+
 	};	
 	
 };//namespace CLAM
