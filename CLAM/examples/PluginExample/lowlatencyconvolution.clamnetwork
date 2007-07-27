@@ -62,6 +62,14 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
+  <processing id="Position" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
   <processing id="SpectrumView_0" type="SpectrumView"/>
 
   <processing id="toMP" type="Complex2MagPhaseSpectrum"/>
@@ -136,6 +144,11 @@
   <control_connection>
     <out>Gain 0.out</out>
     <in>AudioMixer_0.Gain 0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Position.out</out>
+    <in>LowLatencyConvolution_0.Position</in>
   </control_connection>
 
 </network>
