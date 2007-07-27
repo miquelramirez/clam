@@ -7,21 +7,10 @@
 namespace CLAM 
 {
 
-//TODO remove.
-struct LadspaPlugin
-{
-	std::string libraryFileName;
-	unsigned index;
-	std::string description;
-	std::string label; // store a short name to create the factory ID
-	std::string factoryID; 
-};
-
-
 class LadspaPluginsExplorer {
 	public:
-		void ExploreStandardPaths();
-		void ExplorePath(const std::string & path);
+		static void ExploreStandardPaths();
+		static void ExplorePath(const std::string & path);
 };
 
 } // namespace CLAM

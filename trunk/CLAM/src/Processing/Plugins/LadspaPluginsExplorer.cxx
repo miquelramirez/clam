@@ -72,21 +72,15 @@ void LadspaPluginsExplorer::ExplorePath(const std::string & dir)
 		ProcessingFactory& factory = ProcessingFactory::GetInstance();
 		for (unsigned long i=0; descriptorTable(i); i++)
 		{
-			LadspaPlugin plugin;
 			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
-			plugin.index = i;
-			plugin.description = descriptor->Name;
-			plugin.libraryFileName = pluginFullFilename;
-			plugin.label = descriptor->Label;
 			std::ostringstream oss;
-			oss << plugin.label << i;
-			plugin.factoryID = oss.str();
-			factory.AddCreatorWarningRepetitions(plugin.factoryID, 
-					new LadspaWrapperCreator(plugin.libraryFileName, 
-						plugin.index, 
-						plugin.factoryID));
-			factory.AddAttribute(plugin.factoryID, "category", "LADSPA");
-			factory.AddAttribute(plugin.factoryID, "description", plugin.description);
+			oss << descriptor->Label << i;
+			factory.AddCreatorWarningRepetitions(oss.str(), 
+					new LadspaWrapperCreator(pluginFullFilename, 
+						i, 
+						oss.str()));
+			factory.AddAttribute(oss.str(), "category", "LADSPA");
+			factory.AddAttribute(oss.str(), "description", descriptor->Name);
 			//std::cout << "[LADSPA] added \"" << plugin.factoryID << "\" to the Factory" << std::endl;
 		}
 	}
