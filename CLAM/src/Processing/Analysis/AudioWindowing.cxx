@@ -52,13 +52,13 @@ bool AudioWindowing::ConfigureChildren()
 	EWindowType windowType = mConfig.GetWindowType();
 	int hopSize = mConfig.GetHopSize();
 	int sampleRate = mConfig.GetSamplingRate();
-	if (not windowSize&1)
+	if (not (windowSize&1))
 	{
 		AddConfigErrorMessage("FFT Restriction:");
 		AddConfigErrorMessage("Window size should be odd.");
 		return false;
 	}
-	// TODO: Review this restriction
+	// TODO: Review those restriction
 	/*
 	if (windowSize<2*hopSize+1)
 	{
@@ -97,7 +97,7 @@ bool AudioWindowing::ConfigureChildren()
 
 void AudioWindowing::ConfigureData()
 {
-	mInput.SetSize(mConfig.GetWindowSize());
+	mInput.SetSize(mConfig.GetWindowSize()-1);
 	mInput.SetHop(mConfig.GetHopSize());
 
 	mWindow.SetSize(mConfig.GetWindowSize());
@@ -131,10 +131,8 @@ bool AudioWindowing::Do(void)
 
 bool AudioWindowing::Do(const Audio& in,Audio& out)
 {
-	in.GetAudioChunk(0,in.GetSize()-1 ,out,true );
+	in.GetAudioChunk(0,in.GetSize() ,out,true );
 	out.SetSampleRate(mConfig.GetSamplingRate());
-
-	out.SetSize(mConfig.GetWindowSize()-1);
 
 	// Zero padding
 	out.SetSize(mConfig.GetFFTSize());

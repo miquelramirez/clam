@@ -19,8 +19,6 @@
 
   <processing id="AudioSink_1" type="AudioSink"/>
 
-  <processing id="AudioSource_0" type="AudioSource"/>
-
   <processing id="AudioWindowing_0" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
@@ -29,6 +27,8 @@
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
+
+  <processing id="BufferOscilloscope_0" type="BufferOscilloscope"/>
 
   <processing id="Complex2MagPhaseSpectrum_0" type="Complex2MagPhaseSpectrum"/>
 
@@ -64,7 +64,17 @@
 
   <processing id="Oscilloscope_2" type="Oscilloscope"/>
 
+  <processing id="Sin23_0" type="Sin23"/>
+
   <processing id="SpectrumView_0" type="SpectrumView"/>
+
+  <processing id="f" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.25</Default>
+    <Max>4000</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
 
   <port_connection>
     <out>AudioBuffer2Stream_0.Audio stream</out>
@@ -87,28 +97,13 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
-    <in>AudioWindowing_0.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioSource_0.AudioOut</out>
-    <in>Oscilloscope_2.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioSource_0.AudioOut</out>
-    <in>AudioSink_1.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioSource_0.AudioOut</out>
-    <in>AudioMixer_0.Input 0</in>
+    <out>AudioWindowing_0.Output</out>
+    <in>MyFFT_0.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
     <out>AudioWindowing_0.Output</out>
-    <in>MyFFT_0.Audio Buffer</in>
+    <in>BufferOscilloscope_0.Input</in>
   </port_connection>
 
   <port_connection>
@@ -136,6 +131,26 @@
     <in>AudioBuffer2Stream_0.Audio buffer</in>
   </port_connection>
 
+  <port_connection>
+    <out>Sin23_0.out</out>
+    <in>AudioWindowing_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sin23_0.out</out>
+    <in>AudioMixer_0.Input 0</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sin23_0.out</out>
+    <in>AudioSink_1.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sin23_0.out</out>
+    <in>Oscilloscope_2.Input</in>
+  </port_connection>
+
   <control_connection>
     <out>Gain 0.out</out>
     <in>AudioMixer_0.Gain 0</in>
@@ -144,6 +159,11 @@
   <control_connection>
     <out>Gain 1.out</out>
     <in>AudioMixer_0.Gain 1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>f.out</out>
+    <in>Sin23_0.f</in>
   </control_connection>
 
 </network>
