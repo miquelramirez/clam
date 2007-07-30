@@ -21,8 +21,10 @@ class ImpulseResponseLoaderAndInterpolator : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
+	    DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
 	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
+	    DYN_ATTRIBUTE( 1, public, AudioInFilename, OriginImpulseResponse);
+	    DYN_ATTRIBUTE( 2, public, AudioInFilename, FinalImpulseResponse);
 
 	protected:
 	    void DefaultInit()
@@ -35,12 +37,10 @@ public:
 
 private:
 	Config _config;
-	std::vector<ComplexSpectrum> _responseSpectrums;
-	std::vector<ComplexSpectrum> _delayedSpectrums;
-	unsigned _current;
-
-	//TODO extract to new class
 	InControl _position;
+	OutPort< std::vector<ComplexSpectrum>* > _impulseResponse;
+	std::vector<ComplexSpectrum> _responseSpectrums;
+
 	double _lastPosition;
 	std::vector<ComplexSpectrum> _originResponseSpectrums;
 	std::vector<ComplexSpectrum> _finalResponseSpectrums;
@@ -50,6 +50,7 @@ public:
 	const char* GetClassName() const { return "ImpulseResponseLoaderAndInterpolator"; }
 	ImpulseResponseLoaderAndInterpolator(const Config& config = Config()) 
 		: _position("Position", this)
+		, _impulseResponse("ImpulseResponse", this)
 	{
 		Configure( config );
 		_position.SetBounds(0,1);
@@ -58,24 +59,12 @@ public:
 	{
 		CopyAsConcreteConfig(_config, config);
 
-		if (!ComputeResponseSpectrums("room1/p_emissor_4-1-1_receptor_4-1-1.wav", _originResponseSpectrums )) return false;
-		if (!ComputeResponseSpectrums("room1/p_emissor_4-1-1_receptor_4-10-1.wav", _finalResponseSpectrums )) return false;
+		if (!ComputeResponseSpectrums( _config.GetOriginImpulseResponse(), _originResponseSpectrums )) return false;
+		if (!ComputeResponseSpectrums( _config.GetFinalImpulseResponse(), _finalResponseSpectrums )) return false;
 
 		ConfigureInterpolatedResponseSpectrums();
 		_position.DoControl(_position.DefaultValue());
 		InterpolateResponseSpectrums();
-
-		const unsigned nBlocks = _responseSpectrums.size();
-		std::cout << "ImpulseResponseLoaderAndInterpolator: N blocks " << nBlocks << std::endl; 
-		_delayedSpectrums.resize(nBlocks);
-		for (unsigned i=0; i<nBlocks; i++)
-		{
-			ComplexSpectrum & spectrum = _delayedSpectrums[i];
-			spectrum.spectralRange=_responseSpectrums[0].spectralRange;
-			spectrum.bins.assign(_responseSpectrums[0].bins.size(),std::complex<CLAM::TData>());
-		}
-		_current=0;
-
 
 		return true;
 	}
@@ -113,12 +102,13 @@ public:
 
 	bool Do()
 	{
-
 		InterpolateResponseSpectrums();
+		_impulseResponse.GetData()= &_responseSpectrums;
+		_impulseResponse.Produce();
 		return true;
 	}
 private:
-	bool ComputeResponseSpectrums(const char* wavfile, std::vector<ComplexSpectrum> & responseSpectrums)
+	bool ComputeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSpectrum> & responseSpectrums)
 	{
 		MonoAudioFileReaderConfig readerConfig;
 		readerConfig.SetSourceFile(wavfile);

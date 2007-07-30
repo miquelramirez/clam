@@ -41,7 +41,7 @@ public:
 private:
 	InPort<ComplexSpectrum> _input;
 	OutPort<ComplexSpectrum> _output;
-//	InPort< std::vector<ComplexSpectrum>* > _impulseResponse;
+	InPort< std::vector<ComplexSpectrum>* > _impulseResponse;
 
 	Config _config;
 	std::vector<ComplexSpectrum> _responseSpectrums;
@@ -49,50 +49,31 @@ private:
 	unsigned _current;
 	ComplexSpectrumProduct _product;
 	ComplexSpectrumSum _sum;
-	std::vector<ComplexSpectrum> & ResponseSpectrums()
-	{
-		if (_config.GetImpulseResponseAudioFile()=="")
-			return DummyGlobalData::GetStaticResponseSpectrums();
-		else
-			return _responseSpectrums;
-	}
-
 
 public:
 	const char* GetClassName() const { return "LowLatencyConvolution"; }
 	LowLatencyConvolution(const Config& config = Config()) 
 		: _input("Input", this)
 		, _output("Output", this)
-//		, _impulseResponse("ImpulseResponse", this)
+		, _impulseResponse("ImpulseResponse", this)
 	{
 		Configure( config );
 	}
-	bool ConcreteConfigure(const ProcessingConfig & config)
+	void InitialitzeDelaySpectrums( unsigned nBlocks, unsigned spectrumSize, TData spectralRange)
 	{
-		CopyAsConcreteConfig(_config, config);
-		std::cout << "---- ConcreteConfigure - config copied "<< std::endl;
-		
-		std::cout << "---- HasImpulseREsponse "<< _config.HasImpulseResponseAudioFile() << std::endl;
-		 
-		if (!_config.GetUseExternalDataBase()) 
-		{
-			if (!ComputeResponseSpectrums(_config.GetImpulseResponseAudioFile(), _responseSpectrums )) 
-				return false;
-		}
-
-		// Fill the _delayedSpectrums the same size of response spectrums, with zeros
-		std::cout << "About to call ResponseSpectrums  " << std::endl; 
-		const unsigned nBlocks = ResponseSpectrums().size();
 		std::cout << "LowLatencyConvolution: N blocks " << nBlocks << std::endl; 
 		_delayedSpectrums.resize(nBlocks);
 		for (unsigned i=0; i<nBlocks; i++)
 		{
 			ComplexSpectrum & spectrum = _delayedSpectrums[i];
-			spectrum.spectralRange=ResponseSpectrums()[0].spectralRange;
-			spectrum.bins.assign(ResponseSpectrums()[0].bins.size(),std::complex<CLAM::TData>());
+			spectrum.spectralRange=spectralRange;
+			spectrum.bins.assign( spectrumSize, std::complex<CLAM::TData>() );
 		}
 		_current=0;
-
+	}
+	bool ConcreteConfigure(const ProcessingConfig & config)
+	{
+		CopyAsConcreteConfig(_config, config);
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
@@ -100,12 +81,12 @@ public:
 
 	bool Do()
 	{
-
 		const ComplexSpectrum & input = _input.GetData();
 		ComplexSpectrum & output = _output.GetData();
-
-		unsigned nBlocks = std::min(ResponseSpectrums().size(),1000u);
-		std::cout << "Do nBlocks: " <<nBlocks <<std::endl;
+		std::vector<ComplexSpectrum> & impulseResponse = *_impulseResponse.GetData();
+		unsigned nBlocks = std::min(impulseResponse.size(),1000u);
+		if (_delayedSpectrums.size()!=nBlocks)
+			InitialitzeDelaySpectrums( nBlocks, impulseResponse[0].bins.size(), impulseResponse[0].spectralRange );
 
 		output.spectralRange = input.spectralRange;
 		const unsigned nBins = input.bins.size(); 
@@ -118,7 +99,7 @@ public:
 		for (unsigned i=0; i<nBlocks; i++)
 		{
 			if (delayIndex>=nBlocks) delayIndex=0;
-			_product.Do(ResponseSpectrums()[nBlocks-i-1], _delayedSpectrums[delayIndex++], productSpectrum);
+			_product.Do(impulseResponse[nBlocks-i-1], _delayedSpectrums[delayIndex++], productSpectrum);
 			_sum.Do(productSpectrum, output, output);
 		}
 		_current++;
@@ -128,6 +109,7 @@ public:
 		}
 		// Tell the ports this is done
 		_input.Consume();
+		_impulseResponse.Consume();
 		_output.Produce();
 		return true;
 	}

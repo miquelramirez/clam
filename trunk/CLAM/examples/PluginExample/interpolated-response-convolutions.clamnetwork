@@ -28,7 +28,9 @@
   <processing id="BufferOscilloscope_1" type="BufferOscilloscope"/>
 
   <processing id="ImpulseResponseLoaderAndInterpolator" type="ImpulseResponseLoaderAndInterpolator">
-    <FrameSize>512</FrameSize>
+	  <FrameSize>512</FrameSize>
+	  <OriginImpulseResponse></OriginImpulseResponse>
+	  <FinalImpulseResponse></FinalImpulseResponse>
   </processing>
 
   <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
@@ -71,6 +73,11 @@
   <port_connection>
     <out>AudioWindowing.Output</out>
     <in>BufferOscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseLoaderAndInterpolator.ImpulseResponse</out>
+    <in>LowLatencyConvolution.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
