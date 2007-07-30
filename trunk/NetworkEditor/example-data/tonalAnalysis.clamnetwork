@@ -9,7 +9,12 @@
 
   <processing id="PolarChromaPeaks_0" type="PolarChromaPeaks"/>
 
-  <processing id="TonalAnalysis_0" type="TonalAnalysis"/>
+  <processing id="TonalAnalysis_0" type="TonalAnalysis">
+    <FilterInertia>0.7</FilterInertia>
+    <TunningEnabled>1</TunningEnabled>
+    <PeakWindowingEnabled>1</PeakWindowingEnabled>
+    <HopRatio>8</HopRatio>
+  </processing>
 
   <processing id="Tonnetz_0" type="Tonnetz"/>
 
@@ -27,12 +32,12 @@
 
   <port_connection>
     <out>TonalAnalysis_0.Chord Correlation</out>
-    <in>KeySpace_0.Input</in>
+    <in>ChordRanking_0.Input</in>
   </port_connection>
 
   <port_connection>
     <out>TonalAnalysis_0.Chord Correlation</out>
-    <in>ChordRanking_0.Input</in>
+    <in>KeySpace_0.Input</in>
   </port_connection>
 
   <port_connection>
