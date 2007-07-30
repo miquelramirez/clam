@@ -52,7 +52,7 @@ bool SDIFDatabase::LoadProgram(std::string& argDirectoryPath)
 		return false;
 
 	// load SDIF files given in xml metadata files
-	for (int counter = 0; counter < metadataVector.size(); counter++)
+	for (unsigned counter = 0; counter < metadataVector.size(); counter++)
 	{
 		CLAM::SampleMetadata& sampleMetadata = metadataVector[counter];
 		//std::cout << "Loading sample: " << sampleMetadata.GetFilename() << std::endl;
@@ -177,7 +177,7 @@ void SDIFDatabase::SortMetadata()
 {
 	// TODO replace this ugly code by making the sort parametrizable
 	// by an algorithm object
-	for (int counter = 0; counter < metadataVector.size(); counter++)
+	for (unsigned counter = 0; counter < metadataVector.size(); counter++)
 	{
 		metadataVector[counter].SetSortIndex( SAMPLE_METADATA_PITCH_INDEX );
 	}
