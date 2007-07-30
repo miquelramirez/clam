@@ -216,7 +216,7 @@ namespace CLAM
 		{
 			std::stringstream tmp; 
 			tmp << i;
-			name = prefix + "_" + tmp.str(); 
+			name = i? prefix + "_" + tmp.str() : prefix; 
 			if (!this->HasProcessing( name ) ) return name;
 		}
 		CLAM_ASSERT(false, "All valid id's for given prefix are exhausted");
