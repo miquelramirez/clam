@@ -54,8 +54,8 @@ public:
 		value = input->text().toStdString();
 	}
 };
-static ConfiguratorPlugin::Registrator<StringConfiguratorPlugin<std::string> > stringRegistrator;
-static ConfiguratorPlugin::Registrator<StringConfiguratorPlugin<CLAM::Text> > textRegistrator;
+static StringConfiguratorPlugin<std::string> stringRegistrator;
+static StringConfiguratorPlugin<CLAM::Text> textRegistrator;
 
 
 #include <QtGui/QDoubleSpinBox>
@@ -82,9 +82,9 @@ public:
 		value = input->value();
 	}
 };
-static ConfiguratorPlugin::Registrator<FloatConfiguratorPlugin<float> > floatRegistrator;
-static ConfiguratorPlugin::Registrator<FloatConfiguratorPlugin<double> > doubleRegistrator;
-static ConfiguratorPlugin::Registrator<FloatConfiguratorPlugin<long double> > longDoubleRegistrator;
+static FloatConfiguratorPlugin<float> floatRegistrator;
+static FloatConfiguratorPlugin<double> doubleRegistrator;
+static FloatConfiguratorPlugin<long double> longDoubleRegistrator;
 
 
 #include <QtGui/QSpinBox>
@@ -115,9 +115,9 @@ public:
 		value = input->value();
 	}
 };
-static ConfiguratorPlugin::Registrator<IntConfiguratorPlugin<int> > IntRegistrator;
-static ConfiguratorPlugin::Registrator<IntConfiguratorPlugin<unsigned int> > unsignedIntRegistrator;
-static ConfiguratorPlugin::Registrator<IntConfiguratorPlugin<unsigned> > unsignedRegistrator;
+static IntConfiguratorPlugin<int> IntRegistrator;
+static IntConfiguratorPlugin<unsigned int> unsignedIntRegistrator;
+static IntConfiguratorPlugin<unsigned> unsignedRegistrator;
 
 
 
@@ -144,7 +144,7 @@ public:
 		value = input->isChecked();
 	}
 };
-static ConfiguratorPlugin::Registrator<BoolConfiguratorPlugin> boolRegistrator;
+static BoolConfiguratorPlugin boolRegistrator;
 
 
 
@@ -184,7 +184,7 @@ public:
 		value=mapping[input->currentIndex()].value;
 	}
 };
-static ConfiguratorPlugin::Registrator<EnumConfiguratorPlugin> enumRegistrator;
+static EnumConfiguratorPlugin enumRegistrator;
 
 
 
@@ -210,7 +210,7 @@ public:
 	{
 	}
 };
-static ConfiguratorPlugin::Registrator<DynamicTypeConfiguratorPlugin> dtRegistrator;
+static DynamicTypeConfiguratorPlugin dtRegistrator;
 
 
 #include <QtGui/QGraphicsView>
@@ -237,7 +237,7 @@ public:
 //		CLAM::BPF & value = *(CLAM::BPF *)object.GetAttributeAsVoidPtr(attribute);
 	}
 };
-static ConfiguratorPlugin::Registrator<BPFConfiguratorPlugin> bpfRegistrator;
+static BPFConfiguratorPlugin bpfRegistrator;
 
 
 
@@ -306,10 +306,10 @@ private:
 	}
 
 };
-static ConfiguratorPlugin::Registrator<FilenameConfiguratorPlugin<CLAM::InFilename,false> > inFileRegistrator;
-static ConfiguratorPlugin::Registrator<FilenameConfiguratorPlugin<CLAM::AudioInFilename,false> > audioInFileRegistrator;
-static ConfiguratorPlugin::Registrator<FilenameConfiguratorPlugin<CLAM::OutFilename,true> > outFileRegistrator;
-static ConfiguratorPlugin::Registrator<FilenameConfiguratorPlugin<CLAM::AudioOutFilename,true> > audioOutFileRegistrator;
+static FilenameConfiguratorPlugin<CLAM::InFilename,false> inFileRegistrator;
+static FilenameConfiguratorPlugin<CLAM::AudioInFilename,false> audioInFileRegistrator;
+static FilenameConfiguratorPlugin<CLAM::OutFilename,true> outFileRegistrator;
+static FilenameConfiguratorPlugin<CLAM::AudioOutFilename,true> audioOutFileRegistrator;
 
 
 
@@ -338,6 +338,6 @@ public:
 		value = input->location().toStdString();
 	}
 };
-static ConfiguratorPlugin::Registrator<DirectoryNameConfiguratorPlugin> dirnameOutFileRegistrator;
+static DirectoryNameConfiguratorPlugin dirnameOutFileRegistrator;
 
 
