@@ -40,6 +40,7 @@ Adapted from MATLAB code by Chris Harte at Queen Mary
 #include "Array.hxx"
 #include "Enumerated.hxx"
 #include "FrameDivision.hxx"
+#include "CLAM/DiscontinuousSegmentation.hxx"
 #include <CLAM/Assert.hxx>
 
 const char * copyright =
@@ -128,13 +129,16 @@ const char * schemaContent =
 
 class ChordExtractorSegmentation
 {
+	CLAM::DiscontinuousSegmentation * _segmentation;
+
 	std::vector<double> _timePositions; ///< Holds the beggining and end time of each segment
 	std::vector<unsigned> _chordIndexes;  ///< Holds the chord index for each segment
 
 	unsigned _lastChord;
 public:
 	ChordExtractorSegmentation()
-		: _lastChord(0)
+		: _segmentation(new CLAM::DiscontinuousSegmentation(1000))
+		, _lastChord(0)
 	{};
 	~ChordExtractorSegmentation() {};
 
@@ -152,12 +156,14 @@ public:
 			// Closes a segment opened in one of the previous iterations
 			if (_lastChord != 0) {
 				_timePositions.push_back(currentTime);
+				_segmentation->insert(currentTime);
 			}
 			// Opens a new chord segment
 			if (currentChord != 0)
 			{
 				_timePositions.push_back(currentTime);
 				_chordIndexes.push_back(currentChord);
+				_segmentation->insert(currentTime);
 			}
 			_lastChord = currentChord;
 		}
@@ -165,13 +171,15 @@ public:
 	
 	void closeLastSegment(CLAM::TData & currentTime )
 	{
-		if (_lastChord != 0 & _timePositions.size() != 0)
+		if (_lastChord != 0)
 		{
 			CLAM_ASSERT(_timePositions.size()%2==1, "Attempting to close last segment even though all segments have been closed");
 			_timePositions.push_back(currentTime);
+			_segmentation->insert(currentTime);
 		}
 	}
 
+	CLAM::DiscontinuousSegmentation segmentation() { return *_segmentation; };
 	const std::vector<double> timePositions() const { return _timePositions; };
 	const std::vector<unsigned> chordIndexes() const { return _chordIndexes; };
 };
@@ -179,7 +187,7 @@ public:
 class ChordExtractorDescriptionDumper
 {
 	const Simac::ChordExtractor & extractor;
-	ChordExtractorSegmentation segmentation;
+	ChordExtractorSegmentation chordSegmentation;
 	std::ofstream outputPool;
 
 	CLAM::DescriptionScheme _schema;
@@ -254,20 +262,20 @@ public:
 		}
 	
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
-		segmentation.closeLastSegment(currentTime);
+		chordSegmentation.closeLastSegment(currentTime);
 
-		CLAM_ASSERT(segmentation.chordIndexes().size()==segmentation.timePositions().size()/2, "Number of chord indexes does not match number of segment time positions");
+		CLAM_ASSERT(chordSegmentation.chordIndexes().size()==chordSegmentation.timePositions().size()/2, "Number of chord indexes does not match number of segment time positions");
 		CLAM_ASSERT(_pool->GetNumberOfContexts("ExtractedChord")==0, "ExtractedChord pool  not empty");
 
-		_pool->SetNumberOfContexts("ExtractedChord",segmentation.chordIndexes().size());
+		_pool->SetNumberOfContexts("ExtractedChord",chordSegmentation.chordIndexes().size());
 		Simac::Enumerated * root = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root");
 		Simac::Enumerated * mode = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode");
-		for (unsigned segment=0; segment<segmentation.chordIndexes().size(); ++segment)
+		for (unsigned segment=0; segment<chordSegmentation.chordIndexes().size(); ++segment)
 		{
-			root[segment] = extractor.root(segmentation.chordIndexes()[segment]);
-			mode[segment] = extractor.mode(segmentation.chordIndexes()[segment]);
-			_chordSegmentation[0].AddElem(segmentation.timePositions()[2*segment]);
-			_chordSegmentation[0].AddElem(segmentation.timePositions()[2*segment+1]);
+			root[segment] = extractor.root(chordSegmentation.chordIndexes()[segment]);
+			mode[segment] = extractor.mode(chordSegmentation.chordIndexes()[segment]);
+			_chordSegmentation[0].AddElem(chordSegmentation.timePositions()[2*segment]);
+			_chordSegmentation[0].AddElem(chordSegmentation.timePositions()[2*segment+1]);
 		}
 
 //		CLAM::XMLStorage::Dump(*_pool, "Description", std::cout);
@@ -313,7 +321,7 @@ public:
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 //		_debugFrameSegmentation[0].AddElem(currentTime);
 		
-		segmentation.doIt(currentTime, correlation, extractor.firstCandidate(), extractor.secondCandidate());
+		chordSegmentation.doIt(currentTime, correlation, extractor.firstCandidate(), extractor.secondCandidate());
 
 		_currentFrame++;
 	}
