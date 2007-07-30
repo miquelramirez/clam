@@ -42,7 +42,7 @@ bool AudioSink::Do()
 	CLAM_DEBUG_ASSERT(mFloatBuffer, "No float buffer");
 	CLAM_DEBUG_ASSERT(!mDoubleBuffer, "There should not be double buffer");
 	const CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
-	for (int i=0; i<mBufferSize; i++)
+	for (unsigned i=0; i<mBufferSize; i++)
 		mFloatBuffer[i] = audioBuffer[i];
 	mIn.Consume();
 	return true;
