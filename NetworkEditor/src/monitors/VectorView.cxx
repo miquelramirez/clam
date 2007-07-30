@@ -32,8 +32,8 @@ namespace Hidden
 		VectorViewMetadata()
 		{
 			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("VectorView", "port_monitor_type", typeid(CLAM::Audio).name());
-			factory.AddAttribute("VectorView", "icon", "vectorview.svg");
+			factory.AddAttribute("VectorView", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
+			factory.AddAttribute("VectorView", "icon", "lpmodel.svg");
 		}
 	} dummy;
 }
