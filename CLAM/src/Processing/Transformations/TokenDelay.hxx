@@ -249,7 +249,6 @@ bool TokenDelay<T>::Do(const T& in, T& out)
 	WriteNewSample(in);
 	ReadCurrentSample(out);
 	return true;
-
 }
 
 template <class T> 

@@ -35,7 +35,6 @@ namespace CLAM
 		SetIsHarmonic1(true);
 		SetIsHarmonic2(true);
 		SetUseSpectralShape(false);
-		SetIgnoreResidual( true );
 	}
 }
 

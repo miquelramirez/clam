@@ -2,7 +2,7 @@
 #define __SMSTIMESTRETCHCONFIGURATOR__
 
 #include "SMSConfigurator.hxx"
-#include <CLAM/SMSTimeStretchConfig.hxx>
+#include <CLAM/SegmentSMSTimeStretchConfig.hxx>
 
 namespace QtSMS
 {
@@ -26,7 +26,7 @@ namespace QtSMS
 	private:
 		Qt_Help_View*              mHelpWidget;
 		Qt_SMS_BPF_Editor*         mEditorWidget;
-		CLAM::SMSTimeStretchConfig mConfig;
+		CLAM::SegmentSMSTimeStretchConfig mConfig;
 		static const char*         mHelpText;
 		
 	};

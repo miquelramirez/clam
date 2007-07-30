@@ -59,10 +59,8 @@ bool SMSMorph::Do( const SpectralPeakArray& inPeaks1,
 		   Spectrum& outSpectrum
 		 )
 {
-
-
 	bool Harmonic = false;
-	if (inFund1.GetFreq()!=0&&inFund2.GetFreq()!=0&&mConfig.GetIsHarmonic1()&&mConfig.GetIsHarmonic2())
+	if ( inFund1.GetFreq()!=0 && inFund2.GetFreq()!=0 && mConfig.GetIsHarmonic1() && mConfig.GetIsHarmonic2 () )
 		Harmonic = true;
 
 	TData alpha = mInterpolationFactor.GetLastValue();
@@ -77,12 +75,20 @@ bool SMSMorph::Do( const SpectralPeakArray& inPeaks1,
 		outFund.SetFreq(0,newPitch);
 	outFund.SetnCandidates(1);
 
+	mPeaksInterpolator.GetInControl("MagInterpolationFactor").DoControl(alpha);
+// 	mPeaksInterpolator.GetInControl("FreqInterpolationFactor").DoControl(alpha);
+// 	mPeaksInterpolator.GetInControl("PitchInterpolationFactor").DoControl(alpha);
 	mPeaksInterpolator.Do(inPeaks1, inPeaks2, outPeaks);
 
-	if (!mIgnoreResidual)
-// 		TODO ask about 'clam' style... (mSpectrumInterpolator.Do(inSpectrum1, inSpectrum2, outSpectrum);)
-// 		TODO fix (and check SpectrumInterpolator bug...
-		mSpectrumInterpolator.Do(const_cast<Spectrum&>(inSpectrum1), const_cast<Spectrum&>(inSpectrum2), outSpectrum);
+
+//TODO separate alpha/interpolation value for peaks and residual????
+
+	outSpectrum = inSpectrum1; //FIXME asserts without this...
+	CLAM_DEBUG_ASSERT( inSpectrum1.GetSize()==inSpectrum2.GetSize(), "Expected two spectrums of the same size");
+	mSpectrumInterpolator.GetInControl("InterpolationFactor").DoControl(alpha);
+
+// 	TODO fix (and check SpectrumInterpolator bug... (add/fix const inputs) mSpectrumInterpolator.Do(inSpectrum1, inSpectrum2, outSpectrum);)
+	mSpectrumInterpolator.Do(const_cast<Spectrum&>(inSpectrum1), const_cast<Spectrum&>(inSpectrum2), outSpectrum);
 
 	return true;
 }
@@ -90,8 +96,6 @@ bool SMSMorph::Do( const SpectralPeakArray& inPeaks1,
 bool SMSMorph::ConcreteConfigure(const ProcessingConfig& config)
 {
 	CopyAsConcreteConfig( mConfig, config );
-
-	mIgnoreResidual = mConfig.GetIgnoreResidual();
 
 	mInterpolationFactor.SetBounds(0.,1.);
 	mInterpolationFactor.SetDefaultValue(0.5);

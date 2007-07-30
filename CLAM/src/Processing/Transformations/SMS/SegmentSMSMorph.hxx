@@ -20,8 +20,8 @@
  */
 
 
-#ifndef _SegmentSMSMorph_
-#define _SegmentSMSMorph_
+#ifndef _SEGMENTSMSMORPH_
+#define _SEGMENTSMSMORPH_
 
 #include "SegmentTransformation.hxx"
 #include "SegmentSMSMorphConfig.hxx"

@@ -131,7 +131,7 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 		mSinusoidalGain.GetInControl("Gain").DoControl(gain);
 		mSinusoidalGain.Do(mtmpPeaks,mtmpPeaks);
 
-		TData delay = mVoicesDelay[i].GetLastValue()*1000; //TODO add random sign delay?
+		TData delay = mVoicesDelay[i].GetLastValue(); //TODO add random sign delay?
 		if (delay>0.)
 		{
 			mPeaksDelay.GetInControl("Delay Control").DoControl(delay);
@@ -139,6 +139,7 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 		}
 
 		outPeaks = outPeaks + mtmpPeaks;
+		
 		if (!mIgnoreResidual)
 			mSpectrumAdder.Do(outSpectrum, mtmpSpectrum, outSpectrum);
 	}

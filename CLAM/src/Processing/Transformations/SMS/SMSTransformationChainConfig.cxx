@@ -24,7 +24,7 @@
 //We should avoid having to include all SMS Transformations here: factory needed
 #include "SegmentTransformationConfig.hxx"
 #include "SegmentSMSMorphConfig.hxx"
-#include "SMSTimeStretchConfig.hxx"
+#include "SegmentSMSTimeStretchConfig.hxx"
 
 namespace CLAM
 {
@@ -70,7 +70,7 @@ namespace CLAM
 	{
 		if(type=="SMSDummyTransformation"||type=="SMSFreqShift"||type=="SMSPitchShift"||
 		   type=="SMSOddEvenHarmonicRatio"||type=="SMSSineFilter"||type=="SMSResidualGain"||
-		   type=="SMSHarmonizer"||type=="SMSSinusoidalGain"||type=="SMSPitchDiscretization"||
+		   type=="SegmentSMSHarmonizer"||type=="SMSSinusoidalGain"||type=="SMSPitchDiscretization"||
 		   type=="SMSSpectralShapeShift"||type=="SMSGenderChange"||
 		   type=="SMSTransformationChainIO")
 		{
@@ -78,8 +78,8 @@ namespace CLAM
 		}
 		if (type=="SegmentSMSMorph") 
 			return new CLAM::SegmentSMSMorphConfig();
-		if (type=="SMSTimeStretch")
-			return new CLAM::SMSTimeStretchConfig();
+		if (type=="SegmentSMSTimeStretch")
+			return new CLAM::SegmentSMSTimeStretchConfig();
 
 		// error let's investigate
 		CLAM_ASSERT(type!="Unknown",

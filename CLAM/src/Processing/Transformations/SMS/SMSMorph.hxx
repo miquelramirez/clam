@@ -24,13 +24,9 @@
 
 #include "SMSMorphConfig.hxx"
 
-//FIXME
-#include "Frame.hxx"
-#include "InPort.hxx"
-#include "OutPort.hxx"
-#include "InControl.hxx"
 #include "Processing.hxx"
 #include "FrameInterpolator.hxx"
+
 
 namespace CLAM{
 
@@ -50,6 +46,8 @@ namespace CLAM{
 		InPort<Fundamental> mInFund2;
 		InPort<Spectrum> mInSpectrum2;
 
+		//TODO add many sources morph option? (with configurable amount)
+
 		OutPort<SpectralPeakArray> mOutPeaks;
 		OutPort<Fundamental> mOutFund;
 		OutPort<Spectrum> mOutSpectrum;
@@ -59,8 +57,6 @@ namespace CLAM{
 		*/
 		InControl mInterpolationFactor; 
 
-		/// Adding residual does not improve results much and adds a lot of overhead (Ignoring by default)
-		bool mIgnoreResidual;
 	public:
 		SMSMorph()
 			:
@@ -138,10 +134,11 @@ namespace CLAM{
 	protected:
 		bool ConcreteConfigure(const ProcessingConfig& c);
 
-		/** Child processings **/
 
+		/** Child processings **/
 		SpectrumInterpolator mSpectrumInterpolator;
 		SpectralPeakArrayInterpolator mPeaksInterpolator;
+
 	};		
 };//namespace CLAM
 

@@ -48,7 +48,7 @@ namespace QtSMS
 
 	void SMSTimeStretchConfigurator::Initialize( CLAM::ProcessingConfig& cfg )
 	{
-		CLAM::SMSTimeStretchConfig& conCfg = static_cast<CLAM::SMSTimeStretchConfig&>(cfg);
+		CLAM::SegmentSMSTimeStretchConfig& conCfg = static_cast<CLAM::SegmentSMSTimeStretchConfig&>(cfg);
 		conCfg.RemoveAmount();
 		conCfg.AddBPFAmount();
 		conCfg.UpdateData();
@@ -59,7 +59,7 @@ namespace QtSMS
 
 	void SMSTimeStretchConfigurator::SetConfig( const CLAM::ProcessingConfig& cfg )
 	{
-		mConfig = static_cast<const CLAM::SMSTimeStretchConfig&>(cfg);
+		mConfig = static_cast<const CLAM::SegmentSMSTimeStretchConfig&>(cfg);
 		mEditorWidget->Clear();
 
 		if(!mConfig.HasBPFAmount())
