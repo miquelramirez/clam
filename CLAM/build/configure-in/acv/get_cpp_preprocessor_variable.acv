@@ -1,7 +1,0 @@
-cat>cpp_preprocessor_variable.cxx<<EOF
-#include <$$header>
-DEFINED_PREPROCESSOR_VARIABLE=$$variable
-EOF
-SET_DEFINED_PREPROCESSOR_VARIABLE=`$CXXCPP cpp_preprocessor_variable.cxx | grep DEFINED_PREPROCESSOR_VARIABLE`
-eval $SET_DEFINED_PREPROCESSOR_VARIABLE
-$$variable=$DEFINED_PREPROCESSOR_VARIABLE

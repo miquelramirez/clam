@@ -1,3 +1,0 @@
-# source add_qt_include_path_done
-CXXFLAGS=$before_adding_qt_include_path_CXXFLAGS
-CPPFLAGS=$before_adding_qt_include_path_CPPFLAGS
