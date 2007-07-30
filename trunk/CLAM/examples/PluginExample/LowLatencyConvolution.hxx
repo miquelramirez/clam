@@ -23,9 +23,10 @@ class LowLatencyConvolution : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+	    DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
 	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
-	    DYN_ATTRIBUTE( 1, public, AudioInFilename, ImpulseResponseAudioFile );
+	    DYN_ATTRIBUTE( 1, public, bool, UseExternalDataBase );
+	    DYN_ATTRIBUTE( 2, public, AudioInFilename, ImpulseResponseAudioFile );
 
 	protected:
 	    void DefaultInit()
@@ -33,12 +34,14 @@ public:
 		  AddAll();
 		  UpdateData();
 		  SetFrameSize(512);
+		  SetUseExternalDataBase(false);
 	    };
 	};
 
 private:
 	InPort<ComplexSpectrum> _input;
 	OutPort<ComplexSpectrum> _output;
+//	InPort< std::vector<ComplexSpectrum>* > _impulseResponse;
 
 	Config _config;
 	std::vector<ComplexSpectrum> _responseSpectrums;
@@ -48,12 +51,11 @@ private:
 	ComplexSpectrumSum _sum;
 	std::vector<ComplexSpectrum> & ResponseSpectrums()
 	{
-		return DummyGlobalData::GetStaticResponseSpectrums();
-//		return _responseSpectrums;
+		if (_config.GetImpulseResponseAudioFile()=="")
+			return DummyGlobalData::GetStaticResponseSpectrums();
+		else
+			return _responseSpectrums;
 	}
-	//TODO extract to new class
-	double _lastPosition;
-	std::vector<ComplexSpectrum> _finalResponseSpectrums;
 
 
 public:
@@ -61,16 +63,25 @@ public:
 	LowLatencyConvolution(const Config& config = Config()) 
 		: _input("Input", this)
 		, _output("Output", this)
+//		, _impulseResponse("ImpulseResponse", this)
 	{
 		Configure( config );
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
-
-		if (!ComputeResponseSpectrums("", _responseSpectrums )) return false;
+		std::cout << "---- ConcreteConfigure - config copied "<< std::endl;
+		
+		std::cout << "---- HasImpulseREsponse "<< _config.HasImpulseResponseAudioFile() << std::endl;
+		 
+		if (!_config.GetUseExternalDataBase()) 
+		{
+			if (!ComputeResponseSpectrums(_config.GetImpulseResponseAudioFile(), _responseSpectrums )) 
+				return false;
+		}
 
 		// Fill the _delayedSpectrums the same size of response spectrums, with zeros
+		std::cout << "About to call ResponseSpectrums  " << std::endl; 
 		const unsigned nBlocks = ResponseSpectrums().size();
 		std::cout << "LowLatencyConvolution: N blocks " << nBlocks << std::endl; 
 		_delayedSpectrums.resize(nBlocks);
@@ -123,7 +134,7 @@ public:
 private:
 	bool ComputeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSpectrum> & responseSpectrums)
 	{
-		if (wavfile == "") return true;
+		std::cout << "---- wavfile "<< wavfile <<std::endl;
 
 		MonoAudioFileReaderConfig readerConfig;
 		readerConfig.SetSourceFile(wavfile);
