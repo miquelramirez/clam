@@ -313,5 +313,31 @@ static ConfiguratorPlugin::Registrator<FilenameConfiguratorPlugin<CLAM::AudioOut
 
 
 
+#include "QFileLineEdit.hxx"
+#include <CLAM/DirectoryName.hxx>
+class DirectoryNameConfiguratorPlugin : public ConfiguratorPlugin
+{
+public:
+	virtual bool accepts(const CLAM::DynamicType & object, unsigned attribute)
+	{
+		return object.GetTypeId(attribute) == typeid(CLAM::DirectoryName);
+	}
+	virtual QWidget * editorWidget(const CLAM::DynamicType & object, unsigned attribute)
+	{
+		CLAM::DirectoryName & value = *(CLAM::DirectoryName *)object.GetAttributeAsVoidPtr(attribute);
+		QFileLineEdit * input = new QFileLineEdit;
+		input->setDirMode(true);
+		input->setLocation(value.c_str());
+		input->setDialogCaption( QObject::tr("Select a directory"));
+		return input;
+	}
+	virtual void takeFromWidget(const CLAM::DynamicType & object, unsigned attribute, QWidget * editorWidget)
+	{
+		QFileLineEdit * input = dynamic_cast<QFileLineEdit*>(editorWidget);
+		CLAM::DirectoryName & value = *(CLAM::DirectoryName *)object.GetAttributeAsVoidPtr(attribute);
+		value = input->location().toStdString();
+	}
+};
+static ConfiguratorPlugin::Registrator<DirectoryNameConfiguratorPlugin> dirnameOutFileRegistrator;
 
 
