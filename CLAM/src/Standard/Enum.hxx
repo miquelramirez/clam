@@ -139,7 +139,7 @@ public:
 	/**
 	 * Returns the symbol map for the enum
 	 */
-	const tEnumValue * GetSymbolMap() {
+	const tEnumValue * GetSymbolMap() const {
 		return mEnumValues;
 	}
 
