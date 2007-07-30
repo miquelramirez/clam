@@ -95,7 +95,6 @@ const static char * processingClasses[] = {
 	"SMSAnalysisCore",
 	"LPC_AutoCorrelation",
 	"TonalAnalysis",
-	"ChordSegmentator",
 	"MelFilterBank",
 	"CepstralTransform",
 	0,
