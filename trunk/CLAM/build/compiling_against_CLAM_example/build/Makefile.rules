@@ -1,3 +1,0 @@
-include $(TOP)/build/clam-location.cfg
-
-include $(CLAM_PATH)/build/Makefile.rules
