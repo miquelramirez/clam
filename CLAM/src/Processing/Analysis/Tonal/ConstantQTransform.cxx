@@ -119,9 +119,11 @@ void ConstantQTransform::doIt(const std::vector<double> & fftdata)
 	// N.B. complex data
 	// rows = mSpectrumSize
 	// columns = K
+	double * constantQSpectrum = &cqdata[0];
+	const double * fftSpectrum = &fftdata[0];
 	for (unsigned row=0; row<2*K; row+=2) {
-		cqdata[row  ] = 0;
-		cqdata[row+1] = 0;
+		constantQSpectrum[row  ] = 0;
+		constantQSpectrum[row+1] = 0;
 	}
 	const unsigned *fftbin = &(mSparseKernelIs[0]);
 	const unsigned *cqbin = &(mSparseKernelJs[0]);
@@ -134,11 +136,11 @@ void ConstantQTransform::doIt(const std::vector<double> & fftdata)
 		const unsigned col = fftbin[i];
 		const double & r1 = real[i];
 		const double & i1 = imag[i];
-		const double & r2 = fftdata[col];
-		const double & i2 = fftdata[col+1];
+		const double & r2 = fftSpectrum[col];
+		const double & i2 = fftSpectrum[col+1];
 		// add the multiplication
-		cqdata[row  ] += r1*r2 - i1*i2;
-		cqdata[row+1] += r1*i2 + i1*r2;
+		constantQSpectrum[row  ] += r1*r2 - i1*i2;
+		constantQSpectrum[row+1] += r1*i2 + i1*r2;
 	}
 }
 

@@ -51,7 +51,6 @@ FourierTransform::~FourierTransform()
 	fftw_destroy_plan(_plan);
 	fftw_free(_realInput);
 	fftw_free(_complexOutput);
-	fftw_forget_wisdom();
 	#endif
 }
 
@@ -109,19 +108,21 @@ void doFourierTransform(double * data, unsigned frameSize)
 template <typename T>
 void FourierTransform::doItGeneric(const T * input)
 {
+	double * spectrum = &_spectrum[0];
 #if USE_FFTW3
+	fftw_complex * complexOutput = &_complexOutput[0];
 	if (mIsComplex)
 	{
 		for (unsigned long i=0; i<mFrameSize; i++)
 		{
-			_complexOutput[i][0] = input[i<<1];
-			_complexOutput[i][1] = input[(i<<1)+1];
+			complexOutput[i][0] = input[i<<1];
+			complexOutput[i][1] = input[(i<<1)+1];
 		}
 		fftw_execute(_plan);
 		for (unsigned long i=0; i<mFrameSize*2; i+=2)
 		{
-			_spectrum[i] = _complexOutput[i/2][0];
-			_spectrum[i+1] = _complexOutput[i/2][1];
+			spectrum[i] = complexOutput[i/2][0];
+			spectrum[i+1] = complexOutput[i/2][1];
 		}
 	}
 	else
@@ -133,31 +134,31 @@ void FourierTransform::doItGeneric(const T * input)
 		fftw_execute(_plan);
 		for (int i=0; i<mFrameSize; i+=2)
 		{
-			_spectrum[i] = _complexOutput[i/2][0];
-			_spectrum[i+1] = - _complexOutput[i/2][1];
+			spectrum[i] = complexOutput[i/2][0];
+			spectrum[i+1] = - complexOutput[i/2][1];
 		}
 		for (int i=1; i<mFrameSize; i+=2)
 		{
 			unsigned j = mFrameSize*2-i;
-			_spectrum[j] = _complexOutput[i/2][0];
-			_spectrum[j+1] = _complexOutput[i/2][1];
+			spectrum[j] = complexOutput[i/2][0];
+			spectrum[j+1] = complexOutput[i/2][1];
 		}
 	}
 #else
 	if (mIsComplex)
 	{
 		for (unsigned long i=0; i<mFrameSize*2; i++)
-			_spectrum[i] = input[i];
+			spectrum[i] = input[i];
 	}
 	else
 	{
 		for (unsigned long i=0; i<mFrameSize*2; i+=2)
 		{
-			_spectrum[i] = input[i/2];
-			_spectrum[i+1] = 0.0;
+			spectrum[i] = input[i/2];
+			spectrum[i+1] = 0.0;
 		}
 	}
-	double * data = &(_spectrum[0])-1; // Hack to use Matlab indeces TOREMOVE?
+	double * data = spectrum-1; // Hack to use Matlab indeces TOREMOVE?
 	doFourierTransform(data, mFrameSize);
 #endif
 }
