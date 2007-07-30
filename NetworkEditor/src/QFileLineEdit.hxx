@@ -36,7 +36,7 @@ class QFileLineEdit : public QWidget
 	QString _filters;
 	bool _isReading;
 public:
-	QFileLineEdit(QWidget * parent)
+	QFileLineEdit(QWidget * parent=0)
 	: QWidget(parent)
 	, _isReading(true)
 	{
