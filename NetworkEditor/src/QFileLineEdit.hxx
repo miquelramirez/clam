@@ -35,10 +35,12 @@ class QFileLineEdit : public QWidget
 	QString _dialogCaption;
 	QString _filters;
 	bool _isReading;
+	bool _isDir;
 public:
 	QFileLineEdit(QWidget * parent=0)
 	: QWidget(parent)
 	, _isReading(true)
+	, _isDir(false)
 	{
 		QHBoxLayout * layout = new QHBoxLayout(this);
 		_lineEdit = new QLineEdit(this);
@@ -71,11 +73,18 @@ public:
 	{
 		_isReading = ! beWriteMode;
 	}
+	void setDirMode(bool beDirMode = true)
+	{
+		_isDir = beDirMode;
+	}
 public slots:
 	void openFileDialog()
 	{
 		QString file;
-		if (_isReading)
+		if (_isDir)
+			file = QFileDialog::getExistingDirectory(this,
+				_dialogCaption, _lineEdit->text());
+		else if (_isReading)
 			file = QFileDialog::getOpenFileName(this,
 				_dialogCaption, _lineEdit->text(), _filters);
 		else
