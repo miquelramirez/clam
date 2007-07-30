@@ -41,7 +41,9 @@
   </processing>
 
   <processing id="LowLatencyConvolution_0" type="LowLatencyConvolution">
-    <FrameSize>512</FrameSize>
+	  <FrameSize>512</FrameSize>
+	  <UseExternalDataBase>0</UseExternalDataBase>
+	  <ImpulseResponseAudioFile>impulse.wav</ImpulseResponseAudioFile>
   </processing>
 
   <processing id="MyFFT_0" type="MyFFT">
@@ -58,14 +60,6 @@
     <Min>1</Min>
     <Default>440</Default>
     <Max>2000</Max>
-    <Step>0.01</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
-  <processing id="Position" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.5</Default>
-    <Max>1</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
@@ -144,11 +138,6 @@
   <control_connection>
     <out>Gain 0.out</out>
     <in>AudioMixer_0.Gain 0</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Position.out</out>
-    <in>LowLatencyConvolution_0.Position</in>
   </control_connection>
 
 </network>
