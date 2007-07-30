@@ -17,8 +17,8 @@ class ProcessingFactoryTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetKeys_twoElements );
 	CPPUNIT_TEST( testGetSetOfValues_empty );
 	CPPUNIT_TEST( testGetSetOfValues_twoElements );
-	CPPUNIT_TEST( testGetValuesFrom_empty );
-	CPPUNIT_TEST( testGetValuesFrom_twoElements );
+	CPPUNIT_TEST( testGetValuesFromAttribute_empty );
+	CPPUNIT_TEST( testGetValuesFromAttribute_twoElements );
 	CPPUNIT_TEST( testGetValuesOf_empty );
 	CPPUNIT_TEST( testGetValuesOf_twoElements );
 //	CPPUNIT_TEST( testAddAttribute_nonExistingKey );
@@ -82,19 +82,19 @@ protected:
 		CPPUNIT_ASSERT_EQUAL(std::string("spectral"), result.front());
 		CPPUNIT_ASSERT_EQUAL(std::string("time-domain"), result.back());
 	}
-	void testGetValuesFrom_empty()
+	void testGetValuesFromAttribute_empty()
 	{
 		factory.AddCreator("key", new DummyCreator());
-		CLAM::ProcessingFactory::Values result = factory.GetValuesFrom("key","category");
+		CLAM::ProcessingFactory::Values result = factory.GetValuesFromAttribute("key","category");
 		CPPUNIT_ASSERT_EQUAL(size_t(0), result.size());
 	}
-	void testGetValuesFrom_twoElements()
+	void testGetValuesFromAttribute_twoElements()
 	{
 		factory.AddCreator("first", new DummyCreator());
 		factory.AddAttribute("first", "category", "spectral");
 		factory.AddAttribute("first", "category", "time-domain");
 		factory.AddAttribute("first", "description", "short description");
-		CLAM::ProcessingFactory::Values result = factory.GetValuesFrom("first","category");
+		CLAM::ProcessingFactory::Values result = factory.GetValuesFromAttribute("first","category");
 		CPPUNIT_ASSERT_EQUAL(size_t(2), result.size());
 		CPPUNIT_ASSERT_EQUAL(std::string("spectral"), result.front());
 		CPPUNIT_ASSERT_EQUAL(std::string("time-domain"), result.back());
@@ -102,7 +102,7 @@ protected:
 	void testGetValuesOf_empty()
 	{
 		factory.AddCreator("key", new DummyCreator());
-		CLAM::ProcessingFactory::Attributes result = factory.GetValuesOf("key");
+		CLAM::ProcessingFactory::Pairs result = factory.GetValuesOf("key");
 		CPPUNIT_ASSERT_EQUAL(size_t(0), result.size());
 	}
 	void testGetValuesOf_twoElements()
@@ -110,7 +110,7 @@ protected:
 		factory.AddCreator("first", new DummyCreator());
 		factory.AddAttribute("first", "category", "spectral");
 		factory.AddAttribute("first", "category", "time-domain");
-		CLAM::ProcessingFactory::Attributes result = factory.GetValuesOf("first");
+		CLAM::ProcessingFactory::Pairs result = factory.GetValuesOf("first");
 		CPPUNIT_ASSERT_EQUAL(size_t(2), result.size());
 		CPPUNIT_ASSERT_EQUAL(std::string("spectral"), result.front().value);
 		CPPUNIT_ASSERT_EQUAL(std::string("time-domain"), result.back().value);
