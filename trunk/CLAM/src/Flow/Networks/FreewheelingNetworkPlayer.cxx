@@ -81,6 +81,7 @@ void FreewheelingNetworkPlayer::Start()
 		writers[i]->Start();
 	while ( true )
 	{
+		std::cout << "." << std::flush;
 		unsigned audioIndex =0;
 		bool end=false;
 		for (unsigned i = 0; i<readers.size(); i++)
