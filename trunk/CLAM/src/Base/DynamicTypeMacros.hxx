@@ -62,6 +62,11 @@ protected: \
 		}\
 	} \
 public: \
+	/** Returns the type id of attribute n */ \
+	const std::type_info & GetTypeId(unsigned n) const \
+	{ \
+		return GetChainedTypeId((AttributePosition<0>*)NULL,n); \
+	} \
 	/** Visit all Dynamic Attributes */ \
 	template <typename Visitor> \
 	void VisitAll (Visitor & visitor) { \
@@ -176,6 +181,11 @@ private: \
 	} \
 	/** Method chain terminator */ \
 	void LoadChainedAttr (AttributePosition<N>*pos, CLAM::Storage &s) { \
+	} \
+	/** Undefined link on the method chain (GetTypeId) */ \
+	const std::type_info & GetChainedTypeId(AttributePosition<N>*pos, unsigned n) const \
+	{ \
+		return typeid(void); \
 	} \
 
 
@@ -307,6 +317,10 @@ private: \
 	void LoadChainedAttr(AttributePosition<N>*, CLAM::Storage & s) { \
 		Load##NAME(s); \
 		LoadChainedAttr((AttributePosition<(N)+1>*)NULL,s); \
+	} \
+	const std::type_info & GetChainedTypeId(AttributePosition<N>*, unsigned n) const { \
+		if (n==N) return typeid(TYPE); \
+		return GetChainedTypeId((AttributePosition<(N)+1>*)NULL,n); \
 	} \
 
 

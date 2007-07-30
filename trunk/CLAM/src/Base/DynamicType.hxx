@@ -169,6 +169,23 @@ protected:
 	void RemoveAttr_ (const unsigned id);
 
 public:
+	unsigned GetNDynamicAttributes() const { return numAttr; }
+	const char * GetDynamicAttributeName(unsigned i) { return typeDescTable[i].id; }
+	virtual const std::type_info & GetTypeId(unsigned i) const=0;
+	bool AttributeIsComponent(unsigned i) const {return typeDescTable[i].isComponent; }
+	bool AttributeIsDynamictype(unsigned i) const {return typeDescTable[i].isDynamicType; }
+	bool IsAttributeInstantiated(unsigned i) const {return dynamicTable[i].offs!=-1; }
+	const void * GetAttributeAsVoidPtr(unsigned i) const {
+		return GetPtrToData_(i);
+	}
+	const Component * GetAttributeAsComponent(unsigned i) const {
+		if (!typeDescTable[i].isComponent) return 0;
+		return static_cast<const Component *> (GetPtrToData_(i));
+	}
+	Component * GetAttributeAsComponent(unsigned i) {
+		if (! (typeDescTable[i].isComponent)) return 0;
+		return static_cast<Component *> (GetPtrToData_(i));
+	}
 	void FullfilsInvariant() const;
 
 	virtual Component* DeepCopy() const;
