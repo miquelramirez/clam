@@ -66,6 +66,7 @@ namespace CLAM {
 	}
 
 	// Unsupervised Do() function.
+// 	TODO use 'const Spectrum& in1, const Spectrum& in2' and spread it to the rest
 	bool SpectrumInterpolator::Do(Spectrum& in1, Spectrum& in2, Spectrum& out)
 	{
 		CLAM_DEBUG_ASSERT(IsRunning(),

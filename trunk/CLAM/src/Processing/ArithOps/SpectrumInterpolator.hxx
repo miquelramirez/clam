@@ -140,6 +140,7 @@ namespace CLAM {
 
 		bool Do(void);
 
+// 		FIXME bool Do(const Spectrum& in1, const Spectrum& in2, Spectrum& out);
 		bool Do(Spectrum& in1, Spectrum& in2, Spectrum& out);
 
 		// Port interfaces.

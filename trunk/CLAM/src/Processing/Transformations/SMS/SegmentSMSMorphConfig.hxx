@@ -18,8 +18,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef __SMSMORPHCONFIG__
-#define __SMSMORPHCONFIG__
+#ifndef __SEGMENTSMSMORPHCONFIG__
+#define __SEGMENTSMSMORPHCONFIG__
 
 #include "Processing.hxx"
 #include "BPF.hxx"

@@ -35,6 +35,7 @@
 #include "SpectrumAdder2.hxx"
 #include "SMSSinusoidalGain.hxx"
 #include "TokenDelay.hxx"
+#include "SpectralPeakArray.hxx"
 
 namespace CLAM{
 
@@ -67,7 +68,7 @@ namespace CLAM{
 		InControlArray mVoicesDetuningAmount; ///< amount of randomness in voice detuning (one semitone max)
 		InControlArray mVoicesDelay; ///< delay amount of each voice
 
-		// FIXME
+		// FIXME move ore remove this?
 		#define frand() ( float( rand() ) / float(RAND_MAX) )
 
 		/** 
@@ -143,6 +144,7 @@ namespace CLAM{
 
 	private:
 		Config mConfig;
+
 
 		/** Child processings **/
 		SMSPitchShift mPitchShift;

@@ -18,22 +18,31 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef __SMSMORPHCONFIG__
-#define __SMSMORPHCONFIG__
+#ifndef __SEGMENTSMSTIMESTRETCHCONFIG__
+#define __SEGMENTSMSTIMESTRETCHCONFIG__
 
 #include "Processing.hxx"
+#include "BPF.hxx"
+
 
 namespace CLAM
 {
-	class SMSMorphConfig: public ProcessingConfig
+	class SegmentSMSTimeStretchConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE( SMSMorphConfig, 3, ProcessingConfig );
-
-		DYN_ATTRIBUTE( 0, public, bool, IsHarmonic1);
-		DYN_ATTRIBUTE( 1, public, bool, IsHarmonic2);
-		DYN_ATTRIBUTE( 2, public, bool, UseSpectralShape);
-
+		DYNAMIC_TYPE_USING_INTERFACE (SegmentSMSTimeStretchConfig, 7,ProcessingConfig);
+		/** Type of transformation, for the time being just a string, should become
+		* an enumeration of known transformation types??*/
+		DYN_ATTRIBUTE (0, public, std::string, Type);
+		/** Single Value Parameter */
+		DYN_ATTRIBUTE (1, public, TData, Amount);
+		/** BPF (envelope-like) Parameter */
+		DYN_ATTRIBUTE (2, public, BPF, BPFAmount);
+		DYN_ATTRIBUTE (3, public, TData, SamplingRate);
+		DYN_ATTRIBUTE (4, public, TData, HopSize);
+		DYN_ATTRIBUTE (5, public, bool, Harmonic);
+		DYN_ATTRIBUTE (6, public, bool, UseBPF);
+		
 	protected:
 		void DefaultInit();
 
@@ -42,5 +51,5 @@ namespace CLAM
 	
 }
 
-#endif // SMSMorphConfig.hxx
+#endif // SegmentSMSTimeStretchConfig.hxx
 

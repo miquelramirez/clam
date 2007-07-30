@@ -3,15 +3,29 @@
 
   <processing id="AudioSink_0" type="AudioSink"/>
 
-  <processing id="Input" type="AudioSource"/>
+  <processing id="Input 1" type="Oscilloscope"/>
 
-  <processing id="MonoAudioFileReader_1" type="MonoAudioFileReader">
+  <processing id="Input 2" type="Oscilloscope"/>
+
+  <processing id="Interpolation Factor" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
     <SourceFile>/home/hordia/dev/clam_dev/NetworkEditor/example-data/jaume-voice.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>0</Loop>
   </processing>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="MonoAudioFileReader_1" type="MonoAudioFileReader">
+    <SourceFile>/home/hordia/dev/clam_dev/clam-test-data/Elvis44k.wav</SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>1</Loop>
+  </processing>
 
   <processing id="Oscilloscope_1" type="Oscilloscope"/>
 
@@ -245,18 +259,23 @@
   </processing>
 
   <port_connection>
-    <out>Input.AudioOut</out>
+    <out>MonoAudioFileReader_0.Samples Read</out>
     <in>SMSAnalysisCore_0.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>Input.AudioOut</out>
-    <in>Oscilloscope_0.Input</in>
+    <out>MonoAudioFileReader_0.Samples Read</out>
+    <in>Input 1.Input</in>
   </port_connection>
 
   <port_connection>
     <out>MonoAudioFileReader_1.Samples Read</out>
     <in>SMSAnalysisCore_1.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MonoAudioFileReader_1.Samples Read</out>
+    <in>Input 2.Input</in>
   </port_connection>
 
   <port_connection>
@@ -318,5 +337,10 @@
     <out>SMSSynthesis_0.OutputAudio</out>
     <in>Oscilloscope_1.Input</in>
   </port_connection>
+
+  <control_connection>
+    <out>Interpolation Factor.out</out>
+    <in>SMSMorph_0.Interpolation Factor</in>
+  </control_connection>
 
 </network>

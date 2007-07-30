@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
+ * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
  *                         UNIVERSITAT POMPEU FABRA
  *
  *
@@ -18,29 +18,23 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef __SMSMORPHCONFIG__
-#define __SMSMORPHCONFIG__
 
-#include "Processing.hxx"
+#include "SegmentSMSTimeStretchConfig.hxx"
 
 namespace CLAM
 {
-	class SMSMorphConfig: public ProcessingConfig
+	void SegmentSMSTimeStretchConfig::DefaultInit()
 	{
-	public:
-		DYNAMIC_TYPE_USING_INTERFACE( SMSMorphConfig, 3, ProcessingConfig );
+		AddAll();
+		UpdateData();
+		DefaultValues();
+	}
 
-		DYN_ATTRIBUTE( 0, public, bool, IsHarmonic1);
-		DYN_ATTRIBUTE( 1, public, bool, IsHarmonic2);
-		DYN_ATTRIBUTE( 2, public, bool, UseSpectralShape);
-
-	protected:
-		void DefaultInit();
-
-		void DefaultValues();
-	};
-	
+	void SegmentSMSTimeStretchConfig::DefaultValues()
+	{
+		SetSamplingRate(44100);
+		SetHopSize(256);
+		SetUseBPF(true);
+	}
 }
-
-#endif // SMSMorphConfig.hxx
 
