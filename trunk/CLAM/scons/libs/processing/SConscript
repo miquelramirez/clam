@@ -39,8 +39,6 @@ def define_module_contents(env) :
 		folders.append('src/Processing/InitProcessing*.*xx')
 
 	blacklist = [
-		'GT_FilterBank',
-		'OnsetDetector',
 		r'^Audio\..xx',
 		'FileChooser',
 		'MessageBox',
