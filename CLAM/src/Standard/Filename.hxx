@@ -39,6 +39,7 @@ namespace CLAM {
  * Use InFilename and OutFilename subclasses to discriminate the serialization
  * direction
  * and subclass them to specify concrete filters and file type family names.
+ * @sa DirectoryName
  */
 class Filename : public Text
 {
