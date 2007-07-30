@@ -724,7 +724,7 @@ QString ProcessingBox::getConnectionPrototyperName(QString kind, QString connect
 		.arg(connectionName.replace(" ","___"));
 }
 
-#include "ConfiguratorLauncher.hxx"
+#include "Configurator.hxx"
 #include "uic_DummyProcessingConfig.hxx"
 #include <CLAM/Factory.hxx>
 
@@ -732,22 +732,16 @@ bool ProcessingBox::configure()
 {
 	if (_processing)
 	{
-		const CLAM::ProcessingConfig & config = _processing->GetConfig();
-		ConfiguratorLauncher * launcher=0;
-	   	try
+		CLAM::ProcessingConfig * config = (CLAM::ProcessingConfig*) _processing->GetConfig().DeepCopy();
+		Configurator configurator(*config);
+		if (!configurator.exec())
 		{
-			launcher = ConfiguratorLauncherFactory::GetInstance()
-				.CreateSafe(config.GetClassName());
-		}
-		catch (CLAM::ErrFactory & e)
-		{
-			QMessageBox::critical(_canvas, _canvas->tr("Configuring"),
-				   	_canvas->tr("No configuration dialog available for this processing"));
+			delete config;
 			return false;
 		}
-		if ( !launcher->Launch(*_processing,_name)) return false;
-		_canvas->configure( _name, launcher->GetConfiguration() );
+		_canvas->configure( _name, *config );
 		setProcessing(_processing);
+		delete config;
 		return true;
 	}
 	else
