@@ -13,10 +13,10 @@ CPPUNIT_TEST_SUITE_REGISTRATION( ProcessingFactoryTest );
 class ProcessingFactoryTest : public CppUnit::TestFixture
 {
 	CPPUNIT_TEST_SUITE( ProcessingFactoryTest );
-	CPPUNIT_TEST( testGetListOfKeys_empty );
-	CPPUNIT_TEST( testGetListOfKeys_twoElements );
-	CPPUNIT_TEST( testGetValuesFor_empty );
-	CPPUNIT_TEST( testGetValuesFor_twoElements );
+	CPPUNIT_TEST( testGetKeys_empty );
+	CPPUNIT_TEST( testGetKeys_twoElements );
+	CPPUNIT_TEST( testGetSetOfValues_empty );
+	CPPUNIT_TEST( testGetSetOfValues_twoElements );
 	CPPUNIT_TEST( testGetValuesFrom_empty );
 	CPPUNIT_TEST( testGetValuesFrom_twoElements );
 	CPPUNIT_TEST( testGetValuesOf_empty );
@@ -49,35 +49,35 @@ public:
 	// Tests definition :
 protected:
 
-	void testGetListOfKeys_empty()
+	void testGetKeys_empty()
 	{
-		CLAM::ProcessingFactory::Keys result = factory.GetListOfKeys("category","");
+		CLAM::ProcessingFactory::Keys result = factory.GetKeys("category","");
 		CPPUNIT_ASSERT_EQUAL(size_t(0), result.size() );
 	}
 
-	void testGetListOfKeys_twoElements()
+	void testGetKeys_twoElements()
 	{
 		factory.AddCreator("first", new DummyCreator());
 		factory.AddCreator("second", new DummyCreator());
 		factory.AddAttribute("first", "category", "spectral");
 		factory.AddAttribute("second", "category", "time-domain");
-		CLAM::ProcessingFactory::Keys result = factory.GetListOfKeys("category", "spectral");
+		CLAM::ProcessingFactory::Keys result = factory.GetKeys("category", "spectral");
 		CPPUNIT_ASSERT_EQUAL(size_t(1), result.size() );
 		CPPUNIT_ASSERT_EQUAL(std::string("first"), result.front() );
 	}
-	void testGetValuesFor_empty()
+	void testGetSetOfValues_empty()
 	{
 		factory.AddCreator("non-existing", new DummyCreator());
-		CLAM::ProcessingFactory::Values result = factory.GetValuesFor("non-existing");
+		CLAM::ProcessingFactory::Values result = factory.GetSetOfValues("non-existing");
 		CPPUNIT_ASSERT_EQUAL(size_t(0), result.size());
 	}
-	void testGetValuesFor_twoElements()
+	void testGetSetOfValues_twoElements()
 	{
 		factory.AddCreator("first", new DummyCreator());
 		factory.AddCreator("second", new DummyCreator());
 		factory.AddAttribute("first", "category", "spectral");
 		factory.AddAttribute("second", "category", "time-domain");
-		CLAM::ProcessingFactory::Values result = factory.GetValuesFor("category");
+		CLAM::ProcessingFactory::Values result = factory.GetSetOfValues("category");
 		CPPUNIT_ASSERT_EQUAL(size_t(2), result.size());
 		CPPUNIT_ASSERT_EQUAL(std::string("spectral"), result.front());
 		CPPUNIT_ASSERT_EQUAL(std::string("time-domain"), result.back());
