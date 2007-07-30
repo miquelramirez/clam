@@ -302,9 +302,18 @@ public slots:
 	}
 	void on_action_Save_as_triggered()
 	{
-        QString file = QFileDialog::getSaveFileName(this, "", _networkFile, networkFilter());
-        if (file==QString::null) return;
-		save(file);
+		QFileDialog fileDialog(this);
+		fileDialog.setAcceptMode(QFileDialog::AcceptSave);
+		fileDialog.setFileMode(QFileDialog::AnyFile);
+//		fileDialog.setCaption("");
+		fileDialog.selectFile(_networkFile);
+		fileDialog.setFilter(networkFilter());
+		fileDialog.setDefaultSuffix("clamnetwork");
+		fileDialog.exec();
+		
+        QStringList files = fileDialog.selectedFiles();
+        if (files.isEmpty()) return;
+		save(files[0]);
 	}
 	void on_action_Play_triggered()
 	{
