@@ -22,9 +22,19 @@
 #include <CLAM/ProcessingFactory.hxx>
 #include "ChordRanking.hxx"
 
-namespace detail
+namespace Hidden
 {
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ChordRankingMonitor> regChordRankingMonitor("ChordRanking");
+	static class ChordRankingMetadata
+	{
+	public:
+		ChordRankingMetadata()
+		{
+			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+			factory.AddAttribute("ChordRanking", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
+			factory.AddAttribute("ChordRanking", "icon", "chordranking.svg");
+		}
+	} dummy;
 }
 
 #include "ChordRanking.hxx"
