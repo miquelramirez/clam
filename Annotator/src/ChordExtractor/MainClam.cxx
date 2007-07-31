@@ -130,8 +130,6 @@ const char * schemaContent =
 class ChordExtractorSegmentation
 {
 	CLAM::DiscontinuousSegmentation _segmentation;
-
-	std::vector<double> _timePositions; ///< Holds the beggining and end time of each segment
 	std::vector<unsigned> _chordIndexes;  ///< Holds the chord index for each segment
 
 	unsigned _currentSegment;
@@ -157,13 +155,11 @@ public:
 		{	
 			// Closes a segment opened in one of the previous iterations
 			if (_lastChord != 0) {
-				_timePositions.push_back(currentTime);
 				_segmentation.dragOffset(_currentSegment, currentTime);
 			}
 			// Opens a new chord segment
 			if (currentChord != 0)
 			{
-				_timePositions.push_back(currentTime);
 				_chordIndexes.push_back(currentChord);
 				_currentSegment = _segmentation.insert(currentTime);
 			}
@@ -175,14 +171,11 @@ public:
 	{
 		if (_lastChord != 0)
 		{
-			CLAM_ASSERT(_timePositions.size()%2==1, "Attempting to close last segment even though all segments have been closed");
-			_timePositions.push_back(currentTime);
 			_segmentation.dragOffset(_currentSegment, currentTime);
 		}
 	}
 
 	const CLAM::DiscontinuousSegmentation & segmentation() const { return _segmentation; };
-	const std::vector<double> timePositions() const { return _timePositions; };
 	const std::vector<unsigned> chordIndexes() const { return _chordIndexes; };
 };
 
@@ -266,7 +259,6 @@ public:
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 		chordSegmentation.closeLastSegment(currentTime);
 
-		CLAM_ASSERT(chordSegmentation.chordIndexes().size()==chordSegmentation.timePositions().size()/2, "Number of chord indexes does not match number of segment time positions");
 		CLAM_ASSERT(_pool->GetNumberOfContexts("ExtractedChord")==0, "ExtractedChord pool  not empty");
 
 		_pool->SetNumberOfContexts("ExtractedChord",chordSegmentation.chordIndexes().size());
