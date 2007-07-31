@@ -15,8 +15,7 @@ def recursiveDirs(root) :
 
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
-if sys.platform=="linux2" :
-	options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 env = Environment(ENV=os.environ, options=options)
 options.Save('options.cache', env)
@@ -42,6 +41,10 @@ if sys.platform=='linux2' :
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]
+if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
+	env.Append( LIBPATH=['/opt/local/lib'] )
+	env.Append( LIBS=['fftw3'] )
+	
 
 install = env.Install(os.path.join(CLAMInstallDir,'lib','clam'), libraries)
 
