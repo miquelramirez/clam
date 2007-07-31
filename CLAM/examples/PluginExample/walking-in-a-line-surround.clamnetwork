@@ -28,8 +28,6 @@
     <DoHalfWindowShift>1</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioSource" type="AudioSource"/>
-
   <processing id="AudioWindowing" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
@@ -41,23 +39,36 @@
 
   <processing id="C" type="AudioSink"/>
 
+  <processing id="Cartesian2PolarControl" type="Cartesian2PolarControl"/>
+
+  <processing id="ControlSurface" type="ControlSurface">
+    <MinX>-1</MinX>
+    <DefaultX>0</DefaultX>
+    <MaxX>1</MaxX>
+    <MinY>-1</MinY>
+    <DefaultY>0</DefaultY>
+    <MaxY>1</MaxY>
+  </processing>
+
   <processing id="ImpulseResponseLoaderAndInterpolator" type="ImpulseResponseLoaderAndInterpolator">
     <FrameSize>512</FrameSize>
-    <OriginImpulseResponse>room1/p_emissor_4-1-1_receptor_4-1-1.wav</OriginImpulseResponse>
+    <OriginImpulseResponse>room1/p_emissor_4-1-1_receptor_4-2-1.wav</OriginImpulseResponse>
     <FinalImpulseResponse>room1/p_emissor_4-1-1_receptor_4-10-1.wav</FinalImpulseResponse>
   </processing>
 
   <processing id="ImpulseResponseLoaderAndInterpolator_1" type="ImpulseResponseLoaderAndInterpolator">
     <FrameSize>512</FrameSize>
-    <OriginImpulseResponse>room1/vx_emissor_4-1-1_receptor_4-1-1.wav</OriginImpulseResponse>
-    <FinalImpulseResponse>room1/vx_emissor_4-1-1_receptor_4-1-1.wav</FinalImpulseResponse>
+    <OriginImpulseResponse>room1/vx_emissor_4-1-1_receptor_4-2-1.wav</OriginImpulseResponse>
+    <FinalImpulseResponse>room1/vx_emissor_4-1-1_receptor_4-10-1.wav</FinalImpulseResponse>
   </processing>
 
   <processing id="ImpulseResponseLoaderAndInterpolator_2" type="ImpulseResponseLoaderAndInterpolator">
     <FrameSize>512</FrameSize>
-    <OriginImpulseResponse>room1/vy_emissor_4-1-1_receptor_4-1-1.wav</OriginImpulseResponse>
-    <FinalImpulseResponse>room1/vy_emissor_4-1-1_receptor_4-1-1.wav</FinalImpulseResponse>
+    <OriginImpulseResponse>room1/vy_emissor_4-1-1_receptor_4-2-1.wav</OriginImpulseResponse>
+    <FinalImpulseResponse>room1/vy_emissor_4-1-1_receptor_4-10-1.wav</FinalImpulseResponse>
   </processing>
+
+  <processing id="InLanguage" type="AudioSource"/>
 
   <processing id="L" type="AudioSink"/>
 
@@ -105,6 +116,14 @@
 
   <processing id="Oscilloscope_4" type="Oscilloscope"/>
 
+  <processing id="Pitch" type="OutControlSender">
+    <Min>200</Min>
+    <Default>440</Default>
+    <Max>4000</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
   <processing id="Position" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
@@ -121,14 +140,6 @@
 
   <processing id="Surround" type="Surround"/>
 
-  <processing id="beta" type="OutControlSender">
-    <Min>-360</Min>
-    <Default>0</Default>
-    <Max>360</Max>
-    <Step>3.6</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
     <in>Surround.p</in>
@@ -142,11 +153,6 @@
   <port_connection>
     <out>AudioBuffer2Stream_2.Audio stream</out>
     <in>Surround.vy</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioSource.AudioOut</out>
-    <in>AudioWindowing.Input</in>
   </port_connection>
 
   <port_connection>
@@ -167,6 +173,11 @@
   <port_connection>
     <out>ImpulseResponseLoaderAndInterpolator_2.ImpulseResponse</out>
     <in>LowLatencyConvolution_2.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>InLanguage.AudioOut</out>
+    <in>AudioWindowing.Input</in>
   </port_connection>
 
   <port_connection>
@@ -265,6 +276,21 @@
   </port_connection>
 
   <control_connection>
+    <out>Cartesian2PolarControl.angle</out>
+    <in>Surround.beta</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ControlSurface.outX</out>
+    <in>Cartesian2PolarControl.x</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ControlSurface.outY</out>
+    <in>Cartesian2PolarControl.y</in>
+  </control_connection>
+
+  <control_connection>
     <out>Position.out</out>
     <in>ImpulseResponseLoaderAndInterpolator.Position</in>
   </control_connection>
@@ -277,11 +303,6 @@
   <control_connection>
     <out>Position.out</out>
     <in>ImpulseResponseLoaderAndInterpolator_2.Position</in>
-  </control_connection>
-
-  <control_connection>
-    <out>beta.out</out>
-    <in>Surround.beta</in>
   </control_connection>
 
 </network>
