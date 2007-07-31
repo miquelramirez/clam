@@ -27,10 +27,9 @@
 
   <processing id="BufferOscilloscope_1" type="BufferOscilloscope"/>
 
-  <processing id="ImpulseResponseLoaderAndInterpolator" type="ImpulseResponseLoaderAndInterpolator">
-	  <FrameSize>512</FrameSize>
-	  <OriginImpulseResponse></OriginImpulseResponse>
-	  <FinalImpulseResponse></FinalImpulseResponse>
+  <processing id="ImpulseResponseLoader" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>/home/parumi/acustica/wavs/Carnel_3P.wav</ImpulseResponse>
   </processing>
 
   <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
@@ -45,14 +44,6 @@
 
   <processing id="MyIFFT" type="MyIFFT">
     <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="Position" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.8</Default>
-    <Max>1</Max>
-    <Step>0.01</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <port_connection>
@@ -76,7 +67,7 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoaderAndInterpolator.ImpulseResponse</out>
+    <out>ImpulseResponseLoader.ImpulseResponse</out>
     <in>LowLatencyConvolution.ImpulseResponse</in>
   </port_connection>
 
@@ -99,10 +90,5 @@
     <out>MyIFFT.Audio Buffer</out>
     <in>BufferOscilloscope_1.Input</in>
   </port_connection>
-
-  <control_connection>
-    <out>Position.out</out>
-    <in>ImpulseResponseLoaderAndInterpolator.Position</in>
-  </control_connection>
 
 </network>

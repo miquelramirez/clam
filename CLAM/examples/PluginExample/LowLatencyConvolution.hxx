@@ -11,7 +11,6 @@
 #include "ComplexSpectrumProduct.hxx"
 #include "ComplexSpectrumSum.hxx"
 #include "ComplexSpectrumMixer.hxx"
-#include "DummyGlobalData.hxx"
 #include <algorithm>
 #include <cmath>
 
