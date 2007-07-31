@@ -31,7 +31,7 @@ def set_qtdir_to_qt3(x) :
 	os.environ['QTDIR']=localDefinitions['qt3dir']
 
 localDefinitions = {
-	'name': 'mac-10.4.8-ppc-desktop',
+	'name': 'mac-10.4.8-intel-macbook',
 	'description': '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>',
 	'sandbox': '$HOME/clam',
 	'installPath': '$HOME/local',
@@ -94,6 +94,11 @@ clam.add_subtask("Functional Tests", [
 clam.add_subtask("CLAM Examples", [
 	{CMD: "echo set QTDIR to qt4", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/CLAM/examples"%localDefinitions,
+	"scons clam_prefix=%(installPath)s"%localDefinitions,
+] )
+
+clam.add_subtask("CLAM Plugins compilation", [
+	"cd %(sandbox)s/CLAM/examples/PluginExample"%localDefinitions,
 	"scons clam_prefix=%(installPath)s"%localDefinitions,
 ] )
 
