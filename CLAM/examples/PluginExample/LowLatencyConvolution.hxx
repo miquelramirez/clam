@@ -13,6 +13,7 @@
 #include "ComplexSpectrumMixer.hxx"
 #include <algorithm>
 #include <cmath>
+#include <algorithm>
 
 namespace CLAM
 {
@@ -83,7 +84,7 @@ public:
 		const ComplexSpectrum & input = _input.GetData();
 		ComplexSpectrum & output = _output.GetData();
 		std::vector<ComplexSpectrum> & impulseResponse = *_impulseResponse.GetData();
-		unsigned nBlocks = std::min(impulseResponse.size(),1000u);
+		unsigned nBlocks = std::min(impulseResponse.size(), size_t(1000));
 		if (_delayedSpectrums.size()!=nBlocks)
 			InitialitzeDelaySpectrums( nBlocks, impulseResponse[0].bins.size(), impulseResponse[0].spectralRange );
 
