@@ -37,7 +37,7 @@ public:
  
 	bool Do()
 	{
-		const double beta=_beta.GetLastValue()*180/M_PI; //conversion. beta is in radians
+		const double beta=_beta.GetLastValue()*M_PI/180; //conversion. beta is in radians
 		const double cosBeta=std::cos(beta);
 		const double sinBeta=std::sin(beta);
 		const double sin30 = .5;
@@ -56,12 +56,16 @@ public:
 		{
 			double ux = vx[i] * cosBeta - vy[i] * sinBeta;
 			double uy = vx[i] * sinBeta + vy[i] * cosBeta;
+//			std::cout << "sin beta "<< sinBeta << " cos beta " << cosBeta << std::endl;
+//			std::cout << "ux "<< ux << " uy " << uy << std::endl;
+
 			// General C_i = 0.5 * ( p - ux * cos(alpha_i) - uy * sin(alpha_i) )
 			center[i] = p[i] - ux; // alpha_center = 0 
 			left[i] = p[i] - ux * cos30 - uy * sin30; // alpha_left = 30
 			right[i] = p[i] - ux * cos30 - uy * (-sin30); // alpha_right = -30
 			surroundLeft[i] = p[i] - ux * cos110 - uy * sin110; // alpha_surroundLeft=110
 			surroundRight[i] = p[i] - ux * cos110 - uy * (-sin110); // alpha_surroundRight=-110
+
 			center[i] *= 0.5;
 			left[i] *= 0.5;
 			right[i] *= 0.5;

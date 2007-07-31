@@ -28,7 +28,8 @@ public:
 	{
 		const CLAM::TControlData& x = _x.GetLastValue();
 		const CLAM::TControlData& y = _y.GetLastValue();
-		_angle.SendControl( std::atan2(x,y)*180/M_PI + 180 );
+	//	_angle.SendControl( std::atan2(x,y)*180/M_PI + 180 );
+		_angle.SendControl( std::atan2(x,y)*180/M_PI + 180+90 );
 		_module.SendControl(std::sqrt(x*x+y*y));
 		return true;
 	}
