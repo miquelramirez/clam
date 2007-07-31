@@ -129,7 +129,7 @@ const char * schemaContent =
 
 class ChordExtractorSegmentation
 {
-	CLAM::DiscontinuousSegmentation * _segmentation;
+	CLAM::DiscontinuousSegmentation _segmentation;
 
 	std::vector<double> _timePositions; ///< Holds the beggining and end time of each segment
 	std::vector<unsigned> _chordIndexes;  ///< Holds the chord index for each segment
@@ -137,7 +137,7 @@ class ChordExtractorSegmentation
 	unsigned _lastChord;
 public:
 	ChordExtractorSegmentation()
-		: _segmentation(new CLAM::DiscontinuousSegmentation(1000))
+		: _segmentation(1000)
 		, _lastChord(0)
 	{};
 	~ChordExtractorSegmentation() {};
@@ -156,14 +156,14 @@ public:
 			// Closes a segment opened in one of the previous iterations
 			if (_lastChord != 0) {
 				_timePositions.push_back(currentTime);
-				_segmentation->insert(currentTime);
+				_segmentation.insert(currentTime);
 			}
 			// Opens a new chord segment
 			if (currentChord != 0)
 			{
 				_timePositions.push_back(currentTime);
 				_chordIndexes.push_back(currentChord);
-				_segmentation->insert(currentTime);
+				_segmentation.insert(currentTime);
 			}
 			_lastChord = currentChord;
 		}
@@ -175,11 +175,11 @@ public:
 		{
 			CLAM_ASSERT(_timePositions.size()%2==1, "Attempting to close last segment even though all segments have been closed");
 			_timePositions.push_back(currentTime);
-			_segmentation->insert(currentTime);
+			_segmentation.insert(currentTime);
 		}
 	}
 
-	CLAM::DiscontinuousSegmentation segmentation() { return *_segmentation; };
+	const CLAM::DiscontinuousSegmentation & segmentation() const { return _segmentation; };
 	const std::vector<double> timePositions() const { return _timePositions; };
 	const std::vector<unsigned> chordIndexes() const { return _chordIndexes; };
 };
