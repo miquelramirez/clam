@@ -43,7 +43,7 @@ bool VowelResonator::Do(const SpectralPeakArray& in, SpectralPeakArray& out)
 	CLAM_ASSERT(nPeaks==frequencies.Size(),"Frequencies is not as long as input size");
 	double F1=mF1.GetLastValue();
 	double F2=mF2.GetLastValue();
-	double F3=2500;
+	double F3=mF3.GetLastValue();
 	for(int i=0;i<nPeaks;i++)
 	{
 		const double & f = frequencies[i];

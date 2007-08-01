@@ -42,7 +42,7 @@ namespace CLAM{
 		OutPort<SpectralPeakArray> mOut;
 		InControl mF1;
 		InControl mF2;
-
+		InControl mF3;
 	public:
 		typedef NullProcessingConfig Config;
 		const char* GetClassName() const { return "VowelResonator"; }
@@ -51,10 +51,12 @@ namespace CLAM{
 			, mOut("Out SpectralPeaks", this) 
 			, mF1("F1", this)
 			, mF2("F2", this)
+			, mF3("F3", this)
 		{
 			Configure( Config() );
 			mF1.DoControl(700);
 			mF2.DoControl(1200);
+			mF3.DoControl(2500);
 		}
 
  		~VowelResonator() {}
