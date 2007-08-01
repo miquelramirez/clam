@@ -161,8 +161,8 @@ def setup_build_options( env ) :
 	opts.Add( BoolOption( 'with_ladspa', 'Ladspa plugin support', ladspa_option) )
 	
 	# clam_processing options
-	opts.Add( BoolOption( 'with_fftw3', 'Selects whether to use fftw3 or not', 'no'))
-	opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'yes'))
+	opts.Add( BoolOption( 'with_fftw3', 'Selects whether to use fftw3 or not', 'yes'))
+	opts.Add( BoolOption( 'with_fftw', 'Selects whether to use fftw or not', 'no'))
 	opts.Add( BoolOption( 'with_nr_fft', 'Selects whether to use Numerical Recipes fft algorithm implementation or not', 'yes') )
 
 	# clam_audioio options
