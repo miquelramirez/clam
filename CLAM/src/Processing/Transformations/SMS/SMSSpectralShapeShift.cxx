@@ -43,7 +43,7 @@ bool SMSSpectralShapeShift::Do(const SpectralPeakArray&
 	if (!mSpectralEnvelopeExtract.Do(inPeaks,mSpectralEnvelope))
 		return true; // Not enough peaks for an envelope
 
-	TData amount=mAmount.GetLastValue();
+	TData amount = mSteps.GetLastValue();
 
 	//Shift spectral shape
 	BPF& magBPF=mSpectralEnvelope.GetMagBPF();

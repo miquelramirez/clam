@@ -256,7 +256,7 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* freqshift = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(freqshift);
-				wrapper->mAmountCtrl.PublishInControl(freqshift->GetInControls().Get("Amount"));
+				wrapper->mAmountCtrl.PublishInControl(freqshift->GetInControls().Get("Shift Steps"));
 //				ConnectControls(*wrapper,"Out Control", *freqshift, "Shift Amount");
 				Insert( *wrapper );
 				return;
@@ -268,7 +268,7 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* singain = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(singain);
-				wrapper->mAmountCtrl.PublishInControl(singain->GetInControls().Get("Amount"));
+				wrapper->mAmountCtrl.PublishInControl(singain->GetInControls().Get("Gain"));
 //				ConnectControls(*wrapper,"Out Control", *singain, "Gain Amount");
 				Insert( *wrapper );
 				return;
@@ -280,7 +280,7 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* resgain = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(resgain);
-				wrapper->mAmountCtrl.PublishInControl(resgain->GetInControls().Get("Amount"));
+				wrapper->mAmountCtrl.PublishInControl(resgain->GetInControls().Get("Gain"));
 //				ConnectControls(*wrapper,"Out Control", *resgain, "Gain Amount");
 				Insert( *wrapper );
 				return;
@@ -292,7 +292,7 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* pitchshift = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(pitchshift);
-				wrapper->mAmountCtrl.PublishInControl(pitchshift->GetInControls().Get("Amount"));
+				wrapper->mAmountCtrl.PublishInControl(pitchshift->GetInControls().Get("PitchSteps"));
 //				ConnectControls(*wrapper,"Out Control", *pitchshift, "Shift Amount");
 				Insert( *wrapper );
 				return;

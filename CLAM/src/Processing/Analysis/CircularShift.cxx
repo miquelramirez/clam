@@ -26,15 +26,12 @@
 
 namespace CLAM {
 
-
-
 	/* Processing  object Method  implementations */
 
 	CircularShift::CircularShift()
 		: mInput( "Input samples", this ),
 		  mOutput( "Shifted samples", this ),
-		  mAmount("Amount",this)
-		
+		  mSteps( "Shift Steps", this )
 	{
 		Configure(CircularShiftConfig());
 	}
@@ -42,7 +39,7 @@ namespace CLAM {
 	CircularShift::CircularShift(const CircularShiftConfig &c)
 		: mInput( "Input samples", this ),
 		  mOutput( "Shifted samples", this ),
-		  mAmount("Amount",this)
+		  mSteps("Shift Steps",this)
 	{
 		Configure(c);
 	}
@@ -56,7 +53,7 @@ namespace CLAM {
 	bool CircularShift::ConcreteConfigure(const ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig(mConfig, c);
-		mAmount.DoControl(TData(mConfig.GetAmount()));
+		mSteps.DoControl(TData(mConfig.GetAmount()));
 
 		return true;
 	}
@@ -94,7 +91,7 @@ namespace CLAM {
 	{
 
 		int i;
-		TData amount = mAmount.GetLastValue();
+		TData amount = mSteps.GetLastValue();
 		int size = in.Size();
 		const TData* inp = in.GetPtr();
 		TData* outp = out.GetPtr();

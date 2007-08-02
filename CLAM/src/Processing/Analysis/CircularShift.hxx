@@ -47,8 +47,8 @@ namespace CLAM {
 		AudioInPort  mInput;
 		AudioOutPort mOutput;
 
+		InControl mSteps;
 	protected:
-
 
 		const char *GetClassName() const {return "CircularShift";}
 
@@ -82,11 +82,7 @@ namespace CLAM {
 		/** Not implemented yet */
 		bool MayDisableExecution() const {return true;}
 
-		void SetAmount(TSize amount) { mAmount.DoControl(TControlData(amount)); }
-
-
-	private:
-		InControl    mAmount;
+		void SetAmount(TSize amount) { mSteps.DoControl(TControlData(amount)); }
 	};
 
 }

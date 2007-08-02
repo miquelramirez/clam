@@ -40,6 +40,7 @@ namespace CLAM{
 		
 		InControl mBandwidthCtl;
 		InControl mGainCtl;
+		InControl mFreq;
 
 	public:
 		const char* GetClassName() const
@@ -52,7 +53,8 @@ namespace CLAM{
 			mIn("In Spectrum", this), 
 			mOut("Out Spectrum", this),
 			mBandwidthCtl("Bandwidth", this),
-			mGainCtl("Gain",this)
+			mGainCtl("Gain", this),
+			mFreq("Center Freq", this)
 		{
 			Configure( FrameTransformationConfig() );
 		}

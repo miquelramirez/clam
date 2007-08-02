@@ -39,7 +39,7 @@ bool SpectralNotch::Do(const Spectrum& in, Spectrum& out)
 	int spectrumSize = in.GetSize();
 	
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
-	int centerFreq= Round(mAmount.GetLastValue()*spectralResolution);
+	int centerFreq = Round(mFreq.GetLastValue()*spectralResolution);
 	int band = Round(mBandwidthCtl.GetLastValue()*spectralResolution);
 	TData gain = log2lin(mGainCtl.GetLastValue());
 	int n;

@@ -50,12 +50,14 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
+		InControl mSteps;
 	public:
 
 		SpectralShapeShift() 
 			: 
-			mIn( "InSpectrum", this), 
-			mOut( "OutSpectrum", this)
+			mIn( "InSpectrum", this),
+			mOut( "OutSpectrum", this),
+			mSteps("Shift Steps", this)
 		{
 			Configure( SegmentTransformationConfig() );
 			mSpectralRange=22050;	//default
