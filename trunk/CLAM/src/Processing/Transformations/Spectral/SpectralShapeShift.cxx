@@ -46,7 +46,7 @@ bool SpectralShapeShift::Do(const Spectrum&
 	mSpectralPeakDetect.Do(mLogSpectrum, mSpectralPeaks);
 	mSpectralEnvelopeExtract.Do(mSpectralPeaks,mSpectralEnvelope);
 
-	TData amount=mAmount.GetLastValue();
+	TData amount = mSteps.GetLastValue();
 
 	//Shift spectral shape
 	BPF& magBPF=mSpectralEnvelope.GetMagBPF();

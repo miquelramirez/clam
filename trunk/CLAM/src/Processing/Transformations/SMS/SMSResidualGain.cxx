@@ -46,7 +46,7 @@ bool SMSResidualGain::Do(const Spectrum& in, Spectrum& out)
 	}
 	else
 	{
-		TData amount=mAmount.GetLastValue();
+		TData amount = mGain.GetLastValue();
 		for(int i=0;i<spectrumSize;i++)
 		{
 			out.SetMag(i,in.GetMag(i)+amount);
