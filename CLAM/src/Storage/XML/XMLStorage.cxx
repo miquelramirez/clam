@@ -34,6 +34,7 @@
 #include <fstream>
 #include <list>
 #include <string>
+#include <sstream>
 
 namespace CLAM
 {
@@ -112,7 +113,9 @@ namespace CLAM
 	void XmlStorage::Restore(Component & obj, const std::string & filename)
 	{
 		std::ifstream is(filename.c_str());
-		CLAM_WARNING(is.is_open(),"Restoring from an unopened file");
+		std::ostringstream os;
+		os << "Restoring from an unopened file with filename <" << filename << ">" << std::flush;
+		CLAM_WARNING(is.is_open(),os.str().c_str());
 		Restore(obj,is);
 	}
 
