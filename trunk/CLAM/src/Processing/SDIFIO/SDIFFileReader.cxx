@@ -30,8 +30,7 @@ namespace CLAM
 {
 
 SDIFFileReader::SDIFFileReader():
-	mPrevIndexArray(0),
-	mIsFileOpened(false)
+	mPrevIndexArray(0), isFileOpen(false)
 {
 	mpFile=NULL;
 	mLastCenterTime=-1;
@@ -39,8 +38,7 @@ SDIFFileReader::SDIFFileReader():
 }
 
 SDIFFileReader::SDIFFileReader(const SDIFInConfig& c):
-	mPrevIndexArray(0),
-	mIsFileOpened(false)
+	mPrevIndexArray(0), isFileOpen(false)
 {
 	mpFile=NULL;
 	mLastCenterTime=-1;
@@ -50,13 +48,15 @@ SDIFFileReader::SDIFFileReader(const SDIFInConfig& c):
 
 SDIFFileReader::~SDIFFileReader()
 {
+	if (mpFile != NULL)
+		mpFile->Close();
 	delete mpFile;
 }
 
 bool SDIFFileReader::Configure(const SDIFInConfig& c)
 {
 	mConfig = c;
-
+	
 	return true;
 }
 
@@ -68,12 +68,12 @@ bool SDIFFileReader::OpenFile()
 	try
 	{
 		mpFile->Open();
-		mIsFileOpened = true;
+		isFileOpen = true;
 		return true;
 	}
 	catch ( ErrOpenFile& e )
 	{
-		std::cerr << "Inner exception thrown: File could not be opened" << std::endl;
+		std::cerr << "Inner exception thrown: File <" << mConfig.GetFileName().c_str() << "> could not be opened" << std::endl;
 
 		return false;
 	}
@@ -91,10 +91,10 @@ bool SDIFFileReader::ReadFrame(	CLAM::Fundamental& argFundamental,
 								CLAM::Spectrum& argResidual)
 {
 	TTime throwAwayFloat;
-	SDIFFileReader::ReadFrame(	argFundamental,
-								argSpectralPeaks,
-								argResidual,
-								throwAwayFloat);
+	return SDIFFileReader::ReadFrame(	argFundamental,
+									argSpectralPeaks,
+									argResidual,
+									throwAwayFloat);
 }
 
 bool SDIFFileReader::ReadFrame(	CLAM::Fundamental& argFundamental,
@@ -102,9 +102,13 @@ bool SDIFFileReader::ReadFrame(	CLAM::Fundamental& argFundamental,
 								CLAM::Spectrum& argResidual,
 								TTime& argFrameCenterTime)
 {
-	if (!mIsFileOpened) OpenFile();
+	if (!isFileOpen) OpenFile();
 	if(!mpFile) return false;
-	if(mpFile->Done()) return false;
+	if(mpFile->Done())
+	{
+		mpFile->Close();
+		return false;
+	}
 
 	//Residual Spectrum in frame should be configured to have the ComplexArray
 	SpectrumConfig Scfg;
@@ -152,7 +156,7 @@ bool SDIFFileReader::ReadFrame(	CLAM::Fundamental& argFundamental,
 
 		counter++;
 	}
-
+	
 	return true;
 
 }
