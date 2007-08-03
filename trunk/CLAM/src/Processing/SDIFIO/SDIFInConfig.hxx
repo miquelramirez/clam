@@ -31,7 +31,7 @@ class SDIFInConfig:public ProcessingConfig
 {
 public:
 
-	DYNAMIC_TYPE_USING_INTERFACE (SDIFInConfig, 7, ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (SDIFInConfig, 9, ProcessingConfig);
 	DYN_ATTRIBUTE(0,public, double, SpectralRange);
 	DYN_ATTRIBUTE(1,public, TIndex, MaxNumPeaks);
 	DYN_ATTRIBUTE(2,public, bool,EnableResidual);
@@ -42,6 +42,9 @@ public:
 	engines like SALTO). Else index found in SDIF is loaded as is.
  */
 	DYN_ATTRIBUTE(6,public,bool,RelativePeakIndices);
+	DYN_ATTRIBUTE(7,public,int,NumberOfFramesToPreload);
+	DYN_ATTRIBUTE(8,public,int,NumberOfFramesToLoad);
+	
 	void DefaultInit();
 };
 
