@@ -89,7 +89,7 @@ private:
 	TTime mLastCenterTime;
 	int mSamplingRate;
 	IndexArray mPrevIndexArray;
-	bool mIsFileOpened;
+	bool isFileOpen;
 };
 
 
