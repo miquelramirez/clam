@@ -36,7 +36,7 @@ namespace CLAM
 
 		static struct { 
 			const char * extension;
-			EAudioFileFormat format;
+			Enum::tValue format;
 		} extensionMap[] =
 		{
 			{"wav",  eWAV},
