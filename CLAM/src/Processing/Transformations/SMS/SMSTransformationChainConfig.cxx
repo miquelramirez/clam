@@ -23,6 +23,7 @@
 
 //We should avoid having to include all SMS Transformations here: factory needed
 #include "SegmentTransformationConfig.hxx"
+#include "SegmentSMSHarmonizer.hxx"
 #include "SegmentSMSMorphConfig.hxx"
 #include "SegmentSMSTimeStretchConfig.hxx"
 

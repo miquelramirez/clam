@@ -5,7 +5,7 @@
 
 namespace QtSMS
 {
-	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSHarmonizerConfigurator> regtPitchShiftCfg("SMSHarmonizer");
+	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSHarmonizerConfigurator> regtPitchShiftCfg("SegmentSMSHarmonizer");
 	const char* SMSHarmonizerConfigurator::mHelpText = "<html><body><h2>Harmonizer</h2><p><strong>Usage:</strong> Each point in the fuction defines a new voice added to the harmonization. The X value is the gain in relation to the original one and the Y value the pitch transposition factor.</p><p><strong>Explanation:</strong> Pitch transposed (with timbre preservation) versions of the original are added applying the gain factor specified.</p></body></html>";
 
 	SMSHarmonizerConfigurator::SMSHarmonizerConfigurator()
@@ -22,7 +22,7 @@ namespace QtSMS
 		mConfig.RemoveAmount();
 		mConfig.AddBPFAmount();
 		mConfig.UpdateData();
-		mConfig.SetType("SMSHarmonizer");
+		mConfig.SetType("SegmentSMSHarmonizer");
 
 		connect(mEditorWidget,SIGNAL(pointsChanged()),this,SIGNAL(configurationChanged()));
 	}

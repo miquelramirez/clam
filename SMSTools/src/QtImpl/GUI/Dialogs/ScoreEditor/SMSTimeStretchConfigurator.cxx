@@ -5,7 +5,7 @@
 
 namespace QtSMS
 {
-	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSTimeStretchConfigurator> regtPitchShiftCfg("SMSTimeStretch");
+	static CLAM::FactoryRegistrator<SMSConfiguratorFactory, SMSTimeStretchConfigurator> regtPitchShiftCfg("SegmentSMSTimeStretch");
 	const char* SMSTimeStretchConfigurator::mHelpText = "<html><body><h2>Time Stretch</h2><p><strong>Usage:</strong> Introduce relative increase/decrease in speed of resulting sound. 0.8 means decreasing speed by a 20% factor (X axis = time).</p><p><strong>Explanation:</strong> The resulting spectral represantion of the original sound is obtained by interpolating neiboughring frames or skipping others.</p></body></html>";
 
 	SMSTimeStretchConfigurator::SMSTimeStretchConfigurator()
