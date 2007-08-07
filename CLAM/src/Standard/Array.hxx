@@ -60,6 +60,7 @@ public:
 		mStep = step;
 		mpData = NULL;
 		Resize(size);
+		SetSize(size);
 	}
 
 	void Init(){
