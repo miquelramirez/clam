@@ -11,6 +11,7 @@ def config_error(str) :
 	return False
 
 def setup_global_environment( env, conf ) :
+	print '---- setup global environment '
 	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 	# clam env
 	# check for pkg-config, compiler support, bash features, et.
@@ -36,9 +37,12 @@ def setup_global_environment( env, conf ) :
 
 	if sys.platform != 'win32' or crosscompiling :
 		if env['release'] :
+			print '... RELEASE MODE'
 			env.Append( CCFLAGS='-g -O2 -fomit-frame-pointer -Wall'.split(' ') )
 		else :
+			print '... DEBUG MODE'
 			env.Append( CCFLAGS='-g -Wall'.split(' ') )
+			env.Append( CPPFLAGS = ['-D_DEBUG'] )
 	else :
 		env.Append( CPPFLAGS=[
 			'-D_USE_MATH_DEFINES', # Math Posix compatibility for MSVC

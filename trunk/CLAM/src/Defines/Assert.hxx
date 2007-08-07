@@ -178,23 +178,23 @@ namespace CLAM
 */
 
 #if defined(CLAM_DISABLE_CHECKS) || defined(CLAM_USE_RELEASE_ASSERTS)
-#define CLAM_BEGIN_DEBUG_CHECK if (0) {
-#define CLAM_END_DEBUG_CHECK }
-#define CLAM_DEBUG_ASSERT( expression, message )
-#define CLAM_DEBUG_WARNING( expression, message )
+#	define CLAM_BEGIN_DEBUG_CHECK if (0) {
+#	define CLAM_END_DEBUG_CHECK }
+#	define CLAM_DEBUG_ASSERT( expression, message )
+#	define CLAM_DEBUG_WARNING( expression, message )
 #else
-#define CLAM_BEGIN_DEBUG_CHECK {
-#define CLAM_END_DEBUG_CHECK }
-#define CLAM_DEBUG_ASSERT( expression, message ) \
-	do { \
-	if (!(expression)) { \
-		CLAM_ABORT(message); \
-	} } while (0)
-#define CLAM_DEBUG_WARNING( expression, message ) \
-	do { \
-	if (!(expression)) { \
-		CLAM::ExecuteWarningHandler ( message, __FILE__, __LINE__); \
-	} } while (0)
+#	define CLAM_BEGIN_DEBUG_CHECK {
+#	define CLAM_END_DEBUG_CHECK }
+#	define CLAM_DEBUG_ASSERT( expression, message ) \
+		do { \
+		if (!(expression)) { \
+			CLAM_ABORT(message); \
+		} } while (0)
+#	define CLAM_DEBUG_WARNING( expression, message ) \
+		do { \
+		if (!(expression)) { \
+			CLAM::ExecuteWarningHandler ( message, __FILE__, __LINE__); \
+		} } while (0)
 #endif
 /// @}
 
