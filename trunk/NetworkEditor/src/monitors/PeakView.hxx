@@ -29,6 +29,7 @@ class PeakViewMonitor : public CLAM::PortMonitor<CLAM::SpectralPeakArray>, publi
 		if ( !_peaks.HasFreqBuffer()) return 0;
 		const CLAM::Array<CLAM::TData> & data = _peaks.GetFreqBuffer();
 		_size = data.Size();
+		if (!_size) return 0;
 		return &data[0];
 	}
 	const CLAM::TData * magnitudeData()
