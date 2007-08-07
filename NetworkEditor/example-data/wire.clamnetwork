@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed Network">
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink" type="AudioSink"/>
 
-  <processing id="AudioSource_0" type="AudioSource"/>
+  <processing id="AudioSource" type="AudioSource"/>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
-    <in>AudioSink_0.AudioIn</in>
+    <out>AudioSource.AudioOut</out>
+    <in>AudioSink.AudioIn</in>
   </port_connection>
 
 </network>
