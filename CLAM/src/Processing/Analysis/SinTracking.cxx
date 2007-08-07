@@ -226,6 +226,7 @@ TIndex SinTracking::GetCandidate(TData currentPeakFreq,
   //xamat: test!
   SearchArray<TData> mySearch(peakFreqBuffer);
   TIndex found=mySearch.Find(currentPeakFreq);
+  if (found==-1) found = 0; //Pau: to avoid assert. Is this the correct behaviour?
   TIndex originalFound = found;
   distance = Abs(peakFreqBuffer[found]-currentPeakFreq);
   //make sure that the two surrounding peaks are not in fact closer
