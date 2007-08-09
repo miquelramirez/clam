@@ -24,10 +24,12 @@
 #include <QtGui/QHeaderView>
 #include <iostream> 
 
+/*
 #ifdef USE_LADSPA
 #	include <CLAM/LadspaPluginsExplorer.hxx> 
 //#	include <CLAM/LadspaWrapperCreator.hxx>
 #endif
+*/
 #include <CLAM/ProcessingFactory.hxx> 
 
 namespace NetworkGUI
@@ -196,10 +198,11 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			item->setIcon(0, QIcon(":/icons/images/processing.png"));
 		}
 	}
-	
+/*	
 #ifdef USE_LADSPA
 	CLAM::LadspaPluginsExplorer::ExploreStandardPaths();
 #endif //USE_LADSPA
+*/
 
 // TODO: Ladspa is still work in progress 
 
@@ -237,30 +240,6 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 		}
 	}
 
-	
-/*	CLAM::LadspaPlugins plugins = CLAM::LadspaPluginsExplorer::GetList();
-	CLAM::LadspaPlugins::const_iterator it=plugins.begin();
-	CLAM::ProcessingFactory & pFactory = CLAM::ProcessingFactory::GetInstance();
-	QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA (Experimental)" );
-	for (; it != plugins.end(); it++)
-	{
-		const CLAM::LadspaPlugin& plugin = *it;
-		const std::string factoryID(plugin.factoryID);
-		//std::cout << "[LADSPA] registering " << factoryID << " from " << plugin.libraryFileName << std::endl;
-		pFactory.AddCreatorWarningRepetitions(
-				factoryID, 
-				new CLAM::LadspaWrapperCreator(
-					plugin.libraryFileName, 
-					plugin.index,
-					factoryID ) 
-				);
-		QTreeWidgetItem * item = new QTreeWidgetItem( ladspaTree, QStringList() << plugin.description.c_str() );
-		item->setIcon(0, QIcon(":/icons/images/processing.png"));
-		item->setText(1, plugin.factoryID.c_str());
-		
-	}
-*/	
- 
 	
 	connect( this, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),
 		 this, SLOT( PressProcessing(QTreeWidgetItem *,int) ));
