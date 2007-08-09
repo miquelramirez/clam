@@ -112,8 +112,10 @@ bool FFT_fftw3::Do(const Audio& in, Spectrum &out)
 {
 	CLAM_DEBUG_ASSERT(IsRunning(),
 		"FFT_fftw3: Do(): Not in execution mode");
-	CLAM_DEBUG_ASSERT(isPowerOfTwo(mSize),
-		"FFT_fftw3: Do(): Not a power of two");
+	CLAM_BEGIN_DEBUG_CHECK
+		CLAM_WARNING(isPowerOfTwo(mSize),
+			"FFT_fftw3: Do(): Not a power of two");
+	CLAM_END_DEBUG_CHECK
 
 	out.SetSpectralRange(in.GetSampleRate()/2);
 	if (mState==sOther) CheckTypes(in,out);
