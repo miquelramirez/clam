@@ -20,8 +20,10 @@ class FactoryRegistratorTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testCreate_ReturnsAnObjectOfTheTemplateType );
 	CPPUNIT_TEST( testConstructorPassingFactory_RegistersCreator );
 	CPPUNIT_TEST( testConstructorPassingKeyAndFactory_RegistersCreator );
+	CPPUNIT_TEST( testConstructorPassingMetadata_AssertsWhenNoKey );
+	CPPUNIT_TEST( testConstructorPassingMetadata_RegistersCreator );
 	CPPUNIT_TEST( testConstructorPassingKey_RegistersCreator );
-	CPPUNIT_TEST( testDefaultConstructor_RegistersCreator );
+//	CPPUNIT_TEST( testDefaultConstructor_RegistersCreator ); //deprecated functionality
 	CPPUNIT_TEST( testRegistratorsAsStaticObjects_FactoryUnicity );
 	CPPUNIT_TEST( testRegistratorsAsStaticObjects_ProductsRegistered );
 	CPPUNIT_TEST_SUITE_END();
@@ -37,12 +39,47 @@ protected:
 		}
 
 	};
-
 private:
 	void testCreate_ReturnsAnObjectOfTheTemplateType()
 	{
 		 DummyProduct* created =
 			 CLAM::FactoryRegistrator<MyFactoryType, DummyProductFoo>::ConcreteCreator().Create();
+
+		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *created );
+		delete created;
+	}
+
+	void testConstructorPassingMetadata_AssertsWhenNoKey()
+	{
+		MyFactoryType & fact = MyFactoryType::GetInstance();
+		fact.Clear();
+		const char* metadata[] = {
+			"some attribute", "DummyProductFoo",
+			0
+		};
+		try 
+		{
+			CLAM::FactoryRegistrator<MyFactoryType, DummyProductFoo> regt = metadata;
+		}
+		catch ( CLAM::ErrAssertionFailed & err )
+		{
+			CPPUNIT_ASSERT_EQUAL(std::string("FactoryRegistrator: first char* metadata should be 'key'"), std::string(err.what()) );
+		}
+
+	}
+	void testConstructorPassingMetadata_RegistersCreator()
+	{
+		MyFactoryType & fact = MyFactoryType::GetInstance();
+		fact.Clear();
+
+		const char* metadata[] = {
+			"key", "DummyProductFoo",
+			0
+		};
+
+		CLAM::FactoryRegistrator<MyFactoryType, DummyProductFoo> regt = metadata;
+
+		DummyProduct *created = fact.Create( "DummyProductFoo" );
 
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *created );
 		delete created;
@@ -55,8 +92,7 @@ private:
 
 		CLAM::FactoryRegistrator<MyFactoryType, DummyProductFoo> regt( fooClassName, fact );
 
-		DummyProduct *created =
-			fact.Create( fooClassName );
+		DummyProduct *created =	fact.Create( fooClassName );
 
 		CLAMTEST_ASSERT_EQUAL_RTTYPES( DummyProductFoo, *created );
 		delete created;
@@ -97,7 +133,8 @@ private:
 		theFactory.Clear();
 
 	}
-
+/*
+	//deprecated functionality (Pau)
 	void testDefaultConstructor_RegistersCreator()
 	{
 		MyFactoryType &theFactory = MyFactoryType::GetInstance();
@@ -115,7 +152,7 @@ private:
 		delete created;
 		theFactory.Clear();
 	}
-
+*/
 	void testRegistratorsAsStaticObjects_ProductsRegistered()
 	{
 		FactoryOfAs& theFactory = FactoryOfAs::GetInstance();
@@ -123,7 +160,7 @@ private:
 
 		theFactory.GetRegisteredNames( keysInFactory );
 
-		CPPUNIT_ASSERT_EQUAL( false, keysInFactory.empty() );
+		CPPUNIT_ASSERT( false==keysInFactory.empty() );
 	}
 
 	void testRegistratorsAsStaticObjects_FactoryUnicity()

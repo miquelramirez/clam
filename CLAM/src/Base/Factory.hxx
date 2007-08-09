@@ -25,7 +25,8 @@
 #include <map>
 #include <string>
 #include <list>
-//#include <iostream> //TODO only for debugging
+#include <set>
+#include <iostream> //TODO only for debugging
 
 #include "Assert.hxx"
 #include "ErrFactory.hxx"
@@ -70,6 +71,20 @@ public:
 
 	typedef AbstractProductType AbstractProduct;
 	typedef std::string RegistryKey;
+
+	/** definitions from ProcessingFactory **/
+	typedef std::string Attribute;
+	typedef std::string Value;
+	struct Pair 
+	{
+		Attribute attribute;
+		Value value;
+	};
+	typedef RegistryKey Key; // TODO remove
+	typedef std::list<Key> Keys;
+	typedef std::list<std::string> Values;
+	typedef std::list<Pair> Pairs; 
+	typedef std::map<Key, Pairs> Metadata;
 
 	typedef AbstractProduct* (*CreatorMethod)(void); //TODO drop after refactoring
 
@@ -141,6 +156,128 @@ public:
 	bool ExistsKey( const RegistryKey& key) //TODO pau: rename to KeyExists
 	{
 		return _registry.ExistsKey(key);
+	}
+
+	/// Get all keys that have attribute==value in its metadata.
+	Keys GetKeys(const std::string& attribute, const std::string& value)
+	{
+		Keys result;
+		typename Metadata::const_iterator it;
+		for(it = _metadata.begin(); it != _metadata.end(); it++)
+		{
+			if( (attribute == "") )
+			{
+				result.push_back(it->first);
+				continue;
+			}
+			Pairs attributes = it->second;
+			typename Pairs::const_iterator itAtt;
+			for(itAtt = attributes.begin(); itAtt != attributes.end(); itAtt++)
+			{
+				if( ((*itAtt).attribute == attribute) && ((*itAtt).value == value) )
+				{
+					result.push_back(it->first);
+				}
+			}
+		}
+		return result;
+	}
+	/// Get all keys in the factory
+	Keys GetKeys()
+	{
+		return GetKeys("","");
+	}
+	/// Return all the metadata available for a product key
+	Pairs GetPairsFromKey(const std::string& key)
+	{
+		Pairs attributes;
+		typename Metadata::const_iterator it = _metadata.find(key);
+		if(it!=_metadata.end())
+		{
+			attributes = it->second;
+		}
+		return attributes;
+	}
+	/// Get the set of all values present for a given metadata attribute.
+	/// Example GetSetOfValues("category") could return ["modulators","generators","reverbs"] without repeated items.
+	Values GetSetOfValues(const std::string& attribute)
+	{
+		std::set<Value> AttributeSet;
+		std::set<Value>::const_iterator itSet;
+		Values values;
+		typename Metadata::const_iterator it;
+		for(it = _metadata.begin(); it != _metadata.end(); it++)
+		{
+			Pairs attributes = it->second;
+			typename Pairs::const_iterator itAtt;
+			for(itAtt = attributes.begin(); itAtt != attributes.end(); itAtt++)
+			{
+				if((*itAtt).attribute == attribute)
+				{
+					itSet = AttributeSet.find((*itAtt).value);
+					if(itSet == AttributeSet.end())
+					{
+						AttributeSet.insert((*itAtt).value);
+					}
+				}
+			}
+		}
+		// keep using the ProcessingFactory::Values
+		for(itSet = AttributeSet.begin(); itSet != AttributeSet.end(); itSet++)
+		{
+			values.push_back(*itSet);
+		}
+		return values;
+	}
+	/// Return the list of values for a metadata attribute for a product key.
+	Values GetValuesFromAttribute(const std::string& key, const std::string& attribute)
+	{
+		Values values;
+		typename Metadata::const_iterator it = _metadata.find(key);
+		if(it != _metadata.end())
+		{
+			typename Pairs::const_iterator itAtt;
+			for(itAtt = it->second.begin(); itAtt != it->second.end(); itAtt++)
+			{
+				if((*itAtt).attribute == attribute)
+				{
+					values.push_back((*itAtt).value);
+				}
+			}
+		}
+		return values;
+	}
+	/// Return the value for a metadata attribute of product key.
+	Value GetValueFromAttribute(const std::string& key, const std::string& attribute)
+	{
+		return GetValuesFromAttribute(key,attribute).front();
+	}
+
+	void AddAttribute(const std::string& key, const std::string& attribute, const std::string& value)
+	{
+		std::cout << "Factory AddAttribute key \"" << key << "\" addtribute " << attribute << " value " << value << std::endl; 
+		typename Metadata::const_iterator it;
+		it = _metadata.find(key);
+		if(!ExistsKey(key))
+		{
+			std::cout << "[Factory] tryind to add metadata to a non-existing key \"" << key << "\"" << std::endl; 
+	//		return;  //pau: debugging: add metadata anyway. maybe factory registrator is about to be instantiated.
+		}
+		
+		Pair pair;
+		pair.attribute = attribute;
+		pair.value = value;
+		Pairs pairs;
+		if(it == _metadata.end()) // it's a new key: insert it in the _metadata map
+		{
+			pairs.push_back(pair);
+			_metadata.insert( typename Metadata::value_type( key, pairs ) );
+
+		} 
+		else
+		{
+			_metadata[key].push_back(pair);
+		}
 	}
 
 public: // Inner classes. Public for better testing
@@ -284,6 +421,7 @@ public: // Inner classes. Public for better testing
 
 private:
 	Registry _registry;
+	Metadata _metadata;
 
 };
 
@@ -303,30 +441,58 @@ class FactoryRegistrator
 	typedef typename TheFactoryType::AbstractProduct AbstractProduct;
 	typedef typename TheFactoryType::RegistryKey RegistryKey;
 public:
-	FactoryRegistrator( RegistryKey key, TheFactoryType& fact ) {
+	FactoryRegistrator( const char* metadata[] ) 
+	{
+		CLAM_ASSERT(std::string(metadata[0])==std::string("key"), "FactoryRegistrator: first char* metadata should be 'key'"); //TODO fix
+		CLAM_ASSERT(metadata[1], "FactoryRegistrator: value for first attriute ('key') must not be 0");
+		std::string key = metadata[1];
+
+		TheFactoryType & factory = TheFactoryType::GetInstance();
+		factory.AddCreatorWarningRepetitions( key, new ConcreteCreator() );
+		std::string attribute, value;
+		for(unsigned i = 2; metadata[i]; i++)
+		{
+			if(!metadata[i+1])
+			{
+				std::cout << "[METADATA] error with attribute \"" << metadata[i] << "\"" << std::endl;
+			}
+			attribute = metadata[i];
+			value = metadata[++i];
+			factory.AddAttribute(key, attribute, value);
+		}
+	}
+
+	FactoryRegistrator( RegistryKey key, TheFactoryType& fact ) 
+	{
 //		std::cout << "FactoryRegistrator(key,factory) " << key << std::endl;
 		fact.AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 
-	FactoryRegistrator( TheFactoryType& fact ) {
+	FactoryRegistrator( TheFactoryType& fact ) 
+	{
 		ConcreteProductType dummy;
 		RegistryKey key=dummy.GetClassName();
 //		std::cout << "FactoryRegistrator(factory) " << dummy.GetClassName() << std::endl;
 		fact.AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 
-	FactoryRegistrator( RegistryKey key ) {
+	FactoryRegistrator( RegistryKey key ) 
+	{
 //		std::cout << "FactoryRegistrator(key) " << key << std::endl;
 		TheFactoryType::GetInstance().AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
 
-	FactoryRegistrator( ) {
+/*
+	FactoryRegistrator( ) 
+	{
 		ConcreteProductType dummy;
 		RegistryKey key=dummy.GetClassName();
 //		std::cout << "FactoryRegistrator() " << key << std::endl;
 		TheFactoryType::GetInstance().AddCreatorWarningRepetitions( key, new ConcreteCreator() );
 	}
-	~FactoryRegistrator() {
+*/
+	~FactoryRegistrator() 
+	{
 //		std::cout << "~FactoryRegistrator() " << std::endl;
 	}
 	
