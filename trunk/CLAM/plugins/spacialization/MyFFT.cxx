@@ -41,8 +41,7 @@ namespace Hidden
 			factory.AddAttribute("MyFFT", "category", "CLAM");
 			factory.AddAttribute("MyFFT", "description", "MyFFT");
 		}
-	};
-	static dummy;
+	} dummy;
 }
 
 struct MyFFT::Implementation
