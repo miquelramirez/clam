@@ -72,6 +72,7 @@ class RunTimeProcessingLibraryLoader
 	
 	void loadLibrariesFromPathLADSPA(const std::string & path)
 	{
+#ifdef USE_LADSPA
 		std::cerr << "[LADSPA] Looking at path '" << path << "'" << std::endl;
 		DIR* dir = opendir(path.c_str());
 		if (!dir)
@@ -110,6 +111,7 @@ class RunTimeProcessingLibraryLoader
 			}
 		}
 		closedir(dir);	
+#endif //USE_LADSPA
 	}
 public:
 	std::vector<std::string> splitPathVariable(const std::string & pathVariable)
