@@ -32,11 +32,13 @@ namespace CLAM {
 class Processing;
 class OutControl;
 
+/// Control events type
 typedef float TControlData;
 
 /**
 * \brief Processing in control class.
-* 
+* Controls are limited to emmit and receive TControlData (float) numbers. 
+* Though extensible typed connections are future planned development.
 */
 class InControl
 {
@@ -60,7 +62,15 @@ public:
 	 * using \c GetLastValue
 	 */
 	virtual int DoControl(TControlData val) { mLastValue = val; return 0; };
-	virtual const TControlData& GetLastValue() const { return mLastValue; };
+	/// Returns the last TControlData (float) received event
+	const TControlData& GetLastValue() const { return mLastValue; };
+	/// Returns the last TControlData (float) received interpreted as a bool
+	bool GetLastValueAsBoolean() const 
+	{ 
+		return (mLastValue > 0) ? mLastValue>0.01 : mLastValue<-0.01;
+	};
+	/// Returns the last TControlData (float) received interpireted as an integer
+	int GetLastValueAsInteger() const { return (int)(mLastValue+0.5f); };
 	const std::string& GetName() const { return mName; }
 	bool IsConnectedTo( OutControl & );
 	bool IsConnected() const;

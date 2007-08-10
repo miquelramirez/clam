@@ -22,10 +22,10 @@
 #ifndef _OutControl_
 #define _OutControl_
 
-#include "InControl.hxx" // TControlData defined there.
+#include <CLAM/InControl.hxx>
 #include <list>
 #include <string>
-#include "Assert.hxx"
+#include <CLAM/Assert.hxx>
 
 namespace CLAM {
 
@@ -35,6 +35,11 @@ class Processing;
 //	void LinkOutWithInControl(Processing* outProc, std::string outControl, 
 //				  Processing* inProc, std::string inControl);
 
+/**
+* \brief Processing out control class.
+* Controls are limited to emmit and receive TControlData (float) numbers. 
+* Though extensible typed connections are future planned development.
+*/
 class OutControl
 {
 //Attributes
@@ -71,12 +76,18 @@ public:
 	std::list<InControl*>::iterator EndInControlsConnected();
 
 	int SendControl(TControlData val);
-	/**
-	 *  See comments on InControl.hxx about InControl::GetLastValueAsBoolean
-	 */
-	inline int SendControlAsBoolean( bool booleanValue )
+	
+	/// Sends a 0.0 or 1.0 float control depending on the parameter.
+	/// To be used in conjunction with InControl::GetLastValueAsBoolean
+	int SendControlAsBoolean( bool booleanValue )
 	{
-		return SendControl( booleanValue ? TControlData(1) : TControlData(-1) );
+		return SendControl( booleanValue ? TControlData(1) : TControlData(0) );
+	}
+	/// Sends the given int value as a control (float)
+	/// To be used in conjunction with InControl::GetLastValueAsBoolean
+	int SendControlAsInteger( int intvalue )
+	{
+		return SendControl( (TControlData)intvalue );
 	}
 
 	const std::string& GetName(void) const { return mName; }
