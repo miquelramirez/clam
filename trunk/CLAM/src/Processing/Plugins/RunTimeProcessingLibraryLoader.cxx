@@ -111,7 +111,7 @@ class RunTimeProcessingLibraryLoader
 			}
 		}
 		closedir(dir);	
-#endif //USE_LADSPA
+#endif // USE_LADSPA
 	}
 public:
 	std::vector<std::string> splitPathVariable(const std::string & pathVariable)
