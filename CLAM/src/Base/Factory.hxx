@@ -255,7 +255,6 @@ public:
 
 	void AddAttribute(const std::string& key, const std::string& attribute, const std::string& value)
 	{
-		std::cout << "Factory AddAttribute key \"" << key << "\" addtribute " << attribute << " value " << value << std::endl; 
 		typename Metadata::const_iterator it;
 		it = _metadata.find(key);
 		if(!ExistsKey(key))
