@@ -96,7 +96,7 @@ public:
 	unsigned hop() const {return _constantQTransform.getfftlength()/_hopRatio;}
 	unsigned frameSize() const {return _constantQTransform.getfftlength();}
 
-	void doIt(const AudioFrame & input)
+	void doIt(const AudioFrame & input, CLAM::TData & currentTime)
 	{
 		_squaredRootEnergy = 0.0;
 		for (unsigned i=0; i<frameSize(); i++)
@@ -115,6 +115,7 @@ public:
 		_filter.doIt(_circularPeaksToPCP.output());
 		_chordCorrelator.doIt(_filter.output());
 		estimateChord(_chordCorrelator.output());
+		_chordSegmentator.doIt(currentTime, _chordCorrelator.output(), _estimatedChord, _secondCandidate);
 	}
 	void estimateChord(const ChordCorrelator::ChordCorrelation & correlation)
 	{

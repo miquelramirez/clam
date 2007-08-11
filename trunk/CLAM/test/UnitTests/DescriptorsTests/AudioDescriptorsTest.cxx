@@ -90,9 +90,9 @@ private:
 		buf.SetSampleRate(reader.SampleRate());
 
 		reader.Start();
-		do {
+		/*do {
 			reader.Do(buf);
-		} while (!reader.Done());
+		} while (!reader.Done());*/
 		reader.Stop();
 
 		return buf;

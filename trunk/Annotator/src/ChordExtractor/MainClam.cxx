@@ -181,7 +181,7 @@ public:
 
 class ChordExtractorDescriptionDumper
 {
-	const Simac::ChordExtractor & extractor;
+	Simac::ChordExtractor & extractor;
 	ChordExtractorSegmentation chordSegmentation;
 	std::ofstream outputPool;
 
@@ -203,7 +203,7 @@ class ChordExtractorDescriptionDumper
 	unsigned _firstFrameOffset;
 	CLAM::TData _samplingRate;
 public:
-	ChordExtractorDescriptionDumper(const std::string & filenameBase, const std::string & suffix, unsigned frames, unsigned hop, unsigned framesize, CLAM::TData samplingRate, const Simac::ChordExtractor & extractor)
+	ChordExtractorDescriptionDumper(const std::string & filenameBase, const std::string & suffix, unsigned frames, unsigned hop, unsigned framesize, CLAM::TData samplingRate, Simac::ChordExtractor & extractor)
 		: extractor(extractor)
 		, outputPool((filenameBase+suffix).c_str())
 		, _currentFrame(0)
@@ -257,24 +257,24 @@ public:
 		}
 	
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
-		chordSegmentation.closeLastSegment(currentTime);
+		extractor.closeLastSegment(currentTime);
 
 		CLAM_ASSERT(_pool->GetNumberOfContexts("ExtractedChord")==0, "ExtractedChord pool  not empty");
 
-		_pool->SetNumberOfContexts("ExtractedChord",chordSegmentation.chordIndexes().size());
+		_pool->SetNumberOfContexts("ExtractedChord",extractor.chordIndexes().size());
 		Simac::Enumerated * root;
 		Simac::Enumerated * mode;
-		if(chordSegmentation.chordIndexes().size() != 0)
+		if(extractor.chordIndexes().size() != 0)
 		{
 			root = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root");
 			mode = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode");
 		}
-		for (unsigned segment=0; segment<chordSegmentation.chordIndexes().size(); ++segment)
+		for (unsigned segment=0; segment<extractor.chordIndexes().size(); ++segment)
 		{
-			root[segment] = extractor.root(chordSegmentation.chordIndexes()[segment]);
-			mode[segment] = extractor.mode(chordSegmentation.chordIndexes()[segment]);
-			_chordSegmentation[0].AddElem(chordSegmentation.segmentation().onsets()[segment]);
-			_chordSegmentation[0].AddElem(chordSegmentation.segmentation().offsets()[segment]);
+			root[segment] = extractor.root(extractor.chordIndexes()[segment]);
+			mode[segment] = extractor.mode(extractor.chordIndexes()[segment]);
+			_chordSegmentation[0].AddElem(extractor.segmentation().onsets()[segment]);
+			_chordSegmentation[0].AddElem(extractor.segmentation().offsets()[segment]);
 		}
 
 //		CLAM::XMLStorage::Dump(*_pool, "Description", std::cout);
@@ -471,6 +471,8 @@ int main(int argc, char* argv[])			// access command line arguments
 		inport.SetHop( hop );
 
 		reader.Start();
+		CLAM::TData currentFrame = 0;
+		unsigned firstFrameOffset = 0;
 	//	clock_t start = clock();
 		std::vector<float> floatBuffer(framesize);
 		while (reader.Do())
@@ -480,8 +482,10 @@ int main(int argc, char* argv[])			// access command line arguments
 			CLAM::TData * segpointer = &(inport.GetAudio().GetBuffer()[0]);
 			for (unsigned i = 0; i < framesize; i++)
 				floatBuffer[i] = segpointer[i];
-			chordExtractor.doIt(&floatBuffer[0]);
+			CLAM::TData currentTime = (currentFrame*hop+firstFrameOffset)/samplingRate;
+			chordExtractor.doIt(&floatBuffer[0], currentTime);
 			inport.Consume();
+			currentFrame++;
 	//		serializer.doIt();
 			dumper.doIt();
 		}

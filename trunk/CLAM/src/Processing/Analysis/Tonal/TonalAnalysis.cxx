@@ -89,11 +89,14 @@ bool TonalAnalysis::ConcreteConfigure( const ProcessingConfig& c )
 
 bool TonalAnalysis::Do()
 {
+	// TODO, Fix Me, Attention Please, time should not be a constant!!!
+	CLAM::TData currentTime = 0.0;
+
 	if( !AbleToExecute() ) return true;
 	CLAM::TData * input = &(_input.GetAudio().GetBuffer()[0]);
 	for (unsigned i = 0; i < _implementation->frameSize(); i++)
 		_floatBuffer[i] = input[i];
-	_implementation->doIt(&_floatBuffer[0]);
+	_implementation->doIt(&_floatBuffer[0], currentTime);
 
 	std::vector<TData> & pcp = _pcp.GetData();
 	pcp.resize(_implementation->pcp().size());
