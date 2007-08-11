@@ -22,6 +22,8 @@
 #ifndef ChordExtractor_hxx
 #define ChordExtractor_hxx
 
+#include "DiscontinuousSegmentation.hxx"
+#include "ChordSegmentator.hxx"
 #include "ChordCorrelator.hxx"
 #include "CircularPeakPicking.hxx"
 #include "CircularPeaksToPCP.hxx"
@@ -48,6 +50,7 @@ class ChordExtractor
 	CircularPeaksToPCP _circularPeaksToPCP;
 	PCPSmother _filter;
 	ChordCorrelator _chordCorrelator;
+	ChordSegmentator _chordSegmentator;
 	bool _tunningEnabled;
 	bool _peakWindowingEnabled;
 	double _hopRatio;
@@ -179,6 +182,18 @@ public:
 	const std::vector<double> & chordCorrelation() const
 	{
 		return _chordCorrelator.output();
+	}
+	const CLAM::DiscontinuousSegmentation & segmentation() const
+	{
+		return _chordSegmentator.segmentation();
+	}
+	const std::vector<unsigned> & chordIndexes() const
+	{
+		return _chordSegmentator.chordIndexes();
+	}
+	void closeLastSegment(CLAM::TData currentTime)
+	{
+		_chordSegmentator.closeLastSegment(currentTime);
 	}
 	double tunning() const {return _instantTunningEstimator.output().first; }
 	double tunningStrength() const {return _instantTunningEstimator.output().second; }
