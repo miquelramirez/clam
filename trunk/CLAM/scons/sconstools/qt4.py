@@ -206,9 +206,9 @@ def _detect(env):
 			"QTDIR variable is not defined, using moc executable as a hint (QTDIR=%s)" % QTDIR)
 		return os.path.dirname(os.path.dirname(moc))
 
-	SCons.Warnings.warn(
+	raise SCons.Errors.StopError(
 		QtdirNotFound,
-		"Could not detect qt, using empty QTDIR")
+		"Could not detect Qt 4 installation")
 	return None
 
 def generate(env):
