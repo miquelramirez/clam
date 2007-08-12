@@ -32,16 +32,7 @@
     <property name="spacing" >
      <number>6</number>
     </property>
-    <property name="leftMargin" >
-     <number>9</number>
-    </property>
-    <property name="topMargin" >
-     <number>9</number>
-    </property>
-    <property name="rightMargin" >
-     <number>9</number>
-    </property>
-    <property name="bottomMargin" >
+    <property name="margin" >
      <number>9</number>
     </property>
     <item>
@@ -57,16 +48,7 @@
         <property name="spacing" >
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>9</number>
-        </property>
-        <property name="topMargin" >
-         <number>9</number>
-        </property>
-        <property name="rightMargin" >
-         <number>9</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin" >
          <number>9</number>
         </property>
         <item>
@@ -149,16 +131,7 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
         <property name="spacing" >
          <number>6</number>
         </property>
-        <property name="leftMargin" >
-         <number>9</number>
-        </property>
-        <property name="topMargin" >
-         <number>9</number>
-        </property>
-        <property name="rightMargin" >
-         <number>9</number>
-        </property>
-        <property name="bottomMargin" >
+        <property name="margin" >
          <number>9</number>
         </property>
         <item>
@@ -233,7 +206,7 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <enum>TopToolBarArea</enum>
+    <number>4</number>
    </attribute>
    <attribute name="toolBarBreak" >
     <bool>false</bool>
@@ -258,7 +231,7 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <enum>TopToolBarArea</enum>
+    <number>4</number>
    </attribute>
    <attribute name="toolBarBreak" >
     <bool>false</bool>
