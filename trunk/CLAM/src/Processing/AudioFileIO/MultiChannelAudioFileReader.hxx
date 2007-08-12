@@ -26,6 +26,7 @@
 #include "MultiChannelAudioFileReaderConfig.hxx"
 #include "AudioFile.hxx"
 #include "Audio.hxx"
+#include "OutControl.hxx"
 #include <vector>
 
 namespace CLAM
@@ -66,6 +67,7 @@ namespace CLAM
 
 		MultiChannelAudioFileReaderConfig   mConfig;
 		OutputVector                        mOutputs;
+		OutControl                          mTimeOutput;
 		Array< TIndex >                     mSelectedChannels;
 		Array< TData* >                     mSamplesMatrix;
 		AudioCodecs::Stream*                mNativeStream;
