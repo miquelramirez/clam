@@ -26,6 +26,7 @@
 #include "MonoAudioFileReaderConfig.hxx"
 #include "AudioOutPort.hxx"
 #include "AudioFile.hxx"
+#include "OutControl.hxx"
 
 namespace CLAM
 {
@@ -60,6 +61,7 @@ namespace CLAM
 		MonoAudioFileReaderConfig mConfig;
 		AudioFileSource           mAudioFile;
 		AudioOutPort	          mOutput;
+		OutControl                mTimeOutput;
 		AudioCodecs::Stream*      mNativeStream;
 		TTime                     mCurrentBeginTime;
 		TTime                     mDeltaTime;

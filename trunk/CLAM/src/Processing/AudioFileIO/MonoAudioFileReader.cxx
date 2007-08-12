@@ -35,6 +35,7 @@ namespace Hidden
 	
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )
 		: mOutput( "Samples Read", this ),
+		  mTimeOutput( "time position", this),
 		  mNativeStream( NULL )
 	{
 		Configure( cfg );
@@ -144,6 +145,7 @@ namespace Hidden
 		outputSamples.SetBeginTime( mCurrentBeginTime );
 		mDeltaTime = outputSamples.GetSize() / mAudioFile.GetHeader().GetSampleRate()*1000;
 		mCurrentBeginTime += mDeltaTime;
+		mTimeOutput.SendControl( mCurrentBeginTime / 1000 );
 		outputSamples.SetSampleRate( mAudioFile.GetHeader().GetSampleRate() );
 		
 		if ( ! mEOFReached ) return true;
