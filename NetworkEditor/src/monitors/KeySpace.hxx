@@ -31,18 +31,26 @@ namespace VM {
 class QDESIGNER_WIDGET_EXPORT KeySpace : public Tonnetz
 {
 	Q_OBJECT
-protected:
-	float x_res, y_res;
-
+	Q_PROPERTY(bool smooth READ smooth WRITE setSmooth)
+	Q_PROPERTY(int xPixels READ xPixels WRITE setXPixels)
+	Q_PROPERTY(int yPixels READ yPixels WRITE setYPixels)
 public:
 	KeySpace(QWidget * parent);
 
 	virtual void initializeGL();
 	virtual void resizeGL(int width, int height);
 	virtual void paintGL();
+
+	bool smooth() const { return _smooth; }
+	void setSmooth(bool beSmooth=true) { _smooth=beSmooth; initializeGL(); }
+	int xPixels() const { return _nX; }
+	void setXPixels(int xPixels) { if (xPixels>5) _nX=xPixels; } 
+	int yPixels() const { return _nY; }
+	void setYPixels(int yPixels) { if (yPixels>10) _nY=yPixels; } 
 private:
 	void DrawTiles();
 	void DrawLabels();
+	void RecomputeWeights();
 	double wdist(double x1,double x2)
 	{
 		if (x2 > x1+.5) return 1. - (x2-x1);
@@ -51,11 +59,13 @@ private:
 		else            return x1-x2;
 	}
 
-	float centroidx_,centroidy_;
-	float pKeySpaceValue_[24];
-	unsigned pRColor[256],pGColor[256],pBColor[256];
-	int ColorsIndex[6];
-	void RecomputeWeights();
+	bool _smooth;
+	int _nX;
+	int _nY;
+	std::vector<float> _weights;
+	std::vector<float> _texture;
+	GLuint _textureId;
+	float _paletteR[256],_paletteG[256],_paletteB[256];
 };
 
 }

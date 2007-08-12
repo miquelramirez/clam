@@ -76,21 +76,13 @@ TKeyNode * getKeyNodes()
 }
 unsigned nKeyNodes=24;
 // The number of 'pixels'
-unsigned nX = 128;
-unsigned nY = 64;
-//unsigned nX = 50;
-//unsigned nY = 125;
-std::vector<float> weights;
 
 CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
 	: Tonnetz(parent)
+	, _smooth(true)
+	, _nX(128)
+	, _nY(64)
 {
-	x_res = 1;
-	y_res = 1;
-
-	centroidx_ = 0;
-	centroidy_ = 0; 
-
 	static const struct GradientPoint 
 	{
 		unsigned index;
@@ -112,17 +104,17 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 		unsigned index0 = gradient[i].index;
 		unsigned index1 = gradient[i+1].index;
 		unsigned indexStep = gradient[i+1].index - index0;
-		float R = gradient[i].R;
-		float G = gradient[i].G;
-		float B = gradient[i].B;
-		float Rstep = (gradient[i+1].R-R)/indexStep;
-		float Gstep = (gradient[i+1].G-G)/indexStep;
-		float Bstep = (gradient[i+1].B-B)/indexStep;
+		float R = gradient[i].R/256.;
+		float G = gradient[i].G/256.;
+		float B = gradient[i].B/256.;
+		float Rstep = (gradient[i+1].R/256.-R)/indexStep;
+		float Gstep = (gradient[i+1].G/256.-G)/indexStep;
+		float Bstep = (gradient[i+1].B/256.-B)/indexStep;
 		for (unsigned k=index0; k<index1; k++)
 		{
-			pRColor[k] = (unsigned) R;
-			pGColor[k] = (unsigned) G;
-			pBColor[k] = (unsigned) B;
+			_paletteR[k] = R;
+			_paletteG[k] = G;
+			_paletteB[k] = B;
 			R += Rstep;
 			G += Gstep;
 			B += Bstep;
@@ -138,16 +130,14 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 	setDataSource(getDummySource());
 }
 
-GLuint textureId;
 void CLAM::VM::KeySpace::initializeGL()
 {
 	glClearColor(0,0,0,0); // rgba
-	glShadeModel(GL_FLAT);
-//	glShadeModel(GL_SMOOTH);
+	glShadeModel(GL_SMOOTH);
 //	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //	glEnable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
-	glGenTextures(1,&textureId);
+	glGenTextures(1,&_textureId);
 //	glEnable (GL_LINE_SMOOTH);
 //	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
 }
@@ -156,7 +146,7 @@ void CLAM::VM::KeySpace::resizeGL(int width, int height)
 	glViewport(0,0,width,height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0,x_res,y_res,0,-2,2);
+	glOrtho(0,1,1,0,-2,2);
 	glMatrixMode(GL_MODELVIEW);
 }
 void CLAM::VM::KeySpace::paintGL()
@@ -175,13 +165,13 @@ void CLAM::VM::KeySpace::RecomputeWeights()
 {
 	std::cout << "Precomputing KeySpace weights... " << std::flush;
 	TKeyNode *pKeyNodes = getKeyNodes();
-	weights.resize(nX*nY*nKeyNodes);
-	for(unsigned i=0; i<nX; i++)
+	_weights.resize(_nX*_nY*nKeyNodes);
+	for(unsigned i=0; i<_nX; i++)
 	{
-		float x1 = i / float(nX) * x_res;
-		for(unsigned k=0; k<nY; k++)
+		float x1 = i / float(_nX);
+		for(unsigned k=0; k<_nY; k++)
 		{
-			float y1 = k / float(nY) * y_res;
+			float y1 = k / float(_nY);
 			for(unsigned m=0; m<nKeyNodes; m++)
 			{
 				double d1 = wdist(x1,pKeyNodes[m].x);
@@ -190,7 +180,7 @@ void CLAM::VM::KeySpace::RecomputeWeights()
 				double g = dist*dist;
 				if (g < 1E-5)
 					g = 1E-5;
-				weights[m+nKeyNodes*(k+nY*i)] = 1. / g;
+				_weights[m+nKeyNodes*(k+_nY*i)] = 1. / g;
 			}
 		}
 	}
@@ -199,7 +189,7 @@ void CLAM::VM::KeySpace::RecomputeWeights()
 
 void CLAM::VM::KeySpace::DrawTiles()
 {
-	if (weights.size()!=nX*nY*nKeyNodes)
+	if (_weights.size()!=_nX*_nY*nKeyNodes)
 		RecomputeWeights();
 	float mean = 0;
 	_maxValue*=.5;
@@ -214,19 +204,19 @@ void CLAM::VM::KeySpace::DrawTiles()
 
 	if (_nBins!=nKeyNodes) return;
 
-	std::vector<float> texture(nY*nX*3);
+	if (_texture.size()!=_nY*_nX*3) _texture.resize(_nY*_nX*3);
 	unsigned texel=0;
-	for(unsigned k=0; k<nY; k++)
+	for(unsigned k=0; k<_nY; k++)
 	{
-		for(unsigned i=0; i<nX; i++)
+		for(unsigned i=0; i<_nX; i++)
 		{
 			double num = 0.;
 			double den = 0.;
 			for(unsigned m=0; m<nKeyNodes; m++)
 			{
-				unsigned weightIndex = m+nKeyNodes*(k+nY*i);
-				num += _data[m] * weights[weightIndex] /_maxValue;
-				den += weights[weightIndex];
+				unsigned weightIndex = m+nKeyNodes*(k+_nY*i);
+				num += _data[m] * _weights[weightIndex] /_maxValue;
+				den += _weights[weightIndex];
 			}
 			double value = (den != 0.) ? num / den : 0;
 
@@ -236,17 +226,17 @@ void CLAM::VM::KeySpace::DrawTiles()
 			ColorIndex *= ColorIndex;
 			ColorIndex *= 200.f;
 			int cidx = floorf(ColorIndex);
-			texture[texel++] = pRColor[cidx]/255.;
-			texture[texel++] = pGColor[cidx]/255.;
-			texture[texel++] = pBColor[cidx]/255.;
+			_texture[texel++] = _paletteR[cidx];
+			_texture[texel++] = _paletteG[cidx];
+			_texture[texel++] = _paletteB[cidx];
 		}
 	}
-	glBindTexture(GL_TEXTURE_2D, textureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, nX, nY, /*border*/ 0,
-		GL_RGB, GL_FLOAT, &texture[0]);
+	glBindTexture(GL_TEXTURE_2D, _textureId);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _nX, _nY, /*border*/ 0,
+		GL_RGB, GL_FLOAT, &_texture[0]);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _smooth? GL_LINEAR : GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _smooth? GL_LINEAR : GL_NEAREST );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
@@ -266,17 +256,17 @@ void CLAM::VM::KeySpace::DrawLabels()
 	TKeyNode *pKeyNodes = getKeyNodes();
 	for(unsigned i=0; i<nKeyNodes; i++)
 	{
-		float x1 = pKeyNodes[i].x * x_res;
-		float y1 = pKeyNodes[i].y * y_res;
+		float x1 = pKeyNodes[i].x;
+		float y1 = pKeyNodes[i].y;
 
-		if (y1 < 4.*y_res/nY)
-			y1 = 4.*y_res/nY;
+		if (y1 < 4./_nY)
+			y1 = 4./_nY;
 
 		float value = _data ? _data[i]/_maxValue : 0; 
 		if (value>.6) glColor3d(.1,0,0);
 		else          glColor3d(1,1,1);
 
-		renderText(x1, y1+.02, -.6, _dataSource->getLabel(i).c_str(), _font);
+		renderText(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(), font());
 	}
 }
 
