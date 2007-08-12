@@ -113,7 +113,6 @@ namespace VM
 			unsigned _nBins;
 			FloatArrayDataSource * _dataSource;
 			const CLAM::TData * _data;
-			QFont _font;
 	};
 
 

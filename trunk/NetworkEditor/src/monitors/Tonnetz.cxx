@@ -71,8 +71,6 @@ CLAM::VM::Tonnetz::Tonnetz(QWidget * parent) :
 {
 	_data = 0;
 	_dataSource = 0;
-	_font.setFamily("sans-serif");
-	_font.setPointSize(11);
 	_updatePending=0;
 	_nBins=0;
 	_maxValue=1;
@@ -177,7 +175,7 @@ void CLAM::VM::Tonnetz::DrawLabel(int x, int y)
 	const double posx = x*2*cos30+y*cos30;
 	const double posy = y*(1+sin30);
 	unsigned bin=BinAtPosition(x,y);
-	renderText(posx, posy, .6, _dataSource->getLabel(bin).c_str(), _font);
+	renderText(posx, posy, .6, _dataSource->getLabel(bin).c_str(), font());
 }
 void CLAM::VM::Tonnetz::DrawTile(int x, int y)
 {
