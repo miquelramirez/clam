@@ -56,6 +56,8 @@ public:
 		_dataSource = &dataSource;
 		_nBins = _dataSource->nBins();
 	}
+	void updateIfNeeded();
+	void clearData();
 
 private:
 	void DrawTiles();

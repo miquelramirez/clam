@@ -64,7 +64,7 @@ struct TKeyNode
 };
 
 
-TKeyNode * getKeyNodes()
+static TKeyNode * getKeyNodes()
 {
 	static TKeyNode keyNodes[] = 
 	{
@@ -75,8 +75,7 @@ TKeyNode * getKeyNodes()
 	};
 	return keyNodes;
 }
-unsigned nKeyNodes=24;
-// The number of 'pixels'
+static unsigned nKeyNodes=24;
 
 CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
 	: QGLWidget(parent)
@@ -161,7 +160,17 @@ void CLAM::VM::KeySpace::timerEvent(QTimerEvent *event)
 {
 	if ( !_dataSource) return;
 	if ( !_dataSource->isEnabled()) return;
-	if ( !_updatePending++) update();
+	updateIfNeeded();
+}
+
+void CLAM::VM::KeySpace::updateIfNeeded()
+{
+	if (!_updatePending++) update();
+}
+
+void CLAM::VM::KeySpace::clearData()
+{
+	_maxValue=1;
 }
 
 void CLAM::VM::KeySpace::paintGL()
