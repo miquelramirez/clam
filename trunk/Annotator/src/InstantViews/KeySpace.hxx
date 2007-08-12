@@ -22,13 +22,15 @@
 #ifndef KeySpace_hxx
 #define KeySpace_hxx
 
-#include "Tonnetz.hxx"
+#include <QtOpenGL/QGLWidget>
+#undef GetClassName
 #include <QtDesigner/QDesignerExportWidget>
+#include "FloatArrayDataSource.hxx"
 
 namespace CLAM {
 namespace VM {
 
-class QDESIGNER_WIDGET_EXPORT KeySpace : public Tonnetz
+class QDESIGNER_WIDGET_EXPORT KeySpace : public QGLWidget
 {
 	Q_OBJECT
 	Q_PROPERTY(bool smooth READ smooth WRITE setSmooth)
@@ -40,6 +42,7 @@ public:
 	virtual void initializeGL();
 	virtual void resizeGL(int width, int height);
 	virtual void paintGL();
+	virtual void timerEvent(QTimerEvent * event);
 
 	bool smooth() const { return _smooth; }
 	void setSmooth(bool beSmooth=true) { _smooth=beSmooth; initializeGL(); }
@@ -47,6 +50,13 @@ public:
 	void setXPixels(int xPixels) { if (xPixels>5) _nX=xPixels; } 
 	int yPixels() const { return _nY; }
 	void setYPixels(int yPixels) { if (yPixels>10) _nY=yPixels; } 
+
+	void setDataSource(FloatArrayDataSource & dataSource )
+	{
+		_dataSource = &dataSource;
+		_nBins = _dataSource->nBins();
+	}
+
 private:
 	void DrawTiles();
 	void DrawLabels();
@@ -59,6 +69,11 @@ private:
 		else            return x1-x2;
 	}
 
+	unsigned _nBins;
+	FloatArrayDataSource * _dataSource;
+	double _maxValue;
+	int _updatePending;
+	const CLAM::TData * _data;
 	bool _smooth;
 	int _nX;
 	int _nY;
