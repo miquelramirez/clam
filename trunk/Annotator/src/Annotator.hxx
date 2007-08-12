@@ -63,6 +63,7 @@ namespace CLAM_Annotator {
 	class FrameDivision;
 }
 class InstantViewPlugin;
+class SegmentationPane;
 
 class StatusBarDumper 
 {
@@ -114,12 +115,9 @@ public:
 public slots:
 	void currentSongChanged(QTreeWidgetItem*current, QTreeWidgetItem*previous);
 	void globalDescriptorsTableChanged(int row);
-	void segmentDescriptorsTableChanged(int row);
 	void frameDescriptorsChanged(unsigned, double);
-	void segmentationMarksChanged(unsigned, double);
-	void removeSegment(unsigned);
-	void insertSegment(unsigned);
 	void refreshSegmentation();
+	void updateSegmentation();
 
 	void fileOpen();
 	void fileOpenRecent();
@@ -132,7 +130,6 @@ public slots:
 	void computeSongDescriptors();
 
 	void refreshAudioData();
-	void changeCurrentSegment();
 	void changeFrameLevelDescriptor(int current);
 	void updateAuralizationOptions();
 	void linkCurrentSegmentToPlayback(bool enabled);
@@ -180,9 +177,6 @@ private:
 	void updateEnvelopesData();
 	void updateEnvelopeData(int bpfIndex, CLAM::TData * descriptors);
 
-	void adaptSegmentationsToCurrentSchema();
-	void updateSegmentations();
-
 	void auralizeMarks();
 	void setMenuAudioItemsEnabled(bool);
 
@@ -216,7 +210,6 @@ private:
 	CLAM_Annotator::DescriptorTableController * mSegmentDescriptors;
 
 	std::vector<CLAM::EquidistantPointsFunction> mEPFs; // Cached LLD's
-	CLAM::Segmentation * mSegmentation;
 
   	QTextBrowser* mProjectDocumentation;
 	CLAM::VM::BPFPlayer* mPlayer;
@@ -230,6 +223,7 @@ private:
 	std::vector<QAction *> mRecentFilesActions;
 	QAction * mRecentFilesMenuSeparator;
 	enum {MaxRecentFiles=4};
+	SegmentationPane * _segmentationPane;
 };
 
 #endif
