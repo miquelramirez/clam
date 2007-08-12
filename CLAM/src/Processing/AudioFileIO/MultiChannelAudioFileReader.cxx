@@ -35,13 +35,15 @@ namespace Hidden
 	
 	
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader()
-		: mNativeStream( NULL )
+		: mTimeOutput( "time position", this)
+		, mNativeStream( NULL )
 	{
 		Configure(MultiChannelAudioFileReaderConfig());
 	}
 
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader( const ProcessingConfig& cfg )
-		: mNativeStream( NULL )
+		: mTimeOutput( "time position", this)
+		, mNativeStream( NULL )
 	{
 		Configure( cfg );
 	}
@@ -127,7 +129,9 @@ namespace Hidden
 		
 		
 		mDeltaTime = TData(sizeTmp) / mAudioFile.GetHeader().GetSampleRate()*1000;
-		mCurrentBeginTime += mDeltaTime;	
+		mCurrentBeginTime += mDeltaTime;
+
+		mTimeOutput.SendControl( mCurrentBeginTime );
 		
 		return mNativeStream->WasSomethingRead();
 	}
@@ -198,6 +202,7 @@ namespace Hidden
 		mDeltaTime = TData(sizeTmp) / mAudioFile.GetHeader().GetSampleRate();
 		mCurrentBeginTime += mDeltaTime;
 			
+		mTimeOutput.SendControl( mCurrentBeginTime );
 		
 		for ( OutputVector::iterator i = mOutputs.begin();
 		      i!= mOutputs.end(); i++ )
