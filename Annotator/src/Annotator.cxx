@@ -84,6 +84,9 @@ using CLAM::VM::BPFPlot;
 using CLAM::TData;
 using CLAM::TIndex;
 
+#include <QtGui/QSplitter>
+#include "SegmentationPane.hxx"
+
 void Annotator::abortLoader()
 {
 	if (!mAudioLoaderThread) return;
@@ -172,8 +175,6 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mAudioRefreshTimer(new QTimer(this))
 	, mAudioLoaderThread(0)
 	, mGlobalDescriptors(0)
-	, mSegmentDescriptors(0)
-	, mSegmentation(0)
 	, mPlayer(0)
 	, mStatusBar(statusBar())
 {
@@ -185,7 +186,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 
 	setupUi(this);
 	mGlobalDescriptors = new CLAM_Annotator::DescriptorTableController(mDescriptorsTable, mProject);
-	mSegmentDescriptors = new CLAM_Annotator::DescriptorTableController(mSegmentDescriptorsTable, mProject);
+	_segmentationPane = new SegmentationPane(mVSplit, mProject);
 	mAbout = new QDialog(this);
 	Ui::About aboutUi;
 	aboutUi.setupUi(mAbout);
@@ -288,7 +289,6 @@ Annotator::~Annotator()
 {
 	saveSettings();
 	abortLoader();
-	if (mSegmentation) delete mSegmentation;
 	for (InstantViewPlugins::iterator it=mInstantViewPlugins.begin(); it!=mInstantViewPlugins.end(); it++)
 		delete *it;
 }
@@ -306,29 +306,16 @@ void Annotator::initInterface()
 	mBPFEditor->SetXRange(0.0,2.0);
 
 	mCurrentAudio.ResizeToDuration(2.0);
-	mSegmentEditor->SetData(mCurrentAudio);
+	_segmentationPane->setAudio(mCurrentAudio, false);
 
-#if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
 	mBPFEditor->setAutoFillBackground(true);
-	mSegmentEditor->setAutoFillBackground(true);
-#endif
 
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
 
 	mPlayer = new CLAM::VM::BPFPlayer(this);
 
-	resetTabOrder();
 	makeConnections();
-}
-
-void Annotator::resetTabOrder()
-{
-#ifndef QTPORT
-	setTabOrder(mBPFEditor,mSegmentEditor);
-	setTabOrder(mSegmentEditor,mSegmentationSelection);
-	setTabOrder(mSegmentationSelection,mSegmentDescriptorsTable);
-#endif//QTPORT
 }
 
 void Annotator::markProjectChanged(bool changed)
@@ -390,7 +377,7 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	mStatusBar << tr("Adapting Interface to Frame level descriptors...") << mStatusBar;
 	adaptEnvelopesToCurrentSchema();
 	mStatusBar << tr("Adapting Interface to Segmentations...") << mStatusBar;
-	adaptSegmentationsToCurrentSchema();
+	_segmentationPane->updateSchema();
 	mStatusBar << tr("Updating schema browser...") << mStatusBar;
 	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
 	mStatusBar << tr("Creating instant views...") << mStatusBar;
@@ -422,156 +409,14 @@ void Annotator::adaptInstantViewsToSchema()
 	}
 }
 
-void Annotator::segmentDescriptorsTableChanged(int row)
-{
-	markCurrentSongChanged(true);
-}
-
 void Annotator::globalDescriptorsTableChanged(int row)
 {
 	markCurrentSongChanged(true);
 }
 
-void Annotator::adaptSegmentationsToCurrentSchema()
-{
-	mSegmentationSelection->clear();
-	const std::list<std::string> & segmentationNames =
-		mProject.GetNamesByScopeAndType("Song", "Segmentation");
-	for (std::list<std::string>::const_iterator it =  segmentationNames.begin();
-			it != segmentationNames.end();
-			it++)
-	{
-		mStatusBar << tr("Adding segmentation: '%1'").arg(it->c_str()) << mStatusBar;
-		mSegmentationSelection->addItem(it->c_str());
-	}
-}
-
 void Annotator::refreshSegmentation()
 {
-	if (mSegmentationSelection->currentText()==QString::null) return; // No segmentation
-	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
-	CLAM_Annotator::SegmentationPolicy policy = 
-		mProject.GetAttributeScheme("Song",currentSegmentation).GetSegmentationPolicy();
-
-	CLAM::DataArray nullSegmentation; // A null segmentation to be passed when no data available
-	const CLAM::DataArray & descriptorsMarks = mpDescriptorPool?
-		mpDescriptorPool->GetReadPool<CLAM::DataArray>("Song",currentSegmentation)[0]
-		: nullSegmentation;
-	unsigned nMarks = descriptorsMarks.Size();
-	CLAM::Segmentation * theSegmentation=0;
-	CLAM::TData audioDuration = mCurrentAudio.GetSize() / mCurrentAudio.GetSampleRate();
-	switch (policy)
-	{
-		case CLAM_Annotator::SegmentationPolicy::eUnsized:
-		{
-			theSegmentation = 
-				new CLAM::UnsizedSegmentation(
-						audioDuration,
-						&descriptorsMarks[0],
-						&descriptorsMarks[0]+nMarks);
-		} break;
-		case CLAM_Annotator::SegmentationPolicy::eContinuous:
-		{
-			for (unsigned i=0; i<nMarks; i++)
-				std::cout << descriptorsMarks[i] << std::endl;
-			std::cout << audioDuration << std::endl;
-			theSegmentation = 
-				new CLAM::ContiguousSegmentation(
-						audioDuration,
-						&descriptorsMarks[0],
-						&descriptorsMarks[0]+nMarks);
-		} break;
-		case CLAM_Annotator::SegmentationPolicy::eOverlapping:
-			// Not yet implemented, using Discontinuous by now
-		case CLAM_Annotator::SegmentationPolicy::eDiscontinuous:
-		{
-			theSegmentation = 
-				new CLAM::DiscontinuousSegmentation(
-						audioDuration,
-						&descriptorsMarks[0],
-						&descriptorsMarks[0]+nMarks);
-		} break;
-	}
-	if (mSegmentation) delete mSegmentation;
-	mSegmentation = theSegmentation;
-	mSegmentation->xUnits("s");
-	mSegmentEditor->SetSegmentation(mSegmentation);
-	auralizeMarks();
-
-	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
-	mSegmentDescriptors->refreshSchema(childScope);
-}
-
-void Annotator::updateSegmentations()
-{
-	if (!mpDescriptorPool) return;
-	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
-	CLAM::DataArray & descriptorMarks = 
-		mpDescriptorPool->GetWritePool<CLAM::DataArray>("Song",currentSegmentation)[0];
-	CLAM_Annotator::SegmentationPolicy policy = 
-		mProject.GetAttributeScheme("Song",currentSegmentation).GetSegmentationPolicy();
-	const std::vector<double> & onsets = mSegmentation->onsets();
-	const std::vector<double> & offsets = mSegmentation->offsets();
-	unsigned nSegments = onsets.size();
-	switch (policy)
-	{
-		case CLAM_Annotator::SegmentationPolicy::eUnsized:
-		{
-			descriptorMarks.Resize(nSegments);
-			descriptorMarks.SetSize(nSegments);
-			for (unsigned i=0; i<nSegments; i++)
-				descriptorMarks[i] = onsets[i];
-		} break;
-		case CLAM_Annotator::SegmentationPolicy::eContinuous:
-		{
-			descriptorMarks.Resize(nSegments-1);
-			descriptorMarks.SetSize(nSegments-1);
-			for (unsigned i=1; i<nSegments; i++)
-				descriptorMarks[i] = onsets[i];
-		} break;
-		case CLAM_Annotator::SegmentationPolicy::eOverlapping:
-			// Not yet implemented, using Discontinuous by now
-		case CLAM_Annotator::SegmentationPolicy::eDiscontinuous:
-		{
-			descriptorMarks.Resize(nSegments*2);
-			descriptorMarks.SetSize(nSegments*2);
-			for (unsigned i=0; i<nSegments; i++)
-			{
-				descriptorMarks[i*2] = onsets[i];
-				descriptorMarks[i*2+1] = offsets[i];
-			}
-		} break;
-	}
-	markCurrentSongChanged(true);
-}
-
-void Annotator::removeSegment(unsigned index)
-{
-	mStatusBar << tr("Removing segment at ") << index << mStatusBar;
-	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
-	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
-	if (childScope!="")
-	{
-		CLAM_ASSERT(index<mpDescriptorPool->GetNumberOfContexts(childScope),
-				"Invalid segment to be removed");
-		mpDescriptorPool->Remove(childScope, index);
-	}
-	updateSegmentations();
-}
-
-void Annotator::insertSegment(unsigned index)
-{
-	mStatusBar << tr("Inserting segment at ") << index << mStatusBar;
-	std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
-	std::string childScope = mProject.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
-	if (childScope!="")
-	{
-		CLAM_ASSERT(index<=mpDescriptorPool->GetNumberOfContexts(childScope),
-				"Invalid position to insert a segment");
-		mpDescriptorPool->Insert(childScope, index);
-		mProject.InitInstance(childScope, index, *mpDescriptorPool);
-	}
-	updateSegmentations();
+	auralizeMarks(); // TODO: Not in the extracted version!!
 }
 
 void Annotator::adaptEnvelopesToCurrentSchema()
@@ -629,39 +474,21 @@ void Annotator::makeConnections()
 	connect(mFrameLevelAttributeList, SIGNAL(currentRowChanged(int)),
 			this, SLOT(changeFrameLevelDescriptor(int)));
 	// Changing the current segmentation descriptor
-	connect(mSegmentationSelection, SIGNAL(activated(const QString&)),
-			this, SLOT(refreshSegmentation()));
+	connect(_segmentationPane, SIGNAL(segmentationSelectionChanged()),
+			this, SLOT(refreshSegmentation()) );
+
 	// Apply global descriptors changes
 	connect(mGlobalDescriptors, SIGNAL(contentEdited(int) ),
 			this, SLOT(globalDescriptorsTableChanged(int) ) );
-	// Apply segment descriptors changes
-	connect(mSegmentDescriptors, SIGNAL(contentEdited(int) ),
-			this, SLOT(segmentDescriptorsTableChanged(int) ) );
 	// Apply frame descriptor changes
 	connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
 			this, SLOT(frameDescriptorsChanged(unsigned, double)));
+	// Apply segment descriptors changes
+	connect(_segmentationPane, SIGNAL(segmentationDataChanged()),
+			this, SLOT(updateSegmentation()) );
 
-	// Segment editing
-	connect(mSegmentEditor, SIGNAL(segmentOnsetChanged(unsigned,double)),
-			this, SLOT(segmentationMarksChanged(unsigned, double)));
-	connect(mSegmentEditor, SIGNAL(segmentOffsetChanged(unsigned,double)),
-			this, SLOT(segmentationMarksChanged(unsigned, double)));
-	connect(mSegmentEditor, SIGNAL(currentSegmentChanged()),
-			this, SLOT(changeCurrentSegment()));
-	connect(mSegmentEditor, SIGNAL(segmentDeleted(unsigned)),
-			this, SLOT(removeSegment(unsigned)));
-	connect(mSegmentEditor, SIGNAL(segmentInserted(unsigned)),
-			this, SLOT(insertSegment(unsigned)));
+	// TODO: Interplot viewport syncronization
 
-	// Interplot viewport syncronization
-	/*
-	   connect(mSegmentEditor, SIGNAL(xRulerRange(double,double)),
-	   mBPFEditor, SLOT(setHBounds(double,double)));
-	   connect( mBPFEditor, SIGNAL(selectedXPos(double)),
-	   mSegmentEditor, SLOT(setSelectedXPos(double)));
-	   connect(mSegmentEditor, SIGNAL(selectedXPos(double)),
-	   mBPFEditor, SLOT(selectPointFromXCoord(double)));
-	   */
 	// Playhead update
 	connect( mPlayer, SIGNAL(playingTime(double)),
 			this, SLOT(setCurrentPlayingTime(double)), Qt::DirectConnection);
@@ -669,8 +496,9 @@ void Annotator::makeConnections()
 			this, SLOT(setCurrentStopTime(double,bool)), Qt::DirectConnection);
 
 	// Current position update
-	connect(mSegmentEditor, SIGNAL(selectedRegion(double,double)),
-			this, SLOT(setCurrentTime(double,double)));
+	// TODO: This is pending
+//	connect(mSegmentEditor, SIGNAL(selectedRegion(double,double)),
+//			this, SLOT(setCurrentTime(double,double)));
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
 			this, SLOT(setCurrentTime(double,double)));
 
@@ -681,12 +509,12 @@ void Annotator::makeConnections()
 	// Making the splitters look like a table
 	connect(mFrameEditorSplit, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
-	connect(mSegmentEditorSplit, SIGNAL(splitterMoved(int,int)),
+	connect(_segmentationPane, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
 }
 void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 {
-	mSegmentEditor->updateLocator(timeMilliseconds);
+	_segmentationPane->updateLocator(timeMilliseconds);
 	mBPFEditor->updateLocator(timeMilliseconds);
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
@@ -696,7 +524,7 @@ void Annotator::setCurrentStopTime(double timeMilliseconds, bool paused)
 {
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
-	mSegmentEditor->updateLocator(timeMilliseconds, paused);
+	_segmentationPane->updateLocator(timeMilliseconds, paused);
 	mBPFEditor->updateLocator(timeMilliseconds, paused);
 }
 
@@ -708,7 +536,7 @@ void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMilisecond
 	mPlayer->timeBounds(timeMilliseconds,endTimeMiliseconds);
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
-	mSegmentEditor->updateLocator(timeMilliseconds, true);
+	_segmentationPane->updateLocator(timeMilliseconds, true);
 	mBPFEditor->updateLocator(timeMilliseconds, true);
 	updating=false;
 }
@@ -767,24 +595,16 @@ void Annotator::loadProject(const std::string & projectName)
 
 void Annotator::syncronizeSplits()
 {
-	if (sender()==mSegmentEditorSplit)
-		mFrameEditorSplit->setSizes(mSegmentEditorSplit->sizes());
-	if (sender()==mFrameEditorSplit)
-		mSegmentEditorSplit->setSizes(mFrameEditorSplit->sizes());
+	QSplitter * movedSplitter = dynamic_cast<QSplitter*>(sender());
+	if (!movedSplitter) return;
+	QList<int> sizes = movedSplitter->sizes();
+	mFrameEditorSplit->setSizes(sizes);
+	_segmentationPane->setSizes(sizes);
 }
 
 void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 {
-	mSegmentEditor->setCurrentSegmentFollowsPlay(enabled);
-}
-
-
-void Annotator::changeCurrentSegment()
-{
-	mStatusBar << "Segment changed to " << mSegmentation->current() << mStatusBar;
-	// TODO: Some widgets may have half edited information. Need update.
-	// TODO: Some times is not worth to update the information (deleted segment)
-	mSegmentDescriptors->refreshData(mSegmentation->current(),mpDescriptorPool);
+	_segmentationPane->setCurrentSegmentFollowsPlay(enabled);
 }
 
 void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
@@ -802,10 +622,10 @@ void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
 	updateEnvelopesData();
 }
 
-void Annotator::segmentationMarksChanged(unsigned, double)
+void Annotator::updateSegmentation()
 {
-	updateSegmentations();
-	if(mPlayer->IsPlaying() && false)
+	markCurrentSongChanged(true);
+	if(mPlayer->IsPlaying())
 		mMustUpdateMarkedAudio = true;
 	else
 		auralizeMarks();
@@ -825,15 +645,9 @@ void Annotator::updateSongListWidget()
 	std::vector< CLAM_Annotator::Song> songs = mProject.GetSongs();
 	for ( std::vector<CLAM_Annotator::Song>::const_iterator it = songs.begin() ; it != songs.end() ; it++)
 	{
-#if QT_VERSION >= 0x040100 // QTPORT TODO: 4.0 backport
-		QTreeWidgetItem * item = new QTreeWidgetItem(
-			mSongListView,
-			QStringList()
-				<< it->GetSoundFile().c_str());
-#else
-		QTreeWidgetItem * item = new QTreeWidgetItem(mSongListView);
+		QTreeWidgetItem * item = new QTreeWidgetItem;
 		item->setText(0, it->GetSoundFile().c_str());
-#endif
+		mSongListView->addTopLevelItem(item);
 	}
 	mSongListView->show();
 	mSongListView->resizeColumnToContents(0);
@@ -975,7 +789,6 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	mStatusBar << tr("Drawing audio...") << mStatusBar;
 	mAudioRefreshTimer->stop();
 	
-	mSegmentEditor->hide();
 	mBPFEditor->hide();
 	setMenuAudioItemsEnabled(false);
 	const std::string absolutePath = mProject.RelativeToAbsolute(songFilename);
@@ -987,9 +800,10 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	}
 	setMenuAudioItemsEnabled(true);
 
-	mSegmentEditor->SetData(mCurrentAudio);
+	_segmentationPane->setAudio(mCurrentAudio,false);
+	_segmentationPane->setData(mpDescriptorPool);
+	_segmentationPane->refreshSegmentation();
 	refreshSegmentation();
-	mSegmentEditor->show();
 	mBPFEditor->show();
 	refreshEnvelopes();
 	refreshInstantViews();
@@ -1052,7 +866,7 @@ void Annotator::refreshAudioData()
 		mAudioRefreshTimer->stop();
 		auralizeMarks();
 	}
-	mSegmentEditor->SetData(mCurrentAudio,true);
+	_segmentationPane->setAudio(mCurrentAudio, true);
 
 	if (!finished)
 		mAudioRefreshTimer->start(2000);
@@ -1141,8 +955,9 @@ void Annotator::refreshGlobalDescriptorsTable()
 
 void Annotator::auralizeMarks()
 {
-	if (!mSegmentation) return;
-	const std::vector<double> & marks = mSegmentation->onsets();
+	const CLAM::Segmentation * segmentation = _segmentationPane->getSegmentation();
+	if (!segmentation) return;
+	const std::vector<double> & marks = segmentation->onsets();
 	int nMarks = marks.size();
 	mOnsetAuralizationAudio.SetSize(0);
 	mOnsetAuralizationAudio.SetSize(mCurrentAudio.GetSize());
@@ -1161,7 +976,7 @@ void Annotator::updateAuralizationOptions()
 	bool playOnsets = mAuralizeSegmentOnsetsAction->isChecked();
 	bool playLLDs = mAuralizeFrameLevelDescriptorsAction->isChecked();
 
-	unsigned int LEFT_CHANNEL = 1;
+//	unsigned int LEFT_CHANNEL = 1;
 	unsigned int RIGHT_CHANNEL = 2;
 	mPlayer->SetAudioPtr(&mCurrentAudio);
 	if (playOnsets)

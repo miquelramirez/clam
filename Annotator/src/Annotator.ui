@@ -10,9 +10,7 @@
    </rect>
   </property>
   <property name="sizePolicy" >
-   <sizepolicy>
-    <hsizetype>3</hsizetype>
-    <vsizetype>3</vsizetype>
+   <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -31,24 +29,45 @@
   </property>
   <widget class="QWidget" name="widget" >
    <layout class="QVBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
     <property name="spacing" >
      <number>6</number>
     </property>
+    <property name="leftMargin" >
+     <number>9</number>
+    </property>
+    <property name="topMargin" >
+     <number>9</number>
+    </property>
+    <property name="rightMargin" >
+     <number>9</number>
+    </property>
+    <property name="bottomMargin" >
+     <number>9</number>
+    </property>
     <item>
      <widget class="QTabWidget" name="mMainTabWidget" >
+      <property name="currentIndex" >
+       <number>1</number>
+      </property>
       <widget class="QWidget" name="mSongLevelTab" >
        <attribute name="title" >
         <string>Song Descriptors</string>
        </attribute>
        <layout class="QVBoxLayout" >
-        <property name="margin" >
-         <number>9</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>9</number>
+        </property>
+        <property name="topMargin" >
+         <number>9</number>
+        </property>
+        <property name="rightMargin" >
+         <number>9</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>9</number>
         </property>
         <item>
          <widget class="QSplitter" name="mSongLevelSplit" >
@@ -57,9 +76,7 @@
           </property>
           <widget class="QTreeWidget" name="mSongListView" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>3</hsizetype>
-             <vsizetype>1</vsizetype>
+            <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
              <horstretch>5</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -89,9 +106,7 @@ the &lt;tt>Reload Descriptors&lt;/tt> one.&lt;/p></string>
           </widget>
           <widget class="QTableWidget" name="mDescriptorsTable" >
            <property name="sizePolicy" >
-            <sizepolicy>
-             <hsizetype>4</hsizetype>
-             <vsizetype>1</vsizetype>
+            <sizepolicy vsizetype="Minimum" hsizetype="Maximum" >
              <horstretch>1</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -131,11 +146,20 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
         <string>Intrasong Descriptors</string>
        </attribute>
        <layout class="QVBoxLayout" >
-        <property name="margin" >
-         <number>9</number>
-        </property>
         <property name="spacing" >
          <number>6</number>
+        </property>
+        <property name="leftMargin" >
+         <number>9</number>
+        </property>
+        <property name="topMargin" >
+         <number>9</number>
+        </property>
+        <property name="rightMargin" >
+         <number>9</number>
+        </property>
+        <property name="bottomMargin" >
+         <number>9</number>
         </property>
         <item>
          <widget class="QSplitter" name="mVSplit" >
@@ -148,9 +172,7 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
            </property>
            <widget class="CLAM::VM::BPFPlot" name="mBPFEditor" >
             <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>3</hsizetype>
-              <vsizetype>3</vsizetype>
+             <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
               <horstretch>2</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -186,7 +208,7 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
            <widget class="QListWidget" name="mFrameLevelAttributeList" >
             <property name="minimumSize" >
              <size>
-              <width>200</width>
+              <width>150</width>
               <height>0</height>
              </size>
             </property>
@@ -196,98 +218,6 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
             <property name="resizeMode" >
              <enum>QListView::Adjust</enum>
             </property>
-           </widget>
-          </widget>
-          <widget class="QSplitter" name="mSegmentEditorSplit" >
-           <property name="midLineWidth" >
-            <number>4</number>
-           </property>
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <widget class="CLAM::VM::AudioPlot" name="mSegmentEditor" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>3</hsizetype>
-              <vsizetype>3</vsizetype>
-              <horstretch>2</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize" >
-             <size>
-              <width>700</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="focusPolicy" >
-             <enum>Qt::WheelFocus</enum>
-            </property>
-            <property name="whatsThis" >
-             <string>&lt;p>The &lt;b>segmentation editor&lt;/b> allows you to change song level segmentations.&lt;/p>
-			 &lt;ul>
-			 &lt;li>Click Body: Set as current segment&lt;/li>
-			 &lt;li>Dragging segment limit: Moves it&lt;/li>
-			 &lt;li>Insert + Click: Inserts a segment&lt;/li>
-			 &lt;li>Delete: Deletes the current segment&lt;/li>
-			 &lt;li>Dragging play positon: Moves it.&lt;/li>
-			 &lt;li>'r'+Click: Set the current play position.&lt;/li>
-			 &lt;/ul></string>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Raised</enum>
-            </property>
-           </widget>
-           <widget class="QWidget" name="widget" >
-            <layout class="QVBoxLayout" >
-             <property name="margin" >
-              <number>0</number>
-             </property>
-             <property name="spacing" >
-              <number>6</number>
-             </property>
-             <item>
-              <widget class="QTableWidget" name="mSegmentDescriptorsTable" >
-               <property name="minimumSize" >
-                <size>
-                 <width>200</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="focusPolicy" >
-                <enum>Qt::WheelFocus</enum>
-               </property>
-               <property name="whatsThis" >
-                <string>&lt;p>The &lt;b>segmentation level descriptors table&lt;/b>
-allows you to edit values for descriptors 
-that are attached to child scope of the 
-currently selected segmentation.
-&lt;/p>
-&lt;p>You can edit the values by clicking 
-to the proper cell.&lt;/p></string>
-               </property>
-               <property name="selectionMode" >
-                <enum>QAbstractItemView::NoSelection</enum>
-               </property>
-               <property name="rowCount" >
-                <number>0</number>
-               </property>
-               <property name="columnCount" >
-                <number>0</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="mSegmentationSelection" >
-               <property name="whatsThis" >
-                <string>This combo box allows you to change the segmentation that is currently displayed on the segmentation view.</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
            </widget>
           </widget>
          </widget>
@@ -303,7 +233,10 @@ to the proper cell.&lt;/p></string>
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="newProjectAction" />
    <addaction name="fileOpen_projectAction" />
@@ -325,7 +258,10 @@ to the proper cell.&lt;/p></string>
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="playAction" />
    <addaction name="pauseAction" />
@@ -340,7 +276,7 @@ to the proper cell.&lt;/p></string>
      <x>0</x>
      <y>0</y>
      <width>983</width>
-     <height>29</height>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="mSongMenu" >
@@ -691,9 +627,6 @@ to the proper cell.&lt;/p></string>
    </property>
   </action>
   <action name="actionAddSegmentationView" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="text" >
     <string>Add &amp;segmentation view</string>
    </property>
@@ -729,14 +662,10 @@ to the proper cell.&lt;/p></string>
  <layoutdefault spacing="6" margin="11" />
  <customwidgets>
   <customwidget>
-   <class>CLAM::VM::AudioPlot</class>
-   <extends>QFrame</extends>
-   <header>vmAudioPlot.hxx</header>
-  </customwidget>
-  <customwidget>
    <class>CLAM::VM::BPFPlot</class>
    <extends>QFrame</extends>
    <header>vmBPFPlot.hxx</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -745,9 +674,6 @@ to the proper cell.&lt;/p></string>
   <tabstop>mDescriptorsTable</tabstop>
   <tabstop>mBPFEditor</tabstop>
   <tabstop>mFrameLevelAttributeList</tabstop>
-  <tabstop>mSegmentEditor</tabstop>
-  <tabstop>mSegmentDescriptorsTable</tabstop>
-  <tabstop>mSegmentationSelection</tabstop>
  </tabstops>
  <resources>
   <include location="images.qrc" />
