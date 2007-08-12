@@ -20,7 +20,8 @@
  */
 
 #include "KeySpace.hxx"
-
+#include <cmath>
+#include <iostream>
 
 /// Returns dummy data source for unbinded widget
 static CLAM::VM::FloatArrayDataSource & getDummySource()
@@ -78,11 +79,16 @@ unsigned nKeyNodes=24;
 // The number of 'pixels'
 
 CLAM::VM::KeySpace::KeySpace(QWidget * parent) 
-	: Tonnetz(parent)
+	: QGLWidget(parent)
 	, _smooth(true)
 	, _nX(128)
 	, _nY(64)
 {
+	_data = 0;
+	_dataSource = 0;
+	_updatePending=0;
+	_nBins=0;
+	_maxValue=1;
 	static const struct GradientPoint 
 	{
 		unsigned index;
@@ -128,6 +134,7 @@ CLAM::VM::KeySpace::KeySpace(QWidget * parent)
 				"with the most probable chord as a central color spot.</p>\n"
 				));
 	setDataSource(getDummySource());
+	startTimer(50);
 }
 
 void CLAM::VM::KeySpace::initializeGL()
@@ -149,6 +156,14 @@ void CLAM::VM::KeySpace::resizeGL(int width, int height)
 	glOrtho(0,1,1,0,-2,2);
 	glMatrixMode(GL_MODELVIEW);
 }
+
+void CLAM::VM::KeySpace::timerEvent(QTimerEvent *event)
+{
+	if ( !_dataSource) return;
+	if ( !_dataSource->isEnabled()) return;
+	if ( !_updatePending++) update();
+}
+
 void CLAM::VM::KeySpace::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
