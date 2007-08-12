@@ -15,7 +15,12 @@
 
   <processing id="PolarChromaPeaks_0" type="PolarChromaPeaks"/>
 
-  <processing id="TonalAnalysis_0" type="TonalAnalysis"/>
+  <processing id="TonalAnalysis_0" type="TonalAnalysis">
+    <FilterInertia>0.7</FilterInertia>
+    <TunningEnabled>1</TunningEnabled>
+    <PeakWindowingEnabled>1</PeakWindowingEnabled>
+    <HopRatio>8</HopRatio>
+  </processing>
 
   <processing id="Tonnetz_0" type="Tonnetz"/>
 
