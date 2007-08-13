@@ -187,7 +187,7 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	setRootIsDecorated( true );
 	header()->hide();
 
-	for (unsigned i=0; processingClasses[i]; i++)
+/*	for (unsigned i=0; processingClasses[i]; i++)
 	{
 		QTreeWidgetItem * group = new QTreeWidgetItem( this, QStringList() << processingClasses[i] );
 		i++;
@@ -197,7 +197,7 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			item->setText(1, processingClasses[i]); // processing factory key
 			item->setIcon(0, QIcon(":/icons/images/processing.png"));
 		}
-	}
+	}*/
 // TODO: Ladspa is still work in progress 
 	CLAM::ProcessingFactory::Values categories = CLAM::ProcessingFactory::GetInstance().GetSetOfValues("category");
 	CLAM::ProcessingFactory::Values::const_iterator itCategory;
