@@ -149,6 +149,7 @@ const static char * processingClasses[] = {
 	"PeakView",
 	"Tonnetz",
 	"KeySpace",
+	"Spectrogram",
 	"PolarChromaPeaks",
 	"ChordRanking",
 	"LPModelView",
