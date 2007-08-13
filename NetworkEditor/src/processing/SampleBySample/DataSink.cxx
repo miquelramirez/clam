@@ -6,7 +6,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, DataSink> regDataSink("DataSink");
+	static const char * metadata[] = {
+		"key", "DataSink",
+		"category", "Sample by Sample (experimental)",
+		"description", "DataSink",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, DataSink> regDataSink("DataSink");
+	static FactoryRegistrator<ProcessingFactory, DataSink> reg = metadata;
 }
 
 DataSink::DataSink():

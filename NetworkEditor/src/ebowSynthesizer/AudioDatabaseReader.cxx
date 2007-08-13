@@ -28,15 +28,16 @@ typedef CLAM::Factory<CLAM::Processing> ProcessingFactory;
 
 namespace CLAM
 {
-/*
 	namespace detail
 	{
-		static ProcessingFactory::Registrator<AudioDatabaseReader> regtAudioDatabaseReader( "AudioDatabaseReader" );
-	}
-*/
-	namespace detail
-	{
-		static FactoryRegistrator<ProcessingFactory, AudioDatabaseReader> regAudioDatabaseReader("AudioDatabaseReader");
+		const char * metadata[] = {
+			"key", "AudioDatabaseReader",
+			"category", "Ebow Synthesizer (Experimental - GSoC)",
+			"description", "AudioDatabaseReader",
+			0
+		};
+		//static FactoryRegistrator<ProcessingFactory, AudioDatabaseReader> regAudioDatabaseReader("AudioDatabaseReader");
+		static FactoryRegistrator<ProcessingFactory, AudioDatabaseReader> reg = metadata;
 	}
 
 AudioDatabaseReader::AudioDatabaseReader()

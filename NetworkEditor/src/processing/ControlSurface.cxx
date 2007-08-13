@@ -7,7 +7,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, ControlSurface> regControlSurface("ControlSurface");
+	static const char * metadata[] = {
+		"key", "ControlSurface",
+		"category", "Controls",
+		"description", "ControlSurface",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, ControlSurface> regControlSurface("ControlSurface");
+	static FactoryRegistrator<ProcessingFactory, ControlSurface> reg = metadata;
 }
 	
 void ControlSurfaceConfig::DefaultInit(void)

@@ -24,8 +24,16 @@
 
 namespace Hidden
 {
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, SpectrogramMonitor> regSpectrogramMonitor("Spectrogram");
-	static class SpectrogramMetadata
+	static const char * metadata[] = {
+		"key", "SpectrogramMonitor",
+		"category", "Monitors",
+		"description", "SpectrogramMonitor",
+		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
+		0
+	};
+	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, SpectrogramMonitor> regSpectrogramMonitor("Spectrogram");
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, SpectrogramMonitor> reg = metadata;
+	/*static class SpectrogramMetadata
 	{
 	public:
 		SpectrogramMetadata()
@@ -34,6 +42,6 @@ namespace Hidden
 			factory.AddAttribute("Spectrogram", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
 			//factory.AddAttribute("Spectrogram", "icon", "keyspace.svg");
 		}
-	} dummy;
+	} dummy;*/
 }
 

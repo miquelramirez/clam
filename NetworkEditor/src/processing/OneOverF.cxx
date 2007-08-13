@@ -34,7 +34,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, OneOverF> regOneOverF("OneOverF");
+	static const char * metadata[] = {
+		"key", "OneOverF",
+		"category", "Controls",
+		"description", "OneOverF",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, OneOverF> regOneOverF("OneOverF");
+	static FactoryRegistrator<ProcessingFactory, OneOverF> reg = metadata;
 }
 	
 

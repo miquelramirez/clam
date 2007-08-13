@@ -6,7 +6,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, AudioStreamer> regAudioStreamer("AudioStreamer");
+	static const char * metadata[] = {
+		"key", "AudioStreamer",
+		"category", "Sample by Sample (experimental)",
+		"description", "AudioStreamer",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, AudioStreamer> regAudioStreamer("AudioStreamer");
+	static FactoryRegistrator<ProcessingFactory, AudioStreamer> reg = metadata;
 }
 
 AudioStreamer::AudioStreamer():

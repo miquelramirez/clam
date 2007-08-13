@@ -6,7 +6,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SDIFDatabaseProcessing> regSDIFDatabaseProcessing("SDIFDatabaseProcessing");
+	static const char * metadata[] = {
+		"key", "SDIFDatabaseProcessing",
+		"category", "Ebow Synthesizer (Experimental - GSoC)",
+		"description", "SDIFDatabaseProcessing",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SDIFDatabaseProcessing> regSDIFDatabaseProcessing("SDIFDatabaseProcessing");
+	static FactoryRegistrator<ProcessingFactory, SDIFDatabaseProcessing> reg = metadata;
 }
 
 SDIFDatabaseProcessing::SDIFDatabaseProcessing()

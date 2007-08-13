@@ -28,7 +28,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, VowelResonator> regVowelResonator("VowelResonator");
+	static const char * metadata[] = {
+		"key", "VowelResonator",
+		"category", "SMS Transformations",
+		"description", "VowelResonator",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, VowelResonator> regVowelResonator("VowelResonator");
+	static FactoryRegistrator<ProcessingFactory, VowelResonator> reg = metadata;
 }
 
 
