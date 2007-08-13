@@ -207,7 +207,6 @@ private:
 	SchemaBrowser * mSchemaBrowser;
 	AudioLoadThread * mAudioLoaderThread;
 	CLAM_Annotator::DescriptorTableController * mGlobalDescriptors;
-	CLAM_Annotator::DescriptorTableController * mSegmentDescriptors;
 
 	std::vector<CLAM::EquidistantPointsFunction> mEPFs; // Cached LLD's
 

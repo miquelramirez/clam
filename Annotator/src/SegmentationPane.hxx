@@ -22,80 +22,102 @@ public:
 		, _segmentation(0)
 		, _audio(0)
 		, _pool(0)
-		, mSegmentDescriptors(0)
+		, _tableControler(0)
 	{
 		setOrientation(Qt::Horizontal);
 		setMidLineWidth(4);
-		mSegmentEditor = new CLAM::VM::AudioPlot(this);
-		mSegmentEditor->setFrameShape(QFrame::StyledPanel);
-		mSegmentEditor->setFrameShadow(QFrame::Raised);
-		mSegmentEditor->setFocusPolicy(Qt::WheelFocus);
+		_segmentEditor = new CLAM::VM::AudioPlot(this);
+		_segmentEditor->setFrameShape(QFrame::StyledPanel);
+		_segmentEditor->setFrameShadow(QFrame::Raised);
+		_segmentEditor->setFocusPolicy(Qt::WheelFocus);
 		QSizePolicy segmentEditorSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 		segmentEditorSizePolicy.setHorizontalStretch(2);
 		segmentEditorSizePolicy.setVerticalStretch(0);
-		mSegmentEditor->setSizePolicy(segmentEditorSizePolicy);
-		mSegmentEditor->setMinimumSize(700,150);
-		mSegmentEditor->setAutoFillBackground(true);
+		_segmentEditor->setSizePolicy(segmentEditorSizePolicy);
+		_segmentEditor->setMinimumSize(700,150);
+		_segmentEditor->setAutoFillBackground(true);
+		_segmentEditor->setWhatsThis(
+			tr("<p>The <b>segmentation editor</b> allows you to change song level segmentations.</p>\n"
+"                        <ul>\n"
+"                        <li>Click Body: Set as current segment</li>\n"
+"                        <li>Dragging segment limit: Moves it</li>\n"
+"                        <li>Insert + Click: Inserts a segment</li>\n"
+"                        <li>Delete: Deletes the current segment</li>\n"
+"                        <li>Dragging play positon: Moves it.</li>\n"
+"                        <li>'r'+Click: Set the current play position.</li>\n"
+"                        </ul>\n"));
 
-		_propertiesPane = new QWidget(this);
-		_propertiesPaneLayout = new QVBoxLayout(_propertiesPane);
-		_propertiesPaneLayout->setSpacing(6);
-		_propertiesPaneLayout->setMargin(0);
-		mSegmentDescriptorsTable = new QTableWidget(_propertiesPane);
-		mSegmentDescriptorsTable->setMinimumSize(QSize(200, 0));
-		mSegmentDescriptorsTable->setFocusPolicy(Qt::WheelFocus);
-		mSegmentDescriptorsTable->setSelectionMode(QAbstractItemView::NoSelection);
-		mSegmentDescriptorsTable->setRowCount(0);
-		mSegmentDescriptorsTable->setColumnCount(0);
+		QWidget * propertiesPane = new QWidget(this);
+		QVBoxLayout * propertiesPaneLayout = new QVBoxLayout(propertiesPane);
+		propertiesPaneLayout->setSpacing(6);
+		propertiesPaneLayout->setMargin(0);
+		_segmentDescriptorsTable = new QTableWidget(propertiesPane);
+		_segmentDescriptorsTable->setMinimumSize(QSize(200, 0));
+		_segmentDescriptorsTable->setFocusPolicy(Qt::WheelFocus);
+		_segmentDescriptorsTable->setSelectionMode(QAbstractItemView::NoSelection);
+		_segmentDescriptorsTable->setRowCount(0);
+		_segmentDescriptorsTable->setColumnCount(0);
+		_segmentDescriptorsTable->setWhatsThis(
+			tr("<p>The <b>segmentation level descriptors table</b>\n"
+			"allows you to edit values for descriptors\n"
+			"that are attached to child scope of the\n"
+			"currently selected segmentation.\n"
+			"</p>\n"
+			"<p>You can edit the values by clicking\n"
+			"to the proper cell.</p>\n"));
+		propertiesPaneLayout->addWidget(_segmentDescriptorsTable);
 
-		_propertiesPaneLayout->addWidget(mSegmentDescriptorsTable);
+		_segmentationSelection = new QComboBox(propertiesPane);
+		_segmentationSelection->setWhatsThis(
+			tr("This combo box allows you to change the segmentation"
+			" that is currently displayed on the segmentation view."));
+		propertiesPaneLayout->addWidget(_segmentationSelection);
 
-		mSegmentationSelection = new QComboBox(_propertiesPane);
+		addWidget(propertiesPane);
 
-		_propertiesPaneLayout->addWidget(mSegmentationSelection);
-
-		addWidget(_propertiesPane);
-
-		mSegmentDescriptors = new CLAM_Annotator::DescriptorTableController(mSegmentDescriptorsTable, _project);
+		_tableControler = new CLAM_Annotator::DescriptorTableController(_segmentDescriptorsTable, _project);
 
 		// Changing the current segmentation descriptor
-		connect(mSegmentationSelection, SIGNAL(activated(const QString&)),
+		connect(_segmentationSelection, SIGNAL(activated(const QString&)),
 				this, SLOT(refreshSegmentation()));
 		// Apply segment descriptors changes
-		connect(mSegmentDescriptors, SIGNAL(contentEdited(int) ),
-				this, SLOT(notifyChanges() ) );
+		connect(_tableControler, SIGNAL(contentEdited(int) ),
+				this, SIGNAL(segmentationDataChanged() ) );
 		// Segment editing
-		connect(mSegmentEditor, SIGNAL(segmentOnsetChanged(unsigned,double)),
-				this, SLOT(notifyChanges()));
-		connect(mSegmentEditor, SIGNAL(segmentOffsetChanged(unsigned,double)),
-				this, SLOT(notifyChanges()));
-		connect(mSegmentEditor, SIGNAL(currentSegmentChanged()),
+		connect(_segmentEditor, SIGNAL(segmentOnsetChanged(unsigned,double)),
+				this, SIGNAL(segmentationDataChanged()));
+		connect(_segmentEditor, SIGNAL(segmentOffsetChanged(unsigned,double)),
+				this, SIGNAL(segmentationDataChanged()));
+		connect(_segmentEditor, SIGNAL(currentSegmentChanged()),
 				this, SLOT(changeCurrentSegment()));
-		connect(mSegmentEditor, SIGNAL(segmentDeleted(unsigned)),
+		connect(_segmentEditor, SIGNAL(segmentDeleted(unsigned)),
 				this, SLOT(removeSegment(unsigned)));
-		connect(mSegmentEditor, SIGNAL(segmentInserted(unsigned)),
+		connect(_segmentEditor, SIGNAL(segmentInserted(unsigned)),
 				this, SLOT(insertSegment(unsigned)));
+		connect(_segmentEditor, SIGNAL(selectedRegion(double,double)),
+			this, SIGNAL(segmentEditorRegionChanged(double,double)));
+
 	}
 	~SegmentationPane()
 	{
 		if (_segmentation) delete _segmentation;
-		if (mSegmentDescriptors) delete mSegmentDescriptors;
+		if (_tableControler) delete _tableControler;
 	}
 	void setCurrentSegmentFollowsPlay(bool enabled)
 	{
-		mSegmentEditor->setCurrentSegmentFollowsPlay(enabled);
+		_segmentEditor->setCurrentSegmentFollowsPlay(enabled);
 	}
 	void updateLocator(double timeMilliseconds, bool loque)
 	{
-		mSegmentEditor->updateLocator(timeMilliseconds, loque);
+		_segmentEditor->updateLocator(timeMilliseconds, loque);
 	}
 	void updateLocator(double timeMilliseconds)
 	{
-		mSegmentEditor->updateLocator(timeMilliseconds);
+		_segmentEditor->updateLocator(timeMilliseconds);
 	}
 	void setAudio(const CLAM::Audio & audio, bool updating)
 	{
-		mSegmentEditor->SetData(audio, updating);
+		_segmentEditor->SetData(audio, updating);
 		_audio = & audio;
 	}
 	void setData(CLAM::DescriptionDataPool * pool)
@@ -110,24 +132,21 @@ public:
 signals:
 	void segmentationSelectionChanged();
 	void segmentationDataChanged();
+	void segmentEditorRegionChanged(double startMiliseconds, double endMiliseconds);
 public slots:
-	void notifyChanges()
-	{
-		emit segmentationDataChanged();
-	}
 	void changeCurrentSegment()
 	{
 		std::cout << "Segment changed to " << _segmentation->current() << std::endl;
 		// TODO: Some widgets may have half edited information. Need update.
 		// TODO: Some times is not worth to update the information (deleted segment)
-		mSegmentDescriptors->refreshData(_segmentation->current(),_pool);
+		_tableControler->refreshData(_segmentation->current(),_pool);
 	}
 	void refreshSegmentation()
 	{
-		if (mSegmentationSelection->currentText()==QString::null) return; // No segmentation
+		if (_segmentationSelection->currentText()==QString::null) return; // No segmentation
 		if (!_audio) return;
 		CLAM::TData audioDuration = _audio->GetSize() / _audio->GetSampleRate();
-		std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
+		std::string currentSegmentation = _segmentationSelection->currentText().toStdString();
 		CLAM_Annotator::SegmentationPolicy policy = 
 			_project.GetAttributeScheme("Song",currentSegmentation).GetSegmentationPolicy();
 
@@ -172,17 +191,17 @@ public slots:
 		if (_segmentation) delete _segmentation;
 		_segmentation = theSegmentation;
 		_segmentation->xUnits("s");
-		mSegmentEditor->SetSegmentation(_segmentation);
+		_segmentEditor->SetSegmentation(_segmentation);
 
 		std::string childScope = _project.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
-		mSegmentDescriptors->refreshSchema(childScope);
+		_tableControler->refreshSchema(childScope);
 		emit segmentationSelectionChanged();
 	}
 
 	void updateSegmentations()
 	{
 		if (!_pool) return;
-		std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
+		std::string currentSegmentation = _segmentationSelection->currentText().toStdString();
 		CLAM::DataArray & descriptorMarks = 
 			_pool->GetWritePool<CLAM::DataArray>("Song",currentSegmentation)[0];
 		CLAM_Annotator::SegmentationPolicy policy = 
@@ -227,18 +246,18 @@ public slots:
 	}
 	void updateSchema()
 	{
-		mSegmentationSelection->clear();
+		_segmentationSelection->clear();
 		typedef std::list<std::string> Names;
 		const Names & segmentationNames =
 			_project.GetNamesByScopeAndType("Song", "Segmentation");
 		QStringList segmentations;
 		for (Names::const_iterator it=segmentationNames.begin(); it!=segmentationNames.end(); it++)
-			mSegmentationSelection->addItem(it->c_str());
+			_segmentationSelection->addItem(it->c_str());
 	}
 	void insertSegment(unsigned index)
 	{
 		std::cout << tr("Inserting segment at ").toStdString() << index << std::endl;
-		std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
+		std::string currentSegmentation = _segmentationSelection->currentText().toStdString();
 		std::string childScope = _project.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
 		if (childScope!="")
 		{
@@ -252,7 +271,7 @@ public slots:
 	void removeSegment(unsigned index)
 	{
 		std::cout << tr("Removing segment at ").toStdString() << index << std::endl;
-		std::string currentSegmentation = mSegmentationSelection->currentText().toStdString();
+		std::string currentSegmentation = _segmentationSelection->currentText().toStdString();
 		std::string childScope = _project.GetAttributeScheme("Song",currentSegmentation).GetChildScope();
 		if (childScope!="")
 		{
@@ -262,18 +281,15 @@ public slots:
 		}
 		updateSegmentations();
 	}
-
 private:
-	CLAM::VM::AudioPlot * mSegmentEditor;
-	QTableWidget *mSegmentDescriptorsTable;
-	QComboBox *mSegmentationSelection;
-	QVBoxLayout *_propertiesPaneLayout;
-	QWidget *_propertiesPane;
+	CLAM::VM::AudioPlot * _segmentEditor;
+	QTableWidget *_segmentDescriptorsTable;
+	QComboBox *_segmentationSelection;
 	CLAM_Annotator::Project & _project;
 	CLAM::Segmentation * _segmentation;
 	const CLAM::Audio * _audio;
 	CLAM::DescriptionDataPool * _pool;
-	CLAM_Annotator::DescriptorTableController * mSegmentDescriptors;
+	CLAM_Annotator::DescriptorTableController * _tableControler;
 };
 
 
