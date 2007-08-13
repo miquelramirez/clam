@@ -141,6 +141,7 @@ private slots:
 	void setCurrentStopTime(double timeMilliseconds, bool paused);
 	void updatePendingAuralizationsChanges();
 	void saveProject();
+	void syncronizeSplits();
 
 	void on_helpWhatsThisAction_triggered();
 	void on_reloadDescriptorsAction_triggered();
@@ -151,7 +152,7 @@ private slots:
 	void on_editProjectPropertiesAction_triggered();
 	void on_browseSchemaAction_triggered();
 	void on_actionOnline_Tutorial_triggered();
-	void syncronizeSplits();
+	void on_actionAddSegmentationView_triggered();
 
 private:
 	void loadProject(const std::string & projectFileName);
@@ -190,6 +191,7 @@ private:
 	void resetTabOrder();
 	void updateRecentFilesMenu();
 	void initClick();
+	unsigned addNewSegmentationPane();
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece

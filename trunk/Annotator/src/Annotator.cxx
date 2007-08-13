@@ -57,11 +57,6 @@
 #include <CLAM/UnsizedSegmentation.hxx>
 #include <CLAM/Oscillator.hxx>
 
-// TODO: Segment auralization related, to be moved
-#include <CLAM/MultiChannelAudioFileReaderConfig.hxx>
-#include <CLAM/MultiChannelAudioFileReader.hxx>
-#include <CLAM/AudioFile.hxx>
-
 #include <CLAM/CLAMVersion.hxx>
 #include "MusicAnnotatorVersion.hxx"
 
@@ -77,12 +72,6 @@
 #ifndef RESOURCES_BASE
 #define RESOURCES_BASE "../resources"
 #endif
-
-using CLAM::VM::AudioPlot;
-using CLAM::VM::BPFPlot;
-
-using CLAM::TData;
-using CLAM::TIndex;
 
 #include <QtGui/QSplitter>
 #include "SegmentationPane.hxx"
@@ -186,7 +175,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 
 	setupUi(this);
 	mGlobalDescriptors = new CLAM_Annotator::DescriptorTableController(mDescriptorsTable, mProject);
-	_segmentationPanes.push_back(new SegmentationPane(mVSplit, mProject));
+	addNewSegmentationPane();
 	mAbout = new QDialog(this);
 	Ui::About aboutUi;
 	aboutUi.setupUi(mAbout);
@@ -306,7 +295,8 @@ void Annotator::initInterface()
 	mBPFEditor->SetXRange(0.0,2.0);
 
 	mCurrentAudio.ResizeToDuration(2.0);
-	_segmentationPanes[0]->setAudio(mCurrentAudio, false);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->setAudio(mCurrentAudio, false);
 
 	mBPFEditor->setAutoFillBackground(true);
 
@@ -377,7 +367,8 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	mStatusBar << tr("Adapting Interface to Frame level descriptors...") << mStatusBar;
 	adaptEnvelopesToCurrentSchema();
 	mStatusBar << tr("Adapting Interface to Segmentations...") << mStatusBar;
-	_segmentationPanes[0]->adaptToSchema();
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->adaptToSchema();
 	mStatusBar << tr("Updating schema browser...") << mStatusBar;
 	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
 	mStatusBar << tr("Creating instant views...") << mStatusBar;
@@ -432,6 +423,32 @@ void Annotator::adaptEnvelopesToCurrentSchema()
 	}
 }
 
+unsigned Annotator::addNewSegmentationPane()
+{
+	unsigned index = _segmentationPanes.size();
+	SegmentationPane * pane = new SegmentationPane(0, mProject);
+	// Changing the current segmentation descriptor
+	connect(pane, SIGNAL(segmentationSelectionChanged()),
+			this, SLOT(refreshSegmentation()) );
+	// Apply segment descriptors changes
+	connect(pane, SIGNAL(segmentationDataChanged()),
+			this, SLOT(updateSegmentation()) );
+	// Current position update
+	connect(pane, SIGNAL(segmentEditorRegionChanged(double,double)),
+			this, SLOT(setCurrentTime(double,double)));
+	// Making the splitters look like a table
+	connect(pane, SIGNAL(splitterMoved(int,int)),
+			this, SLOT(syncronizeSplits()));
+	if (!index)
+		mVSplit->addWidget(pane);
+	else 
+		mVSplit->insertWidget(mVSplit->indexOf(_segmentationPanes.back()), pane);
+	_segmentationPanes.push_back(pane);
+	mVSplit->refresh();
+	pane->show();
+	return index;
+}
+
 void Annotator::makeConnections()
 {
 	// Action Signals
@@ -473,9 +490,6 @@ void Annotator::makeConnections()
 	// Changing the current frame level descriptor
 	connect(mFrameLevelAttributeList, SIGNAL(currentRowChanged(int)),
 			this, SLOT(changeFrameLevelDescriptor(int)));
-	// Changing the current segmentation descriptor
-	connect(_segmentationPanes[0], SIGNAL(segmentationSelectionChanged()),
-			this, SLOT(refreshSegmentation()) );
 
 	// Apply global descriptors changes
 	connect(mGlobalDescriptors, SIGNAL(contentEdited(int) ),
@@ -483,9 +497,6 @@ void Annotator::makeConnections()
 	// Apply frame descriptor changes
 	connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
 			this, SLOT(frameDescriptorsChanged(unsigned, double)));
-	// Apply segment descriptors changes
-	connect(_segmentationPanes[0], SIGNAL(segmentationDataChanged()),
-			this, SLOT(updateSegmentation()) );
 
 	// TODO: Interplot viewport syncronization
 
@@ -496,9 +507,6 @@ void Annotator::makeConnections()
 			this, SLOT(setCurrentStopTime(double,bool)), Qt::DirectConnection);
 
 	// Current position update
-	// TODO: This is pending
-	connect(_segmentationPanes[0], SIGNAL(segmentEditorRegionChanged(double,double)),
-			this, SLOT(setCurrentTime(double,double)));
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
 			this, SLOT(setCurrentTime(double,double)));
 
@@ -509,12 +517,11 @@ void Annotator::makeConnections()
 	// Making the splitters look like a table
 	connect(mFrameEditorSplit, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
-	connect(_segmentationPanes[0], SIGNAL(splitterMoved(int,int)),
-			this, SLOT(syncronizeSplits()));
 }
 void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 {
-	_segmentationPanes[0]->updateLocator(timeMilliseconds);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->updateLocator(timeMilliseconds);
 	mBPFEditor->updateLocator(timeMilliseconds);
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
@@ -524,7 +531,8 @@ void Annotator::setCurrentStopTime(double timeMilliseconds, bool paused)
 {
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
-	_segmentationPanes[0]->updateLocator(timeMilliseconds, paused);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->updateLocator(timeMilliseconds, paused);
 	mBPFEditor->updateLocator(timeMilliseconds, paused);
 }
 
@@ -536,7 +544,8 @@ void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMilisecond
 	mPlayer->timeBounds(timeMilliseconds,endTimeMiliseconds);
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
-	_segmentationPanes[0]->updateLocator(timeMilliseconds, true);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->updateLocator(timeMilliseconds, true);
 	mBPFEditor->updateLocator(timeMilliseconds, true);
 	updating=false;
 }
@@ -599,12 +608,14 @@ void Annotator::syncronizeSplits()
 	if (!movedSplitter) return;
 	QList<int> sizes = movedSplitter->sizes();
 	mFrameEditorSplit->setSizes(sizes);
-	_segmentationPanes[0]->setSizes(sizes);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->setSizes(sizes);
 }
 
 void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 {
-	_segmentationPanes[0]->setCurrentSegmentFollowsPlay(enabled);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->setCurrentSegmentFollowsPlay(enabled);
 }
 
 void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
@@ -801,9 +812,12 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	}
 	setMenuAudioItemsEnabled(true);
 
-	_segmentationPanes[0]->setAudio(mCurrentAudio,false);
-	_segmentationPanes[0]->setData(mpDescriptorPool);
-	_segmentationPanes[0]->refreshSegmentation();
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->setAudio(mCurrentAudio,false);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->setData(mpDescriptorPool);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->refreshSegmentation();
 	auralizeMarks();
 	mBPFEditor->show();
 	refreshEnvelopes();
@@ -867,7 +881,8 @@ void Annotator::refreshAudioData()
 		mAudioRefreshTimer->stop();
 		auralizeMarks();
 	}
-	_segmentationPanes[0]->setAudio(mCurrentAudio, true);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->setAudio(mCurrentAudio, true);
 
 	if (!finished)
 		mAudioRefreshTimer->start(2000);
@@ -878,7 +893,7 @@ void Annotator::refreshEnvelope(CLAM::EquidistantPointsFunction & epf, const std
 	CLAM::TData firstCenter = division.GetFirstCenter();
 	CLAM::TData interCenterGap = division.GetInterCenterGap();
 	const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>(scope,descriptorName);
-	TData sr = mCurrentAudio.GetSampleRate();
+	CLAM::TData sr = mCurrentAudio.GetSampleRate();
 	int nFrames = mpDescriptorPool->GetNumberOfContexts(scope);
 	epf.setDivision(firstCenter/sr, interCenterGap/sr, "s");
 	epf.setValues(values, nFrames, "");
@@ -957,6 +972,7 @@ void Annotator::refreshGlobalDescriptorsTable()
 
 void Annotator::auralizeMarks()
 {
+	// Taking just the segmentation of the first pane
 	const CLAM::Segmentation * segmentation = _segmentationPanes[0]->getSegmentation();
 	if (!segmentation) return;
 	const std::vector<double> & marks = segmentation->onsets();
@@ -1021,7 +1037,7 @@ void Annotator::changeFrameLevelDescriptor(int current)
 	CLAM::VM::ERulerScale scale = CLAM::VM::eLinearScale;
 	if (fabs(minValue) > 9999.99) scale=CLAM::VM::eLogScale;
 	if (fabs(maxValue) > 9999.99) scale=CLAM::VM::eLogScale;
-	if (maxValue-minValue < TData(5E-2)) scale=CLAM::VM::eLogScale;
+	if (maxValue-minValue < CLAM::TData(5E-2)) scale=CLAM::VM::eLogScale;
 	mBPFEditor->SetYRange(minValue, maxValue, scale);
 
 	mPlayer->SetData(mEPFs[index].GetBPF());
@@ -1070,5 +1086,15 @@ void Annotator::on_actionOnline_Tutorial_triggered()
 	QProcess::startDetached( "x-www-browser", QStringList() << helpUrl); // TODO: Remove this 4.1 unix only version
 	#endif
 }
+
+void Annotator::on_actionAddSegmentationView_triggered()
+{
+	unsigned index = addNewSegmentationPane();
+	_segmentationPanes[index]->adaptToSchema();
+	_segmentationPanes[index]->setAudio(mCurrentAudio,false);
+	_segmentationPanes[index]->setData(mpDescriptorPool);
+	_segmentationPanes[index]->refreshSegmentation();
+}
+
 
 
