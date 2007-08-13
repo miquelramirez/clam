@@ -4,24 +4,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-
-static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MagPhaseSpectrumProduct>
-	regMagPhaseSpectrumProduct("MagPhaseSpectrumProduct");
-
-	class regMagPhaseSpectrumProductMetadata
-	{
-	public:
-		regMagPhaseSpectrumProductMetadata()
-		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("MagPhaseSpectrumProduct", "category", "CLAM");
-			factory.AddAttribute("MagPhaseSpectrumProduct", "description", "MagPhaseSpectrumProduct");
-		}
+	static const char* metadata[] = {
+		"key", "MagPhaseSpectrumProduct",
+		"category", "CLAM",
+		"description", "MagPhaseSpectrumProduct",
+		0
 	};
-	static regMagPhaseSpectrumProductMetadata dummy;
-
-
-
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MagPhaseSpectrumProduct>
+	reg = metadata;
 }
 
 }

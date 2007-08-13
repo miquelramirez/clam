@@ -32,18 +32,13 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, MyIFFT> regMyIFFT("MyIFFT");
-	class regMyIFFTMetadata
-	{
-	public:
-		regMyIFFTMetadata()
-		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("MyIFFT", "category", "CLAM");
-			factory.AddAttribute("MyIFFT", "description", "MyIFFT");
-		}
+	static const char* metadata[] = {
+		"key", "MyIFFT",
+		"category", "CLAM",
+		"description", "MyIFFT",
+		0
 	};
-	static regMyIFFTMetadata dummy;
+	static FactoryRegistrator<ProcessingFactory, MyIFFT> reg = metadata;
 }
 	
 struct MyIFFT::Implementation

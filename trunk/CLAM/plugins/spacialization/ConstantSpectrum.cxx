@@ -5,21 +5,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-
-static FactoryRegistrator<ProcessingFactory, ConstantSpectrum>
-	regConstantSpectrum("ConstantSpectrum");
-
-	class regConstantSpectrumMetadata
-	{
-	public:
-		regConstantSpectrumMetadata()
-		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("ConstantSpectrum", "category", "CLAM");
-			factory.AddAttribute("ConstantSpectrum", "description", "MagPhaseSpectrum2Spectrum");
-		}
+	static const char* metadata[] = {
+		"key", "ConstantSpectrum",
+		"category", "CLAM",
+		"description", "ConstantSpectrum",
+		0
 	};
-	static regConstantSpectrumMetadata dummy;
+	static FactoryRegistrator<ProcessingFactory, ConstantSpectrum>
+	reg = metadata;
 }
 }
 

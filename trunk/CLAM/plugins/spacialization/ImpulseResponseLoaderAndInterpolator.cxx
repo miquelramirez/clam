@@ -4,22 +4,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-
-static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ImpulseResponseLoaderAndInterpolator>
-	regImpulseResponseLoaderAndInterpolator("ImpulseResponseLoaderAndInterpolator");
-	static class ImpulseResponseLoaderAndInterpolatorMetadata
-	{
-	public:
-		ImpulseResponseLoaderAndInterpolatorMetadata()
-		{
-			ProcessingFactory & factory = ProcessingFactory::GetInstance();
-			factory.AddAttribute("ImpulseResponseLoaderAndInterpolator", "category", "CLAM");
-			factory.AddAttribute("ImpulseResponseLoaderAndInterpolator", "description", "ImpulseResponseLoaderAndInterpolator");
-		}
-	} dummy;
-
-
-
+	static const char* metadata[] = {
+		"key", "ImpulseResponseLoaderAndInterpolator",
+		"category", "CLAM",
+		"description", "ImpulseResponseLoaderAndInterpolator",
+		0
+	};
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ImpulseResponseLoaderAndInterpolator>
+	reg = metadata;
 }
 
 }

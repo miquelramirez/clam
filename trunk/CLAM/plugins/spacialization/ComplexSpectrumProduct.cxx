@@ -4,24 +4,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-
-static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ComplexSpectrumProduct>
-	regComplexSpectrumProduct("ComplexSpectrumProduct");
-
-	class regComplexSpectrumProductMetadata
-	{
-	public:
-		regComplexSpectrumProductMetadata()
-		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("ComplexSpectrumProduct", "category", "CLAM");
-			factory.AddAttribute("ComplexSpectrumProduct", "description", "ComplexSpectrumProduct");
-		}
+	static const char* metadata[] = {
+		"key", "ComplexSpectrumProduct",
+		"category", "CLAM",
+		"description", "ComplexSpectrumProduct",
+		0
 	};
-	static regComplexSpectrumProductMetadata dummy;
-
-
-
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ComplexSpectrumProduct>
+	reg = metadata;
 }
 
 }
