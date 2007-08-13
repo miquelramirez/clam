@@ -34,7 +34,7 @@ namespace Hidden
 {
 	static const char* metadata[] = {
 		"key", "MyIFFT",
-		"category", "CLAM",
+		"category", "Spectral Processing",
 		"description", "MyIFFT",
 		0
 	};

@@ -8,7 +8,7 @@ namespace Hidden
 {
 	static const char* metadata[] = {
 		"key", "Complex2MagPhaseSpectrum",
-		"category", "CLAM",
+		"category", "Spectral Processing",
 		"description", "Complex2MagPhaseSpectrum",
 		0
 	};
