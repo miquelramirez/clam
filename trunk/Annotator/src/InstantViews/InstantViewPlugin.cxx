@@ -218,7 +218,7 @@ private:
 		_view = new CLAM::VM::BarGraph(parent);
 		_dataSource.setDataSource(project, config.GetAttributeScope(), config.GetAttributeName());
 		_view->setDataSource( _dataSource );
-//		_view->resize(20,300);
+		_view->resize(20,300);
 		return _view;
 	}
 	virtual bool configureDialog(const CLAM_Annotator::Project & project, CLAM_Annotator::InstantView & config)
