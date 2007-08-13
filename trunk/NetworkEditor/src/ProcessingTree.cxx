@@ -186,7 +186,6 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	setRootIsDecorated( true );
 	header()->hide();
 
-	//TODO refactor two fors in one ?
 	for (unsigned i=0; processingClasses[i]; i++)
 	{
 		QTreeWidgetItem * group = new QTreeWidgetItem( this, QStringList() << processingClasses[i] );
@@ -198,14 +197,31 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			item->setIcon(0, QIcon(":/icons/images/processing.png"));
 		}
 	}
-/*	
-#ifdef USE_LADSPA
-	CLAM::LadspaPluginsExplorer::ExploreStandardPaths();
-#endif //USE_LADSPA
-*/
-
 // TODO: Ladspa is still work in progress 
+	CLAM::ProcessingFactory::Values categories = CLAM::ProcessingFactory::GetInstance().GetSetOfValues("category");
+	CLAM::ProcessingFactory::Values::const_iterator itCategory;
 
+	for(itCategory = categories.begin(); itCategory != categories.end(); itCategory++)
+	{
+		CLAM::ProcessingFactory::Keys keys = CLAM::ProcessingFactory::GetInstance().GetKeys("category", *itCategory);
+		//std::cout << "Category: " << *itCategory << std::endl;
+		if( keys.size() > 0 )
+		{
+			CLAM::ProcessingFactory::Keys::const_iterator itKey;
+			std::string category = *itCategory;
+			QTreeWidgetItem * categoryTree = new QTreeWidgetItem( this, QStringList() << category.c_str());
+			for(itKey = keys.begin(); itKey != keys.end(); itKey++)
+			{
+				std::string description = CLAM::ProcessingFactory::GetInstance().GetValuesFromAttribute(*itKey, "description").front();
+				std::string key = *itKey;
+				QTreeWidgetItem * item = new QTreeWidgetItem( categoryTree, QStringList() << description.c_str());
+				item->setIcon(0, QIcon(":/icons/images/processing.png"));
+				item->setText(1, key.c_str());
+			}
+		}
+	}
+
+/*
 	CLAM::ProcessingFactory::Keys::const_iterator itK;
 	CLAM::ProcessingFactory::Keys keys = CLAM::ProcessingFactory::GetInstance().GetKeys("category", "LADSPA");
 	if( keys.size() > 0)
@@ -239,7 +255,7 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			item->setText(1, factoryID.c_str());
 		}
 	}
-
+*/
 	
 	connect( this, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),
 		 this, SLOT( PressProcessing(QTreeWidgetItem *,int) ));
