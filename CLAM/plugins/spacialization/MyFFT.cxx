@@ -31,17 +31,13 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, MyFFT> regMyFFT("MyFFT");
-	static class MyFFTMetadata
-	{
-	public:
-		MyFFTMetadata()
-		{
-			ProcessingFactory & factory = ProcessingFactory::GetInstance();
-			factory.AddAttribute("MyFFT", "category", "CLAM");
-			factory.AddAttribute("MyFFT", "description", "MyFFT");
-		}
-	} dummy;
+	static const char* metadata[] = {
+		"key", "MyFFT",
+		"category", "CLAM",
+		"description", "MyFFT",
+		0
+	};
+	static FactoryRegistrator<ProcessingFactory, MyFFT> reg = metadata;
 }
 
 struct MyFFT::Implementation

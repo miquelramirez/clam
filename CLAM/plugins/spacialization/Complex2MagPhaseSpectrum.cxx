@@ -6,22 +6,14 @@ namespace CLAM
 
 namespace Hidden
 {
-
-static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, Complex2MagPhaseSpectrum>
-	regComplex2MagPhaseSpectrum("Complex2MagPhaseSpectrum");
-
-	class regComplex2MagPhaseSpectrumMetadata
-	{
-	public:
-		regComplex2MagPhaseSpectrumMetadata()
-		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("Complex2MagPhaseSpectrum", "category", "CLAM");
-			factory.AddAttribute("Complex2MagPhaseSpectrum", "description", "Complex2MagPhaseSpectrum");
-		}
+	static const char* metadata[] = {
+		"key", "Complex2MagPhaseSpectrum",
+		"category", "CLAM",
+		"description", "Complex2MagPhaseSpectrum",
+		0
 	};
-	static regComplex2MagPhaseSpectrumMetadata dummy;
-
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, Complex2MagPhaseSpectrum>
+		reg = metadata;
 }
 
 }
