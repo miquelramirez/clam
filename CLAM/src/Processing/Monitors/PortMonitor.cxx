@@ -30,8 +30,8 @@ namespace CLAM
 #ifndef QT_PLUGIN
 	static const char * metadataPeaks[] = {
 		"key", "PeaksPortMonitor",
-		"category", "Monitors",
-		"description", "PeaksPortMonitor",
+	//	"category", "Monitors",
+	//	"description", "PeaksPortMonitor",
 		0
 	};
 	//static FactoryRegistrator<ProcessingFactory, PeaksPortMonitor> regPeaksPortMonitor("PeaksPortMonitor");
@@ -39,8 +39,8 @@ namespace CLAM
 
 	static const char * metadataSpectrum[] = {
 		"key", "SpectrumPortMonitor",
-		"category", "Monitors",
-		"description", "SpectrumPortMonitor",
+	//	"category", "Monitors",
+	//	"description", "SpectrumPortMonitor",
 		0
 	};
 	//static FactoryRegistrator<ProcessingFactory, SpectrumPortMonitor> regSpectrumPortMonitor("SpectrumPortMonitor");
@@ -48,8 +48,8 @@ namespace CLAM
 
 	static const char * metadataAudio[] = {
 		"key", "AudioPortMonitor",
-		"category", "Monitors",
-		"description", "AudioPortMonitor",
+	//	"category", "Monitors",
+	//	"description", "AudioPortMonitor",
 		0
 	};
 	//static FactoryRegistrator<ProcessingFactory, AudioPortMonitor> regAudioPortMonitor("AudioPortMonitor");
@@ -57,8 +57,8 @@ namespace CLAM
 
 	static const char * metadataFundamental[] = {
 		"key", "FundamentalPortMonitor",
-		"category", "Monitors",
-		"description", "FundamentalPortMonitor",
+	//	"category", "Monitors",
+	//	"description", "FundamentalPortMonitor",
 		0
 	};
 	//static FactoryRegistrator<ProcessingFactory, FundamentalPortMonitor> regFundamentalPortMonitor("FundamentalPortMonitor");
@@ -66,8 +66,8 @@ namespace CLAM
 
 	static const char * metadataAudioBuff[] = {
 		"key", "AudioBuffPortMonitor",
-		"category", "Monitors",
-		"description", "AudioBuffPortMonitor",
+	//	"category", "Monitors",
+	//	"description", "AudioBuffPortMonitor",
 		0
 	};
 	//static FactoryRegistrator<ProcessingFactory, AudioBuffPortMonitor> regAudioBuffPortMonitor("AudioBuffPortMonitor");
@@ -75,8 +75,8 @@ namespace CLAM
 
 	static const char * metadataSpecgram[] = {
 		"key", "SpecgramPortMonitor",
-		"category", "Monitors",
-		"description", "SpecgramPortMonitor",
+	//	"category", "Monitors",
+	//	"description", "SpecgramPortMonitor",
 		0
 	};
 	//static FactoryRegistrator<ProcessingFactory, SpecgramPortMonitor> regSpecgramPortMonitor("SpecgramPortMonitor");
@@ -84,8 +84,8 @@ namespace CLAM
 
 	static const char * metadataFundTrack[] = {
 		"key", "FundTrackPortMonitor",
-		"category", "Monitors",
-		"description", "FundTrackPortMonitor",
+	//	"category", "Monitors",
+	//	"description", "FundTrackPortMonitor",
 		0
 	};
 	//static FactoryRegistrator<ProcessingFactory, FundTrackPortMonitor> regFundTrackPortMonitor("FundTrackPortMonitor");
@@ -93,8 +93,8 @@ namespace CLAM
 
 	static const char * metadataSinTracks[] = {
 		"key", "SinTracksPortMonitor",
-		"category", "Monitors",
-		"description", "SinTracksPortMonitor",
+	//	"category", "Monitors",
+	//	"description", "SinTracksPortMonitor",
 		0
 	};
 	//static FactoryRegistrator<ProcessingFactory, SinTracksPortMonitor> regSinTracksPortMonitor("SinTracksPortMonitor");
