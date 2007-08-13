@@ -26,7 +26,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, ControlMapper> regControlMapper("ControlMapper");
+	static const char * metadata[] = {
+		"key", "ControlMapper",
+		"category", "Controls",
+		"description", "ControlMapper",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, ControlMapper> regControlMapper("ControlMapper");
+	static FactoryRegistrator<ProcessingFactory, ControlMapper> reg = metadata;
 }
 
 void ControlMapperConfig::DefaultInit(void)

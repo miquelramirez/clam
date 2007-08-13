@@ -26,7 +26,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, ThreeBandAM> regThreeBandAM("ThreeBandAM");
+	static const char * metadata[] = {
+		"key", "ThreeBandAM",
+		"category", "Spectral Transformations",
+		"description", "ThreeBandAM",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, ThreeBandAM> regThreeBandAM("ThreeBandAM");
+	static FactoryRegistrator<ProcessingFactory, ThreeBandAM> reg = metadata;
 }
 
 

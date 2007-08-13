@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SMSHarmonizer> regSMSHarmonizer("SMSHarmonizer");
+	static const char * metadata[] = {
+		"key", "SMSHarmonizer",
+		"category", "SMS Transformations",
+		"description", "SMSHarmonizer",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SMSHarmonizer> regSMSHarmonizer("SMSHarmonizer");
+	static FactoryRegistrator<ProcessingFactory, SMSHarmonizer> reg = metadata;
 }
 
 bool SMSHarmonizer::ConcreteConfigure(const ProcessingConfig& config)

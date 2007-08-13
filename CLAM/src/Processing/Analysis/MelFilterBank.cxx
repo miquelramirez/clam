@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, MelFilterBank> regMelFilterBank("MelFilterBank");
+	static const char * metadata[] = {
+		"key", "MelFilterBank",
+		"category", "Analysis",
+		"description", "MelFilterBank",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, MelFilterBank> regMelFilterBank("MelFilterBank");
+	static FactoryRegistrator<ProcessingFactory, MelFilterBank> reg = metadata;
 }
 
 	void MelFilterBankConfig::DefaultInit()

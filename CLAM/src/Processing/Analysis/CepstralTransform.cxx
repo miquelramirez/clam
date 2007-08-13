@@ -28,7 +28,14 @@ namespace CLAM
 {
 namespace Hidden 
 {
-	static FactoryRegistrator<ProcessingFactory, CepstralTransform> regCepstralTransform("CepstralTransform");
+	static const char* metadata[] = {
+		"key", "CepstralTransform",
+		"category", "Analysis",
+		"description", "CepstralTransform",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, CepstralTransform> regCepstralTransform("CepstralTransform");
+	static FactoryRegistrator<ProcessingFactory, CepstralTransform> reg = metadata;
 }
 
 void CepstralTransformConfig::DefaultInit()

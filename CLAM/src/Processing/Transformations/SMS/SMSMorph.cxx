@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SMSMorph> regSMSMorph("SMSMorph");
+	static const char * metadata[] = {
+		"key", "SMSMorph",
+		"category", "SMS Transformations",
+		"description", "SMSMorph",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SMSMorph> regSMSMorph("SMSMorph");
+	static FactoryRegistrator<ProcessingFactory, SMSMorph> reg = metadata;
 }
 
 bool SMSMorph::Do(const Frame& in1, const Frame& in2, Frame& out)

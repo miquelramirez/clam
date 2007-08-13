@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, Peakalizer> regPeakalizer("Peakalizer");
+	static const char * metadata[] = {
+		"key", "Peakalizer",
+		"category", "Spectral Transformations",
+		"description", "Peakalizer",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, Peakalizer> regPeakalizer("Peakalizer");
+	static FactoryRegistrator<ProcessingFactory, Peakalizer> reg = metadata;
 }
 
 bool Peakalizer::Do(const Spectrum& in, Spectrum& out)

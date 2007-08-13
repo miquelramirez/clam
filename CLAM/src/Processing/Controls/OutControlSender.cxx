@@ -6,7 +6,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, OutControlSender> regOutControlSender("OutControlSender");
+	static const char * metadata[] = {
+		"key", "OutControlSender",
+		"category", "Controls",
+		"description", "OutControlSender",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, OutControlSender> regOutControlSender("OutControlSender");
+	static FactoryRegistrator<ProcessingFactory, OutControlSender> reg = metadata;
 }
 	
 Enum::tEnumValue OutControlSenderConfig::EControlRepresentation::sEnumValues[] =

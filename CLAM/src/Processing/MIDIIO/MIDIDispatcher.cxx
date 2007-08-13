@@ -28,7 +28,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, MIDIDispatcher> regMIDIDispatcher("MIDIDispatcher");
+	static const char * metadata[] = {
+		"key", "MIDIDispatcher",
+		"category", "MIDI",
+		"description", "MIDIDispatcher",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, MIDIDispatcher> regMIDIDispatcher("MIDIDispatcher");
+	static FactoryRegistrator<ProcessingFactory, MIDIDispatcher> reg = metadata;
 }
 
 void MIDIDispatcherConfig::DefaultInit()

@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, Partializer> regPartializer("Partializer");
+	static const char * metadata[] = {
+		"key", "Partializer",
+	//	"category", "Spectral Transformations",
+	//	"description", "Partializer",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, Partializer> regPartializer("Partializer");
+	static FactoryRegistrator<ProcessingFactory, Partializer> reg = metadata;
 }
 
 bool Partializer::Do(const Spectrum& in, Spectrum& out)

@@ -28,7 +28,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, Oscillator> regOscillator("Oscillator");
+	static const char * metadata[] = {
+		"key", "Oscillator",
+		"category", "Generators",
+		"description", "Oscillator",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, Oscillator> regOscillator("Oscillator");
+	static FactoryRegistrator<ProcessingFactory, Oscillator> reg = metadata;
 }
 
 void OscillatorConfig::DefaultInit(void)

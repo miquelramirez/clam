@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralGate> regSpectralGate("SpectralGate");
+	static const char * metadata[] = {
+		"key", "SpectralGate",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralGate",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralGate> regSpectralGate("SpectralGate");
+	static FactoryRegistrator<ProcessingFactory, SpectralGate> reg = metadata;
 }
 
 bool SpectralGate::Do(const Spectrum& in, Spectrum& out)

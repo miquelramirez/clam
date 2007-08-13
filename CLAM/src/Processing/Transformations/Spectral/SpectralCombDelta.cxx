@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralCombDelta> regSpectralCombDelta("SpectralCombDelta");
+	static const char * metadata[] = {
+		"key", "SpectralCombDelta",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralCombDelta",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralCombDelta> regSpectralCombDelta("SpectralCombDelta");
+	static FactoryRegistrator<ProcessingFactory, SpectralCombDelta> reg = metadata;
 }
 
 bool SpectralCombDelta::Do(const Spectrum& in, Spectrum& out)

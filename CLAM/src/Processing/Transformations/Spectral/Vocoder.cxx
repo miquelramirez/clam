@@ -26,7 +26,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, Vocoder> regVocoder("Vocoder");
+	static const char * metadata[] = {
+		"key", "Vocoder",
+		"category", "Spectral Transformations",
+		"description", "Vocoder",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, Vocoder> regVocoder("Vocoder");
+	static FactoryRegistrator<ProcessingFactory, Vocoder> reg = metadata;
 }
 
 bool Vocoder::Do(const Spectrum& in, Spectrum& out)

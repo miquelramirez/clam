@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden 
 {
-	static FactoryRegistrator<ProcessingFactory, OverlapAdd> regOverlapAdd("OverlapAdd");
+	static const char * metadata[] = {
+		"key", "OverlapAdd",
+		"category", "Synthesis",
+		"description", "OverlapAdd",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, OverlapAdd> regOverlapAdd("OverlapAdd");
+	static FactoryRegistrator<ProcessingFactory, OverlapAdd> reg = metadata;
 }
 
 /* processing object method implementations */

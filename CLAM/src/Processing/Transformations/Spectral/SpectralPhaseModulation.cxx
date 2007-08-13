@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralPhaseModulation> regSpectralPhaseModulation("SpectralPhaseModulation");
+	static const char * metadata[] = {
+		"key", "SpectralPhaseModulation",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralPhaseModulation",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralPhaseModulation> regSpectralPhaseModulation("SpectralPhaseModulation");
+	static FactoryRegistrator<ProcessingFactory, SpectralPhaseModulation> reg = metadata;
 }
 
 

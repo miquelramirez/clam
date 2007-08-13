@@ -28,7 +28,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SMSTransformationChainIO> regSMSTransformationChainIO("SMSTransformationChainIO");
+	static const char * metadata[] = {
+		"key", "SMSTransformationChainIO",
+		"category", "SMS Transformations",
+		"description", "SMSTransformationChainIO",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SMSTransformationChainIO> regSMSTransformationChainIO("SMSTransformationChainIO");
+	static FactoryRegistrator<ProcessingFactory, SMSTransformationChainIO> reg = metadata;
 }
 
 bool SMSTransformationChainIO::Do(const Frame& in, Frame& out)

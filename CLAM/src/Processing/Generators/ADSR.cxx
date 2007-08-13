@@ -29,7 +29,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, ADSR> regADSR("ADSR");
+	static const char * metadata[] = {
+		"key", "ADSR",
+		"category", "Generators",
+		"description", "ADSR",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, ADSR> regADSR("ADSR");
+	static FactoryRegistrator<ProcessingFactory, ADSR> reg = metadata;
 }
 
 void ADSRConfig::DefaultInit(void)

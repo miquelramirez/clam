@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralReject> regSpectralReject("SpectralReject");
+	static const char * metadata[] = {
+		"key", "SpectralReject",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralReject",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralReject> regSpectralReject("SpectralReject");
+	static FactoryRegistrator<ProcessingFactory, SpectralReject> reg = metadata;
 }
 
 bool SpectralReject::Do(const Spectrum& in, Spectrum& out)

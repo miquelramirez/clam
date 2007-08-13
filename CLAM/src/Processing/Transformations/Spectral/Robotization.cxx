@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, Robotization> regRobotization("Robotization");
+	static const char * metadata[] = {
+		"key", "Robotization",
+		"category", "Spectral Transformations",
+		"description", "Robotization",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, Robotization> regRobotization("Robotization");
+	static FactoryRegistrator<ProcessingFactory, Robotization> reg = metadata;
 }
 
 bool Robotization::Do(const Spectrum& in, Spectrum& out)

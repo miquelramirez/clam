@@ -9,7 +9,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, AudioSink> regAudioSink("AudioSink");
+	static const char* metadata[] = {
+		"key", "AudioSink",
+		"category", "Audio I/O",
+		"description", "AudioSink",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, AudioSink> regAudioSink("AudioSink");
+	static FactoryRegistrator<ProcessingFactory, AudioSink> reg = metadata;
 }
 	
 AudioSink::AudioSink()

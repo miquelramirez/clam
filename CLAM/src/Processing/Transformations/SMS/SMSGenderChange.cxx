@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SMSGenderChange> regSMSGenderChange("SMSGenderChange");
+	static const char * metadata[] = {
+		"key", "SMSGenderChange",
+		"category", "SMS Transformations",
+		"description", "SMSGenderChange",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SMSGenderChange> regSMSGenderChange("SMSGenderChange");
+	static FactoryRegistrator<ProcessingFactory, SMSGenderChange> reg = metadata;
 }
 
 bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks, 

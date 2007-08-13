@@ -6,7 +6,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, AudioSource> regAudioSource("AudioSource");
+	static const char* metadata[] = {
+		"key", "AudioSource",
+		"category", "Audio I/O",
+		"description", "AudioSource",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, AudioSource> regAudioSource("AudioSource");
+	static FactoryRegistrator<ProcessingFactory, AudioSource> reg = metadata;
 }
 	
 AudioSource::AudioSource() 

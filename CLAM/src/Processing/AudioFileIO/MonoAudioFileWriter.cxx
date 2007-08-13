@@ -30,8 +30,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, MonoAudioFileWriter> regMonoAudioFileWriter("MonoAudioFileWriter");
-
+	static const char * metadata[] = {
+		"key", "MonoAudioFileWriter",
+		"category", "Audio File I/O",
+		"description", "MonoAudioFileWriter",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, MonoAudioFileWriter> regMonoAudioFileWriter("MonoAudioFileWriter");
+	static FactoryRegistrator<ProcessingFactory, MonoAudioFileWriter> reg = metadata;
 }
 	
 	

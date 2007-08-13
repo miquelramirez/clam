@@ -28,7 +28,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, AudioMixer> regAudioMixer("AudioMixer");
+	static const char * metadata[] = {
+		"key", "AudioMixer",
+		"category", "Arithmetic Operations",
+		"description", "AudioMixer",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, AudioMixer> regAudioMixer("AudioMixer");
+	static FactoryRegistrator<ProcessingFactory, AudioMixer> reg = metadata;
 }
 
 AudioMixer::AudioMixer() : mOutputPort("Output Audio",this)

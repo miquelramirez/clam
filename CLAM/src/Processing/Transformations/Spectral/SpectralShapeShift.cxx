@@ -26,7 +26,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralShapeShift> regSpectralShapeShift("SpectralShapeShift");
+	static const char * metadata[] = {
+		"key", "SpectralShapeShift",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralShapeShift",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralShapeShift> regSpectralShapeShift("SpectralShapeShift");
+	static FactoryRegistrator<ProcessingFactory, SpectralShapeShift> reg = metadata;
 }
 	
 bool SpectralShapeShift::Do(const Spectrum& 

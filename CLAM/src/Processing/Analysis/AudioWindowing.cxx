@@ -30,7 +30,14 @@ namespace CLAM
 
 namespace Hidden 
 {
-	static FactoryRegistrator<ProcessingFactory, AudioWindowing> regAudioWindowing("AudioWindowing");
+	static const char* metadata[] = {
+		"key", "AudioWindowing",
+		"category", "Analysis",
+		"description", "AudioWindowing",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, AudioWindowing> regAudioWindowing("AudioWindowing");
+	static FactoryRegistrator<ProcessingFactory, AudioWindowing> reg = metadata;
 }
 
 AudioWindowing::~AudioWindowing()

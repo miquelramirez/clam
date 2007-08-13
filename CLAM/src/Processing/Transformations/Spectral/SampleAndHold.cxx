@@ -26,7 +26,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SampleAndHold> regSampleAndHold("SampleAndHold");
+	static const char * metadata[] = {
+		"key", "SampleAndHold",
+		"category", "Spectral Transformations",
+		"description", "SampleAndHold",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SampleAndHold> regSampleAndHold("SampleAndHold");
+	static FactoryRegistrator<ProcessingFactory, SampleAndHold> reg = metadata;
 }
 
 bool SampleAndHold::Do(const Spectrum& in, Spectrum& out)

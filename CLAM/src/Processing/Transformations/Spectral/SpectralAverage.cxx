@@ -26,7 +26,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralAverage> regSpectralAverage("SpectralAverage");
+	static const char * metadata[] = {
+		"key", "SpectralAverage",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralAverage",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralAverage> regSpectralAverage("SpectralAverage");
+	static FactoryRegistrator<ProcessingFactory, SpectralAverage> reg = metadata;
 }
 
 bool SpectralAverage::Do(const Spectrum& in, Spectrum& out)

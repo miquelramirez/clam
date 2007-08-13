@@ -10,7 +10,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, MIDIKeyboard> regMIDIKeyboard("MIDIKeyboard");
+	static const char * metadata[] = {
+		"key", "MIDIKeyboard",
+	//	"category", "MIDI",
+	//	"description", "MIDIKeyboard",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, MIDIKeyboard> regMIDIKeyboard("MIDIKeyboard");
+	static FactoryRegistrator<ProcessingFactory, MIDIKeyboard> reg = metadata;
 }
 
 void MIDIKeyboardConfig::DefaultInit(void)
