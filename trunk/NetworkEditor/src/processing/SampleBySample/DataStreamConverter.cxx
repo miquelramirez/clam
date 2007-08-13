@@ -6,7 +6,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, Data2Audio> regData2Audio("Data2Audio");
+	static const char * metadata[] = {
+		"key", "Data2Audio",
+		"category", "Sample by Sample (experimental)",
+		"description", "Data2Audio",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, Data2Audio> regData2Audio("Data2Audio");
+	static FactoryRegistrator<ProcessingFactory, Data2Audio> reg = metadata;
 }
 
 Data2Audio::Data2Audio():

@@ -28,7 +28,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, SquareWave> regSquareWave("SquareWave");
+	static const char * metadata[] = {
+		"key", "SquareWave",
+		"category", "Generators",
+		"description", "SquareWave",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SquareWave> regSquareWave("SquareWave");
+	static FactoryRegistrator<ProcessingFactory, SquareWave> reg = metadata;
 }
 	
 	

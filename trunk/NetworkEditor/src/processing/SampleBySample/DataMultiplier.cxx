@@ -29,7 +29,14 @@ namespace CLAM
 typedef BinaryDataOp< Multiply<TData> > DataMultiplier;
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, DataMultiplier> regDataMultiplier("DataMultiplier");
+	static const char * metadata[] = {
+		"key", "DataMultiplier",
+		"category", "Sample by Sample (experimental)",
+		"description", "DataMultiplier",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, DataMultiplier> regDataMultiplier("DataMultiplier");
+	static FactoryRegistrator<ProcessingFactory, DataMultiplier> reg = metadata;
 }
 
 }

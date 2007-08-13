@@ -28,7 +28,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, DataGain> regDataGain("DataGain");
+	static const char * metadata[] = {
+		"key", "DataGain",
+		"category", "Sample by Sample (experimental)",
+		"description", "DataGain",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, DataGain> regDataGain("DataGain");
+	static FactoryRegistrator<ProcessingFactory, DataGain> reg = metadata;
 }
 
 bool DataGain::Do()

@@ -28,7 +28,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, DataAdder> regDataAdder("DataAdder");
+	static const char * metadata[] = {
+		"key", "DataAdder",
+		"category", "Sample by Sample (experimental)",
+		"description", "DataAdder",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, DataAdder> regDataAdder("DataAdder");
+	static FactoryRegistrator<ProcessingFactory, DataAdder> reg = metadata;
 }
 	
 

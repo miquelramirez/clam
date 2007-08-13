@@ -6,7 +6,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, SilentSource> regSilentSource("SilentSource");
+	static const char * metadata[] = {
+		"key", "SilentSource",
+		"category", "Sample by Sample (experimental)",
+		"description", "SilentSource",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SilentSource> regSilentSource("SilentSource");
+	static FactoryRegistrator<ProcessingFactory, SilentSource> reg = metadata;
 }
 
 SilentSource::SilentSource():

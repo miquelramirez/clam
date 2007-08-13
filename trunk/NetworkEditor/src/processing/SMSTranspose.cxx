@@ -27,7 +27,14 @@ namespace CLAM
 {
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, SMSTranspose> regSMSTranspose("SMSTranspose");
+	static const char * metadata[] = {
+		"key", "SMSTranspose",
+		"category", "SMS Transformations",
+		"description", "SMSTranspose",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SMSTranspose> regSMSTranspose("SMSTranspose");
+	static FactoryRegistrator<ProcessingFactory, SMSTranspose> reg = metadata;
 }
 
 bool SMSTranspose::Do(const SpectralPeakArray& in, SpectralPeakArray& out)

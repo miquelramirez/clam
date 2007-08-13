@@ -33,7 +33,14 @@ namespace CLAM
 	
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, DataDelay> regDataDelay("DataDelay");
+	static const char * metadata[] = {
+		"key", "DataDelay",
+		"category", "Sample by Sample (experimental)",
+		"description", "DataDelay",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, DataDelay> regDataDelay("DataDelay");
+	static FactoryRegistrator<ProcessingFactory, DataDelay> reg = metadata;
 }
 
 /*bool DataDelay::ConcreteConfigure(const ProcessingConfig& c)

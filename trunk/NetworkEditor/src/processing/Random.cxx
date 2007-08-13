@@ -14,7 +14,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, Random> regRandom("Random");
+	static const char * metadata[] = {
+		"key", "Random",
+		"category", "Controls",
+		"description", "Random",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, Random> regRandom("Random");
+	static FactoryRegistrator<ProcessingFactory, Random> reg = metadata;
 }
 	
 	

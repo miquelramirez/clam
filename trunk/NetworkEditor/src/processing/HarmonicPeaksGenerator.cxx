@@ -27,7 +27,14 @@ namespace CLAM
 {
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, HarmonicPeaksGenerator> regHarmonicPeaksGenerator("HarmonicPeaksGenerator");
+	static const char * metadata[] = {
+		"key", "HarmonicPeaksGenerator",
+		"category", "Generators",
+		"description", "HarmonicPeaksGenerator",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, HarmonicPeaksGenerator> regHarmonicPeaksGenerator("HarmonicPeaksGenerator");
+	static FactoryRegistrator<ProcessingFactory, HarmonicPeaksGenerator> reg = metadata;
 }
 
 bool HarmonicPeaksGenerator::Do(SpectralPeakArray& out)

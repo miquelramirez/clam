@@ -14,7 +14,14 @@ namespace CLAM
 
 namespace detail
 {
-	static FactoryRegistrator<ProcessingFactory, FilenameUsageExample> regFilenameUsageExample("FilenameUsageExample");
+	static const char * metadata[] = {
+		"key", "FilenameUsageExample",
+		"category", "Usage Examples",
+		"description", "FilenameUsageExample",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, FilenameUsageExample> regFilenameUsageExample("FilenameUsageExample");
+	static FactoryRegistrator<ProcessingFactory, FilenameUsageExample> reg = metadata;
 }
 	
 	
