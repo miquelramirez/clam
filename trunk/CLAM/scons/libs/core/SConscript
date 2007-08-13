@@ -40,7 +40,7 @@ def define_module_contents(env) :
 
 	blacklist = [
 		'ScaleCnv',
-		'LadspaBridge',
+		'ProcessingClass2Ladspa',
 		'BlockingNetworkPlayer',
 		'JACKNetworkPlayer',
 		'PANetworkPlayer',
