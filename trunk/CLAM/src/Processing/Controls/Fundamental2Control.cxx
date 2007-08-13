@@ -5,7 +5,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, Fundamental2Control> regFundamental2Control("Fundamental2Control");
+	static const char * metadata[] = {
+		"key", "Fundamental2Control",
+		"category", "Controls",
+		"description", "Fundamental2Control",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, Fundamental2Control> regFundamental2Control("Fundamental2Control");
+	static FactoryRegistrator<ProcessingFactory, Fundamental2Control> reg = metadata;
 }
 
 bool Fundamental2Control::Do( const Fundamental& inFund ) 

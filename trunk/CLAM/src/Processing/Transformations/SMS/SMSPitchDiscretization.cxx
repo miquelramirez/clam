@@ -30,7 +30,14 @@ namespace CLAM
 
 namespace Hidden
 {	
-	static FactoryRegistrator<ProcessingFactory, SMSPitchDiscretization> regSMSPitchDiscretization("SMSPitchDiscretization");
+	static const char * metadata[] = {
+		"key", "SMSPitchDiscretization",
+		"category", "SMS Transformations",
+		"description", "SMSPitchDiscretization",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SMSPitchDiscretization> regSMSPitchDiscretization("SMSPitchDiscretization");
+	static FactoryRegistrator<ProcessingFactory, SMSPitchDiscretization> reg = metadata;
 }
 
 bool SMSPitchDiscretization::Do(const Frame& in, Frame& out)

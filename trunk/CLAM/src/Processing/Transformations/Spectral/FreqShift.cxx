@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, FreqShift> regFreqShift("FreqShift");
+	static const char * metadata[] = {
+		"key", "FreqShift",
+	//	"category", "Spectral Transformations",
+	//	"description", "FreqShift",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, FreqShift> regFreqShift("FreqShift");
+	static FactoryRegistrator<ProcessingFactory, FreqShift> reg = metadata;
 }
 
 

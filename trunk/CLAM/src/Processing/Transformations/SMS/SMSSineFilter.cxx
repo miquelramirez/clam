@@ -28,7 +28,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SMSSineFilter> regSMSSineFilter("SMSSineFilter");
+	static const char * metadata[] = {
+		"key", "SMSSineFilter",
+		"category", "SMS Transformations",
+		"description", "SMSSineFilter",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SMSSineFilter> regSMSSineFilter("SMSSineFilter");
+	static FactoryRegistrator<ProcessingFactory, SMSSineFilter> reg = metadata;
 }
 
 bool SMSSineFilter::Do(const SpectralPeakArray& in, SpectralPeakArray& out) // TODO make this method take a WindowGenerator object as a parameter and use it as a way to modify the filters

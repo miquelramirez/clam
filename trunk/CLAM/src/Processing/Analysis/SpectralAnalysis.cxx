@@ -30,7 +30,14 @@ namespace CLAM
 
 namespace Hidden 
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralAnalysis> regSpectralAnalysis("SpectralAnalysis");
+	static const char * metadata[] = {
+		"key", "SpectralAnalysis",
+		"category", "Analysis",
+		"description", "SpectralAnalysis",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralAnalysis> regSpectralAnalysis("SpectralAnalysis");
+	static FactoryRegistrator<ProcessingFactory, SpectralAnalysis> reg = metadata;
 }
 
 SpectralAnalysis::SpectralAnalysis()

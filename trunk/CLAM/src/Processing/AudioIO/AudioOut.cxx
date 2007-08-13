@@ -30,7 +30,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, AudioOut> regAudioOut("AudioOut");
+	static const char * metadata[] = {
+		"key", "AudioOut",
+//		"category", "Audio I/O",
+//		"description", "AudioOut",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, AudioOut> regAudioOut("AudioOut");
+	static FactoryRegistrator<ProcessingFactory, AudioOut> reg = metadata;
 }
 	
 AudioOut::AudioOut() 

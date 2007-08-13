@@ -28,7 +28,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, OSCSender> regOSCSender("OSCSender");
+	static const char * metadata[] = {
+		"key", "OSCSender",
+		"category", "Controls",
+		"description", "OSCSender",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, OSCSender> regOSCSender("OSCSender");
+	static FactoryRegistrator<ProcessingFactory, OSCSender> reg = metadata;
 }
 	
 	

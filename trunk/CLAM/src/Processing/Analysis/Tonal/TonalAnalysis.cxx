@@ -29,7 +29,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, TonalAnalysis> regTonalAnalysis("TonalAnalysis");
+	static const char * metadata[] = {
+		"key", "TonalAnalysis",
+		"category", "Analysis",
+		"description", "TonalAnalysis",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, TonalAnalysis> regTonalAnalysis("TonalAnalysis");
+	static FactoryRegistrator<ProcessingFactory, TonalAnalysis> reg = metadata;
 }
 	
 

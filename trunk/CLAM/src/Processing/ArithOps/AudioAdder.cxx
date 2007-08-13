@@ -30,7 +30,14 @@ template class BinaryAudioOp< Add<TData> >;
 	
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, AudioAdder> regAudioAdder("AudioAdder");
+	static const char * metadata[] = {
+		"key", "AudioAdder",
+		"category", "Arithmetic Operations",
+		"description", "AudioAdder",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, AudioAdder> regAudioAdder("AudioAdder");
+	static FactoryRegistrator<ProcessingFactory, AudioAdder> reg = metadata;
 }
 
 	

@@ -27,7 +27,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, ControlSink> regControlSink("ControlSink");
+	static const char * metadata[] = {
+		"key", "ControlSink",
+		"category", "Controls", 
+		"description", "ControlSink",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, ControlSink> regControlSink("ControlSink");
+	static FactoryRegistrator<ProcessingFactory, ControlSink> reg = metadata;
 }
 	
 bool ControlSink::Do( )

@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralNotch> regSpectralNotch("SpectralNotch");
+	static const char * metadata[] = {
+		"key", "SpectralNotch",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralNotch",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralNotch> regSpectralNotch("SpectralNotch");
+	static FactoryRegistrator<ProcessingFactory, SpectralNotch> reg = metadata;
 }
 
 bool SpectralNotch::Do(const Spectrum& in, Spectrum& out)

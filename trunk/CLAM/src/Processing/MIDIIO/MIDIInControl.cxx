@@ -29,7 +29,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, MIDIInControl> regMIDIInControl("MIDIInControl");
+	static const char * metadata[] = {
+		"key", "MIDIInControl",
+	//	"category", "MIDI",
+	//	"description", "MIDIInControl",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, MIDIInControl> regMIDIInControl("MIDIInControl");
+	static FactoryRegistrator<ProcessingFactory, MIDIInControl> reg = metadata;
 }
 
 MIDIInControl::MIDIInControl():MIDIIn(false)

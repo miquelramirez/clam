@@ -5,7 +5,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, ControlScaler> regControlScaler("ControlScaler");
+	static const char * metadata[] = {
+		"key", "ControlScaler",
+		"category", "Controls",
+		"description", "ControlScaler",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, ControlScaler> regControlScaler("ControlScaler");
+	static FactoryRegistrator<ProcessingFactory, ControlScaler> reg = metadata;
 }
 
 void ControlScalerConfig::DefaultInit()

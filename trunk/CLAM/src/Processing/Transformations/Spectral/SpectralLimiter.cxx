@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralLimiter> regSpectralLimiter("SpectralLimiter");
+	static const char * metadata[] = {
+		"key", "SpectralLimiter",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralLimiter",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralLimiter> regSpectralLimiter("SpectralLimiter");
+	static FactoryRegistrator<ProcessingFactory, SpectralLimiter> reg = metadata;
 }
 
 bool SpectralLimiter::Do(const Spectrum& in, Spectrum& out)

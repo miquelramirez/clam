@@ -27,7 +27,14 @@ namespace CLAM
 	
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SMSSpectralShapeShift> regSMSSpectralShapeShift("SMSSpectralShapeShift");
+	static const char * metadata[] = {
+		"key", "SMSSpectralShapeShift",
+		"category", "SMS Transformations",
+		"description", "SMSSpectralShapeShift",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SMSSpectralShapeShift> regSMSSpectralShapeShift("SMSSpectralShapeShift");
+	static FactoryRegistrator<ProcessingFactory, SMSSpectralShapeShift> reg = metadata;
 }
 
 bool SMSSpectralShapeShift::Do(const SpectralPeakArray& 

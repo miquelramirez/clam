@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, HumRemover> regHumRemover("HumRemover");
+	static const char * metadata[] = {
+		"key", "HumRemover",
+	//	"category", "Spectral Transformations",
+	//	"description", "HumRemover",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, HumRemover> regHumRemover("HumRemover");
+	static FactoryRegistrator<ProcessingFactory, HumRemover> reg = metadata;
 }
 
 bool HumRemover::Do(const Spectrum& in, Spectrum& out)

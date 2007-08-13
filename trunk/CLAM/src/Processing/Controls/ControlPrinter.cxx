@@ -8,7 +8,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, ControlPrinter> regControlPrinter("ControlPrinter");
+	static const char * metadata[] = {
+		"key", "ControlPrinter",
+		"category", "Controls",
+		"description", "ControlPrinter",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, ControlPrinter> regControlPrinter("ControlPrinter");
+	static FactoryRegistrator<ProcessingFactory, ControlPrinter> reg = metadata;
 }
 
 	void ControlPrinterConfig::DefaultInit()

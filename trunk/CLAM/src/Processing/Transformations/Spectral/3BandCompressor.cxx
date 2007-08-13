@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, ThreeBandCompressor> regThreeBandCompressor("ThreeBandCompressor");
+	static const char * metadata[] = {
+		"key", "ThreeBandCompressor",
+		"category", "Spectral Transformations",
+		"description", "ThreeBandCompressor",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, ThreeBandCompressor> regThreeBandCompressor("ThreeBandCompressor");
+	static FactoryRegistrator<ProcessingFactory, ThreeBandCompressor> reg = metadata;
 }
 
 bool ThreeBandCompressor::Do(const Spectrum& in, Spectrum& out)

@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralCombTriang> regSpectralCombTriang("SpectralCombTriang");
+	static const char * metadata[] = {
+		"key", "SpectralCombTriang",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralCombTriang",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralCombTriang> regSpectralCombTriang("SpectralCombTriang");
+	static FactoryRegistrator<ProcessingFactory, SpectralCombTriang> reg = metadata;
 }
 
 

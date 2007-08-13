@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, Deesser> regDeesser("Deesser");
+	static const char * metadata[] = {
+		"key", "Deesser",
+	//	"category", "Spectral Transformations",
+	//	"description", "Deesser",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, Deesser> regDeesser("Deesser");
+	static FactoryRegistrator<ProcessingFactory, Deesser> reg = metadata;
 }
 
 bool Deesser::Do(const Spectrum& in, Spectrum& out)

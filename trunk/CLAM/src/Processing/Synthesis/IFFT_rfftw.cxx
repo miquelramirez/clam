@@ -32,7 +32,14 @@ namespace CLAM {
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, IFFT_rfftw> regIFFT_rfftw("IFFT_rfftw");
+	static const char * metadata[] = {
+		"key", "IFFT_rfftw",
+		"category", "Synthesis",
+		"description", "IFFT_rfftw",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, IFFT_rfftw> regIFFT_rfftw("IFFT_rfftw");
+	static FactoryRegistrator<ProcessingFactory, IFFT_rfftw> reg = metadata;
 }
 	
 	bool IFFT_rfftw::ConcreteConfigure(const ProcessingConfig& c)

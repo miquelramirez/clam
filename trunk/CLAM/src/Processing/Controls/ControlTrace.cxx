@@ -33,8 +33,23 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, ControlTraceReader> regControlTraceReader("ControlTraceReader");
-	static FactoryRegistrator<ProcessingFactory, CLAM::ControlTraceWriter> regControlTraceWriter("ControlTraceWriter");
+	static const char * metadataReader[] = {
+		"key", "ControlTraceReader",
+		"category", "Controls",
+		"description", "ControlTraceReader",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, ControlTraceReader> regControlTraceReader("ControlTraceReader");
+	static FactoryRegistrator<ProcessingFactory, ControlTraceReader> regReader = metadataReader;
+
+	static const char * metadataWriter[] = {
+		"key", "ControlTraceWriter",
+		"category", "Controls",
+		"description", "ControlTraceWriter",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, CLAM::ControlTraceWriter> regControlTraceWriter("ControlTraceWriter");
+	static FactoryRegistrator<ProcessingFactory, CLAM::ControlTraceWriter> regWriter = metadataWriter;
 }
 
 ControlTraceEvent::ControlTraceEvent()

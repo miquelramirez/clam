@@ -29,7 +29,14 @@ namespace CLAM
 
 namespace Hidden
 {	
-	static FactoryRegistrator<ProcessingFactory, SMSTimeStretch> regSMSTimeStretch("SMSTimeStretch");
+	static const char * metadata[] = {
+		"key", "SMSTimeStretch",
+		"category", "SMS Transformations",
+		"description", "SMSTimeStretch",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SMSTimeStretch> regSMSTimeStretch("SMSTimeStretch");
+	static FactoryRegistrator<ProcessingFactory, SMSTimeStretch> reg = metadata;
 }
 
 SMSTimeStretch::SMSTimeStretch():mAmount("Amount",this)

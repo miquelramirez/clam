@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SegmentSMSMorph> regSegmentSMSMorph("SegmentSMSMorph");
+	static const char * metadata[] = {
+		"key", "SegmentSMSMorph",
+		"category", "SMS Transformations",
+		"description", "SegmentSMSMorph",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SegmentSMSMorph> regSegmentSMSMorph("SegmentSMSMorph");
+	static FactoryRegistrator<ProcessingFactory, SegmentSMSMorph> reg = metadata;
 }
 
 SegmentSMSMorph::SegmentSMSMorph():

@@ -30,7 +30,14 @@ template class BinaryAudioOp< Multiply<TData> >;
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, AudioMultiplier> regAudioMultiplier("AudioMultiplier");
+	static const char * metadata[] = {
+		"key", "AudioMultiplier",
+		"category", "Arithmetic Operations",
+		"description", "AudioMultiplier",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, AudioMultiplier> regAudioMultiplier("AudioMultiplier");
+	static FactoryRegistrator<ProcessingFactory, AudioMultiplier> reg = metadata;
 }
 
 	

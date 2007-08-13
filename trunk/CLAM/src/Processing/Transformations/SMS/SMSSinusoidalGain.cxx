@@ -28,7 +28,14 @@ namespace CLAM
 
 namespace Hidden
 {	
-	static FactoryRegistrator<ProcessingFactory, SMSSinusoidalGain> regSMSSinusoidalGain("SMSSinusoidalGain");
+	static const char * metadata[] =  {
+		"key", "SMSSinusoidalGain",
+		"category", "SMS Transformations",
+		"description", "SMSSinusoidalGain",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SMSSinusoidalGain> regSMSSinusoidalGain("SMSSinusoidalGain");
+	static FactoryRegistrator<ProcessingFactory, SMSSinusoidalGain> reg = metadata;
 }
 
 

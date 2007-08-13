@@ -29,7 +29,14 @@ namespace CLAM
 
 namespace Hidden 
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralSynthesis> regSpectralSynthesis("SpectralSynthesis");
+	static const char * metadata[] = {
+		"key", "SpectralSynthesis",
+		"category", "Synthesis",
+		"description", "SpectralSynthesis",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralSynthesis> regSpectralSynthesis("SpectralSynthesis");
+	static FactoryRegistrator<ProcessingFactory, SpectralSynthesis> reg = metadata;
 }
 
 void SpectralSynthesis::AttachChildren()

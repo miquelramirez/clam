@@ -31,7 +31,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, AutoPanner> regAutoPanner("AutoPanner");
+	static const char * metadata[] = {
+		"key", "AutoPanner",
+		"category", "Controls",
+		"description", "AutoPanner",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, AutoPanner> regAutoPanner("AutoPanner");
+	static FactoryRegistrator<ProcessingFactory, AutoPanner> reg = metadata;
 }
 
 void AutoPannerConfig::DefaultInit(void)

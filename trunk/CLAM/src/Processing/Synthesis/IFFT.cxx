@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, IFFT> regIFFT("IFFT");
+	static const char * metadata[] = {
+		"key", "IFFT",
+		"category", "Synthesis",
+		"description", "IFFT",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, IFFT> regIFFT("IFFT");
+	static FactoryRegistrator<ProcessingFactory, IFFT> reg = metadata;
 }
 
 }

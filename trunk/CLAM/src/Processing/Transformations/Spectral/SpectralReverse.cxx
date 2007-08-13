@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralReverse> regSpectralReverse("SpectralReverse");
+	static const char * metadata[] = {
+		"key", "SpectralReverse",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralReverse",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralReverse> regSpectralReverse("SpectralReverse");
+	static FactoryRegistrator<ProcessingFactory, SpectralReverse> reg = metadata;
 }
 
 bool SpectralReverse::Do(const Spectrum& in, Spectrum& out)

@@ -26,7 +26,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralExciter> regSpectralExciter("SpectralExciter");
+	static const char * metadata[] = {
+		"key", "SpectralExciter",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralExciter",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralExciter> regSpectralExciter("SpectralExciter");
+	static FactoryRegistrator<ProcessingFactory, SpectralExciter> reg = metadata;
 }
 
 

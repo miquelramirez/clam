@@ -26,7 +26,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralSpread> regSpectralSpread("SpectralSpread");
+	static const char * metadata[] = {
+		"key", "SpectralSpread",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralSpread",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralSpread> regSpectralSpread("SpectralSpread");
+	static FactoryRegistrator<ProcessingFactory, SpectralSpread> reg = metadata;
 }
 
 bool SpectralSpread::Do(const Spectrum& 

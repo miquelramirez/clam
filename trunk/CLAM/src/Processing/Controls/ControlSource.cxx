@@ -27,7 +27,14 @@ namespace CLAM
 {
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, ControlSource> regControlSource("ControlSource");
+	static const char * metadata[] = {
+		"key", "ControlSource",
+		"category", "Controls",
+		"description", "ControlSource",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, ControlSource> regControlSource("ControlSource");
+	static FactoryRegistrator<ProcessingFactory, ControlSource> reg = metadata;
 }
 
 

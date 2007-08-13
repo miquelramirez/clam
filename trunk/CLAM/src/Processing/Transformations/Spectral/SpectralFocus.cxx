@@ -27,7 +27,14 @@ namespace CLAM
 
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, SpectralFocus> regSpectralFocus("SpectralFocus");
+	static const char * metadata[] = {
+		"key", "SpectralFocus",
+	//	"category", "Spectral Transformations",
+	//	"description", "SpectralFocus",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SpectralFocus> regSpectralFocus("SpectralFocus");
+	static FactoryRegistrator<ProcessingFactory, SpectralFocus> reg = metadata;
 }
 	
 bool SpectralFocus::Do(const Spectrum& 

@@ -36,7 +36,14 @@ namespace CLAM
 
 namespace Hidden
 {
-		static FactoryRegistrator<ProcessingFactory, SDIFInStreaming> regSDIFInStreaming ("SDIFInStreaming");
+	static const char * metadata[] = {
+		"key", "SDIFInStreaming",
+	//	"category", "SDIF I/O",
+	//	"description", "SDIFInStreaming",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SDIFInStreaming> regSDIFInStreaming ("SDIFInStreaming");
+	static FactoryRegistrator<ProcessingFactory, SDIFInStreaming> reg = metadata;
 }
 
 SDIFInStreaming::SDIFInStreaming():

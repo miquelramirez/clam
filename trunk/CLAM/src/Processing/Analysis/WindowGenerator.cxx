@@ -31,7 +31,14 @@ namespace CLAM
 	
 namespace Hidden
 {
-	static FactoryRegistrator<ProcessingFactory, WindowGenerator> regWindowGenerator("WindowGenerator");
+	static const char * metadata[] = {
+		"key", "WindowGenerator",
+		"category", "Generators", // must change to Analysis?
+		"description", "WindowGenerator",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, WindowGenerator> regWindowGenerator("WindowGenerator");
+	static FactoryRegistrator<ProcessingFactory, WindowGenerator> reg = metadata;
 }
 
 /* Processing  object Method  implementations */
