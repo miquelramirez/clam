@@ -38,14 +38,14 @@ public:
 		_segmentEditor->setAutoFillBackground(true);
 		_segmentEditor->setWhatsThis(
 			tr("<p>The <b>segmentation editor</b> allows you to change song level segmentations.</p>\n"
-"                        <ul>\n"
-"                        <li>Click Body: Set as current segment</li>\n"
-"                        <li>Dragging segment limit: Moves it</li>\n"
-"                        <li>Insert + Click: Inserts a segment</li>\n"
-"                        <li>Delete: Deletes the current segment</li>\n"
-"                        <li>Dragging play positon: Moves it.</li>\n"
-"                        <li>'r'+Click: Set the current play position.</li>\n"
-"                        </ul>\n"));
+				"<ul>\n"
+				"<li>Click Body: Set as current segment</li>\n"
+				"<li>Dragging segment limit: Moves it</li>\n"
+				"<li>Insert + Click: Inserts a segment</li>\n"
+				"<li>Delete: Deletes the current segment</li>\n"
+				"<li>Dragging play positon: Moves it.</li>\n"
+				"<li>'r'+Click: Set the current play position.</li>\n"
+				"</ul>\n"));
 
 		QWidget * propertiesPane = new QWidget(this);
 		QVBoxLayout * propertiesPaneLayout = new QVBoxLayout(propertiesPane);
@@ -85,9 +85,9 @@ public:
 				this, SIGNAL(segmentationDataChanged() ) );
 		// Segment editing
 		connect(_segmentEditor, SIGNAL(segmentOnsetChanged(unsigned,double)),
-				this, SIGNAL(segmentationDataChanged()));
+				this, SLOT(updateSegmentations()));
 		connect(_segmentEditor, SIGNAL(segmentOffsetChanged(unsigned,double)),
-				this, SIGNAL(segmentationDataChanged()));
+				this, SLOT(updateSegmentations()));
 		connect(_segmentEditor, SIGNAL(currentSegmentChanged()),
 				this, SLOT(changeCurrentSegment()));
 		connect(_segmentEditor, SIGNAL(segmentDeleted(unsigned)),
@@ -107,9 +107,9 @@ public:
 	{
 		_segmentEditor->setCurrentSegmentFollowsPlay(enabled);
 	}
-	void updateLocator(double timeMilliseconds, bool loque)
+	void updateLocator(double timeMilliseconds, bool paused)
 	{
-		_segmentEditor->updateLocator(timeMilliseconds, loque);
+		_segmentEditor->updateLocator(timeMilliseconds, paused);
 	}
 	void updateLocator(double timeMilliseconds)
 	{
@@ -128,6 +128,16 @@ public:
 	const CLAM::Segmentation * getSegmentation() const
 	{
 		return _segmentation;
+	}
+	void adaptToSchema()
+	{
+		_segmentationSelection->clear();
+		typedef std::list<std::string> Names;
+		const Names & segmentationNames =
+			_project.GetNamesByScopeAndType("Song", "Segmentation");
+		QStringList segmentations;
+		for (Names::const_iterator it=segmentationNames.begin(); it!=segmentationNames.end(); it++)
+			_segmentationSelection->addItem(it->c_str());
 	}
 signals:
 	void segmentationSelectionChanged();
@@ -238,21 +248,7 @@ public slots:
 				}
 			} break;
 		}
-		std::cout << "TODO: call annotator's markCurrentSongChanged" << std::endl;
-		// TODO: This should be called from the annotator class
-		// markCurrentSongChanged(true);
-		std::cout << "TODO: Warn other segment panes" << std::endl;
-		std::cout << "TODO: Update player" << std::endl;
-	}
-	void updateSchema()
-	{
-		_segmentationSelection->clear();
-		typedef std::list<std::string> Names;
-		const Names & segmentationNames =
-			_project.GetNamesByScopeAndType("Song", "Segmentation");
-		QStringList segmentations;
-		for (Names::const_iterator it=segmentationNames.begin(); it!=segmentationNames.end(); it++)
-			_segmentationSelection->addItem(it->c_str());
+		emit segmentationDataChanged();
 	}
 	void insertSegment(unsigned index)
 	{
