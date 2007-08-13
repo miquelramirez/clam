@@ -24,8 +24,18 @@
 
 namespace Hidden
 {
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ChordRankingMonitor> regChordRankingMonitor("ChordRanking");
-	static class ChordRankingMetadata
+	static const char * metadata[] = {
+		"key", "ChordRanking",
+		"category", "Monitors",
+		"description", "ChordRanking",
+		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
+		"icon", "chordranking.svg",
+		0
+	};
+	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ChordRankingMonitor> regChordRankingMonitor("ChordRanking");
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ChordRankingMonitor> reg = metadata;
+
+/*	static class ChordRankingMetadata
 	{
 	public:
 		ChordRankingMetadata()
@@ -34,7 +44,7 @@ namespace Hidden
 			factory.AddAttribute("ChordRanking", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
 			factory.AddAttribute("ChordRanking", "icon", "chordranking.svg");
 		}
-	} dummy;
+	} dummy;*/
 }
 
 #include "ChordRanking.hxx"

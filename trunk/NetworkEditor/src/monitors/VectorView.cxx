@@ -24,9 +24,18 @@
 
 namespace Hidden
 {
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VectorViewMonitor> regVectorViewMonitor("VectorView");
+	static const char * metadata[] = {
+		"key", "VectorView",
+		"category", "Monitors",
+		"description", "VectorView",
+		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
+		"icon", "lpmodel.svg",
+		0
+	};
+	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VectorViewMonitor> regVectorViewMonitor("VectorView");
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VectorViewMonitor> reg = metadata;
 
-	static class VectorViewMetadata
+/*	static class VectorViewMetadata
 	{
 	public:
 		VectorViewMetadata()
@@ -35,7 +44,7 @@ namespace Hidden
 			factory.AddAttribute("VectorView", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
 			factory.AddAttribute("VectorView", "icon", "lpmodel.svg");
 		}
-	} dummy;
+	} dummy;*/
 }
 
 CLAM::VM::VectorView::~VectorView()

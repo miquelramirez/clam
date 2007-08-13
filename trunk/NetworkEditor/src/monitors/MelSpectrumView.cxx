@@ -24,7 +24,14 @@
 
 namespace detail
 {
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MelSpectrumViewMonitor> regMelSpectrumViewMonitor("MelSpectrumView");
+	static const char * metadata[] = {
+		"key", "MelSpectrumView",
+		"category", "Monitors",
+		"description", "MelSpectrumView",
+		0
+	};
+	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MelSpectrumViewMonitor> regMelSpectrumViewMonitor("MelSpectrumView");
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MelSpectrumViewMonitor> reg = metadata;
 }
 
 CLAM::VM::MelSpectrumView::~MelSpectrumView()

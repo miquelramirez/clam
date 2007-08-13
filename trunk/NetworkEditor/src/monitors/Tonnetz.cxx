@@ -24,9 +24,18 @@
 
 namespace Hidden
 {
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, TonnetzMonitor> regTonnetzMonitor("Tonnetz");
+	static const char * metadata[] = {
+		"key", "Tonnetz",
+		"category", "Monitors",
+		"description", "Tonnetz",
+		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
+		"icon", "tonnetz.svg",
+		0
+	};
+	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, TonnetzMonitor> regTonnetzMonitor("Tonnetz");
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, TonnetzMonitor> reg = metadata;
 
-	static class TonnetzMetadata
+/*	static class TonnetzMetadata
 	{
 	public:
 		TonnetzMetadata()
@@ -35,7 +44,7 @@ namespace Hidden
 			factory.AddAttribute("Tonnetz", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
 			factory.AddAttribute("Tonnetz", "icon", "tonnetz.svg");
 		}
-	} dummy;
+	} dummy;*/
 }
 
 #include "Tonnetz.hxx"

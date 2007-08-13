@@ -3,9 +3,18 @@
 
 namespace Hidden
 {
+	static const char * metadata[] = {
+		"key", "Vumeter",
+		"category", "Monitors",
+		"description", "Vumeter",
+		"port_monitor_type", typeid(CLAM::TData).name(),
+		"icon", "vumeter.svg",
+		0
+	};
+	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VumeterMonitor> regVumeterMonitor("Vumeter");
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VumeterMonitor> regVumeterMonitor("Vumeter");
 
-	static class VumeterMetadata
+/*	static class VumeterMetadata
 	{
 	public:
 		VumeterMetadata()
@@ -14,7 +23,7 @@ namespace Hidden
 			factory.AddAttribute("Vumeter", "port_monitor_type", typeid(CLAM::TData).name());
 			factory.AddAttribute("Vumeter", "icon", "vumeter.svg");
 		}
-	} dummy;
+	} dummy;*/
 }
 
 void Vumeter::paintEvent(QPaintEvent * event)

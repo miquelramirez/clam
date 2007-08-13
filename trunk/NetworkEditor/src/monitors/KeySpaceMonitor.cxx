@@ -24,7 +24,17 @@
 
 namespace Hidden
 {
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, KeySpaceMonitor> regKeySpaceMonitor("KeySpace");
+	static const char * metadata[] = {
+		"key", "KeySpace",
+		"category", "Monitors",
+		"description", "KeySpace",
+		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
+		"icon", "keyspace.svg",
+		0
+	};
+	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, KeySpaceMonitor> regKeySpaceMonitor("KeySpace");
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, KeySpaceMonitor> reg = metadata;
+
 	static class KeySpaceMetadata
 	{
 	public:

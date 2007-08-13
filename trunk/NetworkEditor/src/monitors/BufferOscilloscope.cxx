@@ -3,9 +3,18 @@
 
 namespace Hidden
 {
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, BufferOscilloscopeMonitor> regBufferOscilloscopeMonitor("BufferOscilloscope");
+	static const char * metadata[] = {
+		"key", "BufferOscilloscope",
+		"category", "Monitors",
+		"description", "BufferOscilloscope",
+		"port_monitor_type", typeid(CLAM::Audio).name(),
+		"icon", "oscilloscope.svg",
+		0
+	};
+	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, BufferOscilloscopeMonitor> regBufferOscilloscopeMonitor("BufferOscilloscope");
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, BufferOscilloscopeMonitor> reg = metadata;
 
-	static class BufferOscilloscopeMonitorMetadata
+/*	static class BufferOscilloscopeMonitorMetadata
 	{
 	public:
 		BufferOscilloscopeMonitorMetadata()
@@ -14,7 +23,7 @@ namespace Hidden
 			factory.AddAttribute("BufferOscilloscope", "port_monitor_type", typeid(CLAM::Audio).name());
 			factory.AddAttribute("BufferOscilloscope", "icon", "oscilloscope.svg");
 		}
-	} dummy;
+	} dummy;*/
 
 }
 
