@@ -3,8 +3,18 @@
 
 namespace detail
 {
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, OscilloscopeMonitor> regOscilloscopeMonitor("Oscilloscope");
-	static class OscilloscopeMonitorMetadata
+	static const char * metadata[] = {
+		"key", "Oscilloscope",
+		"category", "Monitors",
+		"description", "Oscilloscope",
+		"port_monitor_type", typeid(CLAM::TData).name(),
+		"icon", "oscilloscope.svg",
+		0
+	};
+	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, OscilloscopeMonitor> regOscilloscopeMonitor("Oscilloscope");
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, OscilloscopeMonitor> reg = metadata;
+
+/*	static class OscilloscopeMonitorMetadata
 	{
 	public:
 		OscilloscopeMonitorMetadata()
@@ -13,6 +23,6 @@ namespace detail
 			factory.AddAttribute("Oscilloscope", "port_monitor_type", typeid(CLAM::TData).name());
 			factory.AddAttribute("Oscilloscope", "icon", "oscilloscope.svg");
 		}
-	} dummy;
+	} dummy;*/
 }
 

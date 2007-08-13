@@ -24,7 +24,14 @@
 
 namespace detail
 {
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, LPModelViewMonitor> regLPModelViewMonitor("LPModelView");
+	static const char * metadata[] = {
+		"key", "LPModelView",
+		"category", "Monitors",
+		"description", "LPModelView",
+		0
+	};
+	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, LPModelViewMonitor> regLPModelViewMonitor("LPModelView");
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, LPModelViewMonitor> reg = metadata;
 }
 
 #include <QtGui/QPixmap>

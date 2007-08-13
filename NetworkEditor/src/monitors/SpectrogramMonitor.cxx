@@ -33,15 +33,5 @@ namespace Hidden
 	};
 	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, SpectrogramMonitor> regSpectrogramMonitor("Spectrogram");
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, SpectrogramMonitor> reg = metadata;
-	/*static class SpectrogramMetadata
-	{
-	public:
-		SpectrogramMetadata()
-		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("Spectrogram", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
-			//factory.AddAttribute("Spectrogram", "icon", "keyspace.svg");
-		}
-	} dummy;*/
 }
 
