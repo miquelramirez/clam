@@ -11,6 +11,8 @@
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
 #include "KeySpaceMonitor.hxx"
+#include "Spectrogram.hxx"
+#include "SpectrogramMonitor.hxx"
 #include "ChordRanking.hxx"
 #include "Tunner.hxx"
 #include "LPModelView.hxx"
@@ -126,6 +128,12 @@ QWidget * embededWidgetFor(CLAM::Processing * processing, QWidget * canvas)
 	{
 		CLAM::VM::KeySpace * widget = new CLAM::VM::KeySpace(canvas);
 		widget->setDataSource( *dynamic_cast<KeySpaceMonitor*>(processing) );
+		return widget;
+	}
+	if (className=="Spectrogram")
+	{
+		CLAM::VM::Spectrogram * widget = new CLAM::VM::Spectrogram(canvas);
+		widget->setDataSource( *dynamic_cast<SpectrogramMonitor*>(processing) );
 		return widget;
 	}
 	if (className=="ChordRanking")
