@@ -416,7 +416,7 @@ void Annotator::globalDescriptorsTableChanged(int row)
 
 void Annotator::refreshSegmentation()
 {
-	auralizeMarks(); // TODO: Not in the extracted version!!
+	auralizeMarks();
 }
 
 void Annotator::adaptEnvelopesToCurrentSchema()
@@ -497,8 +497,8 @@ void Annotator::makeConnections()
 
 	// Current position update
 	// TODO: This is pending
-//	connect(mSegmentEditor, SIGNAL(selectedRegion(double,double)),
-//			this, SLOT(setCurrentTime(double,double)));
+	connect(_segmentationPane, SIGNAL(segmentEditorRegionChanged(double,double)),
+			this, SLOT(setCurrentTime(double,double)));
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
 			this, SLOT(setCurrentTime(double,double)));
 
@@ -803,7 +803,7 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	_segmentationPane->setAudio(mCurrentAudio,false);
 	_segmentationPane->setData(mpDescriptorPool);
 	_segmentationPane->refreshSegmentation();
-	refreshSegmentation();
+	auralizeMarks();
 	mBPFEditor->show();
 	refreshEnvelopes();
 	refreshInstantViews();
@@ -952,6 +952,7 @@ void Annotator::refreshGlobalDescriptorsTable()
 	mGlobalDescriptors->refreshData(0,mpDescriptorPool);
 	mDescriptorsTable->show();
 }
+
 
 void Annotator::auralizeMarks()
 {
