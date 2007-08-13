@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __LadspaBridge_hxx__
-#define __LadspaBridge_hxx__
+#ifndef __ProcessingClass2Ladspa_hxx__
+#define __ProcessingClass2Ladspa_hxx__
 
 #include <ladspa.h>
 #include <vector>
@@ -32,7 +32,7 @@
 #include "OutControl.hxx"
 
 
-class LadspaBridge
+class ProcessingClass2Ladspa
 {
 public:	
 	std::vector<CLAM::TData *> mLocationsList;
@@ -67,7 +67,7 @@ public:
 	virtual const char * GetInPortName(int id) = 0;
 	virtual const char * GetOutPortName(int id) = 0;
 
-	LadspaBridge(int id)
+	ProcessingClass2Ladspa(int id)
 	{
 		mId = id;
 	}
@@ -78,10 +78,10 @@ public:
 };
 
 template<class Proc>
-class LadspaBridgeTmpl : public LadspaBridge, public Proc 
+class ProcessingClass2LadspaTmpl : public ProcessingClass2Ladspa, public Proc 
 {
 public:
-	static LadspaBridge* Create(int id) { return new LadspaBridgeTmpl<Proc>(id); }
+	static ProcessingClass2Ladspa* Create(int id) { return new ProcessingClass2LadspaTmpl<Proc>(id); }
 	int GetInControlsIndex();
 	int GetOutControlsIndex();
 	int GetInPortsIndex();
@@ -90,8 +90,8 @@ public:
 	bool DoSizeCheck(int size);
 	bool CanDo();
 	
-	LadspaBridgeTmpl(int id)
-		: LadspaBridge(id)
+	ProcessingClass2LadspaTmpl(int id)
+		: ProcessingClass2Ladspa(id)
 	{
 	}
 
@@ -186,38 +186,38 @@ public:
 };
 
 template<class Proc>
-int LadspaBridgeTmpl<Proc>::GetInControlsIndex()
+int ProcessingClass2LadspaTmpl<Proc>::GetInControlsIndex()
 {
 	return 0;
 }
 
 template<class Proc>
-int LadspaBridgeTmpl<Proc>::GetOutControlsIndex()
+int ProcessingClass2LadspaTmpl<Proc>::GetOutControlsIndex()
 {
 	return GetInControlsSize();
 }
 
 template<class Proc>
-int LadspaBridgeTmpl<Proc>::GetInPortsIndex()
+int ProcessingClass2LadspaTmpl<Proc>::GetInPortsIndex()
 {
 	return GetOutControlsIndex() + GetOutControlsSize();
 }
 
 template<class Proc>
-int LadspaBridgeTmpl<Proc>::GetOutPortsIndex()
+int ProcessingClass2LadspaTmpl<Proc>::GetOutPortsIndex()
 {
 	return GetInPortsIndex() + GetInPortsSize();
 }
 
 template<class Proc>
-void LadspaBridgeTmpl<Proc>::DoControls()
+void ProcessingClass2LadspaTmpl<Proc>::DoControls()
 {
 	for(int i=0;i<GetInControlsSize();i++)
 		GetInControls().GetByNumber(i).DoControl((CLAM::TData)*mInControlsList[i]);
 }	
 
 template<class Proc>
-bool LadspaBridgeTmpl<Proc>::DoSizeCheck(int size)
+bool ProcessingClass2LadspaTmpl<Proc>::DoSizeCheck(int size)
 {		
 	for(int i=0;i<GetInPorts().Size();i++)
 	{
@@ -235,5 +235,5 @@ bool LadspaBridgeTmpl<Proc>::DoSizeCheck(int size)
 	}
 }
 
-#endif // __LadspaBridge_hxx__
+#endif // __ProcessingClass2Ladspa_hxx__
 

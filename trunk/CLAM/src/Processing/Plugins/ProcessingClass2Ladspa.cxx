@@ -22,16 +22,16 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "LadspaBridge.hxx"
+#include "ProcessingClass2Ladspa.hxx"
 
-extern LadspaBridge * Instance(void);
+extern ProcessingClass2Ladspa * Instance(void);
 
 extern "C"
 {
 	
 LADSPA_Handle Instantiate(const struct _LADSPA_Descriptor * Descriptor,  unsigned long SampleRate)
 {
-	LadspaBridge * test = Instance();
+	ProcessingClass2Ladspa * test = Instance();
 
 	(test->mInControlsList).resize(test->GetInControlsSize());
 	(test->mOutControlsList).resize(test->GetOutControlsSize());
@@ -41,7 +41,7 @@ LADSPA_Handle Instantiate(const struct _LADSPA_Descriptor * Descriptor,  unsigne
 
 void ConnectPort(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data * DataLocation)
 {
-	LadspaBridge * test = (LadspaBridge*)Instance;
+	ProcessingClass2Ladspa * test = (ProcessingClass2Ladspa*)Instance;
 
 	if(Port < test->GetInControlsIndex() + test->GetInControlsSize()) // is an "in control"
 	{
@@ -72,13 +72,13 @@ void ConnectPort(LADSPA_Handle Instance, unsigned long Port, LADSPA_Data * DataL
 
 void Activate(LADSPA_Handle Instance)
 {
-	LadspaBridge* test = (LadspaBridge*)Instance;
+	ProcessingClass2Ladspa* test = (ProcessingClass2Ladspa*)Instance;
 	test->Start();
 }
   
 void Run(LADSPA_Handle Instance, unsigned long SampleCount)
 {
-	LadspaBridge * test = (LadspaBridge*)Instance;
+	ProcessingClass2Ladspa * test = (ProcessingClass2Ladspa*)Instance;
 	test->DoControls();
 	test->DoSizeCheck(SampleCount);
 	test->DoProc();
@@ -86,13 +86,13 @@ void Run(LADSPA_Handle Instance, unsigned long SampleCount)
 
 void DeActivate(LADSPA_Handle Instance)
 {
-	LadspaBridge * test = (LadspaBridge*)Instance;
+	ProcessingClass2Ladspa * test = (ProcessingClass2Ladspa*)Instance;
 	test->Stop();
 }
 
 void CleanUp(LADSPA_Handle Instance)
 {
-	LadspaBridge * test = (LadspaBridge*)Instance;
+	ProcessingClass2Ladspa * test = (ProcessingClass2Ladspa*)Instance;
 	delete test;
 }
 
@@ -102,7 +102,7 @@ LADSPA_Descriptor * g_psDescriptor;
 
 class StartupShutdownHandler 
 {
-	LadspaBridge* test;
+	ProcessingClass2Ladspa* test;
 	char ** pcPortNames;
 	LADSPA_PortDescriptor * piPortDescriptors;
 	LADSPA_PortRangeHint * psPortRangeHints;
