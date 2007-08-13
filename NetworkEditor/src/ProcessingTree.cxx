@@ -34,7 +34,7 @@
 
 namespace NetworkGUI
 {
-const static char * processingClasses[] = {
+/*const static char * processingClasses[] = {
 	"Audio Input/Output",
 	"AudioSource",
 	"AudioSink",
@@ -177,7 +177,7 @@ const static char * processingClasses[] = {
 	"OSCSourceProcessing",
 	0,
 	0
-};
+};*/
 
 ProcessingTree::ProcessingTree( QWidget * parent)
 	: QTreeWidget(parent)
@@ -213,7 +213,15 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			QTreeWidgetItem * categoryTree = new QTreeWidgetItem( this, QStringList() << category.c_str());
 			for(itKey = keys.begin(); itKey != keys.end(); itKey++)
 			{
-				std::string description = CLAM::ProcessingFactory::GetInstance().GetValuesFromAttribute(*itKey, "description").front();
+				std::string description;
+				if(CLAM::ProcessingFactory::GetInstance().GetValuesFromAttribute(*itKey, "description").empty())
+				{
+					description = *itKey;
+				}
+				else
+				{
+					description = CLAM::ProcessingFactory::GetInstance().GetValuesFromAttribute(*itKey, "description").front();
+				}
 				std::string key = *itKey;
 				QTreeWidgetItem * item = new QTreeWidgetItem( categoryTree, QStringList() << description.c_str());
 				item->setIcon(0, QIcon(":/icons/images/processing.png"));
