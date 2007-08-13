@@ -20,8 +20,7 @@
  */
 
 #include "AudioMultiplier.hxx"
-
-#include "LadspaBridge.hxx"
+#include "ProcessingClass2Ladspa.hxx"
 
 LadspaBridge* Instance(void)
 {
