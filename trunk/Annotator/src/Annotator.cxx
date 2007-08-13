@@ -377,7 +377,7 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	mStatusBar << tr("Adapting Interface to Frame level descriptors...") << mStatusBar;
 	adaptEnvelopesToCurrentSchema();
 	mStatusBar << tr("Adapting Interface to Segmentations...") << mStatusBar;
-	_segmentationPane->updateSchema();
+	_segmentationPane->adaptToSchema();
 	mStatusBar << tr("Updating schema browser...") << mStatusBar;
 	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
 	mStatusBar << tr("Creating instant views...") << mStatusBar;
@@ -629,6 +629,7 @@ void Annotator::updateSegmentation()
 		mMustUpdateMarkedAudio = true;
 	else
 		auralizeMarks();
+	// TODO: Future: Warn other panes about the segmentation changes
 }
 
 void Annotator::updatePendingAuralizationsChanges()
