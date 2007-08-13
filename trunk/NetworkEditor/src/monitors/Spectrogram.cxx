@@ -26,7 +26,7 @@
 /// Returns dummy data source for unbinded widget
 static CLAM::VM::FloatArrayDataSource & getDummySource()
 {
-	unsigned nBins=10;
+	unsigned nBins=24;
 	unsigned binGap = 2205.;
 	static std::vector<CLAM::TData> data(nBins);
 	data[5]=1; // C
@@ -80,13 +80,13 @@ static unsigned nKeyNodes=24;
 CLAM::VM::Spectrogram::Spectrogram(QWidget * parent) 
 	: QGLWidget(parent)
 	, _smooth(true)
-	, _nX(128)
-	, _nY(64)
+	, _nFrames(10)
+	, _nBins(10)
 {
 	_data = 0;
 	_dataSource = 0;
 	_updatePending=0;
-	_nBins=0;
+	//_nBins=0;
 	_maxValue=1;
 	static const struct GradientPoint 
 	{
@@ -182,36 +182,10 @@ void CLAM::VM::Spectrogram::paintGL()
 	_updatePending=0;
 }
 
-void CLAM::VM::Spectrogram::RecomputeWeights()
-{
-	std::cout << "Precomputing Spectrogram weights... " << std::flush;
-	TKeyNode *pKeyNodes = getKeyNodes();
-	_weights.resize(_nX*_nY*nKeyNodes);
-	for(unsigned i=0; i<_nX; i++)
-	{
-		float x1 = i / float(_nX);
-		for(unsigned k=0; k<_nY; k++)
-		{
-			float y1 = k / float(_nY);
-			for(unsigned m=0; m<nKeyNodes; m++)
-			{
-				double d1 = wdist(x1,pKeyNodes[m].x);
-				double d2 = wdist(y1,pKeyNodes[m].y);
-				double dist = d1*d1+d2*d2;											   
-				double g = dist*dist;
-				if (g < 1E-5)
-					g = 1E-5;
-				_weights[m+nKeyNodes*(k+_nY*i)] = 1. / g;
-			}
-		}
-	}
-	std::cout << "done" << std::endl;
-}
-
 void CLAM::VM::Spectrogram::DrawTiles()
-{
-	if (_weights.size()!=_nX*_nY*nKeyNodes)
-		RecomputeWeights();
+{		
+//	int _nFrames=1;	// ***
+	
 	float mean = 0;
 	_maxValue*=.5;
 	for (unsigned i=0; i<_nBins; i++)
@@ -223,23 +197,13 @@ void CLAM::VM::Spectrogram::DrawTiles()
 	if (_maxValue<1e-10) _maxValue=1e-10;
 	if (_maxValue<1.5*mean/_nBins) _maxValue=1.5*mean/_nBins;
 
-	if (_nBins!=nKeyNodes) return;
-
-	if (_texture.size()!=_nY*_nX*3) _texture.resize(_nY*_nX*3);
+	if (_texture.size()!=_nBins*_nFrames*3) _texture.resize(_nBins*_nFrames*3);
 	unsigned texel=0;
-	for(unsigned k=0; k<_nY; k++)
+	for(unsigned k=0; k<_nBins; k++)
 	{
-		for(unsigned i=0; i<_nX; i++)
+		for(unsigned i=0; i<_nFrames; i++)
 		{
-			double num = 0.;
-			double den = 0.;
-			for(unsigned m=0; m<nKeyNodes; m++)
-			{
-				unsigned weightIndex = m+nKeyNodes*(k+_nY*i);
-				num += _data[m] * _weights[weightIndex] /_maxValue;
-				den += _weights[weightIndex];
-			}
-			double value = (den != 0.) ? num / den : 0;
+			double value = _data[k];
 
 			float ColorIndex = value;
 			if (ColorIndex > 1.0)
@@ -253,7 +217,7 @@ void CLAM::VM::Spectrogram::DrawTiles()
 		}
 	}
 	glBindTexture(GL_TEXTURE_2D, _textureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _nX, _nY, /*border*/ 0,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _nFrames, _nBins, /*border*/ 0,
 		GL_RGB, GL_FLOAT, &_texture[0]);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _smooth? GL_LINEAR : GL_NEAREST );
@@ -270,24 +234,5 @@ void CLAM::VM::Spectrogram::DrawTiles()
 	glDrawArrays(GL_QUADS,0,5);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-}
-
-void CLAM::VM::Spectrogram::DrawLabels()
-{
-	TKeyNode *pKeyNodes = getKeyNodes();
-	for(unsigned i=0; i<nKeyNodes; i++)
-	{
-		float x1 = pKeyNodes[i].x;
-		float y1 = pKeyNodes[i].y;
-
-		if (y1 < 4./_nY)
-			y1 = 4./_nY;
-
-		float value = _data ? _data[i]/_maxValue : 0; 
-		if (value>.6) glColor3d(.1,0,0);
-		else          glColor3d(1,1,1);
-
-		renderText(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(), font());
-	}
 }
 
