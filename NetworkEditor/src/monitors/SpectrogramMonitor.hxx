@@ -41,8 +41,8 @@ private:
 	const CLAM::TData * frameData()
 	{
 		const std::vector<CLAM::TData> & pcp = FreezeAndGetData();
-		_size = pcp.size()? pcp.size()-1: 0;
-		return pcp.size()? &pcp[1] : 0;
+		_size = pcp.size();
+		return pcp.size()? &pcp[0] : 0;
 	}
 	void release()
 	{
