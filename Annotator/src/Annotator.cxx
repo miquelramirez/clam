@@ -396,7 +396,8 @@ void Annotator::adaptInstantViewsToSchema()
 			continue;
 		}
 		mInstantViewPlugins.push_back(plugin);
-		plugin->createView(mVSplit, mProject, instantViews[i]);
+		QWidget * view = plugin->createView(0, mProject, instantViews[i]);
+		mVSplit->addWidget(view);
 	}
 }
 
@@ -562,13 +563,15 @@ void Annotator::addInstantView()
 	config.SetType(viewType);
 	if (!plugin->configureDialog(mProject, config)) return;
 	mProject.GetViews().push_back(config);
-	plugin->createView(mVSplit, mProject, config);
+	QWidget * view = plugin->createView(0, mProject, config);
+	mVSplit->addWidget(view);
 	markProjectChanged(true);
 	if (mpDescriptorPool)
 		plugin->updateData(*mpDescriptorPool, mCurrentAudio.GetSampleRate());
 	else
 		plugin->clearData();
 	// TODO: Set current time
+	//plugin->setCurrentTime(timeMilliseconds);
 }
 void Annotator::fileOpenRecent()
 {
