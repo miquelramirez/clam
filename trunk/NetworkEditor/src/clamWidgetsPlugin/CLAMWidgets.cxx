@@ -7,6 +7,7 @@
 #include "PeakViewPlugin.hxx"
 #include "TonnetzPlugin.hxx"
 #include "KeySpacePlugin.hxx"
+#include "SpectrogramPlugin.hxx"
 #include "PolarChromaPeaksPlugin.hxx"
 #include "ChordRankingPlugin.hxx"
 #include "LPModelViewPlugin.hxx"
@@ -31,6 +32,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new PeakViewPlugin(this)
 		<< new TonnetzPlugin(this)
 		<< new KeySpacePlugin(this)
+		<< new SpectrogramPlugin(this)
 		<< new PolarChromaPeaksPlugin(this)
 		<< new ChordRankingPlugin(this)
 		<< new LPModelViewPlugin(this)

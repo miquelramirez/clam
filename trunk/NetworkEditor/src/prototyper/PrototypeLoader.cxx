@@ -35,6 +35,8 @@
 #include "Tonnetz.hxx"
 #include "KeySpace.hxx"
 #include "KeySpaceMonitor.hxx"
+#include "Spectrogram.hxx"
+#include "SpectrogramMonitor.hxx"
 #include "PolarChromaPeaks.hxx"
 #include "ChordRanking.hxx"
 #include "LPModelView.hxx"
@@ -224,6 +226,8 @@ void PrototypeLoader::ConnectWithNetwork()
 		("OutPort__.*", "CLAM::VM::Tonnetz");
 	ConnectWidgetsWithPorts<CLAM::VM::KeySpace,KeySpaceMonitor>
 		("OutPort__.*", "CLAM::VM::KeySpace");
+	ConnectWidgetsWithPorts<CLAM::VM::Spectrogram,SpectrogramMonitor>
+		("OutPort__.*", "CLAM::VM::Spectrogram");
 	ConnectWidgetsWithPorts<PolarChromaPeaks,PolarChromaPeaksMonitor>
 		("OutPort__.*", "PolarChromaPeaks");
 	ConnectWidgetsWithPorts<CLAM::VM::ChordRanking,ChordRankingMonitor>
