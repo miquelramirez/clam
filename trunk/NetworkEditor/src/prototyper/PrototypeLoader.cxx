@@ -385,7 +385,7 @@ bool PrototypeLoader::ReportMissingOutPort(const std::string & portName)
 		return false; // no problem :-)
 	QMessageBox::warning(_interface,
 		tr("Error connecting controls"),
-		tr("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
+		tr("The interface asked to connect to a port '%1' not available in the processing '%2'.") // TODO: Try with...
 			.arg(shortPortName.c_str())
 			.arg(processingName.c_str()
 			));
