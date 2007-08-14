@@ -37,6 +37,8 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
+
+		InControl mShiftAmount;
 	public:
 		const char* GetClassName() const
 		{
@@ -45,8 +47,9 @@ namespace CLAM{
 
 		FreqShift() 
 			: 
-			mIn("In Spectrum", this), 
-			mOut("Out Spectrum", this) 
+			mIn("In Spectrum", this),
+			mOut("Out Spectrum", this),
+			mShiftAmount("Shift Amount", this)
 		{
 			Configure( FrameTransformationConfig() );
 		}

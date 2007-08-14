@@ -46,8 +46,8 @@ bool SpectralAverage::Do(const Spectrum& in, Spectrum& out)
 	
 	int spectrumSize = in.GetSize();
 	
-	int nPointsToAverage = int(mAmount.GetLastValue());
-	int nPointsToAverageHalf = int(mAmount.GetLastValue()* 0.5);
+	int nPointsToAverage = int(mPoints.GetLastValue());
+	int nPointsToAverageHalf = int(mPoints.GetLastValue()* 0.5);
 	TData oneOverNPointsToAverage = 1./nPointsToAverage;
 		
 	mMag.Resize(spectrumSize);

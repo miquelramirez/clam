@@ -39,6 +39,7 @@ namespace CLAM{
 		OutPort<Spectrum> mOut;
 		
 		InControl mFundamentalCtl;
+		InControl mLogOverallFactor;
 	public:
 		const char* GetClassName() const
 		{
@@ -49,7 +50,8 @@ namespace CLAM{
 			: 
 			mIn("In Spectrum", this), 
 			mOut("Out Spectrum", this),
-			mFundamentalCtl("Fundamental", this)
+			mFundamentalCtl("Fundamental", this),
+			mLogOverallFactor("Overall Factor", this)
 		{
 			Configure( FrameTransformationConfig() );
 		}
@@ -59,8 +61,8 @@ namespace CLAM{
 		virtual bool InitControls()
 		{ 
 			GetInControl("Fundamental").DoControl(100);
-			GetInControl("Amount").DoControl(0);
-			
+			GetInControl("Overall Factor").DoControl(0);
+
 			return true;
 		}
 		

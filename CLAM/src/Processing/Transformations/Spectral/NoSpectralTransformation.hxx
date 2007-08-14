@@ -38,6 +38,7 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
+		InControl mAmount;
 	public:
 		const char* GetClassName() const
 		{
@@ -46,8 +47,9 @@ namespace CLAM{
 
 		NoSpectralTransformation() 
 			: 
-			mIn("In Spectrum", this), 
-			mOut("Out Spectrum", this) 
+			mIn("In Spectrum", this),
+			mOut("Out Spectrum", this),
+			mAmount("Amount", this)
 		{
 			Configure( FrameTransformationConfig() );
 		}

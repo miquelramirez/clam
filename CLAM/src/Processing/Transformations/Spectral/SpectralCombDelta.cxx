@@ -52,7 +52,7 @@ bool SpectralCombDelta::Do(const Spectrum& in, Spectrum& out)
 	
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
 	int fundamental = Round(mFundamentalCtl.GetLastValue()* spectralResolution);
-	TData overallFactor = log2lin(mAmount.GetLastValue());
+	TData overallFactor = log2lin(mLogOverallFactor.GetLastValue());
 	int i;
 	int n;
 	//first we set everything to 0 (it could be done more efficiently)
@@ -89,7 +89,7 @@ bool SpectralCombDelta::Do(const Spectrum& in, Spectrum& out)
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
 	TData freqFactor = mFreqSpaceFactorCtl.GetLastValue();
 	int fundamental = Round(mFundamentalCtl.GetLastValue()* spectralResolution);
-	TData overallFactor = log2lin(mAmount.GetLastValue());
+	TData overallFactor = log2lin(mLogOverallFactor.GetLastValue());
 	int i;
 	TData n;
 	//first we set everything to 0 (it could be done more efficiently)

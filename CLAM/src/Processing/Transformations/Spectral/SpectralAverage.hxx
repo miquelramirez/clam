@@ -38,6 +38,7 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
+		InControl mPoints;
 	public:
 		const char* GetClassName() const
 		{
@@ -46,8 +47,9 @@ namespace CLAM{
 
 		SpectralAverage() 
 			: 
-			mIn("In Spectrum", this), 
-			mOut("Out Spectrum", this) 
+			mIn("In Spectrum", this),
+			mOut("Out Spectrum", this),
+			mPoints("Average Points", this)
 		{
 			Configure( FrameTransformationConfig() );
 		}
@@ -56,7 +58,7 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Amount").DoControl(50);
+			GetInControl("Average Points").DoControl(50);
 			
 			return true;
 		}
