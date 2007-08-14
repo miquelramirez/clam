@@ -58,10 +58,10 @@ static CLAM::VM::FloatArrayDataSource & getDummySource()
 
 CLAM::VM::Spectrogram::Spectrogram(QWidget * parent) 
 	: QGLWidget(parent)
-	, _smooth(true)
-	, _nFrames(32)
 	, _nBins(0)
+	, _nFrames(32)
 	, _currentFrame(31)
+	, _smooth(true)
 {
 	_data = 0;
 	_dataSource = 0;
