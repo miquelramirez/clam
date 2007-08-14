@@ -26,34 +26,21 @@
 /// Returns dummy data source for unbinded widget
 static CLAM::VM::FloatArrayDataSource & getDummySource()
 {
-	unsigned nBins=24;
-	unsigned binGap = 2205.;
+	unsigned nBins=12;
 	static std::vector<CLAM::TData> data(nBins);
-	data[5]=1; // C
-	data[17]=.8; // c
-	data[21]=.8; // e
-	data[14]=.8; // a
-	data[10]=.6; // F
-	data[9]=.6; // E
-	data[1]=.6; // G#
-	data[8]=.6; // D#
-	data[22]=.6; // f
-	data[2]=.6; // A
-	data[0]=.6; // G
-	data[12]=.6; // g
-	data[18]=.6; // c#
-	static CLAM::VM::DummyFloatArrayDataSource source(nBins, &data[0]);
+	data[0]=.5;
+	data[4]=.3;
+	data[9]=.2;
+	data[7]=.4;
 	static const char * labels[] = {
 		"G", "G#", "A", "A#",
 		"B", "C", "C#", "D",
 		"D#", "E", "F", "F#",
-		"g", "g#", "a", "a#",
-		"b", "c", "c#", "d",
-		"d#", "e", "f", "f#",
 		0
 		};
-	source.setLabels(labels);
-	return source;
+	static CLAM::VM::DummyFloatArrayDataSource dataSource(nBins, &data[0]);
+	dataSource.setLabels(labels);
+	return dataSource;
 }
 
 CLAM::VM::Spectrogram::Spectrogram(QWidget * parent) 
@@ -176,7 +163,6 @@ void CLAM::VM::Spectrogram::DrawTiles()
 		if (_maxValue<_data[i]) _maxValue=_data[i];
 	}
 	if (_maxValue<1e-10) _maxValue=1e-10;
-	if (_maxValue<1e-10) _maxValue=1e-10;
 	if (_maxValue<1.5*mean/_nBins) _maxValue=1.5*mean/_nBins;
 	
 	if (_texture.size()!=realBinSize*_nFrames*3) _texture.resize(realBinSize*_nFrames*3);
@@ -195,15 +181,15 @@ void CLAM::VM::Spectrogram::DrawTiles()
 			double value = _data[k] / _maxValue;
 			value = value / 1.1;
 			
-			float ColorIndex = value;
-			if (ColorIndex > 1.0)
-				ColorIndex = 1.0;	
-			ColorIndex *= ColorIndex;
-			ColorIndex *= 200.f;
-			int cidx = floorf(ColorIndex);
-			_texture[texel++] = _paletteR[cidx];
-			_texture[texel++] = _paletteG[cidx];
-			_texture[texel++] = _paletteB[cidx];
+			float cidx = value;
+			if (cidx > 1.0)
+				cidx = 1.0;	
+
+			cidx *= 200.f;
+			cidx = floorf(cidx);
+			_texture[texel++] = _paletteR[(int)cidx];
+			_texture[texel++] = _paletteG[(int)cidx];
+			_texture[texel++] = _paletteB[(int)cidx];
 		}
 		
 	}
@@ -223,7 +209,7 @@ void CLAM::VM::Spectrogram::DrawTiles()
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 	float vertexes[] = {0,0,0,1,1,1,1,0};
 	float scale = float(_nBins)/realBinSize;
-	float xscroll = float(_currentFrame) / _nFrames;
+	float xscroll = _scrolling? (float(_currentFrame) / _nFrames) : 0;
 	float texvertexes[] = {0+xscroll,0,0+xscroll,scale,1+xscroll,scale,1+xscroll,0};
 	
 	glEnable(GL_TEXTURE_2D);

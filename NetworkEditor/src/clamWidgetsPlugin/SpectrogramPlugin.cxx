@@ -62,7 +62,7 @@ QString SpectrogramPlugin::group() const
 
 QIcon SpectrogramPlugin::icon() const
 {
-    return QIcon(":/icons/images/keyspace.svg");
+    return QIcon(":/icons/images/spectrogram.svg");
 }
 
 QString SpectrogramPlugin::toolTip() const

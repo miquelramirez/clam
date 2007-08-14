@@ -34,6 +34,7 @@ class QDESIGNER_WIDGET_EXPORT Spectrogram : public QGLWidget
 {
 	Q_OBJECT
 	Q_PROPERTY(bool smooth READ smooth WRITE setSmooth)
+	Q_PROPERTY(bool scrolling READ scrolling WRITE setScrolling)
 	Q_PROPERTY(int nFrames READ nFrames WRITE setNFrames)
 public:
 	Spectrogram(QWidget * parent);
@@ -45,6 +46,8 @@ public:
 
 	bool smooth() const { return _smooth; }
 	void setSmooth(bool beSmooth=true) { _smooth=beSmooth; initializeGL(); }
+	bool scrolling() const { return _scrolling; }
+	void setScrolling(bool beScrolling=true) { _scrolling=beScrolling; initializeGL(); }
 	int nFrames() const { return _nFrames; }
 	void setNFrames(int nFrames) { if (nFrames>=2) _nFrames=nFrames; } 
 
@@ -75,6 +78,7 @@ private:
 	int _updatePending;
 	const CLAM::TData * _data;
 	bool _smooth;
+	bool _scrolling;
 	std::vector<float> _weights;
 	std::vector<float> _texture;
 	GLuint _textureId;
