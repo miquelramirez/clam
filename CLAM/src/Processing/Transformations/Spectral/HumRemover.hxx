@@ -40,6 +40,8 @@ namespace CLAM{
 		
 		InControl mBandwidthCtl;
 		InControl mHarmonicsCtl;
+
+		InControl mAmount;
 	public:
 		const char* GetClassName() const
 		{
@@ -51,7 +53,8 @@ namespace CLAM{
 			mIn("In Spectrum", this), 
 			mOut("Out Spectrum", this),
 			mBandwidthCtl("Bandwidth", this),
-			mHarmonicsCtl("Harmonics",this)
+			mHarmonicsCtl("Harmonics",this),
+			mAmount("Amount", this)
 		{
 			Configure( FrameTransformationConfig() );
 		}

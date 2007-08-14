@@ -46,7 +46,7 @@
 #include <CLAM/AudioOut.hxx>
 #include <CLAM/AudioManager.hxx>
 #include <CLAM/SegmentSMSMorph.hxx>
-#include <CLAM/SMSTimeStretchConfig.hxx>
+#include <CLAM/SegmentSMSTimeStretchConfig.hxx>
 
 namespace CLAM
 {
@@ -851,10 +851,10 @@ void SMSBase::UpdateDataInTimeStretch()
 	SMSTransformationChainConfig::iterator cfg;
 	for(cfg=mTransformationScore.ConfigList_begin();cfg!=mTransformationScore.ConfigList_end();cfg++)
 	{
-		if((*cfg).GetConcreteClassName()=="SMSTimeStretch")
+		if((*cfg).GetConcreteClassName()=="SegmentSMSTimeStretch")
 		{
-			SMSTimeStretchConfig& baseConfig=static_cast<SMSTimeStretchConfig&>((*cfg).GetConcreteConfig());
-			SMSTimeStretchConfig concreteConfig;
+			SegmentSMSTimeStretchConfig& baseConfig=static_cast<SegmentSMSTimeStretchConfig&>((*cfg).GetConcreteConfig());
+			SegmentSMSTimeStretchConfig concreteConfig;
 			if(baseConfig.HasAmount()) 
 				concreteConfig.SetAmount(baseConfig.GetAmount());
 			else 
