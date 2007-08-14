@@ -88,7 +88,7 @@ public:
 	{
 		setOrientation(Qt::Horizontal);
 		mBPFEditor = new CLAM::VM::BPFPlot(this);
-		QSizePolicy sizePolicy3(static_cast<QSizePolicy::Policy>(0), static_cast<QSizePolicy::Policy>(0));
+		QSizePolicy sizePolicy3(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 		sizePolicy3.setHorizontalStretch(2);
 		sizePolicy3.setVerticalStretch(0);
 		sizePolicy3.setHeightForWidth(mBPFEditor->sizePolicy().hasHeightForWidth());
