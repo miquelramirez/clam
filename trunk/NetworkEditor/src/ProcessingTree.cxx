@@ -24,13 +24,13 @@
 #include <QtGui/QHeaderView>
 #include <iostream> 
 
-/*
+
 #ifdef USE_LADSPA
-#	include <CLAM/LadspaPluginsExplorer.hxx> 
-//#	include <CLAM/LadspaWrapperCreator.hxx>
+#	include <CLAM/RunTimeLadspaLibraryLoader.hxx> 
 #endif
-*/
+
 #include <CLAM/ProcessingFactory.hxx> 
+
 
 namespace NetworkGUI
 {
@@ -198,7 +198,11 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			item->setIcon(0, QIcon(":/icons/images/processing.png"));
 		}
 	}*/
-// TODO: Ladspa is still work in progress 
+
+#ifdef USE_LADSPA
+	RunTimeLadspaLibraryLoader ladspaLoader;
+	ladspaLoader.Load();
+#endif
 	CLAM::ProcessingFactory::Values categories = CLAM::ProcessingFactory::GetInstance().GetSetOfValues("category");
 	CLAM::ProcessingFactory::Values::const_iterator itCategory;
 

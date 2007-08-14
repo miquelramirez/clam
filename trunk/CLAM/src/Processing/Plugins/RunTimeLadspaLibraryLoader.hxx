@@ -1,3 +1,6 @@
+#ifndef RunTimeLadspaLibraryLoader_hxx
+#define RunTimeLadspaLibraryLoader_hxx
+
 #ifdef WIN32
 #include <windows.h>
 #undef GetClassName
@@ -58,5 +61,7 @@ protected:
 	const char * pathEnvironmentVar() const { return  "LADSPA_PATH"; }
 	const char * libraryType() const { return  "LADSPA"; }
 };
+
+#endif // RunTimeLadspaLibraryLoader_hxx
 
 

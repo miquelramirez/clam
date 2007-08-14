@@ -23,11 +23,8 @@
 #include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
-#if USE_LADSPA
-#include <CLAM/ProcessingFactory.hxx>
-#endif
 // for faust testing
-#include <QtSvg/QSvgWidget>
+//#include <QtSvg/QSvgWidget>
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
