@@ -7,7 +7,7 @@ namespace detail
 {
 	static const char * metadata[] = {
 		"key", "PeakView",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "PeakView",
 		"port_monitor_type", typeid(CLAM::SpectralPeakArray).name(),
 		"icon", "peakview.svg",

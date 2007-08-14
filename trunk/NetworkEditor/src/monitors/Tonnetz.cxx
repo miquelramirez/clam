@@ -26,7 +26,7 @@ namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "Tonnetz",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "Tonnetz",
 		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
 		"icon", "tonnetz.svg",

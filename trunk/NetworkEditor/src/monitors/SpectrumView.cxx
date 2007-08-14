@@ -5,7 +5,7 @@ namespace detail
 {
 	static const char * metadata[] = {
 		"key", "SpectrumView",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "SpectrumView",
 		"port_monitor_type", typeid(CLAM::Spectrum).name(),
 		"icon", "spectrumview.svg",

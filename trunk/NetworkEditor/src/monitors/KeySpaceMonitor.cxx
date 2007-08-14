@@ -26,7 +26,7 @@ namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "KeySpace",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "KeySpace",
 		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
 		"icon", "keyspace.svg",

@@ -5,7 +5,7 @@ namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "Vumeter",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "Vumeter",
 		"port_monitor_type", typeid(CLAM::TData).name(),
 		"icon", "vumeter.svg",
