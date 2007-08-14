@@ -116,8 +116,15 @@ public:
 			"			 <li>'r'+Click: Set the current play position.</li>\n"
 			"			 <li>Arrows: Change focused point values</li>\n"
 			"			 </ul>", 0, QApplication::UnicodeUTF8));
-		}
-	
+
+		mBPFEditor->SetFlags(CLAM::VM::eAllowVerEdition);//|CLAM::VM::eHasVerticalScroll); // QTPORT: What about this flag
+		mBPFEditor->SetZoomSteps(5,5);
+		mBPFEditor->SetXRange(0.0,2.0);
+
+		mBPFEditor->setAutoFillBackground(true);
+	}
+
+
 };
 
 void Annotator::abortLoader()
