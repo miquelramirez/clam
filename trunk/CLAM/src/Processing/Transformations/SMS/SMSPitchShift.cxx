@@ -94,6 +94,7 @@ bool SMSPitchShift::Do(const SpectralPeakArray& inPeaks,
 		oFreqArray[i]=newFreq;
 		oBinPosArray[i]=iBinPosArray[i]*amount;
 	}
+
 	//Apply original spectral shape and comb filter the residual
 	if (isHarmonic)
 	{

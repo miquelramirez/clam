@@ -122,7 +122,6 @@ bool SegmentSMSMorph::ConcreteConfigure(const ProcessingConfig& c)
 	mUseResSpectralShape=mConfig.GetUseSpectralShapes();
 
 	
-	
 	InitializeFactorsToUse();
 
 	FrameInterpConfig frIntCfg;

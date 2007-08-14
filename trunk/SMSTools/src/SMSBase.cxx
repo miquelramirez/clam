@@ -45,7 +45,6 @@
 #include <CLAM/AudioIO.hxx>
 #include <CLAM/AudioOut.hxx>
 #include <CLAM/AudioManager.hxx>
-#include <CLAM/SegmentSMSMorphConfig.hxx>
 #include <CLAM/SegmentSMSMorph.hxx>
 #include <CLAM/SMSTimeStretchConfig.hxx>
 
