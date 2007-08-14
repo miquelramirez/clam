@@ -56,11 +56,9 @@ static CLAM::VM::FloatArrayDataSource & getDummySource()
 	return source;
 }
 
-// *** BAK ***
-
 CLAM::VM::Spectrogram::Spectrogram(QWidget * parent) 
 	: QGLWidget(parent)
-	, _smooth(false)
+	, _smooth(true)
 	, _nFrames(32)
 	, _nBins(0)
 	, _currentFrame(31)
@@ -195,8 +193,6 @@ void CLAM::VM::Spectrogram::DrawTiles()
 			
 			double value = _data[k] / _maxValue;
 			value = value / 1.1;
-
-			//double value = .5;
 			
 			float ColorIndex = value;
 			if (ColorIndex > 1.0)
@@ -224,12 +220,14 @@ void CLAM::VM::Spectrogram::DrawTiles()
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _smooth? GL_LINEAR : GL_NEAREST );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-
 	float vertexes[] = {0,0,0,1,1,1,1,0};
+	float scale = float(_nBins)/realBinSize;
+	float texvertexes[] = {0,0,0,scale,1,scale,1,0};
+	
 	glEnable(GL_TEXTURE_2D);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,texvertexes);
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_QUADS,0,5);
 	glDisableClientState(GL_VERTEX_ARRAY);
