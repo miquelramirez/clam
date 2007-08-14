@@ -187,88 +187,40 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	setRootIsDecorated( true );
 	header()->hide();
 
-/*	for (unsigned i=0; processingClasses[i]; i++)
-	{
-		QTreeWidgetItem * group = new QTreeWidgetItem( this, QStringList() << processingClasses[i] );
-		i++;
-		for (; processingClasses[i]; i++)
-		{
-			QTreeWidgetItem * item = new QTreeWidgetItem( group, QStringList() << processingClasses[i]);
-			item->setText(1, processingClasses[i]); // processing factory key
-			item->setIcon(0, QIcon(":/icons/images/processing.png"));
-		}
-	}*/
-
 #ifdef USE_LADSPA
 	RunTimeLadspaLibraryLoader ladspaLoader;
 	ladspaLoader.Load();
 #endif
-	CLAM::ProcessingFactory::Values categories = CLAM::ProcessingFactory::GetInstance().GetSetOfValues("category");
+	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+	CLAM::ProcessingFactory::Values categories = factory.GetSetOfValues("category");
 	CLAM::ProcessingFactory::Values::const_iterator itCategory;
 
 	for(itCategory = categories.begin(); itCategory != categories.end(); itCategory++)
 	{
-		CLAM::ProcessingFactory::Keys keys = CLAM::ProcessingFactory::GetInstance().GetKeys("category", *itCategory);
+		CLAM::ProcessingFactory::Keys keys = factory.GetKeys("category", *itCategory);
 		//std::cout << "Category: " << *itCategory << std::endl;
-		if( keys.size() > 0 )
+		if( keys.size() == 0 ) continue;
+		CLAM::ProcessingFactory::Keys::const_iterator itKey;
+		std::string category = *itCategory;
+		QTreeWidgetItem * categoryTree = new QTreeWidgetItem( this, QStringList() << category.c_str());
+		for(itKey = keys.begin(); itKey != keys.end(); itKey++)
 		{
-			CLAM::ProcessingFactory::Keys::const_iterator itKey;
-			std::string category = *itCategory;
-			QTreeWidgetItem * categoryTree = new QTreeWidgetItem( this, QStringList() << category.c_str());
-			for(itKey = keys.begin(); itKey != keys.end(); itKey++)
+			std::string description;
+			if(factory.GetValuesFromAttribute(*itKey, "description").empty())
 			{
-				std::string description;
-				if(CLAM::ProcessingFactory::GetInstance().GetValuesFromAttribute(*itKey, "description").empty())
-				{
-					description = *itKey;
-				}
-				else
-				{
-					description = CLAM::ProcessingFactory::GetInstance().GetValuesFromAttribute(*itKey, "description").front();
-				}
-				std::string key = *itKey;
-				QTreeWidgetItem * item = new QTreeWidgetItem( categoryTree, QStringList() << description.c_str());
-				item->setIcon(0, QIcon(":/icons/images/processing.png"));
-				item->setText(1, key.c_str());
+				description = *itKey;
 			}
+			else
+			{
+				description = factory.GetValuesFromAttribute(*itKey, "description").front();
+			}
+			std::string key = *itKey;
+			QTreeWidgetItem * item = new QTreeWidgetItem( categoryTree, QStringList() << description.c_str());
+			item->setIcon(0, QIcon(":/icons/images/processing.png"));
+			item->setText(1, key.c_str());
 		}
 	}
 
-/*
-	CLAM::ProcessingFactory::Keys::const_iterator itK;
-	CLAM::ProcessingFactory::Keys keys = CLAM::ProcessingFactory::GetInstance().GetKeys("category", "LADSPA");
-	if( keys.size() > 0)
-	{
-		QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "LADSPA" );
-		for (	itK = keys.begin(); itK != keys.end(); itK++)
-		{
-			std::string description = CLAM::ProcessingFactory::GetInstance().GetValuesFromAttribute(*itK, "description").front();
-			std::string factoryID = (*itK);
-//			std::cout << "[LADSPA] key: " << factoryID << std::endl;
-//			std::cout << "[LADSPA] description: " << description << std::endl; 
-			QTreeWidgetItem * item = new QTreeWidgetItem( ladspaTree, QStringList() << description.c_str() );
-			item->setIcon(0, QIcon(":/icons/images/processing.png"));
-			item->setText(1, factoryID.c_str());
-		}
-	}
-	
-	keys = CLAM::ProcessingFactory::GetInstance().GetKeys("category", "CLAM");
-//	std::cout << "keys size: "<< keys.size() << std::endl;
-	if( keys.size() > 0)
-	{
-		QTreeWidgetItem * ladspaTree = new QTreeWidgetItem( this, QStringList() << "CLAM Plugins" );
-		for (	itK = keys.begin(); itK != keys.end(); itK++)
-		{
-			std::string description = CLAM::ProcessingFactory::GetInstance().GetValuesFromAttribute(*itK, "description").front();
-			std::string factoryID = (*itK);
-			std::cout << "[CLAM Plugin] key: " << factoryID << std::endl;
-//			std::cout << "[CLAM Plugin] description: " << description << std::endl; 
-			QTreeWidgetItem * item = new QTreeWidgetItem( ladspaTree, QStringList() << description.c_str() );
-			item->setIcon(0, QIcon(":/icons/images/processing.png"));
-			item->setText(1, factoryID.c_str());
-		}
-	}
-*/
 	
 	connect( this, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),
 		 this, SLOT( PressProcessing(QTreeWidgetItem *,int) ));
