@@ -29,7 +29,7 @@ namespace Hidden
 		"category", "Graphical Monitors",
 		"description", "Spectrogram",
 		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
-		//"icon", "keyspace.svg",
+		"icon", "none.svg",
 		0
 	};
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, SpectrogramMonitor> reg = metadata;
