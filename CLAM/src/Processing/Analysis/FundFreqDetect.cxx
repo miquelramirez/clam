@@ -39,7 +39,7 @@ namespace CLAM
 	}
 
 	FundFreqDetect::FundFreqDetect(const FundFreqDetectConfig &c )
-		: mInput( "Input", this),
+		: mInput( "Input", this ),
 		  mOutput( "Output", this ),
 		  mFundFreqValue( "Fund Freq Value", this )
 	{
@@ -94,7 +94,7 @@ namespace CLAM
 	}
 
 	/* The supervised Do() function */
-	bool FundFreqDetect::Do(void) 
+	bool FundFreqDetect::Do(void)
 	{
 		mOutput.GetData().SetnMaxCandidates(1);
 
@@ -128,7 +128,7 @@ namespace CLAM
 
 		// Calculate Maximun Magnitude Peak
 		TIndex nMaxMagPeak = peaks.GetMaxMagPos();
-		TData maxMag      = peaks.GetMag(nMaxMagPeak);
+		TData maxMag       = peaks.GetMag(nMaxMagPeak);
 
 		// 1.- SELECT PEAKS
 		// Add an index to the PeakArray

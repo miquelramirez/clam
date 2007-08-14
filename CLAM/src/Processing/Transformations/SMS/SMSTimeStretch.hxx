@@ -19,75 +19,129 @@
  *
  */
 
-
 #ifndef _SMSTimeStretch_
 #define _SMSTimeStretch_
 
-#include "SegmentTransformation.hxx"
-#include "FrameInterpolator.hxx"
+#include "Processing.hxx"
+#include "Frame.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "InControl.hxx"
 #include "SMSTimeStretchConfig.hxx"
+#include "SpectrumInterpolator.hxx"
+#include "SpectralPeakArrayInterpolator.hxx"
+
+// FIXME
+// #include "FrameInterpolator.hxx"
 
 namespace CLAM{
 
-
-	
-	/** @todo: introduce interpolation of spectral shapes, before that, interpolations may be
-	 *	extracted to external Processing's*/
-	class SMSTimeStretch: public SegmentTransformation
+	/**	\brief Time Stretch using the SMS model
+	 *
+	 *	@todo: introduce interpolation of spectral shapes, before that, interpolations may be
+	 *	extracted to external Processing's
+	 */
+	class SMSTimeStretch: public Processing
 	{
-					
-	public:
-		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
-		SMSTimeStretch();
-		/** Constructor with an object of SegmentTransformationConfig class by parameter
-		 *  @param c SegmentTransformationConfig object created by the user
-		*/
-		SMSTimeStretch(const SegmentTransformationConfig &c);
-		
-		/** This method returns the name of the object
-		 *  @return Char pointer with the name of object
-		 */
+
+	//TODO introduce interpolation of spectral shapes, before that, interpolations may be extracted to external Processing's (this comment is also in doxygen class description)
 		const char *GetClassName() const {return "SMSTimeStretch";}
 
-		bool ConcreteConfigure(const ProcessingConfig& c);
-		bool ConcreteStart();
-		bool ConcreteStop();
-		
-		/** Destructor of the class*/
- 		~SMSTimeStretch(){};
+		InPort<SpectralPeakArray> mInPeaks;
+		OutPort<SpectralPeakArray> mOutPeaks;
+		InPort<Fundamental> mInFund;
+		OutPort<Fundamental> mOutFund;
+		InPort<Spectrum> mInSpectrum;
+		OutPort<Spectrum> mOutSpectrum;
+
+		//InControl m; ///< 
+
+	public:
+		SMSTimeStretch()
+			:
+			mInPeaks("In SpectralPeaks", this),
+			mOutPeaks("Out SpectralPeaks", this),
+			mInFund("In Fundamental", this),
+			mOutFund("Out Fundamental", this),
+			mInSpectrum("In Spectrum", this),
+			mOutSpectrum("Out Spectrum", this)
+		{
+			Configure( mConfig );
+		}
+
+ 		~SMSTimeStretch() {}
 
 		bool Do()
 		{
-			CLAM_ASSERT(false, "Do with ports not implemented");
-			return false;
+			bool result = Do(mInPeaks.GetData(), 
+					 mInFund.GetData(), 
+					 mInSpectrum.GetData(), 
+					 mOutPeaks.GetData(), 
+					 mOutFund.GetData(),
+					 mOutSpectrum.GetData() 
+					 );
+
+			mInPeaks.Consume(); 
+			mInFund.Consume(); 
+			mInSpectrum.Consume(); 
+			mOutPeaks.Produce(); 
+			mOutFund.Produce();
+			mOutSpectrum.Produce();
+
+			return result;
 		}
 
 		bool Do(const Frame& in, Frame& out);
-		bool Do(const Segment& in, Segment& out);
-		bool CanProcessInplace() {return false;}
-		bool IsLastFrame();
-		
-		Frame& GetCurrentFrame(Segment& out);
-		const Frame& GetCurrentFrame(const Segment& in);
-		
-		InControl mAmount;			
+
+		bool Do(const SpectralPeakArray& inPeaks,
+			const Fundamental& inFund,
+			const Spectrum& inSpectrum,
+			SpectralPeakArray& outPeaks,
+			Fundamental& outFund,
+			Spectrum& outSpectrum
+			);
+
+
+//FIXME
+		bool ConcreteStart();
+		bool ConcreteStop();
+
+// 		bool CanProcessInplace() {return false;}
+// 		bool IsLastFrame();
+// 		
+// 		Frame& GetCurrentFrame(Segment& out);
+// 		const Frame& GetCurrentFrame(const Segment& in);
+// 		
+// 		InControl mAmount;
+
+		typedef SMSTimeStretchConfig Config;
+
+		const ProcessingConfig & GetConfig() const
+		{
+			return mConfig;
+		}
+
 	protected:
-		bool HaveFinished();
-		void UpdateTimeAndIndex(const Segment& in);
+		bool ConcreteConfigure(const ProcessingConfig& config);
+
+	private:
+		Config mConfig;
+
+	protected:
+// 		bool HaveFinished();
+// 		void UpdateTimeAndIndex(const Segment& in);
 		
-		TTime mSynthesisTime;
+		TTime mSynthesisTime; ///<
 		TTime mAnalysisTime;
-		TIndex mnSynthesisFrames;
+		TIndex mnSynthesisFrames; ///<
 		
 		Frame mLeftFrame;
 
-		SMSTimeStretchConfig mConcreteConfig;
-
 		/** Child processings **/
-		FrameInterpolator mPO_FrameInterpolator;
-	
-	};		
+// 		FrameInterpolator mFrameInterpolator; // FIXME
+		SpectrumInterpolator mSpectrumInterpolator;
+		SpectralPeakArrayInterpolator mPeaksInterpolator;
+	};
 };//namespace CLAM
 
 #endif // _SMSTimeStretch_
-

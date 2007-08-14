@@ -66,13 +66,13 @@ bool SMSHarmonizer::ConcreteConfigure(const ProcessingConfig& config)
 	mVoicesDelay.Resize(n_voices, "Voice Delay", this);
 	for (int i=0; i < mVoicesPitch.Size(); i++)
 	{
-		mVoicesPitch[i].SetBounds(-24.,24.);
-		mVoicesPitch[i].SetDefaultValue(0.); //no pitch shift
-		mVoicesPitch[i].DoControl(0.);
-
 		mVoicesGain[i].SetBounds(0.,2.);
 		mVoicesGain[i].SetDefaultValue(0.);
 		mVoicesGain[i].DoControl(0.);
+
+		mVoicesPitch[i].SetBounds(-24.,24.);
+		mVoicesPitch[i].SetDefaultValue(0.); //no pitch shift
+		mVoicesPitch[i].DoControl(0.);
 
 		mVoicesDetuningAmount[i].SetBounds(0.,1.);
 		mVoicesDetuningAmount[i].SetDefaultValue(0.);
@@ -108,11 +108,12 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 {
 	outPeaks = inPeaks;
 	outFund = inFund;
-	outSpectrum = inSpectrum;
+	outSpectrum = inSpectrum; //residual processing is ignored by default, so the output residual is the input one
 
 	TData gain0 = mInputVoiceGain.GetLastValue();
 	mSinusoidalGain.GetInControl("Gain").DoControl(gain0);
 	mSinusoidalGain.Do(outPeaks,outPeaks);
+	//TODO add detuning and delay for input voice?
 
 	SpectralPeakArray mtmpPeaks;
 	Fundamental mtmpFund;
@@ -138,7 +139,7 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 		mSinusoidalGain.GetInControl("Gain").DoControl(gain);
 		mSinusoidalGain.Do(mtmpPeaks,mtmpPeaks);
 
-		TData delay = mVoicesDelay[i].GetLastValue(); //TODO add random sign delay?
+		TData delay = mVoicesDelay[i].GetLastValue();
 		if (delay>0.)
 		{
 			mPeaksDelay.GetInControl("Delay Control").DoControl(delay);

@@ -71,10 +71,9 @@ bool SMSMorph::Do( const SpectralPeakArray& inPeaks1,
 		Harmonic = true;
 
 	TData alpha = mInterpolationFactor.GetLastValue();
+
 	TData newPitch = (1. - alpha)*inFund1.GetFreq() + alpha*inFund2.GetFreq();
-
 	if( Harmonic ) newPitch=0;
-
 	//Sets new fund freq
 	if (outFund.GetnCandidates()==0)
 		outFund.AddElem(newPitch,0);
