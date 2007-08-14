@@ -26,7 +26,7 @@ namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "VectorView",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "VectorView",
 		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
 		"icon", "lpmodel.svg",

@@ -6,7 +6,7 @@ namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "Tunner",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "Tunner",
 		"port_monitor_type", typeid(std::pair<CLAM::TData,CLAM::TData>).name(),
 		"icon", "tunner.svg",

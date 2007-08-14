@@ -5,7 +5,7 @@ namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "BufferOscilloscope",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "BufferOscilloscope",
 		"port_monitor_type", typeid(CLAM::Audio).name(),
 		"icon", "oscilloscope.svg",

@@ -48,7 +48,7 @@ CLAM::VM::Spectrogram::Spectrogram(QWidget * parent)
 	, _nBins(0)
 	, _nFrames(256)
 	, _currentFrame(0)
-	, _smooth(true)
+	, _smooth(false)
 {
 	_data = 0;
 	_dataSource = 0;

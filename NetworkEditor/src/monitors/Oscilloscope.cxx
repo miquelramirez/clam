@@ -5,7 +5,7 @@ namespace detail
 {
 	static const char * metadata[] = {
 		"key", "Oscilloscope",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "Oscilloscope",
 		"port_monitor_type", typeid(CLAM::TData).name(),
 		"icon", "oscilloscope.svg",

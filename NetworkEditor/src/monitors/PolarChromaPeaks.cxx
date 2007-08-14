@@ -6,7 +6,7 @@ namespace detail
 {
 	static const char * metadata[] = {
 		"key", "PolarChromaPeaks",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "PolarChromaPeaks",
 		"port_monitor_type", typeid(std::vector<std::pair<CLAM::TData, CLAM::TData> >).name(),
 		"icon", "polarchromapeaks.svg",

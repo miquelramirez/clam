@@ -26,7 +26,7 @@ namespace detail
 {
 	static const char * metadata[] = {
 		"key", "LPModelView",
-		"category", "Monitors",
+		"category", "Graphical Monitors",
 		"description", "LPModelView",
 		0
 	};
