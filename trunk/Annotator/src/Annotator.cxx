@@ -76,6 +76,11 @@
 #include <QtGui/QSplitter>
 #include "SegmentationPane.hxx"
 
+class FrameDescriptorsPane : public QSplitter
+{
+	
+};
+
 void Annotator::abortLoader()
 {
 	if (!mAudioLoaderThread) return;
