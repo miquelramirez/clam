@@ -42,14 +42,14 @@ namespace Hidden
 	
 	
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader()
-		: mTimeOutput( "time position", this)
+		: mTimeOutput( "Current Time Position", this)
 		, mNativeStream( NULL )
 	{
 		Configure(MultiChannelAudioFileReaderConfig());
 	}
 
 	MultiChannelAudioFileReader::MultiChannelAudioFileReader( const ProcessingConfig& cfg )
-		: mTimeOutput( "time position", this)
+		: mTimeOutput( "Current Time Position", this)
 		, mNativeStream( NULL )
 	{
 		Configure( cfg );

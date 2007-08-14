@@ -42,7 +42,7 @@ namespace Hidden
 	
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )
 		: mOutput( "Samples Read", this ),
-		  mTimeOutput( "time position", this),
+		  mTimeOutput( "Current Time Position", this),
 		  mNativeStream( NULL )
 	{
 		Configure( cfg );
