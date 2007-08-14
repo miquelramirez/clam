@@ -56,32 +56,14 @@ static CLAM::VM::FloatArrayDataSource & getDummySource()
 	return source;
 }
 
-
-struct TKeyNode
-{
-	float x;
-	float y;
-};
-
-
-static TKeyNode * getKeyNodes()
-{
-	static TKeyNode keyNodes[] = 
-	{
-		{.50,.65}, {.91,.40}, {.33,.15}, {.74,.91}, {.16,.65}, {.60,.40},
-		{.01,.15}, {.42,.91}, {.83,.65}, {.25,.40}, {.67,.15}, {.08,.91},
-		{.66,.73}, {.08,.50}, {.50,.22}, {.91,.01}, {.33,.73}, {.74,.50},
-		{.15,.22}, {.58,.01}, {.01,.73}, {.42,.50}, {.83,.22}, {.25,.01}
-	};
-	return keyNodes;
-}
-static unsigned nKeyNodes=24;
+// *** BAK ***
 
 CLAM::VM::Spectrogram::Spectrogram(QWidget * parent) 
 	: QGLWidget(parent)
-	, _smooth(true)
-	, _nFrames(10)
-	, _nBins(10)
+	, _smooth(false)
+	, _nFrames(32)
+	, _nBins(0)
+	, _currentFrame(31)
 {
 	_data = 0;
 	_dataSource = 0;
@@ -175,16 +157,17 @@ void CLAM::VM::Spectrogram::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT);
 	if (!_dataSource) return;
 	_data = _dataSource->frameData();
+	_nBins = _dataSource->nBins();
 	if (_data) DrawTiles();
 	_dataSource->release();
-	//DrawLabels();
 
 	_updatePending=0;
 }
 
 void CLAM::VM::Spectrogram::DrawTiles()
-{		
-//	int _nFrames=1;	// ***
+{
+	// make sure nBins is greater than 16 so texture draws correctly
+	unsigned realBinSize = std::max(16u, _nBins);
 	
 	float mean = 0;
 	_maxValue*=.5;
@@ -196,15 +179,25 @@ void CLAM::VM::Spectrogram::DrawTiles()
 	if (_maxValue<1e-10) _maxValue=1e-10;
 	if (_maxValue<1e-10) _maxValue=1e-10;
 	if (_maxValue<1.5*mean/_nBins) _maxValue=1.5*mean/_nBins;
-
-	if (_texture.size()!=_nBins*_nFrames*3) _texture.resize(_nBins*_nFrames*3);
+	
+	if (_texture.size()!=realBinSize*_nFrames*3) _texture.resize(realBinSize*_nFrames*3);
 	unsigned texel=0;
-	for(unsigned k=0; k<_nBins; k++)
-	{
+	
+	for (unsigned k = 0; k < _nBins; k++)
+	{		
 		for(unsigned i=0; i<_nFrames; i++)
 		{
-			double value = _data[k];
+			if (i!=_currentFrame)
+			{
+				texel+=3;
+				continue;
+			}
+			
+			double value = _data[k] / _maxValue;
+			value = value / 1.1;
 
+			//double value = .5;
+			
 			float ColorIndex = value;
 			if (ColorIndex > 1.0)
 				ColorIndex = 1.0;	
@@ -215,10 +208,17 @@ void CLAM::VM::Spectrogram::DrawTiles()
 			_texture[texel++] = _paletteG[cidx];
 			_texture[texel++] = _paletteB[cidx];
 		}
+		
 	}
+	
+	// increment our frame
+	_currentFrame++;
+	if (_currentFrame > _nFrames) _currentFrame = 0;
+	
 	glBindTexture(GL_TEXTURE_2D, _textureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _nFrames, _nBins, /*border*/ 0,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, _nFrames, realBinSize, /*border*/ 0,
 		GL_RGB, GL_FLOAT, &_texture[0]);
+	
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, _smooth? GL_LINEAR : GL_NEAREST );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _smooth? GL_LINEAR : GL_NEAREST );
