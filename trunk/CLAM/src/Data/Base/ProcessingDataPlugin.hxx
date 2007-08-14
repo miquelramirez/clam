@@ -23,7 +23,7 @@ public:
 		: _type(type)
 		, _color(color)
 	{
-		std::cout << "Adding TypePlugin " << type.name() << " with color " << color << std::endl;
+//		std::cout << "Adding TypePlugin " << type.name() << " with color " << color << std::endl;
 		getTypeMap().insert(std::make_pair(type.name(), this));
 	}
 	const std::string & color() const { return _color; }
