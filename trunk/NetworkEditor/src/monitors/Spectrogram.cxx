@@ -222,7 +222,8 @@ void CLAM::VM::Spectrogram::DrawTiles()
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 	float vertexes[] = {0,0,0,1,1,1,1,0};
 	float scale = float(_nBins)/realBinSize;
-	float texvertexes[] = {0,0,0,scale,1,scale,1,0};
+	float xscroll = float(_currentFrame) / _nFrames;
+	float texvertexes[] = {0+xscroll,0,0+xscroll,scale,1+xscroll,scale,1+xscroll,0};
 	
 	glEnable(GL_TEXTURE_2D);
 	glEnableClientState(GL_VERTEX_ARRAY);
