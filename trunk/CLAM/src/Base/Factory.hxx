@@ -204,13 +204,16 @@ public: // Inner classes. Public for better testing
 	class Registry
 	{
 	private:
-		typedef typename std::map<std::string, Creator*> CreatorMap;
-		typedef std::map<Key, Pairs> Metadata;
+		struct FactoryEntry {
+			Creator * creator;
+			Pairs pairs;
+		};
+		typedef std::map<Key, FactoryEntry> FactoryEntries;
 
 	public:
 		Creator& GetCreator( RegistryKey creatorId) 
 		{
-			CLAM_ASSERT(_creators.begin() != _creators.end(),
+			CLAM_ASSERT(_factoryEntries.begin() != _factoryEntries.end(),
 				"the Factory Registry shouldn't be empty");
 
 			Creator* res = CommonGetCreator(creatorId);
@@ -227,7 +230,7 @@ public: // Inner classes. Public for better testing
 
 		Creator& GetCreatorSafe( RegistryKey creatorId) throw (ErrFactory) 
 		{
-			if ( _creators.begin() == _creators.end() )
+			if ( _factoryEntries.begin() == _factoryEntries.end() )
 				throw ErrFactory("GetCreatorSafe invoked on an empty registry");
 
 			Creator* res = CommonGetCreator(creatorId);
@@ -273,16 +276,16 @@ public: // Inner classes. Public for better testing
 
 		void RemoveAllCreators() 
 		{
-			_creators.clear();
+			_factoryEntries.clear();
 		}
 
-		std::size_t Count() { return _creators.size(); }
+		std::size_t Count() { return _factoryEntries.size(); }
 
 		void GetRegisteredNames( std::list<RegistryKey>& namesList )
 		{
-			typename CreatorMap::const_iterator i;
+			typename FactoryEntries::const_iterator i;
 
-			for ( i = _creators.begin(); i != _creators.end(); i++ )
+			for ( i = _factoryEntries.begin(); i != _factoryEntries.end(); i++ )
 			{
 				namesList.push_back( i->first );
 			}
@@ -303,8 +306,8 @@ public: // Inner classes. Public for better testing
 
 		bool ExistsKey(const RegistryKey& key)
 		{
-			typename CreatorMap::const_iterator it = _creators.find(key);
-			if(it == _creators.end())
+			typename FactoryEntries::const_iterator it = _factoryEntries.find(key);
+			if(it == _factoryEntries.end())
 			{
 				return false;
 			}
@@ -315,15 +318,15 @@ public: // Inner classes. Public for better testing
 		Keys GetKeys(const std::string& attribute, const std::string& value)
 		{
 			Keys result;
-			typename Metadata::const_iterator it;
-			for(it = _metadata.begin(); it != _metadata.end(); it++)
+			typename FactoryEntries::const_iterator it;
+			for(it = _factoryEntries.begin(); it != _factoryEntries.end(); it++)
 			{
 				if( (attribute == "") )
 				{
 					result.push_back(it->first);
 					continue;
 				}
-				Pairs attributes = it->second;
+				Pairs attributes = it->second.pairs;
 				typename Pairs::const_iterator itAtt;
 				for(itAtt = attributes.begin(); itAtt != attributes.end(); itAtt++)
 				{
@@ -344,10 +347,10 @@ public: // Inner classes. Public for better testing
 		Pairs GetPairsFromKey(const std::string& key)
 		{
 			Pairs attributes;
-			typename Metadata::const_iterator it = _metadata.find(key);
-			if(it!=_metadata.end())
+			typename FactoryEntries::const_iterator it = _factoryEntries.find(key);
+			if(it!=_factoryEntries.end())
 			{
-				attributes = it->second;
+				attributes = it->second.pairs;
 			}
 			return attributes;
 		}
@@ -358,10 +361,10 @@ public: // Inner classes. Public for better testing
 			std::set<Value> AttributeSet;
 			std::set<Value>::const_iterator itSet;
 			Values values;
-			typename Metadata::const_iterator it;
-			for(it = _metadata.begin(); it != _metadata.end(); it++)
+			typename FactoryEntries::const_iterator it;
+			for(it = _factoryEntries.begin(); it != _factoryEntries.end(); it++)
 			{
-				Pairs attributes = it->second;
+				Pairs attributes = it->second.pairs;
 				typename Pairs::const_iterator itAtt;
 				for(itAtt = attributes.begin(); itAtt != attributes.end(); itAtt++)
 				{
@@ -386,11 +389,11 @@ public: // Inner classes. Public for better testing
 		Values GetValuesFromAttribute(const std::string& key, const std::string& attribute)
 		{
 			Values values;
-			typename Metadata::const_iterator it = _metadata.find(key);
-			if(it != _metadata.end())
+			typename FactoryEntries::const_iterator it = _factoryEntries.find(key);
+			if(it != _factoryEntries.end())
 			{
 				typename Pairs::const_iterator itAtt;
-				for(itAtt = it->second.begin(); itAtt != it->second.end(); itAtt++)
+				for(itAtt = it->second.pairs.begin(); itAtt != it->second.pairs.end(); itAtt++)
 				{
 					if((*itAtt).attribute == attribute)
 					{
@@ -408,50 +411,55 @@ public: // Inner classes. Public for better testing
 
 		void AddAttribute(const std::string& key, const std::string& attribute, const std::string& value)
 		{
-			typename Metadata::const_iterator it;
-			it = _metadata.find(key);
-			if(!ExistsKey(key))
+			typename FactoryEntries::const_iterator it;
+			it = _factoryEntries.find(key);
+			/*if(!ExistsKey(key)) // NOT NEEDED AFETER UNIFYING
 			{
 				std::cout << "[Factory] tryind to add metadata to a non-existing key \"" << key << "\"" << std::endl; 
 		//		return;  //pau: debugging: add metadata anyway. maybe factory registrator is about to be instantiated.
-			}
+			}*/
 			
 			Pair pair;
 			pair.attribute = attribute;
 			pair.value = value;
-			Pairs pairs;
-			if(it == _metadata.end()) // it's a new key: insert it in the _metadata map
+
+			_factoryEntries[key].pairs.push_back(pair);
+			/*Pairs pairs;
+			if(it == _factoryEntries.end()) // it's a new key: insert it in the _factoryEntries map
 			{
 				pairs.push_back(pair);
-				_metadata.insert( typename Metadata::value_type( key, pairs ) );
+				_factoryEntries.insert( typename FactoryEntries::value_type( key, pairs ) );
 
 			} 
 			else
 			{
-				_metadata[key].push_back(pair);
-			}
+				_factoryEntries[key].push_back(pair);
+			}*/
 		}
 
 
 	private: // data
-		CreatorMap _creators;
-		Metadata _metadata;
+		FactoryEntries _factoryEntries;
 
 		// helper methods:
 		Creator* CommonGetCreator( RegistryKey& creatorId ) 
 		{
-			typename CreatorMap::const_iterator i = 
-				_creators.find(creatorId);
-			if ( i==_creators.end() ) // not found
+			typename FactoryEntries::const_iterator i = 
+				_factoryEntries.find(creatorId);
+			if ( i==_factoryEntries.end() ) // not found
 				return 0;
-			return i->second;
+			return i->second.creator;
 		}
 
 		bool CommonAddCreator( RegistryKey& creatorId, Creator* creator) 
 		{
+			FactoryEntry factoryEntry;
+			Pairs pairs;
+			factoryEntry.creator = creator;
+			factoryEntry.pairs = pairs;
 			// returns false if the key was repeated.
-			typedef typename CreatorMap::value_type ValueType;
-			return  _creators.insert( ValueType( creatorId, creator ) ).second;
+			typedef typename FactoryEntries::value_type ValueType;
+			return  _factoryEntries.insert( ValueType( creatorId, factoryEntry ) ).second;
 		}
 
 	};
@@ -460,7 +468,6 @@ public: // Inner classes. Public for better testing
 
 private:
 	Registry _registry;
-
 };
 
 
