@@ -11,7 +11,6 @@ def config_error(str) :
 	return False
 
 def setup_global_environment( env, conf ) :
-	print '---- setup global environment '
 	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 	# clam env
 	# check for pkg-config, compiler support, bash features, et.
