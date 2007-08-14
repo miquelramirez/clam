@@ -64,6 +64,7 @@ namespace CLAM_Annotator {
 }
 class InstantViewPlugin;
 class SegmentationPane;
+class FrameDescriptorsPane;
 
 class StatusBarDumper 
 {
@@ -224,8 +225,8 @@ private:
 	std::vector<QAction *> mRecentFilesActions;
 	QAction * mRecentFilesMenuSeparator;
 	enum {MaxRecentFiles=4};
-	SegmentationPane * _segmentationPane;
 	std::vector<SegmentationPane *> _segmentationPanes;
+	std::vector<FrameDescriptorsPane *> _frameDescriptorsPanes;
 };
 
 #endif
