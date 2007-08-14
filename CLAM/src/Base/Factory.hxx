@@ -68,11 +68,10 @@ template <typename AbstractProductType>
 class Factory
 {
 public:
-
 	typedef AbstractProductType AbstractProduct;
 	typedef std::string RegistryKey;
 
-	/** definitions from ProcessingFactory **/
+private:	
 	typedef std::string Attribute;
 	typedef std::string Value;
 	struct Pair 
@@ -81,10 +80,11 @@ public:
 		Value value;
 	};
 	typedef RegistryKey Key; // TODO remove
+
+public:
 	typedef std::list<Key> Keys;
 	typedef std::list<std::string> Values;
 	typedef std::list<Pair> Pairs; 
-	typedef std::map<Key, Pairs> Metadata;
 
 	typedef AbstractProduct* (*CreatorMethod)(void); //TODO drop after refactoring
 
@@ -161,26 +161,7 @@ public:
 	/// Get all keys that have attribute==value in its metadata.
 	Keys GetKeys(const std::string& attribute, const std::string& value)
 	{
-		Keys result;
-		typename Metadata::const_iterator it;
-		for(it = _metadata.begin(); it != _metadata.end(); it++)
-		{
-			if( (attribute == "") )
-			{
-				result.push_back(it->first);
-				continue;
-			}
-			Pairs attributes = it->second;
-			typename Pairs::const_iterator itAtt;
-			for(itAtt = attributes.begin(); itAtt != attributes.end(); itAtt++)
-			{
-				if( ((*itAtt).attribute == attribute) && ((*itAtt).value == value) )
-				{
-					result.push_back(it->first);
-				}
-			}
-		}
-		return result;
+		return _registry.GetKeys(attribute, value);
 	}
 	/// Get all keys in the factory
 	Keys GetKeys()
@@ -190,62 +171,18 @@ public:
 	/// Return all the metadata available for a product key
 	Pairs GetPairsFromKey(const std::string& key)
 	{
-		Pairs attributes;
-		typename Metadata::const_iterator it = _metadata.find(key);
-		if(it!=_metadata.end())
-		{
-			attributes = it->second;
-		}
-		return attributes;
+		return _registry.GetPairsFromKey(key);
 	}
 	/// Get the set of all values present for a given metadata attribute.
 	/// Example GetSetOfValues("category") could return ["modulators","generators","reverbs"] without repeated items.
 	Values GetSetOfValues(const std::string& attribute)
 	{
-		std::set<Value> AttributeSet;
-		std::set<Value>::const_iterator itSet;
-		Values values;
-		typename Metadata::const_iterator it;
-		for(it = _metadata.begin(); it != _metadata.end(); it++)
-		{
-			Pairs attributes = it->second;
-			typename Pairs::const_iterator itAtt;
-			for(itAtt = attributes.begin(); itAtt != attributes.end(); itAtt++)
-			{
-				if((*itAtt).attribute == attribute)
-				{
-					itSet = AttributeSet.find((*itAtt).value);
-					if(itSet == AttributeSet.end())
-					{
-						AttributeSet.insert((*itAtt).value);
-					}
-				}
-			}
-		}
-		// keep using the ProcessingFactory::Values
-		for(itSet = AttributeSet.begin(); itSet != AttributeSet.end(); itSet++)
-		{
-			values.push_back(*itSet);
-		}
-		return values;
+		return _registry.GetSetOfValues(attribute);
 	}
 	/// Return the list of values for a metadata attribute for a product key.
 	Values GetValuesFromAttribute(const std::string& key, const std::string& attribute)
 	{
-		Values values;
-		typename Metadata::const_iterator it = _metadata.find(key);
-		if(it != _metadata.end())
-		{
-			typename Pairs::const_iterator itAtt;
-			for(itAtt = it->second.begin(); itAtt != it->second.end(); itAtt++)
-			{
-				if((*itAtt).attribute == attribute)
-				{
-					values.push_back((*itAtt).value);
-				}
-			}
-		}
-		return values;
+		return _registry.GetValuesFromAttribute(key, attribute);
 	}
 	/// Return the value for a metadata attribute of product key.
 	Value GetValueFromAttribute(const std::string& key, const std::string& attribute)
@@ -255,28 +192,7 @@ public:
 
 	void AddAttribute(const std::string& key, const std::string& attribute, const std::string& value)
 	{
-		typename Metadata::const_iterator it;
-		it = _metadata.find(key);
-		if(!ExistsKey(key))
-		{
-			std::cout << "[Factory] tryind to add metadata to a non-existing key \"" << key << "\"" << std::endl; 
-	//		return;  //pau: debugging: add metadata anyway. maybe factory registrator is about to be instantiated.
-		}
-		
-		Pair pair;
-		pair.attribute = attribute;
-		pair.value = value;
-		Pairs pairs;
-		if(it == _metadata.end()) // it's a new key: insert it in the _metadata map
-		{
-			pairs.push_back(pair);
-			_metadata.insert( typename Metadata::value_type( key, pairs ) );
-
-		} 
-		else
-		{
-			_metadata[key].push_back(pair);
-		}
+		_registry.AddAttribute(key, attribute, value);
 	}
 
 public: // Inner classes. Public for better testing
@@ -289,6 +205,7 @@ public: // Inner classes. Public for better testing
 	{
 	private:
 		typedef typename std::map<std::string, Creator*> CreatorMap;
+		typedef std::map<Key, Pairs> Metadata;
 
 	public:
 		Creator& GetCreator( RegistryKey creatorId) 
@@ -394,8 +311,131 @@ public: // Inner classes. Public for better testing
 			return true;
 		}
 
+		/// Get all keys that have attribute==value in its metadata.
+		Keys GetKeys(const std::string& attribute, const std::string& value)
+		{
+			Keys result;
+			typename Metadata::const_iterator it;
+			for(it = _metadata.begin(); it != _metadata.end(); it++)
+			{
+				if( (attribute == "") )
+				{
+					result.push_back(it->first);
+					continue;
+				}
+				Pairs attributes = it->second;
+				typename Pairs::const_iterator itAtt;
+				for(itAtt = attributes.begin(); itAtt != attributes.end(); itAtt++)
+				{
+					if( ((*itAtt).attribute == attribute) && ((*itAtt).value == value) )
+					{
+						result.push_back(it->first);
+					}
+				}
+			}
+			return result;
+		}
+		/// Get all keys in the factory
+		Keys GetKeys()
+		{
+			return GetKeys("","");
+		}
+		/// Return all the metadata available for a product key
+		Pairs GetPairsFromKey(const std::string& key)
+		{
+			Pairs attributes;
+			typename Metadata::const_iterator it = _metadata.find(key);
+			if(it!=_metadata.end())
+			{
+				attributes = it->second;
+			}
+			return attributes;
+		}
+		/// Get the set of all values present for a given metadata attribute.
+		/// Example GetSetOfValues("category") could return ["modulators","generators","reverbs"] without repeated items.
+		Values GetSetOfValues(const std::string& attribute)
+		{
+			std::set<Value> AttributeSet;
+			std::set<Value>::const_iterator itSet;
+			Values values;
+			typename Metadata::const_iterator it;
+			for(it = _metadata.begin(); it != _metadata.end(); it++)
+			{
+				Pairs attributes = it->second;
+				typename Pairs::const_iterator itAtt;
+				for(itAtt = attributes.begin(); itAtt != attributes.end(); itAtt++)
+				{
+					if((*itAtt).attribute == attribute)
+					{
+						itSet = AttributeSet.find((*itAtt).value);
+						if(itSet == AttributeSet.end())
+						{
+							AttributeSet.insert((*itAtt).value);
+						}
+					}
+				}
+			}
+			// keep using the ProcessingFactory::Values
+			for(itSet = AttributeSet.begin(); itSet != AttributeSet.end(); itSet++)
+			{
+				values.push_back(*itSet);
+			}
+			return values;
+		}
+		/// Return the list of values for a metadata attribute for a product key.
+		Values GetValuesFromAttribute(const std::string& key, const std::string& attribute)
+		{
+			Values values;
+			typename Metadata::const_iterator it = _metadata.find(key);
+			if(it != _metadata.end())
+			{
+				typename Pairs::const_iterator itAtt;
+				for(itAtt = it->second.begin(); itAtt != it->second.end(); itAtt++)
+				{
+					if((*itAtt).attribute == attribute)
+					{
+						values.push_back((*itAtt).value);
+					}
+				}
+			}
+			return values;
+		}
+		/// Return the value for a metadata attribute of product key.
+		Value GetValueFromAttribute(const std::string& key, const std::string& attribute)
+		{
+			return GetValuesFromAttribute(key,attribute).front();
+		}
+
+		void AddAttribute(const std::string& key, const std::string& attribute, const std::string& value)
+		{
+			typename Metadata::const_iterator it;
+			it = _metadata.find(key);
+			if(!ExistsKey(key))
+			{
+				std::cout << "[Factory] tryind to add metadata to a non-existing key \"" << key << "\"" << std::endl; 
+		//		return;  //pau: debugging: add metadata anyway. maybe factory registrator is about to be instantiated.
+			}
+			
+			Pair pair;
+			pair.attribute = attribute;
+			pair.value = value;
+			Pairs pairs;
+			if(it == _metadata.end()) // it's a new key: insert it in the _metadata map
+			{
+				pairs.push_back(pair);
+				_metadata.insert( typename Metadata::value_type( key, pairs ) );
+
+			} 
+			else
+			{
+				_metadata[key].push_back(pair);
+			}
+		}
+
+
 	private: // data
 		CreatorMap _creators;
+		Metadata _metadata;
 
 		// helper methods:
 		Creator* CommonGetCreator( RegistryKey& creatorId ) 
@@ -420,7 +460,6 @@ public: // Inner classes. Public for better testing
 
 private:
 	Registry _registry;
-	Metadata _metadata;
 
 };
 
