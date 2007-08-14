@@ -69,6 +69,7 @@ private:
 
 	unsigned _nBins;
 	unsigned _nFrames;
+	unsigned _currentFrame;
 	FloatArrayDataSource * _dataSource;
 	double _maxValue;
 	int _updatePending;
