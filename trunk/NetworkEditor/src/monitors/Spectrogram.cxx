@@ -59,8 +59,8 @@ static CLAM::VM::FloatArrayDataSource & getDummySource()
 CLAM::VM::Spectrogram::Spectrogram(QWidget * parent) 
 	: QGLWidget(parent)
 	, _nBins(0)
-	, _nFrames(32)
-	, _currentFrame(31)
+	, _nFrames(256)
+	, _currentFrame(0)
 	, _smooth(true)
 {
 	_data = 0;
@@ -165,7 +165,8 @@ void CLAM::VM::Spectrogram::paintGL()
 void CLAM::VM::Spectrogram::DrawTiles()
 {
 	// make sure nBins is greater than 16 so texture draws correctly
-	unsigned realBinSize = std::max(16u, _nBins);
+	unsigned realBinSize = 16;
+	while (realBinSize<_nBins) realBinSize<<=1;
 	
 	float mean = 0;
 	_maxValue*=.5;
