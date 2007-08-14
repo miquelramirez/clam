@@ -78,6 +78,12 @@
 
 class FrameDescriptorsPane : public QSplitter
 {
+	Q_OBJECT
+public:
+	FrameDescriptorsPane(QWidget * parent)
+		: QSplitter(parent)
+	{
+	}
 	
 };
 
