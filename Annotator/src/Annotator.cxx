@@ -79,10 +79,44 @@
 class FrameDescriptorsPane : public QSplitter
 {
 	Q_OBJECT
+	CLAM::VM::BPFPlot *mBPFEditor;
+	QListWidget *mFrameLevelAttributeList;
+// TODO: move elsewhere!
+//	QSplitter *mVSplit;
+    
 public:
 	FrameDescriptorsPane(QWidget * parent)
 		: QSplitter(parent)
 	{
+	    setOrientation(Qt::Horizontal);
+	    mBPFEditor = new CLAM::VM::BPFPlot(this);
+	    QSizePolicy sizePolicy3(static_cast<QSizePolicy::Policy>(0), static_cast<QSizePolicy::Policy>(0));
+	    sizePolicy3.setHorizontalStretch(2);
+	    sizePolicy3.setVerticalStretch(0);
+	    sizePolicy3.setHeightForWidth(mBPFEditor->sizePolicy().hasHeightForWidth());
+	    mBPFEditor->setSizePolicy(sizePolicy3);
+	    mBPFEditor->setMinimumSize(QSize(700, 200));
+	    mBPFEditor->setFocusPolicy(Qt::WheelFocus);
+	    mBPFEditor->setFrameShape(QFrame::StyledPanel);
+	    mBPFEditor->setFrameShadow(QFrame::Raised);
+	    addWidget(mBPFEditor);
+	    mFrameLevelAttributeList = new QListWidget(this);
+	    mFrameLevelAttributeList->setMinimumSize(QSize(150, 0));
+	    mFrameLevelAttributeList->setAlternatingRowColors(true);
+	    mFrameLevelAttributeList->setResizeMode(QListView::Adjust);
+	    addWidget(mFrameLevelAttributeList);
+//		mVSplit->addWidget(this);
+	
+		mBPFEditor->setWhatsThis(QApplication::translate("Annotator", "<p>The <b>frame level descriptors editor</b> allows editing\n"
+		"			 floating point descriptors that has an occurrence for each frame.</p>\n"
+		"			 <ul>\n"
+		"			 <li>Dragging Points: Moving them.</li>\n"
+		"			 <li>Page up/down: Set focus prev/next point</li>\n"
+		"			 <li>Hover point: Set focus to point</li>\n"
+		"			 <li>Dragging play positon: Moves it.</li>\n"
+		"			 <li>'r'+Click: Set the current play position.</li>\n"
+		"			 <li>Arrows: Change focused point values</li>\n"
+		"			 </ul>", 0, QApplication::UnicodeUTF8));
 	}
 	
 };
