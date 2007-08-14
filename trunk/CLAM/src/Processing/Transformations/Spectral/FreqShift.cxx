@@ -58,7 +58,7 @@ bool FreqShift::Do(const Spectrum& in, Spectrum& out)
 	
 	//actually this is one over the spectral resolution, but it will be better for what I need afterwords
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
-	int amount = Round(mAmount.GetLastValue() * spectralResolution);
+	int amount = Round(mShiftAmount.GetLastValue() * spectralResolution);
 	
 	for(int i = 0; i<spectrumSize; i++)
 	{

@@ -14,7 +14,7 @@ namespace CLAM
 	{
 		public:
 			FrameTransformation()
-				: mAmount("Amount", this)
+				: mAmount("Amount", this) //soon to be deprecated
 			{
 			}
 			virtual bool Do(const Frame& in,Frame& out) = 0; 
@@ -34,7 +34,7 @@ namespace CLAM
 		
 			FrameTransformationConfig mConfig;
 			
-			InControl mAmount;
+			InControl mAmount; //soon to be deprecated
 	};
 	
 	//@todo: could also add ports here

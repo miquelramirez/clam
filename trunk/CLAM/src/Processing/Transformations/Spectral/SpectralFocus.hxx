@@ -51,13 +51,16 @@ namespace CLAM{
 		OutPort<Spectrum> mOut;
 		
 		InControl mCenterFreqCtl;
+		InControl mFocusAmount;
+
 	public:
 
 		SpectralFocus() 
 			: 
-			mIn( "InSpectrum", this), 
-			mOut( "OutSpectrum", this),
-			mCenterFreqCtl("CenterFreq", this)
+			mIn("InSpectrum", this), 
+			mOut("OutSpectrum", this),
+			mCenterFreqCtl("CenterFreq", this),
+			mFocusAmount("Focus Amount", this)
 		{
 			Configure( SegmentTransformationConfig() );
 			SpecTypeFlags flg;
@@ -73,8 +76,8 @@ namespace CLAM{
 		virtual bool InitControls()
 		{ 
 			GetInControl("CenterFreq").DoControl(1000);
-			GetInControl("Amount").DoControl(100);
-			
+			GetInControl("Focus Amount").DoControl(100);
+
 			return true;
 		}
 		
