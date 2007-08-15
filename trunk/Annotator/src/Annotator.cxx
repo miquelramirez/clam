@@ -176,7 +176,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 
 	setupUi(this);
 	mGlobalDescriptors = new CLAM_Annotator::DescriptorTableController(mDescriptorsTable, mProject);
-	_frameDescriptorsPane = new FrameDescriptorsPane(mVSplit, mProject);
+	_frameDescriptorsPane = new FrameDescriptorsPane(mVSplit, mProject, mEPFs);
 	addNewSegmentationPane();
 	mAbout = new QDialog(this);
 	Ui::About aboutUi;
@@ -826,6 +826,7 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	auralizeSegmentation();
 	mBPFEditor->show();
 	refreshEnvelopes();
+//	_frameDescriptorsFrame->refreshEnvelopes(double(mCurrentAudio.GetDuration()), mpDescriptorPool);
 	refreshInstantViews();
 	mStatusBar << tr("Done") << mStatusBar;
 	loaderLaunch();

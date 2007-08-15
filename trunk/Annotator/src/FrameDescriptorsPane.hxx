@@ -16,12 +16,12 @@ class FrameDescriptorsPane : public QSplitter
  
 private:
 	CLAM_Annotator::Project& _mProject;
-	std::vector<CLAM::EquidistantPointsFunction>& _mEPFs;
+	std::vector<CLAM::EquidistantPointsFunction> _mEPFs;
 
 public:
 	FrameDescriptorsPane(QWidget * parent,
 	 					CLAM_Annotator::Project& mProject,
-						std::vector<CLAM::EquidistantPointsFunction>& mEPFs)
+						std::vector<CLAM::EquidistantPointsFunction> mEPFs)
 	
 		: QSplitter(parent)
 		, _mProject(mProject)
