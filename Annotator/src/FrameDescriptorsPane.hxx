@@ -5,6 +5,7 @@
 #include <QtGui/QListWidget>
 #include "vmBPFPlot.hxx"
 #include "Project.hxx"
+#include "EquidistantPointsFunction.hxx"
 
 class FrameDescriptorsPane : public QSplitter
 {
@@ -15,12 +16,16 @@ class FrameDescriptorsPane : public QSplitter
  
 private:
 	CLAM_Annotator::Project& _mProject;
+	std::vector<CLAM::EquidistantPointsFunction>& _mEPFs;
 
 public:
 	FrameDescriptorsPane(QWidget * parent,
-	 					CLAM_Annotator::Project& mProject)
+	 					CLAM_Annotator::Project& mProject,
+						std::vector<CLAM::EquidistantPointsFunction>& mEPFs)
+	
 		: QSplitter(parent)
 		, _mProject(mProject)
+		, _mEPFs(mEPFs)
 	{
 		setOrientation(Qt::Horizontal);
 		mBPFEditor = new CLAM::VM::BPFPlot(this);
