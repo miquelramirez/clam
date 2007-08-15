@@ -226,7 +226,7 @@ private:
 	QAction * mRecentFilesMenuSeparator;
 	enum {MaxRecentFiles=4};
 	std::vector<SegmentationPane *> _segmentationPanes;
-	std::vector<FrameDescriptorsPane *> _frameDescriptorsPanes;
+	FrameDescriptorsPane * _frameDescriptorsPane;
 };
 
 #endif
