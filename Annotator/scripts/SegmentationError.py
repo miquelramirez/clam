@@ -21,12 +21,32 @@
 
 from Pool import *
 import sys
+from xml.dom.ext.reader import Sax2
 
-computedFile = '../example-data/SongsTest/Debaser-CoffeeSmell.mp3.pool'
-groundTruthFile = '../example-data/SongsTest/Debaser-WoodenHouse.mp3.pool'
+def extractAttribute(pool, scope, attribute) :	
+	return pool.SelectAttributes(scope,attribute)[0].firstChild.data.split()
 
+def extractEnumAttribute(pool, scope, attribute) :	
+	return [e.firstChild.data for e in pool.SelectAttributes(scope,attribute)[0].childNodes if e.nodeType == e.ELEMENT_NODE  ]
+
+computedFile = '../example-data/SongsTest/Debaser-CoffeeSmell.mp3.chords'
+trueFile = '../example-data/SongsTest/Debaser-WoodenHouse.mp3.chords'
 
 computedPool = Pool(computedFile)
-groundTruthPool = Pool(groundTruthFile)
+truePool = Pool(trueFile)
 
+computedSegmentationString = extractAttribute(computedPool, "Song", "Chords_Harte")
+computedSegmentation = [ float(a) for a in extractAttribute(computedPool, 'Song','Chords_Harte') ]
+computedRoots = extractEnumAttribute(computedPool, "ExtractedChord", "Root")
+computedModes = extractEnumAttribute(computedPool, "ExtractedChord", "Mode")
+computedChords = []
+for i in range(0,len(computedRoots)):
+	computedChords.append(computedRoots[i]+' '+computedModes[i])
 
+trueSegmentationString = extractAttribute(truePool, "Song", "Chords_Harte")
+trueSegmentation = [ float(a) for a in extractAttribute(truePool, 'Song','Chords_Harte') ]
+trueRoots = extractEnumAttribute(truePool, "ExtractedChord", "Root")
+trueModes = extractEnumAttribute(truePool, "ExtractedChord", "Mode")
+trueChords = []
+for i in range(0,len(trueRoots)):
+	trueChords.append(trueRoots[i]+' '+trueModes[i])
