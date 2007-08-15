@@ -368,6 +368,7 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	mGlobalDescriptors->refreshSchema("Song");
 	mStatusBar << tr("Adapting Interface to Frame level descriptors...") << mStatusBar;
 	adaptEnvelopesToCurrentSchema();
+	_frameDescriptorsPane->adaptEnvelopesToCurrentSchema(mProject);
 	mStatusBar << tr("Adapting Interface to Segmentations...") << mStatusBar;
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->adaptToSchema();
