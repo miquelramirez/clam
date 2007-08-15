@@ -13,9 +13,14 @@ class FrameDescriptorsPane : public QSplitter
 	CLAM::VM::BPFPlot *mBPFEditor;
 	QListWidget *mFrameLevelAttributeList;
  
+private:
+	CLAM_Annotator::Project& _mProject;
+
 public:
-	FrameDescriptorsPane(QWidget * parent)
+	FrameDescriptorsPane(QWidget * parent,
+	 					CLAM_Annotator::Project& mProject)
 		: QSplitter(parent)
+		, _mProject(mProject)
 	{
 		setOrientation(Qt::Horizontal);
 		mBPFEditor = new CLAM::VM::BPFPlot(this);
@@ -56,11 +61,11 @@ public:
 
 		mBPFEditor->setAutoFillBackground(true);
 	}
-	void adaptEnvelopesToCurrentSchema(CLAM_Annotator::Project & project)
+	void adaptEnvelopesToCurrentSchema()
 	{
 		mFrameLevelAttributeList->clear();
 
-		const std::list<std::string>& names = project.GetNamesByScopeAndType("Frame", "Float");
+		const std::list<std::string>& names = _mProject.GetNamesByScopeAndType("Frame", "Float");
 		const unsigned nTabs = names.size();
 		std::list<std::string>::const_iterator name = names.begin();
 		for (unsigned i = 0; i<nTabs; name++, i++)
