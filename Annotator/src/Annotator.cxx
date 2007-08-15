@@ -176,7 +176,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 
 	setupUi(this);
 	mGlobalDescriptors = new CLAM_Annotator::DescriptorTableController(mDescriptorsTable, mProject);
-	_frameDescriptorsPane = new FrameDescriptorsPane(this);
+	_frameDescriptorsPane = new FrameDescriptorsPane(mVSplit);
 	addNewSegmentationPane();
 	mAbout = new QDialog(this);
 	Ui::About aboutUi;
@@ -520,6 +520,10 @@ void Annotator::makeConnections()
 	// Making the splitters look like a table
 	connect(mFrameEditorSplit, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
+
+	// Making the splitters look like a table
+	connect(_frameDescriptorsPane, SIGNAL(splitterMoved(int,int)),
+			this, SLOT(syncronizeSplits()));
 }
 void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 {
@@ -613,6 +617,7 @@ void Annotator::syncronizeSplits()
 	if (!movedSplitter) return;
 	QList<int> sizes = movedSplitter->sizes();
 	mFrameEditorSplit->setSizes(sizes);
+	_frameDescriptorsPane->setSizes(sizes);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->setSizes(sizes);
 }
