@@ -794,7 +794,7 @@ void  Annotator::askToSaveDescriptorsIfNeeded()
 
 void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *previous)
 {
-	if (mPlayer) mPlayer->stop();
+	mPlayer->stop();
 	setCurrentTime(0,0);
 	mStatusBar << tr("Saving previous song descriptors...") << mStatusBar;
 	if (previous) askToSaveDescriptorsIfNeeded();
@@ -1068,17 +1068,14 @@ void Annotator::on_reloadDescriptorsAction_triggered()
 
 void Annotator::on_playAction_triggered()
 {
-	if(!mPlayer) return;
 	mPlayer->play();
 }
 void Annotator::on_pauseAction_triggered()
 {
-	if(!mPlayer) return;
 	mPlayer->pause();
 }
 void Annotator::on_stopAction_triggered()
 {
-	if(!mPlayer) return;
 	mPlayer->stop();
 }
 
