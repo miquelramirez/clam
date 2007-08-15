@@ -27,6 +27,6 @@ groundTruthFile = '../example-data/SongsTest/Debaser-WoodenHouse.mp3.pool'
 
 
 computedPool = Pool(computedFile)
-
+groundTruthPool = Pool(groundTruthFile)
 
 
