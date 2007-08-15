@@ -55,6 +55,18 @@ public:
 
 		mBPFEditor->setAutoFillBackground(true);
 	}
+	void adaptEnvelopesToCurrentSchema(CLAM::Annotator::Project & project)
+	{
+		mFrameLevelAttributeList->clear();
+
+		const std::list<std::string>& names = project.GetNamesByScopeAndType("Frame", "Float");
+		const unsigned nTabs = names.size();
+		std::list<std::string>::const_iterator name = names.begin();
+		for (unsigned i = 0; i<nTabs; name++, i++)
+		{
+			mFrameLevelAttributeList->addItem(name->c_str());
+		}
+	}
 };
 
 #endif
