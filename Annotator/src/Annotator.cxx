@@ -176,7 +176,7 @@ Annotator::Annotator(const std::string & nameProject = "")
 
 	setupUi(this);
 	mGlobalDescriptors = new CLAM_Annotator::DescriptorTableController(mDescriptorsTable, mProject);
-	_frameDescriptorsPane = new FrameDescriptorsPane(mVSplit);
+	_frameDescriptorsPane = new FrameDescriptorsPane(mVSplit, mProject);
 	addNewSegmentationPane();
 	mAbout = new QDialog(this);
 	Ui::About aboutUi;
@@ -368,7 +368,7 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	mGlobalDescriptors->refreshSchema("Song");
 	mStatusBar << tr("Adapting Interface to Frame level descriptors...") << mStatusBar;
 	adaptEnvelopesToCurrentSchema();
-	_frameDescriptorsPane->adaptEnvelopesToCurrentSchema(mProject);
+	_frameDescriptorsPane->adaptEnvelopesToCurrentSchema();
 	mStatusBar << tr("Adapting Interface to Segmentations...") << mStatusBar;
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->adaptToSchema();
