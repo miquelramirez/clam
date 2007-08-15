@@ -23,13 +23,13 @@ public:
 		sizePolicy3.setVerticalStretch(0);
 		sizePolicy3.setHeightForWidth(mBPFEditor->sizePolicy().hasHeightForWidth());
 		mBPFEditor->setSizePolicy(sizePolicy3);
-		mBPFEditor->setMinimumSize(QSize(700, 200));
+		mBPFEditor->setMinimumSize(QSize(700, 150));
 		mBPFEditor->setFocusPolicy(Qt::WheelFocus);
 		mBPFEditor->setFrameShape(QFrame::StyledPanel);
 		mBPFEditor->setFrameShadow(QFrame::Raised);
 		addWidget(mBPFEditor);
 		mFrameLevelAttributeList = new QListWidget(this);
-		mFrameLevelAttributeList->setMinimumSize(QSize(150, 0));
+		mFrameLevelAttributeList->setMinimumSize(QSize(200, 0));
 		mFrameLevelAttributeList->setAlternatingRowColors(true);
 		mFrameLevelAttributeList->setResizeMode(QListView::Adjust);
 		addWidget(mFrameLevelAttributeList);
