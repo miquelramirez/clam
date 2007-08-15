@@ -298,7 +298,7 @@ void Annotator::initInterface()
 
 	mCurrentAudio.ResizeToDuration(2.0);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
-		_segmentationPanes[i]->setAudio(mCurrentAudio, false);
+		_segmentationPanes[i]->setData(0, mCurrentAudio);
 
 	mBPFEditor->setAutoFillBackground(true);
 
@@ -409,11 +409,6 @@ void Annotator::globalDescriptorsTableChanged(int row)
 	markCurrentSongChanged(true);
 }
 
-void Annotator::refreshSegmentation()
-{
-	auralizeMarks();
-}
-
 void Annotator::adaptEnvelopesToCurrentSchema()
 {
 	mFrameLevelAttributeList->clear();
@@ -433,7 +428,7 @@ unsigned Annotator::addNewSegmentationPane()
 	SegmentationPane * pane = new SegmentationPane(0, mProject);
 	// Changing the current segmentation descriptor
 	connect(pane, SIGNAL(segmentationSelectionChanged()),
-			this, SLOT(refreshSegmentation()) );
+			this, SLOT(auralizeSegmentation()) );
 	// Apply segment descriptors changes
 	connect(pane, SIGNAL(segmentationDataChanged()),
 			this, SLOT(updateSegmentation()) );
@@ -514,7 +509,7 @@ void Annotator::makeConnections()
 	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
 			this, SLOT(setCurrentTime(double,double)));
 
-	// Update auralizations whenever player stop and they have been modified
+	// Update auralization whenever player stop and they have been modified
 	connect(mPlayer, SIGNAL(stopTime(double)),
 			this, SLOT(updatePendingAuralizationsChanges()));
 
@@ -647,19 +642,20 @@ void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
 void Annotator::updateSegmentation()
 {
 	markCurrentSongChanged(true);
+
 	if(mPlayer->IsPlaying())
 		mMustUpdateMarkedAudio = true;
 	else
-		auralizeMarks();
-	// TODO: Future: Warn other panes about the segmentation changes
+		auralizeSegmentation();
+	// TODO: Warn other panes about the segmentation changes
 }
 
 void Annotator::updatePendingAuralizationsChanges()
 {
-	mStatusBar << tr("Updating auralizations after playback") << mStatusBar;
+	mStatusBar << tr("Updating auralizeSegmentation after playback") << mStatusBar;
 	if(!mMustUpdateMarkedAudio) return;
 	mMustUpdateMarkedAudio = false;
-	auralizeMarks();
+	auralizeSegmentation();
 }
 
 void Annotator::updateSongListWidget()
@@ -824,12 +820,10 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	setMenuAudioItemsEnabled(true);
 
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
-		_segmentationPanes[i]->setAudio(mCurrentAudio,false);
-	for (unsigned i=0; i<_segmentationPanes.size(); i++)
-		_segmentationPanes[i]->setData(mpDescriptorPool);
-	for (unsigned i=0; i<_segmentationPanes.size(); i++)
-		_segmentationPanes[i]->refreshSegmentation();
-	auralizeMarks();
+	{
+		_segmentationPanes[i]->setData(mpDescriptorPool,mCurrentAudio);
+	}
+	auralizeSegmentation();
 	mBPFEditor->show();
 	refreshEnvelopes();
 	refreshInstantViews();
@@ -890,10 +884,10 @@ void Annotator::refreshAudioData()
 	{
 		mStatusBar << tr("Updating segment auralization, after last audio refresh...") << mStatusBar;
 		mAudioRefreshTimer->stop();
-		auralizeMarks();
+		auralizeSegmentation();
 	}
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
-		_segmentationPanes[i]->setAudio(mCurrentAudio, true);
+		_segmentationPanes[i]->redrawAudio();
 
 	if (!finished)
 		mAudioRefreshTimer->start(2000);
@@ -981,7 +975,7 @@ void Annotator::refreshGlobalDescriptorsTable()
 }
 
 
-void Annotator::auralizeMarks()
+void Annotator::auralizeSegmentation()
 {
 	// Taking just the segmentation of the first pane
 	const CLAM::Segmentation * segmentation = _segmentationPanes[0]->getSegmentation();
@@ -1099,9 +1093,7 @@ void Annotator::on_actionAddSegmentationView_triggered()
 {
 	unsigned index = addNewSegmentationPane();
 	_segmentationPanes[index]->adaptToSchema();
-	_segmentationPanes[index]->setAudio(mCurrentAudio,false);
-	_segmentationPanes[index]->setData(mpDescriptorPool);
-	_segmentationPanes[index]->refreshSegmentation();
+	_segmentationPanes[index]->setData(mpDescriptorPool,mCurrentAudio);
 }
 
 

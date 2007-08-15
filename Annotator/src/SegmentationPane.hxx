@@ -115,14 +115,17 @@ public:
 	{
 		_segmentEditor->updateLocator(timeMilliseconds);
 	}
-	void setAudio(const CLAM::Audio & audio, bool updating)
+	void redrawAudio()
 	{
-		_segmentEditor->SetData(audio, updating);
-		_audio = & audio;
+		if (not _audio) return;
+		_segmentEditor->SetData(*_audio, /*updating*/ true);
 	}
-	void setData(CLAM::DescriptionDataPool * pool)
+	void setData(CLAM::DescriptionDataPool * pool, const CLAM::Audio & audio)
 	{
+		_segmentEditor->SetData(audio, /*updating*/ false);
+		_audio = & audio;
 		_pool=pool;	
+		refreshSegmentation();
 	}
 	// Kludge to provide access
 	const CLAM::Segmentation * getSegmentation() const

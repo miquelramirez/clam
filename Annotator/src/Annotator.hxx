@@ -117,7 +117,7 @@ public slots:
 	void currentSongChanged(QTreeWidgetItem*current, QTreeWidgetItem*previous);
 	void globalDescriptorsTableChanged(int row);
 	void frameDescriptorsChanged(unsigned, double);
-	void refreshSegmentation();
+	void auralizeSegmentation();
 	void updateSegmentation();
 
 	void fileOpen();
@@ -179,7 +179,6 @@ private:
 	void updateEnvelopesData();
 	void updateEnvelopeData(int bpfIndex, CLAM::TData * descriptors);
 
-	void auralizeMarks();
 	void setMenuAudioItemsEnabled(bool);
 
 	// Functions to control de audio loader
