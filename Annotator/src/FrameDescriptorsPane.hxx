@@ -4,6 +4,7 @@
 #include <QtGui/QSplitter>
 #include <QtGui/QListWidget>
 #include "vmBPFPlot.hxx"
+#include "Project.hxx"
 
 class FrameDescriptorsPane : public QSplitter
 {
@@ -55,7 +56,7 @@ public:
 
 		mBPFEditor->setAutoFillBackground(true);
 	}
-	void adaptEnvelopesToCurrentSchema(CLAM::Annotator::Project & project)
+	void adaptEnvelopesToCurrentSchema(CLAM_Annotator::Project & project)
 	{
 		mFrameLevelAttributeList->clear();
 
