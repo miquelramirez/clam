@@ -22,6 +22,6 @@
 from Pool import *
 import sys
 
-
+computedFile = '../example-data/SongsTest/Debaser-CoffeeSmell.mp3.pool'
 
 
