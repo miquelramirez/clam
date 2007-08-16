@@ -68,7 +68,6 @@ public:
 		wait();
 	}
 
-
 	void SetDuration(double dur)
 	{
 		if(dur <= 0) return;
@@ -76,7 +75,6 @@ public:
 		mTimeBounds.max = dur;
 		mBeginTime = 0.0;
 	}
-
 	void SetSamplingRate(double sr)
 	{
 		mSamplingRate = sr;
@@ -85,12 +83,27 @@ public:
 	{
 		mPlayingFlags = flags;
 	}
-
 	bool IsPlaying() const
 	{
 		return mPlayStatus == Playing;
 	}
 
+	void SetData(const CLAM::BPF& bpf) { mBPF = &bpf; }
+	enum { LEFT=1, RIGHT=2};
+	void SetAudioPtr(const CLAM::Audio* audio, unsigned channelMask=LEFT|RIGHT)
+	{
+		if (channelMask&1)
+			mAudio0 = audio;
+		if (channelMask&2)
+			mAudio1 = audio;
+	}
+
+	void SetPitchBounds(double min, double max)
+	{
+		if(min >= max) return;
+		mPitchBounds.min = min;
+		mPitchBounds.max = max;
+	}
 signals:
 	void playingTime(double);
 	void stopTime(double, bool);
@@ -119,24 +132,6 @@ public slots:
 		mTimeBounds.max = max;
 		mBeginTime = mTimeBounds.min;
 	}
-
-	void SetData(const CLAM::BPF& bpf) { mBPF = &bpf; }
-
-	void SetAudioPtr(const CLAM::Audio* audio, unsigned channelMask=1|2)
-	{
-		if (channelMask&1)
-			mAudio0 = audio;
-		if (channelMask&2)
-			mAudio1 = audio;
-	}
-
-	void SetPitchBounds(double min, double max)
-	{
-		if(min >= max) return;
-		mPitchBounds.min = min;
-		mPitchBounds.max = max;
-	}
-
 
 protected:
 	int           mPlayingFlags;
@@ -324,11 +319,9 @@ public:
 	void setOptions(bool playOnsets, bool playLLDs)
 	{
 		CLAM_ASSERT(_currentAudio, "Auralizer::setOptions without audio");
-//		unsigned int LEFT_CHANNEL = 1;
-		unsigned int RIGHT_CHANNEL = 2;
 		mPlayer->SetAudioPtr(_currentAudio);
 		if (playOnsets)
-			mPlayer->SetAudioPtr(&(mOnsetAuralizationAudio), RIGHT_CHANNEL);
+			mPlayer->SetAudioPtr(&(mOnsetAuralizationAudio), AuralizationPlayer::RIGHT);
 		mPlayer->SetPlayingFlags( CLAM::VM::eAudio | (playLLDs?CLAM::VM::eUseOscillator:0));
 	}
 	void setAudio(const CLAM::Audio & audio)
