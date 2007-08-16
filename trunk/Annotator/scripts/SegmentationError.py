@@ -51,6 +51,16 @@ def numberOfChordTimeUnits(segmentation, hop, start, end) :
 		time += hop
 	return result
 
+def numberOfCorrectChordTimeUnits(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end) :
+	result = 0
+	time = start
+	while time < end :
+		if chordAtTime(computedSegmentation, computedChords, time) == chordAtTime(trueSegmentation, trueChords, time) :
+			if chordAtTime(computedSegmentation, computedChords, time) != 'None' :
+				result +=1
+		time += hop
+	return result
+
 
 def displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end) :
 	print 'time:	segment_computed segment_true	chord_computed chord_true'
@@ -83,8 +93,9 @@ for i in range(0,len(trueRoots)):
 	trueChords.append(trueRoots[i]+' '+trueModes[i])
 
 hop = 4096.0/44100.0
-start = hop/2.0
-end =  trueSegmentation[len(trueSegmentation)-1]
+start = hop/2.0 + 40
+end = 50
+#end =  trueSegmentation[len(trueSegmentation)-1]
 
 displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
 
@@ -93,3 +104,4 @@ print 'start time:',start
 print 'end time (end of ground truth\'s last segment)',end
 print numberOfChordTimeUnits(trueSegmentation, hop, start, end)
 print numberOfChordTimeUnits(computedSegmentation, hop, start, end)
+print numberOfCorrectChordTimeUnits(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
