@@ -200,24 +200,11 @@ Annotator::Annotator(const std::string & nameProject = "")
 	else
 		on_newProjectAction_triggered();
 	*/
-	initClick();
+	_auralizer->initClick(mCurrentAudio.GetSampleRate());
 	updateAuralizationOptions();
 	QTimer::singleShot(1000, splash, SLOT(close()));
 }
 
-void Annotator::initClick()
-{
-	mClick.SetSize(1000);
-
-	CLAM::OscillatorConfig cfg;
-	cfg.SetFrequency(1000);
-	cfg.SetAmplitude(1);
-	cfg.SetSamplingRate(mCurrentAudio.GetSampleRate());
-	CLAM::Oscillator osc(cfg);
-	osc.Start();
-	osc.Do(mClick);
-	osc.Stop();
-}
 
 void Annotator::loadSettings()
 {
@@ -998,7 +985,7 @@ void Annotator::auralizeSegmentation()
 	{
 		int samplePosition = Round(marks[i]*mCurrentAudio.GetSampleRate());
 		if(samplePosition<size)
-			mOnsetAuralizationAudio.SetAudioChunk(samplePosition,mClick);
+			mOnsetAuralizationAudio.SetAudioChunk(samplePosition,_auralizer->mClick);
 	} 
 }
 
