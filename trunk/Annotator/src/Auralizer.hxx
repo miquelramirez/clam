@@ -31,34 +31,197 @@
 #include "EquidistantPointsFunction.hxx"
 #include "vmPlayer.hxx"
 
-namespace CLAM
+#include "AudioIO.hxx"
+#include "AudioManager.hxx"
+#include "AudioOut.hxx"
+#include "SimpleOscillator.hxx"
+
+class BPFPlayer : public CLAM::VM::Player
 {
-	namespace VM
+	Q_OBJECT
+public:
+	BPFPlayer(QObject* parent=0)
+		: Player(parent)
+		, mBPF(0)
+		, mAudio0(0)
+		, mAudio1(0)
+		, mPitchBounds(min_ref,max_ref)
 	{
-		class BPFPlayer : public Player
-		{
-			Q_OBJECT
-		public:
-			BPFPlayer(QObject* parent=0);
-			~BPFPlayer();
-
-			void SetData(const BPF& bpf);
-			void SetAudioPtr(const Audio* audio, unsigned channelMask=1|2); // TODO: Make this be enums
-			void SetPitchBounds(double min, double max);
-
-		private:
-			const BPF*   mBPF;
-			const Audio* mAudio0;
-			const Audio* mAudio1;
-			Range        mPitchBounds;
-
-			void run();
-
-			unsigned FirstIndex();
-			double GetPitch(unsigned index);
-		};
+		SetPlayingFlags(CLAM::VM::eUseOscillator);
 	}
-}
+
+	~BPFPlayer() { }
+
+	void SetData(const CLAM::BPF& bpf) { mBPF = &bpf; }
+
+	void SetAudioPtr(const CLAM::Audio* audio, unsigned channelMask=1|2)
+	{
+		if (channelMask&1)
+			mAudio0 = audio;
+		if (channelMask&2)
+			mAudio1 = audio;
+	}
+
+	void SetPitchBounds(double min, double max)
+	{
+		if(min >= max) return;
+		mPitchBounds.min = min;
+		mPitchBounds.max = max;
+	}
+
+private:
+	const CLAM::BPF*   mBPF;
+	const CLAM::Audio* mAudio0;
+	const CLAM::Audio* mAudio1;
+	CLAM::VM::Range    mPitchBounds;
+
+	void run()
+	{
+		if(!mAudio0) SetPlayingFlags(CLAM::VM::eUseOscillator);
+		if(mAudio0) mSamplingRate = mAudio0->GetSampleRate();
+		else mSamplingRate=44100;
+
+		unsigned frameSize = 4092;     
+		CLAM::AudioManager manager(mSamplingRate,(int)frameSize);  
+
+		manager.Start();
+		
+		CLAM::AudioOut channel0;   
+		CLAM::AudioIOConfig audioOutCfg0;     
+		audioOutCfg0.SetChannelID(0);    
+		channel0.Configure(audioOutCfg0); 
+
+		CLAM::AudioOut channel1;   
+		CLAM::AudioIOConfig audioOutCfg1;     
+		audioOutCfg1.SetChannelID(1);    
+		channel1.Configure(audioOutCfg1); 
+		
+		channel0.Start();
+		channel1.Start();
+
+		CLAM::SimpleOscillatorConfig oscCfg;
+		oscCfg.SetSamplingRate(mSamplingRate);
+		oscCfg.SetAmplitude(0.6);
+		CLAM::SimpleOscillator osc(oscCfg);
+		
+		CLAM::InControl& freqControl = osc.GetInControls().Get("Pitch");
+
+		CLAM::Audio samplesAudio0;
+		CLAM::Audio samplesAudio1;
+		CLAM::Audio samplesBpf;
+		samplesAudio0.SetSize(frameSize);
+		samplesAudio1.SetSize(frameSize);
+		samplesBpf.SetSize(frameSize);
+
+		CLAM::Audio silence;
+		silence.SetSize(frameSize);
+
+		unsigned firstIndex = FirstIndex();
+		unsigned k = firstIndex;
+
+		unsigned start = unsigned(mBeginTime*mSamplingRate);
+		unsigned nSamples = unsigned(mTimeBounds.max*mSamplingRate);
+    
+		unsigned leftIndex = start;        
+		unsigned rightIndex = leftIndex+frameSize;
+
+		osc.Start();
+
+		for(unsigned i=start; i < nSamples; i+=frameSize)
+		{
+			if (mPlayStatus!=Playing) break;
+			if(mBPF && mBPF->Size() && k+1<mBPF->Size() && mBPF->GetXValue(k+1)<= i/mSamplingRate) k++;
+
+			if(mAudio0 && rightIndex < unsigned(mAudio0->GetSize()))
+				mAudio0->GetAudioChunk(int(leftIndex),int(rightIndex),samplesAudio0);
+			if(mAudio1 && rightIndex < unsigned(mAudio1->GetSize()))
+				mAudio1->GetAudioChunk(int(leftIndex),int(rightIndex),samplesAudio1);
+
+			if(mBPF && mBPF->Size() && k < mBPF->Size()) freqControl.DoControl(GetPitch(k));
+			osc.Do(samplesBpf);
+			if (mBPF && mBPF->Size() && leftIndex/mSamplingRate < mBPF->GetXValue(k))
+			{
+				channel0.Do(silence);
+				channel1.Do(silence);
+			}
+			else if ((mPlayingFlags & CLAM::VM::eAudio) && (mPlayingFlags & CLAM::VM::eUseOscillator))
+			{
+				channel0.Do(samplesAudio0);
+				channel1.Do(samplesBpf);
+			}
+			else if (mPlayingFlags & CLAM::VM::eAudio && !(mPlayingFlags & CLAM::VM::eUseOscillator))
+			{
+				channel0.Do(samplesAudio0);
+				channel1.Do(samplesAudio1);
+			}
+			else
+			{
+				channel0.Do(samplesBpf);
+				channel1.Do(samplesBpf);
+			}
+			emit playingTime(double(leftIndex)/mSamplingRate);
+			leftIndex += frameSize;
+			rightIndex += frameSize;
+		}
+		osc.Stop();
+		channel0.Stop();
+		channel1.Stop();
+
+		if (mPlayStatus==Playing) mPlayStatus=Stoped;
+		mBeginTime = (mPlayStatus==Paused) ? double(leftIndex)/mSamplingRate : mTimeBounds.min;
+		emit stopTime(double(leftIndex)/mSamplingRate,mPlayStatus==Paused);
+	}
+
+	unsigned FirstIndex()
+	{
+		if (!mBPF ) return 0;
+		unsigned nPoints = mBPF->Size();
+		if(nPoints <= 1) return 0;
+
+		if(mBeginTime <= mBPF->GetXValue(0)) return 0;
+		if(mBeginTime >= mBPF->GetXValue(nPoints-1)) return nPoints-1;
+
+		unsigned index = 0;
+		unsigned left_index = 0;
+		unsigned right_index = nPoints-1;
+		while(left_index <= right_index)
+		{
+			const unsigned currentIndex = (left_index+right_index)/2;
+			if(currentIndex >= nPoints-1)
+			{
+				index = currentIndex;
+				break;
+			}
+			if(mBeginTime >= double(mBPF->GetXValue(currentIndex)) && 
+			   mBeginTime <= double(mBPF->GetXValue(currentIndex+1)))
+			{
+				index = currentIndex;
+				break;
+			}
+			if(mBeginTime < double(mBPF->GetXValue(currentIndex)))
+			{
+				right_index = currentIndex-1;
+			}
+			else if(mBeginTime > double(mBPF->GetXValue(currentIndex)))
+			{
+				left_index = currentIndex+1;
+			}
+		}
+		return index;
+	}
+
+	double GetPitch(unsigned index)
+	{
+		double value = mBPF->GetValueFromIndex(index);
+//		if(value >= min_ref && value <= max_ref) return value;
+		if(value < mPitchBounds.min) value = mPitchBounds.min;
+		else if(value > mPitchBounds.max) value = mPitchBounds.max;
+		return (value-mPitchBounds.min)*(max_ref-min_ref)/mPitchBounds.Span()+min_ref;
+	}
+	static const double min_ref = 8.1758;  // 8.1758 Hz 
+	static const double max_ref = 12545.9; // 12545.9 Hz 
+
+};
 
 
 class Auralizer
@@ -67,11 +230,11 @@ public:
 	CLAM::Audio mClick; ///< A vector of audios to produce click
 	CLAM::Audio mOnsetAuralizationAudio; ///< Current audio with segmentation marks inserted
 	const CLAM::Audio * _currentAudio;
-	CLAM::VM::BPFPlayer* mPlayer;
+	BPFPlayer* mPlayer;
 	Auralizer(QObject * parent)
 		: _currentAudio(0)
 	{
-		mPlayer = new CLAM::VM::BPFPlayer(parent);
+		mPlayer = new BPFPlayer(parent);
 		initClick();
 	}
 	void play() { mPlayer->play(); }
