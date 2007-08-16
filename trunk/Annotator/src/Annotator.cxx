@@ -76,6 +76,7 @@
 #include <QtGui/QSplitter>
 #include "SegmentationPane.hxx"
 #include "FrameDescriptorsPane.hxx"
+#include "Auralizer.hxx"
 
 void Annotator::abortLoader()
 {
@@ -165,8 +166,8 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mAudioRefreshTimer(new QTimer(this))
 	, mAudioLoaderThread(0)
 	, mGlobalDescriptors(0)
-	, mPlayer(0)
 	, mStatusBar(statusBar())
+	, _auralizer(0)
 {
 
 	QSplashScreen * splash = new QSplashScreen( QPixmap(":/logos/images/annotator-splash1.png") );
@@ -310,7 +311,7 @@ void Annotator::initInterface()
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
 
-	mPlayer = new CLAM::VM::BPFPlayer(this);
+	_auralizer = new Auralizer(this);
 
 	makeConnections();
 }
@@ -505,9 +506,9 @@ void Annotator::makeConnections()
 	// TODO: Interplot viewport syncronization
 
 	// Playhead update
-	connect( mPlayer, SIGNAL(playingTime(double)),
+	connect( _auralizer->mPlayer, SIGNAL(playingTime(double)),
 			this, SLOT(setCurrentPlayingTime(double)), Qt::DirectConnection);
-	connect( mPlayer, SIGNAL(stopTime(double,bool)),
+	connect( _auralizer->mPlayer, SIGNAL(stopTime(double,bool)),
 			this, SLOT(setCurrentStopTime(double,bool)), Qt::DirectConnection);
 
 	// Current position update
@@ -515,7 +516,7 @@ void Annotator::makeConnections()
 			this, SLOT(setCurrentTime(double,double)));
 
 	// Update auralization whenever player stop and they have been modified
-	connect(mPlayer, SIGNAL(stopTime(double)),
+	connect(_auralizer->mPlayer, SIGNAL(stopTime(double)),
 			this, SLOT(updatePendingAuralizationsChanges()));
 
 	// Making the splitters look like a table
@@ -549,7 +550,7 @@ void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMilisecond
 	static bool updating = false;
 	if (updating) return;
 	updating=true;
-	mPlayer->timeBounds(timeMilliseconds,endTimeMiliseconds);
+	_auralizer->seekTo(timeMilliseconds,endTimeMiliseconds);
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
@@ -648,7 +649,7 @@ void Annotator::updateSegmentation()
 {
 	markCurrentSongChanged(true);
 
-	if(mPlayer->IsPlaying())
+	if(_auralizer->isPlaying())
 		mMustUpdateMarkedAudio = true;
 	else
 		auralizeSegmentation();
@@ -679,7 +680,7 @@ void Annotator::updateSongListWidget()
 
 void Annotator::closeEvent ( QCloseEvent * e ) 
 {
-	if (mPlayer) mPlayer->stop();
+	_auralizer->stop();
 	askToSaveDescriptorsIfNeeded();
 
 	if (! mProjectNeedsSave )
@@ -795,7 +796,7 @@ void  Annotator::askToSaveDescriptorsIfNeeded()
 
 void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *previous)
 {
-	mPlayer->stop();
+	_auralizer->stop();
 	setCurrentTime(0,0);
 	mStatusBar << tr("Saving previous song descriptors...") << mStatusBar;
 	if (previous) askToSaveDescriptorsIfNeeded();
@@ -859,8 +860,8 @@ void Annotator::refreshEnvelopes()
 	mEPFs.clear();
 	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
 
-	mPlayer->SetAudioPtr(&mCurrentAudio);
-	mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
+	_auralizer->mPlayer->SetAudioPtr(&mCurrentAudio);
+	_auralizer->mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
 
 	if (!mpDescriptorPool) return;
 
@@ -1008,10 +1009,10 @@ void Annotator::updateAuralizationOptions()
 
 //	unsigned int LEFT_CHANNEL = 1;
 	unsigned int RIGHT_CHANNEL = 2;
-	mPlayer->SetAudioPtr(&mCurrentAudio);
+	_auralizer->mPlayer->SetAudioPtr(&mCurrentAudio);
 	if (playOnsets)
-		mPlayer->SetAudioPtr(&mOnsetAuralizationAudio, RIGHT_CHANNEL);
-	mPlayer->SetPlayingFlags( CLAM::VM::eAudio | (playLLDs?CLAM::VM::eUseOscillator:0));
+		_auralizer->mPlayer->SetAudioPtr(&mOnsetAuralizationAudio, RIGHT_CHANNEL);
+	_auralizer->mPlayer->SetPlayingFlags( CLAM::VM::eAudio | (playLLDs?CLAM::VM::eUseOscillator:0));
 }
 
 void Annotator::setMenuAudioItemsEnabled(bool enabled)
@@ -1052,8 +1053,8 @@ void Annotator::changeFrameLevelDescriptor(int current)
 	if (maxValue-minValue < CLAM::TData(5E-2)) scale=CLAM::VM::eLogScale;
 	mBPFEditor->SetYRange(minValue, maxValue, scale);
 
-	mPlayer->SetData(mEPFs[index].GetBPF());
-	mPlayer->SetPitchBounds(minValue, maxValue);
+	_auralizer->mPlayer->SetData(mEPFs[index].GetBPF());
+	_auralizer->mPlayer->SetPitchBounds(minValue, maxValue);
 	mBPFEditor->show();
 }
 
@@ -1069,15 +1070,15 @@ void Annotator::on_reloadDescriptorsAction_triggered()
 
 void Annotator::on_playAction_triggered()
 {
-	mPlayer->play();
+	_auralizer->play();
 }
 void Annotator::on_pauseAction_triggered()
 {
-	mPlayer->pause();
+	_auralizer->pause();
 }
 void Annotator::on_stopAction_triggered()
 {
-	mPlayer->stop();
+	_auralizer->stop();
 }
 
 void Annotator::on_browseSchemaAction_triggered()
