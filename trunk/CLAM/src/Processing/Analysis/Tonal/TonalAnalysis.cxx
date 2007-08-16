@@ -61,6 +61,7 @@ TonalAnalysis::TonalAnalysis( const TonalAnalysisConfig& cfg )
 	, _chromaPeaks("Chroma Peaks",this)
 	, _tunning("Tunning",this)
 	, _implementation( 0 )
+	, _currentTime( 0 )
 {
 	Configure( cfg );
 }
@@ -94,16 +95,19 @@ bool TonalAnalysis::ConcreteConfigure( const ProcessingConfig& c )
 	return true;
 }
 
+bool TonalAnalysis::ConcreteStart()
+{
+	_currentTime = 0.0;
+	return true;
+}
+
 bool TonalAnalysis::Do()
 {
-	// TODO, Fix Me, Attention Please, time should not be a constant!!!
-	CLAM::TData currentTime = 0.0;
-
 	if( !AbleToExecute() ) return true;
 	CLAM::TData * input = &(_input.GetAudio().GetBuffer()[0]);
 	for (unsigned i = 0; i < _implementation->frameSize(); i++)
 		_floatBuffer[i] = input[i];
-	_implementation->doIt(&_floatBuffer[0], currentTime);
+	_implementation->doIt(&_floatBuffer[0], _currentTime);
 
 	std::vector<TData> & pcp = _pcp.GetData();
 	pcp.resize(_implementation->pcp().size());
@@ -130,6 +134,9 @@ bool TonalAnalysis::Do()
 	_tunning.Produce();
 
 	_input.Consume();
+
+	_currentTime += _implementation->hop()/44100.0;
+	
 	return true;
 }
 
