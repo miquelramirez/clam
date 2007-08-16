@@ -120,13 +120,13 @@ for i in range(0,len(trueRoots)):
 
 hop = 4096.0/44100.0
 start = hop/2.0
-end =  trueSegmentation[len(trueSegmentation)-1] # TODO: take number of frames from Pool
+end = start + max(computedSegmentation[len(computedSegmentation)-1],trueSegmentation[len(trueSegmentation)-1])
 
 #displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
 
 print 'hop:',hop
 print 'start time:',start
-print 'end time (end of ground truth\'s last segment)',end
+print 'end time:',end
 print
 
 calculateRecall(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
