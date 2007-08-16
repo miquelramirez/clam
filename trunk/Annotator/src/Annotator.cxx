@@ -973,32 +973,14 @@ void Annotator::auralizeSegmentation()
 {
 	// Taking just the segmentation of the first pane
 	const CLAM::Segmentation * segmentation = _segmentationPanes[0]->getSegmentation();
-	if (!segmentation) return;
-	const std::vector<double> & marks = segmentation->onsets();
-	int nMarks = marks.size();
-	_auralizer->mOnsetAuralizationAudio.SetSize(0);
-	_auralizer->mOnsetAuralizationAudio.SetSize(mCurrentAudio.GetSize());
-	_auralizer->mOnsetAuralizationAudio.SetSampleRate(mCurrentAudio.GetSampleRate());
-	int size = _auralizer->mOnsetAuralizationAudio.GetSize();
-	for (int i=0; i<nMarks; i++)
-	{
-		int samplePosition = Round(marks[i]*mCurrentAudio.GetSampleRate());
-		if(samplePosition<size)
-			_auralizer->mOnsetAuralizationAudio.SetAudioChunk(samplePosition,_auralizer->mClick);
-	} 
+	_auralizer->setSegmentation(segmentation);
 }
 
 void Annotator::updateAuralizationOptions()
 {
 	bool playOnsets = mAuralizeSegmentOnsetsAction->isChecked();
 	bool playLLDs = mAuralizeFrameLevelDescriptorsAction->isChecked();
-
-//	unsigned int LEFT_CHANNEL = 1;
-	unsigned int RIGHT_CHANNEL = 2;
-	_auralizer->mPlayer->SetAudioPtr(&mCurrentAudio);
-	if (playOnsets)
-		_auralizer->mPlayer->SetAudioPtr(&(_auralizer->mOnsetAuralizationAudio), RIGHT_CHANNEL);
-	_auralizer->mPlayer->SetPlayingFlags( CLAM::VM::eAudio | (playLLDs?CLAM::VM::eUseOscillator:0));
+	_auralizer->setOptions(playOnsets, playLLDs);
 }
 
 void Annotator::setMenuAudioItemsEnabled(bool enabled)
