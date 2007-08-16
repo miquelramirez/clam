@@ -81,8 +81,8 @@ def displayAllChords(computedSegmentation, trueSegmentation, computedChords, tru
 	print 'time:	segment_computed segment_true	chord_computed chord_true'
 	time = start
 	while time < end :
-		time += hop
 		print 'time:',time,'   segment:',segmentAtTime(computedSegmentation, time),segmentAtTime(trueSegmentation,time),'   chord:',chordAtTime(computedSegmentation,computedChords,time),chordAtTime(trueSegmentation,trueChords,time)
+		time += hop
 
 
 
@@ -122,12 +122,12 @@ hop = 4096.0/44100.0
 start = hop/2.0
 end = start + max(computedSegmentation[len(computedSegmentation)-1],trueSegmentation[len(trueSegmentation)-1])
 
-#displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
-
 print 'hop:',hop
 print 'start time:',start
 print 'end time:',end
 print
+
+#displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
 
 calculateRecall(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
 calculatePrecision(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
