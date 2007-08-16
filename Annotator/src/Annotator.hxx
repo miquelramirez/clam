@@ -65,6 +65,7 @@ namespace CLAM_Annotator {
 class InstantViewPlugin;
 class SegmentationPane;
 class FrameDescriptorsPane;
+class Auralizer;
 
 class StatusBarDumper 
 {
@@ -213,7 +214,6 @@ private:
 	std::vector<CLAM::EquidistantPointsFunction> mEPFs; // Cached LLD's
 
   	QTextBrowser* mProjectDocumentation;
-	CLAM::VM::BPFPlayer* mPlayer;
 	
 	typedef std::vector<InstantViewPlugin *> InstantViewPlugins;
 	InstantViewPlugins mInstantViewPlugins;
@@ -226,6 +226,7 @@ private:
 	enum {MaxRecentFiles=4};
 	std::vector<SegmentationPane *> _segmentationPanes;
 	FrameDescriptorsPane * _frameDescriptorsPane;
+	Auralizer * _auralizer;
 };
 
 #endif
