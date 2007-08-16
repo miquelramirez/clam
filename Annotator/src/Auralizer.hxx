@@ -144,8 +144,8 @@ protected:
 	const CLAM::Audio* mAudio1;
 	CLAM::VM::Range    mPitchBounds;
 
-	static const double min_ref = 8.1758;  // 8.1758 Hz 
-	static const double max_ref = 12545.9; // 12545.9 Hz 
+	static const double min_ref;
+	static const double max_ref;
 
 private:
 	void run()
