@@ -71,7 +71,7 @@ namespace CLAM
 			mBoundMin=true;
 			mMinValue=min;
 		}
-		CLAM::TData getMax()
+		CLAM::TData getMax() const
 		{
 			if (mBoundMax) return mMaxValue;
 			CLAM::TData max = 0;
@@ -82,7 +82,7 @@ namespace CLAM
 			}
 			return max;
 		}
-		CLAM::TData getMin()
+		CLAM::TData getMin() const
 		{
 			if (mBoundMin) return mMinValue;
 			CLAM::TData min = 0;
@@ -94,6 +94,10 @@ namespace CLAM
 			return min;
 		}
 		CLAM::BPF & GetBPF()
+		{
+			return mBpf;
+		}
+		const CLAM::BPF & GetBPF() const
 		{
 			return mBpf;
 		}
