@@ -77,7 +77,7 @@ bool SMSGenderChange::Do(const SpectralPeakArray& inPeaks,
 		pitchTransposition=1/pitchTransposition;
 	}
 
-	mSpectralShapeShift.GetInControl("Amount").DoControl(sssAmount);
+	mSpectralShapeShift.GetInControl("Shift Steps").DoControl(sssAmount);
 	mPitchShift.GetInControl("PitchSteps").DoControl(pitchTransposition);
 
 	SpectralPeakArray tmpSpectralPeaks;

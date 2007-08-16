@@ -304,7 +304,7 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* oddEvenHarmRatio = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(oddEvenHarmRatio);
-				wrapper->mAmountCtrl.PublishInControl(oddEvenHarmRatio->GetInControls().Get("Amount"));
+				wrapper->mAmountCtrl.PublishInControl(oddEvenHarmRatio->GetInControls().Get("Odd Factor"));
 //				ConnectControls(*wrapper,"Out Control", *oddEvenHarmRatio, "Odd Harmonics Factor");
 				Insert( *wrapper );
 				return;
@@ -316,7 +316,7 @@ namespace CLAM {
 				Processing * proc = theFactory.Create(classname);
 				FrameTransformation* spectralShapeShift = dynamic_cast<FrameTransformation*>(proc); 
 				wrapper->WrapFrameTransformation(spectralShapeShift);
-				wrapper->mAmountCtrl.PublishInControl(spectralShapeShift->GetInControls().Get("Amount"));
+				wrapper->mAmountCtrl.PublishInControl(spectralShapeShift->GetInControls().Get("Shift Steps"));
 //				ConnectControls(*wrapper,"Out Control", *spectralShapeShift, "Shift Amount");
 				Insert( *wrapper );
 				return;
