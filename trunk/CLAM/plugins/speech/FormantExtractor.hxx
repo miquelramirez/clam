@@ -12,6 +12,10 @@
 
 namespace CLAM
 {
+
+	/*
+	  \brief  This class calculates the formants from windowed audio by solving the LPC coefficients
+	*/
 	class FormantExtractor : public Processing
 	{
 		InPort<Audio> AudioIn;
