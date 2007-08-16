@@ -50,7 +50,7 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 
 void * RunTimeLibraryLoader::FullyLoadLibrary(const std::string & libraryPath) const
 {
-	std::cout << "[" << libraryType() << " Plugins] FullyLoading " << libraryPath << std::endl;
+//	std::cout << "[" << libraryType() << " Plugins] FullyLoading " << libraryPath << std::endl;
 #ifdef WIN32
 //		SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT |
 //			SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX );
