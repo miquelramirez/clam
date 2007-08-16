@@ -91,7 +91,7 @@ public:
 	}
 
 	const CLAM::DiscontinuousSegmentation & segmentation() const { return _segmentation; };
-	const std::vector<unsigned> chordIndexes() const { return _chordIndexes; };
+	const std::vector<unsigned> & chordIndexes() const { return _chordIndexes; };
 };
 }
 #endif//ChordSegmentator
