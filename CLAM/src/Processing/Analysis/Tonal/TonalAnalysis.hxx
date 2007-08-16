@@ -50,9 +50,11 @@ public:
 	
 	inline const ProcessingConfig &GetConfig() const { return _config;}
 	bool ConcreteConfigure(const ProcessingConfig& c);
+	bool ConcreteStart();
 private:
 	Simac::ChordExtractor * _implementation;
 	std::vector<float> _floatBuffer;
+	CLAM::TData _currentTime;
 
 };
 
