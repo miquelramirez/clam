@@ -297,7 +297,8 @@ void Annotator::initInterface()
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
 
-	_auralizer = new Auralizer(this, mCurrentAudio);
+	_auralizer = new Auralizer(this);
+	_auralizer->setAudio(mCurrentAudio);
 
 	makeConnections();
 }
@@ -846,8 +847,7 @@ void Annotator::refreshEnvelopes()
 	mEPFs.clear();
 	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
 
-	_auralizer->mPlayer->SetAudioPtr(&mCurrentAudio);
-	_auralizer->mPlayer->SetDuration(double(mCurrentAudio.GetDuration())/1000.0);
+	_auralizer->setAudio(mCurrentAudio);
 
 	if (!mpDescriptorPool) return;
 
@@ -1021,9 +1021,9 @@ void Annotator::changeFrameLevelDescriptor(int current)
 	if (maxValue-minValue < CLAM::TData(5E-2)) scale=CLAM::VM::eLogScale;
 	mBPFEditor->SetYRange(minValue, maxValue, scale);
 
-	_auralizer->mPlayer->SetData(mEPFs[index].GetBPF());
-	_auralizer->mPlayer->SetPitchBounds(minValue, maxValue);
 	mBPFEditor->show();
+
+	_auralizer->setLLD(mEPFs[index]);
 }
 
 void Annotator::on_helpWhatsThisAction_triggered()
