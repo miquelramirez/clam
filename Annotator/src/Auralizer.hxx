@@ -24,6 +24,31 @@ public:
 	{
 		mPlayer->timeBounds(miliseconds, endMiliseconds);
 	}
+	void setSegmentation(const CLAM::Segmentation * segmentation)
+	{
+		if (!segmentation) return;
+		const std::vector<double> & marks = segmentation->onsets();
+		int nMarks = marks.size();
+		mOnsetAuralizationAudio.SetSize(0);
+		mOnsetAuralizationAudio.SetSize(mCurrentAudio.GetSize());
+		mOnsetAuralizationAudio.SetSampleRate(mCurrentAudio.GetSampleRate());
+		int size = mOnsetAuralizationAudio.GetSize();
+		for (int i=0; i<nMarks; i++)
+		{
+			int samplePosition = Round(marks[i]*mCurrentAudio.GetSampleRate());
+			if(samplePosition<size)
+				mOnsetAuralizationAudio.SetAudioChunk(samplePosition,mClick);
+		}
+	}
+	void setOptions(bool playOnsets, bool playLLDs)
+	{
+//		unsigned int LEFT_CHANNEL = 1;
+		unsigned int RIGHT_CHANNEL = 2;
+		mPlayer->SetAudioPtr(&mCurrentAudio);
+		if (playOnsets)
+			mPlayer->SetAudioPtr(&(mOnsetAuralizationAudio), RIGHT_CHANNEL);
+		mPlayer->SetPlayingFlags( CLAM::VM::eAudio | (playLLDs?CLAM::VM::eUseOscillator:0));
+	}
 private:
 	void initClick()
 	{
