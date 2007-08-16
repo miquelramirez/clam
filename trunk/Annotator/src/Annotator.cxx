@@ -801,7 +801,6 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	mStatusBar << tr("Drawing audio...") << mStatusBar;
 	mAudioRefreshTimer->stop();
 	
-	mBPFEditor->hide();
 	setMenuAudioItemsEnabled(false);
 	const std::string absolutePath = mProject.RelativeToAbsolute(songFilename);
 	if (!loaderCreate(mCurrentAudio, absolutePath))
@@ -810,6 +809,7 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 		QMessageBox::critical(this, tr("Error opening audio file"), absolutePath.c_str());
 		return;
 	}
+	_auralizer->setAudio(mCurrentAudio);
 	setMenuAudioItemsEnabled(true);
 
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
@@ -818,7 +818,6 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	}
 	_frameDescriptorsPane->setData(mpDescriptorPool, mCurrentAudio);
 	auralizeSegmentation();
-	mBPFEditor->show();
 	refreshEnvelopes();
 	_frameDescriptorsPane->refreshEnvelopes();
 	refreshInstantViews();
@@ -846,8 +845,6 @@ void Annotator::refreshEnvelopes()
 	// TODO: Not all the things should be done here
 	mEPFs.clear();
 	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
-
-	_auralizer->setAudio(mCurrentAudio);
 
 	if (!mpDescriptorPool) return;
 
