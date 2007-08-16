@@ -297,8 +297,13 @@ void Annotator::initInterface()
 	mBPFEditor->SetXRange(0.0,2.0);
 
 	mCurrentAudio.ResizeToDuration(2.0);
+	// init the segmentation panes
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->setData(0, mCurrentAudio);
+
+	// ...and the frame descriptors pane
+	// TODO: could panes be abstracted?
+	_frameDescriptorsPane->setData(0, mCurrentAudio);
 
 	mBPFEditor->setAutoFillBackground(true);
 
@@ -823,10 +828,11 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	{
 		_segmentationPanes[i]->setData(mpDescriptorPool,mCurrentAudio);
 	}
+	_frameDescriptorsPane->setData(mpDescriptorPool, mCurrentAudio);
 	auralizeSegmentation();
 	mBPFEditor->show();
 	refreshEnvelopes();
-//	_frameDescriptorsFrame->refreshEnvelopes(double(mCurrentAudio.GetDuration()), mpDescriptorPool);
+	_frameDescriptorsPane->refreshEnvelopes();
 	refreshInstantViews();
 	mStatusBar << tr("Done") << mStatusBar;
 	loaderLaunch();
