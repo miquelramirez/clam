@@ -57,12 +57,17 @@ public:
 		mProcess->start(command, arguments);
 		return mProcess->waitForStarted();
 	}
+signals:
+	void taskDone(bool success);
 private slots:
 	void finished()
 	{
+		dumpOutput();
+		dumpError();
 		mOutput += tr("<div style='color: blue;'>Done.</div>");
 		updateText();
 		QTimer::singleShot(5000, this, SLOT(close()));
+		emit taskDone(mProcess->exitCode()==0);
 	}
 	void dumpError()
 	{
