@@ -191,13 +191,11 @@ private:
 
 	void resetTabOrder();
 	void updateRecentFilesMenu();
-	void initClick();
 	unsigned addNewSegmentationPane();
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
 	CLAM::Audio mOnsetAuralizationAudio; ///< Current audio with segmentation marks inserted
-	CLAM::Audio mClick; ///< A vector of audios to produce click
 	CLAM_Annotator::Project mProject;
 	std::string mProjectFileName; 
 	std::string mCurrentDescriptorsPoolFileName;
