@@ -25,47 +25,16 @@
 
 #include <QtCore/QThread>
 #include <CLAM/BPF.hxx>
+#include <CLAM/Audio.hxx>
+#include <CLAM/Segmentation.hxx>
+#include <CLAM/Oscillator.hxx>
+#include "EquidistantPointsFunction.hxx"
+#include "vmPlayer.hxx"
 
 namespace CLAM
 {
-	class Audio;
 	namespace VM
 	{
-		class Player : public QThread
-		{
-			Q_OBJECT
-		public:
-			enum PlayStatus {Stoped, Paused, Playing};
-			Player(QObject* parent=0);
-			virtual ~Player();
-
-			void SetDuration(double dur);
-			void SetSamplingRate(double sr);
-			void SetPlayingFlags(int flags);
-
-			bool IsPlaying() const;
-
-		signals:
-			void playingTime(double);
-			void stopTime(double, bool);
-
-		public slots:
-			void play();
-			void pause();
-			void stop();
-
-			void timeBounds(double, double);
-
-		protected:
-			int           mPlayingFlags;
-			volatile PlayStatus    mPlayStatus;
-			double        mSamplingRate;
-			double        mBeginTime;
-			Range         mTimeBounds;
-
-			virtual void run()=0; // thread code here
-		};
-
 		class BPFPlayer : public Player
 		{
 			Q_OBJECT
@@ -99,7 +68,7 @@ public:
 	CLAM::Audio mOnsetAuralizationAudio; ///< Current audio with segmentation marks inserted
 	const CLAM::Audio * _currentAudio;
 	CLAM::VM::BPFPlayer* mPlayer;
-	Auralizer(QWidget * parent)
+	Auralizer(QObject * parent)
 		: _currentAudio(0)
 	{
 		mPlayer = new CLAM::VM::BPFPlayer(parent);
