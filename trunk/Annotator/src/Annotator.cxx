@@ -62,7 +62,6 @@
 
 #include <vmBPFPlot.hxx>
 #include <vmAudioPlot.hxx>
-#include <vmBPFPlayer.hxx>
 #include "InstantViewPlugin.hxx"
 
 #ifndef VERSION
