@@ -42,6 +42,16 @@ def chordAtTime(segmentation, chords, time) :
 	else :
 		return 'None'
 
+def numberOfChordTimeUnits(segmentation, hop, start, end) :
+	result = 0
+	time = start
+	while time < end :
+		if segmentAtTime(segmentation,time) != None :
+			result += 1
+		time += hop
+	return result
+
+
 def displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end) :
 	print 'time:	segment_computed segment_true	chord_computed chord_true'
 	time = start
@@ -74,5 +84,12 @@ for i in range(0,len(trueRoots)):
 
 hop = 4096.0/44100.0
 start = hop/2.0
+end =  trueSegmentation[len(trueSegmentation)-1]
 
-displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, trueSegmentation[len(trueSegmentation)-1])
+displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
+
+print 'hop:',hop
+print 'start time:',start
+print 'end time (end of ground truth\'s last segment)',end
+print numberOfChordTimeUnits(trueSegmentation, hop, start, end)
+print numberOfChordTimeUnits(computedSegmentation, hop, start, end)
