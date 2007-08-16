@@ -61,6 +61,21 @@ def numberOfCorrectChordTimeUnits(computedSegmentation, trueSegmentation, comput
 		time += hop
 	return result
 
+def calculateRecall(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start,end) :
+	NumberCorrectChords = numberOfCorrectChordTimeUnits(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
+	NumberTrueChords = numberOfChordTimeUnits(trueSegmentation, hop,start,end)
+	print 'number of correctly computed chords:',NumberCorrectChords,'	number of true chords:',NumberTrueChords	
+	recall = float(NumberCorrectChords)/float(NumberTrueChords)
+	print 'RECALL: ',recall
+	return recall
+
+def calculatePrecision(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start,end) :
+	NumberCorrectChords = numberOfCorrectChordTimeUnits(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
+	NumberComputedChords = numberOfChordTimeUnits(computedSegmentation, hop,start,end)
+	print 'number of correctly computed chords:',NumberCorrectChords,'	number of computed chords:',NumberComputedChords	
+	precision = float(NumberCorrectChords)/float(NumberComputedChords)
+	print 'PRECISION: ',precision
+	return precision
 
 def displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end) :
 	print 'time:	segment_computed segment_true	chord_computed chord_true'
@@ -68,6 +83,9 @@ def displayAllChords(computedSegmentation, trueSegmentation, computedChords, tru
 	while time < end :
 		time += hop
 		print 'time:',time,'   segment:',segmentAtTime(computedSegmentation, time),segmentAtTime(trueSegmentation,time),'   chord:',chordAtTime(computedSegmentation,computedChords,time),chordAtTime(trueSegmentation,trueChords,time)
+
+
+
 
 
 computedFile = '../example-data/SongsTest/Debaser-CoffeeSmell.mp3.chords'
@@ -93,15 +111,14 @@ for i in range(0,len(trueRoots)):
 	trueChords.append(trueRoots[i]+' '+trueModes[i])
 
 hop = 4096.0/44100.0
-start = hop/2.0 + 40
-end = 50
-#end =  trueSegmentation[len(trueSegmentation)-1]
+start = hop/2.0
+end =  trueSegmentation[len(trueSegmentation)-1] # TODO: take number of frames from Pool
 
-displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
+#displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
 
 print 'hop:',hop
 print 'start time:',start
 print 'end time (end of ground truth\'s last segment)',end
-print numberOfChordTimeUnits(trueSegmentation, hop, start, end)
-print numberOfChordTimeUnits(computedSegmentation, hop, start, end)
-print numberOfCorrectChordTimeUnits(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
+
+calculateRecall(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
+calculatePrecision(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
