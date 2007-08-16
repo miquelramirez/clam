@@ -42,12 +42,12 @@
 #include "vmPlayer.hxx"
 
 
-class Player : public QThread
+class AuralizationPlayer : public QThread
 {
 	Q_OBJECT
 public:
 	enum PlayStatus {Stoped, Paused, Playing};
-	Player(QObject* parent=0)
+	AuralizationPlayer(QObject* parent=0)
 		: QThread(parent)
 		, mPlayStatus(Stoped)
 		, mSamplingRate(44100.0)
@@ -58,8 +58,9 @@ public:
 		, mAudio1(0)
 		, mPitchBounds(min_ref,max_ref)
 	{
+		SetPlayingFlags(CLAM::VM::eUseOscillator);
 	}
-	virtual ~Player()
+	virtual ~AuralizationPlayer()
 	{
 		if (mPlayStatus != Playing) return;
 		mPlayStatus = Stoped;
@@ -119,39 +120,6 @@ public slots:
 		mBeginTime = mTimeBounds.min;
 	}
 
-protected:
-	int           mPlayingFlags;
-	volatile PlayStatus    mPlayStatus;
-	double        mSamplingRate;
-	double        mBeginTime;
-	CLAM::VM::Range         mTimeBounds;
-	const CLAM::BPF*   mBPF;
-	const CLAM::Audio* mAudio0;
-	const CLAM::Audio* mAudio1;
-	CLAM::VM::Range    mPitchBounds;
-
-	static const double min_ref = 8.1758;  // 8.1758 Hz 
-	static const double max_ref = 12545.9; // 12545.9 Hz 
-
-	virtual void run()=0; // thread code here
-
-};
-
-
-
-
-class BPFPlayer : public Player
-{
-	Q_OBJECT
-public:
-	BPFPlayer(QObject* parent=0)
-		: Player(parent)
-	{
-		SetPlayingFlags(CLAM::VM::eUseOscillator);
-	}
-
-	~BPFPlayer() { }
-
 	void SetData(const CLAM::BPF& bpf) { mBPF = &bpf; }
 
 	void SetAudioPtr(const CLAM::Audio* audio, unsigned channelMask=1|2)
@@ -168,6 +136,21 @@ public:
 		mPitchBounds.min = min;
 		mPitchBounds.max = max;
 	}
+
+
+protected:
+	int           mPlayingFlags;
+	volatile PlayStatus    mPlayStatus;
+	double        mSamplingRate;
+	double        mBeginTime;
+	CLAM::VM::Range         mTimeBounds;
+	const CLAM::BPF*   mBPF;
+	const CLAM::Audio* mAudio0;
+	const CLAM::Audio* mAudio1;
+	CLAM::VM::Range    mPitchBounds;
+
+	static const double min_ref = 8.1758;  // 8.1758 Hz 
+	static const double max_ref = 12545.9; // 12545.9 Hz 
 
 private:
 	void run()
@@ -323,11 +306,11 @@ public:
 	CLAM::Audio mClick; ///< A vector of audios to produce click
 	CLAM::Audio mOnsetAuralizationAudio; ///< Current audio with segmentation marks inserted
 	const CLAM::Audio * _currentAudio;
-	BPFPlayer* mPlayer;
+	AuralizationPlayer* mPlayer;
 	Auralizer(QObject * parent)
 		: _currentAudio(0)
 	{
-		mPlayer = new BPFPlayer(parent);
+		mPlayer = new AuralizationPlayer(parent);
 		initClick();
 	}
 	void play() { mPlayer->play(); }
