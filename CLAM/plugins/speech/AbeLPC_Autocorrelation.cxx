@@ -32,7 +32,13 @@ namespace CLAM
 
 namespace Hidden 
 {
-	static FactoryRegistrator<ProcessingFactory, AbeLPC_AutoCorrelation> regAbeLPC_AutoCorrelation("AbeLPC_AutoCorrelation");
+	static const char* metadata[] = {
+		"key", "AbeLPC_Autocorrelation",
+		"category", "Speech (Experimental - GSoC)",
+		"description", "LPC Autocorrelation",
+		0
+	};
+	static FactoryRegistrator<ProcessingFactory, AbeLPC_AutoCorrelation> reg=metadata ;
 }
 
 void LPCConfig::DefaultInit()
