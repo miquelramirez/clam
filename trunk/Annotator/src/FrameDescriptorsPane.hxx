@@ -23,6 +23,9 @@ private:
 	const CLAM::Audio * _audio;
 	CLAM::DescriptionDataPool * _pool;
 
+//public slots:
+//	void changeFrameLevelDescriptor(int current);
+
 public:
 	FrameDescriptorsPane(QWidget * parent,
 	 					CLAM_Annotator::Project& mProject,
@@ -51,6 +54,11 @@ public:
 		mFrameLevelAttributeList->setAlternatingRowColors(true);
 		mFrameLevelAttributeList->setResizeMode(QListView::Adjust);
 		addWidget(mFrameLevelAttributeList);
+
+		// Changing the current frame level descriptor
+		connect(mFrameLevelAttributeList, SIGNAL(currentRowChanged(int)),
+				this, SLOT(changeFrameLevelDescriptor(int)));
+
 // TODO: move elsewhere!
 //		mVSplit->addWidget(this);
 
@@ -129,6 +137,7 @@ public:
 		changeFrameLevelDescriptor(mFrameLevelAttributeList->currentRow());
 	}
 
+public slots:
 	void changeFrameLevelDescriptor(int current)
 	{
 		unsigned index = mFrameLevelAttributeList->currentRow();
