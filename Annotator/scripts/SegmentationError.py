@@ -86,10 +86,18 @@ def displayAllChords(computedSegmentation, trueSegmentation, computedChords, tru
 
 
 
-
-
-computedFile = '../example-data/SongsTest/Debaser-CoffeeSmell.mp3.chords'
-trueFile = '../example-data/SongsTest/Debaser-WoodenHouse.mp3.chords'
+if len(sys.argv) == 3 :
+	computedFile = sys.argv[1]
+	trueFile = sys.argv[2]
+	print 'File containing computed segmentation:    ', computedFile
+	print 'File containing ground truth segmentation:', trueFile
+	print
+else :
+	print >> sys.stderr, "SegmentationError.py - computing precision and recall"
+	print >> sys.stderr, "Usage: ./Segmentation.py <computedFile> <trueFile>"
+	print >> sys.stderr, "<computedFile> - .chords file containing the computed segmentation to be evaluated"
+	print >> sys.stderr, "<trueFile> - .chords file containing the ground truth segmentation"
+	sys.exit()
 
 computedPool = Pool(computedFile)
 truePool = Pool(trueFile)
@@ -119,6 +127,7 @@ end =  trueSegmentation[len(trueSegmentation)-1] # TODO: take number of frames f
 print 'hop:',hop
 print 'start time:',start
 print 'end time (end of ground truth\'s last segment)',end
+print
 
 calculateRecall(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
 calculatePrecision(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end)
