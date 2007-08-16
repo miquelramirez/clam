@@ -23,12 +23,22 @@ def send_msg( channel, msg, s ):
 def send_msg_dft_channel( msg, s ):
 	s.send('PRIVMSG '+DFT_CHANNEL+' :'+msg+'\r\n')
 
+# /me like message
+def send_action_msg_dft_channel( msg, s ):
+	s.send('PRIVMSG '+DFT_CHANNEL+' :\01ACTION '+msg+'\r\n')
+
+def send_notice_dft_channel( msg, s ):
+	s.send('NOTICE '+DFT_CHANNEL+' :'+msg+'\r\n')
+
+def quit( msg, s ):
+	s.send('QUIT'+' :'+msg+'\r\n')
+	
 def quit( msg, s ):
 	s.send('QUIT'+' :'+msg+'\r\n')
 
 def send_and_quit( message ):
 	readbuffer=""
-	s=socket.socket( )
+	s=socket.socket()
 	s.connect((HOST, PORT))
 	s.send("NICK %s\r\n" % NICK)
 	s.send("USER %s %s bla :%s\r\n" % (IDENT, HOST, REALNAME))
@@ -40,16 +50,16 @@ def send_and_quit( message ):
 		readbuffer=temp.pop( )
 
 		if done:
+			quit( "good bye!", s )
+			s.close()
 			return
-			#quit( "good bye!", s )
-			#sys.exit()
 
 		for line in temp:
 			print line
 			if line.find('End of /MOTD command')!=-1:
 				print "Connected to " + HOST
 				join_channel( DFT_CHANNEL, s )
-				send_msg_dft_channel( message, s )
+				send_notice_dft_channel( message, s )
 				done=1
 
 			line=string.rstrip(line)
@@ -60,4 +70,3 @@ def send_and_quit( message ):
 
 if __name__ == "__main__" :
 	send_and_quit(sys.argv[1])
-
