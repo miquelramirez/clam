@@ -195,7 +195,6 @@ private:
 
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
-	CLAM::Audio mOnsetAuralizationAudio; ///< Current audio with segmentation marks inserted
 	CLAM_Annotator::Project mProject;
 	std::string mProjectFileName; 
 	std::string mCurrentDescriptorsPoolFileName;
