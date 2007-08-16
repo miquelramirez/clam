@@ -29,6 +29,27 @@ def extractAttribute(pool, scope, attribute) :
 def extractEnumAttribute(pool, scope, attribute) :	
 	return [e.firstChild.data for e in pool.SelectAttributes(scope,attribute)[0].childNodes if e.nodeType == e.ELEMENT_NODE  ]
 
+def segmentAtTime(segmentation, time) :	
+	i = 0
+	while i < len(segmentation) :
+		if (time >= segmentation[i]) & (time < segmentation[i+1]) :
+			return i/2
+		i += 2
+
+def chordAtTime(segmentation, chords, time) :
+	if segmentAtTime(segmentation,time) != None :
+		return chords[ segmentAtTime(segmentation,time) ]
+	else :
+		return 'None'
+
+def displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, end) :
+	print 'time:	segment_computed segment_true	chord_computed chord_true'
+	time = start
+	while time < end :
+		time += hop
+		print 'time:',time,'   segment:',segmentAtTime(computedSegmentation, time),segmentAtTime(trueSegmentation,time),'   chord:',chordAtTime(computedSegmentation,computedChords,time),chordAtTime(trueSegmentation,trueChords,time)
+
+
 computedFile = '../example-data/SongsTest/Debaser-CoffeeSmell.mp3.chords'
 trueFile = '../example-data/SongsTest/Debaser-WoodenHouse.mp3.chords'
 
@@ -50,3 +71,8 @@ trueModes = extractEnumAttribute(truePool, "ExtractedChord", "Mode")
 trueChords = []
 for i in range(0,len(trueRoots)):
 	trueChords.append(trueRoots[i]+' '+trueModes[i])
+
+hop = 4096.0/44100.0
+start = hop/2.0
+
+displayAllChords(computedSegmentation, trueSegmentation, computedChords, trueChords, hop, start, trueSegmentation[len(trueSegmentation)-1])
