@@ -39,49 +39,99 @@
 #include <QtCore/QThread>
 #include "vmDataTypes.hxx"
 
-namespace CLAM
+#include "vmPlayer.hxx"
+
+
+class Player : public QThread
 {
-	namespace VM
+	Q_OBJECT
+public:
+	enum PlayStatus {Stoped, Paused, Playing};
+	Player(QObject* parent=0)
+		: QThread(parent)
+		, mPlayStatus(Stoped)
+		, mSamplingRate(44100.0)
+		, mBeginTime(0.0)
+		, mTimeBounds(0.0,1.0)
 	{
-		class Player : public QThread
-		{
-			Q_OBJECT
-		public:
-			enum PlayStatus {Stoped, Paused, Playing};
-			Player(QObject* parent=0);
-			virtual ~Player();
-
-			void SetDuration(double dur);
-			void SetSamplingRate(double sr);
-			void SetPlayingFlags(int flags);
-
-			bool IsPlaying() const;
-
-		signals:
-			void playingTime(double);
-			void stopTime(double, bool);
-
-		public slots:
-			void play();
-			void pause();
-			void stop();
-
-			void timeBounds(double, double);
-
-		protected:
-			int           mPlayingFlags;
-			volatile PlayStatus    mPlayStatus;
-			double        mSamplingRate;
-			double        mBeginTime;
-			Range         mTimeBounds;
-
-			virtual void run()=0; // thread code here
-		};
 	}
-}
+	virtual ~Player()
+	{
+		if (mPlayStatus == Playing)
+		{
+			mPlayStatus = Stoped;
+			terminate();
+			wait();
+		}
+	}
 
 
-class BPFPlayer : public CLAM::VM::Player
+	void SetDuration(double dur)
+	{
+		if(dur <= 0) return;
+		mTimeBounds.min = 0.0;
+		mTimeBounds.max = dur;
+		mBeginTime = 0.0;
+	}
+
+	void SetSamplingRate(double sr)
+	{
+		mSamplingRate = sr;
+	}
+	void SetPlayingFlags(int flags)
+	{
+		mPlayingFlags = flags;
+	}
+
+	bool IsPlaying() const
+	{
+		return mPlayStatus == Playing;
+	}
+
+signals:
+	void playingTime(double);
+	void stopTime(double, bool);
+
+public slots:
+	void play()
+	{
+		mPlayStatus = Playing;
+		start();
+	}
+	void pause()
+	{
+		mPlayStatus = Paused;
+	}
+	void stop()
+	{
+		mPlayStatus = Stoped;
+		wait();
+	}
+
+	void timeBounds(double min, double max)
+	{
+		if(min < 0) return;
+		if(min >= max) return;
+		mTimeBounds.min = min;
+		mTimeBounds.max = max;
+		mBeginTime = mTimeBounds.min;
+	}
+
+protected:
+	int           mPlayingFlags;
+	volatile PlayStatus    mPlayStatus;
+	double        mSamplingRate;
+	double        mBeginTime;
+	CLAM::VM::Range         mTimeBounds;
+
+	virtual void run()=0; // thread code here
+
+};
+
+
+
+
+class BPFPlayer : public Player
 {
 	Q_OBJECT
 public:
