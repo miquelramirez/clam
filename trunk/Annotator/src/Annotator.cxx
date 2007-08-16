@@ -200,7 +200,6 @@ Annotator::Annotator(const std::string & nameProject = "")
 	else
 		on_newProjectAction_triggered();
 	*/
-	_auralizer->initClick(mCurrentAudio.GetSampleRate());
 	updateAuralizationOptions();
 	QTimer::singleShot(1000, splash, SLOT(close()));
 }
@@ -298,7 +297,7 @@ void Annotator::initInterface()
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
 
-	_auralizer = new Auralizer(this);
+	_auralizer = new Auralizer(this, mCurrentAudio);
 
 	makeConnections();
 }
@@ -977,15 +976,15 @@ void Annotator::auralizeSegmentation()
 	if (!segmentation) return;
 	const std::vector<double> & marks = segmentation->onsets();
 	int nMarks = marks.size();
-	mOnsetAuralizationAudio.SetSize(0);
-	mOnsetAuralizationAudio.SetSize(mCurrentAudio.GetSize());
-	mOnsetAuralizationAudio.SetSampleRate(mCurrentAudio.GetSampleRate());
-	int size = mOnsetAuralizationAudio.GetSize();
+	_auralizer->mOnsetAuralizationAudio.SetSize(0);
+	_auralizer->mOnsetAuralizationAudio.SetSize(mCurrentAudio.GetSize());
+	_auralizer->mOnsetAuralizationAudio.SetSampleRate(mCurrentAudio.GetSampleRate());
+	int size = _auralizer->mOnsetAuralizationAudio.GetSize();
 	for (int i=0; i<nMarks; i++)
 	{
 		int samplePosition = Round(marks[i]*mCurrentAudio.GetSampleRate());
 		if(samplePosition<size)
-			mOnsetAuralizationAudio.SetAudioChunk(samplePosition,_auralizer->mClick);
+			_auralizer->mOnsetAuralizationAudio.SetAudioChunk(samplePosition,_auralizer->mClick);
 	} 
 }
 
@@ -998,7 +997,7 @@ void Annotator::updateAuralizationOptions()
 	unsigned int RIGHT_CHANNEL = 2;
 	_auralizer->mPlayer->SetAudioPtr(&mCurrentAudio);
 	if (playOnsets)
-		_auralizer->mPlayer->SetAudioPtr(&mOnsetAuralizationAudio, RIGHT_CHANNEL);
+		_auralizer->mPlayer->SetAudioPtr(&(_auralizer->mOnsetAuralizationAudio), RIGHT_CHANNEL);
 	_auralizer->mPlayer->SetPlayingFlags( CLAM::VM::eAudio | (playLLDs?CLAM::VM::eUseOscillator:0));
 }
 
