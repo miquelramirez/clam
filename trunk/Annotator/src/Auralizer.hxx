@@ -53,16 +53,18 @@ public:
 		, mSamplingRate(44100.0)
 		, mBeginTime(0.0)
 		, mTimeBounds(0.0,1.0)
+		, mBPF(0)
+		, mAudio0(0)
+		, mAudio1(0)
+		, mPitchBounds(min_ref,max_ref)
 	{
 	}
 	virtual ~Player()
 	{
-		if (mPlayStatus == Playing)
-		{
-			mPlayStatus = Stoped;
-			terminate();
-			wait();
-		}
+		if (mPlayStatus != Playing) return;
+		mPlayStatus = Stoped;
+		terminate();
+		wait();
 	}
 
 
@@ -123,6 +125,13 @@ protected:
 	double        mSamplingRate;
 	double        mBeginTime;
 	CLAM::VM::Range         mTimeBounds;
+	const CLAM::BPF*   mBPF;
+	const CLAM::Audio* mAudio0;
+	const CLAM::Audio* mAudio1;
+	CLAM::VM::Range    mPitchBounds;
+
+	static const double min_ref = 8.1758;  // 8.1758 Hz 
+	static const double max_ref = 12545.9; // 12545.9 Hz 
 
 	virtual void run()=0; // thread code here
 
@@ -137,10 +146,6 @@ class BPFPlayer : public Player
 public:
 	BPFPlayer(QObject* parent=0)
 		: Player(parent)
-		, mBPF(0)
-		, mAudio0(0)
-		, mAudio1(0)
-		, mPitchBounds(min_ref,max_ref)
 	{
 		SetPlayingFlags(CLAM::VM::eUseOscillator);
 	}
@@ -165,11 +170,6 @@ public:
 	}
 
 private:
-	const CLAM::BPF*   mBPF;
-	const CLAM::Audio* mAudio0;
-	const CLAM::Audio* mAudio1;
-	CLAM::VM::Range    mPitchBounds;
-
 	void run()
 	{
 		if(!mAudio0) SetPlayingFlags(CLAM::VM::eUseOscillator);
@@ -313,8 +313,6 @@ private:
 		else if(value > mPitchBounds.max) value = mPitchBounds.max;
 		return (value-mPitchBounds.min)*(max_ref-min_ref)/mPitchBounds.Span()+min_ref;
 	}
-	static const double min_ref = 8.1758;  // 8.1758 Hz 
-	static const double max_ref = 12545.9; // 12545.9 Hz 
 
 };
 
