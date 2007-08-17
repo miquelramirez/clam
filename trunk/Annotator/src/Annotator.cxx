@@ -518,6 +518,7 @@ void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds);
 	mBPFEditor->updateLocator(timeMilliseconds);
+	_frameDescriptorsPane->updateLocator(timeMilliseconds);
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 }
@@ -529,6 +530,7 @@ void Annotator::setCurrentStopTime(double timeMilliseconds, bool paused)
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds, paused);
 	mBPFEditor->updateLocator(timeMilliseconds, paused);
+	_frameDescriptorsPane->updateLocator(timeMilliseconds, paused);
 }
 
 void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMiliseconds)
@@ -542,6 +544,7 @@ void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMilisecond
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds, true);
 	mBPFEditor->updateLocator(timeMilliseconds, true);
+	_frameDescriptorsPane->updateLocator(timeMilliseconds, true);
 	updating=false;
 }
 
