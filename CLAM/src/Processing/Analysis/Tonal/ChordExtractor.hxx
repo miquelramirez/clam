@@ -61,7 +61,7 @@ public:
 	static double maximumFrequency(double sampleRate) { return sampleRate/2.1; } // Just below nyquist
 	typedef float * AudioFrame;
 
-	ChordExtractor(unsigned sampleRate=44100, double minimumFrequency=98, unsigned binsPerOctave=36)
+	ChordExtractor(unsigned segmentationMethod=0, unsigned sampleRate=44100, double minimumFrequency=98, unsigned binsPerOctave=36)
 		: _sparseConstantQKernelThreshold(0.0054)
 		, _constantQTransform(sampleRate, minimumFrequency, maximumFrequency(sampleRate), binsPerOctave)
 		, _constantQFolder(_constantQTransform.getK(), binsPerOctave)
@@ -70,6 +70,7 @@ public:
 		, _instantTunningEstimator(/*Inertia*/ 1.0)
 		, _circularPeakTunner(/*reference tunning*/ 0.0)
 		, _filter(0.7)
+		, _chordSegmentator(segmentationMethod)
 		, _tunningEnabled(true)
 		, _peakWindowingEnabled(true)
 		, _hopRatio(8.0) // On the original Chromagram cpp code was 32

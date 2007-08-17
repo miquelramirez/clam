@@ -450,11 +450,12 @@ int main(int argc, char* argv[])			// access command line arguments
 		CLAM::XMLStorage::Dump(reader.GetHeader(), "Header", std::cout);
 		CLAM::XMLStorage::Dump(reader.GetTextDescriptors(), "TextDescriptors", std::cout);
 		
+		unsigned segmentationMethod = 0;
 		int factor=1;							// downsampling factor
 		float minf = 98;						// (MIDI note G1)
 		unsigned bpo = 36;			// bins per octave
 
-		Simac::ChordExtractor chordExtractor(samplingRate/factor,minf,bpo);
+		Simac::ChordExtractor chordExtractor(segmentationMethod,samplingRate/factor,minf,bpo);
 		unsigned framesize = chordExtractor.frameSize();
 		unsigned hop = chordExtractor.hop();
 		unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
