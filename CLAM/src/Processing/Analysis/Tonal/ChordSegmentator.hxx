@@ -62,7 +62,10 @@ class ChordSegmentator
 
 	unsigned _method;
 	
+	// Chord similarity method variables
 	std::vector< std::vector<double> > _chordSimilarity;
+	std::vector<double> _segmentChordCorrelation;
+	unsigned _lastEstimatedChord;
 public:
 	ChordSegmentator(unsigned method=0)
 		: _segmentation(1000)
@@ -70,8 +73,17 @@ public:
 		, _lastChord(0)
 		, _method(method)
 	{
-		ChordCorrelator chordCorrelator;
-		_chordSimilarity = chordCorrelator.chordPatternsSimilarity();
+		switch(_method)
+		{
+			//case 0: break;
+			case 1:
+				ChordCorrelator chordCorrelator;
+				_chordSimilarity = chordCorrelator.chordPatternsSimilarity();
+				for(unsigned i=0; i<101; ++i)
+					_segmentChordCorrelation.push_back(0);
+				break;
+			//default: break;
+		}
 	};
 	~ChordSegmentator() {};
 
@@ -103,31 +115,20 @@ public:
 		if(_segmentOpen)
 		{
 			if(!currentChord)
-				closeSegmentSimilarity(currentTime);
+				closeSegment(currentTime);
 			if(currentChord != _lastChord)
-				closeSegmentSimilarity(currentTime);
+				closeSegment(currentTime);
 		}
 		if(!_segmentOpen)
 		{	
 			if(currentChord)
-				openSegmentSimilarity(currentTime, currentChord);
+				openSegment(currentTime, currentChord);
 		}
 		
 		_lastChord = currentChord;
 		
 		if(_segmentOpen)
 			_segmentation.dragOffset(_currentSegment, currentTime);
-	}
-	void openSegmentSimple(CLAM::TData & currentTime, unsigned currentChord)
-	{
-		_chordIndexes.push_back(currentChord);
-		_currentSegment = _segmentation.insert(currentTime);
-		_segmentOpen = true;
-	}
-	void closeSegmentSimple(CLAM::TData & currentTime)
-	{
-		_segmentation.dragOffset(_currentSegment, currentTime);
-		_segmentOpen = false;
 	}
 
 	/** 
@@ -137,48 +138,99 @@ public:
 	{
 		CLAM::TData firstCandidateWeight = correlation[firstCandidate];
 		CLAM::TData noCandidateWeigth = correlation[0];
+		for(unsigned i=0; i<correlation.size(); i++) 
+		{
+			_segmentChordCorrelation[i] += correlation[i]/correlation[0];
+		}
 		
 		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
 				0 : firstCandidate;
+
+		unsigned segmentChord=0;
 		
 		if(_segmentOpen)
-		{
-			if(!currentChord)
-				closeSegmentSimilarity(currentTime);
-			if(currentChord != _lastChord)
-				closeSegmentSimilarity(currentTime);
+		{ 
+			estimateChord(_segmentChordCorrelation, segmentChord);
+			_chordIndexes[_currentSegment] = segmentChord;
+			_lastChord = segmentChord;
+
+			if(!currentChord) 
+			{
+				closeSegment(currentTime);
+				for(unsigned i=0; i<correlation.size(); i++) 
+				_segmentChordCorrelation[i] = 0;
+			}
+			
+			//
+			// The most important condition for rooting out the small, pointless
+			// segments that appear so often.
+			//
+			
+			double similarityThreshold = 0.67;
+
+			if (_chordSimilarity[currentChord][_lastChord] < similarityThreshold)
+			{
+				closeSegment(currentTime);
+				for(unsigned i=0; i<correlation.size(); i++) 
+				_segmentChordCorrelation[i] = 0;
+			}
 		}
 		if(!_segmentOpen)
 		{	
 			if(currentChord)
-				openSegmentSimilarity(currentTime, currentChord);
+				openSegment(currentTime, currentChord);
+			_lastChord = currentChord;
 		}
 		
-		_lastChord = currentChord;
 		
 		if(_segmentOpen)
 			_segmentation.dragOffset(_currentSegment, currentTime);
 	}
-	void openSegmentSimilarity(CLAM::TData & currentTime, unsigned currentChord)
+
+	void openSegment(CLAM::TData & currentTime, unsigned currentChord)
 	{
 		_chordIndexes.push_back(currentChord);
 		_currentSegment = _segmentation.insert(currentTime);
 		_segmentOpen = true;
 	}
-	void closeSegmentSimilarity(CLAM::TData & currentTime)
+	void closeSegment(CLAM::TData & currentTime)
 	{
 		_segmentation.dragOffset(_currentSegment, currentTime);
 		_segmentOpen = false;
 	}
-
+	
 	void closeLastSegment(CLAM::TData & currentTime )
 	{
 		if (_lastChord != 0)
 		{
 			_segmentation.dragOffset(_currentSegment, currentTime);
+			_segmentOpen = false;
 		}
 	}
 
+	void estimateChord(const ChordCorrelator::ChordCorrelation & correlation, unsigned & estimatedChord)
+	{
+		double maxCorrelation = 0;
+		double underMaxCorrelation = 0;
+		unsigned maxIndex = 0;
+		unsigned underMaxIndex = 0;
+		for (unsigned i=0; i<correlation.size(); i++)
+		{
+			if (correlation[i]<underMaxCorrelation) continue;
+			if (correlation[i]<maxCorrelation)
+			{
+				underMaxIndex=i;
+				underMaxCorrelation=correlation[i];
+				continue;
+			}
+			underMaxIndex=maxIndex;
+			underMaxCorrelation=maxCorrelation;
+			maxIndex=i;
+			maxCorrelation=correlation[i];
+		}
+		estimatedChord = maxIndex;
+	}
+	
 	const CLAM::DiscontinuousSegmentation & segmentation() const { return _segmentation; };
 	const std::vector<unsigned> & chordIndexes() const { return _chordIndexes; };
 };
