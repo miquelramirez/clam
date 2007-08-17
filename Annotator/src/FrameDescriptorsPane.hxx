@@ -19,7 +19,7 @@ class FrameDescriptorsPane : public QSplitter
  
 private:
 	CLAM_Annotator::Project& _mProject;
-	std::vector<CLAM::EquidistantPointsFunction> _mEPFs;
+	std::vector<CLAM::EquidistantPointsFunction> _EPFs;
 	const CLAM::Audio * _audio;
 	CLAM::DescriptionDataPool * _pool;
 
@@ -33,7 +33,7 @@ public:
 	
 		: QSplitter(parent)
 		, _mProject(mProject)
-		, _mEPFs(mEPFs)
+		, _EPFs(mEPFs)
 		, _audio(0)
 		, _pool(0)
 	{
@@ -58,6 +58,12 @@ public:
 		// Changing the current frame level descriptor
 		connect(mFrameLevelAttributeList, SIGNAL(currentRowChanged(int)),
 				this, SLOT(changeFrameLevelDescriptor(int)));
+		// Apply frame descriptor changes
+		connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
+				this, SLOT(frameDescriptorsChanged(unsigned, double)));
+		// Current position update
+		connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
+				this, SLOT(setCurrentTime(double,double)));
 
 // TODO: move elsewhere!
 //		mVSplit->addWidget(this);
@@ -107,7 +113,7 @@ public:
 		std::cout<<"Loading frame level data..."<< std::endl;
 
 		// TODO: Not all the things should be done here
-		_mEPFs.clear();
+		_EPFs.clear();
 		mBPFEditor->SetXRange(0.0,double(_audio->GetDuration())/1000.0);	
 
 		if (!_pool) return;
@@ -124,39 +130,46 @@ public:
 			std::list<std::string>::const_iterator it;
 			for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++)
 			{
-				_mEPFs.push_back(CLAM::EquidistantPointsFunction());
+				_EPFs.push_back(CLAM::EquidistantPointsFunction());
 				CLAM::TData firstCenter = division.GetFirstCenter();
 				CLAM::TData interCenterGap = division.GetInterCenterGap();
 				const CLAM::TData* values = _pool->GetReadPool<CLAM::TData>(frameDivisionChildScope,*it);
 				CLAM::TData sr = _audio->GetSampleRate();
 				int nFrames = _pool->GetNumberOfContexts(frameDivisionChildScope);
-				_mEPFs.back().setDivision(firstCenter/sr, interCenterGap/sr, "s");
-				_mEPFs.back().setValues(values, nFrames, "");
+				_EPFs.back().setDivision(firstCenter/sr, interCenterGap/sr, "s");
+				_EPFs.back().setValues(values, nFrames, "");
 			}
 		}
 		changeFrameLevelDescriptor(mFrameLevelAttributeList->currentRow());
+	}
+	
+	void updateLocator(double timeMilliseconds, bool paused)
+	{
+		mBPFEditor->updateLocator(timeMilliseconds, paused);
+	}
+	void updateLocator(double timeMilliseconds)
+	{
+		mBPFEditor->updateLocator(timeMilliseconds);
 	}
 
 public slots:
 	void changeFrameLevelDescriptor(int current)
 	{
 		unsigned index = mFrameLevelAttributeList->currentRow();
-		if (index >= _mEPFs.size()) return; // No valid descriptor
-		double minValue = _mEPFs[index].getMin();
-		double maxValue = _mEPFs[index].getMax();
+		if (index >= _EPFs.size()) return; // No valid descriptor
+		double minValue = _EPFs[index].getMin();
+		double maxValue = _EPFs[index].getMax();
 		// TODO: Move this margin to the widget
 		double span = maxValue-minValue;
 		minValue -= span*0.1;
 		maxValue += span*0.1;
-		mBPFEditor->SetData(&_mEPFs[index].GetBPF());
+		mBPFEditor->SetData(&_EPFs[index].GetBPF());
 		CLAM::VM::ERulerScale scale = CLAM::VM::eLinearScale;
 		if (fabs(minValue) > 9999.99) scale=CLAM::VM::eLogScale;
 		if (fabs(maxValue) > 9999.99) scale=CLAM::VM::eLogScale;
 		if (maxValue-minValue < CLAM::TData(5E-2)) scale=CLAM::VM::eLogScale;
 		mBPFEditor->SetYRange(minValue, maxValue, scale);
 
-		//mPlayer->SetData(mEPFs[index].GetBPF());
-		//mPlayer->SetPitchBounds(minValue, maxValue);
 		mBPFEditor->show();
 	}
 
