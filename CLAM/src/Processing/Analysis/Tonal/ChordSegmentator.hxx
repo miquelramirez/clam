@@ -42,12 +42,21 @@ Adapted from MATLAB code by Chris Harte at Queen Mary
 namespace Simac
 {
 
+/**
+ * ChordSegmentator divides the analysed audio data into segments
+ * characterized by different chords. It takes as input the chord
+ * correlation for each frame and decides whether this new data
+ * signifies a chord change in the music. If so it opens a new
+ * segment for the new chord, at the same time closing the 
+ * previous segment.
+ */
 class ChordSegmentator
 {
 	CLAM::DiscontinuousSegmentation _segmentation;
-	std::vector<unsigned> _chordIndexes;  ///< Holds the chord index for each segment
+	std::vector<unsigned> _chordIndexes;
 
 	unsigned _currentSegment;
+	bool _segmentOpen;
 	unsigned _lastChord;
 
 	unsigned _method;
@@ -67,34 +76,95 @@ public:
 			case 0:
 				doItSimple(currentTime, correlation, firstCandidate, secondCandidate); 
 				break;
+			case 1:
+				doItSimilarity(currentTime, correlation, firstCandidate, secondCandidate); 
+				break;
+			default:
+				doItSimple(currentTime, correlation, firstCandidate, secondCandidate); 
 		}
 	}
-	
+
+	/** Simple chord segmentation method
+	 */
 	void doItSimple(CLAM::TData & currentTime, const std::vector<double> & correlation, const unsigned firstCandidate, const unsigned secondCandidate) 
 	{
 		CLAM::TData firstCandidateWeight = correlation[firstCandidate];
-		CLAM::TData secondCandidateWeight = correlation[secondCandidate];
 		CLAM::TData noCandidateWeigth = correlation[0];
 		
 		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
 				0 : firstCandidate;
 		
-		if (currentChord!=_lastChord)
-		{	
-			// Closes a segment opened in one of the previous iterations
-			if (_lastChord != 0) {
-				_segmentation.dragOffset(_currentSegment, currentTime);
-			}
-			// Opens a new chord segment
-			if (currentChord != 0)
-			{
-				_chordIndexes.push_back(currentChord);
-				_currentSegment = _segmentation.insert(currentTime);
-			}
-			_lastChord = currentChord;
+		if(_segmentOpen)
+		{
+			if(!currentChord)
+				closeSegmentSimilarity(currentTime);
+			if(currentChord != _lastChord)
+				closeSegmentSimilarity(currentTime);
 		}
+		if(!_segmentOpen)
+		{	
+			if(currentChord)
+				openSegmentSimilarity(currentTime, currentChord);
+		}
+		
+		_lastChord = currentChord;
+		
+		if(_segmentOpen)
+			_segmentation.dragOffset(_currentSegment, currentTime);
 	}
-	
+	void openSegmentSimple(CLAM::TData & currentTime, unsigned currentChord)
+	{
+		_chordIndexes.push_back(currentChord);
+		_currentSegment = _segmentation.insert(currentTime);
+		_segmentOpen = true;
+	}
+	void closeSegmentSimple(CLAM::TData & currentTime)
+	{
+		_segmentation.dragOffset(_currentSegment, currentTime);
+		_segmentOpen = false;
+	}
+
+	/** 
+	 * Chord similarity based segmentation method
+	 */
+	void doItSimilarity(CLAM::TData & currentTime, const std::vector<double> & correlation, const unsigned firstCandidate, const unsigned secondCandidate) 
+	{
+		CLAM::TData firstCandidateWeight = correlation[firstCandidate];
+		CLAM::TData noCandidateWeigth = correlation[0];
+		
+		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
+				0 : firstCandidate;
+		
+		if(_segmentOpen)
+		{
+			if(!currentChord)
+				closeSegmentSimilarity(currentTime);
+			if(currentChord != _lastChord)
+				closeSegmentSimilarity(currentTime);
+		}
+		if(!_segmentOpen)
+		{	
+			if(currentChord)
+				openSegmentSimilarity(currentTime, currentChord);
+		}
+		
+		_lastChord = currentChord;
+		
+		if(_segmentOpen)
+			_segmentation.dragOffset(_currentSegment, currentTime);
+	}
+	void openSegmentSimilarity(CLAM::TData & currentTime, unsigned currentChord)
+	{
+		_chordIndexes.push_back(currentChord);
+		_currentSegment = _segmentation.insert(currentTime);
+		_segmentOpen = true;
+	}
+	void closeSegmentSimilarity(CLAM::TData & currentTime)
+	{
+		_segmentation.dragOffset(_currentSegment, currentTime);
+		_segmentOpen = false;
+	}
+
 	void closeLastSegment(CLAM::TData & currentTime )
 	{
 		if (_lastChord != 0)
