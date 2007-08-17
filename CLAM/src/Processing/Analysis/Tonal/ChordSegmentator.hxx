@@ -37,6 +37,7 @@ Adapted from MATLAB code by Chris Harte at Queen Mary
 #include <cmath>
 #include "Array.hxx"
 #include "DiscontinuousSegmentation.hxx"
+#include "ChordCorrelator.hxx"
 #include <CLAM/Assert.hxx>
 
 namespace Simac
@@ -60,13 +61,18 @@ class ChordSegmentator
 	unsigned _lastChord;
 
 	unsigned _method;
+	
+	std::vector< std::vector<double> > _chordSimilarity;
 public:
 	ChordSegmentator(unsigned method=0)
 		: _segmentation(1000)
 		, _currentSegment(0)
 		, _lastChord(0)
 		, _method(method)
-	{};
+	{
+		ChordCorrelator chordCorrelator;
+		_chordSimilarity = chordCorrelator.chordPatternsSimilarity();
+	};
 	~ChordSegmentator() {};
 
 	void doIt(CLAM::TData & currentTime, const std::vector<double> & correlation, const unsigned firstCandidate, const unsigned secondCandidate) 

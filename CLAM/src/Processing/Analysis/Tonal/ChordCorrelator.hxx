@@ -114,6 +114,22 @@ public:
 				_chordPatterns.push_back(pattern);
 			}
 		}
+		for (unsigned i=0; i<_chordPatterns.size(); i++)
+		{
+			std::vector<double> singleRow;
+			for (unsigned j=0; j<_chordPatterns.size(); j++)
+			{
+				double chordPatternCorrelation = 0;
+				for (unsigned k=0; k<12; k++)
+				{
+					chordPatternCorrelation += (_chordPatterns[i].pattern[k] * _chordPatterns[j].pattern[k]);
+				}
+				chordPatternCorrelation /= (_chordPatterns[i].normalization + _chordPatterns[j].normalization) / 2.0;
+				singleRow.push_back(chordPatternCorrelation);
+				//singleRow.push_back(1.0);
+			}
+			_chordPatternsSimilarity.push_back(singleRow);
+		}
 		_output.resize(_chordPatterns.size());
 	}
 	void DumpChordPatterns(std::ostream & os)
@@ -142,6 +158,10 @@ public:
 		os << _chordModeNames[_chordPatterns[chordIndex].mode];
 		return os.str();
 	}
+	std::vector< std::vector<double> > chordPatternsSimilarity() const
+	{
+		return _chordPatternsSimilarity;
+	}
 	~ChordCorrelator()
 	{
 	}
@@ -164,6 +184,7 @@ public:
 	}
 private:
 	std::vector<ChordPattern> _chordPatterns;
+	std::vector< std::vector<double> > _chordPatternsSimilarity;
 	std::vector<std::string> _chordModeNames;
 	ChordCorrelation _output;
 };
