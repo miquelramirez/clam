@@ -52,11 +52,12 @@ const char * copyright =
 	"\n"
 	;
 const char * usage =
-	"Usage: ChordExtractor [-s out.sc] [-f <suffix>] <wavefile1> <wavefile2> ...\n"
+	"Usage: ChordExtractor [-s out.sc] [-f <suffix>] [-m <method>] <wavefile1> <wavefile2> ...\n"
 	"\nOptions:\n"
 	" -h            shows this help\n"
 	" -s            dump the schema to the standard output\n"
 	" -f <suffix>   append <suffix> to the generated descriptors file (default: '.pool')\n"
+	" -m <method>   use the <method> segmentation algorithm\n"
 	"\nUsage examples:\n"
 	" ChordExtractor -s schema.sc\n"
 	" ChordExtractor -f .beats song1.wav song2.mp3 song3.ogg\n"
@@ -392,6 +393,7 @@ int main(int argc, char* argv[])			// access command line arguments
 	std::list<std::string> songs;
 	std::string suffix = ".pool";
 	std::string schemaLocation = "";
+	unsigned segmentationMethod = 0;
 	if (argc==1) 
 	{
 		std::cerr << usage << std::endl;
@@ -401,6 +403,7 @@ int main(int argc, char* argv[])			// access command line arguments
 	bool hasSchemaOption = false;
 	bool isSchema = false;
 	bool isSuffix = false;
+	bool isSegmentationMethod = false;
 	for (unsigned i = 1; i<argc; i++)
 	{
 		std::string parameter = argv[i];
@@ -419,8 +422,15 @@ int main(int argc, char* argv[])			// access command line arguments
 			suffix = parameter;
 			isSuffix=false;
 		}
+		else if (isSegmentationMethod)
+		{
+			segmentationMethod = atoi( argv[i] );
+			std::cout << std::endl << segmentationMethod << std::endl;
+			isSegmentationMethod=false;
+		}
 		else if (parameter=="-f") isSuffix = true;
 		else if (parameter=="-s") isSchema = hasSchemaOption = true;
+		else if (parameter=="-m") isSegmentationMethod = true;
 		else songs.push_back(parameter);
 	}
 
@@ -450,7 +460,6 @@ int main(int argc, char* argv[])			// access command line arguments
 		CLAM::XMLStorage::Dump(reader.GetHeader(), "Header", std::cout);
 		CLAM::XMLStorage::Dump(reader.GetTextDescriptors(), "TextDescriptors", std::cout);
 		
-		unsigned segmentationMethod = 0;
 		int factor=1;							// downsampling factor
 		float minf = 98;						// (MIDI note G1)
 		unsigned bpo = 36;			// bins per octave
