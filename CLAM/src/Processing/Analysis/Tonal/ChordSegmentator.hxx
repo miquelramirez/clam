@@ -49,15 +49,28 @@ class ChordSegmentator
 
 	unsigned _currentSegment;
 	unsigned _lastChord;
+
+	unsigned _method;
 public:
-	ChordSegmentator()
+	ChordSegmentator(unsigned method=0)
 		: _segmentation(1000)
 		, _currentSegment(0)
 		, _lastChord(0)
+		, _method(method)
 	{};
 	~ChordSegmentator() {};
 
 	void doIt(CLAM::TData & currentTime, const std::vector<double> & correlation, const unsigned firstCandidate, const unsigned secondCandidate) 
+	{
+		switch(_method)
+		{
+			case 0:
+				doItSimple(currentTime, correlation, firstCandidate, secondCandidate); 
+				break;
+		}
+	}
+	
+	void doItSimple(CLAM::TData & currentTime, const std::vector<double> & correlation, const unsigned firstCandidate, const unsigned secondCandidate) 
 	{
 		CLAM::TData firstCandidateWeight = correlation[firstCandidate];
 		CLAM::TData secondCandidateWeight = correlation[secondCandidate];
