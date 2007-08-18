@@ -117,7 +117,7 @@ public:
 public slots:
 	void currentSongChanged(QTreeWidgetItem*current, QTreeWidgetItem*previous);
 	void globalDescriptorsTableChanged(int row);
-	void frameDescriptorsChanged(unsigned, double);
+	//void frameDescriptorsChanged(unsigned, double);
 	void auralizeSegmentation();
 	void updateSegmentation();
 
@@ -132,13 +132,15 @@ public slots:
 	void computeSongDescriptors();
 
 	void refreshAudioData();
-	void changeFrameLevelDescriptor(int current);
+//	void changeFrameLevelDescriptor(int current);
 	void updateAuralizationOptions();
 	void linkCurrentSegmentToPlayback(bool enabled);
+	void setCurrentTime(double timeMilliseconds, double endTimeMiliseconds);
+
 protected:
 	void closeEvent( QCloseEvent * e);
 private slots:
-	void setCurrentTime(double timeMilliseconds, double endTimeMiliseconds);
+//	void setCurrentTime(double timeMilliseconds, double endTimeMiliseconds);
 	void setCurrentPlayingTime(double timeMilliseconds);
 	void setCurrentStopTime(double timeMilliseconds, bool paused);
 	void updatePendingAuralizationsChanges();
@@ -174,11 +176,11 @@ private:
 	void adaptInstantViewsToSchema();
 
 	void refreshInstantViews();
-	void adaptEnvelopesToCurrentSchema();
-	void refreshEnvelopes();
-	void refreshEnvelope(CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & frameDivision);
-	void updateEnvelopesData();
-	void updateEnvelopeData(int bpfIndex, CLAM::TData * descriptors);
+//	void adaptEnvelopesToCurrentSchema();
+//	void refreshEnvelopes();
+//	void refreshEnvelope(CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & frameDivision);
+//	void updateEnvelopesData();
+//	void updateEnvelopeData(int bpfIndex, CLAM::TData * descriptors);
 
 	void setMenuAudioItemsEnabled(bool);
 
