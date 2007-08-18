@@ -10,6 +10,8 @@
 #include "Audio.hxx"
 #include <CLAM/Pool.hxx>
 
+using CLAM::TData;
+
 class FrameDescriptorsPane : public QSplitter
 {
 	Q_OBJECT
@@ -22,9 +24,6 @@ private:
 	std::vector<CLAM::EquidistantPointsFunction> _EPFs;
 	const CLAM::Audio * _audio;
 	CLAM::DescriptionDataPool * _pool;
-
-//public slots:
-//	void changeFrameLevelDescriptor(int current);
 
 public:
 	FrameDescriptorsPane(QWidget * parent,
@@ -62,8 +61,8 @@ public:
 		connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
 				this, SLOT(frameDescriptorsChanged(unsigned, double)));
 		// Current position update
-		connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
-				this, SLOT(setCurrentTime(double,double)));
+		//connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
+		//		this, SLOT(setCurrentTime(double,double)));
 
 // TODO: move elsewhere!
 //		mVSplit->addWidget(this);
@@ -151,7 +150,30 @@ public:
 	{
 		mBPFEditor->updateLocator(timeMilliseconds);
 	}
+	
+	void updateEnvelopesData()
+	{
+		// TODO: Any child scope of any FrameDivision in Song not just Frame, which may not even exist
+		unsigned nEPFEditors = _EPFs.size();
+		const std::list<std::string>& descriptorsNames = _mProject.GetNamesByScopeAndType("Frame", "Float");
+		std::list<std::string>::const_iterator it=descriptorsNames.begin();
+		for(unsigned int i = 0; i < nEPFEditors; i++, it++)
+		{
+			updateEnvelopeData(i, _pool->GetWritePool<CLAM::TData>("Frame",*it));
+		}
 
+		emit markCurrentSongChanged(true);
+	}
+	void updateEnvelopeData(int bpfIndex, CLAM::TData* descriptor)
+	{
+		int nPoints = _EPFs[bpfIndex].GetBPF().Size();
+		for (int i=0; i<nPoints; i++)
+		{
+			descriptor[i] = _EPFs[bpfIndex].GetBPF().GetValueFromIndex(i);
+		}
+	}
+	
+	
 public slots:
 	void changeFrameLevelDescriptor(int current)
 	{
@@ -172,7 +194,22 @@ public slots:
 
 		mBPFEditor->show();
 	}
-
+	void frameDescriptorsChanged(unsigned pointIndex,double newValue)
+	{
+		/*TODO: right now, no matter how many points have been edited all descriptors are updated. This
+		  is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
+		  in the class.*/
+		unsigned index = mFrameLevelAttributeList->currentRow();
+		std::cout << "Frame " <<pointIndex<<" changed value from "
+			<< _EPFs[index].GetBPF().GetValue(pointIndex) <<" to "
+			<< newValue<< std::endl;
+		_EPFs[index].GetBPF().SetValue(pointIndex,TData(newValue));
+		updateEnvelopesData();
+	}
+	
+signals:
+	void markCurrentSongChanged(bool changed);
+	
 };
 
 #endif

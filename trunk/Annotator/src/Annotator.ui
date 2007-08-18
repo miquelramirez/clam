@@ -142,56 +142,7 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
           <widget class="QSplitter" name="mFrameEditorSplit" >
            <property name="orientation" >
             <enum>Qt::Horizontal</enum>
-           </property>
-           <widget class="CLAM::VM::BPFPlot" name="mBPFEditor" >
-            <property name="sizePolicy" >
-             <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
-              <horstretch>2</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize" >
-             <size>
-              <width>700</width>
-              <height>200</height>
-             </size>
-            </property>
-            <property name="focusPolicy" >
-             <enum>Qt::WheelFocus</enum>
-            </property>
-            <property name="whatsThis" >
-             <string>&lt;p>The &lt;b>frame level descriptors editor&lt;/b> allows editing
-			 floating point descriptors that has an occurrence for each frame.&lt;/p>
-			 &lt;ul>
-			 &lt;li>Dragging Points: Moving them.&lt;/li>
-			 &lt;li>Page up/down: Set focus prev/next point&lt;/li>
-			 &lt;li>Hover point: Set focus to point&lt;/li>
-			 &lt;li>Dragging play positon: Moves it.&lt;/li>
-			 &lt;li>'r'+Click: Set the current play position.&lt;/li>
-			 &lt;li>Arrows: Change focused point values&lt;/li>
-			 &lt;/ul></string>
-            </property>
-            <property name="frameShape" >
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow" >
-             <enum>QFrame::Raised</enum>
-            </property>
-           </widget>
-           <widget class="QListWidget" name="mFrameLevelAttributeList" >
-            <property name="minimumSize" >
-             <size>
-              <width>150</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="alternatingRowColors" >
-             <bool>true</bool>
-            </property>
-            <property name="resizeMode" >
-             <enum>QListView::Adjust</enum>
-            </property>
-           </widget>
+           </property>          
           </widget>
          </widget>
         </item>
@@ -645,8 +596,6 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   <tabstop>mMainTabWidget</tabstop>
   <tabstop>mSongListView</tabstop>
   <tabstop>mDescriptorsTable</tabstop>
-  <tabstop>mBPFEditor</tabstop>
-  <tabstop>mFrameLevelAttributeList</tabstop>
  </tabstops>
  <resources>
   <include location="images.qrc" />

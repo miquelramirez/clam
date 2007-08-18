@@ -278,10 +278,6 @@ void Annotator::initInterface()
 	mMainTabWidget->insertTab(0, mProjectDocumentation, tr("Project Documentation"));
 	mMainTabWidget->setCurrentIndex(0);
 
-	mBPFEditor->SetFlags(CLAM::VM::eAllowVerEdition);//|CLAM::VM::eHasVerticalScroll); // QTPORT: What about this flag
-	mBPFEditor->SetZoomSteps(5,5);
-	mBPFEditor->SetXRange(0.0,2.0);
-
 	mCurrentAudio.ResizeToDuration(2.0);
 	// init the segmentation panes
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
@@ -290,8 +286,6 @@ void Annotator::initInterface()
 	// ...and the frame descriptors pane
 	// TODO: could panes be abstracted?
 	_frameDescriptorsPane->setData(0, mCurrentAudio);
-
-	mBPFEditor->setAutoFillBackground(true);
 
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
@@ -359,7 +353,7 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	mStatusBar << tr("Adapting Interface to Song level descriptors...") << mStatusBar;
 	mGlobalDescriptors->refreshSchema("Song");
 	mStatusBar << tr("Adapting Interface to Frame level descriptors...") << mStatusBar;
-	adaptEnvelopesToCurrentSchema();
+	//adaptEnvelopesToCurrentSchema();
 	_frameDescriptorsPane->adaptEnvelopesToCurrentSchema();
 	mStatusBar << tr("Adapting Interface to Segmentations...") << mStatusBar;
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
@@ -399,19 +393,6 @@ void Annotator::adaptInstantViewsToSchema()
 void Annotator::globalDescriptorsTableChanged(int row)
 {
 	markCurrentSongChanged(true);
-}
-
-void Annotator::adaptEnvelopesToCurrentSchema()
-{
-	mFrameLevelAttributeList->clear();
-
-	const std::list<std::string>& names = mProject.GetNamesByScopeAndType("Frame", "Float");
-	const unsigned nTabs = names.size();
-	std::list<std::string>::const_iterator name = names.begin();
-	for (unsigned i = 0; i<nTabs; name++, i++)
-	{
-		mFrameLevelAttributeList->addItem(name->c_str());
-	}
 }
 
 unsigned Annotator::addNewSegmentationPane()
@@ -478,16 +459,10 @@ void Annotator::makeConnections()
 	// Changing the current song
 	connect(mSongListView, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
 			this, SLOT(currentSongChanged(QTreeWidgetItem*,QTreeWidgetItem*)));
-	// Changing the current frame level descriptor
-	connect(mFrameLevelAttributeList, SIGNAL(currentRowChanged(int)),
-			this, SLOT(changeFrameLevelDescriptor(int)));
 
 	// Apply global descriptors changes
 	connect(mGlobalDescriptors, SIGNAL(contentEdited(int) ),
 			this, SLOT(globalDescriptorsTableChanged(int) ) );
-	// Apply frame descriptor changes
-	connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
-			this, SLOT(frameDescriptorsChanged(unsigned, double)));
 
 	// TODO: Interplot viewport syncronization
 
@@ -496,10 +471,6 @@ void Annotator::makeConnections()
 			this, SLOT(setCurrentPlayingTime(double)), Qt::DirectConnection);
 	connect( _auralizer->mPlayer, SIGNAL(stopTime(double,bool)),
 			this, SLOT(setCurrentStopTime(double,bool)), Qt::DirectConnection);
-
-	// Current position update
-	connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
-			this, SLOT(setCurrentTime(double,double)));
 
 	// Update auralization whenever player stop and they have been modified
 	connect(_auralizer->mPlayer, SIGNAL(stopTime(double)),
@@ -517,7 +488,6 @@ void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 {
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds);
-	mBPFEditor->updateLocator(timeMilliseconds);
 	_frameDescriptorsPane->updateLocator(timeMilliseconds);
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
@@ -529,7 +499,6 @@ void Annotator::setCurrentStopTime(double timeMilliseconds, bool paused)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds, paused);
-	mBPFEditor->updateLocator(timeMilliseconds, paused);
 	_frameDescriptorsPane->updateLocator(timeMilliseconds, paused);
 }
 
@@ -543,7 +512,6 @@ void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMilisecond
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds, true);
-	mBPFEditor->updateLocator(timeMilliseconds, true);
 	_frameDescriptorsPane->updateLocator(timeMilliseconds, true);
 	updating=false;
 }
@@ -617,21 +585,6 @@ void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 {
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->setCurrentSegmentFollowsPlay(enabled);
-}
-
-void Annotator::frameDescriptorsChanged(unsigned pointIndex,double newValue)
-{
-	/*TODO: right now, no matter how many points have been edited all descriptors are updated. This
-	  is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
-	  in the class.*/
-	unsigned index = mFrameLevelAttributeList->currentRow();
-	mStatusBar << tr("Frame %1 changed value from %2 to %3")
-		.arg(pointIndex)
-		.arg(mEPFs[index].GetBPF().GetValue(pointIndex))
-		.arg(newValue)
-		<< mStatusBar;
-	mEPFs[index].GetBPF().SetValue(pointIndex,TData(newValue));
-	updateEnvelopesData();
 }
 
 void Annotator::updateSegmentation()
@@ -820,7 +773,7 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	}
 	_frameDescriptorsPane->setData(mpDescriptorPool, mCurrentAudio);
 	auralizeSegmentation();
-	refreshEnvelopes();
+	//refreshEnvelopes();
 	_frameDescriptorsPane->refreshEnvelopes();
 	refreshInstantViews();
 	mStatusBar << tr("Done") << mStatusBar;
@@ -840,34 +793,6 @@ void Annotator::refreshInstantViews()
 	}
 }
 
-void Annotator::refreshEnvelopes()
-{
-	mStatusBar << tr("Loading frame level data...") << mStatusBar;
-
-	// TODO: Not all the things should be done here
-	mEPFs.clear();
-	mBPFEditor->SetXRange(0.0,double(mCurrentAudio.GetDuration())/1000.0);
-
-	if (!mpDescriptorPool) return;
-
-	const std::list<std::string>& divisionNames = mProject.GetNamesByScopeAndType("Song", "FrameDivision");
-
-	std::list<std::string>::const_iterator divisionName;
-	for(divisionName = divisionNames.begin();divisionName != divisionNames.end(); divisionName++)
-	{
-		const CLAM_Annotator::FrameDivision & division = mpDescriptorPool->GetReadPool<CLAM_Annotator::FrameDivision>("Song",*divisionName)[0];
-		
-		const std::string & frameDivisionChildScope = mProject.GetAttributeScheme("Song", *divisionName).GetChildScope();
-		const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType(frameDivisionChildScope, "Float");
-		std::list<std::string>::const_iterator it;
-		for(it = descriptorsNames.begin();it != descriptorsNames.end(); it++)
-		{
-			mEPFs.push_back(CLAM::EquidistantPointsFunction());
-			refreshEnvelope(mEPFs.back(), frameDivisionChildScope, *it, division);
-		}
-	}
-	changeFrameLevelDescriptor(mFrameLevelAttributeList->currentRow());
-}
 
 void Annotator::refreshAudioData()
 {
@@ -884,39 +809,6 @@ void Annotator::refreshAudioData()
 
 	if (!finished)
 		mAudioRefreshTimer->start(2000);
-}
-
-void Annotator::refreshEnvelope(CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & division)
-{
-	CLAM::TData firstCenter = division.GetFirstCenter();
-	CLAM::TData interCenterGap = division.GetInterCenterGap();
-	const CLAM::TData* values = mpDescriptorPool->GetReadPool<CLAM::TData>(scope,descriptorName);
-	CLAM::TData sr = mCurrentAudio.GetSampleRate();
-	int nFrames = mpDescriptorPool->GetNumberOfContexts(scope);
-	epf.setDivision(firstCenter/sr, interCenterGap/sr, "s");
-	epf.setValues(values, nFrames, "");
-}
-
-void Annotator::updateEnvelopesData()
-{
-	// TODO: Any child scope of any FrameDivision in Song not just Frame, which may not even exist
-	unsigned nEPFEditors = mEPFs.size();
-	const std::list<std::string>& descriptorsNames = mProject.GetNamesByScopeAndType("Frame", "Float");
-	std::list<std::string>::const_iterator it=descriptorsNames.begin();
-	for(unsigned int i = 0; i < nEPFEditors; i++, it++)
-	{
-		updateEnvelopeData(i, mpDescriptorPool->GetWritePool<CLAM::TData>("Frame",*it));
-	}
-	markCurrentSongChanged(true);
-}
-
-void Annotator::updateEnvelopeData(int bpfIndex, CLAM::TData* descriptor)
-{
-	int nPoints = mEPFs[bpfIndex].GetBPF().Size();
-	for (int i=0; i<nPoints; i++)
-	{
-		descriptor[i] = mEPFs[bpfIndex].GetBPF().GetValueFromIndex(i);
-	}
 }
 
 
@@ -1003,27 +895,24 @@ QString Annotator::constructFileError(const std::string& fileName,const CLAM::Xm
 }
 
 
-void Annotator::changeFrameLevelDescriptor(int current)
-{
-	unsigned index = mFrameLevelAttributeList->currentRow();
-	if (index >= mEPFs.size()) return; // No valid descriptor
-	double minValue = mEPFs[index].getMin();
-	double maxValue = mEPFs[index].getMax();
-	// TODO: Move this margin to the widget
-	double span = maxValue-minValue;
-	minValue -= span*0.1;
-	maxValue += span*0.1;
-	mBPFEditor->SetData(&mEPFs[index].GetBPF());
-	CLAM::VM::ERulerScale scale = CLAM::VM::eLinearScale;
-	if (fabs(minValue) > 9999.99) scale=CLAM::VM::eLogScale;
-	if (fabs(maxValue) > 9999.99) scale=CLAM::VM::eLogScale;
-	if (maxValue-minValue < CLAM::TData(5E-2)) scale=CLAM::VM::eLogScale;
-	mBPFEditor->SetYRange(minValue, maxValue, scale);
-
-	mBPFEditor->show();
-
-	_auralizer->setLLD(mEPFs[index]);
-}
+//void Annotator::changeFrameLevelDescriptor(int current)
+//{
+//	unsigned index = mFrameLevelAttributeList->currentRow();
+//	if (index >= mEPFs.size()) return; // No valid descriptor
+//	double minValue = mEPFs[index].getMin();
+//	double maxValue = mEPFs[index].getMax();
+//	// TODO: Move this margin to the widget
+//	double span = maxValue-minValue;
+//	minValue -= span*0.1;
+//	maxValue += span*0.1;
+//	CLAM::VM::ERulerScale scale = CLAM::VM::eLinearScale;
+//	if (fabs(minValue) > 9999.99) scale=CLAM::VM::eLogScale;
+//	if (fabs(maxValue) > 9999.99) scale=CLAM::VM::eLogScale;
+//	if (maxValue-minValue < CLAM::TData(5E-2)) scale=CLAM::VM::eLogScale;
+//
+// ***BAK***	
+//	_auralizer->setLLD(mEPFs[index]);
+//}
 
 void Annotator::on_helpWhatsThisAction_triggered()
 {
