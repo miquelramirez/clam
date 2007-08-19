@@ -65,24 +65,25 @@ class ChordSegmentator
 	// Chord similarity method variables
 	std::vector< std::vector<double> > _chordSimilarity;
 	std::vector<double> _segmentChordCorrelation;
-	unsigned _lastEstimatedChord;
 public:
 	ChordSegmentator(unsigned method=0)
 		: _segmentation(1000)
 		, _currentSegment(0)
+		, _segmentOpen(false)
 		, _lastChord(0)
 		, _method(method)
 	{
+		if(method != 0 && method != 1)
+			_method = 0;
+
 		switch(_method)
 		{
-			//case 0: break;
-			case 1:
+			case 2:
 				ChordCorrelator chordCorrelator;
 				_chordSimilarity = chordCorrelator.chordPatternsSimilarity();
 				for(unsigned i=0; i<101; ++i)
 					_segmentChordCorrelation.push_back(0);
 				break;
-			//default: break;
 		}
 	};
 	~ChordSegmentator() {};
@@ -91,14 +92,12 @@ public:
 	{
 		switch(_method)
 		{
-			case 0:
-				doItSimple(currentTime, correlation, firstCandidate, secondCandidate); 
-				break;
-			case 1:
+			case 2:
 				doItSimilarity(currentTime, correlation, firstCandidate, secondCandidate); 
 				break;
 			default:
 				doItSimple(currentTime, correlation, firstCandidate, secondCandidate); 
+
 		}
 	}
 
@@ -206,6 +205,13 @@ public:
 			_segmentation.dragOffset(_currentSegment, currentTime);
 			_segmentOpen = false;
 		}
+		
+		switch(_method)
+		{
+			case 1:
+				removeSmallSegments();
+				break;
+		}
 	}
 
 	void estimateChord(const ChordCorrelator::ChordCorrelation & correlation, unsigned & estimatedChord)
@@ -231,6 +237,38 @@ public:
 		estimatedChord = maxIndex;
 	}
 	
+	//
+	// Post Processing Functions
+	//
+	
+	/**
+	 * Finds segments shorter then minSegmentLength and
+	 * assigns them the same chord as the chord in either
+	 * the previous or the next segment.
+	 */
+	void removeSmallSegments()
+	{
+		double minSegmentLength = 0.4;
+		
+		std::vector<double> onsets = _segmentation.onsets();
+		std::vector<double> offsets = _segmentation.offsets();
+		unsigned lastSegment = onsets.size();
+
+		for(unsigned segment=0; segment<lastSegment; segment++)
+		{
+			if(offsets[segment]-onsets[segment]<0.5)
+			{
+				if(segment<lastSegment)
+					if(offsets[segment]==onsets[segment+1])
+						_chordIndexes[segment] = _chordIndexes[segment+1];
+				if(segment>0)
+					if(onsets[segment]==offsets[segment-1])
+						_chordIndexes[segment] = _chordIndexes[segment-1];
+			}
+			
+		}
+	}
+
 	const CLAM::DiscontinuousSegmentation & segmentation() const { return _segmentation; };
 	const std::vector<unsigned> & chordIndexes() const { return _chordIndexes; };
 };
