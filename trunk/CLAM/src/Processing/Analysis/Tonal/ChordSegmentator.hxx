@@ -248,7 +248,7 @@ public:
 	 */
 	void removeSmallSegments()
 	{
-		double minSegmentLength = 0.4;
+		double minSegmentLength = 0.5;
 		
 		std::vector<double> onsets = _segmentation.onsets();
 		std::vector<double> offsets = _segmentation.offsets();
@@ -256,7 +256,7 @@ public:
 
 		for(unsigned segment=0; segment<lastSegment; segment++)
 		{
-			if(offsets[segment]-onsets[segment]<0.5)
+			if(offsets[segment]-onsets[segment] < minSegmentLength)
 			{
 				if(segment<lastSegment)
 					if(offsets[segment]==onsets[segment+1])
