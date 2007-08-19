@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioSink" type="AudioSink"/>
+
+  <processing id="ControlPrinter" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>0</GuiOnly>
+  </processing>
+
+  <processing id="Fund2MIDI" type="Fund2MIDI"/>
+
+  <processing id="MonoAudioFileReader" type="MonoAudioFileReader">
+    <SourceFile>/home/hordia/dev/clam_dev/NetworkEditor/example-data/jaume-voice.mp3</SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>0</Loop>
+  </processing>
+
+  <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
+    <SinSpectralAnalysis>
+      <WindowGenerator>
+        <Type>Hamming</Type>
+        <Size>2049</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NormalizationForAnalysis</Normalize>
+        <Invert>0</Invert>
+      </WindowGenerator>
+      <CircularShift>
+        <Amount>-1024</Amount>
+      </CircularShift>
+      <FFT>
+        <AudioSize>2048</AudioSize>
+      </FFT>
+      <prHopSize>512</prHopSize>
+      <prZeroPadding>0</prZeroPadding>
+      <prSamplingRate>44100</prSamplingRate>
+      <prFFTSize>2048</prFFTSize>
+      <prWindowSize>2049</prWindowSize>
+      <prWindowType>Hamming</prWindowType>
+    </SinSpectralAnalysis>
+    <ResSpectralAnalysis>
+      <WindowGenerator>
+        <Type>BlackmanHarris92</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NormalizationForAnalysis</Normalize>
+        <Invert>0</Invert>
+      </WindowGenerator>
+      <CircularShift>
+        <Amount>-512</Amount>
+      </CircularShift>
+      <FFT>
+        <AudioSize>1024</AudioSize>
+      </FFT>
+      <prHopSize>512</prHopSize>
+      <prZeroPadding>0</prZeroPadding>
+      <prSamplingRate>44100</prSamplingRate>
+      <prFFTSize>1024</prFFTSize>
+      <prWindowSize>1025</prWindowSize>
+      <prWindowType>BlackmanHarris92</prWindowType>
+    </ResSpectralAnalysis>
+    <PeakDetect>
+      <MaxPeaks>500</MaxPeaks>
+      <MagThreshold>-60</MagThreshold>
+      <MaxFreq>8000</MaxFreq>
+    </PeakDetect>
+    <FundFreqDetect>
+      <ReferenceFundFreq>1000</ReferenceFundFreq>
+      <LowestFundFreq>35</LowestFundFreq>
+      <HighestFundFreq>1500</HighestFundFreq>
+      <MaxCandMagDiff>30</MaxCandMagDiff>
+      <MaxFundFreqError>10</MaxFundFreqError>
+      <PMp>0.5</PMp>
+      <PMq>1.4</PMq>
+      <PMr>0.5</PMr>
+      <MPp>0.5</MPp>
+      <MPq>1.4</MPq>
+      <MPr>0.5</MPr>
+      <PMnPeaks>10</PMnPeaks>
+      <MPnPeaks>10</MPnPeaks>
+      <PMCont>1</PMCont>
+      <MPCont>1</MPCont>
+      <NInt>5</NInt>
+      <NMaxCandidates>40</NMaxCandidates>
+    </FundFreqDetect>
+    <SinTracking>
+      <Threshold>40</Threshold>
+      <nMaxSines>200</nMaxSines>
+      <IsHarmonic>0</IsHarmonic>
+    </SinTracking>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>0</prFFTSize>
+    <SynthSineSpectrum>
+      <SpectrumSize>513</SpectrumSize>
+      <SamplingRate>44100</SamplingRate>
+      <ZeroPadding>0</ZeroPadding>
+    </SynthSineSpectrum>
+  </processing>
+
+  <port_connection>
+    <out>MonoAudioFileReader.Samples Read</out>
+    <in>SMSAnalysisCore.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MonoAudioFileReader.Samples Read</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSAnalysisCore.Fundamental</out>
+    <in>Fund2MIDI.In Fundamental</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Fund2MIDI.Control Out</out>
+    <in>ControlPrinter.In Control</in>
+  </control_connection>
+
+</network>
