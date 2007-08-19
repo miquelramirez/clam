@@ -139,11 +139,6 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
           <property name="orientation" >
            <enum>Qt::Vertical</enum>
           </property>
-          <widget class="QSplitter" name="mFrameEditorSplit" >
-           <property name="orientation" >
-            <enum>Qt::Horizontal</enum>
-           </property>          
-          </widget>
          </widget>
         </item>
        </layout>
@@ -559,9 +554,6 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
    </property>
   </action>
   <action name="actionAddFrameEvolutionView" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
    <property name="text" >
     <string>Add &amp;frame evolution view</string>
    </property>

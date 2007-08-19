@@ -157,7 +157,7 @@ private slots:
 	void on_browseSchemaAction_triggered();
 	void on_actionOnline_Tutorial_triggered();
 	void on_actionAddSegmentationView_triggered();
-
+	void on_actionAddFrameEvolutionView_triggered();
 private:
 	void loadProject(const std::string & projectFileName);
 	void updateApplicationTitle();
@@ -194,7 +194,8 @@ private:
 	void resetTabOrder();
 	void updateRecentFilesMenu();
 	unsigned addNewSegmentationPane();
-
+	unsigned addNewFrameDescriptorsPane();
+	
 private:
 	CLAM::Audio mCurrentAudio; ///< The current audio piece
 	CLAM_Annotator::Project mProject;
@@ -224,7 +225,7 @@ private:
 	QAction * mRecentFilesMenuSeparator;
 	enum {MaxRecentFiles=4};
 	std::vector<SegmentationPane *> _segmentationPanes;
-	FrameDescriptorsPane * _frameDescriptorsPane;
+	std::vector<FrameDescriptorsPane *> _frameDescriptorsPanes;
 	Auralizer * _auralizer;
 };
 
