@@ -35,19 +35,16 @@
 
 namespace CLAM {
 
-//////////////////////////////////////////////////////
-// Class Note:
-//
-/**class Note used to store note information. Pitch and Intranote information is not instantiated by default, 
-	 and time information.
-**/
-
+	/** 	\brief Used to store note information.
+	 *
+	 *	 Pitch and intranote time information are not instantiated by default
+	 */
 	class Note: public ProcessingData
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (Note, 7, ProcessingData);
 		/* Pitch information (not by default) */
-		DYN_ATTRIBUTE (0, public, PitchNote, PitchNote);   
+		DYN_ATTRIBUTE (0, public, PitchNote, PitchNote);
 		/* Note Fundamental frequency (by default) */
 		DYN_ATTRIBUTE (1, public, TData, FundFreq); 
 		/* Note energy (by default) */
