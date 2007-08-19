@@ -104,14 +104,16 @@ void MelodyAnalyzer::AnalyzeMelody(const Segment& segment, const SegmentDescript
 	MIDINote midiNote;
 	myNote.AddPitchNote();
 	myNote.UpdateData();
-	int veloc = 0; 		
+
         // Compute Fundamental frequency mean
 	TIndex b=Round(2*mSegment.GetChildren()[i].GetBeginTime()*mSegment.GetSamplingRate()/wSize);
 	TIndex e;
 	if(mSegment.GetChildren()[i].GetEndTime() < mSegment.GetEndTime())
 	    e=Round(2*mSegment.GetChildren()[i].GetEndTime()*mSegment.GetSamplingRate()/wSize);
 	else
-	    e=Round(2*mSegment.GetEndTime()*mSegment.GetSamplingRate()/wSize);	 		int j;
+	    e=Round(2*mSegment.GetEndTime()*mSegment.GetSamplingRate()/wSize);
+
+	int j;
         // Compute mean
 	int count=0;
 	TData offsetTh=10;
@@ -177,15 +179,16 @@ void MelodyAnalyzer::AnalyzeMelody(const Segment& segment, const SegmentDescript
 	if(noteEnergy==0) noteEnergy=lastEnergy;
 	lastFF=ff;
 	lastEnergy=noteEnergy;
+
 	if(IsValid(eData,time,mSegment.GetSamplingRate()))
 	{
 	    myNote.SetFundFreq(ff);
 	    myNote.SetEnergy(noteEnergy);
 	    myNote.SetTime(time);
 	    myNote.SetPitchNote(pitch[GetPitchIndex(ff)]);
-	    midiNote.SetKey(myNote.GetNoteNumber());
-	    veloc = GetVelocity(myNote.GetVelocity());
-	    midiNote.SetVelocity(veloc);
+
+	    midiNote.SetKey( myNote.GetNoteNumber() );
+	    midiNote.SetVelocity( GetVelocity(myNote.GetVelocity()) );
 	    midiNote.SetTime(myNote.GetTime());
 
 	    array.AddElem(myNote);
@@ -236,11 +239,10 @@ void MelodyAnalyzer::UpdateMidi()
 {
     List<MIDINote> midiList;
     MIDINote midi_note;
-    int veloc = 0; 	for(int i = 0;i < melody.GetNoteArray().Size();i++)
+    for(int i = 0;i < melody.GetNoteArray().Size();i++)
     {
 	midi_note.SetKey(melody.GetNoteArray()[i].GetNoteNumber());
-	veloc = GetVelocity(melody.GetNoteArray()[i].GetVelocity());
-	midi_note.SetVelocity(veloc);
+	midi_note.SetVelocity( GetVelocity(melody.GetNoteArray()[i].GetVelocity()) );
 	midi_note.SetTime(melody.GetNoteArray()[i].GetTime());
 	midiList.AddElem(midi_note);
     } 	

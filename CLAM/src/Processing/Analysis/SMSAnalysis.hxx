@@ -40,7 +40,7 @@ class SMSAnalysis : public ProcessingComposite
 {
 
 public:
-	
+
 // Processing Object compliance methods.
 
 	const char *GetClassName() const {return "SMSAnalysis";}
@@ -48,8 +48,7 @@ public:
 	SMSAnalysis(SMSAnalysisConfig& config);
 	SMSAnalysis();
 	~SMSAnalysis();
-	
-			
+
 	const ProcessingConfig &GetConfig() const {return mConfig;}
 
 	/** Supervised mode execution */
@@ -87,7 +86,6 @@ private:
 	AudioOutPort mAudioProvider;
 
 	Frame tmpFrame;
-
 };
 
 } //namespace CLAM

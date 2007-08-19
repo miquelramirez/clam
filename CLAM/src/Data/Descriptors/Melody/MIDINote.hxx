@@ -35,18 +35,15 @@
 
 namespace CLAM {
 
-//////////////////////////////////////////////////////
-// Class MIDINote:
-//
-/**class MIDINote used to store note information coming from a MIDI stream/file
-**/
-
+	/** 	\brief Used to store note information coming from a MIDI stream/file
+	 *
+	 */
 	class MIDINote: public ProcessingData
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (MIDINote, 3, ProcessingData);
 		/* Pitch information (not by default) */
-		DYN_ATTRIBUTE (0, public, int, Key);   
+		DYN_ATTRIBUTE (0, public, int, Key);
 		/* Note Fundamental frequency (by default) */
 		DYN_ATTRIBUTE (1, public, int, Velocity); 
 		DYN_ATTRIBUTE (2, public, MediaTime, Time);

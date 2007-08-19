@@ -82,8 +82,6 @@ class Fundamental2Control : public Processing
 		}
 
 		bool Do( const Fundamental& inFund );
-
-		
 };
 
 }
