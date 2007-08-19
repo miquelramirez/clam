@@ -73,7 +73,7 @@ public:
 		, _lastChord(0)
 		, _method(method)
 	{
-		if(method != 0 && method != 1)
+		if(method != 0 && method != 1 && method != 2)
 			_method = 0;
 
 		switch(_method)
@@ -97,7 +97,6 @@ public:
 				break;
 			default:
 				doItSimple(currentTime, correlation, firstCandidate, secondCandidate); 
-
 		}
 	}
 
@@ -157,7 +156,7 @@ public:
 			{
 				closeSegment(currentTime);
 				for(unsigned i=0; i<correlation.size(); i++) 
-				_segmentChordCorrelation[i] = 0;
+					_segmentChordCorrelation[i] = 0;
 			}
 			
 			//
@@ -171,7 +170,7 @@ public:
 			{
 				closeSegment(currentTime);
 				for(unsigned i=0; i<correlation.size(); i++) 
-				_segmentChordCorrelation[i] = 0;
+					_segmentChordCorrelation[i] = 0;
 			}
 		}
 		if(!_segmentOpen)
@@ -194,6 +193,15 @@ public:
 	}
 	void closeSegment(CLAM::TData & currentTime)
 	{
+		
+		if(_chordIndexes[_currentSegment] == _chordIndexes[_currentSegment-1]
+			&& _segmentation.onsets()[_currentSegment] == _segmentation.offsets()[_currentSegment-1])
+		{
+			_segmentation.remove(_currentSegment);
+			_chordIndexes.erase(_chordIndexes.begin()+_currentSegment);
+			_currentSegment--;
+		}
+		
 		_segmentation.dragOffset(_currentSegment, currentTime);
 		_segmentOpen = false;
 	}
@@ -210,6 +218,7 @@ public:
 		{
 			case 1:
 				removeSmallSegments();
+				joinSegmentsWithIdenticalChords();
 				break;
 		}
 	}
@@ -266,6 +275,24 @@ public:
 						_chordIndexes[segment] = _chordIndexes[segment-1];
 			}
 			
+		}
+	}
+	void joinSegmentsWithIdenticalChords()
+	{
+		unsigned segment = _segmentation.onsets().size();
+		while(segment!=0)
+		{
+			if(_chordIndexes[segment] == _chordIndexes[segment-1]
+				&& _segmentation.onsets()[segment] == _segmentation.offsets()[segment-1])
+			{
+				CLAM::TData offsetTime = _segmentation.offsets()[segment];
+				_segmentation.remove(segment);
+				_chordIndexes.erase(_chordIndexes.begin()+segment);
+				segment--;
+				_segmentation.dragOffset(segment, offsetTime);
+			}
+			else
+				segment--;
 		}
 	}
 
