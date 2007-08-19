@@ -61,11 +61,8 @@ public:
 		connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
 				this, SLOT(frameDescriptorsChanged(unsigned, double)));
 		// Current position update
-		//connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
-		//		this, SLOT(setCurrentTime(double,double)));
-
-// TODO: move elsewhere!
-//		mVSplit->addWidget(this);
+		connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
+			this, SIGNAL(frameDescriptorsRegionChanged(double,double)));
 
 		mBPFEditor->setWhatsThis(
 			tr("Annotator", "<p>The <b>frame level descriptors editor</b> allows editing\n"
@@ -209,6 +206,7 @@ public slots:
 	
 signals:
 	void markCurrentSongChanged(bool changed);
+	void frameDescriptorsRegionChanged(double startMiliseconds, double endMiliseconds);
 	
 };
 

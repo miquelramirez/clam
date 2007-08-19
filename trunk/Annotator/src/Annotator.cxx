@@ -176,8 +176,9 @@ Annotator::Annotator(const std::string & nameProject = "")
 
 	setupUi(this);
 	mGlobalDescriptors = new CLAM_Annotator::DescriptorTableController(mDescriptorsTable, mProject);
-	_frameDescriptorsPane = new FrameDescriptorsPane(mVSplit, mProject, mEPFs);
+//	_frameDescriptorsPane = new FrameDescriptorsPane(mVSplit, mProject, mEPFs);
 	addNewSegmentationPane();
+	addNewFrameDescriptorsPane();
 	mAbout = new QDialog(this);
 	Ui::About aboutUi;
 	aboutUi.setupUi(mAbout);
@@ -283,9 +284,9 @@ void Annotator::initInterface()
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->setData(0, mCurrentAudio);
 
-	// ...and the frame descriptors pane
-	// TODO: could panes be abstracted?
-	_frameDescriptorsPane->setData(0, mCurrentAudio);
+	// ...and the frame descriptors panes
+	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
+		_frameDescriptorsPanes[i]->setData(0, mCurrentAudio);
 
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
@@ -353,8 +354,8 @@ void Annotator::adaptInterfaceToCurrentSchema()
 	mStatusBar << tr("Adapting Interface to Song level descriptors...") << mStatusBar;
 	mGlobalDescriptors->refreshSchema("Song");
 	mStatusBar << tr("Adapting Interface to Frame level descriptors...") << mStatusBar;
-	//adaptEnvelopesToCurrentSchema();
-	_frameDescriptorsPane->adaptEnvelopesToCurrentSchema();
+	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
+		_frameDescriptorsPanes[i]->adaptEnvelopesToCurrentSchema();
 	mStatusBar << tr("Adapting Interface to Segmentations...") << mStatusBar;
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->adaptToSchema();
@@ -421,6 +422,28 @@ unsigned Annotator::addNewSegmentationPane()
 	return index;
 }
 
+unsigned Annotator::addNewFrameDescriptorsPane()
+{
+	unsigned index = _frameDescriptorsPanes.size();
+	FrameDescriptorsPane * pane = new FrameDescriptorsPane(0, mProject, mEPFs);
+	
+	connect(pane, SIGNAL(frameDescriptorsRegionChanged(double,double)),
+			this, SLOT(setCurrentTime(double,double)));
+	
+	// Making the splitters look like a table
+	connect(pane, SIGNAL(splitterMoved(int,int)),
+			this, SLOT(syncronizeSplits()));
+	
+	if (!index)
+		mVSplit->addWidget(pane);
+	else
+		mVSplit->insertWidget(mVSplit->indexOf(_frameDescriptorsPanes.back()), pane);
+	_frameDescriptorsPanes.push_back(pane);
+	mVSplit->refresh();
+	pane->show();
+	return index;
+}
+
 void Annotator::makeConnections()
 {
 	// Action Signals
@@ -477,18 +500,15 @@ void Annotator::makeConnections()
 			this, SLOT(updatePendingAuralizationsChanges()));
 
 	// Making the splitters look like a table
-	connect(mFrameEditorSplit, SIGNAL(splitterMoved(int,int)),
-			this, SLOT(syncronizeSplits()));
-
-	// Making the splitters look like a table
-	connect(_frameDescriptorsPane, SIGNAL(splitterMoved(int,int)),
-			this, SLOT(syncronizeSplits()));
+//	connect(_frameDescriptorsPane, SIGNAL(splitterMoved(int,int)),
+//			this, SLOT(syncronizeSplits()));
 }
 void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 {
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds);
-	_frameDescriptorsPane->updateLocator(timeMilliseconds);
+	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
+		_frameDescriptorsPanes[i]->updateLocator(timeMilliseconds);
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 }
@@ -499,7 +519,8 @@ void Annotator::setCurrentStopTime(double timeMilliseconds, bool paused)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds, paused);
-	_frameDescriptorsPane->updateLocator(timeMilliseconds, paused);
+	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
+		_frameDescriptorsPanes[i]->updateLocator(timeMilliseconds, paused);
 }
 
 void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMiliseconds)
@@ -512,7 +533,8 @@ void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMilisecond
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds, true);
-	_frameDescriptorsPane->updateLocator(timeMilliseconds, true);
+	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
+		_frameDescriptorsPanes[i]->updateLocator(timeMilliseconds, true);
 	updating=false;
 }
 
@@ -575,8 +597,8 @@ void Annotator::syncronizeSplits()
 	QSplitter * movedSplitter = dynamic_cast<QSplitter*>(sender());
 	if (!movedSplitter) return;
 	QList<int> sizes = movedSplitter->sizes();
-	mFrameEditorSplit->setSizes(sizes);
-	_frameDescriptorsPane->setSizes(sizes);
+	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
+		_frameDescriptorsPanes[i]->setSizes(sizes);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->setSizes(sizes);
 }
@@ -585,6 +607,7 @@ void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 {
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->setCurrentSegmentFollowsPlay(enabled);
+	//***//
 }
 
 void Annotator::updateSegmentation()
@@ -771,10 +794,12 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	{
 		_segmentationPanes[i]->setData(mpDescriptorPool,mCurrentAudio);
 	}
-	_frameDescriptorsPane->setData(mpDescriptorPool, mCurrentAudio);
+	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
+	{
+		_frameDescriptorsPanes[i]->setData(mpDescriptorPool, mCurrentAudio);
+		_frameDescriptorsPanes[i]->refreshEnvelopes();
+	}	
 	auralizeSegmentation();
-	//refreshEnvelopes();
-	_frameDescriptorsPane->refreshEnvelopes();
 	refreshInstantViews();
 	mStatusBar << tr("Done") << mStatusBar;
 	loaderLaunch();
@@ -961,4 +986,9 @@ void Annotator::on_actionAddSegmentationView_triggered()
 }
 
 
-
+void Annotator::on_actionAddFrameEvolutionView_triggered()
+{
+	unsigned index = addNewFrameDescriptorsPane();
+	_frameDescriptorsPanes[index]->adaptEnvelopesToCurrentSchema();
+	_frameDescriptorsPanes[index]->setData(mpDescriptorPool,mCurrentAudio);
+}
