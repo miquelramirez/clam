@@ -425,7 +425,6 @@ int main(int argc, char* argv[])			// access command line arguments
 		else if (isSegmentationMethod)
 		{
 			segmentationMethod = atoi( argv[i] );
-			std::cout << std::endl << segmentationMethod << std::endl;
 			isSegmentationMethod=false;
 		}
 		else if (parameter=="-f") isSuffix = true;
