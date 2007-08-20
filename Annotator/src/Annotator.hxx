@@ -121,6 +121,8 @@ public slots:
 	void auralizeSegmentation();
 	void updateSegmentation();
 
+	void auralizeLLDs();
+
 	void fileOpen();
 	void fileOpenRecent();
 	void addInstantView();

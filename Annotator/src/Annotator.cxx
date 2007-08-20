@@ -176,9 +176,8 @@ Annotator::Annotator(const std::string & nameProject = "")
 
 	setupUi(this);
 	mGlobalDescriptors = new CLAM_Annotator::DescriptorTableController(mDescriptorsTable, mProject);
-//	_frameDescriptorsPane = new FrameDescriptorsPane(mVSplit, mProject, mEPFs);
-	addNewSegmentationPane();
 	addNewFrameDescriptorsPane();
+	addNewSegmentationPane();
 	mAbout = new QDialog(this);
 	Ui::About aboutUi;
 	aboutUi.setupUi(mAbout);
@@ -429,11 +428,15 @@ unsigned Annotator::addNewFrameDescriptorsPane()
 	
 	connect(pane, SIGNAL(frameDescriptorsRegionChanged(double,double)),
 			this, SLOT(setCurrentTime(double,double)));
+
+	// Changing the current LLD descriptor
+	connect(pane, SIGNAL(frameDescriptorsSelectionChanged()),
+			this, SLOT(auralizeLLDs()) );
 	
 	// Making the splitters look like a table
 	connect(pane, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
-	
+				
 	if (!index)
 		mVSplit->addWidget(pane);
 	else
@@ -487,8 +490,6 @@ void Annotator::makeConnections()
 	connect(mGlobalDescriptors, SIGNAL(contentEdited(int) ),
 			this, SLOT(globalDescriptorsTableChanged(int) ) );
 
-	// TODO: Interplot viewport syncronization
-
 	// Playhead update
 	connect( _auralizer->mPlayer, SIGNAL(playingTime(double)),
 			this, SLOT(setCurrentPlayingTime(double)), Qt::DirectConnection);
@@ -498,10 +499,6 @@ void Annotator::makeConnections()
 	// Update auralization whenever player stop and they have been modified
 	connect(_auralizer->mPlayer, SIGNAL(stopTime(double)),
 			this, SLOT(updatePendingAuralizationsChanges()));
-
-	// Making the splitters look like a table
-//	connect(_frameDescriptorsPane, SIGNAL(splitterMoved(int,int)),
-//			this, SLOT(syncronizeSplits()));
 }
 void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 {
@@ -607,7 +604,6 @@ void Annotator::linkCurrentSegmentToPlayback(bool enabled)
 {
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->setCurrentSegmentFollowsPlay(enabled);
-	//***//
 }
 
 void Annotator::updateSegmentation()
@@ -892,6 +888,14 @@ void Annotator::auralizeSegmentation()
 	_auralizer->setSegmentation(segmentation);
 }
 
+void Annotator::auralizeLLDs()
+{
+	// taking the LLDs of the first pane
+	const CLAM::EquidistantPointsFunction & EPFs= _frameDescriptorsPanes[0]->getCurrentEPFs();
+	
+	_auralizer->setLLD(EPFs);
+}
+
 void Annotator::updateAuralizationOptions()
 {
 	bool playOnsets = mAuralizeSegmentOnsetsAction->isChecked();
@@ -918,26 +922,6 @@ QString Annotator::constructFileError(const std::string& fileName,const CLAM::Xm
 		.arg(fileName.c_str())
 		.arg(e.what());
 }
-
-
-//void Annotator::changeFrameLevelDescriptor(int current)
-//{
-//	unsigned index = mFrameLevelAttributeList->currentRow();
-//	if (index >= mEPFs.size()) return; // No valid descriptor
-//	double minValue = mEPFs[index].getMin();
-//	double maxValue = mEPFs[index].getMax();
-//	// TODO: Move this margin to the widget
-//	double span = maxValue-minValue;
-//	minValue -= span*0.1;
-//	maxValue += span*0.1;
-//	CLAM::VM::ERulerScale scale = CLAM::VM::eLinearScale;
-//	if (fabs(minValue) > 9999.99) scale=CLAM::VM::eLogScale;
-//	if (fabs(maxValue) > 9999.99) scale=CLAM::VM::eLogScale;
-//	if (maxValue-minValue < CLAM::TData(5E-2)) scale=CLAM::VM::eLogScale;
-//
-// ***BAK***	
-//	_auralizer->setLLD(mEPFs[index]);
-//}
 
 void Annotator::on_helpWhatsThisAction_triggered()
 {

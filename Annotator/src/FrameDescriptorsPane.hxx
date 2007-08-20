@@ -64,6 +64,11 @@ public:
 		connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
 			this, SIGNAL(frameDescriptorsRegionChanged(double,double)));
 
+		// TODO: Interplot viewport syncronization
+//		connect(mBPFEditor, SIGNAL(hScrollValue()),
+//				this, SLOT(zoomChanged()) );
+
+
 		mBPFEditor->setWhatsThis(
 			tr("Annotator", "<p>The <b>frame level descriptors editor</b> allows editing\n"
 			"			 floating point descriptors that has an occurrence for each frame.</p>\n"
@@ -137,6 +142,8 @@ public:
 			}
 		}
 		changeFrameLevelDescriptor(mFrameLevelAttributeList->currentRow());
+		
+		emit frameDescriptorsSelectionChanged();
 	}
 	
 	void updateLocator(double timeMilliseconds, bool paused)
@@ -170,7 +177,19 @@ public:
 		}
 	}
 	
-	
+	const CLAM::EquidistantPointsFunction & getCurrentEPFs() const
+	{
+		// dummy EPF in case no row selected
+		static const CLAM::EquidistantPointsFunction tmpEPF;
+
+		unsigned index = mFrameLevelAttributeList->currentRow();
+		if (index == -1) // no row selected
+		{
+			return tmpEPF;
+		} else {
+			return _EPFs[index];
+		}
+	}
 public slots:
 	void changeFrameLevelDescriptor(int current)
 	{
@@ -190,6 +209,8 @@ public slots:
 		mBPFEditor->SetYRange(minValue, maxValue, scale);
 
 		mBPFEditor->show();
+		
+		emit frameDescriptorsSelectionChanged();
 	}
 	void frameDescriptorsChanged(unsigned pointIndex,double newValue)
 	{
@@ -204,10 +225,15 @@ public slots:
 		updateEnvelopesData();
 	}
 	
+	void zoomChanged()
+	{
+		std::cout<<"zoomChanged() called!"<<std::endl;
+	}
+	
 signals:
 	void markCurrentSongChanged(bool changed);
 	void frameDescriptorsRegionChanged(double startMiliseconds, double endMiliseconds);
-	
+	void frameDescriptorsSelectionChanged();
 };
 
 #endif
