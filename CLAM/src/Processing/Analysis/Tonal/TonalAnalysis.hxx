@@ -3,6 +3,7 @@
 #define TonalAnalysis_hxx
 
 #include <CLAM/DataTypes.hxx>
+#include <CLAM/DiscontinuousSegmentation.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/AudioInPort.hxx>
 #include <CLAM/Processing.hxx>
@@ -35,6 +36,7 @@ private:
 	AudioInPort _input;
 	OutPort<std::vector<CLAM::TData> > _pcp;
 	OutPort<std::vector<CLAM::TData> > _chordCorrelation;
+	OutPort<std::pair<DiscontinuousSegmentation, std::vector<unsigned> > > _segmentation;
 	OutPort<std::vector<std::pair<CLAM::TData, CLAM::TData> > > _chromaPeaks;
 	OutPort<std::pair<CLAM::TData, CLAM::TData> > _tunning;
 
@@ -51,6 +53,7 @@ public:
 	inline const ProcessingConfig &GetConfig() const { return _config;}
 	bool ConcreteConfigure(const ProcessingConfig& c);
 	bool ConcreteStart();
+	bool ConcreteStop();
 private:
 	Simac::ChordExtractor * _implementation;
 	std::vector<float> _floatBuffer;
