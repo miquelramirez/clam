@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed Network">
+
+  <processing id="AudioSink" type="AudioSink"/>
+
+  <processing id="OSCSourceProcessing" type="OSCSourceProcessing">
+    <TargetName>/ebowSynthesizer</TargetName>
+    <NumberOfOutputs>3</NumberOfOutputs>
+  </processing>
+
+  <processing id="SDIFDatabaseProcessing" type="SDIFDatabaseProcessing">
+    <DirectoryName></DirectoryName>
+  </processing>
+
+  <processing id="SMSSynthesis" type="SMSSynthesis">
+    <SynthSineSpectrum>
+      <SpectrumSize>513</SpectrumSize>
+      <SamplingRate>44100</SamplingRate>
+      <ZeroPadding>0</ZeroPadding>
+    </SynthSineSpectrum>
+    <PhaseMan>
+      <MaxSines>100</MaxSines>
+      <SamplingRate>44100</SamplingRate>
+      <Type>Continuation</Type>
+    </PhaseMan>
+    <SpectralSynth>
+      <AnalWindowGenerator>
+        <Type>BlackmanHarris92</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NormalizationForAnalysis</Normalize>
+        <Invert>1</Invert>
+      </AnalWindowGenerator>
+      <SynthWindowGenerator>
+        <Type>Triangular</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NoNormalization</Normalize>
+        <Invert>0</Invert>
+      </SynthWindowGenerator>
+      <CircularShift>
+        <Amount>512</Amount>
+      </CircularShift>
+      <IFFT>
+        <AudioSize>1024</AudioSize>
+      </IFFT>
+      <prZeroPadding>0</prZeroPadding>
+      <prSamplingRate>44100</prSamplingRate>
+      <Residual>0</Residual>
+      <prAnalWindowSize>1025</prAnalWindowSize>
+      <prAnalWindowType>BlackmanHarris92</prAnalWindowType>
+      <prHopSize>512</prHopSize>
+    </SpectralSynth>
+    <OverlapAddSin>
+      <FrameSize>512</FrameSize>
+    </OverlapAddSin>
+    <OverlapAddRes>
+      <FrameSize>512</FrameSize>
+    </OverlapAddRes>
+    <OverlapAddGlobal>
+      <FrameSize>512</FrameSize>
+    </OverlapAddGlobal>
+    <prSamplingRate>0</prSamplingRate>
+  </processing>
+
+  <port_connection>
+    <out>SDIFDatabaseProcessing.SpectralPeaks</out>
+    <in>SMSSynthesis.InputSinPeaks</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SDIFDatabaseProcessing.Residual</out>
+    <in>SMSSynthesis.InputResSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSSynthesis.OutputAudio</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <control_connection>
+    <out>OSCSourceProcessing.Float 0</out>
+    <in>SDIFDatabaseProcessing.Pitch</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OSCSourceProcessing.Float 0</out>
+    <in>SDIFDatabaseProcessing.Brightness</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OSCSourceProcessing.Float 1</out>
+    <in>SDIFDatabaseProcessing.Amplitude</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OSCSourceProcessing.Float 0</out>
+    <in>SDIFDatabaseProcessing.Pitch</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OSCSourceProcessing.Float 0</out>
+    <in>SDIFDatabaseProcessing.Brightness</in>
+  </control_connection>
+
+</network>
