@@ -31,7 +31,7 @@ namespace CLAM
 {
 
 OSCSource::OSCSource()
-	mPort(7000),
+:	mPort(7000),
 	mThread (/*realtime*/false),
 	mReceiveSocket(NULL),
 	mIsListening(false),
