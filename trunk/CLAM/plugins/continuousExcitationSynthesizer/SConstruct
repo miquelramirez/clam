@@ -2,7 +2,8 @@
 
 import os, glob, sys
 
-libraryName='plugins_specialization'
+baseName = 'continuous_excitation_synth'
+libraryName='plugins_'+baseName
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -16,6 +17,7 @@ def recursiveDirs(root) :
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+options.Add(BoolOption('with_osc', 'Adds OSC related processings. Needs liboscpack from http://www.audiomulch.com/~rossb/code/oscpack/', 'no') )
 
 env = Environment(ENV=os.environ, options=options)
 options.Save('options.cache', env)
@@ -34,6 +36,9 @@ env.EnableClamModules([
 	] , CLAMInstallDir)
 
 sourcePaths = recursiveDirs(".")
+if env["with_osc"] :
+	sourcePaths += recursiveDirs("./../oscSource")
+print sourcePaths
 sources = scanFiles('*.cxx', sourcePaths)
 sources = dict.fromkeys(sources).keys()
 
@@ -41,7 +46,18 @@ extraPaths = [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 ]
+if env["with_osc"] :
+	extraPaths += recursiveDirs("./../oscSource")
+
 env.Append(CPPPATH=extraPaths)
+
+if env["with_osc"] :
+	env.Append( CPPDEFINES=['WITH_OSC'] )
+	env.Append( LIBS=["oscpack"] )
+else:
+	oscDependent = scanFiles("*OSC*.cxx", sourcePaths)
+	for oscfile in oscDependent:
+		sources.remove(oscfile)
 
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
@@ -58,4 +74,25 @@ install = env.Install(os.path.join(CLAMInstallDir,'lib','clam'), libraries)
 env.Alias('install', install)
 env.Default(libraries)
 
+standAloneApplications = [
+	"ContinuousExcitationSynthesizer.cxx",
+]
 
+standalone = []
+
+#exampleSources = glob.glob(folder+"/*.cxx")
+executable = "continuousExcitationSynthesizerExe"
+processings = scanFiles("*Processing*.cxx", [os.path.join('src','ContinuousExcitationSynthesizer')])
+for processing in processings:
+	sources.remove(processing)
+standalone += [ env.Program(target=executable, source = sources ) ]
+
+#for main in standAloneApplications :
+#	executable = os.path.splitext(os.path.basename(main))[0]
+#	standalone += [ env.Program(target=executable, source = sources + [main] ) ]
+
+env.Alias('standalone',standalone)
+
+#env.Default(standalone)
+
+	
