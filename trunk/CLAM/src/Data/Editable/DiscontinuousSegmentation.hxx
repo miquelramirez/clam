@@ -54,6 +54,10 @@ namespace CLAM
 		};
 		typedef std::vector<double> TimePositions;
 	public:
+		DiscontinuousSegmentation()
+			: Segmentation(0)
+		{
+		}
 		DiscontinuousSegmentation(double maxPosition)
 			: Segmentation(maxPosition)
 		{

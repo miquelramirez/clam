@@ -19,6 +19,11 @@ namespace CLAM
 		};
 		typedef std::vector<double> TimePositions;
 	public:
+		Segmentation()
+			: _current(0)
+			, _maxPosition(0)
+		{
+		}
 		Segmentation(double maxPosition)
 			: _current(0)
 			, _maxPosition(maxPosition)
