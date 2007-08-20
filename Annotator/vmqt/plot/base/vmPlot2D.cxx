@@ -198,7 +198,8 @@ namespace CLAM
 			double left = mXRange.Span()/double(GetXPixels())*double(value)+mXRange.min;
 			double right = left+mCurrentXSpan;
 			SetHBounds(left,right);
-}
+			emit hBoundsChanged(left,right);
+		}
 
 		void Plot2D::updateVScrollValue(int value)
 		{
