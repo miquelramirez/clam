@@ -15,20 +15,20 @@ namespace CLAM
 		};
 		typedef std::vector<double> TimePositions;
 	public:
-		ContiguousSegmentation(double maxLength)
-			: Segmentation(maxLength)
+		ContiguousSegmentation(double maxPosition)
+			: Segmentation(maxPosition)
 		{
 			_onsets.push_back(0);
-			_offsets.push_back(maxLength);
+			_offsets.push_back(maxPosition);
 			_selection.push_back(false);
 
 		}
 		template <typename Iterator>
-		ContiguousSegmentation(double maxLength, Iterator begin, Iterator end)
-			: Segmentation(maxLength)
+		ContiguousSegmentation(double maxPosition, Iterator begin, Iterator end)
+			: Segmentation(maxPosition)
 		{
 			_onsets.push_back(0);
-			_offsets.push_back(maxLength);
+			_offsets.push_back(maxPosition);
 			_selection.push_back(false);
 			for (Iterator it=begin; it!=end; it++)
 				insert(*it);

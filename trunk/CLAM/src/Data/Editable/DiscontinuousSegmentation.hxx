@@ -54,18 +54,18 @@ namespace CLAM
 		};
 		typedef std::vector<double> TimePositions;
 	public:
-		DiscontinuousSegmentation(double maxLength)
-			: Segmentation(maxLength)
+		DiscontinuousSegmentation(double maxPosition)
+			: Segmentation(maxPosition)
 		{
 		}
 		/**
 		 * It will create a discontinuous segmentation where the onsets and offsets
 		 * are specified on the ordered list of bounds [begin,end)
-		 * @pre The onsets is a sorted container of bounds in between 0 and maxLength
+		 * @pre The onsets is a sorted container of bounds in between 0 and maxPosition
 		 */
 		template <typename Iterator>
-		DiscontinuousSegmentation(double maxLength, Iterator begin, Iterator end)
-			: Segmentation(maxLength)
+		DiscontinuousSegmentation(double maxPosition, Iterator begin, Iterator end)
+			: Segmentation(maxPosition)
 		{
 			double previousOffset=0.0;
 			unsigned i=0;
@@ -76,7 +76,7 @@ namespace CLAM
 				if (it==end) throw OffsetMissing();
 				double offset = *it++;
 				if (offset<onset) throw MissplacedOffset(i, onset, offset);
-				if (offset>maxLength) throw InsertedOutOfBounds();
+				if (offset>maxPosition) throw InsertedOutOfBounds();
 				_onsets.push_back(onset);
 				_offsets.push_back(offset);
 				_selection.push_back(false);
@@ -89,13 +89,13 @@ namespace CLAM
 		unsigned insert(double timePosition)
 		{
 			if (timePosition<0.0) throw InsertedOutOfBounds();
-			if (timePosition>_maxLength) throw InsertedOutOfBounds();
+			if (timePosition>_maxPosition) throw InsertedOutOfBounds();
 			TimePositions::iterator nextOffset = 
 				std::lower_bound(_offsets.begin(), _offsets.end(), timePosition);
 			if (nextOffset == _offsets.end()) // Beyond any existing segment
 			{
 				_onsets.push_back(timePosition);
-				_offsets.push_back(_maxLength);
+				_offsets.push_back(_maxPosition);
 				_selection.push_back(false);
 				return _onsets.size()-1;
 			}
@@ -197,7 +197,7 @@ namespace CLAM
 			if (segment>=_offsets.size()) return; // Invalid segment
 
 			// Limit to the right to the next offset or max
-			double rigthBound = segment+1==_offsets.size()? _maxLength : _onsets[segment+1];
+			double rigthBound = segment+1==_offsets.size()? _maxPosition : _onsets[segment+1];
 			if (newTimePosition>rigthBound)
 				newTimePosition=rigthBound;
 			// Limit to the left to the own onset

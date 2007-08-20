@@ -19,9 +19,9 @@ namespace CLAM
 		};
 		typedef std::vector<double> TimePositions;
 	public:
-		Segmentation(double maxLength)
+		Segmentation(double maxPosition)
 			: _current(0)
-			, _maxLength(maxLength)
+			, _maxPosition(maxPosition)
 		{
 		}
 		virtual ~Segmentation();
@@ -131,9 +131,13 @@ namespace CLAM
 			if (index>=_onsets.size()) return;
 			_current = index;
 		}
-		double maxLength() const
+		double maxPosition() const
 		{
-			return _maxLength;
+			return _maxPosition;
+		}
+		void maxPosition(double maxPosition)
+		{
+			_maxPosition = maxPosition;
 		}
 		void xUnits(const std::string & units)
 		{
@@ -148,7 +152,7 @@ namespace CLAM
 		TimePositions _offsets;
 		std::vector<bool> _selection;
 		unsigned _current;
-		double _maxLength;
+		double _maxPosition;
 		std::string _xUnits;
 	};
 
