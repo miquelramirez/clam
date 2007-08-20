@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed Network">
+
+  <processing id="AudioSink" type="AudioSink"/>
+
+  <processing id="AudioSource" type="AudioSource"/>
+
+  <processing id="ControlPrinter" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="ControlPrinter_1" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="OSCSourceProcessing" type="OSCSourceProcessing">
+    <TargetName>/ebowSynthesizer</TargetName>
+    <NumberOfOutputs>2</NumberOfOutputs>
+  </processing>
+
+  <port_connection>
+    <out>AudioSource.AudioOut</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <control_connection>
+    <out>OSCSourceProcessing.Float 0</out>
+    <in>ControlPrinter.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OSCSourceProcessing.Float 1</out>
+    <in>ControlPrinter_1.In Control</in>
+  </control_connection>
+
+</network>
