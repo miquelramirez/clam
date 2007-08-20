@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<EBowSampleConfig>
+
+  <!-- This can be either an absolute or relative URL -->
+  <Filename>some.sdif</Filename>
+
+  <!-- This is the pitch in Hertz -->
+  <Pitch>523.2511306012</Pitch>
+
+  <!-- This is the amplitude in linear scale ranging from 0 - 1 -->
+  <Amplitude>0.75</Amplitude>
+
+  <!-- This is the point where the steady state of the sample begins. -->
+  <StartSteadyState Units="Milliseconds">750</StartSteadyState>
+
+  <!-- This is a list of good loop points in the file -->
+  <ListOfLoops>
+	  <Loop>
+		<Units>Milliseconds</Units>
+		<Start>1451</Start>
+		<End>2496</End>
+	  </Loop>
+	  <Loop>
+		<Units>Milliseconds</Units>
+		<Start>870</Start>
+		<End>1875</End>
+	  </Loop>
+	  <Loop>
+		<Units>Milliseconds</Units>
+		<Start>655</Start>
+		<End>1683</End>
+	  </Loop>
+  </ListOfLoops>
+
+</EBowSampleConfig>
