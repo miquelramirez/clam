@@ -128,6 +128,11 @@ namespace CLAM
 			mHScroll->setMaxScrollValue(max);
 		}
 
+		void SegmentationPlot::setVisibleXRange(double min, double max)
+		{
+			mPlot->setHBounds(min, max);
+		}
+
 		void SegmentationPlot::InitSegmentationPlot()
 		{
 			mXRuler = new Ruler(this,CLAM::VM::eTop);
@@ -179,6 +184,8 @@ namespace CLAM
 			connect(mPlot,SIGNAL(hScrollValue(int)),mHScroll,SLOT(updateScrollValue(int)));
 			connect(mPlot,SIGNAL(hScrollMaxValue(int)),this,SLOT(setMaxHScroll(int)));
 
+			connect(mPlot, SIGNAL(hBoundsChanged(double,double)),this, SIGNAL(visibleXRangeChanged(double,double)));
+			
 			connect(mLocator,SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
 
 			connect(mSegmentation,SIGNAL(segmentOnsetChanged(unsigned,double)),

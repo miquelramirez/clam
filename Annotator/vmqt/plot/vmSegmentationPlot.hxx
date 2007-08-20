@@ -49,6 +49,8 @@ namespace CLAM
 			virtual void SetXRange(double xmin, double xmax, ERulerScale scale=CLAM::VM::eLinearScale);
 			virtual void SetYRange(double ymin, double ymax, ERulerScale scale=CLAM::VM::eLinearScale);			
 			virtual void SetZoomSteps(int hsteps, int vsteps);
+			
+			virtual void setVisibleXRange(double min, double max);
 
 			void SetSegmentation(Segmentation* s);
 			
@@ -59,6 +61,7 @@ namespace CLAM
 			void segmentInserted(unsigned);
 			void segmentDeleted(unsigned);
 			void currentSegmentChanged();
+			void visibleXRangeChanged(double,double);
 
 		public slots:
 			virtual void backgroundWhite();

@@ -97,6 +97,9 @@ public:
 		connect(_segmentEditor, SIGNAL(selectedRegion(double,double)),
 			this, SIGNAL(segmentEditorRegionChanged(double,double)));
 
+		// zoom change
+		connect(_segmentEditor, SIGNAL(visibleXRangeChanged(double,double)),
+			this, SIGNAL(visibleXRangeChanged(double,double)));
 	}
 	~SegmentationPane()
 	{
@@ -115,6 +118,12 @@ public:
 	{
 		_segmentEditor->updateLocator(timeMilliseconds);
 	}
+	
+	void setVisibleXRange(double xmin, double xmax)
+	{
+		_segmentEditor->setVisibleXRange(xmin, xmax);
+	}
+	
 	void redrawAudio()
 	{
 		if (not _audio) return;
@@ -146,6 +155,7 @@ signals:
 	void segmentationSelectionChanged();
 	void segmentationDataChanged();
 	void segmentEditorRegionChanged(double startMiliseconds, double endMiliseconds);
+	void visibleXRangeChanged(double min, double max);
 public slots:
 	void changeCurrentSegment()
 	{

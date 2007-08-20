@@ -63,11 +63,9 @@ public:
 		// Current position update
 		connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
 			this, SIGNAL(frameDescriptorsRegionChanged(double,double)));
-
-		// TODO: Interplot viewport syncronization
-//		connect(mBPFEditor, SIGNAL(hScrollValue()),
-//				this, SLOT(zoomChanged()) );
-
+		// zoom change
+		connect(mBPFEditor, SIGNAL(visibleXRangeChanged(double,double)),
+			this, SIGNAL(visibleXRangeChanged(double,double)));
 
 		mBPFEditor->setWhatsThis(
 			tr("Annotator", "<p>The <b>frame level descriptors editor</b> allows editing\n"
@@ -155,6 +153,11 @@ public:
 		mBPFEditor->updateLocator(timeMilliseconds);
 	}
 	
+	void setVisibleXRange(double xmin, double xmax)
+	{
+		mBPFEditor->setVisibleXRange(xmin, xmax);
+	}
+	
 	void updateEnvelopesData()
 	{
 		// TODO: Any child scope of any FrameDivision in Song not just Frame, which may not even exist
@@ -225,15 +228,11 @@ public slots:
 		updateEnvelopesData();
 	}
 	
-	void zoomChanged()
-	{
-		std::cout<<"zoomChanged() called!"<<std::endl;
-	}
-	
 signals:
 	void markCurrentSongChanged(bool changed);
 	void frameDescriptorsRegionChanged(double startMiliseconds, double endMiliseconds);
 	void frameDescriptorsSelectionChanged();
+	void visibleXRangeChanged(double min, double max);
 };
 
 #endif

@@ -134,10 +134,10 @@ public slots:
 	void computeSongDescriptors();
 
 	void refreshAudioData();
-//	void changeFrameLevelDescriptor(int current);
 	void updateAuralizationOptions();
 	void linkCurrentSegmentToPlayback(bool enabled);
 	void setCurrentTime(double timeMilliseconds, double endTimeMiliseconds);
+	void setVisibleXRange(double min, double max);
 
 protected:
 	void closeEvent( QCloseEvent * e);
@@ -178,11 +178,6 @@ private:
 	void adaptInstantViewsToSchema();
 
 	void refreshInstantViews();
-//	void adaptEnvelopesToCurrentSchema();
-//	void refreshEnvelopes();
-//	void refreshEnvelope(CLAM::EquidistantPointsFunction & epf, const std::string& scope, const std::string& descriptorName, const CLAM_Annotator::FrameDivision & frameDivision);
-//	void updateEnvelopesData();
-//	void updateEnvelopeData(int bpfIndex, CLAM::TData * descriptors);
 
 	void setMenuAudioItemsEnabled(bool);
 
