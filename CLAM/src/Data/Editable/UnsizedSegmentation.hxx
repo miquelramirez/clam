@@ -15,10 +15,13 @@ namespace CLAM
 		};
 		typedef std::vector<double> TimePositions;
 	public:
+		UnsizedSegmentation()
+			: Segmentation(0)
+		{
+		}
 		UnsizedSegmentation(double maxPosition)
 			: Segmentation(maxPosition)
 		{
-
 		}
 		template <typename Iterator>
 		UnsizedSegmentation(double maxPosition, Iterator begin, Iterator end)
