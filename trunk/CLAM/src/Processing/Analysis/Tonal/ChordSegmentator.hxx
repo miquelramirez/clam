@@ -169,7 +169,6 @@ public:
 			_lastChord = currentChord;
 		}
 		
-		
 		if(_segmentOpen)
 			_segmentation.dragOffset(_currentSegment, currentTime);
 	}
@@ -182,19 +181,53 @@ public:
 	}
 	void closeSegment(CLAM::TData & currentTime)
 	{
-		
-		if(_chordIndexes[_currentSegment] == _chordIndexes[_currentSegment-1]
-			&& _segmentation.onsets()[_currentSegment] == _segmentation.offsets()[_currentSegment-1])
-		{
-			_segmentation.remove(_currentSegment);
-			_chordIndexes.erase(_chordIndexes.begin()+_currentSegment);
-			_currentSegment--;
-		}
-		
 		_segmentation.dragOffset(_currentSegment, currentTime);
 		_segmentOpen = false;
+		
+		switch(_method)
+		{
+			case 1:
+				changeChordIfSegmentTooSmall(_currentSegment);
+				break;
+		}
+
+		mergeSegmentIfIdenticalChordInPreviousSegment(_currentSegment);
+	}	
+
+	void changeChordIfSegmentTooSmall(unsigned & segment)
+	{
+		double minSegmentLength = 0.5;
+		
+		std::vector<double> onsets = _segmentation.onsets();
+		std::vector<double> offsets = _segmentation.offsets();
+		unsigned lastSegment = onsets.size();
+
+		if(offsets[segment]-onsets[segment] < minSegmentLength)
+		{
+			if(segment<lastSegment)
+				if(offsets[segment]==onsets[segment+1])
+					_chordIndexes[segment] = _chordIndexes[segment+1];
+			if(segment>0)
+				if(onsets[segment]==offsets[segment-1])
+					_chordIndexes[segment] = _chordIndexes[segment-1];
+		}
 	}
-	
+	void mergeSegmentIfIdenticalChordInPreviousSegment(unsigned & segment)
+	{
+		CLAM::TData time = _segmentation.offsets()[segment];
+		if(segment>0)
+		{
+			if(_chordIndexes[segment] == _chordIndexes[segment-1]
+				&& _segmentation.onsets()[segment] == _segmentation.offsets()[segment-1])
+			{
+				_segmentation.remove(segment);
+				_chordIndexes.erase(_chordIndexes.begin()+segment);
+				segment--;
+				_segmentation.dragOffset(segment, time);
+			}
+		}
+	}
+
 	void closeLastSegment(CLAM::TData & currentTime )
 	{
 		_segmentation.maxPosition(currentTime);
@@ -208,7 +241,7 @@ public:
 		switch(_method)
 		{
 			case 1:
-				removeSmallSegments();
+				changeChordsForSmallSegments();
 				joinSegmentsWithIdenticalChords();
 				break;
 		}
@@ -256,45 +289,15 @@ public:
 	 * assigns them the same chord as the chord in either
 	 * the previous or the next segment.
 	 */
-	void removeSmallSegments()
+	void changeChordsForSmallSegments()
 	{
-		double minSegmentLength = 0.5;
-		
-		std::vector<double> onsets = _segmentation.onsets();
-		std::vector<double> offsets = _segmentation.offsets();
-		unsigned lastSegment = onsets.size();
-
-		for(unsigned segment=0; segment<lastSegment; segment++)
-		{
-			if(offsets[segment]-onsets[segment] < minSegmentLength)
-			{
-				if(segment<lastSegment)
-					if(offsets[segment]==onsets[segment+1])
-						_chordIndexes[segment] = _chordIndexes[segment+1];
-				if(segment>0)
-					if(onsets[segment]==offsets[segment-1])
-						_chordIndexes[segment] = _chordIndexes[segment-1];
-			}
-			
-		}
+		for(unsigned segment=0; segment<_segmentation.onsets().size(); segment++)
+			changeChordIfSegmentTooSmall(segment);
 	}
 	void joinSegmentsWithIdenticalChords()
 	{
-		unsigned segment = _segmentation.onsets().size();
-		while(segment!=0)
-		{
-			if(_chordIndexes[segment] == _chordIndexes[segment-1]
-				&& _segmentation.onsets()[segment] == _segmentation.offsets()[segment-1])
-			{
-				CLAM::TData offsetTime = _segmentation.offsets()[segment];
-				_segmentation.remove(segment);
-				_chordIndexes.erase(_chordIndexes.begin()+segment);
-				segment--;
-				_segmentation.dragOffset(segment, offsetTime);
-			}
-			else
-				segment--;
-		}
+		for(unsigned segment=1; segment<_segmentation.onsets().size(); segment++)
+			mergeSegmentIfIdenticalChordInPreviousSegment(segment);
 	}
 
 	const CLAM::DiscontinuousSegmentation & segmentation() const { return _segmentation; };
