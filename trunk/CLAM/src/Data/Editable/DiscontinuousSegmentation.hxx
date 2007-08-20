@@ -79,6 +79,7 @@ namespace CLAM
 				if (offset>maxPosition) throw InsertedOutOfBounds();
 				_onsets.push_back(onset);
 				_offsets.push_back(offset);
+				_labels.push_back(""); // TODO: a constructor with not empty labels
 				_selection.push_back(false);
 				previousOffset=offset;
 			}
@@ -96,6 +97,7 @@ namespace CLAM
 			{
 				_onsets.push_back(timePosition);
 				_offsets.push_back(_maxPosition);
+				_labels.push_back("");
 				_selection.push_back(false);
 				return _onsets.size()-1;
 			}
@@ -105,6 +107,7 @@ namespace CLAM
 			{
 				_offsets.insert(nextOffset, timePosition);
 				_onsets.insert(_onsets.begin()+nextOffsetPosition+1, timePosition);
+				_labels.insert(_labels.begin()+nextOffsetPosition+1, "");
 				_selection.insert(_selection.begin()+nextOffsetPosition+1, false);
 				if (nextOffsetPosition<_current) _current++;
 				return nextOffsetPosition+1;
@@ -113,11 +116,21 @@ namespace CLAM
 			{
 				_offsets.insert(nextOffset, _onsets[nextOffsetPosition]);
 				_onsets.insert(_onsets.begin()+nextOffsetPosition, timePosition);
+				_labels.insert(_labels.begin()+nextOffsetPosition, "");
 				_selection.insert(_selection.begin()+nextOffsetPosition, false);
 				if (_current>=nextOffsetPosition) _current++;
 				return nextOffsetPosition;
 			}
 			
+		}
+		/**
+		 * Inserts a new border at timePosition and adds a label to the new segment.
+		 */
+		unsigned insert(double timePosition, std::string label)
+		{
+			unsigned segment = insert(timePosition);
+			setLabel(segment, label);
+			return segment;
 		}
 		/**
 		 * Removes the specified segment.
@@ -129,6 +142,7 @@ namespace CLAM
 		{
 			_offsets.erase(_offsets.begin()+segment);
 			_onsets.erase(_onsets.begin()+segment);
+			_labels.erase(_labels.begin()+segment);
 			_selection.erase(_selection.begin()+segment);
 			if (_current!=0 && segment<=_current) _current--;
 		}
