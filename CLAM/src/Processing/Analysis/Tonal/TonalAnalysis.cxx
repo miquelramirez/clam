@@ -104,8 +104,7 @@ bool TonalAnalysis::ConcreteStart()
 
 bool TonalAnalysis::ConcreteStop()
 {
-	if (_implementation) delete _implementation;
-	_implementation = new Simac::ChordExtractor;
+	_implementation->clear();
 	return true;
 }
 

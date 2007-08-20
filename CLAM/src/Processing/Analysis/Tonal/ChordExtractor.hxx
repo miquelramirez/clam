@@ -193,6 +193,10 @@ public:
 	{
 		return _chordSegmentator.chordIndexes();
 	}
+	void clear()
+	{
+		_chordSegmentator.eraseAllSegments();
+	}
 	void closeLastSegment(CLAM::TData currentTime)
 	{
 		_chordSegmentator.closeLastSegment(currentTime);

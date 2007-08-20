@@ -67,7 +67,7 @@ class ChordSegmentator
 	std::vector<double> _segmentChordCorrelation;
 public:
 	ChordSegmentator(unsigned method=0)
-		: _segmentation(1000)
+		: _segmentation(0)
 		, _currentSegment(0)
 		, _segmentOpen(false)
 		, _lastChord(0)
@@ -90,6 +90,7 @@ public:
 
 	void doIt(CLAM::TData & currentTime, const std::vector<double> & correlation, const unsigned firstCandidate, const unsigned secondCandidate) 
 	{
+		_segmentation.maxPosition(currentTime);
 		switch(_method)
 		{
 			case 2:
@@ -208,6 +209,8 @@ public:
 	
 	void closeLastSegment(CLAM::TData & currentTime )
 	{
+		_segmentation.maxPosition(currentTime);
+		
 		if (_lastChord != 0)
 		{
 			_segmentation.dragOffset(_currentSegment, currentTime);
@@ -221,6 +224,16 @@ public:
 				joinSegmentsWithIdenticalChords();
 				break;
 		}
+	}
+
+	void eraseAllSegments()
+	{
+		while( _segmentation.onsets().size() )
+		{
+			_segmentation.remove(_segmentation.onsets().size()-1);
+			_chordIndexes.pop_back();
+		}
+		_segmentation.maxPosition(0);
 	}
 
 	void estimateChord(const ChordCorrelator::ChordCorrelation & correlation, unsigned & estimatedChord)
