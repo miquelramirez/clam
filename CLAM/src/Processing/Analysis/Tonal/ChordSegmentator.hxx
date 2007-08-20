@@ -66,14 +66,13 @@ class ChordSegmentator
 	std::vector< std::vector<double> > _chordSimilarity;
 	std::vector<double> _segmentChordCorrelation;
 public:
-	ChordSegmentator(unsigned segmentationMethod=0)
+	ChordSegmentator()
 		: _segmentation(0)
 		, _currentSegment(0)
 		, _segmentOpen(false)
 		, _lastChord(0)
-		, _method(segmentationMethod)
 	{
-		method(_method);
+		method(0);
 	};
 	~ChordSegmentator() {};
 

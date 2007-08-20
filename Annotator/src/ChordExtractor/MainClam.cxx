@@ -463,7 +463,8 @@ int main(int argc, char* argv[])			// access command line arguments
 		float minf = 98;						// (MIDI note G1)
 		unsigned bpo = 36;			// bins per octave
 
-		Simac::ChordExtractor chordExtractor(segmentationMethod,samplingRate/factor,minf,bpo);
+		Simac::ChordExtractor chordExtractor(samplingRate/factor,minf,bpo);
+		chordExtractor.segmentationMethod(segmentationMethod);
 		unsigned framesize = chordExtractor.frameSize();
 		unsigned hop = chordExtractor.hop();
 		unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
