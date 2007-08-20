@@ -93,7 +93,8 @@ public:
 	void enableTunning(bool tunningEnabled=true)  { _tunningEnabled=tunningEnabled; }
 	void enablePeakWindowing(bool peakWindowingEnabled=true)  { _peakWindowingEnabled=peakWindowingEnabled; }
 	void hopRatio(double hopRatio) { _hopRatio=hopRatio; }
-	
+	void segmentationMethod(double segmentationMethod) { _chordSegmentator.method(segmentationMethod); }
+
 	unsigned hop() const {return _constantQTransform.getfftlength()/_hopRatio;}
 	unsigned frameSize() const {return _constantQTransform.getfftlength();}
 

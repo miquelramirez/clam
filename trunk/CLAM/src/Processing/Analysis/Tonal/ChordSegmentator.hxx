@@ -66,25 +66,14 @@ class ChordSegmentator
 	std::vector< std::vector<double> > _chordSimilarity;
 	std::vector<double> _segmentChordCorrelation;
 public:
-	ChordSegmentator(unsigned method=0)
+	ChordSegmentator(unsigned segmentationMethod=0)
 		: _segmentation(0)
 		, _currentSegment(0)
 		, _segmentOpen(false)
 		, _lastChord(0)
-		, _method(method)
+		, _method(segmentationMethod)
 	{
-		if(method != 0 && method != 1 && method != 2)
-			_method = 0;
-
-		switch(_method)
-		{
-			case 2:
-				ChordCorrelator chordCorrelator;
-				_chordSimilarity = chordCorrelator.chordPatternsSimilarity();
-				for(unsigned i=0; i<101; ++i)
-					_segmentChordCorrelation.push_back(0);
-				break;
-		}
+		method(_method);
 	};
 	~ChordSegmentator() {};
 
@@ -311,6 +300,22 @@ public:
 
 	const CLAM::DiscontinuousSegmentation & segmentation() const { return _segmentation; };
 	const std::vector<unsigned> & chordIndexes() const { return _chordIndexes; };
+	void method(unsigned method) 
+	{ 
+		_method=method; 
+		if(method != 0 && method != 1 && method != 2)
+			_method = 0;
+
+		switch(_method)
+		{
+			case 2:
+				ChordCorrelator chordCorrelator;
+				_chordSimilarity = chordCorrelator.chordPatternsSimilarity();
+				for(unsigned i=0; i<101; ++i)
+					_segmentChordCorrelation.push_back(0);
+				break;
+		}
+	}
 };
 }
 #endif//ChordSegmentator
