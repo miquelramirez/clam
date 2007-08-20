@@ -147,8 +147,7 @@ namespace CLAM
 			mCurrentXSpan /= 2.0;
 			UpdateHBounds(true);
 			mCurrentXZoomStep--;
-			int xratio=1;
-			for(int i=0; i < mCurrentXZoomStep; i++) xratio *= 2;
+			int xratio=1<<mCurrentXZoomStep;
 			emit hZoomRatio("1:"+QString::number(xratio));
 			emit hScrollMaxValue(GetXPixels());
 			emit hScrollValue(GetHScrollValue());
@@ -160,8 +159,7 @@ namespace CLAM
 			mCurrentXSpan *= 2.0;
 			UpdateHBounds(false);
 			mCurrentXZoomStep++;
-			int xratio=1;
-			for(int i=0; i < mCurrentXZoomStep; i++) xratio *= 2;
+			int xratio=1<<mCurrentXZoomStep;
 			emit hZoomRatio("1:"+QString::number(xratio));
 			emit hScrollValue(GetHScrollValue());
 			emit hScrollMaxValue(GetXPixels());
