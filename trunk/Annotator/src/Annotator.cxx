@@ -390,6 +390,16 @@ void Annotator::adaptInstantViewsToSchema()
 	}
 }
 
+
+void Annotator::setVisibleXRange(double min, double max)
+{
+	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
+		_frameDescriptorsPanes[i]->setVisibleXRange(min, max);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->setVisibleXRange(min, max);	
+}
+
+
 void Annotator::globalDescriptorsTableChanged(int row)
 {
 	markCurrentSongChanged(true);
@@ -411,6 +421,11 @@ unsigned Annotator::addNewSegmentationPane()
 	// Making the splitters look like a table
 	connect(pane, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
+
+	// sync zoom
+	connect(pane, SIGNAL(visibleXRangeChanged(double,double)),
+			this, SLOT(setVisibleXRange(double,double)));
+
 	if (!index)
 		mVSplit->addWidget(pane);
 	else 
@@ -436,7 +451,10 @@ unsigned Annotator::addNewFrameDescriptorsPane()
 	// Making the splitters look like a table
 	connect(pane, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
-				
+	// sync zoom
+	connect(pane, SIGNAL(visibleXRangeChanged(double,double)),
+			this, SLOT(setVisibleXRange(double,double)));
+
 	if (!index)
 		mVSplit->addWidget(pane);
 	else
@@ -691,6 +709,7 @@ void Annotator::addSongsToProject()
 	{
 		mProject.AppendSong(mProject.AbsoluteToRelative(it->toStdString()));
 	}
+	
 	updateSongListWidget();
 	markProjectChanged(true);
 }
@@ -796,7 +815,8 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 		_frameDescriptorsPanes[i]->refreshEnvelopes();
 	}	
 	auralizeSegmentation();
-	refreshInstantViews();
+	refreshInstantViews();	
+	
 	mStatusBar << tr("Done") << mStatusBar;
 	loaderLaunch();
 	setCursor(Qt::ArrowCursor);

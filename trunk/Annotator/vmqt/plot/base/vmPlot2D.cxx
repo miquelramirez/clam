@@ -151,6 +151,7 @@ namespace CLAM
 			emit hZoomRatio("1:"+QString::number(xratio));
 			emit hScrollMaxValue(GetXPixels());
 			emit hScrollValue(GetHScrollValue());
+			emit hBoundsChanged(mView.left, mView.right);
 		}
 
 		void Plot2D::hZoomOut()
@@ -163,6 +164,7 @@ namespace CLAM
 			emit hZoomRatio("1:"+QString::number(xratio));
 			emit hScrollValue(GetHScrollValue());
 			emit hScrollMaxValue(GetXPixels());
+			emit hBoundsChanged(mView.left, mView.right);
 		}
 
 		void Plot2D::vZoomIn()
