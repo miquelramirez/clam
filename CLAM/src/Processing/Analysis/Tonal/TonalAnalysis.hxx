@@ -37,7 +37,7 @@ private:
 	AudioInPort _input;
 	OutPort<std::vector<CLAM::TData> > _pcp;
 	OutPort<std::vector<CLAM::TData> > _chordCorrelation;
-	OutPort<std::pair<DiscontinuousSegmentation, std::vector<std::string> > > _segmentation;
+	OutPort<DiscontinuousSegmentation> _segmentation;
 	OutPort<std::vector<std::pair<CLAM::TData, CLAM::TData> > > _chromaPeaks;
 	OutPort<std::pair<CLAM::TData, CLAM::TData> > _tunning;
 
