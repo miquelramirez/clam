@@ -58,6 +58,7 @@ TonalAnalysis::TonalAnalysis( const TonalAnalysisConfig& cfg )
 	: _input("Audio Input",this)
 	, _pcp("Pitch Profile",this)
 	, _chordCorrelation("Chord Correlation",this)
+	, _segmentation("Chord Segmentation", this)
 	, _chromaPeaks("Chroma Peaks",this)
 	, _tunning("Tunning",this)
 	, _implementation( 0 )
@@ -101,6 +102,13 @@ bool TonalAnalysis::ConcreteStart()
 	return true;
 }
 
+bool TonalAnalysis::ConcreteStop()
+{
+	if (_implementation) delete _implementation;
+	_implementation = new Simac::ChordExtractor;
+	return true;
+}
+
 bool TonalAnalysis::Do()
 {
 	if( !AbleToExecute() ) return true;
@@ -121,6 +129,31 @@ bool TonalAnalysis::Do()
 		chordCorrelation[i] = _implementation->chordCorrelation()[i];
 	_chordCorrelation.Produce();
 
+	std::pair<DiscontinuousSegmentation, std::vector<unsigned> > & segmentation = _segmentation.GetData();
+	while( segmentation.first.onsets().size() )
+	{
+		segmentation.first.remove(segmentation.first.onsets().size()-1);
+		segmentation.second.pop_back();
+	}
+	segmentation.first.maxPosition(_currentTime);
+	segmentation.second.resize( _implementation->chordIndexes().size() );
+	for (unsigned i=0; i < _implementation->segmentation().onsets().size(); i++)
+	{
+		segmentation.first.insert( _implementation->segmentation().onsets()[i] );
+		segmentation.first.dragOffset(i, _implementation->segmentation().offsets()[i] );
+		segmentation.second[i]=_implementation->chordIndexes()[i];
+	}
+	/*
+	// Temporary code for checking if everything is alright with the segmentation
+	for (unsigned i=0; i < segmentation.first.onsets().size(); i++)
+	{
+		std::cout << segmentation.first.onsets()[i] << " - "<< segmentation.first.offsets()[i] << " (" << segmentation.second[i] << ") ";
+	}
+	std::cout << std::endl;
+	*/
+	_segmentation.Produce();
+	
+	
 	std::vector<std::pair<TData,TData> > & chromaPeaks = _chromaPeaks.GetData();
 	chromaPeaks.resize(_implementation->peaks().size()); //TODO processing time resize!!!!
 	for (unsigned i = 0; i < _implementation->peaks().size(); i++)
