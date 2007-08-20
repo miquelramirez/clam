@@ -130,27 +130,24 @@ bool TonalAnalysis::Do()
 		chordCorrelation[i] = _implementation->chordCorrelation()[i];
 	_chordCorrelation.Produce();
 
-	std::pair<DiscontinuousSegmentation, std::vector<std::string> > & segmentation = _segmentation.GetData();
-	while( segmentation.first.onsets().size() )
+	DiscontinuousSegmentation & segmentation = _segmentation.GetData();
+	while( segmentation.onsets().size() )
 	{
-		segmentation.first.remove(segmentation.first.onsets().size()-1);
-		segmentation.second.pop_back();
+		segmentation.remove(segmentation.onsets().size()-1);
 	}
-	segmentation.first.maxPosition(_currentTime);
-	segmentation.second.resize( _implementation->chordIndexes().size() );
+	segmentation.maxPosition(_currentTime);
 	for (unsigned i=0; i < _implementation->segmentation().onsets().size(); i++)
 	{
 		unsigned chordIndex = _implementation->chordIndexes()[i];
 		std::string chordName = _implementation->root(chordIndex) + " " + _implementation->mode(chordIndex);
-		segmentation.first.insert( _implementation->segmentation().onsets()[i] );
-		segmentation.first.dragOffset(i, _implementation->segmentation().offsets()[i] );
-		segmentation.second[i]=chordName;
+		segmentation.insert( _implementation->segmentation().onsets()[i], chordName );
+		segmentation.dragOffset(i, _implementation->segmentation().offsets()[i] );
 	}
 	/*
 	// Temporary code for checking if everything is alright with the segmentation
-	for (unsigned i=0; i < segmentation.first.onsets().size(); i++)
+	for (unsigned i=0; i < segmentation.onsets().size(); i++)
 	{
-		std::cout << segmentation.first.onsets()[i] << " - "<< segmentation.first.offsets()[i] << " (" << segmentation.second[i] << ") ";
+		std::cout << segmentation.onsets()[i] << " - "<< segmentation.offsets()[i] << " (" << segmentation.labels()[i] << ") ";
 	}
 	std::cout << std::endl;
 	*/
