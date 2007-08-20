@@ -51,6 +51,7 @@ void TonalAnalysisConfig::DefaultInit(void)
 	SetTunningEnabled(true);
 	SetPeakWindowingEnabled(true);
 	SetHopRatio(8.0);
+	SetSegmentationMethod(0);
 }
 
 
@@ -89,7 +90,8 @@ bool TonalAnalysis::ConcreteConfigure( const ProcessingConfig& c )
 	_implementation->enableTunning( _config.GetTunningEnabled() );
 	_implementation->enablePeakWindowing( _config.GetPeakWindowingEnabled() );
 	_implementation->hopRatio( _config.GetHopRatio() );
-	
+	_implementation->segmentationMethod( _config.GetSegmentationMethod() );
+
 	_input.SetSize( _implementation->frameSize() );
 	_input.SetHop( _implementation->hop() );
 	_floatBuffer.resize(_implementation->frameSize());
