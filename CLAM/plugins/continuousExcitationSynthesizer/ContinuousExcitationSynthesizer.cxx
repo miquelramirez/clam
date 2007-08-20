@@ -86,7 +86,8 @@ namespace CLAM
 		VoiceId theVoiceId;
 		float thePitch;
 		float theAmplitude;
-		aControlScore->SetFeedForever(true);
+		// make this true to have the given score file loop
+		aControlScore->SetFeedForever(false);
 		while ( aControlScore->GetControlValues(thePitch, theAmplitude) )
 		{
 			//std::cout << "pitch: " << thePitch << ", amplitude: " << theAmplitude << std::endl;
@@ -153,7 +154,22 @@ int main(int argc,char** argv)
 		isPlayOnSpeakers = (strcmp(wavoutput, "speakers") == 0) ? 1 : 0;
 		break;
 	default:
-		printf("Usage: %s inputSDIFDirectory [inputScore [ output.wav [ synthesis.xml ] ] ]\n",argv[0]);
+		printf("\n");
+		printf("Usage: %s inputSDIFDirectory [(osc | inputScore) [ output.wav [ synthesis.xml ] ] ]\n",argv[0]);
+		printf("\n");
+		printf("    If osc is given, the application will expect an osc stream\n");
+		printf("    with this message format: /ebowSynthesizer pitch amplitude\n");
+		printf("    to be sent to port 7000. Pitch should be in Hertz and amplitude\n");
+		printf("    should be from 0-1.\n");
+		printf("\n");
+		printf("    If an input score is given, the application will expect the\n");
+		printf("    score to have the same format as the files in testData, i.e.\n");
+		printf("    pitch amplitude\n");
+		printf("    pitch amplitude ... \n");
+		printf("\n");
+		printf("    One synthesis frame will be calculated for each OSC message.\n");
+		printf("    or each line from a score file. So, given a hopsize of 256,\n");
+		printf("    you'll need to generate about 172 control events per second.\n");
 		printf("\n");
 		exit(1);
 		break;
