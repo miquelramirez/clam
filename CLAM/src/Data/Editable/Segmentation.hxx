@@ -115,6 +115,21 @@ namespace CLAM
 			return _offsets;
 		}
 		/**
+		 * Returns a vector of segment labels
+		 */
+		const std::vector<std::string> & labels() const
+		{
+			return _labels;
+		}
+		/**
+		 * Sets the label for a particular segment
+		 */
+		void setLabel(unsigned segment, std::string label)
+		{
+			if (segment>=_labels.size()) return; // Invalid segment
+			_labels[segment] = label;
+		}
+		/**
 		 * Returns a vector of time position of the segment selections.
 		 */
 		const std::vector<bool> & selections() const
@@ -155,6 +170,7 @@ namespace CLAM
 	protected:
 		TimePositions _onsets;
 		TimePositions _offsets;
+		std::vector<std::string> _labels;
 		std::vector<bool> _selection;
 		unsigned _current;
 		double _maxPosition;
