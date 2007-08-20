@@ -15,14 +15,14 @@ namespace CLAM
 		};
 		typedef std::vector<double> TimePositions;
 	public:
-		UnsizedSegmentation(double maxLength)
-			: Segmentation(maxLength)
+		UnsizedSegmentation(double maxPosition)
+			: Segmentation(maxPosition)
 		{
 
 		}
 		template <typename Iterator>
-		UnsizedSegmentation(double maxLength, Iterator begin, Iterator end)
-			: Segmentation(maxLength)
+		UnsizedSegmentation(double maxPosition, Iterator begin, Iterator end)
+			: Segmentation(maxPosition)
 		{
 			for (Iterator it=begin; it!=end; it++)
 				insert(*it);
@@ -36,7 +36,7 @@ namespace CLAM
 		unsigned insert(double timePosition)
 		{
 			if (timePosition<0.0) throw InsertedOutOfBounds();
-			if (timePosition>=maxLength()) throw InsertedOutOfBounds();
+			if (timePosition>=maxPosition()) throw InsertedOutOfBounds();
 			TimePositions::iterator insertPoint = 
 				std::lower_bound(_offsets.begin(), _offsets.end(), timePosition);
 			if (insertPoint==_offsets.end())
@@ -121,7 +121,7 @@ namespace CLAM
 			double leftLimit = segment!=0 ?
 				_onsets[segment-1] : 0.0;
 			double rightLimit = segment+1<_offsets.size()? 
-					_onsets[segment+1] : maxLength();
+					_onsets[segment+1] : maxPosition();
 			if (newTimePosition<leftLimit)
 				newTimePosition = leftLimit;
 			// Limit movement on the right to the next offset
