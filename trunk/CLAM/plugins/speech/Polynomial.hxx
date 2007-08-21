@@ -12,6 +12,13 @@
 #include <vector>        
 #include <float.h>
 
+/*
+  \class Polynomial
+  \brief Represents a polynomial as a vector of coefficients and provides a method to solve its roots
+*/
+
+
+
 namespace CLAM
 {
 	/*just an array of coefficients and a method to solve them*/
@@ -23,16 +30,16 @@ namespace CLAM
 		//DYN_ATTRIBUTE( 0, public, DataArray,   Coefficients );
     
 	public:
-		CLAM::Array<Complex> PolyRoots(DataArray coefficients); //Abe 29-6-2007: Move to it's own processing
-		void  BuildCompanion(DataArray coefficients);  //Abe 24-6-2007
-		CLAM::Array <Complex> EigenHessenberg(); //Abe 30-6-2007
+		CLAM::Array<Complex> PolyRoots(DataArray coefficients); //TODO: Move to it's own processing
+		void  BuildCompanion(DataArray coefficients);
+		CLAM::Array <Complex> EigenHessenberg();
     
 	protected:
 		void DefaultInit();
 	private:
 		std::vector <std::vector <double> > M;
     
-		static const double epsilon = DBL_EPSILON;//epsilon();
+		static const double epsilon = DBL_EPSILON;
 	};
 }
 

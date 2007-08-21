@@ -20,8 +20,6 @@
 #include <CLAM/AudioMultiplier.hxx>     // imports CLAM::AudioMultiplier Processing declaration
 #include <CLAM/Complex.hxx>        //Abe 29-6-2007: for complex type
 #include <cmath>
-//#include <CLAM/CLAM_Math.hxx>    //Abe 29-6-2007: for complex type
-//#include <CLAM/Spectrum.hxx>            // Abe to use <Complex>
 #include <CLAM/ComplexToPolarCnv.hxx>
 
 namespace CLAM
@@ -102,7 +100,6 @@ bool FormantExtractor::Do(Audio& in, SpectralPeakArray& out) {
 	DataArray& outBinPosBuffer=out.GetBinPosBuffer();
 	DataArray& outBinWidthBuffer=out.GetBinWidthBuffer();
 	unsigned firstBin = 440*nBins/spectralRange;
-	std::cout<<"LPC roots in Formant Extractor"<<std::endl;
 
 	ComplexToPolarCnv_ convert;
 
@@ -114,8 +111,7 @@ bool FormantExtractor::Do(Audio& in, SpectralPeakArray& out) {
 	{
 		//if angle is not zero, inside the unit circle, and imag non negative
 		if(formants[i].Ang()>0 && formants[i].Mag()<1) {
-			std::cout<<roots[i]<<std::endl;
-			std::cout<<formants[i]<<" "<<formants[i].Ang()/(M_PI)*spectralRange<<", "<<formants[i].Mag()<<std::endl;
+
 			//then, add to the out buffer
 			outIndexBuffer.AddElem(f++);
 			outFreqBuffer.AddElem(formants[i].Ang()/M_PI*spectralRange);

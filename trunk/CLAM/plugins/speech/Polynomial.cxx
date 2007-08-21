@@ -4,11 +4,8 @@
 #include "Polynomial.hxx"
 #include <CLAM/ProcessingData.hxx>
 #include <CLAM/Array.hxx>
-#include <CLAM/CLAM_Math.hxx>    //Abe 29-6-2007: for complex type
-//#include <CLAM/Spectrum.hxx>    //Abe 29-6-2007: for complex type??
-#include <CLAM/Matrix.hxx>      //Abe 30-6-2007: for matrices?
-#include <CLAM/MatrixTmpl.hxx>
-//#include
+#include <CLAM/CLAM_Math.hxx>    
+
 
 namespace CLAM
 {
@@ -189,7 +186,7 @@ namespace CLAM
 		{
 			unsigned int iterations = 0;
 			int na = n-1;
-			const unsigned int maxIter = 60; //set 60 to be the max # of iterations
+			const unsigned int maxIter = 60; //max # of iterations
 			while( iterations < maxIter ) 
 			{
 	    
