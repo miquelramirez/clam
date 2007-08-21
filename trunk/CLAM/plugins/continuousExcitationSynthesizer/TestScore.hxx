@@ -44,7 +44,7 @@ class TestScore : public ContinuousExcitationControlSource
 public:
 	TestScore();
 	TestScore(std::string filename);
-	~TestScore();
+	virtual ~TestScore();
 
 	/**
 	* The path of the score file to load.
