@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="Amplitude" type="OutControlSender">
+    <Min>0</Min>
+    <Default>4</Default>
+    <Max>10</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="AudioMultiplier" type="AudioMultiplier"/>
+
+  <processing id="AudioSink_0" type="AudioSink"/>
+
+  <processing id="CardinalVowel" type="CardinalVowel">
+    <Amount>1</Amount>
+  </processing>
+
+  <processing id="GlottalSourceGenerator" type="GlottalSourceGenerator"/>
+
+  <processing id="Jitter" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.05</Default>
+    <Max>0.2</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="PeakView_0" type="PeakView"/>
+
+  <processing id="PeakView_1" type="PeakView"/>
+
+  <processing id="Pitch" type="OutControlSender">
+    <Min>55</Min>
+    <Default>110</Default>
+    <Max>440</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Knot</ControlRepresentation>
+  </processing>
+
+  <processing id="Pitch_1" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="SMSSynthesis_0" type="SMSSynthesis">
+    <SynthSineSpectrum>
+      <SpectrumSize>513</SpectrumSize>
+      <SamplingRate>44100</SamplingRate>
+      <ZeroPadding>0</ZeroPadding>
+    </SynthSineSpectrum>
+    <PhaseMan>
+      <MaxSines>100</MaxSines>
+      <SamplingRate>44100</SamplingRate>
+      <Type>Continuation</Type>
+    </PhaseMan>
+    <SpectralSynth>
+      <AnalWindowGenerator>
+        <Type>BlackmanHarris92</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NormalizationForAnalysis</Normalize>
+        <Invert>1</Invert>
+      </AnalWindowGenerator>
+      <SynthWindowGenerator>
+        <Type>Triangular</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NoNormalization</Normalize>
+        <Invert>0</Invert>
+      </SynthWindowGenerator>
+      <CircularShift>
+        <Amount>512</Amount>
+      </CircularShift>
+      <IFFT>
+        <AudioSize>1024</AudioSize>
+      </IFFT>
+      <prZeroPadding>0</prZeroPadding>
+      <prSamplingRate>44100</prSamplingRate>
+      <Residual>0</Residual>
+      <prAnalWindowSize>1025</prAnalWindowSize>
+      <prAnalWindowType>BlackmanHarris92</prAnalWindowType>
+      <prHopSize>512</prHopSize>
+    </SpectralSynth>
+    <OverlapAddSin>
+      <FrameSize>512</FrameSize>
+    </OverlapAddSin>
+    <OverlapAddRes>
+      <FrameSize>512</FrameSize>
+    </OverlapAddRes>
+    <OverlapAddGlobal>
+      <FrameSize>512</FrameSize>
+    </OverlapAddGlobal>
+    <prSamplingRate>0</prSamplingRate>
+  </processing>
+
+  <processing id="Shimmer" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.05</Default>
+    <Max>0.5</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="SimpleOscillator" type="SimpleOscillator">
+    <Frequency>440</Frequency>
+    <Amplitude>1</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <processing id="SimpleOscillator_0" type="SimpleOscillator">
+    <Frequency>440</Frequency>
+    <Amplitude>0</Amplitude>
+    <Phase>0</Phase>
+    <SamplingRate>44100</SamplingRate>
+  </processing>
+
+  <processing id="SpectralAnalysis_0" type="SpectralAnalysis">
+    <WindowGenerator>
+      <Type>BlackmanHarris92</Type>
+      <Size>1025</Size>
+      <MaxSize>0</MaxSize>
+      <UseTable>1</UseTable>
+      <Normalize>NormalizationForAnalysis</Normalize>
+      <Invert>0</Invert>
+    </WindowGenerator>
+    <CircularShift>
+      <Amount>-512</Amount>
+    </CircularShift>
+    <FFT>
+      <AudioSize>1024</AudioSize>
+    </FFT>
+    <prHopSize>512</prHopSize>
+    <prZeroPadding>0</prZeroPadding>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>1024</prFFTSize>
+    <prWindowSize>1025</prWindowSize>
+    <prWindowType>BlackmanHarris92</prWindowType>
+  </processing>
+
+  <processing id="SpectrumView_0" type="SpectrumView"/>
+
+  <processing id="Synth Audio" type="Oscilloscope"/>
+
+  <processing id="Vowel Position" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="VowelResonator_0" type="VowelResonator"/>
+
+  <port_connection>
+    <out>AudioMultiplier.Audio Output</out>
+    <in>AudioSink_0.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioMultiplier.Audio Output</out>
+    <in>Synth Audio.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>GlottalSourceGenerator.Out SpectralPeaks</out>
+    <in>VowelResonator_0.In SpectralPeaks</in>
+  </port_connection>
+
+  <port_connection>
+    <out>GlottalSourceGenerator.Out SpectralPeaks</out>
+    <in>PeakView_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSSynthesis_0.OutputSpectrum</out>
+    <in>SpectrumView_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSSynthesis_0.OutputAudio</out>
+    <in>AudioMultiplier.First Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SimpleOscillator.Audio Output</out>
+    <in>AudioMultiplier.Second Audio Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SimpleOscillator_0.Audio Output</out>
+    <in>SpectralAnalysis_0.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SpectralAnalysis_0.Output</out>
+    <in>SMSSynthesis_0.InputResSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>VowelResonator_0.Out SpectralPeaks</out>
+    <in>SMSSynthesis_0.InputSinPeaks</in>
+  </port_connection>
+
+  <port_connection>
+    <out>VowelResonator_0.Out SpectralPeaks</out>
+    <in>PeakView_1.Input</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Amplitude.out</out>
+    <in>SimpleOscillator.Amplitude</in>
+  </control_connection>
+
+  <control_connection>
+    <out>CardinalVowel.F1 Out</out>
+    <in>VowelResonator_0.F1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>CardinalVowel.F2 Out</out>
+    <in>VowelResonator_0.F2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Jitter.out</out>
+    <in>GlottalSourceGenerator.Jitter</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pitch.out</out>
+    <in>GlottalSourceGenerator.Fundamental</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Pitch_1.out</out>
+    <in>SimpleOscillator.Pitch</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Shimmer.out</out>
+    <in>GlottalSourceGenerator.Shimmer</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Vowel Position.out</out>
+    <in>CardinalVowel.Vowel Position</in>
+  </control_connection>
+
+</network>
