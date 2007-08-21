@@ -429,7 +429,7 @@ unsigned Annotator::addNewSegmentationPane()
 	if (!index)
 		mVSplit->addWidget(pane);
 	else 
-		mVSplit->insertWidget(mVSplit->indexOf(_segmentationPanes.back()), pane);
+		mVSplit->insertWidget(mVSplit->indexOf(_segmentationPanes.back())+1, pane);
 	_segmentationPanes.push_back(pane);
 	mVSplit->refresh();
 	pane->show();
@@ -438,27 +438,22 @@ unsigned Annotator::addNewSegmentationPane()
 
 unsigned Annotator::addNewFrameDescriptorsPane()
 {
-	unsigned index = _frameDescriptorsPanes.size();
 	FrameDescriptorsPane * pane = new FrameDescriptorsPane(0, mProject, mEPFs);
-	
-	connect(pane, SIGNAL(frameDescriptorsRegionChanged(double,double)),
-			this, SLOT(setCurrentTime(double,double)));
-
-	// Changing the current LLD descriptor
+	// Changing the current frame descriptor
 	connect(pane, SIGNAL(frameDescriptorsSelectionChanged()),
 			this, SLOT(auralizeLLDs()) );
-	
+	// Current position update
+	connect(pane, SIGNAL(frameDescriptorsRegionChanged(double,double)),
+			this, SLOT(setCurrentTime(double,double)));
 	// Making the splitters look like a table
 	connect(pane, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
-	// sync zoom
+	// Horizontal view range changed
 	connect(pane, SIGNAL(visibleXRangeChanged(double,double)),
 			this, SLOT(setVisibleXRange(double,double)));
 
-	if (!index)
-		mVSplit->addWidget(pane);
-	else
-		mVSplit->insertWidget(mVSplit->indexOf(_frameDescriptorsPanes.back()), pane);
+	unsigned index = _frameDescriptorsPanes.size();
+	mVSplit->insertWidget(index,pane);
 	_frameDescriptorsPanes.push_back(pane);
 	mVSplit->refresh();
 	pane->show();
@@ -912,7 +907,6 @@ void Annotator::auralizeLLDs()
 {
 	// taking the LLDs of the first pane
 	const CLAM::EquidistantPointsFunction & EPFs= _frameDescriptorsPanes[0]->getCurrentEPFs();
-	
 	_auralizer->setLLD(EPFs);
 }
 
