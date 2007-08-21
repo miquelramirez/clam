@@ -51,6 +51,7 @@ namespace CLAM
 			virtual void SetZoomSteps(int hsteps, int vsteps);
 			
 			virtual void setVisibleXRange(double min, double max);
+			virtual void setXScrollValue(int val);
 
 			void SetSegmentation(Segmentation* s);
 			
@@ -62,7 +63,8 @@ namespace CLAM
 			void segmentDeleted(unsigned);
 			void currentSegmentChanged();
 			void visibleXRangeChanged(double,double);
-
+			void xScrollValueChanged(int);
+			
 		public slots:
 			virtual void backgroundWhite();
 			virtual void backgroundBlack();

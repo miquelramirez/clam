@@ -66,6 +66,7 @@ namespace CLAM
 			void xRulerRange(double,double);
 			void yRulerRange(double,double);
 			void hBoundsChanged(double,double);
+			void hScrollValueChanged(int);
 			
 		public slots:
 			void hZoomIn();

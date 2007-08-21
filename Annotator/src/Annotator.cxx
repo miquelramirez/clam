@@ -399,6 +399,13 @@ void Annotator::setVisibleXRange(double min, double max)
 		_segmentationPanes[i]->setVisibleXRange(min, max);	
 }
 
+void Annotator::setXScrollValue(int val)
+{
+	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
+		_frameDescriptorsPanes[i]->setXScrollValue(val);
+	for (unsigned i=0; i<_segmentationPanes.size(); i++)
+		_segmentationPanes[i]->setXScrollValue(val);	
+}
 
 void Annotator::globalDescriptorsTableChanged(int row)
 {
@@ -422,9 +429,12 @@ unsigned Annotator::addNewSegmentationPane()
 	connect(pane, SIGNAL(splitterMoved(int,int)),
 			this, SLOT(syncronizeSplits()));
 
-	// sync zoom
+	// sync zoom & scroll
 	connect(pane, SIGNAL(visibleXRangeChanged(double,double)),
 			this, SLOT(setVisibleXRange(double,double)));
+
+	connect(pane, SIGNAL(xScrollValueChanged(int)),
+			this, SLOT(setXScrollValue(int)));
 
 	if (!index)
 		mVSplit->addWidget(pane);
@@ -451,6 +461,9 @@ unsigned Annotator::addNewFrameDescriptorsPane()
 	// Horizontal view range changed
 	connect(pane, SIGNAL(visibleXRangeChanged(double,double)),
 			this, SLOT(setVisibleXRange(double,double)));
+
+	connect(pane, SIGNAL(xScrollValueChanged(int)),
+			this, SLOT(setXScrollValue(int)));
 
 	unsigned index = _frameDescriptorsPanes.size();
 	mVSplit->insertWidget(index,pane);
