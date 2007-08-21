@@ -223,7 +223,7 @@ def generate(env):
 			'4',
 			'4.exe',
 			'',
-			'exe',
+			'.exe',
 		]
 
 		for suffix in suffixes :
