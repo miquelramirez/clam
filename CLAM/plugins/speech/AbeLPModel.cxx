@@ -107,8 +107,6 @@ namespace CLAM
 		}
 	}
 
-	// Abe 24-6-2007  Calculate formants by solving the LP Model for A(z) = 0 
-	//just get rid of this
 	CLAM::Array<Complex> AbeLPModel::ToRoots(DataArray coefficients)   
 	{
 		return p.PolyRoots(coefficients);  //solve roots of LP coefficients
