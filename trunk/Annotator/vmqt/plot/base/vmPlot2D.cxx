@@ -199,6 +199,7 @@ namespace CLAM
 			double right = left+mCurrentXSpan;
 			SetHBounds(left,right);
 			emit hBoundsChanged(left,right);
+			emit hScrollValueChanged(value);
 		}
 
 		void Plot2D::updateVScrollValue(int value)

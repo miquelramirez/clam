@@ -138,7 +138,8 @@ public slots:
 	void linkCurrentSegmentToPlayback(bool enabled);
 	void setCurrentTime(double timeMilliseconds, double endTimeMiliseconds);
 	void setVisibleXRange(double min, double max);
-
+	void setXScrollValue(int val);
+	
 protected:
 	void closeEvent( QCloseEvent * e);
 private slots:
