@@ -3,6 +3,8 @@
  * BarGraph views for FloatArrays attributes
  * Float arrays with numerical bin labels
  * Better rulers for visualization
+ * Multiples segmentation and frame descriptors panes
+ * Scrool and zoom syncronizations among views
 
 2007-06-08 Annotator 0.3.9
 'More eye-candy, please'
