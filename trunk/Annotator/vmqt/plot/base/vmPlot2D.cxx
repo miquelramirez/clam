@@ -23,6 +23,7 @@
 #include "vmRenderer2D.hxx"
 #include "vmPlot2D.hxx"
 #include <QtCore/QTimer>
+#include <iostream>
 
 namespace CLAM
 {
@@ -34,8 +35,6 @@ namespace CLAM
 			, mToolTip("")
 			, mXZoomSteps(0)
 			, mYZoomSteps(0)
-			, mCurrentXZoomStep(0)
-			, mCurrentYZoomStep(0)
 			, mHZoomRef(0.0)
 			, mCurrentXSpan(1.0)
 			, mCurrentYSpan(1.0)
@@ -97,14 +96,7 @@ namespace CLAM
 			if(xsteps < 0 || ysteps < 0) return;
 			mXZoomSteps = xsteps;
 			mYZoomSteps = ysteps;
-			mCurrentXZoomStep = mXZoomSteps;
 			mCurrentYZoomStep = mYZoomSteps;
-			int xratio = 1;
-			int yratio = 1;
-			for(int i=0; i < mXZoomSteps; i++) xratio *= 2;
-			for(int i=0; i < mYZoomSteps; i++) yratio *= 2;
-			emit hZoomRatio("1:"+QString::number(xratio));
-			emit vZoomRatio("1:"+QString::number(yratio));
 			SetXRange(mXRange.min,mXRange.max);
 			SetYRange(mYRange.min,mYRange.max);
 		}
@@ -142,13 +134,13 @@ namespace CLAM
 		}
 
 		void Plot2D::hZoomIn()
-		{	
-			if(!mCurrentXZoomStep) return;
-			mCurrentXSpan /= 2.0;
-			UpdateHBounds(true);
-			mCurrentXZoomStep--;
-			int xratio=1<<mCurrentXZoomStep;
-			emit hZoomRatio("1:"+QString::number(xratio));
+		{
+			double newSpan = mCurrentXSpan*0.5;
+			double midPoint = ReferenceIsVisible() ? GetReference(): ((mView.right+mView.left)/2);
+			double left=std::max(mXRange.min, midPoint-newSpan/2);
+			double right=std::min(mXRange.max, left+newSpan);
+			mCurrentXSpan = right - left;
+			SetHBounds(left,right);
 			emit hScrollMaxValue(GetXPixels());
 			emit hScrollValue(GetHScrollValue());
 			emit hBoundsChanged(mView.left, mView.right);
@@ -156,14 +148,19 @@ namespace CLAM
 
 		void Plot2D::hZoomOut()
 		{
-			if(mCurrentXZoomStep == mXZoomSteps) return;
-			mCurrentXSpan *= 2.0;
-			UpdateHBounds(false);
-			mCurrentXZoomStep++;
-			int xratio=1<<mCurrentXZoomStep;
-			emit hZoomRatio("1:"+QString::number(xratio));
-			emit hScrollValue(GetHScrollValue());
+			double newSpan = mCurrentXSpan*2;
+			double midPoint = ReferenceIsVisible()? GetReference(): ((mView.right+mView.left)/2);
+			double left=std::max(mXRange.min, midPoint-newSpan/2);
+			double right=left+newSpan;
+			if (right > mXRange.max)
+			{
+				right=mXRange.max;
+				left=std::max(mXRange.min, right-newSpan);
+			}
+			mCurrentXSpan = right - left;
+			SetHBounds(left,right);
 			emit hScrollMaxValue(GetXPixels());
+			emit hScrollValue(GetHScrollValue());
 			emit hBoundsChanged(mView.left, mView.right);
 		}
 
@@ -173,8 +170,7 @@ namespace CLAM
 			mCurrentYSpan /= 2.0;
 			UpdateVBounds(true);
 			mCurrentYZoomStep--;
-			int yratio=1;
-			for(int i=0; i < mCurrentYZoomStep; i++) yratio *= 2;
+			int yratio=1 << mCurrentYZoomStep;
 			emit vZoomRatio("1:"+QString::number(yratio));
 			emit vScrollMaxValue(GetYPixels());
 			emit vScrollValue(GetVScrollValue());
@@ -186,11 +182,10 @@ namespace CLAM
 			mCurrentYSpan *= 2.0;
 			UpdateVBounds(false);
 			mCurrentYZoomStep++;
-			int yratio=1;
-			for(int i=0; i < mCurrentYZoomStep; i++) yratio *= 2;
+			int yratio=1 << mCurrentYZoomStep;
 			emit vZoomRatio("1:"+QString::number(yratio));
-			emit vScrollValue(GetVScrollValue());
 			emit vScrollMaxValue(GetYPixels()); 
+			emit vScrollValue(GetVScrollValue());
 		}
 		
 		void Plot2D::updateHScrollValue(int value)
@@ -214,6 +209,9 @@ namespace CLAM
 		void Plot2D::setHBounds(double left, double right)
 		{
 			SetHBounds(left,right);
+			mCurrentXSpan = mView.right-mView.left;
+			emit hScrollMaxValue(GetXPixels());
+			emit hScrollValue(GetHScrollValue());
 		}
 
 		void Plot2D::setVBounds(double bottom, double top)
@@ -242,7 +240,6 @@ namespace CLAM
 			Draw();
 			RenderToolTip(); 
 			swapBuffers();
-//			std::cout << "Saved refresh : " << mUpdatePending << std::endl;
 			mUpdatePending=0;
 		}
 		
@@ -445,46 +442,6 @@ namespace CLAM
 			SetRenderersVBounds(mView.bottom,mView.top);
 			emit yRulerRange(mView.bottom, mView.top);
 			needUpdate();
-		}
-
-		void Plot2D::UpdateHBounds(bool zin)
-		{
-			double left = mView.left;
-			double right = mView.right;
-			if(zin)
-			{
-				if(ReferenceIsVisible())
-				{
-					double ref = GetReference();
-					if(ref-mXRange.min >= mCurrentXSpan/2.0)
-					{
-						left = (ref+mCurrentXSpan/2.0 < mXRange.Span()) 
-							? ref-mCurrentXSpan/2.0 : ref-(mCurrentXSpan-(mXRange.Span()-ref));
-					}
-					right = left+mCurrentXSpan;
-				}
-				else
-				{
-					left += mCurrentXSpan/2.0;
-					right -= mCurrentXSpan/2.0;
-				}
-			}
-			else
-			{
-				left -= mCurrentXSpan/4.0;
-				right += mCurrentXSpan/4.0;
-				if(left < mXRange.min)
-				{
-					left = mXRange.min;
-					right = left+mCurrentXSpan;
-				}
-				if(right > mXRange.max)
-				{
-					right = mXRange.max;
-					left = right-mCurrentXSpan;
-				}
-			}
-			SetHBounds(left,right);
 		}
 
 		void Plot2D::UpdateVBounds(bool zin)
