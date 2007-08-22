@@ -66,9 +66,6 @@ public:
 		// zoom change
 		connect(mBPFEditor, SIGNAL(visibleXRangeChanged(double,double)),
 			this, SIGNAL(visibleXRangeChanged(double,double)));
-		// scroll value change
-		connect(mBPFEditor, SIGNAL(xScrollValueChanged(int)),
-			this, SIGNAL(xScrollValueChanged(int)));
 
 		mBPFEditor->setWhatsThis(
 			tr("Annotator", "<p>The <b>frame level descriptors editor</b> allows editing\n"
@@ -161,11 +158,6 @@ public:
 		mBPFEditor->setVisibleXRange(xmin, xmax);
 	}
 	
-	void setXScrollValue(int val)
-	{
-		mBPFEditor->setXScrollValue(val);
-	}
-	
 	void updateEnvelopesData()
 	{
 		// TODO: Any child scope of any FrameDivision in Song not just Frame, which may not even exist
@@ -241,7 +233,6 @@ signals:
 	void frameDescriptorsRegionChanged(double startMiliseconds, double endMiliseconds);
 	void frameDescriptorsSelectionChanged();
 	void visibleXRangeChanged(double min, double max);
-	void xScrollValueChanged(int val);
 };
 
 #endif
