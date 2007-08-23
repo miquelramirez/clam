@@ -40,7 +40,7 @@ bool ControlStreamSegmentator::IsNewVoice(float pitch, float amplitude)
 	else
 	{
 		SaveControlStream(pitch, amplitude);
-		true;
+		return true;
 	}
 }
 
