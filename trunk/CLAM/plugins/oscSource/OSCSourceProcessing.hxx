@@ -23,7 +23,7 @@
 #define _OSCSourceProcessing_
 
 //CLAM dependencies
-#include "OscSource.hxx"
+#include "OSCSource.hxx"
 #include "OutControl.hxx"
 #include "Processing.hxx"
 
