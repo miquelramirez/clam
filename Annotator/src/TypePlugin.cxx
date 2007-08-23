@@ -448,7 +448,9 @@ public:
 			pool.GetWritePool<CLAM::DataArray >(
 				mSchema.GetScope(),
 				mSchema.GetName())[instance];
-		unsigned nBins = mSchema.GetBinLabels().size();
+		unsigned nBins = mSchema.HasNBins() ? mSchema.GetNBins()
+			: (mSchema.HasBinLabels() ? mSchema.GetBinLabels().size() 
+			: 0 );
 		array.Resize(nBins);
 		array.SetSize(nBins);
 		for (unsigned i = 0; i < nBins; i++)
