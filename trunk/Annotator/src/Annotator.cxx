@@ -167,6 +167,8 @@ Annotator::Annotator(const std::string & nameProject = "")
 	, mGlobalDescriptors(0)
 	, mStatusBar(statusBar())
 	, _auralizer(0)
+	, _visibleRangeMin(0)
+	, _visibleRangeMax(0)
 {
 
 	QSplashScreen * splash = new QSplashScreen( QPixmap(":/logos/images/annotator-splash1.png") );
@@ -393,10 +395,12 @@ void Annotator::adaptInstantViewsToSchema()
 
 void Annotator::setVisibleXRange(double min, double max)
 {
+	_visibleRangeMin=min;
+	_visibleRangeMax=max;
 	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
 		_frameDescriptorsPanes[i]->setVisibleXRange(min, max);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
-		_segmentationPanes[i]->setVisibleXRange(min, max);	
+		_segmentationPanes[i]->setVisibleXRange(min, max);
 }
 
 
@@ -424,6 +428,8 @@ unsigned Annotator::addNewSegmentationPane()
 
 	// sync zoom
 	connect(pane, SIGNAL(visibleXRangeChanged(double,double)),
+			this, SLOT(setVisibleXRange(double,double)));
+	connect(this, SIGNAL(deferredVisibleXRangeChange(double,double)),
 			this, SLOT(setVisibleXRange(double,double)));
 
 	if (!index)
@@ -513,6 +519,8 @@ void Annotator::makeConnections()
 	connect(_auralizer->mPlayer, SIGNAL(stopTime(double)),
 			this, SLOT(updatePendingAuralizationsChanges()));
 }
+
+// Playhead update while playing
 void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 {
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
@@ -521,30 +529,34 @@ void Annotator::setCurrentPlayingTime(double timeMilliseconds)
 		_frameDescriptorsPanes[i]->updateLocator(timeMilliseconds);
 	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
 		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
+	if (timeMilliseconds<_visibleRangeMin or timeMilliseconds>_visibleRangeMax)
+		emit deferredVisibleXRangeChange(timeMilliseconds, timeMilliseconds+(_visibleRangeMax-_visibleRangeMin));
 }
 
+// Playhead update when stoping or pausing
 void Annotator::setCurrentStopTime(double timeMilliseconds, bool paused)
 {
-	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
-		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds, paused);
 	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
 		_frameDescriptorsPanes[i]->updateLocator(timeMilliseconds, paused);
+	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
+		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 }
 
+// The user set the playhead
 void Annotator::setCurrentTime(double timeMilliseconds, double endTimeMiliseconds)
 {
 	static bool updating = false;
 	if (updating) return;
 	updating=true;
 	_auralizer->seekTo(timeMilliseconds,endTimeMiliseconds);
-	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
-		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 		_segmentationPanes[i]->updateLocator(timeMilliseconds, true);
 	for (unsigned i=0; i<_frameDescriptorsPanes.size(); i++)
 		_frameDescriptorsPanes[i]->updateLocator(timeMilliseconds, true);
+	for (unsigned i=0; i<mInstantViewPlugins.size(); i++)
+		mInstantViewPlugins[i]->setCurrentTime(timeMilliseconds);
 	updating=false;
 }
 
@@ -799,7 +811,6 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 	}
 	_auralizer->setAudio(mCurrentAudio);
 	setMenuAudioItemsEnabled(true);
-
 	for (unsigned i=0; i<_segmentationPanes.size(); i++)
 	{
 		_segmentationPanes[i]->setData(mpDescriptorPool,mCurrentAudio);
@@ -809,6 +820,7 @@ void Annotator::currentSongChanged(QTreeWidgetItem * current, QTreeWidgetItem *p
 		_frameDescriptorsPanes[i]->setData(mpDescriptorPool, mCurrentAudio);
 		_frameDescriptorsPanes[i]->refreshEnvelopes();
 	}	
+	setVisibleXRange(0, mCurrentAudio.GetSize()/mCurrentAudio.GetSampleRate());
 	auralizeSegmentation();
 	refreshInstantViews();	
 	

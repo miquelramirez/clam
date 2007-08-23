@@ -224,6 +224,10 @@ private:
 	std::vector<SegmentationPane *> _segmentationPanes;
 	std::vector<FrameDescriptorsPane *> _frameDescriptorsPanes;
 	Auralizer * _auralizer;
+	TData _visibleRangeMin;
+	TData _visibleRangeMax;
+signals:
+	void deferredVisibleXRangeChange(double min, double max);
 };
 
 #endif
