@@ -107,6 +107,11 @@ The unit of this measure can be dB or none, depending on the scale set for the m
     <Attribute name="MelFrequencyCepstrumCoefficients" scope="Frame" type="FloatArray">
       <BinLabels>MFCC1 MFCC2 MFCC3 MFCC4 MFCC5 MFCC6 MFCC7 MFCC8 MFCC9 MFCC10 MFCC11 MFCC12</BinLabels>
     </Attribute>
+    <Attribute name="SpectrumMagnitude" scope="Frame" type="FloatArray">
+      <FirstBinOffset>0</FirstBinOffset>
+      <BinGap>2205</BinGap>
+      <NBins>10</NBins>
+    </Attribute>
   </Attributes>
 
 </DescriptionScheme>
