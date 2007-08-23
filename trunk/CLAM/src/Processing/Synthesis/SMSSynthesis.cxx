@@ -184,11 +184,19 @@ bool SMSSynthesis::SinusoidalSynthesis(const SpectralPeakArray& in,Spectrum& out
 
 bool SMSSynthesis::Do(void)
 {
-	bool result =  Do(mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
-		mOutputSinSpectrum.GetData(),mOutputSpectrum.GetData(),
-		mOutputAudio.GetAudio(),mOutputSinAudio.GetAudio(),mOutputResAudio.GetAudio());
-
-
+	bool result;
+	if (mOutputSinAudio.HasConnections() || mOutputResAudio.HasConnections())
+	{
+		result =  Do(mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
+					mOutputSinSpectrum.GetData(),mOutputSpectrum.GetData(),
+					mOutputAudio.GetAudio(),mOutputSinAudio.GetAudio(),mOutputResAudio.GetAudio());
+	}
+	else
+	{
+		result =  Do(mInputSinSpectralPeaks.GetData(),mInputResSpectrum.GetData(),
+					mOutputSinSpectrum.GetData(),mOutputSpectrum.GetData(),
+					mOutputAudio.GetAudio());
+	}
 	
 	mInputSinSpectralPeaks.Consume();
 	mInputResSpectrum.Consume();
@@ -198,7 +206,6 @@ bool SMSSynthesis::Do(void)
 	mOutputAudio.Produce();
 	mOutputSinAudio.Produce();
 	mOutputResAudio.Produce();
-
 
 	return result;
 }
@@ -283,7 +290,65 @@ bool SMSSynthesis::Do(
 	return true;
 }
 
+bool SMSSynthesis::Do(
+		SpectralPeakArray& inputSinusoidalPeaks,
+		Spectrum& inputResidualSpectrum,
+		Spectrum& outputSinusoidalSpectrum,	//
+		Spectrum& outputSpectrum,		//
+		Audio& outputAudio)
+{
+	//First we do the phase managing. Note that if the Do(frame) overload is not used,
+	//the time and pitch controls in this processing should be set by hand before this
+	//method is used
+
+//	mPhaseMan.mCurrentTime.DoControl(mCurrentTimeControl.GetLastValue()); //TODO used in SMSBase (Synth from segment)
+	TData currentTime = 0;	
+	if (mCurrentTimeControl.GetLastValue() < -0.9)
+	{
+		int framesize = outputAudio.GetSize();
+		TData samplerate = inputResidualSpectrum.GetSpectralRange()*2;
+		currentTime =  TData( mCurrentFrame*framesize ) / samplerate;
+	} 
+	else 
+	{
+		currentTime = mCurrentTimeControl.GetLastValue();
+	}
+	mPhaseMan.mCurrentTime.DoControl( currentTime );
+	mCurrentFrame ++;
+	
+	mPhaseMan.mCurrentPitch.DoControl(mCurrentPitch.GetLastValue());
+	mPhaseMan.Do(inputSinusoidalPeaks);
+
+	// We create a spectrum from the sinusoidal peaks 	
+	outputSinusoidalSpectrum.SetSize(mConfig.GetSpectrumSize());
+	mSynthSineSpectrum.Do(inputSinusoidalPeaks,outputSinusoidalSpectrum);
+	
+	outputSpectrum.SetSize( inputResidualSpectrum.GetSize() );
+
+	//We add Residual spectrum in the input frame plus the synthesized sinusoidal spectrum
+	mSpectrumAdder.Do(outputSinusoidalSpectrum, inputResidualSpectrum, outputSpectrum);
+	
+	//We synthesize to audio the resulting summed spectrum
+	mSpectralSynthesis.Do(outputSpectrum,mAudioFrame);
+
+
+	//We do the overlap and add
+	mOverlapAddGlobal.Do(mAudioFrame, outputAudio);
+
+	/* Note: although sinusoidal spectrum is already available from the analysis phase, we 
+	need to store it again in the frame because the original peak array may have been
+	transformed
+	*/
+	return true;
+}
+
 bool SMSSynthesis::Do(Frame& in)
+{
+	bool isSynthesizeSinusoidsAndResidual = true;
+	return Do(in, isSynthesizeSinusoidsAndResidual);
+}
+
+bool SMSSynthesis::Do(Frame& in, bool isSynthesizeSinusoidsAndResidual)
 {
 	if(in.GetCenterTime()<0) return false;//such frames should not be synthesized	
 	
@@ -300,9 +365,16 @@ bool SMSSynthesis::Do(Frame& in)
 	in.GetOutSpec().SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
 	in.GetSinusoidalSpec().SetSpectralRange(in.GetResidualSpec().GetSpectralRange());
 
-	return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),in.GetSinusoidalSpec(),in.GetOutSpec(),
-		in.GetSynthAudioFrame(),in.GetSinusoidalAudioFrame(),in.GetResidualAudioFrame());
-
+	if ( isSynthesizeSinusoidsAndResidual )
+	{
+		return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),in.GetSinusoidalSpec(),in.GetOutSpec(),
+					in.GetSynthAudioFrame(),in.GetSinusoidalAudioFrame(),in.GetResidualAudioFrame());
+	}
+	else
+	{
+		return Do(in.GetSpectralPeakArray(),in.GetResidualSpec(),in.GetSinusoidalSpec(),in.GetOutSpec(),
+					in.GetSynthAudioFrame());
+	}
 }
 
 bool SMSSynthesis::Do(Segment& in)
