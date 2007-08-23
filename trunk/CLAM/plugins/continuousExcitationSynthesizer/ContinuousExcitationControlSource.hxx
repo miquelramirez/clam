@@ -38,6 +38,8 @@ namespace CLAM {
 class ContinuousExcitationControlSource
 {
 public:
+	ContinuousExcitationControlSource() {}
+	virtual ~ContinuousExcitationControlSource() {}
 	/**
 	* This method can be used to ask for the next line of control information.
 	*/
