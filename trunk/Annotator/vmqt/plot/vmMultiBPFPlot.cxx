@@ -34,7 +34,10 @@ namespace CLAM
 			, mIsReadOnly(false)
 			, mCurrentBPF("")
 		{
-			InitMultiBPFPlot();
+			mGrid = new Grid;
+			mPlot->AddRenderer("grid", mGrid);
+			mPlot->SendToBack("grid");
+			backgroundWhite();
 		}
 
 		MultiBPFPlot::~MultiBPFPlot()
@@ -45,50 +48,50 @@ namespace CLAM
 		{
 			if(ExistKey(key))
 			{
-				static_cast<BPFEditor*>(mPlot->GetRenderer(key))->SetData(bpf);
+				mBpfEditors[mKeyIndex[key]]->SetData(bpf);
 			}
 			else
 			{
-				mPlot->AddRenderer(key, new BPFEditor());
+				BPFEditor * bpfEditor = new BPFEditor;
+				mKeyIndex[key]=mBpfEditors.size();
+				mBpfEditors.push_back(bpfEditor);
+				mPlot->AddRenderer(key, bpfEditor);
 				mPlot->SendToBack("grid");
 				mPlot->BringToFront("segmentation");
 				mPlot->BringToFront("locator");
-				mPlot->GetRenderer(key)->SetGrid(static_cast<Grid*>(mPlot->GetRenderer("grid")));
-				static_cast<BPFEditor*>(mPlot->GetRenderer(key))->SetData(bpf);
-				if(mIsReadOnly) static_cast<BPFEditor*>(mPlot->GetRenderer(key))->SetFlags(0);
-				mBPFKeys[key]=static_cast<BPFEditor*>(mPlot->GetRenderer(key))->GetFlags();
+				mPlot->GetRenderer(key)->SetGrid(mGrid);
+				bpfEditor->SetData(bpf);
+				if(mIsReadOnly) bpfEditor->SetFlags(0);
+				mBPFKeys[key]=bpfEditor->GetFlags();
 				setCurrentBPF(key);
-				connect(static_cast<BPFEditor*>(mPlot->GetRenderer(key)),
-						SIGNAL(xValueChanged(QString,unsigned,double)),
-						this,SIGNAL(xValueChanged(QString,unsigned,double)));
-				connect(static_cast<BPFEditor*>(mPlot->GetRenderer(key)),
-						SIGNAL(yValueChanged(QString,unsigned,double)),
-						this,SIGNAL(yValueChanged(QString,unsigned,double)));
-				connect(static_cast<BPFEditor*>(mPlot->GetRenderer(key)),
-						SIGNAL(elementAdded(QString,unsigned,double,double)),
-						this,SIGNAL(elementAdded(QString,unsigned,double,double)));
-				connect(static_cast<BPFEditor*>(mPlot->GetRenderer(key)),
-						SIGNAL(elementRemoved(QString,unsigned)),this,SIGNAL(elementRemoved(QString,unsigned)));
+				connect(bpfEditor, SIGNAL(xValueChanged(QString,unsigned,double)),
+					this, SIGNAL(xValueChanged(QString,unsigned,double)));
+				connect(bpfEditor, SIGNAL(yValueChanged(QString,unsigned,double)),
+					this, SIGNAL(yValueChanged(QString,unsigned,double)));
+				connect(bpfEditor, SIGNAL(elementAdded(QString,unsigned,double,double)),
+					this, SIGNAL(elementAdded(QString,unsigned,double,double)));
+				connect(bpfEditor, SIGNAL(elementRemoved(QString,unsigned)),
+					this, SIGNAL(elementRemoved(QString,unsigned)));
 			}
 		}
 
 		void MultiBPFPlot::SetColors(const QString& key, const QColor& cline, const QColor& chandler)
 		{
 			if(!ExistKey(key)) return;
-			static_cast<BPFEditor*>(mPlot->GetRenderer(key))->SetColors(cline,chandler);
+			mBpfEditors[mKeyIndex[key]]->SetColors(cline,chandler);
 		}
 
 		void MultiBPFPlot::SetFlags(const QString& key, int flags)
 		{
 			if(mIsReadOnly) return;
 			if(!ExistKey(key)) return;
-			static_cast<BPFEditor*>(mPlot->GetRenderer(key))->SetFlags(flags);
-			mBPFKeys[key]=static_cast<BPFEditor*>(mPlot->GetRenderer(key))->GetFlags();
+			mBpfEditors[mKeyIndex[key]]->SetFlags(flags);
+			mBPFKeys[key]=flags;
 		}
 			
 		void MultiBPFPlot::SetGridSteps(double xstep, double ystep)
 		{
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridSteps(xstep,ystep);
+			mGrid->SetGridSteps(xstep,ystep);
 //			mXRuler->SetStep(xstep);
 //			mYRuler->SetStep(ystep);
 		}
@@ -96,32 +99,29 @@ namespace CLAM
 		void MultiBPFPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridColor(QColor(152,102,32));
+			mGrid->SetGridColor(QColor(152,102,32));
 		}
 
 		void MultiBPFPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SetGridColor(QColor(255,255,0));
+			mGrid->SetGridColor(QColor(255,255,0));
 		}
 
 		void MultiBPFPlot::showGrid(bool show)
 		{
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->ShowGrid(show);
+			mGrid->ShowGrid(show);
 		}
 
 		void MultiBPFPlot::snapToGrid(bool snap)
 		{
-			static_cast<Grid*>(mPlot->GetRenderer("grid"))->SnapToGrid(snap);
+			mGrid->SnapToGrid(snap);
 		}
 
 		void MultiBPFPlot::readOnly()
 		{
-			std::map<QString,int>::iterator it = mBPFKeys.begin();
-			for(; it != mBPFKeys.end(); it++)
-			{
-				static_cast<BPFEditor*>(mPlot->GetRenderer(it->first))->SetFlags(0);
-			}
+			for (unsigned i=0; i<mBpfEditors.size(); i++)
+				mBpfEditors[i]->SetFlags(0);
 			mIsReadOnly = true;
 		}
 
@@ -129,21 +129,11 @@ namespace CLAM
 		{
 			if(key == mCurrentBPF) return;
 			if(!ExistKey(key)) return;
-			std::map<QString,int>::iterator it = mBPFKeys.begin();
-			for(; it != mBPFKeys.end(); it++)
-			{
-				static_cast<BPFEditor*>(mPlot->GetRenderer(it->first))->SetFlags(0);
-			}
-			static_cast<BPFEditor*>(mPlot->GetRenderer(key))->SetFlags(mBPFKeys[key]);
+			for (unsigned i=0; i<mBpfEditors.size(); i++)
+				mBpfEditors[i]->SetFlags(0);
+			mBpfEditors[mKeyIndex[key]]->SetFlags(mBPFKeys[key]);
 			mCurrentBPF = key;
 			emit currentBPF(mCurrentBPF);
-		}
-
-		void MultiBPFPlot::InitMultiBPFPlot()
-		{
-			mPlot->AddRenderer("grid", new Grid());
-			mPlot->SendToBack("grid");
-			backgroundWhite();
 		}
 
 		bool MultiBPFPlot::ExistKey(const QString& key)
