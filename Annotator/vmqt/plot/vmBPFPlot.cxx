@@ -103,17 +103,14 @@ namespace CLAM
 		{
 			AddBPF("bpf_editor",0);
 			setCurrentBPF("bpf_editor");
-			connect(static_cast<BPFEditor*>(mPlot->GetRenderer("bpf_editor")),
-					SIGNAL(xValueChanged(QString,unsigned,double)),
-					this,SLOT(xvalue_changed(QString,unsigned,double)));
-			connect(static_cast<BPFEditor*>(mPlot->GetRenderer("bpf_editor")),
-					SIGNAL(yValueChanged(QString,unsigned,double)),
-					this,SLOT(yvalue_changed(QString,unsigned,double)));
-			connect(static_cast<BPFEditor*>(mPlot->GetRenderer("bpf_editor")),
-					SIGNAL(elementAdded(QString,unsigned,double,double)),
-					this,SLOT(element_added(QString,unsigned,double,double)));
-			connect(static_cast<BPFEditor*>(mPlot->GetRenderer("bpf_editor")),
-					SIGNAL(elementRemoved(QString,unsigned)),this,SLOT(element_removed(QString,unsigned)));
+			connect(mBpfEditors[0], SIGNAL(xValueChanged(QString,unsigned,double)),
+				this, SLOT(xvalue_changed(QString,unsigned,double)));
+			connect(mBpfEditors[0], SIGNAL(yValueChanged(QString,unsigned,double)),
+				this, SLOT(yvalue_changed(QString,unsigned,double)));
+			connect(mBpfEditors[0],	SIGNAL(elementAdded(QString,unsigned,double,double)),
+				this, SLOT(element_added(QString,unsigned,double,double)));
+			connect(mBpfEditors[0], SIGNAL(elementRemoved(QString,unsigned)),
+				this, SLOT(element_removed(QString,unsigned)));
 		}
 	}
 }

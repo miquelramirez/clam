@@ -30,6 +30,9 @@ namespace CLAM
 {
 	namespace VM
 	{
+		class Grid;
+		class BPFEditor;
+
 		class MultiBPFPlot : public SegmentationPlot
 		{
 			Q_OBJECT
@@ -69,6 +72,10 @@ namespace CLAM
 			std::map<QString,int> mBPFKeys;
 
 			void InitMultiBPFPlot();
+		protected:
+			Grid * mGrid;
+			std::vector <BPFEditor*> mBpfEditors;
+			std::map<QString, int> mKeyIndex;
 		};
 	}
 }
