@@ -447,16 +447,19 @@ unsigned Annotator::addNewFrameDescriptorsPane()
 	FrameDescriptorsPane * pane = new FrameDescriptorsPane(0, mProject, mEPFs);
 	// Changing the current frame descriptor
 	connect(pane, SIGNAL(frameDescriptorsSelectionChanged()),
-			this, SLOT(auralizeLLDs()) );
+		this, SLOT(auralizeLLDs()) );
 	// Current position update
-	connect(pane, SIGNAL(frameDescriptorsRegionChanged(double,double)),
-			this, SLOT(setCurrentTime(double,double)));
+	connect(pane, SIGNAL(playRegionChanged(double,double)),
+		this, SLOT(setCurrentTime(double,double)));
 	// Making the splitters look like a table
 	connect(pane, SIGNAL(splitterMoved(int,int)),
-			this, SLOT(syncronizeSplits()));
+		this, SLOT(syncronizeSplits()));
 	// Horizontal view range changed
 	connect(pane, SIGNAL(visibleXRangeChanged(double,double)),
-			this, SLOT(setVisibleXRange(double,double)));
+		this, SLOT(setVisibleXRange(double,double)));
+	// Be aware when frame descriptors are edited
+	connect(pane, SIGNAL(dataChanged()),
+		this, SLOT(markCurrentSongChanged()));
 
 	unsigned index = _frameDescriptorsPanes.size();
 	mVSplit->insertWidget(index,pane);

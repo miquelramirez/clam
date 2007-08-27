@@ -148,6 +148,7 @@ private slots:
 	void updatePendingAuralizationsChanges();
 	void saveProject();
 	void syncronizeSplits();
+	void markCurrentSongChanged(bool changed=true);
 
 	void on_helpWhatsThisAction_triggered();
 	void on_reloadDescriptorsAction_triggered();
@@ -167,7 +168,6 @@ private:
 	void makeConnections();
 	void currentFile( std::string &);
 	void markProjectChanged(bool changed);
-	void markCurrentSongChanged(bool changed=true);
 	void refreshGlobalDescriptorsTable();
 	void appendRecentOpenedProject(const std::string & projectFilename);
 
