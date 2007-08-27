@@ -24,6 +24,7 @@ private:
 	std::vector<CLAM::EquidistantPointsFunction> _EPFs;
 	const CLAM::Audio * _audio;
 	CLAM::DescriptionDataPool * _pool;
+	std::vector<std::string> _descriptorNames;
 
 public:
 	FrameDescriptorsPane(QWidget * parent,
@@ -56,13 +57,13 @@ public:
 
 		// Changing the current frame level descriptor
 		connect(mFrameLevelAttributeList, SIGNAL(currentRowChanged(int)),
-				this, SLOT(changeFrameLevelDescriptor(int)));
+			this, SLOT(changeFrameLevelDescriptor(int)));
 		// Apply frame descriptor changes
 		connect( mBPFEditor, SIGNAL(yValueChanged(unsigned, double)),
-				this, SLOT(frameDescriptorsChanged(unsigned, double)));
+			this, SLOT(updatePool(unsigned, double)));
 		// Current position update
 		connect(mBPFEditor, SIGNAL(selectedRegion(double,double)),
-			this, SIGNAL(frameDescriptorsRegionChanged(double,double)));
+			this, SIGNAL(playRegionChanged(double,double)));
 		// zoom change
 		connect(mBPFEditor, SIGNAL(visibleXRangeChanged(double,double)),
 			this, SIGNAL(visibleXRangeChanged(double,double)));
@@ -97,6 +98,7 @@ public:
 	void adaptEnvelopesToCurrentSchema()
 	{
 		mFrameLevelAttributeList->clear();
+		_descriptorNames.clear();
 
 		const std::list<std::string>& names = _mProject.GetNamesByScopeAndType("Frame", "Float");
 		const unsigned nTabs = names.size();
@@ -104,6 +106,7 @@ public:
 		for (unsigned i = 0; i<nTabs; name++, i++)
 		{
 			mFrameLevelAttributeList->addItem(name->c_str());
+			_descriptorNames.push_back(*name);
 		}
 	}
 	
@@ -157,43 +160,15 @@ public:
 	{
 		mBPFEditor->setVisibleXRange(xmin, xmax);
 	}
-	
-	void updateEnvelopesData()
-	{
-		// TODO: Any child scope of any FrameDivision in Song not just Frame, which may not even exist
-		unsigned nEPFEditors = _EPFs.size();
-		const std::list<std::string>& descriptorsNames = _mProject.GetNamesByScopeAndType("Frame", "Float");
-		std::list<std::string>::const_iterator it=descriptorsNames.begin();
-		for(unsigned int i = 0; i < nEPFEditors; i++, it++)
-		{
-			updateEnvelopeData(i, _pool->GetWritePool<CLAM::TData>("Frame",*it));
-		}
-
-		emit markCurrentSongChanged(true);
-	}
-	void updateEnvelopeData(int bpfIndex, CLAM::TData* descriptor)
-	{
-		int nPoints = _EPFs[bpfIndex].GetBPF().Size();
-		for (int i=0; i<nPoints; i++)
-		{
-			descriptor[i] = _EPFs[bpfIndex].GetBPF().GetValueFromIndex(i);
-		}
-	}
-	
 	const CLAM::EquidistantPointsFunction & getCurrentEPFs() const
 	{
 		// dummy EPF in case no row selected
-		static const CLAM::EquidistantPointsFunction tmpEPF;
-
+		static const CLAM::EquidistantPointsFunction nullEPF;
 		unsigned index = mFrameLevelAttributeList->currentRow();
-		if (index == -1) // no row selected
-		{
-			return tmpEPF;
-		} else {
-			return _EPFs[index];
-		}
+		if (index == -1) return nullEPF; // No row selected
+		return _EPFs[index];
 	}
-public slots:
+private slots:
 	void changeFrameLevelDescriptor(int current)
 	{
 		unsigned index = mFrameLevelAttributeList->currentRow();
@@ -215,22 +190,21 @@ public slots:
 		
 		emit frameDescriptorsSelectionChanged();
 	}
-	void frameDescriptorsChanged(unsigned pointIndex,double newValue)
+	void updatePool(unsigned pointIndex,double newYValue)
 	{
-		/*TODO: right now, no matter how many points have been edited all descriptors are updated. This
-		  is not too smart/efficient but doing it otherwise would mean having a dynamic list of slots 
-		  in the class.*/
-		unsigned index = mFrameLevelAttributeList->currentRow();
+		unsigned descriptorIndex = mFrameLevelAttributeList->currentRow();
+		// TODO: Is this set value necessary? Does BPFEditor change it itself?
+//		_EPFs[descriptorIndex].GetBPF().SetValue(pointIndex,TData(newYValue));
+		TData * poolArray = _pool->GetWritePool<CLAM::TData>("Frame",_descriptorNames[descriptorIndex]);
 		std::cout << "Frame " <<pointIndex<<" changed value from "
-			<< _EPFs[index].GetBPF().GetValue(pointIndex) <<" to "
-			<< newValue<< std::endl;
-		_EPFs[index].GetBPF().SetValue(pointIndex,TData(newValue));
-		updateEnvelopesData();
+			<< poolArray[pointIndex] <<" to "
+			<< newYValue << " of descriptor " << _descriptorNames[descriptorIndex] << std::endl;
+		poolArray[pointIndex] = newYValue;
+		emit dataChanged();
 	}
-	
 signals:
-	void markCurrentSongChanged(bool changed);
-	void frameDescriptorsRegionChanged(double startMiliseconds, double endMiliseconds);
+	void dataChanged();
+	void playRegionChanged(double startMiliseconds, double endMiliseconds);
 	void frameDescriptorsSelectionChanged();
 	void visibleXRangeChanged(double min, double max);
 };
