@@ -82,7 +82,7 @@ public:
 				this, SLOT(refreshSegmentation()));
 		// Apply segment descriptors changes
 		connect(_tableControler, SIGNAL(contentEdited(int) ),
-				this, SIGNAL(segmentationDataChanged() ) );
+			this, SIGNAL(dataChanged() ) );
 		// Segment editing
 		connect(_segmentEditor, SIGNAL(segmentOnsetChanged(unsigned,double)),
 				this, SLOT(updateSegmentations()));
@@ -95,7 +95,7 @@ public:
 		connect(_segmentEditor, SIGNAL(segmentInserted(unsigned)),
 				this, SLOT(insertSegment(unsigned)));
 		connect(_segmentEditor, SIGNAL(selectedRegion(double,double)),
-			this, SIGNAL(segmentEditorRegionChanged(double,double)));
+			this, SIGNAL(playRegionChanged(double,double)));
 
 		// zoom change
 		connect(_segmentEditor, SIGNAL(visibleXRangeChanged(double,double)),
@@ -153,8 +153,8 @@ public:
 	}
 signals:
 	void segmentationSelectionChanged();
-	void segmentationDataChanged();
-	void segmentEditorRegionChanged(double startMiliseconds, double endMiliseconds);
+	void dataChanged();
+	void playRegionChanged(double startMiliseconds, double endMiliseconds);
 	void visibleXRangeChanged(double min, double max);
 public slots:
 	void changeCurrentSegment()
@@ -261,7 +261,7 @@ public slots:
 				}
 			} break;
 		}
-		emit segmentationDataChanged();
+		emit dataChanged();
 	}
 	void insertSegment(unsigned index)
 	{
