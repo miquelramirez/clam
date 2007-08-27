@@ -415,22 +415,22 @@ unsigned Annotator::addNewSegmentationPane()
 	SegmentationPane * pane = new SegmentationPane(0, mProject);
 	// Changing the current segmentation descriptor
 	connect(pane, SIGNAL(segmentationSelectionChanged()),
-			this, SLOT(auralizeSegmentation()) );
+		this, SLOT(auralizeSegmentation()) );
 	// Apply segment descriptors changes
-	connect(pane, SIGNAL(segmentationDataChanged()),
-			this, SLOT(updateSegmentation()) );
+	connect(pane, SIGNAL(dataChanged()),
+		this, SLOT(updateSegmentation()) );
 	// Current position update
-	connect(pane, SIGNAL(segmentEditorRegionChanged(double,double)),
-			this, SLOT(setCurrentTime(double,double)));
+	connect(pane, SIGNAL(playRegionChanged(double,double)),
+		this, SLOT(setCurrentTime(double,double)));
 	// Making the splitters look like a table
 	connect(pane, SIGNAL(splitterMoved(int,int)),
-			this, SLOT(syncronizeSplits()));
+		this, SLOT(syncronizeSplits()));
 
 	// sync zoom
 	connect(pane, SIGNAL(visibleXRangeChanged(double,double)),
-			this, SLOT(setVisibleXRange(double,double)));
+		this, SLOT(setVisibleXRange(double,double)));
 	connect(this, SIGNAL(deferredVisibleXRangeChange(double,double)),
-			this, SLOT(setVisibleXRange(double,double)));
+		this, SLOT(setVisibleXRange(double,double)));
 
 	if (!index)
 		mVSplit->addWidget(pane);
