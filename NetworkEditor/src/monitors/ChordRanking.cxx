@@ -143,8 +143,8 @@ void CLAM::VM::ChordRanking::paintEvent(QPaintEvent * event)
 		double normalizedValue = (_data[indexes[i]]-minValue)/(_maxValue-minValue);
 		QRect barRect(margin,i*barOffset+margin, maxBarSize*normalizedValue, barSize);
 		QLinearGradient linearGrad(QPointF(margin+maxBarSize*normalizedValue, 0), QPointF(margin+maxBarSize*(normalizedValue-1), 0));
-		linearGrad.setColorAt(0, _barGradientBegin);
-		linearGrad.setColorAt(1, _barGradientEnd);
+		linearGrad.setColorAt(1, _barGradientBegin);
+		linearGrad.setColorAt(0, _barGradientEnd);
 //		painter.setBrush(QColor(0xff, int(0xff*(1-normalizedValue)), 0x00));
 		painter.setBrush(linearGrad);
 		painter.drawRect(barRect);
