@@ -35,7 +35,6 @@ namespace Hidden
 		"description", "ADSR",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ADSR> regADSR("ADSR");
 	static FactoryRegistrator<ProcessingFactory, ADSR> reg = metadata;
 }
 
