@@ -28,6 +28,7 @@ private:
 		const CLAM::Audio & audio = FreezeAndGetData();
 		const CLAM::Array<CLAM::TData> & data = audio.GetBuffer();
 		_size = data.Size();
+		if (_size==0) return 0;
 		return &data[0];
 	}
 	void release()
