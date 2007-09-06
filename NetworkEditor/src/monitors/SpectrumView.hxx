@@ -37,6 +37,7 @@ class SpectrumViewMonitor :
 		}
 		const CLAM::Array<CLAM::TData> & data = _spectrum.GetMagBuffer();
 		_size = data.Size();
+		if (_size==0) return 0;
 		return &data[0];
 	}
 	void release()
@@ -81,6 +82,11 @@ public:
 	{
 		if ( !_dataSource) return;
 		const CLAM::TData * data = _dataSource->frameData();
+		if (!data)
+		{
+			_dataSource->release();
+			return;
+		}
 		int size = _dataSource->nBins();
 
 		QPainter painter(this);
