@@ -11,19 +11,7 @@ namespace Hidden
 		"icon", "vumeter.svg",
 		0
 	};
-	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VumeterMonitor> regVumeterMonitor("Vumeter");
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VumeterMonitor> regVumeterMonitor("Vumeter");
-
-/*	static class VumeterMetadata
-	{
-	public:
-		VumeterMetadata()
-		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("Vumeter", "port_monitor_type", typeid(CLAM::TData).name());
-			factory.AddAttribute("Vumeter", "icon", "vumeter.svg");
-		}
-	} dummy;*/
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VumeterMonitor> regVumeterMonitor=metadata;
 }
 
 void Vumeter::paintEvent(QPaintEvent * event)
