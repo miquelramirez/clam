@@ -1,0 +1,14 @@
+
+This is a CLAM plugin which contains some processings to do 3D acoustics simulation.
+That means simulating moving sound emitters and receptor within a virtual 3D scenario.
+It works by having a database of impulse responses (pressure and velocities) for
+each receiver and emitter position within a discrete position grid.
+
+Of course you can reuse the building blocks for simpler or more complex systems:
+- Simpler spectral processing (FFT, IFFT, arithmetic operation and conversions)
+- Processing of impulse response representation in DFT (computation, interpolation, DB's)
+- Low latency real-time convolution
+- Processings to map receiver acoustic magnitudes to a surround system.
+
+
+
