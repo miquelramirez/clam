@@ -75,7 +75,7 @@ public:
 		for (unsigned i=0; i<nBlocks; i++)
 		{
 			ComplexSpectrum & spectrum = _responseSpectrums[i];
-			spectrum.bins.assign(_config.GetFrameSize()*2,std::complex<CLAM::TData>());
+			spectrum.bins.assign(_config.GetFrameSize()+1,std::complex<CLAM::TData>());
 		}
 	}
 	void InterpolateResponseSpectrums()
