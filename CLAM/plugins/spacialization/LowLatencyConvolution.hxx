@@ -113,68 +113,6 @@ public:
 		_output.Produce();
 		return true;
 	}
-private:
-	bool ComputeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSpectrum> & responseSpectrums)
-	{
-		std::cout << "---- wavfile "<< wavfile <<std::endl;
-
-		MonoAudioFileReaderConfig readerConfig;
-		readerConfig.SetSourceFile(wavfile);
-		MonoAudioFileReader reader(readerConfig);
-		if (!reader.IsConfigured())
-		{
-			AddConfigErrorMessage("Configuring the inner AudioFileReader:\n");
-			AddConfigErrorMessage(reader.GetConfigErrorMessage());
-			return false;
-		}
-		const unsigned nSamples = reader.GetHeader().GetSamples();
-		std::cout << "NSamples: " << nSamples << std::endl;
-
-		AudioWindowingConfig windowerConfig;
-		windowerConfig.SetSamplingRate(44100); // TODO: Take it from the file
-		windowerConfig.SetHopSize(_config.GetFrameSize());
-		windowerConfig.SetWindowSize(_config.GetFrameSize()+1);
-		windowerConfig.SetFFTSize(_config.GetFrameSize()*2);
-		windowerConfig.SetDoHalfWindowShift(false);
-		windowerConfig.SetWindowType(EWindowType::eNone);
-		AudioWindowing windower(windowerConfig);
-		if (!windower.IsConfigured())
-		{
-			AddConfigErrorMessage("Configuring the inner AudioWindowing:\n");
-			AddConfigErrorMessage(windower.GetConfigErrorMessage());
-			return false;
-		}
-		FFTConfig fftConfig; 
-		fftConfig.SetAudioSize(_config.GetFrameSize()*2);
-		MyFFT fft(fftConfig);
-
-		ConnectPorts(reader,0,windower,0);
-		ConnectPorts(windower,0,fft,0);
-		InPort<ComplexSpectrum> fetcher;
-		fft.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
-
-		responseSpectrums.clear();
-		reader.Start();
-		windower.Start();
-		fft.Start();
-		
-		for (bool samplesAvailable=true; samplesAvailable; )
-		{
-			samplesAvailable = reader.Do();
-			if (!windower.CanConsumeAndProduce()) continue;
-			windower.Do();
-			fft.Do();
-			responseSpectrums.push_back(fetcher.GetData());
-//			fetcher.GetData().dump(std::cout);
-			fetcher.Consume();
-		}
-
-		reader.Stop();
-		windower.Stop();
-		fft.Stop();
-		return true;
-	}
-
 };
 
 } // namespace CLAM
