@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioBuffer2Stream" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioBuffer2Stream_1" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioBuffer2Stream_2" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioWindowing" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="C" type="AudioSink"/>
+
+  <processing id="Cartesian2PolarControl" type="Cartesian2PolarControl"/>
+
+  <processing id="ControlSurface" type="ControlSurface">
+    <MinX>-1</MinX>
+    <DefaultX>0</DefaultX>
+    <MaxX>1</MaxX>
+    <MinY>-1</MinY>
+    <DefaultY>0</DefaultY>
+    <MaxY>1</MaxY>
+  </processing>
+
+  <processing id="ImpulseResponseInterpolator" type="ImpulseResponseInterpolator">
+    <FrameSize>512</FrameSize>
+    <MaxNFrames>13</MaxNFrames>
+  </processing>
+
+  <processing id="ImpulseResponseInterpolator_1" type="ImpulseResponseInterpolator">
+    <FrameSize>512</FrameSize>
+    <MaxNFrames>13</MaxNFrames>
+  </processing>
+
+  <processing id="ImpulseResponseInterpolator_2" type="ImpulseResponseInterpolator">
+    <FrameSize>512</FrameSize>
+    <MaxNFrames>13</MaxNFrames>
+  </processing>
+
+  <processing id="ImpulseResponseLoader" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>room1/p_emissor_4-1-1_receptor_4-2-1.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="ImpulseResponseLoader1" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>room1/vx_emissor_4-1-1_receptor_4-2-1.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="ImpulseResponseLoader1End" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>room1/vx_emissor_4-9-1_receptor_4-2-1.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="ImpulseResponseLoader2" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>room1/vy_emissor_4-1-1_receptor_4-2-1.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="ImpulseResponseLoader2End" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>room1/vy_emissor_4-9-1_receptor_4-2-1.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="ImpulseResponseLoaderEnd" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>room1/p_emissor_4-9-1_receptor_4-2-1.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="InLanguage" type="AudioSource"/>
+
+  <processing id="L" type="AudioSink"/>
+
+  <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+    <UseExternalDataBase>0</UseExternalDataBase>
+    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
+  </processing>
+
+  <processing id="LowLatencyConvolution_1" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+    <UseExternalDataBase>0</UseExternalDataBase>
+    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
+  </processing>
+
+  <processing id="LowLatencyConvolution_2" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+    <UseExternalDataBase>0</UseExternalDataBase>
+    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
+  </processing>
+
+  <processing id="MyFFT" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_1" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_2" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="Oscilloscope C" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope L" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope R" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope SL" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope SR" type="Oscilloscope"/>
+
+  <processing id="Position" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="R" type="AudioSink"/>
+
+  <processing id="SL" type="AudioSink"/>
+
+  <processing id="SR" type="AudioSink"/>
+
+  <processing id="Surround" type="Surround"/>
+
+  <port_connection>
+    <out>AudioBuffer2Stream.Audio stream</out>
+    <in>Surround.p</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBuffer2Stream_1.Audio stream</out>
+    <in>Surround.vx</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBuffer2Stream_2.Audio stream</out>
+    <in>Surround.vy</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioWindowing.Output</out>
+    <in>MyFFT.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseInterpolator.Output</out>
+    <in>LowLatencyConvolution.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseInterpolator_1.Output</out>
+    <in>LowLatencyConvolution_1.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseInterpolator_2.Output</out>
+    <in>LowLatencyConvolution_2.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseLoader.ImpulseResponse</out>
+    <in>ImpulseResponseInterpolator.Input1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseLoader1.ImpulseResponse</out>
+    <in>ImpulseResponseInterpolator_1.Input1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseLoader1End.ImpulseResponse</out>
+    <in>ImpulseResponseInterpolator_1.Input2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseLoader2.ImpulseResponse</out>
+    <in>ImpulseResponseInterpolator_2.Input1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseLoader2End.ImpulseResponse</out>
+    <in>ImpulseResponseInterpolator_2.Input2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseLoaderEnd.ImpulseResponse</out>
+    <in>ImpulseResponseInterpolator.Input2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>InLanguage.AudioOut</out>
+    <in>AudioWindowing.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution.Output</out>
+    <in>MyIFFT.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution_1.Output</out>
+    <in>MyIFFT_1.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution_2.Output</out>
+    <in>MyIFFT_2.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution_2.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT.Audio Buffer</out>
+    <in>AudioBuffer2Stream.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_1.Audio Buffer</out>
+    <in>AudioBuffer2Stream_1.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_2.Audio Buffer</out>
+    <in>AudioBuffer2Stream_2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.center</out>
+    <in>C.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.center</out>
+    <in>Oscilloscope C.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.left</out>
+    <in>L.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.left</out>
+    <in>Oscilloscope L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.right</out>
+    <in>R.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.right</out>
+    <in>Oscilloscope R.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.surroundLeft</out>
+    <in>SL.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.surroundLeft</out>
+    <in>Oscilloscope SL.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.surroundRight</out>
+    <in>SR.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.surroundRight</out>
+    <in>Oscilloscope SR.Input</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Cartesian2PolarControl.angle</out>
+    <in>Surround.beta</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ControlSurface.outX</out>
+    <in>Cartesian2PolarControl.x</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ControlSurface.outY</out>
+    <in>Cartesian2PolarControl.y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Position.out</out>
+    <in>ImpulseResponseInterpolator.Position</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Position.out</out>
+    <in>ImpulseResponseInterpolator_1.Position</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Position.out</out>
+    <in>ImpulseResponseInterpolator_2.Position</in>
+  </control_connection>
+
+</network>
