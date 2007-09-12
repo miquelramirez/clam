@@ -33,8 +33,6 @@ private:
 	Config _config;
 	OutPort< std::vector<ComplexSpectrum>* > _impulseResponse;
 	std::vector<ComplexSpectrum> _responseSpectrums;
-	std::vector<ComplexSpectrum> _finalResponseSpectrums;
-
 
 public:
 	const char* GetClassName() const { return "ImpulseResponseLoader"; }
