@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioBuffer2Stream" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioSink" type="AudioSink"/>
+
+  <processing id="AudioSource" type="AudioSource"/>
+
+  <processing id="AudioWindowing" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="Emitter Position" type="ControlSurface">
+    <MinX>0</MinX>
+    <DefaultX>0</DefaultX>
+    <MaxX>1</MaxX>
+    <MinY>0</MinY>
+    <DefaultY>0</DefaultY>
+    <MaxY>1</MaxY>
+  </processing>
+
+  <processing id="ImpulseResponseDatabaseFetcher" type="ImpulseResponseDatabaseFetcher">
+    <FrameSize>512</FrameSize>
+    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/room1/</Path>
+    <Prefix>p</Prefix>
+  </processing>
+
+  <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+    <UseExternalDataBase>0</UseExternalDataBase>
+    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
+  </processing>
+
+  <processing id="MyFFT" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="Receiver Position" type="ControlSurface">
+    <MinX>0</MinX>
+    <DefaultX>0</DefaultX>
+    <MaxX>1</MaxX>
+    <MinY>0</MinY>
+    <DefaultY>0</DefaultY>
+    <MaxY>1</MaxY>
+  </processing>
+
+  <port_connection>
+    <out>AudioBuffer2Stream.Audio stream</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.AudioOut</out>
+    <in>AudioWindowing.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioWindowing.Output</out>
+    <in>MyFFT.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher.ImpulseResponse</out>
+    <in>LowLatencyConvolution.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution.Output</out>
+    <in>MyIFFT.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT.Audio Buffer</out>
+    <in>AudioBuffer2Stream.Audio buffer</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Emitter Position.outX</out>
+    <in>ImpulseResponseDatabaseFetcher.emitterX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Emitter Position.outY</out>
+    <in>ImpulseResponseDatabaseFetcher.emitterY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Receiver Position.outX</out>
+    <in>ImpulseResponseDatabaseFetcher.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Receiver Position.outY</out>
+    <in>ImpulseResponseDatabaseFetcher.receiverY</in>
+  </control_connection>
+
+</network>
