@@ -10,8 +10,7 @@ namespace Hidden
 		"description", "ImpulseResponseDatabaseFetcher",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ImpulseResponseDatabaseFetcher>
-	reg = metadata;
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ImpulseResponseDatabaseFetcher> reg = metadata;
 }
 
 }
