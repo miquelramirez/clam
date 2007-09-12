@@ -16,17 +16,17 @@ class ImpulseResponseLoader : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
-	    DYN_ATTRIBUTE( 1, public, AudioInFilename, ImpulseResponse);
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, int, FrameSize);
+		DYN_ATTRIBUTE( 1, public, AudioInFilename, ImpulseResponse);
 
 	protected:
-	    void DefaultInit()
-	    {
-		  AddAll();
-		  UpdateData();
-		  SetFrameSize(512);
-	    };
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetFrameSize(512);
+		};
 	};
 
 private:
