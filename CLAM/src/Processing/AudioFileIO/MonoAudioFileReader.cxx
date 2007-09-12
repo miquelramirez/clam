@@ -35,7 +35,6 @@ namespace Hidden
 		"description", "MonoAudioFileReader",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, MonoAudioFileReader> regMonoAudioFileReader("MonoAudioFileReader");
 	static FactoryRegistrator<ProcessingFactory, MonoAudioFileReader> reg = metadata;
 }
 	
@@ -84,7 +83,7 @@ namespace Hidden
 		// Check that the given file can be opened
 		if ( ! mAudioFile.IsReadable() )
 		{
-			AddConfigErrorMessage("The audio file could not be opened");
+			AddConfigErrorMessage("The audio file '" + location + "' could not be opened");
 			return false;
 		}
 

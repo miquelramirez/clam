@@ -36,7 +36,6 @@ namespace Hidden
 		"description", "MultiChannelAudioFileReader",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, MultiChannelAudioFileReader> regMultiChannelAudioFileReader("MultiChannelAudioFileReader");
 	static FactoryRegistrator<ProcessingFactory, MultiChannelAudioFileReader> reg = metadata;
 }
 	
@@ -239,7 +238,7 @@ namespace Hidden
 		mAudioFile.OpenExisting(mConfig.GetSourceFile());
 		if ( !mAudioFile.IsReadable() )
 		{
-			AddConfigErrorMessage("The audio file could not be opened!");
+			AddConfigErrorMessage("The audio file '" + mConfig.GetSourceFile() + "' could not be opened!");
 			return false;
 		}
 
