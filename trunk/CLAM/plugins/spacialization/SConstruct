@@ -2,7 +2,7 @@
 
 import os, glob, sys
 
-libraryName='plugins_specialization'
+libraryName='plugins_spacialization'
 
 def scanFiles(pattern, paths) :
 	files = []

@@ -32,10 +32,10 @@ public:
 	};
 
 private:
-	static const unsigned NXEmitter=10;
-	static const unsigned NYEmitter=10;
-	static const unsigned NXReceiver=10;
-	static const unsigned NYReceiver=10;
+	static const unsigned NXEmitter=7;
+	static const unsigned NYEmitter=8;
+	static const unsigned NXReceiver=7;
+	static const unsigned NYReceiver=8;
 	
 	typedef std::vector<ComplexSpectrum> ImpulseResponse;
 	Config _config;
