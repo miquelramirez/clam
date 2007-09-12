@@ -54,7 +54,7 @@
 
   <processing id="Position" type="OutControlSender">
     <Min>0</Min>
-    <Default>0.3</Default>
+    <Default>0.4</Default>
     <Max>1</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
