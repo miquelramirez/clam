@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioBuffer2Stream" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioSink" type="AudioSink"/>
+
+  <processing id="AudioSource" type="AudioSource"/>
+
+  <processing id="AudioWindowing" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="ImpulseResponseInterpolator" type="ImpulseResponseInterpolator">
+    <FrameSize>512</FrameSize>
+    <MaxNFrames>13</MaxNFrames>
+  </processing>
+
+  <processing id="ImpulseResponseLoader" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>room1/p_emissor_4-1-1_receptor_4-2-1.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="ImpulseResponseLoaderEnd" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>room1/p_emissor_4-9-1_receptor_4-2-1.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+    <UseExternalDataBase>0</UseExternalDataBase>
+    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
+  </processing>
+
+  <processing id="MyFFT" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="Position" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.3</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <port_connection>
+    <out>AudioBuffer2Stream.Audio stream</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.AudioOut</out>
+    <in>AudioWindowing.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioWindowing.Output</out>
+    <in>MyFFT.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseInterpolator.Output</out>
+    <in>LowLatencyConvolution.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseLoader.ImpulseResponse</out>
+    <in>ImpulseResponseInterpolator.Input1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseLoaderEnd.ImpulseResponse</out>
+    <in>ImpulseResponseInterpolator.Input2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution.Output</out>
+    <in>MyIFFT.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT.Audio Buffer</out>
+    <in>AudioBuffer2Stream.Audio buffer</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Position.out</out>
+    <in>ImpulseResponseInterpolator.Position</in>
+  </control_connection>
+
+</network>
