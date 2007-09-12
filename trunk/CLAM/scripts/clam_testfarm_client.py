@@ -126,6 +126,30 @@ clam.add_subtask('NetworkEditor installation', [
 	'scons install',
 	'%(sandbox)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
 ] )
+clam.add_subtask('Plugins compilation', [
+	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
+	'cd %(sandbox)s/CLAM/plugins/spatialization'%localDefinitions,
+	'scons clam_prefix=%(installPath)s'%localDefinitions,
+	'scons install',
+
+	'cd %(sandbox)s/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions,
+	'scons clam_prefix=%(installPath)s'%localDefinitions,
+	'scons install',
+
+	'cd %(sandbox)s/CLAM/plugins/oscSource'%localDefinitions,
+	'scons clam_prefix=%(installPath)s'%localDefinitions,
+	'scons install',
+
+	'cd %(sandbox)s/CLAM/plugins/speech'%localDefinitions,
+	'scons clam_prefix=%(installPath)s'%localDefinitions,
+	'scons install',
+] )
+clam.add_subtask('Back-to-back network tests', [
+	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
+	'cd %(sandbox)s/CLAM/plugins/spatialization'%localDefinitions,
+	'CLAM_PLUGIN_PATH=. ../../../NetworkEditor/NetworkEditor simple-interpolation.clamnetwork metronom.wav simple-interpolation-result.wav'%localDefinitions,
+	'diff simple-interpolation-expected.wav simple-interpolation-result.wav'
+] )
 
 clam.add_subtask('Padova Speech SMS (external repository)', [
 	'cd %(sandbox)s/padova-speech-sms/src'%localDefinitions,
