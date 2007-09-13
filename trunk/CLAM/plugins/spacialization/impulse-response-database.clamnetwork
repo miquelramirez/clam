@@ -23,18 +23,24 @@
     <DoHalfWindowShift>1</DoHalfWindowShift>
   </processing>
 
+  <processing id="BufferOscilloscope" type="BufferOscilloscope"/>
+
+  <processing id="Complex2MagPhaseSpectrum" type="Complex2MagPhaseSpectrum"/>
+
+  <processing id="DebugImpulseResponse" type="DebugImpulseResponse"/>
+
   <processing id="Emitter Position" type="ControlSurface">
     <MinX>0</MinX>
-    <DefaultX>0</DefaultX>
-    <MaxX>1</MaxX>
+    <DefaultX>1</DefaultX>
+    <MaxX>7</MaxX>
     <MinY>0</MinY>
-    <DefaultY>0</DefaultY>
-    <MaxY>1</MaxY>
+    <DefaultY>1</DefaultY>
+    <MaxY>9</MaxY>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/room1/</Path>
+    <Path>/home/parumi/acustica/respostes_simples/room1/</Path>
     <Prefix>p</Prefix>
   </processing>
 
@@ -44,6 +50,8 @@
     <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
+  <processing id="MagPhaseSpectrum2Spectrum" type="MagPhaseSpectrum2Spectrum"/>
+
   <processing id="MyFFT" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
@@ -52,18 +60,31 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
+  <processing id="MyIFFT_1" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="Oscilloscope" type="Oscilloscope"/>
+
   <processing id="Receiver Position" type="ControlSurface">
     <MinX>0</MinX>
-    <DefaultX>0</DefaultX>
-    <MaxX>1</MaxX>
+    <DefaultX>1</DefaultX>
+    <MaxX>7</MaxX>
     <MinY>0</MinY>
-    <DefaultY>0</DefaultY>
-    <MaxY>1</MaxY>
+    <DefaultY>1</DefaultY>
+    <MaxY>9</MaxY>
   </processing>
+
+  <processing id="SpectrumView" type="SpectrumView"/>
 
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
     <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBuffer2Stream.Audio stream</out>
+    <in>Oscilloscope.Input</in>
   </port_connection>
 
   <port_connection>
@@ -77,13 +98,38 @@
   </port_connection>
 
   <port_connection>
+    <out>Complex2MagPhaseSpectrum.MagPhaseSpectrum</out>
+    <in>MagPhaseSpectrum2Spectrum.MagPhaseSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>DebugImpulseResponse.Output</out>
+    <in>Complex2MagPhaseSpectrum.ComplexSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>DebugImpulseResponse.Output</out>
+    <in>MyIFFT_1.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
     <out>ImpulseResponseDatabaseFetcher.ImpulseResponse</out>
     <in>LowLatencyConvolution.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
+    <out>ImpulseResponseDatabaseFetcher.ImpulseResponse</out>
+    <in>DebugImpulseResponse.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
     <out>LowLatencyConvolution.Output</out>
     <in>MyIFFT.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MagPhaseSpectrum2Spectrum.Spectrum</out>
+    <in>SpectrumView.Input</in>
   </port_connection>
 
   <port_connection>
@@ -94,6 +140,11 @@
   <port_connection>
     <out>MyIFFT.Audio Buffer</out>
     <in>AudioBuffer2Stream.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_1.Audio Buffer</out>
+    <in>BufferOscilloscope.Input</in>
   </port_connection>
 
   <control_connection>

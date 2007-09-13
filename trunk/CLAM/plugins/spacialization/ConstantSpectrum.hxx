@@ -59,7 +59,7 @@ protected:
 		MonoAudioFileReader reader(readerConfig);
 		CLAM_ASSERT(reader.IsConfigured(), "Reader Not Configured");
 		const unsigned nSamples = reader.GetHeader().GetSamples();
-		std::cout << "NSamples: " << nSamples << std::endl;
+		std::cout << "FillConstantSpectrum: NSamples: " << nSamples << std::endl;
 		
 		AudioWindowingConfig windowerConfig;
 		windowerConfig.SetSamplingRate(44100);
