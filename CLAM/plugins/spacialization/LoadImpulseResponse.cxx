@@ -18,7 +18,7 @@ bool ComputeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSp
 		return false;
 	}
 	const unsigned nSamples = reader.GetHeader().GetSamples();
-	std::cout << "NSamples: " << nSamples << std::endl;
+	//std::cout << "ComputeResponseSpectrums: NSamples: " << nSamples << std::endl;
 
 	AudioWindowingConfig windowerConfig;
 	windowerConfig.SetSamplingRate(44100); // TODO: Take it from the file

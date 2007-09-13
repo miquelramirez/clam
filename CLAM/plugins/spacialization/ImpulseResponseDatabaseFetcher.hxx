@@ -66,7 +66,10 @@ public:
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		_database.resize( NXEmitter*NYEmitter*NXReceiver*NYReceiver );
+		long unsigned totalFiles = NXEmitter*NYEmitter*NXReceiver*NYReceiver;
+		_database.resize( totalFiles);
+		int percentDone=-1;
+		std::cout << "Loading impulse response files: " << std::flush;
 		unsigned i=0;
 		for (unsigned xEmitter=1; xEmitter<=NXEmitter; xEmitter++)
 		for (unsigned yEmitter=1; yEmitter<=NYEmitter; yEmitter++)
@@ -87,7 +90,13 @@ public:
 				return false;
 			}
 			i++;
+			if (int(i/float(totalFiles)*10)>percentDone)
+			{
+				percentDone++;
+				std::cout << percentDone*10 <<"% "<< std::flush;
+			}
 		}
+		std::cout << std::endl;
 
 		return true;
 	}
@@ -97,7 +106,8 @@ public:
 		int x1, int y1, int z1, 
 		int x2, int y2, int z2)
 	{
-		return
+		
+		long unsigned result =
 			z2 + NZReceiver * (
 			y2 + NYReceiver * (
 			x2 + NXReceiver * (
@@ -105,14 +115,16 @@ public:
 			y1 + NYEmitter * (
 			x1
 			)))));
+//		std::cout << " x1 "<<x1 <<" y1 "<<y1<<" z1 "<<z1<<std::endl <<" x2 "<<x2<<" y2 "<<y2<<" z2 "<<z2 << std::endl<< "index "<<result <<std::endl;
+		return result;
 	}
 	bool Do()
 	{
-		int x1 = _emitterX.GetLastValue()+0.5;
-		int y1 = _emitterY.GetLastValue()+0.5;
+		int x1 = int(_emitterX.GetLastValue()+0.5);
+		int y1 = int(_emitterY.GetLastValue()+0.5);
 		int z1 = 1;
-		int x2 = _receiverX.GetLastValue()+0.5;
-		int y2 = _receiverY.GetLastValue()+0.5;
+		int x2 = int(_receiverX.GetLastValue()+0.5);
+		int y2 = int(_receiverY.GetLastValue()+0.5);
 		int z2 = 1;
 		_impulseResponse.GetData()= &_database[getNearestIndex(x1,y1,z1,x2,y2,z2)];
 		_impulseResponse.Produce();
