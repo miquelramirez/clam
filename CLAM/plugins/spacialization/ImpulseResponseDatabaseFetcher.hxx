@@ -35,21 +35,24 @@ private:
 	
 	Config _config;
 	OutPort< ImpulseResponse* > _impulseResponse;
+	OutPort< ImpulseResponse* > _previousImpulseResponse;
 	InControl _emitterX;
 	InControl _emitterY;
 	InControl _receiverX;
 	InControl _receiverY;
-	ImpulseResponse _responseSpectrums;
 	ImpulseResponseDatabase _database;
+	ImpulseResponse * _previous;
 
 public:
 	const char* GetClassName() const { return "ImpulseResponseDatabaseFetcher"; }
 	ImpulseResponseDatabaseFetcher(const Config& config = Config()) 
 		: _impulseResponse("ImpulseResponse", this)
+		, _previousImpulseResponse("PreviousImpulseResponse", this)
 		, _emitterX("emitterX", this)
 		, _emitterY("emitterY", this)
 		, _receiverX("receiverX", this)
 		, _receiverY("receiverY", this)
+		, _previous(0)
 	{
 		Configure( config );
 		_emitterX.SetBounds(0,1);
@@ -86,8 +89,12 @@ public:
 		unsigned y2 = map(_receiverY, _database.NYReceiver);
 		unsigned z2 = 0;
 
-		_impulseResponse.GetData()= &_database.get(x1,y1,z1,x2,y2,z2);
+		ImpulseResponse * current = &_database.get(x1,y1,z1,x2,y2,z2);
+		_impulseResponse.GetData()= current;
+		_previousImpulseResponse.GetData() = _previous ? _previous : current;
+		_previous = current;
 		_impulseResponse.Produce();
+		_previousImpulseResponse.Produce();
 		return true;
 	}
 };
