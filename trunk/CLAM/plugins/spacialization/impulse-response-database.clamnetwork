@@ -6,8 +6,8 @@
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
     <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
   <processing id="AudioSink" type="AudioSink"/>
@@ -18,9 +18,9 @@
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
   <processing id="BufferOscilloscope" type="BufferOscilloscope"/>
@@ -31,11 +31,11 @@
 
   <processing id="Emitter Position" type="ControlSurface">
     <MinX>0</MinX>
-    <DefaultX>1</DefaultX>
-    <MaxX>7</MaxX>
+    <DefaultX>0</DefaultX>
+    <MaxX>1</MaxX>
     <MinY>0</MinY>
-    <DefaultY>1</DefaultY>
-    <MaxY>9</MaxY>
+    <DefaultY>0</DefaultY>
+    <MaxY>1</MaxY>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher" type="ImpulseResponseDatabaseFetcher">
@@ -68,11 +68,11 @@
 
   <processing id="Receiver Position" type="ControlSurface">
     <MinX>0</MinX>
-    <DefaultX>1</DefaultX>
-    <MaxX>7</MaxX>
+    <DefaultX>0</DefaultX>
+    <MaxX>1</MaxX>
     <MinY>0</MinY>
-    <DefaultY>1</DefaultY>
-    <MaxY>9</MaxY>
+    <DefaultY>0</DefaultY>
+    <MaxY>1</MaxY>
   </processing>
 
   <processing id="SpectrumView" type="SpectrumView"/>

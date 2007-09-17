@@ -45,7 +45,7 @@ public:
 	{
 		CopyAsConcreteConfig(_config, config);
 		std::string errorMsg;
-		if (!ComputeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums, _config.GetFrameSize(), errorMsg ))
+		if (!computeResponseSpectrums( _config.GetImpulseResponse(), _responseSpectrums, _config.GetFrameSize(), errorMsg ))
 		{
 			AddConfigErrorMessage(errorMsg);
 			return false;
