@@ -60,14 +60,14 @@ void Audio::ResizeToEndTime(TTime time)
 
 void Audio::SetSize(int s)
 {
+	CLAM_ASSERT(HasBuffer(), "Audio::SetSize(int) needs a buffer (HasBuffer()==1)");
+	CLAM_ASSERT(s>=0,"Audio::SetSize(): Negative size specified");
+
 	int oldSize=GetSize();
 	if (s==oldSize) return;
 
-	CLAM_ASSERT(s>=0,"Audio::SetSize(): Negative size specified");
-	if (HasBuffer()) {
-		GetBuffer().Resize(s);
-		GetBuffer().SetSize(s);
-	}
+	GetBuffer().Resize(s);
+	GetBuffer().SetSize(s);
 	if(s>oldSize)
 		memset(GetBuffer().GetPtr()+oldSize,0,(s-oldSize)*sizeof(TData));
 }
