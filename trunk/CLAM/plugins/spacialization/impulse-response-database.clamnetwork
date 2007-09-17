@@ -10,6 +10,8 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
+  <processing id="AudioBufferCrossFader" type="AudioBufferCrossFader"/>
+
   <processing id="AudioSink" type="AudioSink"/>
 
   <processing id="AudioSource" type="AudioSource"/>
@@ -22,12 +24,6 @@
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
-
-  <processing id="BufferOscilloscope" type="BufferOscilloscope"/>
-
-  <processing id="Complex2MagPhaseSpectrum" type="Complex2MagPhaseSpectrum"/>
-
-  <processing id="DebugImpulseResponse" type="DebugImpulseResponse"/>
 
   <processing id="Emitter Position" type="ControlSurface">
     <MinX>0</MinX>
@@ -50,7 +46,11 @@
     <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
-  <processing id="MagPhaseSpectrum2Spectrum" type="MagPhaseSpectrum2Spectrum"/>
+  <processing id="LowLatencyConvolution_1" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+    <UseExternalDataBase>0</UseExternalDataBase>
+    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
+  </processing>
 
   <processing id="MyFFT" type="MyFFT">
     <AudioSize>1024</AudioSize>
@@ -60,7 +60,7 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_1" type="MyIFFT">
+  <processing id="MyIFFT_2" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
@@ -75,8 +75,6 @@
     <MaxY>1</MaxY>
   </processing>
 
-  <processing id="SpectrumView" type="SpectrumView"/>
-
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
     <in>AudioSink.AudioIn</in>
@@ -85,6 +83,11 @@
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
     <in>Oscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBufferCrossFader.CrossFadedBuffer</out>
+    <in>AudioBuffer2Stream.Audio buffer</in>
   </port_connection>
 
   <port_connection>
@@ -98,28 +101,13 @@
   </port_connection>
 
   <port_connection>
-    <out>Complex2MagPhaseSpectrum.MagPhaseSpectrum</out>
-    <in>MagPhaseSpectrum2Spectrum.MagPhaseSpectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>DebugImpulseResponse.Output</out>
-    <in>Complex2MagPhaseSpectrum.ComplexSpectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>DebugImpulseResponse.Output</out>
-    <in>MyIFFT_1.Complex Spectrum</in>
-  </port_connection>
-
-  <port_connection>
     <out>ImpulseResponseDatabaseFetcher.ImpulseResponse</out>
     <in>LowLatencyConvolution.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseDatabaseFetcher.ImpulseResponse</out>
-    <in>DebugImpulseResponse.ImpulseResponse</in>
+    <out>ImpulseResponseDatabaseFetcher.PreviousImpulseResponse</out>
+    <in>LowLatencyConvolution_1.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
@@ -128,8 +116,8 @@
   </port_connection>
 
   <port_connection>
-    <out>MagPhaseSpectrum2Spectrum.Spectrum</out>
-    <in>SpectrumView.Input</in>
+    <out>LowLatencyConvolution_1.Output</out>
+    <in>MyIFFT_2.Complex Spectrum</in>
   </port_connection>
 
   <port_connection>
@@ -138,13 +126,18 @@
   </port_connection>
 
   <port_connection>
-    <out>MyIFFT.Audio Buffer</out>
-    <in>AudioBuffer2Stream.Audio buffer</in>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution_1.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>MyIFFT_1.Audio Buffer</out>
-    <in>BufferOscilloscope.Input</in>
+    <out>MyIFFT.Audio Buffer</out>
+    <in>AudioBufferCrossFader.FadingIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_2.Audio Buffer</out>
+    <in>AudioBufferCrossFader.FadingOut</in>
   </port_connection>
 
   <control_connection>
