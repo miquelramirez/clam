@@ -56,12 +56,12 @@ public:
 		CopyAsConcreteConfig(_config, config);
 
 		std::string errorMsg;
-		if (!ComputeResponseSpectrums( _config.GetOriginImpulseResponse(), _originResponseSpectrums, _config.GetFrameSize(), errorMsg ))
+		if (!computeResponseSpectrums( _config.GetOriginImpulseResponse(), _originResponseSpectrums, _config.GetFrameSize(), errorMsg ))
 		{
 			AddConfigErrorMessage(errorMsg);
 			return false;
 		}
-		if (!ComputeResponseSpectrums( _config.GetFinalImpulseResponse(), _finalResponseSpectrums, _config.GetFrameSize(), errorMsg ))
+		if (!computeResponseSpectrums( _config.GetFinalImpulseResponse(), _finalResponseSpectrums, _config.GetFrameSize(), errorMsg ))
 		{
 			AddConfigErrorMessage(errorMsg);
 			return false;

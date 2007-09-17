@@ -12,6 +12,8 @@
 namespace CLAM
 {
 
+
+
 class ImpulseResponseDatabaseFetcher : public Processing
 { 
 public:
@@ -29,16 +31,8 @@ public:
 			SetFrameSize(512);
 		};
 	};
-
 private:
-	static const unsigned NXEmitter=8;
-	static const unsigned NYEmitter=10;
-	static const unsigned NZEmitter=1;
-	static const unsigned NXReceiver=8;
-	static const unsigned NYReceiver=10;
-	static const unsigned NZReceiver=1;
 	
-	typedef std::vector<ComplexSpectrum> ImpulseResponse;
 	Config _config;
 	OutPort< ImpulseResponse* > _impulseResponse;
 	InControl _emitterX;
@@ -46,7 +40,7 @@ private:
 	InControl _receiverX;
 	InControl _receiverY;
 	ImpulseResponse _responseSpectrums;
-	std::vector<ImpulseResponse> _database;
+	ImpulseResponseDatabase _database;
 
 public:
 	const char* GetClassName() const { return "ImpulseResponseDatabaseFetcher"; }
@@ -58,75 +52,41 @@ public:
 		, _receiverY("receiverY", this)
 	{
 		Configure( config );
-		_emitterX.SetBounds(1,NXEmitter);
-		_emitterY.SetBounds(1,NYEmitter);
-		_receiverX.SetBounds(1,NXReceiver);
-		_receiverY.SetBounds(1,NYReceiver);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		long unsigned totalFiles = NXEmitter*NYEmitter*NXReceiver*NYReceiver;
-		_database.resize( totalFiles);
-		int percentDone=-1;
-		std::cout << "Loading impulse response files: " << std::flush;
-		unsigned i=0;
-		for (unsigned xEmitter=1; xEmitter<=NXEmitter; xEmitter++)
-		for (unsigned yEmitter=1; yEmitter<=NYEmitter; yEmitter++)
-		for (unsigned zEmitter=1; zEmitter<=NZEmitter; zEmitter++)
-		for (unsigned xReceiver=1; xReceiver<=NXReceiver; xReceiver++)
-		for (unsigned yReceiver=1; yReceiver<=NYReceiver; yReceiver++)
-		for (unsigned zReceiver=1; zReceiver<=NZReceiver; zReceiver++)
-		{
-			std::ostringstream os;
-			os << _config.GetPath() << _config.GetPrefix() 
-				<< "_emissor_"<< xEmitter << "-" << yEmitter << "-" << zEmitter
-				<< "_receptor_" << xReceiver << "-" << yReceiver << "-" << zReceiver
-				<< ".wav" << std::flush;
-			std::string errorMsg;
-			if (!ComputeResponseSpectrums( os.str(), _database[i], _config.GetFrameSize(), errorMsg ))
-			{
-				AddConfigErrorMessage(errorMsg);
-				return false;
-			}
-			i++;
-			if (int(i/float(totalFiles)*10)>percentDone)
-			{
-				percentDone++;
-				std::cout << percentDone*10 <<"% "<< std::flush;
-			}
-		}
-		std::cout << std::endl;
 
+		std::string errorMsg;
+		if (!_database.loadImpulseResponseDatabase(_config.GetPath() + _config.GetPrefix(), _config.GetFrameSize(), errorMsg ))
+		{
+			AddConfigErrorMessage(errorMsg);
+			return false;
+		}
+		_emitterX.SetBounds(1,_database.NXEmitter);
+		_emitterY.SetBounds(1,_database.NYEmitter);
+		_receiverX.SetBounds(1,_database.NXReceiver);
+		_receiverY.SetBounds(1,_database.NYReceiver);
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
 
-	unsigned getNearestIndex(
-		int x1, int y1, int z1, 
-		int x2, int y2, int z2)
+	static unsigned map(InControl & control, unsigned limit)
 	{
-		
-		long unsigned result =
-			z2 + NZReceiver * (
-			y2 + NYReceiver * (
-			x2 + NXReceiver * (
-			z1 + NZEmitter * (
-			y1 + NYEmitter * (
-			x1
-			)))));
-//		std::cout << " x1 "<<x1 <<" y1 "<<y1<<" z1 "<<z1<<std::endl <<" x2 "<<x2<<" y2 "<<y2<<" z2 "<<z2 << std::endl<< "index "<<result <<std::endl;
-		return result;
+		unsigned result = unsigned(std::floor(control.GetLastValue()*limit));
+		return result < limit? result : limit-1;
 	}
 	bool Do()
 	{
-		int x1 = int(_emitterX.GetLastValue()+0.5);
-		int y1 = int(_emitterY.GetLastValue()+0.5);
-		int z1 = 1;
-		int x2 = int(_receiverX.GetLastValue()+0.5);
-		int y2 = int(_receiverY.GetLastValue()+0.5);
-		int z2 = 1;
-		_impulseResponse.GetData()= &_database[getNearestIndex(x1,y1,z1,x2,y2,z2)];
+
+		unsigned x1 = map(_emitterX, _database.NXEmitter);
+		unsigned y1 = map(_emitterY, _database.NYEmitter);
+		unsigned z1 = 0;
+		unsigned x2 = map(_receiverX, _database.NXReceiver);
+		unsigned y2 = map(_receiverY, _database.NYReceiver);
+		unsigned z2 = 0;
+
+		_impulseResponse.GetData()= &_database.get(x1,y1,z1,x2,y2,z2);
 		_impulseResponse.Produce();
 		return true;
 	}
