@@ -52,6 +52,10 @@ public:
 		, _receiverY("receiverY", this)
 	{
 		Configure( config );
+		_emitterX.SetBounds(0,1);
+		_emitterY.SetBounds(0,1);
+		_receiverX.SetBounds(0,1);
+		_receiverY.SetBounds(0,1);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
@@ -63,10 +67,6 @@ public:
 			AddConfigErrorMessage(errorMsg);
 			return false;
 		}
-		_emitterX.SetBounds(1,_database.NXEmitter);
-		_emitterY.SetBounds(1,_database.NYEmitter);
-		_receiverX.SetBounds(1,_database.NXReceiver);
-		_receiverY.SetBounds(1,_database.NYReceiver);
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
