@@ -40,7 +40,7 @@
 
   <processing id="ImpulseResponseDatabaseFetcher" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>/home/parumi/acustica/respostes_simples/room1/</Path>
+    <Path>/home/parumi/acustica/roomjaume/</Path>
     <Prefix>p</Prefix>
   </processing>
 
