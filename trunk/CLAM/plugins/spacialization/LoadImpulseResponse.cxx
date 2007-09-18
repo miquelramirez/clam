@@ -80,12 +80,12 @@ bool ImpulseResponseDatabase::loadImpulseResponseDatabase(
 	int percentDone=-1;
 	std::cout << "Loading impulse response files: " << std::flush;
 	unsigned i=0;
-	for (unsigned xEmitter=1; xEmitter<=NXEmitter; xEmitter++)
-	for (unsigned yEmitter=1; yEmitter<=NYEmitter; yEmitter++)
-	for (unsigned zEmitter=1; zEmitter<=NZEmitter; zEmitter++)
-	for (unsigned xReceiver=1; xReceiver<=NXReceiver; xReceiver++)
-	for (unsigned yReceiver=1; yReceiver<=NYReceiver; yReceiver++)
-	for (unsigned zReceiver=1; zReceiver<=NZReceiver; zReceiver++)
+	for (unsigned xEmitter=0; xEmitter<NXEmitter; xEmitter++)
+	for (unsigned yEmitter=0; yEmitter<NYEmitter; yEmitter++)
+	for (unsigned zEmitter=0; zEmitter<NZEmitter; zEmitter++)
+	for (unsigned xReceiver=0; xReceiver<NXReceiver; xReceiver++)
+	for (unsigned yReceiver=0; yReceiver<NYReceiver; yReceiver++)
+	for (unsigned zReceiver=0; zReceiver<NZReceiver; zReceiver++)
 	{
 		std::ostringstream os;
 		os << filePrefix 
