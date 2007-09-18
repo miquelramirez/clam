@@ -1,8 +1,8 @@
 #include "LoadImpulseResponse.hxx"
 #include <CLAM/MonoAudioFileReader.hxx>
 #include <CLAM/AudioWindowing.hxx>
+#include <fstream>
 #include "MyFFT.hxx"
-
 namespace CLAM
 {
 
@@ -64,17 +64,53 @@ bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSp
 	fft.Stop();
 	return true;
 }
+std::string formatFile(
+		const std::string & filePrefix,
+		unsigned x1, unsigned y1, unsigned z1, unsigned x2, unsigned y2, unsigned z2 )
+{
+		std::ostringstream os;
+		os << filePrefix 
+			<< "_emissor_"<< x1 << "-" << y1 << "-" << z1
+			<< "_receptor_" << x2 << "-" << y2 << "-" << z2
+			<< ".wav" << std::flush;
+		return os.str();
+}
+unsigned searchCoordinateUpperLimit(
+		const std::string & filePrefix,
+		unsigned coordinate)
+{
+	std::string file;
+	for (unsigned value=0; true; value++)
+	{
+		unsigned coords[6]={};
+		coords[coordinate] = value;
+		std::ostringstream os;
+		file = formatFile(filePrefix, coords[0],coords[1],coords[2],coords[3],coords[4],coords[5]);
+		if (std::fstream(file.c_str()).fail())
+			return value;
+	}
+	throw "should not reach this line";
+}
+
 bool ImpulseResponseDatabase::loadImpulseResponseDatabase( 
 		const std::string & filePrefix,
 		unsigned frameSize,
 		std::string & errorMsg )
 {
-	NXEmitter=8;
-	NYEmitter=10;
-	NZEmitter=1;
-	NXReceiver=8;
-	NYReceiver=10;
-	NZReceiver=1;
+	std::string file;
+	file = formatFile(filePrefix, 0,0,0,0,0,0);
+	if (std::fstream(file.c_str()).fail())
+	{
+		errorMsg += "ImpulseResponseDatabase::loadImpulseResponseDatabase:\nCan not open '"+file+"'";
+		return false;
+	}
+
+	NXEmitter=searchCoordinateUpperLimit(filePrefix, 0);
+	NYEmitter=searchCoordinateUpperLimit(filePrefix, 1);
+	NZEmitter=searchCoordinateUpperLimit(filePrefix, 2);
+	NXReceiver=searchCoordinateUpperLimit(filePrefix, 3);
+	NYReceiver=searchCoordinateUpperLimit(filePrefix, 4);
+	NZReceiver=searchCoordinateUpperLimit(filePrefix, 5);
 	long unsigned totalFiles = NXEmitter*NYEmitter*NZEmitter*NXReceiver*NYReceiver*NZReceiver;
 	_storage.resize( totalFiles);
 	int percentDone=-1;
@@ -87,12 +123,8 @@ bool ImpulseResponseDatabase::loadImpulseResponseDatabase(
 	for (unsigned yReceiver=0; yReceiver<NYReceiver; yReceiver++)
 	for (unsigned zReceiver=0; zReceiver<NZReceiver; zReceiver++)
 	{
-		std::ostringstream os;
-		os << filePrefix 
-			<< "_emissor_"<< xEmitter << "-" << yEmitter << "-" << zEmitter
-			<< "_receptor_" << xReceiver << "-" << yReceiver << "-" << zReceiver
-			<< ".wav" << std::flush;
-		if (!computeResponseSpectrums( os.str(), _storage[i], frameSize, errorMsg )) return false;
+		std::string file = formatFile(filePrefix, xEmitter,yEmitter,zEmitter,xReceiver,yReceiver,zReceiver);
+		if (!computeResponseSpectrums( file, _storage[i], frameSize, errorMsg )) return false;
 		i++;
 		if (int(i/float(totalFiles)*10)>percentDone)
 		{
@@ -105,9 +137,8 @@ bool ImpulseResponseDatabase::loadImpulseResponseDatabase(
 
 }
 
-ImpulseResponse &  ImpulseResponseDatabase::get(int x1, int y1, int z1, int x2, int y2, int z2 )
+ImpulseResponse &  ImpulseResponseDatabase::get(unsigned x1, unsigned y1, unsigned z1, unsigned x2, unsigned y2, unsigned z2 )
 {
-	
 	long unsigned index =
 		z2 + NZReceiver * (
 		y2 + NYReceiver * (
