@@ -33,7 +33,7 @@ public:
 			const std::string & filePrefix,
 			unsigned frameSize,
 			std::string & errorMsg );
-	ImpulseResponse & get(int x1, int y1, int z1, int x2, int y2, int z2);
+	ImpulseResponse & get(unsigned x1, unsigned y1, unsigned z1, unsigned x2, unsigned y2, unsigned z2);
 };
 
 
