@@ -48,7 +48,7 @@ private:
 	}
 	std::vector<std::string> initBinLabelVector() const
 	{
-		static char * roots[] = {
+		static const char * roots[] = {
 			"G",
 			"G#",
 			"A",
