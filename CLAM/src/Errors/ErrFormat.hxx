@@ -37,9 +37,8 @@ namespace CLAM {
 	{
 	public:
 		// Constructor
-		ErrFormat()
+		ErrFormat() : Err("Incompatible format")
 		{
-			mMsg = "Incompatible format"; // Initialization of the error message
 		}
 		//Destructor	
 		~ErrFormat() throw() {}
