@@ -288,7 +288,7 @@ private: \
 		InformTypedAttr_(N, #NAME, sizeof(TYPE), #TYPE, false, _new_##NAME, _new_##NAME, _destructor_##NAME, (TYPE*)0);\
 	}\
 	static inline int GetSize##NAME() { return sizeof(TYPE); } \
-	static inline char* GetType##NAME() { return #TYPE; } \
+	static inline const char* GetType##NAME() { return #TYPE; } \
 	static inline int GetId##NAME() { return N;}\
 public: \
 	/*inline TYPE* Get##NAME##Vector(unsigned n) { return Get_##TYPE##Vector(n); }*/ \
