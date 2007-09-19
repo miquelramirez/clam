@@ -161,7 +161,7 @@ private:
 	{
 		t_adapteeIterator it=mAdaptee.begin();
 		t_adapteeIterator end=mAdaptee.end();
-		char * separator = "";
+		const char * separator = "";
 		std::stringstream stream;
 		for (; it!=end; it++) {
 			stream << separator << *it;

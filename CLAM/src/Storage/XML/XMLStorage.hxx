@@ -653,7 +653,7 @@ void ConcreteDT::LoadOn(CLAM::Storage & storage)
  * XML form the subitem will be stored or loaded.
  * @code
  * 	MyAdapterClass( // Here goes the adaptee info 
- * 		, char * name = NULL, bool beElement = false );
+ * 		, const char * name = NULL, bool beElement = false );
  * @endcode
  * - As plain content (name = null, beElement = false)
  * - As XML attribute (name = "yourAttributeName", beElement = false)
