@@ -43,7 +43,7 @@ public:
 	/** The type of the positional indexes */
 	typedef unsigned int tValue;
 	/** The type of the name table rows */
-	typedef struct {tValue value; char*name;} tFlagValue;
+	typedef struct {tValue value; const char*name;} tFlagValue;
 
 // Attributes
 protected:
