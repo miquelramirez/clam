@@ -263,19 +263,17 @@ public:
 		CLAM_ASSERT(_pool->GetNumberOfContexts("ExtractedChord")==0, "ExtractedChord pool  not empty");
 
 		_pool->SetNumberOfContexts("ExtractedChord",extractor.chordIndexes().size());
-		Simac::Enumerated * root;
-		Simac::Enumerated * mode;
-		if(extractor.chordIndexes().size() != 0)
+		if( not extractor.chordIndexes().empty())
 		{
-			root = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root");
-			mode = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode");
-		}
-		for (unsigned segment=0; segment<extractor.chordIndexes().size(); ++segment)
-		{
-			root[segment] = extractor.root(extractor.chordIndexes()[segment]);
-			mode[segment] = extractor.mode(extractor.chordIndexes()[segment]);
-			_chordSegmentation[0].AddElem(extractor.segmentation().onsets()[segment]);
-			_chordSegmentation[0].AddElem(extractor.segmentation().offsets()[segment]);
+			Simac::Enumerated * root = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root");
+			Simac::Enumerated * mode = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode");
+			for (unsigned segment=0; segment<extractor.chordIndexes().size(); ++segment)
+			{
+				root[segment] = extractor.root(extractor.chordIndexes()[segment]);
+				mode[segment] = extractor.mode(extractor.chordIndexes()[segment]);
+				_chordSegmentation[0].AddElem(extractor.segmentation().onsets()[segment]);
+				_chordSegmentation[0].AddElem(extractor.segmentation().offsets()[segment]);
+			}
 		}
 
 //		CLAM::XMLStorage::Dump(*_pool, "Description", std::cout);
