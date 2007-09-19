@@ -19,7 +19,7 @@
  *
  */
 
-#ifndef _VMQT__PLOT2D_H__
+#ifndef __VMQT_PLOT2D_H__
 #define __VMQT_PLOT2D_H__
 
 #include <map>
