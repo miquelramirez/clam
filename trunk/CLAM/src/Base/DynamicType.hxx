@@ -318,36 +318,36 @@ protected:
 	virtual void StoreDynAttributes(CLAM::Storage & s) const=0;
 	virtual void LoadDynAttributes(CLAM::Storage & s)=0;
 	template <typename AttribType>
-	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) const 
+	void StoreAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, const char* name) const 
 	{
 		CLAM::XMLAdapter<AttribType> adapter(object, name, true);
 		s.Store (adapter);
 	}
 	template <typename AttribType>
-	void StoreAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) const
+	void StoreAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, const char* name) const
 	{
 		CLAM::XMLComponentAdapter adapter(object, name, true);
 		s.Store (adapter);
 	} 
 	template <typename AttribType>
-	void StoreIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) const
+	void StoreIterableAttribute(CLAM::Storage &s ,AttribType & object, const char* name, const char* elemName) const
 	{
 		CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
 		s.Store (adapter);
 	} 
 
 	template <typename AttribType>
-	bool LoadAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
+	bool LoadAttribute(StaticTrue* asLeave, CLAM::Storage &s ,AttribType & object, const char* name) {
 		CLAM::XMLAdapter<AttribType> adapter(object, name, true);
 		return s.Load (adapter);	
 	}
 	template <typename AttribType>
-	bool LoadAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, char* name) {
+	bool LoadAttribute(StaticFalse* asLeave, CLAM::Storage &s ,AttribType & object, const char* name) {
 		CLAM::XMLComponentAdapter adapter(object, name, true);
 		return s.Load (adapter);	
 	} 
 	template <typename AttribType>
-	bool LoadIterableAttribute(CLAM::Storage &s ,AttribType & object, char* name, char* elemName) {
+	bool LoadIterableAttribute(CLAM::Storage &s ,AttribType & object, const char* name, const char* elemName) {
 		CLAM::XMLIterableAdapter<AttribType> adapter(object, elemName, name, true);
 		return s.Load (adapter);
 	} 
