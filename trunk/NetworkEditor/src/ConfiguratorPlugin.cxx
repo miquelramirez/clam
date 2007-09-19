@@ -285,7 +285,7 @@ private:
 		if (!filters[0].description)
 			return QObject::tr("All %1 files (*.*)").arg(typeFamily);
 		QString qtfilter, allfilter;
-		char *separator = "";
+		const char *separator = "";
 		for (const CLAM::Filename::Filter* filter = filters; filter->description; filter++)
 		{
 			qtfilter += QString("%1%2 (%3)")
