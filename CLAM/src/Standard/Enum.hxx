@@ -95,7 +95,7 @@ class Enum : public Component {
 // Internal Types
 public:
 	typedef int tValue;
-	typedef struct {tValue value; char*name;} tEnumValue;
+	typedef struct {tValue value; const char*name;} tEnumValue;
 
 // Attributes
 private:
