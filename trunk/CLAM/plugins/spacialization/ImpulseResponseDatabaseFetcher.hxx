@@ -90,8 +90,14 @@ public:
 		unsigned z2 = 0;
 
 		ImpulseResponse * current = &_database.get(x1,y1,z1,x2,y2,z2);
+		if (x1==x2 && y1==y2 && z1==z2) // don't use the IR corresponding to emmiter and receiver at the same position
+		{
+			current = _previous ? _previous : current;
+		}
 		_impulseResponse.GetData()= current;
 		_previousImpulseResponse.GetData() = _previous ? _previous : current;
+		if (_previous != current) 
+			std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		_previous = current;
 		_impulseResponse.Produce();
 		_previousImpulseResponse.Produce();
