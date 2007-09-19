@@ -1,32 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioBuffer2Stream" type="AudioBuffer2Stream">
-    <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
-  </processing>
+  <processing id="AudioBufferCrossFader" type="AudioBufferCrossFader"/>
 
-  <processing id="AudioBuffer2Stream_1" type="AudioBuffer2Stream">
-    <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
-  </processing>
+  <processing id="AudioBufferCrossFader_1" type="AudioBufferCrossFader"/>
 
-  <processing id="AudioBuffer2Stream_2" type="AudioBuffer2Stream">
-    <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
-  </processing>
+  <processing id="AudioBufferCrossFader_2" type="AudioBufferCrossFader"/>
 
   <processing id="AudioWindowing" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -50,19 +29,19 @@
     <MaxY>1</MaxY>
   </processing>
 
-  <processing id="ImpulseResponseDatabaseFetcher" type="ImpulseResponseDatabaseFetcher">
+  <processing id="ImpulseResponseDatabaseFetcher_Pressure" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>room1/</Path>
     <Prefix>p</Prefix>
   </processing>
 
-  <processing id="ImpulseResponseDatabaseFetcher1" type="ImpulseResponseDatabaseFetcher">
+  <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>room1/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
-  <processing id="ImpulseResponseDatabaseFetcher2" type="ImpulseResponseDatabaseFetcher">
+  <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>room1/</Path>
     <Prefix>vy</Prefix>
@@ -90,6 +69,24 @@
     <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
+  <processing id="LowLatencyConvolution_3" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+    <UseExternalDataBase>0</UseExternalDataBase>
+    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
+  </processing>
+
+  <processing id="LowLatencyConvolution_4" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+    <UseExternalDataBase>0</UseExternalDataBase>
+    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
+  </processing>
+
+  <processing id="LowLatencyConvolution_5" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+    <UseExternalDataBase>0</UseExternalDataBase>
+    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
+  </processing>
+
   <processing id="MyFFT" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
@@ -103,6 +100,18 @@
   </processing>
 
   <processing id="MyIFFT_2" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_3" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_4" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_5" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
@@ -142,19 +151,46 @@
 
   <processing id="Surround" type="Surround"/>
 
+  <processing id="toStream" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="toStream2" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="toStream3" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
   <port_connection>
-    <out>AudioBuffer2Stream.Audio stream</out>
-    <in>Surround.p</in>
+    <out>AudioBufferCrossFader.CrossFadedBuffer</out>
+    <in>toStream.Audio buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioBuffer2Stream_1.Audio stream</out>
-    <in>Surround.vx</in>
+    <out>AudioBufferCrossFader_1.CrossFadedBuffer</out>
+    <in>toStream2.Audio buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioBuffer2Stream_2.Audio stream</out>
-    <in>Surround.vy</in>
+    <out>AudioBufferCrossFader_2.CrossFadedBuffer</out>
+    <in>toStream3.Audio buffer</in>
   </port_connection>
 
   <port_connection>
@@ -163,18 +199,33 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseDatabaseFetcher.ImpulseResponse</out>
+    <out>ImpulseResponseDatabaseFetcher_Pressure.ImpulseResponse</out>
     <in>LowLatencyConvolution.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseDatabaseFetcher1.ImpulseResponse</out>
+    <out>ImpulseResponseDatabaseFetcher_Pressure.PreviousImpulseResponse</out>
+    <in>LowLatencyConvolution_3.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vx.ImpulseResponse</out>
     <in>LowLatencyConvolution_1.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseDatabaseFetcher2.ImpulseResponse</out>
+    <out>ImpulseResponseDatabaseFetcher_Vx.PreviousImpulseResponse</out>
+    <in>LowLatencyConvolution_4.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vy.ImpulseResponse</out>
     <in>LowLatencyConvolution_2.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vy.PreviousImpulseResponse</out>
+    <in>LowLatencyConvolution_5.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
@@ -198,6 +249,21 @@
   </port_connection>
 
   <port_connection>
+    <out>LowLatencyConvolution_3.Output</out>
+    <in>MyIFFT_3.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution_4.Output</out>
+    <in>MyIFFT_4.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution_5.Output</out>
+    <in>MyIFFT_5.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
     <out>MyFFT.Complex Spectrum</out>
     <in>LowLatencyConvolution.Input</in>
   </port_connection>
@@ -213,18 +279,48 @@
   </port_connection>
 
   <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution_3.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution_4.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution_5.Input</in>
+  </port_connection>
+
+  <port_connection>
     <out>MyIFFT.Audio Buffer</out>
-    <in>AudioBuffer2Stream.Audio buffer</in>
+    <in>AudioBufferCrossFader.FadingIn</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_1.Audio Buffer</out>
-    <in>AudioBuffer2Stream_1.Audio buffer</in>
+    <in>AudioBufferCrossFader_1.FadingIn</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_2.Audio Buffer</out>
-    <in>AudioBuffer2Stream_2.Audio buffer</in>
+    <in>AudioBufferCrossFader_2.FadingIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_3.Audio Buffer</out>
+    <in>AudioBufferCrossFader.FadingOut</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_4.Audio Buffer</out>
+    <in>AudioBufferCrossFader_1.FadingOut</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_5.Audio Buffer</out>
+    <in>AudioBufferCrossFader_2.FadingOut</in>
   </port_connection>
 
   <port_connection>
@@ -277,6 +373,21 @@
     <in>Oscilloscope SR.Input</in>
   </port_connection>
 
+  <port_connection>
+    <out>toStream.Audio stream</out>
+    <in>Surround.p</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream2.Audio stream</out>
+    <in>Surround.vx</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream3.Audio stream</out>
+    <in>Surround.vy</in>
+  </port_connection>
+
   <control_connection>
     <out>Cartesian2PolarControl.angle</out>
     <in>Surround.beta</in>
@@ -284,32 +395,32 @@
 
   <control_connection>
     <out>Emitter Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher1.emitterX</in>
+    <in>ImpulseResponseDatabaseFetcher_Vx.emitterX</in>
   </control_connection>
 
   <control_connection>
     <out>Emitter Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher2.emitterX</in>
+    <in>ImpulseResponseDatabaseFetcher_Vy.emitterX</in>
   </control_connection>
 
   <control_connection>
     <out>Emitter Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher.emitterX</in>
+    <in>ImpulseResponseDatabaseFetcher_Pressure.emitterX</in>
   </control_connection>
 
   <control_connection>
     <out>Emitter Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher.emitterY</in>
+    <in>ImpulseResponseDatabaseFetcher_Pressure.emitterY</in>
   </control_connection>
 
   <control_connection>
     <out>Emitter Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher1.emitterY</in>
+    <in>ImpulseResponseDatabaseFetcher_Vx.emitterY</in>
   </control_connection>
 
   <control_connection>
     <out>Emitter Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher2.emitterY</in>
+    <in>ImpulseResponseDatabaseFetcher_Vy.emitterY</in>
   </control_connection>
 
   <control_connection>
@@ -324,32 +435,32 @@
 
   <control_connection>
     <out>Receiver Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher.receiverX</in>
+    <in>ImpulseResponseDatabaseFetcher_Pressure.receiverX</in>
   </control_connection>
 
   <control_connection>
     <out>Receiver Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher1.receiverX</in>
+    <in>ImpulseResponseDatabaseFetcher_Vx.receiverX</in>
   </control_connection>
 
   <control_connection>
     <out>Receiver Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher2.receiverX</in>
+    <in>ImpulseResponseDatabaseFetcher_Vy.receiverX</in>
   </control_connection>
 
   <control_connection>
     <out>Receiver Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher2.receiverY</in>
+    <in>ImpulseResponseDatabaseFetcher_Vy.receiverY</in>
   </control_connection>
 
   <control_connection>
     <out>Receiver Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher1.receiverY</in>
+    <in>ImpulseResponseDatabaseFetcher_Vx.receiverY</in>
   </control_connection>
 
   <control_connection>
     <out>Receiver Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher.receiverY</in>
+    <in>ImpulseResponseDatabaseFetcher_Pressure.receiverY</in>
   </control_connection>
 
 </network>
