@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2001-2005 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
+ * Copyright (c) 2007 UNIVERSITAT POMPEU FABRA
  *
  *
  * This program is free software; you can redistribute it and/or modify
