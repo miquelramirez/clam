@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
+ * Copyright (c) 2007 Fundació Barcelona Media Universitat Pompeu Fabra
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -18,6 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
+
 
 #include "MyIFFT.hxx"
 #include <CLAM/SpecTypeFlags.hxx>
