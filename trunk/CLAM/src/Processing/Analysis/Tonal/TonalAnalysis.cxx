@@ -90,7 +90,8 @@ bool TonalAnalysis::ConcreteConfigure( const ProcessingConfig& c )
 	_implementation->enableTunning( _config.GetTunningEnabled() );
 	_implementation->enablePeakWindowing( _config.GetPeakWindowingEnabled() );
 	_implementation->hopRatio( _config.GetHopRatio() );
-	_implementation->segmentationMethod( _config.GetSegmentationMethod() );
+	unsigned segmentationMethod = _config.HasSegmentationMethod() ? _config.GetSegmentationMethod() : 0;
+	_implementation->segmentationMethod( segmentationMethod );
 
 	_input.SetSize( _implementation->frameSize() );
 	_input.SetHop( _implementation->hop() );
