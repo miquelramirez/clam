@@ -13,9 +13,11 @@
 #include <QtGui/QSpinBox>
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
+#include <QtGui/QDialogButtonBox>
 #include <QtCore/QFile>
 #include <QtGui/QMessageBox>
 #include <QtGui/QAction>
+#include <QtGui/QCompleter>
 #include <QtCore/QTextStream>
 #include "ProcessingBox.hxx"
 #include "Wires.hxx"
@@ -1062,8 +1064,37 @@ private slots:
 	void onNewProcessing()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
-		QString type = QInputDialog::getText(this, "Type", "Type", QLineEdit::Normal, "A Processing");
-		if (type.isNull()) return;
+		QString type;
+		if (!_network)
+		{
+			type = QInputDialog::getText(this, "Type", "Type", QLineEdit::Normal, "A Processing");
+			if (type.isNull()) return;
+		}
+		else
+		{
+			QStringList completionList;
+			typedef CLAM::ProcessingFactory::Keys FactoryKeys;
+			FactoryKeys keys = CLAM::ProcessingFactory::GetInstance().GetKeys();
+			for (FactoryKeys::const_iterator it=keys.begin(); it!=keys.end(); it++)
+				completionList << QString::fromStdString(*it);
+			QDialog dialog;
+			dialog.setWindowTitle(tr("Adding a new processing"));
+			QVBoxLayout * layout = new QVBoxLayout(&dialog);
+			QLineEdit * lineEdit = new QLineEdit(&dialog);
+			layout->addWidget(new QLabel(tr("Type"), &dialog));
+			QCompleter *completer = new QCompleter(completionList, &dialog);
+			completer->setCaseSensitivity(Qt::CaseInsensitive);
+			lineEdit->setCompleter(completer);
+			layout->addWidget(lineEdit);
+			QDialogButtonBox * buttons = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
+			connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
+			connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
+			layout->addWidget(buttons);
+			int result = dialog.exec();
+			if (result==QDialog::Rejected) return;
+			type = lineEdit->text();
+			if (type.isEmpty()) return;
+		}
 		addProcessing(point, type);
 	}
 signals:
