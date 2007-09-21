@@ -19,16 +19,6 @@
  *
  */
 
-/* 
-David Garcia Garzon
-Universitat Pompeu Fabra
-
-Katy Noland
-Queen Mary, University of London
-
-Adapted from MATLAB code by Chris Harte at Queen Mary
-*/
-
 #ifndef ChordSegmentator_hxx
 #define ChordSegmentator_hxx
 
