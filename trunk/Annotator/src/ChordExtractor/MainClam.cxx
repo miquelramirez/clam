@@ -128,62 +128,9 @@ const char * schemaContent =
 "</DescriptionScheme>\n"
 ;
 
-class ChordExtractorSegmentation
-{
-	CLAM::DiscontinuousSegmentation _segmentation;
-	std::vector<unsigned> _chordIndexes;  ///< Holds the chord index for each segment
-
-	unsigned _currentSegment;
-	unsigned _lastChord;
-public:
-	ChordExtractorSegmentation()
-		: _segmentation(1000)
-		, _currentSegment(0)
-		, _lastChord(0)
-	{};
-	~ChordExtractorSegmentation() {};
-
-	void doIt(CLAM::TData & currentTime, const std::vector<double> & correlation, const unsigned firstCandidate, const unsigned secondCandidate) 
-	{
-		CLAM::TData firstCandidateWeight = correlation[firstCandidate];
-		CLAM::TData secondCandidateWeight = correlation[secondCandidate];
-		CLAM::TData noCandidateWeigth = correlation[0];
-		
-		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
-				0 : firstCandidate;
-		
-		if (currentChord!=_lastChord)
-		{	
-			// Closes a segment opened in one of the previous iterations
-			if (_lastChord != 0) {
-				_segmentation.dragOffset(_currentSegment, currentTime);
-			}
-			// Opens a new chord segment
-			if (currentChord != 0)
-			{
-				_chordIndexes.push_back(currentChord);
-				_currentSegment = _segmentation.insert(currentTime);
-			}
-			_lastChord = currentChord;
-		}
-	}
-	
-	void closeLastSegment(CLAM::TData & currentTime )
-	{
-		if (_lastChord != 0)
-		{
-			_segmentation.dragOffset(_currentSegment, currentTime);
-		}
-	}
-
-	const CLAM::DiscontinuousSegmentation & segmentation() const { return _segmentation; };
-	const std::vector<unsigned> chordIndexes() const { return _chordIndexes; };
-};
-
 class ChordExtractorDescriptionDumper
 {
 	Simac::ChordExtractor & extractor;
-	ChordExtractorSegmentation chordSegmentation;
 	std::ofstream outputPool;
 
 	CLAM::DescriptionScheme _schema;
@@ -318,8 +265,6 @@ public:
 
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 //		_debugFrameSegmentation[0].AddElem(currentTime);
-		
-		chordSegmentation.doIt(currentTime, correlation, extractor.firstCandidate(), extractor.secondCandidate());
 
 		_currentFrame++;
 	}
