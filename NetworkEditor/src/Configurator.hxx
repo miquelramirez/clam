@@ -6,6 +6,7 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QLabel>
+#include <QtGui/QDialogButtonBox>
 #include "ConfiguratorPlugin.hxx"
 #include <map>
 
@@ -41,28 +42,16 @@ private:
 
 	void AddButtons()
 	{
-		QFrame * frame = new QFrame(this);
-		mLayout->addWidget(frame);
-		frame->setMinimumHeight(10);
-
-		QHBoxLayout * buttons = new QHBoxLayout;
-		mLayout->addLayout(buttons);
-		buttons->setMargin(5);
-		buttons->setSpacing(3);
-		
-		QPushButton * discardButton = new QPushButton("Discard", this);
-		discardButton->setAutoDefault(false);
-		buttons->addWidget(discardButton);
-		connect( discardButton, SIGNAL(clicked()), this, SLOT(Discard()) );
-
-		QPushButton * okButton = new QPushButton("Ok", this);
-		okButton->setDefault(true);
-		buttons->addWidget(okButton);
-		connect( okButton, SIGNAL(clicked()), this, SLOT(Ok()) );
-
-		buttons->setStretchFactor(discardButton,2);
-		buttons->setStretchFactor(okButton,2);
-
+		QDialogButtonBox * buttonBox = new QDialogButtonBox(
+			QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+			Qt::Horizontal, this);
+		buttonBox->setCenterButtons(true);
+		connect( buttonBox, SIGNAL(rejected()), this, SLOT(Discard()) );
+		connect( buttonBox, SIGNAL(accepted()), this, SLOT(Ok()) );
+		mLayout->addStretch();
+		mLayout->addSpacing(10);
+		mLayout->addWidget(buttonBox);
+		mLayout->addSpacing(5);
 		adjustSize();
 	}
 	void GenerateWidgets()
