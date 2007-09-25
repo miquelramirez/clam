@@ -15,6 +15,8 @@
 namespace CLAM
 {
 
+class PrototypeBinder;
+
 class PrototypeLoader : public QObject
 {
 	Q_OBJECT
@@ -27,15 +29,15 @@ private:
 //	std::list<CLAM::VM::NetPlot * > mPortMonitors; //QT4PORT
 public:
 	PrototypeLoader();
-
 	~PrototypeLoader();
-
 	bool LoadNetwork(std::string networkFile);
 	bool ChooseBackend( std::list<std::string> backends, const std::string & name);
 	QWidget * LoadInterface(QString uiFile);
 	
 	void ConnectWithNetwork();
 	void Show();
+	typedef std::list<PrototypeBinder*> Binders;
+	static Binders & binders();
 
 public slots:
 	void Start();
