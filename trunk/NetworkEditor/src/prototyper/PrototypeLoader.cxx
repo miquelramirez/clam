@@ -13,6 +13,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QCoreApplication>
 #include <QtCore/QList>
+#include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/MonoAudioFileReaderConfig.hxx>
@@ -53,11 +54,168 @@ inline bool FileExists( const std::string filename )
 
 namespace CLAM
 {
-	
+
+
+class PrototypeBinder
+{
+public:
+	PrototypeBinder()
+	{
+		PrototypeLoader::binders().push_back(this);
+	}
+	virtual ~PrototypeBinder() {}
+	virtual void bindWidgets(Network & network, QWidget * interface) =0;
+protected:
+	std::string GetNetworkNameFromWidgetName(const char * widgetName)
+	{
+		std::string networkName(widgetName);
+		Substitute(networkName,"___", " ");
+		Substitute(networkName,"__", ".");
+		return networkName;
+	}
+	void Substitute(std::string & subject, const char * pattern, const char * substitution)
+	{
+		for (std::string::size_type position = subject.find(pattern, 0);
+			position!=std::string::npos;
+			position = subject.find(pattern, position))
+		{
+			subject.replace(position, strlen(pattern), substitution);
+		}
+	}
+	bool ReportMissingProcessing(const std::string & processingName, Network & network, QWidget * interface)
+	{
+		if (network.HasProcessing(processingName))
+			return false;
+		QMessageBox::warning(interface,
+			QString("Error connecting controls"),
+			QString("The interface asked to connect to the processing '%1' which is not in the network.")
+				.arg(processingName.c_str()));
+		return true;
+	}
+	bool ReportMissingOutPort(const std::string & portName, Network & network, QWidget * interface)
+	{
+		std::string processingName = network.GetProcessingIdentifier(portName);
+		if (ReportMissingProcessing(processingName,network,interface)) return true;
+		std::string shortPortName = network.GetConnectorIdentifier(portName);
+		if (network.GetProcessing(processingName).HasOutPort(shortPortName))
+			return false; // no problem :-)
+		QMessageBox::warning(interface,
+			QString("Error connecting controls"),
+			QString("The interface asked to connect to a port '%1' not available in the processing '%2'.") // TODO: Try with...
+				.arg(shortPortName.c_str())
+				.arg(processingName.c_str()
+				));
+		return true;
+	}
+	bool ReportMissingInControl(const std::string & controlName, Network & network, QWidget * interface)
+	{
+		std::string processingName = network.GetProcessingIdentifier(controlName);
+		if (ReportMissingProcessing(processingName,network,interface)) return true;
+		std::string shortControlName = network.GetConnectorIdentifier(controlName);
+		if (network.GetProcessing(processingName).HasInControl(shortControlName))
+			return false; // no problem :-)
+		QMessageBox::warning(interface,
+			QString("Error connecting controls"),
+			QString("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
+				.arg(shortControlName.c_str())
+				.arg(processingName.c_str()
+				));
+		return true;
+	}
+};
+
+template < typename PlotClass, typename MonitorType>
+class MonitorBinder : public PrototypeBinder
+{
+	const char * _prefix;
+	const char * _plotClassName;
+public:
+	MonitorBinder(const char* prefix, const char* plotClassName)
+		: _prefix(prefix)
+		, _plotClassName(plotClassName)
+	{}
+	virtual void bindWidgets(Network & network, QWidget * interface)
+	{
+		std::cout << "Looking for " << _plotClassName << " widgets..." << std::endl;
+		QList<QWidget*> widgets = interface->findChildren<QWidget*>(QRegExp(_prefix));
+		for (typename QList<QWidget*>::Iterator it=widgets.begin();
+				it!=widgets.end();
+				it++)
+		{
+			QWidget * aWidget = *it;
+			if (aWidget->metaObject()->className() != std::string(_plotClassName)) continue;
+			std::string portName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(9).toAscii());
+			std::cout << "* " << _plotClassName << " connected to port " << portName << std::endl;
+
+			if (ReportMissingOutPort(portName,network,interface)) continue;
+
+			MonitorType * portMonitor = new MonitorType;
+			std::string monitorName = network.GetUnusedName("PrototyperMonitor");
+			network.AddProcessing(monitorName, portMonitor);
+			network.ConnectPorts(portName, monitorName+".Input");
+			PlotClass * plot = (PlotClass*) aWidget;
+			plot->setDataSource(*portMonitor);
+		}
+	}
+};
+
+static MonitorBinder<Oscilloscope,OscilloscopeMonitor> oscilloscopeBinder
+	("OutPort__.*", "Oscilloscope");
+static MonitorBinder<Vumeter,VumeterMonitor> vumeterBinder
+	("OutPort__.*", "Vumeter");
+static MonitorBinder<SpectrumView,SpectrumViewMonitor> spectrumViewBinder
+	("OutPort__.*", "SpectrumView");
+static MonitorBinder<PeakView,PeakViewMonitor> peakMonitorBinder
+	("OutPort__.*", "PeakView");
+static MonitorBinder<CLAM::VM::Tonnetz,TonnetzMonitor> tonnetzBinder
+	("OutPort__.*", "CLAM::VM::Tonnetz");
+static MonitorBinder<CLAM::VM::KeySpace,KeySpaceMonitor> keyspaceBinder
+	("OutPort__.*", "CLAM::VM::KeySpace");
+static MonitorBinder<CLAM::VM::Spectrogram,SpectrogramMonitor> spectrogramBinder
+	("OutPort__.*", "CLAM::VM::Spectrogram");
+static MonitorBinder<PolarChromaPeaks,PolarChromaPeaksMonitor> polarChromaPeaksBinder
+	("OutPort__.*", "PolarChromaPeaks");
+static MonitorBinder<CLAM::VM::ChordRanking,ChordRankingMonitor> chordRankingBinder
+	("OutPort__.*", "CLAM::VM::ChordRanking");
+static MonitorBinder<CLAM::VM::LPModelView,LPModelViewMonitor> lpModelBinder
+	("OutPort__.*", "CLAM::VM::LPModelView");
+static MonitorBinder<CLAM::VM::MelCepstrumView,MelCepstrumViewMonitor> melCepstrumBinder
+	("OutPort__.*", "CLAM::VM::MelCepstrumView");
+static MonitorBinder<CLAM::VM::MelSpectrumView,MelSpectrumViewMonitor> melSpectrumBinder
+	("OutPort__.*", "CLAM::VM::MelSpectrumView");
+
+
+class ConfigurationBinder : public PrototypeBinder
+{
+public:
+	virtual void bindWidgets(Network & network, QWidget * interface)
+	{
+		std::cout << "Looking for configuration actions..." << std::endl;
+		static QRegExp pattern("Config__(.*)");
+		QList<QAction*> actions = interface->findChildren<QAction*>(pattern);
+		for (QList<QAction*>::iterator it=actions.begin(); it!=actions.end(); it++)
+		{
+			std::cout << "Action: " << (*it)->objectName().toStdString() << std::endl;
+			if (not pattern.exactMatch((*it)->objectName())) continue;
+			std::string processing = GetNetworkNameFromWidgetName(pattern.cap(1).toStdString().c_str());
+			if (ReportMissingProcessing(processing,network,interface)) continue;
+			QObject::connect(*it, SIGNAL(triggered()), this, SLOT(lauchDialog()));
+		}
+	}
+};
+static ConfigurationBinder configurationBinder;
+
+
 PrototypeLoader::PrototypeLoader()
 	: _player(0)
 	, _interface(0)
 {
+}
+
+PrototypeLoader::Binders & PrototypeLoader::binders()
+{
+	static Binders theBinders;
+	return theBinders;
 }
 
 bool PrototypeLoader::LoadNetwork(std::string networkFile)
@@ -214,30 +372,8 @@ void PrototypeLoader::ConnectWithNetwork()
 	ConnectWidgetsWithBooleanControls();
 	ConnectWidgetsWithAudioFileReaders();
 
-	ConnectWidgetsWithPorts<Oscilloscope,OscilloscopeMonitor>
-		("OutPort__.*", "Oscilloscope");
-	ConnectWidgetsWithPorts<Vumeter,VumeterMonitor>
-		("OutPort__.*", "Vumeter");
-	ConnectWidgetsWithPorts<SpectrumView,SpectrumViewMonitor>
-		("OutPort__.*", "SpectrumView");
-	ConnectWidgetsWithPorts<PeakView,PeakViewMonitor>
-		("OutPort__.*", "PeakView");
-	ConnectWidgetsWithPorts<CLAM::VM::Tonnetz,TonnetzMonitor>
-		("OutPort__.*", "CLAM::VM::Tonnetz");
-	ConnectWidgetsWithPorts<CLAM::VM::KeySpace,KeySpaceMonitor>
-		("OutPort__.*", "CLAM::VM::KeySpace");
-	ConnectWidgetsWithPorts<CLAM::VM::Spectrogram,SpectrogramMonitor>
-		("OutPort__.*", "CLAM::VM::Spectrogram");
-	ConnectWidgetsWithPorts<PolarChromaPeaks,PolarChromaPeaksMonitor>
-		("OutPort__.*", "PolarChromaPeaks");
-	ConnectWidgetsWithPorts<CLAM::VM::ChordRanking,ChordRankingMonitor>
-		("OutPort__.*", "CLAM::VM::ChordRanking");
-	ConnectWidgetsWithPorts<CLAM::VM::LPModelView,LPModelViewMonitor>
-		("OutPort__.*", "CLAM::VM::LPModelView");
-	ConnectWidgetsWithPorts<CLAM::VM::MelCepstrumView,MelCepstrumViewMonitor>
-		("OutPort__.*", "CLAM::VM::MelCepstrumView");
-	ConnectWidgetsWithPorts<CLAM::VM::MelSpectrumView,MelSpectrumViewMonitor>
-		("OutPort__.*", "CLAM::VM::MelSpectrumView");
+	for (Binders::iterator it=binders().begin(); it!=binders().end(); it++)
+		(*it)->bindWidgets(_network, _interface);
 
 	QObject * playButton = _interface->findChild<QObject*>("PlayButton");
 	if (playButton) connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
@@ -342,9 +478,9 @@ void PrototypeLoader::UpdatePlayStatus()
 	if (playbackIndicator)
 	{
 		if ( !_network.IsStopped())
-			playbackIndicator->setText("<p style='color:green'>Playing...</p>");
+			playbackIndicator->setText(tr("<p style='color:green'>Playing...</p>"));
 		else
-			playbackIndicator->setText("<p style='color:red'>Stopped</p>");
+			playbackIndicator->setText(tr("<p style='color:red'>Stopped</p>"));
 	}
 }
 
