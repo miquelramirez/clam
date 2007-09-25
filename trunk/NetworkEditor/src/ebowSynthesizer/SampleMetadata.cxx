@@ -24,55 +24,34 @@ bool SampleMetadata::operator<(const SampleMetadata& argSampleMetadata) const
 {
 
 	if (GetSortIndex() == SAMPLE_METADATA_PITCH_INDEX)
-	{
 		return GetPitch() < argSampleMetadata.GetPitch();
-	}
-	else if (GetSortIndex() == SAMPLE_METADATA_AMPLITUDE_INDEX)
-	{
+	if (GetSortIndex() == SAMPLE_METADATA_AMPLITUDE_INDEX)
 		return GetAmplitude() > argSampleMetadata.GetAmplitude();
-	}
-	else
-	{
-		std::ostringstream outStream;
-		outStream << std::string("SampleMetadata: unsupported argument for GetSortIndex(): ") << GetSortIndex();
-		CLAM_DEBUG_ASSERT( false, outStream.str().c_str() );
-	}
+	std::ostringstream outStream;
+	outStream << std::string("SampleMetadata: unsupported argument for GetSortIndex(): ") << GetSortIndex();
+	CLAM_ASSERT( false, outStream.str().c_str() );
 }
 
 bool SampleMetadata::operator>(const SampleMetadata& argSampleMetadata) const
 {
 	if (GetSortIndex() == SAMPLE_METADATA_PITCH_INDEX)
-	{
 		return GetPitch() > argSampleMetadata.GetPitch();
-	}
-	else if (GetSortIndex() == SAMPLE_METADATA_AMPLITUDE_INDEX)
-	{
+	if (GetSortIndex() == SAMPLE_METADATA_AMPLITUDE_INDEX)
 		return GetAmplitude() > argSampleMetadata.GetAmplitude();
-	}
-	else
-	{
-		std::ostringstream outStream;
-		outStream << std::string("SampleMetadata: unsupported argument for GetSortIndex(): ") << GetSortIndex();
-		CLAM_DEBUG_ASSERT( false, outStream.str().c_str() );
-	}
+	std::ostringstream outStream;
+	outStream << std::string("SampleMetadata: unsupported argument for GetSortIndex(): ") << GetSortIndex();
+	CLAM_ASSERT( false, outStream.str().c_str() );
 }
 
 bool SampleMetadata::operator==(const SampleMetadata& argSampleMetadata) const
 {
 	if (GetSortIndex() == SAMPLE_METADATA_PITCH_INDEX)
-	{
 		return GetPitch() == argSampleMetadata.GetPitch();
-	}
-	else if (GetSortIndex() == SAMPLE_METADATA_AMPLITUDE_INDEX)
-	{
+	if (GetSortIndex() == SAMPLE_METADATA_AMPLITUDE_INDEX)
 		return GetAmplitude() == argSampleMetadata.GetAmplitude();
-	}
-	else
-	{
-		std::ostringstream outStream;
-		outStream << std::string("SampleMetadata: unsupported argument for GetSortIndex(): ") << GetSortIndex();
-		CLAM_DEBUG_ASSERT( false, outStream.str().c_str() );
-	}
+	std::ostringstream outStream;
+	outStream << std::string("SampleMetadata: unsupported argument for GetSortIndex(): ") << GetSortIndex();
+	CLAM_ASSERT( false, outStream.str().c_str() );
 }
 
 }
