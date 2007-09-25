@@ -55,12 +55,14 @@ class ChordSegmentator
 	// Chord similarity method variables
 	std::vector< std::vector<double> > _chordSimilarity;
 	std::vector<double> _segmentChordCorrelation;
+	unsigned _framesInSegment;
 public:
 	ChordSegmentator()
 		: _segmentation(0)
 		, _currentSegment(0)
 		, _segmentOpen(false)
 		, _lastChord(0)
+		, _framesInSegment(0)
 	{
 		method(0);
 	};
@@ -79,14 +81,15 @@ public:
 		}
 	}
 
-	/** Simple chord segmentation method
+	/** 
+	 * Simple chord segmentation method
 	 */
 	void doItSimple(CLAM::TData & currentTime, const std::vector<double> & correlation, const unsigned firstCandidate, const unsigned secondCandidate) 
 	{
 		CLAM::TData firstCandidateWeight = correlation[firstCandidate];
-		CLAM::TData noCandidateWeigth = correlation[0];
+		CLAM::TData noCandidateWeight = correlation[0];
 		
-		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
+		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeight || noCandidateWeight<0.001 ?
 				0 : firstCandidate;
 		
 		if(_segmentOpen)
@@ -114,49 +117,55 @@ public:
 	void doItSimilarity(CLAM::TData & currentTime, const std::vector<double> & correlation, const unsigned firstCandidate, const unsigned secondCandidate) 
 	{
 		CLAM::TData firstCandidateWeight = correlation[firstCandidate];
-		CLAM::TData noCandidateWeigth = correlation[0];
-		for(unsigned i=0; i<correlation.size(); i++) 
-		{
-			_segmentChordCorrelation[i] += correlation[i]/correlation[0];
-		}
+		CLAM::TData noCandidateWeight = correlation[0];
 		
-		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
+		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeight || noCandidateWeight<0.001 ?
 				0 : firstCandidate;
 
 		unsigned segmentChord=0;
 		
 		if(_segmentOpen)
 		{ 
+			for(unsigned i=0; i<correlation.size(); i++) 
+				_segmentChordCorrelation[i] += correlation[i]/correlation[0];
+			_framesInSegment++;
 			estimateChord(_segmentChordCorrelation, segmentChord);
 			_chordIndexes[_currentSegment] = segmentChord;
-			_lastChord = segmentChord;
 
+			double segmentCorrelationDiffNew = (_segmentChordCorrelation[segmentChord] - _segmentChordCorrelation[currentChord]) / _framesInSegment;
+
+			double similarity = _chordSimilarity[currentChord][segmentChord];
+			
+			double similarityThreshold = 0.67;
+			double correlationThreshold = 0.3;
+			
 			if(!currentChord) 
 			{
 				closeSegment(currentTime);
+				_framesInSegment = 0;
 				for(unsigned i=0; i<correlation.size(); i++) 
 					_segmentChordCorrelation[i] = 0;
 			}
-			
-			//
-			// The most important condition for rooting out the small, pointless
-			// segments that appear so often.
-			//
-			
-			double similarityThreshold = 0.67;
 
-			if (_chordSimilarity[currentChord][_lastChord] < similarityThreshold)
+			if (similarity < similarityThreshold)
 			{
-				closeSegment(currentTime);
-				for(unsigned i=0; i<correlation.size(); i++) 
-					_segmentChordCorrelation[i] = 0;
+				if(segmentCorrelationDiffNew > correlationThreshold)
+				{
+					closeSegment(currentTime);
+					_framesInSegment = 0;
+					for(unsigned i=0; i<correlation.size(); i++) 
+						_segmentChordCorrelation[i] = 0;
+				}
 			}
+			
 		}
-		if(!_segmentOpen)
+		if(!_segmentOpen && currentChord)
 		{	
-			if(currentChord)
-				openSegment(currentTime, currentChord);
-			_lastChord = currentChord;
+			openSegment(currentTime, currentChord);
+			for(unsigned i=0; i<correlation.size(); i++) 
+				_segmentChordCorrelation[i] = correlation[i]/correlation[0];
+			_framesInSegment++;
+			segmentChord=currentChord;
 		}
 		
 		if(_segmentOpen)
@@ -177,6 +186,9 @@ public:
 		switch(_method)
 		{
 			case 1:
+				changeChordIfSegmentTooSmall(_currentSegment);
+				break;
+			case 2:
 				changeChordIfSegmentTooSmall(_currentSegment);
 				break;
 		}
