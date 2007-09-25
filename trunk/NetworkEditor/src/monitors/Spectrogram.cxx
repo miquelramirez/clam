@@ -49,11 +49,11 @@ CLAM::VM::Spectrogram::Spectrogram(QWidget * parent)
 	, _nFrames(256)
 	, _currentFrame(0)
 	, _smooth(false)
+	, _scrolling(true)
 {
 	_data = 0;
 	_dataSource = 0;
 	_updatePending=0;
-	//_nBins=0;
 	_maxValue=1;
 	static const struct GradientPoint 
 	{
@@ -92,7 +92,6 @@ CLAM::VM::Spectrogram::Spectrogram(QWidget * parent)
 			B += Bstep;
 		}
 	}
-	_maxValue = 1;
 	setWhatsThis(tr(
 				"<p>The <b>Spectrogram view</b> displays the spectrogram of the sound.</p>\n"
 				));
