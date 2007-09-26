@@ -199,7 +199,7 @@ public:
 			if (not pattern.exactMatch((*it)->objectName())) continue;
 			std::string processing = GetNetworkNameFromWidgetName(pattern.cap(1).toStdString().c_str());
 			if (ReportMissingProcessing(processing,network,interface)) continue;
-			QObject::connect(*it, SIGNAL(triggered()), this, SLOT(lauchDialog()));
+	//		QObject::connect(*it, SIGNAL(triggered()), this, SLOT(lauchDialog()));
 		}
 	}
 };
