@@ -146,6 +146,7 @@ def setup_build_options( env ) :
 	if sys.platform == "linux2" :
 		opts.Add( BoolOption( 'crossmingw', '', 'no' ))
 
+	opts.Add( BoolOption( 'verbose', 'Display commands', False) )
 	opts.Add( BoolOption( 'release_asserts', 'CLAM asserts will be triggered on release builds', 'no'))
 	opts.Add( BoolOption( 'optimize_and_lose_precision', 'Use tabulated trigonometric functions and the like', 'no' )) 
 	opts.Add( BoolOption( 'force_avoid_configure', 'Avoid configure phase. Useful for Eclipse scons plugin. Enable it only if you know what you are doing', 'no' ) )
@@ -238,6 +239,12 @@ clam_env = Environment( ENV=os.environ, tools=['default'])
 clam_env.SConsignFile()
 
 setup_build_options( clam_env )
+
+if not clam_env['verbose']:
+	clam_env['CXXCOMSTR'] = '== Compiling $SOURCE'
+	clam_env['SHCXXCOMSTR'] = '== Compiling shared $SOURCE'
+	clam_env['LINKCOMSTR'] = '== Linking $TARGET'
+	clam_env['SHLINKCOMSTR'] = '== Linking library $TARGET'
 
 clam_env.Append( CPPFLAGS = '' )
 crosscompiling = clam_env.has_key('crossmingw') and clam_env['crossmingw']
