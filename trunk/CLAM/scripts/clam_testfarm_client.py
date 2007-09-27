@@ -144,13 +144,14 @@ clam.add_subtask('Plugins compilation', [
 	'scons clam_prefix=%(installPath)s'%localDefinitions,
 	'scons install',
 ] )
+"""
 clam.add_subtask('Back-to-back network tests', [
 	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
 	'cd %(sandbox)s/CLAM/plugins/spacialization'%localDefinitions,
 	'CLAM_PLUGIN_PATH=. ../../../NetworkEditor/OfflinePlayer simple-interpolation.clamnetwork metronom.wav simple-interpolation-result.wav'%localDefinitions,
 	'diff simple-interpolation-expected.wav simple-interpolation-result.wav'
 ] )
-
+"""
 clam.add_subtask('Padova Speech SMS (external repository)', [
 	'cd %(sandbox)s/padova-speech-sms/src'%localDefinitions,
 	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
