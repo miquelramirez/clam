@@ -48,6 +48,7 @@ env['QT4_UICDECLPREFIX'] = os.path.join('generated','uic_')
 env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
+	env['SHCXXCOMSTR'] = '== Compiling shared $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
 	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
 	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
