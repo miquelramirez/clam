@@ -95,7 +95,7 @@ public:
 	}
 	ImpulseResponse & get(unsigned elevation, unsigned azimut)
 	{
-		return _storage[0][azimut];
+		return _storage[elevation][azimut];
 	}
 };
 
@@ -119,21 +119,27 @@ public:
 private:
 	
 	Config _config;
-	OutPort< ImpulseResponse* > _impulseResponse;
-	OutPort< ImpulseResponse* > _previousImpulseResponse;
+	OutPort< ImpulseResponse* > _impulseResponseL;
+	OutPort< ImpulseResponse* > _previousImpulseResponseL;
+	OutPort< ImpulseResponse* > _impulseResponseR;
+	OutPort< ImpulseResponse* > _previousImpulseResponseR;
 	InControl _elevation; // angle to the horizon
 	InControl _azimut; // horizontal angle from viewpoint (north-south-east-west)
 	GeodesicDatabase _database; 
-	ImpulseResponse * _previous;
+	ImpulseResponse * _previousL;
+	ImpulseResponse * _previousR;
 
 public:
 	const char* GetClassName() const { return "HRTFDatabaseFetcher"; }
 	HRTFDatabaseFetcher(const Config& config = Config()) 
-		: _impulseResponse("ImpulseResponse", this)
-		, _previousImpulseResponse("PreviousImpulseResponse", this)
+		: _impulseResponseL("ImpulseResponseL", this)
+		, _impulseResponseR("ImpulseResponseR", this)
+		, _previousImpulseResponseL("PreviousImpulseResponseL", this)
+		, _previousImpulseResponseR("PreviousImpulseResponseR", this)
 		, _elevation("elevation", this)
 		, _azimut("azimut", this)
-		, _previous(0)
+		, _previousL(0)
+		, _previousR(0)
 	{
 		Configure( config );
 		_elevation.SetBounds(-40,90);
@@ -154,7 +160,8 @@ public:
 		}
 		unsigned elevation = map(_elevation, _database.NElevation, -40, 90);
 		unsigned azimut = map(_azimut, _database.NAzimut(elevation), 0, 360);
-		_previous = &_database.get(elevation,azimut);
+		_previousL = &_database.get(elevation,azimut);
+		_previousR = &_database.get(elevation,_database.NAzimut(elevation)-azimut-1);
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
@@ -171,14 +178,20 @@ public:
 		unsigned elevation = map(_elevation, _database.NElevation, -40, 90);
 		unsigned azimut = map(_azimut, _database.NAzimut(elevation), 0, 360);
 
-		ImpulseResponse * current = &_database.get(elevation,azimut);
-		_impulseResponse.GetData()= current;
-		_previousImpulseResponse.GetData() = _previous ? _previous : current;
-		if ( _previous != current) 
+		ImpulseResponse * currentL = &_database.get(elevation,azimut);
+		_impulseResponseL.GetData()= currentL;
+		ImpulseResponse * currentR = &_database.get(elevation,_database.NAzimut(elevation)-azimut-1);
+		_impulseResponseR.GetData()= currentR;
+		_previousImpulseResponseL.GetData() = _previousL ? _previousL : currentL;
+		_previousImpulseResponseR.GetData() = _previousR ? _previousR : currentR;
+		if ( _previousR != currentR) 
 			std::cout << "HRTF indices (elevation, azimut) : "<<elevation<<","<<azimut<<std::endl;
-		_previous = current;
-		_impulseResponse.Produce();
-		_previousImpulseResponse.Produce();
+		_previousL = currentL;
+		_previousR = currentR;
+		_impulseResponseL.Produce();
+		_impulseResponseR.Produce();
+		_previousImpulseResponseL.Produce();
+		_previousImpulseResponseR.Produce();
 		return true;
 	}
 };
