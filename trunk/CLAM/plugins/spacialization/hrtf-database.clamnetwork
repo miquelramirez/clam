@@ -27,7 +27,7 @@
 
   <processing id="HRTFDatabaseFetcher" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>HRTFs/elev0/</Path>
+    <Path>/home/parumi/acustica/HRTFs/</Path>
     <Prefix></Prefix>
   </processing>
 

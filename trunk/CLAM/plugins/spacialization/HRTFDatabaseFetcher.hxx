@@ -55,7 +55,6 @@ private:
 			if (hrtfFile.length()>4 && hrtfFile.substr(hrtfFile.length()-4, 4) != ".wav") continue;
 			files.push_back(hrtfFile);
 		}
-		std::cout << path << "  files size "<< files.size() << std::endl;
 		if (files.empty())
 		{
 			errorMsg += "Elevation dir: "+path+" contains no suitable .wav files\n";
@@ -70,19 +69,15 @@ private:
 		return true;
 	}
 public:
-	ImpulseResponse _dummy;
 	std::vector<std::vector<ImpulseResponse> > _storage;
 	unsigned NElevation;
 	GeodesicDatabase()
 		: NElevation(14)
 	{
-		std::string errMsg;
-		if (!computeResponseSpectrums("HRTFs/elev0/L0e000a.wav", _dummy, 512, errMsg))
-			std::cerr << errMsg << std::endl;
 	}
 	unsigned NAzimut(unsigned elevation) 
 	{
-		return _storage[0].size();
+		return _storage[elevation].size();
 	}
 	bool loadImpulseResponseDatabase( 
 			const std::string & path,
@@ -168,7 +163,6 @@ public:
 	{
 		double normalizedValue = (control.GetLastValue() - min) / (max-min);
 		unsigned result = unsigned(std::floor(normalizedValue*nIndexes+.5));
-		std::cout << normalizedValue << "," << nIndexes << "," << result << std::endl;
 		return result < nIndexes? result : 0;
 	}
 	bool Do()
@@ -181,7 +175,7 @@ public:
 		_impulseResponse.GetData()= current;
 		_previousImpulseResponse.GetData() = _previous ? _previous : current;
 		if ( _previous != current) 
-			std::cout << "IR : "<<elevation<<","<<azimut<<std::endl;
+			std::cout << "HRTF indices (elevation, azimut) : "<<elevation<<","<<azimut<<std::endl;
 		_previous = current;
 		_impulseResponse.Produce();
 		_previousImpulseResponse.Produce();
