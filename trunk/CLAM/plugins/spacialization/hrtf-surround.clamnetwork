@@ -36,6 +36,12 @@
 
   <processing id="Cartesian2PolarControl" type="Cartesian2PolarControl"/>
 
+  <processing id="ControlPrinter" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
   <processing id="Conv C" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
     <UseExternalDataBase>0</UseExternalDataBase>
@@ -101,27 +107,27 @@
 
   <processing id="IR0" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>/home/parumi/acustica/HRTFs/elev0/L0e000a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e000a.wav</ImpulseResponse>
   </processing>
 
   <processing id="IR110" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>/home/parumi/acustica/HRTFs/elev0/L0e110a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e110a.wav</ImpulseResponse>
   </processing>
 
   <processing id="IR250" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>/home/parumi/acustica/HRTFs/elev0/L0e250a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e250a.wav</ImpulseResponse>
   </processing>
 
   <processing id="IR30" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>/home/parumi/acustica/HRTFs/elev0/L0e030a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e030a.wav</ImpulseResponse>
   </processing>
 
   <processing id="IR330" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>/home/parumi/acustica/HRTFs/elev0/L0e330a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e330a.wav</ImpulseResponse>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Pressure" type="ImpulseResponseDatabaseFetcher">
@@ -262,7 +268,7 @@
     <DefaultX>0</DefaultX>
     <MaxX>1</MaxX>
     <MinY>0</MinY>
-    <DefaultY>0</DefaultY>
+    <DefaultY>0.2</DefaultY>
     <MaxY>1</MaxY>
   </processing>
 
@@ -761,6 +767,11 @@
   <control_connection>
     <out>Cartesian2PolarControl.angle</out>
     <in>Surround.beta</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Cartesian2PolarControl.angle</out>
+    <in>ControlPrinter.In Control</in>
   </control_connection>
 
   <control_connection>
