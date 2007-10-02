@@ -28,6 +28,7 @@
 #include "ComplexSpectrum.hxx"
 #include "LoadImpulseResponse.hxx"
 #include <vector>
+#include <dirent.h>
 
 namespace CLAM
 {
@@ -37,6 +38,7 @@ class GeodesicDatabase
 {
 public:
 	ImpulseResponse _dummy;
+	std::vector<std::vector<ImpulseResponse> > _storage;
 	unsigned NElevation;
 	GeodesicDatabase()
 		: NElevation(14)
@@ -47,18 +49,39 @@ public:
 	}
 	unsigned NAzimut(unsigned elevation) 
 	{
-		return 5*elevation;
+		return _storage[0].size();
 	}
 	bool loadImpulseResponseDatabase( 
-			const std::string & filePrefix,
+			const std::string & path,
 			unsigned frameSize,
 			std::string & errorMsg )
 	{
+		_storage.push_back( std::vector<ImpulseResponse>() );
+		DIR* dir = opendir(path.c_str());
+		if (!dir)
+		{
+			errorMsg += "Can not open HRTF dir: " + path + "\n";
+			return false;
+		}
+		std::vector<std::string> files;
+		while ( struct dirent * dirEntry = readdir(dir) )
+		{
+			std::string hrtfFile(dirEntry->d_name);
+			if (hrtfFile[0] != 'L') continue;
+			if (hrtfFile.length()>4 && hrtfFile.substr(hrtfFile.length()-4, 4) != ".wav") continue;
+			files.push_back(hrtfFile);
+		}
+		std::sort(files.begin(), files.end());
+		_storage[0].resize( files.size() );
+		for (unsigned i=0; i<files.size(); i++)
+			if (!computeResponseSpectrums(path+files[i], _storage[0][i], 512, errorMsg))
+				return false;
+
 		return true;
 	}
 	ImpulseResponse & get(unsigned elevation, unsigned azimut)
 	{
-		return _dummy;
+		return _storage[0][azimut];
 	}
 };
 
@@ -107,6 +130,9 @@ public:
 		CopyAsConcreteConfig(_config, config);
 
 		std::string errorMsg;
+
+		_config.SetPrefix( "" ); //TODO remove
+		_config.SetPath( "HRTFs/elev0/" ); //TODO remove
 		if (!_database.loadImpulseResponseDatabase(_config.GetPath() + _config.GetPrefix(), _config.GetFrameSize(), errorMsg ))
 		{
 			AddConfigErrorMessage(errorMsg);
