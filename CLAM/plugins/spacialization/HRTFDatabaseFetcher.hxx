@@ -36,6 +36,39 @@ namespace CLAM
 
 class GeodesicDatabase
 {
+private:
+	bool loadHRTFDir( const std::string & path, unsigned frameSize, std::string & errorMsg)
+	{
+		_storage.push_back( std::vector<ImpulseResponse>() );
+		std::vector<ImpulseResponse> & sameElevationIRs = _storage.back();
+		DIR* dir = opendir(path.c_str());
+		if (!dir)
+		{
+			errorMsg += "Can not open HRTF dir: " + path + "\n";
+			return false;
+		}
+		std::vector<std::string> files;
+		while ( struct dirent * dirEntry = readdir(dir) )
+		{
+			std::string hrtfFile(dirEntry->d_name);
+			if (hrtfFile[0] != 'L') continue;
+			if (hrtfFile.length()>4 && hrtfFile.substr(hrtfFile.length()-4, 4) != ".wav") continue;
+			files.push_back(hrtfFile);
+		}
+		std::cout << path << "  files size "<< files.size() << std::endl;
+		if (files.empty())
+		{
+			errorMsg += "Elevation dir: "+path+" contains no suitable .wav files\n";
+			return false;
+		}
+		std::sort(files.begin(), files.end());
+		sameElevationIRs.resize( files.size() );
+		for (unsigned i=0; i<files.size(); i++)
+			if (!computeResponseSpectrums(path+files[i], sameElevationIRs[i], 512, errorMsg))
+				return false;
+
+		return true;
+	}
 public:
 	ImpulseResponse _dummy;
 	std::vector<std::vector<ImpulseResponse> > _storage;
@@ -56,27 +89,13 @@ public:
 			unsigned frameSize,
 			std::string & errorMsg )
 	{
-		_storage.push_back( std::vector<ImpulseResponse>() );
-		DIR* dir = opendir(path.c_str());
-		if (!dir)
+		for (int i=-40; i<=90; i+=10) //TODO use config
 		{
-			errorMsg += "Can not open HRTF dir: " + path + "\n";
-			return false;
-		}
-		std::vector<std::string> files;
-		while ( struct dirent * dirEntry = readdir(dir) )
-		{
-			std::string hrtfFile(dirEntry->d_name);
-			if (hrtfFile[0] != 'L') continue;
-			if (hrtfFile.length()>4 && hrtfFile.substr(hrtfFile.length()-4, 4) != ".wav") continue;
-			files.push_back(hrtfFile);
-		}
-		std::sort(files.begin(), files.end());
-		_storage[0].resize( files.size() );
-		for (unsigned i=0; i<files.size(); i++)
-			if (!computeResponseSpectrums(path+files[i], _storage[0][i], 512, errorMsg))
+			std::ostringstream os;
+			os << path << "elev" << i << "/" << std::flush;
+			if (!loadHRTFDir( os.str(), frameSize, errorMsg ))
 				return false;
-
+		}
 		return true;
 	}
 	ImpulseResponse & get(unsigned elevation, unsigned azimut)
@@ -132,7 +151,7 @@ public:
 		std::string errorMsg;
 
 		_config.SetPrefix( "" ); //TODO remove
-		_config.SetPath( "HRTFs/elev0/" ); //TODO remove
+		_config.SetPath( "HRTFs/" ); //TODO remove
 		if (!_database.loadImpulseResponseDatabase(_config.GetPath() + _config.GetPrefix(), _config.GetFrameSize(), errorMsg ))
 		{
 			AddConfigErrorMessage(errorMsg);
