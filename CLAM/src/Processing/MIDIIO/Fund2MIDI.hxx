@@ -60,17 +60,17 @@ namespace CLAM
 		const char *GetClassName() const { return "Fund2MIDI"; }
 
 		Fund2MIDI()
-		:
-		mInFund("In Fundamental", this),
-		mFreqControlOut("Control Out", this)
+			:
+			mInFund("In Fundamental", this),
+			mFreqControlOut("MIDI Out", this)
 		{
-		Configure( mConfig );	
+			Configure( mConfig );
 		}
 
 		Fund2MIDI( const Fund2MIDIConfig& cfg ) 
-		:
-		mInFund("In Fundamental", this),
-		mFreqControlOut("Control Out", this)
+			:
+			mInFund("In Fundamental", this),
+			mFreqControlOut("MIDI Out", this)
 		{ 
 			Configure( cfg );
 		}

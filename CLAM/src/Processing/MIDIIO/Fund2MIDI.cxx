@@ -38,7 +38,7 @@ namespace Hidden
 
 bool Fund2MIDI::Do( const Fundamental& inFund ) 
 {
-	TControlData fund_note = Round( 69 + log(inFund.GetFreq(0)/440.)*17.31234 );
+	TControlData fund_note = Round( 69. + log(inFund.GetFreq(0)/440.)*17.31234 );
 
 	//FIXME clipping if necessary (testing), check inFund.GetFreq(0)
 	if (fund_note > 127 | fund_note < 0 )
