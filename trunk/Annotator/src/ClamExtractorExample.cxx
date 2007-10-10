@@ -781,5 +781,3 @@ void Segment2Marks(const CLAM::Segment& segment, CLAM::DataArray & marks)
 	}
 
 }
-
-

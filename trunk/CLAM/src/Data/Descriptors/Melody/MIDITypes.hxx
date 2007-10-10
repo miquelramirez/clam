@@ -29,7 +29,7 @@ namespace CLAM
 		int Length() const;
 
 		bool operator==(const MIDIEvent& ev) {return Ticks()==ev.Ticks();}
-	    bool operator<(const MIDIEvent& ev) {return Ticks()<ev.Ticks();}
+		bool operator<(const MIDIEvent& ev) {return Ticks()<ev.Ticks();}
 		bool operator>(const MIDIEvent& ev) {return Ticks()>ev.Ticks();}
 		bool operator==(const MIDIEvent& ev) const {return Ticks()==ev.Ticks();}
 		bool operator<(const MIDIEvent& ev) const {return Ticks()<ev.Ticks();}
