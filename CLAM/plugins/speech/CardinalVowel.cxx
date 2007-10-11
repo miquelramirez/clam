@@ -8,7 +8,7 @@ namespace Hidden
 	static const char* metadata[] = {
 		"key", "CardinalVowel",
 		"category", "Speech (Experimental - GSoC)",
-		"description", "Cardinal Vowel",
+		"description", "Cardinal Vowel Formant Control Sender: outputs f1 and f2 values from the curve defined by the cardinal vowels for setting the controls of the vowel resonator.",
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, CardinalVowel> reg=metadata ;
@@ -19,6 +19,8 @@ void CardinalVowelConfig::DefaultInit()
 	AddAll();
 	UpdateData();
 	SetAmount( 1.0 );
+	
+
 }
 
 CardinalVowel::CardinalVowel()
@@ -26,6 +28,7 @@ CardinalVowel::CardinalVowel()
 	, mStepControl( "Number of Steps", this )
 	, mF1Control( "F1 Out", this )
 	, mF2Control( "F2 Out", this )
+	, mF3Control( "F3 Out", this )
 {
 	Configure( mConfig );	
 }
@@ -35,6 +38,7 @@ CardinalVowel::CardinalVowel( const CardinalVowelConfig& cfg )
 	, mStepControl( "Number of Steps", this )
 	, mF1Control( "F1 Out", this )
 	, mF2Control( "F2 Out", this )
+	, mF3Control( "F2 Out", this )
 { 
 	Configure( cfg );
 }
@@ -50,6 +54,7 @@ bool CardinalVowel::Do()
 {
 	mF1Control.SendControl(CalcF1() );
 	mF2Control.SendControl(CalcF2() );
+	mF3Control.SendControl(CalcF3() );
 	return true;
 }
 
@@ -75,6 +80,14 @@ float CardinalVowel::CalcF2()
 	TControlData vowelLocation = mVowelControl.GetLastValue();
 	TControlData numSteps = mStepControl.GetLastValue();
 	return 2400 - 1679*vowelLocation;
+}
+
+//function to approximate f3 through the cardinal vowel series
+float CardinalVowel::CalcF3() 
+{
+	TControlData vowelLocation = mVowelControl.GetLastValue();
+	TControlData numSteps = mStepControl.GetLastValue();
+	return 3300 - 900*vowelLocation;
 }
 	
 
