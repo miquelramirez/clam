@@ -78,8 +78,10 @@ namespace CLAM
 		InControl mStepControl;
 		OutControl mF1Control;
 		OutControl mF2Control;
+		OutControl mF3Control;
 		float CalcF1();
 		float CalcF2();
+		float CalcF3();
 		
 	public:
 		
