@@ -16,34 +16,59 @@
    <iconset resource="../src/images.qrc" >:/icons/images/lpmodel.svg</iconset>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
    <property name="spacing" >
     <number>6</number>
    </property>
+   <property name="leftMargin" >
+    <number>9</number>
+   </property>
+   <property name="topMargin" >
+    <number>9</number>
+   </property>
+   <property name="rightMargin" >
+    <number>9</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>9</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
      </property>
+     <property name="leftMargin" >
+      <number>0</number>
+     </property>
+     <property name="topMargin" >
+      <number>0</number>
+     </property>
+     <property name="rightMargin" >
+      <number>0</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>0</number>
+     </property>
      <item>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
        </property>
+       <property name="leftMargin" >
+        <number>0</number>
+       </property>
+       <property name="topMargin" >
+        <number>0</number>
+       </property>
+       <property name="rightMargin" >
+        <number>0</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>0</number>
+       </property>
        <item>
-        <widget class="CLAM::VM::LPModelView" name="OutPort__LPC_AutoCorrelation_0__LPModelOut" >
+        <widget class="CLAM::VM::LPModelView" name="OutPort__LPC___AutoCorrelation__LPModelOut" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>5</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
            <horstretch>0</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
@@ -52,7 +77,7 @@
           <string>LPC Coeficients</string>
          </property>
          <property name="autoFillBackground" >
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="styleSheet" >
           <string>background-color:#444</string>
@@ -84,24 +109,31 @@
      </item>
      <item>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="leftMargin" >
+        <number>0</number>
+       </property>
+       <property name="topMargin" >
+        <number>0</number>
+       </property>
+       <property name="rightMargin" >
+        <number>0</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>0</number>
        </property>
        <item>
         <widget class="Oscilloscope" name="OutPort__AudioSource_0__AudioOut" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>5</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
            <horstretch>1</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
          <property name="autoFillBackground" >
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="styleSheet" >
           <string>background-color:#444;</string>
@@ -123,11 +155,9 @@
         </widget>
        </item>
        <item>
-        <widget class="SpectrumView" name="OutPort__LPC_AutoCorrelation_0__SpectrumOut" >
+        <widget class="SpectrumView" name="OutPort__LPC___AutoCorrelation__SpectrumOut" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>5</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
            <horstretch>1</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
@@ -136,7 +166,7 @@
           <string>LPC Envelope</string>
          </property>
          <property name="autoFillBackground" >
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="styleSheet" >
           <string>background-color:#444</string>
@@ -160,9 +190,7 @@
        <item>
         <widget class="SpectrumView" name="OutPort__FFT_0__Spectrum___Output" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>5</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
            <horstretch>1</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
@@ -171,7 +199,7 @@
           <string>FFT Spectrum</string>
          </property>
          <property name="autoFillBackground" >
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="styleSheet" >
           <string>background-color:#444</string>
@@ -196,24 +224,31 @@
      </item>
      <item>
       <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="leftMargin" >
+        <number>0</number>
+       </property>
+       <property name="topMargin" >
+        <number>0</number>
+       </property>
+       <property name="rightMargin" >
+        <number>0</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>0</number>
        </property>
        <item>
         <widget class="CLAM::VM::MelSpectrumView" name="OutPort__MelFilterBank_0__Mel___Spectrum" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>5</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
            <horstretch>1</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
          <property name="autoFillBackground" >
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="styleSheet" >
           <string>background-color:#444</string>
@@ -244,15 +279,13 @@
        <item>
         <widget class="CLAM::VM::MelCepstrumView" name="OutPort__CepstralTransform_0__Mel___Cepstrum" >
          <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>5</vsizetype>
+          <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
            <horstretch>1</horstretch>
            <verstretch>1</verstretch>
           </sizepolicy>
          </property>
          <property name="autoFillBackground" >
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="styleSheet" >
           <string>background-color:#444</string>
@@ -286,18 +319,25 @@
    </item>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="leftMargin" >
+      <number>0</number>
+     </property>
+     <property name="topMargin" >
+      <number>0</number>
+     </property>
+     <property name="rightMargin" >
+      <number>0</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>0</number>
      </property>
      <item>
       <widget class="QPushButton" name="PlayButton" >
        <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -310,9 +350,7 @@
      <item>
       <widget class="QPushButton" name="StopButton" >
        <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -324,11 +362,20 @@
      </item>
      <item>
       <layout class="QHBoxLayout" >
-       <property name="margin" >
-        <number>0</number>
-       </property>
        <property name="spacing" >
         <number>6</number>
+       </property>
+       <property name="leftMargin" >
+        <number>0</number>
+       </property>
+       <property name="topMargin" >
+        <number>0</number>
+       </property>
+       <property name="rightMargin" >
+        <number>0</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>0</number>
        </property>
        <item>
         <spacer>
@@ -365,9 +412,7 @@
      <item>
       <widget class="QPushButton" name="CloseButton" >
        <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>5</vsizetype>
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -383,6 +428,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>Oscilloscope</class>
+   <extends>QWidget</extends>
+   <header>Oscilloscope.hxx</header>
+  </customwidget>
+  <customwidget>
    <class>SpectrumView</class>
    <extends>QWidget</extends>
    <header>SpectrumView.hxx</header>
@@ -396,11 +446,6 @@
    <class>CLAM::VM::MelCepstrumView</class>
    <extends>QWidget</extends>
    <header>MelCepstrumView.hxx</header>
-  </customwidget>
-  <customwidget>
-   <class>Oscilloscope</class>
-   <extends>QWidget</extends>
-   <header>Oscilloscope.hxx</header>
   </customwidget>
   <customwidget>
    <class>CLAM::VM::MelSpectrumView</class>
