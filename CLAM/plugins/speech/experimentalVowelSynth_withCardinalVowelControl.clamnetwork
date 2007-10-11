@@ -214,6 +214,11 @@
   </control_connection>
 
   <control_connection>
+    <out>CardinalVowel.F3 Out</out>
+    <in>VowelResonator_0.F3</in>
+  </control_connection>
+
+  <control_connection>
     <out>Pitch.out</out>
     <in>HarmonicPeaksGenerator_0.Fundamental</in>
   </control_connection>
