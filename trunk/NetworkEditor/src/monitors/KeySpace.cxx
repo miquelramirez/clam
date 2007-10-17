@@ -142,6 +142,7 @@ void CLAM::VM::KeySpace::initializeGL()
 	glShadeModel(GL_SMOOTH);
 //	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //	glEnable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glGenTextures(1,&_textureId);
 //	glEnable (GL_LINE_SMOOTH);
@@ -175,12 +176,12 @@ void CLAM::VM::KeySpace::clearData()
 
 void CLAM::VM::KeySpace::paintGL()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	if (!_dataSource) return;
 	_data = _dataSource->frameData();
 	if (_data) DrawTiles();
 	_dataSource->release();
-	DrawLabels();
+	if (_data) DrawLabels();
 
 	_updatePending=0;
 }
@@ -263,9 +264,9 @@ void CLAM::VM::KeySpace::DrawTiles()
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, _smooth? GL_LINEAR : GL_NEAREST );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-
-	float vertexes[] = {0,0,0,1,1,1,1,0};
 	glEnable(GL_TEXTURE_2D);
+	qglColor(Qt::yellow);
+	float vertexes[] = {0,0,0,1,1,1,1,0};
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,vertexes);
@@ -273,6 +274,8 @@ void CLAM::VM::KeySpace::DrawTiles()
 	glDrawArrays(GL_QUADS,0,5);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
 }
 
 void CLAM::VM::KeySpace::DrawLabels()
@@ -290,7 +293,7 @@ void CLAM::VM::KeySpace::DrawLabels()
 		if (value>.6) glColor3d(.1,0,0);
 		else          glColor3d(1,1,1);
 
-		renderText(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(), font());
+		renderText(x1, y1+.02, .6, _dataSource->getLabel(i).c_str(),font());
 	}
 }
 
