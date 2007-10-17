@@ -8,7 +8,6 @@ options.Add(PathOption('prefix', 'The prefix where the application will be insta
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt4/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
-options.Add(BoolOption('with_osc', 'Adds OSC related processings. Needs liboscpack from http://www.audiomulch.com/~rossb/code/oscpack/', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -81,8 +80,6 @@ mainSources = {
 	'NetworkEditor' : os.path.join('src','main.cxx'),
 	'Prototyper' : os.path.join('src','prototyper','main.cxx'),
 	'OfflinePlayer' : os.path.join('src','OfflinePlayerMain.cxx'),
-	'TestAudioDatabaseReader' : os.path.join('src','ebowSynthesizer','TestAudioDatabaseReader.cxx'), #TODO provisinal. Will move to CLAM/example
-	'ebowSynthesizer' : os.path.join('src','ebowSynthesizer','ebowSynthesizer.cxx'), #TODO provisinal. Will move to CLAM/example
 }
 
 sourcePaths = [
@@ -95,7 +92,6 @@ sourcePaths = [
 	os.path.join('src','monitors','generated'),
 	os.path.join('src','clamWidgetsPlugins'),
 	os.path.join('src','clamWidgetsPlugins','generated'),
-	os.path.join('src','ebowSynthesizer'),
 ]
 extraPaths = [
 	CLAMInstallDir+'/include',
@@ -126,14 +122,6 @@ if sys.platform=='linux2' :
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
-
-if env["with_osc"] :
-	env.Append( CPPDEFINES=['WITH_OSC'] )
-	env.Append( LIBS=["oscpack"] )
-else:
-	oscDependent = scanFiles("*OSC*.cxx", [os.path.join('src','ebowSynthesizer')])
-	for oscfile in oscDependent:
-		sources.remove(oscfile)
 
 
 testsources = scanFiles('*.cxx', ['test'])
