@@ -32,19 +32,7 @@ namespace Hidden
 		"icon", "tonnetz.svg",
 		0
 	};
-	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, TonnetzMonitor> regTonnetzMonitor("Tonnetz");
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, TonnetzMonitor> reg = metadata;
-
-/*	static class TonnetzMetadata
-	{
-	public:
-		TonnetzMetadata()
-		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("Tonnetz", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
-			factory.AddAttribute("Tonnetz", "icon", "tonnetz.svg");
-		}
-	} dummy;*/
 }
 
 #include "Tonnetz.hxx"
@@ -114,11 +102,12 @@ void CLAM::VM::Tonnetz::initializeGL()
 {
 	glShadeModel(GL_FLAT);
 	glClearColor(0,0,0,0); // rgba
+//	glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 //	glEnable (GL_LINE_SMOOTH);
 //	glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-//	glEnable(GL_CULL_FACE);
 }
 void CLAM::VM::Tonnetz::resizeGL(int width, int height)
 {
@@ -138,12 +127,11 @@ void CLAM::VM::Tonnetz::resizeGL(int width, int height)
 }
 void CLAM::VM::Tonnetz::paintGL()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	if (!_dataSource) return;
 	_data = _dataSource->frameData();
 	Draw();
 	_dataSource->release();
-	swapBuffers(); // TODO: This should not be needed
 	_updatePending=0;
 }
 void CLAM::VM::Tonnetz::Draw()
