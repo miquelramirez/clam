@@ -32,18 +32,6 @@ namespace Hidden
 		"icon", "keyspace.svg",
 		0
 	};
-	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, KeySpaceMonitor> regKeySpaceMonitor("KeySpace");
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, KeySpaceMonitor> reg = metadata;
-
-	static class KeySpaceMetadata
-	{
-	public:
-		KeySpaceMetadata()
-		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("KeySpace", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
-			factory.AddAttribute("KeySpace", "icon", "keyspace.svg");
-		}
-	} dummy;
 }
 
