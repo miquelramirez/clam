@@ -73,42 +73,39 @@ bool OSCSourceProcessing::ConcreteConfigure(const ProcessingConfig& cfgObject)
 		AddConfigErrorMessage("The provided config object lacked the field 'NumberOfOutputs'");
 		return false;
 	}
-	else
+	// if we are reconfiguring this object, we might already have some controls
+	// created. so let's see what the difference is between what we have and what
+	// we need
+	int numberOfControlsToCreate = mConfig.GetNumberOfOutputs() - outControls.size();
+	if (numberOfControlsToCreate==0)
+		return true;
+	// we don't have enough controls. create more.
+	if ( numberOfControlsToCreate > 0 )
 	{
-		// if we are reconfiguring this object, we might already have some controls
-		// created. so let's see what the difference is between what we have and what
-		// we need
-		int numberOfControlsToCreate = mConfig.GetNumberOfOutputs() - outControls.size();
-		
-		// we don't have enough controls. create more.
-		if ( numberOfControlsToCreate > 0 )
+		for (int counter = 0; counter < numberOfControlsToCreate; counter++)
 		{
-			for (int counter = 0; counter < numberOfControlsToCreate; counter++)
-			{
-				std::ostringstream os;
-				os << "Float " << counter << std::flush;
-				outControls.push_back( new OutControl(os.str().c_str(), this) );
-			}
-		}
-		// we have too many controls. delete some.
-		else if (numberOfControlsToCreate < 0)
-		{
-			// deleting controls causes the NetworkEditor to crash. so, let's
-			// not do this...  
-			/*
-			for (int counter = outControls.size(); 
-					counter > mConfig.GetNumberOfOutputs(); 
-					counter--)
-			{
-				int indexOfOutputToDelete = counter-1;
-				OutControl* pOutControl = outControls.at( indexOfOutputToDelete );
-				outControls.erase( outControls.end()-1 );
-				delete pOutControl;
-			}
-			*/
+			std::ostringstream os;
+			os << "Float " << counter << std::flush;
+			outControls.push_back( new OutControl(os.str().c_str(), this) );
 		}
 	}
-	
+	// (numberOfControlsToCreate < 0)
+	// we have too many controls. delete some.
+
+	// deleting controls causes the NetworkEditor to crash. so, let's
+	// not do this...  
+	/*
+	for (int counter = outControls.size(); 
+			counter > mConfig.GetNumberOfOutputs(); 
+			counter--)
+	{
+		int indexOfOutputToDelete = counter-1;
+		OutControl* pOutControl = outControls.at( indexOfOutputToDelete );
+		outControls.erase( outControls.end()-1 );
+		delete pOutControl;
+	}
+	*/
+
 	return true;
 }
 
@@ -117,6 +114,7 @@ bool OSCSourceProcessing::Do(void)
 	std::vector<float>* valuesPtr = mOSCSource.GetLastValuesForTarget(mConfig.GetTargetName());
 	float pitch;
 	float amplitude;
+	
 	if (valuesPtr == NULL || valuesPtr->size() < 2)
 	{
 		pitch = 0.0;
