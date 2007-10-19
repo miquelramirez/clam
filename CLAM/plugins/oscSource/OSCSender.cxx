@@ -34,7 +34,6 @@ namespace Hidden
 		"description", "OSCSender",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, OSCSender> regOSCSender("OSCSender");
 	static FactoryRegistrator<ProcessingFactory, OSCSender> reg = metadata;
 }
 	
