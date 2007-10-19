@@ -76,7 +76,6 @@ namespace CLAM
 		CLAM::FlagControl();
 		CLAM::Fundamental2Control();
 		// linux only 
-		// CLAM::OSCSender oscSender;
 		CLAM::OutControlSender();
 		CLAM::ADSR();
 		CLAM::Oscillator();
