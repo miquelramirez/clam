@@ -112,26 +112,19 @@ bool OSCSourceProcessing::ConcreteConfigure(const ProcessingConfig& cfgObject)
 bool OSCSourceProcessing::Do(void)
 {
 	std::vector<float>* valuesPtr = mOSCSource.GetLastValuesForTarget(mConfig.GetTargetName());
-	float pitch;
-	float amplitude;
 	
-	if (valuesPtr == NULL || valuesPtr->size() < 2)
-	{
-		pitch = 0.0;
-		amplitude = 0.0;
-	}
-	else
-	{
-		pitch = valuesPtr->at(0);
-		amplitude = valuesPtr->at(1);
-		for (int counter = 0; counter < valuesPtr->size() && counter < outControls.size(); counter++)
-		{
-			float value = valuesPtr->at(counter);
-			OutControl* pOutControl = outControls.at( counter );
-			pOutControl->SendControl(value);
-		}
+	if (valuesPtr == NULL) return true;
+	if (valuesPtr->size() < 2) return true;
 
+	float pitch = valuesPtr->at(0);
+	float amplitude = valuesPtr->at(1);
+	for (int counter = 0; counter < valuesPtr->size() && counter < outControls.size(); counter++)
+	{
+		float value = valuesPtr->at(counter);
+		OutControl* pOutControl = outControls.at( counter );
+		pOutControl->SendControl(value);
 	}
+	return true;
 }
 
 bool OSCSourceProcessing::ConcreteStart()
