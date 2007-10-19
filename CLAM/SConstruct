@@ -153,7 +153,6 @@ def setup_build_options( env ) :
 	# clam_core options
 	opts.Add( EnumOption( 'xmlbackend', 'XML passivation backend', 'xercesc', ('xercesc','xmlpp','both','none')) )
 	if not isWindowsPlatform :
-		opts.Add( BoolOption( 'with_osc', 'Enables/Disables OSC support', 'no') )
 		opts.Add( BoolOption( 'with_jack', 'Enables/Disable JACK support', 'yes') )
 	else :
 		opts.Add( BoolOption( 'with_jack', 'Enables/Disable JACK support', 'no') )

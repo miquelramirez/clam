@@ -63,9 +63,6 @@ def define_module_contents(env) :
 	if not env.has_key('with_ladspa') or env['with_ladspa'] == False :
 		blacklist.append( 'Ladspa.+' )
 
-	if not env.has_key('with_osc') or env['with_osc'] == False :
-		blacklist.append( 'OSC.+')
-
 	file_retriever = FileRetriever( '../../..', folders, blacklist )
 
 	file_retriever.scan_without_copy()

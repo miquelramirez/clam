@@ -77,9 +77,6 @@ namespace NetworkGUI
 	"FlagControl",
 	"Random",
 	"OneOverF",
-#if USE_OSCPACK
-	"OSCSender",
-#endif	
 	0,
 	"MIDI",
 //	"MIDIKeyboard",
@@ -174,7 +171,6 @@ namespace NetworkGUI
 	"Ebow Synthesizer (Experimental - GSoC)",
 	"AudioDatabaseReader",
 	"SDIFDatabaseProcessing",
-	"OSCSourceProcessing",
 	0,
 	0
 };*/

@@ -69,10 +69,6 @@ public:
 	void Clear();
 	/** Set the object in charge of managing the processing thread. Receives property of the player. */
 	void SetPlayer( NetworkPlayer* player);
-	//Methods related to OSClistening, needed to keep independance in NetEditor
-	virtual bool IsListeningOSC() const { return false;}
-	virtual void StartListeningOSC() {}
-	virtual void StopListeningOSC(){}
 
 	// serialization methods
 	virtual void StoreOn( Storage & storage) const;
