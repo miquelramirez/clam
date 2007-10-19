@@ -27,7 +27,6 @@ blacklist = [
 	os.path.join('ProcessingTests','TestOnsetDetector.cxx'),
 	os.path.join('ProcessingTests','TestSpectralPeakDetect.cxx'),
 	os.path.join('ProcessingTests','TestSMSAnalysis.cxx'),
-	os.path.join('FlowControlTests','OSCEnabledNetworkTest.cxx'),
 #	'TestAudioFileIn',
 	]
 

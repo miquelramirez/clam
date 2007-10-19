@@ -310,30 +310,12 @@ def test_ladspa ( env, conf ) :
 	env.Append( CPPFLAGS=['-DUSE_LADSPA=1'] )
 	return True
 
-
-def test_oscpack ( env, conf ) :
-	print('Checking that oscpack binaries are installed.')
-	if not env.has_key('with_osc') : return True
-	if not env['with_osc'] : return True
-	if not conf.CheckCXXHeader( 'oscpack/ip/IpEndpointName.h' ) :
-		return config_error( "liboscpack headers not found!" )
-	if not conf.CheckLibWithHeader( 'oscpack', 'oscpack/ip/IpEndpointName.h', 'cxx', call='IpEndpointName("localhost",9999);') :
-		return config_error( "liboscpack binaries not found!" )
-	if not conf.check_oscpack() :
-		return config_error( "liboscpack compile/link/run test failed!" )
-	env.Append( CPPFLAGS=['-DUSE_OSCPACK=1'] )
-	return True
-
 def setup_core_environment ( env, conf) :
 	if not test_xml_backend( env, conf): return False
 	if not test_ladspa ( env, conf):
 		return config_error(
 			"Either install properly ladspa SDK or disable LADSPA support by issuing\n"
 			"$scons with_ladspa=no" )
-	if not test_oscpack (env, conf):
-		return config_error(
-			"Either install properly liboscpack or disable OSC support by issuing\n"
-			"$scons with_osc=no" )
 	return True
 #---------------------------------------------------------------
 # from processing.py

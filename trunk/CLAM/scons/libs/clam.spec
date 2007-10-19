@@ -53,7 +53,6 @@ BuildRequires:	libvorbis-devel
 #BuildRequires:	mad-devel # SuSe
 BuildRequires:	libmad-devel
 #BuildRequires:	Mesa-devel # SuSe
-#BuildRequires:	oscpack # Disabled
 BuildRequires:	pkgconfig
 #BuildRequires:	portaudio-devel
 #BuildRequires:	qt3-devel # SuSe
@@ -268,7 +267,6 @@ scons -j$numprocs configure \
 	double=0 \
 	xmlbackend=xercesc \
 	with_ladspa=1 \
-	with_osc=0 \
 	with_jack=1 \
 	with_fftw=1 \
 	with_fftw3=1 \
