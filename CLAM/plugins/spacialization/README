@@ -10,5 +10,10 @@ Of course you can reuse the building blocks for simpler or more complex systems:
 - Low latency real-time convolution
 - Processings to map receiver acoustic magnitudes to a surround system.
 
+Some examples (.clamnetwork files) needs external databases. You should have them in your disk and link (ln -s) the following directories:
+- HRTFs
+- wavs
+
+
 
 
