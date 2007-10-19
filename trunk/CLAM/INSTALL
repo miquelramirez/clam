@@ -78,6 +78,7 @@ provides already compiled packages for several platforms.
 
  * Packages to compile clam libs:
  build-essential scons ladspa-sdk libxerces27-dev fftw-dev sfftw-dev fftw3-dev libjack-dev libmad0-dev libogg-dev libsndfile1-dev libvorbis-dev libid3-3.8.3-dev libasound2-dev portaudio19-dev 
+ ** to pass the tests: libcppunit-dev 
 
  * Qt4 packages to compile NetworkEditor and Annotator:
  qt4-dev-tools libqt4-dev
