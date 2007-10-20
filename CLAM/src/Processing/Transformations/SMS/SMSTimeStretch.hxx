@@ -54,7 +54,6 @@ namespace CLAM{
 		InPort<Spectrum> mInSpectrum;
 		OutPort<Spectrum> mOutSpectrum;
 
-		//InControl m; ///< 
 
 	public:
 		SMSTimeStretch()
@@ -112,7 +111,8 @@ namespace CLAM{
 // 		Frame& GetCurrentFrame(Segment& out);
 // 		const Frame& GetCurrentFrame(const Segment& in);
 // 		
-// 		InControl mAmount;
+
+// 		InControl mFactor;
 
 		typedef SMSTimeStretchConfig Config;
 

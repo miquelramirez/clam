@@ -33,8 +33,8 @@ namespace Hidden
 		"description", "SMSTimeStretch",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSTimeStretch> regSMSTimeStretch("SMSTimeStretch");
-	static FactoryRegistrator<ProcessingFactory, SMSTimeStretch> reg = metadata;
+
+// 	static FactoryRegistrator<ProcessingFactory, SMSTimeStretch> reg = metadata;
 }
 
 bool SMSTimeStretch::Do(const Frame& in, Frame& out)
@@ -146,7 +146,9 @@ bool SMSTimeStretch::Do( const SpectralPeakArray& inPeaks,
 	return true;
 }
 
-// SMSTimeStretch::SMSTimeStretch():mAmount("Amount",this)
+
+// SMSTimeStretch::SMSTimeStretch()
+// 	:mFactor("Stretch Factor", this)
 // {
 // 	mSynthesisTime=0;
 // 	mAnalysisTime=0;
@@ -154,7 +156,9 @@ bool SMSTimeStretch::Do( const SpectralPeakArray& inPeaks,
 // 	Configure(SMSTimeStretchConfig());
 // }
 
-// SMSTimeStretch::SMSTimeStretch(const SegmentTransformationConfig &c):SegmentTransformation(c),mAmount("Amount",this)
+// SMSTimeStretch::SMSTimeStretch(const SegmentTransformationConfig &c)
+// 	: SegmentTransformation(c),
+// 	mFactor("Stretch Factor", this)
 // {
 // 	mSynthesisTime=0;
 // 	mAnalysisTime=0;
@@ -168,9 +172,9 @@ bool SMSTimeStretch::ConcreteConfigure(const ProcessingConfig& config)
 
 // 	mUseTemporalBPF=false;
 // 	if(mConcreteConfig.HasAmount())
-// 		mAmount.DoControl(mConcreteConfig.GetAmount());
+// 		mFactor.DoControl(mConcreteConfig.GetAmount());
 // 	else if(mConcreteConfig.HasBPFAmount()){
-// 		mAmount.DoControl(mConcreteConfig.GetBPFAmount().GetValue(0));
+// 		mFactor.DoControl(mConcreteConfig.GetBPFAmount().GetValue(0));
 // 		mUseTemporalBPF=true;}
 // 	else
 // 		mAmount.DoControl(0);
@@ -204,7 +208,7 @@ bool SMSTimeStretch::ConcreteStart()
 
 // void SMSTimeStretch::UpdateTimeAndIndex(const Segment& in)
 // {
-// 	mAnalysisTime+=(TData)mConcreteConfig.GetHopSize()*mAmount.GetLastValue()/mConcreteConfig.GetSamplingRate();
+// 	mAnalysisTime+=(TData)mConcreteConfig.GetHopSize()*mFactor.GetLastValue()/mConcreteConfig.GetSamplingRate();
 // 	while(mAnalysisTime>mLeftFrame.GetCenterTime()+mConcreteConfig.GetHopSize()/mConcreteConfig.GetSamplingRate()&&mCurrentInputFrame<=in.GetnFrames())
 // 	{
 // 		mLeftFrame=in.GetFrame(mCurrentInputFrame);
