@@ -113,6 +113,7 @@ namespace Hidden
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
 		mEOFReached = false;
+		mIsPaused = false;
 		
 		return true;
 	}
@@ -141,16 +142,24 @@ namespace Hidden
 		if ( !AbleToExecute() )
 			return false;
 
-		if ( mEOFReached )
-			return false;
-
-		mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(),
-						       outputSamples.GetBuffer().GetPtr(),
-						       outputSamples.GetSize() );
+		if ( !mEOFReached && !mIsPaused ) 
+		{
+			mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(),
+					       outputSamples.GetBuffer().GetPtr(),
+					       outputSamples.GetSize() );
+		}
+		else 
+		{
+			if ( mEOFReached ) mCurrentBeginTime = GetHeader().GetLength();// /1000;
+			memset ((void *)outputSamples.GetBuffer().GetPtr(), 0, outputSamples.GetSize()*sizeof(TData));
+		}
 		
 		outputSamples.SetBeginTime( mCurrentBeginTime );
-		mDeltaTime = outputSamples.GetSize() / mAudioFile.GetHeader().GetSampleRate()*1000;
-		mCurrentBeginTime += mDeltaTime;
+		if ( !mEOFReached && !mIsPaused )
+		{
+			mDeltaTime = outputSamples.GetSize() / mAudioFile.GetHeader().GetSampleRate()*1000;
+			mCurrentBeginTime += mDeltaTime;
+		}
 		mTimeOutput.SendControl( mCurrentBeginTime / 1000 );
 		outputSamples.SetSampleRate( mAudioFile.GetHeader().GetSampleRate() );
 		

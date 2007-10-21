@@ -77,6 +77,7 @@ namespace Hidden
 		return mConfig;
 	}
 
+	//TODO remove Do() and Do(vector<Audio>) duplication
 	bool MultiChannelAudioFileReader::Do( std::vector<Audio>& outputs )
 	{
 		typedef std::vector<Audio> OutputVec;
@@ -84,9 +85,6 @@ namespace Hidden
 		if ( !AbleToExecute() )
 			return false;
 
-		if ( mEOFReached )
-			return false;
-		
 		// Check all outputs sizes
 		bool allOutputsSameSize = true;
 		
@@ -112,20 +110,26 @@ namespace Hidden
 		CLAM_ASSERT( allOutputsSameSize, "Outputs sizes differ!" );
 
 		// build the samples matrix
-
 		int j = 0;
-		for ( OutputVec::iterator i = outputs.begin();
-		      i != outputs.end(); i++ )
+		for ( OutputVec::iterator i = outputs.begin(); i != outputs.end(); i++ )
 			mSamplesMatrix[ j++ ] = (*i).GetBuffer().GetPtr();
 
 		// read the data
-		
-		mEOFReached = mNativeStream->ReadData( mSelectedChannels.GetPtr(),
-						       mSelectedChannels.Size(),
-						       mSamplesMatrix.GetPtr(),
-						       sizeTmp );
+		if ( !mEOFReached && !mIsPaused ) 
+		{
+			mEOFReached = mNativeStream->ReadData( mSelectedChannels.GetPtr(),
+					       mSelectedChannels.Size(),
+					       mSamplesMatrix.GetPtr(),
+					       sizeTmp );
+		}
+		else
+		{
+			if ( mEOFReached ) 
+				mCurrentBeginTime = GetHeader().GetLength()/1000;
+			for ( int i = 0; i != mSamplesMatrix.Size(); i++ ) 
+				memset ((void *)mSamplesMatrix[i], 0, sizeTmp*sizeof(TData));
+		}
 		// Audio 'simple meta-data' setup
-		
 		for ( OutputVec::iterator i = outputs.begin();
 				i != outputs.end(); i++ )
 		{
@@ -134,22 +138,21 @@ namespace Hidden
 		}
 		
 		
-		mDeltaTime = TData(sizeTmp) / mAudioFile.GetHeader().GetSampleRate()*1000;
-		mCurrentBeginTime += mDeltaTime;
-
+		if ( !mEOFReached && !mIsPaused )
+		{
+		        mDeltaTime = (TData(sizeTmp) / mAudioFile.GetHeader().GetSampleRate());//*1000;
+		        mCurrentBeginTime += mDeltaTime;
+		}
 		mTimeOutput.SendControl( mCurrentBeginTime );
 		
 		return mNativeStream->WasSomethingRead();
 	}
-
+	//TODO remove Do() and Do(vector<Audio>) duplication
 	bool MultiChannelAudioFileReader::Do()
 	{
 		if ( !AbleToExecute() )
 			return false;
 
-		if ( mEOFReached )
-			return false;
-		
 		// Check all outputs sizes
 		bool allOutputsSameSize = true;
 		
@@ -190,10 +193,22 @@ namespace Hidden
 
 		// read the data
 		
-		mEOFReached = mNativeStream->ReadData( mSelectedChannels.GetPtr(),
-						       mSelectedChannels.Size(),
-						       mSamplesMatrix.GetPtr(),
-						       sizeTmp );
+		if ( !mEOFReached && !mIsPaused ) 
+		{
+			mEOFReached = mNativeStream->ReadData( mSelectedChannels.GetPtr(),
+					       mSelectedChannels.Size(),
+					       mSamplesMatrix.GetPtr(),
+					       sizeTmp );
+		}
+		else 
+		{
+			if ( mEOFReached ) 
+				mCurrentBeginTime = GetHeader().GetLength()/1000;
+			for ( int i = 0; i != mSamplesMatrix.Size(); i++) 
+			{
+				memset ((void *)mSamplesMatrix[i], 0, sizeTmp*sizeof(TData));
+		  	}
+		}
 
 		// Audio 'simple meta-data' setup
 		
@@ -204,9 +219,11 @@ namespace Hidden
 			(*i)->SetBeginTime( mCurrentBeginTime );
 		}
 		
-		
-		mDeltaTime = TData(sizeTmp) / mAudioFile.GetHeader().GetSampleRate();
-		mCurrentBeginTime += mDeltaTime;
+		if (!mEOFReached && !mIsPaused)
+		{
+			mDeltaTime = TData(sizeTmp) / mAudioFile.GetHeader().GetSampleRate();
+			mCurrentBeginTime += mDeltaTime;
+		}
 			
 		mTimeOutput.SendControl( mCurrentBeginTime );
 		
@@ -331,6 +348,7 @@ namespace Hidden
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
 		mEOFReached = false;
+		mIsPaused = false;
 
 		return true;
 	}

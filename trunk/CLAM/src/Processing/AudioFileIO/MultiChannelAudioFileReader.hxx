@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __MULTICHANNELAUDIOFILEREADER__
-#define __MULTICHANNELAUDIOFILEREADER__
+#ifndef MultiChannelAudioFileReader_hxx
+#define MultiChannelAudioFileReader_hxx
 
 #include "Processing.hxx"
 #include "MultiChannelAudioFileReaderConfig.hxx"
@@ -51,6 +51,8 @@ namespace CLAM
 		const AudioFileHeader & GetHeader() const { return mAudioFile.GetHeader(); }
 		const AudioTextDescriptors & GetTextDescriptors () const { return mAudioFile.GetTextDescriptors(); }
 		const EAudioFileCodec GetCodec() const { return mAudioFile.GetCodec(); }
+		
+	        void Pause() { mIsPaused = (mIsPaused)?false:true; }; //TODO change to Qt boolean interface (pau)
 	
 	protected: // methods
 		
@@ -74,6 +76,7 @@ namespace CLAM
 		TTime                               mCurrentBeginTime;
 		TTime                               mDeltaTime;
 		bool                                mEOFReached;
+		bool                                mIsPaused;
 		AudioFileSource                     mAudioFile;
 	};
 }
