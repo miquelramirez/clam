@@ -19,20 +19,20 @@
  *
  */
 
-#ifndef __MONOAUDIOFILEREADER__
-#define __MONOAUDIOFILEREADER__
+#ifndef MonoAudioFileReader_hxx
+#define MonoAudioFileReader_hxx
 
-#include "Processing.hxx" // For CLAM::Processing interface
+#include "Processing.hxx"
 #include "MonoAudioFileReaderConfig.hxx"
 #include "AudioOutPort.hxx"
 #include "AudioFile.hxx"
 #include "OutControl.hxx"
+#include "AudioCodecs_Stream.hxx"
 
 namespace CLAM
 {
 
-	class MonoAudioFileReader 
-		: public Processing
+	class MonoAudioFileReader : public Processing
 	{
 	public: 
 		MonoAudioFileReader( const ProcessingConfig& cfg = MonoAudioFileReaderConfig() );
@@ -66,6 +66,7 @@ namespace CLAM
 		TTime                     mCurrentBeginTime;
 		TTime                     mDeltaTime;
 		bool                      mEOFReached;
+		bool                      mIsPaused;
 	};
 }
 

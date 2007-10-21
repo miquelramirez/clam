@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __MONOAUDIOFILEWRITER__
-#define __MONOAUDIOFILEWRITER__
+#ifndef MonoAudioFileWriter_hxx
+#define MonoAudioFileWriter_hxx
 
 #include "Processing.hxx"
 #include "MonoAudioFileWriterConfig.hxx"
