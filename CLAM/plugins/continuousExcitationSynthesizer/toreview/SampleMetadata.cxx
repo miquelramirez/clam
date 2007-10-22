@@ -30,6 +30,7 @@ bool SampleMetadata::operator<(const SampleMetadata& argSampleMetadata) const
 	std::ostringstream outStream;
 	outStream << std::string("SampleMetadata: unsupported argument for GetSortIndex(): ") << GetSortIndex();
 	CLAM_ASSERT( false, outStream.str().c_str() );
+	return false;
 }
 
 bool SampleMetadata::operator>(const SampleMetadata& argSampleMetadata) const
@@ -41,6 +42,7 @@ bool SampleMetadata::operator>(const SampleMetadata& argSampleMetadata) const
 	std::ostringstream outStream;
 	outStream << std::string("SampleMetadata: unsupported argument for GetSortIndex(): ") << GetSortIndex();
 	CLAM_ASSERT( false, outStream.str().c_str() );
+	return false;
 }
 
 bool SampleMetadata::operator==(const SampleMetadata& argSampleMetadata) const
@@ -52,6 +54,7 @@ bool SampleMetadata::operator==(const SampleMetadata& argSampleMetadata) const
 	std::ostringstream outStream;
 	outStream << std::string("SampleMetadata: unsupported argument for GetSortIndex(): ") << GetSortIndex();
 	CLAM_ASSERT( false, outStream.str().c_str() );
+	return false;
 }
 
 }
