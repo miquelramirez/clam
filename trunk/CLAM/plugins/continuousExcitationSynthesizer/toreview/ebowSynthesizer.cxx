@@ -1,4 +1,6 @@
-
+// Review (Pau): Seems obsoleted by new program: ContinuousExcitationSynthesizer
+//
+//
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/SMSSynthesis.hxx>
 #include <CLAM/SMSSynthesisConfig.hxx>
@@ -107,7 +109,7 @@ namespace CLAM
 		outL.Start();
 		outR.Start();
 
-		CLAM::VoiceId theVoiceId = sdifDatabase.CreateVoice();
+		VoiceId theVoiceId = sdifDatabase.CreateVoice();
 
 		int counter = 0;
 		float thePitch;

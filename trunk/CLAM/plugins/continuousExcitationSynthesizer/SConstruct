@@ -36,63 +36,55 @@ env.EnableClamModules([
 	] , CLAMInstallDir)
 
 sourcePaths = recursiveDirs(".")
-if env["with_osc"] :
-	sourcePaths += recursiveDirs("./../oscSource")
+#if env["with_osc"] :
+#	sourcePaths += recursiveDirs("./../oscSource")
 print sourcePaths
-sources = scanFiles('*.cxx', sourcePaths)
-sources = dict.fromkeys(sources).keys()
-
+sources = glob.glob('*.cxx')
+sources += glob.glob('toreview/*.cxx')
 extraPaths = [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+	"."
 ]
-if env["with_osc"] :
-	extraPaths += recursiveDirs("./../oscSource")
-
-env.Append(CPPPATH=extraPaths)
 
 if env["with_osc"] :
 	env.Append( CPPDEFINES=['WITH_OSC'] )
 	env.Append( LIBS=["oscpack"] )
+	extraPaths += ["../osc"]
+	sources += [os.path.join("..","osc",file) for file in ["OSCSource.cxx"] ]
 else:
-	oscDependent = scanFiles("*OSC*.cxx", sourcePaths)
+	oscDependent = glob.glob("*OSC*.cxx")
 	for oscfile in oscDependent:
+		print "source to remove:", oscfile
 		sources.remove(oscfile)
+
+env.Append(CPPPATH=extraPaths)
+sources = dict.fromkeys(sources).keys() # eliminate repeated
+print sources
 
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
-libraries = [
-	env.SharedLibrary(target=libraryName, source = sources),
-	]
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
 	env.Append( LIBS=['fftw3'] )
 	
 
-install = env.Install(os.path.join(CLAMInstallDir,'lib','clam'), libraries)
 
+mainSources = {
+	'ContinuousExcitationSynthesizer': 'ContinuousExcitationSynthesizer.cxx',
+	'TestAudioDatabaseReader': 'toreview/TestAudioDatabaseReader.cxx',
+	'EbowSynthesizer': 'toreview/ebowSynthesizer.cxx',
+}
+for binary, mainSource in mainSources.items() :
+	sources.remove(mainSource)
+
+programs = [ env.Program(target=program, source = [mainSource] + sources)
+	for program, mainSource in mainSources.items()]
+
+library = env.SharedLibrary(target=libraryName, source = sources)
+
+install = env.Install(os.path.join(CLAMInstallDir,'lib','clam'), library) #TODO maybe install binaries?
 env.Alias('install', install)
-env.Default(libraries)
 
-standAloneApplications = [
-	"ContinuousExcitationSynthesizer.cxx",
-]
+env.Default(programs + [library])
 
-standalone = []
-
-#exampleSources = glob.glob(folder+"/*.cxx")
-executable = "continuousExcitationSynthesizerExe"
-processings = scanFiles("*Processing*.cxx", [os.path.join('src','ContinuousExcitationSynthesizer')])
-for processing in processings:
-	sources.remove(processing)
-standalone += [ env.Program(target=executable, source = sources ) ]
-
-#for main in standAloneApplications :
-#	executable = os.path.splitext(os.path.basename(main))[0]
-#	standalone += [ env.Program(target=executable, source = sources + [main] ) ]
-
-env.Alias('standalone',standalone)
-
-#env.Default(standalone)
-
-	
