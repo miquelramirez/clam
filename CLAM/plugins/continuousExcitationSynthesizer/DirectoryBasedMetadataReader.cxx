@@ -24,32 +24,23 @@ void DirectoryBasedMetadataReader::ReadMetadata(std::string& argDirectoryPath, s
 
 	directoryPtr = opendir ( argDirectoryPath.c_str() );
 	if (directoryPtr == NULL)
+		throw CLAM::BadFilenameException();
+
+	while (directoryEntryPtr = readdir(directoryPtr))
 	{
-		throw new CLAM::BadFilenameException();
-	}
-	else
-	{
-		while (directoryEntryPtr = readdir (directoryPtr))
-		{
 //				const char* tmp = ".";
-			if (strncmp(directoryEntryPtr->d_name, ".", 1) != 0)
-			{
-				if (strstr(directoryEntryPtr->d_name, ".xml") != NULL)
-				{
-					std::string absolutePath = argDirectoryPath + std::string("/") + std::string(directoryEntryPtr->d_name);
+		if (strncmp(directoryEntryPtr->d_name, ".", 1) == 0) continue;
+		if (strstr(directoryEntryPtr->d_name, ".xml") == NULL) continue;
 
-					//std::cout << "DirectoryBasedMetadataReader:ReadMetadata; found XML file: " << absolutePath << std::endl;
+		std::string absolutePath = argDirectoryPath + std::string("/") + std::string(directoryEntryPtr->d_name);
+		//std::cout << "DirectoryBasedMetadataReader:ReadMetadata; found XML file: " << absolutePath << std::endl;
+		CLAM::SampleMetadata sampleConfig;
+		CLAM::XMLStorage::Restore(sampleConfig, absolutePath);
+		sampleConfig.ConfigureAfterRestore();
 
-					CLAM::SampleMetadata sampleConfig;
-					CLAM::XMLStorage::Restore(sampleConfig, absolutePath);
-					sampleConfig.ConfigureAfterRestore();
-
-					argMetadataVector.push_back( sampleConfig );
-				}
-			}
-		}
-		(void) closedir (directoryPtr);
 	}
+	closedir(directoryPtr);
 }
 
 } // end namespace CLAM
+
