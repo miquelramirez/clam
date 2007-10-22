@@ -1,7 +1,9 @@
 #! /usr/bin/python
 
-import sys
+import sys, time, math
 from OSC import Message
+
+host = ""
 
 def deprecatedOscExample() : # by Xavier Oliver
 	if not (len(sys.argv)==1 or len(sys.argv)==2) :
@@ -32,20 +34,50 @@ def deprecatedOscExample() : # by Xavier Oliver
 		else :
 			Message(dest, [value]).sendlocal(7000)
 
-def oscExample() :
-	host = ""
+def send(path, datalist) :
+	floatlist = [float(element) for element in datalist]
+	if host :
+		Message(path, floatlist).sendto(host, 7000)
+	else :
+		Message(path, floatlist).sendlocal(7000)
+
+
+def exampleInteractive() :
 	while True:
-		print ">Control value?"
 		value1=float(sys.stdin.readline())
 		value2=float(sys.stdin.readline())
 		data = [value1, value2 ]
-		dest = "/ebowSynthesizer"
-		if host :
-			Message(dest, data).sendto(host, 7000)
-		else :
-			Message(dest, data).sendlocal(7000)
+		send("/ebowSynthesizer", data)
+def exampleWalkInCircles() :
+	delta = 0.
+	increment = math.pi/20 # in radians
+	timestep = 0.2 # seconds
+	while True:
+		value1 = math.sin(delta)
+		value2 = math.cos(delta)
+		data = [value1, value2 ]
+		print data
+		send("/azimut", data)
+		delta += increment
+		if delta > 2*math.pi :
+			delta -= 2*math.pi
+		time.sleep(timestep)
+
+def exampleRotatingAngleDegrees() :
+	delta = 0.
+	increment = 360/100 # in degrees
+	timestep = 0.1 # seconds
+	while True:
+		print delta
+		send("/azimut", [delta, 0])
+		delta += increment
+		if delta >= 360 :
+			delta -= 360
+		time.sleep(timestep)
+			
 		
-	pass
 
 if __name__ == "__main__":
-	oscExample()
+#	exampleWalkInCircles()
+	exampleRotatingAngleDegrees()
+
