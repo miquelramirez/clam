@@ -27,6 +27,8 @@
     <DoHalfWindowShift>1</DoHalfWindowShift>
   </processing>
 
+  <processing id="AudioSource" type="AudioSource"/>
+
   <processing id="AudioWindowing" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
@@ -37,6 +39,12 @@
   </processing>
 
   <processing id="BufferOscilloscope" type="BufferOscilloscope"/>
+
+  <processing id="ControlPrinter_1" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
 
   <processing id="CrossFader" type="AudioBufferCrossFader"/>
 
@@ -76,12 +84,6 @@
     <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
-  <processing id="MonoAudioFileReader" type="MonoAudioFileReader">
-    <SourceFile>/home/clamteam/clam/NetworkEditor/example-data/jaume-voice.mp3</SourceFile>
-    <SelectedChannel>0</SelectedChannel>
-    <Loop>1</Loop>
-  </processing>
-
   <processing id="MyFFT" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
@@ -106,6 +108,11 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
+  <processing id="OSCSourceProcessing" type="OSCSourceProcessing">
+    <TargetName>/azimut</TargetName>
+    <NumberOfOutputs>1</NumberOfOutputs>
+  </processing>
+
   <processing id="Oscilloscope" type="Oscilloscope"/>
 
   <processing id="Oscilloscope_1" type="Oscilloscope"/>
@@ -121,8 +128,8 @@
   </processing>
 
   <processing id="elevation" type="OutControlSender">
-    <Min>-40</Min>
-    <Default>25</Default>
+    <Min>0</Min>
+    <Default>0</Default>
     <Max>90</Max>
     <Step>0.65</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
@@ -148,6 +155,11 @@
   <port_connection>
     <out>AudioBuffer2Stream_1.Audio stream</out>
     <in>Oscilloscope_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.AudioOut</out>
+    <in>AudioWindowing.Input</in>
   </port_connection>
 
   <port_connection>
@@ -216,11 +228,6 @@
   </port_connection>
 
   <port_connection>
-    <out>MonoAudioFileReader.Samples Read</out>
-    <in>AudioWindowing.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>MyFFT.Complex Spectrum</out>
     <in>LowLatencyConvolution.Input</in>
   </port_connection>
@@ -271,7 +278,12 @@
   </control_connection>
 
   <control_connection>
-    <out>azimut.out</out>
+    <out>OSCSourceProcessing.Float 0</out>
+    <in>ControlPrinter_1.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>OSCSourceProcessing.Float 0</out>
     <in>HRTFDatabaseFetcher.azimut</in>
   </control_connection>
 
