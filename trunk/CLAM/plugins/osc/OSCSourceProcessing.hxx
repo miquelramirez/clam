@@ -28,37 +28,6 @@
 
 namespace CLAM {
 
-/**
-* This is the configuration class for the OSCSourceProcessing.
-*
-* \author greg kellum [gkellum@iua.upf.edu] 08/20/2007
-* \since CLAM v1.1
-*/
-class OSCSourceConfig : public ProcessingConfig
-{
-public:
-	DYNAMIC_TYPE_USING_INTERFACE(OSCSourceConfig, 2, ProcessingConfig);
-
-	/// Every OSC recipient has an address which is shaped like a file path, 
-	/// e.g./ebowSynthesizer. Use the TargetName to set the address of the events
-	/// you want to receive
-	DYN_ATTRIBUTE (0, public, std::string, TargetName);
-
-	/// This configures the OSCSourceProcessing with the right number of outputs
-	/// for the type of message you are receiving, i.e. one output for every
-	/// message element. Although OSC supports many different message types,
-	/// the outputs created here will always output floats.
-	DYN_ATTRIBUTE (1, public, int, NumberOfOutputs);
-
-protected:
-	/** Dynamic type initialization: All attributes are instantiated. */
-	void DefaultInit(void)
-	{
-		AddAll();
-		UpdateData();
-		SetTargetName( "" );
-	}
-};
 
 /** 
  * This is a Processing wrapper class of an OSCSource. Given the name of an OSC
@@ -82,8 +51,36 @@ protected:
 class OSCSourceProcessing : public Processing
 {
 public:
-	OSCSourceProcessing();
-	OSCSourceProcessing(OSCSourceConfig& config);
+	class Config : public ProcessingConfig
+	{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE(Config, 2, ProcessingConfig);
+
+		/// Every OSC recipient has an address which is shaped like a file path, 
+		/// e.g./ebowSynthesizer. Use the TargetName to set the address of the events
+		/// you want to receive
+		DYN_ATTRIBUTE (0, public, std::string, TargetName);
+
+		/// This configures the OSCSourceProcessing with the right number of outputs
+		/// for the type of message you are receiving, i.e. one output for every
+		/// message element. Although OSC supports many different message types,
+		/// the outputs created here will always output floats.
+		DYN_ATTRIBUTE (1, public, int, NumberOfOutputs);
+
+	protected:
+		/** Dynamic type initialization: All attributes are instantiated. */
+		void DefaultInit(void)
+		{
+			AddAll();
+			UpdateData();
+			SetTargetName( "" );
+		}
+	};
+	OSCSourceProcessing(const Config& config=Config())
+	{
+		Configure(config);
+		mOSCSource.Start();
+	}
 	~OSCSourceProcessing();
 
 	const char* GetClassName() const { return "OSCSourceProcessing"; }
@@ -99,7 +96,7 @@ protected:
 	bool ConcreteStop();
 
 private:
-	OSCSourceConfig mConfig;
+	Config mConfig;
 
 	OSCSource mOSCSource;
 
