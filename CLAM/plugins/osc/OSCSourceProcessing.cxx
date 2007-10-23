@@ -36,22 +36,6 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, OSCSourceProcessing> reg = metadata;
 }
 
-OSCSourceProcessing::OSCSourceProcessing()
- : 	mOSCSource() //, mFloatControl1("Pitch", this), mFloatControl2("Amplitude", this)
-
-{
-	Configure(OSCSourceConfig());
-	
-	mOSCSource.Start();
-}
-
-OSCSourceProcessing::OSCSourceProcessing(OSCSourceConfig& config)
- :  mOSCSource() //, mFloatControl1("Pitch", this), mFloatControl2("Amplitude", this)
-{
-	Configure(config);
-
-	mOSCSource.Start();
-}
 
 OSCSourceProcessing::~OSCSourceProcessing()
 {
@@ -135,11 +119,13 @@ bool OSCSourceProcessing::Do(void)
 
 bool OSCSourceProcessing::ConcreteStart()
 {
+	return true;
 }
 
 bool OSCSourceProcessing::ConcreteStop()
 {
 	mOSCSource.Stop();
+	return true;
 }
 
 } // end namespace CLAM
