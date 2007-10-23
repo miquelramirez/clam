@@ -140,12 +140,12 @@ namespace Hidden
 		
 		if ( !mEOFReached && !mIsPaused )
 		{
-		        mDeltaTime = (TData(sizeTmp) / mAudioFile.GetHeader().GetSampleRate());//*1000;
+		        mDeltaTime = TData(sizeTmp)/mAudioFile.GetHeader().GetSampleRate()*1000;
 		        mCurrentBeginTime += mDeltaTime;
 		}
 		mTimeOutput.SendControl( mCurrentBeginTime );
 		
-		return mNativeStream->WasSomethingRead();
+		return !mEOFReached;
 	}
 	//TODO remove Do() and Do(vector<Audio>) duplication
 	bool MultiChannelAudioFileReader::Do()
@@ -221,7 +221,7 @@ namespace Hidden
 		
 		if (!mEOFReached && !mIsPaused)
 		{
-			mDeltaTime = TData(sizeTmp) / mAudioFile.GetHeader().GetSampleRate();
+			mDeltaTime = TData(sizeTmp)/mAudioFile.GetHeader().GetSampleRate()*1000;
 			mCurrentBeginTime += mDeltaTime;
 		}
 			
@@ -233,7 +233,7 @@ namespace Hidden
 			(*i)->Produce();
 		}
 
-		return mNativeStream->WasSomethingRead();
+		return !mEOFReached;
 	}
 
 	bool MultiChannelAudioFileReader::ConcreteConfigure( const ProcessingConfig& cfgObj )
