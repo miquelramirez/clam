@@ -133,10 +133,10 @@ clam.add_subtask('Plugins compilation', [
 	'scons install',
 
 	'cd %(sandbox)s/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions,
-	'scons clam_prefix=%(installPath)s'%localDefinitions,
+	'scons clam_prefix=%(installPath)s with_osc=1'%localDefinitions,
 	'scons install',
 
-	'cd %(sandbox)s/CLAM/plugins/oscSource'%localDefinitions,
+	'cd %(sandbox)s/CLAM/plugins/osc'%localDefinitions,
 	'scons clam_prefix=%(installPath)s'%localDefinitions,
 	'scons install',
 
