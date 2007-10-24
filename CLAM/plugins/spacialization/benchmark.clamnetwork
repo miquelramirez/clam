@@ -100,12 +100,12 @@
 
   <port_connection>
     <out>AudioBuffer2Stream_0.Audio stream</out>
-    <in>AudioMixer_0.Input 0</in>
+    <in>AudioMixer_0.Input 1</in>
   </port_connection>
 
   <port_connection>
     <out>AudioBuffer2Stream_1.Audio stream</out>
-    <in>AudioMixer_0.Input 1</in>
+    <in>AudioMixer_0.Input 0</in>
   </port_connection>
 
   <port_connection>
