@@ -153,7 +153,7 @@ clam.add_subtask('Back-to-back network tests', [
 ] )
 """
 clam.add_subtask('Padova Speech SMS (external repository)', [
-	'cd %(sandbox)s/padova-speech-sms/src'%localDefinitions,
+	'cd %(sandbox)s/padova-speech-sms/'%localDefinitions,
 	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
 	{CMD: 'svn up', INFO: lambda x:x },
 	'make',
