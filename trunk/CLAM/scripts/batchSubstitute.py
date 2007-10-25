@@ -15,12 +15,22 @@ Substitution examples:
 # --------------------------
 # User configuration
 # --------------------------
+
+testingMode = True # True: do not write any file but print debugging output
+                   # False: overwrite files
+
 inlineSubstitutions = [
-	(r"'referencia': 100", r"'referencia': 10"),
+	(r"GrupDeTests", r"TestFixture"),
+	(r"GRUP_DE_TESTS", r"TEST_FIXTURE"),
+	(r"CAS_DE_TEST", r"TEST_CASE"),
+	(r"ASSERT_IGUALS", r"ASSERT_EQUALS"),
+	(r"REGISTRA_TEST", r"REGISTER_FIXTURE"),
+	(r"FALLA", r"FAIL"),
+	
+	
 ]
 filesToSubstitute = [
-	"*.py",
-	"../*.log",
+	"Sandboxes/ES1-*/src/TestsUnitaris/Test*.cxx",
 ]
 # --------------------------
 # End of user configuration
@@ -31,19 +41,23 @@ filenames = []
 for search in filesToSubstitute: filenames +=  glob.glob(search)
 
 inlines = [ (re.compile(pattern), substitution) for pattern, substitution in inlineSubstitutions ]
-def substituteInlines(line) :
+def substituteInlines(line, linenumber, filename) :
+	original = line
 	for compiledPattern, substitution in inlines :
 		line = compiledPattern.sub(substitution, line)
+	if testingMode and line!=original :
+		print "%s line %i:\nold: %snew: %s"%(filename, linenumber, original, line)
 	return line
 
 
 for filename in filenames :
-	print "processing",filename
 	file = open(filename)
 	modified = []
-	for line in file.readlines() :
-		modified += [ substituteInlines(line) ]
+	for i, line in enumerate(file.readlines()) :
+		modified += [ substituteInlines(line, i, filename) ]
 	file.close()
+	if testingMode: continue
+	print "writing: "+filename
 	file = open(filename,"w")
 	file.writelines( modified )
 	file.close()
