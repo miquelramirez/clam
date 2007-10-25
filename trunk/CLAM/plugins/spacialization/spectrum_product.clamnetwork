@@ -13,7 +13,6 @@
   <processing id="ConstantSpectrum_0" type="ConstantSpectrum">
     <AudioFile>Carnel_3P.wav</AudioFile>
     <FrameSize>512</FrameSize>
-    <WindowedFFT>0</WindowedFFT>
   </processing>
 
   <processing id="Gain 0" type="OutControlSender">
@@ -114,12 +113,12 @@
   </port_connection>
 
   <port_connection>
-    <out>ConstantSpectrum_0.My Output</out>
+    <out>ConstantSpectrum_0.MagPhase Spectrum</out>
     <in>MagPhaseSpectrumProduct_0.Factor1</in>
   </port_connection>
 
   <port_connection>
-    <out>ConstantSpectrum_0.My Output</out>
+    <out>ConstantSpectrum_0.MagPhase Spectrum</out>
     <in>tocompl.MagPhaseSpectrum</in>
   </port_connection>
 

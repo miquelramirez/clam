@@ -7,8 +7,7 @@
 
   <processing id="ConstantSpectrum_0" type="ConstantSpectrum">
     <AudioFile>Carnel_3P.wav</AudioFile>
-    <FrameSize>512</FrameSize>
-    <WindowedFFT>0</WindowedFFT>
+    <FrameSize>32762</FrameSize>
   </processing>
 
   <processing id="FFT" type="FFT">
@@ -54,12 +53,12 @@
   </port_connection>
 
   <port_connection>
-    <out>ConstantSpectrum_0.My Output</out>
+    <out>ConstantSpectrum_0.MagPhase Spectrum</out>
     <in>SpectrumProduct.Factor1</in>
   </port_connection>
 
   <port_connection>
-    <out>ConstantSpectrum_0.My Output</out>
+    <out>ConstantSpectrum_0.MagPhase Spectrum</out>
     <in>cmpx.MagPhaseSpectrum</in>
   </port_connection>
 
