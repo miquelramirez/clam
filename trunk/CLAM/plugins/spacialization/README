@@ -15,6 +15,21 @@ Some examples (.clamnetwork files) needs external databases. You should have the
 - wavs
 
 
+complex_fourier_transforms.clamnetwork
+	This network measures the error of a successive FFT-IFFT tranformation
+	by substracting the output to the input.
+	A perfect transformation should give absolute silence.
+	The windowing affects by a factor the output of the transformations.
+	You can change it on the mixer processing.
+
+spectrum_representation_benchmark.clamnetwork
+	This benchmark is used to compare with profilers such as callgrind
+	the performance of spectrum multiplication in different spectrum
+	representations (complex and polar) considering also the needed
+	conversions.
+
+
+
 
 
 

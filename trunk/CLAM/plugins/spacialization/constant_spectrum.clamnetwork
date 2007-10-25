@@ -3,7 +3,10 @@
 
   <processing id="AudioSink_0" type="AudioSink"/>
 
-  <processing id="ConstantSpectrum_0" type="ConstantSpectrum"/>
+  <processing id="ConstantSpectrum" type="ConstantSpectrum">
+    <AudioFile>Carnel_3P.wav</AudioFile>
+    <FrameSize>32768</FrameSize>
+  </processing>
 
   <processing id="MagPhaseSpectrum2Spectrum_0" type="MagPhaseSpectrum2Spectrum"/>
 
@@ -45,7 +48,7 @@
   <processing id="SpectrumView_0" type="SpectrumView"/>
 
   <port_connection>
-    <out>ConstantSpectrum_0.My Output</out>
+    <out>ConstantSpectrum.My Output</out>
     <in>MagPhaseSpectrum2Spectrum_0.MagPhaseSpectrum</in>
   </port_connection>
 

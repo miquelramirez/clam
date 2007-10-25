@@ -22,6 +22,7 @@
   <processing id="Complex2MagPhaseSpectrum_0" type="Complex2MagPhaseSpectrum"/>
 
   <processing id="ConstantSpectrum_0" type="ConstantSpectrum">
+    <AudioFile>Carnel_3P.wav</AudioFile>
     <FrameSize>262144</FrameSize>
   </processing>
 

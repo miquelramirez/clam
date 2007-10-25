@@ -6,6 +6,7 @@
   <processing id="AudioSource_0" type="AudioSource"/>
 
   <processing id="ConstantSpectrum_0" type="ConstantSpectrum">
+    <AudioFile>Carnel_3P.wav</AudioFile>
     <FrameSize>512</FrameSize>
     <WindowedFFT>0</WindowedFFT>
   </processing>

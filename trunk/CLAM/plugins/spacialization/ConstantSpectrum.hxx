@@ -38,15 +38,17 @@ class ConstantSpectrum : public Processing
 { 
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
+	    DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+	    DYN_ATTRIBUTE( 0, public, AudioInFilename, AudioFile);
+	    DYN_ATTRIBUTE( 1, public, int, FrameSize);
 
 	protected:
 	    void DefaultInit()
 	    {
-		  AddAll();
-		  UpdateData();
-		  SetFrameSize(65536/2);
+		AddAll();
+		UpdateData();
+		SetAudioFile("");
+		SetFrameSize(65536/2);
 	    };
 	};
 
