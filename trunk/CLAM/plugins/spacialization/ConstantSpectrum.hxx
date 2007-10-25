@@ -52,13 +52,16 @@ class ConstantSpectrum : public Processing
 	    };
 	};
 
+	OutPort<ComplexSpectrum> mOutComplex;
 	OutPort<MagPhaseSpectrum> mOut;
 	MagPhaseSpectrum mSpectrum;
+	ComplexSpectrum mComplexSpectrum;
 	Config mConfig;
 public:
 	const char* GetClassName() const { return "ConstantSpectrum"; }
 	ConstantSpectrum(const Config& config = Config()) 
-		: mOut("My Output", this) 
+		: mOutComplex("Complex Spectrum", this) 
+		, mOut("MagPhase Spectrum", this) 
 	{
 		Configure( config );
 	}
@@ -70,16 +73,21 @@ protected:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(mConfig, config);
+		if (!FillSpectrum()) return false;
 		return true; 
 	}
 
-	void FillSpectrum(MagPhaseSpectrum & outSpectrum)
+	bool FillSpectrum()
 	{
 
 		MonoAudioFileReaderConfig readerConfig;
-		readerConfig.SetSourceFile("Carnel_3P.wav");
+		readerConfig.SetSourceFile(mConfig.GetAudioFile());
 		MonoAudioFileReader reader(readerConfig);
-		CLAM_ASSERT(reader.IsConfigured(), "Reader Not Configured");
+		if (!reader.IsConfigured())
+		{
+			AddConfigErrorMessage(reader.GetConfigErrorMessage());
+			return false;
+		}
 		const unsigned nSamples = reader.GetHeader().GetSamples();
 		std::cout << "FillConstantSpectrum: NSamples: " << nSamples << std::endl;
 		
@@ -101,6 +109,8 @@ protected:
 		ConnectPorts(fft,0,toMagPhase,0);
 		InPort<MagPhaseSpectrum> fetcher;
 		toMagPhase.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
+		InPort<ComplexSpectrum> complexFetcher;
+		fft.GetOutPorts().GetByNumber(0).ConnectToIn(complexFetcher);
 
 		reader.Start();
 		windower.Start();
@@ -114,22 +124,28 @@ protected:
 		fft.Do();
 		toMagPhase.Do();
 
-		outSpectrum = fetcher.GetData();
+		mSpectrum = fetcher.GetData();
+		mComplexSpectrum = complexFetcher.GetData();
 
 		reader.Stop();
 		windower.Stop();
 		fft.Stop();
 		toMagPhase.Stop();
+		return true;
 	}
  
 	bool Do()
 	{
 		MagPhaseSpectrum & spectrum = mOut.GetData();
-		if (!spectrum.magnitudes.size()) 
-			FillSpectrum(spectrum);
+		ComplexSpectrum & complexSpectrum = mOutComplex.GetData();
+		if (mSpectrum.magnitudes.size() != !spectrum.magnitudes.size())
+			spectrum = mSpectrum;
+		if (mComplexSpectrum.bins.size() != !complexSpectrum.bins.size())
+			complexSpectrum = mComplexSpectrum;
 
 		// Tell the ports this is done
 		mOut.Produce();
+		mOutComplex.Produce();
 		return true;
 	}
 
