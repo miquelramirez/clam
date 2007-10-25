@@ -34,8 +34,6 @@
 
   <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>1</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="MyFFT" type="MyFFT">

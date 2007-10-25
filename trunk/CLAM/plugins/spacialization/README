@@ -33,7 +33,16 @@ constant_spectrum.clamnetwork
 	the spectrum of the first frame of an audio file.
 	The example resynthesizes and visualizes such spectrum each frame.
 
+lowlatencyconvolution.clamnetwork
+	An example effect of LowLatencyConvolution which is able to apply
+	a reverb using a recorded impulse response with a very long tail
+	faster than time domain convolution (logarithmic time to the frame)
+	and with lower latency than spectrum domain convolution (indeed
+	the latency is just the input block size).
 
+
+
+	
 
 
 
