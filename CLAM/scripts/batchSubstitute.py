@@ -6,18 +6,29 @@ Substitution examples:
 	(r"''(([^']|'[^'])*)''", r"<em>\1</em>"),
 	(r"\[(\S*)\s(.+)\]", r"<a href='\1'>\2</a>"),
 	(r"\[(\S*)\]", r"<a href='\1'>\1</a>"),
-	(r"@cite:([-_a-zA-Z0-9]*)", r"<a href='dataflow.bib.html#\1'>[\1]</a>"), # TODO: hover box with bib info
 	(r"`([^`]*)`", r"<img src=http://www.forkosh.dreamhost.com/mimetex.cgi?\1 />"),
 	(r"{{{", r"<pre>"),
 	(r"}}}", r"</pre>"),
 	(r"^@toc\s*$", r"%(toc)s"),
 """
 
+# --------------------------
+# User configuration
+# --------------------------
 inlineSubstitutions = [
 	(r"'referencia': 100", r"'referencia': 10"),
 ]
-filenames = glob.glob("*.testfarmlog")
+filesToSubstitute = [
+	"*.py",
+	"../*.log",
+]
+# --------------------------
+# End of user configuration
+# --------------------------
 
+
+filenames = []
+for search in filesToSubstitute: filenames +=  glob.glob(search)
 
 inlines = [ (re.compile(pattern), substitution) for pattern, substitution in inlineSubstitutions ]
 def substituteInlines(line) :
