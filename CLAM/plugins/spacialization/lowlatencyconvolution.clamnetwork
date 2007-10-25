@@ -42,13 +42,11 @@
 
   <processing id="ImpulseResponseLoader" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/Carnel_3P.wav</ImpulseResponse>
+    <ImpulseResponse>Carnel_3P.wav</ImpulseResponse>
   </processing>
 
   <processing id="LowLatencyConvolution_0" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>1</UseExternalDataBase>
-    <ImpulseResponseAudioFile>impulse.wav</ImpulseResponseAudioFile>
   </processing>
 
   <processing id="MyFFT_0" type="MyFFT">

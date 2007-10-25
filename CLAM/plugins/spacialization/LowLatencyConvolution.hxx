@@ -43,10 +43,8 @@ class LowLatencyConvolution : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
+	    DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
 	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
-	    DYN_ATTRIBUTE( 1, public, bool, UseExternalDataBase );
-	    DYN_ATTRIBUTE( 2, public, AudioInFilename, ImpulseResponseAudioFile );
 
 	protected:
 	    void DefaultInit()
@@ -54,7 +52,6 @@ public:
 		  AddAll();
 		  UpdateData();
 		  SetFrameSize(512);
-		  SetUseExternalDataBase(false);
 	    };
 	};
 

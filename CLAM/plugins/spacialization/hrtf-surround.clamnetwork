@@ -44,56 +44,38 @@
 
   <processing id="Conv C" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="Conv L to L" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="Conv L to R" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="Conv R to L" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="Conv R to R" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="Conv SL to L" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="Conv SL to R" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="Conv SR to L" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="Conv SR to R" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="Emitter Position" type="ControlSurface">
@@ -154,38 +136,26 @@
 
   <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="LowLatencyConvolution_1" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="LowLatencyConvolution_2" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="LowLatencyConvolution_3" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="LowLatencyConvolution_4" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="LowLatencyConvolution_5" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="Mix" type="ComplexSpectrumSum"/>

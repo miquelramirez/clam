@@ -53,38 +53,26 @@
 
   <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="LowLatencyConvolution_1" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="LowLatencyConvolution_2" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="LowLatencyConvolution_3" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="LowLatencyConvolution_4" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="LowLatencyConvolution_5" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
-    <UseExternalDataBase>0</UseExternalDataBase>
-    <ImpulseResponseAudioFile></ImpulseResponseAudioFile>
   </processing>
 
   <processing id="MyFFT" type="MyFFT">
