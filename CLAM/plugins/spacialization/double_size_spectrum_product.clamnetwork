@@ -86,12 +86,12 @@
   </port_connection>
 
   <port_connection>
-    <out>ConstantSpectrum_0.My Output</out>
+    <out>ConstantSpectrum_0.MagPhase Spectrum</out>
     <in>MagPhaseSpectrum2Spectrum_0.MagPhaseSpectrum</in>
   </port_connection>
 
   <port_connection>
-    <out>ConstantSpectrum_0.My Output</out>
+    <out>ConstantSpectrum_0.MagPhase Spectrum</out>
     <in>Product.Factor1</in>
   </port_connection>
 

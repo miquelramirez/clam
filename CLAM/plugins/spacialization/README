@@ -28,6 +28,10 @@ spectrum_representation_benchmark.clamnetwork
 	representations (complex and polar) considering also the needed
 	conversions.
 
+constant_spectrum.clamnetwork
+	A test for the ConstantSpectrum processing that keeps at the output
+	the spectrum of the first frame of an audio file.
+	The example resynthesizes and visualizes such spectrum each frame.
 
 
 
