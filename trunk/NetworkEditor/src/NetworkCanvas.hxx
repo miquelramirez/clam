@@ -71,6 +71,10 @@ public:
 		addAction(clearSelectionAction);
 		connect(clearSelectionAction, SIGNAL(triggered()), this, SLOT(onClearSelections()));
 	}
+	CLAM::Network & network()
+	{
+		return *_network;
+	}
 
 	void example1()
 	{
@@ -497,10 +501,6 @@ public: // Actions
 		addPortConnection(processing, portIndex, getBox(processingId.c_str()), 0);
 
 		markAsChanged();
-	}
-	void configure( const QString& name, const CLAM::ProcessingConfig& config )
-	{
-		_network->ConfigureProcessing( name.toStdString(), config);	
 	}
 private:
 	void addProcessingBox(const QString & name, CLAM::Processing * processing, QPoint point=QPoint(), QSize size=QSize())

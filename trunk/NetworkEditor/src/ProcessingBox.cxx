@@ -747,7 +747,7 @@ bool ProcessingBox::configure()
 			delete config;
 			return false;
 		}
-		_canvas->configure( _name, *config );
+		_canvas->network().ConfigureProcessing( _name.toStdString(), *config);	
 		setProcessing(_processing);
 		delete config;
 		return true;
