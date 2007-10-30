@@ -19,6 +19,8 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
+  <processing id="AudioInput" type="AudioSource"/>
+
   <processing id="AudioWindowing" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
@@ -168,8 +170,6 @@
     <Prefix>y</Prefix>
   </processing>
 
-  <processing id="InLanguage" type="AudioSource"/>
-
   <processing id="L" type="AudioSink"/>
 
   <processing id="MyFFT" type="MyFFT">
@@ -207,6 +207,8 @@
   <processing id="MyIFFT_7" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
+
+  <processing id="Oscilloscope" type="Oscilloscope"/>
 
   <processing id="R" type="AudioSink"/>
 
@@ -332,6 +334,11 @@
   <port_connection>
     <out>2streamL.Audio stream</out>
     <in>L.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioInput.AudioOut</out>
+    <in>AudioWindowing.Input</in>
   </port_connection>
 
   <port_connection>
@@ -540,11 +547,6 @@
   </port_connection>
 
   <port_connection>
-    <out>InLanguage.AudioOut</out>
-    <in>AudioWindowing.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>MyFFT.Complex Spectrum</out>
     <in>Convolution_P.Input</in>
   </port_connection>
@@ -697,6 +699,11 @@
   <port_connection>
     <out>toStream P.Audio stream</out>
     <in>Surround.p</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream P.Audio stream</out>
+    <in>Oscilloscope.Input</in>
   </port_connection>
 
   <port_connection>

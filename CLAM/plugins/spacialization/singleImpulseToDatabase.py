@@ -49,7 +49,7 @@ scale = complex(sizeX/NX, sizeY/NY)
 for xt in range(NX) : 
 	for yt in range(NY) :
 		wayToSource = (complex(xs, ys) - complex(xt, yt))*scale
-		distanceToSource = abs(wayToSource) or .01
+		distanceToSource = abs(wayToSource) or 1
 		azimuthToSource = math.atan2(wayToSource.real, wayToSource.imag)
 		distanceFactor = recordingDistance/distanceToSource
 		azimuthRotation = azimuthToSource - recordingAzimut
@@ -60,8 +60,8 @@ for xt in range(NX) :
 		for component in P,X,Y:
 			shiftSamples(component, deltaSamples)
 		X, Y = \
-			(X * math.cos(azimuthRotation) * Y + math.sin(azimuthRotation), 
-			-X * math.sin(azimuthRotation) * Y + math.cos(azimuthRotation))
+			(X * math.cos(azimuthRotation) + Y * math.sin(azimuthRotation), 
+			-X * math.sin(azimuthRotation) + Y * math.cos(azimuthRotation))
 
 		print "Writing data...", xt, yt
 		writeDatFile(filepattern % ("p", 0,0,0, xt,yt,0) , P)
