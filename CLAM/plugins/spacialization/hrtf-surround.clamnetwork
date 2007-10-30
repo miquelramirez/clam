@@ -10,7 +10,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="2stream" type="AudioBuffer2Stream">
+  <processing id="2streamL" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -18,12 +18,6 @@
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
-
-  <processing id="AudioBufferCrossFader" type="AudioBufferCrossFader"/>
-
-  <processing id="AudioBufferCrossFader_1" type="AudioBufferCrossFader"/>
-
-  <processing id="AudioBufferCrossFader_2" type="AudioBufferCrossFader"/>
 
   <processing id="AudioWindowing" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -78,6 +72,30 @@
     <FrameSize>512</FrameSize>
   </processing>
 
+  <processing id="Convolution_P" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_P_old" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_Vx" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_Vx_old" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_Vy" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_Vy_old" type="LowLatencyConvolution">
+    <FrameSize>512</FrameSize>
+  </processing>
+
   <processing id="Emitter Position" type="ControlSurface">
     <MinX>0</MinX>
     <DefaultX>0</DefaultX>
@@ -85,6 +103,26 @@
     <MinY>0</MinY>
     <DefaultY>0</DefaultY>
     <MaxY>1</MaxY>
+  </processing>
+
+  <processing id="FFT C" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT L" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT R" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT SL" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT SR" type="MyFFT">
+    <AudioSize>1024</AudioSize>
   </processing>
 
   <processing id="IR0" type="ImpulseResponseLoader">
@@ -112,81 +150,29 @@
     <ImpulseResponse>HRTFs/elev0/L0e330a.wav</ImpulseResponse>
   </processing>
 
-  <processing id="ImpulseResponseDatabaseFetcher_Pressure" type="ImpulseResponseDatabaseFetcher">
+  <processing id="ImpulseResponseDatabaseFetcher_P" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>room1/</Path>
+    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/lalaDatabase/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>room1/</Path>
-    <Prefix>vx</Prefix>
+    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/lalaDatabase/</Path>
+    <Prefix>x</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>room1/</Path>
-    <Prefix>vy</Prefix>
+    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/lalaDatabase/</Path>
+    <Prefix>y</Prefix>
   </processing>
 
   <processing id="InLanguage" type="AudioSource"/>
 
   <processing id="L" type="AudioSink"/>
 
-  <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
-    <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="LowLatencyConvolution_1" type="LowLatencyConvolution">
-    <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="LowLatencyConvolution_2" type="LowLatencyConvolution">
-    <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="LowLatencyConvolution_3" type="LowLatencyConvolution">
-    <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="LowLatencyConvolution_4" type="LowLatencyConvolution">
-    <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="LowLatencyConvolution_5" type="LowLatencyConvolution">
-    <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="Mix" type="ComplexSpectrumSum"/>
-
-  <processing id="Mix2" type="ComplexSpectrumSum"/>
-
-  <processing id="Mix3" type="ComplexSpectrumSum"/>
-
-  <processing id="Mix4" type="ComplexSpectrumSum"/>
-
   <processing id="MyFFT" type="MyFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="MyFFT_1" type="MyFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="MyFFT_2" type="MyFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="MyFFT_3" type="MyFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="MyFFT_4" type="MyFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="MyFFT_5" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
@@ -250,7 +236,21 @@
 
   <processing id="Sum4" type="ComplexSpectrumSum"/>
 
+  <processing id="SumL" type="ComplexSpectrumSum"/>
+
+  <processing id="SumL2" type="ComplexSpectrumSum"/>
+
+  <processing id="SumL3" type="ComplexSpectrumSum"/>
+
+  <processing id="SumL4" type="ComplexSpectrumSum"/>
+
   <processing id="Surround" type="Surround"/>
+
+  <processing id="XFader_P" type="AudioBufferCrossFader"/>
+
+  <processing id="XFader_Vx" type="AudioBufferCrossFader"/>
+
+  <processing id="XFader_Vy" type="AudioBufferCrossFader"/>
 
   <processing id="toStream P" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -330,23 +330,8 @@
   </port_connection>
 
   <port_connection>
-    <out>2stream.Audio stream</out>
+    <out>2streamL.Audio stream</out>
     <in>L.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioBufferCrossFader.CrossFadedBuffer</out>
-    <in>toStream P.Audio buffer</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioBufferCrossFader_1.CrossFadedBuffer</out>
-    <in>toStream Vx.Audio buffer</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioBufferCrossFader_2.CrossFadedBuffer</out>
-    <in>toStream Vy.Audio buffer</in>
   </port_connection>
 
   <port_connection>
@@ -356,7 +341,7 @@
 
   <port_connection>
     <out>Conv C.Output</out>
-    <in>Mix3.Term1</in>
+    <in>SumL4.Term1</in>
   </port_connection>
 
   <port_connection>
@@ -366,7 +351,7 @@
 
   <port_connection>
     <out>Conv L to L.Output</out>
-    <in>Mix.Term1</in>
+    <in>SumL.Term1</in>
   </port_connection>
 
   <port_connection>
@@ -376,7 +361,7 @@
 
   <port_connection>
     <out>Conv R to L.Output</out>
-    <in>Mix.Term2</in>
+    <in>SumL.Term2</in>
   </port_connection>
 
   <port_connection>
@@ -386,7 +371,7 @@
 
   <port_connection>
     <out>Conv SL to L.Output</out>
-    <in>Mix2.Term1</in>
+    <in>SumL2.Term1</in>
   </port_connection>
 
   <port_connection>
@@ -396,12 +381,87 @@
 
   <port_connection>
     <out>Conv SR to L.Output</out>
-    <in>Mix2.Term2</in>
+    <in>SumL2.Term2</in>
   </port_connection>
 
   <port_connection>
     <out>Conv SR to R.Output</out>
     <in>Sum2.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_P.Output</out>
+    <in>MyIFFT.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_P_old.Output</out>
+    <in>MyIFFT_3.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_Vx.Output</out>
+    <in>MyIFFT_1.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_Vx_old.Output</out>
+    <in>MyIFFT_4.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_Vy.Output</out>
+    <in>MyIFFT_2.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_Vy_old.Output</out>
+    <in>MyIFFT_5.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT C.Complex Spectrum</out>
+    <in>Conv C.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT L.Complex Spectrum</out>
+    <in>Conv L to L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT L.Complex Spectrum</out>
+    <in>Conv L to R.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT R.Complex Spectrum</out>
+    <in>Conv R to L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT R.Complex Spectrum</out>
+    <in>Conv R to R.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT SL.Complex Spectrum</out>
+    <in>Conv SL to R.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT SL.Complex Spectrum</out>
+    <in>Conv SL to L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT SR.Complex Spectrum</out>
+    <in>Conv SR to L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT SR.Complex Spectrum</out>
+    <in>Conv SR to R.Input</in>
   </port_connection>
 
   <port_connection>
@@ -450,33 +510,33 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseDatabaseFetcher_Pressure.ImpulseResponse</out>
-    <in>LowLatencyConvolution.ImpulseResponse</in>
+    <out>ImpulseResponseDatabaseFetcher_P.ImpulseResponse</out>
+    <in>Convolution_P.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseDatabaseFetcher_Pressure.PreviousImpulseResponse</out>
-    <in>LowLatencyConvolution_3.ImpulseResponse</in>
+    <out>ImpulseResponseDatabaseFetcher_P.PreviousImpulseResponse</out>
+    <in>Convolution_P_old.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
     <out>ImpulseResponseDatabaseFetcher_Vx.ImpulseResponse</out>
-    <in>LowLatencyConvolution_1.ImpulseResponse</in>
+    <in>Convolution_Vx.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
     <out>ImpulseResponseDatabaseFetcher_Vx.PreviousImpulseResponse</out>
-    <in>LowLatencyConvolution_4.ImpulseResponse</in>
+    <in>Convolution_Vx_old.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
     <out>ImpulseResponseDatabaseFetcher_Vy.ImpulseResponse</out>
-    <in>LowLatencyConvolution_2.ImpulseResponse</in>
+    <in>Convolution_Vy.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
     <out>ImpulseResponseDatabaseFetcher_Vy.PreviousImpulseResponse</out>
-    <in>LowLatencyConvolution_5.ImpulseResponse</in>
+    <in>Convolution_Vy_old.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
@@ -485,163 +545,68 @@
   </port_connection>
 
   <port_connection>
-    <out>LowLatencyConvolution.Output</out>
-    <in>MyIFFT.Complex Spectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LowLatencyConvolution_1.Output</out>
-    <in>MyIFFT_1.Complex Spectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LowLatencyConvolution_2.Output</out>
-    <in>MyIFFT_2.Complex Spectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LowLatencyConvolution_3.Output</out>
-    <in>MyIFFT_3.Complex Spectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LowLatencyConvolution_4.Output</out>
-    <in>MyIFFT_4.Complex Spectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LowLatencyConvolution_5.Output</out>
-    <in>MyIFFT_5.Complex Spectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Mix.Sum</out>
-    <in>Mix4.Term1</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Mix2.Sum</out>
-    <in>Mix4.Term2</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Mix3.Sum</out>
-    <in>MyIFFT_6.Complex Spectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Mix4.Sum</out>
-    <in>Mix3.Term2</in>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_P.Input</in>
   </port_connection>
 
   <port_connection>
     <out>MyFFT.Complex Spectrum</out>
-    <in>LowLatencyConvolution.Input</in>
+    <in>Convolution_Vx.Input</in>
   </port_connection>
 
   <port_connection>
     <out>MyFFT.Complex Spectrum</out>
-    <in>LowLatencyConvolution_1.Input</in>
+    <in>Convolution_Vy.Input</in>
   </port_connection>
 
   <port_connection>
     <out>MyFFT.Complex Spectrum</out>
-    <in>LowLatencyConvolution_2.Input</in>
+    <in>Convolution_P_old.Input</in>
   </port_connection>
 
   <port_connection>
     <out>MyFFT.Complex Spectrum</out>
-    <in>LowLatencyConvolution_3.Input</in>
+    <in>Convolution_Vx_old.Input</in>
   </port_connection>
 
   <port_connection>
     <out>MyFFT.Complex Spectrum</out>
-    <in>LowLatencyConvolution_4.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT.Complex Spectrum</out>
-    <in>LowLatencyConvolution_5.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_1.Complex Spectrum</out>
-    <in>Conv C.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_2.Complex Spectrum</out>
-    <in>Conv L to L.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_2.Complex Spectrum</out>
-    <in>Conv L to R.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_3.Complex Spectrum</out>
-    <in>Conv R to L.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_3.Complex Spectrum</out>
-    <in>Conv R to R.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_4.Complex Spectrum</out>
-    <in>Conv SL to R.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_4.Complex Spectrum</out>
-    <in>Conv SL to L.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_5.Complex Spectrum</out>
-    <in>Conv SR to L.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_5.Complex Spectrum</out>
-    <in>Conv SR to R.Input</in>
+    <in>Convolution_Vy_old.Input</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT.Audio Buffer</out>
-    <in>AudioBufferCrossFader.FadingIn</in>
+    <in>XFader_P.FadingIn</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_1.Audio Buffer</out>
-    <in>AudioBufferCrossFader_1.FadingIn</in>
+    <in>XFader_Vx.FadingIn</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_2.Audio Buffer</out>
-    <in>AudioBufferCrossFader_2.FadingIn</in>
+    <in>XFader_Vy.FadingIn</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_3.Audio Buffer</out>
-    <in>AudioBufferCrossFader.FadingOut</in>
+    <in>XFader_P.FadingOut</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_4.Audio Buffer</out>
-    <in>AudioBufferCrossFader_1.FadingOut</in>
+    <in>XFader_Vx.FadingOut</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_5.Audio Buffer</out>
-    <in>AudioBufferCrossFader_2.FadingOut</in>
+    <in>XFader_Vy.FadingOut</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_6.Audio Buffer</out>
-    <in>2stream.Audio buffer</in>
+    <in>2streamL.Audio buffer</in>
   </port_connection>
 
   <port_connection>
@@ -670,6 +635,26 @@
   </port_connection>
 
   <port_connection>
+    <out>SumL.Sum</out>
+    <in>SumL3.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SumL2.Sum</out>
+    <in>SumL3.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SumL3.Sum</out>
+    <in>SumL4.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SumL4.Sum</out>
+    <in>MyIFFT_6.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
     <out>Surround.center</out>
     <in>win C.Input</in>
   </port_connection>
@@ -695,6 +680,21 @@
   </port_connection>
 
   <port_connection>
+    <out>XFader_P.CrossFadedBuffer</out>
+    <in>toStream P.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFader_Vx.CrossFadedBuffer</out>
+    <in>toStream Vx.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFader_Vy.CrossFadedBuffer</out>
+    <in>toStream Vy.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
     <out>toStream P.Audio stream</out>
     <in>Surround.p</in>
   </port_connection>
@@ -711,27 +711,27 @@
 
   <port_connection>
     <out>win C.Output</out>
-    <in>MyFFT_1.Audio Buffer</in>
+    <in>FFT C.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
     <out>win L.Output</out>
-    <in>MyFFT_2.Audio Buffer</in>
+    <in>FFT L.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
     <out>win R.Output</out>
-    <in>MyFFT_3.Audio Buffer</in>
+    <in>FFT R.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
     <out>win SL.Output</out>
-    <in>MyFFT_4.Audio Buffer</in>
+    <in>FFT SL.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
     <out>win SR.Output</out>
-    <in>MyFFT_5.Audio Buffer</in>
+    <in>FFT SR.Audio Buffer</in>
   </port_connection>
 
   <control_connection>
@@ -756,12 +756,12 @@
 
   <control_connection>
     <out>Emitter Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher_Pressure.emitterX</in>
+    <in>ImpulseResponseDatabaseFetcher_P.emitterX</in>
   </control_connection>
 
   <control_connection>
     <out>Emitter Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher_Pressure.emitterY</in>
+    <in>ImpulseResponseDatabaseFetcher_P.emitterY</in>
   </control_connection>
 
   <control_connection>
@@ -786,7 +786,7 @@
 
   <control_connection>
     <out>Receiver Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher_Pressure.receiverX</in>
+    <in>ImpulseResponseDatabaseFetcher_P.receiverX</in>
   </control_connection>
 
   <control_connection>
@@ -811,7 +811,7 @@
 
   <control_connection>
     <out>Receiver Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher_Pressure.receiverY</in>
+    <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
   </control_connection>
 
 </network>
