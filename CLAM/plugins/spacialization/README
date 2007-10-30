@@ -14,6 +14,51 @@ Some examples (.clamnetwork files) needs external databases. You should have the
 - HRTFs
 - wavs
 
+Included Processings:
+=====================
+
+AudioBuffer2Stream:
+	Generates a continuous samples stream by overlapping audio buffers.
+
+AudioBufferCrossFader:
+	Generates an audio buffer by cross fading the input audio
+	buffers using a linear ramp. The cross fade occurs every frame.
+	This processing is thought to be fed the following way.
+	In steady state, both inputs are fed with the same input.
+	When the source changes, just for a frame, the old source
+	is fed on the fadeout input, while the new one is fed on the
+	fadeout input. After that frame, the new source is fed on both.
+
+MyFFT
+	Takes an audio buffer (n samples) and returns the complex spectrum
+	of n/2+1 complex bins.
+	Uses FFTW internally.
+MyIFFT
+	Takes a complex spectrum (n/2+1 bins) and returns an audio buffer
+	of n samples.
+	Uses FFTW internally.
+
+Complex2MagPhaseSpectrum
+	Converts spectra represented as complex vector (ComplexSpectrum)
+	into spectrum represented as polar fasors (MagPhaseSpectrum).
+
+ComplexSpectrumMixer
+	Does the ponderated sum of two complex spectra.
+
+ComplexSpectrumProduct
+	Multiplies two complex spectra.
+
+ComplexSpectrumSum
+	Adds two complex spectra
+
+ConstantSpectrum
+	Takes the N first samples of an audio file and takes it as constant
+	spectrum on the output.
+
+
+
+
+Example Networks:
 
 complex_fourier_transforms.clamnetwork
 	This network measures the error of a successive FFT-IFFT tranformation
@@ -40,7 +85,8 @@ lowlatencyconvolution.clamnetwork
 	and with lower latency than spectrum domain convolution (indeed
 	the latency is just the input block size).
 
-
+lowlatencyconvolution-withdoubleframesize.clamnetwork
+	The same as lowlatencyconvolution but using 1024 hops instead of 512.
 
 	
 
