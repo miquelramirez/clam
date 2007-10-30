@@ -10,7 +10,6 @@ def readDatFile(filename) :
 	return [ float(sample) for time, sample in [ line.split() for line in wavefile.readlines() if line[0]!=";"]]
 
 def writeDatFile(filename, samples) :
-	return
 	result = []
 	result += ["; Sample Rate 44100\n"]
 	result += ["; Channels 1\n"]
