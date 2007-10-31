@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
+  <processing id="2MagPhase" type="Complex2MagPhaseSpectrum"/>
+
+  <processing id="2MagPhase X" type="Complex2MagPhaseSpectrum"/>
+
+  <processing id="2Spectrum" type="MagPhaseSpectrum2Spectrum"/>
+
+  <processing id="2Spectrum X" type="MagPhaseSpectrum2Spectrum"/>
+
   <processing id="2StreamR" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
@@ -29,6 +37,8 @@
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
+
+  <processing id="BufferOscilloscope" type="BufferOscilloscope"/>
 
   <processing id="Cartesian2PolarControl" type="Cartesian2PolarControl"/>
 
@@ -97,6 +107,10 @@
   <processing id="Convolution_Vy_old" type="LowLatencyConvolution">
     <FrameSize>512</FrameSize>
   </processing>
+
+  <processing id="DebugImpulseResponse" type="DebugImpulseResponse"/>
+
+  <processing id="DebugImpulseResponse_1" type="DebugImpulseResponse"/>
 
   <processing id="Emitter Position" type="ControlSurface">
     <MinX>0</MinX>
@@ -208,6 +222,10 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
+  <processing id="MyIFFT_8" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
   <processing id="Oscilloscope" type="Oscilloscope"/>
 
   <processing id="R" type="AudioSink"/>
@@ -229,6 +247,10 @@
     <DefaultY>0.2</DefaultY>
     <MaxY>1</MaxY>
   </processing>
+
+  <processing id="SpectrumView" type="SpectrumView"/>
+
+  <processing id="SpectrumView_1" type="SpectrumView"/>
 
   <processing id="Sum" type="ComplexSpectrumSum"/>
 
@@ -325,6 +347,26 @@
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
+
+  <port_connection>
+    <out>2MagPhase.MagPhaseSpectrum</out>
+    <in>2Spectrum.MagPhaseSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>2MagPhase X.MagPhaseSpectrum</out>
+    <in>2Spectrum X.MagPhaseSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>2Spectrum.Spectrum</out>
+    <in>SpectrumView.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>2Spectrum X.Spectrum</out>
+    <in>SpectrumView_1.Input</in>
+  </port_connection>
 
   <port_connection>
     <out>2StreamR.Audio stream</out>
@@ -424,6 +466,21 @@
   <port_connection>
     <out>Convolution_Vy_old.Output</out>
     <in>MyIFFT_5.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>DebugImpulseResponse.Output</out>
+    <in>2MagPhase.ComplexSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>DebugImpulseResponse.Output</out>
+    <in>MyIFFT_8.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>DebugImpulseResponse_1.Output</out>
+    <in>2MagPhase X.ComplexSpectrum</in>
   </port_connection>
 
   <port_connection>
@@ -532,6 +589,11 @@
   </port_connection>
 
   <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vx.ImpulseResponse</out>
+    <in>DebugImpulseResponse_1.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
     <out>ImpulseResponseDatabaseFetcher_Vx.PreviousImpulseResponse</out>
     <in>Convolution_Vx_old.ImpulseResponse</in>
   </port_connection>
@@ -539,6 +601,11 @@
   <port_connection>
     <out>ImpulseResponseDatabaseFetcher_Vy.ImpulseResponse</out>
     <in>Convolution_Vy.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vy.ImpulseResponse</out>
+    <in>DebugImpulseResponse.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
@@ -614,6 +681,11 @@
   <port_connection>
     <out>MyIFFT_7.Audio Buffer</out>
     <in>2StreamR.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_8.Audio Buffer</out>
+    <in>BufferOscilloscope.Input</in>
   </port_connection>
 
   <port_connection>

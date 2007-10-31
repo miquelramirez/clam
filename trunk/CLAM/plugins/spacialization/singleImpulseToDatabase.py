@@ -29,11 +29,11 @@ def shiftSamples(audio, deltaSamples) :
 
 # Configurable parameters. (TODO make them arguments with sane defaults)
 
-NX = 10
-NY = 12
-sizeX = 100. #meters
-sizeY = 120. #meters
-recordingDistance = 40
+NX = 5
+NY = 5
+sizeX = 30. #meters
+sizeY = 30. #meters
+recordingDistance = 15
 recordingAzimut = 0 #radians
 recordedFilesPattern = "lala%s.dat"
 filepattern =  "lalaDatabase/%s_emissor_%i-%i-%i_receptor_%i-%i-%i.dat"
@@ -46,14 +46,18 @@ recordedComponents = dict( [
 	( prefix, numpy.array(readDatFile(recordedFilesPattern % prefix)) ) 
 		for prefix in ("P", "X", "Y") ] )
 scale = complex(sizeX/NX, sizeY/NY)
+minDistance = min(scale.real, scale.imag)
 for xt in range(NX) : 
 	for yt in range(NY) :
-		wayToSource = (complex(xs, ys) - complex(xt, yt))*scale
-		distanceToSource = abs(wayToSource) or 1
+		gridWayToSource = (complex(xs, ys) - complex(xt, yt))
+		wayToSource = complex(gridWayToSource.real*scale.real, gridWayToSource.imag*scale.imag)
+		distanceToSource = abs(wayToSource) or minDistance
 		azimuthToSource = math.atan2(wayToSource.real, wayToSource.imag)
 		distanceFactor = recordingDistance/distanceToSource
 		azimuthRotation = azimuthToSource - recordingAzimut
 		deltaSamples = int((distanceToSource - recordingDistance)*44100/340)
+		print distanceToSource, wayToSource
+		assert(deltaSamples >= -2000)
 
 		P,X,Y = [distanceFactor * component for component in 
 			[recordedComponents[c] for c in ["P","X","Y"] ] ]
@@ -64,6 +68,7 @@ for xt in range(NX) :
 			-X * math.sin(azimuthRotation) + Y * math.cos(azimuthRotation))
 
 		print "Writing data...", xt, yt
+		#continue
 		writeDatFile(filepattern % ("p", 0,0,0, xt,yt,0) , P)
 		writeDatFile(filepattern % ("x", 0,0,0, xt,yt,0) , X)
 		writeDatFile(filepattern % ("y", 0,0,0, xt,yt,0) , Y)
