@@ -45,7 +45,6 @@ public:
 		QHBoxLayout * layout = new QHBoxLayout(this);
 		_lineEdit = new QLineEdit(this);
 		_lineEdit->setMinimumWidth(300);
-		_lineEdit->setReadOnly(true);
 		_launcher = new QPushButton(QIcon(":/icons/images/fileopen.png"), "...", this);
 		_launcher->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
 		connect(_launcher, SIGNAL(clicked()), this, SLOT(openFileDialog()));
