@@ -60,6 +60,12 @@ ConstantSpectrum
 
 Example Networks:
 
+double_size_spectrum_product.clamnetwork
+fft_spectrum_product.clamnetwork
+spectrum_mixer.clamnetwork
+spectrum_product.clamnetwork
+windowing-and-overlap.clamnetwork
+
 complex_fourier_transforms.clamnetwork
 	This network measures the error of a successive FFT-IFFT tranformation
 	by substracting the output to the input.
@@ -88,7 +94,54 @@ lowlatencyconvolution.clamnetwork
 lowlatencyconvolution-withdoubleframesize.clamnetwork
 	The same as lowlatencyconvolution but using 1024 hops instead of 512.
 
+
+IR and HRTFs Databases:
+
+impulse-response-database.clamnetwork
+	Virtual room navigation with a single component (p).
+	Simulates emitter and receiver moving on a room by convoluting
+	the source with impulse responses at different emitter-receiver
+	positions combinations. Crossfading is used when the dominant
+	impulse response changes.
+
+database-noninterpoling-and-surround.clamnetwork
+	Virtual room navigation with direccionality (vx, vy) and surround output.
+	Simulates emitter and receiver moving on a room by convoluting
+	the source with impulse responses at different emitter-receiver
+	positions combinations. Crossfading is used when the dominant
+	impulse response changes.
+	p, vx and vy components is considered so we can later compute the
+	surround output.
+
+hrtf-database.clamnetwork
+	Places the input sound at a given azimut and elevation using
+	an HRTF database.
+
+hrtf-surround.clamnetwork
+	Extends the room simulation by turning the 5 surround channels
+	into stereo using specific hrtf impulse responses for the locations
+	of the surround speakers.
+
+
+IR-Interpolation (dropped?):
 	
+simple-interpolation.clamnetwork
+	Does the interpolation of just one component (p)
+
+walking-in-a-line-surround.clamnetwork
+	Simulates receiver movements between two points where we
+	have recorded p, vx and vy components of the impulse response
+	from a fixed emitter point.
+
+modular-walking-in-a-line-surround.clamnetwork
+	The same as walking-in-a-line-surround but splitting in modules
+	the IR loading and the interpolation.
+
+
+TODO:
+
+- Document HRTF database layout
+- Remove the IR-loader-and-interpolator as the splitted version is better
 
 
 
