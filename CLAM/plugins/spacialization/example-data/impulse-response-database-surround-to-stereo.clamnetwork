@@ -1,0 +1,911 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="2MagPhase" type="Complex2MagPhaseSpectrum"/>
+
+  <processing id="2MagPhase X" type="Complex2MagPhaseSpectrum"/>
+
+  <processing id="2Spectrum" type="MagPhaseSpectrum2Spectrum"/>
+
+  <processing id="2Spectrum X" type="MagPhaseSpectrum2Spectrum"/>
+
+  <processing id="2StreamR" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="2streamL" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioInput" type="AudioSource"/>
+
+  <processing id="AudioWindowing" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="BufferOscilloscope" type="BufferOscilloscope"/>
+
+  <processing id="Cartesian2PolarControl" type="Cartesian2PolarControl"/>
+
+  <processing id="ControlPrinter" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="Conv C" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Conv L to L" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Conv L to R" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Conv R to L" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Conv R to R" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Conv SL to L" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Conv SL to R" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Conv SR to L" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Conv SR to R" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_P" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_P_old" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_Vx" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_Vx_old" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_Vy" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution_Vy_old" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="DebugImpulseResponse" type="DebugImpulseResponse"/>
+
+  <processing id="DebugImpulseResponse_1" type="DebugImpulseResponse"/>
+
+  <processing id="Emitter Position" type="ControlSurface">
+    <MinX>0</MinX>
+    <DefaultX>0</DefaultX>
+    <MaxX>1</MaxX>
+    <MinY>0</MinY>
+    <DefaultY>0</DefaultY>
+    <MaxY>1</MaxY>
+  </processing>
+
+  <processing id="FFT C" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT L" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT R" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT SL" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT SR" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="IR0" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>HRTFs/elev0/L0e000a.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="IR110" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>HRTFs/elev0/L0e110a.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="IR250" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>HRTFs/elev0/L0e250a.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="IR30" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>HRTFs/elev0/L0e030a.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="IR330" type="ImpulseResponseLoader">
+    <FrameSize>512</FrameSize>
+    <ImpulseResponse>HRTFs/elev0/L0e330a.wav</ImpulseResponse>
+  </processing>
+
+  <processing id="ImpulseResponseDatabaseFetcher_P" type="ImpulseResponseDatabaseFetcher">
+    <FrameSize>512</FrameSize>
+    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/lalaDatabase/</Path>
+    <Prefix>p</Prefix>
+  </processing>
+
+  <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
+    <FrameSize>512</FrameSize>
+    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/lalaDatabase/</Path>
+    <Prefix>x</Prefix>
+  </processing>
+
+  <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
+    <FrameSize>512</FrameSize>
+    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/lalaDatabase/</Path>
+    <Prefix>y</Prefix>
+  </processing>
+
+  <processing id="L" type="AudioSink"/>
+
+  <processing id="MyFFT" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_1" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_2" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_3" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_4" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_5" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_6" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_7" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_8" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="Oscilloscope" type="Oscilloscope"/>
+
+  <processing id="R" type="AudioSink"/>
+
+  <processing id="Receiver Orientation" type="ControlSurface">
+    <MinX>-1</MinX>
+    <DefaultX>0</DefaultX>
+    <MaxX>1</MaxX>
+    <MinY>-1</MinY>
+    <DefaultY>0</DefaultY>
+    <MaxY>1</MaxY>
+  </processing>
+
+  <processing id="Receiver Position" type="ControlSurface">
+    <MinX>0</MinX>
+    <DefaultX>0</DefaultX>
+    <MaxX>1</MaxX>
+    <MinY>0</MinY>
+    <DefaultY>0.2</DefaultY>
+    <MaxY>1</MaxY>
+  </processing>
+
+  <processing id="SpectrumView" type="SpectrumView"/>
+
+  <processing id="SpectrumView_1" type="SpectrumView"/>
+
+  <processing id="Sum" type="ComplexSpectrumSum"/>
+
+  <processing id="Sum2" type="ComplexSpectrumSum"/>
+
+  <processing id="Sum3" type="ComplexSpectrumSum"/>
+
+  <processing id="Sum4" type="ComplexSpectrumSum"/>
+
+  <processing id="SumL" type="ComplexSpectrumSum"/>
+
+  <processing id="SumL2" type="ComplexSpectrumSum"/>
+
+  <processing id="SumL3" type="ComplexSpectrumSum"/>
+
+  <processing id="SumL4" type="ComplexSpectrumSum"/>
+
+  <processing id="Surround" type="Surround"/>
+
+  <processing id="XFader_P" type="AudioBufferCrossFader"/>
+
+  <processing id="XFader_Vx" type="AudioBufferCrossFader"/>
+
+  <processing id="XFader_Vy" type="AudioBufferCrossFader"/>
+
+  <processing id="toStream P" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="toStream Vx" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>BlackmanHarris92</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="toStream Vy" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>1</DoHalfWindowShift>
+  </processing>
+
+  <processing id="win C" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="win L" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="win R" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="win SL" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="win SR" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <port_connection>
+    <out>2MagPhase.MagPhaseSpectrum</out>
+    <in>2Spectrum.MagPhaseSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>2MagPhase X.MagPhaseSpectrum</out>
+    <in>2Spectrum X.MagPhaseSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>2Spectrum.Spectrum</out>
+    <in>SpectrumView.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>2Spectrum X.Spectrum</out>
+    <in>SpectrumView_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>2StreamR.Audio stream</out>
+    <in>R.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>2streamL.Audio stream</out>
+    <in>L.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioInput.AudioOut</out>
+    <in>AudioWindowing.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioWindowing.Output</out>
+    <in>MyFFT.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Conv C.Output</out>
+    <in>SumL4.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Conv C.Output</out>
+    <in>Sum3.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Conv L to L.Output</out>
+    <in>SumL.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Conv L to R.Output</out>
+    <in>Sum.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Conv R to L.Output</out>
+    <in>SumL.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Conv R to R.Output</out>
+    <in>Sum.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Conv SL to L.Output</out>
+    <in>SumL2.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Conv SL to R.Output</out>
+    <in>Sum2.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Conv SR to L.Output</out>
+    <in>SumL2.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Conv SR to R.Output</out>
+    <in>Sum2.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_P.Output</out>
+    <in>MyIFFT.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_P_old.Output</out>
+    <in>MyIFFT_3.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_Vx.Output</out>
+    <in>MyIFFT_1.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_Vx_old.Output</out>
+    <in>MyIFFT_4.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_Vy.Output</out>
+    <in>MyIFFT_2.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution_Vy_old.Output</out>
+    <in>MyIFFT_5.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>DebugImpulseResponse.Output</out>
+    <in>2MagPhase.ComplexSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>DebugImpulseResponse.Output</out>
+    <in>MyIFFT_8.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>DebugImpulseResponse_1.Output</out>
+    <in>2MagPhase X.ComplexSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT C.Complex Spectrum</out>
+    <in>Conv C.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT L.Complex Spectrum</out>
+    <in>Conv L to L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT L.Complex Spectrum</out>
+    <in>Conv L to R.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT R.Complex Spectrum</out>
+    <in>Conv R to L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT R.Complex Spectrum</out>
+    <in>Conv R to R.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT SL.Complex Spectrum</out>
+    <in>Conv SL to R.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT SL.Complex Spectrum</out>
+    <in>Conv SL to L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT SR.Complex Spectrum</out>
+    <in>Conv SR to L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT SR.Complex Spectrum</out>
+    <in>Conv SR to R.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR0.ImpulseResponse</out>
+    <in>Conv C.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR110.ImpulseResponse</out>
+    <in>Conv SL to R.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR110.ImpulseResponse</out>
+    <in>Conv SR to L.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR250.ImpulseResponse</out>
+    <in>Conv SL to L.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR250.ImpulseResponse</out>
+    <in>Conv SR to R.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR30.ImpulseResponse</out>
+    <in>Conv L to R.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR30.ImpulseResponse</out>
+    <in>Conv R to L.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR330.ImpulseResponse</out>
+    <in>Conv L to L.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR330.ImpulseResponse</out>
+    <in>Conv R to R.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_P.ImpulseResponse</out>
+    <in>Convolution_P.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_P.PreviousImpulseResponse</out>
+    <in>Convolution_P_old.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vx.ImpulseResponse</out>
+    <in>Convolution_Vx.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vx.ImpulseResponse</out>
+    <in>DebugImpulseResponse_1.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vx.PreviousImpulseResponse</out>
+    <in>Convolution_Vx_old.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vy.ImpulseResponse</out>
+    <in>Convolution_Vy.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vy.ImpulseResponse</out>
+    <in>DebugImpulseResponse.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher_Vy.PreviousImpulseResponse</out>
+    <in>Convolution_Vy_old.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_P.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_Vx.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_Vy.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_P_old.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_Vx_old.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>Convolution_Vy_old.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT.Audio Buffer</out>
+    <in>XFader_P.FadingIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_1.Audio Buffer</out>
+    <in>XFader_Vx.FadingIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_2.Audio Buffer</out>
+    <in>XFader_Vy.FadingIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_3.Audio Buffer</out>
+    <in>XFader_P.FadingOut</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_4.Audio Buffer</out>
+    <in>XFader_Vx.FadingOut</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_5.Audio Buffer</out>
+    <in>XFader_Vy.FadingOut</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_6.Audio Buffer</out>
+    <in>2streamL.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_7.Audio Buffer</out>
+    <in>2StreamR.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_8.Audio Buffer</out>
+    <in>BufferOscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sum.Sum</out>
+    <in>Sum4.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sum2.Sum</out>
+    <in>Sum4.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sum3.Sum</out>
+    <in>MyIFFT_7.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sum4.Sum</out>
+    <in>Sum3.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SumL.Sum</out>
+    <in>SumL3.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SumL2.Sum</out>
+    <in>SumL3.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SumL3.Sum</out>
+    <in>SumL4.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SumL4.Sum</out>
+    <in>MyIFFT_6.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.center</out>
+    <in>win C.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.left</out>
+    <in>win L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.right</out>
+    <in>win R.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.surroundLeft</out>
+    <in>win SL.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.surroundRight</out>
+    <in>win SR.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFader_P.CrossFadedBuffer</out>
+    <in>toStream P.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFader_Vx.CrossFadedBuffer</out>
+    <in>toStream Vx.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFader_Vy.CrossFadedBuffer</out>
+    <in>toStream Vy.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream P.Audio stream</out>
+    <in>Surround.p</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream P.Audio stream</out>
+    <in>Oscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream Vx.Audio stream</out>
+    <in>Surround.vx</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream Vy.Audio stream</out>
+    <in>Surround.vy</in>
+  </port_connection>
+
+  <port_connection>
+    <out>win C.Output</out>
+    <in>FFT C.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>win L.Output</out>
+    <in>FFT L.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>win R.Output</out>
+    <in>FFT R.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>win SL.Output</out>
+    <in>FFT SL.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>win SR.Output</out>
+    <in>FFT SR.Audio Buffer</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Cartesian2PolarControl.angle</out>
+    <in>Surround.beta</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Cartesian2PolarControl.angle</out>
+    <in>ControlPrinter.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Emitter Position.outX</out>
+    <in>ImpulseResponseDatabaseFetcher_Vx.emitterX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Emitter Position.outX</out>
+    <in>ImpulseResponseDatabaseFetcher_Vy.emitterX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Emitter Position.outX</out>
+    <in>ImpulseResponseDatabaseFetcher_P.emitterX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Emitter Position.outY</out>
+    <in>ImpulseResponseDatabaseFetcher_P.emitterY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Emitter Position.outY</out>
+    <in>ImpulseResponseDatabaseFetcher_Vx.emitterY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Emitter Position.outY</out>
+    <in>ImpulseResponseDatabaseFetcher_Vy.emitterY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Receiver Orientation.outX</out>
+    <in>Cartesian2PolarControl.x</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Receiver Orientation.outY</out>
+    <in>Cartesian2PolarControl.y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Receiver Position.outX</out>
+    <in>ImpulseResponseDatabaseFetcher_P.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Receiver Position.outX</out>
+    <in>ImpulseResponseDatabaseFetcher_Vx.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Receiver Position.outX</out>
+    <in>ImpulseResponseDatabaseFetcher_Vy.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Receiver Position.outY</out>
+    <in>ImpulseResponseDatabaseFetcher_Vy.receiverY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Receiver Position.outY</out>
+    <in>ImpulseResponseDatabaseFetcher_Vx.receiverY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Receiver Position.outY</out>
+    <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
+  </control_connection>
+
+</network>

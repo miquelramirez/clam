@@ -60,14 +60,6 @@
 
   <processing id="Oscilloscope_0" type="Oscilloscope"/>
 
-  <processing id="Pitch" type="OutControlSender">
-    <Min>1</Min>
-    <Default>440</Default>
-    <Max>2000</Max>
-    <Step>0.01</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
   <processing id="SpectrumView_0" type="SpectrumView"/>
 
   <processing id="toMP" type="Complex2MagPhaseSpectrum"/>
