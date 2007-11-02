@@ -298,7 +298,7 @@ private:
 class Auralizer
 {
 public:
-	CLAM::Audio mClick; ///< A vector of audios to produce click
+	CLAM::Audio mClick; ///< Synthetized click for onsets
 	CLAM::Audio mOnsetAuralizationAudio; ///< Current audio with segmentation marks inserted
 	const CLAM::Audio * _currentAudio;
 	AuralizationPlayer* mPlayer;
