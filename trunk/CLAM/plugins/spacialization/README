@@ -103,7 +103,8 @@ single-impulse-response-surround.clamnetwork
 
 single-impulse-response-surround-to-stereo.clamnetwork
 	Convolves the input sound with p, vx and vy components of an
-	impulse response and obtains the surround output.
+	impulse response, obtains the surround output and turns it
+	into stereo using hrtf's for the speakers positions.
 
 impulse-response-database-only-pressure.clamnetwork
 	Virtual room navigation with a single component (p).
