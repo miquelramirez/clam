@@ -49,6 +49,10 @@ namespace CLAM
 			mInterPointInterval=intervalueGap;
 			mXUnits = units;
 		}
+		TData firstPointPosition() const { return mFirstPointPosition; }
+		TData lastPointPosition() const { return mFirstPointPosition+mSize*mInterPointInterval; }
+		TData gap() const { return mInterPointInterval; }
+
 		void setValues(const CLAM::TData * data, unsigned size, const Units & units)
 		{
 			mValues = data;
@@ -100,6 +104,10 @@ namespace CLAM
 		const CLAM::BPF & GetBPF() const
 		{
 			return mBpf;
+		}
+		unsigned nearestPoint(double xValue) const
+		{
+			return .5 + (xValue-mFirstPointPosition) / mInterPointInterval;
 		}
 
 	private:
