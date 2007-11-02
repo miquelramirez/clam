@@ -40,8 +40,6 @@
 #include "vmDataTypes.hxx"
 
 #include "vmPlayer.hxx"
-
-
 class AuralizationPlayer : public QThread
 {
 	Q_OBJECT
@@ -57,8 +55,9 @@ public:
 		, mAudio0(0)
 		, mAudio1(0)
 		, mPitchBounds(min_ref,max_ref)
+		, _useOscillator(true)
+		, _useAudio(false)
 	{
-		SetPlayingFlags(CLAM::VM::eUseOscillator);
 	}
 	virtual ~AuralizationPlayer()
 	{
@@ -79,9 +78,13 @@ public:
 	{
 		mSamplingRate = sr;
 	}
-	void SetPlayingFlags(int flags)
+	void useAudio(bool useIt=true)
 	{
-		mPlayingFlags = flags;
+		_useAudio = useIt;
+	}
+	void useOscillator(bool useIt=true)
+	{
+		_useOscillator = useIt;
 	}
 	bool IsPlaying() const
 	{
@@ -134,7 +137,6 @@ public slots:
 	}
 
 protected:
-	int           mPlayingFlags;
 	volatile PlayStatus    mPlayStatus;
 	double        mSamplingRate;
 	double        mBeginTime;
@@ -143,6 +145,8 @@ protected:
 	const CLAM::Audio* mAudio0;
 	const CLAM::Audio* mAudio1;
 	CLAM::VM::Range    mPitchBounds;
+	bool _useOscillator;
+	bool _useAudio;
 
 	static const double min_ref;
 	static const double max_ref;
@@ -150,7 +154,11 @@ protected:
 private:
 	void run()
 	{
-		if(!mAudio0) SetPlayingFlags(CLAM::VM::eUseOscillator);
+		if(!mAudio0)
+		{
+			_useAudio=false;
+			_useOscillator=true;
+		}
 		if(mAudio0) mSamplingRate = mAudio0->GetSampleRate();
 		else mSamplingRate=44100;
 
@@ -213,15 +221,10 @@ private:
 				channel0.Do(silence);
 				channel1.Do(silence);
 			}
-			else if ((mPlayingFlags & CLAM::VM::eAudio) && (mPlayingFlags & CLAM::VM::eUseOscillator))
+			else if (_useAudio)
 			{
 				channel0.Do(samplesAudio0);
-				channel1.Do(samplesBpf);
-			}
-			else if (mPlayingFlags & CLAM::VM::eAudio && !(mPlayingFlags & CLAM::VM::eUseOscillator))
-			{
-				channel0.Do(samplesAudio0);
-				channel1.Do(samplesAudio1);
+				channel1.Do(_useOscillator? samplesBpf : samplesAudio1);
 			}
 			else
 			{
@@ -296,6 +299,7 @@ public:
 	CLAM::Audio mClick; ///< Synthetized click for onsets
 	CLAM::Audio mOnsetAuralizationAudio; ///< Current audio with segmentation marks inserted
 	const CLAM::Audio * _currentAudio;
+public:
 	AuralizationPlayer* mPlayer;
 	Auralizer(QObject * parent)
 		: _currentAudio(0)
@@ -316,8 +320,9 @@ public:
 		CLAM_ASSERT(_currentAudio, "Auralizer::setOptions without audio");
 		mPlayer->SetAudioPtr(_currentAudio);
 		if (playOnsets)
-			mPlayer->SetAudioPtr(&(mOnsetAuralizationAudio), AuralizationPlayer::RIGHT);
-		mPlayer->SetPlayingFlags( CLAM::VM::eAudio | (playLLDs?CLAM::VM::eUseOscillator:0));
+			mPlayer->SetAudioPtr(&mOnsetAuralizationAudio, AuralizationPlayer::RIGHT);
+		mPlayer->useAudio(true);
+		mPlayer->useOscillator( playLLDs );
 	}
 	void setAudio(const CLAM::Audio & audio)
 	{
