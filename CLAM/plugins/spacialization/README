@@ -97,14 +97,22 @@ lowlatencyconvolution-withdoubleframesize.clamnetwork
 
 IR and HRTFs Databases:
 
-impulse-response-database.clamnetwork
+single-impulse-response-surround.clamnetwork
+	Convolves the input sound with p, vx and vy components of an
+	impulse response and obtains the surround output.
+
+single-impulse-response-surround-to-stereo.clamnetwork
+	Convolves the input sound with p, vx and vy components of an
+	impulse response and obtains the surround output.
+
+impulse-response-database-only-pressure.clamnetwork
 	Virtual room navigation with a single component (p).
 	Simulates emitter and receiver moving on a room by convoluting
 	the source with impulse responses at different emitter-receiver
 	positions combinations. Crossfading is used when the dominant
 	impulse response changes.
 
-database-noninterpoling-and-surround.clamnetwork
+impulse-response-database-surround.clamnetwork
 	Virtual room navigation with direccionality (vx, vy) and surround output.
 	Simulates emitter and receiver moving on a room by convoluting
 	the source with impulse responses at different emitter-receiver
@@ -113,14 +121,14 @@ database-noninterpoling-and-surround.clamnetwork
 	p, vx and vy components is considered so we can later compute the
 	surround output.
 
-hrtf-database.clamnetwork
-	Places the input sound at a given azimut and elevation using
-	an HRTF database.
-
-hrtf-surround.clamnetwork
+impulse-response-database-surround-to-stereo.clamnetwork
 	Extends the room simulation by turning the 5 surround channels
 	into stereo using specific hrtf impulse responses for the locations
 	of the surround speakers.
+
+hrtf-database.clamnetwork
+	Places the input sound at a given azimut and elevation using
+	an HRTF database.
 
 
 IR-Interpolation:
