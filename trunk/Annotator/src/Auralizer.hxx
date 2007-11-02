@@ -189,7 +189,7 @@ private:
 		CLAM::Audio silence;
 		silence.SetSize(frameSize);
 
-		unsigned k = FirstIndex();
+		unsigned bpfIndex = FirstIndex();
 		unsigned nSamples = unsigned(mTimeBounds.max*mSamplingRate);
 		unsigned leftIndex = unsigned(mBeginTime*mSamplingRate);
 
@@ -199,16 +199,16 @@ private:
 		{
 			if (mPlayStatus!=Playing) break;
 			unsigned rightIndex = leftIndex+frameSize;
-			if (mBPF && mBPF->Size() && k+1<mBPF->Size() && mBPF->GetXValue(k+1)<= i/mSamplingRate) k++;
+			if (mBPF && mBPF->Size() && bpfIndex+1<mBPF->Size() && mBPF->GetXValue(bpfIndex+1)<= i/mSamplingRate) bpfIndex++;
 
 			if (mAudio0 && rightIndex < unsigned(mAudio0->GetSize()))
 				mAudio0->GetAudioChunk(int(leftIndex),int(rightIndex),samplesAudio0);
 			if (mAudio1 && rightIndex < unsigned(mAudio1->GetSize()))
 				mAudio1->GetAudioChunk(int(leftIndex),int(rightIndex),samplesAudio1);
 
-			if (mBPF && mBPF->Size() && k < mBPF->Size()) freqControl.DoControl(GetPitch(k));
+			if (mBPF && mBPF->Size() && bpfIndex < mBPF->Size()) freqControl.DoControl(GetPitch(bpfIndex));
 			osc.Do(samplesBpf);
-			if (mBPF && mBPF->Size() && leftIndex/mSamplingRate < mBPF->GetXValue(k))
+			if (mBPF && mBPF->Size() && leftIndex/mSamplingRate < mBPF->GetXValue(bpfIndex))
 			{
 				channel0.Do(silence);
 				channel1.Do(silence);
