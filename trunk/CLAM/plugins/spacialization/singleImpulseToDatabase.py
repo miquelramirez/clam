@@ -70,8 +70,8 @@ for xt in range(NX) :
 		print "Writing data...", xt, yt
 		#continue
 		writeDatFile(filepattern % ("p", 0,0,0, xt,yt,0) , P)
-		writeDatFile(filepattern % ("x", 0,0,0, xt,yt,0) , X)
-		writeDatFile(filepattern % ("y", 0,0,0, xt,yt,0) , Y)
+		writeDatFile(filepattern % ("vx", 0,0,0, xt,yt,0) , X)
+		writeDatFile(filepattern % ("vy", 0,0,0, xt,yt,0) , Y)
 	print
 
 
