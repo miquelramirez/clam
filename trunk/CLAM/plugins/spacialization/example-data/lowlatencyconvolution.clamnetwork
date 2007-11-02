@@ -46,6 +46,7 @@
   </processing>
 
   <processing id="LowLatencyConvolution_0" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 

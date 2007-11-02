@@ -73,14 +73,17 @@
   <processing id="L" type="AudioSink"/>
 
   <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="LowLatencyConvolution_1" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="LowLatencyConvolution_2" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
