@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef ImpulseResponseLoaderAndInterpolator_hxx
-#define ImpulseResponseLoaderAndInterpolator_hxx
+#ifndef ImpulseResponseInterpolator_hxx
+#define ImpulseResponseInterpolator_hxx
 
 #include <CLAM/InPort.hxx>
 #include <CLAM/OutPort.hxx>
@@ -102,7 +102,7 @@ public:
 	{
 		if (std::abs( _position.GetLastValue() - _lastPosition) < 0.001 )
 			return;
-		std::cout << "ImpulseResponseLoaderAndInterpolator: position changed"<<std::endl;
+		std::cout << "ImpulseResponseInterpolator: position changed"<<std::endl;
 		_lastPosition = _position.GetLastValue();
 
 		const std::vector<ComplexSpectrum> & input1 = *_input1.GetData();
@@ -142,5 +142,5 @@ public:
 
 } // namespace CLAM
 
-#endif // ImpulseResponseLoaderAndInterpolator_hxx
+#endif // ImpulseResponseInterpolator_hxx
 
