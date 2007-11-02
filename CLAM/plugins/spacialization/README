@@ -123,19 +123,20 @@ hrtf-surround.clamnetwork
 	of the surround speakers.
 
 
-IR-Interpolation (dropped?):
+IR-Interpolation:
 	
-simple-interpolation.clamnetwork
-	Does the interpolation of just one component (p)
-
-walking-in-a-line-surround.clamnetwork
+interpolate-between-two-points.clamnetwork
 	Simulates receiver movements between two points where we
-	have recorded p, vx and vy components of the impulse response
-	from a fixed emitter point.
+	have recorded the impulse response from a fixed emitter point.
+	It does such simulation by interpolation (poderated sum) of
+	both impulse responses. It does just for the p component.
 
-modular-walking-in-a-line-surround.clamnetwork
-	The same as walking-in-a-line-surround but splitting in modules
-	the IR loading and the interpolation.
+interpolate-between-two-points-surround.clamnetwork
+	Simulates receiver movements between two points where we
+	have recorded the impulse response from a fixed emitter point.
+	It does such simulation by interpolation (poderated sum) of
+	both impulse responses. By processing p, vx and vy components
+	in parallel we can get the surround output.
 
 
 TODO:
