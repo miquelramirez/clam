@@ -92,9 +92,9 @@ public:
 	enum { LEFT=1, RIGHT=2};
 	void SetAudioPtr(const CLAM::Audio* audio, unsigned channelMask=LEFT|RIGHT)
 	{
-		if (channelMask&1)
+		if (channelMask & LEFT)
 			mAudio0 = audio;
-		if (channelMask&2)
+		if (channelMask & RIGHT)
 			mAudio1 = audio;
 	}
 
@@ -189,28 +189,24 @@ private:
 		CLAM::Audio silence;
 		silence.SetSize(frameSize);
 
-		unsigned firstIndex = FirstIndex();
-		unsigned k = firstIndex;
-
-		unsigned start = unsigned(mBeginTime*mSamplingRate);
+		unsigned k = FirstIndex();
 		unsigned nSamples = unsigned(mTimeBounds.max*mSamplingRate);
-    
-		unsigned leftIndex = start;        
-		unsigned rightIndex = leftIndex+frameSize;
+		unsigned leftIndex = unsigned(mBeginTime*mSamplingRate);
 
 		osc.Start();
 
-		for(unsigned i=start; i < nSamples; i+=frameSize)
+		for(unsigned i=leftIndex; i < nSamples; i+=frameSize)
 		{
 			if (mPlayStatus!=Playing) break;
-			if(mBPF && mBPF->Size() && k+1<mBPF->Size() && mBPF->GetXValue(k+1)<= i/mSamplingRate) k++;
+			unsigned rightIndex = leftIndex+frameSize;
+			if (mBPF && mBPF->Size() && k+1<mBPF->Size() && mBPF->GetXValue(k+1)<= i/mSamplingRate) k++;
 
-			if(mAudio0 && rightIndex < unsigned(mAudio0->GetSize()))
+			if (mAudio0 && rightIndex < unsigned(mAudio0->GetSize()))
 				mAudio0->GetAudioChunk(int(leftIndex),int(rightIndex),samplesAudio0);
-			if(mAudio1 && rightIndex < unsigned(mAudio1->GetSize()))
+			if (mAudio1 && rightIndex < unsigned(mAudio1->GetSize()))
 				mAudio1->GetAudioChunk(int(leftIndex),int(rightIndex),samplesAudio1);
 
-			if(mBPF && mBPF->Size() && k < mBPF->Size()) freqControl.DoControl(GetPitch(k));
+			if (mBPF && mBPF->Size() && k < mBPF->Size()) freqControl.DoControl(GetPitch(k));
 			osc.Do(samplesBpf);
 			if (mBPF && mBPF->Size() && leftIndex/mSamplingRate < mBPF->GetXValue(k))
 			{
@@ -234,7 +230,6 @@ private:
 			}
 			emit playingTime(double(leftIndex)/mSamplingRate);
 			leftIndex += frameSize;
-			rightIndex += frameSize;
 		}
 		osc.Stop();
 		channel0.Stop();
@@ -343,7 +338,7 @@ public:
 		for (int i=0; i<nMarks; i++)
 		{
 			int samplePosition = Round(marks[i]*_currentAudio->GetSampleRate());
-			if(samplePosition<size)
+			if (samplePosition<size)
 				mOnsetAuralizationAudio.SetAudioChunk(samplePosition,mClick);
 		}
 	}
