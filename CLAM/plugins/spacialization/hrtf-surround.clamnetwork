@@ -49,62 +49,77 @@
   </processing>
 
   <processing id="Conv C" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Conv L to L" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Conv L to R" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Conv R to L" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Conv R to R" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Conv SL to L" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Conv SL to R" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Conv SR to L" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Conv SR to R" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Convolution_P" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Convolution_P_old" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Convolution_Vx" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Convolution_Vx_old" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Convolution_Vy" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="Convolution_Vy_old" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 

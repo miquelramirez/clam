@@ -43,8 +43,9 @@ class LowLatencyConvolution : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
+	    DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+	    DYN_ATTRIBUTE( 0, public, unsigned, MaxFrames);
+	    DYN_ATTRIBUTE( 1, public, int, FrameSize);
 
 	protected:
 	    void DefaultInit()
@@ -52,6 +53,7 @@ public:
 		  AddAll();
 		  UpdateData();
 		  SetFrameSize(512);
+		  SetMaxFrames(0);
 	    };
 	};
 
@@ -76,9 +78,14 @@ public:
 	{
 		Configure( config );
 	}
+	unsigned GetLimitedFrames(unsigned requiredNFrames) const
+	{
+		unsigned maxFrames = _config.HasMaxFrames()? _config.GetMaxFrames() : 0;
+		return maxFrames? std::min(maxFrames, requiredNFrames) : requiredNFrames;
+	}
 	void InitialitzeDelaySpectrums( unsigned nBlocks, unsigned spectrumSize, TData spectralRange)
 	{
-		std::cout << "LowLatencyConvolution: N blocks " << nBlocks << std::endl; 
+		std::cout << "LowLatencyConvolution: N blocks " << nBlocks << std::endl;
 		_delayedSpectrums.resize(nBlocks);
 		for (unsigned i=0; i<nBlocks; i++)
 		{
@@ -101,7 +108,7 @@ public:
 		const ComplexSpectrum & input = _input.GetData();
 		ComplexSpectrum & output = _output.GetData();
 		std::vector<ComplexSpectrum> & impulseResponse = *_impulseResponse.GetData();
-		unsigned nBlocks = std::min(impulseResponse.size(), size_t(1000));
+		unsigned nBlocks = GetLimitedFrames(impulseResponse.size());
 		if (_delayedSpectrums.size()!=nBlocks)
 			InitialitzeDelaySpectrums( nBlocks, impulseResponse[0].bins.size(), impulseResponse[0].spectralRange );
 
