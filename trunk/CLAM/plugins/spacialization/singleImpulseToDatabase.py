@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-
+# sudo apt-get install python-numpy
 import numpy
 import math
 import cmath
