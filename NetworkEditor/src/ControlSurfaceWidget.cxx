@@ -146,7 +146,7 @@ void ControlSurfaceWidget::paintEvent(QPaintEvent * event)
 	painter.setPen(_pointPenColor);
 	QPointF point(
 		pointSize/2+(_spinBoxX->value()-_minX)*xSize/(_maxX-_minX),
-		pointSize/2+(_spinBoxY->value()-_minY)*ySize/(_maxY-_minY));
+		pointSize/2+(_maxY-_spinBoxY->value())*ySize/(_maxY-_minY));
 	painter.drawRoundRect(point.x()-pointSize/2, point.y()-pointSize/2,pointSize,pointSize,2,2);
 }
 
@@ -173,9 +173,9 @@ double ControlSurfaceWidget::mapX(int x) const
 double ControlSurfaceWidget::mapY(int y) const
 {
 	int enabledHeight= _spinBoxX->isHidden() ? height() : _spinBoxX->y();
-	if (y<pointSize/2) return _minY;
-	if (y>enabledHeight-pointSize/2) return _maxY;
-	return _minY+(y-pointSize/2)*(_maxY-_minY)/(enabledHeight-pointSize);
+	if (y<pointSize/2) return _maxY;
+	if (y>enabledHeight-pointSize/2) return _minY;
+	return _maxY-(y-pointSize/2)*(_maxY-_minY)/(enabledHeight-pointSize);
 }
 
 
