@@ -15,7 +15,8 @@ def convert(filename, largersample):
 	samples = loadSamples(filename)
 	normalizedfile = open("temp.norm.dat","w")
 	normalizedfile.write("; Sample Rate 44100\n; Channels 1\n")
-	normalizedfile.writelines( ["%s\t%.12f\n"%(time/44100, sample/largersample) for time, sample in zip(range(0,len(samples)), samples) ] )
+	anticlippingFactor = .98
+	normalizedfile.writelines( ["%s\t%.12f\n"%(time/44100, sample*anticlippingFactor/largersample) for time, sample in zip(range(0,len(samples)), samples) ] )
 	outputfile = os.path.splitext(file)[0] + ".wav"
 	print "Generating", outputfile
 	os.system("sox temp.norm.dat %s" % (outputfile) )
