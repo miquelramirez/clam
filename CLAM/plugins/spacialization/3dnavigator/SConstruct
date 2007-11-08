@@ -71,7 +71,7 @@ env.EnableQt4Modules([
 	], debug=False)
 
 mainSources = {
-	'firstPerson' : os.path.join('src','main.cxx'),
+	'3dacusticnavigator' : os.path.join('src','main.cxx'),
 }
 
 sourcePaths = [
