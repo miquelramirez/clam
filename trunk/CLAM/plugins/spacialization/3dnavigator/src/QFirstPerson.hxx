@@ -110,8 +110,8 @@ public:
 	}
 	void paintGL()
 	{
-		std::cout << "Viewer " << _viewX << " " << _viewY << " " << _viewRotation << std::endl;
-		std::cout << "Source " << _sourceX << " " << _sourceY << std::endl;
+//		std::cout << "Viewer " << _viewX << " " << _viewY << " " << _viewRotation << std::endl;
+//		std::cout << "Source " << _sourceX << " " << _sourceY << std::endl;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 		glPushMatrix();
@@ -255,30 +255,41 @@ public:
 	}
 	virtual void paintDecoration()
 	{
-		return;
 		glDisable(GL_LIGHTING);
-		glColor4fv(vColor("green"));
-		renderText(-10.,1.,0.,
-			tr("Emitter: %1 %2")
-				.arg(QString::number(_sourceX))
-				.arg(QString::number(_sourceY)));
-		glBegin(GL_QUADS);
-		glVertex3f(.1,.2,-1);
-		glVertex3f(.1,.3,-1);
-		glVertex3f(.2,.3,-1);
-		glVertex3f(.2,.2,-1);
-		glVertex3f(.3,.3,-1);
-		glVertex3f(.3,.2,-1);
-		glVertex3f(.4,.2,-1);
-		glVertex3f(.4,.3,-1);
-		glColor4fv(vColor("#f73"));
-		glVertex3f(0,0,-1);
-		glVertex3f(0,.9,-1);
-		glVertex3f(.9,.9,-1);
-		glVertex3f(.9,0,-1);
+		glDisable(GL_DEPTH_TEST);
+		QString emiterString = tr("Emitter: %1, %2")
+				.arg(QString::number(_sourceX,'d',2))
+				.arg(QString::number(_sourceY,'d',2))
+				;
+		QString receiverString = tr("Receiver: %1, %2 angle %3")
+				.arg(QString::number(_viewX,'d',2))
+				.arg(QString::number(_viewY,'d',2))
+				.arg(QString::number(_viewRotation,'d',0))
+				;
+		glColor4fv(vColor("#FFFF77"));
+		renderText(10+1,20+1, receiverString);
+		renderText(10+1,40+1, emiterString);
+		renderText(10-1,20-1, receiverString);
+		renderText(10-1,40-1, emiterString);
+		renderText(10-1,20+1, receiverString);
+		renderText(10-1,40+1, emiterString);
+		renderText(10+1,20-1, receiverString);
+		renderText(10+1,40-1, emiterString);
+		glColor4fv(vColor("black"));
+		renderText(10,20, receiverString);
+		renderText(10,40, emiterString);
+		glBegin(GL_LINES);
+		glVertex3f(0,.06,-.1);
+		glVertex3f(0,.02,-.1);
+		glVertex3f(0,-.06,-.1);
+		glVertex3f(0,-.02,-.1);
+		glVertex3f(.06,0,-.1);
+		glVertex3f(.02,0,-.1);
+		glVertex3f(-.06,0,-.1);
+		glVertex3f(-.02,0,-.1);
 		glEnd();
-//		gluSphere(sphere(), 0.015f, 40, 20);
 		glEnable(GL_LIGHTING);
+		glEnable(GL_DEPTH_TEST);
 	}
 	void keyPressEvent( QKeyEvent * event)
 	{
