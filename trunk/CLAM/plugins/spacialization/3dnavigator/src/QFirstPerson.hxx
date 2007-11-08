@@ -86,7 +86,7 @@ public:
 	void initializeGL()
 	{
 		std::cout << "init" << std::endl;
-		glEnable(GL_TEXTURE_2D);       /* enable texture mapping */
+		glEnable(GL_TEXTURE_2D);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glShadeModel(GL_SMOOTH);
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -102,7 +102,7 @@ public:
 	void resizeGL(int width, int height)
 	{
 		std::cout << "resize" << std::endl;
-		glViewport(0, 0, width, height);    /* Reset The Current Viewport And Perspective Transformation */
+		glViewport(0, 0, width, height);
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		gluPerspective(90.0f, (GLfloat)width / (GLfloat)height, 0.01f, 1250.0f);
@@ -110,8 +110,6 @@ public:
 	}
 	void paintGL()
 	{
-//		std::cout << "Viewer " << _viewX << " " << _viewY << " " << _viewRotation << std::endl;
-//		std::cout << "Source " << _sourceX << " " << _sourceY << std::endl;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glLoadIdentity();
 		glPushMatrix();
@@ -123,28 +121,6 @@ public:
 		glPopMatrix();
 		glDepthFunc(GL_NONE);
 		paintDecoration();
-	}
-	void rendrText(double, double, double, const QString &)
-	{
-	}
-	void placeLight(unsigned i, float * pos, float * dir,
-		int cutoff,
-		float exponent,
-		const QColor & diffuse=Qt::white,
-		const QColor & specular=Qt::white,
-		const QColor & ambient=Qt::black)
-	{
-		glLightfv(GL_LIGHT0+i, GL_AMBIENT, vColor(ambient));
-		glLightfv(GL_LIGHT0+i, GL_DIFFUSE, vColor(diffuse));
-		glLightfv(GL_LIGHT0+i, GL_SPECULAR, vColor(specular));
-		glLightfv(GL_LIGHT0+i, GL_SPOT_DIRECTION, dir);
-		glLightfv(GL_LIGHT0+i, GL_POSITION, pos);
-		glLighti (GL_LIGHT0+i, GL_SPOT_CUTOFF, cutoff);
-		glLightf (GL_LIGHT0+i, GL_SPOT_EXPONENT, exponent);
-		glLightf (GL_LIGHT0+i, GL_CONSTANT_ATTENUATION, 1.0f);
-		glLightf (GL_LIGHT0+i, GL_LINEAR_ATTENUATION, 0.2f);
-		glLightf (GL_LIGHT0+i, GL_QUADRATIC_ATTENUATION, 0.0f);
-		glEnable (GL_LIGHT0+i);
 	}
 	virtual void placeLights()
 	{
@@ -306,16 +282,27 @@ public:
 				{
 					_viewX += cosOrientation * step;
 					_viewY -= sinOrientation * step;
+					emitPositionChange();
 				}
-				else _viewRotation+=10;
+				else
+				{
+					_viewRotation+=10;
+					emit orientationChanged(_viewRotation);
+				}
 			break;
 			case Qt::Key_Right:
 				if (strafe)
 				{
 					_viewX -= cosOrientation * step;
 					_viewY += sinOrientation * step;
+					emitPositionChange();
+					emit posChanged(QPointF(_viewX, _viewY));
 				}
-				else _viewRotation-=10;
+				else
+				{
+					_viewRotation-=10;
+					emit orientationChanged(_viewRotation);
+				}
 			break;
 			case Qt::Key_PageUp:
 				_viewElevation+=10;
@@ -326,10 +313,12 @@ public:
 			case Qt::Key_Up:
 				_viewX += sinOrientation * step;
 				_viewY += cosOrientation * step;
+				emitPositionChange();
 			break;
 			case Qt::Key_Down:
 				_viewX -= sinOrientation * step;
 				_viewY -= cosOrientation * step;
+				emitPositionChange();
 			break;
 			case Qt::Key_A:
 				_sourceX+=step;
@@ -356,11 +345,22 @@ public:
 		event->accept();
 		updateGL();
 	}
+signals:
+	double posChanged(QPointF point);
+	double xPosChanged(float x);
+	double yPosChanged(float y);
+	double orientationChanged(float degrees);
 private:
 	GLUquadric * sphere()
 	{
 		if (!_sphere) _sphere = gluNewQuadric();
 		return _sphere;
+	}
+	void emitPositionChange()
+	{
+		emit posChanged(QPointF(_viewX, _viewY));
+		emit xPosChanged(_viewX);
+		emit yPosChanged(_viewY);
 	}
 };
 
