@@ -5,6 +5,61 @@
 #include <QtGui/QKeyEvent>
 #include <iostream>
 #include <cmath>
+static float * vColor(const QColor & color)
+{
+	static float vcolor[4];
+	vcolor[0]=color.redF();
+	vcolor[1]=color.greenF();
+	vcolor[2]=color.blueF();
+	vcolor[3]=color.alphaF();
+	return vcolor;
+}
+
+class Light
+{
+	unsigned _index;
+	QColor _ambient;
+	QColor _specular;
+	QColor _diffuse;
+	float _position[4];
+	float _direction[4];
+	int _cutoff;
+	float _exponent;
+	bool _enabled;
+public:
+	Light(unsigned index,
+		float * position, float * direction,
+		int cutoff,
+		float exponent,
+		const QColor & diffuse=Qt::white,
+		const QColor & specular=Qt::white,
+		const QColor & ambient=Qt::black)
+		: _index(index)
+		, _ambient(ambient)
+		, _specular(specular)
+		, _diffuse(diffuse)
+		, _cutoff(cutoff)
+		, _exponent(exponent)
+		, _enabled(true)
+	{
+		for (unsigned i=0; i<4; i++) _position[i]=position[i];
+		for (unsigned i=0; i<4; i++) _direction[i]=direction[i];
+	}
+	void place()
+	{
+		glLightfv(GL_LIGHT0+_index, GL_AMBIENT, vColor(_ambient));
+		glLightfv(GL_LIGHT0+_index, GL_DIFFUSE, vColor(_diffuse));
+		glLightfv(GL_LIGHT0+_index, GL_SPECULAR, vColor(_specular));
+		glLightfv(GL_LIGHT0+_index, GL_SPOT_DIRECTION, _direction);
+		glLightfv(GL_LIGHT0+_index, GL_POSITION, _position);
+		glLighti (GL_LIGHT0+_index, GL_SPOT_CUTOFF, _cutoff);
+		glLightf (GL_LIGHT0+_index, GL_SPOT_EXPONENT, _exponent);
+		glLightf (GL_LIGHT0+_index, GL_CONSTANT_ATTENUATION, 1.0f);
+		glLightf (GL_LIGHT0+_index, GL_LINEAR_ATTENUATION, 0.2f);
+		glLightf (GL_LIGHT0+_index, GL_QUADRATIC_ATTENUATION, 0.0f);
+		(*(_enabled? &glEnable:&glDisable) )(GL_LIGHT0+_index);
+	}
+};
 
 class QFirstPerson : public QGLWidget
 {
@@ -69,17 +124,8 @@ public:
 		glDepthFunc(GL_NONE);
 		paintDecoration();
 	}
-	void renderText(double, double, double, const QString &)
+	void rendrText(double, double, double, const QString &)
 	{
-	}
-	float * vColor(const QColor & color)
-	{
-		static float vcolor[4];
-		vcolor[0]=color.redF();
-		vcolor[1]=color.greenF();
-		vcolor[2]=color.blueF();
-		vcolor[3]=color.alphaF();
-		return vcolor;
 	}
 	void placeLight(unsigned i, float * pos, float * dir,
 		int cutoff,
@@ -103,15 +149,18 @@ public:
 	virtual void placeLights()
 	{
 		glLightModelfv(GL_LIGHT_MODEL_AMBIENT, vColor("#505060"));
-		GLfloat position0[] = { 0.0f, 1.5f, 0.0f, 1.0f };
-		GLfloat direction0[] = { 0.0f, -0.5f, 0.0f, 1.0f };
-		placeLight(0, position0, direction0, 90, 2, "#555", "#555", "#555");
-		GLfloat position1[] = { -5.0f, 1.0f, 5.0f, 1.0f };
-		GLfloat direction1[] = { .5f, -.5f, -.5f, 1.0f };
-		placeLight(1, position1, direction1, 90, 2, "#700", "#770", "#700");
-		GLfloat position2[] = { 5.0f, 1.0f, -5.0f, 1.0f };
-		GLfloat direction2[] = { -1.0f/5, -1.0f/5, 1.0f, 1.0f };
-		placeLight(2, position2, direction2, 90, 2, "#077", "#007", "#077");
+		static GLfloat position0[] = { 0.0f, 1.5f, 0.0f, 1.0f };
+		static GLfloat direction0[] = { 0.0f, -0.5f, 0.0f, 1.0f };
+		Light light0(0, position0, direction0, 90, 2, "#555", "#555", "#555");
+		light0.place();
+		static GLfloat position1[] = { -5.0f, 1.0f, 5.0f, 1.0f };
+		static GLfloat direction1[] = { .5f, -.5f, -.5f, 1.0f };
+		Light light1(1, position1, direction1, 90, 2, "#700", "#770", "#700");
+		light1.place();
+		static GLfloat position2[] = { 5.0f, 1.0f, -5.0f, 1.0f };
+		static GLfloat direction2[] = { -1.0f/5, -1.0f/5, 1.0f, 1.0f };
+		Light light2(2, position2, direction2, 90, 2, "#077", "#007", "#077");
+		light2.place();
 		drawLight(position0, direction0, "Light0", "#777");
 		drawLight(position1, direction1, "Light1", "#a00");
 		drawLight(position2, direction2, "Light2", "#0aa");
