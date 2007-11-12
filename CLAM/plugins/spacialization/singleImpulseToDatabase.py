@@ -1,6 +1,9 @@
 #!/usr/bin/python
 
+# TODO: When the distance goes beyound the wave file length the IR tail migth click or even disapear on silence. Solution compute the maximum delay and add it to all the waves.
+
 # sudo apt-get install python-numpy
+
 import numpy
 import math
 import cmath
@@ -23,22 +26,22 @@ def shiftSamples(audio, deltaSamples) :
 		audio[deltaSamples:] = audio[:-deltaSamples]
 		audio[0:deltaSamples] = 0
 	else:
-		deltaSamples = -deltaSamples # make it positive
+		deltaSamples = abs(deltaSamples) # make it positive
 		audio[0:-deltaSamples] = audio[deltaSamples:]
 		audio[-deltaSamples:] = 0
 
 # Configurable parameters. (TODO make them arguments with sane defaults)
 
-NX = 5
-NY = 5
-sizeX = 30. #meters
-sizeY = 30. #meters
-recordingDistance = 15
+NX = 20
+NY = 20
+sizeX = 2. #meters
+sizeY = 2. #meters
+recordingDistance = .524263
 recordingAzimut = 0 #radians
 recordedFilesPattern = "lala%s.dat"
 filepattern =  "lalaDatabase/%s_emissor_%i-%i-%i_receptor_%i-%i-%i.dat"
-xs = 2
-ys = 2
+xs = NX/2.
+ys = NY/2.
 
 
 print "Loading recorded impulse responses..."
@@ -56,7 +59,7 @@ for xt in range(NX) :
 		distanceFactor = recordingDistance/distanceToSource
 		azimuthRotation = azimuthToSource - recordingAzimut
 		deltaSamples = int((distanceToSource - recordingDistance)*44100/340)
-		print distanceToSource, wayToSource
+		print distanceToSource, wayToSource, deltaSamples
 		assert(deltaSamples >= -2000)
 
 		P,X,Y = [distanceFactor * component for component in 
