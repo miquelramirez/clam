@@ -4,9 +4,12 @@
 
 # sudo apt-get install python-numpy
 
+import os
+import sys
 import numpy
 import math
 import cmath
+import normalizeAndWav
 
 def readDatFile(filename) :
 	wavefile = file(filename, "r")
@@ -32,22 +35,49 @@ def shiftSamples(audio, deltaSamples) :
 
 # Configurable parameters. (TODO make them arguments with sane defaults)
 
-NX = 20
-NY = 20
-sizeX = 2. #meters
-sizeY = 2. #meters
-recordingDistance = .524263
+setting = 2
+if setting == 1:
+	NX = 10
+	NY = 10
+	sizeX = 2. #meters
+	sizeY = 2. #meters
+	recordingDistance = .524263 #meters
+elif setting == 2:
+	NX = 2 
+	NY = 2
+	sizeX = 12. #meters
+	sizeY = 12. #meters
+	recordingDistance = 7 #meters
+else:
+	assert False, "bad setting"
+
+databasePrefix = "lala"
+wavSourcePrefix = "wavs/CarnelShort"
+print "Usage: ", sys.argv[0], "wav-source-prefix database-prefix"
+print "Example: ", sys.argv[0], "wavs/CarnelShort carnelshort"
+if len(sys.argv)==3:
+	wavSourcePrefix = sys.argv[1]
+	databasePrefix = sys.argv[2]
+databaseDir = databasePrefix+"Database"
+print "wavSourcePrefix:", wavSourcePrefix
+print "databaseDir:", databaseDir
+
 recordingAzimut = 0 #radians
-recordedFilesPattern = "lala%s.dat"
-filepattern =  "lalaDatabase/%s_emissor_%i-%i-%i_receptor_%i-%i-%i.dat"
+recordedFilesPattern = databasePrefix+"%s.dat"
+filepattern =  databaseDir+"/%s_emissor_%i-%i-%i_receptor_%i-%i-%i.dat"
 xs = NX/2.
 ys = NY/2.
+
+print "creating database dir: ", databaseDir
+os.system("mkdir -p %s" % databaseDir)
+for suffix in ("P","X","Y"):
+	os.system("sox %s%s.wav %s%s.dat"%(wavSourcePrefix,suffix,databasePrefix,suffix) )
 
 
 print "Loading recorded impulse responses..."
 recordedComponents = dict( [ 
-	( prefix, numpy.array(readDatFile(recordedFilesPattern % prefix)) ) 
-		for prefix in ("P", "X", "Y") ] )
+	( suffix, numpy.array(readDatFile(recordedFilesPattern % suffix)) ) 
+		for suffix in ("P", "X", "Y") ] )
 scale = complex(sizeX/NX, sizeY/NY)
 minDistance = min(scale.real, scale.imag)
 for xt in range(NX) : 
@@ -76,6 +106,6 @@ for xt in range(NX) :
 		writeDatFile(filepattern % ("vx", 0,0,0, xt,yt,0) , X)
 		writeDatFile(filepattern % ("vy", 0,0,0, xt,yt,0) , Y)
 	print
-
-
+print "\n== Normalize and convert to wav ==\n"
+normalizeAndWav.processDir(databaseDir)
 
