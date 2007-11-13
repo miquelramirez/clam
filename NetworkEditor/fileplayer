@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./Prototyper example-data/FilePlayer.clamnetwork
