@@ -10,9 +10,6 @@ def scanFiles(pattern, paths) :
 		files+=glob.glob(os.path.join(path,pattern))
 	return files
 
-def recursiveDirs(root) :
-	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
-
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
@@ -33,7 +30,7 @@ env.EnableClamModules([
 	'clam_processing',
 	] , CLAMInstallDir)
 
-sourcePaths = recursiveDirs(".")
+sourcePaths = ["."]
 sources = scanFiles('*.cxx', sourcePaths)
 sources = dict.fromkeys(sources).keys()
 if sys.platform=='linux2' :
