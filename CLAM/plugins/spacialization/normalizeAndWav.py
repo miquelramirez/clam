@@ -11,31 +11,32 @@ def maxsample(filename):
 	print "local max:",largersample
 	return largersample
 
-def convert(filename, largersample):
+def convertDatToWav(filename, largersample):
 	samples = loadSamples(filename)
 	normalizedfile = open("temp.norm.dat","w")
 	normalizedfile.write("; Sample Rate 44100\n; Channels 1\n")
 	anticlippingFactor = .98
 	normalizedfile.writelines( ["%s\t%.12f\n"%(time/44100, sample*anticlippingFactor/largersample) for time, sample in zip(range(0,len(samples)), samples) ] )
-	outputfile = os.path.splitext(file)[0] + ".wav"
+	outputfile = os.path.splitext(filename)[0] + ".wav"
 	print "Generating", outputfile
 	os.system("sox temp.norm.dat %s" % (outputfile) )
 
 
-datfiles = glob.glob("lalaDatabase/*.dat")
-datfiles.sort()
-print "datfiles", datfiles
+def processDir(dir):
+	datfiles = glob.glob( dir+"/*.dat")
+	datfiles.sort()
+	print "datfiles", datfiles
 
-# .data (text files) normalization to norm.dat
-globalmax = 2.15820312
-if True:
-	globalmax = max( map( maxsample, datfiles) )
-	print "max:", globalmax
+	# .data (text files) normalization to norm.dat
+	globalmaxSampler = 2.15820312
+	if True:
+		globalmaxSampler = max( map( maxsample, datfiles) )
+		print "max:", globalmaxSampler
 
-if True :
-	for file in datfiles :
-		print "converting: ",file
-		convert(file, globalmax)
+	if True :
+		for filename in datfiles :
+			print "converting: ",filename
+			convertDatToWav(filename, globalmaxSampler)
 
 
 
