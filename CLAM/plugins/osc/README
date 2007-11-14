@@ -9,3 +9,10 @@ At the moment the OSC receiver is configured to receive messages
 on the port 7000. (This is commonly used by OSC clients as the 
 default port.)
 
+
+about OSC and linux 64 bits:
+using this version
+http://www.audiomulch.com/~rossb/code/oscpack/oscpack_1_0_2.zip
+edit Makefile adding -fPIC to COPTS:
+COPTS  = -Wall -O3 -fPIC
+
