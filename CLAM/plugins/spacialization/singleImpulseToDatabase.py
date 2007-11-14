@@ -3,6 +3,7 @@
 # TODO: When the distance goes beyound the wave file length the IR tail migth click or even disapear on silence. Solution compute the maximum delay and add it to all the waves.
 
 # sudo apt-get install python-numpy
+# sudo apt-get install sox
 
 import os
 import sys
