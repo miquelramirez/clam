@@ -86,10 +86,6 @@ provides already compiled packages for several platforms.
  * Qt3 packages to compile SMSTools and Voice2MIDI:
  libqt3-headers libqt3-mt-dev 
 
- * Additional packages for developing:
- doxygen libcppunit-dev
-
-
  
  Redhat / Fedora Core packages list (tested with FC5)
    gcc-c++ scons fftw2-devel fltk-devel libvorbis-devel libogg-devel qt-devel
