@@ -183,20 +183,20 @@
 
   <processing id="ImpulseResponseDatabaseFetcher_P" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/lalaDatabase/</Path>
+    <Path>carneltestDatabase/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/lalaDatabase/</Path>
-    <Prefix>x</Prefix>
+    <Path>carneltestDatabase/</Path>
+    <Prefix>vx</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/lalaDatabase/</Path>
-    <Prefix>y</Prefix>
+    <Path>carneltestDatabase/</Path>
+    <Prefix>vy</Prefix>
   </processing>
 
   <processing id="L" type="AudioSink"/>
