@@ -360,9 +360,9 @@ namespace CLAM {
 			_execState = state;
 		}
 // Attributes:
-	private:
 		/** Pointer to the parent (composite) processing object, or 0 */
 		ProcessingComposite *mpParent;
+	private:
 		/** The parent network if any. 
 		 * Note that Processings can be used directly without a network*/
 		Network * _network;
