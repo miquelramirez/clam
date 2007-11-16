@@ -1,6 +1,5 @@
-
-#ifndef _JACK_NETWORK_PLAYER_HXX_
-#define _JACK_NETWORK_PLAYER_HXX_
+#ifndef JACKNetworkPlayer_hxx
+#define JACKNetworkPlayer_hxx
 
 #include <iostream>
 #include <string>
@@ -42,20 +41,22 @@ private:
 	};
 	typedef std::list<JackConnection> JackConnections;
 private:
-	int mJackSampleRate, mJackBufferSize;
-	bool mAutoConnect;
+	int _jackSampleRate;
+	int _jackBufferSize;
+	bool _autoConnect;
 
-	JackConnections mIncomingJackConnections;
-	JackConnections mOutgoingJackConnections;
+	JackConnections _incomingJackConnections;
+	JackConnections _outgoingJackConnections;
 
-	SourceJackBindings mSourceJackBindings;
-	SinkJackBindings mSinkJackBindigs;
+	SourceJackBindings _sourceJackBindings;
+	SinkJackBindings _sinkJackBindings;
 
-	std::string mJackOutPortAutoConnectList, mJackInPortAutoConnectList;
+	std::string _jackOutPortAutoConnectList;
+	std::string _jackInPortAutoConnectList;
 	
 	//JACK CODE
-	jack_client_t * mJackClient;
-	std::string mJackClientname;
+	jack_client_t * _jackClient;
+	std::string _jackClientName;
 
 public:
 	JACKNetworkPlayer(const std::string & name="CLAM network player");
@@ -78,7 +79,8 @@ public:
 	
 	virtual void Start();
 	virtual void Stop();
-
+	virtual void Init();
+	
 	virtual bool IsCallbackBased() const { return true; }
 
 	void Do(const jack_nframes_t nframes);

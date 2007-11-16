@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef _NETWORK_PLAYER_HXX_
-#define _NETWORK_PLAYER_HXX_
+#ifndef NetworkPlayer_hxx
+#define NetworkPlayer_hxx
 
 #include "Network.hxx"
 #include "AudioSource.hxx"
@@ -45,7 +45,7 @@ public:
 	NetworkPlayer()
 	{
 		SetStopped(true);
-		mNetwork=NULL;
+		_network=NULL;
 	}
 
 	virtual ~NetworkPlayer()
@@ -59,36 +59,39 @@ public:
 	
 	virtual void Start()=0;
 	virtual void Stop()=0;
-	
+	virtual void Init()
+	{
+		std::cout << "NetworkPlayer::Init()"<<std::endl;
+	}
 	void SetNetworkBackLink( Network& net )
 	{
-		mNetwork=&net;
+		_network=&net;
 	}
 	bool IsStopped()
 	{
-		return mStopped;
+		return _stopped;
 	}
 protected:
 	Network& GetNetwork()
 	{
-		CLAM_ASSERT( (mNetwork!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
-		return *mNetwork;
+		CLAM_ASSERT( (_network!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
+		return *_network;
 	}
-	void SetStopped(const bool val)	{ mStopped=val; }
+	void SetStopped(const bool val)	{ _stopped=val; }
 	void CollectSourcesAndSinks();
-	const AudioSources& GetAudioSources() const { return mSources; }
-	const AudioSinks& GetAudioSinks() const { return mSinks; }
-	AudioSources& GetAudioSources() { return mSources; }
-	AudioSinks& GetAudioSinks() { return mSinks; }
+	const AudioSources& GetAudioSources() const { return _sources; }
+	const AudioSinks& GetAudioSinks() const { return _sinks; }
+	AudioSources& GetAudioSources() { return _sources; }
+	AudioSinks& GetAudioSinks() { return _sinks; }
 
-	AudioSources mSources;
-	AudioSinks mSinks;
+	AudioSources _sources;
+	AudioSinks _sinks;
 private:
-	Network *mNetwork;
-	bool mStopped;
+	Network *_network;
+	bool _stopped;
 
 };
 } //namespace CLAM
 
-#endif // _NETWORK_PLAYER_HXX_
+#endif // NetworkPlayer_hxx
 

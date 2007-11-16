@@ -35,22 +35,22 @@
 namespace CLAM
 {	
 	Network::Network() :
-		mName("Unnamed Network"),
-		mFlowControl(new NaiveFlowControl),
-		mPlayer(0)
+		_name("Unnamed Network"),
+		_flowControl(new NaiveFlowControl),
+		_player(0)
 	{}
 	
 	Network::~Network()
 	{
 		//std::cerr <<" *\t\t\t~NETWORK"<<std::endl;
 		Clear();
-		if (mFlowControl) delete mFlowControl;
-		if (mPlayer) delete mPlayer;
+		if (_flowControl) delete _flowControl;
+		if (_player) delete _player;
 	}
 
 	void Network::StoreOn( Storage & storage) const
 	{
-		XMLAdapter<std::string> strAdapter( mName, "id");
+		XMLAdapter<std::string> strAdapter( _name, "id");
 		storage.Store(strAdapter);
 
 		ProcessingsMap::const_iterator it;
@@ -119,7 +119,7 @@ namespace CLAM
 	void Network::LoadFrom( Storage & storage)
 	{
 		Clear();
-		XMLAdapter<std::string> strAdapter( mName, "id");
+		XMLAdapter<std::string> strAdapter( _name, "id");
 		storage.Load(strAdapter);
 
 		while(1)
@@ -163,15 +163,16 @@ namespace CLAM
 
 	void Network::AddFlowControl(FlowControl* flowControl)
 	{
-		if (mFlowControl) delete mFlowControl;
-		mFlowControl = flowControl;
-		mFlowControl->AttachToNetwork(this);
+		if (_flowControl) delete _flowControl;
+		_flowControl = flowControl;
+		_flowControl->AttachToNetwork(this);
 	}
 	void Network::SetPlayer(NetworkPlayer* player)
 	{
-		if (mPlayer) delete mPlayer;
-		mPlayer = player;
-		mPlayer->SetNetworkBackLink(*this);	
+		if (_player) delete _player;
+		_player = player;
+		_player->SetNetworkBackLink(*this);
+		_player->Init();
 	}
 
 	Processing& Network::GetProcessing( const std::string & name ) const
@@ -179,7 +180,7 @@ namespace CLAM
 		CLAM_ASSERT( HasProcessing(name), 
 			("No processing in the network has the name '"+name+"'.").c_str());
 
-		ProcessingsMap::const_iterator it = mProcessings.find( name );
+		ProcessingsMap::const_iterator it = _processings.find( name );
 		return *it->second;
 	}
 
@@ -187,10 +188,10 @@ namespace CLAM
 	{
 		if (!IsStopped()) Stop();
 
-		if (!mProcessings.insert( ProcessingsMap::value_type( name, proc ) ).second )
+		if (!_processings.insert( ProcessingsMap::value_type( name, proc ) ).second )
 			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
 
-		mFlowControl->ProcessingAddedToNetwork(*proc);
+		_flowControl->ProcessingAddedToNetwork(*proc);
 	}
 
 	void Network::AddProcessing( const std::string & name, const std::string & factoryKey )
@@ -226,11 +227,11 @@ namespace CLAM
 
 	void Network::RemoveProcessing ( const std::string & name)
 	{
-		CLAM_ASSERT( mFlowControl, 
+		CLAM_ASSERT( _flowControl, 
 			     "Network::RemoveProcessing() - Network should have an attached flow control at this state.");
 
-		ProcessingsMap::const_iterator i = mProcessings.find( name );
-		if(i==mProcessings.end())
+		ProcessingsMap::const_iterator i = _processings.find( name );
+		if(i==_processings.end())
 		{
 			std::string msg("Network::RemoveProcessing() Trying to remove a processing that is not included in the network:");
 			msg += name;
@@ -238,33 +239,33 @@ namespace CLAM
 		}
 		if ( !IsStopped() ) Stop(); 
 		Processing * proc = i->second;
-		mProcessings.erase( name );
+		_processings.erase( name );
 
-		mFlowControl->ProcessingRemovedFromNetwork(*proc);
+		_flowControl->ProcessingRemovedFromNetwork(*proc);
 		delete proc;		
 	}
 
 	bool Network::HasProcessing( const std::string& name ) const
 	{
-		ProcessingsMap::const_iterator i = mProcessings.find( name );
-		return i!=mProcessings.end();
+		ProcessingsMap::const_iterator i = _processings.find( name );
+		return i!=_processings.end();
 	}
 	
 	bool Network::ConfigureProcessing( const std::string & name, const ProcessingConfig & newConfig )	
 	{
-		ProcessingsMap::iterator it = mProcessings.find( name );
-		CLAM_ASSERT(it!=mProcessings.end(),"Wrong processing name to configure in a network");
+		ProcessingsMap::iterator it = _processings.find( name );
+		CLAM_ASSERT(it!=_processings.end(),"Wrong processing name to configure in a network");
 		Processing * proc = it->second;
 		if ( !IsStopped() ) Stop();
 		bool ok = proc->Configure( newConfig );
-		mFlowControl->ProcessingConfigured(*proc);
+		_flowControl->ProcessingConfigured(*proc);
 		return ok;
 	}
 
 	void Network::ReconfigureAllProcessings()
 	{
 		ProcessingsMap::iterator it;
-		for( it=mProcessings.begin(); it!=mProcessings.end(); it++)
+		for( it=_processings.begin(); it!=_processings.end(); it++)
 		{
 			Processing* proc = it->second;
 			proc->Configure( proc->GetConfig() );
@@ -273,7 +274,7 @@ namespace CLAM
 
 	bool Network::ConnectPorts( const std::string & producer, const std::string & consumer )
 	{
-		mFlowControl->NetworkTopologyChanged();
+		_flowControl->NetworkTopologyChanged();
 
 		OutPortBase & outport = GetOutPortByCompleteName(producer);
 		InPortBase & inport = GetInPortByCompleteName(consumer);
@@ -310,7 +311,7 @@ namespace CLAM
 
 	bool Network::DisconnectPorts( const std::string & producer, const std::string & consumer)
 	{
-		mFlowControl->NetworkTopologyChanged();
+		_flowControl->NetworkTopologyChanged();
 
 		OutPortBase & outport = GetOutPortByCompleteName(producer);
 		InPortBase & inport = GetInPortByCompleteName(consumer);
@@ -393,8 +394,8 @@ namespace CLAM
 
 	bool Network::IsStopped() const
 	{
-		if (! mPlayer) return true;
-		return mPlayer->IsStopped();
+		if (! _player) return true;
+		return _player->IsStopped();
 	}
 
 	void Network::Start()
@@ -412,12 +413,12 @@ namespace CLAM
 				std::cerr << "Warning: could not start processing for not being Configured: '" << it->first<< "' of class " << it->second->GetClassName() << std::endl;
 			}
 		}
-		if (mPlayer) mPlayer->Start();
+		if (_player) _player->Start();
 	}
 	
 	void Network::Stop()
 	{
-		if (mPlayer) mPlayer->Stop();
+		if (_player) _player->Stop();
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
 			if (it->second->IsRunning())
@@ -426,37 +427,37 @@ namespace CLAM
 	
 	void Network::Do()
 	{
-		mFlowControl->Do();
+		_flowControl->Do();
 	}
 
 	void Network::Clear()
 	{
 		if ( !IsStopped() ) Stop(); 
 		
-		while( !mProcessings.empty() )
+		while( !_processings.empty() )
 		{
-			//std::cerr << "REMOVING <"<<mProcessings.begin()->first<<">"<<std::endl;
-			RemoveProcessing( mProcessings.begin()->first );
+			//std::cerr << "REMOVING <"<<_processings.begin()->first<<">"<<std::endl;
+			RemoveProcessing( _processings.begin()->first );
 		}
 	}
 
 	Network::ProcessingsMap::iterator Network::BeginProcessings()
 	{
-		return mProcessings.begin();
+		return _processings.begin();
 	}
 
 	Network::ProcessingsMap::iterator Network::EndProcessings()
 	{
-		return mProcessings.end();
+		return _processings.end();
 	}
 	Network::ProcessingsMap::const_iterator Network::BeginProcessings() const
 	{
-		return mProcessings.begin();
+		return _processings.begin();
 	}
 
 	Network::ProcessingsMap::const_iterator Network::EndProcessings() const
 	{
-		return mProcessings.end();
+		return _processings.end();
 	}
 
 	Network::NamesList  Network::GetInPortsConnectedTo( const std::string & producer ) const
@@ -519,12 +520,12 @@ namespace CLAM
 	bool Network::RenameProcessing( const std::string & oldName, const std::string & newName )
 	{
 		if (oldName==newName) return true;
-		if( mProcessings.find( newName ) != mProcessings.end() ) // newName is being used
+		if( _processings.find( newName ) != _processings.end() ) // newName is being used
 			return false;
-		ProcessingsMap::iterator it = mProcessings.find( oldName );
+		ProcessingsMap::iterator it = _processings.find( oldName );
 		Processing * proc = it->second;
-		mProcessings.erase( it );
-		mProcessings.insert( ProcessingsMap::value_type( newName, proc ) );
+		_processings.erase( it );
+		_processings.insert( ProcessingsMap::value_type( newName, proc ) );
 		return true;
 	}
 
@@ -538,7 +539,7 @@ namespace CLAM
 
 	bool Network::IsEmpty() const
 	{
-		return mProcessings.empty();
+		return _processings.empty();
 	}
 
 	bool Network::HasMisconfiguredProcessings() const
