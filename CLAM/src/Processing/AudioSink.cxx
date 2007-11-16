@@ -26,7 +26,7 @@ AudioSink::AudioSink()
 	, mBufferSize(0)
 {
 	//After being dropped it is ready to run as it does not need any configuration at all
-	mExecState=Ready;
+	SetExecState(Ready);
 }
 
 AudioSink::AudioSink(const ProcessingConfig & conf)
@@ -36,7 +36,7 @@ AudioSink::AudioSink(const ProcessingConfig & conf)
 	, mBufferSize(0)
 {
 	//After being dropped it is ready to run as it does not need any configuration at all
-	mExecState=Ready;
+	SetExecState(Ready);
 }
 
 AudioSink::~AudioSink()

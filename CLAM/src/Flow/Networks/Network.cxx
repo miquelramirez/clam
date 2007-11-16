@@ -174,6 +174,14 @@ namespace CLAM
 		_player->SetNetworkBackLink(*this);
 		_player->Init();
 	}
+	unsigned Network::BackendBufferSize()
+	{
+		return _player->BackendBufferSize();
+	}
+	unsigned Network::BackendSampleRate()
+	{
+		return _player->BackendSampleRate();
+	}
 
 	Processing& Network::GetProcessing( const std::string & name ) const
 	{

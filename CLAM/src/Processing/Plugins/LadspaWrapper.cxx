@@ -16,7 +16,6 @@
 namespace CLAM
 {
 
-static int sPortSize = 512;
 
 LadspaWrapper::LadspaWrapper( const Config & cfg)
 	: mInstance(0),
@@ -62,7 +61,7 @@ bool LadspaWrapper::Do()
 {
 	UpdatePortsPointers();
 	
-	mDescriptor->run(mInstance, sPortSize );
+	mDescriptor->run(mInstance, PortSize() );
 
 	for(unsigned int i=0;i<mOutputControlValues.size();i++)
 		GetOutControls().GetByNumber(i).SendControl(mOutputControlValues[i]);
@@ -123,6 +122,8 @@ void LadspaWrapper::RemovePortsAndControls()
 
 void LadspaWrapper::ConfigurePortsAndControls()
 {
+	std::cout << "LadspaWrapper::ConfigurePortsAndControls() - port size: "
+	<< PortSize() << std::endl;
 	RemovePortsAndControls();
 	for(unsigned int i=0;i<mDescriptor->PortCount;i++)
 	{
@@ -131,14 +132,14 @@ void LadspaWrapper::ConfigurePortsAndControls()
 		if(LADSPA_IS_PORT_INPUT(portDescriptor) && LADSPA_IS_PORT_AUDIO(portDescriptor)) 
 		{
 			AudioInPort * port = new AudioInPort(mDescriptor->PortNames[i],this );
-			port->SetSize( sPortSize );
+			port->SetSize( PortSize() );
 			mInputPorts.push_back(port);
 		}
 		// out port
 		if(LADSPA_IS_PORT_OUTPUT(portDescriptor) && LADSPA_IS_PORT_AUDIO(portDescriptor)) 
 		{
 			AudioOutPort * port = new AudioOutPort(mDescriptor->PortNames[i],this );
-			port->SetSize( sPortSize );
+			port->SetSize( PortSize() );
 			mOutputPorts.push_back(port);
 		}
 

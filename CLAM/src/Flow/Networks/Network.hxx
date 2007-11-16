@@ -69,7 +69,8 @@ public:
 	void Clear();
 	/** Set the object in charge of managing the processing thread. Receives property of the player. */
 	void SetPlayer( NetworkPlayer* player);
-
+	unsigned BackendBufferSize();
+	unsigned BackendSampleRate();
 	// serialization methods
 	virtual void StoreOn( Storage & storage) const;
 	virtual void LoadFrom( Storage & storage);
