@@ -200,20 +200,19 @@ namespace CLAM {
 	
 	void Processing::SetParent(Processing * parent)
 	{
+		ProcessingComposite * composite;
 		if (!parent)
-		{
-			mpParent=0;
-			return;
-		}
-		ProcessingComposite *p = dynamic_cast<ProcessingComposite*>(parent);
-		CLAM_ASSERT(p, "Setting a non ProcessingComposite as Parent");
+			composite = &(TopLevelProcessing::GetInstance());
+		else
+			composite = dynamic_cast<ProcessingComposite*>(parent);
+		CLAM_ASSERT(composite, "Setting a non ProcessingComposite as Parent");
 
-		if (mpParent==p)
+		if (mpParent==composite)
 			return;
 
 		if (mpParent)
 			mpParent->Remove(*this);
-		mpParent=p;
+		mpParent=composite;
 		mpParent->Insert(*this);
 	}
 
