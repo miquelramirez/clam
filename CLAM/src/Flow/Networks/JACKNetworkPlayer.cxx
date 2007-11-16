@@ -212,6 +212,7 @@ void JACKNetworkPlayer::Start()
 }
 void JACKNetworkPlayer::Init()
 {
+	InitClient();
 }
 void JACKNetworkPlayer::OnShutdown()
 {

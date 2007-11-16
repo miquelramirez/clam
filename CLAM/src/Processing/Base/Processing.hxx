@@ -268,7 +268,7 @@ namespace CLAM {
 		void RegisterInControl(InControl* in);
 
 		void SetParent(Processing *p);
-
+		void SetNetworkBackLink(Network * network);
 		/**
 		 * This method is used to determine if a given processing can change its interface of ports/controls after
 		 * its construction (i.e. changing the name of ports in ConcreteConfigure). If a concrete processing
