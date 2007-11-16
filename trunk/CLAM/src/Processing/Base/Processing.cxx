@@ -216,6 +216,10 @@ namespace CLAM {
 		mpParent->Insert(*this);
 	}
 
+	void Processing::SetNetworkBackLink(Network * network)
+	{
+		_network=network;
+	}
 	void Processing::AddConfigErrorMessage( const std::string& msg )
 	{
 		_configErrorMessage += msg;
