@@ -44,8 +44,8 @@ if setting == 1:
 	sizeY = 2. #meters
 	recordingDistance = .524263 #meters
 elif setting == 2:
-	NX = 2 
-	NY = 2
+	NX = 12 
+	NY = 12
 	sizeX = 12. #meters
 	sizeY = 12. #meters
 	recordingDistance = 7 #meters
