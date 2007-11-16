@@ -26,16 +26,16 @@ namespace CLAM
 
 void NetworkPlayer::CollectSourcesAndSinks()
 {
-	mSources.clear();
-	mSinks.clear();
+	_sources.clear();
+	_sinks.clear();
 	Network & net = GetNetwork();
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 	{
 		std::string processingType = it->second->GetClassName();
 		if ( processingType == "AudioSource" )
-			mSources.push_back( (AudioSource*)it->second );
+			_sources.push_back( (AudioSource*)it->second );
 		else if ( processingType == "AudioSink" )
-			mSinks.push_back( (AudioSink*)it->second );
+			_sinks.push_back( (AudioSink*)it->second );
 	}
 }
 

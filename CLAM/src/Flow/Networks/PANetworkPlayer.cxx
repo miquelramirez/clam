@@ -90,8 +90,8 @@ void PANetworkPlayer::Start()
 
 	CollectSourcesAndSinks();
 
-	int nInChannels = mSources.size();
-	int nOutChannels = mSinks.size();
+	int nInChannels = _sources.size();
+	int nOutChannels = _sinks.size();
 
 	PaHostApiTypeId apiTryList[] = {
 		paDirectSound,
@@ -270,7 +270,7 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 {
 	int i=0;
-	for ( AudioSources::iterator it=mSources.begin(); it!=mSources.end(); it++ )
+	for ( AudioSources::iterator it=_sources.begin(); it!=_sources.end(); it++ )
 	{
 		(*it)->SetExternalBuffer( input[i++], nframes );
 	}
@@ -279,7 +279,7 @@ void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 {
 	int i=0;
-	for (AudioSinks::iterator it=mSinks.begin(); it!=mSinks.end(); it++)
+	for (AudioSinks::iterator it=_sinks.begin(); it!=_sinks.end(); it++)
 	{
 		(*it)->SetExternalBuffer(output[i++], nframes);
 	}

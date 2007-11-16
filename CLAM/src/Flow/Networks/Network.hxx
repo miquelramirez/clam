@@ -54,8 +54,8 @@ public:
 	virtual ~Network();
 
 	// Methods related to network itself
-	const std::string& GetName() const { return mName; }
-	void SetName( const std::string& name ) { mName=name; }
+	const std::string& GetName() const { return _name; }
+	void SetName( const std::string& name ) { _name=name; }
 	virtual const char * GetClassName() const
 	{
 		return "Network";
@@ -149,14 +149,14 @@ public:
 private:
 	
 	// fields
-	std::string mName;
-	ProcessingsMap mProcessings;
+	std::string _name;
+	ProcessingsMap _processings;
 	
 	static std::size_t PositionOfLastIdentifier( const std::string& );
 	static std::size_t PositionOfProcessingIdentifier( const std::string& );
 	static char NamesIdentifiersSeparator();
-	FlowControl* mFlowControl;
-	NetworkPlayer* mPlayer;
+	FlowControl* _flowControl;
+	NetworkPlayer* _player;
 };
 
 }// namespace
