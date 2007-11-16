@@ -27,6 +27,7 @@
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
+#include "Network.hxx"
 
 #include <cstring>
 #include <string>
@@ -101,38 +102,40 @@ namespace CLAM {
 		out.ConnectToIn(in);
 	}
 	
-	Processing::Processing() :
-		mpParent(0),
-		mExecState(Unconfigured)
+	Processing::Processing() 
+		: mpParent(0)
+		, _network(0)
+		, _execState(Unconfigured)
 	{
+		std::cout << "Processing defaultl ctr." << std::endl;
 	}
 
 	bool Processing::Configure(const ProcessingConfig &c)
 	{
 		CLAM_ASSERT(!IsRunning(), "Configuring an already running Processing.");
-		mConfigErrorMessage = "";
-		if (!mpParent) 
-			TopLevelProcessing::GetInstance().Insert(*this);
-		mExecState = Unconfigured;
+		_configErrorMessage = "";
+//		if (!mpParent) //TODO remove
+//			TopLevelProcessing::GetInstance().Insert(*this);
+		_execState = Unconfigured;
 		try
 		{
 			if (!ConcreteConfigure(c)) 
 			{
-				if (mConfigErrorMessage=="")
-					mConfigErrorMessage = "Configuration failed.";
+				if (_configErrorMessage=="")
+					_configErrorMessage = "Configuration failed.";
 				return false;
 			}
 		}
 		catch( ErrProcessingObj& error ) ///TODO we should use here an ErrConfiguring class. PA
 		{
-			mConfigErrorMessage += "Exception thrown during ConcreteConfigure:\n";
-			mConfigErrorMessage += error.what();
-			mConfigErrorMessage += "\n";
-			mConfigErrorMessage += "Configuration failed.";
+			_configErrorMessage += "Exception thrown during ConcreteConfigure:\n";
+			_configErrorMessage += error.what();
+			_configErrorMessage += "\n";
+			_configErrorMessage += "Configuration failed.";
 			return false;
 		}
-		mExecState = Ready;
-		mConfigErrorMessage="Ready to be started";
+		_execState = Ready;
+		_configErrorMessage="Ready to be started";
 		return true;
 	}
 
@@ -148,11 +151,11 @@ namespace CLAM {
 		CLAM_ASSERT(IsConfigured(), "Starting an unconfigured processing");
 		try {
 			if (ConcreteStart())
-				mExecState = Running;
+				_execState = Running;
 		}
 		catch (ErrProcessingObj &e) {
-			mConfigErrorMessage += "Exception thrown while starting.\n";
-			mConfigErrorMessage += e.what();
+			_configErrorMessage += "Exception thrown while starting.\n";
+			_configErrorMessage += e.what();
 		}
 	}
 	
@@ -161,12 +164,20 @@ namespace CLAM {
 		CLAM_ASSERT(IsRunning(), "Stop(): Object not running." );
 		try {
 			if(ConcreteStop())
-				mExecState = Ready; 
+				_execState = Ready; 
 		}
 		catch (ErrProcessingObj &e) {
-			mConfigErrorMessage += "Exception thrown while stoping.\n";
-			mConfigErrorMessage += e.what();
+			_configErrorMessage += "Exception thrown while stoping.\n";
+			_configErrorMessage += e.what();
 		}
+	}
+	unsigned Processing::BackendBufferSize()
+	{
+		return _network? _network->BackendBufferSize() : 1024;
+	}
+	unsigned Processing::BackendSampleRate()
+	{
+		return _network? _network->BackendBufferSize() : 44100;
 	}
 
 	void Processing::RegisterOutPort(OutPortBase* out) 
@@ -187,15 +198,14 @@ namespace CLAM {
 		mInControlRegistry.ProcessingInterface_Register(in);
 	}
 	
-	void Processing::SetParent(Processing *o)
+	void Processing::SetParent(Processing * parent)
 	{
-		ProcessingComposite *p;
-
-		if (o==0)
-			p = &(TopLevelProcessing::GetInstance());
-		else
-			p = dynamic_cast<ProcessingComposite*>(o);
-
+		if (!parent)
+		{
+			mpParent=0;
+			return;
+		}
+		ProcessingComposite *p = dynamic_cast<ProcessingComposite*>(parent);
 		CLAM_ASSERT(p, "Setting a non ProcessingComposite as Parent");
 
 		if (mpParent==p)
@@ -203,15 +213,13 @@ namespace CLAM {
 
 		if (mpParent)
 			mpParent->Remove(*this);
-
 		mpParent=p;
-
 		mpParent->Insert(*this);
 	}
 
 	void Processing::AddConfigErrorMessage( const std::string& msg )
 	{
-		mConfigErrorMessage += msg;
+		_configErrorMessage += msg;
 	}
 	
 	bool Processing::CanConsumeAndProduce()
@@ -232,7 +240,7 @@ namespace CLAM {
 	}
 	std::string Processing::GetExecStateString() const 
 	{
-		switch (mExecState)
+		switch (_execState)
 		{
 			case Unconfigured:
 				return "Unconfigured";

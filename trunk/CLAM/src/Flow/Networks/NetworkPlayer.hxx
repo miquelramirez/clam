@@ -71,6 +71,16 @@ public:
 	{
 		return _stopped;
 	}
+	virtual unsigned BackendBufferSize()
+	{
+		std::cout << "NetworkPlayer::BackednBufferSize"<<std::endl;
+		return 512;
+	}
+	virtual unsigned BackendSampleRate()
+	{
+		std::cout << "NetworkPlayer::BackednSampleRate"<<std::endl;
+		return 44100;
+	}
 protected:
 	Network& GetNetwork()
 	{

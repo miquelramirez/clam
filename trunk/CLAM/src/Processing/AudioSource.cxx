@@ -23,7 +23,7 @@ AudioSource::AudioSource()
 	, mBufferSize(0)
 {
 	//After being dropped it is ready to run as it does not need any configuration at all
-	mExecState=Ready;
+	SetExecState(Ready);
 }
 
 AudioSource::AudioSource(const ProcessingConfig & conf)
@@ -33,7 +33,7 @@ AudioSource::AudioSource(const ProcessingConfig & conf)
 	, mBufferSize(0)
 {
 	//After being dropped it is ready to run as it does not need any configuration at all
-	mExecState=Ready;
+	SetExecState(Ready);
 }
 
 AudioSource::~AudioSource()

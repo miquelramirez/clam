@@ -44,7 +44,7 @@ namespace CLAM {
 	class InControl;
 	class OutControl;
 	class ProcessingComposite;
-
+	class Network;
 	/**
 	 * Connects two ports of two processings selecting them by the port name.
 	 * Short hand for sender.GetOutPort(outPortName).ConnectToIn(receiver.GetOutPort(inPortName))
@@ -228,7 +228,11 @@ namespace CLAM {
 		 * @returns Whether stop changes have been successful
 		 */
 		virtual bool ConcreteStop() {return true;};
-
+		
+		/// Given by the NetworkPlayer (backend) if exists
+		unsigned BackendBufferSize();
+		/// Given by the NetworkPlayer (backend) if exists
+		unsigned BackendSampleRate();
 // Public interface:	
 	public:
 		/** Check that Supervised Do() can be safely called */
@@ -251,11 +255,11 @@ namespace CLAM {
 		 * in running or in disabled state.
 		 */
 	private:
-		ExecState GetExecState() const {return mExecState;} 
+		ExecState GetExecState() const {return _execState;} 
 	public:
 		std::string GetExecStateString() const;
-		bool IsConfigured() const { return mExecState != Unconfigured; }
-		bool IsRunning() const { return mExecState == Running; }
+		bool IsConfigured() const { return _execState != Unconfigured; }
+		bool IsRunning() const { return _execState == Running; }
 
 		
 		void RegisterOutPort(OutPortBase* out);
@@ -324,7 +328,7 @@ namespace CLAM {
 		OutPortRegistry& GetOutPorts() { return mOutPortRegistry; }
 
 		/** Returns a string describing configuration errors if any */
-		const std::string& GetConfigErrorMessage() const { return mConfigErrorMessage; }
+		const std::string& GetConfigErrorMessage() const { return _configErrorMessage; }
 
 		/** Wether the processing is a sync source such as audio i/o device,
 		 * or an audio callback hook (i.e. Externalizer) */
@@ -333,7 +337,7 @@ namespace CLAM {
 // Helpers only for subclasses
 	protected:
 		
-		/** Method to prepend a message to mConfigErrorMessage
+		/** Method to prepend a message to _configErrorMessage
 		* CLAM_ASSERT */
 		void AddConfigErrorMessage( const std::string& msg );
 	
@@ -350,17 +354,24 @@ namespace CLAM {
 		 */
 		template <typename ConcreteConfig>
 		void CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const;
-
-// Attributes:
 	protected:
+		void SetExecState(ExecState state)
+		{
+			_execState = state;
+		}
+// Attributes:
+	private:
 		/** Pointer to the parent (composite) processing object, or 0 */
 		ProcessingComposite *mpParent;
+		/** The parent network if any. 
+		 * Note that Processings can be used directly without a network*/
+		Network * _network;
 
 		/** Processing object execution state */
-		ExecState mExecState;
+		ExecState _execState;
 
 		/** Status description, for debugging */
-		std::string mConfigErrorMessage;
+		std::string _configErrorMessage;
 
 
 	private:

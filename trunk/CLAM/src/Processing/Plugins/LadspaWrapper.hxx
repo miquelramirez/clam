@@ -40,6 +40,10 @@ private:
 	void UpdateControlsPointers();
 	void UpdatePortsPointers();
 
+	unsigned PortSize()
+	{
+		return 512;
+	}
 public:
 	LadspaWrapper( const Config & c = Config());
 	LadspaWrapper( const std::string& libraryFileName, unsigned index, const std::string& factoryKey );
