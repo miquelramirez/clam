@@ -52,6 +52,7 @@ bool AudioSink::Do()
 	for (unsigned i=0; i<mBufferSize; i++)
 		mFloatBuffer[i] = audioBuffer[i];
 	mIn.Consume();
+	std::cout << "  AudioSink done. buffer size "<< mBufferSize <<std::endl;
 	return true;
 }
 

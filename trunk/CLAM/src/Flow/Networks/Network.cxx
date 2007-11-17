@@ -176,10 +176,12 @@ namespace CLAM
 	}
 	unsigned Network::BackendBufferSize()
 	{
+		if (!_player) return 512;
 		return _player->BackendBufferSize();
 	}
 	unsigned Network::BackendSampleRate()
 	{
+		if (!_player) return 44100;
 		return _player->BackendSampleRate();
 	}
 

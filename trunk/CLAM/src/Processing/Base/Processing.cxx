@@ -107,7 +107,6 @@ namespace CLAM {
 		, _network(0)
 		, _execState(Unconfigured)
 	{
-		std::cout << "Processing defaultl ctr." << std::endl;
 	}
 
 	bool Processing::Configure(const ProcessingConfig &c)

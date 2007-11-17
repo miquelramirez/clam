@@ -137,13 +137,9 @@ class NetworkTest : public CppUnit::TestFixture
 		{
 			return "DummyProcessing";
 		}
-		const CLAM::ProcessingConfig & GetConfig() const
-		{
-			CLAM_ASSERT( false, "This is a dummy processing and doesn't have config" );
-		}
 		bool ConcreteConfigure( const CLAM::ProcessingConfig & cfg)
 		{
-			return false;
+			return true;
 		}
 		bool Do()
 		{

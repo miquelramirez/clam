@@ -10,8 +10,10 @@ namespace CLAM
 //JACK CODE
 inline int JackProcessingCallback (jack_nframes_t nframes, void *arg)
 {
+std::cout << "\n++++ begin callback"<<std::endl;
 	JACKNetworkPlayer* player=(JACKNetworkPlayer*)arg;
 	player->Do(nframes);
+std::cout << "++++ end callback\n"<<std::endl;
 
 	return 0;
 }
