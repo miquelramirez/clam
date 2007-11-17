@@ -22,19 +22,18 @@ class LadspaWrapper : public Processing
 {
 private:
 	typedef void * SOPointer;
-	LADSPA_Handle mInstance;
-	const LADSPA_Descriptor * mDescriptor;
-	SOPointer mSharedObject;
+	LADSPA_Handle _instance;
+	const LADSPA_Descriptor * _descriptor;
+	SOPointer _sharedObject;
 
-	std::string mFactoryKey;
+	std::vector< AudioInPort* > _inputPorts;
+	std::vector< AudioOutPort* > outputPorts;
 
-	std::vector< AudioInPort* > mInputPorts;
-	std::vector< AudioOutPort* > mOutputPorts;
-
-	std::vector< InControl* > mInputControls;
-	std::vector< OutControl* > mOutputControls;
-	std::vector< LADSPA_Data > mOutputControlValues;
-
+	std::vector< InControl* > _inputControls;
+	std::vector< OutControl* > _outputControls;
+	std::vector< LADSPA_Data > _outputControlValues;
+	unsigned _bufferSize;
+	std::string _factoryKey;
 	void ConfigurePortsAndControls();
 	void RemovePortsAndControls();
 	void UpdateControlsPointers();

@@ -49,7 +49,7 @@ bool AudioSource::Do()
 	for (unsigned i=0; i<mBufferSize; i++)
 		audioBuffer[i] = mFloatBuffer[i];
 	mOut.Produce();
-	// std::cerr << "AudioSource Done. Size :" << mOut.GetSize() << std::endl;
+	std::cout << "   AudioSource Done. Size :" << mOut.GetSize() << std::endl;
 	return true;
 }
 
