@@ -34,10 +34,10 @@ private:
 	std::vector< LADSPA_Data > _outputControlValues;
 	unsigned _bufferSize;
 	std::string _factoryKey;
-	void ConfigurePortsAndControls();
 	void RemovePortsAndControls();
-	void UpdateControlsPointers();
-	void UpdatePortsPointers();
+	void ConfigurePortsAndControls();
+	void ConfigureControlsPointers();
+	void DoUpdatePortsPointers();
 
 public:
 	LadspaWrapper( const Config & c = Config());

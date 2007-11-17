@@ -61,7 +61,7 @@ bool LadspaWrapper::ConcreteStop()
 
 bool LadspaWrapper::Do()
 {
-	UpdatePortsPointers();
+	DoUpdatePortsPointers();
 	
 	_descriptor->run(_instance, _bufferSize );
 
@@ -72,7 +72,6 @@ bool LadspaWrapper::Do()
 		 _inputPorts[i]->Consume();
 	for(unsigned int i=0;i<outputPorts.size();i++)
 		outputPorts[i]->Produce();
-	std::cout << "    ladpa wrapper done" << std::endl;
 	return true;
 }
 bool LadspaWrapper::LoadLibraryFunction(const std::string& libraryFileName, unsigned index, const std::string& factoryKey)
@@ -91,10 +90,9 @@ bool LadspaWrapper::LoadLibraryFunction(const std::string& libraryFileName, unsi
 }
 bool LadspaWrapper::ConcreteConfigure(const ProcessingConfig&)
 {
-	std::cout << "++configuring a LadspaLoader"<<std::endl;
 	_bufferSize = BackendBufferSize();
 	ConfigurePortsAndControls();
-	UpdateControlsPointers();
+	ConfigureControlsPointers();
 	return true;
 }
 void LadspaWrapper::RemovePortsAndControls()
@@ -129,11 +127,6 @@ void LadspaWrapper::RemovePortsAndControls()
 
 void LadspaWrapper::ConfigurePortsAndControls()
 {
-	std::cout << "-- LadspaWrapper::ConfigurePortsAndControls() - port size: "
-	<< _bufferSize << std::endl
-<< "-- has network? " << (_network? "yes" : "no") << std::endl
-<< "-- Backedn buffer: " << _bufferSize << std::endl;
-
 	RemovePortsAndControls();
 	for(unsigned int i=0;i<_descriptor->PortCount;i++)
 	{
@@ -167,8 +160,6 @@ void LadspaWrapper::ConfigurePortsAndControls()
 			{
 				control->SetBounds( hint.LowerBound, hint.UpperBound ); 
 				control->DoControl( control->DefaultValue() );
-//				std::cout << _descriptor->PortNames[i] << " is bounded "<<std::endl;
-//				std::cout << "(" << control->LowerBound()<<", "<< control->UpperBound() << ")" << std::endl;
 			}
 			_inputControls.push_back(control);
 		}			
@@ -182,7 +173,7 @@ void LadspaWrapper::ConfigurePortsAndControls()
 	}
 }
 
-void LadspaWrapper::UpdateControlsPointers()
+void LadspaWrapper::ConfigureControlsPointers()
 {
 	int inControlIndex = 0;
 	int outControlIndex = 0;
@@ -204,7 +195,7 @@ void LadspaWrapper::UpdateControlsPointers()
 
 }
 
-void LadspaWrapper::UpdatePortsPointers()
+void LadspaWrapper::DoUpdatePortsPointers()
 {
 	int inPortIndex = 0;
 	int outPortIndex = 0;
