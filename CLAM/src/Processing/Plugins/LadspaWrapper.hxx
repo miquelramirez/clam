@@ -40,22 +40,19 @@ private:
 	void UpdateControlsPointers();
 	void UpdatePortsPointers();
 
-	unsigned PortSize()
-	{
-		return 512;
-	}
 public:
 	LadspaWrapper( const Config & c = Config());
 	LadspaWrapper( const std::string& libraryFileName, unsigned index, const std::string& factoryKey );
 	bool ConcreteStart();
 	bool ConcreteStop();
+	bool ConcreteConfigure(const ProcessingConfig&);
 
 	bool Do();
 	virtual ~LadspaWrapper();
 
 	const char * GetClassName() const;
 	
-	bool ConcreteConfigure(const std::string& libraryFileName, unsigned index, const std::string& factoryKey);
+	bool LoadLibraryFunction(const std::string& libraryFileName, unsigned index, const std::string& factoryKey);
 
 };
 

@@ -80,7 +80,11 @@ public:
 	virtual void Start();
 	virtual void Stop();
 	virtual void Init();
-	virtual unsigned BackendBufferSize() { return _jackBufferSize; }
+	virtual unsigned BackendBufferSize() 
+	{
+		std::cout << "JACKNetworkPlayer::BackendBufferSize" << std::endl;
+		return _jackBufferSize; 
+	}
 	virtual unsigned BackendSampleRate() { return _jackSampleRate; }
 	
 	virtual bool IsCallbackBased() const { return true; }
