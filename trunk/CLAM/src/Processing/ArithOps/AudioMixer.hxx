@@ -43,7 +43,7 @@ protected:
 	{
 		AddAll();
 		UpdateData();
-		SetNumberOfInPorts(0);
+		SetNumberOfInPorts(2);
 		SetFrameSize(512);
 	}
 
