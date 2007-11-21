@@ -44,13 +44,15 @@ extraPaths = [
 env.Append(CPPPATH=extraPaths)
 
 env.Append( CPPDEFINES=['WITH_OSC'] )
-env.Append( LIBS=["oscpack"] )
+env.Append( LIBS=["oscpack","lo"] )
 
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]
+
+
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
 	env.Append( LIBS=['fftw3'] )
@@ -60,5 +62,4 @@ install = env.Install(os.path.join(CLAMInstallDir,'lib','clam'), libraries)
 
 env.Alias('install', install)
 env.Default(libraries)
-
 
