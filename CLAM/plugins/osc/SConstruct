@@ -4,15 +4,6 @@ import os, glob, sys
 
 libraryName='plugins_osc_source'
 
-def scanFiles(pattern, paths) :
-	files = []
-	for path in paths :
-		files+=glob.glob(os.path.join(path,pattern))
-	return files
-
-def recursiveDirs(root) :
-	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
-
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
@@ -33,10 +24,9 @@ env.EnableClamModules([
 	'clam_processing',
 	] , CLAMInstallDir)
 
-sourcePaths = recursiveDirs(".")
-sources = scanFiles('*.cxx', sourcePaths)
-sources = dict.fromkeys(sources).keys()
-
+sources = glob.glob('*.cxx')
+main = "linkchecking.cxx"
+sources.remove( main )
 extraPaths = [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
@@ -51,7 +41,9 @@ if sys.platform=='linux2' :
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]
-
+programs = [
+	env.Program(target=main[:-4], source=[main]+sources),
+	]
 
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
@@ -61,5 +53,5 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 install = env.Install(os.path.join(CLAMInstallDir,'lib','clam'), libraries)
 
 env.Alias('install', install)
-env.Default(libraries)
+env.Default(libraries + programs)
 
