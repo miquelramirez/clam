@@ -33,8 +33,7 @@ extraPaths = [
 ]
 env.Append(CPPPATH=extraPaths)
 
-env.Append( CPPDEFINES=['WITH_OSC'] )
-env.Append( LIBS=["oscpack","lo"] )
+env.Append( LIBS=["lo"] )
 
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
