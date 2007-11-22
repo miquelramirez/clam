@@ -201,6 +201,10 @@
 
   <processing id="L" type="AudioSink"/>
 
+  <processing id="LibloSource" type="LibloSource">
+    <OscPath>/clam/target</OscPath>
+  </processing>
+
   <processing id="MyFFT" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
@@ -866,6 +870,36 @@
   <control_connection>
     <out>Emitter Position.outY</out>
     <in>ImpulseResponseDatabaseFetcher_Vy.emitterY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 1</out>
+    <in>ImpulseResponseDatabaseFetcher_P.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 1</out>
+    <in>ImpulseResponseDatabaseFetcher_Vx.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 1</out>
+    <in>ImpulseResponseDatabaseFetcher_Vy.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 2</out>
+    <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 2</out>
+    <in>ImpulseResponseDatabaseFetcher_Vy.receiverY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 3</out>
+    <in>Surround.beta</in>
   </control_connection>
 
   <control_connection>
