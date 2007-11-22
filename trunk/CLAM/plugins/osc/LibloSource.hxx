@@ -15,6 +15,7 @@ class LibloSourceConfig : public CLAM::ProcessingConfig
 { 
     DYNAMIC_TYPE_USING_INTERFACE( LibloSourceConfig, 1, ProcessingConfig );
     DYN_ATTRIBUTE( 0, public, std::string, OscPath);
+    //TODO number of arguments/ports
 protected:
     void DefaultInit()
     {
@@ -35,7 +36,6 @@ public:
 		, _out3("osc to control 3", this)
 	{
 		_serverThreadIsRunning=false;
-		_dummy=0;
 		Configure( config );
 	}
 	const CLAM::ProcessingConfig & GetConfig() const
@@ -44,8 +44,6 @@ public:
 	}
 	bool Do()
 	{
-//		_out.SendControl(std::sin(_dummy));
-		_dummy += 0.001;
 		return true;
 	}
 	const char* GetClassName() const
@@ -97,7 +95,6 @@ private:
 	static int quit_handler(const char *path, const char *types, lo_arg **argv, int argc,
 			 void *data, void *user_data);
 
-	float _dummy;
 	bool _serverThreadIsRunning;
 
 	Config _config;
