@@ -161,49 +161,45 @@
     <ImpulseResponse>HRTFs/elev0/L0e000a.wav</ImpulseResponse>
   </processing>
 
-  <processing id="IR110" type="ImpulseResponseLoader">
+  <processing id="IR144" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>HRTFs/elev0/L0e110a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e144a.wav</ImpulseResponse>
   </processing>
 
-  <processing id="IR250" type="ImpulseResponseLoader">
+  <processing id="IR216" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>HRTFs/elev0/L0e250a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e216a.wav</ImpulseResponse>
   </processing>
 
-  <processing id="IR30" type="ImpulseResponseLoader">
+  <processing id="IR288" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>HRTFs/elev0/L0e030a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e288a.wav</ImpulseResponse>
   </processing>
 
-  <processing id="IR330" type="ImpulseResponseLoader">
+  <processing id="IR72" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>HRTFs/elev0/L0e330a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e072a.wav</ImpulseResponse>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_P" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>carneltestDatabase/</Path>
+    <Path>carneltestingDatabase/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>carneltestDatabase/</Path>
+    <Path>lalaDatabase/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>carneltestDatabase/</Path>
+    <Path>lalaDatabase/</Path>
     <Prefix>vy</Prefix>
   </processing>
 
   <processing id="L" type="AudioSink"/>
-
-  <processing id="LibloSource" type="LibloSource">
-    <OscPath>/clam/target</OscPath>
-  </processing>
 
   <processing id="MyFFT" type="MyFFT">
     <AudioSize>1024</AudioSize>
@@ -553,43 +549,43 @@
   </port_connection>
 
   <port_connection>
-    <out>IR110.ImpulseResponse</out>
+    <out>IR144.ImpulseResponse</out>
     <in>Conv SL to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR110.ImpulseResponse</out>
+    <out>IR144.ImpulseResponse</out>
     <in>Conv SR to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR250.ImpulseResponse</out>
+    <out>IR216.ImpulseResponse</out>
     <in>Conv SL to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR250.ImpulseResponse</out>
+    <out>IR216.ImpulseResponse</out>
     <in>Conv SR to R.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR30.ImpulseResponse</out>
-    <in>Conv L to R.ImpulseResponse</in>
-  </port_connection>
-
-  <port_connection>
-    <out>IR30.ImpulseResponse</out>
-    <in>Conv R to L.ImpulseResponse</in>
-  </port_connection>
-
-  <port_connection>
-    <out>IR330.ImpulseResponse</out>
+    <out>IR288.ImpulseResponse</out>
     <in>Conv L to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IR330.ImpulseResponse</out>
+    <out>IR288.ImpulseResponse</out>
     <in>Conv R to R.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR72.ImpulseResponse</out>
+    <in>Conv L to R.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IR72.ImpulseResponse</out>
+    <in>Conv R to L.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
@@ -870,36 +866,6 @@
   <control_connection>
     <out>Emitter Position.outY</out>
     <in>ImpulseResponseDatabaseFetcher_Vy.emitterY</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 1</out>
-    <in>ImpulseResponseDatabaseFetcher_P.receiverX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 1</out>
-    <in>ImpulseResponseDatabaseFetcher_Vx.receiverX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 1</out>
-    <in>ImpulseResponseDatabaseFetcher_Vy.receiverX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 2</out>
-    <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 2</out>
-    <in>ImpulseResponseDatabaseFetcher_Vy.receiverY</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 3</out>
-    <in>Surround.beta</in>
   </control_connection>
 
   <control_connection>
