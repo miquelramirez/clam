@@ -1,6 +1,10 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
+# TODO list 
+#  * implement reconection (if irc connection is lost)
+#  * a way to close the main server from the socket (for example "quit_all")
+
 # Usage: 'telnet localhost 2222' or any simple TCP client connected to 2222 port
 #
 # Example code:
@@ -19,7 +23,7 @@ import sys
 import string
 from collections import deque
 import socket, SocketServer
-import threading
+import threading, time
 import Queue
 
 HOST="irc.freenode.net"
@@ -56,6 +60,7 @@ class IRC_Connection( threading.Thread ):
 				try:
 					line = MessageQ.get_nowait()
 				except:
+					time.sleep( 1 )
 					continue
 				else:
 					if line=="quit_irc":
