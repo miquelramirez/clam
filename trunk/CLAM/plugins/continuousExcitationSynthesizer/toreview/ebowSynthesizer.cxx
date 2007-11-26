@@ -21,10 +21,6 @@
 #include "SMSFreqShift.hxx"
 #include "TestScore.hxx"
 
-#ifdef WITH_OSC
-#include "ContinuousExcitationOSCSource.hxx"
-#endif
-
 /**
 *  This example shows off an implementation of a synthesizer that uses a database
 *  of SDIF files to perform real-time Spectral Modeling Synthesis.
@@ -181,12 +177,8 @@ int main(int argc,char** argv)
 	}
 	else
 	{
-#ifdef WITH_OSC
-		aControlScorePtr = new CLAM::ContinuousExcitationOSCSource(std::string("/ebowSynthesizer"));
-#else
 		std::cout << "OSC is not enabled. Loading dummy score rather than activating OSC." << std::endl;
 		aControlScorePtr = new CLAM::TestScore();
-#endif
 	}
 
 	/****************************************\
