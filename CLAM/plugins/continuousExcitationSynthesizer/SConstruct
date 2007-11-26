@@ -17,8 +17,6 @@ def recursiveDirs(root) :
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
-options.Add(BoolOption('with_osc', 'Adds OSC related processings. Needs liboscpack from http://www.audiomulch.com/~rossb/code/oscpack/', 'no') )
-
 env = Environment(ENV=os.environ, options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
@@ -36,27 +34,14 @@ env.EnableClamModules([
 	] , CLAMInstallDir)
 
 sourcePaths = recursiveDirs(".")
-#if env["with_osc"] :
-#	sourcePaths += recursiveDirs("./../oscSource")
 print sourcePaths
 sources = glob.glob('*.cxx')
 sources += glob.glob('toreview/*.cxx')
 extraPaths = [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
-	"."
+	".",
 ]
-
-if env["with_osc"] :
-	env.Append( CPPDEFINES=['WITH_OSC'] )
-	env.Append( LIBS=["oscpack"] )
-	extraPaths += ["../osc"]
-	sources += [os.path.join("..","osc",file) for file in ["OSCSource.cxx"] ]
-else:
-	oscDependent = glob.glob("*OSC*.cxx")
-	for oscfile in oscDependent:
-		print "source to remove:", oscfile
-		sources.remove(oscfile)
 
 env.Append(CPPPATH=extraPaths)
 sources = dict.fromkeys(sources).keys() # eliminate repeated
