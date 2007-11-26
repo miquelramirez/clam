@@ -22,7 +22,7 @@
 #ifndef _ContinuousExcitationOSCSource_HXX
 #define _ContinuousExcitationOSCSource_HXX
 
-#include "OSCSource.hxx"
+//#include "LibloSource.hxx"
 #include "ContinuousExcitationControlSource.hxx"
 #include <string>
 #include <vector>
@@ -50,7 +50,7 @@ public:
 
 private:
 	std::string mTargetName;
-	OSCSource mOSCSource;
+///	LibloSource mOSCSource;
 };
 
 } // end namespace CLAM
