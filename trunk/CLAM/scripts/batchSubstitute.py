@@ -16,7 +16,7 @@ Substitution examples:
 # User configuration
 # --------------------------
 
-testingMode = True # True: do not write any file but print debugging output
+testingMode = False # True: do not write any file but print debugging output
                    # False: overwrite files
 
 inlineSubstitutions = [
@@ -26,11 +26,13 @@ inlineSubstitutions = [
 	(r"ASSERT_IGUALS", r"ASSERT_EQUALS"),
 	(r"REGISTRA_TEST", r"REGISTER_FIXTURE"),
 	(r"FALLA", r"FAIL"),
-	
-	
+]
+inlineSubstitutions = [
+	(r"'referencia': 100", r"'referencia': 150"),
+
 ]
 filesToSubstitute = [
-	"Sandboxes/ES1-*/src/TestsUnitaris/Test*.cxx",
+	"/var/www/testfarm_logs/practiques_ES1/ES1-*.testfarmlog",
 ]
 # --------------------------
 # End of user configuration
