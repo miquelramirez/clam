@@ -1,6 +1,7 @@
 #include "FreewheelingNetworkPlayer.hxx"
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileWriter.hxx"
+#include <fstream>
 
 namespace CLAM
 {
@@ -36,43 +37,45 @@ void FreewheelingNetworkPlayer::Start()
 		<< "Network have " << GetAudioSinks().size() << std::endl;
 	}
 	const int frameSize = 512;
-	unsigned filename=0;
 	std::vector<Audio> audioBuffers(mFilenames.size());
 	std::vector<MonoAudioFileReader*> readers;
 	MonoAudioFileReaderConfig readercfg;
+	unsigned fileIndex=0;
 	for (unsigned i=0; i<GetAudioSources().size(); i++)
 	{
-		CLAM_ASSERT(filename<mFilenames.size(),
+		CLAM_ASSERT(fileIndex<mFilenames.size(),
 			"Not all the network inputs could be fullfiled. Have you checked the IsWorking() method?");
-		AudioSource& source = *GetAudioSources()[i];
-		readercfg.SetSourceFile(mFilenames[filename]);
+		std::ifstream checkfile(mFilenames[fileIndex].c_str());
+		CLAM_ASSERT(checkfile.is_open(), std::string(std::string("Could not open one of the input files: ")+mFilenames[fileIndex]).c_str());
+		AudioSource& source = *GetAudioSources()[fileIndex];
+		readercfg.SetSourceFile(mFilenames[fileIndex]);
 		MonoAudioFileReader * fileReader = new MonoAudioFileReader(readercfg);
 		fileReader->GetOutPort("Samples Read").SetSize( frameSize );
 		fileReader->GetOutPort("Samples Read").SetHop( frameSize );
 		readers.push_back(fileReader);
-		audioBuffers[filename].SetSize( frameSize );
-		source.SetExternalBuffer( &(audioBuffers[filename].GetBuffer()[0]) ,frameSize);
-		std::cout << " In: " << mFilenames[filename] << std::endl;
-		filename++;
+		audioBuffers[fileIndex].SetSize( frameSize );
+		source.SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize);
+		std::cout << " In: " << mFilenames[fileIndex] << std::endl;
+		fileIndex++;
 	}
 	std::vector<MonoAudioFileWriter*> writers;
 	MonoAudioFileWriterConfig writercfg;
 	for (unsigned i=0; i<GetAudioSinks().size(); i++)
 	{
-		if (filename>=mFilenames.size())
+		if (fileIndex>=mFilenames.size())
 		{
 			std::cerr <<
 			"Not all the network outputs could be fullfiled.";
 			break;
 		}
 		AudioSink& sink = *GetAudioSinks()[i];
-		writercfg.SetTargetFile(mFilenames[filename]);
+		writercfg.SetTargetFile(mFilenames[fileIndex]);
 		MonoAudioFileWriter * fileWriter = new MonoAudioFileWriter(writercfg);
 		writers.push_back(fileWriter);
-		audioBuffers[filename].SetSize( frameSize );
-		sink.SetExternalBuffer( &(audioBuffers[filename].GetBuffer()[0]) ,frameSize);
-		std::cout << " Out: " << mFilenames[filename] << std::endl;
-		filename++;
+		audioBuffers[fileIndex].SetSize( frameSize );
+		sink.SetExternalBuffer( &(audioBuffers[fileIndex].GetBuffer()[0]) ,frameSize);
+		std::cout << " Out: " << mFilenames[fileIndex] << std::endl;
+		fileIndex++;
 	}
 	
 	for (unsigned i = 0; i<readers.size(); i++)
