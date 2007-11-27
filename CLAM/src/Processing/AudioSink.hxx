@@ -17,8 +17,15 @@ namespace CLAM
 		unsigned mBufferSize;
 
 	public:
-		AudioSink();
-		AudioSink(const ProcessingConfig & conf);
+		AudioSink(const ProcessingConfig & conf=Config())
+			: mIn("AudioIn",this)
+			, mFloatBuffer(0)
+			, mDoubleBuffer(0)
+			, mBufferSize(0)
+		{
+			//After being dropped it is ready to run as it does not need any configuration at all
+			SetExecState(Ready);
+		}
 
 		/// @deprecated Delegated to SetExternalBuffer
 		void SetFrameAndHopSize(const int val)
@@ -27,7 +34,7 @@ namespace CLAM
 			mIn.SetHop(val);
 		}
 
-		~AudioSink();
+		~AudioSink() {}
 
 		void SetExternalBuffer(float* buf, unsigned nframes );
 		void SetExternalBuffer(double* buf, unsigned nframes );

@@ -19,35 +19,13 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, AudioSink> reg = metadata;
 }
 	
-AudioSink::AudioSink()
-	: mIn("AudioIn",this)
-	, mFloatBuffer(0)
-	, mDoubleBuffer(0)
-	, mBufferSize(0)
-{
-	//After being dropped it is ready to run as it does not need any configuration at all
-	SetExecState(Ready);
-}
-
-AudioSink::AudioSink(const ProcessingConfig & conf)
-	: mIn("AudioIn",this)
-	, mFloatBuffer(0)
-	, mDoubleBuffer(0)
-	, mBufferSize(0)
-{
-	//After being dropped it is ready to run as it does not need any configuration at all
-	SetExecState(Ready);
-}
-
-AudioSink::~AudioSink()
-{
-}
 
 bool AudioSink::Do()
 {
 	const CLAM::Audio& so=mIn.GetAudio();
 	CLAM_DEBUG_ASSERT(mFloatBuffer, "No float buffer");
 	CLAM_DEBUG_ASSERT(!mDoubleBuffer, "There should not be double buffer");
+	CLAM_DEBUG_ASSERT(mBufferSize>0, "internal buffer size must be greater than 0");
 	const CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
 	for (unsigned i=0; i<mBufferSize; i++)
 		mFloatBuffer[i] = audioBuffer[i];

@@ -16,8 +16,15 @@ namespace CLAM
 		double* mDoubleBuffer;
 		unsigned mBufferSize;
 	public:
-		AudioSource();
-		AudioSource(const ProcessingConfig & conf);
+		AudioSource(const ProcessingConfig & conf=Config())
+			: mOut("AudioOut",this)
+			, mFloatBuffer(0)
+			, mDoubleBuffer(0)
+			, mBufferSize(0)
+		{
+			//After being dropped it is ready to run as it does not need any configuration at all
+			SetExecState(Ready);
+		}
 
 		void SetFrameAndHopSize(const int val)
 		{
@@ -25,7 +32,6 @@ namespace CLAM
 			mOut.SetHop(val);
 		}
 		
-		~AudioSource();
 		void SetExternalBuffer(float* buf, unsigned nframes );
 		void SetExternalBuffer(double* buf, unsigned nframes );
 
