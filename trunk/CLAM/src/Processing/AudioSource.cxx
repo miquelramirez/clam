@@ -16,35 +16,12 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, AudioSource> reg = metadata;
 }
 	
-AudioSource::AudioSource() 
-	: mOut("AudioOut",this)
-	, mFloatBuffer(0)
-	, mDoubleBuffer(0)
-	, mBufferSize(0)
-{
-	//After being dropped it is ready to run as it does not need any configuration at all
-	SetExecState(Ready);
-}
-
-AudioSource::AudioSource(const ProcessingConfig & conf)
-	: mOut("AudioOut",this)
-	, mFloatBuffer(0)
-	, mDoubleBuffer(0)
-	, mBufferSize(0)
-{
-	//After being dropped it is ready to run as it does not need any configuration at all
-	SetExecState(Ready);
-}
-
-AudioSource::~AudioSource()
-{
-}
-
 bool AudioSource::Do()
 {
 	CLAM::Audio& so=mOut.GetAudio();
 	CLAM_DEBUG_ASSERT(mFloatBuffer, "No float buffer");
 	CLAM_DEBUG_ASSERT(!mDoubleBuffer, "There should not be double buffer");
+	CLAM_DEBUG_ASSERT(mBufferSize>0, "internal buffer size must be greater than 0");
 	CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
 	for (unsigned i=0; i<mBufferSize; i++)
 		audioBuffer[i] = mFloatBuffer[i];
