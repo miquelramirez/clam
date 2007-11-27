@@ -89,7 +89,7 @@ class IRC_Connection( threading.Thread ):
 
 	def send_message( self, line ):
 		"""set here the default way of sending messages to the default irc channel"""
-		self.send_notice_dft_channel( line )
+		self.send_msg_dft_channel( line )
 
 	#
 	# IRC Protocol definition
