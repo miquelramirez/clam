@@ -38,6 +38,20 @@ void NetworkPlayer::CollectSourcesAndSinks()
 			_sinks.push_back( (AudioSink*)it->second );
 	}
 }
+std::string NetworkPlayer::SourcesAndSinksToString()
+{
+	std::string result;
+	Network & net = GetNetwork();
+	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
+	{
+		std::string processingType = it->second->GetClassName();
+		if ( processingType == "AudioSource" )
+			result += " * source:\t"+it->first+"\n";
+		else if ( processingType == "AudioSink" )
+			result += " * sink:\t"+it->first+"\n";
+	}
+	return result;
+}
 
 } //namespace
 

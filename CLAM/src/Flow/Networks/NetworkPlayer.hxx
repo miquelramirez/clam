@@ -81,6 +81,7 @@ public:
 		std::cout << "NetworkPlayer::BackednSampleRate"<<std::endl;
 		return 44100;
 	}
+	std::string SourcesAndSinksToString();
 protected:
 	Network& GetNetwork()
 	{
