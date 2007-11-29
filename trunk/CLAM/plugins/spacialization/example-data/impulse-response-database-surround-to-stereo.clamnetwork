@@ -136,6 +136,10 @@
     <MaxY>1</MaxY>
   </processing>
 
+  <processing id="EquidistantSurround" type="NSurround">
+    <NChannels>5</NChannels>
+  </processing>
+
   <processing id="FFT C" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
@@ -163,39 +167,39 @@
 
   <processing id="IR144" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>HRTFs/elev0/L0e144a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e145a.wav</ImpulseResponse>
   </processing>
 
   <processing id="IR216" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>HRTFs/elev0/L0e216a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e215a.wav</ImpulseResponse>
   </processing>
 
   <processing id="IR288" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>HRTFs/elev0/L0e288a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e290a.wav</ImpulseResponse>
   </processing>
 
   <processing id="IR72" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
-    <ImpulseResponse>HRTFs/elev0/L0e072a.wav</ImpulseResponse>
+    <ImpulseResponse>HRTFs/elev0/L0e070a.wav</ImpulseResponse>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_P" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>carneltestingDatabase/</Path>
+    <Path>carneltestDatabase/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>lalaDatabase/</Path>
+    <Path>carneltestDatabase/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>lalaDatabase/</Path>
+    <Path>carneltestDatabase/</Path>
     <Prefix>vy</Prefix>
   </processing>
 
@@ -282,8 +286,6 @@
   <processing id="SumL3" type="ComplexSpectrumSum"/>
 
   <processing id="SumL4" type="ComplexSpectrumSum"/>
-
-  <processing id="Surround" type="Surround"/>
 
   <processing id="XFader_P" type="AudioBufferCrossFader"/>
 
@@ -496,6 +498,31 @@
   <port_connection>
     <out>DebugImpulseResponse_1.Output</out>
     <in>2MagPhase X.ComplexSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>EquidistantSurround.out 0</out>
+    <in>win C.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>EquidistantSurround.out 72</out>
+    <in>win R.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>EquidistantSurround.out 144</out>
+    <in>win SR.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>EquidistantSurround.out 216</out>
+    <in>win SL.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>EquidistantSurround.out 288</out>
+    <in>win L.Input</in>
   </port_connection>
 
   <port_connection>
@@ -744,31 +771,6 @@
   </port_connection>
 
   <port_connection>
-    <out>Surround.center</out>
-    <in>win C.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Surround.left</out>
-    <in>win L.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Surround.right</out>
-    <in>win R.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Surround.surroundLeft</out>
-    <in>win SL.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Surround.surroundRight</out>
-    <in>win SR.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>XFader_P.CrossFadedBuffer</out>
     <in>toStream P.Audio buffer</in>
   </port_connection>
@@ -785,7 +787,7 @@
 
   <port_connection>
     <out>toStream P.Audio stream</out>
-    <in>Surround.p</in>
+    <in>EquidistantSurround.p</in>
   </port_connection>
 
   <port_connection>
@@ -795,12 +797,12 @@
 
   <port_connection>
     <out>toStream Vx.Audio stream</out>
-    <in>Surround.vx</in>
+    <in>EquidistantSurround.vx</in>
   </port_connection>
 
   <port_connection>
     <out>toStream Vy.Audio stream</out>
-    <in>Surround.vy</in>
+    <in>EquidistantSurround.vy</in>
   </port_connection>
 
   <port_connection>
@@ -830,7 +832,7 @@
 
   <control_connection>
     <out>Cartesian2PolarControl.angle</out>
-    <in>Surround.beta</in>
+    <in>EquidistantSurround.beta</in>
   </control_connection>
 
   <control_connection>
