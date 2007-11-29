@@ -1,88 +1,57 @@
 #ifndef Surround_hxx
 #define Surround_hxx
-#include <CLAM/AudioInPort.hxx>
-#include <CLAM/AudioOutPort.hxx>
-#include <CLAM/Processing.hxx>
-#include <CLAM/Audio.hxx>
-#include <CLAM/InControl.hxx>
-#include <cmath>
 
-class Surround : public CLAM::Processing
-{ 
-	CLAM::AudioInPort _p;
-	CLAM::AudioInPort _vx;
-	CLAM::AudioInPort _vy;
-	CLAM::AudioOutPort _center;
-	CLAM::AudioOutPort _left;
-	CLAM::AudioOutPort _right;
-	CLAM::AudioOutPort _surroundLeft;
-	CLAM::AudioOutPort _surroundRight;
-	CLAM::InControl _beta;
+#include "NSurround.hxx"
+
+class Surround : public NSurround
+{
+	
 public:
 	const char* GetClassName() const { return "Surround"; }
-	Surround(const Config& config = Config()) 
-		: _p("p", this)
-		, _vx("vx", this)
-		, _vy("vy", this)
-		, _center("center", this)
-		, _left("left", this)
-		, _right("right", this)
-		, _surroundLeft("surroundLeft", this)
-		, _surroundRight("surroundRight", this)
-		, _beta("beta", this) // angle in degrees
+	Surround(const Config& config = Config())
+		: NSurround(0)
 	{
 		Configure( config );
+		_nChannels = 5;
 		_beta.SetBounds(-360, 360); //a complete spin on each slider direction
-	}
- 
-	bool Do()
-	{
-		const double beta=_beta.GetLastValue()*M_PI/180; //conversion. beta is in radians
-		const double cosBeta=std::cos(beta);
-		const double sinBeta=std::sin(beta);
-		const double sin30 = .5;
-		const double cos30 = 0.8660254037844387076;
-		const double sin110 = 0.9396926207859084279;
-		const double cos110 = -0.3420201433256687129;
-		const CLAM::DataArray& p =_p.GetAudio().GetBuffer();
-		const CLAM::DataArray& vx =_vx.GetAudio().GetBuffer();
-		const CLAM::DataArray& vy =_vy.GetAudio().GetBuffer();
-		CLAM::DataArray& center =_center.GetAudio().GetBuffer();
-		CLAM::DataArray& left =_left.GetAudio().GetBuffer();
-		CLAM::DataArray& right =_right.GetAudio().GetBuffer();
-		CLAM::DataArray& surroundLeft =_surroundLeft.GetAudio().GetBuffer();
-		CLAM::DataArray& surroundRight =_surroundRight.GetAudio().GetBuffer();
-		for (int i=0; i<p.Size(); i++)
+		
+		std::vector<int> angles;
+		angles.push_back(0);
+		angles.push_back(30);
+		angles.push_back(110);
+		angles.push_back(-110);
+		angles.push_back(-300);
+		std::vector<std::string> names;
+		names.push_back("center");
+		names.push_back("left");
+		names.push_back("right");
+		names.push_back("surroundLeft");
+		names.push_back("surroundRight");
+		for (unsigned i=0; i<_nChannels; i++)
 		{
-			double ux = vx[i] * cosBeta - vy[i] * sinBeta;
-			double uy = vx[i] * sinBeta + vy[i] * cosBeta;
-//			std::cout << "sin beta "<< sinBeta << " cos beta " << cosBeta << std::endl;
-//			std::cout << "ux "<< ux << " uy " << uy << std::endl;
-
-			// General C_i = 0.5 * ( p - ux * cos(alpha_i) - uy * sin(alpha_i) )
-			center[i] = p[i] - ux; // alpha_center = 0 
-			left[i] = p[i] - ux * cos30 - uy * sin30; // alpha_left = 30
-			right[i] = p[i] - ux * cos30 - uy * (-sin30); // alpha_right = -30
-			surroundLeft[i] = p[i] - ux * cos110 - uy * sin110; // alpha_surroundLeft=110
-			surroundRight[i] = p[i] - ux * cos110 - uy * (-sin110); // alpha_surroundRight=-110
-
-			center[i] *= 0.5;
-			left[i] *= 0.5;
-			right[i] *= 0.5;
-			surroundLeft[i] *= 0.5;
-			surroundRight[i] *= 0.5;
+			double angle = 360.*i/_nChannels;
+			angles.push_back(int(angle));
+			double rad = M_PI*angle/180;
+			_sinAlphas.push_back( std::sin(rad) );
+			_cosAlphas.push_back( std::cos(rad) );
+			std::cout << "sin "<< angle << " "<< std::sin(rad) << std::endl;
 		}
+		unsigned buffersize = BackendBufferSize();
+		for (unsigned i=0; i<_nChannels; i++)
+		{
+			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( names[i], this);
+			port->SetSize( buffersize );
+			port->SetHop( buffersize );
+			_outputs.push_back( port );
+		}
+		
+		_p.SetSize(buffersize);
+		_p.SetHop(buffersize);
+		_vx.SetSize(buffersize);
+		_vx.SetHop(buffersize);
+		_vy.SetSize(buffersize);
+		_vy.SetHop(buffersize);
 
-		// Tell the ports this is done
-		_p.Consume();
-		_vx.Consume();
-		_vy.Consume();
-		_center.Produce();
-		_left.Produce();
-		_right.Produce();
-		_surroundLeft.Produce();
-		_surroundRight.Produce();
-		return true;
 	}
 
 };
