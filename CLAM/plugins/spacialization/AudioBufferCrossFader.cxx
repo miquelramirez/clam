@@ -27,7 +27,7 @@ namespace Hidden
 {
 	static const char* metadata[] = {
 		"key", "AudioBufferCrossFader",
-		"category", "Spectral Processing",
+		"category", "New Spectral Processing",
 		"description", "AudioBufferCrossFader",
 		0
 	};

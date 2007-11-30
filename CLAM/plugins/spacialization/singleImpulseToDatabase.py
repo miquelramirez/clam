@@ -36,24 +36,44 @@ def shiftSamples(audio, deltaSamples) :
 
 # Configurable parameters. (TODO make them arguments with sane defaults)
 
-setting = 2
+setting = 4
 if setting == 1:
 	NX = 10
 	NY = 10
 	sizeX = 2. #meters
 	sizeY = 2. #meters
 	recordingDistance = .524263 #meters
+	xs = NX/2.
+	ys = NY/2.
 elif setting == 2:
 	NX = 12 
 	NY = 12
 	sizeX = 12. #meters
 	sizeY = 12. #meters
 	recordingDistance = 7 #meters
+	xs = NX/2.
+	ys = NY/2.
+elif setting == 3: #offline 1
+	NX = 20
+	NY = 20
+	sizeX = 12. #meters
+	sizeY = 12. #meters
+	recordingDistance = 6 #meters
+	xs = NX/2.
+	ys = NY/8.
+elif setting == 4: #offline 2
+	NX = 20
+	NY = 20
+	sizeX = 12. #meters
+	sizeY = 12. #meters
+	recordingDistance = 6 #meters
+	xs = NX/2.
+	ys = 7*NY/8.
 else:
 	assert False, "bad setting"
 
-databasePrefix = "lala"
-wavSourcePrefix = "wavs/CarnelShort"
+databasePrefix = "carneltest"
+wavSourcePrefix = "wavs/CarnelTest"
 print "Usage: ", sys.argv[0], "wav-source-prefix database-prefix"
 print "Example: ", sys.argv[0], "wavs/CarnelShort carnelshort"
 if len(sys.argv)==3:
@@ -66,8 +86,6 @@ print "databaseDir:", databaseDir
 recordingAzimut = 0 #radians
 recordedFilesPattern = databasePrefix+"%s.dat"
 filepattern =  databaseDir+"/%s_emissor_%i-%i-%i_receptor_%i-%i-%i.dat"
-xs = NX/2.
-ys = NY/2.
 
 print "creating database dir: ", databaseDir
 os.system("mkdir -p %s" % databaseDir)

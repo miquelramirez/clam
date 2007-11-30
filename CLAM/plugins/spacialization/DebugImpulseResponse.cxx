@@ -26,7 +26,7 @@ namespace Hidden
 {
 	static const char* metadata[] = {
 		"key", "DebugImpulseResponse",
-		"category", "Spectral Processing",
+		"category", "3D Audio",
 		"description", "DebugImpulseResponse",
 		0
 	};
