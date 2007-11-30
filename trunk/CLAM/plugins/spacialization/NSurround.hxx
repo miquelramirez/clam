@@ -29,7 +29,8 @@ protected:
 	CLAM::InControl _beta;
 	std::vector<double> _sinAlphas;
 	std::vector<double> _cosAlphas;
-	std::vector<CLAM::AudioOutPort*> _outputs;
+	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
+	OutPorts _outputs;
 	unsigned _nChannels;
 	Config _config;
 
@@ -60,6 +61,8 @@ public:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
 		CopyAsConcreteConfig(_config, config);
+		RemovePortsAndControls();
+
 		_nChannels=_config.GetNChannels();
 		std::vector<int> angles;
 		for (unsigned i=0; i<_nChannels; i++)
@@ -106,11 +109,6 @@ public:
 			CLAM::TData* channels[_nChannels];
 			for (unsigned channel=0; channel<_nChannels; channel++)
 				channels[channel] = &_outputs[channel]->GetAudio().GetBuffer()[0];
-/*			channels[1] = &right[0];
-			channels[2] = &surroundRight[0];
-			channels[3] = &surroundLeft[0];
-			channels[4] = &left[0];
-*/
 
 			for (unsigned channel=0; channel<_nChannels; channel++)
 			{
@@ -127,6 +125,21 @@ public:
 		
 		return true;
 	}
+	void RemovePortsAndControls()
+	{
+		OutPorts::iterator it;
+		for(it=_outputs.begin(); it!=_outputs.end(); it++)
+			delete *it;
+		_outputs.clear();
+		// Delete ports from Processing (base class) register
+		GetOutPorts().Clear();
+	}
+	~NSurround()
+	{
+		RemovePortsAndControls();
+	}
+
+
 
 };
 #endif

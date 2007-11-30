@@ -40,14 +40,6 @@
 
   <processing id="BufferOscilloscope" type="BufferOscilloscope"/>
 
-  <processing id="Cartesian2PolarControl" type="Cartesian2PolarControl"/>
-
-  <processing id="ControlPrinter" type="ControlPrinter">
-    <Identifier>ControlPrinter</Identifier>
-    <NumberOfInputs>1</NumberOfInputs>
-    <GuiOnly>1</GuiOnly>
-  </processing>
-
   <processing id="Conv C" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
@@ -249,15 +241,6 @@
 
   <processing id="R" type="AudioSink"/>
 
-  <processing id="Receiver Orientation" type="ControlSurface">
-    <MinX>-1</MinX>
-    <DefaultX>0</DefaultX>
-    <MaxX>1</MaxX>
-    <MinY>-1</MinY>
-    <DefaultY>0</DefaultY>
-    <MaxY>1</MaxY>
-  </processing>
-
   <processing id="Receiver Position" type="ControlSurface">
     <MinX>0</MinX>
     <DefaultX>0</DefaultX>
@@ -292,6 +275,14 @@
   <processing id="XFader_Vx" type="AudioBufferCrossFader"/>
 
   <processing id="XFader_Vy" type="AudioBufferCrossFader"/>
+
+  <processing id="beta" type="OutControlSender">
+    <Min>-360</Min>
+    <Default>0</Default>
+    <Max>360</Max>
+    <Step>3.6</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
 
   <processing id="toStream P" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -831,16 +822,6 @@
   </port_connection>
 
   <control_connection>
-    <out>Cartesian2PolarControl.angle</out>
-    <in>EquidistantSurround.beta</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Cartesian2PolarControl.angle</out>
-    <in>ControlPrinter.In Control</in>
-  </control_connection>
-
-  <control_connection>
     <out>Emitter Position.outX</out>
     <in>ImpulseResponseDatabaseFetcher_Vx.emitterX</in>
   </control_connection>
@@ -871,16 +852,6 @@
   </control_connection>
 
   <control_connection>
-    <out>Receiver Orientation.outX</out>
-    <in>Cartesian2PolarControl.x</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Receiver Orientation.outY</out>
-    <in>Cartesian2PolarControl.y</in>
-  </control_connection>
-
-  <control_connection>
     <out>Receiver Position.outX</out>
     <in>ImpulseResponseDatabaseFetcher_P.receiverX</in>
   </control_connection>
@@ -908,6 +879,11 @@
   <control_connection>
     <out>Receiver Position.outY</out>
     <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>beta.out</out>
+    <in>EquidistantSurround.beta</in>
   </control_connection>
 
 </network>
