@@ -26,7 +26,7 @@ namespace Hidden
 {
 	static const char* metadata[] = {
 		"key", "ComplexSpectrumMixer",
-		"category", "Spectral Processing",
+		"category", "New Spectral Processing",
 		"description", "ComplexSpectrumMixer",
 		0
 	};
