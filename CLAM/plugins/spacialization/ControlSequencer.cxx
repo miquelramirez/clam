@@ -1,5 +1,6 @@
 #include "ControlSequencer.hxx"
 #include <CLAM/ProcessingFactory.hxx>
+#include <CLAM/TypeInfo.hxx>
 
 namespace detail
 {
@@ -10,4 +11,5 @@ namespace detail
 	};
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::ControlSequencer> reg = metadata;
 }
+
 
