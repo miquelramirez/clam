@@ -53,6 +53,11 @@ public:
 		_vy.SetHop(buffersize);
 
 	}
+	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
+	{
+		std::cout << "Surround::ConcreteConfigure()"<<std::endl;
+		return true;
+	}
 
 };
 #endif
