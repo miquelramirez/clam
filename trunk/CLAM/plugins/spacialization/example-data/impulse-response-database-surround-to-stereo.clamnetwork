@@ -920,9 +920,4 @@
     <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
   </control_connection>
 
-  <control_connection>
-    <out>beta.out</out>
-    <in>EquidistantSurround.beta</in>
-  </control_connection>
-
 </network>

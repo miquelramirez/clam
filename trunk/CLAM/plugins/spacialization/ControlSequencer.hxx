@@ -45,7 +45,7 @@ class ControlSequencer : public CLAM::Processing
 	    {
 		  AddAll();
 		  UpdateData();
-		  SetFilename("/tmp/data");
+		  SetFilename("");
 		  SetFrameSize(512);
 		  SetSampleRate(48000);
 		  SetControlsPerSecond(15);
