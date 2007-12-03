@@ -36,7 +36,7 @@ def shiftSamples(audio, deltaSamples) :
 
 # Configurable parameters. (TODO make them arguments with sane defaults)
 
-setting = 4
+setting = 5
 if setting == 1:
 	NX = 10
 	NY = 10
@@ -53,7 +53,7 @@ elif setting == 2:
 	recordingDistance = 7 #meters
 	xs = NX/2.
 	ys = NY/2.
-elif setting == 3: #offline 1
+elif setting == 3: #offline 1 - guitar
 	NX = 20
 	NY = 20
 	sizeX = 12. #meters
@@ -61,7 +61,7 @@ elif setting == 3: #offline 1
 	recordingDistance = 6 #meters
 	xs = NX/2.
 	ys = NY/8.
-elif setting == 4: #offline 2
+elif setting == 4: #offline 2 - cajon
 	NX = 20
 	NY = 20
 	sizeX = 12. #meters
@@ -69,6 +69,14 @@ elif setting == 4: #offline 2
 	recordingDistance = 6 #meters
 	xs = NX/2.
 	ys = 7*NY/8.
+elif setting == 5: #offline 2 - bailaora
+	NX = 20
+	NY = 20
+	sizeX = 12. #meters
+	sizeY = 12. #meters
+	recordingDistance = 6 #meters
+	xs = 3*NX/4.
+	ys = 0
 else:
 	assert False, "bad setting"
 
