@@ -107,15 +107,15 @@ protected:
 
 		//Load the sequence
 		// by now, let's do a circle in the room
-		unsigned NPoints = 100;
+		unsigned NPoints = 300;
 		float delta=3*M_PI/2;
 		float alpha=0.; //listener angle;
 		float deltaInc=2*M_PI/NPoints;
 		float alphaInc=360./NPoints;
 		for (unsigned i=0; i<NPoints; i++)
 		{
-			float x=std::cos(delta)*0.45+0.5;
-			float y=std::sin(delta)*0.45+0.5;
+			float x=std::cos(delta)*0.49+0.5;
+			float y=std::sin(delta)*0.49+0.5;
 			_controls1.push_back(x);
 			_controls2.push_back(y);
 			_controls3.push_back(alpha);
