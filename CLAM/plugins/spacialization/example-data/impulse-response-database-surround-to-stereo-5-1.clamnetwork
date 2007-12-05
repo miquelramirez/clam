@@ -183,23 +183,27 @@
 
   <processing id="ImpulseResponseDatabaseFetcher_P" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>lalaDatabase/</Path>
+    <Path>carneltestDatabase/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>lalaDatabase/</Path>
+    <Path>carneltestDatabase/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>lalaDatabase/</Path>
+    <Path>carneltestDatabase/</Path>
     <Prefix>vy</Prefix>
   </processing>
 
   <processing id="L" type="AudioSink"/>
+
+  <processing id="LibloSource" type="LibloSource">
+    <OscPath>/clam/target</OscPath>
+  </processing>
 
   <processing id="MyFFT" type="MyFFT">
     <AudioSize>1024</AudioSize>
@@ -829,16 +833,6 @@
   </port_connection>
 
   <control_connection>
-    <out>Cartesian2PolarControl.angle</out>
-    <in>Surround.beta</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Cartesian2PolarControl.angle</out>
-    <in>ControlPrinter.In Control</in>
-  </control_connection>
-
-  <control_connection>
     <out>Emitter Position.outX</out>
     <in>ImpulseResponseDatabaseFetcher_Vx.emitterX</in>
   </control_connection>
@@ -869,6 +863,41 @@
   </control_connection>
 
   <control_connection>
+    <out>LibloSource.osc to control 1</out>
+    <in>ImpulseResponseDatabaseFetcher_P.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 1</out>
+    <in>ImpulseResponseDatabaseFetcher_Vx.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 1</out>
+    <in>ImpulseResponseDatabaseFetcher_Vy.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 2</out>
+    <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 2</out>
+    <in>ImpulseResponseDatabaseFetcher_Vx.receiverY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 2</out>
+    <in>ImpulseResponseDatabaseFetcher_Vy.receiverY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>LibloSource.osc to control 3</out>
+    <in>Surround.beta</in>
+  </control_connection>
+
+  <control_connection>
     <out>Receiver Orientation.outX</out>
     <in>Cartesian2PolarControl.x</in>
   </control_connection>
@@ -876,36 +905,6 @@
   <control_connection>
     <out>Receiver Orientation.outY</out>
     <in>Cartesian2PolarControl.y</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Receiver Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher_P.receiverX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Receiver Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher_Vx.receiverX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Receiver Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher_Vy.receiverX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Receiver Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher_Vy.receiverY</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Receiver Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher_Vx.receiverY</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Receiver Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
   </control_connection>
 
 </network>

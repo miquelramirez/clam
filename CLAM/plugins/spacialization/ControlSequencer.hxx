@@ -151,9 +151,9 @@ protected:
 		}
 		// Load the file version
 
-		_indexOut1=6;
-		_indexOut2=7;			
-		_indexOut3=8;
+		_indexOut1=3;
+		_indexOut2=4;			
+		_indexOut3=2;
 		// Load table from file
 		std::ifstream file( _config.GetFilename().c_str() );
 		while (file)
