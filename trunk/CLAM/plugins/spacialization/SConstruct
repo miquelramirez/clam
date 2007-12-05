@@ -35,6 +35,16 @@ sources = scanFiles('*.cxx', sourcePaths)
 sources = dict.fromkeys(sources).keys()
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+	print "adding optimization flags"
+	env.Append( CCFLAGS=[
+		'-fomit-frame-pointer', 
+		'-ffast-math',
+		'-funroll-loops',
+		'-mmmx',
+		'-march=nocona',
+		'-msse',
+		'-mfpmath=sse'
+	])
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]

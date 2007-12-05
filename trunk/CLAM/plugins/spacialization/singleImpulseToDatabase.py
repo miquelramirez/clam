@@ -36,7 +36,7 @@ def shiftSamples(audio, deltaSamples) :
 
 # Configurable parameters. (TODO make them arguments with sane defaults)
 
-setting = 5
+setting = 2
 if setting == 1:
 	NX = 10
 	NY = 10
@@ -46,8 +46,8 @@ if setting == 1:
 	xs = NX/2.
 	ys = NY/2.
 elif setting == 2:
-	NX = 12 
-	NY = 12
+	NX = 10
+	NY = 10
 	sizeX = 12. #meters
 	sizeY = 12. #meters
 	recordingDistance = 7 #meters
