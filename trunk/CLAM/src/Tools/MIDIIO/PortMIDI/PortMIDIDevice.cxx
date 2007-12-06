@@ -77,8 +77,8 @@ namespace CLAM {
 									NULL,                      /** device info */
 									100,                       /** stream size */
 									NULL,
-									NULL,
 									0 );
+
 		if (err)
 		{
 			std::string str("Could not open PortMIDIDevice ");
