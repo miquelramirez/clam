@@ -40,7 +40,7 @@ def define_module_contents(env) :
 		folders.append('src/Flow/Networks/PANetworkPlayer*.*xx')
 
 	if env['with_portmidi'] :
-		folders.append( 'src/Tools/PortMIDI' )
+		folders.append( 'src/Tools/MIDIIO/PortMIDI' )
 
 	if sys.platform == 'linux2' :
 		if env['with_alsa'] :
