@@ -15,7 +15,7 @@ namespace CLAM
 {
 
 /*
-// Don't know how to make it work (Pau)
+// Don't know how to make this class work. So use string instad --Pau
 
 class DataInFilename : public InFilename
 {
@@ -89,14 +89,14 @@ public:
 		_sampleCount += _frameSize;
 		if (_sampleCount>=_samplesPerControl)
 		{
-			std::cout << _sequenceIndex << " " << std::flush;
+			//std::cout << _sequenceIndex << " " << std::flush;
 			//TODO check that _indexOut1,2,3 < _controlSequence[_sequenceIndex].size()
 			_out1.SendControl( _controlSequence[_sequenceIndex][_indexOut1] );
 			_out2.SendControl( _controlSequence[_sequenceIndex][_indexOut2] );
 			_out3.SendControl( _controlSequence[_sequenceIndex][_indexOut3] );
 			_sampleCount -= _samplesPerControl;
 			_sequenceIndex++;
-			if (_sequenceIndex==_controlSequence.size())
+			if (_sequenceIndex >= _controlSequence.size())
 			{
 				_sequenceIndex=0;
 				std::cout << std::endl << "\n End of control sequence. Starting new iteration\n"<<std::endl;;
@@ -125,6 +125,7 @@ protected:
 		//Load the sequence
 		if (_config.GetFilename()=="") // Walk in circles version
 		{
+			std::cout << "spiral version"<<std::endl;
 			_indexOut1=0;
 			_indexOut2=1;
 			_indexOut3=2;
@@ -134,23 +135,26 @@ protected:
 			float delta=3*M_PI/2;
 			float alpha=0.; //listener angle;
 			float deltaInc=2*M_PI/NPoints;
-			float alphaInc=360./NPoints;
+			float ratio=1;
+//			float alphaInc=360./NPoints;
 			for (unsigned i=0; i<NPoints; i++)
 			{
-				float x=std::cos(delta)*0.49+0.5;
-				float y=std::sin(delta)*0.49+0.5;
+				ratio = float(NPoints-i)/NPoints;
+				float x=std::cos(delta)*0.49*ratio+0.5;
+				float y=std::sin(delta)*0.49*ratio+0.5;
 				Row row;
 				row.push_back(x);
 				row.push_back(y);
 				row.push_back(alpha);
 				_controlSequence.push_back(row);
 				delta+=deltaInc;
-				alpha+=alphaInc;
+		//		alpha+=alphaInc;
 			}
 			return true;
 		}
 		// Load the file version
-
+		CLAM_ASSERT(false, "should not reach here");
+		std::cout << "ControlSequencer: read from file version"<<std::endl;
 		_indexOut1=3;
 		_indexOut2=4;			
 		_indexOut3=2;
