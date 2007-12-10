@@ -31,19 +31,19 @@
 
   <processing id="ImpulseResponseDatabaseFetcher_Pressure" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>carneltestDatabase/</Path>
+    <Path>db4/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>carneltestDatabase/</Path>
+    <Path>db4/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>carneltestDatabase/</Path>
+    <Path>db4/</Path>
     <Prefix>vy</Prefix>
   </processing>
 
