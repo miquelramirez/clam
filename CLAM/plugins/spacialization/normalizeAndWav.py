@@ -38,5 +38,16 @@ def processDir(dir):
 			print "converting: ",filename
 			convertDatToWav(filename, globalmaxSampler)
 
+def main():
+	import sys
+	if len(sys.argv)<=1 :
+		print "Error: pass the dir with *.dat as argument"
+		return
+		 
+	dir = sys.argv[1]
+	print "Normalizing and converting to wav this dir: ", dir
+	processDir( dir )
 
 
+if __name__=="__main__" :
+	main()

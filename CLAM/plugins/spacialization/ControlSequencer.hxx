@@ -131,7 +131,7 @@ protected:
 			_indexOut3=2;
 
 			// by now, let's do a circle in the room
-			unsigned NPoints = 300;
+			unsigned NPoints = 100;
 			float delta=3*M_PI/2;
 			float alpha=0.; //listener angle;
 			float deltaInc=2*M_PI/NPoints;
@@ -153,7 +153,6 @@ protected:
 			return true;
 		}
 		// Load the file version
-		CLAM_ASSERT(false, "should not reach here");
 		std::cout << "ControlSequencer: read from file version"<<std::endl;
 		_indexOut1=3;
 		_indexOut2=4;			
