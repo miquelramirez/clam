@@ -25,11 +25,17 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
+  <processing id="ControlPrinter_1" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
   <processing id="ControlSequencer" type="ControlSequencer">
-    <Filename>lalala</Filename>
+    <Filename>current_path.data</Filename>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>15</ControlsPerSecond>
+    <ControlsPerSecond>24</ControlsPerSecond>
   </processing>
 
   <processing id="Convolution_P" type="LowLatencyConvolution">
@@ -73,7 +79,7 @@
 
   <processing id="Gain 0" type="OutControlSender">
     <Min>0</Min>
-    <Default>0.8</Default>
+    <Default>1</Default>
     <Max>1</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
@@ -81,19 +87,19 @@
 
   <processing id="ImpulseResponseDatabaseFetcher_P" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>offline1Database/</Path>
+    <Path>db/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>offline1Database/</Path>
+    <Path>db/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>offline1Database/</Path>
+    <Path>db/</Path>
     <Prefix>vy</Prefix>
   </processing>
 
@@ -393,6 +399,11 @@
   <control_connection>
     <out>ControlSequencer.out 2</out>
     <in>ImpulseResponseDatabaseFetcher_Vy.receiverY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ControlSequencer.out 2</out>
+    <in>ControlPrinter_1.In Control</in>
   </control_connection>
 
   <control_connection>
