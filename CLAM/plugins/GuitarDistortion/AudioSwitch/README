@@ -1,0 +1,9 @@
+== Description ==
+
+Switchs between a configurable amount of inputs (like a multiplexer)
+
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install

@@ -1,0 +1,9 @@
+== Description ==
+
+Adaptative automatic gain control. Given an output reference and step response adjusts the output volume to keep it constant.
+
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install

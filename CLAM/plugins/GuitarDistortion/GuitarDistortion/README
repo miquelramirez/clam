@@ -1,0 +1,9 @@
+== Description ==
+
+Overdriven guitar distortion with two controls: distortion and compression amount. 
+
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install
