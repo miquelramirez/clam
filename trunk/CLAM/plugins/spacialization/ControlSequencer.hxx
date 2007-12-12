@@ -89,7 +89,7 @@ public:
 		_sampleCount += _frameSize;
 		if (_sampleCount>=_samplesPerControl)
 		{
-			//std::cout << _sequenceIndex << " " << std::flush;
+			//std::cout << ", ctl "<<_sequenceIndex << "/" <<_controlSequence.size() << std::flush;
 			//TODO check that _indexOut1,2,3 < _controlSequence[_sequenceIndex].size()
 			_out1.SendControl( _controlSequence[_sequenceIndex][_indexOut1] );
 			_out2.SendControl( _controlSequence[_sequenceIndex][_indexOut2] );
@@ -153,7 +153,7 @@ protected:
 			return true;
 		}
 		// Load the file version
-		std::cout << "ControlSequencer: read from file version"<<std::endl;
+		std::cout << "ControlSequencer: read from file version. File: "<< _config.GetFilename() << std::endl;
 		_indexOut1=3;
 		_indexOut2=4;			
 		_indexOut3=2;

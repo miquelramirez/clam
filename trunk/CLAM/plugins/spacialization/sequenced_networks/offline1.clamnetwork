@@ -52,10 +52,10 @@
   </processing>
 
   <processing id="ControlSequencer" type="ControlSequencer">
-    <Filename></Filename>
+    <Filename>realitzacions/path_explorer_02.data</Filename>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>50</ControlsPerSecond>
+    <ControlsPerSecond>24</ControlsPerSecond>
   </processing>
 
   <processing id="Conv C" type="LowLatencyConvolution">
@@ -205,19 +205,19 @@
 
   <processing id="ImpulseResponseDatabaseFetcher_P" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>db3/</Path>
+    <Path>db4/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>db3/</Path>
+    <Path>db4/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>db3/</Path>
+    <Path>db4/</Path>
     <Prefix>vy</Prefix>
   </processing>
 
