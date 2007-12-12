@@ -14,7 +14,7 @@ def norun(command) :
 
 examples = [
 	('realitzacions/realitzacio_centered.data', 'renderedwavs/realitzacio_centered', 'db4'),
-	('realitzacions/explorer2.data', 'renderedwavs/explorer2', 'db4'),
+	('realitzacions/explorer2.data', 'renderedwavs/explorer2', 'db4'), # db4: source centered
 	('realitzacions/explorer3.data', 'renderedwavs/explorer3', 'db4'),
 	('realitzacions/realitzacio1.data', 'renderedwavs/realitzacio1', 'db7/source3'),
 	('realitzacions/realitzacio2.data', 'renderedwavs/realitzacio2', 'db7/source3'),
@@ -26,8 +26,8 @@ examples = [
 for pathfile, outdir, db in examples:
 	run("rm -rf %s" % outdir)
 	run("mkdir -p %s" % outdir)
-	run("rm current_path.data && ln -s %s current_path.data" % pathfile)
-	run("rm db && ln -s %s db" % db)
+	run("rm -f current_path.data && ln -s %s current_path.data" % pathfile)
+	run("rm -f db && ln -s %s db" % db)
 
 	cmd = "./OfflinePlayer sequenced_networks/offline1_surround.clamnetwork wavs/flamenco_mix.wav %(dir)s/C.wav %(dir)s/L.wav %(dir)s/R.wav %(dir)s/SL.wav %(dir)s/SR.wav" % {
 		'dir':outdir
