@@ -1,0 +1,39 @@
+#!/usr/bin/python
+
+import os
+
+def run(command) :
+	print "\033[32m:: ", command, "\033[0m"
+	return os.system(command)
+	for line in os.popen(command) :
+		print line,
+		sys.stdout.flush()
+def norun(command) :
+	print "\033[31mXX ", command, "\033[0m"
+
+
+examples = [
+	('realitzacions/realitzacio_3_all_centered.data', 'renderedwavs/realitzacio_centered', 'db4'),
+	('realitzacions/exported_actors_positions.data', 'renderedwavs/', 'db4'),
+	('realitzacions/path_explorer_02.data', 'renderedwavs/explorer2', 'db4'),
+	('realitzacions/path_explorer_03.data', 'renderedwavs/explorer3', 'db4'),
+	('realitzacions/path_camera_motion_realitzacio_1.data', 'renderedwavs/realitzacio1', 'db7/source3'),
+	('realitzacions/path_camera_motion_realitzacio_2.data', 'renderedwavs/realitzacio2/', 'db7/source3'),
+]
+
+examples = [
+	('realitzacions/path_explorer_02.data', 'renderedwavs/explorer2', 'db4'),
+]
+
+for pathfile, outdir, db in examples:
+	run("rm -rf %s" % outdir)
+	run("mkdir -p %s" % outdir)
+	run("rm current_path.data && ln -s %s current_path.data" % pathfile)
+	run("rm db && ln -s %s db" % db)
+
+	cmd = "./OfflinePlayer sequenced_networks/offline1_surround.clamnetwork wavs/flamenco_mix.wav %(dir)s/C.wav %(dir)s/L.wav %(dir)s/R.wav %(dir)s/SL.wav %(dir)s/SR.wav" % {
+		'dir':outdir
+	}
+	run(cmd)
+	run("zip -r %s.zip %s" % (outdir, outdir) )
+
