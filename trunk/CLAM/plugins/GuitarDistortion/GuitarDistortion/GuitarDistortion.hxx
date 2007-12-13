@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2007 by Hernan Ordiales <audiocode@uint8.com.ar>
  *
- * Special thanks to Daniel Vidal Chornet <vidal_dan@hotmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,11 +27,57 @@
 #include <CLAM/Audio.hxx>
 #include <CLAM/AudioInPort.hxx>
 #include <CLAM/AudioOutPort.hxx>
-#include <CLAM/InControl.hxx>
+#include <CLAM/InControlArray.hxx>
+#include <CLAM/Enum.hxx>
 
 #include <CLAM/CLAM_Math.hxx>
 
 namespace CLAM{
+
+	static inline TData Sign( TData value )
+	{
+		return ( value > 0. ) ? 1. : -1.;
+	}
+
+	class EDistType : public Enum
+	{
+	public:
+		EDistType() : Enum(ValueTable(), ePolynomial) {}
+		EDistType(tValue v) : Enum(ValueTable(), v) {};
+		EDistType(std::string s) : Enum(ValueTable(), s) {};
+		virtual Component* Species() const { return new EDistType(ePolynomial); }
+	
+		typedef enum {
+			eFactor,
+			eAtan,
+			ePolynomial
+		};
+	
+		static tEnumValue * ValueTable()
+		{
+			static tEnumValue sValueTable[] =
+			{
+				{eFactor,"Factor"},
+				{eAtan,"Atan"},
+				{ePolynomial,"Polynomial"},
+				{0,NULL}
+			};
+			return sValueTable;
+		}
+	};
+
+	/**
+	 *	GuitarDistortion configuration object.
+	 */
+	class GuitarDistortionConfig : public ProcessingConfig
+	{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE( GuitarDistortionConfig, 1, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, EDistType, DistortionType );
+
+	protected:
+		void DefaultInit();
+	};
 
 	/**	\brief GuitarDistortion
 	 *
@@ -50,43 +95,48 @@ namespace CLAM{
 		AudioOutPort mOutputAudio;
 
 		/** Controls **/
-		InControl mDistortion; ///< amount of distortion
-		InControl mCompression; ///< amount of compression
+		InControlArray mParams; ///< Parameters
 
+		EDistType mDistType; ///< kind of distortion selector
+
+
+		/** Factor distortion values **/
 		const TData mCompMaxValue; ///< max compression default value
-		TData gain; ///< automatic gain control
-		TData gstep; ///< adaptation gain step
+		TData mGain; ///< automatic mGain control
+		TData mGainStep; ///< adaptation mGain step
 
 	public:
-		GuitarDistortion(const Config & config=Config())
+		GuitarDistortion()
 			:
 			mInputAudio("Input Audio",this ),
 			mOutputAudio("Audio Output",this),
 
-			mDistortion("Distortion amount", this),
-			mCompression("Compression amount", this),
+			mParams(0,"Parameters", this),
 
 			mCompMaxValue(10.)
 		{
-			Configure( config );
-
-			gstep = 0.1; //fixed default value
-			gain = 1.; // starting gain
-
-			mDistortion.SetBounds(0.,1.);
-			mDistortion.SetDefaultValue(0.);
-			mDistortion.DoControl(0.);
-
-			mCompression.SetBounds(0.,mCompMaxValue);
-			mCompression.SetDefaultValue(mCompMaxValue*0.9);
-			mCompression.DoControl(mCompMaxValue*0.9);
+			Configure( mConfig );
 		}
 
  		~GuitarDistortion() {}
 
 		bool Do()
 		{
-			bool result = Do( mInputAudio.GetAudio(), mOutputAudio.GetAudio() );
+			bool result = false;
+			switch( mDistType )
+			{
+			case EDistType::eFactor:
+				result = DoFactor( mInputAudio.GetAudio(), mOutputAudio.GetAudio() );
+				break;
+			case EDistType::eAtan:
+				result = DoAtan( mInputAudio.GetAudio(), mOutputAudio.GetAudio() );
+				break;
+			case EDistType::ePolynomial:
+				result = DoPolynomial( mInputAudio.GetAudio(), mOutputAudio.GetAudio() );
+				break;
+			default:
+				CLAM_ASSERT( false, "Bad mDistType" );
+			}
 
 			mInputAudio.Consume(); 
 			mOutputAudio.Produce();
@@ -94,36 +144,145 @@ namespace CLAM{
 			return result;
 		}
 	
-		bool Do(const Audio& in, Audio& out)
+		bool DoFactor(const Audio& in, Audio& out)
 		{
 			int size = in.GetSize();
 			DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 
-			TData ogainref = mCompression.GetLastValue(); //output power reference
-			gstep = 0.1;
-			if (ogainref>mCompMaxValue-0.01)
-				ogainref = mCompMaxValue-0.01;
-			else if (ogainref<0.01) 
-			{
-				//compression off
-				gstep = 0.;
-				gain = 1.;
-			}
-			ogainref = (mCompMaxValue-ogainref)/100.; //adjust and inverts the slider value
-
-			TData amount = mDistortion.GetLastValue();
+			//Distortion param
+			TData amount = mParams[0].GetLastValue();
 			amount = 1. - CLAM_pow( 1.-amount, 4. ); //value adjust to get more resolution on 0.7-1.0 range
 			if (amount > 0.99) amount = 0.99; // to get it stable avoids division by zero
+
+			//Compression param
+			TData omGainref = mParams[1].GetLastValue(); //output power reference
+			mGainStep = 0.1;
+			if (omGainref>mCompMaxValue-0.01)
+				omGainref = mCompMaxValue-0.01;
+			else if (omGainref<0.01) 
+			{
+				//compression off
+				mGainStep = 0.;
+				mGain = 1.;
+			}
+			omGainref = (mCompMaxValue-omGainref)/100.; //adjust and inverts the slider value
 
 			TData k = 2. * amount / ( 1. - amount );
 			for (int i=0;i<size;i++) 
 			{
-				outb[i] = (1.+k)*inb[i] / ( 1. + k*Abs(inb[i]) ) * gain;
-				gain += gstep * ( ogainref - outb[i]*outb[i] );
+				outb[i] = (1.+k)*inb[i] / ( 1. + k*Abs(inb[i]) ) * mGain;
+				mGain += mGainStep * ( omGainref - outb[i]*outb[i] );
 			}
 			return true;
 		}
+
+		bool DoAtan(const Audio& in, Audio& out)
+		{
+			int size = in.GetSize();
+			DataArray& inb = in.GetBuffer();
+			DataArray& outb = out.GetBuffer();
+
+			TData amount = mParams[0].GetLastValue();
+// 			amount -= 50;
+			for (int i=0;i<size;i++) 
+			{
+				outb[i] = atan( inb[i]*amount ) / atan(amount);
+			}
+			return true;
+		}
+
+		bool DoPolynomial(const Audio& in, Audio& out)
+		{
+			int size = in.GetSize();
+			DataArray& inb = in.GetBuffer();
+			DataArray& outb = out.GetBuffer();
+
+			TData a = mParams[0].GetLastValue();
+			TData b = mParams[1].GetLastValue();
+
+			for (int i=0;i<size;i++) 
+			{
+				outb[i] = a*inb[i] + b*( inb[i]*inb[i] )*Sign(inb[i]);
+			}
+			return true;
+		}
+
+		typedef GuitarDistortionConfig Config;
+
+
+	protected:
+
+		const ProcessingConfig& GetConfig() const {	return mConfig; }
+
+		bool ConcreteConfigure(const ProcessingConfig& config) {
+
+			CopyAsConcreteConfig( mConfig, config );
+
+			unsigned int controls_amount = 0;
+
+			mDistType = mConfig.GetDistortionType();
+			switch( mDistType )
+			{
+			case EDistType::eFactor:
+				controls_amount = 2;
+				break;
+			case EDistType::eAtan:
+				controls_amount = 1;
+				break;
+			case EDistType::ePolynomial:
+				controls_amount = 2;
+				break;
+			default:
+				CLAM_ASSERT( false, "Bad mDistType" );
+			}
+
+			mParams.Resize(controls_amount, "Param", this);
+			for (int i=0; i < mParams.Size(); i++)
+			{
+				mParams[i].SetBounds(0.,1.);
+				mParams[i].SetDefaultValue(0.);
+				mParams[i].DoControl(0.);
+			}
+
+			switch( mDistType )
+			{
+			case EDistType::eFactor:
+				//Compression
+				mParams[1].SetBounds(0.,mCompMaxValue);
+				mParams[1].SetDefaultValue(mCompMaxValue*0.9);
+				mParams[1].DoControl(mCompMaxValue*0.9);
+
+				mGainStep = 0.1; //fixed default value
+				mGain = 1.; // starting mGain
+				break;
+
+			case EDistType::eAtan:
+				mParams[0].SetBounds(0,100);
+				mParams[0].SetDefaultValue(0.5);
+				mParams[0].DoControl(0.5);
+				break;
+
+			case EDistType::ePolynomial:
+				mParams[0].SetBounds(0,100);
+				mParams[0].SetDefaultValue(1);
+				mParams[0].DoControl(1);
+
+				mParams[1].SetBounds(0,100);
+				mParams[1].SetDefaultValue(0);
+				mParams[1].DoControl(0);
+				break;
+			default:
+				CLAM_ASSERT( false, "Bad mDistType" );
+			}
+
+			return true;
+		}
+
+	private:
+
+		/** Configuration **/
+		Config mConfig;
 	};	
 	
 };//namespace CLAM

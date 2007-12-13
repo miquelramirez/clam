@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2007 by Hernan Ordiales <audiocode@uint8.com.ar>
  *
- * Special thanks to Daniel Vidal Chornet <vidal_dan@hotmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,4 +35,10 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, GuitarDistortion> reg = metadata;
 }
 
+	void GuitarDistortionConfig::DefaultInit( )
+	{
+		AddAll();
+		UpdateData();
+		SetDistortionType(EDistType::eAtan);
+	}
 }
