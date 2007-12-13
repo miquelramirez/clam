@@ -52,7 +52,7 @@
   </processing>
 
   <processing id="ControlSequencer" type="ControlSequencer">
-    <Filename>realitzacions/path_explorer_02.data</Filename>
+    <Filename>current_path.data</Filename>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
     <ControlsPerSecond>24</ControlsPerSecond>
@@ -205,19 +205,19 @@
 
   <processing id="ImpulseResponseDatabaseFetcher_P" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>db4/</Path>
+    <Path>db/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>db4/</Path>
+    <Path>db/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>db4/</Path>
+    <Path>db/</Path>
     <Prefix>vy</Prefix>
   </processing>
 
@@ -286,6 +286,8 @@
   <processing id="SumL3" type="ComplexSpectrumSum"/>
 
   <processing id="SumL4" type="ComplexSpectrumSum"/>
+
+  <processing id="VelocityAdapter" type="VelocityAdapter"/>
 
   <processing id="XFader_P" type="AudioBufferCrossFader"/>
 
@@ -781,6 +783,16 @@
   </port_connection>
 
   <port_connection>
+    <out>VelocityAdapter.Vy input</out>
+    <in>EquidistantSurround.vx</in>
+  </port_connection>
+
+  <port_connection>
+    <out>VelocityAdapter.Vy output</out>
+    <in>EquidistantSurround.vy</in>
+  </port_connection>
+
+  <port_connection>
     <out>XFader_P.CrossFadedBuffer</out>
     <in>toStream P.Audio buffer</in>
   </port_connection>
@@ -807,12 +819,12 @@
 
   <port_connection>
     <out>toStream Vx.Audio stream</out>
-    <in>EquidistantSurround.vx</in>
+    <in>VelocityAdapter.Vx input</in>
   </port_connection>
 
   <port_connection>
     <out>toStream Vy.Audio stream</out>
-    <in>EquidistantSurround.vy</in>
+    <in>VelocityAdapter.Vy input</in>
   </port_connection>
 
   <port_connection>
@@ -872,12 +884,7 @@
 
   <control_connection>
     <out>ControlSequencer.out 3</out>
-    <in>EquidistantSurround.beta</in>
-  </control_connection>
-
-  <control_connection>
-    <out>ControlSequencer.out 3</out>
-    <in>ControlPrinter.In Control</in>
+    <in>VelocityAdapter.beta input</in>
   </control_connection>
 
   <control_connection>
@@ -913,6 +920,11 @@
   <control_connection>
     <out>Gain 0.out</out>
     <in>AudioMixer.Gain 0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>VelocityAdapter.beta output</out>
+    <in>EquidistantSurround.beta</in>
   </control_connection>
 
 </network>

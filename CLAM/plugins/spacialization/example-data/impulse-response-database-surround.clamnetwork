@@ -31,19 +31,19 @@
 
   <processing id="ImpulseResponseDatabaseFetcher_Pressure" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>db4/</Path>
+    <Path>db/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>db4/</Path>
+    <Path>db/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>db4/</Path>
+    <Path>db/</Path>
     <Prefix>vy</Prefix>
   </processing>
 
@@ -144,6 +144,8 @@
   <processing id="SR" type="AudioSink"/>
 
   <processing id="Surround" type="Surround"/>
+
+  <processing id="VelocityAdapter" type="VelocityAdapter"/>
 
   <processing id="beta" type="OutControlSender">
     <Min>-360</Min>
@@ -336,16 +338,6 @@
   </port_connection>
 
   <port_connection>
-    <out>Surround.left</out>
-    <in>L.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Surround.left</out>
-    <in>Oscilloscope L.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>Surround.right</out>
     <in>R.AudioIn</in>
   </port_connection>
@@ -353,16 +345,6 @@
   <port_connection>
     <out>Surround.right</out>
     <in>Oscilloscope R.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Surround.surroundLeft</out>
-    <in>SL.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Surround.surroundLeft</out>
-    <in>Oscilloscope SL.Input</in>
   </port_connection>
 
   <port_connection>
@@ -376,18 +358,48 @@
   </port_connection>
 
   <port_connection>
+    <out>Surround.surroundLeft</out>
+    <in>SL.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.surroundLeft</out>
+    <in>Oscilloscope SL.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.left</out>
+    <in>L.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.left</out>
+    <in>Oscilloscope L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>VelocityAdapter.Vy input</out>
+    <in>Surround.vx</in>
+  </port_connection>
+
+  <port_connection>
+    <out>VelocityAdapter.Vy output</out>
+    <in>Surround.vy</in>
+  </port_connection>
+
+  <port_connection>
     <out>toStream.Audio stream</out>
     <in>Surround.p</in>
   </port_connection>
 
   <port_connection>
     <out>toStream2.Audio stream</out>
-    <in>Surround.vx</in>
+    <in>VelocityAdapter.Vx input</in>
   </port_connection>
 
   <port_connection>
     <out>toStream3.Audio stream</out>
-    <in>Surround.vy</in>
+    <in>VelocityAdapter.Vy input</in>
   </port_connection>
 
   <control_connection>
@@ -461,8 +473,13 @@
   </control_connection>
 
   <control_connection>
-    <out>beta.out</out>
+    <out>VelocityAdapter.beta output</out>
     <in>Surround.beta</in>
+  </control_connection>
+
+  <control_connection>
+    <out>beta.out</out>
+    <in>VelocityAdapter.beta input</in>
   </control_connection>
 
 </network>

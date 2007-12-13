@@ -25,30 +25,40 @@ examples = [
 	('realitzacio2', 'db11/source3', 'wavs/flamenco_bailaora_inspirada.wav'),
 ]
 examples = [
-	('realitzacio2', 'db11/source0', 'wavs/flamenco_guitar.wav'),
+	('realitzacio2', 'db15/source0', 'wavs/flamenco_guitar.wav'),
+	('explorer3', 'db15/source0', 'wavs/flamenco_guitar.wav'),
 ]
 
-for realitzation_name, db, inputwav in examples:
+for realization_name, db, inputwav in examples:
 	vars = {
-		'pathfile': 'realitzacions/%s.data'%realitzation_name,
-		'outdir': 'renderedfiles/%s'%realitzation_name, 
+		'pathfile': 'realitzacions/%s.data'%realization_name,
+		'outdir': 'renderedfiles/%s'%realization_name, 
 		'db': db,
-		'realization_name': realitzation_name,
+		'realization_name': realization_name,
 		'inputwav': inputwav
 	}
 	print vars
 	run("rm -rf %(outdir)s" % vars)
-	run("mkdir -p %(outdir)s" % vars)
+	run("mkdir -p %(outdir)s/stereo" % vars)
 	run("rm -f current_path.data && ln -s %(pathfile)s current_path.data" % vars)
 	run("rm -f db && ln -s %(db)s db" % vars)
 
+	#process
 	cmd = "./OfflinePlayer sequenced_networks/offline1_surround.clamnetwork %(inputwav)s %(outdir)s/C.wav %(outdir)s/L.wav %(outdir)s/R.wav %(outdir)s/SL.wav %(outdir)s/SR.wav" % vars
-	run(cmd) #process
-	run("cd s(outdir)/.. && zip -r %(realization_name)s.zip %(realization_name)s/" % vars ) #zip
+	norun(cmd) 
+	cmd_stereo = "./OfflinePlayer sequenced_networks/offline1.clamnetwork %(inputwav)s %(outdir)s/stereo/L.wav %(outdir)s/stereo/R.wav" % vars
+	run(cmd_stereo)
+	#zip
+	norun("cd %(outdir)s/.. && zip -r %(realization_name)s.zip %(realization_name)s/" % vars ) #zip
 	
 	# encode surround ac3 file
-	run("cd %(outdir)s && sox -M L.wav R.wav C.wav SL.wav SR.wav surround.wav" % vars)
-	run("cd %(outdir)s && aften -b 448 -cmix 0 -smix 0 -dsur 2 -acmod 7 surround.wav surround.ac3" % vars)
+	norun("cd %(outdir)s && sox -M L.wav R.wav C.wav SL.wav SR.wav surround.wav" % vars)
+	norun("cd %(outdir)s && aften -b 448 -cmix 0 -smix 0 -dsur 2 -acmod 7 surround.wav surround.ac3" % vars)
+	# encode stereo file
+	run("cd %(outdir)s/stereo && sox -M L.wav R.wav stereo.wav" % vars)
 
-	# encode avi
-	run("mencoder -ovc copy realitzacions/realitzacio2.avi -audiofile %(outdir)s/surround.ac3 -oac copy -o %(outdir)s/realitzacio2_ac3.avi" % vars)
+	# encode avi surround
+	run("mencoder -ovc copy realitzacions/%(realization_name)s_22fps.avi -audiofile %(outdir)s/surround.ac3 -oac copy -o %(outdir)s/%(realization_name)s_ac3.avi" % vars)
+
+	# encode avi stereo
+	run("mencoder -ovc copy realitzacions/%(realization_name)s_22fps.avi -audiofile %(outdir)s/stereo/stereo.wav -oac copy -o %(outdir)s/%(realization_name)s_hrtf_stereo.avi" % vars)
