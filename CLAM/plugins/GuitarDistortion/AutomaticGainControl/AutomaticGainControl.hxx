@@ -18,7 +18,6 @@
  *
  */
 
-
 #ifndef _AutomaticGainControl_
 #define _AutomaticGainControl_
 
@@ -26,6 +25,7 @@
 #include <CLAM/Audio.hxx>
 #include <CLAM/AudioInPort.hxx>
 #include <CLAM/AudioOutPort.hxx>
+#include <CLAM/InControl.hxx>
 
 namespace CLAM{
 
@@ -35,9 +35,8 @@ namespace CLAM{
 	class AutomaticGainControlConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE( AutomaticGainControlConfig, 2, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( AutomaticGainControlConfig, 1, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, TData, AdaptationStep );
-		DYN_ATTRIBUTE( 1, public, TData, OutputPowerReference );
 
 	protected:
 		void DefaultInit();
@@ -59,6 +58,9 @@ namespace CLAM{
 		AudioInPort mInputAudio;
 		AudioOutPort mOutputAudio;
 
+		/** Controls **/
+		InControl mOutputReference;
+
 		TData gain;
 		TData mStep; ///< adaptation step
 		TData mORef; ///< output power reference
@@ -66,10 +68,17 @@ namespace CLAM{
 	public:
 		AutomaticGainControl()
 			:
-			mInputAudio("Input Audio",this ),
-			mOutputAudio("Audio Output",this)
+			mInputAudio("Input Audio",this),
+			mOutputAudio("Audio Output",this),
+
+			mOutputReference("OutputReference",this)
 		{
 			Configure( mConfig );
+
+			mOutputReference.SetBounds(0.,1.);
+			mOutputReference.SetDefaultValue(0.1);
+			mOutputReference.DoControl(0.1);
+
 			gain = 1.; // starting gain
 		}
 
@@ -91,6 +100,7 @@ namespace CLAM{
 			DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 
+			mORef = mOutputReference.GetLastValue();
 			for (int i=0;i<size;i++) 
 			{
 				outb[i] = inb[i] * gain;
@@ -109,7 +119,6 @@ namespace CLAM{
 
 			CopyAsConcreteConfig( mConfig, config );
 			mStep = mConfig.GetAdaptationStep();
-			mORef = mConfig.GetOutputPowerReference();
 			return true;
 		}
 
