@@ -70,6 +70,7 @@ void FreewheelingNetworkPlayer::Start()
 		}
 		AudioSink& sink = *GetAudioSinks()[i];
 		writercfg.SetTargetFile(mFilenames[fileIndex]);
+		writercfg.SetSampleRate(48000); //TODO deduce from inputs.
 		MonoAudioFileWriter * fileWriter = new MonoAudioFileWriter(writercfg);
 		writers.push_back(fileWriter);
 		audioBuffers[fileIndex].SetSize( frameSize );
