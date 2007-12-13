@@ -2,7 +2,7 @@
 
 import os, glob, sys
 
-libraryName=' automaticgaincontrol'
+libraryName='automaticgaincontrol'
 
 def scanFiles(pattern, paths) :
 	files = []

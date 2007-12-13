@@ -40,7 +40,6 @@ namespace Hidden
 		AddAll();
 		UpdateData();
 		SetAdaptationStep(0.1);
-		SetOutputPowerReference(0.25);
 	}
 
 }
