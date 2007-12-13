@@ -1,0 +1,8 @@
+== Description ==
+
+Signal DC component removal (vertically centered)
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install
