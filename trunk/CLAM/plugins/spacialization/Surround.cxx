@@ -9,6 +9,5 @@ namespace detail
 		"description", "Surround 5.1 Angles -30, 0, 30, -110, 110",
 		0
 	};
-	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, Surround> regSurround("Surround");
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, Surround> reg = metadata;
 }
