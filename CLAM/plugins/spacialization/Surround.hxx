@@ -20,17 +20,16 @@ public:
 		angles.push_back(30);
 		angles.push_back(110);
 		angles.push_back(-110);
-		angles.push_back(-300);
+		angles.push_back(-30);
 		std::vector<std::string> names;
 		names.push_back("center");
-		names.push_back("left");
 		names.push_back("right");
-		names.push_back("surroundLeft");
 		names.push_back("surroundRight");
+		names.push_back("surroundLeft");
+		names.push_back("left");
 		for (unsigned i=0; i<_nChannels; i++)
 		{
-			double angle = 360.*i/_nChannels;
-			angles.push_back(int(angle));
+			double angle = angles[i];
 			double rad = M_PI*angle/180;
 			_sinAlphas.push_back( std::sin(rad) );
 			_cosAlphas.push_back( std::cos(rad) );
