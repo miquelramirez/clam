@@ -13,25 +13,42 @@ def norun(command) :
 
 
 examples = [
-	('realitzacions/realitzacio_centered.data', 'renderedwavs/realitzacio_centered', 'db4'),
-	('realitzacions/explorer2.data', 'renderedwavs/explorer2', 'db4'), # db4: source centered
-	('realitzacions/explorer3.data', 'renderedwavs/explorer3', 'db4'),
-	('realitzacions/realitzacio1.data', 'renderedwavs/realitzacio1', 'db7/source3'),
-	('realitzacions/realitzacio2.data', 'renderedwavs/realitzacio2', 'db7/source3'),
+	('realitzacio_centered', 'db4'),
+	('explorer2', 'db4'), # db4: source centered
+	('explorer3', 'db4'),
+	('realitzacio1', 'db7/source3'),
+	('realitzacio2', 'db7/source3'),
+	('realitzacio2', 'db9/source0'),
+	('realitzacio2', 'db11/source0', 'wavs/flamenco_guitar.wav'),
+	('realitzacio2', 'db11/source1', 'wavs/flamenco_voz.wav'),
+	('realitzacio2', 'db11/source2', 'wavs/flamenco_cajon_inspirado.wav'),
+	('realitzacio2', 'db11/source3', 'wavs/flamenco_bailaora_inspirada.wav'),
 ]
 examples = [
-	('realitzacions/realitzacio2.data', 'renderedwavs/realitzacio2', 'db7/source3'),
+	('realitzacio2', 'db11/source0', 'wavs/flamenco_guitar.wav'),
 ]
 
-for pathfile, outdir, db in examples:
-	run("rm -rf %s" % outdir)
-	run("mkdir -p %s" % outdir)
-	run("rm -f current_path.data && ln -s %s current_path.data" % pathfile)
-	run("rm -f db && ln -s %s db" % db)
-
-	cmd = "./OfflinePlayer sequenced_networks/offline1_surround.clamnetwork wavs/flamenco_mix.wav %(dir)s/C.wav %(dir)s/L.wav %(dir)s/R.wav %(dir)s/SL.wav %(dir)s/SR.wav" % {
-		'dir':outdir
+for realitzation_name, db, inputwav in examples:
+	vars = {
+		'pathfile': 'realitzacions/%s.data'%realitzation_name,
+		'outdir': 'renderedfiles/%s'%realitzation_name, 
+		'db': db,
+		'realization_name': realitzation_name,
+		'inputwav': inputwav
 	}
-	run(cmd)
-	run("zip -r %s.zip %s" % (outdir, outdir) )
+	print vars
+	run("rm -rf %(outdir)s" % vars)
+	run("mkdir -p %(outdir)s" % vars)
+	run("rm -f current_path.data && ln -s %(pathfile)s current_path.data" % vars)
+	run("rm -f db && ln -s %(db)s db" % vars)
 
+	cmd = "./OfflinePlayer sequenced_networks/offline1_surround.clamnetwork %(inputwav)s %(outdir)s/C.wav %(outdir)s/L.wav %(outdir)s/R.wav %(outdir)s/SL.wav %(outdir)s/SR.wav" % vars
+	run(cmd) #process
+	run("cd s(outdir)/.. && zip -r %(realization_name)s.zip %(realization_name)s/" % vars ) #zip
+	
+	# encode surround ac3 file
+	run("cd %(outdir)s && sox -M L.wav R.wav C.wav SL.wav SR.wav surround.wav" % vars)
+	run("cd %(outdir)s && aften -b 448 -cmix 0 -smix 0 -dsur 2 -acmod 7 surround.wav surround.ac3" % vars)
+
+	# encode avi
+	run("mencoder -ovc copy realitzacions/realitzacio2.avi -audiofile %(outdir)s/surround.ac3 -oac copy -o %(outdir)s/realitzacio2_ac3.avi" % vars)
