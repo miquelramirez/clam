@@ -12,53 +12,80 @@ def norun(command) :
 	print "\033[31mXX ", command, "\033[0m"
 
 
-examples = [
-	('realitzacio_centered', 'db4'),
-	('explorer2', 'db4'), # db4: source centered
-	('explorer3', 'db4'),
-	('realitzacio1', 'db7/source3'),
-	('realitzacio2', 'db7/source3'),
-	('realitzacio2', 'db9/source0'),
-	('realitzacio2', 'db11/source0', 'wavs/flamenco_guitar.wav'),
-	('realitzacio2', 'db11/source1', 'wavs/flamenco_voz.wav'),
-	('realitzacio2', 'db11/source2', 'wavs/flamenco_cajon_inspirado.wav'),
-	('realitzacio2', 'db11/source3', 'wavs/flamenco_bailaora_inspirada.wav'),
-]
-examples = [
-	('realitzacio2', 'db15/source0', 'wavs/flamenco_guitar.wav'),
-	('explorer3', 'db15/source0', 'wavs/flamenco_guitar.wav'),
-]
+enable_surround = False
+enable_hrtf = True
+enable_wav_surround = False
+enable_zip = False
 
-for realization_name, db, inputwav in examples:
+examples = [
+	('explorer3', 'db17'),
+	('realitzacio2', 'db17'),
+]
+instruments = [
+	('gui', 'wavs/flamenco_guitar.wav', 'source0'),
+	('voz', 'wavs/flamenco_voz.wav', 'source1' ),
+	('caj', 'wavs/flamenco_cajon_inspirado.wav', 'source2' ),
+	('bai', 'wavs/flamenco_bailaora_inspirada.wav', 'source3' ),
+]
+for realization_name, db in examples:
 	vars = {
 		'pathfile': 'realitzacions/%s.data'%realization_name,
-		'outdir': 'renderedfiles/%s'%realization_name, 
-		'db': db,
+		'outdir': 'renderedfiles/%s/%s'%(db, realization_name), 
 		'realization_name': realization_name,
-		'inputwav': inputwav
 	}
-	print vars
+	# clean and setup db and path to use
 	run("rm -rf %(outdir)s" % vars)
 	run("mkdir -p %(outdir)s/stereo" % vars)
 	run("rm -f current_path.data && ln -s %(pathfile)s current_path.data" % vars)
-	run("rm -f db && ln -s %(db)s db" % vars)
+	for instrument, inputwav, dbsubdir in instruments :
+		print '%sL.wav'%instrument
+		print inputwav
+		print dbsubdir
+		vars['lwav']='%sL.wav'%instrument
+		vars['rwav']='%sR.wav'%instrument
+		vars['slwav']='%sSL.wav'%instrument
+		vars['srwav']='%sSR.wav'%instrument
+		vars['cwav']='%sC.wav'%instrument
+		vars['inputwav']=inputwav
+		vars['db']='%s/%s'%(db,dbsubdir)
+		print vars
 
-	#process
-	cmd = "./OfflinePlayer sequenced_networks/offline1_surround.clamnetwork %(inputwav)s %(outdir)s/C.wav %(outdir)s/L.wav %(outdir)s/R.wav %(outdir)s/SL.wav %(outdir)s/SR.wav" % vars
-	norun(cmd) 
-	cmd_stereo = "./OfflinePlayer sequenced_networks/offline1.clamnetwork %(inputwav)s %(outdir)s/stereo/L.wav %(outdir)s/stereo/R.wav" % vars
-	run(cmd_stereo)
-	#zip
-	norun("cd %(outdir)s/.. && zip -r %(realization_name)s.zip %(realization_name)s/" % vars ) #zip
-	
-	# encode surround ac3 file
-	norun("cd %(outdir)s && sox -M L.wav R.wav C.wav SL.wav SR.wav surround.wav" % vars)
-	norun("cd %(outdir)s && aften -b 448 -cmix 0 -smix 0 -dsur 2 -acmod 7 surround.wav surround.ac3" % vars)
-	# encode stereo file
-	run("cd %(outdir)s/stereo && sox -M L.wav R.wav stereo.wav" % vars)
-
-	# encode avi surround
-	run("mencoder -ovc copy realitzacions/%(realization_name)s_22fps.avi -audiofile %(outdir)s/surround.ac3 -oac copy -o %(outdir)s/%(realization_name)s_ac3.avi" % vars)
-
-	# encode avi stereo
-	run("mencoder -ovc copy realitzacions/%(realization_name)s_22fps.avi -audiofile %(outdir)s/stereo/stereo.wav -oac copy -o %(outdir)s/%(realization_name)s_hrtf_stereo.avi" % vars)
+		# set the db corresponding to the instrument db
+		run("rm -f db && ln -s %(db)s db" % vars)
+		if enable_surround:
+			# process 5.0 network
+			cmd = "./OfflinePlayer sequenced_networks/offline1_surround.clamnetwork %(inputwav)s %(outdir)s/%(cwav)s %(outdir)s/%(lwav)s %(outdir)s/%(rwav)s %(outdir)s/%(slwav)s %(outdir)s/%(srwav)s" % vars
+			run(cmd) 
+		if enable_hrtf:
+			cmd = "./OfflinePlayer sequenced_networks/offline1_surround.clamnetwork %(inputwav)s %(outdir)s/%(cwav)s %(outdir)s/%(lwav)s %(outdir)s/%(rwav)s %(outdir)s/%(slwav)s %(outdir)s/%(srwav)s" % vars
+			# process hrtf network
+			cmd_stereo = "./OfflinePlayer sequenced_networks/offline1.clamnetwork %(inputwav)s %(outdir)s/stereo/%(lwav)s %(outdir)s/stereo/%(rwav)s" % vars
+			run(cmd_stereo)
+	if enable_surround:
+		# mix instruments
+		run("cd %(outdir)s && sox -m *L.wav L.wav"%vars)
+		run("cd %(outdir)s && sox -m *R.wav R.wav"%vars)
+		run("cd %(outdir)s && sox -m *SL.wav SL.wav"%vars)
+		run("cd %(outdir)s && sox -m *SR.wav SR.wav"%vars)
+		run("cd %(outdir)s && sox -m *C.wav C.wav"%vars)
+		# encode surround for ac3 file
+		run("cd %(outdir)s && sox -M L.wav R.wav C.wav SL.wav SR.wav surround_ac3_order.wav" % vars)
+		run("cd %(outdir)s && aften -b 448 -cmix 0 -smix 0 -dsur 2 -acmod 7 surround_ac3_order.wav surround.ac3" % vars)
+		# encode avi surround ac3
+		run("mencoder -ovc copy realitzacions/%(realization_name)s_22fps.avi -audiofile %(outdir)s/surround.ac3 -oac copy -o %(outdir)s/%(realization_name)s_ac3.avi" % vars)
+	if enable_wav_surround :
+		# encode surround wav 48khz 
+		run("cd %(outdir)s && sox -M L.wav R.wav SL.wav SR.wav C.wav surround.wav" % vars)
+		# encode avi surround wav 48khz
+		run("mencoder -ovc copy realitzacions/%(realization_name)s.avi -audiofile %(outdir)s/surround.wav -oac copy -o %(outdir)s/%(realization_name)s.avi" % vars)
+	if enable_hrtf:	
+		# mix instruments
+		run("cd %(outdir)s/stereo/ && sox -m *L.wav L.wav"%vars)
+		run("cd %(outdir)s/stereo/ && sox -m *R.wav R.wav"%vars)
+		# encode stereo file
+		run("cd %(outdir)s/stereo && sox -M L.wav R.wav stereo.wav" % vars)
+		run("cd %(outdir)s/stereo && sox stereo.wav stereo_boosted.wav vol 6" % vars)
+		# encode avi stereo
+		run("mencoder -ovc copy realitzacions/%(realization_name)s.avi -audiofile %(outdir)s/stereo/stereo_boosted.wav -oac copy -o %(outdir)s/%(realization_name)s_hrtf_stereo.avi" % vars)
+	if enable_zip:
+		run("cd %(outdir)s/.. && zip -r %(realization_name)s.zip %(realization_name)s/" % vars ) #zip
