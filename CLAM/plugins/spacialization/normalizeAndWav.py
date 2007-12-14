@@ -2,6 +2,7 @@
 
 import glob, sys, os
 
+SampleRate = 48000
 def loadSamples(filename):
 	return [ float(sample) for time, sample in [line.split() for line in open(filename).readlines() if line[0]!=';' ]]
 
@@ -14,9 +15,9 @@ def maxsample(filename):
 def convertDatToWav(filename, largersample):
 	samples = loadSamples(filename)
 	normalizedfile = open("temp.norm.dat","w")
-	normalizedfile.write("; Sample Rate 44100\n; Channels 1\n")
+	normalizedfile.write("; Sample Rate %i\n; Channels 1\n" % SampleRate)
 	anticlippingFactor = .98
-	normalizedfile.writelines( ["%s\t%.12f\n"%(time/44100, sample*anticlippingFactor/largersample) for time, sample in zip(range(0,len(samples)), samples) ] )
+	normalizedfile.writelines( ["%s\t%.12f\n"%(time/SampleRate, sample*anticlippingFactor/largersample) for time, sample in zip(range(0,len(samples)), samples) ] )
 	outputfile = os.path.splitext(filename)[0] + ".wav"
 	print "Generating", outputfile
 	os.system("sox temp.norm.dat %s" % (outputfile) )
