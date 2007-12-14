@@ -24,7 +24,8 @@ def convertDatToWav(filename, largersample):
 
 
 def processDir(dir):
-	datfiles = glob.glob( dir+"/*.dat")
+#	datfiles = glob.glob( dir+"/*.dat")
+	datfiles = glob.glob( dir+"/source*/*.dat")
 	datfiles.sort()
 	print "datfiles", datfiles
 
