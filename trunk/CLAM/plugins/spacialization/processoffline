@@ -11,15 +11,21 @@ def run(command) :
 def norun(command) :
 	print "\033[31mXX ", command, "\033[0m"
 
-
-enable_surround = False
+enable_surround = True
 enable_hrtf = True
 enable_wav_surround = False
 enable_zip = False
 
 examples = [
-	('explorer3', 'db17'),
-	('realitzacio2', 'db17'),
+	('explorer3', 'db18'),
+	('realitzacio2', 'db18'),
+	('explorer3', 'db19'),
+	('realitzacio2', 'db19'),
+	('explorer3', 'db20'),
+	('realitzacio2', 'db20'),
+	('explorer3', 'db21'),
+	('realitzacio2', 'db21'),
+	('explorer3', 'db22'),
 ]
 instruments = [
 	('gui', 'wavs/flamenco_guitar.wav', 'source0'),
