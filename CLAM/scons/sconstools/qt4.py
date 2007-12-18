@@ -10,7 +10,7 @@ selection method.
 """
 
 #
-# Copyright (c) 2001, 2002, 2003, 2004 The SCons Foundation
+# Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007 The SCons Foundation
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -111,7 +111,6 @@ class _Automoc:
 			debug = 0
 		
 		# some shortcuts used in the scanner
-		FS = SCons.Node.FS.default_fs
 		splitext = SCons.Util.splitext
 		objBuilder = getattr(env, self.objBuilderName)
 
@@ -121,7 +120,7 @@ class _Automoc:
 		# cxx and c comment 'eater'
 		#comment = re.compile(r'(//.*)|(/\*(([^*])|(\*[^/]))*\*/)')
 		# CW: something must be wrong with the regexp. See also bug #998222
-		#     CURRENTLY THERE IS NO TEST CASE FOR THAT
+		#	 CURRENTLY THERE IS NO TEST CASE FOR THAT
 		
 		# The following is kind of hacky to get builders working properly (FIXME)
 		objBuilderEnv = objBuilder.env
@@ -192,7 +191,6 @@ AutomocStatic = _Automoc('StaticObject')
 
 def _detect(env):
 	"""Not really safe, but fast method to detect the QT library"""
-
 	QTDIR = env.get('QTDIR',None)
 	if QTDIR!=None : return QTDIR
 
@@ -281,9 +279,9 @@ def generate(env):
 
 		# Commands for the qt support ...
 		QT4_UICCOM = '$QT4_UIC $QT4_UICFLAGS -o $TARGET $SOURCE',
-		QT4_MOCFROMHCOM = '$QT4_MOC $QT4_MOCFROMHFLAGS -o $TARGET $SOURCE',
+		QT4_MOCFROMHCOM = '$QT4_MOC $QT4_MOCFROMHFLAGS $_CPPINCFLAGS -o $TARGET $SOURCE',
 		QT4_MOCFROMCXXCOM = [
-			'$QT4_MOC $QT4_MOCFROMCXXFLAGS -o $TARGET $SOURCE',
+			'$QT4_MOC $QT4_MOCFROMCXXFLAGS $_CPPINCFLAGS -o $TARGET $SOURCE',
 			Action(checkMocIncluded,None)],
 		QT4_LUPDATECOM = '$QT4_LUPDATE $SOURCE -ts $TARGET',
 		QT4_LRELEASECOM = '$QT4_LRELEASE $SOURCE',
@@ -332,7 +330,7 @@ def generate(env):
 		single_source = True
 		#TODO: Consider the uiscanner on new scons version
 		)
-	env.Append( BUILDERS = { 'Uic4': uic4builder } )
+	env['BUILDERS']['Uic4'] = uic4builder
 
 	# Metaobject builder
 	mocBld = Builder(action={}, prefix={}, suffix={})
@@ -346,7 +344,7 @@ def generate(env):
 		mocBld.add_action(cxx, act)
 		mocBld.prefix[cxx] = '$QT4_MOCCXXPREFIX'
 		mocBld.suffix[cxx] = '$QT4_MOCCXXSUFFIX'
-	env.Append( BUILDERS = { 'Moc4': mocBld } )
+	env['BUILDERS']['Moc4'] = mocBld
 
 	# er... no idea what that was for
 	static_obj, shared_obj = SCons.Tool.createObjBuilders(env)
@@ -378,20 +376,23 @@ def enable_modules(self, modules, debug=False) :
 		'QtGui',
 		'QtOpenGL',
 		'Qt3Support',
+		'QtAssistant',
+		'QtScript',
+		'QtDBus',
+		'QtSql',
 		# The next modules have not been tested yet so, please
 		# maybe they require additional work on non Linux platforms
-		'QtSql',
 		'QtNetwork',
 		'QtSvg',
 		'QtTest',
 		'QtXml',
 		'QtUiTools',
 		'QtDesigner',
-		'QtDBUS',
+		'QtWebKit',
 		]
 	pclessModules = [
-		'QtUiTools',
 		'QtDesigner',
+		'QtDesignerComponents',
 	]
 	staticModules = [
 		'QtUiTools',
@@ -404,10 +405,21 @@ def enable_modules(self, modules, debug=False) :
 		raise "Modules %s are not Qt4 modules. Valid Qt4 modules are: %s"% \
 			(str(invalidModules),str(validModules))
 
-	# TODO: Check whether we should add QT_CORE_LIB, QT_XML_LIB, QT_NETWORK_LIB...
-	if 'QtGui' in modules:
-		self.AppendUnique(CPPFLAGS=['-DQT_GUI_LIB'])
-
+	moduleDefines = {
+		'QtScript'   : ['QT_SCRIPT_LIB'],
+		'QtSvg'      : ['QT_SVG_LIB'],
+		'Qt3Support' : ['QT_QT3SUPPORT_LIB','QT3_SUPPORT'],
+		'QtSql'      : ['QT_SQL_LIB'],
+		'QtXml'      : ['QT_XML_LIB'],
+		'QtOpenGL'   : ['QT_OPENGL_LIB'],
+		'QtGui'      : ['QT_GUI_LIB'],
+		'QtNetwork'  : ['QT_NETWORK_LIB'],
+		'QtCore'     : ['QT_CORE_LIB'],
+	}
+	for module in modules :
+		try : self.AppendUnique(CPPDEFINES=moduleDefines[module])
+		except: pass
+		
 	debugSuffix = ''
 	if sys.platform == "linux2" :
 		if debug : debugSuffix = '_debug'
@@ -419,6 +431,13 @@ def enable_modules(self, modules, debug=False) :
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
 		pcmodules = [module+debugSuffix for module in modules if module not in pclessModules ]
 		self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
+		# kludge to fix bugs in pkg-config for some Qt packages
+		if 'QtDBus' in pcmodules:
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4","QtDBus")])
+		if "QtAssistant" in pcmodules:
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4","QtAssistant")])
+			pcmodules.remove("QtAssistant")
+			pcmodules.append("QtAssistantClient")
 		return
 	if sys.platform == "win32" :
 		if debug : debugSuffix = 'd'
@@ -456,6 +475,3 @@ def enable_modules(self, modules, debug=False) :
 
 def exists(env):
 	return _detect(env)
-
-
-
