@@ -271,7 +271,7 @@ def generate(env):
 		QT4_UICDECLSUFFIX = '.h',
 		QT4_MOCHPREFIX = 'moc_',
 		QT4_MOCHSUFFIX = '$CXXFILESUFFIX',
-		QT4_MOCCXXPREFIX = 'moc_',
+		QT4_MOCCXXPREFIX = '',
 		QT4_MOCCXXSUFFIX = '.moc',
 		QT4_QRCSUFFIX = '.qrc',
 		QT4_QRCCXXSUFFIX = '$CXXFILESUFFIX',
@@ -304,8 +304,25 @@ def generate(env):
 
 	# Resource builder
 	def scanResources(node, env, path, arg):
+		# I've being careful on providing names relative to the qrc file
+		# If that was not needed that code could be simplified a lot
+		def recursiveFiles(basepath, path) :
+			result = []
+			for item in os.listdir(os.path.join(basepath, path)) :
+				itemPath = os.path.join(path, item)
+				if os.path.isdir(os.path.join(basepath, itemPath)) :
+					result += recursiveFiles(basepath, itemPath)
+				else:
+					result.append(itemPath)
+			return result
 		contents = node.get_contents()
 		includes = qrcinclude_re.findall(contents)
+		qrcpath = os.path.dirname(node.path)
+		dirs = [included for included in includes if os.path.isdir(os.path.join(qrcpath,included))]
+		# dirs need to include files recursively
+		for dir in dirs :
+			includes.remove(dir)
+			includes+=recursiveFiles(qrcpath,dir)
 		return includes
 	qrcscanner = SCons.Scanner.Scanner(name = 'qrcfile',
 		function = scanResources,
@@ -363,6 +380,8 @@ def generate(env):
 					 CPPPATH=["$QT4_CPPPATH"],
 					 LIBPATH=["$QT4_LIBPATH"],
 					 LIBS=['$QT4_LIB'])
+
+	# TODO: Does dbusxml2cpp need an adapter
 	
 	import new
 	method = new.instancemethod(enable_modules, env, SCons.Environment)
@@ -388,6 +407,7 @@ def enable_modules(self, modules, debug=False) :
 		'QtXml',
 		'QtUiTools',
 		'QtDesigner',
+		'QtDesignerComponents',
 		'QtWebKit',
 		]
 	pclessModules = [
@@ -425,19 +445,18 @@ def enable_modules(self, modules, debug=False) :
 		if debug : debugSuffix = '_debug'
 		for module in modules :
 			if module not in pclessModules : continue
-			self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
+			self.AppendUnique(LIBS=[module+debugSuffix])
 			self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib")])
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4")])
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4",module)])
 		pcmodules = [module+debugSuffix for module in modules if module not in pclessModules ]
-		self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
-		# kludge to fix bugs in pkg-config for some Qt packages
 		if 'QtDBus' in pcmodules:
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4","QtDBus")])
 		if "QtAssistant" in pcmodules:
 			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","qt4","QtAssistant")])
 			pcmodules.remove("QtAssistant")
 			pcmodules.append("QtAssistantClient")
+		self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
 		return
 	if sys.platform == "win32" :
 		if debug : debugSuffix = 'd'

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
-This is an example on how the Qt4 examples provided by Trolltech
-should be compiled using the qt4 tool for scons.
+This is an example on how the Qt4 examples should be compiled using the
+qt4 tool for scons.
 To use it just copy it on the root of the Qt4 examples tree and type
 'scons -f SConstruct.qt4examples'.
 """
@@ -31,43 +31,39 @@ def subdirsContaining(root, patterns):
 	dirs = unique(map(os.path.dirname, scanFiles(root, patterns)))
 	dirs.sort()
 	return dirs
-	
+
+
 
 targetDirs = subdirsContaining(".", ["*.cpp"])
 targetDirs = map(os.path.normpath, targetDirs)
 
+# Those are the projects that are to be compiled as shared libraries
 pluginDirs = [
-	"designer/containerextension", # Undefined interface error: fixed, but should be built as library
-	"designer/customwidgetplugin", # Undefined interface error: fixed, but should be built as library
-	"designer/taskmenuextension", # Undefined interface error: fixed but should be built as library
-	"designer/worldtimeclockplugin", # Undefined interface error: fixed but should be built as library
-	"tools/echoplugin/plugin", # needs extended include path to tools/echoplugin/echowindow
-	"tools/styleplugin/plugin", # Should be compiled as library
-	"tools/plugandpaintplugins/extrafilters", # needs extended include path to tools/plugandpaint
+	"designer/containerextension",
+	"designer/customwidgetplugin",
+	"designer/taskmenuextension",
+	"designer/worldtimeclockplugin",
+	"tools/echoplugin/plugin",
+	"tools/styleplugin/plugin",
+	"tools/plugandpaintplugins/extrafilters",
 ]
+# Those are the projects that are to be compiled as static libraries
 staticPluginDirs = [
-	"tools/plugandpaintplugins/basictools", # needs extended include path to tools/plugandpaint
+	"tools/plugandpaintplugins/basictools",
+]
+# Those are sources that contain alternative main functions within
+# a project which also have a main function.
+singleCppExtraBinaries = [
+	"qdbus/complexpingpong/complexping.cpp",
+	"qdbus/pingpong/ping.cpp",
+	"graphicsview/portedcanvas/blendshadow.cpp",
+	"graphicsview/portedcanvas/makeimg.cpp",
 ]
 
 # The following blacklisted directories contain examples that
 # couldn't be compiled with that script and the tool as they are.
 blacklist=[
-#	"designer/calculatorbuilder", # Missing designer libs in debian -> Fixed!!!
-#	"designer/worldtimeclockbuilder", #  Missing designer libs in debian -> Fixed!!!
-	"network/torrent", # Tool Bug: cxx moc handling (includes a .moc file)
-	"qdbus/complexpingpong", # generates two binaries
-	"qdbus/pingpong", # generates two binaries
-	"qdbus/remotecontrolledcar/car", # scanner fails to detect moc'ed object (_p.h suffix)
-	"qdbus/remotecontrolledcar/controller", # scanner fails to detect moc'ed object (_p.h suffix)
-	"qtestlib/tutorial1", # Tool Bug: cxx moc handling (includes a .moc file)
-	"qtestlib/tutorial2", # Tool Bug: cxx moc handling (includes a .moc file)
-	"qtestlib/tutorial3", # Tool Bug: cxx moc handling (includes a .moc file)
-	"qtestlib/tutorial4", # Tool Bug: cxx moc handling (includes a .moc file)
-	"script/context2d", # Collision between the executable and an existing directory
-#	"sql/relationaltablemodel", # Should pkg_config define QT_GUI_LIB? -> Yes it should, working!
-#	"tools/qtdemo", # includes private/x11_qt_p.h -> Fixed!!!
-#	"tools/plugandpaint", # undefined symbol qt_plugin_instance_pnp_basictools
-	"widgets/validators/", # Tool Bug: cxx moc handling (includes a .moc file)
+	# Empty!! All examples compile!
 ]
 blacklist = map(os.path.normpath, blacklist)
 pluginDirs = map(os.path.normpath, pluginDirs)
@@ -98,10 +94,7 @@ for dir in targetDirs:
 	if os.path.normpath(dir) in blacklist: continue
 	sources = scanFiles(dir,
 		accept=["*.cpp", "*.c"], # *.c needed for some 3rd party files on the examples
-		reject=["qrc_", "ui_", "moc_",
-			"graphicsview/portedcanvas/blendshadow", # Extra main
-			"graphicsview/portedcanvas/makeimg", # Extra main
-		])
+		reject=["qrc_", "ui_", "moc_"]+singleCppExtraBinaries)
 	
 	# rcc needs a -name flag because examples use identified resource files
 	def takebasename(file) : return os.path.splitext(os.path.basename(file))[0]
@@ -111,7 +104,10 @@ for dir in targetDirs:
 			for uic in scanFiles(dir, ['*.ui'])]
 
 	additionalPaths = subdirsContaining(dir, ['*.h', '*.ui'])
-	extraDefines = []
+
+	extraDefines = ['QT_SHARED'] # Should this macro be include by the tool itself?
+
+	# Those projects use header or outputs of other projects
 	if dir == 'tools/plugandpaint' :
 		sources.append('tools/plugandpaintplugins/basictools/libbasictools.a')
 	if dir == 'tools/plugandpaintplugins/basictools' :
@@ -120,32 +116,46 @@ for dir in targetDirs:
 		additionalPaths.append("tools/")
 	if dir == 'tools/echoplugin/plugin' :
 		additionalPaths.append("tools/echoplugin/echowindow/")
-	
+
+	# Using explicit moc builders because those headers do not follow
+	# the standard naming convention (should be named as the cpp with .h)
+	# but a '_p' infix was added.
+	if dir == 'qdbus/remotecontrolledcar/car' :
+		sources.append(env.Moc4("qdbus/remotecontrolledcar/car/car_adaptor_p.h"))
+	if dir == 'qdbus/remotecontrolledcar/controller' :
+		sources.append(env.Moc4("qdbus/remotecontrolledcar/controller/car_interface_p.h"))
+
+	# Now choose the builder depending the kind of project (program, plugin, static lib)
 	if dir in staticPluginDirs :
 		print "StaticLib:", dir
-		extraDefines += ['QT_SHARED','QT_STATICPLUGIN','QT_PLUGIN']
-		target = env.StaticLibrary(
-				dir+"/"+os.path.basename(dir),
-				sources+resources,
-				CPPPATH=env['CPPPATH']+additionalPaths+[".."],
-				CPPDEFINES=env['CPPDEFINES']+extraDefines,
-				)
+		extraDefines += ['QT_PLUGIN','QT_STATICPLUGIN']
+		builder = env.StaticLibrary
 	elif dir in pluginDirs :
 		print "Plugin:", dir
-		extraDefines += ['QT_SHARED','QT_PLUGIN','QDESIGNER_EXPORT_WIDGETS'] # The later is just needed for designer plugins
-		target = env.SharedLibrary(
-				dir+"/"+os.path.basename(dir),
-				sources+resources,
-				CPPPATH=env['CPPPATH']+additionalPaths+[".."],
-				CPPDEFINES=env['CPPDEFINES']+extraDefines,
-				)
-	else:
+		extraDefines += ['QT_PLUGIN','QDESIGNER_EXPORT_WIDGETS'] # The last one is just needed for designer plugins
+		builder = env.SharedLibrary
+	else :
 		print "Program:", dir
-		extraDefines += ['QT_SHARED'] # The later is just needed for designer plugins
-		target = env.Program(
-				dir+"/"+os.path.basename(dir),
-				sources+resources,
-				CPPPATH=env['CPPPATH']+additionalPaths+[".."])
+		builder = env.Program
+
+	programs += builder(
+		dir+"/"+os.path.basename(dir),
+		sources+resources,
+		CPPPATH=env['CPPPATH']+additionalPaths+[".."],
+		CPPDEFINES=env['CPPDEFINES']+extraDefines,
+		)
+
+for source in singleCppExtraBinaries :
+	targetBin = os.path.splitext(source)[0]
+	print "Program:", os.path.splitext(source)[0]
+	additionalPaths = subdirsContaining(dir, ['*.h', '*.ui'])
+	extraDefines = ['QT_SHARED']
+	target = env.Program(
+		targetBin,
+		[source],
+		CPPPATH=env['CPPPATH']+additionalPaths+[".."],
+		CPPDEFINES=env['CPPDEFINES']+extraDefines,
+		)
 	programs += target
 
 env.Alias('all', programs)
