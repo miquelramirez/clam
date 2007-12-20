@@ -57,6 +57,8 @@ SCons.Warnings.enableWarningClass(ToolQtWarning)
 
 qrcinclude_re = re.compile(r'<file>([^<]*)</file>', re.M)
 
+def transformToWinePath(path) :
+	return os.popen('winepath -w "%s"'%path).read().strip().replace('\\','/')
 
 header_extensions = [".h", ".hxx", ".hpp", ".hh"]
 if SCons.Util.case_sensitive_suffixes('.h', '.H'):
@@ -212,8 +214,6 @@ def _detect(env):
 def generate(env):
 	"""Add Builders and construction variables for qt to an Environment."""
 
-	print "Loading qt4 tool..."
-
 	def locateQt4Command(env, command, qtdir) :
 		suffixes = [
 			'-qt4',
@@ -276,12 +276,14 @@ def generate(env):
 		QT4_QRCSUFFIX = '.qrc',
 		QT4_QRCCXXSUFFIX = '$CXXFILESUFFIX',
 		QT4_QRCCXXPREFIX = 'qrc_',
+		QT4_MOCCPPPATH = [],
+		QT4_MOCINCFLAGS = '$( ${_concat(INCPREFIX, QT4_MOCCPPPATH, INCSUFFIX, __env__, RDirs)} $)',
 
 		# Commands for the qt support ...
 		QT4_UICCOM = '$QT4_UIC $QT4_UICFLAGS -o $TARGET $SOURCE',
-		QT4_MOCFROMHCOM = '$QT4_MOC $QT4_MOCFROMHFLAGS $_CPPINCFLAGS -o $TARGET $SOURCE',
+		QT4_MOCFROMHCOM = '$QT4_MOC $QT4_MOCFROMHFLAGS $QT4_MOCINCFLAGS -o $TARGET $SOURCE',
 		QT4_MOCFROMCXXCOM = [
-			'$QT4_MOC $QT4_MOCFROMCXXFLAGS $_CPPINCFLAGS -o $TARGET $SOURCE',
+			'$QT4_MOC $QT4_MOCFROMCXXFLAGS $QT4_MOCINCFLAGS -o $TARGET $SOURCE',
 			Action(checkMocIncluded,None)],
 		QT4_LUPDATECOM = '$QT4_LUPDATE $SOURCE -ts $TARGET',
 		QT4_LRELEASECOM = '$QT4_LRELEASE $SOURCE',
@@ -377,7 +379,7 @@ def generate(env):
 					 SHLIBEMITTER=[AutomocShared],
 					 LIBEMITTER  =[AutomocStatic],
 					 # Of course, we need to link against the qt libraries
-					 CPPPATH=["$QT4_CPPPATH"],
+#					 CPPPATH=["$QT4_CPPPATH"],
 					 LIBPATH=["$QT4_LIBPATH"],
 					 LIBS=['$QT4_LIB'])
 
@@ -387,7 +389,7 @@ def generate(env):
 	method = new.instancemethod(enable_modules, env, SCons.Environment)
 	env.EnableQt4Modules=method
 
-def enable_modules(self, modules, debug=False) :
+def enable_modules(self, modules, debug=False, crosscompiling=False) :
 	import sys
 
 	validModules = [
@@ -441,7 +443,7 @@ def enable_modules(self, modules, debug=False) :
 		except: pass
 		
 	debugSuffix = ''
-	if sys.platform == "linux2" :
+	if sys.platform == "linux2" and not crosscompiling :
 		if debug : debugSuffix = '_debug'
 		for module in modules :
 			if module not in pclessModules : continue
@@ -457,15 +459,33 @@ def enable_modules(self, modules, debug=False) :
 			pcmodules.remove("QtAssistant")
 			pcmodules.append("QtAssistantClient")
 		self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
+		self["QT4_MOCCPPPATH"] = self["CPPPATH"]
 		return
-	if sys.platform == "win32" :
+	if sys.platform == "win32" or crosscompiling :
+		if crosscompiling:
+			self['QT4_MOC'] = "QTDIR=%s %s"%(
+				transformToWinePath(self['QTDIR']),
+				self['QT4_MOC'])
+		self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include")])
+		try: modules.remove("QtDBus")
+		except: pass
 		if debug : debugSuffix = 'd'
+		if "QtAssistant" in modules:
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include","QtAssistant")])
+			modules.remove("QtAssistant")
+			modules.append("QtAssistantClient")
 		self.AppendUnique(LIBS=[lib+'4'+debugSuffix for lib in modules if lib not in staticModules])
 		self.PrependUnique(LIBS=[lib+debugSuffix for lib in modules if lib in staticModules])
 		if 'QtOpenGL' in modules:
 			self.AppendUnique(LIBS=['opengl32'])
 		self.AppendUnique(CPPPATH=[ '$QTDIR/include/'+module
 			for module in modules])
+		if crosscompiling :
+			self["QT4_MOCCPPPATH"] = [
+				path.replace('$QTDIR', transformToWinePath(self['QTDIR']))
+					for path in self['CPPPATH'] ]
+		else :
+			self["QT4_MOCCPPPATH"] = self["CPPPATH"]
 		self.AppendUnique(LIBPATH=[os.path.join('$QTDIR','lib')])
 		return
 	if sys.platform=="darwin" :
