@@ -6,10 +6,14 @@ To use it just copy it on the root of the Qt4 examples tree and type
 'scons -f SConstruct.qt4examples'.
 """
 
-qt4ToolLocation='.'
+customToolsLocation='.'
+# crosscompiling should be true in order this file to realize you
+# are using mingw from linux.
+crosscompiling = True
 
 import glob
 import os
+import sys
 
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( "CVS")==-1 ),  [ a[0] for a in os.walk(root)]  )
@@ -69,7 +73,8 @@ blacklist = map(os.path.normpath, blacklist)
 pluginDirs = map(os.path.normpath, pluginDirs)
 staticPluginDirs = map(os.path.normpath, staticPluginDirs)
 
-env = Environment(tools=['default','qt4'], toolpath=[qt4ToolLocation])
+env = Environment(tools=['default','qt4'], toolpath=[customToolsLocation])
+if crosscompiling : env.Tool('crossmingw', toolpath=[customToolsLocation])
 
 env['CXXFILESUFFIX']='.cpp'
 env.EnableQt4Modules([
@@ -87,11 +92,17 @@ env.EnableQt4Modules([
 	"QtScript",
 	"QtDBus",
 	"QtDesigner",
-	])
+	],
+	debug=False,
+	crosscompiling=crosscompiling,
+	)
 
 programs = []
 for dir in targetDirs:
 	if os.path.normpath(dir) in blacklist: continue
+	# Filtering qdbus examples in windows. Temporary kludge until Qt4.4.
+	if (sys.platform is 'win32' or crosscompiling) and dir.startswith('qdbus') : continue
+
 	sources = scanFiles(dir,
 		accept=["*.cpp", "*.c"], # *.c needed for some 3rd party files on the examples
 		reject=["qrc_", "ui_", "moc_"]+singleCppExtraBinaries)
@@ -109,7 +120,10 @@ for dir in targetDirs:
 
 	# Those projects use header or outputs of other projects
 	if dir == 'tools/plugandpaint' :
-		sources.append('tools/plugandpaintplugins/basictools/libbasictools.a')
+		if sys.platform is 'win32' or crosscompiling :
+			sources.append('tools/plugandpaintplugins/basictools/basictools.lib')
+		else :
+			sources.append('tools/plugandpaintplugins/basictools/libbasictools.a')
 	if dir == 'tools/plugandpaintplugins/basictools' :
 		additionalPaths.append("tools/")
 	if dir == 'tools/plugandpaintplugins/extrafilters' :
@@ -142,10 +156,13 @@ for dir in targetDirs:
 		dir+"/"+os.path.basename(dir),
 		sources+resources,
 		CPPPATH=env['CPPPATH']+additionalPaths+[".."],
+		QT4_MOCCPPPATH=env['QT4_MOCCPPPATH']+additionalPaths+[".."],
 		CPPDEFINES=env['CPPDEFINES']+extraDefines,
 		)
 
 for source in singleCppExtraBinaries :
+	# Filtering qdbus examples in windows. Temporary kludge until Qt4.4.
+	if (sys.platform is 'win32' or crosscompiling) and source.startswith('qdbus') : continue
 	targetBin = os.path.splitext(source)[0]
 	print "Program:", os.path.splitext(source)[0]
 	additionalPaths = subdirsContaining(dir, ['*.h', '*.ui'])
