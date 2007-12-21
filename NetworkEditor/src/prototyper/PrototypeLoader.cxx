@@ -55,7 +55,6 @@ inline bool FileExists( const std::string filename )
 namespace CLAM
 {
 
-
 class PrototypeBinder
 {
 public:
@@ -64,7 +63,7 @@ public:
 		PrototypeLoader::binders().push_back(this);
 	}
 	virtual ~PrototypeBinder() {}
-	virtual void bindWidgets(Network & network, QWidget * interface) =0;
+	virtual void bindWidgets(Network & network, QWidget * userInterface) =0;
 protected:
 	std::string GetNetworkNameFromWidgetName(const char * widgetName)
 	{
@@ -82,24 +81,24 @@ protected:
 			subject.replace(position, strlen(pattern), substitution);
 		}
 	}
-	bool ReportMissingProcessing(const std::string & processingName, Network & network, QWidget * interface)
+	bool ReportMissingProcessing(const std::string & processingName, Network & network, QWidget * userInterface)
 	{
 		if (network.HasProcessing(processingName))
 			return false;
-		QMessageBox::warning(interface,
+		QMessageBox::warning(userInterface,
 			QString("Error connecting controls"),
 			QString("The interface asked to connect to the processing '%1' which is not in the network.")
 				.arg(processingName.c_str()));
 		return true;
 	}
-	bool ReportMissingOutPort(const std::string & portName, Network & network, QWidget * interface)
+	bool ReportMissingOutPort(const std::string & portName, Network & network, QWidget * userInterface)
 	{
 		std::string processingName = network.GetProcessingIdentifier(portName);
-		if (ReportMissingProcessing(processingName,network,interface)) return true;
+		if (ReportMissingProcessing(processingName,network,userInterface)) return true;
 		std::string shortPortName = network.GetConnectorIdentifier(portName);
 		if (network.GetProcessing(processingName).HasOutPort(shortPortName))
 			return false; // no problem :-)
-		QMessageBox::warning(interface,
+		QMessageBox::warning(userInterface,
 			QString("Error connecting controls"),
 			QString("The interface asked to connect to a port '%1' not available in the processing '%2'.") // TODO: Try with...
 				.arg(shortPortName.c_str())
@@ -107,14 +106,14 @@ protected:
 				));
 		return true;
 	}
-	bool ReportMissingInControl(const std::string & controlName, Network & network, QWidget * interface)
+	bool ReportMissingInControl(const std::string & controlName, Network & network, QWidget * userInterface)
 	{
 		std::string processingName = network.GetProcessingIdentifier(controlName);
-		if (ReportMissingProcessing(processingName,network,interface)) return true;
+		if (ReportMissingProcessing(processingName,network,userInterface)) return true;
 		std::string shortControlName = network.GetConnectorIdentifier(controlName);
 		if (network.GetProcessing(processingName).HasInControl(shortControlName))
 			return false; // no problem :-)
-		QMessageBox::warning(interface,
+		QMessageBox::warning(userInterface,
 			QString("Error connecting controls"),
 			QString("The interface asked to connect to a control '%1' not available in the processing '%2'.") // TODO: Try with...
 				.arg(shortControlName.c_str())
@@ -134,10 +133,10 @@ public:
 		: _prefix(prefix)
 		, _plotClassName(plotClassName)
 	{}
-	virtual void bindWidgets(Network & network, QWidget * interface)
+	virtual void bindWidgets(Network & network, QWidget * userInterface)
 	{
 		std::cout << "Looking for " << _plotClassName << " widgets..." << std::endl;
-		QList<QWidget*> widgets = interface->findChildren<QWidget*>(QRegExp(_prefix));
+		QList<QWidget*> widgets = userInterface->findChildren<QWidget*>(QRegExp(_prefix));
 		for (typename QList<QWidget*>::Iterator it=widgets.begin();
 				it!=widgets.end();
 				it++)
@@ -147,7 +146,7 @@ public:
 			std::string portName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(9).toAscii());
 			std::cout << "* " << _plotClassName << " connected to port " << portName << std::endl;
 
-			if (ReportMissingOutPort(portName,network,interface)) continue;
+			if (ReportMissingOutPort(portName,network,userInterface)) continue;
 
 			MonitorType * portMonitor = new MonitorType;
 			std::string monitorName = network.GetUnusedName("PrototyperMonitor");
@@ -188,17 +187,17 @@ static MonitorBinder<CLAM::VM::MelSpectrumView,MelSpectrumViewMonitor> melSpectr
 class ConfigurationBinder : public PrototypeBinder
 {
 public:
-	virtual void bindWidgets(Network & network, QWidget * interface)
+	virtual void bindWidgets(Network & network, QWidget * userInterface)
 	{
 		std::cout << "Looking for configuration actions..." << std::endl;
 		static QRegExp pattern("Config__(.*)");
-		QList<QAction*> actions = interface->findChildren<QAction*>(pattern);
+		QList<QAction*> actions = userInterface->findChildren<QAction*>(pattern);
 		for (QList<QAction*>::iterator it=actions.begin(); it!=actions.end(); it++)
 		{
 			std::cout << "Action: " << (*it)->objectName().toStdString() << std::endl;
 			if (not pattern.exactMatch((*it)->objectName())) continue;
 			std::string processing = GetNetworkNameFromWidgetName(pattern.cap(1).toStdString().c_str());
-			if (ReportMissingProcessing(processing,network,interface)) continue;
+			if (ReportMissingProcessing(processing,network,userInterface)) continue;
 	//		QObject::connect(*it, SIGNAL(triggered()), this, SLOT(lauchDialog()));
 		}
 	}
