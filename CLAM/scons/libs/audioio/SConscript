@@ -2,7 +2,7 @@
 from clam_build_helpers import *
 import os, sys
 
-Import('audioio_env version install_dirs')
+Import('audioio_env version install_dirs crosscompiling')
 
 def define_module_contents(env) :
 	if not os.path.exists('src') :
@@ -42,11 +42,13 @@ def define_module_contents(env) :
 	if env['with_portmidi'] :
 		folders.append( 'src/Tools/MIDIIO/PortMIDI' )
 
-	if sys.platform == 'linux2' :
+	if crosscompiling :
+		pass
+	elif sys.platform == 'linux2' :
 		if env['with_alsa'] :
 			folders.append( 'src/Tools/MIDIIO/Linux' )
 			folders.append( 'src/Tools/AudioIO/Linux')
-	elif sys.platform == 'win32':
+	elif sys.platform == 'win32' :
 		if env['audio_backend'] == 'rtaudio' :
 			print('using rtaudio')
 			folders += ['src/Tools/AudioIO/RtAudio'] #, 'src/Defines/Windows/CLAM_windows.h']
@@ -78,6 +80,7 @@ def define_module_contents(env) :
 		'main.cxx',
 		'GUIAudioApplication.*xx',
 		]
+	env.AppendUnique(LDFLAGS=["-Wl,--exclude-libs,ogg.lib"])
 
 	file_retriever = FileRetriever( '../../..', folders, blacklist )
 

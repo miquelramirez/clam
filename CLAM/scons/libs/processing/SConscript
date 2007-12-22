@@ -2,7 +2,7 @@
 from clam_build_helpers import *
 import os, sys
 
-Import('processing_env version install_dirs')
+Import('processing_env version install_dirs crosscompiling')
 
 def define_module_contents(env) :
 	if not os.path.exists('src') :

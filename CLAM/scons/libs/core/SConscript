@@ -2,7 +2,7 @@
 from clam_build_helpers import *
 import os, sys
 
-Import('core_env version install_dirs')
+Import('core_env version install_dirs crosscompiling')
 
 def define_module_contents(env) :
 	if not os.path.exists('src') :
@@ -33,7 +33,7 @@ def define_module_contents(env) :
 		'externals/CbLib',
 		]
 
-	if sys.platform == 'win32' :
+	if sys.platform == 'win32' or crosscompiling :
 		folders.append('src/Defines/Windows')
 	else :
 		folders.append('src/Defines/Unix')	
@@ -47,7 +47,7 @@ def define_module_contents(env) :
 		'FreewheelingNetworkPlayer',
 		]
 
-	if sys.platform == 'win32' :
+	if sys.platform == 'win32' or crosscompiling :
 		blacklist.append( 'Watchdog.+' )
 
 	if core_env['xmlbackend'] == 'xercesc' :
