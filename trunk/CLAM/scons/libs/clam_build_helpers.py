@@ -3,10 +3,6 @@ import sys, os
 #---------------------------------------------------------------
 # from custom_builders.py
 
-import shelve  #TODO needed
-
-crosscompiling=True
-
 def generate_copy_files( target, source, env ) :
 	if sys.platform == 'win32' :
 		copyCmd = 'copy'
@@ -135,6 +131,7 @@ generic_checks = dict()
 def pkg_config_check_existence(context, *args, **kwargs):
 	name = kwargs['name']
 	context.Message( 'Checking for %s registered in pkg-config... ' % name )
+	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 	if crosscompiling : 
 		pkgconfig = 'wine pkg-config'
 	else :
@@ -261,6 +258,7 @@ tool_checks = dict()
 
 def check_pkg_config(context, *args, **kwords):
 	context.Message( 'Checking for pkg-config... ' )
+	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 	if crosscompiling : 
 		pkgconfig = 'wine pkg-config'
 	else :
@@ -357,6 +355,7 @@ def lib_rules(name, version, headers, sources, install_dirs, env, moduleDependen
 	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])
 	#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
+	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 	if sys.platform != 'win32' and not crosscompiling :
 		return posix_lib_rules( name, version, headers , sources, install_dirs, env )
 	else :
@@ -429,6 +428,7 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 	return tgt, install_tgt
 
 def win32_lib_rules( name, version, headers, sources, install_dirs, env, moduleDependencies =[] ) :
+	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 	if crosscompiling :
 		lib = env.SharedLibrary( 'clam_' + name, sources)
 	else :
