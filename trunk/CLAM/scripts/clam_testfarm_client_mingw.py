@@ -35,6 +35,7 @@ localDefinitions = {
 	'description': '<img src="http://clam.iua.upf.es/images/win_icon.png"/>',
 	'sandbox': '$HOME/CajitasDeArena/mingw/clam',
 	'installPath': '$HOME/CajitasDeArena/mingw/local',
+	'externalDllPath': '$HOME/CajitasDeArena/mingw/dlls',
 	'qt3dir':'',
 	'qt4dir':'~/.wine/dosdevices/c:/Trolltech/Qt-4.3.3/',
 	'packageWildcard':'*_setup.exe',
@@ -117,13 +118,13 @@ clam.add_subtask("SMSTools packaging", [
 clam.add_subtask('vmqt4 compilation and examples', [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/Annotator/vmqt"%localDefinitions,
-	'scons prefix=%(installPath)s clam_prefix=%(installPath)s release=1 double=1'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s crossmingw=1 release=1 double=1'%localDefinitions,
 	'scons examples',
 ] )
 clam.add_subtask("Annotator packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/Annotator"%localDefinitions,
-	"scons clam_vmqt4_path=vmqt prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
+	"scons clam_vmqt4_path=vmqt prefix=%(installPath)s clam_prefix=%(installPath)s external_dll_path=%(externalDllPath)s crossmingw=1 "%localDefinitions,
 	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
 	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
@@ -133,7 +134,7 @@ clam.add_subtask("Annotator packaging", [
 clam.add_subtask("NetworkEditor packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/NetworkEditor"%localDefinitions,
-	"scons prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
+	"scons prefix=%(installPath)s clam_prefix=%(installPath)s external_dll_path=%(externalDllPath)s crossmingw=1 "%localDefinitions,
 	"%(sandbox)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
 	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
