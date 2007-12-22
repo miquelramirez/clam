@@ -5,6 +5,8 @@ import sys, os
 
 import shelve  #TODO needed
 
+crosscompiling=True
+
 def generate_copy_files( target, source, env ) :
 	if sys.platform == 'win32' :
 		copyCmd = 'copy'
@@ -133,7 +135,11 @@ generic_checks = dict()
 def pkg_config_check_existence(context, *args, **kwargs):
 	name = kwargs['name']
 	context.Message( 'Checking for %s registered in pkg-config... ' % name )
-	ret = context.TryAction('pkg-config --exists \'%s\'' % name)[0]
+	if crosscompiling : 
+		pkgconfig = 'wine pkg-config'
+	else :
+		pkgconfig = 'pkg-config'
+	ret = context.TryAction('%s --exists \'%s\'' % (pkgconfig,name))[0]
 	context.Result( ret )
 	return ret
 
@@ -255,7 +261,11 @@ tool_checks = dict()
 
 def check_pkg_config(context, *args, **kwords):
 	context.Message( 'Checking for pkg-config... ' )
-	ret, _  = context.TryAction('pkg-config --help')
+	if crosscompiling : 
+		pkgconfig = 'wine pkg-config'
+	else :
+		pkgconfig = 'pkg-config'
+	ret, _  = context.TryAction(pkgconfig + ' --help') 
 	context.Result( ret )
 	return ret
 
@@ -281,8 +291,8 @@ class PackageData :
 		out = open(out_file, 'w' )
 
 		print >> out, "prefix = %s"%env['prefix']
-		print >> out, "libdir = %s\\lib"%env['prefix']
-		print >> out, "includedir = %s\\include"%env['prefix']
+		print >> out, "libdir = ${prefix}\\lib"
+		print >> out, "includedir = ${prefix}\\include"
 		print >> out
 		print >> out, "Name: %s"%self.name
 		print >> out, "Version: %s"%self.version
@@ -347,7 +357,7 @@ def lib_rules(name, version, headers, sources, install_dirs, env, moduleDependen
 	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])
 	#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
-	if sys.platform != 'win32' :
+	if sys.platform != 'win32' and not crosscompiling :
 		return posix_lib_rules( name, version, headers , sources, install_dirs, env )
 	else :
 		return win32_lib_rules( name, version, headers , sources, install_dirs, env )
@@ -419,10 +429,13 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 	return tgt, install_tgt
 
 def win32_lib_rules( name, version, headers, sources, install_dirs, env, moduleDependencies =[] ) :
-	static_lib = env.Library( 'clam_' + name, sources )
-	tgt = env.Alias(name, static_lib)
+	if crosscompiling :
+		lib = env.SharedLibrary( 'clam_' + name, sources)
+	else :
+		lib = env.Library( 'clam_' + name, sources )
+	tgt = env.Alias(name, lib)
 	lib_descriptor = env.File( 'clam_'+name+'.pc' )
-	install_static = env.Install( install_dirs.lib, static_lib )
+	install_static = env.Install( install_dirs.lib, lib )
 	install_descriptor = env.Install( install_dirs.lib+'/pkgconfig', lib_descriptor )
 	install_headers = env.Install( install_dirs.inc+'/CLAM', headers )
 	install_tgt = env.Alias('install_'+name, [install_headers,install_static,install_descriptor])
@@ -451,7 +464,7 @@ int main( int argc, char** argv )
 }
 """
 
-if sys.platform == 'win32' :
+if sys.platform == 'win32' or crosscompiling :
 	package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c_2', xerces_test_code )
 else :
 	package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c', xerces_test_code )
