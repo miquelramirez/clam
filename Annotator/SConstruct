@@ -153,7 +153,7 @@ example_data = [
 	'example-data/Chords.pro'
 	]
 
-pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQT_OPENGL_LIB','-DQT_XML_LIB','-DQDESIGNER_EXPORT_WIDGETS','-D_REENTRANT']
+pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQDESIGNER_EXPORT_WIDGETS','-D_REENTRANT']
 env.AppendUnique(CPPFLAGS=pluginDefines)
 
 chordSources = scanFiles("*.cxx", ["src/ChordExtractor"])
@@ -165,7 +165,7 @@ programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
 onsetSources = scanFiles("*.cpp", ["src/OnsetExtractor"])
 onsetSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  onsetSources )
 onsetSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  onsetSources )
-fftwlib = "fftw3-3"
+fftwlib = "fftw3"
 fftwlibpath = []
 sndfilelib = 'sndfile'
 if sys.platform=="win32" or crosscompiling :
