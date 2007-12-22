@@ -77,6 +77,7 @@ class StatusBarDumper
 		{
 			os = new std::ostringstream;
 		}
+		~StatusBarDumper() {}
 		StatusBarDumper & operator << (const QString & object)
 		{
 			(*os) << object.toStdString();
