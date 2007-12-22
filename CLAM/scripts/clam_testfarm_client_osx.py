@@ -37,6 +37,8 @@ localDefinitions = {
 	'installPath': '$HOME/local',
 	'qt3dir':'',
 	'qt4dir':'/usr/local/Trolltech/Qt-4.2.2/',
+	'packageWildcard':'*.dmg',
+	'downloadPlatform':'mac',
 }
 
 client = Client(localDefinitions['name'])
@@ -96,7 +98,6 @@ clam.add_subtask("CLAM Examples", [
 	"cd %(sandbox)s/CLAM/examples"%localDefinitions,
 	"scons clam_prefix=%(installPath)s"%localDefinitions,
 ] )
-
 clam.add_subtask("CLAM Plugins compilation", [
 	"cd %(sandbox)s/CLAM/examples/PluginExample"%localDefinitions,
 	"scons clam_prefix=%(installPath)s"%localDefinitions,
@@ -107,13 +108,11 @@ clam.add_subtask("SMSTools packaging", [
 	"cd %(sandbox)s/SMSTools"%localDefinitions,
 	"scons prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
 	"%(sandbox)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
-	"rm -f *.dmg",
+	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
-	"ls *svn1* > /dev/null || scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/",
+	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
 	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
-
-
 clam.add_subtask('vmqt4 compilation and examples', [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/Annotator/vmqt"%localDefinitions,
@@ -124,9 +123,9 @@ clam.add_subtask("Annotator packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/Annotator"%localDefinitions,
 	"scons clam_vmqt4_path=vmqt prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
-	"rm -f *.dmg",
+	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
-	"ls *svn1* > /dev/null || scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/",
+	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
 	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
@@ -135,9 +134,9 @@ clam.add_subtask("NetworkEditor packaging", [
 	"cd %(sandbox)s/NetworkEditor"%localDefinitions,
 	"scons prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
 	"%(sandbox)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
-	"rm -f *.dmg",
+	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
-	"ls *svn1* > /dev/null || scp *.dmg clamadm@www.iua.upf.edu:download/mac/svnsnapshots/",
+	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
 	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
