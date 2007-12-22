@@ -39,7 +39,7 @@
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ; Language files
-!insertmacro MUI_LANGUAGE "Catalan"
+;!insertmacro MUI_LANGUAGE "Catalan"
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "Spanish"
 
@@ -64,24 +64,42 @@ Section "Principal" SEC01
   File "..\NetworkEditor.exe"
   File "..\Prototyper.exe"
   File '${QTDIR}\bin\designer.exe'
-  File '${QTDIR}\lib\QtCore4.dll'
-  File '${QTDIR}\lib\QtGui4.dll'
-  File '${QTDIR}\lib\QtOpenGL4.dll'
-  File '${QTDIR}\lib\QtXml4.dll'
-  File '${QTDIR}\lib\QtNetwork4.dll'
-  File '${QTDIR}\lib\QtDesigner4.dll'
-  File '${QTDIR}\lib\QtDesignerComponents4.dll'
-  File '${QTDIR}\lib\QtAssistantClient4.dll'
-  File '${EXTERNALDLLDIR}\libsndfile.dll'
-  File '${EXTERNALDLLDIR}\ogg.dll'
-  File '${EXTERNALDLLDIR}\pthreadVCE.dll'
-  File '${EXTERNALDLLDIR}\vorbis.dll'
-  File '${EXTERNALDLLDIR}\vorbisenc.dll'
-  File '${EXTERNALDLLDIR}\vorbisfile.dll'
-  File '${EXTERNALDLLDIR}\xerces-c_2_3_0.dll'
+  File '${QTDIR}\bin\QtCore4.dll'
+  File '${QTDIR}\bin\QtGui4.dll'
+  File '${QTDIR}\bin\QtOpenGL4.dll'
+  File '${QTDIR}\bin\QtXml4.dll'
+  File '${QTDIR}\bin\QtSvg4.dll'
+  File '${QTDIR}\bin\QtNetwork4.dll'
+  File '${QTDIR}\bin\QtDesigner4.dll'
+  File '${QTDIR}\bin\QtDesignerComponents4.dll'
+  File '${QTDIR}\bin\QtAssistantClient4.dll'
+  File '${QTDIR}\bin\mingwm10.dll'
+  File '${CLAMINSTALLDIR}\lib\clam_audioio.dll'
+  File '${CLAMINSTALLDIR}\lib\clam_core.dll'
+  File '${CLAMINSTALLDIR}\lib\clam_processing.dll'
+  File '${EXTERNALDLLDIR}\libfftw3-3.dll'
+  File '${EXTERNALDLLDIR}\libogg-0.dll'
+  File '${EXTERNALDLLDIR}\libsndfile-1.dll'
+  File '${EXTERNALDLLDIR}\libvorbis-0.dll'
+  File '${EXTERNALDLLDIR}\libvorbisenc-2.dll'
+  File '${EXTERNALDLLDIR}\libvorbisfile-3.dll'
   File '${EXTERNALDLLDIR}\portaudio.dll'
-  File '${VCRUNTIMEDIR}\msvcp71.dll'
-  File '${VCRUNTIMEDIR}\msvcr71.dll'
+  File '${EXTERNALDLLDIR}\pthreadGC2.dll'
+  ; GTK libs
+  File '${EXTERNALDLLDIR}\libxml++-2.6-2.dll'
+  File '${EXTERNALDLLDIR}\libxml2.dll'
+  File '${EXTERNALDLLDIR}\libglibmm-2.4-1.dll'
+  File '${EXTERNALDLLDIR}\libsigc-2.0-0.dll'
+  File '${EXTERNALDLLDIR}\libgobject-2.0-0.dll'
+  File '${EXTERNALDLLDIR}\libglib-2.0-0.dll'
+  File '${EXTERNALDLLDIR}\iconv.dll'
+  File '${EXTERNALDLLDIR}\intl.dll'
+  File '${EXTERNALDLLDIR}\zlib1.dll'
+  File '${EXTERNALDLLDIR}\libgmodule-2.0-0.dll'
+;  File '${EXTERNALDLLDIR}\mingwm10.dll'
+;  File '${EXTERNALDLLDIR}\pthreadVCE.dll'
+;  File '${VCRUNTIMEDIR}\msvcp71.dll'
+;  File '${VCRUNTIMEDIR}\msvcr71.dll'
   SetOutPath "$INSTDIR\bin\designer"
   File "..\CLAMWidgets.dll"
   SetOutPath "$INSTDIR\example-data\"
@@ -110,7 +128,6 @@ Section "Principal" SEC01
   System::Call 'Shell32::SHChangeNotify(i 0x8000000, i 0, i 0, i 0)'
 !undef Index
 
-  SetOutPath "$INSTDIR\example-data\"
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor\Examples"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Examples\Tonal Analysis.lnk" "$INSTDIR\example-data\tonalAnalysis-file.clamnetwork"
