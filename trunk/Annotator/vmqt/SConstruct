@@ -5,7 +5,8 @@ options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('release', 'Build CLAM Annotator enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
-
+if sys.platform=="linux2" :
+	options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -24,22 +25,31 @@ options.Update(env)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 
+env.SConsignFile() # Single signature file
+
+crosscompiling = env["crossmingw"]
+isWindowsPlatform = sys.platform=='win32' or crosscompiling
+isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isDarwinPlatform = sys.platform=='darwin'
+
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
+if crosscompiling :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 
-env.SConsignFile() # Single signature file
 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
 env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
-env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
+env['QT4_UICDECLPREFIX'] = os.path.join('generated','uic_')
 env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
+	env['SHCXXCOMSTR'] = '== Compiling shared $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
 	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
 	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
@@ -52,13 +62,10 @@ env.EnableQt4Modules([
 	'QtCore',
 	'QtGui',
 	'QtOpenGL',
-#	'QtSql',
-#	'QtNetwork',
-#	'QtTest',
-#	'QtXml',
-#	'QtSvg',
-#	'Qt3Support',
-	])
+	],
+	debug=False,
+	crosscompiling=crosscompiling,
+	)
 
 env.EnableClamModules([
 	'clam_core',
@@ -127,7 +134,7 @@ exampleSources = scanFiles('*.cxx', ['examples/utils'])
 
 staticLibrary = env.StaticLibrary(target='clam_vmqt4', source=sources)
 env.Append(LIBPATH='.')
-env.Append(LIBS='clam_vmqt4')
+env.Prepend(LIBS='clam_vmqt4')
 if sys.platform == "linux2" :
 	env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
 examples = []
