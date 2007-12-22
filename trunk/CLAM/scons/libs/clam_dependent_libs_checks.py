@@ -60,7 +60,7 @@ def setup_global_environment( env, conf ) :
 		return config_error( "Could not find pthread (Posix Threads) library headers!" )
 
 	pthreadLib = "pthread"
-	if crosscompiling : pthreadLib = 'pthreadGCE2'
+	if crosscompiling : pthreadLib = 'pthreadGC2'
 	elif sys.platform == 'win32' : pthreadLib = 'pthreadVCE'
 
 	if not conf.CheckLib( pthreadLib, 'pthread_join' ) :
