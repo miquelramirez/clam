@@ -71,7 +71,7 @@ clam.add_deployment( [
 	"cd %(sandbox)s/CLAM"%localDefinitions,
 	"rm -rf %(installPath)s/*"%localDefinitions,
 	"cd %(sandbox)s/CLAM/"%localDefinitions,
-	"scons configure with_fftw3=1 with_fftw=0 audio_backend=portaudio xmlbackend=xmlpp prefix=%(installPath)s sandbox_path=%(sandbox)s crossmingw=1"%localDefinitions,
+	"scons configure with_fftw3=1 with_fftw=0 audio_backend=portaudio xmlbackend=xmlpp prefix=%(installPath)s sandbox_path=%(sandbox)s/.. crossmingw=1"%localDefinitions,
 	"scons configure prefix=%(installPath)s"%localDefinitions,
 	"scons",
 	"scons install",
