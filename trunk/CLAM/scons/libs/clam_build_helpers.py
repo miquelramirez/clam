@@ -464,7 +464,7 @@ int main( int argc, char** argv )
 }
 """
 
-if sys.platform == 'win32' or crosscompiling :
+if sys.platform == 'win32' :
 	package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c_2', xerces_test_code )
 else :
 	package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c', xerces_test_code )
