@@ -8,6 +8,9 @@ options.Add(PathOption('prefix', 'The prefix where the application will be insta
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt4/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
+options.Add(PathOption('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
+if sys.platform=="linux2" :
+	options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -24,6 +27,11 @@ Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
+crosscompiling = env["crossmingw"]
+isWindowsPlatform = sys.platform=='win32' or crosscompiling
+isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isDarwinPlatform = sys.platform=='darwin'
+
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
@@ -32,6 +40,8 @@ env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
 if sys.platform=='darwin' : env.Tool('bundle', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
+if crosscompiling :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
 version, fullVersion = versionInfo.versionFromLocalInfo("NetworkEditor")
@@ -66,15 +76,14 @@ env.EnableQt4Modules([
 	'QtCore',
 	'QtGui',
 	'QtOpenGL',
-#	'QtSql',
-#	'QtNetwork',
-#	'QtTest',
 	'QtXml',
 	'QtSvg',
 	'QtUiTools',
 	'QtDesigner',
-#	'Qt3Support',
-	], debug=False)
+	],
+	debug=False,
+	crosscompiling=crosscompiling,
+	)
 
 mainSources = {
 	'NetworkEditor' : os.path.join('src','main.cxx'),
@@ -112,10 +121,10 @@ if qrcfiles : sources += env.Qrc(source=qrcfiles)
 uifiles = scanFiles("*.ui", sourcePaths)
 if uifiles: uiheaders = env.Uic4(source=uifiles)
 
-if sys.platform=="win32" :
+if isWindowsPlatform :
 	sources += env.RES(source=["resources/NetworkEditor.rc"])
 
-if sys.platform=='linux2' :
+if isLinuxPlatform :
 	# TODO: This should not be hardcoded neither prefix (because package install)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
 
@@ -165,14 +174,6 @@ pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQ
 env.AppendUnique(CPPFLAGS=pluginDefines)
 
 #env.AppendUnique(CPPFLAGS=['-fPIC']) # qtPlugin examples were compiled with this option
-# TODO: Move this to the qt4 tool
-if os.getenv('QTDIR') :
-	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
-	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I'+os.path.join(env['QTDIR'],'include')])
-else:
-	env.AppendUnique(QT4_MOCFROMHFLAGS=['-I/usr/include/qt4'])
-	env.AppendUnique(QT4_MOCFROMCXXFLAGS=['-I/usr/include/qt4'])
-
 if sys.platform == "win32":
 	env.AppendUnique(LINKFLAGS='/OPT:NOREF')
 
@@ -185,7 +186,8 @@ manpages = [
 
 # Manual step: lupdate-qt4 *xx *ui -ts NetworkEditor_ca.ts
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
-#env.NoClean(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
+env.Precious(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
+env.NoClean(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
 translatableSources = scanFiles('*.cxx', sourcePaths);
 translatableSources+= scanFiles('*.hxx', sourcePaths);
 translatableSources+= scanFiles('*.ui', sourcePaths);
@@ -226,24 +228,36 @@ installation = {
 installTargets = [
 	env.Install( env['prefix']+path, files ) for path, files in installation.items() ]
 
-if sys.platform=='win32' :
+def absolutePosixPathToWine(dir) :
+	return 'z:'+'\\\\'.join(dir.split('/'))
+
+if isWindowsPlatform : 
+	winqtdir=env['QTDIR']
+	if crosscompiling : env['NSIS_MAKENSIS'] = 'wine ~/.wine/dosdevices/c:/Program\ Files/NSIS/makensis'
+	if crosscompiling : winqtdir = absolutePosixPathToWine(winqtdir)
+	externalDllPath = env['external_dll_path']
+	if crosscompiling : externalDllPath = absolutePosixPathToWine(externalDllPath)
+	winclampath = CLAMInstallDir
+	if crosscompiling : winclampath = absolutePosixPathToWine(winclampath)
+	if crosscompiling :
+		env.AddPostAction(programs, env.Action(["i586-mingw32msvc-strip $TARGET"]))
 	installTargets += [
 		env.Install(
 			env['prefix']+"/bin",
-			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
+			os.path.join(env['QTDIR'],'bin',"Qt"+dll+"4.dll")
 			) for dll in 'Core', 'Gui', 'OpenGL']
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
-	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
-	externalsDllDir = os.environ['EXTERNALDLLDIR']
-	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
+	env.Append(NSIS_OPTIONS=['/DQTDIR=%s'%winqtdir ])
+	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalDllPath ])
+	env.Append(NSIS_OPTIONS=['/DCLAMINSTALLDIR=%s' % winclampath ])
 	# Get the visual studio runtimes path
 	for vcRuntimeDir in os.environ['PATH'].split(";") :
 		vcRuntimeDir = os.path.normpath(vcRuntimeDir)
 		if os.access(os.path.join(vcRuntimeDir,"msvcr71.dll"),os.R_OK) :
 			break
 	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
-	win_packages = [env.Nsis( source='resources\\clam_networkeditor.nsi')]
-	env.AddPreAction(win_packages, '%s\\changeExampleDataPath.py . ..' % clam_sconstoolspath)
+	win_packages = [env.Nsis( source='resources/clam_networkeditor.nsi')]
+	env.AddPreAction(win_packages, os.path.join(clam_sconstoolspath,'changeExampleDataPath.py')+' . ..' )
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' :
