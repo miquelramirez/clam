@@ -159,8 +159,8 @@ namespace CLAMTest
 			proc.Configure( cfg );
 
 			CPPUNIT_ASSERT_EQUAL( 2,
-					      std::distance( proc.GetOutPorts().Begin(),
-							     proc.GetOutPorts().End() ) );
+					      int(std::distance( proc.GetOutPorts().Begin(),
+							     proc.GetOutPorts().End() )) );
 			
 		}
 		
@@ -213,8 +213,8 @@ namespace CLAMTest
 
 
 			CPPUNIT_ASSERT_EQUAL( 2,
-					      std::distance( proc.GetOutPorts().Begin(),
-							     proc.GetOutPorts().End() ) );
+					      int(std::distance( proc.GetOutPorts().Begin(),
+							     proc.GetOutPorts().End() )) );
 		}
 
 		void testConfigure_ReturnsFalse_ManualChannelSelection_TooMany()
