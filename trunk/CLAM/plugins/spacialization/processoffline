@@ -27,6 +27,9 @@ examples = [
 	('realitzacio2', 'db21'),
 	('explorer3', 'db22'),
 ]
+examples = [
+	('realitzacio3', 'db18'),
+]
 instruments = [
 	('gui', 'wavs/flamenco_guitar.wav', 'source0'),
 	('voz', 'wavs/flamenco_voz.wav', 'source1' ),
