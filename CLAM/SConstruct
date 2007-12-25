@@ -301,7 +301,7 @@ if not clam_env.GetOption('clean') :
 
 modules = [ 'core', 'processing', 'audioio']
 
-export("crosscompiling")
+Export("crosscompiling")
 for module in modules: Export(module+'_env')
 
 # install dirs composition
