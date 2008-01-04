@@ -3,8 +3,6 @@ import sys, os
 #---------------------------------------------------------------
 # from custom_builders.py
 
-#crosscompiling=True
-
 def generate_copy_files( target, source, env ) :
 	if sys.platform == 'win32' :
 		copyCmd = 'copy'
