@@ -2,14 +2,13 @@
 EnsureSConsVersion(0, 96, 92)
 import sys
 import os
-import shelve
-import copy
+import glob
 
 sys.path.append( os.path.abspath("scons/libs/") )
 from clam_build_helpers import *
 from clam_dependent_libs_checks import *
 # TODO: Must solve the dependency loop of options and platforms
-crosscompiling = False
+crosscompiling = True
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
@@ -23,7 +22,6 @@ def load_config_file_to_env( env, dir ):
 	opts.Add( 'LIBS', 'libs to link')
 	opts.Add( 'LINKFLAGS', 'LINKFLAGS') # This one added because on Mac OS X we need additional '-framework OpenGL && AGL'
 	opts.Add( 'pkg_config_available', 'PKG Config Available', 'False')
-	opts.Add( 'QT_LIB', 'QT lib name')
 	opts.Update(env)
 
 def save_config_file_from_env( env, dir ):
@@ -36,7 +34,6 @@ def save_config_file_from_env( env, dir ):
 	opts.Add( 'LIBS', 'libs to link', env['LIBS'])
 	opts.Add( 'LINKFLAGS', 'LINKFLAGS', '') # This one added because on Mac OS X we need additional '-framework OpenGL && AGL'
 	opts.Add( 'pkg_config_available', 'PKG Config Available', 'False')
-	opts.Add( 'QT_LIB', 'QT lib name', '')
 	opts.Save(dir+'/flags.conf', env)
 
 def configure_clam(clam_env) :
@@ -45,17 +42,12 @@ def configure_clam(clam_env) :
 ### CLAM GLOBAL DEPENDENCIES CHECKING    ###
 ############################################"""
 	# Sandbox setup
-	clam_env.Replace( QT_LIB = '' )
 	if isWindowsPlatform :
 		libbasenames = [ 'xercesc', 'fftw', 'fftw3', 'dxsdk', 'id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','portaudio','pthreads']
 		for basename in libbasenames :
-			include_path = os.path.join(clam_env['sandbox_path'], basename, 'include')
-			print( 'include path: ' + include_path )
-			lib_path =  os.path.join(clam_env['sandbox_path'], basename, 'lib')
-			print( 'lib path: ' + lib_path)
-			clam_env.Append( CPPPATH= [include_path] )
-			clam_env.Append( LIBPATH = [lib_path] )
-			# if flags is not defined it will crash while loading flags.conf
+			basePath = os.path.join(clam_env['sandbox_path'], basename)
+			clam_env.Append( CPPPATH = [os.path.join(basePath,'include')] )
+			clam_env.Append( LIBPATH = [os.path.join(basePath,'lib')] )
 		environmentIncludes = ""
 		if os.environ.has_key('INCLUDE') : environmentIncludes = os.environ['INCLUDE']
 		environmentIncludesList = environmentIncludes.split(';')
@@ -67,7 +59,7 @@ def configure_clam(clam_env) :
 		clam_env.Append( CPPPATH= ['/usr/local/include'] )
 	if isDarwinPlatform :
 		clam_env.Append( CPPPATH= ['/usr/local/include', '/opt/local/include'] )
-		
+
 
 	conf = Configure( clam_env, custom_tests = custom_check_routines )
 	if not setup_global_environment( clam_env, conf ) :
@@ -85,8 +77,6 @@ def configure_core(clam_env) :
 		Exit(1)
 	core_env = conf.Finish()
 	clam_env['xmlbackend'] = core_env['xmlbackend']
-	if clam_env['xmlbackend'] != 'none' :
-		clam_env.Append( CPPFLAGS=['-DCLAM_USE_XML'] )
 	return core_env
 
 def configure_processing(core_env) :
@@ -107,15 +97,10 @@ def configure_audioio(processing_env) :
 ### CLAM AUDIOIO DEPENDENCIES CHECKING   ###
 ############################################"""
 	audioio_env = processing_env.Copy()
-	audioio_env.Replace( QT_LIB = '')
 
 	conf = Configure( audioio_env, custom_check_routines )
 	if not setup_audioio_environment( audioio_env, conf ) :
 		Exit(1)
-	if audioio_env['with_mad'] :
-		audioio_env.Append( CPPFLAGS=['-DWITH_MAD=1'] )
-	if audioio_env['with_oggvorbis'] :
-		audioio_env.Append( CPPFLAGS=['-DWITH_VORBIS=1'] )
 	audioio_env = conf.Finish()
 	return audioio_env
 
@@ -126,7 +111,7 @@ def configureModules( clam_env ) :
 	save_config_file_from_env(core_env, 'scons/libs/core')
 	processing_env = configure_processing(core_env)
 	save_config_file_from_env(processing_env, 'scons/libs/processing')
-	audioio_env = configure_audioio(processing_env)
+	audioio_env = configure_audioio(core_env)
 	save_config_file_from_env(audioio_env, 'scons/libs/audioio')
 
 # helper functions
@@ -245,7 +230,6 @@ if not clam_env['verbose']:
 	clam_env['LINKCOMSTR'] = '== Linking $TARGET'
 	clam_env['SHLINKCOMSTR'] = '== Linking library $TARGET'
 
-clam_env.Append( CPPFLAGS = '' )
 crosscompiling = clam_env.has_key('crossmingw') and clam_env['crossmingw']
 if crosscompiling :
 	clam_env.Tool('crossmingw',toolpath=['scons/sconstools'])
@@ -293,25 +277,19 @@ core_env = clam_env.Copy()
 processing_env = clam_env.Copy()
 audioio_env = clam_env.Copy()
 
-#building
-if not clam_env.GetOption('clean') :
-	load_config_file_to_env(core_env, 'scons/libs/core')
-	load_config_file_to_env(processing_env, 'scons/libs/processing')
-	load_config_file_to_env(audioio_env, 'scons/libs/audioio')
-
 modules = [ 'core', 'processing', 'audioio']
 
 Export("crosscompiling")
-for module in modules: Export(module+'_env')
 
 # install dirs composition
-
 install_dirs = compose_install_dirnames(clam_env)
 Export('install_dirs')
 
-if clam_env.GetOption('clean') :
-	if os.path.exists( 'header.db' ) :
-		os.remove('header.db')
+#building
+if not clam_env.GetOption('clean') :
+	for module in modules :
+		load_config_file_to_env(eval(module+'_env'), 'scons/libs/'+module)
+		Export(module+'_env')
 
 for module in modules :
 	SConscript('scons/libs/'+module+'/SConscript')
@@ -320,7 +298,6 @@ doxygen = clam_env.Command("DoxyLog", "doxygen.cfg",
 	'(cat $SOURCE; echo "PROJECT_NUMBER = %s" ) | doxygen - 2>&1 | tee $TARGET'%fullVersion)
 clam_env.Alias("doxygen", doxygen)
 
-import glob, os
 sconstoolsTargetDir = os.path.join(install_dirs.data, 'clam', 'sconstools')
 sconstoolsInstall = clam_env.Install(sconstoolsTargetDir, glob.glob('scons/sconstools/*.py'))
 clam_env.Alias('install_sconstools', sconstoolsInstall)
@@ -331,7 +308,10 @@ all_alias = Alias( 'all', modules)
 install_alias = Alias( 'install', ['install_%s'%module for module in modules])
 
 Default( all_alias )
+
 print """\
 ##############################################
 ### BUILDING CLAM LIBRARIES                ###
 ##############################################"""
+
+
