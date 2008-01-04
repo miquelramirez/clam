@@ -3,6 +3,8 @@ import sys, os
 #---------------------------------------------------------------
 # from custom_builders.py
 
+#crosscompiling=True
+
 def generate_copy_files( target, source, env ) :
 	if sys.platform == 'win32' :
 		copyCmd = 'copy'
@@ -131,7 +133,7 @@ generic_checks = dict()
 def pkg_config_check_existence(context, *args, **kwargs):
 	name = kwargs['name']
 	context.Message( 'Checking for %s registered in pkg-config... ' % name )
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling=context.env.has_key('crossmingw') and context.env['crossmingw']
 	if crosscompiling : 
 		pkgconfig = 'wine pkg-config'
 	else :
@@ -209,9 +211,10 @@ class InstallDirs :
 
 class ThoroughPackageCheck :
 
-	def __init__( self, name, lang, lib, test_code ) :
+	def __init__( self, name, lang, lib, test_code, winlib=None ) :
 		self.name = name
 		self.lib = lib
+		self.winlib = winlib
 		self.test_code = test_code
 		self.lang = lang
 		self.test_code_extension = None
@@ -226,29 +229,31 @@ class ThoroughPackageCheck :
 		context.Message( 'Checking that %s sample program compiles...'%self.name )
 		result = context.TryCompile( self.test_code, self.test_code_extension )
 		context.Result(result)
-		if not result :
-			return result
+		if not result : return False
 
 		context.Message( 'Checking that %s sample program links...'%self.name )
 		try :
 			lastLIBS = context.env['LIBS']
 		except KeyError :
 			lastLIBS = None
-		if self.lib is not None :
-			context.env.Append( LIBS=self.lib )
+		crosscompiling = context.env.has_key('crossmingw') and context.env['crossmingw']
+		if sys.platform == 'win32' or crosscompiling :
+			lib = self.winlib
+		if not lib :
+			lib = self.lib
+		if lib :
+			context.env.Append( LIBS=lib )
 		result = context.TryLink( self.test_code, self.test_code_extension )
 		context.Result(result)
 		if not result :
 			context.env.Replace( LIBS=lastLIBS )
-			return result
+			return False
 
 		context.Message( 'Checking that %s sample program runs... '%self.name )
 		result, errmsg = context.TryRun( self.test_code, self.test_code_extension )
 		context.Result(result)
 
 		return result
-
-
 
 
 #---------------------------------------------------------------
@@ -258,7 +263,7 @@ tool_checks = dict()
 
 def check_pkg_config(context, *args, **kwords):
 	context.Message( 'Checking for pkg-config... ' )
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling = context.env.has_key('crossmingw') and context.env['crossmingw']
 	if crosscompiling : 
 		pkgconfig = 'wine pkg-config'
 	else :
@@ -355,7 +360,7 @@ def lib_rules(name, version, headers, sources, install_dirs, env, moduleDependen
 	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])
 	#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling = env.has_key('crossmingw') and env['crossmingw']
 	if sys.platform != 'win32' and not crosscompiling :
 		return posix_lib_rules( name, version, headers , sources, install_dirs, env )
 	else :
@@ -464,10 +469,7 @@ int main( int argc, char** argv )
 }
 """
 
-if sys.platform == 'win32' :
-	package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c_2', xerces_test_code )
-else :
-	package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c', xerces_test_code )
+package_checks['check_xerces_c'] = ThoroughPackageCheck( 'xerces-c', 'c++', 'xerces-c', xerces_test_code, 'xerces-c_2' )
 
 # libxml++ package-check
 xmlpp_test_code = """
@@ -513,10 +515,7 @@ int main(int argc, char *argv[])
 
 """
 
-if sys.platform == 'win32' :
-	package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', 'pthreadVCE', pthread_test_code )
-else :
-	package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', None, pthread_test_code )
+package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', None, pthread_test_code, 'pthreadGC2' )
 
 double_fftw_wo_prefix_test_code = """\
 #include <fftw.h>

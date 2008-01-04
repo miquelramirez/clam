@@ -229,9 +229,11 @@ def setup_audioio_environment( env, conf ) :
 
 	if env['with_oggvorbis'] :
 		if not test_oggvorbis( env, conf ) : return False
+		env.Append( CPPFLAGS=['-DWITH_VORBIS=1'] )
 
 	if env['with_mad'] :
 		if not test_mad( env, conf ) : return False
+		env.Append( CPPFLAGS=['-DWITH_MAD=1'] )
 
 	if env['with_id3'] :
 		if not test_id3lib( env, conf ) : return False
@@ -312,6 +314,8 @@ def test_ladspa ( env, conf ) :
 
 def setup_core_environment ( env, conf) :
 	if not test_xml_backend( env, conf): return False
+	if env['xmlbackend'] != 'none' :
+		env.Append( CPPFLAGS=['-DCLAM_USE_XML'] )
 	if not test_ladspa ( env, conf):
 		return config_error(
 			"Either install properly ladspa SDK or disable LADSPA support by issuing\n"
