@@ -8,7 +8,7 @@ sys.path.append( os.path.abspath("scons/libs/") )
 from clam_build_helpers import *
 from clam_dependent_libs_checks import *
 # TODO: Must solve the dependency loop of options and platforms
-crosscompiling = True
+crosscompiling = False
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
