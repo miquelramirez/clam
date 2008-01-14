@@ -235,6 +235,7 @@ class ThoroughPackageCheck :
 		except KeyError :
 			lastLIBS = None
 		crosscompiling = context.env.has_key('crossmingw') and context.env['crossmingw']
+		lib = None
 		if sys.platform == 'win32' or crosscompiling :
 			lib = self.winlib
 		if not lib :
