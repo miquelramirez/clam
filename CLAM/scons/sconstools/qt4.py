@@ -193,11 +193,11 @@ AutomocStatic = _Automoc('StaticObject')
 
 def _detect(env):
 	"""Not really safe, but fast method to detect the QT library"""
-	QTDIR = env.get('QTDIR',None)
-	if QTDIR!=None : return QTDIR
+	try: return env['QTDIR']
+	except KeyError: pass
 
-	QTDIR = os.environ.get('QTDIR',None)
-	if QTDIR!=None : return QTDIR
+	try: return os.environ['QTDIR']
+	except KeyError: pass
 
 	moc = env.WhereIs('moc-qt4') or env.WhereIs('moc4') or env.WhereIs('moc')
 	if moc:
@@ -441,7 +441,6 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 	for module in modules :
 		try : self.AppendUnique(CPPDEFINES=moduleDefines[module])
 		except: pass
-		
 	debugSuffix = ''
 	if sys.platform == "linux2" and not crosscompiling :
 		if debug : debugSuffix = '_debug'
@@ -463,9 +462,8 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 		return
 	if sys.platform == "win32" or crosscompiling :
 		if crosscompiling:
-			self['QT4_MOC'] = "QTDIR=%s %s"%(
-				transformToWinePath(self['QTDIR']),
-				self['QT4_MOC'])
+			transformedQtdir = transformToWinePath(self['QTDIR'])
+			self['QT4_MOC'] = "QTDIR=%s %s"%( transformedQtdir, self['QT4_MOC'])
 		self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include")])
 		try: modules.remove("QtDBus")
 		except: pass
@@ -478,11 +476,11 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 		self.PrependUnique(LIBS=[lib+debugSuffix for lib in modules if lib in staticModules])
 		if 'QtOpenGL' in modules:
 			self.AppendUnique(LIBS=['opengl32'])
-		self.AppendUnique(CPPPATH=[ '$QTDIR/include/'+module
-			for module in modules])
+		self.AppendUnique(CPPPATH=[ '$QTDIR/include/'])
+		self.AppendUnique(CPPPATH=[ '$QTDIR/include/'+module for module in modules])
 		if crosscompiling :
 			self["QT4_MOCCPPPATH"] = [
-				path.replace('$QTDIR', transformToWinePath(self['QTDIR']))
+				path.replace('$QTDIR', transformedQtdir)
 					for path in self['CPPPATH'] ]
 		else :
 			self["QT4_MOCCPPPATH"] = self["CPPPATH"]
