@@ -33,11 +33,11 @@ def set_qtdir_to_qt3(x) :
 localDefinitions = {
 	'name': 'mingw-crosscompiled',
 	'description': '<img src="http://clam.iua.upf.es/images/win_icon.png"/>',
-	'sandbox': '$HOME/CajitasDeArena/mingw/clam',
-	'installPath': '$HOME/CajitasDeArena/mingw/local',
-	'externalDllPath': '$HOME/CajitasDeArena/mingw/dlls',
+	'sandbox': os.path.expanduser('~/CajitasDeArena/mingw/clam'),
+	'installPath': os.path.expanduser('~/CajitasDeArena/mingw/local'),
+	'externalDllPath': os.path.expanduser('~/CajitasDeArena/mingw/dlls'),
 	'qt3dir':'',
-	'qt4dir':'~/.wine/dosdevices/c:/Trolltech/Qt-4.3.3/',
+	'qt4dir': os.path.expanduser('~/.wine/fake_windows/Qt/4.3.3/'),
 	'packageWildcard':'*_setup.exe',
 	'downloadPlatform':'win',
 }
@@ -124,7 +124,7 @@ clam.add_subtask('vmqt4 compilation and examples', [
 clam.add_subtask("Annotator packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/Annotator"%localDefinitions,
-	"scons clam_vmqt4_path=vmqt prefix=%(installPath)s clam_prefix=%(installPath)s external_dll_path=%(externalDllPath)s crossmingw=1 "%localDefinitions,
+	"scons prefix=%(installPath)s clam_prefix=%(installPath)s external_dll_path=%(externalDllPath)s crossmingw=1 "%localDefinitions,
 	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
 	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
@@ -144,7 +144,7 @@ clam.add_subtask("NetworkEditor packaging", [
 
 Runner( clam, 
 	continuous = True,
-	remote_server_url = 'http://ocata48123.upf.es/testfarm_server'
-#	local_base_dir='/tmp'
+	remote_server_url = 'http://ocata48123.upf.es/testfarm_server',
+#	local_base_dir='/tmp',
 )
 
