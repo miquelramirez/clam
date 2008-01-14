@@ -39,6 +39,8 @@ localDefinitions = {
 	'qt4dir':'/usr/local/Trolltech/Qt-4.2.2/',
 	'packageWildcard':'*.dmg',
 	'downloadPlatform':'mac',
+	'extraOptions' : '',
+	'extraLibOptions': '',
 }
 
 client = Client(localDefinitions['name'])
@@ -70,7 +72,7 @@ clam.add_deployment( [
 	"cd %(sandbox)s/CLAM"%localDefinitions,
 	"rm -rf %(installPath)s/*"%localDefinitions,
 	"cd %(sandbox)s/CLAM/"%localDefinitions,
-	"scons configure prefix=%(installPath)s"%localDefinitions,
+	"scons configure prefix=%(installPath)s %(extraLibOptions)s %(extraOptions)s"%localDefinitions,
 	"scons",
 	"scons install",
 ] )
@@ -116,13 +118,13 @@ clam.add_subtask("SMSTools packaging", [
 clam.add_subtask('vmqt4 compilation and examples', [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/Annotator/vmqt"%localDefinitions,
-	'scons prefix=%(installPath)s clam_prefix=%(installPath)s release=1 double=1'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s release=1 double=1 %(extraOptions)s'%localDefinitions,
 	'scons examples',
 ] )
 clam.add_subtask("Annotator packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/Annotator"%localDefinitions,
-	"scons clam_vmqt4_path=vmqt prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
+	"scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraOptions)s "%localDefinitions,
 	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
 	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
@@ -132,7 +134,7 @@ clam.add_subtask("Annotator packaging", [
 clam.add_subtask("NetworkEditor packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/NetworkEditor"%localDefinitions,
-	"scons prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
+	"scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraOptions)s "%localDefinitions,
 	"%(sandbox)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
 	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
@@ -143,6 +145,6 @@ clam.add_subtask("NetworkEditor packaging", [
 Runner( clam, 
 	continuous = True,
 	remote_server_url = 'http://ocata48123.upf.es/testfarm_server'
-#	local_base_dir='/tmp'
+#	local_base_dir='/tmp',
 )
 

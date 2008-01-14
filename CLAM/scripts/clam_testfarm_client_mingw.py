@@ -35,11 +35,12 @@ localDefinitions = {
 	'description': '<img src="http://clam.iua.upf.es/images/win_icon.png"/>',
 	'sandbox': os.path.expanduser('~/CajitasDeArena/mingw/clam'),
 	'installPath': os.path.expanduser('~/CajitasDeArena/mingw/local'),
-	'externalDllPath': os.path.expanduser('~/CajitasDeArena/mingw/dlls'),
 	'qt3dir':'',
 	'qt4dir': os.path.expanduser('~/.wine/fake_windows/Qt/4.3.3/'),
 	'packageWildcard':'*_setup.exe',
 	'downloadPlatform':'win',
+	'extraOptions' : ' external_dll_path=%s crossmingw=1 '%os.path.expanduser('~/CajitasDeArena/mingw/dlls'),
+	'extraLibOptions': 'with_fftw3=1 with_fftw=0 audio_backend=portaudio xmlbackend=xmlpp sandbox_path=%(sandbox)s/.. '%,
 }
 
 client = Client(localDefinitions['name'])
@@ -71,12 +72,11 @@ clam.add_deployment( [
 	"cd %(sandbox)s/CLAM"%localDefinitions,
 	"rm -rf %(installPath)s/*"%localDefinitions,
 	"cd %(sandbox)s/CLAM/"%localDefinitions,
-	"scons configure with_fftw3=1 with_fftw=0 audio_backend=portaudio xmlbackend=xmlpp prefix=%(installPath)s sandbox_path=%(sandbox)s/.. crossmingw=1"%localDefinitions,
-	"scons configure prefix=%(installPath)s"%localDefinitions,
+	"scons configure prefix=%(installPath)s %(extraLibOptions)s %(extraOptions)s"%localDefinitions,
 	"scons",
 	"scons install",
 ] )
-"""
+
 clam.add_subtask("Unit Tests", [
 	"cd %(sandbox)s/CLAM"%localDefinitions,
 	"cd test",
@@ -86,6 +86,7 @@ clam.add_subtask("Unit Tests", [
 	{CMD: "./UnitTests", INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
+"""
 clam.add_subtask("Functional Tests", [
 	"cd %(sandbox)s/CLAM"%localDefinitions,
 	"cd test",
@@ -104,6 +105,7 @@ clam.add_subtask("CLAM Plugins compilation", [
 	"cd %(sandbox)s/CLAM/examples/PluginExample"%localDefinitions,
 	"scons clam_prefix=%(installPath)s"%localDefinitions,
 ] )
+
 clam.add_subtask("SMSTools packaging", [
 	{CMD: "echo setting QTDIR to qt3 path ", INFO: set_qtdir_to_qt3},
 	"cd %(sandbox)s/SMSTools"%localDefinitions,
@@ -118,13 +120,13 @@ clam.add_subtask("SMSTools packaging", [
 clam.add_subtask('vmqt4 compilation and examples', [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/Annotator/vmqt"%localDefinitions,
-	'scons prefix=%(installPath)s clam_prefix=%(installPath)s crossmingw=1 release=1 double=1'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s release=1 double=1 %(extraOptions)s'%localDefinitions,
 	'scons examples',
 ] )
 clam.add_subtask("Annotator packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/Annotator"%localDefinitions,
-	"scons prefix=%(installPath)s clam_prefix=%(installPath)s external_dll_path=%(externalDllPath)s crossmingw=1 "%localDefinitions,
+	"scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraOptions)s "%localDefinitions,
 	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
 	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
@@ -134,7 +136,7 @@ clam.add_subtask("Annotator packaging", [
 clam.add_subtask("NetworkEditor packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(sandbox)s/NetworkEditor"%localDefinitions,
-	"scons prefix=%(installPath)s clam_prefix=%(installPath)s external_dll_path=%(externalDllPath)s crossmingw=1 "%localDefinitions,
+	"scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraOptions)s "%localDefinitions,
 	"%(sandbox)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
 	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
