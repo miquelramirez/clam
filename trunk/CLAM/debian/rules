@@ -13,7 +13,7 @@
 
 
 CFLAGS = -Wall -g
-SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr xmlbackend=xercesc release=yes double=0 with_fftw3=yes
+SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr xmlbackend=xercesc release=yes double=0 with_fftw3=yes width_fftw=no
 SCONS= scons
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
