@@ -252,6 +252,7 @@ namespace CLAM {
 				return "Running";
 		}
 		CLAM_ASSERT(false, "Unknown processing exec state found");
+		return "INTERNAL ERROR";
 	}
 		
 

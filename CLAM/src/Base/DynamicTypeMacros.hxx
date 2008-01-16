@@ -104,17 +104,17 @@ private: \
 		public: \
 			typedef StaticBool<!(NAttrib>=N)> InboundsCheck; \
 	}; \
-	/** Instantiated whenever a Attribute number is out of range. 
-	 * Gives a compilation error message.
+	/** Instantiated whenever a Attribute number is out of range. \
+	 * Gives a compilation error message. \
 	 */ \
 	template <unsigned int NAttrib> \
 	void CheckAttribute (StaticFalse*inRange,AttributePosition<NAttrib>*a) { \
 		AttributePosition<(NAttrib)-1>* previous; \
 		previous->CompilationError_AttributePositionOutOfBounds(); \
 	}\
-	/** 
-	 * Instantiated whenever a Attribute number is left.
-	 * Gives a compilation error message.
+	/** \
+	 * Instantiated whenever a Attribute number is left. \
+	 * Gives a compilation error message. \
 	 */ \
 	template <unsigned int NAttrib> \
 	void CheckAttribute (StaticTrue*inRange,AttributePosition<NAttrib>*a) { \

@@ -38,8 +38,8 @@ namespace CLAM {
 	public:
 
 		ErrDynamicType();
-		ErrDynamicType(char* msg);
-		ErrDynamicType(char* msg1, const char* msg2);
+		ErrDynamicType(const char* msg);
+		ErrDynamicType(const char* msg1, const char* msg2);
 
 		virtual ~ErrDynamicType() throw();
 	};
