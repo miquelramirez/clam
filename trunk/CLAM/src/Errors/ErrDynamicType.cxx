@@ -30,11 +30,11 @@ namespace CLAM {
 	{
 	}
 
-	ErrDynamicType::ErrDynamicType(char* msg)
+	ErrDynamicType::ErrDynamicType(const char* msg)
 		: Err((std::string("\nDynamicType Error: ")+msg).c_str())
 	{
 	}
-	ErrDynamicType::ErrDynamicType(char* msg1, const char* msg2)
+	ErrDynamicType::ErrDynamicType(const char* msg1, const char* msg2)
 		: Err((std::string("\nDynamicType Error: ")+msg1+" "+msg2).c_str())
 	{
 	}
