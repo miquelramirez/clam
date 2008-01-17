@@ -388,6 +388,7 @@ private:
 			err << "Segmentation point at " << values[i] << " is out of bounds" << std::endl;
 			ok=false;
 		}
+		return ok;
 	}
 };
 

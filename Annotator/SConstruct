@@ -56,7 +56,7 @@ versionInfo.generateVersionSources(os.path.join('src','MusicAnnotatorVersion'), 
 env['CXXFILESUFFIX'] = '.cxx'
 env['QT4_UICDECLSUFFIX'] = '.hxx'
 env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
-env['QT4_UICDECLPREFIX'] = os.path.join('generated','uic_')
+env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
 env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
