@@ -61,7 +61,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp configure-stamp
 	-cd $(CURDIR) && $(SCONS) -c
-	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) -c clam_prefix=/usr; done
+#	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) -c clam_prefix=$(CURDIR)/debian/tmp/usr; done # TODO: This cannot work without clam installed
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
