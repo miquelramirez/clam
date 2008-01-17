@@ -15,7 +15,7 @@
 CFLAGS = -Wall -g
 SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr xmlbackend=xercesc release=yes double=0 with_fftw3=yes width_fftw=no
 SCONS= scons
-PLUGINS=continuousExcitationSynthesizer GuitarDistortion osc spacialization
+PLUGINS=continuousExcitationSynthesizer osc spacialization GuitarDistortion/AudioSwitch GuitarDistortion/AutomaticGainControl GuitarDistortion/DCRemoval GuitarDistortion/GuitarDistortion
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -83,7 +83,7 @@ install: build
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/tmp/usr
 	cd $(CURDIR) && $(SCONS) install
-	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; scons; done
+	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; scons clam_prefix=$(CURDIR)/debian/tmp/usr; done
 	dh_install --sourcedir=debian/tmp
 
 # Build architecture-independent files here.
