@@ -47,7 +47,7 @@ build: build-stamp
 build-stamp: configure-stamp 
 	dh_testdir
 	cd $(CURDIR); $(SCONS) core processing audioio
-	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; scons; done
+	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) clam_prefix=$(CURDIR)/debian/tmp/usr; done
 	# First, tarballize the examples folder
 	tar zcvf examples.tar.gz examples
 	# and now doxygenate CLAM stuff
@@ -61,6 +61,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp configure-stamp
 	-cd $(CURDIR) && $(SCONS) -c
+	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) -c clam_prefix=$(CURDIR)/debian/tmp/usr; done
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
@@ -83,7 +84,7 @@ install: build
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/tmp/usr
 	cd $(CURDIR) && $(SCONS) install
-	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; scons clam_prefix=$(CURDIR)/debian/tmp/usr; done
+	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) install clam_prefix=$(CURDIR)/debian/tmp/usr; done
 	dh_install --sourcedir=debian/tmp
 
 # Build architecture-independent files here.
