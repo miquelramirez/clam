@@ -25,7 +25,7 @@
 #include <QtCore/QLocale>
 #include <QtGui/QMessageBox>
 #include <QtCore/QFileInfo>
-#include "uic_GUI.hxx"
+#include "ui_GUI.hxx"
 #include "BocaTaskRunner.hxx"
 
 #ifndef I18N_PATH
