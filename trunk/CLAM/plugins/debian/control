@@ -1,14 +1,13 @@
 Source: clam-plugins
-Section: libs
+Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
-Build-Depends: debhelper (>= 5.0.0), scons, libclam0-dev, liblo0-dev
+Build-Depends: debhelper (>= 5.0.0), scons, g++, libclam-dev, liblo0-dev
 Standards-Version: 3.6.1
 
 Package: libclam-plugin-spacialization
-Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends} 
 Recommends: clam-networkeditor
 Description: Spacialization plugin for the CLAM framework
  This is a CLAM plugin which contains some processings to simulate 3D acoustics.
@@ -21,6 +20,8 @@ Description: Spacialization plugin for the CLAM framework
  * Processing of impulse response representation in DFT (computation, interpolation, DB's)
  * Low latency real-time convolution
  * Processings to map receiver acoustic magnitudes to a surround system.
+ .
+ Homepage: http://clam.iua.upf.edu
 
 
 
