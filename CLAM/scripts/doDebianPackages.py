@@ -10,17 +10,18 @@ from versionInfo import versionFromRemoteSvn
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
 distributions = [
-	('ubuntu', 'feisty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
-	('ubuntu', 'gutsy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
-#	('debian', 'etch',   "http://ftp.de.debian.org/debian/", ['main']),
-	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
+#	('ubuntu', 'gutsy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'hardy', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+#	('debian', 'lenny',   "http://ftp.de.debian.org/debian/", ['main']),
+#	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
 	( 'CLAM',          'clam',               versionFromRemoteSvn('CLAM')[1] ),
-	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
-	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
-	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
+	( 'CLAM/plugins',  'clam-plugins',       versionFromRemoteSvn('CLAM')[1] ),
+#	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
+#	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
+#	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
 ]
 
 hooks = {
@@ -51,7 +52,7 @@ def phase(desc) :
 	print "\033[33m== ", desc, "\033[0m"
 
 phase( "Setting up the environment" )
-run("echo Remember: run this as root, and configure proxy settings (both in the script and ~/.subversion/servers)")
+run ("echo 'Remember: run this as root, and configure proxy settings (both in the script and ~/.subversion/servers)'")
 run ("mkdir -p hooks")
 run ("mkdir -p aptcache")
 run ("mkdir -p apt.config/apt.conf.d")
