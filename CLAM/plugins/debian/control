@@ -5,7 +5,7 @@ Maintainer: CLAM Team <clam@iua.upf.es>
 Build-Depends: debhelper (>= 5.0.0), scons, libclam0-dev, liblo0-dev
 Standards-Version: 3.6.1
 
-Package: libclam-plugins-spacialization
+Package: libclam-plugin-spacialization
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}

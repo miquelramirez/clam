@@ -1,4 +1,0 @@
-usr/include/CLAM/*
-usr/lib/pkgconfig/*
-usr/lib/*.so
-usr/share/clam/sconstools/*
