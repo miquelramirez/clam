@@ -1,0 +1,84 @@
+clam (1.0.1-1) unstable; urgency=low
+
+  * debian/rules: Updated to follow Sconstruct changes (changed location and removed vmqt module)
+
+ -- Giulio Paci <giuliopaci@interfree.it>  Sat,  7 Apr 2007 15:06:32 +0200
+
+clam (0.99.0-1) feisty; urgency=low
+
+  * debian/control: python dependency required for libclam-dev
+  * debian/rules,control: Enabling portaudio and fftw3
+  * Paul Brossier contributed changes:
+    * debian/watch: add debian watch file, to use with uscan. please update tarball names (e.g. clam-0.99.tar.gz)
+    * debian/rules: do not use QTDIR
+    * debian/copyright: add download url
+    * debian/rules: fix typo in SCONS_ENV
+    * debian/dirs: remove dirs file (nothing in /usr/*bin and *.install files do the work)
+    * debian/rules: always use the same scons options, remove blank lines, move scons configure to configure rules
+    * debian/rules: remove commented lines from dh_make template
+    * debian/*.install: add install files, use dh_install --sourcedir=debian/tmp
+    * debian/rules: make use of dh_installdocs to install files in /u/s/d/libclam-doc
+    * debian/*.ex: deleted useless dh_make templates
+    * debian/control: add Section: libs to source package
+    * debian/rules: make sure we build with alsa, and not with portaudio, clean cleaner
+
+ -- CLAM Team <clam@iua.upf.edu>  Fri,  9 Feb 2007 14:01:51 +0100
+
+clam (0.98.0-1) feisty; urgency=low
+
+  * New upstream release 
+  * libclam_vmfl is not included any more.
+  * debian/rules simplified: removed redundant "rm" commands 
+  * lintian advice: Added dependency to python
+  * lintian advice: scons/sconstools/addDependentLibsToBundle.py is not
+    installed
+
+ -- CLAM Team <clam@iua.upf.edu>  Fri,  9 Feb 2007 14:01:51 +0100
+
+clam (0.97.0-1) unstable; urgency=low
+
+  * Collapsed multiple libclam-* packages in libclam0 and libclam-dev
+  * Disabled doxygen source browsing to reduce libclam-doc size
+  * Added conflict with old splitted clam packages
+
+ -- CLAM Team <clam@iua.upf.es>  Sat, 30 Dec 2006 10:22:34 +0100
+ 
+clam (0.96.0-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- CLAM Team <clam@iua.upf.es>  Wed, 22 Dec 2006 10:22:34 +0100
+
+clam (0.95.0-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- CLAM Team <clam@iua.upf.es>  Wed, 22 Nov 2006 10:22:34 +0100
+
+clam (0.91.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Package descriptions updated
+  * Added interdependencies for libclamX packages
+  * Proper sections (libdev -> libdevel)
+  * Removed xlib-dev that is no more in xorg
+  * Removed versions on most build deps so they have not to be
+    updated every time
+  * Library packages names match the soname
+  * Disabling oscpack support as there is no debian package
+  * Installing scons tools for clam
+
+ -- CLAM Team <clam@iua.upf.es>  Tue, 27 May 2006 17:12:24 +0100
+
+libclam (0.90.0-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Pau Arumí <parumi@iua.upf.es>  Tue,  7 Feb 2006 17:12:24 +0100
+
+libclam (0.8.0-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- mramirez <clam@iua.upf.es>  Mon, 29 Aug 2005 15:19:44 +0200
+
