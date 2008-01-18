@@ -46,22 +46,14 @@ configure-stamp:
 build: build-stamp
 build-stamp: configure-stamp 
 	dh_testdir
-	cd $(CURDIR); $(SCONS) core processing audioio
-#	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) clam_prefix=$(CURDIR)/debian/tmp/usr; done
-	# First, tarballize the examples folder
-	tar zcvf examples.tar.gz examples
-	# and now doxygenate CLAM stuff
-	doxygen $(CURDIR)/doxygen.cfg
-	# tarballize dox
-	tar zcvf clam-doxydocs.tar.gz doxygen
+	for plugin in $(PLUGINS); do cd $(CURDIR)/$$plugin; $(SCONS) clam_prefix=/usr packaging_prefix=$(CURDIR)/debian/tmp/usr; done
 	touch build-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
-	-cd $(CURDIR) && $(SCONS) -c
-#	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) -c clam_prefix=$(CURDIR)/debian/tmp/usr; done # TODO: This cannot work without clam installed
+	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) -c clam_prefix=/usr packaging_prefix=$(CURDIR)/debian/tmp/usr; done
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
@@ -70,9 +62,7 @@ clean:
 	find $(CURDIR) -type f -name .*.swp | xargs rm -rf
 	find $(CURDIR) -type f -name .sconsign | xargs rm -rf
 	find $(CURDIR) -type f -name *.db | xargs rm -rf
-	-rm -rf $(CURDIR)/CLAM.tag $(CURDIR)/*.tar.gz $(CURDIR)/doxygen \
-	  $(CURDIR)/src/Defines/CLAMVersion.cxx src/Defines/CLAMVersion.hxx \
-		$(CURDIR)/.sconsign.dblite config.log \
+	-rm -rf $(CURDIR)/.sconsign.dblite config.log \
 		$(CURDIR)/*/{*.conf,include,src,*.so*,*.pc,CLAM} \
 		$(CURDIR)/*.conf
 	dh_clean 
@@ -83,8 +73,7 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/tmp/usr
-	cd $(CURDIR) && $(SCONS) install
-#	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) install clam_prefix=$(CURDIR)/debian/tmp/usr; done
+	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) install; done
 	dh_install --sourcedir=debian/tmp
 
 # Build architecture-independent files here.
