@@ -16,13 +16,16 @@ def recursiveDirs(root) :
 
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathOption.PathAccept))
 options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+
 env = Environment(ENV=os.environ, options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
+InstallDir = env['prefix'] or env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
@@ -53,8 +56,6 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
 	env.Append( LIBS=['fftw3'] )
 	
-
-
 mainSources = {
 	'ContinuousExcitationSynthesizer': 'ContinuousExcitationSynthesizer.cxx',
 	'TestAudioDatabaseReader': 'toreview/TestAudioDatabaseReader.cxx',
@@ -65,11 +66,12 @@ for binary, mainSource in mainSources.items() :
 
 programs = [ env.Program(target=program, source = [mainSource] + sources)
 	for program, mainSource in mainSources.items()]
+libraries = [
+	env.SharedLibrary(target=libraryName, source = sources)
+	]
 
-library = env.SharedLibrary(target=libraryName, source = sources)
-
-install = env.Install(os.path.join(CLAMInstallDir,'lib','clam'), library) #TODO maybe install binaries?
+install = [env.Install(os.path.join(InstallDir,'lib','clam'), library) for library in libraries] 
+install+= [env.Install(os.path.join(InstallDir,'bin'), binary) for binary in programs ]
 env.Alias('install', install)
-
-env.Default(programs + [library])
+env.Default(programs + libraries)
 

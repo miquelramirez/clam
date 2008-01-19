@@ -6,6 +6,7 @@ libraryName='plugins_osc_source'
 
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathOption.PathAccept))
 options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 env = Environment(ENV=os.environ, options=options)
@@ -14,6 +15,7 @@ Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
 CLAMInstallDir = env['clam_prefix']
+InstallDir = env['prefix'] or env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 if env['crossmingw'] :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
@@ -49,8 +51,9 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBS=['fftw3'] )
 	
 
-install = env.Install(os.path.join(CLAMInstallDir,'lib','clam'), libraries)
+install = env.Install(os.path.join(InstallDir,'lib','clam'), libraries)
 
 env.Alias('install', install)
 env.Default(libraries + programs)
+
 
