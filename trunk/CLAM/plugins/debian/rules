@@ -53,7 +53,7 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
-	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) -c clam_prefix=/usr prefix=$(CURDIR)/debian/tmp/usr; done
+	for plugin in $(PLUGINS); do cd $(CURDIR)/$$plugin; $(SCONS) -c clam_prefix=/usr prefix=$(CURDIR)/debian/tmp/usr; done
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
@@ -73,7 +73,7 @@ install: build
 	dh_clean -k 
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/tmp/usr
-	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) install; done
+	for plugin in $(PLUGINS); do cd $(CURDIR)/$$plugin; $(SCONS) install; done
 	dh_install --sourcedir=debian/tmp
 
 # Build architecture-independent files here.
