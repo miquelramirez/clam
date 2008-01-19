@@ -46,14 +46,14 @@ configure-stamp:
 build: build-stamp
 build-stamp: configure-stamp 
 	dh_testdir
-	for plugin in $(PLUGINS); do cd $(CURDIR)/$$plugin; $(SCONS) clam_prefix=/usr packaging_prefix=$(CURDIR)/debian/tmp/usr; done
+	for plugin in $(PLUGINS); do cd $(CURDIR)/$$plugin; $(SCONS) clam_prefix=/usr prefix=$(CURDIR)/debian/tmp/usr; done
 	touch build-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp configure-stamp
-	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) -c clam_prefix=/usr packaging_prefix=$(CURDIR)/debian/tmp/usr; done
+	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) -c clam_prefix=/usr prefix=$(CURDIR)/debian/tmp/usr; done
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
