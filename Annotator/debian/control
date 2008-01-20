@@ -2,6 +2,7 @@ Source: clam-annotator
 Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
+Homepage: http://clam.iua.upf.edu
 Build-Depends: debhelper (>= 5.0.0), scons, g++, libclam-dev, qt4-dev-tools, libqt4-dev, docbook-to-man, imagemagick
 Standards-Version: 3.6.1
 
@@ -22,8 +23,6 @@ Description: CLAM audio annotation tool
  The application adapts to user defined description schemes, auralizes
  annotations and provides import and export support for wavesurfer formats.
  It also has support for collaborative and distributed annotation campaigns.
- .
- Homepage: http://clam.iua.upf.edu
 
 Package: clam-annotator-examples
 Architecture: all
@@ -42,7 +41,5 @@ Description: CLAM audio annotation tool
  annotations and provides import and export support for wavesurfer formats.
  It also has support for collaborative and distributed annotation campaigns.
  .
- This package contains example projects to do 
- .
- Homepage: http://clam.iua.upf.edu
+ This package contains example projects that uses the provided extractors.
 

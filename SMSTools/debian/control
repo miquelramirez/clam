@@ -2,6 +2,7 @@ Source: clam-smstools
 Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
+Homepage: http://clam.iua.upf.edu
 Build-Depends: debhelper (>= 5.0.0), scons, g++, libclam-dev, libqt3-headers, libqt3-mt-dev, docbook-to-man, imagemagick
 Standards-Version: 3.6.1
 
@@ -14,6 +15,4 @@ Description: CLAM SMSTools, SMS based audio authoring tool
  and perform pipelined transformations on such representation.
  SMS representation makes easy to perform quality effects
  such as gender change, pitch shift, time streetch, morphing...
- .
- Homepage: http://clam.iua.upf.edu
 
