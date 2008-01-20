@@ -74,6 +74,7 @@ install: build
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/tmp/usr
 	for plugin in $(PLUGINS); do cd $(CURDIR)/$$plugin; $(SCONS) install; done
+	find $(CURDIR)/debian/tmp/usr
 	dh_install --sourcedir=debian/tmp
 
 # Build architecture-independent files here.
