@@ -2,6 +2,7 @@ Source: clam-networkeditor
 Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
+Homepage: http://clam.iua.upf.edu
 Build-Depends: debhelper (>= 5.0.0), scons, g++, libclam-dev, qt4-dev-tools, libqt4-dev, docbook-to-man, imagemagick, libcppunit-dev
 Standards-Version: 3.6.1
 
@@ -19,8 +20,6 @@ Description: CLAM Network Editor, prototyping tool for CLAM
  This packages provides both the Network Editor and the Prototyper.
  It also provides a plugin for Qt Designer which adds widgets
  to display several kinds of CLAM audio objects from a running network.
- .
- Homepage: http://clam.iua.upf.edu
 
 Package: clam-networkeditor-examples
 Architecture: all
@@ -36,6 +35,4 @@ Description: CLAM Network Editor, prototyping tool for CLAM
  their user interface to be executed also by the Prototyper.
  Those examples include, among others, some sinusoidal plus residual 
  modelling (SMS) transformations and tonal (chords, notes) analysis.
- .
- Homepage: http://clam.iua.upf.edu
 
