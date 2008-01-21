@@ -62,6 +62,7 @@ private:
 	InControl _receiverY;
 	ImpulseResponseDatabase _database;
 	ImpulseResponse * _previous;
+	int _numberOfConfigureCalls;
 
 public:
 	const char* GetClassName() const { return "ImpulseResponseDatabaseFetcher"; }
@@ -73,6 +74,7 @@ public:
 		, _receiverX("receiverX", this)
 		, _receiverY("receiverY", this)
 		, _previous(0)
+		, _numberOfConfigureCalls(0)
 	{
 		Configure( config );
 		_emitterX.SetBounds(0,1);
@@ -82,8 +84,11 @@ public:
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
+		std::cout << "ImpulseResponseDatabaseFetcher::ConcreteConfigure"<<std::endl;
 		CopyAsConcreteConfig(_config, config);
-
+		_numberOfConfigureCalls++;
+		if (_numberOfConfigureCalls<=2) 
+			return false;
 		std::string errorMsg;
 		if (!_database.loadImpulseResponseDatabase(_config.GetPath() + _config.GetPrefix(), _config.GetFrameSize(), errorMsg ))
 		{
