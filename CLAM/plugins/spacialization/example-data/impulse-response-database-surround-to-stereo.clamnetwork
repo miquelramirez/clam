@@ -179,19 +179,19 @@
 
   <processing id="ImpulseResponseDatabaseFetcher_P" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>carneltestDatabase/</Path>
+    <Path>db/</Path>
     <Prefix>p</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vx" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>carneltestDatabase/</Path>
+    <Path>db/</Path>
     <Prefix>vx</Prefix>
   </processing>
 
   <processing id="ImpulseResponseDatabaseFetcher_Vy" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>carneltestDatabase/</Path>
+    <Path>db/</Path>
     <Prefix>vy</Prefix>
   </processing>
 
@@ -199,6 +199,7 @@
 
   <processing id="LibloSource" type="LibloSource">
     <OscPath>/clam/target</OscPath>
+    <ServerPort>7770</ServerPort>
   </processing>
 
   <processing id="MyFFT" type="MyFFT">
