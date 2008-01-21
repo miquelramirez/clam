@@ -69,6 +69,7 @@
 
   <processing id="LibloSource" type="LibloSource">
     <OscPath>/clam/target</OscPath>
+    <ServerPort>7770</ServerPort>
   </processing>
 
   <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
