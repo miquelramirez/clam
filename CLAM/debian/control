@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
 Homepage: http://clam.iua.upf.edu
 Build-Depends: debhelper (>= 5.0.0), scons, ladspa-sdk, libxerces27-dev | libxerces28-dev, portaudio19-dev, libfftw3-dev | fftw3-dev, libjack-dev, libmad0-dev, libogg-dev, libsndfile1-dev, libvorbis-dev, libid3-3.8.3-dev, libasound2-dev, liblo0-dev, doxygen
-Standards-Version: 3.6.1
+Standards-Version: 3.7.3
 
 Package: libclam0
 Section: libs

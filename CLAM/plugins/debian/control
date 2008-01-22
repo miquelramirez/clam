@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
 Homepage: http://clam.iua.upf.edu
 Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, liblo0-dev
-Standards-Version: 3.6.1
+Standards-Version: 3.7.3
 
 Package: libclam-plugins
 Architecture: any
@@ -13,11 +13,11 @@ Recommends: clam-networkeditor
 Homepage: http://clam.iua.upf.edu
 Description: Spacialization plugin for the CLAM framework
  This package provides several plugins for the CLAM audio library, including:
- * OSC support
- * Real-time 3D acoustics scene simulation (HRTF, scene IR databases...)
- * Speech synthesis and analysis
- * Simple SMS based synthesizer
- * Guitar effects
+  * OSC support
+  * Real-time 3D acoustics scene simulation (HRTF, scene IR databases...)
+  * Speech synthesis and analysis
+  * Simple SMS based synthesizer
+  * Guitar effects
  The SMS synthesizer also includes some stand-alone programs.
 
 
