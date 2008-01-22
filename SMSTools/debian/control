@@ -3,7 +3,7 @@ Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
 Homepage: http://clam.iua.upf.edu
-Build-Depends: debhelper (>= 5.0.0), scons, g++, libclam-dev, libqt3-headers, libqt3-mt-dev, docbook-to-man, imagemagick
+Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, libqt3-headers, libqt3-mt-dev, docbook-to-man, imagemagick
 Standards-Version: 3.6.1
 
 Package: clam-smstools

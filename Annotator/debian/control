@@ -3,13 +3,13 @@ Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
 Homepage: http://clam.iua.upf.edu
-Build-Depends: debhelper (>= 5.0.0), scons, g++, libclam-dev, qt4-dev-tools, libqt4-dev, docbook-to-man, imagemagick
+Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, qt4-dev-tools, libqt4-dev, docbook-to-man, imagemagick
 Standards-Version: 3.6.1
 
 Package: clam-annotator
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Recommends: clam-annotator-examples (= ${Source-Version} )
+Recommends: clam-annotator-examples (= ${source:version} )
 Description: CLAM audio annotation tool
  The CLAM Annotator is a tool to visualize, check and modify music
  information extracted from audio: low level features, note
@@ -26,7 +26,7 @@ Description: CLAM audio annotation tool
 
 Package: clam-annotator-examples
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, clam-annotator (= ${Source-Version} )
+Depends: ${shlibs:Depends}, ${misc:Depends}, clam-annotator (= ${source:Version} )
 Description: CLAM audio annotation tool
  The CLAM Annotator is a tool to visualize, check and modify music
  information extracted from audio: low level features, note

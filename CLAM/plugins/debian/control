@@ -3,7 +3,7 @@ Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.es>
 Homepage: http://clam.iua.upf.edu
-Build-Depends: debhelper (>= 5.0.0), scons, g++, libclam-dev, liblo0-dev
+Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, liblo0-dev
 Standards-Version: 3.6.1
 
 Package: libclam-plugins
