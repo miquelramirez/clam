@@ -1,6 +1,6 @@
 ?package(clam-annotator): \
 	needs="X11"  \
-	section="Apps/Sound" \
+	section="Applications/Sound" \
 	hints="Qt,CLAM" \
 	title="CLAM Music Annotator" \
 	longtitle="CLAM Music Annotator (Music annotation tool)" \

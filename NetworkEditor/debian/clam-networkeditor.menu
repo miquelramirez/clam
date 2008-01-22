@@ -1,6 +1,6 @@
 ?package(clam-networkeditor): \
 	needs="X11"  \
-	section="Apps/Sound" \
+	section="Applications/Sound" \
 	hints="Qt,CLAM" \
 	title="CLAM NetworkEditor" \
 	longtitle="CLAM NetworkEditor (Patch editor for CLAM networks)" \
@@ -9,7 +9,7 @@
 
 ?package(clam-networkeditor): \
 	needs="X11"  \
-	section="Apps/Sound" \
+	section="Applications/Sound" \
 	hints="Qt,CLAM" \
 	title="CLAM Prototyper" \
 	longtitle="CLAM Prototyper (CLAM network runner)" \
