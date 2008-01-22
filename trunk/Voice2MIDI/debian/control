@@ -1,7 +1,7 @@
 Source: clam-voice2midi
 Section: x11
 Priority: optional
-Maintainer: CLAM Team <clam@iua.upf.es>
+Maintainer: CLAM Team <clam@iua.upf.edu>
 Homepage: http://clam.iua.upf.edu
 Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, libqt3-headers, libqt3-mt-dev
 

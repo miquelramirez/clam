@@ -1,6 +1,6 @@
 ?package(clam-smstools): \
 	needs="X11"  \
-	section="Apps/Sound" \
+	section="Applications/Sound" \
 	hints="Qt,CLAM" \
 	title="CLAM SMSTools" \
 	longtitle="CLAM SMSTools (Spectral Model authoring tool)" \

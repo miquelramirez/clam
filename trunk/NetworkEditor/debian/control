@@ -1,7 +1,7 @@
 Source: clam-networkeditor
 Section: sound
 Priority: optional
-Maintainer: CLAM Team <clam@iua.upf.es>
+Maintainer: CLAM Team <clam@iua.upf.edu>
 Homepage: http://clam.iua.upf.edu
 Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, qt4-dev-tools, libqt4-dev, docbook-to-man, imagemagick, libcppunit-dev
 Standards-Version: 3.7.3
