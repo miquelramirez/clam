@@ -3,23 +3,42 @@
 # optional: wav2png 
 # svn checkout http://wav2png.googlecode.com/svn/trunk/ wav2png-read-only
 
-import os
+import os, sys
 def run(command) :
 	print "\033[32m:: ", command, "\033[0m"
-	return os.system(command)
 	lines = []
 	for line in os.popen(command) :
 		lines += line
 		print line,
 		sys.stdout.flush()
-	return lines
+	return "".join(lines)
+def silentrun(command) :
+	lines = []
+	for line in os.popen(command) :
+		lines += line
+		sys.stdout.flush()
+	return "".join(lines)
 
 def norun(command) :
 	print "\033[31mXX ", command, "\033[0m"
 
 
-run('sox -v -1 2.wav /tmp/negative.wav')
-run('sox -m -v 1 1.wav -v 1 /tmp/negative.wav result.wav')
-sox_volume = run("sox result.wav -n stat 2>&1 | awk '/Volume/ {print $3}'")
-print "vol", sox_volume
-norun('wav2png --input result.wav --width 700 --linecolor ff0088 --backgroundcolor dddddd --zerocolor 000000')
+def diff_files(expected, result) :
+
+	silentrun('sox -m -v 1 %s -v -1 %s diff.wav 2>&1 '%(expected, result))
+	max_sample = float(silentrun("sndfile-info diff.wav | awk '/Signal/ {print $4}'"))
+	print "max", max_sample
+
+	threshold = 0.00001
+
+	if max_sample > threshold :
+		silentrun('wav2png --input diff.wav --width 700 --linecolor ff0088 --backgroundcolor dddddd --zerocolor 000000')
+		print "Files are different with threshold", threshold
+		print "Maxi diff is :", max_sample
+		print "expected:",expected
+		print "result:",result
+		return False
+	return True
+
+equals = diff_files(sys.argv[1], sys.argv[2])
+print "equals?", equals
