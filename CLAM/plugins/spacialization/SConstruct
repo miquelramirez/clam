@@ -54,7 +54,6 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBS=['fftw3'] )
 if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
 	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'fftw3','lib')] )
-	print env['LIBPATH']
 	env.Append( LIBS=['fftw3-3'] )
 	
 libraries = [
