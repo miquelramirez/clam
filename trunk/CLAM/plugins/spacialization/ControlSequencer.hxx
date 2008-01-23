@@ -8,7 +8,6 @@
 #include <string>
 #include <cmath>
 #include <fstream>
-#include "lo/lo.h"
 
 
 namespace CLAM
