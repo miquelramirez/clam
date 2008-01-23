@@ -13,6 +13,7 @@ def scanFiles(pattern, paths) :
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathOption.PathAccept))
+options.Add(PathOption('sandbox_path', 'Path where third party libraries were installed (in windows)', "", validator=PathOption.PathAccept))
 options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 env = Environment(ENV=os.environ, options=options)
@@ -51,6 +52,10 @@ if sys.platform=='linux2' :
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
 	env.Append( LIBS=['fftw3'] )
+if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
+	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'fftw3','lib')] )
+	print env['LIBPATH']
+	env.Append( LIBS=['fftw3-3'] )
 	
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
