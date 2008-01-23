@@ -6,6 +6,9 @@
 #include <string>
 #include <cmath>
 #include "lo/lo.h"
+#ifdef GetClassName // windows.h introduces that
+#undef GetClassName
+#endif
 
 
 namespace CLAM
