@@ -27,7 +27,7 @@ Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
-crosscompiling = env["crossmingw"]
+crosscompiling = env.has_key("crossmingw") and env["crossmingw"]
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
