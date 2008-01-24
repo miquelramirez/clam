@@ -5,9 +5,12 @@
 !define PRODUCT_VERSION "${VERSION}"
 !define PRODUCT_PUBLISHER "CLAM devel"
 !define PRODUCT_WEB_SITE "http://clam.iua.upf.edu"
+!define PRODUCT_HELP "http://clam.iua.upf.edu/wikis/clam/index.php/Network_Editor_tutorial"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\NetworkEditor.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
-!define PRODUCT_UNINST_ROOT_KEY "HKLM"
+
+!define ALL_USERS
+!include WriteEnvStr.nsh
 
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
@@ -17,10 +20,8 @@
 !define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
 !define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 
-!define ALL_USERS
-
 ; Language Selection Dialog Settings
-!define MUI_LANGDLL_REGISTRY_ROOT "${PRODUCT_UNINST_ROOT_KEY}"
+!define MUI_LANGDLL_REGISTRY_ROOT "HKLM"
 !define MUI_LANGDLL_REGISTRY_KEY "${PRODUCT_UNINST_KEY}"
 !define MUI_LANGDLL_REGISTRY_VALUENAME "NSIS:Language"
 
@@ -39,7 +40,7 @@
 !insertmacro MUI_UNPAGE_INSTFILES
 
 ; Language files
-;!insertmacro MUI_LANGUAGE "Catalan"
+!insertmacro MUI_LANGUAGE "Catalan"
 !insertmacro MUI_LANGUAGE "English"
 !insertmacro MUI_LANGUAGE "Spanish"
 
@@ -51,11 +52,12 @@ InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
 ShowUnInstDetails show
 
+XPStyle "On"
+
 
 Function .onInit
   !insertmacro MUI_LANGDLL_DISPLAY
-   StrCpy $INSTDIR "$PROGRAMFILES\CLAM\NetworkEditor"
-   
+  StrCpy $INSTDIR "$PROGRAMFILES\CLAM\NetworkEditor"
 FunctionEnd
 
 Section "Principal" SEC01
@@ -100,6 +102,8 @@ Section "Principal" SEC01
 ;  File '${EXTERNALDLLDIR}\pthreadVCE.dll'
 ;  File '${VCRUNTIMEDIR}\msvcp71.dll'
 ;  File '${VCRUNTIMEDIR}\msvcr71.dll'
+  SetOutPath "$INSTDIR\lib\clam"
+  File "${CLAMINSTALLDIR}\lib\clam\*"
   SetOutPath "$INSTDIR\bin\designer"
   File "..\CLAMWidgets.dll"
   SetOutPath "$INSTDIR\example-data\"
@@ -107,6 +111,7 @@ Section "Principal" SEC01
   SetOutPath "$INSTDIR\share\networkeditor\i18n"
   File "..\src\i18n\NetworkEditor_ca.qm"
   File "..\src\i18n\NetworkEditor_es.qm"
+
 
 !define Index "Line${__LINE__}"
   ReadRegStr $1 HKCR ".clamnetwork" ""
@@ -130,6 +135,7 @@ Section "Principal" SEC01
 
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor"
   CreateDirectory "$SMPROGRAMS\CLAM\NetworkEditor\Examples"
+  CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Examples\Browse.lnk" "$INSTDIR\example-data\"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Examples\Tonal Analysis.lnk" "$INSTDIR\example-data\tonalAnalysis-file.clamnetwork"
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Examples\SMS Transposition.lnk" "$INSTDIR\example-data\SMSTransposition.clamnetwork"
 ;  CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\Examples\SMSmess.lnk" "$INSTDIR\example-data\SMSmess.clamnetwork"
@@ -138,6 +144,10 @@ Section "Principal" SEC01
   CreateShortCut "$SMPROGRAMS\CLAM\NetworkEditor\QtDesigner.lnk" "$INSTDIR\bin\designer.exe"
   CreateShortCut "$DESKTOP\NetworkEditor.lnk" "$INSTDIR\bin\NetworkEditor.exe"
   CreateShortCut "$DESKTOP\Prototyper.lnk" "$INSTDIR\bin\Prototyper.exe"
+
+  Push "CLAM_PLUGIN_PATH"
+  Push "$INSTDIR\lib\clam"
+  Call WriteEnvStr
 SectionEnd
 
 Section -AdditionalIcons
@@ -150,12 +160,13 @@ SectionEnd
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
   WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\bin\NetworkEditor.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\NetworkEditor.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr HKLM "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
+  WriteRegStr HKLM "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
+  WriteRegStr HKLM "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\bin\NetworkEditor.exe"
+  WriteRegStr HKLM "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr HKLM "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  WriteRegStr HKLM "${PRODUCT_UNINST_KEY}" "HelpLink" "${PRODUCT_HELP}"
+  WriteRegStr HKLM "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
 SectionEnd
 
 
@@ -174,29 +185,33 @@ Section Uninstall
   Delete "$DESKTOP\NetworkEditor.lnk"
   Delete "$DESKTOP\Prototyper.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\Examples\*"
+  RMDir  "$SMPROGRAMS\CLAM\NetworkEditor\Examples"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\Uninstall.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\Website.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\NetworkEditor.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\Prototyper.lnk"
   Delete "$SMPROGRAMS\CLAM\NetworkEditor\QtDesigner.lnk"
-  RMDir "$SMPROGRAMS\CLAM\NetworkEditor\Examples"
-  RMDir "$SMPROGRAMS\CLAM\NetworkEditor"
-  RMDir "$SMPROGRAMS\CLAM"
+  RMDir  "$SMPROGRAMS\CLAM\NetworkEditor"
+  RMDir  "$SMPROGRAMS\CLAM"
 
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
 
   Delete "$INSTDIR\example-data\*"
-  RMDir "$INSTDIR\example-data"
+  RMDir  "$INSTDIR\example-data"
   Delete "$INSTDIR\share\networkeditor\i18n\*"
-  RMDir "$INSTDIR\share\networkeditor\i18n"
-  RMDir "$INSTDIR\share\networkeditor"
-  RMDir "$INSTDIR\share"
+  RMDir  "$INSTDIR\share\networkeditor\i18n"
+  RMDir  "$INSTDIR\share\networkeditor"
+  RMDir  "$INSTDIR\share"
+  Delete "$INSTDIR\lib\clam\*"
+  RMDir  "$INSTDIR\lib\clam"
+  RMDir  "$INSTDIR\lib"
   Delete "$INSTDIR\bin\designer\*"
-  RMDir "$INSTDIR\bin\designer"
+  RMDir  "$INSTDIR\bin\designer"
   Delete "$INSTDIR\bin\*"
-  RMDir "$INSTDIR\bin"
-  RMDir "$INSTDIR"
+  RMDir  "$INSTDIR\bin"
+  RMDir  "$INSTDIR"
+
 
 !define Index "Line${__LINE__}"
   ReadRegStr $1 HKCR ".clamnetwork" ""
@@ -215,7 +230,10 @@ Section Uninstall
 "${Index}-NoOwn:"
 !undef Index
 
-  DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
+  Push "CLAM_PLUGIN_PATH"
+  Call un.DeleteEnvStr
+
+  DeleteRegKey HKLM "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
 SectionEnd
