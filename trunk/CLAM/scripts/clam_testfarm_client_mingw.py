@@ -42,7 +42,7 @@ localDefinitions = {
 	'packageWildcard':'*_setup.exe',
 	'downloadPlatform':'win',
 	'extraLibOptions': 'crossmingw=1 with_fftw3=1 with_fftw=0 audio_backend=portaudio xmlbackend=xmlpp sandbox_path=%s'%sandbox,
-	'extraAppOptions': 'crossmingw=1 external_dll_path=%s '%(sandbox+'dlls'),
+	'extraAppOptions': 'crossmingw=1 external_dll_path=%s sandbox_path=%s '%(sandbox+'dlls', sandbox),
 	'cppunit_prefix': sandbox+"cppunit",
 }
 
@@ -74,8 +74,7 @@ clam.add_subtask("count lines of code", [
 
 clam.add_deployment( [
 	"cd %(clamsrcroot)s/CLAM"%localDefinitions,
-	"rm -rf %(installPath)s/*"%localDefinitions,
-	"cd %(clamsrcroot)s/CLAM/"%localDefinitions,
+#	"rm -rf %(installPath)s/*"%localDefinitions,
 	"scons configure prefix=%(installPath)s %(extraLibOptions)s"%localDefinitions,
 	"scons",
 	"scons install",
@@ -117,9 +116,9 @@ clam.add_subtask("CLAM Plugins", [
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
-#	'cd %(clamsrcroot)s/CLAM/plugins/osc'%localDefinitions,
-#	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
-#	'scons install',
+	'cd %(clamsrcroot)s/CLAM/plugins/osc'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
 
 	'cd %(clamsrcroot)s/CLAM/plugins/spacialization'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
