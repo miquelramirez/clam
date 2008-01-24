@@ -256,7 +256,7 @@ if isWindowsPlatform :
 		if os.access(os.path.join(vcRuntimeDir,"msvcr71.dll"),os.R_OK) :
 			break
 	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
-	win_packages = [env.Nsis( source='resources/clam_networkeditor.nsi')]
+	win_packages = [env.Nsis( source='resources/installer.nsi')]
 	env.AddPreAction(win_packages, os.path.join(clam_sconstoolspath,'changeExampleDataPath.py')+' . ..' )
 	env.Alias('package', win_packages)
 
