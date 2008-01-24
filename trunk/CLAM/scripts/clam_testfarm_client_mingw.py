@@ -123,6 +123,19 @@ clam.add_subtask("CLAM Plugins", [
 	'cd %(clamsrcroot)s/CLAM/plugins/spacialization'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
+
+	'cd %(clamsrcroot)s/CLAM/plugins/GuitarDistortion/GuitarDistortion/'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
+	'cd %(clamsrcroot)s/CLAM/plugins/GuitarDistortion/AudioSwitch/'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
+	'cd %(clamsrcroot)s/CLAM/plugins/GuitarDistortion/AutomaticGainControl/'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
+	'cd %(clamsrcroot)s/CLAM/plugins/GuitarDistortion/DCRemoval/'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
 ] )
 """
 clam.add_subtask("SMSTools packaging", [
@@ -148,8 +161,8 @@ clam.add_subtask("Annotator packaging", [
 	"scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s "%localDefinitions,
 	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
-	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
-	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+	"ls *svn1* > /dev/null && scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
+	'ls *svn1* > /dev/null && slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 clam.add_subtask("NetworkEditor packaging", [
@@ -159,8 +172,8 @@ clam.add_subtask("NetworkEditor packaging", [
 	"%(clamsrcroot)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
 	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
-	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
-	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+	"ls *svn1* > /dev/null && scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
+	'ls *svn1* > /dev/null && slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 Runner( clam, 
