@@ -21,6 +21,7 @@ protected:
 			"/usr/local/lib/clam",
 			"/usr/lib/clam",
 			"/opt/lib/clam",
+			"c:/Program Files/CLAM/NetworkEditor/lib/clam",
 			0
 		};
 		return result;
