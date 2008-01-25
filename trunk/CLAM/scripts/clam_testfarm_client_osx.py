@@ -30,7 +30,7 @@ def set_qtdir_to_qt4(x) :
 def set_qtdir_to_qt3(x) :
 	os.environ['QTDIR']=localDefinitions['qt3dir']
 
-sandbox = os.path.expanduser('~/'),
+sandbox = os.path.expanduser('~/')
 localDefinitions = {
 	'name': 'mac-10.4.8-intel-macbook',
 	'description': '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>',
