@@ -494,17 +494,23 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 		self.AppendUnique(LINKFLAGS="-L$QTDIR/lib") #TODO clean!
 		if debug : debugSuffix = 'd'
 		for module in modules :
-			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include")])
-			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include",module)])
+#			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include")])
+#			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include",module)])
+# port qt4-mac:
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include", "qt4")])
+			self.AppendUnique(CPPPATH=[os.path.join("$QTDIR","include", "qt4", module)])
 			if module in staticModules :
 				self.AppendUnique(LIBS=[module+debugSuffix]) # TODO: Add the debug suffix
 				self.AppendUnique(LIBPATH=[os.path.join("$QTDIR","lib")])
 			else :
-				self.Append(LINKFLAGS=['-framework', module])
+#				self.Append(LINKFLAGS=['-framework', module])
+# port qt4-mac:
+				self.Append(LIBS=module)
 		if 'QtOpenGL' in modules:
 			self.AppendUnique(LINKFLAGS="-F/System/Library/Frameworks")
 			self.Append(LINKFLAGS=['-framework', 'AGL']) #TODO ughly kludge to avoid quotes
 			self.Append(LINKFLAGS=['-framework', 'OpenGL'])
+		self["QT4_MOCCPPPATH"] = self["CPPPATH"]
 		return
 # This should work for mac but doesn't
 #	env.AppendUnique(FRAMEWORKPATH=[os.path.join(env['QTDIR'],'lib')])
