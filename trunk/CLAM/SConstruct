@@ -7,8 +7,14 @@ import glob
 sys.path.append( os.path.abspath("scons/libs/") )
 from clam_build_helpers import *
 from clam_dependent_libs_checks import *
-# TODO: Must solve the dependency loop of options and platforms
+
+# crosscompiling option is one option we should know on beforehand
 crosscompiling = False
+if sys.platform == 'linux2' :
+	opts = Options('options.cache',ARGUMENTS)
+	opts.Add( BoolOption( 'crossmingw', '', 'no' ))
+	crosscompiling = Environment(options=opts)['crossmingw']
+
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
@@ -123,7 +129,7 @@ def setup_build_options( env ) :
 	opts.Add( PathOption( 'prefix', 'Install location for CLAM', '/usr/local'))
 	opts.Add( PathOption( 'prefix_for_packaging', 'Install location when packaging (just for .deb creation)', '.'))
 	if isWindowsPlatform :
-		opts.Add( PathOption( 'sandbox_path', 'Path to sandbox', 'G:\\projects' ) )
+		opts.Add( PathOption( 'sandbox_path', 'The working directory in mingw where the external libraries are placed', 'G:\\projects' ) )
 	opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no'))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
