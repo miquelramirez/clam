@@ -14,6 +14,7 @@ if sys.platform == 'linux2' :
 	opts = Options('options.cache',ARGUMENTS)
 	opts.Add( BoolOption( 'crossmingw', '', 'no' ))
 	crosscompiling = Environment(options=opts)['crossmingw']
+	if crosscompiling: print "Warning: Crosscompiling mode"
 
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
@@ -49,7 +50,8 @@ def configure_clam(clam_env) :
 ############################################"""
 	# Sandbox setup
 	if isWindowsPlatform :
-		libbasenames = [ 'xercesc', 'fftw', 'fftw3', 'dxsdk', 'id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','portaudio','pthreads']
+		libbasenames = [ 'local']
+#'xercesc', 'fftw', 'fftw3', 'dxsdk','id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','portaudio','pthreads', 'local']
 		for basename in libbasenames :
 			basePath = os.path.join(clam_env['sandbox_path'], basename)
 			clam_env.Append( CPPPATH = [os.path.join(basePath,'include')] )
@@ -129,10 +131,9 @@ def setup_build_options( env ) :
 	opts.Add( PathOption( 'prefix', 'Install location for CLAM', '/usr/local'))
 	opts.Add( PathOption( 'prefix_for_packaging', 'Install location when packaging (just for .deb creation)', '.'))
 	if isWindowsPlatform :
-		opts.Add( PathOption( 'sandbox_path', 'The working directory in mingw where the external libraries are placed', 'G:\\projects' ) )
+		opts.Add( PathOption( 'sandbox_path', 'The working directory in mingw where the external libraries are placed', '' ) )
 	opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no'))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
-	opts.Add( BoolOption( 'sandbox', 'Presence of libraries in the CLAM sandbox will have preference', 'yes'))
 	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ))
 	if sys.platform == "linux2" :
 		opts.Add( BoolOption( 'crossmingw', '', 'no' ))
@@ -181,8 +182,7 @@ configure : Configures clam libraries. This is a mandatory step
 """ + opts.GenerateHelpText(env) )
 
 def compose_install_dirnames( env ) :
-	install_dirs = InstallDirs()
-	install_dirs.compose( env )
+	install_dirs = InstallDirs(env)
 	print """\
 #############################################
 ### INSTALL DIRECTORY INFORMATION         ###
@@ -193,14 +193,6 @@ def compose_install_dirnames( env ) :
 	print "\tInclude files will be installed at:", install_dirs.inc
 	print "\tDocumentation, data and examples will be installed at:", install_dirs.data
 	return install_dirs
-
-def gather_custom_checks() :
-	custom_check_routines = dict()
-
-	for checks_collection in package_checks, tool_checks, generic_checks :
-		for check_name, check_routine in checks_collection.items() :
-			custom_check_routines[check_name] = check_routine
-	return custom_check_routines
 
 def create_custom_builders( env ) :
 	bld = Builder( action=Action(generate_so_name,generate_so_name_message) )
@@ -258,7 +250,12 @@ versionInfo.generateVersionSources(os.path.join('src','Defines','CLAMVersion'), 
 Export('clam_env')
 
 #registering custom checks
-custom_check_routines = gather_custom_checks()
+custom_check_routines = dict()
+custom_check_routines.update(package_checks)
+custom_check_routines.update(tool_checks)
+custom_check_routines.update(generic_checks)
+custom_check_routines['CheckPkgConfigFile']=CheckPkgConfigFile
+custom_check_routines['CheckLibrarySample']=CheckLibrarySample
 
 #registering custom_builders
 create_custom_builders(clam_env)

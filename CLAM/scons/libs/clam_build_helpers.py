@@ -177,35 +177,19 @@ def update_includes_without_db(source, target=None ) :
 # from installdirs.py
 
 class InstallDirs :
-
-	def __init__(self) :
-		self.prefix = ''
-		self.lib = ''
-		self.bin = ''
-		self.inc = ''
-		self.data = ''
-		self.doc = ''
-
-	def compose( self, environ ) :
-		if environ['prefix_for_packaging'] != '.' :
-			self.prefix = environ['prefix_for_packaging']
-			self.lib =  environ['prefix_for_packaging']+'/lib'
-			self.bin    = environ['prefix_for_packaging']+'/bin'
-			self.inc    = environ['prefix_for_packaging']+'/include'
-			self.data   = environ['prefix_for_packaging']+'/share'
-			self.doc    =environ['prefix_for_packaging']+'/share/doc'
-		else:
-			self.prefix = environ['prefix']
-			self.lib =  environ['prefix']+'/lib'
-			self.bin    = environ['prefix']+'/bin'
-			self.inc    = environ['prefix']+'/include'
-			self.data   = environ['prefix']+'/share'
-			self.doc    = environ['prefix']+'/share/doc'
+	def __init__(self, environ ) :
+		self.prefix = ( environ['prefix_for_packaging'] 
+			if environ['prefix_for_packaging'] != '.' 
+			else environ['prefix'] )
+		self.lib  = self.prefix + '/lib'
+		self.bin  = self.prefix + '/bin'
+		self.inc  = self.prefix + '/include'
+		self.data = self.prefix + '/share'
+		self.doc  = self.prefix + '/share/doc'
 
 
 #---------------------------------------------------------------
 # from thorough_checks.py
-
 
 class ThoroughPackageCheck :
 
@@ -255,6 +239,53 @@ class ThoroughPackageCheck :
 		return result
 
 
+def CheckPkgConfigFile(context, libname) :
+	if str(libname) != libname :
+		libname = " ".join(libname)
+	context.Message( 'Checking for %s pkg-config file... ' % libname)
+	command = "PKG_CONFIG_PATH='$PKG_CONFIG_PATH' $PKG_CONFIG --cflags --libs %s"%libname
+	ret,_=context.TryAction( command )
+	context.Result(ret)
+	if not ret: return False
+	context.env.ParseConfig( command )
+	return True
+
+def CheckLibrarySample(context, name, lang, lib, test_code, winlib=None ) :
+	if lang == 'c' :
+		test_code_extension = '.c'
+	elif lang == 'c++' :
+		test_code_extension = '.cxx'
+	else :
+		raise RuntimeError, "%s language is not supported for specifying test code"
+
+	context.Message('Checking that %s sample program compiles...'%name )
+	result = context.TryCompile( test_code, test_code_extension )
+	context.Result(result)
+	if not result : return False
+
+	context.Message( 'Checking that %s sample program links...'%name )
+	try :
+		prevLIBS = context.env['LIBS']
+	except KeyError :
+		prevLIBS = None
+	crosscompiling = context.env.has_key('crossmingw') and context.env['crossmingw']
+	if sys.platform == 'win32' or crosscompiling and winlib :
+		lib = winlib
+	context.env.Append( LIBS=lib )
+	result = context.TryLink( test_code, test_code_extension )
+	context.Result(result)
+	if not result :
+		context.env.Replace( LIBS=prevLIBS )
+		return False
+
+	context.Message( 'Checking that %s sample program runs... '%name )
+	result, errmsg = context.TryRun( test_code, test_code_extension )
+	context.Result(result)
+
+	return result
+
+	
+
 #---------------------------------------------------------------
 # from tool_checks.py
 
@@ -262,12 +293,23 @@ tool_checks = dict()
 
 def check_pkg_config(context, *args, **kwords):
 	context.Message( 'Checking for pkg-config... ' )
-	crosscompiling = context.env.has_key('crossmingw') and context.env['crossmingw']
-	if crosscompiling : 
-		pkgconfig = 'wine pkg-config'
-	else :
-		pkgconfig = 'pkg-config'
-	ret, _  = context.TryAction(pkgconfig + ' --help') 
+	env = context.env
+	crosscompiling = env.has_key('crossmingw') and env['crossmingw']
+	if not env.has_key('PKG_CONFIG') :
+		env['PKG_CONFIG'] = 'pkg-config'
+		env['PKG_CONFIG_PATH_SEP']=':'
+		if crosscompiling : 
+			env['PKG_CONFIG'] = 'wine pkg-config'
+			env['PKG_CONFIG_PATH_SEP']=';'
+	if env.has_key('sandbox_path') :
+		env['ENV']['PKG_CONFIG_PATH'] = env['PKG_CONFIG_PATH_SEP'].join([
+			os.path.join(env['sandbox_path'],'local','lib','pkgconfig'),
+			os.path.join(env["sandbox_path"],'gtk','lib','pkgconfig'),
+		])
+		env['PKG_CONFIG_PATH'] = env['ENV']['PKG_CONFIG_PATH']
+	
+	ret, _  = context.TryAction(env.Action('$PKG_CONFIG --help'))
+	if not ret : del env['PKG_CONFIG']
 	context.Result( ret )
 	return ret
 
@@ -454,6 +496,7 @@ import sys
 package_checks = dict()
 
 
+
 # xerces-c package check
 xerces_test_code = """
 #include <xercesc/util/PlatformUtils.hpp>
@@ -514,7 +557,7 @@ int main(int argc, char *argv[])
 
 """
 
-package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', None, pthread_test_code, 'pthreadGC2' )
+package_checks['check_pthread'] = ThoroughPackageCheck( 'pthread', 'c', None, pthread_test_code )
 
 double_fftw_wo_prefix_test_code = """\
 #include <fftw.h>

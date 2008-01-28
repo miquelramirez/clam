@@ -4,6 +4,8 @@ import sys
 #---------------------------------------------------------------
 # from __init__.py
 
+from clam_build_helpers import *
+
 
 def config_error(str) :
 	print str
@@ -16,7 +18,7 @@ def setup_global_environment( env, conf ) :
 	# check for pkg-config, compiler support, bash features, et.
 	if sys.platform == 'linux2' :
 		if not conf.check_pkg_config( conf ) :
-			print 'WARNING: pkg-config is not installed'
+			print 'WARNING: pkg-config is not installed. Checks will be harder.'
 			env['pkg_config_available'] = False
 		else :
 			env['pkg_config_available'] = True
@@ -34,40 +36,23 @@ def setup_global_environment( env, conf ) :
 	if env['optimize_and_lose_precision'] :
 		env.Append( CPPFLAGS=['-DCLAM_OPTIMIZE'] )
 
-	if sys.platform != 'win32' or crosscompiling :
-		if env['release'] :
-			print '... RELEASE MODE'
-			env.Append( CCFLAGS='-g -O2 -fomit-frame-pointer -Wall'.split(' ') )
-		else :
-			print '... DEBUG MODE'
-			env.Append( CCFLAGS='-g -Wall'.split(' ') )
-			env.Append( CPPFLAGS = ['-D_DEBUG'] )
+	if env['release'] :
+		print 'COMPILING IN RELEASE MODE'
+		env.Append( CCFLAGS='-g -O2 -fomit-frame-pointer -Wall'.split(' ') )
 	else :
-		env.Append( CPPFLAGS=[
-			'-D_USE_MATH_DEFINES', # Math Posix compatibility for MSVC
-			'-DWIN32',
-			])
-		if env['release'] :
-			env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /Og /G7 /GL /W3 /Zm1000' )
-			env.Append( LINKFLAGS = ['/OPT:NOREF'] )
-		else :
-			env.Append( CPPFLAGS = ['-D_DEBUG'] )
-			env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
-			env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
+		print 'COMPILING IN DEBUG MODE'
+		env.Append( CCFLAGS='-g -Wall'.split(' ') )
+		env.Append( CPPFLAGS = ['-D_DEBUG'] )
 
 	# pthreads testing
 	if not conf.CheckCHeader('pthread.h') :
 		return config_error( "Could not find pthread (Posix Threads) library headers!" )
 
-	pthreadLib = "pthread"
-	if crosscompiling : pthreadLib = 'pthreadGC2'
-	elif sys.platform == 'win32' : pthreadLib = 'pthreadVCE'
-
-	if not conf.CheckLib( pthreadLib, 'pthread_join' ) :
+	for pthreadLib in ['pthread', 'pthreadGC2', 'pthreadVCE', 'notfound' ] :
+		if not conf.CheckLib( pthreadLib, 'pthread_join' ) : continue
+		if conf.check_pthread() : break # It works
+	if pthreadLib is 'notfound' :
 		return config_error( "Could not find pthread (Posix Threads) library binaries!" )
-
-	if not conf.check_pthread() :
-		return config_error( "Thorough pthread check failed!" )
 
 	env.Append( CPPFLAGS=['-DUSE_PTHREADS=1'] )
 	env.Append( LIBS=[pthreadLib] )
@@ -82,42 +67,66 @@ def setup_global_environment( env, conf ) :
 #---------------------------------------------------------------
 # from audioio.py
 
+def test_that_lib(env, conf, name, libNames, header, symbol, extra=lambda : True) :
+	if not conf.CheckCHeader( header ) :
+		return config_error( "Could not find %s headers! Please check your %s installation" %(name, name) )
+	found = False
+	for libName in libNames :
+		if conf.CheckLib( library=libName, symbol=symbol ) :
+			found = True
+			break
+	if not found : 
+		return config_error( "Could not find %s binaries! Please check your %s installation"%(name,name) )
+
+	if not extra() :
+		return config_error( "%s compile/link/run tests failed!"%name )
+	return True
+
 def test_sndfile( env, conf ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
-	if not conf.CheckCHeader( 'sndfile.h' ) :
-		return config_error( "Could not find libsndfile headers! Please check your libsndfile installation" )
-
-	libName = 'sndfile'
-	if sys.platform == 'win32' or crosscompiling : libName = 'libsndfile'
-	if not conf.CheckLib( library=libName, symbol='sf_open_fd' ) :
-		return config_error( "Could not find libnsndfile binaries! Please check your libsndfile installation" )
-
-	if not conf.check_libsndfile() :
-		return config_error( "libsndfile compile/link/run tests failed!" )
-
+	if not test_that_lib(env, conf, name='libsndfile', 
+			libNames=['sndfile','libsndfile'],
+			header='sndfile.h',
+			symbol='sf_open_fd',
+			extra=conf.check_libsndfile) :
+		return False
 	env.Append( CPPFLAGS=['-DUSE_SNDFILE=1'])
 	return True
 
 def test_oggvorbis( env, conf ) :
-	if not conf.CheckCHeader( 'ogg/ogg.h' ) :
-		return config_error( "Could not find libogg headers! Please check your libogg installation" )
-	if not conf.CheckLib( library='ogg', symbol='oggpack_writeinit' ) :
-		return config_error( "Could not find libogg binaries! Please check you libogg installation" )
-	if not conf.check_libogg() :
-		return config_error( "libogg compile/link/run tests failed!" )
-	if not conf.CheckCHeader( 'vorbis/vorbisenc.h' ) :
-		return config_error( "Could not find libvorbis headers! Please check your libvorbis installation" )
-	env.Append( LIBS=['vorbisenc'] )
-	if not conf.CheckLib( library='vorbis', symbol='vorbis_encode_setup_init') :
-		return config_error( "Could not find libvorbis binaries! Please check you libvorbis installation" )
-	if not conf.check_libvorbis() :
-		return config_error( "libvorbis compile/link/run test failed!" )
-	if not conf.CheckCHeader( 'vorbis/vorbisfile.h' ) :
-		return config_error( "Could not find libvorbisfile headers! Please check your libvorbisfile installation" )
-	if not conf.CheckLib( library="vorbisfile", symbol="ov_test_open" ) :
-		return config_error( "Could not find libvorbisfile binaries! Please check your libvorbisfile installation" )
-	if not conf.check_libvorbisfile() :
-		return config_error( "libvorbisfile compile/link/run test failed!" )
+	if conf.CheckPkgConfigFile(['vorbisfile', 'vorbisenc']) :
+		if not conf.check_libogg() : return False
+		if not conf.check_libvorbis() : return False
+		if not conf.check_libvorbisfile() : return False
+		if not conf.CheckLibrarySample('libvorbisfile', 'c', None, libogg_test_code) : return False
+		env.Append( CPPFLAGS=['-DUSE_OGGVORBIS=1'] )
+		return True
+	if not test_that_lib(env, conf,
+			name='libogg', 
+			libNames=['ogg'],
+			header='ogg/ogg.h',
+			symbol='oggpack_writeinit',
+			extra=conf.check_libogg) :
+		return False
+	if not test_that_lib(env, conf,
+			name='libvorbis', 
+			libNames=['vorbis'],
+			header='vorbis/codec.h',
+			symbol='vorbis_book_decode') :
+		return False
+	env.PrependUnique(LIBS=['libvorbisenc'])
+	if not test_that_lib(env, conf,
+			name='libvorbisenc', 
+			libNames=['vorbisenc'],
+			header='vorbis/vorbisenc.h',
+			symbol='vorbis_encode_setup_init',
+			extra=conf.check_libvorbis) :
+		return False
+	if not test_that_lib(env, conf, name='libvorbisfile', 
+			libNames=['vorbisfile'],
+			header='vorbis/vorbisfile.h',
+			symbol='ov_test_open',
+			extra=conf.check_libvorbisfile) :
+		return False
 
 	env.Append( CPPFLAGS=['-DUSE_OGGVORBIS=1'] )
 	return True
@@ -127,8 +136,6 @@ def test_mad( env, conf ) :
 	if not conf.CheckCHeader( 'mad.h' ) :
 		return config_error( "Could not find libmad headers! Please check your libmad installation" )
 	libName = 'mad'
-	if sys.platform == 'win32' or crosscompiling :
-		libName = 'libmad'
 	if not conf.CheckLib( library=libName, symbol='mad_stream_init' ) :
 		return config_error( "Could not find libmad binaries! Please check your libmad installation" )
 	if not conf.check_libmad( ) :
@@ -138,26 +145,27 @@ def test_mad( env, conf ) :
 
 def test_id3lib( env, conf ) :
 	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+
+	libName = 'id3'
+	if sys.platform == 'win32' : libName = 'id3lib_vc7'
+	env.Append( LIBS=[libName] )
 	if sys.platform == 'win32' :
 		if crosscompiling :
 			env.Append( CPPFLAGS=['-DID3LIB_LINKOPTION=3'] )
 		else :
 			env.Append( CPPFLAGS=['-DID3LIB_LINKOPTION=1'] )
+
+	zlib = 'z'
+	if sys.platform == 'win32' : zlib_vc = 'zlib_vc7'
+	if not conf.CheckLib(zlib, 'uncompress') :
+		return config_error( "Could not link zlib. Please, check your zlib/id3lib installation" )
+
 	if not conf.CheckCXXHeader( 'id3.h' ) :
 		return config_error( "Could not find id3lib headers! Please check your id3lib installation" )
 
-	libName = 'id3'
-	if crosscompiling : libName = 'id3lib'
-	elif sys.platform == 'win32' : libName = 'id3lib_vc7'
 	if not conf.CheckLibWithHeader( libName, 'id3/tag.h', 'cxx', call='ID3_Tag myTag;' ) :
 		return config_error( "Could not find id3lib binaries! Please check your id3lib installation" )
-	if crosscompiling :
-		pass
-	elif sys.platform == 'win32' :
-		env.Append( LIBS=['zlib_vc7'] )
-	else :
-		env.Append( LIBS=['z'] )
-	if not conf.check_id3lib() :
+	if not conf.CheckLibrarySample(libName, 'c++', None, id3lib_test_code) :
 		return config_error( "id3lib compile/link/run tests failed!" )
 	env.Append( CPPFLAGS=['-DUSE_ID3=1'] )
 	return True
@@ -291,10 +299,7 @@ def test_xml_backend( env, conf ) :
 
 	if env['xmlbackend'] in ('both','xmlpp') :
 		if env['pkg_config_available'] :
-			pkgconfig='pkg-config'
-			if crosscompiling : pkgconfig='PKG_CONFIG_PATH=%s/gtk/lib/pkgconfig %s/gtk/bin/pkg-config.exe'%(env["sandbox_path"],env["sandbox_path"])
-			try : env.ParseConfig( pkgconfig+' --cflags --libs libxml++-2.6' )
-			except:
+			if not conf.CheckPkgConfigFile("libxml++-2.6"):
 				return config_error( "Error: pkg-config could not find libxml options." )
 		if not conf.check_xmlpp( conf ) :
 			return config_error( "libxml++ code compile/link/run test failed!" )
@@ -331,10 +336,10 @@ def test_fftw3( env, conf) :
 	if not conf.CheckHeader( 'fftw3.h' ) :
 		return config_error( "FFTW3 header not found" )
 
-	libname = "fftw3"
-	if sys.platform=='win32' or crosscompiling :
-		libname = 'fftw3-3'
-	if not conf.CheckLib( libname, 'fftw_plan_dft_r2c_1d') :
+	for libname in ['fftw3', 'fftw3-3', None] :
+		if not libname: break
+		if conf.CheckLib( libname, 'fftw_plan_dft_r2c_1d') : break
+	if not libname :
 		return config_error( "Unable to link FFTW3" )
 
 	env.Append( CPPFLAGS=['-DUSE_FFTW3=1'] )
