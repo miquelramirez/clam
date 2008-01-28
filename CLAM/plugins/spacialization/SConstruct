@@ -59,7 +59,14 @@ libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]
 
-install = env.Install(os.path.join(InstallDir,'lib','clam'), libraries)
+examples = scanFiles('*.clamnetwork', ['example-data'])
+examples+= scanFiles('*.clamnetwork.pos', ['example-data'])
+examples+= scanFiles('*.ui', ['example-data'])
+
+install = [
+	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
+	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
+	]
 
 env.Alias('install', install)
 env.Default(libraries)

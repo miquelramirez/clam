@@ -70,9 +70,17 @@ libraries = [
 	env.SharedLibrary(target=libraryName, source = sources)
 	]
 
+examples = [
+	'synth_with_osc.clamnetwork',
+	'synth_with_osc.clamnetwork.pos',
+	'synth_with_sliders.clamnetwork',
+	'synth_with_sliders.clamnetwork.pos',
+	]
+
 install = [
 	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
 	env.Install(os.path.join(InstallDir,'bin'), programs),
+	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
 	]
 env.Alias('install', install)
 env.Default(programs + libraries)
