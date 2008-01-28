@@ -239,8 +239,8 @@ if isWindowsPlatform :
 	if crosscompiling : externalDllPath = absolutePosixPathToWine(externalDllPath)
 	winclampath = CLAMInstallDir
 	if crosscompiling : winclampath = absolutePosixPathToWine(winclampath)
-	if crosscompiling :
-		env.AddPostAction(programs, env.Action(["i586-mingw32msvc-strip $TARGET"]))
+#	if crosscompiling :
+#		env.AddPostAction(programs, env.Action(["i586-mingw32msvc-strip $SOURCE"], "== Stripping $SOURCE"))
 	installTargets += [
 		env.Install(
 			env['prefix']+"/bin",
