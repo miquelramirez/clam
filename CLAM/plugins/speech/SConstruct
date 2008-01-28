@@ -55,7 +55,19 @@ libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]
 
-install = env.Install(os.path.join(InstallDir,'lib','clam'), libraries)
+examples = [
+	'speech-example.clamnetwork',
+	'speech-example.clamnetwork.pos',
+	'experimentalVowelSynth_withCardinalVowelControl.clamnetwork',
+	'experimentalVowelSynth_withCardinalVowelControl.clamnetwork.pos',
+	'experimentalVowelSynth_withGlottalSourceGenerator.clamnetwork',
+	'experimentalVowelSynth_withGlottalSourceGenerator.clamnetwork.pos',
+	]
+
+install = [
+	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
+	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
+	]
 
 env.Alias('install', install)
 env.Default(libraries)
