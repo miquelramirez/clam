@@ -39,9 +39,8 @@ env.Append(CPPPATH=extraPaths)
 # TODO: All this (but the ws2_32 in windows) can be retrieved from pkg-config
 env.Append( LIBS=['lo'] )
 if env['sandbox_path'] :
-	env.Append( CPPPATH=os.path.join(env['sandbox_path'],'liblo/include') )
-	env.Append( LIBPATH=os.path.join(env['sandbox_path'],'liblo/lib') )
-	env.Append( LIBPATH=os.path.join(env['sandbox_path'],'pthreads/lib') )
+	env.Append( CPPPATH=os.path.join(env['sandbox_path'],'local/include') )
+	env.Append( LIBPATH=os.path.join(env['sandbox_path'],'local/lib') )
 	env.Append( LIBS=['ws2_32'] )
 	env.Append( LIBS=['pthread'] )
 
