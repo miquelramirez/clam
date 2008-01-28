@@ -4,7 +4,7 @@ import sys
 #---------------------------------------------------------------
 # from __init__.py
 
-from clam_build_helpers import *
+from clam_build_helpers import ThoroughPackageCheck
 
 
 def config_error(str) :
@@ -47,15 +47,11 @@ def setup_global_environment( env, conf ) :
 	# pthreads testing
 	if not conf.CheckCHeader('pthread.h') :
 		return config_error( "Could not find pthread (Posix Threads) library headers!" )
-
-	for pthreadLib in ['pthread', 'pthreadGC2', 'pthreadVCE', 'notfound' ] :
-		if not conf.CheckLib( pthreadLib, 'pthread_join' ) : continue
-		if conf.check_pthread() : break # It works
-	if pthreadLib is 'notfound' :
+	if not conf.CheckLib( 'pthread', 'pthread_join' ) :
 		return config_error( "Could not find pthread (Posix Threads) library binaries!" )
-
+	if not conf.CheckLibrarySample('pthread', 'c', None, pthread_test_code ) : 
+		return config_error( "Could not find pthread (Posix Threads) library binaries!" )
 	env.Append( CPPFLAGS=['-DUSE_PTHREADS=1'] )
-	env.Append( LIBS=[pthreadLib] )
 
 	if sys.platform == 'linux2' :
 		env.Append(LIBPATH=['/usr/local/lib','/opt/lib'])
@@ -83,64 +79,29 @@ def test_that_lib(env, conf, name, libNames, header, symbol, extra=lambda : True
 	return True
 
 def test_sndfile( env, conf ) :
-	if not test_that_lib(env, conf, name='libsndfile', 
+	if not test_that_lib(env, conf,
+			name='libsndfile', 
 			libNames=['sndfile','libsndfile'],
 			header='sndfile.h',
-			symbol='sf_open_fd',
-			extra=conf.check_libsndfile) :
+			symbol='sf_open_fd') :
 		return False
-	env.Append( CPPFLAGS=['-DUSE_SNDFILE=1'])
+	if not conf.CheckLibrarySample('libsndfile', 'c', None, libsndfile_test_code ) :
+		return False
 	return True
 
 def test_oggvorbis( env, conf ) :
-	if conf.CheckPkgConfigFile(['vorbisfile', 'vorbisenc']) :
-		if not conf.check_libogg() : return False
-		if not conf.check_libvorbis() : return False
-		if not conf.check_libvorbisfile() : return False
-		if not conf.CheckLibrarySample('libvorbisfile', 'c', None, libogg_test_code) : return False
-		env.Append( CPPFLAGS=['-DUSE_OGGVORBIS=1'] )
-		return True
-	if not test_that_lib(env, conf,
-			name='libogg', 
-			libNames=['ogg'],
-			header='ogg/ogg.h',
-			symbol='oggpack_writeinit',
-			extra=conf.check_libogg) :
+	if not conf.CheckPkgConfigFile(['vorbisfile', 'vorbisenc']) :
 		return False
-	if not test_that_lib(env, conf,
-			name='libvorbis', 
-			libNames=['vorbis'],
-			header='vorbis/codec.h',
-			symbol='vorbis_book_decode') :
-		return False
-	env.PrependUnique(LIBS=['libvorbisenc'])
-	if not test_that_lib(env, conf,
-			name='libvorbisenc', 
-			libNames=['vorbisenc'],
-			header='vorbis/vorbisenc.h',
-			symbol='vorbis_encode_setup_init',
-			extra=conf.check_libvorbis) :
-		return False
-	if not test_that_lib(env, conf, name='libvorbisfile', 
-			libNames=['vorbisfile'],
-			header='vorbis/vorbisfile.h',
-			symbol='ov_test_open',
-			extra=conf.check_libvorbisfile) :
-		return False
-
-	env.Append( CPPFLAGS=['-DUSE_OGGVORBIS=1'] )
+	if not conf.CheckLibrarySample('libogg', 'c', None, libogg_test_code ) : return False
+	if not conf.CheckLibrarySample('libvorbis', 'c', None, libvorbis_test_code ) : return False
+	if not conf.CheckLibrarySample('libvorbisfile', 'c', None, libvorbisfile_test_code) : return False
 	return True
 
 def test_mad( env, conf ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
-	if not conf.CheckCHeader( 'mad.h' ) :
-		return config_error( "Could not find libmad headers! Please check your libmad installation" )
-	libName = 'mad'
-	if not conf.CheckLib( library=libName, symbol='mad_stream_init' ) :
-		return config_error( "Could not find libmad binaries! Please check your libmad installation" )
-	if not conf.check_libmad( ) :
+	if not conf.CheckPkgConfigFile(['mad']) :
+		return False
+	if not conf.CheckLibrarySample('libmad', 'c', None, libmad_test_code ) :
 		return config_error( "libmad compile/link/run tests failed!" )
-	env.Append( CPPFLAGS=['-DUSE_MAD=1'] )
 	return True
 
 def test_id3lib( env, conf ) :
@@ -167,17 +128,13 @@ def test_id3lib( env, conf ) :
 		return config_error( "Could not find id3lib binaries! Please check your id3lib installation" )
 	if not conf.CheckLibrarySample(libName, 'c++', None, id3lib_test_code) :
 		return config_error( "id3lib compile/link/run tests failed!" )
-	env.Append( CPPFLAGS=['-DUSE_ID3=1'] )
 	return True
 
 def test_alsa_sdk( env, conf ) :
-	if not conf.CheckCHeader( 'alsa/asoundlib.h' ) :
-		return config_error( "Could not find libasound development headers! Please check your libasound installation" )
-	if not conf.CheckLib( library='asound', symbol='snd_card_next' ) :
-		return config_error( "Could not find libasound binaries! Please check your libasound installation" )
-	if not conf.check_libasound() :
+	if not conf.CheckPkgConfigFile('alsa') :
+		return False
+	if not conf.CheckLibrarySample( 'libasound', 'c', None, libasound_test_code ) :
 		return config_error( "libasound compile/link/run tests failed!" )
-	env.Append( CPPFLAGS=['-DUSE_ALSA=1'] )
 	return True
 
 def test_directx_sdk( env, conf ) :
@@ -186,18 +143,15 @@ def test_directx_sdk( env, conf ) :
 	env.Append( LIBS=['dxerr8','user32', 'gdi32'] )
 	if not conf.CheckLibWithHeader('dsound', 'dsound.h', 'cxx', call='DirectSoundCreate(0,0,0);') :
 		return config_error( "Could not find DirectX SDK library 'dsound.lib! Please check that the DirectX SDK is placed at the CLAM sandbox" )
-	if not conf.check_directx() :
+	if not conf.CheckLibrarySample('directx', 'c++', None, directx_test_code ) :
 		return config_error( "directx compile/link/run test failed!" )
 	return True
 
 def test_jack ( env, conf ) :
-	if not conf.CheckCHeader( 'jack/jack.h' ) :
-		return config_error( "jack headers not found!" )
-	if not conf.CheckLib( library='jack', symbol='jack_cpu_load' ) :
-		return config_error( "jack binaries not found!" )
-	if not conf.check_jack() :
+	if not conf.CheckPkgConfigFile('jack') :
+		return False
+	if not conf.CheckLibrarySample('jack', 'c', None, jack_test_code ) :
 		return config_error( "jack compile/link/run test failed!" )
-	env.Append(CPPFLAGS=['-DUSE_JACK=1'])
 	return True
 
 def test_portaudio( env, conf ) :
@@ -205,10 +159,8 @@ def test_portaudio( env, conf ) :
 		return config_error( "Could not find portaudio header! Please check your portaudio installation" )
 	if not conf.CheckLib( library='portaudio', symbol='Pa_GetHostApiInfo' ) :
 		return config_error( "Could not find portaudio binary v19 or higher! (v18 wont work) Please check your portaudio installation" )
-	if not conf.check_portaudio() :
+	if not conf.CheckLibrarySample('portaudio', 'c', None, portaudio_test_code ) :
 		return config_error( "portaudio compile/link/run tests failed!" )
-	env.Append( CPPFLAGS=['-DUSE_PORTAUDIO=1'] )
-	env.Append( LIBS=['portaudio'] )
 	return True
 
 def test_portmidi( env, conf ) :
@@ -226,7 +178,6 @@ def test_portmidi( env, conf ) :
 	if not conf.check_portmidi() :
 		return config_error( "Portmidi compile/link/run tests failed!" )
 
-	env.Append( CPPFLAGS=['-DUSE_PORTMIDI=1'] )
 	return True
 
 def setup_audioio_environment( env, conf ) :
@@ -234,32 +185,40 @@ def setup_audioio_environment( env, conf ) :
 
 	if env['with_sndfile'] :
 		if not test_sndfile( env, conf ) : return False
+		env.Append( CPPFLAGS=['-DUSE_SNDFILE=1'])
 
 	if env['with_oggvorbis'] :
 		if not test_oggvorbis( env, conf ) : return False
+		env.Append( CPPFLAGS=['-DUSE_OGGVORBIS=1'] )
 		env.Append( CPPFLAGS=['-DWITH_VORBIS=1'] )
 
 	if env['with_mad'] :
 		if not test_mad( env, conf ) : return False
+		env.Append( CPPFLAGS=['-DUSE_MAD=1'] )
 		env.Append( CPPFLAGS=['-DWITH_MAD=1'] )
 
 	if env['with_id3'] :
 		if not test_id3lib( env, conf ) : return False
+		env.Append( CPPFLAGS=['-DUSE_ID3=1'] )
 
 	if (sys.platform == 'linux2' and not crosscompiling) and env['with_alsa'] :
 		if not test_alsa_sdk( env, conf ) : return False
+		env.Append( CPPFLAGS=['-DUSE_ALSA=1'] )
 
 	if env['with_jack'] and not crosscompiling:
 		if not test_jack (env, conf):
 			print "Either install jack or disable jack support by issuing"
 			print "$scons with_jack=no"
 			return False
+		env.Append(CPPFLAGS=['-DUSE_JACK=1'])
 
 	if env['with_portmidi'] :
 		if not test_portmidi( env, conf ) : return False
+		env.Append( CPPFLAGS=['-DUSE_PORTMIDI=1'] )
 
 	if env['with_portaudio'] :
 		if not test_portaudio( env, conf ) : return False
+		env.Append( CPPFLAGS=['-DUSE_PORTAUDIO=1'] )
 
 	if not sys.platform == 'linux2' or crosscompiling :
 		if sys.platform == 'win32' :
@@ -270,6 +229,7 @@ def setup_audioio_environment( env, conf ) :
 
 		if env['audio_backend'] == 'portaudio' and not env['with_portaudio']:
 			if not test_portaudio( env, conf ) : return False
+			env.Append( CPPFLAGS=['-DUSE_PORTAUDIO=1'] )
 
 		if env['audio_backend'] == 'rtaudio' :
 			if sys.platform == 'win32' :
@@ -292,7 +252,7 @@ def test_xml_backend( env, conf ) :
 			return config_error( "Could not find xerces c headers! Defaulting to the null xml backend" )
 		env.Append(ENV=os.environ)
 		print('path of app: ' + env['ENV']['PATH'])
-		if not conf.check_xerces_c( conf ) :
+		if not conf.CheckLibrarySample('xerces-c', 'c++', 'xerces-c', xerces_test_code, 'xerces-c_2' ) :
 			return config_error( "xerces c code compile/link/run test failed!" )
 
 		env.Append( CPPFLAGS=['-DUSE_XERCES=1', '-DCLAM_USE_XML'] )
@@ -301,7 +261,7 @@ def test_xml_backend( env, conf ) :
 		if env['pkg_config_available'] :
 			if not conf.CheckPkgConfigFile("libxml++-2.6"):
 				return config_error( "Error: pkg-config could not find libxml options." )
-		if not conf.check_xmlpp( conf ) :
+		if not conf.CheckLibrarySample( 'libxml++', 'c++', None, xmlpp_test_code ) :
 			return config_error( "libxml++ code compile/link/run test failed!" )
 		env.Append( CPPFLAGS=['-DUSE_XMLPP=1','-DCLAM_USE_XML'] )
 	return True
@@ -311,7 +271,7 @@ def test_ladspa ( env, conf ) :
 	if not env['with_ladspa'] : return True
 	if not conf.CheckCHeader( 'ladspa.h' ) :
 		return config_error( "ladspa SDK header was not found" )
-	if not conf.check_ladspa() :
+	if not conf.CheckLibrarySample('ladspa', 'c', None, ladspa_test_code ) :
 		return config_error( "ladspa SDK compile test failed!" )
 
 	env.Append( CPPFLAGS=['-DUSE_LADSPA=1'] )
@@ -330,8 +290,8 @@ def setup_core_environment ( env, conf) :
 # from processing.py
 
 def test_fftw3( env, conf) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
-	if not env['with_fftw3'] : return True
+	if not conf.CheckPkgConfigFile('fftw3') :
+		return False
 
 	if not conf.CheckHeader( 'fftw3.h' ) :
 		return config_error( "FFTW3 header not found" )
@@ -431,55 +391,371 @@ def test_fftw_win32( env, conf ) :
 
 def setup_processing_environment( env, conf ) :
 
-	if not test_fftw3(env, conf ) :
-		return config_error( "Check that fftw is properly installed\n"
-			"Or deactivate its usage with the option: 'with_fftw3=no'" )
+	if env['with_fftw3'] and not test_fftw3(env, conf ) :
+		return config_error( "Check fftw3 installation\n"
+			"Or disable it with the option: 'with_fftw3=no'" )
 
 	if sys.platform == 'win32' :
 		result = test_fftw_win32( env, conf )
 	else :
 		result = test_fftw_linux( env, conf )
 	if not result:
-		return config_error( "Check that fftw is properly installed\n"
-			"Or deactivate its usage with the option: 'with_fftw=no'" )
+		return config_error( "Check fftw2 installation\n"
+			"Or disable it with the option: 'with_fftw=no'" )
 
 	return True
 
 
-#---------------------------------------------------------------
-# from glchecks.py
+package_checks = dict()
 
-def check_opengl( env, conf ) :
-	#Testing for OpenGL under Mac OS X is too complex (a platform-dependent context with additional
-	# dependencies must be managed) and any sane Mac OS X should have OpenGL properly installed
-	if sys.platform == 'darwin' :
-		env.Append( CPPFLAGS=['-DUSE_GL=1'] )
-		env.Append( LINKFLAGS=['-framework', 'OpenGL', '-framework', 'AGL'] )
-		return True
+# xerces-c package check
+xerces_test_code = """
+#include <xercesc/util/PlatformUtils.hpp>
 
-	if sys.platform != 'win32' :
-		if not conf.CheckCHeader('GL/gl.h') :
-			return config_error( "Could not find OpenGL headers! Please install the headers supplied by your OpenGL driver vendor" )
-		if not conf.CheckLib( 'GL', 'glBegin' ) :
-			return config_error( "Could not find OpenGL library! Please install the development library supplied by your OpenGL driver vendor" )
-	else :
-		env.Append( LIBS='opengl32' )
+int main( int argc, char** argv )
+{
+	namespace xercesc=XERCES_CPP_NAMESPACE;
 
-	if not conf.check_opengl() :
-		return config_error( "OpenGL compile/link/run test failed! Please check config.log for details..." )
+	xercesc::XMLPlatformUtils::Initialize();
 
-	if sys.platform != 'win32' :
-		if not conf.CheckCHeader( 'GL/glu.h' ) :
-			return config_error( "Could not find GLU (OpenGL Utility library) headers!  Please install the headers supplied by your OpenGL driver vendor" )
-		if not conf.CheckLib( 'GLU', 'gluPerspective' ) :
-			return config_error( "Could not find GLU (OpenGL Utility library) binaries! Please install the development library supplied by your OpenGL driver vendor" )
-	else :
-		env.Append( LIBS='glu32' )
-	if not conf.check_glu() :
-		return config_error( "GLU compile/link/run tests failed! Check config.log for details..." )
+	return 0;
+}
+"""
 
-	env.Append( CPPFLAGS=['-DUSE_GL=1'] )
 
-	return True
+# libxml++ package-check
+xmlpp_test_code = """
+#include <libxml++/libxml++.h>
+
+int main( int argc, char** argv )
+{
+	xmlpp::Document document;
+
+	return 0;
+}
+"""
+
+
+# pthreads test
+pthread_test_code = """
+#include <pthread.h>
+#include <stdlib.h>
+
+#define NUM_THREADS 2
+
+void* print_hello(void *thread_id)
+{
+	pthread_exit(NULL);
+}
+
+int main(int argc, char *argv[])
+{
+	pthread_t threads[NUM_THREADS];
+	int rc, t;
+	for(t=0;t<NUM_THREADS;t++)
+	{
+		rc = pthread_create(&threads[t], NULL, print_hello, (void *)t);
+		if (rc)
+		{
+			exit(-1);
+		}
+	}
+
+	pthread_exit(NULL);
+}
+
+"""
+
+
+double_fftw_wo_prefix_test_code = """\
+#include <fftw.h>
+#include <stdio.h>
+
+int main(int argc, char** argv )
+{
+
+	fftw_create_plan(0,FFTW_FORWARD,0);
+	if (fftw_sizeof_fftw_real()!=sizeof(double))
+	{
+		fprintf(stderr, "expecting fftw to be using doubles, and it is using floats!\\n");
+		return -1;
+	}
+	return 0;
+
+}
+"""
+
+package_checks['check_fftw_double_wo_prefix'] = ThoroughPackageCheck( 'fftw using doubles without prefixed binaries/headers', 'c', None, double_fftw_wo_prefix_test_code )
+
+double_fftw_w_prefix_test_code = """\
+#include <dfftw.h>
+#include <stdio.h>
+
+int main(int argc, char** argv )
+{
+
+	fftw_create_plan(0,FFTW_FORWARD,0);
+	if (fftw_sizeof_fftw_real()!=sizeof(double))
+	{
+		fprintf(stderr, "expecting fftw to be using doubles, and it is using floats!\\n");
+		return -1;
+	}
+	return 0;
+
+}
+"""
+
+package_checks['check_fftw_double_w_prefix'] = ThoroughPackageCheck( 'fftw using doubles with prefixed binaries/headers', 'c', None, double_fftw_w_prefix_test_code )
+
+double_rfftw_wo_prefix_test_code = """\
+#include <rfftw.h>
+
+int main(int argc, char** argv )
+{
+
+	rfftw_create_plan(0,FFTW_FORWARD,0);
+	return 0;
+}
+"""
+
+package_checks['check_rfftw_double_wo_prefix'] = ThoroughPackageCheck( 'rfftw using doubles without prefixed binaries/headers', 'c', None, double_rfftw_wo_prefix_test_code )
+
+double_rfftw_w_prefix_test_code = """\
+#include <rfftw.h>
+
+int main(int argc, char** argv )
+{
+
+	rfftw_create_plan(0,FFTW_FORWARD,0);
+	return 0;
+}
+"""
+
+package_checks['check_rfftw_double_w_prefix'] = ThoroughPackageCheck( 'rfftw using doubles with prefixed binaries/headers', 'c', None, double_rfftw_w_prefix_test_code )
+
+float_fftw_w_prefix_test_code = """\
+#include <sfftw.h>
+#include <stdio.h>
+
+int main(int argc, char** argv )
+{
+
+	fftw_create_plan(0,FFTW_FORWARD,0);
+	if (fftw_sizeof_fftw_real()!=sizeof(float))
+	{
+		fprintf(stderr, "expecting fftw to be using floats, and it is using doubles!\\n");
+		return -1;
+	}
+	return 0;
+
+}
+"""
+
+package_checks['check_fftw_float_w_prefix'] = ThoroughPackageCheck( 'fftw using floats with prefixed binaries/headers', 'c', None, float_fftw_w_prefix_test_code )
+
+
+float_rfftw_w_prefix_test_code = """\
+#include <srfftw.h>
+
+int main(int argc, char** argv )
+{
+
+	rfftw_create_plan(0,FFTW_FORWARD,0);
+	return 0;
+}
+"""
+
+package_checks['check_rfftw_float_w_prefix'] = ThoroughPackageCheck( 'rfftw using floats with prefixed binaries/headers', 'c', None, float_rfftw_w_prefix_test_code )
+
+float_fftw_wo_prefix_test_code = """\
+#include <fftw.h>
+#include <stdio.h>
+
+int main(int argc, char** argv )
+{
+
+	fftw_create_plan(0,FFTW_FORWARD,0);
+	if (fftw_sizeof_fftw_real()!=sizeof(float))
+	{
+		fprintf(stderr, "expecting fftw to be using floats, and it is using doubles!\\n");
+		return -1;
+	}
+	return 0;
+
+}
+"""
+
+package_checks['check_fftw_float_wo_prefix'] = ThoroughPackageCheck( 'fftw using floats with not prefixed binaries/headers', 'c', None, float_fftw_wo_prefix_test_code )
+
+float_rfftw_wo_prefix_test_code = """\
+#include <rfftw.h>
+
+int main(int argc, char** argv )
+{
+
+	rfftw_create_plan(0,FFTW_FORWARD,0);
+	return 0;
+}
+"""
+
+package_checks['check_rfftw_float_wo_prefix'] = ThoroughPackageCheck( 'rfftw using floats with not prefixed binaries/headers','c', None, float_rfftw_wo_prefix_test_code )
+
+ladspa_test_code = """\
+#include <ladspa.h>
+const LADSPA_Descriptor * ladspa_descriptor(unsigned long Index)
+{ return 0; }
+int main()
+{
+	ladspa_descriptor(0);
+	return 0;
+}
+"""
+
+libsndfile_test_code = """\
+#include <sndfile.h>
+
+int main()
+{
+	SF_INFO sfinfo;
+	sf_open_fd(fileno(stdout),SFM_WRITE,&sfinfo,0);
+	return 0;
+}
+"""
+
+
+libogg_test_code = """\
+#include <ogg/ogg.h>
+
+int main( int argc, char** argv )
+{
+	oggpack_buffer b;
+
+	oggpack_writeinit(&b);
+
+	return 0;
+}
+"""
+
+
+libvorbis_test_code = """\
+#include <vorbis/vorbisenc.h>
+
+int main( int argc, char** argv )
+{
+	vorbis_info vi;
+	vorbis_info_init( &vi );
+	vorbis_encode_setup_init( &vi );
+
+	return 0;
+}
+"""
+
+libvorbisfile_test_code = """\
+#include <vorbis/vorbisfile.h>
+
+int main( int argc, char** argv )
+{
+	OggVorbis_File vf;
+
+//	ov_test_open( &vf );
+
+	return 0;
+}
+
+"""
+
+libmad_test_code = """\
+#include<mad.h>
+int main()
+{
+	struct mad_stream s;
+	mad_stream_init(&s);
+	return 0;
+}
+"""
+
+libasound_test_code = """\
+#include<alsa/asoundlib.h>
+int main()
+{
+	int card = 0;
+	snd_card_next(&card);
+	return 0;
+}
+"""
+
+id3lib_test_code = """\
+#include <id3.h>
+#include <id3/tag.h>
+int main()
+{
+	ID3_Tag myTag;
+	return 0;
+}
+"""
+
+
+directx_test_code = r"""\
+#include <windows.h>
+#include <dsound.h>
+
+int main()
+{
+	LPGUID mGUID = 0;
+	LPDIRECTSOUND mDS;
+	HRESULT hr = DirectSoundCreate( mGUID, &mDS, NULL );
+
+	return 0;
+}
+
+"""
+
+
+portaudio_test_code = """\
+#include <portaudio.h>
+
+int main()
+{
+	int version = Pa_GetVersion();
+
+	return 0;
+}
+
+"""
+
+
+portmidi_test_code = """\
+#include <portmidi.h>
+#include <stdlib.h>
+
+int main()
+{
+	PmStream* mHandleIn = NULL;
+	PmError err = Pm_OpenInput( &mHandleIn, 0, NULL, 100, NULL, NULL );
+
+	return 0;
+}
+
+"""
+
+package_checks['check_portmidi'] = ThoroughPackageCheck( 'portmidi', 'c', None, portmidi_test_code )
+
+jack_test_code = """\
+#include <jack/jack.h>
+#include <stdlib.h>
+jack_client_t *client;
+int main()
+{
+
+	client = jack_client_new ("foo");
+
+	if ( client != NULL )
+		jack_client_close (client);
+
+	return 0;
+}
+"""
+
+package_checks['check_jack'] = ThoroughPackageCheck( 'jack', 'c', None, jack_test_code )
 
 
