@@ -2,7 +2,12 @@
 
 import os, glob, sys
 
-libraryName='guitardistortion'
+libPaths = [
+	('guitardistortion', 'GuitarDistortion'),
+	('dcremoval', 'DCRemoval'),
+	('audioswitch', 'AudioSwitch'),
+	('automaticgaincontrol', 'AutomaticGainControl'),
+]
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -35,16 +40,25 @@ env.EnableClamModules([
 	'clam_processing',
 	] , CLAMInstallDir)
 
-sourcePaths = recursiveDirs(".")
-sources = scanFiles('*.cxx', sourcePaths)
-sources = dict.fromkeys(sources).keys()
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+
 libraries = [
-	env.SharedLibrary(target=libraryName, source = sources),
+	env.SharedLibrary(target=libraryName, source = scanFiles("*.cxx", recursiveDirs(dir))) 
+		for libraryName, dir in libPaths
 	]
 
-install = env.Install(os.path.join(InstallDir,'lib','clam'), libraries)
+examples = [
+	'Dist1-rack.ui',
+	'Dist1.clamnetwork',
+	'Dist1.clamnetwork.pos',
+	'TestAll.clamnetwork',
+	'TestAll.clamnetwork.pos',
+	]
 
+install = [
+	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
+	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
+	]
 env.Alias('install', install)
 env.Default(libraries)
