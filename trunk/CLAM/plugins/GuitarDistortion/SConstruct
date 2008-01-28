@@ -60,5 +60,8 @@ install = [
 	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
 	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
 	]
+
 env.Alias('install', install)
 env.Default(libraries)
+
+
