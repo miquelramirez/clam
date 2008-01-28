@@ -166,13 +166,8 @@ onsetSources = scanFiles("*.cpp", ["src/OnsetExtractor"])
 onsetSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  onsetSources )
 onsetSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  onsetSources )
 fftwlib = "fftw3"
-fftwlibpath = []
+fftwlibpath = [os.path.join(env['prefix'],'lib')]
 sndfilelib = 'sndfile'
-if sys.platform=="win32" or crosscompiling :
-	fftwlib="fftw3-3"
-	fftwlibpath.append("../../fftw3/lib")
-	fftwlibpath.append("../../libsndfile/lib")
-	sndfilelib = 'libsndfile'
 programs += [ env.Program(target='OnsetExtractor', source = onsetSources, LIBS=[fftwlib,sndfilelib], LIBPATH=fftwlibpath) ]
 
 env.Uic4(source="SimacServicesClient/GUI.ui")
