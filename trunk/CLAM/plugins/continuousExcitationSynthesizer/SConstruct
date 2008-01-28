@@ -70,8 +70,10 @@ libraries = [
 	env.SharedLibrary(target=libraryName, source = sources)
 	]
 
-install = [env.Install(os.path.join(InstallDir,'lib','clam'), library) for library in libraries] 
-install+= [env.Install(os.path.join(InstallDir,'bin'), binary) for binary in programs ]
+install = [
+	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
+	env.Install(os.path.join(InstallDir,'bin'), programs),
+	]
 env.Alias('install', install)
 env.Default(programs + libraries)
 
