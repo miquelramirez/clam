@@ -124,16 +124,7 @@ clam.add_subtask("CLAM Plugins", [
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
-	'cd %(clamsrcroot)s/CLAM/plugins/GuitarDistortion/GuitarDistortion/'%localDefinitions,
-	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
-	'scons install',
-	'cd %(clamsrcroot)s/CLAM/plugins/GuitarDistortion/AudioSwitch/'%localDefinitions,
-	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
-	'scons install',
-	'cd %(clamsrcroot)s/CLAM/plugins/GuitarDistortion/AutomaticGainControl/'%localDefinitions,
-	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
-	'scons install',
-	'cd %(clamsrcroot)s/CLAM/plugins/GuitarDistortion/DCRemoval/'%localDefinitions,
+	'cd %(clamsrcroot)s/CLAM/plugins/GuitarDistortion/'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 ] )
