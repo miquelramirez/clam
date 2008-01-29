@@ -187,57 +187,7 @@ class InstallDirs :
 		self.data = self.prefix + '/share'
 		self.doc  = self.prefix + '/share/doc'
 
-
-#---------------------------------------------------------------
-# from thorough_checks.py
-
-class ThoroughPackageCheck :
-
-	def __init__( self, name, lang, lib, test_code, winlib=None ) :
-		self.name = name
-		self.lib = lib
-		self.winlib = winlib
-		self.test_code = test_code
-		self.lang = lang
-		self.test_code_extension = None
-		if self.lang == 'c' :
-			self.test_code_extension = '.c'
-		elif self.lang == 'c++' :
-			self.test_code_extension = '.cxx'
-		else :
-			raise RuntimeError, "%s language is not supported for specifying test code"
-
-	def __call__( self, context, *args, **kwargs ) :
-		context.Message( 'Checking that %s sample program compiles...'%self.name )
-		result = context.TryCompile( self.test_code, self.test_code_extension )
-		context.Result(result)
-		if not result : return False
-
-		context.Message( 'Checking that %s sample program links...'%self.name )
-		try :
-			lastLIBS = context.env['LIBS']
-		except KeyError :
-			lastLIBS = None
-		crosscompiling = context.env.has_key('crossmingw') and context.env['crossmingw']
-		lib = None
-		if sys.platform == 'win32' or crosscompiling :
-			lib = self.winlib
-		if not lib :
-			lib = self.lib
-		if lib :
-			context.env.Append( LIBS=lib )
-		result = context.TryLink( self.test_code, self.test_code_extension )
-		context.Result(result)
-		if not result :
-			context.env.Replace( LIBS=lastLIBS )
-			return False
-
-		context.Message( 'Checking that %s sample program runs... '%self.name )
-		result, errmsg = context.TryRun( self.test_code, self.test_code_extension )
-		context.Result(result)
-
-		return result
-
+# Configuration checkers to add to default ones
 
 def CheckPkgConfigFile(context, libname) :
 	if str(libname) != libname :
@@ -284,8 +234,6 @@ def CheckLibrarySample(context, name, lang, lib, test_code, winlib=None ) :
 
 	return result
 
-	
-
 #---------------------------------------------------------------
 # from tool_checks.py
 
@@ -326,47 +274,9 @@ class PackageData :
 		self.version = version
 		self.depends = depends
 		self.extra = extra
-		if sys.platform != 'win32' :  #both linux2 and darwin have pkg-config
-			self.create_pkg_descriptor = self.linux_create_pkg_descriptor
-		else :  #win32
-			self.create_pkg_descriptor = self.win32_create_pkg_descriptor
 
-	def win32_create_pkg_descriptor( self, env, out_file ) :
-		out = open(out_file, 'w' )
-
-		print >> out, "prefix = %s"%env['prefix']
-		print >> out, "libdir = ${prefix}\\lib"
-		print >> out, "includedir = ${prefix}\\include"
-		print >> out
-		print >> out, "Name: %s"%self.name
-		print >> out, "Version: %s"%self.version
-		print >> out, "Description: C++ Framework for analysis, synthesis and transformation of music audio signals"
-		print >> out, "Requires: %s"%" ".join(self.depends)
-		print >> out, "Conflicts: "
-		edict = env.Dictionary()
-		libnames = [self.name] + self.extra
-		# extract libs from env
-		libnames += edict['LIBS']
-		libnames = [ '%s.lib'%name for name in libnames ]
-		libnames_str = " ".join( libnames )
-		libpaths = [ '%s\\lib'%env['prefix'] ]
-		libpaths += edict['LIBPATH']
-		#print libpaths
-		libpaths = [ '/LIBPATH:%s'%libpath for libpath in libpaths ]
-		libpaths_str = ' '.join( libpaths )
-		print >> out, "Libs: %s %s"%( libpaths_str , libnames_str)
-		cppflags = edict.get('CPPFLAGS', [''])
-		cppflags = [ flag for flag in cppflags if flag != '-D_USRDLL' ]
-		ccflags = edict.get('CCFLAGS', [''])
-		cppaths = edict.get('CPPPATH', [''])
-		cpppaths = [ '/I'+path for path in cppaths ]
-		print >> out, "Cflags: %s"%" ".join(cppflags+cpppaths+ccflags)
-
-		out.close()
-
-	def linux_create_pkg_descriptor( self, env, out_file ) :
+	def create_pkg_descriptor( self, env, out_file ) :
 		out = open(out_file, 'w')
-
 		print >> out, "prefix = %s"%env['prefix']
 		print >> out, "libdir = ${prefix}/lib"
 		print >> out, "includedir = ${prefix}/include"
