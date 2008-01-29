@@ -35,9 +35,6 @@ def define_module_contents(env) :
 		'src/Visualization/Util',
 		]
 
-	if sys.platform == 'win32':
-		folders.append('src/Processing/InitProcessing*.*xx')
-
 	blacklist = [
 		r'^Audio\..xx',
 		'FileChooser',
@@ -52,8 +49,6 @@ def define_module_contents(env) :
 		blacklist.append('MpegAudioStream')
 	if not env.has_key('with_fftw3') or not env['with_fftw3'] :
 		blacklist.append('.+fftw3.+')
-	if not env.has_key('with_fftw') or not env['with_fftw'] :
-		blacklist.append('.+rfftw.+')
 	if not env.has_key('with_nr_fft') or not env['with_nr_fft'] :
 		blacklist.append('.*numrecipes.+')
 		blacklist.append('.+numrec.+')
