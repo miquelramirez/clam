@@ -175,7 +175,7 @@ def test_portmidi( env, conf ) :
 	if not conf.CheckLib( library='portmidi', symbol='Pm_OpenInput' ) :
 		return config_error( "Could not find portmidi libraries! Check your portmidi installation..." )
 
-	if not conf.CheckLibrarySample('portmidi', 'c', None, portmidi_test_code )
+	if not conf.CheckLibrarySample('portmidi', 'c', None, portmidi_test_code ) :
 		return config_error( "Portmidi compile/link/run tests failed!" )
 
 	return True
