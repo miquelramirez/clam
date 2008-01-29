@@ -178,9 +178,9 @@ def update_includes_without_db(source, target=None ) :
 
 class InstallDirs :
 	def __init__(self, environ ) :
-		self.prefix = ( environ['prefix_for_packaging'] 
-			if environ['prefix_for_packaging'] != '.' 
-			else environ['prefix'] )
+		if environ['prefix_for_packaging'] != '.':
+			self.prefix = environ['prefix_for_packaging'] 
+		else: self.prefix = environ['prefix']
 		self.lib  = self.prefix + '/lib'
 		self.bin  = self.prefix + '/bin'
 		self.inc  = self.prefix + '/include'
