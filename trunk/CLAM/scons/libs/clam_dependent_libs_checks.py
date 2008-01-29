@@ -4,9 +4,6 @@ import sys
 #---------------------------------------------------------------
 # from __init__.py
 
-from clam_build_helpers import ThoroughPackageCheck
-
-
 def config_error(str) :
 	print str
 	print 'Check the config.log file for details'
