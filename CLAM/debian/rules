@@ -13,7 +13,7 @@
 
 
 CFLAGS = -Wall -g
-SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr xmlbackend=xercesc release=yes double=0 with_fftw3=yes width_fftw=no
+SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr xmlbackend=xercesc release=yes double=0 with_fftw3=yes with_fftw=no verbose=1
 SCONS= scons
 PLUGINS=continuousExcitationSynthesizer osc spacialization GuitarDistortion/AudioSwitch GuitarDistortion/AutomaticGainControl GuitarDistortion/DCRemoval GuitarDistortion/GuitarDistortion
 
