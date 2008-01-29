@@ -175,7 +175,7 @@ def test_portmidi( env, conf ) :
 	if not conf.CheckLib( library='portmidi', symbol='Pm_OpenInput' ) :
 		return config_error( "Could not find portmidi libraries! Check your portmidi installation..." )
 
-	if not conf.check_portmidi() :
+	if not conf.CheckLibrarySample('portmidi', 'c', None, portmidi_test_code )
 		return config_error( "Portmidi compile/link/run tests failed!" )
 
 	return True
@@ -291,16 +291,15 @@ def setup_core_environment ( env, conf) :
 
 def test_fftw3( env, conf) :
 	if not conf.CheckPkgConfigFile('fftw3') :
-		return False
 
-	if not conf.CheckHeader( 'fftw3.h' ) :
-		return config_error( "FFTW3 header not found" )
+		if not conf.CheckHeader( 'fftw3.h' ) :
+			return config_error( "FFTW3 header not found" )
 
-	for libname in ['fftw3', 'fftw3-3', None] :
-		if not libname: break
-		if conf.CheckLib( libname, 'fftw_plan_dft_r2c_1d') : break
-	if not libname :
-		return config_error( "Unable to link FFTW3" )
+		for libname in ['fftw3', 'fftw3-3', None] :
+			if not libname: break
+			if conf.CheckLib( libname, 'fftw_plan_dft_r2c_1d') : break
+		if not libname :
+			return config_error( "Unable to link FFTW3" )
 
 	env.Append( CPPFLAGS=['-DUSE_FFTW3=1'] )
 	return True
@@ -411,13 +410,10 @@ package_checks = dict()
 # xerces-c package check
 xerces_test_code = """
 #include <xercesc/util/PlatformUtils.hpp>
-
 int main( int argc, char** argv )
 {
 	namespace xercesc=XERCES_CPP_NAMESPACE;
-
 	xercesc::XMLPlatformUtils::Initialize();
-
 	return 0;
 }
 """
@@ -426,11 +422,9 @@ int main( int argc, char** argv )
 # libxml++ package-check
 xmlpp_test_code = """
 #include <libxml++/libxml++.h>
-
 int main( int argc, char** argv )
 {
 	xmlpp::Document document;
-
 	return 0;
 }
 """
@@ -440,14 +434,11 @@ int main( int argc, char** argv )
 pthread_test_code = """
 #include <pthread.h>
 #include <stdlib.h>
-
 #define NUM_THREADS 2
-
 void* print_hello(void *thread_id)
 {
 	pthread_exit(NULL);
 }
-
 int main(int argc, char *argv[])
 {
 	pthread_t threads[NUM_THREADS];
@@ -455,25 +446,17 @@ int main(int argc, char *argv[])
 	for(t=0;t<NUM_THREADS;t++)
 	{
 		rc = pthread_create(&threads[t], NULL, print_hello, (void *)t);
-		if (rc)
-		{
-			exit(-1);
-		}
+		if (rc) exit(-1);
 	}
-
 	pthread_exit(NULL);
 }
-
 """
-
 
 double_fftw_wo_prefix_test_code = """\
 #include <fftw.h>
 #include <stdio.h>
-
 int main(int argc, char** argv )
 {
-
 	fftw_create_plan(0,FFTW_FORWARD,0);
 	if (fftw_sizeof_fftw_real()!=sizeof(double))
 	{
@@ -481,7 +464,6 @@ int main(int argc, char** argv )
 		return -1;
 	}
 	return 0;
-
 }
 """
 
@@ -490,10 +472,8 @@ package_checks['check_fftw_double_wo_prefix'] = ThoroughPackageCheck( 'fftw usin
 double_fftw_w_prefix_test_code = """\
 #include <dfftw.h>
 #include <stdio.h>
-
 int main(int argc, char** argv )
 {
-
 	fftw_create_plan(0,FFTW_FORWARD,0);
 	if (fftw_sizeof_fftw_real()!=sizeof(double))
 	{
@@ -501,7 +481,6 @@ int main(int argc, char** argv )
 		return -1;
 	}
 	return 0;
-
 }
 """
 
@@ -509,10 +488,8 @@ package_checks['check_fftw_double_w_prefix'] = ThoroughPackageCheck( 'fftw using
 
 double_rfftw_wo_prefix_test_code = """\
 #include <rfftw.h>
-
 int main(int argc, char** argv )
 {
-
 	rfftw_create_plan(0,FFTW_FORWARD,0);
 	return 0;
 }
@@ -525,7 +502,6 @@ double_rfftw_w_prefix_test_code = """\
 
 int main(int argc, char** argv )
 {
-
 	rfftw_create_plan(0,FFTW_FORWARD,0);
 	return 0;
 }
@@ -536,10 +512,8 @@ package_checks['check_rfftw_double_w_prefix'] = ThoroughPackageCheck( 'rfftw usi
 float_fftw_w_prefix_test_code = """\
 #include <sfftw.h>
 #include <stdio.h>
-
 int main(int argc, char** argv )
 {
-
 	fftw_create_plan(0,FFTW_FORWARD,0);
 	if (fftw_sizeof_fftw_real()!=sizeof(float))
 	{
@@ -547,7 +521,6 @@ int main(int argc, char** argv )
 		return -1;
 	}
 	return 0;
-
 }
 """
 
@@ -556,10 +529,8 @@ package_checks['check_fftw_float_w_prefix'] = ThoroughPackageCheck( 'fftw using 
 
 float_rfftw_w_prefix_test_code = """\
 #include <srfftw.h>
-
 int main(int argc, char** argv )
 {
-
 	rfftw_create_plan(0,FFTW_FORWARD,0);
 	return 0;
 }
@@ -570,10 +541,8 @@ package_checks['check_rfftw_float_w_prefix'] = ThoroughPackageCheck( 'rfftw usin
 float_fftw_wo_prefix_test_code = """\
 #include <fftw.h>
 #include <stdio.h>
-
 int main(int argc, char** argv )
 {
-
 	fftw_create_plan(0,FFTW_FORWARD,0);
 	if (fftw_sizeof_fftw_real()!=sizeof(float))
 	{
@@ -581,7 +550,6 @@ int main(int argc, char** argv )
 		return -1;
 	}
 	return 0;
-
 }
 """
 
@@ -589,10 +557,8 @@ package_checks['check_fftw_float_wo_prefix'] = ThoroughPackageCheck( 'fftw using
 
 float_rfftw_wo_prefix_test_code = """\
 #include <rfftw.h>
-
 int main(int argc, char** argv )
 {
-
 	rfftw_create_plan(0,FFTW_FORWARD,0);
 	return 0;
 }
@@ -613,7 +579,6 @@ int main()
 
 libsndfile_test_code = """\
 #include <sndfile.h>
-
 int main()
 {
 	SF_INFO sfinfo;
@@ -622,46 +587,35 @@ int main()
 }
 """
 
-
 libogg_test_code = """\
 #include <ogg/ogg.h>
-
 int main( int argc, char** argv )
 {
 	oggpack_buffer b;
-
 	oggpack_writeinit(&b);
-
 	return 0;
 }
 """
 
-
 libvorbis_test_code = """\
 #include <vorbis/vorbisenc.h>
-
 int main( int argc, char** argv )
 {
 	vorbis_info vi;
 	vorbis_info_init( &vi );
 	vorbis_encode_setup_init( &vi );
-
 	return 0;
 }
 """
 
 libvorbisfile_test_code = """\
 #include <vorbis/vorbisfile.h>
-
 int main( int argc, char** argv )
 {
 	OggVorbis_File vf;
-
 //	ov_test_open( &vf );
-
 	return 0;
 }
-
 """
 
 libmad_test_code = """\
@@ -694,51 +648,38 @@ int main()
 }
 """
 
-
 directx_test_code = r"""\
 #include <windows.h>
 #include <dsound.h>
-
 int main()
 {
 	LPGUID mGUID = 0;
 	LPDIRECTSOUND mDS;
 	HRESULT hr = DirectSoundCreate( mGUID, &mDS, NULL );
-
 	return 0;
 }
-
 """
 
 
 portaudio_test_code = """\
 #include <portaudio.h>
-
 int main()
 {
 	int version = Pa_GetVersion();
-
 	return 0;
 }
-
 """
-
 
 portmidi_test_code = """\
 #include <portmidi.h>
 #include <stdlib.h>
-
 int main()
 {
 	PmStream* mHandleIn = NULL;
 	PmError err = Pm_OpenInput( &mHandleIn, 0, NULL, 100, NULL, NULL );
-
 	return 0;
 }
-
 """
-
-package_checks['check_portmidi'] = ThoroughPackageCheck( 'portmidi', 'c', None, portmidi_test_code )
 
 jack_test_code = """\
 #include <jack/jack.h>
@@ -746,16 +687,12 @@ jack_test_code = """\
 jack_client_t *client;
 int main()
 {
-
 	client = jack_client_new ("foo");
-
 	if ( client != NULL )
 		jack_client_close (client);
-
 	return 0;
 }
 """
 
-package_checks['check_jack'] = ThoroughPackageCheck( 'jack', 'c', None, jack_test_code )
 
 
