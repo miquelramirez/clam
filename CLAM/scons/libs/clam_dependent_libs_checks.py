@@ -304,104 +304,11 @@ def test_fftw3( env, conf) :
 	env.Append( CPPFLAGS=['-DUSE_FFTW3=1'] )
 	return True
 
-def test_fftw_linux( env, conf ) :
-	if not env['with_fftw'] : return True
-
-	if env['double'] : # CLAM uses double for TData
-		nonPrefixHeader = conf.CheckCHeader( 'fftw.h' )
-		prefixHeader = conf.CheckCHeader( 'dfftw.h' )
-		if not prefixHeader and not nonPrefixHeader :
-			return config_error("Could not find fftw library headers...!")
-		double_prefixed = not nonPrefixHeader
-		if double_prefixed :
-			realHeader = 'rfftw.h'
-			lib = 'fftw'
-			realLib = 'rfftw'
-		else:
-			realHeader = 'drfftw.h'
-			lib = 'dfftw'
-			realLib = 'drfftw'
-
-		if not conf.CheckCHeader( realHeader ) :
-			return config_error( "Could not find '%s' headers!"%realHeader )
-
-		if not conf.CheckLib( lib, 'fftw_sizeof_fftw_real') :
-			return config_error( "Could not find '%s'!"%lib )
-
-		if not conf.CheckLib( realLib, 'rfftw_create_plan' ) :
-			return config_error( "Could not find' %s'!"%realLib )
-
-		if not double_prefixed :
-			if not conf.check_fftw_double_wo_prefix() :
-				return config_error( "fftw compile/link/run tests failed!" )
-			if not conf.check_rfftw_double_wo_prefix() :
-				return config_error( "rfftw compile/link/run tests failed!" )
-		else :
-			if not conf.check_fftw_double_w_prefix() :
-				return config_error( "fftw compile/link/run tests failed!" )
-			if not conf.check_rfftw_double_w_prefix() :
-				return config_error( "rfftw compile/link/run tests failed!" )
-	else :
-		if not conf.CheckCHeader( 'sfftw.h' ) :
-			return config_error( "Could not find fftw library headers...!" )
-		if not conf.CheckCHeader( 'srfftw.h' ) :
-			return config_error( "Could not find some of the fftw library headers...!" )
-		if not conf.CheckLib( 'sfftw', 'fftw_sizeof_fftw_real') :
-			return config_error( "Could not find libsfftw" )
-		if not conf.CheckLib( 'srfftw', 'rfftw_create_plan' ) :
-			return config_error( "Could not find libsrfftw" )
-
-		if not conf.check_fftw_float_w_prefix() :
-			return config_error( "fftw compile/link/run tests failed!" )
-		if not conf.check_rfftw_float_w_prefix() :
-			return config_error( "rfftw compile/link/run tests failed!" )
-
-	env.Append( CPPFLAGS=['-DUSE_FFTW=1'] )
-
-	return True
-
-def test_fftw_win32( env, conf ) :
-	if not env['with_fftw'] : return True
-	print('testing fftw windows/double')
-	if not conf.CheckCHeader( 'fftw.h' ) :
-		return config_error( "Could not find fftw library headers...!" )
-	if not conf.CheckLib( 'fftw2st', 'fftw_sizeof_fftw_real') :
-		return config_error( "Could not find libfftw (or libdfftw)" )
-	if not conf.CheckLib( 'rfftw2st', 'rfftw_create_plan' ) :
-		return config_error( "Could not find librfftw (or libdrfftw)" )
-
-	if env.has_key('double') :
-		print('with double')
-		if not conf.check_fftw_double_wo_prefix() :
-			return config_error( "fftw compile/link/run tests failed!" )
-		if not conf.check_rfftw_double_wo_prefix() :
-			return config_error( "rfftw compile/link/run tests failed!" )
-	else :
-		print('with float')
-		if not conf.check_fftw_float_wo_prefix() :
-			return config_error( "fftw compile/link/run tests failed!" )
-		if not conf.check_rfftw_float_wo_prefix() :
-			return config_error( "rfftw compile/link/run tests failed!" )
-
-	env.Append( CPPFLAGS=['-DUSE_FFTW=1'] )
-
-	return True
-
-
 def setup_processing_environment( env, conf ) :
 
 	if env['with_fftw3'] and not test_fftw3(env, conf ) :
 		return config_error( "Check fftw3 installation\n"
 			"Or disable it with the option: 'with_fftw3=no'" )
-
-	if sys.platform == 'win32' :
-		result = test_fftw_win32( env, conf )
-	else :
-		result = test_fftw_linux( env, conf )
-	if not result:
-		return config_error( "Check fftw2 installation\n"
-			"Or disable it with the option: 'with_fftw=no'" )
-
 	return True
 
 
@@ -418,7 +325,6 @@ int main( int argc, char** argv )
 }
 """
 
-
 # libxml++ package-check
 xmlpp_test_code = """
 #include <libxml++/libxml++.h>
@@ -428,7 +334,6 @@ int main( int argc, char** argv )
 	return 0;
 }
 """
-
 
 # pthreads test
 pthread_test_code = """
@@ -451,120 +356,6 @@ int main(int argc, char *argv[])
 	pthread_exit(NULL);
 }
 """
-
-double_fftw_wo_prefix_test_code = """\
-#include <fftw.h>
-#include <stdio.h>
-int main(int argc, char** argv )
-{
-	fftw_create_plan(0,FFTW_FORWARD,0);
-	if (fftw_sizeof_fftw_real()!=sizeof(double))
-	{
-		fprintf(stderr, "expecting fftw to be using doubles, and it is using floats!\\n");
-		return -1;
-	}
-	return 0;
-}
-"""
-
-package_checks['check_fftw_double_wo_prefix'] = ThoroughPackageCheck( 'fftw using doubles without prefixed binaries/headers', 'c', None, double_fftw_wo_prefix_test_code )
-
-double_fftw_w_prefix_test_code = """\
-#include <dfftw.h>
-#include <stdio.h>
-int main(int argc, char** argv )
-{
-	fftw_create_plan(0,FFTW_FORWARD,0);
-	if (fftw_sizeof_fftw_real()!=sizeof(double))
-	{
-		fprintf(stderr, "expecting fftw to be using doubles, and it is using floats!\\n");
-		return -1;
-	}
-	return 0;
-}
-"""
-
-package_checks['check_fftw_double_w_prefix'] = ThoroughPackageCheck( 'fftw using doubles with prefixed binaries/headers', 'c', None, double_fftw_w_prefix_test_code )
-
-double_rfftw_wo_prefix_test_code = """\
-#include <rfftw.h>
-int main(int argc, char** argv )
-{
-	rfftw_create_plan(0,FFTW_FORWARD,0);
-	return 0;
-}
-"""
-
-package_checks['check_rfftw_double_wo_prefix'] = ThoroughPackageCheck( 'rfftw using doubles without prefixed binaries/headers', 'c', None, double_rfftw_wo_prefix_test_code )
-
-double_rfftw_w_prefix_test_code = """\
-#include <rfftw.h>
-
-int main(int argc, char** argv )
-{
-	rfftw_create_plan(0,FFTW_FORWARD,0);
-	return 0;
-}
-"""
-
-package_checks['check_rfftw_double_w_prefix'] = ThoroughPackageCheck( 'rfftw using doubles with prefixed binaries/headers', 'c', None, double_rfftw_w_prefix_test_code )
-
-float_fftw_w_prefix_test_code = """\
-#include <sfftw.h>
-#include <stdio.h>
-int main(int argc, char** argv )
-{
-	fftw_create_plan(0,FFTW_FORWARD,0);
-	if (fftw_sizeof_fftw_real()!=sizeof(float))
-	{
-		fprintf(stderr, "expecting fftw to be using floats, and it is using doubles!\\n");
-		return -1;
-	}
-	return 0;
-}
-"""
-
-package_checks['check_fftw_float_w_prefix'] = ThoroughPackageCheck( 'fftw using floats with prefixed binaries/headers', 'c', None, float_fftw_w_prefix_test_code )
-
-
-float_rfftw_w_prefix_test_code = """\
-#include <srfftw.h>
-int main(int argc, char** argv )
-{
-	rfftw_create_plan(0,FFTW_FORWARD,0);
-	return 0;
-}
-"""
-
-package_checks['check_rfftw_float_w_prefix'] = ThoroughPackageCheck( 'rfftw using floats with prefixed binaries/headers', 'c', None, float_rfftw_w_prefix_test_code )
-
-float_fftw_wo_prefix_test_code = """\
-#include <fftw.h>
-#include <stdio.h>
-int main(int argc, char** argv )
-{
-	fftw_create_plan(0,FFTW_FORWARD,0);
-	if (fftw_sizeof_fftw_real()!=sizeof(float))
-	{
-		fprintf(stderr, "expecting fftw to be using floats, and it is using doubles!\\n");
-		return -1;
-	}
-	return 0;
-}
-"""
-
-package_checks['check_fftw_float_wo_prefix'] = ThoroughPackageCheck( 'fftw using floats with not prefixed binaries/headers', 'c', None, float_fftw_wo_prefix_test_code )
-
-float_rfftw_wo_prefix_test_code = """\
-#include <rfftw.h>
-int main(int argc, char** argv )
-{
-	rfftw_create_plan(0,FFTW_FORWARD,0);
-	return 0;
-}
-"""
-
-package_checks['check_rfftw_float_wo_prefix'] = ThoroughPackageCheck( 'rfftw using floats with not prefixed binaries/headers','c', None, float_rfftw_wo_prefix_test_code )
 
 ladspa_test_code = """\
 #include <ladspa.h>
