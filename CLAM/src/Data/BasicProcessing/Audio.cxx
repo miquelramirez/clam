@@ -29,7 +29,7 @@ namespace CLAM
 {
 	namespace Hidden
 	{
-		static ProcessingDataPlugin::Registrator<CLAM::Audio> dataRegistratorAudio("lightcyan");
+		static ProcessingDataPlugin::Registrator<CLAM::Audio> dataRegistratorAudio("lightcyan","CLAM::Audio (Buffer)");
 	}
 }
 
