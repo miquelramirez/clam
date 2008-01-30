@@ -41,8 +41,8 @@ localDefinitions = {
 	'qt4dir': os.path.expanduser('~/.wine/fake_windows/Qt/4.3.3/'),
 	'packageWildcard':'*_setup.exe',
 	'downloadPlatform':'win',
-	'extraLibOptions': 'crossmingw=1 with_fftw3=1 with_fftw=0 audio_backend=portaudio xmlbackend=xmlpp sandbox_path=%s'%sandbox,
-	'extraAppOptions': 'crossmingw=1 external_dll_path=%s sandbox_path=%s '%(sandbox+'local/bin', sandbox),
+	'extraLibOptions': 'crossmingw=1 release=1 sandbox_path=%s audio_backend=portaudio xmlbackend=xmlpp'%sandbox,
+	'extraAppOptions': 'crossmingw=1 release=1 sandbox_path=%s external_dll_path=%s'%(sandbox, sandbox+'local/bin'),
 	'cppunit_prefix': sandbox+"local",
 }
 
