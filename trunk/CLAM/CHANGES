@@ -23,6 +23,8 @@
    * BarGraph is available as Instant View
    * Rulers are positioned at round numbers
    * Rulers have subticks for smaller not numbered divisions
+   * Schema browsers shows Scopes (ie. Frame) as subtrees of
+     their defining attribute (ie. Song::FrameDivision)
  * First plugins available:
    * guitardistortion: Cool guitar effects with prototyper
      interface. (GSoC:hordia)
