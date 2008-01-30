@@ -1,5 +1,42 @@
 2007-??-?? CLAM 1.1.1 SVN $Revision$
 'Windows deprecated as development platform release'
+ * Integrates GSoC students work. Thanks to Hernan Ordiales
+   Bennet Kolasinsky, Greg Kellum, Andreas Calvo, Roman Goj,
+   Abe Kazemzadeh and Google Inc.
+ * It also integrates work done last month within the
+   Acoustics team on the Barcelona Media center.
+ * Windows binaries obtained with crosscompiling
+ * Token data types expose a color to show in NetworkEditor
+ * CLAM plugins: You can load your own processings and
+   data types in an existing CLAM application such the
+   Network Editor. (GSoC:acalvo)
+ * NetworkEditor enhancements:
+   * Suitable monitors are available at port context menu
+   * Suitable controlers are available at control context menu
+     or double clicking
+   * New spectrogram view (GSoC:bkolasinsky)
+ * Anotator enhancements (GSoC:bkolasinsky):
+   * Multiple segmentation and low-level features panes
+   * BarGraph is available as Instant View
+   * Rulers are positioned at round numbers
+   * Rulers have subticks for smaller not numbered divisions
+ * First plugins available:
+   * guitardistortion: (GSoC:hordia) Cool guitar effects with 
+     prototyper interface.
+   * continuousExcitationSynth: (GSoC:gkellum) An SMS based
+       synthesizer.
+   * speech: (GSoC:akazemzadeh) Some experimental processings for 
+     speech synthesis and analysis
+   * spacialization: (bmedia) 3D audio processing including
+     * New spectral processings with simplifyied/explicit
+       polar-complex representation, including windowing,
+       fft, ifft, overlap-and-add and representation
+       converters.
+     * Real-time low latency convolution
+     * Grid and polar impulse response database fetcher
+     * Exibition processings to convert p+v format to
+       5:1, N-Surround and other exibition formats.
+     * Several room databases are available, check the wiki.
 
 2007-06-07 CLAM 1.1.0
 'More eye-candy, please'
