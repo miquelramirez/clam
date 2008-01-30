@@ -1,4 +1,5 @@
-#! /usr/bin/python
+#! /opt/local/bin/python2.4
+
 import os, sys, time
 sys.path.append('%s/testfarm/src' % os.environ['HOME'])
 from task import *
@@ -22,6 +23,7 @@ def ellapsedTime():
 
 HOME = os.environ['HOME']
 os.environ['LD_LIBRARY_PATH']='%s/local/lib:/usr/local/lib' % HOME
+os.environ['PKG_CONFIG_PATH']='/usr/local/'
 
 def set_qtdir_to_qt4(x) :
 	os.environ['QTDIR']=localDefinitions['qt4dir']
@@ -37,8 +39,9 @@ localDefinitions = {
 	'sandbox': sandbox,
 	'clamsrcroot': sandbox+"clam",
 	'installPath': sandbox+"local",
-	'qt3dir':'',
-	'qt4dir':'/usr/local/Trolltech/Qt-4.2.2/',
+	'qt3dir':'/opt/local/',
+#	'qt4dir':'/usr/local/Trolltech/Qt-4.2.2/',
+	'qt4dir':'/opt/local/',
 	'packageWildcard':'*.dmg',
 	'downloadPlatform':'mac',
 	'extraLibOptions': '',
@@ -74,7 +77,7 @@ clam.add_deployment( [
 	"cd %(clamsrcroot)s/CLAM"%localDefinitions,
 	"rm -rf %(installPath)s/*"%localDefinitions,
 	"cd %(clamsrcroot)s/CLAM/"%localDefinitions,
-	"scons configure prefix=%(installPath)s %(extraLibOptions)s"%localDefinitions,
+#	"scons configure prefix=%(installPath)s %(extraLibOptions)s"%localDefinitions,
 	"scons",
 	"scons install",
 ] )
@@ -106,7 +109,7 @@ clam.add_subtask("CLAM Plugins compilation", [
 	"cd %(clamsrcroot)s/CLAM/examples/PluginExample"%localDefinitions,
 	"scons clam_prefix=%(installPath)s"%localDefinitions,
 ] )
-
+"""
 clam.add_subtask("SMSTools packaging", [
 	{CMD: "echo setting QTDIR to qt3 path ", INFO: set_qtdir_to_qt3},
 	"cd %(clamsrcroot)s/SMSTools"%localDefinitions,
@@ -117,20 +120,21 @@ clam.add_subtask("SMSTools packaging", [
 	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
 	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
+"""
 clam.add_subtask('vmqt4 compilation and examples', [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(clamsrcroot)s/Annotator/vmqt"%localDefinitions,
-	'scons prefix=%(installPath)s clam_prefix=%(installPath)s release=1 double=1 %(extraAppOptions)s'%localDefinitions,
+	'scons clam_prefix=%(installPath)s release=1 %(extraAppOptions)s'%localDefinitions,
 	'scons examples',
 ] )
 clam.add_subtask("Annotator packaging", [
 	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
 	"cd %(clamsrcroot)s/Annotator"%localDefinitions,
 	"scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s "%localDefinitions,
-	"rm -f %(packageWildcard)s"%localDefinitions,
+#	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
-	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
-	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+#	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
+#	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 clam.add_subtask("NetworkEditor packaging", [
@@ -138,10 +142,10 @@ clam.add_subtask("NetworkEditor packaging", [
 	"cd %(clamsrcroot)s/NetworkEditor"%localDefinitions,
 	"scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraAppOptions)s "%localDefinitions,
 	"%(clamsrcroot)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
-	"rm -f %(packageWildcard)s"%localDefinitions,
+#	"rm -f %(packageWildcard)s"%localDefinitions,
 	"scons package",
-	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
-	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+#	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
+#	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 Runner( clam, 
