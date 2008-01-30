@@ -23,8 +23,13 @@
 #include <CLAM/AudioWindowing.hxx>
 #include <fstream>
 #include "MyFFT.hxx"
+#include <CLAM/ProcessingDataPlugin.hxx>
 namespace CLAM
 {
+namespace Hidden
+{
+	static ProcessingDataPlugin::Registrator<ImpulseResponse*> registrator("green","CLAM::ImpulseResponse");
+}
 
 bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg)
 {

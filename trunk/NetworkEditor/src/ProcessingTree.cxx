@@ -183,10 +183,6 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	setRootIsDecorated( true );
 	header()->hide();
 
-#ifdef USE_LADSPA
-	RunTimeLadspaLibraryLoader ladspaLoader;
-	ladspaLoader.Load();
-#endif
 	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 	CLAM::ProcessingFactory::Values categories = factory.GetSetOfValues("category");
 	CLAM::ProcessingFactory::Values::const_iterator itCategory;

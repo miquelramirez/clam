@@ -24,12 +24,9 @@
 #include <QtCore/QLocale>
 
 #include "MainWindow.hxx"
-
-#ifdef _MSVC_VER
-#include <CLAM/InitAudioIO.hxx>
-#include <CLAM/InitProcessing.hxx>
+#ifdef USE_LADSPA
+#include <CLAM/RunTimeLadspaLibraryLoader.hxx>
 #endif
-
 
 #ifndef I18N_PATH
 #ifdef WIN32
@@ -43,10 +40,9 @@
 
 int main( int argc, char ** argv )
 {
-
-#ifdef _MSVC_VER
-	CLAM::ProcessingModule::init();
-	CLAM::AudioIOModule::init();
+#ifdef USE_LADSPA
+	RunTimeLadspaLibraryLoader ladspaLoader;
+	ladspaLoader.Load();
 #endif
 
 	QApplication app( argc, argv );

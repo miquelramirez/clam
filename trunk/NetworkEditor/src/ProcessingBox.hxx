@@ -67,6 +67,8 @@ public:
 	// Returns the processing box name
 	QString getName() const;
 	// Get the full connector name
+	QString getInportTooltip(unsigned i) const;
+	QString getOutportTooltip(unsigned i) const;
 	QString getInportName(unsigned i) const;
 	QString getOutportName(unsigned i) const;
 	QString getIncontrolNameAndBounds(unsigned i) const;
