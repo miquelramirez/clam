@@ -14,6 +14,9 @@
    * Suitable monitors are available at port context menu
    * Suitable controlers are available at control context menu
      or double clicking
+   * The processing is automatically populated with available
+     processings. (GSoC:acalvo)
+   * Dialog to add processings has completion
    * New spectrogram view (GSoC:bkolasinsky)
  * Anotator enhancements (GSoC:bkolasinsky):
    * Multiple segmentation and low-level features panes
@@ -21,13 +24,13 @@
    * Rulers are positioned at round numbers
    * Rulers have subticks for smaller not numbered divisions
  * First plugins available:
-   * guitardistortion: (GSoC:hordia) Cool guitar effects with 
-     prototyper interface.
-   * continuousExcitationSynth: (GSoC:gkellum) An SMS based
-       synthesizer.
-   * speech: (GSoC:akazemzadeh) Some experimental processings for 
-     speech synthesis and analysis
-   * spacialization: (bmedia) 3D audio processing including
+   * guitardistortion: Cool guitar effects with prototyper
+     interface. (GSoC:hordia)
+   * continuousExcitationSynth: An SMS based synthesizer.
+     (GSoC:gkellum)
+   * speech: Experimental processings for speech synthesis
+     and analysis (GSoC:akazemzadeh)
+   * spacialization: 3D audio processing including
      * New spectral processings with simplifyied/explicit
        polar-complex representation, including windowing,
        fft, ifft, overlap-and-add and representation
@@ -37,6 +40,8 @@
      * Exibition processings to convert p+v format to
        5:1, N-Surround and other exibition formats.
      * Several room databases are available, check the wiki.
+ * Chord analysis modularity, configurability and postprocessing
+   improved (GSoC:rgoj)
 
 2007-06-07 CLAM 1.1.0
 'More eye-candy, please'
