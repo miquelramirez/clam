@@ -97,10 +97,6 @@ Section "Principal" SEC01
   File '${EXTERNALDLLDIR}\intl.dll'
   File '${EXTERNALDLLDIR}\zlib1.dll'
   File '${EXTERNALDLLDIR}\libgmodule-2.0-0.dll'
-;  File '${EXTERNALDLLDIR}\mingwm10.dll'
-;  File '${EXTERNALDLLDIR}\pthreadVCE.dll'
-;  File '${VCRUNTIMEDIR}\msvcp71.dll'
-;  File '${VCRUNTIMEDIR}\msvcr71.dll'
   SetOutPath "$INSTDIR\lib\clam"
   File "${CLAMINSTALLDIR}\lib\clam\*"
   SetOutPath "$INSTDIR\bin\designer"
