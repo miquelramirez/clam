@@ -26,6 +26,8 @@
 #include <QtGui/QSlider>
 #include <QtCore/QtDebug>
 #include <typeinfo>
+#include <CLAM/ProcessingDataPlugin.hxx>
+
 
 ProcessingBox::~ProcessingBox()
 {
@@ -504,7 +506,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		_highLightRegion=region;
 		_highLightConnection=index;
 		
-		_canvas->setToolTip(getInportName(index));
+		_canvas->setToolTip(getInportTooltip(index));
 		return;
 	}
 	if (region==outportsRegion)
@@ -512,7 +514,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		int index = portIndexByYPos(_canvas->translatedPos(event));
 		_highLightRegion=region;
 		_highLightConnection=index;
-		_canvas->setToolTip(getOutportName(index));
+		_canvas->setToolTip(getOutportTooltip(index));
 		return;
 	}
 	if (region==incontrolsRegion)
@@ -619,23 +621,43 @@ QString ProcessingBox::getName() const
 	return _name;
 }
 
+QString ProcessingBox::getOutportTooltip(unsigned index) const
+{
+	if (!_processing) return getOutportName(index);
+	CLAM::OutPortBase & port = _processing->GetOutPorts().GetByNumber(index);
+	const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
+	return QObject::tr("%1\nType: %3","Outport tooltip")
+		.arg(port.GetName().c_str())
+		.arg(typeString)
+		;
+}
+QString ProcessingBox::getInportTooltip(unsigned index) const
+{
+	if (!_processing) return getInportName(index);
+	CLAM::InPortBase & port = _processing->GetInPorts().GetByNumber(index);
+	const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
+	return QObject::tr("%1\nType: %3","Inport tooltip")
+		.arg(port.GetName().c_str())
+		.arg(typeString)
+		;
+}
 QString ProcessingBox::getOutportName(unsigned index) const
 {
 	if (!_processing) return QString("Outport_%1").arg(index);
-	CLAM::OutPortRegistry & outPorts = _processing->GetOutPorts();
-	return outPorts.GetByNumber(index).GetName().c_str();
+	CLAM::OutPortBase & port = _processing->GetOutPorts().GetByNumber(index);
+	return port.GetName().c_str();
 }
 QString ProcessingBox::getInportName(unsigned index) const
 {
-	if (!_processing) return QString("Inport_%1").arg(index);
-	CLAM::InPortRegistry & inPorts = _processing->GetInPorts();
-	return inPorts.GetByNumber(index).GetName().c_str();
+	if (!_processing) return QString("Outport_%1").arg(index);
+	CLAM::InPortBase & port = _processing->GetInPorts().GetByNumber(index);
+	return port.GetName().c_str();
 }
 QString ProcessingBox::getOutcontrolName(unsigned index) const
 {
 	if (!_processing) return QString("Outcontrol_%1").arg(index);
-	CLAM::OutControlRegistry & outControls = _processing->GetOutControls();
-	return outControls.GetByNumber(index).GetName().c_str();
+	CLAM::OutControl & control = _processing->GetOutControls().GetByNumber(index);
+	return control.GetName().c_str();
 }
 QString ProcessingBox::getIncontrolNameAndBounds(unsigned index) const
 {
@@ -670,18 +692,9 @@ float ProcessingBox::getIncontrolUpperBound(unsigned index) const
 	return inControl.UpperBound();
 }
 
-#include <ProcessingDataPlugin.hxx>
-
-//TODO move to a CLAM cxx
-static const char * getColorNameFromTypeId(const std::type_info & type)
-{
-	CLAM::ProcessingDataPlugin * plugin = CLAM::ProcessingDataPlugin::lookUp(type);
-	if (plugin) return plugin->color().c_str();
-	return "";
-}
 QColor ProcessingBox::getConnectorColorByType(const std::type_info & type) const
 {
-	const char * colorstring = getColorNameFromTypeId(type);
+	const char * colorstring = CLAM::ProcessingDataPlugin::colorFor(type).c_str();
 	QColor color(colorstring);
 	if (color.isValid()) return color;
 	return _canvas->colorPort();
