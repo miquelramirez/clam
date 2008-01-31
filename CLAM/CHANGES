@@ -1,16 +1,18 @@
 2007-??-?? CLAM 1.1.1 SVN $Revision$
 'Windows deprecated as development platform release'
- * Integrates GSoC students work. Thanks to Hernan Ordiales
-   Bennet Kolasinsky, Greg Kellum, Andreas Calvo, Roman Goj,
-   Abe Kazemzadeh and Google Inc.
- * It also integrates work done last month within the
-   Acoustics team on the Barcelona Media center.
- * Windows binaries obtained with crosscompiling
- * Token data types expose a color to show in NetworkEditor
- * CLAM plugins: You can load your own processings and
-   data types in an existing CLAM application such the
-   Network Editor. (GSoC:acalvo)
+ * Major changes summary:
+   * Integrates GSoC students work. Thanks to Hernan Ordiales
+      Bennet Kolasinsky, Greg Kellum, Andreas Calvo, Roman Goj,
+      Abe Kazemzadeh and Google Inc.
+   * It also integrates work done last month within the
+     Acoustics team on the Barcelona Media center.
+   * CLAM plugins: You can load your own processings and
+     data types in an existing CLAM application such the
+     Network Editor. (GSoC:acalvo)
+   * Windows binaries crosscompile from Linux
  * NetworkEditor enhancements:
+   * Token data types expose a color to show in NetworkEditor
+   * Port tooltips show also the data type
    * Suitable monitors are available at port context menu
    * Suitable controlers are available at control context menu
      or double clicking
@@ -20,6 +22,8 @@
    * New spectrogram view (GSoC:bkolasinsky)
  * Realtime port to some spectral processings and prototypes:
     * Harmonizer, pitch-discretization and morph (GSoC:hordia)
+ * Chord analysis modularity, configurability and postprocessing
+   improved (GSoC:rgoj)
  * Anotator enhancements (GSoC:bkolasinsky):
    * Multiple segmentation and low-level features panes
    * BarGraph is available as Instant View
@@ -44,8 +48,13 @@
      * Exibition processings to convert p+v format to
        5:1, N-Surround and other exibition formats.
      * Several room databases are available, check the wiki.
- * Chord analysis modularity, configurability and postprocessing
-   improved (GSoC:rgoj)
+ * Build system:
+   * Windows binaries obtained by crosscompiling from linux
+   * Windows external libs are deployed now as a posix tree
+   * Relying on pkg-config to link dependencies
+   * VisualC bits droped
+   * Installing plugins
+   * OSX uses macported Qt instead of Trolltech binaries
 
 2007-06-07 CLAM 1.1.0
 'More eye-candy, please'
