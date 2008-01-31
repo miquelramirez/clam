@@ -6,6 +6,7 @@ import sys
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('prefix', 'The prefix where the application will be installed', ''))
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(('qt_plugins_install_path', 'Path component (without the install prefix) where to install designer plugins (tipically /lib/qt4/plugins/designer)','/bin/designer'))
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 options.Add(PathOption('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
@@ -20,6 +21,9 @@ def scanFiles(pattern, paths) :
 
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+def unique(list) :
+	return dict.fromkeys(list).keys()
 
 env = Environment(ENV=os.environ, tools=['default'], options=options)
 options.Save('options.cache', env)
@@ -70,7 +74,7 @@ env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-	] , CLAMInstallDir)
+	], CLAMInstallDir)
 
 env.EnableQt4Modules([
 	'QtCore',
@@ -111,7 +115,7 @@ includePaths = sourcePaths + extraPaths
 sources = scanFiles('*.cxx', sourcePaths)
 sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
-sources = dict.fromkeys(sources).keys() # remove duplicates
+sources = unique(sources)
 for mainSource in mainSources.values() :
 	sources.remove(mainSource)
 
@@ -129,8 +133,10 @@ if isLinuxPlatform :
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
 
 if sys.platform=='linux2' :
-	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
-#	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
+	if env['release'] :
+		env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
+	else :
+		env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
 
 testsources = scanFiles('*.cxx', ['test'])
@@ -184,17 +190,18 @@ manpages = [
 	'resources/man/man1/Prototyper.1',
 	]
 
-# Manual step: lupdate-qt4 *xx *ui -ts NetworkEditor_ca.ts
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
-env.Precious(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
-env.NoClean(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
 translatableSources = scanFiles('*.cxx', sourcePaths);
 translatableSources+= scanFiles('*.hxx', sourcePaths);
 translatableSources+= scanFiles('*.ui', sourcePaths);
 translatableSources = filter( (lambda a : a.rfind( "generated/")==-1 ),  translatableSources )
 translations = []
 if len(tsfiles) :
-#	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
+	# Manual step: lupdate-qt4 *xx *ui -ts NetworkEditor_ca.ts
+	#tsNodes = env.Ts(target=tsfiles, source = translatableSources)
+	# TODO: move those settings to the qt4 tool
+	#env.Precious(tsNodes) # Do not remove it until really regenerated
+	#env.NoClean(tsNodes) # They are not just generated but also user edited
 	translations = env.Qm(source = tsfiles)
 
 qtpluginsInstallationPath = env['qt_plugins_install_path']
@@ -239,8 +246,8 @@ if isWindowsPlatform :
 	if crosscompiling : externalDllPath = absolutePosixPathToWine(externalDllPath)
 	winclampath = CLAMInstallDir
 	if crosscompiling : winclampath = absolutePosixPathToWine(winclampath)
-#	if crosscompiling :
-#		env.AddPostAction(programs, env.Action(["i586-mingw32msvc-strip $SOURCE"], "== Stripping $SOURCE"))
+	if crosscompiling :
+		env.AddPostAction(programs, env.Action(["i586-mingw32msvc-strip $TARGET"], "== Stripping $SOURCE"))
 	installTargets += [
 		env.Install(
 			env['prefix']+"/bin",
