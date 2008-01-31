@@ -69,14 +69,15 @@ public:
 	// Get the full connector name
 	QString getInportTooltip(unsigned i) const;
 	QString getOutportTooltip(unsigned i) const;
+	QString getIncontrolTooltip(unsigned i) const;
+	QString getOutcontrolTooltip(unsigned i) const;
 	QString getInportName(unsigned i) const;
 	QString getOutportName(unsigned i) const;
-	QString getIncontrolNameAndBounds(unsigned i) const;
+	QString getIncontrolName(unsigned index) const;
+	QString getOutcontrolName(unsigned index) const;
 	float getIncontrolUpperBound(unsigned index) const;
 	float getIncontrolLowerBound(unsigned index) const;
 	float getIncontrolDefaultValue(unsigned index) const;
-	QString getIncontrolName(unsigned index) const;
-	QString getOutcontrolName(unsigned index) const;
 	//Port colors
 	QColor getInportColor(unsigned index) const;
 	QColor getOutportColor(unsigned index) const;
