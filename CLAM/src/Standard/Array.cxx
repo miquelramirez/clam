@@ -25,7 +25,7 @@ namespace CLAM
 {
 #define CLAM_NUMERIC_ARRAY_INITIALIZATION(Type)          \
 template<>                                              \
-void Array<Type>::InitializeElement(int i)              \
+inline void Array<Type>::InitializeElement(int i)              \
 {                                                       \
     mpData[i]=0;                                        \
 }                                                       \
@@ -47,7 +47,7 @@ CLAM_NUMERIC_ARRAY_INITIALIZATION(float)
 
 #define CLAM_FAST_ARRAY_SPECIALIZATIONS(TYPE)                           \
 template<>                                                             \
-void Array<TYPE >::CopyDataBlock(int first, int last,                  \
+inline void Array<TYPE >::CopyDataBlock(int first, int last,                  \
                                  const TYPE *src)                      \
 {                                                                      \
     if (last>first)                                                    \
@@ -55,7 +55,7 @@ void Array<TYPE >::CopyDataBlock(int first, int last,                  \
                sizeof(TYPE)*(last-first));                             \
 }                                                                      \
 template<>                                                             \
-void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
+inline void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
                                            const TYPE *src)            \
 {                                                                      \
     if (last>first)                                                    \
@@ -63,7 +63,7 @@ void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
                sizeof(TYPE)*(last-first));                             \
 }                                                                      \
 template<>                                                             \
-void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
+inline void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
                                            int src_first,              \
                                            const TYPE *src)            \
 {                                                                      \
@@ -72,18 +72,18 @@ void Array<TYPE >::InitializeCopyDataBlock(int first, int last,        \
                sizeof(TYPE)*(last-first));                             \
 }                                                                      \
 template<>                                                             \
-void Array<TYPE >::ResizeDataBuffer(int new_size)                      \
+inline void Array<TYPE >::ResizeDataBuffer(int new_size)                      \
 {                                                                      \
     mpData = (TYPE*) realloc(mpData,new_size*sizeof(TYPE));            \
 }                                                                      \
 template<>                                                             \
-void Array<TYPE >::InsertElemInDataBuffer(int where)                   \
+inline void Array<TYPE >::InsertElemInDataBuffer(int where)                   \
 {                                                                      \
     memmove(&mpData[where+1],&mpData[where],                           \
             (mSize-where)*sizeof(TYPE));                               \
 }                                                                      \
 template<>                                                             \
-void Array<TYPE >::DeleteElemInDataBuffer(int where)                   \
+inline void Array<TYPE >::DeleteElemInDataBuffer(int where)                   \
 {                                                                      \
     memmove(&mpData[where],&mpData[where+1],                           \
             (mSize-where-1)*sizeof(TYPE));                             \
