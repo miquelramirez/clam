@@ -18,6 +18,8 @@
      processings. (GSoC:acalvo)
    * Dialog to add processings has completion
    * New spectrogram view (GSoC:bkolasinsky)
+ * Realtime port to some spectral processings and prototypes:
+    * Harmonizer, pitch-discretization and morph (GSoC:hordia)
  * Anotator enhancements (GSoC:bkolasinsky):
    * Multiple segmentation and low-level features panes
    * BarGraph is available as Instant View
