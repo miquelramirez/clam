@@ -1,5 +1,7 @@
 #!/usr/bin/python
-import os, sys, glob
+import os
+import glob
+import sys
 
 options = Options('options.cache', ARGUMENTS)
 options.Add(PathOption('prefix', 'The prefix where the application will be installed', ''))
@@ -23,13 +25,12 @@ def unique(list) :
 	return dict.fromkeys(list).keys()
 
 env = Environment(ENV=os.environ, tools=['default'], options=options)
-options.Update(env)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
-crosscompiling = env["crossmingw"]
+crosscompiling = env.has_key("crossmingw") and env["crossmingw"]
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
@@ -69,6 +70,12 @@ if not env['verbose']:
 	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
 	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
 
+env.EnableClamModules([
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	], CLAMInstallDir)
+
 env.EnableQt4Modules([
 	'QtCore',
 	'QtGui',
@@ -77,12 +84,6 @@ env.EnableQt4Modules([
 	debug=False,
 	crosscompiling=crosscompiling,
 	)
-
-env.EnableClamModules([
-	'clam_core',
-	'clam_audioio',
-	'clam_processing',
-	], CLAMInstallDir)
 
 mainSources = {
 	'Annotator' : os.path.join('src','main.cxx'),
@@ -142,11 +143,10 @@ if sys.platform=='linux2' :
 	if env['release'] :
 		env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
 	else :
-		env.Append( CCFLAGS=['-g', '-Wall'] )
-#	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
+		env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
 #commonObjects = env.StaticLibrary(target="annotator", source=sources)
-programs = [ env.Program(target=program, source = [main] + sources) 
+programs = [ env.Program(target=program, source = [main] + sources)
 	for program, main in mainSources.items()]
 
 example_data = [
@@ -183,17 +183,18 @@ manpages = [
 	'resources/man/man1/ClamExtractorExample.1',
 	]
 
-# Manual step: lupdate-qt4 *xx *ui -ts Annotator_ca.ts
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
-env.Precious(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
-env.NoClean(tsfiles) # TODO: this is not enough!! scan -c will delete ts files!!!
 translatableSources = scanFiles('*.cxx', sourcePaths);
 translatableSources+= scanFiles('*.hxx', sourcePaths);
 translatableSources+= scanFiles('*.ui', sourcePaths);
 translatableSources = filter( (lambda a : a.rfind( "generated/")==-1 ),  translatableSources )
 translations = []
 if len(tsfiles) :
-#	tsNodes = env.Ts(target=tsfiles, source = translatableSources)
+	# Manual step: lupdate-qt4 *xx *ui -ts NetworkEditor_ca.ts
+	#tsNodes = env.Ts(target=tsfiles, source = translatableSources)
+	# TODO: move those settings to the qt4 tool
+	#env.Precious(tsNodes) # Do not remove it until really regenerated
+	#env.NoClean(tsNodes) # They are not just generated but also user edited
 	translations = env.Qm(source = tsfiles)
 
 examples = []
@@ -246,7 +247,7 @@ if isWindowsPlatform :
 		if os.access(os.path.join(vcRuntimeDir,"msvcr71.dll"),os.R_OK) :
 			break
 	env.Append(NSIS_OPTIONS=['/DVCRUNTIMEDIR=%s' % vcRuntimeDir ])
-	win_packages = [env.Nsis( source='resources/clam_annotator.nsi')]
+	win_packages = [env.Nsis( source='resources/installer.nsi')]
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' :
