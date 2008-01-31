@@ -1,12 +1,7 @@
 #ifndef VelocityAdapter_hxx
 #define VelocityAdapter_hxx
 
-#include <CLAM/InPort.hxx>
-#include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
-
-// Those two configuration types could be the ones you choose.
-// Your own ones or any type already in CLAM.
 #include <CLAM/AudioInPort.hxx>
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/InControl.hxx>
