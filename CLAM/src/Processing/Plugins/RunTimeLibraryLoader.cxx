@@ -29,11 +29,11 @@ void RunTimeLibraryLoader::Load() const
 
 void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 {
-	std::cerr << "[" << libraryType() << " Plugins] Looking at path '" << path << "'" << std::endl;
+	//std::cerr << "[" << libraryType() << " Plugins] Looking at path '" << path << "'" << std::endl;
 	DIR* dir = opendir(path.c_str());
 	if (!dir)
 	{
-		std::cerr << "[" << libraryType() << " Plugins]  Warning: could not open plugins dir: " << path << std::endl;
+	//	std::cerr << "[" << libraryType() << " Plugins]  Warning: could not open plugins dir: " << path << std::endl;
 		return;
 	}
 	while ( struct dirent * dirEntry = readdir(dir) )
