@@ -1,11 +1,6 @@
 #include "uic_MainWindow.hxx"
 #include "NetworkCanvas.hxx"
 #include "ProcessingTree.hxx"
-#if QT_VERSION >= 0x040200
-#include <QtGui/QDesktopServices>
-#else
-#include <QtCore/QProcess>
-#endif
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QScrollArea>
 #include <QtGui/QDockWidget>
@@ -23,8 +18,16 @@
 #include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
-// for faust testing
-//#include <QtSvg/QSvgWidget>
+
+
+#define SVGWIDGET //this macro is for debugging
+#ifdef SVGWIDGET
+	#include <QtSvg/QSvgWidget>
+#endif
+#include <QtCore/QProcess>
+#if QT_VERSION >= 0x040200
+	#include <QtGui/QDesktopServices>
+#endif
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -397,17 +400,19 @@ public slots:
 //				"<p>Compile all .dsp (Faust) files in the faust_dir and load all generated Ladspa plugins.</p>\n"
 			));
 		// clear the current map of ladspa's
-		/*
 #if USE_LADSPA
-		CLAM::LadspaFactory::GetInstance().Clear();
+//		CLAM::LadspaFactory::GetInstance().Clear();
 #endif
 		// compile all faust files
-		// TODO now it's ugly...
+		// TODO it's ugly...
 		std::cout << "[FAUST] compiling" << std::endl;
 		std::string faustDir="~/src/faust/examples";
 		std::string compileFaustsCmd = "cd "+faustDir+
 			" && make clean && make ladspa && make svg";
-
+		QProcess process;
+		process.start(compileFaustsCmd.c_str());
+		std::cout << "executing: "<< compileFaustsCmd << std::endl;
+		process.waitForFinished();
 		// generate svg for faust code
 		QString svgFilename;
 		svgFilename += faustDir.c_str();
@@ -418,11 +423,12 @@ public slots:
 		#else
 		QProcess::startDetached( "x-www-browser", QStringList() << svgFilename); // TODO: Remove this 4.1 unix only version
 		#endif
-		//QDockWidget * svgDockWidget = new QDockWidget(this);
-		//QSvgWidget * svgWidget = new QSvgWidget(svgFilename, svgDockWidget);
-		//svgDockWidget->setWidget(svgWidget);
-		//addDockWidget(Qt::RightDockWidgetArea, svgDockWidget);
-
+	#ifdef SVGWIDGET	
+		QDockWidget * svgDockWidget = new QDockWidget(this);
+		QSvgWidget * svgWidget = new QSvgWidget(svgFilename, svgDockWidget);
+		svgDockWidget->setWidget(svgWidget);
+		addDockWidget(Qt::RightDockWidgetArea, svgDockWidget);
+	#endif
 		// delete the previous instance of processingtree
 		delete(processingTree);
 		// and generate a new one
@@ -430,7 +436,6 @@ public slots:
 		// attach it to the dock
 		dock->setWidget(processingTree);
 		addDockWidget(Qt::LeftDockWidgetArea, dock);
-		*/
 	}
 	void on_action_Quit_triggered()
 	{
