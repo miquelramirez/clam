@@ -23,3 +23,14 @@ Options:
  -o             Non interactive mode
  -b <backend>   Try backend (portaudio, alsa, jack).
 
+
+== Enable Faust ==
+
+Download faust from CVS
+
+cvs -d:pserver:anonymous@faudiostream.cvs.sourceforge.net:/cvsroot/faudiostream login
+ 
+cvs -z3 -d:pserver:anonymous@faudiostream.cvs.sourceforge.net:/cvsroot/faudiostream co -P faust
+
+make 
+sudo make install
