@@ -25,7 +25,8 @@
 
 #include "MainWindow.hxx"
 #ifdef USE_LADSPA
-#include <CLAM/RunTimeLadspaLibraryLoader.hxx>
+#	include <CLAM/RunTimeLadspaLibraryLoader.hxx>
+#	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
 #endif
 
 #ifndef I18N_PATH
@@ -43,6 +44,8 @@ int main( int argc, char ** argv )
 #ifdef USE_LADSPA
 	RunTimeLadspaLibraryLoader ladspaLoader;
 	ladspaLoader.Load();
+	RunTimeFaustLibraryLoader faustLoader;
+	faustLoader.Load();
 #endif
 
 	QApplication app( argc, argv );
