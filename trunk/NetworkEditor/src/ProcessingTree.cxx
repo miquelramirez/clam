@@ -24,11 +24,6 @@
 #include <QtGui/QHeaderView>
 #include <iostream> 
 
-
-#ifdef USE_LADSPA
-#	include <CLAM/RunTimeLadspaLibraryLoader.hxx> 
-#endif
-
 #include <CLAM/ProcessingFactory.hxx> 
 
 
