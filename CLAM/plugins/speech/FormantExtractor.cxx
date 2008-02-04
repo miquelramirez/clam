@@ -28,7 +28,7 @@ namespace Hidden
 {
 	static const char* metadata[] = {
 		"key", "FormantExtractor",
-		"category", "Speech (Experimental - GSoC)",
+		"category", "[plugin] Speech (experimental, GSoC)",
 		"description", "Formant Extractor",
 		0
 	};

@@ -7,7 +7,7 @@ namespace Hidden
 {
 	static const char* metadata[] = {
 		"key", "CardinalVowel",
-		"category", "Speech (Experimental - GSoC)",
+		"category", "[plugin] Speech (experimental, GSoC)",
 		"description", "Cardinal Vowel Formant Control Sender: outputs f1 and f2 values from the curve defined by the cardinal vowels for setting the controls of the vowel resonator.",
 		0
 	};

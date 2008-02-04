@@ -32,7 +32,7 @@ namespace CLAM
 	{
 		const char * metadata[] = {
 			"key", "AudioDatabaseReader",
-			"category", "Ebow Synthesizer (Experimental - GSoC)",
+			"category", "[plugin] Ebow Synthesizer (experimental, GSoC)",
 			"description", "AudioDatabaseReader",
 			0
 		};

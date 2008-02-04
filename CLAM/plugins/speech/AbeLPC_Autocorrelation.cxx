@@ -34,7 +34,7 @@ namespace Hidden
 {
 	static const char* metadata[] = {
 		"key", "AbeLPC_Autocorrelation",
-		"category", "Speech (Experimental - GSoC)",
+		"category", "[plugin] Speech (experimental, GSoC)",
 		"description", "LPC Autocorrelation",
 		0
 	};
