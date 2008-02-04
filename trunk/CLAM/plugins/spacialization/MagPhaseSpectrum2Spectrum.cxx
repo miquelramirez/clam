@@ -28,7 +28,7 @@ namespace Hidden
 {
 	static const char* metadata[] = {
 		"key", "MagPhaseSpectrum2Spectrum",
-		"category", "New Spectral Processing",
+		"category", "[plugin] New Spectral Processing",
 		"description", "MagPhaseSpectrum2Spectrum",
 		0
 	};

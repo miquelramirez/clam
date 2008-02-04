@@ -5,7 +5,7 @@ namespace detail
 {
 	static const char * metadata[] = {
 		"key", "NSurround",
-		"category", "3D Audio",
+		"category", "[plugin] 3D Audio",
 		"description", "Surround N sources equidistant",
 		0
 	};
