@@ -29,7 +29,7 @@ namespace detail
 {
 	static const char * metadata[] = {
 		"key", "GlottalSourceGenerator",
-		"category", "Speech (Experimental - GSoC)",
+		"category", "[plugin] Speech (experimental, GSoC)",
 		"description", "Glottal Source Generator for input to the vowel resonator",
 		0
 	};
