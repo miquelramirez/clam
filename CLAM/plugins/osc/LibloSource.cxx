@@ -3,7 +3,7 @@
 
 static const char * metadata[] = {
 	"key", "LibloSource",
-	"category", "OSC plugin",
+	"category", "[plugin] Open Sound Control",
 	0
 	};
 
