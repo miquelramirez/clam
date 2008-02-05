@@ -1,6 +1,18 @@
-2007-??-?? NetworkEditor 1.1.1 SVN $Revision$
-'Windows deprecated as development platform release'
- *
+2008-02-05 NetworkEditor 1.1.1
+'GSoCket plugins release'
+ * SVN $Revision$
+ * Using CLAM 1.2.0
+ * Better and updated online tutorial
+ * Loads CLAM and Ladpsa Plugins
+ * Shows ports of different colors depending on token data type
+ * Port tooltips show also the data type name
+ * Suitable monitors are available to add at port context menu
+ * Suitable controlers are available at control context menu
+   or double clicking
+ * The processing is automatically populated with available
+   processings. (GSoC:acalvo)
+ * Dialog to add processings has completion
+ * New spectrogram view (GSoC:bkolasinsky)
 
 2007-06-08 NetworkEditor 1.1.0
 'More eye-candy, please'
