@@ -1,6 +1,7 @@
-2007-??-?? Voice2MIDI 0.3.8 SVN $Revision$
-'Windows deprecated as development platform release'
- *
+2008-02-05 Voice2MIDI 0.3.8
+'GSoCket plugins release'
+ * SVN $Revision$
+ * Using CLAM 1.2.0
 
 2007-06-08 Voice2MIDI 0.3.7
 'More eye-candy, please'
