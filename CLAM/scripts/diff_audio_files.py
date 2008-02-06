@@ -24,7 +24,7 @@ def norun(command) :
 	print "\033[31mXX ", command, "\033[0m"
 
 
-threshold = -25.0 # dB
+threshold = -80.0 # dB
 
 def diff_files(expected, result) :
 	silentrun('sox -m -v 1 %s -v -1 %s diff.wav 2>&1 '%(expected, result))
@@ -38,8 +38,10 @@ def diff_files(expected, result) :
 		return False
 	return True
 
-equals = diff_files(sys.argv[1], sys.argv[2])
-if equals:
-	print "\033[32m Equals\033[0m"
-else:
-	print "\033[31m Non equals\033[0m"
+
+if __name__=="__main__" :
+		equals = diff_files(sys.argv[1], sys.argv[2])
+		if equals:
+			print "\033[32m Equals\033[0m"
+		else:
+			print "\033[31m Non equals\033[0m"
