@@ -336,7 +336,7 @@
     <iconset resource="images.qrc" >:/icons/images/exec.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Compile Faust</string>
+    <string>&amp;Reload Faust modules</string>
    </property>
   </action>
  </widget>

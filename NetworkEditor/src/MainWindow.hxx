@@ -396,10 +396,10 @@ public slots:
 	}
 	void on_action_Compile_Faust_triggered()
 	{
-		QMessageBox::warning(this, tr("Icomplete feature"),
+		QMessageBox::warning(this, tr("Faust loading (icomplete feature)"),
 			tr(
-				"<p>FAUST: WORK IN PROGRESS</p>\n"
-				"<p>This action reloads all Faust modules compiled as LADSPA in FAUST_PATH env var.</p>\n"
+				"<p>This action reloads all Faust modules compiled as LADSPA found in FAUST_PATH environment var.</p>\n"
+				"<p>More Faust related features like processing box embedded diagrams will come soon.</p>\n"
 			));
 		// clear the current map of ladspa's
 #if USE_LADSPA	
