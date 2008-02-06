@@ -35,6 +35,9 @@
 #ifdef USE_PORTAUDIO
 #include <CLAM/PANetworkPlayer.hxx>
 #endif
+#ifdef USE_LADSPA
+#	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
+#endif
 
 #ifndef DATA_EXAMPLES_PATH
 #define DATA_EXAMPLES_PATH "example-data"
@@ -393,18 +396,26 @@ public slots:
 	}
 	void on_action_Compile_Faust_triggered()
 	{
-		QMessageBox::warning(this, tr("Feature not implemented"),
+		QMessageBox::warning(this, tr("Icomplete feature"),
 			tr(
 				"<p>FAUST: WORK IN PROGRESS</p>\n"
-//				"<p>Compile and load Faust</p>\n"
-//				"<p>Compile all .dsp (Faust) files in the faust_dir and load all generated Ladspa plugins.</p>\n"
+				"<p>This action reloads all Faust modules compiled as LADSPA in FAUST_PATH env var.</p>\n"
 			));
 		// clear the current map of ladspa's
-#if USE_LADSPA
-//		CLAM::LadspaFactory::GetInstance().Clear();
+#if USE_LADSPA	
+		RunTimeFaustLibraryLoader faustLoader;
+		faustLoader.Load();
+		// delete the previous instance of processingtree
+		delete(processingTree);
+		// and generate a new one
+		processingTree = new NetworkGUI::ProcessingTree(dock);
+		dock->setWidget(processingTree);
+		addDockWidget(Qt::LeftDockWidgetArea, dock);
+
 #endif
 		// compile all faust files
-		// TODO it's ugly...
+		// TODO: this is debugging code:
+#if 0
 		std::cout << "[FAUST] compiling" << std::endl;
 		std::string faustDir="~/src/faust/examples";
 		std::string compileFaustsCmd = "cd "+faustDir+
@@ -429,13 +440,7 @@ public slots:
 		svgDockWidget->setWidget(svgWidget);
 		addDockWidget(Qt::RightDockWidgetArea, svgDockWidget);
 	#endif
-		// delete the previous instance of processingtree
-		delete(processingTree);
-		// and generate a new one
-		processingTree = new NetworkGUI::ProcessingTree(dock);
-		// attach it to the dock
-		dock->setWidget(processingTree);
-		addDockWidget(Qt::LeftDockWidgetArea, dock);
+#endif
 	}
 	void on_action_Quit_triggered()
 	{
