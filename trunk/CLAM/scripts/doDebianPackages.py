@@ -10,18 +10,18 @@ from versionInfo import versionFromRemoteSvn
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
 distributions = [
-#	('ubuntu', 'gutsy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'gutsy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 	('ubuntu', 'hardy', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('debian', 'lenny',   "http://ftp.de.debian.org/debian/", ['main']),
-#	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
+	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
 	( 'CLAM',          'clam',               versionFromRemoteSvn('CLAM')[1] ),
 	( 'CLAM/plugins',  'clam-plugins',       versionFromRemoteSvn('CLAM')[1] ),
-#	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
-#	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
-#	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
+	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
+	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
+	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
 ]
 
 hooks = {
