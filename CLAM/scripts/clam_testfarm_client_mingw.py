@@ -109,7 +109,7 @@ clam.add_subtask("CLAM Plugins", [
 	{CMD: "echo set QTDIR to qt4", INFO: set_qtdir_to_qt4},
 
 	'cd %(clamsrcroot)s/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions,
-	'scons clam_prefix=%(installPath)s with_osc=1 %(extraAppOptions)s'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
 	'cd %(clamsrcroot)s/CLAM/plugins/speech'%localDefinitions,
