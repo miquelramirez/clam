@@ -1,6 +1,10 @@
+2008-??-?? Voice2MIDI 0.3.9 SVN $Revision$
+''
+ * Using CLAM 1.2.1
+
 2008-02-05 Voice2MIDI 0.3.8
 'GSoCket Plugged-in release'
- * SVN $Revision$
+ * SVN Revision: 11171
  * Using CLAM 1.2.0
 
 2007-06-08 Voice2MIDI 0.3.7

@@ -1,6 +1,9 @@
+2008-??-?? CLAM 1.2.1 SVN $Revision$
+''
+
 2008-02-05 CLAM 1.2.0
 'GSoCket Plugged-in release'
- * SVN $Revision$
+ * SVN Revision: 11171
  * Major changes summary:
    * Integrates GSoC students work. Thanks to Hernan Ordiales
       Bennet Kolasinsky, Greg Kellum, Andreas Calvo, Roman Goj,
