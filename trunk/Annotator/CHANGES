@@ -1,6 +1,11 @@
+2008-??-?? Annotator 0.3.11 SVN $Revision$
+''
+ * Using CLAM 1.2.1
+
 2008-02-05 Annotator 0.3.10
 'GSoCket Plugged-in release'
- * SVN $Revision$
+ * SVN Revision: 11171
+ * Using CLAM 1.2.0
  * BarGraph views for FloatArrays attributes
  * Float arrays with numerical bin labels
  * Better rulers for visualization
