@@ -8,8 +8,9 @@ options.Add(PathOption('prefix', 'The prefix where the application will be insta
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
-options.Add(BoolOption('crossmingw', 'Enable mingw crosscompiling', 'no') )
-
+options.Add(PathOption('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
+if sys.platform=="linux2" :
+	options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -18,24 +19,32 @@ def scanFiles(pattern, paths) :
 	return files
 
 def recursiveDirs(root) :
-	return filter( (lambda a : a.rfind(".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
+	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
+def unique(list) :
+	return dict.fromkeys(list).keys()
 
 env = Environment(ENV=os.environ, tools=['default'], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
+
 env.SConsignFile() # Single signature file
 
-crosscompiling=env['crossmingw']
+crosscompiling = env.has_key("crossmingw") and env["crossmingw"]
+isWindowsPlatform = sys.platform=='win32' or crosscompiling
+isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isDarwinPlatform = sys.platform=='darwin'
+
 CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
 
-if crosscompiling :
-	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
 env.Tool('clam', toolpath=[clam_sconstoolspath])
 env.Tool('nsis', toolpath=[clam_sconstoolspath])
+if sys.platform=='darwin' : env.Tool('bundle', toolpath=[clam_sconstoolspath])
 env.Tool('dmg', toolpath=[clam_sconstoolspath])
+if crosscompiling :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
 version, fullVersion = versionInfo.versionFromLocalInfo("Voice2MIDI")
@@ -52,6 +61,7 @@ env['QT4_UICDECLPREFIX'] = os.path.join('generated','ui_')
 env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
+	env['SHCXXCOMSTR'] = '== Compiling shared $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
 	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
 	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
@@ -64,22 +74,19 @@ env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-	] , CLAMInstallDir)
+	], CLAMInstallDir)
 
 env.EnableQt4Modules([
 	'QtCore',
 	'QtGui',
 	'QtOpenGL',
-#	'QtSvg',
-#	'QtSql',
-#	'QtNetwork',
-#	'QtTest',
-#	'QtXml',
-#	'QtSvg',
 	'Qt3Support',
-	])
+	],
+	debug=False,
+	crosscompiling=crosscompiling,
+	)
 
-env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
+#env.Append(CPPFLAGS=['-DQT3_SUPPORT'])
 
 mainSources = {
 	'Voice2MIDI' : os.path.join('src','main.cxx'),
@@ -112,7 +119,7 @@ if sys.platform == "win32" :
 sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "uic_")==-1 ),  sources )
-sources = dict.fromkeys(sources).keys()
+sources = unique(sources)
 for mainSource in mainSources.values() :
 	sources.remove(mainSource)
 for blacksheep in blacklist :
@@ -129,7 +136,8 @@ sources += [ os.path.join( os.path.dirname(uiccpp),
 sources += [ os.path.join( os.path.dirname(uiccpp),
 		'moc_'+os.path.splitext(os.path.basename(uiccpp))[0]+'.cxx') for uiccpp in uifiles ]
 
-""" # Not available yet
+# TODO: Create the rc file for Voice2MIDI
+"""
 if sys.platform=="win32" or crosscompiling :
 	sources += env.RES(source=["resources/Voice2MIDI.rc"])
 """
@@ -139,9 +147,10 @@ if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Voice2MIDI.app/Contents/Resources\\""')
 else :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['prefix'] + '/share/voice2midi\\""')
-if sys.platform!='win32' :
+if sys.platform!='win32' or crosscompiling :
 	# TODO: This should not be hardcoded neither prefix (because package intall)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/voice2midi/example-data\\""')
+	env.Append(LIBS=['pthread'])
 
 if sys.platform=='linux2' :
 	if env['release'] :
@@ -149,10 +158,6 @@ if sys.platform=='linux2' :
 	else :
 		env.Append( CCFLAGS=['-g', '-Wall'] )
 #	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed?
-
-if crosscompiling :
-	env.AppendUnique(LIBS=['pthreadGCE2']);
-	env.AppendUnique(LIBPATH=['../../pthreads/lib'])
 
 extralinkFlags = []
 if sys.platform == 'darwin' :
@@ -202,18 +207,28 @@ installation = {
 installTargets = [
 	env.Install( env['prefix']+path, files ) for path, files in installation.items() ]
 
-if sys.platform=='win32' : 
-	"""
+def absolutePosixPathToWine(dir) :
+	return 'z:'+'\\\\'.join(dir.split('/'))
+
+if isWindowsPlatform : 
+	winqtdir=env['QTDIR']
+	if crosscompiling : env['NSIS_MAKENSIS'] = 'wine ~/.wine/dosdevices/c:/Program\ Files/NSIS/makensis'
+	if crosscompiling : winqtdir = absolutePosixPathToWine(winqtdir)
+	externalDllPath = env['external_dll_path']
+	if crosscompiling : externalDllPath = absolutePosixPathToWine(externalDllPath)
+	winclampath = CLAMInstallDir
+	if crosscompiling : winclampath = absolutePosixPathToWine(winclampath)
+	if crosscompiling :
+		env.AddPostAction(programs, env.Action(["i586-mingw32msvc-strip $TARGET"]))
 	installTargets += [
 		env.Install(
-			env['prefix']+"/bin", 
-			os.path.join(env['QTDIR'],'lib',"Qt"+dll+"4.dll")
+			env['prefix']+"/bin",
+			os.path.join(env['QTDIR'],'bin',"Qt"+dll+"4.dll")
 			) for dll in 'Core', 'Gui', 'OpenGL']
-	"""
 	env.Append(NSIS_OPTIONS=['/DVERSION=%s' % fullVersion ])
-	env.Append(NSIS_OPTIONS=['/DQTDIR=$QTDIR'])
-	externalsDllDir = os.environ['EXTERNALDLLDIR']
-	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalsDllDir ])
+	env.Append(NSIS_OPTIONS=['/DQTDIR=%s'%winqtdir ])
+	env.Append(NSIS_OPTIONS=['/DEXTERNALDLLDIR=%s' % externalDllPath ])
+	env.Append(NSIS_OPTIONS=['/DCLAMINSTALLDIR=%s' % winclampath ])
 	# Get the visual studio runtimes path
 	for vcRuntimeDir in os.environ['PATH'].split(";") :
 		vcRuntimeDir = os.path.normpath(vcRuntimeDir)
