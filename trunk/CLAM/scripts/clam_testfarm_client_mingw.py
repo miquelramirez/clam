@@ -167,6 +167,18 @@ clam.add_subtask("NetworkEditor packaging", [
 	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
+clam.add_subtask("Voice2MIDI packaging", [
+	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
+	"cd %(clamsrcroot)s/Voice2MIDI"%localDefinitions,
+	"scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraAppOptions)s "%localDefinitions,
+	"%(clamsrcroot)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
+	"rm -f %(packageWildcard)s"%localDefinitions,
+	"scons",
+#	"scons package",
+#	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
+#	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+] )
+
 Runner( clam, 
 	continuous = True,
 	remote_server_url = 'http://ocata48123.upf.es/testfarm_server',
