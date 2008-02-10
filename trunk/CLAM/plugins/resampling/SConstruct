@@ -1,0 +1,63 @@
+#! /usr/bin/python
+
+import os, glob, sys
+
+libraryName='plugins_resampling'
+
+options = Options('options.cache', ARGUMENTS)
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathOption.PathAccept))
+options.Add(PathOption('sandbox_path', 'Path where third party libraries were installed (in windows)', "", validator=PathOption.PathAccept))
+options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+
+env = Environment(ENV=os.environ, options=options)
+options.Save('options.cache', env)
+Help(options.GenerateHelpText(env))
+env.SConsignFile() # Single signature file
+
+CLAMInstallDir = env['clam_prefix']
+InstallDir = env['prefix'] or env['clam_prefix']
+clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+if env['crossmingw'] :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.EnableClamModules([
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	] , CLAMInstallDir)
+
+sources = glob.glob('*.cxx')
+extraPaths = [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+]
+env.Append(CPPPATH=extraPaths)
+
+# TODO: All this (but the ws2_32 in windows) can be retrieved from pkg-config
+env.Append( LIBS=['samplerate'] )
+if env['sandbox_path'] :
+	env.Append( CPPPATH=os.path.join(env['sandbox_path'],'local/include') )
+	env.Append( LIBPATH=os.path.join(env['sandbox_path'],'local/lib') )
+#	env.Append( LIBS=['ws2_32'] )
+#	env.Append( LIBS=['pthread'] )
+
+if sys.platform=='linux2' :
+	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+libraries = [
+	env.SharedLibrary(target=libraryName, source = sources),
+	]
+programs = [
+	]
+
+#if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
+#	env.Append( LIBPATH=['/opt/local/lib'] )
+#	env.Append( LIBS=['fftw3'] )
+	
+
+install = env.Install(os.path.join(InstallDir,'lib','clam'), libraries)
+
+env.Alias('install', install)
+env.Default(libraries + programs)
+
+
