@@ -1,5 +1,6 @@
 2008-??-?? CLAM 1.2.1 SVN $Revision$
 ''
+ * New processings: Resampler, ComplexSpectrumInverter
 
 2008-02-05 CLAM 1.2.0
 'GSoCket Plugged-in release'
