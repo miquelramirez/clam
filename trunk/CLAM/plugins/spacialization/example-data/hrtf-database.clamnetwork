@@ -148,7 +148,7 @@
   <processing id="elevation" type="OutControlSender">
     <Min>-40</Min>
     <Default>0</Default>
-    <Max>90</Max>
+    <Max>85</Max>
     <Step>0.65</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
