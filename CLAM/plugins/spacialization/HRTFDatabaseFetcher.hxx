@@ -22,6 +22,7 @@
 #define HRTFDatabaseFetcher_hxx
 
 #include <CLAM/InControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/DirectoryName.hxx>
@@ -53,6 +54,7 @@ private:
 			std::string hrtfFile(dirEntry->d_name);
 			if (hrtfFile[0] != 'L') continue;
 			if (hrtfFile.length()>4 && hrtfFile.substr(hrtfFile.length()-4, 4) != ".wav") continue;
+			std::cout << "Loading " << hrtfFile << "..." << std::endl;
 			files.push_back(hrtfFile);
 		}
 		if (files.empty())
@@ -120,11 +122,13 @@ private:
 	
 	Config _config;
 	OutPort< ImpulseResponse* > _impulseResponseL;
-	OutPort< ImpulseResponse* > _previousImpulseResponseL;
 	OutPort< ImpulseResponse* > _impulseResponseR;
+	OutPort< ImpulseResponse* > _previousImpulseResponseL;
 	OutPort< ImpulseResponse* > _previousImpulseResponseR;
 	InControl _elevation; // angle to the horizon
 	InControl _azimut; // horizontal angle from viewpoint (north-south-east-west)
+	OutControl _chosenElevation; // angle to the horizon
+	OutControl _chosenAzimut; // horizontal angle from viewpoint (north-south-east-west)
 	GeodesicDatabase _database; 
 	ImpulseResponse * _previousL;
 	ImpulseResponse * _previousR;
@@ -138,6 +142,8 @@ public:
 		, _previousImpulseResponseR("PreviousImpulseResponseR", this)
 		, _elevation("elevation", this)
 		, _azimut("azimut", this)
+		, _chosenElevation("chosen elevation", this)
+		, _chosenAzimut("chosen azimut", this)
 		, _previousL(0)
 		, _previousR(0)
 	{
@@ -158,6 +164,7 @@ public:
 			AddConfigErrorMessage(errorMsg);
 			return false;
 		}
+		std::cout << "HRTF database loaded." << std::endl;
 		unsigned elevation = map(_elevation, _database.NElevation, -40, 90);
 		unsigned azimut = map(_azimut, _database.NAzimut(elevation), 0, 360);
 		_previousL = &_database.get(elevation,azimut);
@@ -177,6 +184,9 @@ public:
 
 		unsigned elevation = map(_elevation, _database.NElevation, -40, 90);
 		unsigned azimut = map(_azimut, _database.NAzimut(elevation), 0, 360);
+
+		_chosenElevation.SendControl(-40+elevation*10);
+		_chosenAzimut.SendControl(azimut*360./_database.NAzimut(elevation));
 
 		ImpulseResponse * currentL = &_database.get(elevation,azimut);
 		_impulseResponseL.GetData()= currentL;
