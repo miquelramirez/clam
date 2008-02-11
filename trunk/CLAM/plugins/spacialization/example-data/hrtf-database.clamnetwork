@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
+  <processing id="Amplitude" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
   <processing id="AudioBuffer2Stream" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
@@ -36,12 +44,6 @@
   </processing>
 
   <processing id="BufferOscilloscope" type="BufferOscilloscope"/>
-
-  <processing id="ControlPrinter_1" type="ControlPrinter">
-    <Identifier>ControlPrinter</Identifier>
-    <NumberOfInputs>1</NumberOfInputs>
-    <GuiOnly>1</GuiOnly>
-  </processing>
 
   <processing id="CrossFader" type="AudioBufferCrossFader"/>
 
@@ -117,11 +119,6 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="OSCSourceProcessing" type="OSCSourceProcessing">
-    <TargetName>/azimut</TargetName>
-    <NumberOfOutputs>1</NumberOfOutputs>
-  </processing>
-
   <processing id="Oscilloscope" type="Oscilloscope"/>
 
   <processing id="Oscilloscope_1" type="Oscilloscope"/>
@@ -136,8 +133,20 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
+  <processing id="chosen azimut" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="chosen elevation" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
   <processing id="elevation" type="OutControlSender">
-    <Min>0</Min>
+    <Min>-40</Min>
     <Default>0</Default>
     <Max>90</Max>
     <Step>0.65</Step>
@@ -292,6 +301,11 @@
   </port_connection>
 
   <control_connection>
+    <out>Amplitude.out</out>
+    <in>noise_white0.Amplitude</in>
+  </control_connection>
+
+  <control_connection>
     <out>Gain 0_1.out</out>
     <in>AudioMixer.Gain 0</in>
   </control_connection>
@@ -302,13 +316,13 @@
   </control_connection>
 
   <control_connection>
-    <out>OSCSourceProcessing.Float 0</out>
-    <in>ControlPrinter_1.In Control</in>
+    <out>HRTFDatabaseFetcher.chosen elevation</out>
+    <in>chosen elevation.In Control</in>
   </control_connection>
 
   <control_connection>
-    <out>OSCSourceProcessing.Float 0</out>
-    <in>HRTFDatabaseFetcher.azimut</in>
+    <out>HRTFDatabaseFetcher.chosen azimut</out>
+    <in>chosen azimut.In Control</in>
   </control_connection>
 
   <control_connection>
