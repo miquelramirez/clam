@@ -34,7 +34,13 @@ namespace CLAM
 {
 
 
+struct BFormatIR
+{
+	ImpulseResponse pressure;
+	ImpulseResponse vx;
+	ImpulseResponse vy;
 
+};
 class ImpulseResponseCalculatedOnTheFly : public Processing
 { 
 public:
@@ -58,15 +64,17 @@ private:
 	OutPort< ImpulseResponse* > _pressureImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _previousPressureImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _vxImpulseResponseOutPort;
+	OutPort< ImpulseResponse* > _previousVxImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _vyImpulseResponseOutPort;
+	OutPort< ImpulseResponse* > _previousVyImpulseResponseOutPort;
 	InControl _emitterX;
 	InControl _emitterY;
 	InControl _receiverX;
 	InControl _receiverY;
-	ImpulseResponse  _pressureImpulseResponse;
-	ImpulseResponse  _vxImpulseResponse;
-	ImpulseResponse  _vyImpulseResponse;
-	ImpulseResponse  * _current;
+	BFormatIR _impulseResponsesA;
+	BFormatIR _impulseResponsesB;
+	BFormatIR  * _current;
+	BFormatIR  * _previous;
 	float _currentEmitterX;
 	float _currentEmitterY;
 	float _currentReceiverX;
@@ -76,14 +84,17 @@ public:
 	const char* GetClassName() const { return "ImpulseResponseCalculatedOnTheFly"; }
 	ImpulseResponseCalculatedOnTheFly(const Config& config = Config()) 
 		: _pressureImpulseResponseOutPort("pressure IR", this)
-		, _previousPressureImpulseResponseOutPort("PreviousImpulseResponse", this)
+		, _previousPressureImpulseResponseOutPort("previous pressure IR", this)
 		, _vxImpulseResponseOutPort("vx IR", this)
+		, _previousVxImpulseResponseOutPort("previous vx IR", this)
 		, _vyImpulseResponseOutPort("vy IR", this)
+		, _previousVyImpulseResponseOutPort("previous vy IR", this)
 		, _emitterX("emitterX", this)
 		, _emitterY("emitterY", this)
 		, _receiverX("receiverX", this)
 		, _receiverY("receiverY", this)
 		, _current(0)
+		, _previous(0)
 		, _currentEmitterX(0)
 		, _currentEmitterY(0)
 		, _currentReceiverX(0)
@@ -133,12 +144,14 @@ public:
 		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		if (!_current or changeSnappedIR)
 		{
+			// swap _current but leave _previous
+			_current = _current == &_impulseResponsesA ? &_impulseResponsesB : &_impulseResponsesA;
+			if (not _previous) _previous = _current;
 			_currentEmitterX = x1;
 			_currentEmitterY = y1;
 			_currentReceiverX = x2;
 			_currentReceiverY = y2;
 			std::cout << "----- calc and load IR --------------------" << std::endl;
-			std::system("echo 1 >> /tmp/foo");
 			std::ostringstream command;
 			command << "(cd /home/clamteam/acustica/visualitzador_escena_c++ && ./visualitzador "
 				<< " --listener-x-pos=" << _currentReceiverX
@@ -147,23 +160,29 @@ public:
 				<< " --source-y-pos=" << _currentEmitterY 
 				<< " > /dev/null )";
 			std::system( command.str().c_str() );
-			_current= &_pressureImpulseResponse;
-			if (!computeResponseSpectrums(pressureFile, _pressureImpulseResponse, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(vxFile, _vxImpulseResponse, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(vyFile, _vyImpulseResponse, _config.GetFrameSize(), errorMsg) )
+			if (!computeResponseSpectrums(pressureFile, _current->pressure, _config.GetFrameSize(), errorMsg)
+				|| !computeResponseSpectrums(vxFile, _current->vx, _config.GetFrameSize(), errorMsg)
+				|| !computeResponseSpectrums(vyFile, _current->vy , _config.GetFrameSize(), errorMsg) )
 			{
 				std::cout << "ImpulseResponseCalculatedOnTheFly::Do " << errorMsg << std::endl;
 			}
 		}
 
-		_pressureImpulseResponseOutPort.GetData()= &_pressureImpulseResponse;
-		_previousPressureImpulseResponseOutPort.GetData() = &_pressureImpulseResponse;
-		_vxImpulseResponseOutPort.GetData()= &_vxImpulseResponse;
-		_vyImpulseResponseOutPort.GetData()= &_vyImpulseResponse;
+		_pressureImpulseResponseOutPort.GetData()= &_current->pressure;
+		_previousPressureImpulseResponseOutPort.GetData() = &_previous->pressure;
+		_vxImpulseResponseOutPort.GetData()= &_current->vx;
+		_previousVxImpulseResponseOutPort.GetData()= &_previous->vx;
+		_vyImpulseResponseOutPort.GetData()= &_current->vy;
+		_previousVyImpulseResponseOutPort.GetData()= &_previous->vy;
+
 		_pressureImpulseResponseOutPort.Produce();
 		_previousPressureImpulseResponseOutPort.Produce();
 		_vxImpulseResponseOutPort.Produce();
+		_previousVxImpulseResponseOutPort.Produce();
 		_vyImpulseResponseOutPort.Produce();
+		_previousVyImpulseResponseOutPort.Produce();
+
+		_previous=_current;
 		return true;
 	}
 };
