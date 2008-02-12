@@ -44,9 +44,9 @@ if sys.platform=='linux2' :
 		'-ffast-math',
 		'-funroll-loops',
 		'-mmmx',
-		'-march=nocona',
-		'-msse',
-		'-mfpmath=sse'
+#		'-march=nocona',
+#		'-msse',
+#		'-mfpmath=sse'
 	])
 
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
