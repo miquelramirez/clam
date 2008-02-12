@@ -55,6 +55,10 @@ class ControlSequencer : public CLAM::Processing
 	OutControl _out1;
 	OutControl _out2;
 	OutControl _out3;
+	OutControl _out4;
+	OutControl _out5;
+	OutControl _out6;
+	OutControl _out7;
 	AudioInPort _syncIn;
 
 	unsigned _samplesPerControl;
@@ -67,12 +71,20 @@ class ControlSequencer : public CLAM::Processing
 	unsigned _indexOut1;
 	unsigned _indexOut2;
 	unsigned _indexOut3;
+	unsigned _indexOut4;
+	unsigned _indexOut5;
+	unsigned _indexOut6;
+	unsigned _indexOut7;
 
 public:
 	ControlSequencer(const Config& config = Config()) 
 		: _out1("out 1", this)
 		, _out2("out 2", this)
 		, _out3("out 3", this)
+		, _out4("out 4", this)
+		, _out5("out 5", this)
+		, _out6("out 6", this)
+		, _out7("out 7", this)
 		, _syncIn("sync", this)
 	{
 		Configure( config );
@@ -93,6 +105,10 @@ public:
 			_out1.SendControl( _controlSequence[_sequenceIndex][_indexOut1] );
 			_out2.SendControl( _controlSequence[_sequenceIndex][_indexOut2] );
 			_out3.SendControl( _controlSequence[_sequenceIndex][_indexOut3] );
+			_out4.SendControl( _controlSequence[_sequenceIndex][_indexOut4] );
+			_out5.SendControl( _controlSequence[_sequenceIndex][_indexOut5] );
+			_out6.SendControl( _controlSequence[_sequenceIndex][_indexOut6] );
+			_out7.SendControl( _controlSequence[_sequenceIndex][_indexOut7] );
 			_sampleCount -= _samplesPerControl;
 			_sequenceIndex++;
 			if (_sequenceIndex >= _controlSequence.size())
@@ -153,9 +169,13 @@ protected:
 		}
 		// Load the file version
 		std::cout << "ControlSequencer: read from file version. File: "<< _config.GetFilename() << std::endl;
-		_indexOut1=3;
-		_indexOut2=4;			
-		_indexOut3=2;
+		_indexOut1=4; // x target
+		_indexOut2=5; // y target	
+		_indexOut3=2; // beta target
+		_indexOut4=7; // x orig 1
+		_indexOut5=8; // y orig 1
+		_indexOut6=9; // x orig 2
+		_indexOut7=10; //x orig 2
 		// Load table from file
 		std::ifstream file( _config.GetFilename().c_str() );
 		while (file)
