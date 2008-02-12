@@ -174,8 +174,8 @@ protected:
 		_indexOut3=2; // beta target
 		_indexOut4=7; // x orig 1
 		_indexOut5=8; // y orig 1
-		_indexOut6=9; // x orig 2
-		_indexOut7=10; //x orig 2
+		_indexOut6=10; // x orig 2
+		_indexOut7=11; //y orig 2
 		// Load table from file
 		std::ifstream file( _config.GetFilename().c_str() );
 		while (file)
