@@ -197,10 +197,6 @@
 
   <processing id="L" type="AudioSink"/>
 
-  <processing id="LibloSource" type="LibloSource">
-    <OscPath>/clam/target</OscPath>
-    <ServerPort>7770</ServerPort>
-  </processing>
 
   <processing id="MyFFT" type="MyFFT">
     <AudioSize>1024</AudioSize>
@@ -856,40 +852,6 @@
     <in>ImpulseResponseDatabaseFetcher_Vy.emitterY</in>
   </control_connection>
 
-  <control_connection>
-    <out>LibloSource.osc to control 1</out>
-    <in>ImpulseResponseDatabaseFetcher_P.receiverX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 1</out>
-    <in>ImpulseResponseDatabaseFetcher_Vx.receiverX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 1</out>
-    <in>ImpulseResponseDatabaseFetcher_Vy.receiverX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 2</out>
-    <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 2</out>
-    <in>ImpulseResponseDatabaseFetcher_Vx.receiverY</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 2</out>
-    <in>ImpulseResponseDatabaseFetcher_Vy.receiverY</in>
-  </control_connection>
-
-  <control_connection>
-    <out>LibloSource.osc to control 3</out>
-    <in>EquidistantSurround.beta</in>
-  </control_connection>
 
   <control_connection>
     <out>Receiver Position.outX</out>
