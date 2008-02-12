@@ -131,10 +131,10 @@
   <processing id="XFader_Vy" type="AudioBufferCrossFader"/>
 
   <processing id="circle" type="ControlSequencer">
-    <Filename></Filename>
+    <Filename>current_path.data</Filename>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>15</ControlsPerSecond>
+    <ControlsPerSecond>24</ControlsPerSecond>
   </processing>
 
   <processing id="emitterX" type="OutControlSender">
@@ -241,7 +241,7 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.PreviousImpulseResponse</out>
+    <out>ImpulseResponseCalculatedOnTheFly.previous pressure IR</out>
     <in>Convolution_P_old.ImpulseResponse</in>
   </port_connection>
 
@@ -251,7 +251,7 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.vx IR</out>
+    <out>ImpulseResponseCalculatedOnTheFly.previous vx IR</out>
     <in>Convolution_Vx_old.ImpulseResponse</in>
   </port_connection>
 
@@ -261,7 +261,7 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.vy IR</out>
+    <out>ImpulseResponseCalculatedOnTheFly.previous vy IR</out>
     <in>Convolution_Vy_old.ImpulseResponse</in>
   </port_connection>
 
@@ -401,11 +401,6 @@
   </control_connection>
 
   <control_connection>
-    <out>ControlSequencer.out 3</out>
-    <in>VelocityAdapter.beta input</in>
-  </control_connection>
-
-  <control_connection>
     <out>Gain 0.out</out>
     <in>AudioMixer.Gain 0</in>
   </control_connection>
@@ -426,12 +421,17 @@
   </control_connection>
 
   <control_connection>
-    <out>emitterX.out</out>
+    <out>circle.out 3</out>
+    <in>VelocityAdapter.beta input</in>
+  </control_connection>
+
+  <control_connection>
+    <out>circle.out 4</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverX</in>
   </control_connection>
 
   <control_connection>
-    <out>emitterY.out</out>
+    <out>circle.out 5</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverY</in>
   </control_connection>
 
