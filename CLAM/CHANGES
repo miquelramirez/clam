@@ -1,6 +1,13 @@
 2008-??-?? CLAM 1.2.1 SVN $Revision$
 ''
- * New processings: Resampler, ComplexSpectrumInverter
+ * New processings:
+   * ComplexSpectrumInverter: Inverts the phase of a ComplexSpectrum
+   * Resampler: Resamples audio streams using libsamplerate (not stable)
+   * Spherical2CartesianControl: Converts radix,azimut,elevation controls
+     to x,y,z
+ * Fix: NetEditor Windows installer should not install .def and .lib for
+   plugins
+ * Voice2MIDI crosscompiled windows binaries (no installer yet)
 
 2008-02-05 CLAM 1.2.0
 'GSoCket Plugged-in release'
