@@ -98,7 +98,7 @@ Section "Principal" SEC01
   File '${EXTERNALDLLDIR}\zlib1.dll'
   File '${EXTERNALDLLDIR}\libgmodule-2.0-0.dll'
   SetOutPath "$INSTDIR\lib\clam"
-  File "${CLAMINSTALLDIR}\lib\clam\*"
+  File "${CLAMINSTALLDIR}\lib\clam\*.dll"
   SetOutPath "$INSTDIR\bin\designer"
   File "..\CLAMWidgets.dll"
   SetOutPath "$INSTDIR\example-data\"
