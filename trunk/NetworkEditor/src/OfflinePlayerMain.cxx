@@ -1,9 +1,9 @@
 #include <CLAM/FreewheelingNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <fstream>
-#ifdef _MSVC_VER
-#include <CLAM/InitAudioIO.hxx>
-#include <CLAM/InitProcessing.hxx>
+#ifdef USE_LADSPA
+#	include <CLAM/RunTimeLadspaLibraryLoader.hxx>
+#	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
 #endif
 
 int usage(const std::string & program)
@@ -17,9 +17,11 @@ int usage(const std::string & program)
 int main( int argc, char *argv[] )
 {
 
-#ifdef _MSVC_VER
-	CLAM::ProcessingModule::init();
-	CLAM::AudioIOModule::init();
+#ifdef USE_LADSPA
+	RunTimeLadspaLibraryLoader ladspaLoader;
+	ladspaLoader.Load();
+	RunTimeFaustLibraryLoader faustLoader;
+	faustLoader.Load();
 #endif
 	if (argc < 2)
 		return usage(argv[0]);
