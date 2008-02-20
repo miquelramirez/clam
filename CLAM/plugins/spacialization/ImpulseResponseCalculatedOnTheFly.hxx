@@ -137,7 +137,7 @@ public:
 		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
 		
 		std::string errorMsg;
-		const std::string path = "/home/parumi/acustica/visualitzador_escena_c++/responses/"; //TODO not abs path
+		const std::string path = "/home/clamteam/acustica/visualitzador_escena_c++/responses/"; //TODO not abs path
 		std::string pressureFile = path+"p_positioned_IR_time.wav";
 		std::string vxFile = path+"vx_positioned_IR_time.wav";
 		std::string vyFile = path+"vy_positioned_IR_time.wav";
