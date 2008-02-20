@@ -43,7 +43,7 @@ public:
 
 		}
 		float beta = _betaIn.GetLastValue();
-		_betaOut.SendControl( -beta );
+		_betaOut.SendControl( beta+90. );
 		// Tell the ports this is done
 		_vxIn.Consume();
 		_vyIn.Consume();
