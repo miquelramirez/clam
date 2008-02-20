@@ -128,7 +128,7 @@ public:
 		float z1 = 0.;
 		float z2 = 0.;
 
-		float delta = 0.003;
+		float delta = 0.005;
 		bool changeSnappedIR = fabs(_currentReceiverX-x2) > delta 
 			|| fabs(_currentReceiverY-y2) > delta 
 			|| fabs(_currentEmitterX-x1) > delta
@@ -137,7 +137,7 @@ public:
 		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
 		
 		std::string errorMsg;
-		const std::string path = "/home/clamteam/acustica/visualitzador_escena_c++/responses/";
+		const std::string path = "/home/parumi/acustica/visualitzador_escena_c++/responses/"; //TODO not abs path
 		std::string pressureFile = path+"p_positioned_IR_time.wav";
 		std::string vxFile = path+"vx_positioned_IR_time.wav";
 		std::string vyFile = path+"vy_positioned_IR_time.wav";
@@ -153,7 +153,7 @@ public:
 			_currentReceiverY = y2;
 			std::cout << "----- calc and load IR --------------------" << std::endl;
 			std::ostringstream command;
-			command << "(cd /home/clamteam/acustica/visualitzador_escena_c++ && ./visualitzador "
+			command << "(cd ~/acustica/visualitzador_escena_c++ && ./visualitzador "
 				<< " --listener-x-pos=" << _currentReceiverX
   				<< " --listener-y-pos=" << _currentReceiverY
   				<< " --source-x-pos=" << _currentEmitterX
