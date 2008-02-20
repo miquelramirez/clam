@@ -19,25 +19,6 @@
 
   <processing id="C" type="AudioSink"/>
 
-  <processing id="ControlPrinter" type="ControlPrinter">
-    <Identifier>ControlPrinter</Identifier>
-    <NumberOfInputs>1</NumberOfInputs>
-    <GuiOnly>1</GuiOnly>
-  </processing>
-
-  <processing id="ControlPrinter_1" type="ControlPrinter">
-    <Identifier>ControlPrinter</Identifier>
-    <NumberOfInputs>1</NumberOfInputs>
-    <GuiOnly>1</GuiOnly>
-  </processing>
-
-  <processing id="ControlSequencer" type="ControlSequencer">
-    <Filename>current_path.data</Filename>
-    <FrameSize>512</FrameSize>
-    <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>24</ControlsPerSecond>
-  </processing>
-
   <processing id="Convolution_P" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
@@ -130,13 +111,6 @@
 
   <processing id="XFader_Vy" type="AudioBufferCrossFader"/>
 
-  <processing id="circle" type="ControlSequencer">
-    <Filename>current_path.data</Filename>
-    <FrameSize>512</FrameSize>
-    <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>24</ControlsPerSecond>
-  </processing>
-
   <processing id="emitterX" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
@@ -151,6 +125,13 @@
     <Max>1</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="sequencer" type="ControlSequencer">
+    <Filename>current_path.data</Filename>
+    <FrameSize>512</FrameSize>
+    <SampleRate>44100</SampleRate>
+    <ControlsPerSecond>24</ControlsPerSecond>
   </processing>
 
   <processing id="toStream P" type="AudioBuffer2Stream">
@@ -182,17 +163,12 @@
 
   <port_connection>
     <out>AudioInput.AudioOut</out>
-    <in>ControlSequencer.sync</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioInput.AudioOut</out>
     <in>AudioMixer.Input 0</in>
   </port_connection>
 
   <port_connection>
     <out>AudioInput.AudioOut</out>
-    <in>circle.sync</in>
+    <in>sequencer.sync</in>
   </port_connection>
 
   <port_connection>
@@ -351,16 +327,6 @@
   </port_connection>
 
   <port_connection>
-    <out>VelocityAdapter.Vy input</out>
-    <in>Surround.vx</in>
-  </port_connection>
-
-  <port_connection>
-    <out>VelocityAdapter.Vy output</out>
-    <in>Surround.vy</in>
-  </port_connection>
-
-  <port_connection>
     <out>XFader_P.CrossFadedBuffer</out>
     <in>toStream P.Audio buffer</in>
   </port_connection>
@@ -382,23 +348,13 @@
 
   <port_connection>
     <out>toStream Vx.Audio stream</out>
-    <in>VelocityAdapter.Vx input</in>
+    <in>Surround.vx</in>
   </port_connection>
 
   <port_connection>
     <out>toStream Vy.Audio stream</out>
-    <in>VelocityAdapter.Vy input</in>
+    <in>Surround.vy</in>
   </port_connection>
-
-  <control_connection>
-    <out>ControlSequencer.out 2</out>
-    <in>ControlPrinter_1.In Control</in>
-  </control_connection>
-
-  <control_connection>
-    <out>ControlSequencer.out 3</out>
-    <in>ControlPrinter.In Control</in>
-  </control_connection>
 
   <control_connection>
     <out>Gain 0.out</out>
@@ -411,28 +367,28 @@
   </control_connection>
 
   <control_connection>
-    <out>circle.out 1</out>
-    <in>ImpulseResponseCalculatedOnTheFly.emitterX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>circle.out 2</out>
-    <in>ImpulseResponseCalculatedOnTheFly.emitterY</in>
-  </control_connection>
-
-  <control_connection>
-    <out>circle.out 3</out>
-    <in>VelocityAdapter.beta input</in>
-  </control_connection>
-
-  <control_connection>
-    <out>circle.out 4</out>
+    <out>sequencer.out 1</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverX</in>
   </control_connection>
 
   <control_connection>
-    <out>circle.out 5</out>
+    <out>sequencer.out 2</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>sequencer.out 3</out>
+    <in>VelocityAdapter.beta input</in>
+  </control_connection>
+
+  <control_connection>
+    <out>sequencer.out 6</out>
+    <in>ImpulseResponseCalculatedOnTheFly.emitterX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>sequencer.out 7</out>
+    <in>ImpulseResponseCalculatedOnTheFly.emitterY</in>
   </control_connection>
 
 </network>
