@@ -12,16 +12,16 @@
 
 
 # Usage:
-#   TemplatedPluginsGenerator NEW_PLUGIN_NAME TEMPLATE_NAME [COPYRIGHT_HOLDER] [LICENSE] [YEAR]
+#   ./TemplatedPluginsGenerator.py NEW_PLUGIN_NAME TEMPLATE_NAME [COPYRIGHT_HOLDER] [LICENSE] [YEAR]
 
 # Examples:
-#./TemplatedPluginsGenerator TestProcessing simple
-#./TemplatedPluginsGenerator TestProcessing simple "Hernan Ordiales" GPL 2007
-#./TemplatedPluginsGenerator TestProcessing simple "Hernan Ordiales" none 2007
-#./TemplatedPluginsGenerator TestProcessing simple "by Hernán Ordiales
+#./TemplatedPluginsGenerator.py TestProcessing simple
+#./TemplatedPluginsGenerator.py TestProcessing simple "Hernan Ordiales" GPL 2007
+#./TemplatedPluginsGenerator.py TestProcessing simple "Hernan Ordiales" none 2007
+#./TemplatedPluginsGenerator.py TestProcessing simple "by Hernán Ordiales
  #* <code@ordia.com.ar>" GPL 2007
-#./TemplatedPluginsGenerator TestProcessing simple "Fundació Barcelona Media Universitat Pompeu Fabra" GPL 2007
-#./TemplatedPluginsGenerator TestProcessing simple "MUSIC TECHNOLOGY GROUP (MTG)
+#./TemplatedPluginsGenerator.py TestProcessing simple "Fundació Barcelona Media Universitat Pompeu Fabra" GPL 2007
+#./TemplatedPluginsGenerator.py TestProcessing simple "MUSIC TECHNOLOGY GROUP (MTG)
  #*                         UNIVERSITAT POMPEU FABRA" GPL "2001-2004"
 
 
@@ -64,6 +64,10 @@ except:
 	plugin["year"] = "" # default value
 
 
+#plugin["output_dir"] = "plugins"
+plugin["output_dir"] = "../../plugins"
+#plugin["description"] = ""
+
 
 license_text = f.read()
 f.close
@@ -86,17 +90,19 @@ def make_file( template_dir, plugin_name, replacement_str, filename, new_file_na
 		new_file = new_file.replace( replacement_str.lower(), plugin_name.lower() )
 	else:
 		new_file = new_file.replace( replacement_str, plugin_name )
-	if not os.path.isdir('plugins'): os.mkdir( 'plugins' )
-	if not os.path.isdir("plugins/"+plugin_name): os.mkdir( "plugins/"+plugin_name )
+	if not os.path.isdir(plugin["output_dir"]):
+		plugin["output_dir"] = "plugins"
+		os.mkdir( plugin["output_dir"] )
+	if not os.path.isdir(plugin["output_dir"]+"/"+plugin_name): os.mkdir( plugin["output_dir"]+"/"+plugin_name )
 	try:
 		ext = "." + filename.split('.')[1]
 	except:
 		ext = ""
 	try:
-		g = open( "plugins/" + plugin_name + "/" + new_file_name + ext, "w" )
-		print "Creating " + "plugins/" + plugin_name + "/" + new_file_name + ext + " file"
+		g = open( plugin["output_dir"]+"/" + plugin_name + "/" + new_file_name + ext, "w" )
+		print "Creating " + plugin["output_dir"]+ "/" + plugin_name + "/" + new_file_name + ext + " file"
 	except:
-		print "plugins/" + plugin_name + "/" + plugin_name + ext
+		print plugin["output_dir"] + "/" + plugin_name + "/" + plugin_name + ext
 		print "Output file write error."
 		sys.exit(2)
 	if (ext==".hxx" or ext==".cxx") and plugin["license"]!="null":
@@ -107,7 +113,7 @@ def make_file( template_dir, plugin_name, replacement_str, filename, new_file_na
 def copy_file( template, filename ):
 	if os.path.isfile("templates/" + template + "/" + filename):
 		print "Copying " + filename + " file"
-		shutil.copyfile( "templates/" + template + "/" + filename, "plugins/" + plugin["name"] + "/" + filename )
+		shutil.copyfile( "templates/" + template + "/" + filename, plugin["output_dir"] + "/" + plugin["name"] + "/" + filename )
 
 
 standard_name = "BaseProcessing"
