@@ -67,8 +67,8 @@ namespace CLAM{
 			mInSpectrum("In Spectrum", this),
 			mOutSpectrum("Out Spectrum", this),
 			mIsHarmonic("Harmonic", this),
-			mIgnoreResidual("IgnoreResidual", this),
-			mPitchSteps("PitchSteps", this)
+			mPitchSteps("PitchSteps", this),
+			mIgnoreResidual("IgnoreResidual", this)
 		{
 			Configure( SegmentTransformationConfig() );
 		}
