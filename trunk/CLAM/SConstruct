@@ -291,9 +291,9 @@ Export('install_dirs')
 if not clam_env.GetOption('clean') :
 	for module in modules :
 		load_config_file_to_env(eval(module+'_env'), 'scons/libs/'+module)
-		Export(module+'_env')
 
 for module in modules :
+	Export(module+'_env')
 	SConscript('scons/libs/'+module+'/SConscript')
 
 doxygen = clam_env.Command("DoxyLog", "doxygen.cfg",
