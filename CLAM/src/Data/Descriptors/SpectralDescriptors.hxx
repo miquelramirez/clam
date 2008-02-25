@@ -118,7 +118,16 @@ namespace CLAM {
 		 * the spectral magnitude. Measured in ??.
 		 * @see Stats::Slope
 		 */
-		DYN_ATTRIBUTE (17,public, TData, Slope); 
+		DYN_ATTRIBUTE (17,public, TData, Slope);
+		/**
+		 * Sum of the squared spectrum magnitude multiplied by the wave number of the bin.
+		 * It could be considered the energy derivative, a high pass filter,
+		 * which gives higher values for high frequency content.
+		 *
+		 * \f[
+		 * HighFrequencyContent = \sum_{i=0}^{nBins} i magnitude_i^2
+		 * \f]
+		 */
 		DYN_ATTRIBUTE (18,public, TData, HighFrequencyContent);
 		DYN_ATTRIBUTE (19,public, Array<SpectralDescriptors>, BandDescriptors);
 
