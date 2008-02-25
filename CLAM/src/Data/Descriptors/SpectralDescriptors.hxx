@@ -84,10 +84,16 @@ namespace CLAM {
 		DYN_ATTRIBUTE (9, public, TData, Flatness);
 		DYN_ATTRIBUTE (10,public, TData, MagnitudeKurtosis);
 		DYN_ATTRIBUTE (11,public, Array<TData>, MFCC);
-		DYN_ATTRIBUTE (12,public, TData, MaxMagFreq); 
 		/**
 		 * Frequency of the maximum magnitude of the spectrum 
 		 * normalized by the spectral range
+		 */
+		DYN_ATTRIBUTE (12,public, TData, MaxMagFreq); 
+		/**
+		 * The ratio between the energy over 0-100 Hz band and the whole spectrum energy.
+		 * To avoid singularities while keeping descriptor continuity, 
+		 * when the whole spectrum energy drops bellow $10^{-4}$, 
+		 * such value is considered as whole spectrum energy.
 		 */
 		DYN_ATTRIBUTE (13,public, TData, LowFreqEnergyRelation); 
 		/**
