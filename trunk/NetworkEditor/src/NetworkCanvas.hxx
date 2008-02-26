@@ -27,7 +27,7 @@
 #include <CLAM/ProcessingFactory.hxx>
 #include "OutControlSender.hxx" //TODO move to cxx
 
-class NetworkCanvas : public QWidget
+class AbstractNetworkCanvas : public QWidget
 {
 	Q_OBJECT
 public:
@@ -42,15 +42,14 @@ public:
 		ResizeDrag,
 		SelectionDrag
 	};
-	NetworkCanvas(QWidget * parent=0)
+	AbstractNetworkCanvas(QWidget * parent=0)
 		: QWidget(parent)
+		, _zoomFactor(1.)
+		, _changed(false)
 		, _dragStatus(NoDrag)
 		, _dragProcessing(0)
 		, _dragConnection(0)
 		, _printing(false)
-		, _zoomFactor(1.)
-		, _network(0)
-		, _changed(false)
 	{
 		setMouseTracking(true);
 		setAcceptDrops(true);
@@ -58,18 +57,193 @@ public:
 		resize(600,300);
 	   	// Overwritten latter. But some text is needed to enable it.
 		setWhatsThis("Dummy");
-		QAction * deleteAction = new QAction("Delete", this);
-		deleteAction->setShortcut(QKeySequence(tr("Del")));
-		addAction(deleteAction);
-		connect(deleteAction, SIGNAL(triggered()), this, SLOT(removeSelectedProcessings()));
-		QAction * selectAllAction = new QAction("Select all", this);
-		selectAllAction->setShortcut(QKeySequence(tr("Ctrl+A")));
-		addAction(selectAllAction);
-		connect(selectAllAction, SIGNAL(triggered()), this, SLOT(onSelectAll()));
-		QAction * clearSelectionAction = new QAction("Clear selection", this);
-		clearSelectionAction->setShortcut(QKeySequence(tr("Ctrl+Shift+A")));
-		addAction(clearSelectionAction);
-		connect(clearSelectionAction, SIGNAL(triggered()), this, SLOT(onClearSelections()));
+
+		_deleteSelectedAction = new QAction("Delete", this);
+		_deleteSelectedAction->setShortcut(QKeySequence(tr("Del")));
+		addAction(_deleteSelectedAction);
+		connect(_deleteSelectedAction, SIGNAL(triggered()), this, SLOT(removeSelectedProcessings()));
+
+		_selectAllAction = new QAction("Select all", this);
+		_selectAllAction->setShortcut(QKeySequence(tr("Ctrl+A")));
+		addAction(_selectAllAction);
+		connect(_selectAllAction, SIGNAL(triggered()), this, SLOT(onSelectAll()));
+
+		_clearSelectionAction = new QAction("Clear selection", this);
+		_clearSelectionAction->setShortcut(QKeySequence(tr("Ctrl+Shift+A")));
+		addAction(_clearSelectionAction);
+		connect(_clearSelectionAction, SIGNAL(triggered()), this, SLOT(onClearSelections()));
+	}
+	void raise(ProcessingBox * toRaise)
+	{
+		std::vector<ProcessingBox*>::iterator search = std::find(_processings.begin(), _processings.end(), toRaise);
+		if (search==_processings.end()) return;
+		_processings.erase(search);
+		_processings.push_back(toRaise);
+		toRaise->raiseEmbeded();
+	}
+	void addPortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	{
+		_portWires.push_back(new PortWire(source, outlet, target, inlet));
+	}
+	void addControlWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	{
+		_controlWires.push_back(new ControlWire(source, outlet, target, inlet));
+	}
+	void clear()
+	{
+		clearWires();
+		for (unsigned i = 0; i<_processings.size(); i++)
+			delete _processings[i];
+		_processings.clear();
+		update();
+	}
+	void clearWires()
+	{
+		for (unsigned i = 0; i<_portWires.size(); i++)
+			delete _portWires[i];
+		_portWires.clear();
+		for (unsigned i = 0; i<_controlWires.size(); i++)
+			delete _controlWires[i];
+		_controlWires.clear();
+	}
+
+
+public: // Helpers
+	QRect translatedRect(QRect rect)
+	{
+		rect.setSize(rect.size()*_zoomFactor);
+		rect.moveTopLeft((rect.topLeft()-_boundingBox.topLeft())*_zoomFactor);
+		return rect;
+	}
+
+	template <class Event> QPoint translatedPos(Event * event)
+	{
+		return event->pos()/_zoomFactor+_boundingBox.topLeft();
+	}
+	template <class Event> QPoint translatedGlobalPos(Event * event)
+	{
+		return event->globalPos()/_zoomFactor;
+	}
+
+public: // Actions
+	void clearSelections()
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+			_processings[i]->deselect();
+	}
+	void selectAll()
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+			_processings[i]->select();
+	}
+	void startMovingSelected(QMouseEvent * event)
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+		{
+			if (!_processings[i]->isSelected()) continue;
+			_processings[i]->startMoving(translatedGlobalPos(event));
+		}
+		setCursor(Qt::SizeAllCursor);
+	}
+private slots:
+	void onClearSelections()
+	{
+		clearSelections();
+		update();
+	}
+	void onSelectAll()
+	{
+		selectAll();
+		update();
+	}
+	void removeSelectedProcessings()
+	{
+		std::vector<ProcessingBox *> toRemove;
+		for (unsigned i=0; i<_processings.size(); i++)
+			if (_processings[i]->isSelected()) toRemove.push_back(_processings[i]) ;
+		for (unsigned i=0; i<toRemove.size(); i++)
+			removeProcessing( toRemove[i] );
+		update();
+	}
+public:
+	void removeProcessing(ProcessingBox * processing)
+	{
+		networkRemoveProcessing(processing->getName().toStdString());
+		markAsChanged();
+		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
+			   	it<_controlWires.end(); )
+		{
+			ControlWire * wire = *it;
+			if ( !wire->involves(processing)) it++;
+			else
+			{
+				delete wire;
+				it=_controlWires.erase(it);
+			}
+		}
+		for (std::vector<PortWire*>::iterator it=_portWires.begin();
+			   	it<_portWires.end(); )
+		{
+			PortWire * wire = *it;
+			if ( !wire->involves(processing)) it++;
+			else
+			{
+				delete wire;
+				it=_portWires.erase(it);
+			}
+		}
+		delete processing;
+		_processings.erase(std::find(_processings.begin(), _processings.end(), processing));
+	}
+protected:
+	virtual void networkRemoveProcessing(const std::string & name) = 0;
+
+protected:
+	std::vector<ProcessingBox *> _processings;
+	std::vector<PortWire *> _portWires;
+	std::vector<ControlWire *> _controlWires;
+	double _zoomFactor;
+	QRect _boundingBox;
+signals:
+	void changed();
+public:
+	bool isChanged()
+	{
+		return _changed;
+	}
+	void markAsChanged()
+	{
+		_changed = true;
+		emit changed();
+	}
+	void clearChanges()
+	{
+		_changed = false;
+	}
+private:
+	bool _changed;
+protected:
+	DragStatus _dragStatus;
+	ProcessingBox * _dragProcessing;
+	unsigned _dragConnection;
+	QPoint _dragPoint;
+	QPoint _selectionDragOrigin;
+	QPoint _tooltipPos;
+	QString _tooltipText;
+	bool _printing;
+	QAction * _deleteSelectedAction;
+	QAction * _selectAllAction;
+	QAction * _clearSelectionAction;
+};
+
+class NetworkCanvas : public AbstractNetworkCanvas
+{
+	Q_OBJECT
+public:
+	NetworkCanvas(QWidget * parent=0)
+		: AbstractNetworkCanvas(parent)
+		, _network(0)
+	{
 	}
 	CLAM::Network & network()
 	{
@@ -92,22 +266,15 @@ public:
 
 	virtual ~NetworkCanvas();
 
-	void clear();
-	void clearWires();
-
-	void raise(ProcessingBox * toRaise)
-	{
-		std::vector<ProcessingBox*>::iterator search = std::find(_processings.begin(), _processings.end(), toRaise);
-		if (search==_processings.end()) return;
-		_processings.erase(search);
-		_processings.push_back(toRaise);
-		toRaise->raiseEmbeded();
-	}
-
 	void paintEvent(QPaintEvent * event)
 	{
 		QPainter painter(this);
 		paint(painter);
+	}
+public: // Helpers
+	void setToolTip(const QString & text)
+	{
+		_tooltipText = text;
 	}
 public slots:
 	void print()
@@ -196,27 +363,6 @@ private:
 		painter.setPen(Qt::black);
 		painter.drawText(tooltip, Qt::AlignLeft, _tooltipText);
 	}
-public: // Helpers
-	void setToolTip(const QString & text)
-	{
-		_tooltipText = text;
-	}
-
-	QRect translatedRect(QRect rect)
-	{
-		rect.setSize(rect.size()*_zoomFactor);
-		rect.moveTopLeft((rect.topLeft()-_boundingBox.topLeft())*_zoomFactor);
-		return rect;
-	}
-	template <class Event> QPoint translatedPos(Event * event)
-	{
-		return event->pos()/_zoomFactor+_boundingBox.topLeft();
-	}
-	template <class Event> QPoint translatedGlobalPos(Event * event)
-	{
-		return event->globalPos()/_zoomFactor;
-	}
-
 public: // Event Handlers
 
 	void mouseMoveEvent(QMouseEvent * event)
@@ -415,26 +561,6 @@ public: // Event Handlers
 
 public: // Actions
 
-	void startMovingSelected(QMouseEvent * event)
-	{
-		for (unsigned i=0; i<_processings.size(); i++)
-		{
-			if (!_processings[i]->isSelected()) continue;
-			_processings[i]->startMoving(translatedGlobalPos(event));
-		}
-		setCursor(Qt::SizeAllCursor);
-	}
-
-	void clearSelections()
-	{
-		for (unsigned i=0; i<_processings.size(); i++)
-			_processings[i]->deselect();
-	}
-	void selectAll()
-	{
-		for (unsigned i=0; i<_processings.size(); i++)
-			_processings[i]->select();
-	}
 	void addProcessing(QPoint point, QString type)
 	{
 		if (networkIsDummy())
@@ -665,15 +791,6 @@ public:
 		addControlWire(source, outlet, target, inlet);
 		markAsChanged();
 	}
-	void addPortWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
-	{
-		_portWires.push_back(new PortWire(source, outlet, target, inlet));
-	}
-	void addControlWire(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
-	{
-		_controlWires.push_back(new ControlWire(source, outlet, target, inlet));
-	}
-
 	void disconnectIncontrol(ProcessingBox * processing, unsigned index)
 	{
 		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
@@ -742,37 +859,12 @@ public:
 			}
 		}
 	}
-
-	void removeProcessing(ProcessingBox * processing)
+	virtual void networkRemoveProcessing(const std::string & name)
 	{
-		markAsChanged();
-		if (!networkIsDummy()) _network->RemoveProcessing(processing->getName().toStdString());
-		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
-			   	it<_controlWires.end(); )
-		{
-			ControlWire * wire = *it;
-			if ( !wire->involves(processing)) it++;
-			else
-			{
-				delete wire;
-				it=_controlWires.erase(it);
-			}
-		}
-		for (std::vector<PortWire*>::iterator it=_portWires.begin();
-			   	it<_portWires.end(); )
-		{
-			PortWire * wire = *it;
-			if ( !wire->involves(processing)) it++;
-			else
-			{
-				delete wire;
-				it=_portWires.erase(it);
-			}
-		}
-		delete processing;
-		_processings.erase(std::find(_processings.begin(), _processings.end(), processing));
+		if (networkIsDummy()) return;
+		_network->RemoveProcessing(name);
 	}
-	
+
 	bool networkIsDummy() const
 	{
 		return _network == 0;
@@ -1097,39 +1189,8 @@ private slots:
 		}
 		addProcessing(point, type);
 	}
-signals:
-	void changed();
-public:
-	bool isChanged()
-	{
-		return _changed;
-	}
-	void markAsChanged()
-	{
-		_changed = true;
-		emit changed();
-	}
-	void clearChanges()
-	{
-		_changed = false;
-	}
-	
 private:
-	std::vector<ProcessingBox *> _processings;
-	std::vector<PortWire *> _portWires;
-	std::vector<ControlWire *> _controlWires;
-	DragStatus _dragStatus;
-	ProcessingBox * _dragProcessing;
-	unsigned _dragConnection;
-	QPoint _dragPoint;
-	QPoint _selectionDragOrigin;
-	QPoint _tooltipPos;
-	QString _tooltipText;
-	bool _printing;
-	double _zoomFactor;
-	QRect _boundingBox;
 	CLAM::Network * _network;
-	bool _changed;
 };
 
 
