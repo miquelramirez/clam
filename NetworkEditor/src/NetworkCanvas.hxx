@@ -49,7 +49,23 @@ public:
 		, _dragStatus(NoDrag)
 		, _dragProcessing(0)
 		, _dragConnection(0)
-		, _printing(false)
+		, _colorBoxFrameText   (0xff,0xff,0xff)
+		, _colorBoxFrameOutline(0x20,0x6f,0x20)
+		, _colorBoxFrame       (0x30,0x8f,0x30,0xaf)
+		, _colorBoxBody        (0xF9,0xFb,0xF9,0xaf)
+		, _colorResizeHandle   (0xf9,0xbb,0xb9)
+		, _colorPortOutline    (0x53,0x30,0x42)
+		, _colorPort           (0xa6,0x60,0x84)
+		, _colorControlOutline (0x53,0x30,0x42)
+		, _colorControl        (0xf6,0x60,0x84)
+		, _colorSelectBoxBody  (0x77,0xff,0x88,0x37)
+		, _colorSelectBoxLine  (0x77,0xff,0x88,0xf7)
+		, _colorHighlight      (Qt::yellow)
+		, _colorForbidenDrop   (0xff,0xaa,0xaa)
+		, _colorAllowedDrop    (0xaa,0xff,0xaa)
+		, _colorTooltipBody    (0xff,0xff,0x90,0xa0)
+		, _colorTooltipLine    (0xff,0xff,0x90,0xff)
+		, _colorTooltipText    (Qt::black)
 	{
 		setMouseTracking(true);
 		setAcceptDrops(true);
@@ -107,6 +123,51 @@ public:
 		_controlWires.clear();
 	}
 
+	QColor colorBoxFrameText() const { return _colorBoxFrameText; }
+	QColor colorBoxFrameOutline() const { return _colorBoxFrameOutline; }
+	QColor colorBoxFrame() const { return _colorBoxFrame; }
+	QColor colorBoxBody() const { return _colorBoxBody; }
+	QColor colorResizeHandle() const { return _colorResizeHandle; }
+	QColor colorPortOutline() const { return _colorPortOutline; }
+	QColor colorPort() const { return _colorPort; }
+	QColor colorControlOutline() const { return _colorControlOutline; }
+	QColor colorControl() const { return _colorControl; }
+	QColor colorSelectBoxBody() const { return _colorSelectBoxBody; }
+	QColor colorSelectBoxLine() const { return _colorSelectBoxLine; }
+	QColor colorHighlight() const { return _colorHighlight; } 
+	QColor colorForbidenDrop() const { return _colorForbidenDrop; }
+	QColor colorAllowedDrop() const { return _colorAllowedDrop; }
+
+	QColor colorHighlightConnector(ProcessingBox * processing, ProcessingBox::Region region, int connection)
+	{
+		switch (_dragStatus) 
+		{
+			case InportDrag:
+				if (region != ProcessingBox::outportsRegion) return _colorForbidenDrop;
+				if (canConnectPorts(processing, connection, _dragProcessing, _dragConnection))
+					return _colorAllowedDrop;
+				return _colorForbidenDrop;
+			case OutportDrag:
+				if (region != ProcessingBox::inportsRegion) return _colorForbidenDrop;
+				if (canConnectPorts(_dragProcessing, _dragConnection, processing, connection))
+					return _colorAllowedDrop;
+				return _colorForbidenDrop;
+			case IncontrolDrag:
+				if (region != ProcessingBox::outcontrolsRegion) return _colorForbidenDrop;
+				if (canConnectControls(processing, connection, _dragProcessing, _dragConnection))
+					return _colorAllowedDrop;
+				return _colorForbidenDrop;
+			case OutcontrolDrag:
+				if (region != ProcessingBox::incontrolsRegion) return _colorForbidenDrop;
+				if (canConnectControls(_dragProcessing, _dragConnection, processing, connection))
+					return _colorAllowedDrop;
+				return _colorForbidenDrop;
+			default:
+				return _colorHighlight;
+		}
+	}
+
+
 // Drawing routines
 protected:
 	void paint(QPainter & painter)
@@ -145,8 +206,8 @@ protected:
 	void drawSelectBox(QPainter & painter)
 	{
 		if (_dragStatus!=SelectionDrag) return;
-		painter.setBrush(QColor(0x77, 0xff, 0x88, 0x37));
-		painter.setPen(QColor(0x77, 0xff, 0x88, 0xf7));
+		painter.setBrush(_colorSelectBoxBody);
+		painter.setPen(_colorSelectBoxLine);
 		painter.drawRect(QRect(_dragPoint, _selectionDragOrigin));
 	}
 	void drawTooltip(QPainter & painter)
@@ -170,10 +231,10 @@ protected:
 		if (y<0) y=0;
 
 		QRectF tooltip(x, y, tooltipWidth, tooltipHeight)  ;
-		painter.setBrush(QColor(0xff,0xff,0x90,0xa0));
-		painter.setPen(QColor(0xff,0xff,0x90,0xff));
+		painter.setBrush(_colorTooltipBody);
+		painter.setPen(_colorTooltipLine);
 		painter.drawRect(tooltip);
-		painter.setPen(Qt::black);
+		painter.setPen(_colorTooltipText);
 		painter.drawText(tooltip, Qt::AlignLeft, _tooltipText);
 	}
 
@@ -182,13 +243,13 @@ public: // Helpers
 	{
 		_tooltipText = text;
 	}
+
 	QRect translatedRect(QRect rect)
 	{
 		rect.setSize(rect.size()*_zoomFactor);
 		rect.moveTopLeft((rect.topLeft()-_boundingBox.topLeft())*_zoomFactor);
 		return rect;
 	}
-
 	template <class Event> QPoint translatedPos(Event * event)
 	{
 		return event->pos()/_zoomFactor+_boundingBox.topLeft();
@@ -221,7 +282,22 @@ public: // Actions
 public slots:
 	void print()
 	{
-		_printing = true;
+		// Save current colors
+		QColor colorBoxFrameText = _colorBoxFrameText;
+		QColor colorBoxFrameOutline = _colorBoxFrameOutline;
+		QColor colorBoxFrame = _colorBoxFrame;
+		QColor colorBoxBody = _colorBoxBody;
+		QColor colorResizeHandle = _colorResizeHandle;
+		QColor colorPort = _colorPort;
+
+		// Set printer friendly colors
+		_colorBoxFrameText = QColor(0x00,0x00,0x00);
+		_colorBoxFrameOutline = QColor(0x00,0x00,0x00);
+		_colorBoxFrame = QColor(0xf0,0xf0,0xf0);
+		_colorBoxBody = QColor(0xd0,0xd0,0xd0);
+		_colorResizeHandle = QColor(0xd0,0xf0,0xd0);
+		_colorPort = QColor(0xd0,0x50,0xa0);
+
 		QPrinter printer;
 		printer.setOutputFormat(QPrinter::PdfFormat);
 		printer.setOutputFileName("ExportedNetwork.pdf");
@@ -234,7 +310,14 @@ public slots:
 		painter.begin(&printer);
 		paint(painter);
 		painter.end();
-		_printing = false;
+
+		// Restore display colors
+		_colorBoxFrameText = colorBoxFrameText;
+		_colorBoxFrameOutline = colorBoxFrameOutline;
+		_colorBoxFrame = colorBoxFrame;
+		_colorBoxBody = colorBoxBody;
+		_colorResizeHandle = colorResizeHandle;
+		_colorPort = colorPort;
 	}
 private slots:
 	void onClearSelections()
@@ -314,6 +397,8 @@ public:
 protected:
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
 	virtual void addProcessing(QPoint point, QString type) = 0;
+	virtual bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)=0;
+	virtual bool canConnectControls(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)=0;
 signals:
 	void changed();
 public:
@@ -543,10 +628,26 @@ protected:
 	QPoint _selectionDragOrigin;
 	QPoint _tooltipPos;
 	QString _tooltipText;
-	bool _printing;
 	QAction * _deleteSelectedAction;
 	QAction * _selectAllAction;
 	QAction * _clearSelectionAction;
+	QColor _colorBoxFrameText;
+	QColor _colorBoxFrameOutline;
+	QColor _colorBoxFrame;
+	QColor _colorBoxBody;
+	QColor _colorResizeHandle;
+	QColor _colorPortOutline;
+	QColor _colorPort;
+	QColor _colorControlOutline;
+	QColor _colorControl;
+	QColor _colorSelectBoxBody;
+	QColor _colorSelectBoxLine;
+	QColor _colorHighlight;
+	QColor _colorForbidenDrop;
+	QColor _colorAllowedDrop;
+	QColor _colorTooltipBody;
+	QColor _colorTooltipLine;
+	QColor _colorTooltipText;
 };
 
 class NetworkCanvas : public AbstractNetworkCanvas
@@ -665,81 +766,6 @@ private:
 		_processings.back()->resize(size);
 	}
 public:
-	QColor colorBoxFrameText() const
-	{
-		if (_printing) return QColor(0x00,0x00,0x00);
-		return QColor(0xff,0xff,0xff);
-	}
-	QColor colorBoxFrameOutline() const
-	{
-		if (_printing) return QColor(0x00,0x00,0x00);
-		return QColor(0x20,0x6f,0x20);
-	}
-	QColor colorBoxFrame() const
-	{
-		if (_printing) return QColor(0xf0,0xf0,0xf0);
-		return QColor(0x30,0x8f,0x30,0xaf);
-	}
-	QColor colorBoxBody() const
-	{
-		if (_printing) return QColor(0xd0,0xd0,0xd0);
-		return QColor(0xF9,0xFb,0xF9,0xaf);
-	}
-	QColor colorResizeHandle() const
-	{
-		if (_printing) return QColor(0xd0,0xf0,0xd0);
-		return QColor(0xf9,0xbb,0xb9);
-	}
-	QColor colorPortOutline() const
-	{
-		return QColor(0x53,0x30,0x42);
-	}
-	QColor colorPort() const
-	{
-		if (_printing) return QColor(0xd0,0x50,0xa0);
-		return QColor(0xa6,0x60,0x84);
-	}
-	QColor colorControlOutline() const
-	{
-		return QColor(0x53,0x30,0x42);
-	}
-	QColor colorControl() const
-	{
-		return QColor(0xf6,0x60,0x84);
-	}
-
-	QColor colorHighlightConnector(ProcessingBox * processing, ProcessingBox::Region region, int connection)
-	{
-		QColor normalHighlight = Qt::yellow;
-		QColor forbidenDrop(0xff,0xaa,0xaa);
-		QColor allowedDrop(0xaa,0xff,0xaa);
-		switch (_dragStatus) 
-		{
-			case InportDrag:
-				if (region != ProcessingBox::outportsRegion) return forbidenDrop;
-				if (canConnectPorts(processing, connection, _dragProcessing, _dragConnection))
-					return allowedDrop;
-				return forbidenDrop;
-			case OutportDrag:
-				if (region != ProcessingBox::inportsRegion) return forbidenDrop;
-				if (canConnectPorts(_dragProcessing, _dragConnection, processing, connection))
-					return allowedDrop;
-				return forbidenDrop;
-			case IncontrolDrag:
-				if (region != ProcessingBox::outcontrolsRegion) return forbidenDrop;
-				if (canConnectControls(processing, connection, _dragProcessing, _dragConnection))
-					return allowedDrop;
-				return forbidenDrop;
-			case OutcontrolDrag:
-				if (region != ProcessingBox::incontrolsRegion) return forbidenDrop;
-				if (canConnectControls(_dragProcessing, _dragConnection, processing, connection))
-					return allowedDrop;
-				return forbidenDrop;
-			default:
-				return normalHighlight;
-		}
-	}
-
 	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
 		if (networkIsDummy()) return true;
