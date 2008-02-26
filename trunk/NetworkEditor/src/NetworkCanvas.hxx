@@ -279,6 +279,36 @@ public: // Actions
 		}
 		setCursor(Qt::SizeAllCursor);
 	}
+	/**
+	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
+	 * @pre The processing box has checked that connection is the proper one for the canvas _dragStatus.
+	 */
+	void endWireDrag(ProcessingBox * processing, int connection)
+	{
+		switch (_dragStatus) 
+		{
+			case InportDrag:
+			{
+				addPortConnection(processing, connection, _dragProcessing, _dragConnection);
+			} break;
+			case OutportDrag:
+			{
+				addPortConnection(_dragProcessing, _dragConnection, processing, connection);
+			} break;
+			case IncontrolDrag:
+			{
+				addControlConnection(processing, connection, _dragProcessing, _dragConnection);
+			} break;
+			case OutcontrolDrag:
+			{
+				addControlConnection(_dragProcessing, _dragConnection, processing, connection);
+			} break;
+			default:
+			{
+				CLAM_ASSERT(false, "Ending a wire drag but not in wire drag status");
+			} return;
+		}
+	}
 public slots:
 	void print()
 	{
@@ -395,10 +425,101 @@ public:
 		update();
 	}
 protected:
+	ProcessingBox * getBox(const QString & name)
+	{
+		for (unsigned i=0; i<_processings.size(); i++)
+			if (_processings[i]->getName()==name) return _processings[i];
+		return 0;
+	}
+	void addPortConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	{
+		QString out = source->getName() + "." + source->getOutportName(outlet);
+		QString in = target->getName() + "." + target->getInportName(inlet);
+		if (!networkAddPortConnection(out,in)) return;
+		addPortWire(source, outlet, target, inlet);
+		markAsChanged();
+	}
+	void addControlConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	{
+		QString out = source->getName() + "." + source->getOutcontrolName(outlet);
+		QString in = target->getName() + "." + target->getIncontrolName(inlet);
+		if ( !networkAddControlConnection(out, in)) return;
+		addControlWire(source, outlet, target, inlet);
+		markAsChanged();
+	}
+	void disconnectIncontrol(ProcessingBox * processing, unsigned index)
+	{
+		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
+			   	it<_controlWires.end();)
+		{
+			ControlWire * wire = *it;
+			if ( !wire->goesTo(processing, index)) it++;
+			else
+			{
+				networkRemoveControlConnection(wire->getSourceId(), wire->getTargetId());
+				delete wire;
+				it=_controlWires.erase(it);
+				markAsChanged();
+			}
+		}
+	}
+	void disconnectOutcontrol(ProcessingBox * processing, unsigned index)
+	{
+		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
+			   	it<_controlWires.end();)
+		{
+			ControlWire * wire = *it;
+			if ( !wire->comesFrom(processing, index)) it++;
+			else
+			{
+				networkRemoveControlConnection(wire->getSourceId(), wire->getTargetId());
+				delete wire;
+				it=_controlWires.erase(it);
+				markAsChanged();
+			}
+		}
+	}
+	void disconnectInport(ProcessingBox * processing, unsigned index)
+	{
+		for (std::vector<PortWire*>::iterator it=_portWires.begin();
+			   	it<_portWires.end();)
+		{
+			PortWire * wire = *it;
+			if ( !wire->goesTo(processing, index)) it++;
+			else
+			{
+				networkRemovePortConnection(wire->getSourceId(), wire->getTargetId());
+				delete wire;
+				it=_portWires.erase(it);
+				markAsChanged();
+			}
+		}
+	}
+	void disconnectOutport(ProcessingBox * processing, unsigned index)
+	{
+		for (std::vector<PortWire*>::iterator it=_portWires.begin();
+			   	it<_portWires.end();)
+		{
+			PortWire * wire = *it;
+			if ( !wire->comesFrom(processing, index)) it++;
+			else
+			{
+				networkRemovePortConnection(wire->getSourceId(), wire->getTargetId());
+				delete wire;
+				it=_portWires.erase(it);
+				markAsChanged();
+			}
+		}
+	}
+protected:
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
 	virtual void addProcessing(QPoint point, QString type) = 0;
-	virtual bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)=0;
-	virtual bool canConnectControls(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)=0;
+	virtual bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
+	virtual bool canConnectControls(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
+	virtual bool networkAddPortConnection(const QString & outlet, const QString & inlet) = 0;
+	virtual bool networkAddControlConnection(const QString & outlet, const QString & inlet) = 0;
+	virtual bool networkRemovePortConnection(const QString & outlet, const QString & inlet) = 0;
+	virtual bool networkRemoveControlConnection(const QString & outlet, const QString & inlet) = 0;
 signals:
 	void changed();
 public:
@@ -765,7 +886,7 @@ private:
 		_processings.back()->move(point);
 		_processings.back()->resize(size);
 	}
-public:
+protected:
 	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
 		if (networkIsDummy()) return true;
@@ -780,125 +901,25 @@ public:
 		if (networkIsDummy()) return true;
 		return true;
 	}
-	/**
-	 * To be called by the ProcessingBox when some one drops a wire on its connectors.
-	 * @pre The processing box has checked that connection is the proper one for the canvas _dragStatus.
-	 */
-	void endWireDrag(ProcessingBox * processing, int connection)
+	virtual bool networkAddPortConnection(const QString & outlet, const QString & inlet)
 	{
-		switch (_dragStatus) 
-		{
-			case InportDrag:
-			{
-				addPortConnection(processing, connection, _dragProcessing, _dragConnection);
-			} break;
-			case OutportDrag:
-			{
-				addPortConnection(_dragProcessing, _dragConnection, processing, connection);
-			} break;
-			case IncontrolDrag:
-			{
-				addControlConnection(processing, connection, _dragProcessing, _dragConnection);
-			} break;
-			case OutcontrolDrag:
-			{
-				addControlConnection(_dragProcessing, _dragConnection, processing, connection);
-			} break;
-			default:
-			{
-				CLAM_ASSERT(false, "Ending a wire drag but not in wire drag status");
-			} return;
-		}
+		if (networkIsDummy()) return true;
+		return _network->ConnectPorts(outlet.toStdString(), inlet.toStdString());
 	}
-	void addPortConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	virtual bool networkAddControlConnection(const QString & outlet, const QString & inlet)
 	{
-		if (!networkIsDummy())
-		{
-			QString out = source->getName() + "." + source->getOutportName(outlet);
-			QString in = target->getName() + "." + target->getInportName(inlet);
-			if ( !_network->ConnectPorts(out.toStdString(), in.toStdString())) return;
-		}
-		addPortWire(source, outlet, target, inlet);
-		markAsChanged();
+		if (networkIsDummy()) return true;
+		return _network->ConnectControls(outlet.toStdString(), inlet.toStdString());
 	}
-	void addControlConnection(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
+	virtual bool networkRemovePortConnection(const QString & outlet, const QString & inlet)
 	{
-		if (!networkIsDummy())
-		{
-			QString out = source->getName() + "." + source->getOutcontrolName(outlet);
-			QString in = target->getName() + "." + target->getIncontrolName(inlet);
-			if ( !_network->ConnectControls(out.toStdString(), in.toStdString())) return;
-		}
-		addControlWire(source, outlet, target, inlet);
-		markAsChanged();
+		if (networkIsDummy()) return true;
+		return _network->DisconnectPorts(outlet.toStdString(), inlet.toStdString());
 	}
-	void disconnectIncontrol(ProcessingBox * processing, unsigned index)
+	virtual bool networkRemoveControlConnection(const QString & outlet, const QString & inlet)
 	{
-		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
-			   	it<_controlWires.end();)
-		{
-			ControlWire * wire = *it;
-			if ( !wire->goesTo(processing, index)) it++;
-			else
-			{
-				if (!networkIsDummy())
-					_network->DisconnectControls(wire->getSourceId(), wire->getTargetId());
-				delete wire;
-				it=_controlWires.erase(it);
-				markAsChanged();
-			}
-		}
-	}
-	void disconnectOutcontrol(ProcessingBox * processing, unsigned index)
-	{
-		for (std::vector<ControlWire*>::iterator it=_controlWires.begin();
-			   	it<_controlWires.end();)
-		{
-			ControlWire * wire = *it;
-			if ( !wire->comesFrom(processing, index)) it++;
-			else
-			{
-				if (!networkIsDummy())
-					_network->DisconnectControls(wire->getSourceId(), wire->getTargetId());
-				delete wire;
-				it=_controlWires.erase(it);
-				markAsChanged();
-			}
-		}
-	}
-	void disconnectInport(ProcessingBox * processing, unsigned index)
-	{
-		for (std::vector<PortWire*>::iterator it=_portWires.begin();
-			   	it<_portWires.end();)
-		{
-			PortWire * wire = *it;
-			if ( !wire->goesTo(processing, index)) it++;
-			else
-			{
-				if (!networkIsDummy())
-					_network->DisconnectPorts(wire->getSourceId(), wire->getTargetId());
-				delete wire;
-				it=_portWires.erase(it);
-				markAsChanged();
-			}
-		}
-	}
-	void disconnectOutport(ProcessingBox * processing, unsigned index)
-	{
-		for (std::vector<PortWire*>::iterator it=_portWires.begin();
-			   	it<_portWires.end();)
-		{
-			PortWire * wire = *it;
-			if ( !wire->comesFrom(processing, index)) it++;
-			else
-			{
-				if (!networkIsDummy())
-					_network->DisconnectPorts(wire->getSourceId(), wire->getTargetId());
-				delete wire;
-				it=_portWires.erase(it);
-				markAsChanged();
-			}
-		}
+		if (networkIsDummy()) return true;
+		return _network->DisconnectControls(outlet.toStdString(), inlet.toStdString());
 	}
 	virtual void networkRemoveProcessing(const std::string & name)
 	{
@@ -906,6 +927,7 @@ public:
 		_network->RemoveProcessing(name);
 	}
 
+public:
 	bool networkIsDummy() const
 	{
 		return _network == 0;
@@ -1031,14 +1053,6 @@ public:
 		if (networkIsDummy()) return true;
 		return _network->RenameProcessing(oldName.toStdString(), newName.toStdString());
 	}
-private:
-	ProcessingBox * getBox(const QString & name)
-	{
-		for (unsigned i=0; i<_processings.size(); i++)
-			if (_processings[i]->getName()==name) return _processings[i];
-		return 0;
-	}
-
 private slots:
 	void onCopyConnection()
 	{
