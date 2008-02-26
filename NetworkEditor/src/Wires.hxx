@@ -77,13 +77,13 @@ public:
 		painter.strokePath(path, QPen(QBrush(QColor(0x50,0x50,0x22)), 6));
 		painter.strokePath(path, QPen(QBrush(QColor(0xbb,0x99,0x44)), 4));
 	}
-	std::string getTargetId()
+	QString getTargetId()
 	{
-		return (_target->getName()+"."+_target->getInportName(_inlet)).toStdString();
+		return _target->getName()+"."+_target->getInportName(_inlet);
 	}
-	std::string getSourceId()
+	QString getSourceId()
 	{
-		return (_source->getName()+"."+_source->getOutportName(_outlet)).toStdString();
+		return _source->getName()+"."+_source->getOutportName(_outlet);
 	}
 	void expand(QRect & rect)
 	{
@@ -124,13 +124,13 @@ public:
 		painter.strokePath(path, QPen(QBrush(QColor(0x20,0x50,0x52)), 4));
 		painter.strokePath(path, QPen(QBrush(QColor(0x4b,0x99,0xb4)), 2));
 	}
-	std::string getTargetId()
+	QString getTargetId()
 	{
-		return (_target->getName()+"."+_target->getIncontrolName(_inlet)).toStdString();
+		return _target->getName()+"."+_target->getIncontrolName(_inlet);
 	}
-	std::string getSourceId()
+	QString getSourceId()
 	{
-		return (_source->getName()+"."+_source->getOutcontrolName(_outlet)).toStdString();
+		return _source->getName()+"."+_source->getOutcontrolName(_outlet);
 	}
 	void expand(QRect & rect)
 	{
