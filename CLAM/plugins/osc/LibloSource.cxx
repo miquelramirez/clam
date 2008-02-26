@@ -34,15 +34,6 @@ int CLAM::LibloSource::generic_handler(const char *path, const char *types, lo_a
     return 1;
 }
 
-int CLAM::LibloSource::foo_handler(const char *path, const char *types, lo_arg **argv, int argc,
-		 void *data, void *user_data)
-{
-    /* example showing pulling the argument values out of the argv array */
-    printf("%s <- f:%f, i:%d\n\n", path, argv[0]->f, argv[1]->i);
-    fflush(stdout);
-    return 0;
-}
-
 int CLAM::LibloSource::controls_handler(const char *path, const char *types, lo_arg **argv, int argc,
 		 void *data, void *user_data)
 {
