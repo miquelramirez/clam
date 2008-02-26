@@ -103,6 +103,8 @@
     <NChannels>0</NChannels>
   </processing>
 
+  <processing id="VelocityAdapter" type="VelocityAdapter"/>
+
   <processing id="XFader_P" type="AudioBufferCrossFader"/>
 
   <processing id="XFader_Vx" type="AudioBufferCrossFader"/>
@@ -360,6 +362,11 @@
   </control_connection>
 
   <control_connection>
+    <out>VelocityAdapter.beta output</out>
+    <in>Surround.beta</in>
+  </control_connection>
+
+  <control_connection>
     <out>sequencer.out 1</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverX</in>
   </control_connection>
@@ -371,16 +378,16 @@
 
   <control_connection>
     <out>sequencer.out 3</out>
-    <in>Surround.beta</in>
+    <in>VelocityAdapter.beta input</in>
   </control_connection>
 
   <control_connection>
-    <out>sequencer.out 4</out>
+    <out>sequencer.out 6</out>
     <in>ImpulseResponseCalculatedOnTheFly.emitterX</in>
   </control_connection>
 
   <control_connection>
-    <out>sequencer.out 5</out>
+    <out>sequencer.out 7</out>
     <in>ImpulseResponseCalculatedOnTheFly.emitterY</in>
   </control_connection>
 
