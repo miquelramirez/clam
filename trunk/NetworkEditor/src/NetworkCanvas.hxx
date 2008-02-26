@@ -107,8 +107,81 @@ public:
 		_controlWires.clear();
 	}
 
+// Drawing routines
+protected:
+	void paint(QPainter & painter)
+	{
+		_boundingBox=QRect(0,0,1,1);
+		for (unsigned i = 0; i<_processings.size(); i++)
+			_boundingBox = _boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
+		for (unsigned i = 0; i<_controlWires.size(); i++)
+			_controlWires[i]->expand(_boundingBox);
+		for (unsigned i = 0; i<_portWires.size(); i++)
+			_portWires[i]->expand(_boundingBox);
+		_boundingBox = _boundingBox.unite(QRect(_boundingBox.topLeft(),((QWidget*)parent())->size()/_zoomFactor));
+		resize(_boundingBox.size()*_zoomFactor);
+
+		painter.setRenderHint(QPainter::Antialiasing);
+		painter.scale(_zoomFactor,_zoomFactor);
+		painter.translate(-_boundingBox.topLeft());
+
+		for (unsigned i = 0; i<_controlWires.size(); i++)
+			_controlWires[i]->draw(painter);
+		for (unsigned i = 0; i<_portWires.size(); i++)
+			_portWires[i]->draw(painter);
+		for (unsigned i = 0; i<_processings.size(); i++)
+			_processings[i]->paintFromParent(painter);
+		if (_dragStatus==InportDrag)
+			PortWire::draw(painter, _dragPoint, _dragProcessing->getInportPos(_dragConnection));
+		if (_dragStatus==OutportDrag)
+			PortWire::draw(painter, _dragProcessing->getOutportPos(_dragConnection), _dragPoint);
+		if (_dragStatus==IncontrolDrag)
+			ControlWire::draw(painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnection));
+		if (_dragStatus==OutcontrolDrag)
+			ControlWire::draw(painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
+		drawSelectBox(painter);
+		drawTooltip(painter);
+	}
+	void drawSelectBox(QPainter & painter)
+	{
+		if (_dragStatus!=SelectionDrag) return;
+		painter.setBrush(QColor(0x77, 0xff, 0x88, 0x37));
+		painter.setPen(QColor(0x77, 0xff, 0x88, 0xf7));
+		painter.drawRect(QRect(_dragPoint, _selectionDragOrigin));
+	}
+	void drawTooltip(QPainter & painter)
+	{
+		if (_tooltipText.isNull()) return;
+		QFontMetrics metrics(font());
+		int margin =3;
+		int cursorSize = 16;
+
+		QRect boundingRect = metrics.boundingRect(QRect(0,0,width(),height()), Qt::AlignLeft, _tooltipText);
+		double tooltipWidth = boundingRect.width()+2*margin;
+		double x = _tooltipPos.x()+cursorSize;
+		if (x + tooltipWidth > width())
+			x = _tooltipPos.x() - tooltipWidth;
+		if (x<0) x=0;
+
+		double tooltipHeight = boundingRect.height()+2*margin;
+		double y = _tooltipPos.y() +cursorSize;
+		if (y + tooltipHeight > height())
+			y = _tooltipPos.y() - tooltipHeight;
+		if (y<0) y=0;
+
+		QRectF tooltip(x, y, tooltipWidth, tooltipHeight)  ;
+		painter.setBrush(QColor(0xff,0xff,0x90,0xa0));
+		painter.setPen(QColor(0xff,0xff,0x90,0xff));
+		painter.drawRect(tooltip);
+		painter.setPen(Qt::black);
+		painter.drawText(tooltip, Qt::AlignLeft, _tooltipText);
+	}
 
 public: // Helpers
+	void setToolTip(const QString & text)
+	{
+		_tooltipText = text;
+	}
 	QRect translatedRect(QRect rect)
 	{
 		rect.setSize(rect.size()*_zoomFactor);
@@ -145,6 +218,24 @@ public: // Actions
 		}
 		setCursor(Qt::SizeAllCursor);
 	}
+public slots:
+	void print()
+	{
+		_printing = true;
+		QPrinter printer;
+		printer.setOutputFormat(QPrinter::PdfFormat);
+		printer.setOutputFileName("ExportedNetwork.pdf");
+		printer.setFullPage(true);
+		printer.setCreator( "CLAM NetworkEditor");
+		printer.setOrientation(QPrinter::Landscape);
+		QPrintDialog * dialog = new QPrintDialog(&printer, this);
+		dialog->exec();
+		QPainter painter;
+		painter.begin(&printer);
+		paint(painter);
+		painter.end();
+		_printing = false;
+	}
 private slots:
 	void onClearSelections()
 	{
@@ -166,6 +257,16 @@ private slots:
 		update();
 	}
 public:
+	void startDrag(DragStatus status, ProcessingBox * processing, int connection)
+	{
+		_dragStatus=status;
+		_dragProcessing=processing;
+		_dragConnection=connection;
+	}
+	DragStatus dragStatus() const
+	{
+		return _dragStatus;
+	}
 	void removeProcessing(ProcessingBox * processing)
 	{
 		networkRemoveProcessing(processing->getName().toStdString());
@@ -195,15 +296,24 @@ public:
 		delete processing;
 		_processings.erase(std::find(_processings.begin(), _processings.end(), processing));
 	}
+	void zoom(int steps)
+	{
+		if (steps>=0)
+			for (int i=0; i<steps; i++)
+				_zoomFactor*=1.0625;
+		else
+			for (int i=0; i>steps; i--)
+				_zoomFactor/=1.0625;
+		update();
+	}
+	void resetZoom()
+	{
+		_zoomFactor=1.;
+		update();
+	}
 protected:
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
-
-protected:
-	std::vector<ProcessingBox *> _processings;
-	std::vector<PortWire *> _portWires;
-	std::vector<ControlWire *> _controlWires;
-	double _zoomFactor;
-	QRect _boundingBox;
+	virtual void addProcessing(QPoint point, QString type) = 0;
 signals:
 	void changed();
 public:
@@ -220,149 +330,7 @@ public:
 	{
 		_changed = false;
 	}
-private:
-	bool _changed;
-protected:
-	DragStatus _dragStatus;
-	ProcessingBox * _dragProcessing;
-	unsigned _dragConnection;
-	QPoint _dragPoint;
-	QPoint _selectionDragOrigin;
-	QPoint _tooltipPos;
-	QString _tooltipText;
-	bool _printing;
-	QAction * _deleteSelectedAction;
-	QAction * _selectAllAction;
-	QAction * _clearSelectionAction;
-};
 
-class NetworkCanvas : public AbstractNetworkCanvas
-{
-	Q_OBJECT
-public:
-	NetworkCanvas(QWidget * parent=0)
-		: AbstractNetworkCanvas(parent)
-		, _network(0)
-	{
-	}
-	CLAM::Network & network()
-	{
-		return *_network;
-	}
-
-	void example1()
-	{
-		_processings.push_back(new ProcessingBox(this, "Processing1", 2, 2, 2, 3));
-		_processings.push_back(new ProcessingBox(this, "Processing2", 4, 5, 1, 2));
-		_processings.push_back(new ProcessingBox(this, "Processing3", 2, 0, 2, 0));
-		_processings[0]->move(QPoint(300,200));
-		_processings[1]->move(QPoint(200,10));
-		_processings[2]->move(QPoint(100,200));
-		addPortWire(_processings[0],1, _processings[1],3);
-		addPortWire(_processings[1],1, _processings[0],1);
-		addControlWire(_processings[1],1, _processings[0],1);
-		addControlWire(_processings[1],1, _processings[2],1);
-	}
-
-	virtual ~NetworkCanvas();
-
-	void paintEvent(QPaintEvent * event)
-	{
-		QPainter painter(this);
-		paint(painter);
-	}
-public: // Helpers
-	void setToolTip(const QString & text)
-	{
-		_tooltipText = text;
-	}
-public slots:
-	void print()
-	{
-		_printing = true;
-		QPrinter printer;
-		printer.setOutputFormat(QPrinter::PdfFormat);
-		printer.setOutputFileName("Network.pdf");
-		printer.setFullPage(true);
-		printer.setCreator( "CLAM NetworkEditor");
-		printer.setOrientation(QPrinter::Landscape);
-		QPrintDialog * dialog = new QPrintDialog(&printer, this);
-		dialog->exec();
-		QPainter painter;
-		painter.begin(&printer);
-		paint(painter);
-		painter.end();
-		_printing = false;
-	}
-public:
-	void paint(QPainter & painter)
-	{
-		_boundingBox=QRect(0,0,1,1);
-		for (unsigned i = 0; i<_processings.size(); i++)
-			_boundingBox = _boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
-		for (unsigned i = 0; i<_controlWires.size(); i++)
-			_controlWires[i]->expand(_boundingBox);
-		for (unsigned i = 0; i<_portWires.size(); i++)
-			_portWires[i]->expand(_boundingBox);
-		_boundingBox = _boundingBox.unite(QRect(_boundingBox.topLeft(),((QWidget*)parent())->size()/_zoomFactor));
-		resize(_boundingBox.size()*_zoomFactor);
-
-		painter.setRenderHint(QPainter::Antialiasing);
-		painter.scale(_zoomFactor,_zoomFactor);
-		painter.translate(-_boundingBox.topLeft());
-
-		for (unsigned i = 0; i<_controlWires.size(); i++)
-			_controlWires[i]->draw(painter);
-		for (unsigned i = 0; i<_portWires.size(); i++)
-			_portWires[i]->draw(painter);
-		for (unsigned i = 0; i<_processings.size(); i++)
-			_processings[i]->paintFromParent(painter);
-		if (_dragStatus==InportDrag)
-			PortWire::draw(painter, _dragPoint, _dragProcessing->getInportPos(_dragConnection));
-		if (_dragStatus==OutportDrag)
-			PortWire::draw(painter, _dragProcessing->getOutportPos(_dragConnection), _dragPoint);
-		if (_dragStatus==IncontrolDrag)
-			ControlWire::draw(painter, _dragPoint, _dragProcessing->getIncontrolPos(_dragConnection));
-		if (_dragStatus==OutcontrolDrag)
-			ControlWire::draw(painter, _dragProcessing->getOutcontrolPos(_dragConnection), _dragPoint);
-		drawSelectBox(painter);
-		drawTooltip(painter);
-	}
-private:
-	void drawSelectBox(QPainter & painter)
-	{
-		if (_dragStatus!=SelectionDrag) return;
-		painter.setBrush(QColor(0x77, 0xff, 0x88, 0x37));
-		painter.setPen(QColor(0x77, 0xff, 0x88, 0xf7));
-		painter.drawRect(QRect(_dragPoint, _selectionDragOrigin));
-	}
-	void drawTooltip(QPainter & painter)
-	{
-		if (_tooltipText.isNull()) return;
-		QFontMetrics metrics(font());
-		int margin =3;
-		int cursorSize = 16;
-
-		QRect boundingRect = metrics.boundingRect(QRect(0,0,width(),height()), Qt::AlignLeft, _tooltipText);
-		double tooltipWidth = boundingRect.width()+2*margin;
-		double x = _tooltipPos.x()+cursorSize;
-		if (x + tooltipWidth > width())
-			x = _tooltipPos.x() - tooltipWidth;
-		if (x<0) x=0;
-
-		double tooltipHeight = boundingRect.height()+2*margin;
-		double y = _tooltipPos.y() +cursorSize;
-		if (y + tooltipHeight > height())
-			y = _tooltipPos.y() - tooltipHeight;
-		if (y<0) y=0;
-
-		QRectF tooltip(x, y, tooltipWidth, tooltipHeight)  ;
-		painter.setBrush(QColor(0xff,0xff,0x90,0xa0));
-		painter.setPen(QColor(0xff,0xff,0x90,0xff));
-		painter.drawRect(tooltip);
-		painter.setPen(Qt::black);
-		painter.drawText(tooltip, Qt::AlignLeft, _tooltipText);
-	}
 public: // Event Handlers
 
 	void mouseMoveEvent(QMouseEvent * event)
@@ -559,6 +527,63 @@ public: // Event Handlers
 		return QWidget::event(event);
 	}
 
+protected:
+	std::vector<ProcessingBox *> _processings;
+	std::vector<PortWire *> _portWires;
+	std::vector<ControlWire *> _controlWires;
+	double _zoomFactor;
+	QRect _boundingBox;
+private:
+	bool _changed;
+protected:
+	DragStatus _dragStatus;
+	ProcessingBox * _dragProcessing;
+	unsigned _dragConnection;
+	QPoint _dragPoint;
+	QPoint _selectionDragOrigin;
+	QPoint _tooltipPos;
+	QString _tooltipText;
+	bool _printing;
+	QAction * _deleteSelectedAction;
+	QAction * _selectAllAction;
+	QAction * _clearSelectionAction;
+};
+
+class NetworkCanvas : public AbstractNetworkCanvas
+{
+	Q_OBJECT
+public:
+	NetworkCanvas(QWidget * parent=0)
+		: AbstractNetworkCanvas(parent)
+		, _network(0)
+	{
+	}
+	CLAM::Network & network()
+	{
+		return *_network;
+	}
+
+	void example1()
+	{
+		_processings.push_back(new ProcessingBox(this, "Processing1", 2, 2, 2, 3));
+		_processings.push_back(new ProcessingBox(this, "Processing2", 4, 5, 1, 2));
+		_processings.push_back(new ProcessingBox(this, "Processing3", 2, 0, 2, 0));
+		_processings[0]->move(QPoint(300,200));
+		_processings[1]->move(QPoint(200,10));
+		_processings[2]->move(QPoint(100,200));
+		addPortWire(_processings[0],1, _processings[1],3);
+		addPortWire(_processings[1],1, _processings[0],1);
+		addControlWire(_processings[1],1, _processings[0],1);
+		addControlWire(_processings[1],1, _processings[2],1);
+	}
+
+	virtual ~NetworkCanvas();
+
+	void paintEvent(QPaintEvent * event)
+	{
+		QPainter painter(this);
+		paint(painter);
+	}
 public: // Actions
 
 	void addProcessing(QPoint point, QString type)
@@ -715,16 +740,6 @@ public:
 		}
 	}
 
-	void startDrag(DragStatus status, ProcessingBox * processing, int connection)
-	{
-		_dragStatus=status;
-		_dragProcessing=processing;
-		_dragConnection=connection;
-	}
-	DragStatus dragStatus() const
-	{
-		return _dragStatus;
-	}
 	bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
 		if (networkIsDummy()) return true;
@@ -985,21 +1000,6 @@ public:
 		}
 	}
 
-	void zoom(int steps)
-	{
-		if (steps>=0)
-			for (int i=0; i<steps; i++)
-				_zoomFactor*=1.0625;
-		else
-			for (int i=0; i>steps; i--)
-				_zoomFactor/=1.0625;
-		update();
-	}
-	void resetZoom()
-	{
-		_zoomFactor=1.;
-		update();
-	}
 	bool renameProcessing(QString oldName, QString newName)
 	{
 		if (networkIsDummy()) return true;
@@ -1014,25 +1014,6 @@ private:
 	}
 
 private slots:
-	void onClearSelections()
-	{
-		clearSelections();
-		update();
-	}
-	void onSelectAll()
-	{
-		selectAll();
-		update();
-	}
-	void removeSelectedProcessings()
-	{
-		std::vector<ProcessingBox *> toRemove;
-		for (unsigned i=0; i<_processings.size(); i++)
-			if (_processings[i]->isSelected()) toRemove.push_back(_processings[i]) ;
-		for (unsigned i=0; i<toRemove.size(); i++)
-			removeProcessing( toRemove[i] );
-		update();
-	}
 	void onCopyConnection()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
