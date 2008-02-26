@@ -16,8 +16,9 @@ namespace CLAM
 
 class LibloSourceConfig : public CLAM::ProcessingConfig
 { 
-    DYNAMIC_TYPE_USING_INTERFACE( LibloSourceConfig, 1, ProcessingConfig );
+    DYNAMIC_TYPE_USING_INTERFACE( LibloSourceConfig, 2, ProcessingConfig );
     DYN_ATTRIBUTE( 0, public, std::string, OscPath);
+    DYN_ATTRIBUTE( 1, public, std::string, ServerPort);
     //TODO number of arguments/ports
 protected:
     void DefaultInit()
@@ -25,6 +26,7 @@ protected:
           AddAll();
           UpdateData();
           SetOscPath("/clam/target");
+          SetServerPort("");
     };
 };
 
@@ -63,16 +65,20 @@ protected:
 			return true;
 		}
 
+		/* start a new server on port 7770 */
+		if (_config.GetServerPort()=="")
+		{
+			std::cout << "LibloSource::ConcreteConfigure server NOT started -- default config" << std::endl;
+			return true;
+		}
+
 		std::cout << "Starting the server" << std::endl;
 		_serverThreadIsRunning=true;
-		/* start a new server on port 7770 */
-		lo_server_thread st = lo_server_thread_new("7770", error);
+		const char * port = _config.GetServerPort().c_str();
+		std::cout << "LibloSource::ConcreteConfigure: STARTING the server. port " << port << std::endl;
+		lo_server_thread st = lo_server_thread_new(port, error);
 		/* add method that will match any path and args */
 		lo_server_thread_add_method(st, NULL, NULL, generic_handler, this);
-
-		/* add method that will match the path /foo/bar, with two numbers, coerced
-		* to float and int */
-		lo_server_thread_add_method(st, "/foo/bar", "fi", foo_handler, this);
 
 		lo_server_thread_add_method(st, _config.GetOscPath().c_str(), "fff", controls_handler, this);
 
@@ -88,9 +94,6 @@ private:
 
 	static int generic_handler(const char *path, const char *types, lo_arg **argv,
 			    int argc, void *data, void *user_data);
-
-	static int foo_handler(const char *path, const char *types, lo_arg **argv, int argc,
-			 void *data, void *user_data);
 
 	static int controls_handler(const char *path, const char *types, lo_arg **argv, int argc,
 			 void *data, void *user_data);
