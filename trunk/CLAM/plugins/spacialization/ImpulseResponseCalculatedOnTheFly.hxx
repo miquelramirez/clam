@@ -128,20 +128,21 @@ public:
 		float z1 = 0.;
 		float z2 = 0.;
 
-		float delta = 0.005;
+		float delta = 0.0020;
 		bool changeSnappedIR = fabs(_currentReceiverX-x2) > delta 
 			|| fabs(_currentReceiverY-y2) > delta 
 			|| fabs(_currentEmitterX-x1) > delta
 			|| fabs(_currentEmitterY-y1) > delta
 			;
-		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
+//		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
 		
 		std::string errorMsg;
 		const std::string path = "/home/clamteam/acustica/visualitzador_escena_c++/responses/"; //TODO not abs path
 		std::string pressureFile = path+"p_positioned_IR_time.wav";
 		std::string vxFile = path+"vx_positioned_IR_time.wav";
 		std::string vyFile = path+"vy_positioned_IR_time.wav";
-		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
+//		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
+		std::cout << "." << std::flush;
 		if (!_current or changeSnappedIR)
 		{
 			// swap _current but leave _previous
@@ -151,7 +152,7 @@ public:
 			_currentEmitterY = y1;
 			_currentReceiverX = x2;
 			_currentReceiverY = y2;
-			std::cout << "----- calc and load IR --------------------" << std::endl;
+			std::cout << "|" << std::flush;
 			std::ostringstream command;
 			command << "(cd ~/acustica/visualitzador_escena_c++ && ./visualitzador "
 				<< " --listener-x-pos=" << _currentReceiverX
@@ -164,7 +165,7 @@ public:
 				|| !computeResponseSpectrums(vxFile, _current->vx, _config.GetFrameSize(), errorMsg)
 				|| !computeResponseSpectrums(vyFile, _current->vy , _config.GetFrameSize(), errorMsg) )
 			{
-				std::cout << "ImpulseResponseCalculatedOnTheFly::Do " << errorMsg << std::endl;
+				std::cout << "Error: ImpulseResponseCalculatedOnTheFly::Do " << errorMsg << std::endl;
 			}
 		}
 
