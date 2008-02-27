@@ -53,6 +53,8 @@ public:
 		, _colorBoxFrameOutline(0x20,0x6f,0x20)
 		, _colorBoxFrame       (0x30,0x8f,0x30,0xaf)
 		, _colorBoxBody        (0xF9,0xFb,0xF9,0xaf)
+		, _colorBoxErrorFrame  (0xff,0x00,0x00,0xa0)
+		, _colorBoxErrorBody   (0xff,0x00,0x00,0xa0)
 		, _colorResizeHandle   (0xf9,0xbb,0xb9)
 		, _colorPortOutline    (0x53,0x30,0x42)
 		, _colorPort           (0xa6,0x60,0x84)
@@ -127,6 +129,8 @@ public:
 	QColor colorBoxFrameOutline() const { return _colorBoxFrameOutline; }
 	QColor colorBoxFrame() const { return _colorBoxFrame; }
 	QColor colorBoxBody() const { return _colorBoxBody; }
+	QColor colorBoxErrorFrame() const { return _colorBoxErrorFrame; }
+	QColor colorBoxErrorBody() const { return _colorBoxErrorBody; }
 	QColor colorResizeHandle() const { return _colorResizeHandle; }
 	QColor colorPortOutline() const { return _colorPortOutline; }
 	QColor colorPort() const { return _colorPort; }
@@ -380,6 +384,10 @@ public:
 	{
 		return _dragStatus;
 	}
+	bool renameProcessing(QString oldName, QString newName)
+	{
+		return networkRenameProcessing(oldName, newName);
+	}
 	void removeProcessing(ProcessingBox * processing)
 	{
 		networkRemoveProcessing(processing->getName().toStdString());
@@ -512,6 +520,19 @@ protected:
 		}
 	}
 protected:
+/*
+	virtual bool processingHasError(QString name)
+	virtual QString processingErrorMessage(QString name)
+	virtual unsigned processingNInPorts(QString name)
+	virtual unsigned processingNOutPorts(QString name)
+	virtual unsigned processingNInControls(QString name)
+	virtual unsigned processingNOutControls(QString name)
+	virtual QString processingInPortName(QString name, unsigned i)
+	virtual QString processingInPortTooltip(QString name, unsigned i)
+	virtual QString processingInPortPrototyperId(QString name, unsigned i)
+	virtual QString processingInPortColor(QString name, unsigned i)
+*/	
+	virtual bool networkRenameProcessing(QString oldName, QString newName)=0;
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
 	virtual void addProcessing(QPoint point, QString type) = 0;
 	virtual bool canConnectPorts(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet) = 0;
@@ -756,6 +777,8 @@ protected:
 	QColor _colorBoxFrameOutline;
 	QColor _colorBoxFrame;
 	QColor _colorBoxBody;
+	QColor _colorBoxErrorFrame;
+	QColor _colorBoxErrorBody;
 	QColor _colorResizeHandle;
 	QColor _colorPortOutline;
 	QColor _colorPort;
@@ -1047,8 +1070,7 @@ public:
 			box->resize(size);
 		}
 	}
-
-	bool renameProcessing(QString oldName, QString newName)
+	virtual bool networkRenameProcessing(QString oldName, QString newName)
 	{
 		if (networkIsDummy()) return true;
 		return _network->RenameProcessing(oldName.toStdString(), newName.toStdString());

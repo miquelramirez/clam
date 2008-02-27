@@ -122,24 +122,17 @@ void ProcessingBox::recomputeMinimumSizes()
 	resize(_size);
 	_canvas->update();
 }
-QColor execBodyColor(QColor defaultColor, CLAM::Processing * processing)
+const QColor & execColor(const QColor & defaultColor, const QColor & errorColor, CLAM::Processing * processing)
 {
 	if ( !processing) return defaultColor;
 	if ( processing->IsConfigured()) return defaultColor;
-	return QColor(0xff,0xa0,0xa0,0x70);
-}
-
-QColor execFrameColor(QColor defaultColor, CLAM::Processing * processing)
-{
-	if ( !processing) return defaultColor;
-	if ( processing->IsConfigured()) return defaultColor;
-	return QColor(0xff,0x00,0x00,0xa0);
+	return errorColor;
 }
 
 void ProcessingBox::paintBox(QPainter & painter)
 {
-	QColor boxBodyColor = execBodyColor(_canvas->colorBoxBody(),_processing);
-	QColor boxFrameColor = execFrameColor(_canvas->colorBoxFrame(),_processing);
+	QColor boxBodyColor = execColor(_canvas->colorBoxBody(),_canvas->colorBoxErrorBody(),_processing);
+	QColor boxFrameColor = execColor(_canvas->colorBoxFrame(),_canvas->colorBoxErrorFrame(),_processing);
 	// Box
 	painter.setPen( _canvas->colorBoxFrameOutline());
 	painter.setBrush(boxFrameColor);
