@@ -19,6 +19,12 @@
 
   <processing id="C" type="AudioSink"/>
 
+  <processing id="ControlPrinter" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
   <processing id="Convolution_P" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
@@ -109,26 +115,10 @@
 
   <processing id="XFader_Vy" type="AudioBufferCrossFader"/>
 
-  <processing id="emitterX" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.01</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
-  <processing id="emitterY" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.01</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
   <processing id="sequencer" type="ControlSequencer">
     <Filename>current_path.data</Filename>
     <FrameSize>512</FrameSize>
-    <SampleRate>44100</SampleRate>
+    <SampleRate>48000</SampleRate>
     <ControlsPerSecond>24</ControlsPerSecond>
   </processing>
 
@@ -372,6 +362,11 @@
   <control_connection>
     <out>sequencer.out 3</out>
     <in>Surround.beta</in>
+  </control_connection>
+
+  <control_connection>
+    <out>sequencer.out 3</out>
+    <in>ControlPrinter.In Control</in>
   </control_connection>
 
   <control_connection>
