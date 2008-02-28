@@ -105,6 +105,8 @@
 
   <processing id="VelocityAdapter" type="VelocityAdapter"/>
 
+  <processing id="VelocityAdapter_1" type="VelocityAdapter"/>
+
   <processing id="XFader_P" type="AudioBufferCrossFader"/>
 
   <processing id="XFader_Vx" type="AudioBufferCrossFader"/>
@@ -327,6 +329,16 @@
   </port_connection>
 
   <port_connection>
+    <out>VelocityAdapter_1.Vy input</out>
+    <in>Surround.vx</in>
+  </port_connection>
+
+  <port_connection>
+    <out>VelocityAdapter_1.Vy output</out>
+    <in>Surround.vy</in>
+  </port_connection>
+
+  <port_connection>
     <out>XFader_P.CrossFadedBuffer</out>
     <in>toStream P.Audio buffer</in>
   </port_connection>
@@ -348,12 +360,12 @@
 
   <port_connection>
     <out>toStream Vx.Audio stream</out>
-    <in>Surround.vx</in>
+    <in>VelocityAdapter_1.Vx input</in>
   </port_connection>
 
   <port_connection>
     <out>toStream Vy.Audio stream</out>
-    <in>Surround.vy</in>
+    <in>VelocityAdapter_1.Vy input</in>
   </port_connection>
 
   <control_connection>
