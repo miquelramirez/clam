@@ -39,6 +39,7 @@ struct BFormatIR
 	ImpulseResponse pressure;
 	ImpulseResponse vx;
 	ImpulseResponse vy;
+	ImpulseResponse vz;
 
 };
 class ImpulseResponseCalculatedOnTheFly : public Processing
@@ -67,18 +68,24 @@ private:
 	OutPort< ImpulseResponse* > _previousVxImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _vyImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _previousVyImpulseResponseOutPort;
+	OutPort< ImpulseResponse* > _vzImpulseResponseOutPort;
+	OutPort< ImpulseResponse* > _previousVzImpulseResponseOutPort;
 	InControl _emitterX;
 	InControl _emitterY;
+	InControl _emitterZ;
 	InControl _receiverX;
 	InControl _receiverY;
+	InControl _receiverZ;
 	BFormatIR _impulseResponsesA;
 	BFormatIR _impulseResponsesB;
 	BFormatIR  * _current;
 	BFormatIR  * _previous;
 	float _currentEmitterX;
 	float _currentEmitterY;
+	float _currentEmitterZ;
 	float _currentReceiverX;
 	float _currentReceiverY;
+	float _currentReceiverZ;
 
 public:
 	const char* GetClassName() const { return "ImpulseResponseCalculatedOnTheFly"; }
@@ -89,22 +96,30 @@ public:
 		, _previousVxImpulseResponseOutPort("previous vx IR", this)
 		, _vyImpulseResponseOutPort("vy IR", this)
 		, _previousVyImpulseResponseOutPort("previous vy IR", this)
+		, _vzImpulseResponseOutPort("vz IR", this)
+		, _previousVzImpulseResponseOutPort("previous vz IR", this)
 		, _emitterX("emitterX", this)
 		, _emitterY("emitterY", this)
+		, _emitterZ("emitterZ", this)
 		, _receiverX("receiverX", this)
 		, _receiverY("receiverY", this)
+		, _receiverZ("receiverZ", this)
 		, _current(0)
 		, _previous(0)
 		, _currentEmitterX(0)
 		, _currentEmitterY(0)
+		, _currentEmitterZ(0)
 		, _currentReceiverX(0)
 		, _currentReceiverY(0)
+		, _currentReceiverZ(0)
 	{
 		Configure( config );
 		_emitterX.SetBounds(0,1);
 		_emitterY.SetBounds(0,1);
+		_emitterZ.SetBounds(0,1);
 		_receiverX.SetBounds(0,1);
 		_receiverY.SetBounds(0,1);
+		_receiverZ.SetBounds(0,1);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
@@ -123,10 +138,10 @@ public:
 	{
 		float x1 = _emitterX.GetLastValue();
 		float y1 = _emitterY.GetLastValue();
+		float z1 = _emitterZ.GetLastValue();
 		float x2 = _receiverX.GetLastValue();
 		float y2 = _receiverY.GetLastValue();
-		float z1 = 0.;
-		float z2 = 0.;
+		float z2 = _receiverZ.GetLastValue();
 
 		float delta = 0.0020;
 		bool changeSnappedIR = fabs(_currentReceiverX-x2) > delta 
@@ -141,6 +156,7 @@ public:
 		std::string pressureFile = path+"p_positioned_IR_time.wav";
 		std::string vxFile = path+"vx_positioned_IR_time.wav";
 		std::string vyFile = path+"vy_positioned_IR_time.wav";
+		std::string vzFile = path+"vz_positioned_IR_time.wav";
 //		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		std::cout << "." << std::flush;
 		if (!_current or changeSnappedIR)
@@ -150,20 +166,26 @@ public:
 			if (not _previous) _previous = _current;
 			_currentEmitterX = x1;
 			_currentEmitterY = y1;
+			_currentEmitterZ = z1;
 			_currentReceiverX = x2;
 			_currentReceiverY = y2;
+			_currentReceiverZ = z2;
 			std::cout << "|" << std::flush;
 			std::ostringstream command;
 			command << "(cd ~/acustica/visualitzador_escena_c++ && ./visualitzador "
 				<< " --listener-x-pos=" << _currentReceiverX
   				<< " --listener-y-pos=" << _currentReceiverY
+  				<< " --listener-z-pos=" << _currentReceiverZ
   				<< " --source-x-pos=" << _currentEmitterX
 				<< " --source-y-pos=" << _currentEmitterY 
+				<< " --source-z-pos=" << _currentEmitterZ
 				<< " > /dev/null )";
+	std::cout << command.str() << std::endl;
 			std::system( command.str().c_str() );
 			if (!computeResponseSpectrums(pressureFile, _current->pressure, _config.GetFrameSize(), errorMsg)
 				|| !computeResponseSpectrums(vxFile, _current->vx, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(vyFile, _current->vy , _config.GetFrameSize(), errorMsg) )
+				|| !computeResponseSpectrums(vyFile, _current->vy , _config.GetFrameSize(), errorMsg) 
+				|| !computeResponseSpectrums(vzFile, _current->vz , _config.GetFrameSize(), errorMsg) )
 			{
 				std::cout << "Error: ImpulseResponseCalculatedOnTheFly::Do " << errorMsg << std::endl;
 			}
@@ -175,6 +197,8 @@ public:
 		_previousVxImpulseResponseOutPort.GetData()= &_previous->vx;
 		_vyImpulseResponseOutPort.GetData()= &_current->vy;
 		_previousVyImpulseResponseOutPort.GetData()= &_previous->vy;
+		_vzImpulseResponseOutPort.GetData()= &_current->vz;
+		_previousVzImpulseResponseOutPort.GetData()= &_previous->vz;
 
 		_pressureImpulseResponseOutPort.Produce();
 		_previousPressureImpulseResponseOutPort.Produce();
@@ -182,6 +206,8 @@ public:
 		_previousVxImpulseResponseOutPort.Produce();
 		_vyImpulseResponseOutPort.Produce();
 		_previousVyImpulseResponseOutPort.Produce();
+		_vzImpulseResponseOutPort.Produce();
+		_previousVzImpulseResponseOutPort.Produce();
 
 		_previous=_current;
 		return true;
