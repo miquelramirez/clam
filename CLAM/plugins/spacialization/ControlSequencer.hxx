@@ -182,6 +182,7 @@ protected:
 		{
 			std::string line;
 			std::getline(file, line);
+			if (line=="" or line[0]=='#') continue; 
 			std::istringstream is(line);
 			Row row;
 			while (is)
