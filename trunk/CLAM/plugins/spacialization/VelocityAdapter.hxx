@@ -38,8 +38,8 @@ public:
 		const int size = vxin.Size();
 		for (int i=0; i<size; i++)
 		{
-			vxout[i] = vyin[i];
-			vyout[i] = vxin[i];
+			vxout[i] = vxin[i];
+			vyout[i] = -vyin[i];
 
 		}
 		float beta = _betaIn.GetLastValue();
