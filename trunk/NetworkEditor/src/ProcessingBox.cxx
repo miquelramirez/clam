@@ -393,7 +393,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		_highLightRegion=region;
 		_highLightConnection=index;
 		
-		_canvas->setToolTip(getInportTooltip(index));
+		_canvas->setToolTip(_canvas->inportTooltip(_processing, index));
 		return;
 	}
 	if (region==outportsRegion)
@@ -401,7 +401,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		int index = portIndexByYPos(_canvas->translatedPos(event));
 		_highLightRegion=region;
 		_highLightConnection=index;
-		_canvas->setToolTip(getOutportTooltip(index));
+		_canvas->setToolTip(_canvas->outportTooltip(_processing, index));
 		return;
 	}
 	if (region==incontrolsRegion)
@@ -409,7 +409,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		int index = controlIndexByXPos(_canvas->translatedPos(event));
 		_highLightRegion=region;
 		_highLightConnection=index;
-		_canvas->setToolTip(getIncontrolTooltip(index));
+		_canvas->setToolTip(_canvas->incontrolTooltip(_processing, index));
 		return;
 	}
 	if (region==outcontrolsRegion)
@@ -417,7 +417,7 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 		int index = controlIndexByXPos(_canvas->translatedPos(event));
 		_highLightRegion=region;
 		_highLightConnection=index;
-		_canvas->setToolTip(getOutcontrolTooltip(index));
+		_canvas->setToolTip(_canvas->outcontrolTooltip(_processing, index));
 		return;
 	}
 	if (region==resizeHandleRegion)
@@ -514,38 +514,6 @@ QString ProcessingBox::getInportName(unsigned index) const
 QString ProcessingBox::getOutportName(unsigned index) const
 {
 	return _canvas->outportName(_processing, index);
-}
-QString ProcessingBox::getOutportTooltip(unsigned index) const
-{
-	if (!_processing) return _canvas->outportName(_processing, index);
-	CLAM::OutPortBase & port = _processing->GetOutPorts().GetByNumber(index);
-	const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
-	return QObject::tr("%1\nType: %3","Outport tooltip")
-		.arg(port.GetName().c_str())
-		.arg(typeString)
-		;
-}
-QString ProcessingBox::getInportTooltip(unsigned index) const
-{
-	if (!_processing) return _canvas->inportName(_processing, index);
-	CLAM::InPortBase & port = _processing->GetInPorts().GetByNumber(index);
-	const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
-	return QObject::tr("%1\nType: %3","Inport tooltip")
-		.arg(port.GetName().c_str())
-		.arg(typeString)
-		;
-}
-QString ProcessingBox::getOutcontrolTooltip(unsigned index) const
-{
-	return getOutcontrolName(index);
-}
-QString ProcessingBox::getIncontrolTooltip(unsigned index) const
-{
-	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
-	QString boundInfo = inControl.IsBounded() ? 
-		QString(" (bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
-		" (not bounded)";
-	return _canvas->incontrolName(_processing, index)+boundInfo;
 }
 QString ProcessingBox::getOutcontrolName(unsigned index) const
 {
