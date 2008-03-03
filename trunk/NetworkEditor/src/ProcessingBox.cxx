@@ -148,12 +148,12 @@ void ProcessingBox::paintBox(QPainter & painter)
 	painter.setPen(_canvas->colorPortOutline());
 	for (unsigned i = 0; i<_nInports; i++)
 	{
-		painter.setBrush( getInportColor(i) );
+		painter.setBrush( _canvas->inportColor(_processing,i) );
 		drawConnector(painter, inportsRegion, i);
 	}
 	for (unsigned i = 0; i<_nOutports; i++)
 	{
-		painter.setBrush( getOutportColor(i) );
+		painter.setBrush( _canvas->outportColor(_processing,i) );
 		drawConnector(painter, outportsRegion, i);
 	}
 	// Controls
@@ -428,15 +428,14 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	}
 	if (region==bodyRegion)
 	{
-		if (_processing && ! _processing->IsConfigured())
-			_canvas->setToolTip(_processing->GetConfigErrorMessage().c_str());
+		if (not _canvas->isOk(_processing)) 
+			_canvas->setToolTip(_canvas->errorMessage(_processing));
 		_canvas->setStatusTip(QObject::tr("Double click: configure. Left click: Processing menu"));
 		return;
 	}
 	if (region==nameRegion)
 	{
-		if (_processing && ! _processing->IsConfigured())
-			_canvas->setToolTip(_processing->GetConfigErrorMessage().c_str());
+		if (not _canvas->isOk(_processing)) _canvas->setToolTip(_canvas->errorMessage(_processing));
 		_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
 		return;
 	}
@@ -508,21 +507,17 @@ QString ProcessingBox::getName() const
 	return _name;
 }
 
-QString ProcessingBox::getOutportName(unsigned index) const
-{
-	if (!_processing) return QString("Outport_%1").arg(index);
-	CLAM::OutPortBase & port = _processing->GetOutPorts().GetByNumber(index);
-	return port.GetName().c_str();
-}
 QString ProcessingBox::getInportName(unsigned index) const
 {
-	if (!_processing) return QString("Outport_%1").arg(index);
-	CLAM::InPortBase & port = _processing->GetInPorts().GetByNumber(index);
-	return port.GetName().c_str();
+	return _canvas->inportName(_processing, index);
+}
+QString ProcessingBox::getOutportName(unsigned index) const
+{
+	return _canvas->outportName(_processing, index);
 }
 QString ProcessingBox::getOutportTooltip(unsigned index) const
 {
-	if (!_processing) return getOutportName(index);
+	if (!_processing) return _canvas->outportName(_processing, index);
 	CLAM::OutPortBase & port = _processing->GetOutPorts().GetByNumber(index);
 	const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
 	return QObject::tr("%1\nType: %3","Outport tooltip")
@@ -532,7 +527,7 @@ QString ProcessingBox::getOutportTooltip(unsigned index) const
 }
 QString ProcessingBox::getInportTooltip(unsigned index) const
 {
-	if (!_processing) return getInportName(index);
+	if (!_processing) return _canvas->inportName(_processing, index);
 	CLAM::InPortBase & port = _processing->GetInPorts().GetByNumber(index);
 	const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
 	return QObject::tr("%1\nType: %3","Inport tooltip")
@@ -550,19 +545,15 @@ QString ProcessingBox::getIncontrolTooltip(unsigned index) const
 	QString boundInfo = inControl.IsBounded() ? 
 		QString(" (bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
 		" (not bounded)";
-	return getIncontrolName(index)+boundInfo;
+	return _canvas->incontrolName(_processing, index)+boundInfo;
 }
 QString ProcessingBox::getOutcontrolName(unsigned index) const
 {
-	if (!_processing) return QString("Outcontrol_%1").arg(index);
-	CLAM::OutControl & control = _processing->GetOutControls().GetByNumber(index);
-	return control.GetName().c_str();
+	return _canvas->outcontrolName(_processing, index);
 }
 QString ProcessingBox::getIncontrolName(unsigned index) const
 {
-	if (!_processing) return QString("Incontrol_%1").arg(index);
-	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
-	return inControl.GetName().c_str();
+	return _canvas->incontrolName(_processing, index);
 }
 float ProcessingBox::getIncontrolDefaultValue(unsigned index) const //TODO remove
 {
@@ -580,26 +571,6 @@ float ProcessingBox::getIncontrolUpperBound(unsigned index) const
 	return inControl.UpperBound();
 }
 
-QColor ProcessingBox::getConnectorColorByType(const std::type_info & type) const
-{
-	const char * colorstring = CLAM::ProcessingDataPlugin::colorFor(type).c_str();
-	QColor color(colorstring);
-	if (color.isValid()) return color;
-	return _canvas->colorPort();
-}
-
-QColor ProcessingBox::getInportColor(unsigned index) const
-{
-	if (!_processing) return _canvas->colorPort();
-	const std::type_info& porttype = _processing->GetInPorts().GetByNumber(index).GetTypeId();
-	return getConnectorColorByType(porttype);
-}
-QColor ProcessingBox::getOutportColor(unsigned index) const
-{
-	if (!_processing) return _canvas->colorPort();
-	const std::type_info& porttype = _processing->GetOutPorts().GetByNumber(index).GetTypeId();
-	return getConnectorColorByType(porttype);
-}
 
 std::string ProcessingBox::getOutportTypeId(unsigned index) const
 {
@@ -609,19 +580,19 @@ std::string ProcessingBox::getOutportTypeId(unsigned index) const
 
 QString ProcessingBox::getInportPrototyperName(const QPoint & point) const
 {
-	return getConnectionPrototyperName("InPort", getInportName(portIndexByYPos(point)));
+	return getConnectionPrototyperName("InPort", _canvas->inportName(_processing, portIndexByYPos(point)));
 }
 QString ProcessingBox::getOutportPrototyperName(const QPoint & point) const
 {
-	return getConnectionPrototyperName("OutPort", getOutportName(portIndexByYPos(point)));
+	return getConnectionPrototyperName("OutPort", _canvas->outportName(_processing, portIndexByYPos(point)));
 }
 QString ProcessingBox::getIncontrolPrototyperName(const QPoint & point) const
 {
-	return getConnectionPrototyperName("InControl", getIncontrolName(controlIndexByXPos(point)));
+	return getConnectionPrototyperName("InControl", _canvas->incontrolName(_processing, controlIndexByXPos(point)));
 }
 QString ProcessingBox::getOutcontrolPrototyperName(const QPoint & point) const
 {
-	return getConnectionPrototyperName("OutControl", getOutcontrolName(controlIndexByXPos(point)));
+	return getConnectionPrototyperName("OutControl", _canvas->outcontrolName(_processing, controlIndexByXPos(point)));
 }
 
 QString ProcessingBox::getConnectionPrototyperName(QString kind, QString connectionName) const

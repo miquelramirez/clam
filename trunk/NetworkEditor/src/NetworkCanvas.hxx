@@ -174,8 +174,6 @@ public:
 				return _colorHighlight;
 		}
 	}
-
-
 // Drawing routines
 protected:
 	void paint(QPainter & painter)
@@ -525,8 +523,6 @@ protected:
 	}
 protected:
 /*
-	virtual bool processingHasError(QString name)
-	virtual QString processingErrorMessage(QString name)
 	virtual unsigned processingNInPorts(QString name)
 	virtual unsigned processingNOutPorts(QString name)
 	virtual unsigned processingNInControls(QString name)
@@ -534,7 +530,6 @@ protected:
 	virtual QString processingInPortName(QString name, unsigned i)
 	virtual QString processingInPortTooltip(QString name, unsigned i)
 	virtual QString processingInPortPrototyperId(QString name, unsigned i)
-	virtual QString processingInPortColor(QString name, unsigned i)
 */	
 	virtual bool networkRenameProcessing(QString oldName, QString newName)=0;
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
@@ -545,6 +540,22 @@ protected:
 	virtual bool networkAddControlConnection(const QString & outlet, const QString & inlet) = 0;
 	virtual bool networkRemovePortConnection(const QString & outlet, const QString & inlet) = 0;
 	virtual bool networkRemoveControlConnection(const QString & outlet, const QString & inlet) = 0;
+
+	virtual QColor inportColor(void * processing, unsigned index) const = 0;
+	virtual QColor outportColor(void * processing, unsigned index) const = 0;
+	virtual QString inportName(void * processing, unsigned index) const = 0;
+	virtual QString outportName(void * processing, unsigned index) const = 0;
+	virtual QString incontrolName(void * processing, unsigned index) const = 0;
+	virtual QString outcontrolName(void * processing, unsigned index) const = 0;
+/*
+	virtual QString inportTooltip(void * processing, unsigned index) const = 0;
+	virtual QString outportTooltip(void * processing, unsigned index) const = 0;
+	virtual QString incontrolTooltip(void * processing, unsigned index) const = 0;
+	virtual QString outcontrolTooltip(void * processing, unsigned index) const = 0;
+*/
+	virtual bool isOk(void * processing)=0;
+	virtual QString errorMessage(void * processing)=0;
+
 signals:
 	void changed();
 public:
@@ -802,6 +813,9 @@ protected:
 	QColor _colorControlWireOutline;
 };
 
+#include <typeinfo>
+#include <CLAM/ProcessingDataPlugin.hxx>
+
 class NetworkCanvas : public AbstractNetworkCanvas
 {
 	Q_OBJECT
@@ -906,7 +920,63 @@ public: // Actions
 
 		markAsChanged();
 	}
+	virtual QColor inportColor(void * element, unsigned index) const
+	{
+		if (!element) return colorPort();
+		CLAM::Processing * processing = (CLAM::Processing*) element;
+		const std::type_info& porttype = processing->GetInPorts().GetByNumber(index).GetTypeId();
+		return getConnectorColorByType(porttype);
+	}
+	virtual QColor outportColor(void * element, unsigned index) const
+	{
+		if (!element) return colorPort();
+		CLAM::Processing * processing = (CLAM::Processing*) element;
+		const std::type_info& porttype = processing->GetOutPorts().GetByNumber(index).GetTypeId();
+		return getConnectorColorByType(porttype);
+	}
+	virtual QString inportName(void * processing, unsigned index) const
+	{
+		if (!processing) return QString("Inport_%1").arg(index);
+		CLAM::InPortBase & port = ((CLAM::Processing*)processing)->GetInPorts().GetByNumber(index);
+		return port.GetName().c_str();
+	}
+	virtual QString outportName(void * processing, unsigned index) const
+	{
+		if (!processing) return QString("Outport_%1").arg(index);
+		CLAM::OutPortBase & port = ((CLAM::Processing*)processing)->GetOutPorts().GetByNumber(index);
+		return port.GetName().c_str();
+	}
+	virtual QString incontrolName(void * processing, unsigned index) const
+	{
+		if (!processing) return QString("Incontrol_%1").arg(index);
+		CLAM::InControl & control = ((CLAM::Processing*)processing)->GetInControls().GetByNumber(index);
+		return control.GetName().c_str();
+	}
+	virtual QString outcontrolName(void * processing, unsigned index) const
+	{
+		if (!processing) return QString("Outcontrol_%1").arg(index);
+		CLAM::OutControl & control = ((CLAM::Processing*)processing)->GetOutControls().GetByNumber(index);
+		return control.GetName().c_str();
+	}
+	virtual bool isOk(void * processing)
+	{
+		if (!processing) return true;
+		return ((CLAM::Processing*)processing)->IsConfigured();
+	}
+	virtual QString errorMessage(void * processing)
+	{
+		if (!processing) return "";
+		return ((CLAM::Processing*)processing)->GetConfigErrorMessage().c_str();
+	}
 private:
+	QColor getConnectorColorByType(const std::type_info & type) const
+	{
+		const char * colorstring = CLAM::ProcessingDataPlugin::colorFor(type).c_str();
+		QColor color(colorstring);
+		if (color.isValid()) return color;
+		return colorPort();
+	}
+
 	void addProcessingBox(const QString & name, CLAM::Processing * processing, QPoint point=QPoint(), QSize size=QSize())
 	{
 		if (!processing)
