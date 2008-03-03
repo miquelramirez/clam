@@ -122,17 +122,11 @@ void ProcessingBox::recomputeMinimumSizes()
 	resize(_size);
 	_canvas->update();
 }
-const QColor & execColor(const QColor & defaultColor, const QColor & errorColor, CLAM::Processing * processing)
-{
-	if ( !processing) return defaultColor;
-	if ( processing->IsConfigured()) return defaultColor;
-	return errorColor;
-}
 
 void ProcessingBox::paintBox(QPainter & painter)
 {
-	QColor boxBodyColor = execColor(_canvas->colorBoxBody(),_canvas->colorBoxErrorBody(),_processing);
-	QColor boxFrameColor = execColor(_canvas->colorBoxFrame(),_canvas->colorBoxErrorFrame(),_processing);
+	QColor boxBodyColor = _canvas->isOk(_processing)? _canvas->colorBoxBody() : _canvas->colorBoxErrorBody();
+	QColor boxFrameColor = _canvas->isOk(_processing)? _canvas->colorBoxFrame() : _canvas->colorBoxErrorFrame();
 	// Box
 	painter.setPen( _canvas->colorBoxFrameOutline());
 	painter.setBrush(boxFrameColor);
@@ -185,7 +179,6 @@ void ProcessingBox::paintBox(QPainter & painter)
 		painter.drawRect(_size.width(), 0,  -margin, margin);
 		painter.drawRect(_size.width(), _size.height(), -margin, -margin);
 	}
-		
 }
 
 void ProcessingBox::drawConnector(QPainter & painter, Region region, unsigned index)
