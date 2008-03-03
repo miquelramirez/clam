@@ -100,7 +100,7 @@ bool MIDIOutControl::ConcreteConfigure(const ProcessingConfig& c)
 	/* create the InControls */
 	for (int i=0;i<MIDI::GetMessageInfo(m).length;i++)
 	{
-		char* fieldname = 0;
+		const char* fieldname = 0;
 		/* if in this switch we set the fieldname, the control
 		 * will be added */
 		switch (i)

@@ -35,7 +35,6 @@ namespace Hidden
 	//	"description", "MIDIInControl",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, MIDIInControl> regMIDIInControl("MIDIInControl");
 	static FactoryRegistrator<ProcessingFactory, MIDIInControl> reg = metadata;
 }
 
@@ -85,7 +84,7 @@ bool MIDIInControl::ConcreteConfigure(const ProcessingConfig& c)
 	/* create the InControls */
 	for (int i=0;i<mMessageSize;i++)
 	{
-		char* fieldname = 0;
+		const char* fieldname = 0;
 		/* if in this switch we set the fieldname, the control
 		 * will be added */
 		switch (i)

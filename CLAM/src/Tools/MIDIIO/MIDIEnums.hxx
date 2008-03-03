@@ -47,8 +47,8 @@ public:
 	struct MessageInfo
 	{
 		int length;
-		char* name;
-		char* field[3];
+		const char* name;
+		const char* field[3];
 	};
 
 	/**
