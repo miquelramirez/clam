@@ -547,12 +547,10 @@ protected:
 	virtual QString outportName(void * processing, unsigned index) const = 0;
 	virtual QString incontrolName(void * processing, unsigned index) const = 0;
 	virtual QString outcontrolName(void * processing, unsigned index) const = 0;
-/*
 	virtual QString inportTooltip(void * processing, unsigned index) const = 0;
 	virtual QString outportTooltip(void * processing, unsigned index) const = 0;
 	virtual QString incontrolTooltip(void * processing, unsigned index) const = 0;
 	virtual QString outcontrolTooltip(void * processing, unsigned index) const = 0;
-*/
 	virtual bool isOk(void * processing)=0;
 	virtual QString errorMessage(void * processing)=0;
 
@@ -957,6 +955,38 @@ public: // Actions
 		if (!processing) return QString("Outcontrol_%1").arg(index);
 		CLAM::OutControl & control = ((CLAM::Processing*)processing)->GetOutControls().GetByNumber(index);
 		return control.GetName().c_str();
+	}
+	QString outportTooltip(void * processing, unsigned index) const
+	{
+		if (!processing) return outportName(processing, index);
+		CLAM::OutPortBase & port = ((CLAM::Processing*)processing)->GetOutPorts().GetByNumber(index);
+		const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
+		return QObject::tr("%1\nType: %3","Outport tooltip")
+			.arg(port.GetName().c_str())
+			.arg(typeString)
+			;
+	}
+	QString inportTooltip(void * processing, unsigned index) const
+	{
+		if (!processing) return inportName(processing, index);
+		CLAM::InPortBase & port = ((CLAM::Processing*)processing)->GetInPorts().GetByNumber(index);
+		const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
+		return QObject::tr("%1\nType: %3","Inport tooltip")
+			.arg(port.GetName().c_str())
+			.arg(typeString)
+			;
+	}
+	QString outcontrolTooltip(void * processing, unsigned index) const
+	{
+		return outcontrolName(processing, index);
+	}
+	QString incontrolTooltip(void * processing, unsigned index) const
+	{
+		CLAM::InControl& inControl = ((CLAM::Processing*)processing)->GetInControls().GetByNumber(index);
+		QString boundInfo = inControl.IsBounded() ? 
+			QString(" (bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
+			" (not bounded)";
+		return incontrolName(processing, index)+boundInfo;
 	}
 	virtual bool isOk(void * processing)
 	{

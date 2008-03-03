@@ -71,10 +71,6 @@ public:
 	QString getOutportName(unsigned i) const;
 	QString getIncontrolName(unsigned i) const;
 	QString getOutcontrolName(unsigned i) const;
-	QString getInportTooltip(unsigned i) const;
-	QString getOutportTooltip(unsigned i) const;
-	QString getIncontrolTooltip(unsigned i) const;
-	QString getOutcontrolTooltip(unsigned i) const;
 	float getIncontrolUpperBound(unsigned index) const;
 	float getIncontrolLowerBound(unsigned index) const;
 	float getIncontrolDefaultValue(unsigned index) const;
