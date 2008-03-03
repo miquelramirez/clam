@@ -57,7 +57,16 @@ public:
 				<< std::flush;
 			CLAM_ASSERT(false, os.str().c_str());
 		}
-		CLAM_ASSERT(in1.spectralRange==in2.spectralRange, "SpectralRanges should be equal");
+		if (in1.spectralRange!=in2.spectralRange)
+		{
+			std::ostringstream os;
+			os 
+				<< "SpectralRanges should be equal:"
+				<< " Range 1: " << in1.spectralRange
+				<< " Range 2: " << in2.spectralRange
+				<< std::flush;
+			CLAM_ASSERT(false, os.str().c_str());
+		}
 
 		out.spectralRange = in1.spectralRange;
 		const unsigned nBins = in1.bins.size(); 

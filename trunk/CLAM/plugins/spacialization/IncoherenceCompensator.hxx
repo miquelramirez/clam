@@ -98,6 +98,7 @@ protected:
 		mComplexSpectrum.bins.resize(frameSize);
 		double c = 443;
 		double spectralRange = mConfig.GetSampleRate()/2;
+		mComplexSpectrum.spectralRange = spectralRange;
 		double a = mConfig.GetDistanceStandardDeviation()*M_PI*spectralRange/frameSize/180/c;
 		for (unsigned i=0; i<frameSize; i++)
 			mComplexSpectrum.bins[i] = exp(a*i);
