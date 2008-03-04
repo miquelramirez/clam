@@ -2,9 +2,9 @@
 # -*- coding: UTF-8 -*-
 
 
-# Usage: ./TemplateGenerator TEMPLATEFILE"
+# Usage: ./TemplateGenerator TEMPLATEFILE
 
-# Template file definition:
+#Example of input file (template file):
 #Name:Test
 #BaseClass:Processing
 #i:AudioInPort
@@ -15,14 +15,15 @@
 #
 # Convention:
 # i (input) | o (output): type
-# ic (input control) | oc (output control): integer/float range
+# ic (input control) | oc (output control): integer/float, range
 
 
 # TODO:
 #* Add controls range
 #* pyqt or NetworkEditor GUI instead of the input file
 #* Add config options
-#* Define ports and controls names through the input file
+#* Define ports and controls names through the input file (i:AudioInPort, Audio Input)
+
 
 import os, sys, shutil
 import sets
@@ -70,8 +71,7 @@ try:
 	g = open( "templates/" + plugin_name + "/BaseProcessing.hxx", "w" )
 	print "Creating " + plugin_name + " template"
 except:
-	print "templates/" + plugin_name + "/BaseProcessing.hxx"
-	print "Output file write error."
+	print "tOutput file write error. File: templates/" + plugin_name + "/BaseProcessing.hxx"
 	sys.exit(2)
 
 g.write( "#ifndef _BaseProcessing_\n" )
@@ -105,9 +105,9 @@ g.write( "\t\t/** This method returns the name of the object\n\
 #Ports
 g.write( "\t\t/** Ports **/\n" )
 for i in range(len(inputs)):
-	g.write( "\t\t" + inputs[i] + " " + member_style + "Input" + class_name.title() + str(i) + ";\n" )
+	g.write( "\t\t" + inputs[i] + " " + member_style + "Input" + inputs[i].title() + str(i) + ";\n" )
 for i in range(len(outputs)):
-	g.write( "\t\t" + outputs[i] + " " + member_style + "Output" + class_name.title() + str(i) + ";\n" )
+	g.write( "\t\t" + outputs[i] + " " + member_style + "Output" + outputs[i].title() + str(i) + ";\n" )
 
 #Controls
 g.write( "\n\t\t/** Controls **/\n" )
@@ -120,9 +120,9 @@ g.write( "\n\tpublic:\n" )
 #Constructor
 g.write( "\t\tBaseProcessing(const Config & config=Config())\n\t\t\t:\n")
 for i in range(len(inputs)):
-	g.write( "\t\t\t" + member_style + "Input" + class_name.title() + str(i) + "(\"Input " + str(i) + "\", this),\n" )
+	g.write( "\t\t\t" + member_style + "Input" + inputs[i].title() + str(i) + "(\"Input " + str(i) + "\", this),\n" )
 for i in range(len(outputs)):
-	g.write( "\t\t\t" + member_style + "Output" + class_name.title() + str(i) + "(\"Output " + str(i) + "\", this),\n" )
+	g.write( "\t\t\t" + member_style + "Output" + outputs[i].title() + str(i) + "(\"Output " + str(i) + "\", this),\n" )
 for i in range(len(incontrols)):
 	g.write( "\t\t\t" + member_style + "InputControl" + str(i) + "(\"Control " + str(i) + "\", this)" )
 	if i==len(incontrols)-1:
