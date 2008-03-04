@@ -70,7 +70,7 @@ plugin["output_dir"] = "../../plugins"
 
 
 license_text = f.read()
-f.close
+f.close()
 license_text = license_text.replace( "Copyright (c)", "Copyright (c) " + plugin["year"] + plugin["copyright_holder"] )
 
 
@@ -83,7 +83,7 @@ def make_file( template_dir, plugin_name, replacement_str, filename, new_file_na
 	except IOError:
 		return
 	new_file = f.read()
-	f.close
+	f.close()
 	
 	if new_file_name=="": new_file_name=plugin_name
 	if to_lower_case:
