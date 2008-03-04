@@ -7,7 +7,7 @@
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/InControl.hxx>
 
-namespace CLAM{
+namespace CLAM {
 
 	/**	\brief Short description
 	 *
@@ -47,7 +47,7 @@ namespace CLAM{
 			mInputAudio.Consume(); 
 			mOutputAudio.Produce();
 
-			return result;
+// 			return result;
 		}
 	
 		bool Do(const Audio& in, Audio& out)
