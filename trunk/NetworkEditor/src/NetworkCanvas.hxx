@@ -819,6 +819,10 @@ protected:
 
 #include <typeinfo>
 #include <CLAM/ProcessingDataPlugin.hxx>
+#include "Configurator.hxx"
+#include "uic_DummyProcessingConfig.hxx"
+#include <CLAM/Factory.hxx>
+
 
 class NetworkCanvas : public AbstractNetworkCanvas
 {
@@ -878,6 +882,21 @@ public: // Actions
 			QMessageBox::critical(this, tr("Error creating a processing"),
 				tr("<p>The processing type '<tt>%1</tt>' is not supported.</p>").arg(type));
 		}
+	}
+	bool editConfiguration(ProcessingBox * box)
+	{
+		CLAM::Processing * processing = (CLAM::Processing *) box->model();
+		CLAM::ProcessingConfig * config = (CLAM::ProcessingConfig*) processing->GetConfig().DeepCopy();
+		Configurator configurator(*config);
+		if (!configurator.exec())
+		{
+			delete config;
+			return false;
+		}
+		network().ConfigureProcessing( box->getName().toStdString(), *config);	
+		box->setProcessing(processing);
+		delete config;
+		return true;
 	}
 	float incontrolDefaultValue(CLAM::Processing * processing, unsigned index) const //TODO remove
 	{
@@ -1051,7 +1070,7 @@ protected:
 	{
 		if (networkIsDummy()) return true;
 		QString outName = source->getName() + "." + source->getOutportName(outlet);
-		QString inName = target->getName() + "." + target->getInportName(inlet);
+		QString inName = target->getName() + "." + inportName(target->model(),inlet);
 		CLAM::OutPortBase & out = _network->GetOutPortByCompleteName(outName.toStdString());
 		CLAM::InPortBase & in = _network->GetInPortByCompleteName(inName.toStdString());
 		return out.IsConnectableTo(in);
