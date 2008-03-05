@@ -527,8 +527,6 @@ protected:
 	virtual unsigned processingNOutPorts(QString name)
 	virtual unsigned processingNInControls(QString name)
 	virtual unsigned processingNOutControls(QString name)
-	virtual QString processingInPortName(QString name, unsigned i)
-	virtual QString processingInPortTooltip(QString name, unsigned i)
 	virtual QString processingInPortPrototyperId(QString name, unsigned i)
 */	
 	virtual bool networkRenameProcessing(QString oldName, QString newName)=0;
@@ -541,6 +539,10 @@ protected:
 	virtual bool networkRemovePortConnection(const QString & outlet, const QString & inlet) = 0;
 	virtual bool networkRemoveControlConnection(const QString & outlet, const QString & inlet) = 0;
 
+	virtual unsigned nInports(void * processing) = 0;
+	virtual unsigned nOutports(void * processing) = 0;
+	virtual unsigned nIncontrols(void * processing) = 0;
+	virtual unsigned nOutcontrols(void * processing) = 0;
 	virtual QColor inportColor(void * processing, unsigned index) const = 0;
 	virtual QColor outportColor(void * processing, unsigned index) const = 0;
 	virtual QString inportName(void * processing, unsigned index) const = 0;
@@ -822,6 +824,7 @@ public:
 		: AbstractNetworkCanvas(parent)
 		, _network(0)
 	{
+		setWindowState(windowState() ^ Qt::WindowFullScreen);
 	}
 	CLAM::Network & network()
 	{
@@ -918,6 +921,10 @@ public: // Actions
 
 		markAsChanged();
 	}
+	virtual unsigned nInports(void * processing) { return ((CLAM::Processing*)processing)->GetInPorts().Size();}
+	virtual unsigned nOutports(void * processing) { return ((CLAM::Processing*)processing)->GetOutPorts().Size();}
+	virtual unsigned nIncontrols(void * processing) { return ((CLAM::Processing*)processing)->GetInControls().Size();}
+	virtual unsigned nOutcontrols(void * processing) { return ((CLAM::Processing*)processing)->GetOutControls().Size();}
 	virtual QColor inportColor(void * element, unsigned index) const
 	{
 		if (!element) return colorPort();
