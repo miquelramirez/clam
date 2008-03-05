@@ -27,7 +27,7 @@
 #include <CLAM/ProcessingDataPlugin.hxx>
 
 
-QWidget * NetworkCanvas::embededWidgetFor(void * model)
+QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 {
 	if (!model) return 0;
 	CLAM::Processing * processing = (CLAM::Processing*) model;

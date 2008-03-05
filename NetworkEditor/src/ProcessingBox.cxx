@@ -1,7 +1,10 @@
 #include "ProcessingBox.hxx"
 #include "NetworkCanvas.hxx"
 
-QWidget * embededWidgetFor(CLAM::Processing * processing, QWidget * canvas);
+#include <QtGui/QWidget>
+#include <QtGui/QPainter>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QInputDialog>
 
 ProcessingBox::~ProcessingBox()
 {

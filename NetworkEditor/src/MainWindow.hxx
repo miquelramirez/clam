@@ -58,7 +58,7 @@ public:
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
 
 		QScrollArea * scroll = new QScrollArea(this);
-		_canvas = new NetworkCanvas;
+		_canvas = new ClamNetworkCanvas;
 		setCentralWidget(scroll);
 		scroll->setWidget(_canvas);
 		
@@ -447,7 +447,7 @@ public slots:
 		close();
 	}
 private:
-	NetworkCanvas * _canvas;
+	ClamNetworkCanvas * _canvas;
 	QDialog * _aboutDialog;
 	CLAM::Network _network;
 	CLAM::NetworkPlayer * _networkPlayer;

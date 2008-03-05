@@ -2,13 +2,6 @@
 #define ProcessingBox_hxx
 
 #include <QtGui/QWidget>
-#include <QtGui/QPainter>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QInputDialog>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <cmath>
 
 class NetworkCanvas;
 
@@ -71,8 +64,6 @@ public:
 	QString getOutportName(unsigned i) const;
 	QString getIncontrolName(unsigned i) const;
 	QString getOutcontrolName(unsigned i) const;
-	//Port types - to add monitors by type
-	std::string getOutportTypeId(unsigned index) const;
 	// Get the connector prototyper name at the given parent pos
 	QString getInportPrototyperName(const QPoint & point) const;
 	QString getOutportPrototyperName(const QPoint & point) const;

@@ -8,6 +8,7 @@
 #include <QtGui/QPrintDialog>
 #include <QtGui/QMenu>
 #include <QtGui/QApplication>
+#include <QtGui/QInputDialog>
 #include <QtGui/QClipboard>
 #include <QtGui/QGridLayout>
 #include <QtGui/QSpinBox>
@@ -27,7 +28,7 @@
 #include <CLAM/ProcessingFactory.hxx>
 #include "OutControlSender.hxx" //TODO move to cxx
 
-class AbstractNetworkCanvas : public QWidget
+class NetworkCanvas : public QWidget
 {
 	Q_OBJECT
 public:
@@ -42,7 +43,7 @@ public:
 		ResizeDrag,
 		SelectionDrag
 	};
-	AbstractNetworkCanvas(QWidget * parent=0)
+	NetworkCanvas(QWidget * parent=0)
 		: QWidget(parent)
 		, _zoomFactor(1.)
 		, _changed(false)
@@ -521,10 +522,7 @@ protected:
 			}
 		}
 	}
-protected:
-/*
-	virtual QString processingInPortPrototyperId(QString name, unsigned i)
-*/
+public:
 	virtual bool networkRenameProcessing(QString oldName, QString newName)=0;
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
 	virtual void addProcessing(QPoint point, QString type) = 0;
@@ -552,6 +550,10 @@ protected:
 	virtual bool isOk(void * processing)=0;
 	virtual QString errorMessage(void * processing)=0;
 	virtual QWidget * embededWidgetFor(void * processing) = 0;
+
+	// TODO: Are those generic enough to be virtual?
+	virtual bool editConfiguration(ProcessingBox * box) = 0;
+	virtual void addControlSenderProcessing( ProcessingBox * processing, QPoint point ) = 0;
 
 signals:
 	void changed();
@@ -824,12 +826,12 @@ protected:
 #include <CLAM/Factory.hxx>
 
 
-class NetworkCanvas : public AbstractNetworkCanvas
+class ClamNetworkCanvas : public NetworkCanvas
 {
 	Q_OBJECT
 public:
-	NetworkCanvas(QWidget * parent=0)
-		: AbstractNetworkCanvas(parent)
+	ClamNetworkCanvas(QWidget * parent=0)
+		: NetworkCanvas(parent)
 		, _network(0)
 	{
 		setWindowState(windowState() ^ Qt::WindowFullScreen);
@@ -853,7 +855,7 @@ public:
 		addControlWire(_processings[1],1, _processings[2],1);
 	}
 
-	virtual ~NetworkCanvas();
+	virtual ~ClamNetworkCanvas();
 
 	void paintEvent(QPaintEvent * event)
 	{
@@ -914,7 +916,7 @@ public: // Actions
 		return inControl.UpperBound();
 	}
 
-	void addControlSenderProcessing( ProcessingBox * processing, QPoint point )
+	virtual void addControlSenderProcessing( ProcessingBox * processing, QPoint point )
 	{
 		if (networkIsDummy()) return;
 
