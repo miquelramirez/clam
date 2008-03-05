@@ -70,10 +70,10 @@ void ProcessingBox::setProcessing(CLAM::Processing * processing)
 void ProcessingBox::refreshConnectors()
 {
 	if (!_processing) return;
-	_nInports = _processing->GetInPorts().Size();
-	_nOutports = _processing->GetOutPorts().Size();
-	_nIncontrols = _processing->GetInControls().Size();
-	_nOutcontrols = _processing->GetOutControls().Size();
+	_nInports = _canvas->nInports(_processing);
+	_nOutports = _canvas->nOutports(_processing);
+	_nIncontrols = _canvas->nIncontrols(_processing);
+	_nOutcontrols = _canvas->nOutcontrols(_processing);
 	recomputeMinimumSizes();
 }
 
