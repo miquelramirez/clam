@@ -53,6 +53,7 @@ public:
 	virtual ~ProcessingBox();
 
 	void setProcessing(CLAM::Processing * processing);
+	void * model() const { return _processing; }
 	void paintFromParent(QPainter & painter);
 	// Returns the region at a parent pos
 	Region getRegion(const QPoint & point) const;
@@ -71,9 +72,6 @@ public:
 	QString getOutportName(unsigned i) const;
 	QString getIncontrolName(unsigned i) const;
 	QString getOutcontrolName(unsigned i) const;
-	float getIncontrolUpperBound(unsigned index) const;
-	float getIncontrolLowerBound(unsigned index) const;
-	float getIncontrolDefaultValue(unsigned index) const;
 	//Port types - to add monitors by type
 	std::string getOutportTypeId(unsigned index) const;
 	// Get the connector prototyper name at the given parent pos

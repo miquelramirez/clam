@@ -62,7 +62,7 @@ void ProcessingBox::paintFromParent(QPainter & painter)
 void ProcessingBox::setProcessing(CLAM::Processing * processing)
 {
 	_processing = processing;
-	QWidget * embeded = embededWidgetFor(processing,_canvas);
+	QWidget * embeded = _canvas->embededWidgetFor(_processing);
 	embed(embeded);
 	refreshConnectors();
 }
@@ -515,28 +515,6 @@ QString ProcessingBox::getOutcontrolName(unsigned index) const
 QString ProcessingBox::getIncontrolName(unsigned index) const
 {
 	return _canvas->incontrolName(_processing, index);
-}
-float ProcessingBox::getIncontrolDefaultValue(unsigned index) const //TODO remove
-{
-	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
-	return inControl.DefaultValue();
-}
-float ProcessingBox::getIncontrolLowerBound(unsigned index) const
-{
-	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
-	return inControl.LowerBound();
-}
-float ProcessingBox::getIncontrolUpperBound(unsigned index) const
-{
-	CLAM::InControl& inControl = _processing->GetInControls().GetByNumber(index);
-	return inControl.UpperBound();
-}
-
-
-std::string ProcessingBox::getOutportTypeId(unsigned index) const
-{
-	if (!_processing) return "";
-	return _processing->GetOutPorts().GetByNumber(index).GetTypeId().name();
 }
 
 QString ProcessingBox::getInportPrototyperName(const QPoint & point) const

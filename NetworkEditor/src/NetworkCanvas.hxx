@@ -523,12 +523,8 @@ protected:
 	}
 protected:
 /*
-	virtual unsigned processingNInPorts(QString name)
-	virtual unsigned processingNOutPorts(QString name)
-	virtual unsigned processingNInControls(QString name)
-	virtual unsigned processingNOutControls(QString name)
 	virtual QString processingInPortPrototyperId(QString name, unsigned i)
-*/	
+*/
 	virtual bool networkRenameProcessing(QString oldName, QString newName)=0;
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
 	virtual void addProcessing(QPoint point, QString type) = 0;
@@ -555,6 +551,7 @@ protected:
 	virtual QString outcontrolTooltip(void * processing, unsigned index) const = 0;
 	virtual bool isOk(void * processing)=0;
 	virtual QString errorMessage(void * processing)=0;
+	virtual QWidget * embededWidgetFor(void * processing) = 0;
 
 signals:
 	void changed();
@@ -630,6 +627,13 @@ public: // Event Handlers
 		print();
 	}
 
+	std::string outportTypeId(void * processing, unsigned index) const
+	{
+		if (!processing) return "";
+		return ((CLAM::Processing*)processing)->GetOutPorts().GetByNumber(index).GetTypeId().name();
+	}
+
+
 	void contextMenuEvent(QContextMenuEvent * event)
 	{
 		QMenu menu(this);
@@ -660,7 +664,7 @@ public: // Event Handlers
 					menu.addSeparator();
 					CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 					unsigned portindex = _processings[i]->portIndexByYPos(translatedPoint);
-					Keys keys = factory.GetKeys("port_monitor_type", _processings[i]->getOutportTypeId(portindex));
+					Keys keys = factory.GetKeys("port_monitor_type", outportTypeId(_processings[i]->model(),portindex));
 					for (Keys::const_iterator it=keys.begin(); it!=keys.end(); it++)
 					{
 						const char* key = it->c_str();
@@ -875,15 +879,32 @@ public: // Actions
 				tr("<p>The processing type '<tt>%1</tt>' is not supported.</p>").arg(type));
 		}
 	}
+	float incontrolDefaultValue(CLAM::Processing * processing, unsigned index) const //TODO remove
+	{
+		CLAM::InControl& inControl = processing->GetInControls().GetByNumber(index);
+		return inControl.DefaultValue();
+	}
+	float incontrolLowerBound(CLAM::Processing * processing, unsigned index) const
+	{
+		CLAM::InControl& inControl = processing->GetInControls().GetByNumber(index);
+		return inControl.LowerBound();
+	}
+	float incontrolUpperBound(CLAM::Processing * processing, unsigned index) const
+	{
+		CLAM::InControl& inControl = processing->GetInControls().GetByNumber(index);
+		return inControl.UpperBound();
+	}
+
 	void addControlSenderProcessing( ProcessingBox * processing, QPoint point )
 	{
 		if (networkIsDummy()) return;
 
 		unsigned controlIndex = processing->controlIndexByXPos(point);
 		QString inControlName = processing->getIncontrolName(controlIndex);
-		float defaultValue = processing->getIncontrolDefaultValue(controlIndex);
-		float lower = processing->getIncontrolLowerBound(controlIndex);
-		float upper = processing->getIncontrolUpperBound(controlIndex);
+		CLAM::Processing * model = (CLAM::Processing*) processing->model();
+		float defaultValue = incontrolDefaultValue(model,controlIndex);
+		float lower = incontrolLowerBound(model,controlIndex);
+		float upper = incontrolUpperBound(model,controlIndex);
 
 		std::string controlSenderName  =  inControlName.toStdString();
 		// add control-sender processing to network
@@ -921,6 +942,7 @@ public: // Actions
 
 		markAsChanged();
 	}
+	virtual QWidget * embededWidgetFor(void * processing);
 	virtual unsigned nInports(void * processing) { return ((CLAM::Processing*)processing)->GetInPorts().Size();}
 	virtual unsigned nOutports(void * processing) { return ((CLAM::Processing*)processing)->GetOutPorts().Size();}
 	virtual unsigned nIncontrols(void * processing) { return ((CLAM::Processing*)processing)->GetInControls().Size();}
