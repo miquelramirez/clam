@@ -27,85 +27,86 @@
 #include <CLAM/ProcessingDataPlugin.hxx>
 
 
-QWidget * embededWidgetFor(CLAM::Processing * processing, QWidget * canvas)
+QWidget * NetworkCanvas::embededWidgetFor(void * model)
 {
-	if (!processing) return 0;
+	if (!model) return 0;
+	CLAM::Processing * processing = (CLAM::Processing*) model;
 	std::string className = processing->GetClassName();
 
 	if (className=="OutControlSender")
 		return new ControlSenderWidget(processing);
 
 	if (className=="ControlSurface")
-		return new ControlSurfaceWidget(canvas, processing);
+		return new ControlSurfaceWidget(this, processing);
 
 	if (className=="ControlPrinter" || className=="ControlTraceWriter")
 		return new ControlPrinterWidget(processing);
 
 	if (className=="Vumeter")
-		return new Vumeter( canvas, dynamic_cast<VumeterMonitor*>(processing) );
+		return new Vumeter( this, dynamic_cast<VumeterMonitor*>(processing) );
 
 	if (className=="Oscilloscope")
-		return new Oscilloscope( canvas, dynamic_cast<OscilloscopeMonitor*>(processing) );
+		return new Oscilloscope( this, dynamic_cast<OscilloscopeMonitor*>(processing) );
 
 	if (className=="BufferOscilloscope")
-		return new BufferOscilloscope( canvas, dynamic_cast<BufferOscilloscopeMonitor*>(processing) );
+		return new BufferOscilloscope( this, dynamic_cast<BufferOscilloscopeMonitor*>(processing) );
 
 	if (className=="SpectrumView")
-		return new SpectrumView(canvas, dynamic_cast<SpectrumViewMonitor*>(processing) );
+		return new SpectrumView(this, dynamic_cast<SpectrumViewMonitor*>(processing) );
 
 	if (className=="PeakView")
 	{
-		PeakView * widget = new PeakView(canvas);
+		PeakView * widget = new PeakView(this);
 		widget->setDataSource( *dynamic_cast<PeakViewMonitor*>(processing) );
 		return widget;
 	}
 	if (className=="PolarChromaPeaks")
 	{
-		PolarChromaPeaks * widget = new PolarChromaPeaks(canvas);
+		PolarChromaPeaks * widget = new PolarChromaPeaks(this);
 		widget->setDataSource( *dynamic_cast<PolarChromaPeaksMonitor*>(processing) );
 		return widget;
 	}
 	if (className=="Tonnetz")
 	{
-		CLAM::VM::Tonnetz * widget = new CLAM::VM::Tonnetz(canvas);
+		CLAM::VM::Tonnetz * widget = new CLAM::VM::Tonnetz(this);
 		widget->setDataSource( *dynamic_cast<TonnetzMonitor*>(processing) );
 		return widget;
 	}
 	if (className=="KeySpace")
 	{
-		CLAM::VM::KeySpace * widget = new CLAM::VM::KeySpace(canvas);
+		CLAM::VM::KeySpace * widget = new CLAM::VM::KeySpace(this);
 		widget->setDataSource( *dynamic_cast<KeySpaceMonitor*>(processing) );
 		return widget;
 	}
 	if (className=="Spectrogram")
 	{
-		CLAM::VM::Spectrogram * widget = new CLAM::VM::Spectrogram(canvas);
+		CLAM::VM::Spectrogram * widget = new CLAM::VM::Spectrogram(this);
 		widget->setDataSource( *dynamic_cast<SpectrogramMonitor*>(processing) );
 		return widget;
 	}
 	if (className=="ChordRanking")
 	{
-		CLAM::VM::ChordRanking * widget = new CLAM::VM::ChordRanking(canvas);
+		CLAM::VM::ChordRanking * widget = new CLAM::VM::ChordRanking(this);
 		widget->setDataSource( *dynamic_cast<ChordRankingMonitor*>(processing) );
 		return widget;
 	}
 	if (className=="Tunner")
 	{
-		Tunner * widget = new Tunner(canvas);
+		Tunner * widget = new Tunner(this);
 		widget->setDataSource( *dynamic_cast<TunnerMonitor*>(processing) );
 		return widget;
 	}
 	if (className=="LPModelView")
-		return new CLAM::VM::LPModelView(canvas, dynamic_cast<LPModelViewMonitor*>(processing));
+		return new CLAM::VM::LPModelView(this, dynamic_cast<LPModelViewMonitor*>(processing));
 
 	if (className=="MelSpectrumView")
-		return new CLAM::VM::MelSpectrumView(canvas, dynamic_cast<MelSpectrumViewMonitor*>(processing));
+		return new CLAM::VM::MelSpectrumView(this, dynamic_cast<MelSpectrumViewMonitor*>(processing));
 
 	if (className=="MelCepstrumView")
-		return new CLAM::VM::MelCepstrumView(canvas, dynamic_cast<MelCepstrumViewMonitor*>(processing));
+		return new CLAM::VM::MelCepstrumView(this, dynamic_cast<MelCepstrumViewMonitor*>(processing));
 
 	if (className=="VectorView")
-		return new CLAM::VM::VectorView(canvas, dynamic_cast<VectorViewMonitor*>(processing));
+		return new CLAM::VM::VectorView(this, dynamic_cast<VectorViewMonitor*>(processing));
 
 	return 0;
 }
