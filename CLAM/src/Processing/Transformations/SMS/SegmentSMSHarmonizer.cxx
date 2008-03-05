@@ -25,6 +25,18 @@
 namespace CLAM
 {
 
+namespace Hidden
+{
+	static const char * metadata[] = {
+		"key", "SegmentSMSHarmonizer",
+// 		"category", "SMS Transformations",
+		"description", "SegmentSMSHarmonizer",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, SegmentSMSHarmonizer> regSegmentSMSHarmonizer("SegmentSMSHarmonizer");
+	static FactoryRegistrator<ProcessingFactory, SegmentSMSHarmonizer> reg = metadata;
+}
+
 bool SegmentSMSHarmonizer::Do(const Frame& in, Frame& out)
 {
 	BPF& voices=mConfig.GetBPF();
