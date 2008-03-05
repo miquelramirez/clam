@@ -1,9 +1,6 @@
 #include "ProcessingBox.hxx"
 #include "NetworkCanvas.hxx"
 
-#include <typeinfo>
-#include <CLAM/ProcessingDataPlugin.hxx>
-
 QWidget * embededWidgetFor(CLAM::Processing * processing, QWidget * canvas);
 
 ProcessingBox::~ProcessingBox()
@@ -15,16 +12,16 @@ ProcessingBox::ProcessingBox(NetworkCanvas * parent, const QString & name,
 		unsigned nInports, unsigned nOutports,
 		unsigned nIncontrols, unsigned nOutcontrols)
 	: _canvas(parent)
+	, _processing(0)
+	, _embeded(0)
 	, _name(name)
+	, _selected(false)
 	, _nInports(nInports)
 	, _nOutports(nOutports)
 	, _nIncontrols(nIncontrols)
 	, _nOutcontrols(nOutcontrols)
 	, _actionMode(NoAction)
 	, _highLightRegion(noRegion)
-	, _processing(0)
-	, _embeded(0)
-	, _selected(false)
 {
 	setName(name);
 	recomputeMinimumSizes();
@@ -59,9 +56,9 @@ void ProcessingBox::paintFromParent(QPainter & painter)
 	painter.restore();
 }
 
-void ProcessingBox::setProcessing(CLAM::Processing * processing)
+void ProcessingBox::setProcessing(void * model)
 {
-	_processing = processing;
+	_processing = model;
 	QWidget * embeded = _canvas->embededWidgetFor(_processing);
 	embed(embeded);
 	refreshConnectors();
@@ -542,43 +539,26 @@ QString ProcessingBox::getConnectionPrototyperName(QString kind, QString connect
 		.arg(connectionName.replace(" ","___"));
 }
 
-#include "Configurator.hxx"
-#include "uic_DummyProcessingConfig.hxx"
-#include <CLAM/Factory.hxx>
-
 bool ProcessingBox::configure()
 {
-	if (_processing)
-	{
-		CLAM::ProcessingConfig * config = (CLAM::ProcessingConfig*) _processing->GetConfig().DeepCopy();
-		Configurator configurator(*config);
-		if (!configurator.exec())
-		{
-			delete config;
-			return false;
-		}
-		_canvas->network().ConfigureProcessing( _name.toStdString(), *config);	
-		setProcessing(_processing);
-		delete config;
-		return true;
-	}
-	else
-	{
-		Ui::DummyProcessingConfig ui;
-		QDialog * configDialog = new QDialog(_canvas);
-		ui.setupUi(configDialog);
-		ui.inports->setValue(_nInports);
-		ui.outports->setValue(_nOutports);
-		ui.incontrols->setValue(_nIncontrols);
-		ui.outcontrols->setValue(_nOutcontrols);
-		if ( !configDialog->exec()) return false;
-		// TODO: clear connections
-		_nInports= ui.inports->value();
-		_nOutports= ui.outports->value();
-		_nIncontrols= ui.incontrols->value();
-		_nOutcontrols= ui.outcontrols->value();
-		recomputeMinimumSizes();
-		return true;
-	}
+	if (_processing) return _canvas->editConfiguration(this);
+
+	// TODO: move this to the dummy canvas
+
+	Ui::DummyProcessingConfig ui;
+	QDialog * configDialog = new QDialog(_canvas);
+	ui.setupUi(configDialog);
+	ui.inports->setValue(_nInports);
+	ui.outports->setValue(_nOutports);
+	ui.incontrols->setValue(_nIncontrols);
+	ui.outcontrols->setValue(_nOutcontrols);
+	if ( !configDialog->exec()) return false;
+	// TODO: clear connections
+	_nInports= ui.inports->value();
+	_nOutports= ui.outports->value();
+	_nIncontrols= ui.incontrols->value();
+	_nOutcontrols= ui.outcontrols->value();
+	recomputeMinimumSizes();
+	return true;
 }
 

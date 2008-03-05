@@ -9,7 +9,6 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
-#include <CLAM/Processing.hxx>
 
 class NetworkCanvas;
 
@@ -52,7 +51,7 @@ public:
 			unsigned nIncontrols, unsigned nOutcontrols);
 	virtual ~ProcessingBox();
 
-	void setProcessing(CLAM::Processing * processing);
+	void setProcessing(void * model);
 	void * model() const { return _processing; }
 	void paintFromParent(QPainter & painter);
 	// Returns the region at a parent pos
@@ -109,7 +108,10 @@ private:
 	void updateEmbededWidget();
 private:
 	NetworkCanvas * _canvas;
+	void * _processing; ///< Data model associated to the box
+	QWidget * _embeded; ///< Embeded widget displayed within the box
 	QString _name;
+	bool _selected; ///< Whether the widget is selected or not
 	unsigned _nInports;
 	unsigned _nOutports;
 	unsigned _nIncontrols;
@@ -124,9 +126,6 @@ private:
 	QSize _minimumSize;
 	Region _highLightRegion;
 	unsigned _highLightConnection;
-	CLAM::Processing * _processing;
-	QWidget * _embeded;
-	bool _selected;
 };
 
 
