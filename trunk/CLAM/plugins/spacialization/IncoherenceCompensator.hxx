@@ -54,6 +54,7 @@ class IncoherenceCompensator : public Processing
 	{
 	    DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
 	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
+	    /// Standard deviation of the sources distance in centimeters
 	    DYN_ATTRIBUTE( 1, public, CLAM::TData, DistanceStandardDeviation);
 	    DYN_ATTRIBUTE( 2, public, CLAM::TData, SampleRate);
 
@@ -63,13 +64,13 @@ class IncoherenceCompensator : public Processing
 		AddAll();
 		UpdateData();
 		SetFrameSize(512);
-		SetDistanceStandardDeviation(4.);
+		SetDistanceStandardDeviation(.01);
 		SetSampleRate(44100);
 	    };
 	};
 
 	OutPort<ComplexSpectrum> mOutComplex;
-	OutPort<MagPhaseSpectrum> mOut;
+	InControl mDeviation;
 	MagPhaseSpectrum mSpectrum;
 	ComplexSpectrum mComplexSpectrum;
 	Config mConfig;
@@ -77,6 +78,7 @@ public:
 	const char* GetClassName() const { return "IncoherenceCompensator"; }
 	IncoherenceCompensator(const Config& config = Config()) 
 		: mOutComplex("Complex Spectrum", this) 
+		, mDeviation("Deviation", this)
 	{
 		Configure( config );
 	}
@@ -88,34 +90,40 @@ protected:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(mConfig, config);
-		if (!FillSpectrum()) return false;
+		mDeviation.DoControl(mConfig.GetDistanceStandardDeviation());
 		return true; 
 	}
 
-	bool FillSpectrum()
+	void ComputeSpectralProfile(ComplexSpectrum & output)
 	{
-		unsigned frameSize = mConfig.GetFrameSize();
-		mComplexSpectrum.bins.resize(frameSize);
 		double c = 340;
+
 		double spectralRange = mConfig.GetSampleRate()/2;
-		mComplexSpectrum.spectralRange = spectralRange;
-		double a = mConfig.GetDistanceStandardDeviation()*M_PI*spectralRange/frameSize/180/c;
+		output.spectralRange = spectralRange;
+
+		unsigned frameSize = mConfig.GetFrameSize();
+		if (output.bins.size() != frameSize)
+			output.bins.resize(frameSize);
+
+		double deviationInCM = mDeviation.GetLastValue();
+		// exp( (sigma*w)^2/2); sigma=d/c; w=i*spectralRange*2*pi/nBins
+		// 1/100: centimetres -> meters
+		// 1/c: meters -> segs
+		// spectralRange: segs -> periods
+		// 2*M_PI: periods -> radians
+		// 1/framesize: samples -> frame
+		// a = sigma*w/i
+		std::cout << deviationInCM << std::endl;
+		double a = deviationInCM*M_PI*spectralRange/frameSize/180./100./c;
+
 		for (unsigned i=0; i<frameSize; i++)
-			mComplexSpectrum.bins[i] = exp(a*i);
-		return true;
+			output.bins[i] = exp(a*a*i*i/2);
 	}
- 
+
 	bool Do()
 	{
-		MagPhaseSpectrum & spectrum = mOut.GetData();
-		ComplexSpectrum & complexSpectrum = mOutComplex.GetData();
-		if (mSpectrum.magnitudes.size() != !spectrum.magnitudes.size())
-			spectrum = mSpectrum;
-		if (mComplexSpectrum.bins.size() != !complexSpectrum.bins.size())
-			complexSpectrum = mComplexSpectrum;
-
+		ComputeSpectralProfile( mOutComplex.GetData() );
 		// Tell the ports this is done
-		mOut.Produce();
 		mOutComplex.Produce();
 		return true;
 	}
