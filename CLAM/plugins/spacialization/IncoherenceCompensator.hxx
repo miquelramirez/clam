@@ -96,7 +96,7 @@ protected:
 	{
 		unsigned frameSize = mConfig.GetFrameSize();
 		mComplexSpectrum.bins.resize(frameSize);
-		double c = 443;
+		double c = 340;
 		double spectralRange = mConfig.GetSampleRate()/2;
 		mComplexSpectrum.spectralRange = spectralRange;
 		double a = mConfig.GetDistanceStandardDeviation()*M_PI*spectralRange/frameSize/180/c;
