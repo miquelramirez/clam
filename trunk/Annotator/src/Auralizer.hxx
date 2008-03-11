@@ -39,7 +39,6 @@
 #include <QtCore/QThread>
 #include "vmDataTypes.hxx"
 
-#include "vmPlayer.hxx"
 class AuralizationPlayer : public QThread
 {
 	Q_OBJECT
