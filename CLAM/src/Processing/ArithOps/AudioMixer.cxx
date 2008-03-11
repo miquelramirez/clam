@@ -38,7 +38,8 @@ namespace Hidden
 	static FactoryRegistrator<ProcessingFactory, AudioMixer> reg = metadata;
 }
 
-AudioMixer::AudioMixer() : mOutputPort("Output Audio",this)
+AudioMixer::AudioMixer()
+	: mOutputPort("Output Audio",this)
 {
 	Configure( mConfig );
 }
