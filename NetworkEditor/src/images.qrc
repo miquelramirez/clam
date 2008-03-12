@@ -741,6 +741,8 @@
         <file>images/viewmag1.png</file>
         <file>images/vumeter.svg</file>
         <file>images/hslider.png</file>
+        <file>images/firstperson.svg</file>
+        <file>images/spectrogram.svg</file>
     </qresource>
     <qresource prefix="/interfaces" >
         <file>prototyper/DefaultInterface.ui</file>

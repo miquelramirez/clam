@@ -14,6 +14,7 @@
 #include "MelSpectrumViewPlugin.hxx"
 #include "MelCepstrumViewPlugin.hxx"
 #include "PixmapWidgetsPlugin.hxx"
+#include "QFirstPersonPlugin.hxx"
 #include "QSynthKnobPlugin.hxx"
 #include "ControlSurfaceWidgetPlugin.hxx"
 #include <iostream>
@@ -42,6 +43,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new ThinPixmapButtonPlugin(this)
 		<< new QSynthKnobPlugin(this)
 		<< new ControlSurfaceWidgetPlugin(this)
+		<< new QFirstPersonPlugin(this)
 		;
 	std::cout << "All CLAM widgets plugins created" << std::endl;
 }
