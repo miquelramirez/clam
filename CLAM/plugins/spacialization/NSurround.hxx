@@ -62,24 +62,22 @@ public:
 	{
 		CopyAsConcreteConfig(_config, config);
 		RemovePortsAndControls();
+		_sinAlphas.clear();
+		_cosAlphas.clear();
 
 		_nChannels=_config.GetNChannels();
-		std::vector<int> angles;
+		unsigned buffersize = BackendBufferSize();
 		for (unsigned i=0; i<_nChannels; i++)
 		{
 			double angle = 360.*i/_nChannels;
-			angles.push_back(int(angle));
 			double rad = M_PI*angle/180;
 			_sinAlphas.push_back( std::sin(rad) );
 			_cosAlphas.push_back( std::cos(rad) );
 			std::cout << "sin "<< angle << " "<< std::sin(rad) << std::endl;
-		}
-		unsigned buffersize = BackendBufferSize();
-		for (unsigned i=0; i<_nChannels; i++)
-		{
-			std::stringstream stream;
-			stream << angles[i];
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( "out "+stream.str(), this);
+
+			std::ostringstream nameStream;
+			nameStream << "out " << angle;
+			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( nameStream.str(), this);
 			port->SetSize( buffersize );
 			port->SetHop( buffersize );
 			_outputs.push_back( port );
