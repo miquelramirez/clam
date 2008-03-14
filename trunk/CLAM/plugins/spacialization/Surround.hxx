@@ -14,35 +14,35 @@ public:
 		Configure( config );
 		_nChannels = 5;
 		_beta.SetBounds(-360, 360); //a complete spin on each slider direction
-		
-		std::vector<int> angles;
-		angles.push_back(0);
-		angles.push_back(30);
-		angles.push_back(110);
-		angles.push_back(-110);
-		angles.push_back(-30);
-		std::vector<std::string> names;
-		names.push_back("center");
-		names.push_back("right");
-		names.push_back("surroundRight");
-		names.push_back("surroundLeft");
-		names.push_back("left");
-		for (unsigned i=0; i<_nChannels; i++)
+
+		struct SpeakerPositions {
+			const char * name;
+			int angle;
+		} speaker[] =
 		{
-			double angle = angles[i];
+			{"center", 0},
+			{"right", 30},
+			{"surroundRight", 110},
+			{"surroundLeft", -110},
+			{"left", -30},
+			{0,0}
+		};
+		
+		unsigned buffersize = BackendBufferSize();
+		for (unsigned i=0; speaker[i].name; i++)
+		{
+			double angle = speaker[i].angle;
 			double rad = M_PI*angle/180;
 			_sinAlphas.push_back( std::sin(rad) );
 			_cosAlphas.push_back( std::cos(rad) );
 			std::cout << "sin "<< angle << " "<< std::sin(rad) << std::endl;
-		}
-		unsigned buffersize = BackendBufferSize();
-		for (unsigned i=0; i<_nChannels; i++)
-		{
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( names[i], this);
+
+			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( speaker[i].name, this);
 			port->SetSize( buffersize );
 			port->SetHop( buffersize );
 			_outputs.push_back( port );
 		}
+		_nChannels = _outputs.size();
 		
 		_p.SetSize(buffersize);
 		_p.SetHop(buffersize);
