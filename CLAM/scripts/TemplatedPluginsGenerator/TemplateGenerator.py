@@ -5,24 +5,22 @@
 # Usage: ./TemplateGenerator TEMPLATEFILE
 
 #Example of input file (template file):
-#Name:Test
+#Name:TestTemplate
 #BaseClass:Processing
-#i:AudioInPort
-#i:AudioInPort
-#o:AudioOutPort
-#ic:i,0,100
-#oc:f,0,100
+#i:AudioInPort,Audio Input Name 1
+#i:AudioInPort,AudioInput Name 2
+#o:AudioOutPort,Audio Output Name
+#ic:0,10,Input Control Name
+#oc:0,0,Output Control Name
 #
 # Convention:
-# i (input) | o (output): type
+# i (input) | o (output): type,Name
 # ic (input control) | oc (output control): integer/float, range
 
 
 # TODO:
-#* Add controls range
 #* pyqt or NetworkEditor GUI instead of the input file
 #* Add config options
-#* Define ports and controls names through the input file (i:AudioInPort, Audio Input)
 
 
 import os, sys, shutil
@@ -46,10 +44,10 @@ except IOError:
 def add_include( class_name ):
 	return "#include <CLAM/" + class_name + ".hxx>\n"
 
-inputs	    = []
-outputs     = []
-incontrols  = []
-outcontrols = []
+inputs	     = []
+outputs      = []
+incontrols   = []
+outcontrols  = []
 
 temp = f.read()
 f.close()
@@ -58,8 +56,8 @@ for elem in temp.split('\n'):
 		(item, value) = elem.split(':')
 		if   item=="Name":		plugin_name = value 
 		elif item=="BaseClass":	base_class_name = value
-		elif item=='i': 		inputs.append( value )
-		elif item=='o': 		outputs.append( value )
+		elif item=='i':			inputs.append( value.split(',') )
+		elif item=='o': 		outputs.append( value.split(',') )
 		elif item=='ic': 		incontrols.append( value.split(',') )
 		elif item=='oc': 		outcontrols.append( value.split(',') )
 
@@ -79,12 +77,10 @@ g.write( "#define _BaseProcessing_\n\n" )
 
 #Includes
 g.write( add_include(base_class_name) )
-for class_name in sets.Set(inputs+outputs):
-	g.write( add_include(class_name) )
-	#print class_name
-if len(incontrols)>0:
-	g.write( add_include("InControl") )
-
+available_port_types_set = sets.Set( (item[0] for item in inputs+outputs) )
+for class_name in available_port_types_set: g.write( add_include(class_name) )
+if len(incontrols)>0: g.write( add_include("InControl") )
+if len(outcontrols)>0: g.write( add_include("OutControl") )
 
 g.write( "\nnamespace CLAM {\n\n" )
 
@@ -104,36 +100,43 @@ g.write( "\t\t/** This method returns the name of the object\n\
 
 #Ports
 g.write( "\t\t/** Ports **/\n" )
-for i in range(len(inputs)):
-	g.write( "\t\t" + inputs[i] + " " + member_style + "Input" + inputs[i].title() + str(i) + ";\n" )
-for i in range(len(outputs)):
-	g.write( "\t\t" + outputs[i] + " " + member_style + "Output" + outputs[i].title() + str(i) + ";\n" )
+for port_type,port_name in (inputs+outputs):
+	g.write( "\t\t" + port_type + " " + member_style + port_name.replace(' ', '') + ";\n" )
 
 #Controls
 g.write( "\n\t\t/** Controls **/\n" )
-for i in range(len(incontrols)):
-	g.write( "\t\tInControl " + member_style + "InputControl" + str(i) + ";\n" )
-
+for cmin,cmax,control_name in incontrols:
+	g.write( "\t\tInControl " + member_style + control_name.replace(' ', '') + ";\n" )
+for cmin,cmax,control_name in outcontrols:
+	g.write( "\t\tOutControl " + member_style + control_name.replace(' ', '') + ";\n" )
 
 g.write( "\n\tpublic:\n" )
 
 #Constructor
 g.write( "\t\tBaseProcessing(const Config & config=Config())\n\t\t\t:\n")
-for i in range(len(inputs)):
-	g.write( "\t\t\t" + member_style + "Input" + inputs[i].title() + str(i) + "(\"Input " + str(i) + "\", this),\n" )
-for i in range(len(outputs)):
-	g.write( "\t\t\t" + member_style + "Output" + outputs[i].title() + str(i) + "(\"Output " + str(i) + "\", this),\n" )
-for i in range(len(incontrols)):
-	g.write( "\t\t\t" + member_style + "InputControl" + str(i) + "(\"Control " + str(i) + "\", this)" )
-	if i==len(incontrols)-1:
-		g.write("\n")
-	else:
-		g.write(",\n")
+members_list = []
+for port_type,port_name in (inputs+outputs):
+	members_list.append( "\t\t\t" + member_style + port_name.replace(' ', '') + "(\"" + port_name + "\", this)" )
+for cmin,cmax,control_name in (incontrols+outcontrols):
+	members_list.append( "\t\t\t" + member_style + control_name.replace(' ', '') + "(\"" + control_name + "\", this)" )
+
+for i in range(len(members_list)-1):
+	g.write( members_list[i] + ",\n" )
+g.write( members_list[len(members_list)-1] + "\n" )
 	
 g.write( "\
 		{\n\
-			Configure( config );\n\
-		}\n" )
+			Configure( config );\n\n")
+
+#InControls SetBounds, SetDefaultValue, DoControl
+for cmin,cmax,control_name in (incontrols):
+	control_media = round((float(cmin)+float(cmax))/2.)
+	g.write( "\t\t\t" +  member_style + control_name.replace(' ', '') + ".SetBounds(" + cmin + "," + cmax + ");\n" )
+	g.write( "\t\t\t" +  member_style + control_name.replace(' ', '') + ".SetDefaultValue(" + str(control_media) + ");\n" )
+	g.write( "\t\t\t" +  member_style + control_name.replace(' ', '') + ".DoControl(" + str(control_media) + ");\n" )
+				
+g.write( "\t\t}\n" )
+
 
 #Destructor
 g.write( "\n\t\t~BaseProcessing() {}\n\n" )
