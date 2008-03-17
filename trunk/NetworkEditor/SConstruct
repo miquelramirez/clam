@@ -240,6 +240,7 @@ def absolutePosixPathToWine(dir) :
 	return 'z:'+'\\\\'.join(dir.split('/'))
 
 if isWindowsPlatform : 
+	env.Append(LIBS=['glu'])
 	winqtdir=env['QTDIR']
 	if crosscompiling : env['NSIS_MAKENSIS'] = 'wine ~/.wine/dosdevices/c:/Program\ Files/NSIS/makensis'
 	if crosscompiling : winqtdir = absolutePosixPathToWine(winqtdir)
