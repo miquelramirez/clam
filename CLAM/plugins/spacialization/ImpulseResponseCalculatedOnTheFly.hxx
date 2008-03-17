@@ -180,7 +180,6 @@ public:
 				<< " --source-y-pos=" << _currentEmitterY 
 				<< " --source-z-pos=" << _currentEmitterZ
 				<< " > /dev/null )";
-	std::cout << command.str() << std::endl;
 			std::system( command.str().c_str() );
 			if (!computeResponseSpectrums(pressureFile, _current->pressure, _config.GetFrameSize(), errorMsg)
 				|| !computeResponseSpectrums(vxFile, _current->vx, _config.GetFrameSize(), errorMsg)
