@@ -373,12 +373,12 @@
 
   <control_connection>
     <out>sequencer.out 3</out>
-    <in>Surround.beta</in>
+    <in>ControlPrinter.In Control</in>
   </control_connection>
 
   <control_connection>
     <out>sequencer.out 3</out>
-    <in>ControlPrinter.In Control</in>
+    <in>Surround.beta</in>
   </control_connection>
 
   <control_connection>
