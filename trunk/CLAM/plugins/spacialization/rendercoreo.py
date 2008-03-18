@@ -7,10 +7,12 @@
 
 # USER CONFIG
 
+path_file = 'current_path.data'
 sources = [
 	"pluck_1s.wav",
-	"metronom.wav",
+#	"metronom.wav",
 	]
+
 
 # CODE
 import os, sys
@@ -23,14 +25,21 @@ def run(command) :
 def norun(command) :
 	print "\033[31mXX ", command, "\033[0m"
 
+network_filename = 'offline.clamnetwork'
+def write_parametrized_network(params):
+	content = file('offline_networks/parametrized_on_the_fly_surround.clamnetwork').read()
+	file(network_filename,'w').write(content % params)
+
+
 run('rm *_surround.wav')
-for source in sources:
+for i, source in enumerate(sources):
 	basename = source[:-4]
-	print "Rendering input:", basename
-	run('rm -f /tmp/outraytracing')
-	run('./OfflinePlayer offline_networks/on_the_fly_surround.clamnetwork \
+	print "Source %i: File: %s" % (i, basename)
+	params = {'source_index':i, 'path_file':path_file }
+	write_parametrized_network(params)
+	run('./OfflinePlayer %s \
 		~/acustica/wavs/%s \
-		W.wav X.wav Y.wav Z.wav' % source )
+		W.wav X.wav Y.wav Z.wav' % (network_filename,source) )
 	run('./OfflinePlayer example-data/bformat2gformat.clamnetwork \
 		W.wav X.wav Y.wav\
 		l.wav r.wav sl.wav sr.wav c.wav')
