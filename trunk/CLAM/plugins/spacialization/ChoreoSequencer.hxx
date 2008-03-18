@@ -78,8 +78,6 @@ class ChoreoSequencer : public CLAM::Processing
 	unsigned _indexSourceX;
 	unsigned _indexSourceY;
 	unsigned _indexSourceZ;
-	unsigned _indexOut6;
-	unsigned _indexOut7;
 
 public:
 	ChoreoSequencer(const Config& config = Config()) 
@@ -104,7 +102,7 @@ public:
 		CLAM_DEBUG_ASSERT(_sampleCount<2*_samplesPerControl,"_sampleCount too large" );
 
 		_sampleCount += _frameSize;
-
+		int sourceIndex = _config.GetSourceIndex();
 		if (_sampleCount>=_samplesPerControl)
 		{
 			//std::cout << ", ctl "<<_sequenceIndex << "/" <<_controlSequence.size() << std::flush;
@@ -183,8 +181,6 @@ protected:
 		_indexSourceX=7; // x orig 1
 		_indexSourceY=8; // y orig 1
 		_indexSourceZ=9; // y orig 1
-		_indexOut6=10; // x orig 2
-		_indexOut7=11; //y orig 2
 		// Load table from file
 		std::ifstream file( _config.GetFilename().c_str() );
 		while (file)

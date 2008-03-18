@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # milestone 1: multiple sources, fixed parameters (sample rate, origen, sequenced-controls), optional inputs
-# milestone 2: configurable networks and warnings, output dirs
+# milestone 2: configurable networks and warnings, output dirs. monitor duration of files and sequencer.
 
 # USER CONFIG
 
