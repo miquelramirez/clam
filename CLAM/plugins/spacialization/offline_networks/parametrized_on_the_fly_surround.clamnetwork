@@ -22,8 +22,8 @@
   </processing>
 
   <processing id="ChoreoSequencer" type="ChoreoSequencer">
-    <Filename>current_path.data</Filename>
-    <SourceIndex>0</SourceIndex>
+    <Filename>%(path_file)s</Filename>
+    <SourceIndex>%(source_index)i</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
     <ControlsPerSecond>24</ControlsPerSecond>
