@@ -152,7 +152,8 @@ public:
 //		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
 		
 		std::string errorMsg;
-		const std::string path = "/home/clamteam/acustica/visualitzador_escena_c++/responses/"; //TODO not abs path
+		const std::string path = std::string(getenv("HOME"))
+			+"/acustica/visualitzador_escena_c++/responses/"; 
 		std::string pressureFile = path+"p_positioned_IR_time.wav";
 		std::string vxFile = path+"vx_positioned_IR_time.wav";
 		std::string vyFile = path+"vy_positioned_IR_time.wav";
@@ -181,6 +182,7 @@ public:
 				<< " --source-z-pos=" << _currentEmitterZ
 				<< " > /dev/null )";
 			std::system( command.str().c_str() );
+std::cout << command.str() << std::endl;
 			if (!computeResponseSpectrums(pressureFile, _current->pressure, _config.GetFrameSize(), errorMsg)
 				|| !computeResponseSpectrums(vxFile, _current->vx, _config.GetFrameSize(), errorMsg)
 				|| !computeResponseSpectrums(vyFile, _current->vy , _config.GetFrameSize(), errorMsg) 
