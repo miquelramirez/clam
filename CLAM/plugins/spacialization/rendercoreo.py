@@ -1,13 +1,18 @@
 #!/usr/bin/python
 
-# milestone 1: multiple sources, fixed parameters (sample rate, origen, sequenced-controls), optional inputs DONE
-# milestone 2: output in b-format + 5.0 + binaural
-# milestone 3: configurable networks and warnings, output dirs. monitor duration of files and sequencer.
-# ln -s bformat2binaural wavs  
+# INSTALL: ln -s bformat2binaural wavs  
+
+# DONE milestone 1: multiple sources, fixed parameters (sample rate, origen, sequenced-controls), optional inputs DONE
+# DONE milestone 2: output in b-format + 5.0 + binaural
+# DONE milestone 3: configuragle networks.
+# milestone 4: warnings, output dirs. monitor duration of files and sequencer.
 
 # USER CONFIG
 
 path_file = 'current_path.data'
+params = {
+	'path_file' : 'current_path.data', 
+	'controls_per_second' : 24 }
 sources = [
 	"pluck_1s.wav",
 #	"metronom.wav",
@@ -27,15 +32,16 @@ def norun(command) :
 
 network_filename = 'offline.clamnetwork'
 def write_parametrized_network(params):
-	content = file('offline_networks/parametrized_on_the_fly_surround.clamnetwork').read()
+	content = file('offline_networks/parametrized_on_the_fly_choreography.clamnetwork').read()
 	file(network_filename,'w').write(content % params)
 
 
 run('rm *_surround.wav')
+run('rm *_binaural.wav')
 for i, source in enumerate(sources):
 	basename = source[:-4]
 	print "Source %i: File: %s" % (i, basename)
-	params = {'source_index':i, 'path_file':path_file }
+	params['source_index']=i
 	write_parametrized_network(params)
 	run('./OfflinePlayer %s \
 		~/acustica/wavs/%s \
@@ -48,5 +54,7 @@ for i, source in enumerate(sources):
 		W.wav X.wav Y.wav Z.wav\
 		lbinaural.wav rbinaural.wav')
 	run('sox -M lbinaural.wav rbinaural.wav %s_binaural.wav' % basename)
+
+if len(sources)<=1 : sys.exit()
 run('sox -m *_surround.wav surround.wav')
 run('sox -m *_binaural.wav binaural.wav')
