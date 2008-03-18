@@ -26,7 +26,7 @@
     <SourceIndex>%(source_index)i</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>24</ControlsPerSecond>
+    <ControlsPerSecond>%(controls_per_second)i</ControlsPerSecond>
   </processing>
 
   <processing id="Convolution_P" type="LowLatencyConvolution">
