@@ -7,7 +7,7 @@
 
 sources = [
 	"pluck_1s.wav",
-	"clicks.wav",
+	"metronom.wav",
 	]
 
 # CODE
@@ -27,7 +27,7 @@ for source in sources:
 	print "Rendering input:", basename
 	run('rm -f /tmp/outraytracing')
 	run('./OfflinePlayer offline_networks/on_the_fly_surround-source_1.clamnetwork \
-		%s \
+		~/acustica/wavs/%s \
 		c.wav l.wav r.wav sl.wav sr.wav' % source )
 	run('sox -M l.wav r.wav sl.wav sr.wav c.wav %s_surround.wav' % basename)
 run('sox -m *_surround.wav surround.wav')
