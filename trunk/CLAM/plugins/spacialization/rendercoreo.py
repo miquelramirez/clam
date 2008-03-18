@@ -7,28 +7,33 @@
 # DONE milestone 3: configuragle networks.
 # milestone 4: warnings, output dirs. monitor duration of files and sequencer.
 
+import os, sys
+
 # USER CONFIG
 
-path_file = 'current_path.data'
+basedir=os.environ['HOME']+'/acustica/'
+
 params = {
-	'path_file' : 'current_path.data', 
+	'path_file' : basedir+'realitzacions/two_moving_sources2.data',
+#	'path_file' : basedir+'realitzacions/arrevola_coreo_simplified.data',
 	'controls_per_second' : 24 }
 sources = [
-	"pluck_1s.wav",
-#	"metronom.wav",
-	]
+#	basedir+'wavs/pluck_1s.wav',
+#	basedir+'wavs/metronom.wav',
+	basedir+'wavs/inlanguage_100s.wav',
+	basedir+'wavs/roland_drums_100s_48khz.wav'
+]
 
 
 # CODE
-import os, sys
 def run(command) :
-	print "\033[32m:: ", command, "\033[0m"
+	print '\033[32m:: ', command, '\033[0m'
 #	return os.system(command)
 	for line in os.popen(command) :
 		print line,
 		sys.stdout.flush()
 def norun(command) :
-	print "\033[31mXX ", command, "\033[0m"
+	print '\033[31mXX ', command, '\033[0m'
 
 network_filename = 'offline.clamnetwork'
 def write_parametrized_network(params):
@@ -39,12 +44,12 @@ def write_parametrized_network(params):
 run('rm *_surround.wav')
 run('rm *_binaural.wav')
 for i, source in enumerate(sources):
-	basename = source[:-4]
-	print "Source %i: File: %s" % (i, basename)
+	basename = source.split('/')[-1][:-4]
+	print 'Source %i: File: %s' % (i, basename)
 	params['source_index']=i
 	write_parametrized_network(params)
 	run('./OfflinePlayer %s \
-		~/acustica/wavs/%s \
+		%s \
 		W.wav X.wav Y.wav Z.wav' % (network_filename,source) )
 	run('./OfflinePlayer example-data/bformat2gformat.clamnetwork \
 		W.wav X.wav Y.wav\

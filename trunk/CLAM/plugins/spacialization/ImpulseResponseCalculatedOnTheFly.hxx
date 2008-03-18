@@ -182,7 +182,6 @@ public:
 				<< " --source-z-pos=" << _currentEmitterZ
 				<< " > /dev/null )";
 			std::system( command.str().c_str() );
-std::cout << command.str() << std::endl;
 			if (!computeResponseSpectrums(pressureFile, _current->pressure, _config.GetFrameSize(), errorMsg)
 				|| !computeResponseSpectrums(vxFile, _current->vx, _config.GetFrameSize(), errorMsg)
 				|| !computeResponseSpectrums(vyFile, _current->vy , _config.GetFrameSize(), errorMsg) 
