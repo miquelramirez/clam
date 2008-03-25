@@ -45,9 +45,6 @@ namespace CLAM
 
 		bool ConcreteConfigure(const ProcessingConfig &c)
 		{
-std::cout << "AudioSink::ConcreteConfigure(..) - buffer size: "
-<< mBufferSize << std::endl
-<< "BackendBufferSize() " << BackendBufferSize() << std::endl;
 			return true;
 		}
 
