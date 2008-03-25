@@ -14,8 +14,9 @@ import os, sys
 basedir=os.environ['HOME']+'/acustica/'
 
 params = {
-	'path_file' : basedir+'realitzacions/two_moving_sources2.data',
+#	'path_file' : basedir+'realitzacions/two_moving_sources2.data',
 #	'path_file' : basedir+'realitzacions/arrevola_coreo_simplified.data',
+	'path_file' : basedir+'realitzacions/target_90_source_left.data',
 	'controls_per_second' : 24 }
 sources = [
 	basedir+'wavs/pluck_1s.wav',
