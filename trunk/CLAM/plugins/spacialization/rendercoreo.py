@@ -18,10 +18,10 @@ params = {
 #	'path_file' : basedir+'realitzacions/arrevola_coreo_simplified.data',
 	'controls_per_second' : 24 }
 sources = [
-#	basedir+'wavs/pluck_1s.wav',
+	basedir+'wavs/pluck_1s.wav',
 #	basedir+'wavs/metronom.wav',
-	basedir+'wavs/inlanguage_100s.wav',
-	basedir+'wavs/roland_drums_100s_48khz.wav'
+#	basedir+'wavs/inlanguage_100s.wav',
+#	basedir+'wavs/roland_drums_100s_48khz.wav'
 ]
 
 
@@ -40,9 +40,12 @@ def write_parametrized_network(params):
 	content = file('offline_networks/parametrized_on_the_fly_choreography.clamnetwork').read()
 	file(network_filename,'w').write(content % params)
 
+enable_binaural = False
+enable_surround = True
 
-run('rm *_surround.wav')
-run('rm *_binaural.wav')
+if enable_surround: run('rm *_surround.wav')
+if enable_binaural: run('rm *_binaural.wav')
+
 for i, source in enumerate(sources):
 	basename = source.split('/')[-1][:-4]
 	print 'Source %i: File: %s' % (i, basename)
@@ -51,14 +54,16 @@ for i, source in enumerate(sources):
 	run('./OfflinePlayer %s \
 		%s \
 		W.wav X.wav Y.wav Z.wav' % (network_filename,source) )
-	run('./OfflinePlayer example-data/bformat2gformat.clamnetwork \
-		W.wav X.wav Y.wav\
-		l.wav r.wav sl.wav sr.wav c.wav')
-	run('sox -M l.wav r.wav sl.wav sr.wav c.wav %s_surround.wav' % basename)
-	run('./OfflinePlayer ~/acustica/bformat2binaural/bformat2binaural.clamnetwork \
-		W.wav X.wav Y.wav Z.wav\
-		lbinaural.wav rbinaural.wav')
-	run('sox -M lbinaural.wav rbinaural.wav %s_binaural.wav' % basename)
+	if enable_surround:
+		run('./OfflinePlayer example-data/bformat2gformat.clamnetwork \
+			W.wav X.wav Y.wav\
+			l.wav r.wav sl.wav sr.wav c.wav')
+		run('sox -M l.wav r.wav sl.wav sr.wav c.wav %s_surround.wav' % basename)
+	if enable_binaural:
+		run('./OfflinePlayer ~/acustica/bformat2binaural/bformat2binaural.clamnetwork \
+			W.wav X.wav Y.wav Z.wav\
+			lbinaural.wav rbinaural.wav')
+		run('sox -M lbinaural.wav rbinaural.wav %s_binaural.wav' % basename)
 
 if len(sources)<=1 : sys.exit()
 run('sox -m *_surround.wav surround.wav')
