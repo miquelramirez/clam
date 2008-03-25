@@ -43,7 +43,7 @@ public:
 		_name = _displayName = type.name();
 		_displayName = displayName.empty()?
 			demangle(_name) : displayName;
-		std::cout << "Adding TypePlugin " << _name << " shown as " << _displayName << " with color " << color << std::endl;
+//		std::cout << "Adding TypePlugin " << _name << " shown as " << _displayName << " with color " << color << std::endl;
 		getTypeMap().insert(std::make_pair(_name, this));
 	}
 	const std::string & color() const { return _color; }
