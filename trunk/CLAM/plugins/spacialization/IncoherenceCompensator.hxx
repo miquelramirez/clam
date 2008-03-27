@@ -113,7 +113,7 @@ protected:
 		// 2*M_PI: periods -> radians
 		// 1/framesize: samples -> frame
 		// a = sigma*w/i
-		std::cout << deviationInCM << std::endl;
+//		std::cout << deviationInCM << std::endl;
 		double a = deviationInCM*M_PI*spectralRange/frameSize/180./100./c;
 
 		for (unsigned i=0; i<frameSize; i++)
