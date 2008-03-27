@@ -65,8 +65,7 @@
 
   <processing id="ImpulseResponseCalculatedOnTheFly" type="ImpulseResponseCalculatedOnTheFly">
     <FrameSize>512</FrameSize>
-    <Path></Path>
-    <Prefix></Prefix>
+    <Model3DFile></Model3DFile>
   </processing>
 
   <processing id="L" type="AudioSink"/>

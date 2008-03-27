@@ -15,12 +15,13 @@ basedir=os.environ['HOME']+'/acustica/'
 
 params = {
 #	'path_file' : basedir+'realitzacions/two_moving_sources2.data',
-#	'path_file' : basedir+'realitzacions/arrevola_coreo_simplified.data',
-	'path_file' : basedir+'realitzacions/target_90_source_left.data',
+#	'path_file' : basedir+'realitzacions/target_90_source_left.data',
+	'path_file' : basedir+'realitzacions/Simple_03.data',
+	'3Dmodel_file' : 'entorns/salo_simplificat.dat',
 	'controls_per_second' : 24 }
 sources = [
-	basedir+'wavs/pluck_1s.wav',
-#	basedir+'wavs/metronom.wav',
+#	basedir+'wavs/pluck_1s.wav',
+	basedir+'wavs/metronom.wav',
 #	basedir+'wavs/inlanguage_100s.wav',
 #	basedir+'wavs/roland_drums_100s_48khz.wav'
 ]
@@ -41,7 +42,7 @@ def write_parametrized_network(params):
 	content = file('offline_networks/parametrized_on_the_fly_choreography.clamnetwork').read()
 	file(network_filename,'w').write(content % params)
 
-enable_binaural = False
+enable_binaural = True
 enable_surround = True
 
 if enable_surround: run('rm *_surround.wav')

@@ -79,8 +79,7 @@
 
   <processing id="ImpulseResponseCalculatedOnTheFly" type="ImpulseResponseCalculatedOnTheFly">
     <FrameSize>512</FrameSize>
-    <Path></Path>
-    <Prefix></Prefix>
+    <Model3DFile>%(3Dmodel_file)s</Model3DFile>
   </processing>
 
   <processing id="MyFFT" type="MyFFT">

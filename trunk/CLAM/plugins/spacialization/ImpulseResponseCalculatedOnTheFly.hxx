@@ -24,11 +24,12 @@
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
-#include <CLAM/DirectoryName.hxx>
+//#include <CLAM/DirectoryName.hxx>
 #include "ComplexSpectrum.hxx"
 #include "LoadImpulseResponse.hxx"
 #include <vector>
 #include <sstream>
+#include <string>
 
 namespace CLAM
 {
@@ -47,16 +48,16 @@ class ImpulseResponseCalculatedOnTheFly : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
-		DYN_ATTRIBUTE( 1, public, DirectoryName, Path);
-		DYN_ATTRIBUTE( 2, public, std::string, Prefix);
+		DYN_ATTRIBUTE( 1, public, std::string, Model3DFile);
 	protected:
 		void DefaultInit()
 		{
 			AddAll();
 			UpdateData();
 			SetFrameSize(512);
+			SetModel3DFile("entorns/salo_simplificat.dat");			
 		};
 	};
 private:
@@ -125,6 +126,12 @@ public:
 	{
 		std::cout << "ImpulseResponseCalculatedOnTheFly::ConcreteConfigure"<<std::endl;
 		CopyAsConcreteConfig(_config, config);
+		_emitterX.DoControl(0.2);
+		_emitterY.DoControl(0.5);
+		_emitterZ.DoControl(0.2);
+		_receiverX.DoControl(0.5);
+		_receiverY.DoControl(0.5);
+		_receiverZ.DoControl(0.2);
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
@@ -174,6 +181,7 @@ public:
 			std::cout << "|" << std::flush;
 			std::ostringstream command;
 			command << "(cd ~/acustica/visualitzador_escena_c++ && ./visualitzador "
+				<< " --model-file=" << _config.GetModel3DFile()
 				<< " --listener-x-pos=" << _currentReceiverX
   				<< " --listener-y-pos=" << _currentReceiverY
   				<< " --listener-z-pos=" << _currentReceiverZ
@@ -181,7 +189,14 @@ public:
 				<< " --source-y-pos=" << _currentEmitterY 
 				<< " --source-z-pos=" << _currentEmitterZ
 				<< " > /dev/null )";
-			std::system( command.str().c_str() );
+std::cout << command.str() << std::endl;
+
+			int error = std::system( command.str().c_str() );
+			if (error)
+			{
+				std::cout << "ERROR: at visualitzador execution!!" <<std::endl;
+				return false;
+			}
 			if (!computeResponseSpectrums(pressureFile, _current->pressure, _config.GetFrameSize(), errorMsg)
 				|| !computeResponseSpectrums(vxFile, _current->vx, _config.GetFrameSize(), errorMsg)
 				|| !computeResponseSpectrums(vyFile, _current->vy , _config.GetFrameSize(), errorMsg) 
