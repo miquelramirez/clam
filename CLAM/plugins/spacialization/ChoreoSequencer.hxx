@@ -75,6 +75,7 @@ class ChoreoSequencer : public CLAM::Processing
 	unsigned _indexTargetY;
 	unsigned _indexTargetZ;
 	unsigned _indexTargetAzimuth;
+	unsigned _indexTargetElevation;
 	unsigned _indexSourceX;
 	unsigned _indexSourceY;
 	unsigned _indexSourceZ;
@@ -111,6 +112,7 @@ public:
 			_targetY.SendControl( _controlSequence[_sequenceIndex][_indexTargetY] );
 			_targetZ.SendControl( _controlSequence[_sequenceIndex][_indexTargetZ] );
 			_targetAzimuth.SendControl( _controlSequence[_sequenceIndex][_indexTargetAzimuth] );
+			_targetElevation.SendControl( _controlSequence[_sequenceIndex][_indexTargetElevation] );
 			_sourceX.SendControl( _controlSequence[_sequenceIndex][_indexSourceX+3*sourceIndex] );
 			_sourceY.SendControl( _controlSequence[_sequenceIndex][_indexSourceY+3*sourceIndex] );
 			_sourceZ.SendControl( _controlSequence[_sequenceIndex][_indexSourceZ+3*sourceIndex] );
@@ -149,6 +151,7 @@ protected:
 			_indexTargetX=0;
 			_indexTargetY=1;
 			_indexTargetAzimuth=2;
+			_indexTargetElevation=3;
 
 			// by now, let's do a circle in the room
 			unsigned NPoints = 100;
