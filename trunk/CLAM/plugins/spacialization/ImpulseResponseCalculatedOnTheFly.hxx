@@ -37,10 +37,10 @@ namespace CLAM
 
 struct BFormatIR
 {
-	ImpulseResponse pressure;
-	ImpulseResponse vx;
-	ImpulseResponse vy;
-	ImpulseResponse vz;
+	ImpulseResponse W;
+	ImpulseResponse X;
+	ImpulseResponse Y;
+	ImpulseResponse Z;
 
 };
 class ImpulseResponseCalculatedOnTheFly : public Processing
@@ -198,24 +198,24 @@ std::cout << command.str() << std::endl;
 				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do at visualitzador execution!!" <<std::endl;
 				return false;
 			}
-			if (!computeResponseSpectrums(pressureFile, _current->pressure, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(vxFile, _current->vx, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(vyFile, _current->vy , _config.GetFrameSize(), errorMsg) 
-				|| !computeResponseSpectrums(vzFile, _current->vz , _config.GetFrameSize(), errorMsg) )
+			if (!computeResponseSpectrums(pressureFile, _current->W, _config.GetFrameSize(), errorMsg)
+				|| !computeResponseSpectrums(vxFile, _current->X, _config.GetFrameSize(), errorMsg)
+				|| !computeResponseSpectrums(vyFile, _current->Y , _config.GetFrameSize(), errorMsg) 
+				|| !computeResponseSpectrums(vzFile, _current->Z , _config.GetFrameSize(), errorMsg) )
 			{
 				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do can not open IR files." << errorMsg << std::endl;
 				return false;
 			}
 		}
 
-		_pressureImpulseResponseOutPort.GetData()= &_current->pressure;
-		_previousPressureImpulseResponseOutPort.GetData() = &_previous->pressure;
-		_vxImpulseResponseOutPort.GetData()= &_current->vx;
-		_previousVxImpulseResponseOutPort.GetData()= &_previous->vx;
-		_vyImpulseResponseOutPort.GetData()= &_current->vy;
-		_previousVyImpulseResponseOutPort.GetData()= &_previous->vy;
-		_vzImpulseResponseOutPort.GetData()= &_current->vz;
-		_previousVzImpulseResponseOutPort.GetData()= &_previous->vz;
+		_pressureImpulseResponseOutPort.GetData()= &_current->W;
+		_previousPressureImpulseResponseOutPort.GetData() = &_previous->W;
+		_vxImpulseResponseOutPort.GetData()= &_current->X;
+		_previousVxImpulseResponseOutPort.GetData()= &_previous->X;
+		_vyImpulseResponseOutPort.GetData()= &_current->Y;
+		_previousVyImpulseResponseOutPort.GetData()= &_previous->Y;
+		_vzImpulseResponseOutPort.GetData()= &_current->Z;
+		_previousVzImpulseResponseOutPort.GetData()= &_previous->Z;
 
 		_pressureImpulseResponseOutPort.Produce();
 		_previousPressureImpulseResponseOutPort.Produce();
