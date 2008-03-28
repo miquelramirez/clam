@@ -189,12 +189,13 @@ public:
 				<< " --source-y-pos=" << _currentEmitterY 
 				<< " --source-z-pos=" << _currentEmitterZ
 				<< " > /dev/null )";
+				
 std::cout << command.str() << std::endl;
 
 			int error = std::system( command.str().c_str() );
 			if (error)
 			{
-				std::cout << "ERROR: at visualitzador execution!!" <<std::endl;
+				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do at visualitzador execution!!" <<std::endl;
 				return false;
 			}
 			if (!computeResponseSpectrums(pressureFile, _current->pressure, _config.GetFrameSize(), errorMsg)
@@ -202,7 +203,8 @@ std::cout << command.str() << std::endl;
 				|| !computeResponseSpectrums(vyFile, _current->vy , _config.GetFrameSize(), errorMsg) 
 				|| !computeResponseSpectrums(vzFile, _current->vz , _config.GetFrameSize(), errorMsg) )
 			{
-				std::cout << "Error: ImpulseResponseCalculatedOnTheFly::Do " << errorMsg << std::endl;
+				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do can not open IR files." << errorMsg << std::endl;
+				return false;
 			}
 		}
 
