@@ -47,6 +47,7 @@ enable_surround = True
 
 if enable_surround: run('rm *_surround.wav')
 if enable_binaural: run('rm *_binaural.wav')
+run('rm *_bformat.wav')
 
 for i, source in enumerate(sources):
 	basename = source.split('/')[-1][:-4]
@@ -56,6 +57,7 @@ for i, source in enumerate(sources):
 	run('./OfflinePlayer %s \
 		%s \
 		W.wav X.wav Y.wav Z.wav' % (network_filename,source) )
+	run('sox -M W.wav X.wav Y.wav Z.wav %s_bformat.wav' % basename)
 	if enable_surround:
 		run('./OfflinePlayer example-data/bformat2gformat.clamnetwork \
 			W.wav X.wav Y.wav\
