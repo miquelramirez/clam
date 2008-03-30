@@ -2,7 +2,6 @@
 #define DataAudioStreamer_hxx
 
 #include "Processing.hxx"
-#include "DummyConfig.hxx"
 #include "AudioInPort.hxx"
 #include "SampleBySampleConfig.hxx"
 

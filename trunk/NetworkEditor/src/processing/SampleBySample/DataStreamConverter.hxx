@@ -2,7 +2,6 @@
 #define DataStreamConverter_hxx
 
 #include "Processing.hxx"
-#include "DummyConfig.hxx"
 #include "AudioOutPort.hxx"
 #include "SampleBySampleConfig.hxx"
 
