@@ -24,9 +24,7 @@
 #include "Wires.hxx"
 #include <vector>
 #include <algorithm>
-#include <CLAM/Network.hxx>
-#include <CLAM/ProcessingFactory.hxx>
-#include "OutControlSender.hxx" //TODO move to cxx
+#include <CLAM/Assert.hxx>
 
 class NetworkCanvas : public QWidget
 {
@@ -550,10 +548,12 @@ public:
 	virtual bool isOk(void * processing)=0;
 	virtual QString errorMessage(void * processing)=0;
 	virtual QWidget * embededWidgetFor(void * processing) = 0;
+	virtual void contextMenu(QMenu* menu, const QPoint & translatedPos) =0;
 
 	// TODO: Are those generic enough to be virtual?
 	virtual bool editConfiguration(ProcessingBox * box) = 0;
 	virtual void addControlSenderProcessing( ProcessingBox * processing, QPoint point ) = 0;
+
 
 signals:
 	void changed();
@@ -629,70 +629,11 @@ public: // Event Handlers
 		print();
 	}
 
-	std::string outportTypeId(void * processing, unsigned index) const
-	{
-		if (!processing) return "";
-		return ((CLAM::Processing*)processing)->GetOutPorts().GetByNumber(index).GetTypeId().name();
-	}
-
-
 	void contextMenuEvent(QContextMenuEvent * event)
 	{
 		QMenu menu(this);
-		menu.move(event->globalPos());
-		QPoint translatedPoint = translatedPos(event);
-		for (unsigned i = _processings.size(); i--; )
-		{
-			ProcessingBox::Region region = _processings[i]->getRegion(translatedPoint);
-			if (region==ProcessingBox::noRegion) continue;
-			if (
-				region==ProcessingBox::inportsRegion ||
-				region==ProcessingBox::outportsRegion ||
-				region==ProcessingBox::incontrolsRegion ||
-				region==ProcessingBox::outcontrolsRegion )
-			{
-				menu.addAction(QIcon(":/icons/images/remove.png"), "Disconnect",
-					this, SLOT(onDisconnect()))->setData(translatedPoint);
-				menu.addAction(QIcon(":/icons/images/editcopy.png"), "Copy connection name",
-					this, SLOT(onCopyConnection()))->setData(translatedPoint);
-				if (region==ProcessingBox::incontrolsRegion)
-				{
-					menu.addAction(QIcon(":/icons/images/hslider.png"), "Add slider",
-						this, SLOT(onAddSlider()))->setData(translatedPoint);
-				}
-				if (region==ProcessingBox::outportsRegion)
-				{
-					typedef CLAM::ProcessingFactory::Keys Keys;
-					menu.addSeparator();
-					CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-					unsigned portindex = _processings[i]->portIndexByYPos(translatedPoint);
-					Keys keys = factory.GetKeys("port_monitor_type", outportTypeId(_processings[i]->model(),portindex));
-					for (Keys::const_iterator it=keys.begin(); it!=keys.end(); it++)
-					{
-						const char* key = it->c_str();
-						std::string iconPath = factory.GetValueFromAttribute(key, "icon");
-						QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
-						menu.addAction( icon, key, this, SLOT(onAddMonitor()))->setData(translatedPoint);
-					}
-				}
-			}
-			if (region==ProcessingBox::nameRegion || 
-				region==ProcessingBox::bodyRegion ||
-				region==ProcessingBox::resizeHandleRegion)
-			{
-				menu.addAction(QIcon(":/icons/images/configure.png"), "Configure",
-					this, SLOT(onConfigure()))->setData(translatedPoint);
-				menu.addAction(QIcon(":/icons/images/rename.png"), "Rename",
-					this, SLOT(onRename()))->setData(translatedPoint);
-				menu.addAction(QIcon(":/icons/images/editdelete.png"), "Remove",
-					this, SLOT(onDeleteProcessing()))->setData(translatedPoint);
-			}
-			menu.exec();
-			return;
-		}
-		menu.addAction(QIcon(":/icons/images/newprocessing.png"), "Add processing",
-			this, SLOT(onNewProcessing()))->setData(translatedPoint);
-		menu.exec();
+		contextMenu(&menu, translatedPos(event));
+		menu.exec(event->globalPos());
 	}
 
 	void dragEnterEvent(QDragEnterEvent *event)
@@ -820,10 +761,12 @@ protected:
 };
 
 #include <typeinfo>
+#include <CLAM/Network.hxx>
 #include <CLAM/ProcessingDataPlugin.hxx>
+#include <CLAM/ProcessingFactory.hxx>
+#include "OutControlSender.hxx"
 #include "Configurator.hxx"
 #include "uic_DummyProcessingConfig.hxx"
-#include <CLAM/Factory.hxx>
 
 
 class ClamNetworkCanvas : public NetworkCanvas
@@ -1390,6 +1333,69 @@ private slots:
 		}
 		addProcessing(point, type);
 	}
+private:
+	std::string outportTypeId(void * processing, unsigned index) const
+	{
+		if (!processing) return "";
+		return ((CLAM::Processing*)processing)->GetOutPorts().GetByNumber(index).GetTypeId().name();
+	}
+
+	virtual void contextMenu(QMenu* menu, const QPoint & translatedPos)
+	{
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(translatedPos);
+			if (region==ProcessingBox::noRegion) continue;
+			if (
+				region==ProcessingBox::inportsRegion ||
+				region==ProcessingBox::outportsRegion ||
+				region==ProcessingBox::incontrolsRegion ||
+				region==ProcessingBox::outcontrolsRegion )
+			{
+				menu->addAction(QIcon(":/icons/images/remove.png"), "Disconnect",
+					this, SLOT(onDisconnect()))->setData(translatedPos);
+				menu->addAction(QIcon(":/icons/images/editcopy.png"), "Copy connection name",
+					this, SLOT(onCopyConnection()))->setData(translatedPos);
+				if (region==ProcessingBox::incontrolsRegion)
+				{
+					menu->addAction(QIcon(":/icons/images/hslider.png"), "Add slider",
+						this, SLOT(onAddSlider()))->setData(translatedPos);
+				}
+				if (region==ProcessingBox::outportsRegion)
+				{
+					typedef CLAM::ProcessingFactory::Keys Keys;
+					menu->addSeparator();
+					CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+					unsigned portindex = _processings[i]->portIndexByYPos(translatedPos);
+					Keys keys = factory.GetKeys("port_monitor_type", outportTypeId(_processings[i]->model(),portindex));
+					for (Keys::const_iterator it=keys.begin(); it!=keys.end(); it++)
+					{
+						const char* key = it->c_str();
+						std::string iconPath = factory.GetValueFromAttribute(key, "icon");
+						QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
+						menu->addAction( icon, key, this, SLOT(onAddMonitor()))->setData(translatedPos);
+					}
+				}
+				return;
+			}
+			if (region==ProcessingBox::nameRegion || 
+				region==ProcessingBox::bodyRegion ||
+				region==ProcessingBox::resizeHandleRegion)
+				{
+				menu->addAction(QIcon(":/icons/images/configure.png"), "Configure",
+					this, SLOT(onConfigure()))->setData(translatedPos);
+				menu->addAction(QIcon(":/icons/images/rename.png"), "Rename",
+					this, SLOT(onRename()))->setData(translatedPos);
+				menu->addAction(QIcon(":/icons/images/editdelete.png"), "Remove",
+				this, SLOT(onDeleteProcessing()))->setData(translatedPos);
+				return;
+			}
+		}
+		menu->addAction(QIcon(":/icons/images/newprocessing.png"), "Add processing",
+			this, SLOT(onNewProcessing()))->setData(translatedPos);
+	}
+
+
 private:
 	CLAM::Network * _network;
 };
