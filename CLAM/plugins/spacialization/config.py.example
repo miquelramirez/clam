@@ -1,0 +1,23 @@
+import os
+basedir=os.environ['HOME']+'/acustica/'
+
+renderParams = { # parameters for the network template
+	'path_file' : basedir+'realitzacions/Simple_03.coreo',
+	'3Dmodel_file' : 'entorns/salo_simplificat.dat',
+	'controls_per_second' : 24,
+	}
+generalParams = {
+	'video' : basedir+'realitzacions/Simple_03.flv', # OPTIONAL: if existent puts the binaural output to this video.
+	}
+
+sources = [
+#	basedir+'wavs/pluck_1s.wav', 
+#	basedir+'wavs/metronom.wav',
+#	basedir+'wavs/inlanguage_100s.wav',
+	basedir+'wavs/roland_drums_100s_48khz.wav'
+]
+
+
+enable_binaural = True
+enable_surround = True
+
