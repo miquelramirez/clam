@@ -11,11 +11,16 @@ namespace CLAM
 
 class FreewheelingNetworkPlayer : public NetworkPlayer
 {
-	int mBufferSize;
-	std::vector<std::string> mFilenames;
+	std::vector<std::string> _filenames;
+	bool _enableLoopInputWavs;
+	float _resultWavsTime;
+
 
 public:
-	FreewheelingNetworkPlayer();
+	FreewheelingNetworkPlayer()
+		: _enableLoopInputWavs(false)
+		, _resultWavsTime(0.0)
+	{}
 	void AddInputFile( const std::string& );
 	void AddOutputFile( const std::string& );
 	// base class (virtual) interface:
@@ -26,7 +31,16 @@ public:
 	virtual void Stop();
 
 	void ProcessInputFile();
-	
+
+// specific interface - not inherited	
+	void EnableLoopInputWavs() 
+	{
+		_enableLoopInputWavs=true;
+	}
+	void SetResultWavsTime( double time)
+	{
+		_resultWavsTime=time;
+	}
 };
 
 }
