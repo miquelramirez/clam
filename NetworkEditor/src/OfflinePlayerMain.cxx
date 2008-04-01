@@ -1,6 +1,8 @@
 #include <CLAM/FreewheelingNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <fstream>
+#include <sstream>
+
 #ifdef USE_LADSPA
 #	include <CLAM/RunTimeLadspaLibraryLoader.hxx>
 #	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
@@ -30,13 +32,34 @@ int main( int argc, char *argv[] )
 	CLAM::Network net;
  	CLAM::XMLStorage::Restore(net, networkFile);
 	CLAM::FreewheelingNetworkPlayer * player =  new CLAM::FreewheelingNetworkPlayer;
-	net.SetPlayer( player ); // network owns the player memory
+	net.SetPlayer( player ); // network owns the player memory	
 	std::cout << "Sources and Sinks list:\n" << player->SourcesAndSinksToString() << std::endl;
 	if (argc==2)
-		return 0;
-	for (int i=2; i<argc; i++)
 	{
-		player->AddInputFile(argv[i]);
+		std::cout << "Inspecting Network." << std::endl;
+		return 0;
+	}
+	int argIndex = 2;
+	if (std::string(argv[argIndex])== "-t")
+	{
+		std::cout << "Resulting wavs time (in seconds) specified Mode" << std::endl;
+		if (argc==3)
+		{
+			std::cout << "Error: needed a time argument. Example -t 10.5 (seconds)" << std::endl;
+			return -1;
+		}
+		std::istringstream iss(argv[++argIndex]);
+		double seconds;
+		iss >> seconds;
+		std::cout << "TIME (seconds) " << seconds << std::endl;
+		player->EnableLoopInputWavs();
+		player->SetResultWavsTime(seconds);
+		argIndex++;
+		
+	}
+	for (; argIndex<argc; argIndex++)
+	{
+		player->AddInputFile(argv[argIndex]);
 	}
 	net.Start();
 	net.Stop();
