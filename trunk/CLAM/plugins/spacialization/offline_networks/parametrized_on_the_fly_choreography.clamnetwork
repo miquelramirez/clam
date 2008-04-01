@@ -118,8 +118,6 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="VelocityAdapter" type="VelocityAdapter"/>
-
   <processing id="W" type="AudioSink"/>
 
   <processing id="X" type="AudioSink"/>
@@ -368,16 +366,6 @@
   </port_connection>
 
   <port_connection>
-    <out>VelocityAdapter.Vy input</out>
-    <in>BFormatRotation.vx</in>
-  </port_connection>
-
-  <port_connection>
-    <out>VelocityAdapter.Vy output</out>
-    <in>BFormatRotation.vy</in>
-  </port_connection>
-
-  <port_connection>
     <out>XFader_P.CrossFadedBuffer</out>
     <in>toStream P.Audio buffer</in>
   </port_connection>
@@ -404,12 +392,12 @@
 
   <port_connection>
     <out>toStream Vx.Audio stream</out>
-    <in>VelocityAdapter.Vx input</in>
+    <in>BFormatRotation.vx</in>
   </port_connection>
 
   <port_connection>
     <out>toStream Vy.Audio stream</out>
-    <in>VelocityAdapter.Vy input</in>
+    <in>BFormatRotation.vy</in>
   </port_connection>
 
   <port_connection>

@@ -99,6 +99,8 @@ std::cout << "BUFFER SIZE " << buffersize << std::endl;
 		}
 		else 
 			elevation = givenElevation;
+
+azimuth *= -1;
 		if (not _isPassiveRotation)
 		{
 			azimuth *= -1;

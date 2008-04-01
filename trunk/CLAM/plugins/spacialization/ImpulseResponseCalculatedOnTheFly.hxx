@@ -190,8 +190,6 @@ public:
 				<< " --source-z-pos=" << _currentEmitterZ
 				<< " > /dev/null )";
 				
-std::cout << command.str() << std::endl;
-
 			int error = std::system( command.str().c_str() );
 			if (error)
 			{
