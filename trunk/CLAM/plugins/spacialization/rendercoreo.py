@@ -8,34 +8,12 @@
 # milestone 4: warnings, output dirs. monitor duration of files and sequencer.
 # TODO export IR histeresis distance to settings
 import os, sys
-
-# USER CONFIG
-
-basedir=os.environ['HOME']+'/acustica/'
-
-renderParams = { # parameters for the network template
-#	'path_file' : basedir+'realitzacions/two_moving_sources2.data',
-#	'path_file' : basedir+'realitzacions/target_90_source_left.data',
-	'path_file' : basedir+'realitzacions/Simple_03.coreo',
-	'3Dmodel_file' : 'entorns/salo_simplificat.dat',
-	'controls_per_second' : 24,
-	}
-generalParams = {
-	'video' : basedir+'realitzacions/Simple_03.flv', # OPTIONAL: if existent puts the binaural output to this video.
-	}
-
-sources = [
-#	basedir+'wavs/pluck_1s.wav', 
-#	basedir+'wavs/metronom.wav',
-#	basedir+'wavs/inlanguage_100s.wav',
-	basedir+'wavs/roland_drums_100s_48khz.wav'
-]
-
+sys.path.append('.')
+from config import *
 
 enable_binaural = True
 enable_surround = True
 
-# CODE
 def run(command) :
 	print '\033[32m:: ', command, '\033[0m'
 #	return os.system(command)
