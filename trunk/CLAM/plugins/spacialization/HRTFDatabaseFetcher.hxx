@@ -125,10 +125,10 @@ private:
 	OutPort< ImpulseResponse* > _impulseResponseR;
 	OutPort< ImpulseResponse* > _previousImpulseResponseL;
 	OutPort< ImpulseResponse* > _previousImpulseResponseR;
-	InControl _elevation; // angle to the horizon
-	InControl _azimut; // horizontal angle from viewpoint (north-south-east-west)
-	OutControl _chosenElevation; // angle to the horizon
-	OutControl _chosenAzimut; // horizontal angle from viewpoint (north-south-east-west)
+	InControl _elevation; ///< angle to the horizon
+	InControl _azimut; ///< horizontal angle from viewpoint (north-south-east-west)
+	OutControl _chosenElevation; ///< angle to the horizon
+	OutControl _chosenAzimut; ///< horizontal angle from viewpoint (north-south-east-west)
 	GeodesicDatabase _database; 
 	ImpulseResponse * _previousL;
 	ImpulseResponse * _previousR;
