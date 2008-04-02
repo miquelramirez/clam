@@ -99,11 +99,10 @@ std::cout << "BUFFER SIZE " << buffersize << std::endl;
 		}
 		else 
 			elevation = givenElevation;
-		if (not _isPassiveRotation)
-		{
-			azimuth *= -1;
-			elevation *= -1;
-		}
+//TODO fix: eliminate param
+_isPassiveRotation=true;
+//azimuth *= -1;
+
 		const double cosAzimuth=std::cos(azimuth);
 		const double sinAzimuth=std::sin(azimuth);
 		const double cosElevation=std::cos(elevation);
@@ -117,9 +116,9 @@ std::cout << "BUFFER SIZE " << buffersize << std::endl;
 			CLAM::TData* Yout = &_Yout.GetAudio().GetBuffer()[0];
 			CLAM::TData* Zout = &_Zout.GetAudio().GetBuffer()[0];
 
-			Xout[i] = cosAzimuth*sinElevation * vx[i] + sinAzimuth * vy[i] -cosAzimuth*cosElevation * vz[i]; 
+			Xout[i] = cosAzimuth*sinElevation * vx[i] + sinAzimuth * vy[i] - cosAzimuth*cosElevation * vz[i]; 
 			Yout[i] = -sinAzimuth*sinElevation * vx[i] + cosAzimuth * vy[i] + sinAzimuth*cosElevation * vz[i];
-			Zout[i] = cosElevation * vx[i] + 0 * vy[i] + sinElevation  * vz[i];
+			Zout[i] = cosElevation * vx[i] + /* 0 * vy[i] */  + sinElevation  * vz[i];
 		}
 
 		_Xin.Consume();
