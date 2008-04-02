@@ -1,14 +1,14 @@
 import os
 acustica_path=os.environ['HOME']+'/acustica/'
-clam_path = os.path.join(os.environ['HOME'], 'CajitasDeArena/clam')
+clam_path = os.environ['HOME']+'/clam/'
 
 renderParams = { # parameters for the network template
-	'path_file' : acustica_path+'realitzacions/Simple_03.coreo',
+	'path_file' : acustica_path+'realitzacions/Simple_01.coreo',
 	'3Dmodel_file' : 'entorns/salo_simplificat.dat',
 	'controls_per_second' : 24,
 	}
 generalParams = {
-	'video' : acustica_path+'realitzacions/Simple_03.flv', # OPTIONAL: if existent puts the binaural output to this video.
+	'video' : acustica_path+'realitzacions/Simple_01.flv', # OPTIONAL: if existent puts the binaural output to this video.
 	}
 
 sources = [
