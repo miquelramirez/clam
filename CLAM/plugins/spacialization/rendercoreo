@@ -60,7 +60,7 @@ for i, source in enumerate(sources):
 		run('sox  -M l.wav r.wav sl.wav sr.wav c.wav %s_surround.wav' % basename)
 	if enable_binaural:
 		run( offlineplayer_bin + ' ~/acustica/bformat2binaural/bformat2binaural.clamnetwork W.wav X.wav Y.wav Z.wav lbinaural.wav rbinaural.wav' )
-		run('sox -M -v 10 lbinaural.wav -v 10 rbinaural.wav  %s_binaural.wav' % basename)
+		run('sox -M  lbinaural.wav  rbinaural.wav  %s_binaural.wav' % basename)
 
 if len(sources)<=1 : 
 	run('cp *_binaural.wav binaural.wav')
