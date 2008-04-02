@@ -80,6 +80,7 @@
   <processing id="ImpulseResponseCalculatedOnTheFly" type="ImpulseResponseCalculatedOnTheFly">
     <FrameSize>512</FrameSize>
     <Model3DFile></Model3DFile>
+    <GridDivisions>500</GridDivisions>
   </processing>
 
   <processing id="MyFFT" type="MyFFT">
