@@ -64,10 +64,10 @@ for i, source in enumerate(sources):
 
 if len(sources)<=1 : 
 	run('cp *_binaural.wav binaural.wav')
-	run('cp *_binaural.wav binaural.wav')
+	run('cp *_surround.wav surround.wav')
 else :	
-	run('sox -m *_surround.wav surround.wav')
 	run('sox -m *_binaural.wav binaural.wav')
+	run('sox -m *_surround.wav surround.wav')
 
 if generalParams.has_key('video') and generalParams['video']:
 	video_path = generalParams['video']
@@ -76,6 +76,12 @@ if generalParams.has_key('video') and generalParams['video']:
 	run('mencoder -ovc copy %s -audiofile binaural.wav -oac copy -o %s_binaural%s' % 
 		(video_path, video_basename, video_ext)
 		)
+	# write demoing script.
+	demoing_script = """#!/bin/bash
+(mplayer %s_binaural%s -fs -loop 0 &) && mplayer surround.wav -ao jack -loop 0
+""" % (video_basename, video_ext)
+	file('play_surround.sh','w').write(demoing_script)
+ 	run('chmod +x play_surround.sh') #TODO do properly
 
 #tear down
 run('rm E?.wav')
