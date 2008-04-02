@@ -4,8 +4,9 @@ clam_path = os.environ['HOME']+'/clam/'
 
 renderParams = { # parameters for the network template
 	'path_file' : acustica_path+'realitzacions/Simple_01.coreo',
-	'3Dmodel_file' : 'entorns/salo_simplificat.dat',
+	'3Dmodel_file' : acustica_path+'visualitzador_escena_c++/entorns/salo_simplificat.dat',
 	'controls_per_second' : 24,
+	'grid_divisions': 500,
 	}
 generalParams = {
 	'video' : acustica_path+'realitzacions/Simple_01.flv', # OPTIONAL: if existent puts the binaural output to this video.

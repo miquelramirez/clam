@@ -24,7 +24,7 @@
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
-//#include <CLAM/DirectoryName.hxx>
+#include <CLAM/Filename.hxx>
 #include "ComplexSpectrum.hxx"
 #include "LoadImpulseResponse.hxx"
 #include <vector>
@@ -48,16 +48,18 @@ class ImpulseResponseCalculatedOnTheFly : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
-		DYN_ATTRIBUTE( 1, public, std::string, Model3DFile);
+		DYN_ATTRIBUTE( 1, public, Filename, Model3DFile);
+		DYN_ATTRIBUTE( 2, public, unsigned, GridDivisions);
 	protected:
 		void DefaultInit()
 		{
 			AddAll();
 			UpdateData();
 			SetFrameSize(512);
-			SetModel3DFile("entorns/salo_simplificat.dat");			
+			SetModel3DFile("entorns/salo_simplificat.dat");
+			SetGridDivisions(500);
 		};
 	};
 private:
@@ -87,6 +89,7 @@ private:
 	float _currentReceiverX;
 	float _currentReceiverY;
 	float _currentReceiverZ;
+	float _delta;
 
 public:
 	const char* GetClassName() const { return "ImpulseResponseCalculatedOnTheFly"; }
@@ -113,6 +116,7 @@ public:
 		, _currentReceiverX(0)
 		, _currentReceiverY(0)
 		, _currentReceiverZ(0)
+		, _delta(1)
 	{
 		Configure( config );
 		_emitterX.SetBounds(0,1);
@@ -132,6 +136,7 @@ public:
 		_receiverX.DoControl(0.5);
 		_receiverY.DoControl(0.5);
 		_receiverZ.DoControl(0.2);
+		_delta = 1./_config.GetGridDivisions();
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
@@ -150,21 +155,18 @@ public:
 		float y2 = _receiverY.GetLastValue();
 		float z2 = _receiverZ.GetLastValue();
 
-		float delta = 0.0020;
-		bool changeSnappedIR = fabs(_currentReceiverX-x2) > delta 
-			|| fabs(_currentReceiverY-y2) > delta 
-			|| fabs(_currentEmitterX-x1) > delta
-			|| fabs(_currentEmitterY-y1) > delta
+		bool changeSnappedIR = fabs(_currentReceiverX-x2) > _delta 
+			|| fabs(_currentReceiverY-y2) > _delta 
+			|| fabs(_currentEmitterX-x1) > _delta
+			|| fabs(_currentEmitterY-y1) > _delta
 			;
 //		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
 		
 		std::string errorMsg;
-		const std::string path = std::string(getenv("HOME"))
-			+"/acustica/visualitzador_escena_c++/responses/"; 
-		std::string pressureFile = path+"p_positioned_IR_time.wav";
-		std::string vxFile = path+"vx_positioned_IR_time.wav";
-		std::string vyFile = path+"vy_positioned_IR_time.wav";
-		std::string vzFile = path+"vz_positioned_IR_time.wav";
+		std::string pressureFile = "p_positioned_IR_time.wav";
+		std::string vxFile = "vx_positioned_IR_time.wav";
+		std::string vyFile = "vy_positioned_IR_time.wav";
+		std::string vzFile = "vz_positioned_IR_time.wav";
 //		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		std::cout << "." << std::flush;
 		if (!_current or changeSnappedIR)
@@ -180,7 +182,7 @@ public:
 			_currentReceiverZ = z2;
 			std::cout << "|" << std::flush;
 			std::ostringstream command;
-			command << "(cd ~/acustica/visualitzador_escena_c++ && ./visualitzador "
+			command << "visualitzador "
 				<< " --model-file=" << _config.GetModel3DFile()
 				<< " --listener-x-pos=" << _currentReceiverX
   				<< " --listener-y-pos=" << _currentReceiverY
@@ -188,8 +190,7 @@ public:
   				<< " --source-x-pos=" << _currentEmitterX
 				<< " --source-y-pos=" << _currentEmitterY 
 				<< " --source-z-pos=" << _currentEmitterZ
-				<< " > /dev/null )";
-				
+				<< " > /dev/null";
 			int error = std::system( command.str().c_str() );
 			if (error)
 			{
