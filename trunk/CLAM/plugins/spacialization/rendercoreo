@@ -9,7 +9,7 @@
 # TODO export IR histeresis distance to settings
 import os, sys
 sys.path.append('.')
-from config import *
+from coreoconfig import *
 
 enable_binaural = True
 enable_surround = True
