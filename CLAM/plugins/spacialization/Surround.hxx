@@ -21,10 +21,10 @@ public:
 		} speaker[] =
 		{
 			{"center", 0},
-			{"right", 30},
-			{"surroundRight", 110},
-			{"surroundLeft", -110},
-			{"left", -30},
+			{"right", -30},
+			{"surroundRight", -110},
+			{"surroundLeft", 110},
+			{"left", 30},
 			{0,0}
 		};
 		
