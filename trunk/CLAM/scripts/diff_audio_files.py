@@ -26,12 +26,18 @@ def norun(command) :
 
 threshold = -80.0 # dB
 
-def diff_files(expected, result) :
-	diff = "diff_"+os.path.basename(expected)
-	silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 '%(expected, result, diff))
-	max_dbs = float(silentrun("sndfile-info %s | awk '/Signal/ {print $5}'"%(diff))[1:])
+def diff_files(expected, result, diffbase) :
+	if not os.access(result, os.R_OK):
+		print "Result file not found: ", result
+		return False
+	if not os.access(expected, os.R_OK):
+		print "Expected file not found: ", result
+		return False
+	diffwav = diffbase+'.wav'
+	silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 '%(expected, result, diffwav))
+	max_dbs = float(silentrun("sndfile-info %s | awk '/Signal/ {print $5}'"%(diffwav))[1:])
 	if max_dbs > threshold :
-		silentrun('wav2png --input %s --width 700 --linecolor ff0088 --backgroundcolor dddddd --zerocolor 000000'%(diff))
+		silentrun('wav2png --input %s --width 700 --linecolor ff0088 --backgroundcolor dddddd --zerocolor 000000'%(diffwav))
 		print "Files are different with threshold", threshold
 		print "Max diff is :", max_dbs, "dB"
 		print "expected:",expected
