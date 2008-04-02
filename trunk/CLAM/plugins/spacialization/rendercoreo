@@ -24,7 +24,6 @@ def norun(command) :
 	print '\033[31mXX ', command, '\033[0m'
 
 generated_network_filename = 'generated.clamnetwork'
-clam_path = os.path.join(os.environ['HOME'], 'clam')
 spacialization_path = os.path.join(clam_path,'CLAM','plugins','spacialization')
 parametrized_network_filename = os.path.join(spacialization_path,
 	'offline_networks','parametrized_on_the_fly_choreography.clamnetwork')
@@ -42,10 +41,8 @@ print "TIME",totalTime
 if enable_surround: run('rm -f *_surround.wav')
 if enable_binaural: run('rm -f *_binaural.wav')
 run('rm -f *_bformat.wav')
-run('ln -s ~/acustica/bformat2binaural/Ew.wav')
-run('ln -s ~/acustica/bformat2binaural/Ex.wav')
-run('ln -s ~/acustica/bformat2binaural/Ey.wav')
-run('ln -s ~/acustica/bformat2binaural/Ez.wav')
+for component in 'wxyz':
+	run ('ln -s %s' % os.path.join(acustica_path, 'bformat2binaural/E%s.wav'%component))
 
 for i, source in enumerate(sources):
 	basename = source.split('/')[-1][:-4]
@@ -59,7 +56,7 @@ for i, source in enumerate(sources):
 		run('%s %s/example-data/bformat2gformat.clamnetwork W.wav X.wav Y.wav l.wav r.wav sl.wav sr.wav c.wav' % (offlineplayer_bin, spacialization_path) )
 		run('sox  -M l.wav r.wav sl.wav sr.wav c.wav %s_surround.wav' % basename)
 	if enable_binaural:
-		run( offlineplayer_bin + ' ~/acustica/bformat2binaural/bformat2binaural.clamnetwork W.wav X.wav Y.wav Z.wav lbinaural.wav rbinaural.wav' )
+		run( offlineplayer_bin + ' ' + os.path.join(acustica_path, 'bformat2binaural/bformat2binaural.clamnetwork') + ' W.wav X.wav Y.wav Z.wav lbinaural.wav rbinaural.wav' )
 		run('sox -M  lbinaural.wav  rbinaural.wav  %s_binaural.wav' % basename)
 
 if len(sources)<=1 : 
@@ -84,4 +81,6 @@ if generalParams.has_key('video') and generalParams['video']:
  	run('chmod +x play_surround.sh') #TODO do properly
 
 #tear down
-run('rm E?.wav')
+run('rm -f E?.wav')
+
+
