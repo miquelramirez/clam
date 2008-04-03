@@ -163,10 +163,10 @@ public:
 //		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
 		
 		std::string errorMsg;
-		std::string pressureFile = "p_positioned_IR_time.wav";
-		std::string vxFile = "vx_positioned_IR_time.wav";
-		std::string vyFile = "vy_positioned_IR_time.wav";
-		std::string vzFile = "vz_positioned_IR_time.wav";
+		std::string wFile = "w_positioned_IR_time.wav";
+		std::string xFile = "x_positioned_IR_time.wav";
+		std::string yFile = "y_positioned_IR_time.wav";
+		std::string zFile = "z_positioned_IR_time.wav";
 //		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		std::cout << "." << std::flush;
 		if (!_current or changeSnappedIR)
@@ -191,16 +191,17 @@ public:
 				<< " --source-y-pos=" << _currentEmitterY 
 				<< " --source-z-pos=" << _currentEmitterZ
 				<< " > /dev/null";
+			//std::cout << command.str() << std::endl;
 			int error = std::system( command.str().c_str() );
 			if (error)
 			{
 				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do at visualitzador execution!!" <<std::endl;
 				return false;
 			}
-			if (!computeResponseSpectrums(pressureFile, _current->W, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(vxFile, _current->X, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(vyFile, _current->Y , _config.GetFrameSize(), errorMsg) 
-				|| !computeResponseSpectrums(vzFile, _current->Z , _config.GetFrameSize(), errorMsg) )
+			if (!computeResponseSpectrums(wFile, _current->W, _config.GetFrameSize(), errorMsg)
+				|| !computeResponseSpectrums(xFile, _current->X, _config.GetFrameSize(), errorMsg)
+				|| !computeResponseSpectrums(yFile, _current->Y , _config.GetFrameSize(), errorMsg) 
+				|| !computeResponseSpectrums(zFile, _current->Z , _config.GetFrameSize(), errorMsg) )
 			{
 				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do can not open IR files." << errorMsg << std::endl;
 				return false;
