@@ -42,7 +42,7 @@ if enable_surround: run('rm -f *_surround.wav')
 if enable_binaural: run('rm -f *_binaural.wav')
 run('rm -f *_bformat.wav')
 for component in 'wxyz':
-	run ('ln -s %s' % os.path.join(acustica_path, 'bformat2binaural/E%s.wav'%component))
+	run ('sox %s -r48000 E%s.wav rabbit' % (os.path.join(acustica_path, 'bformat2binaural/E%s.wav'%component),component))
 
 for i, source in enumerate(sources):
 	basename = source.split('/')[-1][:-4]
