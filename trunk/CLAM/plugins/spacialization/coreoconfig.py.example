@@ -4,7 +4,7 @@ clam_path = os.environ['HOME']+'/clam/'
 
 renderParams = { # parameters for the network template
 	'path_file' : acustica_path+'realitzacions/Simple_01.coreo',
-	'3Dmodel_file' : acustica_path+'visualitzador_escena_c++/entorns/salo_simplificat.dat',
+	'3Dmodel_file' : acustica_path+'visualitzador_escena_c++/entorns/salo_simplificat_sense_sostres.dat',
 	'controls_per_second' : 24,
 	'grid_divisions': 500,
 	}
