@@ -23,6 +23,11 @@ def run(command) :
 def norun(command) :
 	print '\033[31mXX ', command, '\033[0m'
 
+def assert_file_exists(file) :
+	if not os.access(file, os.R_OK):
+		print '\033[31mERROR: this file was expected but not found:', file, '\033[0m'
+		sys.exit(-1)
+
 generated_network_filename = 'generated.clamnetwork'
 spacialization_path = os.path.join(clam_path,'CLAM','plugins','spacialization')
 parametrized_network_filename = os.path.join(spacialization_path,
@@ -32,6 +37,11 @@ offlineplayer_bin = os.path.join(clam_path,'NetworkEditor','OfflinePlayer')
 def write_parametrized_network(renderParams):
 	content = file(parametrized_network_filename).read()
 	file(generated_network_filename,'w').write(content % renderParams)
+
+assert_file_exists(renderParams['path_file'])
+assert_file_exists(renderParams['3Dmodel_file'])
+for s in sources: assert_file_exists(s)
+
 
 
 controlsCount = float(os.popen("wc -l "+renderParams['path_file']).read().split()[0])
@@ -43,6 +53,7 @@ if enable_binaural: run('rm -f *_binaural.wav')
 run('rm -f *_bformat.wav')
 for component in 'wxyz':
 	run ('sox %s -r48000 E%s.wav rabbit' % (os.path.join(acustica_path, 'bformat2binaural/E%s.wav'%component),component))
+
 
 for i, source in enumerate(sources):
 	basename = source.split('/')[-1][:-4]

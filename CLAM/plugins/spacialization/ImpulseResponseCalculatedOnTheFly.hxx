@@ -196,6 +196,7 @@ public:
 			if (error)
 			{
 				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do at visualitzador execution!!" <<std::endl;
+				std::cout << "Offending command:\n"<<  command.str() << std::endl;
 				return false;
 			}
 			if (!computeResponseSpectrums(wFile, _current->W, _config.GetFrameSize(), errorMsg)
