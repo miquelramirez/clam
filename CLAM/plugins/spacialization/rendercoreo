@@ -5,8 +5,10 @@
 # DONE milestone 1: multiple sources, fixed parameters (sample rate, origen, sequenced-controls), optional inputs DONE
 # DONE milestone 2: output in b-format + 5.0 + binaural
 # DONE milestone 3: configuragle networks.
-# milestone 4: warnings, output dirs. monitor duration of files and sequencer.
-# TODO export IR histeresis distance to settings
+# DONE milestone 4: warnings, output dirs. 
+# DONE export IR histeresis distance to settings
+# milestone 5: monitor duration of files and sequencer.
+
 import os, sys
 sys.path.append('.')
 from coreoconfig import *
@@ -52,7 +54,7 @@ if enable_surround: run('rm -f *_surround.wav')
 if enable_binaural: run('rm -f *_binaural.wav')
 run('rm -f *_bformat.wav')
 for component in 'wxyz':
-	run ('sox %s -r48000 E%s.wav rabbit' % (os.path.join(acustica_path, 'bformat2binaural/E%s.wav'%component),component))
+	run ('sox  -v 0.6 %s -r48000 E%s.wav rabbit' % (os.path.join(acustica_path, 'bformat2binaural/E%s.wav'%component),component))
 
 
 for i, source in enumerate(sources):
