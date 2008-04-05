@@ -10,11 +10,32 @@
 # milestone 5: monitor duration of files and sequencer.
 
 import os, sys
-sys.path.append('.')
-from coreoconfig import *
+class config :
+	acustica_path=os.environ['HOME']+'/acustica/'
+	clam_path = os.environ['HOME']+'/clam/'
 
-enable_binaural = True
-enable_surround = True
+	renderParams = { # parameters for the network template
+		'path_file' : acustica_path+'realitzacions/Simple_01.coreo',
+		'3Dmodel_file' : acustica_path+'visualitzador_escena_c++/entorns/salo_simplificat_sense_sostres.dat',
+		'controls_per_second' : 24,
+		'grid_divisions': 500,
+		}
+	generalParams = {
+		'video' : None
+		}
+	sources = [
+	#	acustica_path+'wavs/pluck_1s.wav', 
+	#	acustica_path+'wavs/metronom.wav',
+	#	acustica_path+'wavs/inlanguage_100s.wav',
+		acustica_path+'wavs/roland_drums_100s_48khz.wav'
+	]
+
+	equivalent_hrtf_path = acustica_path+'bformat2binaural'
+	enable_binaural = True
+	enable_surround = True
+	if os.access("coreoconfig.py",os.R_OK) :
+		execfile("coreoconfig.py")
+
 
 def run(command) :
 	print '\033[32m:: ', command, '\033[0m'
@@ -31,57 +52,57 @@ def assert_file_exists(file) :
 		sys.exit(-1)
 
 generated_network_filename = 'generated.clamnetwork'
-spacialization_path = os.path.join(clam_path,'CLAM','plugins','spacialization')
+spacialization_path = os.path.join(config.clam_path,'CLAM','plugins','spacialization')
 parametrized_network_filename = os.path.join(spacialization_path,
 	'offline_networks','parametrized_on_the_fly_choreography.clamnetwork')
-offlineplayer_bin = os.path.join(clam_path,'NetworkEditor','OfflinePlayer')
+offlineplayer_bin = os.path.join(config.clam_path,'NetworkEditor','OfflinePlayer')
 
 def write_parametrized_network(renderParams):
 	content = file(parametrized_network_filename).read()
 	file(generated_network_filename,'w').write(content % renderParams)
 
-assert_file_exists(renderParams['path_file'])
-assert_file_exists(renderParams['3Dmodel_file'])
-for s in sources: assert_file_exists(s)
+assert_file_exists(config.renderParams['path_file'])
+assert_file_exists(config.renderParams['3Dmodel_file'])
+for s in config.sources: assert_file_exists(s)
 
 
 
-controlsCount = float(os.popen("wc -l "+renderParams['path_file']).read().split()[0])
-totalTime = controlsCount / renderParams['controls_per_second']
+controlsCount = float(os.popen("wc -l "+config.renderParams['path_file']).read().split()[0])
+totalTime = controlsCount / config.renderParams['controls_per_second']
 print "TIME",totalTime
 
-if enable_surround: run('rm -f *_surround.wav')
-if enable_binaural: run('rm -f *_binaural.wav')
+if config.enable_surround: run('rm -f *_surround.wav')
+if config.enable_binaural: run('rm -f *_binaural.wav')
 run('rm -f *_bformat.wav')
 for component in 'wxyz':
-	run ('sox  -v 0.6 %s -r48000 E%s.wav rabbit' % (os.path.join(acustica_path, 'bformat2binaural/E%s.wav'%component),component))
+	run ('sox  -v 0.6 %s -r48000 E%s.wav rabbit' % (os.path.join(config.equivalent_hrtf_path,'E%s.wav'%component),component))
 
 
-for i, source in enumerate(sources):
+for i, source in enumerate(config.sources):
 	basename = source.split('/')[-1][:-4]
 	print 'Source %i: File: %s' % (i, basename)
-	renderParams['source_index']=i
-	write_parametrized_network(renderParams)
+	config.renderParams['source_index']=i
+	write_parametrized_network(config.renderParams)
 	run( '%s %s -t %f %s W.wav X.wav Y.wav Z.wav' % 
 		(offlineplayer_bin, generated_network_filename, totalTime, source) )
 	run('sox -M W.wav X.wav Y.wav Z.wav %s_bformat.wav' % basename)
-	if enable_surround:
+	if config.enable_surround:
 		run('%s %s/example-data/bformat2gformat.clamnetwork W.wav X.wav Y.wav l.wav r.wav sl.wav sr.wav c.wav' % (offlineplayer_bin, spacialization_path) )
 		run('sox  -M l.wav r.wav sl.wav sr.wav c.wav %s_surround.wav' % basename)
-	if enable_binaural:
-		run( offlineplayer_bin + ' ' + os.path.join(acustica_path, 'bformat2binaural/bformat2binaural.clamnetwork') + ' W.wav X.wav Y.wav Z.wav lbinaural.wav rbinaural.wav' )
+	if config.enable_binaural:
+		run( offlineplayer_bin + ' ' + os.path.join(config.acustica_path, 'bformat2binaural/bformat2binaural.clamnetwork') + ' W.wav X.wav Y.wav Z.wav lbinaural.wav rbinaural.wav' )
 		run('sox -M  lbinaural.wav  rbinaural.wav  %s_binaural.wav' % basename)
 
-if len(sources)<=1 : 
+if len(config.sources)<=1 : 
 	run('cp *_binaural.wav binaural.wav')
 	run('cp *_surround.wav surround.wav')
 else :	
 	run('sox -m *_binaural.wav binaural.wav')
 	run('sox -m *_surround.wav surround.wav')
 
-if generalParams.has_key('video') and generalParams['video']:
-	video_path = generalParams['video']
-	video_nopath = os.path.basename( generalParams['video'] )
+if config.generalParams.has_key('video') and config.generalParams['video']:
+	video_path = config.generalParams['video']
+	video_nopath = os.path.basename( config.generalParams['video'] )
 	video_basename, video_ext = os.path.splitext(video_nopath)
 	run('mencoder -ovc copy %s -audiofile binaural.wav -oac copy -o %s_binaural%s' % 
 		(video_path, video_basename, video_ext)
