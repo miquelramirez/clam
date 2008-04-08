@@ -48,10 +48,12 @@ class ImpulseResponseCalculatedOnTheFly : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 5, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
 		DYN_ATTRIBUTE( 1, public, Filename, Model3DFile);
 		DYN_ATTRIBUTE( 2, public, unsigned, GridDivisions);
+		DYN_ATTRIBUTE( 3, public, unsigned, NRays);
+		DYN_ATTRIBUTE( 4, public, unsigned, NRebounds);
 	protected:
 		void DefaultInit()
 		{
@@ -60,6 +62,8 @@ public:
 			SetFrameSize(512);
 			SetModel3DFile("entorns/salo_simplificat.dat");
 			SetGridDivisions(500);
+			SetNRays(200);
+			SetNRebounds(20);
 		};
 	};
 private:
@@ -163,10 +167,10 @@ public:
 //		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
 		
 		std::string errorMsg;
-		std::string wFile = "w_positioned_IR_time.wav";
-		std::string xFile = "x_positioned_IR_time.wav";
-		std::string yFile = "y_positioned_IR_time.wav";
-		std::string zFile = "z_positioned_IR_time.wav";
+		std::string wFile = "w_IR.wav";
+		std::string xFile = "x_IR.wav";
+		std::string yFile = "y_IR.wav";
+		std::string zFile = "z_IR.wav";
 //		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		std::cout << "." << std::flush;
 		if (!_current or changeSnappedIR)
@@ -190,7 +194,10 @@ public:
   				<< " --source-x-pos=" << _currentEmitterX
 				<< " --source-y-pos=" << _currentEmitterY 
 				<< " --source-z-pos=" << _currentEmitterZ
-				<< " > /dev/null";
+				;
+			if (_config.HasNRebounds()) command << " --num-rebounds=" <<  _config.GetNRebounds();
+			if (_config.HasNRays()) command << " --num-rays=" << _config.GetNRays();
+			command << " > /dev/null";
 			//std::cout << command.str() << std::endl;
 			int error = std::system( command.str().c_str() );
 			if (error)
