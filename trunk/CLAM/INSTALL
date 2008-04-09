@@ -53,6 +53,12 @@ provides already compiled packages for several platforms.
  
  MacOSX specific: the equivalent to LD_LIBRARY_PATH in mac is DYLD_LIBRARY_PATH.
    
+ ** Warning about compiler Errors: ** 
+ Because scons copies all sources in CLAM/scons/libs/ you must be aware that the 
+ paths given by the g++ error log are NOT the original sources. For example, if scons 
+ returns: "scons/libs/core/src/Processing.cxx:56: error: ..." you should not edit this 
+ file but the one in src/ (searchable by  $ find  src/ -name "Processing.cxx")
+
 
  3. Compile the CLAM application.
 
