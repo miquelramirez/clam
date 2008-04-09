@@ -23,6 +23,7 @@ class config :
 	generalParams = {
 		'video' : None
 		}
+	inputGain = .7
 	sources = [
 	#	acustica_path+'wavs/pluck_1s.wav', 
 	#	acustica_path+'wavs/metronom.wav',
@@ -39,7 +40,7 @@ class config :
 
 def run(command) :
 	print '\033[32m:: ', command, '\033[0m'
-#	return os.system(command)
+	return os.system(command)
 	for line in os.popen(command) :
 		print line,
 		sys.stdout.flush()
@@ -73,7 +74,7 @@ print "TIME",totalTime
 
 if config.enable_surround: run('rm -f *_surround.wav')
 if config.enable_binaural: run('rm -f *_binaural.wav')
-run('rm -f *_bformat.wav')
+norun('rm -f *_bformat.wav')
 for component in 'wxyz':
 	run ('sox  -v 0.6 %s -r48000 E%s.wav rabbit' % (os.path.join(config.equivalent_hrtf_path,'E%s.wav'%component),component))
 
@@ -82,34 +83,35 @@ for i, source in enumerate(config.sources):
 	basename = source.split('/')[-1][:-4]
 	print 'Source %i: File: %s' % (i, basename)
 	config.renderParams['source_index']=i
+	run('sox -v %f "%s" "%s_normalized.wav"'%(config.inputGain, source, basename))
 	write_parametrized_network(config.renderParams)
-	run( '%s %s -t %f %s W.wav X.wav Y.wav Z.wav' % 
-		(offlineplayer_bin, generated_network_filename, totalTime, source) )
-	run('sox -M W.wav X.wav Y.wav Z.wav %s_bformat.wav' % basename)
+	run( '%s %s -t %f "%s_normalized.wav" W.wav X.wav Y.wav Z.wav' % 
+		(offlineplayer_bin, generated_network_filename, totalTime, basename) )
+	run('sox -M W.wav X.wav Y.wav Z.wav "%s_bformat.wav"' % basename)
 	if config.enable_surround:
 		run('%s %s/example-data/bformat2gformat.clamnetwork W.wav X.wav Y.wav l.wav r.wav sl.wav sr.wav c.wav' % (offlineplayer_bin, spacialization_path) )
-		run('sox  -M l.wav r.wav sl.wav sr.wav c.wav %s_surround.wav' % basename)
+		run('sox  -M l.wav r.wav sl.wav sr.wav c.wav "%s_surround.wav"' % basename)
 	if config.enable_binaural:
 		run( offlineplayer_bin + ' ' + os.path.join(config.acustica_path, 'bformat2binaural/bformat2binaural.clamnetwork') + ' W.wav X.wav Y.wav Z.wav lbinaural.wav rbinaural.wav' )
-		run('sox -M  lbinaural.wav  rbinaural.wav  %s_binaural.wav' % basename)
+		run('sox -M  lbinaural.wav  rbinaural.wav  "%s_binaural.wav"' % basename)
 
 if len(config.sources)<=1 : 
-	run('cp *_binaural.wav binaural.wav')
-	run('cp *_surround.wav surround.wav')
+	run('cp "*_binaural.wav" binaural.wav')
+	run('cp "*_surround.wav" surround.wav')
 else :	
-	run('sox -m *_binaural.wav binaural.wav')
-	run('sox -m *_surround.wav surround.wav')
+	run('sox -m "*_binaural.wav" binaural.wav')
+	run('sox -m "*_surround.wav" surround.wav')
 
 if config.generalParams.has_key('video') and config.generalParams['video']:
 	video_path = config.generalParams['video']
 	video_nopath = os.path.basename( config.generalParams['video'] )
 	video_basename, video_ext = os.path.splitext(video_nopath)
-	run('mencoder -ovc copy %s -audiofile binaural.wav -oac copy -o %s_binaural%s' % 
+	run('mencoder -ovc copy %s -audiofile binaural.wav -oac copy -o "%s_binaural%s"' % 
 		(video_path, video_basename, video_ext)
 		)
 	# write demoing script.
 	demoing_script = """#!/bin/bash
-(mplayer %s_binaural%s -fs -loop 0 &) && mplayer surround.wav -ao jack -loop 0
+(mplayer "%s_binaural%s" -fs -loop 0 &) && mplayer surround.wav -ao jack -loop 0
 """ % (video_basename, video_ext)
 	file('play_surround.sh','w').write(demoing_script)
  	run('chmod +x play_surround.sh') #TODO do properly
