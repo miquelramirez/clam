@@ -28,7 +28,7 @@ namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "DCRemoval",
-		"category", "[plugin] Guitar Distorsion",
+		"category", "[plugin] Guitar Effects",
 		"description", "DCRemoval",
 		0
 	};
