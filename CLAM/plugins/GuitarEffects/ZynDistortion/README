@@ -1,0 +1,8 @@
+== Description ==
+
+Distortion algorithms taken from ZynAddSubFX.
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install

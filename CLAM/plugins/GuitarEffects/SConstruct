@@ -4,6 +4,7 @@ import os, glob, sys
 
 libPaths = [
 	('guitardistortion', 'GuitarDistortion'),
+	('zyndistortion', 'ZynDistortion'),
 	('dcremoval', 'DCRemoval'),
 	('audioswitch', 'AudioSwitch'),
 	('automaticgaincontrol', 'AutomaticGainControl'),
