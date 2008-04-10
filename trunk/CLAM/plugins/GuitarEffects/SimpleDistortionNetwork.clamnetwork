@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioSink" type="AudioSink"/>
+
+  <processing id="AudioSource" type="AudioSource"/>
+
+  <processing id="AudioSwitch" type="AudioSwitch">
+    <NumberOfInPorts>2</NumberOfInPorts>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Bypass" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>1</Step>
+    <ControlRepresentation>Knot</ControlRepresentation>
+  </processing>
+
+  <processing id="Drive amount" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Knot</ControlRepresentation>
+  </processing>
+
+  <processing id="Input" type="Oscilloscope"/>
+
+  <processing id="Output" type="Oscilloscope"/>
+
+  <processing id="ZynDistortion" type="ZynDistortion">
+    <DistortionType>Arctangent</DistortionType>
+  </processing>
+
+  <port_connection>
+    <out>AudioSource.AudioOut</out>
+    <in>Input.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.AudioOut</out>
+    <in>ZynDistortion.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.AudioOut</out>
+    <in>AudioSwitch.Input 1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSwitch.Output Audio</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSwitch.Output Audio</out>
+    <in>Output.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ZynDistortion.Audio Output</out>
+    <in>AudioSwitch.Input 0</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Bypass.out</out>
+    <in>AudioSwitch.Switch</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Drive amount.out</out>
+    <in>ZynDistortion.Drive amount</in>
+  </control_connection>
+
+</network>
