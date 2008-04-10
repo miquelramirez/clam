@@ -28,7 +28,7 @@ namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "AutomaticGainControl",
-		"category", "[plugin] Guitar Distorsion",
+		"category", "[plugin] Guitar Effects",
 		"description", "AutomaticGainControl",
 		0
 	};
