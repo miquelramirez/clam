@@ -81,6 +81,7 @@
     <FrameSize>512</FrameSize>
     <Model3DFile></Model3DFile>
     <GridDivisions>500</GridDivisions>
+	<ExtrapOptions>--ignore-sources</ExtraOptions>
   </processing>
 
   <processing id="MyFFT" type="MyFFT">
