@@ -23,6 +23,7 @@ class config :
 		'3Dmodel_file' : 'geometry.data',
 		'controls_per_second' : 24,
 		'grid_divisions': 500,
+		'extra_options': '--ignore-sources',
 		}
 	generalParams = {
 		'video' : None
