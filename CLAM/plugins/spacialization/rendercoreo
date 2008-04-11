@@ -14,33 +14,45 @@ class config :
 	acustica_path=os.environ['HOME']+'/acustica/'
 	clam_path = os.environ['HOME']+'/clam/'
 
+	inputGain = .7
+	equivalent_hrtf_path = acustica_path+'bformat2binaural'
+	enable_binaural = True
+	enable_surround = True
 	renderParams = { # parameters for the network template
-		'path_file' : acustica_path+'realitzacions/Simple_01.coreo',
-		'3Dmodel_file' : acustica_path+'visualitzador_escena_c++/entorns/salo_simplificat_sense_sostres.dat',
+		'path_file' : 'exported_coreo.data',
+		'3Dmodel_file' : 'geometry.data',
 		'controls_per_second' : 24,
 		'grid_divisions': 500,
 		}
 	generalParams = {
 		'video' : None
 		}
-	inputGain = .7
-	sources = [
-	#	acustica_path+'wavs/pluck_1s.wav', 
-	#	acustica_path+'wavs/metronom.wav',
-	#	acustica_path+'wavs/inlanguage_100s.wav',
-		acustica_path+'wavs/roland_drums_100s_48khz.wav'
-	]
+	_video_extensions = [
+			'*.flv',
+		]
+	import glob
+	_all_videos = sum([glob.glob(ext) for ext in _video_extensions], [])
+	if _all_videos :
+		generalParams = {
+			'video' : _all_videos[0]
+			}
 
-	equivalent_hrtf_path = acustica_path+'bformat2binaural'
-	enable_binaural = True
-	enable_surround = True
+	import string
+	sources = []
+	if os.access("wav_relations.data", os.R_OK) :
+		sources = [
+			os.path.join('..','wavs', string.strip(line.split('\t')[0])) 
+				for line in file('wav_relations.data')
+			]
 	if os.access("coreoconfig.py",os.R_OK) :
 		execfile("coreoconfig.py")
 
 
 def run(command) :
 	print '\033[32m:: ', command, '\033[0m'
-	return os.system(command)
+	result = os.system(command)
+	if not result : sys.exit()
+	return result
 	for line in os.popen(command) :
 		print line,
 		sys.stdout.flush()
@@ -92,15 +104,15 @@ for i, source in enumerate(config.sources):
 		run('%s %s/example-data/bformat2gformat.clamnetwork W.wav X.wav Y.wav l.wav r.wav sl.wav sr.wav c.wav' % (offlineplayer_bin, spacialization_path) )
 		run('sox  -M l.wav r.wav sl.wav sr.wav c.wav "%s_surround.wav"' % basename)
 	if config.enable_binaural:
-		run( offlineplayer_bin + ' ' + os.path.join(config.acustica_path, 'bformat2binaural/bformat2binaural.clamnetwork') + ' W.wav X.wav Y.wav Z.wav lbinaural.wav rbinaural.wav' )
+		run( offlineplayer_bin + ' ' + os.path.join(config.acustica_path, 'bformat2binaural/bformat2binaural_0.84.clamnetwork') + ' W.wav X.wav Y.wav Z.wav lbinaural.wav rbinaural.wav' )
 		run('sox -M  lbinaural.wav  rbinaural.wav  "%s_binaural.wav"' % basename)
 
 if len(config.sources)<=1 : 
-	run('cp "*_binaural.wav" binaural.wav')
-	run('cp "*_surround.wav" surround.wav')
+	run('cp *_binaural.wav binaural.wav')
+	run('cp *_surround.wav surround.wav')
 else :	
-	run('sox -m "*_binaural.wav" binaural.wav')
-	run('sox -m "*_surround.wav" surround.wav')
+	run('sox -m *_binaural.wav binaural.wav')
+	run('sox -m *_surround.wav surround.wav')
 
 if config.generalParams.has_key('video') and config.generalParams['video']:
 	video_path = config.generalParams['video']
