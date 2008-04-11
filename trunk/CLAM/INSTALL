@@ -4,9 +4,8 @@ provides already compiled packages for several platforms.
 
  1. Install CLAM dependencies
 
- This step is different for each architecture (Linux, Windows, MacOSX)
- Please, refere to the specific instructions below.
- 
+ This step is different for each architecture (Linux, Windows, MacOSX).
+ Such platform dependant steps at detailed at the end of this file.
    
  2. Compile CLAM libraries from the source
 
@@ -59,8 +58,7 @@ provides already compiled packages for several platforms.
  returns: "scons/libs/core/src/Processing.cxx:56: error: ..." you should not edit this 
  file but the one in src/ (searchable by  $ find  src/ -name "Processing.cxx")
 
-
- 3. Compile the CLAM application.
+ 3. Compile CLAM applications.
 
  Applications can be download from the CLAM website in separate tarballs.
  If you are using svn they are folders at the CLAM trunk.
@@ -77,7 +75,7 @@ provides already compiled packages for several platforms.
 
 
 
-1.1 Install CLAM dependencies on Linux
+2.1 Install CLAM dependencies on Linux
 
  Debian, Ubuntu 06.10 "Edgy" and 07.04 "Feisty" 
  (do "sudo apt-get install <packages>")
@@ -103,7 +101,7 @@ provides already compiled packages for several platforms.
 
 
 
-1.2 Install CLAM dependencies on Mac OSX
+2.2 Install CLAM dependencies on Mac OSX
 
 Build instructions for CLAM in Mac OSX are currently in this wiki:
 
@@ -114,7 +112,7 @@ http://clam.iua.upf.edu/mailinglist.html
 
 
 
-1.3 Install CLAM dependencies on Windows
+2.3 Install CLAM dependencies on Windows
  
   Required Tools
   --------------
@@ -145,7 +143,7 @@ http://clam.iua.upf.edu/mailinglist.html
  
  
  
- 4. Tips for increasing performance
+ 3. Tips for increasing performance
 
  If you plan to use CLAM in performance-sensitive applications it's a good idea to
  compile with the release flag set, as this tells the compiler to use optimizations:
