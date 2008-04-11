@@ -50,9 +50,9 @@ class config :
 
 def run(command) :
 	print '\033[32m:: ', command, '\033[0m'
-	result = os.system(command)
-	if not result : sys.exit()
-	return result
+	errorCode = os.system(command)
+	if errorCode : sys.exit()
+	return not errorCode
 	for line in os.popen(command) :
 		print line,
 		sys.stdout.flush()
