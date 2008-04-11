@@ -198,7 +198,7 @@ public:
 				;
 			if (_config.HasNRebounds()) command << " --num-rebounds=" <<  _config.GetNRebounds();
 			if (_config.HasNRays()) command << " --num-rays=" << _config.GetNRays();
-			if (_config.HasExtraOptions()) command << _config.GetExtraOptions();
+			if (_config.HasExtraOptions()) command << " " << _config.GetExtraOptions() << " ";
 			command << " > /dev/null";
 			//std::cout << command.str() << std::endl;
 			int error = std::system( command.str().c_str() );
