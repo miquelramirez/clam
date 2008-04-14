@@ -33,6 +33,8 @@ void ControlSenderWidget::init()
 	_max = config->GetMax();
 	_step = config->GetStep();
 
+	_mappingMode = config->GetMapping();
+
 	switch (config->GetControlRepresentation().GetValue()) {
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eUndetermined:
 		break;
@@ -114,7 +116,7 @@ void ControlSenderWidget::stepControlChanged(int value)
 
 	double dvalue = _min + _step * value;
 	if (_spinBox) _spinBox->setValue(dvalue);
-	_sender->SendControl(dvalue);
+	_sender->SendControl(mapValue(dvalue));
 
 	_updating = false;
 }
@@ -127,9 +129,35 @@ void ControlSenderWidget::continuousControlChanged(double value)
 	int svalue = int(floor(((value - _min) / _step)+0.5));
 	if (_slider) _slider->setValue(svalue);
 	if (_dial) _dial->setValue(svalue);
-	_sender->SendControl(value);
+	_sender->SendControl( mapValue(svalue) );
 
 	_updating = false;
 }
 
-
+inline double ControlSenderWidget::mapValue(double value)
+{
+	double mapped_value = 0.;
+	double tmp_max = 0.;
+	switch( _mappingMode ) {
+	case CLAM::OutControlSenderConfig::EMapping::eLinear:
+		mapped_value = value;
+		break;
+	case CLAM::OutControlSenderConfig::EMapping::eInverted:
+		mapped_value = fabs(_max - value + _min);
+		break;
+	case CLAM::OutControlSenderConfig::EMapping::eLog:
+		CLAM_ASSERT(_max>=_min, "min > max in Log mapping!" );
+		tmp_max=_max-_min;
+		mapped_value = CLAM_pow((value-_min)/tmp_max,4.)*tmp_max + _min;
+		break;
+	case CLAM::OutControlSenderConfig::EMapping::eReverseLog:
+		CLAM_ASSERT(_max>=_min, "min > max in ReverseLog mapping!" );
+		if (value>=_max-0.01) return _max;
+		tmp_max=_max-_min;
+		mapped_value =  (1. - CLAM_exp(-(value-_min)/tmp_max*4.))*tmp_max + _min;
+		break;
+	default:
+		CLAM_ASSERT(false,"Bad control mapping value");
+	}
+	return mapped_value;
+}

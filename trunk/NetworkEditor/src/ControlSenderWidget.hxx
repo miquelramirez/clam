@@ -1,7 +1,7 @@
 #ifndef ControlSenderWidget_hxx
 #define ControlSenderWidget_hxx
 
-#include <math.h>
+#include <CLAM/CLAM_Math.hxx>
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/OutControlSender.hxx>
@@ -27,6 +27,8 @@ protected:
 	void createSpinBox();
 	void setupSlider(QAbstractSlider *slider);
 
+	double mapValue(double value);
+
 private slots:
 	void stepControlChanged(int value);
 	void continuousControlChanged(double value);
@@ -41,6 +43,7 @@ private:
 	double _max;
 	double _step;
 	bool _updating;
+	int _mappingMode;
 };
 
 #endif//ControlSenderWidget_hxx

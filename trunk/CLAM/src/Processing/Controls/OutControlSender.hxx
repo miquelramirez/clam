@@ -13,6 +13,7 @@ namespace CLAM
 class OutControlSenderConfig : public ProcessingConfig
 {	
 public:
+
 	class EControlRepresentation : public Enum
 	{
 	public:
@@ -38,12 +39,37 @@ public:
 		
 	};
 
-	DYNAMIC_TYPE_USING_INTERFACE (OutControlSenderConfig, 5, ProcessingConfig);
+	class EMapping : public Enum
+	{
+	public:
+
+		static tEnumValue sEnumValues[];
+		static tValue sDefault;
+		EMapping() : Enum(sEnumValues, sDefault) {}
+		EMapping(tValue v) : Enum(sEnumValues, v) {};
+		EMapping(std::string s) : Enum(sEnumValues, s) {};
+
+		typedef enum {
+			eLinear,		///< 1:1 relationship (default)
+			eInverted,		///< Inverted linear relationship
+			eLog, 			///< More resolution in the low range
+			eReverseLog		///< More resolution in the upper range
+		}; 
+		
+		Component* Species() const
+		{
+			return new EMapping;
+		};
+		
+	};
+
+	DYNAMIC_TYPE_USING_INTERFACE (OutControlSenderConfig, 6, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, TControlData, Min );
 	DYN_ATTRIBUTE (1, public, TControlData, Default );
 	DYN_ATTRIBUTE (2, public, TControlData, Max );
 	DYN_ATTRIBUTE (3, public, TControlData, Step );
 	DYN_ATTRIBUTE (4, public, EControlRepresentation, ControlRepresentation );
+	DYN_ATTRIBUTE (5, public, EMapping, Mapping );
 
 
 protected:
