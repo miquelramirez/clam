@@ -26,8 +26,21 @@ Enum::tEnumValue OutControlSenderConfig::EControlRepresentation::sEnumValues[] =
 		{ 0, NULL }
 	};
 
+Enum::tEnumValue OutControlSenderConfig::EMapping::sEnumValues[] =
+	{
+		{ EMapping::eLinear, "Linear" },
+		{ EMapping::eInverted, "Inverted" },
+		{ EMapping::eLog, "Log" },
+		{ EMapping::eReverseLog, "Reverse Log" },
+		{ 0, NULL }
+	};
+
+
 Enum::tValue OutControlSenderConfig::EControlRepresentation::sDefault =
 	OutControlSenderConfig::EControlRepresentation::eHorizontalSlider;
+
+Enum::tValue OutControlSenderConfig::EMapping::sDefault =
+	OutControlSenderConfig::EMapping::eLinear;
 
 void OutControlSenderConfig::DefaultInit(void)
 {
