@@ -33,7 +33,7 @@ void ControlSenderWidget::init()
 	_max = config->GetMax();
 	_step = config->GetStep();
 
-	_mappingMode = config->GetMapping();
+	config->HasMapping() ? _mappingMode=config->GetMapping() : _mappingMode=CLAM::OutControlSenderConfig::EMapping::eLinear;
 
 	switch (config->GetControlRepresentation().GetValue()) {
 	case CLAM::OutControlSenderConfig::EControlRepresentation::eUndetermined:
