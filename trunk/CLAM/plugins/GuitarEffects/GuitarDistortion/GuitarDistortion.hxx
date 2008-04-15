@@ -144,6 +144,13 @@ namespace CLAM{
 			return result;
 		}
 	
+		/** \brief Factor distortion Do
+		* 
+		*	More interesting output in the 0.7-1.0 range.
+		* 	It's better to work with an input with more resolution in the upper range
+		*	or at least adjust the linear input like: amount=1.-CLAM_pow(1.-amount,4.);
+		*	Uses a very simple compression.
+		*/
 		bool DoFactor(const Audio& in, Audio& out)
 		{
 			int size = in.GetSize();
@@ -152,8 +159,7 @@ namespace CLAM{
 
 			//Distortion param
 			TData amount = mParams[0].GetLastValue();
-			amount = 1. - CLAM_pow( 1.-amount, 4. ); //value adjust to get more resolution on 0.7-1.0 range
-			if (amount > 0.99) amount = 0.99; // to get it stable avoids division by zero
+			if (amount > 0.99) amount = 0.99; // to get it stable, avoids division by zero
 
 			//Compression param
 			TData omGainref = mParams[1].GetLastValue(); //output power reference
@@ -177,6 +183,10 @@ namespace CLAM{
 			return true;
 		}
 
+		/** \brief Atan distortion Do
+		* 
+		*	Atan based distortion
+		*/
 		bool DoAtan(const Audio& in, Audio& out)
 		{
 			int size = in.GetSize();
@@ -185,7 +195,7 @@ namespace CLAM{
 
 			TData amount = mParams[0].GetLastValue();
 // 			amount -= 50;
-			if (amount==0.) amount = 0.01; //avoids atan(0)=0 and further zero division
+			if (amount==0.) amount = 0.01; // avoids atan(0)=0 and further zero division
 			for (int i=0;i<size;i++) 
 			{
 				outb[i] = CLAM_atan( inb[i]*amount ) / CLAM_atan(amount);
@@ -193,6 +203,9 @@ namespace CLAM{
 			return true;
 		}
 
+		/** \brief Polynomial distortion
+		* 
+		*/
 		bool DoPolynomial(const Audio& in, Audio& out)
 		{
 			int size = in.GetSize();

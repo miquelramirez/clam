@@ -24,6 +24,7 @@
     <Max>1</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Knot</ControlRepresentation>
+    <Mapping>Log</Mapping>
   </processing>
 
   <processing id="Input" type="Oscilloscope"/>

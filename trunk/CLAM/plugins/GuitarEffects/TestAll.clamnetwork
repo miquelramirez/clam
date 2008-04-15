@@ -26,6 +26,7 @@
     <Max>1</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Log</Mapping>
   </processing>
 
   <processing id="Factor Distortion" type="GuitarDistortion">
@@ -38,6 +39,7 @@
     <Max>2</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Log</Mapping>
   </processing>
 
   <processing id="GuitarDistortion" type="GuitarDistortion">
