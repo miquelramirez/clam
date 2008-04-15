@@ -23,7 +23,10 @@ class config :
 		'3Dmodel_file' : 'geometry.data',
 		'controls_per_second' : 24,
 		'grid_divisions': 500,
-		'extra_options': '--ignore-sources',
+		'num_rays': 3,
+		'num_rebounds': 5,
+		'ir_length': 1.4,
+		'extra_options': '--ignore-sources'
 		}
 	generalParams = {
 		'video' : None
@@ -40,10 +43,10 @@ class config :
 
 	import string
 	sources = []
-	if os.access("wav_relations.data", os.R_OK) :
+	if os.access("exported_wavs.data", os.R_OK) :
 		sources = [
 			os.path.join('..','wavs', string.strip(line.split('\t')[0])) 
-				for line in file('wav_relations.data')
+				for line in file('exported_wavs.data')
 			]
 	if os.access("coreoconfig.py",os.R_OK) :
 		execfile("coreoconfig.py")
@@ -101,6 +104,10 @@ for i, source in enumerate(config.sources):
 	run( '%s %s -t %f "%s_normalized.wav" W.wav X.wav Y.wav Z.wav' % 
 		(offlineplayer_bin, generated_network_filename, totalTime, basename) )
 	run('sox -M W.wav X.wav Y.wav Z.wav "%s_bformat.wav"' % basename)
+	run('cp W.wav "%s_W.wav"' % basename)
+	run('cp X.wav "%s_X.wav"' % basename)
+	run('cp Y.wav "%s_Y.wav"' % basename)
+	run('cp Z.wav "%s_Z.wav"' % basename)
 	if config.enable_surround:
 		run('%s %s/example-data/bformat2gformat.clamnetwork W.wav X.wav Y.wav l.wav r.wav sl.wav sr.wav c.wav' % (offlineplayer_bin, spacialization_path) )
 		run('sox  -M l.wav r.wav sl.wav sr.wav c.wav "%s_surround.wav"' % basename)
@@ -130,6 +137,6 @@ if config.generalParams.has_key('video') and config.generalParams['video']:
  	run('chmod +x play_surround.sh') #TODO do properly
 
 #tear down
-run('rm -f E?.wav')
+norun('rm -f E?.wav')
 
 

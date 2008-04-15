@@ -48,13 +48,14 @@ class ImpulseResponseCalculatedOnTheFly : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 6, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 7, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
 		DYN_ATTRIBUTE( 1, public, Filename, Model3DFile);
 		DYN_ATTRIBUTE( 2, public, unsigned, GridDivisions);
 		DYN_ATTRIBUTE( 3, public, unsigned, NRays);
 		DYN_ATTRIBUTE( 4, public, unsigned, NRebounds);
-		DYN_ATTRIBUTE( 5, public, CLAM::Text, ExtraOptions);
+		DYN_ATTRIBUTE( 5, public, float, IrLength);
+		DYN_ATTRIBUTE( 6, public, CLAM::Text, ExtraOptions);
 	protected:
 		void DefaultInit()
 		{
@@ -65,6 +66,7 @@ public:
 			SetGridDivisions(500);
 			SetNRays(200);
 			SetNRebounds(20);
+			SetIrLength(1.0);
 		};
 	};
 private:
@@ -198,9 +200,10 @@ public:
 				;
 			if (_config.HasNRebounds()) command << " --num-rebounds=" <<  _config.GetNRebounds();
 			if (_config.HasNRays()) command << " --num-rays=" << _config.GetNRays();
+			if (_config.HasIrLength()) command << " --ir-length=" << _config.GetIrLength();
 			if (_config.HasExtraOptions()) command << " " << _config.GetExtraOptions() << " ";
 			command << " > /dev/null";
-			//std::cout << command.str() << std::endl;
+			// std::cout << command.str() << std::endl;
 			int error = std::system( command.str().c_str() );
 			if (error)
 			{

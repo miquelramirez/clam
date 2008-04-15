@@ -81,7 +81,10 @@
     <FrameSize>512</FrameSize>
     <Model3DFile></Model3DFile>
     <GridDivisions>500</GridDivisions>
-	<ExtrapOptions>--ignore-sources</ExtraOptions>
+    <NRays>111</NRays>
+    <NRebounds>11</NRebounds>
+    <IrLength>1.1</IrLength>
+    <ExtraOptions>--ignore-sources</ExtraOptions>
   </processing>
 
   <processing id="MyFFT" type="MyFFT">
