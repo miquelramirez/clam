@@ -14,18 +14,18 @@ class config :
 	acustica_path=os.environ['HOME']+'/acustica/'
 	clam_path = os.environ['HOME']+'/clam/'
 
-	inputGain = .7
+	inputGain = .4
 	equivalent_hrtf_path = acustica_path+'bformat2binaural'
 	enable_binaural = True
 	enable_surround = True
 	renderParams = { # parameters for the network template
 		'path_file' : 'exported_coreo.data',
 		'3Dmodel_file' : 'geometry.data',
-		'controls_per_second' : 24,
+		'controls_per_second' : 25,
 		'grid_divisions': 500,
-		'num_rays': 3,
-		'num_rebounds': 5,
-		'ir_length': 1.4,
+		'num_rays': 5,
+		'num_rebounds': 2,
+		'ir_length': 3.1,
 		'extra_options': '--ignore-sources'
 		}
 	generalParams = {
@@ -126,6 +126,7 @@ if config.generalParams.has_key('video') and config.generalParams['video']:
 	video_path = config.generalParams['video']
 	video_nopath = os.path.basename( config.generalParams['video'] )
 	video_basename, video_ext = os.path.splitext(video_nopath)
+	run('rm -f *_binaural.flv')
 	run('mencoder -ovc copy %s -audiofile binaural.wav -oac copy -o "%s_binaural%s"' % 
 		(video_path, video_basename, video_ext)
 		)
