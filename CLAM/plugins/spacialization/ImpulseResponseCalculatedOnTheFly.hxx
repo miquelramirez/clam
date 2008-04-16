@@ -190,6 +190,7 @@ public:
 			std::cout << "|" << std::flush;
 			std::ostringstream command;
 			command << "visualitzador "
+				<< " --compute-ir"
 				<< " --model-file=" << _config.GetModel3DFile()
 				<< " --listener-x-pos=" << _currentReceiverX
   				<< " --listener-y-pos=" << _currentReceiverY
