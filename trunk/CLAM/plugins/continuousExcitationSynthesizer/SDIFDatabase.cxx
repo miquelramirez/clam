@@ -283,10 +283,10 @@ Frame* SDIFDatabase::SelectFrameForVoice(VoiceId id, float argPitch, float argAm
 
 	// if the BufferedSDIFReader is not loading more frames in the background already
 	// give it a frame with which it can do so
-	if ( !aLoopingSDIFFileReader->IsThreaded() )
-	{
-		aLoopingSDIFFileReader->LoadFramesIntoBufferOnThread( mThreadPool.GetThreadFromPool() );
-	}
+	//if ( !aLoopingSDIFFileReader->IsThreaded() )
+	//{
+	//	aLoopingSDIFFileReader->LoadFramesIntoBufferOnThread( mThreadPool.GetThreadFromPool() );
+	//}
 
 	// TODO how do you want to handle NULL frames?
 	//CLAM_DEBUG_ASSERT( aFrame != NULL, "SDIFDatabase::SelectFrameForVoiceParameters - LoopingSDIFFileReader is null" );

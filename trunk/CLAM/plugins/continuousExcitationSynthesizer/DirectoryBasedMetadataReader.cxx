@@ -37,6 +37,7 @@ void DirectoryBasedMetadataReader::ReadMetadata(std::string& argDirectoryPath, s
 		CLAM::SampleMetadata sampleConfig;
 		CLAM::XMLStorage::Restore(sampleConfig, absolutePath);
 		sampleConfig.ConfigureAfterRestore();
+        argMetadataVector.push_back( sampleConfig );
 
 	}
 	closedir(directoryPtr);
