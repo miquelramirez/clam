@@ -3,7 +3,7 @@ This directory contains a moderately simple spectral modeling synthesizer. It ca
 
 To use this as a plugin in the NetworkEditor, type "sudo scons install" at the command line, and when inside the NetworkEditor, right click on the background until you get the "Add New Processing" dialog, and in this dialog enter the name "SDIFDatabaseProcessing". You'll need to configure the object once it appears with the name of a directory containing SDIF files and metadata about these files in XML format. Alternatively, you could also just load one of the two clam networks that were provided as examples in this directory.
 
-To run this code as a standalone, type "scons standalone" to build the executable, and then ./continuousExcitationSynthesizerExe  The application itself should give you instructions on what arguments it takes.
+To run this code as a standalone, type "scons" to build the executable, and then ./ContinuousExcitationSynthesizer  The application itself should give you instructions on what arguments it takes.
 
 Where can you get such SDIF files and metadata?
 An example directory of SDIF data exists already in the clam_test_data repository caled EBowGuitarSDIFSmall. For instructions on how to download the clam_test_data repository, go to:
