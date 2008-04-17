@@ -46,15 +46,17 @@ namespace CLAM
 	void SynthesizeToSpeakers(SDIFDatabase& sdifDatabase, SinusoidalSynthesis& synthesis, 
 								ContinuousExcitationControlSource* aControlScore, MonoAudioFileWriter* audioWriter)
 	{
-		std::cout << "Playing audio to speakers." << std::endl;
+        if (audioWriter == NULL)
+            std::cout << "Playing audio to speakers." << std::endl;
+        else
+            std::cout << "Playing audio to speakers and writing audio to file." << std::endl;
 
 		CLAM_ACTIVATE_FAST_ROUNDING;
 
 		unsigned int buffersize = 1024;
 		int samplerate = 44100;
 
-		AudioManager audioManager(samplerate,2048);
-
+        AudioManager audioManager(samplerate,2048);
 		AudioIOConfig outLCfg;
 		outLCfg.SetDevice("rtaudio:default");
 		outLCfg.SetChannelID(0);
@@ -66,20 +68,23 @@ namespace CLAM
 		outRCfg.SetSampleRate(samplerate);
 
 		CLAM::SMSFreqShift smsFreqShift;
+
 		CLAM::AudioOut outL(outLCfg);
 		CLAM::AudioOut outR(outRCfg);
 		//CLAM::AudioSink out;
 
-		audioManager.Start();
+        audioManager.Start();
+
 		smsFreqShift.Start();
 		synthesis.Start();
 		if (audioWriter != NULL)
 		{
 			audioWriter->Start();
 		}
-		outL.Start();
-		outR.Start();
 
+        outL.Start();
+        outR.Start();
+        
 		ControlStreamSegmentator theSegmentator;
 
 		int counter = 0;
@@ -106,16 +111,17 @@ namespace CLAM
 
 			//std::cout << "counter: " << counter << ", pitch: " << thePitch << ", amplitude: " << theAmplitude << std::endl;
 			bool isSynthesizeSinusoidsAndResidual = false;
-			synthesis.Do( *aFrame );
+			if ( !synthesis.Do( *aFrame ) )
+                continue;
 
 			if (audioWriter != NULL)
 			{
 				audioWriter->Do( aFrame->GetSynthAudioFrame() );
 			}
 
-			outL.Do( aFrame->GetSynthAudioFrame() );
-			outR.Do( aFrame->GetSynthAudioFrame() );
-
+            outL.Do( aFrame->GetSynthAudioFrame() );
+            outR.Do( aFrame->GetSynthAudioFrame() );
+            
 			counter++;
 		}
 
@@ -125,8 +131,10 @@ namespace CLAM
 		{
 			audioWriter->Stop();
 		}
-		outL.Stop();
-		outR.Stop();
+
+        outL.Stop();
+        outR.Stop();
+
 		synthesis.Stop();
 		smsFreqShift.Stop();
 
