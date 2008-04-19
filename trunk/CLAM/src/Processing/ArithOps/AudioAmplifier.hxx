@@ -95,12 +95,12 @@ namespace CLAM{
 
 			TData gain = mInputControl.GetLastValue();
 
-			TData* inb = in.GetBuffer().GetPtr();
-			TData* outb = out.GetBuffer().GetPtr();
+			DataArray& inb = in.GetBuffer();
+			DataArray& outb = out.GetBuffer();
 
 			for (int i=0;i<size;i++) 
 			{
-				*outb++ = (*inb++)*gain;
+				outb[i] = inb[i]*gain;
 			}
 
 			return true;
