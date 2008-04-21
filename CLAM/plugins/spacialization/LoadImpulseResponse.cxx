@@ -46,7 +46,7 @@ bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSp
 //	std::cout << "ComputeResponseSpectrums: NSamples: " << nSamples << std::endl;
 
 	AudioWindowingConfig windowerConfig;
-	windowerConfig.SetSamplingRate(44100); // TODO: Take it from the file
+	windowerConfig.SetSamplingRate(48000); // TODO: Take it from the file
 	windowerConfig.SetHopSize(framesize);
 	windowerConfig.SetWindowSize(framesize+1);
 	windowerConfig.SetFFTSize(framesize*2);

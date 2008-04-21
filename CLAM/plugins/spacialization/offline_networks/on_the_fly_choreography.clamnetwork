@@ -10,7 +10,7 @@
 
   <processing id="AudioWindowing" type="AudioWindowing">
     <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
+    <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
     <WindowSize>513</WindowSize>
     <WindowType>None</WindowType>

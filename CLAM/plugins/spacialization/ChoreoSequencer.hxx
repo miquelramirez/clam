@@ -106,7 +106,7 @@ public:
 		int sourceIndex = _config.GetSourceIndex();
 		if (_sampleCount>=_samplesPerControl)
 		{
-			//std::cout << ", ctl "<<_sequenceIndex << "/" <<_controlSequence.size() << std::flush;
+			std::cout << ", ctl "<<_sequenceIndex << "/" <<_controlSequence.size() << std::flush;
 			//TODO check that _indexTargetX,Y,Z < _controlSequence[_sequenceIndex].size()
 			_targetX.SendControl( _controlSequence[_sequenceIndex][_indexTargetX] );
 			_targetY.SendControl( _controlSequence[_sequenceIndex][_indexTargetY] );
