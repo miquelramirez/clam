@@ -33,7 +33,7 @@ env.EnableClamModules([
 	'clam_processing',
 	] , CLAMInstallDir)
 
-sourcePaths = ["."]
+sourcePaths = ["src"]
 sources = scanFiles('*.cxx', sourcePaths)
 sources = dict.fromkeys(sources).keys()
 if sys.platform=='linux2' :
