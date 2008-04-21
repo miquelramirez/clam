@@ -189,7 +189,7 @@ public:
 			_currentReceiverZ = z2;
 			std::cout << "|" << std::flush;
 			std::ostringstream command;
-			command << "visualitzador "
+			command << "raytracing "
 				<< " --compute-ir"
 				<< " --model-file=" << _config.GetModel3DFile()
 				<< " --listener-x-pos=" << _currentReceiverX
