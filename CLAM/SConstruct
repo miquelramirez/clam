@@ -14,7 +14,7 @@ if sys.platform == 'linux2' :
 	opts = Options('options.cache',ARGUMENTS)
 	opts.Add( BoolOption( 'crossmingw', '', 'no' ))
 	crosscompiling = Environment(options=opts)['crossmingw']
-	if crosscompiling: print "Warning: Crosscompiling mode"
+	if crosscompiling : print "Warning: Crosscompiling mode"
 
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
 isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
@@ -218,7 +218,6 @@ def config_file_missing():
 
 clam_env = Environment( ENV=os.environ, tools=['default'])
 clam_env.SConsignFile()
-
 setup_build_options( clam_env )
 
 if not clam_env['verbose']:
@@ -230,6 +229,8 @@ if not clam_env['verbose']:
 crosscompiling = clam_env.has_key('crossmingw') and clam_env['crossmingw']
 if crosscompiling :
 	clam_env.Tool('crossmingw',toolpath=['scons/sconstools'])
+elif sys.platform == 'win32' :
+	clam_env.Tool('mingw')
 
 if clam_env['distcc_hosts'] :
 	clam_env['CXX'] = 'distcc g++'
