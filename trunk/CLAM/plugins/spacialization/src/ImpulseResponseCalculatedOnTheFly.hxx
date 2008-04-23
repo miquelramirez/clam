@@ -174,6 +174,10 @@ public:
 		std::string xFile = "x_IR.wav";
 		std::string yFile = "y_IR.wav";
 		std::string zFile = "z_IR.wav";
+		std::string wFileTrimmed = "w_IR_trimmed.wav";
+		std::string xFileTrimmed = "x_IR_trimmed.wav";
+		std::string yFileTrimmed = "y_IR_trimmed.wav";
+		std::string zFileTrimmed = "z_IR_trimmed.wav";
 //		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		std::cout << "." << std::flush;
 		if (!_current or changeSnappedIR)
@@ -212,10 +216,15 @@ public:
 				std::cout << "Offending command:\n"<<  command.str() << std::endl;
 				return false;
 			}
-			if (!computeResponseSpectrums(wFile, _current->W, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(xFile, _current->X, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(yFile, _current->Y , _config.GetFrameSize(), errorMsg) 
-				|| !computeResponseSpectrums(zFile, _current->Z , _config.GetFrameSize(), errorMsg) )
+			
+			std::system( (std::string()+"sox -t wav " + wFile + " -t wav " + wFileTrimmed + " silence 1, 0.00000001, 0.01 2&>1 /dev/null").c_str() );
+			std::system( (std::string()+"sox -t wav " + xFile + " -t wav " + xFileTrimmed + " silence 1, 0.00000001, 0.01 2&>1 /dev/null").c_str() );
+			std::system( (std::string()+"sox -t wav " + yFile + " -t wav " + yFileTrimmed + " silence 1, 0.00000001, 0.01 2&>1 /dev/null").c_str() );
+			std::system( (std::string()+"sox -t wav " + zFile + " -t wav " + zFileTrimmed + " silence 1, 0.00000001, 0.01 2&>1 /dev/null").c_str() );
+			if (!computeResponseSpectrums(wFileTrimmed, _current->W, _config.GetFrameSize(), errorMsg)
+				|| !computeResponseSpectrums(xFileTrimmed, _current->X, _config.GetFrameSize(), errorMsg)
+				|| !computeResponseSpectrums(yFileTrimmed, _current->Y , _config.GetFrameSize(), errorMsg) 
+				|| !computeResponseSpectrums(zFileTrimmed, _current->Z , _config.GetFrameSize(), errorMsg) )
 			{
 				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do can not open IR files." << errorMsg << std::endl;
 				return false;
