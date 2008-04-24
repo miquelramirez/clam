@@ -216,15 +216,25 @@ public:
 				std::cout << "Offending command:\n"<<  command.str() << std::endl;
 				return false;
 			}
-			
-			std::system( (std::string()+"sox -t wav " + wFile + " -t wav " + wFileTrimmed + " silence 1, 0.00000001, 0.01 2&>1 /dev/null").c_str() );
-			std::system( (std::string()+"sox -t wav " + xFile + " -t wav " + xFileTrimmed + " silence 1, 0.00000001, 0.01 2&>1 /dev/null").c_str() );
-			std::system( (std::string()+"sox -t wav " + yFile + " -t wav " + yFileTrimmed + " silence 1, 0.00000001, 0.01 2&>1 /dev/null").c_str() );
-			std::system( (std::string()+"sox -t wav " + zFile + " -t wav " + zFileTrimmed + " silence 1, 0.00000001, 0.01 2&>1 /dev/null").c_str() );
-			if (!computeResponseSpectrums(wFileTrimmed, _current->W, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(xFileTrimmed, _current->X, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(yFileTrimmed, _current->Y , _config.GetFrameSize(), errorMsg) 
-				|| !computeResponseSpectrums(zFileTrimmed, _current->Z , _config.GetFrameSize(), errorMsg) )
+			std::string fileW = wFile;
+			std::string fileX = xFile;
+			std::string fileY = yFile;
+			std::string fileZ = zFile;
+			if (true) // Trim initial silences with sox. Can be safely desabled
+			{
+				std::system( (std::string()+"sox -t wav " + wFile + " -t wav " + wFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
+				std::system( (std::string()+"sox -t wav " + xFile + " -t wav " + xFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
+				std::system( (std::string()+"sox -t wav " + yFile + " -t wav " + yFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
+				std::system( (std::string()+"sox -t wav " + zFile + " -t wav " + zFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
+				std::string fileW = wFileTrimmed;
+				std::string fileX = xFileTrimmed;
+				std::string fileY = yFileTrimmed;
+				std::string fileZ = zFileTrimmed;
+			}
+			if (!computeResponseSpectrums(fileW, _current->W, _config.GetFrameSize(), errorMsg)
+				|| !computeResponseSpectrums(fileX, _current->X, _config.GetFrameSize(), errorMsg)
+				|| !computeResponseSpectrums(fileY, _current->Y , _config.GetFrameSize(), errorMsg) 
+				|| !computeResponseSpectrums(fileZ, _current->Z , _config.GetFrameSize(), errorMsg) )
 			{
 				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do can not open IR files." << errorMsg << std::endl;
 				return false;
