@@ -743,6 +743,8 @@
         <file>images/hslider.png</file>
         <file>images/firstperson.svg</file>
         <file>images/spectrogram.svg</file>
+	<file>images/sink.svg</file>
+	<file>images/source.svg</file>
     </qresource>
     <qresource prefix="/interfaces" >
         <file>prototyper/DefaultInterface.ui</file>

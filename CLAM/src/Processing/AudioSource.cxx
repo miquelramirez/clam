@@ -10,6 +10,7 @@ namespace Hidden
 		"key", "AudioSource",
 		"category", "Audio I/O",
 		"description", "AudioSource",
+		"icon", "source.svg",
 		0
 	};
 	//static FactoryRegistrator<ProcessingFactory, AudioSource> regAudioSource("AudioSource");
