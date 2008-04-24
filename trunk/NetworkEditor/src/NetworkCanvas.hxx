@@ -891,21 +891,43 @@ public: // Actions
 
 		markAsChanged();
 	}
-	void addPortMonitorProcessing( ProcessingBox * processing, QPoint point, const QString & monitorType )
+	
+	void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType )
 	{
 		if (networkIsDummy()) return;
 
 		unsigned portIndex = processing->portIndexByYPos(point);
 		QString outPortName = processing->getOutportName(portIndex);
 
-		std::string processingId = _network->AddProcessing(monitorType.toStdString() );
-		CLAM::Processing & portMonitor = _network->GetProcessing( processingId );
+		std::string processingId = _network->AddProcessing(processingType.toStdString() );
+		CLAM::Processing & portProcessing = _network->GetProcessing( processingId );
 		// add box to canvas and connect
-		addProcessingBox( processingId.c_str(), &portMonitor, point+QPoint(100,0));
+		addProcessingBox( processingId.c_str(), &portProcessing, point+QPoint(100,0));
 		addPortConnection(processing, portIndex, getBox(processingId.c_str()), 0);
 
 		markAsChanged();
 	}
+
+
+	void addLinkedProcessingSender( ProcessingBox * processing, QPoint point, const QString & processingType )
+	{
+		if (networkIsDummy()) return;
+
+		unsigned portIndex = processing->portIndexByYPos(point);
+		QString inPortName = processing->getInportName(portIndex);
+
+		std::string processingId = _network->AddProcessing(processingType.toStdString() );
+		CLAM::Processing & portProcessing = _network->GetProcessing( processingId );
+		// add box to canvas and connect
+		addProcessingBox( processingId.c_str(), &portProcessing, point+QPoint(-200,0));
+		addPortConnection(getBox(processingId.c_str()), 0, processing, portIndex);
+		markAsChanged();
+	}
+
+
+
+
+
 	virtual QWidget * embededWidgetFor(void * processing);
 	virtual unsigned nInports(void * processing) { return ((CLAM::Processing*)processing)->GetInPorts().Size();}
 	virtual unsigned nOutports(void * processing) { return ((CLAM::Processing*)processing)->GetOutPorts().Size();}
@@ -1219,20 +1241,29 @@ private slots:
 			return;
 		}
 	}
-	void onAddMonitor()
+	
+	void onAddLinkedProcessing()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
-		QString monitorType = ((QAction*)sender())->text();
-		for (unsigned i = _processings.size(); i--; )
+		QString processingType = ((QAction*)sender())->text();
+		for (unsigned i = _processings.size();i--;)
 		{
 			ProcessingBox::Region region = _processings[i]->getRegion(point);
-			if (region==ProcessingBox::noRegion) continue;
-			if (region!=ProcessingBox::outportsRegion) return;
-
-			addPortMonitorProcessing(_processings[i], point, monitorType);
+			switch(region)
+			{
+			case ProcessingBox::inportsRegion:
+				addLinkedProcessingSender(_processings[i], point, processingType);
+				break;
+			case ProcessingBox::outportsRegion:
+				addLinkedProcessingReceiver(_processings[i], point, processingType);
+				break;
+			default:
+				continue; // Matches a region but not a connector one
+			}
 			return;
 		}
 	}
+
 	void onConfigure()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
@@ -1340,6 +1371,13 @@ private:
 		return ((CLAM::Processing*)processing)->GetOutPorts().GetByNumber(index).GetTypeId().name();
 	}
 
+	std::string inportTypeId(void * processing, unsigned index) const
+	{
+		if (!processing) return "";
+		return ((CLAM::Processing*)processing)->GetInPorts().GetByNumber(index).GetTypeId().name();
+	}
+
+
 	virtual void contextMenu(QMenu* menu, const QPoint & translatedPos)
 	{
 		for (unsigned i = _processings.size(); i--; )
@@ -1373,7 +1411,28 @@ private:
 						const char* key = it->c_str();
 						std::string iconPath = factory.GetValueFromAttribute(key, "icon");
 						QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
-						menu->addAction( icon, key, this, SLOT(onAddMonitor()))->setData(translatedPos);
+						menu->addAction( icon, key, this, SLOT(onAddLinkedProcessing()))->setData(translatedPos);
+					}
+					if ((outportTypeId(_processings[i]->model(),portindex))==("f")) // Check for audio type. TODO why "f"??
+					{
+						menu->addSeparator();
+						const char* key="AudioSink";
+			                        std::string iconPath = factory.GetValueFromAttribute(key, "icon"); 
+                	        		QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
+						menu->addAction( icon, key, this,SLOT(onAddLinkedProcessing()))->setData(translatedPos);
+			                }
+				}
+				if (region==ProcessingBox::inportsRegion)
+				{
+					CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+					unsigned portindex = _processings[i]->portIndexByYPos(translatedPos);
+					if ((inportTypeId(_processings[i]->model(),portindex))==("f")) // Check for audio type. TODO why "f"??
+					{
+						menu->addSeparator();
+						const char* key="AudioSource";
+						std::string iconPath = factory.GetValueFromAttribute(key,"icon");
+                	        		QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
+						menu->addAction( icon, key, this ,SLOT(onAddLinkedProcessing()))->setData(translatedPos);
 					}
 				}
 				return;

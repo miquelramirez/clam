@@ -13,6 +13,7 @@ namespace Hidden
 		"key", "AudioSink",
 		"category", "Audio I/O",
 		"description", "AudioSink",
+		"icon", "sink.svg",
 		0
 	};
 	//static FactoryRegistrator<ProcessingFactory, AudioSink> regAudioSink("AudioSink");
