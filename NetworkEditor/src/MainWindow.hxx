@@ -57,10 +57,20 @@ public:
 		ui.setupUi(this);
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
 
+		QTabWidget * centralTab = new QTabWidget(this);
+		setCentralWidget(centralTab);
+		centralTab->setTabPosition(QTabWidget::South);
+
 		QScrollArea * scroll = new QScrollArea(this);
 		_canvas = new ClamNetworkCanvas;
-		setCentralWidget(scroll);
 		scroll->setWidget(_canvas);
+
+		QScrollArea * jackScroll = new QScrollArea(this);
+		_jackCanvas = new ClamNetworkCanvas;
+		jackScroll->setWidget(_jackCanvas);
+
+		centralTab->addTab(scroll, "Network");
+		centralTab->addTab(jackScroll, "Jack");
 		
 		dock = new QDockWidget(this);
 		processingTree = new NetworkGUI::ProcessingTree(dock);
@@ -448,6 +458,7 @@ public slots:
 	}
 private:
 	ClamNetworkCanvas * _canvas;
+	NetworkCanvas * _jackCanvas;
 	QDialog * _aboutDialog;
 	CLAM::Network _network;
 	CLAM::NetworkPlayer * _networkPlayer;
