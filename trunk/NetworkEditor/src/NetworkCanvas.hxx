@@ -760,6 +760,17 @@ protected:
 	QColor _colorControlWireOutline;
 };
 
+
+class JackNetworkCanvas : public NetworkCanvas
+{
+	Q_OBJECT
+public:
+	JackNetworkCanvas(QWidget * parent=0)
+		: NetworkCanvas(parent)
+	{
+	}
+};
+
 #include <typeinfo>
 #include <CLAM/Network.hxx>
 #include <CLAM/ProcessingDataPlugin.hxx>
@@ -1013,6 +1024,11 @@ public: // Actions
 		if (!processing) return "";
 		return ((CLAM::Processing*)processing)->GetConfigErrorMessage().c_str();
 	}
+	virtual bool networkRenameProcessing(QString oldName, QString newName)
+	{
+		if (networkIsDummy()) return true;
+		return _network->RenameProcessing(oldName.toStdString(), newName.toStdString());
+	}
 private:
 	QColor getConnectorColorByType(const std::type_info & type) const
 	{
@@ -1192,11 +1208,6 @@ public:
 			box->move(pos);
 			box->resize(size);
 		}
-	}
-	virtual bool networkRenameProcessing(QString oldName, QString newName)
-	{
-		if (networkIsDummy()) return true;
-		return _network->RenameProcessing(oldName.toStdString(), newName.toStdString());
 	}
 private slots:
 	void onCopyConnection()
@@ -1417,10 +1428,10 @@ private:
 					{
 						menu->addSeparator();
 						const char* key="AudioSink";
-			                        std::string iconPath = factory.GetValueFromAttribute(key, "icon"); 
-                	        		QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
+						std::string iconPath = factory.GetValueFromAttribute(key, "icon"); 
+						QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
 						menu->addAction( icon, key, this,SLOT(onAddLinkedProcessing()))->setData(translatedPos);
-			                }
+					}
 				}
 				if (region==ProcessingBox::inportsRegion)
 				{
@@ -1431,7 +1442,7 @@ private:
 						menu->addSeparator();
 						const char* key="AudioSource";
 						std::string iconPath = factory.GetValueFromAttribute(key,"icon");
-                	        		QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
+						QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
 						menu->addAction( icon, key, this ,SLOT(onAddLinkedProcessing()))->setData(translatedPos);
 					}
 				}
