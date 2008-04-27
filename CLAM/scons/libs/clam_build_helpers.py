@@ -248,6 +248,8 @@ def check_pkg_config(context, *args, **kwords):
 	if not env.has_key('PKG_CONFIG') :
 		env['PKG_CONFIG'] = 'pkg-config'
 		env['PKG_CONFIG_PATH_SEP']=':'
+		if sys.platform is "win32":
+			env['PKG_CONFIG_PATH_SEP']=';'
 		if crosscompiling : 
 			env['PKG_CONFIG'] = 'wine pkg-config'
 			env['PKG_CONFIG_PATH_SEP']=';'
