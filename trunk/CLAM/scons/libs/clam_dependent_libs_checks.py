@@ -13,7 +13,7 @@ def setup_global_environment( env, conf ) :
 	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 	# clam env
 	# check for pkg-config, compiler support, bash features, et.
-	if sys.platform == 'linux2' :
+	if sys.platform in ('linux2','win32') :
 		if not conf.check_pkg_config( conf ) :
 			print 'WARNING: pkg-config is not installed. Checks will be harder.'
 			env['pkg_config_available'] = False
