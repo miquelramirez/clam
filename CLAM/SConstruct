@@ -50,12 +50,8 @@ def configure_clam(clam_env) :
 ############################################"""
 	# Sandbox setup
 	if isWindowsPlatform :
-		libbasenames = [ 'local']
-#'xercesc', 'fftw', 'fftw3', 'dxsdk','id3lib', 'libmad', 'libsndfile','oggvorbis','portmidi','portaudio','pthreads', 'local']
-		for basename in libbasenames :
-			basePath = os.path.join(clam_env['sandbox_path'], basename)
-			clam_env.Append( CPPPATH = [os.path.join(basePath,'include')] )
-			clam_env.Append( LIBPATH = [os.path.join(basePath,'lib')] )
+		clam_env.Append( CPPPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'include')] )
+		clam_env.Append( LIBPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'lib')] )
 		environmentIncludes = ""
 		if os.environ.has_key('INCLUDE') : environmentIncludes = os.environ['INCLUDE']
 		environmentIncludesList = environmentIncludes.split(';')
