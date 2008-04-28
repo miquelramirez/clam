@@ -106,12 +106,13 @@ def test_id3lib( env, conf ) :
 
 	libName = 'id3'
 	env.Append( LIBS=[libName] )
+"""	#TODO: Checking whether those options are needed at all
 	if sys.platform == 'win32' :
 		if crosscompiling :
 			env.Append( CPPFLAGS=['-DID3LIB_LINKOPTION=3'] )
 		else :
 			env.Append( CPPFLAGS=['-DID3LIB_LINKOPTION=1'] )
-
+"""
 	zlib = 'z'
 	if not conf.CheckLib(zlib, 'uncompress') :
 		return config_error( "Could not link zlib. Please, check your zlib/id3lib installation" )
