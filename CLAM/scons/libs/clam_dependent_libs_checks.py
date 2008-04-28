@@ -105,7 +105,6 @@ def test_id3lib( env, conf ) :
 	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 
 	libName = 'id3'
-	if sys.platform == 'win32' : libName = 'id3lib_vc7'
 	env.Append( LIBS=[libName] )
 	if sys.platform == 'win32' :
 		if crosscompiling :
@@ -114,7 +113,6 @@ def test_id3lib( env, conf ) :
 			env.Append( CPPFLAGS=['-DID3LIB_LINKOPTION=1'] )
 
 	zlib = 'z'
-	if sys.platform == 'win32' : zlib_vc = 'zlib_vc7'
 	if not conf.CheckLib(zlib, 'uncompress') :
 		return config_error( "Could not link zlib. Please, check your zlib/id3lib installation" )
 
