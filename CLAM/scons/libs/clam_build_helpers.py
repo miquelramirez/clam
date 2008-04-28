@@ -248,15 +248,10 @@ def check_pkg_config(context, *args, **kwords):
 	env = context.env
 	crosscompiling = env.has_key('crossmingw') and env['crossmingw']
 	if not env.has_key('PKG_CONFIG') :
-		env['PKG_CONFIG'] = 'pkg-config'
-		env['PKG_CONFIG_PATH_SEP']=':'
-		if sys.platform is "win32":
-			env['PKG_CONFIG_PATH_SEP']=';'
-		if crosscompiling : 
-			env['PKG_CONFIG'] = 'wine pkg-config'
-			env['PKG_CONFIG_PATH_SEP']=';'
+		env['PKG_CONFIG'] = 'wine pkg-config' if crosscompiling else 'pkg-config'
 	if env.has_key('sandbox_path') :
-		env['ENV']['PKG_CONFIG_PATH'] = env['PKG_CONFIG_PATH_SEP'].join([
+		pathSeparator = ';' if sys.platform is "win32" or crosscompiling  else ':'
+		env['ENV']['PKG_CONFIG_PATH'] = pathSeparator.join([
 			os.path.join(env['sandbox_path'],'local','lib','pkgconfig'),
 			os.path.join(env["sandbox_path"],'gtk','lib','pkgconfig'),
 		])
