@@ -391,10 +391,7 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 
 def win32_lib_rules( name, version, headers, sources, install_dirs, env, moduleDependencies =[] ) :
 	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
-	if crosscompiling :
-		lib = env.SharedLibrary( 'clam_' + name, sources)
-	else :
-		lib = env.Library( 'clam_' + name, sources )
+	lib = env.SharedLibrary( 'clam_' + name, sources)
 	tgt = env.Alias(name, lib)
 	lib_descriptor = env.File( 'clam_'+name+'.pc' )
 	install_static = env.Install( install_dirs.lib, lib )
