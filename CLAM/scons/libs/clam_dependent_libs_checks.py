@@ -104,16 +104,16 @@ def test_mad( env, conf ) :
 def test_id3lib( env, conf ) :
 	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
 
+	libName = 'id3'
+	env.Append( LIBS=[libName] )
 	zlib = 'z'
 	if not conf.CheckLib(zlib, 'uncompress') :
 		return config_error( "Could not link zlib. Please, check your zlib/id3lib installation" )
 
-	libName = 'id3'
-	env.Append( LIBS=[libName] )
 	if not conf.CheckCXXHeader( 'id3.h' ) :
 		return config_error( "Could not find id3lib headers! Please check your id3lib installation" )
 
-	if not conf.CheckLibWithHeader( libName, 'id3/tag.h', 'cxx', call='ID3_Tag myTag;' ) :
+	if not conf.CheckLibWithHeader( libName, 'id3/tag.h', 'c++', call='ID3_Tag myTag;' ) :
 		return config_error( "Could not find id3lib binaries! Please check your id3lib installation" )
 	if not conf.CheckLibrarySample(libName, 'c++', None, id3lib_test_code) :
 		return config_error( "id3lib compile/link/run tests failed!" )
