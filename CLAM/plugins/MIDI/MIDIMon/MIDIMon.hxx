@@ -47,6 +47,11 @@
 			}
 			Configure( config );
 		}
+
+		~MIDIMon() {
+			if ( mMIDIin )
+				delete mMIDIin;
+		}
 		
 		bool Do()
 		{
