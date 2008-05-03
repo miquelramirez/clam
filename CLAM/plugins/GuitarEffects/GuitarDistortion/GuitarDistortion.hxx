@@ -154,7 +154,7 @@ namespace CLAM{
 		bool DoFactor(const Audio& in, Audio& out)
 		{
 			int size = in.GetSize();
-			DataArray& inb = in.GetBuffer();
+			const DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 
 			//Distortion param
@@ -190,7 +190,7 @@ namespace CLAM{
 		bool DoAtan(const Audio& in, Audio& out)
 		{
 			int size = in.GetSize();
-			DataArray& inb = in.GetBuffer();
+			const DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 
 			TData amount = mParams[0].GetLastValue();
@@ -209,7 +209,7 @@ namespace CLAM{
 		bool DoPolynomial(const Audio& in, Audio& out)
 		{
 			int size = in.GetSize();
-			DataArray& inb = in.GetBuffer();
+			const DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 
 			TData a = mParams[0].GetLastValue();

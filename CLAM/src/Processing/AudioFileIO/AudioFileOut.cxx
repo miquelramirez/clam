@@ -144,7 +144,7 @@ namespace CLAM {
 			"AudioFileOut: Do(): Not a mono file");
 		int n = in.GetBuffer().Size();
 		int pos=0;
-		DataArray &array = in.GetBuffer();
+		const DataArray &array = in.GetBuffer();
 		try {
 			while (n)
 			{			

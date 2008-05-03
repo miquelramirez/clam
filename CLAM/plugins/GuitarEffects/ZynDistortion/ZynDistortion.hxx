@@ -151,7 +151,7 @@ namespace CLAM{
 		bool DoDistortion(const Audio& in, Audio& out)
 		{
 			int size = in.GetSize();
-			DataArray& inb = in.GetBuffer();
+			const DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 
 			TData ws = mDrive.GetLastValue();

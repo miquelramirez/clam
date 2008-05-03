@@ -75,7 +75,7 @@ namespace CLAM {
 		bool Do(const Audio& in)
 		{
 			int size = in.GetSize();
-			DataArray& inb = in.GetBuffer();
+			const DataArray& inb = in.GetBuffer();
 			TData threshold = mThreshold.GetLastValue();
 			bool trigger = 0;
 			for (int i=0;i<size;i++) 
