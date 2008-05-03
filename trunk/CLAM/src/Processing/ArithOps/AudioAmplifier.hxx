@@ -95,7 +95,7 @@ namespace CLAM{
 
 			TData gain = mInputControl.GetLastValue();
 
-			DataArray& inb = in.GetBuffer();
+			const DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 
 			for (int i=0;i<size;i++) 

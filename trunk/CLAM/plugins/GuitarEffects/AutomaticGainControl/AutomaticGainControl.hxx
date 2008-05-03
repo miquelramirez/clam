@@ -97,7 +97,7 @@ namespace CLAM{
 		bool Do(const Audio& in, Audio& out)
 		{
 			int size = in.GetSize();
-			DataArray& inb = in.GetBuffer();
+			const DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 
 			mORef = mOutputReference.GetLastValue();
