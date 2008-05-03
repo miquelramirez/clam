@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="ADSR" type="ADSR">
+    <AttackTime>0</AttackTime>
+    <DecayTime>0</DecayTime>
+    <SustainLevel>0</SustainLevel>
+    <ReleaseTime>0</ReleaseTime>
+    <SampleRate>8000</SampleRate>
+  </processing>
+
+  <processing id="AudioSink" type="AudioSink"/>
+
+  <processing id="ControlPrinter" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="ControlPrinter_1" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="ControlPrinter_2" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="MIDIMon" type="MIDIMon"/>
+
+  <port_connection>
+    <out>ADSR.Audio Output</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <control_connection>
+    <out>MIDIMon.MIDI Message</out>
+    <in>ControlPrinter.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MIDIMon.MIDI Data 1</out>
+    <in>ControlPrinter_1.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MIDIMon.MIDI Data 2</out>
+    <in>ControlPrinter_2.In Control</in>
+  </control_connection>
+
+</network>
