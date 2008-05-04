@@ -435,7 +435,7 @@ namespace CLAM
 			const int nPeaks = peaks.GetIndexArray().Size();
 			const IndexArray & peakIndexes = peaks.GetIndexArray();
 			DataArray& peakFrequencies=peaks.GetFreqBuffer();
-			DataArray& peakMagnitudes=peaks.GetMagBuffer();
+			//DataArray& peakMagnitudes=peaks.GetMagBuffer();
 		
 			TData ErrorPM = 0;
 			TData ErrorMP = 0;
@@ -475,7 +475,7 @@ namespace CLAM
 							Peak = GetClosestPeak(HarmonicPm,Peak, peakIndexes, peakFrequencies);
 							//xamat: does not depend on variable data: compute out of the loop!!
 							TData Freq = peakFrequencies[peakIndexes[Peak]];
-							TData Mag  = peakMagnitudes[peakIndexes[Peak]];
+							//TData Mag  = peakMagnitudes[peakIndexes[Peak]];
 							
 							TData FreqDistance = Abs(Freq - HarmonicPm);
 							//xamat: note that default value for mPMp is 0.5 thus yielding a sqrt
