@@ -1,0 +1,10 @@
+== Description ==
+
+MIDI Monitor. Uses RtMidi as backend to create virtual midi ports.
+
+Warning: Works only under Mac and Linux since virtual ports feature of RtMidi works only in these platforms.
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install
