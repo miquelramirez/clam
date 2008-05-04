@@ -6,67 +6,37 @@
 
 #include "RtMidi.hxx"
 
- namespace CLAM {
+namespace CLAM {
 
 	class MIDIMon : public CLAM::Processing
 	{ 
+		/** Controls **/
 		OutControl mMIDIMessage;
 		OutControl mMIDIData1;
 		OutControl mMIDIData2;
 
 		RtMidiIn *mMIDIin;
-		std::vector<unsigned char> mMessage;
-		int mNBytes;
 
 	public:
 		const char* GetClassName() const { return "MIDIMon"; }
 
-		MIDIMon(const Config& config = Config()) 
-			: mMIDIMessage("MIDI Message", this),
-			  mMIDIData1("MIDI Data 1", this),
-			  mMIDIData2("MIDI Data 2", this)
+		MIDIMon( const Config& config = Config() );
+
+		~MIDIMon();
+
+		bool Do() { return true; }
+
+		bool Do(std::vector< unsigned char > *message)
 		{
-			// Create RtMidiIn Object
-			try {
-				mMIDIin = new RtMidiIn();
-			}
-			catch ( RtError &error ) {
-				error.printMessage();
-				exit( EXIT_FAILURE );
-			}
-
-			// Don't ignore sysex, timing, or active sensing messages.
-			mMIDIin->ignoreTypes( false, false, false );
-
-			// Open Virtual Port
-			try {
-				mMIDIin->openVirtualPort("CLAM - MIDIMon In");
-			}
-			catch ( RtError &error ) {
-				error.printMessage();
-			}
-			Configure( config );
-		}
-
-		~MIDIMon() {
-			if ( mMIDIin )
-				delete mMIDIin;
-		}
-		
-		bool Do()
-		{
-			mMIDIin->getMessage( &mMessage );
-		    mNBytes = mMessage.size();
-			
-			if (mNBytes>0)
+			unsigned int nBytes = message->size();
+			if (nBytes>0)
 			{
-				mMIDIMessage.SendControl((float)mMessage[0]);
-				mMIDIData1.SendControl((float)mMessage[1]);
-				mMIDIData2.SendControl((float)mMessage[2]);
+				mMIDIMessage.SendControl((float) ( (*message)[0]) );
+				mMIDIData1.SendControl((float) ( (*message)[1]));
+				mMIDIData2.SendControl((float) ( (*message)[2]));
 			}
 			return true;
 		}
-		
 	};
 	
 } // End namespace
