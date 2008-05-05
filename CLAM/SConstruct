@@ -215,6 +215,7 @@ def config_file_missing():
 clam_env = Environment( ENV=os.environ, tools=['default'])
 clam_env.SConsignFile()
 setup_build_options( clam_env )
+SetupSpawn(clam_env) # to solve long command line problems (in win32)
 
 if not clam_env['verbose']:
 	clam_env['CXXCOMSTR'] = '== Compiling $SOURCE'
