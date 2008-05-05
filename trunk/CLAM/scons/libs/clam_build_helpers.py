@@ -396,3 +396,32 @@ def win32_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 	return tgt, install_tgt
 
 
+# Code taken from http://www.scons.org/wiki/LongCmdLinesOnWin32 (second way as in 2008.05.05)
+# This is to avoid long command line problems in win32.
+# We should remove it as soon as scons does it by itself.
+class ourSpawn:
+	def ourspawn(self, sh, escape, cmd, args, env):
+		newargs = string.join(args[1:], ' ')
+		cmdline = cmd + " " + newargs
+		startupinfo = subprocess.STARTUPINFO()
+		startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+		proc = subprocess.Popen(cmdline, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+			stderr=subprocess.PIPE, startupinfo=startupinfo, shell = False, env = env)
+		data, err = proc.communicate()
+		rv = proc.wait()
+		if rv:
+			print "====="
+			print err
+			print "====="
+		return rv
+def SetupSpawn( env ):
+	if sys.platform == 'win32':
+		buf = ourSpawn()
+		buf.ourenv = env
+		env['SPAWN'] = buf.ourspawn
+
+
+
+
+
+
