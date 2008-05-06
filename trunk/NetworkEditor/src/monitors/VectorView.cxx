@@ -32,19 +32,8 @@ namespace Hidden
 		"icon", "lpmodel.svg",
 		0
 	};
-	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VectorViewMonitor> regVectorViewMonitor("VectorView");
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VectorViewMonitor> reg = metadata;
 
-/*	static class VectorViewMetadata
-	{
-	public:
-		VectorViewMetadata()
-		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			factory.AddAttribute("VectorView", "port_monitor_type", typeid(std::vector<CLAM::TData>).name());
-			factory.AddAttribute("VectorView", "icon", "lpmodel.svg");
-		}
-	} dummy;*/
 }
 
 CLAM::VM::VectorView::~VectorView()

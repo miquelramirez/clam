@@ -28,9 +28,10 @@ namespace detail
 		"key", "MelSpectrumView",
 		"category", "Graphical Monitors",
 		"description", "MelSpectrumView",
+		"port_monitor_type", typeid(CLAM::MelSpectrum).name(),
+		"icon", "lpmodel.svg",
 		0
 	};
-	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MelSpectrumViewMonitor> regMelSpectrumViewMonitor("MelSpectrumView");
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MelSpectrumViewMonitor> reg = metadata;
 }
 
