@@ -203,7 +203,18 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			}
 			std::string key = *itKey;
 			QTreeWidgetItem * item = new QTreeWidgetItem( categoryTree, QStringList() << description.c_str());
-			item->setIcon(0, QIcon(":/icons/images/processing.png"));
+			
+			CLAM::ProcessingFactory::Values anIconMaybe=factory.GetValuesFromAttribute(key,"icon");
+			QIcon icon;
+			if (anIconMaybe.empty())
+				icon = QIcon(":/icons/images/processing.png");
+			else
+			{
+				std::string iconPath = anIconMaybe.front();
+				icon = QIcon(QString(":/icons/images/%1").arg(iconPath.c_str()));
+			}
+			item->setIcon(0,icon);
+
 			item->setText(1, key.c_str());
 		}
 	}
