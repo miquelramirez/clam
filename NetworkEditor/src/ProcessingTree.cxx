@@ -204,16 +204,10 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			std::string key = *itKey;
 			QTreeWidgetItem * item = new QTreeWidgetItem( categoryTree, QStringList() << description.c_str());
 			
-			CLAM::ProcessingFactory::Values anIconMaybe=factory.GetValuesFromAttribute(key,"icon");
-			QIcon icon;
-			if (anIconMaybe.empty())
-				icon = QIcon(":/icons/images/processing.png");
-			else
-			{
-				std::string iconPath = anIconMaybe.front();
-				icon = QIcon(QString(":/icons/images/%1").arg(iconPath.c_str()));
-			}
-			item->setIcon(0, icon);
+			CLAM::ProcessingFactory::Values iconList=factory.GetValuesFromAttribute(key,"icon");
+			std::string iconPath = "processing.png";
+			if (! iconList.empty()) iconPath = iconList.front();
+			item->setIcon(0, QIcon(QString(":/icons/images/%1").arg(iconPath.c_str())));
 
 			item->setText(1, key.c_str());
 		}
