@@ -129,7 +129,7 @@ def test_alsa_sdk( env, conf ) :
 def test_directx_sdk( env, conf ) :
 	if not conf.CheckHeader( 'dsound.h' ) :
 		return config_error( "Could not find DirectX SDK header 'dsound.h'! Please check that the DirectX SDK is placed at the CLAM sandbox" )
-	env.Append( LIBS=['dxerr8','user32', 'gdi32'] )
+	env.Append( LIBS=['dxerr8','user32', 'gdi32', 'dsound'] )
 	if not conf.CheckLibWithHeader('dsound', 'dsound.h', 'cxx', call='DirectSoundCreate(0,0,0);') :
 		return config_error( "Could not find DirectX SDK library 'dsound.lib! Please check that the DirectX SDK is placed at the CLAM sandbox" )
 	if not conf.CheckLibrarySample('directx', 'c++', None, directx_test_code ) :
