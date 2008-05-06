@@ -249,7 +249,7 @@ def check_pkg_config(context, *args, **kwords):
 	crosscompiling = env.has_key('crossmingw') and env['crossmingw']
 	if not env.has_key('PKG_CONFIG') :
 		env['PKG_CONFIG'] = 'pkg-config'
-		if crosscompiling else 'pkg-config'
+		if crosscompiling :
 			env['PKG_CONFIG'] = 'wine pkg-config'
 	if env.has_key('sandbox_path') :
 		pathSeparator = ':'
