@@ -213,7 +213,7 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 				std::string iconPath = anIconMaybe.front();
 				icon = QIcon(QString(":/icons/images/%1").arg(iconPath.c_str()));
 			}
-			item->setIcon(0,icon);
+			item->setIcon(0, icon);
 
 			item->setText(1, key.c_str());
 		}
