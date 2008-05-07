@@ -46,7 +46,7 @@ def define_module_contents(env) :
 		if env['with_alsa'] :
 			folders.append( 'src/Tools/MIDIIO/Linux' )
 			folders.append( 'src/Tools/AudioIO/Linux')
-	elif sys.platform == 'win32' :
+	elif false and sys.platform == 'win32' :
 		if env['audio_backend'] == 'rtaudio' :
 			print('using rtaudio')
 			folders += ['src/Tools/AudioIO/RtAudio'] #, 'src/Defines/Windows/CLAM_windows.h']
