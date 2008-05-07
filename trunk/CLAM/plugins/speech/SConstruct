@@ -19,7 +19,7 @@ options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default
 options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 toolChain = 'default'
-if sys.platform = "win32": toolChain = 'mingw'
+if sys.platform == "win32": toolChain = 'mingw'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))

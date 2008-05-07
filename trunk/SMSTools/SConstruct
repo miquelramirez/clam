@@ -21,7 +21,7 @@ def recursiveDirs(root) :
 
 
 toolChain = 'default'
-if sys.platform = "win32": toolChain = 'mingw'
+if sys.platform == "win32": toolChain = 'mingw'
 env = Environment(ENV=os.environ, tools=[toolChain,'qt'], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
