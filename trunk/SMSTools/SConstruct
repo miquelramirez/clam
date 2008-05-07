@@ -20,7 +20,9 @@ def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind(".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
 
-env = Environment(ENV=os.environ, tools=['default','qt'], options=options)
+toolChain = 'default'
+if sys.platform = "win32": toolChain = 'mingw'
+env = Environment(ENV=os.environ, tools=[toolChain,'qt'], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 
