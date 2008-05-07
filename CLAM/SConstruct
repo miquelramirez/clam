@@ -211,8 +211,10 @@ def config_file_missing():
 # SConstruct file for CLAM
 # Main section
 
+toolChain = 'default'
+if sys.platform = "win32": toolChain = 'mingw'
 
-clam_env = Environment( ENV=os.environ, tools=['default'])
+clam_env = Environment( ENV=os.environ, tools=[toolChain])
 clam_env.SConsignFile()
 setup_build_options( clam_env )
 SetupSpawn(clam_env) # to solve long command line problems (in win32)
@@ -226,8 +228,6 @@ if not clam_env['verbose']:
 crosscompiling = clam_env.has_key('crossmingw') and clam_env['crossmingw']
 if crosscompiling :
 	clam_env.Tool('crossmingw',toolpath=['scons/sconstools'])
-elif sys.platform == 'win32' :
-	clam_env.Tool('mingw')
 
 if clam_env['distcc_hosts'] :
 	clam_env['CXX'] = 'distcc g++'
