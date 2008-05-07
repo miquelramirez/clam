@@ -25,7 +25,9 @@ def recursiveDirs(root) :
 def unique(list) :
 	return dict.fromkeys(list).keys()
 
-env = Environment(ENV=os.environ, tools=['default'], options=options)
+toolchain='default'
+if sys.platform == 'win32': toolchain = 'mingw'
+env = Environment(ENV=os.environ, tools=[toolchain], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
 
