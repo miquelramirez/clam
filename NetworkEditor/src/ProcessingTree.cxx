@@ -192,16 +192,12 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 		QTreeWidgetItem * categoryTree = new QTreeWidgetItem( this, QStringList() << category.c_str());
 		for(itKey = keys.begin(); itKey != keys.end(); itKey++)
 		{
-			std::string description;
-			if(factory.GetValuesFromAttribute(*itKey, "description").empty())
-			{
-				description = *itKey;
-			}
-			else
-			{
-				description = factory.GetValuesFromAttribute(*itKey, "description").front();
-			}
 			std::string key = *itKey;
+
+			std::string description = key;
+			CLAM::ProcessingFactory::Values descriptionList=factory.GetValuesFromAttribute(key, "description");
+			if (! descriptionList.empty()) description=descriptionList.front();
+
 			QTreeWidgetItem * item = new QTreeWidgetItem( categoryTree, QStringList() << description.c_str());
 			
 			CLAM::ProcessingFactory::Values iconList=factory.GetValuesFromAttribute(key,"icon");
