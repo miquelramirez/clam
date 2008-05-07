@@ -55,7 +55,7 @@ namespace CLAM
 		CHECK_PA_ERROR( "Error opening the stream: ", errval );
 	}
 
-	void PAAudioInputStream::CheckConsistency()
+	void PAAudioInputStream::CheckConsistency() throw (ErrPortAudio)
 	{
 		const PaDeviceInfo* devnfo = Pa_GetDeviceInfo( mConfig.GetDeviceID() );
 		
