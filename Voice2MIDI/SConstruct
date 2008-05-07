@@ -25,7 +25,7 @@ def unique(list) :
 	return dict.fromkeys(list).keys()
 
 toolChain = 'default'
-if sys.platform = "win32": toolChain = 'mingw'
+if sys.platform == "win32": toolChain = 'mingw'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
 options.Save('options.cache', env)
 Help(options.GenerateHelpText(env))
