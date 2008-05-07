@@ -97,6 +97,7 @@ mainSources = {
 
 sourcePaths = [
 	os.path.join('src'),
+	os.path.join('src','jack'),
 	os.path.join('src','generated'),
 	os.path.join('src','processing'),
 	os.path.join('src','processing','SampleBySample'),
@@ -181,8 +182,6 @@ pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQT_CORE_LIB','-DQT_GUI_LIB','-DQ
 env.AppendUnique(CPPFLAGS=pluginDefines)
 
 #env.AppendUnique(CPPFLAGS=['-fPIC']) # qtPlugin examples were compiled with this option
-if sys.platform == "win32":
-	env.AppendUnique(LINKFLAGS='/OPT:NOREF')
 
 qtplugin = env.SharedLibrary("CLAMWidgets", pluginsources + env.Qrc(qrcfiles))
 
