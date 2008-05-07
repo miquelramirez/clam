@@ -212,8 +212,7 @@ def config_file_missing():
 # Main section
 
 toolChain = 'default'
-if sys.platform = "win32": toolChain = 'mingw'
-
+if sys.platform == "win32": toolChain = 'mingw'
 clam_env = Environment( ENV=os.environ, tools=[toolChain])
 clam_env.SConsignFile()
 setup_build_options( clam_env )
