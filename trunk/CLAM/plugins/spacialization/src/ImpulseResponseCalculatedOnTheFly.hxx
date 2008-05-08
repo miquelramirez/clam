@@ -72,14 +72,14 @@ public:
 private:
 	
 	Config _config;
-	OutPort< ImpulseResponse* > _pressureImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _previousPressureImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _vxImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _previousVxImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _vyImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _previousVyImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _vzImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _previousVzImpulseResponseOutPort;
+	OutPort< ImpulseResponse* > _WImpulseResponseOutPort;
+	OutPort< ImpulseResponse* > _WImpulseResponseOutPortPrevious;
+	OutPort< ImpulseResponse* > _XImpulseResponseOutPort;
+	OutPort< ImpulseResponse* > _XImpulseResponseOutPortPrevious;
+	OutPort< ImpulseResponse* > _YImpulseResponseOutPort;
+	OutPort< ImpulseResponse* > _YImpulseResponseOutPortPrevious;
+	OutPort< ImpulseResponse* > _ZImpulseResponseOutPort;
+	OutPort< ImpulseResponse* > _ZImpulseResponseOutPortPrevious;
 	InControl _emitterX;
 	InControl _emitterY;
 	InControl _emitterZ;
@@ -97,18 +97,19 @@ private:
 	float _currentReceiverY;
 	float _currentReceiverZ;
 	float _delta;
+	int _irCount;
 
 public:
 	const char* GetClassName() const { return "ImpulseResponseCalculatedOnTheFly"; }
 	ImpulseResponseCalculatedOnTheFly(const Config& config = Config()) 
-		: _pressureImpulseResponseOutPort("pressure IR", this)
-		, _previousPressureImpulseResponseOutPort("previous pressure IR", this)
-		, _vxImpulseResponseOutPort("vx IR", this)
-		, _previousVxImpulseResponseOutPort("previous vx IR", this)
-		, _vyImpulseResponseOutPort("vy IR", this)
-		, _previousVyImpulseResponseOutPort("previous vy IR", this)
-		, _vzImpulseResponseOutPort("vz IR", this)
-		, _previousVzImpulseResponseOutPort("previous vz IR", this)
+		: _WImpulseResponseOutPort("pressure IR", this)
+		, _WImpulseResponseOutPortPrevious("previous pressure IR", this)
+		, _XImpulseResponseOutPort("vx IR", this)
+		, _XImpulseResponseOutPortPrevious("previous vx IR", this)
+		, _YImpulseResponseOutPort("vy IR", this)
+		, _YImpulseResponseOutPortPrevious("previous vy IR", this)
+		, _ZImpulseResponseOutPort("vz IR", this)
+		, _ZImpulseResponseOutPortPrevious("previous vz IR", this)
 		, _emitterX("emitterX", this)
 		, _emitterY("emitterY", this)
 		, _emitterZ("emitterZ", this)
@@ -124,6 +125,7 @@ public:
 		, _currentReceiverY(0)
 		, _currentReceiverZ(0)
 		, _delta(1)
+		, _irCount(0)
 	{
 		Configure( config );
 		_emitterX.SetBounds(0,1);
@@ -239,25 +241,39 @@ public:
 				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do can not open IR files." << errorMsg << std::endl;
 				return false;
 			}
+			if (false) // save all IRs
+			{
+				std::cout << "saving IR "<<_irCount<<std::endl;
+				std::ostringstream os;
+				os << "cp "<<wFile<<" "<<wFile<<_irCount<<".wav";
+				std::system(os.str().c_str());
+				_irCount++;
+			}
 		}
+/*
+if (_current == &_impulseResponsesA) std::cout << "(A,";
+else std::cout << "(B,";
+if (_previous == &_impulseResponsesA) std::cout << "A) " << std::flush;
+else std::cout << "B) " << std::flush;
+*/
 
-		_pressureImpulseResponseOutPort.GetData()= &_current->W;
-		_previousPressureImpulseResponseOutPort.GetData() = &_previous->W;
-		_vxImpulseResponseOutPort.GetData()= &_current->X;
-		_previousVxImpulseResponseOutPort.GetData()= &_previous->X;
-		_vyImpulseResponseOutPort.GetData()= &_current->Y;
-		_previousVyImpulseResponseOutPort.GetData()= &_previous->Y;
-		_vzImpulseResponseOutPort.GetData()= &_current->Z;
-		_previousVzImpulseResponseOutPort.GetData()= &_previous->Z;
+		_WImpulseResponseOutPort.GetData()= &_current->W;
+		_WImpulseResponseOutPortPrevious.GetData() = &_previous->W;
+		_XImpulseResponseOutPort.GetData()= &_current->X;
+		_XImpulseResponseOutPortPrevious.GetData()= &_previous->X;
+		_YImpulseResponseOutPort.GetData()= &_current->Y;
+		_YImpulseResponseOutPortPrevious.GetData()= &_previous->Y;
+		_ZImpulseResponseOutPort.GetData()= &_current->Z;
+		_ZImpulseResponseOutPortPrevious.GetData()= &_previous->Z;
 
-		_pressureImpulseResponseOutPort.Produce();
-		_previousPressureImpulseResponseOutPort.Produce();
-		_vxImpulseResponseOutPort.Produce();
-		_previousVxImpulseResponseOutPort.Produce();
-		_vyImpulseResponseOutPort.Produce();
-		_previousVyImpulseResponseOutPort.Produce();
-		_vzImpulseResponseOutPort.Produce();
-		_previousVzImpulseResponseOutPort.Produce();
+		_WImpulseResponseOutPort.Produce();
+		_WImpulseResponseOutPortPrevious.Produce();
+		_XImpulseResponseOutPort.Produce();
+		_XImpulseResponseOutPortPrevious.Produce();
+		_YImpulseResponseOutPort.Produce();
+		_YImpulseResponseOutPortPrevious.Produce();
+		_ZImpulseResponseOutPort.Produce();
+		_ZImpulseResponseOutPortPrevious.Produce();
 
 		_previous=_current;
 		return true;
