@@ -8,7 +8,21 @@ def enable_modules( self, libs, path) :
 				' '.join(libs)))
 		return
 
-	if sys.platform != 'win32': raise "No CLAM support for your platform, sorry"
+	# TODO join this if compatible with the linux version
+	if sys.platform in ['win32'] : 
+		oldEnv = self['ENV'].items()
+		pathSeparator = ";"
+		self['ENV']['PKG_CONFIG_PATH'] = pathSeparator.join([
+			self.['ENV'],
+			os.path.join(path,'lib','pkgconfig'),
+		])
+		self.ParseConfig('pkg-config %s --libs --cflags'% (path, ' '.join(libs)))
+		self['ENV'] = dict(oldEnv)
+		return
+
+	raise "No CLAM support for your platform, sorry"
+
+	# TODO: remove this pkgconfig parser for visualc
 
 	descriptor_path = path + "\\lib\\pkgconfig\\"
 	libpath = dict()
