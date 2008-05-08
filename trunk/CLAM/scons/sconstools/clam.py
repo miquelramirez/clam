@@ -13,7 +13,7 @@ def enable_modules( self, libs, path) :
 		oldEnv = self['ENV'].items()
 		pathSeparator = ";"
 		self['ENV']['PKG_CONFIG_PATH'] = pathSeparator.join([
-			self.['ENV'],
+			self['ENV'],
 			os.path.join(path,'lib','pkgconfig'),
 		])
 		self.ParseConfig('pkg-config %s --libs --cflags'% (path, ' '.join(libs)))
