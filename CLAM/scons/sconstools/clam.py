@@ -10,6 +10,7 @@ def enable_modules( self, libs, path) :
 
 	# TODO join this if compatible with the linux version
 	if sys.platform in ['win32'] : 
+		import os
 		oldEnv = self['ENV'].items()
 		pathSeparator = ";"
 		self['ENV']['PKG_CONFIG_PATH'] = pathSeparator.join([
