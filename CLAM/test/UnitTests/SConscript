@@ -30,6 +30,7 @@ folders = [
 	os.path.join('StandardTests'),
 	os.path.join('TonalAnalysis'),
 	os.path.join('ToolsTests'),
+	os.path.join('TypedControlsTests'),
 	os.path.join('XMLAdaptersTests'),
 	os.path.join('VisualizationTests'),
 	]
