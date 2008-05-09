@@ -791,7 +791,7 @@ public:
 		setWindowState(windowState() ^ Qt::WindowFullScreen);
 
 		_newProcessingAction = new QAction("New Processing", this);
-		_newProcessingAction->setShortcut(QKeySequence(tr("A")));
+		_newProcessingAction->setShortcut(QKeySequence(tr("Ctrl+Space")));
 		addAction(_newProcessingAction);
 		connect(_newProcessingAction, SIGNAL(triggered()), this, SLOT(onNewProcessing()));
 	}
@@ -1374,6 +1374,7 @@ private slots:
 			connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
 			layout->addWidget(buttons);
 			int result = dialog.exec();
+			this->activateWindow();
 			if (result==QDialog::Rejected) return;
 			type = lineEdit->text();
 			if (type.isEmpty()) return;
