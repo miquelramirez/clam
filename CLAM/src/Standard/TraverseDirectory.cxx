@@ -21,6 +21,7 @@
 
 #include "TraverseDirectory.hxx"
 #include <sys/types.h>
+#include <cstring>
 
 TraverseDirectory::TraverseDirectory(void)
 {

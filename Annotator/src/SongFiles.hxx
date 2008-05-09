@@ -22,7 +22,7 @@
 
 #ifndef _SongFiles_
 #define _SongFiles_
-
+#include <typeinfo>
 #include <CLAM/DynamicType.hxx>
 #include <CLAM/Filename.hxx>
 

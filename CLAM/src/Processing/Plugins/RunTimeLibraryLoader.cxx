@@ -1,6 +1,7 @@
 #include "RunTimeLibraryLoader.hxx"
 
 #include <iostream>
+#include <cstdlib>
 #include <dirent.h>
 #ifdef WIN32
 #	include <windows.h>

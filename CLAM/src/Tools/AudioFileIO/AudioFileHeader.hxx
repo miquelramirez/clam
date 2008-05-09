@@ -21,6 +21,7 @@
 
 #ifndef __AUDIOFILEHEADER__
 #define __AUDIOFILEHEADER__
+#include <typeinfo>
 
 #include "AudioFileFormats.hxx"
 #include "DynamicType.hxx"

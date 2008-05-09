@@ -2,6 +2,7 @@
 #define ProcessingDataPlugin_hxx
 
 #include <string>
+#include <cstdlib>
 #include <map>
 #include <typeinfo>
 #include <iostream>

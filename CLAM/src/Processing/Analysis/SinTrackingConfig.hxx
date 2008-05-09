@@ -21,6 +21,7 @@
 
 #ifndef _SinTrackingConfig_
 #define _SinTrackingConfig_
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 

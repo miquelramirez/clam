@@ -21,6 +21,7 @@
 
 #ifndef __MONOAUDIOFILEWRITERCONFIG__
 #define __MONOAUDIOFILEWRITERCONFIG__
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 #include "AudioOutFilename.hxx"

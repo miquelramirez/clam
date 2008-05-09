@@ -21,6 +21,7 @@
 
 #ifndef _FundFreqDetect__
 #define _FundFreqDetect__
+#include <typeinfo>
 
 #include "DataTypes.hxx"
 #include "Processing.hxx"

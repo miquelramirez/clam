@@ -21,7 +21,7 @@
 
 #ifndef _CircularShiftConfig_
 #define _CircularShiftConfig_
-
+#include <typeinfo>
 #include "DataTypes.hxx"
 #include "ProcessingConfig.hxx"
 

@@ -21,6 +21,7 @@
 
 #ifndef _MIDIMelody_
 #define _MIDIMelody_
+#include <typeinfo>
 
 #include "DynamicType.hxx"
 #include "List.hxx"

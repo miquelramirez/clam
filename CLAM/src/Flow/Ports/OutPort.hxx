@@ -23,6 +23,7 @@
 #define __OutPort_hxx__
 
 #include "WritingRegion.hxx"
+#include <typeinfo>
 #include <list>
 #include <string>
 #include "InPort.hxx"

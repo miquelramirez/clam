@@ -21,7 +21,7 @@
 
 #ifndef __AUDIOTEXTDESCRIPTORS__
 #define __AUDIOTEXTDESCRIPTORS__
-
+#include <typeinfo>
 #include "DynamicType.hxx"
 #include "Text.hxx"
 

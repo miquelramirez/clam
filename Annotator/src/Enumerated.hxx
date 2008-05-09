@@ -22,7 +22,7 @@
 
 #ifndef Enumerated_hxx
 #define Enumerated_hxx
-
+#include <typeinfo>
 #include <CLAM/DynamicType.hxx>
 #include <CLAM/XMLAdapter.hxx>
 #include <CLAM/TypeInfo.hxx>

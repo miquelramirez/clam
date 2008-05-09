@@ -21,6 +21,7 @@
 
 #ifndef _SinTracking__
 #define _SinTracking__
+#include <typeinfo>
 
 #include "DataTypes.hxx"
 #include "Processing.hxx"

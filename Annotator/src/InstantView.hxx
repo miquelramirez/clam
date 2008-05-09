@@ -21,7 +21,7 @@
 
 #ifndef InstantView_hxx
 #define InstantView_hxx
-
+#include <typeinfo>
 #include <CLAM/DynamicType.hxx>
 
 #include <list>

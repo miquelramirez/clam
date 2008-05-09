@@ -1,6 +1,6 @@
 #ifndef __MIDIFILEIOCONFIG__
 #define __MIDIFILEIOCONFIG__
-
+#include <typeinfo>
 #include <string>
 #include "ProcessingConfig.hxx"
 

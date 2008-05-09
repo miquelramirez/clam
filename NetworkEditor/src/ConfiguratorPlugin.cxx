@@ -1,4 +1,6 @@
 #include "ConfiguratorPlugin.hxx"
+#include <cstdlib>
+#include <limits>
 
 /**
  * Abstract class for plugins to add new editable types to configuration dialogs

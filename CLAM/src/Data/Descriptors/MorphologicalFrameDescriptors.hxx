@@ -21,6 +21,7 @@
 
 #ifndef __MorphologicalFrameDescriptors__
 #define __MorphologicalFrameDescriptors__
+#include <typeinfo>
 
 #include "Flags.hxx"
 #include "DynamicType.hxx"

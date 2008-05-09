@@ -22,6 +22,7 @@
 
 #ifndef _FFTConfig_
 #define _FFTConfig_
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 

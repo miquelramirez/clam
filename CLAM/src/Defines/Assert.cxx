@@ -21,6 +21,7 @@
 
 #include "Assert.hxx"
 #include <iostream>
+#include <cstdlib>
 #include <csignal>
 #if defined(__linux__)
 #include <execinfo.h>

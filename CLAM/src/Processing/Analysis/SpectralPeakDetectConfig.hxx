@@ -21,6 +21,7 @@
 
 #ifndef _SpectralPeakDetectConfig_
 #define _SpectralPeakDetectConfig_
+#include <typeinfo>
 
 #include "GlobalEnums.hxx"
 #include "DataTypes.hxx"

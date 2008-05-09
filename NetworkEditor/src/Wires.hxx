@@ -69,7 +69,7 @@ public:
 
 		// We use tangentY instead of plain source.y() in order to avoid a qt bezier bug
 		int tangentY = source.y();
-		if (std::abs(source.y()-target.y())<7) tangentY+=6;
+		if (std::abs((double)(source.y()-target.y()))<7) tangentY+=6;
 
 		QPainterPath path;
 		path.moveTo(source);
@@ -116,7 +116,7 @@ public:
 
 		// We use tangentX instead of plain source.x() in order to avoid a qt bezier bug
 		int tangentX = source.x();
-		if (std::abs(source.x()-target.x())<7) tangentX+=6;
+		if (std::abs((double)(source.x()-target.x()))<7) tangentX+=6;
 
 		QPainterPath path;
 		path.moveTo(source);

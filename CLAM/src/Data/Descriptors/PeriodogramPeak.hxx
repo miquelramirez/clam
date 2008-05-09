@@ -23,7 +23,7 @@
 
 #ifndef _PeriodogramPeak_
 #define _PeriodogramPeak_
-
+#include <typeinfo>
 #include "DataTypes.hxx"
 #include "ProcessingData.hxx"
 

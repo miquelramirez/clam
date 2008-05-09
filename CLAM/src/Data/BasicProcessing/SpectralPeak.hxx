@@ -35,6 +35,8 @@
 #ifndef _SpectralPeak_
 #define _SpectralPeak_
 
+#include <typeinfo>
+
 #include "DynamicType.hxx"
 #include "Array.hxx"
 #include "DataTypes.hxx"

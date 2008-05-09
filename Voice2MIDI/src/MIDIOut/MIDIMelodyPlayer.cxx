@@ -4,6 +4,8 @@
  *
  * Ismael Mosquera Rivera PFC Voice2MIDI UPF 2004
 */
+
+#include <typeinfo>
 #include <CLAM/xtime.hxx>
 #include <CLAM/MIDIManager.hxx>
 #include <CLAM/MIDIIOConfig.hxx>

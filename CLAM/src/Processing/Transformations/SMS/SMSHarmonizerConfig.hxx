@@ -21,6 +21,7 @@
 
 #ifndef __SMSHarmonizerConfig__
 #define __SMSHarmonizerConfig__
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 
