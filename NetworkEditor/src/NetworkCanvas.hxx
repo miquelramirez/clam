@@ -789,6 +789,11 @@ public:
 		, _network(0)
 	{
 		setWindowState(windowState() ^ Qt::WindowFullScreen);
+
+		_newProcessingAction = new QAction("New Processing", this);
+		_newProcessingAction->setShortcut(QKeySequence(tr("A")));
+		addAction(_newProcessingAction);
+		connect(_newProcessingAction, SIGNAL(triggered()), this, SLOT(onNewProcessing()));
 	}
 	CLAM::Network & network()
 	{
@@ -1465,7 +1470,8 @@ private:
 			this, SLOT(onNewProcessing()))->setData(translatedPos);
 	}
 
-
+protected:
+	QAction * _newProcessingAction;
 private:
 	CLAM::Network * _network;
 };
