@@ -45,6 +45,8 @@ blacklist = [
 	os.path.join('XMLAdaptersTests','LibXmlDomReaderTest.cxx'),
 	os.path.join('XMLAdaptersTests','LibXmlDomReadingContextTest.cxx'),
 	os.path.join('XMLAdaptersTests','LibXmlDomWriterTest.cxx'),
+	os.path.join('XMLAdaptersTests','XercesDom2ClamObjectsTest.cxx'),
+	os.path.join('XMLAdaptersTests','XercesDomDocumentHandlerTest.cxx'),
 	os.path.join('DescriptorsTests','ProofOfConceptTest.cxx'),
 	]
 
