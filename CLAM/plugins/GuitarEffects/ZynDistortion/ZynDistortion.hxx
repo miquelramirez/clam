@@ -199,7 +199,7 @@ namespace CLAM{
 				ws = ws*ws + 0.000001;
 				for (int i=0;i<size;i++)
 				{
-					outb[i] = floor(inb[i]/ws+0.5)*ws;
+					outb[i] = floor(inb[i]/ws+0.2)*ws;
 				}
 				break;
 			case EDistType::eZigzag:
