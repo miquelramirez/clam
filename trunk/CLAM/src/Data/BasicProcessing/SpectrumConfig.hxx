@@ -21,6 +21,7 @@
 
 #ifndef __SpectrumConfig__
 #define __SpectrumConfig__
+#include <typeinfo>
 
 #include "DataTypes.hxx"
 #include "SpecTypeFlags.hxx"

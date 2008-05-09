@@ -22,6 +22,7 @@
 #ifndef _AUDIO_HXX
 #define _AUDIO_HXX
 
+#include <typeinfo>
 
 //
 // Finally, we have decided to use a single buffer of TDatas, all

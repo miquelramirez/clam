@@ -21,7 +21,7 @@
 
 #ifndef __SpectralPeakDescriptors_H__
 #define __SpectralPeakDescriptors_H__
-
+#include <typeinfo>
 #include "Descriptor.hxx"
 
 /*

@@ -21,6 +21,7 @@
 
 #ifndef _PhaseManagementConfig_
 #define _PhaseManagementConfig_
+#include <typeinfo>
 
 #include "EPhaseGeneration.hxx"
 #include "ProcessingConfig.hxx"

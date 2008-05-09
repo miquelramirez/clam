@@ -21,7 +21,7 @@
 
 #ifndef _Schema_hxx_
 #define _Schema_hxx_
-
+#include <typeinfo>
 #include <CLAM/DynamicType.hxx>
 #include "SchemaAttribute.hxx"
 

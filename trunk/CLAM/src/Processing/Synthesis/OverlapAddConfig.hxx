@@ -21,6 +21,7 @@
 
 #ifndef _OverlapAddConfig_
 #define _OverlapAddConfig_
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 

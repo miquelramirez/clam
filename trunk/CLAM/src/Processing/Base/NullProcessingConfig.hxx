@@ -23,6 +23,7 @@
 #define _NULL_CONFIG_
 
 #include "ProcessingConfig.hxx"
+#include <typeinfo>
 
 namespace CLAM
 {

@@ -23,6 +23,7 @@
 
 #ifndef _MIDINote_
 #define _MIDINote_
+#include <typeinfo>
 
 #include "DynamicType.hxx"
 #include "DataTypes.hxx"

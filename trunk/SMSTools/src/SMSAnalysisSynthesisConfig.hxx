@@ -21,6 +21,7 @@
 
 #ifndef _SMSAnalysisSynthesisConfig_
 #define _SMSAnalysisSynthesisConfig_
+#include <typeinfo>
 
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/EPhaseGeneration.hxx>

@@ -20,6 +20,7 @@
  */
 
 #include "ProcessingConfig.hxx"
+#include <typeinfo>
 
 #ifndef _FundFreqDetectConfig__
 #define _FundFreqDetectConfig__

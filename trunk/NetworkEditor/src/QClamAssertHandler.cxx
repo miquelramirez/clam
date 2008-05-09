@@ -1,6 +1,7 @@
 #include <QtGui/QMessageBox>
 #include <CLAM/Assert.hxx>
 #include <sstream>
+#include <cstdlib>
 #if defined(__linux__)
 #include <execinfo.h>
 #endif

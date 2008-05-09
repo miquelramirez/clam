@@ -1,5 +1,5 @@
 #include "ocsound.h"
-
+#include <cstdlib>
 void generateorc(char *filename)
 {
    ofstream fd(ORCFILE, ios::out | ios::trunc);

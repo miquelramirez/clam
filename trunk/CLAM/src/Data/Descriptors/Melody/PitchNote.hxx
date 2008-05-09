@@ -21,6 +21,7 @@
 
 #ifndef _PitchNote_
 #define _PitchNote_
+#include <typeinfo>
 
 #include "DynamicType.hxx"
 #include "DataTypes.hxx"

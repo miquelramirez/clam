@@ -22,6 +22,7 @@
 #ifndef _Envelope_
 #define _Envelope_
 
+#include <typeinfo>
 #include "DynamicType.hxx"
 #include "Array.hxx"
 #include "BPF.hxx"

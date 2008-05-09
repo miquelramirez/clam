@@ -21,6 +21,7 @@
 
 #ifndef _WindowGeneratorConfig_
 #define _WindowGeneratorConfig_
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 #include "Enum.hxx"

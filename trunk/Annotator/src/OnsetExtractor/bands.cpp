@@ -1,5 +1,6 @@
 #include "bands.h"
 #include <math.h>
+#include <cstdlib>
 
 band::band() {
 	lowsample=0;

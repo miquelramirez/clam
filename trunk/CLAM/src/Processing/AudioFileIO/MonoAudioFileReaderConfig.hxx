@@ -21,6 +21,7 @@
 
 #ifndef __MONOAUDIOFILEREADERCONFIG__
 #define __MONOAUDIOFILEREADERCONFIG__
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx" // For CLAM::ProcessingConfig interface
 #include "AudioInFilename.hxx" // For CLAM::AudioInFilename interface

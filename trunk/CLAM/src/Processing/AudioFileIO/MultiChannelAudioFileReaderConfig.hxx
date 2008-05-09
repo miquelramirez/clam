@@ -21,6 +21,7 @@
 
 #ifndef __MULTICHANNELAUDIOFILEREADERCONFIG__
 #define __MULTICHANNELAUDIOFILEREADERCONFIG__
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 #include "AudioInFilename.hxx"

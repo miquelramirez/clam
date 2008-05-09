@@ -21,6 +21,7 @@
 
 #ifndef _MediaTime_
 #define _MediaTime_
+#include <typeinfo>
 
 #include "DataTypes.hxx"
 #include "ProcessingData.hxx"

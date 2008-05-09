@@ -22,6 +22,7 @@
 #ifndef _Spectrum_
 #define _Spectrum_
 
+#include <typeinfo>
 #include "Array.hxx"
 #include "Complex.hxx"
 #include "Polar.hxx"

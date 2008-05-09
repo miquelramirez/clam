@@ -21,6 +21,7 @@
 
 #ifndef __MorphologicalSegmentDescriptors__
 #define __MorphologicalSegmentDescriptors__
+#include <typeinfo>
 
 #include "Flags.hxx"
 #include "DynamicType.hxx"

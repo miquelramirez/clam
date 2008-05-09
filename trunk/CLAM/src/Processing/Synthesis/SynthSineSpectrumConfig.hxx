@@ -21,6 +21,7 @@
 
 #ifndef _SynthSineSpectrumConfig_
 #define _SynthSineSpectrumConfig_
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 

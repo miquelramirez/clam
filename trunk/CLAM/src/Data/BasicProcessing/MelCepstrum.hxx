@@ -24,6 +24,7 @@
 
 #include "ProcessingData.hxx"
 #include "Array.hxx"
+#include <typeinfo>
 
 namespace CLAM
 {

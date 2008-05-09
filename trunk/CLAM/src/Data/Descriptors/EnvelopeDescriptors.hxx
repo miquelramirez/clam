@@ -22,7 +22,7 @@
 #ifndef __EnvelopeDescriptors__
 #define __EnvelopeDescriptors__
 
-
+#include <typeinfo>
 
 #include "ProcessingData.hxx"
 #include "DataTypes.hxx"

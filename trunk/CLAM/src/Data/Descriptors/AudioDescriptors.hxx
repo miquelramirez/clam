@@ -22,7 +22,7 @@
 #ifndef __AUDIODescriptors_H__
 #define __AUDIODescriptors_H__
 
-
+#include <typeinfo>
 #include "Descriptor.hxx"
 #include "DataTypes.hxx"
 /*

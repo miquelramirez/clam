@@ -25,6 +25,7 @@
 #include "WritingRegion.hxx"
 #include "ReadingRegion.hxx"
 #include <string>
+#include <typeinfo>
 
 namespace CLAM
 {

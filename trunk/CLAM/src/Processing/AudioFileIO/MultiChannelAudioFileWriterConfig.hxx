@@ -21,6 +21,7 @@
 
 #ifndef __MULTICHANNELAUDIOFILEWRITERCONFIG__
 #define __MULTICHANNELAUDIOFILEWRITERCONFIG__
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 #include "AudioOutFilename.hxx"

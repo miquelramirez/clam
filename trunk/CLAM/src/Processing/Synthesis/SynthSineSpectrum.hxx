@@ -21,6 +21,7 @@
 
 #ifndef _SynthSineSpectrum_
 #define _SynthSineSpectrum_
+#include <typeinfo>
 
 #define   MAINLOBE_TABLE_SIZE 4096		// Tablesize of the mainlobe of a BH92 Window 
 

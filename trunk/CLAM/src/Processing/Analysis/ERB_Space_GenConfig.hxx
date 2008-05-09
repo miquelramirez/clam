@@ -21,6 +21,7 @@
 
 #ifndef __ERB_SPACE_GEN_CONFIG__
 #define __ERB_SPACE_GEN_CONFIG__
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 #include "DataTypes.hxx"

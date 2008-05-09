@@ -21,7 +21,7 @@
 
 #ifndef _Fundamental_
 #define _Fundamental_
-
+#include <typeinfo>
 #include "DynamicType.hxx"
 #include "Array.hxx"
 #include "DataTypes.hxx"

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <typeinfo>
 #include <CLAM/xtime.hxx>
 #include <CLAM/MIDIManager.hxx>
 #include <CLAM/MIDIIOConfig.hxx>

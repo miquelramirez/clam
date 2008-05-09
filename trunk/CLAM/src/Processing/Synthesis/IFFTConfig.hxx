@@ -21,7 +21,7 @@
 
 #ifndef _IFFTConfig_
 #define _IFFTConfig_
-
+#include <typeinfo>
 
 #include "ProcessingConfig.hxx"
 

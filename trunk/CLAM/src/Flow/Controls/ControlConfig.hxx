@@ -21,6 +21,7 @@
 
 #ifndef _CONTROL_CONFIG_H
 #define _CONTROL_CONFIG_H
+#include <typeinfo>
 
 #include "DynamicType.hxx"
 

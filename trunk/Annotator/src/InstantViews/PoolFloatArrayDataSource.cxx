@@ -20,6 +20,7 @@
  */
 
 #include "FrameDivision.hxx"
+#include <typeinfo>
 #include <CLAM/Pool.hxx>
 #include <CLAM/Array.hxx>
 #include "PoolFloatArrayDataSource.hxx"

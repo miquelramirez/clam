@@ -1,5 +1,6 @@
 #ifndef ConfiguratorPlugin_hxx
 #define ConfiguratorPlugin_hxx
+#include <typeinfo>
 #include <list>
 #include <CLAM/DynamicType.hxx>
 #include <QtGui/QLabel>

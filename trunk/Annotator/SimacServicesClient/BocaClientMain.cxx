@@ -23,6 +23,7 @@
 #include <QtCore/QTranslator>
 #include <QtCore/QLocale>
 #include "BocaClientGui.hxx"
+#include <cstdlib>
 
 #ifndef I18N_PATH
 #ifdef WIN32

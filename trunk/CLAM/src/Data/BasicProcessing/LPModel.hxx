@@ -21,7 +21,7 @@
 
 #ifndef __LPMODEL__
 #define __LPMODEL__
-
+#include <typeinfo>
 #include "ProcessingData.hxx"
 #include "Array.hxx"
 
