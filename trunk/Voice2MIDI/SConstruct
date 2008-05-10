@@ -149,7 +149,7 @@ if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Voice2MIDI.app/Contents/Resources\\""')
 else :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['prefix'] + '/share/voice2midi\\""')
-if sys.platform!='win32' or crosscompiling :
+if sys.platform=='win32' or crosscompiling :
 	# TODO: This should not be hardcoded neither prefix (because package intall)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/voice2midi/example-data\\""')
 	env.Append(LIBS=['pthread'])
