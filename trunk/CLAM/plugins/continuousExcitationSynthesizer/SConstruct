@@ -60,8 +60,8 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	
 mainSources = {
 	'ContinuousExcitationSynthesizer': 'ContinuousExcitationSynthesizer.cxx',
-	'TestAudioDatabaseReader': 'toreview/TestAudioDatabaseReader.cxx',
-	'EbowSynthesizer': 'toreview/ebowSynthesizer.cxx',
+	'TestAudioDatabaseReader': os.path.join('toreview','TestAudioDatabaseReader.cxx'),
+	'EbowSynthesizer': os.path.join('toreview','ebowSynthesizer.cxx'),
 }
 for binary, mainSource in mainSources.items() :
 	sources.remove(mainSource)
