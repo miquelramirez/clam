@@ -23,7 +23,7 @@ namespace CLAM {
 
 		void AddLink(TypedInControl<TypedControlData>& in);
 		void RemoveLink(TypedInControl<TypedControlData>& in);
-		void SendControl(TypedControlData& val);
+		void SendControl(const TypedControlData& val);
 	};
 	
 	template<class TypedControlData>
@@ -53,7 +53,7 @@ namespace CLAM {
 	}
 
 	template<class TypedControlData>
-	void TypedOutControl<TypedControlData>::SendControl(TypedControlData& val)
+	void TypedOutControl<TypedControlData>::SendControl(const TypedControlData& val)
 	{
 		typename ProperTypedInControlList::iterator it;
 		
