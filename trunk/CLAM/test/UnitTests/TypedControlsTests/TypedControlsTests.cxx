@@ -19,8 +19,7 @@ namespace CLAMTest {
 		void testTypedInControl_DoControl_ChangesInternalState()
 		{
 			CLAM::TypedInControl<int> in("IntInControl");
-			int number=1;
-			in.DoControl(number);
+			in.DoControl(1);
 			CPPUNIT_ASSERT_EQUAL( 1, in.GetLastValue() );
 		}
 
@@ -29,8 +28,7 @@ namespace CLAMTest {
 			CLAM::TypedInControl<int> in("IntInControl");
 			CLAM::TypedOutControl<int> out("IntOutControl");
 			out.AddLink(in);
-			int number=1;
-			out.SendControl(number);
+			out.SendControl(1);
 			CPPUNIT_ASSERT_EQUAL( 1 , in.GetLastValue() );
 		}
 

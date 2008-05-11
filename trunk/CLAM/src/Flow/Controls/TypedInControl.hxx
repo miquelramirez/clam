@@ -10,22 +10,21 @@ namespace CLAM {
 	{
 	protected:
 		std::string mName;
-		TypedControlData* mLastValue;
+		TypedControlData mLastValue;
 		
 	public:
 		TypedInControl(const std::string &name);
 		~TypedInControl();
 		
-		void DoControl(TypedControlData& val);
+		void DoControl(const TypedControlData& val);
 		const std::string& GetName() const { return mName; }
-		TypedControlData& GetLastValue();
+		const TypedControlData& GetLastValue();
 	}; // End TypedInControl Class
 	
 	// TypedInControl Class Implementation
 	template<class TypedControlData>
 	TypedInControl<TypedControlData>::TypedInControl(const std::string &name)
 		: mName(name)
-		, mLastValue(0)
 	{
 	}
 	
@@ -35,15 +34,15 @@ namespace CLAM {
 	}
 
 	template<class TypedControlData>
-	void TypedInControl<TypedControlData>::DoControl(TypedControlData& val)
+	void TypedInControl<TypedControlData>::DoControl(const TypedControlData& val)
 	{
-		mLastValue = &val;
+		mLastValue = val;
 	}
 
 	template<class TypedControlData>
-	TypedControlData& TypedInControl<TypedControlData>::GetLastValue()
+	const TypedControlData& TypedInControl<TypedControlData>::GetLastValue()
 	{
-		return *mLastValue;
+		return mLastValue;
 	}
 	
 	
