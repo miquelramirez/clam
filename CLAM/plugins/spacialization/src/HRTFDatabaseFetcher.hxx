@@ -65,7 +65,7 @@ private:
 		std::sort(files.begin(), files.end());
 		sameElevationIRs.resize( files.size() );
 		for (unsigned i=0; i<files.size(); i++)
-			if (!computeResponseSpectrums(path+files[i], sameElevationIRs[i], 512, errorMsg))
+			if (!computeResponseSpectrums(path+files[i], sameElevationIRs[i], frameSize, errorMsg))
 				return false;
 
 		return true;
@@ -181,7 +181,6 @@ public:
 	}
 	bool Do()
 	{
-
 		unsigned elevation = map(_elevation, _database.NElevation, -40, 90);
 		unsigned azimut = map(_azimut, _database.NAzimut(elevation), 0, 360);
 
