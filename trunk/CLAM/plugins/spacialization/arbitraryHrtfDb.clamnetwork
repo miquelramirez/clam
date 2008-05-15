@@ -52,7 +52,7 @@
 
   <processing id="HRTFDatabaseFetcher2" type="HRTFDatabaseFetcher2">
     <FrameSize>512</FrameSize>
-    <Path>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/HRTFs/kreuzerDatabase.hrtfs</Path>
+    <Path>HRTFs/kreuzerDatabase.hrtfs</Path>
     <Prefix></Prefix>
   </processing>
 
