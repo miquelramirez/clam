@@ -29,8 +29,10 @@
 #include "ComplexSpectrum.hxx"
 #include "LoadImpulseResponse.hxx"
 #include <vector>
+#include <map>
 #include <dirent.h>
 #include <fstream>
+#include <iomanip>
 
 namespace CLAM
 {
@@ -48,7 +50,37 @@ class GeodesicDatabase2
 		// cos a1-a2 = cos a1 cos a2 + sin a1 sin a2
 		// so:   acos( ce1*ce2 + se1*se2 *(sa1 sa2 + ca1 ca2) )
 	}
-	std::vector<std::vector<ImpulseResponse> > _storage;
+	class SpherePosition
+	{
+	public:
+		SpherePosition(int elevation, double azimut, const std::string & filename)
+			: elevation(elevation)
+			, azimut(azimut)
+			, eradians(M_PI*elevation/180.)
+			, aradians(M_PI*azimut/180.)
+			, ce(std::cos(eradians))
+			, se(std::sin(eradians))
+			, ca(std::cos(aradians))
+			, sa(std::sin(aradians))
+			, filename(filename)
+		{
+		}
+		int elevation;
+		double azimut;
+		double eradians, aradians;
+		double ce, se, ca, sa;
+		std::string filename;
+		double angularDistanceTo(const SpherePosition & line)
+		{
+			double dz = se-line.se;
+			double dy = ce*sa-line.ce*line.sa;
+			double dx = ce*ca-line.ce*line.ca;
+			return dx*dx + dy*dy + dz*dz;
+			return std::acos(ce*line.ce+se*line.se*(ca*line.ca+sa*line.sa));
+		}
+	};
+	std::vector<ImpulseResponse> _storage;
+	std::vector<SpherePosition> _lines;
 	bool error(std::string & errorMsg, const std::string & message)
 	{
 		errorMsg += message;
@@ -65,35 +97,64 @@ public:
 	{
 		return _storage[elevation].size();
 	}
+	std::string baseDir(const std::string & path)
+	{
+		size_t lastBarPos = path.rfind('/');
+		if (lastBarPos == std::string::npos) return "";
+		return path.substr(0,lastBarPos+1);
+	}
 	bool loadImpulseResponseDatabase(
 			const std::string & path,
 			unsigned frameSize,
 			std::string & errorMsg )
 	{
 		if (path.empty()) return error(errorMsg, "No database file specified");
+		std::string base = baseDir(path);
 
 		std::ifstream index(path.c_str());
 		if (!index) return error(errorMsg, "Could not open the file "+path);
-
 		while (true)
 		{
 			double elevation;
 			double azimut;
 			index >> elevation;
 			index >> azimut;
-			if (!index) return true;
+			if (!index) break;
+			index >> std::ws;
 			std::string filename;
 			std::getline(index, filename);
-			std::cout << elevation << " " << azimut << " " <<  filename << std::endl;
-			ImpulseResponse ir;
-			if (false and !computeResponseSpectrums(filename, ir, frameSize, errorMsg))
-				return false;
+			std::cout << elevation << " " << azimut << " '" << base << filename << "'" << std::endl;
+			_lines.push_back(SpherePosition(elevation, azimut, base+filename));
 		}
-		return false;
+		_storage.resize(_lines.size());
+		for (unsigned i=0; i < _storage.size(); i++)
+			if (!computeResponseSpectrums(_lines[i].filename, _storage[i], frameSize, errorMsg))
+				return false;
+		return true;
 	}
-	ImpulseResponse & get(unsigned elevation, unsigned azimut)
+	double azimutForIndex(unsigned index) const
 	{
-		return _storage[elevation][azimut];
+		return _lines[index].azimut;
+	}
+	double elevationForIndex(unsigned index) const
+	{
+		return _lines[index].elevation;
+	}
+	
+	ImpulseResponse & get(unsigned index) { return _storage[index]; }
+	unsigned getIndex(double elevation, double azimut)
+	{
+		SpherePosition target(elevation, azimut, "dummy");
+		unsigned chosen = _lines.size();
+		double minDistance = 10000;
+		for (unsigned i=0; i < _lines.size(); i++)
+		{
+			double distance = _lines[i].angularDistanceTo(target);
+			if (distance>minDistance) continue;
+			minDistance = distance;
+			chosen = i;
+		}
+		return chosen;
 	}
 };
 
@@ -161,10 +222,8 @@ public:
 			return false;
 		}
 		std::cout << "HRTF database loaded." << std::endl;
-		unsigned elevation = map(_elevation, _database.NElevation, -40, 90);
-		unsigned azimut = map(_azimut, _database.NAzimut(elevation), 0, 360);
-		_previousL = &_database.get(elevation,azimut);
-		_previousR = &_database.get(elevation,_database.NAzimut(elevation)-azimut-1);
+		_previousL = 0;
+		_previousR = 0;
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
@@ -175,22 +234,30 @@ public:
 		unsigned result = unsigned(std::floor(normalizedValue*nIndexes+.5));
 		return result < nIndexes? result : 0;
 	}
+public:
 	bool Do()
 	{
-		unsigned elevation = map(_elevation, _database.NElevation, -40, 90);
-		unsigned azimut = map(_azimut, _database.NAzimut(elevation), 0, 360);
+		double elevation = _elevation.GetLastValue();
+		double azimut = _azimut.GetLastValue();
+		unsigned indexL = _database.getIndex(elevation, azimut);
+		unsigned indexR = _database.getIndex(elevation, 360-azimut);
+		_chosenElevation.SendControl(_database.elevationForIndex(indexL));
+		_chosenAzimut.SendControl(_database.azimutForIndex(indexL));
 
-		_chosenElevation.SendControl(-40+elevation*10);
-		_chosenAzimut.SendControl(azimut*360./_database.NAzimut(elevation));
-
-		ImpulseResponse * currentL = &_database.get(elevation,azimut);
+		ImpulseResponse * currentL = &_database.get(indexL);
 		_impulseResponseL.GetData()= currentL;
-		ImpulseResponse * currentR = &_database.get(elevation,_database.NAzimut(elevation)-azimut-1);
+		ImpulseResponse * currentR = &_database.get(indexR);
 		_impulseResponseR.GetData()= currentR;
+
 		_previousImpulseResponseL.GetData() = _previousL ? _previousL : currentL;
 		_previousImpulseResponseR.GetData() = _previousR ? _previousR : currentR;
-		if ( _previousR != currentR) 
-			std::cout << "HRTF indices (elevation, azimut) : "<<elevation<<","<<azimut<<std::endl;
+
+		if ( _previousL != currentL) 
+		{
+			std::cout << "HRTF (elevation, azimut) : "<<elevation<<","<<azimut<<std::endl;
+			std::cout << "L : "<<_database.elevationForIndex(indexL)<<","<<_database.azimutForIndex(indexL)<<std::endl;
+			std::cout << "R : "<<_database.elevationForIndex(indexR)<<","<<_database.azimutForIndex(indexR)<<std::endl;
+		}
 		_previousL = currentL;
 		_previousR = currentR;
 		_impulseResponseL.Produce();
