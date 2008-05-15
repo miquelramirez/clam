@@ -2,15 +2,23 @@
 #define _TypedInControl_
 
 #include <string>
+#include <list>
 
 namespace CLAM {
 	
 	template<class TypedControlData>
+	class TypedOutControl;
+	
+	template<class TypedControlData>
 	class TypedInControl 
 	{
+		typedef TypedOutControl<TypedControlData> ProperTypedOutControl;
+		typedef std::list< ProperTypedOutControl * > ProperTypedOutControlList;
+		
 	protected:
 		std::string mName;
 		TypedControlData mLastValue;
+		ProperTypedOutControlList mLinks;
 		
 	public:
 		TypedInControl(const std::string &name);
@@ -19,6 +27,12 @@ namespace CLAM {
 		void DoControl(const TypedControlData& val);
 		const std::string& GetName() const { return mName; }
 		const TypedControlData& GetLastValue();
+		bool IsConnected() const;
+		
+		/// Implementation detail just to be used from OutControl
+		void OutControlInterface_AddLink(ProperTypedOutControl & outControl);
+		/// Implementation detail just to be used from OutControl
+		void OutControlInterface_RemoveLink(ProperTypedOutControl & outControl);
 	}; // End TypedInControl Class
 	
 	// TypedInControl Class Implementation
@@ -31,6 +45,8 @@ namespace CLAM {
 	template<class TypedControlData>
 	TypedInControl<TypedControlData>::~TypedInControl()
 	{
+		while (!mLinks.empty())
+			mLinks.front()->RemoveLink(*this);
 	}
 
 	template<class TypedControlData>
@@ -44,7 +60,24 @@ namespace CLAM {
 	{
 		return mLastValue;
 	}
-	
+
+	template<class TypedControlData>
+	bool TypedInControl<TypedControlData>::IsConnected() const
+	{
+		return !mLinks.empty();
+	}
+
+	template<class TypedControlData>
+	void TypedInControl<TypedControlData>::OutControlInterface_AddLink(ProperTypedOutControl & outControl)
+	{
+		mLinks.push_back(&outControl);
+	}
+
+	template<class TypedControlData>
+	void TypedInControl<TypedControlData>::OutControlInterface_RemoveLink(ProperTypedOutControl & outControl)
+	{
+		mLinks.remove(&outControl);
+	}
 	
 } // End namespace CLAM
 #endif // _TypedInControl_

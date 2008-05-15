@@ -24,6 +24,8 @@ namespace CLAM {
 		void AddLink(TypedInControl<TypedControlData>& in);
 		void RemoveLink(TypedInControl<TypedControlData>& in);
 		void SendControl(const TypedControlData& val);
+		bool IsConnected();
+		bool IsConnectedTo( TypedInControl<TypedControlData> & );
 	};
 	
 	template<class TypedControlData>
@@ -44,12 +46,14 @@ namespace CLAM {
 	void TypedOutControl<TypedControlData>::AddLink(TypedInControl<TypedControlData>& in)
 	{
 		mLinks.push_back(&in);
+		in.OutControlInterface_AddLink(*this);
 	}
 
 	template<class TypedControlData>
 	void TypedOutControl<TypedControlData>::RemoveLink(TypedInControl<TypedControlData>& in)
 	{
 		mLinks.remove( &in );
+		in.OutControlInterface_RemoveLink(*this);
 	}
 
 	template<class TypedControlData>
@@ -62,5 +66,24 @@ namespace CLAM {
 			(*it)->DoControl(val);
 		}
 	}
+
+	template<class TypedControlData>
+	bool TypedOutControl<TypedControlData>::IsConnected()
+	{
+		return ! mLinks.empty();
+	}
+
+	template<class TypedControlData>
+	bool TypedOutControl<TypedControlData>::IsConnectedTo( TypedInControl<TypedControlData> & in)
+	{
+		typename ProperTypedInControlList::iterator it;
+		for (it=mLinks.begin(); it!=mLinks.end(); it++) 
+			if ((*it) == &in)
+				return true;
+
+		return false;
+	}
+	
+	
 } // END NAMESPACE CLAM
 #endif // _TypedOutControl_
