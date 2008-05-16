@@ -28,14 +28,12 @@ CLAM_TYPEINFOGROUP(BasicCTypeInfo, CLAM::DataInFilename);
 */
 
 
-typedef std::string DataInFilename;
-
 class ChoreoSequencer : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
 	    DYNAMIC_TYPE_USING_INTERFACE( Config, 5, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, DataInFilename, Filename);
+	    DYN_ATTRIBUTE( 0, public, InFilename, Filename);
 	    DYN_ATTRIBUTE( 1, public, unsigned, SourceIndex); // first is 0
 	    DYN_ATTRIBUTE( 2, public, unsigned, FrameSize);
 	    DYN_ATTRIBUTE( 3, public, unsigned, SampleRate);
