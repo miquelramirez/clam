@@ -3,14 +3,24 @@
 
 #include <string>
 #include <list>
+#include <typeinfo>
 
 namespace CLAM {
 	
+	class BaseTypedInControl{
+	public:
+		virtual ~BaseTypedInControl(){}
+		
+		virtual const std::type_info& ControlType() const = 0;
+	};
+
+	
+	// Template Class Declaration
 	template<class TypedControlData>
 	class TypedOutControl;
 	
 	template<class TypedControlData>
-	class TypedInControl 
+	class TypedInControl : public BaseTypedInControl
 	{
 		typedef TypedOutControl<TypedControlData> ProperTypedOutControl;
 		typedef std::list< ProperTypedOutControl * > ProperTypedOutControlList;
@@ -29,6 +39,8 @@ namespace CLAM {
 		const TypedControlData& GetLastValue();
 		bool IsConnected() const;
 		
+		// For the typed linking check
+		virtual const std::type_info& ControlType() const { return typeid(TypedControlData); };
 		/// Implementation detail just to be used from OutControl
 		void OutControlInterface_AddLink(ProperTypedOutControl & outControl);
 		/// Implementation detail just to be used from OutControl

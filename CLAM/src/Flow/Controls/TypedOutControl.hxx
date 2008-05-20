@@ -3,10 +3,18 @@
 
 #include <string>
 #include <list>
+#include <typeinfo>
 
 namespace CLAM {
+	
+	class BaseTypedOutControl{
+	public:
+		virtual ~BaseTypedOutControl(){}
+		virtual bool IsLinkable(const BaseTypedInControl& in) = 0;
+	};
+	
 	template<class TypedControlData>
-	class TypedOutControl
+	class TypedOutControl : public BaseTypedOutControl
 	{
 		// This is required to solve the parsing problem with iterators.
 		typedef TypedInControl<TypedControlData> ProperTypedInControl;
@@ -26,6 +34,8 @@ namespace CLAM {
 		void SendControl(const TypedControlData& val);
 		bool IsConnected();
 		bool IsConnectedTo( TypedInControl<TypedControlData> & );
+		bool IsLinkable(const BaseTypedInControl& in);
+
 	};
 	
 	template<class TypedControlData>
@@ -84,6 +94,12 @@ namespace CLAM {
 		return false;
 	}
 	
+	template<class TypedControlData>
+	bool TypedOutControl<TypedControlData>::IsLinkable(const BaseTypedInControl& in)
+	{
+		return typeid(TypedControlData) == in.ControlType();
+		
+	}
 	
 } // END NAMESPACE CLAM
 #endif // _TypedOutControl_
