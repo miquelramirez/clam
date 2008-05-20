@@ -72,9 +72,12 @@ public:
 		const unsigned nBins = in1.bins.size(); 
 		if (out.bins.size()!=nBins) // Also protects against resizing when out is one of the ins
 			out.bins.resize( nBins );
+		std::complex<float> * outBins = & out.bins[0];
+		const std::complex<float> * in1Bins = & in1.bins[0];
+		const std::complex<float> * in2Bins = & in2.bins[0];
 		for (unsigned i=0; i<nBins; i++)
 		{
-			out.bins[i] = in1.bins[i] * in2.bins[i];
+			outBins[i] = in1Bins[i] * in2Bins[i];
 		}
 		return true;
 	}
