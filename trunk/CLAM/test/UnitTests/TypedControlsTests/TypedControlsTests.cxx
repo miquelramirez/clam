@@ -31,6 +31,10 @@ namespace CLAMTest {
 		// 1 Out - Many Ins Test
 		CPPUNIT_TEST( testOneTypedOutControlManyTypedInControls_DoControl_ChangesInternalState );
 
+		// Template Link Tests
+		CPPUNIT_TEST( testIsLinkable_whenNotLinkable );
+		CPPUNIT_TEST( testIsLinkable_whenLinkable );
+		
 		
 		CPPUNIT_TEST_SUITE_END();
 		
@@ -134,5 +138,27 @@ namespace CLAMTest {
 			CPPUNIT_ASSERT_EQUAL( 1 , in1.GetLastValue() );
 			CPPUNIT_ASSERT_EQUAL( 1 , in2.GetLastValue() );
 		}
+
+		// Template Link Tests
+		void testIsLinkable_whenNotLinkable()
+		{
+			CLAM::TypedInControl<int> concreteIn("Concrete In");
+			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+			CLAM::BaseTypedInControl & in = concreteIn;
+			CLAM::BaseTypedOutControl & out = concreteOut;
+			CPPUNIT_ASSERT_EQUAL(false, out.IsLinkable(in));
+			
+		}
+
+		void testIsLinkable_whenLinkable()
+		{
+			CLAM::TypedInControl<float> concreteIn("Concrete In");
+			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+			CLAM::BaseTypedInControl & in = concreteIn;
+			CLAM::BaseTypedOutControl & out = concreteOut;
+			CPPUNIT_ASSERT_EQUAL(true, out.IsLinkable(in));
+			
+		}
+
 	};
 } // namespace
