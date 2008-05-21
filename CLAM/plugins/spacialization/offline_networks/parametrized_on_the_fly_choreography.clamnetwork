@@ -79,7 +79,7 @@
 
   <processing id="ImpulseResponseCalculatedOnTheFly" type="ImpulseResponseCalculatedOnTheFly">
     <FrameSize>512</FrameSize>
-    <Model3DFile>%(3Dmodel_file)s</Model3DFile>
+    <Model3DFile>%(model_file)s</Model3DFile>
     <GridDivisions>%(grid_divisions)i</GridDivisions>
     <NRays>%(num_rays)i</NRays>
     <NRebounds>%(num_rebounds)i</NRebounds>
