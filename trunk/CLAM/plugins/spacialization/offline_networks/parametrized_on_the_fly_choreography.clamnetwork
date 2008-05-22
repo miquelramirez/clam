@@ -186,6 +186,11 @@
   </port_connection>
 
   <port_connection>
+    <out>AudioInput.AudioOut</out>
+    <in>ImpulseResponseCalculatedOnTheFly.synchronization</in>
+  </port_connection>
+
+  <port_connection>
     <out>AudioMixer.Output Audio</out>
     <in>AudioWindowing.Input</in>
   </port_connection>
