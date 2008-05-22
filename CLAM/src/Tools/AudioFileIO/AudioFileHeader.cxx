@@ -47,11 +47,17 @@ namespace CLAM
 
 		// Default encoding
 		if ( GetFormat() == EAudioFileFormat::eWAV )
+		{
+			//SetEncoding( EAudioFileEncoding::ePCM_24 ); //TODO: We'd like to be able to choose between float and int pcm
+			SetEncoding( EAudioFileEncoding::eFLOAT );
+			return;
+		}
+		if ( GetFormat() == EAudioFileFormat::eAIFF )
+		{
 			SetEncoding( EAudioFileEncoding::ePCM_24 );
-		else if ( GetFormat() == EAudioFileFormat::eAIFF )
-			SetEncoding( EAudioFileEncoding::ePCM_24 );
-		else
-			SetEncoding( EAudioFileEncoding::eDefault );
+			return;
+		}
+		SetEncoding( EAudioFileEncoding::eDefault );
 	}
 
 

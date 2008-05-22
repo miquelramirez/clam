@@ -113,6 +113,10 @@ namespace CLAM
 		if ( !newHeader.HasFormat() )
 			return false;
 
+		if ( newHeader.HasEncoding() )
+			mHeaderData.SetEncoding( newHeader.GetEncoding() );
+		
+
 		if ( newHeader.GetFormat() < EAudioFileFormat::eVorbisMk1 )
 		{
 			mCodec = EAudioFileCodec::ePCM;
@@ -128,26 +132,7 @@ namespace CLAM
 		else
 			CLAM_ASSERT( false, "The Enum contained and invalid value!" );
 
-		if ( !newHeader.HasFormat() )
-		{
-			if ( mCodec == EAudioFileCodec::ePCM )
-			{
-				if ( mHeaderData.GetFormat() == EAudioFileFormat::eWAV )
-					mHeaderData.SetEncoding( EAudioFileEncoding::ePCM_24 );
-				else if ( mHeaderData.GetFormat() == EAudioFileFormat::eAIFF )
-					mHeaderData.SetEncoding( EAudioFileEncoding::ePCM_24 );
-				else
-					return false;
-			}
-			else if ( mCodec == EAudioFileCodec::eOggVorbis )
-			{
-				mHeaderData.SetEncoding( EAudioFileEncoding::eDefault );
-			}
-			else
-				return false;
-		}
-		else
-			mHeaderData.SetFormat( newHeader.GetFormat() );
+		mHeaderData.SetFormat( newHeader.GetFormat() );
 
 		if ( !newHeader.HasEndianess() )
 			mHeaderData.SetEndianess( EAudioFileEndianess::eDefault );
