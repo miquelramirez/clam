@@ -32,10 +32,11 @@ namespace CLAMTest {
 		CPPUNIT_TEST( testOneTypedOutControlManyTypedInControls_DoControl_ChangesInternalState );
 
 		// Template Link Tests
-		CPPUNIT_TEST( testIsLinkable_whenNotLinkable );
-		CPPUNIT_TEST( testIsLinkable_whenLinkable );
-		
-		
+		CPPUNIT_TEST( testIsLinkable_withDifferentTypedControls );
+		CPPUNIT_TEST( testIsLinkable_withSameTypedControls );
+		CPPUNIT_TEST( testLink_withSameTypedControls );
+		CPPUNIT_TEST( testLink_withDifferentTypedControls );
+				
 		CPPUNIT_TEST_SUITE_END();
 		
 		// testing TypedInControl and TypedOutControl
@@ -140,25 +141,46 @@ namespace CLAMTest {
 		}
 
 		// Template Link Tests
-		void testIsLinkable_whenNotLinkable()
+		void testIsLinkable_withDifferentTypedControls()
 		{
 			CLAM::TypedInControl<int> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
 			CLAM::BaseTypedInControl & in = concreteIn;
 			CLAM::BaseTypedOutControl & out = concreteOut;
 			CPPUNIT_ASSERT_EQUAL(false, out.IsLinkable(in));
-			
 		}
 
-		void testIsLinkable_whenLinkable()
+		void testIsLinkable_withSameTypedControls()
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
 			CLAM::BaseTypedInControl & in = concreteIn;
 			CLAM::BaseTypedOutControl & out = concreteOut;
 			CPPUNIT_ASSERT_EQUAL(true, out.IsLinkable(in));
-			
 		}
+
+		void testLink_withDifferentTypedControls()
+		{
+			CLAM::TypedInControl<float> concreteIn("Concrete In");
+			CLAM::TypedOutControl<int> concreteOut("Concrete Out");
+			CLAM::BaseTypedInControl & in = concreteIn;
+			CLAM::BaseTypedOutControl & out = concreteOut;
+			try {
+				out.Link(in);
+				CPPUNIT_FAIL("assertion failed expected, but nothing happened");
+			} catch(CLAM::ErrAssertionFailed& )	{}
+		}
+
+		void testLink_withSameTypedControls()
+		{
+			CLAM::TypedInControl<float> concreteIn("Concrete In");
+			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+			CLAM::BaseTypedInControl & in = concreteIn;
+			CLAM::BaseTypedOutControl & out = concreteOut;
+			out.Link(in);
+			CPPUNIT_ASSERT_EQUAL(true, concreteOut.IsConnectedTo(concreteIn));
+		}
+
 
 	};
 } // namespace
