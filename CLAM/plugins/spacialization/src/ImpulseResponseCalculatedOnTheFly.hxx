@@ -23,6 +23,7 @@
 
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutPort.hxx>
+#include <CLAM/AudioInPort.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/Filename.hxx>
 #include "ComplexSpectrum.hxx"
@@ -72,6 +73,7 @@ public:
 private:
 	
 	Config _config;
+	AudioInPort _syncAudio;
 	OutPort< ImpulseResponse* > _WImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _WImpulseResponseOutPortPrevious;
 	OutPort< ImpulseResponse* > _XImpulseResponseOutPort;
@@ -102,7 +104,8 @@ private:
 public:
 	const char* GetClassName() const { return "ImpulseResponseCalculatedOnTheFly"; }
 	ImpulseResponseCalculatedOnTheFly(const Config& config = Config()) 
-		: _WImpulseResponseOutPort("pressure IR", this)
+		: _syncAudio("synchronization", this)
+		, _WImpulseResponseOutPort("pressure IR", this)
 		, _WImpulseResponseOutPortPrevious("previous pressure IR", this)
 		, _XImpulseResponseOutPort("vx IR", this)
 		, _XImpulseResponseOutPortPrevious("previous vx IR", this)
@@ -139,6 +142,10 @@ public:
 	{
 		std::cout << "ImpulseResponseCalculatedOnTheFly::ConcreteConfigure"<<std::endl;
 		CopyAsConcreteConfig(_config, config);
+		//TODO use _config params instead of hardcoded
+		_syncAudio.SetSize(512);
+		_syncAudio.SetHop(512);
+		//end TODO
 		_emitterX.DoControl(0.2);
 		_emitterY.DoControl(0.5);
 		_emitterZ.DoControl(0.2);
@@ -182,7 +189,18 @@ public:
 		std::string zFileTrimmed = "z_IR_trimmed.wav";
 //		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		std::cout << "." << std::flush;
-		if (!_current or changeSnappedIR)
+		bool audioBufferIsSilence=true; //TODO this is a quick optimizion. but ugly hack!
+		const CLAM::DataArray& audio = _syncAudio.GetAudio().GetBuffer();
+		for (int i=0; i<audio.Size(); i++)
+		{
+			if (audio[i]>0.00001)
+			{	
+				audioBufferIsSilence=false;
+				break;
+			}
+		}
+		std::cout << (audioBufferIsSilence? " Silence " : "·")<<std::flush;
+		if (!_current or (changeSnappedIR and !audioBufferIsSilence))
 		{
 			// swap _current but leave _previous
 			_current = _current == &_impulseResponsesA ? &_impulseResponsesB : &_impulseResponsesA;
@@ -266,6 +284,7 @@ else std::cout << "B) " << std::flush;
 		_ZImpulseResponseOutPort.GetData()= &_current->Z;
 		_ZImpulseResponseOutPortPrevious.GetData()= &_previous->Z;
 
+		_syncAudio.Consume();
 		_WImpulseResponseOutPort.Produce();
 		_WImpulseResponseOutPortPrevious.Produce();
 		_XImpulseResponseOutPort.Produce();
@@ -274,7 +293,7 @@ else std::cout << "B) " << std::flush;
 		_YImpulseResponseOutPortPrevious.Produce();
 		_ZImpulseResponseOutPort.Produce();
 		_ZImpulseResponseOutPortPrevious.Produce();
-
+		
 		_previous=_current;
 		return true;
 	}
