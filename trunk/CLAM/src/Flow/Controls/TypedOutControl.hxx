@@ -4,6 +4,7 @@
 #include <string>
 #include <list>
 #include <typeinfo>
+#include <CLAM/Assert.hxx>
 
 namespace CLAM {
 	
@@ -11,7 +12,21 @@ namespace CLAM {
 	public:
 		virtual ~BaseTypedOutControl(){}
 		virtual bool IsLinkable(const BaseTypedInControl& in) = 0;
+		void Link(BaseTypedInControl& in);
+		virtual bool DoTypedLink(BaseTypedInControl& in) = 0;
 	};
+	
+	/**
+		WARNING: You should call IsLinkable before using the Link function or you'll get an assert failure if In and Out Control types are different.
+	*/
+	void BaseTypedOutControl::Link(BaseTypedInControl& in)
+	{
+		bool successfullLink;
+		successfullLink = DoTypedLink(in);
+		CLAM_ASSERT( successfullLink,
+			     "TypedOutControl<TypedControlData>::Link coudn't connect to TypedInControl "
+	   		     "because was not templatized by the same TypedControlData type as TypedOutControl" );
+	}
 	
 	template<class TypedControlData>
 	class TypedOutControl : public BaseTypedOutControl
@@ -35,6 +50,7 @@ namespace CLAM {
 		bool IsConnected();
 		bool IsConnectedTo( TypedInControl<TypedControlData> & );
 		bool IsLinkable(const BaseTypedInControl& in);
+		bool DoTypedLink(BaseTypedInControl& in);
 
 	};
 	
@@ -99,6 +115,23 @@ namespace CLAM {
 	{
 		return typeid(TypedControlData) == in.ControlType();
 		
+	}
+
+	template<class TypedControlData>
+	bool TypedOutControl<TypedControlData>::DoTypedLink(BaseTypedInControl& in)
+	{
+		bool result = false;
+		try
+		{
+			AddLink(dynamic_cast< ProperTypedInControl& >(in));	
+			result = true;
+		}
+		catch(...)
+		{
+			CLAM_ASSERT( false, "TypedOutControl<TypedControlData>::DoTypedLink could not cast BaseTypedInControl to TypedInControl<TypedControlData>" );
+		}
+		
+		return result;
 	}
 	
 } // END NAMESPACE CLAM

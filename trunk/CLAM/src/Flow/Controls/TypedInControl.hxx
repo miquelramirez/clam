@@ -10,7 +10,6 @@ namespace CLAM {
 	class BaseTypedInControl{
 	public:
 		virtual ~BaseTypedInControl(){}
-		
 		virtual const std::type_info& ControlType() const = 0;
 	};
 
