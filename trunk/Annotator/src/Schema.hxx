@@ -23,6 +23,7 @@
 #define _Schema_hxx_
 #include <typeinfo>
 #include <CLAM/DynamicType.hxx>
+#include <CLAM/DescriptionScheme.hxx>
 #include "SchemaAttribute.hxx"
 
 namespace CLAM_Annotator{
@@ -42,6 +43,15 @@ namespace CLAM_Annotator{
 		}
 
 	public:
+		void FillDescriptionScheme(CLAM::DescriptionScheme & descriptionScheme) const
+		{
+			const std::list<SchemaAttribute>& hlds = GetAllAttributes();
+			std::list<SchemaAttribute>::const_iterator it2;
+			for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
+			{
+				it2->AddTo(descriptionScheme);
+			}
+		}
 		void AttributeDocumentation(
 				const std::string & scope,
 				const std::string & attribute,
@@ -235,8 +245,8 @@ namespace CLAM_Annotator{
 			GetAttributes().push_back(attribute);
 			GetAttributes().back().UpdateTypePlugin();
 		}
-	};
 
+	};
 };
 
 #endif//_Schema_hxx_

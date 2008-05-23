@@ -61,14 +61,8 @@ std::string Project::AbsoluteToRelative(const std::string & currentRelative) con
 
 void Project::CreatePoolScheme()
 {
-	mDescriptionScheme = CLAM::DescriptionScheme(); // reset
-
-	const std::list<CLAM_Annotator::SchemaAttribute>& hlds = mSchema.GetAllAttributes();
-	std::list<CLAM_Annotator::SchemaAttribute>::const_iterator it2;
-	for(it2 = hlds.begin(); it2 != hlds.end(); it2++)
-	{
-		it2->AddTo(mDescriptionScheme);
-	}
+	mDescriptionScheme = CLAM::DescriptionScheme(); // Reseting it
+	mSchema.FillDescriptionScheme(mDescriptionScheme);
 }
 
 bool Project::LoadScheme()
