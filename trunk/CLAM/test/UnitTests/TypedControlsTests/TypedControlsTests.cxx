@@ -36,7 +36,11 @@ namespace CLAMTest {
 		CPPUNIT_TEST( testIsLinkable_withSameTypedControls );
 		CPPUNIT_TEST( testLink_withSameTypedControls );
 		CPPUNIT_TEST( testLink_withDifferentTypedControls );
-				
+		CPPUNIT_TEST( testIsConnected_WithBaseTypedOutControl_AfterConnection );
+		CPPUNIT_TEST( testIsConnected_WithBaseTypedOutControl_WithNoConnection );
+		CPPUNIT_TEST( testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreConnected );
+		CPPUNIT_TEST( testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreNotConnected );
+		
 		CPPUNIT_TEST_SUITE_END();
 		
 		// testing TypedInControl and TypedOutControl
@@ -180,7 +184,42 @@ namespace CLAMTest {
 			out.Link(in);
 			CPPUNIT_ASSERT_EQUAL(true, concreteOut.IsConnectedTo(concreteIn));
 		}
+		
+		void testIsConnected_WithBaseTypedOutControl_AfterConnection()
+		{
+			CLAM::TypedInControl<float> concreteIn("Concrete In");
+			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+			CLAM::BaseTypedInControl & in = concreteIn;
+			CLAM::BaseTypedOutControl & out = concreteOut;
+			out.Link(in);
+			CPPUNIT_ASSERT_EQUAL(true, out.IsConnected());
+		}
 
+		void testIsConnected_WithBaseTypedOutControl_WithNoConnection()
+		{
+			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+			CLAM::BaseTypedOutControl & out = concreteOut;
+			CPPUNIT_ASSERT_EQUAL(false, out.IsConnected());
+		}
+
+		void testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreConnected()
+		{
+			CLAM::TypedInControl<float> concreteIn("Concrete In");
+			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+			CLAM::BaseTypedInControl & in = concreteIn;
+			CLAM::BaseTypedOutControl & out = concreteOut;
+			out.Link(in);
+			CPPUNIT_ASSERT_EQUAL(true, out.IsConnectedTo(in));
+		}
+		
+		void testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreNotConnected()
+		{
+			CLAM::TypedInControl<float> concreteIn("Concrete In");
+			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
+			CLAM::BaseTypedInControl & in = concreteIn;
+			CLAM::BaseTypedOutControl & out = concreteOut;
+			CPPUNIT_ASSERT_EQUAL(false, out.IsConnectedTo(in));
+		}
 
 	};
 } // namespace

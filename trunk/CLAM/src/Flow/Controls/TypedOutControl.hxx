@@ -14,6 +14,8 @@ namespace CLAM {
 		virtual bool IsLinkable(const BaseTypedInControl& in) = 0;
 		void Link(BaseTypedInControl& in);
 		virtual bool DoTypedLink(BaseTypedInControl& in) = 0;
+		virtual bool IsConnected() = 0;
+		virtual	bool IsConnectedTo(BaseTypedInControl& in) = 0;
 	};
 	
 	/**
@@ -49,6 +51,7 @@ namespace CLAM {
 		void SendControl(const TypedControlData& val);
 		bool IsConnected();
 		bool IsConnectedTo( TypedInControl<TypedControlData> & );
+		bool IsConnectedTo(BaseTypedInControl& in);
 		bool IsLinkable(const BaseTypedInControl& in);
 		bool DoTypedLink(BaseTypedInControl& in);
 
@@ -132,6 +135,23 @@ namespace CLAM {
 		}
 		
 		return result;
+	}
+	
+	template<class TypedControlData>
+	bool TypedOutControl<TypedControlData>::IsConnectedTo(BaseTypedInControl& in)
+	{
+		bool result = false;
+		try
+		{
+			result = IsConnectedTo(dynamic_cast< ProperTypedInControl& >(in));	
+		}
+		catch(...)
+		{
+			CLAM_ASSERT( false, "TypedOutControl<TypedControlData>::IsConnectedTo(BaseTypedInControl& in) could not cast BaseTypedInControl to TypedInControl<TypedControlData>" );
+		}
+		
+		return result;
+		
 	}
 	
 } // END NAMESPACE CLAM
