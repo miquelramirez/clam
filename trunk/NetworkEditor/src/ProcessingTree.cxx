@@ -212,8 +212,8 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			CLAM::ProcessingFactory::Pairs::const_iterator itPairs;
 			for(itPairs = pairsFromKey.begin();itPairs!=pairsFromKey.end();itPairs++)
 			{
-				std::string attribute = (*itPairs).attribute;
-				std::string value = (*itPairs).value;
+				std::string attribute = itPairs->attribute;
+				std::string value = itPairs->value;
 				if(attribute!="icon" && value!=key && value!="")
 				{
 					tooltipText+=QString( tr("\n%1: %2")
