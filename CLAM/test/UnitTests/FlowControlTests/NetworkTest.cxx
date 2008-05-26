@@ -33,7 +33,7 @@
 
 #include "Oscillator.hxx" // CLAM
 #include "AudioMultiplier.hxx" // CLAM
-#include "AudioFileIn.hxx" // CLAM
+#include "MonoAudioFileReader.hxx" // CLAM
 #include "AudioSink.hxx" // CLAM
 #include "AudioSource.hxx" // CLAM
 #include "AudioOut.hxx" // CLAM
@@ -864,7 +864,7 @@ class NetworkTest : public CppUnit::TestFixture
 		CLAM::Network net;
 
 		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
-		CLAM::AudioFileIn * filein = new CLAM::AudioFileIn;
+		CLAM::MonoAudioFileReader * filein = new CLAM::MonoAudioFileReader;
 		net.AddProcessing( "oscillator", oscillator) ;
 		net.AddProcessing( "filein", filein );
 		net.Start();
@@ -896,7 +896,7 @@ class NetworkTest : public CppUnit::TestFixture
 		CLAM::Network net;
 
 		CLAM::SimpleOscillator * oscillator = new CLAM::SimpleOscillator;
-		CLAM::AudioFileIn * filein = new CLAM::AudioFileIn;
+		CLAM::MonoAudioFileReader * filein = new CLAM::MonoAudioFileReader;
 		net.AddProcessing( "oscillator", oscillator) ;
 		net.AddProcessing( "filein", filein );
 		net.Start();
@@ -930,7 +930,7 @@ class NetworkTest : public CppUnit::TestFixture
 	{
 		CLAM::Network net;
 		net.AddProcessing( "Oscillator", new CLAM::Oscillator ) ;
-		net.AddProcessing( "FileIn", new CLAM::AudioFileIn ) ;
+		net.AddProcessing( "FileIn", new CLAM::MonoAudioFileReader ) ;
 		CPPUNIT_ASSERT_EQUAL( true, net.HasMisconfiguredProcessings() );
 	}
 	void testHasSyncSource_whenEmpty()
