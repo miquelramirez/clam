@@ -35,8 +35,8 @@ void ConfigureAndCheck(Processing& p,ProcessingConfig& cfg)
 
 int main()
 {
-	char* indevice = "file:test.mid";
-	char* outdevice = "textfile:test.txt";
+	const char* indevice = "file:test.mid";
+	const char* outdevice = "textfile:test.txt";
 	
 	MIDIManager manager;
 

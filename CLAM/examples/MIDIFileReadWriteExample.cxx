@@ -6,8 +6,8 @@ using namespace CLAM;
 
 int main(int argc, char** argv)
 {
-	char* filein=0;
-	char* fileout=0;
+	const char* filein=0;
+	const char* fileout=0;
 
 	switch(argc)
 	{
