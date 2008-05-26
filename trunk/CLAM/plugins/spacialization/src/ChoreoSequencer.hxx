@@ -117,8 +117,16 @@ public:
 			double dx = _sizeX * (row[_indexSourceX+3*sourceIndex] - row[_indexTargetX]);
 			double dy = _sizeY * (row[_indexSourceY+3*sourceIndex] - row[_indexTargetY]);
 			double dz = _sizeZ * (row[_indexSourceZ+3*sourceIndex] - row[_indexTargetZ]);
-			_sourceAzimuth.SendControl( std::atan2(dx,dy) - row[_indexTargetAzimuth] );
-			_sourceElevation.SendControl( std::asin(dz) - row[_indexTargetElevation] );
+			// TODO: Test that with target elevation and azimut
+			double dazimut = 180./M_PI*std::atan2(dy,dx) - row[_indexTargetAzimuth];
+			double delevation = 180./M_PI*std::asin(dz/std::sqrt(dx*dx+dy*dy+dz*dz)) - row[_indexTargetElevation];
+			_sourceAzimuth.SendControl( dazimut );
+			_sourceElevation.SendControl( delevation );
+			std::cout 
+				<< "\t" << _sizeX*row[_indexSourceX+3*sourceIndex] << "\t" << _sizeZ*row[_indexSourceZ+3*sourceIndex] 
+				<< "\t\t" << dx << "\t" << dy << "\t" << dz 
+				<< "\t\t" << dazimut << "\t" << delevation
+				<< std::endl;
 			_sampleCount -= _samplesPerControl;
 			_sequenceIndex++;
 			if (_sequenceIndex >= _controlSequence.size())
