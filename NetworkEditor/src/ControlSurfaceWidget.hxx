@@ -51,13 +51,11 @@ private:
 	QDoubleSpinBox * _spinBoxY;
 	CLAM::ControlSurface * _sender;
 	double _minX;
-	double _defaultX;
-	double _maxX;
-	double _stepX;
 	double _minY;
-	double _defaultY;
+	double _maxX;
 	double _maxY;
-	double _stepY;
+	double _defaultX;
+	double _defaultY;
 	bool _updating;
 	bool _dragging;
 	bool _areSpinBoxesHidden;
