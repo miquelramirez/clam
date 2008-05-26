@@ -206,6 +206,23 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			item->setIcon(0, QIcon(QString(":/icons/images/%1").arg(iconPath.c_str())));
 
 			item->setText(1, key.c_str());
+
+			QString tooltipText=QString(tr("name: %1").arg(key.c_str()));
+			CLAM::ProcessingFactory::Pairs pairsFromKey=factory.GetPairsFromKey(key);
+			CLAM::ProcessingFactory::Pairs::const_iterator itPairs;
+			for(itPairs = pairsFromKey.begin();itPairs!=pairsFromKey.end();itPairs++)
+			{
+				std::string attribute = (*itPairs).attribute;
+				std::string value = (*itPairs).value;
+				if(attribute!="icon" && value!=key && value!="")
+				{
+					tooltipText+=QString( tr("\n%1: %2")
+						.arg(attribute.c_str())
+						.arg(value.c_str()) );
+				}
+			}
+			item->setToolTip(0,tooltipText);
+
 		}
 	}
 
