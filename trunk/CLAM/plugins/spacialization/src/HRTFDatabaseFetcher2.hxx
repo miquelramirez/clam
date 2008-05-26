@@ -207,7 +207,7 @@ public:
 		, _previousR(0)
 	{
 		Configure( config );
-		_elevation.SetBounds(-40,90);
+		_elevation.SetBounds(-90,90);
 		_azimut.SetBounds(0,360);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)

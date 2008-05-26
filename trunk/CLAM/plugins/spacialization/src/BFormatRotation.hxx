@@ -127,7 +127,7 @@ _isPassiveRotation=true;
 		_Xout.Produce();
 		_Yout.Produce();
 		_Zout.Produce();
-		
+
 		return true;
 	}
 
