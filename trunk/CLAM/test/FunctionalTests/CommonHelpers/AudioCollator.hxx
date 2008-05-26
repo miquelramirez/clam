@@ -3,13 +3,12 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
-#include "Audio.hxx"
-#include "AudioFileIn.hxx"
-#include "AudioFileOut.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/MonoAudioFileWriter.hxx>
 
-#include "AudioFile.hxx"
-#include "MonoAudioFileWriter.hxx"
-#include "CLAM_Math.hxx"
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/CLAM_Math.hxx>
 
 #include <string>
 #include <fstream> // used for open(..) : we want to check if some file exists
@@ -28,15 +27,13 @@ namespace CLAMTest
 	inline void helperLoadAudioFromFile(const std::string filename, CLAM::Audio& audioToWrite )
 	{
 		CLAM_ASSERT( helperFileExist(filename), "helperLoadAudioFromFile(..) received a non existing file" );
-		CLAM::AudioFileConfig conf;
-		conf.SetFilename(filename);
-		conf.SetFiletype(CLAM::EAudioFileType::eWave);
+		CLAM::MonoAudioFileReaderConfig conf;
+		conf.SetSourceFile(filename);
 
-		CLAM::AudioFileIn in;
-		in.Configure(conf);
+		CLAM::MonoAudioFileReader in(conf);
 		in.Start();
 		
-		audioToWrite.SetSize( in.Size() );
+		audioToWrite.SetSize( in.GetHeader().GetSamples() );
 		in.Do( audioToWrite );
 		in.Stop();
 	}

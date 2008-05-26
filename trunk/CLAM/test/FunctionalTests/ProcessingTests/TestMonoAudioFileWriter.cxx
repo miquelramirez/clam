@@ -1,13 +1,13 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
-#include "AudioFile.hxx"
-#include "MonoAudioFileWriterConfig.hxx"
-#include "MonoAudioFileReader.hxx"
-#include "MonoAudioFileWriter.hxx"
-#include "Audio.hxx"
+#include <CLAM/AudioFile.hxx>
+#include <CLAM/MonoAudioFileWriterConfig.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/MonoAudioFileWriter.hxx>
+#include <CLAM/Audio.hxx>
 #include "similarityHelper.hxx"
 #include <deque>
-#include "CLAM_Math.hxx"
+#include <CLAM/CLAM_Math.hxx>
 
 namespace CLAMTest
 {
