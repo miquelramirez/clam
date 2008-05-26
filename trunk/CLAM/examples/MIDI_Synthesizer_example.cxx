@@ -444,9 +444,9 @@ void MyAudioApplication::AudioMain(void)
 
 int main(int argc,char** argv)
 {
-	//char* midiDeviceStr = "alsa:hw:1,0";
-	char* midiDeviceStr = "file:test.mid";
-	char* audioDeviceStr = "default";
+	//const char* midiDeviceStr = "alsa:hw:1,0";
+	const char* midiDeviceStr = "file:test.mid";
+	const char* audioDeviceStr = "default";
 	
 	try
 	{
