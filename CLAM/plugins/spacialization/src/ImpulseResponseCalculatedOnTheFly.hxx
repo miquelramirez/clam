@@ -162,8 +162,24 @@ public:
 		unsigned result = unsigned(std::floor(control.GetLastValue()*limit));
 		return result < limit? result : limit-1;
 	}
-	bool Do()
+private:
+	bool sincAudioIsSilence()
 	{
+		const CLAM::DataArray& audio = _syncAudio.GetAudio().GetBuffer();
+		for (int i=0; i<audio.Size(); i++)
+			if (audio[i]>0.00001) return false;
+		return true;
+	}
+	bool computeNewIRIfNeeded()
+	{
+		// If we already have one and we are in silence, keep it
+		if (_current and sincAudioIsSilence())
+		{
+			std::cout << "_" << std::flush;
+			return true;
+		}
+		std::cout << "." << std::flush;
+
 		float x1 = _emitterX.GetLastValue();
 		float y1 = _emitterY.GetLastValue();
 		float z1 = _emitterZ.GetLastValue();
@@ -176,9 +192,47 @@ public:
 			|| fabs(_currentEmitterX-x1) > _delta
 			|| fabs(_currentEmitterY-y1) > _delta
 			;
+
+		// If we already have one but the movement is small enough, keep it
+		if (_current and not changeSnappedIR) return true;
+
 //		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
 		
-		std::string errorMsg;
+//		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
+		// swap _current but leave _previous
+		_current = _current == &_impulseResponsesA ? &_impulseResponsesB : &_impulseResponsesA;
+		if (not _previous) _previous = _current;
+		_currentEmitterX = x1;
+		_currentEmitterY = y1;
+		_currentEmitterZ = z1;
+		_currentReceiverX = x2;
+		_currentReceiverY = y2;
+		_currentReceiverZ = z2;
+		std::cout << "|" << std::flush;
+		std::ostringstream command;
+		command << "raytracing "
+			<< " --compute-ir"
+			<< " --model-file=" << _config.GetModel3DFile()
+			<< " --listener-x-pos=" << _currentReceiverX
+			<< " --listener-y-pos=" << _currentReceiverY
+			<< " --listener-z-pos=" << _currentReceiverZ
+			<< " --source-x-pos=" << _currentEmitterX
+			<< " --source-y-pos=" << _currentEmitterY 
+			<< " --source-z-pos=" << _currentEmitterZ
+			;
+		if (_config.HasNRebounds()) command << " --num-rebounds=" <<  _config.GetNRebounds();
+		if (_config.HasNRays()) command << " --num-rays=" << _config.GetNRays();
+		if (_config.HasIrLength()) command << " --ir-length=" << _config.GetIrLength();
+		if (_config.HasExtraOptions()) command << " " << _config.GetExtraOptions() << " ";
+		command << " > /dev/null";
+		// std::cout << command.str() << std::endl;
+		int error = std::system( command.str().c_str() );
+		if (error)
+		{
+			std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do at visualitzador execution!!" <<std::endl;
+			std::cout << "Offending command:\n"<<  command.str() << std::endl;
+			return false;
+		}
 		std::string wFile = "w_IR.wav";
 		std::string xFile = "x_IR.wav";
 		std::string yFile = "y_IR.wav";
@@ -187,93 +241,47 @@ public:
 		std::string xFileTrimmed = "x_IR_trimmed.wav";
 		std::string yFileTrimmed = "y_IR_trimmed.wav";
 		std::string zFileTrimmed = "z_IR_trimmed.wav";
-//		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
-		std::cout << "." << std::flush;
-		bool audioBufferIsSilence=true; //TODO this is a quick optimizion. but ugly hack!
-		const CLAM::DataArray& audio = _syncAudio.GetAudio().GetBuffer();
-		for (int i=0; i<audio.Size(); i++)
+		std::string fileW = wFile;
+		std::string fileX = xFile;
+		std::string fileY = yFile;
+		std::string fileZ = zFile;
+		if (true) // Trim initial silences with sox. Can be safely desabled
 		{
-			if (audio[i]>0.00001)
-			{	
-				audioBufferIsSilence=false;
-				break;
-			}
+			std::system( ("sox -t wav " + wFile + " -t wav " + wFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
+			std::system( ("sox -t wav " + xFile + " -t wav " + xFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
+			std::system( ("sox -t wav " + yFile + " -t wav " + yFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
+			std::system( ("sox -t wav " + zFile + " -t wav " + zFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
+			fileW = wFileTrimmed;
+			fileX = xFileTrimmed;
+			fileY = yFileTrimmed;
+			fileZ = zFileTrimmed;
 		}
-		std::cout << (audioBufferIsSilence? " Silence " : "·")<<std::flush;
-		if (!_current or (changeSnappedIR and !audioBufferIsSilence))
+		std::string errorMsg;
+		if (!computeResponseSpectrums(fileW, _current->W, _config.GetFrameSize(), errorMsg)
+			|| !computeResponseSpectrums(fileX, _current->X, _config.GetFrameSize(), errorMsg)
+			|| !computeResponseSpectrums(fileY, _current->Y , _config.GetFrameSize(), errorMsg) 
+			|| !computeResponseSpectrums(fileZ, _current->Z , _config.GetFrameSize(), errorMsg) )
 		{
-			// swap _current but leave _previous
-			_current = _current == &_impulseResponsesA ? &_impulseResponsesB : &_impulseResponsesA;
-			if (not _previous) _previous = _current;
-			_currentEmitterX = x1;
-			_currentEmitterY = y1;
-			_currentEmitterZ = z1;
-			_currentReceiverX = x2;
-			_currentReceiverY = y2;
-			_currentReceiverZ = z2;
-			std::cout << "|" << std::flush;
-			std::ostringstream command;
-			command << "raytracing "
-				<< " --compute-ir"
-				<< " --model-file=" << _config.GetModel3DFile()
-				<< " --listener-x-pos=" << _currentReceiverX
-  				<< " --listener-y-pos=" << _currentReceiverY
-  				<< " --listener-z-pos=" << _currentReceiverZ
-  				<< " --source-x-pos=" << _currentEmitterX
-				<< " --source-y-pos=" << _currentEmitterY 
-				<< " --source-z-pos=" << _currentEmitterZ
-				;
-			if (_config.HasNRebounds()) command << " --num-rebounds=" <<  _config.GetNRebounds();
-			if (_config.HasNRays()) command << " --num-rays=" << _config.GetNRays();
-			if (_config.HasIrLength()) command << " --ir-length=" << _config.GetIrLength();
-			if (_config.HasExtraOptions()) command << " " << _config.GetExtraOptions() << " ";
-			command << " > /dev/null";
-			// std::cout << command.str() << std::endl;
-			int error = std::system( command.str().c_str() );
-			if (error)
-			{
-				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do at visualitzador execution!!" <<std::endl;
-				std::cout << "Offending command:\n"<<  command.str() << std::endl;
-				return false;
-			}
-			std::string fileW = wFile;
-			std::string fileX = xFile;
-			std::string fileY = yFile;
-			std::string fileZ = zFile;
-			if (true) // Trim initial silences with sox. Can be safely desabled
-			{
-				std::system( (std::string()+"sox -t wav " + wFile + " -t wav " + wFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
-				std::system( (std::string()+"sox -t wav " + xFile + " -t wav " + xFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
-				std::system( (std::string()+"sox -t wav " + yFile + " -t wav " + yFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
-				std::system( (std::string()+"sox -t wav " + zFile + " -t wav " + zFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
-				std::string fileW = wFileTrimmed;
-				std::string fileX = xFileTrimmed;
-				std::string fileY = yFileTrimmed;
-				std::string fileZ = zFileTrimmed;
-			}
-			if (!computeResponseSpectrums(fileW, _current->W, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(fileX, _current->X, _config.GetFrameSize(), errorMsg)
-				|| !computeResponseSpectrums(fileY, _current->Y , _config.GetFrameSize(), errorMsg) 
-				|| !computeResponseSpectrums(fileZ, _current->Z , _config.GetFrameSize(), errorMsg) )
-			{
-				std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do can not open IR files." << errorMsg << std::endl;
-				return false;
-			}
-			if (false) // save all IRs
-			{
-				std::cout << "saving IR "<<_irCount<<std::endl;
-				std::ostringstream os;
-				os << "cp "<<wFile<<" "<<wFile<<_irCount<<".wav";
-				std::system(os.str().c_str());
-				_irCount++;
-			}
+			std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do can not open IR files.\n" << errorMsg << std::endl;
+			return false;
 		}
-/*
-if (_current == &_impulseResponsesA) std::cout << "(A,";
-else std::cout << "(B,";
-if (_previous == &_impulseResponsesA) std::cout << "A) " << std::flush;
-else std::cout << "B) " << std::flush;
-*/
+		if (false) // save all IRs
+		{
+			std::cout << "saving IR "<<_irCount<<std::endl;
+			std::ostringstream os;
+			os << "cp "<<wFile<<" "<<wFile<<_irCount<<".wav";
+			std::system(os.str().c_str());
+			_irCount++;
+		}
+		return true;
+	}
+public:
+	bool Do()
+	{
+		bool error = computeNewIRIfNeeded();
+		if (error) return false;
+
+		if (not _previous) _previous = _current;
 
 		_WImpulseResponseOutPort.GetData()= &_current->W;
 		_WImpulseResponseOutPortPrevious.GetData() = &_previous->W;
