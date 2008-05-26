@@ -38,7 +38,8 @@ namespace CLAMTest {
 	 * generated from an object restored from this output matches.
 	 */
 	template <class T>
-	bool XMLInputOutputMatches(T & outObject, char * filename) {
+	bool XMLInputOutputMatches(T & outObject, const char * filename)
+	{
 		std::stringstream out;
 		std::ostringstream in;
 		T inObject;
@@ -60,8 +61,8 @@ namespace CLAMTest {
 		return in.str()==out.str();
 	}
 
-	void checkXmlEqual( std::string expectedXml,
-		std::string actualXml,
+	void checkXmlEqual( const std::string & expectedXml,
+		const std::string & actualXml,
 		CppUnit::SourceLine sourceLine );
 
 
