@@ -22,11 +22,10 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
-#include "AudioDescriptors.hxx" // CLAM
-#include "AudioFileIn.hxx" // CLAM
-#include "AudioFileConfig.hxx" // CLAM
-#include "MonoAudioFileReader.hxx" // CLAM
-#include "XMLStorage.hxx" // CLAM
+#include <CLAM/AudioDescriptors.hxx>
+#include <CLAM/MonoAudioFileReaderConfig.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/XMLStorage.hxx>
 
 
 
@@ -78,21 +77,16 @@ private:
 
 	CLAM::Audio ReadAudio(const std::string & fileName)
 	{
-		CLAM::AudioFileConfig infilecfg;
-
-		infilecfg.SetFilename(fileName);
-		infilecfg.SetFiletype(CLAM::EAudioFileType::eWave);
-
-		CLAM::AudioFileIn reader(infilecfg);
+		CLAM::MonoAudioFileReaderConfig infilecfg;
+		infilecfg.SetSourceFile(fileName);
+		CLAM::MonoAudioFileReader reader(infilecfg);
 
 		CLAM::Audio buf;
-		buf.SetSize(reader.Size());
-		buf.SetSampleRate(reader.SampleRate());
+		buf.SetSize(reader.GetHeader().GetSamples());
+		buf.SetSampleRate(reader.GetHeader().GetSampleRate());
 
 		reader.Start();
-		do {
-			reader.Do(buf);
-		} while (!reader.Done());
+		reader.Do(buf);
 		reader.Stop();
 
 		return buf;
