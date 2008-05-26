@@ -32,7 +32,7 @@ private:
 	void copyElementContent();
 	bool isSpace( char c );
 	bool isSpace();
-	bool startsWith( std::string expected );
+	bool startsWith( const std::string & expected );
 	void copyElementName();
 	void copyElementAttributes();
 	void copyAttributeName();
@@ -60,9 +60,10 @@ int notEqualIndex( std::string expectedXml, std::string actualXml )
 
 
 /// Asserts that two XML string are equivalent.
-void checkXmlEqual( std::string expectedXml,
-               std::string actualXml,
-               CppUnit::SourceLine sourceLine )
+void checkXmlEqual(
+				const std::string & expectedXml,
+				const std::string & actualXml,
+				CppUnit::SourceLine sourceLine )
 {
 	std::string expected = XmlUniformiser( expectedXml ).stripped();
 	std::string actual = XmlUniformiser( actualXml ).stripped();
@@ -154,7 +155,7 @@ XmlUniformiser::copyNext( int count )
 
 
 bool
-XmlUniformiser::startsWith( std::string expected )
+XmlUniformiser::startsWith( const std::string & expected )
 {
 	std::string actual = m_xml.substr( m_index, expected.length() );
 	return actual == expected;
