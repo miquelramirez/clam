@@ -19,8 +19,8 @@
  *
  */
 
-#include "AudioFileIn.hxx"
-#include "AudioFileOut.hxx"
+#include "MultiChannelAudioFileReader.hxx"
+#include "MonoAudioFileWriter.hxx"
 #include <stdio.h>
 
 using namespace CLAM;
@@ -35,37 +35,35 @@ int main(int argc,char** argv)
 	}
 	
 	try {
-		AudioFileConfig infilecfg;
-		AudioFileConfig outfilecfgL,outfilecfgR;
+		MultiChannelAudioFileReaderConfig infilecfg;
+		infilecfg.SetSourceFile(argv[1]);
+		MultiChannelAudioFileReader infile(infilecfg);
 
-		infilecfg.SetFilename(argv[1]);
-		infilecfg.SetFiletype(EAudioFileType::eWave);
+		double sampleRate = infile.GetHeader().GetSampleRate();
 
-		outfilecfgL.SetFilename(argv[2]);
-		outfilecfgL.SetFiletype(EAudioFileType::eWave);
+		MonoAudioFileWriterConfig outfilecfgL;
+		outfilecfgL.SetTargetFile(argv[2]);
+		outfilecfgL.SetSampleRate(sampleRate);
+		MonoAudioFileWriter outfileL(outfilecfgL);
 
-		outfilecfgR.SetFilename(argv[3]);
-		outfilecfgR.SetFiletype(EAudioFileType::eWave);
+		MonoAudioFileWriterConfig outfilecfgR;
+		outfilecfgR.SetTargetFile(argv[3]);
+		outfilecfgR.SetSampleRate(sampleRate);
+		MonoAudioFileWriter outfileR(outfilecfgR);
 
-		AudioFileIn infile(infilecfg);
-		AudioFileOut outfileL(outfilecfgL);
-		AudioFileOut outfileR(outfilecfgR);
-
-		Audio bufL;
-		Audio bufR;
-		bufL.SetSize(512);
-		bufR.SetSize(512);
+		std::vector<Audio> buffers(2);
+		buffers[0].SetSize(512);
+		buffers[1].SetSize(512);
 
 		infile.Start();
 		outfileL.Start();
 		outfileR.Start();
 
-		do
+		while (infile.Do(buffers))
 		{
-			infile.Do(bufL,bufR);
-			outfileL.Do(bufL);
-			outfileR.Do(bufR);
-		} while (!infile.Done());
+			outfileL.Do(buffers[0]);
+			outfileR.Do(buffers[1]);
+		}
 
 		infile.Stop();
 		outfileL.Stop();
