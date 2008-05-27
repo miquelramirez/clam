@@ -10,6 +10,8 @@ int main(int argc, char* argv[])			// access command line arguments
     
     schema.AddSegmentation("Song","Silences", CLAM_Annotator::SegmentationPolicy::eDiscontinuous, "");
 
+	schema.SetUri("descriptionScheme:www.iua.upf.edu:clam:JunJunSilenceDetector"); // the Uri is used to identify the kind of document.
+
 	CLAM::XMLStorage::Dump(schema, "Schema", std::cout);
 
 	return 0;
