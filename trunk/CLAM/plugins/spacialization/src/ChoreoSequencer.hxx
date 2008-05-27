@@ -199,10 +199,11 @@ protected:
 		}
 		// Load the file version
 		std::cout << "ChoreoSequencer: read from file version. File: "<< _config.GetFilename() << std::endl;
+		_indexTargetAzimuth=2; // beta target
+		_indexTargetZenith=3;
 		_indexTargetX=4; 
 		_indexTargetY=5; 	
 		_indexTargetZ=6; 	
-		_indexTargetAzimuth=2; // beta target
 		_indexSourceX=7; // x orig 1
 		_indexSourceY=8; // y orig 1
 		_indexSourceZ=9; // y orig 1
