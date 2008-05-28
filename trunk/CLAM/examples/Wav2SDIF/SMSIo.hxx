@@ -1,7 +1,5 @@
 
-#include <CLAM/AudioFileIn.hxx>
-#include <CLAM/SDIFOut.hxx>
-#include <CLAM/SDIFIn.hxx>
+#include <string>
 #include <CLAM/Segment.hxx>
 
 namespace CLAM
