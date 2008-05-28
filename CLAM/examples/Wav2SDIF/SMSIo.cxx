@@ -1,39 +1,41 @@
 
 #include "SMSIo.hxx"
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/SDIFOut.hxx>
+#include <CLAM/SDIFIn.hxx>
 
 namespace CLAM
 {
 	TSize
 	WAVELoad(const std::string& filename, Segment& segment)
 	{
-		AudioFileIn myAudioFileIn;
-		AudioFileConfig infilecfg;
-		infilecfg.SetFilename(filename);
-		infilecfg.SetFiletype(EAudioFileType::eWave);
-		if(!myAudioFileIn.Configure(infilecfg))
+		MonoAudioFileReaderConfig infilecfg;
+		infilecfg.SetSourceFile(filename);
+		MonoAudioFileReader myAudioFileIn(infilecfg);
+		if(!myAudioFileIn.IsConfigured())
 		{
 			return 0;
 		}
 
 		// Initialization of the processing data objects :
-		TSize fileSize=myAudioFileIn.Size();
+		TSize fileSize=myAudioFileIn.GetHeader().GetSamples();
 
-		TSize SamplingRate=int(myAudioFileIn.SampleRate());
+		TSize samplingRate=int(myAudioFileIn.GetHeader().GetSampleRate());
 
 		// Spectral Segment that will actually hold data
-		float duration=fileSize/SamplingRate;
+		float duration=fileSize/samplingRate;
 		segment.SetEndTime(duration);
-		segment.SetSamplingRate(SamplingRate);
+		segment.SetSamplingRate(samplingRate);
 		segment.mCurrentFrameIndex=0;
 		segment.GetAudio().SetSize(fileSize);
-		segment.GetAudio().SetSampleRate(SamplingRate);
+		segment.GetAudio().SetSampleRate(samplingRate);
 
 
 		//Read Audio File
 		myAudioFileIn.Start();
 		myAudioFileIn.Do(segment.GetAudio());
 		myAudioFileIn.Stop();
-		return SamplingRate;
+		return samplingRate;
 	}
 
 	bool
