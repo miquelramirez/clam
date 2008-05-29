@@ -35,7 +35,7 @@ env.SConsignFile() # Single signature file
 
 crosscompiling = env.has_key("crossmingw") and env["crossmingw"]
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 CLAMInstallDir = env['clam_prefix']
@@ -132,14 +132,16 @@ if isWindowsPlatform :
 	sources += env.RES(source=["resources/NetworkEditor.rc"])
 
 if isLinuxPlatform :
+	env.AppendUnique(LIBS=['GLU'])
 	# TODO: This should not be hardcoded neither prefix (because package install)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
 
-if sys.platform=='linux2' :
-	if env['release'] :
-		env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
-	else :
-		env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+if env['release'] :
+	env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
+else :
+	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+
+
 
 
 testsources = scanFiles('*.cxx', ['test'])
