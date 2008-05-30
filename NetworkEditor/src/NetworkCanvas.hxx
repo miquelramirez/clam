@@ -908,7 +908,7 @@ public: // Actions
 		markAsChanged();
 	}
 	
-	void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType )
+	void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nInPort=0 )
 	{
 		if (networkIsDummy()) return;
 
@@ -919,13 +919,13 @@ public: // Actions
 		CLAM::Processing & portProcessing = _network->GetProcessing( processingId );
 		// add box to canvas and connect
 		addProcessingBox( processingId.c_str(), &portProcessing, point+QPoint(100,0));
-		addPortConnection(processing, portIndex, getBox(processingId.c_str()), 0);
+		addPortConnection(processing, portIndex, getBox(processingId.c_str()), nInPort);
 
 		markAsChanged();
 	}
 
 
-	void addLinkedProcessingSender( ProcessingBox * processing, QPoint point, const QString & processingType )
+	void addLinkedProcessingSender( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nOutPort=0 )
 	{
 		if (networkIsDummy()) return;
 
@@ -936,7 +936,7 @@ public: // Actions
 		CLAM::Processing & portProcessing = _network->GetProcessing( processingId );
 		// add box to canvas and connect
 		addProcessingBox( processingId.c_str(), &portProcessing, point+QPoint(-200,0));
-		addPortConnection(getBox(processingId.c_str()), 0, processing, portIndex);
+		addPortConnection(getBox(processingId.c_str()), nOutPort, processing, portIndex);
 		markAsChanged();
 	}
 
@@ -1280,6 +1280,18 @@ private slots:
 		}
 	}
 
+	void onProcessingsConnectPorts()
+	{
+		QMap<QString, QVariant> receiveMap=((QAction*)sender())->data().toMap() ;
+		unsigned sourcePort = receiveMap["sourceport"].toUInt();
+		unsigned sourceNumber = receiveMap["sourceprocessing"].toUInt();
+		unsigned targetPort = receiveMap["targetport"].toUInt();
+		unsigned targetNumber = receiveMap["targetprocessing"].toUInt();
+		this->addPortConnection(_processings[sourceNumber],sourcePort,_processings[targetNumber],targetPort);
+	}
+
+
+
 	void onConfigure()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
@@ -1422,7 +1434,9 @@ private:
 					menu->addSeparator();
 					CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 					unsigned portindex = _processings[i]->portIndexByYPos(translatedPos);
-					Keys keys = factory.GetKeys("port_monitor_type", outportTypeId(_processings[i]->model(),portindex));
+					std::string outportType = outportTypeId(_processings[i]->model(),portindex);
+
+					Keys keys = factory.GetKeys("port_monitor_type", outportType);
 					for (Keys::const_iterator it=keys.begin(); it!=keys.end(); it++)
 					{
 						const char* key = it->c_str();
@@ -1430,7 +1444,7 @@ private:
 						QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
 						menu->addAction( icon, key, this, SLOT(onAddLinkedProcessing()))->setData(translatedPos);
 					}
-					if ((outportTypeId(_processings[i]->model(),portindex))==("f")) // Check for audio type. TODO why "f"??
+					if (outportType==typeid(CLAM::TData).name()) // Check for audio port
 					{
 						menu->addSeparator();
 						const char* key="AudioSink";
@@ -1438,18 +1452,107 @@ private:
 						QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
 						menu->addAction( icon, key, this,SLOT(onAddLinkedProcessing()))->setData(translatedPos);
 					}
+					
 				}
 				if (region==ProcessingBox::inportsRegion)
 				{
 					CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 					unsigned portindex = _processings[i]->portIndexByYPos(translatedPos);
-					if ((inportTypeId(_processings[i]->model(),portindex))==("f")) // Check for audio type. TODO why "f"??
+					std::string inportType=inportTypeId(_processings[i]->model(),portindex);
+
+					if (inportType==typeid(CLAM::TData).name()) // Check for audio port
 					{
 						menu->addSeparator();
 						const char* key="AudioSource";
 						std::string iconPath = factory.GetValueFromAttribute(key,"icon");
 						QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
 						menu->addAction( icon, key, this ,SLOT(onAddLinkedProcessing()))->setData(translatedPos);
+					}
+				}
+				if (region==ProcessingBox::inportsRegion || region==ProcessingBox::outportsRegion)
+				{
+					CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+					// Pointers to functions
+					unsigned (ClamNetworkCanvas::*nTargetPorts) (void *);
+					QString (ClamNetworkCanvas::*targetPortName) (void *, unsigned) const;
+
+					unsigned counterTargetProcessings;
+					unsigned sourcePort=_processings[i]->portIndexByYPos(translatedPos);
+					unsigned targetPort;
+
+					// pointers to connection variables
+					unsigned * outProcessing;
+					unsigned * outPort;
+					unsigned * inProcessing;
+					unsigned * inPort;
+
+					if (region==ProcessingBox::outportsRegion)
+					{
+						nTargetPorts = &ClamNetworkCanvas::nInports;
+						targetPortName = &ClamNetworkCanvas::inportName;
+						outProcessing = &i;
+						outPort = &sourcePort;
+						inProcessing = &counterTargetProcessings;
+						inPort = &targetPort;
+					}
+					else
+					{
+						nTargetPorts = &ClamNetworkCanvas::nOutports;
+						targetPortName = &ClamNetworkCanvas::outportName;
+						outProcessing = &counterTargetProcessings;
+						outPort = &targetPort;
+						inProcessing = &i;
+						inPort = &sourcePort;
+					}
+
+					QMenu * submenu=NULL, * menuUsedProcessings=NULL;
+					std::string iconPath;
+					QIcon processingIcon;
+
+					for (counterTargetProcessings = 0; counterTargetProcessings<_processings.size(); counterTargetProcessings++ )
+					{
+						ProcessingBox * targetProcessing =_processings[counterTargetProcessings];
+						const char* targetClassName=((CLAM::Processing*)targetProcessing->model())->GetClassName();
+						//if (targetProcessing->getName()==_processings[i]->getName()) continue;
+						if (counterTargetProcessings==i) continue; // skip if it's the same processing
+						submenu=NULL;
+						processingIcon=QIcon();
+
+						for (targetPort=0; targetPort<(this->*nTargetPorts)(targetProcessing->model());targetPort++)
+						{
+							QString PortName=(this->*targetPortName)(targetProcessing->model(),targetPort);
+							if (canConnectPorts(_processings[*outProcessing], *outPort, _processings[*inProcessing], *inPort))
+							{
+								//secure method to get icon (to avoid segm. fault when the attribute doesn't exist):
+								CLAM::ProcessingFactory::Pairs pairsFromKey=factory.GetPairsFromKey(targetClassName);
+								CLAM::ProcessingFactory::Pairs::const_iterator itPairs;
+								iconPath="";
+								for (itPairs=pairsFromKey.begin();itPairs!=pairsFromKey.end();itPairs++)
+								{
+									if(itPairs->attribute=="icon")
+									{
+										iconPath=itPairs->value;
+										processingIcon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()));
+										break;
+									}
+								}
+								if (!submenu)
+								{
+									if (!menuUsedProcessings)
+									{
+										menu->addSeparator();
+										menuUsedProcessings = menu->addMenu("Connect to");
+									}
+									submenu=menuUsedProcessings->addMenu(processingIcon,targetProcessing->getName());
+								}
+								QMap<QString, QVariant> sendMap;
+								sendMap["sourceport"]=*outPort;
+								sendMap["sourceprocessing"]=*outProcessing;
+								sendMap["targetprocessing"]=*inProcessing;
+								sendMap["targetport"]=*inPort;
+								submenu->addAction(PortName, this,SLOT(onProcessingsConnectPorts()))->setData(sendMap);
+							}
+						}
 					}
 				}
 				return;
