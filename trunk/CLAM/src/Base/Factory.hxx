@@ -190,6 +190,7 @@ public:
 		return _registry.GetValuesFromAttribute(key, attribute);
 	}
 	/// Return the value for a metadata attribute of product key.
+	/// If multiple values exist returns the first value.
 	Value GetValueFromAttribute(const std::string& key, const std::string& attribute)
 	{
 		return GetValuesFromAttribute(key,attribute).front();
