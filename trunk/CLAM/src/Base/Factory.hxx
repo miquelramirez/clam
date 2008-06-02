@@ -158,6 +158,11 @@ public:
 		return _registry.ExistsKey(key);
 	}
 
+	bool AttributeExists (const std::string& key, const std::string& attribute)
+	{
+		return _registry.AttributeExists(key,attribute);
+	}
+
 	/// Get all keys that have attribute==value in its metadata.
 	Keys GetKeys(const std::string& attribute, const std::string& value)
 	{
@@ -312,6 +317,16 @@ public: // Inner classes. Public for better testing
 				return false;
 			}
 			return true;
+		}
+		bool AttributeExists(const std::string& key, const std::string& attribute)
+		{
+			Pairs pairsFromKey = GetPairsFromKey(key);
+			typename Pairs::const_iterator itPairs;
+			for (itPairs=pairsFromKey.begin();itPairs!=pairsFromKey.end();itPairs++)
+			{
+				if (itPairs->attribute==attribute) return true;
+			}
+			return false;
 		}
 
 		/// Get all keys that have attribute==value in its metadata.
