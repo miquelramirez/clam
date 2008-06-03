@@ -153,9 +153,9 @@ public:
 		_registry.GetRegisteredNames( namesList );
 	}
 
-	bool ExistsKey( const RegistryKey& key) //TODO pau: rename to KeyExists
+	bool KeyExists( const RegistryKey& key)
 	{
-		return _registry.ExistsKey(key);
+		return _registry.KeyExists(key);
 	}
 
 	bool AttributeExists (const std::string& key, const std::string& attribute)
@@ -310,7 +310,7 @@ public: // Inner classes. Public for better testing
 			
 		}
 
-		bool ExistsKey(const RegistryKey& key)
+		bool KeyExists(const RegistryKey& key)
 		{
 			typename FactoryEntries::const_iterator it = _factoryEntries.find(key);
 			if(it == _factoryEntries.end())
@@ -429,7 +429,7 @@ public: // Inner classes. Public for better testing
 		{
 			typename FactoryEntries::const_iterator it;
 			it = _factoryEntries.find(key);
-			/*if(!ExistsKey(key)) // NOT NEEDED AFETER UNIFYING
+			/*if(!KeyExists(key)) // NOT NEEDED AFETER UNIFYING
 			{
 				std::cout << "[Factory] tryind to add metadata to a non-existing key \"" << key << "\"" << std::endl; 
 		//		return;  //pau: debugging: add metadata anyway. maybe factory registrator is about to be instantiated.
