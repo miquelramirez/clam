@@ -86,8 +86,8 @@ provides already compiled packages for several platforms.
  ** to pass the tests: libcppunit-dev 
 
  * Qt4 packages to compile NetworkEditor and Annotator:
- qt4-dev-tools libqt4-dev
-
+ qt4-dev-tools libqt4-dev (and libqt4-opengl-dev in latest versions)
+ 
  * Qt3 packages to compile SMSTools and Voice2MIDI:
  libqt3-headers libqt3-mt-dev 
 
