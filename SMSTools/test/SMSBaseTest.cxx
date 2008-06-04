@@ -8,8 +8,6 @@
 #include "StdOutWaitMessage.hxx"
 
 #include "Audio.hxx"
-#include "AudioFileIn.hxx"
-#include "AudioFileOut.hxx"
 
 
 #include <fstream> // used for open(..) : we want to check if some file exists

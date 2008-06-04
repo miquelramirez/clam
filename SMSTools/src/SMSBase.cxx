@@ -26,8 +26,8 @@
 #include <CLAM/BasicOps.hxx>
 
 
-#include <CLAM/AudioFileIn.hxx>
-#include <CLAM/AudioFileOut.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/MonoAudioFileWriter.hxx>
 #include <iostream>
 
 #include <CLAM/Segment.hxx>
@@ -242,20 +242,19 @@ bool SMSBase::LoadInputSound(void)
 
 bool SMSBase::LoadSound(const std::string& filename,Segment& segment)
 {
-	AudioFileIn myAudioFileIn;
-	AudioFileConfig infilecfg;
-	infilecfg.SetFilename(filename);
-	infilecfg.SetFiletype(EAudioFileType::eWave);
-	if(!myAudioFileIn.Configure(infilecfg))
+	MonoAudioFileReaderConfig infilecfg;
+	infilecfg.SetSourceFile(filename);
+	MonoAudioFileReader myAudioFileIn(infilecfg);
+	if(!myAudioFileIn.IsConfigured())
 	{
 		return false;
 	}
 			
 	/////////////////////////////////////////////////////////////////////////////
 	// Initialization of the processing data objects :
-	TSize fileSize=myAudioFileIn.Size();
+	TSize fileSize=myAudioFileIn.GetHeader().GetSamples();
 
-	SetSamplingRate(int(myAudioFileIn.SampleRate()));
+	SetSamplingRate(int(myAudioFileIn.GetHeader().GetSampleRate()));
 	
 	// Spectral Segment that will actually hold data
 	float duration=fileSize/mSamplingRate;
@@ -459,15 +458,10 @@ void SMSBase::StoreOutputSoundResidual(void)
 
 void SMSBase::StoreSound(const std::string& fileName,const Audio& audio)
 {
-	AudioFileOut myAudioFileOut;
-	AudioFileConfig outfilecfg;
-	outfilecfg.SetChannels(1);
-	outfilecfg.SetFiletype(EAudioFileType::eWave);
+	MonoAudioFileWriterConfig outfilecfg;
+	outfilecfg.SetTargetFile(fileName);
 	outfilecfg.SetSampleRate(mSamplingRate);	
-
-	outfilecfg.SetFilename(fileName);
-	
-	myAudioFileOut.Configure(outfilecfg);
+	MonoAudioFileWriter myAudioFileOut(outfilecfg);
 
 	myAudioFileOut.Start();
 	myAudioFileOut.Do(audio);
