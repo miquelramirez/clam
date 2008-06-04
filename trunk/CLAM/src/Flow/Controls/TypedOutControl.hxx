@@ -5,17 +5,24 @@
 #include <list>
 #include <typeinfo>
 #include <CLAM/Assert.hxx>
+#include <CLAM/TypedInControl.hxx>
 
 namespace CLAM {
-	
+
 	class BaseTypedOutControl{
+		std::string mName;
 	public:
+		BaseTypedOutControl(const std::string &name)
+			: mName(name)
+		{
+		}
 		virtual ~BaseTypedOutControl(){}
 		virtual bool IsLinkable(const BaseTypedInControl& in) = 0;
 		void Link(BaseTypedInControl& in);
 		virtual bool DoTypedLink(BaseTypedInControl& in) = 0;
 		virtual bool IsConnected() = 0;
 		virtual	bool IsConnectedTo(BaseTypedInControl& in) = 0;
+		const std::string& GetName() const { return mName; }
 	};
 	
 	/**
@@ -38,7 +45,6 @@ namespace CLAM {
 		typedef std::list< ProperTypedInControl * > ProperTypedInControlList;
 
 	protected:
-		std::string mName;
 		// mLinks will store the pointers to the connected TypedInPorts
 		ProperTypedInControlList mLinks;
 
@@ -59,7 +65,7 @@ namespace CLAM {
 	
 	template<class TypedControlData>
 	TypedOutControl<TypedControlData>::TypedOutControl(const std::string &name)
-		: mName(name)
+		: BaseTypedOutControl(name)
 	{
 	}
 

@@ -8,11 +8,17 @@
 namespace CLAM {
 	
 	class BaseTypedInControl{
+		std::string mName;
 	public:
+		BaseTypedInControl(const std::string &name)
+			: mName(name)
+		{
+		}
 		virtual ~BaseTypedInControl(){}
 		virtual const std::type_info& ControlType() const = 0;
+		const std::string& GetName() const { return mName; }
 	};
-
+	
 	
 	// Template Class Declaration
 	template<class TypedControlData>
@@ -25,16 +31,14 @@ namespace CLAM {
 		typedef std::list< ProperTypedOutControl * > ProperTypedOutControlList;
 		
 	protected:
-		std::string mName;
 		TypedControlData mLastValue;
 		ProperTypedOutControlList mLinks;
 		
 	public:
-		TypedInControl(const std::string &name);
+		TypedInControl(const std::string &name = "unnamed typed in control");
 		~TypedInControl();
 		
 		void DoControl(const TypedControlData& val);
-		const std::string& GetName() const { return mName; }
 		const TypedControlData& GetLastValue();
 		bool IsConnected() const;
 		
@@ -49,7 +53,7 @@ namespace CLAM {
 	// TypedInControl Class Implementation
 	template<class TypedControlData>
 	TypedInControl<TypedControlData>::TypedInControl(const std::string &name)
-		: mName(name)
+		: BaseTypedInControl(name)
 	{
 	}
 	
