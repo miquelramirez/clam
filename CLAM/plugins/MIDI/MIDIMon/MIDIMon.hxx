@@ -28,6 +28,8 @@ namespace CLAM {
 
 		bool Do(std::vector< unsigned char > *message)
 		{
+			// TODO: deal with many messages in the vector/queue and take timestamp into account
+
 			unsigned int nBytes = message->size();
 			if (nBytes>0)
 			{
