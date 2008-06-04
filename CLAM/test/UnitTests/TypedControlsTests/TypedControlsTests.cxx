@@ -1,5 +1,7 @@
 #include <CLAM/TypedInControl.hxx>
+#include <CLAM/TypedInControlRegistry.hxx>
 #include <CLAM/TypedOutControl.hxx>
+#include <CLAM/TypedOutControlRegistry.hxx>
 #include <cppunit/extensions/HelperMacros.h>
 #include <string>
 
@@ -12,8 +14,8 @@ namespace CLAMTest {
 		CPPUNIT_TEST_SUITE( TypedControlsTest );
 
 		// testing TypedInControl and TypedOutControl
-		 CPPUNIT_TEST( testTypedInControl_DoControl_ChangesInternalState );
-		 CPPUNIT_TEST( testLinkAndSendControl_ChangesTypedInControlInternalState );
+		CPPUNIT_TEST( testTypedInControl_DoControl_ChangesInternalState );
+		CPPUNIT_TEST( testLinkAndSendControl_ChangesTypedInControlInternalState );
 		
 		// tests for IsConnected / IsConnectedTo
 		CPPUNIT_TEST( testIsConnected_WithTypedOutControl_AfterConnection );
@@ -40,6 +42,11 @@ namespace CLAMTest {
 		CPPUNIT_TEST( testIsConnected_WithBaseTypedOutControl_WithNoConnection );
 		CPPUNIT_TEST( testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreConnected );
 		CPPUNIT_TEST( testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreNotConnected );
+		
+		// Typed*ControlRegistry Tests
+		CPPUNIT_TEST( testTypedInControlRegistry_ProcessingInterface_Register_ChangesInternalState );
+		CPPUNIT_TEST( testTypedOutControlRegistry_ProcessingInterface_Register_ChangesInternalState );
+		
 		
 		CPPUNIT_TEST_SUITE_END();
 		
@@ -220,6 +227,25 @@ namespace CLAMTest {
 			CLAM::BaseTypedOutControl & out = concreteOut;
 			CPPUNIT_ASSERT_EQUAL(false, out.IsConnectedTo(in));
 		}
+		
+		// Typed*ControlRegistry Tests
+		// testing TypedInControl and TypedOutControl
+		void testTypedInControlRegistry_ProcessingInterface_Register_ChangesInternalState()
+		{
+			CLAM::TypedInControl<int> concreteIn("IntInControl");
+			CLAM::BaseTypedInControl & in = concreteIn;
+			CLAM::TypedInControlRegistry inRegistry;
+			inRegistry.ProcessingInterface_Register(&in);
+			CPPUNIT_ASSERT_EQUAL( &in, &inRegistry.Get("IntInControl") );
+		}
 
+		void testTypedOutControlRegistry_ProcessingInterface_Register_ChangesInternalState()
+		{
+			CLAM::TypedOutControl<int> concreteOut("IntOutControl");
+			CLAM::BaseTypedOutControl & out = concreteOut;
+			CLAM::TypedOutControlRegistry outRegistry;
+			outRegistry.ProcessingInterface_Register(&out);
+			CPPUNIT_ASSERT_EQUAL( &out, &outRegistry.Get("IntOutControl") );
+		}
 	};
 } // namespace
