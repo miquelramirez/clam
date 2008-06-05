@@ -35,7 +35,7 @@ class ChoreoSequencer : public CLAM::Processing
 			SetSourceIndex(0);
 			SetFrameSize(512);
 			SetSampleRate(48000);
-			SetControlsPerSecond(15);
+			SetControlsPerSecond(24);
 			SetSizeX(1);
 			SetSizeY(1);
 			SetSizeZ(1);
@@ -63,14 +63,6 @@ class ChoreoSequencer : public CLAM::Processing
 
 	typedef std::vector<float> Row;
 	std::vector<Row> _controlSequence;
-	unsigned _indexTargetX;
-	unsigned _indexTargetY;
-	unsigned _indexTargetZ;
-	unsigned _indexTargetAzimuth;
-	unsigned _indexTargetZenith;
-	unsigned _indexSourceX;
-	unsigned _indexSourceY;
-	unsigned _indexSourceZ;
 	double _sizeX;
 	double _sizeY;
 	double _sizeZ;
@@ -106,33 +98,38 @@ public:
 			std::cout << "("<<_sequenceIndex << "/" <<_controlSequence.size() << ")" << std::flush;
 			const Row & row = _controlSequence[_sequenceIndex];
 			//TODO check that _indexTargetX,Y,Z < row.size()
-			_targetX.SendControl( row[_indexTargetX] );
-			_targetY.SendControl( row[_indexTargetY] );
-			_targetZ.SendControl( row[_indexTargetZ] );
-			_targetAzimuth.SendControl( row[_indexTargetAzimuth] );
-			_targetZenith.SendControl( row[_indexTargetZenith] );
-			_sourceX.SendControl( row[_indexSourceX+3*sourceIndex] );
-			_sourceY.SendControl( row[_indexSourceY+3*sourceIndex] );
-			_sourceZ.SendControl( row[_indexSourceZ+3*sourceIndex] );
-			double dx = _sizeX * (row[_indexSourceX+3*sourceIndex] - row[_indexTargetX]);
-			double dy = _sizeY * (row[_indexSourceY+3*sourceIndex] - row[_indexTargetY]);
-			double dz = _sizeZ * (row[_indexSourceZ+3*sourceIndex] - row[_indexTargetZ]);
-			double cosAzimuth = std::cos(M_PI/180*row[_indexTargetAzimuth]);
-			double sinAzimuth = std::sin(M_PI/180*row[_indexTargetAzimuth]);
-			double cosZenith = std::cos(M_PI/180*row[_indexTargetZenith]);
-			double sinZenith = std::sin(M_PI/180*row[_indexTargetZenith]);
-			double x = + cosAzimuth*sinZenith * dx + sinAzimuth * dy - cosAzimuth*cosZenith * dz;
-            double y = - sinAzimuth*sinZenith * dx + cosAzimuth * dy + sinAzimuth*cosZenith * dz;
-            double z = + cosZenith * dx + /* 0 * vy[i] */  + sinZenith  * dz;
+			_targetX.SendControl( row[TargetXColumn] );
+			_targetY.SendControl( row[TargetYColumn] );
+			_targetZ.SendControl( row[TargetZColumn] );
+			_targetAzimuth.SendControl( row[TargetAzimutColumn] );
+			_targetZenith.SendControl( row[TargetZenitColumn] );
+			_sourceX.SendControl( row[SourceXColumn+3*sourceIndex] );
+			_sourceY.SendControl( row[SourceYColumn+3*sourceIndex] );
+			_sourceZ.SendControl( row[SourceZColumn+3*sourceIndex] );
+			double dx = _sizeX * (row[SourceXColumn+3*sourceIndex] - row[TargetXColumn]);
+			double dy = _sizeY * (row[SourceYColumn+3*sourceIndex] - row[TargetYColumn]);
+			double dz = _sizeZ * (row[SourceZColumn+3*sourceIndex] - row[TargetZColumn]);
+			double cosAzimuth = std::cos(M_PI/180*row[TargetAzimutColumn]);
+			double sinAzimuth = std::sin(M_PI/180*row[TargetAzimutColumn]);
+			double cosZenith = std::cos(M_PI/180*row[TargetZenitColumn]);
+			double sinZenith = std::sin(M_PI/180*row[TargetZenitColumn]);
+			double rotatedX = + cosAzimuth*sinZenith * dx + sinAzimuth * dy - cosAzimuth*cosZenith * dz;
+            double rotatedY = - sinAzimuth*sinZenith * dx + cosAzimuth * dy + sinAzimuth*cosZenith * dz;
+            double rotatedZ = + cosZenith * dx + /* 0 * vy[i] */  + sinZenith  * dz;
 
 			// TODO: Test that with target elevation and azimut
-			double dazimut = 180./M_PI*std::atan2(y,x);
-			double delevation = 180./M_PI*std::asin(z/std::sqrt(x*x+y*y+z*z));
+			double dazimut = 180./M_PI*std::atan2(rotatedY,rotatedX);
+			double delevation = 180./M_PI*std::asin(rotatedZ/std::sqrt(rotatedX*rotatedX+rotatedY*rotatedY+rotatedZ*rotatedZ));
 			_sourceAzimuth.SendControl( dazimut );
 			_sourceZenith.SendControl( delevation );
 			std::cout 
-				<< "\t" << _sizeX*row[_indexSourceX+3*sourceIndex] << "\t" << _sizeZ*row[_indexSourceZ+3*sourceIndex] 
-				<< "\t\t" << x << "\t" << y << "\t" << z 
+				<< "\t" << _sizeX*row[TargetXColumn+3*sourceIndex]
+				<< "\t" << _sizeY*row[TargetYColumn+3*sourceIndex] 
+				<< "\t" << _sizeZ*row[TargetZColumn+3*sourceIndex] 
+				<< "\t" << _sizeX*row[SourceXColumn+3*sourceIndex]
+				<< "\t" << _sizeY*row[SourceYColumn+3*sourceIndex] 
+				<< "\t" << _sizeZ*row[SourceZColumn+3*sourceIndex] 
+				<< "\t\t" << rotatedX << "\t" << rotatedY << "\t" << rotatedZ 
 				<< "\t\t" << dazimut << "\t" << delevation
 				<< std::endl;
 			_sampleCount -= _samplesPerControl;
@@ -151,6 +148,51 @@ public:
 		return "ChoreoSequencer";
 	}
 protected:
+	bool ConcreteStart()
+	{
+		_sampleCount=0;
+		_sequenceIndex=0;
+		return true;
+	}
+	enum FileColumns {
+		FrameColumn=0,
+		// TODO: What does the column 1 means?
+		TargetAzimutColumn=2,
+		TargetZenitColumn=3,
+		TargetXColumn=4,
+		TargetYColumn=5,
+		TargetZColumn=6,
+		SourceXColumn=7,
+		SourceYColumn=8,
+		SourceZColumn=9,
+	};
+	void fillDummyChoreo()
+	{
+		std::cout << "spiral version"<<std::endl;
+		unsigned NPoints = 1000;
+		float alpha=0.; //listener angle;
+		float horizontalLoops=10;
+		float delta=horizontalLoops*2*M_PI/NPoints;
+		for (unsigned i=0; i<NPoints; i++)
+		{
+			double t = float(i)/NPoints;
+			float x=0.5+.2*std::cos(delta*i);
+			float y=0.5+.2*std::sin(delta*i);
+			float z=t;
+			Row row;
+			row.push_back(i);
+			row.push_back(0); //Dummy
+			row.push_back(alpha); // Target Azimut
+			row.push_back(90); // Target Zenith 
+			row.push_back(.5); // receiver X
+			row.push_back(.5); // receiver Y
+			row.push_back(.5); // receiver Z
+			row.push_back(x);
+			row.push_back(y);
+			row.push_back(z);
+			_controlSequence.push_back(row);
+		}
+	}
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
@@ -169,44 +211,11 @@ protected:
 		//Load the sequence
 		if (_config.GetFilename()=="") // Walk in circles version
 		{
-			std::cout << "spiral version"<<std::endl;
-			_indexTargetX=0;
-			_indexTargetY=1;
-			_indexTargetAzimuth=2;
-			_indexTargetZenith=3;
-
-			// by now, let's do a circle in the room
-			unsigned NPoints = 100;
-			float delta=3*M_PI/2;
-			float alpha=0.; //listener angle;
-			float deltaInc=2*M_PI/NPoints;
-			float ratio=1;
-//			float alphaInc=360./NPoints;
-			for (unsigned i=0; i<NPoints; i++)
-			{
-				ratio = float(NPoints-i)/NPoints;
-				float x=std::cos(delta)*0.49*ratio+0.5;
-				float y=std::sin(delta)*0.49*ratio+0.5;
-				Row row;
-				row.push_back(x);
-				row.push_back(y);
-				row.push_back(alpha);
-				_controlSequence.push_back(row);
-				delta+=deltaInc;
-		//		alpha+=alphaInc;
-			}
+			fillDummyChoreo();
 			return true;
 		}
 		// Load the file version
 		std::cout << "ChoreoSequencer: read from file version. File: "<< _config.GetFilename() << std::endl;
-		_indexTargetAzimuth=2; // beta target
-		_indexTargetZenith=3;
-		_indexTargetX=4; 
-		_indexTargetY=5; 	
-		_indexTargetZ=6; 	
-		_indexSourceX=7; // x orig 1
-		_indexSourceY=8; // y orig 1
-		_indexSourceZ=9; // y orig 1
 		// Load table from file
 		std::ifstream file( _config.GetFilename().c_str() );
 		if (!file)
@@ -228,6 +237,11 @@ protected:
 				row.push_back(data);
 			}
 			_controlSequence.push_back(row);
+		}
+		if (!_controlSequence.size())
+		{
+			AddConfigErrorMessage("Empty file "+_config.GetFilename());
+			return false;
 		}
 		return true;
 	}
