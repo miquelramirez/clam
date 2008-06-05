@@ -102,37 +102,20 @@ namespace QtSMS
 
 	bool Engine::HasValidAudioInput()
 	{
-		CLAM::Filename filename= mGlobalConfig.GetInputSoundFile();
-		CLAM::AudioFileSource selectedFile;
-		selectedFile.OpenExisting( filename );
+		CLAM::MonoAudioFileReaderConfig config;
+		config.SetSourceFile(mGlobalConfig.GetInputSoundFile());
+		CLAM::MonoAudioFileReader reader(config);
 
-		if ( !selectedFile.IsReadable() )
+		if ( !reader.IsConfigured())
 		{
-			std::string messageShown;
-			messageShown = "Sorry, but the file ";
-			messageShown += filename;
-			messageShown += " \ncannot be used: \n";
-			messageShown += "Unable to open or unrecognized format";
-
-			QMessageBox::critical(0, "SMS Tools 2",messageShown.c_str());
-
+			QMessageBox::critical(0, "SMS Tools 2",QObject::tr(
+				"Sorry, but the file '%1'\n"
+				"cannot be used: \n"
+				"Unable to open or unrecognized format"
+				).arg(mGlobalConfig.GetInputSoundFile().c_str()));
 			return false;
 		}
 
-		if ( selectedFile.GetHeader().GetChannels() > 1 )
-		{
-			std::string messageShown;
-			messageShown = "The file ";
-			messageShown += filename;
-			messageShown += " \nhas several channels, but SMSTools only \n";
-			messageShown += "can process mono channel signals. By default\n";
-			messageShown += "the channel to be analyzed will be the first\n";
-			messageShown +="channel in the file.\n";
-
-			QMessageBox::critical(0, "SMS Tools 2",messageShown.c_str());
-			
-			return false;
-		}
 		return true;
 	}
 
@@ -147,7 +130,7 @@ namespace QtSMS
 		if(!GetState().GetHasAudioIn())
 		{
 			QMessageBox::critical(0, "SMS Tools 2",
-							   "Unable to get the input sound." );
+			   "Unable to get the input sound." );
 		}
 		GetState().SetHasAudioMorph (LoadSound(mGlobalConfig.GetMorphSoundFile(),mMorphSegment));
 		return GetState().GetHasAudioIn();
@@ -168,8 +151,10 @@ namespace QtSMS
 			QMessageBox::critical(0, "SMS Tools 2",QObject::tr(
 				"Sorry, but the file %1\n"
 				"cannot be used: \n"
-				"Unable to open or unrecognized format")
-				.arg(filename.c_str()));
+				"Unable to open or unrecognized format."
+				"%2")
+				.arg(filename.c_str())
+				.arg(fileReader.GetConfigErrorMessage()));
 			return false;
 		}
 
