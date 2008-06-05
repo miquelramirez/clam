@@ -71,6 +71,7 @@ public:
 		_currentIR.GetData()= current;
 		_previousIR.GetData() = _previous ? _previous : current;
 		_previous = current;
+		_inputIR.Consume();
 		_currentIR.Produce();
 		_previousIR.Produce();
 		return true;

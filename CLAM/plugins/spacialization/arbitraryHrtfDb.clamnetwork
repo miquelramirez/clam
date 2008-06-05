@@ -56,6 +56,10 @@
     <Prefix></Prefix>
   </processing>
 
+  <processing id="IRDelayCascade" type="IRDelayCascade"/>
+
+  <processing id="IRDelayCascade_1" type="IRDelayCascade"/>
+
   <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
@@ -160,21 +164,31 @@
 
   <port_connection>
     <out>HRTFDatabaseFetcher2.ImpulseResponseL</out>
-    <in>LowLatencyConvolution.ImpulseResponse</in>
+    <in>IRDelayCascade.Input IR</in>
   </port_connection>
 
   <port_connection>
     <out>HRTFDatabaseFetcher2.ImpulseResponseR</out>
-    <in>LowLatencyConvolution_1.ImpulseResponse</in>
+    <in>IRDelayCascade_1.Input IR</in>
   </port_connection>
 
   <port_connection>
-    <out>HRTFDatabaseFetcher2.PreviousImpulseResponseL</out>
+    <out>IRDelayCascade.Current IR</out>
+    <in>LowLatencyConvolution.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRDelayCascade.Previous IR</out>
     <in>LowLatencyConvolution_2.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>HRTFDatabaseFetcher2.PreviousImpulseResponseR</out>
+    <out>IRDelayCascade_1.Current IR</out>
+    <in>LowLatencyConvolution_1.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRDelayCascade_1.Previous IR</out>
     <in>LowLatencyConvolution_3.ImpulseResponse</in>
   </port_connection>
 
