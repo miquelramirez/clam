@@ -64,60 +64,52 @@ namespace QtSMS
 #endif
 		QString filename = QFileDialog::getOpenFileName(examplesPath, "(*.xml *.sdif)",this);
 		if(filename.isEmpty()) return;
-		if(mEngine->LoadConfiguration(filename.ascii()))
+		if(!mEngine->LoadConfiguration(filename.ascii()))
 		{
-			mShowOriginalAudio=true;
-			Engine::DisplayManager()->Flush(); // we have a new config
-			if(!mEngine->GetGlobalConfig().GetInputAnalysisFile().empty())
-			{
-				mEngine->RetrieveAudio(true);
-				mEngine->LoadAnalysis(mEngine->GetGlobalConfig().GetInputAnalysisFile());
-			}
-			else
-			{
-				Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
-				InitMenuViewItems();
-				ShowIncomingAudio();
-				UpdateState();
-			}
+			QMessageBox::critical(0,"SMS Tools 2","Load configuration failed.");
+			return;
+		}
+		
+		mShowOriginalAudio=true;
+		Engine::DisplayManager()->Flush(); // we have a new config
+		if(!mEngine->GetGlobalConfig().GetInputAnalysisFile().empty())
+		{
+			mEngine->RetrieveAudio(true);
+			mEngine->LoadAnalysis(mEngine->GetGlobalConfig().GetInputAnalysisFile());
 		}
 		else
 		{
-			QMessageBox::critical(0,"SMS Tools 2","Load configuration failed.");
+			Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
+			InitMenuViewItems();
+			ShowIncomingAudio();
+			UpdateState();
 		}
 	}
 
 	void QtSMSTools::newConfiguration()
 	{
-		SMSConfigDlg* configDlg = new SMSConfigDlg(mEngine->GetGlobalConfig(),this);
-		if( configDlg->exec() == QDialog::Accepted )
+		SMSConfigDlg configDlg(mEngine->GetGlobalConfig(),this);
+		if( configDlg.exec() != QDialog::Accepted ) return;
+		configDlg.Apply();
+		if(!mEngine->HasValidAudioInput()) return;
+		QString filename = QFileDialog::getSaveFileName("new_config.xml","*.xml",this);
+		if(filename.isEmpty()) return;
+		mShowOriginalAudio=true;
+		mEngine->StoreConfiguration(filename.ascii());
+		mEngine->LoadConfiguration(filename.ascii());
+		Engine::DisplayManager()->Flush(); // we have a new config
+		if(!mEngine->GetGlobalConfig().GetInputAnalysisFile().empty())
 		{
-			configDlg->Apply();
-			if(mEngine->HasValidAudioInput())
-			{
-				QString filename = QFileDialog::getSaveFileName("new_config.xml","*.xml",this);
-				if(!filename.isEmpty())
-				{
-					mShowOriginalAudio=true;
-					mEngine->StoreConfiguration(filename.ascii());
-					mEngine->LoadConfiguration(filename.ascii());
-					Engine::DisplayManager()->Flush(); // we have a new config
-					if(!mEngine->GetGlobalConfig().GetInputAnalysisFile().empty())
-					{
-						mEngine->RetrieveAudio(true);
-						mEngine->LoadAnalysis(mEngine->GetGlobalConfig().GetInputAnalysisFile());
-					}
-					else
-					{
-						Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
-						InitMenuViewItems();
-						ShowIncomingAudio();
-						UpdateState();
-					}
-				}
-			}
+			mEngine->RetrieveAudio(true);
+			mEngine->LoadAnalysis(mEngine->GetGlobalConfig().GetInputAnalysisFile());
 		}
-		delete configDlg;
+		else
+		{
+			Engine::DisplayManager()->SetAudio(ORIGINAL_AUDIO);
+			InitMenuViewItems();
+			ShowIncomingAudio();
+			UpdateState();
+		}
 	}
 
 	void QtSMSTools::storeExtractedMelody()
@@ -173,39 +165,30 @@ namespace QtSMS
 	void QtSMSTools::loadTransformationScore()
 	{
 		QString filename = QFileDialog::getOpenFileName(QString::null,"*.xml *",this);
-		if(!filename.isEmpty())
-		{
-			mEngine->LoadTransformationScore(filename.ascii());	
-			UpdateState();
-		}
+		if(filename.isEmpty()) return;
+		mEngine->LoadTransformationScore(filename.ascii());	
+		UpdateState();
 	}
 
 	void QtSMSTools::newTransformationScore()
 	{
-		ScoreEditorDlg* scoreDlg = new ScoreEditorDlg(this);
-		if(mEngine->GetState().GetHasTransformationScore())
+		ScoreEditorDlg scoreDlg(this);
+		if (mEngine->GetState().GetHasTransformationScore())
 		{
-			scoreDlg->SetTransformationScore(mEngine->GetCurrentTransformationScore());
+			scoreDlg.SetTransformationScore(mEngine->GetCurrentTransformationScore());
 		}
-		if(scoreDlg->exec() == QDialog::Accepted)
+		if (scoreDlg.exec() != QDialog::Accepted) return;
+		if (!scoreDlg.Apply())
 		{
-			if(scoreDlg->Apply())
-			{
-				QString filename = QFileDialog::getSaveFileName("new_score.xml","*.xml",this);
-				if(!filename.isEmpty())
-				{
-					mEngine->SetCurrentTransformationScore(scoreDlg->GetTransformationChain());
-					mEngine->StoreTransformationScore(filename.ascii());
-					UpdateState();
-				}
-			}
-			else
-			{
-				QMessageBox::information(0,"SMS Tools 2","The score has not been changed or it's empty.");
-			}
+			QMessageBox::information(0,"SMS Tools 2","The score has not been changed or it's empty.");
+			return;
+		}
+		QString filename = QFileDialog::getSaveFileName("new_score.xml","*.xml",this);
+		if (filename.isEmpty()) return;
 
-		}
-		delete scoreDlg;
+		mEngine->SetCurrentTransformationScore(scoreDlg.GetTransformationChain());
+		mEngine->StoreTransformationScore(filename.ascii());
+		UpdateState();
 	}
 
 	void QtSMSTools::analyze()
