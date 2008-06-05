@@ -145,6 +145,8 @@ public:
 		// Tell the ports this is done
 		_in1.Consume();
 		_in2.Consume();
+		_impulseResponse1.Consume();
+		_impulseResponse2.Consume();
 		_out.Produce();
 		return true;
 	}
