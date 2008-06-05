@@ -197,8 +197,6 @@ public:
 	HRTFDatabaseFetcher2(const Config& config = Config()) 
 		: _impulseResponseL("ImpulseResponseL", this)
 		, _impulseResponseR("ImpulseResponseR", this)
-		, _previousImpulseResponseL("PreviousImpulseResponseL", this)
-		, _previousImpulseResponseR("PreviousImpulseResponseR", this)
 		, _elevation("elevation", this)
 		, _azimut("azimut", this)
 		, _chosenElevation("chosen elevation", this)
@@ -244,13 +242,8 @@ public:
 		_chosenElevation.SendControl(_database.elevationForIndex(indexL));
 		_chosenAzimut.SendControl(_database.azimutForIndex(indexL));
 
-		ImpulseResponse * currentL = &_database.get(indexL);
-		_impulseResponseL.GetData()= currentL;
-		ImpulseResponse * currentR = &_database.get(indexR);
-		_impulseResponseR.GetData()= currentR;
-
-		_previousImpulseResponseL.GetData() = _previousL ? _previousL : currentL;
-		_previousImpulseResponseR.GetData() = _previousR ? _previousR : currentR;
+		ImpulseResponse * currentL = _impulseResponseL.GetData()= &_database.get(indexL);
+		ImpulseResponse * currentR = _impulseResponseR.GetData()= &_database.get(indexR);
 
 		if ( _previousL != currentL) 
 		{
@@ -262,8 +255,6 @@ public:
 		_previousR = currentR;
 		_impulseResponseL.Produce();
 		_impulseResponseR.Produce();
-		_previousImpulseResponseL.Produce();
-		_previousImpulseResponseR.Produce();
 		return true;
 	}
 };
