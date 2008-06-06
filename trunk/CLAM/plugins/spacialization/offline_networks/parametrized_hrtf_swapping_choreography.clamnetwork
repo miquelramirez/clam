@@ -53,14 +53,14 @@
   </processing>
 
   <processing id="ChoreoSequencer" type="ChoreoSequencer">
-    <Filename></Filename>
+    <Filename>%(path_file)s</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>15</ControlsPerSecond>
-    <SizeX>1</SizeX>
-    <SizeY>1</SizeY>
-    <SizeZ>1</SizeZ>
+    <ControlsPerSecond>%(controls_per_second)i</ControlsPerSecond>
+    <SizeX>%(size_x)f</SizeX>
+    <SizeY>%(size_y)f</SizeY>
+    <SizeZ>%(size_z)f</SizeZ>
   </processing>
 
   <processing id="ControlPrinter" type="ControlPrinter">
@@ -77,7 +77,7 @@
 
   <processing id="HRTFDatabaseFetcher2" type="HRTFDatabaseFetcher2">
     <FrameSize>512</FrameSize>
-    <Path>HRTFs/kreuzerDatabase.hrtfs</Path>
+    <Path>%(hrtf_database_file)s</Path>
     <Prefix></Prefix>
   </processing>
 
