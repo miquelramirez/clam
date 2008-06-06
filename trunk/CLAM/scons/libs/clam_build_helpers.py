@@ -257,7 +257,6 @@ def check_pkg_config(context, *args, **kwords):
 			pathSeparator = ';'
 		env['ENV']['PKG_CONFIG_PATH'] = pathSeparator.join([
 			os.path.join(env['sandbox_path'],'local','lib','pkgconfig'),
-			os.path.join(env["sandbox_path"],'gtk','lib','pkgconfig'),
 		])
 		env['PKG_CONFIG_PATH'] = env['ENV']['PKG_CONFIG_PATH']
 	
