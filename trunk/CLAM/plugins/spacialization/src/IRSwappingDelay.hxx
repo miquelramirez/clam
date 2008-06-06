@@ -121,8 +121,8 @@ public:
 
 		if (_delayed)
 		{
-			// Second and last frame of a transition
-			// changes on incomingIR are ignored
+			// Second frame of a transition that resolves it
+			// Changes on incomingIR are ignored
 			delayed.GetData() = _delayed;
 			atTime.GetData() = _current;
 			_delayFirst = not _delayFirst; // switching the delayed line
