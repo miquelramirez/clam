@@ -135,22 +135,22 @@
 
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
-    <in>XFadeAndSwitch.FadingIn</in>
+    <in>XFadeAndSwitch.Audio1</in>
   </port_connection>
 
   <port_connection>
     <out>AudioBuffer2Stream_1.Audio stream</out>
-    <in>XFadeAndSwitch_1.FadingIn</in>
+    <in>XFadeAndSwitch_1.Audio1</in>
   </port_connection>
 
   <port_connection>
     <out>AudioBuffer2Stream_2.Audio stream</out>
-    <in>XFadeAndSwitch.FadingOut</in>
+    <in>XFadeAndSwitch.Audio2</in>
   </port_connection>
 
   <port_connection>
     <out>AudioBuffer2Stream_3.Audio stream</out>
-    <in>XFadeAndSwitch_1.FadingOut</in>
+    <in>XFadeAndSwitch_1.Audio2</in>
   </port_connection>
 
   <port_connection>

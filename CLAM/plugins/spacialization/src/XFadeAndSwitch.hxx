@@ -92,9 +92,9 @@ public:
 public:
 	const char* GetClassName() const { return "XFadeAndSwitch"; }
 	XFadeAndSwitch(const Config& config = Config()) 
-		: _in1("FadingIn", this)
+		: _in1("Audio1", this)
 		, _impulseResponse1("ImpulseResponse1", this)
-		, _in2("FadingOut", this)
+		, _in2("Audio2", this)
 		, _impulseResponse2("ImpulseResponse2", this)
 		, _out("CrossFadedBuffer", this) 
 		, _inTransition(false)
@@ -132,6 +132,7 @@ public:
 				outpointer[i]+=(1-level)*current[i];
 			}
 			_currentIs1 = not _currentIs1;
+			_inTransition = false;
 		}
 		else
 		{
