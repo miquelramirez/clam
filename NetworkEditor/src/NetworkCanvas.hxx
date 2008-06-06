@@ -1481,7 +1481,7 @@ private:
 					bool (ClamNetworkCanvas::*canConnectConnection) (ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet);
 				
 					unsigned counterTargetProcessings;
-					unsigned sourceConnection; //processings[i]->controlIndexByXPos(translatedPos);
+					unsigned sourceConnection;
 					unsigned targetConnection;
 				
 					// pointers to connection variables
