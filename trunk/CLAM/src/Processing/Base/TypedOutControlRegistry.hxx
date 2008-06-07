@@ -16,6 +16,10 @@ namespace CLAM{
 			typedef std::vector<BaseTypedOutControl*>::const_iterator ConstIterator;
 			
 			BaseTypedOutControl& Get( const std::string & name ) const;
+			BaseTypedOutControl& GetByNumber(int index) const;
+			bool Has(const std::string& name) const;
+			
+			int Size() const;
 			void ProcessingInterface_Register(BaseTypedOutControl *);
 		private:
 			std::string AvailableNames() const;

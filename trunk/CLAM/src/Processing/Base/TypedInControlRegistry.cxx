@@ -29,7 +29,29 @@ namespace CLAM {
 
 		return *(BaseTypedInControl*)NULL; // just to get rid of warnings
 	}
+	
+	BaseTypedInControl& TypedInControlRegistry::GetByNumber(int index) const
+	{
+		CLAM_ASSERT(index>=0, "index for Control must be >=0");
+		CLAM_ASSERT(index<Size(), "index for Control must be < than Size");
 
+		return *mTypedInControls.at(index);
+	}
+
+	bool TypedInControlRegistry::Has(const std::string& name) const
+	{
+		ConstIterator it;
+		for (it=mTypedInControls.begin(); it!=mTypedInControls.end(); it++)
+			if(name == (*it)->GetName()) 
+				return true;
+
+		return false;
+	}
+
+	int TypedInControlRegistry::Size() const
+	{
+		return mTypedInControls.size();
+	}
 
 	void TypedInControlRegistry::ProcessingInterface_Register( BaseTypedInControl * in )
 	{

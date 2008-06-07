@@ -6,36 +6,26 @@
 #include <typeinfo>
 #include <CLAM/Assert.hxx>
 #include <CLAM/TypedInControl.hxx>
+#include <CLAM/Processing.hxx>
 
 namespace CLAM {
 
 	class BaseTypedOutControl{
 		std::string mName;
+		Processing * mProcessing;
 	public:
-		BaseTypedOutControl(const std::string &name)
-			: mName(name)
-		{
-		}
+		BaseTypedOutControl(const std::string &name, Processing * proc = 0);
 		virtual ~BaseTypedOutControl(){}
 		virtual bool IsLinkable(const BaseTypedInControl& in) = 0;
 		void Link(BaseTypedInControl& in);
 		virtual bool DoTypedLink(BaseTypedInControl& in) = 0;
 		virtual bool IsConnected() = 0;
 		virtual	bool IsConnectedTo(BaseTypedInControl& in) = 0;
+		
 		const std::string& GetName() const { return mName; }
+		Processing * GetProcessing() const { return mProcessing; }
+		
 	};
-	
-	/**
-		WARNING: You should call IsLinkable before using the Link function or you'll get an assert failure if In and Out Control types are different.
-	*/
-	void BaseTypedOutControl::Link(BaseTypedInControl& in)
-	{
-		bool successfullLink;
-		successfullLink = DoTypedLink(in);
-		CLAM_ASSERT( successfullLink,
-			     "TypedOutControl<TypedControlData>::Link coudn't connect to TypedInControl "
-	   		     "because was not templatized by the same TypedControlData type as TypedOutControl" );
-	}
 	
 	template<class TypedControlData>
 	class TypedOutControl : public BaseTypedOutControl
@@ -49,7 +39,7 @@ namespace CLAM {
 		ProperTypedInControlList mLinks;
 
 	public:
-		TypedOutControl(const std::string &name);
+		TypedOutControl(const std::string &name = "unnamed typed in control", Processing * proc = 0);
 		~TypedOutControl();
 
 		void AddLink(TypedInControl<TypedControlData>& in);
@@ -64,8 +54,8 @@ namespace CLAM {
 	};
 	
 	template<class TypedControlData>
-	TypedOutControl<TypedControlData>::TypedOutControl(const std::string &name)
-		: BaseTypedOutControl(name)
+	TypedOutControl<TypedControlData>::TypedOutControl(const std::string &name, Processing * proc)
+		: BaseTypedOutControl(name,proc)
 	{
 	}
 

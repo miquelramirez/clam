@@ -27,6 +27,8 @@
 #include "ErrProcessingObj.hxx"
 #include "InControlRegistry.hxx"
 #include "OutControlRegistry.hxx"
+#include <CLAM/TypedInControlRegistry.hxx>
+#include <CLAM/TypedOutControlRegistry.hxx>
 #include "InPortRegistry.hxx"
 #include "OutPortRegistry.hxx"
 #include "ProcessingConfig.hxx"
@@ -73,7 +75,19 @@ namespace CLAM {
 	void ConnectControls(
 			Processing & sender, const std::string & outControlName, 
 			Processing & receiver, const std::string & inControlName );
-		
+	/**
+	 * Free function that connects two typed controls.
+	 */
+	void ConnectTypedControls(
+			Processing & sender, unsigned typedOutControlNumber, 
+			Processing & receiver, unsigned typedInControlNumber );
+	/**
+	 * Connects two typed controls of two processings selecting them by the control name.
+	 */
+	void ConnectTypedControls(
+			Processing & sender, const std::string & typedOutControlName, 
+			Processing & receiver, const std::string & typedInControlName );
+
 	/**
 	 * Connects a free port to one belonging to a processing selecting it by the port number.
 	 * Short hand for sender.ConnectToIn(receiver.GetOutPort(inPortName))
@@ -266,6 +280,9 @@ namespace CLAM {
 		void RegisterInPort(InPortBase* in);
 		void RegisterOutControl(OutControl* out);
 		void RegisterInControl(InControl* in);
+		void RegisterTypedOutControl(BaseTypedOutControl* out);
+		void RegisterTypedInControl(BaseTypedInControl* in);
+
 
 		void SetParent(Processing *p);
 		void SetNetworkBackLink(Network * network);
@@ -282,7 +299,6 @@ namespace CLAM {
 			return mInPortRegistry.Has(name);
 		}
 
-
 		bool HasOutPort( const std::string & name )
 		{
 			return mOutPortRegistry.Has(name);
@@ -296,6 +312,16 @@ namespace CLAM {
 		bool HasOutControl( const std::string & name )
 		{
 			return mOutControlRegistry.Has(name);
+		}
+
+		bool HasTypedInControl( const std::string & name )
+		{
+			return mTypedInControlRegistry.Has(name);
+		}
+
+		bool HasTypedOutControl( const std::string & name )
+		{
+			return mTypedOutControlRegistry.Has(name);
 		}
 
 		InPortBase & GetInPort( const std::string & name )
@@ -321,6 +347,12 @@ namespace CLAM {
 		/** Accessor to published Controls manager */
 		OutControlRegistry& GetOutControls() { return mOutControlRegistry; }
 		
+		/** Accessor to published Typed Controls manager */
+		TypedInControlRegistry& GetTypedInControls() { return mTypedInControlRegistry; }
+
+		/** Accessor to published Typed Controls manager */
+		TypedOutControlRegistry& GetTypedOutControls() { return mTypedOutControlRegistry; }
+
 		/** Accessor to published Ports manager */
 		InPortRegistry& GetInPorts() { return mInPortRegistry; }
 		
@@ -377,6 +409,8 @@ namespace CLAM {
 	private:
 		InControlRegistry mInControlRegistry;
 		OutControlRegistry mOutControlRegistry;
+		TypedInControlRegistry mTypedInControlRegistry;
+		TypedOutControlRegistry mTypedOutControlRegistry;
 		InPortRegistry mInPortRegistry;
 		OutPortRegistry mOutPortRegistry;
 	};

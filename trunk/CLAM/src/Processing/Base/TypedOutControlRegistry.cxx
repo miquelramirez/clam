@@ -29,6 +29,29 @@ namespace CLAM {
 
 		return *(BaseTypedOutControl*)NULL; // just to get rid of warnings
 	}
+	
+	BaseTypedOutControl& TypedOutControlRegistry::GetByNumber(int index) const
+	{
+		CLAM_ASSERT(index>=0, "index for Control must be >=0");
+		CLAM_ASSERT(index<Size(), "index for Control must be < than Size");
+
+		return *mTypedOutControls.at(index);
+	}
+	
+	bool TypedOutControlRegistry::Has(const std::string& name) const
+	{
+		ConstIterator it;
+		for (it=mTypedOutControls.begin(); it!=mTypedOutControls.end(); it++)
+			if(name == (*it)->GetName()) 
+				return true;
+
+		return false;
+	}
+
+	int TypedOutControlRegistry::Size() const
+	{
+		return mTypedOutControls.size();
+	}
 
 	void TypedOutControlRegistry::ProcessingInterface_Register( BaseTypedOutControl * in )
 	{

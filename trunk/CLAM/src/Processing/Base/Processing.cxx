@@ -28,13 +28,14 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "Network.hxx"
+#include <CLAM/TypedInControl.hxx>
+#include <CLAM/TypedOutControl.hxx>
 
 #include <cstring>
 #include <string>
 
 
 namespace CLAM {
-
 	void ConnectPorts(
 			Processing & sender, const std::string & outPortName, 
 			Processing & receiver, const std::string & inPortName )
@@ -52,6 +53,16 @@ namespace CLAM {
 		InControl & in = receiver.GetInControls().Get(inControlName);
 		out.AddLink(in);
 	}
+	
+	void ConnectTypedControls(
+			Processing & sender, const std::string & typedOutControlName, 
+			Processing & receiver, const std::string & typedInControlName )
+	{
+		BaseTypedOutControl & out = sender.GetTypedOutControls().Get(typedOutControlName);
+		BaseTypedInControl & in = receiver.GetTypedInControls().Get(typedInControlName);
+		out.Link(in);
+	}
+	
 	void ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
 			Processing & receiver, unsigned inPortNumber )
@@ -68,6 +79,15 @@ namespace CLAM {
 		OutControl & out = sender.GetOutControls().GetByNumber(outControlNumber);
 		InControl & in = receiver.GetInControls().GetByNumber(inControlNumber);
 		out.AddLink(in);
+	}
+
+	void ConnectTypedControls(
+			Processing & sender, unsigned typedOutControlNumber, 
+			Processing & receiver, unsigned typedInControlNumber )
+	{
+		BaseTypedOutControl & out = sender.GetTypedOutControls().GetByNumber(typedOutControlNumber);
+		BaseTypedInControl & in = receiver.GetTypedInControls().GetByNumber(typedInControlNumber);
+		out.Link(in);
 	}
 	
 	void ConnectPorts(
@@ -195,6 +215,14 @@ namespace CLAM {
 	void Processing::RegisterInControl(InControl* in)
 	{
 		mInControlRegistry.ProcessingInterface_Register(in);
+	}
+	void Processing::RegisterTypedOutControl(BaseTypedOutControl* out) 
+	{
+		mTypedOutControlRegistry.ProcessingInterface_Register(out);
+	}
+	void Processing::RegisterTypedInControl(BaseTypedInControl* in)
+	{
+		mTypedInControlRegistry.ProcessingInterface_Register(in);
 	}
 	
 	void Processing::SetParent(Processing * parent)
