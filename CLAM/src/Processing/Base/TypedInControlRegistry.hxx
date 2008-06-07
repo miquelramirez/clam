@@ -16,6 +16,10 @@ namespace CLAM{
 			typedef std::vector<BaseTypedInControl*>::const_iterator ConstIterator;
 			
 			BaseTypedInControl& Get( const std::string & name ) const;
+			BaseTypedInControl& GetByNumber(int index) const;
+			bool Has(const std::string& name) const;
+			
+			int Size() const;
 			void ProcessingInterface_Register(BaseTypedInControl *);
 		private:
 			std::string AvailableNames() const;

@@ -4,19 +4,20 @@
 #include <string>
 #include <list>
 #include <typeinfo>
+#include <CLAM/Processing.hxx>
 
 namespace CLAM {
 	
 	class BaseTypedInControl{
 		std::string mName;
+		Processing * mProcessing;
+
 	public:
-		BaseTypedInControl(const std::string &name)
-			: mName(name)
-		{
-		}
+		BaseTypedInControl(const std::string &name, Processing * proc = 0);
 		virtual ~BaseTypedInControl(){}
 		virtual const std::type_info& ControlType() const = 0;
 		const std::string& GetName() const { return mName; }
+		Processing * GetProcessing() const { return mProcessing; }
 	};
 	
 	
@@ -35,7 +36,7 @@ namespace CLAM {
 		ProperTypedOutControlList mLinks;
 		
 	public:
-		TypedInControl(const std::string &name = "unnamed typed in control");
+		TypedInControl(const std::string &name = "unnamed typed in control", Processing * proc = 0);
 		~TypedInControl();
 		
 		void DoControl(const TypedControlData& val);
@@ -52,8 +53,8 @@ namespace CLAM {
 	
 	// TypedInControl Class Implementation
 	template<class TypedControlData>
-	TypedInControl<TypedControlData>::TypedInControl(const std::string &name)
-		: BaseTypedInControl(name)
+	TypedInControl<TypedControlData>::TypedInControl(const std::string &name, Processing * proc)
+		: BaseTypedInControl(name,proc)
 	{
 	}
 	

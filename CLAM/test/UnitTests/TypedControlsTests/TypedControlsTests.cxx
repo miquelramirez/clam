@@ -46,7 +46,10 @@ namespace CLAMTest {
 		// Typed*ControlRegistry Tests
 		CPPUNIT_TEST( testTypedInControlRegistry_ProcessingInterface_Register_ChangesInternalState );
 		CPPUNIT_TEST( testTypedOutControlRegistry_ProcessingInterface_Register_ChangesInternalState );
-		
+		CPPUNIT_TEST( testTypedInControlRegistry_Has_loadingControlWithSameName );
+		CPPUNIT_TEST( testTypedOutControlRegistry_Has_loadingControlWithSameName );
+		CPPUNIT_TEST( testTypedInControlRegistry_Has_withNoControls );
+		CPPUNIT_TEST( testTypedOutControlRegistry_Has_withNoControls );
 		
 		CPPUNIT_TEST_SUITE_END();
 		
@@ -246,6 +249,36 @@ namespace CLAMTest {
 			CLAM::TypedOutControlRegistry outRegistry;
 			outRegistry.ProcessingInterface_Register(&out);
 			CPPUNIT_ASSERT_EQUAL( &out, &outRegistry.Get("IntOutControl") );
+		}
+
+		void testTypedInControlRegistry_Has_loadingControlWithSameName()
+		{
+			CLAM::TypedInControl<int> concreteIn("IntInControl");
+			CLAM::BaseTypedInControl & in = concreteIn;
+			CLAM::TypedInControlRegistry inRegistry;
+			inRegistry.ProcessingInterface_Register(&in);
+			CPPUNIT_ASSERT_EQUAL( true, inRegistry.Has("IntInControl") );
+		}
+
+		void testTypedOutControlRegistry_Has_loadingControlWithSameName()
+		{
+			CLAM::TypedOutControl<int> concreteOut("IntOutControl");
+			CLAM::BaseTypedOutControl & out = concreteOut;
+			CLAM::TypedOutControlRegistry outRegistry;
+			outRegistry.ProcessingInterface_Register(&out);
+			CPPUNIT_ASSERT_EQUAL( true, outRegistry.Has("IntOutControl") );
+		}
+
+		void testTypedInControlRegistry_Has_withNoControls()
+		{
+			CLAM::TypedInControlRegistry inRegistry;
+			CPPUNIT_ASSERT_EQUAL( false, inRegistry.Has("IntInControl") );
+		}
+
+		void testTypedOutControlRegistry_Has_withNoControls()
+		{
+			CLAM::TypedOutControlRegistry outRegistry;
+			CPPUNIT_ASSERT_EQUAL( false, outRegistry.Has("IntOutControl") );
 		}
 	};
 } // namespace
