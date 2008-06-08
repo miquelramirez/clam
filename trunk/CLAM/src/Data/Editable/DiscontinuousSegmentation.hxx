@@ -222,6 +222,22 @@ namespace CLAM
 			// The offset and the next onset change together
 			_offsets[segment]=newTimePosition;
 		}
+		/**
+		* Performs an implementation to fill the segmentation to the array
+		*/
+		void fillArray(DataArray& segmentation)
+		{
+			unsigned nSegments = _onsets.size();
+			segmentation.Resize(nSegments*2);
+			segmentation.SetSize(nSegments*2);
+			for (unsigned i=0; i<nSegments; i++)
+				{
+					segmentation[i*2] = _onsets[i];
+					segmentation[i*2+1] = _offsets[i];
+				}
+		}
+
+
 
 	private:
 		/**

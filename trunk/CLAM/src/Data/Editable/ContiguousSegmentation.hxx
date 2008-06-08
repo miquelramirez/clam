@@ -137,6 +137,17 @@ namespace CLAM
 			_offsets[segment]=newTimePosition;
 			_onsets[segment+1]=newTimePosition;
 		}
+		/**
+		* Performs an empty implementation
+		*/
+		void fillArray(DataArray& segmentation)
+		{
+			unsigned nSegments= _onsets.size();
+			segmentation.Resize(nSegments-1);
+			segmentation.SetSize(nSegments-1);
+			for(unsigned i=1; i<nSegments; i++)
+				segmentation[i]=_onsets[i];
+		}
 
 	private:
 		/**
