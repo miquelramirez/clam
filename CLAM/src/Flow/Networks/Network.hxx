@@ -32,6 +32,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include <set>
 
 #include "Component.hxx"
 #include "Storage.hxx"
@@ -74,6 +75,10 @@ public:
 	// serialization methods
 	virtual void StoreOn( Storage & storage) const;
 	virtual void LoadFrom( Storage & storage);
+
+	// methods related to copy&paste processings from canvas
+	bool UpdateSelections (const NamesList & processingsNamesList);
+	void setPasteMode() { _setPasteMode=true; }
 
 	// methods related to connect/disconnect interface
 	bool ConnectPorts( const std::string &, const std::string & );
@@ -158,6 +163,14 @@ private:
 	static char NamesIdentifiersSeparator();
 	FlowControl* _flowControl;
 	NetworkPlayer* _player;
+	
+	// attributes for canvas copy & paste
+	typedef std::set<std::string> NamesSet;
+	mutable NamesSet _selectedProcessings;
+	bool _setPasteMode;
+	
+	bool ifHasSelectionAndContains(const std::string & name) const;
+
 };
 
 }// namespace
