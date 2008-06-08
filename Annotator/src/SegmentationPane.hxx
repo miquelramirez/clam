@@ -227,40 +227,7 @@ public slots:
 		std::string currentSegmentation = _segmentationSelection->currentText().toStdString();
 		CLAM::DataArray & descriptorMarks = 
 			_pool->GetWritePool<CLAM::DataArray>("Song",currentSegmentation)[0];
-		CLAM_Annotator::SegmentationPolicy policy = 
-			_project.GetAttributeScheme("Song",currentSegmentation).GetSegmentationPolicy();
-		const std::vector<double> & onsets = _segmentation->onsets();
-		const std::vector<double> & offsets = _segmentation->offsets();
-		unsigned nSegments = onsets.size();
-		switch (policy)
-		{
-			case CLAM_Annotator::SegmentationPolicy::eUnsized:
-			{
-				descriptorMarks.Resize(nSegments);
-				descriptorMarks.SetSize(nSegments);
-				for (unsigned i=0; i<nSegments; i++)
-					descriptorMarks[i] = onsets[i];
-			} break;
-			case CLAM_Annotator::SegmentationPolicy::eContinuous:
-			{
-				descriptorMarks.Resize(nSegments-1);
-				descriptorMarks.SetSize(nSegments-1);
-				for (unsigned i=1; i<nSegments; i++)
-					descriptorMarks[i] = onsets[i];
-			} break;
-			case CLAM_Annotator::SegmentationPolicy::eOverlapping:
-				// Not yet implemented, using Discontinuous by now
-			case CLAM_Annotator::SegmentationPolicy::eDiscontinuous:
-			{
-				descriptorMarks.Resize(nSegments*2);
-				descriptorMarks.SetSize(nSegments*2);
-				for (unsigned i=0; i<nSegments; i++)
-				{
-					descriptorMarks[i*2] = onsets[i];
-					descriptorMarks[i*2+1] = offsets[i];
-				}
-			} break;
-		}
+		_segmentation->fillArray(descriptorMarks);
 		emit dataChanged();
 	}
 	void insertSegment(unsigned index)

@@ -6,6 +6,7 @@
 #include <iterator>
 #include <cmath>
 #include <sstream>
+#include <CLAM/Array.hxx>
 
 namespace CLAM
 {
@@ -72,6 +73,11 @@ namespace CLAM
 		 */
 		virtual void dragOffset(unsigned segment, double newTimePosition)=0;
 
+		/**
+		* Performs a empty implementation
+		*/
+		virtual void fillArray(DataArray& segmentation)=0;
+		
 		void select(unsigned segment)
 		{
 			_selection[segment]=true;
