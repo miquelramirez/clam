@@ -16,7 +16,10 @@ options.Add( BoolOption( 'release', 'Build CLAM Tests enabling compiler optimiza
 options.Add( PathOption( 'test_data_path', 'Path to the TestDataPrefix', '') )
 options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode in linux', 'no') )
 
-env = Environment( ENV=os.environ, tools=['default', 'clam'], toolpath=[clamToolPath], options=options)
+toolchain='default'
+if sys.platform == 'win32': toolchain = 'mingw'
+env = Environment(ENV=os.environ, tools=[toolchain], options=options)
+env.Tool('clam', toolpath=[clamToolPath])
 
 options.Update(env)
 options.Save('options.cache', env)
@@ -41,31 +44,13 @@ env.Append( CCFLAGS=['-O3', '-fomit-frame-pointer', '-g','-Wall'] )
 env.Append( CPPFLAGS = ['-DTEST_DATA_PATH="\\"%s\\""' % env['test_data_path'] ] )
 env.Append( CPPFLAGS = ['-DCLAM_MODULE="\\"tests\\""'] )
 
-if sys.platform == 'win32' or crosscompiling :
-	env.ParseConfig( env['cppunit_prefix']+'/bin/cppunit-config --cflags' )
-#	env.ParseConfig( env['cppunit_prefix']+'/bin/cppunit-config --libs' )
-	if crosscompiling :
-		env.PrependUnique( LIBS=['cppunit'] )
-	else:
-		env.PrependUnique( LIBS=['cppunit_vc7'] )
-	env.AppendUnique( LIBPATH=[env['cppunit_prefix']+'/lib'] )
-else:
-	env.ParseConfig( 'pkg-config --cflags --libs cppunit')
+env.ParseConfig( 'pkg-config --cflags --libs cppunit')
 
 if sys.platform == 'darwin':
 	env.AppendUnique( LIBS=['xerces-c'] )
 	env.AppendUnique( LIBPATH=['/opt/local/lib'] )
 
 
-if sys.platform == 'win32' :
-	if env['release'] :
-		env.Append( CPPFLAGS = ['-DWIN32'] )
-		env.Append( CCFLAGS = '/FD /GR /GX /MD /O2 /GL /W3 /Zm1000' )	
-		env.Append( LINKFLAGS = ['/LTCG'] )
-	else :
-		env.Append( CPPFLAGS = ['-DWIN32', '-D_DEBUG'] )
-		env.Append( CCFLAGS = '/D /FD /GR /GX /GZ /MDd /Od /W3 /ZI /Zm1000' )
-		env.Append( LINKFLAGS = ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
 #TODO: KLUDGE to allow old style and new style CLAM headers
 env.Append(CPPPATH=env['clam_prefix']+'/include/CLAM')
