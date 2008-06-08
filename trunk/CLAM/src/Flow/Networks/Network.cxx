@@ -37,7 +37,8 @@ namespace CLAM
 	Network::Network() :
 		_name("Unnamed Network"),
 		_flowControl(new NaiveFlowControl),
-		_player(0)
+		_player(0),
+		_setPasteMode(false)
 	{}
 	
 	Network::~Network()
@@ -57,7 +58,10 @@ namespace CLAM
 		for(it=BeginProcessings();it!=EndProcessings();it++)
 		{
 			Processing * proc = it->second;
-			ProcessingDefinitionAdapter procDefinition(proc, it->first);
+			const std::string & name = it->first;
+			if (!ifHasSelectionAndContains(name))
+				continue;
+			ProcessingDefinitionAdapter procDefinition(proc, name);
 			XMLComponentAdapter xmlAdapter(procDefinition, "processing", true);
 			storage.Store(xmlAdapter);
 		}
@@ -70,6 +74,10 @@ namespace CLAM
 		{
 			const std::string & name = it->first;
 			Processing * proc = it->second;
+
+			if (!ifHasSelectionAndContains(name))
+				continue;
+
 			OutPortRegistry::Iterator itOutPort;
 			for (itOutPort=proc->GetOutPorts().Begin(); 
 			     itOutPort!=proc->GetOutPorts().End(); 
@@ -85,6 +93,8 @@ namespace CLAM
 				    namesIterator!=namesInPorts.end();
 				    namesIterator++)
 				{
+					if (!ifHasSelectionAndContains(GetProcessingIdentifier(*namesIterator)))
+						continue;
 					ConnectionDefinitionAdapter connectionDefinition( outPortName, *namesIterator );
 					XMLComponentAdapter xmlAdapter(connectionDefinition, "port_connection", true);
 					storage.Store(xmlAdapter);
@@ -96,6 +106,10 @@ namespace CLAM
 		{
 			const std::string & name = it->first;
 			Processing * proc = it->second;
+
+			if (!ifHasSelectionAndContains(name))
+				continue;
+
 			OutControlRegistry::Iterator itOutControl;
 			for (itOutControl=proc->GetOutControls().Begin(); 
 			     itOutControl!=proc->GetOutControls().End(); 
@@ -108,17 +122,22 @@ namespace CLAM
 				    namesIterator!=namesInControls.end();
 				    namesIterator++)
 				{
+					if (!ifHasSelectionAndContains(GetProcessingIdentifier(*namesIterator)))
+						continue;
 					ConnectionDefinitionAdapter connectionDefinition( outControlName, *namesIterator );
 					XMLComponentAdapter xmlAdapter(connectionDefinition, "control_connection", true);
 					storage.Store(xmlAdapter);
 				}
 			}
 		}
+		_selectedProcessings.clear();
 	}
 
 	void Network::LoadFrom( Storage & storage)
 	{
-		Clear();
+		typedef std::map <std::string, std::string> changeProcNames;
+		changeProcNames newProcNames;
+		if (!_setPasteMode) Clear();
 		XMLAdapter<std::string> strAdapter( _name, "id");
 		storage.Load(strAdapter);
 
@@ -128,7 +147,18 @@ namespace CLAM
 			XMLComponentAdapter xmlAdapter(procDefinition, "processing", true);
 			if(storage.Load(xmlAdapter) == false) break;
 			
-			AddProcessing(procDefinition.GetName(), procDefinition.GetProcessing()); 
+			if (!_setPasteMode)
+				AddProcessing(procDefinition.GetName(), procDefinition.GetProcessing()); 
+			else
+			{
+				const std::string & name = procDefinition.GetName();
+				CLAM::Processing * processing =procDefinition.GetProcessing();
+				std::string key=processing->GetClassName();
+				std::string newName= AddProcessing(key);
+				CLAM::Processing & newProcessing = GetProcessing(newName);
+				newProcessing.Configure(processing->GetConfig());
+				newProcNames.insert(changeProcNames::value_type(name,newName));
+			}
 		}
 
 		while(1)
@@ -140,7 +170,17 @@ namespace CLAM
 			const std::string & fullIn = connectionDefinition.GetInName();
 			try
 			{
-				ConnectPorts( fullOut, fullIn );
+				if (!_setPasteMode)
+					ConnectPorts( fullOut, fullIn );
+				else
+				{
+					const std::string newNameOut = newProcNames.find(GetProcessingIdentifier(fullOut))->second
+						+"."+GetConnectorIdentifier(fullOut);
+					const std::string newNameIn = newProcNames.find(GetProcessingIdentifier(fullIn))->second
+						+"."+GetConnectorIdentifier(fullIn);
+					ConnectPorts( newNameOut, newNameIn );
+				}
+				
 			}
 			catch (Err & e) { throw XmlStorageErr(e.what()); }
 		}
@@ -152,13 +192,44 @@ namespace CLAM
 			if (!storage.Load(xmlAdapter)) break;
 			const std::string & fullOut = connectionDefinition.GetOutName();
 			const std::string & fullIn = connectionDefinition.GetInName();
-			try 
+			try
 			{
-				ConnectControls( fullOut, fullIn );
+				if (!_setPasteMode)
+					ConnectControls( fullOut, fullIn );
+				else
+				{
+					const std::string newNameOut = newProcNames.find(GetProcessingIdentifier(fullOut))->second
+						+"."+GetConnectorIdentifier(fullOut);
+					const std::string newNameIn = newProcNames.find(GetProcessingIdentifier(fullIn))->second
+						+"."+GetConnectorIdentifier(fullIn);
+					ConnectControls( newNameOut, newNameIn );
+				}
 			}
 			catch (Err & e) { throw XmlStorageErr(e.what()); }
 		}
+		_setPasteMode=false;
+	}
 
+	bool Network::UpdateSelections (const NamesList & processingsNamesList)
+	{
+		NamesList::const_iterator namesIterator;
+		if (!_selectedProcessings.empty() || processingsNamesList.empty())
+		{
+			_selectedProcessings.clear();
+			return 1;
+		}
+		for (namesIterator=processingsNamesList.begin();namesIterator!=processingsNamesList.end();namesIterator++)
+			_selectedProcessings.insert(*namesIterator);
+		return 0;
+		
+	}
+
+	bool Network::ifHasSelectionAndContains(const std::string & name) const
+	{
+		NamesSet::const_iterator itFindSelected = _selectedProcessings.find(name);
+		if (!_selectedProcessings.empty() && itFindSelected==_selectedProcessings.end())
+			return 0;
+		return 1;
 	}
 
 	void Network::AddFlowControl(FlowControl* flowControl)

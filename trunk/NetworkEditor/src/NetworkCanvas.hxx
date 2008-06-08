@@ -25,6 +25,7 @@
 #include <vector>
 #include <algorithm>
 #include <CLAM/Assert.hxx>
+#include <CLAM/XMLStorage.hxx>
 
 class NetworkCanvas : public QWidget
 {
@@ -794,6 +795,21 @@ public:
 		_newProcessingAction->setShortcut(QKeySequence(tr("Ctrl+Space")));
 		addAction(_newProcessingAction);
 		connect(_newProcessingAction, SIGNAL(triggered()), this, SLOT(onNewProcessing()));
+
+		_copySelectionAction = new QAction("Copy Selection", this);
+		_copySelectionAction->setShortcut(QKeySequence(tr("Ctrl+C")));
+		addAction(_copySelectionAction);
+		connect(_copySelectionAction, SIGNAL(triggered()), this, SLOT (onCopyProcessingsToClipboard()));
+
+		_cutSelectionAction = new QAction("Cut Selection", this);
+		_cutSelectionAction->setShortcut(QKeySequence(tr("Ctrl+X")));
+		addAction(_cutSelectionAction);
+		connect(_cutSelectionAction, SIGNAL(triggered()), this, SLOT (onCutProcessingsToClipboard()));
+
+		_pasteSelectionAction = new QAction("Paste Selection", this);
+		_pasteSelectionAction->setShortcut(QKeySequence(tr("Ctrl+V")));
+		addAction(_pasteSelectionAction);
+		connect(_pasteSelectionAction, SIGNAL(triggered()), this, SLOT (onPasteProcessingsFromClipboard()));
 	}
 	CLAM::Network & network()
 	{
@@ -1115,6 +1131,22 @@ public:
 		refreshWires();
 	}
 
+
+	void reloadNetwork()
+	{
+		if (networkIsDummy()) return;
+		CLAM::Network::ProcessingsMap::const_iterator it;
+		for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
+		{
+			const std::string & name = it->first;
+			if (getBox(QString(name.c_str())))
+				continue; // if the processing exists in canvas, skip it
+			CLAM::Processing * processing = it->second;
+			addProcessingBox( name.c_str(),  processing );
+		}
+		refreshWires();
+	}
+
 	void refreshWires()
 	{
 		clearWires();
@@ -1244,6 +1276,64 @@ private slots:
 			return;
 		}
 	}
+
+	void onCopyProcessingsToClipboard(bool cut=false)
+	{
+		std::ostringstream streamXMLBuffer;
+		CLAM::Network::NamesList processingsNamesList;
+		// Copy selected (/active) processings on networkToCopy
+		for (unsigned i=0; i<_processings.size();i++)
+		{
+			if (!_processings[i]->isSelected())
+				continue;
+			const std::string name=(_processings[i]->getName()).toStdString();
+			processingsNamesList.push_back(name);
+		}
+		if (_network->UpdateSelections(processingsNamesList))
+			return;
+		CLAM::XmlStorage::Dump(*_network,"network",streamXMLBuffer);
+
+		QApplication::clipboard()->setText(QString(streamXMLBuffer.str().c_str()));
+		if (!cut) return;
+
+		CLAM::Network::NamesList::iterator cuttedNamesIterator;
+		for(cuttedNamesIterator=processingsNamesList.begin();
+			cuttedNamesIterator!=processingsNamesList.end();
+			cuttedNamesIterator++)
+		{
+			removeProcessing(getBox(QString((*cuttedNamesIterator).c_str())));
+		}
+	}
+
+	void onCutProcessingsToClipboard()
+	{
+		onCopyProcessingsToClipboard(true);
+	}
+
+	void onPasteProcessingsFromClipboard()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		QString text=QApplication::clipboard()->text();
+		std::stringstream streamXMLBuffer;
+		streamXMLBuffer << text.toStdString();
+		CLAM::Network networkToPaste;
+
+		try
+		{
+			_network->setPasteMode();
+			CLAM::XMLStorage::Restore(*_network, streamXMLBuffer);
+		}
+		catch(CLAM::XmlStorageErr &e)
+		{
+			QMessageBox::critical(this, tr("Error trying to paste from clipboard"), 
+					tr("<p>An occurred while loading clipboard.<p>"
+						"<p><b>%1</b></p>").arg(e.what()));
+			return;
+		}
+		reloadNetwork();
+	}
+
+
 	void onAddSlider()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
@@ -1587,15 +1677,23 @@ private:
 					this, SLOT(onRename()))->setData(translatedPos);
 				menu->addAction(QIcon(":/icons/images/editdelete.png"), "Remove",
 				this, SLOT(onDeleteProcessing()))->setData(translatedPos);
+				menu->addSeparator();
+				menu->addAction("Copy processing(s)", this, SLOT(onCopyProcessingsToClipboard()));
+				menu->addAction("Cut processing(s)", this, SLOT(onCutProcessingsToClipboard()));
 				return;
 			}
 		}
 		menu->addAction(QIcon(":/icons/images/newprocessing.png"), "Add processing",
 			this, SLOT(onNewProcessing()))->setData(translatedPos);
+		menu->addAction("Paste processing(s)",
+			this,SLOT(onPasteProcessingsFromClipboard()))->setData(translatedPos);
 	}
 
 protected:
 	QAction * _newProcessingAction;
+	QAction * _copySelectionAction;
+	QAction * _cutSelectionAction;
+	QAction * _pasteSelectionAction;
 private:
 	CLAM::Network * _network;
 };
