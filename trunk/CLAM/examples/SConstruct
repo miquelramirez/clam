@@ -159,7 +159,6 @@ tickEnv = env.Clone()
 tickEnv.AppendUnique(CPPPATH=['TickExtractor/libresample-0.1.3/include'])
 tickEnv.ParseConfig('pkg-config aubio --cflags --libs')
 tickSrc = glob.glob("TickExtractor/*cxx") + glob.glob("TickExtractor/libresample-0.1.3/src/*.c")
-tickSrc.remove("TickExtractor/AubioOnsetDetector.cxx") # not used, not compilable
 examples += [ tickEnv.Program(target="TickExtractorExe", source = tickSrc) ]
 
 

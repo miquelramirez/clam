@@ -26,37 +26,6 @@ namespace CLAM
 {
 	namespace RhythmDescription
 	{
-		EODAlgorithms::EODAlgorithms()
-			: Enum( sEnumValues, sDefault )
-		{
-		}
-
-		EODAlgorithms::EODAlgorithms( tValue v )
-			: Enum( sEnumValues, v )
-		{
-		}
-
-		EODAlgorithms::EODAlgorithms( std::string s )
-			: Enum( sEnumValues, s )
-		{
-		}
-
-		Enum::tEnumValue EODAlgorithms::sEnumValues[] = {
-			{ eEnergy, "Energy" },
-			{ eSpectralDifference, "Spectral difference" },
-			{ eHFC, "HFC" },
-			{ eComplexDomain, "Complex domain"},
-			{ ePhase, "Phase" },
-			{ 0,      NULL }
-		};
-		
-		Enum::tValue EODAlgorithms::sDefault = EODAlgorithms::eEnergy;
-
-		Component* EODAlgorithms::Species() const
-		{
-			return new EODAlgorithms( "Energy method");
-		}
-
 		void AubioOnsetDetectorConfig::DefaultInit()
 		{
 			AddAll();
@@ -74,10 +43,10 @@ namespace CLAM
 			  mOnsetDetector( NULL ),
 			  mPeakPickingParms( NULL ),
 			  mCurrentFrame( NULL ),
-			  mSpectrum( NULL ),
-			  mOnsetBuffer( NULL ),
 			  mInputAudio( NULL ), 
-			  mOnsetType( energy )
+			  mOnsetBuffer( NULL ),
+			  mSpectrum( NULL ),
+			  mOnsetType( aubio_onset_energy )
 		{
 		}
 
@@ -130,15 +99,15 @@ namespace CLAM
 				aubio_onsetdetection_free( mOnsetDetector );
 				
 			if ( mConfig.GetMethod() == 0 )
-				mOnsetType = energy;
+				mOnsetType = aubio_onset_energy;
 			else if ( mConfig.GetMethod() == 1 )
-				mOnsetType = specdiff;
+				mOnsetType = aubio_onset_specdiff;
 			else if ( mConfig.GetMethod() == 2 )
-				mOnsetType = hfc;
+				mOnsetType = aubio_onset_hfc;
 			else if ( mConfig.GetMethod() == 3 )
-				mOnsetType = complexdomain;
+				mOnsetType = aubio_onset_complex;
 			else if ( mConfig.GetMethod() == 4 )
-				mOnsetType = phase;
+				mOnsetType = aubio_onset_phase;
 
 			mOnsetDetector = new_aubio_onsetdetection( mOnsetType , mConfig.GetWindowSize(), 1 );
 			
@@ -194,11 +163,10 @@ namespace CLAM
 
 				isOnset = 0;
 
-				unsigned int i, j ;
 				int pos = 0;
 				smpl_t peakWeight = 0.0;
 
-				for ( j = 0; j < mConfig.GetHopSize(); j++ )
+				for ( int j = 0; j < mConfig.GetHopSize(); j++ )
 				{
 					fvec_write_sample( mCurrentFrame, mInputAudio->data[0][j], 0, pos );
 					

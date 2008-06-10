@@ -22,14 +22,14 @@
 #ifndef __AUBIOONSETDETECTOR__
 #define __AUBIOONSETDETECTOR__
 
-#include "Processing.hxx"
-#include "ProcessingConfig.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/ProcessingConfig.hxx>
 #include <string>
 #include <aubio/aubio.h>
-#include "Audio.hxx"
-#include "Array.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/Array.hxx>
 #include "TimeIndex.hxx"
-#include "Enum.hxx"
+#include <CLAM/Enum.hxx>
 
 namespace CLAM
 {
@@ -42,19 +42,33 @@ namespace CLAM
 			static tEnumValue  sEnumValues[];
 			static tValue      sDefault;
 			
-			EODAlgorithms();
-			EODAlgorithms( tValue val );
-			EODAlgorithms( std::string s );
+			EODAlgorithms() : Enum( EnumValues(), DefaultValue() ) {}
+			EODAlgorithms( tValue val ) : Enum( EnumValues(), val ) {}
+			EODAlgorithms( const std::string & s ) : Enum( EnumValues(), s ) {}
 
 			typedef enum {
-				eEnergy,
-				eSpectralDifference,
-				eHFC,
-				eComplexDomain,
-				ePhase
+				eEnergy = aubio_onset_energy,
+				eSpectralDifference = aubio_onset_specdiff,
+				eHFC = aubio_onset_hfc,
+				eComplexDomain = aubio_onset_complex,
+				ePhase = aubio_onset_phase
 			};
 			
-			virtual Component* Species() const;
+			virtual Component* Species() const { return new EODAlgorithms; }
+
+			static Enum::tEnumValue * EnumValues()
+			{
+				static tEnumValue sEnumValues[] = {
+					{ eEnergy, "Energy" },
+					{ eSpectralDifference, "Spectral difference" },
+					{ eHFC, "HFC" },
+					{ eComplexDomain, "Complex domain"},
+					{ ePhase, "Phase" },
+					{ 0,      NULL }
+				};
+				return sEnumValues;
+			}
+			static tValue DefaultValue() { return eEnergy; }
 		};
 
 		class AubioOnsetDetectorConfig : public ProcessingConfig
@@ -95,12 +109,12 @@ namespace CLAM
 			// "Processings"
 			aubio_pvoc_t*           mPhaseVocoder;
 			aubio_onsetdetection_t*  mOnsetDetector;
-			pickparams_t*           mPeakPickingParms;
+			aubio_pickpeak_t*           mPeakPickingParms;
 
 			fvec_t*                     mCurrentFrame;
 			fvec_t*                     mInputAudio;
 			fvec_t*                     mOnsetBuffer;
-			cvec_t*                     mSpectrum;			
+			cvec_t*                     mSpectrum;
 			aubio_onsetdetection_type  mOnsetType;
 			
 		};
