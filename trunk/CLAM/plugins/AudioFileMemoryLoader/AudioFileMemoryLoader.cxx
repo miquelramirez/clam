@@ -39,7 +39,8 @@ namespace Hidden
 	
 	AudioFileMemoryLoader::AudioFileMemoryLoader( const ProcessingConfig& cfg )
 		: _Output( "Samples Read", this ),
-		  _TimeOutput( "Current Time Position", this)
+		  _TimeOutput( "Current Time Position", this),
+		  _Position ( 0 )
 	{
 		Configure( cfg );
 	}
@@ -64,7 +65,6 @@ namespace Hidden
 		CopyAsConcreteConfig( _Config, cfgObject );
 
 		MonoAudioFileReader reader(_Config);
-		Audio audio;
 		
 		if ( !reader.Configure (_Config) )
 		{
@@ -73,8 +73,8 @@ namespace Hidden
 		}
 
 		reader.Start();
-		audio.SetSize(reader.GetHeader().GetSamples());
-		reader.Do(audio);
+		_Samples.SetSize(reader.GetHeader().GetSamples());
+		reader.Do(_Samples);
 		
 		return true;
 	}
@@ -96,6 +96,26 @@ namespace Hidden
 	
 	bool AudioFileMemoryLoader::Do( Audio & outputSamples )
 	{
+		CLAM::TData * samplesArray = &_Samples.GetBuffer()[0];
+		CLAM::TData * outputArray = &outputSamples.GetBuffer()[0];
+		
+		long samplesLeft = _Samples.GetSize() - _Position;
+		long length = outputSamples.GetSize();
+		if (length > samplesLeft)
+			length = samplesLeft;
+		
+		long i;
+		for (i = 0; i < length; i++)
+		{
+			outputArray[i] = samplesArray[_Position];
+			_Position++;
+		}
+		length = outputSamples.GetSize();
+		for (; i < length; i++)
+		{
+			outputArray[i] = 0.0;
+		}
+		
 		return true;
 	}
 	
