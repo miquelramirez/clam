@@ -22,9 +22,9 @@
 #ifndef __IOI_HISTOGRAM__
 #define __IOI_HISTOGRAM__
 
-#include "ProcessingData.hxx"
-#include "DataTypes.hxx"
-#include "Array.hxx"
+#include <CLAM/ProcessingData.hxx>
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/Array.hxx>
 
 namespace CLAM
 {

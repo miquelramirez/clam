@@ -27,9 +27,9 @@
 #ifndef _GLOBAL_PULSE_
 #define _GLOBAL_PULSE_
 
-#include "Processing.hxx"
+#include <CLAM/Processing.hxx>
 #include "IOIHistogram.hxx"
-#include "WindowGenerator.hxx"
+#include <CLAM/WindowGenerator.hxx>
 
 namespace CLAM 
 {

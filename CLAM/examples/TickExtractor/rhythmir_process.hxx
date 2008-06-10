@@ -22,7 +22,7 @@
 #ifndef __RHYTHMIR_PROCESS__
 #define __RHYTHMIR_PROCESS__
 
-#include "Pool.hxx"
+#include <CLAM/Pool.hxx>
 #include "TickExtractorConfig.hxx"
 #include <string>
 

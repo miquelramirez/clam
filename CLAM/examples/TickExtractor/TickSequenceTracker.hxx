@@ -22,8 +22,8 @@
 #ifndef __TICKSEQUENCETRACKER__
 #define __TICKSEQUENCETRACKER__
 
-#include "ProcessingComposite.hxx"
-#include "Array.hxx"
+#include <CLAM/ProcessingComposite.hxx>
+#include <CLAM/Array.hxx>
 #include "TimeIndex.hxx"
 #include "TickSequenceTrackerConfig.hxx"
 #include "IOIHistPeakDetector.hxx"
