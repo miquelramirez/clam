@@ -23,8 +23,8 @@
 #define __ADJUSTBEATWRTTICK__
 
 
-#include "Processing.hxx"
-#include "DataTypes.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/DataTypes.hxx>
 #include "RD_TimeSeriesSeed.hxx"
 
 namespace CLAM

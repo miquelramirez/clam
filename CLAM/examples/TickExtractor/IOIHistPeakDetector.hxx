@@ -28,8 +28,8 @@
 #ifndef _IOI_HIST_PEAK_DETECTOR_
 #define _IOI_HIST_PEAK_DETECTOR_
 
-#include "Processing.hxx"
-#include "Array.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/Array.hxx>
 #include "TimeIndex.hxx"
 #include "IOIHistogram.hxx"
 

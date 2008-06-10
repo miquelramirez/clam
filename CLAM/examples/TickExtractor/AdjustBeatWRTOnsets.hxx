@@ -22,13 +22,13 @@
 #ifndef __ADJUSTBEATWRTONSETS__
 #define __ADJUSTBEATWRTONSETS__
 
-#include "ProcessingComposite.hxx"
-#include "ProcessingConfig.hxx"
+#include <CLAM/ProcessingComposite.hxx>
+#include <CLAM/ProcessingConfig.hxx>
 #include "RD_TimeSeriesFinder.hxx"
 #include "RD_TimeSeriesSeed.hxx"
 #include "RD_GridGen.hxx"
-#include "DataTypes.hxx"
-#include "Array.hxx"
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/Array.hxx>
 #include "TimeIndex.hxx"
 
 namespace CLAM

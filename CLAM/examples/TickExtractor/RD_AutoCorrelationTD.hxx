@@ -28,9 +28,9 @@
 #ifndef _RD_AUTOCORRELATIONTD_
 #define _RD_AUTOCORRELATIONTD_
 
-#include "Processing.hxx"
-#include "Array.hxx"
-#include "DataTypes.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/Array.hxx>
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAM
 {

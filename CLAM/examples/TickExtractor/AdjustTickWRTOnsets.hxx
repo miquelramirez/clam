@@ -22,11 +22,11 @@
 #ifndef __ADJUSTTICKWRTONSETS__
 #define __ADJUSTTICKWRTONSETS__
 
-#include "ProcessingComposite.hxx"
+#include <CLAM/ProcessingComposite.hxx>
 #include "RD_TimeSeriesFinder.hxx"
 #include "RD_TimeSeriesSeed.hxx"
 #include "RD_GridGen.hxx"
-#include "Array.hxx"
+#include <CLAM/Array.hxx>
 #include "TimeIndex.hxx"
 
 namespace CLAM

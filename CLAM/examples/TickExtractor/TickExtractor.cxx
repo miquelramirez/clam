@@ -21,12 +21,12 @@
 
 #include "TickExtractor.hxx"
 #include "TickExtractorConfig.hxx"
-#include "Err.hxx"
+#include <CLAM/Err.hxx>
 #include "Pulse.hxx"
-#include "Audio.hxx"
-#include "XMLStorage.hxx"
-#include "MonoAudioFileReader.hxx"
-#include "MonoAudioFileReaderConfig.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/MonoAudioFileReaderConfig.hxx>
 #include "OnsetDetector.hxx"
 #include "TickSequenceTracker.hxx"
 #include "IOIHistogram.hxx"

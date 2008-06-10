@@ -46,9 +46,9 @@
  * @see CLAM::TemporalSeriesFinderConfig
  */
 
-#include "Processing.hxx"
-#include "Array.hxx"
-#include "InControl.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/Array.hxx>
+#include <CLAM/InControl.hxx>
 #include "TimeIndex.hxx"
 
 

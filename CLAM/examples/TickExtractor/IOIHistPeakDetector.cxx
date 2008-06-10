@@ -26,8 +26,8 @@
  */
 
 #include "IOIHistPeakDetector.hxx"
-#include "Audio.hxx"
-#include "CLAM_Math.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/CLAM_Math.hxx>
 #include <list>
 
 namespace CLAM
@@ -93,7 +93,6 @@ namespace CLAM
 
 
 			//int maxpeaks = out.Size(); //mConfig.GetnPeaks();
-			int nPeaks=1;
 			TData max=0;
 			
 			std::list<TimeIndex> detectedPeaks;
@@ -152,7 +151,6 @@ namespace CLAM
 
 
 
-			int nActualPeaks=1;
 			const TData invMax = 1.0 / (double)max;
 			const TData minPeakMagThreshold = mConfig.GetThreshold();
 			const bool mustNormalize = mConfig.GetNormalizeWeights();

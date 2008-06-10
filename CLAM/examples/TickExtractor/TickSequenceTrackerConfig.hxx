@@ -22,8 +22,8 @@
 #ifndef __TICKSEQUENCETRACKERCONFIG__
 #define __TICKSEQUENCETRACKERCONFIG__
 
-#include "ProcessingConfig.hxx"
-#include "DataTypes.hxx"
+#include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/DataTypes.hxx>
 
 namespace CLAM
 {

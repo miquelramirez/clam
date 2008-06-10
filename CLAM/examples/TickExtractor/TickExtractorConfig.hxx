@@ -22,9 +22,9 @@
 #ifndef __TICKEXTRACTORCONFIG__
 #define __TICKEXTRACTORCONFIG__
 
-#include "DynamicType.hxx"
-#include "DataTypes.hxx"
-#include "Enum.hxx"
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/DataTypes.hxx>
+#include <CLAM/Enum.hxx>
 
 namespace CLAM
 {

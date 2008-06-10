@@ -25,7 +25,7 @@
  *
  */
 #include "RD_AutoCorrelationTD.hxx"
-#include "CLAM_Math.hxx"
+#include <CLAM/CLAM_Math.hxx>
 #include <numeric>
 #include <iostream>
 

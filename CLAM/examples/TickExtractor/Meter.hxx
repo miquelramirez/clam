@@ -28,7 +28,7 @@
 #ifndef __Meter_H__
 #define __Meter_H__
 
-#include "ProcessingData.hxx"
+#include <CLAM/ProcessingData.hxx>
 
 namespace CLAM 
 {

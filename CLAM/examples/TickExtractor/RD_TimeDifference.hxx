@@ -42,10 +42,10 @@
  * @see TimeDifferenceConfig
  */
 
-#include "ProcessingComposite.hxx"
-#include "Array.hxx"
+#include <CLAM/ProcessingComposite.hxx>
+#include <CLAM/Array.hxx>
 #include "TimeIndex.hxx"
-#include "WindowGenerator.hxx"
+#include <CLAM/WindowGenerator.hxx>
 #include "IOIHistogram.hxx"
 
 namespace CLAM 

@@ -27,10 +27,10 @@
 #ifndef _GRID_GEN_
 #define _GRID_GEN_
 
-#include "Processing.hxx"
-#include "Array.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/Array.hxx>
 #include "TimeIndex.hxx"
-#include "InControl.hxx"
+#include <CLAM/InControl.hxx>
 
 namespace CLAM
 {

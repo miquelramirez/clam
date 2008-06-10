@@ -22,10 +22,10 @@
 #ifndef __BEATINTERVALESTIMATOR__
 #define __BEATINTERVALESTIMATOR__
 
-#include "ProcessingConfig.hxx"
-#include "Processing.hxx"
+#include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/Processing.hxx>
 #include "RD_TimeSeriesSeed.hxx"
-#include "Array.hxx"
+#include <CLAM/Array.hxx>
 #include "TimeIndex.hxx"
 
 namespace CLAM
