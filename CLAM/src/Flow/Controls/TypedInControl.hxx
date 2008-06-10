@@ -124,7 +124,13 @@ namespace CLAM {
 
 			int GetId(void) const { return mId; }
 	
-		//Constructor/Destructor
+		/**
+		* Constructor of the CascadingTypedInControl with a member-service-function associated. 
+		*
+		* @param f The member function that will act as a service funtion each time
+		* the DoControl method is invoqued.
+		* @parent The processing object that owns the control object.
+		*/
 		CascadingTypedInControl(const std::string &name, ProcObj* processing, TPtrMemberFunc f = 0)	:
 				TypedInControl<TypedControlData>(name,processing),
 				mFunc(f),
@@ -147,9 +153,8 @@ namespace CLAM {
 	};
 
 	/////////////////////////////////////////////////////////////////////////////////////////
-	//  Implementation of class InControlTmpl
+	//  Implementation of class CascadingTypedInControl
 	//
-
 	template<class TypedControlData, class ProcObj>
 	void CascadingTypedInControl<TypedControlData, ProcObj>::DoControl(const TypedControlData& val)
 	{
