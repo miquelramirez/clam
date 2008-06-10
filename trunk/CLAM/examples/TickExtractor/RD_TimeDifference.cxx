@@ -27,7 +27,7 @@
  */
 
 #include "RD_TimeDifference.hxx"
-#include "CLAM_Math.hxx"
+#include <CLAM/CLAM_Math.hxx>
 
 namespace CLAM 
 {
