@@ -3,20 +3,21 @@
 #include <CLAM/TypedOutControl.hxx>
 #include <CLAM/TypedOutControlRegistry.hxx>
 #include <cppunit/extensions/HelperMacros.h>
+#include "BaseLoggable.hxx"
 #include <string>
 
 namespace CLAMTest {
 	class TypedControlsTest;
 	CPPUNIT_TEST_SUITE_REGISTRATION( TypedControlsTest );
 	
-	class TypedControlsTest : public CppUnit::TestFixture
+	class TypedControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CLAM::Processing
 	{
 		CPPUNIT_TEST_SUITE( TypedControlsTest );
 
 		// testing TypedInControl and TypedOutControl
 		CPPUNIT_TEST( testTypedInControl_DoControl_ChangesInternalState );
 		CPPUNIT_TEST( testLinkAndSendControl_ChangesTypedInControlInternalState );
-		
+	
 		// tests for IsConnected / IsConnectedTo
 		CPPUNIT_TEST( testIsConnected_WithTypedOutControl_AfterConnection );
 		CPPUNIT_TEST( testIsConnected_WithTypedOutControl_WithoutConnection );
@@ -42,6 +43,12 @@ namespace CLAMTest {
 		CPPUNIT_TEST( testIsConnected_WithBaseTypedOutControl_WithNoConnection );
 		CPPUNIT_TEST( testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreConnected );
 		CPPUNIT_TEST( testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreNotConnected );
+
+		// testing CascadingTypedInControl
+		CPPUNIT_TEST( testCascadingTypedInControl_DoControl_ChangesInternalState );
+		CPPUNIT_TEST( testLinkAndSendWithCascadingTypedInControl_CallbackMethodGetsCalled );
+		CPPUNIT_TEST( testControlHandlerId_WritesToLog );
+		CPPUNIT_TEST( testLinkAndSendWithCascadingTypedInControl_CallbackWithIdMethodGetsCalled );
 		
 		// Typed*ControlRegistry Tests
 		CPPUNIT_TEST( testTypedInControlRegistry_ProcessingInterface_Register_ChangesInternalState );
@@ -52,6 +59,10 @@ namespace CLAMTest {
 		CPPUNIT_TEST( testTypedOutControlRegistry_Has_withNoControls );
 		
 		CPPUNIT_TEST_SUITE_END();
+		
+		// Processing interface:
+		const char* GetClassName() const { return "for testing"; }
+		bool Do() { return false; }
 		
 		// testing TypedInControl and TypedOutControl
 		void testTypedInControl_DoControl_ChangesInternalState()
@@ -229,6 +240,51 @@ namespace CLAMTest {
 			CLAM::BaseTypedInControl & in = concreteIn;
 			CLAM::BaseTypedOutControl & out = concreteOut;
 			CPPUNIT_ASSERT_EQUAL(false, out.IsConnectedTo(in));
+		}
+		
+		// testing CascadingTypedInControl
+		void testCascadingTypedInControl_DoControl_ChangesInternalState()
+		{
+			CLAM::CascadingTypedInControl<int, TypedControlsTest> in("I'm a cascading typed in control", this);
+			in.DoControl(1);
+			CPPUNIT_ASSERT_EQUAL( 1, in.GetLastValue() );
+		}
+		// helper method used for handling incoming control
+		int ControlHandler(int val) {
+			ToLog() << "ControlHandler called with: " << val;
+			return 0;
+		}
+		void testLinkAndSendWithCascadingTypedInControl_CallbackMethodGetsCalled()
+		{
+			CLAM::CascadingTypedInControl<int, TypedControlsTest> 
+				in("in", this, &TypedControlsTest::ControlHandler);
+			ClearLog();
+			in.DoControl(1);
+			CPPUNIT_ASSERT_EQUAL( std::string("ControlHandler called with: 1"), GetLog() );
+		}
+
+		// helper method for handling incoming control plus incontrol ID
+		int ControlHandlerId(int id, int val) {
+			ToLog() << "ControlHandler called with id : " << id << " and value : " << val;
+			return 0;
+		}
+		void testControlHandlerId_WritesToLog()
+		{
+			ControlHandlerId(0, 1);
+			CPPUNIT_ASSERT_EQUAL( std::string("ControlHandler called with id : 0 and value : 1"), GetLog() );
+		}
+
+		void testLinkAndSendWithCascadingTypedInControl_CallbackWithIdMethodGetsCalled()
+		{
+			const int controlId=2;
+			CLAM::CascadingTypedInControl<int, TypedControlsTest> 
+				in( controlId, "in", this, &TypedControlsTest::ControlHandlerId ); // calls this->PublishInControl
+
+			in.DoControl( 1 );
+			CPPUNIT_ASSERT_EQUAL( 
+				GetLog(), 
+				std::string("ControlHandler called with id : 2 and value : 1") );
+			    // note that controlId == 2
 		}
 		
 		// Typed*ControlRegistry Tests
