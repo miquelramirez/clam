@@ -21,7 +21,7 @@
 
 #include<iostream>
 #include "OSDefines.hxx"
-#include "AudioFileIn.hxx"
+#include "MonoAudioFileReader.hxx"
 #include "AudioManager.hxx"
 
 #include "LPC.hxx"
@@ -53,7 +53,7 @@ class LPCExample : public ProcessingComposite {
 	int mSize;
 	int mOrder;
 
-	AudioFileIn mFileIn;
+	MonoAudioFileReader mFileIn;
 	Audio mInputData;
 
 	LPC	  mLPC;
@@ -102,12 +102,9 @@ void LPCExample::AttachChildren()
 
 bool LPCExample::ConfigureChildren()
 {
-	AudioFileConfig fcfg;
-	fcfg.SetFilename(mConfig.GetFilename());
-	fcfg.SetFiletype(EAudioFileType::eWave);
+	MonoAudioFileReaderConfig fcfg;
+	fcfg.SetSourceFile(mConfig.GetFilename());
 	CLAM_DEBUG_ASSERT(mSize>0, "no positive frame size");
-	fcfg.SetFrameSize(mSize);
-	fcfg.SetChannels(1);
 	mFileIn.Configure(fcfg);
 
 	//mSize = mFileIn.Size();

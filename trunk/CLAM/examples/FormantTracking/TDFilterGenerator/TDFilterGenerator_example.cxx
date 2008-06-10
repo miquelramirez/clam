@@ -2,8 +2,8 @@
 #include "LPC.hxx"
 #include "TDFilter.hxx"
 #include "DownSampling.hxx"
-#include "AudioFileIn.hxx"
-#include "AudioFileOut.hxx"
+#include "MonoAudioFileReader.hxx"
+#include "MonoAudioFileWriter.hxx"
 #include "CLAM_Math.hxx"
 #include "XMLStorage.hxx"
 
@@ -15,8 +15,8 @@ public:
 		DYNAMIC_TYPE_USING_INTERFACE (TDFilterGenExampleConfig, 6, ProcessingConfig);
 
 		DYN_ATTRIBUTE (0, public, std::string, Name);
-		DYN_ATTRIBUTE (1, public, std::string, FilenameIn);
-		DYN_ATTRIBUTE (2, public, std::string, FilenameOut);
+		DYN_ATTRIBUTE (1, public, AudioInFilename, FilenameIn);
+		DYN_ATTRIBUTE (2, public, AudioOutFilename, FilenameOut);
 		DYN_ATTRIBUTE (3, public, TData, DownSamplingRate);
 		DYN_ATTRIBUTE (4, public, TData, SamplingRate);
 		DYN_ATTRIBUTE (5, public, int, Order);
@@ -41,8 +41,8 @@ class TDFilterGenExample : public ProcessingComposite {
 	int mOrder;
 	TData mNewSamplingRate;
 
-	AudioFileIn mFileIn;
-	AudioFileOut mFileOut;
+	MonoAudioFileReader mFileIn;
+	MonoAudioFileWriter mFileOut;
 	Audio mInputData;
 	Audio mDownInputData;
 	Audio mOutputData;
@@ -111,21 +111,19 @@ bool TDFilterGenExample::ConfigureChildren()
 
 void TDFilterGenExample::ConfigureFileIO()
 {
-	AudioFileConfig fcfg;
-	fcfg.SetFilename(mConfig.GetFilenameIn());
-	fcfg.SetFiletype(EAudioFileType::eWave);
-	fcfg.SetFrameSize(mSizeIn);
-	fcfg.SetChannels(1);
-	mFileIn.Configure(fcfg);
+	MonoAudioFileReaderConfig readerCfg;
+	readerCfg.SetSourceFile(mConfig.GetFilenameIn());
+	mFileIn.Configure(readerCfg);
 //	mSizeIn = mFileIn.Size();
 	mDownSize = Round( mSizeIn / 
 						 Round( mConfig.GetSamplingRate() / mConfig.GetDownSamplingRate() ) );
 
 	mNewSamplingRate = mConfig.GetSamplingRate() / mDownSize;
 	
-	fcfg.SetFilename(mConfig.GetFilenameOut());
-	fcfg.SetSampleRate(mNewSamplingRate );
-	mFileOut.Configure(fcfg);
+	MonoAudioFileWriterConfig writerCfg;
+	writerCfg.SetTargetFile(mConfig.GetFilenameOut());
+	writerCfg.SetSampleRate(mNewSamplingRate );
+	mFileOut.Configure(writerCfg);
 
 }
 

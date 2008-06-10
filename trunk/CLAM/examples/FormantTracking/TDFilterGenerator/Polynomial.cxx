@@ -74,9 +74,9 @@ namespace CLAM
 	}
 
 
-	unsigned char Polynomial::CalculateRoots( void )
+	void Polynomial::CalculateRoots( void )
 	{
-		unsigned char err, flag = 1;
+		unsigned char flag = 1;
 		double maxerr;
 		DataArray	u, v, conv;
 
@@ -117,6 +117,5 @@ namespace CLAM
 			std::cout << GetRoots()[i] << std::endl;
 		}
 
-		return err;
 	}
 } //namespace
