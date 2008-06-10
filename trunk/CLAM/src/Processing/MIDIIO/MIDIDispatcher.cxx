@@ -34,7 +34,6 @@ namespace Hidden
 		"description", "MIDIDispatcher",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, MIDIDispatcher> regMIDIDispatcher("MIDIDispatcher");
 	static FactoryRegistrator<ProcessingFactory, MIDIDispatcher> reg = metadata;
 }
 
@@ -48,27 +47,15 @@ void MIDIDispatcherConfig::DefaultInit()
 }
 
 
-MIDIDispatcher::MIDIDispatcher()
-	:   mStateIn("StateIn",this,&MIDIDispatcher::UpdateState),
-		  mNoteIn( "Note", this, &MIDIDispatcher::UpdateNote ),
-		  mVelocityIn( "Velocity", this, &MIDIDispatcher::UpdateVel ),
-		  mVelocity( 0 ),
-		  mNote( 0 )
-{
-	Configure( mConfig );
-}
-
 MIDIDispatcher::MIDIDispatcher( const MIDIDispatcherConfig& cfg )
-	:  mStateIn("",this,&MIDIDispatcher::UpdateState),
-  		mNoteIn( "Note", this, &MIDIDispatcher::UpdateNote ),
-		mVelocityIn( "Velocity", this, &MIDIDispatcher::UpdateVel ),
-		mVelocity( 0 ),
-		mNote( 0 )
+	: mStateIn("StateIn",this,&MIDIDispatcher::UpdateState)
+	, mNoteIn( "Note", this, &MIDIDispatcher::UpdateNote )
+	, mVelocityIn( "Velocity", this, &MIDIDispatcher::UpdateVel )
+	, mVelocity( 0 )
+	, mNote( 0 )
 {
 	Configure( cfg );
 }
-	
-	
 
 bool MIDIDispatcher::ConcreteConfigure( const ProcessingConfig& cfg )
 {
@@ -99,7 +86,6 @@ int MIDIDispatcher::UpdateState( TControlData availableInstr )
 	return 0;
 
 }
-	
 
 
 void MIDIDispatcher::Dispatch(void)
@@ -110,14 +96,11 @@ void MIDIDispatcher::Dispatch(void)
 
 		for (it=mVoiceStatusList.begin();it!=mVoiceStatusList.end();it++)
 		{
-			if ( ( (*it).mNote == mNote ) && ( (*it).mVelocity ) )
-			{
-				VoiceStatus status = (*it);
-				(*it).mVelocity = 0;
-				//mValuesOut[ (*it).mId * mNInValues + 1]->SendControl( mVelocity );
-				mOutputControls[ (*it).mId * + 1]->SendControl( mVelocity );
-				return;
-			}
+			if ( it->mNote != mNote ) continue;
+			if ( !it->mVelocity ) continue;
+			it->mVelocity = 0;
+			mOutputControls[ it->mId * + 1]->SendControl( mVelocity );
+			return;
 		}
 	}
 	else
@@ -138,7 +121,7 @@ void MIDIDispatcher::CreateControls()
 
 	for (int i=0;i<mConfig.GetNumberOfInControls(); i++)
 	{
-		std::stringstream number("");
+		std::stringstream number;
 		number << i;
 		InControl* inControl = new InControl( "InControl " + number.str(), this );
 		mInputControls.push_back( inControl );
