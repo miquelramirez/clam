@@ -25,7 +25,7 @@
  *
  */
 #include "RD_MeterEstimator.hxx"
-#include "Audio.hxx"
+#include <CLAM/Audio.hxx>
 #include "Meter.hxx"
 #include <iostream>
 

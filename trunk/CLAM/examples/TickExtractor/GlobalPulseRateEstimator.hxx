@@ -22,12 +22,12 @@
 #ifndef __GLOBALPULSERATEESTIMATOR__
 #define __GLOBALPULSERATEESTIMATOR__
 
-#include "ProcessingComposite.hxx"
-#include "ProcessingConfig.hxx"
+#include <CLAM/ProcessingComposite.hxx>
+#include <CLAM/ProcessingConfig.hxx>
 #include "RD_GlobalPulse.hxx"
 #include "IOIHistPeakDetector.hxx"
 #include "IOIHistogram.hxx"
-#include "DataTypes.hxx"
+#include <CLAM/DataTypes.hxx>
 #include "Pulse.hxx"
 
 namespace CLAM

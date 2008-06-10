@@ -22,9 +22,9 @@
 #ifndef __ADJUST_TICK_WRT_SWING__
 #define __ADJUST_TICK_WRT_SWING__
 
-#include "Processing.hxx"
-#include "ProcessingConfig.hxx"
-#include "DataTypes.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/ProcessingConfig.hxx>
+#include <CLAM/DataTypes.hxx>
 #include "RD_TimeSeriesSeed.hxx"
 
 namespace CLAM

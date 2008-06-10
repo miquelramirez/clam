@@ -23,7 +23,7 @@
 #define __TICK_EXTRACTOR__
 
 #include <string>
-#include "Array.hxx"
+#include <CLAM/Array.hxx>
 #include "Pulse.hxx"
 
 namespace CLAM

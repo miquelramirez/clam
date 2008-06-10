@@ -25,7 +25,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#include "Complex.hxx"
+#include <CLAM/Complex.hxx>
 #include "RD_GlobalPulse.hxx"
 
 namespace CLAM 

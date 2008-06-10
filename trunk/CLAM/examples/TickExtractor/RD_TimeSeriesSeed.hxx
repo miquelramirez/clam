@@ -27,7 +27,7 @@
 #ifndef __TIMESERIESSEED_H__
 #define __TIMESERIESSEED_H__
 
-#include "ProcessingData.hxx"
+#include <CLAM/ProcessingData.hxx>
 
 namespace CLAM 
 {

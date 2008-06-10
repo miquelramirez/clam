@@ -27,7 +27,7 @@
  */
 #include "RD_TimeSeriesFinder.hxx"
 #include "RD_TimeSeriesSeed.hxx"
-#include "CLAM_Math.hxx"
+#include <CLAM/CLAM_Math.hxx>
 
 namespace CLAM 
 {

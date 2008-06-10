@@ -19,7 +19,7 @@
  *
  */
 
-#include "XMLStorage.hxx"
+#include <CLAM/XMLStorage.hxx>
 #include "rhythmir_cmdproc.hxx"
 #include <getopt.h>
 #include <cstdlib>

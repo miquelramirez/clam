@@ -28,12 +28,12 @@
 #ifndef _RD_MeterEstimator_
 #define _RD_MeterEstimator_
 
-#include "ProcessingComposite.hxx"
+#include <CLAM/ProcessingComposite.hxx>
 #include "Pulse.hxx"
-#include "Segment.hxx"
-#include "SegmentDescriptors.hxx"
+#include <CLAM/Segment.hxx>
+#include <CLAM/SegmentDescriptors.hxx>
 #include "RD_AutoCorrelationTD.hxx"
-#include "DescriptorComputation.hxx"
+#include <CLAM/DescriptorComputation.hxx>
 #include <fstream>
 
 namespace CLAM

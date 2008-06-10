@@ -23,7 +23,7 @@
 #define __rhythmir_dumper__
 
 #include <string>
-#include "Pool.hxx"
+#include <CLAM/Pool.hxx>
 
 namespace CLAM
 {

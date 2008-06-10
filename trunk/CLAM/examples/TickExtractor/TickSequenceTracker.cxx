@@ -28,8 +28,8 @@
 #include "TickSequenceTracker.hxx"
 #include "RD_GlobalPulse.hxx"
 #include "RD_GridGen.hxx"
-#include "Audio.hxx"
-#include "CLAM_Math.hxx"
+#include <CLAM/Audio.hxx>
+#include <CLAM/CLAM_Math.hxx>
 #include <list>
 #include <algorithm>
 

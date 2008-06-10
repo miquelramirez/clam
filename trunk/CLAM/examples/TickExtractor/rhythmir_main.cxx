@@ -21,11 +21,11 @@
 
 #include "TickExtractor.hxx"
 #include "TickExtractorConfig.hxx"
-#include "Err.hxx"
+#include <CLAM/Err.hxx>
 #include "rhythmir_dumper.hxx"
 #include "rhythmir_cmdproc.hxx"
 #include "rhythmir_process.hxx"
-#include "Pool.hxx"
+#include <CLAM/Pool.hxx>
 #include <exception>
 #include <string>
 #include <cstdlib>

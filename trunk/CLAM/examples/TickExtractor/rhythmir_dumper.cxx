@@ -20,9 +20,9 @@
  */
 
 #include "rhythmir_dumper.hxx"
-#include "XMLStorage.hxx"
-#include "XmlScoped.hxx"
-#include "Array.hxx"
+#include <CLAM/XMLStorage.hxx>
+#include <CLAM/XmlScoped.hxx>
+#include <CLAM/Array.hxx>
 #include <fstream>
 #include <iostream>
 #include "Meter.hxx"
