@@ -22,7 +22,6 @@
 #include "AudioFileMemoryLoader.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
-
 namespace CLAM
 {
 
@@ -64,11 +63,30 @@ namespace Hidden
 	{
 		CopyAsConcreteConfig( _Config, cfgObject );
 
-		/*if ( !mConfig.HasSourceFile() )
+		if ( !_Config.HasSourceFile() )
 		{
 			AddConfigErrorMessage("The provided config object lacked the field 'SourceFile'");
 			return false;
-		}*/
+		}
+		
+		const std::string & location = _Config.GetSourceFile();
+		if ( location == "")
+		{
+			AddConfigErrorMessage("No file selected");
+			return false;
+		}
+
+		MonoAudioFileReader reader(_Config);
+		Audio audio;
+		if ( !reader.Configure (_Config) )
+		{
+			AddConfigErrorMessage("Internal MonoAudioFileReader configuration error");
+			return false;			
+		}
+
+		reader.Start();
+		audio.SetSize(reader.GetHeader().GetSamples());
+		reader.Do(audio);
 		
 		return true;
 	}
@@ -88,7 +106,7 @@ namespace Hidden
 
 
 	
-	bool AudioFileMemoryLoader::Do( Audio & outputSamples )		
+	bool AudioFileMemoryLoader::Do( Audio & outputSamples )
 	{
 		return true;
 	}
