@@ -36,38 +36,33 @@ namespace RhythmIR
 	void LoadInputAudio( CLAM::DescriptionDataPool& pool,
 			     std::string filename )
 	{
-		CLAM::AudioFile file;
-		file.OpenExisting( filename );
-
-		if ( !file.IsReadable() )
+		CLAM::MonoAudioFileReaderConfig cfg;
+		cfg.SetSourceFile( filename );
+		CLAM::MonoAudioFileReader reader( cfg );
+				
+		if ( !reader.IsConfigured() )
 		{
-			std::string errStr = "Error: file " + file.GetLocation() + " cannot be opened ";
+			std::string errStr = "Error: file " + filename + " cannot be opened ";
 			errStr += "or is encoded in an unrecognized format\n";
-			
+			errStr += reader.GetConfigErrorMessage();
 			throw CLAM::Err( errStr.c_str() );
 		}
 
-
-		std::cerr << "File Location: " << file.GetLocation() << std::endl;
-		std::cerr << "File length(ms): " << file.GetHeader().GetLength() << std::endl;
-		std::cerr << "File sample rate: " << file.GetHeader().GetSampleRate() << std::endl;
+		std::cerr << "File Location: " << filename << std::endl;
+		std::cerr << "File length(ms): " << reader.GetHeader().GetLength() << std::endl;
+		std::cerr << "File sample rate: " << reader.GetHeader().GetSampleRate() << std::endl;
 		// Pool setup
 		// MRJ: Length is in milliseconds :S
-		CLAM::TSize fileSize = int((file.GetHeader().GetLength()/1000.)*file.GetHeader().GetSampleRate());
+		CLAM::TSize fileSize = int((reader.GetHeader().GetLength()/1000.)*reader.GetHeader().GetSampleRate());
 
 		pool.SetNumberOfContexts( "Sample",  fileSize );	
 
-		*pool.GetWritePool<CLAM::TData>("Global", "SampleRate" ) = file.GetHeader().GetSampleRate();
+		*pool.GetWritePool<CLAM::TData>("Global", "SampleRate" ) = reader.GetHeader().GetSampleRate();
 
 		CLAM::Audio     tempAudio;
 		tempAudio.GetBuffer().SetPtr( pool.GetWritePool<CLAM::TData>("Sample","Value"), fileSize  );
-		tempAudio.SetSampleRate( file.GetHeader().GetSampleRate() );
+		tempAudio.SetSampleRate( reader.GetHeader().GetSampleRate() );
 
-		CLAM::MonoAudioFileReaderConfig cfg;
-		cfg.SetSourceFile( file );
-		CLAM::MonoAudioFileReader reader;
-		reader.Configure( cfg );
-				
 		//Read Audio File
 		reader.Start();		
 		reader.Do( tempAudio );
