@@ -27,7 +27,6 @@
 #include "XMLStorage.hxx"
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileReaderConfig.hxx"
-#include "AudioFile.hxx"
 #include "OnsetDetector.hxx"
 #include "TickSequenceTracker.hxx"
 #include "IOIHistogram.hxx"
@@ -39,27 +38,22 @@ namespace CLAM
 
 	static void LoadAudioFile( CLAM::Audio & audio, const std::string & audioFileName )
 	{
-		CLAM::AudioFile file;
-		file.OpenExisting( audioFileName );
-		
-		if ( !file.IsReadable() )
+		CLAM::MonoAudioFileReaderConfig cfg;
+		cfg.SetSourceFile( audioFileName );
+		CLAM::MonoAudioFileReader reader( cfg );
+		if ( ! reader.IsConfigured() )
 		{
-			std::string errStr = "Error: file " + file.GetLocation() + " cannot be opened ";
+			std::string errStr = "Error: file " + audioFileName + " cannot be opened ";
 			errStr += "or is encoded in an unrecognized format\n";
-			
+			errStr += reader.GetConfigErrorMessage();
 			throw Err( errStr.c_str() );
-
+			
 		}
 		
-		CLAM::MonoAudioFileReaderConfig cfg;
-		cfg.SetSourceFile( file );
-		CLAM::MonoAudioFileReader reader;
-		reader.Configure( cfg );
-		
-		CLAM::TSize fileSize = int((file.GetHeader().GetLength()/1000.)*file.GetHeader().GetSampleRate());
+		CLAM::TSize fileSize = int((reader.GetHeader().GetLength()/1000.)*reader.GetHeader().GetSampleRate());
 		
 		audio.SetSize(fileSize);
-		audio.SetSampleRate(file.GetHeader().GetSampleRate());
+		audio.SetSampleRate(reader.GetHeader().GetSampleRate());
 		
 		//Read Audio File
 		reader.Start();		
