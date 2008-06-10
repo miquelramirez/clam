@@ -97,8 +97,7 @@ namespace CLAM
 
 	public:
 
-		MIDIDispatcher();
-		MIDIDispatcher( const MIDIDispatcherConfig& cfg );
+		MIDIDispatcher( const MIDIDispatcherConfig& cfg = MIDIDispatcherConfig());
 
 		bool ModifiesPortsAndControlsAtConfiguration() { return true; }
 
