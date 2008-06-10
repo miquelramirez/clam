@@ -293,8 +293,7 @@ class PackageData :
 		print >> out, "Libs: -L${libdir} -l%s"%self.name
 		edict = env.Dictionary()
 		cppflags = edict.get('CPPFLAGS', [''])
-		cppaths = edict.get('CPPPATH', [''])
-		cpppaths = [ '-I'+path for path in cppaths ]
+		cpppaths = [ '-I'+path for path in env.Dictionary().get('CPPPATH', ['']) ]
 		print >> out, "Cflags: -I${includedir} %s"%" ".join(cppflags+cpppaths)
 
 		out.close()
@@ -306,7 +305,9 @@ from SCons.Action import *
 import sys
 
 def lib_rules(name, version, headers, sources, install_dirs, env, moduleDependencies=[]) :
-	if not env.GetOption('clean') : # David: I don't understand why you don't want to clean it
+	if not env.GetOption('clean') :
+		# David: I don't understand why you don't want to clean it
+		# -> it is not a builder, it can not be cleaned, TODO: Turn it a builder -- David
 		pkg_data = PackageData( 'clam_%s'%name, version )
 		pkg_data.create_pkg_descriptor( env, 'clam_%s.pc'%name )
 
