@@ -20,7 +20,7 @@
  */
 
 #include "FormantExtractor.hxx"
-#include "AudioFileIn.hxx"
+#include "MonoAudioFileReader.hxx"
 #include <iostream>
 
 using namespace CLAM;
@@ -32,7 +32,7 @@ public:
 	DYNAMIC_TYPE_USING_INTERFACE (FormantExtrExampleConfig, 6, ProcessingConfig);
 
 	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, std::string, Filename);
+	DYN_ATTRIBUTE (1, public, AudioInFilename, Filename);
 	DYN_ATTRIBUTE (2, public, TSize, NCandidates);
 	DYN_ATTRIBUTE (3, public, TData, Fmax);
 	DYN_ATTRIBUTE (4, public, TData, Fmin);
@@ -51,13 +51,13 @@ void FormantExtrExampleConfig::DefaultInit()
 class FormantExtrExample: public ProcessingComposite
 {
 	FormantExtrExampleConfig mConfig;
-	TSize					 mSize;
-	TData					 mSamplingRate;
+	TSize                    mSize;
+	TData                    mSamplingRate;
 
-	AudioFileIn				 mFileIn;
-	Audio					 mInputData;
+	MonoAudioFileReader      mFileIn;
+	Audio                    mInputData;
 
-	FormantExtractor		 mFormantExtractor;
+	FormantExtractor         mFormantExtractor;
 
 	void AttachChildren(void);
 	bool ConfigureChildren(void);
@@ -118,14 +118,12 @@ void FormantExtrExample::ConfigureFormantExtr(void)
 
 void FormantExtrExample::ConfigureFileIO(void)
 {
-	AudioFileConfig fcfg;
-	fcfg.SetFilename(mConfig.GetFilename());
-	fcfg.SetFiletype(EAudioFileType::eWave);
-	fcfg.SetChannels(1);
+	MonoAudioFileReaderConfig fcfg;
+	fcfg.SetSourceFile(mConfig.GetFilename());
 	mFileIn.Configure(fcfg);
 
-	mSize = mFileIn.Size();
-	mSamplingRate = mFileIn.SampleRate();
+	mSize = mFileIn.GetHeader().GetSamples();
+	mSamplingRate = mFileIn.GetHeader().GetSampleRate();
 }
 
 void FormantExtrExample::ConfigureAudio(void)

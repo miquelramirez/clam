@@ -53,7 +53,7 @@ namespace CLAM
 		/** Resizes the array coefficients and roots buffers to a new size */
 		void SetSize( int s );
 
-		unsigned char CalculateRoots( void );
+		void CalculateRoots( void );
 
 		void CheckTypes(void) const;
 

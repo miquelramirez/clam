@@ -21,7 +21,7 @@
 
 #include "FormantTracker.hxx"
 //#include "Plots.hxx" // DGGPORT
-#include "AudioFileIn.hxx"
+#include "MonoAudioFileReader.hxx"
 #include <fstream>
 
 using namespace CLAM;
@@ -32,8 +32,8 @@ public:
 	DYNAMIC_TYPE_USING_INTERFACE (FormantTrackerExampleConfig, 12, ProcessingConfig);
 
 	DYN_ATTRIBUTE (0, public, std::string, Name);
-	DYN_ATTRIBUTE (1, public, std::string, Filename);
-	DYN_ATTRIBUTE (2, public, std::string, DatFilename );
+	DYN_ATTRIBUTE (1, public, Filename, Filename);
+	DYN_ATTRIBUTE (2, public, Filename, DatFilename );
 	DYN_ATTRIBUTE (3, public, TSize, NCandidates);
 	DYN_ATTRIBUTE (4, public, TData, Fmax);
 	DYN_ATTRIBUTE (5, public, TData, Fmin);
@@ -61,14 +61,14 @@ void FormantTrackerExampleConfig::DefaultInit()
 class FormantTrackerExample: public ProcessingComposite
 {
 	FormantTrackerExampleConfig mConfig;
-	TSize					 mSize;
-	TSize					 mNCandidates;
-	TData					 mSamplingRate;
+	TSize                mSize;
+	TSize                mNCandidates;
+	TData                mSamplingRate;
 
-	AudioFileIn				 mFileIn;
-	Audio					 mInputData;
+	MonoAudioFileReader  mFileIn;
+	Audio                mInputData;
 
-	FormantTracker		 mFormantTracker;
+	FormantTracker       mFormantTracker;
 
 	void AttachChildren(void);
 	bool ConfigureChildren(void);
@@ -140,14 +140,12 @@ void FormantTrackerExample::ConfigureFormantTracker()
 
 void FormantTrackerExample::ConfigureFileIO(void)
 {
-	AudioFileConfig fcfg;
-	fcfg.SetFilename(mConfig.GetFilename());
-	fcfg.SetFiletype(EAudioFileType::eWave);
-	fcfg.SetChannels(1);
+	MonoAudioFileReaderConfig fcfg;
+	fcfg.SetSourceFile(mConfig.GetFilename());
 	mFileIn.Configure(fcfg);
 
-	mSize = mFileIn.Size();
-	mSamplingRate = mFileIn.SampleRate();
+	mSize = mFileIn.GetHeader().GetSamples();
+	mSamplingRate = mFileIn.GetHeader().GetSampleRate();
 }
 
 void FormantTrackerExample::ConfigureAudio(void)

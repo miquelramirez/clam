@@ -21,8 +21,8 @@
 
 #include "DownSampling.hxx"
 #include "ProcessingComposite.hxx"
-#include "AudioFileIn.hxx"
-#include "AudioFileOut.hxx"
+#include "MonoAudioFileReader.hxx"
+#include "MonoAudioFileWriter.hxx"
 //#include "Plot.hxx" // DGGPORT
 
 using namespace CLAM;
@@ -55,8 +55,8 @@ class DownSamplingExample : public ProcessingComposite {
 	TSize mSizeIn;
 	TSize mSizeOut;
 
-	AudioFileIn mFileIn;
-	AudioFileOut mFileOut;
+	MonoAudioFileReader mFileIn;
+	MonoAudioFileWriter mFileOut;
 	Audio mInputData;
 	Audio mOutputData;
 
@@ -99,18 +99,17 @@ void DownSamplingExample::AttachChildren()
 
 bool DownSamplingExample::ConfigureChildren()
 {
-	AudioFileConfig fcfg;
-	fcfg.SetFilename(mConfig.GetFilenameIn());
-	fcfg.SetFiletype(EAudioFileType::eWave);
-	fcfg.SetChannels(1);
-	mFileIn.Configure(fcfg);
-	mSizeIn = mFileIn.Size();
+	MonoAudioFileReaderConfig inConfig;
+	inConfig.SetSourceFile(mConfig.GetFilenameIn());
+	mFileIn.Configure(inConfig);
+	mSizeIn = mFileIn.GetHeader().GetSamples();
 	mSizeOut = Round( mSizeIn / 
 						Round( mConfig.GetSamplingRate() / mConfig.GetDownSamplingRate() ) );
 
-	fcfg.SetFilename(mConfig.GetFilenameOut());
-	fcfg.SetSampleRate(mConfig.GetDownSamplingRate() );
-	mFileOut.Configure(fcfg);
+	MonoAudioFileWriterConfig outConfig;
+	outConfig.SetTargetFile(mConfig.GetFilenameOut());
+	outConfig.SetSampleRate(mConfig.GetDownSamplingRate() );
+	mFileOut.Configure(outConfig);
 
 
 	DownSamplingConfig DownSampling_cfg;

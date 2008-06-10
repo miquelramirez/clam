@@ -20,7 +20,6 @@
  */
 
 #include "DownSampling.hxx"
-#include "AudioFileOut.hxx"
 
 namespace CLAM
 {
