@@ -95,5 +95,70 @@ namespace CLAM {
 		mLinks.remove(&outControl);
 	}
 	
+	
+	/**
+	* Subclass of TypedInControl that provides the typedincontrol with a callback method
+	* The method must be defined inside the parent \c Processing class.
+	* See the \c CascadingTypedInControl constructors for learn how to provide
+	* the callback to the \c CascadingTypedInControl
+	*/
+	template<class TypedControlData, class ProcObj>
+	class CascadingTypedInControl : public TypedInControl<TypedControlData>
+	{
+		public:
+			typedef int (ProcObj::*TPtrMemberFunc)(TypedControlData);
+			typedef int (ProcObj::*TPtrMemberFuncId)(int,TypedControlData);
+
+		private:
+			TPtrMemberFunc   mFunc;
+			TPtrMemberFuncId mFuncId;
+			ProcObj* mProcObj;
+			int mId;
+		
+		public:
+			// redeclaration
+			void DoControl(const TypedControlData& val);
+
+			bool ExistMemberFunc() { return (mFunc==0); };
+			void SetMemberFunc(TPtrMemberFunc f) { mFunc = f; };
+
+			int GetId(void) const { return mId; }
+	
+		//Constructor/Destructor
+		CascadingTypedInControl(const std::string &name, ProcObj* processing, TPtrMemberFunc f = 0)	:
+				TypedInControl<TypedControlData>(name,processing),
+				mFunc(f),
+				mFuncId(0),
+				mProcObj(processing)
+		{
+		};
+		
+		CascadingTypedInControl(int id,const std::string &name, ProcObj* processing, TPtrMemberFuncId f)
+			: TypedInControl<TypedControlData>(name,processing)
+			, mFunc(0)
+			, mFuncId(f)
+			, mProcObj(processing)
+			, mId(id)
+		{
+		};
+
+		~CascadingTypedInControl(){};
+		
+	};
+
+	/////////////////////////////////////////////////////////////////////////////////////////
+	//  Implementation of class InControlTmpl
+	//
+
+	template<class TypedControlData, class ProcObj>
+	void CascadingTypedInControl<TypedControlData, ProcObj>::DoControl(const TypedControlData& val)
+	{
+		TypedInControl<TypedControlData>::DoControl(val);
+		if(mFunc)
+			(mProcObj->*mFunc)(val);
+		else if (mFuncId)
+			(mProcObj->*mFuncId)(mId,val);
+	}
+	
 } // End namespace CLAM
 #endif // _TypedInControl_
