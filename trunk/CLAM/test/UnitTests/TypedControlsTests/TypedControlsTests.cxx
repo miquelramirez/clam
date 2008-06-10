@@ -278,7 +278,7 @@ namespace CLAMTest {
 		{
 			const int controlId=2;
 			CLAM::CascadingTypedInControl<int, TypedControlsTest> 
-				in( controlId, "in", this, &TypedControlsTest::ControlHandlerId ); // calls this->PublishInControl
+				in( controlId, "in", this, &TypedControlsTest::ControlHandlerId );
 
 			in.DoControl( 1 );
 			CPPUNIT_ASSERT_EQUAL( 
