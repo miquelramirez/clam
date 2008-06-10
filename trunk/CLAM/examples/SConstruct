@@ -20,7 +20,9 @@ def recursiveDirs(root) :
 def unique(list) :
 	return dict.fromkeys(list).keys()
 
-env = Environment(tools=['default'], options=options)
+toolchain = 'default'
+if sys.platform == "win32" : toolchain = 'mingw'
+env = Environment(tools=[toolchain], options=options)
 options.Save('options.cache', env)
 
 env.SConsignFile() # Single signature file
@@ -68,6 +70,7 @@ env.EnableQt4Modules([
 #	'QtDesigner',
 #	'Qt3Support',
 	], debug=False)
+
 
 sourcePaths = []
 extraPaths = [
@@ -153,10 +156,9 @@ for folder in directoryBasedExamples :
 	examples += [ env.Program(target=executable, source = sources + exampleSources ) ]
 
 tickEnv = env.Clone()
-tickEnv.AppendUnique(LIBS=['resample'])
-tickEnv.AppendUnique(LIBPATH=['TickExtractor/libresample-0.1.3'])
 tickEnv.AppendUnique(CPPPATH=['TickExtractor/libresample-0.1.3/include'])
-tickSrc = glob.glob("TickExtractor/*cxx")
+tickEnv.ParseConfig('pkg-config aubio --cflags --libs')
+tickSrc = glob.glob("TickExtractor/*cxx") + glob.glob("TickExtractor/libresample-0.1.3/src/*.c")
 tickSrc.remove("TickExtractor/AubioOnsetDetector.cxx") # not used, not compilable
 examples += [ tickEnv.Program(target="TickExtractorExe", source = tickSrc) ]
 
