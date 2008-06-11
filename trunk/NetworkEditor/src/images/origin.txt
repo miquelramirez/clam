@@ -10,8 +10,10 @@
 /usr/share/icons/crystalsvg/22x22/actions/help.png
 /usr/share/icons/crystalsvg/22x22/actions/exec.png
 /usr/share/icons/crystalsvg/22x22/actions/configure.png
-/usr/share/icons/crystalsvg/22x22/actions/editdelete.png
-/usr/share/icons/crystalsvg/22x22/actions/editcopy.png
+/usr/share/icons/crystalsvg/32x32/actions/editdelete.png
+/usr/share/icons/crystalsvg/32x32/actions/editcopy.png
+/usr/share/icons/crystalsvg/32x32/actions/editcut.png
+/usr/share/icons/crystalsvg/32x32/actions/editpaste.png
 /usr/share/icons/crystalsvg/22x22/actions/remove.png
 /usr/share/icons/crystalsvg/22x22/actions/filequickprint.png
 /usr/share/icons/crystalsvg/22x22/actions/fileprint.png
