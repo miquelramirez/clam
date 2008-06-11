@@ -52,11 +52,11 @@ namespace CLAM
 
 	protected: // attributes
 		
-		Config       _Config;
-		AudioOutPort _Output;
-		OutControl   _TimeOutput;
-		long         _Position;
-		Audio        _Samples;
+		Config       _config;
+		AudioOutPort _output;
+		OutControl   _timeOutput;
+		long         _position;
+		Audio        _samples;
 	};
 }
 
