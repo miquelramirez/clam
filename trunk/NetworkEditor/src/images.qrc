@@ -706,7 +706,10 @@
         <file>images/configure.png</file>
         <file>images/contexthelp.png</file>
         <file>images/designer.png</file>
+        <file>images/editclear.png</file>
         <file>images/editcopy.png</file>
+        <file>images/editcut.png</file>
+        <file>images/editpaste.png</file>
         <file>images/editdelete.png</file>
         <file>images/exec.png</file>
         <file>images/exit.png</file>
