@@ -2,9 +2,11 @@
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
 #include "ContiguousSegmentation.hxx"
+#include "XMLTestHelper.hxx"
 #include <sstream>
 
 using CLAM::ContiguousSegmentation;
+using CLAM::XmlStorage;   
 
 namespace CLAMTest
 {
@@ -70,6 +72,7 @@ namespace CLAMTest
 		CPPUNIT_TEST( testInitialize_withGoodData );
 		CPPUNIT_TEST( testInitialize_withZero );
 		CPPUNIT_TEST( testInitialize_BeyondMax );
+		CPPUNIT_TEST( testStoreOn);
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -663,7 +666,20 @@ namespace CLAMTest
 				CPPUNIT_ASSERT_EQUAL(std::string("Segmentation point inserted out of limits"), std::string(e.what()));
 			}
 		}
+		void testStoreOn()
+		{
+			const double onsets[]={90, 100, 110};
+			ContiguousSegmentation segmentation(200, onsets, onsets+3);
+			std::ostringstream stream;
+			XmlStorage::Dump(segmentation, "Segmentation", stream);
+			CLAMTEST_ASSERT_XML_EQUAL(
+				"<Segmentation size=\"3\">90 100 110</Segmentation>"
+				, stream.str());
+		}
+			
 	};
+
+
 
 
 }

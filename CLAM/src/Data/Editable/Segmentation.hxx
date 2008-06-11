@@ -10,7 +10,7 @@
 
 namespace CLAM
 {
-	class Segmentation
+	class Segmentation : public Component 
 	{
 	public:
 		class InsertedOutOfBounds : public std::exception
@@ -76,7 +76,18 @@ namespace CLAM
 		/**
 		* Performs a empty implementation
 		*/
-		virtual void fillArray(DataArray& segmentation)=0;
+		virtual void fillArray(DataArray& segmentation) const =0;
+
+		const char * GetClassName() const { return "Segmentation"; }
+
+		void StoreOn(Storage & storage) const
+		{
+			CLAM::DataArray array;
+			fillArray(array);
+			array.StoreOn(storage);
+		}
+
+		void LoadFrom(Storage & storage) {}
 		
 		void select(unsigned segment)
 		{

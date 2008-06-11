@@ -2,9 +2,11 @@
 #include "cppUnitHelper.hxx" // necessary for the custom assert
 
 #include "DiscontinuousSegmentation.hxx"
+#include "XMLTestHelper.hxx"
 #include <sstream>
 
 using CLAM::DiscontinuousSegmentation;
+using CLAM::XmlStorage;
 
 namespace CLAMTest
 {
@@ -77,6 +79,7 @@ namespace CLAMTest
 		CPPUNIT_TEST( testInsert_onGapAtTheBegining );
 		CPPUNIT_TEST( testInsert_onGapAtTheBeginingMovesCurrentWhenAfter );
 		CPPUNIT_TEST( testInsert_onGapInBetweenSegments );
+		CPPUNIT_TEST( testStoreOn);	
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -694,6 +697,17 @@ namespace CLAMTest
 			unsigned pos = segmentation.insert(120);
 			CPPUNIT_ASSERT_EQUAL(1u, pos);
 			CPPUNIT_ASSERT_EQUAL(std::string("(90,100) (120,150) (150,200) "), segmentation.boundsAsString());
+		}
+
+		void testStoreOn()
+		{
+			const double onsetsEven[]={90, 100, 110, 120};
+			DiscontinuousSegmentation segmentationEven(200, onsetsEven, onsetsEven+4);
+			std::ostringstream streamEven;
+			XmlStorage::Dump(segmentationEven, "Segmentation_even", streamEven);
+			CLAMTEST_ASSERT_XML_EQUAL(
+				"<Segmentation_even size=\"4\">90 100 110 120</Segmentation_even>"
+				, streamEven.str());
 		}
 	};
 

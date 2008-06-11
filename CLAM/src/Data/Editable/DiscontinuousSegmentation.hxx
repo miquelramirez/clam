@@ -223,9 +223,9 @@ namespace CLAM
 			_offsets[segment]=newTimePosition;
 		}
 		/**
-		* Performs an implementation to fill the segmentation to the array
+		* Performs an implementation to fill the DataArray with the segmentation
 		*/
-		void fillArray(DataArray& segmentation)
+		void fillArray(DataArray& segmentation) const
 		{
 			unsigned nSegments = _onsets.size();
 			segmentation.Resize(nSegments*2);
@@ -236,6 +236,10 @@ namespace CLAM
 					segmentation[i*2+1] = _offsets[i];
 				}
 		}
+
+		const char * GetClassName() const { return "DiscontinuousSegmentation"; }
+					
+		void LoadFrom(Storage & storage){}
 
 
 

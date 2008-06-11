@@ -136,9 +136,9 @@ namespace CLAM
 			_onsets[segment]=newTimePosition;
 		}
 		/**
-		* Performs an empty implementation
+		* Performs an implementation to fill the DataArray with the segmentation
 		*/
-		void fillArray(DataArray& segmentation)
+		void fillArray(DataArray& segmentation) const
 		{
 			unsigned nSegments = _onsets.size();
 			segmentation.Resize(nSegments);
@@ -146,6 +146,16 @@ namespace CLAM
 			for (unsigned i=0; i<nSegments; i++)
 				segmentation[i]=_onsets[i];
 		}
+		
+		const char * GetClassName() const { return "UnsizedSegmentation"; }
+		void StoreOn(Storage & storage) const
+		{
+			CLAM::DataArray array;
+			fillArray(array);
+			array.StoreOn(storage);
+		}
+		void LoadFrom(Storage & storage){}
+
 
 	private:
 		/**
