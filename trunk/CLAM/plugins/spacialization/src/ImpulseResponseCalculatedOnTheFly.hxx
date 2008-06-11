@@ -49,7 +49,7 @@ class ImpulseResponseCalculatedOnTheFly : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 7, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 8, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
 		DYN_ATTRIBUTE( 1, public, Filename, Model3DFile);
 		DYN_ATTRIBUTE( 2, public, unsigned, GridDivisions);
@@ -57,6 +57,7 @@ public:
 		DYN_ATTRIBUTE( 4, public, unsigned, NRebounds);
 		DYN_ATTRIBUTE( 5, public, float, IrLength);
 		DYN_ATTRIBUTE( 6, public, CLAM::Text, ExtraOptions);
+		DYN_ATTRIBUTE( 7, public, bool, TrimDelay);
 	protected:
 		void DefaultInit()
 		{
@@ -68,6 +69,7 @@ public:
 			SetNRays(200);
 			SetNRebounds(20);
 			SetIrLength(1.0);
+			SetTrimDelay(false);
 		};
 	};
 private:
@@ -88,8 +90,7 @@ private:
 	InControl _receiverX;
 	InControl _receiverY;
 	InControl _receiverZ;
-	BFormatIR _impulseResponsesA;
-	BFormatIR _impulseResponsesB;
+	BFormatIR _impulseResponses[3];
 	BFormatIR  * _current;
 	BFormatIR  * _previous;
 	float _currentEmitterX;
@@ -200,7 +201,10 @@ private:
 		
 //		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		// swap _current but leave _previous
-		_current = _current == &_impulseResponsesA ? &_impulseResponsesB : &_impulseResponsesA;
+		_current =
+			(_current == &_impulseResponses[0]) ? &_impulseResponses[1] : (
+			(_current == &_impulseResponses[1]) ? &_impulseResponses[2] :
+			                                      &_impulseResponses[0]);
 		if (not _previous) _previous = _current;
 		_currentEmitterX = x1;
 		_currentEmitterY = y1;
@@ -245,7 +249,7 @@ private:
 		std::string fileX = xFile;
 		std::string fileY = yFile;
 		std::string fileZ = zFile;
-		if (true) // Trim initial silences with sox. Can be safely desabled
+		if (_config.HasTrimDelay() and _config.GetTrimDelay()) // Trim initial silences with sox. Can be safely desabled
 		{
 			std::system( ("sox -t wav " + wFile + " -t wav " + wFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
 			std::system( ("sox -t wav " + xFile + " -t wav " + xFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
