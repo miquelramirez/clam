@@ -107,12 +107,7 @@ namespace CLAM
 
 		bool Do(const CLAM::TData& in1, const CLAM::TData& in2, CLAM::TData& out)
 		{
-
-
-			int i;
-
 			out = mOperation( in1 , in2 );
-
 			return true;
 		}
 
