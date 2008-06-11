@@ -138,16 +138,19 @@ namespace CLAM
 			_onsets[segment+1]=newTimePosition;
 		}
 		/**
-		* Performs an empty implementation
+		* Performs an implementation to fill the DataArray with the segmentation
 		*/
-		void fillArray(DataArray& segmentation)
+		void fillArray(DataArray& segmentation) const
 		{
 			unsigned nSegments= _onsets.size();
 			segmentation.Resize(nSegments-1);
 			segmentation.SetSize(nSegments-1);
 			for(unsigned i=1; i<nSegments; i++)
-				segmentation[i]=_onsets[i];
+				segmentation[i-1]=_onsets[i];
 		}
+		const char * GetClassName() const { return "ContiguousSegmentation"; }
+
+		void LoadFrom(Storage & storage){}
 
 	private:
 		/**
