@@ -66,8 +66,6 @@ private:
 		pool.Allocate(4);
 		const void * data = pool.GetData();
 		CPPUNIT_ASSERT(data!=0);
-
-		delete[] (int*) data;
 	}
 	void testDeallocatePool()
 	{
