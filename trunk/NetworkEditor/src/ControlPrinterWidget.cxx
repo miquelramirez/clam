@@ -16,13 +16,13 @@ ControlPrinterWidget::ControlPrinterWidget(CLAM::Processing * processing)
 		QString name(control->GetName().c_str());
 
 		QLabel *label = new QLabel(name);
-		label->setMinimumHeight(label->sizeHint().height());
-		label->setMinimumWidth(label->sizeHint().width());
+//		label->setMinimumHeight(label->sizeHint().height());
+//		label->setMinimumWidth(label->sizeHint().width());
 		grid->addWidget(label, i, 0, Qt::AlignRight);
 
 		label = new QLabel("100.00");
-		label->setMinimumHeight(label->sizeHint().height());
-		label->setMinimumWidth(label->sizeHint().width());
+//		label->setMinimumHeight(label->sizeHint().height());
+//		label->setMinimumWidth(label->sizeHint().width());
 		label->setText("");
 		grid->addWidget(label, i, 1);
 
@@ -42,11 +42,9 @@ void ControlPrinterWidget::timerEvent(QTimerEvent *event)
 	int nLabels = cr.Size();
 	for (int i = 0; i < nLabels; i++)
 	{
-		CLAM::InControl *control = &cr.GetByNumber(i);
-		CLAM::TControlData value = control->GetLastValue();
-
-		QString str("%1");
-		_labels[i]->setText(str.arg(value, 0, 'f', 2));
+		CLAM::InControl & control = cr.GetByNumber(i);
+		CLAM::TControlData value = control.GetLastValue();
+		_labels[i]->setText(QString::number(value, 'f', 6));
 	}
 }
 
