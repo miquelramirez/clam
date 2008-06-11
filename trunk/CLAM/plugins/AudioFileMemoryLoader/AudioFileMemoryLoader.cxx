@@ -38,9 +38,9 @@ namespace Hidden
 	
 	
 	AudioFileMemoryLoader::AudioFileMemoryLoader( const ProcessingConfig& cfg )
-		: _Output( "Samples Read", this ),
-		  _TimeOutput( "Current Time Position", this),
-		  _Position ( 0 )
+		: _output( "Samples Read", this ),
+		  _timeOutput( "Current Time Position", this),
+		  _position ( 0 )
 	{
 		Configure( cfg );
 	}
@@ -57,24 +57,24 @@ namespace Hidden
 
 	const ProcessingConfig& AudioFileMemoryLoader::GetConfig() const
 	{
-		return _Config;
+		return _config;
 	}
 
 	bool AudioFileMemoryLoader::ConcreteConfigure( const ProcessingConfig& cfgObject )
 	{
-		CopyAsConcreteConfig( _Config, cfgObject );
+		CopyAsConcreteConfig( _config, cfgObject );
 
-		MonoAudioFileReader reader(_Config);
+		MonoAudioFileReader reader(_config);
 		
-		if ( !reader.Configure (_Config) )
+		if ( !reader.Configure (_config) )
 		{
 			AddConfigErrorMessage(reader.GetConfigErrorMessage());
 			return false;
 		}
 
 		reader.Start();
-		_Samples.SetSize(reader.GetHeader().GetSamples());
-		reader.Do(_Samples);
+		_samples.SetSize(reader.GetHeader().GetSamples());
+		reader.Do(_samples);
 		
 		return true;
 	}
@@ -86,8 +86,8 @@ namespace Hidden
 
 	bool AudioFileMemoryLoader::Do()
 	{
-		bool result = Do( _Output.GetAudio() );
-		_Output.Produce();
+		bool result = Do( _output.GetAudio() );
+		_output.Produce();
 
 		return result;
 	}
@@ -96,10 +96,10 @@ namespace Hidden
 	
 	bool AudioFileMemoryLoader::Do( Audio & outputSamples )
 	{
-		CLAM::TData * samplesArray = &_Samples.GetBuffer()[0];
+		CLAM::TData * samplesArray = &_samples.GetBuffer()[0];
 		CLAM::TData * outputArray = &outputSamples.GetBuffer()[0];
 		
-		long samplesLeft = _Samples.GetSize() - _Position;
+		long samplesLeft = _samples.GetSize() - _position;
 		long length = outputSamples.GetSize();
 		if (length > samplesLeft)
 			length = samplesLeft;
@@ -107,8 +107,8 @@ namespace Hidden
 		long i;
 		for (i = 0; i < length; i++)
 		{
-			outputArray[i] = samplesArray[_Position];
-			_Position++;
+			outputArray[i] = samplesArray[_position];
+			_position++;
 		}
 		length = outputSamples.GetSize();
 		for (; i < length; i++)
