@@ -1325,8 +1325,8 @@ private slots:
 		}
 		catch(CLAM::XmlStorageErr &e)
 		{
-			QMessageBox::critical(this, tr("Error trying to paste from clipboard"), 
-					tr("<p>An occurred while loading clipboard.<p>"
+			QMessageBox::critical(this, tr("Error pasting from clipboard"), 
+					tr("<p>An occurred while pasting clipboard content.<p>"
 						"<p><b>%1</b></p>").arg(e.what()));
 			return;
 		}
