@@ -80,17 +80,17 @@ public:
 	   	// Overwritten latter. But some text is needed to enable it.
 		setWhatsThis("Dummy");
 
-		_deleteSelectedAction = new QAction("Delete", this);
+		_deleteSelectedAction = new QAction(tr("Delete"), this);
 		_deleteSelectedAction->setShortcut(QKeySequence(tr("Del")));
 		addAction(_deleteSelectedAction);
 		connect(_deleteSelectedAction, SIGNAL(triggered()), this, SLOT(removeSelectedProcessings()));
 
-		_selectAllAction = new QAction("Select all", this);
+		_selectAllAction = new QAction(tr("Select all"), this);
 		_selectAllAction->setShortcut(QKeySequence(tr("Ctrl+A")));
 		addAction(_selectAllAction);
 		connect(_selectAllAction, SIGNAL(triggered()), this, SLOT(onSelectAll()));
 
-		_clearSelectionAction = new QAction("Clear selection", this);
+		_clearSelectionAction = new QAction(tr("Clear selection"), this);
 		_clearSelectionAction->setShortcut(QKeySequence(tr("Ctrl+Shift+A")));
 		addAction(_clearSelectionAction);
 		connect(_clearSelectionAction, SIGNAL(triggered()), this, SLOT(onClearSelections()));
@@ -791,22 +791,22 @@ public:
 	{
 		setWindowState(windowState() ^ Qt::WindowFullScreen);
 
-		_newProcessingAction = new QAction("New Processing", this);
+		_newProcessingAction = new QAction(tr("&New Processing"), this);
 		_newProcessingAction->setShortcut(QKeySequence(tr("Ctrl+Space")));
 		addAction(_newProcessingAction);
 		connect(_newProcessingAction, SIGNAL(triggered()), this, SLOT(onNewProcessing()));
 
-		_copySelectionAction = new QAction("Copy Selection", this);
+		_copySelectionAction = new QAction(QIcon(":/icons/images/editcopy.png"), tr("&Copy"), this);
 		_copySelectionAction->setShortcut(QKeySequence(tr("Ctrl+C")));
 		addAction(_copySelectionAction);
 		connect(_copySelectionAction, SIGNAL(triggered()), this, SLOT (onCopyProcessingsToClipboard()));
 
-		_cutSelectionAction = new QAction("Cut Selection", this);
+		_cutSelectionAction = new QAction(QIcon(":/icons/images/editcut.png"), tr("Cu&t"), this);
 		_cutSelectionAction->setShortcut(QKeySequence(tr("Ctrl+X")));
 		addAction(_cutSelectionAction);
 		connect(_cutSelectionAction, SIGNAL(triggered()), this, SLOT (onCutProcessingsToClipboard()));
 
-		_pasteSelectionAction = new QAction("Paste Selection", this);
+		_pasteSelectionAction = new QAction(QIcon(":/icons/images/editcopy.png"), tr("&Paste"), this);
 		_pasteSelectionAction->setShortcut(QKeySequence(tr("Ctrl+V")));
 		addAction(_pasteSelectionAction);
 		connect(_pasteSelectionAction, SIGNAL(triggered()), this, SLOT (onPasteProcessingsFromClipboard()));
@@ -1512,13 +1512,13 @@ private:
 				region==ProcessingBox::incontrolsRegion ||
 				region==ProcessingBox::outcontrolsRegion )
 			{
-				menu->addAction(QIcon(":/icons/images/remove.png"), "Disconnect",
+				menu->addAction(QIcon(":/icons/images/remove.png"), tr("Disconnect"),
 					this, SLOT(onDisconnect()))->setData(translatedPos);
-				menu->addAction(QIcon(":/icons/images/editcopy.png"), "Copy connection name",
+				menu->addAction(QIcon(":/icons/images/editcopy.png"), tr("Copy connection name"),
 					this, SLOT(onCopyConnection()))->setData(translatedPos);
 				if (region==ProcessingBox::incontrolsRegion)
 				{
-					menu->addAction(QIcon(":/icons/images/hslider.png"), "Add slider",
+					menu->addAction(QIcon(":/icons/images/hslider.png"), tr("Add slider"),
 						this, SLOT(onAddSlider()))->setData(translatedPos);
 				}
 				if (region==ProcessingBox::outportsRegion)
@@ -1651,7 +1651,7 @@ private:
 								if (!menuUsedProcessings)
 								{
 									menu->addSeparator();
-									menuUsedProcessings = menu->addMenu("Connect to");
+									menuUsedProcessings = menu->addMenu(tr("Connect to"));
 								}
 								submenu=menuUsedProcessings->addMenu(processingIcon,targetProcessing->getName());
 							}
@@ -1671,22 +1671,24 @@ private:
 				region==ProcessingBox::bodyRegion ||
 				region==ProcessingBox::resizeHandleRegion)
 				{
-				menu->addAction(QIcon(":/icons/images/configure.png"), "Configure",
+				menu->addAction(QIcon(":/icons/images/configure.png"), tr("Configure"),
 					this, SLOT(onConfigure()))->setData(translatedPos);
-				menu->addAction(QIcon(":/icons/images/rename.png"), "Rename",
+				menu->addAction(QIcon(":/icons/images/editclear.png"), tr("Rename"),
 					this, SLOT(onRename()))->setData(translatedPos);
-				menu->addAction(QIcon(":/icons/images/editdelete.png"), "Remove",
-				this, SLOT(onDeleteProcessing()))->setData(translatedPos);
-				menu->addSeparator();
-				menu->addAction("Copy processing(s)", this, SLOT(onCopyProcessingsToClipboard()));
-				menu->addAction("Cut processing(s)", this, SLOT(onCutProcessingsToClipboard()));
+				QAction * removeAction =
+				menu->addAction(QIcon(":/icons/images/editdelete.png"), tr("Remove"),
+					this, SLOT(onDeleteProcessing()));
+				removeAction->setData(translatedPos);
+				removeAction->setShortcut(tr("Del"));
+				menu->addAction(_copySelectionAction);
+				menu->addAction(_cutSelectionAction);
 				return;
 			}
 		}
-		menu->addAction(QIcon(":/icons/images/newprocessing.png"), "Add processing",
-			this, SLOT(onNewProcessing()))->setData(translatedPos);
-		menu->addAction("Paste processing(s)",
-			this,SLOT(onPasteProcessingsFromClipboard()))->setData(translatedPos);
+		_pasteSelectionAction->setData(translatedPos);
+		menu->addAction(_pasteSelectionAction);
+		_newProcessingAction->setData(translatedPos);
+		menu->addAction(_newProcessingAction);
 	}
 
 protected:
