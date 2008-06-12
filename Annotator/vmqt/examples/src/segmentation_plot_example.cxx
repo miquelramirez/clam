@@ -20,14 +20,47 @@
  */
 
 #include <QtGui/QApplication>
+#include <QtGui/QInputDialog>
+#include <QtGui/QMessageBox>
 #include <CLAM/DiscontinuousSegmentation.hxx>
+#include <CLAM/ContiguousSegmentation.hxx>
+#include <CLAM/UnsizedSegmentation.hxx>
 #include "vmSegmentationPlot.hxx"
 
 
 int main(int argc, char** argv)
 {
+	QApplication app( argc, argv );
+
+	QString option = QInputDialog::getItem(0, 
+		QString("Segment Editor demo"), 
+		QString("Choose a kind of segmentation"),
+		QStringList() 
+			<< "Unsized"
+			<< "Contiguous"
+			<< "Discontinuous"
+			<< "Overlapped"
+		,0, false);
+
 	double xmax = 22050.0;
-	CLAM::Segmentation* seg = new CLAM::DiscontinuousSegmentation(xmax);
+	CLAM::Segmentation* seg;
+	if      (option=="Unsized")
+		seg = new CLAM::UnsizedSegmentation(xmax);
+	else if (option=="Contiguous")
+		seg = new CLAM::ContiguousSegmentation(xmax);
+	else if (option=="Discontinuous")
+		seg = new CLAM::DiscontinuousSegmentation(xmax);
+	else if (option=="Overlapped")
+	{
+		QMessageBox::warning(0, QString("Not yet implemented"), 
+			QString("Overlapped Segmentation is not implemented yet. Using Discontinuous segmentation instead."));
+		seg = new CLAM::DiscontinuousSegmentation(xmax); // TODO: Overlapped are still not available
+	}
+	else
+	{
+		exit(-1);
+	}
+
 	unsigned nSegments = 15;
 	double step = xmax/double(nSegments);
 	// make some divisions
@@ -37,8 +70,6 @@ int main(int argc, char** argv)
 	}
 	seg->current(2);
 
-	QApplication app( argc, argv );
-
 	CLAM::VM::SegmentationPlot plot;
 	plot.SetTitle("Discontinuous Segmentation");
 	plot.SetGeometry(100,50,600,300);
@@ -46,12 +77,11 @@ int main(int argc, char** argv)
 	plot.SetYRange(-150.0,0.0);
 	plot.SetZoomSteps(10,6);
 	plot.SetSegmentation(seg);
+	// uncomment the following line to see the example on background black mode
+//	plot.backgroundBlack();
 	plot.show();
 
-// uncomment the following line to see the example on background black mode
-//	plot.backgroundBlack();
 
-	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));
 	return app.exec();
 }
 
