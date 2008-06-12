@@ -61,6 +61,16 @@ int main( int argc, char *argv[] )
 	{
 		player->AddInputFile(argv[argIndex]);
 	}
+	if (not net.IsReady())
+	{
+		if (net.HasMisconfiguredProcessings())
+			std::cerr << net.GetConfigurationErrors() << std::endl;
+		else if (net.IsEmpty())
+			std::cerr << "Empty network" << std::endl;
+		else if (net.HasUnconnectedInPorts())
+			std::cerr << "The network has unconnected inports" << std::endl;
+		return -1;
+	}
 	net.Start();
 	net.Stop();
 	std::cout << "\nDone!" << std::endl;
