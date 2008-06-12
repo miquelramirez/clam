@@ -151,6 +151,11 @@ public:
 	 * Don't rely on the format because is subject to change.
 	 */
 	std::string GetConfigurationErrors() const;
+	/**
+	 * Returns an string the full name of the unconnected inports.
+	 * Don't rely on the format because is subject to change.
+	 */
+	std::string GetUnconnectedInPorts() const;
 
 private:
 	

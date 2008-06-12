@@ -636,7 +636,38 @@ namespace CLAM
 
 	bool Network::HasUnconnectedInPorts() const
 	{
-		return true;
+		for (ProcessingsMap::const_iterator it=BeginProcessings(); it!=EndProcessings(); it++)
+		{
+			Processing * proc = it->second;
+			InPortRegistry::Iterator itInPort;
+			for (itInPort=proc->GetInPorts().Begin(); 
+			     itInPort!=proc->GetInPorts().End(); 
+			     itInPort++)
+			{
+				if (not (*itInPort)->GetVisuallyConnectedOutPort())
+					return true;
+			}
+			
+		}
+		return false;
+	}
+	std::string Network::GetUnconnectedInPorts() const
+	{
+		std::string result;
+		for (ProcessingsMap::const_iterator it=BeginProcessings(); it!=EndProcessings(); it++)
+		{
+			Processing * proc = it->second;
+			InPortRegistry::Iterator itInPort;
+			for (itInPort=proc->GetInPorts().Begin(); 
+			     itInPort!=proc->GetInPorts().End(); 
+			     itInPort++)
+			{
+				if (not (*itInPort)->GetVisuallyConnectedOutPort())
+					result+= it->first+"."+(*itInPort)->GetName()+"\n";
+			}
+			
+		}
+		return result;
 	}
 
 	bool Network::HasSyncSource() const
