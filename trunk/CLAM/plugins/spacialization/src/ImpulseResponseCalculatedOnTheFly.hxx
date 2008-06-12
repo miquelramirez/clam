@@ -73,24 +73,20 @@ public:
 		};
 	};
 private:
-	
+	enum {nCachedIRs=3};
 	Config _config;
 	AudioInPort _syncAudio;
 	OutPort< ImpulseResponse* > _WImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _WImpulseResponseOutPortPrevious;
 	OutPort< ImpulseResponse* > _XImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _XImpulseResponseOutPortPrevious;
 	OutPort< ImpulseResponse* > _YImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _YImpulseResponseOutPortPrevious;
 	OutPort< ImpulseResponse* > _ZImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _ZImpulseResponseOutPortPrevious;
 	InControl _emitterX;
 	InControl _emitterY;
 	InControl _emitterZ;
 	InControl _receiverX;
 	InControl _receiverY;
 	InControl _receiverZ;
-	BFormatIR _impulseResponses[3];
+	BFormatIR _impulseResponses[nCachedIRs];
 	BFormatIR  * _current;
 	BFormatIR  * _previous;
 	float _currentEmitterX;
@@ -101,19 +97,16 @@ private:
 	float _currentReceiverZ;
 	float _delta;
 	int _irCount;
+	unsigned _currentCacheIndex;
 
 public:
 	const char* GetClassName() const { return "ImpulseResponseCalculatedOnTheFly"; }
 	ImpulseResponseCalculatedOnTheFly(const Config& config = Config()) 
 		: _syncAudio("synchronization", this)
 		, _WImpulseResponseOutPort("pressure IR", this)
-		, _WImpulseResponseOutPortPrevious("previous pressure IR", this)
 		, _XImpulseResponseOutPort("vx IR", this)
-		, _XImpulseResponseOutPortPrevious("previous vx IR", this)
 		, _YImpulseResponseOutPort("vy IR", this)
-		, _YImpulseResponseOutPortPrevious("previous vy IR", this)
 		, _ZImpulseResponseOutPort("vz IR", this)
-		, _ZImpulseResponseOutPortPrevious("previous vz IR", this)
 		, _emitterX("emitterX", this)
 		, _emitterY("emitterY", this)
 		, _emitterZ("emitterZ", this)
@@ -130,6 +123,7 @@ public:
 		, _currentReceiverZ(0)
 		, _delta(1)
 		, _irCount(0)
+		, _currentCacheIndex(0)
 	{
 		Configure( config );
 		_emitterX.SetBounds(0,1);
@@ -201,10 +195,8 @@ private:
 		
 //		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		// swap _current but leave _previous
-		_current =
-			(_current == &_impulseResponses[0]) ? &_impulseResponses[1] : (
-			(_current == &_impulseResponses[1]) ? &_impulseResponses[2] :
-			                                      &_impulseResponses[0]);
+		_current = &_impulseResponses[_currentCacheIndex];
+		_currentCacheIndex = (_currentCacheIndex+1) % nCachedIRs;
 		if (not _previous) _previous = _current;
 		_currentEmitterX = x1;
 		_currentEmitterY = y1;
@@ -283,28 +275,20 @@ public:
 	bool Do()
 	{
 		bool ok = computeNewIRIfNeeded();
-		if (ok) return false;
+		CLAM_ASSERT(ok, "Error reading the IR");
 
 		if (not _previous) _previous = _current;
 
 		_WImpulseResponseOutPort.GetData()= &_current->W;
-		_WImpulseResponseOutPortPrevious.GetData() = &_previous->W;
 		_XImpulseResponseOutPort.GetData()= &_current->X;
-		_XImpulseResponseOutPortPrevious.GetData()= &_previous->X;
 		_YImpulseResponseOutPort.GetData()= &_current->Y;
-		_YImpulseResponseOutPortPrevious.GetData()= &_previous->Y;
 		_ZImpulseResponseOutPort.GetData()= &_current->Z;
-		_ZImpulseResponseOutPortPrevious.GetData()= &_previous->Z;
 
 		_syncAudio.Consume();
 		_WImpulseResponseOutPort.Produce();
-		_WImpulseResponseOutPortPrevious.Produce();
 		_XImpulseResponseOutPort.Produce();
-		_XImpulseResponseOutPortPrevious.Produce();
 		_YImpulseResponseOutPort.Produce();
-		_YImpulseResponseOutPortPrevious.Produce();
 		_ZImpulseResponseOutPort.Produce();
-		_ZImpulseResponseOutPortPrevious.Produce();
 		
 		_previous=_current;
 		return true;
