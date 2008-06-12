@@ -282,8 +282,8 @@ private:
 public:
 	bool Do()
 	{
-		bool error = computeNewIRIfNeeded();
-		if (error) return false;
+		bool ok = computeNewIRIfNeeded();
+		if (ok) return false;
 
 		if (not _previous) _previous = _current;
 
