@@ -31,7 +31,7 @@ env.SConsignFile() # Single signature file
 
 crosscompiling = env.has_key("crossmingw") and env["crossmingw"]
 isWindowsPlatform = sys.platform=='win32' or crosscompiling
-isLinuxPlatform = sys.platform=='linux' and not crosscompiling
+isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
 isDarwinPlatform = sys.platform=='darwin'
 
 CLAMInstallDir = env['clam_prefix']
@@ -137,8 +137,7 @@ exampleSources = scanFiles('*.cxx', ['examples/utils'])
 staticLibrary = env.StaticLibrary(target='clam_vmqt4', source=sources)
 env.Append(LIBPATH='.')
 env.Prepend(LIBS='clam_vmqt4')
-if sys.platform == "linux2" :
-	env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
+env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
 examples = []
 for main in examplesMainSources :
 	executable = 'examples/'+os.path.splitext(os.path.basename(main))[0]
