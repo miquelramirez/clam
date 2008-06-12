@@ -238,9 +238,7 @@ namespace CLAM
 		}
 
 		const char * GetClassName() const { return "DiscontinuousSegmentation"; }
-					
 		void LoadFrom(Storage & storage){}
-
 
 
 	private:
