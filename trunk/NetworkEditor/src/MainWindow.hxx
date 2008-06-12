@@ -72,11 +72,11 @@ public:
 		centralTab->addTab(scroll, "Network");
 		centralTab->addTab(jackScroll, "Jack");
 		
-		dock = new QDockWidget(this);
-		processingTree = new NetworkGUI::ProcessingTree(dock);
-		dock->setWindowTitle("Processing Toolbox");
-		dock->setWidget(processingTree);
-		addDockWidget(Qt::LeftDockWidgetArea, dock);
+		_processingTreeDock = new QDockWidget(this);
+		_processingTree = new NetworkGUI::ProcessingTree(_processingTreeDock);
+		_processingTreeDock->setWindowTitle("Processing Toolbox");
+		_processingTreeDock->setWidget(_processingTree);
+		addDockWidget(Qt::LeftDockWidgetArea, _processingTreeDock);
 
 		_aboutDialog = new QDialog(this);
 		Ui::About aboutUi;
@@ -132,7 +132,8 @@ public:
 		_backendLabel->setPixmap(QPixmap(backendLogo));
 		updatePlayStatusIndicator();
 
-		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), dock, SLOT(setVisible(bool)));
+		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), _processingTreeDock, SLOT(setVisible(bool)));
+		connect(_processingTreeDock, SIGNAL(visibilityChanged(bool)), ui.action_Show_processing_toolbox, SLOT(setChecked(bool)));
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
 		updateCaption();
@@ -416,11 +417,11 @@ public slots:
 		RunTimeFaustLibraryLoader faustLoader;
 		faustLoader.Load();
 		// delete the previous instance of processingtree
-		delete(processingTree);
+		delete(_processingTree);
 		// and generate a new one
-		processingTree = new NetworkGUI::ProcessingTree(dock);
-		dock->setWidget(processingTree);
-		addDockWidget(Qt::LeftDockWidgetArea, dock);
+		_processingTree = new NetworkGUI::ProcessingTree(_processingTreeDock);
+		_processingTreeDock->setWidget(_processingTree);
+		addDockWidget(Qt::LeftDockWidgetArea, _processingTreeDock);
 
 #endif
 		// compile all faust files
@@ -468,8 +469,8 @@ private:
 	QStringList _recentFiles;
 
 	// faust testing
-	QDockWidget * dock;
-	NetworkGUI::ProcessingTree * processingTree;
+	QDockWidget * _processingTreeDock;
+	NetworkGUI::ProcessingTree * _processingTree;
 };
 
 
