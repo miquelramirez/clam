@@ -19,9 +19,23 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioBufferCrossFader" type="AudioBufferCrossFader"/>
+  <processing id="AudioBuffer2Stream_2" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
 
-  <processing id="AudioBufferCrossFader_1" type="AudioBufferCrossFader"/>
+  <processing id="AudioBuffer2Stream_3" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
 
   <processing id="AudioSink" type="AudioSink"/>
 
@@ -67,9 +81,9 @@
     <Prefix></Prefix>
   </processing>
 
-  <processing id="IRDelayCascade" type="IRDelayCascade"/>
+  <processing id="IRSwappingDelay" type="IRSwappingDelay"/>
 
-  <processing id="IRDelayCascade_1" type="IRDelayCascade"/>
+  <processing id="IRSwappingDelay_1" type="IRSwappingDelay"/>
 
   <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -115,34 +129,28 @@
 
   <processing id="Oscilloscope_1" type="Oscilloscope"/>
 
-  <port_connection>
-    <out>AudioBuffer2Stream.Audio stream</out>
-    <in>Oscilloscope.Input</in>
-  </port_connection>
+  <processing id="XFadeAndSwitch" type="XFadeAndSwitch"/>
+
+  <processing id="XFadeAndSwitch_1" type="XFadeAndSwitch"/>
 
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
-    <in>AudioSink.AudioIn</in>
+    <in>XFadeAndSwitch.Audio1</in>
   </port_connection>
 
   <port_connection>
     <out>AudioBuffer2Stream_1.Audio stream</out>
-    <in>Oscilloscope_1.Input</in>
+    <in>XFadeAndSwitch_1.Audio1</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioBuffer2Stream_1.Audio stream</out>
-    <in>AudioSink_1.AudioIn</in>
+    <out>AudioBuffer2Stream_2.Audio stream</out>
+    <in>XFadeAndSwitch.Audio2</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioBufferCrossFader.CrossFadedBuffer</out>
-    <in>AudioBuffer2Stream.Audio buffer</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioBufferCrossFader_1.CrossFadedBuffer</out>
-    <in>AudioBuffer2Stream_1.Audio buffer</in>
+    <out>AudioBuffer2Stream_3.Audio stream</out>
+    <in>XFadeAndSwitch_1.Audio2</in>
   </port_connection>
 
   <port_connection>
@@ -162,32 +170,52 @@
 
   <port_connection>
     <out>HRTFDatabaseFetcher2.ImpulseResponseL</out>
-    <in>IRDelayCascade.Input IR</in>
+    <in>IRSwappingDelay.Input IR</in>
   </port_connection>
 
   <port_connection>
     <out>HRTFDatabaseFetcher2.ImpulseResponseR</out>
-    <in>IRDelayCascade_1.Input IR</in>
+    <in>IRSwappingDelay_1.Input IR</in>
   </port_connection>
 
   <port_connection>
-    <out>IRDelayCascade.Current IR</out>
+    <out>IRSwappingDelay.Current IR</out>
+    <in>XFadeAndSwitch.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay.Current IR</out>
     <in>LowLatencyConvolution.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IRDelayCascade.Previous IR</out>
+    <out>IRSwappingDelay.Previous IR</out>
+    <in>XFadeAndSwitch.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay.Previous IR</out>
     <in>LowLatencyConvolution_2.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IRDelayCascade_1.Current IR</out>
+    <out>IRSwappingDelay_1.Current IR</out>
     <in>LowLatencyConvolution_1.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IRDelayCascade_1.Previous IR</out>
+    <out>IRSwappingDelay_1.Current IR</out>
+    <in>XFadeAndSwitch_1.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_1.Previous IR</out>
     <in>LowLatencyConvolution_3.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_1.Previous IR</out>
+    <in>XFadeAndSwitch_1.ImpulseResponse2</in>
   </port_connection>
 
   <port_connection>
@@ -232,22 +260,42 @@
 
   <port_connection>
     <out>MyIFFT.Audio Buffer</out>
-    <in>AudioBufferCrossFader.FadingIn</in>
+    <in>AudioBuffer2Stream.Audio buffer</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_1.Audio Buffer</out>
-    <in>AudioBufferCrossFader_1.FadingIn</in>
+    <in>AudioBuffer2Stream_1.Audio buffer</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_2.Audio Buffer</out>
-    <in>AudioBufferCrossFader.FadingOut</in>
+    <in>AudioBuffer2Stream_2.Audio buffer</in>
   </port_connection>
 
   <port_connection>
     <out>MyIFFT_3.Audio Buffer</out>
-    <in>AudioBufferCrossFader_1.FadingOut</in>
+    <in>AudioBuffer2Stream_3.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch.CrossFadedBuffer</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch.CrossFadedBuffer</out>
+    <in>Oscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch_1.CrossFadedBuffer</out>
+    <in>AudioSink_1.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch_1.CrossFadedBuffer</out>
+    <in>Oscilloscope_1.Input</in>
   </port_connection>
 
   <control_connection>

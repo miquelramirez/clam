@@ -69,6 +69,14 @@
     <FrameSize>512</FrameSize>
   </processing>
 
+  <processing id="Delay P" type="IRSwappingDelay"/>
+
+  <processing id="Delay X" type="IRSwappingDelay"/>
+
+  <processing id="Delay Y" type="IRSwappingDelay"/>
+
+  <processing id="Delay Z" type="IRSwappingDelay"/>
+
   <processing id="Gain 0" type="OutControlSender">
     <Min>0</Min>
     <Default>1</Default>
@@ -127,19 +135,28 @@
 
   <processing id="X" type="AudioSink"/>
 
-  <processing id="XFader_P" type="AudioBufferCrossFader"/>
+  <processing id="XFade P" type="XFadeAndSwitch"/>
 
-  <processing id="XFader_Vx" type="AudioBufferCrossFader"/>
+  <processing id="XFade X" type="XFadeAndSwitch"/>
 
-  <processing id="XFader_Vy" type="AudioBufferCrossFader"/>
+  <processing id="XFade Y" type="XFadeAndSwitch"/>
 
-  <processing id="XFader_Vz" type="AudioBufferCrossFader"/>
+  <processing id="XFade Z" type="XFadeAndSwitch"/>
 
   <processing id="Y" type="AudioSink"/>
 
   <processing id="Z" type="AudioSink"/>
 
   <processing id="toStream P" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>48000</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="toStream P 2" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -157,6 +174,15 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
+  <processing id="toStream Vx 2" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>48000</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
   <processing id="toStream Vy" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
@@ -166,7 +192,25 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
+  <processing id="toStream Vy 2" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>48000</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
   <processing id="toStream Vz" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>48000</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="toStream Vz 2" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -256,43 +300,103 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.pressure IR</out>
+    <out>Delay P.Current IR</out>
     <in>Convolution_P.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.previous pressure IR</out>
+    <out>Delay P.Current IR</out>
+    <in>XFade P.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Delay P.Previous IR</out>
     <in>Convolution_P_old.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.vx IR</out>
+    <out>Delay P.Previous IR</out>
+    <in>XFade P.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Delay X.Current IR</out>
     <in>Convolution_Vx.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.previous vx IR</out>
+    <out>Delay X.Current IR</out>
+    <in>XFade X.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Delay X.Previous IR</out>
     <in>Convolution_Vx_old.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.vy IR</out>
+    <out>Delay X.Previous IR</out>
+    <in>XFade X.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Delay Y.Current IR</out>
     <in>Convolution_Vy.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.previous vy IR</out>
+    <out>Delay Y.Current IR</out>
+    <in>XFade Y.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Delay Y.Previous IR</out>
     <in>Convolution_Vy_old.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.vz IR</out>
+    <out>Delay Y.Previous IR</out>
+    <in>XFade Y.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Delay Z.Current IR</out>
     <in>Convolution_Vz.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.previous vz IR</out>
+    <out>Delay Z.Current IR</out>
+    <in>XFade Z.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Delay Z.Previous IR</out>
     <in>Convolution_Vz_old.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Delay Z.Previous IR</out>
+    <in>XFade Z.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseCalculatedOnTheFly.pressure IR</out>
+    <in>Delay P.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseCalculatedOnTheFly.vx IR</out>
+    <in>Delay X.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseCalculatedOnTheFly.vy IR</out>
+    <in>Delay Y.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseCalculatedOnTheFly.vz IR</out>
+    <in>Delay Z.Input IR</in>
   </port_connection>
 
   <port_connection>
@@ -337,82 +441,102 @@
 
   <port_connection>
     <out>MyIFFT.Audio Buffer</out>
-    <in>XFader_P.FadingIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyIFFT_1.Audio Buffer</out>
-    <in>XFader_Vx.FadingIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyIFFT_2.Audio Buffer</out>
-    <in>XFader_Vy.FadingIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyIFFT_3.Audio Buffer</out>
-    <in>XFader_P.FadingOut</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyIFFT_4.Audio Buffer</out>
-    <in>XFader_Vx.FadingOut</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyIFFT_5.Audio Buffer</out>
-    <in>XFader_Vy.FadingOut</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyIFFT_6.Audio Buffer</out>
-    <in>XFader_Vz.FadingIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyIFFT_7.Audio Buffer</out>
-    <in>XFader_Vz.FadingOut</in>
-  </port_connection>
-
-  <port_connection>
-    <out>XFader_P.CrossFadedBuffer</out>
     <in>toStream P.Audio buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>XFader_Vx.CrossFadedBuffer</out>
+    <out>MyIFFT_1.Audio Buffer</out>
     <in>toStream Vx.Audio buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>XFader_Vy.CrossFadedBuffer</out>
+    <out>MyIFFT_2.Audio Buffer</out>
     <in>toStream Vy.Audio buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>XFader_Vz.CrossFadedBuffer</out>
+    <out>MyIFFT_3.Audio Buffer</out>
+    <in>toStream P 2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_4.Audio Buffer</out>
+    <in>toStream Vx 2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_5.Audio Buffer</out>
+    <in>toStream Vy 2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_6.Audio Buffer</out>
     <in>toStream Vz.Audio buffer</in>
   </port_connection>
 
   <port_connection>
-    <out>toStream P.Audio stream</out>
+    <out>MyIFFT_7.Audio Buffer</out>
+    <in>toStream Vz 2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFade P.CrossFadedBuffer</out>
     <in>W.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>toStream Vx.Audio stream</out>
+    <out>XFade X.CrossFadedBuffer</out>
     <in>BFormatRotation.vx</in>
   </port_connection>
 
   <port_connection>
-    <out>toStream Vy.Audio stream</out>
+    <out>XFade Y.CrossFadedBuffer</out>
     <in>BFormatRotation.vy</in>
   </port_connection>
 
   <port_connection>
-    <out>toStream Vz.Audio stream</out>
+    <out>XFade Z.CrossFadedBuffer</out>
     <in>BFormatRotation.vz</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream P.Audio stream</out>
+    <in>XFade P.Audio1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream P 2.Audio stream</out>
+    <in>XFade P.Audio2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream Vx.Audio stream</out>
+    <in>XFade X.Audio1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream Vx 2.Audio stream</out>
+    <in>XFade X.Audio2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream Vy.Audio stream</out>
+    <in>XFade Y.Audio1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream Vy 2.Audio stream</out>
+    <in>XFade Y.Audio2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream Vz.Audio stream</out>
+    <in>XFade Z.Audio1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>toStream Vz 2.Audio stream</out>
+    <in>XFade Z.Audio2</in>
   </port_connection>
 
   <control_connection>
