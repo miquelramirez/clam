@@ -65,16 +65,15 @@ public:
 		_canvas = new ClamNetworkCanvas;
 		scroll->setWidget(_canvas);
 
-		QScrollArea * jackScroll = new QScrollArea(this);
-		_jackCanvas = new ClamNetworkCanvas;
-		jackScroll->setWidget(_jackCanvas);
+		QScrollArea * backendScroll = new QScrollArea(this);
 
 		centralTab->addTab(scroll, "Network");
-		centralTab->addTab(jackScroll, "Jack");
+		centralTab->addTab(backendScroll, "Jack");
 		
 		_processingTreeDock = new QDockWidget(this);
 		_processingTree = new NetworkGUI::ProcessingTree(_processingTreeDock);
-		_processingTreeDock->setWindowTitle("Processing Toolbox");
+		_processingTreeDock->setObjectName("ProcessingTree");
+		_processingTreeDock->setWindowTitle(tr("Processing Toolbox"));
 		_processingTreeDock->setWidget(_processingTree);
 		addDockWidget(Qt::LeftDockWidgetArea, _processingTreeDock);
 
@@ -93,6 +92,7 @@ public:
 		QSettings settings;
 		_recentFiles=settings.value("RecentFiles").toStringList();
 		updateRecentMenu();
+		restoreState(settings.value("DockWindowsState").toByteArray());
 
 		_network.AddFlowControl( new CLAM::NaiveFlowControl );
 		QString backend = "None";
@@ -104,7 +104,11 @@ public:
 		backend = "JACK";
 		backendLogo = ":/icons/images/jacklogo-mini.png";
 		if ( jackPlayer->IsWorking())
+		{
 			_networkPlayer = jackPlayer;
+			_jackCanvas = new ClamNetworkCanvas; // TODO: This should be a JackNetworkCanvas
+			backendScroll->setWidget(_jackCanvas);
+		}
 		else
 			delete jackPlayer;
 #endif
@@ -413,7 +417,7 @@ public slots:
 				"<p>More Faust related features like processing box embedded diagrams will come soon.</p>\n"
 			));
 		// clear the current map of ladspa's
-#if USE_LADSPA	
+#if USE_LADSPA
 		RunTimeFaustLibraryLoader faustLoader;
 		faustLoader.Load();
 		// delete the previous instance of processingtree
