@@ -223,7 +223,7 @@ namespace CLAM
 			_offsets[segment]=newTimePosition;
 		}
 		/**
-		* Performs an implementation to fill the DataArray with the segmentation
+		* Fills a DataArray with the segmentation markers
 		*/
 		void fillArray(DataArray& segmentation) const
 		{
