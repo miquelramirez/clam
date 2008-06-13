@@ -72,9 +72,11 @@ namespace CLAM
 			for (Iterator it=begin; it!=end; i++)
 			{
 				double onset = *it++;
+				std::cout << onset << " " << std::flush;
 				if (onset<previousOffset) throw MissplacedOnset(i,previousOffset,onset);
 				if (it==end) throw OffsetMissing();
 				double offset = *it++;
+				std::cout << offset << " " << std::flush;
 				if (offset<onset) throw MissplacedOffset(i, onset, offset);
 				if (offset>maxPosition) throw InsertedOutOfBounds();
 				_onsets.push_back(onset);
