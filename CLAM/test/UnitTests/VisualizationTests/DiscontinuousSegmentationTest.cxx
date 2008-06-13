@@ -79,7 +79,7 @@ namespace CLAMTest
 		CPPUNIT_TEST( testInsert_onGapAtTheBegining );
 		CPPUNIT_TEST( testInsert_onGapAtTheBeginingMovesCurrentWhenAfter );
 		CPPUNIT_TEST( testInsert_onGapInBetweenSegments );
-//		CPPUNIT_TEST( testStoreOn);	// TODO: This test crashes in some boxes
+		CPPUNIT_TEST( testStoreOn);	// TODO: This test crashes in some boxes
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -701,13 +701,13 @@ namespace CLAMTest
 
 		void testStoreOn()
 		{
-			const double onsetsEven[]={90, 100, 110, 120};
-			DiscontinuousSegmentation segmentationEven(200, onsetsEven, onsetsEven+4);
-			std::ostringstream streamEven;
-			XmlStorage::Dump(segmentationEven, "Segmentation_even", streamEven);
+			const double bounds[]={90, 100, 110, 120};
+			DiscontinuousSegmentation segmentationEven(200, bounds, bounds+4);
+			std::ostringstream stream;
+			XmlStorage::Dump(segmentationEven, "Segmentation", stream);
 			CLAMTEST_ASSERT_XML_EQUAL(
-				"<Segmentation_even size=\"4\">90 100 110 120</Segmentation_even>"
-				, streamEven.str());
+				"<Segmentation size=\"4\">90 100 110 120</Segmentation>"
+				, stream.str());
 		}
 	};
 
