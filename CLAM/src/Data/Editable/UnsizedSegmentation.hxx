@@ -148,12 +148,6 @@ namespace CLAM
 		}
 		
 		const char * GetClassName() const { return "UnsizedSegmentation"; }
-		void StoreOn(Storage & storage) const
-		{
-			CLAM::DataArray array;
-			fillArray(array);
-			array.StoreOn(storage);
-		}
 		void LoadFrom(Storage & storage){}
 
 
