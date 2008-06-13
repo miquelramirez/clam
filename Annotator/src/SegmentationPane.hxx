@@ -191,9 +191,6 @@ public slots:
 			} break;
 			case CLAM_Annotator::SegmentationPolicy::eContinuous:
 			{
-				for (unsigned i=0; i<nMarks; i++)
-					std::cout << descriptorsMarks[i] << std::endl;
-				std::cout << audioDuration << std::endl;
 				theSegmentation = 
 					new CLAM::ContiguousSegmentation(
 							audioDuration,
