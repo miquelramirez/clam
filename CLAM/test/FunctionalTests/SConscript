@@ -40,9 +40,6 @@ for blacksheep in blacklist :
 
 if sys.platform != 'win32'  :
 	env.Append( CPPPATH=['include'] )
-else :
-	env.Append( CCFLAGS = ['/EHsc'] )
-	env.Append( LINKFLAGS = ['/subsystem:console','/machine:x86'] )	
 
 functional_tests = env.Program( 'FunctionalTests', sources )
 
