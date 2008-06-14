@@ -52,7 +52,8 @@ public:
 	virtual ~MainWindow();
 
 	MainWindow()
-		: _networkPlayer(0)
+		: _networkPlayer(0),
+		_saveUsingOldPosFiles(false)
 	{
 		ui.setupUi(this);
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
@@ -223,9 +224,9 @@ public:
 	void save(const QString & filename)
 	{
 		std::cout << "Saving " << filename.toStdString() << "..." << std::endl;
-		_canvas->updateGeometriesOnXML();
+		if (!_saveUsingOldPosFiles) _canvas->updateGeometriesOnXML();
 		CLAM::XMLStorage::Dump(_network, "network", filename.toStdString());
-		//_canvas->savePositions(filename+".pos");
+		if (_saveUsingOldPosFiles) _canvas->savePositions(filename+".pos");
 		_canvas->clearChanges();
 		_networkFile = filename;
 		appendRecentFile(filename);
@@ -473,6 +474,9 @@ private:
 	QLabel * _backendLabel;
 	QLabel * _playingLabel;
 	QStringList _recentFiles;
+
+	//XML boxes geometries testing
+	const bool _saveUsingOldPosFiles;
 
 	// faust testing
 	QDockWidget * _processingTreeDock;
