@@ -30,8 +30,8 @@
 
 namespace CLAM
 {
-	ProcessingDefinitionAdapter::ProcessingDefinitionAdapter( Processing * adaptee, const std::string & name )
-		:  mAdaptee(adaptee), mName(name)
+	ProcessingDefinitionAdapter::ProcessingDefinitionAdapter( Processing * adaptee, const std::string & name, const std::string & position, const std::string & size )
+		:  mAdaptee(adaptee), mName(name), mPosition(position), mSize(size)
 	{
 	}
 
@@ -47,7 +47,18 @@ namespace CLAM
 		XMLAdapter<Text> classNameAdapter( className, "type");
 		store.Store(nameAdapter);
 		store.Store(classNameAdapter);
-
+		if (mPosition!="") // check if position is defined (QPoint values are integers)
+		{
+			Text positionCopy(mPosition);
+			XMLAdapter<Text> positionAdapter (positionCopy, "position");
+			store.Store(positionAdapter);
+		}
+		if (mSize!="") // check if size is defined
+		{
+			Text sizeCopy(mSize);
+			XMLAdapter<Text> sizeAdapter (sizeCopy, "size");
+			store.Store(sizeAdapter);
+		}
 		XMLComponentAdapter configAdapter((ProcessingConfig&)mAdaptee->GetConfig());
 		store.Store(configAdapter);
 	}
@@ -59,6 +70,11 @@ namespace CLAM
 		Text className("");
 		XMLAdapter<Text> classNameAdapter( className, "type");
 		store.Load(classNameAdapter);
+
+		XMLAdapter<Text> positionAdapter (mPosition, "position");
+		store.Load(positionAdapter);
+		XMLAdapter<Text> sizeAdapter (mSize, "size");
+		store.Load(sizeAdapter);
 
 		try
 		{

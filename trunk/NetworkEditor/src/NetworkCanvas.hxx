@@ -521,6 +521,38 @@ protected:
 			}
 		}
 	}
+	// TODO: add more selection and groups management for canvas here??
+	// Get the upper left point of selection:
+	virtual QPoint getSelectionTopLeft(bool inverse = false)
+	{
+		QPoint topLeftPoint=QPoint(0,0);
+		unsigned i=0;
+		while (!_processings[i]->isSelected() && i<_processings.size()) i++;
+		if (++i<_processings.size())
+			topLeftPoint=_processings[i]->pos(); // if exist, take the first selected box as reference instead (0,0)
+		for(++i;i<_processings.size(); i++)
+		{
+			ProcessingBox * processing = _processings[i];
+			if (!processing->isSelected())
+				continue;
+			if (!inverse)	// TopLeft
+			{
+				if (processing->pos().x()<topLeftPoint.x())
+					topLeftPoint.setX(processing->pos().x());
+				if (processing->pos().y()<topLeftPoint.y())
+					topLeftPoint.setY(processing->pos().y());
+			}
+			else		// if inverse, DownRight
+			{
+				if (processing->pos().x()>topLeftPoint.x())
+					topLeftPoint.setX(processing->pos().x());
+				if (processing->pos().y()>topLeftPoint.y())
+					topLeftPoint.setY(processing->pos().y());
+			}
+		}
+		return topLeftPoint;
+	}
+
 public:
 	virtual bool networkRenameProcessing(QString oldName, QString newName)=0;
 	virtual void networkRemoveProcessing(const std::string & name) = 0;
@@ -1246,6 +1278,44 @@ public:
 			box->resize(size);
 		}
 	}
+
+	bool updateGeometriesOnXML(QPoint offsetPoint=QPoint(0,0))
+	{
+		CLAM::Network::ProcessingsGeometryMap processingsGeometryMap;
+		for (unsigned i=0; i<_processings.size(); i++)
+		{
+			CLAM::Network::ProcessingGeometry processingGeometry;
+			QPoint position = _processings[i]->pos()-offsetPoint;
+			QSize size = _processings[i]->size();
+			const std::string name=_processings[i]->getName().toStdString();
+			processingGeometry.setPosition(position.x(),position.y());
+			processingGeometry.setSize(size.width(),size.height());
+			processingsGeometryMap.insert(CLAM::Network::ProcessingsGeometryMap::value_type(name,processingGeometry));
+		}
+		return (_network->UpdateProcessingsGeometry(processingsGeometryMap));
+	}
+	bool loadGeometriesFromXML(QPoint offsetPoint = QPoint(0,0))
+	{
+		const CLAM::Network::ProcessingsGeometryMap & processingsGeometryMap=_network->GetProcessingsGeometry();
+		if (processingsGeometryMap.empty())
+			return 0;
+		CLAM::Network::ProcessingsGeometryMap::const_iterator it;
+		for(it=processingsGeometryMap.begin();it!=processingsGeometryMap.end();it++)
+		{
+			QString name=QString(it->first.c_str());
+			const CLAM::Network::ProcessingGeometry & processingGeometry=it->second;
+			int x,y,w,h;
+			processingGeometry.getPosition(x,y);
+			QPoint position=offsetPoint+QPoint(x,y);
+			processingGeometry.getSize(w,h);
+			QSize size=QSize(w,h);
+			ProcessingBox * box=getBox(name);
+			box->move(position);
+			box->resize(size);
+		}
+		return 1;
+	}
+
 private slots:
 	void onCopyConnection()
 	{
@@ -1281,7 +1351,7 @@ private slots:
 	{
 		std::ostringstream streamXMLBuffer;
 		CLAM::Network::NamesList processingsNamesList;
-		// Copy selected (/active) processings on networkToCopy
+		// Copy selected processings on networkToCopy
 		for (unsigned i=0; i<_processings.size();i++)
 		{
 			if (!_processings[i]->isSelected())
@@ -1291,6 +1361,7 @@ private slots:
 		}
 		if (_network->UpdateSelections(processingsNamesList))
 			return;
+		updateGeometriesOnXML(getSelectionTopLeft());
 		CLAM::XmlStorage::Dump(*_network,"network",streamXMLBuffer);
 
 		QApplication::clipboard()->setText(QString(streamXMLBuffer.str().c_str()));
@@ -1331,6 +1402,7 @@ private slots:
 			return;
 		}
 		reloadNetwork();
+		loadGeometriesFromXML(point);
 	}
 
 
