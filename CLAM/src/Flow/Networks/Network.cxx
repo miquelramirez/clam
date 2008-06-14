@@ -59,9 +59,18 @@ namespace CLAM
 		{
 			Processing * proc = it->second;
 			const std::string & name = it->first;
-			if (!ifHasSelectionAndContains(name))
+			if (!HasSelectionAndContains(name))
 				continue;
-			ProcessingDefinitionAdapter procDefinition(proc, name);
+			std::string processingPosition;
+			std::string processingSize;
+			// if exists canvas processing boxes attributes, store them
+			if (!_processingsGeometry.empty())
+			{
+				ProcessingGeometry & geometry=_processingsGeometry.find(name)->second;
+				processingPosition=geometry.getPosition();
+				processingSize=geometry.getSize();
+			}
+			ProcessingDefinitionAdapter procDefinition(proc, name, processingPosition, processingSize);
 			XMLComponentAdapter xmlAdapter(procDefinition, "processing", true);
 			storage.Store(xmlAdapter);
 		}
@@ -75,7 +84,7 @@ namespace CLAM
 			const std::string & name = it->first;
 			Processing * proc = it->second;
 
-			if (!ifHasSelectionAndContains(name))
+			if (!HasSelectionAndContains(name))
 				continue;
 
 			OutPortRegistry::Iterator itOutPort;
@@ -93,7 +102,7 @@ namespace CLAM
 				    namesIterator!=namesInPorts.end();
 				    namesIterator++)
 				{
-					if (!ifHasSelectionAndContains(GetProcessingIdentifier(*namesIterator)))
+					if (!HasSelectionAndContains(GetProcessingIdentifier(*namesIterator)))
 						continue;
 					ConnectionDefinitionAdapter connectionDefinition( outPortName, *namesIterator );
 					XMLComponentAdapter xmlAdapter(connectionDefinition, "port_connection", true);
@@ -107,7 +116,7 @@ namespace CLAM
 			const std::string & name = it->first;
 			Processing * proc = it->second;
 
-			if (!ifHasSelectionAndContains(name))
+			if (!HasSelectionAndContains(name))
 				continue;
 
 			OutControlRegistry::Iterator itOutControl;
@@ -122,7 +131,7 @@ namespace CLAM
 				    namesIterator!=namesInControls.end();
 				    namesIterator++)
 				{
-					if (!ifHasSelectionAndContains(GetProcessingIdentifier(*namesIterator)))
+					if (!HasSelectionAndContains(GetProcessingIdentifier(*namesIterator)))
 						continue;
 					ConnectionDefinitionAdapter connectionDefinition( outControlName, *namesIterator );
 					XMLComponentAdapter xmlAdapter(connectionDefinition, "control_connection", true);
@@ -131,6 +140,7 @@ namespace CLAM
 			}
 		}
 		_selectedProcessings.clear();
+		_processingsGeometry.clear();
 	}
 
 	void Network::LoadFrom( Storage & storage)
@@ -140,24 +150,34 @@ namespace CLAM
 		if (!_setPasteMode) Clear();
 		XMLAdapter<std::string> strAdapter( _name, "id");
 		storage.Load(strAdapter);
+		_processingsGeometry.clear();
 
 		while(1)
 		{
 			ProcessingDefinitionAdapter procDefinition;
 			XMLComponentAdapter xmlAdapter(procDefinition, "processing", true);
 			if(storage.Load(xmlAdapter) == false) break;
+			std::string name=procDefinition.GetName();
 			
 			if (!_setPasteMode)
-				AddProcessing(procDefinition.GetName(), procDefinition.GetProcessing()); 
+				AddProcessing(name, procDefinition.GetProcessing()); 
 			else
 			{
-				const std::string & name = procDefinition.GetName();
 				CLAM::Processing * processing =procDefinition.GetProcessing();
 				std::string key=processing->GetClassName();
 				std::string newName= AddProcessing(key);
 				CLAM::Processing & newProcessing = GetProcessing(newName);
 				newProcessing.Configure(processing->GetConfig());
 				newProcNames.insert(changeProcNames::value_type(name,newName));
+				name=newName;
+			}
+			// if exists canvas processings boxes related attributes, restore them
+			if (procDefinition.GetPosition()!="" && procDefinition.GetSize()!="")
+			{
+				ProcessingGeometry ProcessingsGeometryMap;
+				ProcessingsGeometryMap.setPosition(procDefinition.GetPosition());
+				ProcessingsGeometryMap.setSize(procDefinition.GetSize());
+				_processingsGeometry.insert(ProcessingsGeometryMap::value_type(name,ProcessingsGeometryMap));
 			}
 		}
 
@@ -224,12 +244,27 @@ namespace CLAM
 		
 	}
 
-	bool Network::ifHasSelectionAndContains(const std::string & name) const
+	bool Network::HasSelectionAndContains(const std::string & name) const
 	{
 		NamesSet::const_iterator itFindSelected = _selectedProcessings.find(name);
 		if (!_selectedProcessings.empty() && itFindSelected==_selectedProcessings.end())
 			return 0;
 		return 1;
+	}
+
+	bool Network::UpdateProcessingsGeometry (const ProcessingsGeometryMap & processingsGeometry)
+	{
+		_processingsGeometry.clear();
+		if (processingsGeometry.empty())
+			return 1;
+		_processingsGeometry=processingsGeometry;
+		return 0;
+	}
+	const Network::ProcessingsGeometryMap Network::GetProcessingsGeometry()
+	{
+		const ProcessingsGeometryMap copyProcessingsGeometry(_processingsGeometry);
+		_processingsGeometry.clear();
+		return copyProcessingsGeometry;
 	}
 
 	void Network::AddFlowControl(FlowControl* flowControl)

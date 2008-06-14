@@ -213,7 +213,8 @@ public:
 			return;
 		}
 		_canvas->loadNetwork(&_network);
-		_canvas->loadPositions(filename+".pos");
+		_canvas->loadPositions(filename+".pos"); //TODO: remove when XML geometries are tested enough
+		_canvas->loadGeometriesFromXML();
 		appendRecentFile(filename);
 		_networkFile = filename;
 		updateCaption();
@@ -222,8 +223,9 @@ public:
 	void save(const QString & filename)
 	{
 		std::cout << "Saving " << filename.toStdString() << "..." << std::endl;
+		_canvas->updateGeometriesOnXML();
 		CLAM::XMLStorage::Dump(_network, "network", filename.toStdString());
-		_canvas->savePositions(filename+".pos");
+		//_canvas->savePositions(filename+".pos");
 		_canvas->clearChanges();
 		_networkFile = filename;
 		appendRecentFile(filename);
