@@ -15,11 +15,7 @@ namespace CLAM
 		};
 		typedef std::vector<double> TimePositions;
 	public:
-		ContiguousSegmentation()
-			: Segmentation(0)
-		{
-		}
-		ContiguousSegmentation(double maxPosition)
+		ContiguousSegmentation(double maxPosition=0)
 			: Segmentation(maxPosition)
 		{
 			_onsets.push_back(0);
