@@ -638,13 +638,13 @@ namespace CLAMTest
 		}
 		void testInitialize_withGoodData()
 		{
-			TData onsets[] = {90,100,110};
+			const TData onsets[] = {90,100,110};
 			ContiguousSegmentation segmentation(200, onsets, onsets+3);
 			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
 		}
 		void testInitialize_withZero()
 		{
-			TData onsets[] = {0,90,100,110};
+			const TData onsets[] = {0,90,100,110};
 			try 
 			{
 				ContiguousSegmentation segmentation(200, onsets, onsets+4);
@@ -657,7 +657,7 @@ namespace CLAMTest
 		}
 		void testInitialize_BeyondMax()
 		{
-			TData onsets[] = {90,100,110, 201};
+			const TData onsets[] = {90,100,110, 201};
 			try 
 			{
 				ContiguousSegmentation segmentation(200, onsets, onsets+4);
@@ -670,7 +670,7 @@ namespace CLAMTest
 		}
 		void testStoreOn()
 		{
-			TData onsets[]={90, 100, 110};
+			const TData onsets[]={90, 100, 110};
 			ContiguousSegmentation segmentation(200, onsets, onsets+3);
 			std::ostringstream stream;
 			XmlStorage::Dump(segmentation, "Segmentation", stream);
@@ -680,7 +680,7 @@ namespace CLAMTest
 		}
 		void testtakeArray()
 		{
-			TData bounds[]={90, 100, 110, 120};
+			const TData bounds[]={90, 100, 110, 120};
 			ContiguousSegmentation segmentation(200);
 			segmentation.takeArray(bounds, bounds+4);
 			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,120) (120,200) "), segmentation.boundsAsString());

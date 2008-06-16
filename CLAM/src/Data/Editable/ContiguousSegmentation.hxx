@@ -24,7 +24,7 @@ namespace CLAM
 
 		}
 
-		ContiguousSegmentation(double maxPosition, TData * begin, TData * end)
+		ContiguousSegmentation(double maxPosition, const TData * begin, const TData * end)
 			: Segmentation(maxPosition)
 		{
 			_onsets.push_back(0);
@@ -39,9 +39,9 @@ namespace CLAM
 		/**
 		 * take data from an array.
 		 */
-		void takeArray(TData * begin, TData * end)
+		void takeArray(const TData * begin, const TData * end)
 		{			
-			for (TData * it=begin; it!=end; it++)
+			for (const TData * it=begin; it!=end; it++)
 				insert(*it);
 		}
 		

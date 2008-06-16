@@ -26,10 +26,8 @@ namespace CLAMTest
 
 		void testStoreOn()
 		{
-			TData onsets[]={90, 100, 110, 120};
-			//UnsizedSegmentation segmentation(200, onsets, onsets+4);
-			UnsizedSegmentation segmentation(200);
-			segmentation.takeArray(onsets, onsets+4);
+			const TData onsets[]={90, 100, 110, 120};
+			UnsizedSegmentation segmentation(200, onsets, onsets+4);
 			std::ostringstream stream;
 			XmlStorage::Dump(segmentation, "Segmentation", stream);
 			CLAMTEST_ASSERT_XML_EQUAL(
@@ -39,7 +37,7 @@ namespace CLAMTest
 
 		void testtakeArray()
 		{
-			TData bounds[]={90, 100, 110, 120};
+			const TData bounds[]={90, 100, 110, 120};
 			UnsizedSegmentation segmentation(200);
 			segmentation.takeArray(bounds, bounds+4);
 			CPPUNIT_ASSERT_EQUAL(std::string("(90,90) (100,100) (110,110) (120,120) "), segmentation.boundsAsString());

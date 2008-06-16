@@ -77,7 +77,7 @@ namespace CLAM
 		/**
 		 * take data from an array.
 		 */
-		virtual void takeArray(TData * begin, TData * end) =0;
+		virtual void takeArray(const TData * begin, const TData * end) =0;
 
 		const char * GetClassName() const { return "Segmentation"; }
 
@@ -93,7 +93,7 @@ namespace CLAM
 			DataArray array;
 			array.LoadFrom(storage);
 			const unsigned size = array.Size();
-			TData* ptr=array.GetPtr(); //TODO: there is no maxPosition info in the array.
+			const TData* ptr=array.GetPtr(); //TODO: there is no maxPosition info in the array.
 			takeArray(ptr, ptr+size);
 		}
 		

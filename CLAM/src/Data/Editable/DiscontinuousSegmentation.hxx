@@ -64,7 +64,7 @@ namespace CLAM
 		 * @pre The onsets is a sorted container of bounds in between 0 and maxPosition
 		 */
 		
-		DiscontinuousSegmentation(double maxPosition, TData * begin, TData * end)
+		DiscontinuousSegmentation(double maxPosition, const TData * begin, const TData * end)
 			: Segmentation(maxPosition)
 		{
 			takeArray(begin, end);
@@ -72,11 +72,11 @@ namespace CLAM
 		/**
 		 * take data from an array.
 		 */
-		void takeArray(TData * begin, TData * end)
+		void takeArray(const TData * begin, const TData * end)
 		{
 			double previousOffset=0.0;
 			unsigned i=0;
-			for (TData* it=begin; it!=end; i++)
+			for (const TData* it=begin; it!=end; i++)
 			{
 				double onset = *it++;
 				std::cout << onset << " " << std::flush;
