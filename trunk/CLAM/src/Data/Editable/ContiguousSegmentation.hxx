@@ -23,19 +23,28 @@ namespace CLAM
 			_selection.push_back(false);
 
 		}
-		template <typename Iterator>
-		ContiguousSegmentation(double maxPosition, Iterator begin, Iterator end)
+
+		ContiguousSegmentation(double maxPosition, TData * begin, TData * end)
 			: Segmentation(maxPosition)
 		{
 			_onsets.push_back(0);
 			_offsets.push_back(maxPosition);
 			_selection.push_back(false);
-			for (Iterator it=begin; it!=end; it++)
-				insert(*it);
+			takeArray(begin, end);
 		}
 		~ContiguousSegmentation()
 		{
 		}
+
+		/**
+		 * take data from an array.
+		 */
+		void takeArray(TData * begin, TData * end)
+		{			
+			for (TData * it=begin; it!=end; it++)
+				insert(*it);
+		}
+		
 		/**
 		 * Inserts a new border at timePosition.
 		 */
@@ -145,8 +154,6 @@ namespace CLAM
 				segmentation[i-1]=_onsets[i];
 		}
 		const char * GetClassName() const { return "ContiguousSegmentation"; }
-
-		void LoadFrom(Storage & storage){}
 
 	private:
 		/**

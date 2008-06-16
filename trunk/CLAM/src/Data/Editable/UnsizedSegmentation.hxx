@@ -23,11 +23,18 @@ namespace CLAM
 			: Segmentation(maxPosition)
 		{
 		}
-		template <typename Iterator>
-		UnsizedSegmentation(double maxPosition, Iterator begin, Iterator end)
+
+		UnsizedSegmentation(double maxPosition, TData * begin, TData * end)
 			: Segmentation(maxPosition)
 		{
-			for (Iterator it=begin; it!=end; it++)
+			takeArray(begin, end);
+		}
+		/**
+		 * take data from an array.
+		 */
+		void takeArray(TData * begin, TData * end)
+		{
+			for (TData * it=begin; it!=end; it++)
 				insert(*it);
 		}
 		~UnsizedSegmentation()
@@ -148,8 +155,6 @@ namespace CLAM
 		}
 		
 		const char * GetClassName() const { return "UnsizedSegmentation"; }
-		void LoadFrom(Storage & storage){}
-
 
 	private:
 		/**

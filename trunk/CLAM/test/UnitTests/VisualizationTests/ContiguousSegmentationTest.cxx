@@ -73,6 +73,8 @@ namespace CLAMTest
 		CPPUNIT_TEST( testInitialize_withZero );
 		CPPUNIT_TEST( testInitialize_BeyondMax );
 		CPPUNIT_TEST( testStoreOn);
+		CPPUNIT_TEST( testtakeArray);
+		CPPUNIT_TEST( testLoadFrom);
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -636,13 +638,13 @@ namespace CLAMTest
 		}
 		void testInitialize_withGoodData()
 		{
-			const double onsets[] = {90,100,110};
+			TData onsets[] = {90,100,110};
 			ContiguousSegmentation segmentation(200, onsets, onsets+3);
 			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
 		}
 		void testInitialize_withZero()
 		{
-			const double onsets[] = {0,90,100,110};
+			TData onsets[] = {0,90,100,110};
 			try 
 			{
 				ContiguousSegmentation segmentation(200, onsets, onsets+4);
@@ -655,7 +657,7 @@ namespace CLAMTest
 		}
 		void testInitialize_BeyondMax()
 		{
-			const double onsets[] = {90,100,110, 201};
+			TData onsets[] = {90,100,110, 201};
 			try 
 			{
 				ContiguousSegmentation segmentation(200, onsets, onsets+4);
@@ -668,13 +670,27 @@ namespace CLAMTest
 		}
 		void testStoreOn()
 		{
-			const double onsets[]={90, 100, 110};
+			TData onsets[]={90, 100, 110};
 			ContiguousSegmentation segmentation(200, onsets, onsets+3);
 			std::ostringstream stream;
 			XmlStorage::Dump(segmentation, "Segmentation", stream);
 			CLAMTEST_ASSERT_XML_EQUAL(
 				"<Segmentation size=\"3\">90 100 110</Segmentation>"
 				, stream.str());
+		}
+		void testtakeArray()
+		{
+			TData bounds[]={90, 100, 110, 120};
+			ContiguousSegmentation segmentation(200);
+			segmentation.takeArray(bounds, bounds+4);
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,120) (120,200) "), segmentation.boundsAsString());
+		}
+		void testLoadFrom()
+		{
+			ContiguousSegmentation segmentation(200);
+			std::istringstream stream("<Segmentation size=\"3\">90 100 110</Segmentation>");
+			XmlStorage::Restore(segmentation, stream);
+			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
 		}
 			
 	};
