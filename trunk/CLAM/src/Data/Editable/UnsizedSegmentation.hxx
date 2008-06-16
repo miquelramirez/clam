@@ -24,7 +24,7 @@ namespace CLAM
 		{
 		}
 
-		UnsizedSegmentation(double maxPosition, TData * begin, TData * end)
+		UnsizedSegmentation(double maxPosition, const TData * begin, const TData * end)
 			: Segmentation(maxPosition)
 		{
 			takeArray(begin, end);
@@ -32,9 +32,9 @@ namespace CLAM
 		/**
 		 * take data from an array.
 		 */
-		void takeArray(TData * begin, TData * end)
+		void takeArray(const TData * begin, const TData * end)
 		{
-			for (TData * it=begin; it!=end; it++)
+			for (const TData * it=begin; it!=end; it++)
 				insert(*it);
 		}
 		~UnsizedSegmentation()
