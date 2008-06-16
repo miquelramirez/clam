@@ -367,7 +367,7 @@ public slots:
 					"<p><b>Some inports in the network are not connected.</b></p>"
 					"<p>To play the network you should connect the following inports.</p>"
 					"<pre>%1</pre"
-					)arg(_network.GetUnconnectedInPorts().c_str()));
+					).arg(_network.GetUnconnectedInPorts().c_str()));
 			return;
 		}
 		if (! _networkPlayer->IsCallbackBased() && ! _network.HasSyncSource() )
