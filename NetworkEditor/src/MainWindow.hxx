@@ -363,9 +363,11 @@ public slots:
 		if (_network.HasUnconnectedInPorts() )
 		{
 			QMessageBox::critical(this, tr("Unable to play the network"), 
-					tr("<p><b>The network has some in ports which are not connected.</b></p>"
-					"<p>All in ports must be feeded in order to play the network</p>"
-					));
+					tr(
+					"<p><b>Some inports in the network are not connected.</b></p>"
+					"<p>To play the network you should connect the following inports.</p>"
+					"<pre>%1</pre"
+					)arg(_network.GetUnconnectedInPorts().c_str()));
 			return;
 		}
 		if (! _networkPlayer->IsCallbackBased() && ! _network.HasSyncSource() )
