@@ -360,8 +360,7 @@ public slots:
 					));
 			return;
 		}
-		// TODO: Activate this once it works
-		if ( false && _network.HasUnconnectedInPorts() )
+		if (_network.HasUnconnectedInPorts() )
 		{
 			QMessageBox::critical(this, tr("Unable to play the network"), 
 					tr("<p><b>The network has some in ports which are not connected.</b></p>"
