@@ -63,13 +63,20 @@ namespace CLAM
 		 * are specified on the ordered list of bounds [begin,end)
 		 * @pre The onsets is a sorted container of bounds in between 0 and maxPosition
 		 */
-		template <typename Iterator>
-		DiscontinuousSegmentation(double maxPosition, Iterator begin, Iterator end)
+		
+		DiscontinuousSegmentation(double maxPosition, TData * begin, TData * end)
 			: Segmentation(maxPosition)
+		{
+			takeArray(begin, end);
+		}
+		/**
+		 * take data from an array.
+		 */
+		void takeArray(TData * begin, TData * end)
 		{
 			double previousOffset=0.0;
 			unsigned i=0;
-			for (Iterator it=begin; it!=end; i++)
+			for (TData* it=begin; it!=end; i++)
 			{
 				double onset = *it++;
 				std::cout << onset << " " << std::flush;
@@ -78,7 +85,7 @@ namespace CLAM
 				double offset = *it++;
 				std::cout << offset << " " << std::flush;
 				if (offset<onset) throw MissplacedOffset(i, onset, offset);
-				if (offset>maxPosition) throw InsertedOutOfBounds();
+				if (offset>_maxPosition) throw InsertedOutOfBounds();  //_maxPosition 
 				_onsets.push_back(onset);
 				_offsets.push_back(offset);
 				_labels.push_back(""); // TODO: a constructor with not empty labels
@@ -240,7 +247,6 @@ namespace CLAM
 		}
 
 		const char * GetClassName() const { return "DiscontinuousSegmentation"; }
-		void LoadFrom(Storage & storage){}
 
 
 	private:

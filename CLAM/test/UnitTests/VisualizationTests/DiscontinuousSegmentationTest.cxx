@@ -80,6 +80,8 @@ namespace CLAMTest
 		CPPUNIT_TEST( testInsert_onGapAtTheBeginingMovesCurrentWhenAfter );
 		CPPUNIT_TEST( testInsert_onGapInBetweenSegments );
 		CPPUNIT_TEST( testStoreOn);	// TODO: This test crashes in some boxes
+		CPPUNIT_TEST( testtakeArray);
+		CPPUNIT_TEST(testLoadFrom);
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -137,7 +139,7 @@ namespace CLAMTest
 		}
 		void testInit_withASortedListsOfPoints()
 		{
-			double bounds[] = {50,90,100,150};
+			TData bounds[] = {50,90,100,150};
 
 			DiscontinuousSegmentation segmentation(200.0, bounds, bounds+4);
 
@@ -147,7 +149,7 @@ namespace CLAMTest
 		{
 			try
 			{
-				double bounds[] = {50,100,90,150};
+				TData bounds[] = {50,100,90,150};
 				DiscontinuousSegmentation segmentation(200.0, bounds, bounds+4);
 				CPPUNIT_FAIL("Should have thrown an exception");
 			}
@@ -160,7 +162,7 @@ namespace CLAMTest
 		{
 			try
 			{
-				double bounds[] = {50,90,150,100};
+				TData bounds[] = {50,90,150,100};
 				DiscontinuousSegmentation segmentation(200.0, bounds, bounds+4);
 				CPPUNIT_FAIL("Should have thrown an exception");
 			}
@@ -173,7 +175,7 @@ namespace CLAMTest
 		{
 			try
 			{
-				double bounds[] = {50,90,150,201};
+				TData bounds[] = {50,90,150,201};
 				DiscontinuousSegmentation segmentation(200.0, bounds, bounds+4);
 				CPPUNIT_FAIL("Should have thrown an exception");
 			}
@@ -186,7 +188,7 @@ namespace CLAMTest
 		{
 			try
 			{
-				double bounds[] = {50,90,100,150};
+				TData bounds[] = {50,90,100,150};
 				DiscontinuousSegmentation segmentation(200.0, bounds, bounds+3);
 				CPPUNIT_FAIL("Should have thrown an exception");
 			}
@@ -197,7 +199,7 @@ namespace CLAMTest
 		}
 		void testPickOffset_withExactValue()
 		{
-			double divisions[]={0,50,50,100,100,150,150,200};
+			TData divisions[]={0,50,50,100,100,150,150,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickOffset(100,0.5);
@@ -206,7 +208,7 @@ namespace CLAMTest
 		}
 		void testPickOffset_withNonMatchingValue()
 		{
-			double divisions[]={0,50,50,100,100,150,150,200};
+			TData divisions[]={0,50,50,100,100,150,150,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickOffset(125,0.5);
@@ -215,7 +217,7 @@ namespace CLAMTest
 		}
 		void testPickOffset_withinTolerance()
 		{
-			double divisions[]={0,50,50,100,100,150,150,200};
+			TData divisions[]={0,50,50,100,100,150,150,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickOffset(100.2,0.5);
@@ -224,7 +226,7 @@ namespace CLAMTest
 		}
 		void testPickOffset_withSeveralPointsWithinTolerance()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickOffset(101,20);
@@ -233,7 +235,7 @@ namespace CLAMTest
 		}
 		void testPickOffset_outsideTheRange()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickOffset(221,20);
@@ -242,7 +244,7 @@ namespace CLAMTest
 		}
 		void testPickOnset_withExactValue()
 		{
-			double divisions[]={0,50,50,100,100,150,150,200};
+			TData divisions[]={0,50,50,100,100,150,150,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickOnset(100,0.5);
@@ -251,7 +253,7 @@ namespace CLAMTest
 		}
 		void testPickOnset_withNonMatchingValue()
 		{
-			double divisions[]={0,50,50,100,100,150,150,200};
+			TData divisions[]={0,50,50,100,100,150,150,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickOnset(125,0.5);
@@ -260,7 +262,7 @@ namespace CLAMTest
 		}
 		void testPickOnset_withinTolerance()
 		{
-			double divisions[]={0,50,50,100,100,150,150,200};
+			TData divisions[]={0,50,50,100,100,150,150,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickOnset(100.2,0.5);
@@ -269,7 +271,7 @@ namespace CLAMTest
 		}
 		void testPickOnset_withSeveralPointsWithinTolerance()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickOnset(101,20);
@@ -278,7 +280,7 @@ namespace CLAMTest
 		}
 		void testPickOnset_outsideTheRange()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickOnset(221,20);
@@ -287,7 +289,7 @@ namespace CLAMTest
 		}
 		void testPickSegmentBody()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickSegmentBody(102);
@@ -296,7 +298,7 @@ namespace CLAMTest
 		}
 		void testPickSegmentBody_behindRange()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickSegmentBody(-1);
@@ -305,7 +307,7 @@ namespace CLAMTest
 		}
 		void testPickSegmentBody_afterRange()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickSegmentBody(201);
@@ -315,7 +317,7 @@ namespace CLAMTest
 		void testPickSegmentBody_atABound()
 		{
 			// This behaviour is not specified just to know what happens
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickSegmentBody(100);
@@ -325,7 +327,7 @@ namespace CLAMTest
 		void testPickSegmentBody_atZeroBound()
 		{
 			// This behaviour is not specified just to know what happens
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			unsigned position= segmentation.pickSegmentBody(0);
@@ -334,7 +336,7 @@ namespace CLAMTest
 		}
 		void testPickSegmentBody_atGap()
 		{
-			double divisions[]={90,100,110,200};
+			TData divisions[]={90,100,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+4);
 
 			unsigned position= segmentation.pickSegmentBody(105);
@@ -343,7 +345,7 @@ namespace CLAMTest
 		}
 		void testSelection()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.select(2);
@@ -352,7 +354,7 @@ namespace CLAMTest
 		}
 		void testSelection_multiple()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.select(2);
@@ -362,7 +364,7 @@ namespace CLAMTest
 		}
 		void testDeselection()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.select(2);
@@ -373,7 +375,7 @@ namespace CLAMTest
 		}
 		void testInsert_movesSelection()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.select(1);
@@ -385,7 +387,7 @@ namespace CLAMTest
 		}
 		void testClearSelection()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.select(1);
@@ -397,7 +399,7 @@ namespace CLAMTest
 		}
 		void testDragOffset_ofLastBoundHasEffect()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOffset(3,190);
@@ -406,7 +408,7 @@ namespace CLAMTest
 		}
 		void testDragOnset_ofFirstBoundHasEffect()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOnset(0,10);
@@ -415,7 +417,7 @@ namespace CLAMTest
 		}
 		void testDragOffset()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOffset(1,95);
@@ -424,7 +426,7 @@ namespace CLAMTest
 		}
 		void testDragOnset()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOnset(2,105);
@@ -433,7 +435,7 @@ namespace CLAMTest
 		}
 		void testDragOnset_thatDoesNotExist()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOnset(4,150);
@@ -442,7 +444,7 @@ namespace CLAMTest
 		}
 		void testDragOffset_thatDoesNotExist()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOffset(4,150);
@@ -451,7 +453,7 @@ namespace CLAMTest
 		}
 		void testDragOnset_toLeftLimitedByPreviousOffset()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOnset(2,95);
@@ -460,7 +462,7 @@ namespace CLAMTest
 		}
 		void testDragOnset_toLeftLimitedByZeroWhenFirstOne()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOnset(0,-10);
@@ -469,7 +471,7 @@ namespace CLAMTest
 		}
 		void testDragOnset_toRightLimitedByOwnOffset()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOnset(2,115);
@@ -478,7 +480,7 @@ namespace CLAMTest
 		}
 		void testDragOffset_toRightLimitedByNextOnset()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOffset(2,115);
@@ -487,7 +489,7 @@ namespace CLAMTest
 		}
 		void testDragOffset_toRightLimitedByMaxWhenLastOne()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOffset(3,115);
@@ -497,7 +499,7 @@ namespace CLAMTest
 		}
 		void testDragOffset_toLeftLimitedByOwnOnset()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.dragOffset(2,95);
@@ -506,7 +508,7 @@ namespace CLAMTest
 		}
 		void testRemove()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			CPPUNIT_ASSERT_EQUAL(std::string("(0,90) (90,100) (100,110) (110,200) "), segmentation.boundsAsString());
@@ -517,7 +519,7 @@ namespace CLAMTest
 		}
 		void testRemove_movesSelection()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.select(1);
@@ -529,7 +531,7 @@ namespace CLAMTest
 		}
 		void testRemove_removesRemovedSelection()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.select(2);
@@ -540,7 +542,7 @@ namespace CLAMTest
 		}
 		void testRemove_firstSegment()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.select(1);
@@ -552,7 +554,7 @@ namespace CLAMTest
 		}
 		void testRemove_lastSegmentExpandsPrevious()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.select(1);
@@ -585,7 +587,7 @@ namespace CLAMTest
 		}
 		void testCurrent_changesCurrent()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.current(2);
@@ -594,7 +596,7 @@ namespace CLAMTest
 		}
 		void testCurrent_aboveNSegmentsHasNoEffect()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 			segmentation.current(2);
 
@@ -604,7 +606,7 @@ namespace CLAMTest
 		}
 		void testInsert_beforeCurrentCorrectsIt()
 		{
-			double divisions[]={0,90,90,100,100,110,110,200};
+			TData divisions[]={0,90,90,100,100,110,110,200};
 			DiscontinuousSegmentation segmentation(200.0, divisions, divisions+8);
 
 			segmentation.current(2);
@@ -701,13 +703,28 @@ namespace CLAMTest
 
 		void testStoreOn()
 		{
-			const double bounds[]={90, 100, 110, 120};
+			TData bounds[]={90, 100, 110, 120};
 			DiscontinuousSegmentation segmentationEven(200, bounds, bounds+4);
 			std::ostringstream stream;
 			XmlStorage::Dump(segmentationEven, "Segmentation", stream);
 			CLAMTEST_ASSERT_XML_EQUAL(
 				"<Segmentation size=\"4\">90 100 110 120</Segmentation>"
 				, stream.str());
+		}
+
+		void testtakeArray()
+		{
+			TData bounds[]={90, 100, 110, 120};
+			DiscontinuousSegmentation segmentationEven(200);
+			segmentationEven.takeArray(bounds, bounds+4);
+			CPPUNIT_ASSERT_EQUAL(std::string("(90,100) (110,120) "), segmentationEven.boundsAsString());
+		}
+		void testLoadFrom()
+		{
+			DiscontinuousSegmentation segmentation(200);
+			std::istringstream stream("<Segmentation size=\"4\">90 100 110 120</Segmentation>");
+			XmlStorage::Restore(segmentation, stream);
+			CPPUNIT_ASSERT_EQUAL(std::string("(90,100) (110,120) "), segmentation.boundsAsString());
 		}
 	};
 

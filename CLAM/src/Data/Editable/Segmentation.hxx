@@ -73,10 +73,11 @@ namespace CLAM
 		 */
 		virtual void dragOffset(unsigned segment, double newTimePosition)=0;
 
-		/**
-		* Performs a empty implementation
-		*/
 		virtual void fillArray(DataArray& segmentation) const =0;
+		/**
+		 * take data from an array.
+		 */
+		virtual void takeArray(TData * begin, TData * end) =0;
 
 		const char * GetClassName() const { return "Segmentation"; }
 
@@ -87,7 +88,14 @@ namespace CLAM
 			array.StoreOn(storage);
 		}
 
-		void LoadFrom(Storage & storage) {}
+		void LoadFrom(Storage & storage) 
+		{
+			DataArray array;
+			array.LoadFrom(storage);
+			const unsigned size = array.Size();
+			TData* ptr=array.GetPtr(); //TODO: there is no maxPosition info in the array.
+			takeArray(ptr, ptr+size);
+		}
 		
 		void select(unsigned segment)
 		{
