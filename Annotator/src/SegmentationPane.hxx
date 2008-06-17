@@ -183,33 +183,23 @@ public slots:
 		{
 			case CLAM_Annotator::SegmentationPolicy::eUnsized:
 			{
-				theSegmentation = 
-					new CLAM::UnsizedSegmentation(
-							audioDuration,
-							&descriptorsMarks[0],
-							&descriptorsMarks[0]+nMarks);
+				theSegmentation = new CLAM::UnsizedSegmentation;
 			} break;
 			case CLAM_Annotator::SegmentationPolicy::eContinuous:
 			{
-				theSegmentation = 
-					new CLAM::ContiguousSegmentation(
-							audioDuration,
-							&descriptorsMarks[0],
-							&descriptorsMarks[0]+nMarks);
+				theSegmentation = new CLAM::ContiguousSegmentation;
 			} break;
 			case CLAM_Annotator::SegmentationPolicy::eOverlapping:
 				// Not yet implemented, using Discontinuous by now
 			case CLAM_Annotator::SegmentationPolicy::eDiscontinuous:
 			{
-				theSegmentation = 
-					new CLAM::DiscontinuousSegmentation(
-							audioDuration,
-							&descriptorsMarks[0],
-							&descriptorsMarks[0]+nMarks);
+				theSegmentation = new CLAM::DiscontinuousSegmentation;
 			} break;
 		}
 		if (_segmentation) delete _segmentation;
 		_segmentation = theSegmentation;
+		_segmentation->maxPosition(audioDuration);
+		_segmentation->takeArray(&descriptorsMarks[0], &descriptorsMarks[0]+nMarks);
 		_segmentation->xUnits("s");
 		_segmentEditor->SetSegmentation(_segmentation);
 
