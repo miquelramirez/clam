@@ -675,7 +675,7 @@ namespace CLAMTest
 			std::ostringstream stream;
 			XmlStorage::Dump(segmentation, "Segmentation", stream);
 			CLAMTEST_ASSERT_XML_EQUAL(
-				"<Segmentation size=\"3\">90 100 110</Segmentation>"
+				"<Segmentation max=\"200\" size=\"3\">90 100 110</Segmentation>"
 				, stream.str());
 		}
 		void testtakeArray()
