@@ -7,6 +7,7 @@
 #include <cmath>
 #include <sstream>
 #include <CLAM/Array.hxx>
+#include <CLAM/XMLAdapter.hxx>
 
 namespace CLAM
 {
@@ -83,6 +84,8 @@ namespace CLAM
 
 		void StoreOn(Storage & storage) const
 		{
+			XMLAdapter<double> adapter(_maxPosition, "max", false);
+			storage.Store(adapter);
 			CLAM::DataArray array;
 			fillArray(array);
 			array.StoreOn(storage);
