@@ -243,8 +243,15 @@ public:
 
 	void closeEvent(QCloseEvent *event)
 	{
-		if (askUserSaveChanges()) event->accept();
-		else event->ignore();
+		if (not askUserSaveChanges())
+		{
+			event->ignore();
+			return;
+		}
+		QSettings settings;
+		settings.setValue("RecentFiles",_recentFiles);
+		settings.setValue("DockWindowsState", saveState());
+		event->accept();
 	}
 public slots:
 	void updateCaption()
