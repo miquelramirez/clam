@@ -57,6 +57,7 @@ namespace CLAM
 		OutControl   _timeOutput;
 		long         _position;
 		Audio        _samples;
+		TData        _sampleRate;
 	};
 }
 

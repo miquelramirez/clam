@@ -76,6 +76,9 @@ namespace Hidden
 		_samples.SetSize(reader.GetHeader().GetSamples());
 		reader.Do(_samples);
 		
+		_sampleRate = reader.GetHeader().GetSampleRate();
+		_timeOutput.SendControl(0);
+		
 		return true;
 	}
 
@@ -92,8 +95,6 @@ namespace Hidden
 		return result;
 	}
 
-
-	
 	bool AudioFileMemoryLoader::Do( Audio & outputSamples )
 	{
 		CLAM::TData * samplesArray = &_samples.GetBuffer()[0];
@@ -115,6 +116,7 @@ namespace Hidden
 		{
 			outputArray[i] = 0.0;
 		}
+		_timeOutput.SendControl(_position / _sampleRate);
 		
 		return true;
 	}
