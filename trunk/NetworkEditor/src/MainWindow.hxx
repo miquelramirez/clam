@@ -337,10 +337,11 @@ public slots:
 		fileDialog.selectFile(_networkFile);
 		fileDialog.setFilter(networkFilter());
 		fileDialog.setDefaultSuffix("clamnetwork");
-		fileDialog.exec();
+		if (not fileDialog.exec()) return;
 		
-        QStringList files = fileDialog.selectedFiles();
-        if (files.isEmpty()) return;
+		QStringList files = fileDialog.selectedFiles();
+		if (files.isEmpty()) return;
+		if (files[0].endsWith("/.clamnetwork")) return;
 		save(files[0]);
 	}
 	void on_action_Play_triggered()
