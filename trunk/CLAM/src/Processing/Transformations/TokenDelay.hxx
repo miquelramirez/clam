@@ -33,8 +33,6 @@
 #include <string>
 #include <deque>
 
-using std::string;
-
 #include <CLAM/Array.hxx>
 
 namespace CLAM  
@@ -321,7 +319,7 @@ class ETokenDelayControls
 public:
 	ETokenDelayControls() : Enum( ValueTable(), delay ) { } 
 	ETokenDelayControls( tValue v ) : Enum( ValueTable(), v ) { } 
-	ETokenDelayControls( string s ) : Enum( ValueTable(), s ) { } 
+	ETokenDelayControls( std::string s ) : Enum( ValueTable(), s ) { } 
 	~ETokenDelayControls() { } 
 	Component* Species() const
 	{
