@@ -63,12 +63,12 @@ namespace CLAM
 				continue;
 			std::string processingPosition;
 			std::string processingSize;
-			// if exists canvas processing boxes attributes, store them
-			if (!_processingsGeometry.empty())
+			// if exists canvas geometries, store them
+			if (!_processingsGeometries.empty())
 			{
-				ProcessingGeometry & geometry=_processingsGeometry.find(name)->second;
-				processingPosition=geometry.getPosition();
-				processingSize=geometry.getSize();
+				Geometry & geometry=_processingsGeometries.find(name)->second;
+				processingPosition=IntsToString (geometry.x, geometry.y);
+				processingSize=IntsToString (geometry.width, geometry.height);
 			}
 			ProcessingDefinitionAdapter procDefinition(proc, name, processingPosition, processingSize);
 			XMLComponentAdapter xmlAdapter(procDefinition, "processing", true);
@@ -140,7 +140,7 @@ namespace CLAM
 			}
 		}
 		_selectedProcessings.clear();
-		_processingsGeometry.clear();
+		_processingsGeometries.clear();
 	}
 
 	void Network::LoadFrom( Storage & storage)
@@ -150,7 +150,7 @@ namespace CLAM
 		if (!_setPasteMode) Clear();
 		XMLAdapter<std::string> strAdapter( _name, "id");
 		storage.Load(strAdapter);
-		_processingsGeometry.clear();
+		_processingsGeometries.clear();
 
 		while(1)
 		{
@@ -171,13 +171,13 @@ namespace CLAM
 				newProcNames.insert(changeProcNames::value_type(name,newName));
 				name=newName;
 			}
-			// if exists canvas processings boxes related attributes, restore them
+			// if exists canvas geometries, restore them
 			if (procDefinition.GetPosition()!="" && procDefinition.GetSize()!="")
 			{
-				ProcessingGeometry ProcessingsGeometryMap;
-				ProcessingsGeometryMap.setPosition(procDefinition.GetPosition());
-				ProcessingsGeometryMap.setSize(procDefinition.GetSize());
-				_processingsGeometry.insert(ProcessingsGeometryMap::value_type(name,ProcessingsGeometryMap));
+				Geometry processingGeometry;
+				StringPairToInts(procDefinition.GetPosition(),processingGeometry.x,processingGeometry.y);
+				StringPairToInts(procDefinition.GetSize(),processingGeometry.width,processingGeometry.height);
+				_processingsGeometries.insert(ProcessingsGeometriesMap::value_type(name,processingGeometry));
 			}
 		}
 
@@ -252,20 +252,51 @@ namespace CLAM
 		return 1;
 	}
 
-	bool Network::UpdateProcessingsGeometry (const ProcessingsGeometryMap & processingsGeometry)
+	bool Network::SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries)
 	{
-		_processingsGeometry.clear();
-		if (processingsGeometry.empty())
+		_processingsGeometries.clear();
+		if (processingsGeometries.empty())
 			return 1;
-		_processingsGeometry=processingsGeometry;
+		_processingsGeometries=processingsGeometries;
 		return 0;
 	}
-	const Network::ProcessingsGeometryMap Network::GetProcessingsGeometry()
+
+
+	const Network::ProcessingsGeometriesMap Network::GetAndClearGeometries()
 	{
-		const ProcessingsGeometryMap copyProcessingsGeometry(_processingsGeometry);
-		_processingsGeometry.clear();
+		const ProcessingsGeometriesMap copyProcessingsGeometry(_processingsGeometries);
+		_processingsGeometries.clear();
 		return copyProcessingsGeometry;
 	}
+
+/*	// TODO: use individual geometries loadings/storings??:
+	const Network::Geometry Network::GetAndEraseGeometry(std::string name)
+	{
+		const ProcessingsGeometriesMap::iterator itGeometry =_processingsGeometries.find(name);
+		Geometry geometry=itGeometry->second;
+		if (itGeometry == _processingsGeometries.end())
+		{
+			geometry.width=0;
+			geometry.height=0;
+			return geometry;
+		}
+		_processingsGeometries.erase(name); // if exists, erase geometry from map
+		return geometry;
+	}*/
+
+	void Network::StringPairToInts(const std::string & geometryInString, int & a, int & b)
+	{
+		a=atoi(geometryInString.substr(0,geometryInString.find(",")).c_str());
+		b=atoi(geometryInString.substr(geometryInString.find(",")+1,geometryInString.length()).c_str());
+	}
+
+	const std::string Network::IntsToString (const int & a, const int & b) const
+	{
+		std::ostringstream stream;
+		stream<<a<<","<<b;
+		return stream.str();
+	}
+
 
 	void Network::AddFlowControl(FlowControl* flowControl)
 	{

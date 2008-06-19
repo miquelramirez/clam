@@ -50,39 +50,12 @@ public:
 	typedef std::list<std::string> NamesList;
 	typedef std::list<InPortBase *> InPortsList;
 
-	class ProcessingGeometry //TODO: maybe just define a struct?
+	
+	typedef struct
 	{
-	public:
-		void getPosition(int & x,int & y) const
-			{ x =_x; y =_y; }
-		const std::string getPosition() const
-			{ return IntsToString(_x,_y); }
-		void getSize (int & w,int & h) const
-			{ w =_w; h =_h; }
-		const std::string getSize() const
-			{ return IntsToString(_w,_h); }
-		void setPosition (int x, int y)
-			{_x=x;_y=y;}
-		void setPosition(const std::string & positionString) { StringPairToInts(positionString,_x,_y);}
-		void setSize (int w, int h)
-			{_w=w;_h=h;}
-		void setSize(const std::string & sizeString) { StringPairToInts(sizeString,_w,_h);}
-	private:
-		int _x,_y,_w,_h;
-		void StringPairToInts(const std::string & geometryInString, int & a, int & b)
-		{
-			a=atoi(geometryInString.substr(0,geometryInString.find(",")).c_str());
-			b=atoi(geometryInString.substr(geometryInString.find(",")+1,geometryInString.length()).c_str());
-		}
-		const std::string IntsToString (const int & a, const int & b) const
-		{
-			std::ostringstream stream;
-			stream<<a<<","<<b;
-			return stream.str();
-		}
-	};
-	typedef std::map <std::string, ProcessingGeometry> ProcessingsGeometryMap;
-
+		int x,y,width,height;
+	} Geometry;
+	typedef std::map <std::string, Geometry> ProcessingsGeometriesMap;
 	
 	// constructor / destructor
 	Network();
@@ -113,8 +86,13 @@ public:
 	// methods related to copy&paste processings from canvas
 	bool UpdateSelections (const NamesList & processingsNamesList);
 	void setPasteMode() { _setPasteMode=true; }
-	bool UpdateProcessingsGeometry (const ProcessingsGeometryMap & processingsProcessingGeometry);
-	const ProcessingsGeometryMap GetProcessingsGeometry ();
+
+	// canvas related geometries
+	bool SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries);
+	const ProcessingsGeometriesMap GetAndClearGeometries();
+
+/*// TODO: make individual geometries loadings/storings??
+	const Geometry GetAndEraseGeometry(std::string name);*/
 
 	// methods related to connect/disconnect interface
 	bool ConnectPorts( const std::string &, const std::string & );
@@ -213,7 +191,12 @@ private:
 	bool HasSelectionAndContains(const std::string & name) const;
 
 	// attributes for canvas processing geometries
-	mutable ProcessingsGeometryMap _processingsGeometry;
+	mutable ProcessingsGeometriesMap _processingsGeometries;
+	// helper to check if object exists (size>0)
+	bool IsNullGeometry (const Geometry & geometry) const;
+	void StringPairToInts(const std::string & geometryInString, int & a, int & b);
+	const std::string IntsToString (const int & a, const int & b) const;
+
 
 };
 
