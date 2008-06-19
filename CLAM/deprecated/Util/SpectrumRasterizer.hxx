@@ -27,7 +27,6 @@
 
 #include "Raster.hxx"
 #include "Assert.hxx"
-#include "ErrGUI.hxx"
 #include "Pixel.hxx"
 #include "Array.hxx"
 #include "CLAM_Math.hxx"
