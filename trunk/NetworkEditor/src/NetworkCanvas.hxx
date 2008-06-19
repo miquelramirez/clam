@@ -26,6 +26,7 @@
 #include <algorithm>
 #include <CLAM/Assert.hxx>
 #include <CLAM/XMLStorage.hxx>
+#include <iostream>
 
 class NetworkCanvas : public QWidget
 {
@@ -80,7 +81,7 @@ public:
 	   	// Overwritten latter. But some text is needed to enable it.
 		setWhatsThis("Dummy");
 
-		_deleteSelectedAction = new QAction(tr("Delete"), this);
+		_deleteSelectedAction = new QAction(QIcon(":/icons/images/editdelete.png"),tr("Delete"), this);
 		_deleteSelectedAction->setShortcut(QKeySequence(tr("Del")));
 		addAction(_deleteSelectedAction);
 		connect(_deleteSelectedAction, SIGNAL(triggered()), this, SLOT(removeSelectedProcessings()));
@@ -581,11 +582,14 @@ public:
 	virtual bool isOk(void * processing)=0;
 	virtual QString errorMessage(void * processing)=0;
 	virtual QWidget * embededWidgetFor(void * processing) = 0;
-	virtual void contextMenu(QMenu* menu, const QPoint & translatedPos) =0;
 
 	// TODO: Are those generic enough to be virtual?
 	virtual bool editConfiguration(ProcessingBox * box) = 0;
 	virtual void addControlSenderProcessing( ProcessingBox * processing, QPoint point ) = 0;
+
+	virtual void connectionContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region) { }
+	virtual void processingContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing) { }
+	virtual void canvasContextMenu(QMenu * menu, QContextMenuEvent * event) { }
 
 
 signals:
@@ -665,7 +669,38 @@ public: // Event Handlers
 	void contextMenuEvent(QContextMenuEvent * event)
 	{
 		QMenu menu(this);
-		contextMenu(&menu, translatedPos(event));
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(translatedPos(event));
+			switch (region)
+			{
+				case ProcessingBox::inportsRegion:
+				case ProcessingBox::outportsRegion:
+				case ProcessingBox::incontrolsRegion:
+				case ProcessingBox::outcontrolsRegion:
+					connectionContextMenu(&menu, event, _processings[i], region);
+					menu.exec(event->globalPos());
+				return;
+
+				case ProcessingBox::nameRegion:
+				case ProcessingBox::bodyRegion:
+				case ProcessingBox::resizeHandleRegion:
+					if (not _processings[i]->isSelected())
+					{
+						std::cout << "updating selection on context menu" << std::endl;
+						if (! (event->modifiers() & Qt::ControlModifier) )
+							clearSelections();
+						_processings[i]->select();
+						update();
+					}
+					processingContextMenu(&menu, event, _processings[i]);
+					menu.exec(event->globalPos());
+				return;
+
+				default: continue;
+			}
+		}
+		canvasContextMenu(&menu, event);
 		menu.exec(event->globalPos());
 	}
 
@@ -1510,17 +1545,6 @@ private slots:
 			return;
 		}
 	}
-	void onDeleteProcessing()
-	{
-		QPoint point = ((QAction*)sender())->data().toPoint();
-		for (unsigned i = _processings.size(); i--; )
-		{
-			ProcessingBox::Region region = _processings[i]->getRegion(point);
-			if (region == ProcessingBox::noRegion) continue;
-			removeProcessing(_processings[i]);
-			return;
-		}
-	}
 	void onNewProcessing()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
@@ -1739,27 +1763,28 @@ private:
 				}
 				return;
 			}
-			if (region==ProcessingBox::nameRegion || 
-				region==ProcessingBox::bodyRegion ||
-				region==ProcessingBox::resizeHandleRegion)
-				{
-				menu->addAction(QIcon(":/icons/images/configure.png"), tr("Configure"),
-					this, SLOT(onConfigure()))->setData(translatedPos);
-				menu->addAction(QIcon(":/icons/images/editclear.png"), tr("Rename"),
-					this, SLOT(onRename()))->setData(translatedPos);
-				QAction * removeAction =
-				menu->addAction(QIcon(":/icons/images/editdelete.png"), tr("Remove"),
-					this, SLOT(onDeleteProcessing()));
-				removeAction->setData(translatedPos);
-				removeAction->setShortcut(tr("Del"));
-				menu->addAction(_copySelectionAction);
-				menu->addAction(_cutSelectionAction);
-				return;
-			}
 		}
-		_pasteSelectionAction->setData(translatedPos);
+	}
+	virtual void connectionContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region)
+	{
+		// TODO: Move contextMenu() content here without the for and the region condition
+		contextMenu(menu, translatedPos(event));
+	}
+	virtual void processingContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing)
+	{
+		menu->addAction(QIcon(":/icons/images/configure.png"), tr("Configure"),
+			this, SLOT(onConfigure()))->setData(translatedPos(event));
+		menu->addAction(QIcon(":/icons/images/editclear.png"), tr("Rename"),
+			this, SLOT(onRename()))->setData(translatedPos(event));
+		menu->addAction(_deleteSelectedAction);
+		menu->addAction(_copySelectionAction);
+		menu->addAction(_cutSelectionAction);
+	}
+	virtual void canvasContextMenu(QMenu * menu, QContextMenuEvent * event)
+	{
+		_pasteSelectionAction->setData(translatedPos(event));
 		menu->addAction(_pasteSelectionAction);
-		_newProcessingAction->setData(translatedPos);
+		_newProcessingAction->setData(translatedPos(event));
 		menu->addAction(_newProcessingAction);
 	}
 
