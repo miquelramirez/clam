@@ -192,8 +192,6 @@ private:
 
 	// attributes for canvas processing geometries
 	mutable ProcessingsGeometriesMap _processingsGeometries;
-	// helper to check if object exists (size>0)
-	bool IsNullGeometry (const Geometry & geometry) const;
 	void StringPairToInts(const std::string & geometryInString, int & a, int & b);
 	const std::string IntsToString (const int & a, const int & b) const;
 
