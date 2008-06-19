@@ -1281,40 +1281,40 @@ public:
 
 	bool updateGeometriesOnXML(QPoint offsetPoint=QPoint(0,0))
 	{
-		CLAM::Network::ProcessingsGeometryMap processingsGeometryMap;
+		CLAM::Network::ProcessingsGeometriesMap processingsGeometriesMap;
 		for (unsigned i=0; i<_processings.size(); i++)
 		{
-			CLAM::Network::ProcessingGeometry processingGeometry;
+			CLAM::Network::Geometry processingGeometry;
 			QPoint position = _processings[i]->pos()-offsetPoint;
 			QSize size = _processings[i]->size();
 			const std::string name=_processings[i]->getName().toStdString();
-			processingGeometry.setPosition(position.x(),position.y());
-			processingGeometry.setSize(size.width(),size.height());
-			processingsGeometryMap.insert(CLAM::Network::ProcessingsGeometryMap::value_type(name,processingGeometry));
+			processingGeometry.x=position.x();
+			processingGeometry.y=position.y();
+			processingGeometry.width=size.width();
+			processingGeometry.height=size.height();
+			processingsGeometriesMap.insert(CLAM::Network::ProcessingsGeometriesMap::value_type(name,processingGeometry));
 		}
-		return (_network->UpdateProcessingsGeometry(processingsGeometryMap));
+		return (_network->SetProcessingsGeometries(processingsGeometriesMap));
 	}
 	bool loadGeometriesFromXML(QPoint offsetPoint = QPoint(0,0))
 	{
-		const CLAM::Network::ProcessingsGeometryMap & processingsGeometryMap=_network->GetProcessingsGeometry();
-		if (processingsGeometryMap.empty())
+		const CLAM::Network::ProcessingsGeometriesMap & processingsGeometriesMap=_network->GetAndClearGeometries();
+		if (processingsGeometriesMap.empty())
 			return 0;
-		CLAM::Network::ProcessingsGeometryMap::const_iterator it;
-		for(it=processingsGeometryMap.begin();it!=processingsGeometryMap.end();it++)
+		CLAM::Network::ProcessingsGeometriesMap::const_iterator it;
+		for(it=processingsGeometriesMap.begin();it!=processingsGeometriesMap.end();it++)
 		{
 			QString name=QString(it->first.c_str());
-			const CLAM::Network::ProcessingGeometry & processingGeometry=it->second;
-			int x,y,w,h;
-			processingGeometry.getPosition(x,y);
-			QPoint position=offsetPoint+QPoint(x,y);
-			processingGeometry.getSize(w,h);
-			QSize size=QSize(w,h);
+			const CLAM::Network::Geometry & geometry=it->second;
+			QPoint position=offsetPoint+QPoint(geometry.x,geometry.y);
+			QSize size=QSize(geometry.width,geometry.height);
 			ProcessingBox * box=getBox(name);
 			box->move(position);
 			box->resize(size);
 		}
 		return 1;
 	}
+
 
 private slots:
 	void onCopyConnection()
