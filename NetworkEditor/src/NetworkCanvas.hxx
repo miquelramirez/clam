@@ -265,6 +265,62 @@ public: // Helpers
 	{
 		return event->globalPos()/_zoomFactor;
 	}
+protected:
+	/// Given a connector region it return the complementary one.
+	/// Returns noRegion if the region is not a connector region.
+	ProcessingBox::Region peerRegion(ProcessingBox::Region region)
+	{
+		switch (region)
+		{
+			case ProcessingBox::outcontrolsRegion:
+				return ProcessingBox::incontrolsRegion;
+			case ProcessingBox::incontrolsRegion:
+				return ProcessingBox::outcontrolsRegion;
+			case ProcessingBox::outportsRegion:
+				return ProcessingBox::inportsRegion;
+			case ProcessingBox::inportsRegion:
+				return ProcessingBox::outportsRegion;
+			default:
+				return ProcessingBox::noRegion;
+		}
+	}
+	/// Being region a connector region, it returns the number of connectors the processing has in it.
+	/// @todo: move this method to the ProcessingBox
+	unsigned nConnectors(void * processing, ProcessingBox::Region region)
+	{
+		switch (region)
+		{
+			case ProcessingBox::outcontrolsRegion:
+				return nOutcontrols(processing);
+			case ProcessingBox::incontrolsRegion:
+				return nIncontrols(processing);
+			case ProcessingBox::outportsRegion:
+				return nOutports(processing);
+			case ProcessingBox::inportsRegion:
+				return nInports(processing);
+			default:
+				return 0;
+		}
+	}
+	/// Being region a connector region, it returns the name of connector in processing at position index.
+	/// @todo: move this method to the ProcessingBox
+	QString connectorName(void * processing, ProcessingBox::Region region, unsigned index)
+	{
+			switch (region)
+			{
+				case ProcessingBox::outcontrolsRegion:
+					return outcontrolName(processing, index);
+				case ProcessingBox::incontrolsRegion:
+					return incontrolName(processing, index);
+				case ProcessingBox::outportsRegion:
+					return outportName(processing, index);
+				case ProcessingBox::inportsRegion:
+					return inportName(processing, index);
+				default:
+					// it should never reach this point
+					return "Error";
+			}
+	}
 
 public: // Actions
 	void clearSelections()
@@ -1480,16 +1536,16 @@ private slots:
 	void onProcessingsConnectTo()
 	{
 		QMap<QString, QVariant> receiveMap=((QAction*)sender())->data().toMap();
-		unsigned sourceOutlet = receiveMap["sourceoutlet"].toUInt();
-		unsigned sourceNumber = receiveMap["sourceprocessing"].toUInt();
-		unsigned targetInlet = receiveMap["targetinlet"].toUInt();
-		unsigned targetNumber = receiveMap["targetprocessing"].toUInt();
-		QPoint point = receiveMap["pos"].toPoint();
-		if ((_processings[sourceNumber]->getRegion(point)==ProcessingBox::outcontrolsRegion)||
-			(_processings[targetNumber]->getRegion(point)==ProcessingBox::incontrolsRegion))
-			this->addControlConnection(_processings[sourceNumber],sourceOutlet,_processings[targetNumber],targetInlet);
+		ProcessingBox * sourceBox = getBox(receiveMap["outprocessing"].toString());
+		ProcessingBox * targetBox = getBox(receiveMap["inprocessing"].toString());
+		unsigned sourceConnector = receiveMap["outlet"].toUInt();
+		unsigned targetConnector = receiveMap["inlet"].toUInt();
+		bool isPort = receiveMap["isPort"].toBool();
+		if (isPort)
+			addPortConnection(sourceBox,sourceConnector,targetBox,targetConnector);
 		else
-			this->addPortConnection(_processings[sourceNumber],sourceOutlet,_processings[targetNumber],targetInlet);
+			addControlConnection(sourceBox,sourceConnector,targetBox,targetConnector);
+		update();
 	}
 
 	void onConfigure()
@@ -1596,200 +1652,129 @@ private:
 	}
 
 
-	virtual void contextMenu(QMenu* menu, const QPoint & translatedPos, ProcessingBox * processing)
+	virtual void connectionContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region)
 	{
+		QPoint cursorPosition = translatedPos(event);
 		menu->addAction(QIcon(":/icons/images/remove.png"), tr("Disconnect"),
-			this, SLOT(onDisconnect()))->setData(translatedPos);
+			this, SLOT(onDisconnect()))->setData(cursorPosition);
 		menu->addAction(QIcon(":/icons/images/editcopy.png"), tr("Copy connection name"),
-			this, SLOT(onCopyConnection()))->setData(translatedPos);
-		ProcessingBox::Region region = processing->getRegion(translatedPos);
+			this, SLOT(onCopyConnection()))->setData(cursorPosition);
 		if (region==ProcessingBox::incontrolsRegion)
 		{
 			menu->addAction(QIcon(":/icons/images/hslider.png"), tr("Add slider"),
-				this, SLOT(onAddSlider()))->setData(translatedPos);
+				this, SLOT(onAddSlider()))->setData(cursorPosition);
 		}
 		if (region==ProcessingBox::outportsRegion)
 		{
 			typedef CLAM::ProcessingFactory::Keys Keys;
 			menu->addSeparator();
 			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			unsigned portindex = processing->portIndexByYPos(translatedPos);
+			unsigned portindex = processing->portIndexByYPos(cursorPosition);
 			std::string outportType = outportTypeId(processing->model(),portindex);
 			Keys keys = factory.GetKeys("port_monitor_type", outportType);
 			for (Keys::const_iterator it=keys.begin(); it!=keys.end(); it++)
 			{
 				const char* key = it->c_str();
-				std::string iconPath = factory.GetValueFromAttribute(key, "icon");
-				QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
-				menu->addAction( icon, key, this, SLOT(onAddLinkedProcessing()))->setData(translatedPos);
+				menu->addAction( clamProcessingIcon(key), key,
+					this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
 			}
 			if (outportType==typeid(CLAM::TData).name()) // Check for audio port
 			{
-				//menu->addSeparator();
 				const char* key="AudioSink";
-				std::string iconPath = factory.GetValueFromAttribute(key, "icon"); 
-				QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
-				menu->addAction( icon, key, this,SLOT(onAddLinkedProcessing()))->setData(translatedPos);
+				menu->addAction( clamProcessingIcon(key), key,
+					this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
 			}
 			
 		}
 		if (region==ProcessingBox::inportsRegion)
 		{
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			unsigned portindex = processing->portIndexByYPos(translatedPos);
+			unsigned portindex = processing->portIndexByYPos(cursorPosition);
 			std::string inportType=inportTypeId(processing->model(),portindex);
 
 			if (inportType==typeid(CLAM::TData).name()) // Check for audio port
 			{
-				menu->addSeparator();
 				const char* key="AudioSource";
-				std::string iconPath = factory.GetValueFromAttribute(key,"icon");
-				QIcon icon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()) );
-				menu->addAction( icon, key, this ,SLOT(onAddLinkedProcessing()))->setData(translatedPos);
+				menu->addAction( clamProcessingIcon(key), key,
+					this ,SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
 			}
 		}
 		// Check for compatible connectors and add "Connect To" submenus
 		{
-			// Needed for compatibility to pass processing index instead of name to onProcessingsConnectTo
-			// TODO: it will not be needed anymore after change map struct
-			unsigned i;
-			for (i = _processings.size(); i--; )
-			{
-				if (_processings[i]->getRegion(translatedPos)==region)
-					break;
-			}
+			bool isPortConnection = region == ProcessingBox::outportsRegion || region == ProcessingBox::inportsRegion;
+			bool selfIsInput = region == ProcessingBox::incontrolsRegion || region == ProcessingBox::inportsRegion;
 
-			CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-			// Pointers to functions
-			unsigned (ClamNetworkCanvas::*nTargetConnections) (void *);
-			QString (ClamNetworkCanvas::*nTargetConnectionName) (void *, unsigned) const;
-			bool (ClamNetworkCanvas::*canConnectConnection) (ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet);
-			unsigned counterTargetProcessings;
-			unsigned sourceConnection;
-			unsigned targetConnection;
-			// pointers to connection variables
-			unsigned * outProcessing;
-			unsigned * outlet;
-			unsigned * inProcessing;
-			unsigned * inlet;
-	
-			switch (region)
+			// Self reference connector
+			ProcessingBox * selfProcessing = processing; // Just an alias to be symmetric to 'peer'
+			unsigned selfConnection = isPortConnection ?
+					selfProcessing->portIndexByYPos(cursorPosition):
+					selfProcessing->controlIndexByXPos(cursorPosition);
+
+			// Peer: To be given values along the bucle
+			ProcessingBox * peerProcessing;
+			unsigned peerConnection;
+
+			// Choosing in/out in respect of self/peer
+			ProcessingBox ** inProcessing  = selfIsInput? &selfProcessing : &peerProcessing;
+			ProcessingBox ** outProcessing = selfIsInput? &peerProcessing : &selfProcessing;
+			unsigned * inlet  = selfIsInput ? &selfConnection : &peerConnection;
+			unsigned * outlet = selfIsInput ? &peerConnection : &selfConnection;
+			
+			menu->addSeparator();
+			for (unsigned i = 0; i<_processings.size(); i++ )
 			{
-				case ProcessingBox::outcontrolsRegion:
-					nTargetConnections = &ClamNetworkCanvas::nIncontrols;
-					nTargetConnectionName = &ClamNetworkCanvas::incontrolName;
-					canConnectConnection = &ClamNetworkCanvas::canConnectControls;
-					outProcessing = &i;
-					outlet = &sourceConnection;
-					inProcessing = &counterTargetProcessings;
-					inlet = &targetConnection;
-					sourceConnection=processing->controlIndexByXPos(translatedPos);
-					break;
-				case ProcessingBox::incontrolsRegion:
-					nTargetConnections = &ClamNetworkCanvas::nOutcontrols;
-					nTargetConnectionName = &ClamNetworkCanvas::outcontrolName;
-					canConnectConnection = &ClamNetworkCanvas::canConnectControls;
-					outProcessing = &counterTargetProcessings;
-					outlet = &targetConnection;
-					inProcessing = &i;
-					inlet = &sourceConnection;
-					sourceConnection=processing->controlIndexByXPos(translatedPos);
-					break;
-				case ProcessingBox::outportsRegion:
-					nTargetConnections = &ClamNetworkCanvas::nInports;
-					nTargetConnectionName = &ClamNetworkCanvas::inportName;
-					canConnectConnection = &ClamNetworkCanvas::canConnectPorts;
-					outProcessing = &i;
-					outlet = &sourceConnection;
-					inProcessing = &counterTargetProcessings;
-					inlet = &targetConnection;
-					sourceConnection=processing->portIndexByYPos(translatedPos);
-					break;
-				case ProcessingBox::inportsRegion:
-					nTargetConnections = &ClamNetworkCanvas::nOutports;
-					nTargetConnectionName = &ClamNetworkCanvas::outportName;
-					canConnectConnection = &ClamNetworkCanvas::canConnectPorts;
-					outProcessing = &counterTargetProcessings;
-					outlet = &targetConnection;
-					inProcessing = &i;
-					inlet = &sourceConnection;
-					sourceConnection=processing->portIndexByYPos(translatedPos);
-					break;
-				default:
-					return;	// it should never reach this point
-			}
-			std::string iconPath;
-			QIcon processingIcon;
-			QMenu * submenu=menu;
-			submenu->addSeparator();
-			for (counterTargetProcessings = 0; counterTargetProcessings<_processings.size(); counterTargetProcessings++ )
-			{
-				ProcessingBox * targetProcessing =_processings[counterTargetProcessings];
-				const char* targetClassName=((CLAM::Processing*)targetProcessing->model())->GetClassName();
-				if (targetProcessing->getName()==processing->getName()) continue;
-				//if (counterTargetProcessings==i) continue; // skip if it's the same processing
+				peerProcessing =_processings[i];
+				if (peerProcessing==selfProcessing) continue; // TODO: Loops not allowed by now
+
 				typedef QMap<QString, QVariant> ConnectionMap;
 				QList<ConnectionMap> listConnectionsMap;
-				
-				processingIcon=QIcon();
-				if (factory.AttributeExists(targetClassName,"icon"))
+				unsigned nPeerConnectors = nConnectors(peerProcessing->model(), peerRegion(region));
+				for (peerConnection=0; peerConnection<nPeerConnectors; peerConnection++)
 				{
-					iconPath=factory.GetValueFromAttribute(targetClassName,"icon");
-					processingIcon = QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()));
-				}
-				for (targetConnection=0; targetConnection<(this->*nTargetConnections)(targetProcessing->model());targetConnection++)
-				{
-					if (!(this->*canConnectConnection)(_processings[*outProcessing], *outlet,
-						_processings[*inProcessing], *inlet)) continue;
-					QString connectionName=(this->*nTargetConnectionName)
-						(targetProcessing->model(),targetConnection);
+					// Filter out incompatible connections
+					if (isPortConnection and not canConnectPorts(*outProcessing, *outlet, *inProcessing, *inlet))
+						continue;
+					if (not isPortConnection and not canConnectControls(*outProcessing, *outlet, *inProcessing, *inlet))
+						continue;
+
+					QString peerConnectionName=connectorName(peerProcessing->model(), peerRegion(region), peerConnection);
 					ConnectionMap connectionMap;
-					connectionMap["sourceoutlet"]=*outlet;			//unsigned
-					connectionMap["sourceprocessing"]=*outProcessing;	//unsigned
-					connectionMap["targetprocessing"]=*inProcessing;	//unsigned
-					connectionMap["targetinlet"]=*inlet;			//unsigned
-					connectionMap["pos"]=translatedPos;			//QPoint
-					connectionMap["connectionName"]=connectionName;		//QString
+					connectionMap["outprocessing"]=(*outProcessing)->getName();	// QString
+					connectionMap["inprocessing"]=(*inProcessing)->getName();	// QString
+					connectionMap["outlet"]=*outlet;			//unsigned
+					connectionMap["inlet"]=*inlet;			//unsigned
+					connectionMap["isPort"]=isPortConnection;			//bool
+					connectionMap["connectionName"]=peerConnectionName;		//QString
 					listConnectionsMap.push_back(connectionMap);
 				}
-				QString connectionName;
 
 				if (listConnectionsMap.empty())
 					continue; // no compatible connections, skip
+				QIcon icon = processingIcon(peerProcessing);
 				if (listConnectionsMap.size()==1) // one compatible connection
 				{
 					ConnectionMap connectionMap = (ConnectionMap)listConnectionsMap.front();
-					connectionName=connectionMap["connectionName"].toString();
-					connectionName=tr("Connect to %1.%2")
-						.arg(targetProcessing->getName())
-						.arg(connectionName);
-					//std::cout<<connectionName.toStdString()<<std::endl;
-					menu->addAction(processingIcon,connectionName,this,
-						SLOT(onProcessingsConnectTo()))->setData(connectionMap);
+					QString connectionName=connectionMap["connectionName"].toString();
+					menu->addAction(icon,
+						tr("Connect to %1.%2")
+							.arg(peerProcessing->getName())
+							.arg(connectionName),
+						this, SLOT(onProcessingsConnectTo()))->setData(connectionMap);
 					continue;
 				}
 				//more than one compatible connection:
-				connectionName=tr("Connect to %1")
-					.arg(targetProcessing->getName());
-				submenu=menu->addMenu(processingIcon,connectionName);
+				QMenu * submenu=menu->addMenu(icon,
+					tr("Connect to %1").arg(peerProcessing->getName()));
 				QList<ConnectionMap>::const_iterator itConnectionsMaps=listConnectionsMap.constBegin();
 				while (itConnectionsMaps!=listConnectionsMap.constEnd())
 				{
 					ConnectionMap connectionMap= *itConnectionsMaps;
-					connectionName=connectionMap["connectionName"].toString();
+					QString connectionName=connectionMap["connectionName"].toString();
 					submenu->addAction(connectionName,this,
 						SLOT(onProcessingsConnectTo()))->setData(connectionMap);
 					itConnectionsMaps++;
 				}
 			}
 		}
-		return;
-	}
-
-	virtual void connectionContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region)
-	{
-		// TODO: Move contextMenu() content here without the for and the region condition
-		contextMenu(menu, translatedPos(event), processing);
 	}
 	virtual void processingContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing)
 	{
@@ -1807,6 +1792,19 @@ private:
 		menu->addAction(_pasteSelectionAction);
 		_newProcessingAction->setData(translatedPos(event));
 		menu->addAction(_newProcessingAction);
+	}
+	virtual QIcon processingIcon(ProcessingBox * processingBox)
+	{
+		const char* className=((CLAM::Processing*)processingBox->model())->GetClassName();
+		return clamProcessingIcon(className);
+	}
+private:
+	QIcon clamProcessingIcon(const std::string & className)
+	{
+		CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+		if (not factory.AttributeExists(className,"icon")) return QIcon();
+		std::string iconPath=factory.GetValueFromAttribute(className,"icon");
+		return QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()));
 	}
 
 protected:
