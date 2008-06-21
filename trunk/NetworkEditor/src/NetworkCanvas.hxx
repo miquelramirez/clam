@@ -583,23 +583,25 @@ protected:
 	virtual QPoint getSelectionTopLeft(bool inverse = false)
 	{
 		QPoint topLeftPoint=QPoint(0,0);
-		unsigned i=0;
-		while (!_processings[i]->isSelected() && i<_processings.size()) i++;
-		if (++i<_processings.size())
-			topLeftPoint=_processings[i]->pos(); // if exist, take the first selected box as reference instead (0,0)
-		for(++i;i<_processings.size(); i++)
+		bool noSelection=true;
+		for(unsigned i=0;i<_processings.size(); i++)
 		{
 			ProcessingBox * processing = _processings[i];
 			if (!processing->isSelected())
 				continue;
-			if (!inverse)	// TopLeft
+			if (noSelection)
+			{
+				topLeftPoint=processing->pos(); // if exist, take the first selected box as reference instead (0,0)
+				noSelection=false;
+			}
+			if(not inverse) // TopLeft
 			{
 				if (processing->pos().x()<topLeftPoint.x())
 					topLeftPoint.setX(processing->pos().x());
 				if (processing->pos().y()<topLeftPoint.y())
 					topLeftPoint.setY(processing->pos().y());
 			}
-			else		// if inverse, DownRight
+			else // is inverse: DownRight
 			{
 				if (processing->pos().x()>topLeftPoint.x())
 					topLeftPoint.setX(processing->pos().x());
