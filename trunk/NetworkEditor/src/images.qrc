@@ -749,6 +749,7 @@
         <file>images/spectrogram.svg</file>
 	<file>images/sink.svg</file>
 	<file>images/source.svg</file>
+	<file>images/faustlogo.svg</file>
     </qresource>
     <qresource prefix="/interfaces" >
         <file>prototyper/DefaultInterface.ui</file>
