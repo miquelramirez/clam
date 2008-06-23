@@ -22,6 +22,8 @@
 #include "AudioFileMemoryLoader.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
+#include <cmath>
+
 namespace CLAM
 {
 
@@ -39,8 +41,10 @@ namespace Hidden
 	
 	AudioFileMemoryLoader::AudioFileMemoryLoader( const ProcessingConfig& cfg )
 		: _output( "Samples Read", this ),
-		  _timeOutput( "Current Time Position", this),
-		  _position ( 0 )
+		  _timeOutput( "Current Time Position", this ),
+		  _positionInput( "Current Time Position (%)", this ),
+		  _lastPosition( 0 ),
+		  _position( 0 )
 	{
 		Configure( cfg );
 	}
@@ -77,6 +81,7 @@ namespace Hidden
 		reader.Do(_samples);
 		
 		_sampleRate = reader.GetHeader().GetSampleRate();
+		_delta = 0.9 / reader.GetHeader().GetSamples();
 		_timeOutput.SendControl(0);
 		
 		return true;
@@ -99,6 +104,12 @@ namespace Hidden
 	{
 		CLAM::TData * samplesArray = &_samples.GetBuffer()[0];
 		CLAM::TData * outputArray = &outputSamples.GetBuffer()[0];
+		
+		CLAM::TControlData currentPosition = _positionInput.GetLastValue();
+		if (std::fabs (currentPosition - _lastPosition) > _delta) {
+			_lastPosition = currentPosition;
+			_position = (long) (currentPosition * (TControlData) _samples.GetSize());
+		}
 		
 		long samplesLeft = _samples.GetSize() - _position;
 		long length = outputSamples.GetSize();
