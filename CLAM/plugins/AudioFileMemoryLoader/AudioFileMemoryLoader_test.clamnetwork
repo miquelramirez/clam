@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioFileMemoryLoader" position="146,47" size="169,58" type="AudioFileMemoryLoader">
+    <SourceFile>/usr/local/share/networkeditor/example-data/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
+    <SelectedChannel>0</SelectedChannel>
+    <Loop>0</Loop>
+  </processing>
+
+  <processing id="AudioSink" position="328,39" size="90,58" type="AudioSink"/>
+
+  <processing id="ControlPrinter" position="151,150" size="110,84" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <port_connection>
+    <out>AudioFileMemoryLoader.Samples Read</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <control_connection>
+    <out>AudioFileMemoryLoader.Current Time Position</out>
+    <in>ControlPrinter.In Control</in>
+  </control_connection>
+
+</network>

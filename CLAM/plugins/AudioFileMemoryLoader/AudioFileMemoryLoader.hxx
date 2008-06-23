@@ -55,6 +55,9 @@ namespace CLAM
 		Config       _config;
 		AudioOutPort _output;
 		OutControl   _timeOutput;
+		InControl    _positionInput;
+		TControlData _lastPosition;
+		TControlData _delta;
 		long         _position;
 		Audio        _samples;
 		TData        _sampleRate;
