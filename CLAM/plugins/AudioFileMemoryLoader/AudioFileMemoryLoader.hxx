@@ -27,6 +27,7 @@
 #include <CLAM/MonoAudioFileReaderConfig.hxx>
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/OutControl.hxx>
+#include <CLAM/InControl.hxx>
 
 namespace CLAM
 {
@@ -38,7 +39,7 @@ namespace CLAM
 		typedef MonoAudioFileReaderConfig Config;
 		
 		AudioFileMemoryLoader( const ProcessingConfig& cfg = Config() );
-   
+
 		virtual const char* GetClassName() const;
 		virtual const ProcessingConfig& GetConfig() const;
 		bool Do( Audio & outputSamples );
