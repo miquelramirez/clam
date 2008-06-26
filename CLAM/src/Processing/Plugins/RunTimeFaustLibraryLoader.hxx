@@ -30,6 +30,7 @@ protected:
 			return;
 		}
 		std::cout << "[FAUST-LADSPA] \topened plugin: " << pluginFullFilename << std::endl;
+
 		CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
 		for (unsigned long i=0; descriptorTable(i); i++)
 		{
@@ -40,8 +41,20 @@ protected:
 					new CLAM::LadspaWrapperCreator(pluginFullFilename, 
 						i, 
 						oss.str()));
+			std::string pluginName=descriptor->Name;
 			factory.AddAttribute(oss.str(), "category", "FAUST");
-			factory.AddAttribute(oss.str(), "description", descriptor->Name);
+			factory.AddAttribute(oss.str(), "description", pluginName);
+			std::string svgFileDir = CompletePathFor("examples/" + pluginName + ".dsp-svg/process.svg");
+			if (svgFileDir != "")
+			{
+				factory.AddAttribute(oss.str(), "svg_diagram", svgFileDir);
+				std::cout << "[FAUST-LADSPA] \tusing SVG diagram: " << svgFileDir << std::endl;
+			}
+			else
+				factory.AddAttribute(oss.str(), "svg_diagram", ":icons/images/faustlogo.svg");
+
+			if (!factory.AttributeExists(oss.str(), "icon"))
+				factory.AddAttribute(oss.str(), "icon", "faustlogo.svg");
 		}
 	}
 
@@ -49,6 +62,8 @@ protected:
 	{ 
 		static const char * result[] = 
 		{
+			"/usr/share/doc/faust",
+			"/usr/local/share/doc/faust",
 			0
 		};
 		return result;
