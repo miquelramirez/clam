@@ -47,6 +47,7 @@ namespace Hidden
 		  _position( 0 )
 	{
 		Configure( cfg );
+		_positionInput.SetBounds( 0.0, 1.0 );
 	}
 
 	AudioFileMemoryLoader::~AudioFileMemoryLoader()
@@ -70,7 +71,7 @@ namespace Hidden
 
 		MonoAudioFileReader reader(_config);
 		
-		if ( !reader.Configure (_config) )
+		if ( !reader.IsConfigured() )
 		{
 			AddConfigErrorMessage(reader.GetConfigErrorMessage());
 			return false;
@@ -82,6 +83,7 @@ namespace Hidden
 		
 		_sampleRate = reader.GetHeader().GetSampleRate();
 		_delta = 0.9 / reader.GetHeader().GetSamples();
+		_position = 0;
 		_timeOutput.SendControl(0);
 		
 		return true;
@@ -89,6 +91,8 @@ namespace Hidden
 
 	bool AudioFileMemoryLoader::ConcreteStart()
 	{
+		_position = 0;
+		_timeOutput.SendControl(0);
 		return true;
 	}
 
