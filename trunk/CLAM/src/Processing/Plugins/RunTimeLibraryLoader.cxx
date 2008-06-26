@@ -10,18 +10,11 @@
 #	include <dlfcn.h>
 #endif
 
+#include <fstream>
+
 void RunTimeLibraryLoader::Load() const
 {
-	const char * envPath = getenv(pathEnvironmentVar());
-	const char * envHome = getenv("HOME");
-	std::string path = envPath ? envPath : "";
-	if (envHome)
-	{	
-		path += std::string(path.empty()? "":pathSeparator()) + envHome + homePath();
-	}
-	// add standardPath to the env path string (i.e. path1:path2)
-	for (const char ** standardPath=standardPaths(); *standardPath; standardPath++)
-		path += std::string(path.empty()? "":pathSeparator()) + *standardPath;
+	std::string path = GetPaths();
 	// for each path, load libraries
 	std::vector <std::string> environmentPaths = SplitPathVariable(path);
 	for (unsigned i=0; i<environmentPaths.size(); i++)
@@ -96,3 +89,47 @@ std::vector<std::string> RunTimeLibraryLoader::SplitPathVariable(const std::stri
 	}
 	return result;
 }
+
+const std::string RunTimeLibraryLoader::GetPaths() const
+{
+	const char * envPath = getenv(pathEnvironmentVar());
+	const char * envHome = getenv("HOME");
+	std::string path = envPath ? envPath : "";
+	if (envHome)
+	{
+		path += std::string(path.empty()? "":pathSeparator()) + envHome + homePath();
+	}
+	// add standardPath to the env path string (i.e. path1:path2)
+	for (const char ** standardPath=standardPaths(); *standardPath; standardPath++)
+		path += std::string(path.empty()? "":pathSeparator()) + *standardPath;
+	return path;
+}
+
+
+const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subpathAndName) const
+{
+	std::string paths=GetPaths();
+	std::vector <std::string> environmentPaths = SplitPathVariable(paths);
+	for (unsigned i=0; i<environmentPaths.size(); i++)
+	{
+		// get file name:
+		std::string fileName = subpathAndName.substr( subpathAndName.rfind("/")+1 , subpathAndName.length()); 
+		// testDir= root_path + subpath:
+		std::string testDir = environmentPaths[i] + "/" + subpathAndName.substr(0, subpathAndName.size()-fileName.size());
+		// check if directory exists:
+		DIR* dir = opendir(testDir.c_str());
+		if (not dir) 
+			continue; // directory doesn't match, skip
+		closedir(dir);
+		// check if file exists:
+		std::fstream fin;
+		std::string completeFileName=testDir+fileName;
+		fin.open(completeFileName.c_str(),std::ios::in);
+		if (not fin.is_open()) 
+			continue; // file doesn't exist, skip
+		fin.close();
+		return completeFileName;
+	}
+	return "";
+}
+

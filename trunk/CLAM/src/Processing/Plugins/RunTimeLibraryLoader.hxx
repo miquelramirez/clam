@@ -17,6 +17,9 @@ protected:
 	void * FullyLoadLibrary(const std::string & libraryPath) const;
 	std::string LibraryLoadError() const;
 	std::vector<std::string> SplitPathVariable(const std::string & pathVariable) const;
+
+	const std::string CompletePathFor(const std::string & subpathAndName) const; // if subpathAndName exists on environment paths, returns full path
+
 	const char * pathSeparator() const
 	{
 		return 
@@ -32,6 +35,9 @@ protected:
 	virtual const char * pathEnvironmentVar() const = 0;
 	virtual const char * libraryType() const = 0;
 	virtual void SetupLibrary( void* handle, const std::string& pluginFullFilename ) const {}
+
+private:
+	const std::string GetPaths() const;
 };
 
 #endif //RunTimeLibraryLoader_hxx
