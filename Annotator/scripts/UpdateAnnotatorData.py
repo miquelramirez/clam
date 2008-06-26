@@ -3,10 +3,10 @@
 import sys
 
 schema = sys.argv[1]
-data = sys.argv[2:]
+pools = sys.argv[2:]
 
 print "Schema:", schema
-print "Data:", data
+print "pools:", pools
 
 from xml.etree import ElementTree
 schemaDoc = ElementTree.parse(file(schema))
@@ -21,13 +21,17 @@ for line in schemaDoc.findall("//Attribute"):
 print segmentationAttributes
 
 # comprehended way
-segmentationAttributes = [
-	(line.attrib['scope'], line.attrib['name']) 
+segmentationAttributes = [ (line.attrib['scope'], line.attrib['name']) 
 	for line in schemaDoc.findall("//Attribute")
 	if line.attrib['type'] == 'Segmentation'
 ]
 
 print segmentationAttributes
+print dir(schemaDoc)
+help(schemaDoc.write)
+schemaDoc.write(sys.stdout,'utf8')
 
+for pool in pools:
+	print pool
 
 
