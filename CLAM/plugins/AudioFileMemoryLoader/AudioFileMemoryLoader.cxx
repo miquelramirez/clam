@@ -106,27 +106,41 @@ namespace Hidden
 		CLAM::TData * outputArray = &outputSamples.GetBuffer()[0];
 		
 		CLAM::TControlData currentPosition = _positionInput.GetLastValue();
-		if (std::fabs (currentPosition - _lastPosition) > _delta) {
+		if (std::fabs (currentPosition - _lastPosition) > _delta)
+		{
 			_lastPosition = currentPosition;
 			_position = (long) (currentPosition * (TControlData) _samples.GetSize());
 		}
 		
-		long samplesLeft = _samples.GetSize() - _position;
+		long lastSample = _samples.GetSize() - 1;
 		long length = outputSamples.GetSize();
-		if (length > samplesLeft)
-			length = samplesLeft;
-		
-		long i;
-		for (i = 0; i < length; i++)
+		bool loop = _config.GetLoop();
+		long i = 0;
+		while (i < length)
 		{
-			outputArray[i] = samplesArray[_position];
-			_position++;
+			long samplesLeft = lastSample - _position;
+			if (samplesLeft > length - i)
+				samplesLeft = length - i;
+			
+			for (; samplesLeft > 0; samplesLeft--)
+			{
+				outputArray[i] = samplesArray[_position];
+				i++;
+				_position++;
+			}
+			
+			if (!loop)
+				break;
+			
+			if (_position >= lastSample)
+				_position = 0;
 		}
-		length = outputSamples.GetSize();
+		
 		for (; i < length; i++)
 		{
 			outputArray[i] = 0.0;
 		}
+		
 		_timeOutput.SendControl(_position / _sampleRate);
 		
 		return true;
