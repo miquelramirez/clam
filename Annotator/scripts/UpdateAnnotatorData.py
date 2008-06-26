@@ -21,7 +21,8 @@ for line in schemaDoc.findall("//Attribute"):
 print segmentationAttributes
 
 # comprehended way
-segmentationAttributes = [ (line.attrib['scope'], line.attrib['name']) 
+segmentationAttributes = [
+	(line.attrib['scope'], line.attrib['name']) 
 	for line in schemaDoc.findall("//Attribute")
 	if line.attrib['type'] == 'Segmentation'
 ]
