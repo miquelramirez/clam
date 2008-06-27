@@ -63,8 +63,12 @@ if sys.platform != 'win32'  :
 	env.Append( CPPPATH=['include'] )
 
 unit_tests = env.Program( 'UnitTests', sources )
-
 test_alias = Alias( 'run_unit_tests', [unit_tests], unit_tests[0].abspath )
-
 AlwaysBuild( test_alias )
 
+# Workaround to have only some unit-tests in a separate executable
+#simple_test = [ 'TestRunnerConsole.cxx',
+                #'TypedControlsTests/TypedControlsTests.cxx' ]
+#simple_unit_tests = env.Program( 'simpleUnitTest', simple_test )
+#simple_unit_tests_alias = Alias( 'simple_unit_tests', [simple_unit_tests], simple_unit_tests[0].abspath )
+#AlwaysBuild( simple_unit_tests )
