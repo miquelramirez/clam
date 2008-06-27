@@ -106,6 +106,8 @@ sourcePaths = [
 	os.path.join('src','prototyper'),
 	os.path.join('src','monitors'),
 	os.path.join('src','monitors','generated'),
+	os.path.join('src','widgets'),
+	os.path.join('src','widgets','generated'),
 	os.path.join('src','clamWidgetsPlugins'),
 	os.path.join('src','clamWidgetsPlugins','generated'),
 ]
@@ -154,25 +156,33 @@ pluginsources = filter( (lambda a : a.rfind( "moc_")==-1 ),  pluginsources )
 pluginsources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  pluginsources )
 pluginsources = dict.fromkeys(pluginsources).keys()
 # //TODO: review this
-pluginsources.append(os.path.join('src','monitors','SpectrumView.cxx'))
-pluginsources.append(os.path.join('src','monitors','PeakView.cxx'))
-pluginsources.append(os.path.join('src','monitors','PolarChromaPeaks.cxx'))
-pluginsources.append(os.path.join('src','monitors','Oscilloscope.cxx'))
-pluginsources.append(os.path.join('src','monitors','PixmapWidgets.cxx'))
-pluginsources.append(os.path.join('src','monitors','Vumeter.cxx'))
-pluginsources.append(os.path.join('src','monitors','ChordRanking.cxx'))
-pluginsources.append(os.path.join('src','monitors','Tonnetz.cxx'))
-pluginsources.append(os.path.join('src','monitors','KeySpace.cxx'))
-pluginsources.append(os.path.join('src','monitors','LPModelView.cxx'))
-pluginsources.append(os.path.join('src','monitors','MelSpectrumView.cxx'))
-pluginsources.append(os.path.join('src','monitors','MelCepstrumView.cxx'))
-pluginsources.append(os.path.join('src','monitors','BarGraph.cxx'))
-pluginsources.append(os.path.join('src','monitors','QSynthKnob.cxx'))
-pluginsources.append(os.path.join('src','monitors','Spectrogram.cxx'))
+pluginsources.append(os.path.join('src','widgets','SpectrumView.cxx'))
+pluginsources.append(os.path.join('src','widgets','PeakView.cxx'))
+pluginsources.append(os.path.join('src','widgets','PolarChromaPeaks.cxx'))
+pluginsources.append(os.path.join('src','widgets','Oscilloscope.cxx'))
+pluginsources.append(os.path.join('src','widgets','PixmapWidgets.cxx'))
+pluginsources.append(os.path.join('src','widgets','Vumeter.cxx'))
+pluginsources.append(os.path.join('src','widgets','ChordRanking.cxx'))
+pluginsources.append(os.path.join('src','widgets','Tonnetz.cxx'))
+pluginsources.append(os.path.join('src','widgets','KeySpace.cxx'))
+pluginsources.append(os.path.join('src','widgets','LPModelView.cxx'))
+pluginsources.append(os.path.join('src','widgets','MelSpectrumView.cxx'))
+pluginsources.append(os.path.join('src','widgets','MelCepstrumView.cxx'))
+pluginsources.append(os.path.join('src','widgets','BarGraph.cxx'))
+pluginsources.append(os.path.join('src','widgets','QSynthKnob.cxx'))
+pluginsources.append(os.path.join('src','widgets','Spectrogram.cxx'))
 pluginsources.append(os.path.join('src','ControlSurfaceWidget.cxx'))
-pluginsources.append(os.path.join('src','monitors','QFirstPerson.cxx'))
+pluginsources.append(os.path.join('src','widgets','QFirstPerson.cxx'))
 pluginsources.append(os.path.join('src','processing','ControlSurface.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
+
+"""
+widgetsources=scanFiles('*.cxx', [os.path.join('src', 'widgets')])
+print widgetsources
+widgetsources=filter( (lambda a : a.rfind( "moc_")==-1 ),  widgetsources )
+widgetsources=filter( (lambda a : a.rfind( "qrc_")==-1 ),  widgetsources )
+print widgetsources
+"""
 
 #commonObjects = env.StaticLibrary(target="networkeditor", source=sources)
 #programs = [ env.Program(target=program, source = [main, commonObjects])
