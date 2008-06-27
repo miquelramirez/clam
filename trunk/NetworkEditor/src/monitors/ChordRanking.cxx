@@ -19,22 +19,6 @@
  *
  */
 
-#include <CLAM/ProcessingFactory.hxx>
-#include "ChordRanking.hxx"
-
-namespace Hidden
-{
-	static const char * metadata[] = {
-		"key", "ChordRanking",
-		"category", "Graphical Monitors",
-		"description", "ChordRanking",
-		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
-		"icon", "chordranking.svg",
-		0
-	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ChordRankingMonitor> reg = metadata;
-}
-
 #include "ChordRanking.hxx"
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
@@ -140,4 +124,3 @@ void CLAM::VM::ChordRanking::paintEvent(QPaintEvent * event)
 	}
 	_dataSource->release();
 }
-

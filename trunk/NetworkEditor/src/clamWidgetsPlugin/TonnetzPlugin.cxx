@@ -25,6 +25,7 @@
 #include "Tonnetz.hxx"
 
 #include <QtCore/QtPlugin>
+#include <iostream>
 
 TonnetzPlugin::TonnetzPlugin(QObject *parent)
     : QObject(parent)

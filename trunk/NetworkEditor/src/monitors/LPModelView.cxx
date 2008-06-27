@@ -19,21 +19,7 @@
  *
  */
 
-#include <CLAM/ProcessingFactory.hxx>
 #include "LPModelView.hxx"
-
-namespace detail
-{
-	static const char * metadata[] = {
-		"key", "LPModelView",
-		"category", "Graphical Monitors",
-		"description", "LPModelView",
-		"port_monitor_type", typeid(CLAM::LPModel).name(),
-		"icon", "lpmodel.svg",
-		0
-	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, LPModelViewMonitor> reg = metadata;
-}
 
 #include <QtGui/QPixmap>
 #include <QtGui/QPainter>
@@ -45,4 +31,3 @@ namespace detail
 CLAM::VM::LPModelView::~LPModelView()
 {
 }
-

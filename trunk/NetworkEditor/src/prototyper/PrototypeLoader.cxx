@@ -30,19 +30,29 @@
 
 // Designer widgets
 #include "Oscilloscope.hxx"
+#include "OscilloscopeMonitor.hxx"
 #include "Vumeter.hxx"
+#include "VumeterMonitor.hxx"
 #include "SpectrumView.hxx"
+#include "SpectrumViewMonitor.hxx"
 #include "PeakView.hxx"
+#include "PeakViewMonitor.hxx"
 #include "Tonnetz.hxx"
+#include "TonnetzMonitor.hxx"
 #include "KeySpace.hxx"
 #include "KeySpaceMonitor.hxx"
 #include "Spectrogram.hxx"
 #include "SpectrogramMonitor.hxx"
 #include "PolarChromaPeaks.hxx"
+#include "PolarChromaPeaksMonitor.hxx"
 #include "ChordRanking.hxx"
+#include "ChordRankingMonitor.hxx"
 #include "LPModelView.hxx"
+#include "LPModelViewMonitor.hxx"
 #include "MelSpectrumView.hxx"
+#include "MelSpectrumViewMonitor.hxx"
 #include "MelCepstrumView.hxx"
+#include "MelCepstrumViewMonitor.hxx"
 
 inline bool FileExists( const std::string filename )
 {

@@ -25,59 +25,6 @@
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
 #include "FloatArrayDataSource.hxx"
-#include <CLAM/PortMonitor.hxx>
-
-#include <vector>
-
-class TonnetzMonitor : public CLAM::PortMonitor<std::vector<CLAM::TData> >, public CLAM::VM::FloatArrayDataSource
-{
-public:
-	TonnetzMonitor()
-		: _size(12)
-	{
-	}
-private:
-	const char* GetClassName() const { return "Tonnetz"; };
-	std::string getLabel(unsigned bin) const
-	{
-		static std::string a[] = {
-			"G",
-			"G#",
-			"A",
-			"A#",
-			"B",
-			"C",
-			"C#",
-			"D",
-			"D#",
-			"E",
-			"F",
-			"F#",
-			};
-		return a[bin];
-	}
-	const CLAM::TData * frameData()
-	{
-		const std::vector<CLAM::TData> & pcp = FreezeAndGetData();
-		_size = pcp.size();
-		return &pcp[0];
-	}
-	void release()
-	{
-		UnfreezeData();
-	}
-	unsigned nBins() const
-	{
-		return _size;
-	}
-	bool isEnabled() const
-	{
-		return IsRunning();
-	}
-private:
-	unsigned _size;
-};
-
 
 #include <QtDesigner/QDesignerExportWidget>
 
@@ -120,6 +67,4 @@ namespace VM
 }
 
 
-
 #endif// Tonnetz_hxx
-

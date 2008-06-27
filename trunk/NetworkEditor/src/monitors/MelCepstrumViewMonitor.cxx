@@ -19,29 +19,18 @@
  *
  */
 
-#ifndef MelSpectrumView_hxx
-#define MelSpectrumView_hxx
+#include <CLAM/ProcessingFactory.hxx>
+#include "MelCepstrumViewMonitor.hxx"
 
-#include "FloatArrayDataSource.hxx"
-
-#include <QtDesigner/QDesignerExportWidget>
-#include "BarGraph.hxx"
-
-namespace CLAM
+namespace detail
 {
-namespace VM
-{
-	class QDESIGNER_WIDGET_EXPORT MelSpectrumView : public BarGraph
-	{
-		Q_OBJECT
-		public:
-			MelSpectrumView(QWidget * parent, FloatArrayDataSource * dataSource = 0)
-				: BarGraph(parent,dataSource)
-			{}
-			~MelSpectrumView();
+	static const char * metadata[] = {
+		"key", "MelCepstrumView",
+		"category", "Graphical Monitors",
+		"description", "MelCepstrumView",
+		"port_monitor_type", typeid(CLAM::MelCepstrum).name(),
+		"icon", "lpmodel.svg",
+		0
 	};
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MelCepstrumViewMonitor> reg = metadata;
 }
-}
-
-
-#endif// MelSpectrumView_hxx

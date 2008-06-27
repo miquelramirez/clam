@@ -2,6 +2,7 @@
 #define QFirstPerson_hxx
 
 #include <QtOpenGL/QGLWidget>
+#undef GetClassName
 #include <QtGui/QKeyEvent>
 #include <iostream>
 #include <cmath>

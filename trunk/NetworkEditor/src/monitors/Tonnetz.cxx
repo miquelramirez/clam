@@ -19,22 +19,6 @@
  *
  */
 
-#include <CLAM/ProcessingFactory.hxx>
-#include "Tonnetz.hxx"
-
-namespace Hidden
-{
-	static const char * metadata[] = {
-		"key", "Tonnetz",
-		"category", "Graphical Monitors",
-		"description", "Tonnetz",
-		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
-		"icon", "tonnetz.svg",
-		0
-	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, TonnetzMonitor> reg = metadata;
-}
-
 #include "Tonnetz.hxx"
 #include <QtGui/QPixmap>
 #include <QtCore/QTimer>
@@ -284,4 +268,3 @@ void CLAM::VM::Tonnetz::timerEvent(QTimerEvent *event)
 	if ( !_dataSource->isEnabled()) return;
 	updateIfNeeded();
 }
-

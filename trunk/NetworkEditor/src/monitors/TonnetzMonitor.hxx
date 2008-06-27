@@ -19,29 +19,62 @@
  *
  */
 
-#ifndef MelSpectrumView_hxx
-#define MelSpectrumView_hxx
+#ifndef TonnetzMonitor_hxx
+#define TonnetzMonitor_hxx
 
 #include "FloatArrayDataSource.hxx"
+#include <CLAM/PortMonitor.hxx>
 
-#include <QtDesigner/QDesignerExportWidget>
-#include "BarGraph.hxx"
+#include <vector>
 
-namespace CLAM
+class TonnetzMonitor : public CLAM::PortMonitor<std::vector<CLAM::TData> >, public CLAM::VM::FloatArrayDataSource
 {
-namespace VM
-{
-	class QDESIGNER_WIDGET_EXPORT MelSpectrumView : public BarGraph
+public:
+	TonnetzMonitor()
+		: _size(12)
 	{
-		Q_OBJECT
-		public:
-			MelSpectrumView(QWidget * parent, FloatArrayDataSource * dataSource = 0)
-				: BarGraph(parent,dataSource)
-			{}
-			~MelSpectrumView();
-	};
-}
-}
+	}
+private:
+	const char* GetClassName() const { return "Tonnetz"; };
+	std::string getLabel(unsigned bin) const
+	{
+		static std::string a[] = {
+			"G",
+			"G#",
+			"A",
+			"A#",
+			"B",
+			"C",
+			"C#",
+			"D",
+			"D#",
+			"E",
+			"F",
+			"F#",
+			};
+		return a[bin];
+	}
+	const CLAM::TData * frameData()
+	{
+		const std::vector<CLAM::TData> & pcp = FreezeAndGetData();
+		_size = pcp.size();
+		return &pcp[0];
+	}
+	void release()
+	{
+		UnfreezeData();
+	}
+	unsigned nBins() const
+	{
+		return _size;
+	}
+	bool isEnabled() const
+	{
+		return IsRunning();
+	}
+private:
+	unsigned _size;
+};
 
 
-#endif// MelSpectrumView_hxx
+#endif// TonnetzMonitor_hxx

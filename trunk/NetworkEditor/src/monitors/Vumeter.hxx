@@ -1,14 +1,9 @@
 #ifndef Vumeter_hxx
 #define Vumeter_hxx
 
+#include "FloatArrayDataSource.hxx"
 #include "Oscilloscope.hxx"
-class VumeterMonitor : public OscilloscopeMonitor
-{
-	const char* GetClassName() const { return "Vumeter"; };
-};
 
-#include <QtOpenGL/QGLWidget>
-#undef GetClassName
 #include <CLAM/DataTypes.hxx>
 #include <QtDesigner/QDesignerExportWidget>
 
@@ -95,6 +90,4 @@ private:
 };
 
 
-
 #endif//Vumeter_hxx
-
