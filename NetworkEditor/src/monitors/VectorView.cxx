@@ -19,24 +19,8 @@
  *
  */
 
-#include <CLAM/ProcessingFactory.hxx>
 #include "VectorView.hxx"
-
-namespace Hidden
-{
-	static const char * metadata[] = {
-		"key", "VectorView",
-		"category", "Graphical Monitors",
-		"description", "VectorView",
-		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
-		"icon", "lpmodel.svg",
-		0
-	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VectorViewMonitor> reg = metadata;
-
-}
 
 CLAM::VM::VectorView::~VectorView()
 {
 }
-

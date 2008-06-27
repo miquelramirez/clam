@@ -19,29 +19,18 @@
  *
  */
 
-#ifndef MelSpectrumView_hxx
-#define MelSpectrumView_hxx
+#include <CLAM/ProcessingFactory.hxx>
+#include "TonnetzMonitor.hxx"
 
-#include "FloatArrayDataSource.hxx"
-
-#include <QtDesigner/QDesignerExportWidget>
-#include "BarGraph.hxx"
-
-namespace CLAM
+namespace Hidden
 {
-namespace VM
-{
-	class QDESIGNER_WIDGET_EXPORT MelSpectrumView : public BarGraph
-	{
-		Q_OBJECT
-		public:
-			MelSpectrumView(QWidget * parent, FloatArrayDataSource * dataSource = 0)
-				: BarGraph(parent,dataSource)
-			{}
-			~MelSpectrumView();
+	static const char * metadata[] = {
+		"key", "Tonnetz",
+		"category", "Graphical Monitors",
+		"description", "Tonnetz",
+		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
+		"icon", "tonnetz.svg",
+		0
 	};
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, TonnetzMonitor> reg = metadata;
 }
-}
-
-
-#endif// MelSpectrumView_hxx

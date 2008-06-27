@@ -19,23 +19,8 @@
  *
  */
 
-#include <CLAM/ProcessingFactory.hxx>
 #include "MelCepstrumView.hxx"
-
-namespace detail
-{
-	static const char * metadata[] = {
-		"key", "MelCepstrumView",
-		"category", "Graphical Monitors",
-		"description", "MelCepstrumView",
-		"port_monitor_type", typeid(CLAM::MelCepstrum).name(),
-		"icon", "lpmodel.svg",
-		0
-	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MelCepstrumViewMonitor> reg = metadata;
-}
 
 CLAM::VM::MelCepstrumView::~MelCepstrumView()
 {
 }
-

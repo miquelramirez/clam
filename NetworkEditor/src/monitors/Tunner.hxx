@@ -1,50 +1,13 @@
 #ifndef Tunner_hxx
 #define Tunner_hxx
 
-#include <vector>
-#include <CLAM/DataTypes.hxx>
-#include "PeakView.hxx"
+#include "PeakDataSource.hxx"
 
-#include <CLAM/PortMonitor.hxx>
-class TunnerMonitor : public CLAM::PortMonitor<std::pair<CLAM::TData,CLAM::TData> >, public PeakDataSource
-{
-	const char* GetClassName() const { return "Tunner"; };
-	const std::string & getLabel(unsigned bin) const
-	{
-		static std::string a("A");
-		return a;
-	}
-	const CLAM::TData * positionData()
-	{
-		_fasor = FreezeAndGetData();
-		UnfreezeData();
-		return &(_fasor.first);
-	}
-	const CLAM::TData * magnitudeData()
-	{
-		return &(_fasor.second);
-	}
-	unsigned nBins() const
-	{
-		return 1;
-	}
-	bool isEnabled() const
-	{
-		return IsRunning();
-	}
-private:
-	std::pair<CLAM::TData,CLAM::TData> _fasor;
-};
-
-
-
-#include <QtOpenGL/QGLWidget>
-#undef GetClassName
 #include <QtGui/QLabel>
 #include <QtGui/QPainter>
-#include <CLAM/Processing.hxx>
-#include <CLAM/PortMonitor.hxx>
+#include <cmath>
 
+#include <QtDesigner/QDesignerExportWidget>
 
 class QDESIGNER_WIDGET_EXPORT Tunner : public QWidget
 {
@@ -159,6 +122,4 @@ private:
 };
 
 
-
 #endif//Tunner_hxx
-
