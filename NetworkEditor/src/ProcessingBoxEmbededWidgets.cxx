@@ -35,6 +35,7 @@
 #include "ControlPrinterWidget.hxx"
 #include "ControlSenderWidget.hxx"
 #include "ControlSurfaceWidget.hxx"
+#include "ProgressControlWidget.hxx"
 
 #include <typeinfo>
 #include <CLAM/ProcessingDataPlugin.hxx>
@@ -60,6 +61,9 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 
 	if (className=="ControlPrinter" || className=="ControlTraceWriter")
 		return new ControlPrinterWidget(processing);
+
+	if (className=="ProgressControl")
+		return new ProgressControlWidget(processing);
 
 	if (className=="Vumeter")
 		return new Vumeter( this, dynamic_cast<VumeterMonitor*>(processing) );
