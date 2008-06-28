@@ -1754,7 +1754,7 @@ private:
 				QIcon icon = processingIcon(peerProcessing);
 				if (listConnectionsMap.size()==1) // one compatible connection
 				{
-					ConnectionMap connectionMap = (ConnectionMap)listConnectionsMap.front();
+					ConnectionMap connectionMap = listConnectionsMap.front();
 					QString connectionName=connectionMap["connectionName"].toString();
 					menu->addAction(icon,
 						tr("Connect to %1.%2")
@@ -1771,8 +1771,8 @@ private:
 				{
 					ConnectionMap connectionMap= *itConnectionsMaps;
 					QString connectionName=connectionMap["connectionName"].toString();
-					submenu->addAction(connectionName,this,
-						SLOT(onProcessingsConnectTo()))->setData(connectionMap);
+					submenu->addAction(connectionName,
+						this, SLOT(onProcessingsConnectTo()))->setData(connectionMap);
 					itConnectionsMaps++;
 				}
 			}
