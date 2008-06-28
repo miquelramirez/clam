@@ -174,6 +174,7 @@ pluginsources.append(os.path.join('src','widgets','Spectrogram.cxx'))
 pluginsources.append(os.path.join('src','ControlSurfaceWidget.cxx'))
 pluginsources.append(os.path.join('src','widgets','QFirstPerson.cxx'))
 pluginsources.append(os.path.join('src','processing','ControlSurface.cxx'))
+pluginsources.append(os.path.join('src','processing','ProgressControl.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
 
 """
@@ -249,10 +250,10 @@ installation = {
 installTargets = [
 	env.Install( env['prefix']+path, files ) for path, files in installation.items() ]
 
-def absolutePosixPathToWine(dir) :
-	return 'z:'+'\\\\'.join(dir.split('/'))
-
 if isWindowsPlatform : 
+	def absolutePosixPathToWine(dir) :
+		return 'z:'+'\\\\'.join(dir.split('/'))
+
 	env.Append(LIBS=['glu32'])
 	winqtdir=env['QTDIR']
 	if crosscompiling : env['NSIS_MAKENSIS'] = 'wine ~/.wine/dosdevices/c:/Program\ Files/NSIS/makensis'
