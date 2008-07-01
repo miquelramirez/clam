@@ -11,27 +11,30 @@ print "pools:", pools
 from xml.etree import ElementTree
 schemaDoc = ElementTree.parse(file(schema))
 
-# classical way
-segmentationAttributes = []
-for line in schemaDoc.findall("//Attribute"):
-	if line.attrib['type'] != 'Segmentation' : continue
-	attribute = (line.attrib['scope'], line.attrib['name'])
-	segmentationAttributes.append(attribute)
-
-print segmentationAttributes
-
-# comprehended way
-segmentationAttributes = [ (line.attrib['scope'], line.attrib['name']) 
+segmentationAttributes = [ (line.attrib['scope'], line.attrib['name'], (line.find('SegmentationPolicy')).text)
 	for line in schemaDoc.findall("//Attribute")
 	if line.attrib['type'] == 'Segmentation'
 ]
 
 print segmentationAttributes
-print dir(schemaDoc)
-help(schemaDoc.write)
 schemaDoc.write(sys.stdout,'utf8')
 
 for pool in pools:
-	print pool
-
+	poolDoc = ElementTree.parse(file(pool))
+	# locate the segmentation attributes
+	for scope, attribute, policy in segmentationAttributes:
+		for line in  poolDoc.findall("//ScopePool"):
+			if line.attrib['name'] != scope : continue
+			for line2 in line.findall("AttributePool"):
+				if line2.attrib['name'] != attribute : continue
+				#insert the new attrib "Segmentations"
+				segmentations=line2.makeelement(policy, {})
+				#set maxlength, which is a fake number by now
+				segmentations.attrib['maxlength']='100000'
+				#mov the content into the deeper level
+				segmentations.text = line2.text
+				line2.text= None
+				segmentations.set("size", line2.attrib.pop("size"))
+				line2.append(segmentations)
+	poolDoc.write(sys.stdout, 'utf8')
 
