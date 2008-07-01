@@ -64,6 +64,15 @@ namespace CLAM
 			return position;
 		}
 		/**
+		* move the last offset to maxPosition
+		*/
+		void maxPosition(double maxPosition)
+		{
+			Segmentation::maxPosition(maxPosition);
+			_offsets.back()=maxPosition;
+		}
+		
+		/**
 		 * Removes the specified segment.
 		 * The previous segment is expanded to cover the region.
 		 * When removing the first segment, the next segment is the one expanded to start at 0.

@@ -93,13 +93,24 @@ namespace CLAM
 
 		void LoadFrom(Storage & storage) 
 		{
+			double newmaxPosition;
+			XMLAdapter<double> adapter(newmaxPosition, "max", false);
+			if(storage.Load(adapter))
+			{
+				maxPosition(newmaxPosition);
+			}
+			else	{
+				//when the maxPos is not present, set it to a large number
+				maxPosition(100000);
+			}
 			DataArray array;
 			array.LoadFrom(storage);
 			const unsigned size = array.Size();
-			const TData* ptr=array.GetPtr(); //TODO: there is no maxPosition info in the array.
+			const TData* ptr=array.GetPtr(); 
 			takeArray(ptr, ptr+size);
+			
 		}
-		
+
 		void select(unsigned segment)
 		{
 			_selection[segment]=true;
@@ -183,7 +194,7 @@ namespace CLAM
 		{
 			return _maxPosition;
 		}
-		void maxPosition(double maxPosition)
+		virtual void maxPosition(double maxPosition)
 		{
 			_maxPosition = maxPosition;
 		}

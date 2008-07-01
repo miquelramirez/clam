@@ -81,7 +81,11 @@ namespace CLAMTest
 		CPPUNIT_TEST( testInsert_onGapInBetweenSegments );
 		CPPUNIT_TEST( testStoreOn);	// TODO: This test crashes in some boxes
 		CPPUNIT_TEST( testtakeArray);
-		CPPUNIT_TEST(testLoadFrom);
+		CPPUNIT_TEST(testLoadFromWithoutMaxPos);
+		CPPUNIT_TEST(testLoadFromWithMaxPos);
+		CPPUNIT_TEST(testStoreOn_withinAnArray);
+		CPPUNIT_TEST(testLoadFromWithoutMaxPos_withinAnArray);
+		CPPUNIT_TEST(testLoadFromWithMaxPos_withinAnArray);
 		CPPUNIT_TEST_SUITE_END();
 
 	public:
@@ -719,12 +723,61 @@ namespace CLAMTest
 			segmentationEven.takeArray(bounds, bounds+4);
 			CPPUNIT_ASSERT_EQUAL(std::string("(90,100) (110,120) "), segmentationEven.boundsAsString());
 		}
-		void testLoadFrom()
+		void testLoadFromWithoutMaxPos()
 		{
 			DiscontinuousSegmentation segmentation(200);
 			std::istringstream stream("<Segmentation size=\"4\">90 100 110 120</Segmentation>");
 			XmlStorage::Restore(segmentation, stream);
 			CPPUNIT_ASSERT_EQUAL(std::string("(90,100) (110,120) "), segmentation.boundsAsString());
+		}
+		void testLoadFromWithMaxPos()
+		{
+			DiscontinuousSegmentation segmentation;
+			std::istringstream stream("<Segmentation max=\"200\" size=\"4\">90 100 110 120</Segmentation>");
+			XmlStorage::Restore(segmentation, stream);
+			CPPUNIT_ASSERT_EQUAL(std::string("(90,100) (110,120) "), segmentation.boundsAsString());
+		}
+		void testStoreOn_withinAnArray()
+		{
+			const TData onsets1[]={90, 100, 110, 120};
+			const TData onsets2[]={9, 10, 11, 12, 16, 18};
+			CLAM::Array<DiscontinuousSegmentation> segmentations(2);
+			segmentations[0].maxPosition(200);
+			segmentations[0].takeArray(onsets1, onsets1+4);
+			segmentations[1].maxPosition(20);
+			segmentations[1].takeArray(onsets2, onsets2+6);
+			std::ostringstream stream;
+			XmlStorage::Dump(segmentations, "Segmentations", stream);
+			CLAMTEST_ASSERT_XML_EQUAL(
+				"<Segmentations>"
+					"<DiscontinuousSegmentation max=\"200\" size=\"4\">90 100 110 120</DiscontinuousSegmentation>"
+					"<DiscontinuousSegmentation max=\"20\" size=\"6\">9 10 11 12 16 18</DiscontinuousSegmentation>"
+				"</Segmentations>"
+				, stream.str());
+		}
+		void testLoadFromWithoutMaxPos_withinAnArray()
+		{
+			CLAM::Array<DiscontinuousSegmentation> segmentations;
+			std::istringstream stream(
+				"<Segmentations>"
+					"<DiscontinuousSegmentation size=\"4\">90 100 110 120</DiscontinuousSegmentation>"
+					"<DiscontinuousSegmentation size=\"6\">9 10 11 12 16 18</DiscontinuousSegmentation>"
+				"</Segmentations>");
+			XmlStorage::Restore(segmentations, stream);
+			CPPUNIT_ASSERT_EQUAL(std::string("(90,100) (110,120) "), segmentations[0].boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(9,10) (11,12) (16,18) "), segmentations[1].boundsAsString());
+		}
+		void testLoadFromWithMaxPos_withinAnArray()
+		{
+			CLAM::Array<DiscontinuousSegmentation> segmentations;
+			std::istringstream stream(
+				"<Segmentations>"
+					"<DiscontinuousSegmentation max=\"200\" size=\"4\">90 100 110 120</DiscontinuousSegmentation>"
+					"<DiscontinuousSegmentation max=\"20\" size=\"6\">9 10 11 12 16 18</DiscontinuousSegmentation>"
+				"</Segmentations>");
+			XmlStorage::Restore(segmentations, stream);
+			CPPUNIT_ASSERT_EQUAL(std::string("(90,100) (110,120) "), segmentations[0].boundsAsString());
+			CPPUNIT_ASSERT_EQUAL(std::string("(9,10) (11,12) (16,18) "), segmentations[1].boundsAsString());
 		}
 	};
 
