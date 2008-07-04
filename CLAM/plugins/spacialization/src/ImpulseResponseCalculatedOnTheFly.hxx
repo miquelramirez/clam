@@ -57,7 +57,7 @@ public:
 		DYN_ATTRIBUTE( 4, public, unsigned, NRebounds);
 		DYN_ATTRIBUTE( 5, public, float, IrLength);
 		DYN_ATTRIBUTE( 6, public, CLAM::Text, ExtraOptions);
-		DYN_ATTRIBUTE( 7, public, bool, TrimDelay);
+		DYN_ATTRIBUTE( 7, public, bool, SupressInitialDelay);
 	protected:
 		void DefaultInit()
 		{
@@ -69,7 +69,7 @@ public:
 			SetNRays(200);
 			SetNRebounds(20);
 			SetIrLength(1.0);
-			SetTrimDelay(false);
+			SetSupressInitialDelay(false);
 		};
 	};
 private:
@@ -241,12 +241,13 @@ private:
 		std::string fileX = xFile;
 		std::string fileY = yFile;
 		std::string fileZ = zFile;
-		if (_config.HasTrimDelay() and _config.GetTrimDelay()) // Trim initial silences with sox. Can be safely desabled
+		if (_config.HasSupressInitialDelay() and _config.GetSupressInitialDelay()) // Trim initial silences with sox. Can be safely desabled
 		{
 			std::system( ("sox -t wav " + wFile + " -t wav " + wFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
 			std::system( ("sox -t wav " + xFile + " -t wav " + xFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
 			std::system( ("sox -t wav " + yFile + " -t wav " + yFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
 			std::system( ("sox -t wav " + zFile + " -t wav " + zFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
+			std::cout << " ------------------- trimming ------------------- " << std::endl;
 			fileW = wFileTrimmed;
 			fileX = xFileTrimmed;
 			fileY = yFileTrimmed;
