@@ -22,12 +22,13 @@
 #ifndef _OutControl_
 #define _OutControl_
 
-#include <CLAM/InControl.hxx>
+#include "InControl.hxx"
 #include <list>
 #include <string>
-#include <CLAM/Assert.hxx>
+#include "Assert.hxx"
 
-namespace CLAM {
+namespace CLAM
+{
 
 class Processing;
 

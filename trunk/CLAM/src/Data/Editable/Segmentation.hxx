@@ -6,8 +6,8 @@
 #include <iterator>
 #include <cmath>
 #include <sstream>
-#include <CLAM/Array.hxx>
-#include <CLAM/XMLAdapter.hxx>
+#include "Array.hxx"
+#include "XMLAdapter.hxx"
 
 namespace CLAM
 {

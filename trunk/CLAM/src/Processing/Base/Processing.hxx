@@ -27,8 +27,8 @@
 #include "ErrProcessingObj.hxx"
 #include "InControlRegistry.hxx"
 #include "OutControlRegistry.hxx"
-#include <CLAM/TypedInControlRegistry.hxx>
-#include <CLAM/TypedOutControlRegistry.hxx>
+#include "TypedInControlRegistry.hxx"
+#include "TypedOutControlRegistry.hxx"
 #include "InPortRegistry.hxx"
 #include "OutPortRegistry.hxx"
 #include "ProcessingConfig.hxx"
@@ -38,7 +38,8 @@
 #include <typeinfo>
 #include <string>
 
-namespace CLAM {
+namespace CLAM
+{
 
 	class Processing;
 	class InPortBase;

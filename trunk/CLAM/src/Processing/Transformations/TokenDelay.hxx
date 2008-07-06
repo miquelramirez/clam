@@ -24,16 +24,16 @@
 #ifndef _TokenDelay_
 #define _TokenDelay_
 
-#include <CLAM/Processing.hxx>
-#include <CLAM/InControl.hxx>
-#include <CLAM/InPort.hxx>
-#include <CLAM/OutPort.hxx>
-#include <CLAM/Component.hxx>
-#include <CLAM/Enum.hxx>
+#include "Processing.hxx"
+#include "InControl.hxx"
+#include "InPort.hxx"
+#include "OutPort.hxx"
+#include "Component.hxx"
+#include "Enum.hxx"
 #include <string>
 #include <deque>
 
-#include <CLAM/Array.hxx>
+#include "Array.hxx"
 
 namespace CLAM  
 {
@@ -196,7 +196,7 @@ private:
 // Class implementation
 
 
-#include <CLAM/Err.hxx>
+#include "Err.hxx"
 
 template <class T> 
 void TokenDelay<T>::Discard(T* toDiscard) {

@@ -28,7 +28,7 @@
 #include "Array.hxx"
 #include "DiscontinuousSegmentation.hxx"
 #include "ChordCorrelator.hxx"
-#include <CLAM/Assert.hxx>
+#include "Assert.hxx"
 
 namespace Simac
 {

@@ -1,7 +1,7 @@
 #ifndef __LadspaWrapperCreator_hxx__
 #define __LadspaWrapperCreator_hxx__
 
-#include <CLAM/LadspaWrapper.hxx>
+#include "LadspaWrapper.hxx"
 
 namespace CLAM {
 

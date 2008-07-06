@@ -4,7 +4,7 @@
 #include <string>
 #include <list>
 #include <typeinfo>
-#include <CLAM/Processing.hxx>
+#include "Processing.hxx"
 
 namespace CLAM {
 	

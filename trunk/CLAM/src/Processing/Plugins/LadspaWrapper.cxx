@@ -2,13 +2,13 @@
 
 #include "LadspaWrapper.hxx"
 //#include <ladspa.h>
-#include <CLAM/OSDefines.hxx>
-#include <CLAM/CLAM_Math.hxx>
-#include <CLAM/Factory.hxx>
-#include <CLAM/AudioInPort.hxx>
-#include <CLAM/AudioOutPort.hxx>
-#include <CLAM/InControl.hxx>
-#include <CLAM/OutControl.hxx>
+#include "OSDefines.hxx"
+#include "CLAM_Math.hxx"
+#include "Factory.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
+#include "InControl.hxx"
+#include "OutControl.hxx"
 #include <ctime>
 #include <cstdlib>
 #include <dlfcn.h>

@@ -4,11 +4,12 @@
 #include <string>
 #include <list>
 #include <typeinfo>
-#include <CLAM/Assert.hxx>
-#include <CLAM/TypedInControl.hxx>
-#include <CLAM/Processing.hxx>
+#include "Assert.hxx"
+#include "TypedInControl.hxx"
+#include "Processing.hxx"
 
-namespace CLAM {
+namespace CLAM
+{
 
 	class BaseTypedOutControl{
 		std::string mName;

@@ -27,7 +27,7 @@
 #include "Err.hxx"
 #include "Segment.hxx"
 #include "Filename.hxx"
-#include <CLAM/InPort.hxx>
+#include "InPort.hxx"
 #include "Fundamental.hxx"
 #include "Spectrum.hxx"
 #include "SpectralPeakArray.hxx"
