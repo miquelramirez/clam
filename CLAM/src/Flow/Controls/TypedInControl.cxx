@@ -1,6 +1,7 @@
-#include <CLAM/TypedInControl.hxx>
+#include "TypedInControl.hxx"
 
-namespace CLAM{
+namespace CLAM
+{
 	BaseTypedInControl::BaseTypedInControl(const std::string &name, Processing * proc)
 		: mName(name)
 		, mProcessing(proc)

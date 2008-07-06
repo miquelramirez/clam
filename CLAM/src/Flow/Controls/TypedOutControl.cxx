@@ -1,6 +1,7 @@
-#include <CLAM/TypedOutControl.hxx>
+#include "TypedOutControl.hxx"
 
-namespace CLAM{
+namespace CLAM
+{
 	BaseTypedOutControl::BaseTypedOutControl(const std::string &name, Processing * proc)
 		: mName(name)
 		, mProcessing(proc)

@@ -23,16 +23,12 @@
 #ifndef CONTROL_TRACE_HXX
 #define CONTROL_TRACE_HXX
 
-#include <CLAM/Processing.hxx>
-#include <CLAM/ProcessingConfig.hxx>
-#include <CLAM/InControlArray.hxx>
-#include <CLAM/OutControlArray.hxx>
-#include <CLAM/Filename.hxx>
+#include "Processing.hxx"
+#include "ProcessingConfig.hxx"
+#include "InControlArray.hxx"
+#include "OutControlArray.hxx"
+#include "Filename.hxx"
 #include <vector>
-
-class Network;
-
-struct fann;
 
 namespace CLAM
 {

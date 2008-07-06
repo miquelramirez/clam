@@ -28,14 +28,15 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "Network.hxx"
-#include <CLAM/TypedInControl.hxx>
-#include <CLAM/TypedOutControl.hxx>
+#include "TypedInControl.hxx"
+#include "TypedOutControl.hxx"
 
 #include <cstring>
 #include <string>
 
 
-namespace CLAM {
+namespace CLAM
+{
 	void ConnectPorts(
 			Processing & sender, const std::string & outPortName, 
 			Processing & receiver, const std::string & inPortName )

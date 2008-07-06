@@ -1,8 +1,9 @@
-#include <CLAM/TypedOutControlRegistry.hxx>
-#include <CLAM/TypedOutControl.hxx>
-#include <CLAM/Assert.hxx>
+#include "TypedOutControlRegistry.hxx"
+#include "TypedOutControl.hxx"
+#include "Assert.hxx"
 
-namespace CLAM {
+namespace CLAM
+{
 	std::string TypedOutControlRegistry::AvailableNames() const
 	{
 		std::string result;

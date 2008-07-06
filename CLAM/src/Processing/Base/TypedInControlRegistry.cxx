@@ -1,8 +1,9 @@
-#include <CLAM/TypedInControlRegistry.hxx>
-#include <CLAM/TypedInControl.hxx>
-#include <CLAM/Assert.hxx>
+#include "TypedInControlRegistry.hxx"
+#include "TypedInControl.hxx"
+#include "Assert.hxx"
 
-namespace CLAM {
+namespace CLAM
+{
 	std::string TypedInControlRegistry::AvailableNames() const
 	{
 		std::string result;
