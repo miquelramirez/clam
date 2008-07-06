@@ -261,12 +261,12 @@ public:
 		QFileLineEdit * input = new QFileLineEdit;
 		input->setWriteMode(writeMode);
 		input->setFilters(filterString(typeFamily, value.Filters(), writeMode));
-		input->setLocation(value.c_str());
+		input->setLocation(QString::fromLocal8Bit(value.c_str()));
 
 		const char *modeStr = writeMode ? "output" : "input";
 		const char *sep = typeFamily[0] ? " " : "";
 		input->setDialogCaption(
-			QObject::tr("Select an %1%2%3 file")
+			QObject::tr("Select a(n) %1%2%3 file")
 				.arg(modeStr)
 				.arg(sep)
 				.arg(typeFamily) );
@@ -277,7 +277,7 @@ public:
 	{
 		QFileLineEdit * input = dynamic_cast<QFileLineEdit*>(editorWidget);
 		ConcreteFilename & value = *(ConcreteFilename *)object.GetAttributeAsVoidPtr(attribute);
-		value = input->location().toStdString();
+		value = input->location().toLocal8Bit().constData();
 	}
 private:
 	QString filterString(const char *typeFamily,
