@@ -89,7 +89,7 @@ public:
 		xercesc::DOMNode * child = _children->item(_currentChild);
 		CLAM_ASSERT(child->getNodeType() == xercesc::DOMNode::ELEMENT_NODE,
 			"Can't change the context to a non element node");
-		if (!xercesc::XMLString::equals(child->getNodeName(), X(name))) return false; // Name mismatch
+		if (!xercesc::XMLString::equals(child->getNodeName(), U(name))) return false; // Name mismatch
 		return true;
 	}
 
@@ -110,7 +110,7 @@ public:
 		xercesc::DOMNode * child = _children->item(_currentChild);
 		CLAM_ASSERT(child->getNodeType() == xercesc::DOMNode::ELEMENT_NODE,
 			"Can't change the context to a non element node");
-		CLAM_ASSERT(xercesc::XMLString::equals(child->getNodeName(), X(name)),
+		CLAM_ASSERT(xercesc::XMLString::equals(child->getNodeName(), U(name)),
 			"XML element name should be the one expected");
 		_currentChild++;
 		fetchContent();
@@ -159,7 +159,7 @@ public:
 	bool extractAttribute(const char * attributeName, std::ostream & os)
 	{
 		xercesc::DOMNode * attribute =
-			_attributes->getNamedItem(X(attributeName));
+			_attributes->getNamedItem(U(attributeName));
 		if (!attribute) return false;
 		os << L(attribute->getNodeValue()) << std::flush;
 		return true;

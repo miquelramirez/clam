@@ -22,8 +22,9 @@
 #ifndef _LibXmlDomReadingContext_hxx_
 #define _LibXmlDomReadingContext_hxx_
 
-#include <libxml++/libxml++.h>
 #include "Assert.hxx"
+#include "LibXmlEncodings.hxx"
+#include <libxml++/libxml++.h>
 #include <sstream>
 #include <list>
 #include <string>
@@ -84,7 +85,7 @@ public:
 		xmlpp::Element * child = dynamic_cast<xmlpp::Element*>(*_currentChild);
 		CLAM_ASSERT(child,
 			"Can't change the context to a non element node");
-		if (std::string(child->get_name())!=name) return false; // Name mismatch
+		if (child->get_name()!=U(name)) return false; // Name mismatch
 		return true;
 	}
 	/**
@@ -103,7 +104,7 @@ public:
 		xmlpp::Element * child = dynamic_cast<xmlpp::Element *>(*_currentChild);
 		CLAM_ASSERT(child,
 			"Can't change the context to a non element node");
-		CLAM_ASSERT(std::string(child->get_name())==name,
+		CLAM_ASSERT(L(child->get_name())==name,
 			"XML element name should be the one expected");
 		_currentChild++;
 		fetchContent();
@@ -139,7 +140,7 @@ public:
 
 		std::ostringstream os;
 		os << "Unexpected Element: '";
-		os << child->get_name();
+		os << L(child->get_name());
 		os << "' at position ";
 		os << getPath();
 
@@ -149,9 +150,9 @@ public:
 	bool extractAttribute(const char * attributeName, std::ostream & os)
 	{
 		xmlpp::Attribute * attribute =
-			_context->get_attribute(attributeName);
+			_context->get_attribute(U(attributeName));
 		if (!attribute) return false;
-		os << attribute->get_value() << std::flush;
+		os << L(attribute->get_value()) << std::flush;
 		return true;
 	}
 
@@ -173,7 +174,7 @@ public:
 			if (dynamic_cast<xmlpp::CommentNode*>(child)) continue;
 			xmlpp::TextNode * textNode = dynamic_cast<xmlpp::TextNode*>(child);
 			if (!textNode) break;
-			_plainContentToParse << textNode->get_content();
+			_plainContentToParse << L(textNode->get_content());
 		}
 		_plainContentToParse << std::flush;
 		contentLeft();
@@ -205,7 +206,7 @@ public:
 		std::string path;
 		if (_parentContext) path=_parentContext->getPath();
 		path += '/';
-		path += _context->get_name();
+		path += L(_context->get_name());
 		return path;
 	}
 };

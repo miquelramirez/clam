@@ -51,7 +51,7 @@ public:
 	{
 		_parent = parent;
 		xercesc::DOMElement * parentElement = parent->_currentElement;
-		_currentElement = parentElement->getOwnerDocument()->createElement(X(name));
+		_currentElement = parentElement->getOwnerDocument()->createElement(U(name));
 		parentElement->appendChild(_currentElement);
 	}
 
@@ -62,11 +62,11 @@ public:
 	
 	void addAttribute(const char * name, const char * value)
 	{
-		_currentElement->setAttribute(X(name),X(value));
+		_currentElement->setAttribute(U(name),U(value));
 	}
 	void addContent(const char * content)
 	{
-		xercesc::DOMText * domContent = _currentElement->getOwnerDocument()->createTextNode(X(content));
+		xercesc::DOMText * domContent = _currentElement->getOwnerDocument()->createTextNode(U(content));
 		_currentElement->appendChild(domContent);
 	}
 };

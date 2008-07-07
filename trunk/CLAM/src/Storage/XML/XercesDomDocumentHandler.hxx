@@ -105,7 +105,7 @@ public:
 		releaseIfAnyDocument();
 		xercesc::DOMImplementation * imp =
 			xercesc::DOMImplementation::getImplementation();
-		xercesc::DOMDocument * domDoc = imp->createDocument(0,X(rootName),0);
+		xercesc::DOMDocument * domDoc = imp->createDocument(0,U(rootName),0);
 		setDocument(domDoc);
 	}
 	void read(std::istream & stream)
