@@ -135,9 +135,9 @@ directoryBasedExamples = [
 
 directoryBasedLibraries = [
 	"PluginExamples/ProcessingClass2Ladspa",
-# TODO: Files to be integred on the Network editor
-#	"LadspaOSCRemoteController",
 	"PluginExamples/NetworkLADSPAPlugin",
+# TODO: Files to be integred on the Network editor
+#	"PluginExamples/LadspaOSCRemoteController",
 ]
 
 singleSourceLibraries = [
