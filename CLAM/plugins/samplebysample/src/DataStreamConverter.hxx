@@ -1,8 +1,8 @@
 #ifndef DataStreamConverter_hxx
 #define DataStreamConverter_hxx
 
-#include "Processing.hxx"
-#include "AudioOutPort.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/AudioOutPort.hxx>
 #include "SampleBySampleConfig.hxx"
 
 namespace CLAM{
@@ -18,8 +18,8 @@ public:
 	inline const CLAM::ProcessingConfig &GetConfig() const { return mConfig;}
 protected:	
 	SampleBySampleConfig mConfig;
-	CLAM::AudioOutPort mOutput;
 	InDataPort mInput;
+	CLAM::AudioOutPort mOutput;
 
 	int mCounter;
 	CLAM::DataArray mBuffer;

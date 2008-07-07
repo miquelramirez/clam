@@ -1,0 +1,75 @@
+#! /usr/bin/python
+
+import os, glob, sys
+
+libraryName='plugins_samplebysample'
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(os.path.join(path,pattern))
+	return files
+
+options = Options('options.cache', ARGUMENTS)
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathOption.PathAccept))
+options.Add(PathOption('sandbox_path', 'Path where third party libraries were installed (in windows)', "", validator=PathOption.PathAccept))
+options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+
+toolChain = 'default'
+if sys.platform == "win32": toolChain = 'mingw'
+env = Environment(ENV=os.environ, tools=[toolChain], options=options)
+options.Save('options.cache', env)
+Help(options.GenerateHelpText(env))
+env.SConsignFile() # Single signature file
+
+CLAMInstallDir = env['clam_prefix']
+InstallDir = env['prefix'] or env['clam_prefix']
+clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+if env['crossmingw'] :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.EnableClamModules([
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	] , CLAMInstallDir)
+
+sourcePaths = ["src"]
+sources = scanFiles('*.cxx', sourcePaths)
+sources = dict.fromkeys(sources).keys()
+if sys.platform=='linux2' :
+	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+	print "adding optimization flags"
+	env.Append( CCFLAGS=[
+		'-fomit-frame-pointer', 
+		'-ffast-math',
+		'-funroll-loops',
+		'-mmmx',
+#		'-march=nocona',
+		'-msse',
+		'-mfpmath=sse'
+	])
+
+if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
+	env.Append( LIBPATH=['/opt/local/lib'] )
+if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
+	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'local','lib')] )
+
+libraries = [
+	env.SharedLibrary(target=libraryName, source = sources),
+	]
+
+examples = scanFiles('*.clamnetwork', ['example-data'])
+examples+= scanFiles('*.clamnetwork.pos', ['example-data'])
+examples+= scanFiles('*.ui', ['example-data'])
+
+install = [
+	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
+	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
+	]
+
+env.Alias('install', install)
+env.Default(libraries)
+
+

@@ -1,7 +1,7 @@
 #ifndef DataSink_hxx
 #define DataSink_hxx
 
-#include "Processing.hxx"
+#include <CLAM/Processing.hxx>
 #include "SampleBySampleConfig.hxx"
 
 namespace CLAM{

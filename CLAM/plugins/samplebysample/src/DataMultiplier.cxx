@@ -19,23 +19,25 @@
  *
  */
 
-#ifndef DataMultiplier_hxx
-#define DataMultiplier_hxx
+#include "DataMultiplier.hxx"
+#include <CLAM/ProcessingFactory.hxx>
 
-#include "BinaryDataOp.hxx"
-#include "CommonOps.hxx"
 
 namespace CLAM
 {
-	typedef BinaryDataOp< CLAM::Multiply<TData> > DataMultiplier;
-	typedef BinaryDataOpConfig         DataMultiplierConfig;
 
-	template<>
-		inline const char* BinaryDataOp< CLAM::Add<TData> >::GetClassName() const
-	{
-		return "DataMultiplier";
-	}
+typedef BinaryDataOp< Multiply<TData> > DataMultiplier;
+namespace detail
+{
+	static const char * metadata[] = {
+		"key", "DataMultiplier",
+		"category", "Sample by Sample (experimental)",
+		"description", "DataMultiplier",
+		0
+	};
+	//static FactoryRegistrator<ProcessingFactory, DataMultiplier> regDataMultiplier("DataMultiplier");
+	static FactoryRegistrator<ProcessingFactory, DataMultiplier> reg = metadata;
 }
 
-#endif 
+}
 

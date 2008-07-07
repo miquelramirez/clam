@@ -19,35 +19,33 @@
  *
  */
 
-#ifndef DataGain_hxx
-#define DataGain_hxx
+#include "DataGain.hxx"
+#include <CLAM/ProcessingFactory.hxx>
 
-#include "SampleDefines.hxx"
-#include "Processing.hxx"
-#include "InControl.hxx"
-#include "SampleBySampleConfig.hxx"
-#include "BinaryDataOp.hxx"
 
 namespace CLAM
 {
-	class DataGain:public CLAM::Processing
-	{
-	public:
-		DataGain():mGainCtl("Gain",this),mInput("Input",this), mOutput("Output",this){}	
-		bool Do();
-		const char* GetClassName() const {return "DataGain";}
-		bool ConcreteConfigure(const CLAM::ProcessingConfig &){return true;}
-		inline const CLAM::ProcessingConfig &GetConfig() const { return mConfig;}
-	protected:
-		/** todo: maybe we want to have a specific config defining the range of the gain*/
-		SampleBySampleConfig mConfig;
-	
-		InDataPort mInput;
-		OutDataPort mOutput;
-		
-		InControl mGainCtl;
+
+namespace detail
+{
+	static const char * metadata[] = {
+		"key", "DataGain",
+		"category", "Sample by Sample (experimental)",
+		"description", "DataGain",
+		0
 	};
+	//static FactoryRegistrator<ProcessingFactory, DataGain> regDataGain("DataGain");
+	static FactoryRegistrator<ProcessingFactory, DataGain> reg = metadata;
 }
 
-#endif 
+bool DataGain::Do()
+{
+	mInput.Consume();
+	mOutput.GetData()=mInput.GetData()*mGainCtl.GetLastValue();
+	mOutput.Produce();
+	return true;
+}
+
+
+}
 

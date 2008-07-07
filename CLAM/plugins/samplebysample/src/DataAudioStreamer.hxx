@@ -1,8 +1,8 @@
 #ifndef DataAudioStreamer_hxx
 #define DataAudioStreamer_hxx
 
-#include "Processing.hxx"
-#include "AudioInPort.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/AudioInPort.hxx>
 #include "SampleBySampleConfig.hxx"
 
 namespace CLAM
