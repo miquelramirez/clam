@@ -7,7 +7,7 @@
 #include <CLAM/Spectrum.hxx>
 
 class MyProcessing : public CLAM::Processing
-{ 
+{
 	CLAM::InPort<CLAM::Spectrum> mIn;
 	CLAM::OutPort<CLAM::Spectrum> mOut;
 public:

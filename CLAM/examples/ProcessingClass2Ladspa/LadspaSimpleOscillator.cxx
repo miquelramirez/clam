@@ -20,11 +20,11 @@
  */
 
 #include "Oscillator.hxx"
-#include "LadspaBridge.hxx"
+#include "ProcessingClass2Ladspa.hxx"
 
-LadspaBridge* Instance(void)
+ProcessingClass2LadspaBase * Instance2(void)
 {
 	int id = 3000;
-	return LadspaBridgeTmpl<CLAM::SimpleOscillator>::Create(id);
+	return ProcessingClass2Ladspa<CLAM::SimpleOscillator>::Create(id);
 }
 
