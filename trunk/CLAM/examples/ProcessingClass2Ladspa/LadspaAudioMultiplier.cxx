@@ -22,9 +22,9 @@
 #include "AudioMultiplier.hxx"
 #include "ProcessingClass2Ladspa.hxx"
 
-LadspaBridge* Instance(void)
+ProcessingClass2LadspaBase* Instance(void)
 {
 	int id = 3001;
-	return LadspaBridgeTmpl<CLAM::AudioMultiplier>::Create(id);
+	return ProcessingClass2Ladspa<CLAM::AudioMultiplier>::Create(id);
 }
 
