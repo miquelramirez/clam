@@ -12,7 +12,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "FilenameUsageExample",
@@ -20,7 +20,6 @@ namespace detail
 		"description", "FilenameUsageExample",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, FilenameUsageExample> regFilenameUsageExample("FilenameUsageExample");
 	static FactoryRegistrator<ProcessingFactory, FilenameUsageExample> reg = metadata;
 }
 	

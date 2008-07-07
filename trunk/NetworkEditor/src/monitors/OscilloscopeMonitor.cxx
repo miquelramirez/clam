@@ -1,7 +1,7 @@
 #include "OscilloscopeMonitor.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "Oscilloscope",

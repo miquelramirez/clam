@@ -25,7 +25,7 @@
 
 namespace CLAM
 {
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "RandomPitches",
@@ -33,7 +33,6 @@ namespace detail
 	//	"description", "RandomPitches",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, RandomPitches> regRandomPitches("RandomPitches");
 	static FactoryRegistrator<ProcessingFactory, RandomPitches> reg = metadata;
 }
 	

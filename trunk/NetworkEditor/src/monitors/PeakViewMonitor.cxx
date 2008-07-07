@@ -2,7 +2,7 @@
 #include <CLAM/SpectralPeakArray.hxx>
 #include "PeakViewMonitor.hxx"
 
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "PeakView",

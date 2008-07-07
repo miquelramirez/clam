@@ -5,7 +5,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "ControlSurface",
@@ -13,7 +13,6 @@ namespace detail
 		"description", "ControlSurface",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ControlSurface> regControlSurface("ControlSurface");
 	static FactoryRegistrator<ProcessingFactory, ControlSurface> reg = metadata;
 }
 	
