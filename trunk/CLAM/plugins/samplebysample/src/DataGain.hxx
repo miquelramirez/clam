@@ -19,23 +19,35 @@
  *
  */
 
-#ifndef DataAdder_hxx
-#define DataAdder_hxx
+#ifndef DataGain_hxx
+#define DataGain_hxx
 
+#include "SampleDefines.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/InControl.hxx>
+#include "SampleBySampleConfig.hxx"
 #include "BinaryDataOp.hxx"
-#include "CommonOps.hxx"
 
 namespace CLAM
 {
-	typedef BinaryDataOp< CLAM::Add<TData> > DataAdder;
-	typedef BinaryDataOpConfig         DataAdderConfig;
-
-	template<>
-		inline const char* BinaryDataOp< CLAM::Add<TData> >::GetClassName() const
+	class DataGain:public CLAM::Processing
 	{
-		return "DataAdder";
-	}
+	public:
+		DataGain():mGainCtl("Gain",this),mInput("Input",this), mOutput("Output",this){}	
+		bool Do();
+		const char* GetClassName() const {return "DataGain";}
+		bool ConcreteConfigure(const CLAM::ProcessingConfig &){return true;}
+		inline const CLAM::ProcessingConfig &GetConfig() const { return mConfig;}
+	protected:
+		/** todo: maybe we want to have a specific config defining the range of the gain*/
+		SampleBySampleConfig mConfig;
+	
+		InDataPort mInput;
+		OutDataPort mOutput;
+		
+		InControl mGainCtl;
+	};
 }
 
-#endif // AudioAdder_hxx
+#endif 
 

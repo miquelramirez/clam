@@ -19,33 +19,23 @@
  *
  */
 
-#include "DataGain.hxx"
-#include "ProcessingFactory.hxx"
+#ifndef DataAdder_hxx
+#define DataAdder_hxx
 
+#include "BinaryDataOp.hxx"
+#include <CLAM/CommonOps.hxx>
 
 namespace CLAM
 {
+	typedef BinaryDataOp< CLAM::Add<TData> > DataAdder;
+	typedef BinaryDataOpConfig         DataAdderConfig;
 
-namespace detail
-{
-	static const char * metadata[] = {
-		"key", "DataGain",
-		"category", "Sample by Sample (experimental)",
-		"description", "DataGain",
-		0
-	};
-	//static FactoryRegistrator<ProcessingFactory, DataGain> regDataGain("DataGain");
-	static FactoryRegistrator<ProcessingFactory, DataGain> reg = metadata;
+	template<>
+		inline const char* BinaryDataOp< CLAM::Add<TData> >::GetClassName() const
+	{
+		return "DataAdder";
+	}
 }
 
-bool DataGain::Do()
-{
-	mInput.Consume();
-	mOutput.GetData()=mInput.GetData()*mGainCtl.GetLastValue();
-	mOutput.Produce();
-	return true;
-}
-
-
-}
+#endif // AudioAdder_hxx
 

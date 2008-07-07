@@ -22,9 +22,9 @@
 #ifndef BinaryDataOp_hxx
 #define BinaryDataOp_hxx
 
-#include "Processing.hxx"
-#include "DynamicType.hxx"
-#include "Audio.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/DynamicType.hxx>
+#include <CLAM/Audio.hxx>
 #include <typeinfo> // std::bad_cast
 #include "SampleDefines.hxx"
 

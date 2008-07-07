@@ -20,5 +20,5 @@
  */
 
 #include "TokenDelay.hxx"
-using namespace CLAM;
+
 

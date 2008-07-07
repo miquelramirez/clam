@@ -1,7 +1,7 @@
 #ifndef DataSilentSource_hxx
 #define DataSilentSource_hxx
 
-#include "Processing.hxx"
+#include <CLAM/Processing.hxx>
 #include "SampleBySampleConfig.hxx"
 
 namespace CLAM{

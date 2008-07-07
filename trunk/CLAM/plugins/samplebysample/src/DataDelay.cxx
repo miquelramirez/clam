@@ -20,13 +20,13 @@
  */
 
 #include "DataDelay.hxx"
-#include "FastRounding.hxx"
+#include <CLAM/FastRounding.hxx>
 /////////////////////////////////////////////////////////////////////////////////////////777
 // Class implementation
 
 
-#include "Err.hxx"
-#include "ProcessingFactory.hxx"
+#include <CLAM/Err.hxx>
+#include <CLAM/ProcessingFactory.hxx>
 
 namespace CLAM
 {

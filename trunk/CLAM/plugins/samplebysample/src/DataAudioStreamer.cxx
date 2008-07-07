@@ -1,5 +1,5 @@
 #include "DataAudioStreamer.hxx"
-#include "ProcessingFactory.hxx"
+#include <CLAM/ProcessingFactory.hxx>
 
 namespace CLAM
 {

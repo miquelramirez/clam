@@ -1,10 +1,10 @@
 #ifndef SampleBySampleConfig_hxx
 #define SampleBySampleConfig_hxx
 
-#include "InPort.hxx"
-#include "OutPort.hxx"
+#include <CLAM/InPort.hxx>
+#include <CLAM/OutPort.hxx>
 
-#include "ProcessingConfig.hxx"
+#include <CLAM/ProcessingConfig.hxx>
 
 namespace CLAM{
 
