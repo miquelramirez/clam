@@ -82,7 +82,7 @@ private :
     char*   _localForm;
 };
 
-#define X(str) ::CLAM::XercesLocal2Unicode(str).unicodeForm()
+#define U(str) ::CLAM::XercesLocal2Unicode(str).unicodeForm()
 #define L(str) ::CLAM::XercesUnicode2Local(str).localForm()
 
 }

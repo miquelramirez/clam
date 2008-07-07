@@ -39,7 +39,7 @@ namespace CLAM
 		const XMLCh * propertyCanonical = xercesc::XMLUni::fgDOMWRTCanonicalForm;
 		const XMLCh * propertyPrettyPrint = xercesc::XMLUni::fgDOMWRTFormatPrettyPrint;
 		xercesc::DOMImplementation *impl = 
-			xercesc::DOMImplementationRegistry::getDOMImplementation(X("LS"));
+			xercesc::DOMImplementationRegistry::getDOMImplementation(U("LS"));
 		xercesc::DOMWriter *xercesWriter = 
 			((xercesc::DOMImplementationLS*)impl)->createDOMWriter();
 

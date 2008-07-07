@@ -25,6 +25,7 @@
 #include <libxml++/nodes/textnode.h>
 #include <libxml++/nodes/element.h>
 #include <libxml++/document.h>
+#include "LibXmlEncodings.hxx"
 
 namespace CLAM
 {
@@ -50,7 +51,7 @@ public:
 	{
 		_parent = parent;
 		xmlpp::Element * parentElement = parent->_currentElement;
-		_currentElement = parentElement->add_child(name);
+		_currentElement = parentElement->add_child(U(name));
 	}
 
 	LibXmlDomWritingContext * release()
@@ -60,11 +61,11 @@ public:
 	
 	void addAttribute(const char * name, const char * value)
 	{
-		_currentElement->set_attribute(name,value);
+		_currentElement->set_attribute(U(name),U(value));
 	}
 	void addContent(const char * content)
 	{
-		_currentElement->add_child_text(content);
+		_currentElement->add_child_text(U(content));
 	}
 };
 
