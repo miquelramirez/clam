@@ -160,10 +160,6 @@ public:
 	{
 		SetProcessing(new Proc);
 	}
-	~ProcessingClass2Ladspa()
-	{
-	}
-
 };
 
 class LadspaLibrary
