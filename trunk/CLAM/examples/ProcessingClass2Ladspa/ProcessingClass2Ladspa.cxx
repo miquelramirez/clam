@@ -24,49 +24,45 @@
 
 #include "ProcessingClass2Ladspa.hxx"
 
-extern CLAM::ProcessingClass2LadspaBase * Instance();
-
 // LADSPA call backs
 extern "C"
 {
 
-LADSPA_Handle Instantiate(const struct _LADSPA_Descriptor * Descriptor,  unsigned long SampleRate)
+LADSPA_Handle Instantiate(const struct _LADSPA_Descriptor * descriptor,  unsigned long sampleRate)
 {
-	CLAM::ProcessingClass2LadspaBase * test = Instance();
-
-	(test->mInControlsList).resize(test->GetInControlsSize());
-	(test->mOutControlsList).resize(test->GetOutControlsSize());
-
-	return test;
+	std::string className = std::string(descriptor->Name).substr(5);
+	CLAM::ProcessingClass2LadspaBase * adapter = new CLAM::ProcessingClass2LadspaBase(className);
+	adapter->Instantiate();
+	return adapter;
 }
 
-void ConnectPort(LADSPA_Handle Instance, unsigned long port, LADSPA_Data * data)
+void ConnectPort(LADSPA_Handle instance, unsigned long port, LADSPA_Data * data)
 {
-	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)Instance;
+	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
 	adapter->ConnectPort(port, data);
 }
 
-void Activate(LADSPA_Handle Instance)
+void Activate(LADSPA_Handle instance)
 {
-	CLAM::ProcessingClass2LadspaBase* adapter = (CLAM::ProcessingClass2LadspaBase*)Instance;
+	CLAM::ProcessingClass2LadspaBase* adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
 	adapter->Activate();
 }
   
-void Run(LADSPA_Handle Instance, unsigned long sampleCount)
+void Run(LADSPA_Handle instance, unsigned long sampleCount)
 {
-	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)Instance;
+	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
 	adapter->Run(sampleCount);
 }
 
-void Deactivate(LADSPA_Handle Instance)
+void Deactivate(LADSPA_Handle instance)
 {
-	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)Instance;
+	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
 	adapter->Deactivate();
 }
 
-void CleanUp(LADSPA_Handle Instance)
+void CleanUp(LADSPA_Handle instance)
 {
-	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)Instance;
+	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
 	delete adapter;
 }
 }
@@ -74,23 +70,15 @@ void CleanUp(LADSPA_Handle Instance)
 namespace CLAM
 {
 
-class LadspaLibrary
-{
-	LadspaLibrary(...)
-	{
-	}
-
-};
-
-
 LADSPA_Descriptor * ProcessingClass2LadspaBase::CreateDescriptor()
 {
 	LADSPA_Descriptor * descriptor = (LADSPA_Descriptor *)malloc(sizeof(LADSPA_Descriptor));
-	descriptor->UniqueID  = GetId(); //?
-	descriptor->Label = strdup(GetClassName());
-	descriptor->Name = strdup(GetClassName());
-	descriptor->Maker = strdup("CLAM-dev");
-	descriptor->Copyright = strdup("None");
+	std::string className = _proc->GetClassName();
+	descriptor->UniqueID  = mId;
+	descriptor->Label = strdup(("CLAM_"+className).c_str());
+	descriptor->Name = strdup(("CLAM "+className).c_str());
+	descriptor->Maker = "CLAM-dev";
+	descriptor->Copyright = "None";
 	descriptor->Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE; //?
 	descriptor->PortCount = NPorts();
 
@@ -104,64 +92,143 @@ LADSPA_Descriptor * ProcessingClass2LadspaBase::CreateDescriptor()
 	descriptor->cleanup = ::CleanUp;
 
 	SetPortsAndControls(descriptor);
-	SetPortRangeHints(descriptor);
 
 	return descriptor;
 }
 
-void ProcessingClass2LadspaBase::AddWrapperPort( CLAM::TData * data )
+void ProcessingClass2LadspaBase::SetPortsAndControls(LADSPA_Descriptor *& descriptor)
 {
-	mInLocationsList.push_back(data);
+	LADSPA_PortDescriptor *& portDescriptors = const_cast<LADSPA_PortDescriptor*&>(descriptor->PortDescriptors);
+	char **& portNames = const_cast<char **&>(descriptor->PortNames);
+	LADSPA_PortRangeHint *& portRangeHints = const_cast<LADSPA_PortRangeHint *&>(descriptor->PortRangeHints);
 
-	CLAM::AudioOutPort * out = new CLAM::AudioOutPort("out", 0 );
-	mWrappersList.push_back(out);
+	portDescriptors = (LADSPA_PortDescriptor *)calloc(NPorts(), sizeof(LADSPA_PortDescriptor));
+	portNames = (char **)calloc(NPorts(), sizeof(char *));
+	portRangeHints = ((LADSPA_PortRangeHint *)calloc(NPorts(), sizeof(LADSPA_PortRangeHint)));
+
+	unsigned i=0;
+	for(unsigned j=0; j<GetInControlsSize() ; i++, j++)
+	{
+		portDescriptors[i] = LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL; 
+		portNames[i] = strdup(GetInControlName(j));
+		portRangeHints[i].HintDescriptor = 0;
+	}
+
+	for(unsigned j=0; j<GetOutControlsSize() ; i++, j++)
+	{
+		portDescriptors[i] = LADSPA_PORT_OUTPUT | LADSPA_PORT_CONTROL; 
+		portNames[i] =  strdup(GetOutControlName(j));
+		portRangeHints[i].HintDescriptor = 0;
+	}
+	for(unsigned j=0; j<GetInPortsSize() ; i++, j++)
+	{
+		portDescriptors[i] = LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO; 
+		portNames[i] =  strdup(GetInPortName(j));
+		portRangeHints[i].HintDescriptor = 0;
+	}
+	for(unsigned j=0; j<GetOutPortsSize() ; i++, j++)
+	{
+		portDescriptors[i] = LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO; 
+		portNames[i] =  strdup(GetOutPortName(j));
+		portRangeHints[i].HintDescriptor = 0;
+	}
+/*
+	// pitch
+	portRangeHints[0].HintDescriptor = (
+		LADSPA_HINT_BOUNDED_BELOW |
+		LADSPA_HINT_BOUNDED_ABOVE |
+		LADSPA_HINT_SAMPLE_RATE |
+		LADSPA_HINT_LOGARITHMIC |
+		LADSPA_HINT_DEFAULT_440);
+	portRangeHints[0].LowerBound = 0;
+	portRangeHints[0].UpperBound = 0.5;
+	   
+	// amplitude
+	portRangeHints[1].HintDescriptor = (
+		LADSPA_HINT_BOUNDED_BELOW | 
+		LADSPA_HINT_BOUNDED_ABOVE |
+		LADSPA_HINT_DEFAULT_1);
+	portRangeHints[1].LowerBound = 0;
+	portRangeHints[1].UpperBound = 1;
+			
+	// audio output
+	portRangeHints[2] = 0;
+*/
+}
+void ProcessingClass2LadspaBase::CleanUpDescriptor(LADSPA_Descriptor *& descriptor)
+{
+	if (not descriptor) return;
+	free((char *)descriptor->Label);
+	free((char *)descriptor->Name);
+	free((LADSPA_PortDescriptor *)descriptor->PortDescriptors);
+	for (unsigned long lIndex = 0; lIndex < descriptor->PortCount; lIndex++)
+		 free((char *)(descriptor->PortNames[lIndex]));
+	free((char **)descriptor->PortNames);
+	free((LADSPA_PortRangeHint *)descriptor->PortRangeHints);
+	free(descriptor);
+	descriptor=0;
 }
 
-void ProcessingClass2LadspaBase::AddLocation( CLAM::TData * data )
+void ProcessingClass2LadspaBase::DoControls()
 {
-	mLocationsList.push_back(data);
+	for(unsigned i=0;i<GetInControlsSize();i++)
+		_proc->GetInControls().GetByNumber(i).DoControl((CLAM::TData)*_incontrolBuffers[i]);
+	// TODO: No output controls!
+}	
+
+void ProcessingClass2LadspaBase::SetPortSizes(int size)
+{		
+	for(int i=0;i<_proc->GetInPorts().Size();i++)
+	{
+		if(_proc->GetInPorts().GetByNumber(i).GetSize() == size ) continue;
+		_proc->GetInPorts().GetByNumber(i).SetSize( size );
+		mWrappersList[i]->SetSize( size );
+	}
+
+	for(int i=0;i<_proc->GetOutPorts().Size();i++)
+	{
+		if(_proc->GetOutPorts().GetByNumber(i).GetSize() == size ) continue;
+		_proc->GetOutPorts().GetByNumber(i).SetSize( size );
+	}
 }
 
-void ProcessingClass2LadspaBase::DoProc()
+void ProcessingClass2LadspaBase::DoProc(unsigned long nSamples)
 {
 	for(int i=0;i<_proc->GetInPorts().Size();i++)
 	{
-		memcpy( &(mWrappersList[i]->GetData()), mInLocationsList[i], _proc->GetInPorts().GetByNumber(i).GetSize()*sizeof(CLAM::TData) );
+		memcpy( &(mWrappersList[i]->GetData()), _inportBuffers[i], nSamples*sizeof(CLAM::TData) );
 		mWrappersList[i]->Produce();
 	}
 
-	std::vector<CLAM::TData*> mDataList;
+	std::vector<CLAM::TData*> dataList(GetOutPortsSize());
 	for(int i=0;i<_proc->GetOutPorts().Size();i++)
 	{
-		CLAM::AudioOutPort & out = (CLAM::AudioOutPort&)(_proc->GetOutPorts().GetByNumber(i));
-		mDataList.push_back( &(out.GetData()));
+		CLAM::OutPortBase & port = _proc->GetOutPorts().GetByNumber(i);
+		CLAM::AudioOutPort & audioPort = dynamic_cast<CLAM::AudioOutPort&>(port);
+		dataList[i] = &(audioPort.GetData());
 	}
 
 	_proc->Do();
-	for(int i=0;i<_proc->GetOutPorts().Size();i++)
-		memcpy(mLocationsList[i], mDataList[i], _proc->GetOutPorts().GetByNumber(i).GetSize()*sizeof(CLAM::TData) );		
-}
-const char* ProcessingClass2LadspaBase::GetClassName()
-{
-	return _proc->GetClassName();
+
+	for(int i=0; i<_proc->GetOutPorts().Size(); i++)
+		memcpy(_outcontrolBuffers[i], dataList[i], nSamples*sizeof(CLAM::TData) );		
 }
 
-const char * ProcessingClass2LadspaBase::GetInControlName(int id)
+
+
+const char * ProcessingClass2LadspaBase::GetInControlName(int id) const
 {
 	return _proc->GetInControls().GetByNumber(id).GetName().c_str();
 }
-
-const char * ProcessingClass2LadspaBase::GetOutControlName(int id)
+const char * ProcessingClass2LadspaBase::GetOutControlName(int id) const
 {
 	return _proc->GetOutControls().GetByNumber(id).GetName().c_str();
 }
-
-const char * ProcessingClass2LadspaBase::GetInPortName(int id)
+const char * ProcessingClass2LadspaBase::GetInPortName(int id) const
 {
 	return _proc->GetInPorts().GetByNumber(id).GetName().c_str();
 }
-
-const char * ProcessingClass2LadspaBase::GetOutPortName(int id)
+const char * ProcessingClass2LadspaBase::GetOutPortName(int id) const
 {
 	return _proc->GetOutPorts().GetByNumber(id).GetName().c_str();
 }
@@ -170,107 +237,35 @@ unsigned ProcessingClass2LadspaBase::GetInControlsSize() const
 {
 	return _proc->GetInControls().Size();
 }
-
 unsigned ProcessingClass2LadspaBase::GetOutControlsSize() const
 {
 	return _proc->GetOutControls().Size();
 }
-
 unsigned ProcessingClass2LadspaBase::GetInPortsSize() const
 {
 	return _proc->GetInPorts().Size();
 }
-
 unsigned ProcessingClass2LadspaBase::GetOutPortsSize() const
 {
 	return _proc->GetOutPorts().Size();
 }
 
-// TODO: Rename Offset -> Offset
 unsigned ProcessingClass2LadspaBase::GetInControlsOffset() const
 {
 	return 0;
 }
-
 unsigned ProcessingClass2LadspaBase::GetOutControlsOffset() const
 {
 	return GetInControlsSize();
 }
-
 unsigned ProcessingClass2LadspaBase::GetInPortsOffset() const
 {
 	return GetOutControlsOffset() + GetOutControlsSize();
 }
-
 unsigned ProcessingClass2LadspaBase::GetOutPortsOffset() const
 {
 	return GetInPortsOffset() + GetInPortsSize();
 }
 
-void ProcessingClass2LadspaBase::DoControls()
-{
-	for(unsigned i=0;i<GetInControlsSize();i++)
-		_proc->GetInControls().GetByNumber(i).DoControl((CLAM::TData)*mInControlsList[i]);
-}	
-
-void ProcessingClass2LadspaBase::SetPortSizes(int size)
-{		
-	for(int i=0;i<_proc->GetInPorts().Size();i++)
-	{
-		if(_proc->GetInPorts().GetByNumber(i).GetSize() != size )
-		{
-			_proc->GetInPorts().GetByNumber(i).SetSize( size );
-			mWrappersList[i]->SetSize( size );
-		}
-	}
-		
-	for(int i=0;i<_proc->GetOutPorts().Size();i++)
-	{
-		if(_proc->GetOutPorts().GetByNumber(i).GetSize() != size )
-			_proc->GetOutPorts().GetByNumber(i).SetSize( size );
-	}
 }
-
-namespace Hidden
-{
-
-static LADSPA_Descriptor * g_psDescriptor;
-
-class StartupShutdownHandler 
-{
-	CLAM::ProcessingClass2LadspaBase* _adapter;
-public:
-	StartupShutdownHandler():
-		_adapter(0)
-	{
-		_adapter = Instance();
-		g_psDescriptor = _adapter->CreateDescriptor();
-	}
-	~StartupShutdownHandler() 
-	{
-		_adapter->CleanUpDescriptor(g_psDescriptor);
-	}
-
-
-};
-
-static StartupShutdownHandler g_oShutdownStartupHandler;
-
-}
-}
-
-extern "C"
-{
-
-const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
-{
-	switch (index)
-	{
-		case 0: return CLAM::Hidden::g_psDescriptor;
-		default: return NULL;
-	}
-}
-
-}
-
 

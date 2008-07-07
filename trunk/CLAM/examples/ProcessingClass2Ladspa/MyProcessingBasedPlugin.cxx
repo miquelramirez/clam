@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
+ * Copyright (c) 2004 UNIVERSITAT POMPEU FABRA
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,11 +19,20 @@
  */
 
 #include "AudioMultiplier.hxx"
+#include "Oscillator.hxx"
 #include "ProcessingClass2Ladspa.hxx"
 
-CLAM::ProcessingClass2LadspaBase* Instance(void)
+static CLAM::LadspaLibrary library;
+
+extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 {
-	int id = 3001;
-	return new CLAM::ProcessingClass2Ladspa<CLAM::AudioMultiplier>(id);
+	static CLAM::LadspaLibrary::ProcessingExporter<CLAM::Oscillator> a1(library, 3000);
+	static CLAM::LadspaLibrary::ProcessingExporter<CLAM::AudioMultiplier> a2(library, 3001);
+	return library.pluginAt(index);
 }
+
+
+
+
+
 
