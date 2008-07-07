@@ -1,66 +1,66 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink_0" position="1222,105" size="140,63" type="AudioSink"/>
 
-  <processing id="AudioSource_0" type="AudioSource"/>
+  <processing id="AudioSource_0" position="80,12" size="161,63" type="AudioSource"/>
 
-  <processing id="AudioStreamer_0" type="AudioStreamer">
+  <processing id="AudioStreamer_0" position="159,359" size="182,63" type="AudioStreamer">
     <FrameSize>1024</FrameSize>
   </processing>
 
-  <processing id="Data2Audio_0" type="Data2Audio">
+  <processing id="Data2Audio_0" position="1252,271" size="154,63" type="Data2Audio">
     <FrameSize>1024</FrameSize>
   </processing>
 
-  <processing id="DataAdder_0" type="DataAdder"/>
+  <processing id="DataAdder_0" position="557,316" size="145,63" type="DataAdder"/>
 
-  <processing id="DataAdder_1" type="DataAdder"/>
+  <processing id="DataAdder_1" position="715,316" size="145,63" type="DataAdder"/>
 
-  <processing id="DataAdder_2" type="DataAdder"/>
+  <processing id="DataAdder_2" position="856,315" size="145,63" type="DataAdder"/>
 
-  <processing id="DataAdder_3" type="DataAdder"/>
+  <processing id="DataAdder_3" position="991,316" size="145,63" type="DataAdder"/>
 
-  <processing id="DataAdder_4" type="DataAdder"/>
+  <processing id="DataAdder_4" position="1130,308" size="145,63" type="DataAdder"/>
 
-  <processing id="DataDelay_0" type="DataDelay">
+  <processing id="DataDelay_0" position="200,614" size="142,63" type="DataDelay">
     <Delay>1</Delay>
     <MaxDelay>1000</MaxDelay>
   </processing>
 
-  <processing id="DataDelay_1" type="DataDelay">
+  <processing id="DataDelay_1" position="398,641" size="142,63" type="DataDelay">
     <Delay>1</Delay>
     <MaxDelay>10</MaxDelay>
   </processing>
 
-  <processing id="DataDelay_2" type="DataDelay">
+  <processing id="DataDelay_2" position="550,640" size="142,63" type="DataDelay">
     <Delay>1</Delay>
     <MaxDelay>10</MaxDelay>
   </processing>
 
-  <processing id="DataDelay_3" type="DataDelay">
+  <processing id="DataDelay_3" position="700,644" size="142,63" type="DataDelay">
     <Delay>1</Delay>
     <MaxDelay>10</MaxDelay>
   </processing>
 
-  <processing id="DataDelay_4" type="DataDelay">
+  <processing id="DataDelay_4" position="861,642" size="142,63" type="DataDelay">
     <Delay>1</Delay>
     <MaxDelay>10</MaxDelay>
   </processing>
 
-  <processing id="DataGain_0" type="DataGain"/>
+  <processing id="DataGain_0" position="362,480" size="134,63" type="DataGain"/>
 
-  <processing id="DataGain_1" type="DataGain"/>
+  <processing id="DataGain_1" position="328,273" size="134,63" type="DataGain"/>
 
-  <processing id="DataGain_2" type="DataGain"/>
+  <processing id="DataGain_2" position="552,477" size="133,63" type="DataGain"/>
 
-  <processing id="DataGain_3" type="DataGain"/>
+  <processing id="DataGain_3" position="706,477" size="133,63" type="DataGain"/>
 
-  <processing id="DataGain_4" type="DataGain"/>
+  <processing id="DataGain_4" position="860,474" size="133,63" type="DataGain"/>
 
-  <processing id="DataGain_5" type="DataGain"/>
+  <processing id="DataGain_5" position="1003,476" size="133,63" type="DataGain"/>
 
-  <processing id="Delay" type="OutControlSender">
+  <processing id="Delay" position="0,411" size="142,305" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1000</Max>
@@ -68,7 +68,7 @@
     <ControlRepresentation>Vertical Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Freq" type="OutControlSender">
+  <processing id="Freq" position="1,67" size="153,186" type="OutControlSender">
     <Min>20</Min>
     <Default>1000</Default>
     <Max>20000</Max>
@@ -76,11 +76,11 @@
     <ControlRepresentation>Vertical Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="235,57" size="243,192" type="Oscilloscope"/>
 
-  <processing id="Oscilloscope_1" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="1121,419" size="334,281" type="Oscilloscope"/>
 
-  <processing id="OutControlSender_0" type="OutControlSender">
+  <processing id="OutControlSender_0" position="553,58" size="207,184" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -88,7 +88,7 @@
     <ControlRepresentation>Knot</ControlRepresentation>
   </processing>
 
-  <processing id="OutControlSender_2" type="OutControlSender">
+  <processing id="OutControlSender_2" position="767,39" size="225,200" type="OutControlSender">
     <Min>0</Min>
     <Default>1</Default>
     <Max>1</Max>
@@ -96,7 +96,7 @@
     <ControlRepresentation>Knot</ControlRepresentation>
   </processing>
 
-  <processing id="SimpleOscillator_0" type="SimpleOscillator">
+  <processing id="SimpleOscillator_0" position="5,289" size="193,63" type="SimpleOscillator">
     <Frequency>440</Frequency>
     <Amplitude>1</Amplitude>
     <Phase>0</Phase>
