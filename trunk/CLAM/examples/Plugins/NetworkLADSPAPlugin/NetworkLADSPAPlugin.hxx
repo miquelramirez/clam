@@ -9,10 +9,10 @@
 #include "Network.hxx"
 #include "PushFlowControl.hxx"
 #include "XMLStorage.hxx"
-#include "ExternGenerator.hxx"
-#include "ExternSink.hxx"
-#include "ExternInControl.hxx"
-#include "ExternOutControl.hxx"
+#include "AudioSource.hxx"
+#include "AudioSink.hxx"
+//#include "ExternInControl.hxx" // TODO: Port
+//#include "ExternOutControl.hxx" // TODO: Port
 
 //C++ version 
 static char *dupstr( char const *args )
@@ -45,10 +45,10 @@ public:
 	LADSPA_Data *dataBuffer;
 };
 
-typedef std::vector< LADSPAInfo<ExternGenerator> > LADSPAInPortList;
-typedef std::vector< LADSPAInfo<ExternSink> > LADSPAOutPortList;
-typedef std::vector< LADSPAInfo<ExternInControl> > LADSPAInControlList;
-typedef std::vector< LADSPAInfo<ExternOutControl> > LADSPAOutControlList;
+typedef std::vector< LADSPAInfo<AudioSource> > LADSPAInPortList;
+typedef std::vector< LADSPAInfo<AudioSink> > LADSPAOutPortList;
+//typedef std::vector< LADSPAInfo<ExternInControl> > LADSPAInControlList; // TODO: Port
+//typedef std::vector< LADSPAInfo<ExternOutControl> > LADSPAOutControlList; // TODO: Port
 
 class NetworkLADSPAPlugin
 {
@@ -56,8 +56,8 @@ private:
 	Network* mNet;		
 	LADSPAInPortList mReceiverList;
 	LADSPAOutPortList mSenderList;
-	LADSPAInControlList mInControlList;
-	LADSPAOutControlList mOutControlList;
+//	LADSPAInControlList mInControlList; // TODO: Port
+//	LADSPAOutControlList mOutControlList; // TODO: Port
 	unsigned long mClamBufferSize, mExternBufferSize;
 	
 public:
@@ -71,10 +71,11 @@ public:
 	{
 		return ( mReceiverList.size()+mSenderList.size() );
 	}
-	
+
 	int GetControlCount()
 	{
-		return ( mInControlList.size()+mOutControlList.size() );
+		return 0;
+//		return ( mInControlList.size()+mOutControlList.size() ); // TODO: Port
 	}
 
 	Network& GetNetwork()
