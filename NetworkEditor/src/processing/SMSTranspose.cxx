@@ -25,7 +25,7 @@
 
 namespace CLAM
 {
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "SMSTranspose",
@@ -33,7 +33,6 @@ namespace detail
 		"description", "SMSTranspose",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSTranspose> regSMSTranspose("SMSTranspose");
 	static FactoryRegistrator<ProcessingFactory, SMSTranspose> reg = metadata;
 }
 

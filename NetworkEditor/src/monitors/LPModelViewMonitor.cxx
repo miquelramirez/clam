@@ -22,7 +22,7 @@
 #include <CLAM/ProcessingFactory.hxx>
 #include "LPModelViewMonitor.hxx"
 
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "LPModelView",

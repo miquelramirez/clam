@@ -26,7 +26,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "VowelResonator",
@@ -34,7 +34,6 @@ namespace detail
 		"description", "VowelResonator",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, VowelResonator> regVowelResonator("VowelResonator");
 	static FactoryRegistrator<ProcessingFactory, VowelResonator> reg = metadata;
 }
 

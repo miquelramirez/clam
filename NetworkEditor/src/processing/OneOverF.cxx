@@ -32,7 +32,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "OneOverF",
@@ -40,7 +40,6 @@ namespace detail
 		"description", "OneOverF",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, OneOverF> regOneOverF("OneOverF");
 	static FactoryRegistrator<ProcessingFactory, OneOverF> reg = metadata;
 }
 	

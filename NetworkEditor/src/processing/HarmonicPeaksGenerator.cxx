@@ -25,7 +25,7 @@
 
 namespace CLAM
 {
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "HarmonicPeaksGenerator",
@@ -33,7 +33,6 @@ namespace detail
 		"description", "HarmonicPeaksGenerator",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, HarmonicPeaksGenerator> regHarmonicPeaksGenerator("HarmonicPeaksGenerator");
 	static FactoryRegistrator<ProcessingFactory, HarmonicPeaksGenerator> reg = metadata;
 }
 

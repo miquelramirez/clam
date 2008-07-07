@@ -12,7 +12,7 @@
 namespace CLAM
 {
 
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "Random",
@@ -20,7 +20,6 @@ namespace detail
 		"description", "Random",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, Random> regRandom("Random");
 	static FactoryRegistrator<ProcessingFactory, Random> reg = metadata;
 }
 	

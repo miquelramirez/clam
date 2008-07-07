@@ -1,7 +1,7 @@
 #include <CLAM/ProcessingFactory.hxx>
 #include "SpectrumViewMonitor.hxx"
 
-namespace detail
+namespace Hidden
 {
 	static const char * metadata[] = {
 		"key", "SpectrumView",
