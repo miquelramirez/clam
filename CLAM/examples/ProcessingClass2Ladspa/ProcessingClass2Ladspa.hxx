@@ -39,7 +39,6 @@ namespace CLAM
 
 class ProcessingClass2LadspaBase
 {
-	int mId;
 	std::vector<LADSPA_Data *> _portBuffers;
 	LADSPA_Data ** _outportBuffers;
 	LADSPA_Data ** _inportBuffers;
@@ -51,14 +50,13 @@ private:
 public:
 // Ladspa entry points
 	// Instantiate
-	ProcessingClass2LadspaBase(int id)
-		: mId(id)
-		, _proc(0)
+	ProcessingClass2LadspaBase(CLAM::Processing * processing)
+		: _proc(0)
 	{
+		SetProcessing(processing);
 	}
 	ProcessingClass2LadspaBase(const std::string & className)
-		: mId(69) // TODO: set it something
-		, _proc(0)
+		: _proc(0)
 	{
 		SetProcessing(ProcessingFactory::GetInstance().Create(className));
 	}
@@ -113,7 +111,7 @@ private:
 
 // Pre instantiation interface
 public:
-	LADSPA_Descriptor * CreateDescriptor();
+	LADSPA_Descriptor * CreateDescriptor(unsigned long id);
 	static void CleanUpDescriptor(LADSPA_Descriptor *& descriptor);
 private:
 	void SetPortsAndControls(LADSPA_Descriptor *& descriptor);
@@ -151,17 +149,6 @@ private:
 
 };
 
-template<class Proc>
-class ProcessingClass2Ladspa : public ProcessingClass2LadspaBase
-{
-public:
-	ProcessingClass2Ladspa(int id)
-		: ProcessingClass2LadspaBase(id)
-	{
-		SetProcessing(new Proc);
-	}
-};
-
 class LadspaLibrary
 {
 	std::vector<LADSPA_Descriptor * > _descriptors;
@@ -189,8 +176,8 @@ public:
 	public:
 		ProcessingExporter(LadspaLibrary & library, unsigned long id)
 		{
-			ProcessingClass2Ladspa<ProcessingType> adapter(id);
-			LADSPA_Descriptor * descriptor = adapter.CreateDescriptor();
+			ProcessingClass2LadspaBase adapter(new ProcessingType);
+			LADSPA_Descriptor * descriptor = adapter.CreateDescriptor(id);
 			library.AddPluginType(descriptor);
 		}
 	};
