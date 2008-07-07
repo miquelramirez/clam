@@ -146,7 +146,7 @@ singleSourceLibraries = [
 ]
 
 env.Append(CPPPATH=includePaths)
-#env.AppendUnique(CPPFLAGS=["-g"])
+env.AppendUnique(CPPFLAGS=["-g", "-Wall"])
 #env.AppendUnique(DEFINES=["_DEBUG"])
 
 examples = []

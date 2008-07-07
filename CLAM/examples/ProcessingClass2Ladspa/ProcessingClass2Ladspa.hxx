@@ -32,6 +32,8 @@
 #include "OutControl.hxx"
 #include "Processing.hxx"
 
+namespace CLAM
+{
 
 class ProcessingClass2LadspaBase
 {
@@ -43,29 +45,27 @@ public:
 	std::vector<LADSPA_Data*> mInControlsList;
 	std::vector<LADSPA_Data*> mOutControlsList;
 	int mId;
-	virtual void AddWrapperPort( CLAM::TData * DataLocation );
-	virtual void AddLocation( CLAM::TData * DataLocation );
+	void AddWrapperPort( CLAM::TData * data );
+	void AddLocation( CLAM::TData * data );
 public:
 
-	virtual void Start();
-	virtual void Stop();
-	virtual void DoProc();
-	virtual int GetInControlsSize();
-	virtual int GetOutControlsSize();
-	virtual int GetInPortsSize();
-	virtual int GetOutPortsSize();
+	void DoProc();
+	unsigned GetInControlsSize() const;
+	unsigned GetOutControlsSize() const;
+	unsigned GetInPortsSize() const;
+	unsigned GetOutPortsSize() const;
 	
-	virtual int GetInControlsIndex();
-	virtual int GetOutControlsIndex();
-	virtual int GetInPortsIndex();
-	virtual int GetOutPortsIndex();
-	virtual void DoControls();
-	virtual void DoSizeCheck(int size);
-	virtual const char* GetClassName();
-	virtual const char * GetInControlName(int id);
-	virtual const char * GetOutControlName(int id);
-	virtual const char * GetInPortName(int id);
-	virtual const char * GetOutPortName(int id);
+	unsigned GetInControlsOffset() const;
+	unsigned GetOutControlsOffset() const;
+	unsigned GetInPortsOffset() const;
+	unsigned GetOutPortsOffset() const;
+	void DoControls();
+	void SetPortSizes(int size);
+	const char* GetClassName();
+	const char * GetInControlName(int id);
+	const char * GetOutControlName(int id);
+	const char * GetInPortName(int id);
+	const char * GetOutPortName(int id);
 
 	ProcessingClass2LadspaBase(int id)
 	{
@@ -75,6 +75,139 @@ public:
 	{
 		return mId;
 	}
+// Ladspa entry points
+public:
+	void Activate()
+	{
+		for(int i=0;i<_proc->GetInPorts().Size();i++)	
+			mWrappersList[i]->ConnectToIn( _proc->GetInPorts().GetByNumber(i) );
+		_proc->Start();
+	}
+	void ConnectPort(unsigned long port, LADSPA_Data * data)
+	{
+		if(port < GetInControlsOffset() + GetInControlsSize()) // is an "in control"
+		{
+			mInControlsList[port] = data;
+			return;
+		}
+		if(port < GetOutControlsOffset() + GetOutControlsSize()) // is an "out control"
+		{
+			mOutControlsList[port-GetOutControlsOffset()] = data;
+			return;
+		}
+		if(port < GetInPortsOffset() + GetInPortsSize())
+		{
+			std::cout << "connect in port" << std::endl;
+			AddWrapperPort( (CLAM::TData*)data );
+			return;
+		}
+
+		if(port < GetOutPortsOffset() + GetOutPortsSize()) 
+		{
+			std::cout << "connect out port" << std::endl;
+			AddLocation( (CLAM::TData*)data );
+			return;
+		}
+		CLAM_ASSERT(false, "port out of range");
+	}
+	void Run(unsigned long sampleCount)
+	{
+		DoControls();
+		SetPortSizes(sampleCount);
+		DoProc();
+	}
+	void Deactivate()
+	{
+		_proc->Stop();
+	}
+
+	unsigned NPorts() const
+	{
+		return
+			GetInControlsSize() + GetOutControlsSize() +
+			GetInPortsSize() + GetOutPortsSize();
+	}
+
+	LADSPA_Descriptor * CreateDescriptor();
+
+	void CleanUpDescriptor(LADSPA_Descriptor *& descriptor)
+	{
+		if (not descriptor) return;
+		free((char *)descriptor->Label);
+		free((char *)descriptor->Name);
+		free((char *)descriptor->Maker);
+		free((char *)descriptor->Copyright);
+		
+		free((LADSPA_PortDescriptor *)descriptor->PortDescriptors);
+		for (unsigned long lIndex = 0; lIndex < descriptor->PortCount; lIndex++)
+			 free((char *)(descriptor->PortNames[lIndex]));
+		free((char **)descriptor->PortNames);
+		free((LADSPA_PortRangeHint *)descriptor->PortRangeHints);
+		free(descriptor);
+		descriptor=0;
+	}
+private:
+	void SetPortsAndControls(LADSPA_Descriptor *& descriptor)
+	{
+		LADSPA_PortDescriptor *& portDescriptors = const_cast<LADSPA_PortDescriptor*&>(descriptor->PortDescriptors);
+		char **& portNames = const_cast<char **&>(descriptor->PortNames);
+		descriptor->PortDescriptors = (LADSPA_PortDescriptor *)calloc(NPorts(), sizeof(LADSPA_PortDescriptor));
+		portDescriptors = (LADSPA_PortDescriptor *)calloc(NPorts(), sizeof(LADSPA_PortDescriptor));
+		portNames = (char **)calloc(NPorts(), sizeof(char *));
+
+		unsigned i=0;
+		for(unsigned j=0; i<GetInControlsOffset()+GetInControlsSize() ; i++, j++)
+		{
+			portDescriptors[i] = LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL; 
+			portNames[i] = strdup(GetInControlName(j));
+		}
+
+		for(unsigned j=0; i<GetOutControlsOffset()+GetOutControlsSize() ; i++, j++)
+		{
+			portDescriptors[i] = LADSPA_PORT_OUTPUT | LADSPA_PORT_CONTROL; 
+			portNames[i] =  strdup(GetOutControlName(j));
+		}
+		for(unsigned j=0; i<GetInPortsOffset()+GetInPortsSize() ; i++, j++)
+		{
+			portDescriptors[i] = LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO; 
+			portNames[i] =  strdup(GetInPortName(j));
+		}
+		for(unsigned j=0; i<GetOutPortsOffset()+GetOutPortsSize() ; i++, j++)
+		{
+			portDescriptors[i] = LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO; 
+			portNames[i] =  strdup(GetOutPortName(j));
+		}
+	}
+
+	void SetPortRangeHints(LADSPA_Descriptor *& descriptor)
+	{
+		LADSPA_PortRangeHint *& portRangeHints = const_cast<LADSPA_PortRangeHint *&>(descriptor->PortRangeHints);
+		portRangeHints = ((LADSPA_PortRangeHint *)calloc(NPorts(), sizeof(LADSPA_PortRangeHint)));
+		for(unsigned i=0; i<NPorts(); i++)
+			portRangeHints[i].HintDescriptor = 0;
+/*
+		// pitch
+		portRangeHints[0].HintDescriptor = (
+			LADSPA_HINT_BOUNDED_BELOW |
+			LADSPA_HINT_BOUNDED_ABOVE |
+			LADSPA_HINT_SAMPLE_RATE |
+			LADSPA_HINT_LOGARITHMIC |
+			LADSPA_HINT_DEFAULT_440);
+		portRangeHints[0].LowerBound = 0;
+		portRangeHints[0].UpperBound = 0.5;
+		   
+		// amplitude
+		portRangeHints[1].HintDescriptor = (
+			LADSPA_HINT_BOUNDED_BELOW | 
+			LADSPA_HINT_BOUNDED_ABOVE |
+			LADSPA_HINT_DEFAULT_1);
+		portRangeHints[1].LowerBound = 0;
+		portRangeHints[1].UpperBound = 1;
+				
+		// audio output
+		portRangeHints[2] = 0;
+*/
+	}
 protected:
 	CLAM::Processing * _proc;
 };
@@ -83,8 +216,6 @@ template<class Proc>
 class ProcessingClass2Ladspa : public ProcessingClass2LadspaBase
 {
 public:
-	static ProcessingClass2LadspaBase* Create(int id) { return new ProcessingClass2Ladspa<Proc>(id); }
-	
 	ProcessingClass2Ladspa(int id)
 		: ProcessingClass2LadspaBase(id)
 	{
@@ -96,6 +227,8 @@ public:
 	}
 
 };
+
+}
 
 
 #endif // __ProcessingClass2Ladspa_hxx__

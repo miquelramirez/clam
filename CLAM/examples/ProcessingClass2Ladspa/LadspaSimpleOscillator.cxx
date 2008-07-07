@@ -22,9 +22,9 @@
 #include "Oscillator.hxx"
 #include "ProcessingClass2Ladspa.hxx"
 
-ProcessingClass2LadspaBase * Instance2(void)
+CLAM::ProcessingClass2LadspaBase * Instance2(void)
 {
 	int id = 3000;
-	return ProcessingClass2Ladspa<CLAM::SimpleOscillator>::Create(id);
+	return new CLAM::ProcessingClass2Ladspa<CLAM::SimpleOscillator>(id);
 }
 
