@@ -70,11 +70,11 @@ void CleanUp(LADSPA_Handle instance)
 namespace CLAM
 {
 
-LADSPA_Descriptor * ProcessingClass2LadspaBase::CreateDescriptor()
+LADSPA_Descriptor * ProcessingClass2LadspaBase::CreateDescriptor(unsigned long id)
 {
 	LADSPA_Descriptor * descriptor = (LADSPA_Descriptor *)malloc(sizeof(LADSPA_Descriptor));
 	std::string className = _proc->GetClassName();
-	descriptor->UniqueID  = mId;
+	descriptor->UniqueID  = id;
 	descriptor->Label = strdup(("CLAM_"+className).c_str());
 	descriptor->Name = strdup(("CLAM "+className).c_str());
 	descriptor->Maker = "CLAM-dev";

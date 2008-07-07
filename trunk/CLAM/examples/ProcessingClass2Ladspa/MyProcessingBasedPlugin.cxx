@@ -19,6 +19,7 @@
  */
 
 #include "AudioMultiplier.hxx"
+#include "AudioAmplifier.hxx"
 #include "Oscillator.hxx"
 #include "ProcessingClass2Ladspa.hxx"
 
@@ -28,6 +29,7 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 {
 	static CLAM::LadspaLibrary::ProcessingExporter<CLAM::Oscillator> a1(library, 3000);
 	static CLAM::LadspaLibrary::ProcessingExporter<CLAM::AudioMultiplier> a2(library, 3001);
+	static CLAM::LadspaLibrary::ProcessingExporter<CLAM::AudioAmplifier> a3(library, 3002);
 	return library.pluginAt(index);
 }
 
