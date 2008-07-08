@@ -113,7 +113,7 @@ namespace Hidden
 		if (std::fabs (currentPosition - _lastPosition) > _delta)
 		{
 			_lastPosition = currentPosition;
-			_position = (long) (currentPosition * (TControlData) _samples.GetSize());
+			_position = long(currentPosition * TControlData(_samples.GetSize()));
 		}
 		
 		long lastSample = _samples.GetSize() - 1;
@@ -145,7 +145,7 @@ namespace Hidden
 			outputArray[i] = 0.0;
 		}
 		
-		_timeOutput.SendControl(_position / _sampleRate);
+		_timeOutput.SendControl(float(_position) / _samples.GetSize());
 		
 		return true;
 	}
