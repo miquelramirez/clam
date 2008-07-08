@@ -142,6 +142,13 @@ public:
 		_registry.AddCreatorWarningRepetitions(name, creator);
 	}
 
+	void ReplaceCreator ( const RegistryKey name, Creator* creator )
+	{
+		_registry.ReplaceCreator(name, creator);
+	}
+
+
+
 	void AddCreatorSafe(const RegistryKey name, Creator* creator) throw (ErrFactory)
 	{
 		_registry.AddCreatorSafe(name, creator);
@@ -272,6 +279,11 @@ public: // Inner classes. Public for better testing
 //				errmsg += "\n Registered keys: " + GetRegisteredNames();
 				CLAM_WARNING(false, errmsg.c_str() );
 			}
+		}
+
+		void ReplaceCreator ( RegistryKey creatorId, Creator* creator )
+		{
+			CommonReplaceCreator(creatorId, creator);
 		}
 
 		void AddCreatorSafe( RegistryKey creatorId, Creator* creator ) throw (ErrFactory) 
@@ -476,6 +488,17 @@ public: // Inner classes. Public for better testing
 			// returns false if the key was repeated.
 			typedef typename FactoryEntries::value_type ValueType;
 			return  _factoryEntries.insert( ValueType( creatorId, factoryEntry ) ).second;
+		}
+
+		void CommonReplaceCreator( RegistryKey& creatorId, Creator* creator) 
+		{
+			FactoryEntry factoryEntry;
+			Pairs pairs;
+			factoryEntry.creator = creator;
+			factoryEntry.pairs = pairs;
+			typedef typename FactoryEntries::value_type ValueType;
+			_factoryEntries.erase(_factoryEntries.find(creatorId));
+			_factoryEntries.insert( ValueType( creatorId, factoryEntry ) );
 		}
 
 	};
