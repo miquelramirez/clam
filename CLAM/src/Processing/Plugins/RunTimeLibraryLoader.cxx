@@ -18,7 +18,11 @@ void RunTimeLibraryLoader::Load() const
 	// for each path, load libraries
 	std::vector <std::string> environmentPaths = SplitPathVariable(path);
 	for (unsigned i=0; i<environmentPaths.size(); i++)
+	{
 		LoadLibrariesFromPath(environmentPaths[i]);
+		//std::cout<<"[FAUST DEBUG] \tUsing environment path: "<<environmentPaths[i]<<std::endl;
+	}
+	//std::cout<<"[FAUST DEBUG] \tload of RunTimeLibraryLoader"<<std::endl;
 }
 
 void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
@@ -106,14 +110,14 @@ const std::string RunTimeLibraryLoader::GetPaths() const
 }
 
 
-const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subpathAndName) const
+const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subpathAndName) const //, ios_base::openmode
 {
 	std::string paths=GetPaths();
 	std::vector <std::string> environmentPaths = SplitPathVariable(paths);
 	for (unsigned i=0; i<environmentPaths.size(); i++)
 	{
 		// get file name:
-		std::string fileName = subpathAndName.substr( subpathAndName.rfind("/")+1 , subpathAndName.length()); 
+		std::string fileName = subpathAndName.substr( subpathAndName.rfind("/")+1); 
 		// testDir= root_path + subpath:
 		std::string testDir = environmentPaths[i] + "/" + subpathAndName.substr(0, subpathAndName.size()-fileName.size());
 		// check if directory exists:

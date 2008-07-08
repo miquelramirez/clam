@@ -8,17 +8,14 @@ class RunTimeLibraryLoader
 {
 public:
 	virtual ~RunTimeLibraryLoader() {}
-	void Load() const;
+	virtual void Load() const;
+	const std::string CompletePathFor(const std::string & subpathAndName) const; // if subpathAndName exists on environment paths, returns full path
 
 protected:
 	void LoadLibrariesFromPath(const std::string & path) const;
-
-
 	void * FullyLoadLibrary(const std::string & libraryPath) const;
 	std::string LibraryLoadError() const;
 	std::vector<std::string> SplitPathVariable(const std::string & pathVariable) const;
-
-	const std::string CompletePathFor(const std::string & subpathAndName) const; // if subpathAndName exists on environment paths, returns full path
 
 	const char * pathSeparator() const
 	{
