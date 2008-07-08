@@ -53,7 +53,7 @@ typedef std::vector< LADSPAInfo<AudioSink> > LADSPAOutPortList;
 class NetworkLADSPAPlugin
 {
 private:
-	Network* mNet;		
+	Network _network;
 	LADSPAInPortList mReceiverList;
 	LADSPAOutPortList mSenderList;
 //	LADSPAInControlList mInControlList; // TODO: Port
@@ -74,13 +74,13 @@ public:
 
 	int GetControlCount()
 	{
-		return 0;
 //		return ( mInControlList.size()+mOutControlList.size() ); // TODO: Port
+		return 0;
 	}
 
 	Network& GetNetwork()
 	{
-		return *mNet;
+		return _network;
 	}
 
 
