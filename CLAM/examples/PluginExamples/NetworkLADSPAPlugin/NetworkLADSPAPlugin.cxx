@@ -5,15 +5,13 @@ namespace CLAM
 
 NetworkLADSPAPlugin::NetworkLADSPAPlugin()
 {
-	mNet=new Network();
-
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
-	GetNetwork().SetName("Testing name");
+	_network.SetName("Testing name");
 
 	std::cerr << " constructor" << std::endl;
 
-	char* xmlfile=getenv("CLAM_NETWORK_PLUGIN_PATH");
+	const char* xmlfile=getenv("CLAM_NETWORK_PLUGIN_PATH");
 	if (xmlfile==NULL)
 	{
 		std::cerr << "CLAM::NetworkLADSPAPlugin WARNING: no network file specified. Plugin not loaded" << std::endl;
@@ -23,11 +21,12 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin()
 	
 	try
 	{
-		XmlStorage::Restore( GetNetwork(), xmlfile);	//"genwire.xml");	
+		XmlStorage::Restore( _network, xmlfile);	//"genwire.xml");	
 	}
 	catch ( XmlStorageErr err)
 	{
 		std::cerr << "CLAM::NetworkLADSPAPlugin WARNING: error opening file <" << xmlfile << "> . Plugin not loaded" <<std::endl;
+		std::cerr << err.what() << std::endl;
 		return;
 	}
 	
@@ -39,20 +38,17 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin()
 
 NetworkLADSPAPlugin::~NetworkLADSPAPlugin()
 {
-	delete mNet;
-
-	std::cerr << " DELETED" << std::endl;
-
+	std::cerr << "NetworkLADSPAPlugin: DELETED" << std::endl;
 }
 
 void NetworkLADSPAPlugin::Activate()
 {
-	GetNetwork().Start();
+	_network.Start();
 }
 
 void NetworkLADSPAPlugin::Deactivate()
 {
-	GetNetwork().Stop();
+	_network.Stop();
 }
 
 void NetworkLADSPAPlugin::ProcessInputPorts()
@@ -62,7 +58,7 @@ void NetworkLADSPAPlugin::ProcessInputPorts()
 	LADSPAInfo<AudioSource> info;
 
 	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
+	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
 	{
 		if (std::string("AudioSource")==std::string(it->second->GetClassName()))
 		{
@@ -86,7 +82,7 @@ void NetworkLADSPAPlugin::ProcessOutputPorts()
 	LADSPAInfo<AudioSink> info;
 
 	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
+	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
 	{
 		if (std::string("AudioSink")==std::string(it->second->GetClassName()))
 		{
@@ -111,7 +107,7 @@ void NetworkLADSPAPlugin::ProcessInputControls()
 	LADSPAInfo<ExternInControl> info;
 
 	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
+	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
 	{
 		if (std::string("ExternInControl")==std::string(it->second->GetClassName()))
 		{
@@ -137,7 +133,7 @@ void NetworkLADSPAPlugin::ProcessOutputControls()
 	LADSPAInfo<ExternOutControl> info;
 
 	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
+	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
 	{
 		if (std::string("ExternOutControl")==std::string(it->second->GetClassName()))
 		{
@@ -235,7 +231,7 @@ void NetworkLADSPAPlugin::Run( unsigned long nsamples )
 
 	//Do() as much as it is needed
 	for (int stepcount=0; stepcount < (int(mExternBufferSize)/int(mClamBufferSize)); stepcount++)
-		GetNetwork().Do();
+		_network.Do();
 
 	CopySinksToLadspaBuffers(nsamples);
 	ProcessOutControlValues();
