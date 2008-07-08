@@ -16,7 +16,6 @@ namespace Hidden
 		"icon", "sink.svg",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, AudioSink> regAudioSink("AudioSink");
 	static FactoryRegistrator<ProcessingFactory, AudioSink> reg = metadata;
 }
 	

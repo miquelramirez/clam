@@ -13,10 +13,9 @@ namespace Hidden
 		"icon", "source.svg",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, AudioSource> regAudioSource("AudioSource");
 	static FactoryRegistrator<ProcessingFactory, AudioSource> reg = metadata;
 }
-	
+
 bool AudioSource::Do()
 {
 	CLAM::Audio& so=mOut.GetAudio();
