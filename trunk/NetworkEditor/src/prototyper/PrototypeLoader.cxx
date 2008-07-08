@@ -53,6 +53,8 @@
 #include "MelSpectrumViewMonitor.hxx"
 #include "MelCepstrumView.hxx"
 #include "MelCepstrumViewMonitor.hxx"
+#include "ProgressControl.hxx"
+#include "ProgressControlWidget.hxx"
 
 inline bool FileExists( const std::string filename )
 {
@@ -168,6 +170,36 @@ public:
 	}
 };
 
+template <typename PlotClass, typename MonitorType>
+class ProgressControlBinder : public PrototypeBinder
+{
+	const char * _prefix;
+	const char * _plotClassName;
+public:
+	ProgressControlBinder(const char* prefix, const char* plotClassName)
+		: _prefix(prefix)
+		, _plotClassName(plotClassName)
+	{}
+	
+	virtual void bindWidgets(Network & network, QWidget * userInterface)
+	{
+		std::cout << "Looking for " << _plotClassName << " widgets..." << std::endl;
+		QList<QWidget*> widgets = userInterface->findChildren<QWidget*>(QRegExp(_prefix));
+		for (typename QList<QWidget*>::Iterator it=widgets.begin();
+			it!=widgets.end();
+			it++)
+		{
+			QWidget * aWidget = *it;
+			if (aWidget->metaObject()->className() != std::string(_plotClassName)) continue;
+			
+			MonitorType * portMonitor = new MonitorType;
+			std::string monitorName = network.GetUnusedName("PrototyperProgressControl");
+			network.AddProcessing(monitorName, portMonitor);
+			((PlotClass*) aWidget)->SetProcessing(portMonitor);
+		}
+	}	
+};
+
 static MonitorBinder<Oscilloscope,OscilloscopeMonitor> oscilloscopeBinder
 	("OutPort__.*", "Oscilloscope");
 static MonitorBinder<Vumeter,VumeterMonitor> vumeterBinder
@@ -192,6 +224,9 @@ static MonitorBinder<CLAM::VM::MelCepstrumView,MelCepstrumViewMonitor> melCepstr
 	("OutPort__.*", "CLAM::VM::MelCepstrumView");
 static MonitorBinder<CLAM::VM::MelSpectrumView,MelSpectrumViewMonitor> melSpectrumBinder
 	("OutPort__.*", "CLAM::VM::MelSpectrumView");
+
+static ProgressControlBinder<ProgressControlWidget, ProgressControl> progressControlBinder
+	("ProgressControl__.*", "ProgressControlWidget");
 
 
 class ConfigurationBinder : public PrototypeBinder
@@ -383,6 +418,8 @@ void PrototypeLoader::ConnectWithNetwork()
 
 	for (Binders::iterator it=binders().begin(); it!=binders().end(); it++)
 		(*it)->bindWidgets(_network, _interface);
+
+	ConnectWidgetsWithProgressControls();
 
 	QObject * playButton = _interface->findChild<QObject*>("PlayButton");
 	if (playButton) connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
@@ -652,6 +689,22 @@ void PrototypeLoader::ConnectWidgetsWithAudioFileReaders()
 		std::cout << "* Load Audio File Button connected to Audio file reader '" << processingName << "'" << std::endl;
 		if (ReportMissingProcessing(processingName)) continue;
 		connect(loadButton, SIGNAL(clicked()), this, SLOT(OpenAudioFile()));
+	}
+}
+
+void PrototypeLoader::ConnectWidgetsWithProgressControls()
+{
+	QList<QWidget*> widgets = _interface->findChildren<QWidget*>(QRegExp("ProgressControl__.*"));
+	for (QList<QWidget*>::Iterator it=widgets.begin(); it!=widgets.end(); it++)
+	{
+		QWidget * aWidget = *it;
+		std::string fullControlName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(17).toAscii());
+		std::cout << "* Progress Control: " << fullControlName << std::endl;
+
+		CLAM::Processing * sender = ((ProgressControlWidget *) aWidget)->GetProcessing();
+		CLAM::Processing & receiver = _network.GetProcessing(fullControlName);
+		ConnectControls(*sender, "Progress Jump", receiver, "Current Time Position (%)");
+		ConnectControls(receiver, "Current Time Position", *sender, "Progress Update");
 	}
 }
 

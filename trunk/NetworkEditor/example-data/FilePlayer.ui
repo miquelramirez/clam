@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>265</width>
-    <height>331</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -110,7 +110,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QPushButton" name="AudioFile___MonoAudioFileReader_0" >
+    <widget class="QPushButton" name="AudioFile___AudioFileMemoryLoader" >
      <property name="icon" >
       <iconset resource="../src/images.qrc" >:/icons/images/fileopen.png</iconset>
      </property>
@@ -165,7 +165,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="Oscilloscope" name="OutPort__MonoAudioFileReader_0__Samples___Read" >
+       <widget class="Oscilloscope" name="OutPort__AudioFileMemoryLoader__Samples___Read" >
         <property name="minimumSize" >
          <size>
           <width>100</width>
@@ -189,6 +189,9 @@
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <widget class="ProgressControlWidget" name="ProgressControl__AudioFileMemoryLoader" />
    </item>
    <item>
     <layout class="QHBoxLayout" >
@@ -314,6 +317,11 @@
    <class>Oscilloscope</class>
    <extends>QWidget</extends>
    <header>Oscilloscope.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>ProgressControlWidget</class>
+   <extends>QSlider</extends>
+   <header>ProgressControlWidget.hxx</header>
   </customwidget>
  </customwidgets>
  <tabstops>

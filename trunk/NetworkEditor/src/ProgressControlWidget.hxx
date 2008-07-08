@@ -2,15 +2,20 @@
 #define __ProgressControlWidget_hxx__
 
 #include <CLAM/Processing.hxx>
+#include <QtGui/QWidget>
 #include <QtGui/QSlider>
+#include <QtDesigner/QDesignerExportWidget>
 
-class ProgressControlWidget : public QSlider
+class QDESIGNER_WIDGET_EXPORT ProgressControlWidget : public QSlider
 {
 	Q_OBJECT
 public:
-	ProgressControlWidget(CLAM::Processing *processing);
+	ProgressControlWidget(QWidget *parent = 0, CLAM::Processing *processing = 0);
 	~ProgressControlWidget();
 
+	CLAM::Processing* GetProcessing();
+	void SetProcessing(CLAM::Processing *processing);
+	
 protected:
 	void timerEvent(QTimerEvent *event);
 
