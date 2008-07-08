@@ -12,8 +12,7 @@
 #include "AudioSource.hxx"
 #include "AudioSink.hxx"
 #include "ControlSource.hxx"
-#include "ControlSource.hxx" // TODO: Port
-#include "ControlSink.hxx" // TODO: Port
+#include "ControlSink.hxx"
 
 //C++ version 
 static char *dupstr( char const *args )
@@ -48,8 +47,8 @@ public:
 
 typedef std::vector< LADSPAInfo<AudioSource> > LADSPAInPortList;
 typedef std::vector< LADSPAInfo<AudioSink> > LADSPAOutPortList;
-typedef std::vector< LADSPAInfo<ControlSource> > LADSPAInControlList; // TODO: Port
-typedef std::vector< LADSPAInfo<ControlSink> > LADSPAOutControlList; // TODO: Port
+typedef std::vector< LADSPAInfo<ControlSource> > LADSPAInControlList;
+typedef std::vector< LADSPAInfo<ControlSink> > LADSPAOutControlList;
 
 class NetworkLADSPAPlugin
 {
@@ -57,8 +56,8 @@ private:
 	Network _network;
 	LADSPAInPortList mReceiverList;
 	LADSPAOutPortList mSenderList;
-	LADSPAInControlList mInControlList; // TODO: Port
-	LADSPAOutControlList mOutControlList; // TODO: Port
+	LADSPAInControlList mInControlList;
+	LADSPAOutControlList mOutControlList;
 	unsigned long mClamBufferSize, mExternBufferSize;
 	
 public:
@@ -75,7 +74,7 @@ public:
 
 	int GetControlCount()
 	{
-		return ( mInControlList.size()+mOutControlList.size() ); // TODO: Port
+		return ( mInControlList.size()+mOutControlList.size() );
 	}
 
 	Network& GetNetwork()
