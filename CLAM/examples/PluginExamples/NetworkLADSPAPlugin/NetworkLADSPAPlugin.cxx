@@ -100,54 +100,48 @@ void NetworkLADSPAPlugin::ProcessOutputPorts()
 }
 void NetworkLADSPAPlugin::ProcessInputControls()
 {
-// TODO: Port
-#if 0
 	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::ProcessInputControls() : there are already registered controls");
 
-	LADSPAInfo<ExternInControl> info;
+	LADSPAInfo<ControlSource> info;
 
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
 	{
-		if (std::string("ExternInControl")==std::string(it->second->GetClassName()))
+		if (std::string("ControlSource")==std::string(it->second->GetClassName()))
 		{
 			//Store Processing name
 			info.name=it->first;
 			
 			//Get Processing address
-			info.processing=(ExternInControl*)it->second;
+			info.processing=(ControlSource*)it->second;
 
 			//Add the info 
 			mInControlList.push_back(info);
 		}
 	}
-#endif
 }
 
 void NetworkLADSPAPlugin::ProcessOutputControls()
 {
-// TODO: Port
-#if 0
 	CLAM_ASSERT( mOutControlList.empty(), "NetworkLADSPAPlugin::ProcessOutputControls() : there are already registered controls");
 
-	LADSPAInfo<ExternOutControl> info;
+	LADSPAInfo<ControlSink> info;
 
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
 	{
-		if (std::string("ExternOutControl")==std::string(it->second->GetClassName()))
+		if (std::string("ControlSink")==std::string(it->second->GetClassName()))
 		{
 			//Store Processing name
 			info.name=it->first;
 			
 			//Get Processing address
-			info.processing=(ExternOutControl*)it->second;
+			info.processing=(ControlSink*)it->second;
 
 			//Add the info 
 			mOutControlList.push_back(info);
 		}
 	}
-#endif
 }
 
 void NetworkLADSPAPlugin::UpdatePortFrameAndHopSize()
@@ -182,8 +176,7 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		rangehints[currentport].HintDescriptor = 0;
 		currentport++;
 	}
-// TODO: Port
-#if 0
+
 	//Manage InControls (ExternInControls)
 	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
 	{
@@ -191,9 +184,7 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		names[currentport] = dupstr( it->name.c_str() );
 
 		//Obté processingConfig, i defineix cada param
-		ExternInControlConfig& conf=const_cast<ExternInControlConfig&>(
-						dynamic_cast<const ExternInControlConfig&>(
-							it->processing->GetConfig() ));
+		ControlSourceConfig conf = dynamic_cast<const ControlSourceConfig&>(it->processing->GetConfig() );
 		
 		rangehints[currentport].LowerBound=(LADSPA_Data)conf.GetMinValue();
 		rangehints[currentport].UpperBound=(LADSPA_Data)conf.GetMaxValue();
@@ -212,7 +203,6 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		rangehints[currentport].HintDescriptor = (LADSPA_HINT_BOUNDED_BELOW | LADSPA_HINT_BOUNDED_ABOVE);
 		currentport++;
 	}
-#endif
 }
 
 void NetworkLADSPAPlugin::Run( unsigned long nsamples )
@@ -239,20 +229,14 @@ void NetworkLADSPAPlugin::Run( unsigned long nsamples )
 
 void NetworkLADSPAPlugin::ProcessInControlValues()
 {
-// TODO: Port
-#if 0
 	for (LADSPAInControlList::iterator it=mInControlList.begin(); it!=mInControlList.end(); it++)
 		it->processing->Do( (float) *(it->dataBuffer) );
-#endif
 }
 
 void NetworkLADSPAPlugin::ProcessOutControlValues()
 {
-// TODO: Port
-#if 0
 	for (LADSPAOutControlList::iterator it=mOutControlList.begin(); it!=mOutControlList.end(); it++)
 		*(it->dataBuffer)=it->processing->GetControlValue();
-#endif
 }
 
 void NetworkLADSPAPlugin::CopyLadspaBuffersToGenerators(const unsigned long nframes)
@@ -273,13 +257,10 @@ void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
 		mReceiverList.at( port ).dataBuffer=data;
 	else if ( port <= mReceiverList.size() + mSenderList.size() -1) //Output port
 		mSenderList.at( port-mReceiverList.size() ).dataBuffer=data;
-// TODO: Port
-#if 0
 	else if ( port <= mReceiverList.size() + mSenderList.size() + mInControlList.size() -1) //Input control
 		mInControlList.at( port-mReceiverList.size()-mSenderList.size() ).dataBuffer=data;
 	else //Output control
 		mOutControlList.at( port-mReceiverList.size()-mSenderList.size()-mInControlList.size() ).dataBuffer=data;
-#endif
 }
 
 } //end namespace CLAM
