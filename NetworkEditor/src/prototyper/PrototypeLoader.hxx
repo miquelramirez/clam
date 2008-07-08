@@ -54,6 +54,7 @@ private:
 	void ConnectWidgetsUsingControlBounds();
 	void ConnectWidgetsWithAudioFileReaders();
 	void ConnectWidgetsWithBooleanControls();
+	void ConnectWidgetsWithProgressControls();
 	
 	template < typename PlotClass, typename MonitorType >
 	void ConnectWidgetsWithPorts(char* prefix, char* plotClassName);

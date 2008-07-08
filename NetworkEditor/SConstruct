@@ -170,10 +170,11 @@ pluginsources.append(os.path.join('src','widgets','MelCepstrumView.cxx'))
 pluginsources.append(os.path.join('src','widgets','BarGraph.cxx'))
 pluginsources.append(os.path.join('src','widgets','QSynthKnob.cxx'))
 pluginsources.append(os.path.join('src','widgets','Spectrogram.cxx'))
-pluginsources.append(os.path.join('src','ControlSurfaceWidget.cxx'))
 pluginsources.append(os.path.join('src','widgets','QFirstPerson.cxx'))
+pluginsources.append(os.path.join('src','ControlSurfaceWidget.cxx'))
 pluginsources.append(os.path.join('src','processing','ControlSurface.cxx'))
 pluginsources.append(os.path.join('src','processing','ProgressControl.cxx'))
+pluginsources.append(os.path.join('src','ProgressControlWidget.cxx'))
 env.Append(CPPPATH=includePaths+plugindirs)
 
 """

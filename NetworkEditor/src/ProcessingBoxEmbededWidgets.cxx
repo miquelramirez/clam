@@ -63,7 +63,7 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 		return new ControlPrinterWidget(processing);
 
 	if (className=="ProgressControl")
-		return new ProgressControlWidget(processing);
+		return new ProgressControlWidget(this, processing);
 
 	if (className=="Vumeter")
 		return new Vumeter( this, dynamic_cast<VumeterMonitor*>(processing) );

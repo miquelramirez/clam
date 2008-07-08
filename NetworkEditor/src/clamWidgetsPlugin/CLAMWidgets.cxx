@@ -17,6 +17,7 @@
 #include "QFirstPersonPlugin.hxx"
 #include "QSynthKnobPlugin.hxx"
 #include "ControlSurfaceWidgetPlugin.hxx"
+#include "ProgressControlWidgetPlugin.hxx"
 #include <iostream>
 #include <CLAM/CLAMVersion.hxx>
 
@@ -43,6 +44,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new ThinPixmapButtonPlugin(this)
 		<< new QSynthKnobPlugin(this)
 		<< new ControlSurfaceWidgetPlugin(this)
+		<< new ProgressControlWidgetPlugin(this)
 		<< new QFirstPersonPlugin(this)
 		;
 	std::cout << "All CLAM widgets plugins created" << std::endl;
