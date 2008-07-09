@@ -45,14 +45,14 @@ public:
 	LADSPA_Data *dataBuffer;
 };
 
-typedef std::vector< LADSPAInfo<AudioSource> > LADSPAInPortList;
-typedef std::vector< LADSPAInfo<AudioSink> > LADSPAOutPortList;
-typedef std::vector< LADSPAInfo<ControlSource> > LADSPAInControlList;
-typedef std::vector< LADSPAInfo<ControlSink> > LADSPAOutControlList;
-
 class NetworkLADSPAPlugin
 {
 private:
+	typedef std::vector< LADSPAInfo<AudioSource> > LADSPAInPortList;
+	typedef std::vector< LADSPAInfo<AudioSink> > LADSPAOutPortList;
+	typedef std::vector< LADSPAInfo<ControlSource> > LADSPAInControlList;
+	typedef std::vector< LADSPAInfo<ControlSink> > LADSPAOutControlList;
+
 	Network _network;
 	LADSPAInPortList mReceiverList;
 	LADSPAOutPortList mSenderList;

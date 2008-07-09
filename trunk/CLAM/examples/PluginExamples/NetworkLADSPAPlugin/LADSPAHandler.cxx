@@ -2,20 +2,31 @@
 #include "NetworkLADSPAPlugin.hxx"
 #include <iostream>
 
-LADSPA_Descriptor * g_psDescriptor=NULL;
-StartupShutdownHandler g_oShutdownStartupHandler;
+extern "C"
+{
+	const LADSPA_Descriptor * ladspa_descriptor(unsigned long);
+	LADSPA_Handle Instantiate(const LADSPA_Descriptor *, unsigned long);
+	void Run(LADSPA_Handle, unsigned long);
+	void CleanUp(LADSPA_Handle);
+	void Activate(LADSPA_Handle);
+	void Deactivate(LADSPA_Handle);
+	void ConnectTo(LADSPA_Handle, unsigned long, LADSPA_Data *);
+}
 
-////////////////////////////////////////////////////////////////////////////////////    HANDLER OBJECT
+static LADSPA_Descriptor * g_psDescriptor=0;
+static StartupShutdownHandler g_oShutdownStartupHandler;
+
+///    HANDLER OBJECT     /////////////////////////////////////////////////
 StartupShutdownHandler::StartupShutdownHandler()
 {
-	std::cerr << " constructor handler" << std::endl;
+	std::cerr << "Network2Ladspa: constructor handler" << std::endl;
 	if (!g_psDescriptor)
 		CreateLADSPADescriptor();
 }
 
 StartupShutdownHandler::~StartupShutdownHandler()
 {
-	std::cerr << " destructor handler" << std::endl;
+	std::cerr << "Network2Ladspa: destructor handler" << std::endl;
 	if (g_psDescriptor)
 	{
 		delete g_psDescriptor->Label;
@@ -44,7 +55,6 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 
 	g_psDescriptor = new LADSPA_Descriptor;
 
-	//TODO posa cada grupet en mètodes propis: "registra portdescriptors...", etc
 	if (g_psDescriptor)
 	{
 		g_psDescriptor->UniqueID = 8983;
@@ -78,67 +88,56 @@ void StartupShutdownHandler::CreateLADSPADescriptor()
 	delete plugin;
 }
 
-////////////////////////////////////////////////////////////////////////////////////    LADSPA CALLBACKS
+///      LADSPA CALLBACKS     ///////////////////////////////////////////////////
 
 // Return a descriptor of the requested plugin type.
 const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 {
-	std::cerr << " ladspa_descriptor: " << index << std::endl;
-
-	if (index == 0)
-	{
-		return g_psDescriptor;
-	}
-	else
-		return NULL;
+	std::cerr << "Network2Ladspa: ladspa_descriptor: " << index << std::endl;
+	if (index == 0) return g_psDescriptor;
+	return NULL;
 }
 
 
 // Construct a new plugin instance.
-LADSPA_Handle Instantiate(const LADSPA_Descriptor * Descriptor, unsigned long SampleRate)
+LADSPA_Handle Instantiate(const LADSPA_Descriptor * descriptor, unsigned long sampleRate)
 {
-	std::cerr << " instantiate" << std::endl;
-
-	//TODO això no està bé, principalment perquè si només té 1 in 1 out en vols intanciar dos però no li deixa...
+	std::cerr << "Network2Ladspa: instantiate" << std::endl;
 	return new CLAM::NetworkLADSPAPlugin();
 }
 
+void CleanUp(LADSPA_Handle handle)
+{
+	std::cerr << "Network2Ladspa: cleanup " << handle << std::endl;
+	delete (CLAM::NetworkLADSPAPlugin*) handle;
+}
+
 // Run the plugin
-void Run(LADSPA_Handle Instance, unsigned long SampleCount)
+void Run(LADSPA_Handle handle, unsigned long sampleCount)
 {
-	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
-
-	p->Run( SampleCount );
+	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
+	p->Run( sampleCount );
 }
 
-void CleanUp(LADSPA_Handle Instance)
+void Activate(LADSPA_Handle handle)
 {
-	std::cerr << " cleanup " << Instance << std::endl;
-	//Cleanup method only called by some apps. Jack-rack doesn't, but Sweep does.
-	delete (CLAM::NetworkLADSPAPlugin*) Instance;
-}
-
-void Activate(LADSPA_Handle Instance)
-{
-	std::cerr << " activate " << Instance << std::endl;
-	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
-
-	//Start network
+	std::cerr << "Network2Ladspa: activate " << handle << std::endl;
+	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
 	p->Activate();
 }
 
-void Deactivate(LADSPA_Handle Instance)
+void Deactivate(LADSPA_Handle handle)
 {
-	std::cerr << " deactivate " << Instance << std::endl;
-	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) Instance;
-	
-	//Stop network
+	std::cerr << "Network2Ladspa: deactivate " << handle << std::endl;
+	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
 	p->Deactivate();
 }
 
-/* Connect a port to a data location. */
-void ConnectTo(LADSPA_Handle instance, unsigned long port, LADSPA_Data * dataLocation)
+// Connect a port to a data location.
+void ConnectTo(LADSPA_Handle handle, unsigned long port, LADSPA_Data * dataLocation)
 {
-	((CLAM::NetworkLADSPAPlugin *)instance)->ConnectTo( port, dataLocation );
+	std::cerr << "Network2Ladspa: connect " << port << std::endl;
+	CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
+	p->ConnectTo( port, dataLocation );
 }
 

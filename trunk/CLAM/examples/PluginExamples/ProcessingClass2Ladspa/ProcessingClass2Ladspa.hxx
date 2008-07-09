@@ -45,6 +45,10 @@ class ProcessingClass2LadspaBase
 	LADSPA_Data ** _incontrolBuffers;
 	LADSPA_Data ** _outcontrolBuffers;
 	std::vector<AudioOutPort*> mWrappersList;
+	unsigned _nInPorts;
+	unsigned _nOutPorts;
+	unsigned _nInControls;
+	unsigned _nOutControls;
 private:
 	Processing * _proc;
 public:
@@ -63,12 +67,13 @@ public:
 	void Instantiate()
 	{
 		_portBuffers.resize(NPorts());
-		_incontrolBuffers = &(_portBuffers[0]) + GetInControlsOffset();
-		_outcontrolBuffers = &(_portBuffers[0]) + GetOutControlsOffset();
-		_inportBuffers = &(_portBuffers[0]) + GetInPortsOffset();
-		_outportBuffers = &(_portBuffers[0]) + GetOutPortsOffset();
 
-		mWrappersList.resize(GetInPortsSize());
+		_incontrolBuffers = &(_portBuffers[0]);
+		_outcontrolBuffers = _incontrolBuffers + _nInControls;
+		_inportBuffers = _outcontrolBuffers + _nOutControls;
+		_outportBuffers = _inportBuffers + _nInPorts;
+
+		mWrappersList.resize(_nInPorts);
 		for (unsigned i=0; i<mWrappersList.size(); i++)
 		{
 			mWrappersList[i] = new AudioOutPort("out", 0 );
@@ -116,35 +121,26 @@ public:
 private:
 	void SetPortsAndControls(LADSPA_Descriptor *& descriptor);
 
-protected:
+// Helper shortcuts
+private:
 	void SetProcessing(Processing * processing)
 	{
 		if (_proc) delete _proc;
 		_proc = processing;
+		_nInPorts = _proc?_proc->GetInPorts().Size():0;
+		_nOutPorts = _proc?_proc->GetOutPorts().Size():0;
+		_nInControls = _proc?_proc->GetInControls().Size():0;
+		_nOutControls = _proc?_proc->GetOutControls().Size():0;
 	}
 
-// Helper shortcuts
-private:
 	const char * GetInControlName(int id) const;
 	const char * GetOutControlName(int id) const;
 	const char * GetInPortName(int id) const;
 	const char * GetOutPortName(int id) const;
 
-	unsigned GetInControlsSize() const;
-	unsigned GetOutControlsSize() const;
-	unsigned GetInPortsSize() const;
-	unsigned GetOutPortsSize() const;
-	
-	unsigned GetInControlsOffset() const;
-	unsigned GetOutControlsOffset() const;
-	unsigned GetInPortsOffset() const;
-	unsigned GetOutPortsOffset() const;
-
 	unsigned NPorts() const
 	{
-		return
-			GetInControlsSize() + GetOutControlsSize() +
-			GetInPortsSize() + GetOutPortsSize();
+		return _nInPorts + _nOutPorts + _nInControls + _nOutControls;
 	}
 
 };
