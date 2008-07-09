@@ -22,7 +22,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "ProcessingClass2Ladspa.hxx"
+#include "LadspaProcessingExporter.hxx"
 
 // LADSPA call backs
 extern "C"

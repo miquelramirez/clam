@@ -19,8 +19,8 @@
  *
  */
 
-#ifndef __ProcessingClass2Ladspa_hxx__
-#define __ProcessingClass2Ladspa_hxx__
+#ifndef LadspaProcessingExporter_hxx
+#define LadspaProcessingExporter_hxx
 
 #include "Audio.hxx"
 #include "AudioOutPort.hxx"
@@ -156,5 +156,5 @@ public:
 }
 
 
-#endif // __ProcessingClass2Ladspa_hxx__
+#endif//LadspaProcessingExporter_hxx
 
