@@ -14,6 +14,7 @@ namespace Hidden
 		"category", "Audio I/O",
 		"description", "AudioSink",
 		"icon", "sink.svg",
+		"svg_diagram", "sink.svg",
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, AudioSink> reg = metadata;
