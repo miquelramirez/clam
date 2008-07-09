@@ -79,7 +79,6 @@ public:
 	void CopySinksToLadspaBuffers(const unsigned long nframes);
 	void ProcessInControlValues();
 	void ProcessOutControlValues();
-	static void DestructDescriptor(LADSPA_Descriptor * descriptor);
 	static LADSPA_Descriptor * CreateLADSPADescriptor();
 };
 

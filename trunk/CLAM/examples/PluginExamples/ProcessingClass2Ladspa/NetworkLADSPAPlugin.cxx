@@ -309,23 +309,6 @@ void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
 		mOutControlList.at( port-mReceiverList.size()-mSenderList.size()-mInControlList.size() ).dataBuffer=data;
 }
 
-void NetworkLADSPAPlugin::DestructDescriptor(LADSPA_Descriptor * descriptor)
-{
-	std::cerr << "Network2Ladspa: destructing handler" << std::endl;
-	if (not descriptor) return;
-	delete[] descriptor->Label;
-	delete[] descriptor->Name;
-	delete[] descriptor->Maker;
-	delete[] descriptor->Copyright;
-	delete[] descriptor->PortDescriptors;
-
-	for (unsigned long lIndex = 0; lIndex < descriptor->PortCount; lIndex++)
-		delete[] descriptor->PortNames[lIndex];
-
-	delete[] descriptor->PortNames;
-	delete[] descriptor->PortRangeHints;
-	delete descriptor;
-}
 LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor()
 {
 	CLAM::NetworkLADSPAPlugin plugin;
