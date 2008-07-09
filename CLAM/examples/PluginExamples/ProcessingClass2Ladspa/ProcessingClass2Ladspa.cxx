@@ -28,7 +28,7 @@
 extern "C"
 {
 
-LADSPA_Handle Instantiate(const struct _LADSPA_Descriptor * descriptor,  unsigned long sampleRate)
+static LADSPA_Handle Instantiate(const struct _LADSPA_Descriptor * descriptor,  unsigned long sampleRate)
 {
 	std::string className = std::string(descriptor->Name).substr(5);
 	CLAM::ProcessingClass2LadspaBase * adapter = new CLAM::ProcessingClass2LadspaBase(className);
@@ -36,31 +36,31 @@ LADSPA_Handle Instantiate(const struct _LADSPA_Descriptor * descriptor,  unsigne
 	return adapter;
 }
 
-void ConnectPort(LADSPA_Handle instance, unsigned long port, LADSPA_Data * data)
+static void ConnectPort(LADSPA_Handle instance, unsigned long port, LADSPA_Data * data)
 {
 	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
 	adapter->ConnectPort(port, data);
 }
 
-void Activate(LADSPA_Handle instance)
+static void Activate(LADSPA_Handle instance)
 {
 	CLAM::ProcessingClass2LadspaBase* adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
 	adapter->Activate();
 }
   
-void Run(LADSPA_Handle instance, unsigned long sampleCount)
+static void Run(LADSPA_Handle instance, unsigned long sampleCount)
 {
 	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
 	adapter->Run(sampleCount);
 }
 
-void Deactivate(LADSPA_Handle instance)
+static void Deactivate(LADSPA_Handle instance)
 {
 	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
 	adapter->Deactivate();
 }
 
-void CleanUp(LADSPA_Handle instance)
+static void CleanUp(LADSPA_Handle instance)
 {
 	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
 	delete adapter;
@@ -99,34 +99,34 @@ LADSPA_Descriptor * ProcessingClass2LadspaBase::CreateDescriptor(unsigned long i
 void ProcessingClass2LadspaBase::SetPortsAndControls(LADSPA_Descriptor *& descriptor)
 {
 	LADSPA_PortDescriptor *& portDescriptors = const_cast<LADSPA_PortDescriptor*&>(descriptor->PortDescriptors);
-	char **& portNames = const_cast<char **&>(descriptor->PortNames);
+	const char **& portNames = const_cast<const char **&>(descriptor->PortNames);
 	LADSPA_PortRangeHint *& portRangeHints = const_cast<LADSPA_PortRangeHint *&>(descriptor->PortRangeHints);
 
 	portDescriptors = (LADSPA_PortDescriptor *)calloc(NPorts(), sizeof(LADSPA_PortDescriptor));
-	portNames = (char **)calloc(NPorts(), sizeof(char *));
+	portNames = (const char **)calloc(NPorts(), sizeof(const char *));
 	portRangeHints = ((LADSPA_PortRangeHint *)calloc(NPorts(), sizeof(LADSPA_PortRangeHint)));
 
 	unsigned i=0;
-	for(unsigned j=0; j<GetInControlsSize() ; i++, j++)
+	for(unsigned j=0; j<_nInControls; i++, j++)
 	{
 		portDescriptors[i] = LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL; 
 		portNames[i] = strdup(GetInControlName(j));
 		portRangeHints[i].HintDescriptor = 0;
 	}
 
-	for(unsigned j=0; j<GetOutControlsSize() ; i++, j++)
+	for(unsigned j=0; j<_nOutControls; i++, j++)
 	{
 		portDescriptors[i] = LADSPA_PORT_OUTPUT | LADSPA_PORT_CONTROL; 
 		portNames[i] =  strdup(GetOutControlName(j));
 		portRangeHints[i].HintDescriptor = 0;
 	}
-	for(unsigned j=0; j<GetInPortsSize() ; i++, j++)
+	for(unsigned j=0; j<_nInPorts; i++, j++)
 	{
 		portDescriptors[i] = LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO; 
 		portNames[i] =  strdup(GetInPortName(j));
 		portRangeHints[i].HintDescriptor = 0;
 	}
-	for(unsigned j=0; j<GetOutPortsSize() ; i++, j++)
+	for(unsigned j=0; j<_nOutPorts; i++, j++)
 	{
 		portDescriptors[i] = LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO; 
 		portNames[i] =  strdup(GetOutPortName(j));
@@ -171,21 +171,21 @@ void ProcessingClass2LadspaBase::CleanUpDescriptor(LADSPA_Descriptor *& descript
 
 void ProcessingClass2LadspaBase::DoControls()
 {
-	for(unsigned i=0;i<GetInControlsSize();i++)
+	for(unsigned i=0;i<_nInControls;i++)
 		_proc->GetInControls().GetByNumber(i).DoControl((CLAM::TData)*_incontrolBuffers[i]);
 	// TODO: No output controls!
 }	
 
 void ProcessingClass2LadspaBase::SetPortSizes(int size)
 {		
-	for(int i=0;i<_proc->GetInPorts().Size();i++)
+	for(int i=0;i<_nInControls;i++)
 	{
 		if(_proc->GetInPorts().GetByNumber(i).GetSize() == size ) continue;
 		_proc->GetInPorts().GetByNumber(i).SetSize( size );
 		mWrappersList[i]->SetSize( size );
 	}
 
-	for(int i=0;i<_proc->GetOutPorts().Size();i++)
+	for(int i=0;i<_nOutPorts;i++)
 	{
 		if(_proc->GetOutPorts().GetByNumber(i).GetSize() == size ) continue;
 		_proc->GetOutPorts().GetByNumber(i).SetSize( size );
@@ -194,14 +194,14 @@ void ProcessingClass2LadspaBase::SetPortSizes(int size)
 
 void ProcessingClass2LadspaBase::DoProc(unsigned long nSamples)
 {
-	for(int i=0;i<_proc->GetInPorts().Size();i++)
+	for(int i=0;i<_nInPorts;i++)
 	{
 		memcpy( &(mWrappersList[i]->GetData()), _inportBuffers[i], nSamples*sizeof(CLAM::TData) );
 		mWrappersList[i]->Produce();
 	}
 
-	std::vector<CLAM::TData*> dataList(GetOutPortsSize());
-	for(int i=0;i<_proc->GetOutPorts().Size();i++)
+	std::vector<CLAM::TData*> dataList(_nOutPorts);
+	for(int i=0;i<_nOutPorts;i++)
 	{
 		CLAM::OutPortBase & port = _proc->GetOutPorts().GetByNumber(i);
 		CLAM::AudioOutPort & audioPort = dynamic_cast<CLAM::AudioOutPort&>(port);
@@ -210,7 +210,7 @@ void ProcessingClass2LadspaBase::DoProc(unsigned long nSamples)
 
 	_proc->Do();
 
-	for(int i=0; i<_proc->GetOutPorts().Size(); i++)
+	for(int i=0; i<_nOutControls; i++)
 		memcpy(_outcontrolBuffers[i], dataList[i], nSamples*sizeof(CLAM::TData) );		
 }
 
@@ -231,40 +231,6 @@ const char * ProcessingClass2LadspaBase::GetInPortName(int id) const
 const char * ProcessingClass2LadspaBase::GetOutPortName(int id) const
 {
 	return _proc->GetOutPorts().GetByNumber(id).GetName().c_str();
-}
-
-unsigned ProcessingClass2LadspaBase::GetInControlsSize() const
-{
-	return _proc->GetInControls().Size();
-}
-unsigned ProcessingClass2LadspaBase::GetOutControlsSize() const
-{
-	return _proc->GetOutControls().Size();
-}
-unsigned ProcessingClass2LadspaBase::GetInPortsSize() const
-{
-	return _proc->GetInPorts().Size();
-}
-unsigned ProcessingClass2LadspaBase::GetOutPortsSize() const
-{
-	return _proc->GetOutPorts().Size();
-}
-
-unsigned ProcessingClass2LadspaBase::GetInControlsOffset() const
-{
-	return 0;
-}
-unsigned ProcessingClass2LadspaBase::GetOutControlsOffset() const
-{
-	return GetInControlsSize();
-}
-unsigned ProcessingClass2LadspaBase::GetInPortsOffset() const
-{
-	return GetOutControlsOffset() + GetOutControlsSize();
-}
-unsigned ProcessingClass2LadspaBase::GetOutPortsOffset() const
-{
-	return GetInPortsOffset() + GetInPortsSize();
 }
 
 }
