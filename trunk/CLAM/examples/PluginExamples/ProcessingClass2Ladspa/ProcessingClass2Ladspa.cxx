@@ -72,13 +72,13 @@ namespace CLAM
 
 LADSPA_Descriptor * ProcessingClass2LadspaBase::CreateDescriptor(unsigned long id)
 {
-	LADSPA_Descriptor * descriptor = (LADSPA_Descriptor *)malloc(sizeof(LADSPA_Descriptor));
+	LADSPA_Descriptor * descriptor = new LADSPA_Descriptor;
 	std::string className = _proc->GetClassName();
 	descriptor->UniqueID  = id;
-	descriptor->Label = strdup(("CLAM_"+className).c_str());
-	descriptor->Name = strdup(("CLAM "+className).c_str());
-	descriptor->Maker = "CLAM-dev";
-	descriptor->Copyright = "None";
+	descriptor->Label = LadspaLibrary::dupstr(("CLAM_"+className).c_str());
+	descriptor->Name = LadspaLibrary::dupstr(("CLAM "+className).c_str());
+	descriptor->Maker = LadspaLibrary::dupstr("CLAM-dev");
+	descriptor->Copyright = LadspaLibrary::dupstr("None");
 	descriptor->Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE; //?
 	descriptor->PortCount = NPorts();
 
@@ -102,34 +102,35 @@ void ProcessingClass2LadspaBase::SetPortsAndControls(LADSPA_Descriptor *& descri
 	const char **& portNames = const_cast<const char **&>(descriptor->PortNames);
 	LADSPA_PortRangeHint *& portRangeHints = const_cast<LADSPA_PortRangeHint *&>(descriptor->PortRangeHints);
 
-	portDescriptors = (LADSPA_PortDescriptor *)calloc(NPorts(), sizeof(LADSPA_PortDescriptor));
-	portNames = (const char **)calloc(NPorts(), sizeof(const char *));
-	portRangeHints = ((LADSPA_PortRangeHint *)calloc(NPorts(), sizeof(LADSPA_PortRangeHint)));
+	typedef const char * ConstCharPtr;
+	portNames = new ConstCharPtr[NPorts()];
+	portDescriptors = new LADSPA_PortDescriptor[NPorts()];
+	portRangeHints = new LADSPA_PortRangeHint[NPorts()];
 
 	unsigned i=0;
 	for(unsigned j=0; j<_nInControls; i++, j++)
 	{
 		portDescriptors[i] = LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL; 
-		portNames[i] = strdup(GetInControlName(j));
+		portNames[i] = LadspaLibrary::dupstr(GetInControlName(j));
 		portRangeHints[i].HintDescriptor = 0;
 	}
 
 	for(unsigned j=0; j<_nOutControls; i++, j++)
 	{
 		portDescriptors[i] = LADSPA_PORT_OUTPUT | LADSPA_PORT_CONTROL; 
-		portNames[i] =  strdup(GetOutControlName(j));
+		portNames[i] =  LadspaLibrary::dupstr(GetOutControlName(j));
 		portRangeHints[i].HintDescriptor = 0;
 	}
 	for(unsigned j=0; j<_nInPorts; i++, j++)
 	{
 		portDescriptors[i] = LADSPA_PORT_INPUT | LADSPA_PORT_AUDIO; 
-		portNames[i] =  strdup(GetInPortName(j));
+		portNames[i] =  LadspaLibrary::dupstr(GetInPortName(j));
 		portRangeHints[i].HintDescriptor = 0;
 	}
 	for(unsigned j=0; j<_nOutPorts; i++, j++)
 	{
 		portDescriptors[i] = LADSPA_PORT_OUTPUT | LADSPA_PORT_AUDIO; 
-		portNames[i] =  strdup(GetOutPortName(j));
+		portNames[i] =  LadspaLibrary::dupstr(GetOutPortName(j));
 		portRangeHints[i].HintDescriptor = 0;
 	}
 /*

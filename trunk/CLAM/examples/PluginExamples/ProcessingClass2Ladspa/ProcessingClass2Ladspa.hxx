@@ -22,10 +22,6 @@
 #ifndef __ProcessingClass2Ladspa_hxx__
 #define __ProcessingClass2Ladspa_hxx__
 
-#include <ladspa.h>
-#include <vector>
-#include <map>
-
 #include "Audio.hxx"
 #include "AudioOutPort.hxx"
 #include "AudioInPort.hxx"
@@ -33,6 +29,7 @@
 #include "OutControl.hxx"
 #include "Processing.hxx"
 #include "ProcessingFactory.hxx"
+#include "LadspaLibrary.hxx"
 
 namespace CLAM
 {
@@ -145,40 +142,17 @@ private:
 
 };
 
-class LadspaLibrary
+template <typename ProcessingType>
+class LadspaProcessingExporter
 {
-	std::vector<LADSPA_Descriptor * > _descriptors;
 public:
-	LadspaLibrary()
+	LadspaProcessingExporter(LadspaLibrary & library, unsigned long id)
 	{
+		ProcessingClass2LadspaBase adapter(new ProcessingType);
+		LADSPA_Descriptor * descriptor = adapter.CreateDescriptor(id);
+		library.AddPluginType(descriptor);
 	}
-	~LadspaLibrary()
-	{
-		for (unsigned i=0; i<_descriptors.size(); i++)
-			ProcessingClass2LadspaBase::CleanUpDescriptor(_descriptors[i]);
-	}
-	void AddPluginType(LADSPA_Descriptor * descriptor)
-	{
-		_descriptors.push_back(descriptor);
-	}
-	LADSPA_Descriptor * pluginAt(unsigned long i)
-	{
-		if (i>=_descriptors.size()) return 0;
-		return _descriptors[i];
-	}
-	template <typename ProcessingType>
-	class ProcessingExporter
-	{
-	public:
-		ProcessingExporter(LadspaLibrary & library, unsigned long id)
-		{
-			ProcessingClass2LadspaBase adapter(new ProcessingType);
-			LADSPA_Descriptor * descriptor = adapter.CreateDescriptor(id);
-			library.AddPluginType(descriptor);
-		}
-	};
 };
-
 
 }
 
