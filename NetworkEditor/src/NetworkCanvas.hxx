@@ -28,6 +28,9 @@
 #include <CLAM/XMLStorage.hxx>
 #include <iostream>
 
+
+
+
 class NetworkCanvas : public QWidget
 {
 	Q_OBJECT
@@ -913,6 +916,7 @@ public:
 	ClamNetworkCanvas(QWidget * parent=0)
 		: NetworkCanvas(parent)
 		, _network(0)
+		, _fileNameToOpen(0)
 	{
 		setWindowState(windowState() ^ Qt::WindowFullScreen);
 
@@ -1175,6 +1179,25 @@ public: // Actions
 		if (networkIsDummy()) return true;
 		return _network->RenameProcessing(oldName.toStdString(), newName.toStdString());
 	}
+
+
+signals:
+	void openFileWithExternalApplicationRequest();
+public:
+	void requestOpenFileWithExternalApplication (const QString & fileName )
+	{
+		_fileNameToOpen.clear();
+		_fileNameToOpen=fileName;
+		emit openFileWithExternalApplicationRequest();
+	}
+	const QString getFileNameToOpenWithExternalApplication () const
+	{
+		QString copyFileNameToOpen = _fileNameToOpen;
+		_fileNameToOpen.clear();
+		return copyFileNameToOpen;
+		//return _fileNameToOpen;
+	}
+
 private:
 	QColor getConnectorColorByType(const std::type_info & type) const
 	{
@@ -1640,6 +1663,14 @@ private slots:
 		}
 		addProcessing(point, type);
 	}
+
+	void onOpenFileWithExternalApplication()
+	{
+		const QString fileName = ((QAction*)sender())->data().toString();
+		requestOpenFileWithExternalApplication(fileName);
+	}
+
+
 private:
 	std::string outportTypeId(void * processing, unsigned index) const
 	{
@@ -1686,7 +1717,6 @@ private:
 				menu->addAction( clamProcessingIcon(key), key,
 					this, SLOT(onAddLinkedProcessing()))->setData(cursorPosition);
 			}
-			
 		}
 		if (region==ProcessingBox::inportsRegion)
 		{
@@ -1787,6 +1817,22 @@ private:
 		menu->addAction(_deleteSelectedAction);
 		menu->addAction(_copySelectionAction);
 		menu->addAction(_cutSelectionAction);
+
+		CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
+		std::string className=((CLAM::Processing*)processing->model())->GetClassName();
+		if (factory.AttributeExists(className,"svg_diagram"))
+		{
+			QString fileName=QString(factory.GetValueFromAttribute(className,"svg_diagram").c_str());
+			menu->addSeparator();
+			menu->addAction(clamProcessingIcon(className),"Open diagram with browser",this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
+		}
+		if (factory.AttributeExists(className,"dsp_source"))
+		{
+			QString fileName=QString(factory.GetValueFromAttribute(className,"dsp_source").c_str());
+			menu->addAction(clamProcessingIcon(className),"Open source with editor",this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
+			//menu->addAction(clamProcessingIcon(className),"Recompile plugin");
+		}
+
 	}
 	virtual void canvasContextMenu(QMenu * menu, QContextMenuEvent * event)
 	{
@@ -1809,6 +1855,8 @@ private:
 		return QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()));
 	}
 
+
+
 protected:
 	QAction * _newProcessingAction;
 	QAction * _copySelectionAction;
@@ -1816,6 +1864,7 @@ protected:
 	QAction * _pasteSelectionAction;
 private:
 	CLAM::Network * _network;
+	mutable QString _fileNameToOpen;
 };
 
 

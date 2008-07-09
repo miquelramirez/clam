@@ -37,6 +37,7 @@
 #endif
 #ifdef USE_LADSPA
 #	include <CLAM/RunTimeFaustLibraryLoader.hxx> 
+#	include <QtCore/QDir>
 #endif
 
 #ifndef DATA_EXAMPLES_PATH
@@ -141,6 +142,8 @@ public:
 		connect(_processingTreeDock, SIGNAL(visibilityChanged(bool)), ui.action_Show_processing_toolbox, SLOT(setChecked(bool)));
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
+		connect(_canvas, SIGNAL(openFileWithExternalApplicationRequest()), this, SLOT(on_action_Processing_Open_File_With_External_Application_triggered()));
+//		connect(_canvas, SIGNAL(editFileRequest()), this, SLOT(on_action_Processing_Launch_Editor_triggered()));
 		updateCaption();
 
 	}
@@ -269,11 +272,7 @@ public slots:
 	void on_action_Online_tutorial_triggered()
 	{
 		QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Network_Editor_tutorial";
-		#if QT_VERSION >= 0x040200
-		QDesktopServices::openUrl(helpUrl);
-		#else
-		QProcess::startDetached( "x-www-browser", QStringList() << helpUrl); // TODO: Remove this 4.1 unix only version
-		#endif
+		emit on_action_Launch_Browser_triggered(helpUrl);
 	}
 	void on_action_About_triggered()
 	{
@@ -421,54 +420,117 @@ public slots:
 				"<p>Run the Prototyper and open the same network you are editing</p>\n"
 			));
 	}
+
 	void on_action_Compile_Faust_triggered()
 	{
-		QMessageBox::warning(this, tr("Faust loading (icomplete feature)"),
+		QMessageBox::warning(this, tr("Faust loading (incomplete feature)"),
 			tr(
 				"<p>This action reloads all Faust modules compiled as LADSPA found in FAUST_PATH environment var.</p>\n"
 				"<p>More Faust related features like processing box embedded diagrams will come soon.</p>\n"
 			));
-		// clear the current map of ladspa's
 #if USE_LADSPA
+		if ((QMessageBox::question(this,tr("Are you sure?"),
+			tr(
+				"<p>Recompilation of all FAUST plugins could take some minutes.</p>\n"
+				"<p>Do you still want to do it?</p>\n"
+			), QMessageBox::Yes|QMessageBox::No))!=QMessageBox::Yes) return;
+		// compile all faust files
+		// TODO: this is debugging code:
+	//#if 0
 		RunTimeFaustLibraryLoader faustLoader;
-		faustLoader.Load();
+		typedef std::map<std::string,std::string> CommandsMap;
+		std::cout << "[FAUST] \tcompiling" << std::endl;
+		std::string faustDir=faustLoader.CompletePathFor("examples"); // get path for examples dir
+		QDir examplesPath=QDir(faustDir.c_str());
+		if (not examplesPath.exists("ladspadir") and not examplesPath.mkdir("ladspadir"))	// if directory for plugins compilation doesn't exist try to create it
+		{
+			QMessageBox::warning(this, tr("Faust compilation failed"),
+				tr(
+					"<p>Can't create ladspadir on '%1'!</p>\n"
+					"<p>Compilation failed.</p>\n"
+				).arg(examplesPath.path()) );
+			return;
+		}
+ 		QStringList listOfSources=examplesPath.entryList((QStringList() << "*.dsp"));//, QDir::Files);
+		QStringList::const_iterator sourcesQListIterator;
+		for (sourcesQListIterator = listOfSources.constBegin(); sourcesQListIterator != listOfSources.constEnd(); ++sourcesQListIterator)
+		{
+			const std::string sourceFileCompletePath=examplesPath.absolutePath().toStdString()+"/"+sourcesQListIterator->toStdString();
+			CommandsMap commands=faustLoader.GetCompilePluginCommands(sourceFileCompletePath);	// Get compilation parameters
+			if (commands.empty())
+			{
+				QMessageBox::warning(this, tr("Faust compilation failed"),
+					tr(
+						"<p>Can't found FAUST compiler and/or ladspa.cpp required library!</p>\n"
+						"<p>Compilation failed.</p>\n"
+					));
+				return;
+			}
+			QProcess process;
+			std::cout << "[FAUST DEBUG] \tusing directory: " << process.workingDirectory().toStdString() << std::endl;
+			
+			CommandsMap::iterator commandsIt;
+			for (commandsIt=commands.begin();commandsIt!=commands.end();commandsIt++)
+			{
+				process.setWorkingDirectory((*commandsIt).second.c_str());
+				//process.setWorkingDirectory(faustDir.c_str());
+				process.start((*commandsIt).first.c_str());
+				std::cout<<"[FAUST DEBUG] \texecuting: " << (*commandsIt).first <<" on "<< (*commandsIt).second <<" ";
+				if (!process.waitForFinished())
+					std::cout<<"\t...compiling error" << std::endl;
+				else 
+					std::cout << "\t...compiling done" << std::endl;
+			}
+		}
+		on_action_Reload_Faust_Plugins_triggered(faustLoader);
+	//#endif
+#endif
+	}
+
+	void on_action_Reload_Faust_Plugins_triggered(RunTimeFaustLibraryLoader & faustLibraryLoader)
+	{
+#if USE_LADSPA
+		
+		faustLibraryLoader.Load();
 		// delete the previous instance of processingtree
 		delete(_processingTree);
 		// and generate a new one
 		_processingTree = new NetworkGUI::ProcessingTree(_processingTreeDock);
 		_processingTreeDock->setWidget(_processingTree);
 		addDockWidget(Qt::LeftDockWidgetArea, _processingTreeDock);
-
-#endif
-		// compile all faust files
-		// TODO: this is debugging code:
-#if 0
-		std::cout << "[FAUST] compiling" << std::endl;
-		std::string faustDir="~/src/faust/examples";
-		std::string compileFaustsCmd = "cd "+faustDir+
-			" && make clean && make ladspa && make svg";
-		QProcess process;
-		process.start(compileFaustsCmd.c_str());
-		std::cout << "executing: "<< compileFaustsCmd << std::endl;
-		process.waitForFinished();
 		// generate svg for faust code
-		QString svgFilename;
+		/*QString svgFilename;
 		svgFilename += faustDir.c_str();
-		svgFilename += "/freeverb.dsp-svg/process.svg";
-		#if QT_VERSION >= 0x040200
-		std::cout << "opening "<<svgFilename.toStdString() << std::endl;
-		QDesktopServices::openUrl(svgFilename);
-		#else
-		QProcess::startDetached( "x-www-browser", QStringList() << svgFilename); // TODO: Remove this 4.1 unix only version
-		#endif
+		on_action_Launch_Browser_triggered(svgFilename);
+
 	#ifdef SVGWIDGET	
 		QDockWidget * svgDockWidget = new QDockWidget(this);
 		QSvgWidget * svgWidget = new QSvgWidget(svgFilename, svgDockWidget);
 		svgDockWidget->setWidget(svgWidget);
 		addDockWidget(Qt::RightDockWidgetArea, svgDockWidget);
-	#endif
+	#endif*/
 #endif
 	}
+
+
+	void on_action_Processing_Open_File_With_External_Application_triggered ()
+	{
+		QString fileName="file://"+_canvas->getFileNameToOpenWithExternalApplication();
+		on_action_Launch_Browser_triggered(fileName);
+	}
+
+	void on_action_Launch_Browser_triggered (QString & fileNameToBrowse) const
+	{
+		#if QT_VERSION >= 0x040200
+		std::cout << "opening "<<fileNameToBrowse.toStdString() << std::endl;
+		QDesktopServices::openUrl(fileNameToBrowse);
+		#else
+		QProcess::startDetached("x-www-browser", QStringList() << fileNameToBrowse); // TODO: Remove this 4.1 unix only version
+		#endif
+	}
+
+
+
 	void on_action_Quit_triggered()
 	{
 		close();
