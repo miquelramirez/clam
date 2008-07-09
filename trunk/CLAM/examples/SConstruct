@@ -134,7 +134,8 @@ directoryBasedExamples = [
 ]
 
 directoryBasedLibraries = [
-	"PluginExamples/ProcessingClass2Ladspa",
+	"PluginExamples/ClamLadspaPluginExample",
+	"PluginExamples/ClamNativePluginExample",
 # TODO: Files to be integred on the Network editor
 #	"PluginExamples/LadspaOSCRemoteController",
 ]
