@@ -1,4 +1,4 @@
-#include "NetworkLADSPAPlugin.hxx"
+#include "LadspaNetworkExporter.hxx"
 
 // Ladspa Callbacks
 extern "C"
@@ -314,6 +314,8 @@ LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor()
 	CLAM::NetworkLADSPAPlugin plugin;
 
 	unsigned numports = plugin.GetPortCount() + plugin.GetControlCount();
+
+	if (numports == 0) return 0;
 
 	LADSPA_Descriptor * descriptor = new LADSPA_Descriptor;
 

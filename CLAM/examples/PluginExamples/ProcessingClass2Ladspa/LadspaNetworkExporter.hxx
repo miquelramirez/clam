@@ -1,5 +1,5 @@
-#ifndef _NETWORK_LADSPA_PLUGIN_
-#define _NETWORK_LADSPA_PLUGIN_
+#ifndef LadspaNetworkExporter_hxx
+#define LadspaNetworkExporter_hxx
 
 #include <ladspa.h>
 #include <cstring>
@@ -88,6 +88,7 @@ public:
 	LadspaNetworkExporter(LadspaLibrary & library)
 	{
 		LADSPA_Descriptor * descriptor = NetworkLADSPAPlugin::CreateLADSPADescriptor();
+		if (not descriptor) return;
 		library.AddPluginType(descriptor);
 	}
 };
@@ -95,5 +96,5 @@ public:
 } //namespace CLAM
 
 
-#endif
+#endif//LadspaNetworkExporter_hxx
 

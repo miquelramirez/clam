@@ -21,8 +21,9 @@
 #include "AudioMultiplier.hxx"
 #include "AudioAmplifier.hxx"
 #include "Oscillator.hxx"
-#include "ProcessingClass2Ladspa.hxx"
-#include "NetworkLADSPAPlugin.hxx"
+#include "LadspaNetworkExporter.hxx"
+#include "LadspaProcessingExporter.hxx"
+#include "LadspaLibrary.hxx"
 
 static CLAM::LadspaLibrary library;
 
