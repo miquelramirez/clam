@@ -14,24 +14,6 @@
 #include "ControlSource.hxx"
 #include "ControlSink.hxx"
 
-//C++ version 
-static char *dupstr( char const *args )
-{
-	char * s;
-	size_t v;
-
-	try
-	{
-		s = new char[v = strlen(args) + 1];
-		memcpy( s, args, v );
-	}
-	catch( std::bad_alloc )
-	{
-		s = NULL;
-	}
-	return s;
-} 
-
 
 namespace CLAM
 {
@@ -97,6 +79,8 @@ public:
 	void CopySinksToLadspaBuffers(const unsigned long nframes);
 	void ProcessInControlValues();
 	void ProcessOutControlValues();
+	static void DestructDescriptor(LADSPA_Descriptor * descriptor);
+	static LADSPA_Descriptor * CreateLADSPADescriptor();
 };
 
 } //namespace CLAM

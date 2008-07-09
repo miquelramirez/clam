@@ -1,5 +1,69 @@
 #include "NetworkLADSPAPlugin.hxx"
 
+// Ladspa Callbacks
+extern "C"
+{
+	// Construct a new plugin instance.
+	static LADSPA_Handle Instantiate(const LADSPA_Descriptor * descriptor, unsigned long sampleRate)
+	{
+		std::cerr << "Network2Ladspa: instantiate" << std::endl;
+		return new CLAM::NetworkLADSPAPlugin();
+	}
+	// Destruct plugin instance
+	static void CleanUp(LADSPA_Handle handle)
+	{
+		std::cerr << "Network2Ladspa: cleanup " << handle << std::endl;
+		delete (CLAM::NetworkLADSPAPlugin*) handle;
+	}
+
+	// Run the plugin
+	static void Run(LADSPA_Handle handle, unsigned long sampleCount)
+	{
+		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
+		p->Run( sampleCount );
+	}
+	// Activate Plugin
+	static void Activate(LADSPA_Handle handle)
+	{
+		std::cerr << "Network2Ladspa: activate " << handle << std::endl;
+		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
+		p->Activate();
+	}
+
+	static void Deactivate(LADSPA_Handle handle)
+	{
+		std::cerr << "Network2Ladspa: deactivate " << handle << std::endl;
+		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
+		p->Deactivate();
+	}
+
+	// Connect a port to a data location.
+	static void ConnectTo(LADSPA_Handle handle, unsigned long port, LADSPA_Data * dataLocation)
+	{
+		std::cerr << "Network2Ladspa: connect " << port << std::endl;
+		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
+		p->ConnectTo( port, dataLocation );
+	}
+}
+
+//C++ version 
+static char *dupstr( char const *args )
+{
+	char * s;
+	size_t v;
+
+	try
+	{
+		s = new char[v = strlen(args) + 1];
+		memcpy( s, args, v );
+	}
+	catch( std::bad_alloc )
+	{
+		s = NULL;
+	}
+	return s;
+} 
+
 namespace CLAM
 {
 
@@ -263,5 +327,65 @@ void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
 		mOutControlList.at( port-mReceiverList.size()-mSenderList.size()-mInControlList.size() ).dataBuffer=data;
 }
 
+void NetworkLADSPAPlugin::DestructDescriptor(LADSPA_Descriptor * descriptor)
+{
+	std::cerr << "Network2Ladspa: destructing handler" << std::endl;
+	if (not descriptor) return;
+	delete descriptor->Label;
+	delete descriptor->Name;
+	delete descriptor->Maker;
+	delete descriptor->Copyright;
+	delete descriptor->PortDescriptors;
+
+	for (unsigned long lIndex = 0; lIndex < descriptor->PortCount; lIndex++)
+		delete descriptor->PortNames[lIndex];
+
+	delete descriptor->PortNames;
+	delete descriptor->PortRangeHints;
+	delete descriptor;
+}
+LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor()
+{
+	CLAM::NetworkLADSPAPlugin plugin;
+
+	unsigned numports = plugin.GetPortCount() + plugin.GetControlCount();
+
+	char ** pcPortNames;
+	LADSPA_PortDescriptor * piPortDescriptors;
+	LADSPA_PortRangeHint * psPortRangeHints;
+
+	LADSPA_Descriptor * descriptor = new LADSPA_Descriptor;
+
+	if (not descriptor) return 0;
+
+	descriptor->UniqueID = 8983;
+	descriptor->Label = dupstr("CLAMNetworkLADSPAPlugin");
+	descriptor->Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE; // LADSPA_PROPERTY_REALTIME;
+	descriptor->Name = dupstr("CLAM Network LADSPA Plugin");
+	descriptor->Maker = dupstr("CLAM-devel");
+	descriptor->Copyright = dupstr("GPL");
+	descriptor->PortCount = numports;
+
+	piPortDescriptors = new LADSPA_PortDescriptor[ numports ];
+	descriptor->PortDescriptors = (const LADSPA_PortDescriptor *)piPortDescriptors;
+	
+	pcPortNames = new char*[ numports ];
+	
+	descriptor->PortNames = (const char **)pcPortNames;
+
+	psPortRangeHints = new LADSPA_PortRangeHint[ numports ];
+	descriptor->PortRangeHints = (const LADSPA_PortRangeHint *)psPortRangeHints;
+
+	plugin.FillPortInfo( piPortDescriptors, pcPortNames, psPortRangeHints);
+	
+	descriptor->instantiate = ::Instantiate;
+	descriptor->connect_port = ::ConnectTo;
+	descriptor->activate = ::Activate;
+	descriptor->run = ::Run;
+	descriptor->deactivate = ::Deactivate;
+	descriptor->cleanup = ::CleanUp;
+
+	return descriptor;
+}
 } //end namespace CLAM
 
