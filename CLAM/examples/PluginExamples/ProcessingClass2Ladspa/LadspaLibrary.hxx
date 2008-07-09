@@ -25,17 +25,6 @@ class LadspaLibrary
 		delete[] descriptor->PortRangeHints;
 		delete descriptor;
 		descriptor = 0;
-#if 0
-		free((char *)descriptor->Label);
-		free((char *)descriptor->Name);
-		free((LADSPA_PortDescriptor *)descriptor->PortDescriptors);
-		for (unsigned long lIndex = 0; lIndex < descriptor->PortCount; lIndex++)
-			 free((char *)(descriptor->PortNames[lIndex]));
-		free((char **)descriptor->PortNames);
-		free((LADSPA_PortRangeHint *)descriptor->PortRangeHints);
-		free(descriptor);
-		descriptor=0;
-#endif
 	}
 public:
 	LadspaLibrary()

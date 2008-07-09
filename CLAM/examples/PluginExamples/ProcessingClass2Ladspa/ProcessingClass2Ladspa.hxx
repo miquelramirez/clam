@@ -114,7 +114,6 @@ private:
 // Pre instantiation interface
 public:
 	LADSPA_Descriptor * CreateDescriptor(unsigned long id);
-	static void CleanUpDescriptor(LADSPA_Descriptor *& descriptor);
 private:
 	void SetPortsAndControls(LADSPA_Descriptor *& descriptor);
 

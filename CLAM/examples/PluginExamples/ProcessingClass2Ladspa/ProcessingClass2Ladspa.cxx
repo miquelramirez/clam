@@ -156,19 +156,6 @@ void ProcessingClass2LadspaBase::SetPortsAndControls(LADSPA_Descriptor *& descri
 	portRangeHints[2] = 0;
 */
 }
-void ProcessingClass2LadspaBase::CleanUpDescriptor(LADSPA_Descriptor *& descriptor)
-{
-	if (not descriptor) return;
-	free((char *)descriptor->Label);
-	free((char *)descriptor->Name);
-	free((LADSPA_PortDescriptor *)descriptor->PortDescriptors);
-	for (unsigned long lIndex = 0; lIndex < descriptor->PortCount; lIndex++)
-		 free((char *)(descriptor->PortNames[lIndex]));
-	free((char **)descriptor->PortNames);
-	free((LADSPA_PortRangeHint *)descriptor->PortRangeHints);
-	free(descriptor);
-	descriptor=0;
-}
 
 void ProcessingClass2LadspaBase::DoControls()
 {
