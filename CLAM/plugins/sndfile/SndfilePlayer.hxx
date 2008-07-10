@@ -17,7 +17,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
 #ifndef SndfilePlayer_hxx
 #define SndfilePlayer_hxx
 
@@ -28,6 +27,7 @@
 #include <CLAM/OutControl.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/AudioInFilename.hxx> 
+#include <CLAM/Audio.hxx>
 #include <sndfile.hh>  
 
 namespace CLAM
@@ -48,70 +48,86 @@ namespace CLAM
 
 	class SndfilePlayer : public  Processing
 	{ 
+		typedef SndfilePlayerConfig Config;
+		typedef std::vector<CLAM::AudioOutPort*> OutPorts;
+		OutPorts _outports;
+
 		AudioOutPort _out;
 		SndfileHandle* _infile;
 		SndfilePlayerConfig _config;
-		int _channels;
+		unsigned _numChannels;
 		
 	public:
-		typedef SndfilePlayerConfig Config;
-
 		const char* GetClassName() const { return "SndfilePlayer"; }
 
 		SndfilePlayer(const ProcessingConfig& config =  Config()) 
 			: _out("s Output", this) 
 			, _infile(0)
-			,_channels(0)
+			,_numChannels(0)
 		{ 
 			Configure( config );
 		}
 	 
 		bool Do()
 		{
-			Do(_out.GetAudio().GetBuffer());		
-		
+			ReadBufferAndWriteToPorts();		
 			// Tell the ports this is done
-			_out.Produce();
+			for (unsigned channel=0; channel<_numChannels; channel++)
+				_outports[channel]->Produce();
+				
 			return true;
 		}
 
-		bool Do(DataArray& out)
+		void ReadBufferAndWriteToPorts()
 		{
-			const int portSize = out.Size();
+			//all the ports have to have the same buffer size
+			const int portSize = _outports[0]->GetAudio().GetBuffer().Size();
+
+			CLAM::TData* channels[_numChannels];
+			for (unsigned channel=0; channel<_numChannels; channel++)
+				channels[channel] = &_outports[channel]->GetAudio().GetBuffer()[0];
+
 			if (not _infile)
 			{
-				for(int i=0; i< portSize; i++) out[i] = 0; // Do it for all the channels
-				return true;
+				for(int i=0; i< portSize; i++) 
+					for(unsigned channel = 0; channel<_numChannels; channel++)
+						channels[channel][i] = 0; 
+				return;
 			}
 
-			const int bufferSize =  portSize * _channels;
+			const int bufferSize =  portSize * _numChannels;
 			float buffer[bufferSize];
 			int readSize = _infile->read( buffer,bufferSize);
 			
 			// produce the portion read (normally the whole buffer)
 			int frameIndex=0;
-			for (int i=0; i<bufferSize; i+= _channels) 
-			{      				
-					//Now only catch the first channel.		
-					out[frameIndex] = buffer[i];
-					frameIndex++;
+			for (int i=0; i<readSize; i+= _numChannels) 
+			{	for(unsigned channel = 0; channel<_numChannels; channel++)
+				{				
+					channels[channel][frameIndex] = buffer[i+channel];
+				}
+				frameIndex++;
 			}
 
-			if (readSize == bufferSize) return true;	
+			if (readSize == bufferSize) return;	
 		
 			// the last buffer is not complete fill it up with zeros and close file
-			for(int i=readSize; i< bufferSize; i++)
-			{	if(i<portSize)
-					out[i] = 0; // Do it for all the channels
-			} 
-	 
+			frameIndex=0;
+			for(int i=readSize; i< bufferSize; i += _numChannels)
+			{	for(unsigned channel=0;channel<_numChannels;channel++)
+				{
+					channels[channel][frameIndex] = 0; 
+				}
+				frameIndex++;
+			}
+
 			delete _infile;
 			_infile = 0;
 
 			if(_config.GetLoop())
 				_infile = new SndfileHandle(_config.GetSourceFile().c_str(), SFM_READ);			
 				
-			return true;		
+			return;		
 		}
 
 		bool ConcreteStart()	
@@ -141,7 +157,7 @@ namespace CLAM
 		bool ConcreteConfigure(const ProcessingConfig & config)
 		{
 			CopyAsConcreteConfig(_config, config);
-		
+
 			if ( !_config.HasSourceFile() )
 			{
 				AddConfigErrorMessage("The provided config object lacked the field 'SourceFile'");
@@ -161,11 +177,41 @@ namespace CLAM
 			{
 				AddConfigErrorMessage("Error with the file type. Only PCM WAV files are supported");
 				return false;
-			}		
+			}
 
-			_channels = _infile->channels();
-			std::cout << " Channel: " << _channels <<std::endl;
+			RemovePortsAndControls();
+			_numChannels = _infile->channels();
+			unsigned portSize = BackendBufferSize();
+			for(unsigned i=0;i<_numChannels;i++)
+			{		
+				std::ostringstream nameStream;
+				nameStream << "out " << (i+1);
+				AudioOutPort * port = new AudioOutPort( nameStream.str(), this);
+				port->SetSize( portSize );
+				port->SetHop( portSize );
+				_outports.push_back( port );
+			}
+
 			return true;
+		}
+		void RemovePortsAndControls()
+		{
+			if(!_outports.empty())
+			{
+				for(OutPorts::iterator itOutPorts=_outports.begin();itOutPorts!=_outports.end();itOutPorts++)
+				{	
+					delete *itOutPorts;
+				}				
+			}		
+			_outports.clear();
+
+			// Delete ports from Processing (base class) register
+			GetOutPorts().Clear();
+		}
+
+		~SndfilePlayer()
+		{
+			RemovePortsAndControls();
 		}
 	};
 
