@@ -452,11 +452,11 @@ void PrototypeLoader::OpenAudioFile()
 	QString filename = 
 		QFileDialog::getOpenFileName(_interface, 
 			tr("Choose an audio file"),
-			config.GetSourceFile().c_str(),
+			QString::fromLocal8Bit(config.GetSourceFile().c_str()),
 			tr("Audio files (*.wav *.ogg *.mp3)")
 			);
 	if (filename.isEmpty()) return;
-	config.SetSourceFile(filename.toStdString());
+	config.SetSourceFile(filename.toLocal8Bit().constData());
 	Stop();
 	processing.Configure(config);
 	Start();
