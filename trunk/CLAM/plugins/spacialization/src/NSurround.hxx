@@ -100,14 +100,16 @@ public:
 		const CLAM::DataArray& p =_p.GetAudio().GetBuffer();
 		const CLAM::DataArray& vx =_vx.GetAudio().GetBuffer();
 		const CLAM::DataArray& vy =_vy.GetAudio().GetBuffer();
+		CLAM::TData* channels[_nChannels];
+	
+		for (unsigned channel=0; channel<_nChannels; channel++)
+			channels[channel] = &_outputs[channel]->GetAudio().GetBuffer()[0];
+
 		for (int i=0; i<p.Size(); i++)
 		{
 			double ux = vx[i] * cosBeta - vy[i] * sinBeta;
 			double uy = vx[i] * sinBeta + vy[i] * cosBeta;
-			CLAM::TData* channels[_nChannels];
-			for (unsigned channel=0; channel<_nChannels; channel++)
-				channels[channel] = &_outputs[channel]->GetAudio().GetBuffer()[0];
-
+			
 			for (unsigned channel=0; channel<_nChannels; channel++)
 			{
 				channels[channel][i] = 0.5*( p[i] - ux * _cosAlphas[channel] - uy * _sinAlphas[channel] );
