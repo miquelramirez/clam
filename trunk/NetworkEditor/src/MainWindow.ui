@@ -88,6 +88,9 @@
      <string>&amp;Interface</string>
     </property>
     <widget class="QMenu" name="menuFaust" >
+     <property name="enabled" >
+      <bool>false</bool>
+     </property>
      <property name="title" >
       <string>Faust</string>
      </property>
