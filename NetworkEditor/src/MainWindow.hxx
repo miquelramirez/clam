@@ -20,10 +20,7 @@
 #include "NetworkEditorVersion.hxx"
 
 
-#define SVGWIDGET //this macro is for debugging
-#ifdef SVGWIDGET
-	#include <QtSvg/QSvgWidget>
-#endif
+#include <QtSvg/QSvgWidget>
 #include <QtCore/QProcess>
 #if QT_VERSION >= 0x040200
 	#include <QtGui/QDesktopServices>
@@ -95,12 +92,20 @@ public:
 		_recentFiles=settings.value("RecentFiles").toStringList();
 		updateRecentMenu();
 		restoreState(settings.value("DockWindowsState").toByteArray());
+		bool embedSvgDiagramsOption=settings.value("EmbedSVGDiagramsOption").toBool();
+		_canvas->setEmbedSVGDiagramsOption(embedSvgDiagramsOption);
+		ui.action_Embed_SVG_Diagrams_Option->setChecked(embedSvgDiagramsOption);
 
 		_network.AddFlowControl( new CLAM::NaiveFlowControl );
 		QString backend = "None";
 		QString backendLogo = ":/icons/images/editdelete.png"; // TODO: Change this icon
 		if (_networkPlayer) delete _networkPlayer;
 		_networkPlayer = 0;
+
+#ifdef USE_LADSPA
+		ui.menuFaust->setEnabled(true);
+#endif
+
 #ifdef USE_JACK
 		CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
 		backend = "JACK";
@@ -142,8 +147,7 @@ public:
 		connect(_processingTreeDock, SIGNAL(visibilityChanged(bool)), ui.action_Show_processing_toolbox, SLOT(setChecked(bool)));
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
-		connect(_canvas, SIGNAL(openFileWithExternalApplicationRequest()), this, SLOT(on_action_Processing_Open_File_With_External_Application_triggered()));
-//		connect(_canvas, SIGNAL(editFileRequest()), this, SLOT(on_action_Processing_Launch_Editor_triggered()));
+		connect(_canvas, SIGNAL(openFileWithExternalApplicationRequest()), this, SLOT(openFileWithExternalApplicationFromProcessing()));
 		updateCaption();
 
 	}
@@ -254,8 +258,23 @@ public:
 		QSettings settings;
 		settings.setValue("RecentFiles",_recentFiles);
 		settings.setValue("DockWindowsState", saveState());
+		settings.setValue("EmbedSVGDiagramsOption",_canvas->getEmbedSVGDiagramsOption());
 		event->accept();
 	}
+
+private:
+	void launchBrowser (QString & fileNameToBrowse) const
+	{
+		#if QT_VERSION >= 0x040200
+		std::cout << "opening "<<fileNameToBrowse.toStdString() << std::endl;
+		QDesktopServices::openUrl(fileNameToBrowse);
+		#else
+		QProcess::startDetached("x-www-browser", QStringList() << fileNameToBrowse); // TODO: Remove this 4.1 unix only version
+		#endif
+	}
+
+
+
 public slots:
 	void updateCaption()
 	{
@@ -265,14 +284,26 @@ public slots:
 				);
 		updatePlayStatusIndicator();
 	}
+	void openFileWithExternalApplicationFromProcessing()
+	{
+		QString fileName="file://"+_canvas->getFileNameToOpenWithExternalApplication();
+		launchBrowser(fileName);
+	}
+	void on_action_Embed_SVG_Diagrams_Option_changed()
+	{
+		QAction *action = qobject_cast<QAction *>(sender());
+		if (!action) return;
+		_canvas->setEmbedSVGDiagramsOption(action->isChecked());
+	}
 	void on_action_Whats_this_triggered()
 	{
 		QWhatsThis::enterWhatsThisMode();
 	}
+
 	void on_action_Online_tutorial_triggered()
 	{
 		QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Network_Editor_tutorial";
-		emit on_action_Launch_Browser_triggered(helpUrl);
+		launchBrowser(helpUrl);
 	}
 	void on_action_About_triggered()
 	{
@@ -412,6 +443,7 @@ public slots:
 				" the network but changing the '.clamnetwork' extension to '.ui'</p>\n"
 			));
 	}
+
 	void on_action_Run_prototyper_triggered()
 	{
 		QMessageBox::warning(this, tr("Feature not implemented"),
@@ -421,13 +453,8 @@ public slots:
 			));
 	}
 
-	void on_action_Compile_Faust_triggered()
+	void on_action_Compile_Faust_Modules_triggered()
 	{
-		QMessageBox::warning(this, tr("Faust loading (incomplete feature)"),
-			tr(
-				"<p>This action reloads all Faust modules compiled as LADSPA found in FAUST_PATH environment var.</p>\n"
-				"<p>More Faust related features like processing box embedded diagrams will come soon.</p>\n"
-			));
 #if USE_LADSPA
 		if ((QMessageBox::question(this,tr("Are you sure?"),
 			tr(
@@ -435,8 +462,6 @@ public slots:
 				"<p>Do you still want to do it?</p>\n"
 			), QMessageBox::Yes|QMessageBox::No))!=QMessageBox::Yes) return;
 		// compile all faust files
-		// TODO: this is debugging code:
-	//#if 0
 		RunTimeFaustLibraryLoader faustLoader;
 		typedef std::map<std::string,std::string> CommandsMap;
 		std::cout << "[FAUST] \tcompiling" << std::endl;
@@ -482,15 +507,14 @@ public slots:
 					std::cout << "\t...compiling done" << std::endl;
 			}
 		}
-		on_action_Reload_Faust_Plugins_triggered(faustLoader);
-	//#endif
+		on_action_Reload_Faust_Modules_triggered();
 #endif
 	}
 
-	void on_action_Reload_Faust_Plugins_triggered(RunTimeFaustLibraryLoader & faustLibraryLoader)
+	void on_action_Reload_Faust_Modules_triggered()
 	{
 #if USE_LADSPA
-		
+		RunTimeFaustLibraryLoader faustLibraryLoader;
 		faustLibraryLoader.Load();
 		// delete the previous instance of processingtree
 		delete(_processingTree);
@@ -512,25 +536,6 @@ public slots:
 #endif
 	}
 
-
-	void on_action_Processing_Open_File_With_External_Application_triggered ()
-	{
-		QString fileName="file://"+_canvas->getFileNameToOpenWithExternalApplication();
-		on_action_Launch_Browser_triggered(fileName);
-	}
-
-	void on_action_Launch_Browser_triggered (QString & fileNameToBrowse) const
-	{
-		#if QT_VERSION >= 0x040200
-		std::cout << "opening "<<fileNameToBrowse.toStdString() << std::endl;
-		QDesktopServices::openUrl(fileNameToBrowse);
-		#else
-		QProcess::startDetached("x-www-browser", QStringList() << fileNameToBrowse); // TODO: Remove this 4.1 unix only version
-		#endif
-	}
-
-
-
 	void on_action_Quit_triggered()
 	{
 		close();
@@ -549,7 +554,6 @@ private:
 	//XML boxes geometries testing
 	const bool _saveUsingOldPosFiles;
 
-	// faust testing
 	QDockWidget * _processingTreeDock;
 	NetworkGUI::ProcessingTree * _processingTree;
 };
