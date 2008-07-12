@@ -118,6 +118,28 @@ void ProcessingBox::recomputeMinimumSizes()
 	if (minimumWidth<outcontrolsWidth) minimumWidth = outcontrolsWidth;
 	minimumWidth += 2*controlOffset;
 
+	// If exists hint size and is greater that minimum use instead of (until 500x500)
+	if (_embeded && _embeded->sizeHint().isValid())
+	{
+		//std::cout<<"minimum size: "<<minimumWidth<<"; "<<minimumHeight<<std::endl;
+		const double maximumEmbededWidth=std::max(500,minimumWidth);
+		const double maximumEmbededHeight=std::max(500,minimumHeight);
+		//std::cout<<"maximum size: "<<maximumEmbededWidth<<"; "<<maximumEmbededHeight<<std::endl;
+		double factor=1;
+		const double embededHintWidth = _embeded->sizeHint().width();
+		const double embededHintHeight = _embeded->sizeHint().height();
+		//std::cout<<"hint size: "<<embededHintWidth<<"; "<<embededHintHeight<<std::endl;
+
+		if (embededHintWidth>maximumEmbededWidth)
+			factor=(maximumEmbededWidth/embededHintWidth);
+		if (embededHintHeight>maximumEmbededHeight)
+			factor=std::min(factor,(maximumEmbededHeight/embededHintHeight));
+		minimumHeight=std::max(minimumHeight,(int)(embededHintHeight*factor));
+		minimumWidth=std::max(minimumWidth,(int)(embededHintWidth*factor));
+		//std::cout<<"Factor: "<<factor<<std::endl;
+		//std::cout<<"resize: "<<minimumWidth<<"; "<<minimumHeight<<std::endl;
+	}
+
 	_minimumSize = QSize(minimumWidth, minimumHeight );
 	resize(_size);
 	_canvas->update();
