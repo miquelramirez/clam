@@ -415,6 +415,7 @@ public slots:
 		_colorResizeHandle = colorResizeHandle;
 		_colorPort = colorPort;
 	}
+
 private slots:
 	void onClearSelections()
 	{
@@ -1086,9 +1087,6 @@ public: // Actions
 	}
 
 
-
-
-
 	virtual QWidget * embededWidgetFor(void * processing);
 	virtual unsigned nInports(void * processing) { return ((CLAM::Processing*)processing)->GetInPorts().Size();}
 	virtual unsigned nOutports(void * processing) { return ((CLAM::Processing*)processing)->GetOutPorts().Size();}
@@ -1431,6 +1429,15 @@ public:
 		return 1;
 	}
 
+	void setEmbedSVGDiagramsOption(bool state)
+	{
+		_embedSVGDiagramsOption=state;
+	}
+
+	bool getEmbedSVGDiagramsOption()
+	{
+		return _embedSVGDiagramsOption;
+	}
 
 private slots:
 	void onCopyConnection()
@@ -1503,7 +1510,6 @@ private slots:
 		QString text=QApplication::clipboard()->text();
 		std::stringstream streamXMLBuffer;
 		streamXMLBuffer << text.toStdString();
-		CLAM::Network networkToPaste;
 
 		try
 		{
@@ -1517,7 +1523,6 @@ private slots:
 						"<p><b>%1</b></p>").arg(e.what()));
 			return;
 		}
-		reloadNetwork();
 		loadGeometriesFromXML(point);
 	}
 
@@ -1865,9 +1870,8 @@ protected:
 private:
 	CLAM::Network * _network;
 	mutable QString _fileNameToOpen;
+	bool _embedSVGDiagramsOption;
 };
-
-
 
 #endif//NetworkCanvas_hxx
 

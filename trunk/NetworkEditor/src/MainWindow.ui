@@ -87,10 +87,21 @@
     <property name="title" >
      <string>&amp;Interface</string>
     </property>
+    <widget class="QMenu" name="menuFaust" >
+     <property name="title" >
+      <string>Faust</string>
+     </property>
+     <property name="icon" >
+      <iconset resource="images.qrc" >:/icons/images/faustlogo.svg</iconset>
+     </property>
+     <addaction name="action_Compile_Faust_Modules" />
+     <addaction name="action_Reload_Faust_Modules" />
+     <addaction name="action_Embed_SVG_Diagrams_Option" />
+    </widget>
     <addaction name="action_Edit_interface" />
     <addaction name="action_Run_prototyper" />
     <addaction name="separator" />
-    <addaction name="action_Compile_Faust" />
+    <addaction name="menuFaust" />
    </widget>
    <addaction name="menu_File" />
    <addaction name="menu_Network" />
@@ -119,7 +130,7 @@
    <addaction name="separator" />
    <addaction name="action_Edit_interface" />
    <addaction name="action_Run_prototyper" />
-   <addaction name="action_Compile_Faust" />
+   <addaction name="action_Compile_Faust_Modules" />
    <addaction name="separator" />
    <addaction name="action_Show_processing_toolbox" />
    <addaction name="action_Zoom_in" />
@@ -331,12 +342,25 @@
     <string>&amp;Open</string>
    </property>
   </action>
-  <action name="action_Compile_Faust" >
+  <action name="action_Compile_Faust_Modules" >
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/exec.png</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Reload Faust modules</string>
+    <string>&amp;Recompile Faust modules</string>
+   </property>
+  </action>
+  <action name="action_Reload_Faust_Modules" >
+   <property name="text" >
+    <string>Re&amp;load Faust modules</string>
+   </property>
+  </action>
+  <action name="action_Embed_SVG_Diagrams_Option" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Embed SVN diagrams on new processings</string>
    </property>
   </action>
  </widget>

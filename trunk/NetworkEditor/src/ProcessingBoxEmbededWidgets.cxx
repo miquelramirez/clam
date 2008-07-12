@@ -40,11 +40,8 @@
 #include <typeinfo>
 #include <CLAM/ProcessingDataPlugin.hxx>
 
-#define SVGWIDGET //this macro is for debugging
-#ifdef SVGWIDGET
-	#include <QtSvg/QSvgWidget>
-	#include <QSvgRenderer>
-#endif
+#include <QtSvg/QSvgWidget>
+#include <QSvgRenderer>
 
 
 QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
@@ -131,21 +128,17 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 	if (className=="VectorView")
 		return new CLAM::VM::VectorView(this, dynamic_cast<VectorViewMonitor*>(processing));
 
-#ifdef SVGWIDGET
 	// SVG diagrams embedding
 	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-	if (factory.AttributeExists(className,"svg_diagram"))
+	if (factory.AttributeExists(className,"svg_diagram") && _embedSVGDiagramsOption)
 	{
 		std::string svgDiagramFile=factory.GetValueFromAttribute(className,"svg_diagram");
 		QWidget * widget = new QSvgWidget(this);
 		QSvgRenderer *renderer = (dynamic_cast<QSvgWidget*>(widget))->renderer();
 		if (!renderer->load(QString(svgDiagramFile.c_str())))
 			renderer->load(tr(":/icons/images/%1").arg(factory.GetValueFromAttribute(className,"icon").c_str()));
-		widget->resize(renderer->defaultSize().width(),renderer->defaultSize().height());
-//		widget->setMinimumSize(widget->size());
 		return widget;
 	}
-#endif
 
 	return 0;
 }
