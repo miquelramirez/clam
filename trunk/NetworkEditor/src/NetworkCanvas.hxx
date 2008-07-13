@@ -1278,7 +1278,7 @@ public:
 	}
 
 
-	void reloadNetwork()
+	void reloadNetwork(bool selectAllNew=false)
 	{
 		if (networkIsDummy()) return;
 		CLAM::Network::ProcessingsMap::const_iterator it;
@@ -1289,6 +1289,8 @@ public:
 				continue; // if the processing exists in canvas, skip it
 			CLAM::Processing * processing = it->second;
 			addProcessingBox( name.c_str(),  processing );
+			if (selectAllNew)
+				getBox(name.c_str())->select();
 		}
 		refreshWires();
 	}
@@ -1523,7 +1525,9 @@ private slots:
 						"<p><b>%1</b></p>").arg(e.what()));
 			return;
 		}
-		reloadNetwork();
+		clearSelections();
+		bool selectAllNew=true;
+		reloadNetwork(selectAllNew);
 		loadGeometriesFromXML(point);
 	}
 
