@@ -1523,6 +1523,7 @@ private slots:
 						"<p><b>%1</b></p>").arg(e.what()));
 			return;
 		}
+		reloadNetwork();
 		loadGeometriesFromXML(point);
 	}
 
