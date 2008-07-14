@@ -128,15 +128,28 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 	if (className=="VectorView")
 		return new CLAM::VM::VectorView(this, dynamic_cast<VectorViewMonitor*>(processing));
 
-	// SVG diagrams embedding
+	// SVG embedding. TODO: replace embedded_svg for embedded_logo (requires load in QLabel? on QWidget, instead using QSvgWidget)
 	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
-	if (factory.AttributeExists(className,"svg_diagram") && _embedSVGDiagramsOption)
+	bool existsDiagram=factory.AttributeExists(className,"faust_diagram");
+	bool existsLogo=factory.AttributeExists(className,"embedded_svg");
+	if (existsDiagram or existsLogo)
 	{
-		std::string svgDiagramFile=factory.GetValueFromAttribute(className,"svg_diagram");
+		std::string embeddedSvg;
+		if (existsLogo)
+		{
+			embeddedSvg=factory.GetValueFromAttribute(className,"embedded_svg");
+		}
+		// if embedding option is selected, diagram overwrites logo
+		if (existsDiagram and _embedSVGDiagramsOption)
+		{
+			 embeddedSvg=factory.GetValueFromAttribute(className,"faust_diagram");
+		}
+
 		QWidget * widget = new QSvgWidget(this);
 		QSvgRenderer *renderer = (dynamic_cast<QSvgWidget*>(widget))->renderer();
-		if (!renderer->load(QString(svgDiagramFile.c_str())))
-			renderer->load(tr(":/icons/images/%1").arg(factory.GetValueFromAttribute(className,"icon").c_str()));
+		if (!renderer->load(QString(embeddedSvg.c_str())))
+			if (!renderer->load(tr(":/icons/images/%1").arg(embeddedSvg.c_str())))
+				return 0;
 		return widget;
 	}
 
