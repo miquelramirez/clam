@@ -103,18 +103,17 @@ protected:
 			std::string svgFileDir = CompletePathFor( "examples/" + pluginName + ".dsp-svg/process.svg");
 			if (svgFileDir != "")
 			{
-				factory.AddAttribute(oss.str(), "svg_diagram", svgFileDir);
-				std::cout << "[FAUST-LADSPA] \tusing SVG diagram: " << svgFileDir << std::endl;
+				factory.AddAttribute(oss.str(), "faust_diagram", svgFileDir);
+				std::cout << "[FAUST-LADSPA] \tusing faust diagram: " << svgFileDir << std::endl;
 			}
-			else
-				factory.AddAttribute(oss.str(), "svg_diagram", ":icons/images/faustlogo.svg");
-
+			if (!factory.AttributeExists(oss.str(), "embedded_svg"))
+				factory.AddAttribute(oss.str(), "embedded_svg", ":icons/images/faustlogo.svg");
 			if (!factory.AttributeExists(oss.str(), "icon"))
 				factory.AddAttribute(oss.str(), "icon", "faustlogo.svg");
 
 			std::string sourceFileName=CompletePathFor( "examples/"+pluginName+".dsp");
 			if (sourceFileName != "")
-				factory.AddAttribute(oss.str(), "dsp_source", sourceFileName);
+				factory.AddAttribute(oss.str(), "faust_source_file", sourceFileName);
 		}
 	}
 

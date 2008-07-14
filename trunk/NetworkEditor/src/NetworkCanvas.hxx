@@ -1830,15 +1830,15 @@ private:
 
 		CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 		std::string className=((CLAM::Processing*)processing->model())->GetClassName();
-		if (factory.AttributeExists(className,"svg_diagram"))
+		if (factory.AttributeExists(className,"faust_diagram"))
 		{
-			QString fileName=QString(factory.GetValueFromAttribute(className,"svg_diagram").c_str());
+			QString fileName=QString(factory.GetValueFromAttribute(className,"faust_diagram").c_str());
 			menu->addSeparator();
 			menu->addAction(clamProcessingIcon(className),"Open diagram with browser",this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
 		}
-		if (factory.AttributeExists(className,"dsp_source"))
+		if (factory.AttributeExists(className,"faust_source_file"))
 		{
-			QString fileName=QString(factory.GetValueFromAttribute(className,"dsp_source").c_str());
+			QString fileName=QString(factory.GetValueFromAttribute(className,"faust_source_file").c_str());
 			menu->addAction(clamProcessingIcon(className),"Open source with editor",this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
 			//menu->addAction(clamProcessingIcon(className),"Recompile plugin");
 		}

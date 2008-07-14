@@ -11,7 +11,7 @@ namespace Hidden
 		"category", "Audio I/O",
 		"description", "AudioSource",
 		"icon", "source.svg",
-		"svg_diagram", "source.svg",
+		"embedded_svg", "source.svg",
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, AudioSource> reg = metadata;
