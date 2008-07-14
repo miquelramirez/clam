@@ -37,25 +37,25 @@ class TaskRunner : public QDockWidget
 public:
 	TaskRunner(QWidget * parent = 0)
 	{
-		mOutputDisplay = new QTextEdit(this);
+		_OutputDisplay = new QTextEdit(this);
 //		QVBoxLayout * layout = new QVBoxLayout(this);
-		layout()->addWidget(mOutputDisplay);
+		layout()->addWidget(_OutputDisplay);
 		setAttribute(Qt::WA_DeleteOnClose, true);
 	}
 	virtual ~TaskRunner();
 	bool run(QString command, QStringList & arguments, QString workingDir)
 	{
-		mOutput = ("<div style='color: blue;'>" + tr("Executing '<tt>%1 %2</tt>'") + "</div><br/>")
+		_Output = ("<div style='color: blue;'>" + tr("Executing '<tt>%1 %2</tt>'") + "</div><br/>")
 			.arg(command)
 			.arg(arguments.join(" "));
 		updateText();
-		mProcess = new QProcess(this);
-		mProcess->setWorkingDirectory(workingDir);
-		connect(mProcess, SIGNAL(readyReadStandardError()), this, SLOT(dumpError()));
-		connect(mProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(dumpOutput()));
-		connect(mProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished()));
-		mProcess->start(command, arguments);
-		return mProcess->waitForStarted();
+		_Process = new QProcess(this);
+		_Process->setWorkingDirectory(workingDir);
+		connect(_Process, SIGNAL(readyReadStandardError()), this, SLOT(dumpError()));
+		connect(_Process, SIGNAL(readyReadStandardOutput()), this, SLOT(dumpOutput()));
+		connect(_Process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished()));
+		_Process->start(command, arguments);
+		return _Process->waitForStarted();
 	}
 signals:
 	void taskDone(bool success);
@@ -64,18 +64,18 @@ private slots:
 	{
 		dumpOutput();
 		dumpError();
-		mOutput += tr("<div style='color: blue;'>Done.</div>");
+		_Output += tr("<div style='color: blue;'>Done.</div>");
 		updateText();
 		QTimer::singleShot(5000, this, SLOT(close()));
-		emit taskDone(mProcess->exitCode()==0);
+		emit taskDone(_Process->exitCode()==0);
 	}
 	void dumpError()
 	{
-		dump(mProcess->readAllStandardError(), true);
+		dump(_Process->readAllStandardError(), true);
 	}
 	void dumpOutput()
 	{
-		dump(mProcess->readAllStandardOutput(), false);
+		dump(_Process->readAllStandardOutput(), false);
 	}
 private:
 	void dump(QString output, bool error)
@@ -83,21 +83,21 @@ private:
 		output.replace("&","&amp;");
 		output.replace("<","&lt;");
 		output.replace("\n","<br/>");
-		mOutput += QString("<tt style='color: ") + (error?"red":"green") + ";'>"+  output +"</tt>";
+		_Output += QString("<tt style='color: ") + (error?"red":"green") + ";'>"+  output +"</tt>";
 		updateText();
 	}
 	void updateText()
 	{
-		mOutputDisplay->setHtml(mOutput);
-		QTextCursor cursor = mOutputDisplay->textCursor();
+		_OutputDisplay->setHtml(_Output);
+		QTextCursor cursor = _OutputDisplay->textCursor();
 		cursor.movePosition(QTextCursor::End);
-		mOutputDisplay->setTextCursor(cursor);
-		mOutputDisplay->ensureCursorVisible();
+		_OutputDisplay->setTextCursor(cursor);
+		_OutputDisplay->ensureCursorVisible();
 	}
 private:
-	QTextEdit * mOutputDisplay;
-	QProcess * mProcess;
-	QString mOutput;
+	QTextEdit * _OutputDisplay;
+	QProcess * _Process;
+	QString _Output;
 };
 
 
