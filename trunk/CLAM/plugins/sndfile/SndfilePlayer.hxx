@@ -56,6 +56,7 @@ namespace CLAM
 		SndfileHandle* _infile;
 		SndfilePlayerConfig _config;
 		unsigned _numChannels;
+		std::vector<float> _buffer; 
 		
 	public:
 		const char* GetClassName() const { return "SndfilePlayer"; }
@@ -94,17 +95,15 @@ namespace CLAM
 						channels[channel][i] = 0; 
 				return;
 			}
-
-			const int bufferSize =  portSize * _numChannels;
-			float buffer[bufferSize];
-			int readSize = _infile->read( buffer,bufferSize);
+			unsigned bufferSize = portSize*_numChannels;
+			int readSize = _infile->read( &_buffer[0], bufferSize);
 			
 			// produce the portion read (normally the whole buffer)
 			int frameIndex=0;
 			for (int i=0; i<readSize; i+= _numChannels) 
 			{	for(unsigned channel = 0; channel<_numChannels; channel++)
 				{				
-					channels[channel][frameIndex] = buffer[i+channel];
+					channels[channel][frameIndex] = _buffer[i+channel];
 				}
 				frameIndex++;
 			}
@@ -191,7 +190,7 @@ namespace CLAM
 				port->SetHop( portSize );
 				_outports.push_back( port );
 			}
-
+			_buffer.resize(portSize*_numChannels);
 			return true;
 		}
 		void RemovePortsAndControls()
