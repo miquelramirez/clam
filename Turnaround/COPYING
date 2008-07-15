@@ -1,0 +1,19 @@
+License Notes
+
+CLAM is offered under the GNU General Public License (GPL).
+
+You may get a complete copy of the license by writing to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1308 USA or at http://www.gnu.org/copyleft/gpl.html.
+
+The following, though, is a brief summary of what this license means. Nevertheless, that does not imply the Free Software Foundation agrees with the exact words that are in this website. For legal interpretations you might as well contact FSF yourself.(http://fsfeurope.org)
+
+The GPL is the most often used license for Free Software, with over 50% of all Free Software being licensed under it. For a piece of software to classify as Free Software, it must grant the user the freedom to use, modify, study, and distribute it. "Copyleft" protects this rights by requiring that the result of using Free Software is also Free. GPL is a particular version of the Copyleft endorsed by the GNU project and FSF.
+
+All the above means, to put it short, that you can do whatever you want with CLAM as long as the resulting software is also licensed under the GPL.(In-house or personal modifications to CLAM, though are not forced to become public).
+
+Note: an important feature of free software is that the source code must be open so it can effectively be modified. Open Source, though, has nowadays become something different and an open source project does not necessarily imply Free Software.
+
+The Copyleft is there to protect the user's freedom but also the author's rights. No one will be able to make a "propietary" (opposite to Free) software without his consent. (One can sell and distribute the product and make money from that activity as long as it does not violate the GPL license).
+
+So, what if you want to build a "propietary" piece of software and you want to use CLAM? Can you just do that? The answer is no, but... But if you talk to us we can possibly come to an agreement and offer you a non-GPL license for using CLAM. Note though that this double-licensing scheme can only be used by the authors themselves and cannot be enforced by a third party.
+
+Anyway, if you have any doubt about the license, please send a mail to clam-info@iua.upf.es.
