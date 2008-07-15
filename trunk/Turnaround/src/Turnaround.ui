@@ -1,0 +1,124 @@
+<ui version="4.0" >
+ <class>Turnaround</class>
+ <widget class="QMainWindow" name="Turnaround" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle" >
+   <string>Turnaround</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <widget class="QWidget" name="" >
+    <property name="geometry" >
+     <rect>
+      <x>9</x>
+      <y>9</y>
+      <width>621</width>
+      <height>421</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" >
+     <item>
+      <widget class="ProgressControlWidget" name="progressControl" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="CLAM::VM::KeySpace" name="keySpace" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>640</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="fileOpenAction" />
+    <addaction name="separator" />
+    <addaction name="fileExitAction" />
+   </widget>
+   <widget class="QMenu" name="menuPlayback" >
+    <property name="title" >
+     <string>Playback</string>
+    </property>
+    <addaction name="playbackPlayAction" />
+    <addaction name="playbackPauseAction" />
+    <addaction name="playbackStopAction" />
+   </widget>
+   <addaction name="menuFile" />
+   <addaction name="menuPlayback" />
+  </widget>
+  <widget class="QStatusBar" name="statusbar" />
+  <action name="fileOpenAction" >
+   <property name="text" >
+    <string>&amp;Open</string>
+   </property>
+  </action>
+  <action name="fileExitAction" >
+   <property name="text" >
+    <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="playbackPlayAction" >
+   <property name="text" >
+    <string>Play</string>
+   </property>
+  </action>
+  <action name="playbackStopAction" >
+   <property name="text" >
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="playbackPauseAction" >
+   <property name="text" >
+    <string>Pause</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CLAM::VM::KeySpace</class>
+   <extends>QWidget</extends>
+   <header>KeySpace.hxx</header>
+  </customwidget>
+  <customwidget>
+   <class>ProgressControlWidget</class>
+   <extends>QSlider</extends>
+   <header>ProgressControlWidget.hxx</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
