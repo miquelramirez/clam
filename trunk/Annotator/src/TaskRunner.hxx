@@ -39,7 +39,8 @@ public:
 	{
 		_OutputDisplay = new QTextEdit(this);
 //		QVBoxLayout * layout = new QVBoxLayout(this);
-		layout()->addWidget(_OutputDisplay);
+		//layout()->addWidget(_OutputDisplay);
+		setWidget(_OutputDisplay);
 		setAttribute(Qt::WA_DeleteOnClose, true);
 	}
 	virtual ~TaskRunner();
