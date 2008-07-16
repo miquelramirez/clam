@@ -46,8 +46,8 @@ public:
 		xercesc::DOMImplementation * imp = 
 			xercesc::DOMImplementation::getImplementation();
 		mDocument = imp->createDocument(
-			X("2003-04.clam05.iua.mtg.upf.es"), // root element namespace URI.
-			X("TestDoc"), // root element name
+			U("2003-04.clam05.iua.mtg.upf.es"), // root element namespace URI.
+			U("TestDoc"), // root element name
 			0  // document type object (DTD).
 		);
 	}
@@ -65,7 +65,7 @@ private:
 
 	void testPlainContent()
 	{
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("Content"));
 		XercesDomWriter writer;
 		writer.write(mTargetStream, domContent);
 
@@ -76,7 +76,7 @@ private:
 
 	void testEmptyElement()
 	{
-		xercesc::DOMElement * domElement = mDocument->createElement(X("EmptyElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("EmptyElement"));
 		XercesDomWriter writer;
 		writer.write(mTargetStream, domElement);
 
@@ -86,8 +86,8 @@ private:
 
 	void testElementWithPlainContent()
 	{
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("Content"));
 		domElement->appendChild(domContent);
 		XercesDomWriter writer;
 		writer.write(mTargetStream, domElement);
@@ -98,9 +98,9 @@ private:
 
 	void testElementWithInnerElement()
 	{
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		xercesc::DOMElement * domInnerElement = mDocument->createElement(X("InnerElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		xercesc::DOMElement * domInnerElement = mDocument->createElement(U("InnerElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("Content"));
 		domInnerElement->appendChild(domContent);
 		domElement->appendChild(domInnerElement);
 		XercesDomWriter writer;
@@ -112,8 +112,8 @@ private:
 
 	void testEmptyElementWithAttribute()
 	{
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		domElement->setAttribute(X("attribute"),X("Attribute value"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		domElement->setAttribute(U("attribute"),U("Attribute value"));
 		XercesDomWriter writer;
 		writer.write(mTargetStream, domElement);
 
@@ -123,9 +123,9 @@ private:
 
 	void testEmptyElementWithAttributes()
 	{
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		domElement->setAttribute(X("attribute1"),X("Attribute 1 value"));
-		domElement->setAttribute(X("attribute2"),X("Attribute 2 value"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		domElement->setAttribute(U("attribute1"),U("Attribute 1 value"));
+		domElement->setAttribute(U("attribute2"),U("Attribute 2 value"));
 		XercesDomWriter writer;
 		writer.write(mTargetStream, domElement);
 
@@ -135,9 +135,9 @@ private:
 
 	void testEmptyElementWithReversedOrderAttributes()
 	{
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		domElement->setAttribute(X("attribute2"),X("Attribute 2 value"));
-		domElement->setAttribute(X("attribute1"),X("Attribute 1 value"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		domElement->setAttribute(U("attribute2"),U("Attribute 2 value"));
+		domElement->setAttribute(U("attribute1"),U("Attribute 1 value"));
 		XercesDomWriter writer;
 		writer.write(mTargetStream, domElement);
 
@@ -147,9 +147,9 @@ private:
 
 	void testNonEmptyElementWithAttribute()
 	{
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		xercesc::DOMElement * domInnerElement = mDocument->createElement(X("InnerElement"));
-		domElement->setAttribute(X("attribute"),X("Attribute value"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		xercesc::DOMElement * domInnerElement = mDocument->createElement(U("InnerElement"));
+		domElement->setAttribute(U("attribute"),U("Attribute value"));
 		domElement->appendChild(domInnerElement);
 		XercesDomWriter writer;
 		writer.write(mTargetStream, domElement);
@@ -170,10 +170,10 @@ private:
 
 	void testDocumentWithFullContent()
 	{
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		xercesc::DOMElement * domInnerElement = mDocument->createElement(X("InnerElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
-		domElement->setAttribute(X("attribute"),X("Attribute value"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		xercesc::DOMElement * domInnerElement = mDocument->createElement(U("InnerElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("Content"));
+		domElement->setAttribute(U("attribute"),U("Attribute value"));
 		domElement->appendChild(domContent);
 		domElement->appendChild(domInnerElement);
 		mDocument->getDocumentElement()->appendChild(domElement);
@@ -194,10 +194,10 @@ private:
 
 	void testDocumentWithFullContentAndIndentation()
 	{
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		xercesc::DOMElement * domInnerElement = mDocument->createElement(X("InnerElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
-		domElement->setAttribute(X("attribute"),X("Attribute value"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		xercesc::DOMElement * domInnerElement = mDocument->createElement(U("InnerElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("Content"));
+		domElement->setAttribute(U("attribute"),U("Attribute value"));
 		domElement->appendChild(domContent);
 		domElement->appendChild(domInnerElement);
 		mDocument->getDocumentElement()->appendChild(domElement);
