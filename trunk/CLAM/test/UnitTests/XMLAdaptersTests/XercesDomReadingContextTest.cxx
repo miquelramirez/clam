@@ -87,8 +87,8 @@ public:
 		xercesc::DOMImplementation * imp = 
 			xercesc::DOMImplementation::getImplementation();
 		mDocument = imp->createDocument(
-			X("2003-04.clam05.iua.mtg.upf.es"), // root element namespace URI.
-			X("TestDoc"), // root element name
+			U("2003-04.clam05.iua.mtg.upf.es"), // root element namespace URI.
+			U("TestDoc"), // root element name
 			0  // document type object (DTD).
 		);
 	}
@@ -105,8 +105,8 @@ private:
 
 	void testFetchContent_withASingleWordContent()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("Content"));
 		contextElement->appendChild(domContent);
 
 		XercesDomReadingContext context(contextElement);
@@ -117,9 +117,9 @@ private:
 
 	void testFetchContent_withTwoJointContents()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent1 = mDocument->createTextNode(X("Content1"));
-		xercesc::DOMText * domContent2 = mDocument->createTextNode(X("Content2"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent1 = mDocument->createTextNode(U("Content1"));
+		xercesc::DOMText * domContent2 = mDocument->createTextNode(U("Content2"));
 		contextElement->appendChild(domContent1);
 		contextElement->appendChild(domContent2);
 
@@ -132,10 +132,10 @@ private:
 
 	void testFetchContent_withTwoContentsSeparatedByElement()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent1 = mDocument->createTextNode(X("Content1"));
-		xercesc::DOMElement * separator = mDocument->createElement(X("Separator"));
-		xercesc::DOMText * domContent2 = mDocument->createTextNode(X("Content2"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent1 = mDocument->createTextNode(U("Content1"));
+		xercesc::DOMElement * separator = mDocument->createElement(U("Separator"));
+		xercesc::DOMText * domContent2 = mDocument->createTextNode(U("Content2"));
 		contextElement->appendChild(domContent1);
 		contextElement->appendChild(separator);
 		contextElement->appendChild(domContent2);
@@ -149,10 +149,10 @@ private:
 
 	void testFetchContent_withTwoContentsSeparatedByComment()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent1 = mDocument->createTextNode(X("Content1"));
-		xercesc::DOMComment * separator = mDocument->createComment(X("Separator"));
-		xercesc::DOMText * domContent2 = mDocument->createTextNode(X("Content2"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent1 = mDocument->createTextNode(U("Content1"));
+		xercesc::DOMComment * separator = mDocument->createComment(U("Separator"));
+		xercesc::DOMText * domContent2 = mDocument->createTextNode(U("Content2"));
 		contextElement->appendChild(domContent1);
 		contextElement->appendChild(separator);
 		contextElement->appendChild(domContent2);
@@ -167,7 +167,7 @@ private:
 	void testFetchContent_withNoNode()
 	{
 
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
 		XercesDomReadingContext context(contextElement);
 		std::string content="rubbish";
 
@@ -180,9 +180,9 @@ private:
 
 	void testFetchContent_withElementFirst()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * unexpectedElement = mDocument->createElement(X("UnexpectedElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * unexpectedElement = mDocument->createElement(U("UnexpectedElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("Content"));
 		contextElement->appendChild(unexpectedElement);
 		contextElement->appendChild(domContent);
 
@@ -197,7 +197,7 @@ private:
 
 	void testContentLeft_withNoNode_returnsFalse()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
 
 		XercesDomReadingContext context(contextElement);
 		std::string content="rubbish";
@@ -208,8 +208,8 @@ private:
 
 	void testContentLeft_withNonSpaceReturnsTrue()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("Content"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("Content"));
 		contextElement->appendChild(domContent);
 
 		XercesDomReadingContext context(contextElement);
@@ -223,8 +223,8 @@ private:
 
 	void testContentLeft_withStartingSpacesAndNonSpace_chopsAndReturnsTrue()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("  \t  \n Content"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("  \t  \n Content"));
 		contextElement->appendChild(domContent);
 
 		XercesDomReadingContext context(contextElement);
@@ -238,8 +238,8 @@ private:
 
 	void testContentLeft_withOnlySpaces_chopsAndReturnsFalse()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X(" \t \n  "));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U(" \t \n  "));
 		contextElement->appendChild(domContent);
 
 		XercesDomReadingContext context(contextElement);
@@ -253,8 +253,8 @@ private:
 
 	void testFindElement_withThatElementFirst()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domElement);
 
 		XercesDomReadingContext context(contextElement);
@@ -264,9 +264,9 @@ private:
 
 	void testFindElement_withWrongNameFails()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * domElement1 = mDocument->createElement(X("Wrong"));
-		xercesc::DOMElement * domElement2 = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * domElement1 = mDocument->createElement(U("Wrong"));
+		xercesc::DOMElement * domElement2 = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domElement1);
 		contextElement->appendChild(domElement2);
 
@@ -277,9 +277,9 @@ private:
 
 	void testFindElement_withCommentBefore()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMComment * separator = mDocument->createComment(X("Separator"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMComment * separator = mDocument->createComment(U("Separator"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(separator);
 		contextElement->appendChild(domElement);
 
@@ -290,7 +290,7 @@ private:
 
 	void testFindElement_withNoElement()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
 
 		XercesDomReadingContext context(contextElement);
 		bool foundElement = context.findElement("Element");
@@ -299,9 +299,9 @@ private:
 
 	void testFindElement_withTextFirst()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("ContentLeft"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("ContentLeft"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domContent);
 		contextElement->appendChild(domElement);
 
@@ -312,9 +312,9 @@ private:
 
 	void testFindElement_withReadedTextFirst()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("ReadingContent"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("ReadingContent"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domContent);
 		contextElement->appendChild(domElement);
 
@@ -330,9 +330,9 @@ private:
 
 	void testFindElement_withHalfReadedTextFirst()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("Reading Content"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("Reading Content"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domContent);
 		contextElement->appendChild(domElement);
 
@@ -348,9 +348,9 @@ private:
 
 	void testFindElement_withSpacesToReadFirst()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("    \n \t \t \r "));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("    \n \t \t \r "));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domContent);
 		contextElement->appendChild(domElement);
 
@@ -362,9 +362,9 @@ private:
 
 	void testFindElement_withStillNonElement_asserts()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
 		xercesc::DOMProcessingInstruction * domProcessingInstruction = 
-			mDocument->createProcessingInstruction(X("ProcessingInstruction"),X("Content"));
+			mDocument->createProcessingInstruction(U("ProcessingInstruction"),U("Content"));
 		contextElement->appendChild(domProcessingInstruction);
 
 		XercesDomReadingContext context(contextElement);
@@ -384,8 +384,8 @@ private:
 
 	void testFetchElement_withThatElementFirst()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domElement);
 
 		XercesDomReadingContext context(contextElement);
@@ -395,9 +395,9 @@ private:
 
 	void testFetchElement_withSecondElementFirst()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * domElement1 = mDocument->createElement(X("Element1"));
-		xercesc::DOMElement * domElement2 = mDocument->createElement(X("Element2"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * domElement1 = mDocument->createElement(U("Element1"));
+		xercesc::DOMElement * domElement2 = mDocument->createElement(U("Element2"));
 		contextElement->appendChild(domElement1);
 		contextElement->appendChild(domElement2);
 
@@ -410,9 +410,9 @@ private:
 
 	void testFetchElement_withTextFirst()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("ContentLeft"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("ContentLeft"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domContent);
 		contextElement->appendChild(domElement);
 
@@ -433,8 +433,8 @@ private:
 
 	void testFetchElement_withNoElement()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domElement);
 
 		XercesDomReadingContext context(contextElement);
@@ -457,8 +457,8 @@ private:
 
 	void testFetchElement_withADifferentName()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domElement);
 
 		XercesDomReadingContext context(contextElement);
@@ -479,9 +479,9 @@ private:
 	
 	void testFetchElement_withANonElementNode()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
 		xercesc::DOMProcessingInstruction * domProcessingInstruction = 
-			mDocument->createProcessingInstruction(X("ProcessingInstruction"),X("Content"));
+			mDocument->createProcessingInstruction(U("ProcessingInstruction"),U("Content"));
 		contextElement->appendChild(domProcessingInstruction);
 
 		XercesDomReadingContext context(contextElement);
@@ -503,10 +503,10 @@ private:
 
 	void testFetchContent_afterElement()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent1 = mDocument->createTextNode(X("Content1"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		xercesc::DOMText * domContent2 = mDocument->createTextNode(X("Content2"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent1 = mDocument->createTextNode(U("Content1"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		xercesc::DOMText * domContent2 = mDocument->createTextNode(U("Content2"));
 		contextElement->appendChild(domContent1);
 		contextElement->appendChild(domElement);
 		contextElement->appendChild(domContent2);
@@ -524,9 +524,9 @@ private:
 
 	void testFetchContent_whenSecondElement()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * domElement1 = mDocument->createElement(X("Element1"));
-		xercesc::DOMElement * domElement2 = mDocument->createElement(X("Element2"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * domElement1 = mDocument->createElement(U("Element1"));
+		xercesc::DOMElement * domElement2 = mDocument->createElement(U("Element2"));
 		contextElement->appendChild(domElement1);
 		contextElement->appendChild(domElement2);
 
@@ -543,9 +543,9 @@ private:
 
 	void testFetchContent_afterElementWithSpaces()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("  Content"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("  Content"));
 		contextElement->appendChild(domElement);
 		contextElement->appendChild(domContent);
 
@@ -560,7 +560,7 @@ private:
 
 	void testReleaseContext_atRootReturnsNull()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
 
 		XercesDomReadingContext context(contextElement);
 		XercesDomReadingContext * previous = context.release();
@@ -570,8 +570,8 @@ private:
 
 	void testReleaseContext_whenIsChildContext()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
 		contextElement->appendChild(domElement);
 		XercesDomReadingContext context1(contextElement);
 		XercesDomReadingContext context2(&context1,"Element");
@@ -584,9 +584,9 @@ private:
 
 	void testRecursiveConstructor_initializesTheContext()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * outerElement = mDocument->createElement(X("Element"));
-		xercesc::DOMElement * innerElement = mDocument->createElement(X("InnerElement"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * outerElement = mDocument->createElement(U("Element"));
+		xercesc::DOMElement * innerElement = mDocument->createElement(U("InnerElement"));
 		contextElement->appendChild(outerElement);
 		outerElement->appendChild(innerElement);
 		XercesDomReadingContext contextRoot(contextElement);
@@ -599,8 +599,8 @@ private:
 
 	void testReleaseContext_whenContentLeft()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMText * domContent = mDocument->createTextNode(X("Offending input\none line more"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMText * domContent = mDocument->createTextNode(U("Offending input\none line more"));
 		contextElement->appendChild(domContent);
 		XercesDomReadingContext context(contextElement);
 
@@ -620,9 +620,9 @@ private:
 
 	void testReleaseContext_whenElementLeft()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * domElement = mDocument->createElement(X("Element"));
-		xercesc::DOMElement * unparsedElement = mDocument->createElement(X("Offender"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * domElement = mDocument->createElement(U("Element"));
+		xercesc::DOMElement * unparsedElement = mDocument->createElement(U("Offender"));
 		contextElement->appendChild(domElement);
 		contextElement->appendChild(unparsedElement);
 		
@@ -651,7 +651,7 @@ private:
 
 	void testExtractAttribute_whenNone()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
 		XercesDomReadingContext context(contextElement);
 		std::stringstream stream;
 		bool result = context.extractAttribute("Unexistent", stream);
@@ -661,9 +661,9 @@ private:
 
 	void testExtractAttribute_whenPresent()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMAttr * domAttribute = mDocument->createAttribute(X("Attribute"));
-		contextElement->setAttribute(X("Attribute"),X("AttributeValue"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMAttr * domAttribute = mDocument->createAttribute(U("Attribute"));
+		contextElement->setAttribute(U("Attribute"),U("AttributeValue"));
 		XercesDomReadingContext context(contextElement);
 		std::stringstream stream;
 		bool result = context.extractAttribute("Attribute", stream);
@@ -679,9 +679,9 @@ private:
 
 	void testExtractAttribute_withDifferentAttributeName()
 	{
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMAttr * domAttribute = mDocument->createAttribute(X("Attribute"));
-		contextElement->setAttribute(X("Attribute"),X("AttributeValue"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMAttr * domAttribute = mDocument->createAttribute(U("Attribute"));
+		contextElement->setAttribute(U("Attribute"),U("AttributeValue"));
 		XercesDomReadingContext context(contextElement);
 		std::stringstream stream;
 		bool result = context.extractAttribute("WrongAttribute", stream);
@@ -693,10 +693,10 @@ private:
 	void testGetPath()
 	{
 		XercesDomReader reader;
-		xercesc::DOMElement * contextElement = mDocument->createElement(X("ContextElement"));
-		xercesc::DOMElement * element1 = mDocument->createElement(X("Element1"));
-		xercesc::DOMElement * element2 = mDocument->createElement(X("Element2"));
-		xercesc::DOMElement * element3 = mDocument->createElement(X("Element3"));
+		xercesc::DOMElement * contextElement = mDocument->createElement(U("ContextElement"));
+		xercesc::DOMElement * element1 = mDocument->createElement(U("Element1"));
+		xercesc::DOMElement * element2 = mDocument->createElement(U("Element2"));
+		xercesc::DOMElement * element3 = mDocument->createElement(U("Element3"));
 		contextElement->appendChild(element1);
 		element1->appendChild(element2);
 		element2->appendChild(element3);
