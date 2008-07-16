@@ -504,36 +504,6 @@ public slots:
 		}
 		TaskRunner::CommandsAndEnvironmentsList commandsQList;
 		TaskRunner::CommandAndEnvironment command;
-
-		// old method for compile individually all founded .dsp
-		//TODO: remove this and RunTimeFaustLibraryLoader::GetCompilePluginCommands ??
-		/* 
-		QStringList listOfSources=examplesPath.entryList((QStringList() << "*.dsp"));//, QDir::Files);
-		QStringList::const_iterator sourcesQListIterator;
-		for (sourcesQListIterator = listOfSources.constBegin(); sourcesQListIterator != listOfSources.constEnd(); ++sourcesQListIterator)
-		{
-			const std::string sourceFileCompletePath=examplesPath.absolutePath().toStdString()+"/"+sourcesQListIterator->toStdString();
-			CommandsMap commandsMap=faustLoader.GetCompilePluginCommands(sourceFileCompletePath);	// Get compilation parameters
-			if (commandsMap.empty())
-			{
-				QMessageBox::warning(this, tr("Faust compilation failed"),
-					tr(
-						"<p>Can't found FAUST compiler and/or ladspa.cpp required library!</p>\n"
-						"<p>Compilation failed.</p>\n"
-					));
-			}
-			CommandsMap::iterator commandsIt;
-			for (commandsIt=commandsMap.begin();commandsIt!=commandsMap.end();commandsIt++)
-			{
-				command.workingDir=(*commandsIt).second.c_str();
-				QString commandAndArguments=(*commandsIt).first.c_str();
-				QStringList arguments=commandAndArguments.split(" ");
-				command.command=arguments.takeFirst();
-				command.arguments=arguments;
-				commandsQList.append(command);
-			}
-		}*/
-
 		// define compilation using make:
 		command.command="make";
 		command.arguments=(QStringList() << QString("ladspa"));

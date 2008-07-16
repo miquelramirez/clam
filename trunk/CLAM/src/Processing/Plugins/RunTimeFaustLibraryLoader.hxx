@@ -33,38 +33,6 @@ public:
 		LoadLibrariesFromPath(pluginFullPath);
 	}
 
-/*	const std::map<std::string, std::string> GetCompilePluginCommands(const std::string & pluginSourceFullName) const
-	{
-		typedef std::map<std::string,std::string> CommandsMap;
-		CommandsMap commands;
-		const std::string pluginSourcePath=pluginSourceFullName.substr(0,pluginSourceFullName.rfind("/")+1);// separate path from plugin filename
-		std::cout << "sourcepath:"<<pluginSourcePath<<std::endl;
-		std::string baseFileName=pluginSourceFullName.substr( pluginSourceFullName.rfind("/")+1); //separate base filename
-		baseFileName=baseFileName.substr(0,baseFileName.rfind("."));	// throw away extension
-
-		const std::string ladspaLibraryFullPath=faustLibIncludeFile();
-		if (ladspaLibraryFullPath == "") return commands; // if doesn't found libraries, return with empty list of commands
-		const std::string faustCommandFullPath = faustBinCommand();
-		if (faustCommandFullPath == "") return commands; // if doesn't found libraries, return with empty list of commands
-
-		std::string command;
-		std::string defaultPath;
-
-		// Generate Faust LADSPA plugin .cpp from .dsp:
-		defaultPath=ladspaLibraryFullPath.substr(0,ladspaLibraryFullPath.rfind("/"));	// compile from library path (to include possible libraries)
-		command = faustCommandFullPath + " -a " + ladspaLibraryFullPath + " " +pluginSourceFullName  + " -o " + pluginSourcePath +  baseFileName + ".cpp";
-		commands.insert(CommandsMap::value_type(command,defaultPath));
-
-		// compile Faust LADSPA plugin from .cpp:
-		command = "g++ -fPIC -shared -O3 -Dmydsp=" + baseFileName + " "+pluginSourcePath + baseFileName + ".cpp -o " + pluginSourcePath +"ladspadir/"+  baseFileName + ".so";
-		commands.insert(CommandsMap::value_type(command,defaultPath));
-
-		// compile Faust SVG diagram from .dsp
-		command = faustCommandFullPath + " -svg " + pluginSourceFullName + " -o /dev/null";
-		commands.insert(CommandsMap::value_type(command,defaultPath));
-		return commands;
-	}*/
-
 protected:
 
 	void SetupLibrary(void* handle, const std::string & pluginFullFilename) const
