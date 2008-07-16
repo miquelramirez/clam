@@ -273,10 +273,11 @@ private:
 		QProcess::startDetached("x-www-browser", QStringList() << fileNameToBrowse); // TODO: Remove this 4.1 unix only version
 		#endif
 	}
-	bool runQueuedCommands(TaskRunner::CommandsAndEnvironmentsList & commandsQList, const char * slotName, bool stopOnError=true)
+	bool runQueuedCommands(TaskRunner::CommandsAndEnvironmentsList & commandsQList, const char * slotEndName=NULL, bool stopOnError=true)
 	{
 		TaskRunner * runner = new TaskRunner();
-		connect(runner, SIGNAL(taskDone(bool)), this, slotName);
+		if (slotEndName)
+			connect(runner, SIGNAL(taskDone(bool)), this, slotEndName);
 		addDockWidget( Qt::BottomDockWidgetArea, runner);
 		// Wait the window to be redrawn after the reconfiguration
 		// before loading the cpu with the extractor
