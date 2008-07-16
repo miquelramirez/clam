@@ -1,0 +1,10 @@
+
+
+Checkout the clam-test-data repository at any directory
+ $ svn co https://iua-share.upf.edu/svn/clam-test-data/trunk clam-test-data
+
+And compile with 
+ $ scons data_prefix=path/to/clam-test-data clam_prefix=/usr/local or clam_prefix=~/local
+
+You need to install libcppunit. In Ubuntu: 
+ $ sudo apt-get install libcppunit-dev 
