@@ -123,6 +123,7 @@ void Annotator::computeSongDescriptors()
 	}
 	mStatusBar << "Launching Extractor..." << mStatusBar;
 	TaskRunner * runner = new TaskRunner();
+	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
 	addDockWidget( Qt::BottomDockWidgetArea, runner);
 	// Wait the window to be redrawn after the reconfiguration
 	// before loading the cpu with the extractor
@@ -133,16 +134,16 @@ void Annotator::computeSongDescriptors()
 	if (!ok)
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("<p><b>Error: Unable to launch the extractor.</b></p>\n"
-					"<p>Check that the project extractor is well configured and you have permissions to run it.</p>\n"
-					"<p>The configured command was:</p>\n<tt>%1</tt>")
-				.arg(mProject.GetExtractor().c_str())
-				);
+			tr("<p><b>Error: Unable to launch the extractor.</b></p>\n"
+				"<p>Check that the project extractor is well configured and you have permissions to run it.</p>\n"
+				"<p>The configured command was:</p>\n<tt>%1</tt>")
+			.arg(mProject.GetExtractor().c_str())
+			);
 		delete runner;
-		return;
 	}
 	return;
-	/*
+
+	/*loadDescriptorPool(); // TODO: This should be done thru an slot from the runner
 	while (extractor.isRunning())
 	{
 	}
@@ -152,8 +153,20 @@ void Annotator::computeSongDescriptors()
 				tr("<p><b>Error: The extractor was terminated with an error.</b></p>"));
 		return;
 	}
+
 	*/
-	loadDescriptorPool(); // TODO: This should be done thru an slot from the runner
+}
+
+void Annotator::endExtractorRunner(bool done)
+{
+	if (done)
+		loadDescriptorPool();
+	else
+	{
+		QMessageBox::critical(this, tr("Extracting descriptors"),
+				tr("<p><b>Error: The extractor was terminated with an error.</b></p>"));
+		return;
+	}
 }
 
 Annotator::Annotator(const std::string & nameProject = "")
