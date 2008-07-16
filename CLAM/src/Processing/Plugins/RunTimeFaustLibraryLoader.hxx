@@ -33,7 +33,7 @@ public:
 		LoadLibrariesFromPath(pluginFullPath);
 	}
 
-	const std::map<std::string, std::string> GetCompilePluginCommands(const std::string & pluginSourceFullName) const
+/*	const std::map<std::string, std::string> GetCompilePluginCommands(const std::string & pluginSourceFullName) const
 	{
 		typedef std::map<std::string,std::string> CommandsMap;
 		CommandsMap commands;
@@ -63,7 +63,7 @@ public:
 		command = faustCommandFullPath + " -svg " + pluginSourceFullName + " -o /dev/null";
 		commands.insert(CommandsMap::value_type(command,defaultPath));
 		return commands;
-	}
+	}*/
 
 protected:
 
@@ -132,9 +132,9 @@ protected:
 	const char * pathEnvironmentVar() const { return  "FAUST_PATH"; }
 	const char * libraryType() const { return  "LADSPA"; }
 
-private:
+/*private:
 	const std::string faustLibIncludeFile() const	{ return CompletePathFor("architecture/ladspa.cpp"); } // get needed libraries path
-	const std::string faustBinCommand() const	{ return CompletePathFor("compiler/faust"); }		// get faust binary path
+	const std::string faustBinCommand() const	{ return CompletePathFor("compiler/faust"); }		// get faust binary path*/
 };
 
 #endif // RunTimeFaustLibraryLoader_hxx
