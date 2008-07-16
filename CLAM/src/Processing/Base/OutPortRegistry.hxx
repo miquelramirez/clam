@@ -44,6 +44,7 @@ public:
 	int Size() const;
 	bool AreReadyForWriting();
 	void ProcessingInterface_Register( OutPortBase * );
+	void ProcessingInterface_Unregister( OutPortBase * );
 	void Clear(){ mOutPorts.clear(); }
 	Iterator Begin();
 	Iterator End();

@@ -44,6 +44,7 @@ public:
 	int Size() const;
 	bool AreReadyForReading();
 	void ProcessingInterface_Register(InPortBase *);
+	void ProcessingInterface_Unregister( InPortBase * );
 	void Clear(){ mInPorts.clear(); }
 	Iterator Begin();
 	Iterator End();

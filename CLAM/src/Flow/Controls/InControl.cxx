@@ -23,7 +23,8 @@
 #include "OutControl.hxx"
 #include "Processing.hxx"
 
-namespace CLAM {
+namespace CLAM 
+{
 
 InControl::InControl(const std::string &name, Processing* parent, const bool publish)
 	: mLastValue(0)
@@ -43,6 +44,9 @@ InControl::~InControl()
 {
 	while (!mLinks.empty())
 		mLinks.front()->RemoveLink(*this);
+	
+	if (mParent)
+		mParent->GetInControls().ProcessingInterface_Unregister(this);
 }
 
 bool InControl::IsConnectedTo( OutControl & out)

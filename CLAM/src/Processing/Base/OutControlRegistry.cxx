@@ -87,6 +87,20 @@ void OutControlRegistry::ProcessingInterface_Register( OutControl * out )
 	mOutControls.push_back( out );
 }
 
+void OutControlRegistry::ProcessingInterface_Unregister( OutControl * out )
+{
+	for (Iterator it=mOutControls.begin(); it!=mOutControls.end(); it++)
+	{
+		if (*it==out)
+		{
+			std::cout << "Removing out control "<< out << std::endl;
+			mOutControls.erase(it);
+			return;
+		}
+	}
+}	
+
+
 std::string OutControlRegistry::AvailableNames() const
 {
 	std::string result;

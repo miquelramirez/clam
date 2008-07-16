@@ -37,6 +37,9 @@ OutControl::~OutControl()
 {
 	while (!mLinks.empty())
 		RemoveLink(*mLinks.front());
+
+	if (mParent)
+		mParent->GetOutControls().ProcessingInterface_Unregister(this);
 }
 // Methods
 

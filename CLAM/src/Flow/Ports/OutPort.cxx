@@ -38,6 +38,8 @@ OutPortBase::~OutPortBase()
 {
 	if (mPublisher) 
 		mPublisher->UnpublishOutPort();
+	if (mProcessing)
+		mProcessing->GetOutPorts().ProcessingInterface_Unregister(this);
 }
 
 const std::string & OutPortBase::GetName()

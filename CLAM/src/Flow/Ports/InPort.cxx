@@ -37,6 +37,8 @@ InPortBase::InPortBase( const std::string & name, Processing * proc )
 
 InPortBase::~InPortBase()
 {
+	if (mProcessing)
+		mProcessing->GetInPorts().ProcessingInterface_Unregister(this);
 }
 
 OutPortBase * InPortBase::GetVisuallyConnectedOutPort() 
