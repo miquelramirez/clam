@@ -82,7 +82,6 @@ InPortRegistry::ConstIterator InPortRegistry::End() const
 	return mInPorts.end();
 }
 
-
 bool InPortRegistry::AreReadyForReading()
 {
 	Iterator in;
@@ -96,7 +95,19 @@ void InPortRegistry::ProcessingInterface_Register( InPortBase * in )
 {
 	mInPorts.push_back( in );
 }
-	
+
+void InPortRegistry::ProcessingInterface_Unregister( InPortBase * in )
+{
+	for (Iterator it=mInPorts.begin(); it!=mInPorts.end(); it++)
+	{
+		if (*it==in)
+		{
+			mInPorts.erase(it);
+			return;
+		}
+	}
+}	
+
 std::string InPortRegistry::AvailableNames() const
 {
 	std::string result;

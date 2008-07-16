@@ -95,6 +95,18 @@ void OutPortRegistry::ProcessingInterface_Register( OutPortBase * out )
 	mOutPorts.push_back( out );
 }
 
+void OutPortRegistry::ProcessingInterface_Unregister( OutPortBase * out )
+{
+	for (Iterator it=mOutPorts.begin(); it!=mOutPorts.end(); it++)
+	{
+		if (*it==out)
+		{
+			mOutPorts.erase(it);
+			return;
+		}
+	}
+}
+
 std::string OutPortRegistry::AvailableNames() const
 {
 	std::string result;

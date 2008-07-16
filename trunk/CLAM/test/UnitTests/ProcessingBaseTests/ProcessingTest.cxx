@@ -47,6 +47,14 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testTypedOutControls_Size );
 	CPPUNIT_TEST( testInPorts_Size );
 	CPPUNIT_TEST( testOutPorts_Size );
+	CPPUNIT_TEST( testOutPorts_Delete);
+	CPPUNIT_TEST( testInPorts_Delete);
+	CPPUNIT_TEST( testOutControls_Delete);
+	CPPUNIT_TEST( testInControls_Delete);
+	CPPUNIT_TEST( testUnRegistredOutPorts);
+	CPPUNIT_TEST( testUnRegistredInPorts);
+	CPPUNIT_TEST( testUnRegistredOutControls);
+	CPPUNIT_TEST( testUnRegistredInControls);
 		
 	CPPUNIT_TEST( testConnectPorts_usingNames );
 	CPPUNIT_TEST( testConnectPorts_usingNumbers );
@@ -59,7 +67,7 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testHasTypedOutControl_usingRegisteredControlName );
 	CPPUNIT_TEST( testHasTypedOutControl_usingNotRegisteredControlName );
 
-	CPPUNIT_TEST( testIsSyncSource_default );	
+	CPPUNIT_TEST( testIsSyncSource_default );
 	
 	CPPUNIT_TEST_SUITE_END();
 
@@ -280,6 +288,62 @@ private:
 	void testOutPorts_Size()
 	{
 		CPPUNIT_ASSERT_EQUAL( 2, GetOutPorts().Size() );
+	}
+	void testOutPorts_Delete()
+	{
+		int initialNumPorts = GetOutPorts().Size();
+		CLAM::OutPort<int>* port = new CLAM::OutPort<int>( "out", this);
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts+1, GetOutPorts().Size() );
+		delete port;
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetOutPorts().Size() );
+
+	}
+	void testInPorts_Delete()
+	{
+		int initialNumPorts = GetInPorts().Size();
+		CLAM::InPort<int>* port = new CLAM::InPort<int>( "in", this);
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts+1, GetInPorts().Size() );
+		delete port;
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetInPorts().Size() );
+
+	}
+	void testOutControls_Delete()
+	{
+		int initialNumControls = GetOutControls().Size();
+		CLAM::OutControl* control = new CLAM::OutControl( "outControl", this);
+		CPPUNIT_ASSERT_EQUAL( initialNumControls+1, GetOutControls().Size() );
+		delete control;
+		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetOutControls().Size() );
+
+	}
+	void testInControls_Delete()
+	{
+		int initialNumControls = GetInControls().Size();
+		CLAM::InControl* control = new CLAM::InControl( "inControl", this);
+		CPPUNIT_ASSERT_EQUAL( initialNumControls+1, GetInControls().Size() );
+		delete control;
+		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetInControls().Size() );
+
+	}
+	void testUnRegistredOutPorts()
+	{	int initialNumPorts = GetOutPorts().Size();
+		new CLAM::OutPort<int>( "out");
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetOutPorts().Size() );
+	}	
+	void testUnRegistredInPorts()
+	{	int initialNumPorts = GetInPorts().Size();
+		new CLAM::InPort<int>( "in");
+		CPPUNIT_ASSERT_EQUAL( initialNumPorts, GetInPorts().Size() );
+	}
+	void testUnRegistredOutControls()
+	{	int initialNumControls = GetOutControls().Size();
+		new CLAM::OutControl( "outControl");
+		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetOutControls().Size() );
+	}	
+	void testUnRegistredInControls()
+	{	int initialNumControls = GetInControls().Size();
+		new CLAM::InControl( "inControl");
+		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetInControls().Size() );
 	}
 
 	class DummyIOProcessing : public CLAM::Processing

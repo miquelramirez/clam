@@ -24,7 +24,7 @@
 
 #include <vector>
 #include <string>
-
+#include <iostream>
 namespace CLAM
 {
 class InControl;
@@ -41,6 +41,7 @@ public:
 	bool Has(const std::string& name) const;
 	int Size() const;
 	void ProcessingInterface_Register(InControl *);
+	void ProcessingInterface_Unregister( InControl * );
 	void Clear(){ mInControls.clear(); }
 	Iterator Begin();
 	Iterator End();

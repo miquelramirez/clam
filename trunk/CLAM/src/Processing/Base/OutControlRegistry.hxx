@@ -24,7 +24,7 @@
 
 #include <vector>
 #include <string>
-
+#include <iostream>
 namespace CLAM
 {
 //foward declaration:
@@ -42,6 +42,7 @@ public:
 	bool Has(const std::string& name) const;
 	int Size() const;
 	void ProcessingInterface_Register( OutControl *);
+	void ProcessingInterface_Unregister( OutControl * );
 	void Clear(){ mOutControls.clear(); }
 	Iterator Begin();
 	Iterator End();	

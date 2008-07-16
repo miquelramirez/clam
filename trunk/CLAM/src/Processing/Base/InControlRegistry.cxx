@@ -100,6 +100,19 @@ void InControlRegistry::ProcessingInterface_Register( InControl * in )
 {
 	mInControls.push_back( in );
 }
+
+void InControlRegistry::ProcessingInterface_Unregister( InControl * in )
+{
+	for (Iterator it=mInControls.begin(); it!=mInControls.end(); it++)
+	{
+		if (*it==in)
+		{
+			std::cout << "Removing in control "<< in << std::endl;
+			mInControls.erase(it);
+			return;
+		}
+	}
+}
 		
 } // namespace CLAM
 
