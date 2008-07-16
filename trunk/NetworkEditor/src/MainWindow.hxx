@@ -19,6 +19,8 @@
 #include <CLAM/CLAMVersion.hxx>
 #include "NetworkEditorVersion.hxx"
 
+// copied from Annotator:
+#include "TaskRunner.hxx"
 
 #include <QtSvg/QSvgWidget>
 #include <QtCore/QProcess>
@@ -40,7 +42,6 @@
 #ifndef DATA_EXAMPLES_PATH
 #define DATA_EXAMPLES_PATH "example-data"
 #endif
-
 
 class MainWindow : public QMainWindow
 {
@@ -272,9 +273,19 @@ private:
 		QProcess::startDetached("x-www-browser", QStringList() << fileNameToBrowse); // TODO: Remove this 4.1 unix only version
 		#endif
 	}
-
-
-
+	bool runQueuedCommands(TaskRunner::CommandsAndEnvironmentsList & commandsQList, const char * slotName, bool stopOnError=true)
+	{
+		TaskRunner * runner = new TaskRunner();
+		connect(runner, SIGNAL(taskDone(bool)), this, slotName);
+		addDockWidget( Qt::BottomDockWidgetArea, runner);
+		// Wait the window to be redrawn after the reconfiguration
+		// before loading the cpu with the extractor
+		qApp->processEvents();
+		bool ok = runner->run(commandsQList,stopOnError);
+		if (!ok)
+			delete runner;
+		return ok;
+	}
 public slots:
 	void updateCaption()
 	{
@@ -288,6 +299,23 @@ public slots:
 	{
 		QString fileName="file://"+_canvas->getFileNameToOpenWithExternalApplication();
 		launchBrowser(fileName);
+	}
+	void endCompilationFaust(bool done)
+	{
+		statusBar()->clearMessage();
+		if (done)
+		{
+			on_action_Reload_Faust_Modules_triggered();
+			QMessageBox::information(this, tr("Faust compilation done!"),
+				tr(
+					"<p>Faust modules compilation is done!</p>\n"));
+		}
+		else
+		{
+			QMessageBox::critical(this, tr("Faust compilation failed!"),
+				tr(
+					"<p>Faust modules compilation failed</p>\n"));
+		}
 	}
 	void on_action_Embed_SVG_Diagrams_Option_changed()
 	{
@@ -443,7 +471,6 @@ public slots:
 				" the network but changing the '.clamnetwork' extension to '.ui'</p>\n"
 			));
 	}
-
 	void on_action_Run_prototyper_triggered()
 	{
 		QMessageBox::warning(this, tr("Feature not implemented"),
@@ -452,7 +479,6 @@ public slots:
 				"<p>Run the Prototyper and open the same network you are editing</p>\n"
 			));
 	}
-
 	void on_action_Compile_Faust_Modules_triggered()
 	{
 #if USE_LADSPA
@@ -460,14 +486,13 @@ public slots:
 			tr(
 				"<p>Recompilation of all FAUST plugins could take some minutes.</p>\n"
 				"<p>Do you still want to do it?</p>\n"
-			), QMessageBox::Yes|QMessageBox::No))!=QMessageBox::Yes) return;
-		// compile all faust files
+				), QMessageBox::Yes|QMessageBox::No))!=QMessageBox::Yes) return;
 		RunTimeFaustLibraryLoader faustLoader;
 		typedef std::map<std::string,std::string> CommandsMap;
 		std::cout << "[FAUST] \tcompiling" << std::endl;
 		std::string faustDir=faustLoader.CompletePathFor("examples"); // get path for examples dir
 		QDir examplesPath=QDir(faustDir.c_str());
-		if (not examplesPath.exists("ladspadir") and not examplesPath.mkdir("ladspadir"))	// if directory for plugins compilation doesn't exist try to create it
+		if (not examplesPath.exists("ladspadir") and not examplesPath.mkdir("ladspadir")) // if directory for plugins compilation doesn't exist try to create it
 		{
 			QMessageBox::warning(this, tr("Faust compilation failed"),
 				tr(
@@ -476,41 +501,57 @@ public slots:
 				).arg(examplesPath.path()) );
 			return;
 		}
- 		QStringList listOfSources=examplesPath.entryList((QStringList() << "*.dsp"));//, QDir::Files);
+		TaskRunner::CommandsAndEnvironmentsList commandsQList;
+		TaskRunner::CommandAndEnvironment command;
+
+		// old method for compile individually all founded .dsp
+		//TODO: remove this and RunTimeFaustLibraryLoader::GetCompilePluginCommands ??
+		/* 
+		QStringList listOfSources=examplesPath.entryList((QStringList() << "*.dsp"));//, QDir::Files);
 		QStringList::const_iterator sourcesQListIterator;
 		for (sourcesQListIterator = listOfSources.constBegin(); sourcesQListIterator != listOfSources.constEnd(); ++sourcesQListIterator)
 		{
 			const std::string sourceFileCompletePath=examplesPath.absolutePath().toStdString()+"/"+sourcesQListIterator->toStdString();
-			CommandsMap commands=faustLoader.GetCompilePluginCommands(sourceFileCompletePath);	// Get compilation parameters
-			if (commands.empty())
+			CommandsMap commandsMap=faustLoader.GetCompilePluginCommands(sourceFileCompletePath);	// Get compilation parameters
+			if (commandsMap.empty())
 			{
 				QMessageBox::warning(this, tr("Faust compilation failed"),
 					tr(
 						"<p>Can't found FAUST compiler and/or ladspa.cpp required library!</p>\n"
 						"<p>Compilation failed.</p>\n"
 					));
-				return;
 			}
-			QProcess process;
-			std::cout << "[FAUST DEBUG] \tusing directory: " << process.workingDirectory().toStdString() << std::endl;
-			
 			CommandsMap::iterator commandsIt;
-			for (commandsIt=commands.begin();commandsIt!=commands.end();commandsIt++)
+			for (commandsIt=commandsMap.begin();commandsIt!=commandsMap.end();commandsIt++)
 			{
-				process.setWorkingDirectory((*commandsIt).second.c_str());
-				//process.setWorkingDirectory(faustDir.c_str());
-				process.start((*commandsIt).first.c_str());
-				std::cout<<"[FAUST DEBUG] \texecuting: " << (*commandsIt).first <<" on "<< (*commandsIt).second <<" ";
-				if (!process.waitForFinished())
-					std::cout<<"\t...compiling error" << std::endl;
-				else 
-					std::cout << "\t...compiling done" << std::endl;
+				command.workingDir=(*commandsIt).second.c_str();
+				QString commandAndArguments=(*commandsIt).first.c_str();
+				QStringList arguments=commandAndArguments.split(" ");
+				command.command=arguments.takeFirst();
+				command.arguments=arguments;
+				commandsQList.append(command);
 			}
+		}*/
+
+		// define compilation using make:
+		command.command="make";
+		command.arguments=(QStringList() << QString("ladspa"));
+		command.workingDir=faustDir.c_str();
+		commandsQList.append(command);
+		command.arguments=(QStringList() << QString("svg"));
+		commandsQList.append(command);
+
+		statusBar()->showMessage("Compiling faust modules...");
+		const char * slotEnd = SLOT(endCompilationFaust(bool));
+		bool ok = runQueuedCommands(commandsQList,slotEnd);
+		if(!ok)
+		{
+			QMessageBox::critical(this, tr("Compiling Faust modules"),
+				tr("<p><b>Error: Compilation failed.</b></p>\n"));
+			statusBar()->clearMessage();
 		}
-		on_action_Reload_Faust_Modules_triggered();
 #endif
 	}
-
 	void on_action_Reload_Faust_Modules_triggered()
 	{
 #if USE_LADSPA
@@ -557,5 +598,4 @@ private:
 	QDockWidget * _processingTreeDock;
 	NetworkGUI::ProcessingTree * _processingTree;
 };
-
 

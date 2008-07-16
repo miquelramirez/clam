@@ -41,7 +41,7 @@
 #include <CLAM/ProcessingDataPlugin.hxx>
 
 #include <QtSvg/QSvgWidget>
-#include <QSvgRenderer>
+#include <QtSvg/QSvgRenderer>
 
 
 QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
