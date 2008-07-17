@@ -9,6 +9,5 @@ namespace detail
 		"description", "VectorBasedArrayPanning",
 		0
 	};
-	//static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VectorBasedArrayPanning> regVectorBasedArrayPanning("VectorBasedArrayPanning");
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, VectorBasedArrayPanning> reg = metadata;
 }
