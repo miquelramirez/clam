@@ -33,7 +33,6 @@ namespace detail
 		"description", "Glottal Source Generator for input to the vowel resonator",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, GlottalSourceGenerator> regGlottalSourceGenerator("GlottalSourceGenerator");
 	static FactoryRegistrator<ProcessingFactory, GlottalSourceGenerator> reg = metadata;
 }
 
