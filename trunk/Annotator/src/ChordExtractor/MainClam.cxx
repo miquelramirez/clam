@@ -130,8 +130,7 @@ const char * schemaContent =
 
 class ChordExtractorDescriptionDumper
 {
-	Simac::ChordExtractor & extractor;
-	std::ofstream outputPool;
+	Simac::ChordExtractor & _extractor;
 
 	CLAM::DescriptionScheme _schema;
 	CLAM::DescriptionDataPool * _pool;
@@ -151,9 +150,8 @@ class ChordExtractorDescriptionDumper
 	unsigned _firstFrameOffset;
 	CLAM::TData _samplingRate;
 public:
-	ChordExtractorDescriptionDumper(const std::string & filenameBase, const std::string & suffix, unsigned frames, unsigned hop, unsigned framesize, CLAM::TData samplingRate, Simac::ChordExtractor & extractor)
-		: extractor(extractor)
-		, outputPool((filenameBase+suffix).c_str())
+	ChordExtractorDescriptionDumper(unsigned frames, unsigned hop, unsigned framesize, CLAM::TData samplingRate, Simac::ChordExtractor & extractor)
+		: _extractor(extractor)
 		, _currentFrame(0)
 		, _lastChord(0)
 		, _hop(hop)
@@ -175,10 +173,12 @@ public:
 		_schema.AddAttribute<Simac::Enumerated>("ExtractedChord", "Mode");
 		_schema.AddAttribute<CLAM::DataArray>("Frame", "HartePcp");
 		_schema.AddAttribute<CLAM::DataArray>("Frame", "HarteChordCorrelation");
+
 		_pool = new CLAM::DescriptionDataPool(_schema);
 		_pool->SetNumberOfContexts("Song", 1);
 		_pool->SetNumberOfContexts("Frame", frames);
 		_pool->SetNumberOfContexts("ExtractedChord", 0);
+
 		Simac::FrameDivision & frameDivision = _pool->GetWritePool<Simac::FrameDivision>("Song","Frames")[0];
 		frameDivision.SetFirstCenter(0);
 	//	frameDivision.SetFirstCenter(framesize/2);
@@ -194,48 +194,22 @@ public:
 		_chordChorrelation = _pool->GetWritePool<CLAM::DataArray>("Frame","HarteChordCorrelation");
 		_energies = _pool->GetWritePool<CLAM::TData>("Frame","Energy");
 	}
+	const CLAM::DescriptionDataPool & getPool() const
+	{
+		return *_pool;
+	}
 	~ChordExtractorDescriptionDumper()
 	{
-		for (unsigned frame=_currentFrame; frame<_pool->GetNumberOfContexts("Frame"); frame++)
-		{
-			_pcps[frame].Resize(12);
-			_pcps[frame].SetSize(12);
-			_chordChorrelation[frame].Resize(24);
-			_chordChorrelation[frame].SetSize(24);
-		}
-	
-		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
-		extractor.closeLastSegment(currentTime);
-
-		CLAM_ASSERT(_pool->GetNumberOfContexts("ExtractedChord")==0, "ExtractedChord pool  not empty");
-
-		_pool->SetNumberOfContexts("ExtractedChord",extractor.chordIndexes().size());
-		if( not extractor.chordIndexes().empty())
-		{
-			Simac::Enumerated * root = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root");
-			Simac::Enumerated * mode = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode");
-			for (unsigned segment=0; segment<extractor.chordIndexes().size(); ++segment)
-			{
-				root[segment] = extractor.root(extractor.chordIndexes()[segment]);
-				mode[segment] = extractor.mode(extractor.chordIndexes()[segment]);
-				_chordSegmentation[0].AddElem(extractor.segmentation().onsets()[segment]);
-				_chordSegmentation[0].AddElem(extractor.segmentation().offsets()[segment]);
-			}
-		}
-
-//		CLAM::XMLStorage::Dump(*_pool, "Description", std::cout);
-		CLAM::XMLStorage::Dump(*_pool, "Description", outputPool);
-		std::cout << "Frames " << _currentFrame << " of " <<  _pool->GetNumberOfContexts("Frame") << std::endl;
 		delete _pool;
 	}
 
 	void doIt()
 	{
-		const std::vector<double> & pcp = extractor.pcp(); //pointer to chromagram data
-		const std::vector<double> & chromagram = extractor.chromagram(); //pointer to chromagram data
-		const Simac::CircularPeakPicking::PeakList & peaks = extractor.peaks(); //pointer to chromagram data
-		const std::vector<double> & correlation = extractor.chordCorrelation(); //pointer to chromagram data
-		std::string estimation = extractor.chordEstimation();
+		const std::vector<double> & pcp = _extractor.pcp(); //pointer to chromagram data
+		const std::vector<double> & chromagram = _extractor.chromagram(); //pointer to chromagram data
+		const Simac::CircularPeakPicking::PeakList & peaks = _extractor.peaks(); //pointer to chromagram data
+		const std::vector<double> & correlation = _extractor.chordCorrelation(); //pointer to chromagram data
+		std::string estimation = _extractor.chordEstimation();
 
 		CLAM_ASSERT(pcp.size()==12, "Unexpected pcp size" );
 		_pcps[_currentFrame].Resize(pcp.size());
@@ -250,85 +224,120 @@ public:
 		for (unsigned i =0; i<correlationSize; i++)
 			_chordChorrelation[_currentFrame][i]=correlation[i+1];
 
-		_tunningPositions[_currentFrame] = extractor.tunning();
-		_tunningStrength[_currentFrame] = extractor.tunningStrength();
-		CLAM::TData firstCandidateWeight = correlation[extractor.firstCandidate()];
-		CLAM::TData secondCandidateWeight = correlation[extractor.secondCandidate()];
+		_tunningPositions[_currentFrame] = _extractor.tunning();
+		_tunningStrength[_currentFrame] = _extractor.tunningStrength();
+		CLAM::TData firstCandidateWeight = correlation[_extractor.firstCandidate()];
+		CLAM::TData secondCandidateWeight = correlation[_extractor.secondCandidate()];
 		CLAM::TData noCandidateWeigth = correlation[0];
 		_firstChordRelevance[_currentFrame] = firstCandidateWeight/noCandidateWeigth;
 		_secondChordRelevance[_currentFrame] = secondCandidateWeight/noCandidateWeigth;
-		_firstChordIndex[_currentFrame] = extractor.firstCandidate();
-		_secondChordIndex[_currentFrame] = extractor.secondCandidate();
-		_energies[_currentFrame] = extractor.energy();
+		_firstChordIndex[_currentFrame] = _extractor.firstCandidate();
+		_secondChordIndex[_currentFrame] = _extractor.secondCandidate();
+		_energies[_currentFrame] = _extractor.energy();
 		unsigned currentChord = firstCandidateWeight*0.6<=noCandidateWeigth || noCandidateWeigth<0.001 ?
-				0 : extractor.firstCandidate();
+				0 : _extractor.firstCandidate();
 
 		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
 //		_debugFrameSegmentation[0].AddElem(currentTime);
 
 		_currentFrame++;
 	}
+	void endExtraction()
+	{
+		for (unsigned frame=_currentFrame; frame<_pool->GetNumberOfContexts("Frame"); frame++)
+		{
+			_pcps[frame].Resize(12);
+			_pcps[frame].SetSize(12);
+			_chordChorrelation[frame].Resize(24);
+			_chordChorrelation[frame].SetSize(24);
+		}
+	
+		CLAM::TData currentTime = (_currentFrame*_hop+_firstFrameOffset)/_samplingRate;
+		_extractor.closeLastSegment(currentTime);
+
+		CLAM_ASSERT(_pool->GetNumberOfContexts("ExtractedChord")==0, "ExtractedChord pool  not empty");
+
+		_pool->SetNumberOfContexts("ExtractedChord",_extractor.chordIndexes().size());
+		if( not _extractor.chordIndexes().empty())
+		{
+			Simac::Enumerated * root = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Root");
+			Simac::Enumerated * mode = _pool->GetWritePool<Simac::Enumerated>("ExtractedChord","Mode");
+			for (unsigned segment=0; segment<_extractor.chordIndexes().size(); ++segment)
+			{
+				root[segment] = _extractor.root(_extractor.chordIndexes()[segment]);
+				mode[segment] = _extractor.mode(_extractor.chordIndexes()[segment]);
+				_chordSegmentation[0].AddElem(_extractor.segmentation().onsets()[segment]);
+				_chordSegmentation[0].AddElem(_extractor.segmentation().offsets()[segment]);
+			}
+		}
+		std::cout << "Frames " << _currentFrame << " of " <<  _pool->GetNumberOfContexts("Frame") << std::endl;
+	}
+
 };
 
-class ChordExtractorSerializer
+int processFile(const std::string & waveFile, const std::string & suffix, unsigned segmentationMethod)
 {
-	const Simac::ChordExtractor & extractor;
-	std::ofstream outputChromogram;
-	std::ofstream outputPcp;
-	std::ofstream outputPeaks;
-	std::ofstream outputCorrelation;
-	std::ofstream outputTuning;
-	std::ofstream outputEstimation;
-public:
-	ChordExtractorSerializer(const std::string & filenameBase, unsigned frames, unsigned hop, unsigned framesize, const Simac::ChordExtractor & extractor)
-		: extractor(extractor)
-		, outputChromogram((filenameBase+".chromogram.txt").c_str())
-		, outputPcp((filenameBase+".pcp.txt").c_str())
-		, outputPeaks((filenameBase+".peaks.txt").c_str())
-		, outputCorrelation((filenameBase+".correlation.txt").c_str())
-		, outputTuning((filenameBase+".tuning.txt").c_str())
-		, outputEstimation((filenameBase+".estimation.txt").c_str())
+	CLAM::MonoAudioFileReaderConfig cfg;
+	cfg.SetSourceFile( waveFile );
+	CLAM::MonoAudioFileReader reader;
+	if (!reader.Configure(cfg))
 	{
+		std::cerr << "Error reading file '" << waveFile << "'" << std::endl;
+		std::cerr << reader.GetConfigErrorMessage() << std::endl;
+		return -1;
 	}
-	~ChordExtractorSerializer()
+	CLAM::TData samplingRate = reader.GetHeader().GetSampleRate();
+	unsigned long nsamples = reader.GetHeader().GetLength()*samplingRate/1000.0;
+
+	CLAM::XMLStorage::Dump(reader.GetHeader(), "Header", std::cout);
+	CLAM::XMLStorage::Dump(reader.GetTextDescriptors(), "TextDescriptors", std::cout);
+	
+	int factor=1;							// downsampling factor
+	float minf = 98;						// (MIDI note G1)
+	unsigned bpo = 36;			// bins per octave
+
+	Simac::ChordExtractor chordExtractor(samplingRate/factor,minf,bpo);
+	chordExtractor.segmentationMethod(segmentationMethod);
+	unsigned framesize = chordExtractor.frameSize();
+	unsigned hop = chordExtractor.hop();
+	unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
+	ChordExtractorDescriptionDumper dumper(nFrames, hop, framesize, samplingRate, chordExtractor);
+
+	std::cout << "Frame size: " << framesize << std::endl;
+	std::cout << "Hop size: " << hop << std::endl;
+
+	CLAM::AudioInPort inport;
+	reader.GetOutPorts().GetByNumber(0).ConnectToIn(inport);
+	inport.SetSize( framesize );
+	inport.SetHop( hop );
+
+	reader.Start();
+	CLAM::TData currentFrame = 0;
+	unsigned firstFrameOffset = 0;
+//	clock_t start = clock();
+	std::vector<float> floatBuffer(framesize);
+	while (reader.Do())
 	{
+		if (!inport.CanConsume()) continue; // Not enough audio, try again
+		std::cout << "." << std::flush;
+		CLAM::TData * segpointer = &(inport.GetAudio().GetBuffer()[0]);
+		for (unsigned i = 0; i < framesize; i++)
+			floatBuffer[i] = segpointer[i];
+		CLAM::TData currentTime = (currentFrame*hop+firstFrameOffset)/samplingRate;
+		chordExtractor.doIt(&floatBuffer[0], currentTime);
+		inport.Consume();
+		currentFrame++;
+		dumper.doIt();
 	}
+//	clock_t end = clock();
+	reader.Stop();
+	dumper.endExtraction();
 
-	void doIt()
-	{
-		std::cout << extractor.chordEstimation() << std::endl;
+	std::ofstream outputPool((waveFile+suffix).c_str());
+	CLAM::XMLStorage::Dump(dumper.getPool(), "Description", outputPool);
 
-		const std::vector<double> & pcp = extractor.pcp(); //pointer to chromagram data
-		for (unsigned i=0; i<pcp.size(); i++)
-			outputPcp << pcp[i] << " ";
-		outputPcp << std::endl;
-
-		const std::vector<double> & chromagram = extractor.chromagram(); //pointer to chromagram data
-		for (unsigned i=0; i<chromagram.size(); i++)
-			outputChromogram << chromagram[i] << " ";
-		outputChromogram << std::endl;
-
-		const Simac::CircularPeakPicking::PeakList & peaks = extractor.peaks(); //pointer to chromagram data
-		for (unsigned i=0; i<peaks.size(); i++)
-			outputPeaks << peaks[i].first << " ";
-		outputPeaks << std::endl;
-
-		const std::vector<double> & correlation = extractor.chordCorrelation(); //pointer to chromagram data
-		for (unsigned i=0; i<correlation.size(); i++)
-			outputCorrelation << correlation[i] << " ";
-		outputCorrelation << std::endl;
-		outputTuning
-			<< extractor.tunning() 
-			<< "\t" 
-			<< extractor.tunningStrength()
-			<< std::endl;
-		outputEstimation
-			<< extractor.chordEstimation()
-			<< std::endl;
-
-	}
-};
-
+	return 0;
+}
 
 int main(int argc, char* argv[])			// access command line arguments
 {
@@ -386,64 +395,8 @@ int main(int argc, char* argv[])			// access command line arguments
 			it!= songs.end();
 			it++)
 	{
-		const std::string & waveFile = *it;
-		CLAM::MonoAudioFileReaderConfig cfg;
-		cfg.SetSourceFile( waveFile );
-		CLAM::MonoAudioFileReader reader;
-		if (!reader.Configure(cfg))
-		{
-			std::cerr << "Error reading file '" << waveFile << "'" << std::endl;
-			std::cerr << reader.GetConfigErrorMessage() << std::endl;
-			return -1;
-		}
-		CLAM::TData samplingRate = reader.GetHeader().GetSampleRate();
-		unsigned long nsamples = reader.GetHeader().GetLength()*samplingRate/1000.0;
-
-		CLAM::XMLStorage::Dump(reader.GetHeader(), "Header", std::cout);
-		CLAM::XMLStorage::Dump(reader.GetTextDescriptors(), "TextDescriptors", std::cout);
-		
-		int factor=1;							// downsampling factor
-		float minf = 98;						// (MIDI note G1)
-		unsigned bpo = 36;			// bins per octave
-
-		Simac::ChordExtractor chordExtractor(samplingRate/factor,minf,bpo);
-		chordExtractor.segmentationMethod(segmentationMethod);
-		unsigned framesize = chordExtractor.frameSize();
-		unsigned hop = chordExtractor.hop();
-		unsigned long nFrames = floor((float)(nsamples-framesize+hop)/(float)hop);	// no. of time windows
-	//	unsigned long nFrames = (nsamples-framesize)/hop;	// no. of time windows
-	//	ChordExtractorSerializer serializer(waveFile, nFrames, hop, framesize, chordExtractor);
-		ChordExtractorDescriptionDumper dumper(waveFile, suffix, nFrames, hop, framesize, samplingRate, chordExtractor);
-
-		std::cout << "Frame size: " << framesize << std::endl;
-		std::cout << "Hop size: " << hop << std::endl;
-
-		CLAM::AudioInPort inport;
-		reader.GetOutPorts().GetByNumber(0).ConnectToIn(inport);
-		inport.SetSize( framesize );
-		inport.SetHop( hop );
-
-		reader.Start();
-		CLAM::TData currentFrame = 0;
-		unsigned firstFrameOffset = 0;
-	//	clock_t start = clock();
-		std::vector<float> floatBuffer(framesize);
-		while (reader.Do())
-		{
-			if (!inport.CanConsume()) continue; // Not enough audio, try again
-			std::cout << "." << std::flush;
-			CLAM::TData * segpointer = &(inport.GetAudio().GetBuffer()[0]);
-			for (unsigned i = 0; i < framesize; i++)
-				floatBuffer[i] = segpointer[i];
-			CLAM::TData currentTime = (currentFrame*hop+firstFrameOffset)/samplingRate;
-			chordExtractor.doIt(&floatBuffer[0], currentTime);
-			inport.Consume();
-			currentFrame++;
-	//		serializer.doIt();
-			dumper.doIt();
-		}
-	//	clock_t end = clock();
-		reader.Stop();
+		int error = processFile(*it, suffix, segmentationMethod);
+		if (error) return error;
 	}
 
 //	std::cout << "\nProcessing time: " << (end-start)/CLOCKS_PER_SEC << " seconds\n";
