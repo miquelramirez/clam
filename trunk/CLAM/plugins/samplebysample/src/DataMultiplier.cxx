@@ -35,7 +35,6 @@ namespace detail
 		"description", "DataMultiplier",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, DataMultiplier> regDataMultiplier("DataMultiplier");
 	static FactoryRegistrator<ProcessingFactory, DataMultiplier> reg = metadata;
 }
 
