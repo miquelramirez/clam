@@ -582,38 +582,14 @@ protected:
 			}
 		}
 	}
-	// TODO: add more selection and groups management for canvas here??
-	// Get the upper left point of selection:
-	virtual QPoint getSelectionTopLeft(bool inverse = false)
+	// get a bounded QRect of selection:
+	virtual QRect getSelectionBoundingRect()
 	{
-		QPoint topLeftPoint=QPoint(0,0);
-		bool noSelection=true;
-		for(unsigned i=0;i<_processings.size(); i++)
-		{
-			ProcessingBox * processing = _processings[i];
-			if (!processing->isSelected())
-				continue;
-			if (noSelection)
-			{
-				topLeftPoint=processing->pos(); // if exist, take the first selected box as reference instead (0,0)
-				noSelection=false;
-			}
-			if(not inverse) // TopLeft
-			{
-				if (processing->pos().x()<topLeftPoint.x())
-					topLeftPoint.setX(processing->pos().x());
-				if (processing->pos().y()<topLeftPoint.y())
-					topLeftPoint.setY(processing->pos().y());
-			}
-			else // is inverse: DownRight
-			{
-				if (processing->pos().x()>topLeftPoint.x())
-					topLeftPoint.setX(processing->pos().x());
-				if (processing->pos().y()>topLeftPoint.y())
-					topLeftPoint.setY(processing->pos().y());
-			}
-		}
-		return topLeftPoint;
+		QRect boundingBox;
+		for (unsigned i = 0; i<_processings.size(); i++)
+			if (_processings[i]->isSelected())
+				boundingBox = boundingBox.unite(QRect(_processings[i]->pos(),_processings[i]->size()));
+		return boundingBox;
 	}
 
 public:
@@ -1486,7 +1462,7 @@ private slots:
 		}
 		if (_network->UpdateSelections(processingsNamesList))
 			return;
-		updateGeometriesOnXML(getSelectionTopLeft());
+		updateGeometriesOnXML(getSelectionBoundingRect().topLeft());
 		CLAM::XmlStorage::Dump(*_network,"network",streamXMLBuffer);
 
 		QApplication::clipboard()->setText(QString(streamXMLBuffer.str().c_str()));
