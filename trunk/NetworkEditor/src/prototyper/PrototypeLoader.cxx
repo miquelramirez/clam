@@ -239,7 +239,7 @@ public:
 		QList<QAction*> actions = userInterface->findChildren<QAction*>(pattern);
 		for (QList<QAction*>::iterator it=actions.begin(); it!=actions.end(); it++)
 		{
-			std::cout << "Action: " << (*it)->objectName().toStdString() << std::endl;
+			std::cout << "Action: " << (*it)->objectName().toLocal8Bit().constData() << std::endl;
 			if (not pattern.exactMatch((*it)->objectName())) continue;
 			std::string processing = GetNetworkNameFromWidgetName(pattern.cap(1).toStdString().c_str());
 			if (ReportMissingProcessing(processing,network,userInterface)) continue;
@@ -272,7 +272,7 @@ bool PrototypeLoader::LoadNetwork(std::string networkFile)
 			QString::null,
 			"CLAM Network files (*.clamnetwork)");
 		if (file.isEmpty()) return false;
-		_networkFile=file.toStdString();
+		_networkFile=file.toLocal8Bit().constData();
 	}
 	QString errorMessage;
 	try
@@ -368,7 +368,7 @@ static QWidget * DoLoadInterface(const QString & uiFile)
 	QStringList paths = loader.pluginPaths();
 	for (QStringList::iterator it = paths.begin(); it!=paths.end(); it++)
 	{
-		std::cout << "Looking for plugins at path: " << it->toStdString() << std::endl;
+		std::cout << "Looking for plugins at path: " << it->toLocal8Bit().constData() << std::endl;
 	}
 	QWidget * userInterface = loader.load(&file, 0 );
 	if (userInterface)
@@ -385,7 +385,7 @@ QWidget * PrototypeLoader::LoadInterface(QString uiFile)
 	if (_interface) delete _interface;
 	if (uiFile.isEmpty())
 	{
-		uiFile = _networkFile.c_str();
+		uiFile = QString.fromLocal8Bit(_networkFile.c_str());
 		int pos = uiFile.lastIndexOf(".");
 		uiFile.truncate(pos); // if not found nothing happens
 		uiFile += ".ui";
@@ -393,7 +393,7 @@ QWidget * PrototypeLoader::LoadInterface(QString uiFile)
 	_interface = DoLoadInterface(uiFile);
 	if (_interface) return _interface;
 
-	QString error = FileExists(uiFile.toStdString()) ?
+	QString error = FileExists(uiFile.toLocal8Bit().constData()) ?
 		tr("Interface file '%1' had errors."):
 		tr("Interface file '%1' not found.") ;
 	QMessageBox::warning(_interface,

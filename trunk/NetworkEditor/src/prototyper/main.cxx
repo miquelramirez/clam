@@ -79,7 +79,7 @@ int main( int argc, char *argv[] )
 
 	CLAM::PrototypeLoader prototype;
 
-	if (! prototype.ChooseBackend( backends, undottedName.toStdString() ) ) return -1;
+	if (! prototype.ChooseBackend( backends, undottedName.toLocal8Bit().constData() ) ) return -1;
 	if (! prototype.LoadNetwork( networkFile ) ) return -1;
 	if (!isInteractive) 
 	{

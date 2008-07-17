@@ -207,11 +207,12 @@ public:
 	}
 	void load(const QString & filename)
 	{
-		std::cout << "Loading " << filename.toStdString() << "..." << std::endl;
+		std::string localFilename = filename.toLocal8Bit().constData();
+		std::cout << "Loading " << localFilename << "..." << std::endl;
 		clear();
 		try
 		{
-			CLAM::XMLStorage::Restore(_network, filename.toStdString());
+			CLAM::XMLStorage::Restore(_network, localFilename);
 		}
 		catch(CLAM::XmlStorageErr &e)
 		{
@@ -222,7 +223,7 @@ public:
 			return;
 		}
 		_canvas->loadNetwork(&_network);
-		_canvas->loadPositions(filename+".pos"); //TODO: remove when XML geometries are tested enough
+		_canvas->loadPositions(filename+".pos"); //TODO: remove after embeded positions are released
 		_canvas->loadGeometriesFromXML();
 		appendRecentFile(filename);
 		_networkFile = filename;
@@ -231,9 +232,10 @@ public:
 	}
 	void save(const QString & filename)
 	{
-		std::cout << "Saving " << filename.toStdString() << "..." << std::endl;
+		std::string localFilename = filename.toLocal8Bit().constData();
+		std::cout << "Saving " << localFilename << "..." << std::endl;
 		if (!_saveUsingOldPosFiles) _canvas->updateGeometriesOnXML();
-		CLAM::XMLStorage::Dump(_network, "network", filename.toStdString());
+		CLAM::XMLStorage::Dump(_network, "network", localFilename);
 		if (_saveUsingOldPosFiles) _canvas->savePositions(filename+".pos");
 		_canvas->clearChanges();
 		_networkFile = filename;
@@ -264,15 +266,6 @@ public:
 	}
 
 private:
-	void launchBrowser (QString & fileNameToBrowse) const
-	{
-		#if QT_VERSION >= 0x040200
-		std::cout << "opening "<<fileNameToBrowse.toStdString() << std::endl;
-		QDesktopServices::openUrl(fileNameToBrowse);
-		#else
-		QProcess::startDetached("x-www-browser", QStringList() << fileNameToBrowse); // TODO: Remove this 4.1 unix only version
-		#endif
-	}
 	bool runQueuedCommands(TaskRunner::CommandsAndEnvironmentsList & commandsQList, const char * slotEndName=NULL, bool stopOnError=true)
 	{
 		TaskRunner * runner = new TaskRunner();
@@ -298,8 +291,7 @@ public slots:
 	}
 	void openFileWithExternalApplicationFromProcessing()
 	{
-		QString fileName="file://"+_canvas->getFileNameToOpenWithExternalApplication();
-		launchBrowser(fileName);
+		QDesktopServices::openUrl(QUrl::localFileToUrl(fileNameToBrowse));
 	}
 	void endCompilationFaust(bool done)
 	{
@@ -332,7 +324,7 @@ public slots:
 	void on_action_Online_tutorial_triggered()
 	{
 		QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Network_Editor_tutorial";
-		launchBrowser(helpUrl);
+		QDesktopServices::openUrl(helpUrl);
 	}
 	void on_action_About_triggered()
 	{
