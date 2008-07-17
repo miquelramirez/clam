@@ -34,7 +34,6 @@ namespace CLAM
 	//	"description", "PeaksPortMonitor",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, PeaksPortMonitor> regPeaksPortMonitor("PeaksPortMonitor");
 	static FactoryRegistrator<ProcessingFactory, PeaksPortMonitor> regPeaks = metadataPeaks;
 
 	static const char * metadataSpectrum[] = {
@@ -43,7 +42,6 @@ namespace CLAM
 	//	"description", "SpectrumPortMonitor",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectrumPortMonitor> regSpectrumPortMonitor("SpectrumPortMonitor");
 	static FactoryRegistrator<ProcessingFactory, SpectrumPortMonitor> regSpectrum = metadataSpectrum;
 
 	static const char * metadataAudio[] = {
@@ -52,7 +50,6 @@ namespace CLAM
 	//	"description", "AudioPortMonitor",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, AudioPortMonitor> regAudioPortMonitor("AudioPortMonitor");
 	static FactoryRegistrator<ProcessingFactory, AudioPortMonitor> regAudio = metadataAudio;
 
 	static const char * metadataFundamental[] = {
@@ -61,7 +58,6 @@ namespace CLAM
 	//	"description", "FundamentalPortMonitor",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, FundamentalPortMonitor> regFundamentalPortMonitor("FundamentalPortMonitor");
 	static FactoryRegistrator<ProcessingFactory, FundamentalPortMonitor> regFundamental = metadataFundamental;
 
 	static const char * metadataAudioBuff[] = {
@@ -70,7 +66,6 @@ namespace CLAM
 	//	"description", "AudioBuffPortMonitor",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, AudioBuffPortMonitor> regAudioBuffPortMonitor("AudioBuffPortMonitor");
 	static FactoryRegistrator<ProcessingFactory, AudioBuffPortMonitor> regAudioBuff = metadataAudioBuff;
 
 	static const char * metadataSpecgram[] = {
@@ -79,7 +74,6 @@ namespace CLAM
 	//	"description", "SpecgramPortMonitor",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpecgramPortMonitor> regSpecgramPortMonitor("SpecgramPortMonitor");
 	static FactoryRegistrator<ProcessingFactory, SpecgramPortMonitor> regSpecgram = metadataSpecgram;
 
 	static const char * metadataFundTrack[] = {
@@ -88,7 +82,6 @@ namespace CLAM
 	//	"description", "FundTrackPortMonitor",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, FundTrackPortMonitor> regFundTrackPortMonitor("FundTrackPortMonitor");
 	static FactoryRegistrator<ProcessingFactory, FundTrackPortMonitor> regFundTrack = metadataFundTrack;
 
 	static const char * metadataSinTracks[] = {
@@ -97,7 +90,6 @@ namespace CLAM
 	//	"description", "SinTracksPortMonitor",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SinTracksPortMonitor> regSinTracksPortMonitor("SinTracksPortMonitor");
 	static FactoryRegistrator<ProcessingFactory, SinTracksPortMonitor> regSinTracks = metadataSinTracks;
 #endif
 	

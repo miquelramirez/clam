@@ -44,7 +44,6 @@ namespace Hidden
 		"description", "FFT_numrec",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, FFT_numrec> regFFT_numrec("FFT_numrec");
 	static FactoryRegistrator<ProcessingFactory, FFT_numrec> reg = metadata;
 }
 

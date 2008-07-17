@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "SMSGenderChange",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSGenderChange> regSMSGenderChange("SMSGenderChange");
 	static FactoryRegistrator<ProcessingFactory, SMSGenderChange> reg = metadata;
 }
 

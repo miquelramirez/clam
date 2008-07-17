@@ -11,7 +11,6 @@ namespace Hidden
 		"description", "Fundamental2Control",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, Fundamental2Control> regFundamental2Control("Fundamental2Control");
 	static FactoryRegistrator<ProcessingFactory, Fundamental2Control> reg = metadata;
 }
 

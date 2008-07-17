@@ -32,7 +32,6 @@ namespace Hidden
 	//	"description", "SpectralAverage",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralAverage> regSpectralAverage("SpectralAverage");
 	static FactoryRegistrator<ProcessingFactory, SpectralAverage> reg = metadata;
 }
 

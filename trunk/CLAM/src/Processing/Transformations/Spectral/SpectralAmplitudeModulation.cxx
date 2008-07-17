@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "SpectralAmplitudeModulation",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralAmplitudeModulation> regSpectralAmplitudeModulation("SpectralAmplitudeModulation");
 	static FactoryRegistrator<ProcessingFactory, SpectralAmplitudeModulation> reg = metadata;
 }
 

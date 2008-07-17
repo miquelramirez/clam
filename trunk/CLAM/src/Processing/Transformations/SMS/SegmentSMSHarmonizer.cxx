@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "SegmentSMSHarmonizer",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SegmentSMSHarmonizer> regSegmentSMSHarmonizer("SegmentSMSHarmonizer");
 	static FactoryRegistrator<ProcessingFactory, SegmentSMSHarmonizer> reg = metadata;
 }
 

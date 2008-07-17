@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "SegmentSMSMorph",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SegmentSMSMorph> regSegmentSMSMorph("SegmentSMSMorph");
 	static FactoryRegistrator<ProcessingFactory, SegmentSMSMorph> reg = metadata;
 }
 

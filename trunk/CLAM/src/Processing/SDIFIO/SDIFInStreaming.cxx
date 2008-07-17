@@ -42,7 +42,6 @@ namespace Hidden
 	//	"description", "SDIFInStreaming",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SDIFInStreaming> regSDIFInStreaming ("SDIFInStreaming");
 	static FactoryRegistrator<ProcessingFactory, SDIFInStreaming> reg = metadata;
 }
 

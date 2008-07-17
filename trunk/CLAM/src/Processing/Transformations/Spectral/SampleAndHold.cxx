@@ -32,7 +32,6 @@ namespace Hidden
 		"description", "SampleAndHold",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SampleAndHold> regSampleAndHold("SampleAndHold");
 	static FactoryRegistrator<ProcessingFactory, SampleAndHold> reg = metadata;
 }
 

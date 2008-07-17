@@ -14,7 +14,6 @@ namespace Hidden
 		"description", "FlagControl",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, FlagControl> regFlagControl("FlagControl");
 	static FactoryRegistrator<ProcessingFactory, FlagControl> reg = metadata;
 }
 

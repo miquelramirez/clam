@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "ControlSink",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ControlSink> regControlSink("ControlSink");
 	static FactoryRegistrator<ProcessingFactory, ControlSink> reg = metadata;
 }
 	

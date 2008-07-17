@@ -12,7 +12,6 @@ namespace Hidden
 		"description", "OutControlSender",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, OutControlSender> regOutControlSender("OutControlSender");
 	static FactoryRegistrator<ProcessingFactory, OutControlSender> reg = metadata;
 }
 	

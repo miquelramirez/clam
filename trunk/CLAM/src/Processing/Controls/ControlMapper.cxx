@@ -32,7 +32,6 @@ namespace Hidden
 		"description", "ControlMapper",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ControlMapper> regControlMapper("ControlMapper");
 	static FactoryRegistrator<ProcessingFactory, ControlMapper> reg = metadata;
 }
 

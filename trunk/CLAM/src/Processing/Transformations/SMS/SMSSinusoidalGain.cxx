@@ -34,7 +34,6 @@ namespace Hidden
 		"description", "SMSSinusoidalGain",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSSinusoidalGain> regSMSSinusoidalGain("SMSSinusoidalGain");
 	static FactoryRegistrator<ProcessingFactory, SMSSinusoidalGain> reg = metadata;
 }
 

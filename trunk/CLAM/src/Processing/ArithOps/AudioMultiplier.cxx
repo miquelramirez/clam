@@ -36,7 +36,6 @@ namespace Hidden
 		"description", "AudioMultiplier",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, AudioMultiplier> regAudioMultiplier("AudioMultiplier");
 	static FactoryRegistrator<ProcessingFactory, AudioMultiplier> reg = metadata;
 }
 

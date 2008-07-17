@@ -34,7 +34,6 @@ namespace Hidden
 		"description", "SMSTransformationChainIO",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSTransformationChainIO> regSMSTransformationChainIO("SMSTransformationChainIO");
 	static FactoryRegistrator<ProcessingFactory, SMSTransformationChainIO> reg = metadata;
 }
 

@@ -37,7 +37,6 @@ namespace Hidden
 		"description", "SpectrumSubstracter2",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectrumSubstracter2> regSpectrumSubstracter2("SpectrumSubstracter2");
 	static FactoryRegistrator<ProcessingFactory, SpectrumSubstracter2> reg = metadata;
 }
 

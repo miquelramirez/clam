@@ -35,7 +35,6 @@ namespace Hidden
 		"description", "SpectralSynthesis",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralSynthesis> regSpectralSynthesis("SpectralSynthesis");
 	static FactoryRegistrator<ProcessingFactory, SpectralSynthesis> reg = metadata;
 }
 

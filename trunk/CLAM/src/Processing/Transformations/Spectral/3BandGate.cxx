@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "ThreeBandGate",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ThreeBandGate> regThreeBandGate("ThreeBandGate");
 	static FactoryRegistrator<ProcessingFactory, ThreeBandGate> reg = metadata;
 }
 

@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "OverlapAdd",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, OverlapAdd> regOverlapAdd("OverlapAdd");
 	static FactoryRegistrator<ProcessingFactory, OverlapAdd> reg = metadata;
 }
 

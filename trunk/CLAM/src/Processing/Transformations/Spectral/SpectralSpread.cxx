@@ -32,7 +32,6 @@ namespace Hidden
 	//	"description", "SpectralSpread",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralSpread> regSpectralSpread("SpectralSpread");
 	static FactoryRegistrator<ProcessingFactory, SpectralSpread> reg = metadata;
 }
 

@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "IFFT",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, IFFT> regIFFT("IFFT");
 	static FactoryRegistrator<ProcessingFactory, IFFT> reg = metadata;
 }
 

@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "SimpleOscillator",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SimpleOscillator> regSimpleOscillator("SimpleOscillator");
 	static FactoryRegistrator<ProcessingFactory, SimpleOscillator> reg = metadata;
 }
 

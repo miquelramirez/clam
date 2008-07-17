@@ -36,7 +36,6 @@ namespace Hidden
 		"description", "SpectralAnalysis",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralAnalysis> regSpectralAnalysis("SpectralAnalysis");
 	static FactoryRegistrator<ProcessingFactory, SpectralAnalysis> reg = metadata;
 }
 

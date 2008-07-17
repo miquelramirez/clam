@@ -32,7 +32,6 @@ namespace Hidden
 		"description", "ThreeBandAM",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ThreeBandAM> regThreeBandAM("ThreeBandAM");
 	static FactoryRegistrator<ProcessingFactory, ThreeBandAM> reg = metadata;
 }
 

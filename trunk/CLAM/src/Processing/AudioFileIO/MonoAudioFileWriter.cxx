@@ -36,7 +36,6 @@ namespace Hidden
 		"description", "MonoAudioFileWriter",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, MonoAudioFileWriter> regMonoAudioFileWriter("MonoAudioFileWriter");
 	static FactoryRegistrator<ProcessingFactory, MonoAudioFileWriter> reg = metadata;
 }
 	

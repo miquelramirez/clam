@@ -36,7 +36,6 @@ namespace Hidden
 		"description", "SMSSynthesis",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSSynthesis> regSMSSynthesis("SMSSynthesis");
 	static FactoryRegistrator<ProcessingFactory, SMSSynthesis> reg = metadata;
 }
 	

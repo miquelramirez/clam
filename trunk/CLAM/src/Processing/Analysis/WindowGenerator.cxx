@@ -37,7 +37,6 @@ namespace Hidden
 		"description", "WindowGenerator",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, WindowGenerator> regWindowGenerator("WindowGenerator");
 	static FactoryRegistrator<ProcessingFactory, WindowGenerator> reg = metadata;
 }
 

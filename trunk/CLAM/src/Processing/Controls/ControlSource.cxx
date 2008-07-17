@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "ControlSource",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ControlSource> regControlSource("ControlSource");
 	static FactoryRegistrator<ProcessingFactory, ControlSource> reg = metadata;
 }
 

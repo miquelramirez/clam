@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "SpectralLimiter",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralLimiter> regSpectralLimiter("SpectralLimiter");
 	static FactoryRegistrator<ProcessingFactory, SpectralLimiter> reg = metadata;
 }
 

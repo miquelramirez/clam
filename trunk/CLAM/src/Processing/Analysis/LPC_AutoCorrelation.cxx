@@ -38,7 +38,6 @@ namespace Hidden
 		"description", "LPC_AutoCorrelation",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, LPC_AutoCorrelation> regLPC_AutoCorrelation("LPC_AutoCorrelation");
 	static FactoryRegistrator<ProcessingFactory, LPC_AutoCorrelation> reg = metadata;
 }
 

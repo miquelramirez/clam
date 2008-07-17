@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "NoSpectralTransformation",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, NoSpectralTransformation> regNoSpectralTransformation("NoSpectralTransformation");
 	static FactoryRegistrator<ProcessingFactory, NoSpectralTransformation> reg = metadata;
 }
 

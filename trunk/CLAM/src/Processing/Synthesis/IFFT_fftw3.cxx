@@ -39,7 +39,6 @@ namespace Hidden
 		"description", "IFFT_fftw3",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, IFFT_fftw3> regIFFT_fftw3("IFFT_fftw3");
 	static FactoryRegistrator<ProcessingFactory, IFFT_fftw3> reg = metadata;
 }
 	

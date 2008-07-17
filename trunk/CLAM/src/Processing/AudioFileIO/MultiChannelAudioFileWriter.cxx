@@ -40,7 +40,6 @@ namespace Hidden
 		"description", "MultiChannelAudioFileReaderConfig",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, MultiChannelAudioFileWriter> regMultiChannelAudioFileWriter("MultiChannelAudioFileWriter");
 	static FactoryRegistrator<ProcessingFactory, MultiChannelAudioFileWriter> reg = metadata;
 }
 	

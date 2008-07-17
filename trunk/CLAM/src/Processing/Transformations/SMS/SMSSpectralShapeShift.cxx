@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "SMSSpectralShapeShift",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSSpectralShapeShift> regSMSSpectralShapeShift("SMSSpectralShapeShift");
 	static FactoryRegistrator<ProcessingFactory, SMSSpectralShapeShift> reg = metadata;
 }
 

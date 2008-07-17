@@ -32,7 +32,6 @@ namespace Hidden
 	//	"description", "SpectralExciter",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralExciter> regSpectralExciter("SpectralExciter");
 	static FactoryRegistrator<ProcessingFactory, SpectralExciter> reg = metadata;
 }
 

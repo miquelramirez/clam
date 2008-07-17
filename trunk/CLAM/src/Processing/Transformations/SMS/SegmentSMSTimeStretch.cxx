@@ -35,7 +35,6 @@ namespace Hidden
 		"description", "SegmentSMSTimeStretch",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SegmentSMSTimeStretch> regSegmentSMSTimeStretch("SegmentSMSTimeStretch");
 	static FactoryRegistrator<ProcessingFactory, SegmentSMSTimeStretch> reg = metadata;
 }
 

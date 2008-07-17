@@ -35,7 +35,6 @@ namespace Hidden
 		"description", "SMSOddEvenHarmonicRatio",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSOddEvenHarmonicRatio> regSMSOddEvenHarmonicRatio("SMSOddEvenHarmonicRatio");
 	static FactoryRegistrator<ProcessingFactory, SMSOddEvenHarmonicRatio> reg = metadata;
 }
 

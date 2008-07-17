@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "SpectralReverse",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralReverse> regSpectralReverse("SpectralReverse");
 	static FactoryRegistrator<ProcessingFactory, SpectralReverse> reg = metadata;
 }
 

@@ -34,7 +34,6 @@ namespace Hidden
 		"description", "CepstralTransform",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, CepstralTransform> regCepstralTransform("CepstralTransform");
 	static FactoryRegistrator<ProcessingFactory, CepstralTransform> reg = metadata;
 }
 
