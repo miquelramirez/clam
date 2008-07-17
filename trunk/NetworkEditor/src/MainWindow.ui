@@ -363,7 +363,7 @@
     <bool>true</bool>
    </property>
    <property name="text" >
-    <string>&amp;Embed SVN diagrams on new processings</string>
+    <string>&amp;Embed SVG diagrams on new processings</string>
    </property>
   </action>
  </widget>
