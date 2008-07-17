@@ -71,15 +71,6 @@ class FileMetadataSource :
 		raise FileMetadataSource.SongNotFoundException(id)
 
 
-<<<<<<< FileMetadataSource.py
-	def QueryDescriptors(self, id) :
-		try :
-			return Pool(file(self._poolPath(id)))
-		except IOError, e :
-			raise FileMetadataSource.SongNotFoundException(id)
-
-=======
->>>>>>> 1.9
 	def QuerySchema(self) :
 		return self.schema
 
