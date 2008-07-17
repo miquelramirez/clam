@@ -43,9 +43,6 @@ private:
 
 public:
 	TonalAnalysis( const TonalAnalysisConfig & config = TonalAnalysisConfig() );
-#ifdef _MSC_VER
-	TonalAnalysis( bool callThisAsFakeConstructorToBeCalledToAvoidWindowsInstantiationBug );
-#endif
 
 	bool Do();
 	virtual ~TonalAnalysis();
