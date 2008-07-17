@@ -35,7 +35,6 @@ namespace Hidden
 		"description", "TonalAnalysis",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, TonalAnalysis> regTonalAnalysis("TonalAnalysis");
 	static FactoryRegistrator<ProcessingFactory, TonalAnalysis> reg = metadata;
 }
 	
