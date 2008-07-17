@@ -33,7 +33,7 @@ ConfiguratorPlugin & ConfiguratorPlugin::GetPlugin(const CLAM::DynamicType & obj
 	return nullPlugin;
 }
 
-
+// TODO: It has more sense to use UTF-8 as internal representation but actual XML converts to local 8 bits
 #include <CLAM/Text.hxx>
 #include <QtGui/QLineEdit>
 template <typename ConcreteString>
@@ -47,13 +47,13 @@ public:
 	virtual QWidget * editorWidget(const CLAM::DynamicType & object, unsigned attribute)
 	{
 		const ConcreteString & value = *(ConcreteString *)object.GetAttributeAsVoidPtr(attribute);
-		return new QLineEdit(value.c_str());
+		return new QLineEdit(QString::fromLocal8Bit(value.c_str()));
 	}
 	virtual void takeFromWidget(const CLAM::DynamicType & object, unsigned attribute, QWidget * editorWidget)
 	{
 		QLineEdit * input = dynamic_cast<QLineEdit*>(editorWidget);
 		ConcreteString & value = *(ConcreteString *)object.GetAttributeAsVoidPtr(attribute);
-		value = input->text().toStdString();
+		value = input->text().toLocal8Bit().constData();
 	}
 };
 static StringConfiguratorPlugin<std::string> stringRegistrator;
@@ -329,7 +329,7 @@ public:
 		CLAM::DirectoryName & value = *(CLAM::DirectoryName *)object.GetAttributeAsVoidPtr(attribute);
 		QFileLineEdit * input = new QFileLineEdit;
 		input->setDirMode(true);
-		input->setLocation(value.c_str());
+		input->setLocation(QString::fromLocal8Bit(value.c_str()));
 		input->setDialogCaption( QObject::tr("Select a directory"));
 		return input;
 	}
@@ -337,7 +337,7 @@ public:
 	{
 		QFileLineEdit * input = dynamic_cast<QFileLineEdit*>(editorWidget);
 		CLAM::DirectoryName & value = *(CLAM::DirectoryName *)object.GetAttributeAsVoidPtr(attribute);
-		value = input->location().toStdString();
+		value = input->location().toLocal8Bit().constData();
 	}
 };
 static DirectoryNameConfiguratorPlugin dirnameOutFileRegistrator;
