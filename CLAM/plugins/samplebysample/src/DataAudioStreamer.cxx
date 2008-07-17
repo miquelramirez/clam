@@ -12,7 +12,6 @@ namespace detail
 		"description", "AudioStreamer",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, AudioStreamer> regAudioStreamer("AudioStreamer");
 	static FactoryRegistrator<ProcessingFactory, AudioStreamer> reg = metadata;
 }
 

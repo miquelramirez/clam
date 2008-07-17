@@ -12,7 +12,6 @@ namespace detail
 		"description", "Data2Audio",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, Data2Audio> regData2Audio("Data2Audio");
 	static FactoryRegistrator<ProcessingFactory, Data2Audio> reg = metadata;
 }
 

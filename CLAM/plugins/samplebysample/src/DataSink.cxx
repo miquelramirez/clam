@@ -12,7 +12,6 @@ namespace detail
 		"description", "DataSink",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, DataSink> regDataSink("DataSink");
 	static FactoryRegistrator<ProcessingFactory, DataSink> reg = metadata;
 }
 

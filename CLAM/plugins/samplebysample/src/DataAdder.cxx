@@ -34,7 +34,6 @@ namespace detail
 		"description", "DataAdder",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, DataAdder> regDataAdder("DataAdder");
 	static FactoryRegistrator<ProcessingFactory, DataAdder> reg = metadata;
 }
 	

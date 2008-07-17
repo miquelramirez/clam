@@ -12,7 +12,6 @@ namespace detail
 		"description", "SilentSource",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SilentSource> regSilentSource("SilentSource");
 	static FactoryRegistrator<ProcessingFactory, SilentSource> reg = metadata;
 }
 

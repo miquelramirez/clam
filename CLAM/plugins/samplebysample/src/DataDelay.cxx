@@ -39,7 +39,6 @@ namespace detail
 		"description", "DataDelay",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, DataDelay> regDataDelay("DataDelay");
 	static FactoryRegistrator<ProcessingFactory, DataDelay> reg = metadata;
 }
 

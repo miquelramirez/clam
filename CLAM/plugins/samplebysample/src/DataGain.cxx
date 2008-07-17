@@ -34,7 +34,6 @@ namespace detail
 		"description", "DataGain",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, DataGain> regDataGain("DataGain");
 	static FactoryRegistrator<ProcessingFactory, DataGain> reg = metadata;
 }
 
