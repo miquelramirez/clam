@@ -21,10 +21,7 @@
 #define SndfilePlayer_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/AudioInPort.hxx>
 #include <CLAM/AudioOutPort.hxx>
-#include <CLAM/InControl.hxx>
-#include <CLAM/OutControl.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/AudioInFilename.hxx> 
 #include <CLAM/Audio.hxx>
@@ -34,15 +31,17 @@ namespace CLAM
 {
 	class SndfilePlayerConfig : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( SndfilePlayerConfig, 2, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, AudioInFilename, SourceFile );
-	    DYN_ATTRIBUTE( 1, public, bool, Loop );
+		DYNAMIC_TYPE_USING_INTERFACE( SndfilePlayerConfig,3, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, AudioInFilename, SourceFile );
+		DYN_ATTRIBUTE( 1, public, bool, Loop );
+		DYN_ATTRIBUTE( 2, public, unsigned, SavedNumberOfChannels );
 
 		protected:	
 		void DefaultInit()
 		{
 			AddAll();
 			UpdateData();
+			SetSavedNumberOfChannels(0);
 		};	
 	};
 
@@ -52,7 +51,6 @@ namespace CLAM
 		typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 		OutPorts _outports;
 
-		AudioOutPort _out;
 		SndfileHandle* _infile;
 		SndfilePlayerConfig _config;
 		unsigned _numChannels;
@@ -62,8 +60,7 @@ namespace CLAM
 		const char* GetClassName() const { return "SndfilePlayer"; }
 
 		SndfilePlayer(const ProcessingConfig& config =  Config()) 
-			: _out("s Output", this) 
-			, _infile(0)
+			: _infile(0)
 			,_numChannels(0)
 		{ 
 			Configure( config );
@@ -75,7 +72,7 @@ namespace CLAM
 			// Tell the ports this is done
 			for (unsigned channel=0; channel<_numChannels; channel++)
 				_outports[channel]->Produce();
-				
+	
 			return true;
 		}
 
@@ -108,11 +105,11 @@ namespace CLAM
 				frameIndex++;
 			}
 
-			if (readSize == bufferSize) return;	
+			if (readSize == (int)bufferSize) return;	
 		
 			// the last buffer is not complete fill it up with zeros and close file
 			frameIndex=0;
-			for(int i=readSize; i< bufferSize; i += _numChannels)
+			for(int i=readSize; i<(int) bufferSize; i += _numChannels)
 			{	for(unsigned channel=0;channel<_numChannels;channel++)
 				{
 					channels[channel][frameIndex] = 0; 
@@ -130,22 +127,11 @@ namespace CLAM
 		}
 
 		bool ConcreteStart()	
-		{
-			if(_infile)
-			{	
-				delete _infile;
-			}	
-
-			_infile = new SndfileHandle(_config.GetSourceFile().c_str(), SFM_READ);	
-
-			// check if the file is open
-			if(!*_infile)
-			{
-				std::cout << "Error. Can not open the file"<< std::endl;
-				return false;
-			}
+		{	
+			CLAM_ASSERT(_infile, "SndfilePlayer::ConcreteStart() should have _infile with value.");
+			_infile->seek(0,SEEK_SET);
 			
-			return true; // Configuration ok
+			return true; 
 		}
 	
 		const ProcessingConfig& GetConfig() const
@@ -156,6 +142,19 @@ namespace CLAM
 		bool ConcreteConfigure(const ProcessingConfig & config)
 		{
 			CopyAsConcreteConfig(_config, config);
+			unsigned portSize = BackendBufferSize();
+			std::ostringstream nameStream;
+			std::string nameOutPort = "out";
+			if(_outports.empty())
+			{
+				//initialization port
+				nameStream<<nameOutPort<<1;
+				AudioOutPort * port = new AudioOutPort( nameStream.str(), this);
+				port->SetSize(portSize);
+				port->SetHop( portSize );
+				_outports.push_back( port );
+				_numChannels = _outports.size();
+			}
 
 			if ( !_config.HasSourceFile() )
 			{
@@ -174,26 +173,68 @@ namespace CLAM
 			// check if the file is open
 			if(!*_infile)
 			{
-				AddConfigErrorMessage("Error with the file type. Only PCM WAV files are supported");
+				AddConfigErrorMessage("The audio file '" + location + "' could not be opened");
 				return false;
 			}
+			
+			//report sndfile library errors
+			if(_infile->error() != 0)
+			{
+				AddConfigErrorMessage(_infile->strError());
+				return false;
+			}			
 
-			RemovePortsAndControls();
-			_numChannels = _infile->channels();
-			unsigned portSize = BackendBufferSize();
-			for(unsigned i=0;i<_numChannels;i++)
-			{		
-				std::ostringstream nameStream;
-				nameStream << "out " << (i+1);
-				AudioOutPort * port = new AudioOutPort( nameStream.str(), this);
-				port->SetSize( portSize );
-				port->SetHop( portSize );
-				_outports.push_back( port );
+			if(_config.GetSavedNumberOfChannels() != 0)
+			{
+				if( _config.GetSavedNumberOfChannels() !=(unsigned)_infile->channels() )
+				{				
+					AddConfigErrorMessage("The configuration have a number of channels saved which \ndoes not correspond to the channels in the provided audio \nfile. If you want to just open a file, first choose '0' in the\n SavedNumberOfChannels config parameter");
+
+					return false;
+				}
 			}
+			_numChannels = _infile->channels();
+			_config.SetSavedNumberOfChannels(_infile->channels() );
 			_buffer.resize(portSize*_numChannels);
-			return true;
+			// the processing have _outports.size() and the target number of ports is _infile->channels()
+	
+			// case 1: maintain the same ports
+			if ( (unsigned)_infile->channels() == _outports.size() )
+			{
+				return true;
+			}
+
+			// case 2: increase number of same ports
+			if ( (unsigned)_infile->channels() > _outports.size() )
+			{
+				for (int i=_outports.size()+1; i<= _infile->channels(); i++)
+				{
+					std::ostringstream nameStream;
+					nameStream << nameOutPort << i;
+					AudioOutPort * port = new AudioOutPort( nameStream.str(), this);
+					port->SetSize( portSize );
+					port->SetHop( portSize );
+					_outports.push_back( port );
+				}
+				return true;
+			}
+			// case 3: decrease number of same ports
+			if ( (unsigned)_infile->channels() < _outports.size() )
+			{
+				for (unsigned i=_infile->channels(); i<_outports.size(); i++)
+				{
+					delete _outports[i];
+				}
+				_outports.resize( _infile->channels() );
+				
+				return true;
+			}
+			
+			CLAM_ASSERT(false, "Should not reach here");
+			return false;			
 		}
-		void RemovePortsAndControls()
+
+		void RemovePorts()
 		{
 			if(!_outports.empty())
 			{
@@ -210,7 +251,7 @@ namespace CLAM
 
 		~SndfilePlayer()
 		{
-			RemovePortsAndControls();
+			RemovePorts();
 		}
 	};
 
