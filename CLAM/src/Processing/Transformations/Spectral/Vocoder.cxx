@@ -32,7 +32,6 @@ namespace Hidden
 		"description", "Vocoder",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, Vocoder> regVocoder("Vocoder");
 	static FactoryRegistrator<ProcessingFactory, Vocoder> reg = metadata;
 }
 

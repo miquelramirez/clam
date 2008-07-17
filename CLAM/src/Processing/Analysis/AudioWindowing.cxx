@@ -36,7 +36,6 @@ namespace Hidden
 		"description", "AudioWindowing",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, AudioWindowing> regAudioWindowing("AudioWindowing");
 	static FactoryRegistrator<ProcessingFactory, AudioWindowing> reg = metadata;
 }
 

@@ -32,7 +32,6 @@ namespace Hidden
 		"description", "OscillatingSpectralNotch",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, OscillatingSpectralNotch> regOscillatingSpectralNotch("OscillatingSpectralNotch");
 	static FactoryRegistrator<ProcessingFactory, OscillatingSpectralNotch> reg = metadata;
 }
 

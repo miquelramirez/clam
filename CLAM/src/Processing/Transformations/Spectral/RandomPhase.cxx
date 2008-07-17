@@ -32,7 +32,6 @@ namespace Hidden
 	//	"description", "RandomPhase",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, RandomPhase> regRandomPhase("RandomPhase");
 	static FactoryRegistrator<ProcessingFactory, RandomPhase> reg = metadata;
 }
 

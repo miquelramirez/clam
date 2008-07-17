@@ -34,7 +34,6 @@ namespace Hidden
 		"description", "Oscillator",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, Oscillator> regOscillator("Oscillator");
 	static FactoryRegistrator<ProcessingFactory, Oscillator> reg = metadata;
 }
 

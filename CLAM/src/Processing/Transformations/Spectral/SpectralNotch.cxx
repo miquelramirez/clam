@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "SpectralNotch",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralNotch> regSpectralNotch("SpectralNotch");
 	static FactoryRegistrator<ProcessingFactory, SpectralNotch> reg = metadata;
 }
 

@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "SpectralRingModulation",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralRingModulation> regSpectralRingModulation("SpectralRingModulation");
 	static FactoryRegistrator<ProcessingFactory, SpectralRingModulation> reg = metadata;
 }
 

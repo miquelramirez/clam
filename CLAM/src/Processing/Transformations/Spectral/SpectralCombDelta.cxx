@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "SpectralCombDelta",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralCombDelta> regSpectralCombDelta("SpectralCombDelta");
 	static FactoryRegistrator<ProcessingFactory, SpectralCombDelta> reg = metadata;
 }
 

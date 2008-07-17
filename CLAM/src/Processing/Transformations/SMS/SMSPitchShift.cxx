@@ -34,7 +34,6 @@ namespace Hidden
 		"description", "SMSPitchShift",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSPitchShift> regSMSPitchShift("SMSPitchShift");
 	static FactoryRegistrator<ProcessingFactory, SMSPitchShift> reg = metadata;
 }
 

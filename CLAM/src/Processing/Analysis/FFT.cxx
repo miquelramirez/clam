@@ -37,7 +37,6 @@ namespace Hidden
 		"description", "FFT",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, FFT> regFFT("FFT");
 	static FactoryRegistrator<ProcessingFactory, FFT> reg = metadata;
 }
 

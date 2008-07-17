@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "SpectralReject",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralReject> regSpectralReject("SpectralReject");
 	static FactoryRegistrator<ProcessingFactory, SpectralReject> reg = metadata;
 }
 

@@ -32,7 +32,6 @@ namespace Hidden
 		"description", "Fund2MIDI",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, Fund2MIDI> regFund2MIDI("Fund2MIDI");
 	static FactoryRegistrator<ProcessingFactory, Fund2MIDI> reg = metadata;
 }
 

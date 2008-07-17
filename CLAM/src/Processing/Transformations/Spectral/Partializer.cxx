@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "Partializer",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, Partializer> regPartializer("Partializer");
 	static FactoryRegistrator<ProcessingFactory, Partializer> reg = metadata;
 }
 

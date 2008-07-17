@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "SpectralGate",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralGate> regSpectralGate("SpectralGate");
 	static FactoryRegistrator<ProcessingFactory, SpectralGate> reg = metadata;
 }
 

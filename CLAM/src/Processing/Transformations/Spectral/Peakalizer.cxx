@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "Peakalizer",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, Peakalizer> regPeakalizer("Peakalizer");
 	static FactoryRegistrator<ProcessingFactory, Peakalizer> reg = metadata;
 }
 

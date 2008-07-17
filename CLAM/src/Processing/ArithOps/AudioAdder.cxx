@@ -36,7 +36,6 @@ namespace Hidden
 		"description", "AudioAdder",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, AudioAdder> regAudioAdder("AudioAdder");
 	static FactoryRegistrator<ProcessingFactory, AudioAdder> reg = metadata;
 }
 

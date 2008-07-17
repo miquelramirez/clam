@@ -37,7 +37,6 @@ namespace Hidden
 		"description", "AutoPanner",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, AutoPanner> regAutoPanner("AutoPanner");
 	static FactoryRegistrator<ProcessingFactory, AutoPanner> reg = metadata;
 }
 

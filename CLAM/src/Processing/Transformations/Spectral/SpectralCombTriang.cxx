@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "SpectralCombTriang",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralCombTriang> regSpectralCombTriang("SpectralCombTriang");
 	static FactoryRegistrator<ProcessingFactory, SpectralCombTriang> reg = metadata;
 }
 

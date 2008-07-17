@@ -2,13 +2,13 @@
 #ifndef TonalAnalysis_hxx
 #define TonalAnalysis_hxx
 
-#include <CLAM/DataTypes.hxx>
-#include <CLAM/DiscontinuousSegmentation.hxx>
-#include <CLAM/OutPort.hxx>
-#include <CLAM/AudioInPort.hxx>
-#include <CLAM/Processing.hxx>
-#include <CLAM/Audio.hxx>
-#include <CLAM/ProcessingConfig.hxx>
+#include "DataTypes.hxx"
+#include "DiscontinuousSegmentation.hxx"
+#include "OutPort.hxx"
+#include "AudioInPort.hxx"
+#include "Processing.hxx"
+#include "Audio.hxx"
+#include "ProcessingConfig.hxx"
 #include <string>
 
 namespace Simac { class ChordExtractor; }

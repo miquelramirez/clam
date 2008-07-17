@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "SpectralDelay",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralDelay> regSpectralDelay("SpectralDelay");
 	static FactoryRegistrator<ProcessingFactory, SpectralDelay> reg = metadata;
 }
 

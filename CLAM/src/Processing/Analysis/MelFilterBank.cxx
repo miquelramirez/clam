@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "MelFilterBank",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, MelFilterBank> regMelFilterBank("MelFilterBank");
 	static FactoryRegistrator<ProcessingFactory, MelFilterBank> reg = metadata;
 }
 

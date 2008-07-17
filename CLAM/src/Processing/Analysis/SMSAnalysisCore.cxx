@@ -36,7 +36,6 @@ namespace Hidden
 		"description", "SMSAnalysisCore",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSAnalysisCore> regSMSAnalysisCore("SMSAnalysisCore");
 	static FactoryRegistrator<ProcessingFactory, SMSAnalysisCore> reg = metadata;
 }
 

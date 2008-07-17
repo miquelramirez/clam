@@ -36,7 +36,6 @@ namespace Hidden
 		"description", "SMSPitchDiscretization",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSPitchDiscretization> regSMSPitchDiscretization("SMSPitchDiscretization");
 	static FactoryRegistrator<ProcessingFactory, SMSPitchDiscretization> reg = metadata;
 }
 

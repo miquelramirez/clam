@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "SpectralFocus",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralFocus> regSpectralFocus("SpectralFocus");
 	static FactoryRegistrator<ProcessingFactory, SpectralFocus> reg = metadata;
 }
 	

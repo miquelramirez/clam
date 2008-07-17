@@ -36,7 +36,6 @@ namespace Hidden
 //		"description", "AudioOut",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, AudioOut> regAudioOut("AudioOut");
 	static FactoryRegistrator<ProcessingFactory, AudioOut> reg = metadata;
 }
 	

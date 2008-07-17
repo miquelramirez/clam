@@ -11,7 +11,6 @@ namespace Hidden
 		"description", "ControlScaler",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ControlScaler> regControlScaler("ControlScaler");
 	static FactoryRegistrator<ProcessingFactory, ControlScaler> reg = metadata;
 }
 

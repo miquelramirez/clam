@@ -35,7 +35,6 @@ namespace Hidden
 		"description", "SpectrumProduct",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectrumProduct> regSpectrumProduct("SpectrumProduct");
 	static FactoryRegistrator<ProcessingFactory, SpectrumProduct> reg = metadata;
 }
 

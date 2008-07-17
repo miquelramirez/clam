@@ -34,7 +34,6 @@ namespace Hidden
 		"description", "SMSSineFilter",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSSineFilter> regSMSSineFilter("SMSSineFilter");
 	static FactoryRegistrator<ProcessingFactory, SMSSineFilter> reg = metadata;
 }
 

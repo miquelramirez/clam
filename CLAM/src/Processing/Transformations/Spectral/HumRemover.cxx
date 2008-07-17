@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "HumRemover",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, HumRemover> regHumRemover("HumRemover");
 	static FactoryRegistrator<ProcessingFactory, HumRemover> reg = metadata;
 }
 

@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "SMSFreqShift",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SMSFreqShift> regSMSFreqShift("SMSFreqShift");
 	static FactoryRegistrator<ProcessingFactory, SMSFreqShift> reg = metadata;
 }
 

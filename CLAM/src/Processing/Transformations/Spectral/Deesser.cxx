@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "Deesser",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, Deesser> regDeesser("Deesser");
 	static FactoryRegistrator<ProcessingFactory, Deesser> reg = metadata;
 }
 

@@ -14,7 +14,6 @@ namespace Hidden
 		"description", "ControlPrinter",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ControlPrinter> regControlPrinter("ControlPrinter");
 	static FactoryRegistrator<ProcessingFactory, ControlPrinter> reg = metadata;
 }
 

@@ -16,7 +16,6 @@ namespace Hidden
 	//	"description", "MIDIKeyboard",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, MIDIKeyboard> regMIDIKeyboard("MIDIKeyboard");
 	static FactoryRegistrator<ProcessingFactory, MIDIKeyboard> reg = metadata;
 }
 

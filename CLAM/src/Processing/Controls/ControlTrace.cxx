@@ -39,7 +39,6 @@ namespace Hidden
 		"description", "ControlTraceReader",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ControlTraceReader> regControlTraceReader("ControlTraceReader");
 	static FactoryRegistrator<ProcessingFactory, ControlTraceReader> regReader = metadataReader;
 
 	static const char * metadataWriter[] = {
@@ -48,7 +47,6 @@ namespace Hidden
 		"description", "ControlTraceWriter",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, CLAM::ControlTraceWriter> regControlTraceWriter("ControlTraceWriter");
 	static FactoryRegistrator<ProcessingFactory, CLAM::ControlTraceWriter> regWriter = metadataWriter;
 }
 

@@ -40,7 +40,6 @@ namespace Hidden
 		"description", "IFFT_ooura",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, IFFT_ooura> regFFT_ooura("IFFT_ooura");
 	static FactoryRegistrator<ProcessingFactory, IFFT_ooura> reg = metadata;
 }
 

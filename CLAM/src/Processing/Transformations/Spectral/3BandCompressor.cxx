@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "ThreeBandCompressor",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ThreeBandCompressor> regThreeBandCompressor("ThreeBandCompressor");
 	static FactoryRegistrator<ProcessingFactory, ThreeBandCompressor> reg = metadata;
 }
 

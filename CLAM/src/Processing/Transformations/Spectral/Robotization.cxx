@@ -33,7 +33,6 @@ namespace Hidden
 		"description", "Robotization",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, Robotization> regRobotization("Robotization");
 	static FactoryRegistrator<ProcessingFactory, Robotization> reg = metadata;
 }
 

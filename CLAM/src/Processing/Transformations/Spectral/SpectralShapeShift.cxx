@@ -32,7 +32,6 @@ namespace Hidden
 	//	"description", "SpectralShapeShift",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, SpectralShapeShift> regSpectralShapeShift("SpectralShapeShift");
 	static FactoryRegistrator<ProcessingFactory, SpectralShapeShift> reg = metadata;
 }
 	

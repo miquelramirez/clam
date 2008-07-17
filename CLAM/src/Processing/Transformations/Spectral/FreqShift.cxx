@@ -33,7 +33,6 @@ namespace Hidden
 	//	"description", "FreqShift",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, FreqShift> regFreqShift("FreqShift");
 	static FactoryRegistrator<ProcessingFactory, FreqShift> reg = metadata;
 }
 

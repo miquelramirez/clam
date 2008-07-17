@@ -32,7 +32,6 @@ namespace Hidden
 		"description", "ThreeBandFilter",
 		0
 	};
-	//static FactoryRegistrator<ProcessingFactory, ThreeBandFilter> regThreeBandFilter("ThreeBandFilter");
 	static FactoryRegistrator<ProcessingFactory, ThreeBandFilter> reg = metadata;
 }
 
