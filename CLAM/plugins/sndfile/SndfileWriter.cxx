@@ -18,13 +18,43 @@
  *
  */
 
-#include "SndfilePlayer.hxx"
+#include "SndfileWriter.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
+
 static const char * metadata[] = {
-	"key", "SndfilePlayer",
+	"key", "SndfileWriter",
 	"category", "[plugin] Sndfile Read/Write",
 	0
 	};
 
-static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::SndfilePlayer> registratorSndfile(metadata);
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::SndfileWriter> registratorSndfile(metadata);
+
+namespace CLAM
+{
+	
+	EAudioFileWriter EAudioFileWriter::FormatFromFilename( std::string filename )
+	{
+		std::string::iterator dotPos = std::find( filename.begin(), filename.end(), '.' );
+		if ( dotPos == filename.end() )
+			return eDefault;
+		std::string extension( dotPos+1, filename.end() );
+		for(unsigned i=0; i<extension.size();++i)
+			extension[i] = std::tolower(extension[i]);
+
+		static struct { 
+			const char * extension;
+			Enum::tValue format;
+		} extensionMap[] =
+		{
+			{"wav", ePCM_16},
+			{"flac", eFLAC_16},
+			{0,0}
+		};
+
+		for (unsigned i=0; extensionMap[i].extension; i++)
+			if (extension==extensionMap[i].extension)
+				return extensionMap[i].format;
+		return eDefault;
+	}
+}
