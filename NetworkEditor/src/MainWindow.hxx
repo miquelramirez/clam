@@ -291,7 +291,7 @@ public slots:
 	}
 	void openFileWithExternalApplicationFromProcessing()
 	{
-		QDesktopServices::openUrl(QUrl::fromLocalFile(fileNameToBrowse));
+		QDesktopServices::openUrl(QUrl::fromLocalFile(_canvas->getFileNameToOpenWithExternalApplication()));
 	}
 	void endCompilationFaust(bool done)
 	{
