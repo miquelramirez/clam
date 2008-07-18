@@ -97,7 +97,7 @@ protected:
 	}
 
 	const char * homePath() const { return  "/.faust"; }
-	const char * pathEnvironmentVar() const { return  "FAUST_PATH"; }
+	const char * pathEnvironmentVar() const { return  "CLAM_FAUST_PATH"; }
 	const char * libraryType() const { return  "LADSPA"; }
 
 /*private:
