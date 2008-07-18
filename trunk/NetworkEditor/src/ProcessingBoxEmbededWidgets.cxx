@@ -32,6 +32,8 @@
 #include "MelCepstrumViewMonitor.hxx"
 #include "VectorView.hxx"
 #include "VectorViewMonitor.hxx"
+#include "SegmentationView.hxx"
+#include "SegmentationViewMonitor.hxx"
 #include "ControlPrinterWidget.hxx"
 #include "ControlSenderWidget.hxx"
 #include "ControlSurfaceWidget.hxx"
@@ -127,6 +129,9 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 
 	if (className=="VectorView")
 		return new CLAM::VM::VectorView(this, dynamic_cast<VectorViewMonitor*>(processing));
+
+	if (className=="SegmentationView")
+		return new SegmentationView(this, dynamic_cast<SegmentationViewMonitor*>(processing));
 
 	// SVG embedding. TODO: replace embedded_svg for embedded_logo (requires load in QLabel? on QWidget, instead using QSvgWidget)
 	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();

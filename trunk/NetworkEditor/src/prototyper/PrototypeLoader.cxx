@@ -385,7 +385,7 @@ QWidget * PrototypeLoader::LoadInterface(QString uiFile)
 	if (_interface) delete _interface;
 	if (uiFile.isEmpty())
 	{
-		uiFile = QString.fromLocal8Bit(_networkFile.c_str());
+		uiFile = QString::fromLocal8Bit(_networkFile.c_str());
 		int pos = uiFile.lastIndexOf(".");
 		uiFile.truncate(pos); // if not found nothing happens
 		uiFile += ".ui";
