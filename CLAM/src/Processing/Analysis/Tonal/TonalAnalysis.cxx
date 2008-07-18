@@ -50,7 +50,7 @@ void TonalAnalysisConfig::DefaultInit(void)
 	SetTunningEnabled(true);
 	SetPeakWindowingEnabled(true);
 	SetHopRatio(8.0);
-	SetSegmentationMethod(0);
+	SetSegmentationMethod(1);
 }
 
 
@@ -125,26 +125,15 @@ bool TonalAnalysis::Do()
 	_chordCorrelation.Produce();
 
 	DiscontinuousSegmentation & segmentation = _segmentation.GetData();
-	while( segmentation.onsets().size() )
-	{
-		segmentation.remove(segmentation.onsets().size()-1);
-	}
-	segmentation.maxPosition(_currentTime);
-	for (unsigned i=0; i < _implementation->segmentation().onsets().size(); i++)
+	segmentation = _implementation->segmentation();
+	for (unsigned i=0; i<segmentation.onsets().size(); i++)
 	{
 		unsigned chordIndex = _implementation->chordIndexes()[i];
 		std::string chordName = _implementation->root(chordIndex) + " " + _implementation->mode(chordIndex);
-		segmentation.insert( _implementation->segmentation().onsets()[i], chordName );
-		segmentation.dragOffset(i, _implementation->segmentation().offsets()[i] );
+		segmentation.setLabel(i,chordName);
 	}
-	/*
-	// Temporary code for checking if everything is alright with the segmentation
-	for (unsigned i=0; i < segmentation.onsets().size(); i++)
-	{
-		std::cout << segmentation.onsets()[i] << " - "<< segmentation.offsets()[i] << " (" << segmentation.labels()[i] << ") ";
-	}
-	std::cout << std::endl;
-	*/
+	segmentation.dragOffset(segmentation.onsets().size()-1, _currentTime );
+
 	_segmentation.Produce();
 	
 	
