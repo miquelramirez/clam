@@ -60,7 +60,6 @@ int main(int argc, char** argv)
 // uncomment the following line to see the example on background black mode
 //	plot.backgroundBlack();
 
-	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));
 	return app.exec();
 }
 

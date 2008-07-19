@@ -45,7 +45,6 @@ int main(int argc, char** argv)
 	plot.SetData(channels[0],channels[1]);
 	plot.show();
 
-	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));
 	return app.exec();
 }
 
