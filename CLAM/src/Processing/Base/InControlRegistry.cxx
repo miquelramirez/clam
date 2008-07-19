@@ -107,7 +107,7 @@ void InControlRegistry::ProcessingInterface_Unregister( InControl * in )
 	{
 		if (*it==in)
 		{
-			std::cout << "Removing in control "<< in << std::endl;
+			//std::cout << "Removing in control "<< in << std::endl;
 			mInControls.erase(it);
 			return;
 		}

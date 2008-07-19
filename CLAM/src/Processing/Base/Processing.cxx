@@ -61,7 +61,7 @@ namespace CLAM
 	{
 		BaseTypedOutControl & out = sender.GetTypedOutControls().Get(typedOutControlName);
 		BaseTypedInControl & in = receiver.GetTypedInControls().Get(typedInControlName);
-		out.Link(in);
+		out.AddLink(in);
 	}
 	
 	void ConnectPorts(
@@ -88,7 +88,7 @@ namespace CLAM
 	{
 		BaseTypedOutControl & out = sender.GetTypedOutControls().GetByNumber(typedOutControlNumber);
 		BaseTypedInControl & in = receiver.GetTypedInControls().GetByNumber(typedInControlNumber);
-		out.Link(in);
+		out.AddLink(in);
 	}
 	
 	void ConnectPorts(

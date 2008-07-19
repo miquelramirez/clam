@@ -4,29 +4,12 @@
 #include <string>
 #include <list>
 #include <typeinfo>
-#include "Assert.hxx"
-#include "TypedInControl.hxx"
-#include "Processing.hxx"
+#include <CLAM/Assert.hxx>
+#include <CLAM/BaseTypedOutControl.hxx>
+#include <CLAM/TypedInControl.hxx>
 
-namespace CLAM
-{
-
-	class BaseTypedOutControl{
-		std::string mName;
-		Processing * mProcessing;
-	public:
-		BaseTypedOutControl(const std::string &name, Processing * proc = 0);
-		virtual ~BaseTypedOutControl(){}
-		virtual bool IsLinkable(const BaseTypedInControl& in) = 0;
-		void Link(BaseTypedInControl& in);
-		virtual bool DoTypedLink(BaseTypedInControl& in) = 0;
-		virtual bool IsConnected() = 0;
-		virtual	bool IsConnectedTo(BaseTypedInControl& in) = 0;
-		
-		const std::string& GetName() const { return mName; }
-		Processing * GetProcessing() const { return mProcessing; }
-		
-	};
+namespace CLAM {
+	class Processing;
 	
 	template<class TypedControlData>
 	class TypedOutControl : public BaseTypedOutControl
@@ -37,20 +20,28 @@ namespace CLAM
 
 	protected:
 		// mLinks will store the pointers to the connected TypedInPorts
-		ProperTypedInControlList mLinks;
+		std::list< BaseTypedInControl * > mLinks;
 
 	public:
 		TypedOutControl(const std::string &name = "unnamed typed in control", Processing * proc = 0);
 		~TypedOutControl();
 
 		void AddLink(TypedInControl<TypedControlData>& in);
+		/**
+			WARNING: You should call IsLinkable before using the Link function or you'll get an assert failure if In and Out Control types are different.
+		*/
+		void AddLink(BaseTypedInControl& in);
 		void RemoveLink(TypedInControl<TypedControlData>& in);
+		void RemoveLink(BaseTypedInControl& in);
 		void SendControl(const TypedControlData& val);
 		bool IsConnected();
-		bool IsConnectedTo( TypedInControl<TypedControlData> & );
+		bool IsConnectedTo(TypedInControl<TypedControlData> & );
 		bool IsConnectedTo(BaseTypedInControl& in);
 		bool IsLinkable(const BaseTypedInControl& in);
-		bool DoTypedLink(BaseTypedInControl& in);
+		std::list<BaseTypedInControl*>::iterator BeginInControlsConnected();
+		std::list<BaseTypedInControl*>::iterator EndInControlsConnected();
+		
+		//bool DoTypedLink(BaseTypedInControl& in);
 
 	};
 	
@@ -75,21 +66,48 @@ namespace CLAM
 		in.OutControlInterface_AddLink(*this);
 	}
 
+	/**
+		WARNING: You should call IsLinkable before using the Link function or you'll get an assert failure if In and Out Control types are different.
+	*/
+	template<class TypedControlData>
+	void TypedOutControl<TypedControlData>::AddLink(BaseTypedInControl& in)
+	{
+		try
+		{
+			AddLink(dynamic_cast< ProperTypedInControl& >(in));	
+		}
+		catch(...)
+		{
+			CLAM_ASSERT( false, "TypedOutControl<TypedControlData>::AddLink(BaseTypedInControl&) could not cast BaseTypedInControl to TypedInControl<TypedControlData>" );
+		}
+	}
+
 	template<class TypedControlData>
 	void TypedOutControl<TypedControlData>::RemoveLink(TypedInControl<TypedControlData>& in)
 	{
 		mLinks.remove( &in );
 		in.OutControlInterface_RemoveLink(*this);
 	}
-
+	template<class TypedControlData>
+	void TypedOutControl<TypedControlData>::RemoveLink(BaseTypedInControl& in)
+	{
+		try
+		{
+			RemoveLink(dynamic_cast< ProperTypedInControl& >(in));	
+		}
+		catch(...)
+		{
+			CLAM_ASSERT( false, "TypedOutControl<TypedControlData>::RemoveLink(BaseTypedInControl&) could not cast BaseTypedInControl to TypedInControl<TypedControlData>" );
+		}
+	}
 	template<class TypedControlData>
 	void TypedOutControl<TypedControlData>::SendControl(const TypedControlData& val)
 	{
-		typename ProperTypedInControlList::iterator it;
+		typename std::list< BaseTypedInControl * >::iterator it;
 		
 		for (it=mLinks.begin(); it!=mLinks.end(); it++) 
 		{
-			(*it)->DoControl(val);
+			((dynamic_cast<TypedInControl<TypedControlData>*>(*it)))->DoControl(val);
 		}
 	}
 
@@ -102,7 +120,7 @@ namespace CLAM
 	template<class TypedControlData>
 	bool TypedOutControl<TypedControlData>::IsConnectedTo( TypedInControl<TypedControlData> & in)
 	{
-		typename ProperTypedInControlList::iterator it;
+		typename std::list< BaseTypedInControl * >::iterator it;
 		for (it=mLinks.begin(); it!=mLinks.end(); it++) 
 			if ((*it) == &in)
 				return true;
@@ -117,23 +135,6 @@ namespace CLAM
 		
 	}
 
-	template<class TypedControlData>
-	bool TypedOutControl<TypedControlData>::DoTypedLink(BaseTypedInControl& in)
-	{
-		bool result = false;
-		try
-		{
-			AddLink(dynamic_cast< ProperTypedInControl& >(in));	
-			result = true;
-		}
-		catch(...)
-		{
-			CLAM_ASSERT( false, "TypedOutControl<TypedControlData>::DoTypedLink could not cast BaseTypedInControl to TypedInControl<TypedControlData>" );
-		}
-		
-		return result;
-	}
-	
 	template<class TypedControlData>
 	bool TypedOutControl<TypedControlData>::IsConnectedTo(BaseTypedInControl& in)
 	{
@@ -150,6 +151,19 @@ namespace CLAM
 		return result;
 		
 	}
+	
+	template<class TypedControlData>
+	std::list<BaseTypedInControl*>::iterator TypedOutControl<TypedControlData>::BeginInControlsConnected()
+	{
+		return mLinks.begin();
+	}
+
+	template<class TypedControlData>
+	std::list<BaseTypedInControl*>::iterator TypedOutControl<TypedControlData>::EndInControlsConnected()
+	{
+		return mLinks.end();
+	}
+	
 	
 } // END NAMESPACE CLAM
 #endif // _TypedOutControl_

@@ -2,6 +2,7 @@
 #include <CLAM/TypedInControlRegistry.hxx>
 #include <CLAM/TypedOutControl.hxx>
 #include <CLAM/TypedOutControlRegistry.hxx>
+#include <CLAM/Processing.hxx>
 #include <cppunit/extensions/HelperMacros.h>
 #include "BaseLoggable.hxx"
 #include <string>
@@ -16,7 +17,7 @@ namespace CLAMTest {
 
 		// testing TypedInControl and TypedOutControl
 		CPPUNIT_TEST( testTypedInControl_DoControl_ChangesInternalState );
-		CPPUNIT_TEST( testLinkAndSendControl_ChangesTypedInControlInternalState );
+		CPPUNIT_TEST( testAddLinkAndSendControl_ChangesTypedInControlInternalState );
 	
 		// tests for IsConnected / IsConnectedTo
 		CPPUNIT_TEST( testIsConnected_WithTypedOutControl_AfterConnection );
@@ -37,8 +38,8 @@ namespace CLAMTest {
 		// Template Link Tests
 		CPPUNIT_TEST( testIsLinkable_withDifferentTypedControls );
 		CPPUNIT_TEST( testIsLinkable_withSameTypedControls );
-		CPPUNIT_TEST( testLink_withSameTypedControls );
-		CPPUNIT_TEST( testLink_withDifferentTypedControls );
+		CPPUNIT_TEST( testAddLink_withSameTypedControls );
+		CPPUNIT_TEST( testAddLink_withDifferentTypedControls );
 		CPPUNIT_TEST( testIsConnected_WithBaseTypedOutControl_AfterConnection );
 		CPPUNIT_TEST( testIsConnected_WithBaseTypedOutControl_WithNoConnection );
 		CPPUNIT_TEST( testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreConnected );
@@ -72,7 +73,7 @@ namespace CLAMTest {
 			CPPUNIT_ASSERT_EQUAL( 1, in.GetLastValue() );
 		}
 
-		void testLinkAndSendControl_ChangesTypedInControlInternalState()
+		void testAddLinkAndSendControl_ChangesTypedInControlInternalState()
 		{
 			CLAM::TypedInControl<int> in("IntInControl");
 			CLAM::TypedOutControl<int> out("IntOutControl");
@@ -184,25 +185,25 @@ namespace CLAMTest {
 			CPPUNIT_ASSERT_EQUAL(true, out.IsLinkable(in));
 		}
 
-		void testLink_withDifferentTypedControls()
+		void testAddLink_withDifferentTypedControls()
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<int> concreteOut("Concrete Out");
 			CLAM::BaseTypedInControl & in = concreteIn;
 			CLAM::BaseTypedOutControl & out = concreteOut;
 			try {
-				out.Link(in);
+				out.AddLink(in);
 				CPPUNIT_FAIL("assertion failed expected, but nothing happened");
 			} catch(CLAM::ErrAssertionFailed& )	{}
 		}
 
-		void testLink_withSameTypedControls()
+		void testAddLink_withSameTypedControls()
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
 			CLAM::BaseTypedInControl & in = concreteIn;
 			CLAM::BaseTypedOutControl & out = concreteOut;
-			out.Link(in);
+			out.AddLink(in);
 			CPPUNIT_ASSERT_EQUAL(true, concreteOut.IsConnectedTo(concreteIn));
 		}
 		
@@ -212,7 +213,7 @@ namespace CLAMTest {
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
 			CLAM::BaseTypedInControl & in = concreteIn;
 			CLAM::BaseTypedOutControl & out = concreteOut;
-			out.Link(in);
+			out.AddLink(in);
 			CPPUNIT_ASSERT_EQUAL(true, out.IsConnected());
 		}
 
@@ -229,7 +230,7 @@ namespace CLAMTest {
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
 			CLAM::BaseTypedInControl & in = concreteIn;
 			CLAM::BaseTypedOutControl & out = concreteOut;
-			out.Link(in);
+			out.AddLink(in);
 			CPPUNIT_ASSERT_EQUAL(true, out.IsConnectedTo(in));
 		}
 		
