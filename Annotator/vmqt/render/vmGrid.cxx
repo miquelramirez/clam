@@ -21,6 +21,7 @@
 
 #include "CLAMGL.hxx"
 #include "vmGrid.hxx"
+#include "vmPlot2D.hxx"
 
 namespace CLAM
 {
@@ -42,7 +43,7 @@ namespace CLAM
 		void Grid::ShowGrid(bool show)
 		{
 			mShowGrid = show;
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void Grid::SnapToGrid(bool snap)
@@ -54,13 +55,13 @@ namespace CLAM
 		{
 			mGridXStep = xstep;
 			mGridYStep = ystep;
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void Grid::SetGridColor(const QColor& color)
 		{
 			mGridColor = color;
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		bool Grid::ShowGrid() const

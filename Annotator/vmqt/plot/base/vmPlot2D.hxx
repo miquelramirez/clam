@@ -84,9 +84,7 @@ namespace CLAM
 			void setHZoomPivot(double);
 			void rendererWorking(QString,bool);
 			void updateRenderers();
-
-		protected slots:
-			// This slot is calle whenever an updateGl is needed.
+			// This slot is called whenever an updateGl is needed.
 			void needUpdate();
 
 		protected:

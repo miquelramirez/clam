@@ -51,7 +51,7 @@ namespace CLAM
 		void DataArrayRenderer::SetDataColor(const QColor& c)
 		{
 			mDataColor = c;
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void DataArrayRenderer::SetHugeModeEnabled(bool en)

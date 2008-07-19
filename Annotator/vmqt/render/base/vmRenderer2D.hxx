@@ -47,9 +47,6 @@ namespace CLAM
 			void setContainer(Plot2D * container) { _container = container; }
 			virtual void SetEnabled(bool enabled);
 
-		signals:
-			void requestRefresh();
-
 		protected:
 			virtual void Render()=0;
 			virtual void SetXRange(double xmin, double xmax);
