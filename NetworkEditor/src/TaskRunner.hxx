@@ -25,23 +25,43 @@
 #include <QtGui/QWidget>
 #include <QtGui/QTextEdit>
 #include <QtCore/QProcess>
-#include <QtCore/QTimer>
+//#include <QtCore/QTimer>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QDockWidget>
 #include <QtGui/QTextCursor>
 #include <QtGui/QStatusBar>
+#include <QtGui/QDialogButtonBox>
+#include <QtGui/QPushButton>
 #include <iostream>
+
+
 
 class TaskRunner : public QDockWidget
 {
 	Q_OBJECT
 public:
-	TaskRunner(QWidget * parent = 0)
+	TaskRunner(QWidget * parent = 0):
+		_process(0)
 	{
 		_OutputDisplay = new QTextEdit(this);
-		setWidget(_OutputDisplay);
+		QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel
+                                      | QDialogButtonBox::Close,Qt::Horizontal,this);
+		_cancelButton=buttonBox->button(QDialogButtonBox::Cancel);
+		_closeButton=buttonBox->button(QDialogButtonBox::Close);
+		_cancelButton->setEnabled(true);
+		_closeButton->setEnabled(false);
+		connect(_closeButton, SIGNAL(clicked()), this, SLOT(close()));
+		QVBoxLayout * mainBox=new QVBoxLayout();
+		mainBox->addWidget(_OutputDisplay);
+		mainBox->addWidget(buttonBox);
+		//TODO: keep the default dimensions without an intermediate widget
+		//setWidget(dynamic_cast<QWidget *>(mainBox));
+		QWidget * widget= new QWidget(this);
+		widget->setLayout(mainBox);
+		setWidget(widget);
 		setAttribute(Qt::WA_DeleteOnClose, true);
 	}
+
 	virtual ~TaskRunner();
 	typedef struct
 	{
@@ -75,15 +95,15 @@ signals:
 private slots:
 	void dumpError()
 	{
-		dump(_Process->readAllStandardError(), true);
+		dump(_process->readAllStandardError(), true);
 	}
 	void dumpOutput()
 	{
-		dump(_Process->readAllStandardOutput(), false);
+		dump(_process->readAllStandardOutput(), false);
 	}
 	void finishedCommand()
 	{
-		_error=(_error || (_Process->exitCode()!=0));
+		_error=(_error || (_process->exitCode()!=0));
 		dumpOutput();
 		dumpError();
 		_Output += tr("<div style='color: blue;'>Done.</div>");
@@ -93,6 +113,13 @@ private slots:
 		else
 			getAndRunQueuedCommand();
 	}
+	void cancelProcess()
+	{
+		_queuedCommandsList.clear();
+		_error=true;
+		if (_process->state() != QProcess::NotRunning)
+			_process->terminate();
+	}
 private:
 	bool runCommand(QString command, QStringList & arguments, QString workingDir)
 	{
@@ -100,13 +127,14 @@ private:
 			.arg(command)
 			.arg(arguments.join(" "));
 		updateText();
-		_Process = new QProcess(this);
-		_Process->setWorkingDirectory(workingDir);
-		connect(_Process, SIGNAL(readyReadStandardError()), this, SLOT(dumpError()));
-		connect(_Process, SIGNAL(readyReadStandardOutput()), this, SLOT(dumpOutput()));
-		connect(_Process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finishedCommand()));
-		_Process->start(command, arguments);
-		return _Process->waitForStarted();
+		_process = new QProcess(this);
+		_process->setWorkingDirectory(workingDir);
+		connect(_cancelButton, SIGNAL(clicked()), this, SLOT(cancelProcess()));
+		connect(_process, SIGNAL(readyReadStandardError()), this, SLOT(dumpError()));
+		connect(_process, SIGNAL(readyReadStandardOutput()), this, SLOT(dumpOutput()));
+		connect(_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finishedCommand()));
+		_process->start(command, arguments);
+		return _process->waitForStarted();
 	}
 	bool getAndRunQueuedCommand()
 	{
@@ -115,8 +143,10 @@ private:
 	}
 	void finishedQueue()
 	{
+		_closeButton->setEnabled(true);
+		_cancelButton->setEnabled(false);
 		emit taskDone(!_error);
-		QTimer::singleShot(5000, this, SLOT(close()));
+//		QTimer::singleShot(5000, this, SLOT(close()));
 		//std::cout<<"Queued commands running finished!\n";
 	}
 
@@ -138,11 +168,13 @@ private:
 	}
 private:
 	QTextEdit * _OutputDisplay;
-	QProcess * _Process;
+	QProcess * _process;
 	QString _Output;
 	CommandsAndEnvironmentsList _queuedCommandsList;
 	bool _error;
 	bool _stopOnError;
+	QPushButton * _cancelButton;
+	QPushButton * _closeButton;
 };
 #endif//TaskRunner_hxx
 
