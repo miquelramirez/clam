@@ -1,6 +1,6 @@
-#include "TypedOutControlRegistry.hxx"
-#include "TypedOutControl.hxx"
-#include "Assert.hxx"
+#include <CLAM/TypedOutControlRegistry.hxx>
+#include <CLAM/BaseTypedOutControl.hxx>
+#include <CLAM/Assert.hxx>
 
 namespace CLAM
 {
@@ -59,4 +59,16 @@ namespace CLAM
 		mTypedOutControls.push_back( in );
 	}
 	
+	void TypedOutControlRegistry::ProcessingInterface_Unregister( BaseTypedOutControl * out )
+	{
+		for (Iterator it=mTypedOutControls.begin(); it!=mTypedOutControls.end(); it++)
+		{
+			if (*it==out)
+			{
+				// std::cout << "Removing out control "<< out << std::endl;
+				mTypedOutControls.erase(it);
+				return;
+			}
+		}
+	}	
 } // namespace CLAM

@@ -4,51 +4,38 @@
 #include <string>
 #include <list>
 #include <typeinfo>
-#include "Processing.hxx"
+#include <CLAM/BaseTypedInControl.hxx>
+#include <CLAM/BaseTypedOutControl.hxx>
 
 namespace CLAM {
-	
-	class BaseTypedInControl{
-		std::string mName;
-		Processing * mProcessing;
+	class Processing;
+	class BaseTypedOutControl;
 
-	public:
-		BaseTypedInControl(const std::string &name, Processing * proc = 0);
-		virtual ~BaseTypedInControl(){}
-		virtual const std::type_info& ControlType() const = 0;
-		const std::string& GetName() const { return mName; }
-		Processing * GetProcessing() const { return mProcessing; }
-	};
-	
-	
-	// Template Class Declaration
 	template<class TypedControlData>
 	class TypedOutControl;
 	
 	template<class TypedControlData>
 	class TypedInControl : public BaseTypedInControl
 	{
-		typedef TypedOutControl<TypedControlData> ProperTypedOutControl;
-		typedef std::list< ProperTypedOutControl * > ProperTypedOutControlList;
 		
 	protected:
 		TypedControlData mLastValue;
-		ProperTypedOutControlList mLinks;
+		std::list< BaseTypedOutControl * > mLinks;
 		
 	public:
 		TypedInControl(const std::string &name = "unnamed typed in control", Processing * proc = 0);
 		~TypedInControl();
 		
 		void DoControl(const TypedControlData& val);
-		const TypedControlData& GetLastValue();
+		const TypedControlData& GetLastValue() const;
 		bool IsConnected() const;
 		
 		// For the typed linking check
 		virtual const std::type_info& ControlType() const { return typeid(TypedControlData); };
 		/// Implementation detail just to be used from OutControl
-		void OutControlInterface_AddLink(ProperTypedOutControl & outControl);
+		void OutControlInterface_AddLink(TypedOutControl<TypedControlData> & outControl);
 		/// Implementation detail just to be used from OutControl
-		void OutControlInterface_RemoveLink(ProperTypedOutControl & outControl);
+		void OutControlInterface_RemoveLink(TypedOutControl<TypedControlData> & outControl);
 	}; // End TypedInControl Class
 	
 	// TypedInControl Class Implementation
@@ -72,7 +59,7 @@ namespace CLAM {
 	}
 
 	template<class TypedControlData>
-	const TypedControlData& TypedInControl<TypedControlData>::GetLastValue()
+	const TypedControlData& TypedInControl<TypedControlData>::GetLastValue() const
 	{
 		return mLastValue;
 	}
@@ -84,13 +71,13 @@ namespace CLAM {
 	}
 
 	template<class TypedControlData>
-	void TypedInControl<TypedControlData>::OutControlInterface_AddLink(ProperTypedOutControl & outControl)
+	void TypedInControl<TypedControlData>::OutControlInterface_AddLink(TypedOutControl<TypedControlData> & outControl)
 	{
 		mLinks.push_back(&outControl);
 	}
 
 	template<class TypedControlData>
-	void TypedInControl<TypedControlData>::OutControlInterface_RemoveLink(ProperTypedOutControl & outControl)
+	void TypedInControl<TypedControlData>::OutControlInterface_RemoveLink(TypedOutControl<TypedControlData> & outControl)
 	{
 		mLinks.remove(&outControl);
 	}

@@ -93,7 +93,7 @@ void OutControlRegistry::ProcessingInterface_Unregister( OutControl * out )
 	{
 		if (*it==out)
 		{
-			std::cout << "Removing out control "<< out << std::endl;
+			//std::cout << "Removing out control "<< out << std::endl;
 			mOutControls.erase(it);
 			return;
 		}

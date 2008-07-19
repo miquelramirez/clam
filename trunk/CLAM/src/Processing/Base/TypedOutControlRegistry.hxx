@@ -3,10 +3,9 @@
 
 #include <string>
 #include <vector>
+#include <CLAM/BaseTypedOutControl.hxx>
 
 namespace CLAM{
-	//forward declarations:
-	class BaseTypedOutControl;
 	
 	class TypedOutControlRegistry {
 		std::vector<BaseTypedOutControl*> mTypedOutControls;
@@ -21,6 +20,8 @@ namespace CLAM{
 			
 			int Size() const;
 			void ProcessingInterface_Register(BaseTypedOutControl *);
+			void ProcessingInterface_Unregister(BaseTypedOutControl *);
+			
 		private:
 			std::string AvailableNames() const;
 	};

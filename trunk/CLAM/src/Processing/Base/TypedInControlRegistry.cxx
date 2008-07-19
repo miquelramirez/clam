@@ -1,6 +1,6 @@
-#include "TypedInControlRegistry.hxx"
-#include "TypedInControl.hxx"
-#include "Assert.hxx"
+#include <CLAM/TypedInControlRegistry.hxx>
+#include <CLAM/BaseTypedInControl.hxx>
+#include <CLAM/Assert.hxx>
 
 namespace CLAM
 {
@@ -58,5 +58,19 @@ namespace CLAM
 	{
 		mTypedInControls.push_back( in );
 	}
+	
+	void TypedInControlRegistry::ProcessingInterface_Unregister( BaseTypedInControl * in )
+	{
+		for (Iterator it=mTypedInControls.begin(); it!=mTypedInControls.end(); it++)
+		{
+			if (*it==in)
+			{
+				// std::cout << "Removing in control "<< in << std::endl;
+				mTypedInControls.erase(it);
+				return;
+			}
+		}
+	}
+	
 	
 } // namespace CLAM
