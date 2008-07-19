@@ -21,6 +21,7 @@
 
 #include "CLAMGL.hxx"
 #include "vmRenderer2D.hxx"
+#include "vmPlot2D.hxx"
 
 namespace CLAM
 {
@@ -56,7 +57,7 @@ namespace CLAM
 			if(xmax <= xmin) return;
 			mXRange.min = xmin;
 			mXRange.max = xmax;
-			emit requestUpdate();
+			_container->updateRenderers();
 		}
 
 		void Renderer2D::SetYRange(double ymin, double ymax)
@@ -64,7 +65,7 @@ namespace CLAM
 			if(ymax <= ymin) return;
 			mYRange. min = ymin;
 			mYRange.max = ymax;
-			emit requestUpdate();
+			_container->updateRenderers();
 		}
 
 		void Renderer2D::SetHBounds(double left, double right)

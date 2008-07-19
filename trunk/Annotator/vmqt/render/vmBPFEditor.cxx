@@ -51,7 +51,7 @@ namespace CLAM
 			mCurrentIndex = 0;
 			mRebuildglList = true;
 			mEditionMode = Idle;
-			emit requestUpdate();
+			_container->updateRenderers();
 		}
 
 		void BPFEditor::SetColors(const QColor& cline, const QColor& chandler)

@@ -49,8 +49,6 @@ namespace CLAM
 
 		signals:
 			void requestRefresh();
-			void requestUpdate();
-			void working(QString,bool);
 
 		protected:
 			virtual void Render()=0;

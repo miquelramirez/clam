@@ -40,6 +40,7 @@ namespace CLAM
 		void PlayableBPFPlot::SetData(BPF* bpf)
 		{
 			PlayableMultiBPFPlot::AddBPF("bpf_editor",bpf);
+			_bpfEditor = dynamic_cast<BPFEditor*>(mPlot->GetRenderer("bpf_editor"));
 		}
 
 		void PlayableBPFPlot::SetFlags(int f)
@@ -82,6 +83,7 @@ namespace CLAM
 		void PlayableBPFPlot::InitPlayableBPFPlot()
 		{
 			AddBPF("bpf_editor",0);
+			_bpfEditor = dynamic_cast<BPFEditor*>(mPlot->GetRenderer("bpf_editor"));
 			setCurrentBPF("bpf_editor");
 			connect(_bpfEditor,
 					SIGNAL(xValueChanged(QString,unsigned,double)),

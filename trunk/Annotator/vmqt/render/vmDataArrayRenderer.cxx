@@ -22,6 +22,7 @@
 #include <algorithm>
 #include "CLAMGL.hxx"
 #include "vmDataArrayRenderer.hxx"
+#include "vmPlot2D.hxx"
 
 namespace CLAM
 {
@@ -44,7 +45,7 @@ namespace CLAM
 		{
 			mCachedData.assign(&data[0], &data[0]+data.Size());
 			mMustProcessData = true;
-			emit requestUpdate();
+			_container->updateRenderers();
 		}
 
 		void DataArrayRenderer::SetDataColor(const QColor& c)

@@ -40,7 +40,7 @@ namespace CLAM
 		void PeaksRenderer::SetPeaks(const Array<Peak>& peaks)
 		{
 			mCachedPeaks = peaks;
-			requestUpdate();
+			_container->updateRenderers();
 		}
 
 		void PeaksRenderer::SetPeaksColor(const QColor& cpoint, const QColor& cline)
