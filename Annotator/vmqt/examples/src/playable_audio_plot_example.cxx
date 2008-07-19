@@ -45,7 +45,6 @@ int main(int argc, char** argv)
 	plot.SetData(audio);
 	plot.show();
 
-	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));
 	return app.exec();
 }
 

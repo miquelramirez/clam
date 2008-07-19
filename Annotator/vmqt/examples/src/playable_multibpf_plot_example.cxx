@@ -60,7 +60,6 @@ int main(int argc, char** argv)
 	plot.SetColors("star_wars",QColor(0,255,0),QColor(0,0,255));
 	plot.show();
 
-	app.connect(&app,SIGNAL(lastWindowClosed()),&app,SLOT(quit()));
 	return app.exec();
 }
 
