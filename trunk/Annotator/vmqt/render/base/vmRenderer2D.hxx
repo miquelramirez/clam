@@ -51,8 +51,6 @@ namespace CLAM
 			void requestRefresh();
 			void requestUpdate();
 			void hZoomRef(double);
-			void toolTip(QString);
-			void cursorChanged(QCursor);
 			void working(QString,bool);
 
 		protected:
