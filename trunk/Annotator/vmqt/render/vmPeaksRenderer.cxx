@@ -21,6 +21,7 @@
 
 #include "CLAMGL.hxx"
 #include "vmPeaksRenderer.hxx"
+#include "vmPlot2D.hxx"
 
 namespace CLAM
 {
@@ -97,7 +98,7 @@ namespace CLAM
 				return;
 			}
 			emit working(mKey,false);
-			emit cursorChanged(QCursor(Qt::ArrowCursor));
+			_container->setCursor(Qt::ArrowCursor);
 			emit toolTip("");
 		}
 		

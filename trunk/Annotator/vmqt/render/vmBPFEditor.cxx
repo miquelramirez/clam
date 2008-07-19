@@ -23,6 +23,7 @@
 #include "CLAM_Math.hxx"
 #include "vmGrid.hxx"
 #include "vmBPFEditor.hxx"
+#include "vmPlot2D.hxx"
 
 namespace CLAM
 {
@@ -156,7 +157,7 @@ namespace CLAM
 			int mode = mEditionMode;
 			mEditionMode = Idle;
 			emit toolTip("");
-			emit cursorChanged(QCursor(Qt::ArrowCursor));
+			_container->setCursor(Qt::ArrowCursor);
 			if(mode == DraggingPoint) 
 			{
 				if(mFlags & CLAM::VM::eAllowHorEdition)
@@ -189,7 +190,7 @@ namespace CLAM
 					// Just continue below
 					emit working(mKey,false);
 					emit toolTip("");
-					emit cursorChanged(QCursor(Qt::ArrowCursor));
+					_container->setCursor(Qt::ArrowCursor);
 					break;
 			}
 	
@@ -202,19 +203,19 @@ namespace CLAM
 										double(mBPF->GetValueFromIndex(mCurrentIndex))));
 				if(mFlags & CLAM::VM::eAllowHorEdition && mFlags & CLAM::VM::eAllowVerEdition)
 				{
-					emit cursorChanged(QCursor(Qt::SizeAllCursor));
+					_container->setCursor(Qt::SizeAllCursor);
 				}
 				else if(mFlags & CLAM::VM::eAllowHorEdition)
 				{
-					emit cursorChanged(QCursor(Qt::SizeHorCursor));
+					_container->setCursor(Qt::SizeHorCursor);
 				}
 				else if(mFlags & CLAM::VM::eAllowVerEdition)
 				{
-					emit cursorChanged(QCursor(Qt::SizeVerCursor));
+					_container->setCursor(Qt::SizeVerCursor);
 				}
 				else
 				{
-					emit cursorChanged(QCursor(Qt::ArrowCursor));
+					_container->setCursor(Qt::ArrowCursor);
 				}
 				return;
 			}

@@ -22,6 +22,7 @@
 #include "CLAMGL.hxx"
 #include <CLAM/Segmentation.hxx>
 #include "vmSegmentEditor.hxx"
+#include "vmPlot2D.hxx"
 
 //#define __SEGMENT_EDITOR__DEBUG__
 
@@ -156,7 +157,7 @@ namespace CLAM
 					mHighlighted = -1;
 					emit working(mKey,false);
 					emit toolTip(ttip);
-					emit cursorChanged(QCursor(Qt::ArrowCursor));
+					_container->setCursor(Qt::ArrowCursor);
 					break;
 			}
 
@@ -176,7 +177,7 @@ namespace CLAM
 						.arg(units)
 						;
 				emit toolTip(ttip);
-				emit cursorChanged(QCursor(Qt::SizeHorCursor));
+				_container->setCursor(Qt::SizeHorCursor);
 				return;
 			}
 			index = mSegmentation->pickOffset(x,tolerance);
@@ -191,7 +192,7 @@ namespace CLAM
 						.arg(units)
 						;
 				emit toolTip(ttip);
-				emit cursorChanged(QCursor(Qt::SizeHorCursor));
+				_container->setCursor(Qt::SizeHorCursor);
 				return;
 			}
 			if(mKeyboard.key_insert || mKeyboard.key_ctrl)
@@ -272,7 +273,7 @@ namespace CLAM
 			if(!mKeyboard.key_ctrl) emit working(mKey,false);
 			mHighlighted = -1;
 			emit toolTip("");
-			emit cursorChanged(QCursor(Qt::ArrowCursor));
+			_container->setCursor(Qt::ArrowCursor);
 			if(mode == DraggingOnset) 
 			{
 				emit segmentOnsetChanged(mDraggedSegment,mSegmentation->onsets()[mDraggedSegment]);
