@@ -22,10 +22,12 @@
 #ifndef __VMQT_PLOT2D_H__
 #define __VMQT_PLOT2D_H__
 
+#include <QtOpenGL/QGLWidget>
+#undef GetClassName
 #include <map>
 #include <vector>
 #include <QtGui/QCursor>
-#include "vmPlot.hxx"
+#include "vmDataTypes.hxx"
 
 namespace CLAM
 {
@@ -34,7 +36,7 @@ namespace CLAM
 
 		class Renderer2D;
 
-		class Plot2D : public Plot
+		class Plot2D : public QGLWidget
 		{
 			typedef std::map<QString, Renderer2D*> Renderers;
 			
@@ -42,6 +44,8 @@ namespace CLAM
 		public:
 			Plot2D(QWidget* parent=0);
 			~Plot2D();
+
+			void SetBackgroundColor(const QColor& c);
 
 			void SetXRange(double xmin, double xmax);
 			void SetYRange(double ymin, double ymax);
@@ -99,6 +103,9 @@ namespace CLAM
 			void changeCursor(QCursor);
 			void setToolTip(QString);
 			void rendererWorking(QString,bool);
+
+		protected:
+			QColor mBgColor;
 
 		private:
 			Renderers mRenderers;

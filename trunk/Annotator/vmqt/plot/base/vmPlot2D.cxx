@@ -31,7 +31,8 @@ namespace CLAM
 	{
 
 		Plot2D::Plot2D(QWidget* parent)
-			: Plot(parent)
+			: QGLWidget(parent)
+			, mBgColor(255,255,255,255)
 			, mToolTip("")
 			, mXZoomSteps(0)
 			, mYZoomSteps(0)
@@ -43,6 +44,7 @@ namespace CLAM
 			, mYRange(-1.0,1.0)
 			, mViewport(0,0,10,10)
 		{
+			setFocusPolicy(Qt::StrongFocus);
 			setMouseTracking(true);
 			setAutoBufferSwap(false);
 			
@@ -576,6 +578,11 @@ namespace CLAM
 			mDrawOrder[0] = key;
 		}
 
+		void Plot2D::SetBackgroundColor(const QColor& c)
+		{
+			mBgColor = c;
+			updateGL();
+		}
 	}
 }
 
