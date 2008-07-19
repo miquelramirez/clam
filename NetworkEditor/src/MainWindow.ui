@@ -354,6 +354,9 @@
    </property>
   </action>
   <action name="action_Reload_Faust_Modules" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/reload.svg</iconset>
+   </property>
    <property name="text" >
     <string>Re&amp;load Faust modules</string>
    </property>
