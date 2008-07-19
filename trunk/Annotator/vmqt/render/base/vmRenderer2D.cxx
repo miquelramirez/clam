@@ -32,6 +32,7 @@ namespace CLAM
 			, mCatchEvents(true)
 			, mViewport(-1,-1,1,1)
 			, mGrid(0)
+			, _container(0)
 		{
 		}
 

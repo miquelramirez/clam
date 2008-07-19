@@ -32,6 +32,7 @@ namespace CLAM
 	namespace VM
 	{
 		class Grid;
+		class Plot2D;
 
 		class Renderer2D : public QObject
 		{
@@ -43,6 +44,7 @@ namespace CLAM
 			virtual ~Renderer2D();
 
 			void SetGrid(Grid* grid);
+			void setContainer(Plot2D * container) { _container = container; }
 
 		signals:
 			void requestRefresh();
@@ -85,6 +87,7 @@ namespace CLAM
 			Range      mYRange;
 			Keyboard   mKeyboard;
 			Grid*      mGrid;
+			Plot2D * _container;
 		};
 	}
 }
