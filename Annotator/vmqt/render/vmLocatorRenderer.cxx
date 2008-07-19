@@ -81,7 +81,7 @@ namespace CLAM
 				}
 				zoom_ref = mLocatorPos;
 			}
-			emit hZoomRef(zoom_ref);
+			_container->setHZoomPivot(zoom_ref);
 			emit requestRefresh();
 		}
 
@@ -91,14 +91,14 @@ namespace CLAM
 			{
 				mLocatorPos = begin;
 				mRegion.min = mRegion.max = mLocatorPos;
-				emit hZoomRef(mLocatorPos);
+				_container->setHZoomPivot(mLocatorPos);
 			}
 			else
 			{
 				mRegion.min = begin;
 				mRegion.max = end;
 				(isEnd) ? mLocatorPos = end : mLocatorPos = begin;
-				emit hZoomRef(mRegion.min+mRegion.Span()/2.0);
+				_container->setHZoomPivot(mRegion.min+mRegion.Span()/2.0);
 			}
 			emit requestRefresh();
 		}
@@ -151,7 +151,7 @@ namespace CLAM
 					}
 				}
 				emit regionChanged(mRegion.min,mRegion.max,mLocatorPos > mRegion.min);
-				emit hZoomRef(mRegion.min+mRegion.Span()/2.0);
+				_container->setHZoomPivot(mRegion.min+mRegion.Span()/2.0);
 				emit requestRefresh();
 				return;
 			}
@@ -160,7 +160,7 @@ namespace CLAM
 				mLocatorPos = x;
 				mRegion.min = mRegion.max = mLocatorPos;
 				emit regionChanged(mRegion.min,mRegion.max,false);
-				emit hZoomRef(mLocatorPos);
+				_container->setHZoomPivot(mLocatorPos);
 				emit requestRefresh();
 				return;
 			}
@@ -193,7 +193,7 @@ namespace CLAM
 			emit working(mKey,false);
 			_container->setCursor(Qt::ArrowCursor);
 			double zoom_ref = (mRegion.min == mRegion.max) ? mLocatorPos : mRegion.min+mRegion.Span()/2.0;
-			emit hZoomRef(zoom_ref);
+			_container->setHZoomPivot(zoom_ref);
 			(zoom_ref == mLocatorPos) 
 				? emit selectedRegion(mLocatorPos,mXRange.max) 
 				: emit selectedRegion(mRegion.min,mRegion.max);

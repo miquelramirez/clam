@@ -112,7 +112,6 @@ namespace CLAM
 			rd->setContainer(this);
 			connect(rd,SIGNAL(requestUpdate()),this,SLOT(updateRenderers()));
 			connect(rd,SIGNAL(requestRefresh()),this,SLOT(needUpdate()));
-			connect(rd,SIGNAL(hZoomRef(double)),this,SLOT(updateHZoomRef(double)));
 			connect(rd,SIGNAL(working(QString,bool)),this,SLOT(rendererWorking(QString,bool)));
 			rd->SetXRange(mXRange.min,mXRange.max);
 			rd->SetYRange(mYRange.min,mYRange.max);
@@ -325,7 +324,7 @@ namespace CLAM
 			needUpdate();
 		}
 
-		void Plot2D::updateHZoomRef(double ref)
+		void Plot2D::setHZoomPivot(double ref)
 		{
 			if(ref < mXRange.min || ref > mXRange.max) return;
 			mHZoomRef = ref;

@@ -81,6 +81,7 @@ namespace CLAM
 			void setHBounds(double, double);
 			void setVBounds(double, double);
 			void setToolTip(QString);
+			void setHZoomPivot(double);
 
 		protected slots:
 			// This slot is calle whenever an updateGl is needed.
@@ -100,7 +101,6 @@ namespace CLAM
 
 		private slots:
 			void updateRenderers();
-			void updateHZoomRef(double);
 			void rendererWorking(QString,bool);
 
 		protected:

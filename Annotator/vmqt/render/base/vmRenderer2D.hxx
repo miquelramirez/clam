@@ -50,7 +50,6 @@ namespace CLAM
 		signals:
 			void requestRefresh();
 			void requestUpdate();
-			void hZoomRef(double);
 			void working(QString,bool);
 
 		protected:
