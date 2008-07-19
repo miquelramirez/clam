@@ -118,7 +118,8 @@ namespace CLAM
 
 		void Locator::MousePressEvent(double x, double y)
 		{
-			if(!mEnabled || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mEnabled) return;
 			if(mUpdatingLocator) return;
 			if(x == mRegion.min && x == mRegion.max) return;		
 			if(mKeyboard.key_shift && mKeyboard.key_r)
@@ -187,10 +188,11 @@ namespace CLAM
 
 		void Locator::MouseReleaseEvent(double x, double y)
 		{
-			if(!mEnabled || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mEnabled) return;
 			if(mUpdatingLocator) return;
 			mEditionMode = Idle;
-			emit working(mKey,false);
+			_container->rendererWorking(mKey,false);
 			_container->setCursor(Qt::ArrowCursor);
 			double zoom_ref = (mRegion.min == mRegion.max) ? mLocatorPos : mRegion.min+mRegion.Span()/2.0;
 			_container->setHZoomPivot(zoom_ref);
@@ -201,13 +203,14 @@ namespace CLAM
 
 		void Locator::MouseMoveEvent(double x, double y)
 		{
-			if(!mEnabled || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mEnabled) return;
 			if(mUpdatingLocator) return;
 			QString ttip("");
 			if(mKeyboard.key_r) 
 			{
 				mEditionMode = Idle;
-				emit working(mKey,true);
+				_container->rendererWorking(mKey,true);
 				_container->setToolTip(ttip);
 				_container->setCursor(Qt::ArrowCursor);
 				return;
@@ -261,7 +264,7 @@ namespace CLAM
 					return;
 				}
 				default:
-					emit working(mKey,false);
+					_container->rendererWorking(mKey,false);
 					_container->setToolTip(ttip);
 					_container->setCursor(Qt::ArrowCursor);
 					break;
@@ -271,7 +274,7 @@ namespace CLAM
 			{
 				if(PickBeginRegion(x,tolerance))
 				{
-					emit working(mKey,true);
+					_container->rendererWorking(mKey,true);
 					ttip = "Cue:"+QString::number(mLocatorPos,'f',2);
 					_container->setToolTip(ttip);
 					_container->setCursor(Qt::SizeHorCursor);
@@ -279,7 +282,7 @@ namespace CLAM
 				else
 				{
 					mEditionMode = Idle;
-					emit working(mKey,false);
+					_container->rendererWorking(mKey,false);
 					_container->setToolTip(ttip);
 					_container->setCursor(Qt::ArrowCursor);
 				}
@@ -287,7 +290,7 @@ namespace CLAM
 			}
 			if(PickBeginRegion(x,tolerance)) 
 			{
-				emit working(mKey,true);
+				_container->rendererWorking(mKey,true);
 				ttip = "Cue:"+QString::number(mRegion.min,'f',2);
 				_container->setToolTip(ttip);
 				_container->setCursor(Qt::SizeHorCursor);
@@ -295,7 +298,7 @@ namespace CLAM
 			}
 			if(PickEndRegion(x,tolerance)) 
 			{
-				emit working(mKey,true);
+				_container->rendererWorking(mKey,true);
 				ttip = "Cue:"+QString::number(mRegion.max,'f',2);
 				_container->setToolTip(ttip);
 				_container->setCursor(Qt::SizeHorCursor);
@@ -305,7 +308,8 @@ namespace CLAM
 
 		void Locator::KeyPressEvent(int key)
 		{
-			if(!mEnabled || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mEnabled) return;
 			if(mUpdatingLocator) return;
 			switch(key)
 			{
@@ -314,7 +318,7 @@ namespace CLAM
 					break;
 				case Qt::Key_R:
 					mKeyboard.key_r = true;
-					emit working(mKey,true);
+					_container->rendererWorking(mKey,true);
 					break;
 				default:
 					break;
@@ -323,7 +327,8 @@ namespace CLAM
 
 		void Locator::KeyReleaseEvent(int key)
 		{
-			if(!mEnabled || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mEnabled) return;
 			if(mUpdatingLocator) return;
 			switch(key)
 			{

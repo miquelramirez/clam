@@ -122,7 +122,8 @@ namespace CLAM
 		void SegmentEditor::MouseMoveEvent(double x, double y)
 		{
 			if(!mEnabled) return;
-			if(!mSegmentation || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mSegmentation) return;
 			QString ttip("");
 			QString units = mSegmentation->xUnits().c_str();
 			switch (mEditionMode)
@@ -148,14 +149,14 @@ namespace CLAM
 					emit requestRefresh();	
 					return;
 				case DraggingBody:
-					emit working(mKey,true);
+					_container->rendererWorking(mKey,true);
 					mHighlighted = -1;
 					_container->setToolTip(ttip);
 					return;
 				default:
 					// Just continue below
 					mHighlighted = -1;
-					emit working(mKey,false);
+					_container->rendererWorking(mKey,false);
 					_container->setToolTip(ttip);
 					_container->setCursor(Qt::ArrowCursor);
 					break;
@@ -168,7 +169,7 @@ namespace CLAM
 			index = mSegmentation->pickOnset(x,tolerance);
 			if(index != size) 
 			{
-				emit working(mKey,true);
+				_container->rendererWorking(mKey,true);
 				mHighlighted = index;
 				mBoundType = LEFT_BOUND;
 				ttip = QString("Begin (%1): %2%3")
@@ -183,7 +184,7 @@ namespace CLAM
 			index = mSegmentation->pickOffset(x,tolerance);
 			if(index != size) 
 			{
-				emit working(mKey,true);
+				_container->rendererWorking(mKey,true);
 				mHighlighted = index;
 				mBoundType = RIGHT_BOUND;
 				ttip = QString("End (%1): %2%3")
@@ -197,14 +198,15 @@ namespace CLAM
 			}
 			if(mKeyboard.key_insert || mKeyboard.key_ctrl)
 			{
-				emit working(mKey,true);	
+				_container->rendererWorking(mKey,true);	
 			}
 		}
 
 		void SegmentEditor::MousePressEvent(double x, double y)
 		{
 			if(!mEnabled) return;
-			if(!mSegmentation || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mSegmentation) return;
 			if(mKeyboard.key_insert)
 			{
 				unsigned index = mSegmentation->insert(x);
@@ -267,10 +269,11 @@ namespace CLAM
 		void SegmentEditor::MouseReleaseEvent(double x, double y)
 		{
 			if(!mEnabled) return;
-			if(!mSegmentation || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mSegmentation) return;
 			int mode = mEditionMode;
 			mEditionMode=Idle;
-			if(!mKeyboard.key_ctrl) emit working(mKey,false);
+			if(!mKeyboard.key_ctrl) _container->rendererWorking(mKey,false);
 			mHighlighted = -1;
 			_container->setToolTip("");
 			_container->setCursor(Qt::ArrowCursor);
@@ -297,12 +300,13 @@ namespace CLAM
 		void SegmentEditor::KeyPressEvent(int key)
 		{
 			if(!mEnabled) return;
-			if(!mSegmentation || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mSegmentation) return;
 			switch(key)
 			{
 				case Qt::Key_Insert:
 				{
-					emit working(mKey,true);
+					_container->rendererWorking(mKey,true);
 					mKeyboard.key_insert = true; 
 				}
 				break;
@@ -327,7 +331,7 @@ namespace CLAM
 
 				case Qt::Key_Control:
 				{
-					emit working(mKey,true);
+					_container->rendererWorking(mKey,true);
 					mKeyboard.key_ctrl = true;
 				}
 				break;
@@ -337,11 +341,12 @@ namespace CLAM
 		void SegmentEditor::KeyReleaseEvent(int key)
 		{
 			if(!mEnabled) return;
-			if(!mSegmentation || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mSegmentation) return;
 			switch(key)
 			{
 				case Qt::Key_Insert:
-					emit working(mKey,false);
+					_container->rendererWorking(mKey,false);
 					mKeyboard.key_insert = false; 
 					break;
 						
@@ -350,7 +355,7 @@ namespace CLAM
 					break;
 
 				case Qt::Key_Control:
-					emit working(mKey,false);
+					_container->rendererWorking(mKey,false);
 					mKeyboard.key_ctrl = false;
 					break;
 
@@ -363,7 +368,7 @@ namespace CLAM
 		{
 			mHighlighted = -1;
 			_container->setToolTip("");
-			emit working(mKey,false);
+			_container->rendererWorking(mKey,false);
 		}
 
 		void SegmentEditor::SetViewport(const GLViewport& v)

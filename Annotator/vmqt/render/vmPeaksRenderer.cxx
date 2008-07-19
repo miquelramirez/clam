@@ -88,16 +88,17 @@ namespace CLAM
 		void PeaksRenderer::MouseMoveEvent(double x, double y)
 		{
 			if(!mEnabled) return;
-			if(!mCachedPeaks.Size() || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mCachedPeaks.Size()) return;
 			int peak_index = PickPeak(x,y);
 			if(peak_index != -1)
 			{
-				emit working(mKey,true);
+				_container->rendererWorking(mKey,true);
 				QString ttip = "freq="+QString::number(mCachedPeaks[peak_index].freq,'f',0)+"Hz "+"mag="+QString::number(mCachedPeaks[peak_index].mag,'f',0)+"dB";
 				_container->setToolTip(ttip);
 				return;
 			}
-			emit working(mKey,false);
+			_container->rendererWorking(mKey,false);
 			_container->setCursor(Qt::ArrowCursor);
 			_container->setToolTip("");
 		}
