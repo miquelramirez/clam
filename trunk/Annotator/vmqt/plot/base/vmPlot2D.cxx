@@ -109,6 +109,7 @@ namespace CLAM
 			mRenderers[key] = renderer;
 			Renderer2D* rd = GetRenderer(key);
 			if(!rd) return false;
+			rd->setContainer(this);
 			connect(rd,SIGNAL(requestUpdate()),this,SLOT(updateRenderers()));
 			connect(rd,SIGNAL(requestRefresh()),this,SLOT(needUpdate()));
 			connect(rd,SIGNAL(hZoomRef(double)),this,SLOT(updateHZoomRef(double)));
