@@ -22,9 +22,9 @@
 #ifndef __VMQT_RENDERER2D_H__
 #define __VMQT_RENDERER2D_H__
 
+#include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtGui/QCursor>
-#include "vmRenderer.hxx"
 #include "vmDataTypes.hxx"
 
 namespace CLAM
@@ -33,7 +33,7 @@ namespace CLAM
 	{
 		class Grid;
 
-		class Renderer2D : public Renderer
+		class Renderer2D : public QObject
 		{
 			friend class Plot2D;
 
@@ -42,7 +42,6 @@ namespace CLAM
 			Renderer2D();
 			virtual ~Renderer2D();
 
-			void SetEnabled(bool enabled);
 			void SetGrid(Grid* grid);
 
 		signals:
@@ -54,6 +53,7 @@ namespace CLAM
 			void working(QString,bool);
 
 		protected:
+			virtual void SetEnabled(bool enabled);
 			virtual void Render()=0;
 			virtual void SetXRange(double xmin, double xmax);
 			virtual void SetYRange(double ymin, double ymax);
@@ -73,6 +73,8 @@ namespace CLAM
 			void CatchEvents(bool ce);
 
 			int GetglList();
+
+			bool mEnabled;
 
 			bool    mCatchEvents;
 			QString mKey;
