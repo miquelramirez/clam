@@ -309,7 +309,6 @@ public slots:
 		ui.action_Compile_Faust_Modules->setEnabled(true);
 	}
 
-
 	void on_action_Embed_SVG_Diagrams_Option_changed()
 	{
 		QAction *action = qobject_cast<QAction *>(sender());
@@ -475,11 +474,6 @@ public slots:
 	void on_action_Compile_Faust_Modules_triggered()
 	{
 #if USE_LADSPA
-		if ((QMessageBox::question(this,tr("Are you sure?"),
-			tr(
-				"<p>Recompilation of all FAUST plugins could take some minutes.</p>\n"
-				"<p>Do you still want to do it?</p>\n"
-				), QMessageBox::Yes|QMessageBox::No))!=QMessageBox::Yes) return;
 		RunTimeFaustLibraryLoader faustLoader;
 		typedef std::map<std::string,std::string> CommandsMap;
 		std::cout << "[FAUST] \tcompiling" << std::endl;
