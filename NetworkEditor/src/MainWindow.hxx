@@ -105,6 +105,7 @@ public:
 
 #ifdef USE_LADSPA
 		ui.menuFaust->setEnabled(true);
+		ui.action_Compile_Faust_Modules->setEnabled(true);
 #endif
 
 #ifdef USE_JACK
@@ -295,6 +296,7 @@ public slots:
 	}
 	void endCompilationFaust(bool done)
 	{
+		ui.action_Compile_Faust_Modules->setEnabled(true);
 		statusBar()->clearMessage();
 		if (done)
 		{
@@ -494,6 +496,8 @@ public slots:
 				).arg(examplesPath.path()) );
 			return;
 		}
+		// disable compilation action while compiling
+		ui.action_Compile_Faust_Modules->setEnabled(false);
 		TaskRunner::CommandsAndEnvironmentsList commandsQList;
 		TaskRunner::CommandAndEnvironment command;
 		// define compilation using make:
