@@ -346,6 +346,9 @@
    </property>
   </action>
   <action name="action_Compile_Faust_Modules" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
    <property name="icon" >
     <iconset resource="images.qrc" >:/icons/images/faust_compile.png</iconset>
    </property>
