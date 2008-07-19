@@ -73,7 +73,7 @@ namespace CLAM
 
 			void InitMultiBPFPlot();
 		protected:
-			Grid * mGrid;
+			Grid * _grid;
 			std::vector <BPFEditor*> mBpfEditors;
 			std::map<QString, int> mKeyIndex;
 		};

@@ -149,12 +149,12 @@ namespace CLAM
 
 			mLayout->addLayout(layout,3,1);
 			
-			connect(static_cast<Locator*>(mPlot->GetRenderer("locator")),
+			connect(_locator,
 					SIGNAL(selectedRegion(double,double)),mFundPlayer,SLOT(timeBounds(double,double)));
 			connect(mFundPlayer,SIGNAL(playingTime(double)),
-					static_cast<Locator*>(mPlot->GetRenderer("locator")),SLOT(updateLocator(double)));
+					_locator,SLOT(updateLocator(double)));
 			connect(mFundPlayer,SIGNAL(stopTime(double,bool)),
-					static_cast<Locator*>(mPlot->GetRenderer("locator")),SLOT(updateLocator(double,bool)));
+					_locator,SLOT(updateLocator(double,bool)));
 			connect(mSchemaComboBox,SIGNAL(activated(int)),this,SLOT(setColorSchema(int)));
 			connect(mPlayModeComboBox,SIGNAL(activated(int)),this,SLOT(setPlayingFlags(int)));
 

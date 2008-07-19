@@ -44,23 +44,23 @@ namespace CLAM
 		{
 		}
 
-		void AudioStereoPlot::SetData(const Audio& chn0, const Audio& chn1, bool update)
+		void AudioStereoPlot::SetData(const Audio& channel0, const Audio& channel1, bool update)
 		{
-			CLAM_ASSERT(chn0.GetSize() == chn1.GetSize(), "Size of channels 0 and 1 must be the same!");
+			CLAM_ASSERT(channel0.GetSize() == channel1.GetSize(), "Size of channels 0 and 1 must be the same!");
 			
 			if(!update)
 			{
-				mDisplay[MASTER]->SetXRange(0.0,chn0.GetDuration()/1000.0);
-				mDisplay[SLAVE]->SetXRange(0.0,chn0.GetDuration()/1000.0);
+				mDisplay[MASTER]->SetXRange(0.0,channel0.GetDuration()/1000.0);
+				mDisplay[SLAVE]->SetXRange(0.0,channel0.GetDuration()/1000.0);
 				mDisplay[MASTER]->SetYRange(-1.0,1.0);
 				mDisplay[SLAVE]->SetYRange(-1.0,1.0);
-				std::pair<int, int> zoom_steps = GetZoomSteps(chn0.GetBuffer().Size());
+				std::pair<int, int> zoom_steps = GetZoomSteps(channel0.GetBuffer().Size());
 				mDisplay[MASTER]->SetZoomSteps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<Grid*>(mDisplay[MASTER]->GetRenderer("grid0"))->SetGridSteps(chn0.GetDuration()/1000.0,1.0);
-			static_cast<DataArrayRenderer*>(mDisplay[MASTER]->GetRenderer("chn0"))->SetData(chn0.GetBuffer());
-			static_cast<Grid*>(mDisplay[SLAVE]->GetRenderer("grid1"))->SetGridSteps(chn0.GetDuration()/1000.0,1.0);
-			static_cast<DataArrayRenderer*>(mDisplay[SLAVE]->GetRenderer("chn1"))->SetData(chn1.GetBuffer());
+			_grid0->SetGridSteps(channel0.GetDuration()/1000.0,1.0);
+			_channel0->SetData(channel0.GetBuffer());
+			_grid1->SetGridSteps(channel0.GetDuration()/1000.0,1.0);
+			_channel1->SetData(channel1.GetBuffer());
 		}
 
 		void AudioStereoPlot::backgroundWhite()
@@ -76,12 +76,12 @@ namespace CLAM
 			mVScroll->setPalette(Qt::white);
 			mDisplay[MASTER]->SetBackgroundColor(QColor(255,255,255));
 			mDisplay[SLAVE]->SetBackgroundColor(QColor(255,255,255));
-			static_cast<Grid*>(mDisplay[MASTER]->GetRenderer("grid0"))->SetGridColor(QColor(0,0,255));
-			static_cast<Grid*>(mDisplay[SLAVE]->GetRenderer("grid1"))->SetGridColor(QColor(0,0,255));
-			static_cast<DataArrayRenderer*>(mDisplay[MASTER]->GetRenderer("chn0"))->SetDataColor(QColor(0,0,255));
-			static_cast<DataArrayRenderer*>(mDisplay[SLAVE]->GetRenderer("chn1"))->SetDataColor(QColor(0,0,255));
-			static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0"))->SetLocatorColor(QColor(250,160,30));
-			static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1"))->SetLocatorColor(QColor(250,160,30));
+			_grid0->SetGridColor(QColor(0,0,255));
+			_grid1->SetGridColor(QColor(0,0,255));
+			_channel0->SetDataColor(QColor(0,0,255));
+			_channel1->SetDataColor(QColor(0,0,255));
+			_locator0->SetLocatorColor(QColor(250,160,30));
+			_locator1->SetLocatorColor(QColor(250,160,30));
 		}
 
 		void AudioStereoPlot::backgroundBlack()
@@ -97,24 +97,24 @@ namespace CLAM
 			mVScroll->setPalette(Qt::darkGreen);
 			mDisplay[MASTER]->SetBackgroundColor(QColor(0,0,0));
 			mDisplay[SLAVE]->SetBackgroundColor(QColor(0,0,0));
-			static_cast<Grid*>(mDisplay[MASTER]->GetRenderer("grid0"))->SetGridColor(QColor(0,255,0));
-			static_cast<Grid*>(mDisplay[SLAVE]->GetRenderer("grid1"))->SetGridColor(QColor(0,255,0));
-			static_cast<DataArrayRenderer*>(mDisplay[MASTER]->GetRenderer("chn0"))->SetDataColor(QColor(0,255,0));
-			static_cast<DataArrayRenderer*>(mDisplay[SLAVE]->GetRenderer("chn1"))->SetDataColor(QColor(0,255,0));
-			static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0"))->SetLocatorColor(QColor(255,0,0));
-			static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1"))->SetLocatorColor(QColor(255,0,0));
+			_grid0->SetGridColor(QColor(0,255,0));
+			_grid1->SetGridColor(QColor(0,255,0));
+			_channel0->SetDataColor(QColor(0,255,0));
+			_channel1->SetDataColor(QColor(0,255,0));
+			_locator0->SetLocatorColor(QColor(255,0,0));
+			_locator1->SetLocatorColor(QColor(255,0,0));
 		}
 
 		void AudioStereoPlot::updateLocator(double value)
 		{
-			static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0"))->updateLocator(value);
-			static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1"))->updateLocator(value);
+			_locator0->updateLocator(value);
+			_locator1->updateLocator(value);
 		}
 
 		void AudioStereoPlot::updateLocator(double value,bool flag)
 		{
-			static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0"))->updateLocator(value,flag);
-			static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1"))->updateLocator(value,flag);
+			_locator0->updateLocator(value,flag);
+			_locator1->updateLocator(value,flag);
 		}
 
 		void AudioStereoPlot::setMaxVScroll(int value)
@@ -133,33 +133,39 @@ namespace CLAM
 			{
 				mDisplay[i] = new Plot2D(this);
 			}
-			mDisplay[MASTER]->AddRenderer("grid0", new Grid());
-			mDisplay[MASTER]->AddRenderer("locator0", new Locator());
-			mDisplay[MASTER]->AddRenderer("chn0", new DataArrayRenderer());
-			mDisplay[SLAVE]->AddRenderer("grid1", new Grid());
-			mDisplay[SLAVE]->AddRenderer("locator1", new Locator());
-			mDisplay[SLAVE]->AddRenderer("chn1", new DataArrayRenderer());
+			_grid0 = new Grid;
+			_grid1 = new Grid;
+			_locator0 = new Locator;
+			_locator1 = new Locator;
+			_channel0 = new DataArrayRenderer;
+			_channel1 = new DataArrayRenderer;
+			mDisplay[MASTER]->AddRenderer("grid0", _grid0);
+			mDisplay[SLAVE]->AddRenderer("grid1", _grid1);
+			mDisplay[MASTER]->AddRenderer("locator0", _locator0);
+			mDisplay[SLAVE]->AddRenderer("locator1", _locator1);
+			mDisplay[MASTER]->AddRenderer("channel0", _channel0);
+			mDisplay[SLAVE]->AddRenderer("channel1", _channel1);
 
-			mDisplay[MASTER]->SendToBack("chn0");
+			mDisplay[MASTER]->SendToBack("channel0");
 			mDisplay[MASTER]->SendToBack("grid0");
-			mDisplay[SLAVE]->SendToBack("chn1");
+			mDisplay[SLAVE]->SendToBack("channel1");
 			mDisplay[SLAVE]->SendToBack("grid1");
 
-			static_cast<Grid*>(mDisplay[MASTER]->GetRenderer("grid0"))->ShowGrid(true);
-			static_cast<Grid*>(mDisplay[SLAVE]->GetRenderer("grid1"))->ShowGrid(true);
+			_grid0->ShowGrid(true);
+			_grid1->ShowGrid(true);
 
-			connect(static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0")),
-					SIGNAL(regionChanged(double,double,bool)),
-					static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1")),
-					SLOT(updateRegion(double,double,bool)));
-			connect(static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1")),
-					SIGNAL(regionChanged(double,double,bool)),
-					static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0")),
-					SLOT(updateRegion(double,double,bool)));
-			connect(static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0")),
-					SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
-			connect(static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1")),
-					SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
+			connect(
+				_locator0, SIGNAL(regionChanged(double,double,bool)),
+				_locator1, SLOT(updateRegion(double,double,bool)));
+			connect(
+				_locator1, SIGNAL(regionChanged(double,double,bool)),
+				_locator0, SLOT(updateRegion(double,double,bool)));
+			connect(
+				_locator0, SIGNAL(selectedRegion(double,double)),
+				this, SIGNAL(selectedRegion(double,double)));
+			connect(
+				_locator1, SIGNAL(selectedRegion(double,double)),
+				this, SIGNAL(selectedRegion(double,double)));
 		}
 	
 		void AudioStereoPlot::InitAudioStereoPlot()

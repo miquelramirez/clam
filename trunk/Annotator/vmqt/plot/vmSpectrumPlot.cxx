@@ -51,8 +51,8 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = GetZoomSteps(spec_data.Size());
 				SetZoomSteps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetHugeModeEnabled(false);
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetData(spec_data);
+			_spectrum->SetHugeModeEnabled(false);
+			_spectrum->SetData(spec_data);
 		}
 
 		void SpectrumPlot::SetData(const Spectrum& spec, const SpectralPeakArray& peaks, bool update)
@@ -65,48 +65,50 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = GetZoomSteps(spec_data.Size());
 				SetZoomSteps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetHugeModeEnabled(false);
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetData(spec_data);
-			static_cast<PeaksRenderer*>(mPlot->GetRenderer("peaks"))->SetPeaks(GetPeaksData(peaks));
+			_spectrum->SetHugeModeEnabled(false);
+			_spectrum->SetData(spec_data);
+			_peaks->SetPeaks(GetPeaksData(peaks));
 		}
 
 		void SpectrumPlot::showPeaksOnly()
 		{
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetEnabled(false);
-			static_cast<PeaksRenderer*>(mPlot->GetRenderer("peaks"))->SetEnabled(true);
+			_spectrum->SetEnabled(false);
+			_peaks->SetEnabled(true);
 		}
 
 		void SpectrumPlot::showSpectrumOnly()
 		{
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetEnabled(true);
-			static_cast<PeaksRenderer*>(mPlot->GetRenderer("peaks"))->SetEnabled(false);
+			_spectrum->SetEnabled(true);
+			_peaks->SetEnabled(false);
 		}
 
 		void SpectrumPlot::showSpectrumAndPeaks()
 		{
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetEnabled(true);
-			static_cast<PeaksRenderer*>(mPlot->GetRenderer("peaks"))->SetEnabled(true);
+			_spectrum->SetEnabled(true);
+			_peaks->SetEnabled(true);
 		}
 
 		void SpectrumPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetDataColor(QColor(0,0,255));
-			static_cast<PeaksRenderer*>(mPlot->GetRenderer("peaks"))->SetPeaksColor(QColor(255,0,0),QColor(8,180,70));
+			_spectrum->SetDataColor(QColor(0,0,255));
+			_peaks->SetPeaksColor(QColor(255,0,0),QColor(8,180,70));
 		}
 
 		void SpectrumPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("spectrum"))->SetDataColor(QColor(0,255,0));
-			static_cast<PeaksRenderer*>(mPlot->GetRenderer("peaks"))->SetPeaksColor(QColor(255,0,0),QColor(0,255,255));
+			_spectrum->SetDataColor(QColor(0,255,0));
+			_peaks->SetPeaksColor(QColor(255,0,0),QColor(0,255,255));
 
 		}
 
 		void SpectrumPlot::InitSpectrumPlot()
 		{
-			mPlot->AddRenderer("spectrum", new DataArrayRenderer());
-			mPlot->AddRenderer("peaks", new PeaksRenderer());
+			_spectrum = new DataArrayRenderer();
+			_peaks = new PeaksRenderer();
+			mPlot->AddRenderer("spectrum", _spectrum);
+			mPlot->AddRenderer("peaks", _peaks);
 			mPlot->SendToBack("peaks");
 			mPlot->SendToBack("spectrum");
 			mPlot->BringToFront("locator");

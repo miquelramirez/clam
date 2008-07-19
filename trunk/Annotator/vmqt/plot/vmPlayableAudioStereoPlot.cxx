@@ -177,22 +177,24 @@ namespace CLAM
 
 			mLayout->addLayout(layout,4,1);
 			
-			connect(static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0")),
-					SIGNAL(selectedRegion(double,double)),mAudioPlayer,SLOT(timeBounds(double,double)));
-			connect(static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1")),
-					SIGNAL(selectedRegion(double,double)),mAudioPlayer,SLOT(timeBounds(double,double)));
-			connect(mAudioPlayer,SIGNAL(playingTime(double)),
-					static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0")),
-					SLOT(updateLocator(double)));
-			connect(mAudioPlayer,SIGNAL(playingTime(double)),
-					static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1")),
-					SLOT(updateLocator(double)));
-			connect(mAudioPlayer,SIGNAL(stopTime(double,bool)),
-					static_cast<Locator*>(mDisplay[MASTER]->GetRenderer("locator0")),
-					SLOT(updateLocator(double,bool)));
-			connect(mAudioPlayer,SIGNAL(stopTime(double,bool)),
-					static_cast<Locator*>(mDisplay[SLAVE]->GetRenderer("locator1")),
-					SLOT(updateLocator(double,bool)));
+			connect(
+				_locator0, SIGNAL(selectedRegion(double,double)),
+				mAudioPlayer,SLOT(timeBounds(double,double)));
+			connect(
+				_locator1, SIGNAL(selectedRegion(double,double)),
+				mAudioPlayer, SLOT(timeBounds(double,double)));
+			connect(
+				mAudioPlayer, SIGNAL(playingTime(double)),
+				_locator0, SLOT(updateLocator(double)));
+			connect(
+				mAudioPlayer, SIGNAL(playingTime(double)),
+				_locator1, SLOT(updateLocator(double)));
+			connect(
+				mAudioPlayer, SIGNAL(stopTime(double,bool)),
+				_locator0, SLOT(updateLocator(double,bool)));
+			connect(
+				mAudioPlayer, SIGNAL(stopTime(double,bool)),
+				_locator1, SLOT(updateLocator(double,bool)));
 			connect(mComboBox,SIGNAL(activated(int)),this,SLOT(setColorSchema(int)));
 			connect(mMuteChn0,SIGNAL(stateChanged(int)),this,SLOT(muteChannel0(int)));
 			connect(mMuteChn1,SIGNAL(stateChanged(int)),this,SLOT(muteChannel1(int)));

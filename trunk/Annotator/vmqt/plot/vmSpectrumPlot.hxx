@@ -30,6 +30,9 @@ namespace CLAM
 {
 	namespace VM
 	{
+		class DataArrayRenderer;
+		class PeaksRenderer;
+
 		class SpectrumPlot : public SegmentationPlot
 		{
 		public:
@@ -56,6 +59,8 @@ namespace CLAM
 			DataArray GetSpectrumData(const CLAM::Spectrum& in);
 			Array<Peak> GetPeaksData(const SpectralPeakArray& in);
 			std::pair<int,int> GetZoomSteps(TSize size);
+			DataArrayRenderer * _spectrum;
+			PeaksRenderer * _peaks;
 			
 		};
 	}

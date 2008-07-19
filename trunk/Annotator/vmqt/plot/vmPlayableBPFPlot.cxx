@@ -39,12 +39,12 @@ namespace CLAM
 
 		void PlayableBPFPlot::SetData(BPF* bpf)
 		{
-			AddBPF("bpf_editor",bpf);
+			PlayableMultiBPFPlot::AddBPF("bpf_editor",bpf);
 		}
 
 		void PlayableBPFPlot::SetFlags(int f)
 		{
-			SetFlags("bpf_editor",f);
+			PlayableMultiBPFPlot::SetFlags("bpf_editor",f);
 		}
 
 		void PlayableBPFPlot::backgroundWhite()
@@ -79,40 +79,20 @@ namespace CLAM
 			emit elementRemoved(index);
 		}
 
-		void PlayableBPFPlot::setCurrentBPF(QString key)
-		{
-			PlayableMultiBPFPlot::setCurrentBPF(key);
-		}
-
-		void PlayableBPFPlot::AddBPF(const QString& key, BPF* bpf)
-		{
-			PlayableMultiBPFPlot::AddBPF(key,bpf);
-		}
-
-		void PlayableBPFPlot::SetColors(const QString& key, const QColor& cline, const QColor& chandler)
-		{
-			PlayableMultiBPFPlot::SetColors(key,cline,chandler);
-		}
-
-		void PlayableBPFPlot::SetFlags(const QString& key, int flags)
-		{
-			PlayableMultiBPFPlot::SetFlags(key,flags);
-		}
-
 		void PlayableBPFPlot::InitPlayableBPFPlot()
 		{
 			AddBPF("bpf_editor",0);
 			setCurrentBPF("bpf_editor");
-			connect(static_cast<BPFEditor*>(mPlot->GetRenderer("bpf_editor")),
+			connect(_bpfEditor,
 					SIGNAL(xValueChanged(QString,unsigned,double)),
 					this,SLOT(xvalue_changed(QString,unsigned,double)));
-			connect(static_cast<BPFEditor*>(mPlot->GetRenderer("bpf_editor")),
+			connect(_bpfEditor,
 					SIGNAL(yValueChanged(QString,unsigned,double)),
 					this,SLOT(yvalue_changed(QString,unsigned,double)));
-			connect(static_cast<BPFEditor*>(mPlot->GetRenderer("bpf_editor")),
+			connect(_bpfEditor,
 					SIGNAL(elementAdded(QString,unsigned,double,double)),
 					this,SLOT(element_added(QString,unsigned,double,double)));
-			connect(static_cast<BPFEditor*>(mPlot->GetRenderer("bpf_editor")),
+			connect(_bpfEditor,
 					SIGNAL(elementRemoved(QString,unsigned)),this,SLOT(element_removed(QString,unsigned)));
 		}
 	}

@@ -48,12 +48,13 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = GetZoomSteps(segment.GetnFrames(),segment.GetSamplingRate()/2.0);
 				SetZoomSteps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<SinTracksRenderer*>(mPlot->GetRenderer("sintracks"))->SetData(GetPeakMatrix(segment));
+			_sintracks->SetData(GetPeakMatrix(segment));
 		}
 
 		void SinTracksPlot::InitSinTracksPlot()
 		{
-			mPlot->AddRenderer("sintracks", new SinTracksRenderer());
+			_sintracks = new SinTracksRenderer();
+			mPlot->AddRenderer("sintracks", _sintracks);
 			mPlot->SendToBack("sintracks");
 			mPlot->BringToFront("locator");
 //			mXRuler->SetStep(0.01);

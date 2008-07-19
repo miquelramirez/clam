@@ -115,12 +115,12 @@ namespace CLAM
 
 			mLayout->addLayout(layout,3,1);
 			
-			connect(static_cast<Locator*>(mPlot->GetRenderer("locator")),
+			connect(_locator,
 					SIGNAL(selectedRegion(double,double)),mAudioPlayer,SLOT(timeBounds(double,double)));
 			connect(mAudioPlayer,SIGNAL(playingTime(double)),
-					static_cast<Locator*>(mPlot->GetRenderer("locator")),SLOT(updateLocator(double)));
+					_locator,SLOT(updateLocator(double)));
 			connect(mAudioPlayer,SIGNAL(stopTime(double,bool)),
-					static_cast<Locator*>(mPlot->GetRenderer("locator")),SLOT(updateLocator(double,bool)));
+					_locator,SLOT(updateLocator(double,bool)));
 			connect(mComboBox,SIGNAL(activated(int)),this,SLOT(setColorSchema(int)));
 
 			backgroundWhite();
