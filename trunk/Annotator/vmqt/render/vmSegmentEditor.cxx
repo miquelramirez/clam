@@ -134,7 +134,7 @@ namespace CLAM
 						.arg(mSegmentation->onsets()[mDraggedSegment],0,'g')
 						.arg(units)
 						;
-					emit toolTip(ttip);
+					_container->setToolTip(ttip);
 					emit requestRefresh();	
 					return;
 				case DraggingOffset:
@@ -144,19 +144,19 @@ namespace CLAM
 						.arg(mSegmentation->offsets()[mDraggedSegment],0,'g')
 						.arg(units)
 						;
-					emit toolTip(ttip);
+					_container->setToolTip(ttip);
 					emit requestRefresh();	
 					return;
 				case DraggingBody:
 					emit working(mKey,true);
 					mHighlighted = -1;
-					emit toolTip(ttip);
+					_container->setToolTip(ttip);
 					return;
 				default:
 					// Just continue below
 					mHighlighted = -1;
 					emit working(mKey,false);
-					emit toolTip(ttip);
+					_container->setToolTip(ttip);
 					_container->setCursor(Qt::ArrowCursor);
 					break;
 			}
@@ -176,7 +176,7 @@ namespace CLAM
 						.arg(mSegmentation->onsets()[index],0,'g')
 						.arg(units)
 						;
-				emit toolTip(ttip);
+				_container->setToolTip(ttip);
 				_container->setCursor(Qt::SizeHorCursor);
 				return;
 			}
@@ -191,7 +191,7 @@ namespace CLAM
 						.arg(mSegmentation->offsets()[index],0,'g')
 						.arg(units)
 						;
-				emit toolTip(ttip);
+				_container->setToolTip(ttip);
 				_container->setCursor(Qt::SizeHorCursor);
 				return;
 			}
@@ -272,7 +272,7 @@ namespace CLAM
 			mEditionMode=Idle;
 			if(!mKeyboard.key_ctrl) emit working(mKey,false);
 			mHighlighted = -1;
-			emit toolTip("");
+			_container->setToolTip("");
 			_container->setCursor(Qt::ArrowCursor);
 			if(mode == DraggingOnset) 
 			{
@@ -362,7 +362,7 @@ namespace CLAM
 		void SegmentEditor::LeaveEvent()
 		{
 			mHighlighted = -1;
-			emit toolTip("");
+			_container->setToolTip("");
 			emit working(mKey,false);
 		}
 

@@ -156,7 +156,7 @@ namespace CLAM
 			if(!mBPF || !mCatchEvents) return;
 			int mode = mEditionMode;
 			mEditionMode = Idle;
-			emit toolTip("");
+			_container->setToolTip("");
 			_container->setCursor(Qt::ArrowCursor);
 			if(mode == DraggingPoint) 
 			{
@@ -182,14 +182,14 @@ namespace CLAM
 			{
 				case DraggingPoint:
 					Update(x,y);
-					emit toolTip(GetToolTip(double(mBPF->GetXValue(mCurrentIndex)),
+					_container->setToolTip(GetToolTip(double(mBPF->GetXValue(mCurrentIndex)),
 											double(mBPF->GetValueFromIndex(mCurrentIndex))));
 					emit requestRefresh();	
 					return;
 				default:
 					// Just continue below
 					emit working(mKey,false);
-					emit toolTip("");
+					_container->setToolTip("");
 					_container->setCursor(Qt::ArrowCursor);
 					break;
 			}
@@ -199,7 +199,7 @@ namespace CLAM
 			{
 				emit working(mKey,true);
 				ChooseCurrentPoint(index);
-				emit toolTip(GetToolTip(double(mBPF->GetXValue(mCurrentIndex)),
+				_container->setToolTip(GetToolTip(double(mBPF->GetXValue(mCurrentIndex)),
 										double(mBPF->GetValueFromIndex(mCurrentIndex))));
 				if(mFlags & CLAM::VM::eAllowHorEdition && mFlags & CLAM::VM::eAllowVerEdition)
 				{
@@ -328,7 +328,7 @@ namespace CLAM
 
 		void BPFEditor::LeaveEvent()
 		{
-			emit toolTip("");
+			_container->setToolTip("");
 		}
 
 		void BPFEditor::Remove()

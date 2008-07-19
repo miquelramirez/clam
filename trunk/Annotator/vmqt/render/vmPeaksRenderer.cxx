@@ -94,12 +94,12 @@ namespace CLAM
 			{
 				emit working(mKey,true);
 				QString ttip = "freq="+QString::number(mCachedPeaks[peak_index].freq,'f',0)+"Hz "+"mag="+QString::number(mCachedPeaks[peak_index].mag,'f',0)+"dB";
-				emit toolTip(ttip);
+				_container->setToolTip(ttip);
 				return;
 			}
 			emit working(mKey,false);
 			_container->setCursor(Qt::ArrowCursor);
-			emit toolTip("");
+			_container->setToolTip("");
 		}
 		
 		int PeaksRenderer::PickPeak(double x, double y)

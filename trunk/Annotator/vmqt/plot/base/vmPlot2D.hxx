@@ -80,6 +80,7 @@ namespace CLAM
 			void updateVScrollValue(int);
 			void setHBounds(double, double);
 			void setVBounds(double, double);
+			void setToolTip(QString);
 
 		protected slots:
 			// This slot is calle whenever an updateGl is needed.
@@ -100,7 +101,6 @@ namespace CLAM
 		private slots:
 			void updateRenderers();
 			void updateHZoomRef(double);
-			void setToolTip(QString);
 			void rendererWorking(QString,bool);
 
 		protected:
