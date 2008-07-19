@@ -132,7 +132,8 @@ namespace CLAM
 		{
 			if(!mFlags) return;
 			if(!mEnabled) return;
-			if(!mBPF || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mBPF) return;
 			if(mKeyboard.key_insert)
 			{
 				if(!(mFlags & CLAM::VM::eAllowInsertions)) return;
@@ -153,7 +154,8 @@ namespace CLAM
 		{
 			if(!mFlags) return;
 			if(!mEnabled) return;
-			if(!mBPF || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mBPF) return;
 			int mode = mEditionMode;
 			mEditionMode = Idle;
 			_container->setToolTip("");
@@ -173,8 +175,8 @@ namespace CLAM
 
 		void BPFEditor::MouseMoveEvent(double x, double y)
 		{
-			if(!mBPF) return;
 			if(!mCatchEvents) return;
+			if(!mBPF) return;
 			if(!mBPF->Size()) return;
 			if(!mEnabled) return;
 	   
@@ -188,7 +190,7 @@ namespace CLAM
 					return;
 				default:
 					// Just continue below
-					emit working(mKey,false);
+					_container->rendererWorking(mKey,false);
 					_container->setToolTip("");
 					_container->setCursor(Qt::ArrowCursor);
 					break;
@@ -197,7 +199,7 @@ namespace CLAM
 			long index = PickPoint(x,y);
 			if(index != -1) 
 			{
-				emit working(mKey,true);
+				_container->rendererWorking(mKey,true);
 				ChooseCurrentPoint(index);
 				_container->setToolTip(GetToolTip(double(mBPF->GetXValue(mCurrentIndex)),
 										double(mBPF->GetValueFromIndex(mCurrentIndex))));
@@ -222,7 +224,7 @@ namespace CLAM
 			
 			if(mKeyboard.key_insert)
 			{
-				emit working(mKey,true);	
+				_container->rendererWorking(mKey,true);	
 			}
 				   
 		}
@@ -231,11 +233,12 @@ namespace CLAM
 		{
 			if(!mFlags) return;
 			if(!mEnabled) return;
-			if(!mBPF || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mBPF) return;
 			switch(key)
 			{
 				case Qt::Key_Insert:
-					emit working(mKey,true);
+					_container->rendererWorking(mKey,true);
 					mKeyboard.key_insert = true; 
 					break;
 				case Qt::Key_Delete:
@@ -290,11 +293,12 @@ namespace CLAM
 		{
 			if(!mFlags) return;
 			if(!mEnabled) return;
-			if(!mBPF || !mCatchEvents) return;
+			if(!mCatchEvents) return;
+			if(!mBPF) return;
 			switch(key)
 			{
 				case Qt::Key_Insert:
-					emit working(mKey,false);
+					_container->rendererWorking(mKey,false);
 					mKeyboard.key_insert = false; 
 					break;
 				case Qt::Key_Delete:
