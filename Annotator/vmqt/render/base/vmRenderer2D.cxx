@@ -28,7 +28,8 @@ namespace CLAM
 	{
 
 		Renderer2D::Renderer2D()
-			: mCatchEvents(true)
+			: mEnabled(true)
+			, mCatchEvents(true)
 			, mViewport(-1,-1,1,1)
 			, mGrid(0)
 		{
@@ -40,7 +41,7 @@ namespace CLAM
 
 		void Renderer2D::SetEnabled(bool enabled)
 		{
-			Renderer::SetEnabled(enabled);
+			mEnabled = enabled;
 			emit requestRefresh();
 		}
 
@@ -138,6 +139,7 @@ namespace CLAM
 			while(glIsList(gl_list)) gl_list++;
 			return gl_list;
 		}
+
 	}
 }
 
