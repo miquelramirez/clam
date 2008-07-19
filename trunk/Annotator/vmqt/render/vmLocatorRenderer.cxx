@@ -55,7 +55,7 @@ namespace CLAM
 		{
 			if(!mUpdatingLocator) mUpdatingLocator = true;
 			mLocatorPos = value;
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void Locator::updateLocator(double value, bool flag)
@@ -82,7 +82,7 @@ namespace CLAM
 				zoom_ref = mLocatorPos;
 			}
 			_container->setHZoomPivot(zoom_ref);
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void Locator::updateRegion(double begin, double end, bool isEnd)
@@ -100,7 +100,7 @@ namespace CLAM
 				(isEnd) ? mLocatorPos = end : mLocatorPos = begin;
 				_container->setHZoomPivot(mRegion.min+mRegion.Span()/2.0);
 			}
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void Locator::Render()
@@ -153,7 +153,7 @@ namespace CLAM
 				}
 				emit regionChanged(mRegion.min,mRegion.max,mLocatorPos > mRegion.min);
 				_container->setHZoomPivot(mRegion.min+mRegion.Span()/2.0);
-				emit requestRefresh();
+				_container->needUpdate();
 				return;
 			}
 			if(mKeyboard.key_r)
@@ -162,7 +162,7 @@ namespace CLAM
 				mRegion.min = mRegion.max = mLocatorPos;
 				emit regionChanged(mRegion.min,mRegion.max,false);
 				_container->setHZoomPivot(mLocatorPos);
-				emit requestRefresh();
+				_container->needUpdate();
 				return;
 			}
 			double tolerance = double(TOLERANCE)*(mView.right-mView.left)/double(mViewport.w);
@@ -232,7 +232,7 @@ namespace CLAM
 					ttip = "Cue:"+QString::number(mRegion.min,'f',2);
 					_container->setToolTip(ttip);
 					emit regionChanged(mRegion.min,mRegion.max,mLocatorPos > mRegion.min);
-					emit requestRefresh();	
+					_container->needUpdate();	
 					return;
 				}
 				case DraggingEndRegion:
@@ -250,7 +250,7 @@ namespace CLAM
 					ttip = "Cue:"+QString::number(mRegion.max,'f',2);
 					_container->setToolTip(ttip);
 					emit regionChanged(mRegion.min,mRegion.max,mLocatorPos > mRegion.min);
-					emit requestRefresh();	
+					_container->needUpdate();	
 					return;
 				}
 				case DraggingLocator:

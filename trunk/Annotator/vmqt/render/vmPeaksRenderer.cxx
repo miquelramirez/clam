@@ -47,7 +47,7 @@ namespace CLAM
 		{
 			mCpoint = cpoint;
 			mCline = cline;
-			requestRefresh();
+			_container->needUpdate();
 		}
 
 		void PeaksRenderer::Render()

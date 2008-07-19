@@ -70,7 +70,7 @@ namespace CLAM
 			mSegmentation->current(index);
 			mCurrentSegment = mSegmentation->current();
 			emit currentSegmentChanged();
-			emit requestRefresh();	
+			_container->needUpdate();	
 		}
 
 		void SegmentEditor::allowChangeCurrent(bool allow)
@@ -136,7 +136,7 @@ namespace CLAM
 						.arg(units)
 						;
 					_container->setToolTip(ttip);
-					emit requestRefresh();	
+					_container->needUpdate();	
 					return;
 				case DraggingOffset:
 					mSegmentation->dragOffset(mDraggedSegment,x);
@@ -146,7 +146,7 @@ namespace CLAM
 						.arg(units)
 						;
 					_container->setToolTip(ttip);
-					emit requestRefresh();	
+					_container->needUpdate();	
 					return;
 				case DraggingBody:
 					_container->rendererWorking(mKey,true);
@@ -210,7 +210,7 @@ namespace CLAM
 			if(mKeyboard.key_insert)
 			{
 				unsigned index = mSegmentation->insert(x);
-				emit requestRefresh();
+				_container->needUpdate();
 				emit segmentInserted(index);
 #ifdef __SEGMENT_EDITOR__DEBUG__
 				std::cout << "Inserted segment at index  " << index << std::endl;
@@ -261,7 +261,7 @@ namespace CLAM
 					std::cout << "Current segment is " << index << std::endl;
 #endif
 				}
-				emit requestRefresh();	
+				_container->needUpdate();	
 				return;
 			}
 		}
@@ -318,7 +318,7 @@ namespace CLAM
 					unsigned index = mSegmentation->current();
 					mSegmentation->remove(index);
 					if(mSegmentation->onsets().size() == nSegments) return; // Remove was ignored
-					emit requestRefresh();
+					_container->needUpdate();
 					emit segmentDeleted(index);
 					emit currentSegmentChanged();
 					mCurrentSegment = mSegmentation->current();

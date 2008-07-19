@@ -44,7 +44,7 @@ namespace CLAM
 		void Renderer2D::SetEnabled(bool enabled)
 		{
 			mEnabled = enabled;
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void Renderer2D::SetGrid(Grid* grid)

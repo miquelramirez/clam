@@ -59,7 +59,7 @@ namespace CLAM
 			mLineColor = cline;
 			mHandlerColor = chandler;
 			mRebuildglList = true;
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void BPFEditor::SetFlags(int flags)
@@ -186,7 +186,7 @@ namespace CLAM
 					Update(x,y);
 					_container->setToolTip(GetToolTip(double(mBPF->GetXValue(mCurrentIndex)),
 											double(mBPF->GetValueFromIndex(mCurrentIndex))));
-					emit requestRefresh();	
+					_container->needUpdate();	
 					return;
 				default:
 					// Just continue below
@@ -253,7 +253,7 @@ namespace CLAM
 					{
 						ChooseCurrentPoint(0);
 					}
-					emit requestRefresh();
+					_container->needUpdate();
 					break;
 				case Qt::Key_Control:
 					mKeyboard.key_ctrl = true;
@@ -509,7 +509,7 @@ namespace CLAM
 			if(!mEnabled || !mBPF->Size()) return;
 			mRebuildglList = true;
 			mCurrentIndex = index;
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void BPFEditor::MoveCurrentPointdx(double dx)
@@ -543,7 +543,7 @@ namespace CLAM
 				}
 			}
 			mBPF->SetXValue(mCurrentIndex,x);
-			emit requestRefresh();
+			_container->needUpdate();
 			emit xValueChanged(mKey,mCurrentIndex,mBPF->GetXValue(mCurrentIndex));
 		}
 
@@ -567,7 +567,7 @@ namespace CLAM
 				}
 			}
 			mBPF->SetValue(mCurrentIndex,y);
-			emit requestRefresh();
+			_container->needUpdate();
 			emit yValueChanged(mKey,mCurrentIndex,mBPF->GetValueFromIndex(mCurrentIndex));
 		}
 

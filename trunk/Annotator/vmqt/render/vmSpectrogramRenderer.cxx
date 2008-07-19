@@ -55,13 +55,13 @@ namespace CLAM
 		void SpectrogramRenderer::colorSonogram()
 		{
 			mColormap = COLOR_SONOGRAM;
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void SpectrogramRenderer::blackWhiteSonogram()
 		{
 			mColormap = BW_SONOGRAM;
-			emit requestRefresh();
+			_container->needUpdate();
 		}
 
 		void SpectrogramRenderer::Render()

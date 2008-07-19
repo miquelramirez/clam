@@ -110,7 +110,6 @@ namespace CLAM
 			Renderer2D* rd = GetRenderer(key);
 			if(!rd) return false;
 			rd->setContainer(this);
-			connect(rd,SIGNAL(requestRefresh()),this,SLOT(needUpdate()));
 			rd->SetXRange(mXRange.min,mXRange.max);
 			rd->SetYRange(mYRange.min,mYRange.max);
 			rd->SetKey(key);
