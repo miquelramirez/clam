@@ -31,6 +31,10 @@ namespace CLAM
 {
 	namespace VM
 	{
+		class Grid;
+		class Locator;
+		class DataArrayRenderer;
+
 		class AudioStereoPlot : public MultiDisplayPlot
 		{
 			Q_OBJECT
@@ -66,6 +70,13 @@ namespace CLAM
 			void CreateDisplay();
 			void InitAudioStereoPlot();
 			std::pair<int,int> GetZoomSteps(TSize size);
+			Grid * _grid0;
+			Grid * _grid1;
+			DataArrayRenderer * _channel0;
+			DataArrayRenderer * _channel1;
+		protected:
+			Locator * _locator0;
+			Locator * _locator1;
 		};
 	}
 }

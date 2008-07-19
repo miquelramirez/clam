@@ -216,12 +216,15 @@ namespace CLAM
 
 			mLayout->addLayout(layout,3,1);
 			
-			connect(static_cast<Locator*>(mPlot->GetRenderer("locator")),
-					SIGNAL(selectedRegion(double,double)),mBPFPlayer,SLOT(timeBounds(double,double)));
-			connect(mBPFPlayer,SIGNAL(playingTime(double)),
-					static_cast<Locator*>(mPlot->GetRenderer("locator")),SLOT(updateLocator(double)));
-			connect(mBPFPlayer,SIGNAL(stopTime(double,bool)),
-					static_cast<Locator*>(mPlot->GetRenderer("locator")),SLOT(updateLocator(double,bool)));
+			connect(
+				_locator, SIGNAL(selectedRegion(double,double)),
+				mBPFPlayer, SLOT(timeBounds(double,double)));
+			connect(
+				mBPFPlayer, SIGNAL(playingTime(double)),
+				_locator, SLOT(updateLocator(double)));
+			connect(
+				mBPFPlayer, SIGNAL(stopTime(double,bool)),
+				_locator, SLOT(updateLocator(double,bool)));
 			connect(mSchemaComboBox,SIGNAL(activated(int)),this,SLOT(set_color_schema(int)));
 			connect(mCurrentBPFComboBox,SIGNAL(currentIndexChanged(QString)),this,SLOT(setCurrentBPF(QString)));
 			connect(mShowGrid,SIGNAL(stateChanged(int)),this,SLOT(show_grid(int)));

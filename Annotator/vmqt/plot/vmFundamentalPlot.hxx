@@ -29,6 +29,8 @@ namespace CLAM
 {
 	namespace VM
 	{
+		class DataArrayRenderer;
+
 		class FundamentalPlot : public SegmentationPlot
 		{
 		public:
@@ -50,6 +52,7 @@ namespace CLAM
 			void SetZoomSteps(int hsteps, int vsteps);
 
 			DataArray GetFundData(const Segment& segment);
+			DataArrayRenderer * _fundamental;
 		};
 	}
 }

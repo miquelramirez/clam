@@ -28,6 +28,8 @@ namespace CLAM
 {
 	namespace VM
 	{
+		class BPFEditor;
+
 		class PlayableBPFPlot : public PlayableMultiBPFPlot
 		{
 			Q_OBJECT
@@ -53,14 +55,11 @@ namespace CLAM
 			void yvalue_changed(QString, unsigned, double);
 			void element_added(QString, unsigned, double, double);
 			void element_removed(QString, unsigned);
-			void setCurrentBPF(QString);
 
 		private:
-			void AddBPF(const QString& key, BPF* bpf);
-			void SetColors(const QString& key, const QColor& cline, const QColor& chandler);
-			void SetFlags(const QString& key, int flags);
-
 			void InitPlayableBPFPlot();
+
+			BPFEditor * _bpfEditor;
 		};
 	}
 }

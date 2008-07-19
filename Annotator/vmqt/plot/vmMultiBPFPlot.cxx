@@ -34,8 +34,8 @@ namespace CLAM
 			, mIsReadOnly(false)
 			, mCurrentBPF("")
 		{
-			mGrid = new Grid;
-			mPlot->AddRenderer("grid", mGrid);
+			_grid = new Grid;
+			mPlot->AddRenderer("grid", _grid);
 			mPlot->SendToBack("grid");
 			backgroundWhite();
 		}
@@ -59,7 +59,7 @@ namespace CLAM
 				mPlot->SendToBack("grid");
 				mPlot->BringToFront("segmentation");
 				mPlot->BringToFront("locator");
-				mPlot->GetRenderer(key)->SetGrid(mGrid);
+				bpfEditor->SetGrid(_grid);
 				bpfEditor->SetData(bpf);
 				if(mIsReadOnly) bpfEditor->SetFlags(0);
 				mBPFKeys[key]=bpfEditor->GetFlags();
@@ -91,7 +91,7 @@ namespace CLAM
 			
 		void MultiBPFPlot::SetGridSteps(double xstep, double ystep)
 		{
-			mGrid->SetGridSteps(xstep,ystep);
+			_grid->SetGridSteps(xstep,ystep);
 //			mXRuler->SetStep(xstep);
 //			mYRuler->SetStep(ystep);
 		}
@@ -99,23 +99,23 @@ namespace CLAM
 		void MultiBPFPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			mGrid->SetGridColor(QColor(152,102,32));
+			_grid->SetGridColor(QColor(152,102,32));
 		}
 
 		void MultiBPFPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
-			mGrid->SetGridColor(QColor(255,255,0));
+			_grid->SetGridColor(QColor(255,255,0));
 		}
 
 		void MultiBPFPlot::showGrid(bool show)
 		{
-			mGrid->ShowGrid(show);
+			_grid->ShowGrid(show);
 		}
 
 		void MultiBPFPlot::snapToGrid(bool snap)
 		{
-			mGrid->SnapToGrid(snap);
+			_grid->SnapToGrid(snap);
 		}
 
 		void MultiBPFPlot::readOnly()

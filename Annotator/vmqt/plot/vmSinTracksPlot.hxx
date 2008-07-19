@@ -29,6 +29,8 @@ namespace CLAM
 {
 	namespace VM
 	{
+		class SinTracksRenderer;
+
 		class SinTracksPlot : public SegmentationPlot
 		{
 		public:
@@ -46,6 +48,8 @@ namespace CLAM
 
 			std::pair<int,int> GetZoomSteps(TSize size, TData yrange);
 			Array<SpectralPeakArray> GetPeakMatrix(const Segment& in);
+
+			SinTracksRenderer * _sintracks;
 		};
 	}
 }

@@ -78,7 +78,7 @@ namespace CLAM
 			mHScroll->setPalette(Qt::white);
 			mVScroll->setPalette(Qt::white);
 			mPlot->SetBackgroundColor(QColor(255,255,255));
-			mLocator->SetLocatorColor(QColor(250,160,30));
+			_locator->SetLocatorColor(QColor(250,160,30));
 		}
 
 		void SegmentationPlot::backgroundBlack()
@@ -91,7 +91,7 @@ namespace CLAM
 			mHScroll->setPalette(Qt::darkGreen);
 			mVScroll->setPalette(Qt::darkGreen);
 			mPlot->SetBackgroundColor(QColor(0,0,0));
-			mLocator->SetLocatorColor(QColor(255,0,0));
+			_locator->SetLocatorColor(QColor(255,0,0));
 		}
 
 		void SegmentationPlot::setCurrentSegmentFollowsPlay(bool active)
@@ -102,13 +102,13 @@ namespace CLAM
 
 		void SegmentationPlot::updateLocator(double value)
 		{
-			mLocator->updateLocator(value);
+			_locator->updateLocator(value);
 			mSegmentation->checkCurrent(value);
 		}
 
 		void SegmentationPlot::updateLocator(double value, bool flag)
 		{
-			mLocator->updateLocator(value,flag);
+			_locator->updateLocator(value,flag);
 			mSegmentation->checkCurrent(value);
 		}
 
@@ -148,8 +148,8 @@ namespace CLAM
 			mVScroll = new ScrollGroup(CLAM::VM::eVertical,this);
 
 			mPlot = new Plot2D(this);
-			mLocator =  new Locator();
-			mPlot->AddRenderer("locator", mLocator);
+			_locator =  new Locator();
+			mPlot->AddRenderer("locator", _locator);
 			mSegmentation = new SegmentEditor();
 			mPlot->AddRenderer("segmentation", mSegmentation);
 			mPlot->BringToFront("locator");
@@ -186,7 +186,7 @@ namespace CLAM
 
 			connect(mPlot, SIGNAL(hBoundsChanged(double,double)),this, SIGNAL(visibleXRangeChanged(double,double)));
 			
-			connect(mLocator,SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
+			connect(_locator,SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));
 
 			connect(mSegmentation,SIGNAL(segmentOnsetChanged(unsigned,double)),
 					this,SIGNAL(segmentOnsetChanged(unsigned,double)));

@@ -80,7 +80,7 @@ namespace CLAM
 			Plot2D*      mPlot;
 			Ruler*       mXRuler;
 			Ruler*       mYRuler;
-			Locator*       mLocator;
+			Locator*       _locator;
 			SegmentEditor* mSegmentation;
 			bool mCurrentSegmentFollowsPlay;
 

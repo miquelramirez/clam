@@ -47,25 +47,26 @@ namespace CLAM
 				std::pair<int, int> zoom_steps = GetZoomSteps(segment.GetnFrames(),segment.GetSamplingRate()/2.0);
 				SetZoomSteps(zoom_steps.first,zoom_steps.second);
 			}
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("fundamental"))->SetHugeModeEnabled(false);
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("fundamental"))->SetData(GetFundData(segment));
+			_fundamental->SetHugeModeEnabled(false);
+			_fundamental->SetData(GetFundData(segment));
 		}
 
 		void FundamentalPlot::backgroundWhite()
 		{
 			SegmentationPlot::backgroundWhite();
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("fundamental"))->SetDataColor(QColor(0,0,255));
+			_fundamental->SetDataColor(QColor(0,0,255));
 		}
 
 		void FundamentalPlot::backgroundBlack()
 		{
 			SegmentationPlot::backgroundBlack();
-			static_cast<DataArrayRenderer*>(mPlot->GetRenderer("fundamental"))->SetDataColor(QColor(0,255,0));
+			_fundamental->SetDataColor(QColor(0,255,0));
 		}
 
 		void FundamentalPlot::InitFundamentalPlot()
 		{
-			mPlot->AddRenderer("fundamental", new DataArrayRenderer());
+			_fundamental = new DataArrayRenderer();
+			mPlot->AddRenderer("fundamental", _fundamental);
 			mPlot->SendToBack("fundamental");
 			mPlot->BringToFront("locator");
 //			mXRuler->SetStep(0.01);
