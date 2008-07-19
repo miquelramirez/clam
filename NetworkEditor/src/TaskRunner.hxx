@@ -92,6 +92,7 @@ public:
 
 signals:
 	void taskDone(bool success);
+	void widgetDestructed();
 private slots:
 	void dumpError()
 	{

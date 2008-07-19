@@ -23,5 +23,9 @@
 
 TaskRunner::~TaskRunner()
 {
+	_queuedCommandsList.clear();
+	_process->terminate();
+	_process->waitForFinished(5000);
+	emit widgetDestructed();
 }
 

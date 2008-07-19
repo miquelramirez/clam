@@ -267,11 +267,13 @@ public:
 	}
 
 private:
-	bool runQueuedCommands(TaskRunner::CommandsAndEnvironmentsList & commandsQList, const char * slotEndName=NULL, bool stopOnError=true)
+	bool runQueuedCommands(TaskRunner::CommandsAndEnvironmentsList & commandsQList, const char * slotFinishedQueueName=NULL, const char * slotWidgetClosedName=NULL, bool stopOnError=true)
 	{
 		TaskRunner * runner = new TaskRunner();
-		if (slotEndName)
-			connect(runner, SIGNAL(taskDone(bool)), this, slotEndName);
+		if (slotFinishedQueueName)
+			connect(runner, SIGNAL(taskDone(bool)), this, slotFinishedQueueName);
+		if (slotWidgetClosedName)
+			connect(runner, SIGNAL(widgetDestructed()),this,slotWidgetClosedName);
 		addDockWidget( Qt::BottomDockWidgetArea, runner);
 		// Wait the window to be redrawn after the reconfiguration
 		// before loading the cpu with the extractor
@@ -299,19 +301,15 @@ public slots:
 		ui.action_Compile_Faust_Modules->setEnabled(true);
 		statusBar()->clearMessage();
 		if (done)
-		{
 			on_action_Reload_Faust_Modules_triggered();
-			QMessageBox::information(this, tr("Faust compilation done!"),
-				tr(
-					"<p>Faust modules compilation is done!</p>\n"));
-		}
-		else
-		{
-			QMessageBox::critical(this, tr("Faust compilation failed!"),
-				tr(
-					"<p>Faust modules compilation failed</p>\n"));
-		}
 	}
+
+	void closeCompilationWidget()
+	{
+		ui.action_Compile_Faust_Modules->setEnabled(true);
+	}
+
+
 	void on_action_Embed_SVG_Diagrams_Option_changed()
 	{
 		QAction *action = qobject_cast<QAction *>(sender());
@@ -509,8 +507,9 @@ public slots:
 		commandsQList.append(command);
 
 		statusBar()->showMessage("Compiling faust modules...");
-		const char * slotEnd = SLOT(endCompilationFaust(bool));
-		bool ok = runQueuedCommands(commandsQList,slotEnd);
+		const char * slotFinishedQueue = SLOT(endCompilationFaust(bool));
+		const char * slotCloseWidget = SLOT(closeCompilationWidget());
+		bool ok = runQueuedCommands(commandsQList,slotFinishedQueue,slotCloseWidget);
 		if(!ok)
 		{
 			QMessageBox::critical(this, tr("Compiling Faust modules"),
