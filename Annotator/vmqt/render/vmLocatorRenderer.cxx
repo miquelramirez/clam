@@ -21,6 +21,7 @@
 
 #include "CLAMGL.hxx"
 #include "vmLocatorRenderer.hxx"
+#include "vmPlot2D.hxx"
 
 namespace CLAM
 {
@@ -190,7 +191,7 @@ namespace CLAM
 			if(mUpdatingLocator) return;
 			mEditionMode = Idle;
 			emit working(mKey,false);
-			emit cursorChanged(QCursor(Qt::ArrowCursor));
+			_container->setCursor(Qt::ArrowCursor);
 			double zoom_ref = (mRegion.min == mRegion.max) ? mLocatorPos : mRegion.min+mRegion.Span()/2.0;
 			emit hZoomRef(zoom_ref);
 			(zoom_ref == mLocatorPos) 
@@ -208,7 +209,7 @@ namespace CLAM
 				mEditionMode = Idle;
 				emit working(mKey,true);
 				emit toolTip(ttip);
-				emit cursorChanged(QCursor(Qt::ArrowCursor));
+				_container->setCursor(Qt::ArrowCursor);
 				return;
 			}
 			switch (mEditionMode)
@@ -262,7 +263,7 @@ namespace CLAM
 				default:
 					emit working(mKey,false);
 					emit toolTip(ttip);
-					emit cursorChanged(QCursor(Qt::ArrowCursor));
+					_container->setCursor(Qt::ArrowCursor);
 					break;
 			}
 			double tolerance = double(TOLERANCE)*(mView.right-mView.left)/double(mViewport.w);
@@ -273,14 +274,14 @@ namespace CLAM
 					emit working(mKey,true);
 					ttip = "Cue:"+QString::number(mLocatorPos,'f',2);
 					emit toolTip(ttip);
-					emit cursorChanged(QCursor(Qt::SizeHorCursor));
+					_container->setCursor(Qt::SizeHorCursor);
 				}
 				else
 				{
 					mEditionMode = Idle;
 					emit working(mKey,false);
 					emit toolTip(ttip);
-					emit cursorChanged(QCursor(Qt::ArrowCursor));
+					_container->setCursor(Qt::ArrowCursor);
 				}
 				return;
 			}
@@ -289,7 +290,7 @@ namespace CLAM
 				emit working(mKey,true);
 				ttip = "Cue:"+QString::number(mRegion.min,'f',2);
 				emit toolTip(ttip);
-				emit cursorChanged(QCursor(Qt::SizeHorCursor));
+				_container->setCursor(Qt::SizeHorCursor);
 				return;
 			}
 			if(PickEndRegion(x,tolerance)) 
@@ -297,7 +298,7 @@ namespace CLAM
 				emit working(mKey,true);
 				ttip = "Cue:"+QString::number(mRegion.max,'f',2);
 				emit toolTip(ttip);
-				emit cursorChanged(QCursor(Qt::SizeHorCursor));
+				_container->setCursor(Qt::SizeHorCursor);
 				return;
 			}
 		}

@@ -100,7 +100,6 @@ namespace CLAM
 		private slots:
 			void updateRenderers();
 			void updateHZoomRef(double);
-			void changeCursor(QCursor);
 			void setToolTip(QString);
 			void rendererWorking(QString,bool);
 
