@@ -50,6 +50,7 @@ public:
 		_closeButton=buttonBox->button(QDialogButtonBox::Close);
 		_cancelButton->setEnabled(true);
 		_closeButton->setEnabled(false);
+		//TODO: make a slot which first properly terminate the running process, if exists
 		connect(_closeButton, SIGNAL(clicked()), this, SLOT(close()));
 		QVBoxLayout * mainBox=new QVBoxLayout();
 		mainBox->addWidget(_OutputDisplay);
