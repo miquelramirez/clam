@@ -208,7 +208,7 @@ namespace CLAM
 			{
 				mEditionMode = Idle;
 				emit working(mKey,true);
-				emit toolTip(ttip);
+				_container->setToolTip(ttip);
 				_container->setCursor(Qt::ArrowCursor);
 				return;
 			}
@@ -227,7 +227,7 @@ namespace CLAM
 					else
 						if(mLocatorPos <= mRegion.min) mLocatorPos = mRegion.min;
 					ttip = "Cue:"+QString::number(mRegion.min,'f',2);
-					emit toolTip(ttip);
+					_container->setToolTip(ttip);
 					emit regionChanged(mRegion.min,mRegion.max,mLocatorPos > mRegion.min);
 					emit requestRefresh();	
 					return;
@@ -245,7 +245,7 @@ namespace CLAM
 					else
 						if(mLocatorPos >= mRegion.max) mLocatorPos = mRegion.max;
 					ttip = "Cue:"+QString::number(mRegion.max,'f',2);
-					emit toolTip(ttip);
+					_container->setToolTip(ttip);
 					emit regionChanged(mRegion.min,mRegion.max,mLocatorPos > mRegion.min);
 					emit requestRefresh();	
 					return;
@@ -256,13 +256,13 @@ namespace CLAM
 					if(x > mXRange.max) x = mXRange.max;
 					mRegion.min = mRegion.max = mLocatorPos = x;
 					ttip = "Cue:"+QString::number(mLocatorPos,'f',2);
-					emit toolTip(ttip);
+					_container->setToolTip(ttip);
 					emit regionChanged(mLocatorPos,mLocatorPos,false);
 					return;
 				}
 				default:
 					emit working(mKey,false);
-					emit toolTip(ttip);
+					_container->setToolTip(ttip);
 					_container->setCursor(Qt::ArrowCursor);
 					break;
 			}
@@ -273,14 +273,14 @@ namespace CLAM
 				{
 					emit working(mKey,true);
 					ttip = "Cue:"+QString::number(mLocatorPos,'f',2);
-					emit toolTip(ttip);
+					_container->setToolTip(ttip);
 					_container->setCursor(Qt::SizeHorCursor);
 				}
 				else
 				{
 					mEditionMode = Idle;
 					emit working(mKey,false);
-					emit toolTip(ttip);
+					_container->setToolTip(ttip);
 					_container->setCursor(Qt::ArrowCursor);
 				}
 				return;
@@ -289,7 +289,7 @@ namespace CLAM
 			{
 				emit working(mKey,true);
 				ttip = "Cue:"+QString::number(mRegion.min,'f',2);
-				emit toolTip(ttip);
+				_container->setToolTip(ttip);
 				_container->setCursor(Qt::SizeHorCursor);
 				return;
 			}
@@ -297,7 +297,7 @@ namespace CLAM
 			{
 				emit working(mKey,true);
 				ttip = "Cue:"+QString::number(mRegion.max,'f',2);
-				emit toolTip(ttip);
+				_container->setToolTip(ttip);
 				_container->setCursor(Qt::SizeHorCursor);
 				return;
 			}
@@ -340,7 +340,7 @@ namespace CLAM
 
 		void Locator::LeaveEvent()
 		{
-			emit toolTip("");
+			_container->setToolTip("");
 		}
 
 		int Locator::DrawRegionMode()

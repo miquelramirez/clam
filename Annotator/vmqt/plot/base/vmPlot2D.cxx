@@ -113,7 +113,6 @@ namespace CLAM
 			connect(rd,SIGNAL(requestUpdate()),this,SLOT(updateRenderers()));
 			connect(rd,SIGNAL(requestRefresh()),this,SLOT(needUpdate()));
 			connect(rd,SIGNAL(hZoomRef(double)),this,SLOT(updateHZoomRef(double)));
-			connect(rd,SIGNAL(toolTip(QString)),this,SLOT(setToolTip(QString)));
 			connect(rd,SIGNAL(working(QString,bool)),this,SLOT(rendererWorking(QString,bool)));
 			rd->SetXRange(mXRange.min,mXRange.max);
 			rd->SetYRange(mYRange.min,mYRange.max);
