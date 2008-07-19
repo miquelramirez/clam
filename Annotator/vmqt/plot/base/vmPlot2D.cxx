@@ -110,9 +110,7 @@ namespace CLAM
 			Renderer2D* rd = GetRenderer(key);
 			if(!rd) return false;
 			rd->setContainer(this);
-			connect(rd,SIGNAL(requestUpdate()),this,SLOT(updateRenderers()));
 			connect(rd,SIGNAL(requestRefresh()),this,SLOT(needUpdate()));
-			connect(rd,SIGNAL(working(QString,bool)),this,SLOT(rendererWorking(QString,bool)));
 			rd->SetXRange(mXRange.min,mXRange.max);
 			rd->SetYRange(mYRange.min,mYRange.max);
 			rd->SetKey(key);
@@ -344,6 +342,7 @@ namespace CLAM
 
 		void Plot2D::rendererWorking(QString key,bool working)
 		{
+			// TODO: Maybe using the evend handling system is enough
 			Renderers::iterator it = mRenderers.begin();
 			if(working)
 			{

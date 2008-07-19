@@ -83,6 +83,7 @@ namespace CLAM
 			void setToolTip(QString);
 			void setHZoomPivot(double);
 			void rendererWorking(QString,bool);
+			void updateRenderers();
 
 		protected slots:
 			// This slot is calle whenever an updateGl is needed.
@@ -100,8 +101,6 @@ namespace CLAM
 			void enterEvent(QEvent* e);
 			void leaveEvent(QEvent* e);
 
-		private slots:
-			void updateRenderers();
 
 		protected:
 			QColor mBgColor;

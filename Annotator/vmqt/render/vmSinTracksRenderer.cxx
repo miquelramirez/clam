@@ -22,6 +22,7 @@
 #include "CLAMGL.hxx"
 #include "vmSinTracksBuilder.hxx"
 #include "vmSinTracksRenderer.hxx"
+#include "vmPlot2D.hxx"
 
 namespace CLAM
 {
@@ -44,7 +45,7 @@ namespace CLAM
 			mPeakMtxSize = peakMtx.Size();
 			SinTracksBuilder tbuilder;
 			mTracks = tbuilder.GetTracks(peakMtx);
-			emit requestUpdate();
+			_container->updateRenderers();
 		}
 
 		void SinTracksRenderer::Render()

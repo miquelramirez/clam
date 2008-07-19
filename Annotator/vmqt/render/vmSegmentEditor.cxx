@@ -58,7 +58,7 @@ namespace CLAM
 			mSegmentation = s;
 			if(!mSegmentation) return;
 			mCurrentSegment = mSegmentation->current();
-			emit requestUpdate();
+			_container->updateRenderers();
 		}
 
 		void SegmentEditor::checkCurrent(double xpos)

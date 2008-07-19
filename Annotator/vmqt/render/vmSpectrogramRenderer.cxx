@@ -22,6 +22,7 @@
 #include "CLAMGL.hxx"
 #include "vmSonogramBuilder.hxx"
 #include "vmSpectrogramRenderer.hxx"
+#include "vmPlot2D.hxx"
 
 namespace CLAM
 {
@@ -46,7 +47,7 @@ namespace CLAM
 			mBlackWhiteData.clear();
 			SonogramBuilder sbuilder;
 			sbuilder.MakeSonogram(specMtx,mComputedData,mColorData,mBlackWhiteData);
-			emit requestUpdate();
+			_container->updateRenderers();
 			emit fixedLabels(QString::number(specMtx[0].GetSpectralRange(),'f',0),
 							 QString::number(mComputedData.size()));
 		}
