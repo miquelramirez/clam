@@ -45,6 +45,7 @@ namespace CLAM
 
 			void SetGrid(Grid* grid);
 			void setContainer(Plot2D * container) { _container = container; }
+			virtual void SetEnabled(bool enabled);
 
 		signals:
 			void requestRefresh();
@@ -55,7 +56,6 @@ namespace CLAM
 			void working(QString,bool);
 
 		protected:
-			virtual void SetEnabled(bool enabled);
 			virtual void Render()=0;
 			virtual void SetXRange(double xmin, double xmax);
 			virtual void SetYRange(double ymin, double ymax);
