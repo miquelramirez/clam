@@ -36,6 +36,12 @@ namespace CLAM
 
 		class Renderer2D;
 
+		/**
+		 * 	A Plot2D is an OpenGl surface for a 2D plot.
+		 * 	The plot is conformed by two coordinates axis
+		 * 	and the content is drawn by a stack of interactive
+		 * 	layers, called Renderer2D's.
+		 */
 		class Plot2D : public QGLWidget
 		{
 			typedef std::map<QString, Renderer2D*> Renderers;
@@ -80,11 +86,20 @@ namespace CLAM
 			void updateVScrollValue(int);
 			void setHBounds(double, double);
 			void setVBounds(double, double);
+		public:
+			// Renderer interface
+			/** Sets the tooltip text. If an empty string is given,
+			 * the tooltip is disabled. */
 			void setToolTip(QString);
+			/** Sets the location to center the zoom on */
 			void setHZoomPivot(double);
-			void rendererWorking(QString,bool);
+			/** Makes further events to be captured just by the 
+			 * given renderer. Other renderers will ignore events. */
+			void rendererWorking(QString key, bool isWorking);
 			void updateRenderers();
-			// This slot is called whenever an updateGl is needed.
+			/** Marks the plot to be updated when the cpu is free.
+			* Several calls to this method wihout update are safely
+			* ignored. */
 			void needUpdate();
 
 		protected:
@@ -128,7 +143,8 @@ namespace CLAM
 			std::pair<int,int>   mMousePos;
 			std::vector<QString> mDrawOrder;
 
-			void Draw();
+		private:
+			void DrawRenderers();
 			void RenderToolTip();
 			void ClearRenderers();
 			bool ExistRenderer(const QString& key);

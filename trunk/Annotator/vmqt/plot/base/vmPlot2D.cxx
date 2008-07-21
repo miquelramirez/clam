@@ -234,7 +234,7 @@ namespace CLAM
 			glEnable (GL_LINE_SMOOTH);
 			glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glHint (GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
-			Draw();
+			DrawRenderers();
 			RenderToolTip(); 
 			swapBuffers();
 			mUpdatePending=0;
@@ -341,7 +341,7 @@ namespace CLAM
 
 		void Plot2D::rendererWorking(QString key,bool working)
 		{
-			// TODO: Maybe using the evend handling system is enough
+			// TODO: Maybe using the event handling system is enough
 			Renderers::iterator it = mRenderers.begin();
 			if(working)
 			{
@@ -361,7 +361,7 @@ namespace CLAM
 			}
 		}
 
-		void Plot2D::Draw()
+		void Plot2D::DrawRenderers()
 		{
 			std::vector<QString>::iterator it = mDrawOrder.begin();
 			for(; it != mDrawOrder.end(); it++) mRenderers[(*it)]->Render();
