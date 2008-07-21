@@ -748,11 +748,11 @@
         <file>images/hslider.png</file>
         <file>images/firstperson.svg</file>
         <file>images/spectrogram.svg</file>
-	<file>images/sink.svg</file>
-	<file>images/source.svg</file>
-	<file>images/faustlogo.svg</file>
-	<file>images/faust_compile.png</file>
-	<file>images/reload.svg</file>
+        <file>images/sink.svg</file>
+        <file>images/source.svg</file>
+        <file>images/faustlogo.svg</file>
+        <file>images/faust_compile.svg</file>
+        <file>images/reload.svg</file>
     </qresource>
     <qresource prefix="/interfaces" >
         <file>prototyper/DefaultInterface.ui</file>
