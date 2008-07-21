@@ -270,6 +270,7 @@ private:
 	bool runQueuedCommands(TaskRunner::CommandsAndEnvironmentsList & commandsQList, const char * slotFinishedQueueName=NULL, const char * slotWidgetClosedName=NULL, bool stopOnError=true)
 	{
 		TaskRunner * runner = new TaskRunner();
+		runner->setWindowTitle(tr("Faust compilation"));
 		if (slotFinishedQueueName)
 			connect(runner, SIGNAL(taskDone(bool)), this, slotFinishedQueueName);
 		if (slotWidgetClosedName)
