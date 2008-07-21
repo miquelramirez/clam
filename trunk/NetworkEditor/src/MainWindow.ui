@@ -350,7 +350,7 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/faust_compile.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/faust_compile.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Recompile Faust modules</string>
