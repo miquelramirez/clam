@@ -1,10 +1,10 @@
 from Pool import *
 from Schema import *
 from Aggregator import *
-import Cache
-import ServiceStub
 import shelve
 import os
+
+
 
 class FileMetadataSource :
 	class SongNotFoundException :
@@ -43,7 +43,7 @@ class FileMetadataSource :
 			try :
 				return Pool(file(self._poolPath(id)))
 			except IOError, e : pass # Not found
-		path = self._downloadSong(id)
+		path=id
 		linkName = os.path.join(self.path, id)
 		try :
 			os.symlink(path, linkName)
@@ -54,22 +54,6 @@ class FileMetadataSource :
 			return Pool(file(self._poolPath(id)))
 		except IOError, e : pass # Not found
 		raise FileMetadataSource.SongNotFoundException(id)
-
-	def _downloadSong(self, id) :
-		# TODO: Maybe this should be abstrated somewhere else. We are doing it all the time
-		contentLocator = ServiceStub.ContentLocator("http://simacservices.iua.upf.edu/ContentLocator")
-		locations = contentLocator.LocateId( id )
-		if locations == "ServerError": #Stop execution
-			raise "Service error\nThe server is not working properly, a ServerError was received."
-		elif locations == "NotFound": #Ignore song
-			raise FileMetadataSource.SongNotFoundException(id)
-		cache = Cache.Cache()
-		for url in locations.splitlines() :
-			cache.DownloadUrl(url)
-			path = cache.PathForUrl(url)
-			if os.path.exists(path) : return path
-		raise FileMetadataSource.SongNotFoundException(id)
-
 
 	def QuerySchema(self) :
 		return self.schema
