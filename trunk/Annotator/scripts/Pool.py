@@ -35,7 +35,7 @@ class Pool :
 	def __init__(self, file=None) :
 		if file is None:
 			file = cStringIO.StringIO("<DescriptorsPool/>")
-		self.doc = Sax2.Reader().fromStream(file);
+		self.doc = Sax2.Reader().fromStream(file)
 
 	def Dump(self, file=sys.stdout):
 		xml.dom.ext.PrettyPrint(self.doc, file)
@@ -74,6 +74,9 @@ class Pool :
 			raise Pool.Exception("Attribute '"+scope+"::"+name+"' not found")
 		sourceSize = source.GetScopeSize(scope)
 		self.AssureScopeWithPopulation(targetScope, sourceSize)
+		try :
+			self.RemoveAttribute(targetScope, targetName)
+		except : pass # if it does not exist that's ok
 		self._InsertNode(nodesToMove, targetScope, targetName)
 
 	def _InsertNode(self, nodesToMove, scope, name = None) :
@@ -106,5 +109,16 @@ class Pool :
 			"Requested size for scope '"+ scope +
 			"' was " + str(population) +
 			" but it is actually " + str(actualSize))
+
+	def PresentAttributes(self) :
+		ids=[]
+		path = '//ScopePool/@name'
+		for scopeNode in \
+				xml.xpath.Evaluate(path, self.doc.documentElement):
+			path = '//ScopePool[@name="%s"]/AttributePool/@name'%scopeNode.value
+			for attributeNode in \
+				xml.xpath.Evaluate(path, self.doc.documentElement):
+				ids.append(str(scopeNode.value+"::"+attributeNode.value))
+		return ids
 
 
