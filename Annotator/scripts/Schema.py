@@ -16,11 +16,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+import sys
+# Kludge: Ubuntu prefers the standard xml module which doesn't contain xpath
+sys.path.append('/usr/lib/python2.5/site-packages/oldxml')
+import xml.xpath
 
-from xml import xpath
 from xml.dom.ext.reader import Sax2
 import xml.dom.ext 
-import sys
 from cStringIO import StringIO
 
 class Schema :
@@ -41,7 +43,7 @@ class Schema :
 
 	def SelectAttribute(self, scope, name) :
 		path = '//Attribute[@scope="%s" and @name="%s"]'%(scope,name)
-		return xpath.Evaluate(path, self.doc.documentElement)
+		return xml.xpath.Evaluate(path, self.doc.documentElement)
 
 	def InsertAttribute(self, source, scope, name, targetScope, targetName=None) :
 		nodesToMove = source.SelectAttribute(scope,name)
@@ -52,13 +54,13 @@ class Schema :
 		newAttribute.setAttribute("scope", targetScope)
 		if targetName != None : 
 			newAttribute.setAttribute("name", targetName)
-		xpath.Evaluate("//Attributes", self.doc)[0].appendChild(newAttribute)
+		xml.xpath.Evaluate("//Attributes", self.doc)[0].appendChild(newAttribute)
 
 	def RemoveAttribute(self, scope, name) :
 		nodesToRemove = self.SelectAttribute(scope,name)
 		if len(nodesToRemove)!=1 :
 			raise Schema.Exception("Attribute '"+scope+"::"+name+"' not found")
-		xpath.Evaluate("//Attributes", self.doc)[0].removeChild(nodesToRemove[0])
+		xml.xpath.Evaluate("//Attributes", self.doc)[0].removeChild(nodesToRemove[0])
 
 
 
