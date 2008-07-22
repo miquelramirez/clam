@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DescriptorsPool>
+  <ScopePool name='File' size='1'>
+    <AttributePool name='Singer'>Artist 2</AttributePool>
+    <AttributePool name='Name'>Title 2</AttributePool>
+    <AttributePool name='Style'>
+      <RestrictedString>
+        <String>Folk</String>
+      </RestrictedString>
+    </AttributePool>
+  </ScopePool>
+</DescriptorsPool>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DescriptorsPool>
+  <ScopePool name='File' size='1'>
+    <AttributePool name='Style'>
+      <Enumerated>Folk</Enumerated>
+    </AttributePool>
+    <AttributePool name='Singer'>Laura Cantrell &amp; Gordlon McIntire (Ballboy)</AttributePool>
+    <AttributePool name='Name'>I Lost You (But I Found Country Music)</AttributePool>
+  </ScopePool>
+</DescriptorsPool>
