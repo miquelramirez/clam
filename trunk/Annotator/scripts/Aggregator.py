@@ -44,6 +44,7 @@ class Aggregator :
 			target.InsertAttribute(source,
 				self.scope, self.attribute,
 				self.targetScope, self.targetAttribute)
+			target.TranslateChildScope(self.targetScope, self.targetAttribute, self.aggregator.scopeMappings[self.source])
 
 		def dump(self, file) :
 			print >> file, "copy", self.source, \
@@ -72,7 +73,12 @@ class Aggregator :
 					targetScope, targetAttribute))
 			if self.requiredSources < source :
 				self.requiredSources = source
-			self.scopeMappings[(source,scope)] = targetScope
+			try :
+				sourceScopeMappings = self.scopeMappings[source]
+			except :
+				self.scopeMappings[source] = {}
+				sourceScopeMappings = self.scopeMappings[source]
+			sourceScopeMappings[scope] = targetScope
 
 		if errors != "" :
 			raise Aggregator.Exception(errors)
