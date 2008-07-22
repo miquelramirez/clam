@@ -25,16 +25,17 @@ class FileMetadataSource :
 		def __str__(self) :
 			return "The extractor '%s' cannot be executed. Check its existence and permissions." % self.path
 
-	def __init__(self, path, extractor=None) :
+	def __init__(self, path, schemaTitle, poolSuffix, extractor=None ) :
 		self.path = path
 		self.idsToRecalculate = []
+		self.poolSuffix=poolSuffix
 		if extractor and not os.access(extractor, os.X_OK) :
 			raise FileMetadataSource.InvalidExtractorPathException(extractor)
 		self.extractor = extractor
-		if extractor and not os.access(self.path + "schema.sc", os.R_OK) :
-			os.system("%s -s %s"%(self.extractor, os.path.join(self.path,"schema.sc")))
+		if extractor and not os.access(self.path + schemaTitle, os.R_OK) :
+			os.system("%s -s %s"%(self.extractor, os.path.join(self.path,schemaTitle)))
 		try :
-			self.schema = Schema(file(self.path + "schema.sc"))
+			self.schema = Schema(file(self.path + schemaTitle))
 		except IOError, e :
 			raise FileMetadataSource.InvalidPathException(path)
 
@@ -123,4 +124,4 @@ class FileMetadataSource :
 		return result
 	
 	def _poolPath(self, id) :
-		return self.path + id + ".pool";
+		return id + self.poolSuffix;
