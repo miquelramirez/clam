@@ -18,8 +18,8 @@ class FileMetadataSourceTest(unittest.TestCase):
 		try :
 			source1 = FileMetadataSource("testdata/BadSource/")
 			self.fail("Should have thrown an exception")
-		except FileMetadataSource.InvalidPathException, e:
-			self.assertEquals(str(e), "No schema 'schema.sc' found at 'testdata/BadSource/'.")
+		except FileMetadataSource.InvalidSchemaException, e:
+			self.assertEquals(str(e), "Schema file 'testdata/BadSource/schema.sc' not found.")
 
 	def testQueryDescriptors_nonExistingSong(self) :
 		source1 = FileMetadataSource("testdata/FileSource1/")
