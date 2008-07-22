@@ -19,12 +19,15 @@ sources = [
 ]
 
 map = [
+	# ('TargetScope::TargetAttribute', 'sourceId', 'SourceScope::SourceAttribute'),
 	("Song::Frames", "example", "Song::Frames"),
-	("Song::Danceable", "example", "Song::Danceability"),
+	("Song::ChordFrames", "chord", "Song::Frames"),
+	("Song::Bailable", "example", "Song::Danceability"),
 	#("TrackFrame::ClamMean", "example", "Frame::Mean"),  # there is a bug or something.
-	("Frame::Energy", "chord", "Frame::Energy"),
-	("Frame::ChordHartePcp", "chord", "Frame::HartePcp"),
-	("Frame::HarteChordCorrelation", "chord", "Frame::HarteChordCorrelation"),
+	("Frame::Energy", "example", "Frame::Energy"),
+	("ChordFrame::Energy", "chord", "Frame::Energy"),
+	("ChordFrame::ChordHartePcp", "chord", "Frame::HartePcp"),
+	("ChordFrame::HarteChordCorrelation", "chord", "Frame::HarteChordCorrelation"),
 	("Song::Harte", "chord", "Song::Chords_Harte"),
 	# How to remain the childscope relationship while changing the scope names?
 	("ExtractedChord::ChordRoot", "chord", "ExtractedChord::Root"),
