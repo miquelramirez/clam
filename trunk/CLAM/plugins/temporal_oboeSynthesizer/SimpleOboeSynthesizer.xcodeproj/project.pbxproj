@@ -1,0 +1,329 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 44;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0BAD5B380E07512300553D42 /* SDIFFileReaderWithLoop.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD5B200E07512300553D42 /* SDIFFileReaderWithLoop.cxx */; };
+		0BAD5B390E07512300553D42 /* SimpleOboeSynthesizer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD5B210E07512300553D42 /* SimpleOboeSynthesizer.cxx */; };
+		0BAD5B3A0E07512300553D42 /* SDIFFileReaderWithBuffer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD5B220E07512300553D42 /* SDIFFileReaderWithBuffer.cxx */; };
+		0BAD5B3B0E07512300553D42 /* TestScore.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD5B230E07512300553D42 /* TestScore.cxx */; };
+		0BAD5B3C0E07512300553D42 /* SDIFDatabase.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD5B240E07512300553D42 /* SDIFDatabase.cxx */; };
+		0BAD5B3D0E07512300553D42 /* ControlStreamSegmentator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD5B280E07512300553D42 /* ControlStreamSegmentator.cxx */; };
+		0BAD5B3E0E07512300553D42 /* ContinuousExcitationOSCSource.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD5B2C0E07512300553D42 /* ContinuousExcitationOSCSource.cxx */; };
+		0BAD5B3F0E07512300553D42 /* SimpleTransformer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD5B310E07512300553D42 /* SimpleTransformer.cxx */; };
+		0BAD5B400E07512300553D42 /* SDIFDatabaseProcessing.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD5B330E07512300553D42 /* SDIFDatabaseProcessing.cxx */; };
+		0BAD5B410E07512300553D42 /* DirectoryBasedMetadataReader.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 0BAD5B360E07512300553D42 /* DirectoryBasedMetadataReader.cxx */; };
+		8DD76F6A0486A84900D96B5E /* SimpleOboeSynthesizer.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = C6859E8B029090EE04C91782 /* SimpleOboeSynthesizer.1 */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8DD76F690486A84900D96B5E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 8;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				8DD76F6A0486A84900D96B5E /* SimpleOboeSynthesizer.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0BAD5B200E07512300553D42 /* SDIFFileReaderWithLoop.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDIFFileReaderWithLoop.cxx; sourceTree = "<group>"; };
+		0BAD5B210E07512300553D42 /* SimpleOboeSynthesizer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleOboeSynthesizer.cxx; sourceTree = "<group>"; };
+		0BAD5B220E07512300553D42 /* SDIFFileReaderWithBuffer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDIFFileReaderWithBuffer.cxx; sourceTree = "<group>"; };
+		0BAD5B230E07512300553D42 /* TestScore.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TestScore.cxx; sourceTree = "<group>"; };
+		0BAD5B240E07512300553D42 /* SDIFDatabase.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDIFDatabase.cxx; sourceTree = "<group>"; };
+		0BAD5B250E07512300553D42 /* SDIFFileReaderWithLoop.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SDIFFileReaderWithLoop.hxx; sourceTree = "<group>"; };
+		0BAD5B260E07512300553D42 /* SDIFFileReaderWithBuffer.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SDIFFileReaderWithBuffer.hxx; sourceTree = "<group>"; };
+		0BAD5B270E07512300553D42 /* SDIFDatabase.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SDIFDatabase.hxx; sourceTree = "<group>"; };
+		0BAD5B280E07512300553D42 /* ControlStreamSegmentator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ControlStreamSegmentator.cxx; sourceTree = "<group>"; };
+		0BAD5B290E07512300553D42 /* SampleMetadata.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SampleMetadata.hxx; sourceTree = "<group>"; };
+		0BAD5B2A0E07512300553D42 /* array.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = array.hxx; sourceTree = "<group>"; };
+		0BAD5B2B0E07512300553D42 /* ContinuousExcitationOSCSource.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ContinuousExcitationOSCSource.hxx; sourceTree = "<group>"; };
+		0BAD5B2C0E07512300553D42 /* ContinuousExcitationOSCSource.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContinuousExcitationOSCSource.cxx; sourceTree = "<group>"; };
+		0BAD5B2D0E07512300553D42 /* ContinuousExcitationControlSource.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ContinuousExcitationControlSource.hxx; sourceTree = "<group>"; };
+		0BAD5B2E0E07512300553D42 /* ContinuousExcitationConstants.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ContinuousExcitationConstants.hxx; sourceTree = "<group>"; };
+		0BAD5B2F0E07512300553D42 /* TestScore.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = TestScore.hxx; sourceTree = "<group>"; };
+		0BAD5B300E07512300553D42 /* SimpleTransformer.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SimpleTransformer.hxx; sourceTree = "<group>"; };
+		0BAD5B310E07512300553D42 /* SimpleTransformer.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimpleTransformer.cxx; sourceTree = "<group>"; };
+		0BAD5B320E07512300553D42 /* SDIFDatabaseProcessing.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SDIFDatabaseProcessing.hxx; sourceTree = "<group>"; };
+		0BAD5B330E07512300553D42 /* SDIFDatabaseProcessing.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SDIFDatabaseProcessing.cxx; sourceTree = "<group>"; };
+		0BAD5B340E07512300553D42 /* MetadataReader.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MetadataReader.hxx; sourceTree = "<group>"; };
+		0BAD5B350E07512300553D42 /* DirectoryBasedMetadataReader.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DirectoryBasedMetadataReader.hxx; sourceTree = "<group>"; };
+		0BAD5B360E07512300553D42 /* DirectoryBasedMetadataReader.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirectoryBasedMetadataReader.cxx; sourceTree = "<group>"; };
+		0BAD5B370E07512300553D42 /* ControlStreamSegmentator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ControlStreamSegmentator.hxx; sourceTree = "<group>"; };
+		8DD76F6C0486A84900D96B5E /* SimpleOboeSynthesizer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SimpleOboeSynthesizer; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6859E8B029090EE04C91782 /* SimpleOboeSynthesizer.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = SimpleOboeSynthesizer.1; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8DD76F660486A84900D96B5E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* SimpleOboeSynthesizer */ = {
+			isa = PBXGroup;
+			children = (
+				08FB7795FE84155DC02AAC07 /* Source */,
+				C6859E8C029090F304C91782 /* Documentation */,
+				1AB674ADFE9D54B511CA2CBB /* Products */,
+			);
+			name = SimpleOboeSynthesizer;
+			sourceTree = "<group>";
+		};
+		08FB7795FE84155DC02AAC07 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				0BAD5B250E07512300553D42 /* SDIFFileReaderWithLoop.hxx */,
+				0BAD5B200E07512300553D42 /* SDIFFileReaderWithLoop.cxx */,
+				0BAD5B210E07512300553D42 /* SimpleOboeSynthesizer.cxx */,
+				0BAD5B260E07512300553D42 /* SDIFFileReaderWithBuffer.hxx */,
+				0BAD5B220E07512300553D42 /* SDIFFileReaderWithBuffer.cxx */,
+				0BAD5B340E07512300553D42 /* MetadataReader.hxx */,
+				0BAD5B230E07512300553D42 /* TestScore.cxx */,
+				0BAD5B2F0E07512300553D42 /* TestScore.hxx */,
+				0BAD5B240E07512300553D42 /* SDIFDatabase.cxx */,
+				0BAD5B270E07512300553D42 /* SDIFDatabase.hxx */,
+				0BAD5B280E07512300553D42 /* ControlStreamSegmentator.cxx */,
+				0BAD5B290E07512300553D42 /* SampleMetadata.hxx */,
+				0BAD5B2A0E07512300553D42 /* array.hxx */,
+				0BAD5B2B0E07512300553D42 /* ContinuousExcitationOSCSource.hxx */,
+				0BAD5B2C0E07512300553D42 /* ContinuousExcitationOSCSource.cxx */,
+				0BAD5B2D0E07512300553D42 /* ContinuousExcitationControlSource.hxx */,
+				0BAD5B2E0E07512300553D42 /* ContinuousExcitationConstants.hxx */,
+				0BAD5B300E07512300553D42 /* SimpleTransformer.hxx */,
+				0BAD5B310E07512300553D42 /* SimpleTransformer.cxx */,
+				0BAD5B320E07512300553D42 /* SDIFDatabaseProcessing.hxx */,
+				0BAD5B330E07512300553D42 /* SDIFDatabaseProcessing.cxx */,
+				0BAD5B350E07512300553D42 /* DirectoryBasedMetadataReader.hxx */,
+				0BAD5B360E07512300553D42 /* DirectoryBasedMetadataReader.cxx */,
+				0BAD5B370E07512300553D42 /* ControlStreamSegmentator.hxx */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		1AB674ADFE9D54B511CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8DD76F6C0486A84900D96B5E /* SimpleOboeSynthesizer */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C6859E8C029090F304C91782 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				C6859E8B029090EE04C91782 /* SimpleOboeSynthesizer.1 */,
+			);
+			name = Documentation;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8DD76F620486A84900D96B5E /* SimpleOboeSynthesizer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "SimpleOboeSynthesizer" */;
+			buildPhases = (
+				8DD76F640486A84900D96B5E /* Sources */,
+				8DD76F660486A84900D96B5E /* Frameworks */,
+				8DD76F690486A84900D96B5E /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SimpleOboeSynthesizer;
+			productInstallPath = "$(HOME)/bin";
+			productName = SimpleOboeSynthesizer;
+			productReference = 8DD76F6C0486A84900D96B5E /* SimpleOboeSynthesizer */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "SimpleOboeSynthesizer" */;
+			compatibilityVersion = "Xcode 3.0";
+			hasScannedForEncodings = 1;
+			mainGroup = 08FB7794FE84155DC02AAC07 /* SimpleOboeSynthesizer */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8DD76F620486A84900D96B5E /* SimpleOboeSynthesizer */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8DD76F640486A84900D96B5E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0BAD5B380E07512300553D42 /* SDIFFileReaderWithLoop.cxx in Sources */,
+				0BAD5B390E07512300553D42 /* SimpleOboeSynthesizer.cxx in Sources */,
+				0BAD5B3A0E07512300553D42 /* SDIFFileReaderWithBuffer.cxx in Sources */,
+				0BAD5B3B0E07512300553D42 /* TestScore.cxx in Sources */,
+				0BAD5B3C0E07512300553D42 /* SDIFDatabase.cxx in Sources */,
+				0BAD5B3D0E07512300553D42 /* ControlStreamSegmentator.cxx in Sources */,
+				0BAD5B3E0E07512300553D42 /* ContinuousExcitationOSCSource.cxx in Sources */,
+				0BAD5B3F0E07512300553D42 /* SimpleTransformer.cxx in Sources */,
+				0BAD5B400E07512300553D42 /* SDIFDatabaseProcessing.cxx in Sources */,
+				0BAD5B410E07512300553D42 /* DirectoryBasedMetadataReader.cxx in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB923208733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_GLIBCXX_DEBUG=1",
+					"_GLIBCXX_DEBUG_PEDANTIC=1",
+				);
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/opt/local/include,
+					/usr/local/include/CLAM/,
+				);
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = (
+					"-DCLAM_FLOAT",
+					"-D_DEBUG",
+					"-DUSE_PTHREADS=1",
+					"-DUSE_XERCES=1",
+					"-DCLAM_USE_XML",
+					"-DCLAM_USE_XML",
+					"-DUSE_SNDFILE=1",
+					"-DUSE_OGGVORBIS=1",
+					"-DWITH_VORBIS=1",
+					"-DUSE_MAD=1",
+					"-DWITH_MAD=1",
+					"-DUSE_ID3=1",
+					"-DUSE_PORTAUDIO=1",
+					"-D__MACOSX_CORE__",
+					"-DUSE_RTAUDIO=1",
+					"-DUSE_FFTW3=1",
+				);
+				OTHER_LDFLAGS = (
+					"-L/usr/local/lib",
+					"-lclam_core",
+					"-lclam_audioio",
+					"-lclam_processing",
+				);
+				PRODUCT_NAME = SimpleOboeSynthesizer;
+				VALID_ARCHS = i386;
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		1DEB923308733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/include,
+					/opt/local/include,
+					/usr/local/include/CLAM/,
+				);
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_CFLAGS = (
+					"-DCLAM_FLOAT",
+					"-D_DEBUG",
+					"-DUSE_PTHREADS=1",
+					"-DUSE_XERCES=1",
+					"-DCLAM_USE_XML",
+					"-DCLAM_USE_XML",
+					"-DUSE_SNDFILE=1",
+					"-DUSE_OGGVORBIS=1",
+					"-DWITH_VORBIS=1",
+					"-DUSE_MAD=1",
+					"-DWITH_MAD=1",
+					"-DUSE_ID3=1",
+					"-DUSE_PORTAUDIO=1",
+					"-D__MACOSX_CORE__",
+					"-DUSE_RTAUDIO=1",
+					"-DUSE_FFTW3=1",
+				);
+				OTHER_LDFLAGS = (
+					"-L/usr/local/lib",
+					"-lclam_core",
+					"-lclam_audioio",
+					"-lclam_processing",
+				);
+				PRODUCT_NAME = SimpleOboeSynthesizer;
+				VALID_ARCHS = i386;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		1DEB923608733DC60010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+			};
+			name = Debug;
+		};
+		1DEB923708733DC60010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB923108733DC60010E9CD /* Build configuration list for PBXNativeTarget "SimpleOboeSynthesizer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923208733DC60010E9CD /* Debug */,
+				1DEB923308733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB923508733DC60010E9CD /* Build configuration list for PBXProject "SimpleOboeSynthesizer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB923608733DC60010E9CD /* Debug */,
+				1DEB923708733DC60010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

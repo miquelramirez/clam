@@ -1,0 +1,107 @@
+#! /usr/bin/python
+
+import os, glob, sys
+
+baseName = 'continuous_excitation_synth'
+libraryName='plugins_'+baseName
+
+def scanFiles(pattern, paths) :
+	files = []
+	for path in paths :
+		files+=glob.glob(os.path.join(path,pattern))
+	return files
+
+def recursiveDirs(root) :
+	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
+
+options = Options('options.cache', ARGUMENTS)
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathOption.PathAccept))
+options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'yes') )
+
+
+env = Environment(ENV=os.environ, options=options)
+options.Save('options.cache', env)
+Help(options.GenerateHelpText(env))
+env.SConsignFile() # Single signature file
+
+CLAMInstallDir = env['clam_prefix']
+InstallDir = env['prefix'] or env['clam_prefix']
+clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+if env['crossmingw'] :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.EnableClamModules([
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	] , CLAMInstallDir)
+
+sourcePaths = recursiveDirs(".")
+print sourcePaths
+sources = glob.glob('*.cxx')
+sources += glob.glob('toreview/*.cxx')
+extraPaths = [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+	".",
+]
+
+env.Append(CPPPATH=extraPaths)
+sources = dict.fromkeys(sources).keys() # eliminate repeated
+print sources
+
+if sys.platform=='linux2' :
+	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
+	env.Append( LIBPATH=['/opt/local/lib'] )
+	env.Append( LIBS=['fftw3'] )
+	
+mainSources = {
+	'SimpleOboeSynthesizer': 'SimpleOboeSynthesizer.cxx',
+#	'TestAudioDatabaseReader': 'toreview/TestAudioDatabaseReader.cxx',
+#	'EbowSynthesizer': 'toreview/ebowSynthesizer.cxx',
+#	'lookMaker': 'loopMaker/loopMaker.cxx',
+}
+for binary, mainSource in mainSources.items() :
+	sources.remove(mainSource)
+
+programs = [ env.Program(target=program, source = [mainSource] + sources)
+	for program, mainSource in mainSources.items()]
+libraries = [
+	env.SharedLibrary(target=libraryName, source = sources)
+	]
+	
+directoryBasedExamples = [
+#	"TickExtractor", # TODO: Files left to be compilable
+#	"PortsAndControlsUsageExample",
+#	"ControlArrayExamples",
+#	"Wav2SDIF",
+#	"SDIF2Wav",
+#	"SDIF2WavStreaming",
+	"loopMaker",
+]
+
+examples = []
+for folder in directoryBasedExamples :
+	exampleSources = glob.glob(folder+"/*.cxx")
+	executable = os.path.basename(folder)+"Exe"
+	examples += [ env.Program(target=executable, source = sources + exampleSources ) ]
+
+
+examples = [
+	'synth_with_osc.clamnetwork',
+	'synth_with_osc.clamnetwork.pos',
+	'synth_with_sliders.clamnetwork',
+	'synth_with_sliders.clamnetwork.pos',
+	]
+
+install = [
+	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
+	env.Install(os.path.join(InstallDir,'bin'), programs),
+	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
+	]
+env.Alias('install', install)
+env.Default(programs + libraries)
+
