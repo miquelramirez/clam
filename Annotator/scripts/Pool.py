@@ -121,4 +121,6 @@ class Pool :
 				ids.append(str(scopeNode.value+"::"+attributeNode.value))
 		return ids
 
+	def TranslateChildScope(self, scope, attribute, scopeMapping) :
+		pass
 
