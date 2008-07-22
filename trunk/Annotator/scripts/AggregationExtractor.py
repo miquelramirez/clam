@@ -8,21 +8,21 @@ from optparse import OptionParser
 
 
 sources = [
-	("example", FileMetadataSource(path="./",
+	("example", FileMetadataSource(path=".",
 		schemaFile="CLAMDescriptors.sc",
-		poolSuffix=".pool",
-		extractor="../ClamExtractorExample")),
-	("chord", FileMetadataSource(path="./",
+		poolSuffix=".example",
+		extractor="ClamExtractorExample")),
+	("chord", FileMetadataSource(path=".",
 		schemaFile="Chords.sc",
 		poolSuffix=".chords",
-		extractor="../ChordExtractor")),
+		extractor="ChordExtractor")),
 ]
 
 map = [
 	# ('TargetScope::TargetAttribute', 'sourceId', 'SourceScope::SourceAttribute'),
 	("Song::Frames", "example", "Song::Frames"),
 	("Song::ChordFrames", "chord", "Song::Frames"),
-	("Song::Bailable", "example", "Song::Danceability"),
+	("Song::Danceable", "example", "Song::Danceability"),
 	#("TrackFrame::ClamMean", "example", "Frame::Mean"),  # there is a bug or something.
 	("Frame::Energy", "example", "Frame::Energy"),
 	("ChordFrame::Energy", "chord", "Frame::Energy"),
@@ -35,7 +35,7 @@ map = [
 ]
 
 
-provider = MetadataSourceAggregator(sources, map)
+provider = MetadataSourceAggregator(sources, map, verbose=True)
 
 
 parser = OptionParser(
@@ -66,6 +66,7 @@ if not args :
 	sys.exit()
 
 for audiofile in args:
+	print "Processing %s..."%audiofile
 	target = open(audiofile+options.suffix,'w')
 	provider.QueryDescriptors(audiofile, provider.AvailableDescriptors()).Dump(target)
 	target.close()
