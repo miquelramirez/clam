@@ -25,17 +25,18 @@ class FileMetadataSource :
 		def __str__(self) :
 			return "The extractor '%s' cannot be executed. Check its existence and permissions." % self.path
 
-	def __init__(self, path, schemaTitle='schema.sc', poolSuffix=".pool", extractor=None ) :
+	def __init__(self, path=None, schemaFile='schema.sc', poolSuffix=".pool", extractor=None ) :
 		self.path = path
+		self.schemaFile = schemaFile if self.path is None else os.path.join(self.path, schemaFile)
 		self.idsToRecalculate = []
 		self.poolSuffix=poolSuffix
 		if extractor and not os.access(extractor, os.X_OK) :
 			raise FileMetadataSource.InvalidExtractorPathException(extractor)
 		self.extractor = extractor
-		if extractor and not os.access(self.path + schemaTitle, os.R_OK) :
-			os.system("%s -s %s"%(self.extractor, os.path.join(self.path,schemaTitle)))
+		if extractor and not os.access(self.schemaFile, os.R_OK) :
+			os.system("%s -s %s"%(self.extractor, schemaFile))
 		try :
-			self.schema = Schema(file(self.path + schemaTitle))
+			self.schema = Schema(file(self.schemaFile))
 		except IOError, e :
 			raise FileMetadataSource.InvalidPathException(path)
 
@@ -44,13 +45,16 @@ class FileMetadataSource :
 			try :
 				return Pool(file(self._poolPath(id)))
 			except IOError, e : pass # Not found
-		path=id
-		linkName = os.path.join(self.path, id)
-		try :
-			os.symlink(path, linkName)
-		except: pass
-		command = "%s -f .pool %s"%(self.extractor, linkName)
-		os.popen(command, 'r').read()
+		path=id # TODO: This should take the file given an id, by now using the path as id
+		if self.path :
+			linkName = os.path.join(self.path, id)
+			try :
+				os.symlink(path, linkName)
+				path = linkName
+			except: pass
+		if self.extractor :
+			command = "%s -f .pool %s"%(self.extractor, path)
+			os.popen(command, 'r').read()
 		try :
 			return Pool(file(self._poolPath(id)))
 		except IOError, e : pass # Not found
@@ -124,4 +128,8 @@ class FileMetadataSource :
 		return result
 	
 	def _poolPath(self, id) :
-		return id + self.poolSuffix;
+		if self.path is None :
+			return id + self.poolSuffix;
+		return os.path.join(self.path, id+self.poolSuffix)
+
+
