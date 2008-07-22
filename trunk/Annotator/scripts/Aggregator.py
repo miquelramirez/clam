@@ -53,6 +53,7 @@ class Aggregator :
 	def __init__(self, script) :
 		errors = ""
 		self.copiers = []
+		self.scopeMappings = {}
 		self.requiredSources = 0
 		lineNumber = 0
 		for line in script :
@@ -63,13 +64,16 @@ class Aggregator :
 			if not match :
 				errors += "Parser error at line %d\n>%s"%(lineNumber,line)
 				continue
-			fields = match.groups()
+			(source,scope,attribute,targetScope,targetAttribute) = match.groups()
+			source = int(source)
 			self.copiers.append(
-				Aggregator.Copier(self, int(fields[0]),
-					fields[1], fields[2],
-					fields[3], fields[4]))
-			if self.requiredSources < int(fields[0]) :
-				self.requiredSources = int(fields[0])
+				Aggregator.Copier(self, source,
+					scope, attribute,
+					targetScope, targetAttribute))
+			if self.requiredSources < source :
+				self.requiredSources = source
+			self.scopeMappings[(source,scope)] = targetScope
+
 		if errors != "" :
 			raise Aggregator.Exception(errors)
 
