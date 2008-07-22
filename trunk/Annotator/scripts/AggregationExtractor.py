@@ -11,11 +11,11 @@ sources = [
 	("example", FileMetadataSource(path="./",
 		schemaTitle="CLAMDescriptors.sc",
 		poolSuffix=".pool",
-		extractor="D:/devel/Annotator/ClamExtractorExample.exe")),
+		extractor="../ClamExtractorExample")),
 	("chord", FileMetadataSource(path="./",
 		schemaTitle="Chords.sc",
 		poolSuffix=".chords",
-		extractor="D:/devel/Annotator/ChordExtractor.exe")),
+		extractor="../ChordExtractor")),
 ]
 
 map = [
@@ -39,10 +39,11 @@ parser = OptionParser(
 	usage="%prog [options] audiofile1 audiofile2 ...",
 	version="%prog 1.0")
 parser.add_option("-s","--print-schema",
-		action="store_true",
-		default=False,
+		type='string',
+		default=None,
 		dest="printSchema",
-		help="Outputs the description schema for the extractor"
+		metavar="SCHEMAFILE",
+		help="Outputs the description schema for the extractor. Use '-' for standard output."
 	)
 parser.add_option("-f",# "--suffix",
 		default=".pool",
@@ -52,15 +53,18 @@ parser.add_option("-f",# "--suffix",
 (options, args) = parser.parse_args()
 
 
-if options.printSchema :
-	target= open("./Aggregation.sc",'w')
+if options.printSchema is not None:
+	target = sys.stdout if options.printSchema == "-" else open(options.printSchema,'w')
 	provider.QuerySchema(provider.AvailableDescriptors()).Dump(target)
 	sys.exit()
 
+if not args :
+	parser.print_help()
+	sys.exit()
 
-import sys
 for audiofile in args:
 	target = open(audiofile+options.suffix,'w')
 	provider.QueryDescriptors(audiofile, provider.AvailableDescriptors()).Dump(target)
 	target.close()
+
 
