@@ -16,11 +16,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+import sys
+# Kludge: Ubuntu prefers the standard xml module which doesn't contain xpath
+sys.path.append('/usr/lib/python2.5/site-packages/oldxml')
+import xml.xpath
 
-from xml import xpath
 from xml.dom.ext.reader import Sax2
 import xml.dom.ext 
-import sys
 import cStringIO
 
 class Pool :
@@ -41,18 +43,18 @@ class Pool :
 
 	def GetScopeSize(self, scope) :
 		path = '//ScopePool[@name="%s"]/@size'%(scope)
-		nodes = xpath.Evaluate(path, self.doc.documentElement)
+		nodes = xml.xpath.Evaluate(path, self.doc.documentElement)
 		for node in nodes :
 			return int(node.nodeValue)
 		raise Pool.Exception("Scope '" + scope + "' not found")
 
 	def SelectAttributes(self, scope, name) :
 		path = '//ScopePool[@name="%s"]/AttributePool[@name="%s"]'%(scope,name)
-		return xpath.Evaluate(path, self.doc.documentElement)
+		return xml.xpath.Evaluate(path, self.doc.documentElement)
 
 	def SelectScope(self, scope) :
 		path = '//ScopePool[@name="%s"]'%(scope)
-		return xpath.Evaluate(path, self.doc.documentElement)
+		return xml.xpath.Evaluate(path, self.doc.documentElement)
 
 	def RemoveAttribute(self, scope, name) :
 		location = self.SelectScope(scope)
@@ -76,7 +78,7 @@ class Pool :
 
 	def _InsertNode(self, nodesToMove, scope, name = None) :
 		path = '//ScopePool[@name="%s"]'%(scope)
-		scopeNodes = xpath.Evaluate(path, self.doc.documentElement)
+		scopeNodes = xml.xpath.Evaluate(path, self.doc.documentElement)
 		for scopeNode in scopeNodes :
 			for node in nodesToMove :
 				cloned = self.doc.importNode(node, True)
