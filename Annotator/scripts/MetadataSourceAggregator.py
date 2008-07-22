@@ -12,7 +12,8 @@ class MetadataSourceAggregator :
 		def __str__(self) :
 			return self.what
 
-	def __init__(self, sources, attributeMap) :
+	def __init__(self, sources, attributeMap, verbose=False) :
+		self.verbose = verbose
 		self.sources = dict(sources)
 		self.attributeMap = attributeMap
 		self.sourceKeys = [key for (key, source) in sources ]
@@ -40,13 +41,16 @@ class MetadataSourceAggregator :
 		return scripts
 
 	def QueryDescriptors(self, id, descriptors) :
+		if self.verbose : print "++ Building aggregation script..."
 		(aggregatorScript, sourceIds) = self._AggregatorScriptFor(descriptors)
 		aggregator = Aggregator(cStringIO.StringIO(aggregatorScript))
 		result = Pool()
 		sourcesPools = []
 		for sourceId in sourceIds :
+			if self.verbose : print "++ Querying descriptors from %s..."%sourceId
 			sourcePool = self.sources[sourceId].QueryDescriptors(id)
 			sourcesPools.append(sourcePool)
+		if self.verbose : print "++ Aggregating..."
 		aggregator.run(result, sourcesPools)
 		return result
 
@@ -105,3 +109,4 @@ class MetadataSourceAggregator :
 			return  [ a[0] for a in self.attributeMap ]
 		else:
 			return  [ a[0] for a in self.attributeMap if a[1]==source ]
+
