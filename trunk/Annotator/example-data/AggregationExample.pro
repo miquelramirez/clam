@@ -11,9 +11,9 @@ TODO: Explain how this aggregation extractor should be reviewed.
 &lt;/p&gt;
 </Description>
 
-  <Schema>Aggregation.sc</Schema>
+  <Schema>AggregationExample.sc</Schema>
 
-  <Extractor>AggregationExtractor.py</Extractor>
+  <Extractor>./scripts/AggregationExtractor.py</Extractor>
 
   <PoolSuffix>.aggregatedPool</PoolSuffix>
 
@@ -25,19 +25,18 @@ TODO: Explain how this aggregation extractor should be reviewed.
       <SoundFile>SongsTest/Debaser-WoodenHouse.mp3</SoundFile>
     </Song>
   </Songs>
-  
+
   <Views>
     <View>
       <Type>Tonnetz</Type>
-      <AttributeScope>Frame</AttributeScope>
+      <AttributeScope>ChordFrame</AttributeScope>
       <AttributeName>ChordHartePcp</AttributeName>
     </View>
     <View>
       <Type>KeySpace</Type>
-      <AttributeScope>Frame</AttributeScope>
+      <AttributeScope>ChordFrame</AttributeScope>
       <AttributeName>HarteChordCorrelation</AttributeName>
     </View>
   </Views>
 
-  
 </Project>
