@@ -25,7 +25,7 @@ class FileMetadataSource :
 		def __str__(self) :
 			return "The extractor '%s' cannot be executed. Check its existence and permissions." % self.path
 
-	def __init__(self, path, schemaTitle, poolSuffix, extractor=None ) :
+	def __init__(self, path, schemaTitle='schema.sc', poolSuffix=".pool", extractor=None ) :
 		self.path = path
 		self.idsToRecalculate = []
 		self.poolSuffix=poolSuffix

@@ -23,6 +23,8 @@ import unittest
 from PoolTest import *
 from SchemaTest import *
 from AggregatorTest import *
+from FileMetadataSourceTest import *
+from MetadataSourceAggregatorTest import *
 
 if __name__ == "__main__":
 	unittest.main()
