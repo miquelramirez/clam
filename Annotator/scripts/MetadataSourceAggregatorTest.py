@@ -4,9 +4,9 @@ import unittest
 import os
 
 sources = [
-	("source1", FileMetadataSource("data/FileSource1/")),
-	("source2", FileMetadataSource("data/FileSource2/")),
-	("source3", FileMetadataSource("data/FileSource3/")),
+	("source1", FileMetadataSource("testdata/FileSource1/")),
+	("source2", FileMetadataSource("testdata/FileSource2/")),
+	("source3", FileMetadataSource("testdata/FileSource3/")),
 ]
 
 map = [
@@ -28,18 +28,18 @@ class MetadataSourceAggregatorTest(unittest.TestCase):
 
 	def setUp(self) :
 		files=[
-			"data/FileSource1/data-newId.pool",
-			"data/FileSource2/data-newId.pool",
-			"data/FileSource3/data-newId.pool",
+			"testdata/FileSource1/newId.pool",
+			"testdata/FileSource2/newId.pool",
+			"testdata/FileSource3/newId.pool",
 		]
 		for file in files :
 			if os.access(file, os.F_OK) :
 				os.remove(file)
 	def tearDown(self):
 		files=[
-			"data/FileSource1/data-newId.pool",
-			"data/FileSource2/data-newId.pool",
-			"data/FileSource3/data-newId.pool",
+			"testdata/FileSource1/newId.pool",
+			"testdata/FileSource2/newId.pool",
+			"testdata/FileSource3/newId.pool",
 		]
 		for file in files :
 			if os.access(file, os.F_OK) :
