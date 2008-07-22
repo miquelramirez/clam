@@ -62,5 +62,16 @@ class Schema :
 			raise Schema.Exception("Attribute '"+scope+"::"+name+"' not found")
 		xml.xpath.Evaluate("//Attributes", self.doc)[0].removeChild(nodesToRemove[0])
 
+	# TODO: Test this method
+	def TranslateChildScope(self, scope, name, scopeMapping) :
+		attributes = self.SelectAttribute(scope,name)
+		childScopeElements = xml.xpath.Evaluate("//ChildScope/text()", attributes[0])
+		for childScopeElement in childScopeElements :
+			try :
+				childScopeElement.data = scopeMapping[childScopeElement.data]
+			except KeyError:
+				# TODO: Remove the child scope as it doesn't exist in the new context
+				pass
+
 
 
