@@ -65,7 +65,7 @@ class Schema :
 	# TODO: Test this method
 	def TranslateChildScope(self, scope, name, scopeMapping) :
 		attributes = self.SelectAttribute(scope,name)
-		childScopeElements = xml.xpath.Evaluate("//ChildScope/text()", attributes[0])
+		childScopeElements = xml.xpath.Evaluate("ChildScope/text()", attributes[0])
 		for childScopeElement in childScopeElements :
 			try :
 				childScopeElement.data = scopeMapping[childScopeElement.data]
