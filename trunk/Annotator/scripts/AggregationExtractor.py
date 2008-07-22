@@ -7,26 +7,29 @@ import os
 from optparse import OptionParser
 
 
-sources = [("example", FileMetadataSource(path="./",
-schemaTitle="CLAMDescriptors.sc",
-poolSuffix=".pool",
-extractor="D:/devel/Annotator/ClamExtractorExample.exe")),
-("chord", FileMetadataSource(path="./",
-schemaTitle="Chords.sc",
-poolSuffix=".chords",
-extractor="D:/devel/Annotator/ChordExtractor.exe")),]
+sources = [
+	("example", FileMetadataSource(path="./",
+		schemaTitle="CLAMDescriptors.sc",
+		poolSuffix=".pool",
+		extractor="D:/devel/Annotator/ClamExtractorExample.exe")),
+	("chord", FileMetadataSource(path="./",
+		schemaTitle="Chords.sc",
+		poolSuffix=".chords",
+		extractor="D:/devel/Annotator/ChordExtractor.exe")),
+]
 
 map = [
-("Song::Frames", "example", "Song::Frames"),
-("Song::Danceable", "example", "Song::Danceability"),
-#("TrackFrame::ClamMean", "example", "Frame::Mean"),  # there is a bug or something.
-("Frame::Energy", "chord", "Frame::Energy"),
-("Frame::ChordHartePcp", "chord", "Frame::HartePcp"),
-("Frame::HarteChordCorrelation", "chord", "Frame::HarteChordCorrelation"),
-("Song::Harte", "chord", "Song::Chords_Harte"),
-# How to remain the childscope relationship while changing the scope names?
-("ExtractedChord::ChordRoot", "chord", "ExtractedChord::Root"),
-("ExtractedChord::ChordMode", "chord", "ExtractedChord::Mode"),]
+	("Song::Frames", "example", "Song::Frames"),
+	("Song::Danceable", "example", "Song::Danceability"),
+	#("TrackFrame::ClamMean", "example", "Frame::Mean"),  # there is a bug or something.
+	("Frame::Energy", "chord", "Frame::Energy"),
+	("Frame::ChordHartePcp", "chord", "Frame::HartePcp"),
+	("Frame::HarteChordCorrelation", "chord", "Frame::HarteChordCorrelation"),
+	("Song::Harte", "chord", "Song::Chords_Harte"),
+	# How to remain the childscope relationship while changing the scope names?
+	("ExtractedChord::ChordRoot", "chord", "ExtractedChord::Root"),
+	("ExtractedChord::ChordMode", "chord", "ExtractedChord::Mode"),
+]
 
 
 provider = MetadataSourceAggregator(sources, map)
