@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DescriptorsPool>
+  <ScopePool name='WaveFile' size='1'>
+    <AttributePool name='Danceability'>7.2</AttributePool>
+    <AttributePool name='Key'>
+      <Enumerated>C</Enumerated>
+    </AttributePool>
+    <AttributePool name='KeyMode'>
+      <Enumerated>Minor</Enumerated>
+    </AttributePool>
+    <AttributePool name='Complexity'>8.1</AttributePool>
+    <AttributePool name='BeatsPerMinute'>100</AttributePool>
+  </ScopePool>
+</DescriptorsPool>
