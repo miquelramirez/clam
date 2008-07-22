@@ -13,11 +13,11 @@ class FileMetadataSource :
 		def __str__(self) :
 			return "No descriptors found for song id '%s'." % self.id
 
-	class InvalidPathException :
+	class InvalidSchemaException :
 		def __init__(self, path) :
 			self.path = path
 		def __str__(self) :
-			return "No schema 'schema.sc' found at '%s'." % self.path
+			return "Schema file '%s' not found." % (self.path)
 
 	class InvalidExtractorPathException :
 		def __init__(self, path) :
@@ -34,11 +34,11 @@ class FileMetadataSource :
 			raise FileMetadataSource.InvalidExtractorPathException(extractor)
 		self.extractor = extractor
 		if extractor and not os.access(self.schemaFile, os.R_OK) :
-			os.system("%s -s %s"%(self.extractor, schemaFile))
+			os.system("%s -s %s"%(self.extractor, self.schemaFile))
 		try :
 			self.schema = Schema(file(self.schemaFile))
 		except IOError, e :
-			raise FileMetadataSource.InvalidPathException(path)
+			raise FileMetadataSource.InvalidSchemaException(self.schemaFile)
 
 	def QueryDescriptors(self, id, ignoreCache=False, computeIfNotCached=False, keepCache=True) :
 		if not ignoreCache:
@@ -53,7 +53,7 @@ class FileMetadataSource :
 				path = linkName
 			except: pass
 		if self.extractor :
-			command = "%s -f .pool %s"%(self.extractor, path)
+			command = "%s -f %s %s"%(self.extractor, self.poolSuffix, path)
 			os.popen(command, 'r').read()
 		try :
 			return Pool(file(self._poolPath(id)))
