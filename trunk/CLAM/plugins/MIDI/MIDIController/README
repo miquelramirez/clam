@@ -1,0 +1,11 @@
+== Description ==
+
+MIDI Controller. Filters MIDI Controller messages from the connected MIDISource.
+
+
+Warning: Works only under Linux (Mac test needed) since virtual ports feature of RtMidi works only in these platforms.
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install
