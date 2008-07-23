@@ -53,12 +53,12 @@ int main()
 	
 	manager.Start();
 	
-	outNote.GetInControls().GetByNumber(0).DoControl(60);
-	outNote.GetInControls().GetByNumber(1).DoControl(120);
+	SendFloatToInControl(outNote,0,60);
+	SendFloatToInControl(outNote,1,120);
 
 	CrossPlatformSleep(1);
-	outNote.GetInControls().GetByNumber(0).DoControl(60);
-	outNote.GetInControls().GetByNumber(1).DoControl(0);
+	SendFloatToInControl(outNote,0,60);
+	SendFloatToInControl(outNote,1,0);
 	
 	CrossPlatformSleep(1);
 
@@ -74,13 +74,13 @@ int main()
 
 	MIDIOutControl outNote2(outNote2Cfg);
 	
-	outNote2.GetInControls().GetByNumber(0).DoControl(3);
-	outNote2.GetInControls().GetByNumber(1).DoControl(60);
-	outNote2.GetInControls().GetByNumber(2).DoControl(120);
+	SendFloatToInControl(outNote2,0,3);
+	SendFloatToInControl(outNote2,1,60);
+	SendFloatToInControl(outNote2,2,120);
 
-	outNote2.GetInControls().GetByNumber(0).DoControl(3);
-	outNote2.GetInControls().GetByNumber(1).DoControl(60);
-	outNote2.GetInControls().GetByNumber(2).DoControl(120);
+	SendFloatToInControl(outNote2,0,3);
+	SendFloatToInControl(outNote2,1,60);
+	SendFloatToInControl(outNote2,2,120);
 
 	// VOLUME CONTROL CHANGE EXAMPLE
 	MIDIIOConfig volCtrlCfg;
@@ -95,6 +95,6 @@ int main()
 	MIDIOutControl volCtrl(volCtrlCfg);
 
 	// send value 110 to volume control change on channel 1
-	volCtrl.GetInControls().GetByNumber(0).DoControl(110);
+	SendFloatToInControl(volCtrl,0,110);
 }
 

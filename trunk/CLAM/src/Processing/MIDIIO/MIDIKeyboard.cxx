@@ -107,7 +107,7 @@ bool MIDIKeyboard::Do()
 
 	mCurrentTimeIncrement = buffersize * 1000.0 / CLAM::AudioManager::Current().SampleRate();
 
-	mClocker.GetInControls().GetByNumber(0).DoControl( mCurrentTime );
+	SendFloatToInControl(mClocker,0,mCurrentTime);
 
 	mNoteOut.SendControl( mNoteInControl.GetLastValue() );
 	mVelocityOut.SendControl( mVelocityInControl.GetLastValue() );

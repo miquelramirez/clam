@@ -53,6 +53,14 @@ namespace MIDI
 
 		Byte operator [] (int i) const { return mVal[i]; }
 
+		void Update(Byte status = 0,Byte data1 = 0,Byte data2 = 0,Byte data3 = 0)
+		{
+			if(status) {mData.mStatus = status;}
+			if(data1) {mData.mData1 = data1;}
+			if(data2) {mData.mData2 = data2;}
+			if(data3) {mData.mData3 = data3;}
+		}
+		
 	private:
 		union
 		{

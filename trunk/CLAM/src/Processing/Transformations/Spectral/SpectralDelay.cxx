@@ -55,9 +55,9 @@ bool SpectralDelay::Do(const Spectrum& in, Spectrum& out)
 	TData hfDelay = mHighDelayCtl.GetLastValue() * in.GetSpectralRange() * 0.002 / mFrameSize;
 	
 	//these controls could just be connected at the beginning
-	mLFDelay.GetInControl("Delay Control").DoControl(lfDelay);
-	mMFDelay.GetInControl("Delay Control").DoControl(mfDelay);
-	mHFDelay.GetInControl("Delay Control").DoControl(hfDelay);
+	SendFloatToInControl(mLFDelay,"Delay Control",lfDelay);
+	SendFloatToInControl(mMFDelay,"Delay Control",mfDelay);
+	SendFloatToInControl(mHFDelay,"Delay Control",hfDelay);
 	
 	//now we are ready to get the appropriate spectrums
 	mLFDelay.Do(in, mLFSpectrum);

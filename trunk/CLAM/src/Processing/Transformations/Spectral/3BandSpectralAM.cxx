@@ -47,18 +47,18 @@ bool ThreeBandAM::Do(const Spectrum& in, Spectrum& out)
 	
 	TData spectralResolution = spectrumSize/in.GetSpectralRange();
 	
-	mLFOscillator.GetInControl("Pitch").DoControl(mLowPitchCtl.GetLastValue());
-	mMFOscillator.GetInControl("Pitch").DoControl(mMidPitchCtl.GetLastValue());
-	mHFOscillator.GetInControl("Pitch").DoControl(mHighPitchCtl.GetLastValue());
+	SendFloatToInControl(mLFOscillator,"Pitch",mLowPitchCtl.GetLastValue());
+	SendFloatToInControl(mMFOscillator,"Pitch",mMidPitchCtl.GetLastValue());
+	SendFloatToInControl(mHFOscillator,"Pitch",mHighPitchCtl.GetLastValue());
 	
-	mLFOscillator.GetInControl("Amplitude").DoControl(mModAmplitudeCtl.GetLastValue());
-	mMFOscillator.GetInControl("Amplitude").DoControl(mModAmplitudeCtl.GetLastValue());
-	mHFOscillator.GetInControl("Amplitude").DoControl(mModAmplitudeCtl.GetLastValue());
-	
+	SendFloatToInControl(mLFOscillator,"Amplitude",mModAmplitudeCtl.GetLastValue());
+	SendFloatToInControl(mMFOscillator,"Amplitude",mModAmplitudeCtl.GetLastValue());
+	SendFloatToInControl(mHFOscillator,"Amplitude",mModAmplitudeCtl.GetLastValue());
+
 	//kludge: this is not taking into account the possible overlap between windows!!
-	mLFOscillator.GetInControl("SamplesBetweenCalls").DoControl((spectrumSize-1)/2);
-	mMFOscillator.GetInControl("SamplesBetweenCalls").DoControl((spectrumSize-1)/2);
-	mHFOscillator.GetInControl("SamplesBetweenCalls").DoControl((spectrumSize-1)/2);
+	SendFloatToInControl(mLFOscillator,"SamplesBetweenCalls",(spectrumSize-1)/2);
+	SendFloatToInControl(mMFOscillator,"SamplesBetweenCalls",(spectrumSize-1)/2);
+	SendFloatToInControl(mHFOscillator,"SamplesBetweenCalls",(spectrumSize-1)/2);
 	
 	
 	DataArray& oMag = out.GetMagBuffer();

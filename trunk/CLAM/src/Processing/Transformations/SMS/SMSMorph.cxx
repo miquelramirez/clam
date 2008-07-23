@@ -80,7 +80,7 @@ bool SMSMorph::Do( const SpectralPeakArray& inPeaks1,
 		outFund.SetFreq(0,newPitch);
 	outFund.SetnCandidates(1);
 
-	mPeaksInterpolator.GetInControl("MagInterpolationFactor").DoControl(alpha);
+	SendFloatToInControl(mPeaksInterpolator,"MagInterpolationFactor",alpha);
 // 	mPeaksInterpolator.GetInControl("FreqInterpolationFactor").DoControl(alpha);
 // 	mPeaksInterpolator.GetInControl("PitchInterpolationFactor").DoControl(alpha);
 	mPeaksInterpolator.Do(inPeaks1, inPeaks2, outPeaks);
@@ -90,7 +90,7 @@ bool SMSMorph::Do( const SpectralPeakArray& inPeaks1,
 
 	outSpectrum = inSpectrum1; //FIXME asserts without this...
 	CLAM_DEBUG_ASSERT( inSpectrum1.GetSize()==inSpectrum2.GetSize(), "Expected two spectrums of the same size");
-	mSpectrumInterpolator.GetInControl("InterpolationFactor").DoControl(alpha);
+	SendFloatToInControl(mSpectrumInterpolator,"InterpolationFactor",alpha);
 
 // 	TODO fix (and check SpectrumInterpolator bug... (add/fix const inputs) mSpectrumInterpolator.Do(inSpectrum1, inSpectrum2, outSpectrum);)
 	mSpectrumInterpolator.Do(const_cast<Spectrum&>(inSpectrum1), const_cast<Spectrum&>(inSpectrum2), outSpectrum);

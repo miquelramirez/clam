@@ -45,7 +45,7 @@ bool SegmentSMSHarmonizer::Do(const Frame& in, Frame& out)
 	{
 		TData amount=voices.GetValueFromIndex(i);
 		TData gain=voices.GetXValue(i);
-		mPitchShift.GetInControl("PitchSteps").DoControl(amount);
+		SendFloatToInControl(mPitchShift,"PitchSteps",amount);
 		mPitchShift.Do(in,mTmpFrame);
 		Gain(mTmpFrame,gain);
 		AddFrame(mTmpFrame,out,out);

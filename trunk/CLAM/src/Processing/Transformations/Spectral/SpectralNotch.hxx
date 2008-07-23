@@ -63,9 +63,9 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Amount").DoControl(1000);
-			GetInControl("Bandwidth").DoControl(100);
-			GetInControl("Gain").DoControl(0);
+			mAmount.DoControl(1000);
+			mBandwidthCtl.DoControl(100);
+			mGainCtl.DoControl(0);
 			
 			return true;
 		}

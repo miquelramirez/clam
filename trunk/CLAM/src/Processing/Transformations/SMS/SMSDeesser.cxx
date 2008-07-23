@@ -40,10 +40,10 @@ namespace Hidden
 bool SMSDeesser::Do(const Spectrum& in, Spectrum& out)
 {
 	//this could be done by connecting controls but then I would need outControls
-	mDeesser.GetInControl("Amount").DoControl(GetInControl("Amount").GetLastValue());
-	mDeesser.GetInControl("LowCutoff").DoControl(GetInControl("LowCutoff").GetLastValue());
-	mDeesser.GetInControl("HighCutoff").DoControl(GetInControl("HighCutoff").GetLastValue());
-	mDeesser.GetInControl("Threshold").DoControl(GetInControl("Threshold").GetLastValue());
+	SendFloatToInControl(mDeesser,"Amount",mAmount.GetLastValue());
+	SendFloatToInControl(mDeesser,"LowCutoff",mLowCutoffFreqCtl.GetLastValue());
+	SendFloatToInControl(mDeesser,"HighCutoff",mHighCutoffFreqCtl.GetLastValue());
+	SendFloatToInControl(mDeesser,"Threshold",mThresholdCtl.GetLastValue());
 	
 	mDeesser.Do(in, out);
 	return true;

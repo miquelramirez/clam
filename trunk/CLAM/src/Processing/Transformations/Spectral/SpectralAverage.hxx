@@ -58,7 +58,7 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Average Points").DoControl(50);
+			mPoints.DoControl(50);
 			
 			return true;
 		}

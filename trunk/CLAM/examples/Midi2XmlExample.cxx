@@ -132,7 +132,7 @@ void ConvertAllMidiFiles::OnFile(const std::string& filename)
 	do{//Converter loop
 		
 			//we send a timing control to the MIDI clocker 
-			clocker.GetInControls().GetByNumber(0).DoControl(curTime);
+			SendFloatToInControl(clocker,0,curTime);
 			//we increment the time counter
 			curTime += curTimeInc;
 			//we check for new events in the MIDI manager

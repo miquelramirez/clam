@@ -47,7 +47,7 @@ int main()
 	
 	generator.Start();
 
-	generator.GetInControl("Low Cutoff Frecuency").DoControl(1000.0); // Low Cutoff
+	SendFloatToInControl(generator,"Low Cutoff Frecuency",100.0);// Low Cutoff
 
 	generator.Do(filter);
 

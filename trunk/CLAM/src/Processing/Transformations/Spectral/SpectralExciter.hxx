@@ -62,10 +62,10 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("HighCutoff").DoControl(5000);
-			GetInControl("Threshold").DoControl(-30);
+			mHighCutoffFreqCtl.DoControl(5000);
+			mThresholdCtl.DoControl(-30);
 			
-			GetInControl("HarmonicsGain").DoControl(-30);
+			mHarmonicsGainCtl.DoControl(-30);
 			
 			return true;
 		}

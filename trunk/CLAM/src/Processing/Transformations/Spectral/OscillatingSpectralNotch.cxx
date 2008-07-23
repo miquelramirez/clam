@@ -43,11 +43,11 @@ bool OscillatingSpectralNotch::Do(const Spectrum& in, Spectrum& out)
 	
 	int spectrumSize = in.GetSize();
 	
-	mOscillator.GetInControl("Pitch").DoControl(mOscFreqCtl.GetLastValue());
+	SendFloatToInControl(mOscillator,"Pitch",mOscFreqCtl.GetLastValue());
 	//note that oscillator depth is given in %
-	mOscillator.GetInControl("Amplitude").DoControl(mOscWidthCtl.GetLastValue()*0.01);
+	SendFloatToInControl(mOscillator,"Amplitude",mOscWidthCtl.GetLastValue()*0.01);
 	//kludge: this is not taking into account the possible overlap between windows!!
-	mOscillator.GetInControl("SamplesBetweenCalls").DoControl((spectrumSize-1)/2);
+	SendFloatToInControl(mOscillator,"SamplesBetweenCalls",(spectrumSize-1)/2);
 	
 	TData currentOscAmp;
 	mOscillator.Do(currentOscAmp);

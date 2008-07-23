@@ -85,8 +85,8 @@ int main()
 	while (stopReceiver.GetLastValue()==0)
 	{
 		//we send a timing control to the MIDI clocker 
-		inpClocker.GetInControls().GetByNumber(0).DoControl(curTime);
-		outClocker.GetInControls().GetByNumber(0).DoControl(curTime);
+		SendFloatToInControl(inpClocker,0,curTime);
+		SendFloatToInControl(outClocker,0,curTime);
 
 		//we check for new events in the MIDI manager
 		manager.Check();

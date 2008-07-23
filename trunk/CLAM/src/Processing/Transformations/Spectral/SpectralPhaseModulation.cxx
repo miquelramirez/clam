@@ -45,8 +45,8 @@ bool SpectralPhaseModulation::Do(const Spectrum& in, Spectrum& out)
 		out = in; //TODO big cludge for streaming
 	}
 	
-	mOscillator.GetInControl("Pitch").DoControl(mFreqCtl.GetLastValue());
-	mOscillator.GetInControl("Amplitude").DoControl(mWidthCtl.GetLastValue());
+	SendFloatToInControl(mOscillator,"Pitch",mFreqCtl.GetLastValue());
+	SendFloatToInControl(mOscillator,"Amplitude",mWidthCtl.GetLastValue());
 	
 	DataArray& oPhase = out.GetPhaseBuffer();
 	

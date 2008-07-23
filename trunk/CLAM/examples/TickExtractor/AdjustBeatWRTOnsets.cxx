@@ -80,11 +80,11 @@ namespace CLAM
 		{
 			//get the best phase
 			// Computing best beat phase
-			mSeriesFinder.GetInControl("OffsetMin").DoControl(tickParams.GetOffset());			
-			mSeriesFinder.GetInControl("OffsetStep").DoControl(tickParams.GetInterval());
-			mSeriesFinder.GetInControl("IntervalMin").DoControl(oldBeatParams.GetInterval());
-			mSeriesFinder.GetInControl("IntervalMax").DoControl(oldBeatParams.GetInterval()+1);
-			mSeriesFinder.GetInControl("IntervalStep").DoControl(2);
+			SendFloatToOutControl(mSeriesFinder,"OffsetMin",tickParams.GetOffset());
+			SendFloatToOutControl(mSeriesFinder,"OffsetStep",tickParams.GetInterval());
+			SendFloatToOutControl(mSeriesFinder,"IntervalMin",oldBeatParams.GetInterval());
+			SendFloatToOutControl(mSeriesFinder,"IntervalMax",oldBeatParams.GetInterval()+1);
+			SendFloatToOutControl(mSeriesFinder,"IntervalStep",2);
 			
 			//NB: Use of transients instead of transientsForHist
 			// i.e. making use of transient weights
@@ -102,9 +102,9 @@ namespace CLAM
 			beats.Resize( nUnits );
 			beats.SetSize( nUnits );
 
-			mGridGenerator.GetInControl( "Start" ).DoControl( start );
-			mGridGenerator.GetInControl( "Gap" ).DoControl( gap );
-			mGridGenerator.GetInControl( "End" ).DoControl( end );
+			SendFloatToOutControl(mGridGenerator,"Start",start);
+			SendFloatToOutControl(mGridGenerator,"Gap",gap);
+			SendFloatToOutControl(mGridGenerator,"End",end);
 			
 			mGridGenerator.Do( beats );
 						
