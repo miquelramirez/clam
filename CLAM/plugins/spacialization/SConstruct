@@ -15,6 +15,7 @@ options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', '')
 options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', "", validator=PathOption.PathAccept))
 options.Add(PathOption('sandbox_path', 'Path where third party libraries were installed (in windows)', "", validator=PathOption.PathAccept))
 options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+options.Add(BoolOption('raytracing', 'Linking with Barcelona Media raytracing (not GPL)', 'no') )
 
 toolChain = 'default'
 if sys.platform == "win32": toolChain = 'mingw'
@@ -47,8 +48,8 @@ if sys.platform=='linux2' :
 		'-funroll-loops',
 		'-mmmx',
 #		'-march=nocona',
-#		'-msse',
-#		'-mfpmath=sse'
+		'-msse',
+		'-mfpmath=sse'
 	])
 
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
@@ -56,7 +57,14 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
 	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'local','lib')] )
 env.Append( LIBS=['fftw3'] )
-	
+
+if env['raytracing'] :
+	env.Append(CPPPATH=[os.path.join('..','..','..','..','acustica','raytracing')])
+	env.Append(LIBPATH=[os.path.join('..','..','..','..','acustica','raytracing')])
+	env.Append(LIBS=['raytracing'])
+else :
+	sources.remove(os.path.join('src','RoomImpulseResponseSimulator.cxx'))
+
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]
