@@ -10,7 +10,7 @@ from optparse import OptionParser
 sources = [
 	("example", FileMetadataSource(path=".",
 		schemaFile="CLAMDescriptors.sc",
-		poolSuffix=".example",
+		poolSuffix=".pool",
 		extractor="ClamExtractorExample")),
 	("chord", FileMetadataSource(path=".",
 		schemaFile="Chords.sc",
