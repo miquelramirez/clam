@@ -100,6 +100,7 @@ private:
 	float _delta;
 	int _irCount;
 	unsigned _currentCacheIndex;
+	Scene * _scene;
 
 public:
 	const char* GetClassName() const { return "RoomImpulseResponseSimulator"; }
@@ -126,6 +127,7 @@ public:
 		, _delta(1)
 		, _irCount(0)
 		, _currentCacheIndex(0)
+		, _scene(0)
 	{
 		Configure( config );
 		_emitterX.SetBounds(0,1);
@@ -150,7 +152,28 @@ public:
 		_receiverY.DoControl(0.5);
 		_receiverZ.DoControl(0.2);
 		_delta = 1./_config.GetGridDivisions();
+
+		Settings settings;
+		settings.extra_bound = 0.5;
+		settings.human_height = 1.70;
+		settings.model_filename = _config.GetModel3DFile();
+		settings.num_rays = _config.GetNRays();
+		settings.num_rebounds = _config.GetNRebounds();
+		settings.ir_length = _config.GetIrLength();
+		CLAM_WARNING(_config.HasExtraOptions() and _config.GetExtraOptions() != "",
+			"Extra options not supported");
+		settings.ignore_sources_models = true;
+		settings.use_osc = false;
+		settings.use_dat = false;
+
+		if (_scene) delete _scene;
+		_scene = new Scene(settings);
+
 		return true;
+	}
+	~RoomImpulseResponseSimulator()
+	{
+		if (_scene) delete _scene;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
 
@@ -208,37 +231,22 @@ private:
 		_currentReceiverZ = z2;
 		std::cout << "|" << std::flush;
 
-		Settings settings;
-		settings.extra_bound = 0.5;
-		settings.human_height = 1.70;
-		settings.model_filename = _config.GetModel3DFile();
-		settings.num_rays = _config.GetNRays();
-		settings.num_rebounds = _config.GetNRebounds();
-		settings.ir_length = _config.GetIrLength();
-		CLAM_WARNING(_config.HasExtraOptions() and _config.GetExtraOptions() != "",
-			"Extra options not supported");
-		settings.ignore_sources_models = true;
-		settings.use_osc = false;
-		settings.use_dat = false;
-
-		Scene scene(settings);
-
-		scene.setReceiverPos(
-			scene.normalizedToModelX(_currentReceiverX),
-			scene.normalizedToModelY(_currentReceiverY),
-			scene.normalizedToModelZ(_currentReceiverZ)
+		_scene->setReceiverPos(
+			_scene->normalizedToModelX(_currentReceiverX),
+			_scene->normalizedToModelY(_currentReceiverY),
+			_scene->normalizedToModelZ(_currentReceiverZ)
 			);
-		scene.setComputedSource(0);
-		scene.clearSources();
-		scene.appendSource(
-			scene.normalizedToModelX(_currentEmitterX),
-			scene.normalizedToModelY(_currentEmitterY),
-			scene.normalizedToModelZ(_currentEmitterZ)
+		_scene->setComputedSource(0);
+		_scene->clearSources();
+		_scene->appendSource(
+			_scene->normalizedToModelX(_currentEmitterX),
+			_scene->normalizedToModelY(_currentEmitterY),
+			_scene->normalizedToModelZ(_currentEmitterZ)
 			);
-		std::string responsesPath;
-//		scene.writeDirectSoundOverTime(responses_path, "direct_sound");
-//		scene.raytracingReverbOverTime(responses_path, "reverb");
-		scene.raytracingOverTime(responsesPath, "IR" );
+		std::string responsesPath = "";
+//		_scene->writeDirectSoundOverTime(responses_path, "direct_sound");
+//		_scene->raytracingReverbOverTime(responses_path, "reverb");
+		_scene->raytracingOverTime(responsesPath, "IR" );
 
 		std::string wFile = "w_IR.wav";
 		std::string xFile = "x_IR.wav";
