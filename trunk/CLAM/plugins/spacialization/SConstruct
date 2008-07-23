@@ -61,7 +61,7 @@ env.Append( LIBS=['fftw3'] )
 if env['raytracing'] :
 	env.Append(CPPPATH=[os.path.join('..','..','..','..','acustica','raytracing')])
 	env.Append(LIBPATH=[os.path.join('..','..','..','..','acustica','raytracing')])
-	env.Append(LIBS=['raytracing'])
+	env.Append(LIBS=['raytracing',"GL","GLU","lo"])
 else :
 	sources.remove(os.path.join('src','RoomImpulseResponseSimulator.cxx'))
 
