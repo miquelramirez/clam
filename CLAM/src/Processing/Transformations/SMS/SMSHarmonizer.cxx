@@ -49,7 +49,7 @@ bool SMSHarmonizer::ConcreteConfigure(const ProcessingConfig& config)
 	mIgnoreResidual = mConfig.GetIgnoreResidual();
 
 	mPitchShift.Configure( FrameTransformationConfig() );
-	mPitchShift.GetInControl("IgnoreResidual").DoControl(mIgnoreResidual);
+	SendFloatToInControl(mPitchShift,"IgnoreResidual",mIgnoreResidual);
 
 	mInputVoiceGain.SetBounds(-2.,2.);
 	mInputVoiceGain.SetDefaultValue(0.);
@@ -110,7 +110,7 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 	outSpectrum = inSpectrum; //residual processing is ignored by default, so the output residual is the input one
 
 	TData gain0 = mInputVoiceGain.GetLastValue();
-	mSinusoidalGain.GetInControl("Gain").DoControl(gain0);
+	SendFloatToInControl(mSinusoidalGain,"Gain",gain0);
 	mSinusoidalGain.Do(outPeaks,outPeaks);
 	//TODO add detuning and delay for input voice?
 
@@ -127,21 +127,21 @@ bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks,
 		TData amount = mVoicesPitch[i].GetLastValue() + frand()*mVoicesDetuningAmount[i].GetLastValue(); //detuning
 		amount = CLAM_pow( 2., amount/12. ); //adjust to equal-tempered scale semitones
 
-		mPitchShift.GetInControl("PitchSteps").DoControl(amount);
+		SendFloatToInControl(mPitchShift,"PitchSteps",amount);
 		mPitchShift.Do( inPeaks,
 				inFund, 
 				inSpectrum,
 				mtmpPeaks, 
 				mtmpFund,
 				mtmpSpectrum);
-	
-		mSinusoidalGain.GetInControl("Gain").DoControl(gain);
+				
+		SendFloatToInControl(mSinusoidalGain,"Gain",gain);
 		mSinusoidalGain.Do(mtmpPeaks,mtmpPeaks);
 
 		TData delay = mVoicesDelay[i].GetLastValue();
 		if (delay>0.)
 		{
-			mPeaksDelay.GetInControl("Delay Control").DoControl(delay);
+			SendFloatToInControl(mPeaksDelay,"Delay Control",delay);
 			mPeaksDelay.Do(mtmpPeaks, mtmpPeaks);
 		}
 

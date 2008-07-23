@@ -63,10 +63,10 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Bandwidth").DoControl(20);
-			GetInControl("Harmonics").DoControl(5);
+			mBandwidthCtl.DoControl(20);
+			mHarmonicsCtl.DoControl(5);
 			
-			GetInControl("Amount").DoControl(60);
+			mAmount.DoControl(60);
 			
 			return true;
 		}

@@ -125,12 +125,12 @@ int main(void)
 		// to its connected in controls.
 
 		// From proc1:Out[0] to proc2:In[0], proc3:In[0] and proc3:In[1]
-		proc1.GetOutControls().Get("NoteOn").SendControl(44);
+		SendFloatToOutControl(proc1,"NoteOn",44);
 		// From proc1:Out[1] to proc2:In[1]
-		proc1.GetOutControls().Get("NoteOff").SendControl(555);
+		SendFloatToOutControl(proc1,"NoteOff",555);
 
 		// 
-		proc1.GetInControls().GetByNumber(0).DoControl(222.2f); 
+		SendFloatToOutControl(proc1,0,222.2f);
 
 		// Useless Do's, they are not necessary for the example
 		proc1.Do();

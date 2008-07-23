@@ -175,8 +175,8 @@ private:
 	{
 		const int outId=0, inId=0;
 		GetOutControls().GetByNumber(outId).AddLink(GetInControls().GetByNumber(inId));
-		GetOutControls().GetByNumber(outId).SendControl(1.f);
-		CPPUNIT_ASSERT_EQUAL( 1.f, GetInControls().GetByNumber(inId).GetLastValue() );
+		SendFloatToOutControl(*this,outId,1.f);
+		CPPUNIT_ASSERT_EQUAL( 1.f, GetFloatFromInControl(*this,inId) );
 	}
 	void testLinkAndSendControl_ChangesTypedInControlState()
 	{

@@ -123,6 +123,38 @@ namespace CLAM
 		out.ConnectToIn(in);
 	}
 	
+	void SendFloatToInControl(Processing & receiver, const std::string & inControlName, float value){
+		OutControl controlSender("tmpOutControl");
+		controlSender.AddLink(receiver.GetInControls().Get(inControlName));
+		controlSender.SendControl(value);
+	}
+
+	void SendFloatToInControl(Processing & receiver, int inControlIndex, float value){
+		OutControl controlSender("tmpOutControl");
+		controlSender.AddLink(receiver.GetInControls().GetByNumber(inControlIndex));
+		controlSender.SendControl(value);
+	}
+	
+	void SendFloatToOutControl(Processing & sender, const std::string & inControlName, float value){
+		OutControl& out = *(dynamic_cast<OutControl*>(&(sender.GetOutControls().Get(inControlName))));
+		out.SendControl(value);
+	}
+	
+	void SendFloatToOutControl(Processing & sender, int inControlIndex, float value){
+		OutControl& out = *(dynamic_cast<OutControl*>(&(sender.GetOutControls().GetByNumber(inControlIndex))));
+		out.SendControl(value);
+	}
+	
+	float GetFloatFromInControl(Processing & proc, const std::string & inControlName){
+		InControl& in = *(dynamic_cast<InControl*>(&(proc.GetInControl(inControlName))));
+		return in.GetLastValue();
+	}
+	
+	float GetFloatFromInControl(Processing & proc, int inControlIndex){
+		InControl& in = *(dynamic_cast<InControl*>(&(proc.GetInControls().GetByNumber(inControlIndex))));
+		return in.GetLastValue();
+	}
+	
 	Processing::Processing() 
 		: mpParent(0)
 		, _network(0)

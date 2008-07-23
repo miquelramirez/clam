@@ -120,8 +120,8 @@ public:
 			<< _config.GetFrameSize() << " "
 			<< std::endl;
 		ComplexSpectrumMixer mixer;
-		mixer.GetInControl("Gain1").DoControl(_lastPosition);
-		mixer.GetInControl("Gain2").DoControl(1-_lastPosition);
+		SendFloatToInControl(mixer,"Gain1",_lastPosition);
+		SendFloatToInControl(mixer,"Gain2",1-_lastPosition);
 		for (unsigned i=0; i<_responseSpectrums.size(); i++)
 		{
 			const ComplexSpectrum & spectrum1 = i<input1.size() ? input1[i] : zeroSpectrum;

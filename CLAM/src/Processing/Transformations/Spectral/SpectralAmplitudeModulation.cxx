@@ -45,10 +45,10 @@ bool SpectralAmplitudeModulation::Do(const Spectrum& in, Spectrum& out)
 	
 	int spectrumSize = in.GetSize();
 	
-	mOscillator.GetInControl("Pitch").DoControl(mFreqCtl.GetLastValue());
-	mOscillator.GetInControl("Amplitude").DoControl(mWidthCtl.GetLastValue());
+	SendFloatToInControl(mOscillator,"Pitch",mFreqCtl.GetLastValue());
+	SendFloatToInControl(mOscillator,"Amplitude",mWidthCtl.GetLastValue());
 	//kludge: this is not taking into account the possible overlap between windows!!
-	mOscillator.GetInControl("SamplesBetweenCalls").DoControl((spectrumSize-1)/2);
+	SendFloatToInControl(mOscillator,"SamplesBetweenCalls",(spectrumSize-1)/2);
 	
 	DataArray& oMag = out.GetMagBuffer();
 	

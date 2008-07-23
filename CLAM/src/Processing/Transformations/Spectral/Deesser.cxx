@@ -51,8 +51,9 @@ bool Deesser::Do(const Spectrum& in, Spectrum& out)
 	int highCutoff = 	Round(mHighCutoffFreqCtl.GetLastValue()* spectralResolution);
 	
 	TData midFreq = mLowCutoffFreqCtl.GetLastValue()+(mHighCutoffFreqCtl.GetLastValue()-mLowCutoffFreqCtl.GetLastValue())*0.5;
-	mNotch.GetInControl("Amount").DoControl(midFreq);
-	mNotch.GetInControl("Bandwidth").DoControl(mHighCutoffFreqCtl.GetLastValue()-mLowCutoffFreqCtl.GetLastValue());
+	SendFloatToInControl(mNotch,"Amount",midFreq);
+	SendFloatToInControl(mNotch,"Bandwidth",mHighCutoffFreqCtl.GetLastValue()-mLowCutoffFreqCtl.GetLastValue());
+
 	//note: control is supposed to be sent as dB's
 	TData threshold = 	log2lin(mThresholdCtl.GetLastValue());
 	

@@ -70,7 +70,7 @@ namespace CLAM{
 		
 		bool InitControls()
 		{
-			GetInControl("NumBands").DoControl(50);
+			mNumBandsCtl.DoControl(50);
 			return true;
 		}
 		

@@ -63,7 +63,7 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Amount").DoControl(500);
+			mAmount.DoControl(500);
 			
 			mTimeElapsed = 0;
 			return true;

@@ -159,7 +159,7 @@ void MIDIInControl::Handle(unsigned char* msg,int size)
 			/* TODO: this now only handles correctly system realtime
 			 * messages, where SetChannel is used to specify the
 			 * type of message. Maybe this can be done more elegantly? */
-			GetOutControls().GetByNumber(0).SendControl(1);
+			SendFloatToOutControl(*this,0,1);
 		}
 		else
 		{
@@ -171,19 +171,16 @@ void MIDIInControl::Handle(unsigned char* msg,int size)
 				 * out to values (LSB, MSB), we prefer 1 14bit value.
 				 * see also the code in ConcreteConfigure
 				*/
-				GetOutControls().GetByNumber(mMsgByteIdToControlId[1]).
-					SendControl(msg[1] + (msg[2]<<7));
+				SendFloatToOutControl(*this,mMsgByteIdToControlId[1],msg[1] + (msg[2]<<7));
 			}
 			else
 			if (i==0)
 			{
-				GetOutControls().GetByNumber(mMsgByteIdToControlId[0]).
-					SendControl((msg[0]&0x0F)+1);
+				SendFloatToOutControl(*this,mMsgByteIdToControlId[0],(msg[0]&0x0F)+1);
 			}
 			else
 			{	
-				GetOutControls().GetByNumber(mMsgByteIdToControlId[i]).
-					SendControl(msg[i]);
+				SendFloatToOutControl(*this,mMsgByteIdToControlId[i],msg[i]);
 			}
 		}
 	}

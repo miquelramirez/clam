@@ -60,9 +60,10 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Fundamental").DoControl(100);
-			GetInControl("Amount").DoControl(0);
-			GetInControl("FreqSpaceFactor").DoControl(1.1);
+			
+			mFundamentalCtl.DoControl(100);
+			mAmount.DoControl(0);
+			mFreqSpaceFactorCtl.DoControl(1.1);
 			
 			return true;
 		}

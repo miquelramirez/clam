@@ -251,8 +251,8 @@ namespace CLAM
 		
 				///Adjust pulses and generate arrays of pulses
 				///Tick adjustment
-				mTickOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( firstTransientPos );
-				mTickOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( lastTransientPos );
+				SendFloatToOutControl(mTickOnsetsAdjuster,"FirstTransientPosition",firstTransientPos);
+				SendFloatToOutControl(mTickOnsetsAdjuster,"LastTransientPosition",lastTransientPos);
 				
 				//Use of transientsForHist or transients???
 				// i.e. use of weights or not??					
@@ -277,8 +277,8 @@ namespace CLAM
 					//get the best phase
 					// Computing best beat phase
 
-					mBeatOnsetsAdjuster.GetInControl("FirstTransientPosition").DoControl( firstTransientPos );
-					mBeatOnsetsAdjuster.GetInControl("LastTransientPosition").DoControl( lastTransientPos );
+					SendFloatToOutControl(mBeatOnsetsAdjuster,"FirstTransientPosition",firstTransientPos);
+					SendFloatToOutControl(mBeatOnsetsAdjuster,"LastTransientPosition",lastTransientPos);
 
 					//NB: Use of transients instead of transientsForHist
 					// i.e. making use of transient weights
@@ -310,13 +310,13 @@ namespace CLAM
 			{
 				const TData tempoLimInf = mConfig.GetTempoLimInf(); //BPM
 				TData rateLowerBound = (mConfig.GetSampleRate()*60.0)/tempoLimInf;
-				mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( rateLowerBound );
+				SendFloatToOutControl(mGlobalPREstimator,"RateLowerBound",rateLowerBound);
 				mGlobalPREstimator.Do( forGlobalTempoCalc, beatSequence );
 			}
 
 			///Compute Global tick
 			const int tickLimInf = int(mConfig.GetTickLimInf()*mConfig.GetSampleRate()); //samples
-			mGlobalPREstimator.GetInControl( "RateLowerBound" ).DoControl( tickLimInf );
+			SendFloatToOutControl(mGlobalPREstimator,"RateLowerBound",tickLimInf);
 			mGlobalPREstimator.Do( forGlobalTickCalc, tickSequence );
 		
 			return true;

@@ -60,8 +60,8 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Fundamental").DoControl(100);
-			GetInControl("Overall Factor").DoControl(0);
+			mFundamentalCtl.DoControl(100);
+			mLogOverallFactor.DoControl(0);
 
 			return true;
 		}

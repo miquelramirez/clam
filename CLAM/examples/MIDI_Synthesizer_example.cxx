@@ -409,7 +409,7 @@ void MyAudioApplication::AudioMain(void)
 			inL.Do(bufL);
 			inR.Do(bufR);
 
-			clocker.GetInControls().GetByNumber(0).DoControl(curTime);
+			SendFloatToInControl(clocker,0,curTime);
 			curTime += curTimeInc;
 			
 			midiManager.Check();

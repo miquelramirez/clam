@@ -138,7 +138,7 @@ void CLAMRemoteController::ProcessInControlValues()
 	{
 		if ( (TData) *(it->dataBuffer) != mLastValues[i] )
 		{
-			mSenderList.at(i)->GetInControl("input").DoControl( (TData) *(it->dataBuffer) );
+			SendFloatToInControl(*(mSenderList.at(i)),"input",(TData) *(it->dataBuffer));
 			mLastValues[i]= (TData) *(it->dataBuffer);
 		}
 		i++;

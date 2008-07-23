@@ -60,8 +60,8 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Threshold").DoControl(-60);
-			GetInControl("Bandwidth").DoControl(500);
+			mThresholdCtl.DoControl(-60);
+			mBandWidthCtl.DoControl(500);
 			
 			return true;
 		}

@@ -75,8 +75,8 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("CenterFreq").DoControl(1000);
-			GetInControl("Focus Amount").DoControl(100);
+			mCenterFreqCtl.DoControl(1000);
+			mFocusAmount.DoControl(100);
 
 			return true;
 		}

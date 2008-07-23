@@ -72,8 +72,8 @@ namespace CLAM{
 
 		virtual bool InitControls()
 		{ 
-			GetInControl("CenterFreq").DoControl(1000);
-			GetInControl("Amount").DoControl(100);
+			mCenterFreqCtl.DoControl(1000);
+			mAmount.DoControl(100);
 			
 			return true;
 		}

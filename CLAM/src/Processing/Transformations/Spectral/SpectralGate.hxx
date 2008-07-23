@@ -56,7 +56,7 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Amount").DoControl(-30);
+			mAmount.DoControl(-30);
 			
 			return true;
 		}

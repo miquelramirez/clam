@@ -104,6 +104,37 @@ namespace CLAM
 			Processing & sender, unsigned outPortNumber, 
 			InPortBase & receiver );
 	/**
+	 * Tries to send a float to an inaccessible InControl, this is kept for compatibility
+	 * This function uses the InControl's name to identfy it.
+	 */
+	void SendFloatToInControl(Processing & receiver, const std::string & inControlName, float value);
+	/**
+	 * Tries to send a float to an inaccessible InControl, this is kept for compatibility
+	 * This function uses the InControl's registry index to identfy it.
+	*/
+	void SendFloatToInControl(Processing & receiver, int inControlIndex, float value);
+	/**
+	 * Tries to send a float to an inaccessible OutControl, this is kept for compatibility
+	 * This function uses the OutControl's registry index to identfy it.
+	*/
+	void SendFloatToOutControl(Processing & sender, const std::string & inControlName, float value);
+	/**
+	 * Tries to send a float to an inaccessible OutControl, this is kept for compatibility
+	 * This function uses the OutControl's registry index to identfy it.
+	*/
+	void SendFloatToOutControl(Processing & sender, int inControlIndex, float value);
+	/**
+	 * Gets a float from an inaccesible InControl, this is kept for compatibility
+	 * This function uses the InControl's name to identfy it.
+	*/
+	float GetFloatFromInControl(Processing & proc, const std::string & inControlName);
+	/**
+	 * Gets a float from an inaccesible InControl, this is kept for compatibility
+	 * This function uses the InControl's name to identfy it.
+	*/
+	float GetFloatFromInControl(Processing & proc, int inControlIndex);
+
+	/**
 	 * The base class for all the CLAM processing object classes.
 	 *
 	 * Processing is the base class for all the CLAM processing object classes.

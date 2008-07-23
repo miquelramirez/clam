@@ -26,7 +26,7 @@ namespace CLAM
 			/** Virtual function to override when needing to give different default values to the controls*/
 			virtual bool InitControls()
 			{ 
-				GetInControl("Amount").DoControl(0.);
+				mAmount.DoControl(0.);
 				return true;
 			}
 
