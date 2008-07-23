@@ -240,31 +240,6 @@ private:
 //		scene.raytracingReverbOverTime(responses_path, "reverb");
 		scene.raytracingOverTime(responsesPath, "IR" );
 
-
-		std::ostringstream command;
-		command << "raytracing "
-			<< " --compute-ir"
-			<< " --model-file=" << _config.GetModel3DFile()
-			<< " --listener-x-pos=" << _currentReceiverX
-			<< " --listener-y-pos=" << _currentReceiverY
-			<< " --listener-z-pos=" << _currentReceiverZ
-			<< " --source-x-pos=" << _currentEmitterX
-			<< " --source-y-pos=" << _currentEmitterY 
-			<< " --source-z-pos=" << _currentEmitterZ
-			;
-		if (_config.HasNRebounds()) command << " --num-rebounds=" <<  _config.GetNRebounds();
-		if (_config.HasNRays()) command << " --num-rays=" << _config.GetNRays();
-		if (_config.HasIrLength()) command << " --ir-length=" << _config.GetIrLength();
-		if (_config.HasExtraOptions()) command << " " << _config.GetExtraOptions() << " ";
-		command << " > /dev/null";
-		// std::cout << command.str() << std::endl;
-		int error = std::system( command.str().c_str() );
-		if (error)
-		{
-			std::cout << "ERROR: RoomImpulseResponseSimulator::Do at visualitzador execution!!" <<std::endl;
-			std::cout << "Offending command:\n"<<  command.str() << std::endl;
-			return false;
-		}
 		std::string wFile = "w_IR.wav";
 		std::string xFile = "x_IR.wav";
 		std::string yFile = "y_IR.wav";
