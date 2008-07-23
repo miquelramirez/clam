@@ -42,8 +42,6 @@ bool Vocoder::Do(const Spectrum& in, Spectrum& out)
 		out = in; //TODO big cludge for streaming
 	}
 	
-	int i;
-	
 	int nBands = mNumBandsCtl.GetLastValue(); 
 	int nGainBands = 5; //it is one more than the actual gains
 	int firstBand = 5;

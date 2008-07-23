@@ -53,15 +53,14 @@ namespace CLAM{
 		}
 
 		Vocoder() 
-			: 
-			mIn("In Spectrum", this), 
-			mOut("Out Spectrum", this) ,
-			mBand0GainCtl("Band0Gain", this),
-			mBand1GainCtl("Band1Gain", this),
-			mBand2GainCtl("Band2Gain", this),
-			mBand3GainCtl("Band3Gain", this),
-			mFreqShiftCtl("FreqShift", this),
-			mNumBandsCtl("NumBands", this)
+			: mIn("In Spectrum", this)
+			, mOut("Out Spectrum", this)
+			, mBand0GainCtl("Band0Gain", this)
+			, mBand1GainCtl("Band1Gain", this)
+			, mBand2GainCtl("Band2Gain", this)
+			, mBand3GainCtl("Band3Gain", this)
+			, mNumBandsCtl("NumBands", this)
+			, mFreqShiftCtl("FreqShift", this)
 		{
 			Configure( FrameTransformationConfig() );
 		}
