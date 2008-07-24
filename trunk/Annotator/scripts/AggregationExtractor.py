@@ -6,16 +6,41 @@ import sys
 import os
 from optparse import OptionParser
 
+
+parser = OptionParser(
+	usage="%prog [options] audiofile1 audiofile2 ...",
+	version="%prog 1.0")
+parser.add_option("-s","--print-schema",
+		type='string',
+		default=None,
+		dest="printSchema",
+		metavar="SCHEMAFILE",
+		help="Outputs the description schema for the extractor. Use '-' for standard output."
+	)
+parser.add_option("-f",# "--suffix",
+		default=".pool",
+		dest="suffix",
+		help="Appends SUFFIX to the generated descriptors file (default: '%default')"
+	)
+parser.add_option("-c",# "--print-configuration",
+		type='string',
+		default=None,
+		dest="ConfigurationFile",
+		help=" the Configuration file for the Aggregator."
+	)
+(options, args) = parser.parse_args()
+
+
 class config :
 	#Here define the default configuration
 	sources = [
 		("example", FileMetadataSource(path=".",
 			schemaFile="CLAMDescriptors.sc",
-			poolSuffix=".example1",
+			poolSuffix=".example",
 			extractor="ClamExtractorExample")),
 		("chord", FileMetadataSource(path=".",
 			schemaFile="Chords.sc",
-			poolSuffix=".example2",
+			poolSuffix=".chord",
 			extractor="ChordExtractor")),
 	]
 
@@ -34,32 +59,15 @@ class config :
 	]
 	
 	#Here we load new values from configuration file, if it exists
-	#TODO: a path configuration for the configuration file  (uf~ dizzy?)
-	if not os.access("./AggregatorConfig.conf",os.R_OK) :
-		print "using the default configuration"
-		pass
-	else : execfile("./AggregatorConfig.conf")
+	if options.ConfigurationFile is not None:
+		if not os.access(options.ConfigurationFile,os.R_OK) :
+			print "Configuration File not available. Using the default Aggregator configuration"
+			pass
+		else : execfile(options.ConfigurationFile)
+	else : print "Using the default Aggregator configuration"
 
 
 provider = MetadataSourceAggregator(config.sources, config.map, verbose=True)
-
-
-parser = OptionParser(
-	usage="%prog [options] audiofile1 audiofile2 ...",
-	version="%prog 1.0")
-parser.add_option("-s","--print-schema",
-		type='string',
-		default=None,
-		dest="printSchema",
-		metavar="SCHEMAFILE",
-		help="Outputs the description schema for the extractor. Use '-' for standard output."
-	)
-parser.add_option("-f",# "--suffix",
-		default=".pool",
-		dest="suffix",
-		help="Appends SUFFIX to the generated descriptors file (default: '%default')"
-	)
-(options, args) = parser.parse_args()
 
 
 if options.printSchema is not None:
