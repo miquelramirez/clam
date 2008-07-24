@@ -22,7 +22,7 @@
 #include "ProcessingTree.hxx" 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QHeaderView>
-#include <iostream> 
+#include <iostream>
 
 #include <CLAM/ProcessingFactory.hxx> 
 
@@ -171,12 +171,29 @@ namespace NetworkGUI
 };*/
 
 ProcessingTree::ProcessingTree( QWidget * parent)
-	: QTreeWidget(parent)
+	: QWidget(parent)
+	,_treeWidget(0)
 {
-	setColumnCount(1);
-	setHeaderLabels(QStringList() << tr("Processings toolbox"));
-	setRootIsDecorated( true );
-	header()->hide();
+	QVBoxLayout * globalWidgetLayout = new QVBoxLayout;
+	QHBoxLayout * searchBarLayout = new QHBoxLayout;
+
+	_searchEdit = new QLineEdit(this);
+	_clearButton = new QPushButton("clear",this);
+	_treeWidget = new QTreeWidget(this);
+	_treeWidget->setColumnCount(1);
+	_treeWidget->setHeaderLabels(QStringList() << tr("Processings toolbox"));
+	_treeWidget->setRootIsDecorated( true );
+	_treeWidget->header()->hide();
+
+	searchBarLayout->addWidget(_searchEdit);
+	searchBarLayout->addWidget(_clearButton);
+	globalWidgetLayout->addWidget(_treeWidget);
+//	globalWidgetLayout->addWidget(label);
+	globalWidgetLayout->addLayout(searchBarLayout);
+	this->setLayout(globalWidgetLayout);
+
+	connect(_clearButton,SIGNAL(clicked(bool)),_searchEdit,SLOT(clear()));
+	connect(_searchEdit,SIGNAL(textChanged(const QString)),this,SLOT(filterProcessings(const QString)));
 
 	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 	CLAM::ProcessingFactory::Values categories = factory.GetSetOfValues("category");
@@ -189,7 +206,7 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 		if( keys.size() == 0 ) continue;
 		CLAM::ProcessingFactory::Keys::const_iterator itKey;
 		std::string category = *itCategory;
-		QTreeWidgetItem * categoryTree = new QTreeWidgetItem( this, QStringList() << category.c_str());
+		QTreeWidgetItem * categoryTree = new QTreeWidgetItem( _treeWidget, QStringList() << category.c_str());
 		for(itKey = keys.begin(); itKey != keys.end(); itKey++)
 		{
 			std::string key = *itKey;
@@ -222,12 +239,9 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 				}
 			}
 			item->setToolTip(0,tooltipText);
-
 		}
 	}
-
-	
-	connect( this, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),
+	connect( _treeWidget, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),
 		 this, SLOT( PressProcessing(QTreeWidgetItem *,int) ));
 }
 
@@ -239,10 +253,9 @@ void ProcessingTree::PressProcessing(QTreeWidgetItem * item, int column)
 {	
 	if (!item) return;
 	if (!item->parent()) return;
-
 	// always use column 1
 	QString className = item->text(1);
-	QDrag *drag = new QDrag( this);
+	QDrag *drag = new QDrag( _treeWidget);
 	QMimeData * data = new QMimeData;
 	data->setText(className);
 	drag->setMimeData(data);
