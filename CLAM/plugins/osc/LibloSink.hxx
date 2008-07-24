@@ -1,5 +1,5 @@
-#ifndef LibloSink
-#define LibloSink
+#ifndef LibloSink_hxx
+#define LibloSink_hxx
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/InControl.hxx>
@@ -24,12 +24,23 @@ protected:
           SetOscPath("/clam/target");
     };
 };
+class X
+{
+  X(const LibloSinkConfig& = LibloSinkConfig())
+  {
+  }
+};
 
 class LibloSink : public CLAM::Processing
 {
 	typedef LibloSinkConfig Config;
 	lo_address _oscPort;
+	Config _config;
+	InControl _in1;
+	InControl _in2;
+	InControl _in3;
 public:
+
 	LibloSink(const Config& config = Config()) 
 		: _in1("osc argument 1", this)
 		, _in2("osc argument 2", this)
@@ -73,10 +84,6 @@ protected:
 		return true; // Configuration ok
 	}
 
-	Config _config;
-	InControl _in1;
-	InControl _in2;
-	InControl _in3;
 };
 
 } //namespace
