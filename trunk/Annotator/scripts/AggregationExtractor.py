@@ -6,36 +6,42 @@ import sys
 import os
 from optparse import OptionParser
 
+class config :
+	#Here define the default configuration
+	sources = [
+		("example", FileMetadataSource(path=".",
+			schemaFile="CLAMDescriptors.sc",
+			poolSuffix=".example1",
+			extractor="ClamExtractorExample")),
+		("chord", FileMetadataSource(path=".",
+			schemaFile="Chords.sc",
+			poolSuffix=".example2",
+			extractor="ChordExtractor")),
+	]
 
-sources = [
-	("example", FileMetadataSource(path=".",
-		schemaFile="CLAMDescriptors.sc",
-		poolSuffix=".pool",
-		extractor="ClamExtractorExample")),
-	("chord", FileMetadataSource(path=".",
-		schemaFile="Chords.sc",
-		poolSuffix=".chords",
-		extractor="ChordExtractor")),
-]
-
-map = [
-	# ('TargetScope::TargetAttribute', 'sourceId', 'SourceScope::SourceAttribute'),
-	("Song::Frames", "example", "Song::Frames"),
-	("Song::ChordFrames", "chord", "Song::Frames"),
-	("Song::Danceable", "example", "Song::Danceability"),
-	#("TrackFrame::ClamMean", "example", "Frame::Mean"),  # there is a bug or something.
-	("Frame::Energy", "example", "Frame::Energy"),
-	("ChordFrame::Energy", "chord", "Frame::Energy"),
-	("ChordFrame::ChordHartePcp", "chord", "Frame::HartePcp"),
-	("ChordFrame::HarteChordCorrelation", "chord", "Frame::HarteChordCorrelation"),
-	("Song::Harte", "chord", "Song::Chords_Harte"),
-	# How to remain the childscope relationship while changing the scope names?
-	("ExtractedChord::ChordRoot", "chord", "ExtractedChord::Root"),
-	("ExtractedChord::ChordMode", "chord", "ExtractedChord::Mode"),
-]
+	map = [
+		# ('TargetScope::TargetAttribute', 'sourceId', 'SourceScope::SourceAttribute'),
+		("Song::Frames", "example", "Song::Frames"),
+		("Song::ChordFrames", "chord", "Song::Frames"),
+		("Song::Danceable", "example", "Song::Danceability"),
+		("Frame::Energy", "example", "Frame::Energy"),
+		("ChordFrame::Energy", "chord", "Frame::Energy"),
+		("ChordFrame::ChordHartePcp", "chord", "Frame::HartePcp"),
+		("ChordFrame::HarteChordCorrelation", "chord", "Frame::HarteChordCorrelation"),
+		("Song::Harte", "chord", "Song::Chords_Harte"),
+		("ExtractedChord::ChordRoot", "chord", "ExtractedChord::Root"),
+		("ExtractedChord::ChordMode", "chord", "ExtractedChord::Mode"),
+	]
+	
+	#Here we load new values from configuration file, if it exists
+	#TODO: a path configuration for the configuration file  (uf~ dizzy?)
+	if not os.access("./AggregatorConfig.conf",os.R_OK) :
+		print "using the default configuration"
+		pass
+	else : execfile("./AggregatorConfig.conf")
 
 
-provider = MetadataSourceAggregator(sources, map, verbose=True)
+provider = MetadataSourceAggregator(config.sources, config.map, verbose=True)
 
 
 parser = OptionParser(
