@@ -1,11 +1,11 @@
-#include "LibloSender.hxx"
+#include "LibloSink.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
 static const char * metadata[] = {
-	"key", "LibloSender",
+	"key", "LibloSink",
 	"category", "[plugin] Open Sound Control",
 	0
 	};
 
-static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::LibloSender> registrator(metadata);
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::LibloSink> registrator(metadata);
 

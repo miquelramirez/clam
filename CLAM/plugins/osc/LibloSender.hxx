@@ -1,5 +1,5 @@
-#ifndef LibloSender_hxx
-#define LibloSender_hxx
+#ifndef LibloSink
+#define LibloSink
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/InControl.hxx>
@@ -11,9 +11,9 @@
 namespace CLAM
 {
 
-class LibloSenderConfig : public CLAM::ProcessingConfig
+class LibloSinkConfig : public CLAM::ProcessingConfig
 { 
-    DYNAMIC_TYPE_USING_INTERFACE( LibloSenderConfig, 1, ProcessingConfig );
+    DYNAMIC_TYPE_USING_INTERFACE( LibloSinkConfig, 1, ProcessingConfig );
     DYN_ATTRIBUTE( 0, public, std::string, OscPath);
     //TODO number of arguments/ports
 protected:
@@ -25,12 +25,12 @@ protected:
     };
 };
 
-class LibloSender : public CLAM::Processing
+class LibloSink : public CLAM::Processing
 {
-	typedef LibloSenderConfig Config;
+	typedef LibloSinkConfig Config;
 	lo_address _oscPort;
 public:
-	LibloSender(const Config& config = Config()) 
+	LibloSink(const Config& config = Config()) 
 		: _in1("osc argument 1", this)
 		, _in2("osc argument 2", this)
 		, _in3("osc argument 3", this)
@@ -44,7 +44,8 @@ public:
 	}
 	void SendOsc(float f1, float f2, float f3)
 	{
-
+		//TODO this code is provisional. OSC path should be configurable
+	
 	//	std::cout << f1 << " " << f2 << " " << f3 << std::endl;
 		if (lo_send(_oscPort, "/navigator", "fff", f1, f2, f3) == -1) {
 			printf("OSC error %d: %s\n", lo_address_errno(_oscPort), lo_address_errstr(_oscPort));
@@ -62,7 +63,7 @@ public:
 	}
 	const char* GetClassName() const
 	{
-		return "LibloSender";
+		return "LibloSink";
 	}
 protected:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
