@@ -21,6 +21,7 @@
 
   <processing id="LibloSource" type="LibloSource">
     <OscPath>/clam/target</OscPath>
+    <ServerPort>8000</ServerPort>
   </processing>
 
   <control_connection>
