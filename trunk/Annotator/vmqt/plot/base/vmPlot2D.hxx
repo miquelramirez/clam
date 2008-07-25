@@ -132,12 +132,17 @@ namespace CLAM
 			double mCurrentYSpan;
 			bool   mDoResize;
 
+			/// Marks when an update is pending to be served.
+			/// Used to consolidate several update requests.
 			unsigned mUpdatePending;
 
+			/// X full range, data units
 			Range mXRange;
+			/// Y full range, data units
 			Range mYRange;
-
+			/// Visualized range, data units
 			GLView     mView;
+			/// Widget size in pixels
 			GLViewport mViewport;
 
 			std::pair<int,int>   mMousePos;
