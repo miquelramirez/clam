@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="Input" type="AudioSource"/>
+  <processing id="Input" position="15,14" size="128,108" type="AudioSource"/>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="577,210" size="174,342" type="Oscilloscope"/>
 
-  <processing id="PeakView_0" type="PeakView"/>
+  <processing id="PeakView_0" position="97,408" size="495,130" type="PeakView"/>
 
-  <processing id="PeakView_1" type="PeakView"/>
+  <processing id="PeakView_1" position="101,209" size="488,134" type="PeakView"/>
 
-  <processing id="PeakView_2" type="PeakView"/>
+  <processing id="PeakView_2" position="96,622" size="494,130" type="PeakView"/>
 
-  <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
+  <processing id="SMSAnalysisCore" position="65,107" size="187,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -94,7 +94,7 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSSynthesis_0" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" position="513,105" size="177,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -147,7 +147,7 @@
     <prSamplingRate>0</prSamplingRate>
   </processing>
 
-  <processing id="SMSSynthesis_1" type="SMSSynthesis">
+  <processing id="SMSSynthesis_1" position="349,734" size="177,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -200,15 +200,15 @@
     <prSamplingRate>0</prSamplingRate>
   </processing>
 
-  <processing id="SMSTranspose_0" type="SMSTranspose">
+  <processing id="SMSTranspose_0" position="322,67" size="180,64" type="SMSTranspose">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="SMSTranspose_1" type="SMSTranspose">
+  <processing id="SMSTranspose_1" position="109,759" size="180,64" type="SMSTranspose">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="Transpose amount" type="OutControlSender">
+  <processing id="Transpose amount" position="102,332" size="485,91" type="OutControlSender">
     <Min>-36</Min>
     <Default>0</Default>
     <Max>36</Max>
@@ -216,7 +216,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Transpose amount_0" type="OutControlSender">
+  <processing id="Transpose amount_0" position="96,553" size="494,91" type="OutControlSender">
     <Min>-36</Min>
     <Default>0</Default>
     <Max>36</Max>
@@ -224,9 +224,9 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Transposed_0" type="AudioSink"/>
+  <processing id="Transposed_0" position="545,40" size="153,111" type="AudioSink"/>
 
-  <processing id="Transposed_1" type="AudioSink"/>
+  <processing id="Transposed_1" position="566,732" size="153,111" type="AudioSink"/>
 
   <port_connection>
     <out>Input.AudioOut</out>

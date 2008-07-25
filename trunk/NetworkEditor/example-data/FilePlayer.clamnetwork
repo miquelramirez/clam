@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioFileMemoryLoader" position="65,158" size="129,52" type="AudioFileMemoryLoader">
-    <SourceFile>/home/tues/dev/clam/clam/NetworkEditor/example-data/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
+  <processing id="AudioFileMemoryLoader" position="65,158" size="249,64" type="AudioFileMemoryLoader">
+    <SourceFile>example-data/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
 
-  <processing id="AudioMixer" position="223,154" size="118,60" type="AudioMixer">
+  <processing id="AudioMixer" position="355,149" size="133,64" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="AudioSink_0" position="347,191" size="128,60" type="AudioSink"/>
+  <processing id="AudioSink_0" position="542,138" size="141,111" type="AudioSink"/>
 
-  <processing id="Gain 0" position="209,31" size="189,77" type="OutControlSender">
+  <processing id="Gain 0" position="209,31" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>1</Default>
     <Max>1</Max>

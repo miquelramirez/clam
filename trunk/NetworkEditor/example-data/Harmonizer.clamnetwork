@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink_0" position="950,395" size="141,111" type="AudioSink"/>
 
-  <processing id="Gain_0" type="OutControlSender">
+  <processing id="Gain_0" position="352,96" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>2</Max>
@@ -11,7 +11,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Gain_1" type="OutControlSender">
+  <processing id="Gain_1" position="351,159" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>2</Max>
@@ -19,7 +19,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Gain_2" type="OutControlSender">
+  <processing id="Gain_2" position="352,221" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>2</Max>
@@ -27,7 +27,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Gain_3" type="OutControlSender">
+  <processing id="Gain_3" position="353,283" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>2</Max>
@@ -35,9 +35,9 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Input" type="AudioSource"/>
+  <processing id="Input" position="-41,267" size="128,108" type="AudioSource"/>
 
-  <processing id="Input Voice Gain" type="OutControlSender">
+  <processing id="Input Voice Gain" position="352,17" size="206,91" type="OutControlSender">
     <Min>-2</Min>
     <Default>0</Default>
     <Max>2</Max>
@@ -45,15 +45,15 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="262,493" size="379,131" type="Oscilloscope"/>
 
-  <processing id="Oscilloscope_1" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="687,493" size="381,130" type="Oscilloscope"/>
 
-  <processing id="PeakView_0" type="PeakView"/>
+  <processing id="PeakView_0" position="265,619" size="376,140" type="PeakView"/>
 
-  <processing id="PeakView_1" type="PeakView"/>
+  <processing id="PeakView_1" position="692,621" size="376,137" type="PeakView"/>
 
-  <processing id="Pitch_0" type="OutControlSender">
+  <processing id="Pitch_0" position="519,96" size="217,91" type="OutControlSender">
     <Min>-24</Min>
     <Default>0</Default>
     <Max>24</Max>
@@ -61,7 +61,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Pitch_1" type="OutControlSender">
+  <processing id="Pitch_1" position="518,158" size="217,91" type="OutControlSender">
     <Min>-24</Min>
     <Default>0</Default>
     <Max>24</Max>
@@ -69,7 +69,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Pitch_2" type="OutControlSender">
+  <processing id="Pitch_2" position="518,220" size="217,91" type="OutControlSender">
     <Min>-24</Min>
     <Default>0</Default>
     <Max>24</Max>
@@ -77,7 +77,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Pitch_3" type="OutControlSender">
+  <processing id="Pitch_3" position="519,282" size="217,91" type="OutControlSender">
     <Min>-24</Min>
     <Default>0</Default>
     <Max>24</Max>
@@ -85,7 +85,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="SMSAnalysisCore_0" type="SMSAnalysisCore">
+  <processing id="SMSAnalysisCore_0" position="33,355" size="207,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -168,12 +168,12 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSHarmonizer_0" type="SMSHarmonizer">
+  <processing id="SMSHarmonizer_0" position="271,388" size="322,78" type="SMSHarmonizer">
     <NumberOfVoices>4</NumberOfVoices>
     <IgnoreResidual>1</IgnoreResidual>
   </processing>
 
-  <processing id="SMSSynthesis_0" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" position="650,391" size="177,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -226,7 +226,7 @@
     <prSamplingRate>0</prSamplingRate>
   </processing>
 
-  <processing id="Voice Delay_0" type="OutControlSender">
+  <processing id="Voice Delay_0" position="863,95" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -234,7 +234,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Voice Delay_1" type="OutControlSender">
+  <processing id="Voice Delay_1" position="863,159" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -242,7 +242,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Voice Delay_2" type="OutControlSender">
+  <processing id="Voice Delay_2" position="864,220" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -250,7 +250,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Voice Delay_3" type="OutControlSender">
+  <processing id="Voice Delay_3" position="864,281" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -258,7 +258,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Voice Detuning_0" type="OutControlSender">
+  <processing id="Voice Detuning_0" position="698,96" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -266,7 +266,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Voice Detuning_1" type="OutControlSender">
+  <processing id="Voice Detuning_1" position="697,160" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -274,7 +274,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Voice Detuning_2" type="OutControlSender">
+  <processing id="Voice Detuning_2" position="699,222" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -282,7 +282,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Voice Detuning_3" type="OutControlSender">
+  <processing id="Voice Detuning_3" position="700,283" size="199,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>

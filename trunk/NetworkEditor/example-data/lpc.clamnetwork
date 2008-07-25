@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSource_0" type="AudioSource"/>
+  <processing id="AudioSource_0" position="-33,39" size="165,108" type="AudioSource"/>
 
-  <processing id="AudioWindowing" type="AudioWindowing">
+  <processing id="AudioWindowing" position="130,63" size="182,64" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -12,33 +12,33 @@
     <DoHalfWindowShift>1</DoHalfWindowShift>
   </processing>
 
-  <processing id="CepstralTransform_0" type="CepstralTransform">
+  <processing id="CepstralTransform_0" position="444,117" size="216,64" type="CepstralTransform">
     <NumMelCoefficients>20</NumMelCoefficients>
     <NumCepstrumCoefficients>20</NumCepstrumCoefficients>
     <UseBase10>0</UseBase10>
   </processing>
 
-  <processing id="FFT Spectrum" type="SpectrumView"/>
+  <processing id="FFT Spectrum" position="531,-70" size="157,80" type="SpectrumView"/>
 
-  <processing id="FFT_0" type="FFT">
+  <processing id="FFT_0" position="136,2" size="85,64" type="FFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Incomming Audio" type="Oscilloscope"/>
+  <processing id="Incomming Audio" position="238,-72" size="190,80" type="Oscilloscope"/>
 
-  <processing id="LP Model" type="LPModelView"/>
+  <processing id="LP Model" position="656,-76" size="115,82" type="LPModelView"/>
 
-  <processing id="LPC AutoCorrelation" type="LPC_AutoCorrelation">
+  <processing id="LPC AutoCorrelation" position="305,60" size="214,64" type="LPC_AutoCorrelation">
     <Order>33</Order>
   </processing>
 
-  <processing id="LPC Spectral Envelope" type="SpectrumView"/>
+  <processing id="LPC Spectral Envelope" position="631,11" size="235,87" type="SpectrumView"/>
 
-  <processing id="Mel Cepstrum" type="MelCepstrumView"/>
+  <processing id="Mel Cepstrum" position="609,219" size="159,71" type="MelCepstrumView"/>
 
-  <processing id="Mel Spectrum" type="MelSpectrumView"/>
+  <processing id="Mel Spectrum" position="471,215" size="158,77" type="MelSpectrumView"/>
 
-  <processing id="MelFilterBank_0" type="MelFilterBank">
+  <processing id="MelFilterBank_0" position="288,118" size="174,64" type="MelFilterBank">
     <SpectrumSize>513</SpectrumSize>
     <SpectralRange>22050</SpectralRange>
     <LowCutoff>0</LowCutoff>
@@ -47,7 +47,7 @@
     <UsePower>0</UsePower>
   </processing>
 
-  <processing id="SpectralAnalysis_0" type="SpectralAnalysis">
+  <processing id="SpectralAnalysis_0" position="111,115" size="200,64" type="SpectralAnalysis">
     <WindowGenerator>
       <Type>BlackmanHarris92</Type>
       <Size>1025</Size>
@@ -70,9 +70,9 @@
     <prWindowType>BlackmanHarris92</prWindowType>
   </processing>
 
-  <processing id="Windowed Audio" type="BufferOscilloscope"/>
+  <processing id="Windowed Audio" position="388,-69" size="183,81" type="BufferOscilloscope"/>
 
-  <processing id="Windowed Spectrum" type="SpectrumView"/>
+  <processing id="Windowed Spectrum" position="295,213" size="219,77" type="SpectrumView"/>
 
   <port_connection>
     <out>AudioSource_0.AudioOut</out>

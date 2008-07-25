@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink" type="AudioSink"/>
+  <processing id="AudioSink" position="409,102" size="128,111" type="AudioSink"/>
 
-  <processing id="ControlPrinter" type="ControlPrinter">
+  <processing id="ControlPrinter" position="335,316" size="172,87" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>0</GuiOnly>
   </processing>
 
-  <processing id="Fund2MIDI" type="Fund2MIDI"/>
+  <processing id="Fund2MIDI" position="328,215" size="127,64" type="Fund2MIDI"/>
 
-  <processing id="MonoAudioFileReader" type="MonoAudioFileReader">
-    <SourceFile>/home/hordia/dev/clam_dev/NetworkEditor/example-data/jaume-voice.mp3</SourceFile>
+  <processing id="MonoAudioFileReader" position="9,94" size="226,64" type="MonoAudioFileReader">
+    <SourceFile>example-data/jaume-voice.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>0</Loop>
   </processing>
 
-  <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
+  <processing id="SMSAnalysisCore" position="78,178" size="187,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>

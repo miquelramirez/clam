@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="Amount" type="OutControlSender">
+  <processing id="Amount" position="19,416" size="232,91" type="OutControlSender">
     <Min>100</Min>
     <Default>1000</Default>
     <Max>5000</Max>
@@ -9,7 +9,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Bandwidth" type="OutControlSender">
+  <processing id="Bandwidth" position="501,213" size="335,91" type="OutControlSender">
     <Min>1</Min>
     <Default>500.5</Default>
     <Max>1000</Max>
@@ -17,7 +17,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Freq" type="OutControlSender">
+  <processing id="Freq" position="499,152" size="332,91" type="OutControlSender">
     <Min>80</Min>
     <Default>7540</Default>
     <Max>15000</Max>
@@ -25,7 +25,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Gain" type="OutControlSender">
+  <processing id="Gain" position="502,275" size="339,95" type="OutControlSender">
     <Min>-60</Min>
     <Default>0</Default>
     <Max>60</Max>
@@ -33,7 +33,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="High Cutoff" type="OutControlSender">
+  <processing id="High Cutoff" position="14,295" size="243,91" type="OutControlSender">
     <Min>1000</Min>
     <Default>5000</Default>
     <Max>10000</Max>
@@ -41,7 +41,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="High Gain" type="OutControlSender">
+  <processing id="High Gain" position="13,119" size="227,91" type="OutControlSender">
     <Min>-60</Min>
     <Default>0</Default>
     <Max>0</Max>
@@ -49,7 +49,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Low Cutoff" type="OutControlSender">
+  <processing id="Low Cutoff" position="15,355" size="232,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1000</Max>
@@ -57,7 +57,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Low Gain" type="OutControlSender">
+  <processing id="Low Gain" position="14,236" size="228,91" type="OutControlSender">
     <Min>-60</Min>
     <Default>0</Default>
     <Max>0</Max>
@@ -65,7 +65,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Mid Gain" type="OutControlSender">
+  <processing id="Mid Gain" position="14,179" size="227,91" type="OutControlSender">
     <Min>-60</Min>
     <Default>0</Default>
     <Max>0</Max>
@@ -73,7 +73,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="OscFreq" type="OutControlSender">
+  <processing id="OscFreq" position="501,351" size="342,91" type="OutControlSender">
     <Min>0.1</Min>
     <Default>2.55</Default>
     <Max>5</Max>
@@ -81,7 +81,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="OscWidth" type="OutControlSender">
+  <processing id="OscWidth" position="500,414" size="343,91" type="OutControlSender">
     <Min>5</Min>
     <Default>102.5</Default>
     <Max>200</Max>
@@ -89,17 +89,17 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="OscillatingSpectralNotch_0" type="OscillatingSpectralNotch">
+  <processing id="OscillatingSpectralNotch_0" position="424,508" size="272,64" type="OscillatingSpectralNotch">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="477,12" size="222,129" type="Oscilloscope"/>
 
-  <processing id="OverlapAdd_0" type="OverlapAdd">
+  <processing id="OverlapAdd_0" position="292,587" size="158,64" type="OverlapAdd">
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Robotization Amount" type="OutControlSender">
+  <processing id="Robotization Amount" position="230,411" size="254,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>100</Max>
@@ -107,15 +107,15 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Robotization_0" type="Robotization">
+  <processing id="Robotization_0" position="249,504" size="165,64" type="Robotization">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="Spectral Input" type="AudioSource"/>
+  <processing id="Spectral Input" position="21,6" size="158,108" type="AudioSource"/>
 
-  <processing id="Spectral Output" type="AudioSink"/>
+  <processing id="Spectral Output" position="491,587" size="174,111" type="AudioSink"/>
 
-  <processing id="SpectralAnalysis_0" type="SpectralAnalysis">
+  <processing id="SpectralAnalysis_0" position="226,46" size="200,64" type="SpectralAnalysis">
     <WindowGenerator>
       <Type>BlackmanHarris92</Type>
       <Size>2049</Size>
@@ -138,7 +138,7 @@
     <prWindowType>BlackmanHarris92</prWindowType>
   </processing>
 
-  <processing id="SpectralSynthesis_0" type="SpectralSynthesis">
+  <processing id="SpectralSynthesis_0" position="87,590" size="212,64" type="SpectralSynthesis">
     <AnalWindowGenerator>
       <Type>BlackmanHarris92</Type>
       <Size>2049</Size>
@@ -169,15 +169,20 @@
     <prHopSize>512</prHopSize>
   </processing>
 
-  <processing id="SpectrumView_0" type="SpectrumView"/>
+  <processing id="SpectrumView_0" position="221,119" size="272,150" type="SpectrumView"/>
 
-  <processing id="SpectrumView_1" type="SpectrumView"/>
+  <processing id="SpectrumView_1" position="220,268" size="274,144" type="SpectrumView"/>
 
-  <processing id="ThreeBandFilter_0" type="ThreeBandFilter">
+  <processing id="ThreeBandFilter_0" position="82,503" size="194,64" type="ThreeBandFilter">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="TonalAnalysis_0" type="TonalAnalysis"/>
+  <processing id="TonalAnalysis_0" position="171,-66" size="173,110" type="TonalAnalysis">
+    <FilterInertia>0.7</FilterInertia>
+    <TunningEnabled>1</TunningEnabled>
+    <PeakWindowingEnabled>1</PeakWindowingEnabled>
+    <HopRatio>8</HopRatio>
+  </processing>
 
   <port_connection>
     <out>OscillatingSpectralNotch_0.Out Spectrum</out>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink" type="AudioSink"/>
+  <processing id="AudioSink" position="325,85" size="128,111" type="AudioSink"/>
 
-  <processing id="AudioSource" type="AudioSource"/>
+  <processing id="AudioSource" position="33,64" size="145,108" type="AudioSource"/>
 
-  <processing id="ControlSource_0" type="ControlSource">
+  <processing id="ControlSource_0" position="182,24" size="180,64" type="ControlSource">
     <MinValue>200</MinValue>
     <MaxValue>4000</MaxValue>
     <Step>1</Step>
     <UnitName>Hz</UnitName>
   </processing>
 
-  <processing id="Modulator" type="Oscillator">
+  <processing id="Modulator" position="184,152" size="124,64" type="Oscillator">
     <Frequency>440</Frequency>
     <Amplitude>1</Amplitude>
     <ModIndex>1</ModIndex>
@@ -20,7 +20,7 @@
     <SamplingRate>44100</SamplingRate>
   </processing>
 
-  <processing id="Oscillator" type="SimpleOscillator">
+  <processing id="Oscillator" position="33,124" size="118,64" type="SimpleOscillator">
     <Frequency>10</Frequency>
     <Amplitude>1</Amplitude>
     <Phase>0</Phase>

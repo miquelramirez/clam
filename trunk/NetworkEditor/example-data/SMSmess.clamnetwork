@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="AudioSource_0" type="AudioSource"/>
+  <processing id="AudioSource_0" position="2,115" size="165,108" type="AudioSource"/>
 
-  <processing id="OutControlSender" type="OutControlSender">
+  <processing id="OutControlSender" position="227,12" size="441,91" type="OutControlSender">
     <Min>-11025</Min>
     <Default>0</Default>
     <Max>11025</Max>
@@ -11,11 +11,9 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Output" type="AudioSink"/>
-<!--
-  <processing id="Residual" type="AudioSink"/>
--->
-  <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
+  <processing id="Output" position="721,185" size="128,111" type="AudioSink"/>
+
+  <processing id="SMSAnalysisCore" position="61,177" size="187,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -98,19 +96,19 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSFreqShift" type="SMSFreqShift">
+  <processing id="SMSFreqShift" position="430,166" size="150,64" type="SMSFreqShift">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="SMSResidualGain" type="SMSResidualGain">
+  <processing id="SMSResidualGain" position="235,247" size="188,64" type="SMSResidualGain">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="SMSSinusoidalGain" type="SMSSinusoidalGain">
+  <processing id="SMSSinusoidalGain" position="244,187" size="203,64" type="SMSSinusoidalGain">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="SMSSynthesis" type="SMSSynthesis">
+  <processing id="SMSSynthesis" position="567,199" size="157,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -162,9 +160,7 @@
     </OverlapAddGlobal>
     <prSamplingRate>0</prSamplingRate>
   </processing>
-<!--
-  <processing id="Sinusoidal" type="AudioSink"/>
--->
+
   <port_connection>
     <out>AudioSource_0.AudioOut</out>
     <in>SMSAnalysisCore.Input Audio</in>
@@ -199,17 +195,7 @@
     <out>SMSSynthesis.OutputAudio</out>
     <in>Output.AudioIn</in>
   </port_connection>
-<!--
-  <port_connection>
-    <out>SMSSynthesis.OutputResAudio</out>
-    <in>Residual.AudioIn</in>
-  </port_connection>
 
-  <port_connection>
-    <out>SMSSynthesis.OutputSinAudio</out>
-    <in>Sinusoidal.AudioIn</in>
-  </port_connection>
--->
   <control_connection>
     <out>OutControlSender.out</out>
     <in>SMSFreqShift.Amount</in>
