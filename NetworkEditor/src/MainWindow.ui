@@ -10,18 +10,27 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>MainWindow</string>
+   <string>CLAM Networ Editor</string>
   </property>
   <property name="windowIcon" >
-   <iconset/>
+   <iconset resource="images.qrc" >
+    <normaloff>:/icons/images/NetworkEditor-icon.svg</normaloff>:/icons/images/NetworkEditor-icon.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>69</y>
+     <width>746</width>
+     <height>336</height>
+    </rect>
+   </property>
    <layout class="QHBoxLayout" >
-    <property name="margin" >
-     <number>9</number>
-    </property>
     <property name="spacing" >
      <number>6</number>
+    </property>
+    <property name="margin" >
+     <number>9</number>
     </property>
    </layout>
   </widget>
@@ -31,7 +40,7 @@
      <x>0</x>
      <y>0</y>
      <width>746</width>
-     <height>25</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File" >
@@ -43,7 +52,8 @@
       <string>Open &amp;Recent</string>
      </property>
      <property name="icon" >
-      <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
+      <iconset resource="images.qrc" >
+       <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
      </property>
      <addaction name="separator" />
     </widget>
@@ -82,6 +92,8 @@
     </property>
     <addaction name="action_Play" />
     <addaction name="action_Stop" />
+    <addaction name="separator" />
+    <addaction name="action_Compile_as_ladspa_plugin" />
    </widget>
    <widget class="QMenu" name="menu_Interface" >
     <property name="title" >
@@ -95,7 +107,8 @@
       <string>Faust</string>
      </property>
      <property name="icon" >
-      <iconset resource="images.qrc" >:/icons/images/faustlogo.svg</iconset>
+      <iconset resource="images.qrc" >
+       <normaloff>:/icons/images/faustlogo.svg</normaloff>:/icons/images/faustlogo.svg</iconset>
      </property>
      <addaction name="action_Compile_Faust_Modules" />
      <addaction name="action_Reload_Faust_Modules" />
@@ -112,8 +125,25 @@
    <addaction name="menu_View" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" />
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>405</y>
+     <width>746</width>
+     <height>23</height>
+    </rect>
+   </property>
+  </widget>
   <widget class="QToolBar" name="toolBar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>30</y>
+     <width>746</width>
+     <height>39</height>
+    </rect>
+   </property>
    <property name="windowTitle" >
     <string>Main ToolBar</string>
    </property>
@@ -121,7 +151,10 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak" >
+    <bool>false</bool>
    </attribute>
    <addaction name="action_New" />
    <addaction name="action_OpenToolbar" />
@@ -134,6 +167,7 @@
    <addaction name="action_Edit_interface" />
    <addaction name="action_Run_prototyper" />
    <addaction name="action_Compile_Faust_Modules" />
+   <addaction name="action_Compile_as_ladspa_plugin" />
    <addaction name="separator" />
    <addaction name="action_Show_processing_toolbox" />
    <addaction name="action_Zoom_in" />
@@ -145,7 +179,8 @@
   </widget>
   <action name="action_New" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/filenew.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/filenew.png</normaloff>:/icons/images/filenew.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;New</string>
@@ -159,7 +194,8 @@
   </action>
   <action name="action_Open" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open</string>
@@ -170,7 +206,8 @@
   </action>
   <action name="action_Open_example" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
    </property>
    <property name="text" >
     <string>Open e&amp;xample</string>
@@ -181,7 +218,8 @@
   </action>
   <action name="action_Play" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/player_play.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/player_play.png</normaloff>:/icons/images/player_play.png</iconset>
    </property>
    <property name="text" >
     <string>Play</string>
@@ -192,7 +230,8 @@
   </action>
   <action name="action_Save" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/filesave.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/filesave.png</normaloff>:/icons/images/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Save</string>
@@ -203,7 +242,8 @@
   </action>
   <action name="action_Stop" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/player_stop.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/player_stop.png</normaloff>:/icons/images/player_stop.png</iconset>
    </property>
    <property name="text" >
     <string>Stop</string>
@@ -214,7 +254,8 @@
   </action>
   <action name="action_Save_as" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/filesaveas.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/filesaveas.png</normaloff>:/icons/images/filesaveas.png</iconset>
    </property>
    <property name="text" >
     <string>Save &amp;as</string>
@@ -222,7 +263,8 @@
   </action>
   <action name="action_Quit" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/exit.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/exit.png</normaloff>:/icons/images/exit.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Quit</string>
@@ -233,7 +275,8 @@
   </action>
   <action name="action_About" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/NetworkEditor-icon.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/NetworkEditor-icon.png</normaloff>:/icons/images/NetworkEditor-icon.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;About</string>
@@ -247,7 +290,8 @@
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/view_tree.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/view_tree.png</normaloff>:/icons/images/view_tree.png</iconset>
    </property>
    <property name="text" >
     <string>Show &amp;processing toolbox</string>
@@ -255,7 +299,8 @@
   </action>
   <action name="action_Whats_this" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/contexthelp.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/contexthelp.png</normaloff>:/icons/images/contexthelp.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;What's this</string>
@@ -266,7 +311,8 @@
   </action>
   <action name="action_Online_tutorial" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/help.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/help.png</normaloff>:/icons/images/help.png</iconset>
    </property>
    <property name="text" >
     <string>Online tutorial</string>
@@ -274,7 +320,8 @@
   </action>
   <action name="action_Run_prototyper" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/exec.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/exec.png</normaloff>:/icons/images/exec.png</iconset>
    </property>
    <property name="text" >
     <string>Run prototyper</string>
@@ -282,7 +329,8 @@
   </action>
   <action name="action_Print" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/fileprint.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/fileprint.png</normaloff>:/icons/images/fileprint.png</iconset>
    </property>
    <property name="text" >
     <string>Print</string>
@@ -293,7 +341,8 @@
   </action>
   <action name="action_Edit_interface" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/designer.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/designer.png</normaloff>:/icons/images/designer.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Edit interface</string>
@@ -301,7 +350,8 @@
   </action>
   <action name="action_Zoom_in" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/viewmag+.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/viewmag+.png</normaloff>:/icons/images/viewmag+.png</iconset>
    </property>
    <property name="text" >
     <string>Zoom &amp;in</string>
@@ -312,7 +362,8 @@
   </action>
   <action name="action_Zoom_out" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/viewmag-.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/viewmag-.png</normaloff>:/icons/images/viewmag-.png</iconset>
    </property>
    <property name="text" >
     <string>Zoom &amp;out</string>
@@ -323,7 +374,8 @@
   </action>
   <action name="action_Default_zoom" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/viewmag1.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/viewmag1.png</normaloff>:/icons/images/viewmag1.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Default zoom</string>
@@ -331,7 +383,8 @@
   </action>
   <action name="action_New_dummy" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/filenew.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/filenew.png</normaloff>:/icons/images/filenew.png</iconset>
    </property>
    <property name="text" >
     <string>New dummy</string>
@@ -339,7 +392,8 @@
   </action>
   <action name="action_OpenToolbar" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/fileopen_draggable.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/fileopen_draggable.png</normaloff>:/icons/images/fileopen_draggable.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open</string>
@@ -350,7 +404,8 @@
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/faust_compile.svg</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/faust_compile.svg</normaloff>:/icons/images/faust_compile.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Recompile Faust modules</string>
@@ -358,7 +413,8 @@
   </action>
   <action name="action_Reload_Faust_Modules" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/reload.svg</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/reload.svg</normaloff>:/icons/images/reload.svg</iconset>
    </property>
    <property name="text" >
     <string>Re&amp;load Faust modules</string>
@@ -370,6 +426,15 @@
    </property>
    <property name="text" >
     <string>&amp;Embed SVG diagrams on new processings</string>
+   </property>
+  </action>
+  <action name="action_Compile_as_ladspa_plugin" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/compile_ladspa.svg</normaloff>:/icons/images/compile_ladspa.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Compile as &amp;Ladspa plugin</string>
    </property>
   </action>
  </widget>

@@ -22,6 +22,7 @@
 #include "ProcessingTree.hxx" 
 #include <QtGui/QMouseEvent>
 #include <QtGui/QHeaderView>
+#include <QtGui/QLabel>
 #include <iostream>
 
 #include <CLAM/ProcessingFactory.hxx> 
@@ -29,146 +30,6 @@
 
 namespace NetworkGUI
 {
-/*const static char * processingClasses[] = {
-	"Audio Input/Output",
-	"AudioSource",
-	"AudioSink",
-	0,
-	"Audio File I/O",
-	"MonoAudioFileReader",
-	"MonoAudioFileWriter",
-	"MultiChannelAudioFileReader",
-	"MultiChannelAudioFileWriter",
-	0,
-	"Generators",
-	"SimpleOscillator",
-	"Oscillator",
-	"ADSR",
-	"SquareWave",
-	"WindowGenerator",
-	"HarmonicPeaksGenerator",
-//	"WaveGenerator",	TODO register
-	0,
-	"Arithmetic operations",
-	"AudioMultiplier",
-	"AudioAdder",
-	"AudioMixer",
-//	"SpectralPeakArrayAdder", TODO register
-//	"SpectrumAdder", TODO register
-//	"SpectrumAdder2", TODO register
-	"SpectrumSubstracter2",
-	"SpectrumProduct",
-	0,
-	"Controls",
-	"OutControlSender",
-	"ControlSurface",
-	"ControlSource",
-	"ControlSink",
-	"ControlPrinter",
-	"ControlTraceReader",
-	"ControlTraceWriter",
-	"ControlScaler", 
-	"AutoPanner",
-	"FlagControl",
-	"Random",
-	"OneOverF",
-	0,
-	"MIDI",
-//	"MIDIKeyboard",
-//	"MIDIInControl",
-	"MIDIDispatcher",
-	0,
-	"Analysis",
-	"FFT",
-	"FFT_rfftw",
-	"FFT_fftw3",
-	"FFT_ooura",
-	"FFT_numrec",
-	"AudioWindowing",
-	"SpectralAnalysis",
-	"SMSAnalysisCore",
-	"LPC_AutoCorrelation",
-	"TonalAnalysis",
-	"MelFilterBank",
-	"CepstralTransform",
-	0,
-	"Synthesis",
-	"IFFT",
-	"IFFT_rfftw",
-	"IFFT_fftw3",
-	"IFFT_ooura",
-	"OverlapAdd",
-	"SpectralSynthesis",
-	"SMSSynthesis",
-	0,
-	"SMS Transformations",
-	"SMSFreqShift",
-	"SMSPitchShift",
-	"SMSResidualGain",
-	"SMSSinusoidalGain",
-	"SMSSineFilter",
-	"SMSOddEvenHarmonicRatio",
-	"SMSSpectralShapeShift",
-	"SMSPitchDiscretization",
-	"SMSGenderChange",
-	"SMSHarmonizer",
-	"SMSMorph",
-	"SMSTimeStretch",
-	"SMSTranspose",
-	"VowelResonator",
-	0,
-	"Spectral Transformations",
-	"OscillatingSpectralNotch",
-	"SpectralDelay",
-	"Vocoder",
-	"ThreeBandFilter",
-	"Robotization",
-	"SampleAndHold",
-	"ThreeBandCompressor",
-	"Peakalizer",
-	"ThreeBandAM",
-//	"Deeser",
-	0,	
-	"Utils",
-	"Fundamental2Control",
-//	"ControlMapper" //	TODO register
-	0,
-	"Graphical Monitors",
-	"Vumeter",
-	"Oscilloscope",
-	"BufferOscilloscope",
-	"SpectrumView",
-	"PeakView",
-	"Tonnetz",
-	"KeySpace",
-	"Spectrogram",
-	"PolarChromaPeaks",
-	"ChordRanking",
-	"LPModelView",
-	"MelSpectrumView",
-	"MelCepstrumView",
-	"VectorView",
-	"Tunner",
-	0,
-	"Usage Examples",
-	"FilenameUsageExample",
-	0,
-	"Sample by Sample (Experimental)",
-	"Data2Audio",
-	"AudioStreamer",
-	"DataAdder",
-	"DataMultiplier",
-	"DataGain",
-	"DataSink",
-	"DataDelay",
-	"SilentSource",
-	0,
-	"Ebow Synthesizer (Experimental - GSoC)",
-	"AudioDatabaseReader",
-	"SDIFDatabaseProcessing",
-	0,
-	0
-};*/
 
 ProcessingTree::ProcessingTree( QWidget * parent)
 	: QWidget(parent)
@@ -178,13 +39,14 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 	QHBoxLayout * searchBarLayout = new QHBoxLayout;
 
 	_searchEdit = new QLineEdit(this);
-	_clearButton = new QPushButton("clear",this);
+	_clearButton = new QPushButton(QIcon(":/icons/images/clear_left.png"),"",this);
 	_treeWidget = new QTreeWidget(this);
 	_treeWidget->setColumnCount(1);
 	_treeWidget->setHeaderLabels(QStringList() << tr("Processings toolbox"));
 	_treeWidget->setRootIsDecorated( true );
 	_treeWidget->header()->hide();
 
+	searchBarLayout->addWidget(new QLabel(tr("Filter:")));
 	searchBarLayout->addWidget(_searchEdit);
 	searchBarLayout->addWidget(_clearButton);
 	globalWidgetLayout->addWidget(_treeWidget);
