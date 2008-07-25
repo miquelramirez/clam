@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink_0" position="856,19" size="141,111" type="AudioSink"/>
 
-  <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
+  <processing id="MonoAudioFileReader_0" position="33,37" size="246,64" type="MonoAudioFileReader">
     <SourceFile>example-data/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="159,243" size="165,226" type="Oscilloscope"/>
 
-  <processing id="Oscilloscope_1" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="728,242" size="165,232" type="Oscilloscope"/>
 
-  <processing id="OutControlSender_0" type="OutControlSender">
+  <processing id="OutControlSender_0" position="158,457" size="682,91" type="OutControlSender">
     <Min>-50</Min>
     <Default>0</Default>
     <Max>550</Max>
@@ -21,11 +21,11 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="PeakView_0" type="PeakView"/>
+  <processing id="PeakView_0" position="154,644" size="710,128" type="PeakView"/>
 
-  <processing id="PeakView_1" type="PeakView"/>
+  <processing id="PeakView_1" position="155,531" size="706,123" type="PeakView"/>
 
-  <processing id="Robotization factor" type="OutControlSender">
+  <processing id="Robotization factor" position="494,-2" size="221,91" type="OutControlSender">
     <Min>0</Min>
     <Default>50</Default>
     <Max>100</Max>
@@ -33,11 +33,11 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Robotization_0" type="Robotization">
+  <processing id="Robotization_0" position="345,133" size="165,64" type="Robotization">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="SMSAnalysisCore_0" type="SMSAnalysisCore">
+  <processing id="SMSAnalysisCore_0" position="62,125" size="207,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -120,11 +120,11 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSFreqShift_0" type="SMSFreqShift">
+  <processing id="SMSFreqShift_0" position="344,75" size="170,64" type="SMSFreqShift">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="SMSSynthesis_0" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" position="674,61" size="177,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -177,13 +177,13 @@
     <prSamplingRate>0</prSamplingRate>
   </processing>
 
-  <processing id="SpectrumView_0" type="SpectrumView"/>
+  <processing id="SpectrumView_0" position="305,244" size="426,109" type="SpectrumView"/>
 
-  <processing id="SpectrumView_1" type="SpectrumView"/>
+  <processing id="SpectrumView_1" position="304,348" size="428,118" type="SpectrumView"/>
 
-  <processing id="Vumeter_0" type="Vumeter"/>
+  <processing id="Vumeter_0" position="49,242" size="130,537" type="Vumeter"/>
 
-  <processing id="Vumeter_1" type="Vumeter"/>
+  <processing id="Vumeter_1" position="863,242" size="130,538" type="Vumeter"/>
 
   <port_connection>
     <out>MonoAudioFileReader_0.Samples Read</out>

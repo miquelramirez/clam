@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink_0" position="954,78" size="141,111" type="AudioSink"/>
 
-  <processing id="Input 1" type="Oscilloscope"/>
+  <processing id="Input 1" position="4,380" size="268,106" type="Oscilloscope"/>
 
-  <processing id="Input 2" type="Oscilloscope"/>
+  <processing id="Input 2" position="3,472" size="274,128" type="Oscilloscope"/>
 
-  <processing id="Interpolation Factor" type="OutControlSender">
+  <processing id="Interpolation Factor" position="455,41" size="207,91" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
     <Max>1</Max>
@@ -15,25 +15,25 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
-    <SourceFile>/home/hordia/dev/clam_dev/NetworkEditor/example-data/jaume-voice.mp3</SourceFile>
+  <processing id="MonoAudioFileReader_0" position="-49,54" size="246,64" type="MonoAudioFileReader">
+    <SourceFile>example-data/jaume-voice.mp3</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>0</Loop>
   </processing>
 
-  <processing id="MonoAudioFileReader_1" type="MonoAudioFileReader">
+  <processing id="MonoAudioFileReader_1" position="-43,268" size="246,64" type="MonoAudioFileReader">
     <SourceFile>/home/hordia/dev/clam_dev/clam-test-data/Elvis44k.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
 
-  <processing id="Oscilloscope_1" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="496,468" size="278,129" type="Oscilloscope"/>
 
-  <processing id="PeakView_0" type="PeakView"/>
+  <processing id="PeakView_0" position="3,586" size="272,123" type="PeakView"/>
 
-  <processing id="PeakView_1" type="PeakView"/>
+  <processing id="PeakView_1" position="496,583" size="276,128" type="PeakView"/>
 
-  <processing id="SMSAnalysisCore_0" type="SMSAnalysisCore">
+  <processing id="SMSAnalysisCore_0" position="164,29" size="207,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -116,7 +116,7 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSAnalysisCore_1" type="SMSAnalysisCore">
+  <processing id="SMSAnalysisCore_1" position="173,265" size="207,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -199,13 +199,13 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSMorph_0" type="SMSMorph">
+  <processing id="SMSMorph_0" position="431,139" size="148,126" type="SMSMorph">
     <IsHarmonic1>1</IsHarmonic1>
     <IsHarmonic2>1</IsHarmonic2>
     <UseSpectralShape>0</UseSpectralShape>
   </processing>
 
-  <processing id="SMSSynthesis_0" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" position="778,163" size="177,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>

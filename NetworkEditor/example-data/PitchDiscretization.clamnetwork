@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="Input" type="AudioSource"/>
+  <processing id="Input" position="11,197" size="128,108" type="AudioSource"/>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="102,272" size="286,128" type="Oscilloscope"/>
 
-  <processing id="Oscilloscope_1" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="666,271" size="277,129" type="Oscilloscope"/>
 
-  <processing id="PeakView_0" type="PeakView"/>
+  <processing id="PeakView_0" position="101,389" size="287,120" type="PeakView"/>
 
-  <processing id="PeakView_1" type="PeakView"/>
+  <processing id="PeakView_1" position="667,386" size="277,123" type="PeakView"/>
 
-  <processing id="PitchDiscretization_Out" type="AudioSink"/>
+  <processing id="PitchDiscretization_Out" position="810,133" size="241,111" type="AudioSink"/>
 
-  <processing id="SMSAnalysisCore" type="SMSAnalysisCore">
+  <processing id="SMSAnalysisCore" position="113,98" size="187,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
       <WindowGenerator>
         <Type>Hamming</Type>
@@ -96,11 +96,11 @@
     </SynthSineSpectrum>
   </processing>
 
-  <processing id="SMSPitchDiscretization_0" type="SMSPitchDiscretization">
+  <processing id="SMSPitchDiscretization_0" position="339,129" size="258,78" type="SMSPitchDiscretization">
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="SMSSynthesis_0" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" position="604,102" size="177,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
