@@ -246,7 +246,8 @@ namespace CLAM
 			mViewport.h = e->size().height();
 			mDoResize = true;
 			Renderers::iterator it = mRenderers.begin();
-			for(; it != mRenderers.end(); it++) it->second->SetViewport(mViewport);
+			for(; it != mRenderers.end(); it++)
+				it->second->SetViewport(mViewport);
 			int sv = GetHScrollValue();
 			emit hScrollMaxValue(GetXPixels());
 			emit hScrollValue(sv);
@@ -264,53 +265,61 @@ namespace CLAM
 			mMousePos = std::make_pair(e->x(),e->y());
 			std::pair<double,double> coords = GetXY(mMousePos.first,mMousePos.second);
 			Renderers::iterator it = mRenderers.begin();
-			for(;it != mRenderers.end(); it++) it->second->MouseMoveEvent(coords.first,coords.second);
+			for(;it != mRenderers.end(); it++)
+				it->second->MouseMoveEvent(coords.first,coords.second);
 		}
 
 		void Plot2D::mousePressEvent(QMouseEvent* e)
 		{
 			std::pair<double,double> coords = GetXY(e->x(),e->y());
 			Renderers::iterator it = mRenderers.begin();
-			for(;it != mRenderers.end(); it++) it->second->MousePressEvent(coords.first,coords.second);
+			for(;it != mRenderers.end(); it++)
+				it->second->MousePressEvent(coords.first,coords.second);
 		}
 
 		void Plot2D::mouseReleaseEvent(QMouseEvent* e)
 		{
 			std::pair<double,double> coords = GetXY(e->x(),e->y());
 			Renderers::iterator it = mRenderers.begin();
-			for(;it != mRenderers.end(); it++) it->second->MouseReleaseEvent(coords.first,coords.second);
+			for(;it != mRenderers.end(); it++)
+				it->second->MouseReleaseEvent(coords.first,coords.second);
 		}
 
 		void Plot2D::mouseDoubleClickEvent(QMouseEvent* e)
 		{
 			std::pair<double,double> coords = GetXY(e->x(),e->y());
 			Renderers::iterator it = mRenderers.begin();
-			for(;it != mRenderers.end(); it++) it->second->MouseDoubleclickEvent(coords.first,coords.second);
+			for(;it != mRenderers.end(); it++)
+				it->second->MouseDoubleclickEvent(coords.first,coords.second);
 		}
 
 		void Plot2D::keyPressEvent(QKeyEvent * e)
 		{
 			Renderers::iterator it = mRenderers.begin();
-			for(;it != mRenderers.end(); it++) it->second->KeyPressEvent(e->key());
+			for(;it != mRenderers.end(); it++)
+				it->second->KeyPressEvent(e->key());
 		}
 
 		void Plot2D::keyReleaseEvent(QKeyEvent * e)
 		{
 			Renderers::iterator it = mRenderers.begin();
-			for(;it != mRenderers.end(); it++) it->second->KeyReleaseEvent(e->key());
+			for(;it != mRenderers.end(); it++)
+				it->second->KeyReleaseEvent(e->key());
 		}
 
 		void Plot2D::enterEvent(QEvent* e)
 		{
 			Renderers::iterator it = mRenderers.begin();
-			for(;it != mRenderers.end(); it++) it->second->EnterEvent();
+			for(;it != mRenderers.end(); it++)
+				it->second->EnterEvent();
 			QGLWidget::enterEvent(e);
 		}
 
 		void Plot2D::leaveEvent(QEvent* e)
 		{
 			Renderers::iterator it = mRenderers.begin();
-			for(;it != mRenderers.end(); it++) it->second->LeaveEvent();
+			for(;it != mRenderers.end(); it++)
+				it->second->LeaveEvent();
 			QGLWidget::leaveEvent(e);
 		}
 
