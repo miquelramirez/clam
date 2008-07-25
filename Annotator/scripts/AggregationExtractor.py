@@ -33,6 +33,7 @@ parser.add_option("-c",# "--print-configuration",
 
 class config :
 	#Here define the default configuration
+	verbose = True
 	sources = [
 		("example", FileMetadataSource(path=".",
 			schemaFile="CLAMDescriptors.sc",
@@ -60,12 +61,14 @@ class config :
 	
 	#Here we load new values from configuration file, if it exists
 	if options.ConfigurationFile is not None:
+
 		if not os.access(options.ConfigurationFile,os.R_OK) :
 			print >> sys.stderr, "Bad Configuration File!"
 			sys.exit(-1)
-		else : execfile(options.ConfigurationFile)
 
-provider = MetadataSourceAggregator(config.sources, config.map, verbose=True)
+		execfile(options.ConfigurationFile)
+
+provider = MetadataSourceAggregator(config.sources, config.map, verbose=config.verbose)
 
 
 if options.printSchema is not None:
