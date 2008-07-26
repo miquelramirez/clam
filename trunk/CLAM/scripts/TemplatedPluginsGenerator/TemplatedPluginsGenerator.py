@@ -32,8 +32,11 @@
 import os, sys, shutil
 
 if len(sys.argv) < 3:
-	print "Bad amount of input arguments"
-	print "Usage: TemplatedPluginsGenerator NEWPLUGINNAME TEMPLATENAME [COPYRIGHTHOLDER] [LICENSE] [YEAR]"
+	print """
+	Bad amount of input arguments
+	
+	Usage: TemplatedPluginsGenerator NEWPLUGINNAME TEMPLATENAME [COPYRIGHTHOLDER] [LICENSE] [YEAR]
+	"""
 	sys.exit(1)
 
 plugin = {}
@@ -69,8 +72,7 @@ plugin["output_dir"] = "../../plugins"
 #plugin["description"] = ""
 
 
-license_text = f.read()
-f.close()
+license_text = f.read(); f.close()
 license_text = license_text.replace( "Copyright (c)", "Copyright (c) " + plugin["year"] + plugin["copyright_holder"] )
 
 
@@ -82,8 +84,7 @@ def make_file( template_dir, plugin_name, replacement_str, filename, new_file_na
 		f = open( "templates/" + template_dir + "/" + filename , 'r' )
 	except IOError:
 		return
-	new_file = f.read()
-	f.close()
+	new_file = f.read(); f.close()
 	
 	if new_file_name=="": new_file_name=plugin_name
 	if to_lower_case:
@@ -99,16 +100,15 @@ def make_file( template_dir, plugin_name, replacement_str, filename, new_file_na
 	except:
 		ext = ""
 	try:
-		g = open( plugin["output_dir"]+"/" + plugin_name + "/" + new_file_name + ext, "w" )
+		f = open( plugin["output_dir"]+"/" + plugin_name + "/" + new_file_name + ext, "w" )
 		print "Creating " + plugin["output_dir"]+ "/" + plugin_name + "/" + new_file_name + ext + " file"
 	except:
 		print plugin["output_dir"] + "/" + plugin_name + "/" + plugin_name + ext
 		print "Output file write error."
 		sys.exit(2)
 	if (ext==".hxx" or ext==".cxx") and plugin["license"]!="null":
-		g.write( license_text + "\n\n" )
-	g.write( new_file )
-	g.close()
+		f.write( license_text + "\n\n" )
+	f.write( new_file ); f.close()
 
 def copy_file( template, filename ):
 	if os.path.isfile("templates/" + template + "/" + filename):
