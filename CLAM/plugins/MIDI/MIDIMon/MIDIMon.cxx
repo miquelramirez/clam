@@ -15,7 +15,7 @@ namespace Hidden
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MIDIMon> registrator(metadata);	
 }
 
-	inline void RtMidiCallback( double deltatime, std::vector< unsigned char > *message, void *userData )
+	void MIDIMon::RtMidiCallback( double deltatime, std::vector< unsigned char > *message, void *userData )
 	{
 		MIDIMon* monitor = (MIDIMon*)userData;
 		monitor->Do(message);
