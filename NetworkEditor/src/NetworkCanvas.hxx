@@ -495,6 +495,18 @@ public:
 		_zoomFactor=1.;
 		update();
 	}
+	const QPixmap getPixmapOfCanvas(Qt::TransformationMode mode = Qt::FastTransformation)
+	{
+		QPixmap pixmap(size());
+		QPainter painter;
+		painter.begin(&pixmap);
+		paint(painter);
+		painter.end();
+		// if greater than 800x800, rescale it
+		if (size()!=size().boundedTo(QSize(800,800)))
+			return pixmap.scaled(800,800,Qt::KeepAspectRatio, mode);
+		return pixmap;
+	}
 protected:
 	ProcessingBox * getBox(const QString & name)
 	{
