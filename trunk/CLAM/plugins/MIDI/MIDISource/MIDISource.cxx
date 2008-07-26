@@ -14,10 +14,10 @@ namespace Hidden
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, MIDISource> registrator(metadata);	
 }
 
-	inline void RtMidiCallback( double deltatime, std::vector< unsigned char > *message, void *userData )
+	void MIDISource::RtMidiCallback( double deltatime, std::vector< unsigned char > *message, void *userData )
 	{
-		MIDISource* monitor = (MIDISource*)userData;
-		monitor->Do(message);
+		MIDISource* source = (MIDISource*)userData;
+		source->Do(message);
 	}
 
 	MIDISource::MIDISource(const Config& config) 

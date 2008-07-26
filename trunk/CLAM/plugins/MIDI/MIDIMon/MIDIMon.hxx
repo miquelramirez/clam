@@ -16,6 +16,8 @@ namespace CLAM {
 		OutControl mMIDIData2;
 
 		RtMidiIn *mMIDIin;
+	
+		static void RtMidiCallback( double deltatime, std::vector< unsigned char > *message, void *userData );
 
 	public:
 		const char* GetClassName() const { return "MIDIMon"; }

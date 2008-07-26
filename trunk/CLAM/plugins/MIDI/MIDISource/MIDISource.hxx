@@ -14,12 +14,15 @@ namespace CLAM {
 		OutControl mMIDIMessage;
 		OutControl mMIDIData1;
 		OutControl mMIDIData2;
-		/** 
-		 mTrigger should be connected to an InControlTmpl to inform that all MIDI Data is placed and can be used.
+
+		/**
+		* mTrigger should be connected to an InControlTmpl to inform that all MIDI Data is placed and can be used.
 		*/
 		OutControl mTrigger; 
 
 		RtMidiIn *mMIDIin;
+
+		static void RtMidiCallback( double deltatime, std::vector< unsigned char > *message, void *userData );
 
 	public:
 		const char* GetClassName() const { return "MIDISource"; }
