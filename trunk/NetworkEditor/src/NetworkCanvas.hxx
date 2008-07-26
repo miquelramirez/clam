@@ -636,6 +636,7 @@ public:
 	// TODO: Are those generic enough to be virtual?
 	virtual bool editConfiguration(ProcessingBox * box) = 0;
 	virtual void addControlSenderProcessing( ProcessingBox * processing, QPoint point ) = 0;
+	virtual void addControlPrinterProcessing( ProcessingBox * processing, QPoint point ) = 0;
 
 	virtual void connectionContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing, ProcessingBox::Region region) { }
 	virtual void processingContextMenu(QMenu * menu, QContextMenuEvent * event, ProcessingBox * processing) { }
@@ -1041,6 +1042,27 @@ public: // Actions
 
 		markAsChanged();
 	}
+
+	virtual void addControlPrinterProcessing( ProcessingBox * processing, QPoint point )
+	{
+		if (networkIsDummy()) return;
+
+		unsigned controlIndex = processing->controlIndexByXPos(point);
+		QString outControlName = processing->getOutcontrolName(controlIndex);
+		std::string controlPrinterName  =  outControlName.toStdString();
+		// add Control Printer processing to network
+		if (_network->HasProcessing(controlPrinterName) )
+		{
+			controlPrinterName = _network->GetUnusedName(controlPrinterName);
+		}
+		_network->AddProcessing( controlPrinterName, "ControlPrinter");
+		CLAM::Processing & controlPrinter = _network->GetProcessing( controlPrinterName );
+		// add box to canvas and connect
+		addProcessingBox( controlPrinterName.c_str(), &controlPrinter, point+QPoint(0,100));
+		addControlConnection( processing, controlIndex, getBox(controlPrinterName.c_str()), 0 );
+
+		markAsChanged();
+	}
 	
 	void addLinkedProcessingReceiver( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nInPort=0 )
 	{
@@ -1057,7 +1079,6 @@ public: // Actions
 
 		markAsChanged();
 	}
-
 
 	void addLinkedProcessingSender( ProcessingBox * processing, QPoint point, const QString & processingType, unsigned nOutPort=0 )
 	{
@@ -1533,7 +1554,21 @@ private slots:
 			return;
 		}
 	}
-	
+
+	void onAddControlPrinter()
+	{
+		QPoint point = ((QAction*)sender())->data().toPoint();
+		for (unsigned i = _processings.size(); i--; )
+		{
+			ProcessingBox::Region region = _processings[i]->getRegion(point);
+			if (region==ProcessingBox::noRegion) continue;
+			if (region!=ProcessingBox::outcontrolsRegion) return;
+
+			addControlPrinterProcessing(_processings[i], point);
+			return;
+		}
+	}
+
 	void onAddLinkedProcessing()
 	{
 		QPoint point = ((QAction*)sender())->data().toPoint();
@@ -1694,6 +1729,11 @@ private:
 		{
 			menu->addAction(QIcon(":/icons/images/hslider.png"), tr("Add slider"),
 				this, SLOT(onAddSlider()))->setData(cursorPosition);
+		}
+		if (region==ProcessingBox::outcontrolsRegion)
+		{
+			menu->addAction(QIcon(":/icons/images/processing.png"), tr("Add control printer"),
+				this, SLOT(onAddControlPrinter()))->setData(cursorPosition);
 		}
 		if (region==ProcessingBox::outportsRegion)
 		{
