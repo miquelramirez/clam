@@ -6,6 +6,7 @@
 #include <string>
 #include <cmath>
 #include "lo/lo.h"
+#undef GetClassName
 
 
 namespace CLAM
