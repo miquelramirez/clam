@@ -67,7 +67,6 @@ bool LadspaWrapper::Do()
 
 	for(unsigned int i=0;i<_outputControlValues.size();i++)
 		SendFloatToOutControl(*this, i, _outputControlValues[i]);
-		//GetOutControls().GetByNumber(i).SendControl(_outputControlValues[i]);
 
 	for(unsigned int i=0;i<_inputPorts.size();i++)
 		 _inputPorts[i]->Consume();
