@@ -154,6 +154,7 @@ public:
 		_delta = 1./_config.GetGridDivisions();
 
 		Settings settings;
+		settings.repeatable = true; // TODO: It should be configurable
 		settings.extra_bound = 0.5;
 		settings.human_height = 1.70;
 		settings.model_filename = _config.GetModel3DFile();
@@ -244,8 +245,8 @@ private:
 			_scene->normalizedToModelZ(_currentEmitterZ)
 			);
 		std::string responsesPath = "";
-//		_scene->writeDirectSoundOverTime(responses_path, "direct_sound");
-//		_scene->raytracingReverbOverTime(responses_path, "reverb");
+//		_scene->writeDirectSoundOverTime(responsesPath, "direct_sound");
+//		_scene->raytracingReverbOverTime(responsesPath, "reverb");
 		_scene->raytracingOverTime(responsesPath, "IR" );
 
 		std::string wFile = "w_IR.wav";
