@@ -498,6 +498,10 @@ void ProcessingBox::mouseDoubleClickEvent(QMouseEvent * event)
 	{
 		_canvas->addControlSenderProcessing(this, point);
 	}
+	if (region==outcontrolsRegion)
+	{
+		_canvas->addControlPrinterProcessing(this, point);
+	}
 }
 
 bool ProcessingBox::rename()
