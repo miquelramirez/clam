@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink" type="AudioSink"/>
+  <processing id="AudioSink" position="360,47" size="128,111" type="AudioSink"/>
 
-  <processing id="MonoAudioFileReader" type="MonoAudioFileReader">
+  <processing id="MonoAudioFileReader" position="29,25" size="158,58" type="MonoAudioFileReader">
     <SourceFile>/home/vokimon/CajitasDeArena/acustica/wavs/3InLanguage.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
 
-  <processing id="Oscilloscope" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="317,127" size="149,103" type="Oscilloscope"/>
 
-  <processing id="Oscilloscope_1" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="154,129" size="144,101" type="Oscilloscope"/>
 
-  <processing id="Resampler" type="Resampler">
+  <processing id="Resampler" position="219,27" size="94,58" type="Resampler">
     <InputSamples>1024</InputSamples>
     <OutputSamples>1024</OutputSamples>
   </processing>
