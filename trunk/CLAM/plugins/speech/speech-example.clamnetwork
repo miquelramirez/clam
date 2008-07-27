@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink_0" position="465,66" size="128,111" type="AudioSink"/>
 
-  <processing id="AudioWindowing_0" type="AudioWindowing">
+  <processing id="AudioWindowing_0" position="-24,73" size="141,58" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>8000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -12,17 +12,17 @@
     <DoHalfWindowShift>1</DoHalfWindowShift>
   </processing>
 
-  <processing id="FormantExtractor_0" type="FormantExtractor"/>
+  <processing id="FormantExtractor_0" position="-24,144" size="141,58" type="FormantExtractor"/>
 
-  <processing id="MonoAudioFileReader_0" type="MonoAudioFileReader">
+  <processing id="MonoAudioFileReader_0" position="-56,16" size="172,58" type="MonoAudioFileReader">
     <SourceFile>/home/abe/media/audio/vowels/uw_8k.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
 
-  <processing id="PeakView_0" type="PeakView"/>
+  <processing id="PeakView_0" position="179,238" size="345,272" type="PeakView"/>
 
-  <processing id="SMSSynthesis_0" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" position="297,27" size="127,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>8000</SamplingRate>
@@ -75,14 +75,14 @@
     <prSamplingRate>0</prSamplingRate>
   </processing>
 
-  <processing id="SimpleOscillator_0" type="SimpleOscillator">
+  <processing id="SimpleOscillator_0" position="170,179" size="137,58" type="SimpleOscillator">
     <Frequency>440</Frequency>
     <Amplitude>1</Amplitude>
     <Phase>0</Phase>
     <SamplingRate>8000</SamplingRate>
   </processing>
 
-  <processing id="SpectralAnalysis_0" type="SpectralAnalysis">
+  <processing id="SpectralAnalysis_0" position="282,144" size="139,58" type="SpectralAnalysis">
     <WindowGenerator>
       <Type>BlackmanHarris92</Type>
       <Size>1025</Size>
