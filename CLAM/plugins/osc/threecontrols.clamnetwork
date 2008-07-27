@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="ControlPrinter" position="71,206" size="162,84" type="ControlPrinter">
+  <processing id="ControlPrinter" position="-1,186" size="162,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="ControlPrinter_1" position="228,206" size="162,84" type="ControlPrinter">
+  <processing id="ControlPrinter_1" position="156,186" size="162,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="ControlPrinter_2" position="389,206" size="162,84" type="ControlPrinter">
+  <processing id="ControlPrinter_2" position="317,186" size="162,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="LibloSource" position="147,46" size="106,58" type="LibloSource">
+  <processing id="LibloSource" position="75,26" size="106,58" type="LibloSource">
     <OscPath>/clam/target</OscPath>
     <ServerPort>8000</ServerPort>
   </processing>

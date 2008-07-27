@@ -70,7 +70,6 @@ libraries = [
 	]
 
 examples = scanFiles('*.clamnetwork', ['example-data'])
-examples+= scanFiles('*.clamnetwork.pos', ['example-data'])
 examples+= scanFiles('*.ui', ['example-data'])
 
 install = [
