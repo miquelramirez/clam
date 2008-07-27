@@ -59,11 +59,8 @@ libraries = [
 
 examples = [
 	'speech-example.clamnetwork',
-	'speech-example.clamnetwork.pos',
 	'experimentalVowelSynth_withCardinalVowelControl.clamnetwork',
-	'experimentalVowelSynth_withCardinalVowelControl.clamnetwork.pos',
 	'experimentalVowelSynth_withGlottalSourceGenerator.clamnetwork',
-	'experimentalVowelSynth_withGlottalSourceGenerator.clamnetwork.pos',
 	]
 
 install = [

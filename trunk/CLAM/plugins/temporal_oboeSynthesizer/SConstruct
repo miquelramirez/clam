@@ -92,9 +92,7 @@ for folder in directoryBasedExamples :
 
 examples = [
 	'synth_with_osc.clamnetwork',
-	'synth_with_osc.clamnetwork.pos',
 	'synth_with_sliders.clamnetwork',
-	'synth_with_sliders.clamnetwork.pos',
 	]
 
 install = [

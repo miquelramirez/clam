@@ -54,11 +54,8 @@ libraries = [
 examples = [
 	'Dist1-rack.ui',
 	'Dist1.clamnetwork',
-	'Dist1.clamnetwork.pos',
 	'TestAll.clamnetwork',
-	'TestAll.clamnetwork.pos',
 	'SimpleDistortionNetwork.clamnetwork',
-	'SimpleDistortionNetwork.clamnetwork.pos',
 	]
 
 install = [
