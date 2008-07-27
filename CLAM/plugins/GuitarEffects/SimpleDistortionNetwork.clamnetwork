@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink" type="AudioSink"/>
+  <processing id="AudioSink" position="665,195" size="128,111" type="AudioSink"/>
 
-  <processing id="AudioSource" type="AudioSource"/>
+  <processing id="AudioSource" position="11,226" size="128,108" type="AudioSource"/>
 
-  <processing id="AudioSwitch" type="AudioSwitch">
+  <processing id="AudioSwitch" position="472,253" size="109,62" type="AudioSwitch">
     <NumberOfInPorts>2</NumberOfInPorts>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Bypass" type="OutControlSender">
+  <processing id="Bypass" position="516,58" size="110,132" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -18,7 +18,7 @@
     <ControlRepresentation>Knot</ControlRepresentation>
   </processing>
 
-  <processing id="Drive amount" type="OutControlSender">
+  <processing id="Drive amount" position="318,60" size="177,132" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -27,11 +27,11 @@
     <Mapping>Log</Mapping>
   </processing>
 
-  <processing id="Input" type="Oscilloscope"/>
+  <processing id="Input" position="137,357" size="319,137" type="Oscilloscope"/>
 
-  <processing id="Output" type="Oscilloscope"/>
+  <processing id="Output" position="629,349" size="310,137" type="Oscilloscope"/>
 
-  <processing id="ZynDistortion" type="ZynDistortion">
+  <processing id="ZynDistortion" position="325,200" size="118,58" type="ZynDistortion">
     <DistortionType>Arctangent</DistortionType>
   </processing>
 
