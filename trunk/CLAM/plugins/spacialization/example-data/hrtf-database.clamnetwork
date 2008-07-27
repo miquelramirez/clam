@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="Amplitude" type="OutControlSender">
+  <processing id="Amplitude" position="8,9" size="181,76" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
     <Max>1</Max>
@@ -9,7 +9,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="AudioBuffer2Stream" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream" position="873,322" size="187,60" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -18,7 +18,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioBuffer2Stream_1" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream_1" position="850,397" size="205,60" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -27,14 +27,14 @@
     <DoHalfWindowShift>1</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioMixer" type="AudioMixer">
+  <processing id="AudioMixer" position="185,107" size="101,62" type="AudioMixer">
     <NumberOfInPorts>2</NumberOfInPorts>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="AudioSource" type="AudioSource"/>
+  <processing id="AudioSource" position="32,134" size="128,108" type="AudioSource"/>
 
-  <processing id="AudioWindowing" type="AudioWindowing">
+  <processing id="AudioWindowing" position="430,96" size="161,60" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -43,15 +43,15 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BufferOscilloscope" type="BufferOscilloscope"/>
+  <processing id="BufferOscilloscope" position="573,479" size="188,133" type="BufferOscilloscope"/>
 
-  <processing id="CrossFader" type="AudioBufferCrossFader"/>
+  <processing id="CrossFader" position="717,395" size="117,62" type="AudioBufferCrossFader"/>
 
-  <processing id="CrossFaderR" type="AudioBufferCrossFader"/>
+  <processing id="CrossFaderR" position="727,305" size="127,62" type="AudioBufferCrossFader"/>
 
-  <processing id="DebugImpulseResponse" type="DebugImpulseResponse"/>
+  <processing id="DebugImpulseResponse" position="256,479" size="184,58" type="DebugImpulseResponse"/>
 
-  <processing id="Gain 0_1" type="OutControlSender">
+  <processing id="Gain 0_1" position="177,16" size="181,76" type="OutControlSender">
     <Min>0</Min>
     <Default>0</Default>
     <Max>1</Max>
@@ -59,7 +59,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Gain 1" type="OutControlSender">
+  <processing id="Gain 1" position="348,13" size="181,76" type="OutControlSender">
     <Min>0</Min>
     <Default>1</Default>
     <Max>1</Max>
@@ -67,65 +67,65 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="HRTFDatabaseFetcher" type="HRTFDatabaseFetcher">
+  <processing id="HRTFDatabaseFetcher" position="75,326" size="200,94" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>HRTFs/</Path>
     <Prefix></Prefix>
   </processing>
 
-  <processing id="L" type="AudioSink"/>
+  <processing id="L" position="850,483" size="128,111" type="AudioSink"/>
 
-  <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution" position="358,292" size="212,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_1" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_1" position="349,382" size="230,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_2" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_2" position="347,427" size="230,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_3" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_3" position="349,337" size="230,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="MyFFT" type="MyFFT">
+  <processing id="MyFFT" position="597,100" size="83,60" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT" type="MyIFFT">
+  <processing id="MyIFFT" position="595,290" size="87,60" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_1" type="MyIFFT">
+  <processing id="MyIFFT_1" position="449,478" size="105,60" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_2" type="MyIFFT">
+  <processing id="MyIFFT_2" position="594,383" size="105,60" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_3" type="MyIFFT">
+  <processing id="MyIFFT_3" position="592,427" size="105,60" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_4" type="MyIFFT">
+  <processing id="MyIFFT_4" position="592,340" size="105,60" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="886,208" size="208,127" type="Oscilloscope"/>
 
-  <processing id="Oscilloscope_1" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="881,453" size="208,103" type="Oscilloscope"/>
 
-  <processing id="R" type="AudioSink"/>
+  <processing id="R" position="853,260" size="128,111" type="AudioSink"/>
 
-  <processing id="azimut" type="OutControlSender">
+  <processing id="azimut" position="296,181" size="565,81" type="OutControlSender">
     <Min>0</Min>
     <Default>180</Default>
     <Max>360</Max>
@@ -133,19 +133,19 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="chosen azimut" type="ControlPrinter">
+  <processing id="chosen azimut" position="38,531" size="162,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="chosen elevation" type="ControlPrinter">
+  <processing id="chosen elevation" position="39,459" size="162,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="elevation" type="OutControlSender">
+  <processing id="elevation" position="2,181" size="323,81" type="OutControlSender">
     <Min>-40</Min>
     <Default>0</Default>
     <Max>85</Max>
@@ -153,7 +153,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="noise_white0" type="noise_white0"/>
+  <processing id="noise_white0" position="30,90" size="133,60" type="noise_white0"/>
 
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
@@ -216,13 +216,13 @@
   </port_connection>
 
   <port_connection>
-    <out>HRTFDatabaseFetcher.PreviousImpulseResponseL</out>
-    <in>LowLatencyConvolution_3.ImpulseResponse</in>
+    <out>HRTFDatabaseFetcher.ImpulseResponseR</out>
+    <in>LowLatencyConvolution_1.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>HRTFDatabaseFetcher.ImpulseResponseR</out>
-    <in>LowLatencyConvolution_1.ImpulseResponse</in>
+    <out>HRTFDatabaseFetcher.PreviousImpulseResponseL</out>
+    <in>LowLatencyConvolution_3.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
