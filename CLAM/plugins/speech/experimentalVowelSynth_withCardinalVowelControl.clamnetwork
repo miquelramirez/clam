@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="Amplitude" type="OutControlSender">
+  <processing id="Amplitude" position="80,581" size="189,76" type="OutControlSender">
     <Min>0</Min>
     <Default>4</Default>
     <Max>10</Max>
@@ -9,21 +9,21 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="AudioMultiplier" type="AudioMultiplier"/>
+  <processing id="AudioMultiplier" position="280,648" size="125,62" type="AudioMultiplier"/>
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink_0" position="471,642" size="128,111" type="AudioSink"/>
 
-  <processing id="CardinalVowel" type="CardinalVowel">
+  <processing id="CardinalVowel" position="187,180" size="120,58" type="CardinalVowel">
     <Amount>1</Amount>
   </processing>
 
-  <processing id="HarmonicPeaksGenerator_0" type="HarmonicPeaksGenerator"/>
+  <processing id="HarmonicPeaksGenerator_0" position="25,252" size="209,58" type="HarmonicPeaksGenerator"/>
 
-  <processing id="PeakView_0" type="PeakView"/>
+  <processing id="PeakView_0" position="458,106" size="376,138" type="PeakView"/>
 
-  <processing id="PeakView_1" type="PeakView"/>
+  <processing id="PeakView_1" position="457,233" size="377,149" type="PeakView"/>
 
-  <processing id="Pitch" type="OutControlSender">
+  <processing id="Pitch" position="7,10" size="154,198" type="OutControlSender">
     <Min>55</Min>
     <Default>110</Default>
     <Max>440</Max>
@@ -31,7 +31,7 @@
     <ControlRepresentation>Knot</ControlRepresentation>
   </processing>
 
-  <processing id="Pitch_1" type="OutControlSender">
+  <processing id="Pitch_1" position="-29,479" size="235,76" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
     <Max>1</Max>
@@ -39,7 +39,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="SMSSynthesis_0" type="SMSSynthesis">
+  <processing id="SMSSynthesis_0" position="179,387" size="134,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
@@ -92,21 +92,21 @@
     <prSamplingRate>0</prSamplingRate>
   </processing>
 
-  <processing id="SimpleOscillator" type="SimpleOscillator">
+  <processing id="SimpleOscillator" position="13,719" size="133,58" type="SimpleOscillator">
     <Frequency>440</Frequency>
     <Amplitude>1</Amplitude>
     <Phase>0</Phase>
     <SamplingRate>44100</SamplingRate>
   </processing>
 
-  <processing id="SimpleOscillator_0" type="SimpleOscillator">
+  <processing id="SimpleOscillator_0" position="-28,331" size="147,58" type="SimpleOscillator">
     <Frequency>440</Frequency>
     <Amplitude>0</Amplitude>
     <Phase>0</Phase>
     <SamplingRate>44100</SamplingRate>
   </processing>
 
-  <processing id="SpectralAnalysis_0" type="SpectralAnalysis">
+  <processing id="SpectralAnalysis_0" position="-26,373" size="150,58" type="SpectralAnalysis">
     <WindowGenerator>
       <Type>BlackmanHarris92</Type>
       <Size>1025</Size>
@@ -129,11 +129,11 @@
     <prWindowType>BlackmanHarris92</prWindowType>
   </processing>
 
-  <processing id="SpectrumView_0" type="SpectrumView"/>
+  <processing id="SpectrumView_0" position="455,384" size="369,128" type="SpectrumView"/>
 
-  <processing id="Synth Audio" type="Oscilloscope"/>
+  <processing id="Synth Audio" position="450,528" size="273,135" type="Oscilloscope"/>
 
-  <processing id="Vowel Position" type="OutControlSender">
+  <processing id="Vowel Position" position="204,9" size="319,92" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
     <Max>1</Max>
@@ -141,7 +141,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="VowelResonator_0" type="VowelResonator"/>
+  <processing id="VowelResonator_0" position="257,263" size="148,58" type="VowelResonator"/>
 
   <port_connection>
     <out>AudioMultiplier.Audio Output</out>
