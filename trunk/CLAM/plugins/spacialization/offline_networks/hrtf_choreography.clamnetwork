@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioBuffer2Stream" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream" position="892,132" size="144,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -10,7 +10,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioBuffer2Stream_1" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream_1" position="892,179" size="158,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -19,17 +19,17 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioBufferCrossFader" type="AudioBufferCrossFader"/>
+  <processing id="AudioBufferCrossFader" position="708,125" size="162,62" type="AudioBufferCrossFader"/>
 
-  <processing id="AudioBufferCrossFader_1" type="AudioBufferCrossFader"/>
+  <processing id="AudioBufferCrossFader_1" position="698,183" size="176,62" type="AudioBufferCrossFader"/>
 
-  <processing id="AudioSink" type="AudioSink"/>
+  <processing id="AudioSink" position="1107,131" size="128,111" type="AudioSink"/>
 
-  <processing id="AudioSink_1" type="AudioSink"/>
+  <processing id="AudioSink_1" position="1099,180" size="128,111" type="AudioSink"/>
 
-  <processing id="AudioSource" type="AudioSource"/>
+  <processing id="AudioSource" position="365,289" size="128,108" type="AudioSource"/>
 
-  <processing id="AudioWindowing" type="AudioWindowing">
+  <processing id="AudioWindowing" position="488,287" size="127,58" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -38,7 +38,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="ChoreoSequencer" type="ChoreoSequencer">
+  <processing id="ChoreoSequencer" position="377,20" size="194,58" type="ChoreoSequencer">
     <Filename></Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
@@ -49,71 +49,71 @@
     <SizeZ>1</SizeZ>
   </processing>
 
-  <processing id="ControlPrinter" type="ControlPrinter">
+  <processing id="ControlPrinter" position="4,209" size="148,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="ControlPrinter_1" type="ControlPrinter">
+  <processing id="ControlPrinter_1" position="174,202" size="148,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="HRTFDatabaseFetcher2" type="HRTFDatabaseFetcher2">
+  <processing id="HRTFDatabaseFetcher2" position="41,80" size="167,94" type="HRTFDatabaseFetcher2">
     <FrameSize>512</FrameSize>
     <Path>HRTFs/kreuzerDatabase.hrtfs</Path>
     <Prefix></Prefix>
   </processing>
 
-  <processing id="IRDelayCascade" type="IRDelayCascade"/>
+  <processing id="IRDelayCascade" position="227,82" size="127,62" type="IRDelayCascade"/>
 
-  <processing id="IRDelayCascade_1" type="IRDelayCascade"/>
+  <processing id="IRDelayCascade_1" position="224,152" size="141,62" type="IRDelayCascade"/>
 
-  <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution" position="400,75" size="166,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_1" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_1" position="394,168" size="180,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_2" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_2" position="392,119" size="180,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_3" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_3" position="391,219" size="180,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="MyFFT" type="MyFFT">
+  <processing id="MyFFT" position="641,287" size="71,58" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT" type="MyIFFT">
+  <processing id="MyIFFT" position="601,76" size="74,58" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_1" type="MyIFFT">
+  <processing id="MyIFFT_1" position="588,170" size="88,58" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_2" type="MyIFFT">
+  <processing id="MyIFFT_2" position="599,123" size="88,58" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_3" type="MyIFFT">
+  <processing id="MyIFFT_3" position="592,220" size="88,58" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="790,12" size="288,113" type="Oscilloscope"/>
 
-  <processing id="Oscilloscope_1" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="783,260" size="288,110" type="Oscilloscope"/>
 
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>

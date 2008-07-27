@@ -344,7 +344,7 @@
   </port_connection>
 
   <port_connection>
-    <out>VelocityAdapter.Vy input</out>
+    <out>VelocityAdapter.Vx output</out>
     <in>Surround.vx</in>
   </port_connection>
 

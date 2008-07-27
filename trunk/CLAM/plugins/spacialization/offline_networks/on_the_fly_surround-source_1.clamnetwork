@@ -66,6 +66,12 @@
   <processing id="ImpulseResponseCalculatedOnTheFly" type="ImpulseResponseCalculatedOnTheFly">
     <FrameSize>512</FrameSize>
     <Model3DFile></Model3DFile>
+    <GridDivisions>500</GridDivisions>
+    <NRays>111</NRays>
+    <NRebounds>11</NRebounds>
+    <IrLength>1.1</IrLength>
+    <ExtraOptions>--ignore-sources --repeatable</ExtraOptions>
+    <SupressInitialDelay>0</SupressInitialDelay>
   </processing>
 
   <processing id="L" type="AudioSink"/>

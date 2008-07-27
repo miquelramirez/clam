@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink_0" position="1045,240" size="128,111" type="AudioSink"/>
 
-  <processing id="AudioSource_0" type="AudioSource"/>
+  <processing id="AudioSource_0" position="27,226" size="128,108" type="AudioSource"/>
 
-  <processing id="ConstantSpectrum_0" type="ConstantSpectrum">
+  <processing id="ConstantSpectrum_0" position="32,164" size="165,62" type="ConstantSpectrum">
     <AudioFile>Carnel_3P.wav</AudioFile>
     <FrameSize>32762</FrameSize>
   </processing>
 
-  <processing id="FFT" type="FFT">
+  <processing id="FFT" position="194,229" size="69,58" type="FFT">
     <AudioSize>65536</AudioSize>
   </processing>
 
-  <processing id="Gain 0" type="OutControlSender">
+  <processing id="Gain 0" position="304,48" size="484,78" type="OutControlSender">
     <Min>0</Min>
     <Default>1</Default>
     <Max>1000</Max>
@@ -22,30 +22,30 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="IFFT" type="IFFT">
+  <processing id="IFFT" position="762,193" size="72,58" type="IFFT">
     <AudioSize>65536</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="991,27" size="206,145" type="Oscilloscope"/>
 
-  <processing id="SpectrumProduct" type="MagPhaseSpectrumProduct"/>
+  <processing id="SpectrumProduct" position="423,181" size="143,62" type="MagPhaseSpectrumProduct"/>
 
-  <processing id="SpectrumView_0" type="SpectrumView"/>
+  <processing id="SpectrumView_0" position="487,331" size="287,154" type="SpectrumView"/>
 
-  <processing id="SpectrumView_1" type="SpectrumView"/>
+  <processing id="SpectrumView_1" position="790,330" size="287,156" type="SpectrumView"/>
 
-  <processing id="SpectrumView_2" type="SpectrumView"/>
+  <processing id="SpectrumView_2" position="170,332" size="296,154" type="SpectrumView"/>
 
-  <processing id="cmpx" type="MagPhaseSpectrum2Spectrum"/>
+  <processing id="cmpx" position="71,369" size="66,58" type="MagPhaseSpectrum2Spectrum"/>
 
-  <processing id="complex" type="MagPhaseSpectrum2Spectrum"/>
+  <processing id="complex" position="614,186" size="85,58" type="MagPhaseSpectrum2Spectrum"/>
 
-  <processing id="gain" type="AudioMixer">
+  <processing id="gain" position="868,196" size="115,58" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="magphase" type="Spectrum2MagPhaseSpectrum"/>
+  <processing id="magphase" position="306,209" size="100,58" type="Spectrum2MagPhaseSpectrum"/>
 
   <port_connection>
     <out>AudioSource_0.AudioOut</out>

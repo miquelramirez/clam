@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioMixer_0" type="AudioMixer">
+  <processing id="AudioMixer_0" position="758,122" size="115,58" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink_0" position="887,122" size="128,111" type="AudioSink"/>
 
-  <processing id="AudioSource_0" type="AudioSource"/>
+  <processing id="AudioSource_0" position="4,244" size="128,108" type="AudioSource"/>
 
-  <processing id="AudioWindowing_0" type="AudioWindowing">
+  <processing id="AudioWindowing_0" position="148,251" size="149,58" type="AudioWindowing">
     <HopSize>262144</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>524288</FFTSize>
@@ -19,14 +19,14 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Complex2MagPhaseSpectrum_0" type="Complex2MagPhaseSpectrum"/>
+  <processing id="Complex2MagPhaseSpectrum_0" position="419,244" size="233,58" type="Complex2MagPhaseSpectrum"/>
 
-  <processing id="ConstantSpectrum_0" type="ConstantSpectrum">
+  <processing id="ConstantSpectrum_0" position="35,42" size="165,62" type="ConstantSpectrum">
     <AudioFile>Carnel_3P.wav</AudioFile>
     <FrameSize>262144</FrameSize>
   </processing>
 
-  <processing id="Gain 0" type="OutControlSender">
+  <processing id="Gain 0" position="476,61" size="177,73" type="OutControlSender">
     <Min>0</Min>
     <Default>0.8</Default>
     <Max>1</Max>
@@ -34,31 +34,31 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="IFFT_0" type="IFFT">
+  <processing id="IFFT_0" position="519,127" size="72,58" type="IFFT">
     <AudioSize>524288</AudioSize>
   </processing>
 
-  <processing id="MagPhaseSpectrum2Spectrum_0" type="MagPhaseSpectrum2Spectrum"/>
+  <processing id="MagPhaseSpectrum2Spectrum_0" position="295,29" size="241,58" type="MagPhaseSpectrum2Spectrum"/>
 
-  <processing id="MagPhaseSpectrum2Spectrum_1" type="MagPhaseSpectrum2Spectrum"/>
+  <processing id="MagPhaseSpectrum2Spectrum_1" position="265,342" size="241,58" type="MagPhaseSpectrum2Spectrum"/>
 
-  <processing id="MyFFT_0" type="MyFFT">
+  <processing id="MyFFT_0" position="318,251" size="85,58" type="MyFFT">
     <AudioSize>524288</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="683,211" size="287,123" type="Oscilloscope"/>
 
-  <processing id="OverlapAdd_0" type="OverlapAdd">
+  <processing id="OverlapAdd_0" position="609,124" size="119,58" type="OverlapAdd">
     <FrameSize>262144</FrameSize>
   </processing>
 
-  <processing id="Product" type="MagPhaseSpectrumProduct"/>
+  <processing id="Product" position="271,116" size="83,62" type="MagPhaseSpectrumProduct"/>
 
-  <processing id="SpectrumView_0" type="SpectrumView"/>
+  <processing id="SpectrumView_0" position="637,18" size="329,104" type="SpectrumView"/>
 
-  <processing id="SpectrumView_1" type="SpectrumView"/>
+  <processing id="SpectrumView_1" position="650,348" size="300,91" type="SpectrumView"/>
 
-  <processing id="ToSpectrum" type="MagPhaseSpectrum2Spectrum"/>
+  <processing id="ToSpectrum" position="385,126" size="107,58" type="MagPhaseSpectrum2Spectrum"/>
 
   <port_connection>
     <out>AudioMixer_0.Output Audio</out>
