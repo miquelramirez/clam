@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioBuffer2Stream_0" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream_0" position="195,318" size="197,60" type="AudioBuffer2Stream">
     <HopSize>1024</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>2048</FFTSize>
@@ -10,16 +10,16 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioMixer_0" type="AudioMixer">
+  <processing id="AudioMixer_0" position="415,323" size="132,60" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
     <FrameSize>1024</FrameSize>
   </processing>
 
-  <processing id="AudioSink_0" type="AudioSink"/>
+  <processing id="AudioSink_0" position="585,329" size="128,111" type="AudioSink"/>
 
-  <processing id="AudioSource_0" type="AudioSource"/>
+  <processing id="AudioSource_0" position="11,8" size="141,108" type="AudioSource"/>
 
-  <processing id="AudioWindowing_0" type="AudioWindowing">
+  <processing id="AudioWindowing_0" position="182,18" size="171,60" type="AudioWindowing">
     <HopSize>1024</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>2048</FFTSize>
@@ -28,11 +28,11 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BufferOscilloscope_0" type="BufferOscilloscope"/>
+  <processing id="BufferOscilloscope_0" position="380,66" size="150,108" type="BufferOscilloscope"/>
 
-  <processing id="BufferOscilloscope_1" type="BufferOscilloscope"/>
+  <processing id="BufferOscilloscope_1" position="613,20" size="150,149" type="BufferOscilloscope"/>
 
-  <processing id="Gain 0" type="OutControlSender">
+  <processing id="Gain 0" position="395,233" size="200,77" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
     <Max>200</Max>
@@ -40,31 +40,31 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="ImpulseResponseLoader" type="ImpulseResponseLoader">
+  <processing id="ImpulseResponseLoader" position="14,194" size="186,58" type="ImpulseResponseLoader">
     <FrameSize>1024</FrameSize>
     <ImpulseResponse>Carnel_3P.wav</ImpulseResponse>
   </processing>
 
-  <processing id="LowLatencyConvolution_0" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_0" position="95,109" size="224,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>1024</FrameSize>
   </processing>
 
-  <processing id="MyFFT_0" type="MyFFT">
+  <processing id="MyFFT_0" position="373,17" size="97,60" type="MyFFT">
     <AudioSize>2048</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_0" type="MyIFFT">
+  <processing id="MyIFFT_0" position="53,274" size="101,60" type="MyIFFT">
     <AudioSize>2048</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope_0" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="729,199" size="161,222" type="Oscilloscope"/>
 
-  <processing id="SpectrumView_0" type="SpectrumView"/>
+  <processing id="SpectrumView_0" position="341,427" size="590,173" type="SpectrumView"/>
 
-  <processing id="toMP" type="Complex2MagPhaseSpectrum"/>
+  <processing id="toMP" position="91,436" size="71,60" type="Complex2MagPhaseSpectrum"/>
 
-  <processing id="toSpectrum" type="MagPhaseSpectrum2Spectrum"/>
+  <processing id="toSpectrum" position="186,433" size="119,60" type="MagPhaseSpectrum2Spectrum"/>
 
   <port_connection>
     <out>AudioBuffer2Stream_0.Audio stream</out>

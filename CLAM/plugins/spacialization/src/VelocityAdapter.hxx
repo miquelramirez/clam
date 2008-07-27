@@ -19,7 +19,7 @@ public:
 	const char* GetClassName() const { return "VelocityAdapter"; }
 	VelocityAdapter(const Config& config = Config()) 
 		: _vxIn("Vx input", this)
-		, _vxOut("Vy output", this) 
+		, _vxOut("Vx output", this) 
 		, _vyIn("Vy input", this) 
 		, _vyOut("Vy output", this) 
 		, _betaIn("beta input", this)

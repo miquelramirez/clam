@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioBuffer2Stream" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream" position="917,342" size="159,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -10,13 +10,13 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioBufferCrossFader" type="AudioBufferCrossFader"/>
+  <processing id="AudioBufferCrossFader" position="723,332" size="176,62" type="AudioBufferCrossFader"/>
 
-  <processing id="AudioSink" type="AudioSink"/>
+  <processing id="AudioSink" position="980,439" size="128,111" type="AudioSink"/>
 
-  <processing id="AudioSource" type="AudioSource"/>
+  <processing id="AudioSource" position="377,33" size="128,108" type="AudioSource"/>
 
-  <processing id="AudioWindowing" type="AudioWindowing">
+  <processing id="AudioWindowing" position="528,53" size="135,58" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -25,11 +25,11 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BufferOscilloscope" type="BufferOscilloscope"/>
+  <processing id="BufferOscilloscope" position="400,519" size="286,176" type="BufferOscilloscope"/>
 
-  <processing id="DebugImpulseResponse" type="DebugImpulseResponse"/>
+  <processing id="DebugImpulseResponse" position="164,491" size="185,58" type="DebugImpulseResponse"/>
 
-  <processing id="Emitter Position" type="ControlSurface">
+  <processing id="Emitter Position" position="61,23" size="152,184" type="ControlSurface">
     <MinX>0</MinX>
     <DefaultX>0</DefaultX>
     <MaxX>1</MaxX>
@@ -38,41 +38,41 @@
     <MaxY>1</MaxY>
   </processing>
 
-  <processing id="ImpulseResponseDatabaseFetcher" type="ImpulseResponseDatabaseFetcher">
+  <processing id="ImpulseResponseDatabaseFetcher" position="41,321" size="253,62" type="ImpulseResponseDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>/home/parumi/acustica/roomjaume/</Path>
     <Prefix>p</Prefix>
   </processing>
 
-  <processing id="LowLatencyConvolution" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution" position="403,291" size="178,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_1" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_1" position="393,359" size="192,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="MyFFT" type="MyFFT">
+  <processing id="MyFFT" position="695,50" size="71,58" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT" type="MyIFFT">
+  <processing id="MyIFFT" position="612,291" size="74,58" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_1" type="MyIFFT">
+  <processing id="MyIFFT_1" position="176,543" size="88,58" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_2" type="MyIFFT">
+  <processing id="MyIFFT_2" position="606,373" size="88,58" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="886,505" size="197,108" type="Oscilloscope"/>
 
-  <processing id="Receiver Position" type="ControlSurface">
+  <processing id="Receiver Position" position="233,26" size="152,184" type="ControlSurface">
     <MinX>0</MinX>
     <DefaultX>0</DefaultX>
     <MaxX>1</MaxX>
