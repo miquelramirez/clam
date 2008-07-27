@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network id="Unnamed Network">
+<network id="Unnamed">
 
-  <processing id="Amplitude" type="OutControlSender">
+  <processing id="Amplitude" position="88,82" size="189,76" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
     <Max>1</Max>
@@ -9,9 +9,9 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="AudioSink" type="AudioSink"/>
+  <processing id="AudioSink" position="375,209" size="128,111" type="AudioSink"/>
 
-  <processing id="Pitch" type="OutControlSender">
+  <processing id="Pitch" position="64,7" size="221,76" type="OutControlSender">
     <Min>220</Min>
     <Default>440</Default>
     <Max>1000</Max>
@@ -19,11 +19,11 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="SDIFDatabaseProcessing" type="SDIFDatabaseProcessing">
+  <processing id="SDIFDatabaseProcessing" position="44,178" size="188,62" type="SDIFDatabaseProcessing">
     <DirectoryName></DirectoryName>
   </processing>
 
-  <processing id="SMSSynthesis" type="SMSSynthesis">
+  <processing id="SMSSynthesis" position="242,178" size="119,110" type="SMSSynthesis">
     <SynthSineSpectrum>
       <SpectrumSize>513</SpectrumSize>
       <SamplingRate>44100</SamplingRate>
