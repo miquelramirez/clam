@@ -401,12 +401,7 @@ public slots:
 		QColor colorPort = _colorPort;
 
 		// Set printer friendly colors
-		_colorBoxFrameText = QColor(0x00,0x00,0x00);
-		_colorBoxFrameOutline = QColor(0x00,0x00,0x00);
-		_colorBoxFrame = QColor(0xf0,0xf0,0xf0);
-		_colorBoxBody = QColor(0xd0,0xd0,0xd0);
-		_colorResizeHandle = QColor(0xd0,0xf0,0xd0);
-		_colorPort = QColor(0xd0,0x50,0xa0);
+		setWhiteColorsForBoxes();
 
 		QPrinter printer;
 		printer.setOutputFormat(QPrinter::PdfFormat);
