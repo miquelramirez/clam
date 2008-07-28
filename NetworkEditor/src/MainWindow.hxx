@@ -96,6 +96,7 @@ public:
 		restoreState(settings.value("DockWindowsState").toByteArray());
 		bool embedSvgDiagramsOption=settings.value("EmbedSVGDiagramsOption").toBool();
 		_whiteColorsForBoxes=settings.value("WhiteColorsForBoxes").toBool();
+		ui.action_White_colors_Option->setChecked(_whiteColorsForBoxes);
 		_canvas->setEmbedSVGDiagramsOption(embedSvgDiagramsOption);
 		ui.action_Embed_SVG_Diagrams_Option->setChecked(embedSvgDiagramsOption);
 
@@ -321,13 +322,13 @@ public slots:
 	}
 	void on_action_White_colors_Option_changed()
 	{
+		QAction *action = qobject_cast<QAction *>(sender());	
+		_whiteColorsForBoxes = action->isChecked();
 		// Change colors scheme
 		if (_whiteColorsForBoxes)
-			_canvas->setGreenColorsForBoxes();
+			_canvas->setWhiteColorsForBoxes();		
 		else
-			_canvas->setWhiteColorsForBoxes();
-		_whiteColorsForBoxes = not _whiteColorsForBoxes;
-		
+			_canvas->setGreenColorsForBoxes();
 	}
 	void on_action_Whats_this_triggered()
 	{
