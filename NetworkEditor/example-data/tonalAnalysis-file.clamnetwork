@@ -20,6 +20,7 @@
     <TunningEnabled>1</TunningEnabled>
     <PeakWindowingEnabled>1</PeakWindowingEnabled>
     <HopRatio>8</HopRatio>
+    <SegmentationMethod>1</SegmentationMethod>
   </processing>
 
   <processing id="Tonnetz_0" position="-1,-40" size="495,175" type="Tonnetz"/>
