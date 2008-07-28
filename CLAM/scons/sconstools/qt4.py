@@ -415,6 +415,8 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 		'QtWebKit',
 		]
 	pclessModules = [
+		'QtDesigner',
+		'QtDesignerComponents',
 	]
 	staticModules = [
 		'QtUiTools',
