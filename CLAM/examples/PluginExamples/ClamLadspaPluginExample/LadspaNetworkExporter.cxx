@@ -76,10 +76,7 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin()
 		return;
 	}
 	
-	ProcessInputPorts();
-	ProcessOutputPorts();
-	ProcessInputControls();
-	ProcessOutputControls();
+	LocateConnections();
 }
 
 NetworkLADSPAPlugin::~NetworkLADSPAPlugin()
@@ -97,94 +94,46 @@ void NetworkLADSPAPlugin::Deactivate()
 	_network.Stop();
 }
 
-void NetworkLADSPAPlugin::ProcessInputPorts()
+void NetworkLADSPAPlugin::LocateConnections()
 {
-	CLAM_ASSERT( mReceiverList.empty(), "NetworkLADSPAPlugin::ProcessInputPorts() : there are already registered input ports");
-
-	LADSPAInfo<AudioSource> info;
+	CLAM_ASSERT( mReceiverList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered input ports");
+	CLAM_ASSERT( mSenderList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered output ports");
+	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
+	CLAM_ASSERT( mOutControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
 
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
 	{
-		if (std::string("AudioSource")==std::string(it->second->GetClassName()))
+		CLAM::Processing * processing = it->second;
+		const std::string & className = processing->GetClassName();
+		if (className == "AudioSource")
 		{
-			//Store Processing name
+			LADSPAInfo<AudioSource> info;
 			info.name=it->first;
-			
-			//Get Processing address
-			info.processing=(AudioSource*)it->second;
+			info.processing=(AudioSource*)processing;
 			info.processing->SetFrameAndHopSize( mExternBufferSize );
-
-			//Add the info 
 			mReceiverList.push_back(info);
 		}
-	}
-}
-
-void NetworkLADSPAPlugin::ProcessOutputPorts()
-{
-	CLAM_ASSERT( mSenderList.empty(), "NetworkLADSPAPlugin::ProcessInputPorts() : there are already registered output ports");
-
-	LADSPAInfo<AudioSink> info;
-
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
-	{
-		if (std::string("AudioSink")==std::string(it->second->GetClassName()))
+		if (className == "AudioSink")
 		{
-			//Store Processing name
+			LADSPAInfo<AudioSink> info;
 			info.name=it->first;
-			
-			//Get Processing address
 			info.processing=(AudioSink*)it->second;
 			info.processing->SetFrameAndHopSize( mExternBufferSize );
-
-			//Add the info 
 			mSenderList.push_back(info);
 		}
-	}
-}
-void NetworkLADSPAPlugin::ProcessInputControls()
-{
-	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::ProcessInputControls() : there are already registered controls");
-
-	LADSPAInfo<ControlSource> info;
-
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
-	{
-		if (std::string("ControlSource")==std::string(it->second->GetClassName()))
+		if (className == "ControlSource")
 		{
-			//Store Processing name
+			LADSPAInfo<ControlSource> info;
 			info.name=it->first;
-			
-			//Get Processing address
 			info.processing=(ControlSource*)it->second;
-
-			//Add the info 
 			mInControlList.push_back(info);
 		}
-	}
-}
-
-void NetworkLADSPAPlugin::ProcessOutputControls()
-{
-	CLAM_ASSERT( mOutControlList.empty(), "NetworkLADSPAPlugin::ProcessOutputControls() : there are already registered controls");
-
-	LADSPAInfo<ControlSink> info;
-
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
-	{
-		if (std::string("ControlSink")==std::string(it->second->GetClassName()))
+		if (className == "ControlSink")
 		{
-			//Store Processing name
+			LADSPAInfo<ControlSink> info;
 			info.name=it->first;
-			
-			//Get Processing address
 			info.processing=(ControlSink*)it->second;
-
-			//Add the info 
 			mOutControlList.push_back(info);
 		}
 	}

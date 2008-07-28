@@ -49,11 +49,7 @@ public:
 	void Activate();
 	void Deactivate();
 	
-	void ProcessInputPorts();
-	void ProcessOutputPorts();
-	void ProcessInputControls();
-	void ProcessOutputControls();
-
+	void LocateConnections();
 	void UpdatePortFrameAndHopSize();
 	void FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints );
 	void ConnectTo(unsigned long port, LADSPA_Data * data);
