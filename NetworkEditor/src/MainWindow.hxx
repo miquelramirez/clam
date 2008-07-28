@@ -52,7 +52,6 @@ public:
 
 	MainWindow()
 		: _networkPlayer(0),
-		_whiteColorsForBoxes(false),
 		_saveUsingOldPosFiles(false)
 	{
 		ui.setupUi(this);
@@ -95,8 +94,8 @@ public:
 		updateRecentMenu();
 		restoreState(settings.value("DockWindowsState").toByteArray());
 		bool embedSvgDiagramsOption=settings.value("EmbedSVGDiagramsOption").toBool();
-		_whiteColorsForBoxes=settings.value("WhiteColorsForBoxes").toBool();
-		ui.action_White_colors_Option->setChecked(_whiteColorsForBoxes);
+		bool whiteColorsForBoxes=settings.value("WhiteColorsForBoxes").toBool();
+		ui.action_White_colors_Option->setChecked(whiteColorsForBoxes);
 		_canvas->setEmbedSVGDiagramsOption(embedSvgDiagramsOption);
 		ui.action_Embed_SVG_Diagrams_Option->setChecked(embedSvgDiagramsOption);
 
@@ -266,7 +265,7 @@ public:
 		settings.setValue("RecentFiles",_recentFiles);
 		settings.setValue("DockWindowsState", saveState());
 		settings.setValue("EmbedSVGDiagramsOption",_canvas->getEmbedSVGDiagramsOption());
-		settings.setValue("WhiteColorsForBoxes",_whiteColorsForBoxes);
+		settings.setValue("WhiteColorsForBoxes",ui.action_White_colors_Option->isChecked());
 		event->accept();
 	}
 
@@ -323,9 +322,8 @@ public slots:
 	void on_action_White_colors_Option_changed()
 	{
 		QAction *action = qobject_cast<QAction *>(sender());	
-		_whiteColorsForBoxes = action->isChecked();
 		// Change colors scheme
-		if (_whiteColorsForBoxes)
+		if (action->isChecked())
 			_canvas->setWhiteColorsForBoxes();		
 		else
 			_canvas->setGreenColorsForBoxes();
@@ -567,7 +565,6 @@ private:
 	QLabel * _playingLabel;
 	QStringList _recentFiles;
 	
-	bool _whiteColorsForBoxes; //TODO: evolve into proper color schemes
 	//XML boxes geometries testing
 	const bool _saveUsingOldPosFiles;
 
