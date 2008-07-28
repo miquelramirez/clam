@@ -2,7 +2,6 @@
 #define AudioSink_hxx
 
 #include "Processing.hxx"
-#include "NullProcessingConfig.hxx"
 #include "AudioInPort.hxx"
 
 namespace CLAM
@@ -11,7 +10,6 @@ namespace CLAM
 	{
 	private:
 		AudioInPort mIn;
-		NullProcessingConfig mConf;
 		float* mFloatBuffer;
 		double* mDoubleBuffer;
 		unsigned mBufferSize;
@@ -43,16 +41,6 @@ namespace CLAM
 		
 		const char* GetClassName() const { return "AudioSink";}
 
-		bool ConcreteConfigure(const ProcessingConfig &c)
-		{
-			return true;
-		}
-
-		const ProcessingConfig& GetConfig() const
-		{
-			return mConf;
-		}
-		
 	};
 } //namespace CLAM
 
