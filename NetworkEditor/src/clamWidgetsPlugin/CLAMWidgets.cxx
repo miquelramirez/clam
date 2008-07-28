@@ -13,6 +13,7 @@
 #include "LPModelViewPlugin.hxx"
 #include "MelSpectrumViewPlugin.hxx"
 #include "MelCepstrumViewPlugin.hxx"
+#include "SegmentationViewPlugin.hxx"
 #include "PixmapWidgetsPlugin.hxx"
 #include "QFirstPersonPlugin.hxx"
 #include "QSynthKnobPlugin.hxx"
@@ -40,6 +41,7 @@ CLAMWidgets::CLAMWidgets(QObject* parent)
 		<< new LPModelViewPlugin(this)
 		<< new MelCepstrumViewPlugin(this)
 		<< new MelSpectrumViewPlugin(this)
+		<< new SegmentationViewPlugin(this)
 		<< new PixmapSliderPlugin(this)
 		<< new ThinPixmapButtonPlugin(this)
 		<< new QSynthKnobPlugin(this)

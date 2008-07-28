@@ -53,6 +53,8 @@
 #include "MelSpectrumViewMonitor.hxx"
 #include "MelCepstrumView.hxx"
 #include "MelCepstrumViewMonitor.hxx"
+#include "SegmentationView.hxx"
+#include "SegmentationViewMonitor.hxx"
 #include "ProgressControl.hxx"
 #include "ProgressControlWidget.hxx"
 
@@ -224,6 +226,8 @@ static MonitorBinder<CLAM::VM::MelCepstrumView,MelCepstrumViewMonitor> melCepstr
 	("OutPort__.*", "CLAM::VM::MelCepstrumView");
 static MonitorBinder<CLAM::VM::MelSpectrumView,MelSpectrumViewMonitor> melSpectrumBinder
 	("OutPort__.*", "CLAM::VM::MelSpectrumView");
+static MonitorBinder<SegmentationView,SegmentationViewMonitor> segmentationBinder
+	("OutPort__.*", "SegmentationView");
 
 static ProgressControlBinder<ProgressControlWidget, ProgressControl> progressControlBinder
 	("ProgressControl__.*", "ProgressControlWidget");
