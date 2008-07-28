@@ -53,15 +53,9 @@ public:
 		, _dragStatus(NoDrag)
 		, _dragProcessing(0)
 		, _dragConnection(0)
-		, _colorBoxFrameText      (0xff,0xff,0xff)
-		, _colorBoxFrameOutline   (0x20,0x6f,0x20)
-		, _colorBoxFrame          (0x30,0x8f,0x30,0xaf)
-		, _colorBoxBody           (0xF9,0xFb,0xF9,0xaf)
 		, _colorBoxErrorFrame     (0xff,0x00,0x00,0xa0)
 		, _colorBoxErrorBody      (0xff,0x00,0x00,0xa0)
-		, _colorResizeHandle      (0xf9,0xbb,0xb9)
 		, _colorPortOutline       (0x53,0x30,0x42)
-		, _colorPort              (0xa6,0x60,0x84)
 		, _colorControlOutline    (0x53,0x30,0x42)
 		, _colorControl           (0xf6,0x60,0x84)
 		, _colorSelectBoxBody     (0x77,0xff,0x88,0x37)
@@ -77,6 +71,8 @@ public:
 		, _colorControlWire       (0x4b,0x99,0xb4)
 		, _colorControlWireOutline(0x20,0x50,0x52)
 	{
+		setGreenColorsForBoxes();
+
 		setMouseTracking(true);
 		setAcceptDrops(true);
 		setMinimumSize(200,100);
@@ -98,6 +94,24 @@ public:
 		_clearSelectionAction->setShortcut(QKeySequence(tr("Ctrl+Shift+A")));
 		addAction(_clearSelectionAction);
 		connect(_clearSelectionAction, SIGNAL(triggered()), this, SLOT(onClearSelections()));
+	}
+	void setGreenColorsForBoxes()
+	{
+		_colorBoxFrameText = QColor(0xff,0xff,0xff);
+		_colorBoxFrameOutline = QColor(0x20,0x6f,0x20);
+		_colorBoxFrame = QColor(0x30,0x8f,0x30,0xaf);
+		_colorBoxBody = QColor(0xF9,0xFb,0xF9,0xaf);
+		_colorResizeHandle = QColor(0xf9,0xbb,0xb9);
+		_colorPort = QColor(0xa6,0x60,0x84);
+	}
+	void setWhiteColorsForBoxes()
+	{
+		_colorBoxFrameText = QColor(0x00,0x00,0x00);
+		_colorBoxFrameOutline = QColor(0x00,0x00,0x00);
+		_colorBoxFrame = QColor(0xf0,0xf0,0xf0);
+		_colorBoxBody = QColor(0xd0,0xd0,0xd0);
+		_colorResizeHandle = QColor(0xd0,0xf0,0xd0);
+		_colorPort = QColor(0xd0,0x50,0xa0);
 	}
 	void raise(ProcessingBox * toRaise)
 	{
