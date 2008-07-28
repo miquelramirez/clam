@@ -2,7 +2,6 @@
 #define AudioSource_hxx
 
 #include "Processing.hxx"
-#include "NullProcessingConfig.hxx"
 #include "AudioOutPort.hxx"
 
 namespace CLAM
@@ -11,7 +10,6 @@ namespace CLAM
 	{
 	private:
 		AudioOutPort mOut;
-		NullProcessingConfig mConf;
 		float* mFloatBuffer;
 		double* mDoubleBuffer;
 		unsigned mBufferSize;
@@ -38,18 +36,6 @@ namespace CLAM
 		bool Do();
 		
 		const char* GetClassName() const { return "AudioSource";}
-
-		bool ConcreteConfigure(const ProcessingConfig &c)
-		{
-//			std::cout << "AudioSource::ConcreteConfigure(..) - buffer size: "	<< mBufferSize << std::endl;
-			return true;
-		}
-
-		const ProcessingConfig& GetConfig() const
-		{
-			return mConf;
-		}
-		
 
 	};
 } //namespace CLAM
