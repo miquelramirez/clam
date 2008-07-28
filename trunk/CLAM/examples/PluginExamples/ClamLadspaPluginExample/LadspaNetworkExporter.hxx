@@ -49,22 +49,6 @@ public:
 	void Activate();
 	void Deactivate();
 	
-	int GetPortCount()
-	{
-		return ( mReceiverList.size()+mSenderList.size() );
-	}
-
-	int GetControlCount()
-	{
-		return ( mInControlList.size()+mOutControlList.size() );
-	}
-
-	Network& GetNetwork()
-	{
-		return _network;
-	}
-
-
 	void ProcessInputPorts();
 	void ProcessOutputPorts();
 	void ProcessInputControls();

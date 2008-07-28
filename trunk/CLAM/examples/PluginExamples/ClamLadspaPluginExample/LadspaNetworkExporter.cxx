@@ -313,7 +313,9 @@ LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor()
 {
 	CLAM::NetworkLADSPAPlugin plugin;
 
-	unsigned numports = plugin.GetPortCount() + plugin.GetControlCount();
+	unsigned numports =
+		plugin.mReceiverList.size() + plugin.mSenderList.size() +
+		plugin.mInControlList.size() + plugin.mOutControlList.size();
 
 	if (numports == 0) return 0;
 
