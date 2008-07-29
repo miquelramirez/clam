@@ -1,7 +1,5 @@
 #include "LadspaNetworkExporter.hxx"
 
-CLAM_EXTERNAL_FILE_DATA(embededNetwork, "PluginExamples/ClamLadspaPluginExample/genderChange.clamnetwork")
-
 // Ladspa Callbacks
 extern "C"
 {
@@ -9,7 +7,7 @@ extern "C"
 	static LADSPA_Handle Instantiate(const LADSPA_Descriptor * descriptor, unsigned long sampleRate)
 	{
 		std::cerr << "Network2Ladspa: instantiate" << std::endl;
-		return new CLAM::NetworkLADSPAPlugin();
+		return new CLAM::NetworkLADSPAPlugin((const char*)descriptor->ImplementationData);
 	}
 	// Destruct plugin instance
 	static void CleanUp(LADSPA_Handle handle)
@@ -51,7 +49,7 @@ extern "C"
 namespace CLAM
 {
 
-NetworkLADSPAPlugin::NetworkLADSPAPlugin()
+NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & networkXmlContent)
 {
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
@@ -67,7 +65,7 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin()
 		return;
 	}
 */
-	std::istringstream xmlfile(embededNetwork);
+	std::istringstream xmlfile(networkXmlContent);
 	try
 	{
 		XmlStorage::Restore( _network, xmlfile);
@@ -263,9 +261,9 @@ void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
 
 
 
-LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor()
+LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor(const std::string & networkXmlContent)
 {
-	CLAM::NetworkLADSPAPlugin plugin;
+	CLAM::NetworkLADSPAPlugin plugin(networkXmlContent);
 
 	unsigned numports =
 		plugin.mReceiverList.size() + plugin.mSenderList.size() +
@@ -281,6 +279,7 @@ LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor()
 	descriptor->Name = LadspaLibrary::dupstr("CLAM Network LADSPA Plugin");
 	descriptor->Maker = LadspaLibrary::dupstr("CLAM-devel");
 	descriptor->Copyright = LadspaLibrary::dupstr("GPL");
+	descriptor->ImplementationData = LadspaLibrary::dupstr(networkXmlContent.c_str());
 	descriptor->PortCount = numports;
 
 	LADSPA_PortDescriptor * piPortDescriptors = new LADSPA_PortDescriptor[ numports ];

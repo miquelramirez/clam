@@ -58,7 +58,7 @@ private:
 	unsigned long mClamBufferSize, mExternBufferSize;
 	
 public:
-	NetworkLADSPAPlugin();
+	NetworkLADSPAPlugin(const std::string & networkXmlContent);
 	~NetworkLADSPAPlugin();
 	
 	void Activate();
@@ -74,15 +74,15 @@ public:
 	void CopySinksToLadspaBuffers(const unsigned long nframes);
 	void ProcessInControlValues();
 	void ProcessOutControlValues();
-	static LADSPA_Descriptor * CreateLADSPADescriptor();
+	static LADSPA_Descriptor * CreateLADSPADescriptor(const std::string & networkXmlContent);
 };
 
 class LadspaNetworkExporter
 {
 public:
-	LadspaNetworkExporter(LadspaLibrary & library)
+	LadspaNetworkExporter(LadspaLibrary & library, const std::string & networkXmlContent)
 	{
-		LADSPA_Descriptor * descriptor = NetworkLADSPAPlugin::CreateLADSPADescriptor();
+		LADSPA_Descriptor * descriptor = NetworkLADSPAPlugin::CreateLADSPADescriptor(networkXmlContent);
 		if (not descriptor) return;
 		library.AddPluginType(descriptor);
 	}
