@@ -28,13 +28,19 @@
 static CLAM::LadspaLibrary library;
 
 CLAM_EXTERNAL_FILE_DATA(genderChange,"PluginExamples/ClamLadspaPluginExample/genderChange.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(wire,"PluginExamples/ClamLadspaPluginExample/wire.clamnetwork")
 
 extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 {
 	static CLAM::LadspaProcessingExporter<CLAM::Oscillator> a1(library, 3000);
 	static CLAM::LadspaProcessingExporter<CLAM::AudioMultiplier> a2(library, 3001);
 	static CLAM::LadspaProcessingExporter<CLAM::AudioAmplifier> a3(library, 3002);
-	static CLAM::LadspaNetworkExporter n1(library, genderChange);
+	static CLAM::LadspaNetworkExporter n1(library, genderChange, 3003,
+			"clamGenderChange0", "CLAM Gender Change",
+			"CLAM Team <clam@iua.upf.edu>", "GPL");
+	static CLAM::LadspaNetworkExporter n2(library, wire, 3004,
+			"clamWire0", "CLAM Wire",
+			"CLAM Team <clam@iua.upf.edu>", "GPL");
 	return library.pluginAt(index);
 }
 

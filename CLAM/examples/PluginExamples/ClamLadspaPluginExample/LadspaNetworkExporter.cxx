@@ -179,7 +179,7 @@ void NetworkLADSPAPlugin::FillPortInfo( LADSPA_PortDescriptor* descriptors, char
 		descriptors[currentport] = (LADSPA_PORT_INPUT | LADSPA_PORT_CONTROL);
 		names[currentport] = LadspaLibrary::dupstr( it->name.c_str() );
 
-		//Obté processingConfig, i defineix cada param
+		//ObtÃ© processingConfig, i defineix cada param
 		ControlSourceConfig conf = dynamic_cast<const ControlSourceConfig&>(it->processing->GetConfig() );
 		
 		rangehints[currentport].LowerBound=(LADSPA_Data)conf.GetMinValue();
@@ -261,7 +261,14 @@ void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
 
 
 
-LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor(const std::string & networkXmlContent)
+LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor(
+	const std::string & networkXmlContent,
+	unsigned id,
+	const std::string & label,
+	const std::string & name,
+	const std::string & maker,
+	const std::string & copyright
+	)
 {
 	CLAM::NetworkLADSPAPlugin plugin(networkXmlContent);
 
@@ -273,12 +280,12 @@ LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor(const std::strin
 
 	LADSPA_Descriptor * descriptor = new LADSPA_Descriptor;
 
-	descriptor->UniqueID = 8983;
-	descriptor->Label = LadspaLibrary::dupstr("CLAMNetworkLADSPAPlugin");
+	descriptor->UniqueID = id;
+	descriptor->Label = LadspaLibrary::dupstr(label.c_str());
 	descriptor->Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE; // LADSPA_PROPERTY_REALTIME;
-	descriptor->Name = LadspaLibrary::dupstr("CLAM Network LADSPA Plugin");
-	descriptor->Maker = LadspaLibrary::dupstr("CLAM-devel");
-	descriptor->Copyright = LadspaLibrary::dupstr("GPL");
+	descriptor->Name = LadspaLibrary::dupstr(name.c_str());
+	descriptor->Maker = LadspaLibrary::dupstr(maker.c_str());
+	descriptor->Copyright = LadspaLibrary::dupstr(copyright.c_str());
 	descriptor->ImplementationData = LadspaLibrary::dupstr(networkXmlContent.c_str());
 	descriptor->PortCount = numports;
 
