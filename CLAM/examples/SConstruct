@@ -28,7 +28,7 @@ env = Environment(tools=[toolchain], options=options)
 options.Save('options.cache', env)
 
 #TODO: This didn't work for dynamic linking
-"""
+
 def renameEmbededFileSymbols(source, target, env) :
 	""" Remove the path part of the symbol name for the embeded file"""
 	objdumpOutput=os.popen("objdump -x %s | grep _binary'.*'start"%target[0] , "r").read()
@@ -45,6 +45,7 @@ def renameEmbededFileSymbols(source, target, env) :
 			"target": target[0],
 		}
 	)
+"""
 embededFileBuilder = Builder(
 	action=Action([
 		["ld", "-fPIC", "--shared", "-b", "binary", "-o", "$TARGET", "$SOURCE"],
