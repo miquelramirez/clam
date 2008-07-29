@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioSink_0" position="795,114" size="141,111" type="AudioSink"/>
+
+  <processing id="AudioSource_0" position="27,22" size="165,108" type="AudioSource"/>
+
+  <processing id="Control" position="473,8" size="199,91" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.005</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
+
+  <processing id="ControlSource" position="276,33" size="160,64" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>1</MaxValue>
+    <Step>1</Step>
+    <UnitName>-</UnitName>
+  </processing>
+
+  <processing id="SMSAnalysisCore_0" position="37,115" size="207,110" type="SMSAnalysisCore">
+    <SinSpectralAnalysis>
+      <WindowGenerator>
+        <Type>Hamming</Type>
+        <Size>2049</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NormalizationForAnalysis</Normalize>
+        <Invert>0</Invert>
+      </WindowGenerator>
+      <CircularShift>
+        <Amount>-1024</Amount>
+      </CircularShift>
+      <FFT>
+        <AudioSize>2048</AudioSize>
+      </FFT>
+      <prHopSize>512</prHopSize>
+      <prZeroPadding>0</prZeroPadding>
+      <prSamplingRate>44100</prSamplingRate>
+      <prFFTSize>2048</prFFTSize>
+      <prWindowSize>2049</prWindowSize>
+      <prWindowType>Hamming</prWindowType>
+    </SinSpectralAnalysis>
+    <ResSpectralAnalysis>
+      <WindowGenerator>
+        <Type>BlackmanHarris92</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NormalizationForAnalysis</Normalize>
+        <Invert>0</Invert>
+      </WindowGenerator>
+      <CircularShift>
+        <Amount>-512</Amount>
+      </CircularShift>
+      <FFT>
+        <AudioSize>1024</AudioSize>
+      </FFT>
+      <prHopSize>512</prHopSize>
+      <prZeroPadding>0</prZeroPadding>
+      <prSamplingRate>44100</prSamplingRate>
+      <prFFTSize>1024</prFFTSize>
+      <prWindowSize>1025</prWindowSize>
+      <prWindowType>BlackmanHarris92</prWindowType>
+    </ResSpectralAnalysis>
+    <PeakDetect>
+      <MaxPeaks>500</MaxPeaks>
+      <MagThreshold>-60</MagThreshold>
+      <MaxFreq>8000</MaxFreq>
+    </PeakDetect>
+    <FundFreqDetect>
+      <ReferenceFundFreq>1000</ReferenceFundFreq>
+      <LowestFundFreq>35</LowestFundFreq>
+      <HighestFundFreq>1500</HighestFundFreq>
+      <MaxCandMagDiff>30</MaxCandMagDiff>
+      <MaxFundFreqError>10</MaxFundFreqError>
+      <PMp>0.5</PMp>
+      <PMq>1.4</PMq>
+      <PMr>0.5</PMr>
+      <MPp>0.5</MPp>
+      <MPq>1.4</MPq>
+      <MPr>0.5</MPr>
+      <PMnPeaks>10</PMnPeaks>
+      <MPnPeaks>10</MPnPeaks>
+      <PMCont>1</PMCont>
+      <MPCont>1</MPCont>
+      <NInt>5</NInt>
+      <NMaxCandidates>40</NMaxCandidates>
+    </FundFreqDetect>
+    <SinTracking>
+      <Threshold>40</Threshold>
+      <nMaxSines>200</nMaxSines>
+      <IsHarmonic>1</IsHarmonic>
+    </SinTracking>
+    <prSamplingRate>44100</prSamplingRate>
+    <prFFTSize>0</prFFTSize>
+    <SynthSineSpectrum>
+      <SpectrumSize>513</SpectrumSize>
+      <SamplingRate>44100</SamplingRate>
+      <ZeroPadding>0</ZeroPadding>
+    </SynthSineSpectrum>
+  </processing>
+
+  <processing id="SMSGenderChange_0" position="297,110" size="225,78" type="SMSGenderChange">
+    <PreserveOuts>0</PreserveOuts>
+  </processing>
+
+  <processing id="SMSSynthesis_0" position="572,109" size="177,110" type="SMSSynthesis">
+    <SynthSineSpectrum>
+      <SpectrumSize>513</SpectrumSize>
+      <SamplingRate>44100</SamplingRate>
+      <ZeroPadding>0</ZeroPadding>
+    </SynthSineSpectrum>
+    <PhaseMan>
+      <MaxSines>100</MaxSines>
+      <SamplingRate>44100</SamplingRate>
+      <Type>Continuation</Type>
+    </PhaseMan>
+    <SpectralSynth>
+      <AnalWindowGenerator>
+        <Type>BlackmanHarris92</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NormalizationForAnalysis</Normalize>
+        <Invert>1</Invert>
+      </AnalWindowGenerator>
+      <SynthWindowGenerator>
+        <Type>Triangular</Type>
+        <Size>1025</Size>
+        <MaxSize>0</MaxSize>
+        <UseTable>1</UseTable>
+        <Normalize>NoNormalization</Normalize>
+        <Invert>0</Invert>
+      </SynthWindowGenerator>
+      <CircularShift>
+        <Amount>512</Amount>
+      </CircularShift>
+      <IFFT>
+        <AudioSize>1024</AudioSize>
+      </IFFT>
+      <prZeroPadding>0</prZeroPadding>
+      <prSamplingRate>44100</prSamplingRate>
+      <Residual>0</Residual>
+      <prAnalWindowSize>1025</prAnalWindowSize>
+      <prAnalWindowType>BlackmanHarris92</prAnalWindowType>
+      <prHopSize>512</prHopSize>
+    </SpectralSynth>
+    <OverlapAddSin>
+      <FrameSize>512</FrameSize>
+    </OverlapAddSin>
+    <OverlapAddRes>
+      <FrameSize>512</FrameSize>
+    </OverlapAddRes>
+    <OverlapAddGlobal>
+      <FrameSize>512</FrameSize>
+    </OverlapAddGlobal>
+    <prSamplingRate>0</prSamplingRate>
+  </processing>
+
+  <port_connection>
+    <out>AudioSource_0.AudioOut</out>
+    <in>SMSAnalysisCore_0.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSAnalysisCore_0.Sinusoidal Peaks</out>
+    <in>SMSGenderChange_0.In SpectralPeaks</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSAnalysisCore_0.Fundamental</out>
+    <in>SMSGenderChange_0.In Fundamental</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSAnalysisCore_0.Residual Spectrum</out>
+    <in>SMSGenderChange_0.In Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSGenderChange_0.Out SpectralPeaks</out>
+    <in>SMSSynthesis_0.InputSinPeaks</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSGenderChange_0.Out Spectrum</out>
+    <in>SMSSynthesis_0.InputResSpectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>SMSSynthesis_0.OutputAudio</out>
+    <in>AudioSink_0.AudioIn</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Control.out</out>
+    <in>SMSGenderChange_0.Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ControlSource.output</out>
+    <in>SMSGenderChange_0.Control</in>
+  </control_connection>
+
+</network>

@@ -20,10 +20,41 @@ def recursiveDirs(root) :
 def unique(list) :
 	return dict.fromkeys(list).keys()
 
+
+
 toolchain = 'default'
 if sys.platform == "win32" : toolchain = 'mingw'
 env = Environment(tools=[toolchain], options=options)
 options.Save('options.cache', env)
+
+#TODO: This didn't work for dynamic linking
+"""
+def renameEmbededFileSymbols(source, target, env) :
+	""" Remove the path part of the symbol name for the embeded file"""
+	objdumpOutput=os.popen("objdump -x %s | grep _binary'.*'start"%target[0] , "r").read()
+	startSymbol=objdumpOutput.split()[-1]
+	infix = startSymbol[len('_binary_'):-len("_start")]
+	baseName = os.path.split(str(source[0]))[-1]
+	newInfix = infix[-len(baseName):]
+	return Execute("objcopy %(target)s "
+		"--redefine-sym _binary_%(infix)s_start=_binary_%(newInfix)s_start "
+		"--redefine-sym _binary_%(infix)s_end=_binary_%(newInfix)s_end "
+		"--redefine-sym _binary_%(infix)s_size=_binary_%(newInfix)s_size " % {
+			"infix": infix,
+			"newInfix": newInfix,
+			"target": target[0],
+		}
+	)
+embededFileBuilder = Builder(
+	action=Action([
+		["ld", "-fPIC", "--shared", "-b", "binary", "-o", "$TARGET", "$SOURCE"],
+		renameEmbededFileSymbols,
+		],
+		),
+	suffix='.os',
+	)
+env['BUILDERS']['EmbededFile']=embededFileBuilder
+"""
 
 env.SConsignFile() # Single signature file
 
@@ -50,6 +81,8 @@ if not env['verbose']:
 	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
 	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
 	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
+
+env.AppendUnique(ASFLAGS='-I. ')
 
 env.EnableClamModules(libs=[
 	'clam_core',
@@ -155,6 +188,7 @@ for libsource in singleSourceLibraries :
 
 for folder in directoryBasedLibraries :
 	librarySources = glob.glob(folder+"/*.cxx")
+#	librarySources += [env.EmbededFile(file) for file in glob.glob(folder+"/*.clamnetwork")]
 	library = os.path.basename(folder)
 	examples += [ env.SharedLibrary(target=library, source = librarySources ) ]
 
@@ -166,6 +200,8 @@ for folder in directoryBasedExamples :
 	exampleSources = glob.glob(folder+"/*.cxx")
 	executable = os.path.basename(folder)+"Exe"
 	examples += [ env.Program(target=executable, source = sources + exampleSources ) ]
+
+
 
 tickEnv = env.Clone()
 tickEnv.AppendUnique(CPPPATH=['TickExtractor/libresample-0.1.3/include'])

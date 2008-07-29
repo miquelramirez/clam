@@ -1,5 +1,22 @@
 #include "LadspaNetworkExporter.hxx"
 
+/// Include a given file as binary data
+/// @arg varname is the variable that will hold the var (const char[])
+/// @arg file is an absolute path or a relative path from the build point (not the source file!!)
+/// @todo Try to make CLAM_EXTERNAL_FILE_DATA work with path relatives to the source that uses the macro.
+#define CLAM_EXTERNAL_FILE_DATA(varname, file) \
+asm ( \
+"  .section \".rodata\"\n" \
+"   .type " #varname ", @object\n" \
+" " #varname ":\n" \
+"   .incbin \"" file "\"\n" \
+"   .byte 0\n" \
+"   .size " #varname ", .-" #varname "\n" \
+); \
+extern const char varname[]; \
+
+CLAM_EXTERNAL_FILE_DATA(embededNetwork, "PluginExamples/ClamLadspaPluginExample/genderChange.clamnetwork")
+
 // Ladspa Callbacks
 extern "C"
 {
@@ -56,7 +73,7 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin()
 	_network.SetName("Testing name");
 
 	std::cerr << " constructor" << std::endl;
-
+/*
 	const char* xmlfile=getenv("CLAM_NETWORK_PLUGIN_PATH");
 	if (xmlfile==NULL)
 	{
@@ -64,10 +81,11 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin()
 		std::cerr << "                    --> Do \"export CLAM_NETWORK_PLUGIN_PATH=/..path../file.xml\"" << std::endl;
 		return;
 	}
-	
+*/
+	std::istringstream xmlfile(embededNetwork);
 	try
 	{
-		XmlStorage::Restore( _network, xmlfile);	//"genwire.xml");	
+		XmlStorage::Restore( _network, xmlfile);
 	}
 	catch ( XmlStorageErr err)
 	{
@@ -75,7 +93,7 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin()
 		std::cerr << err.what() << std::endl;
 		return;
 	}
-	
+
 	LocateConnections();
 }
 
@@ -257,6 +275,8 @@ void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)
 	else //Output control
 		mOutControlList.at( port-mReceiverList.size()-mSenderList.size()-mInControlList.size() ).dataBuffer=data;
 }
+
+
 
 LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor()
 {
