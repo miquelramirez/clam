@@ -74,15 +74,30 @@ public:
 	void CopySinksToLadspaBuffers(const unsigned long nframes);
 	void ProcessInControlValues();
 	void ProcessOutControlValues();
-	static LADSPA_Descriptor * CreateLADSPADescriptor(const std::string & networkXmlContent);
+	static LADSPA_Descriptor * CreateLADSPADescriptor(
+		const std::string & networkXmlContent,
+		unsigned id,
+		const std::string & label,
+		const std::string & name,
+		const std::string & maker,
+		const std::string & copyright = "GNU General Public License"
+	);
 };
 
 class LadspaNetworkExporter
 {
 public:
-	LadspaNetworkExporter(LadspaLibrary & library, const std::string & networkXmlContent)
+	LadspaNetworkExporter(LadspaLibrary & library, const std::string & networkXmlContent,
+		unsigned id,
+		const std::string & label,
+		const std::string & name,
+		const std::string & maker,
+		const std::string & copyright = "GNU General Public License"
+		)
 	{
-		LADSPA_Descriptor * descriptor = NetworkLADSPAPlugin::CreateLADSPADescriptor(networkXmlContent);
+		LADSPA_Descriptor * descriptor = NetworkLADSPAPlugin::CreateLADSPADescriptor(
+			networkXmlContent, id, label, name,
+			maker, copyright);
 		if (not descriptor) return;
 		library.AddPluginType(descriptor);
 	}
