@@ -27,6 +27,9 @@
 
 static CLAM::LadspaLibrary library;
 
+CLAM_EXTERNAL_FILE_DATA(genderChange,"PluginExamples/ClamLadspaPluginExample/genderChange.clamnetwork")
+
+
 extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 {
 	static CLAM::LadspaProcessingExporter<CLAM::Oscillator> a1(library, 3000);
