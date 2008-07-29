@@ -80,7 +80,7 @@ public:
 		const std::string & label,
 		const std::string & name,
 		const std::string & maker,
-		const std::string & copyright = "GNU General Public License"
+		const std::string & copyright
 	);
 };
 
@@ -92,7 +92,7 @@ public:
 		const std::string & label,
 		const std::string & name,
 		const std::string & maker,
-		const std::string & copyright = "GNU General Public License"
+		const std::string & copyright
 		)
 	{
 		LADSPA_Descriptor * descriptor = NetworkLADSPAPlugin::CreateLADSPADescriptor(

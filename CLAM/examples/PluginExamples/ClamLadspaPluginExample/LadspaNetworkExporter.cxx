@@ -55,16 +55,7 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & networkXmlContent)
 	mExternBufferSize=mClamBufferSize;
 	_network.SetName("Testing name");
 
-//	std::cerr << " constructor" << std::endl;
-/*
-	const char* xmlfile=getenv("CLAM_NETWORK_PLUGIN_PATH");
-	if (xmlfile==NULL)
-	{
-//		std::cerr << "CLAM::NetworkLADSPAPlugin WARNING: no network file specified. Plugin not loaded" << std::endl;
-//		std::cerr << "                    --> Do \"export CLAM_NETWORK_PLUGIN_PATH=/..path../file.xml\"" << std::endl;
-		return;
-	}
-*/
+//	std::cerr << "NetworkLADSPAPlugin: Constructed" << std::endl;
 	std::istringstream xmlfile(networkXmlContent);
 	try
 	{
