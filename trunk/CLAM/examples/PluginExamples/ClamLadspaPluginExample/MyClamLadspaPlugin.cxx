@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2004 UNIVERSITAT POMPEU FABRA
  *
- *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -43,9 +42,6 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 			"CLAM Team <clam@iua.upf.edu>", "GPL");
 	return library.pluginAt(index);
 }
-
-
-
 
 
 
