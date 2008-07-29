@@ -6,13 +6,13 @@ extern "C"
 	// Construct a new plugin instance.
 	static LADSPA_Handle Instantiate(const LADSPA_Descriptor * descriptor, unsigned long sampleRate)
 	{
-		std::cerr << "Network2Ladspa: instantiate" << std::endl;
+//		std::cerr << "Network2Ladspa: instantiate" << std::endl;
 		return new CLAM::NetworkLADSPAPlugin((const char*)descriptor->ImplementationData);
 	}
 	// Destruct plugin instance
 	static void CleanUp(LADSPA_Handle handle)
 	{
-		std::cerr << "Network2Ladspa: cleanup " << handle << std::endl;
+//		std::cerr << "Network2Ladspa: cleanup " << handle << std::endl;
 		delete (CLAM::NetworkLADSPAPlugin*) handle;
 	}
 
@@ -25,14 +25,14 @@ extern "C"
 	// Activate Plugin
 	static void Activate(LADSPA_Handle handle)
 	{
-		std::cerr << "Network2Ladspa: activate " << handle << std::endl;
+//		std::cerr << "Network2Ladspa: activate " << handle << std::endl;
 		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
 		p->Activate();
 	}
 
 	static void Deactivate(LADSPA_Handle handle)
 	{
-		std::cerr << "Network2Ladspa: deactivate " << handle << std::endl;
+//		std::cerr << "Network2Ladspa: deactivate " << handle << std::endl;
 		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
 		p->Deactivate();
 	}
@@ -40,7 +40,7 @@ extern "C"
 	// Connect a port to a data location.
 	static void ConnectTo(LADSPA_Handle handle, unsigned long port, LADSPA_Data * dataLocation)
 	{
-		std::cerr << "Network2Ladspa: connect " << port << std::endl;
+//		std::cerr << "Network2Ladspa: connect " << port << std::endl;
 		CLAM::NetworkLADSPAPlugin *p = (CLAM::NetworkLADSPAPlugin*) handle;
 		p->ConnectTo( port, dataLocation );
 	}
@@ -55,13 +55,13 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & networkXmlContent)
 	mExternBufferSize=mClamBufferSize;
 	_network.SetName("Testing name");
 
-	std::cerr << " constructor" << std::endl;
+//	std::cerr << " constructor" << std::endl;
 /*
 	const char* xmlfile=getenv("CLAM_NETWORK_PLUGIN_PATH");
 	if (xmlfile==NULL)
 	{
-		std::cerr << "CLAM::NetworkLADSPAPlugin WARNING: no network file specified. Plugin not loaded" << std::endl;
-		std::cerr << "                    --> Do \"export CLAM_NETWORK_PLUGIN_PATH=/..path../file.xml\"" << std::endl;
+//		std::cerr << "CLAM::NetworkLADSPAPlugin WARNING: no network file specified. Plugin not loaded" << std::endl;
+//		std::cerr << "                    --> Do \"export CLAM_NETWORK_PLUGIN_PATH=/..path../file.xml\"" << std::endl;
 		return;
 	}
 */
@@ -82,7 +82,7 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & networkXmlContent)
 
 NetworkLADSPAPlugin::~NetworkLADSPAPlugin()
 {
-	std::cerr << "NetworkLADSPAPlugin: DELETED" << std::endl;
+//	std::cerr << "NetworkLADSPAPlugin: DELETED" << std::endl;
 }
 
 void NetworkLADSPAPlugin::Activate()
