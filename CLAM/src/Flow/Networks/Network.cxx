@@ -488,24 +488,6 @@ namespace CLAM
 		return true;
 	}
 
-	char Network::NamesIdentifiersSeparator()
-	{ 	
-		return '.'; 	
-	}
-
-	std::size_t Network::PositionOfLastIdentifier( const std::string & str )
-	{
-		std::size_t result = str.find_last_of( NamesIdentifiersSeparator() );
-		CLAM_ASSERT( result!=std::string::npos, "Malformed port/control name. It should be ProcessingName.[Port/Control]Name");
-		return result;
-	}
-	std::size_t Network::PositionOfProcessingIdentifier( const std::string& str )
-	{
-		std::size_t endPos = PositionOfLastIdentifier(str)-1;
-		std::size_t	last_ofResult = str.find_last_of( NamesIdentifiersSeparator(), endPos );
-		return last_ofResult == std::string::npos ? 0 : last_ofResult+1;
-	}
-
 	std::string Network::GetConnectorIdentifier( const std::string& str ) const
 	{
 		return str.substr( PositionOfLastIdentifier(str)+1 );
