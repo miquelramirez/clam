@@ -86,9 +86,13 @@ provides already compiled packages for several platforms.
  ** to pass the tests: libcppunit-dev 
 
  * Qt4 packages to compile NetworkEditor and Annotator:
- qt4-dev-tools libqt4-dev (and libqt4-opengl-dev in latest versions)
- 
- * Qt3 packages to compile SMSTools and Voice2MIDI:
+ qt4-dev-tools libqt4-dev libqt4-opengl-dev (the last, from revision 11755)
+
+NOTE about Qt version: 
+from CLAM svn revision 11755 support to qt4.3 is discontinued and qt4.4 is required.
+If you are a Ubuntu 8.04 (Hardy) user you can enable the hardy-backports repository
+
+* Qt3 packages to compile SMSTools and Voice2MIDI:
  libqt3-headers libqt3-mt-dev 
 
  
@@ -108,38 +112,16 @@ Build instructions for CLAM in Mac OSX are currently in this wiki:
 
 http://iua-share.upf.edu/wikis/clam/index.php/Devel/Mac_OSX_build
 
-Please report to the clam-devel list any problem or things to improve.
-http://clam.iua.upf.edu/mailinglist.html
-
 
 
 2.3 Install CLAM dependencies on Windows
- 
-  Required Tools
-  --------------
 
- * cl.exe command line compiler from Microsoft 
-   (it comes with Microsoft Visual C++ 7.1).
- * python and scons installed on the system.
- * make sure that any needed tool have its directory added to the 
-   PATH variable (in order to execute cl and scons)
-   In particular you'll need all the 3rd party library DLLs in the PATH.
- * if you want to create installer you'll need nsis scripting language. 
-   You can download it from [http://nsis.sourceforge.net/Main_Page] 
- 
-  3rd party libraries
-  -------------------
-  
-  You can download the needed external libraries to build CLAM library 
-  on the CLAM web [http://clam.iua.upf.edu/download/win/other/windows-external-libs.tar.gz]
-  Please make sure that they are installed on a common base directory. 
-  i.e:
-        devel\CLAM\
-        devel\xercesc\ 
-        devel\fftw\
-        devel\...
+See instructions on the wiki for native compilation with MinGW 
+or cross compilation from Linux
 
- 
+ http://www.clam.iua.upf.edu/wikis/clam/index.php/Devel/Windows_MinGW_build
+ http://www.clam.iua.upf.edu/wikis/clam/index.php/Devel/Windows_MinGW_cross_compile
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  
  
