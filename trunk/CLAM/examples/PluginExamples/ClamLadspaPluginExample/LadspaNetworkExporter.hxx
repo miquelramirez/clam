@@ -33,57 +33,6 @@ extern const char varname[]; \
 namespace CLAM
 {
 
-template<class T>
-class LADSPAInfo
-{
-public:
-	std::string name;
-	T* processing;
-	LADSPA_Data *dataBuffer;
-};
-
-class NetworkLADSPAPlugin
-{
-private:
-	typedef std::vector< LADSPAInfo<AudioSource> > LADSPAInPortList;
-	typedef std::vector< LADSPAInfo<AudioSink> > LADSPAOutPortList;
-	typedef std::vector< LADSPAInfo<ControlSource> > LADSPAInControlList;
-	typedef std::vector< LADSPAInfo<ControlSink> > LADSPAOutControlList;
-
-	Network _network;
-	LADSPAInPortList mReceiverList;
-	LADSPAOutPortList mSenderList;
-	LADSPAInControlList mInControlList;
-	LADSPAOutControlList mOutControlList;
-	unsigned long mClamBufferSize, mExternBufferSize;
-	
-public:
-	NetworkLADSPAPlugin(const std::string & networkXmlContent);
-	~NetworkLADSPAPlugin();
-	
-	void Activate();
-	void Deactivate();
-	
-	void LocateConnections();
-	void UpdatePortFrameAndHopSize();
-	void FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints );
-	void ConnectTo(unsigned long port, LADSPA_Data * data);
-	
-	void Run( unsigned long nsamples );
-	void CopyLadspaBuffersToGenerators(const unsigned long nframes);
-	void CopySinksToLadspaBuffers(const unsigned long nframes);
-	void ProcessInControlValues();
-	void ProcessOutControlValues();
-	static LADSPA_Descriptor * CreateLADSPADescriptor(
-		const std::string & networkXmlContent,
-		unsigned id,
-		const std::string & label,
-		const std::string & name,
-		const std::string & maker,
-		const std::string & copyright
-	);
-};
-
 class LadspaNetworkExporter
 {
 public:
@@ -93,14 +42,7 @@ public:
 		const std::string & name,
 		const std::string & maker,
 		const std::string & copyright
-		)
-	{
-		LADSPA_Descriptor * descriptor = NetworkLADSPAPlugin::CreateLADSPADescriptor(
-			networkXmlContent, id, label, name,
-			maker, copyright);
-		if (not descriptor) return;
-		library.AddPluginType(descriptor);
-	}
+		);
 };
 
 } //namespace CLAM

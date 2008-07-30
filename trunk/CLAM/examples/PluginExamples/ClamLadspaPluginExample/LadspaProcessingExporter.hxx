@@ -33,7 +33,8 @@
 
 namespace CLAM
 {
-
+namespace Hidden
+{
 class ProcessingClass2LadspaBase
 {
 	std::vector<LADSPA_Data *> _portBuffers;
@@ -141,6 +142,7 @@ private:
 	}
 
 };
+}
 
 template <typename ProcessingType>
 class LadspaProcessingExporter
@@ -149,7 +151,7 @@ public:
 	LadspaProcessingExporter(LadspaLibrary & library, unsigned long id,
 		const std::string & maker, const std::string & copyright)
 	{
-		ProcessingClass2LadspaBase adapter(new ProcessingType);
+		Hidden::ProcessingClass2LadspaBase adapter(new ProcessingType);
 		LADSPA_Descriptor * descriptor = adapter.CreateDescriptor(id,maker,copyright);
 		library.AddPluginType(descriptor);
 	}

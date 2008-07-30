@@ -31,43 +31,46 @@ extern "C"
 static LADSPA_Handle Instantiate(const struct _LADSPA_Descriptor * descriptor,  unsigned long sampleRate)
 {
 	std::string className = std::string(descriptor->Name).substr(5);
-	CLAM::ProcessingClass2LadspaBase * adapter = new CLAM::ProcessingClass2LadspaBase(className);
+	CLAM::Hidden::ProcessingClass2LadspaBase * adapter =
+		new CLAM::Hidden::ProcessingClass2LadspaBase(className);
 	adapter->Instantiate();
 	return adapter;
 }
 
 static void ConnectPort(LADSPA_Handle instance, unsigned long port, LADSPA_Data * data)
 {
-	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
+	CLAM::Hidden::ProcessingClass2LadspaBase * adapter = (CLAM::Hidden::ProcessingClass2LadspaBase*)instance;
 	adapter->ConnectPort(port, data);
 }
 
 static void Activate(LADSPA_Handle instance)
 {
-	CLAM::ProcessingClass2LadspaBase* adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
+	CLAM::Hidden::ProcessingClass2LadspaBase* adapter = (CLAM::Hidden::ProcessingClass2LadspaBase*)instance;
 	adapter->Activate();
 }
   
 static void Run(LADSPA_Handle instance, unsigned long sampleCount)
 {
-	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
+	CLAM::Hidden::ProcessingClass2LadspaBase * adapter = (CLAM::Hidden::ProcessingClass2LadspaBase*)instance;
 	adapter->Run(sampleCount);
 }
 
 static void Deactivate(LADSPA_Handle instance)
 {
-	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
+	CLAM::Hidden::ProcessingClass2LadspaBase * adapter = (CLAM::Hidden::ProcessingClass2LadspaBase*)instance;
 	adapter->Deactivate();
 }
 
 static void CleanUp(LADSPA_Handle instance)
 {
-	CLAM::ProcessingClass2LadspaBase * adapter = (CLAM::ProcessingClass2LadspaBase*)instance;
+	CLAM::Hidden::ProcessingClass2LadspaBase * adapter = (CLAM::Hidden::ProcessingClass2LadspaBase*)instance;
 	delete adapter;
 }
 }
 
 namespace CLAM
+{
+namespace Hidden
 {
 
 LADSPA_Descriptor * ProcessingClass2LadspaBase::CreateDescriptor(unsigned long id,
@@ -222,5 +225,6 @@ const char * ProcessingClass2LadspaBase::GetOutPortName(int id) const
 	return _proc->GetOutPorts().GetByNumber(id).GetName().c_str();
 }
 
+}
 }
 
