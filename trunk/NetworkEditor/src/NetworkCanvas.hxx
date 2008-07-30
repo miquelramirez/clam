@@ -900,7 +900,7 @@ public:
 };
 
 #include <typeinfo>
-#include <CLAM/Network.hxx>
+#include <CLAM/BaseNetwork.hxx>
 #include <CLAM/ProcessingDataPlugin.hxx>
 #include <CLAM/ProcessingFactory.hxx>
 #include "OutControlSender.hxx"
@@ -939,7 +939,7 @@ public:
 		addAction(_pasteSelectionAction);
 		connect(_pasteSelectionAction, SIGNAL(triggered()), this, SLOT (onPasteProcessingsFromClipboard()));
 	}
-	CLAM::Network & network()
+	CLAM::BaseNetwork & network()
 	{
 		return *_network;
 	}
@@ -1279,13 +1279,13 @@ public:
 	{
 		return _network == 0;
 	}
-	void loadNetwork(CLAM::Network * network)
+	void loadNetwork(CLAM::BaseNetwork * network)
 	{
 		clear();
 		_network = network;
 		clearChanges();
 		if (networkIsDummy()) return;
-		CLAM::Network::ProcessingsMap::const_iterator it;
+		CLAM::BaseNetwork::ProcessingsMap::const_iterator it;
 		for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
 		{
 			const std::string & name = it->first;
@@ -1299,7 +1299,7 @@ public:
 	void reloadNetwork(bool selectAllNew=false)
 	{
 		if (networkIsDummy()) return;
-		CLAM::Network::ProcessingsMap::const_iterator it;
+		CLAM::BaseNetwork::ProcessingsMap::const_iterator it;
 		for (it=_network->BeginProcessings(); it!=_network->EndProcessings(); it++)
 		{
 			const std::string & name = it->first;
@@ -1326,8 +1326,8 @@ public:
 			{
 				CLAM::OutPortBase & outPort = outPorts.GetByNumber(op);
 				std::string completeOutName = producerName + "." + outPort.GetName();
-				CLAM::Network::NamesList connected = _network->GetInPortsConnectedTo( completeOutName );
-				CLAM::Network::NamesList::iterator inName;
+				CLAM::BaseNetwork::NamesList connected = _network->GetInPortsConnectedTo( completeOutName );
+				CLAM::BaseNetwork::NamesList::iterator inName;
 				for(inName=connected.begin(); inName!=connected.end(); inName++)
 				{
 					std::string consumerName = _network->GetProcessingIdentifier(*inName);
@@ -1351,8 +1351,8 @@ public:
 			{
 				CLAM::OutControl & outControl = outControls.GetByNumber(op);
 				std::string completeOutName = producerName + "." + outControl.GetName();
-				CLAM::Network::NamesList connected = _network->GetInControlsConnectedTo( completeOutName );
-				CLAM::Network::NamesList::iterator inName;
+				CLAM::BaseNetwork::NamesList connected = _network->GetInControlsConnectedTo( completeOutName );
+				CLAM::BaseNetwork::NamesList::iterator inName;
 				for(inName=connected.begin(); inName!=connected.end(); inName++)
 				{
 					std::string consumerName = _network->GetProcessingIdentifier(*inName);
@@ -1415,10 +1415,10 @@ public:
 
 	bool updateGeometriesOnXML(QPoint offsetPoint=QPoint(0,0))
 	{
-		CLAM::Network::ProcessingsGeometriesMap processingsGeometriesMap;
+		CLAM::BaseNetwork::ProcessingsGeometriesMap processingsGeometriesMap;
 		for (unsigned i=0; i<_processings.size(); i++)
 		{
-			CLAM::Network::Geometry processingGeometry;
+			CLAM::BaseNetwork::Geometry processingGeometry;
 			QPoint position = _processings[i]->pos()-offsetPoint;
 			QSize size = _processings[i]->size();
 			const std::string name=_processings[i]->getName().toStdString();
@@ -1426,20 +1426,20 @@ public:
 			processingGeometry.y=position.y();
 			processingGeometry.width=size.width();
 			processingGeometry.height=size.height();
-			processingsGeometriesMap.insert(CLAM::Network::ProcessingsGeometriesMap::value_type(name,processingGeometry));
+			processingsGeometriesMap.insert(CLAM::BaseNetwork::ProcessingsGeometriesMap::value_type(name,processingGeometry));
 		}
 		return (_network->SetProcessingsGeometries(processingsGeometriesMap));
 	}
 	bool loadGeometriesFromXML(QPoint offsetPoint = QPoint(0,0))
 	{
-		const CLAM::Network::ProcessingsGeometriesMap & processingsGeometriesMap=_network->GetAndClearGeometries();
+		const CLAM::BaseNetwork::ProcessingsGeometriesMap & processingsGeometriesMap=_network->GetAndClearGeometries();
 		if (processingsGeometriesMap.empty())
 			return 0;
-		CLAM::Network::ProcessingsGeometriesMap::const_iterator it;
+		CLAM::BaseNetwork::ProcessingsGeometriesMap::const_iterator it;
 		for(it=processingsGeometriesMap.begin();it!=processingsGeometriesMap.end();it++)
 		{
 			QString name=QString(it->first.c_str());
-			const CLAM::Network::Geometry & geometry=it->second;
+			const CLAM::BaseNetwork::Geometry & geometry=it->second;
 			QPoint position=offsetPoint+QPoint(geometry.x,geometry.y);
 			QSize size=QSize(geometry.width,geometry.height);
 			ProcessingBox * box=getBox(name);
@@ -1493,7 +1493,7 @@ private slots:
 	void onCopyProcessingsToClipboard(bool cut=false)
 	{
 		std::ostringstream streamXMLBuffer;
-		CLAM::Network::NamesList processingsNamesList;
+		CLAM::BaseNetwork::NamesList processingsNamesList;
 		// Copy selected processings on networkToCopy
 		for (unsigned i=0; i<_processings.size();i++)
 		{
@@ -1510,7 +1510,7 @@ private slots:
 		QApplication::clipboard()->setText(QString(streamXMLBuffer.str().c_str()));
 		if (!cut) return;
 
-		CLAM::Network::NamesList::iterator cuttedNamesIterator;
+		CLAM::BaseNetwork::NamesList::iterator cuttedNamesIterator;
 		for(cuttedNamesIterator=processingsNamesList.begin();
 			cuttedNamesIterator!=processingsNamesList.end();
 			cuttedNamesIterator++)
@@ -1902,15 +1902,13 @@ private:
 		return QIcon( QString(":/icons/images/%1").arg(iconPath.c_str()));
 	}
 
-
-
 protected:
 	QAction * _newProcessingAction;
 	QAction * _copySelectionAction;
 	QAction * _cutSelectionAction;
 	QAction * _pasteSelectionAction;
 private:
-	CLAM::Network * _network;
+	CLAM::BaseNetwork * _network;
 	mutable QString _fileNameToOpen;
 	bool _embedSVGDiagramsOption;
 };

@@ -34,29 +34,19 @@
 #include <map>
 #include <set>
 
-#include "Component.hxx"
-#include "Storage.hxx"
+//#include "Component.hxx"
+//#include "Storage.hxx"
+#include "BaseNetwork.hxx"
 
 namespace CLAM
 {
 class NetworkPlayer;
 class FlowControl;
 
-class Network : public Component
+class Network : public BaseNetwork
 {
 
 public:
-	typedef std::map< std::string, Processing* > ProcessingsMap;
-	typedef std::list<std::string> NamesList;
-	typedef std::list<InPortBase *> InPortsList;
-
-	
-	typedef struct
-	{
-		int x,y,width,height;
-	} Geometry;
-	typedef std::map <std::string, Geometry> ProcessingsGeometriesMap;
-	
 	// constructor / destructor
 	Network();
 	virtual ~Network();
@@ -176,15 +166,11 @@ private:
 	// fields
 	std::string _name;
 	ProcessingsMap _processings;
-	
-	static std::size_t PositionOfLastIdentifier( const std::string& );
-	static std::size_t PositionOfProcessingIdentifier( const std::string& );
-	static char NamesIdentifiersSeparator();
+
 	FlowControl* _flowControl;
 	NetworkPlayer* _player;
 	
 	// attributes for canvas copy & paste
-	typedef std::set<std::string> NamesSet;
 	mutable NamesSet _selectedProcessings;
 	bool _setPasteMode;
 	
