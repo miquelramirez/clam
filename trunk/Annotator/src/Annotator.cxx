@@ -128,9 +128,14 @@ void Annotator::computeSongDescriptors()
 	// Wait the window to be redrawn after the reconfiguration
 	// before loading the cpu with the extractor
 	qApp->processEvents();
+
+	std::string configurationOption="";
+	if (mProject.Config()!="")
+	configurationOption = "-c"+mProject.GetConfig();
 	bool ok = runner->run(mProject.GetExtractor().c_str(),
-		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str(),
+		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str() << configurationOption.c_str(),
 		QDir::current().path());
+	
 	if (!ok)
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
