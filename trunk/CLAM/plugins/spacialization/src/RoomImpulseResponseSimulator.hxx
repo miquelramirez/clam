@@ -51,7 +51,7 @@ class RoomImpulseResponseSimulator : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 8, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 9, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
 		DYN_ATTRIBUTE( 1, public, Filename, Model3DFile);
 		DYN_ATTRIBUTE( 2, public, unsigned, GridDivisions);
@@ -59,7 +59,8 @@ public:
 		DYN_ATTRIBUTE( 4, public, unsigned, NRebounds);
 		DYN_ATTRIBUTE( 5, public, float, IrLength);
 		DYN_ATTRIBUTE( 6, public, CLAM::Text, ExtraOptions);
-		DYN_ATTRIBUTE( 7, public, bool, SupressInitialDelay);
+		DYN_ATTRIBUTE( 7, public, bool, StripDirectSound);
+		DYN_ATTRIBUTE( 8, public, bool, SupressInitialDelay);
 	protected:
 		void DefaultInit()
 		{
@@ -71,6 +72,7 @@ public:
 			SetNRays(200);
 			SetNRebounds(20);
 			SetIrLength(1.0);
+			SetStripDirectSound(false);
 			SetSupressInitialDelay(false);
 		};
 	};
@@ -245,9 +247,11 @@ private:
 			_scene->normalizedToModelZ(_currentEmitterZ)
 			);
 		std::string responsesPath = "";
+		if (_config.HasStripDirectSound() and _config.GetStripDirectSound())
+			_scene->raytracingReverbOverTime(responsesPath, "IR");
+		else
+			_scene->raytracingOverTime(responsesPath, "IR" );
 //		_scene->writeDirectSoundOverTime(responsesPath, "direct_sound");
-//		_scene->raytracingReverbOverTime(responsesPath, "reverb");
-		_scene->raytracingOverTime(responsesPath, "IR" );
 
 		std::string wFile = "w_IR.wav";
 		std::string xFile = "x_IR.wav";
