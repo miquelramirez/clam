@@ -31,9 +31,12 @@ CLAM_EXTERNAL_FILE_DATA(wire,"PluginExamples/ClamLadspaPluginExample/wire.clamne
 
 extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 {
-	static CLAM::LadspaProcessingExporter<CLAM::Oscillator> a1(library, 3000);
-	static CLAM::LadspaProcessingExporter<CLAM::AudioMultiplier> a2(library, 3001);
-	static CLAM::LadspaProcessingExporter<CLAM::AudioAmplifier> a3(library, 3002);
+	static CLAM::LadspaProcessingExporter<CLAM::Oscillator> a1(library, 3000,
+			"CLAM Team <clam@iua.upf.edu>", "GPL");
+	static CLAM::LadspaProcessingExporter<CLAM::AudioMultiplier> a2(library, 3001,
+			"CLAM Team <clam@iua.upf.edu>", "GPL");
+	static CLAM::LadspaProcessingExporter<CLAM::AudioAmplifier> a3(library, 3002,
+			"CLAM Team <clam@iua.upf.edu>", "GPL");
 	static CLAM::LadspaNetworkExporter n1(library, genderChange, 3003,
 			"clamGenderChange0", "CLAM Gender Change",
 			"CLAM Team <clam@iua.upf.edu>", "GPL");

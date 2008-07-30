@@ -113,7 +113,8 @@ private:
 
 // Pre instantiation interface
 public:
-	LADSPA_Descriptor * CreateDescriptor(unsigned long id);
+	LADSPA_Descriptor * CreateDescriptor(unsigned long id,
+		const std::string & maker, const std::string & copyright);
 private:
 	void SetPortsAndControls(LADSPA_Descriptor *& descriptor);
 
@@ -145,10 +146,11 @@ template <typename ProcessingType>
 class LadspaProcessingExporter
 {
 public:
-	LadspaProcessingExporter(LadspaLibrary & library, unsigned long id)
+	LadspaProcessingExporter(LadspaLibrary & library, unsigned long id,
+		const std::string & maker, const std::string & copyright)
 	{
 		ProcessingClass2LadspaBase adapter(new ProcessingType);
-		LADSPA_Descriptor * descriptor = adapter.CreateDescriptor(id);
+		LADSPA_Descriptor * descriptor = adapter.CreateDescriptor(id,maker,copyright);
 		library.AddPluginType(descriptor);
 	}
 };

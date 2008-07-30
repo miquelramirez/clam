@@ -70,15 +70,16 @@ static void CleanUp(LADSPA_Handle instance)
 namespace CLAM
 {
 
-LADSPA_Descriptor * ProcessingClass2LadspaBase::CreateDescriptor(unsigned long id)
+LADSPA_Descriptor * ProcessingClass2LadspaBase::CreateDescriptor(unsigned long id,
+	const std::string & maker, const std::string & copyright)
 {
 	LADSPA_Descriptor * descriptor = new LADSPA_Descriptor;
 	std::string className = _proc->GetClassName();
 	descriptor->UniqueID  = id;
 	descriptor->Label = LadspaLibrary::dupstr(("CLAM_"+className).c_str());
 	descriptor->Name = LadspaLibrary::dupstr(("CLAM "+className).c_str());
-	descriptor->Maker = LadspaLibrary::dupstr("CLAM-dev");
-	descriptor->Copyright = LadspaLibrary::dupstr("None");
+	descriptor->Maker = LadspaLibrary::dupstr(maker.c_str());
+	descriptor->Copyright = LadspaLibrary::dupstr(copyright.c_str());
 	descriptor->Properties = LADSPA_PROPERTY_HARD_RT_CAPABLE; //?
 	descriptor->PortCount = NPorts();
 
