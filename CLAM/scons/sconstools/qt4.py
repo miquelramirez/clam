@@ -415,8 +415,9 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 		'QtWebKit',
 		]
 	pclessModules = [
-		'QtDesigner',
-		'QtDesignerComponents',
+# in qt <= 4.3 designer and designerComponents are pcless, on qt4.4 they are not, so removed.	
+#		'QtDesigner',
+#		'QtDesignerComponents',
 	]
 	staticModules = [
 		'QtUiTools',
