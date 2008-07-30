@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Dialog</string>
+   <string>LADSPA plugin generation</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2" >
    <item>
@@ -171,12 +171,12 @@ Example: Richard Stallman &lt;rms@fsf.org></string>
         <string>License:</string>
        </property>
        <property name="buddy" >
-        <cstring>comboBox</cstring>
+        <cstring>ladspaCopyright</cstring>
        </property>
       </widget>
      </item>
      <item row="5" column="1" >
-      <widget class="QComboBox" name="comboBox" >
+      <widget class="QComboBox" name="ladspaCopyright" >
        <property name="whatsThis" >
         <string>This is the license (copyright) of the Plugin. Since the plugin links against CLAM, that is GPL, you have to choose a GPL compatible license.
 </string>
@@ -292,7 +292,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>ladspaLabel</tabstop>
   <tabstop>ladspaName</tabstop>
   <tabstop>ladspaMaker</tabstop>
-  <tabstop>comboBox</tabstop>
+  <tabstop>ladspaCopyright</tabstop>
   <tabstop>laspaLibrary</tabstop>
   <tabstop>choseLibraryFile</tabstop>
   <tabstop>buttonBox</tabstop>
