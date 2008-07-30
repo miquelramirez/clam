@@ -1,4 +1,5 @@
 #include "uic_MainWindow.hxx"
+#include "uic_LadspaMetadataEditor.hxx"
 #include "NetworkCanvas.hxx"
 #include "ProcessingTree.hxx"
 #include <QtGui/QVBoxLayout>
@@ -554,10 +555,21 @@ public slots:
 	{
 		close();
 	}
+
+	void on_action_CompileAsLadspaPlugin_triggered()
+	{
+		_ladspaMetadataDialog = new QDialog(this);
+		metadataEditorUi.setupUi(_ladspaMetadataDialog);
+		_ladspaMetadataDialog->exec();
+		delete _ladspaMetadataDialog;
+	}
+
 private:
 	ClamNetworkCanvas * _canvas;
 	NetworkCanvas * _jackCanvas;
 	QDialog * _aboutDialog;
+	QDialog * _ladspaMetadataDialog;
+	Ui::LadspaMetadataEditor metadataEditorUi;
 	CLAM::Network _network;
 	CLAM::NetworkPlayer * _networkPlayer;
 	QString _networkFile;

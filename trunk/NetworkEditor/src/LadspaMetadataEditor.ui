@@ -1,0 +1,337 @@
+<ui version="4.0" >
+ <author>David Garcia Garzon</author>
+ <class>LadspaMetadataEditor</class>
+ <widget class="QDialog" name="LadspaMetadataEditor" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>575</width>
+    <height>579</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2" >
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" >
+     <item>
+      <widget class="QLabel" name="label_6" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Preferred" hsizetype="Fixed" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="pixmap" >
+        <pixmap resource="images.qrc" >:/icons/images/lau_logo.png</pixmap>
+       </property>
+       <property name="scaledContents" >
+        <bool>false</bool>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_7" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>&lt;b>LADSPA plugin metadata&lt;/b>
+&lt;br/>Metadata fields for the plugin to be generated.</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+       <property name="wordWrap" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_9" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string/>
+       </property>
+       <property name="pixmap" >
+        <pixmap resource="images.qrc" >:/icons/images/clamlogo.png</pixmap>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line_2" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QFormLayout" name="formLayout" >
+     <property name="fieldGrowthPolicy" >
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <item row="1" column="0" >
+      <widget class="QLabel" name="label_5" >
+       <property name="text" >
+        <string>Unique ID:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>ladspaUniqueId</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" >
+      <widget class="QSpinBox" name="ladspaUniqueId" >
+       <property name="whatsThis" >
+        <string>The unique id is a number that indentifies the plugin uniquely world wide.</string>
+       </property>
+       <property name="maximum" >
+        <number>2147483647</number>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" >
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>Plugin label:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>ladspaLabel</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" >
+      <widget class="QLineEdit" name="ladspaLabel" >
+       <property name="whatsThis" >
+        <string>The plugin label is a mnemonic identifier that can be used in conjuction with the library name instead of using the numeric id. No spaces are allowed in the label. The convention is to add an increasing number at the end for different incompatible versions of the same plugin.
+Example: sine28</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0" >
+      <widget class="QLabel" name="label_2" >
+       <property name="text" >
+        <string>Descriptive name:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>ladspaName</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" >
+      <widget class="QLineEdit" name="ladspaName" >
+       <property name="toolTip" >
+        <string>This is the descriptive name that the host application will display to the final user.</string>
+       </property>
+       <property name="whatsThis" >
+        <string>This is the descriptive name that the host application will display to the final user.
+Example: Sine Oscillator</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0" >
+      <widget class="QLabel" name="label_3" >
+       <property name="text" >
+        <string>Author:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>ladspaMaker</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" >
+      <widget class="QLineEdit" name="ladspaMaker" >
+       <property name="whatsThis" >
+        <string>The author (maker) is the name of the maker of the plugin. The convention is to specify both the name and a contact email enclosed in angles.
+Example: Richard Stallman &lt;rms@fsf.org></string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0" >
+      <widget class="QLabel" name="label_4" >
+       <property name="text" >
+        <string>License:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>comboBox</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" >
+      <widget class="QComboBox" name="comboBox" >
+       <property name="whatsThis" >
+        <string>This is the license (copyright) of the Plugin. Since the plugin links against CLAM, that is GPL, you have to choose a GPL compatible license.
+</string>
+       </property>
+       <property name="editable" >
+        <bool>true</bool>
+       </property>
+       <item>
+        <property name="text" >
+         <string>GNU GPL</string>
+        </property>
+       </item>
+       <item>
+        <property name="text" >
+         <string>GNU LGPL</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="7" column="0" >
+      <widget class="QLabel" name="label_8" >
+       <property name="text" >
+        <string>Generated library:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>laspaLibrary</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1" >
+      <layout class="QHBoxLayout" name="horizontalLayout_2" >
+       <item>
+        <widget class="QLineEdit" name="laspaLibrary" >
+         <property name="whatsThis" >
+          <string>This field is not metadata but a chooser for the target library file you want to generate. Click on the side button to choose a location.</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="choseLibraryFile" >
+         <property name="icon" >
+          <iconset resource="images.qrc" >
+           <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout" >
+     <item>
+      <widget class="QLabel" name="label_11" >
+       <property name="text" >
+        <string>&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN" "http://www.w3.org/TR/REC-html40/strict.dtd">
+&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-weight:600;">Metadata field help&lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="FocusPropertyFollower" name="label_10" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="MinimumExpanding" hsizetype="Preferred" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text" >
+        <string>Here goes current field help text</string>
+       </property>
+       <property name="alignment" >
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+       <property name="wordWrap" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>FocusPropertyFollower</class>
+   <extends>QLabel</extends>
+   <header>FocusPropertyFollower.hxx</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>ladspaUniqueId</tabstop>
+  <tabstop>ladspaLabel</tabstop>
+  <tabstop>ladspaName</tabstop>
+  <tabstop>ladspaMaker</tabstop>
+  <tabstop>comboBox</tabstop>
+  <tabstop>laspaLibrary</tabstop>
+  <tabstop>choseLibraryFile</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources>
+  <include location="images.qrc" />
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>LadspaMetadataEditor</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>222</x>
+     <y>458</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>LadspaMetadataEditor</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>290</x>
+     <y>464</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
