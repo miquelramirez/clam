@@ -1,4 +1,6 @@
 #include "LadspaNetworkExporter.hxx"
+#include "ControlSource.hxx"
+#include "ControlSink.hxx"
 
 namespace CLAM
 {

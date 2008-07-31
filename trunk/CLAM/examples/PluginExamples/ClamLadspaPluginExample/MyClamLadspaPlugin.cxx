@@ -17,12 +17,12 @@
  *
  */
 
-#include "AudioMultiplier.hxx"
-#include "AudioAmplifier.hxx"
-#include "Oscillator.hxx"
-#include "LadspaNetworkExporter.hxx"
-#include "LadspaProcessingExporter.hxx"
-#include "LadspaLibrary.hxx"
+#include <CLAM/AudioMultiplier.hxx>
+#include <CLAM/AudioAmplifier.hxx>
+#include <CLAM/Oscillator.hxx>
+#include <CLAM/LadspaNetworkExporter.hxx>
+#include <CLAM/LadspaProcessingExporter.hxx>
+#include <CLAM/LadspaLibrary.hxx>
 
 static CLAM::LadspaLibrary library;
 
