@@ -103,6 +103,9 @@
        <property name="whatsThis" >
         <string>The unique id is a number that indentifies the plugin uniquely world wide.</string>
        </property>
+       <property name="minimum" >
+        <number>1</number>
+       </property>
        <property name="maximum" >
         <number>2147483647</number>
        </property>
@@ -202,21 +205,49 @@ Example: Richard Stallman &lt;rms@fsf.org></string>
         <string>Generated library:</string>
        </property>
        <property name="buddy" >
-        <cstring>laspaLibrary</cstring>
+        <cstring>ladspaLibrary</cstring>
        </property>
       </widget>
      </item>
      <item row="7" column="1" >
       <layout class="QHBoxLayout" name="horizontalLayout_2" >
        <item>
-        <widget class="QLineEdit" name="laspaLibrary" >
+        <widget class="QLineEdit" name="ladspaLibrary" >
          <property name="whatsThis" >
           <string>This field is not metadata but a chooser for the target library file you want to generate. Click on the side button to choose a location.</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="choseLibraryFile" >
+        <widget class="QPushButton" name="browseLadspaLibrary" >
+         <property name="icon" >
+          <iconset resource="images.qrc" >
+           <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="8" column="0" >
+      <widget class="QLabel" name="label_12" >
+       <property name="text" >
+        <string>CLAM prefix:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1" >
+      <layout class="QHBoxLayout" name="horizontalLayout_3" >
+       <item>
+        <widget class="QLineEdit" name="clamPrefix" >
+         <property name="whatsThis" >
+          <string>The prefix where the CLAM libraries have been installed. Common paths are: /usr or /usr/local in Linux/Unix/MacOs and c:/MinGW/local in windows.
+
+Building LADSPA plugins requires the development files or SDK not just the run time libraries.</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="browseClamPrefix" >
          <property name="icon" >
           <iconset resource="images.qrc" >
            <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
@@ -293,8 +324,10 @@ p, li { white-space: pre-wrap; }
   <tabstop>ladspaName</tabstop>
   <tabstop>ladspaMaker</tabstop>
   <tabstop>ladspaCopyright</tabstop>
-  <tabstop>laspaLibrary</tabstop>
-  <tabstop>choseLibraryFile</tabstop>
+  <tabstop>ladspaLibrary</tabstop>
+  <tabstop>browseLadspaLibrary</tabstop>
+  <tabstop>clamPrefix</tabstop>
+  <tabstop>browseClamPrefix</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
