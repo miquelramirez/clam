@@ -20,7 +20,7 @@
  */
 
 
-#include "Network.hxx"
+#include "FlattenedNetwork.hxx"
 #include "NaiveFlowControl.hxx"
 #include "NetworkPlayer.hxx"
 #include <algorithm>
@@ -34,14 +34,14 @@
 
 namespace CLAM
 {	
-	Network::Network() :
+	FlattenedNetwork::FlattenedNetwork() :
 		_name("Unnamed Network"),
 		_flowControl(new NaiveFlowControl),
 		_player(0),
 		_setPasteMode(false)
 	{}
 	
-	Network::~Network()
+	FlattenedNetwork::~FlattenedNetwork()
 	{
 		//std::cerr <<" *\t\t\t~NETWORK"<<std::endl;
 		Clear();
@@ -49,7 +49,7 @@ namespace CLAM
 		if (_player) delete _player;
 	}
 
-	void Network::StoreOn( Storage & storage) const
+	void FlattenedNetwork::StoreOn( Storage & storage) const
 	{
 		XMLAdapter<std::string> strAdapter( _name, "id");
 		storage.Store(strAdapter);
@@ -143,7 +143,7 @@ namespace CLAM
 		_processingsGeometries.clear();
 	}
 
-	void Network::LoadFrom( Storage & storage)
+	void FlattenedNetwork::LoadFrom( Storage & storage)
 	{
 		typedef std::map <std::string, std::string> changeProcNames;
 		changeProcNames newProcNames;
@@ -230,7 +230,7 @@ namespace CLAM
 		_setPasteMode=false;
 	}
 
-	bool Network::UpdateSelections (const NamesList & processingsNamesList)
+	bool FlattenedNetwork::UpdateSelections (const NamesList & processingsNamesList)
 	{
 		NamesList::const_iterator namesIterator;
 		if (!_selectedProcessings.empty() || processingsNamesList.empty())
@@ -244,7 +244,7 @@ namespace CLAM
 		
 	}
 
-	bool Network::HasSelectionAndContains(const std::string & name) const
+	bool FlattenedNetwork::HasSelectionAndContains(const std::string & name) const
 	{
 		NamesSet::const_iterator itFindSelected = _selectedProcessings.find(name);
 		if (!_selectedProcessings.empty() && itFindSelected==_selectedProcessings.end())
@@ -252,7 +252,7 @@ namespace CLAM
 		return 1;
 	}
 
-	bool Network::SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries)
+	bool FlattenedNetwork::SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries)
 	{
 		_processingsGeometries.clear();
 		if (processingsGeometries.empty())
@@ -262,7 +262,7 @@ namespace CLAM
 	}
 
 
-	const Network::ProcessingsGeometriesMap Network::GetAndClearGeometries()
+	const FlattenedNetwork::ProcessingsGeometriesMap FlattenedNetwork::GetAndClearGeometries()
 	{
 		const ProcessingsGeometriesMap copyProcessingsGeometry(_processingsGeometries);
 		_processingsGeometries.clear();
@@ -270,7 +270,7 @@ namespace CLAM
 	}
 
 /*	// TODO: use individual geometries loadings/storings??:
-	const Network::Geometry Network::GetAndEraseGeometry(std::string name)
+	const FlattenedNetwork::Geometry FlattenedNetwork::GetAndEraseGeometry(std::string name)
 	{
 		const ProcessingsGeometriesMap::iterator itGeometry =_processingsGeometries.find(name);
 		Geometry geometry=itGeometry->second;
@@ -284,45 +284,46 @@ namespace CLAM
 		return geometry;
 	}*/
 
-	void Network::StringPairToInts(const std::string & geometryInString, int & a, int & b)
+	void FlattenedNetwork::StringPairToInts(const std::string & geometryInString, int & a, int & b)
 	{
 		a=atoi(geometryInString.substr(0,geometryInString.find(",")).c_str());
 		b=atoi(geometryInString.substr(geometryInString.find(",")+1,geometryInString.length()).c_str());
 	}
 
-	const std::string Network::IntsToString (const int & a, const int & b) const
+	const std::string FlattenedNetwork::IntsToString (const int & a, const int & b) const
 	{
 		std::ostringstream stream;
 		stream<<a<<","<<b;
 		return stream.str();
 	}
 
-
-	void Network::AddFlowControl(FlowControl* flowControl)
+	// flow and player related methods
+	void FlattenedNetwork::AddFlowControl(FlowControl* flowControl)
 	{
 		if (_flowControl) delete _flowControl;
 		_flowControl = flowControl;
-		_flowControl->AttachToNetwork(this);
+		_flowControl->AttachToNetwork((CLAM::Network*)this);
 	}
-	void Network::SetPlayer(NetworkPlayer* player)
+	void FlattenedNetwork::SetPlayer(NetworkPlayer* player)
 	{
 		if (_player) delete _player;
 		_player = player;
-		_player->SetNetworkBackLink(*this);
+		_player->SetNetworkBackLink(*(CLAM::Network*)this);
 		_player->Init();
 	}
-	unsigned Network::BackendBufferSize()
+	unsigned FlattenedNetwork::BackendBufferSize()
 	{
 		if (!_player) return 512;
 		return _player->BackendBufferSize();
 	}
-	unsigned Network::BackendSampleRate()
+	unsigned FlattenedNetwork::BackendSampleRate()
 	{
 		if (!_player) return 44100;
 		return _player->BackendSampleRate();
 	}
 
-	Processing& Network::GetProcessing( const std::string & name ) const
+
+	Processing& FlattenedNetwork::GetProcessing( const std::string & name ) const
 	{
 		CLAM_ASSERT( HasProcessing(name), 
 			("No processing in the network has the name '"+name+"'.").c_str());
@@ -331,19 +332,19 @@ namespace CLAM
 		return *it->second;
 	}
 
-	void Network::AddProcessing( const std::string & name, Processing* proc)
+	void FlattenedNetwork::AddProcessing( const std::string & name, Processing* proc)
 	{
 		if (!IsStopped()) Stop();
 
 		if (!_processings.insert( ProcessingsMap::value_type( name, proc ) ).second )
-			CLAM_ASSERT(false, "Network::AddProcessing() Trying to add a processing with a repeated name (key)" );
-		proc->SetNetworkBackLink(this);
+			CLAM_ASSERT(false, "FlattenedNetwork::AddProcessing() Trying to add a processing with a repeated name (key)" );
+		proc->SetNetworkBackLink((CLAM::Network*)this);
 		proc->Configure(proc->GetConfig()); //TODO inefficient. but solves the problem 
 		// of some processings needing the network for configuring its ports.
 		_flowControl->ProcessingAddedToNetwork(*proc);
 	}
 
-	void Network::AddProcessing( const std::string & name, const std::string & factoryKey )
+	void FlattenedNetwork::AddProcessing( const std::string & name, const std::string & factoryKey )
 	{
 		Processing * proc=0;
 		proc = ProcessingFactory::GetInstance().CreateSafe( factoryKey  );
@@ -351,14 +352,14 @@ namespace CLAM
 	}
 
 	// returns the name that was used so the same one can be used when calling CreateProcessingController (hack)
-	std::string Network::AddProcessing( const std::string & factoryKey )
+	std::string FlattenedNetwork::AddProcessing( const std::string & factoryKey )
 	{
 		std::string name = GetUnusedName( factoryKey  ); 
 		AddProcessing(name, factoryKey );
 		return name;
 	}
 
-	std::string Network::GetUnusedName( const std::string& prefix ) const
+	std::string FlattenedNetwork::GetUnusedName( const std::string& prefix ) const
 	{
 		std::string name;
 
@@ -373,16 +374,15 @@ namespace CLAM
 		return "";
 	}
 
-
-	void Network::RemoveProcessing ( const std::string & name)
+	void FlattenedNetwork::RemoveProcessing ( const std::string & name)
 	{
 		CLAM_ASSERT( _flowControl, 
-			     "Network::RemoveProcessing() - Network should have an attached flow control at this state.");
+			     "FlattenedNetwork::RemoveProcessing() - Network should have an attached flow control at this state.");
 
 		ProcessingsMap::const_iterator i = _processings.find( name );
 		if(i==_processings.end())
 		{
-			std::string msg("Network::RemoveProcessing() Trying to remove a processing that is not included in the network:");
+			std::string msg("FlattenedNetwork::RemoveProcessing() Trying to remove a processing that is not included in the network:");
 			msg += name;
 			CLAM_ASSERT(false, msg.c_str() );
 		}
@@ -394,13 +394,13 @@ namespace CLAM
 		delete proc;		
 	}
 
-	bool Network::HasProcessing( const std::string& name ) const
+	bool FlattenedNetwork::HasProcessing( const std::string& name ) const
 	{
 		ProcessingsMap::const_iterator i = _processings.find( name );
 		return i!=_processings.end();
 	}
 	
-	bool Network::ConfigureProcessing( const std::string & name, const ProcessingConfig & newConfig )	
+	bool FlattenedNetwork::ConfigureProcessing( const std::string & name, const ProcessingConfig & newConfig )	
 	{
 		ProcessingsMap::iterator it = _processings.find( name );
 		CLAM_ASSERT(it!=_processings.end(),"Wrong processing name to configure in a network");
@@ -411,7 +411,7 @@ namespace CLAM
 		return ok;
 	}
 
-	void Network::ReconfigureAllProcessings()
+	void FlattenedNetwork::ReconfigureAllProcessings()
 	{
 		ProcessingsMap::iterator it;
 		for( it=_processings.begin(); it!=_processings.end(); it++)
@@ -421,7 +421,7 @@ namespace CLAM
 		}
 	}
 
-	bool Network::ConnectPorts( const std::string & producer, const std::string & consumer )
+	bool FlattenedNetwork::ConnectPorts( const std::string & producer, const std::string & consumer )
 	{
 		_flowControl->NetworkTopologyChanged();
 
@@ -443,7 +443,7 @@ namespace CLAM
 		return true;
 	}
 
-	bool Network::ConnectControls( const std::string & producer, const std::string & consumer )
+	bool FlattenedNetwork::ConnectControls( const std::string & producer, const std::string & consumer )
 	{
 		OutControl & outcontrol = GetOutControlByCompleteName(producer);
 		InControl & incontrol = GetInControlByCompleteName(consumer);
@@ -458,7 +458,7 @@ namespace CLAM
 	}
 
 
-	bool Network::DisconnectPorts( const std::string & producer, const std::string & consumer)
+	bool FlattenedNetwork::DisconnectPorts( const std::string & producer, const std::string & consumer)
 	{
 		_flowControl->NetworkTopologyChanged();
 
@@ -474,7 +474,7 @@ namespace CLAM
 		return true;
 	}
 
-	bool Network::DisconnectControls( const std::string & producer, const std::string & consumer)
+	bool FlattenedNetwork::DisconnectControls( const std::string & producer, const std::string & consumer)
 	{
 		OutControl & outcontrol = GetOutControlByCompleteName(producer);
 		InControl & incontrol = GetInControlByCompleteName(consumer);
@@ -488,48 +488,48 @@ namespace CLAM
 		return true;
 	}
 
-	std::string Network::GetConnectorIdentifier( const std::string& str ) const
+	std::string FlattenedNetwork::GetConnectorIdentifier( const std::string& str ) const
 	{
 		return str.substr( PositionOfLastIdentifier(str)+1 );
 	}
 
-	std::string Network::GetProcessingIdentifier( const std::string& str ) const
+	std::string FlattenedNetwork::GetProcessingIdentifier( const std::string& str ) const
 	{
 		std::size_t length = PositionOfLastIdentifier(str)  - PositionOfProcessingIdentifier(str);
 		return str.substr( PositionOfProcessingIdentifier(str), length);
 	}
 
-	InPortBase & Network::GetInPortByCompleteName( const std::string & name ) const
+	InPortBase & FlattenedNetwork::GetInPortByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetInPorts().Get( GetConnectorIdentifier(name) );
 	}
 
-	OutPortBase & Network::GetOutPortByCompleteName( const std::string & name ) const
+	OutPortBase & FlattenedNetwork::GetOutPortByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetOutPorts().Get( GetConnectorIdentifier(name) );
 	}
 
-	InControl & Network::GetInControlByCompleteName( const std::string & name ) const
+	InControl & FlattenedNetwork::GetInControlByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetInControls().Get( GetConnectorIdentifier(name) );
 	}
 
-	OutControl & Network::GetOutControlByCompleteName( const std::string & name ) const
+	OutControl & FlattenedNetwork::GetOutControlByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetOutControls().Get( GetConnectorIdentifier(name) );
 	}
 
-	bool Network::IsStopped() const
+	bool FlattenedNetwork::IsStopped() const
 	{
 		if (! _player) return true;
 		return _player->IsStopped();
 	}
 
-	void Network::Start()
+	void FlattenedNetwork::Start()
 	{
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
@@ -547,7 +547,7 @@ namespace CLAM
 		if (_player) _player->Start();
 	}
 	
-	void Network::Stop()
+	void FlattenedNetwork::Stop()
 	{
 		if (_player) _player->Stop();
 		ProcessingsMap::iterator it;
@@ -556,12 +556,12 @@ namespace CLAM
 				it->second->Stop();
 	}
 	
-	void Network::Do()
+	void FlattenedNetwork::Do()
 	{
 		_flowControl->Do();
 	}
 
-	void Network::Clear()
+	void FlattenedNetwork::Clear()
 	{
 		if ( !IsStopped() ) Stop(); 
 		
@@ -572,26 +572,26 @@ namespace CLAM
 		}
 	}
 
-	Network::ProcessingsMap::iterator Network::BeginProcessings()
+	FlattenedNetwork::ProcessingsMap::iterator FlattenedNetwork::BeginProcessings()
 	{
 		return _processings.begin();
 	}
 
-	Network::ProcessingsMap::iterator Network::EndProcessings()
+	FlattenedNetwork::ProcessingsMap::iterator FlattenedNetwork::EndProcessings()
 	{
 		return _processings.end();
 	}
-	Network::ProcessingsMap::const_iterator Network::BeginProcessings() const
+	FlattenedNetwork::ProcessingsMap::const_iterator FlattenedNetwork::BeginProcessings() const
 	{
 		return _processings.begin();
 	}
 
-	Network::ProcessingsMap::const_iterator Network::EndProcessings() const
+	FlattenedNetwork::ProcessingsMap::const_iterator FlattenedNetwork::EndProcessings() const
 	{
 		return _processings.end();
 	}
 
-	Network::NamesList  Network::GetInPortsConnectedTo( const std::string & producer ) const
+	FlattenedNetwork::NamesList  FlattenedNetwork::GetInPortsConnectedTo( const std::string & producer ) const
 	{		
 		OutPortBase & out = GetOutPortByCompleteName( producer );
 		NamesList consumers;
@@ -610,7 +610,7 @@ namespace CLAM
 		return consumers;
 	}
 
-	Network::NamesList  Network::GetInControlsConnectedTo( const std::string & producer ) const
+	FlattenedNetwork::NamesList  FlattenedNetwork::GetInControlsConnectedTo( const std::string & producer ) const
 	{		
 		OutControl & out = GetOutControlByCompleteName( producer );
 		NamesList consumers;
@@ -628,7 +628,7 @@ namespace CLAM
 		return consumers;
 	}
 
-	Network::InPortsList Network::GetInPortsConnectedTo( OutPortBase & producer ) const
+	FlattenedNetwork::InPortsList FlattenedNetwork::GetInPortsConnectedTo( OutPortBase & producer ) const
 	{		
 		InPortsList consumers;
 		OutPortBase::InPortsList::iterator it;
@@ -637,7 +637,7 @@ namespace CLAM
 		return consumers;
 	}
 
-	const std::string &  Network::GetNetworkId(const Processing * proc) const
+	const std::string &  FlattenedNetwork::GetNetworkId(const Processing * proc) const
 	{
 		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings(); it!=EndProcessings(); it++)
@@ -648,7 +648,7 @@ namespace CLAM
 		throw 0; // To avoid warning message
 	}
 
-	bool Network::RenameProcessing( const std::string & oldName, const std::string & newName )
+	bool FlattenedNetwork::RenameProcessing( const std::string & oldName, const std::string & newName )
 	{
 		if (oldName==newName) return true;
 		if( _processings.find( newName ) != _processings.end() ) // newName is being used
@@ -660,7 +660,7 @@ namespace CLAM
 		return true;
 	}
 
-	bool Network::IsReady() const
+	bool FlattenedNetwork::IsReady() const
 	{
 		if (IsEmpty()) return false;
 		if (HasMisconfiguredProcessings()) return false;
@@ -668,12 +668,12 @@ namespace CLAM
 		return true;
 	}
 
-	bool Network::IsEmpty() const
+	bool FlattenedNetwork::IsEmpty() const
 	{
 		return _processings.empty();
 	}
 
-	bool Network::HasMisconfiguredProcessings() const
+	bool FlattenedNetwork::HasMisconfiguredProcessings() const
 	{
 		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings(); it!=EndProcessings(); it++)
@@ -682,7 +682,7 @@ namespace CLAM
 		return false;
 	}
 
-	bool Network::HasUnconnectedInPorts() const
+	bool FlattenedNetwork::HasUnconnectedInPorts() const
 	{
 		for (ProcessingsMap::const_iterator it=BeginProcessings(); it!=EndProcessings(); it++)
 		{
@@ -699,7 +699,7 @@ namespace CLAM
 		}
 		return false;
 	}
-	std::string Network::GetUnconnectedInPorts() const
+	std::string FlattenedNetwork::GetUnconnectedInPorts() const
 	{
 		std::string result;
 		for (ProcessingsMap::const_iterator it=BeginProcessings(); it!=EndProcessings(); it++)
@@ -718,7 +718,7 @@ namespace CLAM
 		return result;
 	}
 
-	bool Network::HasSyncSource() const
+	bool FlattenedNetwork::HasSyncSource() const
 	{
 		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings(); it!=EndProcessings(); it++)
@@ -728,7 +728,7 @@ namespace CLAM
 	}
 
 	// TODO: Test GetConfigurationErrors
-	std::string Network::GetConfigurationErrors() const
+	std::string FlattenedNetwork::GetConfigurationErrors() const
 	{
 		std::ostringstream errorMessage;
 		ProcessingsMap::const_iterator it;
