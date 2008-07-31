@@ -36,6 +36,7 @@ void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 	mProject.SetDescription(project.GetDescription());
 	mProject.SetSchema(project.GetSchema());
 	mProject.SetExtractor(project.GetExtractor());
+	mProject.SetConfig(project.GetConfig());
 	mProject.SetPoolSuffix(project.PoolSuffix());
 	if (project.HasViews())
 		mProject.SetViews(project.GetViews());
@@ -50,6 +51,7 @@ void ProjectEditor::applyChanges(CLAM_Annotator::Project & project)
 	project.SetDescription(mProject.GetDescription());
 	project.SetSchema(mProject.GetSchema());
 	project.SetExtractor(mProject.GetExtractor());
+	project.SetConfig(mProject.GetConfig());
 	project.SetPoolSuffix(mProject.PoolSuffix());
 }
 
@@ -74,6 +76,7 @@ void ProjectEditor::updateFields()
 	ui.suffix->setEditText(mProject.PoolSuffix().c_str());
 	if (mProject.HasExtractor())
 		ui.extractor->setText(mProject.GetExtractor().c_str());
+	ui.configuration->setText(mProject.GetConfig().c_str());
 	ui.projectInfo->setPlainText(mProject.GetDescription().c_str());
 	ui.htmlPreview->setHtml(mProject.GetDescription().c_str());
 }
@@ -114,9 +117,30 @@ void ProjectEditor::on_extractorBrowseButton_clicked()
 	updateFields();
 }
 
+void ProjectEditor::on_configurationBrowseButton_clicked()
+{
+	QString file = QFileDialog::getOpenFileName(this, 
+			"Select a configuration file",
+			mProject.GetConfig().c_str(),
+			"Configuration file (*)"
+			);
+	if (file.isNull()) return;
+	mProject.SetConfig(file.toStdString());
+	updateFields();
+}
+
+void ProjectEditor::on_configuration_textChanged()
+{
+	mProject.SetConfig(ui.configuration->text().toStdString());
+}
+
+
+void ProjectEditor::on_configurationEditButton_clicked()
+{
+	QDialog * configurationDialog;
+}
 void ProjectEditor::on_extractor_textChanged()
 {
 	mProject.SetExtractor(ui.extractor->text().toStdString());
 }
-
 
