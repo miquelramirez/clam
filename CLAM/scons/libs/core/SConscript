@@ -24,6 +24,8 @@ def define_module_contents(env) :
 		'src/Processing/Base',
 		'src/Processing/Audio*.*xx',
 		'src/Processing/Plugins',
+		'src/Processing/Controls/ControlSink*xx',
+		'src/Processing/Controls/ControlSource*xx',
 		'src/Standard',
 		'src/Storage',
 		'src/Storage/Base',
