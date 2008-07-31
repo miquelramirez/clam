@@ -51,6 +51,9 @@ class ProjectEditor : public QDialog
 		void on_suffix_editTextChanged();
 		void on_extractor_textChanged();
 		void on_extractorBrowseButton_clicked();
+		void on_configurationBrowseButton_clicked();
+		void on_configuration_textChanged();
+		void on_configurationEditButton_clicked();
 	private:
 		void updateFields();
 		void updateProject();
