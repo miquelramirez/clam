@@ -31,7 +31,7 @@ static const char * ladspaSconsTemplate =
 	"toolChain = 'default'\n"
 	"if sys.platform == 'win32': toolChain = 'mingw'\n"
 	"env = Environment(ENV=os.environ, tools=[toolChain], options=options)\n"
-	"options.Save('options.cache', env)\n"
+	"#options.Save('options.cache', env) # do not save options in NetworkEditor generated plugins\n"
 	"Help(options.GenerateHelpText(env))\n"
 	"env.SConsignFile() # Single signature file\n"
 	"\n"
