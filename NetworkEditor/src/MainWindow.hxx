@@ -556,34 +556,7 @@ public slots:
 		close();
 	}
 
-	void on_action_CompileAsLadspaPlugin_triggered()
-	{
-		Ui::LadspaMetadataEditor ui;
-		QDialog ladspaMetadataDialog(this);
-		ui.setupUi(&ladspaMetadataDialog);
-		bool accepted = ladspaMetadataDialog.exec();
-		if (!accepted) return;
-		unsigned id = ui.ladspaUniqueId->value();
-		// TODO: Take the proper encoding here
-		QString label = ui.ladspaLabel->text();
-		QString name = ui.ladspaName->text();
-		QString maker = ui.ladspaMaker->text();
-		QString copyright = ui.ladspaCopyright->currentText();
-		QString pluginTemplateCode = 
-			"#include <CLAM/LadspaNetworkExporter.hxx>\n"
-			"#include <CLAM/LadspaLibrary.hxx>\n"
-			"static CLAM::LadspaLibrary library;\n"
-			"CLAM_EXTERNAL_FILE_DATA(embededNetwork,\"myplugin.clamnetwork\")\n"
-			"extern \"C\" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)\n"
-			"{\n"
-			"	static CLAM::LadspaNetworkExporter n2(library, embededNetwork, %1,\n"
-			"			\"%2\", \"%3\",\n"
-			"			\"%4\", \"%5\");\n"
-			"	return library.pluginAt(index);\n"
-			"}\n";
-		QString pluginCode = pluginTemplateCode.arg(id).arg(label).arg(name).arg(maker).arg(copyright);
-		std::cout << pluginCode.toStdString() << std::endl;
-	}
+	void on_action_CompileAsLadspaPlugin_triggered();
 
 private:
 	ClamNetworkCanvas * _canvas;
