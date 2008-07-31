@@ -34,7 +34,7 @@
    <item row="0" column="0" >
     <widget class="QLabel" name="label" >
      <property name="text" >
-      <string>Configuration &amp;information: </string>
+      <string>Configuration information: </string>
      </property>
      <property name="alignment" >
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
