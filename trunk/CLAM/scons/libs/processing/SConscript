@@ -21,6 +21,7 @@ def define_module_contents(env) :
 		'src/Processing/Synthesis',
 		'src/Processing/Transformations',
 		'src/Processing/Monitors/',
+		'src/Processing/Controls/',
 		'externals/numrec',
 		'src/Processing/SDIFIO',
 		'src/Tools/SDIF',
@@ -28,13 +29,14 @@ def define_module_contents(env) :
 		'src/Standard/ScaleCnv.*',
 		'src/Processing/Transformations/SMS',
 		'src/Processing/Transformations/Spectral',
-		'src/Processing/Controls',
 		'src/Visualization/Base',
 		'src/Visualization/View',
 		'src/Visualization/Util',
 		]
 
 	blacklist = [
+		'ControlSink..xx',
+		'ControlSource..xx',
 		r'^Audio\..xx',
 		'FileChooser',
 		'MessageBox',
