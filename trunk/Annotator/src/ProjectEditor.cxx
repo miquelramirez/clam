@@ -21,6 +21,9 @@
 
 #include "ProjectEditor.hxx"
 #include "Project.hxx"
+#include "ui_ConfigurationEditor.hxx"
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 #include <QtGui/QFileDialog>
 #include <iostream>
 
@@ -137,7 +140,17 @@ void ProjectEditor::on_configuration_textChanged()
 
 void ProjectEditor::on_configurationEditButton_clicked()
 {
-	QDialog * configurationDialog;
+	QDialog configDialog(this);
+	Ui::ConfigurationEditor configUi;
+	QFile file(ui.configuration->text());
+	if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+		return;
+	QTextStream in(&file);
+	QString content = in.readAll();
+	configUi.setupUi(&configDialog);
+	configUi.configInfo->setPlainText(content);
+	if(configDialog.exec()==0) return;
+	
 }
 void ProjectEditor::on_extractor_textChanged()
 {
