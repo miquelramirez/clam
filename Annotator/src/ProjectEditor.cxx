@@ -37,7 +37,8 @@ void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 	mProject.SetDescription(project.GetDescription());
 	mProject.SetSchema(project.GetSchema());
 	mProject.SetExtractor(project.GetExtractor());
-	mProject.SetConfig(project.GetConfig());
+	if (project.HasConfig())
+		mProject.SetConfig(project.GetConfig());
 	mProject.SetPoolSuffix(project.PoolSuffix());
 	if (project.HasViews())
 		mProject.SetViews(project.GetViews());
