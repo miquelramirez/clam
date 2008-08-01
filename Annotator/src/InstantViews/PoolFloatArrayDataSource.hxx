@@ -44,19 +44,14 @@ namespace VM
 
 			std::string getLabel(unsigned bin) const
 			{
-				const CLAM_Annotator::SchemaAttribute & attribute =	_project->GetAttributeScheme(_scope,_name);
-				
 				if (bin < _binLabels.size())
-				{
 					return _binLabels[bin];
-				} else if (attribute.HasBinGap())
-				{
-					std::ostringstream oss;
-					oss << attribute.GetFirstBinOffset() + bin * attribute.GetBinGap();
-					return oss.str();
-				} else {
-					return "ERR";
-				}
+
+				if (!_binGap) return "ERR";
+
+				std::ostringstream oss;
+				oss << _firstBinOffset + bin * _binGap;
+				return oss.str();
 			}
 			const TData * getData() const
 			{
@@ -76,9 +71,10 @@ namespace VM
 				return _nBins;
 			}
 		private:
-			const CLAM_Annotator::Project * _project;
 			std::string _scope;
 			std::string _name;
+			std::string _parentScope;
+			std::string _parentName;
 			std::vector<std::string> _binLabels;
 			std::vector<TData> _data;
 			unsigned _nFrames;

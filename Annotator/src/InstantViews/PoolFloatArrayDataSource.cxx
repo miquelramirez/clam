@@ -30,10 +30,10 @@ CLAM::VM::PoolFloatArrayDataSource::PoolFloatArrayDataSource()
 	, _frameDivision(0)
 	, _samplingRate(44100)
 	, _frameData(0)
-	, _currentFrame(0)
 	, _nBins(0)
-	, _firstBinOffset(0)
 	, _binGap(0)
+	, _firstBinOffset(0)
+	, _currentFrame(0)
 {
 }
 
@@ -53,8 +53,12 @@ void CLAM::VM::PoolFloatArrayDataSource::setDataSource(const CLAM_Annotator::Pro
 {
 	_name = name;
 	_scope = scope;
-	_project = & project;
-	const CLAM_Annotator::SchemaAttribute & attribute =	project.GetAttributeScheme(scope,name);
+	const CLAM_Annotator::SchemaAttribute & attribute =
+		project.GetAttributeScheme(scope,name);
+	const CLAM_Annotator::SchemaAttribute & parent =
+		project.GetParentAttribute(scope);
+	_parentName = parent.GetName();
+	_parentScope = parent.GetScope();
 
 	if (attribute.HasBinLabels())
 	{
@@ -78,13 +82,8 @@ void CLAM::VM::PoolFloatArrayDataSource::updateData(const CLAM::DescriptionDataP
 	_frameData = 0;
 	_samplingRate = samplingRate;
 	_nFrames = data.GetNumberOfContexts(_scope);
-	const CLAM_Annotator::SchemaAttribute & parent =
-		_project->GetParentAttribute(_scope);
 	_frameDivision = 
-		data.GetReadPool<CLAM_Annotator::FrameDivision>(
-			parent.GetScope(),
-			parent.GetName()
-		);
+		data.GetReadPool<CLAM_Annotator::FrameDivision>(_parentScope, _parentName);
 	const CLAM::DataArray * arrays =
 		data.GetReadPool<CLAM::DataArray>(_scope,_name);
 
