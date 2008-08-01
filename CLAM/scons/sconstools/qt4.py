@@ -63,6 +63,8 @@ def transformToWinePath(path) :
 header_extensions = [".h", ".hxx", ".hpp", ".hh"]
 if SCons.Util.case_sensitive_suffixes('.h', '.H'):
 	header_extensions.append('.H')
+# TODO: The following two lines will work when integrated back to SCons
+# TODO: Meanwhile the third line will do the work
 #cplusplus = __import__('c++', globals(), locals(), [])
 #cxx_suffixes = cplusplus.CXXSuffixes
 cxx_suffixes = [".c", ".cxx", ".cpp", ".cc"]
@@ -81,7 +83,6 @@ def checkMocIncluded(target, source, env):
 			(str(moc), str(cpp)))
 
 def find_file(filename, paths, node_factory):
-	retval = None
 	for dir in paths:
 		node = node_factory(filename, dir)
 		if node.rexists():
@@ -386,10 +387,7 @@ def generate(env):
 					 LIBS=['$QT4_LIB'])
 
 	# TODO: Does dbusxml2cpp need an adapter
-	
-	import new
-	method = new.instancemethod(enable_modules, env, SCons.Environment)
-	env.EnableQt4Modules=method
+	env.AddMethod(enable_modules, "EnableQt4Modules")
 
 def enable_modules(self, modules, debug=False, crosscompiling=False) :
 	import sys
@@ -409,10 +407,13 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 		'QtSvg',
 		'QtTest',
 		'QtXml',
+		'QtXmlPatterns',
 		'QtUiTools',
 		'QtDesigner',
 		'QtDesignerComponents',
 		'QtWebKit',
+		'QtHelp',
+		'QtScript',
 		]
 	pclessModules = [
 # in qt <= 4.3 designer and designerComponents are pcless, on qt4.4 they are not, so removed.	
