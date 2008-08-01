@@ -14,7 +14,6 @@
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/NaiveFlowControl.hxx>
-//#include <CLAM/BlockingNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
@@ -132,12 +131,6 @@ public:
 			_networkPlayer = new CLAM::PANetworkPlayer();
 		}
 #endif
-/*		if (! _networkPlayer)
-		{
-			backend = "ALSA";
-			backendLogo = ":/icons/images/alsalogo-mini.png";
-			_networkPlayer = new CLAM::BlockingNetworkPlayer();
-		}*/
 		_network.SetPlayer( _networkPlayer );
 
 		_playingLabel = new QLabel;
