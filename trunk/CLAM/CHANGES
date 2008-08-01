@@ -1,4 +1,4 @@
-2008-??-?? CLAM 1.2.1 SVN $Revision$
+2008-??-?? CLAM 1.3.0 SVN $Revision$
 ''
  * New processings:
    * ComplexSpectrumInverter: Inverts the phase of a ComplexSpectrum
@@ -9,6 +9,7 @@
    plugins
  * Voice2MIDI crosscompiled windows binaries (no installer yet)
  * Template based processing/plugin generator
+ * Classes for easy Ladspa generation of Networks and isolate processings
 
 2008-02-05 CLAM 1.2.0
 'GSoCket Plugged-in release'
