@@ -1,4 +1,8 @@
 /*
+ * Copyright (c) 2001-2006 MUSIC TECHNOLOGY GROUP (MTG)
+ *                         UNIVERSITAT POMPEU FABRA
+ *
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -12,43 +16,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
  */
 
-#ifndef TURNAROUND_HXX
-#define TURNAROUND_HXX
+#include <CLAM/ProcessingFactory.hxx>
+#include "KeySpaceMonitor.hxx"
 
-#include "ui_Turnaround.hxx"
-
-#include <string>
-
-#include <CLAM/Network.hxx>
-#include <CLAM/MonoAudioFileReader.hxx>
-
-class Turnaround : public QMainWindow, public Ui::Turnaround
+namespace Hidden
 {
-	Q_OBJECT
+	static const char * metadata[] = {
+		"key", "KeySpace",
+		"category", "Graphical Monitors",
+		"description", "KeySpace",
+		"port_monitor_type", typeid(std::vector<CLAM::TData>).name(),
+		"icon", "keyspace.svg",
+		0
+	};
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, KeySpaceMonitor> reg = metadata;
+}
 
-public:
-	Turnaround(const std::string & nameProject);
-	virtual ~Turnaround();
-	
-public slots:
-	void fileOpen();
-	
-	void play();
-	void pause();
-	void stop();
-	
-private:
-	void loadAudioFile(const std::string & fileName);
-	
-	CLAM::Network _network;
-	CLAM::MonoAudioFileReaderConfig _fileReaderConfig;
-	std::string _fileReader;
-	std::string _progressControl;
-	std::string _audioSink;
-	std::string _tonalAnalysis;
-	std::string _keySpaceMonitor;
-};
-
-#endif
