@@ -50,8 +50,15 @@ public:
 		connect(_launcher, SIGNAL(clicked()), this, SLOT(openFileDialog()));
 		layout->addWidget(_lineEdit);
 		layout->addWidget(_launcher);
+		setFocusProxy(_lineEdit);
 	}
 	~QFileLineEdit();
+	// This method is called to propagate the whatsThis text to the childs
+	void propagateWhatsThisHack()
+	{
+		_lineEdit->setWhatsThis(whatsThis());
+		_launcher->setWhatsThis(whatsThis());
+	}
 	void setLocation(const QString & location)
 	{
 		_lineEdit->setText(location);

@@ -1,5 +1,4 @@
 #include "uic_MainWindow.hxx"
-#include "uic_LadspaMetadataEditor.hxx"
 #include "NetworkCanvas.hxx"
 #include "ProcessingTree.hxx"
 #include <QtGui/QVBoxLayout>

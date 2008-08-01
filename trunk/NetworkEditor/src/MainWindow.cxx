@@ -1,10 +1,18 @@
 #include "MainWindow.hxx"
 #include <QtCore/QTemporaryFile>
-
+#include "uic_LadspaMetadataEditor.hxx"
 
 MainWindow::~MainWindow()
 {
 }
+
+
+//////////////////////
+// LADSPA Generator
+// TODO: Use a TaskRunner
+// TODO: Remove the lib prefix from the library
+// TODO: Auto install the plugin into ~/.ladspa
+// TODO: Windows?
 
 static const char * ladspaCxxTemplate =
 	"#include <CLAM/LadspaNetworkExporter.hxx>\n"
@@ -69,8 +77,11 @@ void MainWindow::on_action_CompileAsLadspaPlugin_triggered()
 	Ui::LadspaMetadataEditor ui;
 	QDialog ladspaMetadataDialog(this);
 	ui.setupUi(&ladspaMetadataDialog);
+	ui.fieldHelp->setText("");
 	ui.ladspaMaker->setText(settings.value("Ladspa/Maker").toString());
-	ui.clamPrefix->setText(settings.value("ClamPrefix").toString());
+	ui.clamPrefix->setLocation(settings.value("ClamPrefix").toString());
+	ui.clamPrefix->setDirMode();
+	ui.clamPrefix->propagateWhatsThisHack();
 	bool accepted = ladspaMetadataDialog.exec();
 	if (!accepted) return;
 	unsigned id = ui.ladspaUniqueId->value();
@@ -80,7 +91,7 @@ void MainWindow::on_action_CompileAsLadspaPlugin_triggered()
 	QString copyright = ui.ladspaCopyright->currentText();
 	QString libraryName = ui.ladspaLibrary->text();
 	settings.setValue("Ladspa/Maker", maker);
-	QString clamPrefix = ui.clamPrefix->text();
+	QString clamPrefix = ui.clamPrefix->location();
 	settings.setValue("ClamPrefix", clamPrefix);
 
 	QTemporaryFile networkFile("ladspa-XXXXXXXX.clamnetwork");
@@ -119,7 +130,6 @@ void MainWindow::on_action_CompileAsLadspaPlugin_triggered()
 	sconsFile.setAutoRemove(false);
 	networkFile.setAutoRemove(false);
 #endif
-
 }
 
 
