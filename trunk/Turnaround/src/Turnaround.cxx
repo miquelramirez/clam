@@ -20,6 +20,11 @@
 
 #include <QtGui/QFileDialog>
 
+#include <CLAM/PANetworkPlayer.hxx>
+#include <CLAM/TonalAnalysis.hxx>
+#include "KeySpaceMonitor.hxx"
+#include "ProgressControl.hxx"
+
 Turnaround::Turnaround(const std::string & nameProject = "")
 	: QMainWindow( 0 )
 	, Ui::Turnaround( )
@@ -28,6 +33,30 @@ Turnaround::Turnaround(const std::string & nameProject = "")
 	
 	connect(fileOpenAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
 	connect(fileExitAction, SIGNAL(triggered()), this, SLOT(close()));
+	connect(playbackPlayAction, SIGNAL(triggered()), this, SLOT(play()));
+	connect(playbackPauseAction, SIGNAL(triggered()), this, SLOT(pause()));
+	connect(playbackStopAction, SIGNAL(triggered()), this, SLOT(stop()));
+
+	_fileReader = _network.AddProcessing("AudioFileMemoryLoader");
+	
+	CLAM::ProgressControl * progress = new CLAM::ProgressControl;
+	_progressControl = _network.GetUnusedName("ProgressControl");
+	_network.AddProcessing(_progressControl, progress);
+	_network.ConnectControls(_fileReader+".Current Time Position", _progressControl+".Progress Update");	
+	_network.ConnectControls(_progressControl+".Progress Jump", _fileReader+".Current Time Position (%)");	
+	progressControl->SetProcessing(progress);
+	
+	_audioSink = _network.AddProcessing("AudioSink");
+	_network.ConnectPorts(_fileReader+".Samples Read", _audioSink+".AudioIn");
+	
+	_tonalAnalysis = _network.AddProcessing("TonalAnalysis");
+	_network.ConnectPorts(_fileReader+".Samples Read", _tonalAnalysis+".Audio Input");	
+	
+	KeySpaceMonitor * monitor = new KeySpaceMonitor;
+	_keySpaceMonitor = _network.GetUnusedName("KeySpaceMonitor");
+	_network.AddProcessing(_keySpaceMonitor, monitor);
+	_network.ConnectPorts(_tonalAnalysis+".Chord Correlation", _keySpaceMonitor+".Input");
+	keySpace->setDataSource(*monitor);
 }
 
 Turnaround::~Turnaround()
@@ -45,5 +74,34 @@ void Turnaround::fileOpen()
 
 void Turnaround::loadAudioFile(const std::string & fileName)
 {
-	// TODO	
+	// TODO
+	
+	if (!_network.IsStopped())
+		_network.Stop();
+		
+	_fileReaderConfig.SetSourceFile(fileName);
+	if (!_network.ConfigureProcessing(_fileReader, _fileReaderConfig))
+		return;
+
+	_network.SetPlayer(new CLAM::PANetworkPlayer);
+	_network.Start();
+}
+
+void Turnaround::play()
+{
+	if (_network.IsStopped())
+		_network.Start();
+}
+
+void Turnaround::pause()
+{
+	// TODO
+	if (!_network.IsStopped())
+		_network.Stop();
+}
+
+void Turnaround::stop()
+{
+	if (!_network.IsStopped())
+		_network.Stop();
 }
