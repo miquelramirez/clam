@@ -523,17 +523,6 @@ public slots:
 		_processingTree = new NetworkGUI::ProcessingTree(_processingTreeDock);
 		_processingTreeDock->setWidget(_processingTree);
 		addDockWidget(Qt::LeftDockWidgetArea, _processingTreeDock);
-		// generate svg for faust code
-		/*QString svgFilename;
-		svgFilename += faustDir.c_str();
-		on_action_Launch_Browser_triggered(svgFilename);
-
-	#ifdef SVGWIDGET	
-		QDockWidget * svgDockWidget = new QDockWidget(this);
-		QSvgWidget * svgWidget = new QSvgWidget(svgFilename, svgDockWidget);
-		svgDockWidget->setWidget(svgWidget);
-		addDockWidget(Qt::RightDockWidgetArea, svgDockWidget);
-	#endif*/
 #endif
 	}
 
