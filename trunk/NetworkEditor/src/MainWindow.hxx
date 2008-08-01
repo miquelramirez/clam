@@ -132,12 +132,12 @@ public:
 			_networkPlayer = new CLAM::PANetworkPlayer();
 		}
 #endif
-		if (! _networkPlayer)
+/*		if (! _networkPlayer)
 		{
 			backend = "ALSA";
 			backendLogo = ":/icons/images/alsalogo-mini.png";
 			_networkPlayer = new CLAM::BlockingNetworkPlayer();
-		}
+		}*/
 		_network.SetPlayer( _networkPlayer );
 
 		_playingLabel = new QLabel;
@@ -440,12 +440,6 @@ public slots:
 					"<p>To play the network you should connect the following inports.</p>"
 					"<pre>%1</pre"
 					).arg(_network.GetUnconnectedInPorts().c_str()));
-			return;
-		}
-		if (! _networkPlayer->IsCallbackBased() && ! _network.HasSyncSource() )
-		{
-			QMessageBox::critical(this, tr("Unable to play the network"), 
-				tr("<p>The network needs an AudioIn or AudioOut in order to be playable.</p>"));
 			return;
 		}
 		_network.Start();

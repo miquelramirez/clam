@@ -18,7 +18,6 @@
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/MonoAudioFileReaderConfig.hxx>
 #include <fstream>
-#include <CLAM/BlockingNetworkPlayer.hxx>
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
 #endif
@@ -324,10 +323,11 @@ CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend, const std::s
 		return new CLAM::PANetworkPlayer;
 	}
 #endif
-	if (backend=="alsa")
+// Not supported anymore
+/*	if (backend=="alsa")
 	{
 		return new CLAM::BlockingNetworkPlayer;
-	}
+	}*/
 	return 0;
 }
 
@@ -501,13 +501,6 @@ void PrototypeLoader::Start()
 				tr("<p><b>The network has some in ports which are not connected.</b></p>"
 				"<p>All in ports must be feeded in order to play the network</p>"
 				));
-		return;
-	}
-	if ( !_player->IsCallbackBased() && !_network.HasSyncSource() )
-	{
-		QMessageBox::critical(_interface,
-			tr("Unable to play the network"), 
-			tr("<p>The network needs an AudioIn or AudioOut in order to be playable.</p>"));
 		return;
 	}
 	std::cout << "Starting..." << std::endl;
