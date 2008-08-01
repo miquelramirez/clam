@@ -14,7 +14,7 @@
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
 #include <CLAM/NaiveFlowControl.hxx>
-#include <CLAM/BlockingNetworkPlayer.hxx>
+//#include <CLAM/BlockingNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <CLAM/XmlStorageErr.hxx>
 #include <CLAM/CLAMVersion.hxx>
