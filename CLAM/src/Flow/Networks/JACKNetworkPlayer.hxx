@@ -87,7 +87,7 @@ public:
 	}
 	virtual unsigned BackendSampleRate() { return _jackSampleRate; }
 	
-	virtual bool IsCallbackBased() const { return true; }
+//	virtual bool IsCallbackBased() const { return true; }
 
 	void Do(const jack_nframes_t nframes);
 

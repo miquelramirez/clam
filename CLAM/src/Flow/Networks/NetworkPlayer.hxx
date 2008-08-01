@@ -51,7 +51,7 @@ public:
 	virtual ~NetworkPlayer()
 	{
 	}
-	virtual bool IsCallbackBased() const = 0;
+//	virtual bool IsCallbackBased() const = 0;
 	/// Should return true when the backend is able to run the network
 	virtual bool IsWorking() const = 0;
 	/// Whenever the backend is not working, this method returns the reason

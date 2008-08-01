@@ -52,7 +52,7 @@ public:
 	// base class (virtual) interface:
 	bool IsWorking() const;
 	std::string NonWorkingReason() const;
-	virtual bool IsCallbackBased() const { return true; }
+//	virtual bool IsCallbackBased() const { return true; }
 	virtual void Start();
 	virtual void Stop();
 	
