@@ -353,7 +353,7 @@ void Annotator::initProject()
 
 	try
 	{
-		mProject.LoadScheme();
+		mProject.LoadScheme(mProject.GetSchema());
 	}
 	catch (CLAM::XmlStorageErr & e)
 	{

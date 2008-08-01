@@ -65,10 +65,10 @@ void Project::CreatePoolScheme()
 	mSchema.FillDescriptionScheme(mDescriptionScheme);
 }
 
-bool Project::LoadScheme()
+bool Project::LoadScheme(const std::string & GetSchemaRelative)
 {
 	CLAM_Annotator::Schema tempSchema;
-	CLAM::XMLStorage::Restore(tempSchema,RelativeToAbsolute(GetSchema())); // May throw an exception
+	CLAM::XMLStorage::Restore(tempSchema,RelativeToAbsolute(GetSchemaRelative)); // May throw an exception
 	GetAnnotatorSchema() = tempSchema;
 	CreatePoolScheme();
 	return true;
