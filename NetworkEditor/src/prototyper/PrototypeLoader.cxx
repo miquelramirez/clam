@@ -323,11 +323,6 @@ CLAM::NetworkPlayer * tryNetworkPlayer(const std::string & backend, const std::s
 		return new CLAM::PANetworkPlayer;
 	}
 #endif
-// Not supported anymore
-/*	if (backend=="alsa")
-	{
-		return new CLAM::BlockingNetworkPlayer;
-	}*/
 	return 0;
 }
 
