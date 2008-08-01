@@ -54,7 +54,7 @@ class Project : public CLAM::DynamicType
 public:
 	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 public:
-	bool LoadScheme();
+	bool LoadScheme(const std::string & GetSchemaRelative);
 	void DumpSchema();
 	void DumpSchema(std::ostream & os);
 
