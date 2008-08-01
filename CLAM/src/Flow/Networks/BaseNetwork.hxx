@@ -41,7 +41,6 @@ public:
 	// used types
 	typedef std::list<std::string> NamesList;
 	typedef std::map <std::string, Processing* > ProcessingsMap;
-	typedef std::map<std::string, NamesList > ConnectionsMap;
 	typedef std::list<InPortBase *> InPortsList;
 
 	typedef struct
@@ -89,8 +88,6 @@ public:
 	virtual bool DisconnectPorts( const std::string &, const std::string & ) = 0;
 	virtual bool DisconnectControls( const std::string &, const std::string & ) = 0;
 
-	virtual const ConnectionsMap getConnectionsMap() const = 0;
-	virtual void RefreshConnections() = 0;
 
 	/**
 	 * Returns an string the full name of the unconnected inports.
