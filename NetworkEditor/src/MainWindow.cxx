@@ -10,7 +10,6 @@ MainWindow::~MainWindow()
 //////////////////////
 // LADSPA Generator
 // TODO: Use a TaskRunner
-// TODO: Remove the lib prefix from the library
 // TODO: Auto install the plugin into ~/.ladspa
 // TODO: Windows?
 
@@ -64,7 +63,7 @@ static const char * ladspaSconsTemplate =
 	"\n"
 	"env.Append( CCFLAGS=['-g','-O3','-Wall'] )\n"
 	"libraries = [\n"
-	"	env.SharedLibrary(target=libraryName, source = sources),\n"
+	"	env.SharedLibrary(target=libraryName, source = sources, SHLIBPREFIX=''),\n"
 	"	]\n"
 	"install = env.Install(os.path.join(InstallDir,'lib','ladspa'), libraries)\n"
 	"env.Alias('install', install)\n"
