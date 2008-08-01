@@ -57,12 +57,12 @@ protected:
 			if (!factory.KeyExists(oss.str()))
 			{
 				factory.AddCreatorWarningRepetitions(oss.str(), creator);
-				std::cout << "[FAUST-LADSPA] \t created: " << oss.str() << std::endl;
+				//std::cout << "[FAUST-LADSPA] \t created: " << oss.str() << std::endl;
 			}
 			else
 			{
 				factory.ReplaceCreator(oss.str(), creator);
-				std::cout << "[FAUST-LADSPA] \t replaced: " << oss.str() << std::endl;
+				//std::cout << "[FAUST-LADSPA] \t replaced: " << oss.str() << std::endl;
 			}
 			factory.AddAttribute(oss.str(), "category", "FAUST");
 			factory.AddAttribute(oss.str(), "description", descriptor->Name);
@@ -100,9 +100,6 @@ protected:
 	const char * pathEnvironmentVar() const { return  "CLAM_FAUST_PATH"; }
 	const char * libraryType() const { return  "LADSPA"; }
 
-/*private:
-	const std::string faustLibIncludeFile() const	{ return CompletePathFor("architecture/ladspa.cpp"); } // get needed libraries path
-	const std::string faustBinCommand() const	{ return CompletePathFor("compiler/faust"); }		// get faust binary path*/
 };
 
 #endif // RunTimeFaustLibraryLoader_hxx
