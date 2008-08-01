@@ -66,7 +66,7 @@ public:
 		return GetPoolSuffix();
 	}
 
-	const std::string & Config() const
+	std::string Config() const
 	{
 		if (!HasConfig()) return "";
 		return GetConfig();
