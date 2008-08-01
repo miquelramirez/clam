@@ -10,7 +10,7 @@ def generate_copy_files( target, source, env ) :
 		copyCmd = 'cp'
 	command = "%s %s %s"%(copyCmd, source[0], target[0])
 	os.system( command )
-	update_includes_without_db(str(target[0]))
+	change_include_style_to_system(str(target[0]))
 	return None
 
 def generate_copy_files_message( target, source, env ) :
@@ -148,29 +148,22 @@ import os, re
 
 hdrNormRE = re.compile( r'(?P<prefix>.*)include\s*["](?P<hdr>.+)["].*', re.IGNORECASE )
 
-def update_includes_without_db(source, target=None ) :
-
-	if target is None :
-		target = source
-
-	newFile = []
-	isDirty = False
+def change_include_style_to_system(source, target=None ) :
+	if not target : target = source
+	newVersion = []
+	modified = False
 	fileHandle = file( source, "r" )
 	for line in fileHandle :
 		match = hdrNormRE.search( line )
 		if match is not None :
-			newFile.append( hdrNormRE.sub('\g<prefix>include <CLAM/\g<hdr>>', line ))
-			isDirty = True
-		else :
-			newFile.append( line )
-
+			line = hdrNormRE.sub('\g<prefix>include <CLAM/\g<hdr>>', line )
+			modified = True
+		newVersion.append( line )
 	fileHandle.close()
-
-	if isDirty == True :
+	if modified :
 		fileHandle = file( target, "w" )
-		fileHandle.write( "".join( newFile ) )
+		fileHandle.write( "".join( newVersion ) )
 		fileHandle.close()
-
 	return target
 
 #---------------------------------------------------------------
@@ -330,6 +323,7 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 
 	# We expect a version like " X.Y-possibleextrachars "
 	versionnumbers = version.split('.')
+	libversion = "%s%s.%s"%(versionnumbers[0], versionnumbers[1], versionnumbers[2])
 
 	if len(versionnumbers) != 3:
 		print " ERROR in buildtools.posix_lib_rules: version name does not follow CLAM standard "
@@ -337,13 +331,12 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 		sys.exit(1)
 
 	if sys.platform == 'linux2' :
-		libname = 'libclam_'+name+'.so.%s.%s.%s' % (versionnumbers[0], versionnumbers[1], versionnumbers[2])
-		middle_linker_name = 'libclam_'+name+'.so.%s.%s' % (versionnumbers[0], versionnumbers[1])
-		soname = 'libclam_'+name+'.so.%s' % versionnumbers[0]
+		libname = 'libclam_'+name+'.so.%s%s.%s' % (versionnumbers[0], versionnumbers[1], versionnumbers[2])
+		soname = 'libclam_'+name+'.so.%s%s' % (versionnumbers[0], versionnumbers[1])
 		linker_name = 'libclam_'+name+'.so'
 		env.Append(SHLINKFLAGS=['-Wl,-soname,%s'%soname ] )
-		lib = env.SharedLibrary( 'clam_' + name, sources, SHLIBSUFFIX='.so.%s'%version )
-		soname_lib = env.SonameLink( soname, lib )				# lib***.so.X.Y -> lib***.so.X.Y.Z
+		lib = env.SharedLibrary( 'clam_' + name, sources, SHLIBSUFFIX='.so.%s'%libversion )
+		soname_lib = env.SonameLink( soname, lib )				# lib***.so.XY -> lib***.so.XY.Z
 		linkername_lib = env.LinkerNameLink( linker_name, soname_lib )		# lib***.so -> lib***.so.X
 		env.Depends(lib, ['../%s/libclam_%s.so.%s'%(module,module,versionnumbers[0]) for module in moduleDependencies ])
 	else : #darwin
