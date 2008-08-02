@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.edu>
 Homepage: http://clam.iua.upf.edu
 Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, qt4-dev-tools, libqt4-dev, libqt4-dev (<4.4) | libqt4-opengl-dev, docbook-to-man, imagemagick, libcppunit-dev
-Standards-Version: 3.7.3
+Standards-Version: 3.8.0
 
 Package: clam-networkeditor
 Architecture: any
