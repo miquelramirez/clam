@@ -83,7 +83,7 @@ public:
 	EScale(std::string s) : Enum(ValueTable(), s) {};
 	virtual Component* Species() const { return new EScale; };
 
-	typedef enum {
+	enum {
 		eLinear,
 		eLog
 	};
@@ -110,7 +110,7 @@ public:
 	EWindowType(std::string s) : Enum(ValueTable(), s) {};
 	virtual Component* Species() const { return new EWindowType(eHamming); }
 
-	typedef enum {
+	enum {
 		eNone,
 		eKaiserBessel17,
 		eKaiserBessel18,
