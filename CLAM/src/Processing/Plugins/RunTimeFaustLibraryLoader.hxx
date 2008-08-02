@@ -23,9 +23,7 @@ public:
 	{
 		std::string examplesDir = CompletePathFor("examples/ladspadir");
 		LoadLibrariesFromPath(examplesDir);
-		examplesDir = CompletePathFor("ladspadir");
-		LoadLibrariesFromPath(examplesDir);
-		//std::cout<<"[FAUST DEBUG] \tload of RunTimeFaustLibraryLoader"<<std::endl;
+		//std::cout<<"[FAUST-LADSPA Plugin] \tload of RunTimeFaustLibraryLoader"<<std::endl;
 		RunTimeLibraryLoader::Load(); // needed??
 	}
 	void LoadPlugin(const std::string & pluginFullPath) const
@@ -34,7 +32,6 @@ public:
 	}
 
 protected:
-
 	void SetupLibrary(void* handle, const std::string & pluginFullFilename) const
 	{
 		LADSPA_Descriptor_Function descriptorTable = 0;
@@ -44,7 +41,7 @@ protected:
 			std::cout << "[FAUST-LADSPA Plugin] Warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
 			return;
 		}
-		std::cout << "[FAUST-LADSPA] \topened plugin: " << pluginFullFilename << std::endl;
+		std::cout << "[FAUST-LADSPA Plugin] \topened plugin: " << pluginFullFilename << std::endl;
 
 		CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
 		for (unsigned long i=0; descriptorTable(i); i++)
@@ -54,34 +51,26 @@ protected:
 			oss << descriptor->Label << i;
 
 			CLAM::ProcessingFactory::Creator * creator=new CLAM::LadspaWrapperCreator(pluginFullFilename, i, oss.str());
-			if (!factory.KeyExists(oss.str()))
-			{
-				factory.AddCreatorWarningRepetitions(oss.str(), creator);
-				//std::cout << "[FAUST-LADSPA] \t created: " << oss.str() << std::endl;
-			}
-			else
-			{
-				factory.ReplaceCreator(oss.str(), creator);
+			factory.AddCreatorReplace(oss.str(), creator);
 				//std::cout << "[FAUST-LADSPA] \t replaced: " << oss.str() << std::endl;
-			}
 			factory.AddAttribute(oss.str(), "category", "FAUST");
 			factory.AddAttribute(oss.str(), "description", descriptor->Name);
 
 			std::string pluginName=descriptor->Label;
-			std::string svgFileDir = CompletePathFor( "examples/" + pluginName + ".dsp-svg/process.svg");
+			const std::string diagramMainSufix=".dsp-svg/process.svg";
+			std::string svgFileDir = CompletePathFor( "examples/" + pluginName + diagramMainSufix);
 			if (svgFileDir != "")
 			{
 				factory.AddAttribute(oss.str(), "faust_diagram", svgFileDir);
-				std::cout << "[FAUST-LADSPA] \tusing faust diagram: " << svgFileDir << std::endl;
+				std::cout << "[FAUST-LADSPA Plugin] \tusing diagram: " << svgFileDir << std::endl;
 			}
 			if (!factory.AttributeExists(oss.str(), "embedded_svg"))
 				factory.AddAttribute(oss.str(), "embedded_svg", ":icons/images/faustlogo.svg");
 			if (!factory.AttributeExists(oss.str(), "icon"))
 				factory.AddAttribute(oss.str(), "icon", "faustlogo.svg");
-
-			std::string sourceFileName=CompletePathFor( "examples/"+pluginName+".dsp");
-			if (sourceFileName != "")
-				factory.AddAttribute(oss.str(), "faust_source_file", sourceFileName);
+			std::string sourcePath=CompletePathFor( "examples/"+pluginName+".dsp");
+			if (sourcePath != "")
+				factory.AddAttribute(oss.str(), "faust_source_file", sourcePath+pluginName);
 		}
 	}
 

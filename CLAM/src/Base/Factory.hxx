@@ -142,11 +142,10 @@ public:
 		_registry.AddCreatorWarningRepetitions(name, creator);
 	}
 
-	void ReplaceCreator ( const RegistryKey name, Creator* creator )
+	void AddCreatorReplace ( const RegistryKey name, Creator* creator )
 	{
-		_registry.ReplaceCreator(name, creator);
+		_registry.AddCreatorReplace(name,creator);
 	}
-
 
 
 	void AddCreatorSafe(const RegistryKey name, Creator* creator) throw (ErrFactory)
@@ -281,9 +280,12 @@ public: // Inner classes. Public for better testing
 			}
 		}
 
-		void ReplaceCreator ( RegistryKey creatorId, Creator* creator )
+		void AddCreatorReplace ( RegistryKey creatorId, Creator* creator )
 		{
-			CommonReplaceCreator(creatorId, creator);
+			if (KeyExists(creatorId))
+				CommonReplaceCreator(creatorId, creator);
+			else
+				AddCreator(creatorId,creator);
 		}
 
 		void AddCreatorSafe( RegistryKey creatorId, Creator* creator ) throw (ErrFactory) 
