@@ -3,7 +3,7 @@ Section: sound
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.edu>
 Homepage: http://clam.iua.upf.edu
-Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, qt4-dev-tools, libqt4-dev, docbook-to-man, imagemagick
+Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, qt4-dev-tools, libqt4-dev, libqt4-dev (<4.4) | libqt4-opengl-dev, docbook-to-man, imagemagick
 Standards-Version: 3.7.3
 
 Package: clam-annotator
