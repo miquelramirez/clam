@@ -30,7 +30,7 @@ public:
 			eHorizontalSlider,
 			eKnot,
 			eSpinBox		
-		}; 
+		} tEnum; 
 		
 		Component* Species() const
 		{
@@ -54,7 +54,7 @@ public:
 			eInverted,		///< Inverted linear relationship
 			eLog, 			///< More resolution in the low range
 			eReverseLog		///< More resolution in the upper range
-		}; 
+		} tEnum; 
 		
 		Component* Species() const
 		{

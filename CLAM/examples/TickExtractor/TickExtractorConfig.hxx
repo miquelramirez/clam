@@ -45,7 +45,7 @@ namespace CLAM
 			eQMUL_HFC,
 			eQMUL_ComplexDomain,
 			eQMUL_Phase
-		};
+		} tEnum;
 
 		virtual Component* Species() const;
 	};
