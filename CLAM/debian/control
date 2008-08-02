@@ -22,8 +22,8 @@ Description: runtime package for the CLAM framework
  useful to abstract target platform for most tasks in an audio applications
  such as audio devices, file formats, threading...
  . 
- This package contains the files needed to develop with the following libraries:
- clam-core, clam-processing, clam-audioio, clam-vmfl and clam-vmqt libraries.
+ This package contains the shared libraries for libclam-core, 
+ libclam-processing and libclam-audioio.
 
 Package: libclam-dev
 Section: libdevel
@@ -37,7 +37,8 @@ Description: development package for the CLAM framework
  useful to abstract target platform for most tasks in an audio applications
  such as audio devices, file formats, threading...
  . 
- This meta-package depends on development packages.
+ This package contains the files needed to develop with libclam-core,
+ libclam-processing, and libclam-audioio libraries.
 
 Package: libclam-doc
 Section: doc
