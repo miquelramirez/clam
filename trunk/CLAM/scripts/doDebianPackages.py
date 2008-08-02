@@ -39,10 +39,13 @@ hooks = {
 }
 
 aptconfiguration = "APT::Get::AllowUnauthenticated 1;"
+failedSteps = []
 
 def run(command) :
-	print "\033[32m:: ", command, "\033[0m"
-	return os.system(command)
+	print "\033[32m:: ", command, " \033[0m"
+	retcode = os.system(command)
+	if retcode < 0 : failedSteps.append(command)
+	return retcode
 	for line in os.popen(command) :
 		print line,
 		sys.stdout.flush()
@@ -126,7 +129,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 		dscfiles = glob.glob(dscbase + "*.dsc")
 		if not dscfiles: raise "No dsc file found for %s"%dscbase
 		dscfile = dscfiles[-1]
-		run( ("pbuilder build "+
+		ok = run( ("pbuilder build "+
 			" --buildplace . " +
 			" --buildresult %(resultdir)s " +
 			" --basetgz ./%(distro)s.tgz " +
@@ -141,6 +144,9 @@ for (maindistro, distribution, mirror, components) in distributions :
 				'dscfile': dscfile,
 				'proxyoption': proxyoption,
 		})
+		if not ok and srcpackage == "clam" :
+			print >> sys.stderr, "\033[31mCLAM LIBS COULD NOT BE COMPILED in", maindistro, distribution, "\033[0m"
+			break
 		# We need update the package for each package for interdependencies
 		run("cd %(resultdir)s; /usr/bin/dpkg-scanpackages . /dev/null > Packages; cd -" %{
 			'resultdir': resultdir,
@@ -161,7 +167,10 @@ for (maindistro, distribution, mirror, components) in distributions :
 	run("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
 	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
 
-
+if failedSteps :
+	print "Those steps have failed:"
+	for step in failedSteps :
+		print step
 
 
 
