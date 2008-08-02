@@ -20,11 +20,11 @@
  */
 
 #include "TestScore.hxx"
-#include <math.h>
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-
+#include <cstdlib>
 namespace CLAM {
 
 TestScore::TestScore() :
@@ -83,7 +83,7 @@ bool TestScore::LoadScore(std::string filename)
 			for (int columnNumber = 0; columnNumber < tokens.size(); columnNumber++)
 			{
 				const char* stringToken = tokens.at(columnNumber).c_str();
-				float floatToken = (float) atof(stringToken);
+				float floatToken = (float) std::atof(stringToken);
 
 				scoreVector[columnNumber][rowNumber] =  floatToken;
 			}
