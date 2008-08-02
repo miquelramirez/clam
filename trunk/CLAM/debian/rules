@@ -105,7 +105,7 @@ binary-arch: build install
 	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
-	dh_shlibdeps -L libclam0 -l debian/libclam0/usr/lib
+	dh_shlibdeps -L libclam13 -l debian/libclam13/usr/lib
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
