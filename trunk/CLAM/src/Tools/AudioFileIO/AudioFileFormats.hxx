@@ -49,7 +49,7 @@ namespace CLAM
 			eOggVorbis, /* String value: "Ogg/Vorbis". Compressed with OggVorbis scheme */
 			eMpeg,        /* String value: "Mpeg Audio". Compressed with MPEG-1 Layer 3 scheme */
 			eUnknown /* For error handling */
-		};
+		} tEnum;
 
 		static tValue     DefaultValue() { return ePCM; }
 		static tEnumValue * EnumValues() 

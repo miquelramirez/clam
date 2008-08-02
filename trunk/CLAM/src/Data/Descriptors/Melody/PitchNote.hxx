@@ -43,7 +43,7 @@ namespace CLAM
 		
 		typedef enum {
 			eC,eDb,eD,eEb,eE,eF,eGb,eG,eAb,eA,eBb,eB,eNone
-		};	
+		} tEnum;	
 
 		virtual Component* Species() const
 		{

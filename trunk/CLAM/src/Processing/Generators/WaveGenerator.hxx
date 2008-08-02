@@ -38,7 +38,7 @@ namespace CLAM {
 		
 		typedef enum {
 			eSine
-		};
+		} tEnum;
 		static tEnumValue * ValueTable()
 		{
 			static tEnumValue sEnumValues[] = {

@@ -43,7 +43,7 @@ namespace CLAM {
 			eAnalysis,
 			eEnergy,
 			eMax
-		};
+		} tEnum;
 
 		virtual Component* Species() const
 		{

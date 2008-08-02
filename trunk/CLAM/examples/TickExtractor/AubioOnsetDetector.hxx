@@ -52,7 +52,7 @@ namespace CLAM
 				eHFC = aubio_onset_hfc,
 				eComplexDomain = aubio_onset_complex,
 				ePhase = aubio_onset_phase
-			};
+			} tEnum;
 			
 			virtual Component* Species() const { return new EODAlgorithms; }
 
