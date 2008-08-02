@@ -41,7 +41,7 @@ namespace CLAM
 			eAutoregressive,
 			eARMA,
 			eFIR,
-		};
+		} tEnum;
 
 		virtual Component* Species() const
 		{
