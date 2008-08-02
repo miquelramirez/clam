@@ -30,7 +30,7 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 		QWidget.__init__(self, parent)
 		self.setupUi(self)
 
-		self.setWindowTitle( "Plugin Code Generator" )
+		self.setWindowTitle( "Processing Code Generator" )
 		clam_logo_svg = "../../artwork/clamlogo.svg"
 		self.setWindowIcon( QIcon(clam_logo_svg) )
 		self.clamLogo.setPixmap( QPixmap(clam_logo_svg) )
@@ -52,7 +52,7 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 
 		definitions_dict["inputs"] = list()
 		definitions_dict["outputs"] = list()
-		for index in range(6)[1:]:
+		for index in range(1,6):
 			in_out = str( getattr(self, "comboBox_Port%i"%(index)).currentText() )
 			port_type = str( getattr(self, "lineEdit_Port%i_Type"%(index)).text() )
 			port_name = str( getattr(self, "lineEdit_Port%i_Name"%(index)).text() )
@@ -62,7 +62,7 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 
 		definitions_dict["incontrols"] = list()
 		definitions_dict["outcontrols"] = list()
-		for index in range(6)[1:]:
+		for index in range(1,6):
 			in_out = str( getattr(self, "comboBox_Control%i"%(index)).currentText() )
 			cmin = str( getattr(self, "lineEdit_Control%i_Min"%(index)).text() )
 			cmax = str( getattr(self, "lineEdit_Control%i_Max"%(index)).text() )
@@ -88,7 +88,7 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 		TemplatedPluginsGenerator.copy_file( definitions_dict["template_name"], "README" )
 		TemplatedPluginsGenerator.copy_file( definitions_dict["template_name"], "options.cache" )
 
-		self.statusBar().showMessage("Done")
+		print "Done"; self.statusBar().showMessage("Done")
 	#generate()
 
 #class MainWindow
