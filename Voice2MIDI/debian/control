@@ -4,8 +4,8 @@ Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.edu>
 Homepage: http://clam.iua.upf.edu
 Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, libqt3-headers, libqt3-mt-dev
+Standards-Version: 3.8.0
 
-Standards-Version: 3.7.3
 Package: clam-voice2midi
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
