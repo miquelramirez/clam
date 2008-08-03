@@ -8,8 +8,8 @@
  * Fix: NetEditor Windows installer should not install .def and .lib for
    plugins
  * Voice2MIDI crosscompiled windows binaries (no installer yet)
- * Template based processing/plugin generator
- * Classes for easy Ladspa generation of Networks and isolate processings
+ * Template based processing/plugin code generator scripts and frontend.
+ * Classes for easy LADSPA generation of Networks and isolate processings
 
 2008-02-05 CLAM 1.2.0
 'GSoCket Plugged-in release'
