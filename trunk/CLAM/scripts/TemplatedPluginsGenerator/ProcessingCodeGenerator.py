@@ -77,6 +77,7 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 		TemplateGenerator.make_base_processing_hxx_file(definitions_dict)
 		TemplateGenerator.make_base_processing_cxx_file(definitions_dict)
 		TemplateGenerator.make_sconstruct_file(definitions_dict)
+		TemplateGenerator.make_readme_file(definitions_dict)
 
 		print "Creating " + definitions_dict["plugin_name"] + " plugin"
 		definitions_dict["output_dir"] = "../../plugins"
@@ -85,8 +86,7 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 		TemplatedPluginsGenerator.make_file( definitions_dict, standard_name, standard_name+".hxx" )
 		TemplatedPluginsGenerator.make_file( definitions_dict, standard_name, standard_name+".cxx" )
 		TemplatedPluginsGenerator.make_file( definitions_dict, standard_name, "SConstruct", "SConstruct", True )
-		TemplatedPluginsGenerator.copy_file( definitions_dict["template_name"], "README" )
-		TemplatedPluginsGenerator.copy_file( definitions_dict["template_name"], "options.cache" )
+		TemplatedPluginsGenerator.copy_file( definitions_dict, "README" )
 
 		print "Done"; self.statusBar().showMessage("Done")
 	#generate()

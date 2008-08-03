@@ -237,6 +237,27 @@ env.Default(libraries)
 	f.close()
 #make_sconstruct_file()
 
+def make_readme_file(definitions_dict):
+	""" Standard SConstruct file """
+
+	try:
+		filename = "templates/%s/README"%(definitions_dict["template_name"])
+		f = open(filename,"w")
+	except:
+		print "Output file write error. File: "+filename
+		sys.exit(2)
+
+	f.write("""== Description ==
+
+
+== Install ==
+
+scons clam_prefix=path/to/installed/clam/prefix
+scons install
+""")
+	f.close()
+#make_readme_file()
+
 def main(args): 
 	""" Generates a template for clam plugins from a config file
 	
@@ -292,6 +313,7 @@ def main(args):
 	make_base_processing_hxx_file(definitions_dict)
 	make_base_processing_cxx_file(definitions_dict)
 	make_sconstruct_file(definitions_dict)
+	make_readme_file(definitions_dict)
 #main()
 
 
