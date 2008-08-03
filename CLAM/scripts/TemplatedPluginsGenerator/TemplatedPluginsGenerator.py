@@ -60,10 +60,10 @@ def make_file( definitions_dict, replacement_str, filename, new_file_name="", to
 	f.write( new_file ); f.close()
 #make_file()
 
-def copy_file( template, filename ):
-	if os.path.isfile("templates/" + template + "/" + filename):
-		print "Copying " + filename + " file"
-		shutil.copyfile( "templates/" + template + "/" + filename, definitions_dict["output_dir"] + "/" + definitions_dict["plugin_name"] + "/" + filename )
+def copy_file( definitions_dict, filename ):
+	if os.path.isfile("templates/" + definitions_dict["template_name"] + "/" + filename):
+		#print "Copying " + filename + " file"
+		shutil.copyfile( "templates/" + definitions_dict["template_name"] + "/" + filename, definitions_dict["output_dir"] + "/" + definitions_dict["plugin_name"] + "/" + filename )
 #copy_file()
 
 def make_license_text(definitions_dict):
@@ -74,7 +74,10 @@ def make_license_text(definitions_dict):
 		print "License: " + plugin_dict["license"]
 		sys.exit(2)
 	license_text = f.read(); f.close()
-	license_text = license_text.replace( "Copyright (c)", "Copyright (c) " + definitions_dict["year"] + " " + definitions_dict["copyright_holder"] )
+	if definitions_dict["copyright_holder"]!="":
+		license_text = license_text.replace( "Copyright (c)", "Copyright (c) " + definitions_dict["year"] + " " + definitions_dict["copyright_holder"] )
+	else:
+		license_text = license_text.replace( "Copyright (c)", "" )
 	return license_text
 #make_license_text()
 
@@ -138,8 +141,8 @@ def main(args):
 	make_file( definitions_dict, standard_name, standard_name+".cxx" )
 	make_file( definitions_dict, standard_name, "SConstruct", "SConstruct", True )
 	
-	copy_file( definitions_dict["template_name"], "README" )
-	copy_file( definitions_dict["template_name"], "options.cache" )
+	copy_file( definitions_dict, "README" )
+	copy_file( definitions_dict, "options.cache" )
 #main()
 
 
