@@ -70,7 +70,7 @@ protected:
 				factory.AddAttribute(oss.str(), "icon", "faustlogo.svg");
 			std::string sourcePath=CompletePathFor( "examples/"+pluginName+".dsp");
 			if (sourcePath != "")
-				factory.AddAttribute(oss.str(), "faust_source_file", sourcePath+pluginName);
+				factory.AddAttribute(oss.str(), "faust_source_file", sourcePath);
 		}
 	}
 
