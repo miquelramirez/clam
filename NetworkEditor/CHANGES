@@ -2,8 +2,15 @@
 ''
  * Using CLAM 1.3.0
  * One-click LADSPA plugin generation
- * TODO: Explain faust feautres
+ * Faust support under Linux:
+   * One-click Faust compilation as LADSPA plugins
+   * TODO: dynamic reloading?
+   * Option to include Faust generated embedded diagrams on processings boxes
+   * Faust plugins processing boxes context menu allowing to:
+     * edit the source with an external editor
+     * navigate the Faust diagrams with a browser
  * Cut and paste processings
+ * Processings geometries embedded on the network files on saving
  * Port context menu to connect to compatible existing ports
  * Port context menu to add connected sources/sinks, monitors, 
    controlSenders and controlPrinters
