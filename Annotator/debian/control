@@ -26,7 +26,7 @@ Description: CLAM audio annotation tool
 
 Package: clam-annotator-examples
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, clam-annotator (= ${source:Version} )
+Depends: ${shlibs:Depends}, ${misc:Depends}, clam-annotator (>= ${source:Version} ), clam-annotator (<< ${source:Version}.1~)
 Description: CLAM audio annotation tool
  The CLAM Annotator is a tool to visualize, check and modify music
  information extracted from audio: low level features, note
