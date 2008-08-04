@@ -4,7 +4,7 @@
  * One-click LADSPA plugin generation
  * Faust support under Linux:
    * One-click Faust compilation as LADSPA plugins
-   * TODO: dynamic reloading?
+   * Dynamic reloading of Faust compiled LADSPA plugins
    * Option to include Faust generated embedded diagrams on processings boxes
    * Faust plugins processing boxes context menu allowing to:
      * edit the source with an external editor
