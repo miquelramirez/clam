@@ -73,6 +73,7 @@ protected:
 				factory.AddAttribute(oss.str(), "faust_source_file", sourcePath);
 		}
 		dlclose(handle);
+		handle=0; // to avoid problems on return to RunTimeLibraryLoader::LoadLibrariesFromPath. TODO: IMPROVE THIS!
 	}
 
 	const char ** standardPaths() const
