@@ -17,12 +17,17 @@ public:
 		, _index( index )
 		, _factoryKey( key )
 	{
+		//std::cout<<"LadspaWrapperCreator() libraryFileName="<<libraryFileName<<std::endl;
 	}
 	virtual Processing* Create()
 	{
+		//std::cout << "LadspaWrapperCreator::Create called"<<std::endl;
 		return new CLAM::LadspaWrapper(_libraryFileName, _index, _factoryKey);
 	}
-	virtual ~LadspaWrapperCreator() {};
+	virtual ~LadspaWrapperCreator() 
+	{
+		//std::cout<<"~LadspaWrapperCreator()"<<std::endl; 
+	}
 };
 
 } // namespace CLAM

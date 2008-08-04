@@ -491,16 +491,21 @@ public: // Inner classes. Public for better testing
 			typedef typename FactoryEntries::value_type ValueType;
 			return  _factoryEntries.insert( ValueType( creatorId, factoryEntry ) ).second;
 		}
-
-		void CommonReplaceCreator( RegistryKey& creatorId, Creator* creator) 
+		// TODO: split on two: delete and replace
+		bool CommonReplaceCreator( RegistryKey& creatorId, Creator* creator) 
 		{
-			FactoryEntry factoryEntry;
-			Pairs pairs;
-			factoryEntry.creator = creator;
-			factoryEntry.pairs = pairs;
-			typedef typename FactoryEntries::value_type ValueType;
-			_factoryEntries.erase(_factoryEntries.find(creatorId));
-			_factoryEntries.insert( ValueType( creatorId, factoryEntry ) );
+			typename FactoryEntries::iterator i = 
+				_factoryEntries.find(creatorId);
+			if ( i!=_factoryEntries.end() ) // creator exists
+			{
+				Creator* oldCreator = i->second.creator;
+				if (oldCreator)
+					delete oldCreator;
+				_factoryEntries.erase(i);
+			}
+			if (!creator)
+				return false;
+			return CommonAddCreator(creatorId,creator);
 		}
 
 	};

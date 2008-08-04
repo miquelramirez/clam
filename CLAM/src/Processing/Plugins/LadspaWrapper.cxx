@@ -32,6 +32,7 @@ LadspaWrapper::LadspaWrapper( const std::string& libraryFileName, unsigned index
 	, _sharedObject(0)
 	, _bufferSize(0)
 {
+	//std::cout<<"LadspaWrapper()"<<std::endl;
 	Config cfg;
 	LoadLibraryFunction( libraryFileName, index, key);
 	Configure(cfg);
@@ -39,11 +40,21 @@ LadspaWrapper::LadspaWrapper( const std::string& libraryFileName, unsigned index
 
 LadspaWrapper::~LadspaWrapper()
 {
+	//std::cout<<"~LadspaWrapper()"<<std::endl;
 	if (_instance)
 	{
 		if (_descriptor->cleanup) _descriptor->cleanup(_instance);
+		//std::cout<<"_descriptor->cleanup called"<<std::endl;
 	}
 	RemovePortsAndControls();
+	if (_sharedObject)
+	{
+		if(dlclose(_sharedObject))
+		{
+			std::cout<<"[LADSPA] error unloading library handle: "<<std::endl;
+			std::cout<<dlerror()<<std::endl;
+		}
+	}
 }
 
 bool LadspaWrapper::ConcreteStart()
@@ -76,7 +87,9 @@ bool LadspaWrapper::Do()
 }
 bool LadspaWrapper::LoadLibraryFunction(const std::string& libraryFileName, unsigned index, const std::string& factoryKey)
 {
+	//std::cout<<"LadspaWrapper::LoadLibraryFunction("<<libraryFileName<<")"<<std::endl;
 	_sharedObject = dlopen(libraryFileName.c_str(), RTLD_LAZY);
+	//_sharedObject = dlopen(libraryFileName.c_str(), RTLD_NOW);
 	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)dlsym(_sharedObject, "ladspa_descriptor");
 	if(!function)
 	{
