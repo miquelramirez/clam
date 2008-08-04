@@ -42,6 +42,7 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
 		void* handle = FullyLoadLibrary(pluginFullFilename);
 		SetupLibrary( handle, pluginFullFilename );
+		ReleaseLibraryHandler(handle, pluginFullFilename);
 	}
 	closedir(dir);
 }
@@ -56,6 +57,22 @@ void * RunTimeLibraryLoader::FullyLoadLibrary(const std::string & libraryPath) c
 #else
 	return dlopen( libraryPath.c_str(), RTLD_NOW);	
 #endif
+}
+
+bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string & pluginFullFilename) const
+{
+	bool error=false;
+	if (!handle)
+		return true;
+#ifndef WIN32 //TODO: the same for windows libraries
+	if (dlclose(handle))
+	{
+		error=true;
+		std::cout<<"Error unloading library handle of "<< pluginFullFilename<< ": "<<std::endl;
+		std::cout<<LibraryLoadError()<<std::endl;	
+	}
+#endif
+	return error;
 }
 
 std::string RunTimeLibraryLoader::LibraryLoadError() const
