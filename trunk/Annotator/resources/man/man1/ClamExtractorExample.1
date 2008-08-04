@@ -22,25 +22,25 @@ Generates a dummy project with all the wave files
 .SH EXAMPLES
 Dump the schema into schema.sc
 
-.ES
+.EX
 	$ ClamExtractorExample -s schema.sc
 .EE
 
 Dump song1.wav.beats, song2.mp3.beats and song3.ogg.beats with the extracted description.
 
-.ES
+.EX
 	$ ClamExtractorExample -f .beats song1.wav song2.mp3 song3.ogg
 .EE
 
 Generate the project file and the schema file with default settings.
 
-.ES
+.EX
 	$ ClamExtractorExample -p path/to/project/Project.pro
 .EE
 
 Generate the project and the schema using .beats as suffix and generating all the descriptions.
 
-.ES
+.EX
 	$ ClamExtractorExample -p path/to/project/Project.pro -f .beats path/to/project/*.{wav,ogg,mp3}
 .EE
 
