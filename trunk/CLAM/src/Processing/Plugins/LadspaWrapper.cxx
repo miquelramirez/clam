@@ -89,7 +89,6 @@ bool LadspaWrapper::LoadLibraryFunction(const std::string& libraryFileName, unsi
 {
 	//std::cout<<"LadspaWrapper::LoadLibraryFunction("<<libraryFileName<<")"<<std::endl;
 	_sharedObject = dlopen(libraryFileName.c_str(), RTLD_LAZY);
-	//_sharedObject = dlopen(libraryFileName.c_str(), RTLD_NOW);
 	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)dlsym(_sharedObject, "ladspa_descriptor");
 	if(!function)
 	{
