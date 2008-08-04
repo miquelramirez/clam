@@ -65,8 +65,8 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("Freq").DoControl(1000.);
-			GetInControl("Width").DoControl(1.);
+			mFreqCtl.DoControl(1000.);
+			mWidthCtl.DoControl(1.);
 			return true;
 		}
 		

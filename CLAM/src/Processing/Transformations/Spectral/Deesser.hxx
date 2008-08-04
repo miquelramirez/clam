@@ -64,9 +64,9 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("LowCutoff").DoControl(3000);
-			GetInControl("HighCutoff").DoControl(6000);
-			GetInControl("Threshold").DoControl(-30);
+			mLowCutoffFreqCtl.DoControl(3000);
+			mHighCutoffFreqCtl.DoControl(6000);
+			mThresholdCtl.DoControl(-30);
 			
 			return true;
 		}

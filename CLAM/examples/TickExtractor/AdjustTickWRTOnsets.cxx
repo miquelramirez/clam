@@ -87,14 +87,12 @@ namespace CLAM
 			unsigned int scope = (unsigned int)std::min(TData(mConfig.GetScope()*mConfig.GetSampleRate()),
 								    TData(previousSeed.GetInterval()*0.5));
 			
-			mTimeSeriesFinder.GetInControl("OffsetMin").DoControl( 0 );
-			mTimeSeriesFinder.GetInControl("OffsetStep").DoControl( 50 );
-			mTimeSeriesFinder.GetInControl("IntervalMin").DoControl(
-				std::max(TData(previousSeed.GetInterval()-scope*0.5),TData(mConfig.GetTickLimSup())) );
-			mTimeSeriesFinder.GetInControl("IntervalMax").DoControl(previousSeed.GetInterval()+scope/2);
-			mTimeSeriesFinder.GetInControl("IntervalStep").DoControl( 10 );
-			mTimeSeriesFinder.GetInControl("OverSubdivisionPenalty").DoControl( 0 );
-
+			SendFloatToInControl(mTimeSeriesFinder,"OffsetMin",0);
+			SendFloatToInControl(mTimeSeriesFinder,"OffsetStep",50);
+			SendFloatToInControl(mTimeSeriesFinder,"IntervalMin",std::max(TData(previousSeed.GetInterval()-scope*0.5),TData(mConfig.GetTickLimSup())));
+			SendFloatToInControl(mTimeSeriesFinder,"IntervalMax",previousSeed.GetInterval()+scope/2);
+			SendFloatToInControl(mTimeSeriesFinder,"IntervalStep",10);
+			SendFloatToInControl(mTimeSeriesFinder,"OverSubdivisionPenalty",0);
 			
 			int firstTransientPosition = (int) mFirstTransientPosition.GetLastValue();
 			int lastTransientPosition = (int) mLastTransientPosition.GetLastValue();
@@ -111,9 +109,9 @@ namespace CLAM
 			ticks.Resize( nUnits );
 			ticks.SetSize( nUnits );
 
-			mGridGenerator.GetInControl( "Start" ).DoControl( start );
-			mGridGenerator.GetInControl( "Gap" ).DoControl( gap );
-			mGridGenerator.GetInControl( "End" ).DoControl( end );
+			SendFloatToInControl(mGridGenerator,"Start",start);
+			SendFloatToInControl(mGridGenerator,"Gap",gap);
+			SendFloatToInControl(mGridGenerator,"End",end);
 
 			mGridGenerator.Do( ticks );
 
