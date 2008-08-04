@@ -69,12 +69,12 @@ namespace CLAM{
 		
 		virtual bool InitControls()
 		{ 
-			GetInControl("LowCutoff").DoControl(1000);
-			GetInControl("HighCutoff").DoControl(5000);
-			GetInControl("LowPitch").DoControl(1000);
-			GetInControl("MidPitch").DoControl(1000);
-			GetInControl("HighPitch").DoControl(1000);
-			GetInControl("ModAmp").DoControl(1);
+			mLowCutoffFreqCtl.DoControl(1000);
+			mHighCutoffFreqCtl.DoControl(5000);
+			mLowPitchCtl.DoControl(1000);
+			mMidPitchCtl.DoControl(1000);
+			mHighPitchCtl.DoControl(1000);
+			mModAmplitudeCtl.DoControl(1);
 			
 			return true;
 		}

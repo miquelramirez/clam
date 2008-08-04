@@ -164,7 +164,7 @@ void ProcessingClass2LadspaBase::SetPortsAndControls(LADSPA_Descriptor *& descri
 void ProcessingClass2LadspaBase::DoControls()
 {
 	for(unsigned i=0;i<_nInControls;i++)
-		_proc->GetInControls().GetByNumber(i).DoControl((CLAM::TData)*_incontrolBuffers[i]);
+		SendFloatToInControl(*_proc, i,(CLAM::TData)*_incontrolBuffers[i]);
 	// TODO: No output controls!
 }	
 
