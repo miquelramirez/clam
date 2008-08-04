@@ -40,7 +40,7 @@ class TaskRunner : public QDockWidget
 {
 	Q_OBJECT
 public:
-	TaskRunner(QWidget * parent = 0):
+	TaskRunner(QString objectName="TaskRunnerWidget", QWidget * parent = 0):
 		_process(0)
 	{
 		_OutputDisplay = new QTextEdit(this);
@@ -60,6 +60,7 @@ public:
 		widget->setLayout(mainBox);
 		setWidget(widget);
 		setAttribute(Qt::WA_DeleteOnClose, true);
+		setObjectName(objectName);
 	}
 
 	virtual ~TaskRunner();
