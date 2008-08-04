@@ -13,9 +13,9 @@
 
 
 CFLAGS = -Wall -g
-SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr xmlbackend=xercesc release=yes double=0 with_fftw3=yes width_fftw=no
+SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr release=yes
 SCONS= scons
-PLUGINS=continuousExcitationSynthesizer osc spacialization GuitarEffects
+PLUGINS=continuousExcitationSynthesizer osc spacialization GuitarEffects samplebysample speech sndfile
 
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 	CFLAGS += -O0
@@ -95,7 +95,7 @@ binary-arch: build install
 	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
-	dh_shlibdeps -L libclam0 -l debian/libclam0/usr/lib
+	dh_shlibdeps
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
