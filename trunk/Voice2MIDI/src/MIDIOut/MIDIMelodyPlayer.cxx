@@ -76,8 +76,8 @@ void MIDIMelodyPlayer::PlayMIDIThreadSafe()
 
 	manager.Start();
 
-	progChg.GetInControls().GetByNumber(0).DoControl(TControlData(_program)); // program
-	volCtrl.GetInControls().GetByNumber(0).DoControl(120);      // volume = 120
+	SendFloatToInControl(progChg,0,TControlData(_program)); // program
+	SendFloatToInControl(volCtrl,0,120); // volume = 120
 
 	active = true;
 
@@ -91,15 +91,15 @@ void MIDIMelodyPlayer::PlayMIDIThreadSafe()
 		if((t2-t1) >= _melody.GetNoteArray()[noteNumber].GetTime().GetBegin()*1000 && isBegin)
 		{
 			// note on
-			outNote.GetInControls().GetByNumber(0).DoControl(TControlData(_melody.GetNoteArray()[noteNumber].GetKey()));
-			outNote.GetInControls().GetByNumber(1).DoControl(TControlData(_melody.GetNoteArray()[noteNumber].GetVelocity()));
+			SendFloatToInControl(outNote,0,TControlData(_melody.GetNoteArray()[noteNumber].GetKey()));
+			SendFloatToInControl(outNote,1,TControlData(_melody.GetNoteArray()[noteNumber].GetVelocity()));
 			isBegin = false;
 		}
 		if((t2-t1) >= _melody.GetNoteArray()[noteNumber].GetTime().GetEnd()*1000 && !isBegin)
 		{
 			// note off
-			outNote.GetInControls().GetByNumber(0).DoControl(TControlData(_melody.GetNoteArray()[noteNumber].GetKey()));
-			outNote.GetInControls().GetByNumber(1).DoControl(0);
+			SendFloatToInControl(outNote,0,TControlData(_melody.GetNoteArray()[noteNumber].GetKey()));
+			SendFloatToInControl(outNote,1,0);
 			noteNumber++;
 			isBegin = true;
 		}
@@ -112,7 +112,7 @@ void MIDIMelodyPlayer::PlayMIDIThreadSafe()
 	panicCfg.SetFirstData(123); 
 	panicCfg.SetMessage(MIDI::eControlChange);
 	MIDIOutControl panicCtrl(panicCfg);
-	panicCtrl.GetInControls().GetByNumber(0).DoControl(0); 
+	SendFloatToInControl(panicCtrl,0,0); 
     
 	if(active)	mRequestStop.Emit();
 }

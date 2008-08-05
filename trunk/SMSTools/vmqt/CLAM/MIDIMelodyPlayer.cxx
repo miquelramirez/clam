@@ -99,8 +99,8 @@ namespace CLAM
 
 			manager.Start();
 
-			progChg.GetInControls().GetByNumber(0).DoControl(TControlData(mMIDIProgram)); // set program
-			volCtrl.GetInControls().GetByNumber(0).DoControl(120); // set volume
+			SendFloatToInControl(progChg,0,TControlData(mMIDIProgram)); // set program
+			SendFloatToInControl(volCtrl,0,120); // set volume
         
 			TData stopTime;
 
@@ -132,16 +132,16 @@ namespace CLAM
 				if((t1-t0) >= mMelodies[melodyIndex].GetNoteArray()[noteNumber].GetTime().GetBegin()*1000 && isBegin)
 				{
 					// note on
-					outNote.GetInControls().GetByNumber(0).DoControl(TControlData(mMelodies[melodyIndex].GetNoteArray()[noteNumber].GetKey()));
-					outNote.GetInControls().GetByNumber(1).DoControl(TControlData(mMelodies[melodyIndex].GetNoteArray()[noteNumber].GetVelocity()));
+					SendFloatToInControl(outNote,0,TControlData(mMelodies[melodyIndex].GetNoteArray()[noteNumber].GetKey()));
+					SendFloatToInControl(outNote,1,TControlData(mMelodies[melodyIndex].GetNoteArray()[noteNumber].GetVelocity()));
 					isBegin = false;
 				}
 		
 				if((t1-t0) >= mMelodies[melodyIndex].GetNoteArray()[noteNumber].GetTime().GetEnd()*1000 && !isBegin)
 				{
 					// note off
-					outNote.GetInControls().GetByNumber(0).DoControl(TControlData(mMelodies[melodyIndex].GetNoteArray()[noteNumber].GetKey()));
-					outNote.GetInControls().GetByNumber(1).DoControl(0);
+					SendFloatToInControl(outNote,0,TControlData(mMelodies[melodyIndex].GetNoteArray()[noteNumber].GetKey()));
+					SendFloatToInControl(outNote,1,0);
 					noteNumber++;
 					isBegin = true;
 				}
@@ -164,7 +164,7 @@ namespace CLAM
 			panicCfg.SetFirstData(123); 
 			panicCfg.SetMessage(MIDI::eControlChange);
 			MIDIOutControl panicCtrl(panicCfg);
-			panicCtrl.GetInControls().GetByNumber(0).DoControl(0); 
+			SendFloatToInControl(panicCtrl,0,0);
 
 			if(!IsPaused()) mTime.SetBegin(GetBeginTime());
 
