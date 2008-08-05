@@ -72,6 +72,13 @@ protected:
 			if (sourcePath != "")
 				factory.AddAttribute(oss.str(), "faust_source_file", sourcePath);
 		}
+		// TODO: remove this when fixed the creation of CLAM library plugins creation
+		if (dlclose(handle))
+		{
+			error=true;
+			std::cout<<"Error unloading library handle of "<< pluginFullFilename<< ": "<<std::endl;
+			std::cout<<dlerror()<<std::endl;	
+		}
 	}
 
 	const char ** standardPaths() const
