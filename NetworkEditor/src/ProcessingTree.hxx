@@ -45,6 +45,7 @@ public:
 	/** TODO: this tree should be derived from the CLAM::Factory instance */
 	ProcessingTree( QWidget * parent = 0);
 	virtual ~ProcessingTree();
+	void RePopulateTree();
 private:
 	QLineEdit * _searchEdit;
 	QPushButton * _clearButton;

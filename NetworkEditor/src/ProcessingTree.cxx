@@ -56,7 +56,15 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 
 	connect(_clearButton,SIGNAL(clicked(bool)),_searchEdit,SLOT(clear()));
 	connect(_searchEdit,SIGNAL(textChanged(const QString)),this,SLOT(filterProcessings(const QString)));
+	RePopulateTree();
+	connect( _treeWidget, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),
+		 this, SLOT( PressProcessing(QTreeWidgetItem *,int) ));
+}
 
+
+void ProcessingTree::RePopulateTree()
+{
+	_treeWidget->clear();
 	CLAM::ProcessingFactory & factory = CLAM::ProcessingFactory::GetInstance();
 	CLAM::ProcessingFactory::Values categories = factory.GetSetOfValues("category");
 	CLAM::ProcessingFactory::Values::const_iterator itCategory;
@@ -103,8 +111,9 @@ ProcessingTree::ProcessingTree( QWidget * parent)
 			item->setToolTip(0,tooltipText);
 		}
 	}
-	connect( _treeWidget, SIGNAL( itemPressed(QTreeWidgetItem *,int) ),
-		 this, SLOT( PressProcessing(QTreeWidgetItem *,int) ));
+	// actualize the search bar with the new populated tree
+	if(_searchEdit->text()!="")
+		filterProcessings(_searchEdit->text());
 }
 
 ProcessingTree::~ProcessingTree()
