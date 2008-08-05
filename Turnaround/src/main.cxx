@@ -52,7 +52,7 @@ int main( int argc, char ** argv )
 	QCoreApplication::setOrganizationName("CLAM");
 	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
 	QCoreApplication::setApplicationName("Turnaround");
-	Turnaround w(argc>1?argv[1]:"");
+	Turnaround w;
 	w.show();
 	return app.exec();
 }

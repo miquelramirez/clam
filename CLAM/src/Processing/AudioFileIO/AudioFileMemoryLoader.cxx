@@ -150,5 +150,10 @@ namespace Hidden
 		return true;
 	}
 	
+	unsigned long AudioFileMemoryLoader::GetSamples()
+	{
+		return _samples.GetSize();
+	}
+	
 }
 

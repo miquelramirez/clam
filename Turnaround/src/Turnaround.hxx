@@ -23,13 +23,18 @@
 
 #include <CLAM/Network.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
+#include "PoolFloatArrayDataSource.hxx"
+#include "ProgressControlWidget.hxx"
+#include "VectorView.hxx"
+
+#include <QtGui/QVBoxLayout>
 
 class Turnaround : public QMainWindow, public Ui::Turnaround
 {
 	Q_OBJECT
 
 public:
-	Turnaround(const std::string & nameProject);
+	Turnaround();
 	virtual ~Turnaround();
 	
 public slots:
@@ -39,6 +44,9 @@ public slots:
 	void pause();
 	void stop();
 	
+protected:
+	void timerEvent(QTimerEvent *event);
+
 private:
 	void loadAudioFile(const std::string & fileName);
 	
@@ -48,7 +56,14 @@ private:
 	std::string _progressControl;
 	std::string _audioSink;
 	std::string _tonalAnalysis;
-	std::string _keySpaceMonitor;
+	std::string _vectorViewMonitor;
+	
+	QVBoxLayout *_vboxLayout;
+	ProgressControlWidget *_progressControlWidget;
+	CLAM::VM::VectorView *_vectorView;
+	
+	CLAM::VM::PoolFloatArrayDataSource *_dataSource;
+	double _length;
 };
 
 #endif

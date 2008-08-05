@@ -22,12 +22,15 @@
 
 #include <CLAM/PANetworkPlayer.hxx>
 #include <CLAM/TonalAnalysis.hxx>
-#include "KeySpaceMonitor.hxx"
+#include <CLAM/AudioFileMemoryLoader.hxx>
+#include "VectorViewMonitor.hxx"
 #include "ProgressControl.hxx"
+#include "FrameDivision.hxx"
 
-Turnaround::Turnaround(const std::string & nameProject = "")
+Turnaround::Turnaround()
 	: QMainWindow( 0 )
 	, Ui::Turnaround( )
+	, _dataSource( 0 )
 {
 	setupUi(this);
 	
@@ -37,6 +40,10 @@ Turnaround::Turnaround(const std::string & nameProject = "")
 	connect(playbackPauseAction, SIGNAL(triggered()), this, SLOT(pause()));
 	connect(playbackStopAction, SIGNAL(triggered()), this, SLOT(stop()));
 
+	_vboxLayout = new QVBoxLayout(centralwidget);
+	_progressControlWidget = new ProgressControlWidget(centralwidget);
+	_vboxLayout->addWidget(_progressControlWidget);
+	
 	_fileReader = _network.AddProcessing("AudioFileMemoryLoader");
 	
 	CLAM::ProgressControl * progress = new CLAM::ProgressControl;
@@ -44,19 +51,18 @@ Turnaround::Turnaround(const std::string & nameProject = "")
 	_network.AddProcessing(_progressControl, progress);
 	_network.ConnectControls(_fileReader+".Current Time Position", _progressControl+".Progress Update");	
 	_network.ConnectControls(_progressControl+".Progress Jump", _fileReader+".Current Time Position (%)");	
-	progressControl->SetProcessing(progress);
+	_progressControlWidget->SetProcessing(progress);
 	
 	_audioSink = _network.AddProcessing("AudioSink");
 	_network.ConnectPorts(_fileReader+".Samples Read", _audioSink+".AudioIn");
 	
-	_tonalAnalysis = _network.AddProcessing("TonalAnalysis");
-	_network.ConnectPorts(_fileReader+".Samples Read", _tonalAnalysis+".Audio Input");	
+	//_tonalAnalysis = _network.AddProcessing("TonalAnalysis");
+	//_network.ConnectPorts(_fileReader+".Samples Read", _tonalAnalysis+".Audio Input");	
 	
-	KeySpaceMonitor * monitor = new KeySpaceMonitor;
-	_keySpaceMonitor = _network.GetUnusedName("KeySpaceMonitor");
-	_network.AddProcessing(_keySpaceMonitor, monitor);
-	_network.ConnectPorts(_tonalAnalysis+".Chord Correlation", _keySpaceMonitor+".Input");
-	keySpace->setDataSource(*monitor);
+	_vectorView = new CLAM::VM::VectorView(centralwidget);
+	_vboxLayout->addWidget(_vectorView);
+	
+	startTimer(50);
 }
 
 Turnaround::~Turnaround()
@@ -69,13 +75,13 @@ void Turnaround::fileOpen()
 			tr("Choose an audio file"), QString::null, 
 			   tr("Audio files (*.wav *.ogg *.mp3)"));
 	if(qFileName == QString::null) return;
-	loadAudioFile(qFileName.toStdString());
+	loadAudioFile(qFileName.toLocal8Bit().constData());
 }
 
 void Turnaround::loadAudioFile(const std::string & fileName)
 {
 	// TODO
-	
+		
 	if (!_network.IsStopped())
 		_network.Stop();
 		
@@ -85,6 +91,44 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 
 	_network.SetPlayer(new CLAM::PANetworkPlayer);
 	_network.Start();
+	
+	CLAM::AudioFileMemoryLoader *afml = (CLAM::AudioFileMemoryLoader*)&(_network.GetProcessing(_fileReader));
+	
+	unsigned hop = 256;
+	unsigned frameSize = 512;
+	unsigned nSamples = afml->/*GetHeader().*/GetSamples();
+	unsigned long nFrames = (unsigned long)(floor((float)(nSamples-frameSize+hop)/(float)hop));
+	_length = double(nSamples) / 44100.0;
+	
+	float data[nFrames*12];
+	for (unsigned frame = 0; frame < nFrames; frame++)
+	{
+		for (unsigned i = 0; i < 12; i++)
+			data[frame*12+i] = frame >> (11-i) & 1;
+	}
+	
+	CLAM_Annotator::FrameDivision * frameDivision = new CLAM_Annotator::FrameDivision;
+	frameDivision->SetFirstCenter(frameSize / 2);
+	frameDivision->SetInterCenterGap(frameSize);
+	
+	std::vector<std::string> binLabels;
+	binLabels.push_back("G");
+	binLabels.push_back("G#");
+	binLabels.push_back("A");
+	binLabels.push_back("A#");
+	binLabels.push_back("B");
+	binLabels.push_back("C");
+	binLabels.push_back("C#");
+	binLabels.push_back("D");
+	binLabels.push_back("D#");
+	binLabels.push_back("E");
+	binLabels.push_back("F");
+	binLabels.push_back("F#");
+	
+	_dataSource = new CLAM::VM::PoolFloatArrayDataSource;
+	_dataSource->setDataSource(12, 0, 0, binLabels);
+	_dataSource->updateData(data, 44100.0, frameDivision, nFrames);
+	_vectorView->setDataSource(*_dataSource);
 }
 
 void Turnaround::play()
@@ -104,4 +148,10 @@ void Turnaround::stop()
 {
 	if (!_network.IsStopped())
 		_network.Stop();
+}
+
+void Turnaround::timerEvent(QTimerEvent *event)
+{
+	if (_dataSource)
+		_dataSource->setCurrentTime(_network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length);
 }

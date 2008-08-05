@@ -45,6 +45,8 @@ namespace CLAM
 		bool Do( Audio & outputSamples );
 		virtual bool Do();	
 		virtual ~AudioFileMemoryLoader();
+		
+		unsigned long GetSamples();
 
 	protected: // methods
 
