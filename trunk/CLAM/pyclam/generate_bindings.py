@@ -23,7 +23,7 @@ clam_file_list += ["OutControl.hxx","InControl.hxx"]
 #"FFT_fftw3.hxx", "FFT_rfftw.hxx"
 #clam_file_list += [ "FFT_fftw3.hxx" ] # requires USE_FFTW3 definition (defined below but indeed no works FIXME)
 
-#Warning: don't move below lines, breaks the compilation with DynamicType error.
+# Warning: don't move below lines, breaks the compilation with DynamicType error.
 #( KeyError: (('../include/DynamicType.hxx', 311), ('::', 'CLAM', 'DynamicType', 'AttributePositionBase<10u>')) )
 clam_file_list += ["Processing.hxx", "ProcessingConfig.hxx","ProcessingData.hxx","ProcessingDataConfig.hxx","ProcessingDataPlugin.hxx"] 
 
@@ -48,7 +48,7 @@ clam_file_list += ["Processing.hxx", "ProcessingConfig.hxx","ProcessingData.hxx"
 #/usr/include/boost/python/object/make_instance.hpp:24: error: invalid application of 'sizeof' to incomplete type 'boost::STATIC_ASSERTION_FAILURE<false>'
 
 
-# general
+# General
 clam_file_list += ["DataTypes.hxx","Enum.hxx","CLAM_Math.hxx","Err.hxx"]
 
 # Adds CLAM dir
@@ -57,8 +57,12 @@ file_list = ["CLAM/"+item for item in clam_file_list]
 # Special definitions
 file_list += ["Definitions.hxx"]
 
+options_filename = 'options.cache'
+if not os.path.exists(options_filename):
+	print "\nError. Options file is missing. Run \'scons configure prefix=CLAM_LIBRARY_PATH\' first.\n"
+	exit(1)
 clam_include_path = "/usr/local/include"
-for line in open('options.cache').readlines():
+for line in open(options_filename).readlines():
 	(name,value) = line.split(' = ')
 	if name=='prefix': clam_include_path=value[1:-2]+"/include"
 
