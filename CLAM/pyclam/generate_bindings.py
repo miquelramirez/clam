@@ -57,13 +57,16 @@ file_list = ["CLAM/"+item for item in clam_file_list]
 # Special definitions
 file_list += ["Definitions.hxx"]
 
+clam_include_path = "/usr/local/include"
+for line in open('options.cache').readlines():
+	(name,value) = line.split(' = ')
+	if name=='prefix': clam_include_path=value[1:-2]+"/include"
+
 # Creating an instance of class that will help you to expose your declarations
 mb = module_builder.module_builder_t (
 					file_list
 					, working_directory = r"."
-		 
-# FIXME: make generic/use standard path (TODO: read from options.cache?)
-			 		, include_paths = [ '/home/hordia/dev/local/clam_dev/include' ]
+					, include_paths = [ clam_include_path ]
 		 			, define_symbols = [ "USE_SNDFILE=1", "USE_FFTW3" ]
 					#, cflags=''
 					, indexing_suite_version = 2
