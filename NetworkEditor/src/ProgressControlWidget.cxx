@@ -43,7 +43,7 @@ void ProgressControlWidget::sliderValueChanged(int value)
 		return;
 	
 	double dvalue = float(value) / 100.0;
-	_processing->GetOutControls().GetByNumber(0).SendControl(dvalue);
+	SendFloatToOutControl(*_processing,0,dvalue);
 }
 
 void ProgressControlWidget::sliderPressed()
@@ -64,7 +64,7 @@ void ProgressControlWidget::timerEvent(QTimerEvent *event)
 		return;
 	
 	_updating = true;
-	int value = int(std::floor(_processing->GetInControls().GetByNumber(0).GetLastValue() * 100.0));
+	int value = int(std::floor(GetFloatFromInControl(*_processing,0) * 100.0));
 	setValue(value);
 	_updating = false;
 }
