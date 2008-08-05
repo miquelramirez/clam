@@ -18,40 +18,7 @@
   <property name="windowTitle" >
    <string>Turnaround</string>
   </property>
-  <widget class="QWidget" name="centralwidget" >
-   <widget class="QWidget" name="layoutWidget" >
-    <property name="geometry" >
-     <rect>
-      <x>9</x>
-      <y>9</y>
-      <width>621</width>
-      <height>421</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" >
-     <item>
-      <widget class="ProgressControlWidget" name="progressControl" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Minimum" hsizetype="Expanding" >
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="CLAM::VM::KeySpace" name="keySpace" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
+  <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >
     <rect>
@@ -148,18 +115,6 @@
    </property>
   </action>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>CLAM::VM::KeySpace</class>
-   <extends>QWidget</extends>
-   <header>KeySpace.hxx</header>
-  </customwidget>
-  <customwidget>
-   <class>ProgressControlWidget</class>
-   <extends>QSlider</extends>
-   <header>ProgressControlWidget.hxx</header>
-  </customwidget>
- </customwidgets>
  <resources>
   <include location="images.qrc" />
  </resources>
