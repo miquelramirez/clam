@@ -517,12 +517,8 @@ public slots:
 #if USE_LADSPA
 		RunTimeFaustLibraryLoader faustLibraryLoader;
 		faustLibraryLoader.Load();
-		// delete the previous instance of processingtree
-		delete(_processingTree);
-		// and generate a new one
-		_processingTree = new NetworkGUI::ProcessingTree(_processingTreeDock);
-		_processingTreeDock->setWidget(_processingTree);
-		addDockWidget(Qt::LeftDockWidgetArea, _processingTreeDock);
+		if (_processingTree)
+			_processingTree->RePopulateTree();
 #endif
 	}
 
