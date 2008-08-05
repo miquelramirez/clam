@@ -37,6 +37,7 @@ typedef float TControlData;
 
 /**
 * \brief Processing in control class.
+*
 * Controls are limited to emmit and receive TControlData (float) numbers. 
 * Though extensible typed connections are future planned development.
 */
