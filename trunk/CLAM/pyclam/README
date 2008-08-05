@@ -1,0 +1,22 @@
+== Instructions ==
+
+=== Tools (assuming a working clam dev environment) ===
+- Install Boost.Python: sudo apt-get install libboost-python-dev libboost-python1.34.1
+- Get gccxml version 0.9 (standard deb package at common repos is about 0.7). I took from here:  http://ftp.zcu.cz/pub/linux/debian/pool/main/g/gccxml/gccxml_0.9.0+cvs20080525-1_i386.deb or compile from CVS.
+- Download and install Py++ (no package at ubuntu repos)
+  'sudo python setup.py install'
+  Py++-0.9.5.zip at https://sourceforge.net/project/showfiles.php?group_id=118209&package_id=157697
+- Download and install pygccxml (no package at ubuntu repos):
+  'sudo python setup.py install'
+  pygccxml-0.9.5.zip: http://sourceforge.net/project/showfiles.php?group_id=118209&package_id=146545
+- Enable indexing suite version v2:
+  PYPLUSPLUS='Py++-0.9.5/indexing_suite_v2/indexing'
+  BOOST_INDEXING='/usr/include/boost/python/suite/indexing'
+  sudo cp $PYPLUSPLUS/* $BOOST_INDEXING/
+
+=== Compilation ===
+- Set the correct 'clam_prefix' in Makefile and 'include_paths' in generate_bindings.py (or fix them to get those paths in a proper way :P)
+- Apply the pyhacks.patch to FFT_ooura.hxx at clam include directory in order to allow some hacked features. Is temporay, just for testing purposes!
+- Run build.sh and you should get the clam.so ready to use.
+- Run the examples at examples directory: fft_example.py and playfile.py or play with the library from a console with ipython.
+

@@ -1,0 +1,10 @@
+97a98,106
+> 		//Python bindings ugly hack
+> 		bool Do(const ProcessingData& in, ProcessingData &out) {
+> 			try {
+> 				Do( dynamic_cast<const Audio&>(in), dynamic_cast<Spectrum&>(out) );
+> 			}
+> 			catch(...){
+> 				return false;
+> 			}
+> 		}
