@@ -47,7 +47,7 @@ namespace CLAM
 			ePCMFLOAT = SF_FORMAT_WAV | SF_FORMAT_FLOAT,	/* 32 bit float data */
 			ePCMDOUBLE = SF_FORMAT_WAV | SF_FORMAT_DOUBLE,	/* 64 bit float data */
 			eFLAC_16 = SF_FORMAT_FLAC | SF_FORMAT_PCM_16,	/* FLAC lossless file format 16 bit data */
-		};
+		} tEnum;
 
 		static tValue     DefaultValue() { return eDefault; }
 		static tEnumValue * EnumValues()
