@@ -42,7 +42,8 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
 		void* handle = FullyLoadLibrary(pluginFullFilename);
 		SetupLibrary( handle, pluginFullFilename );
-		ReleaseLibraryHandler(handle, pluginFullFilename);
+		// Commented because it brokes the library processings libraries creation:
+		// releaseLibraryHandler(handle, pluginFullFilename);
 	}
 	closedir(dir);
 }
