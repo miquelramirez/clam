@@ -236,29 +236,28 @@ namespace CLAM
 		if (!_selectedProcessings.empty() || processingsNamesList.empty())
 		{
 			_selectedProcessings.clear();
-			return 1;
+			return true;
 		}
 		for (namesIterator=processingsNamesList.begin();namesIterator!=processingsNamesList.end();namesIterator++)
 			_selectedProcessings.insert(*namesIterator);
-		return 0;
-		
+		return false;
 	}
 
 	bool FlattenedNetwork::HasSelectionAndContains(const std::string & name) const
 	{
 		NamesSet::const_iterator itFindSelected = _selectedProcessings.find(name);
 		if (!_selectedProcessings.empty() && itFindSelected==_selectedProcessings.end())
-			return 0;
-		return 1;
+			return false;
+		return true;
 	}
 
 	bool FlattenedNetwork::SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries)
 	{
 		_processingsGeometries.clear();
 		if (processingsGeometries.empty())
-			return 1;
+			return true;
 		_processingsGeometries=processingsGeometries;
-		return 0;
+		return false;
 	}
 
 
