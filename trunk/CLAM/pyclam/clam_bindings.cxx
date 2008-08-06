@@ -269,8 +269,10 @@ struct FFT_wrapper : CLAM::FFT, bp::wrapper< CLAM::FFT > {
     }
 
     virtual bool ConcreteConfigure( ::CLAM::ProcessingConfig const & arg0 ){
-        bp::override func_ConcreteConfigure = this->get_override( "ConcreteConfigure" );
-        return func_ConcreteConfigure( boost::ref(arg0) );
+        if( bp::override func_ConcreteConfigure = this->get_override( "ConcreteConfigure" ) )
+            return func_ConcreteConfigure( boost::ref(arg0) );
+        else
+            return this->CLAM::Processing::ConcreteConfigure( boost::ref(arg0) );
     }
 
     virtual bool ConcreteStart(  ){
