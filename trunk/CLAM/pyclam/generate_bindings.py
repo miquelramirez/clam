@@ -30,7 +30,9 @@ clam_path = "/usr/local/include"; plugins_path = ''
 for line in open(options_filename).readlines():
 	(name,value) = line.split(' = ')
 	if name=='prefix': clam_path=value[1:-2]+"/include"
-	if name=='plugins_prefix': plugins_path=value[1:-2]
+	if name=='plugins_prefix':
+		if value=='True': plugins_path=clam_path
+		else: plugins_path=value[1:-2]
 enablePlugins = True if plugins_path!='' else False
 
 #import glob
