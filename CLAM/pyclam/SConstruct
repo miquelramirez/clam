@@ -2,9 +2,8 @@ import os, sys
 
 options_filename = 'options.cache'
 opts = Options(options_filename,ARGUMENTS)
-#TODO: fix default values
 opts.Add(PathOption('prefix', 'The prefix where the CLAM library is installed', '/usr/local'))
-#opts.Add(PathOption('plugins_prefix', 'The prefix where the CLAM plugins are installed', ''))
+opts.Add(PackageOption('plugins_prefix', 'The prefix where the CLAM plugins are installed. Use No for disable them and Yes to use the same CLAM installation path.', 'no'))
 env = Environment(ENV=os.environ, options=opts)
 Help(opts.GenerateHelpText(env))
 
