@@ -38,6 +38,7 @@ public:
 	bool Do(const MyInputDataType& in, MyOutputDataType& out)
 	{
 		// Your implementation
+		return true;
 	}
 };
 
@@ -47,7 +48,9 @@ int main()
 	MyProcessing proc;
 	std::cout << "State: "<< proc.GetExecStateString() << std::endl;
 	std::cout << "Config error message: " << proc.GetConfigErrorMessage() << std::endl;
+//	proc.Start();
 //	proc.Do();
+//	proc.Stop();
 	std::cout << "Done." << std::endl;
 	return 0;
 }
