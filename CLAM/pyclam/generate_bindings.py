@@ -1,6 +1,20 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
 import os
 from pyplusplus import module_builder
 from pyplusplus.module_builder import call_policies
@@ -8,9 +22,19 @@ from pygccxml import declarations
 from pygccxml.declarations import custom_matcher_t as c_matcher
 from pygccxml.declarations import regex_matcher_t as re_matcher
 
+options_filename = 'options.cache'
+if not os.path.exists(options_filename):
+	print "\nError. Options file is missing. Run \'scons configure prefix=CLAM_LIBRARY_PATH\' first.\n"
+	exit(1)
+clam_path = "/usr/local/include"; plugins_path = ''
+for line in open(options_filename).readlines():
+	(name,value) = line.split(' = ')
+	if name=='prefix': clam_path=value[1:-2]+"/include"
+	if name=='plugins_prefix': plugins_path=value[1:-2]
+enablePlugins = True if plugins_path!='' else False
+
 #import glob
 #clam_clam_file_list = glob.glob('CLAM/*.hxx')
-
 clam_file_list = []
 
 # These requires pointer support enabled (see below declarations.is_pointer (mem_fun.return_type)):)
@@ -23,9 +47,36 @@ clam_file_list += ["OutControl.hxx","InControl.hxx"]
 #"FFT_fftw3.hxx", "FFT_rfftw.hxx"
 #clam_file_list += [ "FFT_fftw3.hxx" ] # requires USE_FFTW3 definition (defined below but indeed no works FIXME)
 
-# Warning: don't move below lines, breaks the compilation with DynamicType error.
-#( KeyError: (('../include/DynamicType.hxx', 311), ('::', 'CLAM', 'DynamicType', 'AttributePositionBase<10u>')) )
+# Warning: don't move below lines, breaks the compilation with DynamicType error (Problem3).
 clam_file_list += ["Processing.hxx", "ProcessingConfig.hxx","ProcessingData.hxx","ProcessingDataConfig.hxx","ProcessingDataPlugin.hxx"] 
+
+#clam_file_list += ["NullProcessingConfig.hxx"]
+
+""" Usual problems:
+== Problem1 ==
+"error: call of overloaded 'Xxxxx_wrapper(...)'"
+
+(Note1:could be fixed removing line 850 constructor?)
+(Note2:Py++ parse ok, fails with compilation)
+clam_bindings.cxx:2361:   instantiated from here
+/usr/include/boost/python/object/value_holder.hpp:134: error: call of overloaded 'Spectrum_wrapper(const CLAM::Spectrum&)' is ambiguous
+clam_bindings.cxx:864: note: candidates are: Spectrum_wrapper::Spectrum_wrapper(const CLAM::Spectrum&, bool, bool)
+clam_bindings.cxx:850: note:                 Spectrum_wrapper::Spectrum_wrapper(const CLAM::Spectrum&)
+clam_bindings.cxx:848: note:                 Spectrum_wrapper::Spectrum_wrapper(const Spectrum_wrapper&)
+
+== Problem2 ==
+"error: invalid application of 'sizeof' to incomplete type"
+	
+(Note1:line of clam_bindings.cxx is always end of file)
+(Note2:Py++ parse ok, fails with compilation)
+clam_bindings.cxx:3649:   instantiated from here
+/usr/include/boost/python/object/make_instance.hpp:24: error: invalid application of 'sizeof' to incomplete type 'boost::STATIC_ASSERTION_FAILURE<false>'
+	
+== Problem3 ==
+'DynamicType'
+
+( KeyError: (('../include/DynamicType.hxx', 311), ('::', 'CLAM', 'DynamicType', 'AttributePositionBase<10u>')) )
+"""
 
 #clam_file_list += ["SMSHarmonizer.hxx"]
 #clam_file_list += ["DynamicType.hxx"] # here associated with "Problem2"
@@ -33,20 +84,6 @@ clam_file_list += ["Processing.hxx", "ProcessingConfig.hxx","ProcessingData.hxx"
 #clam_file_list += ["Audio.hxx"]#,,"AudioFileHeader.hxx"]
 #clam_file_list += ["MonoAudioFileReaderConfig.hxx"]
 #clam_file_list += ["Spectrum.hxx"] # here associated with "Problem1" and "Problem2"
-# Problem1: "error: call of overloaded 'Xxxxx_wrapper(...)'"
-#(Note1:could be fixed removing line 850 constructor?)
-#(Note2:Py++ parse ok, fails with compilation)
-#clam_bindings.cxx:2361:   instantiated from here
-#/usr/include/boost/python/object/value_holder.hpp:134: error: call of overloaded 'Spectrum_wrapper(const CLAM::Spectrum&)' is ambiguous
-#clam_bindings.cxx:864: note: candidates are: Spectrum_wrapper::Spectrum_wrapper(const CLAM::Spectrum&, bool, bool)
-#clam_bindings.cxx:850: note:                 Spectrum_wrapper::Spectrum_wrapper(const CLAM::Spectrum&)
-#clam_bindings.cxx:848: note:                 Spectrum_wrapper::Spectrum_wrapper(const Spectrum_wrapper&)
-# Problem2: "error: invalid application of 'sizeof' to incomplete type"
-#(Note1:line of clam_bindings.cxx is always end of file)
-#(Note2:Py++ parse ok, fails with compilation)
-#clam_bindings.cxx:3649:   instantiated from here
-#/usr/include/boost/python/object/make_instance.hpp:24: error: invalid application of 'sizeof' to incomplete type 'boost::STATIC_ASSERTION_FAILURE<false>'
-
 
 # General
 clam_file_list += ["DataTypes.hxx","Enum.hxx","CLAM_Math.hxx","Err.hxx"]
@@ -54,23 +91,33 @@ clam_file_list += ["DataTypes.hxx","Enum.hxx","CLAM_Math.hxx","Err.hxx"]
 # Adds CLAM dir
 file_list = ["CLAM/"+item for item in clam_file_list]
 
+# Experimental:
+if enablePlugins:
+	# FIXME: Most of them parse and compile, but they need NullProcessingConfig (not parsed ATM, Problem1) exposed to python since this construction:
+	# PROCESSING_NAME_CONSTRUCTOR(const Config & config=Config()) { Configure(config); ... }
+	# PROCESSING_NAME_CONSTRUCTOR() { ... }
+
+	clam_plugins_file_list = []
+	#clam_plugins_file_list += ["GuitarEffects/DCRemoval/DCRemoval.hxx"]
+	#clam_plugins_file_list += ["GuitarEffects/AutomaticGainControl/AutomaticGainControl.hxx"]
+	#clam_plugins_file_list += ["GuitarEffects/AudioSwitch/AudioSwitch.hxx"]
+	#clam_plugins_file_list += ["sndfile/SndfilePlayer.hxx"]
+	#clam_plugins_file_list += ["MIDI/MIDISource/MIDISource.hxx"]
+	file_list += [ plugins_path+"/"+item for item in clam_plugins_file_list]
+
+
 # Special definitions
 file_list += ["Definitions.hxx"]
 
-options_filename = 'options.cache'
-if not os.path.exists(options_filename):
-	print "\nError. Options file is missing. Run \'scons configure prefix=CLAM_LIBRARY_PATH\' first.\n"
-	exit(1)
-clam_include_path = "/usr/local/include"
-for line in open(options_filename).readlines():
-	(name,value) = line.split(' = ')
-	if name=='prefix': clam_include_path=value[1:-2]+"/include"
+clam_include_path = []
+clam_include_path.append( clam_path )
+if enablePlugins: clam_include_path.append( plugins_path )
 
 # Creating an instance of class that will help you to expose your declarations
 mb = module_builder.module_builder_t (
 					file_list
 					, working_directory = r"."
-					, include_paths = [ clam_include_path ]
+					, include_paths = clam_include_path
 		 			, define_symbols = [ "USE_SNDFILE=1", "USE_FFTW3" ]
 					#, cflags=''
 					, indexing_suite_version = 2
