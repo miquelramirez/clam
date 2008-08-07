@@ -6,11 +6,14 @@
     <x>0</x>
     <y>0</y>
     <width>783</width>
-    <height>835</height>
+    <height>836</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>MainWindow</string>
+  </property>
+  <property name="locale" >
+   <locale country="UnitedStates" language="English" />
   </property>
   <widget class="QWidget" name="centralwidget" >
    <property name="geometry" >
@@ -18,7 +21,7 @@
      <x>0</x>
      <y>0</y>
      <width>783</width>
-     <height>807</height>
+     <height>808</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" >
@@ -64,14 +67,29 @@
           </property>
           <item>
            <widget class="QLabel" name="clamLogo" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize" >
              <size>
-              <width>50</width>
-              <height>50</height>
+              <width>200</width>
+              <height>150</height>
+             </size>
+            </property>
+            <property name="maximumSize" >
+             <size>
+              <width>200</width>
+              <height>150</height>
              </size>
             </property>
             <property name="frameShape" >
              <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Raised</enum>
             </property>
             <property name="text" >
              <string>clam logo</string>
@@ -244,160 +262,99 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" >
-          <item>
-           <widget class="QComboBox" name="comboBox_Port1" >
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Out</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Port1_Type" >
-            <property name="text" >
-             <string>Type</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Port1_Name" >
-            <property name="text" >
-             <string>Name</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QTableWidget" name="tableWidget_Ports" >
+          <property name="minimumSize" >
+           <size>
+            <width>0</width>
+            <height>150</height>
+           </size>
+          </property>
+          <property name="frameShadow" >
+           <enum>QFrame::Raised</enum>
+          </property>
+          <property name="verticalScrollBarPolicy" >
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="horizontalScrollBarPolicy" >
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="autoScroll" >
+           <bool>false</bool>
+          </property>
+          <column>
+           <property name="text" >
+            <string>In/Out</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Name</string>
+           </property>
+          </column>
+         </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4" >
+          <property name="topMargin" >
+           <number>5</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>5</number>
+          </property>
           <item>
-           <widget class="QComboBox" name="comboBox_Port2" >
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Out</string>
-             </property>
-            </item>
-           </widget>
+           <spacer name="horizontalSpacer" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_Port2_Type" >
+           <widget class="QPushButton" name="pushButton_Ports_Plus" >
+            <property name="font" >
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Ctrl+P</string>
+            </property>
             <property name="text" >
-             <string>Type</string>
+             <string>+</string>
+            </property>
+            <property name="shortcut" >
+             <string>Ctrl+P</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lineEdit_Port2_Name" >
-            <property name="text" >
-             <string>Name</string>
+           <widget class="QPushButton" name="pushButton_Ports_Minus" >
+            <property name="font" >
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
             </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_5" >
-          <item>
-           <widget class="QComboBox" name="comboBox_Port3" >
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Out</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Port3_Type" >
-            <property name="text" >
-             <string>Type</string>
+            <property name="toolTip" >
+             <string>Ctrl+[</string>
             </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Port3_Name" >
             <property name="text" >
-             <string>Name</string>
+             <string>-</string>
             </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_6" >
-          <item>
-           <widget class="QComboBox" name="comboBox_Port4" >
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Out</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Port4_Type" >
-            <property name="text" >
-             <string>Type</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Port4_Name" >
-            <property name="text" >
-             <string>Name</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_9" >
-          <item>
-           <widget class="QComboBox" name="comboBox_Port5" >
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Out</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Port5_Type" >
-            <property name="text" >
-             <string>Type</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Port5_Name" >
-            <property name="text" >
-             <string>Name</string>
+            <property name="shortcut" >
+             <string>Ctrl+[</string>
             </property>
            </widget>
           </item>
@@ -446,263 +403,118 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_11" >
-          <item>
-           <widget class="QComboBox" name="comboBox_Control1" >
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Out</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control1_Min" >
-            <property name="text" >
-             <string>Min</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control1_Max" >
-            <property name="text" >
-             <string>Max</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control1_Name" >
-            <property name="text" >
-             <string>Name</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_12" >
-          <item>
-           <widget class="QComboBox" name="comboBox_Control2" >
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Out</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control2_Min" >
-            <property name="text" >
-             <string>Min</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control2_Max" >
-            <property name="text" >
-             <string>Max</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control2_Name" >
-            <property name="text" >
-             <string>Name</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_7" >
-          <item>
-           <widget class="QComboBox" name="comboBox_Control3" >
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Out</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control3_Min" >
-            <property name="text" >
-             <string>Min</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control3_Max" >
-            <property name="text" >
-             <string>Max</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control3_Name" >
-            <property name="text" >
-             <string>Name</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_8" >
-          <item>
-           <widget class="QComboBox" name="comboBox_Control4" >
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Out</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control4_Min" >
-            <property name="text" >
-             <string>Min</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control4_Max" >
-            <property name="text" >
-             <string>Max</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control4_Name" >
-            <property name="text" >
-             <string>Name</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_13" >
-          <item>
-           <widget class="QComboBox" name="comboBox_Control5" >
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>In</string>
-             </property>
-            </item>
-            <item>
-             <property name="text" >
-              <string>Out</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control5_Min" >
-            <property name="text" >
-             <string>Min</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control5_Max" >
-            <property name="text" >
-             <string>Max</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLineEdit" name="lineEdit_Control5_Name" >
-            <property name="text" >
-             <string>Name</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_9" >
+         <widget class="QTableWidget" name="tableWidget_Controls" >
+          <property name="minimumSize" >
+           <size>
+            <width>0</width>
+            <height>150</height>
+           </size>
+          </property>
           <property name="font" >
            <font>
-            <weight>75</weight>
-            <bold>true</bold>
+            <pointsize>11</pointsize>
            </font>
           </property>
-          <property name="text" >
-           <string>Typed Controls</string>
+          <property name="toolTip" >
+           <string>Ctrl+P</string>
           </property>
-          <property name="alignment" >
-           <set>Qt::AlignCenter</set>
-          </property>
+          <column>
+           <property name="text" >
+            <string>In/Out</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Min</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Max</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Name</string>
+           </property>
+          </column>
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_14" >
+         <layout class="QHBoxLayout" name="horizontalLayout_13" >
+          <property name="topMargin" >
+           <number>5</number>
+          </property>
+          <property name="bottomMargin" >
+           <number>5</number>
+          </property>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_15" >
-            <item>
-             <widget class="QComboBox" name="comboBox_8" >
-              <property name="enabled" >
-               <bool>false</bool>
-              </property>
-              <item>
-               <property name="text" >
-                <string>In</string>
-               </property>
-              </item>
-              <item>
-               <property name="text" >
-                <string>Out</string>
-               </property>
-              </item>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEdit_17" >
-              <property name="enabled" >
-               <bool>false</bool>
-              </property>
-              <property name="text" >
-               <string>Type</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="lineEdit_16" >
-              <property name="enabled" >
-               <bool>false</bool>
-              </property>
-              <property name="text" >
-               <string>Name</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <spacer name="horizontalSpacer_2" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_TypedSwitch" >
+            <property name="enabled" >
+             <bool>false</bool>
+            </property>
+            <property name="toolTip" >
+             <string>Switchs between Typed and Float Controls (Ctrl+T, Ctrl+F)</string>
+            </property>
+            <property name="text" >
+             <string>Typed</string>
+            </property>
+            <property name="shortcut" >
+             <string>Ctrl+F, Ctrl+T</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Controls_Plus" >
+            <property name="font" >
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Ctrl+C</string>
+            </property>
+            <property name="text" >
+             <string>+</string>
+            </property>
+            <property name="shortcut" >
+             <string>Ctrl+C</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_Controls_Minus" >
+            <property name="font" >
+             <font>
+              <pointsize>11</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="toolTip" >
+             <string>Ctrl+V</string>
+            </property>
+            <property name="text" >
+             <string>-</string>
+            </property>
+            <property name="shortcut" >
+             <string>Ctrl+V</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </item>
@@ -729,39 +541,84 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_10" >
       <item>
+       <spacer name="horizontalSpacer_5" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Minimum</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
        <widget class="QPushButton" name="pushButton_Generate" >
+        <property name="toolTip" >
+         <string>Ctrl+G</string>
+        </property>
         <property name="text" >
          <string>Generate</string>
+        </property>
+        <property name="shortcut" >
+         <string>Ctrl+G</string>
+        </property>
+        <property name="autoDefault" >
+         <bool>true</bool>
+        </property>
+        <property name="default" >
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton_Exit" >
+        <property name="toolTip" >
+         <string>Ctrl+X</string>
+        </property>
         <property name="text" >
          <string>Exit</string>
         </property>
+        <property name="shortcut" >
+         <string>Ctrl+X</string>
+        </property>
        </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_4" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Minimum</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
    </layout>
-   <zorder>horizontalLayoutWidget</zorder>
-   <zorder>horizontalLayoutWidget_2</zorder>
-   <zorder>horizontalLayoutWidget_3</zorder>
-   <zorder>lineEdit_3</zorder>
-   <zorder>lineEdit_Control5_Name</zorder>
-   <zorder>lineEdit_28</zorder>
-   <zorder></zorder>
-   <zorder>label</zorder>
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
+  <widget class="QStatusBar" name="statusBar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>807</y>
+     <y>808</y>
      <width>783</width>
      <height>28</height>
     </rect>
+   </property>
+   <property name="sizeGripEnabled" >
+    <bool>true</bool>
    </property>
   </widget>
  </widget>
