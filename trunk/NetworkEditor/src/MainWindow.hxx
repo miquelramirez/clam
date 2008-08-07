@@ -262,24 +262,6 @@ public:
 		event->accept();
 	}
 
-private:
-	bool runQueuedCommands(TaskRunner::CommandsAndEnvironmentsList & commandsQList, const char * slotFinishedQueueName=NULL, const char * slotWidgetClosedName=NULL, bool stopOnError=true)
-	{
-		TaskRunner * runner = new TaskRunner("FaustCompilationWidget");
-		runner->setWindowTitle(tr("Faust compilation"));
-		if (slotFinishedQueueName)
-			connect(runner, SIGNAL(taskDone(bool)), this, slotFinishedQueueName);
-		if (slotWidgetClosedName)
-			connect(runner, SIGNAL(widgetDestructed()),this,slotWidgetClosedName);
-		addDockWidget( Qt::BottomDockWidgetArea, runner);
-		// Wait the window to be redrawn after the reconfiguration
-		// before loading the cpu with the extractor
-		qApp->processEvents();
-		bool ok = runner->run(commandsQList,stopOnError);
-		if (!ok)
-			delete runner;
-		return ok;
-	}
 public slots:
 	void updateCaption()
 	{
@@ -500,10 +482,18 @@ public slots:
 		command.arguments=(QStringList() << QString("svg"));
 		commandsQList.append(command);
 
-		statusBar()->showMessage("Compiling faust modules...");
-		const char * slotFinishedQueue = SLOT(endCompilationFaust(bool));
-		const char * slotCloseWidget = SLOT(closeCompilationWidget());
-		bool ok = runQueuedCommands(commandsQList,slotFinishedQueue,slotCloseWidget);
+		statusBar()->showMessage(tr("Compiling faust modules..."));
+		TaskRunner * runner = new TaskRunner("FaustCompilationWidget");
+		runner->setWindowTitle(tr("Faust compilation"));
+		connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endCompilationFaust(bool)));
+		connect(runner, SIGNAL(widgetDestructed()), this,SLOT(closeCompilationWidget()));
+		addDockWidget( Qt::BottomDockWidgetArea, runner);
+		// Wait the window to be redrawn after the reconfiguration
+		// before loading the cpu with the extractor
+		qApp->processEvents();
+		bool stopOnError = true;
+		bool ok = runner->run(commandsQList,stopOnError);
+		if (!ok) delete runner;
 		if(!ok)
 		{
 			QMessageBox::critical(this, tr("Compiling Faust modules"),
