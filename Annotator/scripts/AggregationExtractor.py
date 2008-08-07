@@ -28,6 +28,9 @@ parser.add_option("-c",# "--print-configuration",
 		dest="ConfigurationFile",
 		help=" the Configuration file for the Aggregator."
 	)
+parser.add_option("-w",# "--write flag of writing back"
+		help=" the flag for the write back."
+	)
 (options, args) = parser.parse_args()
 
 
@@ -83,7 +86,10 @@ if not args :
 for audiofile in args:
 	print "Processing %s..."%audiofile
 	target = open(audiofile+options.suffix,'w')
-	provider.QueryDescriptors(audiofile, provider.AvailableDescriptors()).Dump(target)
+	poolToCopy=provider.QueryDescriptors(audiofile, provider.AvailableDescriptors())
+	poolToCopy.Dump(target)
+	if options.w is not None:
+		provider.UpdateDescriptors(audiofile,poolToCopy)
 	target.close()
 
 
