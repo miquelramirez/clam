@@ -42,7 +42,7 @@ class Project : public CLAM::DynamicType
 	DYN_ATTRIBUTE(1, public, CLAM::Filename, Schema);
 	DYN_ATTRIBUTE(2, public, CLAM::Filename, Extractor);
 	DYN_ATTRIBUTE(3, public, std::string, PoolSuffix);
-	DYN_ATTRIBUTE(4, public, std::string, Config); // actually it is CLAM::Filename, but just consider it as a string 
+	DYN_ATTRIBUTE(4, public, std::string, Config);
 	DYN_CONTAINER_ATTRIBUTE(5, public, std::vector<Song>, Songs, Song);
 	DYN_CONTAINER_ATTRIBUTE(6, public, std::vector<InstantView>, Views, View);
 
