@@ -20,7 +20,6 @@
  */
 
 #include "ProjectEditor.hxx"
-#include "Project.hxx"
 #include "ConfigurationEditor.hxx"
 #include <QtGui/QFileDialog>
 #include <iostream>
@@ -143,8 +142,21 @@ void ProjectEditor::on_configurationEditButton_clicked()
 	configDialog.setConfiguration(ui.configuration->text());
 	if(configDialog.exec()==0) return;
 }
+
 void ProjectEditor::on_extractor_textChanged()
 {
 	mProject.SetExtractor(ui.extractor->text().toStdString());
 }
+
+void ProjectEditor::on_buttonBox_accepted()
+{
+	this->accept();
+}
+
+void ProjectEditor::on_buttonBox_rejected()
+{
+	this->reject();
+}
+
+
 
