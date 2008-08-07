@@ -164,11 +164,6 @@ chordSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  chordSources )
 
 programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
 
-
-silenceSources = scanFiles("*.cxx", ["src/SilenceDetector"])
-
-programs += [ env.Program(target='SilenceDetector', source = silenceSources) ]
-
 onsetSources = scanFiles("*.cpp", ["src/OnsetExtractor"])
 onsetSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  onsetSources )
 onsetSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  onsetSources )
