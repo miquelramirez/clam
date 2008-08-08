@@ -1,10 +1,22 @@
-97a98,106
-> 		//Python bindings ugly hack
-> 		bool Do(const ProcessingData& in, ProcessingData &out) {
-> 			try {
-> 				Do( dynamic_cast<const Audio&>(in), dynamic_cast<Spectrum&>(out) );
-> 			}
-> 			catch(...){
-> 				return false;
-> 			}
-> 		}
+Index: CLAM/src/Processing/Analysis/FFT_ooura.hxx
+===================================================================
+--- CLAM/src/Processing/Analysis/FFT_ooura.hxx	(revisión: 11854)
++++ CLAM/src/Processing/Analysis/FFT_ooura.hxx	(copia de trabajo)
+@@ -95,7 +95,16 @@
+ 
+ 		bool Do(const Audio& in, Spectrum &out);
+ 
+-		
++		//Python bindings hack
++ 		bool Do(const ProcessingData& in, ProcessingData &out) {
++ 			try {
++ 				Do( dynamic_cast<const Audio&>(in), dynamic_cast<Spectrum&>(out) );
++ 			}
++ 			catch(...){
++ 				return false;
++ 			}
++ 		}
++
+ 		bool MayDisableExecution() const {return true;}
+ 
+ 	};

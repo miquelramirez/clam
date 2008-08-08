@@ -4,6 +4,7 @@ options_filename = 'options.cache'
 opts = Options(options_filename,ARGUMENTS)
 opts.Add(PathOption('prefix', 'The prefix where the CLAM library is installed', '/usr/local'))
 opts.Add(PackageOption('plugins_prefix', 'The prefix where the CLAM plugins are installed. Use No for disable them and Yes to use the same CLAM installation path.', 'no'))
+opts.Add(BoolOption('debug', 'Enables debug symbols', 'no'))
 env = Environment(ENV=os.environ, options=opts)
 Help(opts.GenerateHelpText(env))
 
@@ -28,6 +29,7 @@ env.Append( CPPPATH=['/usr/include/python2.5','/usr/include/'] )
 env.Append( LIBS=['boost_python'] )
 env.Append( LIBPATH=['/usr/lib/python2.5/config'] )
 
-#env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+if env['debug']:
+	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
 env.SharedLibrary( target='clam', source=['clam_bindings.cxx','Definitions.cxx','indexing/indexing_slice.cpp','indexing/python_iterator.cpp'], SHLIBPREFIX='' )

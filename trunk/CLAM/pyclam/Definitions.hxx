@@ -2,7 +2,6 @@
 #define __clam_definitions_hpp__
 
 #include <boost/shared_ptr.hpp>
-#include <boost/weak_ptr.hpp>
 
 #include <vector>
 #include <string>
@@ -13,9 +12,6 @@
 #include <CLAM/MonoAudioFileReader.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 
-#include <bitset>
-// # include <boost/mpl/or.hpp>
-// # include <boost/mpl/not.hpp>
 #include <CLAM/Flags.hxx>
 #include <CLAM/SpecTypeFlags.hxx>
 
@@ -31,11 +27,10 @@
 
 namespace Bindings {
 using boost::shared_ptr;
-using boost::weak_ptr;
 using CLAM::TSize;
 using CLAM::TData;
 
-class Spectrum: public CLAM::Spectrum { //wrap
+class Spectrum: public CLAM::Spectrum { //extra-wrap
 	shared_ptr<CLAM::Spectrum> _spectrum;
 public:
 	Spectrum() { _spectrum = shared_ptr<CLAM::Spectrum>( new CLAM::Spectrum() ); }
@@ -47,12 +42,13 @@ public:
 };
 
 //TODO: make generic as a template. template <class T> class Array and typedef Bindings::Array<TData> Bindings::DataArray;
-class DataArray { //wrap
-	CLAM::DataArray* _dataArray; //Note: avoid shared_ptr here, will try to delete the CLAM::Array object managed internally by the CLAM library (no 'new' here)
+class DataArray { //extra-wrap
+
+	//Note: avoid shared_ptr here, will try to delete the CLAM::Array object managed internally by the CLAM library (no 'new' here)
+	CLAM::DataArray* _dataArray;
 public:
 	DataArray(CLAM::DataArray& array) { _dataArray=&array; }
 
-// 	const &TData operator [](const int& i) const { return (*_dataArray)[i]; }
 	TData& operator [](const int& i) { return (*_dataArray)[i]; }
 
 	//FIXME: Workaround since [] operator no works with assigment (Note: bindings to std::vector work ok)
@@ -62,7 +58,7 @@ public:
 //TODO: inline bool operator == (const DataArray& a, const DataArray& b)
 };
 
-class Audio: public CLAM::Audio { //wrap
+class Audio: public CLAM::Audio { //extra-wrap
 	shared_ptr<CLAM::Audio> _audio;
 	shared_ptr<Bindings::DataArray> _dataArray;
 public:
@@ -81,7 +77,7 @@ public:
 	CLAM::ProcessingData& getBase() const { return dynamic_cast<CLAM::ProcessingData&>(*_audio.get()); } //Note: breaks orginal interface
 };
 
-class Processing { //wrap
+class Processing { //extra-wrap
 protected: shared_ptr<CLAM::Processing> _clamproc;
 public:
 	Processing() {};
@@ -90,7 +86,7 @@ public:
 
 	shared_ptr<CLAM::Processing> getReal() const { return _clamproc; } //Note: breaks orginal interface
 };
-class MonoAudioFileReader: public Processing { //wrap
+class MonoAudioFileReader: public Processing { //extra-wrap
 public:
 	MonoAudioFileReader() { _clamproc = shared_ptr<CLAM::Processing>( new CLAM::MonoAudioFileReader() ); }
 
@@ -101,6 +97,7 @@ public:
 	*	proc.GetLength()
 	*/
 	MonoAudioFileReader(shared_ptr<Bindings::Processing> Proc) { _clamproc=Proc->getReal(); }
+	MonoAudioFileReader(CLAM::Processing& Proc) { _clamproc=shared_ptr<CLAM::Processing>(&Proc); }
 
 	//Note: breaks orginal interface
 	int GetLength() const {
@@ -108,58 +105,38 @@ public:
 	}
 };
 
-
 //KLUDGE: using same alias for the clase name.
 // WARNING: CLAM::ProcessingConfig [class]
 // > warning W1047: There are two or more classes that use same alias("ProcessingConfig"). Duplicated aliases causes few problems,
 // > but the main one is that some of the classes will not be exposed to Python.Other classes : Bindings::ProcessingConfig
-class ProcessingConfig { //wrap
+class ProcessingConfig { //extra-wrap
 protected: shared_ptr<CLAM::ProcessingConfig> _cfg;
 public:
 	CLAM::ProcessingConfig& getReal() const { return *_cfg.get(); } //Note: breaks orginal interface
 };
-class MonoAudioFileReaderConfig: public ProcessingConfig { //wrap
+class MonoAudioFileReaderConfig: public ProcessingConfig { //extra-wrap
 public:
 	MonoAudioFileReaderConfig() { _cfg = shared_ptr<CLAM::ProcessingConfig>( new CLAM::MonoAudioFileReaderConfig() ); }
 	void SetSourceFile(char* name) { dynamic_cast<CLAM::MonoAudioFileReaderConfig*>(_cfg.get())->SetSourceFile(name); }
 };
-class FFTConfig: public ProcessingConfig { //wrap
+class FFTConfig: public ProcessingConfig { //extra-wrap
 public:
 	FFTConfig() { _cfg = shared_ptr<CLAM::ProcessingConfig>( new CLAM::FFTConfig() ); }
 	void SetAudioSize(int s) { dynamic_cast<CLAM::FFTConfig*>(_cfg.get())->SetAudioSize(s); }
 };
 
-class NetworkPlayer { //wrap
+class BPNetworkPlayer { //extra-wrap
 protected: shared_ptr<CLAM::NetworkPlayer> _player;
 public:
-	NetworkPlayer() {};
-	NetworkPlayer(const Bindings::NetworkPlayer& Net) { _player=Net.getReal(); }
+	BPNetworkPlayer() {};
+	BPNetworkPlayer(const Bindings::BPNetworkPlayer& Net) { _player=Net.getSharedPointer(); }
 
-	shared_ptr<CLAM::NetworkPlayer> getReal() const { return _player; } //Note: breaks orginal interface
+	shared_ptr<CLAM::NetworkPlayer> getSharedPointer() const { return _player; } //Note: breaks orginal interface
+	CLAM::NetworkPlayer& getReal() const { return *(_player.get()); } //Note: breaks orginal interface
 };
-class PANetworkPlayer: public NetworkPlayer {
+class PANetworkPlayer: public BPNetworkPlayer {
 public:
 	PANetworkPlayer() { _player = shared_ptr<CLAM::NetworkPlayer>( new CLAM::PANetworkPlayer() ); }
-};
-
-class Network { //wrap
-	CLAM::Network _network;
-	std::vector< shared_ptr<Bindings::Processing> > _proccesings;
-public:
-	std::string AddProcessing(const std::string& key) { return _network.AddProcessing(key); }
-	bool ConnectPorts( const std::string &r, const std::string &s ) { return _network.ConnectPorts(r,s); }
-
-	void Start() { _network.Start(); }
-	void Stop() { _network.Stop(); }
-	void Do() { _network.Do(); }
-
-	/** Methods with 'proxy' classes **/
-	bool ConfigureProcessing(const std::string& p, Bindings::ProcessingConfig& c);
-	void SetPlayer(Bindings::NetworkPlayer& player) { _network.SetPlayer( player.getReal().get() ); }
-	shared_ptr<Bindings::Processing> GetProcessing(const std::string &name) {
-		_proccesings.push_back( shared_ptr<Bindings::Processing>( new Bindings::Processing(_network.GetProcessing(name)) ) );
-		return _proccesings.back();
-	}
 };
 
 //FIXME: Temporary hacks to allow some issues
@@ -167,7 +144,7 @@ namespace PyHacks {
 
 //Note: Expected automatic upcasting seems no work in some methods called through python (no meet some methods signatures)
 static inline CLAM::Component& toComponent(CLAM::ProcessingData& pd) { return dynamic_cast<CLAM::Component&>(pd); }
-
+static inline CLAM::Component& toComponent(CLAM::Network& n) { return dynamic_cast<CLAM::Component&>(n); }
 static inline CLAM::Component& toComponent(Bindings::Spectrum& s) { return toComponent(s.getBase()); }
 
 } //namespace PyHacks

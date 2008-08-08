@@ -37,7 +37,11 @@ enablePlugins = True if plugins_path!='' else False
 
 #import glob
 #clam_clam_file_list = glob.glob('CLAM/*.hxx')
+
 clam_file_list = []
+
+#FIXME: Important include,related with Problem2. 
+#clam_file_list += ["DynamicTypeMacros.hxx"] 
 
 # These requires pointer support enabled (see below declarations.is_pointer (mem_fun.return_type)):)
 #clam_file_list += ["Processing.hxx", "ProcessingConfig.hxx"] # <- not put here, breaks the parser (FIXME)
@@ -45,7 +49,7 @@ clam_file_list += ["Flags.hxx", "SpecTypeFlags.hxx"]
 clam_file_list += ["Component.hxx","Storage.hxx", "XMLStorage.hxx"]
 clam_file_list += ["FFT.hxx","FFT_base.hxx","FFT_ooura.hxx"]
 clam_file_list += ["OutControl.hxx","InControl.hxx"]
-#"FFTConfig.hxx" -> no works by now (see wrap at Definitions.hxx)
+#"FFTConfig.hxx" no works by now (see wrap at Definitions.hxx)
 #"FFT_fftw3.hxx", "FFT_rfftw.hxx"
 #clam_file_list += [ "FFT_fftw3.hxx" ] # requires USE_FFTW3 definition (defined below but indeed no works FIXME)
 
@@ -53,6 +57,14 @@ clam_file_list += ["OutControl.hxx","InControl.hxx"]
 clam_file_list += ["Processing.hxx", "ProcessingConfig.hxx","ProcessingData.hxx","ProcessingDataConfig.hxx","ProcessingDataPlugin.hxx"] 
 
 #clam_file_list += ["NullProcessingConfig.hxx"]
+clam_file_list += ["FlowControl.hxx"]
+clam_file_list += ["FlattenedNetwork.hxx","Network.hxx"]
+
+clam_file_list += ["NetworkPlayer.hxx"] #, "PANetworkPlayer.hxx"
+#clam_file_list += ["JACKNetworkPlayer.hxx"]
+
+#clam_file_list += ["MonoAudioFileReader.hxx","MonoAudioFileReaderConfig.hxx"] # Problem2 with MonoAudioFileReaderConfig
+
 
 """ Usual problems:
 == Problem1 ==
@@ -68,9 +80,10 @@ clam_bindings.cxx:848: note:                 Spectrum_wrapper::Spectrum_wrapper(
 
 == Problem2 ==
 "error: invalid application of 'sizeof' to incomplete type"
-	
-(Note1:line of clam_bindings.cxx is always end of file)
-(Note2:Py++ parse ok, fails with compilation)
+
+Note1:line of clam_bindings.cxx is always end of file
+Note2:Py++ parse ok, fails with compilation
+Note3:comes fromo DynamicTypeMacros.hxx include
 clam_bindings.cxx:3649:   instantiated from here
 /usr/include/boost/python/object/make_instance.hpp:24: error: invalid application of 'sizeof' to incomplete type 'boost::STATIC_ASSERTION_FAILURE<false>'
 	
@@ -105,6 +118,7 @@ if enablePlugins:
 	#clam_plugins_file_list += ["GuitarEffects/AudioSwitch/AudioSwitch.hxx"]
 	#clam_plugins_file_list += ["sndfile/SndfilePlayer.hxx"]
 	#clam_plugins_file_list += ["MIDI/MIDISource/MIDISource.hxx"]
+	#clam_plugins_file_list += ["osc/LibloSource.hxx","osc/LibloSink.hxx"]
 	file_list += [ plugins_path+"/"+item for item in clam_plugins_file_list]
 
 
