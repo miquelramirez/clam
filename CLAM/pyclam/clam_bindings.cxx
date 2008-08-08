@@ -6,6 +6,10 @@
 
 #include "boost/python/suite/indexing/container_suite.hpp"
 
+#include "boost/python/suite/indexing/vector.hpp"
+
+#include "boost/python/suite/indexing/map.hpp"
+
 #include "boost/python/suite/indexing/list.hpp"
 
 #include "CLAM/Flags.hxx"
@@ -37,6 +41,14 @@
 #include "CLAM/ProcessingDataConfig.hxx"
 
 #include "CLAM/ProcessingDataPlugin.hxx"
+
+#include "CLAM/FlowControl.hxx"
+
+#include "CLAM/FlattenedNetwork.hxx"
+
+#include "CLAM/Network.hxx"
+
+#include "CLAM/NetworkPlayer.hxx"
 
 #include "CLAM/DataTypes.hxx"
 
@@ -771,6 +783,560 @@ struct Flags_less__4u__grate__wrapper : CLAM::Flags< 4u >, bp::wrapper< CLAM::Fl
 
 };
 
+struct FlattenedNetwork_wrapper : CLAM::FlattenedNetwork, bp::wrapper< CLAM::FlattenedNetwork > {
+
+    FlattenedNetwork_wrapper(CLAM::FlattenedNetwork const & arg )
+    : CLAM::FlattenedNetwork( arg )
+      , bp::wrapper< CLAM::FlattenedNetwork >(){
+        // copy constructor
+        
+    }
+
+    FlattenedNetwork_wrapper( )
+    : CLAM::FlattenedNetwork( )
+      , bp::wrapper< CLAM::FlattenedNetwork >(){
+        // null constructor
+    
+    }
+
+    virtual void AddProcessing( ::std::string const & arg0, ::CLAM::Processing * arg1 ) {
+        if( bp::override func_AddProcessing = this->get_override( "AddProcessing" ) )
+            func_AddProcessing( arg0, boost::python::ptr(arg1) );
+        else
+            this->CLAM::FlattenedNetwork::AddProcessing( arg0, boost::python::ptr(arg1) );
+    }
+    
+    
+    void default_AddProcessing( ::std::string const & arg0, ::CLAM::Processing * arg1 ) {
+        CLAM::FlattenedNetwork::AddProcessing( arg0, boost::python::ptr(arg1) );
+    }
+
+    virtual void AddProcessing( ::std::string const & name, ::std::string const & key ) {
+        if( bp::override func_AddProcessing = this->get_override( "AddProcessing" ) )
+            func_AddProcessing( name, key );
+        else
+            this->CLAM::FlattenedNetwork::AddProcessing( name, key );
+    }
+    
+    
+    void default_AddProcessing( ::std::string const & name, ::std::string const & key ) {
+        CLAM::FlattenedNetwork::AddProcessing( name, key );
+    }
+
+    virtual ::std::string AddProcessing( ::std::string const & key ) {
+        if( bp::override func_AddProcessing = this->get_override( "AddProcessing" ) )
+            return func_AddProcessing( key );
+        else
+            return this->CLAM::FlattenedNetwork::AddProcessing( key );
+    }
+    
+    
+    ::std::string default_AddProcessing( ::std::string const & key ) {
+        return CLAM::FlattenedNetwork::AddProcessing( key );
+    }
+
+    virtual unsigned int BackendBufferSize(  ) {
+        if( bp::override func_BackendBufferSize = this->get_override( "BackendBufferSize" ) )
+            return func_BackendBufferSize(  );
+        else
+            return this->CLAM::FlattenedNetwork::BackendBufferSize(  );
+    }
+    
+    
+    unsigned int default_BackendBufferSize(  ) {
+        return CLAM::FlattenedNetwork::BackendBufferSize( );
+    }
+
+    virtual unsigned int BackendSampleRate(  ) {
+        if( bp::override func_BackendSampleRate = this->get_override( "BackendSampleRate" ) )
+            return func_BackendSampleRate(  );
+        else
+            return this->CLAM::FlattenedNetwork::BackendSampleRate(  );
+    }
+    
+    
+    unsigned int default_BackendSampleRate(  ) {
+        return CLAM::FlattenedNetwork::BackendSampleRate( );
+    }
+
+    virtual ::std::_Rb_tree_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > BeginProcessings(  ) {
+        if( bp::override func_BeginProcessings = this->get_override( "BeginProcessings" ) )
+            return func_BeginProcessings(  );
+        else
+            return this->CLAM::FlattenedNetwork::BeginProcessings(  );
+    }
+    
+    
+    ::std::_Rb_tree_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > default_BeginProcessings(  ) {
+        return CLAM::FlattenedNetwork::BeginProcessings( );
+    }
+
+    virtual ::std::_Rb_tree_const_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > BeginProcessings(  ) const  {
+        if( bp::override func_BeginProcessings = this->get_override( "BeginProcessings" ) )
+            return func_BeginProcessings(  );
+        else
+            return this->CLAM::FlattenedNetwork::BeginProcessings(  );
+    }
+    
+    
+    ::std::_Rb_tree_const_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > default_BeginProcessings(  ) const  {
+        return CLAM::FlattenedNetwork::BeginProcessings( );
+    }
+
+    virtual void Clear(  ) {
+        if( bp::override func_Clear = this->get_override( "Clear" ) )
+            func_Clear(  );
+        else
+            this->CLAM::FlattenedNetwork::Clear(  );
+    }
+    
+    
+    void default_Clear(  ) {
+        CLAM::FlattenedNetwork::Clear( );
+    }
+
+    virtual bool ConfigureProcessing( ::std::string const & arg0, ::CLAM::ProcessingConfig const & arg1 ) {
+        if( bp::override func_ConfigureProcessing = this->get_override( "ConfigureProcessing" ) )
+            return func_ConfigureProcessing( arg0, boost::ref(arg1) );
+        else
+            return this->CLAM::FlattenedNetwork::ConfigureProcessing( arg0, boost::ref(arg1) );
+    }
+    
+    
+    bool default_ConfigureProcessing( ::std::string const & arg0, ::CLAM::ProcessingConfig const & arg1 ) {
+        return CLAM::FlattenedNetwork::ConfigureProcessing( arg0, boost::ref(arg1) );
+    }
+
+    virtual bool ConnectControls( ::std::string const & arg0, ::std::string const & arg1 ) {
+        if( bp::override func_ConnectControls = this->get_override( "ConnectControls" ) )
+            return func_ConnectControls( arg0, arg1 );
+        else
+            return this->CLAM::FlattenedNetwork::ConnectControls( arg0, arg1 );
+    }
+    
+    
+    bool default_ConnectControls( ::std::string const & arg0, ::std::string const & arg1 ) {
+        return CLAM::FlattenedNetwork::ConnectControls( arg0, arg1 );
+    }
+
+    virtual bool ConnectPorts( ::std::string const & arg0, ::std::string const & arg1 ) {
+        if( bp::override func_ConnectPorts = this->get_override( "ConnectPorts" ) )
+            return func_ConnectPorts( arg0, arg1 );
+        else
+            return this->CLAM::FlattenedNetwork::ConnectPorts( arg0, arg1 );
+    }
+    
+    
+    bool default_ConnectPorts( ::std::string const & arg0, ::std::string const & arg1 ) {
+        return CLAM::FlattenedNetwork::ConnectPorts( arg0, arg1 );
+    }
+
+    virtual bool DisconnectControls( ::std::string const & arg0, ::std::string const & arg1 ) {
+        if( bp::override func_DisconnectControls = this->get_override( "DisconnectControls" ) )
+            return func_DisconnectControls( arg0, arg1 );
+        else
+            return this->CLAM::FlattenedNetwork::DisconnectControls( arg0, arg1 );
+    }
+    
+    
+    bool default_DisconnectControls( ::std::string const & arg0, ::std::string const & arg1 ) {
+        return CLAM::FlattenedNetwork::DisconnectControls( arg0, arg1 );
+    }
+
+    virtual bool DisconnectPorts( ::std::string const & arg0, ::std::string const & arg1 ) {
+        if( bp::override func_DisconnectPorts = this->get_override( "DisconnectPorts" ) )
+            return func_DisconnectPorts( arg0, arg1 );
+        else
+            return this->CLAM::FlattenedNetwork::DisconnectPorts( arg0, arg1 );
+    }
+    
+    
+    bool default_DisconnectPorts( ::std::string const & arg0, ::std::string const & arg1 ) {
+        return CLAM::FlattenedNetwork::DisconnectPorts( arg0, arg1 );
+    }
+
+    virtual ::std::_Rb_tree_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > EndProcessings(  ) {
+        if( bp::override func_EndProcessings = this->get_override( "EndProcessings" ) )
+            return func_EndProcessings(  );
+        else
+            return this->CLAM::FlattenedNetwork::EndProcessings(  );
+    }
+    
+    
+    ::std::_Rb_tree_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > default_EndProcessings(  ) {
+        return CLAM::FlattenedNetwork::EndProcessings( );
+    }
+
+    virtual ::std::_Rb_tree_const_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > EndProcessings(  ) const  {
+        if( bp::override func_EndProcessings = this->get_override( "EndProcessings" ) )
+            return func_EndProcessings(  );
+        else
+            return this->CLAM::FlattenedNetwork::EndProcessings(  );
+    }
+    
+    
+    ::std::_Rb_tree_const_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > default_EndProcessings(  ) const  {
+        return CLAM::FlattenedNetwork::EndProcessings( );
+    }
+
+    virtual ::std::map< std::string, CLAM::BaseNetwork::Geometry > const GetAndClearGeometries(  ) {
+        if( bp::override func_GetAndClearGeometries = this->get_override( "GetAndClearGeometries" ) )
+            return func_GetAndClearGeometries(  );
+        else
+            return this->CLAM::FlattenedNetwork::GetAndClearGeometries(  );
+    }
+    
+    
+    ::std::map< std::string, CLAM::BaseNetwork::Geometry > const default_GetAndClearGeometries(  ) {
+        return CLAM::FlattenedNetwork::GetAndClearGeometries( );
+    }
+
+    virtual char const * GetClassName(  ) const  {
+        if( bp::override func_GetClassName = this->get_override( "GetClassName" ) )
+            return func_GetClassName(  );
+        else
+            return this->CLAM::FlattenedNetwork::GetClassName(  );
+    }
+    
+    
+    char const * default_GetClassName(  ) const  {
+        return CLAM::FlattenedNetwork::GetClassName( );
+    }
+
+    virtual ::std::string GetConfigurationErrors(  ) const  {
+        if( bp::override func_GetConfigurationErrors = this->get_override( "GetConfigurationErrors" ) )
+            return func_GetConfigurationErrors(  );
+        else
+            return this->CLAM::FlattenedNetwork::GetConfigurationErrors(  );
+    }
+    
+    
+    ::std::string default_GetConfigurationErrors(  ) const  {
+        return CLAM::FlattenedNetwork::GetConfigurationErrors( );
+    }
+
+    virtual ::std::string GetConnectorIdentifier( ::std::string const & arg0 ) const  {
+        if( bp::override func_GetConnectorIdentifier = this->get_override( "GetConnectorIdentifier" ) )
+            return func_GetConnectorIdentifier( arg0 );
+        else
+            return this->CLAM::FlattenedNetwork::GetConnectorIdentifier( arg0 );
+    }
+    
+    
+    ::std::string default_GetConnectorIdentifier( ::std::string const & arg0 ) const  {
+        return CLAM::FlattenedNetwork::GetConnectorIdentifier( arg0 );
+    }
+
+    virtual ::std::list< std::string > GetInControlsConnectedTo( ::std::string const & arg0 ) const  {
+        if( bp::override func_GetInControlsConnectedTo = this->get_override( "GetInControlsConnectedTo" ) )
+            return func_GetInControlsConnectedTo( arg0 );
+        else
+            return this->CLAM::FlattenedNetwork::GetInControlsConnectedTo( arg0 );
+    }
+    
+    
+    ::std::list< std::string > default_GetInControlsConnectedTo( ::std::string const & arg0 ) const  {
+        return CLAM::FlattenedNetwork::GetInControlsConnectedTo( arg0 );
+    }
+
+    virtual ::std::list< std::string > GetInPortsConnectedTo( ::std::string const & arg0 ) const  {
+        if( bp::override func_GetInPortsConnectedTo = this->get_override( "GetInPortsConnectedTo" ) )
+            return func_GetInPortsConnectedTo( arg0 );
+        else
+            return this->CLAM::FlattenedNetwork::GetInPortsConnectedTo( arg0 );
+    }
+    
+    
+    ::std::list< std::string > default_GetInPortsConnectedTo( ::std::string const & arg0 ) const  {
+        return CLAM::FlattenedNetwork::GetInPortsConnectedTo( arg0 );
+    }
+
+    virtual ::std::list< CLAM::InPortBase* > GetInPortsConnectedTo( ::CLAM::OutPortBase & arg0 ) const  {
+        if( bp::override func_GetInPortsConnectedTo = this->get_override( "GetInPortsConnectedTo" ) )
+            return func_GetInPortsConnectedTo( boost::ref(arg0) );
+        else
+            return this->CLAM::FlattenedNetwork::GetInPortsConnectedTo( boost::ref(arg0) );
+    }
+    
+    
+    ::std::list< CLAM::InPortBase* > default_GetInPortsConnectedTo( ::CLAM::OutPortBase & arg0 ) const  {
+        return CLAM::FlattenedNetwork::GetInPortsConnectedTo( boost::ref(arg0) );
+    }
+
+    virtual ::std::string GetProcessingIdentifier( ::std::string const & arg0 ) const  {
+        if( bp::override func_GetProcessingIdentifier = this->get_override( "GetProcessingIdentifier" ) )
+            return func_GetProcessingIdentifier( arg0 );
+        else
+            return this->CLAM::FlattenedNetwork::GetProcessingIdentifier( arg0 );
+    }
+    
+    
+    ::std::string default_GetProcessingIdentifier( ::std::string const & arg0 ) const  {
+        return CLAM::FlattenedNetwork::GetProcessingIdentifier( arg0 );
+    }
+
+    virtual ::std::string GetUnconnectedInPorts(  ) const  {
+        if( bp::override func_GetUnconnectedInPorts = this->get_override( "GetUnconnectedInPorts" ) )
+            return func_GetUnconnectedInPorts(  );
+        else
+            return this->CLAM::FlattenedNetwork::GetUnconnectedInPorts(  );
+    }
+    
+    
+    ::std::string default_GetUnconnectedInPorts(  ) const  {
+        return CLAM::FlattenedNetwork::GetUnconnectedInPorts( );
+    }
+
+    virtual ::std::string GetUnusedName( ::std::string const & prefix ) const  {
+        if( bp::override func_GetUnusedName = this->get_override( "GetUnusedName" ) )
+            return func_GetUnusedName( prefix );
+        else
+            return this->CLAM::FlattenedNetwork::GetUnusedName( prefix );
+    }
+    
+    
+    ::std::string default_GetUnusedName( ::std::string const & prefix ) const  {
+        return CLAM::FlattenedNetwork::GetUnusedName( prefix );
+    }
+
+    virtual bool HasMisconfiguredProcessings(  ) const  {
+        if( bp::override func_HasMisconfiguredProcessings = this->get_override( "HasMisconfiguredProcessings" ) )
+            return func_HasMisconfiguredProcessings(  );
+        else
+            return this->CLAM::FlattenedNetwork::HasMisconfiguredProcessings(  );
+    }
+    
+    
+    bool default_HasMisconfiguredProcessings(  ) const  {
+        return CLAM::FlattenedNetwork::HasMisconfiguredProcessings( );
+    }
+
+    virtual bool HasProcessing( ::std::string const & name ) const  {
+        if( bp::override func_HasProcessing = this->get_override( "HasProcessing" ) )
+            return func_HasProcessing( name );
+        else
+            return this->CLAM::FlattenedNetwork::HasProcessing( name );
+    }
+    
+    
+    bool default_HasProcessing( ::std::string const & name ) const  {
+        return CLAM::FlattenedNetwork::HasProcessing( name );
+    }
+
+    virtual bool HasSyncSource(  ) const  {
+        if( bp::override func_HasSyncSource = this->get_override( "HasSyncSource" ) )
+            return func_HasSyncSource(  );
+        else
+            return this->CLAM::FlattenedNetwork::HasSyncSource(  );
+    }
+    
+    
+    bool default_HasSyncSource(  ) const  {
+        return CLAM::FlattenedNetwork::HasSyncSource( );
+    }
+
+    virtual bool HasUnconnectedInPorts(  ) const  {
+        if( bp::override func_HasUnconnectedInPorts = this->get_override( "HasUnconnectedInPorts" ) )
+            return func_HasUnconnectedInPorts(  );
+        else
+            return this->CLAM::FlattenedNetwork::HasUnconnectedInPorts(  );
+    }
+    
+    
+    bool default_HasUnconnectedInPorts(  ) const  {
+        return CLAM::FlattenedNetwork::HasUnconnectedInPorts( );
+    }
+
+    virtual bool IsEmpty(  ) const  {
+        if( bp::override func_IsEmpty = this->get_override( "IsEmpty" ) )
+            return func_IsEmpty(  );
+        else
+            return this->CLAM::FlattenedNetwork::IsEmpty(  );
+    }
+    
+    
+    bool default_IsEmpty(  ) const  {
+        return CLAM::FlattenedNetwork::IsEmpty( );
+    }
+
+    virtual bool IsReady(  ) const  {
+        if( bp::override func_IsReady = this->get_override( "IsReady" ) )
+            return func_IsReady(  );
+        else
+            return this->CLAM::FlattenedNetwork::IsReady(  );
+    }
+    
+    
+    bool default_IsReady(  ) const  {
+        return CLAM::FlattenedNetwork::IsReady( );
+    }
+
+    virtual void LoadFrom( ::CLAM::Storage & storage ) {
+        if( bp::override func_LoadFrom = this->get_override( "LoadFrom" ) )
+            func_LoadFrom( boost::ref(storage) );
+        else
+            this->CLAM::FlattenedNetwork::LoadFrom( boost::ref(storage) );
+    }
+    
+    
+    void default_LoadFrom( ::CLAM::Storage & storage ) {
+        CLAM::FlattenedNetwork::LoadFrom( boost::ref(storage) );
+    }
+
+    virtual void ReconfigureAllProcessings(  ) {
+        if( bp::override func_ReconfigureAllProcessings = this->get_override( "ReconfigureAllProcessings" ) )
+            func_ReconfigureAllProcessings(  );
+        else
+            this->CLAM::FlattenedNetwork::ReconfigureAllProcessings(  );
+    }
+    
+    
+    void default_ReconfigureAllProcessings(  ) {
+        CLAM::FlattenedNetwork::ReconfigureAllProcessings( );
+    }
+
+    virtual void RemoveProcessing( ::std::string const & arg0 ) {
+        if( bp::override func_RemoveProcessing = this->get_override( "RemoveProcessing" ) )
+            func_RemoveProcessing( arg0 );
+        else
+            this->CLAM::FlattenedNetwork::RemoveProcessing( arg0 );
+    }
+    
+    
+    void default_RemoveProcessing( ::std::string const & arg0 ) {
+        CLAM::FlattenedNetwork::RemoveProcessing( arg0 );
+    }
+
+    virtual bool RenameProcessing( ::std::string const & oldName, ::std::string const & newName ) {
+        if( bp::override func_RenameProcessing = this->get_override( "RenameProcessing" ) )
+            return func_RenameProcessing( oldName, newName );
+        else
+            return this->CLAM::FlattenedNetwork::RenameProcessing( oldName, newName );
+    }
+    
+    
+    bool default_RenameProcessing( ::std::string const & oldName, ::std::string const & newName ) {
+        return CLAM::FlattenedNetwork::RenameProcessing( oldName, newName );
+    }
+
+    virtual void SetName( ::std::string const & name ) {
+        if( bp::override func_SetName = this->get_override( "SetName" ) )
+            func_SetName( name );
+        else
+            this->CLAM::FlattenedNetwork::SetName( name );
+    }
+    
+    
+    void default_SetName( ::std::string const & name ) {
+        CLAM::FlattenedNetwork::SetName( name );
+    }
+
+    virtual bool SetProcessingsGeometries( ::std::map< std::string, CLAM::BaseNetwork::Geometry > const & processingsGeometries ) {
+        if( bp::override func_SetProcessingsGeometries = this->get_override( "SetProcessingsGeometries" ) )
+            return func_SetProcessingsGeometries( boost::ref(processingsGeometries) );
+        else
+            return this->CLAM::FlattenedNetwork::SetProcessingsGeometries( boost::ref(processingsGeometries) );
+    }
+    
+    
+    bool default_SetProcessingsGeometries( ::std::map< std::string, CLAM::BaseNetwork::Geometry > const & processingsGeometries ) {
+        return CLAM::FlattenedNetwork::SetProcessingsGeometries( boost::ref(processingsGeometries) );
+    }
+
+    virtual void StoreOn( ::CLAM::Storage & storage ) const  {
+        if( bp::override func_StoreOn = this->get_override( "StoreOn" ) )
+            func_StoreOn( boost::ref(storage) );
+        else
+            this->CLAM::FlattenedNetwork::StoreOn( boost::ref(storage) );
+    }
+    
+    
+    void default_StoreOn( ::CLAM::Storage & storage ) const  {
+        CLAM::FlattenedNetwork::StoreOn( boost::ref(storage) );
+    }
+
+    virtual bool UpdateSelections( ::std::list< std::string > const & processingsNamesList ) {
+        if( bp::override func_UpdateSelections = this->get_override( "UpdateSelections" ) )
+            return func_UpdateSelections( boost::ref(processingsNamesList) );
+        else
+            return this->CLAM::FlattenedNetwork::UpdateSelections( boost::ref(processingsNamesList) );
+    }
+    
+    
+    bool default_UpdateSelections( ::std::list< std::string > const & processingsNamesList ) {
+        return CLAM::FlattenedNetwork::UpdateSelections( boost::ref(processingsNamesList) );
+    }
+
+    virtual void setPasteMode(  ) {
+        if( bp::override func_setPasteMode = this->get_override( "setPasteMode" ) )
+            func_setPasteMode(  );
+        else
+            this->CLAM::FlattenedNetwork::setPasteMode(  );
+    }
+    
+    
+    void default_setPasteMode(  ) {
+        CLAM::FlattenedNetwork::setPasteMode( );
+    }
+
+};
+
+struct FlowControl_wrapper : CLAM::FlowControl, bp::wrapper< CLAM::FlowControl > {
+
+    FlowControl_wrapper( )
+    : CLAM::FlowControl( )
+      , bp::wrapper< CLAM::FlowControl >(){
+        // null constructor
+    
+    }
+
+    virtual void AttachToNetwork( ::CLAM::Network * arg0 ) {
+        if( bp::override func_AttachToNetwork = this->get_override( "AttachToNetwork" ) )
+            func_AttachToNetwork( boost::python::ptr(arg0) );
+        else
+            this->CLAM::FlowControl::AttachToNetwork( boost::python::ptr(arg0) );
+    }
+    
+    
+    void default_AttachToNetwork( ::CLAM::Network * arg0 ) {
+        CLAM::FlowControl::AttachToNetwork( boost::python::ptr(arg0) );
+    }
+
+    virtual void Do(  ){
+        bp::override func_Do = this->get_override( "Do" );
+        func_Do(  );
+    }
+
+    bool HasNetworkTopologyChanged(  ) const {
+        return CLAM::FlowControl::HasNetworkTopologyChanged(  );
+    }
+
+    virtual void ProcessingAddedToNetwork( ::CLAM::Processing & added ) {
+        if( bp::override func_ProcessingAddedToNetwork = this->get_override( "ProcessingAddedToNetwork" ) )
+            func_ProcessingAddedToNetwork( boost::ref(added) );
+        else
+            this->CLAM::FlowControl::ProcessingAddedToNetwork( boost::ref(added) );
+    }
+    
+    
+    void default_ProcessingAddedToNetwork( ::CLAM::Processing & added ) {
+        CLAM::FlowControl::ProcessingAddedToNetwork( boost::ref(added) );
+    }
+
+    virtual void ProcessingRemovedFromNetwork( ::CLAM::Processing & removed ) {
+        if( bp::override func_ProcessingRemovedFromNetwork = this->get_override( "ProcessingRemovedFromNetwork" ) )
+            func_ProcessingRemovedFromNetwork( boost::ref(removed) );
+        else
+            this->CLAM::FlowControl::ProcessingRemovedFromNetwork( boost::ref(removed) );
+    }
+    
+    
+    void default_ProcessingRemovedFromNetwork( ::CLAM::Processing & removed ) {
+        CLAM::FlowControl::ProcessingRemovedFromNetwork( boost::ref(removed) );
+    }
+
+};
+
 struct InControl_wrapper : CLAM::InControl, bp::wrapper< CLAM::InControl > {
 
     InControl_wrapper(CLAM::InControl const & arg )
@@ -797,6 +1363,101 @@ struct InControl_wrapper : CLAM::InControl, bp::wrapper< CLAM::InControl > {
     
     int default_DoControl( ::CLAM::TControlData val ) {
         return CLAM::InControl::DoControl( val );
+    }
+
+};
+
+struct NetworkPlayer_wrapper : CLAM::NetworkPlayer, bp::wrapper< CLAM::NetworkPlayer > {
+
+    NetworkPlayer_wrapper( )
+    : CLAM::NetworkPlayer( )
+      , bp::wrapper< CLAM::NetworkPlayer >(){
+        // null constructor
+    
+    }
+
+    virtual unsigned int BackendBufferSize(  ) {
+        if( bp::override func_BackendBufferSize = this->get_override( "BackendBufferSize" ) )
+            return func_BackendBufferSize(  );
+        else
+            return this->CLAM::NetworkPlayer::BackendBufferSize(  );
+    }
+    
+    
+    unsigned int default_BackendBufferSize(  ) {
+        return CLAM::NetworkPlayer::BackendBufferSize( );
+    }
+
+    virtual unsigned int BackendSampleRate(  ) {
+        if( bp::override func_BackendSampleRate = this->get_override( "BackendSampleRate" ) )
+            return func_BackendSampleRate(  );
+        else
+            return this->CLAM::NetworkPlayer::BackendSampleRate(  );
+    }
+    
+    
+    unsigned int default_BackendSampleRate(  ) {
+        return CLAM::NetworkPlayer::BackendSampleRate( );
+    }
+
+    void CollectSourcesAndSinks(  ){
+        CLAM::NetworkPlayer::CollectSourcesAndSinks(  );
+    }
+
+    ::std::vector< CLAM::AudioSink* > const & GetAudioSinks(  ) const {
+        return CLAM::NetworkPlayer::GetAudioSinks(  );
+    }
+
+    ::std::vector< CLAM::AudioSink* > & GetAudioSinks(  ){
+        return CLAM::NetworkPlayer::GetAudioSinks(  );
+    }
+
+    ::std::vector< CLAM::AudioSource* > const & GetAudioSources(  ) const {
+        return CLAM::NetworkPlayer::GetAudioSources(  );
+    }
+
+    ::std::vector< CLAM::AudioSource* > & GetAudioSources(  ){
+        return CLAM::NetworkPlayer::GetAudioSources(  );
+    }
+
+    ::CLAM::Network & GetNetwork(  ){
+        return CLAM::NetworkPlayer::GetNetwork(  );
+    }
+
+    virtual void Init(  ) {
+        if( bp::override func_Init = this->get_override( "Init" ) )
+            func_Init(  );
+        else
+            this->CLAM::NetworkPlayer::Init(  );
+    }
+    
+    
+    void default_Init(  ) {
+        CLAM::NetworkPlayer::Init( );
+    }
+
+    virtual bool IsWorking(  ) const {
+        bp::override func_IsWorking = this->get_override( "IsWorking" );
+        return func_IsWorking(  );
+    }
+
+    virtual ::std::string NonWorkingReason(  ) const {
+        bp::override func_NonWorkingReason = this->get_override( "NonWorkingReason" );
+        return func_NonWorkingReason(  );
+    }
+
+    void SetStopped( bool const val ){
+        CLAM::NetworkPlayer::SetStopped( val );
+    }
+
+    virtual void Start(  ){
+        bp::override func_Start = this->get_override( "Start" );
+        func_Start(  );
+    }
+
+    virtual void Stop(  ){
+        bp::override func_Stop = this->get_override( "Stop" );
+        func_Stop(  );
     }
 
 };
@@ -1088,12 +1749,63 @@ struct value_traits< std::basic_string< char, std::char_traits< char >, std::all
 
 }/*indexing*/ } /*python*/ } /*boost*/
 
+namespace boost { namespace python { namespace indexing {
+
+template<>
+struct value_traits< CLAM::BaseNetwork::Geometry >{
+
+    static bool const equality_comparable = false;
+    
+
+    static bool const less_than_comparable = false;
+    
+
+    template<typename PythonClass, typename Policy>
+    static void visit_container_class(PythonClass &, Policy const &){
+        
+    }
+
+};
+
+}/*indexing*/ } /*python*/ } /*boost*/
+
 BOOST_PYTHON_MODULE(clam){
+    { //::std::vector< CLAM::AudioSource* >
+        typedef bp::class_< std::vector< CLAM::AudioSource* > > AudioSources_exposer_t;
+        AudioSources_exposer_t AudioSources_exposer = AudioSources_exposer_t( "AudioSources" );
+        bp::scope AudioSources_scope( AudioSources_exposer );
+        AudioSources_exposer.def( bp::indexing::vector_suite< std::vector< CLAM::AudioSource* > >::with_policies(bp::return_internal_reference< >()) );
+    }
+
+    { //::std::vector< CLAM::AudioSink* >
+        typedef bp::class_< std::vector< CLAM::AudioSink* > > AudioSinks_exposer_t;
+        AudioSinks_exposer_t AudioSinks_exposer = AudioSinks_exposer_t( "AudioSinks" );
+        bp::scope AudioSinks_scope( AudioSinks_exposer );
+        AudioSinks_exposer.def( bp::indexing::vector_suite< std::vector< CLAM::AudioSink* > >::with_policies(bp::return_internal_reference< >()) );
+    }
+
+    { //::std::map< std::string, CLAM::BaseNetwork::Geometry >
+        typedef bp::class_< std::map< std::string, CLAM::BaseNetwork::Geometry > > ProcessingsGeometriesMap_exposer_t;
+        ProcessingsGeometriesMap_exposer_t ProcessingsGeometriesMap_exposer = ProcessingsGeometriesMap_exposer_t( "ProcessingsGeometriesMap" );
+        bp::scope ProcessingsGeometriesMap_scope( ProcessingsGeometriesMap_exposer );
+        ProcessingsGeometriesMap_exposer.def( bp::indexing::map_suite< std::map< std::string, CLAM::BaseNetwork::Geometry > >() );
+    }
+
     { //::std::list< std::string >
         typedef bp::class_< std::list< std::string > > list_less__std_scope_string__grate__exposer_t;
         list_less__std_scope_string__grate__exposer_t list_less__std_scope_string__grate__exposer = list_less__std_scope_string__grate__exposer_t( "list_less__std_scope_string__grate_" );
         bp::scope list_less__std_scope_string__grate__scope( list_less__std_scope_string__grate__exposer );
         list_less__std_scope_string__grate__exposer.def( bp::indexing::list_suite< std::list< std::string > >() );
+    }
+
+    bp::class_< std::list< std::string > >("list_less__std_scope_string__grate_")    
+        .def( bp::indexing::list_suite< std::list< std::string > >() );
+
+    { //::std::list< CLAM::InPortBase* >
+        typedef bp::class_< std::list< CLAM::InPortBase* > > InPortsList_exposer_t;
+        InPortsList_exposer_t InPortsList_exposer = InPortsList_exposer_t( "InPortsList" );
+        bp::scope InPortsList_scope( InPortsList_exposer );
+        InPortsList_exposer.def( bp::indexing::list_suite< std::list< CLAM::InPortBase* > >::with_policies(bp::return_internal_reference< >()) );
     }
 
     bp::enum_< CLAM::EFFTType>("EFFTType")
@@ -1128,6 +1840,17 @@ BOOST_PYTHON_MODULE(clam){
             "getReal"
             , (::CLAM::Audio & ( ::Bindings::Audio::* )(  ) const)( &::Bindings::Audio::getReal )
             , bp::return_value_policy< bp::reference_existing_object >() );
+
+    bp::class_< Bindings::BPNetworkPlayer >( "BPNetworkPlayer" )    
+        .def( bp::init< >() )    
+        .def( bp::init< Bindings::BPNetworkPlayer const & >(( bp::arg("Net") )) )    
+        .def( 
+            "getReal"
+            , (::CLAM::NetworkPlayer & ( ::Bindings::BPNetworkPlayer::* )(  ) const)( &::Bindings::BPNetworkPlayer::getReal )
+            , bp::return_value_policy< bp::reference_existing_object >() )    
+        .def( 
+            "getSharedPointer"
+            , (::boost::shared_ptr< CLAM::NetworkPlayer > ( ::Bindings::BPNetworkPlayer::* )(  ) const)( &::Bindings::BPNetworkPlayer::getSharedPointer ) );
 
     { //::Bindings::DataArray
         typedef bp::class_< Bindings::DataArray > DataArray_exposer_t;
@@ -1196,11 +1919,14 @@ BOOST_PYTHON_MODULE(clam){
     bp::class_< Bindings::MonoAudioFileReader, bp::bases< Bindings::Processing > >( "MonoAudioFileReader" )    
         .def( bp::init< >() )    
         .def( bp::init< boost::shared_ptr< Bindings::Processing > >(( bp::arg("Proc") )) )    
+        .def( bp::init< CLAM::Processing & >(( bp::arg("Proc") )) )    
         .def( 
             "GetLength"
             , (int ( ::Bindings::MonoAudioFileReader::* )(  ) const)( &::Bindings::MonoAudioFileReader::GetLength ) );
 
     bp::implicitly_convertible< boost::shared_ptr< Bindings::Processing >, Bindings::MonoAudioFileReader >();
+
+    bp::implicitly_convertible< CLAM::Processing &, Bindings::MonoAudioFileReader >();
 
     bp::class_< Bindings::MonoAudioFileReaderConfig, bp::bases< Bindings::ProcessingConfig > >( "MonoAudioFileReaderConfig" )    
         .def( bp::init< >() )    
@@ -1209,45 +1935,7 @@ BOOST_PYTHON_MODULE(clam){
             , (void ( ::Bindings::MonoAudioFileReaderConfig::* )( char * ) )( &::Bindings::MonoAudioFileReaderConfig::SetSourceFile )
             , ( bp::arg("name") ) );
 
-    bp::class_< Bindings::Network >( "Network" )    
-        .def( 
-            "AddProcessing"
-            , (::std::string ( ::Bindings::Network::* )( ::std::string const & ) )( &::Bindings::Network::AddProcessing )
-            , ( bp::arg("key") ) )    
-        .def( 
-            "ConfigureProcessing"
-            , (bool ( ::Bindings::Network::* )( ::std::string const &,::Bindings::ProcessingConfig & ) )( &::Bindings::Network::ConfigureProcessing )
-            , ( bp::arg("p"), bp::arg("c") ) )    
-        .def( 
-            "ConnectPorts"
-            , (bool ( ::Bindings::Network::* )( ::std::string const &,::std::string const & ) )( &::Bindings::Network::ConnectPorts )
-            , ( bp::arg("r"), bp::arg("s") ) )    
-        .def( 
-            "Do"
-            , (void ( ::Bindings::Network::* )(  ) )( &::Bindings::Network::Do ) )    
-        .def( 
-            "GetProcessing"
-            , (::boost::shared_ptr< Bindings::Processing > ( ::Bindings::Network::* )( ::std::string const & ) )( &::Bindings::Network::GetProcessing )
-            , ( bp::arg("name") ) )    
-        .def( 
-            "SetPlayer"
-            , (void ( ::Bindings::Network::* )( ::Bindings::NetworkPlayer & ) )( &::Bindings::Network::SetPlayer )
-            , ( bp::arg("player") ) )    
-        .def( 
-            "Start"
-            , (void ( ::Bindings::Network::* )(  ) )( &::Bindings::Network::Start ) )    
-        .def( 
-            "Stop"
-            , (void ( ::Bindings::Network::* )(  ) )( &::Bindings::Network::Stop ) );
-
-    bp::class_< Bindings::NetworkPlayer >( "NetworkPlayer" )    
-        .def( bp::init< >() )    
-        .def( bp::init< Bindings::NetworkPlayer const & >(( bp::arg("Net") )) )    
-        .def( 
-            "getReal"
-            , (::boost::shared_ptr< CLAM::NetworkPlayer > ( ::Bindings::NetworkPlayer::* )(  ) const)( &::Bindings::NetworkPlayer::getReal ) );
-
-    bp::class_< Bindings::PANetworkPlayer, bp::bases< Bindings::NetworkPlayer > >( "PANetworkPlayer" )    
+    bp::class_< Bindings::PANetworkPlayer, bp::bases< Bindings::BPNetworkPlayer > >( "PANetworkPlayer" )    
         .def( bp::init< >() );
 
     bp::class_< Bindings::Spectrum >( "Spectrum" )    
@@ -2035,10 +2723,6 @@ BOOST_PYTHON_MODULE(clam){
             , bp::pure_virtual( (bool ( ::CLAM::FFT_base::* )( ::CLAM::Audio const &,::CLAM::Spectrum & ) )(&::CLAM::FFT_base::Do) )
             , ( bp::arg("in"), bp::arg("out") ) )    
         .def( 
-            "Do"
-            , (bool ( ::CLAM::FFT_base::* )( ::CLAM::ProcessingData const &,::CLAM::Processing & ) )( &::CLAM::FFT_base::Do )
-            , ( bp::arg("in"), bp::arg("out") ) )    
-        .def( 
             "EnableExecution"
             , (bool ( ::CLAM::FFT_base::* )(  ) )(&::CLAM::FFT_base::EnableExecution)
             , (bool ( FFT_base_wrapper::* )(  ) )(&FFT_base_wrapper::default_EnableExecution) )    
@@ -2339,6 +3023,276 @@ BOOST_PYTHON_MODULE(clam){
             , bp::pure_virtual( (::CLAM::Component * ( ::CLAM::Flags<4u>::* )(  ) const)(&::CLAM::Flags< 4u >::Species) )
             , bp::return_value_policy< bp::reference_existing_object >() );
 
+    bp::class_< FlattenedNetwork_wrapper >( "FlattenedNetwork" )    
+        .def( bp::init< >() )    
+        .def( 
+            "AddFlowControl"
+            , (void ( ::CLAM::FlattenedNetwork::* )( ::CLAM::FlowControl * ) )( &::CLAM::FlattenedNetwork::AddFlowControl )
+            , ( bp::arg("arg0") ) )    
+        .def( 
+            "AddProcessing"
+            , (void ( ::CLAM::FlattenedNetwork::* )( ::std::string const &,::CLAM::Processing * ) )(&::CLAM::FlattenedNetwork::AddProcessing)
+            , (void ( FlattenedNetwork_wrapper::* )( ::std::string const &,::CLAM::Processing * ) )(&FlattenedNetwork_wrapper::default_AddProcessing)
+            , ( bp::arg("arg0"), bp::arg("arg1") ) )    
+        .def( 
+            "AddProcessing"
+            , (void ( ::CLAM::FlattenedNetwork::* )( ::std::string const &,::std::string const & ) )(&::CLAM::FlattenedNetwork::AddProcessing)
+            , (void ( FlattenedNetwork_wrapper::* )( ::std::string const &,::std::string const & ) )(&FlattenedNetwork_wrapper::default_AddProcessing)
+            , ( bp::arg("name"), bp::arg("key") ) )    
+        .def( 
+            "AddProcessing"
+            , (::std::string ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) )(&::CLAM::FlattenedNetwork::AddProcessing)
+            , (::std::string ( FlattenedNetwork_wrapper::* )( ::std::string const & ) )(&FlattenedNetwork_wrapper::default_AddProcessing)
+            , ( bp::arg("key") ) )    
+        .def( 
+            "BackendBufferSize"
+            , (unsigned int ( ::CLAM::FlattenedNetwork::* )(  ) )(&::CLAM::FlattenedNetwork::BackendBufferSize)
+            , (unsigned int ( FlattenedNetwork_wrapper::* )(  ) )(&FlattenedNetwork_wrapper::default_BackendBufferSize) )    
+        .def( 
+            "BackendSampleRate"
+            , (unsigned int ( ::CLAM::FlattenedNetwork::* )(  ) )(&::CLAM::FlattenedNetwork::BackendSampleRate)
+            , (unsigned int ( FlattenedNetwork_wrapper::* )(  ) )(&FlattenedNetwork_wrapper::default_BackendSampleRate) )    
+        .def( 
+            "BeginProcessings"
+            , (::std::_Rb_tree_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > ( ::CLAM::FlattenedNetwork::* )(  ) )(&::CLAM::FlattenedNetwork::BeginProcessings)
+            , (::std::_Rb_tree_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > ( FlattenedNetwork_wrapper::* )(  ) )(&FlattenedNetwork_wrapper::default_BeginProcessings) )    
+        .def( 
+            "BeginProcessings"
+            , (::std::_Rb_tree_const_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::BeginProcessings)
+            , (::std::_Rb_tree_const_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > ( FlattenedNetwork_wrapper::* )(  ) const)(&FlattenedNetwork_wrapper::default_BeginProcessings) )    
+        .def( 
+            "Clear"
+            , (void ( ::CLAM::FlattenedNetwork::* )(  ) )(&::CLAM::FlattenedNetwork::Clear)
+            , (void ( FlattenedNetwork_wrapper::* )(  ) )(&FlattenedNetwork_wrapper::default_Clear) )    
+        .def( 
+            "ConfigureProcessing"
+            , (bool ( ::CLAM::FlattenedNetwork::* )( ::std::string const &,::CLAM::ProcessingConfig const & ) )(&::CLAM::FlattenedNetwork::ConfigureProcessing)
+            , (bool ( FlattenedNetwork_wrapper::* )( ::std::string const &,::CLAM::ProcessingConfig const & ) )(&FlattenedNetwork_wrapper::default_ConfigureProcessing)
+            , ( bp::arg("arg0"), bp::arg("arg1") ) )    
+        .def( 
+            "ConnectControls"
+            , (bool ( ::CLAM::FlattenedNetwork::* )( ::std::string const &,::std::string const & ) )(&::CLAM::FlattenedNetwork::ConnectControls)
+            , (bool ( FlattenedNetwork_wrapper::* )( ::std::string const &,::std::string const & ) )(&FlattenedNetwork_wrapper::default_ConnectControls)
+            , ( bp::arg("arg0"), bp::arg("arg1") ) )    
+        .def( 
+            "ConnectPorts"
+            , (bool ( ::CLAM::FlattenedNetwork::* )( ::std::string const &,::std::string const & ) )(&::CLAM::FlattenedNetwork::ConnectPorts)
+            , (bool ( FlattenedNetwork_wrapper::* )( ::std::string const &,::std::string const & ) )(&FlattenedNetwork_wrapper::default_ConnectPorts)
+            , ( bp::arg("arg0"), bp::arg("arg1") ) )    
+        .def( 
+            "DisconnectControls"
+            , (bool ( ::CLAM::FlattenedNetwork::* )( ::std::string const &,::std::string const & ) )(&::CLAM::FlattenedNetwork::DisconnectControls)
+            , (bool ( FlattenedNetwork_wrapper::* )( ::std::string const &,::std::string const & ) )(&FlattenedNetwork_wrapper::default_DisconnectControls)
+            , ( bp::arg("arg0"), bp::arg("arg1") ) )    
+        .def( 
+            "DisconnectPorts"
+            , (bool ( ::CLAM::FlattenedNetwork::* )( ::std::string const &,::std::string const & ) )(&::CLAM::FlattenedNetwork::DisconnectPorts)
+            , (bool ( FlattenedNetwork_wrapper::* )( ::std::string const &,::std::string const & ) )(&FlattenedNetwork_wrapper::default_DisconnectPorts)
+            , ( bp::arg("arg0"), bp::arg("arg1") ) )    
+        .def( 
+            "Do"
+            , (void ( ::CLAM::FlattenedNetwork::* )(  ) )( &::CLAM::FlattenedNetwork::Do ) )    
+        .def( 
+            "EndProcessings"
+            , (::std::_Rb_tree_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > ( ::CLAM::FlattenedNetwork::* )(  ) )(&::CLAM::FlattenedNetwork::EndProcessings)
+            , (::std::_Rb_tree_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > ( FlattenedNetwork_wrapper::* )(  ) )(&FlattenedNetwork_wrapper::default_EndProcessings) )    
+        .def( 
+            "EndProcessings"
+            , (::std::_Rb_tree_const_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::EndProcessings)
+            , (::std::_Rb_tree_const_iterator< std::pair< const std::basic_string< char, std::char_traits< char >, std::allocator< char > >, CLAM::Processing* > > ( FlattenedNetwork_wrapper::* )(  ) const)(&FlattenedNetwork_wrapper::default_EndProcessings) )    
+        .def( 
+            "GetAndClearGeometries"
+            , (::std::map< std::string, CLAM::BaseNetwork::Geometry > const ( ::CLAM::FlattenedNetwork::* )(  ) )(&::CLAM::FlattenedNetwork::GetAndClearGeometries)
+            , (::std::map< std::string, CLAM::BaseNetwork::Geometry > const ( FlattenedNetwork_wrapper::* )(  ) )(&FlattenedNetwork_wrapper::default_GetAndClearGeometries) )    
+        .def( 
+            "GetClassName"
+            , (char const * ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::GetClassName)
+            , (char const * ( FlattenedNetwork_wrapper::* )(  ) const)(&FlattenedNetwork_wrapper::default_GetClassName) )    
+        .def( 
+            "GetConfigurationErrors"
+            , (::std::string ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::GetConfigurationErrors)
+            , (::std::string ( FlattenedNetwork_wrapper::* )(  ) const)(&FlattenedNetwork_wrapper::default_GetConfigurationErrors) )    
+        .def( 
+            "GetConnectorIdentifier"
+            , (::std::string ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::GetConnectorIdentifier)
+            , (::std::string ( FlattenedNetwork_wrapper::* )( ::std::string const & ) const)(&FlattenedNetwork_wrapper::default_GetConnectorIdentifier)
+            , ( bp::arg("arg0") ) )    
+        .def( 
+            "GetInControlByCompleteName"
+            , (::CLAM::InControl & ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::GetInControlByCompleteName)
+            , ( bp::arg("arg0") )
+            , bp::return_value_policy< bp::reference_existing_object >() )    
+        .def( 
+            "GetInControlsConnectedTo"
+            , (::std::list< std::string > ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::GetInControlsConnectedTo)
+            , (::std::list< std::string > ( FlattenedNetwork_wrapper::* )( ::std::string const & ) const)(&FlattenedNetwork_wrapper::default_GetInControlsConnectedTo)
+            , ( bp::arg("arg0") ) )    
+        .def( 
+            "GetInPortByCompleteName"
+            , (::CLAM::InPortBase & ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::GetInPortByCompleteName)
+            , ( bp::arg("arg0") )
+            , bp::return_value_policy< bp::reference_existing_object >() )    
+        .def( 
+            "GetInPortsConnectedTo"
+            , (::std::list< std::string > ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::GetInPortsConnectedTo)
+            , (::std::list< std::string > ( FlattenedNetwork_wrapper::* )( ::std::string const & ) const)(&FlattenedNetwork_wrapper::default_GetInPortsConnectedTo)
+            , ( bp::arg("arg0") ) )    
+        .def( 
+            "GetInPortsConnectedTo"
+            , (::std::list< CLAM::InPortBase* > ( ::CLAM::FlattenedNetwork::* )( ::CLAM::OutPortBase & ) const)(&::CLAM::FlattenedNetwork::GetInPortsConnectedTo)
+            , (::std::list< CLAM::InPortBase* > ( FlattenedNetwork_wrapper::* )( ::CLAM::OutPortBase & ) const)(&FlattenedNetwork_wrapper::default_GetInPortsConnectedTo)
+            , ( bp::arg("arg0") ) )    
+        .def( 
+            "GetName"
+            , (::std::string const & ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::GetName)
+            , bp::return_value_policy< bp::copy_const_reference >() )    
+        .def( 
+            "GetNetworkId"
+            , (::std::string const & ( ::CLAM::FlattenedNetwork::* )( ::CLAM::Processing const * ) const)(&::CLAM::FlattenedNetwork::GetNetworkId)
+            , ( bp::arg("proc") )
+            , bp::return_value_policy< bp::copy_const_reference >() )    
+        .def( 
+            "GetOutControlByCompleteName"
+            , (::CLAM::OutControl & ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::GetOutControlByCompleteName)
+            , ( bp::arg("arg0") )
+            , bp::return_value_policy< bp::reference_existing_object >() )    
+        .def( 
+            "GetOutPortByCompleteName"
+            , (::CLAM::OutPortBase & ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::GetOutPortByCompleteName)
+            , ( bp::arg("arg0") )
+            , bp::return_value_policy< bp::reference_existing_object >() )    
+        .def( 
+            "GetProcessing"
+            , (::CLAM::Processing & ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::GetProcessing)
+            , ( bp::arg("name") )
+            , bp::return_value_policy< bp::reference_existing_object >() )    
+        .def( 
+            "GetProcessingIdentifier"
+            , (::std::string ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::GetProcessingIdentifier)
+            , (::std::string ( FlattenedNetwork_wrapper::* )( ::std::string const & ) const)(&FlattenedNetwork_wrapper::default_GetProcessingIdentifier)
+            , ( bp::arg("arg0") ) )    
+        .def( 
+            "GetUnconnectedInPorts"
+            , (::std::string ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::GetUnconnectedInPorts)
+            , (::std::string ( FlattenedNetwork_wrapper::* )(  ) const)(&FlattenedNetwork_wrapper::default_GetUnconnectedInPorts) )    
+        .def( 
+            "GetUnusedName"
+            , (::std::string ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::GetUnusedName)
+            , (::std::string ( FlattenedNetwork_wrapper::* )( ::std::string const & ) const)(&FlattenedNetwork_wrapper::default_GetUnusedName)
+            , ( bp::arg("prefix") ) )    
+        .def( 
+            "HasMisconfiguredProcessings"
+            , (bool ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::HasMisconfiguredProcessings)
+            , (bool ( FlattenedNetwork_wrapper::* )(  ) const)(&FlattenedNetwork_wrapper::default_HasMisconfiguredProcessings) )    
+        .def( 
+            "HasProcessing"
+            , (bool ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) const)(&::CLAM::FlattenedNetwork::HasProcessing)
+            , (bool ( FlattenedNetwork_wrapper::* )( ::std::string const & ) const)(&FlattenedNetwork_wrapper::default_HasProcessing)
+            , ( bp::arg("name") ) )    
+        .def( 
+            "HasSyncSource"
+            , (bool ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::HasSyncSource)
+            , (bool ( FlattenedNetwork_wrapper::* )(  ) const)(&FlattenedNetwork_wrapper::default_HasSyncSource) )    
+        .def( 
+            "HasUnconnectedInPorts"
+            , (bool ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::HasUnconnectedInPorts)
+            , (bool ( FlattenedNetwork_wrapper::* )(  ) const)(&FlattenedNetwork_wrapper::default_HasUnconnectedInPorts) )    
+        .def( 
+            "IsEmpty"
+            , (bool ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::IsEmpty)
+            , (bool ( FlattenedNetwork_wrapper::* )(  ) const)(&FlattenedNetwork_wrapper::default_IsEmpty) )    
+        .def( 
+            "IsReady"
+            , (bool ( ::CLAM::FlattenedNetwork::* )(  ) const)(&::CLAM::FlattenedNetwork::IsReady)
+            , (bool ( FlattenedNetwork_wrapper::* )(  ) const)(&FlattenedNetwork_wrapper::default_IsReady) )    
+        .def( 
+            "IsStopped"
+            , (bool ( ::CLAM::FlattenedNetwork::* )(  ) const)( &::CLAM::FlattenedNetwork::IsStopped ) )    
+        .def( 
+            "LoadFrom"
+            , (void ( ::CLAM::FlattenedNetwork::* )( ::CLAM::Storage & ) )(&::CLAM::FlattenedNetwork::LoadFrom)
+            , (void ( FlattenedNetwork_wrapper::* )( ::CLAM::Storage & ) )(&FlattenedNetwork_wrapper::default_LoadFrom)
+            , ( bp::arg("storage") ) )    
+        .def( 
+            "ReconfigureAllProcessings"
+            , (void ( ::CLAM::FlattenedNetwork::* )(  ) )(&::CLAM::FlattenedNetwork::ReconfigureAllProcessings)
+            , (void ( FlattenedNetwork_wrapper::* )(  ) )(&FlattenedNetwork_wrapper::default_ReconfigureAllProcessings) )    
+        .def( 
+            "RemoveProcessing"
+            , (void ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) )(&::CLAM::FlattenedNetwork::RemoveProcessing)
+            , (void ( FlattenedNetwork_wrapper::* )( ::std::string const & ) )(&FlattenedNetwork_wrapper::default_RemoveProcessing)
+            , ( bp::arg("arg0") ) )    
+        .def( 
+            "RenameProcessing"
+            , (bool ( ::CLAM::FlattenedNetwork::* )( ::std::string const &,::std::string const & ) )(&::CLAM::FlattenedNetwork::RenameProcessing)
+            , (bool ( FlattenedNetwork_wrapper::* )( ::std::string const &,::std::string const & ) )(&FlattenedNetwork_wrapper::default_RenameProcessing)
+            , ( bp::arg("oldName"), bp::arg("newName") ) )    
+        .def( 
+            "SetName"
+            , (void ( ::CLAM::FlattenedNetwork::* )( ::std::string const & ) )(&::CLAM::FlattenedNetwork::SetName)
+            , (void ( FlattenedNetwork_wrapper::* )( ::std::string const & ) )(&FlattenedNetwork_wrapper::default_SetName)
+            , ( bp::arg("name") ) )    
+        .def( 
+            "SetPlayer"
+            , (void ( ::CLAM::FlattenedNetwork::* )( ::CLAM::NetworkPlayer * ) )( &::CLAM::FlattenedNetwork::SetPlayer )
+            , ( bp::arg("player") ) )    
+        .def( 
+            "SetProcessingsGeometries"
+            , (bool ( ::CLAM::FlattenedNetwork::* )( ::std::map< std::string, CLAM::BaseNetwork::Geometry > const & ) )(&::CLAM::FlattenedNetwork::SetProcessingsGeometries)
+            , (bool ( FlattenedNetwork_wrapper::* )( ::std::map< std::string, CLAM::BaseNetwork::Geometry > const & ) )(&FlattenedNetwork_wrapper::default_SetProcessingsGeometries)
+            , ( bp::arg("processingsGeometries") ) )    
+        .def( 
+            "Start"
+            , (void ( ::CLAM::FlattenedNetwork::* )(  ) )( &::CLAM::FlattenedNetwork::Start ) )    
+        .def( 
+            "Stop"
+            , (void ( ::CLAM::FlattenedNetwork::* )(  ) )( &::CLAM::FlattenedNetwork::Stop ) )    
+        .def( 
+            "StoreOn"
+            , (void ( ::CLAM::FlattenedNetwork::* )( ::CLAM::Storage & ) const)(&::CLAM::FlattenedNetwork::StoreOn)
+            , (void ( FlattenedNetwork_wrapper::* )( ::CLAM::Storage & ) const)(&FlattenedNetwork_wrapper::default_StoreOn)
+            , ( bp::arg("storage") ) )    
+        .def( 
+            "UpdateSelections"
+            , (bool ( ::CLAM::FlattenedNetwork::* )( ::std::list< std::string > const & ) )(&::CLAM::FlattenedNetwork::UpdateSelections)
+            , (bool ( FlattenedNetwork_wrapper::* )( ::std::list< std::string > const & ) )(&FlattenedNetwork_wrapper::default_UpdateSelections)
+            , ( bp::arg("processingsNamesList") ) )    
+        .def( 
+            "setPasteMode"
+            , (void ( ::CLAM::FlattenedNetwork::* )(  ) )(&::CLAM::FlattenedNetwork::setPasteMode)
+            , (void ( FlattenedNetwork_wrapper::* )(  ) )(&FlattenedNetwork_wrapper::default_setPasteMode) );
+
+    bp::class_< FlowControl_wrapper, boost::noncopyable >( "FlowControl" )    
+        .def( bp::init< >() )    
+        .def( 
+            "AttachToNetwork"
+            , (void ( ::CLAM::FlowControl::* )( ::CLAM::Network * ) )(&::CLAM::FlowControl::AttachToNetwork)
+            , (void ( FlowControl_wrapper::* )( ::CLAM::Network * ) )(&FlowControl_wrapper::default_AttachToNetwork)
+            , ( bp::arg("arg0") ) )    
+        .def( 
+            "Do"
+            , bp::pure_virtual( (void ( ::CLAM::FlowControl::* )(  ) )(&::CLAM::FlowControl::Do) ) )    
+        .def( 
+            "HasNetworkTopologyChanged"
+            , (bool ( FlowControl_wrapper::* )(  ) const)(&FlowControl_wrapper::HasNetworkTopologyChanged) )    
+        .def( 
+            "NetworkTopologyChanged"
+            , (void ( ::CLAM::FlowControl::* )(  ) )( &::CLAM::FlowControl::NetworkTopologyChanged ) )    
+        .def( 
+            "ProcessingAddedToNetwork"
+            , (void ( ::CLAM::FlowControl::* )( ::CLAM::Processing & ) )(&::CLAM::FlowControl::ProcessingAddedToNetwork)
+            , (void ( FlowControl_wrapper::* )( ::CLAM::Processing & ) )(&FlowControl_wrapper::default_ProcessingAddedToNetwork)
+            , ( bp::arg("added") ) )    
+        .def( 
+            "ProcessingConfigured"
+            , (void ( ::CLAM::FlowControl::* )( ::CLAM::Processing & ) )( &::CLAM::FlowControl::ProcessingConfigured )
+            , ( bp::arg("configured") ) )    
+        .def( 
+            "ProcessingRemovedFromNetwork"
+            , (void ( ::CLAM::FlowControl::* )( ::CLAM::Processing & ) )(&::CLAM::FlowControl::ProcessingRemovedFromNetwork)
+            , (void ( FlowControl_wrapper::* )( ::CLAM::Processing & ) )(&FlowControl_wrapper::default_ProcessingRemovedFromNetwork)
+            , ( bp::arg("removed") ) );
+
     bp::class_< CLAM::IllegalValue >( "IllegalValue", bp::init< CLAM::IllegalValue const & >(( bp::arg("e") )) )    
         .def( bp::init< std::string const & >(( bp::arg("s") )) )    
         .def_readwrite( "msg", &CLAM::IllegalValue::msg );
@@ -2404,6 +3358,183 @@ BOOST_PYTHON_MODULE(clam){
         .def( 
             "UpperBound"
             , (::CLAM::TControlData ( ::CLAM::InControl::* )(  ) const)( &::CLAM::InControl::UpperBound ) );
+
+    bp::class_< CLAM::Network, bp::bases< CLAM::FlattenedNetwork > >( "Network" )    
+        .def( bp::init< >() );
+
+    { //::CLAM::NetworkPlayer
+        typedef bp::class_< NetworkPlayer_wrapper, boost::noncopyable > NetworkPlayer_exposer_t;
+        NetworkPlayer_exposer_t NetworkPlayer_exposer = NetworkPlayer_exposer_t( "NetworkPlayer" );
+        bp::scope NetworkPlayer_scope( NetworkPlayer_exposer );
+        NetworkPlayer_exposer.def( bp::init< >() );
+        { //::CLAM::NetworkPlayer::BackendBufferSize
+        
+            typedef unsigned int ( ::CLAM::NetworkPlayer::*BackendBufferSize_function_type )(  ) ;
+            typedef unsigned int ( NetworkPlayer_wrapper::*default_BackendBufferSize_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "BackendBufferSize"
+                , BackendBufferSize_function_type(&::CLAM::NetworkPlayer::BackendBufferSize)
+                , default_BackendBufferSize_function_type(&NetworkPlayer_wrapper::default_BackendBufferSize) );
+        
+        }
+        { //::CLAM::NetworkPlayer::BackendSampleRate
+        
+            typedef unsigned int ( ::CLAM::NetworkPlayer::*BackendSampleRate_function_type )(  ) ;
+            typedef unsigned int ( NetworkPlayer_wrapper::*default_BackendSampleRate_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "BackendSampleRate"
+                , BackendSampleRate_function_type(&::CLAM::NetworkPlayer::BackendSampleRate)
+                , default_BackendSampleRate_function_type(&NetworkPlayer_wrapper::default_BackendSampleRate) );
+        
+        }
+        { //::CLAM::NetworkPlayer::CollectSourcesAndSinks
+        
+            typedef void ( NetworkPlayer_wrapper::*CollectSourcesAndSinks_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "CollectSourcesAndSinks"
+                , CollectSourcesAndSinks_function_type( &NetworkPlayer_wrapper::CollectSourcesAndSinks ) );
+        
+        }
+        { //::CLAM::NetworkPlayer::GetAudioSinks
+        
+            typedef ::std::vector< CLAM::AudioSink* > const & ( NetworkPlayer_wrapper::*GetAudioSinks_function_type )(  ) const;
+            
+            NetworkPlayer_exposer.def( 
+                "GetAudioSinks"
+                , GetAudioSinks_function_type( &NetworkPlayer_wrapper::GetAudioSinks )
+                , bp::return_value_policy< bp::copy_const_reference >() );
+        
+        }
+        { //::CLAM::NetworkPlayer::GetAudioSinks
+        
+            typedef ::std::vector< CLAM::AudioSink* > & ( NetworkPlayer_wrapper::*GetAudioSinks_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "GetAudioSinks"
+                , GetAudioSinks_function_type( &NetworkPlayer_wrapper::GetAudioSinks )
+                , bp::return_value_policy< bp::reference_existing_object >() );
+        
+        }
+        { //::CLAM::NetworkPlayer::GetAudioSources
+        
+            typedef ::std::vector< CLAM::AudioSource* > const & ( NetworkPlayer_wrapper::*GetAudioSources_function_type )(  ) const;
+            
+            NetworkPlayer_exposer.def( 
+                "GetAudioSources"
+                , GetAudioSources_function_type( &NetworkPlayer_wrapper::GetAudioSources )
+                , bp::return_value_policy< bp::copy_const_reference >() );
+        
+        }
+        { //::CLAM::NetworkPlayer::GetAudioSources
+        
+            typedef ::std::vector< CLAM::AudioSource* > & ( NetworkPlayer_wrapper::*GetAudioSources_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "GetAudioSources"
+                , GetAudioSources_function_type( &NetworkPlayer_wrapper::GetAudioSources )
+                , bp::return_value_policy< bp::reference_existing_object >() );
+        
+        }
+        { //::CLAM::NetworkPlayer::GetNetwork
+        
+            typedef ::CLAM::Network & ( NetworkPlayer_wrapper::*GetNetwork_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "GetNetwork"
+                , GetNetwork_function_type( &NetworkPlayer_wrapper::GetNetwork )
+                , bp::return_value_policy< bp::reference_existing_object >() );
+        
+        }
+        { //::CLAM::NetworkPlayer::Init
+        
+            typedef void ( ::CLAM::NetworkPlayer::*Init_function_type )(  ) ;
+            typedef void ( NetworkPlayer_wrapper::*default_Init_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "Init"
+                , Init_function_type(&::CLAM::NetworkPlayer::Init)
+                , default_Init_function_type(&NetworkPlayer_wrapper::default_Init) );
+        
+        }
+        { //::CLAM::NetworkPlayer::IsStopped
+        
+            typedef bool ( ::CLAM::NetworkPlayer::*IsStopped_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "IsStopped"
+                , IsStopped_function_type( &::CLAM::NetworkPlayer::IsStopped ) );
+        
+        }
+        { //::CLAM::NetworkPlayer::IsWorking
+        
+            typedef bool ( ::CLAM::NetworkPlayer::*IsWorking_function_type )(  ) const;
+            
+            NetworkPlayer_exposer.def( 
+                "IsWorking"
+                , bp::pure_virtual( IsWorking_function_type(&::CLAM::NetworkPlayer::IsWorking) ) );
+        
+        }
+        { //::CLAM::NetworkPlayer::NonWorkingReason
+        
+            typedef ::std::string ( ::CLAM::NetworkPlayer::*NonWorkingReason_function_type )(  ) const;
+            
+            NetworkPlayer_exposer.def( 
+                "NonWorkingReason"
+                , bp::pure_virtual( NonWorkingReason_function_type(&::CLAM::NetworkPlayer::NonWorkingReason) ) );
+        
+        }
+        { //::CLAM::NetworkPlayer::SetNetworkBackLink
+        
+            typedef void ( ::CLAM::NetworkPlayer::*SetNetworkBackLink_function_type )( ::CLAM::Network & ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "SetNetworkBackLink"
+                , SetNetworkBackLink_function_type( &::CLAM::NetworkPlayer::SetNetworkBackLink )
+                , ( bp::arg("net") ) );
+        
+        }
+        { //::CLAM::NetworkPlayer::SetStopped
+        
+            typedef void ( NetworkPlayer_wrapper::*SetStopped_function_type )( bool const ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "SetStopped"
+                , SetStopped_function_type( &NetworkPlayer_wrapper::SetStopped )
+                , ( bp::arg("val") ) );
+        
+        }
+        { //::CLAM::NetworkPlayer::SourcesAndSinksToString
+        
+            typedef ::std::string ( ::CLAM::NetworkPlayer::*SourcesAndSinksToString_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "SourcesAndSinksToString"
+                , SourcesAndSinksToString_function_type( &::CLAM::NetworkPlayer::SourcesAndSinksToString ) );
+        
+        }
+        { //::CLAM::NetworkPlayer::Start
+        
+            typedef void ( ::CLAM::NetworkPlayer::*Start_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "Start"
+                , bp::pure_virtual( Start_function_type(&::CLAM::NetworkPlayer::Start) ) );
+        
+        }
+        { //::CLAM::NetworkPlayer::Stop
+        
+            typedef void ( ::CLAM::NetworkPlayer::*Stop_function_type )(  ) ;
+            
+            NetworkPlayer_exposer.def( 
+                "Stop"
+                , bp::pure_virtual( Stop_function_type(&::CLAM::NetworkPlayer::Stop) ) );
+        
+        }
+        bp::register_ptr_to_python< boost::shared_ptr< CLAM::NetworkPlayer > >();
+    }
 
     bp::class_< OutControl_wrapper >( "OutControl", bp::init< std::string const &, bp::optional< CLAM::Processing *, bool > >(( bp::arg("name"), bp::arg("parent")=bp::object(), bp::arg("publish")=(bool const)(true) )) )    
         .def( 
@@ -3042,6 +4173,18 @@ BOOST_PYTHON_MODULE(clam){
             "toComponent"
             , toComponent_function_type( &::Bindings::PyHacks::toComponent )
             , ( bp::arg("s") )
+            , bp::return_value_policy< bp::reference_existing_object >() );
+    
+    }
+
+    { //::Bindings::PyHacks::toComponent
+    
+        typedef ::CLAM::Component & ( *toComponent_function_type )( ::CLAM::Network & );
+        
+        bp::def( 
+            "toComponent"
+            , toComponent_function_type( &::Bindings::PyHacks::toComponent )
+            , ( bp::arg("n") )
             , bp::return_value_policy< bp::reference_existing_object >() );
     
     }

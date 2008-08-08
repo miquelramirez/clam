@@ -15,14 +15,14 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-import clam
+from clam import *
 from math import sin
 
 samples = 1024
 sampleRate = 8000.0
 sineFreq = 400.0
 
-myaudio = clam.Audio()
+myaudio = Audio()
 myaudio.SetSize( samples );
 myaudio.SetSampleRate( sampleRate );
 
@@ -31,8 +31,8 @@ for i in range(samples):
 	vector.set( i, 0.625+0.5*sin(2.0*sineFreq*400.0*((float(i))/sampleRate)) )
 	#print vector[i]
 
-myspectrum = clam.Spectrum()
-specFlags = clam.SpecTypeFlags()
+myspectrum = Spectrum()
+specFlags = SpecTypeFlags()
 
 specFlags.SetFlag( specFlags.GetFlagPosition("Polar"), 1 )
 specFlags.SetFlag( specFlags.GetFlagPosition("Complex"), 1 )
@@ -43,10 +43,10 @@ specFlags.SetFlag( specFlags.GetFlagPosition("MagPhaseBPF"), 1 )
 myspectrum.SetType( specFlags )
 myspectrum.SetSize( samples/2+1 )
 
-fconfig = clam.FFTConfig()
+fconfig = FFTConfig()
 fconfig.SetAudioSize( samples )
 
-myfft = clam.FFT_ooura() #FIXME: clam.FFT() should work
+myfft = FFT_ooura() #FIXME: plain FFT() should work
 myfft.Configure( fconfig.getReal() ) #FIXME
 myfft.Start()
 
@@ -54,4 +54,4 @@ print "Running object "
 myfft.Do( myaudio.getBase(), myspectrum.getBase() )
 
 print "Storing spectrum"
-clam.XmlStorage.Dump( clam.toComponent(myspectrum), "FFTResult", "pyFFT_example.xml")
+XmlStorage.Dump( toComponent(myspectrum), "FFTResult", "pyFFT_example.xml" )

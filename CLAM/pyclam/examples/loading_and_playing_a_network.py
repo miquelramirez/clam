@@ -16,27 +16,33 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 from clam import *
+import sys
 import time
 
-filename = "./test4seg.mp3"
+if len(sys.argv)!=2:
+	print "needs a network filename."
+	sys.exit(-1)
 
-network = Network()
+def error(msg):
+	print msg
+	return -1
 
-reader = network.AddProcessing( "MonoAudioFileReader" )
-config = MonoAudioFileReaderConfig()
-config.SetSourceFile( filename )
+def main(args):
+	filename = sys.argv[1]
+	network = Network()
+	
+	try:
+		XmlStorage.Restore( toComponent(network), filename )
+	except RuntimeError:
+		return error( "Could not open the network file" )
+	
+	# Set the audio backend to PortAudio
+	portaudio_player = PANetworkPlayer()
+	network.SetPlayer( portaudio_player.getReal() ) #FIXME
+	
+	network.Start()
+	time.sleep(4) #TODO: until?
+	network.Stop()
 
-if not network.ConfigureProcessing( reader, config.getReal() ): #FIXME
-	print "Could not open the file"
-
-sink = network.AddProcessing( "AudioSink" )
-
-network.ConnectPorts( reader+".Samples Read", sink+".AudioIn" )
-
-portaudio_player = PANetworkPlayer()
-network.SetPlayer( portaudio_player.getReal() ) #FIXME
-
-network.Start()
-#time.sleep( MonoAudioFileReader( network.GetProcessing(reader) ).GetLength() )
-time.sleep(4)
-network.Stop()
+if __name__ == '__main__':
+	sys.exit( main(sys.argv) )
