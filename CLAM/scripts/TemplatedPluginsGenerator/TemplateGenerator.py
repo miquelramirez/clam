@@ -79,6 +79,7 @@ namespace CLAM {
 	#Ports
 	f.write( "\t\t/** Ports **/\n" )
 	for port_type,port_name in (inputs+outputs):
+		if member_style=='_': port_name = port_name[0].lower()+port_name[1:]
 		f.write( "\t\t" + port_type + " " + member_style + port_name.replace(' ', '') + ";\n" )
 	
 	#Controls
