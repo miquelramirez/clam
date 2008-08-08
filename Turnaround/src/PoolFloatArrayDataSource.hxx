@@ -40,7 +40,7 @@ namespace VM
 			PoolFloatArrayDataSource();
 			void setDataSource(unsigned nBins, CLAM::TData binGap, CLAM::TData firstBinOffset, std::vector<std::string> binLabels);
 			void clearData();
-			void updateData(float data[], CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames);
+			void updateData(std::vector<CLAM::TData>, CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames);
 			bool setCurrentTime(double timeMiliseconds);
 
 			std::string getLabel(unsigned bin) const

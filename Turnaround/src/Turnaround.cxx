@@ -21,11 +21,16 @@
 #include <QtGui/QFileDialog>
 
 #include <CLAM/PANetworkPlayer.hxx>
+#include <CLAM/JACKNetworkPlayer.hxx>
 #include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/AudioFileMemoryLoader.hxx>
+#include <CLAM/MonoAudioFileReader.hxx>
 #include "VectorViewMonitor.hxx"
 #include "ProgressControl.hxx"
 #include "FrameDivision.hxx"
+#include "FloatVectorStorage.hxx"
+
+#include <iostream> // debug
 
 Turnaround::Turnaround()
 	: QMainWindow( 0 )
@@ -56,12 +61,11 @@ Turnaround::Turnaround()
 	_audioSink = _network.AddProcessing("AudioSink");
 	_network.ConnectPorts(_fileReader+".Samples Read", _audioSink+".AudioIn");
 	
-	//_tonalAnalysis = _network.AddProcessing("TonalAnalysis");
-	//_network.ConnectPorts(_fileReader+".Samples Read", _tonalAnalysis+".Audio Input");	
-	
 	_vectorView = new CLAM::VM::VectorView(centralwidget);
 	_vboxLayout->addWidget(_vectorView);
 	
+	_network.SetPlayer(new CLAM::PANetworkPlayer);
+
 	startTimer(50);
 }
 
@@ -86,30 +90,51 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 		_network.Stop();
 		
 	_fileReaderConfig.SetSourceFile(fileName);
+	
+	analyse();
+	
 	if (!_network.ConfigureProcessing(_fileReader, _fileReaderConfig))
 		return;
-
-	_network.SetPlayer(new CLAM::PANetworkPlayer);
+	
 	_network.Start();
+}
+
+void Turnaround::analyse()
+{
+	CLAM::MonoAudioFileReader fileReader(_fileReaderConfig);
+	CLAM::TonalAnalysis tonalAnalysis;
+	CLAM::AudioInPort &analysisInput = (CLAM::AudioInPort&)(tonalAnalysis.GetInPort("Audio Input"));
+	fileReader.GetOutPort("Samples Read").ConnectToIn(analysisInput);
 	
-	CLAM::AudioFileMemoryLoader *afml = (CLAM::AudioFileMemoryLoader*)&(_network.GetProcessing(_fileReader));
+	const unsigned hop = analysisInput.GetHop();
+	const unsigned frameSize = analysisInput.GetSize();
+	const unsigned nSamples = fileReader.GetHeader().GetSamples();
+	const unsigned long nFrames = (unsigned long)(floor((float)(nSamples-frameSize+hop)/(float)hop));
+	const CLAM::TData sampleRate = fileReader.GetHeader().GetSampleRate();
+	_length = CLAM::TData(nSamples) / sampleRate;
 	
-	unsigned hop = 256;
-	unsigned frameSize = 512;
-	unsigned nSamples = afml->/*GetHeader().*/GetSamples();
-	unsigned long nFrames = (unsigned long)(floor((float)(nSamples-frameSize+hop)/(float)hop));
-	_length = double(nSamples) / 44100.0;
+	std::cout << nFrames << std::endl; // debug
 	
-	float data[nFrames*12];
-	for (unsigned frame = 0; frame < nFrames; frame++)
+	FloatVectorStorage storage;
+	tonalAnalysis.GetOutPort("Pitch Profile").ConnectToIn(storage.GetInPort("Data Input"));
+	
+	fileReader.Start();
+	tonalAnalysis.Start();
+	storage.Start();
+	
+	while (fileReader.Do())
 	{
-		for (unsigned i = 0; i < 12; i++)
-			data[frame*12+i] = frame >> (11-i) & 1;
+		//if (! tonalAnalysis.CanConsumeAndProduce())
+		//if (! tonalAnalysis.IsAbleToExecute())
+		if (! analysisInput.CanConsume())
+			continue;
+		tonalAnalysis.Do();
+		storage.Do();
 	}
-	
+					
 	CLAM_Annotator::FrameDivision * frameDivision = new CLAM_Annotator::FrameDivision;
 	frameDivision->SetFirstCenter(frameSize / 2);
-	frameDivision->SetInterCenterGap(frameSize);
+	frameDivision->SetInterCenterGap(hop);
 	
 	std::vector<std::string> binLabels;
 	binLabels.push_back("G");
@@ -127,8 +152,8 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	
 	_dataSource = new CLAM::VM::PoolFloatArrayDataSource;
 	_dataSource->setDataSource(12, 0, 0, binLabels);
-	_dataSource->updateData(data, 44100.0, frameDivision, nFrames);
-	_vectorView->setDataSource(*_dataSource);
+	_dataSource->updateData(storage.Data(), sampleRate, frameDivision, nFrames);
+	_vectorView->setDataSource(*_dataSource);	
 }
 
 void Turnaround::play()
