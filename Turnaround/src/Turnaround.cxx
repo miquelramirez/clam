@@ -19,6 +19,7 @@
 #include "TurnaroundVersion.hxx"
 
 #include <QtGui/QFileDialog>
+#include <QtGui/QProgressDialog>
 
 #include <CLAM/PANetworkPlayer.hxx>
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -124,12 +125,17 @@ void Turnaround::analyse()
 	tonalAnalysis.Start();
 	storage.Start();
 
+	QProgressDialog progress(tr("Analysing chords..."), 0, 0, nFrames, this);
+	progress.setWindowModality(Qt::WindowModal);
+	
+	unsigned long i = 0;
 	while (fileReader.Do())
 	{
 		if (! analysisInput.CanConsume())
 			continue;
 		tonalAnalysis.Do();
 		storage.Do();
+		progress.setValue(++i);
 	}
 
 	CLAM_Annotator::FrameDivision * frameDivision = new CLAM_Annotator::FrameDivision;
