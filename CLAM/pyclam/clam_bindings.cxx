@@ -12,6 +12,8 @@
 
 #include "boost/python/suite/indexing/list.hpp"
 
+#include "CLAM/DynamicTypeMacros.hxx"
+
 #include "CLAM/Flags.hxx"
 
 #include "CLAM/SpecTypeFlags.hxx"
@@ -22,15 +24,15 @@
 
 #include "CLAM/XMLStorage.hxx"
 
+#include "CLAM/OutControl.hxx"
+
+#include "CLAM/InControl.hxx"
+
 #include "CLAM/FFT.hxx"
 
 #include "CLAM/FFT_base.hxx"
 
 #include "CLAM/FFT_ooura.hxx"
-
-#include "CLAM/OutControl.hxx"
-
-#include "CLAM/InControl.hxx"
 
 #include "CLAM/Processing.hxx"
 
@@ -281,8 +283,10 @@ struct FFT_wrapper : CLAM::FFT, bp::wrapper< CLAM::FFT > {
     }
 
     virtual bool ConcreteConfigure( ::CLAM::ProcessingConfig const & arg0 ){
-        bp::override func_ConcreteConfigure = this->get_override( "ConcreteConfigure" );
-        return func_ConcreteConfigure( boost::ref(arg0) );
+        if( bp::override func_ConcreteConfigure = this->get_override( "ConcreteConfigure" ) )
+            return func_ConcreteConfigure( boost::ref(arg0) );
+        else
+            return this->CLAM::Processing::ConcreteConfigure( boost::ref(arg0) );
     }
 
     virtual bool ConcreteStart(  ){
@@ -1835,20 +1839,20 @@ BOOST_PYTHON_MODULE(clam){
             , (::CLAM::ProcessingData & ( ::Bindings::Audio::* )(  ) const)( &::Bindings::Audio::getBase )
             , bp::return_value_policy< bp::reference_existing_object >() )    
         .def( 
-            "getReal"
-            , (::CLAM::Audio & ( ::Bindings::Audio::* )(  ) const)( &::Bindings::Audio::getReal )
+            "real"
+            , (::CLAM::Audio & ( ::Bindings::Audio::* )(  ) const)( &::Bindings::Audio::real )
             , bp::return_value_policy< bp::reference_existing_object >() );
 
     bp::class_< Bindings::BPNetworkPlayer >( "BPNetworkPlayer" )    
         .def( bp::init< >() )    
         .def( bp::init< Bindings::BPNetworkPlayer const & >(( bp::arg("Net") )) )    
         .def( 
-            "getReal"
-            , (::CLAM::NetworkPlayer & ( ::Bindings::BPNetworkPlayer::* )(  ) const)( &::Bindings::BPNetworkPlayer::getReal )
+            "real"
+            , (::CLAM::NetworkPlayer & ( ::Bindings::BPNetworkPlayer::* )(  ) const)( &::Bindings::BPNetworkPlayer::real )
             , bp::return_value_policy< bp::reference_existing_object >() )    
         .def( 
-            "getSharedPointer"
-            , (::boost::shared_ptr< CLAM::NetworkPlayer > ( ::Bindings::BPNetworkPlayer::* )(  ) const)( &::Bindings::BPNetworkPlayer::getSharedPointer ) );
+            "sharedPointer"
+            , (::boost::shared_ptr< CLAM::NetworkPlayer > ( ::Bindings::BPNetworkPlayer::* )(  ) const)( &::Bindings::BPNetworkPlayer::sharedPointer ) );
 
     { //::Bindings::DataArray
         typedef bp::class_< Bindings::DataArray > DataArray_exposer_t;
@@ -1882,8 +1886,8 @@ BOOST_PYTHON_MODULE(clam){
 
     bp::class_< Bindings::ProcessingConfig >( "ProcessingConfig" )    
         .def( 
-            "getReal"
-            , (::CLAM::ProcessingConfig & ( ::Bindings::ProcessingConfig::* )(  ) const)( &::Bindings::ProcessingConfig::getReal )
+            "real"
+            , (::CLAM::ProcessingConfig & ( ::Bindings::ProcessingConfig::* )(  ) const)( &::Bindings::ProcessingConfig::real )
             , bp::return_value_policy< bp::reference_existing_object >() );
 
     bp::class_< Bindings::FFTConfig, bp::bases< Bindings::ProcessingConfig > >( "FFTConfig" )    
@@ -1898,8 +1902,8 @@ BOOST_PYTHON_MODULE(clam){
         .def( bp::init< Bindings::Processing const & >(( bp::arg("Proc") )) )    
         .def( bp::init< CLAM::Processing & >(( bp::arg("proc") )) )    
         .def( 
-            "getReal"
-            , (::CLAM::Processing * ( ::Bindings::Processing::* )(  ) const)( &::Bindings::Processing::getReal )
+            "real"
+            , (::CLAM::Processing * ( ::Bindings::Processing::* )(  ) const)( &::Bindings::Processing::real )
             , bp::return_value_policy< bp::reference_existing_object >() );
 
     bp::implicitly_convertible< CLAM::Processing &, Bindings::Processing >();
@@ -1938,8 +1942,8 @@ BOOST_PYTHON_MODULE(clam){
             , (::CLAM::ProcessingData & ( ::Bindings::Spectrum::* )(  ) const)( &::Bindings::Spectrum::getBase )
             , bp::return_value_policy< bp::reference_existing_object >() )    
         .def( 
-            "getReal"
-            , (::CLAM::Spectrum & ( ::Bindings::Spectrum::* )(  ) const)( &::Bindings::Spectrum::getReal )
+            "real"
+            , (::CLAM::Spectrum & ( ::Bindings::Spectrum::* )(  ) const)( &::Bindings::Spectrum::real )
             , bp::return_value_policy< bp::reference_existing_object >() );
 
     bp::class_< Component_wrapper, boost::noncopyable >( "Component" )    

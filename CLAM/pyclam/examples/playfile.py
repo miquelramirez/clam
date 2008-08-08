@@ -26,7 +26,7 @@ reader = network.AddProcessing( "MonoAudioFileReader" )
 config = MonoAudioFileReaderConfig()
 config.SetSourceFile( filename )
 
-if not network.ConfigureProcessing( reader, config.getReal() ): #FIXME
+if not network.ConfigureProcessing( reader, config.real() ): #FIXME
 	print "Could not open the file"
 
 sink = network.AddProcessing( "AudioSink" )
@@ -34,7 +34,7 @@ sink = network.AddProcessing( "AudioSink" )
 network.ConnectPorts( reader+".Samples Read", sink+".AudioIn" )
 
 portaudio_player = PANetworkPlayer()
-network.SetPlayer( portaudio_player.getReal() ) #FIXME
+network.SetPlayer( portaudio_player.real() ) #FIXME
 
 network.Start()
 time.sleep( MonoAudioFileReader( network.GetProcessing(reader) ).GetLength() )

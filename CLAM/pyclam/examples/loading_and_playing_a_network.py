@@ -38,7 +38,7 @@ def main(args):
 	
 	# Set the audio backend to PortAudio
 	portaudio_player = PANetworkPlayer()
-	network.SetPlayer( portaudio_player.getReal() ) #FIXME
+	network.SetPlayer( portaudio_player.real() ) #FIXME
 	
 	network.Start()
 	time.sleep(4) #TODO: until?

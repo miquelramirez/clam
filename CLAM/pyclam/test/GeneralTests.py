@@ -15,9 +15,9 @@ class GeneralTests(unittest.TestCase):
 	def testAudioFileReaderConfig(self):
 		reader = clam.MonoAudioFileReader()
 		config = clam.MonoAudioFileReaderConfig()
-		self.assertEqual( False, reader.getReal().Configure( config.getReal() ) )
+		self.assertEqual( False, reader.real().Configure( config.real() ) )
 		config.SetSourceFile( "test4seg.mp3" )
-		self.assertEqual( True, reader.getReal().Configure( config.getReal() ) )
+		self.assertEqual( True, reader.real().Configure( config.real() ) )
 	#testAudioFileReaderConfig()
 
 	def testAudioFileReaderLength(self):
@@ -25,13 +25,13 @@ class GeneralTests(unittest.TestCase):
 		reader = network.AddProcessing( "MonoAudioFileReader" )
 		config = clam.MonoAudioFileReaderConfig()
 		config.SetSourceFile( "test4seg.mp3" )
-		network.ConfigureProcessing(reader,config.getReal())
+		network.ConfigureProcessing(reader,config.real())
 		self.assertEqual( 4, clam.MonoAudioFileReader( network.GetProcessing(reader) ).GetLength() )
 		
 		reader = clam.MonoAudioFileReader()
 		config = clam.MonoAudioFileReaderConfig()
 		config.SetSourceFile( "test4seg.mp3" )
-		reader.getReal().Configure( config.getReal() )
+		reader.real().Configure( config.real() )
 		self.assertEqual( 4, reader.GetLength() )
 	#testAudioFileReaderLength()
 

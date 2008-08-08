@@ -47,7 +47,7 @@ fconfig = FFTConfig()
 fconfig.SetAudioSize( samples )
 
 myfft = FFT_ooura() #FIXME: plain FFT() should work
-myfft.Configure( fconfig.getReal() ) #FIXME
+myfft.Configure( fconfig.real() ) #FIXME
 myfft.Start()
 
 print "Running object "
