@@ -26,7 +26,7 @@
 #include <QtGui/QTextEdit>
 #include <QtCore/QProcess>
 //#include <QtCore/QTimer>
-#include <QtGui/QVBoxLayout>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QDockWidget>
 #include <QtGui/QTextCursor>
 #include <QtGui/QStatusBar>
@@ -43,16 +43,16 @@ public:
 	TaskRunner(QString objectName="TaskRunnerWidget", QWidget * parent = 0):
 		_process(0)
 	{
-		_OutputDisplay = new QTextEdit(this);
+		_outputDisplay = new QTextEdit(this);
 		QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel
-                                      | QDialogButtonBox::Close,Qt::Horizontal,this);
+                                      | QDialogButtonBox::Close,Qt::Vertical,this);
 		_cancelButton=buttonBox->button(QDialogButtonBox::Cancel);
 		_closeButton=buttonBox->button(QDialogButtonBox::Close);
 		_cancelButton->setEnabled(true);
 		_closeButton->setEnabled(false);
 		connect(_closeButton, SIGNAL(clicked()), this, SLOT(close()));
-		QVBoxLayout * mainBox=new QVBoxLayout();
-		mainBox->addWidget(_OutputDisplay);
+		QHBoxLayout * mainBox=new QHBoxLayout();
+		mainBox->addWidget(_outputDisplay);
 		mainBox->addWidget(buttonBox);
 		//TODO: keep the default dimensions without an intermediate widget
 		//setWidget(dynamic_cast<QWidget *>(mainBox));
@@ -162,14 +162,14 @@ private:
 	}
 	void updateText()
 	{
-		_OutputDisplay->setHtml(_Output);
-		QTextCursor cursor = _OutputDisplay->textCursor();
+		_outputDisplay->setHtml(_Output);
+		QTextCursor cursor = _outputDisplay->textCursor();
 		cursor.movePosition(QTextCursor::End);
-		_OutputDisplay->setTextCursor(cursor);
-		_OutputDisplay->ensureCursorVisible();
+		_outputDisplay->setTextCursor(cursor);
+		_outputDisplay->ensureCursorVisible();
 	}
 private:
-	QTextEdit * _OutputDisplay;
+	QTextEdit * _outputDisplay;
 	QProcess * _process;
 	QString _Output;
 	CommandsAndEnvironmentsList _queuedCommandsList;
