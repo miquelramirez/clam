@@ -44,8 +44,8 @@ bool FloatVectorStorage::ConcreteStart()
 
 bool FloatVectorStorage::Do()
 {
-	for (FloatVector::iterator i = _in.GetData().begin(); i != _in.GetData().end(); i++)
-		_data.push_back(*i);
+	const std::vector<CLAM::TData> & input = _in.GetData();
+	_data.insert(_data.end(), input.begin(), input.end());
 	_in.Consume();
 	return true;
 }
