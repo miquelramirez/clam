@@ -105,7 +105,7 @@ void Turnaround::analyse()
 	CLAM::TonalAnalysis tonalAnalysis;
 	CLAM::AudioInPort &analysisInput = (CLAM::AudioInPort&)(tonalAnalysis.GetInPort("Audio Input"));
 	fileReader.GetOutPort("Samples Read").ConnectToIn(analysisInput);
-	
+
 	const unsigned hop = analysisInput.GetHop();
 	const unsigned frameSize = analysisInput.GetSize();
 	const unsigned nSamples = fileReader.GetHeader().GetSamples();
@@ -121,21 +121,19 @@ void Turnaround::analyse()
 	fileReader.Start();
 	tonalAnalysis.Start();
 	storage.Start();
-	
+
 	while (fileReader.Do())
 	{
-		//if (! tonalAnalysis.CanConsumeAndProduce())
-		//if (! tonalAnalysis.IsAbleToExecute())
 		if (! analysisInput.CanConsume())
 			continue;
 		tonalAnalysis.Do();
 		storage.Do();
 	}
-					
+
 	CLAM_Annotator::FrameDivision * frameDivision = new CLAM_Annotator::FrameDivision;
 	frameDivision->SetFirstCenter(frameSize / 2);
 	frameDivision->SetInterCenterGap(hop);
-	
+
 	std::vector<std::string> binLabels;
 	binLabels.push_back("G");
 	binLabels.push_back("G#");
@@ -153,7 +151,7 @@ void Turnaround::analyse()
 	_dataSource = new CLAM::VM::PoolFloatArrayDataSource;
 	_dataSource->setDataSource(12, 0, 0, binLabels);
 	_dataSource->updateData(storage.Data(), sampleRate, frameDivision, nFrames);
-	_vectorView->setDataSource(*_dataSource);	
+	_vectorView->setDataSource(*_dataSource);
 }
 
 void Turnaround::play()
