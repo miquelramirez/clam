@@ -45,7 +45,7 @@ bool FloatVectorStorage::ConcreteStart()
 bool FloatVectorStorage::Do()
 {
 	const std::vector<CLAM::TData> & input = _in.GetData();
-	_data.insert(_data.end(), input.begin(), input.end());
+	_data.insert(_data.end(), input.begin(), input.begin()+_config.GetBins());
 	_in.Consume();
 	return true;
 }
