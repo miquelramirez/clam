@@ -10,8 +10,9 @@ from versionInfo import versionFromRemoteSvn
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
 distributions = [
-	('ubuntu', 'gutsy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+#	('ubuntu', 'gutsy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 	('ubuntu', 'hardy', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'intrepid', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('debian', 'lenny',   "http://ftp.de.debian.org/debian/", ['main']),
 	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 ]
@@ -95,6 +96,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 		'maindistro' : maindistro,
 		'distro': distribution,
 	})
+	backportMirror = "'|deb http://es.archive.ubuntu.com/ubuntu/ %(distro)s-backports main restricted universe multiverse' "%{'distro':distribution} if maindistro == 'ubuntu' else ""
 	# Assure that the first time a Package file exists
 	run ("mkdir -p %(resultdir)s"%{'resultdir' : resultdir } )
 	run ("touch %(resultdir)s/Packages"%{'resultdir': resultdir} )
@@ -104,7 +106,8 @@ for (maindistro, distribution, mirror, components) in distributions :
 		command = "update"
 
 	run( ("COMPONENTS='%(components)s' pbuilder %(command)s " +
-		" --othermirror 'deb file:%(resultdir)s ./' " +
+		" --othermirror 'deb file:%(resultdir)s ./'" +
+		backportMirror +
 		" --buildplace . " +
 		" --basetgz ./%(distro)s.tgz " +
 		" --distribution %(distro)s " +
@@ -129,7 +132,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 		dscfiles = glob.glob(dscbase + "*.dsc")
 		if not dscfiles: raise "No dsc file found for %s"%dscbase
 		dscfile = dscfiles[-1]
-		ok = run( ("pbuilder build "+
+		ret = run( ("pbuilder build "+
 			" --buildplace . " +
 			" --buildresult %(resultdir)s " +
 			" --basetgz ./%(distro)s.tgz " +
@@ -144,7 +147,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 				'dscfile': dscfile,
 				'proxyoption': proxyoption,
 		})
-		if not ok and srcpackage == "clam" :
+		if ret<0 and srcpackage == "clam" :
 			print >> sys.stderr, "\033[31mCLAM LIBS COULD NOT BE COMPILED in", maindistro, distribution, "\033[0m"
 			break
 		# We need update the package for each package for interdependencies
@@ -153,6 +156,7 @@ for (maindistro, distribution, mirror, components) in distributions :
 		})
 		run("gzip -c %s/Packages > %s/Packages.gz" %( resultdir, resultdir ) )
 
+	if '--noupload' in sys.argv : continue
 	phase( "Uploading packages for '%s'"%distribution )
 	targetWebDir = "download/linux-%(maindistro)s-%(distro)s/"%{
 		'resultdir' : resultdir,
@@ -162,7 +166,6 @@ for (maindistro, distribution, mirror, components) in distributions :
 
 	if "~svn" in repositories[0][2]:
 		targetWebDir += "svnsnapshots/"
-
 	run("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
 	run("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
 	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
