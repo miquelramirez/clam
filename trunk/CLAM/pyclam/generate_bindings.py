@@ -40,18 +40,15 @@ enablePlugins = True if plugins_path!='' else False
 
 clam_file_list = []
 
-#FIXME: Important include,related with Problem2. 
-#clam_file_list += ["DynamicTypeMacros.hxx"] 
-
-# These requires pointer support enabled (see below declarations.is_pointer (mem_fun.return_type)):)
 #clam_file_list += ["Processing.hxx", "ProcessingConfig.hxx"] # <- not put here, breaks the parser (FIXME)
+clam_file_list += ["DynamicTypeMacros.hxx"] 
 clam_file_list += ["Flags.hxx", "SpecTypeFlags.hxx"]
 clam_file_list += ["Component.hxx","Storage.hxx", "XMLStorage.hxx"]
-clam_file_list += ["FFT.hxx","FFT_base.hxx","FFT_ooura.hxx"]
 clam_file_list += ["OutControl.hxx","InControl.hxx"]
-#"FFTConfig.hxx" no works by now (see wrap at Definitions.hxx)
-#"FFT_fftw3.hxx", "FFT_rfftw.hxx"
-#clam_file_list += [ "FFT_fftw3.hxx" ] # requires USE_FFTW3 definition (defined below but indeed no works FIXME)
+
+clam_file_list += ["FFT.hxx","FFT_base.hxx","FFT_ooura.hxx"] #"FFT_fftw3.hxx" Needs CLAM::FFTConfig.hxx
+#clam_file_list += ["FFTConfig.hxx"] #Problem2 no works by now (see wrap at Definitions.hxx)
+#clam_file_list += ["FFT_fftw3.hxx", "FFT_rfftw.hxx"]
 
 # Warning: don't move below lines, breaks the compilation with DynamicType error (Problem3).
 clam_file_list += ["Processing.hxx", "ProcessingConfig.hxx","ProcessingData.hxx","ProcessingDataConfig.hxx","ProcessingDataPlugin.hxx"] 
@@ -134,7 +131,7 @@ mb = module_builder.module_builder_t (
 					file_list
 					, working_directory = r"."
 					, include_paths = clam_include_path
-		 			, define_symbols = [ "USE_SNDFILE=1", "USE_FFTW3" ]
+		 			, define_symbols = [ 'CLAM_FLOAT','_DEBUG','USE_PTHREADS=1','USE_XERCES=1','CLAM_USE_XML','USE_LADSPA=1','USE_FFTW3=1','USE_SNDFILE=1','USE_OGGVORBIS=1','WITH_VORBIS=1','USE_MAD=1','WITH_MAD=1','USE_ID3=1','USE_ALSA=1','USE_JACK=1','USE_PORTAUDIO=1' ]
 					#, cflags=''
 					, indexing_suite_version = 2
 )

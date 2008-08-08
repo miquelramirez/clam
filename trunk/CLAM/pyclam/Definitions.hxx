@@ -39,7 +39,7 @@ public:
 	void SetType(const CLAM::SpecTypeFlags& newFlags) { _spectrum->SetType(newFlags); }
 	void SetSize(int s) { _spectrum->SetSize(s); }
 
-	CLAM::Spectrum& getReal() const { return *_spectrum.get(); } //Note: breaks orginal interface
+	CLAM::Spectrum& real() const { return *_spectrum.get(); } //Note: breaks orginal interface
 	CLAM::ProcessingData& getBase() const { return dynamic_cast<CLAM::ProcessingData&>(*_spectrum.get()); } //Note: breaks orginal interface
 };
 
@@ -75,7 +75,7 @@ public:
 	shared_ptr<Bindings::DataArray> GetBuffer() { return _dataArray; }
 // 	CLAM::DataArray& GetBuffer() { return _audio->GetBuffer(); } //no CLAM::DataArray class available in python
 
-	CLAM::Audio& getReal() const { return *_audio.get(); } //Note: breaks orginal interface
+	CLAM::Audio& real() const { return *_audio.get(); } //Note: breaks orginal interface
 	CLAM::ProcessingData& getBase() const { return dynamic_cast<CLAM::ProcessingData&>(*_audio.get()); } //Note: breaks orginal interface
 };
 
@@ -86,10 +86,10 @@ protected:
 public:
 	Processing() { _proc=0; _createdHere=true; }
 	~Processing() { if(_proc!=0&&_createdHere) delete _proc; }
-	Processing(const Bindings::Processing& Proc) { _proc=Proc.getReal(); _createdHere=false;}
+	Processing(const Bindings::Processing& Proc) { _proc=Proc.real(); _createdHere=false;}
 	Processing(CLAM::Processing& proc) { _proc = &proc; _createdHere=false; }
 
-	CLAM::Processing* getReal() const { return _proc; } //Note: breaks orginal interface
+	CLAM::Processing* real() const { return _proc; } //Note: breaks orginal interface
 };
 class MonoAudioFileReader: public Processing { //extra-wrap
 public:
@@ -116,7 +116,7 @@ public:
 class ProcessingConfig { //extra-wrap
 protected: shared_ptr<CLAM::ProcessingConfig> _cfg;
 public:
-	CLAM::ProcessingConfig& getReal() const { return *_cfg.get(); } //Note: breaks orginal interface
+	CLAM::ProcessingConfig& real() const { return *_cfg.get(); } //Note: breaks orginal interface
 };
 class MonoAudioFileReaderConfig: public ProcessingConfig { //extra-wrap
 public:
@@ -133,10 +133,10 @@ class BPNetworkPlayer { //extra-wrap
 protected: shared_ptr<CLAM::NetworkPlayer> _player;
 public:
 	BPNetworkPlayer() {};
-	BPNetworkPlayer(const Bindings::BPNetworkPlayer& Net) { _player=Net.getSharedPointer(); }
+	BPNetworkPlayer(const Bindings::BPNetworkPlayer& Net) { _player=Net.sharedPointer(); }
 
-	shared_ptr<CLAM::NetworkPlayer> getSharedPointer() const { return _player; } //Note: breaks orginal interface
-	CLAM::NetworkPlayer& getReal() const { return *(_player.get()); } //Note: breaks orginal interface
+	shared_ptr<CLAM::NetworkPlayer> sharedPointer() const { return _player; } //Note: breaks orginal interface
+	CLAM::NetworkPlayer& real() const { return *(_player.get()); } //Note: breaks orginal interface
 };
 class PANetworkPlayer: public BPNetworkPlayer {
 public:
