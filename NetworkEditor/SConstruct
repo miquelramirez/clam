@@ -222,7 +222,7 @@ if len(tsfiles) :
 
 qtpluginsInstallationPath = env['qt_plugins_install_path']
 examples = []
-for ext in ['clamnetwork', 'pos', 'ui', 'wav', 'mp3', 'ogg']:
+for ext in ['clamnetwork', 'ui', 'wav', 'mp3', 'ogg']:
 	examples += scanFiles('*.%s'%ext, ['example-data'])
 
 menuEntries = [
