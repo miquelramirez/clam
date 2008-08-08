@@ -40,10 +40,9 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 		if(pluginFilename == "." || pluginFilename == "..")
 			continue;
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
-		void* handle = FullyLoadLibrary(pluginFullFilename);
+		void * handle = FullyLoadLibrary(pluginFullFilename);
 		SetupLibrary( handle, pluginFullFilename );
-		// Commented because it brokes the library processings libraries creation:
-		// releaseLibraryHandler(handle, pluginFullFilename);
+//		std::cout<<"loaded plugin: "<<pluginFullFilename<<std::endl;
 	}
 	closedir(dir);
 }
@@ -59,20 +58,46 @@ void * RunTimeLibraryLoader::FullyLoadLibrary(const std::string & libraryPath) c
 	return dlopen( libraryPath.c_str(), RTLD_NOW);	
 #endif
 }
-
-bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string & pluginFullFilename) const
+void * RunTimeLibraryLoader::LazyLoadLibrary(const std::string & libraryPath) const
 {
+#ifdef WIN32
+	return LoadLibrary(libraryPath.c_str());	//TODO: does windows have an equivalent LAZY mode?
+#else
+	return dlopen( libraryPath.c_str(), RTLD_LAZY);	
+#endif
+}
+
+void * RunTimeLibraryLoader::GetLibraryHandler(const std::string & libraryPath) const
+{
+#ifdef WIN32 //TODO: does windows have an equivalent method to have the handler?
+	return 0;
+#else
+	return dlopen (libraryPath.c_str(), RTLD_NOLOAD);
+#endif
+}
+
+//TODO: the name argument will be used to check on the plugins map 
+bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string pluginFullFilename) const
+{
+//	std::cout<<"ReleaseLibraryHandler: "<<pluginFullFilename<<std::endl;
 	bool error=false;
 	if (!handle)
-		return true;
-#ifndef WIN32 //TODO: the same for windows libraries
-	if (dlclose(handle))
 	{
-		error=true;
-		std::cout<<"Error unloading library handle of "<< pluginFullFilename<< ": "<<std::endl;
-		std::cout<<LibraryLoadError()<<std::endl;	
+		std::cout<<"Cannot release an empty handle!"<<std::endl;
+		return true;
 	}
+#ifdef WIN32
+	if(!FreeLibrary(handle))
+		error=true;
+#else 
+	if (dlclose(handle))
+		error=true;
 #endif
+	if (error)
+	{
+//		std::cout<<"Error unloading library handle of "<< pluginFullFilename << ": "<<std::endl;
+		std::cout<<LibraryLoadError()<<std::endl;
+	}
 	return error;
 }
 

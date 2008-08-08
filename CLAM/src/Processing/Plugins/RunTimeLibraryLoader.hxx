@@ -14,10 +14,11 @@ public:
 protected:
 	void LoadLibrariesFromPath(const std::string & path) const;
 	void * FullyLoadLibrary(const std::string & libraryPath) const;
-	bool ReleaseLibraryHandler(void * handle, const std::string& pluginFullFilename) const;
+	void * LazyLoadLibrary(const std::string & libraryPath) const;
+	bool ReleaseLibraryHandler(void * handle, const std::string pluginFullFilename="") const;
 	std::string LibraryLoadError() const;
 	std::vector<std::string> SplitPathVariable(const std::string & pathVariable) const;
-
+	void * GetLibraryHandler(const std::string & libraryPath) const;
 	const char * pathSeparator() const
 	{
 		return 
