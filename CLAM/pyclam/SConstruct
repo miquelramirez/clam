@@ -23,7 +23,14 @@ if needs_configure and not avoid_configure :
 env.Append( CPPPATH=[env['prefix']+'/include'] )
 env.Append( LIBS=['clam_core','clam_audioio','clam_processing'] )
 env.Append( LIBPATH=[env['prefix']+'/lib'] )
-env.Append( CPPDEFINES=["USE_SNDFILE=1"] )
+
+#env.ParseConfig( 'pkg-config --cflags clam_core' )
+#env.ParseConfig( 'pkg-config --cflags clam_audioio' )
+#env.ParseConfig( 'pkg-config --cflags clam_processing' )
+
+env.Append( CPPDEFINES=['CLAM_FLOAT','_DEBUG','USE_PTHREADS=1','USE_XERCES=1','CLAM_USE_XML','USE_LADSPA=1','USE_FFTW3=1','USE_SNDFILE=1','USE_OGGVORBIS=1','WITH_VORBIS=1','USE_MAD=1','WITH_MAD=1','USE_ID3=1','USE_ALSA=1','USE_JACK=1','USE_PORTAUDIO=1'] )
+env.Append( CPPPATH=['/usr/include/alsa','/usr/local/include'] )
+
 
 env.Append( CPPPATH=['/usr/include/python2.5','/usr/include/'] )
 env.Append( LIBS=['boost_python'] )

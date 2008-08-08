@@ -2,6 +2,7 @@
 #define __clam_definitions_hpp__
 
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 
 #include <vector>
 #include <string>
@@ -27,6 +28,7 @@
 
 namespace Bindings {
 using boost::shared_ptr;
+using boost::weak_ptr;
 using CLAM::TSize;
 using CLAM::TData;
 
@@ -78,30 +80,32 @@ public:
 };
 
 class Processing { //extra-wrap
-protected: shared_ptr<CLAM::Processing> _clamproc;
+protected:
+	CLAM::Processing* _proc;
+	bool _createdHere;
 public:
-	Processing() {};
-	Processing(const Bindings::Processing& Proc) { _clamproc=Proc.getReal(); }
-	Processing(CLAM::Processing& proc) { _clamproc = shared_ptr<CLAM::Processing>(&proc); }
+	Processing() { _proc=0; _createdHere=true; }
+	~Processing() { if(_proc!=0&&_createdHere) delete _proc; }
+	Processing(const Bindings::Processing& Proc) { _proc=Proc.getReal(); _createdHere=false;}
+	Processing(CLAM::Processing& proc) { _proc = &proc; _createdHere=false; }
 
-	shared_ptr<CLAM::Processing> getReal() const { return _clamproc; } //Note: breaks orginal interface
+	CLAM::Processing* getReal() const { return _proc; } //Note: breaks orginal interface
 };
 class MonoAudioFileReader: public Processing { //extra-wrap
 public:
-	MonoAudioFileReader() { _clamproc = shared_ptr<CLAM::Processing>( new CLAM::MonoAudioFileReader() ); }
+	MonoAudioFileReader() { _proc = dynamic_cast<CLAM::Processing*>( new CLAM::MonoAudioFileReader() ); }
 
 	/**	This allows 'downcasts'
 	*	
 	*	For example things like:
-	*	proc=clam.MonoAudioFileReader( network.GetProcessing(reader) )
-	*	proc.GetLength()
+	*	p = clam.MonoAudioFileReader( network.GetProcessing(reader) )
+	*	p.GetLength()
 	*/
-	MonoAudioFileReader(shared_ptr<Bindings::Processing> Proc) { _clamproc=Proc->getReal(); }
-	MonoAudioFileReader(CLAM::Processing& Proc) { _clamproc=shared_ptr<CLAM::Processing>(&Proc); }
+	MonoAudioFileReader(CLAM::Processing& Proc): Processing(Proc) {}
 
 	//Note: breaks orginal interface
 	int GetLength() const {
-		return (int)boost::dynamic_pointer_cast<CLAM::MonoAudioFileReader>(_clamproc)->GetHeader().GetLength()/1000;
+		return (int)dynamic_cast<CLAM::MonoAudioFileReader*>(_proc)->GetHeader().GetLength()/1000;
 	}
 };
 
