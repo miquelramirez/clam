@@ -5,9 +5,20 @@
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/InPort.hxx>
 
+class FloatVectorStorageConfig : public CLAM::ProcessingConfig
+{
+	public:
+		DYNAMIC_TYPE_USING_INTERFACE (FloatVectorStorageConfig, 2, ProcessingConfig);
+		DYN_ATTRIBUTE (0, public, unsigned, Bins);
+		DYN_ATTRIBUTE (1, public, unsigned long, Frames);
+	protected:
+		void DefaultInit(void);
+};
+
 class FloatVectorStorage : public CLAM::Processing
 {
 	typedef std::vector<CLAM::TData> FloatVector;
+	typedef FloatVectorStorageConfig Config;
 	
 public:
 
@@ -21,6 +32,7 @@ public:
 
 protected: // methods
 
+	virtual bool ConcreteConfigure(const CLAM::ProcessingConfig& cfgObject);
 	virtual bool ConcreteStart();
 		
 protected: // attributes
