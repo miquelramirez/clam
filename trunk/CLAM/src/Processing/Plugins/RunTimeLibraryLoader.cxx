@@ -58,7 +58,7 @@ void * RunTimeLibraryLoader::FullyLoadLibrary(const std::string & libraryPath) c
 	return dlopen( libraryPath.c_str(), RTLD_NOW);	
 #endif
 }
-void * RunTimeLibraryLoader::LazyLoadLibrary(const std::string & libraryPath) const
+void * RunTimeLibraryLoader::LazyLoadLibrary(const std::string & libraryPath)
 {
 #ifdef WIN32
 	return LoadLibrary(libraryPath.c_str());	//TODO: does windows have an equivalent LAZY mode?
@@ -77,7 +77,7 @@ void * RunTimeLibraryLoader::GetLibraryHandler(const std::string & libraryPath) 
 }
 
 //TODO: the name argument will be used to check on the plugins map 
-bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string pluginFullFilename) const
+bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string pluginFullFilename)
 {
 //	std::cout<<"ReleaseLibraryHandler: "<<pluginFullFilename<<std::endl;
 	bool error=false;
@@ -93,15 +93,10 @@ bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string
 	if (dlclose(handle))
 		error=true;
 #endif
-	if (error)
-	{
-//		std::cout<<"Error unloading library handle of "<< pluginFullFilename << ": "<<std::endl;
-		std::cout<<LibraryLoadError()<<std::endl;
-	}
 	return error;
 }
 
-std::string RunTimeLibraryLoader::LibraryLoadError() const
+std::string RunTimeLibraryLoader::LibraryLoadError()
 {
 #ifdef WIN32
 	LPVOID lpMsgBuf;

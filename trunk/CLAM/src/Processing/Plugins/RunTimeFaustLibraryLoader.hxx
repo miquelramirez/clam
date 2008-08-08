@@ -73,7 +73,11 @@ protected:
 				factory.AddAttribute(oss.str(), "faust_source_file", sourcePath);
 		}
 		// TODO: remove this when fixed the creation of CLAM library plugins creation
-		ReleaseLibraryHandler(handle, pluginFullFilename);
+		if (ReleaseLibraryHandler(handle, pluginFullFilename))
+		{
+			std::cout<<"[FAUST-LADSPA] error unloading library handle of: " << pluginFullFilename<<std::endl;
+			std::cout<<LibraryLoadError()<<std::endl;
+		}
 	}
 
 	const char ** standardPaths() const

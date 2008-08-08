@@ -6,6 +6,7 @@
 #include "OutControl.hxx"
 #include "InControl.hxx"
 #include "Processing.hxx"
+#include "RunTimeLibraryLoader.hxx"
 
 #include <ladspa.h>
 
@@ -25,6 +26,7 @@ private:
 	LADSPA_Handle _instance;
 	const LADSPA_Descriptor * _descriptor;
 	SOPointer _sharedObject;
+	std::string _libraryFileName;
 
 	std::vector< AudioInPort* > _inputPorts;
 	std::vector< AudioOutPort* > outputPorts;
