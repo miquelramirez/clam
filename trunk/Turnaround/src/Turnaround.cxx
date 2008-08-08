@@ -26,6 +26,8 @@
 #include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/AudioFileMemoryLoader.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
+#include "VectorView.hxx"
+#include "Tonnetz.hxx"
 #include "ProgressControl.hxx"
 #include "FrameDivision.hxx"
 #include "FloatVectorStorage.hxx"
@@ -63,7 +65,7 @@ Turnaround::Turnaround()
 	
 	_vectorView = new CLAM::VM::VectorView(centralwidget);
 	_vboxLayout->addWidget(_vectorView);
-
+	
 	_tonnetz = new CLAM::VM::Tonnetz(centralwidget);
 	_vboxLayout->addWidget(_tonnetz);
 
