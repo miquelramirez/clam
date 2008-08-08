@@ -25,10 +25,17 @@
 #include <CLAM/MonoAudioFileReader.hxx>
 #include "PoolFloatArrayDataSource.hxx"
 #include "ProgressControlWidget.hxx"
-#include "VectorView.hxx"
-#include "Tonnetz.hxx"
 
 #include <QtGui/QVBoxLayout>
+
+namespace CLAM
+{
+namespace VM
+{
+	class VectorView;
+	class Tonnetz;
+}
+}
 
 class Turnaround : public QMainWindow, public Ui::Turnaround
 {
@@ -69,3 +76,4 @@ private:
 };
 
 #endif
+
