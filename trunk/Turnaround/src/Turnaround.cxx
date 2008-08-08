@@ -26,7 +26,6 @@
 #include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/AudioFileMemoryLoader.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
-#include "VectorViewMonitor.hxx"
 #include "ProgressControl.hxx"
 #include "FrameDivision.hxx"
 #include "FloatVectorStorage.hxx"
@@ -64,7 +63,10 @@ Turnaround::Turnaround()
 	
 	_vectorView = new CLAM::VM::VectorView(centralwidget);
 	_vboxLayout->addWidget(_vectorView);
-	
+
+	_tonnetz = new CLAM::VM::Tonnetz(centralwidget);
+	_vboxLayout->addWidget(_tonnetz);
+
 	_network.SetPlayer(new CLAM::PANetworkPlayer);
 
 	startTimer(50);
@@ -155,6 +157,7 @@ void Turnaround::analyse()
 	_dataSource->setDataSource(nBins, 0, 0, binLabels);
 	_dataSource->updateData(storage.Data(), sampleRate, frameDivision, nFrames);
 	_vectorView->setDataSource(*_dataSource);
+	_tonnetz->setDataSource(*_dataSource);
 }
 
 void Turnaround::play()

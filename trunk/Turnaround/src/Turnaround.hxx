@@ -26,6 +26,7 @@
 #include "PoolFloatArrayDataSource.hxx"
 #include "ProgressControlWidget.hxx"
 #include "VectorView.hxx"
+#include "Tonnetz.hxx"
 
 #include <QtGui/QVBoxLayout>
 
@@ -57,11 +58,11 @@ private:
 	std::string _progressControl;
 	std::string _audioSink;
 	std::string _tonalAnalysis;
-	std::string _vectorViewMonitor;
 	
 	QVBoxLayout *_vboxLayout;
 	ProgressControlWidget *_progressControlWidget;
 	CLAM::VM::VectorView *_vectorView;
+	CLAM::VM::Tonnetz *_tonnetz;
 	
 	CLAM::VM::PoolFloatArrayDataSource *_dataSource;
 	CLAM::TData _length;
