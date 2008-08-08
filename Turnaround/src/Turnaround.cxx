@@ -90,12 +90,11 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 		_network.Stop();
 		
 	_fileReaderConfig.SetSourceFile(fileName);
-	
-	analyse();
-	
 	if (!_network.ConfigureProcessing(_fileReader, _fileReaderConfig))
 		return;
-	
+
+	analyse();
+
 	_network.Start();
 }
 
@@ -134,22 +133,16 @@ void Turnaround::analyse()
 	frameDivision->SetFirstCenter(frameSize / 2);
 	frameDivision->SetInterCenterGap(hop);
 
-	std::vector<std::string> binLabels;
-	binLabels.push_back("G");
-	binLabels.push_back("G#");
-	binLabels.push_back("A");
-	binLabels.push_back("A#");
-	binLabels.push_back("B");
-	binLabels.push_back("C");
-	binLabels.push_back("C#");
-	binLabels.push_back("D");
-	binLabels.push_back("D#");
-	binLabels.push_back("E");
-	binLabels.push_back("F");
-	binLabels.push_back("F#");
+	const unsigned nBins = 12;
+	const char * notes[] = { 
+		"G", "G#", "A", "A#",
+		"B", "C", "C#", "D",
+		"D#", "E", "F", "F#"
+	};
+	std::vector<std::string> binLabels(notes, notes+nBins);
 	
 	_dataSource = new CLAM::VM::PoolFloatArrayDataSource;
-	_dataSource->setDataSource(12, 0, 0, binLabels);
+	_dataSource->setDataSource(nBins, 0, 0, binLabels);
 	_dataSource->updateData(storage.Data(), sampleRate, frameDivision, nFrames);
 	_vectorView->setDataSource(*_dataSource);
 }
