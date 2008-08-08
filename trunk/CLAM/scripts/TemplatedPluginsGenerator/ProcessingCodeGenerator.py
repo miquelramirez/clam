@@ -97,7 +97,7 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 			return
 
 		definitions_dict = {}
-		definitions_dict["member_style"] = "_" # Member name convention. Option: "m" 
+		definitions_dict["member_style"] = "m" # Member name convention. Option: "_"
 		definitions_dict["plugin_name"] = str( self.lineEdit_PluginName.text() )
 		definitions_dict["template_name"] = str( self.lineEdit_PluginName.text() )
 		definitions_dict["base_class_name"] = str( self.lineEdit_BaseClass.text() )
