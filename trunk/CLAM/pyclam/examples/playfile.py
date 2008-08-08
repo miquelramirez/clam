@@ -37,6 +37,5 @@ portaudio_player = PANetworkPlayer()
 network.SetPlayer( portaudio_player.getReal() ) #FIXME
 
 network.Start()
-#time.sleep( MonoAudioFileReader( network.GetProcessing(reader) ).GetLength() )
-time.sleep(4)
+time.sleep( MonoAudioFileReader( network.GetProcessing(reader) ).GetLength() )
 network.Stop()

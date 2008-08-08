@@ -21,12 +21,12 @@ class GeneralTests(unittest.TestCase):
 	#testAudioFileReaderConfig()
 
 	def testAudioFileReaderLength(self):
-		#network = clam.Network()
-		#reader = network.AddProcessing( "MonoAudioFileReader" )
-		#config = clam.MonoAudioFileReaderConfig()
-		#config.SetSourceFile( "test4seg.mp3" )
-		#network.ConfigureProcessing(reader,config.getReal())
-		#self.assertEqual( 4, MonoAudioFileReader( network.GetProcessing(reader) ).GetLength() )
+		network = clam.Network()
+		reader = network.AddProcessing( "MonoAudioFileReader" )
+		config = clam.MonoAudioFileReaderConfig()
+		config.SetSourceFile( "test4seg.mp3" )
+		network.ConfigureProcessing(reader,config.getReal())
+		self.assertEqual( 4, clam.MonoAudioFileReader( network.GetProcessing(reader) ).GetLength() )
 		
 		reader = clam.MonoAudioFileReader()
 		config = clam.MonoAudioFileReaderConfig()

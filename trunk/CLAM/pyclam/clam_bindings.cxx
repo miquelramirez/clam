@@ -281,10 +281,8 @@ struct FFT_wrapper : CLAM::FFT, bp::wrapper< CLAM::FFT > {
     }
 
     virtual bool ConcreteConfigure( ::CLAM::ProcessingConfig const & arg0 ){
-        if( bp::override func_ConcreteConfigure = this->get_override( "ConcreteConfigure" ) )
-            return func_ConcreteConfigure( boost::ref(arg0) );
-        else
-            return this->CLAM::Processing::ConcreteConfigure( boost::ref(arg0) );
+        bp::override func_ConcreteConfigure = this->get_override( "ConcreteConfigure" );
+        return func_ConcreteConfigure( boost::ref(arg0) );
     }
 
     virtual bool ConcreteStart(  ){
@@ -1895,36 +1893,23 @@ BOOST_PYTHON_MODULE(clam){
             , (void ( ::Bindings::FFTConfig::* )( int ) )( &::Bindings::FFTConfig::SetAudioSize )
             , ( bp::arg("s") ) );
 
-    { //::Bindings::Processing
-        typedef bp::class_< Bindings::Processing > Processing_exposer_t;
-        Processing_exposer_t Processing_exposer = Processing_exposer_t( "Processing" );
-        bp::scope Processing_scope( Processing_exposer );
-        Processing_exposer.def( bp::init< >() );
-        Processing_exposer.def( bp::init< Bindings::Processing const & >(( bp::arg("Proc") )) );
-        Processing_exposer.def( bp::init< CLAM::Processing & >(( bp::arg("proc") )) );
-        { //::Bindings::Processing::getReal
-        
-            typedef ::boost::shared_ptr< CLAM::Processing > ( ::Bindings::Processing::*getReal_function_type )(  ) const;
-            
-            Processing_exposer.def( 
-                "getReal"
-                , getReal_function_type( &::Bindings::Processing::getReal ) );
-        
-        }
-        bp::register_ptr_to_python< boost::shared_ptr< Bindings::Processing > >();
-    }
+    bp::class_< Bindings::Processing >( "Processing" )    
+        .def( bp::init< >() )    
+        .def( bp::init< Bindings::Processing const & >(( bp::arg("Proc") )) )    
+        .def( bp::init< CLAM::Processing & >(( bp::arg("proc") )) )    
+        .def( 
+            "getReal"
+            , (::CLAM::Processing * ( ::Bindings::Processing::* )(  ) const)( &::Bindings::Processing::getReal )
+            , bp::return_value_policy< bp::reference_existing_object >() );
 
     bp::implicitly_convertible< CLAM::Processing &, Bindings::Processing >();
 
     bp::class_< Bindings::MonoAudioFileReader, bp::bases< Bindings::Processing > >( "MonoAudioFileReader" )    
         .def( bp::init< >() )    
-        .def( bp::init< boost::shared_ptr< Bindings::Processing > >(( bp::arg("Proc") )) )    
         .def( bp::init< CLAM::Processing & >(( bp::arg("Proc") )) )    
         .def( 
             "GetLength"
             , (int ( ::Bindings::MonoAudioFileReader::* )(  ) const)( &::Bindings::MonoAudioFileReader::GetLength ) );
-
-    bp::implicitly_convertible< boost::shared_ptr< Bindings::Processing >, Bindings::MonoAudioFileReader >();
 
     bp::implicitly_convertible< CLAM::Processing &, Bindings::MonoAudioFileReader >();
 
@@ -2694,7 +2679,6 @@ BOOST_PYTHON_MODULE(clam){
                 , Stop_function_type( &::CLAM::Processing::Stop ) );
         
         }
-        bp::register_ptr_to_python< boost::shared_ptr< CLAM::Processing > >();
     }
 
     bp::class_< FFT_base_wrapper, bp::bases< CLAM::Processing >, boost::noncopyable >( "FFT_base" )    
