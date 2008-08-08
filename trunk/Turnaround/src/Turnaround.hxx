@@ -49,6 +49,7 @@ protected:
 
 private:
 	void loadAudioFile(const std::string & fileName);
+	void analyse();
 	
 	CLAM::Network _network;
 	CLAM::MonoAudioFileReaderConfig _fileReaderConfig;
@@ -63,7 +64,7 @@ private:
 	CLAM::VM::VectorView *_vectorView;
 	
 	CLAM::VM::PoolFloatArrayDataSource *_dataSource;
-	double _length;
+	CLAM::TData _length;
 };
 
 #endif

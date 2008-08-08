@@ -56,7 +56,7 @@ void CLAM::VM::PoolFloatArrayDataSource::setDataSource(unsigned nBins, CLAM::TDa
 	_binLabels.assign(binLabels.begin(), binLabels.end());	
 }
 
-void CLAM::VM::PoolFloatArrayDataSource::updateData(float data[], CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames)
+void CLAM::VM::PoolFloatArrayDataSource::updateData(std::vector<CLAM::TData> data, CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames)
 {
 	_frameData = 0;
 	_samplingRate = samplingRate;
@@ -64,11 +64,13 @@ void CLAM::VM::PoolFloatArrayDataSource::updateData(float data[], CLAM::TData sa
 	_frameDivision = frameDivision;
 
 	_data.resize(_nFrames*_nBins);
-	for (unsigned i = 0; i < _nFrames*_nBins; i++)
+	unsigned long j = 0;
+	for (std::vector<CLAM::TData>::iterator i = data.begin(); i != data.end(); i++)
 	{
 		// TODO: This nBins is and adhoc hack for normalization
-		double value = data[i]*_nBins;
-		_data[i] = value;
+		double value = (*i)*_nBins;
+		_data[j] = value;
+		j++;
 	}
 	_frameData = &_data[0];
 }
