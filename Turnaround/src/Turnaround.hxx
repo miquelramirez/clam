@@ -34,6 +34,7 @@ namespace VM
 {
 	class VectorView;
 	class Tonnetz;
+	class KeySpace;
 }
 }
 
@@ -70,8 +71,10 @@ private:
 	ProgressControlWidget *_progressControlWidget;
 	CLAM::VM::VectorView *_vectorView;
 	CLAM::VM::Tonnetz *_tonnetz;
+	CLAM::VM::KeySpace *_keySpace;
 	
-	CLAM::VM::PoolFloatArrayDataSource *_dataSource;
+	CLAM::VM::PoolFloatArrayDataSource *_pcpSource;
+	CLAM::VM::PoolFloatArrayDataSource *_chordCorrelationSource;
 	CLAM::TData _length;
 };
 

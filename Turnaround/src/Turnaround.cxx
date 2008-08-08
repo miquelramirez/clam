@@ -26,6 +26,7 @@
 #include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/AudioFileMemoryLoader.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
+#include "KeySpace.hxx"
 #include "VectorView.hxx"
 #include "Tonnetz.hxx"
 #include "ProgressControl.hxx"
@@ -37,7 +38,8 @@
 Turnaround::Turnaround()
 	: QMainWindow( 0 )
 	, Ui::Turnaround( )
-	, _dataSource( 0 )
+	, _pcpSource( 0 )
+	, _chordCorrelationSource( 0 )
 {
 	setupUi(this);
 	
@@ -68,6 +70,9 @@ Turnaround::Turnaround()
 	
 	_tonnetz = new CLAM::VM::Tonnetz(centralwidget);
 	_vboxLayout->addWidget(_tonnetz);
+
+	_keySpace = new CLAM::VM::KeySpace(centralwidget);
+	_vboxLayout->addWidget(_keySpace);
 
 	_network.SetPlayer(new CLAM::PANetworkPlayer);
 
@@ -121,14 +126,20 @@ void Turnaround::analyse()
 	FloatVectorStorageConfig storageConfig;
 	storageConfig.SetBins(12);
 	storageConfig.SetFrames(nFrames);
-	FloatVectorStorage storage(storageConfig);
+	FloatVectorStorage pcpStorage(storageConfig);
+
+	storageConfig.SetBins(24);
+	storageConfig.SetFrames(nFrames);
+	FloatVectorStorage chordCorrelationStorage(storageConfig);
 
 	CLAM::ConnectPorts(fileReader, "Samples Read", tonalAnalysis, "Audio Input");
-	CLAM::ConnectPorts(tonalAnalysis, "Pitch Profile", storage, "Data Input");
+	CLAM::ConnectPorts(tonalAnalysis, "Pitch Profile", pcpStorage, "Data Input");
+	CLAM::ConnectPorts(tonalAnalysis, "Chord Correlation", chordCorrelationStorage, "Data Input");
 
 	fileReader.Start();
 	tonalAnalysis.Start();
-	storage.Start();
+	pcpStorage.Start();
+	chordCorrelationStorage.Start();
 
 	QProgressDialog progress(tr("Analyzing chords..."), 0, 0, nFrames, this);
 	progress.setWindowModality(Qt::WindowModal);
@@ -139,7 +150,8 @@ void Turnaround::analyse()
 		if (! analysisInput.CanConsume())
 			continue;
 		tonalAnalysis.Do();
-		storage.Do();
+		pcpStorage.Do();
+		chordCorrelationStorage.Do();
 		progress.setValue(++i);
 	}
 
@@ -155,11 +167,23 @@ void Turnaround::analyse()
 	};
 	std::vector<std::string> binLabels(notes, notes+nBins);
 	
-	_dataSource = new CLAM::VM::PoolFloatArrayDataSource;
-	_dataSource->setDataSource(nBins, 0, 0, binLabels);
-	_dataSource->updateData(storage.Data(), sampleRate, frameDivision, nFrames);
-	_vectorView->setDataSource(*_dataSource);
-	_tonnetz->setDataSource(*_dataSource);
+	_pcpSource = new CLAM::VM::PoolFloatArrayDataSource;
+	_pcpSource->setDataSource(nBins, 0, 0, binLabels);
+	_pcpSource->updateData(pcpStorage.Data(), sampleRate, frameDivision, nFrames);
+	_vectorView->setDataSource(*_pcpSource);
+	_tonnetz->setDataSource(*_pcpSource);
+
+	const char * minorChords[] = { 
+		"g", "g#", "a", "a#",
+		"b", "c", "c#", "d",
+		"d#", "e", "f", "f#"
+	};
+	binLabels.insert(binLabels.end(), minorChords, minorChords+nBins);
+	
+	_chordCorrelationSource = new CLAM::VM::PoolFloatArrayDataSource;
+	_chordCorrelationSource->setDataSource(nBins*2, 0, 0, binLabels); // nBins?
+	_chordCorrelationSource->updateData(chordCorrelationStorage.Data(), sampleRate, frameDivision, nFrames);
+	_keySpace->setDataSource(*_chordCorrelationSource);
 }
 
 void Turnaround::play()
@@ -183,6 +207,9 @@ void Turnaround::stop()
 
 void Turnaround::timerEvent(QTimerEvent *event)
 {
-	if (_dataSource)
-		_dataSource->setCurrentTime(_network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length);
+	if (_pcpSource)
+	{
+		_pcpSource->setCurrentTime(_network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length);
+		_chordCorrelationSource->setCurrentTime(_network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length);		
+	}
 }
