@@ -78,7 +78,7 @@ void Turnaround::fileOpen()
 {
 	QString qFileName = QFileDialog::getOpenFileName(this, 
 			tr("Choose an audio file"), QString::null, 
-			   tr("Audio files (*.wav *.ogg *.mp3)"));
+			tr("Audio files (*.wav *.ogg *.mp3)"));
 	if(qFileName == QString::null) return;
 	loadAudioFile(qFileName.toLocal8Bit().constData());
 }
@@ -104,7 +104,6 @@ void Turnaround::analyse()
 	CLAM::MonoAudioFileReader fileReader(_fileReaderConfig);
 	CLAM::TonalAnalysis tonalAnalysis;
 	CLAM::AudioInPort &analysisInput = (CLAM::AudioInPort&)(tonalAnalysis.GetInPort("Audio Input"));
-	fileReader.GetOutPort("Samples Read").ConnectToIn(analysisInput);
 
 	const unsigned hop = analysisInput.GetHop();
 	const unsigned frameSize = analysisInput.GetSize();
@@ -119,13 +118,15 @@ void Turnaround::analyse()
 	storageConfig.SetBins(12);
 	storageConfig.SetFrames(nFrames);
 	FloatVectorStorage storage(storageConfig);
-	tonalAnalysis.GetOutPort("Pitch Profile").ConnectToIn(storage.GetInPort("Data Input"));
-	
+
+	CLAM::ConnectPorts(fileReader, "Samples Read", tonalAnalysis, "Audio Input");
+	CLAM::ConnectPorts(tonalAnalysis, "Pitch Profile", storage, "Data Input");
+
 	fileReader.Start();
 	tonalAnalysis.Start();
 	storage.Start();
 
-	QProgressDialog progress(tr("Analysing chords..."), 0, 0, nFrames, this);
+	QProgressDialog progress(tr("Analyzing chords..."), 0, 0, nFrames, this);
 	progress.setWindowModality(Qt::WindowModal);
 	
 	unsigned long i = 0;
