@@ -114,7 +114,10 @@ void Turnaround::analyse()
 	
 	std::cout << nFrames << std::endl; // debug
 	
-	FloatVectorStorage storage;
+	FloatVectorStorageConfig storageConfig;
+	storageConfig.SetBins(12);
+	storageConfig.SetFrames(nFrames);
+	FloatVectorStorage storage(storageConfig);
 	tonalAnalysis.GetOutPort("Pitch Profile").ConnectToIn(storage.GetInPort("Data Input"));
 	
 	fileReader.Start();
