@@ -22,7 +22,7 @@
   </processing>
 
   <processing id="MonoAudioFileReader_1" position="-43,268" size="246,64" type="MonoAudioFileReader">
-    <SourceFile>/home/hordia/dev/clam_dev/clam-test-data/Elvis44k.wav</SourceFile>
+    <SourceFile>../../clam-test-data/Elvis44k.wav</SourceFile>
     <SelectedChannel>0</SelectedChannel>
     <Loop>1</Loop>
   </processing>
