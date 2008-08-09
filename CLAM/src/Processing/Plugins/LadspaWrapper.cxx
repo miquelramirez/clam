@@ -91,7 +91,7 @@ bool LadspaWrapper::Do()
 bool LadspaWrapper::LoadLibraryFunction(const std::string& libraryFileName, unsigned index, const std::string& factoryKey)
 {
 	//std::cout<<"LadspaWrapper::LoadLibraryFunction("<<libraryFileName<<")"<<std::endl;
-	_sharedObject = RunTimeLibraryLoader::FullyLoadLibrary(libraryFileName,RunTimeLibraryLoader::LAZY);
+	_sharedObject = RunTimeLibraryLoader::LazyLoadLibrary(libraryFileName);
 	LADSPA_Descriptor_Function function = (LADSPA_Descriptor_Function)dlsym(_sharedObject, "ladspa_descriptor");
 	if(!function)
 	{
