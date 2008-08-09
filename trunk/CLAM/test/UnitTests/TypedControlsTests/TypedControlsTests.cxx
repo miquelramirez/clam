@@ -59,6 +59,16 @@ namespace CLAMTest {
 		CPPUNIT_TEST( testTypedInControlRegistry_Has_withNoControls );
 		CPPUNIT_TEST( testTypedOutControlRegistry_Has_withNoControls );
 		
+		// Testing bounds
+		CPPUNIT_TEST( testTypedInControl_doesntHaveBoundsBydefault );
+		CPPUNIT_TEST( testTypedInControl_defaultBounds );
+		CPPUNIT_TEST( testTypedInControl_settingBounds );
+		CPPUNIT_TEST( testTypedInControl_boundedDefaultValue );
+		CPPUNIT_TEST( testTypedInControl_isBoundedWhenTrue );
+
+		// Testing default value
+		CPPUNIT_TEST( testTypedInControl_setDefaultprevailstoBounds );
+
 		CPPUNIT_TEST_SUITE_END();
 		
 		// Processing interface:
@@ -337,5 +347,50 @@ namespace CLAMTest {
 			CLAM::TypedOutControlRegistry outRegistry;
 			CPPUNIT_ASSERT_EQUAL( false, outRegistry.Has("IntOutControl") );
 		}
+
+	void testTypedInControl_doesntHaveBoundsBydefault()
+	{
+		CLAM::TypedInControl<float> concreteIn("InControl");
+		CLAM::BaseTypedInControl & inControl = concreteIn;
+		CPPUNIT_ASSERT_EQUAL( false, inControl.IsBounded() );
+	}
+	void testTypedInControl_defaultBounds()
+	{
+		CLAM::TypedInControl<float> concreteIn("InControl");
+		CLAM::BaseTypedInControl & inControl = concreteIn;
+		CPPUNIT_ASSERT_EQUAL( 0.0f, inControl.LowerBound() );
+		CPPUNIT_ASSERT_EQUAL( 1.0f, inControl.UpperBound() );
+	}
+	void testTypedInControl_settingBounds()
+	{
+		CLAM::TypedInControl<float> concreteIn("InControl");
+		CLAM::BaseTypedInControl & inControl = concreteIn;
+		inControl.SetBounds(-1.f, 2.f);
+		CPPUNIT_ASSERT_EQUAL( -1.f, inControl.LowerBound() );
+		CPPUNIT_ASSERT_EQUAL( 2.f, inControl.UpperBound() );
+	}
+	void testTypedInControl_boundedDefaultValue()
+	{
+		CLAM::TypedInControl<float> concreteIn("InControl");
+		CLAM::BaseTypedInControl & inControl = concreteIn;
+		inControl.SetBounds(0.f, 10.f);
+		CPPUNIT_ASSERT_EQUAL( 5.f, inControl.DefaultValue() );
+	}
+	void testTypedInControl_isBoundedWhenTrue()
+	{
+		CLAM::TypedInControl<float> concreteIn("InControl");
+		CLAM::BaseTypedInControl & inControl = concreteIn;
+		inControl.SetBounds(0.f, 0.f);
+		CPPUNIT_ASSERT_EQUAL( true, inControl.IsBounded() );
+	}
+
+	void testTypedInControl_setDefaultprevailstoBounds()
+	{
+		CLAM::TypedInControl<float> concreteIn("InControl");
+		CLAM::BaseTypedInControl & inControl = concreteIn;
+		inControl.SetBounds(0.f, 10.f);
+		inControl.SetDefaultValue(0.0f);
+		CPPUNIT_ASSERT_EQUAL( 0.0f, inControl.DefaultValue() );
+	}
 	};
 } // namespace
