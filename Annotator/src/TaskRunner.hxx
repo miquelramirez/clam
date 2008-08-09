@@ -46,7 +46,7 @@ public:
 	virtual ~TaskRunner();
 	bool run(QString command, QStringList & arguments, QString workingDir)
 	{
-		_Output = ("<div style='color: blue;'>" + tr("Executing '<tt>%1 %2</tt>'") + "</div><br/>")
+		_output = ("<div style='color: blue;'>" + tr("Executing '<tt>%1 %2</tt>'") + "</div><br/>")
 			.arg(command)
 			.arg(arguments.join(" "));
 		updateText();
@@ -65,7 +65,7 @@ private slots:
 	{
 		dumpOutput();
 		dumpError();
-		_Output += tr("<div style='color: blue;'>Done.</div>");
+		_output += tr("<div style='color: blue;'>Done.</div>");
 		updateText();
 		QTimer::singleShot(5000, this, SLOT(close()));
 		emit taskDone(_process->exitCode()==0);
@@ -84,12 +84,12 @@ private:
 		output.replace("&","&amp;");
 		output.replace("<","&lt;");
 		output.replace("\n","<br/>");
-		_Output += QString("<tt style='color: ") + (error?"red":"green") + ";'>"+  output +"</tt>";
+		_output += QString("<tt style='color: ") + (error?"red":"green") + ";'>"+  output +"</tt>";
 		updateText();
 	}
 	void updateText()
 	{
-		_outputDisplay->setHtml(_Output);
+		_outputDisplay->setHtml(_output);
 		QTextCursor cursor = _outputDisplay->textCursor();
 		cursor.movePosition(QTextCursor::End);
 		_outputDisplay->setTextCursor(cursor);
@@ -98,7 +98,7 @@ private:
 private:
 	QTextEdit * _outputDisplay;
 	QProcess * _process;
-	QString _Output;
+	QString _output;
 };
 
 
