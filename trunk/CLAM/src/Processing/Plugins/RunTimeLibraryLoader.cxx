@@ -48,19 +48,30 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 }
 
 
-void * RunTimeLibraryLoader::FullyLoadLibrary(const std::string & libraryPath, OpenLibraryMode openMode) 
+void * RunTimeLibraryLoader::FullyLoadLibrary(const std::string & libraryPath)
 {
 //	std::cout << "[" << libraryType() << " Plugins] FullyLoading " << libraryPath << std::endl;
 #ifdef WIN32
 //		SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT |
 //			SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX );
-//	TODO: if windows allow it, check for lazy mode
 	return LoadLibrary(libraryPath.c_str());
 #else
-	int mode = (openMode==LAZY ? RTLD_LAZY : RTLD_NOW);
-	return dlopen( libraryPath.c_str(), mode);
+	return dlopen( libraryPath.c_str(), RTLD_NOW);
 #endif
 }
+
+
+void * RunTimeLibraryLoader::LazyLoadLibrary(const std::string & libraryPath)
+{
+#ifdef WIN32
+//	TODO: if windows allow it, add here a lazy load
+	return 0; 
+#else
+	return dlopen( libraryPath.c_str(), RTLD_LAZY);
+#endif
+}
+
+
 
 void * RunTimeLibraryLoader::GetLibraryHandler(const std::string & libraryPath) const
 {

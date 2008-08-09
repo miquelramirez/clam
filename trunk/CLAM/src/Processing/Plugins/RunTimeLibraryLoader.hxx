@@ -9,14 +9,13 @@ class RunTimeLibraryLoader
 {
 public:
 
-	enum OpenLibraryMode { NOW,LAZY };
-	
 	virtual ~RunTimeLibraryLoader() {}
 	virtual void Load() const;
 	const std::string CompletePathFor(const std::string & subpathAndName) const; // if subpathAndName exists on environment paths, returns full path
 
 	// static methods for dynamic libraries handles
-	static void * FullyLoadLibrary(const std::string & libraryPath, OpenLibraryMode = NOW);
+	static void * FullyLoadLibrary(const std::string & libraryPath);
+	static void * LazyLoadLibrary(const std::string & libraryPath);
 	static bool ReleaseLibraryHandler(void * handle, const std::string pluginFullFilename="");
 	static std::string LibraryLoadError();
 protected:
