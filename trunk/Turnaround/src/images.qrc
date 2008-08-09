@@ -1,10 +1,17 @@
 <RCC>
-    <qresource prefix="/icons" >
-        <file>images/exit.png</file>
-        <file>images/fileopen.png</file>
-        <file>images/player_pause.png</file>
-        <file>images/player_play.png</file>
-        <file>images/player_stop.png</file>
-    </qresource>
-    <qresource prefix="/logos" />
+  <qresource prefix="/icons" >
+    <file>images/tonnetz.svg</file>
+    <file>images/segmentation.svg</file>
+    <file>images/polarchromapeaks.svg</file>
+    <file>images/keyspace.svg</file>
+    <file>images/chordranking.svg</file>
+    <file>images/help.png</file>
+    <file>images/contexthelp.png</file>
+    <file>images/exit.png</file>
+    <file>images/fileopen.png</file>
+    <file>images/player_pause.png</file>
+    <file>images/player_play.png</file>
+    <file>images/player_stop.png</file>
+  </qresource>
+  <qresource prefix="/logos" />
 </RCC>
