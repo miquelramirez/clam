@@ -72,23 +72,20 @@ void * RunTimeLibraryLoader::GetLibraryHandler(const std::string & libraryPath) 
 }
 
 //TODO: the name argument will be used to check on the plugins map 
+// returns false on success, true on fail
 bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string pluginFullFilename)
 {
 	std::cout<<"ReleaseLibraryHandler: "<<pluginFullFilename<<std::endl;
-	bool error=false;
 	if (!handle)
 	{
 		std::cout<<"Cannot release an empty handle!"<<std::endl;
 		return true;
 	}
 #ifdef WIN32
-	if(!FreeLibrary(handle))
-		error=true;
+	return (!FreeLibrary(handle));
 #else 
-	if (dlclose(handle))
-		error=true;
+	return (dlclose(handle));
 #endif
-	return error;
 }
 
 std::string RunTimeLibraryLoader::LibraryLoadError()
