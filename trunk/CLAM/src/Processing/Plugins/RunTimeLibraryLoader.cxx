@@ -47,23 +47,18 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 	closedir(dir);
 }
 
-void * RunTimeLibraryLoader::FullyLoadLibrary(const std::string & libraryPath) const
+
+void * RunTimeLibraryLoader::FullyLoadLibrary(const std::string & libraryPath, OpenLibraryMode openMode) 
 {
 //	std::cout << "[" << libraryType() << " Plugins] FullyLoading " << libraryPath << std::endl;
 #ifdef WIN32
 //		SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT |
 //			SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX );
+//	TODO: if windows allow it, check for lazy mode
 	return LoadLibrary(libraryPath.c_str());
 #else
-	return dlopen( libraryPath.c_str(), RTLD_NOW);	
-#endif
-}
-void * RunTimeLibraryLoader::LazyLoadLibrary(const std::string & libraryPath)
-{
-#ifdef WIN32
-	return LoadLibrary(libraryPath.c_str());	//TODO: does windows have an equivalent LAZY mode?
-#else
-	return dlopen( libraryPath.c_str(), RTLD_LAZY);	
+	int mode = (openMode==LAZY ? RTLD_LAZY : RTLD_NOW);
+	return dlopen( libraryPath.c_str(), mode);
 #endif
 }
 
@@ -79,7 +74,7 @@ void * RunTimeLibraryLoader::GetLibraryHandler(const std::string & libraryPath) 
 //TODO: the name argument will be used to check on the plugins map 
 bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string pluginFullFilename)
 {
-//	std::cout<<"ReleaseLibraryHandler: "<<pluginFullFilename<<std::endl;
+	std::cout<<"ReleaseLibraryHandler: "<<pluginFullFilename<<std::endl;
 	bool error=false;
 	if (!handle)
 	{

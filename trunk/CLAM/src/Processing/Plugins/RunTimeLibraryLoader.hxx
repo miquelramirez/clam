@@ -3,20 +3,24 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 class RunTimeLibraryLoader
 {
 public:
+
+	enum OpenLibraryMode { NOW,LAZY };
+	
 	virtual ~RunTimeLibraryLoader() {}
 	virtual void Load() const;
 	const std::string CompletePathFor(const std::string & subpathAndName) const; // if subpathAndName exists on environment paths, returns full path
-	static void * LazyLoadLibrary(const std::string & libraryPath);
+
+	// static methods for dynamic libraries handles
+	static void * FullyLoadLibrary(const std::string & libraryPath, OpenLibraryMode = NOW);
 	static bool ReleaseLibraryHandler(void * handle, const std::string pluginFullFilename="");
 	static std::string LibraryLoadError();
-
 protected:
 	void LoadLibrariesFromPath(const std::string & path) const;
-	void * FullyLoadLibrary(const std::string & libraryPath) const;
 	std::vector<std::string> SplitPathVariable(const std::string & pathVariable) const;
 	void * GetLibraryHandler(const std::string & libraryPath) const;
 	const char * pathSeparator() const
