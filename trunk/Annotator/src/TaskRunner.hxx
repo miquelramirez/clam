@@ -37,10 +37,10 @@ class TaskRunner : public QDockWidget
 public:
 	TaskRunner(QWidget * parent = 0)
 	{
-		_OutputDisplay = new QTextEdit(this);
+		_outputDisplay = new QTextEdit(this);
 //		QVBoxLayout * layout = new QVBoxLayout(this);
-		//layout()->addWidget(_OutputDisplay);
-		setWidget(_OutputDisplay);
+		//layout()->addWidget(_outputDisplay);
+		setWidget(_outputDisplay);
 		setAttribute(Qt::WA_DeleteOnClose, true);
 	}
 	virtual ~TaskRunner();
@@ -50,13 +50,13 @@ public:
 			.arg(command)
 			.arg(arguments.join(" "));
 		updateText();
-		_Process = new QProcess(this);
-		_Process->setWorkingDirectory(workingDir);
-		connect(_Process, SIGNAL(readyReadStandardError()), this, SLOT(dumpError()));
-		connect(_Process, SIGNAL(readyReadStandardOutput()), this, SLOT(dumpOutput()));
-		connect(_Process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished()));
-		_Process->start(command, arguments);
-		return _Process->waitForStarted();
+		_process = new QProcess(this);
+		_process->setWorkingDirectory(workingDir);
+		connect(_process, SIGNAL(readyReadStandardError()), this, SLOT(dumpError()));
+		connect(_process, SIGNAL(readyReadStandardOutput()), this, SLOT(dumpOutput()));
+		connect(_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished()));
+		_process->start(command, arguments);
+		return _process->waitForStarted();
 	}
 signals:
 	void taskDone(bool success);
@@ -68,15 +68,15 @@ private slots:
 		_Output += tr("<div style='color: blue;'>Done.</div>");
 		updateText();
 		QTimer::singleShot(5000, this, SLOT(close()));
-		emit taskDone(_Process->exitCode()==0);
+		emit taskDone(_process->exitCode()==0);
 	}
 	void dumpError()
 	{
-		dump(_Process->readAllStandardError(), true);
+		dump(_process->readAllStandardError(), true);
 	}
 	void dumpOutput()
 	{
-		dump(_Process->readAllStandardOutput(), false);
+		dump(_process->readAllStandardOutput(), false);
 	}
 private:
 	void dump(QString output, bool error)
@@ -89,15 +89,15 @@ private:
 	}
 	void updateText()
 	{
-		_OutputDisplay->setHtml(_Output);
-		QTextCursor cursor = _OutputDisplay->textCursor();
+		_outputDisplay->setHtml(_Output);
+		QTextCursor cursor = _outputDisplay->textCursor();
 		cursor.movePosition(QTextCursor::End);
-		_OutputDisplay->setTextCursor(cursor);
-		_OutputDisplay->ensureCursorVisible();
+		_outputDisplay->setTextCursor(cursor);
+		_outputDisplay->ensureCursorVisible();
 	}
 private:
-	QTextEdit * _OutputDisplay;
-	QProcess * _Process;
+	QTextEdit * _outputDisplay;
+	QProcess * _process;
 	QString _Output;
 };
 
