@@ -8,6 +8,11 @@
 namespace CLAM {
 	class Processing; 
 	
+	/**
+	* \brief Processing in control base class.
+	*
+	* Typed in controls base interface with some specific services for float ones.
+	*/
 	class BaseTypedInControl{
 		std::string mName;
 		Processing * mProcessing;
@@ -25,6 +30,10 @@ namespace CLAM {
 		const std::string& GetName() const { return mName; }
 		Processing * GetProcessing() const { return mProcessing; }
 		
+		/** @name Float specific services
+		* 
+		*/
+		//{@
 		bool IsBounded() const;
 		float UpperBound() const;
 		float LowerBound() const;
@@ -32,6 +41,7 @@ namespace CLAM {
 		float DefaultValue() const;
 		void SetDefaultValue(float val);
 		void SetBounds(float lower, float upper);
+		//@}
 	};
 } // End namespace CLAM
 #endif // _BaseTypedInControl_

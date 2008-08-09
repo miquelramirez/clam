@@ -40,7 +40,7 @@ class Processing;
 * \brief Processing out control class.
 *
 * Controls are limited to emmit and receive TControlData (float) numbers. 
-* Though extensible typed connections are future planned development.
+* Though extensible typed connections are future planned development: @see TypedOutControl
 */
 class OutControl
 {

@@ -11,6 +11,10 @@
 namespace CLAM {
 	class Processing;
 	
+	/**
+	* \brief Processing typed out control template class.
+	*
+	*/
 	template<class TypedControlData>
 	class TypedOutControl : public BaseTypedOutControl
 	{
@@ -28,7 +32,7 @@ namespace CLAM {
 
 		void AddLink(TypedInControl<TypedControlData>& in);
 		/**
-			WARNING: You should call IsLinkable before using the Link function or you'll get an assert failure if In and Out Control types are different.
+			@warning You should call IsLinkable before using the Link function or you'll get an assert failure if In and Out Control types are different.
 		*/
 		void AddLink(BaseTypedInControl& in);
 		void RemoveLink(TypedInControl<TypedControlData>& in);
@@ -67,7 +71,7 @@ namespace CLAM {
 	}
 
 	/**
-		WARNING: You should call IsLinkable before using the Link function or you'll get an assert failure if In and Out Control types are different.
+		@warning You should call IsLinkable before using the Link function or you'll get an assert failure if In and Out Control types are different.
 	*/
 	template<class TypedControlData>
 	void TypedOutControl<TypedControlData>::AddLink(BaseTypedInControl& in)
