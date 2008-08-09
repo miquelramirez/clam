@@ -11,6 +11,10 @@
 namespace CLAM {
 	class Processing;
 	
+	/**
+	* \brief Processing out control base class.
+	*
+	*/
 	class BaseTypedOutControl{
 		std::string mName;
 		Processing * mProcessing;
@@ -18,7 +22,7 @@ namespace CLAM {
 		BaseTypedOutControl(const std::string &name, Processing * proc = 0);
 		virtual ~BaseTypedOutControl();
 		/**
-			WARNING: You should call IsLinkable before using the AddLink function to avoid errors.
+			@warning You should call IsLinkable before using the AddLink function to avoid errors.
 		*/
 		virtual void AddLink(BaseTypedInControl& in) = 0;
 		virtual void RemoveLink(BaseTypedInControl& in) = 0;
