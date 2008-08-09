@@ -29,6 +29,7 @@
 #include "KeySpace.hxx"
 #include "VectorView.hxx"
 #include "Tonnetz.hxx"
+#include "ChordRanking.hxx"
 #include "ProgressControl.hxx"
 #include "FrameDivision.hxx"
 #include "FloatVectorStorage.hxx"
@@ -73,6 +74,9 @@ Turnaround::Turnaround()
 
 	_keySpace = new CLAM::VM::KeySpace(centralwidget);
 	_vboxLayout->addWidget(_keySpace);
+
+	_chordRanking = new CLAM::VM::ChordRanking(centralwidget);
+	_vboxLayout->addWidget(_chordRanking);
 
 	_network.SetPlayer(new CLAM::PANetworkPlayer);
 
@@ -184,6 +188,7 @@ void Turnaround::analyse()
 	_chordCorrelationSource->setDataSource(nBins*2, 0, 0, binLabels); // nBins?
 	_chordCorrelationSource->updateData(chordCorrelationStorage.Data(), sampleRate, frameDivision, nFrames);
 	_keySpace->setDataSource(*_chordCorrelationSource);
+	_chordRanking->setDataSource(*_chordCorrelationSource);
 }
 
 void Turnaround::play()
