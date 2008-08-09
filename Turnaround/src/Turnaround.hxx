@@ -35,6 +35,7 @@ namespace VM
 	class VectorView;
 	class Tonnetz;
 	class KeySpace;
+	class ChordRanking;
 }
 }
 
@@ -72,6 +73,7 @@ private:
 	CLAM::VM::VectorView *_vectorView;
 	CLAM::VM::Tonnetz *_tonnetz;
 	CLAM::VM::KeySpace *_keySpace;
+	CLAM::VM::ChordRanking *_chordRanking;
 	
 	CLAM::VM::PoolFloatArrayDataSource *_pcpSource;
 	CLAM::VM::PoolFloatArrayDataSource *_chordCorrelationSource;
