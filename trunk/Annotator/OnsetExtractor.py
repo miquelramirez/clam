@@ -9,23 +9,33 @@ parser = OptionParser(
 	usage="%prog [options] audiofile1 audiofile2 ...",
 	version="%prog 1.0")
 parser.add_option("-s","--print-schema",
-		action="store_true",
-		default=False,
+		default=None,
 		dest="printSchema",
-		help="Outputs the description schema for the extractor"
+		metavar="SCHEMAFILE",
+		help="Outputs the description schema for the extractor. Use '-' for standard output."
 	)
-parser.add_option("-f",# "--suffix",
+parser.add_option("-w","--writeback",
+		action="store_true",
+		dest="writeback",
+		help="Writes back the descriptors to the source. (Not applied in this extrator)"
+	)
+parser.add_option("-f","--suffix",
 		default=".pool",
 		dest="suffix",
 		help="Appends SUFFIX to the generated descriptors file (default: '%default')"
+	)
+parser.add_option("-c","--configuration",
+		default='',
+		dest="ConfigurationFile",
+		help="Specifies a configuration file with the options for the extractor."
 	)
 (options, args) = parser.parse_args()
 
 
 
-
 if options.printSchema :
-	print """<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
+	schemaFile = sys.stdout if options.printSchema == "-" else file(options.printSchema,'w')
+	print >> schemaFile, """<?xml version='1.0' encoding='UTF-8' standalone='no' ?>
 <DescriptionScheme>
 
  <Uri>descriptionScheme:www.iua.upf.edu:clam:OnsetExtraction</Uri>
@@ -40,6 +50,9 @@ if options.printSchema :
 </DescriptionScheme>
 
 """
+	sys.exit()
+
+if options.writeback :
 	sys.exit()
 
 dataTemplate = """<?xml version='1.0' encoding='UTF-8' standalone='no' ?>

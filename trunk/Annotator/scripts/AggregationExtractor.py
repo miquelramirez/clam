@@ -26,10 +26,10 @@ parser.add_option("-c",# "--print-configuration",
 		type='string',
 		default=None,
 		dest="ConfigurationFile",
-		help=" the Configuration file for the Aggregator."
+		help="Specifies a configuration file with the options for the aggregation."
 	)
-parser.add_option("-w",# "--write flag of writing back"
-		help=" the flag for the write back."
+parser.add_option("-w","--writeback"
+		help="Writes back the descriptors to the source."
 	)
 (options, args) = parser.parse_args()
 
@@ -82,6 +82,8 @@ if options.printSchema is not None:
 if not args :
 	parser.print_help()
 	sys.exit()
+
+if options.writeback: sys.exit()
 
 for audiofile in args:
 	print "Processing %s..."%audiofile
