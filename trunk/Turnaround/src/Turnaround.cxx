@@ -31,6 +31,7 @@
 #include "Tonnetz.hxx"
 #include "ChordRanking.hxx"
 #include "PolarChromaPeaks.hxx"
+#include "SegmentationView.hxx"
 #include "ProgressControl.hxx"
 #include "FrameDivision.hxx"
 #include "FloatVectorStorage.hxx"
@@ -82,6 +83,9 @@ Turnaround::Turnaround()
 
 	_polarChromaPeaks = new PolarChromaPeaks(centralwidget);
 	_vboxLayout->addWidget(_polarChromaPeaks);
+
+	_segmentationView = new SegmentationView(centralwidget);
+	_vboxLayout->addWidget(_segmentationView);
 
 	_network.SetPlayer(new CLAM::PANetworkPlayer);
 
@@ -183,7 +187,7 @@ void Turnaround::analyse()
 		"D#", "E", "F", "F#"
 	};
 	std::vector<std::string> binLabels(notes, notes+nBins);
-	
+
 	_pcpSource = new CLAM::VM::PoolFloatArrayDataSource;
 	_pcpSource->setDataSource(nBins, 0, 0, binLabels);
 	_pcpSource->updateData(pcpStorage.Data(), sampleRate, frameDivision, nFrames);
@@ -207,6 +211,11 @@ void Turnaround::analyse()
 	_chromaPeaksSource->setDataSource(1);
 	_chromaPeaksSource->updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, frameDivision);
 	_polarChromaPeaks->setDataSource(*_chromaPeaksSource);
+	
+	CLAM::OutPort<CLAM::Segmentation> &segmentationOutput = (CLAM::OutPort<CLAM::Segmentation>&)(tonalAnalysis.GetOutPort("Chord Segmentation"));
+	_segmentationSource = new CLAM::VM::PoolSegmentationDataSource;
+	_segmentationSource->updateData(segmentationOutput.GetData());
+	_segmentationView->setDataSource(*_segmentationSource);
 }
 
 void Turnaround::play()
