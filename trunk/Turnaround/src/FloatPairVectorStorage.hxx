@@ -50,3 +50,4 @@ protected: // attributes
 };
 
 #endif //__FloatPairVectorStorage_hxx__
+
