@@ -66,7 +66,7 @@ void CLAM::VM::PoolPeakDataSource::updateData(
 	_magnitudeFrameData = 0;
 	_nFrames = positionStorage.size();
 	_frameDivision = frameDivision;
-	
+
 	_positionStorage = positionStorage;
 	_magnitudeStorage = magnitudeStorage;
 	
@@ -75,7 +75,7 @@ void CLAM::VM::PoolPeakDataSource::updateData(
 	Storage::iterator magnitudeIt = _magnitudeStorage.begin();
 	for (unsigned i=0; i<_nFrames; i++)
 	{
-		std::cout << positionIt->size() << std::endl;
+		//std::cout << positionIt->size() << std::endl;
 		_frameDataIndex[i]=std::make_pair(&*positionIt++, &*magnitudeIt++);
 	}
 }
