@@ -446,7 +446,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 		try : self.AppendUnique(CPPDEFINES=moduleDefines[module])
 		except: pass
 	debugSuffix = ''
-	if sys.platform == "linux2" and not crosscompiling :
+	if sys.platform in ["darwin", "linux2"] and not crosscompiling :
 		if debug : debugSuffix = '_debug'
 		for module in modules :
 			if module not in pclessModules : continue
@@ -490,6 +490,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 			self["QT4_MOCCPPPATH"] = self["CPPPATH"]
 		self.AppendUnique(LIBPATH=[os.path.join('$QTDIR','lib')])
 		return
+	"""
 	if sys.platform=="darwin" :
 		# TODO: Test debug version on Mac
 		self.AppendUnique(LIBPATH=[os.path.join('$QTDIR','lib')])
@@ -518,6 +519,7 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 # This should work for mac but doesn't
 #	env.AppendUnique(FRAMEWORKPATH=[os.path.join(env['QTDIR'],'lib')])
 #	env.AppendUnique(FRAMEWORKS=['QtCore','QtGui','QtOpenGL', 'AGL'])
+	"""
 
 
 def exists(env):
