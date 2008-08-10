@@ -53,6 +53,25 @@ namespace CLAM
 	{
 		return mTypedInControls.size();
 	}
+	TypedInControlRegistry::Iterator  TypedInControlRegistry::Begin()
+	{
+		return mTypedInControls.begin();
+	}
+	
+	TypedInControlRegistry::Iterator TypedInControlRegistry::End()
+	{
+		return mTypedInControls.end();
+	}
+	
+	TypedInControlRegistry::ConstIterator  TypedInControlRegistry::Begin() const
+	{
+		return mTypedInControls.begin();
+	}
+	
+	TypedInControlRegistry::ConstIterator TypedInControlRegistry::End() const
+	{
+		return mTypedInControls.end();
+	}
 
 	void TypedInControlRegistry::ProcessingInterface_Register( BaseTypedInControl * in )
 	{

@@ -21,7 +21,11 @@ namespace CLAM{
 			int Size() const;
 			void ProcessingInterface_Register(BaseTypedOutControl *);
 			void ProcessingInterface_Unregister(BaseTypedOutControl *);
-			
+			void Clear(){ mTypedOutControls.clear(); }
+			Iterator Begin();
+			Iterator End();	
+			ConstIterator Begin() const;
+			ConstIterator End() const;
 		private:
 			std::string AvailableNames() const;
 	};

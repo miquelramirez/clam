@@ -19,6 +19,11 @@ namespace CLAM{
 			bool Has(const std::string& name) const;
 			
 			int Size() const;
+			void Clear(){ mTypedInControls.clear(); }
+			Iterator Begin();
+			Iterator End();
+			ConstIterator Begin() const;
+			ConstIterator End() const;
 			void ProcessingInterface_Register(BaseTypedInControl *);
 			void ProcessingInterface_Unregister(BaseTypedInControl *);
 			

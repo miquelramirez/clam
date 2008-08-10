@@ -53,7 +53,25 @@ namespace CLAM
 	{
 		return mTypedOutControls.size();
 	}
-
+	TypedOutControlRegistry::Iterator  TypedOutControlRegistry::Begin()
+	{
+		return mTypedOutControls.begin();
+	}
+	
+	TypedOutControlRegistry::Iterator TypedOutControlRegistry::End()
+	{
+		return mTypedOutControls.end();
+	}
+	
+	TypedOutControlRegistry::ConstIterator  TypedOutControlRegistry::Begin() const
+	{
+		return mTypedOutControls.begin();
+	}
+	
+	TypedOutControlRegistry::ConstIterator TypedOutControlRegistry::End() const
+	{
+		return mTypedOutControls.end();
+	}
 	void TypedOutControlRegistry::ProcessingInterface_Register( BaseTypedOutControl * in )
 	{
 		mTypedOutControls.push_back( in );
