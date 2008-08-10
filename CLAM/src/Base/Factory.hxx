@@ -551,6 +551,12 @@ public:
 			value = metadata[++i];
 			factory.AddAttribute(key, attribute, value);
 		}
+		if (RunTimeLibraryLoading::_currentLibrary()!="")
+		{
+			std::cout<<"[DEBUGING REGISTRATORS] "<<key <<" "<<attribute<<" "<<value<<std::endl;
+			std::cout<<"[DEBUGING REGISTRATORS] currentLibrary:" <<_currentLibrary()<<std::endl;
+		}
+
 	}
 
 	FactoryRegistrator( RegistryKey key, TheFactoryType& fact ) 
