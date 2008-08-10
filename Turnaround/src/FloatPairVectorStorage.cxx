@@ -51,13 +51,18 @@ bool FloatPairVectorStorage::ConcreteStart()
 bool FloatPairVectorStorage::Do()
 {
 	const FloatPairVector & input = _in.GetData();
-	//_data.push_back(input);
+	_positionStorage.push_back(std::vector<CLAM::TData> ());
+	_magnitudeStorage.push_back(std::vector<CLAM::TData> ());
+	std::vector<CLAM::TData> & positions = _positionStorage.back();
+	std::vector<CLAM::TData> & magnitudes = _magnitudeStorage.back();
 	
 //	for (std::vector<const std::pair<CLAM::TData, CLAM::TData> >::iterator i = input.begin(); i != input.end(); i++)
 	std::cout << "in size " << input.size() << std::endl;
 	for (FloatPairVector::const_iterator i = input.begin(); i != input.begin()+1; i++)
 	{
 		//std::cout << "+ " << i->first << ", " << i->second << std::endl;
+		positions.push_back(i->first);
+		magnitudes.push_back(i->second);
 		_firstData.push_back(i->first);
 		_secondData.push_back(i->second);
 	}
@@ -84,3 +89,4 @@ std::vector<CLAM::TData> FloatPairVectorStorage::SecondData()
 {
 	return _secondData;
 }
+
