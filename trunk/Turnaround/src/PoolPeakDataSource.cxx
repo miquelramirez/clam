@@ -72,6 +72,8 @@ void CLAM::VM::PoolPeakDataSource::updateData(
 	CLAM_Annotator::FrameDivision *frameDivision,
 	unsigned nFrames)
 {
+	typedef std::list<std::vector<std::pair<TData,TData> > > ExternalStorage;
+
 	_positionFrameData = 0;
 	_magnitudeFrameData = 0;
 	_samplingRate = samplingRate;

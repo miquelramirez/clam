@@ -18,7 +18,7 @@ class FloatPairVectorStorage : public CLAM::Processing
 {
 	typedef std::vector<CLAM::TData> FloatVector;
 	typedef std::vector<std::pair<CLAM::TData, CLAM::TData> > FloatPairVector;
-	typedef std::list<FloatPairVector> Storage;
+	typedef std::list<FloatVector> Storage;
 	typedef FloatPairVectorStorageConfig Config;
 
 public:
@@ -29,7 +29,8 @@ public:
 	virtual bool Do();
 	virtual ~FloatPairVectorStorage();
 
-	const Storage& Data() const;
+	const Storage& PositionStorage() const;
+	const Storage& MagnitudeStorage() const;
 	FloatVector FirstData();
 	FloatVector SecondData();
 
@@ -44,7 +45,8 @@ protected: // attributes
 	CLAM::InPort<FloatPairVector> _in;
 	FloatVector                   _firstData;
 	FloatVector                   _secondData;
-	Storage _data;
+	Storage                       _positionStorage;
+	Storage                       _magnitudeStorage;
 };
 
 #endif //__FloatPairVectorStorage_hxx__
