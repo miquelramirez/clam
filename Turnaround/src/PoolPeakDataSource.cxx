@@ -106,11 +106,12 @@ bool CLAM::VM::PoolPeakDataSource::setCurrentTime(double timeMiliseconds)
 	unsigned newFrame = _frameDivision ? _frameDivision->GetItem(timeMiliseconds*_samplingRate): 0;
 	if (_nFrames==0) newFrame = 0;
 	else if (newFrame>=_nFrames) newFrame=_nFrames-1;
-	_positionFrameData = positionData()? positionData()+_nBins*newFrame : 0;
-	_magnitudeFrameData = magnitudeData()? magnitudeData()+_nBins*newFrame : 0;
+
+	_nBins =  _nFrames ? _frameDataIndex[newFrame].first->size() : 0;
+	_positionFrameData = _nBins ? &(*_frameDataIndex[newFrame].first)[0] : 0;
+	_magnitudeFrameData = _nBins ? &(*_frameDataIndex[newFrame].second)[0] : 0;
+
 	if (newFrame == _currentFrame) return false;
 	_currentFrame = newFrame;
 	return true;
 }
-
-

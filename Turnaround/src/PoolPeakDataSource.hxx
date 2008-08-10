@@ -58,12 +58,10 @@ namespace VM
 
 			const TData * positionData()
 			{
-				if (_positionData.empty()) return 0;
 				return _positionFrameData;
 			}
 			const TData * magnitudeData()
 			{
-				if (_magnitudeData.empty()) return 0;
 				return _magnitudeFrameData;
 			}
 			unsigned nFrames() const
