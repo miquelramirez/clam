@@ -24,6 +24,7 @@
 #include <CLAM/Network.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
 #include "PoolFloatArrayDataSource.hxx"
+#include "PoolPeakDataSource.hxx"
 #include "ProgressControlWidget.hxx"
 
 #include <QtGui/QVBoxLayout>
@@ -38,6 +39,7 @@ namespace VM
 	class ChordRanking;
 }
 }
+class PolarChromaPeaks;
 
 class Turnaround : public QMainWindow, public Ui::Turnaround
 {
@@ -74,9 +76,11 @@ private:
 	CLAM::VM::Tonnetz *_tonnetz;
 	CLAM::VM::KeySpace *_keySpace;
 	CLAM::VM::ChordRanking *_chordRanking;
+	PolarChromaPeaks *_polarChromaPeaks;
 	
 	CLAM::VM::PoolFloatArrayDataSource *_pcpSource;
 	CLAM::VM::PoolFloatArrayDataSource *_chordCorrelationSource;
+	CLAM::VM::PoolPeakDataSource *_chromaPeaksSource;
 	CLAM::TData _length;
 };
 
