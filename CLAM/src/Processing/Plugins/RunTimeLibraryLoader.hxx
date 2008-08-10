@@ -25,6 +25,7 @@ public:
 		return sCurrentLibrary;
 	}
 
+	static std::string FileOfSymbol (void * symbolAddress);
 protected:
 	void LoadLibrariesFromPath(const std::string & path) const;
 	std::vector<std::string> SplitPathVariable(const std::string & pathVariable) const;
