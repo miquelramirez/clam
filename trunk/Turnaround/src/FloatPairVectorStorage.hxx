@@ -31,8 +31,6 @@ public:
 
 	const Storage& PositionStorage() const;
 	const Storage& MagnitudeStorage() const;
-	FloatVector FirstData();
-	FloatVector SecondData();
 
 protected: // methods
 
@@ -43,8 +41,6 @@ protected: // attributes
 
 	Config                        _config;
 	CLAM::InPort<FloatPairVector> _in;
-	FloatVector                   _firstData;
-	FloatVector                   _secondData;
 	Storage                       _positionStorage;
 	Storage                       _magnitudeStorage;
 };

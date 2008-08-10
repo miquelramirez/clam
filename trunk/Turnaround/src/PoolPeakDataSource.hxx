@@ -44,12 +44,6 @@ namespace VM
 			void setDataSource(unsigned nBins);
 			void clearData();
 			void updateData(
-				std::vector<CLAM::TData>,
-				std::vector<CLAM::TData>,
-				CLAM::TData samplingRate,
-				CLAM_Annotator::FrameDivision *frameDivision,
-				unsigned nFrames);
-			void updateData(
 				const Storage & positionStorage,
 				const Storage & magnitudeStorage,
 				CLAM::TData samplingRate,
@@ -78,8 +72,6 @@ namespace VM
 			}
 		private:
 			std::vector<std::string> _binLabels;
-			std::vector<TData> _positionData;
-			std::vector<TData> _magnitudeData;
 			unsigned _nFrames;
 			const CLAM_Annotator::FrameDivision * _frameDivision;
 			CLAM::TData _samplingRate;

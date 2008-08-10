@@ -203,10 +203,6 @@ void Turnaround::analyse()
 	_keySpace->setDataSource(*_chordCorrelationSource);
 	_chordRanking->setDataSource(*_chordCorrelationSource);
 
-	std::cout << "pcp size " << pcpStorage.Data().size() << std::endl;
-	std::cout << "first size " << chromaPeaksStorage.FirstData().size() << std::endl;
-	std::cout << "second size " << chromaPeaksStorage.SecondData().size() << std::endl;
-
 	_chromaPeaksSource = new CLAM::VM::PoolPeakDataSource;
 	_chromaPeaksSource->setDataSource(1);
 	_chromaPeaksSource->updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, frameDivision);
