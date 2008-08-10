@@ -43,7 +43,16 @@ namespace VM
 			PoolPeakDataSource();
 			void setDataSource(unsigned nBins);
 			void clearData();
-			void updateData(std::vector<CLAM::TData>, std::vector<CLAM::TData>, CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames);
+			void updateData(
+				std::vector<CLAM::TData>,
+				std::vector<CLAM::TData>,
+				CLAM::TData samplingRate,
+				CLAM_Annotator::FrameDivision *frameDivision,
+				unsigned nFrames);
+			void updateData(
+				const std::list<std::vector<std::pair<TData,TData> > > & data,
+				CLAM::TData samplingRate,
+				CLAM_Annotator::FrameDivision * frameDivision);
 			bool setCurrentTime(double timeMiliseconds);
 
 			const TData * positionData()
