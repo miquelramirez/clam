@@ -12,6 +12,17 @@
 
 #include <fstream>
 
+std::string RunTimeLibraryLoader::FileOfSymbol (void * symbolAddress)
+{
+#ifndef WIN32
+	Dl_info info;
+	int ok=dladdr(symbolAddress,&info);
+	if (ok)
+		return info.dli_fname;
+#endif
+	return "";
+}
+
 void RunTimeLibraryLoader::Load() const
 {
 	std::string path = GetPaths();
