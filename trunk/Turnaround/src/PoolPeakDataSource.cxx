@@ -74,7 +74,10 @@ void CLAM::VM::PoolPeakDataSource::updateData(
 	Storage::iterator positionIt = _positionStorage.begin();
 	Storage::iterator magnitudeIt = _magnitudeStorage.begin();
 	for (unsigned i=0; i<_nFrames; i++)
+	{
+		std::cout << positionIt->size() << std::endl;
 		_frameDataIndex[i]=std::make_pair(&*positionIt++, &*magnitudeIt++);
+	}
 }
 
 void CLAM::VM::PoolPeakDataSource::updateData(
@@ -112,6 +115,9 @@ bool CLAM::VM::PoolPeakDataSource::setCurrentTime(double timeMiliseconds)
 	_magnitudeFrameData = _nBins ? &(*_frameDataIndex[newFrame].second)[0] : 0;
 
 	if (newFrame == _currentFrame) return false;
+	std::cout << "Current Time Bins: " << _nBins << std::endl;
 	_currentFrame = newFrame;
 	return true;
 }
+
+
