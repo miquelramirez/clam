@@ -28,8 +28,6 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	// todo: adapt the old tests:
 	CPPUNIT_TEST( testInControls_GetByNumber_GetTheRightControl );
 	CPPUNIT_TEST( testOutControls_GetByNumber_GetTheRightControl );
-	CPPUNIT_TEST( testTypedInControls_GetByNumber_GetTheRightControl );
-	CPPUNIT_TEST( testTypedOutControls_GetByNumber_GetTheRightControl );
 	CPPUNIT_TEST( testOutPorts_GetByNumber_GetTheRightPort );
 	CPPUNIT_TEST( testInPorts_GetByNumber_GetTheRightPort );
 	CPPUNIT_TEST( testInControls_GetByName_GetTheRightControl );
@@ -38,8 +36,6 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testInPorts_GetByName_GetTheRightPort );
 	CPPUNIT_TEST( testInControls_Size );
 	CPPUNIT_TEST( testOutControls_Size );
-	CPPUNIT_TEST( testTypedInControls_Size );
-	CPPUNIT_TEST( testTypedOutControls_Size );
 	CPPUNIT_TEST( testInPorts_Size );
 	CPPUNIT_TEST( testOutPorts_Size );
 	CPPUNIT_TEST( testOutPorts_Delete);
@@ -55,12 +51,10 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 	CPPUNIT_TEST( testConnectPorts_usingNumbers );
 	CPPUNIT_TEST( testConnectControls_usingNames );
 	CPPUNIT_TEST( testConnectControls_usingNumbers );
-	CPPUNIT_TEST( testConnectTypedControls_usingNames );
-	CPPUNIT_TEST( testConnectTypedControls_usingNumbers );
-	CPPUNIT_TEST( testHasTypedInControl_usingRegisteredControlName );
-	CPPUNIT_TEST( testHasTypedInControl_usingNotRegisteredControlName );
-	CPPUNIT_TEST( testHasTypedOutControl_usingRegisteredControlName );
-	CPPUNIT_TEST( testHasTypedOutControl_usingNotRegisteredControlName );
+	CPPUNIT_TEST( testHasInControl_usingRegisteredControlName );
+	CPPUNIT_TEST( testHasInControl_usingNotRegisteredControlName );
+	CPPUNIT_TEST( testHasOutControl_usingRegisteredControlName );
+	CPPUNIT_TEST( testHasOutControl_usingNotRegisteredControlName );
 
 	CPPUNIT_TEST( testIsSyncSource_default );
 	
@@ -162,19 +156,6 @@ private:
 		CLAM::OutControl* expected = &mOutControl2;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
-	void testTypedInControls_GetByNumber_GetTheRightControl()
-	{
-		CLAM::BaseTypedInControl* returned = &GetTypedInControls().GetByNumber(0);
-		CLAM::BaseTypedInControl* expected = &mTypedInControl;
-		CPPUNIT_ASSERT_EQUAL( expected, returned );
-	}
-	void testTypedOutControls_GetByNumber_GetTheRightControl()
-	{
-		CLAM::BaseTypedOutControl* returned = &GetTypedOutControls().GetByNumber(1); // get the second control
-		CLAM::BaseTypedOutControl* expected = &mTypedOutControl2;
-		CPPUNIT_ASSERT_EQUAL( expected, returned );
-	}
-
 	void testOutPorts_GetByNumber_GetTheRightPort()
 	{
 		CLAM::OutPortBase* returnedPort = &GetOutPorts().GetByNumber(1); // get the second port
@@ -200,19 +181,6 @@ private:
 		CLAM::OutControl* expected = &mOutControl2;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
-	void testTypedInControls_GetByName_GetTheRightControl()
-	{
-		CLAM::BaseTypedInControl* returned = &GetTypedInControls().Get("TypedIn");
-		CLAM::BaseTypedInControl* expected = &mTypedInControl;
-		CPPUNIT_ASSERT_EQUAL( expected, returned );
-	}
-
-	void testTypedOutControls_GetByName_GetTheRightControl()
-	{
-		CLAM::BaseTypedOutControl* returned = &GetTypedOutControls().Get("TypedOut2"); // get the second control
-		CLAM::BaseTypedOutControl* expected = &mTypedOutControl2;
-		CPPUNIT_ASSERT_EQUAL( expected, returned );
-	}
 	void testOutPorts_GetByName_GetTheRightPort()
 	{
 		CLAM::OutPortBase* returnedPort = &GetOutPorts().Get("out2"); // get the second port
@@ -233,14 +201,6 @@ private:
 	void testOutControls_Size()
 	{
 		CPPUNIT_ASSERT_EQUAL( 2, GetOutControls().Size() );
-	}
-	void testTypedInControls_Size()
-	{
-		CPPUNIT_ASSERT_EQUAL( 1, GetTypedInControls().Size() );
-	}
-	void testTypedOutControls_Size()
-	{
-		CPPUNIT_ASSERT_EQUAL( 2, GetTypedOutControls().Size() );
 	}
 	void testInPorts_Size()
 	{
@@ -368,42 +328,26 @@ private:
 		sender.outControl.SendControl(event);
 		CPPUNIT_ASSERT_EQUAL(event, receiver.inControl.GetLastValue() );
 	}
-	void testConnectTypedControls_usingNames()
-	{
-		DummyIOProcessing sender, receiver;
-		CLAM::ConnectTypedControls(sender, "TypedOut", receiver, "TypedIn");
-		receiver.typedInControl.DoControl(666); // A previous value
-		sender.typedOutControl.SendControl(1);
-		CPPUNIT_ASSERT_EQUAL(1, receiver.typedInControl.GetLastValue() );
-	}
-	void testConnectTypedControls_usingNumbers()
-	{
-		DummyIOProcessing sender, receiver;
-		CLAM::ConnectTypedControls(sender, 0, receiver, 0);
-		receiver.typedInControl.DoControl(666); // A previous value
-		sender.typedOutControl.SendControl(1);
-		CPPUNIT_ASSERT_EQUAL(1, receiver.typedInControl.GetLastValue() );
-	}
-	
-	void testHasTypedInControl_usingRegisteredControlName()
+
+	void testHasInControl_usingRegisteredControlName()
 	{
 		DummyIOProcessing test;
-		CPPUNIT_ASSERT_EQUAL(true, test.HasTypedInControl("TypedIn"));
+		CPPUNIT_ASSERT_EQUAL(true, test.HasInControl("In"));
 	}
-	void testHasTypedInControl_usingNotRegisteredControlName()
+	void testHasInControl_usingNotRegisteredControlName()
 	{
 		DummyIOProcessing test;
-		CPPUNIT_ASSERT_EQUAL(false, test.HasTypedInControl("FalseTypedIn"));
+		CPPUNIT_ASSERT_EQUAL(false, test.HasInControl("FalseIn"));
 	}
-	void testHasTypedOutControl_usingRegisteredControlName()
+	void testHasOutControl_usingRegisteredControlName()
 	{
 		DummyIOProcessing test;
-		CPPUNIT_ASSERT_EQUAL(true, test.HasTypedOutControl("TypedOut"));
+		CPPUNIT_ASSERT_EQUAL(true, test.HasOutControl("Out"));
 	}
-	void testHasTypedOutControl_usingNotRegisteredControlName()
+	void testHasOutControl_usingNotRegisteredControlName()
 	{
 		DummyIOProcessing test;
-		CPPUNIT_ASSERT_EQUAL(false, test.HasTypedOutControl("FalseTypedOut"));
+		CPPUNIT_ASSERT_EQUAL(false, test.HasOutControl("FalseOut"));
 	}
 
 	void testIsSyncSource_default()
