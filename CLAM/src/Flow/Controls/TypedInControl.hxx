@@ -28,6 +28,14 @@ namespace CLAM {
 		
 		void DoControl(const TypedControlData& val);
 		const TypedControlData& GetLastValue() const;
+		/** ONLY TO USE WHEN TypedControlData == float. Returns the last TypedControlData (float) received interpreted as a bool. */
+		bool GetLastValueAsBoolean() const 
+		{ 
+			return (mLastValue > 0) ? mLastValue>0.01 : mLastValue<-0.01;
+		};
+		/** ONLY TO USE WHEN TypedControlData == float. Returns the last TControlData (float) received interpireted as an integer */
+		int GetLastValueAsInteger() const { return (int)(mLastValue+0.5f); };
+		
 		bool IsConnected() const;
 		
 		// For the typed linking check
