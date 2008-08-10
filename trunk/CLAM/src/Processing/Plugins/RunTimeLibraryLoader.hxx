@@ -18,6 +18,13 @@ public:
 	static void * LazyLoadLibrary(const std::string & libraryPath);
 	static bool ReleaseLibraryHandler(void * handle, const std::string pluginFullFilename="");
 	static std::string LibraryLoadError();
+
+	static std::string & _currentLibrary()
+	{
+		static std::string sCurrentLibrary;
+		return sCurrentLibrary;
+	}
+
 protected:
 	void LoadLibrariesFromPath(const std::string & path) const;
 	std::vector<std::string> SplitPathVariable(const std::string & pathVariable) const;
