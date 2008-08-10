@@ -79,55 +79,50 @@ public:
 	CLAM::ProcessingData& getBase() const { return dynamic_cast<CLAM::ProcessingData&>(*_audio.get()); } //Note: breaks orginal interface
 };
 
-class Processing { //extra-wrap
-protected:
-	CLAM::Processing* _proc;
-	bool _createdHere;
-public:
-	Processing() { _proc=0; _createdHere=true; }
-	~Processing() { if(_proc!=0&&_createdHere) delete _proc; }
-	Processing(const Bindings::Processing& Proc) { _proc=Proc.real(); _createdHere=false;}
-	Processing(CLAM::Processing& proc) { _proc = &proc; _createdHere=false; }
-
-	CLAM::Processing* real() const { return _proc; } //Note: breaks orginal interface
-};
-class MonoAudioFileReader: public Processing { //extra-wrap
-public:
-	MonoAudioFileReader() { _proc = dynamic_cast<CLAM::Processing*>( new CLAM::MonoAudioFileReader() ); }
-
-	/**	This allows 'downcasts'
-	*	
-	*	For example things like:
-	*	p = clam.MonoAudioFileReader( network.GetProcessing(reader) )
-	*	p.GetLength()
-	*/
-	MonoAudioFileReader(CLAM::Processing& Proc): Processing(Proc) {}
-
-	//Note: breaks orginal interface
-	int GetLength() const {
-		return (int)dynamic_cast<CLAM::MonoAudioFileReader*>(_proc)->GetHeader().GetLength()/1000;
-	}
-};
+// class Processing { //extra-wrap
+// protected:
+// 	CLAM::Processing* _proc;
+// 	bool _createdHere;
+// public:
+// 	Processing() { _proc=0; _createdHere=true; }
+// 	~Processing() { if(_proc!=0&&_createdHere) delete _proc; }
+// 	Processing(const Bindings::Processing& Proc) { _proc=Proc.real(); _createdHere=false;}
+// 	Processing(CLAM::Processing& proc) { _proc = &proc; _createdHere=false; }
+// 
+// 	CLAM::Processing* real() const { return _proc; } //Note: breaks orginal interface
+// };
+// class MonoAudioFileReader: public Processing { //extra-wrap
+// public:
+// 	MonoAudioFileReader() { _proc = dynamic_cast<CLAM::Processing*>( new CLAM::MonoAudioFileReader() ); }
+// 
+// 	/**	This allows 'downcasts'
+// 	*	
+// 	*	For example things like:
+// 	*	p = clam.MonoAudioFileReader( network.GetProcessing(reader) )
+// 	*	p.GetLength()
+// 	*/
+// 	MonoAudioFileReader(CLAM::Processing& Proc): Processing(Proc) {}
+// 
+// 	//Note: breaks orginal interface
+// 	int GetLength() const {
+// 		return (int)dynamic_cast<CLAM::MonoAudioFileReader*>(_proc)->GetHeader().GetLength()/1000;
+// 	}
+// };
 
 //KLUDGE: using same alias for the clase name.
 // WARNING: CLAM::ProcessingConfig [class]
 // > warning W1047: There are two or more classes that use same alias("ProcessingConfig"). Duplicated aliases causes few problems,
 // > but the main one is that some of the classes will not be exposed to Python.Other classes : Bindings::ProcessingConfig
-class ProcessingConfig { //extra-wrap
-protected: shared_ptr<CLAM::ProcessingConfig> _cfg;
-public:
-	CLAM::ProcessingConfig& real() const { return *_cfg.get(); } //Note: breaks orginal interface
-};
-class MonoAudioFileReaderConfig: public ProcessingConfig { //extra-wrap
-public:
-	MonoAudioFileReaderConfig() { _cfg = shared_ptr<CLAM::ProcessingConfig>( new CLAM::MonoAudioFileReaderConfig() ); }
-	void SetSourceFile(char* name) { dynamic_cast<CLAM::MonoAudioFileReaderConfig*>(_cfg.get())->SetSourceFile(name); }
-};
-class FFTConfig: public ProcessingConfig { //extra-wrap
-public:
-	FFTConfig() { _cfg = shared_ptr<CLAM::ProcessingConfig>( new CLAM::FFTConfig() ); }
-	void SetAudioSize(int s) { dynamic_cast<CLAM::FFTConfig*>(_cfg.get())->SetAudioSize(s); }
-};
+// class ProcessingConfig { //extra-wrap
+// protected: shared_ptr<CLAM::ProcessingConfig> _cfg;
+// public:
+// 	CLAM::ProcessingConfig& real() const { return *_cfg.get(); } //Note: breaks orginal interface
+// };
+// class MonoAudioFileReaderConfig: public ProcessingConfig { //extra-wrap
+// public:
+// 	MonoAudioFileReaderConfig() { _cfg = shared_ptr<CLAM::ProcessingConfig>( new CLAM::MonoAudioFileReaderConfig() ); }
+// 	void SetSourceFile(char* name) { dynamic_cast<CLAM::MonoAudioFileReaderConfig*>(_cfg.get())->SetSourceFile(name); }
+// };
 
 class BPNetworkPlayer { //extra-wrap
 protected: shared_ptr<CLAM::NetworkPlayer> _player;
@@ -150,6 +145,9 @@ namespace PyHacks {
 static inline CLAM::Component& toComponent(CLAM::ProcessingData& pd) { return dynamic_cast<CLAM::Component&>(pd); }
 static inline CLAM::Component& toComponent(CLAM::Network& n) { return dynamic_cast<CLAM::Component&>(n); }
 static inline CLAM::Component& toComponent(Bindings::Spectrum& s) { return toComponent(s.getBase()); }
+
+static inline CLAM::ProcessingConfig& toProcessingConfig(CLAM::FFTConfig& fft_c) { return dynamic_cast<CLAM::ProcessingConfig&>(fft_c); }
+
 
 } //namespace PyHacks
 

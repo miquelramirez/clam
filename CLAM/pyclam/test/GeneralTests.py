@@ -35,6 +35,20 @@ class GeneralTests(unittest.TestCase):
 		self.assertEqual( 4, reader.GetLength() )
 	#testAudioFileReaderLength()
 
+	def testSpectrumFlags(self):
+		myspectrum = clam.Spectrum()
+		specFlags = clam.SpecTypeFlags()
+
+		specFlags.SetFlag( specFlags.GetFlagPosition("Polar"), 1 )
+		self.assertEqual( True, specFlags.IsSetFlag( specFlags.GetFlagPosition("Polar") ) )
+		specFlags.SetFlag( specFlags.GetFlagPosition("Polar"), 0 )
+		self.assertEqual( False, specFlags.IsSetFlag( specFlags.GetFlagPosition("Polar") ) )
+		specFlags.SetFlag( specFlags.GetFlagPosition("Polar"), True )
+		self.assertEqual( True, specFlags.IsSetFlag( specFlags.GetFlagPosition("Polar") ) )
+		specFlags.SetFlag( specFlags.GetFlagPosition("Polar"), False )
+		self.assertEqual( False, specFlags.IsSetFlag( specFlags.GetFlagPosition("Polar") ) )
+	#testSpectrumFlags()		
+		
 #class GeneralTests
 
 if __name__ == '__main__':
