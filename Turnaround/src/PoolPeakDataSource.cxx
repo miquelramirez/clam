@@ -60,6 +60,8 @@ void CLAM::VM::PoolPeakDataSource::updateData(
 	TData samplingRate,
 	CLAM_Annotator::FrameDivision * frameDivision)
 {
+	CLAM_ASSERT(positionStorage.size() == magnitudeStorage.size(),
+		"PoolPeakDataSource: position and magnitudes sizes missmatch");
 	_positionFrameData = 0;
 	_magnitudeFrameData = 0;
 	_nFrames = positionStorage.size();
