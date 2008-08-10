@@ -29,6 +29,7 @@ public:
 	virtual bool Do();
 	virtual ~FloatPairVectorStorage();
 
+	const Storage& Data() const;
 	FloatVector FirstData();
 	FloatVector SecondData();
 

@@ -35,6 +35,8 @@ bool FloatPairVectorStorage::ConcreteConfigure(const CLAM::ProcessingConfig& cfg
 
 bool FloatPairVectorStorage::ConcreteStart()
 {
+	_data.clear();
+	
 	_firstData.clear();
 	_firstData.reserve(_config.GetFrames());
 	std::cout << "reserve first " << _config.GetFrames() << " frames, " << _firstData.capacity() << " capacity, " << _firstData.size() << " size " << std::endl;
@@ -48,6 +50,7 @@ bool FloatPairVectorStorage::ConcreteStart()
 bool FloatPairVectorStorage::Do()
 {
 	const FloatPairVector & input = _in.GetData();
+	_data.push_back(input);
 //	for (std::vector<const std::pair<CLAM::TData, CLAM::TData> >::iterator i = input.begin(); i != input.end(); i++)
 	std::cout << "in size " << input.size() << std::endl;
 	for (FloatPairVector::const_iterator i = input.begin(); i != input.begin()+1; i++)
@@ -58,6 +61,11 @@ bool FloatPairVectorStorage::Do()
 	}
 	_in.Consume();
 	return true;
+}
+
+const std::list<std::vector<std::pair<CLAM::TData, CLAM::TData> > >& FloatPairVectorStorage::Data() const
+{
+	return _data;
 }
 
 std::vector<CLAM::TData> FloatPairVectorStorage::FirstData()
