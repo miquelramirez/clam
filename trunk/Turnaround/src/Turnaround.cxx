@@ -30,9 +30,11 @@
 #include "VectorView.hxx"
 #include "Tonnetz.hxx"
 #include "ChordRanking.hxx"
+#include "PolarChromaPeaks.hxx"
 #include "ProgressControl.hxx"
 #include "FrameDivision.hxx"
 #include "FloatVectorStorage.hxx"
+#include "FloatPairVectorStorage.hxx"
 
 #include <iostream> // debug
 
@@ -53,22 +55,22 @@ Turnaround::Turnaround()
 	_vboxLayout = new QVBoxLayout(centralwidget);
 	_progressControlWidget = new ProgressControlWidget(centralwidget);
 	_vboxLayout->addWidget(_progressControlWidget);
-	
+
 	_fileReader = _network.AddProcessing("AudioFileMemoryLoader");
-	
+
 	CLAM::ProgressControl * progress = new CLAM::ProgressControl;
 	_progressControl = _network.GetUnusedName("ProgressControl");
 	_network.AddProcessing(_progressControl, progress);
 	_network.ConnectControls(_fileReader+".Current Time Position", _progressControl+".Progress Update");	
 	_network.ConnectControls(_progressControl+".Progress Jump", _fileReader+".Current Time Position (%)");	
 	_progressControlWidget->SetProcessing(progress);
-	
+
 	_audioSink = _network.AddProcessing("AudioSink");
 	_network.ConnectPorts(_fileReader+".Samples Read", _audioSink+".AudioIn");
-	
+
 	_vectorView = new CLAM::VM::VectorView(centralwidget);
 	_vboxLayout->addWidget(_vectorView);
-	
+
 	_tonnetz = new CLAM::VM::Tonnetz(centralwidget);
 	_vboxLayout->addWidget(_tonnetz);
 
@@ -77,6 +79,9 @@ Turnaround::Turnaround()
 
 	_chordRanking = new CLAM::VM::ChordRanking(centralwidget);
 	_vboxLayout->addWidget(_chordRanking);
+
+	_polarChromaPeaks = new PolarChromaPeaks(centralwidget);
+	_vboxLayout->addWidget(_polarChromaPeaks);
 
 	_network.SetPlayer(new CLAM::PANetworkPlayer);
 
@@ -128,6 +133,7 @@ void Turnaround::analyse()
 	std::cout << nFrames << std::endl; // debug
 	
 	FloatVectorStorageConfig storageConfig;
+
 	storageConfig.SetBins(12);
 	storageConfig.SetFrames(nFrames);
 	FloatVectorStorage pcpStorage(storageConfig);
@@ -136,14 +142,20 @@ void Turnaround::analyse()
 	storageConfig.SetFrames(nFrames);
 	FloatVectorStorage chordCorrelationStorage(storageConfig);
 
+	FloatPairVectorStorageConfig pairStorageConfig;
+	pairStorageConfig.SetFrames(nFrames);
+	FloatPairVectorStorage chromaPeaksStorage(pairStorageConfig);
+
 	CLAM::ConnectPorts(fileReader, "Samples Read", tonalAnalysis, "Audio Input");
 	CLAM::ConnectPorts(tonalAnalysis, "Pitch Profile", pcpStorage, "Data Input");
 	CLAM::ConnectPorts(tonalAnalysis, "Chord Correlation", chordCorrelationStorage, "Data Input");
+	CLAM::ConnectPorts(tonalAnalysis, "Chroma Peaks", chromaPeaksStorage, "Data Input");
 
 	fileReader.Start();
 	tonalAnalysis.Start();
 	pcpStorage.Start();
 	chordCorrelationStorage.Start();
+	chromaPeaksStorage.Start();
 
 	QProgressDialog progress(tr("Analyzing chords..."), 0, 0, nFrames, this);
 	progress.setWindowModality(Qt::WindowModal);
@@ -156,6 +168,7 @@ void Turnaround::analyse()
 		tonalAnalysis.Do();
 		pcpStorage.Do();
 		chordCorrelationStorage.Do();
+		chromaPeaksStorage.Do();
 		progress.setValue(++i);
 	}
 
@@ -183,12 +196,21 @@ void Turnaround::analyse()
 		"d#", "e", "f", "f#"
 	};
 	binLabels.insert(binLabels.end(), minorChords, minorChords+nBins);
-	
+
 	_chordCorrelationSource = new CLAM::VM::PoolFloatArrayDataSource;
 	_chordCorrelationSource->setDataSource(nBins*2, 0, 0, binLabels); // nBins?
 	_chordCorrelationSource->updateData(chordCorrelationStorage.Data(), sampleRate, frameDivision, nFrames);
 	_keySpace->setDataSource(*_chordCorrelationSource);
 	_chordRanking->setDataSource(*_chordCorrelationSource);
+
+	std::cout << "pcp size " << pcpStorage.Data().size() << std::endl;
+	std::cout << "first size " << chromaPeaksStorage.FirstData().size() << std::endl;
+	std::cout << "second size " << chromaPeaksStorage.SecondData().size() << std::endl;
+
+	_chromaPeaksSource = new CLAM::VM::PoolPeakDataSource;
+	_chromaPeaksSource->setDataSource(1, 0, 0);
+	_chromaPeaksSource->updateData(chromaPeaksStorage.FirstData(), chromaPeaksStorage.SecondData(), sampleRate, frameDivision, nFrames);
+	_polarChromaPeaks->setDataSource(*_chromaPeaksSource);
 }
 
 void Turnaround::play()
@@ -214,7 +236,9 @@ void Turnaround::timerEvent(QTimerEvent *event)
 {
 	if (_pcpSource)
 	{
-		_pcpSource->setCurrentTime(_network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length);
-		_chordCorrelationSource->setCurrentTime(_network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length);		
+		double time = _network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length;
+		_pcpSource->setCurrentTime(time);
+		_chordCorrelationSource->setCurrentTime(time);
+		_chromaPeaksSource->setCurrentTime(time);
 	}
 }
