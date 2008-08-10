@@ -209,7 +209,7 @@ void Turnaround::analyse()
 
 	_chromaPeaksSource = new CLAM::VM::PoolPeakDataSource;
 	_chromaPeaksSource->setDataSource(1);
-//	_chromaPeaksSource->updateData(chromaPeaksStorage.FirstData(), chromaPeaksStorage.SecondData(), sampleRate, frameDivision, nFrames);
+	_chromaPeaksSource->updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, frameDivision);
 	_polarChromaPeaks->setDataSource(*_chromaPeaksSource);
 }
 
