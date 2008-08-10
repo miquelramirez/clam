@@ -208,8 +208,8 @@ void Turnaround::analyse()
 	std::cout << "second size " << chromaPeaksStorage.SecondData().size() << std::endl;
 
 	_chromaPeaksSource = new CLAM::VM::PoolPeakDataSource;
-	_chromaPeaksSource->setDataSource(1, 0, 0);
-	_chromaPeaksSource->updateData(chromaPeaksStorage.FirstData(), chromaPeaksStorage.SecondData(), sampleRate, frameDivision, nFrames);
+	_chromaPeaksSource->setDataSource(1);
+//	_chromaPeaksSource->updateData(chromaPeaksStorage.FirstData(), chromaPeaksStorage.SecondData(), sampleRate, frameDivision, nFrames);
 	_polarChromaPeaks->setDataSource(*_chromaPeaksSource);
 }
 

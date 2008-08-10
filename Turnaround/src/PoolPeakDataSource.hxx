@@ -37,7 +37,7 @@ namespace VM
 	{
 		public:
 			PoolPeakDataSource();
-			void setDataSource(unsigned nBins, CLAM::TData binGap, CLAM::TData firstBinOffset);
+			void setDataSource(unsigned nBins);
 			void clearData();
 			void updateData(std::vector<CLAM::TData>, std::vector<CLAM::TData>, CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames);
 			bool setCurrentTime(double timeMiliseconds);
@@ -86,8 +86,6 @@ namespace VM
 			const CLAM::TData *_positionFrameData;
 			const CLAM::TData *_magnitudeFrameData;
 			unsigned _nBins;
-			CLAM::TData _binGap;
-			CLAM::TData _firstBinOffset;
 			unsigned _currentFrame;
 	};
 }

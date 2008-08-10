@@ -33,8 +33,6 @@ CLAM::VM::PoolPeakDataSource::PoolPeakDataSource()
 	, _positionFrameData(0)
 	, _magnitudeFrameData(0)
 	, _nBins(0)
-	, _binGap(0)
-	, _firstBinOffset(0)
 	, _currentFrame(0)
 {
 }
@@ -49,15 +47,11 @@ void CLAM::VM::PoolPeakDataSource::clearData()
 	_magnitudeFrameData=0;
 	_currentFrame=0;
 	_nBins = 0;
-	_firstBinOffset = 0;
-	_binGap = 0;
 }
 
-void CLAM::VM::PoolPeakDataSource::setDataSource(unsigned nBins, CLAM::TData binGap, CLAM::TData firstBinOffset)
+void CLAM::VM::PoolPeakDataSource::setDataSource(unsigned nBins)
 {
 	_nBins = nBins;
-	_binGap = binGap;
-	_firstBinOffset = firstBinOffset;
 }
 
 void CLAM::VM::PoolPeakDataSource::updateData(std::vector<CLAM::TData> positionData, std::vector<CLAM::TData> magnitudeData, CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames)
