@@ -30,6 +30,7 @@
 
 #include "Assert.hxx"
 #include "ErrFactory.hxx"
+#include "RunTimeLibraryLoader.hxx"
 
 namespace CLAM {
 
@@ -551,12 +552,7 @@ public:
 			value = metadata[++i];
 			factory.AddAttribute(key, attribute, value);
 		}
-		if (RunTimeLibraryLoading::_currentLibrary()!="")
-		{
-			std::cout<<"[DEBUGING REGISTRATORS] "<<key <<" "<<attribute<<" "<<value<<std::endl;
-//			std::cout<<"[DEBUGING REGISTRATORS] currentLibrary:" <<_currentLibrary()<<std::endl;
-		}
-
+		std::cout<<"[DEBUGING REGISTRATORS] "<<key <<" "<<RunTimeLibraryLoader::CurrentLibrary()<<std::endl;
 	}
 
 	FactoryRegistrator( RegistryKey key, TheFactoryType& fact ) 
