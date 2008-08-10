@@ -25,6 +25,7 @@
 #include <CLAM/MonoAudioFileReader.hxx>
 #include "PoolFloatArrayDataSource.hxx"
 #include "PoolPeakDataSource.hxx"
+#include "PoolSegmentationDataSource.hxx"
 #include "ProgressControlWidget.hxx"
 
 #include <QtGui/QVBoxLayout>
@@ -40,6 +41,7 @@ namespace VM
 }
 }
 class PolarChromaPeaks;
+class SegmentationView;
 
 class Turnaround : public QMainWindow, public Ui::Turnaround
 {
@@ -77,10 +79,12 @@ private:
 	CLAM::VM::KeySpace *_keySpace;
 	CLAM::VM::ChordRanking *_chordRanking;
 	PolarChromaPeaks *_polarChromaPeaks;
+	SegmentationView *_segmentationView;
 	
 	CLAM::VM::PoolFloatArrayDataSource *_pcpSource;
 	CLAM::VM::PoolFloatArrayDataSource *_chordCorrelationSource;
 	CLAM::VM::PoolPeakDataSource *_chromaPeaksSource;
+	CLAM::VM::PoolSegmentationDataSource *_segmentationSource;
 	CLAM::TData _length;
 };
 
