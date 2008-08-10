@@ -50,7 +50,8 @@ namespace VM
 				CLAM_Annotator::FrameDivision *frameDivision,
 				unsigned nFrames);
 			void updateData(
-				const std::list<std::vector<std::pair<TData,TData> > > & data,
+				const Storage & positionStorage,
+				const Storage & magnitudeStorage,
 				CLAM::TData samplingRate,
 				CLAM_Annotator::FrameDivision * frameDivision);
 			bool setCurrentTime(double timeMiliseconds);
