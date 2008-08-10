@@ -19,7 +19,7 @@ public:
 	static bool ReleaseLibraryHandler(void * handle, const std::string pluginFullFilename="");
 	static std::string LibraryLoadError();
 
-	static std::string & _currentLibrary()
+	static std::string & CurrentLibrary()
 	{
 		static std::string sCurrentLibrary;
 		return sCurrentLibrary;

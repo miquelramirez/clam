@@ -40,11 +40,11 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 		if(pluginFilename == "." || pluginFilename == "..")
 			continue;
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
-		_currentLibrary()=pluginFullFilename;
+		CurrentLibrary()=pluginFullFilename;
 		void * handle = FullyLoadLibrary(pluginFullFilename);
 		SetupLibrary( handle, pluginFullFilename );
 //		std::cout<<"loaded plugin: "<<pluginFullFilename<<std::endl;
-		_currentLibrary()="";
+		CurrentLibrary()="";
 	}
 	closedir(dir);
 }
