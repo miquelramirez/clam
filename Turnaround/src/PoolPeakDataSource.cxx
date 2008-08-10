@@ -55,14 +55,24 @@ void CLAM::VM::PoolPeakDataSource::setDataSource(unsigned nBins)
 }
 
 void CLAM::VM::PoolPeakDataSource::updateData(
-	const std::list<std::vector<std::pair<TData,TData> > > & data,
+	const std::list<std::vector<TData> > & positionStorage,
+	const std::list<std::vector<TData> > & magnitudeStorage,
 	TData samplingRate,
 	CLAM_Annotator::FrameDivision * frameDivision)
 {
 	_positionFrameData = 0;
 	_magnitudeFrameData = 0;
-	_nFrames = data.size();
+	_nFrames = positionStorage.size();
 	_frameDivision = frameDivision;
+	
+	_positionStorage = positionStorage;
+	_magnitudeStorage = magnitudeStorage;
+	
+	_frameDataIndex.resize(_nFrames);
+	Storage::iterator positionIt = _positionStorage.begin();
+	Storage::iterator magnitudeIt = _magnitudeStorage.begin();
+	for (unsigned i=0; i<_nFrames; i++)
+		_frameDataIndex[i]=std::make_pair(&*positionIt++, &*magnitudeIt++);
 }
 
 void CLAM::VM::PoolPeakDataSource::updateData(
