@@ -39,8 +39,9 @@ CLAM::VM::PoolPeakDataSource::PoolPeakDataSource()
 
 void CLAM::VM::PoolPeakDataSource::clearData()
 {
-	_positionData.resize(0);
-	_magnitudeData.resize(0);
+	_positionStorage.clear();
+	_magnitudeStorage.clear();
+	_frameDataIndex.clear();
 	_nFrames=0;
 	_frameDivision=0;
 	_positionFrameData=0;
@@ -74,34 +75,7 @@ void CLAM::VM::PoolPeakDataSource::updateData(
 	Storage::iterator positionIt = _positionStorage.begin();
 	Storage::iterator magnitudeIt = _magnitudeStorage.begin();
 	for (unsigned i=0; i<_nFrames; i++)
-	{
-		//std::cout << positionIt->size() << std::endl;
 		_frameDataIndex[i]=std::make_pair(&*positionIt++, &*magnitudeIt++);
-	}
-}
-
-void CLAM::VM::PoolPeakDataSource::updateData(
-	std::vector<CLAM::TData> positionData,
-	std::vector<CLAM::TData> magnitudeData,
-	CLAM::TData samplingRate,
-	CLAM_Annotator::FrameDivision *frameDivision,
-	unsigned nFrames)
-{
-	typedef std::list<std::vector<std::pair<TData,TData> > > ExternalStorage;
-
-	_positionFrameData = 0;
-	_magnitudeFrameData = 0;
-	_samplingRate = samplingRate;
-	_nFrames = nFrames;
-	_frameDivision = frameDivision;
-
-	_positionData.reserve(_nFrames*_nBins);
-	_magnitudeData.reserve(_nFrames*_nBins);
-	_positionData.insert(_positionData.end(), positionData.begin(), positionData.end());
-	_magnitudeData.insert(_magnitudeData.end(), magnitudeData.begin(), magnitudeData.end());
-	_positionFrameData = &_positionData[0];
-	_magnitudeFrameData = &_magnitudeData[0];
-	std::cout << "pool position size " << _positionData.size() << ", magnitude " << _magnitudeData.size() << std::endl;
 }
 
 bool CLAM::VM::PoolPeakDataSource::setCurrentTime(double timeMiliseconds)
@@ -115,7 +89,6 @@ bool CLAM::VM::PoolPeakDataSource::setCurrentTime(double timeMiliseconds)
 	_magnitudeFrameData = _nBins ? &(*_frameDataIndex[newFrame].second)[0] : 0;
 
 	if (newFrame == _currentFrame) return false;
-	std::cout << "Current Time Bins: " << _nBins << std::endl;
 	_currentFrame = newFrame;
 	return true;
 }

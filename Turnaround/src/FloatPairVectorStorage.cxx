@@ -37,14 +37,6 @@ bool FloatPairVectorStorage::ConcreteStart()
 {
 	_positionStorage.clear();
 	_magnitudeStorage.clear();
-	
-	_firstData.clear();
-	_firstData.reserve(_config.GetFrames());
-	std::cout << "reserve first " << _config.GetFrames() << " frames, " << _firstData.capacity() << " capacity, " << _firstData.size() << " size " << std::endl;
-	
-	_secondData.clear();
-	_secondData.reserve(_config.GetFrames());
-	std::cout << "reserve second " << _config.GetFrames() << " frames, " << _secondData.capacity() << " capacity, " << _secondData.size() << " size " << std::endl;
 	return true;
 }
 
@@ -60,8 +52,6 @@ bool FloatPairVectorStorage::Do()
 	{
 		positions.push_back(i->first);
 		magnitudes.push_back(i->second);
-		_firstData.push_back(i->first);
-		_secondData.push_back(i->second);
 	}
 	_in.Consume();
 	return true;
@@ -76,14 +66,3 @@ const std::list<std::vector<CLAM::TData> >& FloatPairVectorStorage::MagnitudeSto
 {
 	return _magnitudeStorage;
 }
-
-std::vector<CLAM::TData> FloatPairVectorStorage::FirstData()
-{
-	return _firstData;
-}
-
-std::vector<CLAM::TData> FloatPairVectorStorage::SecondData()
-{
-	return _secondData;
-}
-
