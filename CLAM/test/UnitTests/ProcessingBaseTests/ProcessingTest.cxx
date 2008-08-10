@@ -21,14 +21,9 @@ class ProcessingTest : public CppUnit::TestFixture, public CLAM::Processing
 
 	CPPUNIT_TEST( testGetInControl_GetTheRightControl );
 	CPPUNIT_TEST( testGetOutControl_GetTheRightControl );
-	CPPUNIT_TEST( testGetTypedInControl_GetTheRightControl );
-	CPPUNIT_TEST( testGetTypedOutControl_GetTheRightControl );
 	CPPUNIT_TEST( testGetInControl_WithOutOfRangeIndexThrowException );
 	CPPUNIT_TEST( testGetOutControl_WithOutOfRangeIndexThrowException );
-	CPPUNIT_TEST( testGetTypedInControl_WithOutOfRangeIndexThrowException );
-	CPPUNIT_TEST( testGetTypedOutControl_WithOutOfRangeIndexThrowException );
 	CPPUNIT_TEST( testLinkAndSendControl_ChangesInControlState );
-	CPPUNIT_TEST( testLinkAndSendControl_ChangesTypedInControlState );
 	// new controls/ports interface.
 	// todo: adapt the old tests:
 	CPPUNIT_TEST( testInControls_GetByNumber_GetTheRightControl );
@@ -127,14 +122,6 @@ private:
 	{
 		CPPUNIT_ASSERT_EQUAL( std::string("out1"), GetOutControls().GetByNumber(0).GetName() );
 	}
-	void testGetTypedInControl_GetTheRightControl()
-	{
-		CPPUNIT_ASSERT_EQUAL( std::string("TypedIn"), GetTypedInControls().GetByNumber(0).GetName() );
-	}
-	void testGetTypedOutControl_GetTheRightControl()
-	{
-		CPPUNIT_ASSERT_EQUAL( std::string("TypedOut"), GetTypedOutControls().GetByNumber(0).GetName() );
-	}
 	void testGetInControl_WithOutOfRangeIndexThrowException() 
 	{
 		try
@@ -153,24 +140,6 @@ private:
 		}
 		catch( ... ) {}
 	}
-	void testGetTypedInControl_WithOutOfRangeIndexThrowException() 
-	{
-		try
-		{
-			GetTypedInControls().GetByNumber(2); // we have one published in controls: index 0
-			CPPUNIT_FAIL("std::out_of_range was expected but none was thrown");
-		}
-		catch( ... ) {}
-	}
-	void testGetTypedOutControl_WithOutOfRangeIndexThrowException() 
-	{
-		try
-		{
-			GetOutControls().GetByNumber(2); // we have two published out controls: indexs 0,1
-			CPPUNIT_FAIL("std::out_of_range was expected but none was thrown");
-		}
-		catch( ... ) {}
-	}
 	void testLinkAndSendControl_ChangesInControlState()
 	{
 		const int outId=0, inId=0;
@@ -178,14 +147,6 @@ private:
 		SendFloatToOutControl(*this,outId,1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f, GetFloatFromInControl(*this,inId) );
 	}
-	void testLinkAndSendControl_ChangesTypedInControlState()
-	{
-		const int outId=0, inId=0;
-		(dynamic_cast< IntTypedOutControlPointer > (&GetTypedOutControls().GetByNumber(outId)))->AddLink(*(dynamic_cast< IntTypedInControlPointer >(&GetTypedInControls().GetByNumber(inId))));
-		(dynamic_cast< IntTypedOutControlPointer >(&GetTypedOutControls().GetByNumber(outId)))->SendControl(1);
-		CPPUNIT_ASSERT_EQUAL( 1, (dynamic_cast< IntTypedInControlPointer >(&GetTypedInControls().GetByNumber(inId)))->GetLastValue() );
-	}
-
 	//---------------------------------------
 	// new controls/ports interface tests
 
