@@ -25,6 +25,7 @@
 
 #include "PeakDataSource.hxx"
 #include <vector>
+#include <list>
 #include "FrameDivision.hxx"
 
 namespace CLAM_Annotator { class FrameDivision; }
@@ -35,6 +36,9 @@ namespace VM
 {
 	class PoolPeakDataSource : public PeakDataSource
 	{
+			typedef std::vector<TData> Buffer;
+			typedef std::list<Buffer> Storage;
+			typedef std::vector<std::pair<Buffer*, Buffer*> > Index;
 		public:
 			PoolPeakDataSource();
 			void setDataSource(unsigned nBins);
@@ -73,10 +77,6 @@ namespace VM
 				return true; // ?
 			}
 		private:
-			std::string _scope;
-			std::string _name;
-			std::string _parentScope;
-			std::string _parentName;
 			std::vector<std::string> _binLabels;
 			std::vector<TData> _positionData;
 			std::vector<TData> _magnitudeData;
@@ -87,6 +87,9 @@ namespace VM
 			const CLAM::TData *_magnitudeFrameData;
 			unsigned _nBins;
 			unsigned _currentFrame;
+			Index _frameDataIndex;
+			Storage _positionStorage;
+			Storage _magnitudeStorage;
 	};
 }
 }
