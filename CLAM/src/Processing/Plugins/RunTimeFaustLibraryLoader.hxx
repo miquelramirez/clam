@@ -55,6 +55,7 @@ protected:
 			factory.AddCreatorReplace(oss.str(), creator);
 			factory.AddAttribute(oss.str(), "category", "FAUST");
 			factory.AddAttribute(oss.str(), "description", descriptor->Name);
+			factory.AddAttribute(oss.str(), "library_filename", pluginFullFilename);
 
 			std::string pluginName=descriptor->Label;
 			const std::string diagramMainSufix=".dsp-svg/process.svg";
