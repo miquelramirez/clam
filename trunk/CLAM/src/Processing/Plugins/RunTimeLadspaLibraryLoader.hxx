@@ -42,6 +42,7 @@ protected:
 						oss.str()));
 			factory.AddAttribute(oss.str(), "category", "LADSPA");
 			factory.AddAttribute(oss.str(), "description", descriptor->Name);
+			factory.AddAttribute(oss.str(), "library_filename", pluginFullFilename);
 			//std::cout << "[LADSPA] added \"" << plugin.factoryID << "\" to the Factory" << std::endl;
 		}
 	}
