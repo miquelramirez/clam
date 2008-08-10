@@ -552,7 +552,8 @@ public:
 			value = metadata[++i];
 			factory.AddAttribute(key, attribute, value);
 		}
-		std::cout<<"[DEBUGING REGISTRATORS] "<<key <<" "<<RunTimeLibraryLoader::FileOfSymbol(this)<<std::endl;
+		factory.AddAttribute(key,"library_filename",RunTimeLibraryLoader::FileOfSymbol(this));
+		//std::cout<<"[DEBUGING REGISTRATORS] "<<key <<" "<<RunTimeLibraryLoader::FileOfSymbol(this)<<std::endl;
 	}
 
 	FactoryRegistrator( RegistryKey key, TheFactoryType& fact ) 

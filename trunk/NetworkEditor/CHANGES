@@ -16,6 +16,7 @@
    controlSenders and controlPrinters
  * Ctrl+Space to add processings
  * Processing tree has a filter box
+ * Processing tree show a tooltip with it metadata
  * OfflinePlayer uses floating point wavs to avoid clipping
  * OfflinePlayer commandline options to join/split channels on a single file
 
