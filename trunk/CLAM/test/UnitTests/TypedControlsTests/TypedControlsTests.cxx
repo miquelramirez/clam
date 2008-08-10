@@ -18,7 +18,10 @@ namespace CLAMTest {
 		// testing TypedInControl and TypedOutControl
 		CPPUNIT_TEST( testTypedInControl_DoControl_ChangesInternalState );
 		CPPUNIT_TEST( testAddLinkAndSendControl_ChangesTypedInControlInternalState );
-	
+		CPPUNIT_TEST( testGetLastValueAsBoolean_NearZeroIsFalse );
+		CPPUNIT_TEST( testGetLastValueAsBoolean_NonZeroIsTrue );
+		CPPUNIT_TEST( testGetLastValueAsInteger );
+
 		// tests for IsConnected / IsConnectedTo
 		CPPUNIT_TEST( testIsConnected_WithTypedOutControl_AfterConnection );
 		CPPUNIT_TEST( testIsConnected_WithTypedOutControl_WithoutConnection );
@@ -91,7 +94,36 @@ namespace CLAMTest {
 			out.SendControl(1);
 			CPPUNIT_ASSERT_EQUAL( 1 , in.GetLastValue() );
 		}
-
+		void testGetLastValueAsBoolean_NearZeroIsFalse()
+		{
+			CLAM::TypedInControl<float> in("in");
+			CLAM::TypedOutControl<float> out("out");
+			out.AddLink(in);
+			out.SendControl(-0.001f);
+			CPPUNIT_ASSERT( false==in.GetLastValueAsBoolean() );
+			out.SendControl( 0.001f);
+			CPPUNIT_ASSERT( false==in.GetLastValueAsBoolean() );
+		}
+		void testGetLastValueAsBoolean_NonZeroIsTrue()
+		{
+			CLAM::TypedInControl<float> in("in");
+			CLAM::TypedOutControl<float> out("out");
+			out.AddLink(in);
+			out.SendControl(-0.2f); //not-so-near zero
+			CPPUNIT_ASSERT( true==in.GetLastValueAsBoolean() );
+			out.SendControl( 0.2f); //not-so-near zero
+			CPPUNIT_ASSERT( true==in.GetLastValueAsBoolean() );
+		}
+		void testGetLastValueAsInteger()
+		{
+			CLAM::TypedInControl<float> in("in");
+			CLAM::TypedOutControl<float> out("out");
+			out.AddLink(in);
+			out.SendControl(0.9f);
+			CPPUNIT_ASSERT_EQUAL( 1, in.GetLastValueAsInteger() );
+			out.SendControl(1.001f);
+			CPPUNIT_ASSERT_EQUAL( 1, in.GetLastValueAsInteger() );
+		}
 		// tests for IsConnected / IsConnectedTo
 		void testIsConnected_WithTypedOutControl_AfterConnection()
 		{	
