@@ -56,16 +56,6 @@ namespace VM
 				CLAM_Annotator::FrameDivision * frameDivision);
 			bool setCurrentTime(double timeMiliseconds);
 
-			const TData * positionData()
-			{
-				if (_positionData.empty()) return 0;
-				return _positionFrameData;
-			}
-			const TData * magnitudeData()
-			{
-				if (_magnitudeData.empty()) return 0;
-				return _magnitudeFrameData;
-			}
 			const TData * positionFrameData()
 			{
 				return _positionFrameData;
@@ -87,6 +77,16 @@ namespace VM
 				return true; // ?
 			}
 		private:
+			const TData * positionData()
+			{
+				if (_positionData.empty()) return 0;
+				return _positionFrameData;
+			}
+			const TData * magnitudeData()
+			{
+				if (_magnitudeData.empty()) return 0;
+				return _magnitudeFrameData;
+			}
 			std::vector<std::string> _binLabels;
 			std::vector<TData> _positionData;
 			std::vector<TData> _magnitudeData;
