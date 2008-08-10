@@ -1,4 +1,5 @@
 import os, sys
+import glob
 
 options_filename = 'options.cache'
 opts = Options(options_filename,ARGUMENTS)
@@ -24,10 +25,6 @@ env.Append( CPPPATH=[env['prefix']+'/include'] )
 env.Append( LIBS=['clam_core','clam_audioio','clam_processing'] )
 env.Append( LIBPATH=[env['prefix']+'/lib'] )
 
-#env.ParseConfig( 'pkg-config --cflags clam_core' )
-#env.ParseConfig( 'pkg-config --cflags clam_audioio' )
-#env.ParseConfig( 'pkg-config --cflags clam_processing' )
-
 env.Append( CPPDEFINES=['CLAM_FLOAT','_DEBUG','USE_PTHREADS=1','USE_XERCES=1','CLAM_USE_XML','USE_LADSPA=1','USE_FFTW3=1','USE_SNDFILE=1','USE_OGGVORBIS=1','WITH_VORBIS=1','USE_MAD=1','WITH_MAD=1','USE_ID3=1','USE_ALSA=1','USE_JACK=1','USE_PORTAUDIO=1'] )
 env.Append( CPPPATH=['/usr/include/alsa','/usr/local/include'] )
 
@@ -39,4 +36,9 @@ env.Append( LIBPATH=['/usr/lib/python2.5/config'] )
 if env['debug']:
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
-env.SharedLibrary( target='clam', source=['clam_bindings.cxx','Definitions.cxx','indexing/indexing_slice.cpp','indexing/python_iterator.cpp'], SHLIBPREFIX='' )
+#bindings = glob.glob('src/*.cpp')
+#bindings = ['clam_bindings.cxx']
+env.Append( CPPPATH=['.', './src/automatic','./src/manual'] )
+bindings = glob.glob('src/automatic/*.cpp')
+bindings += glob.glob('src/manual/*.cpp')
+env.SharedLibrary( target='clam', source=bindings+['Definitions.cxx','indexing/indexing_slice.cpp','indexing/python_iterator.cpp'], SHLIBPREFIX='' )
