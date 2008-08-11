@@ -77,7 +77,7 @@ public:
 	{
 		_error=false;
 		_stopOnError=stopOnError;
-		_Output.clear();
+		_output.clear();
 		_queuedCommandsList=commandsList;
 		if (_queuedCommandsList.size()==0)
 			return 0;
@@ -86,7 +86,7 @@ public:
 	bool run (QString command, QStringList & arguments, QString workingDir)
 	{
 		_error=false;
-		_Output.clear();
+		_output.clear();
 		_queuedCommandsList.clear();
 		return runCommand(command,arguments,workingDir);
 	}
@@ -108,7 +108,7 @@ private slots:
 		_error=(_error || (_process->exitCode()!=0));
 		dumpOutput();
 		dumpError();
-		_Output += tr("<div style='color: blue;'>Done.</div>");
+		_output += tr("<div style='color: blue;'>Done.</div>");
 		updateText();
 		if (_queuedCommandsList.size()==0 or (_stopOnError and _error))
 			finishedQueue();
@@ -125,7 +125,7 @@ private slots:
 private:
 	bool runCommand(QString command, QStringList & arguments, QString workingDir)
 	{
-		_Output += ("<div style='color: blue;'>" + tr("Executing '<tt>%1 %2</tt>'") + "</div><br/>")
+		_output += ("<div style='color: blue;'>" + tr("Executing '<tt>%1 %2</tt>'") + "</div><br/>")
 			.arg(command)
 			.arg(arguments.join(" "));
 		updateText();
@@ -157,12 +157,12 @@ private:
 		output.replace("&","&amp;");
 		output.replace("<","&lt;");
 		output.replace("\n","<br/>");
-		_Output += QString("<tt style='color: ") + (error?"red":"green") + ";'>"+  output +"</tt>";
+		_output += QString("<tt style='color: ") + (error?"red":"green") + ";'>"+  output +"</tt>";
 		updateText();
 	}
 	void updateText()
 	{
-		_outputDisplay->setHtml(_Output);
+		_outputDisplay->setHtml(_output);
 		QTextCursor cursor = _outputDisplay->textCursor();
 		cursor.movePosition(QTextCursor::End);
 		_outputDisplay->setTextCursor(cursor);
@@ -171,7 +171,7 @@ private:
 private:
 	QTextEdit * _outputDisplay;
 	QProcess * _process;
-	QString _Output;
+	QString _output;
 	CommandsAndEnvironmentsList _queuedCommandsList;
 	bool _error;
 	bool _stopOnError;
