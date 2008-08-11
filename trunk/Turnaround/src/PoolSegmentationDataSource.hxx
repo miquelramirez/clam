@@ -35,6 +35,8 @@ namespace VM
 		public:
 			PoolSegmentationDataSource();
 			void updateData(CLAM::Segmentation & data);
+			bool setCurrentTime(double timeMiliseconds);
+			double currentTime();
 			
 			std::string getLabel(unsigned bin) const
 			{
@@ -55,6 +57,7 @@ namespace VM
 
 		private:
 			CLAM::DiscontinuousSegmentation _data;
+			double _currentTime;
 	};
 }
 }

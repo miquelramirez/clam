@@ -42,6 +42,10 @@ namespace VM
 			{
 				return true;
 			}
+			virtual double currentTime()
+			{
+				return 0.0;
+			}
 	};
 /*
 	class DummySegmentationDataSource : public SegmentationDataSource

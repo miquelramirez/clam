@@ -16,6 +16,8 @@ class QDESIGNER_WIDGET_EXPORT SegmentationView : public QWidget
 	Q_OBJECT
 	Q_PROPERTY(QColor lineColor READ lineColor WRITE setLineColor)
 	Q_PROPERTY(QColor pointColor READ pointColor WRITE setPointColor)
+	Q_PROPERTY(bool centred READ isCentred WRITE beCentred)
+	Q_PROPERTY(double timeSpan READ timeSpan WRITE setTimeSpan)
 	enum Dimensions {
 	};
 public:
@@ -24,6 +26,8 @@ public:
 		, _dataSource(dataSource)
 		, _lineColor(Qt::green)
 		, _pointColor(Qt::white)
+		, _centred(false)
+		, _timeSpan(20.)
 	{
 		startTimer(50);
 	}
@@ -36,8 +40,18 @@ public:
 		for (unsigned i=0; i<segmentation.onsets().size(); i++)
 		{
 //			double maxTime = segmentation.maxPosition();
-			double maxTime = segmentation.offsets().back();
-			double minTime = maxTime - 20.;
+			double maxTime, minTime;
+			if (_centred)
+			{
+				double currentTime = _dataSource->currentTime();
+				maxTime = currentTime + _timeSpan/2.;
+				minTime = currentTime - _timeSpan/2.;
+			}
+			else
+			{
+				maxTime = segmentation.offsets().back();
+				minTime = maxTime - _timeSpan;
+			}
 			if (maxTime<1) maxTime=1;
 			float onsetPosition = width()*(segmentation.onsets()[i]-minTime)/(maxTime-minTime);
 			float offsetPosition = width()*(segmentation.offsets()[i]-minTime)/(maxTime-minTime);
@@ -47,7 +61,17 @@ public:
 		painter.setPen(QPen(_lineColor,3));
 		painter.setBrush(_pointColor);
 		painter.drawRects(segmentBoxes);
+
 		painter.setPen(Qt::black);
+
+		QPointF points[3] = {
+			QPointF(width()/2.0 - 3.0, 0.0),
+			QPointF(width()/2.0 + 3.0, 0.0),
+			QPointF(width()/2.0, 6.0),
+		};
+		if (_centred)
+			painter.drawConvexPolygon(points, 3);
+
 		for (unsigned i=0; i<segmentation.onsets().size(); i++)
 		{
 			painter.drawText(segmentBoxes[i], Qt::AlignCenter|Qt::TextWordWrap, segmentation.labels()[i].c_str());
@@ -75,6 +99,22 @@ public:
 	{
 		return _lineColor;
 	}
+	void beCentred(bool centred)
+	{
+		_centred = centred;
+	}
+	bool isCentred() const
+	{
+		return _centred;
+	}
+	void setTimeSpan(double timeSpan)
+	{
+		_timeSpan = timeSpan;
+	}
+	double timeSpan() const
+	{
+		return _timeSpan;
+	}
 	void timerEvent(QTimerEvent *event)
 	{
 		if ( !_dataSource) return;
@@ -85,6 +125,8 @@ private:
 	CLAM::VM::SegmentationDataSource * _dataSource;
 	QColor _lineColor;
 	QColor _pointColor;
+	bool   _centred;
+	double _timeSpan;
 };
 
 

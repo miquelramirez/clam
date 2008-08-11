@@ -85,6 +85,7 @@ Turnaround::Turnaround()
 	_vboxLayout->addWidget(_polarChromaPeaks);
 
 	_segmentationView = new SegmentationView(centralwidget);
+	_segmentationView->beCentred(true);
 	_vboxLayout->addWidget(_segmentationView);
 
 	_network.SetPlayer(new CLAM::PANetworkPlayer);
@@ -211,7 +212,7 @@ void Turnaround::analyse()
 	_chromaPeaksSource->setDataSource(1);
 	_chromaPeaksSource->updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, frameDivision);
 	_polarChromaPeaks->setDataSource(*_chromaPeaksSource);
-	
+
 	CLAM::OutPort<CLAM::Segmentation> &segmentationOutput = (CLAM::OutPort<CLAM::Segmentation>&)(tonalAnalysis.GetOutPort("Chord Segmentation"));
 	_segmentationSource = new CLAM::VM::PoolSegmentationDataSource;
 	_segmentationSource->updateData(segmentationOutput.GetData());
@@ -245,5 +246,6 @@ void Turnaround::timerEvent(QTimerEvent *event)
 		_pcpSource->setCurrentTime(time);
 		_chordCorrelationSource->setCurrentTime(time);
 		_chromaPeaksSource->setCurrentTime(time);
+		_segmentationSource->setCurrentTime(time);
 	}
 }

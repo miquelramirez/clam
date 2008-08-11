@@ -23,10 +23,22 @@
 
 CLAM::VM::PoolSegmentationDataSource::PoolSegmentationDataSource()
 	: _data(0)
+	, _currentTime(0.0)
 {
 }
 
 void CLAM::VM::PoolSegmentationDataSource::updateData(CLAM::Segmentation & data)
 {
 	_data = (CLAM::DiscontinuousSegmentation&)data;
+}
+
+bool CLAM::VM::PoolSegmentationDataSource::setCurrentTime(double timeMiliseconds)
+{
+	_currentTime = timeMiliseconds;
+	return true;
+}
+
+double CLAM::VM::PoolSegmentationDataSource::currentTime()
+{
+	return _currentTime;	
 }
