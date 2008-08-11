@@ -133,7 +133,7 @@ bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string
 		return true;
 	}
 #ifdef WIN32
-	return (!FreeLibrary(handle));
+	return (!FreeLibrary((HMODULE*)handle));
 #else 
 	return (dlclose(handle));
 #endif
