@@ -12,6 +12,36 @@
 
 #include <fstream>
 
+#include "ProcessingFactory.hxx" 
+
+const std::list<std::string> RunTimeLibraryLoader::GetUsedLibraries()
+{
+	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
+	std::list<std::string> usedLibraries;
+	CLAM::ProcessingFactory::Values librariesValues=factory.GetSetOfValues("library");
+	CLAM::ProcessingFactory::Values::const_iterator itLibraries;
+	std::cout<<"values:"<<std::endl;
+	for (itLibraries=librariesValues.begin();itLibraries!=librariesValues.end();itLibraries++)
+	{
+		const std::string & path=getPathFromFullFileName(*itLibraries); 
+		if (IsOnPath(path))
+			usedLibraries.push_back(*itLibraries);
+	}
+	return usedLibraries;
+}
+
+bool RunTimeLibraryLoader::IsOnPath(const std::string & path) const
+{
+	std::string paths = GetPaths();
+	std::vector <std::string> environmentPaths = SplitPathVariable(paths);
+	for (unsigned i=0; i<environmentPaths.size(); i++)
+	{
+		if (environmentPaths[i]==path)
+			return true;	
+	}
+	return false;
+}
+
 const std::string RunTimeLibraryLoader::FileOfSymbol (void * symbolAddress)
 {
 #ifndef WIN32
@@ -171,7 +201,7 @@ const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subp
 		// get file name:
 		std::string fileName = subpathAndName.substr( subpathAndName.rfind("/")+1); 
 		// testDir= root_path + subpath:
-		std::string testDir = environmentPaths[i] + "/" + subpathAndName.substr(0, subpathAndName.size()-fileName.size());
+		std::string testDir = environmentPaths[i] + "/" + getPathFromFullFileName(subpathAndName);
 		// check if directory exists:
 		DIR* dir = opendir(testDir.c_str());
 		if (not dir) 
@@ -179,7 +209,7 @@ const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subp
 		closedir(dir);
 		// check if file exists:
 		std::fstream fin;
-		std::string completeFileName=testDir+fileName;
+		std::string completeFileName=testDir+"/"+fileName;
 		fin.open(completeFileName.c_str(),std::ios::in);
 		if (not fin.is_open()) 
 			continue; // file doesn't exist, skip

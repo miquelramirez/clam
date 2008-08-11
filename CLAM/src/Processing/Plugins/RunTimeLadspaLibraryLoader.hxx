@@ -8,9 +8,9 @@
 #include <dlfcn.h>
 #endif
 #include <dirent.h>
-#include "RunTimeLibraryLoader.hxx"
+//#include "RunTimeLibraryLoader.hxx"
 
-#include "ProcessingFactory.hxx"
+#include "ProcessingFactory.hxx" 
 #include "LadspaWrapperCreator.hxx"
 #include <ladspa.h>
 
@@ -36,14 +36,20 @@ protected:
 			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
 			std::ostringstream oss;
 			oss << descriptor->Label << i;
+			factory.DeleteCreator(oss.str());
 			factory.AddCreatorWarningRepetitions(oss.str(), 
 					new CLAM::LadspaWrapperCreator(pluginFullFilename, 
 						i, 
 						oss.str()));
 			factory.AddAttribute(oss.str(), "category", "LADSPA");
 			factory.AddAttribute(oss.str(), "description", descriptor->Name);
-			factory.AddAttribute(oss.str(), "library_filename", pluginFullFilename);
+			factory.AddAttribute(oss.str(), "library", pluginFullFilename);
 			//std::cout << "[LADSPA] added \"" << plugin.factoryID << "\" to the Factory" << std::endl;
+		}
+		if (ReleaseLibraryHandler(handle, pluginFullFilename))
+		{
+			std::cout<<"[LADSPA Plugin] error unloading library handle of: " << pluginFullFilename<<std::endl;
+			std::cout<<LibraryLoadError()<<std::endl;
 		}
 	}
 

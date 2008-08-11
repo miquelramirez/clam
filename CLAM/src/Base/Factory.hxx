@@ -143,17 +143,15 @@ public:
 		_registry.AddCreatorWarningRepetitions(name, creator);
 	}
 
-	void AddCreatorReplace ( const RegistryKey name, Creator* creator )
-	{
-		_registry.AddCreatorReplace(name,creator);
-	}
-
-
 	void AddCreatorSafe(const RegistryKey name, Creator* creator) throw (ErrFactory)
 	{
 		_registry.AddCreatorSafe(name, creator);
 	}
 
+	void DeleteCreator(const RegistryKey name)
+	{
+		_registry.DeleteCreator(name);
+	}
 
 	void GetRegisteredNames( std::list<std::string>& namesList )
 	{
@@ -281,18 +279,16 @@ public: // Inner classes. Public for better testing
 			}
 		}
 
-		void AddCreatorReplace ( RegistryKey creatorId, Creator* creator )
-		{
-			if (KeyExists(creatorId))
-				CommonReplaceCreator(creatorId, creator);
-			else
-				AddCreator(creatorId,creator);
-		}
-
 		void AddCreatorSafe( RegistryKey creatorId, Creator* creator ) throw (ErrFactory) 
 		{
 			if( !CommonAddCreator( creatorId, creator ) ) 
 				throw ErrFactory("A repeated key was passed");
+		}
+
+		void DeleteCreator( RegistryKey creatorId)
+		{
+			if (CommonDeleteCreator(creatorId)==false)
+				std::cout<<"WARNING: attempted to delete an inexistent creator"<<std::endl;
 		}
 
 		void RemoveAllCreators() 
@@ -492,23 +488,18 @@ public: // Inner classes. Public for better testing
 			typedef typename FactoryEntries::value_type ValueType;
 			return  _factoryEntries.insert( ValueType( creatorId, factoryEntry ) ).second;
 		}
-		// TODO: split on two: delete and replace
-		bool CommonReplaceCreator( RegistryKey& creatorId, Creator* creator) 
-		{
-			typename FactoryEntries::iterator i = 
-				_factoryEntries.find(creatorId);
-			if ( i!=_factoryEntries.end() ) // creator exists
-			{
-				Creator* oldCreator = i->second.creator;
-				if (oldCreator)
-					delete oldCreator;
-				_factoryEntries.erase(i);
-			}
-			if (!creator)
-				return false;
-			return CommonAddCreator(creatorId,creator);
-		}
 
+		bool CommonDeleteCreator (RegistryKey& creatorId)
+		{
+			typename FactoryEntries::iterator i =
+				_factoryEntries.find(creatorId);
+			if ( i == _factoryEntries.end() ) //not found
+				return false;
+			Creator * creator = i->second.creator; 
+			delete creator;
+			_factoryEntries.erase(i);
+			return true;
+		}
 	};
 
 	int Count() { return _registry.Count(); }
@@ -552,8 +543,9 @@ public:
 			value = metadata[++i];
 			factory.AddAttribute(key, attribute, value);
 		}
-		factory.AddAttribute(key,"library_filename",RunTimeLibraryLoader::FileOfSymbol(this));
-		//std::cout<<"[DEBUGING REGISTRATORS] "<<key <<" "<<RunTimeLibraryLoader::FileOfSymbol(this)<<std::endl;
+		const std::string & libraryFileName=RunTimeLibraryLoader::FileOfSymbol(this);
+		if (libraryFileName!="")
+			factory.AddAttribute(key,"library",libraryFileName);
 	}
 
 	FactoryRegistrator( RegistryKey key, TheFactoryType& fact ) 
