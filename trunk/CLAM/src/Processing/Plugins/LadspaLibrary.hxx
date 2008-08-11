@@ -6,6 +6,16 @@
 
 namespace CLAM
 {
+
+/**
+ A LadspaLibrary represents a pool of ladspa plugins descriptors.
+ You can register new plugin type by calling AddPluginType.
+ Normally you want to implicitly add plugins by creating a
+ CLAM::LadspaNetworkExporter or a CLAM::LadspaProcessingExporter.
+ @see CLAM::LadspaNetworkExporter
+ @see CLAM::LadspaProcessingExporter
+ @group Ladspa
+*/
 class LadspaLibrary
 {
 	std::vector<LADSPA_Descriptor * > _descriptors;
