@@ -36,7 +36,6 @@ protected:
 			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
 			std::ostringstream oss;
 			oss << descriptor->Label << i;
-			factory.DeleteCreator(oss.str());
 			factory.AddCreatorWarningRepetitions(oss.str(), 
 					new CLAM::LadspaWrapperCreator(pluginFullFilename, 
 						i, 
@@ -45,11 +44,6 @@ protected:
 			factory.AddAttribute(oss.str(), "description", descriptor->Name);
 			factory.AddAttribute(oss.str(), "library", pluginFullFilename);
 			//std::cout << "[LADSPA] added \"" << plugin.factoryID << "\" to the Factory" << std::endl;
-		}
-		if (ReleaseLibraryHandler(handle, pluginFullFilename))
-		{
-			std::cout<<"[LADSPA Plugin] error unloading library handle of: " << pluginFullFilename<<std::endl;
-			std::cout<<LibraryLoadError()<<std::endl;
 		}
 	}
 
