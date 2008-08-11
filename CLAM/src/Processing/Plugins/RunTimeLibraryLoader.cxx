@@ -12,7 +12,7 @@
 
 #include <fstream>
 
-std::string RunTimeLibraryLoader::FileOfSymbol (void * symbolAddress)
+const std::string RunTimeLibraryLoader::FileOfSymbol (void * symbolAddress)
 {
 #ifndef WIN32
 	Dl_info info;
@@ -110,7 +110,7 @@ bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string
 #endif
 }
 
-std::string RunTimeLibraryLoader::LibraryLoadError()
+const std::string RunTimeLibraryLoader::LibraryLoadError()
 {
 #ifdef WIN32
 	LPVOID lpMsgBuf;
