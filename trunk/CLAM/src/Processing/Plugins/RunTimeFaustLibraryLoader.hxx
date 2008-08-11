@@ -10,7 +10,6 @@
 #include <dirent.h>
 #include "RunTimeLibraryLoader.hxx"
 
-//#include "ProcessingFactory.hxx" 
 #include "LadspaWrapperCreator.hxx"
 #include <ladspa.h>
 
@@ -31,6 +30,13 @@ public:
 		LoadLibrariesFromPath(pluginFullPath);
 	}
 
+	// overload as workaround of Load() overload and path issues
+	virtual const std::list<std::string> GetUsedLibraries()
+	{
+		const std::list<std::string> loadedLibraries=_loadedLibraries;
+		_loadedLibraries.clear();
+		return loadedLibraries;
+	}
 protected:
 	void SetupLibrary(void* handle, const std::string & pluginFullFilename) const
 	{
@@ -41,8 +47,7 @@ protected:
 			std::cout << "[FAUST-LADSPA Plugin] Warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
 			return;
 		}
-		//std::cout << "[FAUST-LADSPA Plugin] Opened plugin: " << pluginFullFilename << std::endl;
-
+		_loadedLibraries.push_back(pluginFullFilename);
 		CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
 		for (unsigned long i=0; descriptorTable(i); i++)
 		{
@@ -89,7 +94,8 @@ protected:
 	const char * homePath() const { return  "/.faust"; }
 	const char * pathEnvironmentVar() const { return  "CLAM_FAUST_PATH"; }
 	const char * libraryType() const { return  "LADSPA"; }
-
+private:
+	mutable std::list<std::string> _loadedLibraries;
 };
 
 #endif // RunTimeFaustLibraryLoader_hxx

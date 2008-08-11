@@ -229,7 +229,7 @@ void MainWindow::on_action_Reload_Faust_Modules_triggered()
 {
 #if USE_LADSPA
 	RunTimeFaustLibraryLoader faustLibraryLoader;
-	faustLibraryLoader.Load();
+	faustLibraryLoader.ReLoad();
 	if (_processingTree)
 		_processingTree->RePopulateTree();
 #endif
