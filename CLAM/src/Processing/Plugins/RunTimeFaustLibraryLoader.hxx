@@ -49,7 +49,6 @@ protected:
 			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
 			std::ostringstream oss;
 			oss << descriptor->Label << i;
-			factory.DeleteCreator(oss.str());
 			factory.AddCreatorWarningRepetitions(oss.str(), 
 					new CLAM::LadspaWrapperCreator(pluginFullFilename, 
 						i, 
@@ -73,11 +72,6 @@ protected:
 			std::string sourcePath=CompletePathFor( "examples/"+pluginName+".dsp");
 			if (sourcePath != "")
 				factory.AddAttribute(oss.str(), "faust_source_file", sourcePath);
-		}
-		if (ReleaseLibraryHandler(handle, pluginFullFilename))
-		{
-			std::cout<<"[FAUST-LADSPA] error unloading library handle of: " << pluginFullFilename<<std::endl;
-			std::cout<<LibraryLoadError()<<std::endl;
 		}
 	}
 
