@@ -64,8 +64,6 @@ void FundPlayer::PlayFundThreadSafe()
 	oscCfg.SetAmplitude(TData(0.6));
 	SimpleOscillator osc(oscCfg);
 	
-	InControl& freqControl = osc.GetInControls().Get("Pitch");
-
 	Audio samples;
 	samples.SetSize(frameSize);
 
@@ -76,7 +74,7 @@ void FundPlayer::PlayFundThreadSafe()
 	for(TIndex i= 0;i < nSamples;i += frameSize)
 	{
 		if(!active) break;
-		freqControl.DoControl(mSegment.GetFrame(int(i*nFrames/nSamples)).GetFundamental().GetFreq(0));
+		SendFloatToInControl(osc, "Pitch", mSegment.GetFrame(int(i*nFrames/nSamples)).GetFundamental().GetFreq(0));
 		osc.Do(samples);
 		channel.Do(samples);
 		mSendData.Emit(samples.GetBuffer());
