@@ -37,22 +37,13 @@ public:
 		if ( !_dataSource) return;
 		QVector<QRectF> segmentBoxes;
 		const CLAM::Segmentation & segmentation = _dataSource->frameData();
+		double currentTime = _dataSource->currentTime();
+		double headPosition = _centred ? .5 : 1.;
+		double maxTime = currentTime + (1.-headPosition)* _timeSpan;
+		double minTime = currentTime - (headPosition) * _timeSpan;
+		if (maxTime<1) maxTime=1;
 		for (unsigned i=0; i<segmentation.onsets().size(); i++)
 		{
-//			double maxTime = segmentation.maxPosition();
-			double maxTime, minTime;
-			if (_centred)
-			{
-				double currentTime = _dataSource->currentTime();
-				maxTime = currentTime + _timeSpan/2.;
-				minTime = currentTime - _timeSpan/2.;
-			}
-			else
-			{
-				maxTime = segmentation.offsets().back();
-				minTime = maxTime - _timeSpan;
-			}
-			if (maxTime<1) maxTime=1;
 			float onsetPosition = width()*(segmentation.onsets()[i]-minTime)/(maxTime-minTime);
 			float offsetPosition = width()*(segmentation.offsets()[i]-minTime)/(maxTime-minTime);
 			segmentBoxes << QRectF(onsetPosition,margin,offsetPosition-onsetPosition,height()-2*margin);
@@ -61,22 +52,23 @@ public:
 		painter.setPen(QPen(_lineColor,3));
 		painter.setBrush(_pointColor);
 		painter.drawRects(segmentBoxes);
-
 		painter.setPen(Qt::black);
-
-		QPointF points[3] = {
-			QPointF(width()/2.0 - 3.0, 0.0),
-			QPointF(width()/2.0 + 3.0, 0.0),
-			QPointF(width()/2.0, 6.0),
-		};
-		if (_centred)
-			painter.drawConvexPolygon(points, 3);
-
 		for (unsigned i=0; i<segmentation.onsets().size(); i++)
 		{
 			painter.drawText(segmentBoxes[i], Qt::AlignCenter|Qt::TextWordWrap, segmentation.labels()[i].c_str());
 		}
 		_dataSource->release();
+
+		if (_centred)
+		{
+			QPointF points[3] = {
+				QPointF(width()/2.0 - 3.0, 0.0),
+				QPointF(width()/2.0 + 3.0, 0.0),
+				QPointF(width()/2.0, 6.0),
+			};
+			painter.drawConvexPolygon(points, 3);
+		}
+
 	}
 
 	void setDataSource(CLAM::VM::SegmentationDataSource & dataSource)
