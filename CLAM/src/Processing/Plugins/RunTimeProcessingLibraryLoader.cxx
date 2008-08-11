@@ -13,7 +13,7 @@ class RunTimeProcessingLibraryLoader : public RunTimeLibraryLoader
 
 protected:
 
-
+	const bool needReleaseHandlerOnReload() const { return true; } 
 	const char ** standardPaths() const
 	{ 
 		static const char * result[] = 

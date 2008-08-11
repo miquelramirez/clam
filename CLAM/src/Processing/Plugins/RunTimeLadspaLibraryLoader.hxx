@@ -20,6 +20,7 @@ class RunTimeLadspaLibraryLoader : public RunTimeLibraryLoader
 
 protected:
 
+	virtual const bool needReleaseHandlerOnReload() const { return false;} 
 	void SetupLibrary(void* handle, const std::string & pluginFullFilename) const
 	{
 		LADSPA_Descriptor_Function descriptorTable = 0;
@@ -44,6 +45,11 @@ protected:
 			factory.AddAttribute(oss.str(), "description", descriptor->Name);
 			factory.AddAttribute(oss.str(), "library", pluginFullFilename);
 			//std::cout << "[LADSPA] added \"" << plugin.factoryID << "\" to the Factory" << std::endl;
+		}
+		if (ReleaseLibraryHandler(handle, pluginFullFilename))
+		{
+			std::cout<<"[LADSPA Plugin] error unloading library handle of: " << pluginFullFilename<<std::endl;
+			std::cout<<LibraryLoadError()<<std::endl;
 		}
 	}
 

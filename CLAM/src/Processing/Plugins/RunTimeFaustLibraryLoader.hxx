@@ -38,6 +38,8 @@ public:
 		return loadedLibraries;
 	}
 protected:
+
+	virtual const bool needReleaseHandlerOnReload() const {return false; }
 	void SetupLibrary(void* handle, const std::string & pluginFullFilename) const
 	{
 		LADSPA_Descriptor_Function descriptorTable = 0;
@@ -78,6 +80,11 @@ protected:
 			std::string sourcePath=CompletePathFor( "examples/"+pluginName+".dsp");
 			if (sourcePath != "")
 				factory.AddAttribute(oss.str(), "faust_source_file", sourcePath);
+		}
+		if (ReleaseLibraryHandler(handle, pluginFullFilename))
+		{
+			std::cout<<"[FAUST-LADSPA] error unloading library handle of: " << pluginFullFilename<<std::endl;
+			std::cout<<LibraryLoadError()<<std::endl;
 		}
 	}
 

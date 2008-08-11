@@ -42,6 +42,7 @@ protected:
 	virtual const char * homePath() const = 0;
 	virtual const char * pathEnvironmentVar() const = 0;
 	virtual const char * libraryType() const = 0;
+	virtual const bool needReleaseHandlerOnReload() const =0;
 	virtual void SetupLibrary( void* handle, const std::string & pluginFullFilename ) const {}
 	const std::string getPathFromFullFileName(const std::string & fullFileNameConst) const
 	{
