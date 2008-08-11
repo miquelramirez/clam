@@ -14,6 +14,29 @@
 
 #include "ProcessingFactory.hxx" 
 
+
+void RunTimeLibraryLoader::ReLoad() 
+{
+	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
+	std::list<std::string> usedLibraries=GetUsedLibraries();
+	std::list<std::string>::const_iterator itLibraries;
+	// iterate on used libraries
+	for (itLibraries=usedLibraries.begin();itLibraries!=usedLibraries.end();itLibraries++)
+	{
+		CLAM::ProcessingFactory::Keys keys;
+		keys=factory.GetKeys("library",(*itLibraries));
+		CLAM::ProcessingFactory::Keys::const_iterator itKeys;
+		// iterate on used creators of the library
+		for(itKeys=keys.begin();itKeys!=keys.end();itKeys++)
+		{
+			factory.DeleteCreator(*itKeys);
+		}		
+		void * handle=GetLibraryHandler(*itLibraries);
+		ReleaseLibraryHandler(handle,(*itLibraries));
+	}
+	Load();
+}
+
 const std::list<std::string> RunTimeLibraryLoader::GetUsedLibraries()
 {
 	CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
@@ -126,7 +149,6 @@ void * RunTimeLibraryLoader::GetLibraryHandler(const std::string & libraryPath) 
 // returns false on success, true on fail
 bool RunTimeLibraryLoader::ReleaseLibraryHandler(void* handle, const std::string pluginFullFilename)
 {
-	std::cout<<"ReleaseLibraryHandler: "<<pluginFullFilename<<std::endl;
 	if (!handle)
 	{
 		std::cout<<"Cannot release an empty handle!"<<std::endl;
