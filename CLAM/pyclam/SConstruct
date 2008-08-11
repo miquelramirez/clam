@@ -36,9 +36,9 @@ env.Append( LIBPATH=['/usr/lib/python2.5/config'] )
 if env['debug']:
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
-#bindings = glob.glob('src/*.cpp')
-#bindings = ['clam_bindings.cxx']
 env.Append( CPPPATH=['.', './src/automatic','./src/manual'] )
 bindings = glob.glob('src/automatic/*.cpp')
 bindings += glob.glob('src/manual/*.cpp')
-env.SharedLibrary( target='clam', source=bindings+['Definitions.cxx','indexing/indexing_slice.cpp','indexing/python_iterator.cpp'], SHLIBPREFIX='' )
+source_files = ['src/Definitions.cxx','src/indexing/indexing_slice.cpp','src/indexing/python_iterator.cpp'] + bindings
+
+env.SharedLibrary( target='clam', source=source_files, SHLIBPREFIX='' )
