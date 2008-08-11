@@ -18,13 +18,6 @@ public:
 	static void * LazyLoadLibrary(const std::string & libraryPath);
 	static bool ReleaseLibraryHandler(void * handle, const std::string pluginFullFilename="");
 	static std::string LibraryLoadError();
-
-	static std::string & CurrentLibrary()
-	{
-		static std::string sCurrentLibrary;
-		return sCurrentLibrary;
-	}
-
 	static std::string FileOfSymbol (void * symbolAddress);
 protected:
 	void LoadLibrariesFromPath(const std::string & path) const;
