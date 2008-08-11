@@ -10,7 +10,7 @@
 #include <dirent.h>
 #include "RunTimeLibraryLoader.hxx"
 
-#include "ProcessingFactory.hxx"
+//#include "ProcessingFactory.hxx" 
 #include "LadspaWrapperCreator.hxx"
 #include <ladspa.h>
 
@@ -49,13 +49,14 @@ protected:
 			LADSPA_Descriptor* descriptor = (LADSPA_Descriptor*)descriptorTable(i);
 			std::ostringstream oss;
 			oss << descriptor->Label << i;
-			CLAM::ProcessingFactory::Creator * creator=NULL;
-			factory.AddCreatorReplace(oss.str(), creator); //TODO: this is to delete the actual creator first, add a DeleteCreator method instead
-			creator=new CLAM::LadspaWrapperCreator(pluginFullFilename, i, oss.str());
-			factory.AddCreatorReplace(oss.str(), creator);
+			factory.DeleteCreator(oss.str());
+			factory.AddCreatorWarningRepetitions(oss.str(), 
+					new CLAM::LadspaWrapperCreator(pluginFullFilename, 
+						i, 
+						oss.str()));
 			factory.AddAttribute(oss.str(), "category", "FAUST");
 			factory.AddAttribute(oss.str(), "description", descriptor->Name);
-			factory.AddAttribute(oss.str(), "library_filename", pluginFullFilename);
+			factory.AddAttribute(oss.str(), "library", pluginFullFilename);
 
 			std::string pluginName=descriptor->Label;
 			const std::string diagramMainSufix=".dsp-svg/process.svg";
@@ -73,7 +74,6 @@ protected:
 			if (sourcePath != "")
 				factory.AddAttribute(oss.str(), "faust_source_file", sourcePath);
 		}
-		// TODO: remove this when fixed the creation of CLAM library plugins creation
 		if (ReleaseLibraryHandler(handle, pluginFullFilename))
 		{
 			std::cout<<"[FAUST-LADSPA] error unloading library handle of: " << pluginFullFilename<<std::endl;

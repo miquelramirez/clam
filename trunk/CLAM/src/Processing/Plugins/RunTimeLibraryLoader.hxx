@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <list>
+
 
 class RunTimeLibraryLoader
 {
@@ -11,6 +13,7 @@ public:
 
 	virtual ~RunTimeLibraryLoader() {}
 	virtual void Load() const;
+
 	const std::string CompletePathFor(const std::string & subpathAndName) const; // if subpathAndName exists on environment paths, returns full path
 
 	// static methods for dynamic libraries handles
@@ -38,7 +41,14 @@ protected:
 	virtual const char * homePath() const = 0;
 	virtual const char * pathEnvironmentVar() const = 0;
 	virtual const char * libraryType() const = 0;
-	virtual void SetupLibrary( void* handle, const std::string& pluginFullFilename ) const {}
+	virtual void SetupLibrary( void* handle, const std::string & pluginFullFilename ) const {}
+	const std::string getPathFromFullFileName(const std::string & fullFileNameConst) const
+	{
+		std::string fullFileName = fullFileNameConst;
+		return fullFileName.substr(0,fullFileName.rfind("/"));
+	}
+	bool IsOnPath(const std::string & path) const;
+	virtual const std::list<std::string> GetUsedLibraries();
 
 private:
 	const std::string GetPaths() const;
