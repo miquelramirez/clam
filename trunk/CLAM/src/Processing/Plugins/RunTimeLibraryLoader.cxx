@@ -30,9 +30,12 @@ void RunTimeLibraryLoader::ReLoad()
 		for(itKeys=keys.begin();itKeys!=keys.end();itKeys++)
 		{
 			factory.DeleteCreator(*itKeys);
-		}		
-		void * handle=GetLibraryHandler(*itLibraries);
-		ReleaseLibraryHandler(handle,(*itLibraries));
+		}
+		if (needReleaseHandlerOnReload())
+		{
+			void * handle=GetLibraryHandler(*itLibraries);
+			ReleaseLibraryHandler(handle,(*itLibraries));
+		}
 	}
 	Load();
 }
