@@ -44,6 +44,7 @@
 
 #include <QtSvg/QSvgWidget>
 #include <QtSvg/QSvgRenderer>
+#include <QtCore/QFileInfo> // added to check if embbeded file exists as external without console error message
 
 
 QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
@@ -152,12 +153,12 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 
 		QWidget * widget = new QSvgWidget(this);
 		QSvgRenderer *renderer = (dynamic_cast<QSvgWidget*>(widget))->renderer();
-		if (!renderer->load(QString(embeddedSvg.c_str())))
-			if (!renderer->load(tr(":/icons/images/%1").arg(embeddedSvg.c_str())))
-				return 0;
-		return widget;
+		QString embeddedSvgQString=embeddedSvg.c_str();
+		if( (QFileInfo(embeddedSvgQString).exists() and renderer->load(embeddedSvgQString)) 
+			or renderer->load(tr(":/icons/images/%1").arg(embeddedSvg.c_str())) )
+				return widget;
+		return 0;
 	}
-
 	return 0;
 }
 
