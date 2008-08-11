@@ -218,7 +218,7 @@ const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subp
 		// get file name:
 		std::string fileName = subpathAndName.substr( subpathAndName.rfind("/")+1); 
 		// testDir= root_path + subpath:
-		std::string testDir = environmentPaths[i] + "/" + getPathFromFullFileName(subpathAndName);
+		std::string testDir = environmentPaths[i] + "/" + subpathAndName.substr(0, subpathAndName.size()-fileName.size());
 		// check if directory exists:
 		DIR* dir = opendir(testDir.c_str());
 		if (not dir) 
@@ -226,7 +226,7 @@ const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subp
 		closedir(dir);
 		// check if file exists:
 		std::fstream fin;
-		std::string completeFileName=testDir+"/"+fileName;
+		std::string completeFileName=testDir+fileName;
 		fin.open(completeFileName.c_str(),std::ios::in);
 		if (not fin.is_open()) 
 			continue; // file doesn't exist, skip
@@ -235,4 +235,3 @@ const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subp
 	}
 	return "";
 }
-
