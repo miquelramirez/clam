@@ -184,8 +184,6 @@ private:
 		oscCfg.SetAmplitude(0.6);
 		CLAM::SimpleOscillator osc(oscCfg);
 		
-		CLAM::InControl& freqControl = osc.GetInControls().Get("Pitch");
-
 		CLAM::Audio samplesAudio0;
 		CLAM::Audio samplesAudio1;
 		CLAM::Audio samplesBpf;
@@ -213,7 +211,7 @@ private:
 			if (mAudio1 && rightIndex < unsigned(mAudio1->GetSize()))
 				mAudio1->GetAudioChunk(int(leftIndex),int(rightIndex),samplesAudio1);
 
-			if (mBPF && mBPF->Size() && bpfIndex < mBPF->Size()) freqControl.DoControl(GetPitch(bpfIndex));
+			if (mBPF && mBPF->Size() && bpfIndex < mBPF->Size()) SendFloatToInControl(osc,"Pitch",GetPitch(bpfIndex));
 			osc.Do(samplesBpf);
 			if (mBPF && mBPF->Size() && leftIndex/mSamplingRate < mBPF->GetXValue(bpfIndex))
 			{
