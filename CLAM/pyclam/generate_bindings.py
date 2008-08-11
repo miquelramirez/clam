@@ -64,7 +64,6 @@ if enablePlugins:
 	# FIXME: Most of them parse and compile, but they need NullProcessingConfig (not parsed ATM, Problem1) exposed to python since this construction:
 	# PROCESSING_NAME_CONSTRUCTOR(const Config & config=Config()) { Configure(config); ... }
 	# PROCESSING_NAME_CONSTRUCTOR() { ... }
-
 	clam_plugins_file_list = []
 	#clam_plugins_file_list += ['GuitarEffects/DCRemoval/DCRemoval.hxx']
 	#clam_plugins_file_list += ['GuitarEffects/AutomaticGainControl/AutomaticGainControl.hxx']
@@ -112,18 +111,12 @@ try:
 	#mb.class_('FFTConfig').exclude()
 	pass
 except:
-	print "Error excluding members or classes"
+	print "Error excluding members functions or classes."
 
 # Register of manually exposed classes
 for classname in exported_manually_file_list:
 	mb.add_declaration_code( "#include  \"src/manual/%s.pypp.hpp\""%(classname[:-4]) )
-	mb.add_registration_code( "register_%s_class();"%(classname[:-4]) )
-#TODO: Bug: is needed to move the register call above of all, if not, then seems no correctly exposed, not sure why
-#Example:
-#BOOST_PYTHON_MODULE(clam){
-	#register_enumerations();
-	#register_FFTConfig_class();
-#
+	mb.add_registration_code( "register_%s_class();"%(classname[:-4]), tail=False )
 
  # Creating code creator. After this step you should not modify/customize declarations.
 mb.build_code_creator( module_name='clam' )
@@ -147,6 +140,5 @@ mb.code_creator.license = """/*
  */
  """
 
-# Writing code to file.
-#mb.write_module( 'clam_bindings.cxx' ) # single file output
+# Writing code to files
 mb.split_module( './src/automatic' )
