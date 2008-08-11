@@ -78,7 +78,7 @@ if enablePlugins:
 	file_list += [ plugins_path+'/'+item for item in clam_plugins_file_list]
 
 # Special definitions and extra-wrappers
-file_list += ['Definitions.hxx']
+file_list += ['src/Definitions.hxx']
 
 clam_include_path = [ '.' ]
 clam_include_path.append( clam_path )

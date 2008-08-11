@@ -21,7 +21,7 @@
 #include "CLAM/FFT_ooura.hxx"
 #include "CLAM/FFT_fftw3.hxx"
 #include "CLAM/SpectrumConfig.hxx"
-#include "Definitions.hxx"
+#include "src/Definitions.hxx"
 #include "SpectrumConfig.pypp.hpp"
 
 namespace bp = boost::python;

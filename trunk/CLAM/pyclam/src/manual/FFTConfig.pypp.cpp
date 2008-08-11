@@ -21,7 +21,7 @@
 #include "CLAM/FFT_ooura.hxx"
 #include "CLAM/FFT_fftw3.hxx"
 #include "CLAM/FFTConfig.hxx"
-#include "Definitions.hxx"
+#include "src/Definitions.hxx"
 #include "FFTConfig.pypp.hpp"
 
 namespace bp = boost::python;

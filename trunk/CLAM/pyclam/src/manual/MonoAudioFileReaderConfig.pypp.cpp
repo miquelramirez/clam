@@ -43,7 +43,7 @@
 #include "CLAM/Err.hxx"
 #include "CLAM/MonoAudioFileReader.hxx"
 #include "CLAM/MonoAudioFileReaderConfig.hxx"
-#include "Definitions.hxx"
+#include "src/Definitions.hxx"
 #include "MonoAudioFileReaderConfig.pypp.hpp"
 
 namespace bp = boost::python;
