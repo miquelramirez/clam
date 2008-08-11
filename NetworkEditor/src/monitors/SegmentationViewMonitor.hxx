@@ -33,7 +33,7 @@ class SegmentationViewMonitor :
 {
 public:
 	SegmentationViewMonitor()
-		: _size(0)
+		: _currentTime(0)
 	{
 	}
 private:
@@ -45,7 +45,8 @@ private:
 	}
 	const CLAM::Segmentation & frameData()
 	{
-		const CLAM::DiscontinuousSegmentation & data = FreezeAndGetData();
+		const CLAM::Segmentation & data = FreezeAndGetData();
+		_currentTime = data.maxPosition();
 		return data;
 	}
 	void release()
@@ -56,8 +57,12 @@ private:
 	{
 		return IsRunning();
 	}
+	double currentTime()
+	{
+		return _currentTime;
+	}
 private:
-	unsigned _size;
+	double _currentTime;
 };
 
 
