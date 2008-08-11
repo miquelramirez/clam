@@ -33,8 +33,8 @@ public:
 	// overload as workaround of Load() overload and path issues
 	virtual const std::list<std::string> GetUsedLibraries()
 	{
-		const std::list<std::string> loadedLibraries=_loadedLibraries;
-		_loadedLibraries.clear();
+		const std::list<std::string> loadedLibraries=LoadedLibraries();
+		LoadedLibraries().clear();
 		return loadedLibraries;
 	}
 protected:
@@ -44,10 +44,11 @@ protected:
 		descriptorTable = (LADSPA_Descriptor_Function)dlsym(handle, "ladspa_descriptor");
 		if (!descriptorTable)
 		{
-			std::cout << "[FAUST-LADSPA Plugin] Warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
+//			std::cout << "[FAUST-LADSPA Plugin] Warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
 			return;
 		}
-		_loadedLibraries.push_back(pluginFullFilename);
+		
+		LoadedLibraries().push_back(pluginFullFilename);
 		CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
 		for (unsigned long i=0; descriptorTable(i); i++)
 		{
@@ -95,7 +96,11 @@ protected:
 	const char * pathEnvironmentVar() const { return  "CLAM_FAUST_PATH"; }
 	const char * libraryType() const { return  "LADSPA"; }
 private:
-	mutable std::list<std::string> _loadedLibraries;
+	static std::list<std::string> & LoadedLibraries()
+	{
+		static std::list<std::string> sLoadedLibraries;
+		return sLoadedLibraries;
+	}
 };
 
 #endif // RunTimeFaustLibraryLoader_hxx
