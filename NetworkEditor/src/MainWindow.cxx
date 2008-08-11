@@ -70,6 +70,69 @@ static const char * ladspaSconsTemplate =
 	"env.Default(libraries)\n"
 	"\n";
 
+class LadspaPluginCompilationTask : public QObject
+{
+public:
+	LadspaPluginCompilationTask(QWidget * parent, CLAM::Network & network)
+		: QObject(parent)
+		, _network(network)
+		, networkFile("ladspa-XXXXXXXX.clamnetwork")
+		, cxxFile(    "ladspa-XXXXXXXX.cxx")
+		, sconsFile(  "ladspa-XXXXXXXX.scons")
+	{
+	}
+	~LadspaPluginCompilationTask() {}
+	void keepFiles()
+	{
+		cxxFile.setAutoRemove(false);
+		sconsFile.setAutoRemove(false);
+		networkFile.setAutoRemove(false);
+	}
+	void run(
+		unsigned id, 
+		const QString & label, 
+		const QString & name, 
+		const QString & maker, 
+		const QString & copyright,
+		const QString & libraryName,
+		const QString & clamPrefix
+		)
+	{
+		if (not networkFile.open()) return; // TODO: Error
+		std::ostringstream memoryBuffer;
+		CLAM::XMLStorage::Dump(_network, "network", memoryBuffer);
+		networkFile.write(memoryBuffer.str().c_str());
+		networkFile.flush();
+
+		if (not cxxFile.open()) return; // TODO: Error
+		QString pluginCode = QString(ladspaCxxTemplate)
+			.arg(networkFile.fileName()).arg(id)
+			.arg(label).arg(name).arg(maker).arg(copyright);
+		std::cout << pluginCode.toStdString() << std::endl;
+		cxxFile.write(pluginCode.toUtf8());
+		cxxFile.flush();
+
+		if (not sconsFile.open()) return; // TODO: Error
+		sconsFile.write(QString(ladspaSconsTemplate)
+			.arg(libraryName)
+			.arg(cxxFile.fileName())
+			.toLocal8Bit());
+		sconsFile.flush();
+		QString command = QString("scons -f %1 clam_prefix=%2 prefix=%3")
+			.arg(sconsFile.fileName())
+			.arg(clamPrefix)
+			.arg("/usr/local/")
+			;
+		std::cout << command.toStdString() << std::endl;
+		QProcess::execute(command);
+	}	
+private:
+	CLAM::Network & _network;
+	QTemporaryFile networkFile;
+	QTemporaryFile cxxFile;
+	QTemporaryFile sconsFile;
+};
+
 void MainWindow::on_action_CompileAsLadspaPlugin_triggered()
 {
 	QSettings settings;
@@ -83,51 +146,92 @@ void MainWindow::on_action_CompileAsLadspaPlugin_triggered()
 	ui.clamPrefix->propagateWhatsThisHack();
 	bool accepted = ladspaMetadataDialog.exec();
 	if (!accepted) return;
-	unsigned id = ui.ladspaUniqueId->value();
-	QString label = ui.ladspaLabel->text();
-	QString name = ui.ladspaName->text();
-	QString maker = ui.ladspaMaker->text();
-	QString copyright = ui.ladspaCopyright->currentText();
-	QString libraryName = ui.ladspaLibrary->text();
-	settings.setValue("Ladspa/Maker", maker);
-	QString clamPrefix = ui.clamPrefix->location();
-	settings.setValue("ClamPrefix", clamPrefix);
+	settings.setValue("Ladspa/Maker", ui.ladspaMaker->text());
+	settings.setValue("ClamPrefix", ui.clamPrefix->location());
 
-	QTemporaryFile networkFile("ladspa-XXXXXXXX.clamnetwork");
-	if (not networkFile.open()) return; // TODO: Error
-	std::ostringstream memoryBuffer;
-	CLAM::XMLStorage::Dump(_network, "network", memoryBuffer);
-	networkFile.write(memoryBuffer.str().c_str());
-	networkFile.flush();
+	LadspaPluginCompilationTask ladspaCompilation(this, _network);
+//	ladspaCompilation.keepFiles();
+	ladspaCompilation.run(
+		ui.ladspaUniqueId->value(), 
+		ui.ladspaLabel->text(), 
+		ui.ladspaName->text(), 
+		ui.ladspaMaker->text(), 
+		ui.ladspaCopyright->currentText(),
+		ui.ladspaLibrary->text(),
+		ui.clamPrefix->location()
+		);
+}
 
-	QTemporaryFile cxxFile("ladspa-XXXXXXXX.cxx");
-	if (not cxxFile.open()) return; // TODO: Error
-	QString pluginCode = QString(ladspaCxxTemplate)
-		.arg(networkFile.fileName()).arg(id)
-		.arg(label).arg(name).arg(maker).arg(copyright);
-	std::cout << pluginCode.toStdString() << std::endl;
-	cxxFile.write(pluginCode.toUtf8());
-	cxxFile.flush();
+////////////////////////////////////////////////////
+// Faust Compilation
 
-	QTemporaryFile sconsFile("ladspa-XXXXXXXX.scons");
-	if (not sconsFile.open()) return; // TODO: Error
-	sconsFile.write(QString(ladspaSconsTemplate)
-		.arg(libraryName)
-		.arg(cxxFile.fileName())
-		.toLocal8Bit());
-	sconsFile.flush();
+void MainWindow::on_action_Compile_Faust_Modules_triggered()
+{
+#if USE_LADSPA
+	RunTimeFaustLibraryLoader faustLoader;
+	std::cout << "[FAUST] \tcompiling" << std::endl;
+	std::string faustDir=faustLoader.CompletePathFor("examples"); // get path for examples dir
+	QDir examplesPath=QDir(faustDir.c_str());
+	if (not examplesPath.exists("ladspadir") and not examplesPath.mkdir("ladspadir")) // if directory for plugins compilation doesn't exist try to create it
+	{
+		QMessageBox::warning(this, tr("Faust compilation failed"),
+			tr(
+				"<p>Can't create ladspadir on '%1'!</p>\n"
+				"<p>Compilation failed.</p>\n"
+			).arg(examplesPath.path()) );
+		return;
+	}
+	// disable compilation action while compiling
+	ui.action_Compile_Faust_Modules->setEnabled(false);
+	TaskRunner::CommandsAndEnvironmentsList commandsQList;
+	TaskRunner::CommandAndEnvironment command;
+	// define compilation using make:
+	command.command="make";
+	command.arguments=(QStringList() << QString("ladspa"));
+	command.workingDir=faustDir.c_str();
+	commandsQList.append(command);
+	command.arguments=(QStringList() << QString("svg"));
+	commandsQList.append(command);
 
-	QString command = QString("scons -f '%1' clam_prefix=%2 prefix=%3")
-        .arg(sconsFile.fileName())
-        .arg(clamPrefix)
-        .arg("/usr/local/")
-		;
-	std::cout << command.toStdString() << std::endl;
-	system(command.toStdString().c_str());
-#if 0 // To debug, keep the files
-	cxxFile.setAutoRemove(false);
-	sconsFile.setAutoRemove(false);
-	networkFile.setAutoRemove(false);
+	statusBar()->showMessage(tr("Compiling faust modules..."));
+	TaskRunner * runner = new TaskRunner("FaustCompilationWidget");
+	runner->setWindowTitle(tr("Faust compilation"));
+	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endCompilationFaust(bool)));
+	connect(runner, SIGNAL(widgetDestructed()), this,SLOT(closeCompilationWidget()));
+	addDockWidget( Qt::BottomDockWidgetArea, runner);
+	// Wait the window to be redrawn after the reconfiguration
+	// before loading the cpu with the extractor
+	qApp->processEvents();
+	bool stopOnError = true;
+	bool ok = runner->run(commandsQList,stopOnError);
+	if (!ok) delete runner;
+	if(!ok)
+	{
+		QMessageBox::critical(this, tr("Compiling Faust modules"),
+			tr("<p><b>Error: Compilation failed.</b></p>\n"));
+		statusBar()->clearMessage();
+	}
+#endif
+}
+void MainWindow::endCompilationFaust(bool done)
+{
+	ui.action_Compile_Faust_Modules->setEnabled(true);
+	statusBar()->clearMessage();
+	if (done)
+		on_action_Reload_Faust_Modules_triggered();
+}
+void MainWindow::closeCompilationWidget()
+{
+	ui.action_Compile_Faust_Modules->setEnabled(true);
+}
+
+void MainWindow::on_action_Reload_Faust_Modules_triggered()
+{
+#if USE_LADSPA
+	RunTimeFaustLibraryLoader faustLibraryLoader;
+	faustLibraryLoader.Load();
+	if (_processingTree)
+		_processingTree->RePopulateTree();
 #endif
 }
 

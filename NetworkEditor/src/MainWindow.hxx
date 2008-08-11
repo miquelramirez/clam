@@ -271,23 +271,11 @@ public slots:
 				);
 		updatePlayStatusIndicator();
 	}
+
 	void openFileWithExternalApplicationFromProcessing()
 	{
 		QDesktopServices::openUrl(QUrl::fromLocalFile(_canvas->getFileNameToOpenWithExternalApplication()));
 	}
-	void endCompilationFaust(bool done)
-	{
-		ui.action_Compile_Faust_Modules->setEnabled(true);
-		statusBar()->clearMessage();
-		if (done)
-			on_action_Reload_Faust_Modules_triggered();
-	}
-
-	void closeCompilationWidget()
-	{
-		ui.action_Compile_Faust_Modules->setEnabled(true);
-	}
-
 	void on_action_Embed_SVG_Diagrams_Option_changed()
 	{
 		QAction *action = qobject_cast<QAction *>(sender());
@@ -453,64 +441,10 @@ public slots:
 				"<p>Run the Prototyper and open the same network you are editing</p>\n"
 			));
 	}
-	void on_action_Compile_Faust_Modules_triggered()
-	{
-#if USE_LADSPA
-		RunTimeFaustLibraryLoader faustLoader;
-		typedef std::map<std::string,std::string> CommandsMap;
-		std::cout << "[FAUST] \tcompiling" << std::endl;
-		std::string faustDir=faustLoader.CompletePathFor("examples"); // get path for examples dir
-		QDir examplesPath=QDir(faustDir.c_str());
-		if (not examplesPath.exists("ladspadir") and not examplesPath.mkdir("ladspadir")) // if directory for plugins compilation doesn't exist try to create it
-		{
-			QMessageBox::warning(this, tr("Faust compilation failed"),
-				tr(
-					"<p>Can't create ladspadir on '%1'!</p>\n"
-					"<p>Compilation failed.</p>\n"
-				).arg(examplesPath.path()) );
-			return;
-		}
-		// disable compilation action while compiling
-		ui.action_Compile_Faust_Modules->setEnabled(false);
-		TaskRunner::CommandsAndEnvironmentsList commandsQList;
-		TaskRunner::CommandAndEnvironment command;
-		// define compilation using make:
-		command.command="make";
-		command.arguments=(QStringList() << QString("ladspa"));
-		command.workingDir=faustDir.c_str();
-		commandsQList.append(command);
-		command.arguments=(QStringList() << QString("svg"));
-		commandsQList.append(command);
-
-		statusBar()->showMessage(tr("Compiling faust modules..."));
-		TaskRunner * runner = new TaskRunner("FaustCompilationWidget");
-		runner->setWindowTitle(tr("Faust compilation"));
-		connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endCompilationFaust(bool)));
-		connect(runner, SIGNAL(widgetDestructed()), this,SLOT(closeCompilationWidget()));
-		addDockWidget( Qt::BottomDockWidgetArea, runner);
-		// Wait the window to be redrawn after the reconfiguration
-		// before loading the cpu with the extractor
-		qApp->processEvents();
-		bool stopOnError = true;
-		bool ok = runner->run(commandsQList,stopOnError);
-		if (!ok) delete runner;
-		if(!ok)
-		{
-			QMessageBox::critical(this, tr("Compiling Faust modules"),
-				tr("<p><b>Error: Compilation failed.</b></p>\n"));
-			statusBar()->clearMessage();
-		}
-#endif
-	}
-	void on_action_Reload_Faust_Modules_triggered()
-	{
-#if USE_LADSPA
-		RunTimeFaustLibraryLoader faustLibraryLoader;
-		faustLibraryLoader.Load();
-		if (_processingTree)
-			_processingTree->RePopulateTree();
-#endif
-	}
+	void on_action_Compile_Faust_Modules_triggered();
+	void endCompilationFaust(bool done);
+	void closeCompilationWidget();
+	void on_action_Reload_Faust_Modules_triggered();
 
 	void on_action_Quit_triggered()
 	{
