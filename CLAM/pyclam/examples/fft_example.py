@@ -46,13 +46,11 @@ myspectrum.SetSize( samples/2+1 )
 fconfig = FFTConfig()
 fconfig.SetAudioSize( samples )
 
-myfft = FFT()
-#myfft = FFT_ooura()
-myfft.Configure( toProcessingConfig(fconfig) )
-myfft.Start()
+myfft = FFT_ooura() #FIXME: FFT() should work
+myfft.Configure( toProcessingConfig(fconfig) ) #FIXME
 
 print "Running object "
-myfft.Do( myaudio.getBase(), myspectrum.getBase() )
+myfft.Do( myaudio.getBase(), myspectrum.getBase() ) #FIXME
 
 print "Storing spectrum"
-XmlStorage.Dump( toComponent(myspectrum), "FFTResult", "pyFFT_example.xml" )
+XmlStorage.Dump( toComponent(myspectrum), "FFTResult", "pyFFT_example.xml" ) #FIXME

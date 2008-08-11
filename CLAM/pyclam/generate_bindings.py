@@ -50,6 +50,10 @@ clam_file_list += ['Processing.hxx','ProcessingConfig.hxx','ProcessingData.hxx',
 clam_file_list += ['FlowControl.hxx','FlattenedNetwork.hxx','Network.hxx','NetworkPlayer.hxx']
 clam_file_list += ['DataTypes.hxx','Enum.hxx','CLAM_Math.hxx','Err.hxx']
 
+clam_file_list += ['MonoAudioFileReader.hxx','AudioInFilename.hxx']
+exported_manually_file_list += ['MonoAudioFileReaderConfig.hxx']
+
+
 # Removes class names that could be added by accident to the list to be parsed (they're already exposed manually)
 for classname in exported_manually_file_list:
 	try:
@@ -117,6 +121,7 @@ except:
 for classname in exported_manually_file_list:
 	mb.add_declaration_code( "#include  \"src/manual/%s.pypp.hpp\""%(classname[:-4]) )
 	mb.add_registration_code( "register_%s_class();"%(classname[:-4]), tail=False )
+
 
  # Creating code creator. After this step you should not modify/customize declarations.
 mb.build_code_creator( module_name='clam' )
