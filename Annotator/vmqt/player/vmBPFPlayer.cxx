@@ -128,7 +128,8 @@ namespace CLAM
 				if(mAudio1 && rightIndex < unsigned(mAudio1->GetSize()))
 					mAudio1->GetAudioChunk(int(leftIndex),int(rightIndex),samplesAudio1);
 
-				if(mBPF && mBPF->Size() && k < mBPF->Size()) freqControl.DoControl(GetPitch(k));
+				if(mBPF && mBPF->Size() && k < mBPF->Size()) 		SendFloatToInControl(osc, "Pitch", GetPitch(k));
+
 				osc.Do(samplesBpf);
 				if (mBPF && mBPF->Size() && leftIndex/mSamplingRate < mBPF->GetXValue(k))
 				{
