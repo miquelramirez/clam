@@ -20,7 +20,6 @@ const std::list<std::string> RunTimeLibraryLoader::GetUsedLibraries()
 	std::list<std::string> usedLibraries;
 	CLAM::ProcessingFactory::Values librariesValues=factory.GetSetOfValues("library");
 	CLAM::ProcessingFactory::Values::const_iterator itLibraries;
-	std::cout<<"values:"<<std::endl;
 	for (itLibraries=librariesValues.begin();itLibraries!=librariesValues.end();itLibraries++)
 	{
 		const std::string & path=getPathFromFullFileName(*itLibraries); 
