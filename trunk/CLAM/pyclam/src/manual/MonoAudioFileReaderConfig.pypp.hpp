@@ -15,9 +15,9 @@
  *
  */
  
-#ifndef SpectrumConfig_hpp__wrapper
-#define SpectrumConfig_hpp__wrapper
+#ifndef MonoAudioFileReaderConfig_hpp__wrapper
+#define MonoAudioFileReaderConfig_hpp__wrapper
 
-void register_SpectrumConfig_class();
+void register_MonoAudioFileReaderConfig_class();
 
-#endif//SpectrumConfig_hpp__wrapper
+#endif//MonoAudioFileReaderConfig_hpp__wrapper
