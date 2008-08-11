@@ -74,8 +74,6 @@ namespace CLAM
 			oscCfg.SetAmplitude(TData(0.6));
 			SimpleOscillator osc(oscCfg);
 			
-			InControl& freqControl = osc.GetInControls().Get("Pitch");
-    
 			Audio samplesL;             
 			Audio samplesR;
 			samplesL.SetSize(frameSize);
@@ -109,16 +107,16 @@ namespace CLAM
 					if(TData(i/mSampleRate) >= mMelodies[melodyIndex].GetNoteArray()[k].GetTime().GetBegin() &&
 					   TData(i/mSampleRate) < mMelodies[melodyIndex].GetNoteArray()[k].GetTime().GetEnd())
 					{
-						freqControl.DoControl(mMelodies[melodyIndex].GetNoteArray()[k].GetFundFreq());
+						SendFloatToInControl(osc,"Pitch",mMelodies[melodyIndex].GetNoteArray()[k].GetFundFreq());
 					}
 					else
 					{
-						freqControl.DoControl(0);
+						SendFloatToInControl(osc,"Pitch",0);
 					}
 				}
 				else
 				{
-					freqControl.DoControl(0);
+					SendFloatToInControl(osc,"Pitch",0);
 				}
 
 				if(mPlayMelody && mPlayAudio)
