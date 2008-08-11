@@ -51,11 +51,9 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 		if(pluginFilename == "." || pluginFilename == "..")
 			continue;
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
-		CurrentLibrary()=pluginFullFilename;
 		void * handle = FullyLoadLibrary(pluginFullFilename);
 		SetupLibrary( handle, pluginFullFilename );
 //		std::cout<<"loaded plugin: "<<pluginFullFilename<<std::endl;
-		CurrentLibrary()="";
 	}
 	closedir(dir);
 }
@@ -164,7 +162,7 @@ const std::string RunTimeLibraryLoader::GetPaths() const
 }
 
 
-const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subpathAndName) const //, ios_base::openmode
+const std::string RunTimeLibraryLoader::CompletePathFor(const std::string & subpathAndName) const 
 {
 	std::string paths=GetPaths();
 	std::vector <std::string> environmentPaths = SplitPathVariable(paths);
