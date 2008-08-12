@@ -27,7 +27,6 @@
  * Fix: NetEditor Windows installer should not install .def and .lib for
    plugins
  * Voice2MIDI crosscompiled windows binaries (no installer yet)
- * SampleBySample builds as a plugin.
  * Old AudioFileInput/Output definitely removed, remaining old code adapted.
  * FormantTracker and TickExtractor examples working with current version
 
