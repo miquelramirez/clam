@@ -13,12 +13,14 @@
      * navigate the Faust diagrams with a browser
  * Cut and paste processings
  * Processings geometries embedded on the network files on saving
+ * AudioSource and AudioSink processings have embbeded graphics on canvas
  * Port context menu to connect to compatible existing ports
  * Port context menu to add connected sources/sinks, monitors, 
    controlSenders and controlPrinters
  * Ctrl+Space to add processings
  * Processing tree has a filter box
- * Processing tree show a tooltip with it metadata
+ * Processing tree shows processings icons
+ * Processing tree shows a tooltip with processings creators metadata
  * OfflinePlayer uses floating point wavs to avoid clipping
  * OfflinePlayer commandline options to join/split channels on a single file
 
