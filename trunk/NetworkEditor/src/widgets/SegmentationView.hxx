@@ -61,12 +61,9 @@ public:
 
 		if (_centred)
 		{
-			QPointF points[3] = {
-				QPointF(width()/2.0 - 3.0, 0.0),
-				QPointF(width()/2.0 + 3.0, 0.0),
-				QPointF(width()/2.0, 6.0),
-			};
-			painter.drawConvexPolygon(points, 3);
+			painter.setPen(QPen(Qt::red, 1));
+			painter.setBrush(Qt::NoBrush);
+			painter.drawLine(QPoint(width()/2, 0), QPoint(width()/2, height()));
 		}
 
 	}
