@@ -137,6 +137,7 @@ int main(int argc, char ** argv)
 	bool isSchema = false;
 	bool isSuffix = false;
 	bool isProject = false;
+	bool isConfiguration = false;
 	for (unsigned i = 1; i<argc; i++)
 	{
 		std::string parameter = argv[i];
@@ -160,9 +161,16 @@ int main(int argc, char ** argv)
 			// We just considered it before
 			isProject=false;
 		}
+		else if (isConfiguration)
+		{
+			// TODO: Load the configuration file
+			isConfiguration=false;
+		}
 		else if (parameter=="-p") isProject = true;
 		else if (parameter=="-f") isSuffix = true;
 		else if (parameter=="-s") isSchema = hasSchemaOption = true;
+		else if (parameter=="-c") isConfiguration = true;
+		else if (parameter=="-w") return 0; // No writeback mode
 		else 
 			myProject.AppendSong(myProject.AbsoluteToRelative(argv[i]));
 	}
