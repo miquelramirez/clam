@@ -4,6 +4,7 @@
  * Using CLAM 1.3.0
  * Loads mp3 and oggs, saves oggs by using MonoAudioFileReader
 
+
 2008-02-05 SMSTools 0.4.9
 'GSoCket Plugged-in release'
  * SVN Revision: 11171
