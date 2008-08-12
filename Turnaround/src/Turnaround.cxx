@@ -222,20 +222,30 @@ void Turnaround::analyse()
 void Turnaround::play()
 {
 	if (_network.IsStopped())
+	{
 		_network.Start();
+		_network.GetOutControlByCompleteName(_progressControl+".Progress Jump").SendControl(_pausedProgress);
+		_network.GetOutControlByCompleteName(_fileReader+".Current Time Position").SendControl(_pausedProgress);
+	}
 }
 
 void Turnaround::pause()
 {
 	// TODO
 	if (!_network.IsStopped())
+	{
+		_pausedProgress = _network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue();
 		_network.Stop();
+	}
 }
 
 void Turnaround::stop()
 {
 	if (!_network.IsStopped())
+	{
 		_network.Stop();
+	}
+	_pausedProgress = 0.0;
 }
 
 void Turnaround::timerEvent(QTimerEvent *event)

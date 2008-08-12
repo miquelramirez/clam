@@ -86,6 +86,8 @@ private:
 	CLAM::VM::PoolPeakDataSource *_chromaPeaksSource;
 	CLAM::VM::PoolSegmentationDataSource *_segmentationSource;
 	CLAM::TData _length;
+	
+	CLAM::TControlData _pausedProgress;
 };
 
 #endif
