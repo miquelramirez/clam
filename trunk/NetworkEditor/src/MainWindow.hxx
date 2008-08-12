@@ -55,20 +55,22 @@ public:
 	{
 		ui.setupUi(this);
 		setWindowIcon(QIcon(":/icons/images/NetworkEditor-icon.png"));
-
+#ifdef AFTER13RELEASE
 		QTabWidget * centralTab = new QTabWidget(this);
 		setCentralWidget(centralTab);
 		centralTab->setTabPosition(QTabWidget::South);
-
+#endif//AFTER13RELEASE
 		QScrollArea * scroll = new QScrollArea(this);
 		_canvas = new ClamNetworkCanvas;
 		scroll->setWidget(_canvas);
 
+#ifdef AFTER13RELEASE
 		QScrollArea * backendScroll = new QScrollArea(this);
-
 		centralTab->addTab(scroll, "Network");
 		centralTab->addTab(backendScroll, "Jack");
-		
+#else
+		setCentralWidget(scroll);
+#endif//AFTER13RELEASE
 		_processingTreeDock = new QDockWidget(this);
 		_processingTree = new NetworkGUI::ProcessingTree(_processingTreeDock);
 		_processingTreeDock->setObjectName("ProcessingTree");
@@ -116,8 +118,10 @@ public:
 		if ( jackPlayer->IsWorking())
 		{
 			_networkPlayer = jackPlayer;
+#ifdef AFTER13RELEASE
 			_jackCanvas = new ClamNetworkCanvas; // TODO: This should be a JackNetworkCanvas
 			backendScroll->setWidget(_jackCanvas);
+#endif//AFTER13RELEASE
 		}
 		else
 			delete jackPlayer;
