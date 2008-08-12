@@ -1,5 +1,6 @@
-2008-??-?? SMSTools 0.4.10 SVN $Revision$
-''
+2008-08-11 SMSTools 0.4.10
+'Shooting flying plugins release'
+ * SVN $Revision$
  * Using CLAM 1.3.0
  * Loads mp3 and oggs, saves oggs by using MonoAudioFileReader
 

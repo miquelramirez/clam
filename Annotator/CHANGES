@@ -1,12 +1,12 @@
-2008-??-?? Annotator 0.4.0 SVN $Revision$
-''
+2008-08-11 Annotator 0.4.0
+'Shooting flying plugins release'
+ * SVN $Revision$
  * Using CLAM 1.3.0
  * Compiles also natively in windows with MinGW
  * New AggregationExtractor.py to aggregate several extractors
    see (http://iua-share.upf.edu/wikis/clam/index.php/Manual_Annotator)
  * Now you can specify a configuration file for the extractor
- * Changed the xml format for segmentations
- * UpdateAnnotatorData.py script provided to upgrade old files
+ * New extractor option to be able to write back to the descriptors source
  * Several bugs on the segmentation handling solved
  * vmqt clean up
 
