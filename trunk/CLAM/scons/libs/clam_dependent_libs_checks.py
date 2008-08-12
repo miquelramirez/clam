@@ -208,10 +208,6 @@ def setup_audioio_environment( env, conf ) :
 		if not test_portaudio( env, conf ) : return False
 		env.Append( CPPFLAGS=['-DUSE_PORTAUDIO=1'] )
 
-	if not sys.platform == 'linux2' or crosscompiling :
-		if sys.platform == 'win32' :
-			if not test_directx_sdk( env, conf ) : return False
-
 		if env['audio_backend'] == 'directx' :
 			env.Append( CPPFLAGS=['-DUSE_DIRECTX=1'] )
 
