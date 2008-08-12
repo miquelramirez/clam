@@ -25,6 +25,7 @@
  * OfflinePlayer uses floating point wavs to avoid clipping
  * OfflinePlayer commandline options to join/split channels on a single file
 
+
 2008-02-05 NetworkEditor 1.2.0
 'GSoCket Plugged-in release'
  * SVN Revision: 11171

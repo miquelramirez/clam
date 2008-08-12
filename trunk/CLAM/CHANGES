@@ -30,6 +30,7 @@
  * Old AudioFileInput/Output definitely removed, remaining old code adapted.
  * FormantTracker and TickExtractor examples working with current version
 
+
 2008-02-05 CLAM 1.2.0
 'GSoCket Plugged-in release'
  * SVN Revision: 11171
