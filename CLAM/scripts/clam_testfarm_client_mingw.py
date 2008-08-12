@@ -32,13 +32,13 @@ def set_qtdir_to_qt3(x) :
 
 sandbox = os.path.expanduser('~/CajitasDeArena/mingw/')
 localDefinitions = {
-	'name': 'mingw-crosscompiled',
+	'name': 'mingw-crosscompiled-office',
 	'description': '<img src="http://clam.iua.upf.es/images/windows_icon.png"/>',
 	'sandbox': sandbox,
 	'clamsrcroot': sandbox+"clam",
 	'installPath': sandbox+"local",
 	'qt3dir':'',
-	'qt4dir': os.path.expanduser('~/.wine/fake_windows/Qt/4.3.3/'),
+	'qt4dir': os.path.expanduser('~/.wine/drive_c/Qt/4.4.0/'),
 	'packageWildcard':'*_setup.exe',
 	'downloadPlatform':'win',
 	'extraLibOptions': 'crossmingw=1 release=1 sandbox_path=%s audio_backend=portaudio xmlbackend=xmlpp'%sandbox,
@@ -56,8 +56,8 @@ clam = Task(
 	task_name="with svn update" 
 	)
 clam.set_check_for_new_commits( 
-		checking_cmd="cd %(clamsrcroot)s && svn status -u | grep \*"%localDefinitions,
-		minutes_idle=15
+	checking_cmd="cd %(clamsrcroot)s && svn status -u | grep \*"%localDefinitions,
+	minutes_idle=15
 )
 
 clam.add_subtask( "List of new commits", [
