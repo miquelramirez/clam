@@ -37,13 +37,18 @@
 #include "FloatVectorStorage.hxx"
 #include "FloatPairVectorStorage.hxx"
 
-#include <iostream> // debug
+#include <iostream>
 
 Turnaround::Turnaround()
-	: QMainWindow( 0 )
-	, Ui::Turnaround( )
-	, _pcpSource( 0 )
-	, _chordCorrelationSource( 0 )
+	: QMainWindow(0)
+	, Ui::Turnaround()
+	, _networkPlayer(0)
+	, _tonalAnalysis(0)
+	, _pcpSource(0)
+	, _chordCorrelationSource(0)
+	, _chromaPeaksSource(0)
+	, _segmentationSource(0)
+	, _frameDivision(0)
 {
 	setupUi(this);
 	
@@ -88,13 +93,29 @@ Turnaround::Turnaround()
 	_segmentationView->beCentred(true);
 	_vboxLayout->addWidget(_segmentationView);
 
-	_network.SetPlayer(new CLAM::PANetworkPlayer);
+	_networkPlayer = new CLAM::PANetworkPlayer;
+	_network.SetPlayer(_networkPlayer);
+
+	_tonalAnalysis = new CLAM::TonalAnalysis;
 
 	startTimer(50);
 }
 
 Turnaround::~Turnaround()
 {
+	if (!_network.IsStopped())
+		_network.Stop();
+
+	delete _networkPlayer;
+	delete _vboxLayout;
+	delete _progressControlWidget;
+	delete _vectorView;
+	delete _tonnetz;
+	delete _keySpace;
+	delete _chordRanking;
+	delete _polarChromaPeaks;
+	delete _segmentationView;
+	//delete _tonalAnalysis; // crashes here
 }
 
 void Turnaround::fileOpen()
@@ -108,8 +129,6 @@ void Turnaround::fileOpen()
 
 void Turnaround::loadAudioFile(const std::string & fileName)
 {
-	// TODO
-		
 	if (!_network.IsStopped())
 		_network.Stop();
 		
@@ -124,9 +143,17 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 
 void Turnaround::analyse()
 {
+	if (_pcpSource)
+	{
+		delete _pcpSource;
+		delete _chordCorrelationSource;
+		delete _chromaPeaksSource;
+		delete _segmentationSource;
+		delete _frameDivision;
+	}
+
 	CLAM::MonoAudioFileReader fileReader(_fileReaderConfig);
-	CLAM::TonalAnalysis tonalAnalysis;
-	CLAM::AudioInPort &analysisInput = (CLAM::AudioInPort&)(tonalAnalysis.GetInPort("Audio Input"));
+	CLAM::AudioInPort &analysisInput = (CLAM::AudioInPort&)(_tonalAnalysis->GetInPort("Audio Input"));
 
 	const unsigned hop = analysisInput.GetHop();
 	const unsigned frameSize = analysisInput.GetSize();
@@ -134,8 +161,8 @@ void Turnaround::analyse()
 	const unsigned long nFrames = (unsigned long)(floor((float)(nSamples-frameSize+hop)/(float)hop));
 	const CLAM::TData sampleRate = fileReader.GetHeader().GetSampleRate();
 	_length = CLAM::TData(nSamples) / sampleRate;
-	
-	std::cout << nFrames << std::endl; // debug
+
+	std::cout << "Number of frames: " << nFrames << std::endl;
 	
 	FloatVectorStorageConfig storageConfig;
 
@@ -151,35 +178,41 @@ void Turnaround::analyse()
 	pairStorageConfig.SetFrames(nFrames);
 	FloatPairVectorStorage chromaPeaksStorage(pairStorageConfig);
 
-	CLAM::ConnectPorts(fileReader, "Samples Read", tonalAnalysis, "Audio Input");
-	CLAM::ConnectPorts(tonalAnalysis, "Pitch Profile", pcpStorage, "Data Input");
-	CLAM::ConnectPorts(tonalAnalysis, "Chord Correlation", chordCorrelationStorage, "Data Input");
-	CLAM::ConnectPorts(tonalAnalysis, "Chroma Peaks", chromaPeaksStorage, "Data Input");
+	CLAM::ConnectPorts(fileReader, "Samples Read", *_tonalAnalysis, "Audio Input");
+	CLAM::ConnectPorts(*_tonalAnalysis, "Pitch Profile", pcpStorage, "Data Input");
+	CLAM::ConnectPorts(*_tonalAnalysis, "Chord Correlation", chordCorrelationStorage, "Data Input");
+	CLAM::ConnectPorts(*_tonalAnalysis, "Chroma Peaks", chromaPeaksStorage, "Data Input");
 
 	fileReader.Start();
-	tonalAnalysis.Start();
+	_tonalAnalysis->Start();
 	pcpStorage.Start();
 	chordCorrelationStorage.Start();
 	chromaPeaksStorage.Start();
 
 	QProgressDialog progress(tr("Analyzing chords..."), 0, 0, nFrames, this);
 	progress.setWindowModality(Qt::WindowModal);
-	
+
 	unsigned long i = 0;
 	while (fileReader.Do())
 	{
 		if (! analysisInput.CanConsume())
 			continue;
-		tonalAnalysis.Do();
+		_tonalAnalysis->Do();
 		pcpStorage.Do();
 		chordCorrelationStorage.Do();
 		chromaPeaksStorage.Do();
-		progress.setValue(++i);
+		//progress.setValue(++i); // crashes here when loading second file
 	}
 
-	CLAM_Annotator::FrameDivision * frameDivision = new CLAM_Annotator::FrameDivision;
-	frameDivision->SetFirstCenter(frameSize / 2);
-	frameDivision->SetInterCenterGap(hop);
+	fileReader.Stop();
+	_tonalAnalysis->Stop();
+	pcpStorage.Stop();
+	chordCorrelationStorage.Stop();
+	chromaPeaksStorage.Stop();
+
+	_frameDivision = new CLAM_Annotator::FrameDivision;
+	_frameDivision->SetFirstCenter(frameSize / 2);
+	_frameDivision->SetInterCenterGap(hop);
 
 	const unsigned nBins = 12;
 	const char * notes[] = { 
@@ -191,7 +224,7 @@ void Turnaround::analyse()
 
 	_pcpSource = new CLAM::VM::PoolFloatArrayDataSource;
 	_pcpSource->setDataSource(nBins, 0, 0, binLabels);
-	_pcpSource->updateData(pcpStorage.Data(), sampleRate, frameDivision, nFrames);
+	_pcpSource->updateData(pcpStorage.Data(), sampleRate, _frameDivision, nFrames);
 	_vectorView->setDataSource(*_pcpSource);
 	_tonnetz->setDataSource(*_pcpSource);
 
@@ -204,16 +237,16 @@ void Turnaround::analyse()
 
 	_chordCorrelationSource = new CLAM::VM::PoolFloatArrayDataSource;
 	_chordCorrelationSource->setDataSource(nBins*2, 0, 0, binLabels); // nBins?
-	_chordCorrelationSource->updateData(chordCorrelationStorage.Data(), sampleRate, frameDivision, nFrames);
+	_chordCorrelationSource->updateData(chordCorrelationStorage.Data(), sampleRate, _frameDivision, nFrames);
 	_keySpace->setDataSource(*_chordCorrelationSource);
 	_chordRanking->setDataSource(*_chordCorrelationSource);
 
 	_chromaPeaksSource = new CLAM::VM::PoolPeakDataSource;
 	_chromaPeaksSource->setDataSource(1);
-	_chromaPeaksSource->updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, frameDivision);
+	_chromaPeaksSource->updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, _frameDivision);
 	_polarChromaPeaks->setDataSource(*_chromaPeaksSource);
 
-	CLAM::OutPort<CLAM::Segmentation> &segmentationOutput = (CLAM::OutPort<CLAM::Segmentation>&)(tonalAnalysis.GetOutPort("Chord Segmentation"));
+	CLAM::OutPort<CLAM::Segmentation> &segmentationOutput = (CLAM::OutPort<CLAM::Segmentation>&)(_tonalAnalysis->GetOutPort("Chord Segmentation"));
 	_segmentationSource = new CLAM::VM::PoolSegmentationDataSource;
 	_segmentationSource->updateData(segmentationOutput.GetData());
 	_segmentationView->setDataSource(*_segmentationSource);
