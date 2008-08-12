@@ -66,14 +66,14 @@ namespace CLAM
 		
 		/** Returns the attribute name */
 		const std::string & GetName() const { return _attributeName; }
-		/** Returns the attribute name */
+		/** Returns the scope name */
 		const std::string & GetScope() const { return _scopeName; }
 		
 		/** Allocates and construct 'size' elements for the attribute */
 		virtual void * Allocate(unsigned size) const = 0;
 		/** Destroys and deallocates the elements pointed by 'data' */
 		virtual void Deallocate(void * data) const = 0;
-		/** Inserts am element at position pos */
+		/** Inserts an element at position pos */
 		virtual void Insert(void * data, unsigned pos) const = 0;
 		/** Removes an element at position pos */
 		virtual void Remove(void * data, unsigned pos) const = 0;
