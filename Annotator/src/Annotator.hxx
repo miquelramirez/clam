@@ -80,7 +80,7 @@ class StatusBarDumper
 		~StatusBarDumper() {}
 		StatusBarDumper & operator << (const QString & object)
 		{
-			(*os) << object.toStdString();
+			(*os) << object.toLocal8Bit().constData();
 			std::cout << object.toStdString();
 			return *this;
 		}
@@ -95,7 +95,7 @@ class StatusBarDumper
 		{
 			(*os) << std::flush;
 			std::cout << std::endl;
-			mStatusBar->showMessage(QString(os->str().c_str()), 2000);
+			mStatusBar->showMessage(QString::fromLocal8Bit(os->str().c_str()), 2000);
 			delete os;
 			os = new std::ostringstream;
 			return *this;
