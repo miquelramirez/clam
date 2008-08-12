@@ -355,6 +355,7 @@ int main(int argc, char* argv[])			// access command line arguments
 	bool hasSchemaOption = false;
 	bool isSchema = false;
 	bool isSuffix = false;
+	bool isConfiguration = false;
 	bool isSegmentationMethod = false;
 	for (unsigned i = 1; i<argc; i++)
 	{
@@ -379,9 +380,16 @@ int main(int argc, char* argv[])			// access command line arguments
 			segmentationMethod = atoi( argv[i] );
 			isSegmentationMethod=false;
 		}
+		else if (isConfiguration)
+		{
+			// TODO: Take the configuration file
+			isConfiguration=false;
+		}
 		else if (parameter=="-f") isSuffix = true;
 		else if (parameter=="-s") isSchema = hasSchemaOption = true;
 		else if (parameter=="-m") isSegmentationMethod = true;
+		else if (parameter=="-c") isConfiguration = true;
+		else if (parameter=="-w") return 0; // No write back
 		else songs.push_back(parameter);
 	}
 
