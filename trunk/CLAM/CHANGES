@@ -1,5 +1,6 @@
 2008-??-?? CLAM 1.3.0 SVN $Revision$
 ''
+ * Native windows compilation (using mingw) working without patches (GSoC:jun)
  * New processings:
    * ComplexSpectrumInverter: Inverts the phase of a ComplexSpectrum
    * Resampler: Resamples audio streams using libsamplerate (not stable)
@@ -8,8 +9,11 @@
  * Fix: NetEditor Windows installer should not install .def and .lib for
    plugins
  * Voice2MIDI crosscompiled windows binaries (no installer yet)
+ * SampleBySample builds as a plugin.
  * Template based processing/plugin code generator scripts and frontend.
  * Classes for easy LADSPA generation of Networks and isolate processings
+ * Old AudioFileInput/Output definitely removed, remaining old code adapted.
+ * FormantTracker and TickExtractor examples working with current version
 
 2008-02-05 CLAM 1.2.0
 'GSoCket Plugged-in release'
