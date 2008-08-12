@@ -32,6 +32,8 @@
 
 namespace CLAM
 {
+	class NetworkPlayer;
+	class TonalAnalysis;
 namespace VM
 {
 	class VectorView;
@@ -39,6 +41,10 @@ namespace VM
 	class KeySpace;
 	class ChordRanking;
 }
+}
+namespace CLAM_Annotator
+{
+	class FrameDivision;
 }
 class PolarChromaPeaks;
 class SegmentationView;
@@ -66,11 +72,13 @@ private:
 	void analyse();
 	
 	CLAM::Network _network;
+	CLAM::NetworkPlayer *_networkPlayer;
 	CLAM::MonoAudioFileReaderConfig _fileReaderConfig;
 	std::string _fileReader;
 	std::string _progressControl;
 	std::string _audioSink;
-	std::string _tonalAnalysis;
+	
+	CLAM::TonalAnalysis *_tonalAnalysis;
 	
 	QVBoxLayout *_vboxLayout;
 	ProgressControlWidget *_progressControlWidget;
@@ -85,6 +93,7 @@ private:
 	CLAM::VM::PoolFloatArrayDataSource *_chordCorrelationSource;
 	CLAM::VM::PoolPeakDataSource *_chromaPeaksSource;
 	CLAM::VM::PoolSegmentationDataSource *_segmentationSource;
+	CLAM_Annotator::FrameDivision *_frameDivision;
 	CLAM::TData _length;
 	
 	CLAM::TControlData _pausedProgress;
