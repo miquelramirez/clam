@@ -50,6 +50,7 @@ void ProjectEditor::applyChanges(CLAM_Annotator::Project & project)
 	project.UpdateData();
 	project.SetProjectPath(mProject.File());
 	project.SetDescription(mProject.GetDescription());
+	project.SetConfiguration(mProject.GetConfiguration());
 	project.SetSchema(mProject.GetSchema());
 	project.SetExtractor(mProject.GetExtractor());
 	project.SetConfig(mProject.GetConfig());
@@ -79,6 +80,7 @@ void ProjectEditor::updateFields()
 		ui.extractor->setText(mProject.GetExtractor().c_str());
 	ui.configuration->setText(mProject.GetConfig().c_str());
 	ui.projectInfo->setPlainText(mProject.GetDescription().c_str());
+	ui.configurationInfo->setPlainText(mProject.GetConfiguration().c_str());
 	ui.htmlPreview->setHtml(mProject.GetDescription().c_str());
 }
 
@@ -86,6 +88,11 @@ void ProjectEditor::on_projectInfo_textChanged()
 {
 	ui.htmlPreview->setHtml(ui.projectInfo->toPlainText());
 	mProject.SetDescription(ui.projectInfo->toPlainText().toStdString());
+}
+
+void ProjectEditor::on_configurationInfo_textChanged()
+{
+	mProject.SetConfiguration(ui.configurationInfo->toPlainText().toStdString());
 }
 
 void ProjectEditor::on_suffix_editTextChanged()

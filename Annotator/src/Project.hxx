@@ -37,14 +37,15 @@ class Schema;
 
 class Project : public CLAM::DynamicType
 {
-	DYNAMIC_TYPE(Project,7);
+	DYNAMIC_TYPE(Project,8);
 	DYN_ATTRIBUTE(0, public, CLAM::Text, Description);
 	DYN_ATTRIBUTE(1, public, CLAM::Filename, Schema);
 	DYN_ATTRIBUTE(2, public, CLAM::Filename, Extractor);
 	DYN_ATTRIBUTE(3, public, std::string, PoolSuffix);
 	DYN_ATTRIBUTE(4, public, std::string, Config);
-	DYN_CONTAINER_ATTRIBUTE(5, public, std::vector<Song>, Songs, Song);
-	DYN_CONTAINER_ATTRIBUTE(6, public, std::vector<InstantView>, Views, View);
+	DYN_ATTRIBUTE(5, public, CLAM::Text, Configuration);
+	DYN_CONTAINER_ATTRIBUTE(6, public, std::vector<Song>, Songs, Song);
+	DYN_CONTAINER_ATTRIBUTE(7, public, std::vector<InstantView>, Views, View);
 
 	void DefaultInit()
 	{

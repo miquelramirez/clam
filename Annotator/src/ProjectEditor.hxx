@@ -47,6 +47,7 @@ class ProjectEditor : public QDialog
 		void setProjectPath(const std::string & file);
 	private slots:
 		void on_projectInfo_textChanged();
+		void on_configurationInfo_textChanged();
 		void on_schemaBrowseButton_clicked();
 		void on_suffix_editTextChanged();
 		void on_extractor_textChanged();
