@@ -15,14 +15,6 @@ path.append(home+"/src/liblo")
 # use OSC client module for python - by Stefan Kersten
 from OSC import Message
 
-def existsInGroup(objectToFind, group):
-	objectNumber=1
-	for object in group.objects:
-		if object==objectToFind:
-			return objectNumber
-		objectNumber+=1
-	return False
-
 def sendGroupObjects(group,typeName):
 	objectNumber=1
 	for object in group.objects:
