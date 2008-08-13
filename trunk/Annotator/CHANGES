@@ -1,6 +1,9 @@
+2008-??-?? Annotator 0.4.1 SVN $Revision$
+''
+
 2008-08-11 Annotator 0.4.0
 'Shooting flying plugins release'
- * SVN $Revision$
+ * SVN Revision: 11960
  * Using CLAM 1.3.0
  * Native windows compilation (using mingw) working without patches (GSoC:jun)
  * New AggregationExtractor.py to aggregate several extractors
@@ -9,7 +12,6 @@
  * New extractor option to be able to write back to the descriptors source
  * Several bugs on the segmentation handling solved
  * vmqt clean up
-
 
 2008-02-05 Annotator 0.3.10
 'GSoCket Plugged-in release'
