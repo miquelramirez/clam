@@ -1,6 +1,9 @@
+2008-08-11 NetworkEditor 1.3.1 SVN $Revision$
+''
+
 2008-08-11 NetworkEditor 1.3.0
 'Shooting flying plugins release'
- * SVN $Revision$
+ * SVN Revision: 11960
  * Using CLAM 1.3.0
  * Native windows compilation (using mingw) working without patches (GSoC:jun)
  * One-click LADSPA plugin generation
@@ -24,7 +27,6 @@
    * Processing tree shows a tooltip with processings creators metadata
  * OfflinePlayer uses floating point wavs to avoid clipping
  * OfflinePlayer commandline options to join/split channels on a single file
-
 
 2008-02-05 NetworkEditor 1.2.0
 'GSoCket Plugged-in release'
