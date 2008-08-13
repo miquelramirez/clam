@@ -28,7 +28,7 @@ parser.add_option("-c",# "--print-configuration",
 		dest="ConfigurationFile",
 		help="Specifies a configuration file with the options for the aggregation."
 	)
-parser.add_option("-w","--writeback"
+parser.add_option("-w","--writeback",
 		help="Writes back the descriptors to the source."
 	)
 (options, args) = parser.parse_args()
