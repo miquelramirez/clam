@@ -18,14 +18,14 @@ class LibloSourceConfig : public CLAM::ProcessingConfig
 	DYNAMIC_TYPE_USING_INTERFACE( LibloSourceConfig, 3, ProcessingConfig );
 	DYN_ATTRIBUTE( 0, public, std::string, OscPath);
 	DYN_ATTRIBUTE( 1, public, std::string, ServerPort);
-	DYN_ATTRIBUTE( 2, public, CLAM::TData, NumberOfOutputs);
+	DYN_ATTRIBUTE( 2, public, CLAM::TData, NumberOfArguments);
 	//TODO number of arguments/ports
 protected:
 	void DefaultInit()
 	{
 		AddAll();
 		UpdateData();
-		SetNumberOfOutputs(3);
+		SetNumberOfArguments(3);
 		SetOscPath("/clam/target");
 		SetServerPort("");
 	};
@@ -74,10 +74,10 @@ protected:
 //		AddAll();
 //		UpdateData();
 //set outputs:
-		int nOutputs = int(_config.GetNumberOfOutputs());
+		int nOutputs = int(_config.GetNumberOfArguments());
 		if (nOutputs < 1)
 		{
-			_config.SetNumberOfOutputs(1.);
+			_config.SetNumberOfArguments(1);
 			nOutputs = 1;
 		}
 		if (nOutputs == 1) 
