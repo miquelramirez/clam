@@ -22,6 +22,9 @@
 #include "ProjectEditor.hxx"
 #include "ConfigurationEditor.hxx"
 #include <QtGui/QFileDialog>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
+#include <QtCore/QString>
 #include <iostream>
 
 ProjectEditor::~ProjectEditor()
@@ -160,6 +163,14 @@ void ProjectEditor::on_extractor_textChanged()
 
 void ProjectEditor::on_buttonBox_accepted()
 {
+	QString filePath(mProject.File().c_str());
+	QFile *file=new QFile(filePath.append(".conf"));
+	if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
+		return;
+	if(!file->resize(0))
+		return; 
+	QTextStream out(file);
+	out << ui.configurationInfo->toPlainText();	
 	this->accept();
 }
 
