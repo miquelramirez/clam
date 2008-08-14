@@ -22,20 +22,21 @@
   <processing id="LibloSource" position="75,26" size="106,58" type="LibloSource">
     <OscPath>/clam/target</OscPath>
     <ServerPort>8000</ServerPort>
+    <NumberOfArguments>3</NumberOfArguments>
   </processing>
 
   <control_connection>
-    <out>LibloSource.osc to control 1</out>
+    <out>LibloSource./clam/target_0</out>
     <in>ControlPrinter.In Control</in>
   </control_connection>
 
   <control_connection>
-    <out>LibloSource.osc to control 2</out>
+    <out>LibloSource./clam/target_1</out>
     <in>ControlPrinter_1.In Control</in>
   </control_connection>
 
   <control_connection>
-    <out>LibloSource.osc to control 3</out>
+    <out>LibloSource./clam/target_2</out>
     <in>ControlPrinter_2.In Control</in>
   </control_connection>
 
