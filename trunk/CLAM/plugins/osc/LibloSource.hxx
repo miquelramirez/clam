@@ -2,7 +2,7 @@
 #define LibloSource_hxx
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/OutControl.hxx>
+#include <CLAM/OutControlArray.hxx>
 #include <string>
 #include <cmath>
 #include "lo/lo.h"
@@ -16,15 +16,17 @@ namespace CLAM
 
 class LibloSourceConfig : public CLAM::ProcessingConfig
 { 
-    DYNAMIC_TYPE_USING_INTERFACE( LibloSourceConfig, 2, ProcessingConfig );
+    DYNAMIC_TYPE_USING_INTERFACE( LibloSourceConfig, 3, ProcessingConfig );
     DYN_ATTRIBUTE( 0, public, std::string, OscPath);
     DYN_ATTRIBUTE( 1, public, std::string, ServerPort);
+    DYN_ATTRIBUTE( 2, public, CLAM::TData, NumberOfOutputs);
     //TODO number of arguments/ports
 protected:
     void DefaultInit()
     {
           AddAll();
           UpdateData();
+	  SetNumberOfOutputs(3.);
           SetOscPath("/clam/target");
           SetServerPort("");
     };
@@ -37,13 +39,16 @@ class LibloSource : public CLAM::Processing
 public:
 	LibloSource(const Config& config = Config()) 
 		: _serverThread(0)
-		, _out1("osc to control 1", this)
-		, _out2("osc to control 2", this)
-		, _out3("osc to control 3", this)
 	{
 		_serverThreadIsRunning=false;
 		Configure( config );
 	}
+	
+	~LibloSource()
+	{
+		RemoveOldControls();
+	}
+	
 	const CLAM::ProcessingConfig & GetConfig() const
 	{
 		return _config;
@@ -57,9 +62,39 @@ public:
 		return "LibloSource";
 	}
 protected:
+
+        void RemoveOldControls()
+        {
+        	_outControls.Clear();
+	    GetOutControls().Clear();
+	}
+
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
+
+//		AddAll();
+//		UpdateData();
+
+//set outputs:
+		int nOutputs = int(_config.GetNumberOfOutputs());
+		if (nOutputs < 1)
+		{
+			_config.SetNumberOfOutputs(1.);
+			nOutputs = 1;
+		}
+		if (nOutputs == 1) 
+		{
+			// preserve old port name 
+		        std::list<std::string> names;
+			names.push_back("Out Control");
+			_outControls.Resize(1, names, this);									
+		} 
+		else
+		{
+		// multi-port names share user-configured identifier
+			_outControls.Resize(nOutputs,_config.GetOscPath(), this);
+		}
 
 		if (_serverThreadIsRunning)
 		{	
@@ -84,7 +119,13 @@ protected:
 		/* add method that will match any path and args */
 		lo_server_thread_add_method(_serverThread, NULL, NULL, generic_handler, this);
 
-		lo_server_thread_add_method(_serverThread, _config.GetOscPath().c_str(), "fff", controls_handler, this);
+		std::string typespecMask="";
+		for (int i=0;i<nOutputs;i++)
+		{
+			typespecMask+="f";
+		}
+
+		lo_server_thread_add_method(_serverThread, _config.GetOscPath().c_str(), typespecMask.c_str(), controls_handler, this);
 
 		/* add method that will match the path /quit with no args */
 		lo_server_thread_add_method(_serverThread, "/quit", "", quit_handler, this);
@@ -109,9 +150,7 @@ private:
 	
 	lo_server_thread _serverThread;
 	Config _config;
-	OutControl _out1;
-	OutControl _out2;
-	OutControl _out3;
+	OutControlArray _outControls;
 };
 
 } //namespace

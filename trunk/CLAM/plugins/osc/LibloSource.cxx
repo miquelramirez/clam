@@ -37,13 +37,18 @@ int CLAM::LibloSource::generic_handler(const char *path, const char *types, lo_a
 int CLAM::LibloSource::controls_handler(const char *path, const char *types, lo_arg **argv, int argc,
 		 void *data, void *user_data)
 {
-    /* example showing pulling the argument values out of the argv array */
-    printf("%s <- f:%f, f:%f, f:%f\n\n", path, argv[0]->f, argv[1]->f, argv[2]->f);
-    fflush(stdout);
     CLAM::LibloSource & self = *((CLAM::LibloSource*)user_data);
-    self._out1.SendControl( argv[0]->f );
-    self._out2.SendControl( argv[1]->f );
-    self._out3.SendControl( argv[2]->f );
+    /* example showing pulling the argument values out of the argv array */
+    printf("%s <- f:",path);
+    for (int i=0;i<argc;i++)
+    {
+	if(i>0)
+	    printf(", ");
+	printf("%f", argv[i]->f);
+	self._outControls[i].SendControl( argv[i]->f );
+    }
+    printf("\n\n");
+    fflush(stdout);
 
     return 0;
 }
@@ -56,5 +61,4 @@ int CLAM::LibloSource::quit_handler(const char *path, const char *types, lo_arg 
 
     return 0;
 }
-
 
