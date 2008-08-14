@@ -5,6 +5,8 @@
 #include <CLAM/OutControlArray.hxx>
 #include <string>
 #include <cmath>
+#include <algorithm>
+
 #include "lo/lo.h"
 #ifdef GetClassName // windows.h introduces that
 #undef GetClassName
@@ -90,7 +92,9 @@ protected:
 		else
 		{
 		// multi-port names share user-configured identifier
-			_outControls.Resize(nOutputs,_config.GetOscPath(), this);
+			std::string path=_config.GetOscPath();
+			std::replace(path.begin(),path.end(),'/','_');
+			_outControls.Resize(nOutputs,path, this);
 		}
 
 		if (_serverThreadIsRunning)
