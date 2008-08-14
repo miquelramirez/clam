@@ -42,14 +42,13 @@ int CLAM::LibloSource::controls_handler(const char *path, const char *types, lo_
     printf("%s <- f:",path);
     for (int i=0;i<argc;i++)
     {
-	if(i>0)
-	    printf(", ");
-	printf("%f", argv[i]->f);
+	if(i>0) 
+		printf(", ");
+	printf ("%f", argv[i]->f);
 	self._outControls[i].SendControl( argv[i]->f );
     }
     printf("\n\n");
     fflush(stdout);
-
     return 0;
 }
 

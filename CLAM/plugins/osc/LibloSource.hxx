@@ -10,26 +10,25 @@
 #undef GetClassName
 #endif
 
-
 namespace CLAM
 {
 
 class LibloSourceConfig : public CLAM::ProcessingConfig
-{ 
-    DYNAMIC_TYPE_USING_INTERFACE( LibloSourceConfig, 3, ProcessingConfig );
-    DYN_ATTRIBUTE( 0, public, std::string, OscPath);
-    DYN_ATTRIBUTE( 1, public, std::string, ServerPort);
-    DYN_ATTRIBUTE( 2, public, CLAM::TData, NumberOfOutputs);
-    //TODO number of arguments/ports
+{
+	DYNAMIC_TYPE_USING_INTERFACE( LibloSourceConfig, 3, ProcessingConfig );
+	DYN_ATTRIBUTE( 0, public, std::string, OscPath);
+	DYN_ATTRIBUTE( 1, public, std::string, ServerPort);
+	DYN_ATTRIBUTE( 2, public, CLAM::TData, NumberOfOutputs);
+	//TODO number of arguments/ports
 protected:
-    void DefaultInit()
-    {
-          AddAll();
-          UpdateData();
-	  SetNumberOfOutputs(3.);
-          SetOscPath("/clam/target");
-          SetServerPort("");
-    };
+	void DefaultInit()
+	{
+		AddAll();
+		UpdateData();
+		SetNumberOfOutputs(3);
+		SetOscPath("/clam/target");
+		SetServerPort("");
+	};
 };
 
 class LibloSource : public CLAM::Processing
@@ -65,17 +64,15 @@ protected:
 
         void RemoveOldControls()
         {
-        	_outControls.Clear();
-	    GetOutControls().Clear();
+		_outControls.Clear();
+		GetOutControls().Clear();
 	}
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
-
 //		AddAll();
 //		UpdateData();
-
 //set outputs:
 		int nOutputs = int(_config.GetNumberOfOutputs());
 		if (nOutputs < 1)
@@ -86,7 +83,7 @@ protected:
 		if (nOutputs == 1) 
 		{
 			// preserve old port name 
-		        std::list<std::string> names;
+			std::list<std::string> names;
 			names.push_back("Out Control");
 			_outControls.Resize(1, names, this);									
 		} 
@@ -138,7 +135,7 @@ private:
 	static void error(int num, const char *m, const char *path);
 
 	static int generic_handler(const char *path, const char *types, lo_arg **argv,
-			    int argc, void *data, void *user_data);
+			 int argc, void *data, void *user_data);
 
 	static int controls_handler(const char *path, const char *types, lo_arg **argv, int argc,
 			 void *data, void *user_data);
