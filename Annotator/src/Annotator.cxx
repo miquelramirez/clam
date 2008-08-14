@@ -131,7 +131,7 @@ void Annotator::computeSongDescriptors()
 
 	std::string configurationOption="";
 	if (mProject.Config()!="")
-	configurationOption = "-c"+mProject.GetConfig();
+		configurationOption = "-c"+mProject.File()+".conf";
 	bool ok = runner->run(mProject.GetExtractor().c_str(),
 		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str() << configurationOption.c_str(),
 		QDir::current().path());
@@ -350,6 +350,11 @@ void Annotator::initProject()
 	else
 		projectDescription += tr("<p><em>(No project documentation available)</em></p>");
 	mProjectDocumentation->setHtml(projectDescription);
+
+	if (mProject.HasConfiguration())
+	{
+		mProject.InitConfiguration();
+	}
 
 	try
 	{

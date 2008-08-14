@@ -140,6 +140,7 @@ public:
 	std::string RelativeToAbsolute(const std::string & file) const;
 	std::string AbsoluteToRelative(const std::string & file) const;
 	void CreatePoolScheme();
+	void InitConfiguration();
 private:
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM_Annotator::Schema mSchema;
