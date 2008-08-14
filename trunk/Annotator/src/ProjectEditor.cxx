@@ -38,6 +38,8 @@ void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 	mProject.SetExtractor(project.GetExtractor());
 	if (project.HasConfig())
 		mProject.SetConfig(project.GetConfig());
+	if (project.HasConfiguration())
+		mProject.SetConfiguration(project.GetConfiguration());
 	mProject.SetPoolSuffix(project.PoolSuffix());
 	if (project.HasViews())
 		mProject.SetViews(project.GetViews());
@@ -67,6 +69,7 @@ void ProjectEditor::setProjectPath(const std::string & file)
 void ProjectEditor::updateProject()
 {
 	mProject.SetDescription(ui.projectInfo->toPlainText().toStdString());
+	mProject.SetConfiguration(ui.configurationInfo->toPlainText().toStdString());
 //	mProject.SetExtractor(ui.extractor->text().toStdString());
 //	mProject.SetSchema(mProject.AbsoluteToRelative(file.toStdString()));
 }
