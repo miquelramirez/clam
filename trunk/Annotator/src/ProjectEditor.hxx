@@ -60,6 +60,7 @@ class ProjectEditor : public QDialog
 	private:
 		void updateFields();
 		void updateProject();
+		void updateConfiguration();
 	private:
 		Ui::ProjectEditor ui;
 		CLAM_Annotator::Project mProject;

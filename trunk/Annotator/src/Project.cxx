@@ -24,6 +24,8 @@
 #include <CLAM/Text.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
 #include <QtCore/QFileInfo>
 
 namespace CLAM_Annotator
@@ -42,6 +44,18 @@ void Project::SetProjectPath(const std::string & path)
 	mFile = path;
 	mBasePath = QFileInfo(path.c_str()).path().toStdString();
 	std::cout << "Project file: " << mFile << " at Base " << mBasePath << std::endl;
+}
+
+void Project::InitConfiguration()
+{
+	QString filePath(File().c_str());
+	QFile *file=new QFile(filePath.append(".conf"));
+	if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
+		return;
+	if(!file->resize(0))
+		return; 
+	QTextStream out(file);
+	out << GetConfiguration().c_str();	
 }
 
 std::string Project::RelativeToAbsolute(const std::string & projectRelative) const

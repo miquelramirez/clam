@@ -90,6 +90,19 @@ void ProjectEditor::updateFields()
 	ui.htmlPreview->setHtml(mProject.GetDescription().c_str());
 }
 
+void ProjectEditor::updateConfiguration()
+{
+	QString filePath(mProject.File().c_str());
+	QFile *file=new QFile(filePath.append(".conf"));
+	if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
+		return;
+	if(!file->resize(0))
+		return; 
+	QTextStream out(file);
+	out << ui.configurationInfo->toPlainText();	
+}
+
+
 void ProjectEditor::on_projectInfo_textChanged()
 {
 	ui.htmlPreview->setHtml(ui.projectInfo->toPlainText());
@@ -161,16 +174,10 @@ void ProjectEditor::on_extractor_textChanged()
 	mProject.SetExtractor(ui.extractor->text().toStdString());
 }
 
+
 void ProjectEditor::on_buttonBox_accepted()
 {
-	QString filePath(mProject.File().c_str());
-	QFile *file=new QFile(filePath.append(".conf"));
-	if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
-		return;
-	if(!file->resize(0))
-		return; 
-	QTextStream out(file);
-	out << ui.configurationInfo->toPlainText();	
+	updateConfiguration();
 	this->accept();
 }
 
