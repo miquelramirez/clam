@@ -36,7 +36,8 @@ class LibloSource : public CLAM::Processing
 
 public:
 	LibloSource(const Config& config = Config()) 
-		: _out1("osc to control 1", this)
+		: _serverThread(0)
+		, _out1("osc to control 1", this)
 		, _out2("osc to control 2", this)
 		, _out3("osc to control 3", this)
 	{
@@ -62,7 +63,10 @@ protected:
 
 		if (_serverThreadIsRunning)
 		{	
-			return true;
+//			return true;
+			std<<cout "LibloSource: Restarting the server..."<<std::endl;
+			lo_server_thread_free(_serverThread);
+			_serverThreadIsRunning=false;
 		}
 
 		/* start a new server on port 7770 */
@@ -76,16 +80,16 @@ protected:
 		_serverThreadIsRunning=true;
 		const char * port = _config.GetServerPort().c_str();
 		std::cout << "LibloSource::ConcreteConfigure: STARTING the server. port " << port << std::endl;
-		lo_server_thread st = lo_server_thread_new(port, error);
+		_serverThread = lo_server_thread_new(port, error);
 		/* add method that will match any path and args */
-		lo_server_thread_add_method(st, NULL, NULL, generic_handler, this);
+		lo_server_thread_add_method(_serverThread, NULL, NULL, generic_handler, this);
 
-		lo_server_thread_add_method(st, _config.GetOscPath().c_str(), "fff", controls_handler, this);
+		lo_server_thread_add_method(_serverThread, _config.GetOscPath().c_str(), "fff", controls_handler, this);
 
 		/* add method that will match the path /quit with no args */
-		lo_server_thread_add_method(st, "/quit", "", quit_handler, this);
+		lo_server_thread_add_method(_serverThread, "/quit", "", quit_handler, this);
 
-		lo_server_thread_start(st);
+		lo_server_thread_start(_serverThread);
 
 		return true; // Configuration ok
 	}
@@ -102,7 +106,8 @@ private:
 			 void *data, void *user_data);
 
 	bool _serverThreadIsRunning;
-
+	
+	lo_server_thread _serverThread;
 	Config _config;
 	OutControl _out1;
 	OutControl _out2;
