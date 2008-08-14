@@ -15,7 +15,7 @@ path.append(home+"/src/liblo")
 # use OSC client module for python - by Stefan Kersten
 from OSC import Message
 
-def sendGroupObjects(group,typeName):
+def sendGroupObjectsPositions(group,typeName):
 	objectNumber=1
 	for object in group.objects:
 		location=object.getLocation()
@@ -30,14 +30,14 @@ def main():
 	
 	scene=data.scenes.active
 	print '-'*30
-	print 'OSCSender Called! - Event: '+Blender.event
+#	print 'OSCSender Called! - Event: '+Blender.event
 
 	if Blender.event=='FrameChanged':
 		frame=Blender.Get('curframe')
 		print 'frame: ' +str(frame)
 		Message("/SpatDIF/sync/FrameChanged",[frame]).sendlocal(7000)
-		sendGroupObjects(data.groups['AudioSources'],'sources')
-		sendGroupObjects(data.groups['AudioSinks'],'sinks')
+		sendGroupObjectsPositions(data.groups['AudioSources'],'sources')
+		sendGroupObjectsPositions(data.groups['AudioSinks'],'sinks')
 			
 # This lets you can import the script without running it
 if __name__ == '__main__':
