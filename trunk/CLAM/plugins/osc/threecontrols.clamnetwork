@@ -26,17 +26,17 @@
   </processing>
 
   <control_connection>
-    <out>LibloSource./clam/target_0</out>
+    <out>LibloSource._clam_target_0</out>
     <in>ControlPrinter.In Control</in>
   </control_connection>
 
   <control_connection>
-    <out>LibloSource./clam/target_1</out>
+    <out>LibloSource._clam_target_1</out>
     <in>ControlPrinter_1.In Control</in>
   </control_connection>
 
   <control_connection>
-    <out>LibloSource./clam/target_2</out>
+    <out>LibloSource._clam_target_2</out>
     <in>ControlPrinter_2.In Control</in>
   </control_connection>
 
