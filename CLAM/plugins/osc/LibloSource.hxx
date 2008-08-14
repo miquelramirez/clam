@@ -64,7 +64,7 @@ protected:
 		if (_serverThreadIsRunning)
 		{	
 //			return true;
-			std<<cout "LibloSource: Restarting the server..."<<std::endl;
+			std::cout <<"LibloSource: Restarting the server..."<<std::endl;
 			lo_server_thread_free(_serverThread);
 			_serverThreadIsRunning=false;
 		}
