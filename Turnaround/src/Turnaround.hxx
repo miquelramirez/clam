@@ -69,7 +69,6 @@ protected:
 
 private:
 	void loadAudioFile(const std::string & fileName);
-	void analyse();
 	
 	CLAM::Network _network;
 	CLAM::NetworkPlayer *_networkPlayer;
