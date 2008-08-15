@@ -53,6 +53,7 @@ namespace VM
 		public:
 			void updateIfNeeded();
 			void setDataSource( FloatArrayDataSource & dataSource );
+			void noDataSource();
 			void clearData();
 		protected:
 			int _updatePending;

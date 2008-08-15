@@ -72,6 +72,10 @@ public:
 	{
 		_dataSource = & dataSource;
 	}
+	void noDataSource()
+	{
+		_dataSource = 0;
+	}
 	void setPointColor(const QColor & color)
 	{
 		_pointColor = color;
