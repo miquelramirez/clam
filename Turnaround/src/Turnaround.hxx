@@ -28,8 +28,6 @@
 #include "PoolSegmentationDataSource.hxx"
 #include "ProgressControlWidget.hxx"
 
-#include <QtGui/QVBoxLayout>
-
 namespace CLAM
 {
 	class NetworkPlayer;
@@ -79,7 +77,6 @@ private:
 	
 	CLAM::TonalAnalysis *_tonalAnalysis;
 	
-	QVBoxLayout *_vboxLayout;
 	ProgressControlWidget *_progressControlWidget;
 	CLAM::VM::VectorView *_vectorView;
 	CLAM::VM::Tonnetz *_tonnetz;

@@ -21,6 +21,8 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QProgressDialog>
 #include <QtGui/QMessageBox>
+#include <QtGui/QVBoxLayout>
+
 
 #include <CLAM/PANetworkPlayer.hxx>
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -55,9 +57,9 @@ Turnaround::Turnaround()
 	connect(playbackPauseAction, SIGNAL(triggered()), this, SLOT(pause()));
 	connect(playbackStopAction, SIGNAL(triggered()), this, SLOT(stop()));
 
-	_vboxLayout = new QVBoxLayout(centralwidget);
+	QVBoxLayout * vboxLayout = new QVBoxLayout(centralwidget);
 	_progressControlWidget = new ProgressControlWidget(centralwidget);
-	_vboxLayout->addWidget(_progressControlWidget);
+	vboxLayout->addWidget(_progressControlWidget);
 
 	_fileReader = _network.AddProcessing("AudioFileMemoryLoader");
 
@@ -72,23 +74,26 @@ Turnaround::Turnaround()
 	_network.ConnectPorts(_fileReader+".Samples Read", _audioSink+".AudioIn");
 
 	_vectorView = new CLAM::VM::VectorView(centralwidget);
-	_vboxLayout->addWidget(_vectorView);
+	vboxLayout->addWidget(_vectorView);
 
 	_tonnetz = new CLAM::VM::Tonnetz(centralwidget);
-	_vboxLayout->addWidget(_tonnetz);
+	vboxLayout->addWidget(_tonnetz);
 
 	_keySpace = new CLAM::VM::KeySpace(centralwidget);
-	_vboxLayout->addWidget(_keySpace);
+	vboxLayout->addWidget(_keySpace);
 
-	_chordRanking = new CLAM::VM::ChordRanking(centralwidget);
-	_vboxLayout->addWidget(_chordRanking);
+	QHBoxLayout * hboxLayout = new QHBoxLayout;
+	vboxLayout->addLayout(hboxLayout);
 
 	_polarChromaPeaks = new PolarChromaPeaks(centralwidget);
-	_vboxLayout->addWidget(_polarChromaPeaks);
+	hboxLayout->addWidget(_polarChromaPeaks);
+
+	_chordRanking = new CLAM::VM::ChordRanking(centralwidget);
+	hboxLayout->addWidget(_chordRanking);
 
 	_segmentationView = new SegmentationView(centralwidget);
 	_segmentationView->beCentred(true);
-	_vboxLayout->addWidget(_segmentationView);
+	vboxLayout->addWidget(_segmentationView);
 
 	_networkPlayer = new CLAM::PANetworkPlayer;
 	_network.SetPlayer(_networkPlayer);
