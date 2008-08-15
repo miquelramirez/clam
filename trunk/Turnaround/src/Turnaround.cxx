@@ -117,24 +117,18 @@ void Turnaround::fileOpen()
 
 void Turnaround::loadAudioFile(const std::string & fileName)
 {
-	if (!_network.IsStopped())
-		_network.Stop();
-		
-	_fileReaderConfig.SetSourceFile(fileName);
-	if (!_network.ConfigureProcessing(_fileReader, _fileReaderConfig))
-		return;
-
-	analyse();
-
-	_network.Start();
-}
-
-void Turnaround::analyse()
-{
 	QProgressDialog progress(tr("Analyzing chords..."), 0, 0, 1, this);
 	progress.setWindowModality(Qt::WindowModal);
 	progress.setValue(0);
 
+	if (!_network.IsStopped())
+		_network.Stop();
+
+	_fileReaderConfig.SetSourceFile(fileName);
+	if (!_network.ConfigureProcessing(_fileReader, _fileReaderConfig))
+		return;
+
+	// Begin analysis
 	// Point the widgets to no source
 	_vectorView->noDataSource();
 	_tonnetz->noDataSource();
@@ -153,7 +147,7 @@ void Turnaround::analyse()
 	_length = CLAM::TData(nSamples) / sampleRate;
 
 	std::cout << "Number of frames: " << nFrames << std::endl;
-	
+
 	progress.setMaximum(nFrames);
 	
 	FloatVectorStorageConfig storageConfig;
@@ -235,6 +229,9 @@ void Turnaround::analyse()
 	CLAM::OutPort<CLAM::Segmentation> &segmentationOutput = (CLAM::OutPort<CLAM::Segmentation>&)(_tonalAnalysis->GetOutPort("Chord Segmentation"));
 	_segmentationSource.updateData(segmentationOutput.GetData());
 	_segmentationView->setDataSource(_segmentationSource);
+	// End analysis
+
+	_network.Start();
 }
 
 void Turnaround::play()
