@@ -72,9 +72,10 @@ protected:
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
+		RemoveOldControls();
 		CopyAsConcreteConfig(_config, config);
-//		AddAll();
-//		UpdateData();
+//		_config.AddAll();
+//		_config.UpdateData();
 //set outputs:
 		int nOutputs = int(_config.GetNumberOfArguments());
 		if (nOutputs < 1)
@@ -82,20 +83,10 @@ protected:
 			_config.SetNumberOfArguments(1);
 			nOutputs = 1;
 		}
-		if (nOutputs == 1) 
-		{
-			// preserve old port name 
-			std::list<std::string> names;
-			names.push_back("Out Control");
-			_outControls.Resize(1, names, this);									
-		} 
-		else
-		{
 		// multi-port names share user-configured identifier
-			std::string path=_config.GetOscPath();
-			std::replace(path.begin(),path.end(),'/','_');
-			_outControls.Resize(nOutputs,path, this);
-		}
+		std::string path=_config.GetOscPath();
+		std::replace(path.begin(),path.end(),'/','_');
+		_outControls.Resize(nOutputs,path, this);
 
 		if (_serverThreadIsRunning)
 		{	
