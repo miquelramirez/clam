@@ -103,7 +103,6 @@ Turnaround::~Turnaround()
 	if (!_network.IsStopped())
 		_network.Stop();
 
-	delete _networkPlayer;
 	delete _tonalAnalysis;
 }
 
@@ -271,3 +270,4 @@ void Turnaround::timerEvent(QTimerEvent *event)
 	_chromaPeaksSource.setCurrentTime(time);
 	_segmentationSource.setCurrentTime(time);
 }
+
