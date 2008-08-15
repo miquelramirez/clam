@@ -27,6 +27,7 @@
 #include "PoolPeakDataSource.hxx"
 #include "PoolSegmentationDataSource.hxx"
 #include "ProgressControlWidget.hxx"
+#include "FrameDivision.hxx"
 
 namespace CLAM
 {
@@ -39,10 +40,6 @@ namespace VM
 	class KeySpace;
 	class ChordRanking;
 }
-}
-namespace CLAM_Annotator
-{
-	class FrameDivision;
 }
 class PolarChromaPeaks;
 class SegmentationView;
@@ -89,7 +86,7 @@ private:
 	CLAM::VM::PoolFloatArrayDataSource _chordCorrelationSource;
 	CLAM::VM::PoolPeakDataSource _chromaPeaksSource;
 	CLAM::VM::PoolSegmentationDataSource _segmentationSource;
-	CLAM_Annotator::FrameDivision *_frameDivision;
+	CLAM_Annotator::FrameDivision _frameDivision;
 	CLAM::TData _length;
 	
 	CLAM::TControlData _pausedProgress;
