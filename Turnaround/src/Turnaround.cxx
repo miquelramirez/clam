@@ -187,7 +187,7 @@ void Turnaround::analyse()
 		pcpStorage.Do();
 		chordCorrelationStorage.Do();
 		chromaPeaksStorage.Do();
-		//progress.setValue(++i); // crashes here when loading second file
+		progress.setValue(++i); // crashes here when loading second file
 	}
 
 	fileReader.Stop();
