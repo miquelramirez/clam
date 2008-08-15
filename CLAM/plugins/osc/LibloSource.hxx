@@ -47,6 +47,11 @@ public:
 	
 	~LibloSource()
 	{
+		if (_serverThreadIsRunning)
+		{	
+			std::cout <<"LibloSource: Shutting down the server..."<<std::endl;
+			lo_server_thread_free(_serverThread);
+		}
 		RemoveOldControls();
 	}
 	
