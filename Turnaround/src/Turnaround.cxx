@@ -44,10 +44,6 @@ Turnaround::Turnaround()
 	, Ui::Turnaround()
 	, _networkPlayer(0)
 	, _tonalAnalysis(0)
-	, _pcpSource(0)
-	, _chordCorrelationSource(0)
-	, _chromaPeaksSource(0)
-	, _segmentationSource(0)
 	, _frameDivision(0)
 {
 	setupUi(this);
@@ -107,15 +103,7 @@ Turnaround::~Turnaround()
 		_network.Stop();
 
 	delete _networkPlayer;
-	delete _vboxLayout;
-	delete _progressControlWidget;
-	delete _vectorView;
-	delete _tonnetz;
-	delete _keySpace;
-	delete _chordRanking;
-	delete _polarChromaPeaks;
-	delete _segmentationView;
-	//delete _tonalAnalysis; // crashes here
+	delete _tonalAnalysis;
 }
 
 void Turnaround::fileOpen()
@@ -143,14 +131,12 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 
 void Turnaround::analyse()
 {
-	if (_pcpSource)
-	{
-		delete _pcpSource;
-		delete _chordCorrelationSource;
-		delete _chromaPeaksSource;
-		delete _segmentationSource;
-		delete _frameDivision;
-	}
+	// Point the widgets to no source
+	_vectorView->noDataSource();
+	_tonnetz->noDataSource();
+	_keySpace->noDataSource();
+	_chordRanking->noDataSource();
+	_segmentationView->noDataSource();
 
 	CLAM::MonoAudioFileReader fileReader(_fileReaderConfig);
 	CLAM::AudioInPort &analysisInput = (CLAM::AudioInPort&)(_tonalAnalysis->GetInPort("Audio Input"));
@@ -222,11 +208,10 @@ void Turnaround::analyse()
 	};
 	std::vector<std::string> binLabels(notes, notes+nBins);
 
-	_pcpSource = new CLAM::VM::PoolFloatArrayDataSource;
-	_pcpSource->setDataSource(nBins, 0, 0, binLabels);
-	_pcpSource->updateData(pcpStorage.Data(), sampleRate, _frameDivision, nFrames);
-	_vectorView->setDataSource(*_pcpSource);
-	_tonnetz->setDataSource(*_pcpSource);
+	_pcpSource.setDataSource(nBins, 0, 0, binLabels);
+	_pcpSource.updateData(pcpStorage.Data(), sampleRate, _frameDivision, nFrames);
+	_vectorView->setDataSource(_pcpSource);
+	_tonnetz->setDataSource(_pcpSource);
 
 	const char * minorChords[] = { 
 		"g", "g#", "a", "a#",
@@ -235,60 +220,44 @@ void Turnaround::analyse()
 	};
 	binLabels.insert(binLabels.end(), minorChords, minorChords+nBins);
 
-	_chordCorrelationSource = new CLAM::VM::PoolFloatArrayDataSource;
-	_chordCorrelationSource->setDataSource(nBins*2, 0, 0, binLabels); // nBins?
-	_chordCorrelationSource->updateData(chordCorrelationStorage.Data(), sampleRate, _frameDivision, nFrames);
-	_keySpace->setDataSource(*_chordCorrelationSource);
-	_chordRanking->setDataSource(*_chordCorrelationSource);
+	_chordCorrelationSource.setDataSource(nBins*2, 0, 0, binLabels); // nBins?
+	_chordCorrelationSource.updateData(chordCorrelationStorage.Data(), sampleRate, _frameDivision, nFrames);
+	_keySpace->setDataSource(_chordCorrelationSource);
+	_chordRanking->setDataSource(_chordCorrelationSource);
 
-	_chromaPeaksSource = new CLAM::VM::PoolPeakDataSource;
-	_chromaPeaksSource->setDataSource(1);
-	_chromaPeaksSource->updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, _frameDivision);
-	_polarChromaPeaks->setDataSource(*_chromaPeaksSource);
+	_chromaPeaksSource.setDataSource(1);
+	_chromaPeaksSource.updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, _frameDivision);
+	_polarChromaPeaks->setDataSource(_chromaPeaksSource);
 
 	CLAM::OutPort<CLAM::Segmentation> &segmentationOutput = (CLAM::OutPort<CLAM::Segmentation>&)(_tonalAnalysis->GetOutPort("Chord Segmentation"));
-	_segmentationSource = new CLAM::VM::PoolSegmentationDataSource;
-	_segmentationSource->updateData(segmentationOutput.GetData());
-	_segmentationView->setDataSource(*_segmentationSource);
+	_segmentationSource.updateData(segmentationOutput.GetData());
+	_segmentationView->setDataSource(_segmentationSource);
 }
 
 void Turnaround::play()
 {
 	if (_network.IsStopped())
-	{
 		_network.Start();
-		_network.GetOutControlByCompleteName(_progressControl+".Progress Jump").SendControl(_pausedProgress);
-		_network.GetOutControlByCompleteName(_fileReader+".Current Time Position").SendControl(_pausedProgress);
-	}
 }
 
 void Turnaround::pause()
 {
 	// TODO
 	if (!_network.IsStopped())
-	{
-		_pausedProgress = _network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue();
 		_network.Stop();
-	}
 }
 
 void Turnaround::stop()
 {
-	if (!_network.IsStopped())
-	{
+	if (not _network.IsStopped())
 		_network.Stop();
-	}
-	_pausedProgress = 0.0;
 }
 
 void Turnaround::timerEvent(QTimerEvent *event)
 {
-	if (_pcpSource)
-	{
-		double time = _network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length;
-		_pcpSource->setCurrentTime(time);
-		_chordCorrelationSource->setCurrentTime(time);
-		_chromaPeaksSource->setCurrentTime(time);
-		_segmentationSource->setCurrentTime(time);
-	}
+	double time = _network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length;
+	_pcpSource.setCurrentTime(time);
+	_chordCorrelationSource.setCurrentTime(time);
+	_chromaPeaksSource.setCurrentTime(time);
+	_segmentationSource.setCurrentTime(time);
 }
