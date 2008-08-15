@@ -45,6 +45,7 @@ namespace VM
 			virtual void timerEvent(QTimerEvent *event);
 			void updateIfNeeded();
 			void setDataSource( FloatArrayDataSource & dataSource );
+			void noDataSource();
 			void clearData();
 			// Designer properties
 			const QColor & barGradientBegin() const { return _barGradientBegin; }

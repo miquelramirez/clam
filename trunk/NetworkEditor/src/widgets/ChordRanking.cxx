@@ -57,6 +57,12 @@ void CLAM::VM::ChordRanking::setDataSource(FloatArrayDataSource & dataSource )
 	_nBins = _dataSource->nBins();
 }
 
+void CLAM::VM::ChordRanking::noDataSource()
+{
+	_dataSource = 0;
+	_nBins = 0;
+}
+
 void CLAM::VM::ChordRanking::clearData()
 {
 	_maxValue=1;

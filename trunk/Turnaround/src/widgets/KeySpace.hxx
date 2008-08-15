@@ -56,6 +56,11 @@ public:
 		_dataSource = &dataSource;
 		_nBins = _dataSource->nBins();
 	}
+	void noDataSource()
+	{
+		_dataSource = 0;
+		_nBins = 0;
+	}
 	void updateIfNeeded();
 	void clearData();
 

@@ -56,6 +56,11 @@ void CLAM::VM::BarGraph::setDataSource(FloatArrayDataSource & dataSource )
 	_dataSource = &dataSource;
 }
 
+void CLAM::VM::BarGraph::noDataSource()
+{
+	_dataSource = 0;
+}
+
 void CLAM::VM::BarGraph::clearData()
 {
 }

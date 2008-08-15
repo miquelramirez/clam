@@ -135,7 +135,6 @@ void CLAM::VM::Tonnetz::Draw()
 		for (int x = 0-y/2; x<10; x++)
 			DrawLabel(x,y);
 }
-
 unsigned CLAM::VM::Tonnetz::BinAtPosition(int x, int y)
 {
 	if (_nBins==12)
@@ -249,6 +248,12 @@ void CLAM::VM::Tonnetz::DrawChordsShapes()
 void CLAM::VM::Tonnetz::updateIfNeeded()
 {
 	if (!_updatePending++) update();
+}
+
+void CLAM::VM::Tonnetz::noDataSource()
+{
+	_dataSource = 0;
+	_nBins = 0;
 }
 
 void CLAM::VM::Tonnetz::setDataSource(FloatArrayDataSource & dataSource )
