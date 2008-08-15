@@ -36,7 +36,6 @@
 #include "PolarChromaPeaks.hxx"
 #include "SegmentationView.hxx"
 #include "ProgressControl.hxx"
-#include "FrameDivision.hxx"
 #include "FloatVectorStorage.hxx"
 #include "FloatPairVectorStorage.hxx"
 
@@ -47,7 +46,6 @@ Turnaround::Turnaround()
 	, Ui::Turnaround()
 	, _networkPlayer(0)
 	, _tonalAnalysis(0)
-	, _frameDivision(0)
 {
 	setupUi(this);
 	
@@ -207,9 +205,8 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	chordCorrelationStorage.Stop();
 	chromaPeaksStorage.Stop();
 
-	_frameDivision = new CLAM_Annotator::FrameDivision;
-	_frameDivision->SetFirstCenter(frameSize / 2);
-	_frameDivision->SetInterCenterGap(hop);
+	_frameDivision.SetFirstCenter(frameSize / 2);
+	_frameDivision.SetInterCenterGap(hop);
 
 	const unsigned nBins = 12;
 	const char * notes[] = { 
@@ -220,7 +217,7 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	std::vector<std::string> binLabels(notes, notes+nBins);
 
 	_pcpSource.setDataSource(nBins, 0, 0, binLabels);
-	_pcpSource.updateData(pcpStorage.Data(), sampleRate, _frameDivision, nFrames);
+	_pcpSource.updateData(pcpStorage.Data(), sampleRate, &_frameDivision, nFrames);
 	_vectorView->setDataSource(_pcpSource);
 	_tonnetz->setDataSource(_pcpSource);
 
@@ -232,12 +229,12 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	binLabels.insert(binLabels.end(), minorChords, minorChords+nBins);
 
 	_chordCorrelationSource.setDataSource(nBins*2, 0, 0, binLabels); // nBins?
-	_chordCorrelationSource.updateData(chordCorrelationStorage.Data(), sampleRate, _frameDivision, nFrames);
+	_chordCorrelationSource.updateData(chordCorrelationStorage.Data(), sampleRate, &_frameDivision, nFrames);
 	_keySpace->setDataSource(_chordCorrelationSource);
 	_chordRanking->setDataSource(_chordCorrelationSource);
 
 	_chromaPeaksSource.setDataSource(1);
-	_chromaPeaksSource.updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, _frameDivision);
+	_chromaPeaksSource.updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, &_frameDivision);
 	_polarChromaPeaks->setDataSource(_chromaPeaksSource);
 
 	CLAM::OutPort<CLAM::Segmentation> &segmentationOutput = (CLAM::OutPort<CLAM::Segmentation>&)(_tonalAnalysis->GetOutPort("Chord Segmentation"));
