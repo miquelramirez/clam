@@ -117,18 +117,9 @@ void Turnaround::fileOpen()
 
 void Turnaround::loadAudioFile(const std::string & fileName)
 {
-	QProgressDialog progress(tr("Analyzing chords..."), 0, 0, 1, this);
-	progress.setWindowModality(Qt::WindowModal);
-	progress.setValue(0);
-
 	if (!_network.IsStopped())
 		_network.Stop();
 
-	_fileReaderConfig.SetSourceFile(fileName);
-	if (!_network.ConfigureProcessing(_fileReader, _fileReaderConfig))
-		return;
-
-	// Begin analysis
 	// Point the widgets to no source
 	_vectorView->noDataSource();
 	_tonnetz->noDataSource();
@@ -136,6 +127,15 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	_chordRanking->noDataSource();
 	_segmentationView->noDataSource();
 
+	QProgressDialog progress(tr("Analyzing chords..."), 0, 0, 1, this);
+	progress.setWindowModality(Qt::WindowModal);
+	progress.setValue(0);
+
+	_fileReaderConfig.SetSourceFile(fileName);
+	if (!_network.ConfigureProcessing(_fileReader, _fileReaderConfig))
+		return;
+
+	// Begin analysis
 	CLAM::MonoAudioFileReader fileReader(_fileReaderConfig);
 	CLAM::AudioInPort &analysisInput = (CLAM::AudioInPort&)(_tonalAnalysis->GetInPort("Audio Input"));
 
