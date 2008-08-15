@@ -20,6 +20,7 @@
 
 #include <QtGui/QFileDialog>
 #include <QtGui/QProgressDialog>
+#include <QtGui/QMessageBox>
 
 #include <CLAM/PANetworkPlayer.hxx>
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -127,13 +128,22 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	_chordRanking->noDataSource();
 	_segmentationView->noDataSource();
 
-	QProgressDialog progress(tr("Analyzing chords..."), 0, 0, 1, this);
+	QProgressDialog progress(tr("Analyzing chords..."), tr("Abort"), 0, 2, this);
 	progress.setWindowModality(Qt::WindowModal);
-	progress.setValue(0);
+	progress.setValue(1);
+	QApplication::processEvents();
 
 	_fileReaderConfig.SetSourceFile(fileName);
 	if (!_network.ConfigureProcessing(_fileReader, _fileReaderConfig))
+	{
+		progress.close();
+		QMessageBox::critical(this,
+			tr("Loading error"),
+			tr("Error loading the media\n%1")
+				.arg(_network.GetProcessing(_fileReader).GetConfigErrorMessage().c_str())
+			);
 		return;
+	}
 
 	// Begin analysis
 	CLAM::MonoAudioFileReader fileReader(_fileReaderConfig);
@@ -180,11 +190,11 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	{
 		if (! analysisInput.CanConsume())
 			continue;
+		progress.setValue(i++);
 		_tonalAnalysis->Do();
 		pcpStorage.Do();
 		chordCorrelationStorage.Do();
 		chromaPeaksStorage.Do();
-		progress.setValue(++i);
 	}
 
 	fileReader.Stop();
