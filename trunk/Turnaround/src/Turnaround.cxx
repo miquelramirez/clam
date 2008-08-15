@@ -131,6 +131,10 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 
 void Turnaround::analyse()
 {
+	QProgressDialog progress(tr("Analyzing chords..."), 0, 0, 1, this);
+	progress.setWindowModality(Qt::WindowModal);
+	progress.setValue(0);
+
 	// Point the widgets to no source
 	_vectorView->noDataSource();
 	_tonnetz->noDataSource();
@@ -149,6 +153,8 @@ void Turnaround::analyse()
 	_length = CLAM::TData(nSamples) / sampleRate;
 
 	std::cout << "Number of frames: " << nFrames << std::endl;
+	
+	progress.setMaximum(nFrames);
 	
 	FloatVectorStorageConfig storageConfig;
 
@@ -175,9 +181,6 @@ void Turnaround::analyse()
 	chordCorrelationStorage.Start();
 	chromaPeaksStorage.Start();
 
-	QProgressDialog progress(tr("Analyzing chords..."), 0, 0, nFrames, this);
-	progress.setWindowModality(Qt::WindowModal);
-
 	unsigned long i = 0;
 	while (fileReader.Do())
 	{
@@ -187,7 +190,7 @@ void Turnaround::analyse()
 		pcpStorage.Do();
 		chordCorrelationStorage.Do();
 		chromaPeaksStorage.Do();
-		progress.setValue(++i); // crashes here when loading second file
+		progress.setValue(++i);
 	}
 
 	fileReader.Stop();
