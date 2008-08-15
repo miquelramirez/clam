@@ -89,10 +89,10 @@ private:
 	PolarChromaPeaks *_polarChromaPeaks;
 	SegmentationView *_segmentationView;
 	
-	CLAM::VM::PoolFloatArrayDataSource *_pcpSource;
-	CLAM::VM::PoolFloatArrayDataSource *_chordCorrelationSource;
-	CLAM::VM::PoolPeakDataSource *_chromaPeaksSource;
-	CLAM::VM::PoolSegmentationDataSource *_segmentationSource;
+	CLAM::VM::PoolFloatArrayDataSource _pcpSource;
+	CLAM::VM::PoolFloatArrayDataSource _chordCorrelationSource;
+	CLAM::VM::PoolPeakDataSource _chromaPeaksSource;
+	CLAM::VM::PoolSegmentationDataSource _segmentationSource;
 	CLAM_Annotator::FrameDivision *_frameDivision;
 	CLAM::TData _length;
 	
