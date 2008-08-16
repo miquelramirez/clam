@@ -30,8 +30,9 @@ class FileMetadataSource :
 		self.schemaFile = schemaFile if self.path is None else os.path.join(self.path, schemaFile)
 		self.idsToRecalculate = []
 		self.poolSuffix=poolSuffix
-		if extractor and not os.access(extractor, os.X_OK) :
-			raise FileMetadataSource.InvalidExtractorPathException(extractor)
+		# TODO: there should be an InvalidExtractorPath exception check
+		#if extractor and not os.access(extractor, os.X_OK) :
+		#raise FileMetadataSource.InvalidExtractorPathException(extractor)
 		self.extractor = extractor
 		if extractor and not os.access(self.schemaFile, os.R_OK) :
 			os.system("%s -s %s"%(self.extractor, self.schemaFile))

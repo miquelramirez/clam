@@ -124,16 +124,18 @@ void Annotator::computeSongDescriptors()
 	mStatusBar << "Launching Extractor..." << mStatusBar;
 	TaskRunner * runner = new TaskRunner();
 	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
-	addDockWidget( Qt::BottomDockWidgetArea, runner);
+	//addDockWidget( Qt::BottomDockWidgetArea, runner);  //jun: comment out as it occupies to much CPU&MEM
 	// Wait the window to be redrawn after the reconfiguration
 	// before loading the cpu with the extractor
 	qApp->processEvents();
 
 	std::string configurationOption="";
-	if (mProject.Config()!="")
-		configurationOption = "-c"+mProject.File()+".conf";
+	//if (mProject.Config()!="")
+	//	configurationOption = "-c"+mProject.File()+".conf";
+	configurationOption = "-c"+mProject.File()+".conf";
 	bool ok = runner->run(mProject.GetExtractor().c_str(),
-		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str() << configurationOption.c_str(),
+		//QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str() << configurationOption.c_str(),
+		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str(),
 		QDir::current().path());
 	
 	if (!ok)
