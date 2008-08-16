@@ -4,7 +4,6 @@ Name: 'Blender Scene OSC CLAM exporter'
 Blender: 244
 Group: 'Object'
 """
-
 header="""<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Blender_exported_scene">
 """
@@ -43,10 +42,12 @@ endHeader="""</network>"""
 
 # use bpy module of Blender:
 from bpy import data
-#import Blender
+import Blender
 
 def main():
-
+	Blender.Window.FileSelector(write, "Export to CLAM network","exported_scene.clamnetwork")
+	
+def write(filename):
 	liblos=""
 	connections=""
 	printers=""
@@ -72,7 +73,7 @@ def main():
 		connections+=connection.replace("NameOfMultiLibloSource",libloName+"._SpatDIF_sinks_"+str(i)).replace("NameOfControlPrinter","printer_"+libloName)		
 		i+=1
 		XPosition+=300
-	f=open('exported_scene.clamnetwork','w')
+	f=open(filename,'w')
 	f.write(header+liblos+printers+connections+endHeader)
 	f.close()
 
