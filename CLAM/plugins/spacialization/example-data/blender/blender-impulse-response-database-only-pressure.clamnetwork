@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="AudioBuffer2Stream" position="917,342" size="159,65" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioBufferCrossFader" position="723,332" size="176,65" type="AudioBufferCrossFader"/>
+
+  <processing id="AudioSink" position="980,439" size="128,111" type="AudioSink"/>
+
+  <processing id="AudioSource" position="377,33" size="128,108" type="AudioSource"/>
+
+  <processing id="AudioWindowing" position="528,53" size="135,65" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="Blender Emitter1 Position (XY)" position="26,73" size="212,65" type="MultiLibloSource">
+    <OscPath>/SpatDIF/sources/1/xyz</OscPath>
+    <ServerPort>7000</ServerPort>
+    <NumberOfArguments>2</NumberOfArguments>
+  </processing>
+
+  <processing id="Blender Receiver1 Position (XY)" position="120,145" size="220,65" type="MultiLibloSource">
+    <OscPath>/SpatDIF/sinks/1/xyz</OscPath>
+    <ServerPort>7000</ServerPort>
+    <NumberOfArguments>2</NumberOfArguments>
+  </processing>
+
+  <processing id="BufferOscilloscope" position="400,519" size="286,176" type="BufferOscilloscope"/>
+
+  <processing id="DebugImpulseResponse" position="164,491" size="185,65" type="DebugImpulseResponse"/>
+
+  <processing id="ImpulseResponseDatabaseFetcher" position="41,321" size="253,65" type="ImpulseResponseDatabaseFetcher">
+    <FrameSize>512</FrameSize>
+    <Path>/home/parumi/acustica/roomjaume/</Path>
+    <Prefix>p</Prefix>
+  </processing>
+
+  <processing id="LowLatencyConvolution" position="403,291" size="178,65" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="LowLatencyConvolution_1" position="393,359" size="192,65" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="MyFFT" position="695,50" size="76,65" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT" position="612,291" size="80,65" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_1" position="176,543" size="94,65" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_2" position="606,373" size="94,65" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="Oscilloscope" position="886,505" size="197,108" type="Oscilloscope"/>
+
+  <port_connection>
+    <out>AudioBuffer2Stream.Audio stream</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBuffer2Stream.Audio stream</out>
+    <in>Oscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioBufferCrossFader.CrossFadedBuffer</out>
+    <in>AudioBuffer2Stream.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioSource.AudioOut</out>
+    <in>AudioWindowing.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioWindowing.Output</out>
+    <in>MyFFT.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>DebugImpulseResponse.Output</out>
+    <in>MyIFFT_1.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher.ImpulseResponse</out>
+    <in>LowLatencyConvolution.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher.ImpulseResponse</out>
+    <in>DebugImpulseResponse.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>ImpulseResponseDatabaseFetcher.PreviousImpulseResponse</out>
+    <in>LowLatencyConvolution_1.ImpulseResponse</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution.Output</out>
+    <in>MyIFFT.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>LowLatencyConvolution_1.Output</out>
+    <in>MyIFFT_2.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyFFT.Complex Spectrum</out>
+    <in>LowLatencyConvolution_1.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT.Audio Buffer</out>
+    <in>AudioBufferCrossFader.FadingIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_1.Audio Buffer</out>
+    <in>BufferOscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_2.Audio Buffer</out>
+    <in>AudioBufferCrossFader.FadingOut</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Blender Emitter1 Position (XY)._SpatDIF_sources_1_xyz_0</out>
+    <in>ImpulseResponseDatabaseFetcher.emitterX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Blender Emitter1 Position (XY)._SpatDIF_sources_1_xyz_1</out>
+    <in>ImpulseResponseDatabaseFetcher.emitterY</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Blender Receiver1 Position (XY)._SpatDIF_sinks_1_xyz_0</out>
+    <in>ImpulseResponseDatabaseFetcher.receiverX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Blender Receiver1 Position (XY)._SpatDIF_sinks_1_xyz_1</out>
+    <in>ImpulseResponseDatabaseFetcher.receiverY</in>
+  </control_connection>
+
+</network>
