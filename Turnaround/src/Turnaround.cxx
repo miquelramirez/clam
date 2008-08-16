@@ -247,15 +247,14 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 
 void Turnaround::play()
 {
-	if (_network.IsStopped())
+	if (not _network.IsPlaying())
 		_network.Start();
 }
 
 void Turnaround::pause()
 {
-	// TODO
-	if (!_network.IsStopped())
-		_network.Stop();
+	if (_network.IsPlaying())
+		_network.Pause();
 }
 
 void Turnaround::stop()
