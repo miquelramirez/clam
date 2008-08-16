@@ -22,7 +22,6 @@ public:
 	{
 		std::string examplesDir = CompletePathFor("examples/ladspadir");
 		LoadLibrariesFromPath(examplesDir);
-		//std::cout<<"[FAUST-LADSPA Plugin] \tload of RunTimeFaustLibraryLoader"<<std::endl;
 		RunTimeLibraryLoader::Load(); // needed??
 	}
 	void LoadPlugin(const std::string & pluginFullPath) const
@@ -49,7 +48,7 @@ protected:
 //			std::cout << "[FAUST-LADSPA Plugin] Warning: trying to open non ladspa plugin: " << pluginFullFilename << std::endl;
 			return;
 		}
-		
+
 		LoadedLibraries().push_back(pluginFullFilename);
 		CLAM::ProcessingFactory& factory = CLAM::ProcessingFactory::GetInstance();
 		for (unsigned long i=0; descriptorTable(i); i++)
@@ -71,7 +70,6 @@ protected:
 			if (svgFileDir != "")
 			{
 				factory.AddAttribute(oss.str(), "faust_diagram", svgFileDir);
-				//std::cout << "[FAUST-LADSPA Plugin] Using diagram: " << svgFileDir << std::endl;
 			}
 			if (!factory.AttributeExists(oss.str(), "embedded_svg"))
 				factory.AddAttribute(oss.str(), "embedded_svg", ":icons/images/faustlogo.svg");
