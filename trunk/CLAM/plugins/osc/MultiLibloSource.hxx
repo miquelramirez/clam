@@ -69,21 +69,6 @@ public:
 		return "MultiLibloSource";
 	}
 protected:
-	void DeleteMethod()
-	{
-		// if exists a previous method handler
-		if (_methodSetted)
-		{
-			lo_server_thread_del_method(_serverThread,_oscPath.c_str(),_typespec.c_str()); //delete it
-			DecInstance(_port.c_str());
-		}
-		if (IsPortUsed(_port.c_str()) && GetInstances(_port.c_str())==0) // if was the last instance
-		{
-			std::cout <<"MultiLibloSource: Shutting down the server..."<<std::endl;
-			lo_server_thread_free(_serverThread);
-			RemoveServer(_port.c_str());
-		}
-	}
 
         void RemoveOldControls()
         {
@@ -108,8 +93,8 @@ protected:
 		std::string oscPath=_config.GetOscPath();
 		std::replace(oscPath.begin(),oscPath.end(),'/','_');
 		_outControls.Resize(nOutputs,oscPath, this);
-		std::string port = _config.GetServerPort();
 
+		std::string port = _config.GetServerPort();
 		/* not defined port */
 		if (port=="")
 		{
@@ -124,6 +109,7 @@ protected:
 			_serverThread = (*ServersInstances().find(port)).second.thread;	//uses existing thread
 			DeleteMethod();
 		}
+
 		// define processing callback catcher (floats, for now)
 		std::string typespecMask="";
 		for (int i=0;i<nOutputs;i++)
@@ -131,12 +117,36 @@ protected:
 		_typespec=typespecMask;
 		_oscPath=_config.GetOscPath();
 		_port=port;
-		lo_server_thread_add_method(_serverThread, _oscPath.c_str(), _typespec.c_str(), controls_handler, this);
+		if (AddMethod()==false)
+			return false;
 		_methodSetted=true;
 		// add instance on map
-		IncInstance(_port.c_str()); //,path,typespec
-		lo_server_thread_start(_serverThread);
 		return true; // Configuration ok
+	}
+
+	void DeleteMethod()
+	{
+		// if exists a previous method handler
+		if (_methodSetted)
+		{
+			if (EraseInstance(_port.c_str(), _oscPath.c_str(),_typespec.c_str()))
+				lo_server_thread_del_method(_serverThread,_oscPath.c_str(),_typespec.c_str()); //delete it
+		}
+		if (IsPortUsed(_port.c_str()) && GetInstances(_port.c_str())==0) // if was the last instance
+		{
+			std::cout <<"MultiLibloSource: Shutting down the server..."<<std::endl;
+			lo_server_thread_free(_serverThread);
+			RemoveServer(_port.c_str());
+		}
+	}
+	bool AddMethod()
+	{
+		if (InsertInstance(_port.c_str(), _oscPath.c_str(), _typespec.c_str()))
+		{
+			lo_server_thread_add_method(_serverThread, _oscPath.c_str(), _typespec.c_str(), controls_handler, this);
+			return true;
+		}
+		return false;
 	}
 
 private:
@@ -151,12 +161,20 @@ private:
 	static int quit_handler(const char *path, const char *types, lo_arg **argv, int argc,
 			 void *data, void *user_data);
 
+	static bool EraseInstance(const char* port, const char * path, const char * typespec);
+	static bool InsertInstance(const char* port, const char * path, const char * typespec);
+
 	// server management related structs, methods, and attributes
+
+	// key: path, value: typespec
+	typedef std::multimap<std::string,std::string> MethodsMultiMap;
 	typedef struct
 	{
 		lo_server_thread thread;
-		unsigned int nProcessings;
+		//unsigned int nProcessings;
+		MethodsMultiMap methods;
 	} ServerInstance;
+
 	// map key: port
 	typedef std::map<std::string,ServerInstance> OscServersMap;
 	static OscServersMap & ServersInstances()
