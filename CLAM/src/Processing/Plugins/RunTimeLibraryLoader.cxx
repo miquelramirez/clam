@@ -84,18 +84,13 @@ void RunTimeLibraryLoader::Load() const
 	// for each path, load libraries
 	std::vector <std::string> environmentPaths = SplitPathVariable(path);
 	for (unsigned i=0; i<environmentPaths.size(); i++)
-	{
 		LoadLibrariesFromPath(environmentPaths[i]);
-	}
 }
 
 void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 {
 	DIR* dir = opendir(path.c_str());
-	if (!dir)
-	{
-		return;
-	}
+	if (!dir) return;
 	while ( struct dirent * dirEntry = readdir(dir) )
 	{
 		std::string pluginFilename(dirEntry->d_name);
@@ -104,7 +99,6 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 		std::string pluginFullFilename(path + std::string("/") + pluginFilename);
 		void * handle = FullyLoadLibrary(pluginFullFilename);
 		SetupLibrary( handle, pluginFullFilename );
-//		std::cout<<"loaded plugin: "<<pluginFullFilename<<std::endl;
 	}
 	closedir(dir);
 }
@@ -112,7 +106,6 @@ void RunTimeLibraryLoader::LoadLibrariesFromPath(const std::string & path) const
 
 void * RunTimeLibraryLoader::FullyLoadLibrary(const std::string & libraryPath)
 {
-//	std::cout << "[" << libraryType() << " Plugins] FullyLoading " << libraryPath << std::endl;
 #ifdef WIN32
 //		SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT |
 //			SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX );
