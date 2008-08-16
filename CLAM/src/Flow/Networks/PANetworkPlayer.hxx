@@ -68,6 +68,7 @@ private:
 	void Do(const void *inputBuffers, void *outputBuffers, unsigned long framesPerBuffer);
 	void DoInPorts(float** input, unsigned long nframes);
 	void DoOutPorts(float** output, unsigned long nframes);
+	void MuteOutBuffers(float** output, unsigned long nframes);
 };
 
 } //end namespace CLAM

@@ -61,8 +61,11 @@ public:
 
 	// Methods related with player and flow
 	bool IsStopped() const;
+	bool IsPlaying() const;
+	bool IsPaused() const;
 	void Start();
 	void Stop();
+	void Pause();
 	void Do();
 	/** Gets the ownership of the FlowControl passed. So it will be deleted by the destructor */
 	void AddFlowControl( FlowControl* );

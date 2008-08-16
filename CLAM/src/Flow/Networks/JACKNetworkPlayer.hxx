@@ -76,6 +76,7 @@ public:
 	//Buffer copying methods
 	void CopyJackBuffersToGenerators(const jack_nframes_t nframes);
 	void CopySinksToJackBuffers(const jack_nframes_t nframes);
+	void BlankJackBuffers(const jack_nframes_t nframes);
 	
 	virtual void Start();
 	virtual void Stop();

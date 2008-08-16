@@ -4,6 +4,7 @@
 #include "PushFlowControl.hxx"
 #include "XMLStorage.hxx"
 
+#include <iostream>
 namespace CLAM
 {
 
@@ -22,17 +23,19 @@ inline void JackShutdownCallback (void *arg)
 }
 
 JACKNetworkPlayer::JACKNetworkPlayer(const std::string & name)
-	: _jackClientName(name)
+	: _jackClient(0)
+	, _jackClientName(name)
 {
 	_autoConnect=false;
 	_jackClient=0;
+	std::cout << "JACKNetworkPlayer:: Constructor" << std::endl;
 	InitClient();
 }
 
 JACKNetworkPlayer::~JACKNetworkPlayer()
 {
 	Stop();
-	
+
 	if (not _jackClient) return;
 	bool error = jack_client_close (_jackClient);
 	if (error)
@@ -55,6 +58,7 @@ std::string JACKNetworkPlayer::NonWorkingReason() const
 
 void JACKNetworkPlayer::InitClient()
 {
+	CLAM_ASSERT(not _jackClient, "JACKNetworkPlayer: Initializing a client without closing the previous one");
 	jack_status_t jackStatus;
 	_jackClient = jack_client_open ( _jackClientName.c_str(), JackNullOption, &jackStatus );
 	if (not _jackClient)
@@ -85,7 +89,8 @@ void JACKNetworkPlayer::RegisterPorts()
 
 void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 {
-	CLAM_ASSERT( _sourceJackBindings.empty(), "JACKNetworkPlayer::RegisterInputPorts() : there are already registered input ports");
+	CLAM_ASSERT( _sourceJackBindings.empty(),
+		"JACKNetworkPlayer::RegisterInputPorts() : there are already registered input ports");
 	
 	SourceJackBinding pair;
 	
@@ -112,7 +117,8 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 
 void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 {
-	CLAM_ASSERT( _sinkJackBindings.empty(), "JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");
+	CLAM_ASSERT( _sinkJackBindings.empty(),
+		"JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");
 	
 	SinkJackBinding pair;
 	
@@ -169,9 +175,7 @@ void JACKNetworkPlayer::CopyJackBuffersToGenerators(const jack_nframes_t nframes
 			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
 		//Tell the AudioSource where to look for data in its Do()
 		it->source->SetExternalBuffer( jackInBuffer, nframes );
-
 	}
-
 }
 
 void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
@@ -186,18 +190,32 @@ void JACKNetworkPlayer::CopySinksToJackBuffers(const jack_nframes_t nframes)
 	}
 }
 
+void JACKNetworkPlayer::BlankJackBuffers(const jack_nframes_t nframes)
+{
+	for (SinkJackBindings::iterator it=_sinkJackBindings.begin(); it!=_sinkJackBindings.end(); it++)
+	{
+		jack_default_audio_sample_t *jackOutBuffer = 
+			(jack_default_audio_sample_t*) jack_port_get_buffer ( it->jackPort, nframes);
+		std::memset(jackOutBuffer, 0, nframes*sizeof(jack_default_audio_sample_t));
+	}
+}
+
 void JACKNetworkPlayer::Start()
 {
-	if (!IsStopped()) return;
-
+	if (IsPlaying()) return;
+	if (IsPaused())
+	{
+		BePlaying();
+		return;
+	}
 	if (!_jackClient) InitClient();
 	if (!_jackClient) return;
-	
-	SetStopped(false);
-	
+
+	BePlaying();
 	UnRegisterPorts();
 	RegisterPorts();
-		
+	GetNetwork().Start();
+
 	//JACK CODE (the init order of network, ... should be decided)
 	if (jack_activate (_jackClient)) {
 		std::cerr << "JACK ERROR: cannot activate client" << std::endl;
@@ -211,12 +229,14 @@ void JACKNetworkPlayer::Start()
 }
 void JACKNetworkPlayer::Init()
 {
-	InitClient();
+	std::cout << "JACKNetworkPlayer:: Init" << std::endl;
+	if (not _jackClient) InitClient();
 }
 void JACKNetworkPlayer::OnShutdown()
 {
+	std::cout << "JACK backend shutdown..." << std::endl;
 	if (not _jackClient) return;
-	SetStopped(true);
+	BeStopped();
 	GetNetwork().Stop();
 	_sinkJackBindings.clear(); // TODO: May we save them?
 	_sourceJackBindings.clear(); // TODO: May we save them?;
@@ -226,20 +246,24 @@ void JACKNetworkPlayer::OnShutdown()
 void JACKNetworkPlayer::Stop()
 {
 	if (IsStopped()) return;
-	SetStopped(true);
-
 	StoreConnections();
-	
 	if ( jack_deactivate (_jackClient) )
 	{
 		std::cerr << "JACK ERROR: cannot deactivate client" << std::endl;
 		exit(1);
 	}
+	BeStopped();
+	GetNetwork().Stop();
 }
 
 void JACKNetworkPlayer::Do(const jack_nframes_t nframes)
 {
 	if (IsStopped()) return;
+	if (IsPaused())
+	{
+		BlankJackBuffers(nframes);
+		return;
+	}
 
 	CopyJackBuffersToGenerators(nframes);
 	CopySinksToJackBuffers(nframes);

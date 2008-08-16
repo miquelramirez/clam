@@ -528,6 +528,18 @@ namespace CLAM
 		return _player->IsStopped();
 	}
 
+	bool FlattenedNetwork::IsPlaying() const
+	{
+		if (! _player) return false;
+		return _player->IsPlaying();
+	}
+
+	bool FlattenedNetwork::IsPaused() const
+	{
+		if (! _player) return false;
+		return _player->IsPaused();
+	}
+
 	void FlattenedNetwork::Start()
 	{
 		ProcessingsMap::iterator it;
@@ -553,6 +565,10 @@ namespace CLAM
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
 			if (it->second->IsRunning())
 				it->second->Stop();
+	}
+	void FlattenedNetwork::Pause()
+	{
+		if (_player) _player->Pause();
 	}
 	
 	void FlattenedNetwork::Do()

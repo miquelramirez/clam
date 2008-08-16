@@ -41,10 +41,11 @@ class NetworkPlayer
 protected:
 	typedef std::vector<AudioSource*> AudioSources;
 	typedef std::vector<AudioSink*> AudioSinks;
+	enum Status { Playing=0, Stopped=1, Paused=2 };
 public:
 	NetworkPlayer()
 	{
-		SetStopped(true);
+		_status=Stopped;
 		_network=NULL;
 	}
 
@@ -55,21 +56,29 @@ public:
 	virtual bool IsWorking() const = 0;
 	/// Whenever the backend is not working, this method returns the reason
 	virtual std::string NonWorkingReason() const = 0;
-	
-	virtual void Start()=0;
-	virtual void Stop()=0;
-	virtual void Init()
-	{
-		std::cout << "NetworkPlayer::Init()"<<std::endl;
-	}
+
+	/// Redefine to add any initialization after being attached to a network
+	/// TODO: Consider removing it as just Jack backend uses it but it is redundant
+	virtual void Init() {}
+	/// Redefine to make the backend ready to process and start the network.
+	/// If IsPlaying() should do nothing.
+	/// If it IsPaused() you should consider just call BePlaying()
+	/// without starting the processings.
+	virtual void Start()=0; // { if (not IsPlaying()) BePlaying(); }
+	/// Redefine it to deactivate the backend.
+	virtual void Stop()=0; // { if (not IsStopped()) BeStopped(); }
+	virtual void Pause() { if (IsPlaying()) BePaused(); }
+
 	void SetNetworkBackLink( Network& net )
 	{
 		_network=&net;
 	}
-	bool IsStopped()
-	{
-		return _stopped;
-	}
+	void BePaused() { _status=Paused; }
+	void BeStopped() { _status=Stopped; }
+	void BePlaying() { _status=Playing; }
+	bool IsPaused() const { return _status==Paused; }
+	bool IsStopped() const { return _status==Stopped; }
+	bool IsPlaying() const { return _status==Playing; }
 	virtual unsigned BackendBufferSize()
 	{
 		std::cout << "NetworkPlayer::BackednBufferSize"<<std::endl;
@@ -87,7 +96,6 @@ protected:
 		CLAM_ASSERT( (_network!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
 		return *_network;
 	}
-	void SetStopped(const bool val)	{ _stopped=val; }
 	void CollectSourcesAndSinks();
 	const AudioSources& GetAudioSources() const { return _sources; }
 	const AudioSinks& GetAudioSinks() const { return _sinks; }
@@ -98,8 +106,7 @@ protected:
 	AudioSinks _sinks;
 private:
 	Network *_network;
-	bool _stopped;
-
+	volatile Status _status;
 };
 } //namespace CLAM
 
