@@ -20,8 +20,8 @@ std::string FreewheelingNetworkPlayer::NonWorkingReason() const
 }
 void FreewheelingNetworkPlayer::Start()
 {
-	if ( !IsStopped() ) return;
-	SetStopped(false);
+	if ( IsPlaying() ) return;
+	BePlaying();
 	CollectSourcesAndSinks();
 
 	const int frameSize = 512;
@@ -103,7 +103,7 @@ void FreewheelingNetworkPlayer::Start()
 void FreewheelingNetworkPlayer::Stop()
 {
 	if ( IsStopped() ) return;
-	SetStopped(true);
+	BeStopped();
 	//TODO close files
 }
 

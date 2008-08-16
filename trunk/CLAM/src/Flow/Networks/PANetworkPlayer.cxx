@@ -83,8 +83,12 @@ PANetworkPlayer::~PANetworkPlayer()
 
 void PANetworkPlayer::Start()
 {
-	if ( !IsStopped() )
+	if (IsPlaying()) return;
+	if (IsPaused())
+	{
+		BePlaying();
 		return;
+	}
 	if (CheckPaError(Pa_Initialize())) return;
 	displayPADevices();
 
@@ -190,7 +194,7 @@ void PANetworkPlayer::Start()
 		mErrorMessage = "Audio i/o devices requirements not fullfilled";
 		return;
 	}
-	SetStopped(false);
+	BePlaying();
 	const PaStreamInfo * streamInfo = Pa_GetStreamInfo(mPortAudioStream);
 	std::cout << "Sample rate: " << streamInfo->sampleRate << std::endl;
 	std::cout << "Input latency: " << streamInfo->inputLatency << std::endl;
@@ -202,15 +206,14 @@ void PANetworkPlayer::Start()
 
 void PANetworkPlayer::Stop()
 {
-	if ( IsStopped() )
-		return;
+	if (IsStopped()) return;
 	if ( mPortAudioStream )
 	{
 		Pa_StopStream( mPortAudioStream );
 		CheckPaError( Pa_CloseStream( mPortAudioStream ) );
 		mPortAudioStream=0;
 	}
-	SetStopped(true);
+	BeStopped();
 	Pa_Terminate();
 }
 
@@ -262,6 +265,11 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 			std::cerr << "Scheduler set to Round Robin with priority "<< sched_param.sched_priority << std::endl;
 	#endif
 	}
+	if (IsPaused())
+	{
+		MuteOutBuffers((float**) outputBuffers, framesPerBuffer);
+		return;
+	}
 	DoInPorts( (float**) inputBuffers, framesPerBuffer);
 	DoOutPorts( (float**) outputBuffers, framesPerBuffer);
 	GetNetwork().Do();
@@ -283,6 +291,12 @@ void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 	{
 		(*it)->SetExternalBuffer(output[i++], nframes);
 	}
+}
+
+void PANetworkPlayer::MuteOutBuffers(float** output, unsigned long nframes)
+{
+	for (unsigned i=0; i<_sinks.size(); i++)
+		std::memset(output[i], 0, nframes*sizeof(float));
 }
 
 } //end namespace CLAM
