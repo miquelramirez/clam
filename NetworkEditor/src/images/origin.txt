@@ -25,3 +25,5 @@ qt-mac-opensource-src-4.2.2/tools/designer/src/components/formeditor/images/widg
 /usr/share/icons/UbuntuStudio/scalable/actions/reload.svg
 /usr/share/icons/crystalsvg/32x32/actions/compfile.png
 /usr/share/icons/crystalsvg/32x32/actions/clear_left.png
+/usr/share/icons/crystalsvg/32x32/actions/player_pause.png
+/usr/share/icons/crystalsvg/32x32/actions/player_play.png

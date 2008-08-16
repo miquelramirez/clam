@@ -20,9 +20,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>62</y>
+     <y>69</y>
      <width>802</width>
-     <height>417</height>
+     <height>416</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" >
@@ -40,7 +40,7 @@
      <x>0</x>
      <y>0</y>
      <width>802</width>
-     <height>32</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File" >
@@ -92,6 +92,7 @@
      <string>&amp;Network</string>
     </property>
     <addaction name="action_Play" />
+    <addaction name="action_Pause" />
     <addaction name="action_Stop" />
     <addaction name="separator" />
     <addaction name="action_CompileAsLadspaPlugin" />
@@ -130,9 +131,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>479</y>
+     <y>485</y>
      <width>802</width>
-     <height>29</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>
@@ -140,9 +141,9 @@
    <property name="geometry" >
     <rect>
      <x>0</x>
-     <y>32</y>
+     <y>30</y>
      <width>802</width>
-     <height>30</height>
+     <height>39</height>
     </rect>
    </property>
    <property name="windowTitle" >
@@ -163,6 +164,7 @@
    <addaction name="action_Print" />
    <addaction name="separator" />
    <addaction name="action_Play" />
+   <addaction name="action_Pause" />
    <addaction name="action_Stop" />
    <addaction name="separator" />
    <addaction name="action_Edit_interface" />
@@ -444,6 +446,18 @@
    </property>
    <property name="text" >
     <string>&amp;White colors</string>
+   </property>
+  </action>
+  <action name="action_Pause" >
+   <property name="icon" >
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/player_pause.png</normaloff>:/icons/images/player_pause.png</iconset>
+   </property>
+   <property name="text" >
+    <string>Pause</string>
+   </property>
+   <property name="shortcut" >
+    <string>Space</string>
    </property>
   </action>
  </widget>
