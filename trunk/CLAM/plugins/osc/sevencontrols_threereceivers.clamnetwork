@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="ControlPrinter" position="129,186" size="291,285" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>7</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="MultiLibloSource" position="50,21" size="130,65" type="MultiLibloSource">
+    <OscPath>/clam/target1</OscPath>
+    <ServerPort>8000</ServerPort>
+    <NumberOfArguments>3</NumberOfArguments>
+  </processing>
+
+  <processing id="MultiLibloSource_1" position="181,21" size="144,65" type="MultiLibloSource">
+    <OscPath>/clam/target1</OscPath>
+    <ServerPort>8000</ServerPort>
+    <NumberOfArguments>1</NumberOfArguments>
+  </processing>
+
+  <processing id="MultiLibloSource_2" position="314,20" size="144,65" type="MultiLibloSource">
+    <OscPath>/clam/target2</OscPath>
+    <ServerPort>8000</ServerPort>
+    <NumberOfArguments>3</NumberOfArguments>
+  </processing>
+
+  <control_connection>
+    <out>MultiLibloSource._clam_target1_0</out>
+    <in>ControlPrinter.ControlPrinter_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSource._clam_target1_1</out>
+    <in>ControlPrinter.ControlPrinter_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSource._clam_target1_2</out>
+    <in>ControlPrinter.ControlPrinter_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSource_1._clam_target1_0</out>
+    <in>ControlPrinter.ControlPrinter_3</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSource_2._clam_target2_0</out>
+    <in>ControlPrinter.ControlPrinter_4</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSource_2._clam_target2_1</out>
+    <in>ControlPrinter.ControlPrinter_5</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSource_2._clam_target2_2</out>
+    <in>ControlPrinter.ControlPrinter_6</in>
+  </control_connection>
+
+</network>
