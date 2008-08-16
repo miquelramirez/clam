@@ -38,6 +38,18 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
+  <processing id="Blender Emitter1 Position (XY)" position="0,0" size="212,65" type="MultiLibloSource">
+    <OscPath>/SpatDIF/sources/1/xyz</OscPath>
+    <ServerPort>7000</ServerPort>
+    <NumberOfArguments>2</NumberOfArguments>
+  </processing>
+
+  <processing id="Blender Receiver1 Position (XY)" position="94,72" size="220,65" type="MultiLibloSource">
+    <OscPath>/SpatDIF/sinks/1/xyz</OscPath>
+    <ServerPort>7000</ServerPort>
+    <NumberOfArguments>2</NumberOfArguments>
+  </processing>
+
   <processing id="BufferOscilloscope" position="1034,866" size="349,191" type="BufferOscilloscope"/>
 
   <processing id="Conv C" position="1011,519" size="77,65" type="LowLatencyConvolution">
@@ -118,15 +130,6 @@
   <processing id="DebugImpulseResponse" position="163,919" size="184,65" type="DebugImpulseResponse"/>
 
   <processing id="DebugImpulseResponse_1" position="150,976" size="198,65" type="DebugImpulseResponse"/>
-
-  <processing id="Emitter Position" position="160,21" size="152,195" type="ControlSurface">
-    <MinX>0</MinX>
-    <DefaultX>0</DefaultX>
-    <MaxX>1</MaxX>
-    <MinY>0</MinY>
-    <DefaultY>0</DefaultY>
-    <MaxY>1</MaxY>
-  </processing>
 
   <processing id="EquidistantSurround" position="560,617" size="163,190" type="NSurround">
     <NChannels>5</NChannels>
@@ -240,15 +243,6 @@
   <processing id="Oscilloscope" position="724,199" size="131,96" type="Oscilloscope"/>
 
   <processing id="R" position="1365,599" size="128,111" type="AudioSink"/>
-
-  <processing id="Receiver Position" position="25,17" size="152,195" type="ControlSurface">
-    <MinX>0</MinX>
-    <DefaultX>0</DefaultX>
-    <MaxX>1</MaxX>
-    <MinY>0</MinY>
-    <DefaultY>0.2</DefaultY>
-    <MaxY>1</MaxY>
-  </processing>
 
   <processing id="SpectrumView" position="635,852" size="237,91" type="SpectrumView"/>
 
@@ -822,63 +816,63 @@
   </port_connection>
 
   <control_connection>
-    <out>Emitter Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher_Vx.emitterX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Emitter Position.outX</out>
-    <in>ImpulseResponseDatabaseFetcher_Vy.emitterX</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Emitter Position.outX</out>
+    <out>Blender Emitter1 Position (XY)._SpatDIF_sources_1_xyz_0</out>
     <in>ImpulseResponseDatabaseFetcher_P.emitterX</in>
   </control_connection>
 
   <control_connection>
-    <out>Emitter Position.outY</out>
+    <out>Blender Emitter1 Position (XY)._SpatDIF_sources_1_xyz_0</out>
+    <in>ImpulseResponseDatabaseFetcher_Vx.emitterX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Blender Emitter1 Position (XY)._SpatDIF_sources_1_xyz_0</out>
+    <in>ImpulseResponseDatabaseFetcher_Vy.emitterX</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Blender Emitter1 Position (XY)._SpatDIF_sources_1_xyz_1</out>
     <in>ImpulseResponseDatabaseFetcher_P.emitterY</in>
   </control_connection>
 
   <control_connection>
-    <out>Emitter Position.outY</out>
+    <out>Blender Emitter1 Position (XY)._SpatDIF_sources_1_xyz_1</out>
     <in>ImpulseResponseDatabaseFetcher_Vx.emitterY</in>
   </control_connection>
 
   <control_connection>
-    <out>Emitter Position.outY</out>
+    <out>Blender Emitter1 Position (XY)._SpatDIF_sources_1_xyz_1</out>
     <in>ImpulseResponseDatabaseFetcher_Vy.emitterY</in>
   </control_connection>
 
   <control_connection>
-    <out>Receiver Position.outX</out>
+    <out>Blender Receiver1 Position (XY)._SpatDIF_sinks_1_xyz_0</out>
     <in>ImpulseResponseDatabaseFetcher_P.receiverX</in>
   </control_connection>
 
   <control_connection>
-    <out>Receiver Position.outX</out>
+    <out>Blender Receiver1 Position (XY)._SpatDIF_sinks_1_xyz_0</out>
     <in>ImpulseResponseDatabaseFetcher_Vx.receiverX</in>
   </control_connection>
 
   <control_connection>
-    <out>Receiver Position.outX</out>
+    <out>Blender Receiver1 Position (XY)._SpatDIF_sinks_1_xyz_0</out>
     <in>ImpulseResponseDatabaseFetcher_Vy.receiverX</in>
   </control_connection>
 
   <control_connection>
-    <out>Receiver Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher_Vy.receiverY</in>
+    <out>Blender Receiver1 Position (XY)._SpatDIF_sinks_1_xyz_1</out>
+    <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
   </control_connection>
 
   <control_connection>
-    <out>Receiver Position.outY</out>
+    <out>Blender Receiver1 Position (XY)._SpatDIF_sinks_1_xyz_1</out>
     <in>ImpulseResponseDatabaseFetcher_Vx.receiverY</in>
   </control_connection>
 
   <control_connection>
-    <out>Receiver Position.outY</out>
-    <in>ImpulseResponseDatabaseFetcher_P.receiverY</in>
+    <out>Blender Receiver1 Position (XY)._SpatDIF_sinks_1_xyz_1</out>
+    <in>ImpulseResponseDatabaseFetcher_Vy.receiverY</in>
   </control_connection>
 
   <control_connection>
