@@ -101,13 +101,15 @@ protected:
 			std::cout << "MultiLibloSource::ConcreteConfigure server NOT started -- default config" << std::endl;
 			return true;
 		}
-		// if there are no servers on port
-		if (not IsPortUsed(port.c_str())) 
-			_serverThread = ServerStart(port.c_str(),this); // start new server
-		else 
-		{ // if exists server on port
+		if (IsPortUsed(port.c_str())) // if exists server on port
+		{ 
 			_serverThread = (*ServersInstances().find(port)).second.thread;	//uses existing thread
 			DeleteMethod();
+		}
+		// if there are no servers on port. IMPORTANT: the conditional need to be explicit, since the server could be removed by the last conditional
+		if (not IsPortUsed(port.c_str())) 
+		{ 
+			_serverThread = ServerStart(port.c_str()); // start new server
 		}
 
 		// define processing callback catcher (floats, for now)
@@ -165,7 +167,6 @@ private:
 	static bool InsertInstance(const char* port, const char * path, const char * typespec);
 
 	// server management related structs, methods, and attributes
-
 	// key: path, value: typespec
 	typedef std::multimap<std::string,std::string> MethodsMultiMap;
 	typedef struct
@@ -186,7 +187,7 @@ private:
 	{
 		return ( ServersInstances().find(port) != ServersInstances().end() );
 	}
-	static lo_server_thread ServerStart(const char* port, void * parent);
+	static lo_server_thread ServerStart(const char* port);
 	static bool RemoveServer(const char* port);
 	static bool IncInstance(const char* port);
 	static bool DecInstance(const char* port);

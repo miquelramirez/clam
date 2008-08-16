@@ -60,26 +60,28 @@ int CLAM::MultiLibloSource::quit_handler(const char *path, const char *types, lo
 	return 0;
 }
 
-lo_server_thread CLAM::MultiLibloSource::ServerStart(const char* port, void * parent)
+lo_server_thread CLAM::MultiLibloSource::ServerStart(const char* port)
 {
+
 	if (IsPortUsed(port))
 	{
 		std::cout<<"WARNING: trying to start an existent server port!"<<std::endl;
 		ServersInstances().erase(ServersInstances().find(port));
 	}
-	std::cout << "Starting the server" << std::endl;		
-	std::cout << "MultiLibloSource::ConcreteConfigure: STARTING the server. port " << port << std::endl;
+	std::cout << "Starting server on port "<< port << std::endl;		
 	lo_server_thread serverThread = lo_server_thread_new(port, error);
 	ServerInstance server;
 	server.thread=serverThread;
 	MethodsMultiMap methods; // create an empty map
 	server.methods=methods;
 	ServersInstances().insert(OscServersMap::value_type(port,server));
+
 	// common methods are not counted in map!:
 	/* add method that will match any path and args */
-	lo_server_thread_add_method(serverThread, NULL, NULL, generic_handler, parent);
+	lo_server_thread_add_method(serverThread, NULL, NULL, generic_handler, NULL);
 	/* add method that will match the path /quit with no args */
-	lo_server_thread_add_method(serverThread, "/quit", "", quit_handler, parent);
+	lo_server_thread_add_method(serverThread, "/quit", "", quit_handler, NULL);
+
 	std::cout<<"number of servers: "<<ServersInstances().size()<<std::endl;
 	lo_server_thread_start(serverThread);
 	return serverThread;
@@ -98,6 +100,7 @@ bool CLAM::MultiLibloSource::RemoveServer(const char* port)
 		return false;
 	}
 	ServersInstances().erase(itServer);
+	std::cout << "Removed server on port "<<port<<std::endl;
 	return true;
 }
 
@@ -120,8 +123,8 @@ bool CLAM::MultiLibloSource::InsertInstance(const char* port, const char * path,
 			}
 		}
 	}
-//	std::cout<<"added instance: "<<path<<" - "<<typespec<<std::endl;
 	methods.insert(MethodsMultiMap::value_type(path,typespec));
+	std::cout<< "Added method handler for path "<<path<<" and typespec "<< typespec<< " on port "<<port <<std::endl;
 	return true;
 }
 
@@ -129,7 +132,10 @@ bool CLAM::MultiLibloSource::EraseInstance(const char* port, const char * path, 
 {
 	OscServersMap::iterator itServer=ServersInstances().find(port);
 	if (itServer==ServersInstances().end())
+	{
+		std::cout<<"EraseInstance: server doesn't exist!!" <<std::endl;
 		return false;
+	}
 	MethodsMultiMap & methods=itServer->second.methods;
 	MethodsMultiMap::iterator itMethods=methods.find(path);
 	if (itMethods==methods.end())	// if path doesn't exists
@@ -143,7 +149,7 @@ bool CLAM::MultiLibloSource::EraseInstance(const char* port, const char * path, 
 		if (itMethods->second == typespec)
 		{
 			methods.erase(itMethods);
-//			std::cout<<"removed instance: "<<path<<" - "<<typespec<<std::endl;
+			std::cout<< "Removed method handler for path "<<path<<" and typespec "<< typespec<< " on port "<<port <<std::endl;
 			return true;
 		}
 	}
@@ -154,6 +160,9 @@ const unsigned int CLAM::MultiLibloSource::GetInstances (const char* port)
 {
 	OscServersMap::const_iterator itServer=ServersInstances().find(port);
 	if (itServer==ServersInstances().end())
+	{
+		std::cout<<"GetInstances: server doesn't exist!! returning 0";
 		return 0;
+	}
 	return itServer->second.methods.size();
 }
