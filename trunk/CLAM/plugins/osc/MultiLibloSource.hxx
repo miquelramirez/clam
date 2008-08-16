@@ -101,17 +101,10 @@ protected:
 			std::cout << "MultiLibloSource::ConcreteConfigure server NOT started -- default config" << std::endl;
 			return true;
 		}
-		if (IsPortUsed(port.c_str())) // if exists server on port
+		if (_methodSetted) // if exists delete previous method (with previous _port, _oscPath and _typespec)
 		{ 
-			_serverThread = (*ServersInstances().find(port)).second.thread;	//uses existing thread
 			DeleteMethod();
 		}
-		// if there are no servers on port. IMPORTANT: the conditional need to be explicit, since the server could be removed by the last conditional
-		if (not IsPortUsed(port.c_str())) 
-		{ 
-			_serverThread = ServerStart(port.c_str()); // start new server
-		}
-
 		// define processing callback catcher (floats, for now)
 		std::string typespecMask="";
 		for (int i=0;i<nOutputs;i++)
@@ -119,6 +112,16 @@ protected:
 		_typespec=typespecMask;
 		_oscPath=_config.GetOscPath();
 		_port=port;
+
+		if (IsPortUsed(port.c_str())) // if exist server on port
+		{
+			_serverThread = (*ServersInstances().find(_port.c_str())).second.thread;	//uses existing thread
+		}
+		// if there are no servers on port. IMPORTANT: the conditional need to be explicit, since the server could be removed by the last conditional
+		if (not IsPortUsed(port.c_str())) 
+		{ 
+			_serverThread = ServerStart(port.c_str()); // start new server
+		}
 		if (AddMethod()==false)
 			return false;
 		_methodSetted=true;
@@ -133,12 +136,14 @@ protected:
 		{
 			if (EraseInstance(_port.c_str(), _oscPath.c_str(),_typespec.c_str()))
 				lo_server_thread_del_method(_serverThread,_oscPath.c_str(),_typespec.c_str()); //delete it
+			_methodSetted=false;
 		}
 		if (IsPortUsed(_port.c_str()) && GetInstances(_port.c_str())==0) // if was the last instance
 		{
 			std::cout <<"MultiLibloSource: Shutting down the server..."<<std::endl;
 			lo_server_thread_free(_serverThread);
 			RemoveServer(_port.c_str());
+			_serverThread=0;
 		}
 	}
 	bool AddMethod()
