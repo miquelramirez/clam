@@ -83,14 +83,14 @@ if not args :
 	parser.print_help()
 	sys.exit()
 
-if options.writeback: sys.exit()
+#if options.writeback: sys.exit()
 
 for audiofile in args:
 	print "Processing %s..."%audiofile
 	target = open(audiofile+options.suffix,'w')
 	poolToCopy=provider.QueryDescriptors(audiofile, provider.AvailableDescriptors())
 	poolToCopy.Dump(target)
-	if options.w is not None:
+	if options.writeback is not None:
 		provider.UpdateDescriptors(audiofile,poolToCopy)
 	target.close()
 

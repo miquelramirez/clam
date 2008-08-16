@@ -20,7 +20,9 @@
       <BinLabels>G G# A Bb B C C# D Eb E F F#</BinLabels>
     </Attribute>
     <Attribute scope='ChordFrame' name='HarteChordCorrelation' type='FloatArray'>
-      <BinLabels>G G#/Ab A A#/Bb B C C#/Db D D#/Eb E F F#/Gb g g#/ab a a#/bb b c c#/db d d#/eb e f f#/gb </BinLabels>
+      <BinLabels>
+	  	G G#/Ab A A#/Bb B C C#/Db D D#/Eb E F F#/Gb
+	  	g g#/ab a a#/bb b c c#/db d d#/eb e f f#/gb</BinLabels>
     </Attribute>
     <Attribute scope='Song' name='Harte' type='Segmentation'>
       <ChildScope>ExtractedChord</ChildScope>
@@ -32,7 +34,8 @@
     <Attribute scope='ExtractedChord' name='ChordMode' type='Enumerated'>
       <EnumerationValues>
          Major Minor Major7 Minor7 Dominant7 MinorMajor7
-		 Diminished Diminished7 Augmented Fifth
+		 Suspended2 Suspended4 Major6 Minor6 6/9
+		 Diminished Diminished7 Augmented
       </EnumerationValues>
     </Attribute>
   </Attributes>

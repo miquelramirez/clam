@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <DescriptionScheme>
-
   <Uri>descriptionScheme:www.iua.upf.edu:clam:dummyTest-0.90</Uri>
-
   <Attributes>
     <Attribute name="Artist" scope="Song" type="String"/>
     <Attribute name="Title" scope="Song" type="String"/>
@@ -113,5 +111,4 @@ The unit of this measure can be dB or none, depending on the scale set for the m
       <NBins>10</NBins>
     </Attribute>
   </Attributes>
-
 </DescriptionScheme>
