@@ -58,8 +58,9 @@ MyFactory& MyFactory::GetInstance()
 }
 @endcode
 
-To automatically register concrete products into the factory at program loading time 
-(before "main()"), declare a registrator object like this:
+To automatically register concrete products into the factory at program
+loading time (before "main()" starts), declare a registrator object like
+this:
 @code
 // put this in a .cxx (not in a header)
 static CLAM::FactoryRegistrator<MyFactory, MyConcreteProduct> regMyConcreteProduct("MyConcreteProduct");
