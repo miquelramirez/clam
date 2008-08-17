@@ -122,13 +122,15 @@ private slots:
 		if (_process->state() != QProcess::NotRunning)
 			_process->terminate();
 	}
+	void printCommand(const QString & command)
+	{
+		_output += ("<div style='color: blue;'>"+ tr("Executing '<tt>%1</tt>'") + "</div><br/>").arg(command);
+		updateText();
+	}
 private:
 	bool runCommand(QString command, QStringList & arguments, QString workingDir)
 	{
-		_output += ("<div style='color: blue;'>" + tr("Executing '<tt>%1 %2</tt>'") + "</div><br/>")
-			.arg(command)
-			.arg(arguments.join(" "));
-		updateText();
+		printCommand(QString("%1 %2").arg(command).arg(arguments.join(" ")));
 		_process = new QProcess(this);
 		_process->setWorkingDirectory(workingDir);
 		connect(_cancelButton, SIGNAL(clicked()), this, SLOT(cancelProcess()));
