@@ -13,6 +13,8 @@ Files:
 	    one sink of the actual scene. Makes a ChoreoSequencer readable file
 	- choreofile_exporter_with_network.py: as the previous, but also exports
 	    a network with a configured ChoreoSequencer with the proper FPS
+	- scene_maker.py: to call once. Generates a new Blender scene with audio
+	    sources and sinks spheres, compatibles with the previous scripts
 
 Comming soon:
 	- BlenderChoreoExporter.py: a Blender scene exporter to ChoreoSequencer
