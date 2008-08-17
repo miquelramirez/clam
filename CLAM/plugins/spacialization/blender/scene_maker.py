@@ -30,6 +30,8 @@ def main():
 	]):
 		return
 	data.scenes.unlink(data.scenes.active)
+	for group in data.groups:
+		data.groups.unlink(group)
 	scene=data.scenes.new()
 	data.scenes.active=scene
 	AddSinks(scene,SinksNumber.val)
