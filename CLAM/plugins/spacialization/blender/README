@@ -1,8 +1,16 @@
-Here are the blender exporters to use with clam.
+Blender python scripts to use with CLAM.
 
 Files:
-	- BlenderOSCSender.py: script to call in FrameChanged Blender events, which uses the OSC client of CLAM/plugins/osc/oscpython using a very basic SpatDIF 3D audio scene description
+	- BlenderOSCSender.py: to call in FrameChanged Blender events. Sends the
+	    positions of objects whithin 'AudioSources' and 'AudioSinks' groups,
+	    using the Stefan Kersten OSC python client 
+	    (CLAM/plugins/osc/oscpython/OSC.py, searched on '~/src/liblo') using
+	    a very basic SpatDIF 3D audio scene description.
+ 	- network_scene_exporter.py: to call once on a Blender scene. Generates
+	    a CLAM network with the propers OSC receivers (MultiLibloSources) 
+	    for objects involved in BlenderOSCSender.
 
 Comming soon:
-	- BlenderChoreoExporter.py: a Blender scene exporter to ChoreoSequencer processing input files
+	- BlenderChoreoExporter.py: a Blender scene exporter to ChoreoSequencer
+	    processing input files
 	- Blender examples, and CLAM networks examples
