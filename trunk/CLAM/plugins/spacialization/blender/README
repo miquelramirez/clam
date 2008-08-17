@@ -15,8 +15,3 @@ Files:
 	    a network with a configured ChoreoSequencer with the proper FPS
 	- scene_maker.py: to call once. Generates a new Blender scene with audio
 	    sources and sinks spheres, compatibles with the previous scripts
-
-Comming soon:
-	- BlenderChoreoExporter.py: a Blender scene exporter to ChoreoSequencer
-	    processing input files
-	- Blender examples, and CLAM networks examples
