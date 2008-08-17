@@ -10,7 +10,9 @@ Files:
 	    a CLAM network with the propers OSC receivers (MultiLibloSources) 
 	    for objects involved in BlenderOSCSender.
 	- choreofile_exporter.py: to call once after selecting one source and
-	    one sink of the actual scene. Makes a choreosequencer readable file
+	    one sink of the actual scene. Makes a ChoreoSequencer readable file
+	- choreofile_exporter_with_network.py: as the previous, but also exports
+	    a network with a configured ChoreoSequencer with the proper FPS
 
 Comming soon:
 	- BlenderChoreoExporter.py: a Blender scene exporter to ChoreoSequencer
