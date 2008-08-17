@@ -29,6 +29,7 @@ def main():
 	('Sinks number:',SinksNumber,1,100,'number of sinks'),\
 	]):
 		return
+	data.scenes.unlink(data.scenes.active)
 	scene=data.scenes.new()
 	data.scenes.active=scene
 	AddSinks(scene,SinksNumber.val)
