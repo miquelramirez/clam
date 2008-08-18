@@ -27,6 +27,7 @@
 //#include "Project.hxx"
 #include <vector>
 #include "FrameDivision.hxx"
+#include "FloatVectorStorage.hxx"
 
 namespace CLAM_Annotator { class FrameDivision; }
 
@@ -40,7 +41,8 @@ namespace VM
 			PoolFloatArrayDataSource();
 			void setDataSource(unsigned nBins, CLAM::TData binGap, CLAM::TData firstBinOffset, std::vector<std::string> binLabels);
 			void clearData();
-			void updateData(std::vector<CLAM::TData>, CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames);
+			void setStorage(FloatVectorStorage *storage, CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames);
+			void noStorage();
 			bool setCurrentTime(double timeMiliseconds);
 
 			std::string getLabel(unsigned bin) const
@@ -56,8 +58,8 @@ namespace VM
 			}
 			const TData * getData() const
 			{
-				if (_data.empty()) return 0;
-				return &_data[0];
+				if (!_storage) return 0;
+				return &_storage->Data()[0];
 			}
 			const CLAM::TData * frameData()
 			{
@@ -77,7 +79,6 @@ namespace VM
 			std::string _parentScope;
 			std::string _parentName;
 			std::vector<std::string> _binLabels;
-			std::vector<TData> _data;
 			unsigned _nFrames;
 			const CLAM_Annotator::FrameDivision * _frameDivision;
 			CLAM::TData _samplingRate;
@@ -86,6 +87,7 @@ namespace VM
 			CLAM::TData _binGap;
 			CLAM::TData _firstBinOffset;
 			unsigned _currentFrame;
+			FloatVectorStorage *_storage;
 	};
 }
 }
