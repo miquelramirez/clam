@@ -19,6 +19,7 @@ Consider that such descriptors are computed every 2048 samples so their precisio
   <Extractor>ClamExtractorExample</Extractor>
 
   <PoolSuffix>.pool</PoolSuffix>
+  <Configuration></Configuration>
 
   <Songs>
     <Song>

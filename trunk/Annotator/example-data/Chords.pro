@@ -17,6 +17,7 @@ TODO: Explain what the descriptors mean and how this should be reviewed.
   <Extractor>ChordExtractor</Extractor>
 
   <PoolSuffix>.chords</PoolSuffix>
+  <Configuration></Configuration>
 
   <Songs>
     <Song>
