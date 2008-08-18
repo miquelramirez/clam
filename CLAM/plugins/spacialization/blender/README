@@ -1,17 +1,23 @@
 Blender python scripts to use with CLAM.
 
 Files:
-	- BlenderOSCSender.py: to call in FrameChanged Blender events. Sends the
-	    positions of objects whithin 'AudioSources' and 'AudioSinks' groups,
-	    using the Stefan Kersten OSC python client 
-	    (CLAM/plugins/osc/oscpython/OSC.py, searched on '~/src/liblo') using
-	    a very basic SpatDIF 3D audio scene description.
- 	- network_scene_exporter.py: to call once on a Blender scene. Generates
-	    a CLAM network with the propers OSC receivers (MultiLibloSources) 
-	    for objects involved in BlenderOSCSender.
-	- choreofile_exporter.py: to call once after selecting one source and
-	    one sink of the actual scene. Makes a ChoreoSequencer readable file
-	- choreofile_exporter_with_network.py: as the previous, but also exports
-	    a network with a configured ChoreoSequencer with the proper FPS
-	- scene_maker.py: to call once. Generates a new Blender scene with audio
-	    sources and sinks spheres, compatibles with the previous scripts
+
+- BlenderOSCSender.py: to call in FrameChanged Blender events. Sends the
+   positions of objects whithin 'AudioSources' and 'AudioSinks' groups,
+   using the Stefan Kersten OSC python client [1] using a very basic 
+   SpatDIF 3D audio scene description.
+
+  [1] CLAM/plugins/osc/oscpython/OSC.py, searched on '$home/src/liblo'
+
+- network_scene_exporter.py: to call once on a Blender scene. Generates
+   a CLAM network with the propers OSC receivers (MultiLibloSources) 
+   for objects involved in BlenderOSCSender.
+
+- choreofile_exporter.py: to call once after selecting one source and
+   one sink of the actual scene. Makes a ChoreoSequencer readable file
+
+- choreofile_exporter_with_network.py: as the previous, but also exports
+   a network with a configured ChoreoSequencer with the proper FPS
+
+- scene_maker.py: to call once. Generates a new Blender scene with audio
+   sources and sinks spheres, compatibles with the previous scripts
