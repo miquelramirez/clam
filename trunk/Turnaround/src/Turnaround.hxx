@@ -63,6 +63,7 @@ protected:
 	void timerEvent(QTimerEvent *event);
 
 private:
+	std::vector<std::string> initBinLabelVector() const;
 	void loadAudioFile(const std::string & fileName);
 	
 	CLAM::Network _network;

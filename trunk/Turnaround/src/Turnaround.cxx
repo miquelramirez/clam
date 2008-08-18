@@ -40,6 +40,8 @@
 #include "FloatPairVectorStorage.hxx"
 
 #include <iostream>
+#include <vector>
+#include <string>
 
 Turnaround::Turnaround()
 	: QMainWindow(0)
@@ -116,6 +118,63 @@ void Turnaround::fileOpen()
 			tr("Audio files (*.wav *.ogg *.mp3)"));
 	if(qFileName == QString::null) return;
 	loadAudioFile(qFileName.toLocal8Bit().constData());
+}
+
+std::vector<std::string> Turnaround::initBinLabelVector() const
+{
+	static const char * roots[] = {
+		"G",
+		"G#",
+		"A",
+		"A#",
+		"B",
+		"C",
+		"C#",
+		"D",
+		"D#",
+		"E",
+		"F",
+		"F#",
+	};
+	static struct Modes {
+		const char * name;
+		unsigned nRoots;
+	} modes[] =
+	{
+		{"None",	1},
+		{"Major",	12},
+		{"Minor",	12},
+		{"Major7",	12}, // Cmaj7
+		{"Dominant7",	12}, // C7
+		{"MinorMajor7",	12}, // Cm/maj7
+		{"Minor7",	12}, // Cm7
+//		{"Suspended2",	12}, // Csus2
+//		{"Suspended4",	12}, // Csus4
+//		{"Major6",	12}, // C6
+//		{"Minor6",	12}, // Cm6
+//		{"6/9",		12}, // C6/9
+		{"Augmented",	4}, // Caug
+		{"Diminished",	12}, // Cdim
+		{"Diminished7",	12}, // Cdim7
+//		{"Fifth",	12}, // C5
+		{0, 0}
+	};
+	std::vector<std::string> chordNames;
+	for (unsigned i = 0; modes[i].name; i++)
+	{
+		std::string mode=modes[i].name;
+		if (modes[i].nRoots == 1)
+		{
+			chordNames.push_back(mode);
+			continue;
+		}
+		for (unsigned root=0; root<modes[i].nRoots; root++)
+		{
+			std::string rootName(roots[root]);
+			chordNames.push_back(rootName+mode);
+		}
+	}
+	return chordNames;
 }
 
 void Turnaround::loadAudioFile(const std::string & fileName)
@@ -228,7 +287,7 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	};
 	binLabels.insert(binLabels.end(), minorChords, minorChords+nBins);
 
-	_chordCorrelationSource.setDataSource(nBins*2, 0, 0, binLabels); // nBins?
+	_chordCorrelationSource.setDataSource(nBins*2, 0, 0, initBinLabelVector());
 	_chordCorrelationSource.updateData(chordCorrelationStorage.Data(), sampleRate, &_frameDivision, nFrames);
 	_keySpace->setDataSource(_chordCorrelationSource);
 	_chordRanking->setDataSource(_chordCorrelationSource);
