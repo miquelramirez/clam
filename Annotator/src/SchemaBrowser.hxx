@@ -50,10 +50,14 @@ public:
     SchemaBrowser( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~SchemaBrowser();
     void setSchema(CLAM_Annotator::Schema & schema);
-	template <class T>
-	void setListedSchema(CLAM_Annotator::Schema & schema, T parent);
-	template <class T>
-    void addAttribute(const std::string & scope, const std::string & name, const std::string & type, T parent);
+	//template <class T> void setListedSchema(CLAM_Annotator::Schema & schema, T parent);
+	//template <class T> void addAttribute(const std::string & scope, const std::string & name, const std::string & type, T parent);
+
+	void setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidget* parent);
+	void setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem* parent);
+	void addAttribute(const std::string & scope, const std::string & name, const std::string & type, QTreeWidget* parent);
+	void addAttribute(const std::string & scope, const std::string & name, const std::string & type, QTreeWidgetItem* parent);
+
 private:
     QSplitter* splitter1;
     //QTreeWidget* attributeList; 

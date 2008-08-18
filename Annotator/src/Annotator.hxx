@@ -45,6 +45,7 @@ class QTextBrowser;
 class QCloseEvent;
 class AudioLoadThread;
 class SchemaBrowser;
+class AggregationEditor;
 using CLAM::TIndex;
 using CLAM::TData;
 
@@ -206,6 +207,7 @@ private:
 
 	QTimer * mAudioRefreshTimer;
 	SchemaBrowser * mSchemaBrowser;
+	AggregationEditor * mAggregationEditor;
 	AudioLoadThread * mAudioLoaderThread;
 	CLAM_Annotator::DescriptorTableController * mGlobalDescriptors;
 
