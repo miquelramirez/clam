@@ -33,6 +33,7 @@
 #include <QtGui/QGridLayout>
 #include <QtGui/QFrame>
 
+
 SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
     : QWidget( parent, fl )
 	, scopeIcon(":/icons/images/xkill.png")
@@ -105,13 +106,15 @@ SchemaBrowser::~SchemaBrowser()
     // no need to delete child widgets, Qt does it all for us
 }
 
-void SchemaBrowser::addAttribute(const std::string & scope, const std::string & name, const std::string & type)
+template <class T>
+void SchemaBrowser::addAttribute(const std::string & scope, const std::string & name, const std::string & type, T parent)
 {
     QList<QTreeWidgetItem *> scopeItems = attributeList->findItems(scope.c_str(),Qt::MatchExactly);
     QTreeWidgetItem * scopeItem = 0;
     if (scopeItems.size()==0)
     {
-	    scopeItem = new QTreeWidgetItem( attributeList);
+	   // scopeItem = new QTreeWidgetItem( attributeList);
+	   scopeItem = new QTreeWidgetItem( parent);
 	    scopeItem->setText( 0, scope.c_str() );
 	    scopeItem->setIcon( 0, scopeIcon );
 	    attributeList->expandItem(scopeItem);
@@ -183,15 +186,21 @@ QTreeWidgetItem * SchemaBrowser::findScopeItem(const QString & scope)
 
 void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 {
+	attributeList->clear();
+	setListedSchema(schema, attributeList);
+}
+
+template <class T>
+void SchemaBrowser::setListedSchema(CLAM_Annotator::Schema & schema, T parent)
+{
 	attributeProperties->hide();
 	mSchema = &schema;
-	attributeList->clear();
 	SchemaAttributes & attributes = schema.GetAttributes();
 	for (SchemaAttributes::iterator it = attributes.begin();
 			it!=attributes.end();
 			it++)
 	{
-		addAttribute(it->GetScope(), it->GetName(), it->GetType());
+		addAttribute(it->GetScope(), it->GetName(), it->GetType(), parent);
 	}
 	for (SchemaAttributes::iterator it = attributes.begin();
 			it!=attributes.end();
@@ -213,6 +222,8 @@ void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 	attributeList->resizeColumnToContents(1);
 	attributeList->show();
 }
+
+
 
 void SchemaBrowser::updateCurrentAttribute()
 {
