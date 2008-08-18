@@ -35,7 +35,7 @@ namespace CLAM
 	class TonalAnalysis;
 namespace VM
 {
-	class VectorView;
+	class Spectrogram;
 	class Tonnetz;
 	class KeySpace;
 	class ChordRanking;
@@ -75,7 +75,7 @@ private:
 	CLAM::TonalAnalysis *_tonalAnalysis;
 	
 	ProgressControlWidget *_progressControlWidget;
-	CLAM::VM::VectorView *_vectorView;
+	CLAM::VM::Spectrogram *_spectrogram;
 	CLAM::VM::Tonnetz *_tonnetz;
 	CLAM::VM::KeySpace *_keySpace;
 	CLAM::VM::ChordRanking *_chordRanking;

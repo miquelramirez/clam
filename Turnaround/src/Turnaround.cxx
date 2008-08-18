@@ -30,7 +30,7 @@
 #include <CLAM/AudioFileMemoryLoader.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
 #include "KeySpace.hxx"
-#include "VectorView.hxx"
+#include "Spectrogram.hxx"
 #include "Tonnetz.hxx"
 #include "ChordRanking.hxx"
 #include "PolarChromaPeaks.hxx"
@@ -71,8 +71,8 @@ Turnaround::Turnaround()
 	_audioSink = _network.AddProcessing("AudioSink");
 	_network.ConnectPorts(_fileReader+".Samples Read", _audioSink+".AudioIn");
 
-	_vectorView = new CLAM::VM::VectorView(centralwidget);
-	vboxLayout->addWidget(_vectorView);
+	_spectrogram = new CLAM::VM::Spectrogram(centralwidget);
+	vboxLayout->addWidget(_spectrogram);
 
 	_tonnetz = new CLAM::VM::Tonnetz(centralwidget);
 	vboxLayout->addWidget(_tonnetz);
@@ -124,7 +124,7 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 		_network.Stop();
 
 	// Point the widgets to no source
-	_vectorView->noDataSource();
+	_spectrogram->noDataSource();
 	_tonnetz->noDataSource();
 	_keySpace->noDataSource();
 	_chordRanking->noDataSource();
@@ -218,7 +218,7 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 
 	_pcpSource.setDataSource(nBins, 0, 0, binLabels);
 	_pcpSource.updateData(pcpStorage.Data(), sampleRate, &_frameDivision, nFrames);
-	_vectorView->setDataSource(_pcpSource);
+	_spectrogram->setDataSource(_pcpSource);
 	_tonnetz->setDataSource(_pcpSource);
 
 	const char * minorChords[] = { 
