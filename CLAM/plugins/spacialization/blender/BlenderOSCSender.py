@@ -6,13 +6,21 @@ Group: 'Object'
 """
 # use bpy module of Blender:
 from bpy import data
-
 from sys import path
 from os import getenv
-home=getenv("HOME")
-path.append(home+"/src/liblo")
+import Blender
+#home=getenv("HOME")
+#path.append(home+"/src/liblo")
 
 # use OSC client module for python - by Stefan Kersten
+relativePathToOSC="../../osc/oscpython"
+if Blender.sys.exists(relativePathToOSC+"/OSC.py"):
+	path.append(relativePathToOSC)
+	configured=1
+else:
+	print "Can't found OSC.py. Aborting."
+	configured=0
+	
 from OSC import Message
 
 def sendGroupObjectsPositions(group,typeName):
@@ -27,12 +35,11 @@ def sendGroupObjectsPositions(group,typeName):
 import Blender
 
 def main():
-	
 	scene=data.scenes.active
 #	print '-'*30
 #	print 'OSCSender Called! - Event: '+Blender.event
 
-	if Blender.event=='FrameChanged':
+	if Blender.event=='FrameChanged' and configured==1:
 		frame=Blender.Get('curframe')
 #		print 'frame: ' +str(frame)
 		Message("/SpatDIF/sync/FrameChanged",[frame]).sendlocal(7000)
