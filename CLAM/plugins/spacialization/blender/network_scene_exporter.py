@@ -17,35 +17,33 @@ def write(filename):
 	connections=""
 	printers=""
 	argumentNumbers=3
-	i=1
 	xPosition=50
 	yPosition=150
 	path="/SpatDIF/sources/%(objectNumber)s/xyz"
+	objectsList=list(data.groups['AudioSources'].objects)
 	for source in data.groups['AudioSources'].objects:
 		libloName="source_"+source.name
 		printerName="printer_source_"+source.name
-		objectNumber=str(i)
+		objectNumber=str(objectsList.index(source))
 		liblos+=makeLibloSource(libloName,path % vars(),xPosition,yPosition,3,7000)
 		printers+=makeControlPrinter(printerName,xPosition,yPosition+150,3)
 
 		for o in range(3):
 			sufix="_"+str(o)
 			connections+=makeConnection(libloName,(path%vars()).replace("/","_")+sufix,printerName,"ControlPrinter"+sufix)
-		i+=1
 		xPosition+=300
 
-	i=1
+	objectsList=list(data.groups['AudioSinks'].objects)
 	path="/SpatDIF/sinks/%(objectNumber)s/xyz"
 	for sink in data.groups['AudioSinks'].objects:
 		libloName="sink_"+sink.name
 		printerName="printer_sink_"+sink.name
-		objectNumber=str(i)
+		objectNumber=str(objectsList.index(sink))
 		liblos+=makeLibloSource(libloName,path % vars(),xPosition,yPosition,3,7000)
 		printers+=makeControlPrinter(printerName,xPosition,yPosition+150,3)
 		for o in range(3):
 			sufix="_"+str(o)
 			connections+=makeConnection(libloName,(path%vars()).replace("/","_")+sufix,printerName,"ControlPrinter"+sufix)
-		i+=1
 		xPosition+=300
 
 	path="/SpatDIF/sync/FrameChanged"
