@@ -25,7 +25,7 @@
 #include "FrameDivision.hxx"
 #include "AudioLoadThread.hxx"
 #include "SchemaBrowser.hxx"
-//#include "TaskRunner.hxx"
+#include "TaskRunner.hxx"
 #include "ui_About.hxx"
 #include "ProjectEditor.hxx"
 
@@ -41,9 +41,9 @@
 
 #if QT_VERSION >= 0x040200
 #include <QtGui/QDesktopServices>
-#endif
-
+#else
 #include <QtCore/QProcess>
+#endif
 
 #include <algorithm>
 #include <iostream>
@@ -122,8 +122,8 @@ void Annotator::computeSongDescriptors()
 		return;
 	}
 	mStatusBar << "Launching Extractor..." << mStatusBar;
-	//TaskRunner * runner = new TaskRunner();
-	//connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
+	TaskRunner * runner = new TaskRunner();
+	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
 	//addDockWidget( Qt::BottomDockWidgetArea, runner);  //jun: comment out as it occupies to much CPU&MEM
 	// Wait the window to be redrawn after the reconfiguration
 	// before loading the cpu with the extractor
@@ -132,25 +132,22 @@ void Annotator::computeSongDescriptors()
 	std::string configurationOption="";
 	//if (mProject.Config()!="")
 	//	configurationOption = "-c"+mProject.File()+".conf";
-	configurationOption = mProject.File()+".conf";
-	const QString extractor = mProject.GetExtractor().c_str();
-	int ok = QProcess::execute(extractor,
-		QStringList() << "-f" << mProject.PoolSuffix().c_str() << "-c" << configurationOption.c_str() << qfilename
-		);
-
-	std::cout<< "The extractor exits" <<std::endl;
+	configurationOption = "-c"+mProject.File()+".conf";
+	bool ok = runner->run(mProject.GetExtractor().c_str(),
+		//QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str() << configurationOption.c_str(),
+		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str(),
+		QDir::current().path());
 	
-	if (ok)
+	if (!ok)
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
 			tr("<p><b>Error: Unable to launch the extractor.</b></p>\n"
 				"<p>Check that the project extractor is well configured and you have permissions to run it.</p>\n"
 				"<p>The configured command was:</p>\n<tt>%1</tt>")
-			.arg(extractor)
+			.arg(mProject.GetExtractor().c_str())
 			);
-		//delete runner;
+		delete runner;
 	}
-
 	return;
 
 	/*loadDescriptorPool(); // TODO: This should be done thru an slot from the runner
@@ -167,8 +164,6 @@ void Annotator::computeSongDescriptors()
 	*/
 }
 
-/*
-
 void Annotator::endExtractorRunner(bool done)
 {
 	if (done)
@@ -180,7 +175,6 @@ void Annotator::endExtractorRunner(bool done)
 		return;
 	}
 }
-*/
 
 Annotator::Annotator(const std::string & nameProject = "")
 	: QMainWindow( 0 )
