@@ -9,28 +9,29 @@ from bpy import data
 from sys import path
 from os import getenv
 import Blender
-#home=getenv("HOME")
-#path.append(home+"/src/liblo")
 
 # use OSC client module for python - by Stefan Kersten
-relativePathToOSC="../../osc/oscpython"
-if Blender.sys.exists(relativePathToOSC+"/OSC.py"):
-	path.append(relativePathToOSC)
-	configured=1
-else:
+pathToOSCList=["../../osc/oscpython",getenv("HOME")+"/src/liblo"]
+configured=0
+for testpath in pathToOSCList:
+	if Blender.sys.exists(testpath+"/OSC.py"):
+		path.append(testpath)
+		from OSC import Message
+		configured=1
+		break
+if configured==0:
 	print "Can't found OSC.py. Aborting."
-	configured=0
 	
-from OSC import Message
-
 def sendGroupObjectsPositions(group,typeName):
-	objectNumber=1
+	objectsList=list(group.objects)
 	for object in group.objects:
 		location=object.getLocation()
-#		print object.name
-		message="/SpatDIF/%s/%i/xyz" % (typeName,objectNumber)
-		Message(message,location).sendlocal(7000)
-		objectNumber+=1
+		objectNumber=objectsList.index(object)
+		sendObjectLocation(objectNumber,typeName,location)
+
+def sendObjectLocation(objectNumber,typeName,location):
+	message="/SpatDIF/%s/%i/xyz" % (typeName,objectNumber)
+	Message(message,location).sendlocal(7000)
 
 import Blender
 
@@ -39,14 +40,28 @@ def main():
 #	print '-'*30
 #	print 'OSCSender Called! - Event: '+Blender.event
 
-	if Blender.event=='FrameChanged' and configured==1:
+	if (configured==0):
+		return
+	if Blender.event=='FrameChanged':
 		frame=Blender.Get('curframe')
-#		print 'frame: ' +str(frame)
 		Message("/SpatDIF/sync/FrameChanged",[frame]).sendlocal(7000)
 		sendGroupObjectsPositions(data.groups['AudioSources'],'sources')
 		sendGroupObjectsPositions(data.groups['AudioSinks'],'sinks')
-			
+	if Blender.bylink==True and Blender.event=='ObjectUpdate':
+		object=Blender.link
+		location=object.getLocation()
+		sources=list(data.groups['AudioSources'].objects)
+		sinks=list(data.groups['AudioSinks'].objects)
+		if sources.count(object)!=0:
+			typename='sources'
+			objectNumber=sources.index(object)
+		if sinks.count(object)!=0:
+			typename='sinks'
+			objectNumber=sinks.index(object)
+		if not typename:
+			return
+		sendObjectLocation(objectNumber,typename,location)
+		
 # This lets you can import the script without running it
 if __name__ == '__main__':
 	main()
-
