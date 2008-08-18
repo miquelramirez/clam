@@ -114,6 +114,7 @@ Turnaround::~Turnaround()
 	{
 		delete _pcpStorage;
 		delete _chordCorrelationStorage;
+		delete _chromaPeaksStorage;
 	}
 }
 
@@ -196,12 +197,14 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	_segmentationView->noDataSource();
 	
 	// Point the data sources to no storage and delete old storages
-	_pcpSource.noStorage();
-	_chordCorrelationSource.noStorage();
+	_pcpSource.clearData();
+	_chordCorrelationSource.clearData();
+	_chromaPeaksSource.clearData();
 	if (_pcpStorage)
 	{
 		delete _pcpStorage;
 		delete _chordCorrelationStorage;
+		delete _chromaPeaksStorage;
 	}
 
 	QProgressDialog progress(tr("Analyzing chords..."), tr("Abort"), 0, 2, this);
@@ -248,18 +251,18 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 
 	FloatPairVectorStorageConfig pairStorageConfig;
 	pairStorageConfig.SetFrames(nFrames);
-	FloatPairVectorStorage chromaPeaksStorage(pairStorageConfig);
+	_chromaPeaksStorage = new FloatPairVectorStorage(pairStorageConfig);
 
 	CLAM::ConnectPorts(fileReader, "Samples Read", *_tonalAnalysis, "Audio Input");
 	CLAM::ConnectPorts(*_tonalAnalysis, "Pitch Profile", *_pcpStorage, "Data Input");
 	CLAM::ConnectPorts(*_tonalAnalysis, "Chord Correlation", *_chordCorrelationStorage, "Data Input");
-	CLAM::ConnectPorts(*_tonalAnalysis, "Chroma Peaks", chromaPeaksStorage, "Data Input");
+	CLAM::ConnectPorts(*_tonalAnalysis, "Chroma Peaks", *_chromaPeaksStorage, "Data Input");
 
 	fileReader.Start();
 	_tonalAnalysis->Start();
 	_pcpStorage->Start();
 	_chordCorrelationStorage->Start();
-	chromaPeaksStorage.Start();
+	_chromaPeaksStorage->Start();
 
 	unsigned long i = 0;
 	while (fileReader.Do())
@@ -270,14 +273,14 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 		_tonalAnalysis->Do();
 		_pcpStorage->Do();
 		_chordCorrelationStorage->Do();
-		chromaPeaksStorage.Do();
+		_chromaPeaksStorage->Do();
 	}
 
 	fileReader.Stop();
 	_tonalAnalysis->Stop();
 	_pcpStorage->Stop();
 	_chordCorrelationStorage->Stop();
-	chromaPeaksStorage.Stop();
+	_chromaPeaksStorage->Stop();
 
 	_frameDivision.SetFirstCenter(frameSize / 2);
 	_frameDivision.SetInterCenterGap(hop);
@@ -308,7 +311,7 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	_chordRanking->setDataSource(_chordCorrelationSource);
 
 	_chromaPeaksSource.setDataSource(1);
-	_chromaPeaksSource.updateData(chromaPeaksStorage.PositionStorage(), chromaPeaksStorage.MagnitudeStorage(), sampleRate, &_frameDivision);
+	_chromaPeaksSource.setStorage(_chromaPeaksStorage, sampleRate, &_frameDivision);
 	_polarChromaPeaks->setDataSource(_chromaPeaksSource);
 
 	CLAM::OutPort<CLAM::Segmentation> &segmentationOutput = (CLAM::OutPort<CLAM::Segmentation>&)(_tonalAnalysis->GetOutPort("Chord Segmentation"));

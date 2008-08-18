@@ -85,6 +85,7 @@ private:
 	
 	FloatVectorStorage *_pcpStorage;
 	FloatVectorStorage *_chordCorrelationStorage;
+	FloatPairVectorStorage *_chromaPeaksStorage;
 	
 	CLAM::VM::PoolFloatArrayDataSource _pcpSource;
 	CLAM::VM::PoolFloatArrayDataSource _chordCorrelationSource;

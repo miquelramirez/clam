@@ -45,6 +45,7 @@ void CLAM::VM::PoolFloatArrayDataSource::clearData()
 	_nBins = 0;
 	_firstBinOffset = 0;
 	_binGap = 0;
+	_storage = 0;
 }
 
 void CLAM::VM::PoolFloatArrayDataSource::setDataSource(unsigned nBins, CLAM::TData binGap, CLAM::TData firstBinOffset, std::vector<std::string> binLabels)
@@ -62,11 +63,6 @@ void CLAM::VM::PoolFloatArrayDataSource::setStorage(FloatVectorStorage *storage,
 	_samplingRate = samplingRate;
 	_nFrames = nFrames;
 	_frameDivision = frameDivision;
-}
-
-void CLAM::VM::PoolFloatArrayDataSource::noStorage()
-{
-	_storage = 0;
 }
 
 bool CLAM::VM::PoolFloatArrayDataSource::setCurrentTime(double timeMiliseconds)

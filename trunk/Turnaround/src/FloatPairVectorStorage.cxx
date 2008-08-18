@@ -57,12 +57,12 @@ bool FloatPairVectorStorage::Do()
 	return true;
 }
 
-const std::list<std::vector<CLAM::TData> >& FloatPairVectorStorage::PositionStorage() const
+std::list<std::vector<CLAM::TData> >& FloatPairVectorStorage::PositionStorage()
 {
 	return _positionStorage;
 }
 
-const std::list<std::vector<CLAM::TData> >& FloatPairVectorStorage::MagnitudeStorage() const
+std::list<std::vector<CLAM::TData> >& FloatPairVectorStorage::MagnitudeStorage()
 {
 	return _magnitudeStorage;
 }

@@ -42,7 +42,6 @@ namespace VM
 			void setDataSource(unsigned nBins, CLAM::TData binGap, CLAM::TData firstBinOffset, std::vector<std::string> binLabels);
 			void clearData();
 			void setStorage(FloatVectorStorage *storage, CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames);
-			void noStorage();
 			bool setCurrentTime(double timeMiliseconds);
 
 			std::string getLabel(unsigned bin) const
