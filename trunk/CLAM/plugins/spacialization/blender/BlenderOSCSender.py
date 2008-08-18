@@ -19,7 +19,7 @@ def sendGroupObjectsPositions(group,typeName):
 	objectNumber=1
 	for object in group.objects:
 		location=object.getLocation()
-		print object.name
+#		print object.name
 		message="/SpatDIF/%s/%i/xyz" % (typeName,objectNumber)
 		Message(message,location).sendlocal(7000)
 		objectNumber+=1
@@ -29,12 +29,12 @@ import Blender
 def main():
 	
 	scene=data.scenes.active
-	print '-'*30
+#	print '-'*30
 #	print 'OSCSender Called! - Event: '+Blender.event
 
 	if Blender.event=='FrameChanged':
 		frame=Blender.Get('curframe')
-		print 'frame: ' +str(frame)
+#		print 'frame: ' +str(frame)
 		Message("/SpatDIF/sync/FrameChanged",[frame]).sendlocal(7000)
 		sendGroupObjectsPositions(data.groups['AudioSources'],'sources')
 		sendGroupObjectsPositions(data.groups['AudioSinks'],'sinks')
