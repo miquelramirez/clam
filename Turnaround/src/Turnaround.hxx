@@ -83,6 +83,9 @@ private:
 	PolarChromaPeaks *_polarChromaPeaks;
 	SegmentationView *_segmentationView;
 	
+	FloatVectorStorage *_pcpStorage;
+	FloatVectorStorage *_chordCorrelationStorage;
+	
 	CLAM::VM::PoolFloatArrayDataSource _pcpSource;
 	CLAM::VM::PoolFloatArrayDataSource _chordCorrelationSource;
 	CLAM::VM::PoolPeakDataSource _chromaPeaksSource;

@@ -28,7 +28,7 @@ public:
 	virtual bool Do();
 	virtual ~FloatVectorStorage();
 	
-	FloatVector Data();
+	FloatVector& Data();
 
 protected: // methods
 

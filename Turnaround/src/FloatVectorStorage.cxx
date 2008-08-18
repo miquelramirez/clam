@@ -50,7 +50,7 @@ bool FloatVectorStorage::Do()
 	return true;
 }
 
-std::vector<CLAM::TData> FloatVectorStorage::Data()
+std::vector<CLAM::TData>& FloatVectorStorage::Data()
 {
 	return _data;
 }

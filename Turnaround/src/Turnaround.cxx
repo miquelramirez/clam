@@ -48,6 +48,7 @@ Turnaround::Turnaround()
 	, Ui::Turnaround()
 	, _networkPlayer(0)
 	, _tonalAnalysis(0)
+	, _pcpStorage(0)
 {
 	setupUi(this);
 	
@@ -109,6 +110,11 @@ Turnaround::~Turnaround()
 		_network.Stop();
 
 	delete _tonalAnalysis;
+	if (_pcpStorage)
+	{
+		delete _pcpStorage;
+		delete _chordCorrelationStorage;
+	}
 }
 
 void Turnaround::fileOpen()
@@ -188,6 +194,15 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	_keySpace->noDataSource();
 	_chordRanking->noDataSource();
 	_segmentationView->noDataSource();
+	
+	// Point the data sources to no storage and delete old storages
+	_pcpSource.noStorage();
+	_chordCorrelationSource.noStorage();
+	if (_pcpStorage)
+	{
+		delete _pcpStorage;
+		delete _chordCorrelationStorage;
+	}
 
 	QProgressDialog progress(tr("Analyzing chords..."), tr("Abort"), 0, 2, this);
 	progress.setWindowModality(Qt::WindowModal);
@@ -225,25 +240,25 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 
 	storageConfig.SetBins(12);
 	storageConfig.SetFrames(nFrames);
-	FloatVectorStorage pcpStorage(storageConfig);
+	_pcpStorage = new FloatVectorStorage(storageConfig);
 
 	storageConfig.SetBins(24);
 	storageConfig.SetFrames(nFrames);
-	FloatVectorStorage chordCorrelationStorage(storageConfig);
+	_chordCorrelationStorage = new FloatVectorStorage(storageConfig);
 
 	FloatPairVectorStorageConfig pairStorageConfig;
 	pairStorageConfig.SetFrames(nFrames);
 	FloatPairVectorStorage chromaPeaksStorage(pairStorageConfig);
 
 	CLAM::ConnectPorts(fileReader, "Samples Read", *_tonalAnalysis, "Audio Input");
-	CLAM::ConnectPorts(*_tonalAnalysis, "Pitch Profile", pcpStorage, "Data Input");
-	CLAM::ConnectPorts(*_tonalAnalysis, "Chord Correlation", chordCorrelationStorage, "Data Input");
+	CLAM::ConnectPorts(*_tonalAnalysis, "Pitch Profile", *_pcpStorage, "Data Input");
+	CLAM::ConnectPorts(*_tonalAnalysis, "Chord Correlation", *_chordCorrelationStorage, "Data Input");
 	CLAM::ConnectPorts(*_tonalAnalysis, "Chroma Peaks", chromaPeaksStorage, "Data Input");
 
 	fileReader.Start();
 	_tonalAnalysis->Start();
-	pcpStorage.Start();
-	chordCorrelationStorage.Start();
+	_pcpStorage->Start();
+	_chordCorrelationStorage->Start();
 	chromaPeaksStorage.Start();
 
 	unsigned long i = 0;
@@ -253,15 +268,15 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 			continue;
 		progress.setValue(i++);
 		_tonalAnalysis->Do();
-		pcpStorage.Do();
-		chordCorrelationStorage.Do();
+		_pcpStorage->Do();
+		_chordCorrelationStorage->Do();
 		chromaPeaksStorage.Do();
 	}
 
 	fileReader.Stop();
 	_tonalAnalysis->Stop();
-	pcpStorage.Stop();
-	chordCorrelationStorage.Stop();
+	_pcpStorage->Stop();
+	_chordCorrelationStorage->Stop();
 	chromaPeaksStorage.Stop();
 
 	_frameDivision.SetFirstCenter(frameSize / 2);
@@ -276,7 +291,7 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	std::vector<std::string> binLabels(notes, notes+nBins);
 
 	_pcpSource.setDataSource(nBins, 0, 0, binLabels);
-	_pcpSource.updateData(pcpStorage.Data(), sampleRate, &_frameDivision, nFrames);
+	_pcpSource.setStorage(_pcpStorage, sampleRate, &_frameDivision, nFrames);
 	_spectrogram->setDataSource(_pcpSource);
 	_tonnetz->setDataSource(_pcpSource);
 
@@ -288,7 +303,7 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	binLabels.insert(binLabels.end(), minorChords, minorChords+nBins);
 
 	_chordCorrelationSource.setDataSource(nBins*2, 0, 0, initBinLabelVector());
-	_chordCorrelationSource.updateData(chordCorrelationStorage.Data(), sampleRate, &_frameDivision, nFrames);
+	_chordCorrelationSource.setStorage(_chordCorrelationStorage, sampleRate, &_frameDivision, nFrames);
 	_keySpace->setDataSource(_chordCorrelationSource);
 	_chordRanking->setDataSource(_chordCorrelationSource);
 

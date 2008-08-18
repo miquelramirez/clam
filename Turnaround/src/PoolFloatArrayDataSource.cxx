@@ -38,7 +38,6 @@ CLAM::VM::PoolFloatArrayDataSource::PoolFloatArrayDataSource()
 
 void CLAM::VM::PoolFloatArrayDataSource::clearData()
 {
-	_data.resize(0);
 	_nFrames=0;
 	_frameDivision=0;
 	_frameData=0;
@@ -56,23 +55,18 @@ void CLAM::VM::PoolFloatArrayDataSource::setDataSource(unsigned nBins, CLAM::TDa
 	_binLabels.assign(binLabels.begin(), binLabels.end());	
 }
 
-void CLAM::VM::PoolFloatArrayDataSource::updateData(std::vector<CLAM::TData> data, CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames)
+void CLAM::VM::PoolFloatArrayDataSource::setStorage(FloatVectorStorage *storage, CLAM::TData samplingRate, CLAM_Annotator::FrameDivision *frameDivision, unsigned nFrames)
 {
-	_frameData = 0;
+	_storage = storage;
+	_frameData = &_storage->Data()[0];
 	_samplingRate = samplingRate;
 	_nFrames = nFrames;
 	_frameDivision = frameDivision;
+}
 
-	_data.resize(_nFrames*_nBins);
-	unsigned long j = 0;
-	for (std::vector<CLAM::TData>::iterator i = data.begin(); i != data.end(); i++)
-	{
-		// TODO: This nBins is and adhoc hack for normalization
-		double value = (*i)*_nBins;
-		_data[j] = value;
-		j++;
-	}
-	_frameData = &_data[0];
+void CLAM::VM::PoolFloatArrayDataSource::noStorage()
+{
+	_storage = 0;
 }
 
 bool CLAM::VM::PoolFloatArrayDataSource::setCurrentTime(double timeMiliseconds)
@@ -85,5 +79,3 @@ bool CLAM::VM::PoolFloatArrayDataSource::setCurrentTime(double timeMiliseconds)
 	_currentFrame = newFrame;
 	return true;
 }
-
-
