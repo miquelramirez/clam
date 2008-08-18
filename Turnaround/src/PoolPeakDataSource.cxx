@@ -39,8 +39,6 @@ CLAM::VM::PoolPeakDataSource::PoolPeakDataSource()
 
 void CLAM::VM::PoolPeakDataSource::clearData()
 {
-	_positionStorage.clear();
-	_magnitudeStorage.clear();
 	_frameDataIndex.clear();
 	_nFrames=0;
 	_frameDivision=0;
@@ -48,6 +46,7 @@ void CLAM::VM::PoolPeakDataSource::clearData()
 	_magnitudeFrameData=0;
 	_currentFrame=0;
 	_nBins = 0;
+	_storage = 0;
 }
 
 void CLAM::VM::PoolPeakDataSource::setDataSource(unsigned nBins)
@@ -55,25 +54,20 @@ void CLAM::VM::PoolPeakDataSource::setDataSource(unsigned nBins)
 	_nBins = nBins;
 }
 
-void CLAM::VM::PoolPeakDataSource::updateData(
-	const std::list<std::vector<TData> > & positionStorage,
-	const std::list<std::vector<TData> > & magnitudeStorage,
+void CLAM::VM::PoolPeakDataSource::setStorage(
+	FloatPairVectorStorage *storage,
 	TData samplingRate,
 	CLAM_Annotator::FrameDivision * frameDivision)
 {
-	CLAM_ASSERT(positionStorage.size() == magnitudeStorage.size(),
-		"PoolPeakDataSource: position and magnitudes sizes missmatch");
+	_storage = storage;
 	_positionFrameData = 0;
 	_magnitudeFrameData = 0;
-	_nFrames = positionStorage.size();
+	_nFrames = _storage->PositionStorage().size();
 	_frameDivision = frameDivision;
 
-	_positionStorage = positionStorage;
-	_magnitudeStorage = magnitudeStorage;
-	
 	_frameDataIndex.resize(_nFrames);
-	Storage::iterator positionIt = _positionStorage.begin();
-	Storage::iterator magnitudeIt = _magnitudeStorage.begin();
+	Storage::iterator positionIt = _storage->PositionStorage().begin();
+	Storage::iterator magnitudeIt = _storage->MagnitudeStorage().begin();
 	for (unsigned i=0; i<_nFrames; i++)
 		_frameDataIndex[i]=std::make_pair(&*positionIt++, &*magnitudeIt++);
 }
@@ -92,5 +86,3 @@ bool CLAM::VM::PoolPeakDataSource::setCurrentTime(double timeMiliseconds)
 	_currentFrame = newFrame;
 	return true;
 }
-
-

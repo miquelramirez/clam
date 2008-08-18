@@ -27,6 +27,7 @@
 #include <vector>
 #include <list>
 #include "FrameDivision.hxx"
+#include "FloatPairVectorStorage.hxx"
 
 namespace CLAM_Annotator { class FrameDivision; }
 
@@ -43,9 +44,7 @@ namespace VM
 			PoolPeakDataSource();
 			void setDataSource(unsigned nBins);
 			void clearData();
-			void updateData(
-				const Storage & positionStorage,
-				const Storage & magnitudeStorage,
+			void setStorage(FloatPairVectorStorage *storage,
 				CLAM::TData samplingRate,
 				CLAM_Annotator::FrameDivision * frameDivision);
 			bool setCurrentTime(double timeMiliseconds);
@@ -80,8 +79,7 @@ namespace VM
 			unsigned _nBins;
 			unsigned _currentFrame;
 			Index _frameDataIndex;
-			Storage _positionStorage;
-			Storage _magnitudeStorage;
+			FloatPairVectorStorage *_storage;
 	};
 }
 }

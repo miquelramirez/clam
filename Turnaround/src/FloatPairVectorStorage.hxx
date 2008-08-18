@@ -29,8 +29,8 @@ public:
 	virtual bool Do();
 	virtual ~FloatPairVectorStorage();
 
-	const Storage& PositionStorage() const;
-	const Storage& MagnitudeStorage() const;
+	Storage& PositionStorage();
+	Storage& MagnitudeStorage();
 
 protected: // methods
 
