@@ -50,10 +50,13 @@ public:
     SchemaBrowser( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~SchemaBrowser();
     void setSchema(CLAM_Annotator::Schema & schema);
-    void addAttribute(const std::string & scope, const std::string & name, const std::string & type);
+	template <class T>
+	void setListedSchema(CLAM_Annotator::Schema & schema, T parent);
+	template <class T>
+    void addAttribute(const std::string & scope, const std::string & name, const std::string & type, T parent);
 private:
     QSplitter* splitter1;
-    QTreeWidget* attributeList;
+    //QTreeWidget* attributeList; 
     QSplitter* splitter2;
     QFrame* attributeProperties;
     QSpinBox* minSpin;
@@ -66,6 +69,7 @@ private:
 
 protected:
     QHBoxLayout* schemaBrowserLayout;
+	QTreeWidget* attributeList; 
     QGridLayout* attributePropertiesLayout;
 
 protected slots:
