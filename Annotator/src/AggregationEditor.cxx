@@ -107,25 +107,25 @@ AggregationEditor::~AggregationEditor()
 	delete mParser.suffix;
 	delete mParser.configFile;
 	delete mParser.path;
+	delete mParser.sourceAttribute;
+	delete mParser.sourceScope;
+	delete mParser.sourceId;
+	delete mParser.targetAttribute;
+	delete mParser.targetScope;
 	//is "delete mParser" just enough?
 }
 
-
+typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
 void AggregationEditor::addSource(const std::string & source, CLAM_Annotator::Schema & schema)
 {
-	QList<QTreeWidgetItem *> sourceItems = attributeList->findItems(source.c_str(),Qt::MatchExactly);
-	QTreeWidgetItem * sourceItem = 0;
-	if (sourceItems.size()==0)
-	{
-		sourceItem = new QTreeWidgetItem(attributeList);
-		sourceItem->setText( 0, source.c_str() );
-		sourceItem->setIcon( 0, sourceIcon );
-		attributeList->expandItem(sourceItem);
-	}
-	else
-		sourceItem = sourceItems[0];
 
-	SchemaBrowser::setListedSchema(schema, sourceItem);
+	QTreeWidgetItem * sourceItem = 0;
+	sourceItem = new QTreeWidgetItem(attributeList);
+	sourceItem->setText( 0, source.c_str() );
+	sourceItem->setIcon( 0, sourceIcon );
+	attributeList->expandItem(sourceItem);
+	
+	setListedSchema(schema, sourceItem);	
 	
 }
 
@@ -133,15 +133,13 @@ void AggregationEditor::setSchema()
 {	
 	//attributeProperties->hide();
 	attributeList->clear();
-	int arraysize=parseConfiguration();
+	int arraySize=parseSources();
 
-	//mSourceSchema=new CLAM_Annotator::Schema[arraysize];  //may just be a local variable
 	CLAM_Annotator::Schema sourceSchema;
-	for(int it = 0; it <arraysize; it++)
+	for(int it = 0; it <arraySize; it++)
 	{
 		CLAM::XMLStorage::Restore(sourceSchema, mParser.path[it]+"/"+mParser.schemaFile[it]);
 		addSource(mParser.source[it], sourceSchema);
-		//SchemaBrowser::setSchema(sourceSchema); //jun added for debug
 	}
 	attributeList->show();
 	attributeList->resizeColumnToContents(0);
@@ -149,37 +147,97 @@ void AggregationEditor::setSchema()
 	attributeList->show();	
 }
 
+void AggregationEditor::addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem * parent)
+{
+	QTreeWidgetItem * scopeItem = 0;
+	if(!(scopeItem=hasScope(scope, parent)))
+	{
+		scopeItem = new QTreeWidgetItem( parent);
+		scopeItem->setText( 0, scope.c_str() );
+		scopeItem->setIcon( 0, scopeIcon );
+		attributeList->expandItem(scopeItem);		
+	}
+	
+	QTreeWidgetItem * item = new QTreeWidgetItem( scopeItem);
+	item->setText( 0, name.c_str() );
+	item->setIcon( 0, attributeIcon );
 
-int AggregationEditor::parseConfiguration()
+	int arraySize = parseMap();
+	Qt::CheckState  state=Qt::Unchecked;
+
+	for(int i=0; i<arraySize; i++)
+	{
+		if((mParser.sourceAttribute[i]==name)&&(mParser.sourceId[i].c_str()==parent->text(0)))
+			state=Qt::Checked;	
+	}
+
+	item->setCheckState( 0, state);
+
+	//item->setText( 1, type.c_str() );
+}
+
+void AggregationEditor::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem * parentItem)
+{
+	attributeProperties->hide();
+	//mSchema = &schema;
+	SchemaAttributes & attributes = schema.GetAttributes();
+	for (SchemaAttributes::iterator it = attributes.begin();
+			it!=attributes.end();
+			it++)
+	{
+		addAttribute(it->GetScope(), it->GetName(), parentItem);
+	}
+
+	attributeList->show();
+	attributeList->resizeColumnToContents(0);
+	attributeList->resizeColumnToContents(1);
+	attributeList->show();
+}
+
+
+QTreeWidgetItem *  AggregationEditor::hasScope(const std::string & scope,  QTreeWidgetItem * parent)
+{
+	for (int i=0; i<parent->childCount(); i++)
+	{
+		QTreeWidgetItem * scopeItem = parent->child(i);
+		if (scopeItem->text(0)==scope.c_str()) return scopeItem;
+	}
+	return 0;
+}
+
+
+ // TODO: dealing with exceptions
+ // TODO: allowing "#" in the script
+int AggregationEditor::parseSources()
 {
 	std::string::size_type posStart=0;
 	std::string::size_type posEnd, posSourcesEnd;
 
-	int arraysize=-1;
-	while(posStart!=std::string::npos)  //to get the count of sources 
+	int arraySize = -1;
+
+	while(posStart!=std::string::npos) 
 	{
-		posStart=mConfig.find("FileMetadataSource", posStart+1,18);
-		arraysize++;
+		posStart=mConfig.find("FileMetadataSource", posStart+1,18);  //Keyword "FileMetadataSource" 
+		arraySize++;
 	}
-	if(!arraysize)
+	if(!arraySize)
 	{
-		std::cout<< "There is no source. Please check whether the Aggregator is correctly configured." <<std::endl;
-		return arraysize;
+		std::cout<< "There is no source. Please check whether the Aggregator is correctly configured." <<std::endl;//todo: replace this with unique Failure assertion
+		return arraySize;
 	}
 
-
-	mParser.source=new std::string[arraysize];	
-	mParser.extractor=new std::string[arraysize];
-	mParser.schemaFile=new std::string[arraysize];	
-	mParser.suffix=new std::string[arraysize];
-	mParser.configFile=new std::string[arraysize];
-	mParser.path=new std::string[arraysize];
+	mParser.source=new std::string[arraySize];	
+	mParser.extractor=new std::string[arraySize];
+	mParser.schemaFile=new std::string[arraySize];	
+	mParser.suffix=new std::string[arraySize];
+	mParser.configFile=new std::string[arraySize];
+	mParser.path=new std::string[arraySize];
 
 	posStart = mConfig.find("sources", 0);
 	posEnd = mConfig.find("),", posStart+1);
 	posSourcesEnd = mConfig.find("]", posStart+1);
 
-	for(int i=0; i<arraysize && posEnd<posSourcesEnd; i++)
+	for(int i=0; i<arraySize && posEnd<posSourcesEnd; i++)
 	{
 		mParser.source[i] = parseQuotationMark(posStart, posEnd, "(");
 		mParser.path[i] = parseQuotationMark(posStart, posEnd, "path");
@@ -190,9 +248,61 @@ int AggregationEditor::parseConfiguration()
 		posStart = posEnd;
 		posEnd = mConfig.find("),", posStart+1);		
 	}	
-	return arraysize;
+	return arraySize;
 	
 }
+
+int AggregationEditor::parseMap() 
+{
+	std::string::size_type posStart=0;
+	std::string::size_type posA, posB, posEnd, posAttributesEnd;
+
+	int arraySize = -1;
+
+	posStart = mConfig.find("map",0);         //keyword "map" 
+	posA = posStart;	
+	posEnd = mConfig.find("]", posStart+1);
+	posAttributesEnd = posEnd; 
+
+	while(posA<posEnd)  
+	{
+		posA = mConfig.find("),", posA+1);  //key word"),"
+		arraySize++;
+	}
+	if(!arraySize)	return arraySize;
+
+	mParser.targetScope=new std::string[arraySize];	
+	mParser.targetAttribute=new std::string[arraySize];
+	mParser.sourceId=new std::string[arraySize];	
+	mParser.sourceScope=new std::string[arraySize];
+	mParser.sourceAttribute=new std::string[arraySize];
+
+	posEnd = mConfig.find("),", posStart+1);
+	
+	for(int i=0; i<arraySize && posEnd<posAttributesEnd; i++)
+	{
+		posA = mConfig.rfind("::", posEnd);
+		posB = mConfig.rfind("\"", posEnd);
+		mParser.sourceAttribute[i] = mConfig.substr(posA+2, posB-posA-2);
+		posB = mConfig.rfind("\"", posA);
+		mParser.sourceScope[i] = mConfig.substr(posB+1, posA-posB-1);
+		posA = mConfig.rfind("\"", posB-1);
+		posB = mConfig.rfind("\"", posA-1);
+		mParser.sourceId[i] = mConfig.substr(posB+1, posA-posB-1);
+		
+		posA = mConfig.rfind("::", posB-1);
+		posB = mConfig.rfind("\"", posB-1);
+		mParser.targetAttribute[i] = mConfig.substr(posA+2, posB-posA-2);
+		posB = mConfig.rfind("\"", posA);
+		mParser.targetScope[i] = mConfig.substr(posB+1, posA-posB-1);
+
+		posEnd = mConfig.find("),", posEnd+1);		
+	}	
+	return arraySize;
+	
+}
+
+
 
 std::string AggregationEditor::parseQuotationMark(std::string::size_type beginPos, std::string::size_type limitedPos, std::string keyWord )
 {

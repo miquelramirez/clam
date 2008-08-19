@@ -47,22 +47,18 @@ class SchemaBrowser : public QWidget
     Q_OBJECT
 
 public:
-    SchemaBrowser( QWidget* parent = 0, Qt::WFlags fl = 0 );
-    ~SchemaBrowser();
-    void setSchema(CLAM_Annotator::Schema & schema);
-	//template <class T> void setListedSchema(CLAM_Annotator::Schema & schema, T parent);
-	//template <class T> void addAttribute(const std::string & scope, const std::string & name, const std::string & type, T parent);
-
+	SchemaBrowser( QWidget* parent = 0, Qt::WFlags fl = 0 );
+	~SchemaBrowser();
+	void setSchema(CLAM_Annotator::Schema & schema);
 	void setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidget* parent);
-	void setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem* parent);
+
 	void addAttribute(const std::string & scope, const std::string & name, const std::string & type, QTreeWidget* parent);
-	void addAttribute(const std::string & scope, const std::string & name, const std::string & type, QTreeWidgetItem* parent);
+
 
 private:
     QSplitter* splitter1;
     //QTreeWidget* attributeList; 
     QSplitter* splitter2;
-    QFrame* attributeProperties;
     QSpinBox* minSpin;
     QSpinBox* maxSpin;
     QLineEdit* childEdit;
@@ -75,6 +71,7 @@ protected:
     QHBoxLayout* schemaBrowserLayout;
 	QTreeWidget* attributeList; 
     QGridLayout* attributePropertiesLayout;
+	QFrame* attributeProperties;
 
 protected slots:
     virtual void languageChange();
@@ -83,6 +80,7 @@ protected slots:
 private:
 	QTreeWidgetItem * findAttributeItem(const QString & scope, const QString & name);
 	QTreeWidgetItem * findScopeItem(const QString & scope);
+
 
 private:
     QPixmap scopeIcon;
