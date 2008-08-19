@@ -29,6 +29,7 @@
 #include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/AudioFileMemoryLoader.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/AudioTextDescriptors.hxx>
 #include "KeySpace.hxx"
 #include "Spectrogram.hxx"
 #include "Tonnetz.hxx"
@@ -67,8 +68,8 @@ Turnaround::Turnaround()
 	CLAM::ProgressControl * progress = new CLAM::ProgressControl;
 	_progressControl = _network.GetUnusedName("ProgressControl");
 	_network.AddProcessing(_progressControl, progress);
-	_network.ConnectControls(_fileReader+".Current Time Position", _progressControl+".Progress Update");	
-	_network.ConnectControls(_progressControl+".Progress Jump", _fileReader+".Current Time Position (%)");	
+	_network.ConnectControls(_fileReader+".Current Time Position", _progressControl+".Progress Update");
+	_network.ConnectControls(_progressControl+".Progress Jump", _fileReader+".Current Time Position (%)");
 	_progressControlWidget->SetProcessing(progress);
 
 	_audioSink = _network.AddProcessing("AudioSink");
@@ -224,10 +225,17 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 			);
 		return;
 	}
-
+	
 	// Begin analysis
 	CLAM::MonoAudioFileReader fileReader(_fileReaderConfig);
 	CLAM::AudioInPort &analysisInput = (CLAM::AudioInPort&)(_tonalAnalysis->GetInPort("Audio Input"));
+
+	std::string title = "Turnaround: ";
+	const CLAM::AudioTextDescriptors &textDescriptors = fileReader.GetTextDescriptors();
+	title += textDescriptors.HasArtist() ? textDescriptors.GetArtist() : "Unknown Artist";
+	title += " - ";
+	title += textDescriptors.HasTitle() ? textDescriptors.GetTitle() : "Unknown Title";
+	setWindowTitle(title.c_str());
 
 	const unsigned hop = analysisInput.GetHop();
 	const unsigned frameSize = analysisInput.GetSize();
