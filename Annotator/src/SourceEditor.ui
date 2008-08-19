@@ -1,0 +1,89 @@
+<ui version="4.0" >
+ <class>sourceEditor</class>
+ <widget class="QDialog" name="sourceEditor" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>576</width>
+    <height>311</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Dialog</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2" >
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout" >
+     <item>
+      <widget class="QTableWidget" name="parameterTable" >
+       <property name="styleSheet" >
+        <string notr="true" />
+       </property>
+       <column>
+        <property name="text" >
+         <string>Source</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Extractor</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>SchemaFile</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Suffix</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>ConfigFile</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout" >
+       <item>
+        <spacer name="horizontalSpacer" >
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>288</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="addButton" >
+         <property name="text" >
+          <string>Add</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="deleteButton" >
+         <property name="text" >
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="images.qrc" />
+ </resources>
+ <connections/>
+</ui>
