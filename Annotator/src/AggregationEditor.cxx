@@ -168,7 +168,11 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 	for(int i=0; i<arraySize; i++)
 	{
 		if((mParser.sourceAttribute[i]==name)&&(mParser.sourceId[i].c_str()==parent->text(0)))
-			state=Qt::Checked;	
+		{
+			state=Qt::Checked;
+			item->setText(1, mParser.targetAttribute[i].c_str());
+		}
+				
 	}
 
 	item->setCheckState( 0, state);
