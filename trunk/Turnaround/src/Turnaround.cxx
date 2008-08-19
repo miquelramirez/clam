@@ -198,6 +198,7 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	
 	// Point the data sources to no storage and delete old storages
 	_pcpSource.clearData();
+	_keySpaceSource.clearData();
 	_chordCorrelationSource.clearData();
 	_chromaPeaksSource.clearData();
 	if (_pcpStorage)
@@ -235,17 +236,20 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	const CLAM::TData sampleRate = fileReader.GetHeader().GetSampleRate();
 	_length = CLAM::TData(nSamples) / sampleRate;
 
+	const unsigned nBins = 12;
+	const unsigned maxBins = 101;
+
 	std::cout << "Number of frames: " << nFrames << std::endl;
 
 	progress.setMaximum(nFrames);
 	
 	FloatVectorStorageConfig storageConfig;
 
-	storageConfig.SetBins(12);
+	storageConfig.SetBins(nBins);
 	storageConfig.SetFrames(nFrames);
 	_pcpStorage = new FloatVectorStorage(storageConfig);
 
-	storageConfig.SetBins(24);
+	storageConfig.SetBins(maxBins);
 	storageConfig.SetFrames(nFrames);
 	_chordCorrelationStorage = new FloatVectorStorage(storageConfig);
 
@@ -285,7 +289,6 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	_frameDivision.SetFirstCenter(frameSize / 2);
 	_frameDivision.SetInterCenterGap(hop);
 
-	const unsigned nBins = 12;
 	const char * notes[] = { 
 		"G", "G#", "A", "A#",
 		"B", "C", "C#", "D",
@@ -305,9 +308,12 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	};
 	binLabels.insert(binLabels.end(), minorChords, minorChords+nBins);
 
-	_chordCorrelationSource.setDataSource(nBins*2, 0, 0, initBinLabelVector());
+	_keySpaceSource.setDataSource(nBins*2, maxBins - nBins*2, 1, binLabels);
+	_keySpaceSource.setStorage(_chordCorrelationStorage, sampleRate, &_frameDivision, nFrames);
+	_keySpace->setDataSource(_keySpaceSource);
+
+	_chordCorrelationSource.setDataSource(maxBins, 0, 0, initBinLabelVector());
 	_chordCorrelationSource.setStorage(_chordCorrelationStorage, sampleRate, &_frameDivision, nFrames);
-	_keySpace->setDataSource(_chordCorrelationSource);
 	_chordRanking->setDataSource(_chordCorrelationSource);
 
 	_chromaPeaksSource.setDataSource(1);
@@ -344,6 +350,7 @@ void Turnaround::timerEvent(QTimerEvent *event)
 {
 	double time = _network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length;
 	_pcpSource.setCurrentTime(time);
+	_keySpaceSource.setCurrentTime(time);
 	_chordCorrelationSource.setCurrentTime(time);
 	_chromaPeaksSource.setCurrentTime(time);
 	_segmentationSource.setCurrentTime(time);
