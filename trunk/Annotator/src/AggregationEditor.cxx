@@ -93,7 +93,9 @@ AggregationEditor::AggregationEditor( SchemaBrowser* parent, Qt::WFlags fl )
 
 	//resize( QSize(740, 346).expandedTo(minimumSizeHint()) );
 	//connect(attributeList, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-         //   this, SLOT(updateCurrentAttribute()));
+        //    this, SLOT(updateCurrentAttribute()));
+        connect(attributeList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+            this, SLOT(onDoubleClick()));
 }
 
 /*
@@ -172,13 +174,11 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 			state=Qt::Checked;
 			item->setText(1, mParser.targetAttribute[i].c_str());
 		}
-				
 	}
 
 	item->setCheckState( 0, state);
-
-	//item->setText( 1, type.c_str() );
 }
+
 
 void AggregationEditor::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem * parentItem)
 {
@@ -325,3 +325,38 @@ std::string AggregationEditor::parseQuotationMark(std::string::size_type beginPo
 	}
 	
 }
+
+void AggregationEditor::updateCurrentAttribute()
+{
+	return;
+}
+
+void AggregationEditor::languageChange()
+{
+	return;
+}
+
+void AggregationEditor::onDoubleClick()
+{
+	QTreeWidgetItem * current = attributeList->currentItem();
+	if(!current) return;
+	QTreeWidgetItem * parent=current->parent();
+	if(!(parent=parent->parent()))  //Source
+	editSource();
+	else
+	renameTarget();
+}
+
+void AggregationEditor::editSource()
+{
+	//pop out a new widget with "Source   Extractor   Suffix   SchemaFile  ConfigFile" list
+	return;
+}
+
+void AggregationEditor::renameTarget()
+{
+	QTreeWidgetItem * current = attributeList->currentItem();
+	current->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled |Qt::ItemIsEditable);
+	attributeList->editItem(current, 1);
+}
+

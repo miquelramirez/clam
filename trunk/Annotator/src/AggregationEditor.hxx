@@ -85,14 +85,15 @@ protected:
     //QGridLayout* attributePropertiesLayout;
 
 protected slots:
-    //virtual void languageChange();
-    //virtual void updateCurrentAttribute();
+	void languageChange();
+	void updateCurrentAttribute();
+	void onDoubleClick();
 
 private:
-	//QTreeWidgetItem * findAttributeItem(const QString & scope, const QString & name);
-	//QTreeWidgetItem * findScopeItem(const QString & scope);
 	int parseSources();
 	int parseMap();
+	void editSource();
+	void renameTarget();
 	QTreeWidgetItem *  hasScope(const std::string & scope,  QTreeWidgetItem * parent);
 	std::string parseQuotationMark(std::string::size_type beginPos, std::string::size_type limitedPos, std::string keyWord );
 
