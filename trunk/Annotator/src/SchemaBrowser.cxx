@@ -32,6 +32,7 @@
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QGridLayout>
 #include <QtGui/QFrame>
+//#include <QtGui/QCheckBox>
 
 
 SchemaBrowser::SchemaBrowser( QWidget* parent, Qt::WFlags fl )
@@ -106,15 +107,14 @@ SchemaBrowser::~SchemaBrowser()
     // no need to delete child widgets, Qt does it all for us
 }
 
-//template <class T>
+
 void SchemaBrowser::addAttribute(const std::string & scope, const std::string & name, const std::string & type, QTreeWidget * parent)
 {
     QList<QTreeWidgetItem *> scopeItems = attributeList->findItems(scope.c_str(),Qt::MatchExactly);
     QTreeWidgetItem * scopeItem = 0;
     if (scopeItems.size()==0)
     {
-	   // scopeItem = new QTreeWidgetItem( attributeList);
-	   scopeItem = new QTreeWidgetItem( parent);
+	    scopeItem = new QTreeWidgetItem( parent);
 	    scopeItem->setText( 0, scope.c_str() );
 	    scopeItem->setIcon( 0, scopeIcon );
 	    attributeList->expandItem(scopeItem);
@@ -128,26 +128,8 @@ void SchemaBrowser::addAttribute(const std::string & scope, const std::string & 
     item->setText( 1, type.c_str() );
 }
 
-void SchemaBrowser::addAttribute(const std::string & scope, const std::string & name, const std::string & type, QTreeWidgetItem * parent)
-{
-    QList<QTreeWidgetItem *> scopeItems = attributeList->findItems(scope.c_str(),Qt::MatchExactly);
-    QTreeWidgetItem * scopeItem = 0;
-    if (scopeItems.size()==0)
-    {
-	   // scopeItem = new QTreeWidgetItem( attributeList);
-	   scopeItem = new QTreeWidgetItem( parent);
-	    scopeItem->setText( 0, scope.c_str() );
-	    scopeItem->setIcon( 0, scopeIcon );
-	    attributeList->expandItem(scopeItem);
-    }
-	else
-		scopeItem = scopeItems[0];
 
-    QTreeWidgetItem * item = new QTreeWidgetItem( scopeItem);
-    item->setText( 0, name.c_str() );
-    item->setIcon( 0, attributeIcon );
-    item->setText( 1, type.c_str() );
-}
+
 /*
  *  Sets the strings of the subwidgets using the current
  *  language.
@@ -211,7 +193,6 @@ void SchemaBrowser::setSchema(CLAM_Annotator::Schema & schema)
 	setListedSchema(schema, attributeList);
 }
 
-//template <class T>
 void SchemaBrowser::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidget * parentItem)
 {
 	attributeProperties->hide();
@@ -243,39 +224,6 @@ void SchemaBrowser::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidget
 	attributeList->resizeColumnToContents(1);
 	attributeList->show();
 }
-
-void SchemaBrowser::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem * parentItem)
-{
-	attributeProperties->hide();
-	mSchema = &schema;
-	SchemaAttributes & attributes = schema.GetAttributes();
-	for (SchemaAttributes::iterator it = attributes.begin();
-			it!=attributes.end();
-			it++)
-	{
-		addAttribute(it->GetScope(), it->GetName(), it->GetType(), parentItem);
-	}
-	for (SchemaAttributes::iterator it = attributes.begin();
-			it!=attributes.end();
-			it++)
-	{
-		if (! it->HasChildScope() ) continue;
-		QTreeWidgetItem * parent = findAttributeItem(it->GetScope().c_str(), it->GetName().c_str() );
-		if (!parent) continue;
-		QTreeWidgetItem * child = findScopeItem(it->GetChildScope().c_str());
-		if (!child) continue;
-		CLAM_ASSERT(parent, "The attribute should have been inserted");
-		attributeList->takeTopLevelItem(attributeList->indexOfTopLevelItem(child));
-		parent->insertChild(0,child);
-		parent->setExpanded(true);
-		child->setExpanded(true);
-	}
-	attributeList->show();
-	attributeList->resizeColumnToContents(0);
-	attributeList->resizeColumnToContents(1);
-	attributeList->show();
-}
-
 
 void SchemaBrowser::updateCurrentAttribute()
 {

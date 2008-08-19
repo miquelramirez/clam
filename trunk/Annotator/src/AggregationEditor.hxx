@@ -52,6 +52,8 @@ public:
 	AggregationEditor( SchemaBrowser* parent = 0, Qt::WFlags fl = 0 );
 	~AggregationEditor();
 	void setSchema();
+	void addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem* parent);
+	void setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem* parent);
 	void addSource(const std::string & source, CLAM_Annotator::Schema & schema);
 	void loadConfig(std::string config)
 	{
@@ -73,6 +75,7 @@ private:
 struct configurationParser
 {
   std::string * source, *extractor, *suffix, *schemaFile, *configFile, *path;
+  std::string *targetScope, *targetAttribute, *sourceId, *sourceScope, *sourceAttribute;
 };
 
 	
@@ -88,7 +91,9 @@ protected slots:
 private:
 	//QTreeWidgetItem * findAttributeItem(const QString & scope, const QString & name);
 	//QTreeWidgetItem * findScopeItem(const QString & scope);
-	int parseConfiguration();
+	int parseSources();
+	int parseMap();
+	QTreeWidgetItem *  hasScope(const std::string & scope,  QTreeWidgetItem * parent);
 	std::string parseQuotationMark(std::string::size_type beginPos, std::string::size_type limitedPos, std::string keyWord );
 
 private:
