@@ -70,7 +70,7 @@ bool CLAM::VM::PoolFloatArrayDataSource::setCurrentTime(double timeMiliseconds)
 	unsigned newFrame = _frameDivision ? _frameDivision->GetItem(timeMiliseconds*_samplingRate): 0;
 	if (_nFrames==0) newFrame = 0;
 	else if (newFrame>=_nFrames) newFrame=_nFrames-1;
-	_frameData = getData()? getData()+_nBins*newFrame : 0;
+	_frameData = getData() ? getData() + (_nBins + unsigned(_binGap)) * newFrame + unsigned(_firstBinOffset) : 0;
 	if (newFrame == _currentFrame) return false;
 	_currentFrame = newFrame;
 	return true;

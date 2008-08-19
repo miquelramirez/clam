@@ -88,6 +88,7 @@ private:
 	FloatPairVectorStorage *_chromaPeaksStorage;
 	
 	CLAM::VM::PoolFloatArrayDataSource _pcpSource;
+	CLAM::VM::PoolFloatArrayDataSource _keySpaceSource;
 	CLAM::VM::PoolFloatArrayDataSource _chordCorrelationSource;
 	CLAM::VM::PoolPeakDataSource _chromaPeaksSource;
 	CLAM::VM::PoolSegmentationDataSource _segmentationSource;
