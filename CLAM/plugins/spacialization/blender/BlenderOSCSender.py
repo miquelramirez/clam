@@ -33,7 +33,7 @@ def sendObjectLocation(objectNumber,typeName,location):
 	message="/SpatDIF/%s/%i/xyz" % (typeName,objectNumber)
 	Message(message,location).sendlocal(7000)
 
-import Blender
+
 
 def main():
 	scene=data.scenes.active
