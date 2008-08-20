@@ -18,6 +18,9 @@ Files:
   [1] CLAM/plugins/osc/oscpython/OSC.py, searched on relative path
        '../../osc/oscpython/OSC.py'
 
+- demo_scene_maker.py: call scene_maker and then assign single circular 
+   trajectories on sources objects
+
 - network_scene_exporter.py: to call once on a Blender scene. Generates
    a CLAM network with the propers OSC receivers (MultiLibloSources) 
    for objects involved in BlenderOSCSender.
