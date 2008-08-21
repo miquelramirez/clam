@@ -5,7 +5,7 @@ import Blender
 #comment the filenames of the scripts you don't want to use
 NetworkExporterFilename="network_scene_exporter.py"
 OSCSenderFilename="BlenderOSCSender.py"
-ChoreoExporterFilename="choreofile_exporter_with_network.py"
+ChoreoExporterFilename="choreofile_exporter.py"
 
 def main():
 	SourcesNumber,SinksNumber=ShowConfigurationDialog(1,1)
@@ -21,7 +21,6 @@ def main():
 			data.scenes.unlink(scene)
 	AddSinks(newscene,SinksNumber.val)
 	AddSources(newscene,SourcesNumber.val)
-	
 	if (NetworkExporterFilename and Blender.sys.exists(NetworkExporterFilename)==1): # if is an existent filename
 		NetworkExporter=Blender.Text.Load(NetworkExporterFilename)
 		Blender.Run(NetworkExporter.name)
