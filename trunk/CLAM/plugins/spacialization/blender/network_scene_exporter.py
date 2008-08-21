@@ -10,9 +10,9 @@ from bpy import data
 import Blender
 
 def main():
-	Blender.Window.FileSelector(write, "Export to CLAM network","exported_scene.clamnetwork")
+	Blender.Window.FileSelector(GenerateNetworkOSCReceiver, "Generate CLAM network OSC monitor",Blender.sys.makename(ext='.clamnetwork'))
 	
-def write(filename):
+def GenerateNetworkOSCReceiver(filename):
 	liblos=""
 	connections=""
 	printers=""
@@ -21,6 +21,7 @@ def write(filename):
 	yPosition=150
 	path="/SpatDIF/sources/%(objectNumber)s/xyz"
 	port=7000
+#create sources receivers and its monitors
 	objectsList=list(data.groups['AudioSources'].objects)
 	for source in data.groups['AudioSources'].objects:
 		libloName="source_"+source.name
@@ -32,9 +33,9 @@ def write(filename):
 			sufix="_"+str(o)
 			connections+=makeControlConnection(libloName,(path%vars()).replace("/","_")+sufix,printerName,"ControlPrinter"+sufix)
 		xPosition+=300
-
 	xPosition=50
 	yPosition=600
+#create sinks receivers and its monitors
 	objectsList=list(data.groups['AudioSinks'].objects)
 	path="/SpatDIF/sinks/%(objectNumber)s/xyz"
 	for sink in data.groups['AudioSinks'].objects:
@@ -47,7 +48,7 @@ def write(filename):
 			sufix="_"+str(o)
 			connections+=makeControlConnection(libloName,(path%vars()).replace("/","_")+sufix,printerName,"ControlPrinter"+sufix)
 		xPosition+=300
-
+#create sync receivers and it monitors
 	path="/SpatDIF/sync/FrameChanged"
 	libloName="sync_Framechanged"
 	printerName="printer_sync_FrameChanged"
