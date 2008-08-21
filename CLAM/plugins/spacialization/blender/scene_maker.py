@@ -35,7 +35,7 @@ def ShowConfigurationDialog(defaultSources=1,defaultSinks=1):
 	SourcesNumber=Draw.Create(defaultSources)
 	SinksNumber=Draw.Create(defaultSinks)
 	
-	if not Draw.PupBlock('',[\
+	if not Draw.PupBlock('Define the objects to create',[\
 	('Sources number:',SourcesNumber,1,100,'number of sources'),\
 	('Sinks number:',SinksNumber,1,100,'number of sinks'),\
 	]):

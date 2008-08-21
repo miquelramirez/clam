@@ -6,7 +6,6 @@ import math
 MainSceneMaker="scene_maker.py"
 
 def main():
-#TODO: this doesn't clear all the data!
 	if Blender.sys.exists(MainSceneMaker)!=1:
 		Blender.Draw.PupMenu('Cannot found the scene creator (scene_maker.py). Aborting')
 		return 0
