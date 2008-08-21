@@ -57,8 +57,9 @@ def GenerateNetworkOSCReceiver(filename):
 	connections+=makeControlConnection(libloName,path.replace("/","_")+"_0",printerName,"In Control")
 	f=open(filename,'w')
 	networkId="Exported_Blender_scene_receiver_network"
-	header=Header % vars()
-	f.write(header+liblos+printers+connections+Tail)
+#	header=Header % vars()
+	body=liblos+printers+connections
+	f.write(Network % vars())
 	f.close()
 	print "OSC receivers CLAM Network exported as %(filename)s" % vars()
 
@@ -68,24 +69,32 @@ if __name__ == '__main__':
 
 def makeAudioSource(processingName,position,size=(130,65)):
 	processingPosition="%i,%i" % (position[0],position[1])
-	processingSize="%i,%i" % (size[0],size[1])	
-	return AudioSource % vars()
+	processingSize="%i,%i" % (size[0],size[1])
+	typeName="AudioSource"
+	processingConfig=""
+	return Processing % vars()
 
 def makeChoreoSequencer(processingName,choreoFilename,fps,position,size=(194,65)):
 	processingPosition="%i,%i" % (position[0],position[1])
 	processingSize="%i,%i" % (size[0],size[1])
-	return ChoreoSequencer % vars()
+	typeName="ChoreoSequencer"
+	processingConfig=ChoreoSequencerConfig % vars()
+	return Processing % vars()
 
 def makeLibloSource(processingName,path,position,argumentsNumber,port=7000,size=(130,65)):
 	processingPosition="%i,%i" % (position[0],position[1])
 	processingSize="%i,%i" % (size[0],size[1])
-	return LibloSource % vars()
+	typeName="MultiLibloSource"
+	processingConfig=LibloSourceConfig%vars()
+	return Processing % vars()
 	
 def makeControlPrinter(processingName,position,argumentsNumber,size=(300,285)):
 	processingPosition="%i,%i" % (position[0],position[1])
 	processingSize="%i,%i" % (size[0],size[1])
-	printerId="ControlPrinter"
-	return ControlPrinter % vars()
+	typeName="ControlPrinter"
+	printerId=typeName
+	processingConfig=ControlPrinterConfig%vars()
+	return Processing % vars()
 
 def makeControlConnection(sourceName,outName,targetName,inName):
 	return ControlConnection % vars()
@@ -93,49 +102,40 @@ def makeControlConnection(sourceName,outName,targetName,inName):
 def makePortConnection(sourceName,outName,targetName,inName):
 	return PortConnection % vars()
 
-Header="""<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network id="%(networkId)s">"""
-Tail="""
+Network="""<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="%(networkId)s">
+%(body)s
 </network>
 """
-ControlPrinter="""
-  <processing id="%(processingName)s" position="%(processingPosition)s" size="%(processingSize)s" type="ControlPrinter">
-    <Identifier>%(printerId)s</Identifier>
+Processing="""
+  <processing id="%(processingName)s" position="%(processingPosition)s" size="%(processingSize)s" type="%(typeName)s">
+  %(processingConfig)s
+  </processing>
+  """
+ControlPrinterConfig="""  <Identifier>%(printerId)s</Identifier>
     <NumberOfInputs>%(argumentsNumber)s</NumberOfInputs>
-    <GuiOnly>1</GuiOnly>
-  </processing>
-  """
-LibloSource="""
-  <processing id="%(processingName)s" position="%(processingPosition)s" size="%(processingSize)s" type="MultiLibloSource">
-    <OscPath>%(path)s</OscPath>
+    <GuiOnly>1</GuiOnly>"""
+LibloSourceConfig="""  <OscPath>%(path)s</OscPath>
     <ServerPort>%(port)s</ServerPort>
-    <NumberOfArguments>%(argumentsNumber)s</NumberOfArguments>
-  </processing>
-  """
-ControlConnection="""
-  <control_connection>
-    <out>%(sourceName)s.%(outName)s</out>
-    <in>%(targetName)s.%(inName)s</in>
-  </control_connection>
-  """
-PortConnection="""
-  <port_connection>
-    <out>%(sourceName)s.%(outName)s</out>
-    <in>%(targetName)s.%(inName)s</in>
-  </port_connection>
-  """
-ChoreoSequencer="""
-  <processing id="%(processingName)s" position="%(processingPosition)s" size="%(processingSize)s" type="ChoreoSequencer">
-    <Filename>%(choreoFilename)s</Filename>
+    <NumberOfArguments>%(argumentsNumber)s</NumberOfArguments>"""
+ChoreoSequencerConfig="""  <Filename>%(choreoFilename)s</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
     <ControlsPerSecond>%(fps)i</ControlsPerSecond>
     <SizeX>1</SizeX>
     <SizeY>1</SizeY>
-    <SizeZ>1</SizeZ>
-  </processing>
-  """
-AudioSource="""
-  <processing id="%(processingName)s" position="%(processingPosition)s" size="%(processingSize)s" type="AudioSource"/>
-  """
+    <SizeZ>1</SizeZ>"""
+
+ControlConnection="""
+  <control_connection>
+    <out>%(sourceName)s.%(outName)s</out>
+    <in>%(targetName)s.%(inName)s</in>
+  </control_connection>
+"""
+PortConnection="""
+  <port_connection>
+    <out>%(sourceName)s.%(outName)s</out>
+    <in>%(targetName)s.%(inName)s</in>
+  </port_connection>
+"""
