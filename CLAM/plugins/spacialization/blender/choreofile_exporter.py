@@ -1,4 +1,3 @@
-#!BPY
 
 import Blender
 from bpy import data
@@ -49,7 +48,6 @@ def WriteSceneAsChoreo (choreoFilename):
 def WriteChoreoNetwork(choreoFilename):
 	networkFilename=choreoFilename.replace(".choreo",".clamnetwork")
 	networkId="ChoreoSequencer_Blender_exported_network"
-	header=SceneExporter.Header % vars()
 	audioSourceName="AudioSync"
 	audioSourceOutName="AudioOut"
 	choreoSyncInName="sync"
@@ -84,7 +82,8 @@ def WriteChoreoNetwork(choreoFilename):
 			connections+=SceneExporter.makeControlConnection(choreoSequencerId,outConnector,printerName,"ControlPrinter_"+str(outIndex))
 			outputNumber+=1
 	f=open(networkFilename,'w')
-	f.write(header+processings+connections+SceneExporter.Tail)
+	body=processings+connections
+	f.write(SceneExporter.Network % vars())
 	f.close()
 	print "Exported CLAM network: %s" % networkFilename
 
@@ -93,4 +92,3 @@ def main():
 		 
 if __name__=='__main__':
 	main()
-
