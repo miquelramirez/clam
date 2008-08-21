@@ -27,7 +27,6 @@ Files:
 
 - choreofile_exporter.py: to call once after selecting one source and
    one sink of the actual scene. Makes a ChoreoSequencer readable file
-
-- choreofile_exporter_with_network.py: as the previous, but also exports
-   a network with a configured ChoreoSequencer with the proper FPS
+   and also exports a network with a configured ChoreoSequencer with 
+   the proper FPS
 
