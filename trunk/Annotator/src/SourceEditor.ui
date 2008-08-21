@@ -1,11 +1,11 @@
 <ui version="4.0" >
- <class>sourceEditor</class>
- <widget class="QDialog" name="sourceEditor" >
+ <class>SourceEditor</class>
+ <widget class="QDialog" name="SourceEditor" >
   <property name="geometry" >
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>576</width>
+    <width>605</width>
     <height>311</height>
    </rect>
   </property>
@@ -43,6 +43,11 @@
        <column>
         <property name="text" >
          <string>ConfigFile</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Path</string>
         </property>
        </column>
       </widget>

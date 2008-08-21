@@ -24,6 +24,7 @@
 
 #include "Schema.hxx"
 #include "SchemaBrowser.hxx"
+#include "Project.hxx"
 #include <QtCore/QVariant>
 #include <QtGui/QPixmap>
 #include <QtGui/QWidget>
@@ -49,7 +50,7 @@ class AggregationEditor : public SchemaBrowser
     Q_OBJECT
 
 public:
-	AggregationEditor( SchemaBrowser* parent = 0, Qt::WFlags fl = 0 );
+	AggregationEditor( QWidget * parent = 0, Qt::WFlags fl = 0 );
 	~AggregationEditor();
 	void setSchema();
 	void addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem* parent);
@@ -59,23 +60,17 @@ public:
 	{
 		mConfig=config;
 	}
-private:
-	/*QSplitter* splitter1;
-	//QTreeWidget* attributeList;
-	QSplitter* splitter2;
-	QFrame* attributeProperties;
-	QSpinBox* minSpin;
-	QSpinBox* maxSpin;
-	QLineEdit* childEdit;
-	QLabel* minLabel;
-	QLabel* maxLabel;
-	QLabel* childLabel;
-	QTextBrowser* attributeDocumentation;*/
+	std::string outputConfig()
+	{
+		return mConfig;	
+	}
+
 
 struct configurationParser
 {
   std::string * source, *extractor, *suffix, *schemaFile, *configFile, *path;
   std::string *targetScope, *targetAttribute, *sourceId, *sourceScope, *sourceAttribute;
+  int sourceCnt, attributeCnt;
 };
 
 	
@@ -87,13 +82,14 @@ protected:
 protected slots:
 	void languageChange();
 	void updateCurrentAttribute();
-	void onDoubleClick();
+	void editConfiguration();
+	void setConfiguration();
 
 private:
 	int parseSources();
 	int parseMap();
-	void editSource();
-	void renameTarget();
+	void editSource(QTreeWidgetItem * current);
+	void renameTarget(QTreeWidgetItem * current);
 	QTreeWidgetItem *  hasScope(const std::string & scope,  QTreeWidgetItem * parent);
 	std::string parseQuotationMark(std::string::size_type beginPos, std::string::size_type limitedPos, std::string keyWord );
 
@@ -101,13 +97,10 @@ private:
 	QPixmap sourceIcon;
 	QPixmap scopeIcon;
 	QPixmap attributeIcon;
-
 		
 	configurationParser mParser;
 	std::string mConfig;
-	//CLAM_Annotator::Schema * mSchema;
-	//CLAM_Annotator::Schema * mSourceSchema;
-	
+
 };
 
 #endif

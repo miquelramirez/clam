@@ -19,33 +19,38 @@
  *
  */
 
-#ifndef ConfigurationEditor_hxx
-#define ConfigurationEditor_hxx
+#ifndef GraphicConfigEditor_hxx
+#define GraphicConfigEditor_hxx
 
-#include "ui_ConfigurationEditor.hxx"
-#include <QtCore/QFile>
+#include "ui_GraphicConfigEditor.hxx"
+#include "AggregationEditor.hxx"
 
-
-class ConfigurationEditor : public QDialog
+class GraphicConfigEditor : public QDialog
 {
 		Q_OBJECT
 	public:
-		ConfigurationEditor(QWidget * parent =0)
+		GraphicConfigEditor(QWidget * parent =0)
 			: QDialog(parent)
 		{
 			_ui.setupUi(this);
+			mAggregationEditor = new AggregationEditor;  // new AggregationEditor(this);
+			_ui.verticalLayout->addWidget(mAggregationEditor);
 		}
-		virtual ~ConfigurationEditor();
+		void setConfiguration(std::string config);
+		std::string getConfiguration();
+		virtual ~GraphicConfigEditor();
 
-		void setConfiguration(QString filePath);
 
 	private slots:
 		void on_okButton_clicked();
+		void on_cancelButton_clicked();
+
 		
 	private:
-		Ui::ConfigurationEditor _ui;
-		QFile * mfile;
+		std::string mConfig;
+		Ui::GraphicConfigEditor _ui;
+		AggregationEditor * mAggregationEditor;
 };
 
-#endif//ConfigurationEditor_hxx
+#endif//GraphicConfigEditor_hxx
 
