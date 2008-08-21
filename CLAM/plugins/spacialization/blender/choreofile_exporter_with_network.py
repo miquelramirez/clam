@@ -2,8 +2,8 @@
 
 import Blender
 from bpy import data
-
 from sys import path
+
 if Blender.sys.exists("network_scene_exporter.py")==1:
 	path.append(Blender.sys.dirname("network_scene_exporter.py"))
 	import network_scene_exporter as SceneExporter
@@ -42,8 +42,12 @@ def WriteSceneAsChoreo (choreoFilename):
 		sourceZ=source.LocZ
 		f.write(row % vars())
 	f.close()
+	print "Exported choreo file: %s" % choreoFilename
+	WriteChoreoNetwork(choreoFilename)
 
-# generate the CLAM network
+# generate CLAM network with the choreo sequencer and monitors
+def WriteChoreoNetwork(choreoFilename):
+	networkFilename=choreoFilename.replace(".choreo",".clamnetwork")
 	networkId="ChoreoSequencer_Blender_exported_network"
 	header=SceneExporter.Header % vars()
 	audioSourceName="AudioSync"
@@ -58,10 +62,10 @@ def WriteSceneAsChoreo (choreoFilename):
 	connections+= SceneExporter.makePortConnection(audioSourceName,audioSourceOutName,choreoSequencerId,choreoSyncInName)
 
 	printersParameters=[\
-		("target xyz",37,184,3,203,165), \
-		("target azimuth - zenith",37,353,2,203,130), \
-		("source xyz",235,184,3,203,165), \
-		("source azimuth - zenith",235,353,2,203,130) \
+		("target xyz",(37,184),3,(203,165)), \
+		("target azimuth - zenith",(37,353),2,(203,130)), \
+		("source xyz",(235,184),3,(203,165)), \
+		("source azimuth - zenith",(235,353),2,(203,130)) \
 	]
 	choreoOuts = [\
 		"target X","target Y","target Z", \
@@ -69,29 +73,24 @@ def WriteSceneAsChoreo (choreoFilename):
 		"source X","source Y","source Z", \
 		"source azimuth","source elevation" \
 	]
-
 	outputNumber=0
 	for parameters in printersParameters:
 		printerName=parameters[0]
-		printerXPos=parameters[1]
-		printerYPos=parameters[2]
-		printerInputs=parameters[3]
-		printerWidth=parameters[4]
-		printerHeight=parameters[5]
-		processings+=SceneExporter.makeControlPrinter(printerName,(printerXPos,printerYPos),printerInputs,(printerWidth,printerHeight))
+		printerPos=parameters[1]
+		printerInputs=parameters[2]
+		printerSize=parameters[3]
+		processings+=SceneExporter.makeControlPrinter(printerName,printerPos,printerInputs,printerSize)
 		for outIndex,outConnector in enumerate(choreoOuts[outputNumber:outputNumber+printerInputs]):
 			connections+=SceneExporter.makeControlConnection(choreoSequencerId,outConnector,printerName,"ControlPrinter_"+str(outIndex))
 			outputNumber+=1
-
-	networkFilename=choreoFilename.replace(".choreo",".clamnetwork")
 	f=open(networkFilename,'w')
 	f.write(header+processings+connections+SceneExporter.Tail)
 	f.close()
 	print "Exported CLAM network: %s" % networkFilename
 
 def main():
-	Blender.Window.FileSelector(WriteSceneAsChoreo, "Export choreo sequencer file", Blender.sys.makename(ext='.choreo'))
-
+	Blender.Window.FileSelector(WriteSceneAsChoreo, "Export choreo sequencer file", Blender.sys.makename(ext=".choreo"))
+		 
 if __name__=='__main__':
 	main()
 
