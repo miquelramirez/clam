@@ -20,6 +20,7 @@
  */
 
 #include "AggregationEditor.hxx"
+#include "SourceEditor.hxx"
 
 #include <CLAM/XMLStorage.hxx>
 #include <QtGui/QSplitter>
@@ -33,69 +34,22 @@
 #include <QtGui/QFrame>
 #include <iostream>
 
-AggregationEditor::AggregationEditor( SchemaBrowser* parent, Qt::WFlags fl )
+AggregationEditor::AggregationEditor(QWidget *parent, Qt::WFlags fl )
     : SchemaBrowser( parent, fl )
     , sourceIcon(":/icons/images/gear.png")
     , scopeIcon(":/icons/images/xkill.png")
     , attributeIcon(":/icons/images/label.png")
 {
 	setObjectName( "aggregationEditor" );
-	//aggregationEditorLayout = new QHBoxLayout( this );
-	//aggregationEditorLayout->setMargin(11);
-	//aggregationEditorLayout->setSpacing(6);
 
-	//splitter1 = new QSplitter( this );
-	//splitter1->setOrientation( Qt::Horizontal );
-	//attributeList = new QTreeWidget( splitter1 );
 	attributeList->setHeaderLabels( QStringList()
 		<< tr( "Source" )
 		<< tr( "Target" )
 		);
-	//attributeList->setRootIsDecorated( true );
-	//attributeList->setSortingEnabled( false );
-	//attributeList->setAlternatingRowColors(true);
-	//attributeList->resizeColumnToContents(0);
-	//attributeList->resizeColumnToContents(1);
-
-	//splitter2 = new QSplitter( splitter1 );
-	//splitter2->setOrientation( Qt::Vertical );
-
-	//attributeProperties = new QFrame( splitter2 );
-	//attributeProperties->setFrameShape( QFrame::StyledPanel );
-	//attributeProperties->setFrameShadow( QFrame::Raised );
-	//attributePropertiesLayout = new QGridLayout( attributeProperties ); 
-	//attributePropertiesLayout->setMargin(11);
-	//attributePropertiesLayout->setSpacing(6);
-
-	//minLabel = new QLabel( attributeProperties );
-	//attributePropertiesLayout->addWidget( minLabel, 0, 0 );
-
-	//minSpin = new QSpinBox( attributeProperties );
-	//attributePropertiesLayout->addWidget( minSpin, 0, 1 );
-
-	//maxLabel = new QLabel( attributeProperties );
-	//attributePropertiesLayout->addWidget( maxLabel, 1, 0 );
-
-	//maxSpin = new QSpinBox( attributeProperties );
-	//attributePropertiesLayout->addWidget( maxSpin, 1, 1 );
-
-	//childLabel = new QLabel( attributeProperties );
-	//attributePropertiesLayout->addWidget( childLabel, 2, 0 );
-
-	//childEdit = new QLineEdit( attributeProperties );
-	//attributePropertiesLayout->addWidget( childEdit, 2, 1 );
-
-	//attributeDocumentation = new QTextBrowser( splitter2 );  //jun: needed?
-	//attributeDocumentation->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Maximum);
-
-	//aggregationEditorLayout->addWidget( splitter1 );
-	//languageChange();
-
-	//resize( QSize(740, 346).expandedTo(minimumSizeHint()) );
-	//connect(attributeList, SIGNAL(currentItemChanged(QTreeWidgetItem*,QTreeWidgetItem*)),
-        //    this, SLOT(updateCurrentAttribute()));
-        connect(attributeList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
-            this, SLOT(onDoubleClick()));
+	connect(attributeList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+            this, SLOT(editConfiguration()));
+	//connect(attributeList, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+      //      this, SLOT(setConfiguration()));
 }
 
 /*
@@ -103,7 +57,7 @@ AggregationEditor::AggregationEditor( SchemaBrowser* parent, Qt::WFlags fl )
  */
 AggregationEditor::~AggregationEditor()
 {
-	delete mParser.source;	
+	delete mParser.source;
 	delete mParser.extractor;
 	delete mParser.schemaFile;	
 	delete mParser.suffix;
@@ -143,15 +97,21 @@ void AggregationEditor::setSchema()
 		CLAM::XMLStorage::Restore(sourceSchema, mParser.path[it]+"/"+mParser.schemaFile[it]);
 		addSource(mParser.source[it], sourceSchema);
 	}
+
 	attributeList->show();
 	attributeList->resizeColumnToContents(0);
 	attributeList->resizeColumnToContents(1);
 	attributeList->show();	
+
+	connect(attributeList, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+		this, SLOT(setConfiguration()));  //start monitoring the change of the tree&SourceEditor
 }
 
 void AggregationEditor::addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem * parent)
 {
 	QTreeWidgetItem * scopeItem = 0;
+	int arraySize = parseMap();
+	Qt::CheckState  state=Qt::Unchecked;
 	if(!(scopeItem=hasScope(scope, parent)))
 	{
 		scopeItem = new QTreeWidgetItem( parent);
@@ -163,16 +123,20 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 	QTreeWidgetItem * item = new QTreeWidgetItem( scopeItem);
 	item->setText( 0, name.c_str() );
 	item->setIcon( 0, attributeIcon );
-
-	int arraySize = parseMap();
-	Qt::CheckState  state=Qt::Unchecked;
+	
+	std::cout<< "arraySize is: \n" <<arraySize <<std::endl;
+	//std::cout<< "the currently added attribute name is:\n " << name.c_str() <<std::endl;
+	//std::cout<< "its related extractor ID name is :\n" <<parent->text(0).toStdString() <<std::endl;
 
 	for(int i=0; i<arraySize; i++)
 	{
+		std::cout<< "Parser has Attribute  " << i <<">>>>"<<mParser.sourceAttribute[i].c_str()<<std::endl;
+		std::cout<< "The extractor ID  " << i <<">>>>"<<mParser.sourceId[i].c_str()<<std::endl;
 		if((mParser.sourceAttribute[i]==name)&&(mParser.sourceId[i].c_str()==parent->text(0)))
 		{
 			state=Qt::Checked;
 			item->setText(1, mParser.targetAttribute[i].c_str());
+			scopeItem->setText(1, mParser.targetScope[i].c_str());
 		}
 	}
 
@@ -224,6 +188,7 @@ int AggregationEditor::parseSources()
 		posStart=mConfig.find("FileMetadataSource", posStart+1,18);  //Keyword "FileMetadataSource" 
 		arraySize++;
 	}
+	mParser.sourceCnt=arraySize;
 	if(!arraySize)
 	{
 		std::cout<< "There is no source. Please check whether the Aggregator is correctly configured." <<std::endl;//todo: replace this with unique Failure assertion
@@ -263,6 +228,8 @@ int AggregationEditor::parseMap()
 
 	int arraySize = -1;
 
+	//std::cout<<"the mConfig in parseMap() is>>>>>>>>>>\n"<<mConfig<<std::endl;
+
 	posStart = mConfig.find("map",0);         //keyword "map" 
 	posA = posStart;	
 	posEnd = mConfig.find("]", posStart+1);
@@ -273,6 +240,8 @@ int AggregationEditor::parseMap()
 		posA = mConfig.find("),", posA+1);  //key word"),"
 		arraySize++;
 	}
+	mParser.attributeCnt=arraySize;
+	
 	if(!arraySize)	return arraySize;
 
 	mParser.targetScope=new std::string[arraySize];	
@@ -336,27 +305,82 @@ void AggregationEditor::languageChange()
 	return;
 }
 
-void AggregationEditor::onDoubleClick()
+void AggregationEditor::editSource(QTreeWidgetItem * current)
+{
+	//pop out a new QDialog with "Source   Extractor   Suffix   SchemaFile  ConfigFile" list
+	SourceEditor sourceEditor(this, &mParser);
+	if(sourceEditor.exec()==0) return; //a modal dialog
+}
+
+void AggregationEditor::renameTarget(QTreeWidgetItem * current)
+{
+	current->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled |Qt::ItemIsEditable);
+	attributeList->editItem(current, 1);
+}
+
+void AggregationEditor::editConfiguration()
 {
 	QTreeWidgetItem * current = attributeList->currentItem();
 	if(!current) return;
 	QTreeWidgetItem * parent=current->parent();
-	if(!(parent=parent->parent()))  //Source
-	editSource();
+	//if(!(parent=parent->parent()))  //Source or SourceScope
+
+	if(!parent)    //Source
+		editSource(current);
 	else
-	renameTarget();
+		renameTarget(current);
+
 }
 
-void AggregationEditor::editSource()
+void AggregationEditor::setConfiguration()
 {
-	//pop out a new widget with "Source   Extractor   Suffix   SchemaFile  ConfigFile" list
-	return;
+	QTreeWidgetItem * attributeItem;
+	QTreeWidgetItem * scopeItem;
+	QTreeWidgetItem * sourceItem;
+	std::string::size_type posStart=0;
+	std::string::size_type posA, posB, posEnd, posAttributesEnd;
+
+	int arraySize = -1;
+
+	posStart = mConfig.find("map",0);         
+	posA = mConfig.find("[", posStart+1);  
+	posB = mConfig.find("]", posStart+1);
+	mConfig.erase(posA+1, posB-posA-1); //erase the map content
+	std::string newContent="\n";
+	std::string str1="\t(\"";
+	std::string str2="::";
+	std::string str3="\", \"";
+	std::string str4="::";
+	std::string str5="\"),\n";
+
+	for(int i=0; i<attributeList->topLevelItemCount(); i++)  //ugly.....is there any clearer way?
+	{
+		sourceItem=attributeList->topLevelItem(i);
+		for(int j=0; j<sourceItem->childCount();j++)
+		{
+			scopeItem = sourceItem->child(j);
+			for(int k=0; k<scopeItem->childCount();k++)
+			{
+				attributeItem = scopeItem->child(k);
+					if(attributeItem->checkState(0)==Qt::Checked)
+				{
+					if(attributeItem->text(1)=="") attributeItem->setText(1, attributeItem->text(0));
+					if(scopeItem->text(1)=="") scopeItem->setText(1, scopeItem->text(0));
+					newContent+=str1+scopeItem->text(1).toStdString()+str2+
+						attributeItem->text(1).toStdString()+str3+
+						sourceItem->text(0).toStdString()+str3+
+						scopeItem->text(0).toStdString()+str4+
+						attributeItem->text(0).toStdString()+str5;
+				}
+			}
+			
+		}
+		
+	}
+	mConfig.insert(posA+1, newContent);
+	std::cout<< "the newly edited Configuration is ..............\n" << mConfig << std::endl;
+	
 }
 
-void AggregationEditor::renameTarget()
-{
-	QTreeWidgetItem * current = attributeList->currentItem();
-	current->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled |Qt::ItemIsEditable);
-	attributeList->editItem(current, 1);
-}
+
 

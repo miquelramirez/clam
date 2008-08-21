@@ -25,12 +25,10 @@ TODO: Explain how this aggregation extractor should be reviewed.
 ]
 
 map = [
-	# ('TargetScope::TargetAttribute', 'sourceId', 'SourceScope::SourceAttribute'),
 	("Song::Frames", "example", "Song::Frames"),
 	("Song::ChordFrames", "chord", "Song::Frames"),
 	("Song::Danceable", "example", "Song::Danceability"),
 	("Frame::Energy", "example", "Frame::Energy"),
-	#("ChordFrame::Energy", "chord", "Frame::Energy"),
 	("ChordFrame::ChordHartePcp", "chord", "Frame::HartePcp"),
 	("ChordFrame::HarteChordCorrelation", "chord", "Frame::HarteChordCorrelation"),
 	("Song::Harte", "chord", "Song::Chords_Harte"),

@@ -19,33 +19,32 @@
  *
  */
 
-#ifndef ConfigurationEditor_hxx
-#define ConfigurationEditor_hxx
+#include "GraphicConfigEditor.hxx"
 
-#include "ui_ConfigurationEditor.hxx"
-#include <QtCore/QFile>
-
-
-class ConfigurationEditor : public QDialog
+GraphicConfigEditor::~GraphicConfigEditor()
 {
-		Q_OBJECT
-	public:
-		ConfigurationEditor(QWidget * parent =0)
-			: QDialog(parent)
-		{
-			_ui.setupUi(this);
-		}
-		virtual ~ConfigurationEditor();
+}
 
-		void setConfiguration(QString filePath);
+void GraphicConfigEditor::setConfiguration(std::string config)
+{
+	mConfig=config;
+	std::cout<< "the configuration is.......\n" <<config <<std::endl;
+	mAggregationEditor->loadConfig(config);
+	mAggregationEditor->setSchema();
+}
 
-	private slots:
-		void on_okButton_clicked();
-		
-	private:
-		Ui::ConfigurationEditor _ui;
-		QFile * mfile;
-};
+std::string GraphicConfigEditor::getConfiguration()
+{
+	return mConfig;
+}
 
-#endif//ConfigurationEditor_hxx
+void GraphicConfigEditor::on_okButton_clicked()
+{
+	mConfig=mAggregationEditor->outputConfig(); //Does this work? will the mConfig be deleted right now?
+	this->accept();
+}
 
+void GraphicConfigEditor::on_cancelButton_clicked()
+{
+	this->reject();
+}

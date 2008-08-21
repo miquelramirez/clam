@@ -25,7 +25,7 @@
 #include "FrameDivision.hxx"
 #include "AudioLoadThread.hxx"
 #include "SchemaBrowser.hxx"
-#include "AggregationEditor.hxx"
+//#include "AggregationEditor.hxx"
 #include "TaskRunner.hxx"
 #include "ui_About.hxx"
 #include "ProjectEditor.hxx"
@@ -313,9 +313,9 @@ void Annotator::initInterface()
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
 
-	mAggregationEditor = new AggregationEditor;
+	//mAggregationEditor = new AggregationEditor;
 
-	mMainTabWidget->addTab(mAggregationEditor, tr("Aggregation Editor"));
+	//mMainTabWidget->addTab(mAggregationEditor, tr("Aggregation Editor"));
 	
 	_auralizer = new Auralizer(this);
 	_auralizer->setAudio(mCurrentAudio);
@@ -392,6 +392,7 @@ void Annotator::adaptInterfaceToCurrentSchema()
 		_segmentationPanes[i]->adaptToSchema();
 	mStatusBar << tr("Updating schema browser...") << mStatusBar;
 	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
+	/*
 	if(mProject.GetConfiguration()=="")
 		mStatusBar << tr("Aggregation editor is void, skip...") << mStatusBar;
 	else
@@ -400,6 +401,7 @@ void Annotator::adaptInterfaceToCurrentSchema()
 		mAggregationEditor->loadConfig(mProject.GetConfiguration().c_str());
 		mAggregationEditor->setSchema();
 	}
+	*/
 		
 	mStatusBar << tr("Creating instant views...") << mStatusBar;
 	adaptInstantViewsToSchema();
@@ -1018,14 +1020,6 @@ void Annotator::on_browseSchemaAction_triggered()
 {
 	mMainTabWidget->setCurrentWidget(mSchemaBrowser);
 }
-
-//TODO
-/*void Annotator::on_editAggregationAction_triggered()
-{
-	mMainTabWidget->setCurrentWidget(mAggregationEditor);
-}
-*/
-
 
 void Annotator::on_actionOnline_Tutorial_triggered()
 {
