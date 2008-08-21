@@ -5,6 +5,7 @@ import Blender
 #comment the filenames of the scripts you don't want to use
 NetworkExporterFilename="network_scene_exporter.py"
 OSCSenderFilename="BlenderOSCSender.py"
+ChoreoExporterFilename="choreofile_exporter_with_network.py"
 
 def main():
 	SourcesNumber,SinksNumber=ShowConfigurationDialog(1,1)
@@ -27,6 +28,8 @@ def main():
 	if (OSCSenderFilename and Blender.sys.exists(OSCSenderFilename)==1):
 		OSCSender=Blender.Text.Load(OSCSenderFilename)
 		data.scenes.active.addScriptLink(OSCSender.name,'FrameChanged')
+	if (ChoreoExporterFilename and Blender.sys.exists(ChoreoExporterFilename)==1):
+		Blender.Text.Load(ChoreoExporterFilename)
 		
 def ShowConfigurationDialog(defaultSources=1,defaultSinks=1):
 	Draw=Blender.Draw
