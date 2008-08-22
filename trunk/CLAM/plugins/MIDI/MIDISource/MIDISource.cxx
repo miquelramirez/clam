@@ -40,7 +40,7 @@ namespace Hidden
 
 		// Open Virtual Port
 		try {
-			mMIDIin->openVirtualPort("CLAM - MIDIMon In");
+			mMIDIin->openVirtualPort("CLAM - MIDISource In");
 
 			// Set our callback function.  This should be done immediately after 
 			// opening the port to avoid having incoming messages written to the
