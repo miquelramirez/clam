@@ -53,6 +53,7 @@ public:
 	AggregationEditor( QWidget * parent = 0, Qt::WFlags fl = 0 );
 	~AggregationEditor();
 	void setSchema();
+	void setConfiguration();
 	void addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem* parent);
 	void setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem* parent);
 	void addSource(const std::string & source, CLAM_Annotator::Schema & schema);
@@ -83,7 +84,7 @@ protected slots:
 	void languageChange();
 	void updateCurrentAttribute();
 	void editConfiguration();
-	void setConfiguration();
+	
 
 private:
 	int parseSources();

@@ -58,10 +58,7 @@ void ProjectEditor::applyChanges(CLAM_Annotator::Project & project)
 	project.UpdateData();
 	project.SetProjectPath(mProject.File());
 	project.SetDescription(mProject.GetDescription());
-	if(mGraphicConfigEditor)
-		project.SetConfiguration(mGraphicConfigEditor->getConfiguration());
-	else project.SetConfiguration(mProject.GetConfiguration());
-
+	project.SetConfiguration(mProject.GetConfiguration());
 	project.SetSchema(mProject.GetSchema());
 	project.SetExtractor(mProject.GetExtractor());
 	project.SetConfig(mProject.GetConfig());
@@ -171,10 +168,9 @@ void ProjectEditor::on_configuration_textChanged()
 void ProjectEditor::on_configurationEditButton_clicked()
 {
 	ConfigurationEditor configDialog(this);
-	//Users cannot interact with any other window in the same application until they close the dialog
-	//if(configDialog.exec()==0) return; 
+ 
 	configDialog.setConfiguration(ui.configuration->text());
-	if(configDialog.exec()==QDialog::Rejected) return;
+	if(configDialog.exec()==QDialog::Rejected) return;  //??needed??
 	
 }
 
@@ -182,9 +178,9 @@ void ProjectEditor::on_graphicalEditButton_clicked()
 {
 	mGraphicConfigEditor = new GraphicConfigEditor(this);
 	mGraphicConfigEditor->setConfiguration(mProject.GetConfiguration().c_str());
-	if(mGraphicConfigEditor->exec()==QDialog::Rejected) return;		
+	if(mGraphicConfigEditor->exec()==QDialog::Rejected) return;	
 
-	mProject.SetConfiguration(mGraphicConfigEditor->getConfiguration()); //Does this work?
+	mProject.SetConfiguration(mGraphicConfigEditor->getConfiguration()); // parameter of std::string type 
 }
 
 void ProjectEditor::on_extractor_textChanged()
