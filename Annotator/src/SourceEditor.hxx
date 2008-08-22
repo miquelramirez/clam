@@ -44,22 +44,24 @@ class SourceEditor : public QDialog
 			_ui.setupUi(this);
 			loadParameter(parser);
 			mAggregationEditor = parent;
-			connect(_ui.parameterTable, SIGNAL(itemChanged(QTableWidgetItem *)), this, SLOT(applyUpdates())); //AggregationEditor?
+			connect(_ui.parameterTable, SIGNAL(itemChanged(QTableWidgetItem *)), this, SLOT(setItemChangedFlag())); 
+			_itemChangedFlag=0;
 		}
 		virtual ~SourceEditor();
+		void applyUpdates();
 
 	private:
 
 		void loadParameter(AggregationEditor::configurationParser* parser);
-
+		
 	private slots:
-		void applyUpdates();
+		void setItemChangedFlag();
 		void on_addButton_clicked();
 		void on_deleteButton_clicked();
-		void on_itemDoubleClicked();
 		
 	private:
 		Ui::SourceEditor _ui;
+		int _itemChangedFlag;
 		AggregationEditor * mAggregationEditor;
 };
 

@@ -125,18 +125,20 @@ void Annotator::computeSongDescriptors()
 	mStatusBar << "Launching Extractor..." << mStatusBar;
 	TaskRunner * runner = new TaskRunner();
 	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
-	//addDockWidget( Qt::BottomDockWidgetArea, runner);  //jun: comment out as it occupies to much CPU&MEM
+	//jun: comment out as it occupies to much CPU&MEM while execute ClamExtractorExample
+	
+	//addDockWidget( Qt::BottomDockWidgetArea, runner);  
+
+	
 	// Wait the window to be redrawn after the reconfiguration
 	// before loading the cpu with the extractor
 	qApp->processEvents();
 
-	std::string configurationOption="";
-	//if (mProject.Config()!="")
-	//	configurationOption = "-c"+mProject.File()+".conf";
-	configurationOption = "-c"+mProject.File()+".conf";
+	std::string str2=".conf";
+	std::string configurationOption = mProject.File()+str2;
 	bool ok = runner->run(mProject.GetExtractor().c_str(),
-		//QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str() << configurationOption.c_str(),
-		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str(),
+		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str() << "-c" <<configurationOption.c_str(),
+		//QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str(),
 		QDir::current().path());
 	
 	if (!ok)
@@ -797,7 +799,7 @@ void Annotator::on_editProjectPropertiesAction_triggered()
 	if (projectDialog.exec() == QDialog::Rejected) return;
 	projectDialog.applyChanges(mProject);
 	initProject();
-	markProjectChanged(true);
+	markProjectChanged(true);	
 }
 
 

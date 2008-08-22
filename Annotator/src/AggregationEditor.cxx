@@ -48,8 +48,6 @@ AggregationEditor::AggregationEditor(QWidget *parent, Qt::WFlags fl )
 		);
 	connect(attributeList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
             this, SLOT(editConfiguration()));
-	//connect(attributeList, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
-      //      this, SLOT(setConfiguration()));
 }
 
 /*
@@ -103,8 +101,6 @@ void AggregationEditor::setSchema()
 	attributeList->resizeColumnToContents(1);
 	attributeList->show();	
 
-	connect(attributeList, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
-		this, SLOT(setConfiguration()));  //start monitoring the change of the tree&SourceEditor
 }
 
 void AggregationEditor::addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem * parent)
@@ -125,9 +121,7 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 	item->setIcon( 0, attributeIcon );
 	
 	std::cout<< "arraySize is: \n" <<arraySize <<std::endl;
-	//std::cout<< "the currently added attribute name is:\n " << name.c_str() <<std::endl;
-	//std::cout<< "its related extractor ID name is :\n" <<parent->text(0).toStdString() <<std::endl;
-
+	
 	for(int i=0; i<arraySize; i++)
 	{
 		std::cout<< "Parser has Attribute  " << i <<">>>>"<<mParser.sourceAttribute[i].c_str()<<std::endl;
@@ -228,8 +222,6 @@ int AggregationEditor::parseMap()
 
 	int arraySize = -1;
 
-	//std::cout<<"the mConfig in parseMap() is>>>>>>>>>>\n"<<mConfig<<std::endl;
-
 	posStart = mConfig.find("map",0);         //keyword "map" 
 	posA = posStart;	
 	posEnd = mConfig.find("]", posStart+1);
@@ -309,7 +301,11 @@ void AggregationEditor::editSource(QTreeWidgetItem * current)
 {
 	//pop out a new QDialog with "Source   Extractor   Suffix   SchemaFile  ConfigFile" list
 	SourceEditor sourceEditor(this, &mParser);
-	if(sourceEditor.exec()==0) return; //a modal dialog
+	if(sourceEditor.exec()==QDialog::Rejected) //maybe not a conventional way to consider 'X' as accepted 
+	{
+		sourceEditor.applyUpdates();
+		return;
+	}
 }
 
 void AggregationEditor::renameTarget(QTreeWidgetItem * current)
@@ -323,7 +319,6 @@ void AggregationEditor::editConfiguration()
 	QTreeWidgetItem * current = attributeList->currentItem();
 	if(!current) return;
 	QTreeWidgetItem * parent=current->parent();
-	//if(!(parent=parent->parent()))  //Source or SourceScope
 
 	if(!parent)    //Source
 		editSource(current);
@@ -364,6 +359,7 @@ void AggregationEditor::setConfiguration()
 				attributeItem = scopeItem->child(k);
 					if(attributeItem->checkState(0)==Qt::Checked)
 				{
+					//the default names will be automatically writen after "accepted"
 					if(attributeItem->text(1)=="") attributeItem->setText(1, attributeItem->text(0));
 					if(scopeItem->text(1)=="") scopeItem->setText(1, scopeItem->text(0));
 					newContent+=str1+scopeItem->text(1).toStdString()+str2+

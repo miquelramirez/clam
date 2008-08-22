@@ -28,7 +28,6 @@ GraphicConfigEditor::~GraphicConfigEditor()
 void GraphicConfigEditor::setConfiguration(std::string config)
 {
 	mConfig=config;
-	std::cout<< "the configuration is.......\n" <<config <<std::endl;
 	mAggregationEditor->loadConfig(config);
 	mAggregationEditor->setSchema();
 }
@@ -40,6 +39,7 @@ std::string GraphicConfigEditor::getConfiguration()
 
 void GraphicConfigEditor::on_okButton_clicked()
 {
+	mAggregationEditor->setConfiguration();
 	mConfig=mAggregationEditor->outputConfig(); //Does this work? will the mConfig be deleted right now?
 	this->accept();
 }

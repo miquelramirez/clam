@@ -28,30 +28,34 @@ SourceEditor::~SourceEditor()
 
 void SourceEditor::applyUpdates()
 {
-	std::string config="sources = [\n"; 
-	int rowCount=_ui.parameterTable->rowCount();
-	std::string str1="\t(\"";
-	std::string str2="\", FileMetadataSource(path=\"";
-	std::string str3="\",\n\t\tschemaFile=\"";
-	std::string str4="\",\n\t\tpoolSuffix=\"";
-	std::string str5="\",\n\t\textractor=\"";
-	std::string str6="\")),\n";
-	std::string str7="]\n\nmap = [\n]\n";
-
-	for(int i=0; i<rowCount; i++)
+	if(_itemChangedFlag)
 	{
-		config=config+str1+_ui.parameterTable->item(i,0)->text().toStdString()+
-			str2+ _ui.parameterTable->item(i,5)->text().toStdString()+str3+
-			 _ui.parameterTable->item(i,2)->text().toStdString()+str4+
-			 _ui.parameterTable->item(i,3)->text().toStdString()+str5+
-			 _ui.parameterTable->item(i,1)->text().toStdString()+str6;
-	}
+		std::string config="sources = [\n"; 
+		int rowCount=_ui.parameterTable->rowCount();
+		std::string str1="\t(\"";
+		std::string str2="\", FileMetadataSource(path=\"";
+		std::string str3="\",\n\t\tschemaFile=\"";
+		std::string str4="\",\n\t\tpoolSuffix=\"";
+		std::string str5="\",\n\t\textractor=\"";
+		std::string str6="\")),\n";
+		std::string str7="]\n\nmap = [\n]\n";
+
+		for(int i=0; i<rowCount; i++)
+		{
+			config=config+str1+_ui.parameterTable->item(i,0)->text().toStdString()+
+				str2+ _ui.parameterTable->item(i,5)->text().toStdString()+str3+
+				_ui.parameterTable->item(i,2)->text().toStdString()+str4+
+				_ui.parameterTable->item(i,3)->text().toStdString()+str5+
+				_ui.parameterTable->item(i,1)->text().toStdString()+str6;
+		}		
 	config+=str7;  //Given the sources are edited, clear the map.	
 	std::cout<< mAggregationEditor->outputConfig() << std::endl;
 	mAggregationEditor->loadConfig(config);
 	std::cout<< "after reloading is ..............\n" << std::endl;
 	std::cout<< mAggregationEditor->outputConfig() << std::endl;
 	mAggregationEditor->setSchema();
+	}
+		
 }
 
 void SourceEditor::loadParameter(AggregationEditor::configurationParser* parser)
@@ -75,6 +79,11 @@ void SourceEditor::loadParameter(AggregationEditor::configurationParser* parser)
 
 }
 
+void SourceEditor::setItemChangedFlag()
+{
+	_itemChangedFlag=1;
+}
+
 void SourceEditor::on_addButton_clicked()
 {
 	_ui.parameterTable->insertRow(_ui.parameterTable->rowCount());
@@ -85,10 +94,4 @@ void SourceEditor::on_deleteButton_clicked()
 	_ui.parameterTable->removeRow(_ui.parameterTable->currentRow());
 }
 
-void SourceEditor::on_itemDoubleClicked()
-{
-	QTableWidgetItem * current = _ui.parameterTable->currentItem();
-	current->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled |Qt::ItemIsEditable);
-	_ui.parameterTable->editItem(current);
-}
 

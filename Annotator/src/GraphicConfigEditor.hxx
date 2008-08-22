@@ -33,7 +33,7 @@ class GraphicConfigEditor : public QDialog
 			: QDialog(parent)
 		{
 			_ui.setupUi(this);
-			mAggregationEditor = new AggregationEditor;  // new AggregationEditor(this);
+			mAggregationEditor = new AggregationEditor(this);  // new AggregationEditor(this);
 			_ui.verticalLayout->addWidget(mAggregationEditor);
 		}
 		void setConfiguration(std::string config);
