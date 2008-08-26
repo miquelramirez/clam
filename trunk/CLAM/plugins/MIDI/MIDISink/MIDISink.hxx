@@ -4,7 +4,7 @@
 #include <CLAM/OutControl.hxx>
 #include <CLAM/Processing.hxx>
 
-#include "RtMidi.hxx"
+#include "../RtMidi.hxx"
 
 namespace CLAM {
 
