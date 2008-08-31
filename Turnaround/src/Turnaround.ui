@@ -18,23 +18,14 @@
   <property name="windowTitle" >
    <string>Turnaround</string>
   </property>
-  <widget class="QWidget" name="centralwidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>69</y>
-     <width>640</width>
-     <height>388</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QWidget" name="centralwidget" />
   <widget class="QMenuBar" name="menubar" >
    <property name="geometry" >
     <rect>
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>30</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -57,44 +48,28 @@
     <property name="title" >
      <string>&amp;View</string>
     </property>
-    <addaction name="action_ChromaPeaks" />
-    <addaction name="action_Tonnetz" />
-    <addaction name="action_Key_Space" />
-    <addaction name="action_Chord_Ranking" />
-    <addaction name="action_Segmentation" />
+    <addaction name="viewSpectrogramAction" />
+    <addaction name="viewChromaPeaksAction" />
+    <addaction name="viewTonnetzAction" />
+    <addaction name="viewKeySpaceAction" />
+    <addaction name="viewChordRankingAction" />
+    <addaction name="viewSegmentationAction" />
    </widget>
    <widget class="QMenu" name="menu_Help" >
     <property name="title" >
      <string>&amp;Help</string>
     </property>
-    <addaction name="action_Online_tutorial" />
-    <addaction name="action_Whats_this" />
-    <addaction name="action_About" />
+    <addaction name="helpOnlineTutorialAction" />
+    <addaction name="helpWhatsThisAction" />
+    <addaction name="helpAboutAction" />
    </widget>
    <addaction name="menuFile" />
    <addaction name="menuPlayback" />
    <addaction name="menu_View" />
    <addaction name="menu_Help" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>457</y>
-     <width>640</width>
-     <height>23</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>30</y>
-     <width>640</width>
-     <height>39</height>
-    </rect>
-   </property>
    <property name="windowTitle" >
     <string>toolBar</string>
    </property>
@@ -110,19 +85,19 @@
    <addaction name="playbackPauseAction" />
    <addaction name="playbackStopAction" />
    <addaction name="separator" />
-   <addaction name="action_ChromaPeaks" />
-   <addaction name="action_Tonnetz" />
-   <addaction name="action_Key_Space" />
-   <addaction name="action_Chord_Ranking" />
-   <addaction name="action_Segmentation" />
+   <addaction name="viewSpectrogramAction" />
+   <addaction name="viewChromaPeaksAction" />
+   <addaction name="viewTonnetzAction" />
+   <addaction name="viewKeySpaceAction" />
+   <addaction name="viewChordRankingAction" />
+   <addaction name="viewSegmentationAction" />
    <addaction name="separator" />
-   <addaction name="action_Online_tutorial" />
-   <addaction name="action_Whats_this" />
+   <addaction name="helpOnlineTutorialAction" />
+   <addaction name="helpWhatsThisAction" />
   </widget>
   <action name="fileOpenAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/fileopen.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open</string>
@@ -136,8 +111,7 @@
   </action>
   <action name="fileExitAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/exit.png</normaloff>:/icons/images/exit.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/exit.png</iconset>
    </property>
    <property name="text" >
     <string>E&amp;xit</string>
@@ -148,8 +122,7 @@
   </action>
   <action name="playbackPlayAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/player_play.png</normaloff>:/icons/images/player_play.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/player_play.png</iconset>
    </property>
    <property name="text" >
     <string>Play</string>
@@ -160,8 +133,7 @@
   </action>
   <action name="playbackStopAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/player_stop.png</normaloff>:/icons/images/player_stop.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/player_stop.png</iconset>
    </property>
    <property name="text" >
     <string>Stop</string>
@@ -172,17 +144,15 @@
   </action>
   <action name="playbackPauseAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/player_pause.png</normaloff>:/icons/images/player_pause.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/player_pause.png</iconset>
    </property>
    <property name="text" >
     <string>Pause</string>
    </property>
   </action>
-  <action name="action_Online_tutorial" >
+  <action name="helpOnlineTutorialAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/help.png</normaloff>:/icons/images/help.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/help.png</iconset>
    </property>
    <property name="text" >
     <string>Online &amp;tutorial</string>
@@ -191,10 +161,9 @@
     <string>F1</string>
    </property>
   </action>
-  <action name="action_Whats_this" >
+  <action name="helpWhatsThisAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/contexthelp.png</normaloff>:/icons/images/contexthelp.png</iconset>
+    <iconset resource="images.qrc" >:/icons/images/contexthelp.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;What's this</string>
@@ -203,69 +172,75 @@
     <string>Shift+F1</string>
    </property>
   </action>
-  <action name="action_About" >
+  <action name="helpAboutAction" >
    <property name="text" >
     <string>&amp;About</string>
    </property>
   </action>
-  <action name="action_ChromaPeaks" >
+  <action name="viewChromaPeaksAction" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/polarchromapeaks.svg</normaloff>:/icons/images/polarchromapeaks.svg</iconset>
+    <iconset resource="images.qrc" >:/icons/images/polarchromapeaks.svg</iconset>
    </property>
    <property name="text" >
     <string>Chroma &amp;Peaks</string>
    </property>
   </action>
-  <action name="action_Tonnetz" >
+  <action name="viewTonnetzAction" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/tonnetz.svg</normaloff>:/icons/images/tonnetz.svg</iconset>
+    <iconset resource="images.qrc" >:/icons/images/tonnetz.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Tonnetz</string>
    </property>
   </action>
-  <action name="action_Key_Space" >
+  <action name="viewKeySpaceAction" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/keyspace.svg</normaloff>:/icons/images/keyspace.svg</iconset>
+    <iconset resource="images.qrc" >:/icons/images/keyspace.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Key Space</string>
    </property>
   </action>
-  <action name="action_Chord_Ranking" >
+  <action name="viewChordRankingAction" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/chordranking.svg</normaloff>:/icons/images/chordranking.svg</iconset>
+    <iconset resource="images.qrc" >:/icons/images/chordranking.svg</iconset>
    </property>
    <property name="text" >
     <string>Chord &amp;Ranking</string>
    </property>
   </action>
-  <action name="action_Segmentation" >
+  <action name="viewSegmentationAction" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >
-     <normaloff>:/icons/images/segmentation.svg</normaloff>:/icons/images/segmentation.svg</iconset>
+    <iconset resource="images.qrc" >:/icons/images/segmentation.svg</iconset>
    </property>
    <property name="text" >
     <string>&amp;Segmentation</string>
+   </property>
+  </action>
+  <action name="viewSpectrogramAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="images.qrc" >:/icons/images/spectrogram.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Spectrogram</string>
    </property>
   </action>
  </widget>
