@@ -58,6 +58,19 @@ Turnaround::Turnaround()
 	connect(playbackPlayAction, SIGNAL(triggered()), this, SLOT(play()));
 	connect(playbackPauseAction, SIGNAL(triggered()), this, SLOT(pause()));
 	connect(playbackStopAction, SIGNAL(triggered()), this, SLOT(stop()));
+	connect(viewSpectrogramAction, SIGNAL(triggered()), this, SLOT(triggerSpectrogram()));
+	connect(viewTonnetzAction, SIGNAL(triggered()), this, SLOT(triggerTonnetz()));
+	connect(viewKeySpaceAction, SIGNAL(triggered()), this, SLOT(triggerKeySpace()));
+	connect(viewChromaPeaksAction, SIGNAL(triggered()), this, SLOT(triggerChromaPeaks()));
+	connect(viewChordRankingAction, SIGNAL(triggered()), this, SLOT(triggerChordRanking()));
+	connect(viewSegmentationAction, SIGNAL(triggered()), this, SLOT(triggerSegmentation()));
+
+	viewSpectrogramAction->setChecked(true);
+	viewTonnetzAction->setChecked(true);
+	viewKeySpaceAction->setChecked(true);
+	viewChromaPeaksAction->setChecked(true);
+	viewChordRankingAction->setChecked(true);
+	viewSegmentationAction->setChecked(true);
 
 	QVBoxLayout * vboxLayout = new QVBoxLayout(centralwidget);
 	_progressControlWidget = new ProgressControlWidget(centralwidget);
@@ -364,3 +377,32 @@ void Turnaround::timerEvent(QTimerEvent *event)
 	_segmentationSource.setCurrentTime(time);
 }
 
+void Turnaround::triggerSpectrogram()
+{
+	_spectrogram->setVisible(viewSpectrogramAction->isChecked());
+}
+
+void Turnaround::triggerTonnetz()
+{
+	_tonnetz->setVisible(viewTonnetzAction->isChecked());
+}
+
+void Turnaround::triggerKeySpace()
+{
+	_keySpace->setVisible(viewKeySpaceAction->isChecked());
+}
+
+void Turnaround::triggerChromaPeaks()
+{
+	_polarChromaPeaks->setVisible(viewChromaPeaksAction->isChecked());
+}
+
+void Turnaround::triggerChordRanking()
+{
+	_chordRanking->setVisible(viewChordRankingAction->isChecked());
+}
+
+void Turnaround::triggerSegmentation()
+{
+	_segmentationView->setVisible(viewSegmentationAction->isChecked());
+}

@@ -54,11 +54,18 @@ public:
 	
 public slots:
 	void fileOpen();
-	
+
 	void play();
 	void pause();
 	void stop();
-	
+
+	void triggerSpectrogram();
+	void triggerTonnetz();
+	void triggerKeySpace();
+	void triggerChromaPeaks();
+	void triggerChordRanking();
+	void triggerSegmentation();
+
 protected:
 	void timerEvent(QTimerEvent *event);
 
