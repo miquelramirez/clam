@@ -54,6 +54,7 @@ public:
 	
 public slots:
 	void fileOpen();
+	void recentFileOpen();
 
 	void play();
 	void pause();
@@ -72,6 +73,8 @@ protected:
 private:
 	std::vector<std::string> initBinLabelVector() const;
 	void loadAudioFile(const std::string & fileName);
+	void updateRecentMenu();
+	void appendRecentFile(const QString & recentFile);
 	
 	CLAM::Network _network;
 	CLAM::NetworkPlayer *_networkPlayer;
@@ -103,6 +106,8 @@ private:
 	CLAM::TData _length;
 	
 	CLAM::TControlData _pausedProgress;
+
+	QStringList _recentFiles;
 };
 
 #endif

@@ -22,7 +22,7 @@
 #include <QtGui/QProgressDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QVBoxLayout>
-
+#include <QSettings>
 
 #include <CLAM/PANetworkPlayer.hxx>
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -115,11 +115,18 @@ Turnaround::Turnaround()
 
 	_tonalAnalysis = new CLAM::TonalAnalysis;
 
+	QSettings settings;
+	_recentFiles = settings.value("RecentFiles").toStringList();
+	updateRecentMenu();
+
 	startTimer(50);
 }
 
 Turnaround::~Turnaround()
 {
+	QSettings settings;
+	settings.setValue("RecentFiles", _recentFiles);
+
 	if (!_network.IsStopped())
 		_network.Stop();
 
@@ -132,13 +139,55 @@ Turnaround::~Turnaround()
 	}
 }
 
+void Turnaround::updateRecentMenu()
+{
+	menuOpenRecent->clear();
+	
+	if (_recentFiles.size() == 0)
+	{
+		menuOpenRecent->setEnabled(false);
+		return;
+	}
+	menuOpenRecent->setEnabled(true);
+	
+	int i=0;
+	for (QStringList::iterator it = _recentFiles.begin(); it!=_recentFiles.end(); it++)
+	{
+		QString text = QString("&%1 %2").arg(++i).arg(*it);
+		QAction * recentFileAction = new QAction(text, this);
+		recentFileAction->setData(*it);
+		menuOpenRecent->addAction(recentFileAction);
+		connect(recentFileAction, SIGNAL(triggered()), this, SLOT(recentFileOpen()));
+	}
+}
+
+void Turnaround::appendRecentFile(const QString & recentFile)
+{
+	_recentFiles.removeAll(recentFile);
+	_recentFiles.push_front(recentFile);
+	while (_recentFiles.size() > 8)
+		_recentFiles.pop_back();
+	updateRecentMenu();
+}
+
 void Turnaround::fileOpen()
 {
 	QString qFileName = QFileDialog::getOpenFileName(this, 
 			tr("Choose an audio file"), QString::null, 
 			tr("Audio files (*.wav *.ogg *.mp3)"));
 	if(qFileName == QString::null) return;
+	appendRecentFile(qFileName);
 	loadAudioFile(qFileName.toLocal8Bit().constData());
+}
+
+void Turnaround::recentFileOpen()
+{
+	QAction *action = qobject_cast<QAction *>(sender());
+	if (!action) return;
+	QString file = action->data().toString();
+	if (file == QString::null) return;
+	appendRecentFile(file);
+	loadAudioFile(file.toLocal8Bit().constData());
 }
 
 std::vector<std::string> Turnaround::initBinLabelVector() const
