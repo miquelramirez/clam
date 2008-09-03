@@ -17,13 +17,16 @@
 #include "Turnaround.hxx"
 
 #include "TurnaroundVersion.hxx"
+using namespace Turnaround;
 
+#include "ui_About.hxx"
 #include <QtGui/QFileDialog>
 #include <QtGui/QProgressDialog>
 #include <QtGui/QMessageBox>
 #include <QtGui/QVBoxLayout>
 #include <QSettings>
 
+#include <CLAM/CLAMVersion.hxx>
 #include <CLAM/PANetworkPlayer.hxx>
 #include <CLAM/JACKNetworkPlayer.hxx>
 #include <CLAM/TonalAnalysis.hxx>
@@ -65,6 +68,7 @@ Turnaround::Turnaround()
 	connect(viewChromaPeaksAction, SIGNAL(toggled(bool)), this, SLOT(toggleChromaPeaks(bool)));
 	connect(viewChordRankingAction, SIGNAL(toggled(bool)), this, SLOT(toggleChordRanking(bool)));
 	connect(viewSegmentationAction, SIGNAL(toggled(bool)), this, SLOT(toggleSegmentation(bool)));
+	connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(about()));	
 
 	QVBoxLayout * vboxLayout = new QVBoxLayout(centralwidget);
 	_progressControlWidget = new ProgressControlWidget(centralwidget);
@@ -108,6 +112,15 @@ Turnaround::Turnaround()
 	_network.SetPlayer(_networkPlayer);
 
 	_tonalAnalysis = new CLAM::TonalAnalysis;
+
+	_aboutDialog = new QDialog(this);
+	Ui::About aboutUi;
+	aboutUi.setupUi(_aboutDialog);
+	aboutUi.versionInfo->setText(tr(
+			"<p><b>Turnaround version %1</b></p>"
+			"<p>Using CLAM version %2</p>")
+		.arg(GetFullVersion())
+		.arg(CLAM::GetFullVersion()));
 
 	viewSpectrogramAction->setChecked(true);
 	viewTonnetzAction->setChecked(true);
@@ -470,4 +483,9 @@ void Turnaround::toggleChordRanking(bool checked)
 void Turnaround::toggleSegmentation(bool checked)
 {
 	_segmentationView->setVisible(checked);
+}
+
+void Turnaround::about()
+{
+	_aboutDialog->show();
 }

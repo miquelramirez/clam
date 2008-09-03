@@ -66,6 +66,8 @@ public slots:
 	void toggleChromaPeaks(bool checked);
 	void toggleChordRanking(bool checked);
 	void toggleSegmentation(bool checked);
+	
+	void about();
 
 protected:
 	void timerEvent(QTimerEvent *event);
@@ -109,6 +111,7 @@ private:
 
 	QStringList _recentFiles;
 	int _timerID;
+	QDialog *_aboutDialog;
 };
 
 #endif
