@@ -47,7 +47,7 @@ namespace CLAM
 			ePCMFLOAT = SF_FORMAT_WAV | SF_FORMAT_FLOAT,	/* 32 bit float data */
 			ePCMDOUBLE = SF_FORMAT_WAV | SF_FORMAT_DOUBLE,	/* 64 bit float data */
 			eFLAC_16 = SF_FORMAT_FLAC | SF_FORMAT_PCM_16,	/* FLAC lossless file format 16 bit data */
-		} tEnum;
+		};
 
 		static tValue     DefaultValue() { return eDefault; }
 		static tEnumValue * EnumValues()
@@ -84,15 +84,14 @@ namespace CLAM
 			AddAll();
 			UpdateData();
 			SetSampleRate(44100);
-			SetNumberChannels(1);
+			SetNumberChannels(0);
 		};	
 	};
 
 	class SndfileWriter : public  Processing
 	{ 
 		typedef SndfileWriterConfig Config;
-		typedef std::vector<CLAM::AudioInPort*> InPorts;
-		
+		typedef std::vector<CLAM::AudioInPort*> InPorts;		
 		InPorts _inports;
 		SndfileHandle* _outfile;
 		SndfileWriterConfig _config;
@@ -152,14 +151,16 @@ namespace CLAM
 
 		bool ConcreteStart()	
 		{	
-			CLAM_ASSERT(_outfile, "SndfileWriter::ConcreteStart() should have _outfile with value.");
-
-			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE, _format,_numChannels,_sampleRate);
-
+			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
+			
 			// check if the file is open
 			if(!*_outfile)
-			{	
-				std::cout << "The file is not writeable"<< std::endl;
+			{	CLAM_ASSERT(_outfile, "The file is not writeable");
+				return false;
+			}
+			//report sndfile library errors
+			if(_outfile->error() != 0)
+			{	CLAM_ASSERT(_outfile, _outfile->strError());
 				return false;
 			}
 			
@@ -214,7 +215,6 @@ namespace CLAM
 			}
 
 			return formatConfigure;
-
 		}
 
 		bool ConcreteConfigure(const ProcessingConfig & config)
@@ -250,32 +250,23 @@ namespace CLAM
 			_format=ChooseFormat(location); 
 			_numChannels = _config.GetNumberChannels();
  			_sampleRate = _config.GetSampleRate();
-			_outfile = new SndfileHandle(location.c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
-			
-			// check if the file is open
-			if(!*_outfile)
+
+			if (_numChannels == 0)
 			{
-				AddConfigErrorMessage("The file is not writeable");
-				return false;
-			}
-			
-			//report sndfile library errors
-			if(_outfile->error() != 0)
-			{
-				AddConfigErrorMessage(_outfile->strError());
+				AddConfigErrorMessage("The number of channels has to be greater than 0");
 				return false;
 			}
 
 			// case 1: maintain the same ports
-			if ( (unsigned)_outfile->channels() == _inports.size() )
+			if ( _numChannels == _inports.size() )
 			{
 				return true;
 			}
 
 			// case 2: increase number of same ports
-			if ( (unsigned)_outfile->channels() > _inports.size() )
+			if ( _numChannels > _inports.size() )
 			{
-				for (int i=_inports.size()+1; i<= _outfile->channels(); i++)
+				for (unsigned i=_inports.size()+1; i<=_numChannels; i++)
 				{
 					std::ostringstream nameStream;
 					nameStream << nameInPort << i;
@@ -288,13 +279,13 @@ namespace CLAM
 			}
 
 			// case 3: decrease number of same ports
-			if ( (unsigned)_outfile->channels() < _inports.size() )
+			if ( _numChannels < _inports.size() )
 			{
-				for (unsigned i=_outfile->channels(); i<_inports.size(); i++)
+				for (unsigned i=_numChannels; i<_inports.size(); i++)
 				{
 					delete _inports[i];
 				}
-				_inports.resize( _outfile->channels() );
+				_inports.resize( _numChannels);
 				
 				return true;
 			}

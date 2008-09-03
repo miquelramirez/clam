@@ -35,10 +35,10 @@ namespace CLAM
 	
 	EAudioFileWriter EAudioFileWriter::FormatFromFilename( std::string filename )
 	{
-		std::string::size_type dotPos = filename.find_last_of('.');
-		if ( dotPos == std::string::npos )
+		std::string::iterator dotPos = std::find( filename.begin(), filename.end(), '.' );
+		if ( dotPos == filename.end() )
 			return eDefault;
-		std::string extension = filename.substr(dotPos+1);
+		std::string extension( dotPos+1, filename.end() );
 		for(unsigned i=0; i<extension.size();++i)
 			extension[i] = std::tolower(extension[i]);
 

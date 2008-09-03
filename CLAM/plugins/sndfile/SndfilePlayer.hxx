@@ -22,6 +22,8 @@
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/AudioOutPort.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/AudioInFilename.hxx> 
 #include <CLAM/Audio.hxx>
@@ -50,25 +52,62 @@ namespace CLAM
 		typedef SndfilePlayerConfig Config;
 		typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 		OutPorts _outports;
-
+		CLAM::OutControl _outControlSeek;
+		CLAM::InControl _inControlSeek;
+		CLAM::InControl _inControlPause;
 		SndfileHandle* _infile;
 		SndfilePlayerConfig _config;
 		unsigned _numChannels;
 		std::vector<float> _buffer; 
+		unsigned _numReadFrames;
+		unsigned _numTotalFrames;
 		
 	public:
 		const char* GetClassName() const { return "SndfilePlayer"; }
 
 		SndfilePlayer(const ProcessingConfig& config =  Config()) 
-			: _infile(0)
+			: _outControlSeek("Position out-Control",this) 
+			, _inControlSeek("Seek in-Control",this) 
+			, _inControlPause("Pause in-Control",this)
+			, _infile(0)
 			,_numChannels(0)
+			, _numReadFrames(0)
+			, _numTotalFrames(0)
 		{ 
 			Configure( config );
 		}
 	 
 		bool Do()
 		{
-			ReadBufferAndWriteToPorts();		
+			// PAUSE CONTROL
+			//User has moved the slider and we have to change the position
+			//TODO potentially dangerous since a different thread is reading!
+			if(_infile)
+			{	
+				if(_inControlPause.GetLastValue()<0.5)
+					WriteSilenceToPorts();
+				else
+					ReadBufferAndWriteToPorts();
+			}		
+
+			static CLAM::TControlData controlSliderValue = 0;			
+			//User has moved the slider and we have to change the position
+			//TODO potentially dangerous since a different thread is reading!
+			if(controlSliderValue != _inControlSeek.GetLastValue() and _infile)
+			{	controlSliderValue = _inControlSeek.GetLastValue();
+				_numReadFrames = controlSliderValue*_numTotalFrames;
+				_infile->seek(_numReadFrames ,SEEK_SET);
+			}		
+
+			//Calculate the seek position between 0 and 1
+			float seekPosition = ((float)_numReadFrames/(float)_numTotalFrames);
+			if(seekPosition >1)
+			{	_numReadFrames = _numReadFrames -_numTotalFrames;
+				seekPosition = ((float)_numReadFrames/(float)_numTotalFrames);							
+			}
+
+			_outControlSeek.SendControl(seekPosition);
+	
 			// Tell the ports this is done
 			for (unsigned channel=0; channel<_numChannels; channel++)
 				_outports[channel]->Produce();
@@ -80,13 +119,12 @@ namespace CLAM
 		{
 			//all the ports have to have the same buffer size
 			const int portSize = _outports[0]->GetAudio().GetBuffer().Size();
-
 			CLAM::TData* channels[_numChannels];
 			for (unsigned channel=0; channel<_numChannels; channel++)
 				channels[channel] = &_outports[channel]->GetAudio().GetBuffer()[0];
 
 			if (not _infile)
-			{
+			{	_numReadFrames = 0;
 				for(int i=0; i< portSize; i++) 
 					for(unsigned channel = 0; channel<_numChannels; channel++)
 						channels[channel][i] = 0; 
@@ -102,6 +140,7 @@ namespace CLAM
 				{				
 					channels[channel][frameIndex] = _buffer[i+channel];
 				}
+				_numReadFrames++;
 				frameIndex++;
 			}
 
@@ -114,6 +153,7 @@ namespace CLAM
 				{
 					channels[channel][frameIndex] = 0; 
 				}
+				_numReadFrames++;
 				frameIndex++;
 			}
 
@@ -125,13 +165,40 @@ namespace CLAM
 				
 			return;		
 		}
+		
+		void WriteSilenceToPorts()
+		{
+			//all the ports have to have the same buffer size
+			const int portSize = _outports[0]->GetAudio().GetBuffer().Size();
+			CLAM::TData* channels[_numChannels];
+
+			for (unsigned channel=0; channel<_numChannels; channel++)
+				channels[channel] = &_outports[channel]->GetAudio().GetBuffer()[0];
+
+			for(int i=0; i< portSize; i++) 
+				for(unsigned channel = 0; channel<_numChannels; channel++)
+					channels[channel][i] = 0;					
+			return;	
+					
+		}
 
 		bool ConcreteStart()	
 		{	
 			CLAM_ASSERT(_infile, "SndfilePlayer::ConcreteStart() should have _infile with value.");
 			_infile->seek(0,SEEK_SET);
-			
+			_numReadFrames = 0;
+			//initial configuration for the controls.
+			_inControlSeek.SetBounds(0,1);
+			_inControlSeek.DoControl(0.);
+			_inControlPause.SetBounds(0,1);
+			_inControlPause.DoControl(0.5);
+			_outControlSeek.SendControl(0.);			
 			return true; 
+		}
+		bool ConcreteStop()
+		{
+			_numReadFrames = 0;
+			return true;
 		}
 	
 		const ProcessingConfig& GetConfig() const
@@ -196,14 +263,14 @@ namespace CLAM
 			_numChannels = _infile->channels();
 			_config.SetSavedNumberOfChannels(_infile->channels() );
 			_buffer.resize(portSize*_numChannels);
-			// the processing have _outports.size() and the target number of ports is _infile->channels()
+			_numTotalFrames = _infile->frames();
+			// The file has not size, perhaps that's because the file is empty			
+			if(_numTotalFrames == 0)_numTotalFrames = 1;
 	
 			// case 1: maintain the same ports
 			if ( (unsigned)_infile->channels() == _outports.size() )
-			{
 				return true;
-			}
-
+			
 			// case 2: increase number of same ports
 			if ( (unsigned)_infile->channels() > _outports.size() )
 			{

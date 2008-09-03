@@ -1,5 +1,4 @@
 /*
- * Copyright (c) 2008 Fundació Barcelona Media Universitat Pompeu Fabra
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -22,6 +21,8 @@
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/AudioOutPort.hxx>
+#include <CLAM/InControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/AudioInFilename.hxx> 
 #include <CLAM/Audio.hxx>
@@ -66,17 +67,22 @@ namespace CLAM
 
 		typedef SndfilePlayerConfig Config;
 		typedef std::vector<CLAM::AudioOutPort*> OutPorts;
-		OutPorts _outports;
+		OutPorts _outports;		
+		CLAM::OutControl _outControlSeek;
+		CLAM::InControl _inControlSeek;
+		CLAM::InControl _inControlPause;
 		SndfileHandle* _infile;
 		SndfilePlayerConfig _config;
 		unsigned _sampleSize;
 		unsigned _numChannels;
+		unsigned _numReadFrames;
+		unsigned _numTotalFrames;
 		std::vector<float> _buffer; 
 
 		pthread_t _threadId;
 		long _overruns;
 		const static unsigned _ringBufferSize = 16384;
-		volatile int _canCapture;
+		volatile int _canPlay;
 		volatile int _canProcess;
 		volatile int _isStopped;
 		/* Synchronization between process thread and disk thread. */
@@ -88,8 +94,13 @@ namespace CLAM
 		const char* GetClassName() const { return "LockFreeSndfilePlayer"; }
 
 		LockFreeSndfilePlayer(const ProcessingConfig& config =  Config()) 
-			: _infile(0)
-			,_numChannels(0)
+			: _outControlSeek("Position out-Control",this) 
+			, _inControlSeek("Seek in-Control",this) 
+			, _inControlPause("Pause in-Control",this)
+			, _infile(0)				
+			, _numChannels(0)
+			, _numReadFrames(0)
+			, _numTotalFrames(0)
 			, _overruns(0)
 		{ 
 			static pthread_cond_t sPthreadCondInitializer = PTHREAD_COND_INITIALIZER;
@@ -103,10 +114,37 @@ namespace CLAM
 		bool Do()
 		{
 			/* Do nothing until we're ready to begin. */
-			if ((!_canProcess) || (!_canCapture))
+			if ((!_canProcess) || (!_canPlay))
 				return false;
-			ReadBufferAndWriteToPorts();
+
+			// PAUSE CONTROL
+			//User has moved the slider and we have to change the position
+			//TODO potentially dangerous since a different thread is reading!
+			if(_infile)
+			{	
+				if(_inControlPause.GetLastValue()<0.5)
+					WriteSilenceToPorts();
+				else
+					ReadBufferAndWriteToPorts();
+			}		
 			
+			// SEEK CONTROL
+			static CLAM::TControlData controlSeekValue = _inControlSeek.GetLastValue();		
+			//User has moved the slider and we have to change the position
+			//TODO potentially dangerous since a different thread is reading!
+			if(controlSeekValue != _inControlSeek.GetLastValue() and _infile)
+			{	controlSeekValue = _inControlSeek.GetLastValue();
+				_numReadFrames = controlSeekValue*_numTotalFrames;
+				_infile->seek(_numReadFrames ,SEEK_SET);
+			}		
+			//Calculate the seek position between 0 and 1
+			float seekPosition = ((float)_numReadFrames/(float)_numTotalFrames);
+			if(seekPosition >1)
+			{	_numReadFrames = _numReadFrames -_numTotalFrames;
+				seekPosition = ((float)_numReadFrames/(float)_numTotalFrames);							
+			}
+			_outControlSeek.SendControl(seekPosition);
+		
 			/* Tell the disk thread there is work to do.  If it is already
 			 * running, the lock will not be available.  We can't wait
 			 * here in the process() thread, but we don't need to signal
@@ -137,11 +175,8 @@ namespace CLAM
 			//case 1 ringbuffer is empty. Fill the ports with zeros
 			if (not _infile)
 			{
-				for(int i=0; i< portSize; i++) 
-					for(unsigned channel = 0; channel<_numChannels; channel++)
-						channels[channel][i] = 0;
-				
-				return;	
+				WriteSilenceToPorts();
+				return;
 			}
 			
 			//case 2 Reading the ringbuffer information to the Ports
@@ -153,6 +188,7 @@ namespace CLAM
 				{				
 					channels[channel][frameIndex] = _frameBuffer[channel];
 				}
+				_numReadFrames++;
 				frameIndex ++;			
 			}
 
@@ -163,6 +199,7 @@ namespace CLAM
 			while(frameIndex < portSize)
 			{	for(unsigned channel = 0; channel<_numChannels; channel++)
 					channels[channel][frameIndex] = 0;											
+				_numReadFrames++;
 				frameIndex++;
 			}
 
@@ -172,6 +209,21 @@ namespace CLAM
 			if(_config.GetLoop())
 				_infile = new SndfileHandle(_config.GetSourceFile().c_str(), SFM_READ);	
 			return;					
+		}
+		void WriteSilenceToPorts()
+		{
+			//all the ports have to have the same buffer size
+			const int portSize = _outports[0]->GetAudio().GetBuffer().Size();
+			CLAM::TData* channels[_numChannels];
+
+			for (unsigned channel=0; channel<_numChannels; channel++)
+				channels[channel] = &_outports[channel]->GetAudio().GetBuffer()[0];
+
+			for(int i=0; i< portSize; i++) 
+				for(unsigned channel = 0; channel<_numChannels; channel++)
+					channels[channel][i] = 0;					
+			return;	
+					
 		}
 		
 		void DiskThread()
@@ -214,21 +266,28 @@ namespace CLAM
 			player->DiskThread();
 			return 0;
 		}
+
 		bool ConcreteStart()	
 		{	
 			CLAM_ASSERT(_infile, "LockFreeSndfilePlayer::ConcreteStart() should have _infile with value.");
 
+			//initial configuration for the controls.
+			_inControlSeek.SetBounds(0,1);
+			_inControlSeek.DoControl(0.);
+			_inControlPause.SetBounds(0,1);
+			_inControlPause.DoControl(0.5);
+			_outControlSeek.SendControl(0.);
+			_numReadFrames = 0;
 			_isStopped = false;
 			_canProcess = 0;
 			_rb = jack_ringbuffer_create (_sampleSize*_ringBufferSize*_numChannels);
 			memset(_rb->buf, 0, _rb->size);
 			_infile->seek(0,SEEK_SET);
-			_canCapture = 0;
+			_canPlay = 0;
 			ReadFileAndWriteRingBuffer();			
 			pthread_create(&_threadId, NULL,DiskThreadCallback,this);
 			_canProcess = 1;
-			_canCapture = 1;
-			
+			_canPlay = 1;						
 			return true; 
 		}
 		bool ConcreteStop()	
@@ -249,6 +308,7 @@ namespace CLAM
 				CLAM_ASSERT(_overruns,"Overruns is greater than 0. Try a bigger buffer");			
 			}
 			jack_ringbuffer_free (_rb);
+			_numReadFrames = 0;
 			return true; 
 		}
 	
@@ -315,7 +375,9 @@ namespace CLAM
 			_sampleSize = _numChannels*sizeof(TData);
 			_config.SetSavedNumberOfChannels(_infile->channels() );
 			_buffer.resize(portSize*_numChannels);
-			// the processing have _outports.size() and the target number of ports is _infile->channels()
+			_numTotalFrames = _infile->frames();
+			// The file has not size, perhaps that's because the file is empty			
+			if(_numTotalFrames == 0)_numTotalFrames = 1;
 	
 			// case 1: maintain the same ports
 			if ( (unsigned)_infile->channels() == _outports.size() )
@@ -337,6 +399,7 @@ namespace CLAM
 				}
 				return true;
 			}
+
 			// case 3: decrease number of same ports
 			if ( (unsigned)_infile->channels() < _outports.size() )
 			{

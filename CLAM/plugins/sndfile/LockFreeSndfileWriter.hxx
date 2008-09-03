@@ -225,7 +225,6 @@ namespace CLAM
 
 		bool ConcreteStart()	
 		{	
-			CLAM_ASSERT(_outfile, "LockFreeSndfileWriter::ConcreteStart() should have _outfile with value.");			
 			_isStopped = false;
 			_canProcess = 0;
 			_rb = jack_ringbuffer_create (_sampleSize*_ringBufferSize*_numChannels);
@@ -344,31 +343,23 @@ namespace CLAM
 			_numChannels = _config.GetNumberChannels();
 			_sampleSize = _numChannels*sizeof(TData);
  			_sampleRate = _config.GetSampleRate();
-			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
-			
-			// check if the file is open
-			if(!*_outfile)
+
+			if (_numChannels == 0)
 			{
-				AddConfigErrorMessage("The file is not writeable");
+				AddConfigErrorMessage("The number of channels has to be greater than 0");
 				return false;
 			}
-			//report sndfile library errors
-			if(_outfile->error() != 0)
-			{
-				AddConfigErrorMessage(_outfile->strError());
-				return false;
-			}	
 
 			// case 1: maintain the same ports
-			if ( (unsigned)_outfile->channels() == _inports.size() )
+			if (_numChannels == _inports.size() )
 			{
 				return true;
 			}
 
 			// case 2: increase number of same ports
-			if ( (unsigned)_outfile->channels() > _inports.size() )
+			if ( _numChannels > _inports.size() )
 			{
-				for (int i=_inports.size()+1; i<= _outfile->channels(); i++)
+				for (unsigned i=_inports.size()+1; i<= _numChannels; i++)
 				{
 					std::ostringstream nameStream;
 					nameStream << nameInPort << i;
@@ -381,13 +372,13 @@ namespace CLAM
 			}
 
 			// case 3: decrease number of same ports
-			if ( (unsigned)_outfile->channels() < _inports.size() )
+			if ( _numChannels < _inports.size() )
 			{
-				for (unsigned i=_outfile->channels(); i<_inports.size(); i++)
+				for (unsigned i=_numChannels; i<_inports.size(); i++)
 				{
 					delete _inports[i];
 				}
-				_inports.resize( _outfile->channels() );
+				_inports.resize( _numChannels );
 				
 				return true;
 			}
