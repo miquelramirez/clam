@@ -60,12 +60,12 @@ public slots:
 	void pause();
 	void stop();
 
-	void triggerSpectrogram();
-	void triggerTonnetz();
-	void triggerKeySpace();
-	void triggerChromaPeaks();
-	void triggerChordRanking();
-	void triggerSegmentation();
+	void toggleSpectrogram(bool checked);
+	void toggleTonnetz(bool checked);
+	void toggleKeySpace(bool checked);
+	void toggleChromaPeaks(bool checked);
+	void toggleChordRanking(bool checked);
+	void toggleSegmentation(bool checked);
 
 protected:
 	void timerEvent(QTimerEvent *event);
