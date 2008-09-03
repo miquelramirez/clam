@@ -108,6 +108,7 @@ private:
 	CLAM::TControlData _pausedProgress;
 
 	QStringList _recentFiles;
+	int _timerID;
 };
 
 #endif

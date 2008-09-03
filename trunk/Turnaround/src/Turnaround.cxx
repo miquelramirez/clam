@@ -50,6 +50,7 @@ Turnaround::Turnaround()
 	, _networkPlayer(0)
 	, _tonalAnalysis(0)
 	, _pcpStorage(0)
+	, _timerID(0)
 {
 	setupUi(this);
 	
@@ -124,8 +125,6 @@ Turnaround::Turnaround()
 	viewChromaPeaksAction->setChecked(settings.value("ChromaPeaksVisible", true).toBool());
 	viewChordRankingAction->setChecked(settings.value("ChordRankingVisible", true).toBool());
 	viewSegmentationAction->setChecked(settings.value("SegmentationVisible", true).toBool());
-
-	startTimer(50);
 }
 
 Turnaround::~Turnaround()
@@ -139,8 +138,7 @@ Turnaround::~Turnaround()
 	settings.setValue("ChordRankingVisible", viewChordRankingAction->isChecked());
 	settings.setValue("SegmentationVisible", viewSegmentationAction->isChecked());
 
-	if (!_network.IsStopped())
-		_network.Stop();
+	stop();
 
 	delete _tonalAnalysis;
 	if (_pcpStorage)
@@ -261,8 +259,7 @@ std::vector<std::string> Turnaround::initBinLabelVector() const
 
 void Turnaround::loadAudioFile(const std::string & fileName)
 {
-	if (!_network.IsStopped())
-		_network.Stop();
+	stop();
 
 	// Point the widgets to no source
 	_spectrogram->noDataSource();
@@ -407,13 +404,15 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	_segmentationView->setDataSource(_segmentationSource);
 	// End analysis
 
-	_network.Start();
+	play();
 }
 
 void Turnaround::play()
 {
 	if (not _network.IsPlaying())
 		_network.Start();
+	if (_timerID == 0)
+		_timerID = startTimer(50);
 }
 
 void Turnaround::pause()
@@ -426,6 +425,11 @@ void Turnaround::stop()
 {
 	if (not _network.IsStopped())
 		_network.Stop();
+	if (_timerID > 0)
+	{
+		killTimer(_timerID);
+		_timerID = 0;
+	}
 }
 
 void Turnaround::timerEvent(QTimerEvent *event)
