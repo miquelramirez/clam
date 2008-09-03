@@ -58,19 +58,12 @@ Turnaround::Turnaround()
 	connect(playbackPlayAction, SIGNAL(triggered()), this, SLOT(play()));
 	connect(playbackPauseAction, SIGNAL(triggered()), this, SLOT(pause()));
 	connect(playbackStopAction, SIGNAL(triggered()), this, SLOT(stop()));
-	connect(viewSpectrogramAction, SIGNAL(triggered()), this, SLOT(triggerSpectrogram()));
-	connect(viewTonnetzAction, SIGNAL(triggered()), this, SLOT(triggerTonnetz()));
-	connect(viewKeySpaceAction, SIGNAL(triggered()), this, SLOT(triggerKeySpace()));
-	connect(viewChromaPeaksAction, SIGNAL(triggered()), this, SLOT(triggerChromaPeaks()));
-	connect(viewChordRankingAction, SIGNAL(triggered()), this, SLOT(triggerChordRanking()));
-	connect(viewSegmentationAction, SIGNAL(triggered()), this, SLOT(triggerSegmentation()));
-
-	viewSpectrogramAction->setChecked(true);
-	viewTonnetzAction->setChecked(true);
-	viewKeySpaceAction->setChecked(true);
-	viewChromaPeaksAction->setChecked(true);
-	viewChordRankingAction->setChecked(true);
-	viewSegmentationAction->setChecked(true);
+	connect(viewSpectrogramAction, SIGNAL(toggled(bool)), this, SLOT(toggleSpectrogram(bool)));
+	connect(viewTonnetzAction, SIGNAL(toggled(bool)), this, SLOT(toggleTonnetz(bool)));
+	connect(viewKeySpaceAction, SIGNAL(toggled(bool)), this, SLOT(toggleKeySpace(bool)));
+	connect(viewChromaPeaksAction, SIGNAL(toggled(bool)), this, SLOT(toggleChromaPeaks(bool)));
+	connect(viewChordRankingAction, SIGNAL(toggled(bool)), this, SLOT(toggleChordRanking(bool)));
+	connect(viewSegmentationAction, SIGNAL(toggled(bool)), this, SLOT(toggleSegmentation(bool)));
 
 	QVBoxLayout * vboxLayout = new QVBoxLayout(centralwidget);
 	_progressControlWidget = new ProgressControlWidget(centralwidget);
@@ -115,9 +108,22 @@ Turnaround::Turnaround()
 
 	_tonalAnalysis = new CLAM::TonalAnalysis;
 
+	viewSpectrogramAction->setChecked(true);
+	viewTonnetzAction->setChecked(true);
+	viewKeySpaceAction->setChecked(true);
+	viewChromaPeaksAction->setChecked(true);
+	viewChordRankingAction->setChecked(true);
+	viewSegmentationAction->setChecked(true);
+
 	QSettings settings;
 	_recentFiles = settings.value("RecentFiles").toStringList();
 	updateRecentMenu();
+	viewSpectrogramAction->setChecked(settings.value("SpectrogramVisible", true).toBool());
+	viewTonnetzAction->setChecked(settings.value("TonnetzVisible", true).toBool());
+	viewKeySpaceAction->setChecked(settings.value("KeySpaceVisible", true).toBool());
+	viewChromaPeaksAction->setChecked(settings.value("ChromaPeaksVisible", true).toBool());
+	viewChordRankingAction->setChecked(settings.value("ChordRankingVisible", true).toBool());
+	viewSegmentationAction->setChecked(settings.value("SegmentationVisible", true).toBool());
 
 	startTimer(50);
 }
@@ -126,6 +132,12 @@ Turnaround::~Turnaround()
 {
 	QSettings settings;
 	settings.setValue("RecentFiles", _recentFiles);
+	settings.setValue("SpectrogramVisible",  viewSpectrogramAction->isChecked());
+	settings.setValue("TonnetzVisible",      viewTonnetzAction->isChecked());
+	settings.setValue("KeySpaceVisible",     viewKeySpaceAction->isChecked());
+	settings.setValue("ChromaPeaksVisible",  viewChromaPeaksAction->isChecked());
+	settings.setValue("ChordRankingVisible", viewChordRankingAction->isChecked());
+	settings.setValue("SegmentationVisible", viewSegmentationAction->isChecked());
 
 	if (!_network.IsStopped())
 		_network.Stop();
@@ -426,32 +438,32 @@ void Turnaround::timerEvent(QTimerEvent *event)
 	_segmentationSource.setCurrentTime(time);
 }
 
-void Turnaround::triggerSpectrogram()
+void Turnaround::toggleSpectrogram(bool checked)
 {
-	_spectrogram->setVisible(viewSpectrogramAction->isChecked());
+	_spectrogram->setVisible(checked);
 }
 
-void Turnaround::triggerTonnetz()
+void Turnaround::toggleTonnetz(bool checked)
 {
-	_tonnetz->setVisible(viewTonnetzAction->isChecked());
+	_tonnetz->setVisible(checked);
 }
 
-void Turnaround::triggerKeySpace()
+void Turnaround::toggleKeySpace(bool checked)
 {
-	_keySpace->setVisible(viewKeySpaceAction->isChecked());
+	_keySpace->setVisible(checked);
 }
 
-void Turnaround::triggerChromaPeaks()
+void Turnaround::toggleChromaPeaks(bool checked)
 {
-	_polarChromaPeaks->setVisible(viewChromaPeaksAction->isChecked());
+	_polarChromaPeaks->setVisible(checked);
 }
 
-void Turnaround::triggerChordRanking()
+void Turnaround::toggleChordRanking(bool checked)
 {
-	_chordRanking->setVisible(viewChordRankingAction->isChecked());
+	_chordRanking->setVisible(checked);
 }
 
-void Turnaround::triggerSegmentation()
+void Turnaround::toggleSegmentation(bool checked)
 {
-	_segmentationView->setVisible(viewSegmentationAction->isChecked());
+	_segmentationView->setVisible(checked);
 }
