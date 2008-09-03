@@ -68,6 +68,7 @@ public slots:
 	void toggleSegmentation(bool checked);
 	
 	void about();
+	void onlineTutorial();
 
 protected:
 	void timerEvent(QTimerEvent *event);

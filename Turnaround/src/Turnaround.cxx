@@ -25,6 +25,7 @@ using namespace Turnaround;
 #include <QtGui/QMessageBox>
 #include <QtGui/QVBoxLayout>
 #include <QSettings>
+#include <QDesktopServices>
 
 #include <CLAM/CLAMVersion.hxx>
 #include <CLAM/PANetworkPlayer.hxx>
@@ -69,6 +70,7 @@ Turnaround::Turnaround()
 	connect(viewChordRankingAction, SIGNAL(toggled(bool)), this, SLOT(toggleChordRanking(bool)));
 	connect(viewSegmentationAction, SIGNAL(toggled(bool)), this, SLOT(toggleSegmentation(bool)));
 	connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(about()));	
+	connect(helpOnlineTutorialAction, SIGNAL(triggered()), this, SLOT(onlineTutorial()));	
 
 	QVBoxLayout * vboxLayout = new QVBoxLayout(centralwidget);
 	_progressControlWidget = new ProgressControlWidget(centralwidget);
@@ -488,4 +490,10 @@ void Turnaround::toggleSegmentation(bool checked)
 void Turnaround::about()
 {
 	_aboutDialog->show();
+}
+
+void Turnaround::onlineTutorial()
+{
+	QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Turnaround_tutorial";
+	QDesktopServices::openUrl(helpUrl);
 }
