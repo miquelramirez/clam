@@ -50,19 +50,17 @@ def configure_clam(clam_env) :
 ############################################"""
 	# Sandbox setup
 	if isWindowsPlatform :
-		clam_env.Append( CPPPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'include')] )
-		clam_env.Append( LIBPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'lib')] )
-		environmentIncludes = ""
-		if os.environ.has_key('INCLUDE') : environmentIncludes = os.environ['INCLUDE']
-		environmentIncludesList = environmentIncludes.split(';')
-		for include in environmentIncludesList :
-			if not include : continue
-			print( 'adding include dir from windows config: ' + include )
-			clam_env.Append( CPPPATH = [include] )
+		clam_env.AppendUnique( CPPPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'include')] )
+		clam_env.AppendUnique( LIBPATH = [os.path.join(clam_env['sandbox_path'], 'local', 'lib')] )
+		if os.environ.has_key('INCLUDE') :
+			for include in os.environ['INCLUDE'].split(';') :
+				if not include : continue
+				print( 'adding include dir from windows config: ' + include )
+				clam_env.AppendUnique( CPPPATH = [include] )
 	if isLinuxPlatform :
-		clam_env.Append( CPPPATH= ['/usr/local/include'] )
+		clam_env.AppendUnique( CPPPATH= ['/usr/local/include'] )
 	if isDarwinPlatform :
-		clam_env.Append( CPPPATH= ['/usr/local/include', '/opt/local/include'] )
+		clam_env.AppendUnique( CPPPATH= ['/usr/local/include', '/opt/local/include'] )
 
 
 	conf = Configure( clam_env, custom_tests = custom_check_routines )
