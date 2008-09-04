@@ -14,14 +14,6 @@
 
 OPTIONS= clam_prefix=/usr prefix=$(CURDIR)/debian/clam-networkeditor/usr qt_plugins_install_path=/lib/qt4/plugins/designer release=1 verbose=1 double=0
 
-CFLAGS = -Wall -g
-
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
-endif
-
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
