@@ -8,7 +8,7 @@ Tooltip: 'Open Sound Control Sender (link to objects ObjectUpdate events, or Sce
 __author__ = ("Natanael Olaiz", "CLAM Team")
 __url__ = ("http://clam.iua.upf.edu/")
 __email__ = ["clam@iua.upf.edu"]
-__version__ = "CLAM 1.3 - GSOC 2008"
+__version__ = "CLAM 1.3.1 - GSOC 2008"
 __bpydoc__ = """\
 This script allows to send objects positions through Open Sound Control, with
  a very simple implementation of SpatDIF. 
