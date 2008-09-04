@@ -8,7 +8,7 @@ Tooltip: 'Generate a Blender scene and make the sources move in circles around t
 __author__ = ("Natanael Olaiz", "CLAM Team")
 __url__ = ("http://clam.iua.upf.edu/")
 __email__ = ["clam@iua.upf.edu"]
-__version__ = "CLAM 1.3 - GSOC 2008"
+__version__ = "CLAM 1.3.1 - GSOC 2008"
 __bpydoc__ = """\
 This script first calls the Scene Maker script and then apply ipoCurves 
  (trajetories) to make the sources turn around the center of coordinates

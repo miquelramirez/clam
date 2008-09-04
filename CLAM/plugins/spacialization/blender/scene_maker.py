@@ -8,7 +8,7 @@ Tooltip: 'Create a new scene with m audio sinks and n audio sources'
 __author__ = ("Natanael Olaiz", "CLAM Team")
 __url__ = ("http://clam.iua.upf.edu/")
 __email__ = ["clam@iua.upf.edu"]
-__version__ = "CLAM 1.3 - GSOC 2008"
+__version__ = "CLAM 1.3.1 - GSOC 2008"
 __bpydoc__ = """\
 This script generates a new blender scene with audio sinks and sources 
 (for now just UVSpheres, within the groups 'AudioSinks' and 'AudioSources').
