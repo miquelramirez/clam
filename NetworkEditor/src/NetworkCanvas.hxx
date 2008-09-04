@@ -1199,6 +1199,7 @@ public: // Actions
 
 signals:
 	void openFileWithExternalApplicationRequest();
+	void browseUrlRequest();
 public:
 	void requestOpenFileWithExternalApplication (const QString & fileName )
 	{
@@ -1212,6 +1213,12 @@ public:
 		_fileNameToOpen.clear();
 		return copyFileNameToOpen;
 		//return _fileNameToOpen;
+	}
+	void requestBrowseUrl(const QString & fileName)
+	{
+		_fileNameToOpen.clear();
+		_fileNameToOpen=fileName;
+		emit browseUrlRequest();
 	}
 
 private:
@@ -1712,6 +1719,12 @@ private slots:
 		requestOpenFileWithExternalApplication(fileName);
 	}
 
+	void onBrowseUrl()
+	{
+		const QString fileName = ((QAction*)sender())->data().toString();
+		requestBrowseUrl(fileName);
+	}
+
 
 private:
 	std::string outportTypeId(void * processing, unsigned index) const
@@ -1871,7 +1884,8 @@ private:
 		{
 			QString fileName=QString(factory.GetValueFromAttribute(className,"faust_diagram").c_str());
 			menu->addSeparator();
-			menu->addAction(clamProcessingIcon(className),"Open diagram with browser",this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
+			//menu->addAction(clamProcessingIcon(className),"Open diagram with browser",this,SLOT(onOpenFileWithExternalApplication()))->setData(fileName);
+			menu->addAction(clamProcessingIcon(className),"Navigate Faust diagram",this,SLOT(onBrowseUrl()))->setData(fileName);
 		}
 		if (factory.AttributeExists(className,"faust_source_file"))
 		{

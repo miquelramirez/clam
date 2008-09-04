@@ -21,6 +21,7 @@
 // copied from Annotator:
 #include "TaskRunner.hxx"
 
+#include <QtWebKit/QWebView>
 #include <QtSvg/QSvgWidget>
 #include <QtCore/QProcess>
 #if QT_VERSION >= 0x040200
@@ -149,6 +150,7 @@ public:
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
 		connect(_canvas, SIGNAL(openFileWithExternalApplicationRequest()), this, SLOT(openFileWithExternalApplicationFromProcessing()));
+		connect(_canvas, SIGNAL(browseUrlRequest()),this,SLOT(browseUrlInternalFromProcessing()));
 		updateCaption();
 
 	}
@@ -280,6 +282,20 @@ public slots:
 	{
 		QDesktopServices::openUrl(QUrl::fromLocalFile(_canvas->getFileNameToOpenWithExternalApplication()));
 	}
+
+	void browseUrlInternalFromProcessing()
+	{
+		QDockWidget * browser=new QDockWidget(this);
+		QWebView * view=new QWebView(browser);
+		view->setContextMenuPolicy(Qt::NoContextMenu);
+		QString fileName=_canvas->getFileNameToOpenWithExternalApplication();
+		view->load(fileName);
+		browser->setObjectName(tr("Internal Browser"));
+		browser->setWidget(view);
+		browser->setWindowTitle(tr("Browsing %1").arg(fileName));
+		addDockWidget(Qt::BottomDockWidgetArea,browser);
+	}
+
 	void on_action_Embed_SVG_Diagrams_Option_changed()
 	{
 		QAction *action = qobject_cast<QAction *>(sender());

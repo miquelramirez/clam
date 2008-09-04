@@ -86,6 +86,7 @@ env.EnableQt4Modules([
 	'QtSvg',
 	'QtUiTools',
 	'QtDesigner',
+	'QtWebKit',
 	],
 	debug=False,
 	crosscompiling=crosscompiling,
