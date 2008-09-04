@@ -1,4 +1,47 @@
 #!BPY
+"""
+Name: 'CLAM & Blender scene demo creator'
+Blender: 244
+Group: 'Misc, Export'
+Tooltip: 'Generate a Blender scene and make the sources move in circles around the coordinates origin'
+"""
+__author__ = ("Natanael Olaiz", "CLAM Team")
+__url__ = ("http://clam.iua.upf.edu/")
+__email__ = ["clam@iua.upf.edu"]
+__version__ = "CLAM 1.3 - GSOC 2008"
+__bpydoc__ = """\
+This script first calls the Scene Maker script and then apply ipoCurves 
+ (trajetories) to make the sources turn around the center of coordinates
+ origin
+
+Requires:
+ - 'scene_maker.py' on path 
+
+Usage:
+ - Just call it
+
+See also:
+ - scene_maker.py
+"""
+#
+# Copyright (c) 2008 Fundació Barcelona Media Universitat Pompeu Fabra
+#
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# 
+
 from bpy import data
 import Blender
 import math
