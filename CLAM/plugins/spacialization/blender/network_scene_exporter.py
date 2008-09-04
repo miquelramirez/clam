@@ -1,9 +1,52 @@
 #!BPY
 """
-Name: 'Blender Scene OSC CLAM exporter'
+Name: 'Scene CLAM Network exporter'
 Blender: 244
-Group: 'Object'
+Group: 'Exporter'
+Tooltip: 'Generates CLAM Networks'
 """
+__author__ = ("Natanael Olaiz", "CLAM Team")
+__url__ = ("http://clam.iua.upf.edu/")
+__email__ = ["clam@iua.upf.edu"]
+__version__ = "CLAM 1.3 - GSOC 2008"
+__bpydoc__ = """\
+This script generates a CLAM Network with one OSC receiver for each audio
+ object of the scene (contained in 'AudioSources' and 'AudioSinks' groups)
+ and connect them to a ControlPrinter as monitor. Useful to use as a template
+ network for the Blender scene.
+
+Requires:
+ - on Blender: BlenderOSCSender.py
+ - on CLAM: MultiLibloSource plugin
+
+Usage:
+ - Just run it.
+
+This file is also used to generate the choreosequencer network.
+
+TODO: 
+ - merge the clam Network exporter routines in a class
+
+"""
+#
+# Copyright (c) 2008 Fundació Barcelona Media Universitat Pompeu Fabra
+#
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# 
+
 
 # use bpy module of Blender:
 from bpy import data
@@ -57,7 +100,6 @@ def GenerateNetworkOSCReceiver(filename):
 	connections+=makeControlConnection(libloName,path.replace("/","_")+"_0",printerName,"In Control")
 	f=open(filename,'w')
 	networkId="Exported_Blender_scene_receiver_network"
-#	header=Header % vars()
 	body=liblos+printers+connections
 	f.write(Network % vars())
 	f.close()

@@ -1,4 +1,56 @@
 #!BPY
+"""
+Name: 'CLAM scene generator'
+Blender: 244
+Group: 'Export'
+Tooltip: 'Create a new scene with m audio sinks and n audio sources'
+"""
+__author__ = ("Natanael Olaiz", "CLAM Team")
+__url__ = ("http://clam.iua.upf.edu/")
+__email__ = ["clam@iua.upf.edu"]
+__version__ = "CLAM 1.3 - GSOC 2008"
+__bpydoc__ = """\
+This script generates a new blender scene with audio sinks and sources 
+(for now just UVSpheres, within the groups 'AudioSinks' and 'AudioSources').
+
+Optional:
+ - 'BlenderOSCSender.py' on path, to link the OSC sender to the new scene 
+     FrameChanged event (sending the objects positions via OSC messages).
+ - 'network_scene_exporter.py' on path, to generate an OSC CLAM monitor
+     for the created objects.
+ - 'choreofile_exporter.py' on path, to generate a ChoreoSequencer 
+     readable file.
+
+Usage:
+ - Just run it to create a new scene.
+
+TODO:
+ - the CLAM syntax uses the dot '.' as a connection symbol. As the CLAM Networks 
+    objects names are inherited from the Blender ones, the generated network could
+    fail on read. 
+    Furthermore, the dot '.' is used for duplicated objects in Blender!
+ - it doesn't clear all the previous scene
+
+"""
+#
+# Copyright (c) 2008 Fundació Barcelona Media Universitat Pompeu Fabra
+#
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+# 
+
 from bpy import data
 import Blender
 
