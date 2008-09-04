@@ -12,19 +12,10 @@
 
 
 
-CFLAGS = -Wall -g
 SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr xmlbackend=xercesc release=yes double=0 with_fftw3=yes with_fftw=no verbose=1
 SCONS= scons
 PLUGINS=continuousExcitationSynthesizer osc spacialization GuitarEffects/AudioSwitch GuitarEffects/AutomaticGainControl GuitarEffects/DCRemoval GuitarEffects/GuitarDistortion
 
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
-endif
-ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
-	INSTALL_PROGRAM += -s
-endif
 
 # shared library versions, option 1
 #version=2.0.5

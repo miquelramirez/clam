@@ -14,14 +14,6 @@
 
 OPTIONS= clam_prefix=/usr prefix=$(CURDIR)/debian/clam-annotator/usr release=1 verbose=0 double=0
 
-CFLAGS = -Wall -g
-
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
-endif
-
 configure: configure-stamp
 configure-stamp:
 	dh_testdir
