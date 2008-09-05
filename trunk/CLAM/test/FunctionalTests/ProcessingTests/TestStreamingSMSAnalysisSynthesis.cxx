@@ -11,7 +11,7 @@
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileWriter.hxx"
 #include "Network.hxx"
-#include "FreewheelingNetworkPlayer.hxx"
+#include "MonoOfflineNetworkPlayer.hxx"
 
 namespace CLAMTest
 {
@@ -188,7 +188,7 @@ private:
 	{
 		//CLAM::ErrAssertionFailed::breakpointInCLAMAssertEnabled = true;
 		CLAM::Network net;
-		CLAM::FreewheelingNetworkPlayer * player =  new CLAM::FreewheelingNetworkPlayer;
+		CLAM::MonoOfflineNetworkPlayer * player =  new CLAM::MonoOfflineNetworkPlayer;
 		net.SetPlayer( player ); // network owns the player memory
 
 		net.AddProcessing( "Source", new CLAM::AudioSource );		

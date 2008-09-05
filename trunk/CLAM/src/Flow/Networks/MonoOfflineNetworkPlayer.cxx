@@ -1,4 +1,4 @@
-#include "FreewheelingNetworkPlayer.hxx"
+#include "MonoOfflineNetworkPlayer.hxx"
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileWriter.hxx"
 #include <fstream>
@@ -6,11 +6,11 @@
 namespace CLAM
 {
 
-bool FreewheelingNetworkPlayer::IsWorking() const
+bool MonoOfflineNetworkPlayer::IsWorking() const
 {
 	return _filenames.size()!=GetAudioSinks().size()+GetAudioSources().size();
 }
-std::string FreewheelingNetworkPlayer::NonWorkingReason() const
+std::string MonoOfflineNetworkPlayer::NonWorkingReason() const
 {
 	std::stringstream ss;
 	ss << GetAudioSources().size() << " inputs and " 
@@ -18,7 +18,7 @@ std::string FreewheelingNetworkPlayer::NonWorkingReason() const
 		<< _filenames.size() << " files provided" << std::ends;
 	return ss.str();
 }
-void FreewheelingNetworkPlayer::Start()
+void MonoOfflineNetworkPlayer::Start()
 {
 	if ( IsPlaying() ) return;
 	BePlaying();
@@ -100,23 +100,23 @@ void FreewheelingNetworkPlayer::Start()
 	for (unsigned i = 0; i<writers.size(); i++)
 		writers[i]->Stop();
 }
-void FreewheelingNetworkPlayer::Stop()
+void MonoOfflineNetworkPlayer::Stop()
 {
 	if ( IsStopped() ) return;
 	BeStopped();
 	//TODO close files
 }
 
-void FreewheelingNetworkPlayer::ProcessInputFile()
+void MonoOfflineNetworkPlayer::ProcessInputFile()
 {
 	GetNetwork().Do();
 }
 
-void FreewheelingNetworkPlayer::AddInputFile( const std::string& filename )
+void MonoOfflineNetworkPlayer::AddInputFile( const std::string& filename )
 {
 	_filenames.push_back(filename);
 }
-void FreewheelingNetworkPlayer::AddOutputFile( const std::string& filename )
+void MonoOfflineNetworkPlayer::AddOutputFile( const std::string& filename )
 {
 	_filenames.push_back(filename);
 }

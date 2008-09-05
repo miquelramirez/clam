@@ -1,5 +1,5 @@
-#ifndef _FreewheelingNetworkPlayer_hxx_
-#define _FreewheelingNetworkPlayer_hxx_
+#ifndef _MonoOfflineNetworkPlayer_hxx_
+#define _MonoOfflineNetworkPlayer_hxx_
 
 #include "NetworkPlayer.hxx"
 #include "AudioSource.hxx"
@@ -9,7 +9,7 @@ namespace CLAM
 {
 
 
-class FreewheelingNetworkPlayer : public NetworkPlayer
+class MonoOfflineNetworkPlayer : public NetworkPlayer
 {
 	std::vector<std::string> _filenames;
 	bool _enableLoopInputWavs;
@@ -17,7 +17,7 @@ class FreewheelingNetworkPlayer : public NetworkPlayer
 
 
 public:
-	FreewheelingNetworkPlayer()
+	MonoOfflineNetworkPlayer()
 		: _enableLoopInputWavs(false)
 		, _resultWavsTime(0.0)
 	{}

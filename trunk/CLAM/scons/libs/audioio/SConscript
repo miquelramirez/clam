@@ -21,7 +21,8 @@ def define_module_contents(env) :
 		'src/Tools/AudioFileIO',
 		'src/Processing/AudioIO*.*xx',
 		'src/Flow/Networks/BlockingNetworkPlayer*.*xx',
-		'src/Flow/Networks/FreewheelingNetworkPlayer.*xx',
+		'src/Flow/Networks/MonoOfflineNetworkPlayer.*xx',
+		'src/Flow/Networks/OfflineNetworkPlayer.*xx',
 		'src/System/Application',
 		]
 	blacklist = []

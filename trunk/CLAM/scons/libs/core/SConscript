@@ -45,7 +45,7 @@ def define_module_contents(env) :
 		'BlockingNetworkPlayer',
 		'JACKNetworkPlayer',
 		'PANetworkPlayer',
-		'FreewheelingNetworkPlayer',
+		'OfflineNetworkPlayer',
 		]
 
 	if sys.platform == 'win32' or crosscompiling :
