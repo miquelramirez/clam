@@ -95,7 +95,7 @@ env.EnableQt4Modules([
 mainSources = {
 	'NetworkEditor' : os.path.join('src','main.cxx'),
 	'Prototyper' : os.path.join('src','prototyper','main.cxx'),
-	'OfflinePlayer' : os.path.join('src','OfflinePlayerMain.cxx'),
+	'MonoOfflinePlayer' : os.path.join('src','MonoOfflinePlayerMain.cxx'),
 }
 
 sourcePaths = [
