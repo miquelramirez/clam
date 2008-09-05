@@ -1,5 +1,8 @@
 == Description ==
 
+MIDI Sink. Uses RtMidi as backend to create virtual midi ports.
+MIDI Source. Uses RtMidi as backend to create virtual midi ports.
+MIDI Controller. Filters MIDI Controller messages from the connected MIDISource.
 MIDI Monitor. Uses RtMidi as backend to create virtual midi ports.
 
 Warning: Works only under Mac and Linux since virtual ports feature of RtMidi works only in these platforms.

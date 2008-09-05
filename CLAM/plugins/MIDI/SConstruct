@@ -2,7 +2,7 @@
 
 import os, glob, sys
 
-libraryName='midicontroller'
+libraryName='midi'
 
 def scanFiles(pattern, paths) :
 	files = []
@@ -34,7 +34,8 @@ env.EnableClamModules([
 	] , CLAMInstallDir)
 
 sourcePaths = recursiveDirs(".")
-sources = scanFiles('*.cxx', sourcePaths)
+rtmidiPath = ['.']
+sources = scanFiles('*.cxx', sourcePaths+rtmidiPath)
 sources = dict.fromkeys(sources).keys()
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall', '-D__LINUX_ALSASEQ__'] )
