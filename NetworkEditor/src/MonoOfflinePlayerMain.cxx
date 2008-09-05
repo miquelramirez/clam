@@ -1,4 +1,4 @@
-#include <CLAM/FreewheelingNetworkPlayer.hxx>
+#include <CLAM/MonoOfflineNetworkPlayer.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <fstream>
 #include <sstream>
@@ -31,7 +31,7 @@ int main( int argc, char *argv[] )
 	std::string networkFile = argv[1];
 	CLAM::Network net;
  	CLAM::XMLStorage::Restore(net, networkFile);
-	CLAM::FreewheelingNetworkPlayer * player =  new CLAM::FreewheelingNetworkPlayer;
+	CLAM::MonoOfflineNetworkPlayer * player =  new CLAM::MonoOfflineNetworkPlayer;
 	net.SetPlayer( player ); // network owns the player memory	
 	std::cout << "Sources and Sinks list:\n" << player->SourcesAndSinksToString() << std::endl;
 	if (argc==2)
