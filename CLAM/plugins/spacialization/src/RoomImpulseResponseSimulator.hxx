@@ -60,7 +60,7 @@ public:
 		DYN_ATTRIBUTE( 5, public, float, IrLength);
 		DYN_ATTRIBUTE( 6, public, CLAM::Text, ExtraOptions);
 		DYN_ATTRIBUTE( 7, public, bool, StripDirectSound);
-		DYN_ATTRIBUTE( 8, public, bool, SupressInitialDelay);
+		DYN_ATTRIBUTE( 8, public, bool, SupressInitialDelay); // TODO: remove it
 	protected:
 		void DefaultInit()
 		{
@@ -100,7 +100,6 @@ private:
 	float _currentReceiverY;
 	float _currentReceiverZ;
 	float _delta;
-	int _irCount;
 	unsigned _currentCacheIndex;
 	Scene * _scene;
 
@@ -127,7 +126,6 @@ public:
 		, _currentReceiverY(0)
 		, _currentReceiverZ(0)
 		, _delta(1)
-		, _irCount(0)
 		, _currentCacheIndex(0)
 		, _scene(0)
 	{
@@ -253,46 +251,16 @@ private:
 			_scene->raytracingOverTime(responsesPath, "IR" );
 //		_scene->writeDirectSoundOverTime(responsesPath, "direct_sound");
 
-		std::string wFile = "w_IR.wav";
-		std::string xFile = "x_IR.wav";
-		std::string yFile = "y_IR.wav";
-		std::string zFile = "z_IR.wav";
-		std::string wFileTrimmed = "w_IR_trimmed.wav";
-		std::string xFileTrimmed = "x_IR_trimmed.wav";
-		std::string yFileTrimmed = "y_IR_trimmed.wav";
-		std::string zFileTrimmed = "z_IR_trimmed.wav";
-		std::string fileW = wFile;
-		std::string fileX = xFile;
-		std::string fileY = yFile;
-		std::string fileZ = zFile;
-		if (_config.HasSupressInitialDelay() and _config.GetSupressInitialDelay()) // Trim initial silences with sox. Can be safely desabled
-		{
-			std::system( ("sox -t wav " + wFile + " -t wav " + wFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
-			std::system( ("sox -t wav " + xFile + " -t wav " + xFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
-			std::system( ("sox -t wav " + yFile + " -t wav " + yFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
-			std::system( ("sox -t wav " + zFile + " -t wav " + zFileTrimmed + " silence 1, 0.00000001, 0.01 ").c_str() );
-			std::cout << " ------------------- trimming ------------------- " << std::endl;
-			fileW = wFileTrimmed;
-			fileX = xFileTrimmed;
-			fileY = yFileTrimmed;
-			fileZ = zFileTrimmed;
-		}
+		
 		std::string errorMsg;
-		if (!computeResponseSpectrums(fileW, _current->W, _config.GetFrameSize(), errorMsg)
-			|| !computeResponseSpectrums(fileX, _current->X, _config.GetFrameSize(), errorMsg)
-			|| !computeResponseSpectrums(fileY, _current->Y , _config.GetFrameSize(), errorMsg) 
-			|| !computeResponseSpectrums(fileZ, _current->Z , _config.GetFrameSize(), errorMsg) )
+		if (
+			!computeResponseSpectrums(_scene->getTimeResponse_P(), _current->W, _config.GetFrameSize(), errorMsg) ||
+			!computeResponseSpectrums(_scene->getTimeResponse_Vx(), _current->X, _config.GetFrameSize(), errorMsg) ||
+			!computeResponseSpectrums(_scene->getTimeResponse_Vy(), _current->Y, _config.GetFrameSize(), errorMsg) ||
+			!computeResponseSpectrums(_scene->getTimeResponse_Vz(), _current->Z, _config.GetFrameSize(), errorMsg) )
 		{
 			std::cout << "ERROR: RoomImpulseResponseSimulator::Do can not open IR files.\n" << errorMsg << std::endl;
 			return false;
-		}
-		if (false) // save all IRs
-		{
-			std::cout << "saving IR "<<_irCount<<std::endl;
-			std::ostringstream os;
-			os << "cp "<<wFile<<" "<<wFile<<_irCount<<".wav";
-			std::system(os.str().c_str());
-			_irCount++;
 		}
 		return true;
 	}
