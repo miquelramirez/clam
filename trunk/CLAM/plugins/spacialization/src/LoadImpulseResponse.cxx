@@ -85,7 +85,7 @@ bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> 
 	ConnectPorts(source,0,windower,0);
 	ConnectPorts(windower,0,fft,0);
 	InPort<ComplexSpectrum> fetcher;
-	fft.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
+	fft.GetOutPort(0).ConnectToIn(fetcher);
 
 	responseSpectrums.clear();
 	source.Start();

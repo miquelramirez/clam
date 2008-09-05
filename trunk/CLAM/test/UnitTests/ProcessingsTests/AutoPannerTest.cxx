@@ -78,8 +78,8 @@ private:
 		int frameSize = 1;
 
 		CLAM::AutoPanner controlSender;
-		controlSender.GetOutControls().Get("Left Control").AddLink(mReceiverLeft);
-		controlSender.GetOutControls().Get("Right Control").AddLink(mReceiverRight);		
+		controlSender.GetOutControl("Left Control").AddLink(mReceiverLeft);
+		controlSender.GetOutControl("Right Control").AddLink(mReceiverRight);		
 
 		CLAM::AutoPannerConfig cfg;
 		cfg.SetFrequency( freq );
@@ -109,8 +109,8 @@ private:
 		int frameSize = 1;
 
 		CLAM::AutoPanner controlSender;
-		controlSender.GetOutControls().Get("Left Control").AddLink(mReceiverLeft);
-		controlSender.GetOutControls().Get("Right Control").AddLink(mReceiverRight);		
+		controlSender.GetOutControl("Left Control").AddLink(mReceiverLeft);
+		controlSender.GetOutControl("Right Control").AddLink(mReceiverRight);		
 
 		CLAM::AutoPannerConfig cfg;
 		cfg.SetFrequency( freq );
@@ -142,8 +142,8 @@ private:
 		int frameSize = 1;
 
 		CLAM::AutoPanner controlSender;
-		controlSender.GetOutControls().Get("Left Control").AddLink(mReceiverLeft);
-		controlSender.GetOutControls().Get("Right Control").AddLink(mReceiverRight);		
+		controlSender.GetOutControl("Left Control").AddLink(mReceiverLeft);
+		controlSender.GetOutControl("Right Control").AddLink(mReceiverRight);		
 
 		CLAM::AutoPannerConfig cfg;
 		cfg.SetFrequency( freq );
@@ -171,8 +171,8 @@ private:
 		int frameSize = 10;
 
 		CLAM::AutoPanner controlSender;
-		controlSender.GetOutControls().Get("Left Control").AddLink(mReceiverLeft);
-		controlSender.GetOutControls().Get("Right Control").AddLink(mReceiverRight);		
+		controlSender.GetOutControl("Left Control").AddLink(mReceiverLeft);
+		controlSender.GetOutControl("Right Control").AddLink(mReceiverRight);		
 
 		CLAM::AutoPannerConfig cfg;
 		cfg.SetFrequency( freq );
@@ -203,8 +203,8 @@ private:
 		int frameSize = 7;
 
 		CLAM::AutoPanner controlSender;
-		controlSender.GetOutControls().Get("Left Control").AddLink(mReceiverLeft);
-		controlSender.GetOutControls().Get("Right Control").AddLink(mReceiverRight);		
+		controlSender.GetOutControl("Left Control").AddLink(mReceiverLeft);
+		controlSender.GetOutControl("Right Control").AddLink(mReceiverRight);		
 
 		CLAM::AutoPannerConfig cfg;
 		cfg.SetFrequency( freq );

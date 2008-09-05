@@ -108,9 +108,9 @@ protected:
 		ConnectPorts(windower,0,fft,0);
 		ConnectPorts(fft,0,toMagPhase,0);
 		InPort<MagPhaseSpectrum> fetcher;
-		toMagPhase.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
+		toMagPhase.GetOutPort(0).ConnectToIn(fetcher);
 		InPort<ComplexSpectrum> complexFetcher;
-		fft.GetOutPorts().GetByNumber(0).ConnectToIn(complexFetcher);
+		fft.GetOutPort(0).ConnectToIn(complexFetcher);
 
 		reader.Start();
 		windower.Start();

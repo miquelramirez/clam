@@ -307,7 +307,7 @@ int processFile(const std::string & waveFile, const std::string & suffix, unsign
 	std::cout << "Hop size: " << hop << std::endl;
 
 	CLAM::AudioInPort inport;
-	reader.GetOutPorts().GetByNumber(0).ConnectToIn(inport);
+	reader.GetOutPort(0).ConnectToIn(inport);
 	inport.SetSize( framesize );
 	inport.SetHop( hop );
 

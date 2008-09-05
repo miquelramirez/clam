@@ -37,7 +37,7 @@ void PushFlowControl::ProcessingAddedToNetwork( Processing & added )
 {
 	NetworkTopologyChanged();
 
-	if (added.GetInPorts().Size() == 0) // if it's a generator
+	if (added.GetNInPorts() == 0) // if it's a generator
 		mGenerators.push_back( &added );
 }
 
@@ -45,7 +45,7 @@ void PushFlowControl::ProcessingRemovedFromNetwork( Processing & removed )
 {
 	NetworkTopologyChanged();
 
-	if (removed.GetInPorts().Size() == 0) // if it's a generator
+	if (removed.GetNInPorts() == 0) // if it's a generator
 		mGenerators.remove( &removed );
 }
 
@@ -76,31 +76,22 @@ void PushFlowControl::AddNewPossibleProcessingsToDo(
 	Processing * producer, 
 	std::list<Processing*> & toDo )
 {
-	
-	OutPortRegistry::Iterator itOutPort;
-	
-	for (itOutPort=producer->GetOutPorts().Begin(); 
-			 itOutPort!=producer->GetOutPorts().End(); 
-			 itOutPort++)
+	unsigned nOutPorts = producer->GetNOutPorts();
+	for (unsigned i=0; i<nOutPorts; i++)
 	{
-		Network::InPortsList consumers;
-		consumers = mNetwork->GetInPortsConnectedTo( **itOutPort );
+		Network::InPortsList consumers =
+			mNetwork->GetInPortsConnectedTo( producer->GetOutPort(i) );
 		
 		Network::InPortsList::iterator itInPort;
-
 		for (itInPort=consumers.begin(); itInPort!=consumers.end(); itInPort++)
-		  {	
+		{
+			InPortBase & inPort = **itInPort;
 		        //ignore orphan inports
-			if (!(*itInPort)->HasProcessing())
-				continue;
+			if (!inPort.HasProcessing()) continue;
 
-			Processing * proc = (*itInPort)->GetProcessing();
-
+			Processing * proc = inPort.GetProcessing();
 			if (proc->CanConsumeAndProduce())
-			  {
-			    //std::cerr <<"\n\t CAN"<<proc->GetClassName();
 				toDo.push_back( proc );
-			  }
 		}
 	}
 }

@@ -352,13 +352,13 @@ private:
 	void testOutControlPublisher_GetsRegisteredToAProcessing()
 	{
 		DummyProcessing proc;
-		CPPUNIT_ASSERT( &proc.outControlPublisher == &(proc.GetOutControls().Get("PublisherTestOut")) );
+		CPPUNIT_ASSERT( &proc.outControlPublisher == &(proc.GetOutControl("PublisherTestOut")) );
 	}
 	
 	void testInControlPublisher_GetsRegisteredToAProcessing()
 	{
 		DummyProcessing proc;
-		CPPUNIT_ASSERT( &proc.inControlPublisher == &(proc.GetInControls().Get("PublisherTestIn")) );
+		CPPUNIT_ASSERT( &proc.inControlPublisher == &(proc.GetInControl("PublisherTestIn")) );
 	}
 
 	void testOutControlPublisher_ConnectControlsFromPublisher()

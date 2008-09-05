@@ -183,10 +183,10 @@ namespace CLAMTest {
 		mpGenerator2->Input.Attach(envelope2);
 
 		mpGenerator1->Output.Attach(mOutputNode1);
-		mOutput1.GetInPorts().GetByNumber(0).Attach(mOutputNode1);
+		mOutput1.GetInPort(0).Attach(mOutputNode1);
 
 		mpGenerator2->Output.Attach(mOutputNode2);
-		mOutput2.GetInPorts().GetByNumber(0).Attach(mOutputNode2);
+		mOutput2.GetInPort(0).Attach(mOutputNode2);
 
 		mInputNode.Configure(5*mFrameSize);
 		mOutputNode1.Configure(5*mFrameSize);

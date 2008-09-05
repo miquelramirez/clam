@@ -43,15 +43,10 @@ main()
 	MIDIInControl inStop(inStopCfg);
 	InControl stopReceiver("stop-receiver");
 
-	inStop.GetOutControls().GetByNumber(0).AddLink(
-			&stopReceiver);
-	
-	inNote.GetOutControls().GetByNumber(0).AddLink(
-			&outNote.GetInControls().GetByNumber(0));
-	inNote.GetOutControls().GetByNumber(1).AddLink(
-			&outNote.GetInControls().GetByNumber(1));
-	inNote.GetOutControls().GetByNumber(2).AddLink(
-			&outNote.GetInControls().GetByNumber(2));
+	inStop.GetOutControl(0).AddLink( &stopReceiver);
+	inNote.GetOutControl(0).AddLink( &outNote.GetInControl(0));
+	inNote.GetOutControl(1).AddLink( &outNote.GetInControl(1));
+	inNote.GetOutControl(2).AddLink( &outNote.GetInControl(2));
 	
 	manager.Start();
 

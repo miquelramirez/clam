@@ -110,17 +110,17 @@ private:
 
 	void testGetInControl_GetTheRightControl()
 	{
-		CPPUNIT_ASSERT_EQUAL( std::string("in"), GetInControls().GetByNumber(0).GetName() );
+		CPPUNIT_ASSERT_EQUAL( std::string("in"), GetInControl(0).GetName() );
 	}
 	void testGetOutControl_GetTheRightControl()
 	{
-		CPPUNIT_ASSERT_EQUAL( std::string("out1"), GetOutControls().GetByNumber(0).GetName() );
+		CPPUNIT_ASSERT_EQUAL( std::string("out1"), GetOutControl(0).GetName() );
 	}
 	void testGetInControl_WithOutOfRangeIndexThrowException() 
 	{
 		try
 		{
-			GetInControls().GetByNumber(2); // we have two published in controls: indexs 0,1
+			GetInControl(2); // we have two published in controls: indexs 0,1
 			CPPUNIT_FAIL("std::out_of_range was expected but none was thrown");
 		}
 		catch( ... ) {}
@@ -129,7 +129,7 @@ private:
 	{
 		try
 		{
-			GetOutControls().GetByNumber(2); // we have two published out controls: indexs 0,1
+			GetOutControl(2); // we have two published out controls: indexs 0,1
 			CPPUNIT_FAIL("std::out_of_range was expected but none was thrown");
 		}
 		catch( ... ) {}
@@ -137,7 +137,7 @@ private:
 	void testLinkAndSendControl_ChangesInControlState()
 	{
 		const int outId=0, inId=0;
-		GetOutControls().GetByNumber(outId).AddLink(GetInControls().GetByNumber(inId));
+		GetOutControl(outId).AddLink(GetInControl(inId));
 		SendFloatToOutControl(*this,outId,1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f, GetFloatFromInControl(*this,inId) );
 	}
@@ -146,50 +146,50 @@ private:
 
 	void testInControls_GetByNumber_GetTheRightControl()
 	{
-		CLAM::InControl* returned = &GetInControls().GetByNumber(0);
+		CLAM::InControl* returned = &GetInControl(0);
 		CLAM::InControl* expected = &mInControl;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 	void testOutControls_GetByNumber_GetTheRightControl()
 	{
-		CLAM::OutControl* returned = &GetOutControls().GetByNumber(1); // get the second control
+		CLAM::OutControl* returned = &GetOutControl(1); // get the second control
 		CLAM::OutControl* expected = &mOutControl2;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 	void testOutPorts_GetByNumber_GetTheRightPort()
 	{
-		CLAM::OutPortBase* returnedPort = &GetOutPorts().GetByNumber(1); // get the second port
+		CLAM::OutPortBase* returnedPort = &GetOutPort(1); // get the second port
 		CLAM::OutPortBase* expectedPort = &mOutPort2;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 	void testInPorts_GetByNumber_GetTheRightPort()
 	{
-		CLAM::InPortBase* returnedPort = &GetInPorts().GetByNumber(0); // get the first port
+		CLAM::InPortBase* returnedPort = &GetInPort(0); // get the first port
 		CLAM::InPortBase* expectedPort = &mInPort;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 	void testInControls_GetByName_GetTheRightControl()
 	{
-		CLAM::InControl* returned = &GetInControls().Get("in");
+		CLAM::InControl* returned = &GetInControl("in");
 		CLAM::InControl* expected = &mInControl;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 
 	void testOutControls_GetByName_GetTheRightControl()
 	{
-		CLAM::OutControl* returned = &GetOutControls().Get("out2"); // get the second control
+		CLAM::OutControl* returned = &GetOutControl("out2"); // get the second control
 		CLAM::OutControl* expected = &mOutControl2;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 	void testOutPorts_GetByName_GetTheRightPort()
 	{
-		CLAM::OutPortBase* returnedPort = &GetOutPorts().Get("out2"); // get the second port
+		CLAM::OutPortBase* returnedPort = &GetOutPort("out2"); // get the second port
 		CLAM::OutPortBase* expectedPort = &mOutPort2;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}
 	void testInPorts_GetByName_GetTheRightPort()
 	{
-		CLAM::InPortBase* returnedPort = &GetInPorts().Get("in"); // get the first port
+		CLAM::InPortBase* returnedPort = &GetInPort("in"); // get the first port
 		CLAM::InPortBase* expectedPort = &mInPort;
 		CPPUNIT_ASSERT_EQUAL( expectedPort,  returnedPort );
 	}

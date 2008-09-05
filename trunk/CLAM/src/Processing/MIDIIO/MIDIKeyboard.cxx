@@ -80,15 +80,15 @@ bool MIDIKeyboard::ConcreteConfigure( const ProcessingConfig& cfg )
 	mModulationConfig.SetFirstData( 0x01 );	// modulation 
 	ConfigureAndCheck( mModulationIn, mModulationConfig );
 
-	OutControl& outNote = mNoteIn.GetOutControls().GetByNumber(1);
-	OutControl& outVelocity = mNoteIn.GetOutControls().GetByNumber(2); 
-	OutControl& outPitchBend = mPitchBendIn.GetOutControls().GetByNumber(1);
-	OutControl& outModulation = mModulationIn.GetOutControls().GetByNumber(1);
+	OutControl& outNote = mNoteIn.GetOutControl(1);
+	OutControl& outVelocity = mNoteIn.GetOutControl(2); 
+	OutControl& outPitchBend = mPitchBendIn.GetOutControl(1);
+	OutControl& outModulation = mModulationIn.GetOutControl(1);
 
 	mNoteOut.PublishOutControl( outNote );
 	mVelocityOut.PublishOutControl( outVelocity );
 	mPitchBendOut.PublishOutControl( outPitchBend );
-	mModulationOut.PublishOutControl( outModulation );	
+	mModulationOut.PublishOutControl( outModulation );
 
 	mNoteOut.AddLink( mNoteInControl );
 	mVelocityOut.AddLink( mVelocityInControl );

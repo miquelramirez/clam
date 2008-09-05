@@ -176,8 +176,8 @@ private:
 
 		storage.Restore(foo, mPathToTestData+"networkwithportconnections.xml");
 		
-		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("oscillator").GetOutPorts().Get("Audio Output").IsVisuallyConnectedTo( 
-					      foo.GetProcessing("multiplier").GetInPorts().Get("First Audio Input")));
+		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("oscillator").GetOutPort("Audio Output").IsVisuallyConnectedTo( 
+					      foo.GetProcessing("multiplier").GetInPort("First Audio Input")));
 	}
 
 	void TestSaveNetworkWithPortsConnection()
@@ -215,10 +215,10 @@ private:
 
 		CLAM::XMLStorage::Restore(foo, mPathToTestData+"networkwithcontrolconnections.xml");
 		
-		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("panner").GetOutControls().Get("Left Control").IsConnectedTo( 
-					      foo.GetProcessing("oscillator").GetInControls().Get("ModIndex")));
-		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("panner").GetOutControls().Get("Right Control").IsConnectedTo( 
-					      foo.GetProcessing("oscillator").GetInControls().Get("Amplitude")));
+		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("panner").GetOutControl("Left Control").IsConnectedTo( 
+					      foo.GetProcessing("oscillator").GetInControl("ModIndex")));
+		CPPUNIT_ASSERT_EQUAL( true, foo.GetProcessing("panner").GetOutControl("Right Control").IsConnectedTo( 
+					      foo.GetProcessing("oscillator").GetInControl("Amplitude")));
 
 	}
 
