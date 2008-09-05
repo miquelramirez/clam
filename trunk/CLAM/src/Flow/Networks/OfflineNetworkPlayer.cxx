@@ -90,7 +90,7 @@ void OfflineNetworkPlayer::Start()
 	unsigned sinkIndex = 0;
 	while(sinkIndex<GetAudioSinks().size())
 	{			
-		CLAM_ASSERT(fileIndex<infiles.size(),"The number of sources is greater than the input files multichannels");	
+		CLAM_ASSERT(fileIndex<outfiles.size(),"The number of sinks is greater than the input files multichannels");	
 		for(int i=0;i<outfiles[fileIndex]->channels();i++)
 		{	
 			outbuffers[sinkIndex].Resize( frameSize );
