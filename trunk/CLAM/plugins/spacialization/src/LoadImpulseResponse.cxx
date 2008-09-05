@@ -20,16 +20,20 @@
 
 #include "LoadImpulseResponse.hxx"
 #include <CLAM/MonoAudioFileReader.hxx>
+#include <CLAM/AudioSource.hxx>
 #include <CLAM/AudioWindowing.hxx>
 #include <fstream>
 #include "MyFFT.hxx"
 #include <CLAM/ProcessingDataPlugin.hxx>
+
 namespace CLAM
 {
 namespace Hidden
 {
 	static ProcessingDataPlugin::Registrator<ImpulseResponse*> registrator("green","CLAM::ImpulseResponse");
 }
+
+bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg);
 
 bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg)
 {
@@ -42,8 +46,23 @@ bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSp
 		errorMsg += reader.GetConfigErrorMessage();
 		return false;
 	}
-//	const unsigned nSamples = reader.GetHeader().GetSamples();
+	const unsigned nSamples = reader.GetHeader().GetSamples();
 //	std::cout << "ComputeResponseSpectrums: NSamples: " << nSamples << std::endl;
+	reader.GetOutPort(0).SetSize(nSamples);
+	reader.GetOutPort(0).SetHop(nSamples);
+
+	return computeResponseSpectrums(reader, responseSpectrums, framesize, errorMsg);
+}
+
+bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg)
+{
+	AudioSource source;
+	source.SetExternalBuffer(&buffer[0], buffer.size());
+	return computeResponseSpectrums(source, responseSpectrums, framesize, errorMsg);
+}
+
+bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg)
+{
 
 	AudioWindowingConfig windowerConfig;
 	windowerConfig.SetSamplingRate(44100); // TODO: Take it from the file
@@ -63,28 +82,26 @@ bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSp
 	fftConfig.SetAudioSize(framesize*2);
 	MyFFT fft(fftConfig);
 
-	ConnectPorts(reader,0,windower,0);
+	ConnectPorts(source,0,windower,0);
 	ConnectPorts(windower,0,fft,0);
 	InPort<ComplexSpectrum> fetcher;
 	fft.GetOutPorts().GetByNumber(0).ConnectToIn(fetcher);
 
 	responseSpectrums.clear();
-	reader.Start();
+	source.Start();
 	windower.Start();
 	fft.Start();
 	
-	for (bool samplesAvailable=true; samplesAvailable; )
+	source.Do();
+	while (windower.CanConsumeAndProduce())
 	{
-		samplesAvailable = reader.Do();
-		if (!windower.CanConsumeAndProduce()) continue;
 		windower.Do();
 		fft.Do();
 		responseSpectrums.push_back(fetcher.GetData());
-//			fetcher.GetData().dump(std::cout);
 		fetcher.Consume();
 	}
 
-	reader.Stop();
+	source.Stop();
 	windower.Stop();
 	fft.Stop();
 	return true;

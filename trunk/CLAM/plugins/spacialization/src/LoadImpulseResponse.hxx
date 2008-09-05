@@ -38,6 +38,12 @@ bool computeResponseSpectrums(
 		unsigned frameSize, 
 		std::string & errorMsg);
 
+bool computeResponseSpectrums(
+		const std::vector<double> & buffer,
+		ImpulseResponse & responseSpectrums, 
+		unsigned frameSize, 
+		std::string & errorMsg);
+
 class ImpulseResponseDatabase
 {
 	typedef std::vector<ImpulseResponse> ImpulseResponses;
