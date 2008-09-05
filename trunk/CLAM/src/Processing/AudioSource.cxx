@@ -20,17 +20,21 @@ namespace Hidden
 bool AudioSource::Do()
 {
 	CLAM::Audio& so=mOut.GetAudio();
-	CLAM_DEBUG_ASSERT(mFloatBuffer, "No float buffer");
-	CLAM_DEBUG_ASSERT(!mDoubleBuffer, "There should not be double buffer");
-	CLAM_DEBUG_ASSERT(mBufferSize>0, "internal buffer size must be greater than 0");
+	CLAM_DEBUG_ASSERT(!mFloatBuffer || !mDoubleBuffer, "AudioSource: Just one buffer should be set");
+	CLAM_DEBUG_ASSERT(mFloatBuffer || mDoubleBuffer, "AudioSource: No external buffer set");
+	CLAM_DEBUG_ASSERT(mBufferSize>0, "AudioSource: internal buffer size must be greater than 0");
 	CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
-	for (unsigned i=0; i<mBufferSize; i++)
-		audioBuffer[i] = mFloatBuffer[i];
+	if (mFloatBuffer)
+		for (unsigned i=0; i<mBufferSize; i++)
+			audioBuffer[i] = mFloatBuffer[i];
+	else
+		for (unsigned i=0; i<mBufferSize; i++)
+			audioBuffer[i] = mDoubleBuffer[i];
 	mOut.Produce();
 	return true;
 }
 
-void AudioSource::SetExternalBuffer( float* buf, unsigned nframes)
+void AudioSource::SetExternalBuffer(const float* buf, unsigned nframes)
 {
 	mFloatBuffer = buf;
 	mBufferSize = nframes;
@@ -38,7 +42,7 @@ void AudioSource::SetExternalBuffer( float* buf, unsigned nframes)
 	mOut.SetSize(nframes);
 	mOut.SetHop(nframes);
 }
-void AudioSource::SetExternalBuffer( double* buf, unsigned nframes)
+void AudioSource::SetExternalBuffer(const double* buf, unsigned nframes)
 {
 	mDoubleBuffer = buf;
 	mBufferSize = nframes;

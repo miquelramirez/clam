@@ -10,8 +10,8 @@ namespace CLAM
 	{
 	private:
 		AudioOutPort mOut;
-		float* mFloatBuffer;
-		double* mDoubleBuffer;
+		const float* mFloatBuffer;
+		const double* mDoubleBuffer;
 		unsigned mBufferSize;
 	public:
 		AudioSource(const ProcessingConfig & conf=Config())
@@ -30,8 +30,8 @@ namespace CLAM
 			mOut.SetHop(val);
 		}
 		
-		void SetExternalBuffer(float* buf, unsigned nframes );
-		void SetExternalBuffer(double* buf, unsigned nframes );
+		void SetExternalBuffer(const float* buf, unsigned nframes );
+		void SetExternalBuffer(const double* buf, unsigned nframes );
 
 		bool Do();
 		
