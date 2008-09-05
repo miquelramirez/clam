@@ -8,9 +8,14 @@ GenerateDoxygen()
 	Branch=$2
 	TargetDir=$3
 	Date=$4
-	cvs co $Branch -d CLAM-for-doxygen CLAM
-	pushd CLAM-for-doxygen
-		Version=`grep PROJECT_NUMBER doxygen.cfg | (read var eq value; echo $value )`
+	svn co http://iua-share.upf.edu/svn/clam/trunk/CLAM CLAM-for-doxygen
+	(
+		cd CLAM-for-doxygen
+		Version=`grep "CLAM" CHANGES | (read date name version svn revisionTag revision dollar; echo $version )`
+		Revision=`grep "CLAM" CHANGES | (read date name version svn revisionTag revision dollar; echo $revision )`
+		if [ "$Revision" != "" ]; then
+			Version="$Version~svn$Revision"
+		fi
 		echo Generating Doxygen, output will be on the DoxyLog file...
 		(
 			cat doxygen.cfg
@@ -18,14 +23,14 @@ GenerateDoxygen()
 			echo "PROJECT_NUMBER = $Version $Date"
 		) | doxygen - >DoxyLog 2>&1 
 
-		Tarball=$TargetDir.tar.bz
+		Tarball=$TargetDir-$Version.tar.bz
 
 		echo creating tarball
 		mv doxygen/html $TargetDir
 		tar cfvj $Tarball $TargetDir
 
 		echo removing old remote dir $TargetDir
-		ssh clamadm@www.iua.upf.es rm -rf $TargetDir
+		ssh clamadm@www.iua.upf.es mv $TargetDir $TargetDir-old
 		echo transferring new tarball
 		scp -r $Tarball "clamadm@www.iua.upf.es:"
 		echo extracting new tarball on remote
@@ -36,9 +41,9 @@ GenerateDoxygen()
 		scp -r CLAM.tag "clamadm@www.iua.upf.es:$TargetDir"
 		echo transferring DoxyLog
 		scp -r DoxyLog "clamadm@www.iua.upf.es:$TargetDir"
-	popd
+	)
 	echo removing local temporary CLAM repository
-	rm -rf CLAM-for-doxygen
+#	rm -rf CLAM-for-doxygen
 }
 
 
