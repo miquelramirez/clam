@@ -1,3 +1,39 @@
+clam (1.3.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Paul Brossier changes:
+    * debian/control: added myself to Uploaders, use 
+    * debian/control: added Vcs-Browser and Vcs-Svn fields
+    * debian/rules: add verbose=1 option
+    * debian/: set svn-bp properties
+
+  * Python dependency required for libclam-dev
+  * debian/rules: install_prefix -> prefix_for_packaging
+  * debian/rules: Adapted to new configure way (any option means configure and stop)
+  * debian/rules: configure needs the target dir to be created
+  * removed osc dependencies
+  * debian/control: fftw3 -> libfftw3
+  * temptative compilation of plugins within the debian package
+  * fix on debian/rules to compile plugins, lets try again!
+  * debian/rules: hack to make scons -c work (complained about non existing clam prefix)
+  * debian/rules: Removed the code to compile plugins.
+  * /debian/control: Standards version upgrade
+  * debian/menu: 'Apps' deprecated in favor of Applications
+  * debian/control: Changed the mainainer email to match the one in the build script
+  * debian rules files updated because the rename of the Guitar plugin
+  * debian/control: added alternative dependency to libxerces-c2-dev
+  * debian/control: matching the soname number 13
+  * CLAM/debian/control: description: -dev file is no more a metapackage.
+  * CLAM/debian/control: description refers to libclam-XXXX instead of clam-XXX
+  * CLAM/debian/control: description: libclam does not contain development files,
+   libclam-dev do
+  * debian/libclam0.install renamed as debian/libclam13.install
+  * debian/rules: updated to the libclam13 name
+  * debian/control: removed hard version dependency from the examples
+    packages to the binary ones to enable binary Non-Maintainer-Updates.
+
+ -- CLAM Team <clam@iua.upf.edu> Mon, 11 Aug 2008 14:23:54 +0100
+
 clam (1.1.1~svn11102-1) unstable; urgency=low
 
   * Build of current trunk based on latest svn snapshot
