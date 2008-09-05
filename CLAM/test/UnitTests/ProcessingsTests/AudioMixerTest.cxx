@@ -56,8 +56,8 @@ public:
 	{
 
 		//add link to in controls of mixer
-		mOut1.AddLink(&mMixer.GetInControls().Get("Input Gain_0"));
-		mOut2.AddLink(&mMixer.GetInControls().Get("Input Gain_1"));
+		mOut1.AddLink(&mMixer.GetInControl("Input Gain_0"));
+		mOut2.AddLink(&mMixer.GetInControl("Input Gain_1"));
 
 		mInAudio1.SetSize(1);
 		mInAudio2.SetSize(1);
@@ -67,9 +67,9 @@ public:
 		mixerCfg.SetFrameSize(1);
 		mMixer.Configure(mixerCfg);
 
-		mMixer.GetInPorts().Get("Input Audio_0").Attach(mInAudio1);
-		mMixer.GetInPorts().Get("Input Audio_1").Attach(mInAudio2);
-		mMixer.GetOutPorts().Get("Output Audio").Attach(mOutAudio);
+		mMixer.GetInPort("Input Audio_0").Attach(mInAudio1);
+		mMixer.GetInPort("Input Audio_1").Attach(mInAudio2);
+		mMixer.GetOutPort("Output Audio").Attach(mOutAudio);
 	}
 
 public:
@@ -97,7 +97,7 @@ private:
 		mMixer.Do();
 
 		CPPUNIT_ASSERT_EQUAL( CLAM::TControlData( val1 ), 
-				      mMixer.GetInControls().Get("Input Gain_0").GetLastValue());
+				      mMixer.GetInControl("Input Gain_0").GetLastValue());
 		CPPUNIT_ASSERT_DOUBLES_EQUAL( CLAM::TData( (val1*1 + val2*2)/2 ) , mOutAudio.GetBuffer()[0], mDelta );
 	}
 

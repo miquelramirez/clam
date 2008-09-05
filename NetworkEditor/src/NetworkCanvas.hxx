@@ -1005,17 +1005,17 @@ public: // Actions
 	}
 	float incontrolDefaultValue(CLAM::Processing * processing, unsigned index) const //TODO remove
 	{
-		CLAM::InControl& inControl = processing->GetInControls().GetByNumber(index);
+		CLAM::InControl& inControl = processing->GetInControl(index);
 		return inControl.DefaultValue();
 	}
 	float incontrolLowerBound(CLAM::Processing * processing, unsigned index) const
 	{
-		CLAM::InControl& inControl = processing->GetInControls().GetByNumber(index);
+		CLAM::InControl& inControl = processing->GetInControl(index);
 		return inControl.LowerBound();
 	}
 	float incontrolUpperBound(CLAM::Processing * processing, unsigned index) const
 	{
-		CLAM::InControl& inControl = processing->GetInControls().GetByNumber(index);
+		CLAM::InControl& inControl = processing->GetInControl(index);
 		return inControl.UpperBound();
 	}
 
@@ -1106,52 +1106,52 @@ public: // Actions
 
 
 	virtual QWidget * embededWidgetFor(void * processing);
-	virtual unsigned nInports(void * processing) { return ((CLAM::Processing*)processing)->GetInPorts().Size();}
-	virtual unsigned nOutports(void * processing) { return ((CLAM::Processing*)processing)->GetOutPorts().Size();}
-	virtual unsigned nIncontrols(void * processing) { return ((CLAM::Processing*)processing)->GetInControls().Size();}
-	virtual unsigned nOutcontrols(void * processing) { return ((CLAM::Processing*)processing)->GetOutControls().Size();}
+	virtual unsigned nInports(void * processing) { return ((CLAM::Processing*)processing)->GetNInPorts();}
+	virtual unsigned nOutports(void * processing) { return ((CLAM::Processing*)processing)->GetNOutPorts();}
+	virtual unsigned nIncontrols(void * processing) { return ((CLAM::Processing*)processing)->GetNInControls();}
+	virtual unsigned nOutcontrols(void * processing) { return ((CLAM::Processing*)processing)->GetNOutControls();}
 	virtual QColor inportColor(void * element, unsigned index) const
 	{
 		if (!element) return colorPort();
 		CLAM::Processing * processing = (CLAM::Processing*) element;
-		const std::type_info& porttype = processing->GetInPorts().GetByNumber(index).GetTypeId();
+		const std::type_info& porttype = processing->GetInPort(index).GetTypeId();
 		return getConnectorColorByType(porttype);
 	}
 	virtual QColor outportColor(void * element, unsigned index) const
 	{
 		if (!element) return colorPort();
 		CLAM::Processing * processing = (CLAM::Processing*) element;
-		const std::type_info& porttype = processing->GetOutPorts().GetByNumber(index).GetTypeId();
+		const std::type_info& porttype = processing->GetOutPort(index).GetTypeId();
 		return getConnectorColorByType(porttype);
 	}
 	virtual QString inportName(void * processing, unsigned index) const
 	{
 		if (!processing) return QString("Inport_%1").arg(index);
-		CLAM::InPortBase & port = ((CLAM::Processing*)processing)->GetInPorts().GetByNumber(index);
+		CLAM::InPortBase & port = ((CLAM::Processing*)processing)->GetInPort(index);
 		return port.GetName().c_str();
 	}
 	virtual QString outportName(void * processing, unsigned index) const
 	{
 		if (!processing) return QString("Outport_%1").arg(index);
-		CLAM::OutPortBase & port = ((CLAM::Processing*)processing)->GetOutPorts().GetByNumber(index);
+		CLAM::OutPortBase & port = ((CLAM::Processing*)processing)->GetOutPort(index);
 		return port.GetName().c_str();
 	}
 	virtual QString incontrolName(void * processing, unsigned index) const
 	{
 		if (!processing) return QString("Incontrol_%1").arg(index);
-		CLAM::InControl & control = ((CLAM::Processing*)processing)->GetInControls().GetByNumber(index);
+		CLAM::InControl & control = ((CLAM::Processing*)processing)->GetInControl(index);
 		return control.GetName().c_str();
 	}
 	virtual QString outcontrolName(void * processing, unsigned index) const
 	{
 		if (!processing) return QString("Outcontrol_%1").arg(index);
-		CLAM::OutControl & control = ((CLAM::Processing*)processing)->GetOutControls().GetByNumber(index);
+		CLAM::OutControl & control = ((CLAM::Processing*)processing)->GetOutControl(index);
 		return control.GetName().c_str();
 	}
 	QString outportTooltip(void * processing, unsigned index) const
 	{
 		if (!processing) return outportName(processing, index);
-		CLAM::OutPortBase & port = ((CLAM::Processing*)processing)->GetOutPorts().GetByNumber(index);
+		CLAM::OutPortBase & port = ((CLAM::Processing*)processing)->GetOutPort(index);
 		const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
 		return QObject::tr("%1\nType: %3","Outport tooltip")
 			.arg(port.GetName().c_str())
@@ -1161,7 +1161,7 @@ public: // Actions
 	QString inportTooltip(void * processing, unsigned index) const
 	{
 		if (!processing) return inportName(processing, index);
-		CLAM::InPortBase & port = ((CLAM::Processing*)processing)->GetInPorts().GetByNumber(index);
+		CLAM::InPortBase & port = ((CLAM::Processing*)processing)->GetInPort(index);
 		const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
 		return QObject::tr("%1\nType: %3","Inport tooltip")
 			.arg(port.GetName().c_str())
@@ -1174,7 +1174,7 @@ public: // Actions
 	}
 	QString incontrolTooltip(void * processing, unsigned index) const
 	{
-		CLAM::InControl& inControl = ((CLAM::Processing*)processing)->GetInControls().GetByNumber(index);
+		CLAM::InControl& inControl = ((CLAM::Processing*)processing)->GetInControl(index);
 		QString boundInfo = inControl.IsBounded() ? 
 			QString(" (bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
 			" (not bounded)";
@@ -1328,10 +1328,10 @@ public:
 		{
 			std::string producerName = _processings[p]->getName().toStdString();
 			CLAM::Processing & producer = _network->GetProcessing(producerName);
-			CLAM::OutPortRegistry & outPorts = producer.GetOutPorts();
-			for (int op = 0; op<outPorts.Size(); op++)
+			unsigned nOutPorts = producer.GetNOutPorts();
+			for (unsigned op = 0; op<nOutPorts; op++)
 			{
-				CLAM::OutPortBase & outPort = outPorts.GetByNumber(op);
+				CLAM::OutPortBase & outPort = producer.GetOutPort(op);
 				std::string completeOutName = producerName + "." + outPort.GetName();
 				CLAM::BaseNetwork::NamesList connected = _network->GetInPortsConnectedTo( completeOutName );
 				CLAM::BaseNetwork::NamesList::iterator inName;
@@ -1343,20 +1343,20 @@ public:
 
 					std::string peerConnection = _network->GetConnectorIdentifier(*inName);
 					CLAM::Processing & consumer = _network->GetProcessing(consumerName);
-					CLAM::InPortRegistry & inPorts = consumer.GetInPorts();
-					for (int ip=0; ip<inPorts.Size(); ip++)
+					unsigned nInPorts = consumer.GetNInPorts();
+					for (unsigned ip=0; ip<nInPorts; ip++)
 					{
-						CLAM::InPortBase & inPort = inPorts.GetByNumber(ip);
+						CLAM::InPortBase & inPort = consumer.GetInPort(ip);
 						if (inPort.GetName()!=peerConnection) continue;
 						addPortWire(_processings[p], op, consumerBox, ip);
 						break;
 					}
 				}
 			}
-			CLAM::OutControlRegistry & outControls = producer.GetOutControls();
-			for (int op = 0; op<outControls.Size(); op++)
+			unsigned nOutControls = producer.GetNOutControls();
+			for (unsigned op = 0; op<nOutControls; op++)
 			{
-				CLAM::OutControl & outControl = outControls.GetByNumber(op);
+				CLAM::OutControl & outControl = producer.GetOutControl(op);
 				std::string completeOutName = producerName + "." + outControl.GetName();
 				CLAM::BaseNetwork::NamesList connected = _network->GetInControlsConnectedTo( completeOutName );
 				CLAM::BaseNetwork::NamesList::iterator inName;
@@ -1368,10 +1368,10 @@ public:
 
 					std::string peerConnection = _network->GetConnectorIdentifier(*inName);
 					CLAM::Processing & consumer = _network->GetProcessing(consumerName);
-					CLAM::InControlRegistry & inControls = consumer.GetInControls();
-					for (int ip=0; ip<inControls.Size(); ip++)
+					unsigned nInControls = consumer.GetNInControls();
+					for (unsigned ip=0; ip<nInControls; ip++)
 					{
-						CLAM::InControl & inControl = inControls.GetByNumber(ip);
+						CLAM::InControl & inControl = consumer.GetInControl(ip);
 						if (inControl.GetName()!=peerConnection) continue;
 						addControlWire(_processings[p], op, consumerBox, ip);
 						break;
@@ -1730,13 +1730,13 @@ private:
 	std::string outportTypeId(void * processing, unsigned index) const
 	{
 		if (!processing) return "";
-		return ((CLAM::Processing*)processing)->GetOutPorts().GetByNumber(index).GetTypeId().name();
+		return ((CLAM::Processing*)processing)->GetOutPort(index).GetTypeId().name();
 	}
 
 	std::string inportTypeId(void * processing, unsigned index) const
 	{
 		if (!processing) return "";
-		return ((CLAM::Processing*)processing)->GetInPorts().GetByNumber(index).GetTypeId().name();
+		return ((CLAM::Processing*)processing)->GetInPort(index).GetTypeId().name();
 	}
 
 

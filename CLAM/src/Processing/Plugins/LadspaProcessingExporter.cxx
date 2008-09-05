@@ -172,15 +172,15 @@ void ProcessingClass2LadspaBase::SetPortSizes(int size)
 {		
 	for(int i=0;i<_nInControls;i++)
 	{
-		if(_proc->GetInPorts().GetByNumber(i).GetSize() == size ) continue;
-		_proc->GetInPorts().GetByNumber(i).SetSize( size );
+		if(_proc->GetInPort(i).GetSize() == size ) continue;
+		_proc->GetInPort(i).SetSize( size );
 		mWrappersList[i]->SetSize( size );
 	}
 
 	for(int i=0;i<_nOutPorts;i++)
 	{
-		if(_proc->GetOutPorts().GetByNumber(i).GetSize() == size ) continue;
-		_proc->GetOutPorts().GetByNumber(i).SetSize( size );
+		if(_proc->GetOutPort(i).GetSize() == size ) continue;
+		_proc->GetOutPort(i).SetSize( size );
 	}
 }
 
@@ -195,7 +195,7 @@ void ProcessingClass2LadspaBase::DoProc(unsigned long nSamples)
 	std::vector<CLAM::TData*> dataList(_nOutPorts);
 	for(int i=0;i<_nOutPorts;i++)
 	{
-		CLAM::OutPortBase & port = _proc->GetOutPorts().GetByNumber(i);
+		CLAM::OutPortBase & port = _proc->GetOutPort(i);
 		CLAM::AudioOutPort & audioPort = dynamic_cast<CLAM::AudioOutPort&>(port);
 		dataList[i] = &(audioPort.GetData());
 	}
@@ -210,19 +210,19 @@ void ProcessingClass2LadspaBase::DoProc(unsigned long nSamples)
 
 const char * ProcessingClass2LadspaBase::GetInControlName(int id) const
 {
-	return _proc->GetInControls().GetByNumber(id).GetName().c_str();
+	return _proc->GetInControl(id).GetName().c_str();
 }
 const char * ProcessingClass2LadspaBase::GetOutControlName(int id) const
 {
-	return _proc->GetOutControls().GetByNumber(id).GetName().c_str();
+	return _proc->GetOutControl(id).GetName().c_str();
 }
 const char * ProcessingClass2LadspaBase::GetInPortName(int id) const
 {
-	return _proc->GetInPorts().GetByNumber(id).GetName().c_str();
+	return _proc->GetInPort(id).GetName().c_str();
 }
 const char * ProcessingClass2LadspaBase::GetOutPortName(int id) const
 {
-	return _proc->GetOutPorts().GetByNumber(id).GetName().c_str();
+	return _proc->GetOutPort(id).GetName().c_str();
 }
 
 }

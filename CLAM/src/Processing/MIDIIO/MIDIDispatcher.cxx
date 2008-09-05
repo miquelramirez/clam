@@ -147,7 +147,7 @@ void MIDIDispatcher::CreateControls()
 			std::stringstream number("");
 			number << i << j;
 			mOutputControls.push_back( new OutControl("a" + number.str(),this ) );
-//			GetOutControls().GetByNumber(k).AddLink( mInstruments[i]->GetImConfig.GetNumberOfInControls().GetByNumber(j+1));
+//			GetOutControl(k).AddLink( mInstruments[i]->GetImConfig.GetInControl(j+1));
 //			LinkOutWithInControl( k , mInstruments[ i ], j+1);
 			k++;
 		}

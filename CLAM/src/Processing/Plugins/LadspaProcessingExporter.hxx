@@ -75,7 +75,7 @@ public:
 		for (unsigned i=0; i<mWrappersList.size(); i++)
 		{
 			mWrappersList[i] = new AudioOutPort("out", 0 );
-			mWrappersList[i]->ConnectToIn( _proc->GetInPorts().GetByNumber(i) );
+			mWrappersList[i]->ConnectToIn( _proc->GetInPort(i) );
 		}
 	}
 	
@@ -125,10 +125,10 @@ private:
 	{
 		if (_proc) delete _proc;
 		_proc = processing;
-		_nInPorts = _proc?_proc->GetInPorts().Size():0;
-		_nOutPorts = _proc?_proc->GetOutPorts().Size():0;
-		_nInControls = _proc?_proc->GetInControls().Size():0;
-		_nOutControls = _proc?_proc->GetOutControls().Size():0;
+		_nInPorts = _proc?_proc->GetNInPorts():0;
+		_nOutPorts = _proc?_proc->GetNOutPorts():0;
+		_nInControls = _proc?_proc->GetNInControls():0;
+		_nOutControls = _proc?_proc->GetNOutControls():0;
 	}
 
 	const char * GetInControlName(int id) const;

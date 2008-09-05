@@ -87,15 +87,14 @@ namespace CLAM
 			if (!HasSelectionAndContains(name))
 				continue;
 
-			OutPortRegistry::Iterator itOutPort;
-			for (itOutPort=proc->GetOutPorts().Begin(); 
-			     itOutPort!=proc->GetOutPorts().End(); 
-			     itOutPort++)
+			unsigned nOutPorts = proc->GetNOutPorts();
+			for (unsigned i = 0; i<nOutPorts; i++)
 			{
-				if (!(*itOutPort)->HasConnections())
+				OutPortBase & outport = proc->GetOutPort(i);
+				if (!outport.HasConnections())
 					continue;
 	
-				std::string outPortName = name + "." + (*itOutPort)->GetName();
+				std::string outPortName = name + "." + outport.GetName();
 				NamesList namesInPorts = GetInPortsConnectedTo(outPortName);
 				NamesList::iterator namesIterator;
 				for(namesIterator=namesInPorts.begin();
@@ -119,12 +118,11 @@ namespace CLAM
 			if (!HasSelectionAndContains(name))
 				continue;
 
-			OutControlRegistry::Iterator itOutControl;
-			for (itOutControl=proc->GetOutControls().Begin(); 
-			     itOutControl!=proc->GetOutControls().End(); 
-			     itOutControl++)
+			unsigned nOutControls = proc->GetNOutControls();
+			for (unsigned i = 0; i<nOutControls; i++)
 			{
-				std::string outControlName = name+ "." + (*itOutControl)->GetName();
+				OutControl & outControl = proc->GetOutControl(i);
+				std::string outControlName = name+ "." + outControl.GetName();
 				NamesList namesInControls = GetInControlsConnectedTo(outControlName);
 				NamesList::iterator namesIterator;
 				for(namesIterator=namesInControls.begin();
@@ -501,25 +499,25 @@ namespace CLAM
 	InPortBase & FlattenedNetwork::GetInPortByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
-		return proc.GetInPorts().Get( GetConnectorIdentifier(name) );
+		return proc.GetInPort( GetConnectorIdentifier(name) );
 	}
 
 	OutPortBase & FlattenedNetwork::GetOutPortByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
-		return proc.GetOutPorts().Get( GetConnectorIdentifier(name) );
+		return proc.GetOutPort( GetConnectorIdentifier(name) );
 	}
 
 	InControl & FlattenedNetwork::GetInControlByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
-		return proc.GetInControls().Get( GetConnectorIdentifier(name) );
+		return proc.GetInControl( GetConnectorIdentifier(name) );
 	}
 
 	OutControl & FlattenedNetwork::GetOutControlByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
-		return proc.GetOutControls().Get( GetConnectorIdentifier(name) );
+		return proc.GetOutControl( GetConnectorIdentifier(name) );
 	}
 
 	bool FlattenedNetwork::IsStopped() const
@@ -702,15 +700,13 @@ namespace CLAM
 		for (ProcessingsMap::const_iterator it=BeginProcessings(); it!=EndProcessings(); it++)
 		{
 			Processing * proc = it->second;
-			InPortRegistry::Iterator itInPort;
-			for (itInPort=proc->GetInPorts().Begin(); 
-			     itInPort!=proc->GetInPorts().End(); 
-			     itInPort++)
+			unsigned nInPorts = proc->GetNInPorts();
+			for (unsigned i = 0; i<nInPorts; i++)
 			{
-				if (not (*itInPort)->GetVisuallyConnectedOutPort())
+				InPortBase & inPort = proc->GetInPort(i);
+				if (not inPort.GetVisuallyConnectedOutPort())
 					return true;
 			}
-			
 		}
 		return false;
 	}
@@ -720,15 +716,13 @@ namespace CLAM
 		for (ProcessingsMap::const_iterator it=BeginProcessings(); it!=EndProcessings(); it++)
 		{
 			Processing * proc = it->second;
-			InPortRegistry::Iterator itInPort;
-			for (itInPort=proc->GetInPorts().Begin(); 
-			     itInPort!=proc->GetInPorts().End(); 
-			     itInPort++)
+			unsigned nInPorts = proc->GetNInPorts();
+			for (unsigned i = 0; i<nInPorts; i++)
 			{
-				if (not (*itInPort)->GetVisuallyConnectedOutPort())
-					result+= it->first+"."+(*itInPort)->GetName()+"\n";
+				InPortBase & inPort = proc->GetInPort(i);
+				if (not inPort.GetVisuallyConnectedOutPort())
+					result+= it->first + "." + inPort.GetName() + "\n";
 			}
-			
 		}
 		return result;
 	}

@@ -72,7 +72,7 @@ int main()
 
 	InControl stopReceiver("stop-receiver");
 
-	inStop.GetOutControls().GetByNumber(0).AddLink(stopReceiver);
+	inStop.GetOutControl(0).AddLink(stopReceiver);
 
 	CLAM::ConnectControls(inNote,0, outNote, 0);
 	CLAM::ConnectControls(inNote,1, outNote, 1);

@@ -71,7 +71,7 @@ namespace CLAM
 		
  		void LinkStateOutWithInControl(Processing* inProc, unsigned inId)
 		{
-			GetOutControls().GetByNumber(0).AddLink( inProc->GetInControls().GetByNumber(inId));
+			GetOutControl(0).AddLink( inProc->GetInControl(inId));
 //			LinkOutWithInControl( 0, inProc, inId );
 		}
 

@@ -147,11 +147,11 @@ int Test(FDFilterGen &gen)
 	
 	FDControlsGenerator controls;
 
-	controls.GetOutControls().GetByNumber(0).AddLink(&gen.GetInControls().GetByNumber(0));
-	controls.GetOutControls().GetByNumber(1).AddLink(&gen.GetInControls().GetByNumber(1));
-	controls.GetOutControls().GetByNumber(2).AddLink(&gen.GetInControls().GetByNumber(2));
-	controls.GetOutControls().GetByNumber(3).AddLink(&gen.GetInControls().GetByNumber(3));
-	controls.GetOutControls().GetByNumber(4).AddLink(&gen.GetInControls().GetByNumber(4));
+	controls.GetOutControl(0).AddLink(&gen.GetInControl(0));
+	controls.GetOutControl(1).AddLink(&gen.GetInControl(1));
+	controls.GetOutControl(2).AddLink(&gen.GetInControl(2));
+	controls.GetOutControl(3).AddLink(&gen.GetInControl(3));
+	controls.GetOutControl(4).AddLink(&gen.GetInControl(4));
 
 	for (i=0; i<4; i++) {
 		std::cout << " " << EFDFilterType::sEnumValues[i].name << std::endl;
@@ -186,11 +186,11 @@ int TestContrChanges(FDFilterGen &gen)
 	Spectrum spec(sets);
 	FDControlsGenerator controls;
 
-	controls.GetOutControls().GetByNumber(0).AddLink(&gen.GetInControls().GetByNumber(0));
-	controls.GetOutControls().GetByNumber(1).AddLink(&gen.GetInControls().GetByNumber(1));
-	controls.GetOutControls().GetByNumber(2).AddLink(&gen.GetInControls().GetByNumber(2));
-	controls.GetOutControls().GetByNumber(3).AddLink(&gen.GetInControls().GetByNumber(3));
-	controls.GetOutControls().GetByNumber(4).AddLink(&gen.GetInControls().GetByNumber(4));
+	controls.GetOutControl(0).AddLink(&gen.GetInControl(0));
+	controls.GetOutControl(1).AddLink(&gen.GetInControl(1));
+	controls.GetOutControl(2).AddLink(&gen.GetInControl(2));
+	controls.GetOutControl(3).AddLink(&gen.GetInControl(3));
+	controls.GetOutControl(4).AddLink(&gen.GetInControl(4));
 
 
 

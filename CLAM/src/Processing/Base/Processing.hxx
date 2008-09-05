@@ -46,6 +46,8 @@ namespace CLAM
 	class OutPortBase;
 	class InControl;
 	class OutControl;
+	class BaseTypedInControl;
+	class BaseTypedOutControl;
 	class ProcessingComposite;
 	class Network;
 	/**
@@ -57,21 +59,21 @@ namespace CLAM
 			Processing & receiver, const std::string & inPortName );
 	/**
 	 * Connects two ports of two processings selecting them by the port number.
-	 * Short hand for sender.GetOutPortByNumber(outPortNumber).ConnectToIn(receiver.GetOutPort(inPortNumber))
+	 * Short hand for sender.GetOutPort(outPortNumber).ConnectToIn(receiver.GetOutPort(inPortNumber))
 	 */
 	void ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
 			Processing & receiver, unsigned inPortNumber );
 	/**
 	 * Free function that connects two controls.
-	 * Short hand for sender.GetOutControls().GetByNumber(outControlNumber).AddLink( receiver.GetOutControls().GetByNumber(inControlNumber))
+	 * Short hand for sender.GetOutControl(outControlNumber).AddLink( receiver.GetOutControl(inControlNumber))
 	 */
 	void ConnectControls(
 			Processing & sender, unsigned outControlNumber, 
 			Processing & receiver, unsigned inControlNumber );
 	/**
 	 * Connects two controls of two processings selecting them by the control name.
-	 * Short hand for sender.GetOutControls().GetByName(outControlName).AddLink( receiver.GetOutControls().GetByName(inControlName))
+	 * Short hand for sender.GetOutControl(outControlName).AddLink( receiver.GetOutControl(inControlName))
 	 */
 	void ConnectControls(
 			Processing & sender, const std::string & outControlName, 
@@ -189,6 +191,13 @@ namespace CLAM
 
 		typedef NullProcessingConfig Config;
 
+		// TODO: Temporary kludge to be able to access the connectors registry directly from connector classes
+		friend class InPortBase;
+		friend class OutPortBase;
+		friend class InControl;
+		friend class OutControl;
+		friend class BaseTypedInControl;
+		friend class BaseTypedOutControl;
 // Basic usage interface:
 
 	public:
@@ -372,6 +381,16 @@ namespace CLAM
 		{
 			return mOutControlRegistry.Get(name);
 		}
+		/** @deprecated: Transitional method */
+		BaseTypedInControl & GetTypedInControl( const std::string & name )
+		{
+			return mTypedInControlRegistry.Get(name);
+		}
+		/** @deprecated: Transitional method */
+		BaseTypedOutControl & GetTypedOutControl( const std::string & name )
+		{
+			return mTypedOutControlRegistry.Get(name);
+		}
 
 		InPortBase & GetInPort( unsigned index )
 		{
@@ -389,6 +408,45 @@ namespace CLAM
 		{
 			return mOutControlRegistry.GetByNumber(index);
 		}
+
+		/** @deprecated: Transitional method */
+		BaseTypedInControl & GetTypedInControl( unsigned index )
+		{
+			return mTypedInControlRegistry.GetByNumber(index);
+		}
+		/** @deprecated: Transitional method */
+		BaseTypedOutControl & GetTypedOutControl( unsigned index )
+		{
+			return mTypedOutControlRegistry.GetByNumber(index);
+		}
+
+		unsigned GetNInPorts()
+		{
+			return mInPortRegistry.Size();
+		}
+		unsigned GetNOutPorts()
+		{
+			return mOutPortRegistry.Size();
+		}
+		unsigned GetNInControls()
+		{
+			return mInControlRegistry.Size();
+		}
+		unsigned GetNOutControls()
+		{
+			return mOutControlRegistry.Size();
+		}
+		/** @deprecated: Transitional method */
+		unsigned GetNTypedInControls()
+		{
+			return mTypedInControlRegistry.Size();
+		}
+		/** @deprecated: Transitional method */
+		unsigned GetNTypedOutControls()
+		{
+			return mTypedOutControlRegistry.Size();
+		}
+	protected:
 		/** Accessor to published Controls manager */
 		InControlRegistry& GetInControls() { return mInControlRegistry; }
 		
@@ -406,7 +464,7 @@ namespace CLAM
 		
 		/** Accessor to published Portss manager */
 		OutPortRegistry& GetOutPorts() { return mOutPortRegistry; }
-
+	public:
 		/** Returns a string describing configuration errors if any */
 		const std::string& GetConfigErrorMessage() const { return _configErrorMessage; }
 
