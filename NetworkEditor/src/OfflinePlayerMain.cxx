@@ -11,7 +11,7 @@
 int usage(const std::string & program)
 {
 		std::cout << " Usage: " << program
-			<< " <networkfile> [<infile.wav> [<infile.wav> ...] ] [<outfile.wav> [<outfile.wav> ...]]\n"
+			<< " <networkfile> [-t <seconds to process>] [<infile.wav> [<infile.wav> ...] ] [<outfile.wav> [<outfile.wav> ...]]\n"
 			<< std::endl;
 		return -1;
 }
