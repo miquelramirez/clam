@@ -96,6 +96,7 @@ mainSources = {
 	'NetworkEditor' : os.path.join('src','main.cxx'),
 	'Prototyper' : os.path.join('src','prototyper','main.cxx'),
 	'MonoOfflinePlayer' : os.path.join('src','MonoOfflinePlayerMain.cxx'),
+	'OfflinePlayer' : os.path.join('src','OfflinePlayerMain.cxx'),
 }
 
 sourcePaths = [
@@ -122,7 +123,7 @@ sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
 sources = filter( (lambda a : a.rfind( "qrc_")==-1 ),  sources )
 sources = unique(sources)
 for mainSource in mainSources.values() :
-	sources.remove(mainSource)
+	sources.remove(mainSource)	
 
 qrcfiles = scanFiles("*.qrc", sourcePaths)
 if qrcfiles : sources += env.Qrc(source=qrcfiles)
