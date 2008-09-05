@@ -373,6 +373,22 @@ namespace CLAM
 			return mOutControlRegistry.Get(name);
 		}
 
+		InPortBase & GetInPort( unsigned index )
+		{
+			return mInPortRegistry.GetByNumber(index);
+		}
+		OutPortBase & GetOutPort( unsigned index )
+		{
+			return mOutPortRegistry.GetByNumber(index);
+		}
+		InControl & GetInControl( unsigned index )
+		{
+			return mInControlRegistry.GetByNumber(index);
+		}
+		OutControl & GetOutControl( unsigned index )
+		{
+			return mOutControlRegistry.GetByNumber(index);
+		}
 		/** Accessor to published Controls manager */
 		InControlRegistry& GetInControls() { return mInControlRegistry; }
 		
