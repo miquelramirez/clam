@@ -14,10 +14,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-#include "Turnaround.hxx"
+#include "MainWindow.hxx"
 
 #include "TurnaroundVersion.hxx"
-using namespace Turnaround;
 
 #include "ui_About.hxx"
 #include <QtGui/QFileDialog>
@@ -48,9 +47,9 @@ using namespace Turnaround;
 #include <vector>
 #include <string>
 
-Turnaround::Turnaround()
+MainWindow::MainWindow()
 	: QMainWindow(0)
-	, Ui::Turnaround()
+	, Ui::MainWindow()
 	, _networkPlayer(0)
 	, _tonalAnalysis(0)
 	, _pcpStorage(0)
@@ -121,7 +120,7 @@ Turnaround::Turnaround()
 	aboutUi.versionInfo->setText(tr(
 			"<p><b>Turnaround version %1</b></p>"
 			"<p>Using CLAM version %2</p>")
-		.arg(GetFullVersion())
+		.arg(Turnaround::GetFullVersion())
 		.arg(CLAM::GetFullVersion()));
 
 	viewSpectrogramAction->setChecked(true);
@@ -142,7 +141,7 @@ Turnaround::Turnaround()
 	viewSegmentationAction->setChecked(settings.value("SegmentationVisible", true).toBool());
 }
 
-Turnaround::~Turnaround()
+MainWindow::~MainWindow()
 {
 	QSettings settings;
 	settings.setValue("RecentFiles", _recentFiles);
@@ -164,7 +163,7 @@ Turnaround::~Turnaround()
 	}
 }
 
-void Turnaround::updateRecentMenu()
+void MainWindow::updateRecentMenu()
 {
 	menuOpenRecent->clear();
 	
@@ -186,7 +185,7 @@ void Turnaround::updateRecentMenu()
 	}
 }
 
-void Turnaround::appendRecentFile(const QString & recentFile)
+void MainWindow::appendRecentFile(const QString & recentFile)
 {
 	_recentFiles.removeAll(recentFile);
 	_recentFiles.push_front(recentFile);
@@ -195,7 +194,7 @@ void Turnaround::appendRecentFile(const QString & recentFile)
 	updateRecentMenu();
 }
 
-void Turnaround::fileOpen()
+void MainWindow::fileOpen()
 {
 	QString qFileName = QFileDialog::getOpenFileName(this, 
 			tr("Choose an audio file"), QString::null, 
@@ -205,7 +204,7 @@ void Turnaround::fileOpen()
 	loadAudioFile(qFileName.toLocal8Bit().constData());
 }
 
-void Turnaround::recentFileOpen()
+void MainWindow::recentFileOpen()
 {
 	QAction *action = qobject_cast<QAction *>(sender());
 	if (!action) return;
@@ -215,7 +214,7 @@ void Turnaround::recentFileOpen()
 	loadAudioFile(file.toLocal8Bit().constData());
 }
 
-std::vector<std::string> Turnaround::initBinLabelVector() const
+std::vector<std::string> MainWindow::initBinLabelVector() const
 {
 	static const char * roots[] = {
 		"G",
@@ -272,7 +271,7 @@ std::vector<std::string> Turnaround::initBinLabelVector() const
 	return chordNames;
 }
 
-void Turnaround::loadAudioFile(const std::string & fileName)
+void MainWindow::loadAudioFile(const std::string & fileName)
 {
 	stop();
 
@@ -422,7 +421,7 @@ void Turnaround::loadAudioFile(const std::string & fileName)
 	play();
 }
 
-void Turnaround::play()
+void MainWindow::play()
 {
 	if (not _network.IsPlaying())
 		_network.Start();
@@ -430,13 +429,13 @@ void Turnaround::play()
 		_timerID = startTimer(50);
 }
 
-void Turnaround::pause()
+void MainWindow::pause()
 {
 	if (_network.IsPlaying())
 		_network.Pause();
 }
 
-void Turnaround::stop()
+void MainWindow::stop()
 {
 	if (not _network.IsStopped())
 		_network.Stop();
@@ -447,7 +446,7 @@ void Turnaround::stop()
 	}
 }
 
-void Turnaround::timerEvent(QTimerEvent *event)
+void MainWindow::timerEvent(QTimerEvent *event)
 {
 	double time = _network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length;
 	_pcpSource.setCurrentTime(time);
@@ -457,42 +456,42 @@ void Turnaround::timerEvent(QTimerEvent *event)
 	_segmentationSource.setCurrentTime(time);
 }
 
-void Turnaround::toggleSpectrogram(bool checked)
+void MainWindow::toggleSpectrogram(bool checked)
 {
 	_spectrogram->setVisible(checked);
 }
 
-void Turnaround::toggleTonnetz(bool checked)
+void MainWindow::toggleTonnetz(bool checked)
 {
 	_tonnetz->setVisible(checked);
 }
 
-void Turnaround::toggleKeySpace(bool checked)
+void MainWindow::toggleKeySpace(bool checked)
 {
 	_keySpace->setVisible(checked);
 }
 
-void Turnaround::toggleChromaPeaks(bool checked)
+void MainWindow::toggleChromaPeaks(bool checked)
 {
 	_polarChromaPeaks->setVisible(checked);
 }
 
-void Turnaround::toggleChordRanking(bool checked)
+void MainWindow::toggleChordRanking(bool checked)
 {
 	_chordRanking->setVisible(checked);
 }
 
-void Turnaround::toggleSegmentation(bool checked)
+void MainWindow::toggleSegmentation(bool checked)
 {
 	_segmentationView->setVisible(checked);
 }
 
-void Turnaround::about()
+void MainWindow::about()
 {
 	_aboutDialog->show();
 }
 
-void Turnaround::onlineTutorial()
+void MainWindow::onlineTutorial()
 {
 	QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Turnaround_tutorial";
 	QDesktopServices::openUrl(helpUrl);

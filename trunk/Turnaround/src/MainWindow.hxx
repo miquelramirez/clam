@@ -17,7 +17,7 @@
 #ifndef TURNAROUND_HXX
 #define TURNAROUND_HXX
 
-#include "ui_Turnaround.hxx"
+#include "ui_MainWindow.hxx"
 
 #include <string>
 
@@ -44,13 +44,13 @@ namespace VM
 class PolarChromaPeaks;
 class SegmentationView;
 
-class Turnaround : public QMainWindow, public Ui::Turnaround
+class MainWindow : public QMainWindow, public Ui::MainWindow
 {
 	Q_OBJECT
 
 public:
-	Turnaround();
-	virtual ~Turnaround();
+	MainWindow();
+	virtual ~MainWindow();
 	
 public slots:
 	void fileOpen();
