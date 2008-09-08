@@ -18,7 +18,7 @@
 #include <QtCore/QTranslator>
 #include <QtCore/QLocale>
 
-#include "Turnaround.hxx"
+#include "MainWindow.hxx"
 
 #ifdef _MSVC_VER
 #include <CLAM/InitAudioIO.hxx>
@@ -52,7 +52,7 @@ int main( int argc, char ** argv )
 	QCoreApplication::setOrganizationName("CLAM");
 	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
 	QCoreApplication::setApplicationName("Turnaround");
-	Turnaround w;
+	MainWindow w;
 	w.show();
 	return app.exec();
 }
