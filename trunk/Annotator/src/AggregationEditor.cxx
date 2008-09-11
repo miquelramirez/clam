@@ -21,6 +21,7 @@
 
 #include "AggregationEditor.hxx"
 #include "SourceEditor.hxx"
+#include "Assert.hxx"
 
 #include <CLAM/XMLStorage.hxx>
 #include <QtGui/QSplitter>
@@ -55,17 +56,17 @@ AggregationEditor::AggregationEditor(QWidget *parent, Qt::WFlags fl )
  */
 AggregationEditor::~AggregationEditor()
 {
-	delete mParser.source;
-	delete mParser.extractor;
-	delete mParser.schemaFile;	
-	delete mParser.suffix;
-	delete mParser.configFile;
-	delete mParser.path;
-	delete mParser.sourceAttribute;
-	delete mParser.sourceScope;
-	delete mParser.sourceId;
-	delete mParser.targetAttribute;
-	delete mParser.targetScope;
+	delete [] mParser.source;
+	delete [] mParser.extractor;
+	delete [] mParser.schemaFile;	
+	delete [] mParser.suffix;
+	delete [] mParser.configFile;
+	delete [] mParser.path;
+	delete [] mParser.sourceAttribute;
+	delete [] mParser.sourceScope;
+	delete [] mParser.sourceId;
+	delete [] mParser.targetAttribute;
+	delete [] mParser.targetScope;
 	//is "delete mParser" just enough?
 }
 
@@ -189,12 +190,18 @@ int AggregationEditor::parseSources()
 		return arraySize;
 	}
 
-	mParser.source=new std::string[arraySize];	
+	mParser.source=new std::string[arraySize];
+	CLAM_ASSERT(mParser.source!=NULL, "Memory allocation failed");
 	mParser.extractor=new std::string[arraySize];
-	mParser.schemaFile=new std::string[arraySize];	
+	CLAM_ASSERT(mParser.extractor!=NULL, "Memory allocation failed");
+	mParser.schemaFile=new std::string[arraySize];
+	CLAM_ASSERT(mParser.schemaFile!=NULL, "Memory allocation failed");
 	mParser.suffix=new std::string[arraySize];
+	CLAM_ASSERT(mParser.suffix!=NULL, "Memory allocation failed");
 	mParser.configFile=new std::string[arraySize];
+	CLAM_ASSERT(mParser.configFile!=NULL, "Memory allocation failed");
 	mParser.path=new std::string[arraySize];
+	CLAM_ASSERT(mParser.path!=NULL, "Memory allocation failed");
 
 	posStart = mConfig.find("sources", 0);
 	posEnd = mConfig.find("),", posStart+1);
@@ -237,10 +244,15 @@ int AggregationEditor::parseMap()
 	if(!arraySize)	return arraySize;
 
 	mParser.targetScope=new std::string[arraySize];	
+	CLAM_ASSERT(mParser.targetScope!=NULL, "Memory allocation failed");
 	mParser.targetAttribute=new std::string[arraySize];
+	CLAM_ASSERT(mParser.targetAttribute!=NULL, "Memory allocation failed");
 	mParser.sourceId=new std::string[arraySize];	
+	CLAM_ASSERT(mParser.sourceId!=NULL, "Memory allocation failed");
 	mParser.sourceScope=new std::string[arraySize];
+	CLAM_ASSERT(mParser.sourceScope!=NULL, "Memory allocation failed");
 	mParser.sourceAttribute=new std::string[arraySize];
+	CLAM_ASSERT(mParser.sourceAttribute!=NULL, "Memory allocation failed");
 
 	posEnd = mConfig.find("),", posStart+1);
 	
