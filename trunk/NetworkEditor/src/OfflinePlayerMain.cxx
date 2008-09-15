@@ -61,13 +61,23 @@ int main( int argc, char *argv[] )
 		argIndex++;
 		
 	}
-	CLAM_ASSERT(std::string(argv[argIndex]) != "-o","There are not intput files.");
+
+	if(std::string(argv[argIndex]) == "-o")
+	{
+		std::cout << "There are not intput files." << std::endl;
+		return -1;
+	}
+
 
 	while(std::string(argv[argIndex]) != "-o")
 	{
 		player->AddInputFile(argv[argIndex]);
 		argIndex++;
-		CLAM_ASSERT(argIndex<argc,"There are not output files. The output files are separated by -o");
+		if(argc<=argIndex)
+		{	std::cout << "There are not output files. The output files are separated by -o" << std::endl;
+			return -1;
+		}
+		
 	}
 	argIndex ++;
 
@@ -121,8 +131,10 @@ int main( int argc, char *argv[] )
 		player->AddOutputFile(argv[argIndex]);
 	}
 
-	CLAM_ASSERT(argIndex == argc,"There are so many arguments");
-
+	if(argIndex != argc)
+	{	std::cout << "There are so many arguments" << std::endl;
+		return -1;
+	}
 
 	if (not net.IsReady())
 	{
