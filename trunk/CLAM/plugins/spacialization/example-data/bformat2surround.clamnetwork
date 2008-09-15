@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="L" position="371,66" size="128,111" type="AudioSink"/>
+
+  <processing id="R" position="620,62" size="128,111" type="AudioSink"/>
+
+  <processing id="SL" position="392,278" size="128,111" type="AudioSink"/>
+
+  <processing id="SR" position="605,278" size="128,111" type="AudioSink"/>
+
+  <processing id="Surround" position="241,154" size="92,110" type="Surround">
+    <NChannels>0</NChannels>
+  </processing>
+
+  <processing id="W" position="63,75" size="128,108" type="AudioSource"/>
+
+  <processing id="X" position="64,172" size="128,108" type="AudioSource"/>
+
+  <processing id="Y" position="66,273" size="128,108" type="AudioSource"/>
+
+  <processing id="Z" position="65,383" size="128,108" type="AudioSource"/>
+
+  <processing id="c" position="490,25" size="128,111" type="AudioSink"/>
+
+  <port_connection>
+    <out>Surround.center</out>
+    <in>c.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.right</out>
+    <in>R.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.surroundRight</out>
+    <in>SR.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.surroundLeft</out>
+    <in>SL.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Surround.left</out>
+    <in>L.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>W.AudioOut</out>
+    <in>Surround.p</in>
+  </port_connection>
+
+  <port_connection>
+    <out>X.AudioOut</out>
+    <in>Surround.vx</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Y.AudioOut</out>
+    <in>Surround.vy</in>
+  </port_connection>
+
+</network>
