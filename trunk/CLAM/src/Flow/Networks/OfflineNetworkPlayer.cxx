@@ -27,7 +27,6 @@ void OfflineNetworkPlayer::Start()
 	CollectSourcesAndSinks();
 
 	const int frameSize = 512;
-
 	//Open the files, get the total number of channels and the sample rate
 	int sampleRate=0; 
 	unsigned inNumChannels=0;
@@ -50,7 +49,6 @@ void OfflineNetworkPlayer::Start()
 	std::vector<DataArray> inbuffers(inNumChannels);
 	unsigned sourceIndex=0;
 	unsigned fileIndex = 0;
-
 	// Prepare the sources
 	while(sourceIndex<GetAudioSources().size())
 	{		
@@ -90,7 +88,7 @@ void OfflineNetworkPlayer::Start()
 	unsigned sinkIndex = 0;
 	while(sinkIndex<GetAudioSinks().size())
 	{			
-		CLAM_ASSERT(fileIndex<outfiles.size(),"The number of sinks is greater than the input files multichannels");	
+		CLAM_ASSERT(fileIndex<outfiles.size(),"The number of sinks is greater than the output files multichannels");	
 		for(int i=0;i<outfiles[fileIndex]->channels();i++)
 		{	
 			outbuffers[sinkIndex].Resize( frameSize );
@@ -116,7 +114,7 @@ void OfflineNetworkPlayer::Start()
 		for(std::vector<SndfileHandle*>::iterator it=infiles.begin();it!=infiles.end();it++)
 		{	
 			int bufferReaderSize = (*it)->channels()*frameSize;
-			bufferReader =  (float *)malloc(bufferReaderSize*sizeof(float));
+			bufferReader = new float[bufferReaderSize];
 			int readSize = (*it)->read(bufferReader,bufferReaderSize);
 
 			//We have read the last part (not complete) of the buffer file. Fill the buffer with zeros.
@@ -135,10 +133,10 @@ void OfflineNetworkPlayer::Start()
 			{	for(int channel=0; channel < (*it)->channels(); channel++)
 				{	inbuffers[inAudioIndex+channel][frameIndex] = bufferReader[(frameIndex*(*it)->channels())+channel];
 				}
-			 }
+			}
 			inAudioIndex += (*it)->channels();
 			fileIndex ++;
-			free(bufferReader);
+			delete(bufferReader);
 		}		
 
 		GetNetwork().Do();
@@ -147,7 +145,7 @@ void OfflineNetworkPlayer::Start()
 		for(std::vector<SndfileHandle*>::iterator it=outfiles.begin();it!=outfiles.end();it++)
 		{	
 			int bufferWriterSize = (*it)->channels()*frameSize;
-			bufferWriter =  (float *)malloc(bufferWriterSize*sizeof(float));
+			bufferWriter = new float[bufferWriterSize];
 	
 			//Save the sources' buffers into the bufferWriter.
 			for(int frameIndex=0; frameIndex <frameSize; frameIndex ++)
@@ -158,7 +156,7 @@ void OfflineNetworkPlayer::Start()
 			int writeSize = (*it)->write(bufferWriter,bufferWriterSize);
 			CLAM_ASSERT(writeSize==bufferWriterSize,"The outfile has not been written correctly");
 			outAudioIndex += (*it)->channels();
-			free(bufferWriter);	
+			delete bufferWriter;	
 		}
 
 		if (timeLimitedMode and float(iterationIndex*frameSize)/sampleRate > _resultWavsTime)
@@ -173,7 +171,6 @@ void OfflineNetworkPlayer::Start()
 	//Deleting the sndfiles
 	for(std::vector<SndfileHandle*>::iterator it=infiles.begin();it!=infiles.end();it++) delete *it;
 	for(std::vector<SndfileHandle*>::iterator it=outfiles.begin();it!=outfiles.end();it++) delete *it;
-	
 }
 void OfflineNetworkPlayer::Stop()
 {
@@ -181,12 +178,10 @@ void OfflineNetworkPlayer::Stop()
 	BeStopped();
 	//TODO close files
 }
-
 void OfflineNetworkPlayer::ProcessInputFile()
 {
 	GetNetwork().Do();
 }
-
 void OfflineNetworkPlayer::AddInputFile( const std::string& filename )
 {
 	_inFileNames.push_back(filename);
