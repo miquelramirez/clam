@@ -57,10 +57,10 @@
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>48000</ControlsPerSecond>
-    <SizeX>-1.50095</SizeX>
-    <SizeY>-1.50095</SizeY>
-    <SizeZ>-1.50095</SizeZ>
+    <ControlsPerSecond>%(controls_per_second)i</ControlsPerSecond>
+    <SizeX>%(size_x)f</SizeX>
+    <SizeY>%(size_y)f</SizeY>
+    <SizeZ>%(size_z)f</SizeZ>
   </processing>
 
   <processing id="ControlPrinter" position="-570,534" size="111,84" type="ControlPrinter">
