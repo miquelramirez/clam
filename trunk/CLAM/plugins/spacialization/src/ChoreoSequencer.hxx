@@ -9,7 +9,6 @@
 #include <cmath>
 #include <fstream>
 
-
 namespace CLAM
 {
 
@@ -90,12 +89,11 @@ public:
 	bool Do()
 	{
 		CLAM_DEBUG_ASSERT(_sampleCount<2*_samplesPerControl,"_sampleCount too large" );
-
 		_sampleCount += _frameSize;
 		int sourceIndex = _config.GetSourceIndex();
 		if (_sampleCount>=_samplesPerControl)
 		{
-			std::cout << "("<<_sequenceIndex << "/" <<_controlSequence.size() << ")" << std::flush;
+			//std::cout << "("<<_sequenceIndex << "/" <<_controlSequence.size() << ")" << std::flush;
 			const Row & row = _controlSequence[_sequenceIndex];
 			//TODO check that _indexTargetX,Y,Z < row.size()
 			_targetX.SendControl( row[TargetXColumn] );
@@ -114,14 +112,15 @@ public:
 			double cosZenith = std::cos(M_PI/180*row[TargetZenitColumn]);
 			double sinZenith = std::sin(M_PI/180*row[TargetZenitColumn]);
 			double rotatedX = + cosAzimuth*sinZenith * dx + sinAzimuth * dy - cosAzimuth*cosZenith * dz;
-            double rotatedY = - sinAzimuth*sinZenith * dx + cosAzimuth * dy + sinAzimuth*cosZenith * dz;
-            double rotatedZ = + cosZenith * dx + /* 0 * vy[i] */  + sinZenith  * dz;
+			double rotatedY = - sinAzimuth*sinZenith * dx + cosAzimuth * dy + sinAzimuth*cosZenith * dz;
+			double rotatedZ = + cosZenith * dx + /* 0 * vy[i] */  + sinZenith  * dz;
 
 			// TODO: Test that with target elevation and azimut
 			double dazimut = 180./M_PI*std::atan2(rotatedY,rotatedX);
 			double delevation = 180./M_PI*std::asin(rotatedZ/std::sqrt(rotatedX*rotatedX+rotatedY*rotatedY+rotatedZ*rotatedZ));
 			_sourceAzimuth.SendControl( dazimut );
 			_sourceZenith.SendControl( delevation );
+			/* 
 			std::cout 
 				<< "\t" << _sizeX*row[TargetXColumn+3*sourceIndex]
 				<< "\t" << _sizeY*row[TargetYColumn+3*sourceIndex] 
@@ -132,7 +131,9 @@ public:
 				<< "\t\t" << rotatedX << "\t" << rotatedY << "\t" << rotatedZ 
 				<< "\t\t" << dazimut << "\t" << delevation
 				<< std::endl;
+			*/
 			_sampleCount -= _samplesPerControl;
+	std::cout << "_sampleCount SUBSTRACTED samples per control: " << _sampleCount << std::endl;
 			_sequenceIndex++;
 			if (_sequenceIndex >= _controlSequence.size())
 			{
@@ -243,6 +244,11 @@ protected:
 			AddConfigErrorMessage("Empty file "+_config.GetFilename());
 			return false;
 		}
+		if (_samplesPerControl<_frameSize)
+		{
+			AddConfigErrorMessage("Samples per control should be greater than frame size. (This limitation is provisional: To be implemented)");
+			return false;
+		}	
 		return true;
 	}
 };
