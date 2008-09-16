@@ -40,17 +40,20 @@ void NetworkPlayer::CollectSourcesAndSinks()
 }
 std::string NetworkPlayer::SourcesAndSinksToString()
 {
-	std::string result;
+
+	std::string sourceNames;
+	std::string sinkNames;
 	Network & net = GetNetwork();
+
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 	{
 		std::string processingType = it->second->GetClassName();
 		if ( processingType == "AudioSource" )
-			result += " * source:\t"+it->first+"\n";
+			sourceNames += " * source:\t"+it->first+"\n";
 		else if ( processingType == "AudioSink" )
-			result += " * sink:\t"+it->first+"\n";
+			sinkNames += " * sink:\t"+it->first+"\n";
 	}
-	return result;
+	return (sourceNames+sinkNames);
 }
 
 } //namespace
