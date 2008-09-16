@@ -133,7 +133,6 @@ public:
 				<< std::endl;
 			*/
 			_sampleCount -= _samplesPerControl;
-	std::cout << "_sampleCount SUBSTRACTED samples per control: " << _sampleCount << std::endl;
 			_sequenceIndex++;
 			if (_sequenceIndex >= _controlSequence.size())
 			{
