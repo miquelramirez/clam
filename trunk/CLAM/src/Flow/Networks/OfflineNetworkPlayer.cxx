@@ -29,7 +29,7 @@ void OfflineNetworkPlayer::Start()
 	const int frameSize = 512;
 	//Open the files, get the total number of channels and the sample rate
 	int sampleRate=0; 
-	unsigned inNumChannels=0;
+	unsigned inputChannelsCount=0;
 	std::vector<SndfileHandle*> infiles;
 
 	for(unsigned fileIndex=0;fileIndex<_inFileNames.size();fileIndex++)
@@ -40,35 +40,28 @@ void OfflineNetworkPlayer::Start()
 		CLAM_ASSERT(checkfile.is_open(), std::string(std::string("Could not open one of the input files: ")+_inFileNames[fileIndex]).c_str());
 		SndfileHandle* infile = new SndfileHandle(_inFileNames[fileIndex].c_str(), SFM_READ );
 		CLAM_ASSERT(*infile, "Can not create the infile ");		
-		inNumChannels += infile->channels();
+		 inputChannelsCount += infile->channels();
 		if(fileIndex==0)
 			sampleRate = infile->samplerate();
-		CLAM_ASSERT(infile->samplerate()==sampleRate,"All the input audio files have to have the same sample rate");
+		if(infile->samplerate() != sampleRate)
+		{
+			std::cout <<"All the input audio files have to have the same sample rate"<<std::endl;
+			exit(-1);	
+		}
 		infiles.push_back(infile);
 	}
-	
-	std::vector<DataArray> inbuffers(inNumChannels);
-	unsigned sourceIndex=0;
-	unsigned fileIndex = 0;
-	// Prepare the sources
 
-	while(sourceIndex<GetAudioSources().size())
-	{	
-		CLAM_ASSERT(fileIndex<infiles.size(),"The number of sources is greater than the input files multichannels");
-		for(int channel=0;channel<infiles[fileIndex]->channels();channel++)
-		{	CLAM_ASSERT(fileIndex+channel<GetAudioSources().size(),"The number of input channels is greater than the sources");
-			inbuffers[sourceIndex].Resize( frameSize );
-			inbuffers[sourceIndex].SetSize( frameSize );
-			AudioSource& source = *GetAudioSources()[sourceIndex];				
-			source.SetExternalBuffer( &(inbuffers[sourceIndex][0]),frameSize);
-			std::cout << " In: " << _inFileNames[fileIndex] << " channel "<< channel+1<< std::endl;
-			sourceIndex++;
-		}
-		fileIndex++;
+	// Check that the number of input channels matches the network	
+	if( inputChannelsCount != GetAudioSources().size())
+	{
+	 	std::cout <<"The number of input channels is different than the number of sources." << std::endl
+			<<"There are "<<GetAudioSources().size()<<" sources and "
+			<<inputChannelsCount<<" input channels"<<std::endl;
+		exit(-1);			
 	}
 
 	//Open the files and get the total number of channels
-	unsigned outNumChannels=0;
+	unsigned outputChannelsCount=0;
 	std::vector<SndfileHandle*> outfiles;
 	for(unsigned fileIndex=0;fileIndex<_outFileNames.size();fileIndex++)
 	{
@@ -80,19 +73,52 @@ void OfflineNetworkPlayer::Start()
 		}
 		SndfileHandle* outfile = new SndfileHandle(_outFileNames[fileIndex].c_str(), SFM_WRITE,_format,_outChannelsFiles[fileIndex],sampleRate);
 		CLAM_ASSERT(*outfile, "Can not create the outfile ");		
-		outNumChannels +=_outChannelsFiles[fileIndex];
+		outputChannelsCount +=_outChannelsFiles[fileIndex];
 		outfiles.push_back(outfile);
+	}
+	// Check that the number of output channels matches the network	
+	if( outputChannelsCount != GetAudioSinks().size())
+	{
+	 	std::cout <<"The number of output channels is different than the number of sinks." << std::endl
+			  <<"There are "<<GetAudioSinks().size()<<" sinks and "
+			   <<outputChannelsCount<<" output channels"<<std::endl;
+		exit(-1);			
+	}
+
+	// Prepare the sources
+	std::vector<DataArray> inbuffers( inputChannelsCount);
+	unsigned sourceIndex=0;
+	unsigned fileIndex = 0;
+	while(sourceIndex<GetAudioSources().size())
+	{	
+		for(int channel=0;channel<infiles[fileIndex]->channels();channel++)
+		{
+			inbuffers[sourceIndex].Resize( frameSize );
+			inbuffers[sourceIndex].SetSize( frameSize );
+			AudioSource& source = *GetAudioSources()[sourceIndex];				
+			source.SetExternalBuffer( &(inbuffers[sourceIndex][0]),frameSize);
+			std::cout << " In: " << _inFileNames[fileIndex] << " channel "<< channel+1<< std::endl;
+			sourceIndex++;
+		}
+		fileIndex++;
 	}
 
 	//Prepare the sinks
-	std::vector<DataArray> outbuffers(outNumChannels);
+	std::vector<DataArray> outbuffers(outputChannelsCount);
 	fileIndex =0;
 	unsigned sinkIndex = 0;
 	while(sinkIndex<GetAudioSinks().size())
-	{			
-		CLAM_ASSERT(fileIndex<outfiles.size(),"The number of sinks is greater than the output files multichannels");	
+	{	if(fileIndex>=outfiles.size())
+		{
+			std::cout << "The number of sinks is greater than the output files. " << "There are "<<GetAudioSinks().size()<<" sinks "<<" and "<<outfiles.size()<<"output files"<<std::endl;
+			exit(-1);
+		}
 		for(int channel=0;channel<outfiles[fileIndex]->channels();channel++)
-		{	CLAM_ASSERT(fileIndex+channel<GetAudioSinks().size(),"The number of output channels is greater than the sinks");			
+		{	if(fileIndex+channel>=GetAudioSinks().size())
+			{
+			 	std::cout <<"The number of output channels is greater than the sinks. "<<"There are "<<GetAudioSinks().size()<<" sinks and "<<fileIndex+channel<<" ouput channels"<<std::endl;
+				exit(-1);
+			}
 			outbuffers[sinkIndex].Resize( frameSize );
 			outbuffers[sinkIndex].SetSize( frameSize );
 			AudioSink& sink = *GetAudioSinks()[sinkIndex];
