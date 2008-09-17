@@ -123,7 +123,7 @@ public:
 			index >> std::ws;
 			std::string filename;
 			std::getline(index, filename);
-			std::cout << elevation << " " << azimut << " '" << base << filename << "'" << std::endl;
+		//	std::cout << elevation << " " << azimut << " '" << base << filename << "'" << std::endl;
 			_lines.push_back(SpherePosition(elevation, azimut, base+filename));
 		}
 		_storage.resize(_lines.size());
@@ -247,9 +247,9 @@ public:
 
 		if ( _previousL != currentL) 
 		{
-			std::cout << "HRTF (elevation, azimut) : "<<elevation<<","<<azimut<<std::endl;
-			std::cout << "L : "<<_database.elevationForIndex(indexL)<<","<<_database.azimutForIndex(indexL)<<std::endl;
-			std::cout << "R : "<<_database.elevationForIndex(indexR)<<","<<_database.azimutForIndex(indexR)<<std::endl;
+		//	std::cout << "HRTF (elevation, azimut) : "<<elevation<<","<<azimut<<std::endl;
+		//	std::cout << "L : "<<_database.elevationForIndex(indexL)<<","<<_database.azimutForIndex(indexL)<<std::endl;
+		//	std::cout << "R : "<<_database.elevationForIndex(indexR)<<","<<_database.azimutForIndex(indexR)<<std::endl;
 		}
 		_previousL = currentL;
 		_previousR = currentR;
