@@ -54,9 +54,9 @@ void OfflineNetworkPlayer::Start()
 	// Check that the number of input channels matches the network	
 	if( inputChannelsCount != GetAudioSources().size())
 	{
-	 	std::cout <<"The number of input channels is different than the number of sources." << std::endl
+	 	std::cout <<"The number of input channels is different than the number of sources in the provided network." << std::endl
 			<<"There are "<<GetAudioSources().size()<<" sources and "
-			<<inputChannelsCount<<" input channels"<<std::endl;
+			<<inputChannelsCount<<" input channels summing all channels in "<<_infiles.size()<<" input files"<<std::endl;
 		exit(-1);			
 	}
 
@@ -79,9 +79,9 @@ void OfflineNetworkPlayer::Start()
 	// Check that the number of output channels matches the network	
 	if( outputChannelsCount != GetAudioSinks().size())
 	{
-	 	std::cout <<"The number of output channels is different than the number of sinks." << std::endl
+	 	std::cout <<"The number of output channels is different than the number of sinks in the provided network." << std::endl
 			  <<"There are "<<GetAudioSinks().size()<<" sinks and "
-			   <<outputChannelsCount<<" output channels"<<std::endl;
+			   <<outputChannelsCount<<" output channels summing all channels in "<<_outfiles.size()<<" output files"<<std::endl;
 		exit(-1);			
 	}
 
