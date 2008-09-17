@@ -31,6 +31,7 @@ void OfflineNetworkPlayer::Start()
 	int sampleRate=0; 
 	unsigned inNumChannels=0;
 	std::vector<SndfileHandle*> infiles;
+
 	for(unsigned fileIndex=0;fileIndex<_inFileNames.size();fileIndex++)
 	{
 		CLAM_ASSERT(fileIndex<_inFileNames.size(),
@@ -50,16 +51,17 @@ void OfflineNetworkPlayer::Start()
 	unsigned sourceIndex=0;
 	unsigned fileIndex = 0;
 	// Prepare the sources
+
 	while(sourceIndex<GetAudioSources().size())
-	{		
+	{	
 		CLAM_ASSERT(fileIndex<infiles.size(),"The number of sources is greater than the input files multichannels");
-		for(int i=0;i<infiles[fileIndex]->channels();i++)
-		{
+		for(int channel=0;channel<infiles[fileIndex]->channels();channel++)
+		{	CLAM_ASSERT(fileIndex+channel<GetAudioSources().size(),"The number of input channels is greater than the sources");
 			inbuffers[sourceIndex].Resize( frameSize );
 			inbuffers[sourceIndex].SetSize( frameSize );
 			AudioSource& source = *GetAudioSources()[sourceIndex];				
 			source.SetExternalBuffer( &(inbuffers[sourceIndex][0]),frameSize);
-			std::cout << " In: " << _inFileNames[fileIndex] << " channel "<< i+1<< std::endl;
+			std::cout << " In: " << _inFileNames[fileIndex] << " channel "<< channel+1<< std::endl;
 			sourceIndex++;
 		}
 		fileIndex++;
@@ -89,13 +91,13 @@ void OfflineNetworkPlayer::Start()
 	while(sinkIndex<GetAudioSinks().size())
 	{			
 		CLAM_ASSERT(fileIndex<outfiles.size(),"The number of sinks is greater than the output files multichannels");	
-		for(int i=0;i<outfiles[fileIndex]->channels();i++)
-		{	
+		for(int channel=0;channel<outfiles[fileIndex]->channels();channel++)
+		{	CLAM_ASSERT(fileIndex+channel<GetAudioSinks().size(),"The number of output channels is greater than the sinks");			
 			outbuffers[sinkIndex].Resize( frameSize );
 			outbuffers[sinkIndex].SetSize( frameSize );
 			AudioSink& sink = *GetAudioSinks()[sinkIndex];
 			sink.SetExternalBuffer( &(outbuffers[sinkIndex][0]) ,frameSize);
-			std::cout << " Out: " << _outFileNames[fileIndex] << " channel "<< i+1<< std::endl;
+			std::cout << " Out: " << _outFileNames[fileIndex] << " channel "<< channel+1<< std::endl;
 			sinkIndex++;
 		}		
 		fileIndex++;
