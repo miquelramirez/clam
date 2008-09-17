@@ -16,6 +16,18 @@ int usage(const std::string & program)
 			<< std::endl;
 		return -1;
 }
+bool isWavFile(std::string filename)
+{
+	std::string::iterator dotPos = std::find( filename.begin(), filename.end(), '.' );
+	if (dotPos == filename.end())
+		return false;
+
+	std::string extension( dotPos+1, filename.end() );
+	if(extension.compare("wav")==0)
+		return true;
+
+	return false;
+}
 
 int main( int argc, char *argv[] )
 {
@@ -58,8 +70,7 @@ int main( int argc, char *argv[] )
 		std::cout << "TIME (seconds) " << seconds << std::endl;
 		player->EnableLoopInputWavs();
 		player->SetResultWavsTime(seconds);
-		argIndex++;
-		
+		argIndex++;		
 	}
 
 	if(std::string(argv[argIndex]) == "-o")
@@ -71,13 +82,16 @@ int main( int argc, char *argv[] )
 
 	while(std::string(argv[argIndex]) != "-o")
 	{
+		if(!isWavFile(std::string(argv[argIndex])))
+		{	std::cout << "The input files names have to finish with .wav" << std::endl;
+			return -1;			
+		}
 		player->AddInputFile(argv[argIndex]);
 		argIndex++;
 		if(argc<=argIndex)
 		{	std::cout << "There are not output files. The output files are separated by -o" << std::endl;
 			return -1;
-		}
-		
+		}		
 	}
 	argIndex ++;
 
@@ -126,7 +140,10 @@ int main( int argc, char *argv[] )
 		{
 			channel = 1;
 		}
-
+		if(!isWavFile(std::string(argv[argIndex])))
+		{	std::cout << "The output files names have to finish with .wav" << std::endl;
+			return -1;			
+		}
 		player->AddNumChannels(channel);			
 		player->AddOutputFile(argv[argIndex]);
 	}
