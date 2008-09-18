@@ -1,7 +1,7 @@
 Index: CLAM/src/Processing/Analysis/FFT_ooura.hxx
 ===================================================================
---- CLAM/src/Processing/Analysis/FFT_ooura.hxx	(revisión: 11854)
-+++ CLAM/src/Processing/Analysis/FFT_ooura.hxx	(copia de trabajo)
+--- CLAM/src/Processing/Analysis/FFT_ooura.hxx	(revision 12081)
++++ CLAM/src/Processing/Analysis/FFT_ooura.hxx	(working copy)
 @@ -95,7 +95,16 @@
  
  		bool Do(const Audio& in, Spectrum &out);
@@ -20,3 +20,20 @@ Index: CLAM/src/Processing/Analysis/FFT_ooura.hxx
  		bool MayDisableExecution() const {return true;}
  
  	};
+Index: CLAM/src/Standard/Array.hxx
+===================================================================
+--- CLAM/src/Standard/Array.hxx	(revision 12081)
++++ CLAM/src/Standard/Array.hxx	(working copy)
+@@ -206,6 +206,12 @@
+ 		new(&mpData[where]) T(elem);
+ 		mSize++;
+ 	}
++	void	EditElem(int where,const T& elem)
++	{
++		CLAM_DEBUG_ASSERT(where>=0,msgIndexOutOfRange);
++		CLAM_DEBUG_ASSERT(where<mSize,msgIndexOutOfRange);
++		mpData[where] = elem;
++	}
+ 	void	DeleteElem(int where)
+ 	{
+ 		CLAM_ASSERT(OwnsMemory(),"Array::DeleteElem(): Resize requiered,"
