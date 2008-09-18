@@ -18,15 +18,17 @@ int usage(const std::string & program)
 }
 bool isWavFile(std::string filename)
 {
-	std::string::iterator dotPos = std::find( filename.begin(), filename.end(), '.' );
-	if (dotPos == filename.end())
+	std::string originalExtension = "wav";
+	int posDot = filename.size()-(originalExtension.size()+1);
+	std::string fileExtension = filename.substr(posDot+1);
+
+	if(filename.at(posDot)!='.')
+		return false;
+	
+	if(fileExtension.compare(originalExtension)!=0)
 		return false;
 
-	std::string extension( dotPos+1, filename.end() );
-	if(extension.compare("wav")==0)
-		return true;
-
-	return false;
+	return true;
 }
 
 int main( int argc, char *argv[] )
@@ -83,7 +85,7 @@ int main( int argc, char *argv[] )
 	while(std::string(argv[argIndex]) != "-o")
 	{
 		if(!isWavFile(std::string(argv[argIndex])))
-		{	std::cout << "The input files names have to finish with .wav" << std::endl;
+		{	std::cout << "The input files "<<std::string(argv[argIndex])<<" have to finish with .wav" << std::endl;
 			return -1;			
 		}
 		player->AddInputFile(argv[argIndex]);
