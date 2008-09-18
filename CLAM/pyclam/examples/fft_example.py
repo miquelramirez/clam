@@ -28,8 +28,7 @@ myaudio.SetSampleRate( sampleRate );
 
 vector = myaudio.GetBuffer()
 for i in range(samples):
-	vector.set( i, 0.625+0.5*sin(2.0*sineFreq*400.0*((float(i))/sampleRate)) )
-	#print vector[i]
+	vector[i] = 0.625+0.5*sin(2.0*sineFreq*400.0*((float(i))/sampleRate))
 
 myspectrum = Spectrum()
 specFlags = SpecTypeFlags()
