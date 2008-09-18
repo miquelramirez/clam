@@ -70,7 +70,6 @@ public:
 			AddConfigErrorMessage(errorMsg);
 			return false;
 		}
-
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
