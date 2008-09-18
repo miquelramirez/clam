@@ -110,13 +110,16 @@ public:
 		std::vector<ComplexSpectrum> & impulseResponse = *_impulseResponse.GetData();
 		unsigned nBlocks = GetLimitedFrames(impulseResponse.size());
 		if (_delayedSpectrums.size()!=nBlocks)
+		{
 			InitialitzeDelaySpectrums( nBlocks, impulseResponse[0].bins.size(), impulseResponse[0].spectralRange );
+		}
 
 		output.spectralRange = input.spectralRange;
 		const unsigned nBins = input.bins.size(); 
 		output.bins.resize( nBins );
 		for (unsigned i=0; i<output.bins.size(); i++)
 			output.bins[i]=0;
+
 		_delayedSpectrums[_current].bins=input.bins;
 		unsigned delayIndex=_current+1;
 		ComplexSpectrum productSpectrum;

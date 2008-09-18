@@ -91,8 +91,9 @@ bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> 
 	source.Start();
 	windower.Start();
 	fft.Start();
-	
-	source.Do();
+
+	while( source.Do() ); //read all the file and put it into the out port buffer
+
 	while (windower.CanConsumeAndProduce())
 	{
 		windower.Do();
@@ -100,7 +101,7 @@ bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> 
 		responseSpectrums.push_back(fetcher.GetData());
 		fetcher.Consume();
 	}
-
+	CLAM_DEBUG_ASSERT(responseSpectrums.size()>0, "LoadImpulseResponse: Expected an IR of size >= 1.");
 	source.Stop();
 	windower.Stop();
 	fft.Stop();
