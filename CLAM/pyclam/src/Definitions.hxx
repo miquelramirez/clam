@@ -45,40 +45,40 @@ public:
 };
 
 //TODO: make generic as a template. template <class T> class Array and typedef Bindings::Array<TData> Bindings::DataArray;
-class DataArray { //extra-wrap
+// class DataArray { //extra-wrap
+// 
+// 	//Note: avoid shared_ptr here, will try to delete the CLAM::Array object managed internally by the CLAM library (no 'new' here)
+// 	CLAM::DataArray* _dataArray;
+// public:
+// 	DataArray(CLAM::DataArray& array) { _dataArray=&array; }
+// 
+// 	TData& operator [](const int& i) { return (*_dataArray)[i]; }
+// 
+// 	//FIXME: Workaround since [] operator no works with assigment (Note: bindings to std::vector work ok)
+// 	void set(const int& i, const TData& data) { (*_dataArray)[i]=data; } //Note: breaks orginal interface
+// 
+// //TODO: DataArray& operator = (const DataArray& src)
+// //TODO: inline bool operator == (const DataArray& a, const DataArray& b)
+// };
 
-	//Note: avoid shared_ptr here, will try to delete the CLAM::Array object managed internally by the CLAM library (no 'new' here)
-	CLAM::DataArray* _dataArray;
-public:
-	DataArray(CLAM::DataArray& array) { _dataArray=&array; }
-
-	TData& operator [](const int& i) { return (*_dataArray)[i]; }
-
-	//FIXME: Workaround since [] operator no works with assigment (Note: bindings to std::vector work ok)
-	void set(const int& i, const TData& data) { (*_dataArray)[i]=data; } //Note: breaks orginal interface
-
-//TODO: DataArray& operator = (const DataArray& src)
-//TODO: inline bool operator == (const DataArray& a, const DataArray& b)
-};
-
-class Audio: public CLAM::Audio { //extra-wrap
-	shared_ptr<CLAM::Audio> _audio;
-	shared_ptr<Bindings::DataArray> _dataArray;
-public:
-	Audio() {
-		_audio = shared_ptr<CLAM::Audio>( new CLAM::Audio() );
-		_dataArray = shared_ptr<Bindings::DataArray>( new Bindings::DataArray( _audio->GetBuffer() ) );
-	}
-	void SetSize(TSize s) { _audio->SetSize(s); }
-	TSize GetSize() { _audio->GetSize(); }
-	void SetSampleRate(TData s) { _audio->SetSampleRate(s); }
-
-	shared_ptr<Bindings::DataArray> GetBuffer() { return _dataArray; }
-// 	CLAM::DataArray& GetBuffer() { return _audio->GetBuffer(); } //no CLAM::DataArray class available in python
-
-	CLAM::Audio& real() const { return *_audio.get(); } //Note: breaks orginal interface
-	CLAM::ProcessingData& getBase() const { return dynamic_cast<CLAM::ProcessingData&>(*_audio.get()); } //Note: breaks orginal interface
-};
+// class Audio: public CLAM::Audio { //extra-wrap
+// 	shared_ptr<CLAM::Audio> _audio;
+// 	shared_ptr<Bindings::DataArray> _dataArray;
+// public:
+// 	Audio() {
+// 		_audio = shared_ptr<CLAM::Audio>( new CLAM::Audio() );
+// 		_dataArray = shared_ptr<Bindings::DataArray>( new Bindings::DataArray( _audio->GetBuffer() ) );
+// 	}
+// 	void SetSize(TSize s) { _audio->SetSize(s); }
+// 	TSize GetSize() { _audio->GetSize(); }
+// 	void SetSampleRate(TData s) { _audio->SetSampleRate(s); }
+//
+// 	shared_ptr<Bindings::DataArray> GetBuffer() { return _dataArray; }
+// // 	CLAM::DataArray& GetBuffer() { return _audio->GetBuffer(); } //no CLAM::DataArray class available in python
+//
+// 	CLAM::Audio& real() const { return *_audio.get(); } //Note: breaks orginal interface
+// 	CLAM::ProcessingData& getBase() const { return dynamic_cast<CLAM::ProcessingData&>(*_audio.get()); } //Note: breaks orginal interface
+// };
 
 class BPNetworkPlayer { //extra-wrap
 protected: shared_ptr<CLAM::NetworkPlayer> _player;
@@ -132,13 +132,13 @@ inline bool FlagsBase::CheckInvariant() {
 	for (unsigned int i=0; i<top; i++) {
 		for (unsigned int j=i+1; j<top; j++) {
 			if (std::string(mFlagValues[i].name)==std::string(mFlagValues[j].name)) {
-				std::cerr << "Warning: flag names '"<< mFlagValues[i].name 
-					<< "' and '" << mFlagValues[j].name 
+				std::cerr << "Warning: flag names '"<< mFlagValues[i].name
+					<< "' and '" << mFlagValues[j].name
 					<< "' are replicated" << std::endl;
 			}
 			if (mFlagValues[i].value==mFlagValues[j].value) {
-				std::cerr << "Warning: flag values '"<< mFlagValues[i].value 
-					<< "' and '" << mFlagValues[j].value 
+				std::cerr << "Warning: flag values '"<< mFlagValues[i].value
+					<< "' and '" << mFlagValues[j].value
 					<< "' are replicated" << std::endl;
 			}
 		}

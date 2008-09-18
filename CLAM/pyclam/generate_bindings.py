@@ -51,6 +51,9 @@ clam_file_list += ['FlowControl.hxx','FlattenedNetwork.hxx','Network.hxx','Netwo
 clam_file_list += ['DataTypes.hxx','Enum.hxx','CLAM_Math.hxx','Err.hxx']
 
 clam_file_list += ['MonoAudioFileReader.hxx','AudioInFilename.hxx']
+#clam_file_list += ['AudioFileHeader.hxx']
+exported_manually_file_list += ['DataArray.hxx'] # Original CLAM file is Array.hxx, but exposed class/type is named DataArray
+exported_manually_file_list += ['Audio.hxx']
 exported_manually_file_list += ['MonoAudioFileReaderConfig.hxx']
 
 
