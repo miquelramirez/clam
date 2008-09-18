@@ -71,7 +71,8 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 		self.setupUi(self)
 
 		self.setWindowTitle( "Processing Code Generator" )
-		clam_logo_svg = "../../artwork/clamlogo.svg"
+		if os.path.isfile('./clamlogo.svg'): clam_logo_svg = "./clamlogo.svg"
+		else: clam_logo_svg = "../../artwork/clamlogo.svg"
 		self.setWindowIcon( QIcon(clam_logo_svg) )
 		self.clamLogo.setPixmap( QPixmap(clam_logo_svg) )
 
