@@ -56,7 +56,7 @@ void OfflineNetworkPlayer::Start()
 	{
 	 	std::cout <<"The number of input channels is different than the number of sources in the provided network." << std::endl
 			<<"There are "<<GetAudioSources().size()<<" sources and "
-			<<inputChannelsCount<<" input channels summing all channels in "<<_infiles.size()<<" input files"<<std::endl;
+			<<inputChannelsCount<<" input channels summing all channels in "<<infiles.size()<<" input files"<<std::endl;
 		exit(-1);			
 	}
 
@@ -81,7 +81,7 @@ void OfflineNetworkPlayer::Start()
 	{
 	 	std::cout <<"The number of output channels is different than the number of sinks in the provided network." << std::endl
 			  <<"There are "<<GetAudioSinks().size()<<" sinks and "
-			   <<outputChannelsCount<<" output channels summing all channels in "<<_outfiles.size()<<" output files"<<std::endl;
+			   <<outputChannelsCount<<" output channels summing all channels in "<<outfiles.size()<<" output files"<<std::endl;
 		exit(-1);			
 	}
 
