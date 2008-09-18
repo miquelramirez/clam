@@ -6,6 +6,7 @@ opts = Options(options_filename,ARGUMENTS)
 opts.Add(PathOption('prefix', 'The prefix where the CLAM library is installed', '/usr/local'))
 opts.Add(PackageOption('plugins_prefix', 'The prefix where the CLAM plugins are installed. Use No for disable them and Yes to use the same CLAM installation path.', 'no'))
 opts.Add(BoolOption('debug', 'Enables debug symbols', 'no'))
+opts.Add( 'distcc_hosts', 'Defines compiling hosts, if defined enables the distcc compiler', '')
 env = Environment(ENV=os.environ, options=opts)
 Help(opts.GenerateHelpText(env))
 
@@ -20,6 +21,10 @@ if needs_configure and not avoid_configure :
 	print "Finished. Invoke 'scons' now."
 	Exit(0)
 
+if env['distcc_hosts'] :
+	env['CXX'] = 'distcc g++'
+	env['ENV']['DISTCC_HOSTS'] = env['distcc_hosts']
+	SetOption('num_jobs', len(env['distcc_hosts'].split()) )
 
 env.Append( CPPPATH=[env['prefix']+'/include'] )
 env.Append( LIBS=['clam_core','clam_audioio','clam_processing'] )
