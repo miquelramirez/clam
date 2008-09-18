@@ -143,7 +143,7 @@ int main( int argc, char *argv[] )
 			channel = 1;
 		}
 		if(!isWavFile(std::string(argv[argIndex])))
-		{	std::cout << "The output files names have to finish with .wav" << std::endl;
+		{	std::cout << "The output files "<<std::string(argv[argIndex])<<" have to finish with .wav" << std::endl;
 			return -1;			
 		}
 		player->AddNumChannels(channel);			
