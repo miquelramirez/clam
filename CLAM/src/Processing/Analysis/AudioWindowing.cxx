@@ -56,8 +56,6 @@ bool AudioWindowing::ConfigureChildren()
 {
 	int windowSize = mConfig.GetWindowSize();
 	EWindowType windowType = mConfig.GetWindowType();
-	int hopSize = mConfig.GetHopSize();
-	int sampleRate = mConfig.GetSamplingRate();
 	if (not (windowSize&1))
 	{
 		AddConfigErrorMessage("FFT Restriction:");

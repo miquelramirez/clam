@@ -216,10 +216,7 @@ TIndex SinTracking::GetCandidate(TData currentPeakFreq,
 									   TData& distance) const
 {
   //Can be optimized! XA
-  TIndex bestCandidate=-1;
-  TData tmpDistance;
   distance=-1;
-  int nPeaks=iPeakArray.GetnPeaks();
   DataArray& peakFreqBuffer=iPeakArray.GetFreqBuffer();
   TData factor=100./currentPeakFreq;
   
