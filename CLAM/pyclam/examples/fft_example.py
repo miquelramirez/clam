@@ -51,7 +51,7 @@ myfft.Configure( toProcessingConfig(fconfig) ) #FIXME
 myfft.Start()
 
 print "Running object "
-myfft.Do( myaudio.getBase(), myspectrum.getBase() ) #FIXME
+myfft.Do( myaudio, myspectrum )
 
 print "Storing spectrum"
 XmlStorage.Dump( toComponent(myspectrum), "FFTResult", "pyFFT_example.xml" ) #FIXME

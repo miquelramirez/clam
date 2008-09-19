@@ -56,6 +56,7 @@ exported_manually_file_list += ['DataArray.hxx'] # Original CLAM file is Array.h
 exported_manually_file_list += ['Audio.hxx']
 exported_manually_file_list += ['MonoAudioFileReaderConfig.hxx']
 
+exported_manually_file_list += ['SpectrumConfig.hxx','Spectrum.hxx']
 
 # Removes class names that could be added by accident to the list to be parsed (they're already exposed manually)
 for classname in exported_manually_file_list:
