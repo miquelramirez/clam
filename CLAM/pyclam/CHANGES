@@ -1,6 +1,8 @@
 2008-??-?? CLAM 1.?.?
 
- * pyclam: Spectrum and SpectrumConfig classes are now manually exposed to python and old extra wrappers for these classes were removed. Warning: at the moment they are not fully exposed, there are ready just a couple of methods.
+ * Doxygen documentation extractor script fixed and improved. Now most documentation is accessible from python through the help() command (documentation string is at .__doc__ member).
+ * Py++ doxygen documentation extractor script added.
+ * Spectrum and SpectrumConfig classes are now manually exposed to python and old extra wrappers for these classes were removed. Warning: at the moment they are not fully exposed, there are ready just a couple of methods.
  * DataArray __setitem__ class method definition wrapping a new method EditElem in order to have [] working for python vectors also in assignation, instead of have to use the workaround with set(). pyclam.patch updated.
  * Audio and DataArray classes manually exposed. Removed now unused extra wrappers for those classes at Definitions.hxx.
  * distcc support added to scons script.
