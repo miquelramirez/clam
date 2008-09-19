@@ -13,6 +13,8 @@
 #include <CLAM/MonoAudioFileReaderConfig.hxx>
 #include <CLAM/FFTConfig.hxx>
 
+//Required to toComponent() definitions
+#include <CLAM/Spectrum.hxx>
 
 #include <CLAM/Network.hxx>
 #include <CLAM/PANetworkPlayer.hxx>
@@ -23,8 +25,6 @@
 #include <CLAM/Array.hxx>
 #include <CLAM/FFT_ooura.hxx>
 
-#include <CLAM/Spectrum.hxx>
-#include <CLAM/SpectrumConfig.hxx>
 #include <CLAM/DataTypes.hxx>
 
 namespace Bindings {
@@ -32,17 +32,6 @@ using boost::shared_ptr;
 using boost::weak_ptr;
 using CLAM::TSize;
 using CLAM::TData;
-
-class Spectrum: public CLAM::Spectrum { //extra-wrap
-	shared_ptr<CLAM::Spectrum> _spectrum;
-public:
-	Spectrum() { _spectrum = shared_ptr<CLAM::Spectrum>( new CLAM::Spectrum() ); }
-	void SetType(const CLAM::SpecTypeFlags& newFlags) { _spectrum->SetType(newFlags); }
-	void SetSize(int s) { _spectrum->SetSize(s); }
-
-	CLAM::Spectrum& real() const { return *_spectrum.get(); } //Note: breaks orginal interface
-	CLAM::ProcessingData& getBase() const { return dynamic_cast<CLAM::ProcessingData&>(*_spectrum.get()); } //Note: breaks orginal interface
-};
 
 class BPNetworkPlayer { //extra-wrap
 protected: shared_ptr<CLAM::NetworkPlayer> _player;
@@ -64,7 +53,7 @@ namespace PyHacks {
 //Note: Expected automatic upcasting seems no work in some methods called through python (no meet methods signatures), so these are the workaround to allow that:
 static inline CLAM::Component& toComponent(CLAM::ProcessingData& pd) { return dynamic_cast<CLAM::Component&>(pd); }
 static inline CLAM::Component& toComponent(CLAM::Network& n) { return dynamic_cast<CLAM::Component&>(n); }
-static inline CLAM::Component& toComponent(Bindings::Spectrum& s) { return toComponent(s.getBase()); }
+static inline CLAM::Component& toComponent(CLAM::Spectrum& s) { return dynamic_cast<CLAM::Component&>(s); }
 
 static inline CLAM::ProcessingConfig& toProcessingConfig(CLAM::FFTConfig& fft_c) { return dynamic_cast<CLAM::ProcessingConfig&>(fft_c); }
 static inline CLAM::ProcessingConfig& toProcessingConfig(CLAM::MonoAudioFileReaderConfig& fft_c) { return dynamic_cast<CLAM::ProcessingConfig&>(fft_c); }

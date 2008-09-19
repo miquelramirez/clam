@@ -16,10 +16,6 @@
  */
  
 #include "boost/python.hpp"
-#include "CLAM/FFT.hxx"
-#include "CLAM/FFT_base.hxx"
-#include "CLAM/FFT_ooura.hxx"
-#include "CLAM/FFT_fftw3.hxx"
 #include "CLAM/SpectrumConfig.hxx"
 #include "src/Definitions.hxx"
 #include "SpectrumConfig.pypp.hpp"

@@ -1,3 +1,25 @@
+Index: CLAM/src/Processing/Analysis/FFT_base.hxx
+===================================================================
+--- CLAM/src/Processing/Analysis/FFT_base.hxx        (revisión: 12087)
++++ CLAM/src/Processing/Analysis/FFT_base.hxx        (working copy)
+@@ -106,6 +106,16 @@
+ 	 */
+ 	virtual bool Do(const Audio& in, Spectrum &out)= 0;
+ 
++		//PyHack
++		bool Do(const ProcessingData& in, ProcessingData &out) {
++			try {
++					Do( dynamic_cast<const Audio&>(in), dynamic_cast<Spectrum&>(out) );
++			}
++			catch(...){
++					return false;
++			}
++		}
++
+ 	// Input/Output configuration methods
+ 
+ 	/** FFT non-supervised mode SetPrototypes function */
+
 Index: CLAM/src/Processing/Analysis/FFT_ooura.hxx
 ===================================================================
 --- CLAM/src/Processing/Analysis/FFT_ooura.hxx	(revision 12081)
