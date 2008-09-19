@@ -8,8 +8,7 @@ http://www.boost.org/LICENSE_1_0.txt)
 
 class doxygen_doc_extractor:
 	"""
-	Extracts Doxigen styled documentation from source
-	or generates from description.
+	Extracts Doxygen styled documentation from source or generates it from description.
 	"""
 	def __init__(self):
 		#for caching source
@@ -51,27 +50,14 @@ class doxygen_doc_extractor:
 			if doc_lines:
 				final_doc_lines = [ line.replace("\n","\\n") for line in doc_lines[:-1] ]
 				final_doc_lines.append(doc_lines[-1].replace("\n",""))
-				#final_doc_lines.insert(0, self.get_generic_doc(declaration))
 				return '\"' + ''.join(final_doc_lines) + '\"'
 			else:
 				return '\"\"'
-				#return '\"'+self.get_generic_doc(declaration)+'\"'
 	#__call__()
-
-	#def get_generic_doc(self, declaration):
-		#"""
-		#Generate call information about function or method
-		#"""
-		#try:
-			#return "Help on %s" % str(declaration)
-		#except:
-			#pass
-		#return ''
-	##get_generic_doc()
 
 	def clear_str(self, tmp_str):
 		"""
-		Replace */! by Space and \breaf, \fn, \param, ...
+		Replace */! by space and \brief, @fn, \param, etc
 		"""
 		clean = lambda tmp_str, sym, change2 = '': tmp_str.replace(sym, change2)
 	
@@ -100,11 +86,11 @@ class doxygen_doc_extractor:
 	
 	def is_code(self, tmp_str):
 		"""
-		Detect if tmp_str is code
+		Detects if tmp_str is code or not
 		"""
 		try:
 			beg = tmp_str.lstrip()[:2]
-			return  beg != "//" and beg != "/*"
+			return beg != "//" and beg != "/*"
 		except:
 			pass
 		return False
