@@ -217,6 +217,7 @@ TIndex SinTracking::GetCandidate(TData currentPeakFreq,
 {
   //Can be optimized! XA
   distance=-1;
+  int nPeaks=iPeakArray.GetnPeaks();
   DataArray& peakFreqBuffer=iPeakArray.GetFreqBuffer();
   TData factor=100./currentPeakFreq;
   
