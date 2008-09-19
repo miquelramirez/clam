@@ -1,8 +1,9 @@
 2008-??-?? CLAM 1.?.?
 
+ * pyclam: Spectrum and SpectrumConfig classes are now manually exposed to python and old extra wrappers for these classes were removed. Warning: at the moment they are not fully exposed, there are ready just a couple of methods.
  * DataArray __setitem__ class method definition wrapping a new method EditElem in order to have [] working for python vectors also in assignation, instead of have to use the workaround with set(). pyclam.patch updated.
  * Audio and DataArray classes manually exposed. Removed now unused extra wrappers for those classes at Definitions.hxx.
- * distcc support added to scons script
+ * distcc support added to scons script.
  * Moving remaining source to src directory. indexing suite directory, Definitions.*xx, etc.
  * MonoAudioFileReaderConfig now exposed to python by hand.
  * Removed unused old extra-wrappers for some Processing's and ProcessingConfig's.

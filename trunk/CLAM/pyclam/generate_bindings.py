@@ -23,6 +23,8 @@ from pygccxml.declarations import custom_matcher_t as c_matcher
 from pygccxml.declarations import regex_matcher_t as re_matcher
 from pygccxml.declarations.matchers import access_type_matcher_t
 
+from doxygen import doc_extractor
+
 options_filename = 'options.cache'
 if not os.path.exists(options_filename):
 	print "\nError. Options file is missing. Run \'scons configure prefix=CLAM_LIBRARY_PATH\' first.\n"
