@@ -24,7 +24,7 @@ See also:
  - scene_maker.py
 """
 #
-# Copyright (c) 2008 Fundació Barcelona Media Universitat Pompeu Fabra
+# Copyright (c) 2008 Fundacio Barcelona Media Universitat Pompeu Fabra
 #
 #
 # This program is free software; you can redistribute it and/or modify
