@@ -1,6 +1,4 @@
 #!BPY
-# -*- coding: iso-8859-1 -*-
-
 """
 Name: 'SpatDIF OSC Sender'
 Blender: 244
@@ -28,7 +26,7 @@ or
     ObjectUpdate event
 """
 #
-# Copyright (c) 2008 Fundació Barcelona Media Universitat Pompeu Fabra
+# Copyright (c) 2008 Fundacio Barcelona Media Universitat Pompeu Fabra
 #
 #
 # This program is free software; you can redistribute it and/or modify
