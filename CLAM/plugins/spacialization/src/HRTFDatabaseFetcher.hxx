@@ -29,6 +29,7 @@
 #include "ComplexSpectrum.hxx"
 #include "LoadImpulseResponse.hxx"
 #include <vector>
+#include <algorithm>
 #include <dirent.h>
 
 namespace CLAM
