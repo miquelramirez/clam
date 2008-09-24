@@ -26,6 +26,7 @@
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/AudioWindowingConfig.hxx>
+#include <algorithm>
 
 namespace CLAM
 {
