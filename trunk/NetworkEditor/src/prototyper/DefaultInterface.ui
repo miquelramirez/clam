@@ -1,7 +1,4 @@
 <ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
  <class>Prototyper</class>
  <widget class="QDialog" name="Prototyper" >
   <property name="geometry" >
@@ -9,29 +6,30 @@
     <x>0</x>
     <y>0</y>
     <width>247</width>
-    <height>204</height>
+    <height>205</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Prototyper</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../images.qrc" >:/icons/images/NetworkEditor-icon.png</iconset>
+   <iconset resource="../images.qrc" >
+    <normaloff>:/icons/images/NetworkEditor-icon.png</normaloff>:/icons/images/NetworkEditor-icon.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
    <property name="spacing" >
     <number>6</number>
    </property>
+   <property name="margin" >
+    <number>9</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="margin" >
+      <number>0</number>
      </property>
      <item>
       <widget class="QLabel" name="playStatus" >
@@ -67,11 +65,11 @@
       <enum>QFrame::Sunken</enum>
      </property>
      <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
       <property name="spacing" >
        <number>6</number>
+      </property>
+      <property name="margin" >
+       <number>0</number>
       </property>
       <item>
        <widget class="QLabel" name="PlaybackIndicator" />
@@ -79,9 +77,7 @@
       <item>
        <widget class="QLabel" name="BackendIndicator" >
         <property name="sizePolicy" >
-         <sizepolicy>
-          <hsizetype>1</hsizetype>
-          <vsizetype>5</vsizetype>
+         <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -96,18 +92,16 @@
    </item>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="margin" >
+      <number>0</number>
      </property>
      <item>
       <widget class="QPushButton" name="PlayButton" >
        <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -116,16 +110,15 @@
         <string>Play</string>
        </property>
        <property name="icon" >
-        <iconset resource="../images.qrc" >:/icons/images/player_play.png</iconset>
+        <iconset resource="../images.qrc" >
+         <normaloff>:/icons/images/player_play.png</normaloff>:/icons/images/player_play.png</iconset>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="StopButton" >
+      <widget class="QPushButton" name="PauseButton" >
        <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -134,7 +127,25 @@
         <string>Stop</string>
        </property>
        <property name="icon" >
-        <iconset resource="../images.qrc" >:/icons/images/player_stop.png</iconset>
+        <iconset resource="../images.qrc" >
+         <normaloff>:/icons/images/player_pause.png</normaloff>:/icons/images/player_pause.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="StopButton" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip" >
+        <string>Stop</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../images.qrc" >
+         <normaloff>:/icons/images/player_stop.png</normaloff>:/icons/images/player_stop.png</iconset>
        </property>
       </widget>
      </item>
@@ -143,9 +154,7 @@
    <item>
     <widget class="QPushButton" name="CloseButton" >
      <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>7</hsizetype>
-       <vsizetype>0</vsizetype>
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -154,14 +163,14 @@
       <string>Exit</string>
      </property>
      <property name="icon" >
-      <iconset resource="../images.qrc" >:/icons/images/exit.png</iconset>
+      <iconset resource="../images.qrc" >
+       <normaloff>:/icons/images/exit.png</normaloff>:/icons/images/exit.png</iconset>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
  <tabstops>
   <tabstop>PlayButton</tabstop>
   <tabstop>StopButton</tabstop>

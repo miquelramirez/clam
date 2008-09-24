@@ -13,7 +13,8 @@
    <string>Prototyper</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="../src/images.qrc" >:/icons/images/NetworkEditor-icon.png</iconset>
+   <iconset resource="../src/images.qrc" >
+    <normaloff>:/icons/images/NetworkEditor-icon.png</normaloff>:/icons/images/NetworkEditor-icon.png</iconset>
   </property>
   <layout class="QVBoxLayout" >
    <item>
@@ -21,16 +22,7 @@
      <property name="spacing" >
       <number>6</number>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin" >
       <number>0</number>
      </property>
      <item>
@@ -38,7 +30,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>40</width>
          <height>20</height>
@@ -70,7 +62,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>40</width>
          <height>20</height>
@@ -99,7 +91,7 @@
        <property name="orientation" >
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" >
+       <property name="sizeHint" stdset="0" >
         <size>
          <width>40</width>
          <height>20</height>
@@ -112,7 +104,8 @@
    <item>
     <widget class="QPushButton" name="AudioFile___AudioFileMemoryLoader" >
      <property name="icon" >
-      <iconset resource="../src/images.qrc" >:/icons/images/fileopen.png</iconset>
+      <iconset resource="../src/images.qrc" >
+       <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
      </property>
     </widget>
    </item>
@@ -152,20 +145,11 @@
       <property name="spacing" >
        <number>0</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin" >
        <number>0</number>
       </property>
       <item>
-       <widget class="Oscilloscope" name="OutPort__AudioFileMemoryLoader__Samples___Read" >
+       <widget class="Oscilloscope" native="1" name="OutPort__AudioFileMemoryLoader__Samples___Read" >
         <property name="minimumSize" >
          <size>
           <width>100</width>
@@ -176,9 +160,9 @@
          <bool>false</bool>
         </property>
         <property name="styleSheet" >
-         <string>background-color:#def;</string>
+         <string notr="true" >background-color:#def;</string>
         </property>
-        <property name="lineColor" >
+        <property name="lineColor" stdset="0" >
          <color>
           <red>100</red>
           <green>200</green>
@@ -198,16 +182,7 @@
      <property name="spacing" >
       <number>6</number>
      </property>
-     <property name="leftMargin" >
-      <number>0</number>
-     </property>
-     <property name="topMargin" >
-      <number>0</number>
-     </property>
-     <property name="rightMargin" >
-      <number>0</number>
-     </property>
-     <property name="bottomMargin" >
+     <property name="margin" >
       <number>0</number>
      </property>
      <item>
@@ -222,7 +197,25 @@
         <string>Play</string>
        </property>
        <property name="icon" >
-        <iconset resource="../src/images.qrc" >:/icons/images/player_play.png</iconset>
+        <iconset resource="../src/images.qrc" >
+         <normaloff>:/icons/images/player_play.png</normaloff>:/icons/images/player_play.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="PauseButton" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="toolTip" >
+        <string>Stop</string>
+       </property>
+       <property name="icon" >
+        <iconset resource="../src/images.qrc" >
+         <normaloff>:/icons/images/player_pause.png</normaloff>:/icons/images/player_pause.png</iconset>
        </property>
       </widget>
      </item>
@@ -238,7 +231,8 @@
         <string>Stop</string>
        </property>
        <property name="icon" >
-        <iconset resource="../src/images.qrc" >:/icons/images/player_stop.png</iconset>
+        <iconset resource="../src/images.qrc" >
+         <normaloff>:/icons/images/player_stop.png</normaloff>:/icons/images/player_stop.png</iconset>
        </property>
       </widget>
      </item>
@@ -256,7 +250,8 @@
       <string>Exit</string>
      </property>
      <property name="icon" >
-      <iconset resource="../src/images.qrc" >:/icons/images/exit.png</iconset>
+      <iconset resource="../src/images.qrc" >
+       <normaloff>:/icons/images/exit.png</normaloff>:/icons/images/exit.png</iconset>
      </property>
     </widget>
    </item>
@@ -278,16 +273,7 @@
       <property name="spacing" >
        <number>6</number>
       </property>
-      <property name="leftMargin" >
-       <number>0</number>
-      </property>
-      <property name="topMargin" >
-       <number>0</number>
-      </property>
-      <property name="rightMargin" >
-       <number>0</number>
-      </property>
-      <property name="bottomMargin" >
+      <property name="margin" >
        <number>0</number>
       </property>
       <item>
@@ -325,7 +311,11 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>AudioFile___AudioFileMemoryLoader</tabstop>
+  <tabstop>InControl__AudioMixer__Gain___0</tabstop>
+  <tabstop>ProgressControl__AudioFileMemoryLoader</tabstop>
   <tabstop>PlayButton</tabstop>
+  <tabstop>PauseButton</tabstop>
   <tabstop>StopButton</tabstop>
   <tabstop>CloseButton</tabstop>
  </tabstops>

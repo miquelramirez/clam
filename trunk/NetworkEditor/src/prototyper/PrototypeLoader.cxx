@@ -423,6 +423,9 @@ void PrototypeLoader::ConnectWithNetwork()
 	QObject * playButton = _interface->findChild<QObject*>("PlayButton");
 	if (playButton) connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
 
+	QObject * pauseButton = _interface->findChild<QObject*>("PauseButton");
+	if (pauseButton) connect(pauseButton, SIGNAL(clicked()), this, SLOT(Pause()));  
+
 	QObject * stopButton = _interface->findChild<QObject*>("StopButton");
 	if (stopButton) connect(stopButton, SIGNAL(clicked()), this, SLOT(Stop()));
 
@@ -510,13 +513,22 @@ void PrototypeLoader::Stop()
 	UpdatePlayStatus();
 }
 
+void PrototypeLoader::Pause()
+{
+	std::cout << "Pausing..." << std::endl;
+	_network.Pause();
+	UpdatePlayStatus();
+}
+
 void PrototypeLoader::UpdatePlayStatus()
 {
 	QLabel * playbackIndicator = _interface->findChild<QLabel*>("PlaybackIndicator");
 	if (playbackIndicator)
 	{
-		if ( !_network.IsStopped())
+		if ( _network.IsPlaying())
 			playbackIndicator->setText(tr("<p style='color:green'>Playing...</p>"));
+		else if (_network.IsPaused())
+			playbackIndicator->setText(tr("<p style='color:orange;text-decoration:blink'>Paused</p>"));
 		else
 			playbackIndicator->setText(tr("<p style='color:red'>Stopped</p>"));
 	}
