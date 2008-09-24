@@ -51,7 +51,7 @@ namespace CLAM{
 		EDistType(std::string s) : Enum(ValueTable(), s) {};
 		virtual Component* Species() const { return new EDistType(eArctangent); }
 	
-		typedef enum {
+		enum {
 			eArctangent,
 			eAsymmetric,
 			ePow,

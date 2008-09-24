@@ -47,7 +47,7 @@ namespace CLAM{
 		EDistType(std::string s) : Enum(ValueTable(), s) {};
 		virtual Component* Species() const { return new EDistType(ePolynomial); }
 	
-		typedef enum {
+		enum {
 			eFactor,
 			eAtan,
 			ePolynomial
