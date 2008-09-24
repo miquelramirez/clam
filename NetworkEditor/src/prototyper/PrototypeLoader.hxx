@@ -41,6 +41,7 @@ public:
 
 public slots:
 	void Start();
+	void Pause();
 	void Stop();
 	void OpenAudioFile();
 
