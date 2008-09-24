@@ -44,7 +44,7 @@ namespace CLAM
 		EAudioFileCodec( std::string s ) : Enum(EnumValues(), s) {}
 		virtual Component* Species() const { return new EAudioFileCodec; }
 
-		typedef enum {
+		enum {
 			ePCM,  /* String value: "PCM". Some variant of good ol' Pulse Code Modulation */
 			eOggVorbis, /* String value: "Ogg/Vorbis". Compressed with OggVorbis scheme */
 			eMpeg,        /* String value: "Mpeg Audio". Compressed with MPEG-1 Layer 3 scheme */
