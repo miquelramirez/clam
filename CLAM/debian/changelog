@@ -32,7 +32,7 @@ clam (1.3.0-1) unstable; urgency=low
   * debian/control: removed hard version dependency from the examples
     packages to the binary ones to enable binary Non-Maintainer-Updates.
 
- -- CLAM Team <clam@iua.upf.edu> Mon, 11 Aug 2008 14:23:54 +0100
+ -- CLAM Team <clam@iua.upf.edu>  Mon, 11 Aug 2008 14:23:54 +0100
 
 clam (1.1.1~svn11102-1) unstable; urgency=low
 
