@@ -78,7 +78,7 @@ std::cout << "BUFFER SIZE " << buffersize << std::endl;
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
-		std::cout << "BFormatRotation::ConcreteConfigure()"<<std::endl;
+//		std::cout << "BFormatRotation::ConcreteConfigure()"<<std::endl;
 		_isPassiveRotation = _config.GetIsPassiveRotation();
 		return true;
 	}
