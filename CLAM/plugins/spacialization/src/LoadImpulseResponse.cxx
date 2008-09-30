@@ -35,6 +35,12 @@ namespace Hidden
 
 bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg);
 
+unsigned neededFramesForNSamples(unsigned nsamples, unsigned frameSize)
+{
+	return (nsamples+frameSize-1)/frameSize;
+}
+
+
 bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg)
 {
 	MonoAudioFileReaderConfig readerConfig;
@@ -46,8 +52,9 @@ bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSp
 		errorMsg += reader.GetConfigErrorMessage();
 		return false;
 	}
-	const unsigned nSamples = reader.GetHeader().GetSamples();
+	const unsigned nSamples = neededFramesForNSamples( reader.GetHeader().GetSamples(), framesize ) * framesize;
 //	std::cout << "ComputeResponseSpectrums: NSamples: " << nSamples << std::endl;
+
 	reader.GetOutPort(0).SetSize(nSamples);
 	reader.GetOutPort(0).SetHop(nSamples);
 
@@ -58,8 +65,9 @@ bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<Co
 {
 	AudioSource source;
 	source.SetExternalBuffer(&buffer[0], buffer.size());
-	source.GetOutPort(0).SetSize(buffer.size());
-	source.GetOutPort(0).SetHop(buffer.size());
+	const unsigned nSamples = neededFramesForNSamples( buffer.size(), framesize) * framesize;
+	source.GetOutPort(0).SetSize(nSamples);
+	source.GetOutPort(0).SetHop(nSamples);
 	return computeResponseSpectrums(source, responseSpectrums, framesize, errorMsg);
 }
 
@@ -95,7 +103,6 @@ bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> 
 	fft.Start();
 
 	source.Do(); //read all the file and put it into the out port buffer
-
 	while (windower.CanConsumeAndProduce())
 	{
 		windower.Do();
@@ -103,7 +110,7 @@ bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> 
 		responseSpectrums.push_back(fetcher.GetData());
 		fetcher.Consume();
 	}
-	CLAM_DEBUG_ASSERT(responseSpectrums.size()>0, "LoadImpulseResponse: Expected an IR of size >= 1.");
+	CLAM_DEBUG_ASSERT(responseSpectrums.size()>0, "LoadImpulseResponse: Expected an sliced IR with more than one slice.");
 	source.Stop();
 	windower.Stop();
 	fft.Stop();
