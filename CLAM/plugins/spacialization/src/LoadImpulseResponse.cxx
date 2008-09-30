@@ -58,6 +58,8 @@ bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<Co
 {
 	AudioSource source;
 	source.SetExternalBuffer(&buffer[0], buffer.size());
+	source.GetOutPort(0).SetSize(buffer.size());
+	source.GetOutPort(0).SetHop(buffer.size());
 	return computeResponseSpectrums(source, responseSpectrums, framesize, errorMsg);
 }
 
@@ -92,7 +94,7 @@ bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> 
 	windower.Start();
 	fft.Start();
 
-	while( source.Do() ); //read all the file and put it into the out port buffer
+	source.Do(); //read all the file and put it into the out port buffer
 
 	while (windower.CanConsumeAndProduce())
 	{
