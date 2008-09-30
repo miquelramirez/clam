@@ -30,6 +30,9 @@ bool AudioSource::Do()
 	else
 		for (unsigned i=0; i<mBufferSize; i++)
 			audioBuffer[i] = mDoubleBuffer[i];
+
+	for (unsigned i=mBufferSize; i<mOut.GetSize(); i++)
+		audioBuffer[i] = 0.;
 	mOut.Produce();
 	return true;
 }
