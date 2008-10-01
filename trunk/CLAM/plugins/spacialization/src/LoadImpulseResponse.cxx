@@ -61,11 +61,13 @@ bool computeResponseSpectrums(const std::string & wavfile, std::vector<ComplexSp
 	return computeResponseSpectrums(reader, responseSpectrums, framesize, errorMsg);
 }
 
-bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg)
+bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg, unsigned samplesOffset)
 {
+	// TODO: case where offset > size
+	const unsigned validSamples = buffer.size() - samplesOffset;
 	AudioSource source;
-	source.SetExternalBuffer(&buffer[0], buffer.size());
-	const unsigned nSamples = neededFramesForNSamples( buffer.size(), framesize) * framesize;
+	source.SetExternalBuffer(&buffer[0]+samplesOffset, validSamples);
+	const unsigned nSamples = neededFramesForNSamples( validSamples, framesize) * framesize;
 	source.GetOutPort(0).SetSize(nSamples);
 	source.GetOutPort(0).SetHop(nSamples);
 	return computeResponseSpectrums(source, responseSpectrums, framesize, errorMsg);

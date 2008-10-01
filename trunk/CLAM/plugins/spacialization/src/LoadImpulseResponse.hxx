@@ -42,7 +42,8 @@ bool computeResponseSpectrums(
 		const std::vector<double> & buffer,
 		ImpulseResponse & responseSpectrums, 
 		unsigned frameSize, 
-		std::string & errorMsg);
+		std::string & errorMsg,
+		unsigned samplesOffset=0);
 
 class ImpulseResponseDatabase
 {
