@@ -85,7 +85,7 @@ public:
 	}
 	void InitialitzeDelaySpectrums( unsigned nBlocks, unsigned spectrumSize, TData spectralRange)
 	{
-		std::cout << "LowLatencyConvolution: N blocks " << nBlocks << std::endl;
+//		std::cout << "LowLatencyConvolution: N blocks " << nBlocks << std::endl;
 		_delayedSpectrums.resize(nBlocks);
 		for (unsigned i=0; i<nBlocks; i++)
 		{
