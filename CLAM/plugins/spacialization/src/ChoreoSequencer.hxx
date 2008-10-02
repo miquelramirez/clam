@@ -168,7 +168,7 @@ protected:
 	};
 	void fillDummyChoreo()
 	{
-		std::cout << "spiral version"<<std::endl;
+//		std::cout << "spiral version"<<std::endl;
 		unsigned NPoints = 1000;
 		float alpha=0.; //listener angle;
 		float horizontalLoops=10;
@@ -215,7 +215,7 @@ protected:
 			return true;
 		}
 		// Load the file version
-		std::cout << "ChoreoSequencer: read from file version. File: "<< _config.GetFilename() << std::endl;
+//		std::cout << "ChoreoSequencer: read from file version. File: "<< _config.GetFilename() << std::endl;
 		// Load table from file
 		std::ifstream file( _config.GetFilename().c_str() );
 		if (!file)
