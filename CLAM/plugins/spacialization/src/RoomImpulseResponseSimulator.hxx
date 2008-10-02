@@ -244,20 +244,26 @@ private:
 			_scene->normalizedToModelY(_currentEmitterY),
 			_scene->normalizedToModelZ(_currentEmitterZ)
 			);
+
+		unsigned offset = 0;
+		if (_config.HasSupressInitialDelay() and _config.GetSupressInitialDelay())
+		{
+			_scene->computeDirectSoundOverTime();
+			offset = _scene->getDirectSoundDelayInSamples();
+		}
+
 		std::string responsesPath = "";
 		if (_config.HasStripDirectSound() and _config.GetStripDirectSound())
 			_scene->raytracingReverbOverTime(responsesPath, "IR");
 		else
 			_scene->raytracingOverTime(responsesPath, "IR" );
-//		_scene->writeDirectSoundOverTime(responsesPath, "direct_sound");
 
-		
 		std::string errorMsg;
 		if (
-			!computeResponseSpectrums(_scene->getTimeResponse_P(), _current->W, _config.GetFrameSize(), errorMsg) ||
-			!computeResponseSpectrums(_scene->getTimeResponse_Vx(), _current->X, _config.GetFrameSize(), errorMsg) ||
-			!computeResponseSpectrums(_scene->getTimeResponse_Vy(), _current->Y, _config.GetFrameSize(), errorMsg) ||
-			!computeResponseSpectrums(_scene->getTimeResponse_Vz(), _current->Z, _config.GetFrameSize(), errorMsg) )
+			!computeResponseSpectrums(_scene->getTimeResponse_P(), _current->W, _config.GetFrameSize(), errorMsg, offset) ||
+			!computeResponseSpectrums(_scene->getTimeResponse_Vx(), _current->X, _config.GetFrameSize(), errorMsg, offset) ||
+			!computeResponseSpectrums(_scene->getTimeResponse_Vy(), _current->Y, _config.GetFrameSize(), errorMsg, offset) ||
+			!computeResponseSpectrums(_scene->getTimeResponse_Vz(), _current->Z, _config.GetFrameSize(), errorMsg, offset) )
 		{
 			std::cout << "ERROR: RoomImpulseResponseSimulator::Do can not open IR files.\n" << errorMsg << std::endl;
 			return false;
