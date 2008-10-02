@@ -93,6 +93,7 @@
     <NRebounds>%(num_rebounds)i</NRebounds>
     <IrLength>%(ir_length)f</IrLength>
     <ExtraOptions>%(extra_options)s</ExtraOptions>
+    <StripDirectSound>%(strip_direct_sound)</StripDirectSound>
     <SupressInitialDelay>%(supress_initial_delay)i</SupressInitialDelay>
   </processing>
 
