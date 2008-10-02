@@ -93,6 +93,7 @@
     <NRebounds>11</NRebounds>
     <IrLength>1.1</IrLength>
     <ExtraOptions>--ignore-sources --repeatable</ExtraOptions>
+    <StripDirectSound>0</StripDirectSound>
     <SupressInitialDelay>0</SupressInitialDelay>
   </processing>
 
