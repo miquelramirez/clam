@@ -53,14 +53,14 @@ public:
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( Config, 9, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
-		DYN_ATTRIBUTE( 1, public, Filename, Model3DFile);
+		DYN_ATTRIBUTE( 1, public, InFilename, Model3DFile);
 		DYN_ATTRIBUTE( 2, public, unsigned, GridDivisions);
 		DYN_ATTRIBUTE( 3, public, unsigned, NRays);
 		DYN_ATTRIBUTE( 4, public, unsigned, NRebounds);
 		DYN_ATTRIBUTE( 5, public, float, IrLength);
 		DYN_ATTRIBUTE( 6, public, CLAM::Text, ExtraOptions);
 		DYN_ATTRIBUTE( 7, public, bool, StripDirectSound);
-		DYN_ATTRIBUTE( 8, public, bool, SupressInitialDelay); // TODO: remove it
+		DYN_ATTRIBUTE( 8, public, bool, SupressInitialDelay);
 	protected:
 		void DefaultInit()
 		{

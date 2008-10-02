@@ -49,15 +49,16 @@ class ImpulseResponseCalculatedOnTheFly : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 8, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 9, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
-		DYN_ATTRIBUTE( 1, public, Filename, Model3DFile);
+		DYN_ATTRIBUTE( 1, public, InFilename, Model3DFile);
 		DYN_ATTRIBUTE( 2, public, unsigned, GridDivisions);
 		DYN_ATTRIBUTE( 3, public, unsigned, NRays);
 		DYN_ATTRIBUTE( 4, public, unsigned, NRebounds);
 		DYN_ATTRIBUTE( 5, public, float, IrLength);
 		DYN_ATTRIBUTE( 6, public, CLAM::Text, ExtraOptions);
-		DYN_ATTRIBUTE( 7, public, bool, SupressInitialDelay);
+		DYN_ATTRIBUTE( 7, public, bool, StripDirectSound);
+		DYN_ATTRIBUTE( 8, public, bool, SupressInitialDelay);
 	protected:
 		void DefaultInit()
 		{
@@ -69,6 +70,7 @@ public:
 			SetNRays(200);
 			SetNRebounds(20);
 			SetIrLength(1.0);
+			SetStripDirectSound(false);
 			SetSupressInitialDelay(false);
 		};
 	};
@@ -220,6 +222,7 @@ private:
 		if (_config.HasNRays()) command << " --num-rays=" << _config.GetNRays();
 		if (_config.HasIrLength()) command << " --ir-length=" << _config.GetIrLength();
 		if (_config.HasExtraOptions()) command << " " << _config.GetExtraOptions() << " ";
+		if (_config.HasStripDirectSound() and _config.GetStripDirectSound()) command << " --reverb";
 		command << " > /dev/null";
 		// std::cout << command.str() << std::endl;
 		int error = std::system( command.str().c_str() );
