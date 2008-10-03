@@ -143,6 +143,9 @@ public:
 		statusBar()->addPermanentWidget(_backendLabel);
 		_backendLabel->setToolTip(tr("<p>Audio Backend: %1</p>").arg(backend));
 		_backendLabel->setPixmap(QPixmap(backendLogo));
+		ui.action_Play->setEnabled(true);
+		ui.action_Stop->setEnabled(false);
+		ui.action_Pause->setEnabled(false);
 		updatePlayStatusIndicator();
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), _processingTreeDock, SLOT(setVisible(bool)));
