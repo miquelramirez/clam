@@ -33,7 +33,7 @@ TODO:
 
 """
 #
-# Copyright (c) 2008 Fundacio Barcelona Media Universitat Pompeu Fabra
+# Copyright (c) 2008 Fundació Barcelona Media Universitat Pompeu Fabra
 #
 #
 # This program is free software; you can redistribute it and/or modify
@@ -52,7 +52,7 @@ TODO:
 # 
 
 from bpy import data
-import Blender
+import Blender, math
 
 #comment the filenames of the scripts you don't want to use
 NetworkExporterFilename="network_scene_exporter.py"
@@ -98,11 +98,14 @@ def ShowConfigurationDialog(defaultSources=1,defaultSinks=1):
 def AddSinks(scene,sinksNumber):
 	group=data.groups.new('AudioSinks')
 	offsetX=(sinksNumber-1)*3./(-2)
-	mesh=Blender.Mesh.Primitives.UVsphere(32,32,1)
+	mesh=Blender.Mesh.Primitives.Monkey()
 	mesh.name="omni_sink_model"
 	for i in range(sinksNumber):
 		object=scene.objects.new(mesh,'sink'+str(i))
-		object.setLocation([offsetX,-5,0])
+		object.setLocation([offsetX,0,0])
+		object.RotX = math.pi/2;
+		object.RotY = 0;
+		object.RotZ = math.pi/2;
 		offsetX+=3
 		group.objects.link(object)
 	
