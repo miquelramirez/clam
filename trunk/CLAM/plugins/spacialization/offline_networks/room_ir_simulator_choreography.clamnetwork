@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioInput" position="23,470" size="128,108" type="AudioSource"/>
+  <processing id="AudioInput" position="31,332" size="128,108" type="AudioSource"/>
 
-  <processing id="AudioMixer" position="168,678" size="107,62" type="AudioMixer">
+  <processing id="AudioMixer" position="176,540" size="107,62" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="AudioWindowing" position="322,680" size="143,59" type="AudioWindowing">
+  <processing id="AudioWindowing" position="330,542" size="143,59" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -17,67 +17,67 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BFormatRotation" position="743,752" size="143,78" type="BFormatRotation">
+  <processing id="BFormatRotation" position="775,558" size="143,78" type="BFormatRotation">
     <IsPassiveRotation>1</IsPassiveRotation>
   </processing>
 
-  <processing id="ChoreoSequencer" position="93,152" size="194,59" type="ChoreoSequencer">
-    <Filename></Filename>
+  <processing id="ChoreoSequencer" position="101,14" size="194,59" type="ChoreoSequencer">
+    <Filename>/home/vokimon/CajitasDeArena/acustica/realitzacions/Simple_02.coreo</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
     <ControlsPerSecond>24</ControlsPerSecond>
   </processing>
 
-  <processing id="Convolution_P" position="513,174" size="127,62" type="LowLatencyConvolution">
+  <processing id="Convolution_P" position="521,36" size="127,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_P_old" position="512,219" size="154,62" type="LowLatencyConvolution">
+  <processing id="Convolution_P_old" position="520,81" size="154,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_Vx" position="510,279" size="136,62" type="LowLatencyConvolution">
+  <processing id="Convolution_Vx" position="518,141" size="136,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_Vx_old" position="510,325" size="163,62" type="LowLatencyConvolution">
+  <processing id="Convolution_Vx_old" position="518,187" size="163,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_Vy" position="520,381" size="159,62" type="LowLatencyConvolution">
+  <processing id="Convolution_Vy" position="528,243" size="159,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_Vy_old" position="518,434" size="163,62" type="LowLatencyConvolution">
+  <processing id="Convolution_Vy_old" position="526,296" size="163,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_Vz" position="513,488" size="166,62" type="LowLatencyConvolution">
+  <processing id="Convolution_Vz" position="521,350" size="166,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution_Vz_old" position="520,541" size="159,62" type="LowLatencyConvolution">
+  <processing id="Convolution_Vz_old" position="528,403" size="159,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Delay P" position="370,184" size="84,62" type="IRSwappingDelay"/>
+  <processing id="Delay P" position="378,46" size="84,62" type="IRSwappingDelay"/>
 
-  <processing id="Delay X" position="372,299" size="85,62" type="IRSwappingDelay"/>
+  <processing id="Delay X" position="380,161" size="85,62" type="IRSwappingDelay"/>
 
-  <processing id="Delay Y" position="363,398" size="84,62" type="IRSwappingDelay"/>
+  <processing id="Delay Y" position="371,260" size="84,62" type="IRSwappingDelay"/>
 
-  <processing id="Delay Z" position="361,509" size="85,62" type="IRSwappingDelay"/>
+  <processing id="Delay Z" position="369,371" size="85,62" type="IRSwappingDelay"/>
 
-  <processing id="Gain 0" position="184,572" size="262,78" type="OutControlSender">
+  <processing id="Gain 0" position="192,434" size="262,78" type="OutControlSender">
     <Min>0</Min>
     <Default>1</Default>
     <Max>1</Max>
@@ -85,71 +85,77 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="RoomImpulseResponseSimulator" position="50,302" size="267,100" type="RoomImpulseResponseSimulator">
+  <processing id="MyFFT" position="494,538" size="75,59" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT" position="705,37" size="79,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_1" position="703,146" size="94,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_2" position="705,246" size="94,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_3" position="704,81" size="94,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_4" position="704,191" size="94,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_5" position="707,290" size="94,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_6" position="722,355" size="94,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_7" position="720,401" size="94,59" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="Oscilloscope" position="1134,174" size="162,169" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_1" position="1250,378" size="148,155" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_2" position="591,640" size="238,173" type="Oscilloscope"/>
+
+  <processing id="RoomImpulseResponseSimulator" position="58,164" size="267,100" type="RoomImpulseResponseSimulator">
     <FrameSize>512</FrameSize>
-    <Model3DFile>scene.data</Model3DFile>
+    <Model3DFile>/home/vokimon/CajitasDeArena/acustica/raytracing/entorns/cubic_room_arrebola.data</Model3DFile>
     <GridDivisions>500</GridDivisions>
-    <NRays>111</NRays>
-    <NRebounds>11</NRebounds>
-    <IrLength>1.1</IrLength>
-    <ExtraOptions>--ignore-sources --repeatable</ExtraOptions>
-    <StripDirectSound>0</StripDirectSound>
-    <SupressInitialDelay>0</SupressInitialDelay>
+    <NRays>50</NRays>
+    <NRebounds>50</NRebounds>
+    <IrLength>0.2</IrLength>
+    <ExtraOptions>--ignore-sources</ExtraOptions>
+    <StripDirectSound>1</StripDirectSound>
+    <SupressInitialDelay>1</SupressInitialDelay>
   </processing>
 
-  <processing id="MyFFT" position="486,676" size="75,59" type="MyFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="W" position="1085,337" size="128,111" type="AudioSink"/>
 
-  <processing id="MyIFFT" position="697,175" size="79,59" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="X" position="1085,433" size="128,111" type="AudioSink"/>
 
-  <processing id="MyIFFT_1" position="695,284" size="94,59" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="XFade P" position="974,41" size="85,94" type="XFadeAndSwitch"/>
 
-  <processing id="MyIFFT_2" position="697,384" size="94,59" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="XFade X" position="975,142" size="86,94" type="XFadeAndSwitch"/>
 
-  <processing id="MyIFFT_3" position="696,219" size="94,59" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="XFade Y" position="974,243" size="85,94" type="XFadeAndSwitch"/>
 
-  <processing id="MyIFFT_4" position="696,329" size="94,59" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="XFade Z" position="980,349" size="86,94" type="XFadeAndSwitch"/>
 
-  <processing id="MyIFFT_5" position="699,428" size="94,59" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="Y" position="1085,531" size="128,111" type="AudioSink"/>
 
-  <processing id="MyIFFT_6" position="714,493" size="94,59" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="Z" position="1086,629" size="128,111" type="AudioSink"/>
 
-  <processing id="MyIFFT_7" position="712,539" size="94,59" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="W" position="1077,475" size="128,111" type="AudioSink"/>
-
-  <processing id="X" position="1077,571" size="128,111" type="AudioSink"/>
-
-  <processing id="XFade P" position="966,179" size="85,94" type="XFadeAndSwitch"/>
-
-  <processing id="XFade X" position="967,280" size="86,94" type="XFadeAndSwitch"/>
-
-  <processing id="XFade Y" position="967,381" size="85,94" type="XFadeAndSwitch"/>
-
-  <processing id="XFade Z" position="972,487" size="86,94" type="XFadeAndSwitch"/>
-
-  <processing id="Y" position="1077,669" size="128,111" type="AudioSink"/>
-
-  <processing id="Z" position="1078,767" size="128,111" type="AudioSink"/>
-
-  <processing id="toStream P" position="809,181" size="106,59" type="AudioBuffer2Stream">
+  <processing id="toStream P" position="817,43" size="106,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -158,7 +164,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream P 2" position="808,223" size="118,59" type="AudioBuffer2Stream">
+  <processing id="toStream P 2" position="816,85" size="118,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -167,7 +173,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vx" position="809,286" size="115,59" type="AudioBuffer2Stream">
+  <processing id="toStream Vx" position="817,148" size="115,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -176,7 +182,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vx 2" position="811,331" size="127,59" type="AudioBuffer2Stream">
+  <processing id="toStream Vx 2" position="819,193" size="127,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -185,7 +191,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vy" position="817,388" size="115,59" type="AudioBuffer2Stream">
+  <processing id="toStream Vy" position="825,250" size="115,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -194,7 +200,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vy 2" position="814,434" size="127,59" type="AudioBuffer2Stream">
+  <processing id="toStream Vy 2" position="822,296" size="127,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -203,7 +209,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vz" position="832,496" size="114,59" type="AudioBuffer2Stream">
+  <processing id="toStream Vz" position="840,358" size="114,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -212,7 +218,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vz 2" position="831,542" size="128,59" type="AudioBuffer2Stream">
+  <processing id="toStream Vz 2" position="839,404" size="128,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -237,6 +243,11 @@
   </port_connection>
 
   <port_connection>
+    <out>AudioInput.AudioOut</out>
+    <in>Oscilloscope_2.Input</in>
+  </port_connection>
+
+  <port_connection>
     <out>AudioMixer.Output Audio</out>
     <in>AudioWindowing.Input</in>
   </port_connection>
@@ -252,8 +263,18 @@
   </port_connection>
 
   <port_connection>
+    <out>BFormatRotation.vx</out>
+    <in>Oscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
     <out>BFormatRotation.vy</out>
     <in>Y.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormatRotation.vy</out>
+    <in>Oscilloscope_1.Input</in>
   </port_connection>
 
   <port_connection>
@@ -382,26 +403,6 @@
   </port_connection>
 
   <port_connection>
-    <out>RoomImpulseResponseSimulator.pressure IR</out>
-    <in>Delay P.Input IR</in>
-  </port_connection>
-
-  <port_connection>
-    <out>RoomImpulseResponseSimulator.vx IR</out>
-    <in>Delay X.Input IR</in>
-  </port_connection>
-
-  <port_connection>
-    <out>RoomImpulseResponseSimulator.vy IR</out>
-    <in>Delay Y.Input IR</in>
-  </port_connection>
-
-  <port_connection>
-    <out>RoomImpulseResponseSimulator.vz IR</out>
-    <in>Delay Z.Input IR</in>
-  </port_connection>
-
-  <port_connection>
     <out>MyFFT.Complex Spectrum</out>
     <in>Convolution_P.Input</in>
   </port_connection>
@@ -479,6 +480,26 @@
   <port_connection>
     <out>MyIFFT_7.Audio Buffer</out>
     <in>toStream Vz 2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>RoomImpulseResponseSimulator.pressure IR</out>
+    <in>Delay P.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>RoomImpulseResponseSimulator.vx IR</out>
+    <in>Delay X.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>RoomImpulseResponseSimulator.vy IR</out>
+    <in>Delay Y.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>RoomImpulseResponseSimulator.vz IR</out>
+    <in>Delay Z.Input IR</in>
   </port_connection>
 
   <port_connection>
