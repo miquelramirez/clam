@@ -141,10 +141,8 @@ public:
 	{
 		std::cout << "RoomImpulseResponseSimulator::ConcreteConfigure"<<std::endl;
 		CopyAsConcreteConfig(_config, config);
-		//TODO use _config params instead of hardcoded
-		_syncAudio.SetSize(512);
-		_syncAudio.SetHop(512);
-		//end TODO
+		_syncAudio.SetSize(_config.GetFrameSize());
+		_syncAudio.SetHop(_config.GetFrameSize());
 		_emitterX.DoControl(0.2);
 		_emitterY.DoControl(0.5);
 		_emitterZ.DoControl(0.2);
@@ -166,6 +164,7 @@ public:
 		settings.ignore_sources_models = true;
 		settings.use_osc = false;
 		settings.use_dat = false;
+		settings.bformat_output = true;
 
 		if (_scene) delete _scene;
 		_scene = new Scene(settings);
