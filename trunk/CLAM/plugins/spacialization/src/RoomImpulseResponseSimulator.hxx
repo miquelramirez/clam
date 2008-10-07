@@ -164,7 +164,6 @@ public:
 		settings.ignore_sources_models = true;
 		settings.use_osc = false;
 		settings.use_dat = false;
-		settings.bformat_output = true;
 
 		if (_scene) delete _scene;
 		_scene = new Scene(settings);
