@@ -158,7 +158,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream P 2" type="AudioBuffer2Stream">
+  <processing id="toStream P 2" position="808,223" size="118,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -167,7 +167,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vx" type="AudioBuffer2Stream">
+  <processing id="toStream Vx" position="809,286" size="115,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -176,7 +176,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vx 2" type="AudioBuffer2Stream">
+  <processing id="toStream Vx 2" position="811,331" size="127,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -185,7 +185,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vy" type="AudioBuffer2Stream">
+  <processing id="toStream Vy" position="817,388" size="115,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -194,7 +194,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vy 2" type="AudioBuffer2Stream">
+  <processing id="toStream Vy 2" position="814,434" size="127,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -203,7 +203,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vz" type="AudioBuffer2Stream">
+  <processing id="toStream Vz" position="832,496" size="114,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -212,7 +212,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="toStream Vz 2" type="AudioBuffer2Stream">
+  <processing id="toStream Vz 2" position="831,542" size="128,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
