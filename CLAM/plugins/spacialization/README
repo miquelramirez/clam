@@ -198,6 +198,31 @@ interpolate-between-two-points-surround.clamnetwork
 	both impulse responses. By processing p, vx and vy components
 	in parallel we can get the surround output.
 
+B-format handling
+
+mono2bformat.clamnetwork
+	This network is a utility network to generate a synthetic first order
+	B-format signal from a single mono signal applying different gains
+	to the mono signal in order to generate the B-format W,X,Y,Z components.
+	Gains are deduced from the intended azimut and elevation and two 
+	independent factors one for the W and another for X,Y,Z.
+	W normally should be kept to 1/sqrt(2) while the X,Y,Z components should
+	be the components of a normalized vector pointing to the source image position.
+	TODO: Review whether this is pointing to the source or pointing to the listener
+	Some rules of thumb:
+		W factor: tipically set to 1/sqrt(2)
+		X factor: +1 comes from front, -1 comes from back
+		Y factor: +1 comes from left, -1 comes from right
+		Z factor: +1 comes from above, -1 comes from below
+		X,Y,Z factors are normalized to be an unitary vector
+
+bformat2binaural.clamnetwork
+	This network converts a bformat (W,X,Y,Z) signal into a binaural one (L,R).
+	Input channels are convolved with the first order components of the
+	decomposition in spherical harmonic of the HRTF(time,azimut,elevation)
+	function.
+	TODO: Explain how to obtain the spherical harmonics components
+
 
 
 
