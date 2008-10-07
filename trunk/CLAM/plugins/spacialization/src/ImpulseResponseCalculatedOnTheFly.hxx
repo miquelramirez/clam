@@ -210,7 +210,6 @@ private:
 		std::ostringstream command;
 		command << "raytracing "
 			<< " --compute-ir"
-			<< " --bformat-output"
 			<< " --model-file=" << _config.GetModel3DFile()
 			<< " --listener-x-pos=" << _currentReceiverX
 			<< " --listener-y-pos=" << _currentReceiverY
