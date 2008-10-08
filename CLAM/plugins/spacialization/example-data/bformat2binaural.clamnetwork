@@ -75,8 +75,8 @@
 
   <processing id="Gain" position="709,42" size="201,73" type="OutControlSender">
     <Min>0</Min>
-    <Default>0.3</Default>
-    <Max>1</Max>
+    <Default>1.41</Default>
+    <Max>2</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
