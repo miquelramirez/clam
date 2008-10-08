@@ -39,7 +39,7 @@ MyIFFT
 	Uses FFTW internally.
 
 ComplexSpectrumMixer
-	Does the ponderated sum of two complex spectra.
+	Does the pondered sum of two complex spectra.
 
 ComplexSpectrumProduct
 	Multiplies two complex spectra.
@@ -119,7 +119,7 @@ windowing-and-overlap.clamnetwork
 
 complex_fourier_transforms.clamnetwork
 	This network measures the error of a successive FFT-IFFT tranformation
-	by substracting the output to the input.
+	by subtracting the output to the input.
 	A perfect transformation should give absolute silence.
 	The windowing affects by a factor the output of the transformations.
 	You can change it on the mixer processing.
@@ -159,14 +159,14 @@ single-impulse-response-surround-to-stereo.clamnetwork
 
 impulse-response-database-only-pressure.clamnetwork
 	Virtual room navigation with a single component (p).
-	Simulates emitter and receiver moving on a room by convoluting
+	Simulates emitter and receiver moving on a room by convolving
 	the source with impulse responses at different emitter-receiver
 	positions combinations. Crossfading is used when the dominant
 	impulse response changes.
 
 impulse-response-database-surround.clamnetwork
 	Virtual room navigation with direccionality (vx, vy) and surround output.
-	Simulates emitter and receiver moving on a room by convoluting
+	Simulates emitter and receiver moving on a room by convolving
 	the source with impulse responses at different emitter-receiver
 	positions combinations. Crossfading is used when the dominant
 	impulse response changes.
@@ -179,7 +179,7 @@ impulse-response-database-surround-to-stereo.clamnetwork
 	of the surround speakers.
 
 hrtf-database.clamnetwork
-	Places the input sound at a given azimut and elevation using
+	Places the input sound at a given azimuth and elevation using
 	an HRTF database.
 
 
@@ -188,13 +188,13 @@ IR-Interpolation:
 interpolate-between-two-points.clamnetwork
 	Simulates receiver movements between two points where we
 	have recorded the impulse response from a fixed emitter point.
-	It does such simulation by interpolation (poderated sum) of
+	It does such simulation by interpolation (pondered sum) of
 	both impulse responses. It does just for the p component.
 
 interpolate-between-two-points-surround.clamnetwork
 	Simulates receiver movements between two points where we
 	have recorded the impulse response from a fixed emitter point.
-	It does such simulation by interpolation (poderated sum) of
+	It does such simulation by interpolation (pondered sum) of
 	both impulse responses. By processing p, vx and vy components
 	in parallel we can get the surround output.
 
@@ -204,24 +204,29 @@ mono2bformat.clamnetwork
 	This network is a utility network to generate a synthetic first order
 	B-format signal from a single mono signal applying different gains
 	to the mono signal in order to generate the B-format W,X,Y,Z components.
-	Gains are deduced from the intended azimut and elevation and two 
-	independent factors one for the W and another for X,Y,Z.
-	W normally should be kept to 1/sqrt(2) while the X,Y,Z components should
-	be the components of a normalized vector pointing to the source image position.
-	TODO: Review whether this is pointing to the source or pointing to the listener
-	Some rules of thumb:
-		W factor: tipically set to 1/sqrt(2)
+	Gains are deduced from the controllable azimuth and elevation.
+	Two independent factors one for the W and another for X,Y,Z.
+	For ambisonics W factor has to be 1/sqrt(2) and X,Y,Z factor should be 1.
+	By changing those defaults values to Wfactor=1 and XYZfactor=-1,
+	you can also obtain the physical magnitudes of pressure and velocity.
+	Some rules of thumb for ambisonics output:
+		W factor: typically set to 1/sqrt(2)
 		X factor: +1 comes from front, -1 comes from back
 		Y factor: +1 comes from left, -1 comes from right
 		Z factor: +1 comes from above, -1 comes from below
 		X,Y,Z factors are normalized to be an unitary vector
 
+bformat2surround.clamnetwork
+	This network decodes a bformat (W,X,Y,Z) input into a 5 channels surround
+	with L R C SL SR channels at 30 -30 0 110 -110 degrees.
+
 bformat2binaural.clamnetwork
 	This network converts a bformat (W,X,Y,Z) signal into a binaural one (L,R).
 	Input channels are convolved with the first order components of the
-	decomposition in spherical harmonic of the HRTF(time,azimut,elevation)
-	function.
-	TODO: Explain how to obtain the spherical harmonics components
+	decomposition in spherical harmonics of the HRTF(time,azimut,elevation)
+	function. Such components are expected to be in the working directory
+	with filenames Ew.wav, Ex.wav, Ey.wav, Ez.wav.
+	TODO: Explain how to obtain such spherical harmonics components
 
 
 
