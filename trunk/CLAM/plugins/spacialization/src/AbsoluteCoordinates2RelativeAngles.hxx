@@ -76,9 +76,13 @@ public:
 //		double cosRoll = std::cos(targetRoll);
 //		double sinRoll = std::sin(targetRoll);
 
-		double rotatedX = + cosAzimuth*sinElevation * dx + sinAzimuth * dy 	+ cosAzimuth*cosElevation * dz;
-		double rotatedY = - sinAzimuth*sinElevation * dx + cosAzimuth * dy 	- sinAzimuth*cosElevation * dz;
-		double rotatedZ = - cosElevation * dx 		 + /* 0 * vy[i] */  	+ sinElevation  * dz;
+//		double rotatedX = + cosAzimuth*sinElevation * dx + sinAzimuth * dy 	+ cosAzimuth*cosElevation * dz;
+//		double rotatedY = - sinAzimuth*sinElevation * dx + cosAzimuth * dy 	- sinAzimuth*cosElevation * dz;
+//		double rotatedZ = - cosElevation * dx 		 + /* 0 * vy[i] */  	+ sinElevation  * dz;
+
+		double rotatedX = + cosAzimuth*sinElevation * dx + sinAzimuth * sinElevation * dy+ cosElevation * dz;
+		double rotatedY = - sinAzimuth * dx + cosAzimuth * dy - 0 * dz;
+		double rotatedZ = - cosElevation * cosAzimuth *dx + -cosElevation*sinAzimuth*dy 	+ sinElevation  * dz;
 
 		// TODO: Test that with target elevation and azimut
 		double dazimut = 180./M_PI*std::atan2(rotatedY,rotatedX);
