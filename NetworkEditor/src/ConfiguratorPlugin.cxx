@@ -73,7 +73,8 @@ public:
 	{
 		const ConcreteFloat & value = *(ConcreteFloat *)object.GetAttributeAsVoidPtr(attribute);
 		QDoubleSpinBox * input = new QDoubleSpinBox;
-		input->setRange(std::numeric_limits<ConcreteFloat>::min(),std::numeric_limits<ConcreteFloat>::max());
+		input->setDecimals(5);
+		input->setRange(-std::numeric_limits<ConcreteFloat>::max(),std::numeric_limits<ConcreteFloat>::max());
 		input->setValue(value);
 		return input;
 	}
