@@ -126,38 +126,33 @@ void ControlSenderWidget::continuousControlChanged(double value)
 	if (_updating) return;
 	_updating = true;
 
-	int svalue = int(floor(((value - _min) / _step)+0.5));
-	if (_slider) _slider->setValue(svalue);
-	if (_dial) _dial->setValue(svalue);
-	_sender->SendControl( mapValue(svalue) );
+	int step = int(floor(((value - _min) / _step)+0.5));
+	if (_slider) _slider->setValue(step);
+	if (_dial) _dial->setValue(step);
+	_sender->SendControl( mapValue(value) );
 
 	_updating = false;
 }
 
 inline double ControlSenderWidget::mapValue(double value)
 {
-	double mapped_value = 0.;
-	double tmp_max = 0.;
-	switch( _mappingMode ) {
+	switch (_mappingMode ) {
 	case CLAM::OutControlSenderConfig::EMapping::eLinear:
-		mapped_value = value;
-		break;
+		return value;
 	case CLAM::OutControlSenderConfig::EMapping::eInverted:
-		mapped_value = fabs(_max - value + _min);
-		break;
+		return fabs(_max - value + _min);
 	case CLAM::OutControlSenderConfig::EMapping::eLog:
 		CLAM_ASSERT(_max>=_min, "min > max in Log mapping!" );
-		tmp_max=_max-_min;
-		mapped_value = CLAM_pow((value-_min)/tmp_max,4.)*tmp_max + _min;
-		break;
+		double range =_max-_min;
+		return CLAM_pow((value-_min)/range,4.)*range + _min;
 	case CLAM::OutControlSenderConfig::EMapping::eReverseLog:
 		CLAM_ASSERT(_max>=_min, "min > max in ReverseLog mapping!" );
 		if (value>=_max-0.01) return _max;
-		tmp_max=_max-_min;
-		mapped_value =  (1. - CLAM_exp(-(value-_min)/tmp_max*4.))*tmp_max + _min;
-		break;
+		double range =_max-_min;
+		return  (1.-CLAM_exp(-(value-_min)/range*4.))*range + _min;
 	default:
 		CLAM_ASSERT(false,"Bad control mapping value");
+		return 0;
 	}
-	return mapped_value;
 }
+
