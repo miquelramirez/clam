@@ -7,7 +7,7 @@
 
 class Spherical2CartesianControl : public CLAM::Processing
 { 
-	CLAM::InControl _azimut;
+	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
 	CLAM::InControl _module;
 	CLAM::OutControl _x;
@@ -16,7 +16,7 @@ class Spherical2CartesianControl : public CLAM::Processing
 public:
 	const char* GetClassName() const { return "Spherical2CartesianControl"; }
 	Spherical2CartesianControl(const Config& config = Config()) 
-		: _azimut("azimut", this)
+		: _azimuth("azimuth", this)
 		, _elevation("elevation", this)
 		, _module("module", this)
 		, _x("x", this)
@@ -24,18 +24,18 @@ public:
 		, _z("z", this)
 	{
 		Configure( config );
-		_azimut.SetBounds(-180,180);
+		_azimuth.SetBounds(-180,180);
 		_elevation.SetBounds(-90,90);
 		_module.DoControl(0);
 	}
  
 	bool Do()
 	{
-		const CLAM::TControlData& azimut = _azimut.GetLastValue()*M_PI/180;
+		const CLAM::TControlData& azimuth = _azimuth.GetLastValue()*M_PI/180;
 		const CLAM::TControlData& elevation = _elevation.GetLastValue()*M_PI/180;
 		const CLAM::TControlData& module = _module.GetLastValue();
-		_x.SendControl(module * std::cos(elevation) * std::cos(azimut));
-		_y.SendControl(module * std::cos(elevation) * std::sin(azimut));
+		_x.SendControl(module * std::cos(elevation) * std::cos(azimuth));
+		_y.SendControl(module * std::cos(elevation) * std::sin(azimuth));
 		_z.SendControl(module * std::sin(elevation));
 		return true;
 	}

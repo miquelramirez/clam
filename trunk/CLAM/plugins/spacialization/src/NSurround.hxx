@@ -7,6 +7,12 @@
 #include <CLAM/InControl.hxx>
 #include <cmath>
 
+/**
+ * Converts ambisonics B-Format (W,X,Y,Z) input into N equiangular surround
+ * channels with the first one at the front.
+ *
+ * Control value <em>beta</em>, controls a simulated rotation of the receiver.
+ */
 class NSurround : public CLAM::Processing
 { 
 protected:
@@ -73,7 +79,7 @@ public:
 			double rad = M_PI*angle/180;
 			_sinAlphas.push_back( std::sin(rad) );
 			_cosAlphas.push_back( std::cos(rad) );
-			std::cout << "sin "<< angle << " "<< std::sin(rad) << std::endl;
+	//		std::cout << "sin "<< angle << " "<< std::sin(rad) << std::endl;
 
 			std::ostringstream nameStream;
 			nameStream << "out " << angle;

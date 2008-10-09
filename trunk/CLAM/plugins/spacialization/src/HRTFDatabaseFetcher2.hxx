@@ -53,11 +53,11 @@ class GeodesicDatabase2
 	class SpherePosition
 	{
 	public:
-		SpherePosition(int elevation, double azimut, const std::string & filename)
+		SpherePosition(int elevation, double azimuth, const std::string & filename)
 			: elevation(elevation)
-			, azimut(azimut)
+			, azimuth(azimuth)
 			, eradians(M_PI*elevation/180.)
-			, aradians(M_PI*azimut/180.)
+			, aradians(M_PI*azimuth/180.)
 			, ce(std::cos(eradians))
 			, se(std::sin(eradians))
 			, ca(std::cos(aradians))
@@ -66,7 +66,7 @@ class GeodesicDatabase2
 		{
 		}
 		int elevation;
-		double azimut;
+		double azimuth;
 		double eradians, aradians;
 		double ce, se, ca, sa;
 		std::string filename;
@@ -93,7 +93,7 @@ public:
 		: NElevation(14)
 	{
 	}
-	unsigned NAzimut(unsigned elevation) 
+	unsigned NAzimuth(unsigned elevation) 
 	{
 		return _storage[elevation].size();
 	}
@@ -116,15 +116,15 @@ public:
 		while (true)
 		{
 			double elevation;
-			double azimut;
+			double azimuth;
 			index >> elevation;
-			index >> azimut;
+			index >> azimuth;
 			if (!index) break;
 			index >> std::ws;
 			std::string filename;
 			std::getline(index, filename);
-		//	std::cout << elevation << " " << azimut << " '" << base << filename << "'" << std::endl;
-			_lines.push_back(SpherePosition(elevation, azimut, base+filename));
+		//	std::cout << elevation << " " << azimuth << " '" << base << filename << "'" << std::endl;
+			_lines.push_back(SpherePosition(elevation, azimuth, base+filename));
 		}
 		_storage.resize(_lines.size());
 		for (unsigned i=0; i < _storage.size(); i++)
@@ -134,7 +134,7 @@ public:
 	}
 	double azimutForIndex(unsigned index) const
 	{
-		return _lines[index].azimut;
+		return _lines[index].azimuth;
 	}
 	double elevationForIndex(unsigned index) const
 	{
@@ -142,9 +142,9 @@ public:
 	}
 	
 	ImpulseResponse & get(unsigned index) { return _storage[index]; }
-	unsigned getIndex(double elevation, double azimut)
+	unsigned getIndex(double elevation, double azimuth)
 	{
-		SpherePosition target(elevation, azimut, "dummy");
+		SpherePosition target(elevation, azimuth, "dummy");
 		unsigned chosen = _lines.size();
 		double minDistance = 10000;
 		for (unsigned i=0; i < _lines.size(); i++)
@@ -185,9 +185,9 @@ private:
 	OutPort< ImpulseResponse* > _previousImpulseResponseL;
 	OutPort< ImpulseResponse* > _previousImpulseResponseR;
 	InControl _elevation; ///< angle to the horizon
-	InControl _azimut; ///< horizontal angle from viewpoint (north-south-east-west)
+	InControl _azimuth; ///< horizontal angle from viewpoint (north-south-east-west)
 	OutControl _chosenElevation; ///< angle to the horizon
-	OutControl _chosenAzimut; ///< horizontal angle from viewpoint (north-south-east-west)
+	OutControl _chosenAzimuth; ///< horizontal angle from viewpoint (north-south-east-west)
 	GeodesicDatabase2 _database; 
 	ImpulseResponse * _previousL;
 	ImpulseResponse * _previousR;
@@ -198,15 +198,15 @@ public:
 		: _impulseResponseL("ImpulseResponseL", this)
 		, _impulseResponseR("ImpulseResponseR", this)
 		, _elevation("elevation", this)
-		, _azimut("azimut", this)
+		, _azimuth("azimuth", this)
 		, _chosenElevation("chosen elevation", this)
-		, _chosenAzimut("chosen azimut", this)
+		, _chosenAzimuth("chosen azimuth", this)
 		, _previousL(0)
 		, _previousR(0)
 	{
 		Configure( config );
 		_elevation.SetBounds(-90,90);
-		_azimut.SetBounds(0,360);
+		_azimuth.SetBounds(0,360);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
@@ -236,18 +236,18 @@ public:
 	bool Do()
 	{
 		double elevation = _elevation.GetLastValue();
-		double azimut = _azimut.GetLastValue();
-		unsigned indexL = _database.getIndex(elevation, azimut);
-		unsigned indexR = _database.getIndex(elevation, 360-azimut);
+		double azimuth = _azimuth.GetLastValue();
+		unsigned indexL = _database.getIndex(elevation, azimuth);
+		unsigned indexR = _database.getIndex(elevation, 360-azimuth);
 		_chosenElevation.SendControl(_database.elevationForIndex(indexL));
-		_chosenAzimut.SendControl(_database.azimutForIndex(indexL));
+		_chosenAzimuth.SendControl(_database.azimutForIndex(indexL));
 
 		ImpulseResponse * currentL = _impulseResponseL.GetData()= &_database.get(indexL);
 		ImpulseResponse * currentR = _impulseResponseR.GetData()= &_database.get(indexR);
 
 		if ( _previousL != currentL) 
 		{
-		//	std::cout << "HRTF (elevation, azimut) : "<<elevation<<","<<azimut<<std::endl;
+		//	std::cout << "HRTF (elevation, azimuth) : "<<elevation<<","<<azimuth<<std::endl;
 		//	std::cout << "L : "<<_database.elevationForIndex(indexL)<<","<<_database.azimutForIndex(indexL)<<std::endl;
 		//	std::cout << "R : "<<_database.elevationForIndex(indexR)<<","<<_database.azimutForIndex(indexR)<<std::endl;
 		}

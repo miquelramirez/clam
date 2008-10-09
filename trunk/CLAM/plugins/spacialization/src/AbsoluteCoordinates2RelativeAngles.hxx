@@ -74,14 +74,14 @@ public:
 		double rotatedY = - sinAzimuth * dx + cosAzimuth * dy - 0 * dz;
 		double rotatedZ = - cosZenith * cosAzimuth *dx + -cosZenith*sinAzimuth*dy 	+ sinZenith  * dz;
 
-		// TODO: Test that with target elevation and azimut
-		double dazimut = 180./M_PI*std::atan2(rotatedY,rotatedX);
+		// TODO: Test that with target elevation and azimuth
+		double dazimuth = 180./M_PI*std::atan2(rotatedY,rotatedX);
 		double delevation = 180./M_PI*std::asin(rotatedZ/std::sqrt(rotatedX*rotatedX+rotatedY*rotatedY+rotatedZ*rotatedZ));
 
 		//TODO calculate the roll relative between the listener and the source
 		_sourceRoll.SendControl( targetRoll );
 		_sourceElevation.SendControl( delevation );
-		_sourceAzimuth.SendControl( dazimut );
+		_sourceAzimuth.SendControl( dazimuth );
 		return true;
 	}
 

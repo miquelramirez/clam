@@ -108,6 +108,19 @@ HRTFDatabaseFetcher
 	TODO: Describe HRTF database layout
 
 
+
+NSurround
+	Converts ambisonics B-Format (W,X,Y,Z) input to N equiangular surround 
+	channels placed the first one at front and going left.
+	TOCHECK: Control value <em>beta</em>, controls a simulated rotation of the receiver.
+
+Surround
+	Converts ambisonics B-Format (W,X,Y,Z) input to 5 surround with channels
+	L(30), R(-30), C(0), SL(110), SR(-110).
+	TOCHECK: Control value <em>beta</em>, controls a simulated rotation of the receiver.
+
+
+
 Example Networks:
 =================
 

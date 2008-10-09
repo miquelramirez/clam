@@ -19,14 +19,6 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Oscilloscope_W" position="786,174" size="126,110" type="Oscilloscope"/>
-
-  <processing id="Oscilloscope_X" position="787,267" size="124,113" type="Oscilloscope"/>
-
-  <processing id="Oscilloscope_Y" position="787,363" size="123,110" type="Oscilloscope"/>
-
-  <processing id="Oscilloscope_Z" position="787,456" size="123,110" type="Oscilloscope"/>
-
   <processing id="Sintetic input" position="265,366" size="128,108" type="AudioSource"/>
 
   <processing id="Spherical2CartesianControl" position="99,207" size="205,58" type="Spherical2CartesianControl"/>
@@ -45,7 +37,7 @@
 
   <processing id="amp_Z" position="493,423" size="107,58" type="amp_mono0"/>
 
-  <processing id="azimut" position="304,11" size="574,76" type="OutControlSender">
+  <processing id="azimuth" position="304,11" size="574,76" type="OutControlSender">
     <Min>-180</Min>
     <Default>270</Default>
     <Max>360</Max>
@@ -54,7 +46,7 @@
   </processing>
 
   <processing id="elevation" position="304,85" size="581,76" type="OutControlSender">
-    <Min>-40</Min>
+    <Min>-90</Min>
     <Default>0</Default>
     <Max>90</Max>
     <Step>0.9</Step>
@@ -85,11 +77,6 @@
   </port_connection>
 
   <port_connection>
-    <out>Amp_W.Output</out>
-    <in>Oscilloscope_W.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>Sintetic input.AudioOut</out>
     <in>Amp_W.Input</in>
   </port_connection>
@@ -115,28 +102,13 @@
   </port_connection>
 
   <port_connection>
-    <out>amp_X.Output</out>
-    <in>Oscilloscope_X.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>amp_Y.Output</out>
     <in>Y.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>amp_Y.Output</out>
-    <in>Oscilloscope_Y.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>amp_Z.Output</out>
     <in>Z.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>amp_Z.Output</out>
-    <in>Oscilloscope_Z.Input</in>
   </port_connection>
 
   <control_connection>
@@ -180,8 +152,8 @@
   </control_connection>
 
   <control_connection>
-    <out>azimut.out</out>
-    <in>Spherical2CartesianControl.azimut</in>
+    <out>azimuth.out</out>
+    <in>Spherical2CartesianControl.azimuth</in>
   </control_connection>
 
   <control_connection>
