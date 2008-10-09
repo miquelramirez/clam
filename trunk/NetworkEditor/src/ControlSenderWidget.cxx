@@ -136,6 +136,7 @@ void ControlSenderWidget::continuousControlChanged(double value)
 
 inline double ControlSenderWidget::mapValue(double value)
 {
+	double range =_max-_min;
 	switch (_mappingMode ) {
 	case CLAM::OutControlSenderConfig::EMapping::eLinear:
 		return value;
@@ -143,12 +144,10 @@ inline double ControlSenderWidget::mapValue(double value)
 		return fabs(_max - value + _min);
 	case CLAM::OutControlSenderConfig::EMapping::eLog:
 		CLAM_ASSERT(_max>=_min, "min > max in Log mapping!" );
-		double range =_max-_min;
 		return CLAM_pow((value-_min)/range,4.)*range + _min;
 	case CLAM::OutControlSenderConfig::EMapping::eReverseLog:
 		CLAM_ASSERT(_max>=_min, "min > max in ReverseLog mapping!" );
 		if (value>=_max-0.01) return _max;
-		double range =_max-_min;
 		return  (1.-CLAM_exp(-(value-_min)/range*4.))*range + _min;
 	default:
 		CLAM_ASSERT(false,"Bad control mapping value");
