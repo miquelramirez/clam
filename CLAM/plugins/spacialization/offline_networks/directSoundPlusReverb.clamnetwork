@@ -1190,7 +1190,7 @@
 
   <control_connection>
     <out>ChoreoSequencer_1.source azimuth</out>
-    <in>HRTFDatabaseFetcher2.azimut</in>
+    <in>HRTFDatabaseFetcher2.azimuth</in>
   </control_connection>
 
   <control_connection>
@@ -1214,7 +1214,7 @@
   </control_connection>
 
   <control_connection>
-    <out>HRTFDatabaseFetcher2.chosen azimut</out>
+    <out>HRTFDatabaseFetcher2.chosen azimuth</out>
     <in>ControlPrinter_1.In Control</in>
   </control_connection>
 

@@ -78,7 +78,7 @@ public:
 		: NElevation(14)
 	{
 	}
-	unsigned NAzimut(unsigned elevation) 
+	unsigned NAzimuth(unsigned elevation) 
 	{
 		return _storage[elevation].size();
 	}
@@ -96,9 +96,9 @@ public:
 		}
 		return true;
 	}
-	ImpulseResponse & get(unsigned elevation, unsigned azimut)
+	ImpulseResponse & get(unsigned elevation, unsigned azimuth)
 	{
-		return _storage[elevation][azimut];
+		return _storage[elevation][azimuth];
 	}
 };
 
@@ -127,9 +127,9 @@ private:
 	OutPort< ImpulseResponse* > _previousImpulseResponseL;
 	OutPort< ImpulseResponse* > _previousImpulseResponseR;
 	InControl _elevation; ///< angle to the horizon
-	InControl _azimut; ///< horizontal angle from viewpoint (north-south-east-west)
+	InControl _azimuth; ///< horizontal angle from viewpoint (north-south-east-west)
 	OutControl _chosenElevation; ///< angle to the horizon
-	OutControl _chosenAzimut; ///< horizontal angle from viewpoint (north-south-east-west)
+	OutControl _chosenAzimuth; ///< horizontal angle from viewpoint (north-south-east-west)
 	GeodesicDatabase _database; 
 	ImpulseResponse * _previousL;
 	ImpulseResponse * _previousR;
@@ -142,15 +142,15 @@ public:
 		, _previousImpulseResponseL("PreviousImpulseResponseL", this)
 		, _previousImpulseResponseR("PreviousImpulseResponseR", this)
 		, _elevation("elevation", this)
-		, _azimut("azimut", this)
+		, _azimuth("azimuth", this)
 		, _chosenElevation("chosen elevation", this)
-		, _chosenAzimut("chosen azimut", this)
+		, _chosenAzimuth("chosen azimuth", this)
 		, _previousL(0)
 		, _previousR(0)
 	{
 		Configure( config );
 		_elevation.SetBounds(-40,90);
-		_azimut.SetBounds(0,360);
+		_azimuth.SetBounds(0,360);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
@@ -167,9 +167,9 @@ public:
 		}
 		std::cout << "HRTF database loaded." << std::endl;
 		unsigned elevation = map(_elevation, _database.NElevation, -40, 90);
-		unsigned azimut = map(_azimut, _database.NAzimut(elevation), 0, 360);
-		_previousL = &_database.get(elevation,azimut);
-		_previousR = &_database.get(elevation,_database.NAzimut(elevation)-azimut-1);
+		unsigned azimuth = map(_azimuth, _database.NAzimuth(elevation), 0, 360);
+		_previousL = &_database.get(elevation,azimuth);
+		_previousR = &_database.get(elevation,_database.NAzimuth(elevation)-azimuth-1);
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
@@ -183,19 +183,19 @@ public:
 	bool Do()
 	{
 		unsigned elevation = map(_elevation, _database.NElevation, -40, 90);
-		unsigned azimut = map(_azimut, _database.NAzimut(elevation), 0, 360);
+		unsigned azimuth = map(_azimuth, _database.NAzimuth(elevation), 0, 360);
 
 		_chosenElevation.SendControl(-40+elevation*10);
-		_chosenAzimut.SendControl(azimut*360./_database.NAzimut(elevation));
+		_chosenAzimuth.SendControl(azimuth*360./_database.NAzimuth(elevation));
 
-		ImpulseResponse * currentL = &_database.get(elevation,azimut);
+		ImpulseResponse * currentL = &_database.get(elevation,azimuth);
 		_impulseResponseL.GetData()= currentL;
-		ImpulseResponse * currentR = &_database.get(elevation,_database.NAzimut(elevation)-azimut-1);
+		ImpulseResponse * currentR = &_database.get(elevation,_database.NAzimuth(elevation)-azimuth-1);
 		_impulseResponseR.GetData()= currentR;
 		_previousImpulseResponseL.GetData() = _previousL ? _previousL : currentL;
 		_previousImpulseResponseR.GetData() = _previousR ? _previousR : currentR;
 		if ( _previousR != currentR) 
-			std::cout << "HRTF indices (elevation, azimut) : "<<elevation<<","<<azimut<<std::endl;
+			std::cout << "HRTF indices (elevation, azimuth) : "<<elevation<<","<<azimuth<<std::endl;
 		_previousL = currentL;
 		_previousR = currentR;
 		_impulseResponseL.Produce();

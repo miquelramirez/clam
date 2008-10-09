@@ -115,10 +115,10 @@ public:
 			double rotatedY = - sinAzimuth*sinZenith * dx + cosAzimuth * dy + sinAzimuth*cosZenith * dz;
 			double rotatedZ = + cosZenith * dx + /* 0 * vy[i] */  + sinZenith  * dz;
 
-			// TODO: Test that with target elevation and azimut
-			double dazimut = 180./M_PI*std::atan2(rotatedY,rotatedX);
+			// TODO: Test that with target elevation and azimuth
+			double dazimuth = 180./M_PI*std::atan2(rotatedY,rotatedX);
 			double delevation = 180./M_PI*std::asin(rotatedZ/std::sqrt(rotatedX*rotatedX+rotatedY*rotatedY+rotatedZ*rotatedZ));
-			_sourceAzimuth.SendControl( dazimut );
+			_sourceAzimuth.SendControl( dazimuth );
 			_sourceZenith.SendControl( delevation );
 			/* 
 			std::cout 
@@ -129,7 +129,7 @@ public:
 				<< "\t" << _sizeY*row[SourceYColumn+3*sourceIndex] 
 				<< "\t" << _sizeZ*row[SourceZColumn+3*sourceIndex] 
 				<< "\t\t" << rotatedX << "\t" << rotatedY << "\t" << rotatedZ 
-				<< "\t\t" << dazimut << "\t" << delevation
+				<< "\t\t" << dazimuth << "\t" << delevation
 				<< std::endl;
 			*/
 			_sampleCount -= _samplesPerControl;
@@ -182,7 +182,7 @@ protected:
 			Row row;
 			row.push_back(i);
 			row.push_back(0); //Dummy
-			row.push_back(alpha); // Target Azimut
+			row.push_back(alpha); // Target Azimuth
 			row.push_back(90); // Target Zenith 
 			row.push_back(.5); // receiver X
 			row.push_back(.5); // receiver Y
