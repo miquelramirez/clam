@@ -1,0 +1,29 @@
+/**
+ @defgroup AmbisonicsConventions
+ @ingroup Spatialization
+ Processings on the spatialization plugin follow the ambisonics conventions.
+ 
+ @section AmbisonicsCoordinateSystem Cartesian coordinate system
+
+ When coordinates are centered in the listener:
+ - X axis positive goes front
+ - Y axis positive goes left
+ - Z axis positive goes up
+
+ When other coordinate frame is defined, also the right hand rule applies.
+
+ Points relative to the listener can be expressed by providing relative
+ polar coordinates: Azimuth, elevation and distance:
+
+ - \b Azimuth is the angle of the projecto of the point on the XY plane
+   having the 0 at the front of the listener and increasing when rotating
+   to the left.
+   Valid values for the Azimuth are 0 to 360.
+ - \b Elevation is the angle to the horizont, positive going up, negative goint down.
+   Elevations range from -90 to 90
+
+ - Azimuth and elevations angles outside those ranges are not accepted.
+ - Angles are expressed in degrees unless otherwise specified.
+ - Distances and cartesian coords are expressed in meters unless otherwise specified.
+
+*/

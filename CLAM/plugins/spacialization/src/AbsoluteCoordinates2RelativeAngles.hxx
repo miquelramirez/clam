@@ -10,8 +10,14 @@
 namespace CLAM
 {
 
-/** 	This class calculate the angles azimuth and elevation that are relative to the listener. 
-	Their values are in degrees. The input values are the source and sink location and the sink's azimuth and elevation angles.**/
+/**
+ Computes the azimuth and elevation angles of
+ a point (source) relative to the listener (target)
+ position and orientation.
+ Angles are expressed in degrees. 
+ Coordinates systems and rotations follow ambisonics conventions.
+ @see AmbisonicsConventions
+*/
 class AbsoluteCoordinates2RelativeAngles : public CLAM::Processing
 { 
 
