@@ -104,7 +104,7 @@
 
   <processing id="Oscilloscope_1" position="783,260" size="288,110" type="Oscilloscope"/>
 
-  <processing id="azimut" position="312,8" size="474,73" type="OutControlSender">
+  <processing id="azimuth" position="312,8" size="474,73" type="OutControlSender">
     <Min>0</Min>
     <Default>180</Default>
     <Max>360</Max>
@@ -258,13 +258,13 @@
   </control_connection>
 
   <control_connection>
-    <out>HRTFDatabaseFetcher2.chosen azimut</out>
+    <out>HRTFDatabaseFetcher2.chosen azimuth</out>
     <in>ControlPrinter_1.In Control</in>
   </control_connection>
 
   <control_connection>
-    <out>azimut.out</out>
-    <in>HRTFDatabaseFetcher2.azimut</in>
+    <out>azimuth.out</out>
+    <in>HRTFDatabaseFetcher2.azimuth</in>
   </control_connection>
 
   <control_connection>
