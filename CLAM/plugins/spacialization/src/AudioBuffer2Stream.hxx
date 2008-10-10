@@ -31,50 +31,74 @@
 namespace CLAM
 {
 
+/**
+ Processing that take buffers of audio and produces an audio
+ stream by concatenating or semioverlaping them.
+ @param Hopsize [Config] How many samples the window is advancing each execution 
+ @param FFTSize [Config] How many samples the window includes
+ @param[in] "Audio buffer"  [Port]
+ @ingroup NewSpectralProcessing New spectral processing
+*/
+
 class AudioBuffer2Stream : public Processing
 {
-	// TODO: This configuration is over crowed
+	// TODO: Use that configuration instead AudioWindowingConfig
+	class FutureConfig : public ProcessingConfig
+	{
+		DYNAMIC_TYPE_USING_INTERFACE( FutureConfig, 2, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, unsigned, HopSize);
+		// TODO: Rename FFTSize to WindowSize
+		DYN_ATTRIBUTE( 1, public, unsigned, FFTSize);
+    	protected:
+	    void DefaultInit()
+	    {
+		AddAll();
+		UpdateData();
+		SetHopSize(512);
+		SetFFTSize(1024);
+	    }
+	};
 	typedef AudioWindowingConfig Config;
-	InPort<Audio> mIn;
-	AudioOutPort mOut;
-	unsigned mHopSize;
-	unsigned mWindowSize;
-	Config mConfig;
+	InPort<Audio> _in;
+	AudioOutPort _out;
+	unsigned _hopSize;
+	unsigned _windowSize;
+	Config _config;
 public:
 	const char* GetClassName() const { return "AudioBuffer2Stream"; }
 	AudioBuffer2Stream(const Config& config = Config()) 
-		: mIn("Audio buffer", this)
-		, mOut("Audio stream", this) 
+		: _in("Audio buffer", this)
+		, _out("Audio stream", this) 
 	{
 		Configure( config );
 	}
 	bool ConcreteConfigure(const ProcessingConfig & c)
 	{
-		CopyAsConcreteConfig(mConfig, c);
-		mHopSize = mConfig.GetHopSize();
-		mWindowSize = mConfig.GetFFTSize();
-		mOut.SetSize( mWindowSize );
-		mOut.SetHop( mHopSize );
+		CopyAsConcreteConfig(_config, c);
+		_hopSize = _config.GetHopSize();
+		_windowSize = _config.GetFFTSize();
+		_out.SetSize( _windowSize );
+		_out.SetHop( _hopSize );
 		return true;
 	}
-	const ProcessingConfig & GetConfig() const { return mConfig; }
+	const ProcessingConfig & GetConfig() const { return _config; }
  
 	bool Do()
 	{
-		const Audio& in = mIn.GetData();
-		CLAM_ASSERT(mWindowSize==in.GetSize(),
+		const Audio& in = _in.GetData();
+		CLAM_ASSERT(_windowSize==in.GetSize(),
 			"AudioBuffer2Stream: Input does not provide the configured window size"); 
-		Audio& out = mOut.GetAudio();
+		Audio& out = _out.GetAudio();
 		const TData* inpointer = in.GetBuffer().GetPtr();
 		TData* outpointer = out.GetBuffer().GetPtr();
 		// Zero fill the new incomming hopSize
-		std::fill(outpointer+mWindowSize-mHopSize, outpointer+mWindowSize, 0.0);
+		std::fill(outpointer+_windowSize-_hopSize, outpointer+_windowSize, 0.0);
 		// Add the input on the full window
-		std::transform(inpointer, inpointer+mWindowSize, outpointer, outpointer, std::plus<TData>());
+		std::transform(inpointer, inpointer+_windowSize, outpointer, outpointer, std::plus<TData>());
 		
 		// Tell the ports this is done
-		mIn.Consume();
-		mOut.Produce();
+		_in.Consume();
+		_out.Produce();
 		return true;
 	}
 
