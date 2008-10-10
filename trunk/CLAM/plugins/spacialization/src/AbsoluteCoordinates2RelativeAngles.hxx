@@ -15,7 +15,20 @@ namespace CLAM
  a point (source) relative to the listener (target)
  position and orientation.
  Angles are expressed in degrees. 
- Coordinates systems and rotations follow ambisonics conventions.
+ Coordinates systems and rotations follow @ref AmbisonicsConventions.
+ @param[in] "target X" [Control] X coord of the listener in absolute coords
+ @param[in] "target Y" [Control] Y coord of the listener in absolute coords
+ @param[in] "target Z" [Control] Z coord of the listener in absolute coords
+ @param[in] "target azimuth" [Control] Azimuth of the listener orientation
+ @param[in] "target elevation" [Control] Elevation of the listener orientation
+ @param[in] "target roll" [Control] Roll of the listener orientation
+ @param[in] "source X" [Control] X coord of the source in absolute coords
+ @param[in] "source Y" [Control] Y coord of the source in absolute coords
+ @param[in] "source Z" [Control] Z coord of the source in absolute coords
+ @param[out] "target azimuth" [Control] Relative azimuth of the target
+ @param[out] "target elevation" [Control] Relative elevation of the target
+ @param[out] "target roll" [Control] Relative roll of the target
+ @ingroup SpatialAudio
  @see AmbisonicsConventions
 */
 class AbsoluteCoordinates2RelativeAngles : public CLAM::Processing

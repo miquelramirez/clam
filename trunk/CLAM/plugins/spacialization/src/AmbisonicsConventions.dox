@@ -1,6 +1,10 @@
 /**
- @defgroup AmbisonicsConventions
- @ingroup Spatialization
+ @defgroup SpatialAudio Spatial Audio
+*/
+/**
+ @defgroup AmbisonicsConventions Ambisonics Conventions
+ @ingroup SpatialAudio
+
  Processings on the spatialization plugin follow the ambisonics conventions.
  
  @section AmbisonicsCoordinateSystem Cartesian coordinate system
@@ -15,15 +19,36 @@
  Points relative to the listener can be expressed by providing relative
  polar coordinates: Azimuth, elevation and distance:
 
- - \b Azimuth is the angle of the projecto of the point on the XY plane
+ - \b Azimuth is the angle of the projection of the point on the X-Y plane
    having the 0 at the front of the listener and increasing when rotating
    to the left.
-   Valid values for the Azimuth are 0 to 360.
- - \b Elevation is the angle to the horizont, positive going up, negative goint down.
-   Elevations range from -90 to 90
+   - Valid values for the Azimuth are 0 to 360.
+     Angles outside those ranges are not accepted.
+ - \b Elevation is the angle to the horizon, positive going up, negative going down.
+   - Elevations range from -90 to 90.
+     Angles outside those ranges are not accepted.
 
+ Further specifications:
  - Azimuth and elevations angles outside those ranges are not accepted.
  - Angles are expressed in degrees unless otherwise specified.
- - Distances and cartesian coords are expressed in meters unless otherwise specified.
+ - Distances and Cartesian coordinates are expressed in meters unless otherwise specified.
 
+ @section AmbisonicsPhisicalMeasurements Physical measurements
+
+ @todo providing links to the wikipedia on acoustic pressure and velocity
+ @todo explaining signs and directions for physical measurements of pressure and velocity for plane waves coming from different points
+
+ @section AmbisonicsEncoding Ambisonics encoding
+
+ Given physical measurements of the pressure and velocity,
+ B-format components, W, X, Y and Z, are composed in the following way:
+
+@f{eqnarray*}{
+W = \frac 1 {\sqrt{2}} p \\
+X = - v_x \\
+Y = - v_y \\
+Z = - v_z \\
+ @f}
 */
+
+
