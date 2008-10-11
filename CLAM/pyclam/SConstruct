@@ -3,7 +3,8 @@ import glob
 
 options_filename = 'options.cache'
 opts = Options(options_filename,ARGUMENTS)
-opts.Add(PathOption('prefix', 'The prefix where the CLAM library is installed', '/usr/local'))
+#TODO: opts.Add(PathOption('prefix', 'The prefix where the application will be installed', ''))
+opts.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
 opts.Add(PackageOption('plugins_prefix', 'The prefix where the CLAM plugins are installed. Use No for disable them and Yes to use the same CLAM installation path.', 'no'))
 opts.Add(BoolOption('debug', 'Enables debug symbols', 'no'))
 opts.Add( 'distcc_hosts', 'Defines compiling hosts, if defined enables the distcc compiler', '')
@@ -26,24 +27,41 @@ if env['distcc_hosts'] :
 	env['ENV']['DISTCC_HOSTS'] = env['distcc_hosts']
 	SetOption('num_jobs', len(env['distcc_hosts'].split()) )
 
-env.Append( CPPPATH=[env['prefix']+'/include'] )
-env.Append( LIBS=['clam_core','clam_audioio','clam_processing'] )
-env.Append( LIBPATH=[env['prefix']+'/lib'] )
+CLAMInstallDir = env['clam_prefix']
+clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+sys.path.append(clam_sconstoolspath)
 
-env.Append( CPPDEFINES=['CLAM_FLOAT','_DEBUG','USE_PTHREADS=1','USE_XERCES=1','CLAM_USE_XML','USE_LADSPA=1','USE_FFTW3=1','USE_SNDFILE=1','USE_OGGVORBIS=1','WITH_VORBIS=1','USE_MAD=1','WITH_MAD=1','USE_ID3=1','USE_ALSA=1','USE_JACK=1','USE_PORTAUDIO=1'] )
-env.Append( CPPPATH=['/usr/include/alsa','/usr/local/include'] )
+env.EnableClamModules([
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	], CLAMInstallDir)
 
+bindings = glob.glob('src/automatic/*.cpp')
+bindings += glob.glob('src/manual/*.cpp')
+sources = ['src/Definitions.cxx','src/indexing/indexing_slice.cpp','src/indexing/python_iterator.cpp'] + bindings
 
-env.Append( CPPPATH=['/usr/include/python2.5','/usr/include/'] )
+sourcePaths = [
+	os.path.join('.'),
+	os.path.join('src','automatic'),
+	os.path.join('src','manual'),
+]
+extraPaths = []
+extraPaths += ['/usr/include/python2.5','/usr/include/']
+extraPaths += [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+]
+includePaths = sourcePaths + extraPaths
+env.Append(CPPPATH=includePaths)
+
 env.Append( LIBS=['boost_python'] )
 env.Append( LIBPATH=['/usr/lib/python2.5/config'] )
 
 if env['debug']:
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+else:
+	env.Append( CCFLAGS=['-O3','-fomit-frame-pointer','-Wall'] )
 
-env.Append( CPPPATH=['.', './src/automatic','./src/manual'] )
-bindings = glob.glob('src/automatic/*.cpp')
-bindings += glob.glob('src/manual/*.cpp')
-source_files = ['src/Definitions.cxx','src/indexing/indexing_slice.cpp','src/indexing/python_iterator.cpp'] + bindings
-
-env.SharedLibrary( target='clam', source=source_files, SHLIBPREFIX='' )
+env.SharedLibrary( target='clam', source=sources, SHLIBPREFIX='' )

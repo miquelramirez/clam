@@ -27,12 +27,12 @@ from doxygen import doxygen_doc_extractor
 
 options_filename = 'options.cache'
 if not os.path.exists(options_filename):
-	print "\nError. Options file is missing. Run \'scons configure prefix=CLAM_LIBRARY_PATH\' first.\n"
+	print "\nError. Options file is missing. Run \'scons configure clam_prefix=CLAM_LIBRARY_PATH\' first.\n"
 	exit(1)
 clam_path = "/usr/local/include"; plugins_path = ''
 for line in open(options_filename).readlines():
 	(name,value) = line.split(' = ')
-	if name=='prefix': clam_path=value[1:-2]+"/include"
+	if name=='clam_prefix': clam_path=value[1:-2]+"/include"
 	if name=='plugins_prefix':
 		if value=='True': plugins_path=clam_path
 		else: plugins_path=value[1:-2]
@@ -54,6 +54,7 @@ clam_file_list += ['DataTypes.hxx','Enum.hxx','CLAM_Math.hxx','Err.hxx']
 
 clam_file_list += ['MonoAudioFileReader.hxx','AudioInFilename.hxx']
 #clam_file_list += ['AudioFileHeader.hxx']
+
 exported_manually_file_list += ['DataArray.hxx'] # Original CLAM file is Array.hxx, but exposed class/type is named DataArray
 exported_manually_file_list += ['Audio.hxx']
 exported_manually_file_list += ['MonoAudioFileReaderConfig.hxx']
