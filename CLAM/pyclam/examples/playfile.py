@@ -17,26 +17,43 @@
 
 from clam import *
 import time
+import sys
 
-filename = "./test4seg.mp3"
+if len(sys.argv)==1: # No input file
+	print "No input file."
+	print "Usage: playfile.py <input file name>"
+	sys.exit(-1)
+elif len(sys.argv)>2: #Too many parameters
+	print "Too many parameters"
+	print "Usage: playfile.py <input file name>"
+	sys.exit(-1)
 
-network = Network()
 
-reader = network.AddProcessing( "MonoAudioFileReader" )
-config = MonoAudioFileReaderConfig()
-config.SetSourceFile( filename )
+def main(args):
+	filename = sys.argv[1]
 
-if not network.ConfigureProcessing( reader, toProcessingConfig(config) ): #FIXME
-	print "Could not open the file"
+	network = Network()
+	
+	reader = network.AddProcessing( "MonoAudioFileReader" )
+	config = MonoAudioFileReaderConfig()
+	config.SetSourceFile( filename )
+	
+	if not network.ConfigureProcessing( reader, toProcessingConfig(config) ): #FIXME
+		print "Could not open the file"
+	
+	sink = network.AddProcessing( "AudioSink" )
+	
+	network.ConnectPorts( reader+".Samples Read", sink+".AudioIn" )
 
-sink = network.AddProcessing( "AudioSink" )
+	portaudio_player = PANetworkPlayer()
+	network.SetPlayer( portaudio_player.real() ) #FIXME
+	
+	network.Start()
+	time.sleep( int( network.GetProcessing(reader).GetHeader().GetLength()/1000) )
+	network.Stop()
 
-network.ConnectPorts( reader+".Samples Read", sink+".AudioIn" )
+	return 0
+#main()
 
-portaudio_player = PANetworkPlayer()
-network.SetPlayer( portaudio_player.real() ) #FIXME
-
-network.Start()
-#time.sleep( int(MonoAudioFleReader( network.GetProcessing(reader) ).GetHeader().GetLength()/1000) )
-time.sleep(4)
-network.Stop()
+if __name__ == '__main__':
+	sys.exit( main(sys.argv) )

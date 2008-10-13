@@ -55,6 +55,8 @@ static inline CLAM::Component& toComponent(CLAM::ProcessingData& pd) { return dy
 static inline CLAM::Component& toComponent(CLAM::Network& n) { return dynamic_cast<CLAM::Component&>(n); }
 static inline CLAM::Component& toComponent(CLAM::Spectrum& s) { return dynamic_cast<CLAM::Component&>(s); }
 
+static inline char const * toString(CLAM::Text& t) { return t.c_str(); }
+
 static inline CLAM::ProcessingConfig& toProcessingConfig(CLAM::FFTConfig& fft_c) { return dynamic_cast<CLAM::ProcessingConfig&>(fft_c); }
 static inline CLAM::ProcessingConfig& toProcessingConfig(CLAM::MonoAudioFileReaderConfig& fft_c) { return dynamic_cast<CLAM::ProcessingConfig&>(fft_c); }
 
