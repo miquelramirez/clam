@@ -32,8 +32,10 @@
 namespace CLAM
 {
 
-
-
+/**
+ @todo Document ImpulseResponseDatabaseFetcher
+ @ingroup RealTimeConvolution, SpatialAudio
+*/
 class ImpulseResponseDatabaseFetcher : public Processing
 { 
 public:

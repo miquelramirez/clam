@@ -30,6 +30,16 @@
 namespace CLAM
 {
 
+/**
+ Processing that computes the time domain cross correlation of two
+ spectrums (which is cheaper performed in spectral domain).
+ @param[in] Input1 [Port] A ComplexSpectrum.
+ @param[in] Input2 [Port] A ComplexSpectrum.
+ @param[out] CrossCorrelation [Port] A ComplexSpectrum whose time domain representation is the crosscorrelation of the two inputs timedomain representations
+ @pre Input1 and Input2 must be equal size.
+ @pre Input1 and Input2 must have the same spectralRange.
+ @ingroup SpectralProcessingOperations
+*/
 class CrossCorrelation : public Processing
 { 
 	InPort<ComplexSpectrum> _factor1;
@@ -38,9 +48,9 @@ class CrossCorrelation : public Processing
 public:
 	const char* GetClassName() const { return "CrossCorrelation"; }
 	CrossCorrelation(const Config& config = Config()) 
-		: _factor1("Factor1", this)
-		, _factor2("Factor2", this)
-		, _product("Product", this) 
+		: _factor1("Input1", this)
+		, _factor2("Input2", this)
+		, _product("CrossCorrelation", this) 
 	{
 		Configure( config );
 	}

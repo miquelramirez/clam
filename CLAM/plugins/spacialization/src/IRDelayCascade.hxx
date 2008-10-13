@@ -37,6 +37,10 @@
 namespace CLAM
 {
 
+/**
+ @todo document IRDelayCascade
+ @ingroup RealTimeConvolution
+*/
 
 class IRDelayCascade : public Processing
 { 

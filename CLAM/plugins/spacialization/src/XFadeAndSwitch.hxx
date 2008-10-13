@@ -63,6 +63,8 @@ namespace CLAM
  * - On a signal change one of the lines should keep the old signal during 2 frames
  * - The first line to keep the old signal is 1 and then they alternate.
  * - Any other signal change during such 2 frames should be ignored (see D in the example)
+ *
+ * @ingroup RealTimeConvolution
  */
 class XFadeAndSwitch : public Processing
 {

@@ -31,6 +31,22 @@
 namespace CLAM
 {
 
+/**
+ This processing converts an spectrum in
+	Magnitude/Phase representation (MagPhaseSpectrum)
+ into a deprecated CLAM::Spectrum.
+
+ @param[in] MagPhaseSpectrum [Port] A magnitude-phase spectrum.
+ @param[out] Spectrum [Port] A deprecated version of CLAM::Spectrum.
+
+ The NewSpectralProcessing module is the one to substitute actual
+ spectral processing classes in CLAM on the long term.
+ Meanwhile, this processing is provided for convenience to make both
+ world compatible.
+
+ @see ComplexSpectrum, MagPhaseSpectrum, Spectrum2MagPhaseSpectrum
+ @ingroup SpectralProcessingConversions
+*/
 class MagPhaseSpectrum2Spectrum : public Processing
 {
 	InPort<MagPhaseSpectrum> mMagPhaseSpectrum;

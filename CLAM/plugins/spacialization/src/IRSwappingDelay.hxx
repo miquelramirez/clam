@@ -38,7 +38,7 @@ namespace CLAM
 {
 /**
  * This processing provides two delay lines from a IR stream
- * so that it is compatible with CLAM::CrossFadeAndSwitch.
+ * so that it is compatible with CLAM::XFadeAndSwitch.
  * That is, when the IR changes, it keeps it on one of the
  * delay lines for two frames. The lines that it is delayed
  * is alternated each change starting with the first one.
@@ -73,7 +73,9 @@ o1: AAAAADDD
 o2: AAABBBBD
     AAAAbBdD
 @endcode
- */
+ @ingroup RealTimeConvolution
+*/
+
 class IRSwappingDelay : public Processing
 { 
 private:

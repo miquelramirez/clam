@@ -40,7 +40,7 @@ namespace CLAM
  @param[in] Gain2 [Control] The gain to apply to Term2.
  @pre Term1 and Term2 must be equal size.
  @pre Term1 and Term2 must have the same spectralRange.
- @ingroup NewSpectralProcessing
+ @ingroup SpectralProcessingOperations
 */
 class ComplexSpectrumMixer : public Processing
 { 

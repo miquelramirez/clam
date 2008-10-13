@@ -31,15 +31,18 @@ namespace CLAM
 {
 
 /**
- This Processing crossfades a pair of buffers at each frame.
+ [Deprecated] This Processing crossfades a pair of buffers at each frame.
  It was intended to solve the problem of realtime switching
  audio buffers convoluted with different impulse responses.
 
  @deprecated This processing doesn't work as intended when
  	the buffers require overlap on later stages.
+ @see XFadeAndSwitch
  @param[in] FadingIn [Port] The audio that fades in
  @param[in] FadingOut [Port] The audio fades out
  @param[out] CrossFadedBuffer [Port] The crossfaded audio buffer
+
+ @ingroup RealTimeConvolution
 */
 class AudioBufferCrossFader : public Processing
 {

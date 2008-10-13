@@ -36,16 +36,20 @@ namespace CLAM
 {
 
 
-struct BFormatIR
-{
-	ImpulseResponse W;
-	ImpulseResponse X;
-	ImpulseResponse Y;
-	ImpulseResponse Z;
-
-};
+/**
+ @todo Document ImpulseResponseCalculatedOnTheFly
+ @ingroup SpatialAudio
+*/
 class ImpulseResponseCalculatedOnTheFly : public Processing
 { 
+	struct BFormatIR
+	{
+		ImpulseResponse W;
+		ImpulseResponse X;
+		ImpulseResponse Y;
+		ImpulseResponse Z;
+
+	};
 public:
 	class Config : public ProcessingConfig
 	{

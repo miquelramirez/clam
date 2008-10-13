@@ -158,6 +158,10 @@ public:
 	}
 };
 
+/**
+ @todo document HRTFDatabaseFetcher2
+ @ingroup SpatialAudio
+*/
 class HRTFDatabaseFetcher2 : public Processing
 { 
 public:

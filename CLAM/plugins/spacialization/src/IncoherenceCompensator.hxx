@@ -45,7 +45,8 @@ namespace CLAM
  * frequencys than for lower frequencies.
  *
  * @todo IncoherenceCompensator: Write down the formula and the statistical justification.
- *
+ * @todo document Config, Ports and Controls
+ * @ingroup SpatialAudio
  */
 
 class IncoherenceCompensator : public Processing

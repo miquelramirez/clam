@@ -39,6 +39,7 @@ namespace CLAM
 
 /**
  * Does the interpolation of two ImpulseResponse objects.
+ * @todo Assign this class to a doxygen group
  */
 class ImpulseResponseInterpolator : public Processing
 {

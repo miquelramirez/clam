@@ -41,7 +41,7 @@ namespace CLAM
  @param FFTSize [Config] How many samples the window includes
  @param[in] "Audio buffer"  [Port] The incoming audio buffers
  @param[out] "Audio stream"  [Port] The outgoing audio stream
- @ingroup NewSpectralProcessing New spectral processing
+ @ingroup SpectralProcessingAnalysis
 */
 
 class AudioBuffer2Stream : public Processing

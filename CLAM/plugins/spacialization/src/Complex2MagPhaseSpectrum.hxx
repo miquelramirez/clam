@@ -46,7 +46,7 @@ namespace CLAM
  whether the cost of the conversion is worth for the cost you save.
 
  @see ComplexSpectrum, MagPhaseSpectrum, MagPhase2ComplexSpectrum
- @ingroup NewSpectralProcessing
+ @ingroup SpectralProcessingConversions
 */
 class Complex2MagPhaseSpectrum : public Processing
 {

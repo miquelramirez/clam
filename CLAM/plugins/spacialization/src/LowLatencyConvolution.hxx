@@ -38,6 +38,19 @@
 namespace CLAM
 {
 
+/**
+ This processing performs the convolution of a incomming stream of spectrums with an ImpulseResponse
+ with lower latency than frequency domain convolution and still not being so slow as a time domain
+ convolution.
+ @param MaxFrames [Config] The maximum of frames that are considered from
+	the impulse response or zero to no use such a limit.
+ @param FrameSize [Config] The number of samples of each frame. It determines the latency of the convolution.
+ @param[in] Input [Port] A complex spectrum to process.
+ @param[in] ImpulseResponse [Port] An ImpulseResponse object to convolve the input with.
+ @param[out] Output [Port] The convolved output.
+ @ingroup RealTimeConvolution
+ @todo Complete LowLatencyConvolution documentation
+*/
 class LowLatencyConvolution : public Processing
 { 
 public:
