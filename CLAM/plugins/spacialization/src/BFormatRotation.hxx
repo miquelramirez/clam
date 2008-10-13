@@ -8,6 +8,21 @@
 #include <CLAM/InControl.hxx>
 #include <cmath>
 
+/**
+ This Processing rotates a B-format source
+ @todo BFormatRotation explain how the rotations are performed
+ @param IsPassiveRotation [Config] Is true when the listener is the one that rotates and false when the sources are the ones that rotate
+ @param[in] azimuth [Control]
+ @param[in] elevation [Control]
+ @param[in] vx [Port] The X component to be rotated
+ @param[in] vy [Port] The Y component to be rotated
+ @param[in] vz [Port] The Z component to be rotated
+ @param[out] vx [Port] The X component after rotation
+ @param[out] vy [Port] The Y component after rotation
+ @param[out] vz [Port] The Z component after rotation
+ @see AmbisonicsConventions
+ @ingroup SpatialAudio
+*/
 class BFormatRotation : public CLAM::Processing
 {
 protected:
@@ -56,7 +71,7 @@ public:
 //		When buffersize==1024 a 512 delay is added to the W channel. This is strange!
 //		there is a dataflow scheduling problem. --Pau
 		unsigned buffersize=512;
-std::cout << "BUFFER SIZE " << buffersize << std::endl;
+//std::cout << "BUFFER SIZE " << buffersize << std::endl;
 		_Xin.SetSize(buffersize);
 		_Xin.SetHop(buffersize);
 		_Yin.SetSize(buffersize);
