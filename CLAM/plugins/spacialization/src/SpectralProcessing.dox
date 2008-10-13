@@ -1,0 +1,25 @@
+/**
+ @defgroup NewSpectralProcessing Spectral Processing reimplementation
+
+ This module contains classes that implement spectral processing,
+ this is working with the spectral representation
+ (@link http://en.wikipedia.org/wiki/Short-time_Fourier_transform STFT @endlink)
+ of the signal that, once modified can be converted back to the usual time domain.
+
+ Classes in this module are a reimplementation of the old spectral classes
+ in CLAM which were based on an spectrum (CLAM::Spectrum) which contained
+ all the possible representations considering linear or dB, and Complex, 
+ Polar, MagPhase or MagPhaseBPF.
+ Which added a lot of extra complexity to any operation to be done with it.
+
+ These new classes split those representations in several different data
+ objects so that the processings just deal with one of them and then
+ conversors are provided to switch from one to another.
+
+ These classes are intended to substitute the whole existing spectral 
+ processing in CLAM on the long term.
+ Meanwhile conversion classes to go from and to CLAM::Spectrums
+ are also provided to bridge them both.
+*/
+
+
