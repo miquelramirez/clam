@@ -22,6 +22,7 @@
 #define RoomImpulseResponseSimulator_hxx
 
 #include <CLAM/InControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/AudioInPort.hxx>
 #include <CLAM/Processing.hxx>
@@ -90,6 +91,7 @@ private:
 	InControl _receiverX;
 	InControl _receiverY;
 	InControl _receiverZ;
+	OutControl _directSoundPressure;
 	BFormatIR _impulseResponses[nCachedIRs];
 	BFormatIR  * _current;
 	BFormatIR  * _previous;
@@ -117,6 +119,7 @@ public:
 		, _receiverX("receiverX", this)
 		, _receiverY("receiverY", this)
 		, _receiverZ("receiverZ", this)
+		, _directSoundPressure("directSoundPressure", this)
 		, _current(0)
 		, _previous(0)
 		, _currentEmitterX(0)
@@ -243,11 +246,13 @@ private:
 			_scene->normalizedToModelZ(_currentEmitterZ)
 			);
 
+		double directSoundPressure = 0;
 		unsigned offset = 0;
 		if (_config.HasSupressInitialDelay() and _config.GetSupressInitialDelay())
 		{
 			_scene->computeDirectSoundOverTime();
 			offset = _scene->getDirectSoundDelayInSamples();
+			directSoundPressure = _scene->getDirectSoundPressure();
 		}
 
 		std::string responsesPath = "";
@@ -266,6 +271,7 @@ private:
 			std::cout << "ERROR: RoomImpulseResponseSimulator::Do can not open IR files.\n" << errorMsg << std::endl;
 			return false;
 		}
+		_directSoundPressure.SendControl(directSoundPressure);
 		return true;
 	}
 public:
