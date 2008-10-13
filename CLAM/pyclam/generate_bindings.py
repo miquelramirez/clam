@@ -53,9 +53,10 @@ clam_file_list += ['FlowControl.hxx','FlattenedNetwork.hxx','Network.hxx','Netwo
 clam_file_list += ['DataTypes.hxx','Enum.hxx','CLAM_Math.hxx','Err.hxx']
 
 clam_file_list += ['MonoAudioFileReader.hxx','AudioInFilename.hxx']
-#clam_file_list += ['AudioFileHeader.hxx']
-
-exported_manually_file_list += ['DataArray.hxx'] # Original CLAM file is Array.hxx, but exposed class/type is named DataArray
+clam_file_list += ['AudioFile.hxx','Text.hxx','Filename.hxx']
+exported_manually_file_list += [ 'EAudioFileCodec.hxx','EAudioFileEncoding.hxx','EAudioFileEndianess.hxx','EAudioFileFormat.hxx' ] # Original CLAM file for all these classes is 'AudioFileFormats.hxx'
+exported_manually_file_list += ['AudioFileHeader.hxx']
+exported_manually_file_list += ['DataArray.hxx'] # Original CLAM file declaring this class/type is 'Array.hxx'
 exported_manually_file_list += ['Audio.hxx']
 exported_manually_file_list += ['MonoAudioFileReaderConfig.hxx']
 
@@ -129,6 +130,23 @@ for classname in exported_manually_file_list:
 	mb.add_declaration_code( "#include  \"src/manual/%s.pypp.hpp\""%(classname[:-4]) )
 	mb.add_registration_code( "register_%s_class();"%(classname[:-4]), tail=False )
 
+# Extra registrations
+mb.add_registration_code( """bp::implicitly_convertible< int, CLAM::EAudioFileCodec >();
+    bp::implicitly_convertible< std::string, CLAM::EAudioFileCodec >();
+	bp::implicitly_convertible< int, CLAM::EAudioFileCodec >();
+    bp::implicitly_convertible< std::string, CLAM::EAudioFileCodec >();
+    bp::implicitly_convertible< int, CLAM::EAudioFileEncoding >();
+    bp::implicitly_convertible< std::string, CLAM::EAudioFileEncoding >();
+    bp::implicitly_convertible< int, CLAM::EAudioFileEndianess >();
+    bp::implicitly_convertible< std::string, CLAM::EAudioFileEndianess >();
+    bp::implicitly_convertible< int, CLAM::EAudioFileFormat >();
+    bp::implicitly_convertible< std::string, CLAM::EAudioFileFormat >();""" )
+
+# Classes that need to be registered before others
+mb.add_registration_code("register_Enum_class();", tail=False)
+mb.add_registration_code("register_Component_class();", tail=False)
+
+#TODO: avoid duplicated classes registering
 
 # Creating code creator. After this step you should not modify/customize declarations.
 mb.build_code_creator( module_name='clam', doc_extractor=doxygen_doc_extractor() )
