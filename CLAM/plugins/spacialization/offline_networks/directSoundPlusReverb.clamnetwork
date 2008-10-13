@@ -142,6 +142,16 @@
     <FrameSize>512</FrameSize>
   </processing>
 
+  <processing id="AudioMixer_3" position="1357,954" size="110,62" type="AudioMixer">
+    <NumberOfInPorts>1</NumberOfInPorts>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="AudioMixer_4" position="1367,1132" size="110,62" type="AudioMixer">
+    <NumberOfInPorts>1</NumberOfInPorts>
+    <FrameSize>512</FrameSize>
+  </processing>
+
   <processing id="AudioSink" position="1879,815" size="128,111" type="AudioSink"/>
 
   <processing id="AudioSink_1" position="1796,1029" size="128,111" type="AudioSink"/>
@@ -498,6 +508,12 @@
 
   <processing id="amp_mono0" position="1426,318" size="134,66" type="amp_mono0"/>
 
+  <processing id="directSoundPressure" position="754,513" size="247,100" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
     <in>XFadeAndSwitch.Audio1</in>
@@ -581,6 +597,16 @@
   <port_connection>
     <out>AudioMixer_2.Output Audio</out>
     <in>AudioSink_1.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioMixer_3.Output Audio</out>
+    <in>AudioMixer_1.Input 1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioMixer_4.Output Audio</out>
+    <in>AudioMixer_2.Input 1</in>
   </port_connection>
 
   <port_connection>
@@ -1105,7 +1131,7 @@
 
   <port_connection>
     <out>XFadeAndSwitch.CrossFadedBuffer</out>
-    <in>AudioMixer_1.Input 1</in>
+    <in>AudioMixer_3.Input 0</in>
   </port_connection>
 
   <port_connection>
@@ -1115,7 +1141,7 @@
 
   <port_connection>
     <out>XFadeAndSwitch_1.CrossFadedBuffer</out>
-    <in>AudioMixer_2.Input 1</in>
+    <in>AudioMixer_4.Input 0</in>
   </port_connection>
 
   <port_connection>
@@ -1231,6 +1257,21 @@
   <control_connection>
     <out>Reverb Gain.out</out>
     <in>AudioMixer_2.Gain 0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>RoomImpulseResponseSimulator.directSoundPressure</out>
+    <in>AudioMixer_3.Gain 0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>RoomImpulseResponseSimulator.directSoundPressure</out>
+    <in>AudioMixer_4.Gain 0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>RoomImpulseResponseSimulator.directSoundPressure</out>
+    <in>directSoundPressure.In Control</in>
   </control_connection>
 
 </network>
