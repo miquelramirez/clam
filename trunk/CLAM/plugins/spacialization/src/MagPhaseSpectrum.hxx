@@ -28,8 +28,12 @@ namespace CLAM
 {
 
 /**
- * Experimental light-weight spectrum
- * Linear scale is implicit.
+ * Experimental light-weight spectrum using two vectors of magnitudes and phase.
+ * Linear scale is used for the magnitude.
+ * The phase is expressed in radiants.
+ *
+ * @ingroup NewSpectralProcessing.
+ * @see ComplexSpectrum, CLAM::Spectrum
  */
 struct MagPhaseSpectrum 
 {

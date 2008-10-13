@@ -30,6 +30,15 @@
 namespace CLAM
 {
 
+/**
+ Processing that adds two incoming complex spectrums.
+ @param[in] Term1 [Port] A ComplexSpectrum to be added.
+ @param[in] Term2 [Port] A ComplexSpectrum to be added.
+ @param[out] Mixer [Port] An ComplexSpectrum which is the sum of the two inputs.
+ @pre Term1 and Term2 must be equal size.
+ @pre Term1 and Term2 must have the same spectralRange.
+ @ingroup NewSpectralProcessing
+*/
 class ComplexSpectrumSum : public Processing
 { 
 	InPort<ComplexSpectrum> _term1;

@@ -29,8 +29,11 @@ namespace CLAM
 {
 
 /**
- * Experimental light-weight spectrum
- * Linear scale is implicit.
+ * Experimental light-weight spectrum using complex representation.
+ * Linear scale is used.
+ *
+ * @ingroup NewSpectralProcessing.
+ * @see MagPhaseSpectrum, CLAM::Spectrum
  */
 class ComplexSpectrum
 {

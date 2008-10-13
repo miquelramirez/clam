@@ -40,8 +40,17 @@ namespace CLAM
 	class ComplexSpectrum;
 	class Audio;
 
-	/** Implementation of the FFT using the Fastest Fourier Transform of the West version 3
-	 */
+/**
+ Implementation of the FFT using the Fastest Fourier Transform in the West version 3.
+ @see @link http://www.fftw.org/ FFTW Home Page @endlink
+
+ @param[in] "Audio Buffer" [Port] An audio buffer
+ @param[out] "Complex Spectrum" [Port] A complex spectrum
+
+ @todo Document MyFFT configuration parameters
+ @see MyIFFT, NewSpectralProcessing
+ @ingroup NewSpectralProcessing
+*/
 	class MyFFT: public Processing
 	{
 	public:

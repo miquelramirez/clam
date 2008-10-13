@@ -32,9 +32,17 @@
 
 namespace CLAM {
 
-	/** Implementation of the IFFT using the Fastest Fourier in the West version 3
-	* @see <a HREF="http://www.fftw.org/"> FFTW Home Page</a>
-	*/
+/**
+ Implementation of the IFFT using the Fastest Fourier Tranform in the West version 3.
+ @see @link http://www.fftw.org/ FFTW Home Page @endlink
+ 
+ @param[in] "Complex Spectrum" [Port] A complex spectrum
+ @param[out] "Audio Buffer" [Port] An audio buffer
+ @todo Document MyIFFT configuration parameters
+
+ @see MyFFT, AudioBuffer2Stream, NewSpectralProcessing
+ @ingroup NewSpectralProcessing
+*/
 	class MyIFFT: public Processing
 	{
 		InPort<ComplexSpectrum> mInput;

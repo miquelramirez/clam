@@ -31,6 +31,23 @@
 namespace CLAM
 {
 
+/**
+ This processing converts an spectrum in
+	Complex representation (ComplexSpectrum)
+ into one which uses 
+	Magnitude/Phase representation (MagPhaseSpectrum).
+ Linear values are suposed in both representations.
+
+ @param[in] ComplexSpectrum [Port] A complex spectrum.
+ @param[out] MagPhaseSpectrum [Port] A magnitude-phase
+
+ Magnitude-Phase representation is more convenient for some operations.
+ Anyway, as the FFT and IFFT works with complex form, consider with a profiler
+ whether the cost of the conversion is worth for the cost you save.
+
+ @see ComplexSpectrum, MagPhaseSpectrum, MagPhase2ComplexSpectrum
+ @ingroup NewSpectralProcessing
+*/
 class Complex2MagPhaseSpectrum : public Processing
 {
 	InPort<ComplexSpectrum> mComplexSpectrum;

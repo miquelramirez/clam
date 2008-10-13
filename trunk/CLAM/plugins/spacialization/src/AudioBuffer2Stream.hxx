@@ -32,17 +32,22 @@ namespace CLAM
 {
 
 /**
- Processing that take buffers of audio and produces an audio
- stream by concatenating or semioverlaping them.
- @param Hopsize [Config] How many samples the window is advancing each execution 
+ Processing that generates a continuous stream of samples
+ by semi-overlapping incomming audio buffers.
+ The overlap is controlled by setting smaller HopSize than
+ the incomming FFTSize.
+ @pre The FFTSize should match the size of the incomming buffers.
+ @param HopSize [Config] How many samples the window is advancing each execution 
  @param FFTSize [Config] How many samples the window includes
- @param[in] "Audio buffer"  [Port]
+ @param[in] "Audio buffer"  [Port] The incoming audio buffers
+ @param[out] "Audio stream"  [Port] The outgoing audio stream
  @ingroup NewSpectralProcessing New spectral processing
 */
 
 class AudioBuffer2Stream : public Processing
 {
 	// TODO: Use that configuration instead AudioWindowingConfig
+	/// The configuration for that
 	class FutureConfig : public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( FutureConfig, 2, ProcessingConfig );
@@ -50,13 +55,14 @@ class AudioBuffer2Stream : public Processing
 		// TODO: Rename FFTSize to WindowSize
 		DYN_ATTRIBUTE( 1, public, unsigned, FFTSize);
     	protected:
-	    void DefaultInit()
-	    {
-		AddAll();
-		UpdateData();
-		SetHopSize(512);
-		SetFFTSize(1024);
-	    }
+		/// Booo
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetHopSize(512);
+			SetFFTSize(1024);
+		}
 	};
 	typedef AudioWindowingConfig Config;
 	InPort<Audio> _in;
@@ -72,6 +78,7 @@ public:
 	{
 		Configure( config );
 	}
+private:
 	bool ConcreteConfigure(const ProcessingConfig & c)
 	{
 		CopyAsConcreteConfig(_config, c);
@@ -82,7 +89,7 @@ public:
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
- 
+public: 
 	bool Do()
 	{
 		const Audio& in = _in.GetData();
@@ -101,7 +108,6 @@ public:
 		_out.Produce();
 		return true;
 	}
-
 
 };
 
