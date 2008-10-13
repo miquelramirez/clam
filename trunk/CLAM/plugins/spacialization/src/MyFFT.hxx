@@ -49,7 +49,7 @@ namespace CLAM
 
  @todo Document MyFFT configuration parameters
  @see MyIFFT, NewSpectralProcessing
- @ingroup NewSpectralProcessing
+ @ingroup SpectralProcessingAnalysis
 */
 	class MyFFT: public Processing
 	{

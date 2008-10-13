@@ -102,6 +102,11 @@ public:
 	}
 };
 
+/**
+ @todo document HRTFDatabaseFetcher
+ @deprecated Use HRTFDatabaseFetcher2 which uses a database description file instead of using filename patterns.
+ @ingroup SpatialAudio
+*/
 class HRTFDatabaseFetcher : public Processing
 { 
 public:

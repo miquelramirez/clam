@@ -31,6 +31,10 @@
 namespace CLAM
 {
 
+/**
+ @todo Document ImpulseResponseLoader
+ @ingroup RealTimeConvolution
+*/
 class ImpulseResponseLoader : public Processing
 { 
 public:

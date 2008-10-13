@@ -34,6 +34,20 @@ namespace CLAM
 {
 
 
+/**
+ This processing loads an audio file and outputs
+ a fixed spectrum representing the first FrameSize samples.
+ This processing can be used, for example, to filter an incoming stream with
+ a filter represented in a wave file as a time domain impulse response.
+ If the impulse response is long and you want to achieve low latency,
+ consider to use ImpulseResponse objects and LowLatencyConvolution objects.
+ @param AudioFile [Control] The file name of the input file
+ @param FrameSize [Control] The number of samples to compute the FFT on.
+ @param[out] "Complex Spectrum" [Port] The spectrum in ComplexSpectrum representation
+ @param[out] "MagPhase Spectrum" [Port] The spectrum in MagPhaseSpectrum representation
+ @todo Doing zero padding when the FrameSize is shorter
+ @ingroup NewSpectralProcessing
+*/
 class ConstantSpectrum : public Processing
 { 
 	class Config : public ProcessingConfig

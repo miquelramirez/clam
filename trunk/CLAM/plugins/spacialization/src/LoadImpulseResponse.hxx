@@ -29,7 +29,10 @@
 namespace CLAM
 {
 
-
+/**
+ @ingroup RealTimeConvolution
+ @todo Document ImpulseResponse
+*/
 typedef std::vector<ComplexSpectrum> ImpulseResponse;
 
 bool computeResponseSpectrums(

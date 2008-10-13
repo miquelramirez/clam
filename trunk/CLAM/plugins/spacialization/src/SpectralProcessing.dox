@@ -2,7 +2,7 @@
  @defgroup NewSpectralProcessing Spectral Processing reimplementation
 
  This module contains classes that implement spectral processing,
- this is working with the spectral representation
+ that is working with the spectral representation
  (@link http://en.wikipedia.org/wiki/Short-time_Fourier_transform STFT @endlink)
  of the signal that, once modified can be converted back to the usual time domain.
 
@@ -20,6 +20,36 @@
  processing in CLAM on the long term.
  Meanwhile conversion classes to go from and to CLAM::Spectrums
  are also provided to bridge them both.
+*/
+
+/**
+ @defgroup SpectralProcessingAnalysis Spectral Processing Analysis and Synthesis
+ @ingroup NewSpectralProcessing
+
+ Obtaining the spectral representation from time domain audio and backwards.
+*/
+
+/**
+ @defgroup SpectralProcessingOperations Spectral Processing Operations
+ @ingroup NewSpectralProcessing
+
+ Operating with the spectral representation of the sound.
+*/
+
+/**
+ @defgroup SpectralProcessingConversions Spectral Processing Conversions
+ @ingroup NewSpectralProcessing
+
+ Converting among the different spectral representations.
+*/
+
+/**
+ @defgroup RealTimeConvolution Real Time Convolution
+ @ingroup NewSpectralProcessing
+
+ This module contains Processings and Data types to perform realtime
+ convolutions of long impulse responses with low latency and the
+ ability to switch the impulse response while processing.
 */
 
 

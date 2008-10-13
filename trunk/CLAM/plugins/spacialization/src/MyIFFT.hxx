@@ -41,7 +41,7 @@ namespace CLAM {
  @todo Document MyIFFT configuration parameters
 
  @see MyFFT, AudioBuffer2Stream, NewSpectralProcessing
- @ingroup NewSpectralProcessing
+ @ingroup SpectralProcessingAnalysis
 */
 	class MyIFFT: public Processing
 	{

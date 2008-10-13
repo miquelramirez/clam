@@ -30,6 +30,16 @@
 namespace CLAM
 {
 
+/**
+ Processing that multiplies two incoming MagPhaseSpectrum's.
+ @param[in] Factor1 [Port] A MagPhaseSpectrum to be multiplied.
+ @param[in] Factor2 [Port] A MagPhaseSpectrum to be multiplied.
+ @param[out] Product [Port] A MagPhaseSpectrum which is the product of the two inputs.
+ @pre Factor1 and Factor2 must be equal size.
+ @pre Factor1 and Factor2 must have the same spectralRange.
+ @see ComplexSpectrumProduct
+ @ingroup SpectralProcessingOperations
+*/
 class MagPhaseSpectrumProduct : public Processing
 { 
 	InPort<MagPhaseSpectrum> _factor1;

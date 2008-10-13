@@ -34,7 +34,7 @@ namespace CLAM
  Processing that inverts the phase of a complex spectrum.
  @param[in] Input A ComplexSpectrum to be inverted.
  @param[out] Output An ComplexSpectrum which is the same in the input but with all the bins inverted in sign.
- @ingroup NewSpectralProcessing
+ @ingroup SpectralProcessingOperations
 */
 class ComplexSpectrumInverter : public Processing
 { 

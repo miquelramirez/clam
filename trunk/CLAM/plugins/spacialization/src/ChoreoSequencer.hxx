@@ -12,6 +12,10 @@
 namespace CLAM
 {
 
+/**
+ @todo document ChoreoSequencer
+ @ingroup SpatialAudio
+*/
 class ChoreoSequencer : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig

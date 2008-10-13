@@ -37,7 +37,7 @@ namespace CLAM
  @param[out] Mixer [Port] An ComplexSpectrum which is the sum of the two inputs.
  @pre Term1 and Term2 must be equal size.
  @pre Term1 and Term2 must have the same spectralRange.
- @ingroup NewSpectralProcessing
+ @ingroup SpectralProcessingOperations
 */
 class ComplexSpectrumSum : public Processing
 { 
