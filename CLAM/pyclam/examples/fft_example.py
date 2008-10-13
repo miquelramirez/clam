@@ -47,7 +47,7 @@ myspectrum.SetSize( samples/2+1 )
 fconfig = FFTConfig()
 fconfig.SetAudioSize( samples )
 
-myfft = FFT_ooura() #FIXME: FFT() should work
+myfft = FFT()
 myfft.Configure( toProcessingConfig(fconfig) ) #FIXME
 
 myfft.Start()
