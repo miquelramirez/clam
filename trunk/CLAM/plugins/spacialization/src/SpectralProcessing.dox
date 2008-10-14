@@ -27,6 +27,7 @@
  @ingroup NewSpectralProcessing
 
  Obtaining the spectral representation from time domain audio and backwards.
+ @todo Explain setups for typical cases: window less, windowed, zeropadding..., processing involved and sizes to be configured
 */
 
 /**
@@ -49,7 +50,7 @@
 
  This module contains Processings and Data types to perform realtime
  convolutions of long impulse responses with low latency and the
- ability to switch the impulse response while processing.
+ ability to switch the impulse response without clicks.
 */
 
 
