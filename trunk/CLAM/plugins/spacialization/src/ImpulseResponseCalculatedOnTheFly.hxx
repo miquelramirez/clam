@@ -38,7 +38,7 @@ namespace CLAM
 
 /**
  @todo Document ImpulseResponseCalculatedOnTheFly
- @see RoomImpulseResponseSimulator
+ @see RoomImpulseResponseSimulator, ImpulseResponseDatabaseFetcher
  @ingroup SpatialAudio
 */
 class ImpulseResponseCalculatedOnTheFly : public Processing
