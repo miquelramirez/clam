@@ -35,7 +35,7 @@ namespace CLAM
  Processing that adds two incoming complex spectrums applying a different gain to each one.
  @param[in] Term1 [Port] A ComplexSpectrum to be mixed.
  @param[in] Term2 [Port] A ComplexSpectrum to be mixed.
- @param[out] Mixer [Port] An ComplexSpectrum which is the weighted sum of the two inputs.
+ @param[out] Mixer [Port] A ComplexSpectrum which is the weighted sum of the two inputs.
  @param[in] Gain1 [Control] The gain to apply to Term1.
  @param[in] Gain2 [Control] The gain to apply to Term2.
  @pre Term1 and Term2 must be equal size.

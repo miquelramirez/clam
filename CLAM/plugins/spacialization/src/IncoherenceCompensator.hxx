@@ -34,40 +34,40 @@ namespace CLAM
 {
 
 /**
- * Generates a spectrum representing a frequency domain filter 
- * that compensates the frequency magnitude decay produced by 
- * placing several coherent sources with an error on the distance
- * characterized by its standard deviation.
- *
- * To get an idea of why this is needed, given a displacement 
- * between two speakers reproducing the same or similar wave
- * smaller error is required to cancel each other for high
- * frequencys than for lower frequencies.
- *
- * @todo IncoherenceCompensator: Write down the formula and the statistical justification.
- * @todo document Config, Ports and Controls
- * @ingroup SpatialAudio
- */
+ Generates a spectrum representing a frequency domain filter 
+ that compensates the frequency magnitude decay produced by 
+ placing several coherent sources with an error on the distance
+ characterized by its standard deviation.
+
+ To get an idea of why this is needed, given a displacement 
+ between two speakers reproducing the same or similar wave
+ smaller error is required to cancel each other for high
+ frequencys than for lower frequencies.
+
+ @todo IncoherenceCompensator: Write down the formula and the statistical justification.
+ @todo document Config, Ports and Controls
+ @ingroup SpatialAudio
+*/
 
 class IncoherenceCompensator : public Processing
 { 
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
-	    /// Standard deviation of the sources distance in centimeters
-	    DYN_ATTRIBUTE( 1, public, CLAM::TData, DistanceStandardDeviation);
-	    DYN_ATTRIBUTE( 2, public, CLAM::TData, SampleRate);
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, int, FrameSize);
+		/// Standard deviation of the sources distance in centimeters
+		DYN_ATTRIBUTE( 1, public, CLAM::TData, DistanceStandardDeviation);
+		DYN_ATTRIBUTE( 2, public, CLAM::TData, SampleRate);
 
 	protected:
-	    void DefaultInit()
-	    {
-		AddAll();
-		UpdateData();
-		SetFrameSize(512);
-		SetDistanceStandardDeviation(.01);
-		SetSampleRate(44100);
-	    };
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetFrameSize(512);
+			SetDistanceStandardDeviation(.01);
+			SetSampleRate(44100);
+		};
 	};
 
 	OutPort<ComplexSpectrum> mOutComplex;

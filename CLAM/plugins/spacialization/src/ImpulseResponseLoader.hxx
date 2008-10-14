@@ -32,7 +32,11 @@ namespace CLAM
 {
 
 /**
- @todo Document ImpulseResponseLoader
+ This processing feeds a constant ImpulseResponse (DFT stream representation)
+ of an audio file.
+ @param FrameSize [Config] The size of the frames in samples for the DFT.
+ @param AudioInFilename [Config] The name of the wave file to load.
+ @param[out] ImpulseResponse [Port] The generated impulse response.
  @ingroup RealTimeConvolution
 */
 class ImpulseResponseLoader : public Processing

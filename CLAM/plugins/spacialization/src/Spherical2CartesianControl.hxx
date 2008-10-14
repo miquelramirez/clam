@@ -5,6 +5,14 @@
 #include <CLAM/OutControl.hxx>
 #include <cmath>
 
+
+/**
+ Processing that converts spherical coordinates in \ref AmbisonicsConventions
+ into cartesian X, Y, Z coordinates also in \ref AmbisonicsConventions
+ @todo Domument Spherical2CartesianControl
+ @todo Check that Spherical2CartesianControl follows ambisonics convetions.
+ @ingroup SpatialAudio
+ */
 class Spherical2CartesianControl : public CLAM::Processing
 { 
 	CLAM::InControl _azimuth;

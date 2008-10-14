@@ -56,18 +56,18 @@ class LowLatencyConvolution : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, unsigned, MaxFrames);
-	    DYN_ATTRIBUTE( 1, public, int, FrameSize);
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, unsigned, MaxFrames);
+		DYN_ATTRIBUTE( 1, public, int, FrameSize);
 
 	protected:
-	    void DefaultInit()
-	    {
-		  AddAll();
-		  UpdateData();
-		  SetFrameSize(512);
-		  SetMaxFrames(0);
-	    };
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetFrameSize(512);
+			SetMaxFrames(0);
+		};
 	};
 
 private:

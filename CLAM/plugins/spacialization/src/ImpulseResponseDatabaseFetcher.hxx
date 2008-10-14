@@ -33,7 +33,16 @@ namespace CLAM
 {
 
 /**
- @todo Document ImpulseResponseDatabaseFetcher
+ Given source and emitter normalized positions (0..1 for each dimension)
+ it returns the closer precomputed impulse response within the 6D grid.
+ The second port is a single frame delayed one so one can do crossfading.
+ To load the database it takes a path, a prefix and constructs the
+ wave file names $(path)/$(prefix)_emissor_x-y-z_receptor_x-y-z.wav
+ x,y,z are integer positions on the grid starting at 0.
+ Every dimension for separate emitter and receptor goes as far as wav
+ are found from 0,0,0,0,0,0.
+ @todo Document ImpulseResponseDatabaseFetcher Config, Ports and Controls
+ @todo Document the database layout
  @ingroup RealTimeConvolution, SpatialAudio
 */
 class ImpulseResponseDatabaseFetcher : public Processing

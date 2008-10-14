@@ -8,25 +8,32 @@
 #include <cmath>
 
 /**
- * Converts ambisonics B-Format (W,X,Y,Z) input into N equiangular surround
- * channels with the first one at the front.
- *
- * Control value <em>beta</em>, controls a simulated rotation of the receiver.
- */
+ Converts pressure and velocity input into N equiangular surround
+ channels with the first one at the front and going to the left.
+ @param NChannels [Config] The number of channels that are to be generated. That configuration parameter changes number of output ports the processing will have and the separation among the speakers.
+ @param[in] beta [Control] Angle in degrees for a simulated rotation of the receiver in the xy plane to the right.
+ @param[in] p [Port] Pressure to be reproduced at the sweet-spot
+ @param[in] vx [Port] X component of the velocity to be reproduced at the sweet-spot
+ @param[in] vy [Port] Y component of the velocity to be reproduced at the sweet-spot
+ @param[out] "out AAA" [Ports] Audio signals to be emitted by the speaker at AAA. Here AAA is the angle in degrees for each one of the speakers.
+ @bug It should take W,X,Y,Z instead pressure and velocity according to conventions
+ @todo Review the rotation direction with the conventions.
+ @ingroup SpatialAudio
+*/
 class NSurround : public CLAM::Processing
 { 
 protected:
 	class Config : public CLAM::ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, int, NChannels);
-    	protected:
-	    void DefaultInit()
-	    {
-		AddAll();
-		UpdateData();
-		SetNChannels(0);
-	    };
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, int, NChannels);
+	protected:
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetNChannels(0);
+		};
 	};
 
 	CLAM::AudioInPort _p;

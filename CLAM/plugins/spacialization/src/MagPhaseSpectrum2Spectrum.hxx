@@ -33,7 +33,7 @@ namespace CLAM
 
 /**
  This processing converts an spectrum in
-	Magnitude/Phase representation (MagPhaseSpectrum)
+ Magnitude/Phase representation (MagPhaseSpectrum)
  into a deprecated CLAM::Spectrum.
 
  @param[in] MagPhaseSpectrum [Port] A magnitude-phase spectrum.

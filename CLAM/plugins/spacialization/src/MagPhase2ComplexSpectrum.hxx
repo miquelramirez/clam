@@ -33,9 +33,8 @@ namespace CLAM
 
 /**
  This processing converts an spectrum in
-	Magnitude/Phase representation (MagPhaseSpectrum)
- into one which uses 
-	Complex representation (ComplexSpectrum).
+ Magnitude/Phase representation (MagPhaseSpectrum)
+ into one which uses Complex representation (ComplexSpectrum).
  Linear values are suposed in both representations.
 
  @param[in] MagPhaseSpectrum [Port] A magnitude-phase

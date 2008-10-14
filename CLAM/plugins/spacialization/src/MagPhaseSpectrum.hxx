@@ -28,13 +28,13 @@ namespace CLAM
 {
 
 /**
- * Experimental light-weight spectrum using two vectors of magnitudes and phase.
- * Linear scale is used for the magnitude.
- * The phase is expressed in radiants.
- *
- * @ingroup NewSpectralProcessing.
- * @see ComplexSpectrum, CLAM::Spectrum
- */
+ Light-weight spectrum representation using two vectors of magnitudes and phase.
+ Linear scale is used for the magnitude.
+ The phase is expressed in radiants.
+
+ @ingroup NewSpectralProcessing.
+ @see ComplexSpectrum, CLAM::Spectrum
+*/
 struct MagPhaseSpectrum 
 {
 	std::vector<TData> magnitudes;

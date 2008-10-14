@@ -37,7 +37,12 @@
 
 namespace CLAM
 {
-
+/**
+ Helper processing that takes the first DFT spectrum of an impulse response.
+ Normally required to visualize it.
+ @todo Document DebugImpulseResponse
+ @ingroup RealTimeConvolution
+*/
 class DebugImpulseResponse : public Processing
 { 
 

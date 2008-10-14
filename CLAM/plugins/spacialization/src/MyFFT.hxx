@@ -41,13 +41,17 @@ namespace CLAM
 	class Audio;
 
 /**
- Implementation of the FFT using the Fastest Fourier Transform in the West version 3.
+ Fast Fourier Tranform that takes an audio buffer (n samples) 
+ and returns the complex spectrum of n/2+1 complex bins.
+ Implementation uses the Fastest Fourier Transform in the West version 3
+ to perform a real to complex DFT.
  @see @link http://www.fftw.org/ FFTW Home Page @endlink
 
  @param[in] "Audio Buffer" [Port] An audio buffer
  @param[out] "Complex Spectrum" [Port] A complex spectrum
 
  @todo Document MyFFT configuration parameters
+ @todo Frequencies related to each bin
  @see MyIFFT, NewSpectralProcessing
  @ingroup SpectralProcessingAnalysis
 */

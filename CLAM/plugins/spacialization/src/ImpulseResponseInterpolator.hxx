@@ -38,25 +38,35 @@ namespace CLAM
 
 
 /**
- * Does the interpolation of two ImpulseResponse objects.
- * @todo Assign this class to a doxygen group
- */
+ A processing that, given two impulse responses on the inputs,
+ build a third one as the pondered sum of them depending on
+ how close we are to each one.
+ @param FrameSize [Config] The size of the analized frames in samples
+ @param MaxNFrames [Config] The number of frames that the impulse responses are clamped at, or zero for no limit
+ @param[in] Position [Control] Control the position among the two: 0.0 at Input1 1.0 at Input2, the ponderation is linear among those two points.
+ @param[in] Input1 [Port] ImpulseResponse 1 
+ @param[in] Input2 [Port] ImpulseResponse 2
+ @param[out] Output [Port] Interpolated ImpulseResponse
+ @deprecated It didn't work as expected: for far IR it created echoes instead of finding intermediate IR's and for close ones it was not needed.
+ @see ImpulseResponse
+ @ingroup RealTimeConvolution
+*/
 class ImpulseResponseInterpolator : public Processing
 {
 public:
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, int, FrameSize);
-	    DYN_ATTRIBUTE( 1, public, int, MaxNFrames);
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, int, FrameSize);
+		DYN_ATTRIBUTE( 1, public, int, MaxNFrames);
 	protected:
-	    void DefaultInit()
-	    {
-		  AddAll();
-		  UpdateData();
-		  SetFrameSize(512);
-		  SetMaxNFrames(1000);
-	    };
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetFrameSize(512);
+			SetMaxNFrames(1000);
+		};
 	};
 private:
 	InControl _position;
