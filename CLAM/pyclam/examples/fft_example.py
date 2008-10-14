@@ -25,8 +25,8 @@ sampleRate = 8000.0
 sineFreq = 400.0
 
 myaudio = Audio()
-myaudio.SetSize( samples );
-myaudio.SetSampleRate( sampleRate );
+myaudio.SetSize( samples )
+myaudio.SetSampleRate( sampleRate )
 
 vector = myaudio.GetBuffer()
 for i in range(samples):
