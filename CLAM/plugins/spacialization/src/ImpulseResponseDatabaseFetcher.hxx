@@ -43,7 +43,8 @@ namespace CLAM
  are found from 0,0,0,0,0,0.
  @todo Document ImpulseResponseDatabaseFetcher Config, Ports and Controls
  @todo Document the database layout
- @ingroup RealTimeConvolution, SpatialAudio
+ @see ImpulseResponseCalculatedOnTheFly, RoomImpulseResponseSimulator
+ @ingroup RealTimeConvolution SpatialAudio
 */
 class ImpulseResponseDatabaseFetcher : public Processing
 { 
