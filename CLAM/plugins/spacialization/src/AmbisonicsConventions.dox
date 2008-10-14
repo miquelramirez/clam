@@ -43,12 +43,13 @@
  Given physical measurements of the pressure and velocity,
  B-format components, W, X, Y and Z, are composed in the following way:
 
-@f{eqnarray*}{
-W = \frac 1 {\sqrt{2}} p \\
-X = - v_x \\
-Y = - v_y \\
-Z = - v_z \\
+ @f{eqnarray*}
+  W = \frac 1 {\sqrt{2}} p \\
+  X = - v_x \\
+  Y = - v_y \\
+  Z = - v_z
  @f}
+
 */
 
 
