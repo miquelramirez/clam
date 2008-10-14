@@ -56,9 +56,7 @@ def main(args):
 	print "Filename:", toString( file.GetLocation() ) #FIXME: implicity convertible to string is not working
 	
 	# Now we print out the format it was encoded:
-	#print "Format:", file.GetHeader().GetFormat() #FIXME: two calls in the same line only works from ipython console
-	header = file.GetHeader()
-	print header.GetFormat()
+	print "Format:", file.GetHeader().GetFormat()
 	
 	# The number of channels in the file
 	print "Channels:", file.GetHeader().GetChannels()
