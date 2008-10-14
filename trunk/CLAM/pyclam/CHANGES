@@ -1,8 +1,14 @@
 2008-??-?? CLAM 1.?.?
 
- * Doxygen documentation extractor script fixed and improved. Now most documentation is accessible from python through the help() command (documentation string is at .__doc__ member).
+ * Unit tests now using standard clam 'test_data_path'.
+ * New file_info.py example using AudioFileSource and AudioTextDescriptors (port of 'examples/FileInfo_example.cxx').
+ * New exposed classes related with audio files (filename, header, encoding, text descriptors, etc).
+ * SConstruct now using CLAM defines from pkg-config files instead of hardcoded ones.
+ ** Same convention for prefix and clam_prefix than the rest of the clam applications.
+ ** Compiler optimizations flags added in release mode.
+ * Doxygen documentation extractor script fixed and improved. Now most documentation is accessible from python. through the help() command (documentation string is at .__doc__ member).
  * Py++ doxygen documentation extractor script added.
- * Spectrum and SpectrumConfig classes are now manually exposed to python and old extra wrappers for these classes were removed. Warning: at the moment they are not fully exposed, there are ready just a couple of methods.
+ * Spectrum and SpectrumConfig classes are now manually exposed to python and old extra wrappers for these classes. were removed. Warning: at the moment they are not fully exposed, there are ready just a couple of methods.
  * DataArray __setitem__ class method definition wrapping a new method EditElem in order to have [] working for python vectors also in assignation, instead of have to use the workaround with set(). pyclam.patch updated.
  * Audio and DataArray classes manually exposed. Removed now unused extra wrappers for those classes at Definitions.hxx.
  * distcc support added to scons script.

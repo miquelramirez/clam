@@ -1,0 +1,18 @@
+import os, sys
+
+options_filename = 'options.cache'
+opts = Options(options_filename,ARGUMENTS)
+opts.Add( PathOption( 'test_data_path', 'Path to the TestDataPrefix', '') )
+env = Environment(ENV=os.environ, options=opts)
+Help(opts.GenerateHelpText(env))
+
+avoid_configure_option=ARGUMENTS.get('force_avoid_configure',0)
+needs_configure = ('configure' in COMMAND_LINE_TARGETS) or not os.path.exists(options_filename) or len(ARGUMENTS)>0
+avoid_configure = '--help' in COMMAND_LINE_TARGETS or avoid_configure_option=='1' or avoid_configure_option=='yes' or '-c' in ARGUMENTS
+
+if needs_configure and not avoid_configure :
+	print 'Configure phase...'
+	opts.Update(env)
+	opts.Save(options_filename, env)
+	print "Finished."
+	Exit(0)
