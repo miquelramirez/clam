@@ -16,7 +16,7 @@ class GeneralTests(unittest.TestCase):
 		reader = clam.MonoAudioFileReader()
 		config = clam.MonoAudioFileReaderConfig()
 		self.assertEqual( False, reader.Configure( clam.toProcessingConfig(config) ) )
-		config.SetSourceFile( "test4seg.mp3" )
+		config.SetSourceFile( "trumpet.mp3" )
 		self.assertEqual( True, reader.Configure( clam.toProcessingConfig(config) ) )
 	#testAudioFileReaderConfig()
 
@@ -24,15 +24,15 @@ class GeneralTests(unittest.TestCase):
 		network = clam.Network()
 		reader = network.AddProcessing( "MonoAudioFileReader" )
 		config = clam.MonoAudioFileReaderConfig()
-		config.SetSourceFile( "test4seg.mp3" )
+		config.SetSourceFile( "trumpet.mp3" )
 		network.ConfigureProcessing(reader,clam.toProcessingConfig(config))
-		self.assertEqual( 4, int( network.GetProcessing(reader).GetHeader().GetLength()/1000) )
+		self.assertEqual( 2, int( network.GetProcessing(reader).GetHeader().GetLength()/1000) )
 		
 		reader = clam.MonoAudioFileReader()
 		config = clam.MonoAudioFileReaderConfig()
-		config.SetSourceFile( "test4seg.mp3" )
+		config.SetSourceFile( "trumpet.mp3" )
 		reader.Configure( clam.toProcessingConfig(config) )
-		self.assertEqual( 4, int(reader.GetHeader().GetLength()/1000) )
+		self.assertEqual( 2, int(reader.GetHeader().GetLength()/1000) )
 	#testAudioFileReaderLength()
 
 	def testSpectrumFlags(self):

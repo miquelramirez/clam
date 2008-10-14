@@ -31,4 +31,24 @@ After those steps you should get the clam.so ready to use.
 * Put the clam.so file in a visible place for your scripts (PYTHONPATH or the directory where your scripts are placed).
 * Import the library as usual: 'import clam' or 'from clam import *' as your convenience.
 * Try the examples at examples directory (fft_example.py, playfile.py, etc) and/or check unit tests to have a better idea of how to work with the library.
-* Play interactively with the library from a console with IPython.
+* Play interactively with the library from a console with IPython or standard python interpreter.
+
+
+=== Tests ===
+
+Pass the automatic tests
+
+First, checkout the clam test-data repository:
+$ svn co https://iua-share.upf.edu/svn/clam-test-data/trunk clam-test-data
+
+Change dir to CLAM/pyclam/test and configure it with scons providing the following option (no compiling nor installation step is needed):
+
+	* test_data_path --the path to the clam-test-data sandbox (local copy of the repository).
+
+For example:
+
+$ scons configure test_data_path=~/clam-test-data
+
+Then execute unit tests:
+
+$ ./UnitTestsSuite.py

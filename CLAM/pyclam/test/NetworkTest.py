@@ -22,7 +22,7 @@ class NetworkTest(unittest.TestCase):
 		reader = self.network.AddProcessing( "MonoAudioFileReader" )
 		config = clam.MonoAudioFileReaderConfig()
 		self.assertEqual( False, self.network.ConfigureProcessing(reader,clam.toProcessingConfig(config)) )
-		config.SetSourceFile( "test4seg.mp3" )
+		config.SetSourceFile( "trumpet.mp3" )
 		self.assertEqual( True, self.network.ConfigureProcessing(reader,clam.toProcessingConfig(config)) )
 	#testConfigureProcessingFromTheNetwork()
 
