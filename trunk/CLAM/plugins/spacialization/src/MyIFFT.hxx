@@ -33,11 +33,15 @@
 namespace CLAM {
 
 /**
- Implementation of the IFFT using the Fastest Fourier Tranform in the West version 3.
+ Fast Fourier Transform that takes a complex spectrum (n/2+1 bins)
+ and returns an audio buffer  of n samples.
+ Implementation uses the Fastest Fourier Tranform in the West version 3
+ to perfrom a complex to real IDFT.
  @see @link http://www.fftw.org/ FFTW Home Page @endlink
  
  @param[in] "Complex Spectrum" [Port] A complex spectrum
  @param[out] "Audio Buffer" [Port] An audio buffer
+
  @todo Document MyIFFT configuration parameters
 
  @see MyFFT, AudioBuffer2Stream, NewSpectralProcessing

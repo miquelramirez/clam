@@ -7,6 +7,18 @@
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
 
+/**
+ Inverts the left-right orientation (Y) of a 2D acoustic velocity signal.
+ @param[in] "beta input" [Control] Rotation to be applied.
+ @param[in] "Vx input" [Port] X component of the velocity.
+ @param[in] "VY input" [Port] Y component of the velocity.
+ @param[out] "beta output" [Control] Inverted rotation (changes the sign).
+ @param[out] "Vx output" [Port] Inverted X component of the velocity (doesn't change).
+ @param[out] "Vy output" [Port] Inverted Y component of the velocity (changes the sign).
+ @deprecated It won't have sense once we uses AmbisonicsConventions for everything
+ @todo Generalize VelocityAdapter to something like Physical2BFormat
+ @ingroup SpatialAudio
+*/ 
 class VelocityAdapter : public CLAM::Processing
 { 
 	CLAM::AudioInPort _vxIn;

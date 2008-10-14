@@ -7,6 +7,26 @@
 #include <CLAM/InControl.hxx>
 #include <cmath>
 
+/**
+ This processing implements a 2D 
+ Vector Based Array Panning (VBAP)
+ algorithm to virtually map a sound source 
+ in a direction along the horizontal plane
+ by using the two nearer speakers of an
+ ITU 5.1 Surround speaker system with channels 
+ L(30), R(-30), C(0), SL(110), SR(-110).
+ @param[in] p [Port] Pressure that the virtual sound emits.
+ @param[out] center [Port] Output for channel  placed at 0 degrees.
+ @param[out] right [Port] Output for channel  placed at -30 degrees.
+ @param[out] surroundRight [Port] Output for channel  placed at -110 degrees.
+ @param[out] surroundLeft [Port] Output for channel  placed at 110 degrees.
+ @param[out] left [Port] Output for channel  placed at 30 degrees.
+ @todo Is that what is called ITU 5.1?
+ @todo Control value beta, controls a simulated rotation of the receiver
+ @todo Review whether the input should be ambisonics or pressure/velocity
+ @ingroup SpatialAudio
+*/
+
 class VectorBasedArrayPanning : public CLAM::Processing
 { 
 	CLAM::AudioInPort _p;

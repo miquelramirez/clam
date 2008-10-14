@@ -37,14 +37,14 @@
 namespace CLAM
 {
 /**
- * This processing provides two delay lines from a IR stream
- * so that it is compatible with CLAM::XFadeAndSwitch.
- * That is, when the IR changes, it keeps it on one of the
- * delay lines for two frames. The lines that it is delayed
- * is alternated each change starting with the first one.
- * Any successive IR change is retained until the 2 frames
- * delay of the last change is applied.
- *
+ This processing provides two delay lines from a IR stream
+ so that it is compatible with CLAM::XFadeAndSwitch.
+ That is, when the IR changes, it keeps it on one of the
+ delay lines for two frames. The lines that it is delayed
+ is alternated each change starting with the first one.
+ Any successive IR change is retained until the 2 frames
+ delay of the last change is applied.
+
 Alternating the delayed output:
 @code
 i:  AAABBBCCC

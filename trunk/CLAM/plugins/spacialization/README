@@ -6,9 +6,10 @@ each receiver and emitter position within a discrete position grid.
 
 Of course you can reuse the building blocks for simpler or more complex systems:
 - Simpler spectral processing (FFT, IFFT, arithmetic operation and conversions)
-- Processing of impulse response representation in DFT (computation, interpolation, DB's)
+- Processing of impulse response representation in DFT (computation, interpolation, DB's loading)
 - Low latency real-time convolution
-- Processings to map receiver acoustic magnitudes to a surround system.
+- Simulation of physical acoustic magnitudes
+- Decoding physical magnitudes and b-format to exhibition systems
 
 Some examples (.clamnetwork files) needs external databases. You should have them in your disk and link (ln -s) the following directories:
 - HRTFs
@@ -17,112 +18,17 @@ Some examples (.clamnetwork files) needs external databases. You should have the
 Included Processings:
 =====================
 
-AudioBuffer2Stream:
-	Generates a continuous samples stream by overlapping audio buffers.
+To get a comprehensive description of the included processings,
+conventions and other details, please, refer to the doxygen documentation.
 
-AudioBufferCrossFader:
-	Generates an audio buffer by cross fading the input audio
-	buffers using a linear ramp. The cross fade occurs every frame.
-	This processing is thought to be fed the following way.
-	In steady state, both inputs are fed with the same input.
-	When the source changes, just for a frame, the old source
-	is fed on the fadeout input, while the new one is fed on the
-	fadeout input. After that frame, the new source is fed on both.
-
-MyFFT
-	Takes an audio buffer (n samples) and returns the complex spectrum
-	of n/2+1 complex bins.
-	Uses FFTW internally.
-MyIFFT
-	Takes a complex spectrum (n/2+1 bins) and returns an audio buffer
-	of n samples.
-	Uses FFTW internally.
-
-ComplexSpectrumMixer
-	Does the pondered sum of two complex spectra.
-
-ComplexSpectrumProduct
-	Multiplies two complex spectra.
-
-ComplexSpectrumSum
-	Adds two complex spectra
-
-ConstantSpectrum
-	Takes the N first samples of an audio file and takes it as constant
-	spectrum on the output.
-
-
-
-ImpulseResponseLoader
-	Feeds a constant impulse response (DFT stream representation
-	of an audio file).
-
-ImpulseResponseDatabaseFetcher
-	Given source and emitter normalized positions (0..1 for each dimension)
-	it returns the closer impulse response within the 6D grid.
-	The second port is a single frame delayed one so one can do crossfading.
-	To load the database it takes a path, a prefix and constructs the
-	wave file names $(path)/$(prefix)_emissor_x-y-z_receptor_x-y-z.wav
-	x,y,z are integer positions on the grid starting at 0.
-	Every dimension for separate emitter and receptor goes as far as wav
-	are found from 0,0,0,0,0,0.
-
-ImpulseResponseInterpolator
-	Given two impulse responses returns the ponderated sum of both of them.
-
-
-AudioBufferCrossFader
-	Every execution it does a crossfading by ramping and adding both
-	input buffers. Every execution the crossfade is done so you can
-	control the delay by feeding each port with the same audio source
-	but on the crossfading period.
-
-LowLatencyConvolution
-	Does the partitioned convolution of a stream of DFT spectrums.
-
-MagPhaseSpectrumProduct
-	Multiples two MagPhaseSpectrum's
-
-Complex2MagPhaseSpectrum
-	Converts spectra represented as complex vector (ComplexSpectrum)
-	into spectrum represented as polar fasors (MagPhaseSpectrum).
-
-MagPhase2ComplexSpectrum
-	Obtain the equivalent ComplexSpectrum from an input MagPhaseSpectrum
-
-Complex2MagPhaseSpectrum
-	Obtain the equivalent MagPhaseSpectrum from an input ComplexSpectrum
-
-Spectrum2MagPhaseSpectrum
-	Converts the deprecated CLAM::Spectrum into a MagPhaseSpectrum representation
-
-MagPhaseSpectrum2Spectrum
-	Converts a MagPhaseSpectrum to a deprecated CLAM::Spectrum representation
-
-DebugImpulseResponse
-	Helper processing that takes the first DFT spectrum of an impulse response.
-	Normally required to visualize it.
-
-HRTFDatabaseFetcher
-	Imports a database of impulse response with the following layout:
-	TODO: Describe HRTF database layout
-
-
-
-NSurround
-	Converts ambisonics B-Format (W,X,Y,Z) input to N equiangular surround 
-	channels placed the first one at front and going left.
-	TOCHECK: Control value <em>beta</em>, controls a simulated rotation of the receiver.
-
-Surround
-	Converts ambisonics B-Format (W,X,Y,Z) input to 5 surround with channels
-	L(30), R(-30), C(0), SL(110), SR(-110).
-	TOCHECK: Control value <em>beta</em>, controls a simulated rotation of the receiver.
-
-
+To generate it, just execute 'doxygen' from the root of the plugin source.
+You can start browsing the documentation at html/index.html
 
 Example Networks:
 =================
+
+Spectral Processinh
+-------------------
 
 double_size_spectrum_product.clamnetwork
 fft_spectrum_product.clamnetwork
@@ -148,6 +54,9 @@ constant_spectrum.clamnetwork
 	the spectrum of the first frame of an audio file.
 	The example resynthesizes and visualizes such spectrum each frame.
 
+Real Time Convolution
+---------------------
+
 lowlatencyconvolution.clamnetwork
 	An example effect of LowLatencyConvolution which is able to apply
 	a reverb using a recorded impulse response with a very long tail
@@ -159,7 +68,8 @@ lowlatencyconvolution-withdoubleframesize.clamnetwork
 	The same as lowlatencyconvolution but using 1024 hops instead of 512.
 
 
-IR and HRTFs Databases:
+IR and HRTFs Databases
+----------------------
 
 single-impulse-response-surround.clamnetwork
 	Convolves the input sound with p, vx and vy components of an
@@ -196,7 +106,8 @@ hrtf-database.clamnetwork
 	an HRTF database.
 
 
-IR-Interpolation:
+IR-Interpolation
+----------------
 	
 interpolate-between-two-points.clamnetwork
 	Simulates receiver movements between two points where we
@@ -212,6 +123,7 @@ interpolate-between-two-points-surround.clamnetwork
 	in parallel we can get the surround output.
 
 B-format handling
+-----------------
 
 mono2bformat.clamnetwork
 	This network is a utility network to generate a synthetic first order

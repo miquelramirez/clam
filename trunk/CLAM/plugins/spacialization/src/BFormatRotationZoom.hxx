@@ -8,20 +8,25 @@
 #include <CLAM/InControl.hxx>
 #include <cmath>
 
+
+/**
+ @todo Document BFormatRotationZoom
+ @ingroup SpatialAudio
+*/
 class BFormatRotationZoom : public CLAM::Processing
 {
 protected:
 	class Config : public CLAM::ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, bool, IsPassiveRotation);
-    	protected:
-	    void DefaultInit()
-	    {
-		AddAll();
-		UpdateData();
-		SetIsPassiveRotation(true);
-	    };
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, bool, IsPassiveRotation);
+	protected:
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetIsPassiveRotation(true);
+		};
 	};
 
 	

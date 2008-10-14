@@ -30,25 +30,30 @@ CLAM_TYPEINFOGROUP(BasicCTypeInfo, CLAM::DataInFilename);
 
 typedef std::string DataInFilename;
 
+/**
+ Sends the control values stored in a file in tab separated columns.
+ @todo: move ControlSequencer into CLAM as it is too general to be in the spacialization plugin.
+*/
+
 class ControlSequencer : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 4, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, DataInFilename, Filename);
-	    DYN_ATTRIBUTE( 1, public, unsigned, FrameSize);
-	    DYN_ATTRIBUTE( 2, public, unsigned, SampleRate);
-	    DYN_ATTRIBUTE( 3, public, unsigned, ControlsPerSecond);
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 4, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, DataInFilename, Filename);
+		DYN_ATTRIBUTE( 1, public, unsigned, FrameSize);
+		DYN_ATTRIBUTE( 2, public, unsigned, SampleRate);
+		DYN_ATTRIBUTE( 3, public, unsigned, ControlsPerSecond);
 	protected:
-	    void DefaultInit()
-	    {
-		  AddAll();
-		  UpdateData();
-		  SetFilename("");
-		  SetFrameSize(512);
-		  SetSampleRate(48000);
-		  SetControlsPerSecond(15);
-	    };
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetFilename("");
+			SetFrameSize(512);
+			SetSampleRate(48000);
+			SetControlsPerSecond(15);
+		};
 	};
 
 	Config _config;

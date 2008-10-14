@@ -31,41 +31,41 @@
 namespace CLAM
 {
 /**
- * Enable the convolution with an impulse response that changes 
- * along the time, avoiding clicks on the change by properly crossfading
- * when an impulse response is detected.
- *
- * It address two problems, the one is the progressive transition
- * over signals, and the other is the mix of signals on some frames
- * due to the overlap and add.
- * This processing requires the setting of two convolution lines
- * which are fed as indicated bellow to discard such crapped frames,
- * do the crossfading when the signal is stable and switch to the new
- * signal afterwards.
- *
- * To understand the process see the following sample sequence:
- * Being A,B,C,D different signals
- * Being A0 the 0th audio frame of the A signal coming from the iFFT, 
- * having double the framesize.
- * Being a0 and a0' the two semibuffers of A0 having the frame size
- * which are added a0 at frame 0 and a0' at frame 1 during the overlap&add.
- * @code
- * Changes:                 B                                   C        D
- * ifft  1:   A1   |   A2   |   A3   |   A4   |   B5   |   B6   |   C7   |   C8   |   C9   |   C10   |
- * o&add 1: a0'+a1 | a1'+a2 | a2'+a3 | a3'+a4 | a4'+b5 | b5'+b6 | a6'+c7 | c7'+c8 | c8'+c9 | c9'+c10 |
- * ifft  2:   A1   |   A2   |   B3   |   B4   |   B5   |   B6   |   B7   |   B8   |   D9   |   D10   |
- * o&add 2: a0'+a1 | a1'+a2 | a2'+b3 | b3'+b4 | b4'+b5 | b5'+b6 | b6'+b7 | b7'+b8 | b8'+d9 | d9'+d10 |
- * xf&swch:    1        1        1       1X2       2       2         2       2X1       1       1X2
- * result:     A        A        A       AXB       B       B         B       BXC       C       CXD
- * @endcode
- *
- * This impose several conditions to the feeder:
- * - On a signal change one of the lines should keep the old signal during 2 frames
- * - The first line to keep the old signal is 1 and then they alternate.
- * - Any other signal change during such 2 frames should be ignored (see D in the example)
- *
- * @ingroup RealTimeConvolution
- */
+ Enable the convolution with an impulse response that changes 
+ along the time, avoiding clicks on the change by properly crossfading
+ when an impulse response is detected.
+
+ It address two problems, the one is the progressive transition
+ over signals, and the other is the mix of signals on some frames
+ due to the overlap and add.
+ This processing requires the setting of two convolution lines
+ which are fed as indicated bellow to discard such crapped frames,
+ do the crossfading when the signal is stable and switch to the new
+ signal afterwards.
+
+ To understand the process see the following sample sequence:
+ Being A,B,C,D different signals
+ Being A0 the 0th audio frame of the A signal coming from the iFFT, 
+ having double the framesize.
+ Being a0 and a0' the two semibuffers of A0 having the frame size
+ which are added a0 at frame 0 and a0' at frame 1 during the overlap&add.
+ @code
+ Changes:                 B                                   C        D
+ ifft  1:   A1   |   A2   |   A3   |   A4   |   B5   |   B6   |   C7   |   C8   |   C9   |   C10   |
+ o&add 1: a0'+a1 | a1'+a2 | a2'+a3 | a3'+a4 | a4'+b5 | b5'+b6 | a6'+c7 | c7'+c8 | c8'+c9 | c9'+c10 |
+ ifft  2:   A1   |   A2   |   B3   |   B4   |   B5   |   B6   |   B7   |   B8   |   D9   |   D10   |
+ o&add 2: a0'+a1 | a1'+a2 | a2'+b3 | b3'+b4 | b4'+b5 | b5'+b6 | b6'+b7 | b7'+b8 | b8'+d9 | d9'+d10 |
+ xf&swch:    1        1        1       1X2       2       2         2       2X1       1       1X2
+ result:     A        A        A       AXB       B       B         B       BXC       C       CXD
+ @endcode
+
+ This impose several conditions to the feeder:
+ - On a signal change one of the lines should keep the old signal during 2 frames
+ - The first line to keep the old signal is 1 and then they alternate.
+ - Any other signal change during such 2 frames should be ignored (see D in the example)
+
+ @ingroup RealTimeConvolution
+*/
 class XFadeAndSwitch : public Processing
 {
 public:

@@ -35,8 +35,8 @@ namespace CLAM
 
 
 /**
- This processing loads an audio file and outputs
- a fixed spectrum representing the first FrameSize samples.
+ This processing takes the first FrameSize samples of an audio file
+ and takes it as constant spectrum on the output.
  This processing can be used, for example, to filter an incoming stream with
  a filter represented in a wave file as a time domain impulse response.
  If the impulse response is long and you want to achieve low latency,
@@ -52,18 +52,18 @@ class ConstantSpectrum : public Processing
 { 
 	class Config : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, AudioInFilename, AudioFile);
-	    DYN_ATTRIBUTE( 1, public, int, FrameSize);
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, AudioInFilename, AudioFile);
+		DYN_ATTRIBUTE( 1, public, int, FrameSize);
 
 	protected:
-	    void DefaultInit()
-	    {
-		AddAll();
-		UpdateData();
-		SetAudioFile("");
-		SetFrameSize(65536/2);
-	    };
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetAudioFile("");
+			SetFrameSize(65536/2);
+		};
 	};
 
 	OutPort<ComplexSpectrum> mOutComplex;

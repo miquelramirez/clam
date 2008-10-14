@@ -3,6 +3,26 @@
 
 #include "NSurround.hxx"
 
+/**
+ Converts ambisonics B-Format (W,X,Y,Z) input to an
+ ITU 5.1 Surround speaker system with channels
+ L(30), R(-30), C(0), SL(110), SR(-110).
+
+ @param[in] beta [Control] Angle in degrees for a simulated rotation of the receiver in the xy plane to the right.
+ @param[in] p [Port] Pressure to be reproduced at the sweet-spot
+ @param[in] vx [Port] X component of the velocity to be reproduced at the sweet-spot
+ @param[in] vy [Port] Y component of the velocity to be reproduced at the sweet-spot
+ @param[out] center [Port] Output for channel  placed at 0 degrees.
+ @param[out] right [Port] Output for channel  placed at -30 degrees.
+ @param[out] surroundRight [Port] Output for channel  placed at -110 degrees.
+ @param[out] surroundLeft [Port] Output for channel  placed at 110 degrees.
+ @param[out] left [Port] Output for channel  placed at 30 degrees.
+ @todo Is that what is called ITU 5.1?
+ @todo Control value beta, controls a simulated rotation of the receiver
+ @todo Review whether the input should be ambisonics or pressure/velocity
+ @todo Document ports and controls
+ @ingroup SpatialAudio
+*/
 class Surround : public NSurround
 {
 	

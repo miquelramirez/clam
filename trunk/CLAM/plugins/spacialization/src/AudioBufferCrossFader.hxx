@@ -32,6 +32,11 @@ namespace CLAM
 
 /**
  [Deprecated] This Processing crossfades a pair of buffers at each frame.
+ Every execution it does a crossfading by ramping and adding both
+ input buffers. Every execution the crossfade is done so you can
+ control the delay by feeding each port with the same audio source
+ but on the crossfading period.
+ 
  It was intended to solve the problem of realtime switching
  audio buffers convoluted with different impulse responses.
 

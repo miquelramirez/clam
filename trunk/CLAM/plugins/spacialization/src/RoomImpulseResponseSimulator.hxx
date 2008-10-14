@@ -38,15 +38,11 @@
 namespace CLAM
 {
 
-
-struct BFormatIR
-{
-	ImpulseResponse W;
-	ImpulseResponse X;
-	ImpulseResponse Y;
-	ImpulseResponse Z;
-
-};
+/**
+ @todo Document RoomImpulseResponseSimulator
+ @see ImpulseResponseCalculatedOnTheFly
+ @ingroup SpatialAudio
+*/
 class RoomImpulseResponseSimulator : public Processing
 { 
 public:
@@ -77,6 +73,15 @@ public:
 			SetSupressInitialDelay(false);
 		};
 	};
+	struct BFormatIR
+	{
+		ImpulseResponse W;
+		ImpulseResponse X;
+		ImpulseResponse Y;
+		ImpulseResponse Z;
+
+	};
+
 private:
 	enum {nCachedIRs=3};
 	Config _config;

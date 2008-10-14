@@ -30,6 +30,8 @@ namespace CLAM
 {
 
 /**
+ An ImpulseResponse object contains the STFT representation of an impulse response.
+ It is used to convolve it with a STFT analyzed audio stream.
  @ingroup RealTimeConvolution
  @todo Document ImpulseResponse
 */
