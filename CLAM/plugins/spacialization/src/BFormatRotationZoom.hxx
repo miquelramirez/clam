@@ -128,18 +128,40 @@ _isPassiveRotation=true;
 		const CLAM::DataArray& vz =_Zin.GetAudio().GetBuffer();
 		const CLAM::DataArray& vx =_Xin.GetAudio().GetBuffer();
 		const CLAM::DataArray& vy =_Yin.GetAudio().GetBuffer();
+		const double dominanceWW = 0.5*(dominance+1/dominance);
+		const double dominanceWX = 1/sqrt(8)*(dominance-1/dominance);
+		const double dominanceXW = 1/sqrt(2)*(dominance-1/dominance);
+		const double dominanceXX = 0.5*(dominance+1/dominance);
+		CLAM::TData* Wout = &_Wout.GetAudio().GetBuffer()[0];//add
+		CLAM::TData* Xout = &_Xout.GetAudio().GetBuffer()[0];
+		CLAM::TData* Yout = &_Yout.GetAudio().GetBuffer()[0];
+		CLAM::TData* Zout = &_Zout.GetAudio().GetBuffer()[0];
+
 		for (int i=0; i<vz.Size(); i++)
 		{
-			CLAM::TData* Wout = &_Wout.GetAudio().GetBuffer()[0];//add
-			CLAM::TData* Xout = &_Xout.GetAudio().GetBuffer()[0];
-			CLAM::TData* Yout = &_Yout.GetAudio().GetBuffer()[0];
-			CLAM::TData* Zout = &_Zout.GetAudio().GetBuffer()[0];
-
 			//insert dominance gain	
-			Wout[i] = 0.5*(dominance+1/dominance) * p[i] + 1/sqrt(8)*(dominance-1/dominance)*(cosAzimuth*sinElevation * vx[i] + sinAzimuth * vy[i] - cosAzimuth*cosElevation * vz[i]);//add		
-			Xout[i] = 0.5*(dominance+1/dominance)*(cosAzimuth*sinElevation * vx[i] + sinAzimuth * vy[i] - cosAzimuth*cosElevation * vz[i])+1/sqrt(2)*(dominance-1/dominance)*p[i]; //add
-			Yout[i] = -sinAzimuth*sinElevation * vx[i] + cosAzimuth * vy[i] + sinAzimuth*cosElevation * vz[i];
-			Zout[i] = cosElevation * vx[i] + /* 0 * vy[i] */  + sinElevation  * vz[i];
+			Wout[i] = 
+				+ dominanceWW * p[i] 
+				+ dominanceWX *(
+					+ cosAzimuth*sinElevation * vx[i] 
+					+ sinAzimuth * vy[i]
+					- cosAzimuth*cosElevation * vz[i]
+					);//add
+			Xout[i] =
+				+ dominanceXW *p[i]
+				+ dominanceXX*(
+					+ cosAzimuth*sinElevation * vx[i] 
+					+ sinAzimuth * vy[i]
+					- cosAzimuth*cosElevation * vz[i]
+					); //add
+			Yout[i] = 
+				- sinAzimuth*sinElevation * vx[i] 
+				+ cosAzimuth * vy[i]
+				+ sinAzimuth*cosElevation * vz[i];
+			Zout[i] =
+				+ cosElevation * vx[i]
+				+  0 * vy[i]
+				+ sinElevation  * vz[i];
 		}
 
 		_Win.Consume();//add
