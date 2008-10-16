@@ -135,7 +135,9 @@ def runBack2BackProgram(datapath, argv, back2back_files, help=help) :
 	architectureSpecific = "--arch" in argv
 	if architectureSpecific : argv.remove("--arch")
 
-	os.access( datapath, os.X_OK ) or die("Datapath at '%s' not available"%datapath)
+	os.access( datapath, os.X_OK ) or die(
+		"Datapath at '%s' not available. "%datapath +
+		"Check the back 2 back script on information on how to obtain it.")
 
 	if "--accept" in argv :
 		cases = argv[argv.index("--accept")+1:]
