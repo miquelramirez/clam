@@ -42,12 +42,17 @@ def badResultName(base) :
 def diffBaseName(base) :
 	return base+'_diff'
 
-def accept(back2back_files, archSpecific=False, cases=[]) :
+def prefix(datapath, case, output) :
+	outputBasename = os.path.splitext(os.path.basename(output))[0]
+	return os.path.join(datapath, case + '_' + outputBasename )
+
+def accept(datapath, back2back_files, archSpecific=False, cases=[]) :
 	remainingCases = cases[:]
-	for case, command, files in back2back_files :
+	for case, command, outputs in back2back_files :
 		if cases and case not in cases : continue
 		if cases : remainingCases.remove(case)
-		for base, result in files :
+		for output in outputs :
+			base = prefix(datapath, case, output)
 			badResult = badResultName(base)
 			if not os.access(badResult, os.R_OK) : continue
 			print "Accepting", badResult
@@ -56,25 +61,26 @@ def accept(back2back_files, archSpecific=False, cases=[]) :
 			else :
 				os.rename(badResult, expectedName(base))
 	if remainingCases :
-		print "Warning: Inexistent test cases:", ", ".join("'%s'"%case for case in remainingCases)
+		print "Warning: No such test cases:", ", ".join("'%s'"%case for case in remainingCases)
 
 def removeIfExists(filename) :
 	try: os.remove(filename)
 	except: pass
 
-def passB2BTests(back2back_files) :
+def passB2BTests(datapath, back2back_files) :
 	failedCases = []
-	for case, command, files in back2back_files :
+	for case, command, outputs in back2back_files :
 		phase("Test: %s Command: '%s'"%(case,command))
 		caseFailed = False
 		msgs = []
-		for base, result in files :
-			removeIfExists(result)
+		for output in outputs :
+			removeIfExists(output)
 		os.system(command)
-		for base, result in files :
+		for output in outputs :
+			base = prefix(datapath, case, output)
 			expected = expectedName(base)
-			diffbase = base+'_diff'
-			equals = diff_files(expected, result, diffBaseName(base))
+			diffbase = diffBaseName(base)
+			equals = diff_files(expected, output, diffbase)
 			if equals:
 				print "\033[32m Equals\033[0m"
 				removeIfExists(diffbase+'.wav')
@@ -83,9 +89,9 @@ def passB2BTests(back2back_files) :
 			else:
 				caseFailed = True
 				print "\033[31m Non equals\033[0m"
-				os.system('cp %s %s' % (result, badResultName(base)) )
+				os.system('cp %s %s' % (output, badResultName(base)) )
 				msgs.append("Output %s mismatch"%base)
-			removeIfExists(result)
+			removeIfExists(output)
 		if caseFailed :
 			failedCases.append((case, msgs))
 
@@ -122,25 +128,27 @@ due to floating point missmatches, use:
 	./back2back --arch --accept case1 case2
 """
 
-def runBack2BackProgram(argv, back2back_files, help=help) :
+def runBack2BackProgram(datapath, argv, back2back_files, help=help) :
 
 	"--help" not in sys.argv or die(help, 0)
 
 	architectureSpecific = "--arch" in argv
 	if architectureSpecific : argv.remove("--arch")
 
+	os.access( datapath, os.X_OK ) or die("Datapath at '%s' not available"%datapath)
+
 	if "--accept" in argv :
 		cases = argv[argv.index("--accept")+1:]
 		cases or die("Option --accept needs a set of cases to accept. Try")
-		accept(back2back_files, architectureSpecific, cases)
+		accept(datapath, back2back_files, architectureSpecific, cases)
 		sys.exit()
 
 	if "--acceptall" in argv :
 		print "Warning: Accepting any faling case"
-		accept(back2back_files, architectureSpecific)
+		accept(datapath, back2back_files, architectureSpecific)
 		sys.exit()
 
-	sys.exit(0 if passB2BTests(back2back_files) else -1)
+	passB2BTests(datapath, back2back_files) or die("Tests not passed")
 
 
 ### End of generic stuff
