@@ -10,6 +10,7 @@ back2BackTests = [
 		, [
 			"bformat.wav",
 		]),
+	# TODO: take an existing bformat
 	("bformat2binaural",
 		"OfflinePlayer example-data/mono2bformat.clamnetwork jaume.wav -o -c 4 bformat.wav;"
 		"OfflinePlayer example-data/bformat2binaural.clamnetwork bformat.wav -o -c 2 binaural.wav;"
@@ -17,6 +18,7 @@ back2BackTests = [
 			"bformat.wav",
 			"binaural.wav",
 		]),
+	# TODO: take an existing bformat
 	("bformat2surround",
 		"OfflinePlayer example-data/mono2bformat.clamnetwork jaume.wav -o -c 4 bformat.wav;"
 		"OfflinePlayer example-data/bformat2surround.clamnetwork bformat.wav -o -c 2 surround.wav;"
