@@ -113,9 +113,20 @@ protected:
 		windowerConfig.SetDoHalfWindowShift(false);
 		windowerConfig.SetWindowType(EWindowType::eNone);
 		AudioWindowing windower(windowerConfig);
+		if (not windower.IsConfigured())
+		{
+			AddConfigErrorMessage(windower.GetConfigErrorMessage());
+			return false;
+		}
+
 		FFTConfig fftConfig; 
 		fftConfig.SetAudioSize(mConfig.GetFrameSize()*2);
 		MyFFT fft(fftConfig);
+		if (not fft.IsConfigured())
+		{
+			AddConfigErrorMessage(fft.GetConfigErrorMessage());
+			return false;
+		}
 		Complex2MagPhaseSpectrum toMagPhase;
 
 		ConnectPorts(reader,0,windower,0);
@@ -126,10 +137,15 @@ protected:
 		InPort<ComplexSpectrum> complexFetcher;
 		fft.GetOutPort(0).ConnectToIn(complexFetcher);
 
+		std::cout << "Reader" << std::endl;
 		reader.Start();
+		std::cout << "Windower" << std::endl;
 		windower.Start();
+		std::cout << "fft" << std::endl;
 		fft.Start();
+		std::cout << "MagPhase" << std::endl;
 		toMagPhase.Start();
+		std::cout << "Started" << std::endl;
 		do 
 		{
 			reader.Do();
