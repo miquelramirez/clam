@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network id="Unnamed">
+
+  <processing id="Amplitude" position="126,80" size="177,73" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="AudioSink" position="323,12" size="128,111" type="AudioSink"/>
+
+  <processing id="Oscilloscope" position="303,117" size="193,266" type="Oscilloscope"/>
+
+  <processing id="noise_white0" position="153,192" size="107,58" type="noise_white0"/>
+
+  <port_connection>
+    <out>noise_white0.Output</out>
+    <in>Oscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>noise_white0.Output</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Amplitude.out</out>
+    <in>noise_white0.Amplitude</in>
+  </control_connection>
+
+</network>
