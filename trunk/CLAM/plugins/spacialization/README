@@ -33,9 +33,13 @@ Spectral Processinh
 double_size_spectrum_product.clamnetwork
 fft_spectrum_product.clamnetwork
 spectrum_mixer.clamnetwork
-spectrum_product.clamnetwork
-windowing-and-overlap.clamnetwork
+	This network exemplifies how to do a mixing in spectral domain.
+	The outputs of two frequency and amplitude controlable oscillators
+	are feed to two spectral analysis pipelines and then the complex
+	spectrums added and the result resintesized.
 
+windowing-and-overlap.clamnetwork
+	
 complex_fourier_transforms.clamnetwork
 	This network measures the error of a successive FFT-IFFT tranformation
 	by subtracting the output to the input.

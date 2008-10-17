@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioBuffer2Stream_0" position="192,353" size="197,60" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream_0" position="910,138" size="158,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -10,7 +10,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioSink_0" position="419,354" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink_0" position="1084,141" size="128,111" type="AudioSink"/>
 
   <processing id="AudioWindowing_0" position="182,105" size="171,60" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -21,7 +21,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioWindowing_1" position="157,269" size="171,60" type="AudioWindowing">
+  <processing id="AudioWindowing_1" position="210,269" size="141,58" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -30,7 +30,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="ComplexSpectrumMixer_0" position="493,152" size="225,62" type="ComplexSpectrumMixer"/>
+  <processing id="ComplexSpectrumMixer_0" position="493,152" size="179,62" type="ComplexSpectrumMixer"/>
 
   <processing id="Gain1" position="480,36" size="182,77" type="OutControlSender">
     <Min>0</Min>
@@ -52,35 +52,35 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyFFT_1" position="354,260" size="97,60" type="MyFFT">
+  <processing id="MyFFT_1" position="354,260" size="85,58" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_0" position="59,352" size="101,60" type="MyIFFT">
+  <processing id="MyIFFT_0" position="764,154" size="101,60" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="SimpleOscillator_0" position="9,145" size="169,60" type="SimpleOscillator">
+  <processing id="SimpleOscillator_0" position="9,145" size="137,58" type="SimpleOscillator">
     <Frequency>440</Frequency>
     <Amplitude>1</Amplitude>
     <Phase>0</Phase>
     <SamplingRate>44100</SamplingRate>
   </processing>
 
-  <processing id="SimpleOscillator_1" position="16,302" size="169,60" type="SimpleOscillator">
+  <processing id="SimpleOscillator_1" position="16,302" size="137,58" type="SimpleOscillator">
     <Frequency>440</Frequency>
     <Amplitude>1</Amplitude>
     <Phase>0</Phase>
     <SamplingRate>44100</SamplingRate>
   </processing>
 
-  <processing id="SpectrumView_0" position="86,425" size="773,184" type="SpectrumView"/>
+  <processing id="SpectrumView_0" position="240,333" size="773,184" type="SpectrumView"/>
 
-  <processing id="ToMagPhase" position="546,278" size="124,60" type="Complex2MagPhaseSpectrum"/>
+  <processing id="ToMagPhase" position="546,278" size="107,58" type="Complex2MagPhaseSpectrum"/>
 
-  <processing id="ToSpectrum" position="680,277" size="122,60" type="MagPhaseSpectrum2Spectrum"/>
+  <processing id="ToSpectrum" position="680,277" size="100,58" type="MagPhaseSpectrum2Spectrum"/>
 
-  <processing id="f" position="12,58" size="209,77" type="OutControlSender">
+  <processing id="f" position="9,31" size="209,77" type="OutControlSender">
     <Min>0</Min>
     <Default>0.25</Default>
     <Max>2000</Max>
@@ -96,7 +96,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="volume" position="128,9" size="182,77" type="OutControlSender">
+  <processing id="volume" position="183,29" size="182,77" type="OutControlSender">
     <Min>1e-06</Min>
     <Default>0.5</Default>
     <Max>1</Max>
@@ -104,7 +104,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="volume_0" position="157,150" size="182,77" type="OutControlSender">
+  <processing id="volume_0" position="202,187" size="182,77" type="OutControlSender">
     <Min>1e-06</Min>
     <Default>0.5</Default>
     <Max>1</Max>
