@@ -63,7 +63,6 @@ namespace CLAM
 		TTime                     mCurrentBeginTime;
 		TTime                     mDeltaTime;
 		bool                      mEOFReached;
-		bool                      mIsPaused;
 	};
 }
 
