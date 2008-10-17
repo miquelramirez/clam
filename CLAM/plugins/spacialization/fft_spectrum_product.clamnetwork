@@ -6,12 +6,12 @@
   <processing id="AudioSource_0" position="27,226" size="128,108" type="AudioSource"/>
 
   <processing id="ConstantSpectrum_0" position="32,164" size="165,62" type="ConstantSpectrum">
-    <AudioFile>Carnel_3P.wav</AudioFile>
-    <FrameSize>32762</FrameSize>
+    <AudioFile>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/Ew.wav</AudioFile>
+    <FrameSize>256</FrameSize>
   </processing>
 
-  <processing id="FFT" position="194,229" size="69,58" type="FFT">
-    <AudioSize>65536</AudioSize>
+  <processing id="FFT" position="194,229" size="69,58" type="MyFFT">
+    <AudioSize>512</AudioSize>
   </processing>
 
   <processing id="Gain 0" position="304,48" size="484,78" type="OutControlSender">
@@ -22,13 +22,13 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="IFFT" position="762,193" size="72,58" type="IFFT">
-    <AudioSize>65536</AudioSize>
+  <processing id="IFFT" position="762,193" size="72,58" type="MyIFFT">
+    <AudioSize>512</AudioSize>
   </processing>
 
   <processing id="Oscilloscope_0" position="991,27" size="206,145" type="Oscilloscope"/>
 
-  <processing id="SpectrumProduct" position="423,181" size="143,62" type="MagPhaseSpectrumProduct"/>
+  <processing id="SpectrumProduct" position="433,179" size="143,62" type="MagPhaseSpectrumProduct"/>
 
   <processing id="SpectrumView_0" position="487,331" size="287,154" type="SpectrumView"/>
 
@@ -49,7 +49,7 @@
 
   <port_connection>
     <out>AudioSource_0.AudioOut</out>
-    <in>FFT.Audio Input</in>
+    <in>FFT.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
@@ -63,17 +63,17 @@
   </port_connection>
 
   <port_connection>
-    <out>FFT.Spectrum Output</out>
+    <out>FFT.Complex Spectrum</out>
     <in>magphase.Spectrum</in>
   </port_connection>
 
   <port_connection>
-    <out>FFT.Spectrum Output</out>
+    <out>FFT.Complex Spectrum</out>
     <in>SpectrumView_0.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>IFFT.Audio Output</out>
+    <out>IFFT.Audio Buffer</out>
     <in>gain.Input 0</in>
   </port_connection>
 
@@ -94,7 +94,7 @@
 
   <port_connection>
     <out>complex.Spectrum</out>
-    <in>IFFT.Spectrum Input</in>
+    <in>IFFT.Complex Spectrum</in>
   </port_connection>
 
   <port_connection>

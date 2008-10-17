@@ -12,7 +12,7 @@
 
   <processing id="ConstantSpectrum_0" position="37,126" size="165,62" type="ConstantSpectrum">
     <AudioFile>Carnel_3P.wav</AudioFile>
-    <FrameSize>512</FrameSize>
+    <FrameSize>65536</FrameSize>
   </processing>
 
   <processing id="Gain 0" position="441,56" size="354,78" type="OutControlSender">
@@ -33,7 +33,7 @@
 
   <processing id="SpectralAnalysis_0" position="1,184" size="150,58" type="SpectralAnalysis">
     <WindowGenerator>
-      <Type>BlackmanHarris92</Type>
+      <Type>None</Type>
       <Size>65537</Size>
       <MaxSize>0</MaxSize>
       <UseTable>1</UseTable>
@@ -51,7 +51,7 @@
     <prSamplingRate>44100</prSamplingRate>
     <prFFTSize>65536</prFFTSize>
     <prWindowSize>65537</prWindowSize>
-    <prWindowType>BlackmanHarris92</prWindowType>
+    <prWindowType>None</prWindowType>
   </processing>
 
   <processing id="SpectralSynthesis_0" position="705,154" size="160,58" type="SpectralSynthesis">

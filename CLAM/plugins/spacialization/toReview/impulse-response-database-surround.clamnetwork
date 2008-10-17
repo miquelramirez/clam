@@ -70,6 +70,7 @@
   <processing id="LibloSource" position="504,157" size="106,58" type="LibloSource">
     <OscPath>/clam/target</OscPath>
     <ServerPort>7770</ServerPort>
+    <NumberOfArguments>3</NumberOfArguments>
   </processing>
 
   <processing id="LowLatencyConvolution" position="457,377" size="199,62" type="LowLatencyConvolution">
