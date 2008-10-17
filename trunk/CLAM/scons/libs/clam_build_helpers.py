@@ -1,43 +1,3 @@
-import sys, os
-
-#---------------------------------------------------------------
-# from custom_builders.py
-
-def generate_copy_files( target, source, env ) :
-	if sys.platform == 'win32' :
-		copyCmd = 'copy'
-	else :
-		copyCmd = 'cp'
-	command = "%s %s %s"%(copyCmd, source[0], target[0])
-	os.system( command )
-	change_include_style_to_system(str(target[0]))
-	return None
-
-def generate_copy_files_message( target, source, env ) :
-	return "== Copying and updating includes : %s" % target[0]
-
-
-def generate_so_name( target, source, env ) :
-	source_dir = os.path.dirname( str(source[0]) )
-	source_file = os.path.basename( str(source[0]) )
-	cwd = os.getcwd()
-	os.chdir( source_dir )
-	if sys.platform == 'linux2' :
-		os.system( "/sbin/ldconfig -n ." )
-	os.chdir(cwd)
-	return None
-
-def generate_so_name_message( target, source, env ) :
-	return "generating %s with /sbin/ldconfig -n"%target[0]
-
-def generate_linker_name( target, source, env ) :
-	source_file = os.path.basename( str(source[0]) )
-	os.system( "ln -sf %s %s"%(source_file,str(target[0]) ))
-	return None
-
-def generate_linker_name_message( target, source, env ) :
-	return "Linking linker name %s to %s"%(target[0], source[0])
-
 #---------------------------------------------------------------
 # from file_retriever.py
 import re, os, glob
@@ -141,30 +101,6 @@ def pkg_config_check_existence(context, *args, **kwargs):
 	return ret
 
 generic_checks['pkg_config_check_existence'] = pkg_config_check_existence
-
-#---------------------------------------------------------------
-# from include_rename.py
-import os, re
-
-hdrNormRE = re.compile( r'(?P<prefix>.*)include\s*["](?P<hdr>.+)["].*', re.IGNORECASE )
-
-def change_include_style_to_system(source, target=None ) :
-	if not target : target = source
-	newVersion = []
-	modified = False
-	fileHandle = file( source, "r" )
-	for line in fileHandle :
-		match = hdrNormRE.search( line )
-		if match is not None :
-			line = hdrNormRE.sub('\g<prefix>include <CLAM/\g<hdr>>', line )
-			modified = True
-		newVersion.append( line )
-	fileHandle.close()
-	if modified :
-		fileHandle = file( target, "w" )
-		fileHandle.write( "".join( newVersion ) )
-		fileHandle.close()
-	return target
 
 #---------------------------------------------------------------
 # from installdirs.py
@@ -305,6 +241,7 @@ def lib_rules(name, version, headers, sources, install_dirs, env, moduleDependen
 		pkg_data.create_pkg_descriptor( env, 'clam_%s.pc'%name )
 
 	env.Prepend(CPPPATH=['include']+['../%s/include'%module for module in moduleDependencies])
+	env.Prepend(CPPPATH=['include/CLAM']+['../%s/include/CLAM'%module for module in moduleDependencies])
 	env.Append(LIBS=['clam_%s'%module for module in moduleDependencies ])
 	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])
 	#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
@@ -431,6 +368,34 @@ def SetupSpawn( env ):
 	env['SPAWN'] = my_spawn
 
 
+def create_custom_builders( env ) :
+	def generate_so_name( target, source, env ) :
+		source_dir = os.path.dirname( str(source[0]) )
+		cwd = os.getcwd()
+		os.chdir( source_dir )
+		if sys.platform == 'linux2' :
+			os.system( "/sbin/ldconfig -n ." )
+		os.chdir(cwd)
+		return None
 
+	bld = env.Builder( action=Action(generate_so_name,
+		"== Generating soname $TARGET") )
+	env.Append( BUILDERS={'SonameLink' : bld} )
+
+	def generate_linker_name( target, source, env ) :
+		source_file = os.path.basename( str(source[0]) )
+		os.system( "ln -sf %s %s"%(source_file,str(target[0]) ))
+		return None
+
+	bld = env.Builder( action=Action(generate_linker_name,
+		"== Linking linker name $TARGET to $SOURCE") )
+	env.Append( BUILDERS={'LinkerNameLink' : bld} )
+
+	import shutil
+	bld = env.Builder( action =  Action( 
+		lambda target, source, env:
+			shutil.copy(str(source[0]), str(target[0])),
+			"== Build copying $SOURCE"))
+	env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : bld} )	
 
 

@@ -187,11 +187,7 @@ def compose_install_dirnames( env ) :
 	print "\tDocumentation, data and examples will be installed at:", install_dirs.data
 	return install_dirs
 
-def create_custom_builders( env ) :
-	bld = Builder( action=Action(generate_so_name,generate_so_name_message) )
-	env.Append( BUILDERS={'SonameLink' : bld} )	
-	bld = Builder( action=Action(generate_linker_name, generate_linker_name_message) )
-	env.Append( BUILDERS={'LinkerNameLink' : bld} )
+
 
 def config_file_missing():
 	dirs = ". core audioio processing"
@@ -267,8 +263,6 @@ if needs_configure and not avoid_configure :
 	print "Finished. Invoke 'scons' now."
 	Exit(0)
 
-builderCopy = Builder( action=Action(generate_copy_files,generate_copy_files_message) )
-clam_env.Append( BUILDERS={'CopyFileAndUpdateIncludes' : builderCopy} )	
 
 core_env = clam_env.Copy()
 processing_env = clam_env.Copy()
