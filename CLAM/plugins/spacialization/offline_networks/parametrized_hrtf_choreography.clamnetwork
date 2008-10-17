@@ -59,7 +59,7 @@
   </processing>
 
   <processing id="ChoreoSequencer" position="108,51" size="194,58" type="ChoreoSequencer">
-    <Filename></Filename>
+    <Filename>%(path_file)s</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
