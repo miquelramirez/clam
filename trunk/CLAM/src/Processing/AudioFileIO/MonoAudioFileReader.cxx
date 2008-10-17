@@ -113,8 +113,7 @@ namespace Hidden
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
 		mEOFReached = false;
-		mIsPaused = false;
-		
+
 		return true;
 	}
 
@@ -136,13 +135,12 @@ namespace Hidden
 	}
 
 
-	
 	bool MonoAudioFileReader::Do( Audio & outputSamples )		
 	{
 		if ( !AbleToExecute() )
 			return false;
 
-		if ( !mEOFReached && !mIsPaused ) 
+		if ( !mEOFReached ) 
 		{
 			mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(),
 					       outputSamples.GetBuffer().GetPtr(),
@@ -155,7 +153,7 @@ namespace Hidden
 		}
 		
 		outputSamples.SetBeginTime( mCurrentBeginTime );
-		if ( !mEOFReached && !mIsPaused )
+		if ( !mEOFReached )
 		{
 			mDeltaTime = outputSamples.GetSize() / mAudioFile.GetHeader().GetSampleRate()*1000;
 			mCurrentBeginTime += mDeltaTime;
@@ -173,6 +171,5 @@ namespace Hidden
 		ConcreteStart();
 		return true;
 	}
-	
 }
 
