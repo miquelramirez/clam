@@ -1,10 +1,23 @@
 #!/usr/bin/python
 
+"""
+Data for this B2B test can be found at the clam-test-data repository.
+Create a link to clam-test-data/b2b to this directory.
+"""
+
+
 import sys
 sys.path.append('../../../CLAM/scripts/')
 from audiob2b import runBack2BackProgram
 
+data_path="b2b/spacialization"
+
 back2BackTests = [
+	("mono2binaural",
+		"OfflinePlayer example-data/mono2binaural.clamnetwork jaume.wav -o -c 2 binaural.wav"
+		, [
+			"binaural.wav",
+		]),
 	("mono2bformat",
 		"OfflinePlayer example-data/mono2bformat.clamnetwork jaume.wav -o -c 4 bformat.wav"
 		, [
@@ -28,7 +41,7 @@ back2BackTests = [
 		]),
 ]
 
-runBack2BackProgram("b2b", sys.argv, back2BackTests)
+runBack2BackProgram(data_path, sys.argv, back2BackTests)
 
 
 
