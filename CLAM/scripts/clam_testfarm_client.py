@@ -21,7 +21,7 @@ def ellapsedTime():
 	return time.time() - startTime
 
 HOME = os.environ['HOME']
-os.environ['LD_LIBRARY_PATH']='%s/local/lib:/usr/local/lib' % HOME
+os.environ['LD_LIBRARY_PATH']='%s/testfarm_sandboxes/local/lib:/usr/local/lib' % HOME
 
 def set_qtdir_to_qt4(x) :
 	os.environ['QTDIR']=localDefinitions['qt4dir']
@@ -31,10 +31,10 @@ def set_qtdir_to_qt3(x) :
 	os.environ['QTDIR']=localDefinitions['qt3dir']
 
 localDefinitions = {
-	'name': 'linux_ubuntu_feisty',
+	'name': 'linux_ubuntu_hardy',
 	'description': '<img src="http://clam.iua.upf.es/images/linux_icon.png"/> <img src="http://clam.iua.upf.es/images/ubuntu_icon.png"/>',
-	'sandbox': '$HOME/clam',
-	'installPath': '$HOME/local',
+	'sandbox': '$HOME/testfarm_sandboxes/clam',
+	'installPath': '$HOME/testfarm_sandboxes/local',
 	'qt3dir':'',
 	'qt4dir':'',
 }
@@ -129,11 +129,15 @@ clam.add_subtask('NetworkEditor installation', [
 clam.add_subtask('Plugins compilation', [
 	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
 	'cd %(sandbox)s/CLAM/plugins/spacialization'%localDefinitions,
-	'scons clam_prefix=%(installPath)s'%localDefinitions,
+	'scons clam_prefix=%(installPath)s raytracing=0'%localDefinitions,
+	'scons install',
+
+	'cd %(sandbox)s/CLAM/plugins/spacialization'%localDefinitions,
+	'scons clam_prefix=%(installPath)s raytracing=1'%localDefinitions,
 	'scons install',
 
 	'cd %(sandbox)s/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions,
-	'scons clam_prefix=%(installPath)s with_osc=1'%localDefinitions,
+	'scons clam_prefix=%(installPath)s'%localDefinitions,
 	'scons install',
 
 	'cd %(sandbox)s/CLAM/plugins/osc'%localDefinitions,
@@ -148,8 +152,8 @@ clam.add_subtask('Plugins compilation', [
 clam.add_subtask('Back-to-back network tests', [
 	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
 	'cd %(sandbox)s/CLAM/plugins/spacialization'%localDefinitions,
-	'CLAM_PLUGIN_PATH=. ../../../NetworkEditor/OfflinePlayer simple-interpolation.clamnetwork metronom.wav simple-interpolation-result.wav'%localDefinitions,
-	'diff simple-interpolation-expected.wav simple-interpolation-result.wav'
+	'CLAM_PLUGIN_PATH=. ../../../NetworkEditor/OfflinePlayer example-data/single-impulse-response-surround.clamnetwork wavs/metronom.wav b2bresults/c.wav b2bresults/l.wav b2bresults/r.wav b2bresults/sl.wav b2bresults/sr.wav',
+	'diff -r b2bresults/ b2bexpected/',
 ] )
 """
 clam.add_subtask('Padova Speech SMS (external repository)', [
@@ -161,6 +165,7 @@ clam.add_subtask('Padova Speech SMS (external repository)', [
 
 Runner( clam, 
 	continuous = True,
+#	first_run_always = False,
 	remote_server_url = 'http://ocata48123.upf.es/testfarm_server'
 #	local_base_dir='/tmp'
 )
