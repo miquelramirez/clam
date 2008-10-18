@@ -1,15 +1,13 @@
 #!/usr/bin/python
 from clam_build_helpers import *
-import os, sys
 
-Import('core_env version install_dirs crosscompiling')
+module = 'core'
+moduleDependencies = []
+
+Import(module+'_env version install_dirs crosscompiling')
+env=core_env
 
 def define_module_contents(env) :
-	if not os.path.exists('src') :
-		os.mkdir('src')
-	if not os.path.exists('include' ) :
-		os.makedirs('include/CLAM')
-
 	folders = [
 		'src/Base',
 		'src/Data/Base',
@@ -35,13 +33,7 @@ def define_module_contents(env) :
 		'externals/CbLib',
 		]
 
-	if sys.platform == 'win32' or crosscompiling :
-		folders.append('src/Defines/Windows')
-	else :
-		folders.append('src/Defines/Unix')	
-
 	blacklist = [
-		'ScaleCnv',
 		'BlockingNetworkPlayer',
 		'JACKNetworkPlayer',
 		'PANetworkPlayer',
@@ -49,9 +41,12 @@ def define_module_contents(env) :
 		]
 
 	if sys.platform == 'win32' or crosscompiling :
+		folders.append('src/Defines/Windows')
+
+	if sys.platform == 'win32' or crosscompiling :
 		blacklist.append( 'Watchdog.+' )
 
-	if core_env['xmlbackend'] == 'xercesc' :
+	if env['xmlbackend'] == 'xercesc' :
 		blacklist.append( 'LibXml.+')
 		blacklist.append( 'NullDom.+' )
 	elif env['xmlbackend'] == 'xmlpp' :
@@ -64,26 +59,11 @@ def define_module_contents(env) :
 	if not env.has_key('with_ladspa') or env['with_ladspa'] == False :
 		blacklist.append( 'Ladspa.+' )
 
-	file_retriever = FileRetriever( '../../..', folders, blacklist )
-
-	file_retriever.scan_without_copy()
-
-	realHeaders = []
-	for orig,target in file_retriever.origTargetHeaders :
-		env.CopyFileAndUpdateIncludes(target, orig)
-		realHeaders.append(target)
-
-	realSources = []
-	for orig,target in file_retriever.origTargetSources:
-		env.CopyFileAndUpdateIncludes(target,orig)
-		realSources.append(target)
-
+	realHeaders, realSources = retrieveSources(env, folders, blacklist )
 	return realHeaders, realSources
 
-realHeaders, realSources = define_module_contents(core_env)
+realHeaders, realSources = define_module_contents(env)
 
-moduleDependencies = []
-
-lib_tgt, install_tgt = lib_rules( 'core', version, realHeaders , realSources, install_dirs, core_env, moduleDependencies)
+lib_tgt, install_tgt = lib_rules( module, version, realHeaders, realSources, install_dirs, env, moduleDependencies)
 
 Return( 'lib_tgt', 'install_tgt' )
