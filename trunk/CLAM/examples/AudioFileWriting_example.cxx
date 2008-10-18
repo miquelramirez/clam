@@ -24,7 +24,7 @@
 // to write simultaneously several channels at once from the same file.
 
 // Before attempting to follow this example you should take a look first on the
-// "FileInfo" example ( examples/AudioFileWriting_example.cxx ) and the
+// "FileInfo" example ( examples/FileInfo_example.cxx.cxx ) and the
 // "AudioFileReading" example ( examples/AudioFileReading_example.cxx ).
 
 // We need to include the following files to have access to classes
