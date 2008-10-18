@@ -7,57 +7,51 @@ moduleDependencies = ['core']
 Import(module+'_env version install_dirs crosscompiling')
 env=processing_env
 
-def define_module_contents(env) :
-	folders = [
-		'src/Data/BasicProcessing',
-		'src/Data/Descriptors',
-		'src/Data/Descriptors/Melody',
-		'src/Processing/Analysis',
-		'src/Processing/Analysis/Tonal',
-		'src/Processing/ArithOps',
-		'src/Processing/Generators/',
-		'src/Processing/Synthesis',
-		'src/Processing/Transformations',
-		'src/Processing/Monitors/',
-		'src/Processing/Controls/',
-		'externals/numrec',
-		'src/Processing/SDIFIO',
-		'src/Tools/SDIF',
-		'src/Processing/SMS*.*xx',
-		'src/Standard/ScaleCnv.*',
-		'src/Processing/Transformations/SMS',
-		'src/Processing/Transformations/Spectral',
-		'src/Visualization/Base',
-		'src/Visualization/View',
-		'src/Visualization/Util',
-		]
+folders = [
+	'src/Data/BasicProcessing',
+	'src/Data/Descriptors',
+	'src/Data/Descriptors/Melody',
+	'src/Processing/Analysis',
+	'src/Processing/Analysis/Tonal',
+	'src/Processing/ArithOps',
+	'src/Processing/Generators/',
+	'src/Processing/Synthesis',
+	'src/Processing/Transformations',
+	'src/Processing/Monitors/',
+	'src/Processing/Controls/',
+	'externals/numrec',
+	'src/Processing/SDIFIO',
+	'src/Tools/SDIF',
+	'src/Processing/SMS*.*xx',
+	'src/Standard/ScaleCnv.*',
+	'src/Processing/Transformations/SMS',
+	'src/Processing/Transformations/Spectral',
+	'src/Visualization/Base',
+	'src/Visualization/View',
+	'src/Visualization/Util',
+	]
 
-	blacklist = [
-		'ControlSink..xx',
-		'ControlSource..xx',
-		r'^Audio\..xx',
-		'FileChooser',
-		'MessageBox',
-		'FLTKConfigurator',
-		'QTConfigurator',
-		'WidgetTKWrapper',
-		'FDFilterController',
-		'SupportedToolkits',
-		]
+blacklist = [
+	'ControlSink..xx',
+	'ControlSource..xx',
+	r'^Audio\..xx',
+	'FileChooser',
+	'MessageBox',
+	'FLTKConfigurator',
+	'QTConfigurator',
+	'WidgetTKWrapper',
+	'FDFilterController',
+	'SupportedToolkits',
+	]
 
-	if not env.get('with_mad') :
-		blacklist.append('MpegAudioStream')
-	if not env.get('with_fftw3') :
-		blacklist.append('.+fftw3.+')
-	if not env.get('with_nr_fft') :
-		blacklist.append('.*numrecipes.+')
-		blacklist.append('.+numrec.+')
+if not env.get('with_mad') :
+	blacklist.append('MpegAudioStream')
+if not env.get('with_fftw3') :
+	blacklist.append('.+fftw3.+')
+if not env.get('with_nr_fft') :
+	blacklist.append('.*numrecipes.+')
+	blacklist.append('.+numrec.+')
 
-	realHeaders, realSources = retrieveSources(env, folders, blacklist )
-	return realHeaders, realSources
-
-realHeaders, realSources = define_module_contents(env)
-
-lib_tgt, install_tgt = lib_rules( module, version, realHeaders, realSources, install_dirs, env, moduleDependencies)
-
+lib_tgt, install_tgt = lib_rules( module, version, folders, blacklist, install_dirs, env, moduleDependencies)
 Return( 'lib_tgt', 'install_tgt' )
+
