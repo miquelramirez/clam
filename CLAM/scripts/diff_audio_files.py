@@ -35,7 +35,9 @@ def diff_files(expected, result, diffbase) :
 		return False
 	diffwav = diffbase+'.wav'
 	silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 '%(expected, result, diffwav))
-	max_dbs = float(silentrun("sndfile-info %s | awk '/Signal/ {print $5}'"%(diffwav))[1:])
+	errorString = silentrun("sndfile-info %s | awk '/Signal/ {print $5}'"%(diffwav))[1:]
+	if errorString == "-inf" : return true
+	max_dbs = float(errorString)
 	if max_dbs > threshold :
 		silentrun('wav2png --input %s --width 700 --linecolor ff0088 --backgroundcolor dddddd --zerocolor 000000'%(diffwav))
 		print "Files are different with threshold", threshold
