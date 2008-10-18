@@ -4,6 +4,7 @@
 #include "MIDIClocker.hxx"
 #include "OutControl.hxx"
 #include "InControl.hxx"
+#include "Processing.hxx"
 #include <vector>
 
 using namespace CLAM;
@@ -54,11 +55,10 @@ int main()
 	ConfigureAndCheck(inStop,inStopCfg);
 	InControl stopReceiver("stop-receiver");
 
-	
-	inStop.GetOutControl(0).AddLink(&stopReceiver);
-	inNote.GetOutControl(0).AddLink(&outNote.GetInControl(0));
-	inNote.GetOutControl(1).AddLink(&outNote.GetInControl(1));
-	inNote.GetOutControl(2).AddLink(&outNote.GetInControl(2));
+	inStop.GetOutControl(0).AddLink(stopReceiver);
+	ConnectControls(inNote, 0, outNote, 0);
+	ConnectControls(inNote, 1, outNote, 1);
+	ConnectControls(inNote, 2, outNote, 2);
 	
 	manager.Start();
 
