@@ -159,6 +159,9 @@ public:
 	}
 	void updatePlayStatusIndicator()
 	{
+		ui.action_Play->setEnabled(not _network.IsPlaying());
+		ui.action_Stop->setEnabled(not _network.IsStopped());
+		ui.action_Pause->setEnabled(_network.IsPlaying());
 		if (_canvas->networkIsDummy() )
 			_playingLabel->setText(tr("<p style='color:blue'>Dummy</p>"));
 		else if (_network.IsPlaying())
@@ -430,25 +433,16 @@ public slots:
 			return;
 		}
 		_network.Start();
-		ui.action_Play->setEnabled(false);
-		ui.action_Stop->setEnabled(true);
-		ui.action_Pause->setEnabled(true);
 		updatePlayStatusIndicator();
 	}
 	void on_action_Stop_triggered()
 	{
 		_network.Stop();
-		ui.action_Play->setEnabled(true);
-		ui.action_Stop->setEnabled(false);
-		ui.action_Pause->setEnabled(false);
 		updatePlayStatusIndicator();
 	}
 	void on_action_Pause_triggered()
 	{
 		_network.Pause();
-		ui.action_Play->setEnabled(true);
-		ui.action_Stop->setEnabled(true);
-		ui.action_Pause->setEnabled(false);
 		updatePlayStatusIndicator();
 	}
 	void on_action_Zoom_in_triggered()
