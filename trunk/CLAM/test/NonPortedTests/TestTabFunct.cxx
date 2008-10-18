@@ -23,6 +23,7 @@
 #include "TabFunct.hxx"
 #include "Assert.hxx"
 #include <iostream>
+#include <cmath>
 
 using std::cout;
 
@@ -52,7 +53,7 @@ int TestTabFunction()
 	
 	TData maxerror=0;
 	for (TData x=TData(2.01); x<=100; x+=5)	{
-		TData newerror = abs(f.Log::operator() (x) - f(x));
+		TData newerror = std::abs(f.Log::operator() (x) - f(x));
 		maxerror = maxerror < newerror?  newerror : maxerror;
 		cout << f(x) << " (" << f.Log::operator() (x) <<") ";
 	} 
@@ -64,7 +65,7 @@ int TestTabFunction()
 	
 	maxerror=0;
 	for (TData x=TData(0.01); x<=100; x+=5)	{
-		TData newerror = abs(g.Double::operator() (x) - g(x));
+		TData newerror = std::abs(g.Double::operator() (x) - g(x));
 		maxerror = maxerror < newerror?  newerror : maxerror;
 		cout << g(x) << " (" << g.Double::operator() (x) <<") ";
 	}

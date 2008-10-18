@@ -26,14 +26,12 @@
 #include "ErrProcessingObj.hxx"
 #include "ErrOpenFile.hxx"
 #include "ErrOutOfMemory.hxx"
-#include "ErrGUI.hxx"
 
 using CLAM::Err;
 using CLAM::ErrDynamicType;
 using CLAM::ErrProcessingObj;
 using CLAM::ErrOpenFile;
 using CLAM::ErrOutOfMemory;
-using CLAMVM::ErrGUI;
 
 namespace CLAMTest {
 
@@ -127,8 +125,7 @@ int main()
 		ExceptionTester<ErrDynamicType>();
 		ExceptionTester<ErrProcessingObj>();
 		ExceptionTester<ErrOpenFile>();
-//	ExceptionTester<ErrOutOfMemory>();
-//	ExceptionTester<ErrGUI>();
+//		ExceptionTester<ErrOutOfMemory>();
 		std::cout << "Passed." << std::endl;
 		return 0;
 	}

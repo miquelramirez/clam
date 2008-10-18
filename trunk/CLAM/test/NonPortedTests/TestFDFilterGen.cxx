@@ -19,7 +19,8 @@
  *
  */
 
-#include "Processing.hxx"
+#include <CLAM/Processing.hxx>
+#include <CLAM/OutControl.hxx>
 #include "FDFilterGen.hxx"
 #include "Spectrum.hxx"
 #include "SpectrumConfig.hxx"
@@ -133,7 +134,7 @@ int Test(FDFilterGen &gen)
 	std::cout << "Trying Configure changes" << std::endl;
 
 	for (i=0; i<4; i++) {
-		std::cout << " " << EFDFilterType::sEnumValues[i].name << std::endl;
+		std::cout << " " << EFDFilterType::ValueTable()[i].name << std::endl;
 		Set(i,cfg);
 		cfg.SetType(EFDFilterType(i));
 		gen.Configure(cfg);
@@ -147,14 +148,14 @@ int Test(FDFilterGen &gen)
 	
 	FDControlsGenerator controls;
 
-	controls.GetOutControl(0).AddLink(&gen.GetInControl(0));
-	controls.GetOutControl(1).AddLink(&gen.GetInControl(1));
-	controls.GetOutControl(2).AddLink(&gen.GetInControl(2));
-	controls.GetOutControl(3).AddLink(&gen.GetInControl(3));
-	controls.GetOutControl(4).AddLink(&gen.GetInControl(4));
+	controls.GetOutControl(0).AddLink(gen.GetInControl(0));
+	controls.GetOutControl(1).AddLink(gen.GetInControl(1));
+	controls.GetOutControl(2).AddLink(gen.GetInControl(2));
+	controls.GetOutControl(3).AddLink(gen.GetInControl(3));
+	controls.GetOutControl(4).AddLink(gen.GetInControl(4));
 
 	for (i=0; i<4; i++) {
-		std::cout << " " << EFDFilterType::sEnumValues[i].name << std::endl;
+		std::cout << " " << EFDFilterType::ValueTable()[i].name << std::endl;
 		cfg.SetType(EFDFilterType(i));
 		cfg2=dynamic_cast<const FDFilterGenConfig&>(gen.GetConfig());
 		cfg2.SetType(EFDFilterType(i));
@@ -186,11 +187,11 @@ int TestContrChanges(FDFilterGen &gen)
 	Spectrum spec(sets);
 	FDControlsGenerator controls;
 
-	controls.GetOutControl(0).AddLink(&gen.GetInControl(0));
-	controls.GetOutControl(1).AddLink(&gen.GetInControl(1));
-	controls.GetOutControl(2).AddLink(&gen.GetInControl(2));
-	controls.GetOutControl(3).AddLink(&gen.GetInControl(3));
-	controls.GetOutControl(4).AddLink(&gen.GetInControl(4));
+	controls.GetOutControl(0).AddLink(gen.GetInControl(0));
+	controls.GetOutControl(1).AddLink(gen.GetInControl(1));
+	controls.GetOutControl(2).AddLink(gen.GetInControl(2));
+	controls.GetOutControl(3).AddLink(gen.GetInControl(3));
+	controls.GetOutControl(4).AddLink(gen.GetInControl(4));
 
 
 

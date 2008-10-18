@@ -28,6 +28,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
+#include <typeinfo>
 
 using namespace CLAM;
 
