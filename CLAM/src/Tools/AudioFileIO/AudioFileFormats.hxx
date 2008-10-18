@@ -75,7 +75,7 @@ namespace CLAM
 		EAudioFileFormat( std::string s ) : Enum(EnumValues(), s) {}
 		virtual Component* Species() const { return new EAudioFileFormat; }
 
-		typedef enum
+		enum
 		{
 			eWAV = SF_FORMAT_WAV,   /* Microsoft WAV  (little endian)*/
 			eAIFF = SF_FORMAT_AIFF,  /* Apple/SGI AIFF (big endian)*/
