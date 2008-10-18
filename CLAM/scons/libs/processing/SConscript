@@ -2,10 +2,9 @@
 from clam_build_helpers import *
 
 module = 'processing'
-moduleDependencies = ['core']
-
 Import(module+'_env version install_dirs crosscompiling')
 env=processing_env
+moduleDependencies = ['core']
 
 folders = [
 	'src/Data/BasicProcessing',

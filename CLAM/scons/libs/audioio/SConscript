@@ -2,10 +2,9 @@
 from clam_build_helpers import *
 
 module = 'audioio'
-moduleDependencies = ['core','processing']
-
 Import(module+'_env version install_dirs crosscompiling')
 env=audioio_env
+moduleDependencies = ['core','processing']
 
 folders = [
 	'src/Processing/AudioFileIO',
