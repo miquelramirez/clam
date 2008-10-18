@@ -22,25 +22,13 @@ folders = [
 	'src/Processing/SDIFIO',
 	'src/Tools/SDIF',
 	'src/Processing/SMS*.*xx',
-	'src/Standard/ScaleCnv.*',
 	'src/Processing/Transformations/SMS',
 	'src/Processing/Transformations/Spectral',
-	'src/Visualization/Base',
-	'src/Visualization/View',
-	'src/Visualization/Util',
 	]
 
 blacklist = [
-	'ControlSink..xx',
-	'ControlSource..xx',
-	r'^Audio\..xx',
-	'FileChooser',
-	'MessageBox',
-	'FLTKConfigurator',
-	'QTConfigurator',
-	'WidgetTKWrapper',
-	'FDFilterController',
-	'SupportedToolkits',
+	r'^Audio\.hxx',
+	r'^Audio\.cxx',
 	]
 
 if not env.get('with_mad') :
