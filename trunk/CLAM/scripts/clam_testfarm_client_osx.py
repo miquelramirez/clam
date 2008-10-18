@@ -42,6 +42,7 @@ localDefinitions = {
 	'qt3dir':'/opt/local/',
 #	'qt4dir':'/usr/local/Trolltech/Qt-4.2.2/',
 	'qt4dir':'/opt/local/',
+	'cppunit_prefix': sandbox+"local",
 	'packageWildcard':'*.dmg',
 	'downloadPlatform':'mac',
 	'extraLibOptions': '',
@@ -86,18 +87,16 @@ clam.add_subtask("Unit Tests", [
 	"cd %(clamsrcroot)s/CLAM"%localDefinitions,
 	"cd test",
 	"scons test_data_path=%(clamsrcroot)s/testdata clam_prefix=%(installPath)s"%localDefinitions, # TODO: test_data_path and release
-	"cd UnitTests",
 	{INFO : lambda x:startTimer() }, 
-	{CMD: "./UnitTests", INFO: lambda x:x, STATUS_OK: lambda x:True},
+	{CMD: "scons run_unit_tests", INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
 clam.add_subtask("Functional Tests", [
 	"cd %(clamsrcroot)s/CLAM"%localDefinitions,
 	"cd test",
 	"scons test_data_path=%(clamsrcroot)s/testdata clam_prefix=%(installPath)s"%localDefinitions, # TODO: test_data_path and release
-	"cd FunctionalTests",
 	{INFO : lambda x:startTimer() }, 
-	{CMD:"./FunctionalTests", INFO: lambda x:x, STATUS_OK: lambda x:True},
+	{CMD:"scons run_functional_tests", INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
 ] )
 clam.add_subtask("CLAM Examples", [
