@@ -23,6 +23,7 @@ class _FileRetriever :
 	def is_blacklisted( self, filename ) :
 		for entry in self.blacklisted :
 			if entry.search(filename) is not None :
+				print "blacklisted", filename
 				return True
 		return False
 
