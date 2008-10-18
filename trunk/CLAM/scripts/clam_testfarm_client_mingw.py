@@ -39,11 +39,11 @@ localDefinitions = {
 	'installPath': sandbox+"local",
 	'qt3dir':'',
 	'qt4dir': os.path.expanduser('~/.wine/drive_c/Qt/4.4.0/'),
+	'cppunit_prefix': sandbox+"local",
 	'packageWildcard':'*_setup.exe',
 	'downloadPlatform':'win',
 	'extraLibOptions': 'crossmingw=1 release=1 sandbox_path=%s audio_backend=portaudio xmlbackend=xmlpp'%sandbox,
 	'extraAppOptions': 'crossmingw=1 release=1 sandbox_path=%s external_dll_path=%s'%(sandbox, sandbox+'local/bin'),
-	'cppunit_prefix': sandbox+"local",
 }
 
 client = Client(localDefinitions['name'])
@@ -71,7 +71,6 @@ clam.add_subtask("count lines of code", [
 	{CMD:"echo %(clamsrcroot)s/SMSTools"%localDefinitions, STATS: lambda x: {"smstools_loc": countLines(x) } },
 	{CMD:"echo %(clamsrcroot)s/NetworkEditor"%localDefinitions, STATS: lambda x: {"networkeditor_loc": countLines(x) } },
 ] )
-
 clam.add_deployment( [
 	"cd %(clamsrcroot)s/CLAM"%localDefinitions,
 #	"rm -rf %(installPath)s/*"%localDefinitions,
@@ -84,7 +83,6 @@ clam.add_subtask("Unit Tests", [
 	"cd %(clamsrcroot)s/CLAM"%localDefinitions,
 	"cd test",
 	"scons test_data_path=%(clamsrcroot)s/testdata cppunit_prefix=%(cppunit_prefix)s clam_prefix=%(installPath)s %(extraAppOptions)s"%localDefinitions, # TODO: test_data_path and release
-#	"cd UnitTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD: "scons run_unit_tests", INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
@@ -93,7 +91,6 @@ clam.add_subtask("Functional Tests", [
 	"cd %(clamsrcroot)s/CLAM"%localDefinitions,
 	"cd test",
 	"scons test_data_path=%(clamsrcroot)s/testdata clam_prefix=%(installPath)s"%localDefinitions, # TODO: test_data_path and release
-#	"cd FunctionalTests",
 	{INFO : lambda x:startTimer() }, 
 	{CMD:"scons run_functional_tests", INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
