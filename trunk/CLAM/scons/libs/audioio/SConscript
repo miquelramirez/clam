@@ -7,84 +7,78 @@ moduleDependencies = ['core','processing']
 Import(module+'_env version install_dirs crosscompiling')
 env=audioio_env
 
-def define_module_contents(env) :
-	folders = [
-		'src/Processing/AudioFileIO',
-		'src/Processing/AudioIO',
-		'src/Processing/MIDIIO',
-		'src/Tools/MIDIIO',
-		'src/Tools/MIDIIO/File',
-		'src/Tools/MIDIIO/TextFile',
-		'src/Tools/AudioIO',
-		'src/Tools/AudioFileIO',
-		'src/Processing/AudioIO*.*xx',
-		'src/Flow/Networks/BlockingNetworkPlayer*.*xx',
-		'src/Flow/Networks/MonoOfflineNetworkPlayer.*xx',
-		'src/Flow/Networks/OfflineNetworkPlayer.*xx',
-		'src/System/Application',
-		]
+folders = [
+	'src/Processing/AudioFileIO',
+	'src/Processing/AudioIO',
+	'src/Processing/MIDIIO',
+	'src/Tools/MIDIIO',
+	'src/Tools/MIDIIO/File',
+	'src/Tools/MIDIIO/TextFile',
+	'src/Tools/AudioIO',
+	'src/Tools/AudioFileIO',
+	'src/Processing/AudioIO*.*xx',
+	'src/Flow/Networks/BlockingNetworkPlayer*.*xx',
+	'src/Flow/Networks/MonoOfflineNetworkPlayer.*xx',
+	'src/Flow/Networks/OfflineNetworkPlayer.*xx',
+	'src/System/Application',
+	]
 
-	blacklist = [
-		'foo.cxx',
-		'main.cxx',
-		'GUIAudioApplication.*xx',
-		]
+blacklist = [
+	'foo.cxx',
+	'main.cxx',
+	'GUIAudioApplication.*xx',
+	]
 
-	if env.get('with_jack') :
-		folders.append('src/Flow/Networks/JACKNetworkPlayer*.*xx')
+if env.get('with_jack') :
+	folders.append('src/Flow/Networks/JACKNetworkPlayer*.*xx')
 
-	if not env.get('with_mad') :
-		blacklist += ['Mpeg']
-	if not env.get('with_oggvorbis') :
-		blacklist += ['Vorbis']
+if not env.get('with_mad') :
+	blacklist += ['Mpeg']
+if not env.get('with_oggvorbis') :
+	blacklist += ['Vorbis']
 
-	if env.get('with_portaudio') :
-		folders.append('src/Flow/Networks/PANetworkPlayer*.*xx')
+if env.get('with_portaudio') :
+	folders.append('src/Flow/Networks/PANetworkPlayer*.*xx')
 
-	if env.get('with_portmidi') :
-		folders.append( 'src/Tools/MIDIIO/PortMIDI' )
+if env.get('with_portmidi') :
+	folders.append( 'src/Tools/MIDIIO/PortMIDI' )
 
-	if crosscompiling :
-		pass
-	elif sys.platform == 'linux2' :
-		if env.get('with_alsa') :
-			folders.append( 'src/Tools/MIDIIO/Linux' )
-			folders.append( 'src/Tools/AudioIO/Linux')
-	# TODO: Remove this code and the related sources
-	elif False and sys.platform == 'win32' :
-		if env['audio_backend'] == 'rtaudio' :
-			print('using rtaudio')
-			folders += ['src/Tools/AudioIO/RtAudio']
-		elif env['audio_backend'] == 'directx' :
-			print('using directx')
-			folders += [
-				'src/Tools/AudioIO/Windows/DirectXAudioDevice.cxx',
-				'src/Tools/AudioIO/Windows/DXFullDuplex.*xx',
-				]
-		elif env['audio_backend'] == 'portaudio' :
-			print('using portaudio')
-			folders += [
-				'src/Tools/AudioIO/Windows/PAAudio*.*xx', 
-				'src/Tools/AudioIO/Windows/PACLAM*.*xx', 
-				'src/Tools/AudioIO/Windows/PortAudioUtils.*', 
-				'src/Tools/AudioIO/Windows/DoubleBuffer.*xx',
-				]
-	else :
-		if env['audio_backend'] == 'rtaudio' :
-			print('using rtaudio2')
-			folders += ['src/Tools/AudioIO/RtAudio']
-			env.Append( LINKFLAGS=['-framework','CoreAudio'] )
-		elif env['audio_backend'] == 'portaudio' :
-			print('using portaudio')
-#			folders += ['src/Flow/Networks/PANetworkPlayer*.*xx']
+if crosscompiling :
+	pass
+elif sys.platform == 'linux2' :
+	if env.get('with_alsa') :
+		folders.append( 'src/Tools/MIDIIO/Linux' )
+		folders.append( 'src/Tools/AudioIO/Linux')
+# TODO: Remove this code and the related sources
+elif False and sys.platform == 'win32' :
+	if env['audio_backend'] == 'rtaudio' :
+		print('using rtaudio')
+		folders += ['src/Tools/AudioIO/RtAudio']
+	elif env['audio_backend'] == 'directx' :
+		print('using directx')
+		folders += [
+			'src/Tools/AudioIO/Windows/DirectXAudioDevice.cxx',
+			'src/Tools/AudioIO/Windows/DXFullDuplex.*xx',
+			]
+	elif env['audio_backend'] == 'portaudio' :
+		print('using portaudio')
+		folders += [
+			'src/Tools/AudioIO/Windows/PAAudio*.*xx', 
+			'src/Tools/AudioIO/Windows/PACLAM*.*xx', 
+			'src/Tools/AudioIO/Windows/PortAudioUtils.*', 
+			'src/Tools/AudioIO/Windows/DoubleBuffer.*xx',
+			]
+else :
+	if env['audio_backend'] == 'rtaudio' :
+		print('using rtaudio2')
+		folders += ['src/Tools/AudioIO/RtAudio']
+		env.Append( LINKFLAGS=['-framework','CoreAudio'] )
+	elif env['audio_backend'] == 'portaudio' :
+		print('using portaudio')
+#		folders += ['src/Flow/Networks/PANetworkPlayer*.*xx']
 
-	env.AppendUnique(LDFLAGS=["-Wl,--exclude-libs,ogg.lib"])
+env.AppendUnique(LDFLAGS=["-Wl,--exclude-libs,ogg.lib"])
 
-	realHeaders, realSources = retrieveSources(env, folders, blacklist )
-	return realHeaders, realSources
-
-realHeaders, realSources = define_module_contents(env)
-
-lib_tgt, install_tgt = lib_rules( module, version, realHeaders, realSources, install_dirs, env, moduleDependencies)
-
+lib_tgt, install_tgt = lib_rules( module, version, folders, blacklist, install_dirs, env, moduleDependencies)
 Return( 'lib_tgt', 'install_tgt' )
+

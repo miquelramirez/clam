@@ -6,11 +6,6 @@ import sys
 class _FileRetriever :
 	__hdr_extensions = ['h', 'H', 'hxx', 'hpp']
 	__src_extensions = ['c', 'C', 'cxx', 'cpp', r'c\+\+', 'cc']
-	if sys.platform == 'win32' :
-		__copy_cmd = 'copy'
-	else :
-		__copy_cmd = 'cp'
-
 
 	def __init__(self, basedir, folders, blacklist  ) :
 		self.out_inc = 'include/CLAM'
@@ -37,13 +32,6 @@ class _FileRetriever :
 		self.origTargetHeaders = []
 		self.origTargetSources = []
 
-	def __setup_file( self, src, tgt, echo = True ) :
-		norm_src = os.path.normcase( src )
-		norm_tgt = os.path.normcase( tgt )
-		command = "%s %s %s"%(self.__copy_cmd, norm_src, norm_tgt)
-		if echo : print command
-		os.system( command )
-
 	def is_blacklisted( self, filename ) :
 		for entry in self.blacklisted :
 			if entry.search(filename) is not None :
@@ -64,6 +52,7 @@ class _FileRetriever :
 		return False
 
 	def scan_without_copy( self ) :
+		print 'Scanning'
 		for target in self.scantargets :
 			if not os.path.isdir( target ) : # is a file
 				base = os.path.dirname(target)
@@ -256,7 +245,10 @@ from SCons.Action import *
 
 import sys
 
-def lib_rules(name, version, headers, sources, install_dirs, env, moduleDependencies=[]) :
+def lib_rules(name, version, folders, blacklist, install_dirs, env, moduleDependencies=[]) :
+
+	headers, sources = retrieveSources(env, folders, blacklist)
+
 	if not env.GetOption('clean') :
 		# David: I don't understand why you don't want to clean it
 		# -> it is not a builder, it can not be cleaned, TODO: Turn it a builder -- David
