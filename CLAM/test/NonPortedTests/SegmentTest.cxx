@@ -21,7 +21,7 @@
 
 #include "Segmentator.hxx"
 
-#include "AudioFileIn.hxx"
+#include "MonoAudioFileReader.hxx"
 #include <iostream>
 #include "CLAM_Math.hxx"
 
@@ -54,25 +54,28 @@ void Segmentate(Segment& in)
 
 
 
-int main()
+int main(int argc, const char **argv)
 {
 
-try{	
+try{
 	std::string fileName;
-	std::cout<<"Enter File Name: \n";
-	std::cin>>fileName;
-	
+	if (argc<=1)
+	{
+		std::cout<<"Enter File Name: \n";
+		std::cin>>fileName;
+	}
+	else
+		fileName = argv[1];
+
 	//The File I/O PO
-	AudioFileIn myAudioFileIn;
-	AudioFileConfig infilecfg;
-	infilecfg.SetFilename(fileName);
-	infilecfg.SetFiletype(EAudioFileType::eWave);
-	myAudioFileIn.Configure(infilecfg);
+	MonoAudioFileReaderConfig infilecfg;
+	infilecfg.SetSourceFile(fileName);
+	MonoAudioFileReader myAudioFileIn(infilecfg);
 	
 
 	/////////////////////////////////////////////////////////////////////////////
 	// Initialization of the processing data objects :
-	TSize fileSize=myAudioFileIn.Size();
+	TSize fileSize=myAudioFileIn.GetHeader().GetSamples();
 	Audio readAudio; // read Audio object 
 	readAudio.SetSize(fileSize);
 	TData samplingRate=readAudio.GetSampleRate();

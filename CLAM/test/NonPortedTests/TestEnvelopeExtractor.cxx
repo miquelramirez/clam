@@ -26,12 +26,13 @@
 #include "GnuplotSnapshot.hxx"
 #endif
 
-#include "NodeTmpl.hxx"
-#include "StreamBuffer.hxx"
-#include "CircularStreamImpl.hxx"
+//#include "NodeTmpl.hxx"
+//#include "StreamBuffer.hxx"
+//#include "CircularStreamImpl.hxx"
 #include "WaveGenerator.hxx"
-#include "AudioFileOut.hxx"
+#include "MonoAudioFileWriter.hxx"
 #include "Controller.hxx"
+#include <CLAM/AudioOutPort.hxx>
 
 #include <iostream>
 #include <cstdlib>
@@ -53,13 +54,13 @@ namespace CLAMTest {
 		EnvelopeGenerator *mpGenerator2;
 
 		WaveGenerator mGenerator;
-		AudioFileOut  mOutput1;
-		AudioFileOut  mOutput2;
+		MonoAudioFileWriter  mOutput1;
+		MonoAudioFileWriter  mOutput2;
 		Controller    mController;
 
-		NodeTmpl<Audio,CircularStreamImpl<TData> > mInputNode;
-		NodeTmpl<Audio,CircularStreamImpl<TData> > mOutputNode1;
-		NodeTmpl<Audio,CircularStreamImpl<TData> > mOutputNode2;
+//		NodeTmpl<Audio,CircularStreamImpl<TData> > mInputNode;
+//		NodeTmpl<Audio,CircularStreamImpl<TData> > mOutputNode1;
+//		NodeTmpl<Audio,CircularStreamImpl<TData> > mOutputNode2;
 
 		void SendControls(int controls);
 		bool TestConstruction();
@@ -86,16 +87,12 @@ namespace CLAMTest {
 
 		Audio proto;
 		proto.SetSampleRate(mSampleRate);
-		mInputNode.SetPrototype(proto);
-		mOutputNode1.SetPrototype(proto);
-		mOutputNode2.SetPrototype(proto);
 
-		AudioFileConfig fcfg;
+		MonoAudioFileWriterConfig fcfg;
 		fcfg.SetSampleRate(mSampleRate);
-		fcfg.SetFiletype(EAudioFileType::eWave);
-		fcfg.SetFilename("test1.wav");
+		fcfg.SetTargetFile("test1.wav");
 		mOutput1.Configure(fcfg);
-		fcfg.SetFilename("test2.wav");
+		fcfg.SetTargetFile("test2.wav");
 		mOutput2.Configure(fcfg);
 
 	}
@@ -172,25 +169,16 @@ namespace CLAMTest {
 	{
 		Envelope envelope1,envelope2;
 
-		mGenerator.Output.Attach(mInputNode);
-		mpExtractor1->Input.Attach(mInputNode);
-		mpExtractor2->Input.Attach(mInputNode);
+		ConnectPorts(mGenerator, 0, *mpExtractor1, 0);
+		ConnectPorts(mGenerator, 0, *mpExtractor2, 0);
+		ConnectPorts(*mpExtractor1, 0, *mpGenerator1, 0);
+		ConnectPorts(*mpExtractor2, 0, *mpGenerator2, 0);
+		ConnectPorts(*mpGenerator1, 0, mOutput1, 0);
+		ConnectPorts(*mpGenerator2, 0, mOutput2, 0);
 
-		mpExtractor1->Output.Attach(envelope1);
-		mpGenerator1->Input.Attach(envelope1);
-
-		mpExtractor2->Output.Attach(envelope2);
-		mpGenerator2->Input.Attach(envelope2);
-
-		mpGenerator1->Output.Attach(mOutputNode1);
-		mOutput1.GetInPort(0).Attach(mOutputNode1);
-
-		mpGenerator2->Output.Attach(mOutputNode2);
-		mOutput2.GetInPort(0).Attach(mOutputNode2);
-
-		mInputNode.Configure(5*mFrameSize);
-		mOutputNode1.Configure(5*mFrameSize);
-		mOutputNode2.Configure(5*mFrameSize);
+//		mInputNode.Configure(5*mFrameSize);
+//		mOutputNode1.Configure(5*mFrameSize);
+//		mOutputNode2.Configure(5*mFrameSize);
 
 		mGenerator.Start();
 		mpExtractor1->Start();

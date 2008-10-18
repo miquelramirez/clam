@@ -35,7 +35,7 @@
 #include "GlobalEnums.hxx"
 #include <vector>
 #include <time.h>
-#include "XMLTestHelper.hxx"
+//#include "XMLTestHelper.hxx"
 
 using namespace CLAM;
 
