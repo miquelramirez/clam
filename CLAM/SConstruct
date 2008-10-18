@@ -73,7 +73,7 @@ def configure_core(clam_env) :
 #########################################
 ### CLAM CORE DEPENDENCIES CHECKING   ###
 #########################################"""
-	core_env = clam_env.Copy()
+	core_env = clam_env.Clone()
 	conf = Configure( core_env, custom_tests = custom_check_routines )
 	if not setup_core_environment( core_env, conf ) :
 		Exit(1)
@@ -86,7 +86,7 @@ def configure_processing(core_env) :
 ###############################################
 ### CLAM PROCESSING DEPENDENCIES CHECKING   ###
 ###############################################"""
-	processing_env = core_env.Copy()
+	processing_env = core_env.Clone()
 	conf = Configure( processing_env, custom_check_routines )
 	if not setup_processing_environment( processing_env, conf ) :
 		Exit(1)
@@ -98,7 +98,7 @@ def configure_audioio(processing_env) :
 ############################################
 ### CLAM AUDIOIO DEPENDENCIES CHECKING   ###
 ############################################"""
-	audioio_env = processing_env.Copy()
+	audioio_env = processing_env.Clone()
 
 	conf = Configure( audioio_env, custom_check_routines )
 	if not setup_audioio_environment( audioio_env, conf ) :
@@ -264,9 +264,9 @@ if needs_configure and not avoid_configure :
 	Exit(0)
 
 
-core_env = clam_env.Copy()
-processing_env = clam_env.Copy()
-audioio_env = clam_env.Copy()
+core_env = clam_env.Clone()
+processing_env = clam_env.Clone()
+audioio_env = clam_env.Clone()
 
 modules = [ 'core', 'processing', 'audioio']
 
