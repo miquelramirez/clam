@@ -149,6 +149,7 @@ namespace CLAM {
 			CLAM_ASSERT(mSize,"SpectrumInterpolator::SetPrototypes: Zero size spectrum");
 		}
 		if (t2.bMagPhase || t2.bComplex || t2.bPolar)
+		{
 			if (mSize) {
 				CLAM_ASSERT(mSize == in2.GetSize(),"SpectrumInterpolator::SetPrototypes:Size mismatch in spectrum interpolation");
 			}
@@ -156,7 +157,9 @@ namespace CLAM {
 				mSize = in2.GetSize();
 				CLAM_ASSERT(mSize,"SpectrumInterpolator::SetPrototypes: Zero size spectrum");
 			}
+		}
 		if (to.bMagPhase || to.bComplex || to.bPolar)
+		{
 			if (mSize) {
 				CLAM_ASSERT(mSize == out.GetSize(),"SpectrumInterpolator::SetPrototypes:Size mismatch in spectrum interpolation");
 			}
@@ -164,7 +167,7 @@ namespace CLAM {
 				mSize = out.GetSize();
 				CLAM_ASSERT(mSize,"SpectrumInterpolator::SetPrototypes: Zero size spectrum");
 			}
-
+		}
 		// Spectral Range.  
 		// We could also ignore BPF-only objects here, but in
 		// practice, if a BPF is designed for a certain spectral
