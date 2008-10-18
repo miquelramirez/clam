@@ -1,32 +1,20 @@
+import sys
+
 #---------------------------------------------------------------
 # from file_retriever.py
 import re, os, glob
-import sys
 
 class _FileRetriever :
-	__hdr_extensions = ['h', 'H', 'hxx', 'hpp']
-	__src_extensions = ['c', 'C', 'cxx', 'cpp', r'c\+\+', 'cc']
+	hdr_extensions = ['h', 'H', 'hxx', 'hpp']
+	src_extensions = ['c', 'C', 'cxx', 'cpp', r'c\+\+', 'cc']
+	headerREs = [ re.compile( r'^.+\.%s$'%ext) for ext in hdr_extensions ]
+	sourceREs = [ re.compile( r'^.+\.%s$'%ext) for ext in src_extensions ]
+	out_inc = 'include/CLAM'
+	out_src = 'src'
 
 	def __init__(self, basedir, folders, blacklist  ) :
-		self.out_inc = 'include/CLAM'
-		self.out_src = 'src'
-		self.headerREs = []
-
-		for ext in self.__hdr_extensions :
-			self.headerREs.append( re.compile( r'^.+\.%s$'%ext ) )
-
-		self.sourceREs = []
-
-		for ext in self.__src_extensions :
-			self.sourceREs.append( re.compile( r'^.+\.%s$'%ext  ) )
-
 		self.scantargets = [ basedir+'/'+folder for folder in folders ]
-
-		self.blacklisted = []
-
-		for entry in blacklist :
-			self.blacklisted.append( re.compile( entry ) )
-
+		self.blacklisted = [ re.compile( entry ) for entry in blacklist ]
 		self.headers = []
 		self.sources = []
 		self.origTargetHeaders = []
@@ -36,7 +24,6 @@ class _FileRetriever :
 		for entry in self.blacklisted :
 			if entry.search(filename) is not None :
 				return True
-
 		return False
 
 	def is_header( self, filename ) :
@@ -52,7 +39,7 @@ class _FileRetriever :
 		return False
 
 	def scan_without_copy( self ) :
-		print 'Scanning'
+		join = os.path.join
 		for target in self.scantargets :
 			if not os.path.isdir( target ) : # is a file
 				base = os.path.dirname(target)
@@ -60,17 +47,17 @@ class _FileRetriever :
 					if self.is_blacklisted(file) :
 						continue
 					if self.is_header(file) :
-						self.origTargetHeaders.append((file, '%s/%s'%(self.out_inc,os.path.basename(file))))
+						self.origTargetHeaders.append((file, join(self.out_inc, os.path.basename(file))))
 					if self.is_source(file) :
-						self.origTargetSources.append((file, '%s/%s'%(self.out_src,os.path.basename(file))))
+						self.origTargetSources.append((file, join(self.out_src, os.path.basename(file))))
 			else : # is a dir
 				for file in os.listdir(target) :
 					if self.is_blacklisted(file) :
 						continue
 					if self.is_header(file) :
-						self.origTargetHeaders.append((target+'/'+file, '%s/%s'%(self.out_inc,file)))
+						self.origTargetHeaders.append((join(target,file), join(self.out_inc,file)))
 					if self.is_source(file) :
-						self.origTargetSources.append((target+'/'+file, '%s/%s'%(self.out_src,file)))
+						self.origTargetSources.append((join(target,file), join(self.out_src,file)))
 
 
 def retrieveSources(env, folders, blacklist) :
@@ -103,7 +90,7 @@ generic_checks = dict()
 def pkg_config_check_existence(context, *args, **kwargs):
 	name = kwargs['name']
 	context.Message( 'Checking for %s registered in pkg-config... ' % name )
-	crosscompiling=context.env.has_key('crossmingw') and context.env['crossmingw']
+	crosscompiling=context.env.get('crossmingw')
 	if crosscompiling : 
 		pkgconfig = 'wine pkg-config'
 	else :
@@ -163,7 +150,7 @@ def CheckLibrarySample(context, name, lang, lib, test_code, winlib=None ) :
 		prevLIBS = context.env['LIBS']
 	except KeyError :
 		prevLIBS = None
-	crosscompiling = context.env.has_key('crossmingw') and context.env['crossmingw']
+	crosscompiling = context.env.get('crossmingw')
 	if sys.platform == 'win32' or crosscompiling and winlib :
 		lib = winlib
 	context.env.Append( LIBS=lib )
@@ -187,7 +174,7 @@ tool_checks = dict()
 def check_pkg_config(context, *args, **kwords):
 	context.Message( 'Checking for pkg-config... ' )
 	env = context.env
-	crosscompiling = env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling = env.get('crossmingw')
 	if not env.has_key('PKG_CONFIG') :
 		env['PKG_CONFIG'] = 'pkg-config'
 		if crosscompiling :
@@ -210,7 +197,6 @@ tool_checks['check_pkg_config'] = check_pkg_config
 
 #---------------------------------------------------------------
 # from pkggen.py
-import sys
 
 class PackageData :
 
@@ -243,7 +229,6 @@ class PackageData :
 # from rulesets.py
 from SCons.Action import *
 
-import sys
 
 def lib_rules(name, version, folders, blacklist, install_dirs, env, moduleDependencies=[]) :
 
@@ -261,7 +246,7 @@ def lib_rules(name, version, folders, blacklist, install_dirs, env, moduleDepend
 	env.Prepend(LIBPATH=['../%s'%module for module in moduleDependencies])
 	#audioio_env.Append( ARFLAGS= ['/OPT:NOREF', '/OPT:NOICF', '/DEBUG'] )
 
-	crosscompiling = env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling = env.get('crossmingw')
 	if sys.platform != 'win32' and not crosscompiling :
 		return posix_lib_rules( name, version, headers , sources, install_dirs, env )
 	else :
@@ -334,7 +319,7 @@ def posix_lib_rules( name, version, headers, sources, install_dirs, env, moduleD
 	return tgt, install_tgt
 
 def win32_lib_rules( name, version, headers, sources, install_dirs, env, moduleDependencies =[] ) :
-	crosscompiling=env.has_key('crossmingw') and env['crossmingw']
+	crosscompiling=env.get('crossmingw')
 	lib = env.SharedLibrary( 'clam_' + name, sources)
 	tgt = env.Alias(name, lib)
 	lib_descriptor = env.File( 'clam_'+name+'.pc' )
