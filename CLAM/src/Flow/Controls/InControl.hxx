@@ -93,7 +93,7 @@ public:
 //Constructor/Destructor
 	/**
 	 * \todo constructor rework. 
-	 * \argument \c parent Optional. If present, is the processing where to be published.
+	 * \param parent Optional. If present, is the processing where to be published.
 	 */
 	InControl(const std::string &name, Processing* parent=0, const bool publish=true);
 	virtual ~InControl();

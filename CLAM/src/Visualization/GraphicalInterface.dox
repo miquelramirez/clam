@@ -1,11 +1,4 @@
 /**
  @defgroup GraphicalInterface Graphical Interface
 
- CLAM supports several graphical toolkits
-
- - @link QTVM QT Visualization Module @endlink : Plots, widgets and controllers for QT.
- - FLTK Visualization Module: Plots, widgets and controllers for FLTK.
- - @link Configurators  @endlink : To edit any DynamicType. They adapt to the object
-   and offers a view. Currently Qt and Fltk are supported.
-
 */

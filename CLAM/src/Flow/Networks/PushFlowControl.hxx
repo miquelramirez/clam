@@ -31,8 +31,8 @@ namespace CLAM
 
 class Processing;
 
-/// @deprecate This flow control do not fulfils the Network::Do() call-back based semantics 
-//  to be more specific: consume all audio from its sources and produce to its sinks if possible
+/// @deprecated This flow control do not fulfils the Network::Do() call-back based semantics 
+///  to be more specific: consume all audio from its sources and produce to its sinks if possible
 class PushFlowControl : public FlowControl
 {
 public:
