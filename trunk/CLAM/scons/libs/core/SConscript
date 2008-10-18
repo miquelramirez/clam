@@ -2,10 +2,9 @@
 from clam_build_helpers import *
 
 module = 'core'
-moduleDependencies = []
-
 Import(module+'_env version install_dirs crosscompiling')
 env=core_env
+moduleDependencies = []
 
 folders = [
 	'src/Base',
