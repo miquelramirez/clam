@@ -3,7 +3,7 @@
 import re, os, glob
 import sys
 
-class FileRetriever :
+class _FileRetriever :
 	__hdr_extensions = ['h', 'H', 'hxx', 'hpp']
 	__src_extensions = ['c', 'C', 'cxx', 'cpp', r'c\+\+', 'cc']
 	if sys.platform == 'win32' :
@@ -82,6 +82,29 @@ class FileRetriever :
 						self.origTargetHeaders.append((target+'/'+file, '%s/%s'%(self.out_inc,file)))
 					if self.is_source(file) :
 						self.origTargetSources.append((target+'/'+file, '%s/%s'%(self.out_src,file)))
+
+
+def retrieveSources(env, folders, blacklist) :
+	if not os.path.exists('src') :
+		os.mkdir('src')
+	if not os.path.exists('include' ) :
+		os.makedirs('include/CLAM')
+
+	file_retriever = _FileRetriever( '../../..', folders, blacklist )
+
+	file_retriever.scan_without_copy()
+
+	realHeaders = []
+	for orig,target in file_retriever.origTargetHeaders :
+		env.CopyFileAndUpdateIncludes(target, orig)
+		realHeaders.append(target)
+
+	realSources = []
+	for orig,target in file_retriever.origTargetSources:
+		env.CopyFileAndUpdateIncludes(target,orig)
+		realSources.append(target)
+
+	return realHeaders, realSources
 
 
 #---------------------------------------------------------------

@@ -1,15 +1,13 @@
 #!/usr/bin/python
 from clam_build_helpers import *
-import os, sys
 
-Import('processing_env version install_dirs crosscompiling')
+module = 'processing'
+moduleDependencies = ['core']
+
+Import(module+'_env version install_dirs crosscompiling')
+env=processing_env
 
 def define_module_contents(env) :
-	if not os.path.exists('src') :
-		os.mkdir('src')
-	if not os.path.exists('include' ) :
-		os.makedirs('include/CLAM')
-
 	folders = [
 		'src/Data/BasicProcessing',
 		'src/Data/Descriptors',
@@ -46,34 +44,20 @@ def define_module_contents(env) :
 		'FDFilterController',
 		'SupportedToolkits',
 		]
-	if not env.has_key('with_mad') or not env['with_mad'] :
+
+	if not env.get('with_mad') :
 		blacklist.append('MpegAudioStream')
-	if not env.has_key('with_fftw3') or not env['with_fftw3'] :
+	if not env.get('with_fftw3') :
 		blacklist.append('.+fftw3.+')
-	if not env.has_key('with_nr_fft') or not env['with_nr_fft'] :
+	if not env.get('with_nr_fft') :
 		blacklist.append('.*numrecipes.+')
 		blacklist.append('.+numrec.+')
-	
-	file_retriever = FileRetriever( '../../..', folders, blacklist )
 
-	file_retriever.scan_without_copy()
-
-	realHeaders = []
-	for orig,target in file_retriever.origTargetHeaders :
-		env.CopyFileAndUpdateIncludes(target, orig)
-		realHeaders.append(target)
-
-
-	realSources = []
-	for orig,target in file_retriever.origTargetSources:
-		env.CopyFileAndUpdateIncludes(target,orig)
-		realSources.append(target)
+	realHeaders, realSources = retrieveSources(env, folders, blacklist )
 	return realHeaders, realSources
 
-realHeaders, realSources = define_module_contents(processing_env)
+realHeaders, realSources = define_module_contents(env)
 
-moduleDependencies = ['core']
-
-lib_tgt, install_tgt = lib_rules( 'processing', version, realHeaders, realSources, install_dirs, processing_env, moduleDependencies )
+lib_tgt, install_tgt = lib_rules( module, version, realHeaders, realSources, install_dirs, env, moduleDependencies)
 
 Return( 'lib_tgt', 'install_tgt' )
