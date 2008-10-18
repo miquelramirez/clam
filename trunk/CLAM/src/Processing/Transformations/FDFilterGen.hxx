@@ -48,7 +48,7 @@ public:
 		return new EFDFilterGenControls;
 	}
 
-	typedef enum 
+	enum 
 	{
 		gain=0,
 		highcutoff,
@@ -81,7 +81,7 @@ public:
 	EFDFilterType(tValue v) : Enum(ValueTable(), v) {};
 	EFDFilterType(std::string s) : Enum(ValueTable(), s) {};
 
-	typedef enum {
+	enum {
 		eLowPass,
 		eHighPass,
 		eBandPass,
