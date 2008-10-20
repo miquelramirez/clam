@@ -8,14 +8,13 @@ moduleDependencies = ['core','processing']
 
 folders = [
 	'src/Processing/AudioFileIO',
-	'src/Processing/AudioIO',
 	'src/Processing/MIDIIO',
+	'src/Processing/AudioIO',
 	'src/Tools/MIDIIO',
 	'src/Tools/MIDIIO/File',
 	'src/Tools/MIDIIO/TextFile',
 	'src/Tools/AudioIO',
 	'src/Tools/AudioFileIO',
-	'src/Processing/AudioIO',
 	'src/Flow/Networks/BlockingNetworkPlayer*.*xx',
 	'src/Flow/Networks/MonoOfflineNetworkPlayer.*xx',
 	'src/Flow/Networks/OfflineNetworkPlayer.*xx',
