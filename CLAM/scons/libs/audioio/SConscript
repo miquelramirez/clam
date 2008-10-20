@@ -15,9 +15,7 @@ folders = [
 	'src/Tools/MIDIIO/TextFile',
 	'src/Tools/AudioIO',
 	'src/Tools/AudioFileIO',
-	'src/Flow/Networks/BlockingNetworkPlayer*.*xx',
-	'src/Flow/Networks/MonoOfflineNetworkPlayer.*xx',
-	'src/Flow/Networks/OfflineNetworkPlayer.*xx',
+	'src/Flow/Networks/BackEnds',
 	'src/System/Application',
 	]
 
@@ -25,16 +23,16 @@ blacklist = [
 	'main.cxx', # TODO: Move main from midi file examples to examples if needed
 	]
 
-if env.get('with_jack') :
-	folders.append( 'src/Flow/Networks/JACKNetworkPlayer*.*xx')
+if not env.get('with_jack') :
+	blacklist += ['JACKNetworkPlayer']
 
 if not env.get('with_mad') :
 	blacklist += ['Mpeg']
 if not env.get('with_oggvorbis') :
 	blacklist += ['Vorbis']
 
-if env.get('with_portaudio') :
-	folders.append( 'src/Flow/Networks/PANetworkPlayer*.*xx')
+if not env.get('with_portaudio') :
+	blacklist += ['PANetworkPlayer']
 
 if env.get('with_portmidi') :
 	folders.append( 'src/Tools/MIDIIO/PortMIDI' )

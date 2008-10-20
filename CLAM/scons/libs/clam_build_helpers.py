@@ -389,7 +389,7 @@ def create_custom_builders( env ) :
 		return None
 
 	bld = env.Builder( action=Action(generate_linker_name,
-		"== Linking linker name $TARGET to $SOURCE") )
+		"== Generating linker name $TARGET to $SOURCE") )
 	env.Append( BUILDERS={'LinkerNameLink' : bld} )
 
 	import shutil

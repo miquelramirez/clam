@@ -33,11 +33,6 @@ folders = [
 	]
 
 blacklist = [
-	'BlockingNetworkPlayer',
-	'JACKNetworkPlayer',
-	'PANetworkPlayer',
-	'MonoOfflineNetworkPlayer',
-	'OfflineNetworkPlayer',
 	]
 
 if sys.platform == 'win32' or crosscompiling :
