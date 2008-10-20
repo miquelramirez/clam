@@ -6,7 +6,7 @@
 #include "MonoAudioFileWriter.hxx"
 #include "AudioDatabaseReader.hxx"
 #include "Network.hxx"
-#include "FreewheelingNetworkPlayer.hxx"
+#include "OfflineNetworkPlayer.hxx"
 #include "XMLStorage.hxx"
 #include "Err.hxx"
 
