@@ -37,7 +37,6 @@
 #include <CLAM/CleanTracks.hxx>
 #include <CLAM/Segmentator.hxx>
 #include <CLAM/Normalization.hxx>
-#include <CLAM/HeapDbg.hxx>
 
 #include <fstream>
 #include <CLAM/XMLStorage.hxx>
