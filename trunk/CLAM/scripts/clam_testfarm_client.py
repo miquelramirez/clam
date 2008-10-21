@@ -22,6 +22,7 @@ def ellapsedTime():
 
 HOME = os.environ['HOME']
 os.environ['LD_LIBRARY_PATH']='%s/testfarm_sandboxes/local/lib:/usr/local/lib' % HOME
+os.environ['CLAM_PLUGIN_PATH']='%s/testfarm_sandboxes/local/lib/clam' % HOME
 
 def set_qtdir_to_qt4(x) :
 	os.environ['QTDIR']=localDefinitions['qt4dir']
@@ -149,14 +150,12 @@ clam.add_subtask("CLAM Plugins", [
 	'scons clam_prefix=%(installPath)s'%localDefinitions,
 	'scons install',
 ] )
-"""
 clam.add_subtask('Back-to-back network tests', [
 	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
 	'cd %(sandbox)s/CLAM/plugins/spacialization'%localDefinitions,
-	'CLAM_PLUGIN_PATH=. ../../../NetworkEditor/OfflinePlayer example-data/single-impulse-response-surround.clamnetwork wavs/metronom.wav b2bresults/c.wav b2bresults/l.wav b2bresults/r.wav b2bresults/sl.wav b2bresults/sr.wav',
-	'diff -r b2bresults/ b2bexpected/',
+	'./back2back.py',
 ] )
-"""
+
 clam.add_subtask('Padova Speech SMS (external repository)', [
 	'cd %(sandbox)s/padova-speech-sms/'%localDefinitions,
 	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
@@ -165,9 +164,9 @@ clam.add_subtask('Padova Speech SMS (external repository)', [
 ] )
 
 Runner( clam, 
-	continuous = True,
-#	first_run_always = False,
-	remote_server_url = 'http://ocata48123.upf.es/testfarm_server'
+	continuous = False,
+	first_run_always = False,
+	remote_server_url = 'http://localhost/testfarm_server'
 #	local_base_dir='/tmp'
 )
 
