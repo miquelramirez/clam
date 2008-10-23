@@ -50,11 +50,12 @@ namespace CLAM
 			Processing & sender, const std::string & outControlName, 
 			Processing & receiver, const std::string & inControlName )
 	{
-		OutControl & out = sender.GetOutControl(outControlName);
-		InControl & in = receiver.GetInControl(inControlName);
+		OutControlBase & out = sender.GetOutControl(outControlName);
+		InControlBase & in = receiver.GetInControl(inControlName);
 		out.AddLink(in);
 	}
 	
+/*
 	void ConnectTypedControls(
 			Processing & sender, const std::string & typedOutControlName, 
 			Processing & receiver, const std::string & typedInControlName )
@@ -63,7 +64,7 @@ namespace CLAM
 		BaseTypedInControl & in = receiver.GetTypedInControl(typedInControlName);
 		out.AddLink(in);
 	}
-	
+*/	
 	void ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
 			Processing & receiver, unsigned inPortNumber )
@@ -81,7 +82,7 @@ namespace CLAM
 		InControl & in = receiver.GetInControl(inControlNumber);
 		out.AddLink(in);
 	}
-
+/*
 	void ConnectTypedControls(
 			Processing & sender, unsigned typedOutControlNumber, 
 			Processing & receiver, unsigned typedInControlNumber )
@@ -90,7 +91,7 @@ namespace CLAM
 		BaseTypedInControl & in = receiver.GetTypedInControl(typedInControlNumber);
 		out.AddLink(in);
 	}
-	
+*/	
 	void ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
 			InPortBase & in )
@@ -124,34 +125,34 @@ namespace CLAM
 	}
 	
 	void SendFloatToInControl(Processing & receiver, const std::string & inControlName, float value){
-		OutControl controlSender("tmpOutControl");
+		FloatOutControl controlSender("tmpOutControl");
 		controlSender.AddLink(receiver.GetInControl(inControlName));
 		controlSender.SendControl(value);
 	}
 
 	void SendFloatToInControl(Processing & receiver, int inControlIndex, float value){
-		OutControl controlSender("tmpOutControl");
+		FloatOutControl controlSender("tmpOutControl");
 		controlSender.AddLink(receiver.GetInControl(inControlIndex));
 		controlSender.SendControl(value);
 	}
 	
 	void SendFloatToOutControl(Processing & sender, const std::string & inControlName, float value){
-		OutControl& out = *(dynamic_cast<OutControl*>(&(sender.GetOutControl(inControlName))));
+		FloatOutControl& out = *(dynamic_cast<FloatOutControl*>(&(sender.GetOutControl(inControlName))));
 		out.SendControl(value);
 	}
 	
 	void SendFloatToOutControl(Processing & sender, int inControlIndex, float value){
-		OutControl& out = *(dynamic_cast<OutControl*>(&(sender.GetOutControl(inControlIndex))));
+		FloatOutControl& out = *(dynamic_cast<FloatOutControl*>(&(sender.GetOutControl(inControlIndex))));
 		out.SendControl(value);
 	}
 	
 	float GetFloatFromInControl(Processing & proc, const std::string & inControlName){
-		InControl& in = *(dynamic_cast<InControl*>(&(proc.GetInControl(inControlName))));
+		FloatInControl& in = *(dynamic_cast<FloatInControl*>(&(proc.GetInControl(inControlName))));
 		return in.GetLastValue();
 	}
 	
 	float GetFloatFromInControl(Processing & proc, int inControlIndex){
-		InControl& in = *(dynamic_cast<InControl*>(&(proc.GetInControl(inControlIndex))));
+		FloatInControl& in = *(dynamic_cast<FloatInControl*>(&(proc.GetInControl(inControlIndex))));
 		return in.GetLastValue();
 	}
 	
@@ -245,10 +246,11 @@ namespace CLAM
 	{
 		mOutControlRegistry.ProcessingInterface_Register(out);
 	}
-	void Processing::RegisterInControl(InControl* in)
+	void Processing::RegisterInControl(InControlBase* in)
 	{
 		mInControlRegistry.ProcessingInterface_Register(in);
 	}
+/*
 	void Processing::RegisterTypedOutControl(BaseTypedOutControl* out) 
 	{
 		mTypedOutControlRegistry.ProcessingInterface_Register(out);
@@ -257,7 +259,7 @@ namespace CLAM
 	{
 		mTypedInControlRegistry.ProcessingInterface_Register(in);
 	}
-	
+*/	
 	void Processing::SetParent(Processing * parent)
 	{
 		ProcessingComposite * composite;

@@ -274,16 +274,16 @@ private:
 		CLAM::OutPort<int> out;
 		CLAM::InControl inControl;
 		CLAM::OutControl outControl;
-		CLAM::TypedInControl<int> typedInControl;
-		CLAM::TypedOutControl<int> typedOutControl;
+//		CLAM::TypedInControl<int> typedInControl;
+//		CLAM::TypedOutControl<int> typedOutControl;
 		
 		DummyIOProcessing() : 
 			in("In", this), 
 			out("Out", this),
 			inControl("In", this),
 			outControl("Out", this),
-			typedInControl("TypedIn", this),
-			typedOutControl("TypedOut", this)
+//			typedInControl("TypedIn", this),
+//			typedOutControl("TypedOut", this)
 		{
 		}
 		bool Do() { return false; }

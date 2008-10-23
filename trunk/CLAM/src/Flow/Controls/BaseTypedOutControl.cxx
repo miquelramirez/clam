@@ -11,7 +11,7 @@ namespace CLAM{
 	
 	BaseTypedOutControl::~BaseTypedOutControl()
 	{
-		if (mProcessing)
-			mProcessing->GetTypedOutControls().ProcessingInterface_Unregister(this);
+//		if (mProcessing)
+//			mProcessing->GetTypedOutControls().ProcessingInterface_Unregister(this);
 	}
 }

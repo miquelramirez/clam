@@ -25,7 +25,7 @@
 namespace CLAM
 {
 
-OutControl& OutControlRegistry::GetByNumber(int index) const
+OutControlBase& OutControlRegistry::GetByNumber(int index) const
 {
 	CLAM_ASSERT(index>=0, "index for Control must be >=0");
 	CLAM_ASSERT(index<Size(), "index for Control must be < than Size");
@@ -33,7 +33,7 @@ OutControl& OutControlRegistry::GetByNumber(int index) const
 	return *mOutControls[index];
 }
 
-OutControl& OutControlRegistry::Get(const std::string & name) const
+OutControlBase& OutControlRegistry::Get(const std::string & name) const
 {
 	ConstIterator it;
 	for (it=mOutControls.begin(); it!=mOutControls.end(); it++)
@@ -44,7 +44,7 @@ OutControl& OutControlRegistry::Get(const std::string & name) const
 		"No out control named '" +  name + "'.\nTry with: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
-	return *(OutControl*)NULL; // Just to get rid of warnings
+	return *(OutControlBase*)NULL; // Just to get rid of warnings
 }
 
 bool OutControlRegistry::Has(const std::string& name) const
@@ -82,12 +82,12 @@ OutControlRegistry::ConstIterator OutControlRegistry::End() const
 	return mOutControls.end();
 }
 
-void OutControlRegistry::ProcessingInterface_Register( OutControl * out )
+void OutControlRegistry::ProcessingInterface_Register( OutControlBase * out )
 {
 	mOutControls.push_back( out );
 }
 
-void OutControlRegistry::ProcessingInterface_Unregister( OutControl * out )
+void OutControlRegistry::ProcessingInterface_Unregister( OutControlBase * out )
 {
 	for (Iterator it=mOutControls.begin(); it!=mOutControls.end(); it++)
 	{
@@ -107,7 +107,7 @@ std::string OutControlRegistry::AvailableNames() const
 	std::string separator = "";
 	for (ConstIterator it=mOutControls.begin(); it!=mOutControls.end(); it++)
 	{
-		OutControl & control = *(*it);
+		OutControlBase & control = *(*it);
 		result += separator + "'" + control.GetName() + "'";
 		separator = ",";
 	}
