@@ -168,6 +168,10 @@ public:
 };
 
 
+// REFACTORING typed connections
+typedef InControl FloatInControl;
+typedef InControl InControlBase;
+
 /////////////////////////////////////////////////////////////////////////////////////////
 //  Implementation of class InControlTmpl
 //
@@ -178,10 +182,9 @@ int InControlTmpl<ProcObj>::DoControl(TControlData val)
 	InControl::DoControl(val);
 	if(mFunc)
 		return (mProcObj->*mFunc)(val);
-	else if (mFuncId)
+	if (mFuncId)
 		return (mProcObj->*mFuncId)(mId,val);
-	else
-		return 0;
+	return 0;
 }
 
 

@@ -16,8 +16,8 @@ namespace CLAM
 	
 	BaseTypedInControl::~BaseTypedInControl()
 	{
-		if (mProcessing)
-			mProcessing->GetTypedInControls().ProcessingInterface_Unregister(this);
+//		if (mProcessing)
+//			mProcessing->GetTypedInControls().ProcessingInterface_Unregister(this);
 	}
 	bool BaseTypedInControl::IsBounded() const
 	{

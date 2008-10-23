@@ -105,7 +105,9 @@ public:
 	Processing * GetProcessing() const { return mParent;}
 };
 
-
+//REFACTORING Typed Controls
+typedef OutControl FloatOutControl;
+typedef OutControl OutControlBase;
 
 }; // namespace CLAM
 

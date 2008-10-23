@@ -28,21 +28,21 @@
 namespace CLAM
 {
 //foward declaration:
-class OutControl;
+class OutControlBase;
 
 class OutControlRegistry
 {
-	std::vector<OutControl*> mOutControls;
+	std::vector<OutControlBase*> mOutControls;
 public:
-	typedef std::vector<OutControl*>::iterator Iterator;
-	typedef std::vector<OutControl*>::const_iterator ConstIterator;
+	typedef std::vector<OutControlBase*>::iterator Iterator;
+	typedef std::vector<OutControlBase*>::const_iterator ConstIterator;
 
-	OutControl& GetByNumber(int index) const;
-	OutControl& Get(const std::string & name) const;
+	OutControlBase& GetByNumber(int index) const;
+	OutControlBase& Get(const std::string & name) const;
 	bool Has(const std::string& name) const;
 	int Size() const;
-	void ProcessingInterface_Register( OutControl *);
-	void ProcessingInterface_Unregister( OutControl * );
+	void ProcessingInterface_Register( OutControlBase *);
+	void ProcessingInterface_Unregister( OutControlBase * );
 	void Clear(){ mOutControls.clear(); }
 	Iterator Begin();
 	Iterator End();	

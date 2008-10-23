@@ -78,6 +78,7 @@ namespace CLAM
 	void ConnectControls(
 			Processing & sender, const std::string & outControlName, 
 			Processing & receiver, const std::string & inControlName );
+#if 0
 	/**
 	 * Free function that connects two typed controls.
 	 */
@@ -91,6 +92,7 @@ namespace CLAM
 			Processing & sender, const std::string & typedOutControlName, 
 			Processing & receiver, const std::string & typedInControlName );
 
+#endif 
 	/**
 	 * Connects a free port to one belonging to a processing selecting it by the port number.
 	 * Short hand for sender.ConnectToIn(receiver.GetOutPort(inPortName))
@@ -321,8 +323,8 @@ namespace CLAM
 		void RegisterInPort(InPortBase* in);
 		void RegisterOutControl(OutControl* out);
 		void RegisterInControl(InControl* in);
-		void RegisterTypedOutControl(BaseTypedOutControl* out);
-		void RegisterTypedInControl(BaseTypedInControl* in);
+		void RegisterTypedOutControl(BaseTypedOutControl* out) {}
+		void RegisterTypedInControl(BaseTypedInControl* in) {}
 
 
 		void SetParent(Processing *p);
@@ -355,6 +357,7 @@ namespace CLAM
 			return mOutControlRegistry.Has(name);
 		}
 
+#if 0
 		bool HasTypedInControl( const std::string & name )
 		{
 			return mTypedInControlRegistry.Has(name);
@@ -365,6 +368,7 @@ namespace CLAM
 			return mTypedOutControlRegistry.Has(name);
 		}
 
+#endif 
 		InPortBase & GetInPort( const std::string & name )
 		{
 			return mInPortRegistry.Get(name);
@@ -373,15 +377,17 @@ namespace CLAM
 		{
 			return mOutPortRegistry.Get(name);
 		}
-		InControl & GetInControl( const std::string & name )
+		InControlBase & GetInControl( const std::string & name )
 		{
 			return mInControlRegistry.Get(name);
 		}		
-		OutControl & GetOutControl( const std::string & name )
+		OutControlBase & GetOutControl( const std::string & name )
 		{
 			return mOutControlRegistry.Get(name);
 		}
 		/** @deprecated: Transitional method */
+
+#if 0
 		BaseTypedInControl & GetTypedInControl( const std::string & name )
 		{
 			return mTypedInControlRegistry.Get(name);
@@ -392,6 +398,7 @@ namespace CLAM
 			return mTypedOutControlRegistry.Get(name);
 		}
 
+#endif
 		InPortBase & GetInPort( unsigned index )
 		{
 			return mInPortRegistry.GetByNumber(index);
@@ -400,15 +407,16 @@ namespace CLAM
 		{
 			return mOutPortRegistry.GetByNumber(index);
 		}
-		InControl & GetInControl( unsigned index )
+		InControlBase & GetInControl( unsigned index )
 		{
 			return mInControlRegistry.GetByNumber(index);
 		}
-		OutControl & GetOutControl( unsigned index )
+		OutControlBase & GetOutControl( unsigned index )
 		{
 			return mOutControlRegistry.GetByNumber(index);
 		}
 
+#if 0
 		/** @deprecated: Transitional method */
 		BaseTypedInControl & GetTypedInControl( unsigned index )
 		{
@@ -420,6 +428,7 @@ namespace CLAM
 			return mTypedOutControlRegistry.GetByNumber(index);
 		}
 
+#endif 
 		unsigned GetNInPorts()
 		{
 			return mInPortRegistry.Size();
@@ -436,6 +445,8 @@ namespace CLAM
 		{
 			return mOutControlRegistry.Size();
 		}
+
+#if 0
 		/** @deprecated: Transitional method */
 		unsigned GetNTypedInControls()
 		{
@@ -446,6 +457,7 @@ namespace CLAM
 		{
 			return mTypedOutControlRegistry.Size();
 		}
+#endif 
 	protected:
 		/** Accessor to published Controls manager */
 		InControlRegistry& GetInControls() { return mInControlRegistry; }
@@ -454,10 +466,10 @@ namespace CLAM
 		OutControlRegistry& GetOutControls() { return mOutControlRegistry; }
 		
 		/** Accessor to published Typed Controls manager */
-		TypedInControlRegistry& GetTypedInControls() { return mTypedInControlRegistry; }
+//		TypedInControlRegistry& GetTypedInControls() { return mTypedInControlRegistry; }
 
 		/** Accessor to published Typed Controls manager */
-		TypedOutControlRegistry& GetTypedOutControls() { return mTypedOutControlRegistry; }
+//		TypedOutControlRegistry& GetTypedOutControls() { return mTypedOutControlRegistry; }
 
 		/** Accessor to published Ports manager */
 		InPortRegistry& GetInPorts() { return mInPortRegistry; }
@@ -515,8 +527,8 @@ namespace CLAM
 	private:
 		InControlRegistry mInControlRegistry;
 		OutControlRegistry mOutControlRegistry;
-		TypedInControlRegistry mTypedInControlRegistry;
-		TypedOutControlRegistry mTypedOutControlRegistry;
+//		TypedInControlRegistry mTypedInControlRegistry;
+//		TypedOutControlRegistry mTypedOutControlRegistry;
 		InPortRegistry mInPortRegistry;
 		OutPortRegistry mOutPortRegistry;
 	};

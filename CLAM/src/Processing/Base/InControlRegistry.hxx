@@ -27,21 +27,23 @@
 #include <iostream>
 namespace CLAM
 {
+
 class InControl;
+typedef InControlRegistry I
 
 class InControlRegistry
 {
-	std::vector<InControl*> mInControls;
+	std::vector<InControlBase*> mInControls;
 public:
-	typedef std::vector<InControl*>::iterator Iterator;
-	typedef std::vector<InControl*>::const_iterator ConstIterator;
+	typedef std::vector<InControlBase*>::iterator Iterator;
+	typedef std::vector<InControlBase*>::const_iterator ConstIterator;
 
-	InControl& GetByNumber(int index) const;
-	InControl& Get(const std::string & name) const;
+	InControlBase& GetByNumber(int index) const;
+	InControlBase& Get(const std::string & name) const;
 	bool Has(const std::string& name) const;
 	int Size() const;
-	void ProcessingInterface_Register(InControl *);
-	void ProcessingInterface_Unregister( InControl * );
+	void ProcessingInterface_Register(InControlBase *);
+	void ProcessingInterface_Unregister( InControlBase * );
 	void Clear(){ mInControls.clear(); }
 	Iterator Begin();
 	Iterator End();

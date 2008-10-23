@@ -26,7 +26,7 @@
 namespace CLAM
 {
 
-InControl& InControlRegistry::GetByNumber(int index) const
+InControlBase& InControlRegistry::GetByNumber(int index) const
 {
 	CLAM_ASSERT(index>=0, "index for Control must be >=0");
 	CLAM_ASSERT(index<Size(), "index for Control must be < than Size");
@@ -34,7 +34,7 @@ InControl& InControlRegistry::GetByNumber(int index) const
 	return *mInControls.at(index);
 }
 
-InControl& InControlRegistry::Get(const std::string & name) const
+InControlBase& InControlRegistry::Get(const std::string & name) const
 {
 	ConstIterator it;
 	for (it=mInControls.begin(); it!=mInControls.end(); it++)
@@ -45,7 +45,7 @@ InControl& InControlRegistry::Get(const std::string & name) const
 		"No in control named '" +  name + "'.\nTry with: " + AvailableNames();
 	CLAM_ASSERT( false, error.c_str() );
 
-	return *(InControl*)NULL; // just to get rid of warnings
+	return *(InControlBase*)NULL; // just to get rid of warnings
 }
 
 bool InControlRegistry::Has(const std::string& name) const
@@ -64,7 +64,7 @@ std::string InControlRegistry::AvailableNames() const
 	std::string separator = "";
 	for (ConstIterator it=mInControls.begin(); it!=mInControls.end(); it++)
 	{
-		InControl & control = *(*it);
+		InControlBase & control = *(*it);
 		result += separator + "'" + control.GetName() + "'";
 		separator = ",";
 	}
