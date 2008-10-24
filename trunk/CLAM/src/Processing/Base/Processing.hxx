@@ -44,8 +44,6 @@ namespace CLAM
 	class Processing;
 	class InPortBase;
 	class OutPortBase;
-	class InControl;
-	class OutControl;
 	class BaseTypedInControl;
 	class BaseTypedOutControl;
 	class ProcessingComposite;
@@ -158,7 +156,7 @@ namespace CLAM
 	 * done. 
 	 * Asyncronous comunication is done using the Control abstraction.
 	 * 
-	 * @see InPortBase, OutPortBase, InControl, OutControl
+	 * @see InPortBase, OutPortBase, InControlBase, OutControl
 	 *
 	 * An initial setup is needed before using any processing.
 	 * You can specify this initial setup by providing the
@@ -321,8 +319,9 @@ namespace CLAM
 		
 		void RegisterOutPort(OutPortBase* out);
 		void RegisterInPort(InPortBase* in);
-		void RegisterOutControl(OutControl* out);
-		void RegisterInControl(InControl* in);
+		void RegisterOutControl(OutControlBase* out);
+		void RegisterInControl(InControlBase* in);
+		//TODO remove
 		void RegisterTypedOutControl(BaseTypedOutControl* out) {}
 		void RegisterTypedInControl(BaseTypedInControl* in) {}
 

@@ -124,8 +124,8 @@ public:
 
 	InPortBase & GetInPortByCompleteName( const std::string& ) const;
 	OutPortBase & GetOutPortByCompleteName( const std::string& ) const;
-	InControl & GetInControlByCompleteName( const std::string& ) const;
-	OutControl & GetOutControlByCompleteName( const std::string& ) const;
+	InControlBase & GetInControlByCompleteName( const std::string& ) const;
+	OutControlBase & GetOutControlByCompleteName( const std::string& ) const;
 
 	NamesList GetInPortsConnectedTo( const std::string & ) const;
 	NamesList GetInControlsConnectedTo( const std::string & ) const;
