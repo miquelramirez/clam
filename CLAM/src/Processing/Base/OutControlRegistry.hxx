@@ -25,10 +25,10 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include "OutControl.hxx"
+
 namespace CLAM
 {
-//foward declaration:
-class OutControlBase;
 
 class OutControlRegistry
 {

@@ -25,11 +25,10 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include "InControl.hxx"
+
 namespace CLAM
 {
-
-class InControl;
-typedef InControlRegistry I
 
 class InControlRegistry
 {

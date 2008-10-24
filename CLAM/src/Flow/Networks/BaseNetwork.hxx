@@ -76,8 +76,8 @@ public:
 	virtual std::string GetProcessingIdentifier( const std::string& ) const = 0;
 	virtual InPortBase & GetInPortByCompleteName( const std::string & name ) const = 0;
 	virtual OutPortBase & GetOutPortByCompleteName( const std::string & name ) const = 0;
-	virtual InControl & GetInControlByCompleteName( const std::string & name ) const = 0;
-	virtual OutControl & GetOutControlByCompleteName( const std::string & name ) const = 0;
+	virtual InControlBase & GetInControlByCompleteName( const std::string & name ) const = 0;
+	virtual OutControlBase & GetOutControlByCompleteName( const std::string & name ) const = 0;
 
 	// methods related to connect/disconnect interface
 	virtual bool ConnectPorts( const std::string &, const std::string & ) = 0;

@@ -9,24 +9,24 @@
 // Extract common interface from InControlPublisher, InControl and create a common base class
 namespace CLAM
 {
-    class InControlPublisher : public InControl
+    class InControlPublisher : public FloatInControl
 	{
-		InControl* mPublished; //TODO should be a list, in the future
+		FloatInControl* mPublished; //TODO should be a list, in the future
 
 		public:
 			InControlPublisher() 
-				: InControl( "InControlPublisher", 0 ) 
+				: FloatInControl( "InControlPublisher", 0 ) 
 			{
 				mPublished=NULL;
 			} 
 
 			InControlPublisher( const std::string& name, Processing* father )
-				: InControl( name, father ) 
+				: FloatInControl( name, father ) 
 			{
 				mPublished=NULL;
 			}
 
-			void PublishInControl( InControl& in )
+			void PublishInControl( FloatInControl& in )
 			{
 				mPublished = &in;
 			}
@@ -34,15 +34,13 @@ namespace CLAM
 			{
 				if(mPublished)
 					return mPublished->DoControl(val);
-				else
-					return InControl::DoControl(val);
+				return FloatInControl::DoControl(val);
 			}
 			const TControlData& GetLastValue() const 
 			{ 
 				if(mPublished)
 					return mPublished->GetLastValue();
-				else
-					return mLastValue; 
+				return mLastValue; 
 			}
 
 	};
