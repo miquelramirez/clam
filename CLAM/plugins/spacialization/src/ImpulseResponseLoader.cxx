@@ -30,7 +30,7 @@ namespace Hidden
 		"description", "ImpulseResponseLoader",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ImpulseResponseLoader>
+	static FactoryRegistrator<ProcessingFactory, ImpulseResponseLoader>
 	reg = metadata;
 }
 

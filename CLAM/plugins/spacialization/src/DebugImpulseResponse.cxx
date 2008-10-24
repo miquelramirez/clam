@@ -30,7 +30,7 @@ namespace Hidden
 		"description", "DebugImpulseResponse",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, DebugImpulseResponse>
+	static FactoryRegistrator<ProcessingFactory, DebugImpulseResponse>
 	reg = metadata;
 }
 

@@ -32,7 +32,7 @@ namespace Hidden
 		"description", "Complex2MagPhaseSpectrum",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, Complex2MagPhaseSpectrum>
+	static FactoryRegistrator<ProcessingFactory, Complex2MagPhaseSpectrum>
 		reg = metadata;
 }
 

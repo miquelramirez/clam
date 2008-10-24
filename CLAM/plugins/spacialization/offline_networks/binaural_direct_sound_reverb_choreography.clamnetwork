@@ -207,7 +207,7 @@
     <IsPassiveRotation>1</IsPassiveRotation>
   </processing>
 
-  <processing id="Beta" position="1885,6" size="406,73" type="OutControlSender">
+  <processing id="Beta" position="1885,6" size="406,78" type="OutControlSender">
     <Min>0</Min>
     <Default>0.3</Default>
     <Max>1</Max>
@@ -216,7 +216,7 @@
   </processing>
 
   <processing id="ChoreoSequencer_1" position="104,22" size="194,59" type="ChoreoSequencer">
-    <Filename>/home/vokimon/CajitasDeArena/data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
+    <Filename>/home/parumi/data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
@@ -238,7 +238,7 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="Direct Sound Gain" position="1671,584" size="367,73" type="OutControlSender">
+  <processing id="Direct Sound Gain" position="1671,584" size="367,78" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
     <Max>1</Max>
@@ -249,7 +249,7 @@
 
   <processing id="HRTFDatabaseFetcher2" position="237,999" size="167,94" type="HRTFDatabaseFetcher2">
     <FrameSize>512</FrameSize>
-    <Path>HRTFs/kreuzerDatabase.hrtfs</Path>
+    <Path>/home/parumi/acustica/HRTFs/mitKemarFullL.hrtfs</Path>
     <Prefix></Prefix>
   </processing>
 
@@ -465,7 +465,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Reverb Gain" position="1365,589" size="280,73" type="OutControlSender">
+  <processing id="Reverb Gain" position="1365,589" size="280,78" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
     <Max>1</Max>

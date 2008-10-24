@@ -21,7 +21,7 @@
 #include "ConstantSpectrum.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
-namespace CLAM
+namespace detail
 {
 namespace Hidden
 {
@@ -31,8 +31,7 @@ namespace Hidden
 		"description", "ConstantSpectrum",
 		0
 	};
-	static FactoryRegistrator<ProcessingFactory, ConstantSpectrum>
-	reg = metadata;
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::ConstantSpectrum> reg = metadata;
 }
 }
 
