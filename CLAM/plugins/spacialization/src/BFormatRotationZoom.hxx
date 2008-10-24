@@ -10,7 +10,21 @@
 
 
 /**
- @todo Document BFormatRotationZoom
+ This Processing implements the rotation and zoom of a B-format signal set.
+ The rotation is performed on the set X,Y,Z such as the new set of axes X',Y',Z' has X' facing the direction specified by the Azimuth and Elevation angles.
+ The Zoom effect (Dominance effect) is applied after rotation and takes place along the X' direction.
+ @param[in] azimuth [Control] The counterclockwise angle of rotation on the horizontal plane
+ @param[in] elevation [Control] The angle of vertical rotation
+ @param[in] dominance [Control] The parameter related to the level of zoom in the X' direction. A value of 1 leaves the components untouched. Values greater than 1 produce a zoom-in effect, while values less than 1 produce the zoom out.
+ @param[in] Win [Port] The W input component
+ @param[in] Xin [Port] The X component to be rotated
+ @param[in] Yin [Port] The Y component to be rotated
+ @param[in] Zin [Port] The Z component to be rotated
+ @param[out] Wout [Port] The W component after rotation and zoom
+ @param[out] Xout [Port] The X component after rotation and zoom
+ @param[out] Yout [Port] The Y component after rotation and zoom	
+ @param[out] Zout [Port] The Z component after rotation and zoom
+ @see AmbisonicsConventions 
  @ingroup SpatialAudio
 */
 class BFormatRotationZoom : public CLAM::Processing
