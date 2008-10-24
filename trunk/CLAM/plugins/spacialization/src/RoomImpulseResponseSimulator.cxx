@@ -20,9 +20,8 @@
 
 #include "RoomImpulseResponseSimulator.hxx"
 #include <CLAM/ProcessingFactory.hxx>
-namespace CLAM
-{
-namespace Hidden
+
+namespace detail
 {
 	static const char* metadata[] = {
 		"key", "RoomImpulseResponseSimulator",
@@ -30,7 +29,5 @@ namespace Hidden
 		"description", "RoomImpulseResponseSimulator",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, RoomImpulseResponseSimulator> reg = metadata;
-}
-
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::RoomImpulseResponseSimulator> reg = metadata;
 }

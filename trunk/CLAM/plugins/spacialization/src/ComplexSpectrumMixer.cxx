@@ -30,7 +30,7 @@ namespace Hidden
 		"description", "ComplexSpectrumMixer",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ComplexSpectrumMixer>
+	static FactoryRegistrator<ProcessingFactory, ComplexSpectrumMixer>
 	reg = metadata;
 
 }

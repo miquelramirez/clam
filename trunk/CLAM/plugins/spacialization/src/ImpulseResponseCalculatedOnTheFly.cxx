@@ -20,9 +20,8 @@
 
 #include "ImpulseResponseCalculatedOnTheFly.hxx"
 #include <CLAM/ProcessingFactory.hxx>
-namespace CLAM
-{
-namespace Hidden
+
+namespace detail
 {
 	static const char* metadata[] = {
 		"key", "ImpulseResponseCalculatedOnTheFly",
@@ -30,7 +29,6 @@ namespace Hidden
 		"description", "ImpulseResponseCalculatedOnTheFly",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ImpulseResponseCalculatedOnTheFly> reg = metadata;
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::ImpulseResponseCalculatedOnTheFly> reg = metadata;
 }
 
-}

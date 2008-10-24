@@ -30,7 +30,7 @@ namespace Hidden
 		"description", "CrossCorrelation",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CrossCorrelation>
+	static FactoryRegistrator<ProcessingFactory, CrossCorrelation>
 	reg = metadata;
 }
 

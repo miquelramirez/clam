@@ -20,9 +20,7 @@
 
 #include "HRTFDatabaseFetcher2.hxx"
 #include <CLAM/ProcessingFactory.hxx>
-namespace CLAM
-{
-namespace Hidden
+namespace detail
 {
 	static const char* metadata[] = {
 		"key", "HRTFDatabaseFetcher2",
@@ -30,7 +28,5 @@ namespace Hidden
 		"description", "HRTFDatabaseFetcher2",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, HRTFDatabaseFetcher2> reg = metadata;
-}
-
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::HRTFDatabaseFetcher2> reg = metadata;
 }

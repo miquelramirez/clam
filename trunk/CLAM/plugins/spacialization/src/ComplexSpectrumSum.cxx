@@ -30,7 +30,7 @@ namespace Hidden
 		"description", "ComplexSpectrumSum",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ComplexSpectrumSum>
+	static FactoryRegistrator<ProcessingFactory, ComplexSpectrumSum>
 	reg = metadata;
 }
 

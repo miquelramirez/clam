@@ -30,7 +30,7 @@ namespace Hidden
 		"description", "HRTFDatabaseFetcher",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, HRTFDatabaseFetcher> reg = metadata;
+	static FactoryRegistrator<ProcessingFactory, HRTFDatabaseFetcher> reg = metadata;
 }
 
 }

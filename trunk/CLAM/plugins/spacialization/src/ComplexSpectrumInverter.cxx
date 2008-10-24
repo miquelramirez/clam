@@ -30,7 +30,7 @@ namespace Hidden
 		"description", "ComplexSpectrumInverter",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ComplexSpectrumInverter>
+	static FactoryRegistrator<ProcessingFactory, ComplexSpectrumInverter>
 	reg = metadata;
 }
 

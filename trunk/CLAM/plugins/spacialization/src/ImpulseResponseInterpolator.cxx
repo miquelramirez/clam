@@ -30,7 +30,7 @@ namespace Hidden
 		"description", "ImpulseResponseInterpolator",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ImpulseResponseInterpolator>
+	static FactoryRegistrator<ProcessingFactory, ImpulseResponseInterpolator>
 	reg = metadata;
 }
 
