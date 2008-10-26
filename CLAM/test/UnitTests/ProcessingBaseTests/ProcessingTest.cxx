@@ -277,13 +277,13 @@ private:
 //		CLAM::TypedInControl<int> typedInControl;
 //		CLAM::TypedOutControl<int> typedOutControl;
 		
-		DummyIOProcessing() : 
-			in("In", this), 
-			out("Out", this),
-			inControl("In", this),
-			outControl("Out", this),
-//			typedInControl("TypedIn", this),
-//			typedOutControl("TypedOut", this)
+		DummyIOProcessing()
+			: in("In", this)
+			, out("Out", this)
+			, inControl("In", this)
+			, outControl("Out", this)
+//			, typedInControl("TypedIn", this)
+//			, typedOutControl("TypedOut", this)
 		{
 		}
 		bool Do() { return false; }
