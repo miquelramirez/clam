@@ -11,7 +11,9 @@ namespace CLAM{
 	
 	BaseTypedOutControl::~BaseTypedOutControl()
 	{
+		while (!mLinks.empty())
+			RemoveLink(*mLinks.front());
 //		if (mProcessing)
-//			mProcessing->GetTypedOutControls().ProcessingInterface_Unregister(this);
+//			mProcessing->GetOutControls().ProcessingInterface_Unregister(this);
 	}
 }

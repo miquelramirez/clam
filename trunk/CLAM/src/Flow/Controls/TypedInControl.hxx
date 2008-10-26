@@ -20,10 +20,9 @@ namespace CLAM {
 		
 	protected:
 		TypedControlData mLastValue;
-		std::list< BaseTypedOutControl * > mLinks;
 		
 	public:
-		TypedInControl(const std::string &name = "unnamed typed in control", Processing * proc = 0);
+		TypedInControl(const std::string &name = "unnamed in control", Processing * proc = 0);
 		~TypedInControl();
 		
 		void DoControl(const TypedControlData& val);
@@ -36,14 +35,8 @@ namespace CLAM {
 		/** ONLY TO USE WHEN TypedControlData == float. Returns the last TControlData (float) received interpireted as an integer */
 		int GetLastValueAsInteger() const { return (int)(mLastValue+0.5f); };
 		
-		bool IsConnected() const;
-		
 		// For the typed linking check
 		virtual const std::type_info& ControlType() const { return typeid(TypedControlData); };
-		/// Implementation detail just to be used from OutControl
-		void OutControlInterface_AddLink(TypedOutControl<TypedControlData> & outControl);
-		/// Implementation detail just to be used from OutControl
-		void OutControlInterface_RemoveLink(TypedOutControl<TypedControlData> & outControl);
 	}; // End TypedInControl Class
 	
 	// TypedInControl Class Implementation
@@ -53,13 +46,6 @@ namespace CLAM {
 	{
 	}
 	
-	template<class TypedControlData>
-	TypedInControl<TypedControlData>::~TypedInControl()
-	{
-		while (!mLinks.empty())
-			mLinks.front()->RemoveLink(*this);
-	}
-
 	template<class TypedControlData>
 	void TypedInControl<TypedControlData>::DoControl(const TypedControlData& val)
 	{
@@ -72,24 +58,6 @@ namespace CLAM {
 		return mLastValue;
 	}
 
-	template<class TypedControlData>
-	bool TypedInControl<TypedControlData>::IsConnected() const
-	{
-		return !mLinks.empty();
-	}
-
-	template<class TypedControlData>
-	void TypedInControl<TypedControlData>::OutControlInterface_AddLink(TypedOutControl<TypedControlData> & outControl)
-	{
-		mLinks.push_back(&outControl);
-	}
-
-	template<class TypedControlData>
-	void TypedInControl<TypedControlData>::OutControlInterface_RemoveLink(TypedOutControl<TypedControlData> & outControl)
-	{
-		mLinks.remove(&outControl);
-	}
-	
 	
 	/**
 	* Subclass of TypedInControl that provides the typedincontrol with a callback method
