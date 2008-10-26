@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <vector>
+#include <typeinfo>
 
 #include "XMLStorage.hxx" // CLAM
 
