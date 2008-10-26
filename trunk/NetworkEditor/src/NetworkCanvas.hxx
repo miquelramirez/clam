@@ -1139,13 +1139,13 @@ public: // Actions
 	virtual QString incontrolName(void * processing, unsigned index) const
 	{
 		if (!processing) return QString("Incontrol_%1").arg(index);
-		CLAM::InControl & control = ((CLAM::Processing*)processing)->GetInControl(index);
+		CLAM::InControlBase & control = ((CLAM::Processing*)processing)->GetInControl(index);
 		return control.GetName().c_str();
 	}
 	virtual QString outcontrolName(void * processing, unsigned index) const
 	{
 		if (!processing) return QString("Outcontrol_%1").arg(index);
-		CLAM::OutControl & control = ((CLAM::Processing*)processing)->GetOutControl(index);
+		CLAM::OutControlBase & control = ((CLAM::Processing*)processing)->GetOutControl(index);
 		return control.GetName().c_str();
 	}
 	QString outportTooltip(void * processing, unsigned index) const
@@ -1174,7 +1174,7 @@ public: // Actions
 	}
 	QString incontrolTooltip(void * processing, unsigned index) const
 	{
-		CLAM::InControl& inControl = ((CLAM::Processing*)processing)->GetInControl(index);
+		CLAM::InControlBase& inControl = ((CLAM::Processing*)processing)->GetInControl(index);
 		QString boundInfo = inControl.IsBounded() ? 
 			QString(" (bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
 			" (not bounded)";
@@ -1356,7 +1356,7 @@ public:
 			unsigned nOutControls = producer.GetNOutControls();
 			for (unsigned op = 0; op<nOutControls; op++)
 			{
-				CLAM::OutControl & outControl = producer.GetOutControl(op);
+				CLAM::OutControlBase & outControl = producer.GetOutControl(op);
 				std::string completeOutName = producerName + "." + outControl.GetName();
 				CLAM::BaseNetwork::NamesList connected = _network->GetInControlsConnectedTo( completeOutName );
 				CLAM::BaseNetwork::NamesList::iterator inName;
@@ -1371,7 +1371,7 @@ public:
 					unsigned nInControls = consumer.GetNInControls();
 					for (unsigned ip=0; ip<nInControls; ip++)
 					{
-						CLAM::InControl & inControl = consumer.GetInControl(ip);
+						CLAM::InControlBase & inControl = consumer.GetInControl(ip);
 						if (inControl.GetName()!=peerConnection) continue;
 						addControlWire(_processings[p], op, consumerBox, ip);
 						break;

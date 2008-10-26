@@ -603,7 +603,7 @@ void PrototypeLoader::ConnectWidgetsWithIntegerControls()
 		std::cout << "* Control: " << controlName << std::endl;
 
 		if (ReportMissingInControl(controlName)) continue;
-		CLAM::InControl & receiver = _network.GetInControlByCompleteName(controlName);
+		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(controlName);
 		QtSlot2Control * notifier = new QtSlot2Control(controlName.c_str()); // TODO: Memory leak here
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
@@ -621,7 +621,7 @@ void PrototypeLoader::ConnectWidgetsWithMappedControls()
 		std::cout << "* Mapped Control (100:1): " << fullControlName << std::endl;
 
 		if (ReportMissingInControl(fullControlName)) continue;
-		CLAM::InControl & receiver = _network.GetInControlByCompleteName(fullControlName);
+		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(fullControlName);
 		QtSlot2Control * notifier = new QtSlot2Control(fullControlName.c_str()); // TODO: Memory leak here
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(valueChanged(int)),
@@ -651,7 +651,7 @@ void PrototypeLoader::ConnectWidgetsUsingControlBounds()
 		if (aWidget->metaObject()->indexOfProperty("value") >= 0)
 			aWidget->setProperty("value", QVariant(100));
 
-		CLAM::InControl & receiver = _network.GetInControlByCompleteName(fullControlName);
+		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(fullControlName);
 		QtSlot2Control * notifier = new QtSlot2Control(
 					fullControlName.c_str(), 
 					receiver.LowerBound(),
@@ -673,7 +673,7 @@ void PrototypeLoader::ConnectWidgetsWithBooleanControls()
 		std::cout << "* Bool Control (100:1): " << fullControlName << std::endl;
 
 		if (ReportMissingInControl(fullControlName)) continue;
-		CLAM::InControl & receiver = _network.GetInControlByCompleteName(fullControlName);
+		CLAM::InControlBase & receiver = _network.GetInControlByCompleteName(fullControlName);
 		QtSlot2Control * notifier = new QtSlot2Control(fullControlName.c_str()); // TODO: Memory leak here
 		notifier->linkControl(receiver);
 		notifier->connect(aWidget,SIGNAL(toggled(bool)),

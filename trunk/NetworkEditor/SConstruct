@@ -140,9 +140,9 @@ if isLinuxPlatform :
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"/usr/share/networkeditor/example-data\\""')
 
 if env['release'] :
-	env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
+	env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall','-pipe'] )
 else :
-	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+	env.Append( CCFLAGS=['-g','-O3','-Wall','-pipe'] )
 
 
 
