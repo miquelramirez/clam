@@ -149,6 +149,14 @@ public:
 	{
 		std::cout << "RoomImpulseResponseSimulator::ConcreteConfigure"<<std::endl;
 		CopyAsConcreteConfig(_config, config);
+		std::ifstream modelcheck( _config.GetModel3DFile().c_str() );
+		if ( not modelcheck.is_open() )
+		{
+			std::string err("Could not open 3D model file: "); 
+			err += _config.GetModel3DFile();
+			AddConfigErrorMessage(err);
+			return false;
+		}
 		_syncAudio.SetSize(_config.GetFrameSize());
 		_syncAudio.SetHop(_config.GetFrameSize());
 		_emitterX.DoControl(0.2);
@@ -214,6 +222,7 @@ private:
 		float y2 = _receiverY.GetLastValue();
 		float z2 = _receiverZ.GetLastValue();
 
+		//TODO : have into account Z
 		bool changeSnappedIR = fabs(_currentReceiverX-x2) > _delta 
 			|| fabs(_currentReceiverY-y2) > _delta 
 			|| fabs(_currentEmitterX-x1) > _delta
@@ -251,6 +260,15 @@ private:
 			_scene->normalizedToModelZ(_currentEmitterZ)
 			);
 
+std:: cout << "receiver x,y,z = " 
+<< _scene->normalizedToModelX(_currentReceiverX) << " "
+<< _scene->normalizedToModelY(_currentReceiverY) << " "
+<< _scene->normalizedToModelZ(_currentReceiverZ) << std::endl;
+std:: cout << "emitter x,y,z = " 
+<< _scene->normalizedToModelX(_currentEmitterX) << " "
+<< _scene->normalizedToModelY(_currentEmitterY) << " "
+<< _scene->normalizedToModelZ(_currentEmitterZ) << std::endl;
+
 		double directSoundPressure = 0;
 		unsigned offset = 0;
 		if (_config.HasSupressInitialDelay() and _config.GetSupressInitialDelay())
@@ -266,6 +284,13 @@ private:
 		else
 			_scene->raytracingOverTime(responsesPath, "IR" );
 
+std::cout << "DS pressure " << directSoundPressure << std::endl;
+std::cout << "DS offset " << offset << std::endl;
+std::cout << "IR W size  " << _scene->getTimeResponse_P().size() << std::endl;
+std::cout << "IR W  " << offset << std::endl;
+for (int i=0; i<2; i++) std::cout << _scene->getTimeResponse_P()[i] << " ";
+std::cout << std::endl;
+
 		std::string errorMsg;
 		if (
 			!computeResponseSpectrums(_scene->getTimeResponse_P(), _current->W, _config.GetFrameSize(), errorMsg, offset) ||
@@ -276,12 +301,14 @@ private:
 			std::cout << "ERROR: RoomImpulseResponseSimulator::Do can not open IR files.\n" << errorMsg << std::endl;
 			return false;
 		}
+
 		_directSoundPressure.SendControl(directSoundPressure);
 		return true;
 	}
 public:
 	bool Do()
 	{
+std::cout << "RoomImpulseResponseSimulator::Do -------" << std::endl;
 		bool ok = computeNewIRIfNeeded();
 		CLAM_ASSERT(ok, "Error reading the IR");
 
