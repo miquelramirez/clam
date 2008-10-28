@@ -476,7 +476,7 @@
 
   <processing id="RoomImpulseResponseSimulator" position="61,172" size="267,100" type="RoomImpulseResponseSimulator">
     <FrameSize>512</FrameSize>
-    <Model3DFile>/home/vokimon/CajitasDeArena/acustica/raytracing/entorns/cubic_room_arrebola.data</Model3DFile>
+    <Model3DFile>%(model_file)s</Model3DFile>
     <GridDivisions>500</GridDivisions>
     <NRays>200</NRays>
     <NRebounds>50</NRebounds>
