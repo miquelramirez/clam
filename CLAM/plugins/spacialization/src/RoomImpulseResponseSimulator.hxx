@@ -308,7 +308,6 @@ std::cout << std::endl;
 public:
 	bool Do()
 	{
-std::cout << "RoomImpulseResponseSimulator::Do -------" << std::endl;
 		bool ok = computeNewIRIfNeeded();
 		CLAM_ASSERT(ok, "Error reading the IR");
 
