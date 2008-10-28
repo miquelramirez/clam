@@ -1,4 +1,4 @@
-clam-annotator (0.3.6-1) feisty; urgency=low
+clam-annotator (0.3.6-1) unstable; urgency=low
 
   * New uptream release
   * lintian advice: fixed hyphens in man page for ClamExtractorExample
