@@ -477,13 +477,13 @@
   <processing id="RoomImpulseResponseSimulator" position="61,172" size="267,100" type="RoomImpulseResponseSimulator">
     <FrameSize>512</FrameSize>
     <Model3DFile>%(model_file)s</Model3DFile>
-    <GridDivisions>500</GridDivisions>
-    <NRays>200</NRays>
-    <NRebounds>50</NRebounds>
-    <IrLength>0.2</IrLength>
-    <ExtraOptions>--ignore-sources</ExtraOptions>
+    <GridDivisions>%(grid_divisions)i</GridDivisions>
+    <NRays>%(num_rays)i</NRays>
+    <NRebounds>%(num_rebounds)i</NRebounds>
+    <IrLength>%(ir_length)f</IrLength>
+    <ExtraOptions>%(extra_options)s</ExtraOptions>
     <StripDirectSound>1</StripDirectSound>
-    <SupressInitialDelay>1</SupressInitialDelay>
+    <SupressInitialDelay>%(supress_initial_delay)i</SupressInitialDelay>
   </processing>
 
   <processing id="SumWXZ" position="1946,258" size="85,62" type="ComplexSpectrumSum"/>
