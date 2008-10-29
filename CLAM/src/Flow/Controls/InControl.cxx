@@ -27,7 +27,7 @@ namespace CLAM
 {
 
 InControl::InControl(const std::string &name, Processing* parent, const bool publish)
-	: BaseTypedInControl(name, parent, publish)
+	: InControlBase(name, parent, publish)
 {
 }
 

@@ -42,10 +42,10 @@ namespace CLAMTest {
 		CPPUNIT_TEST( testIsLinkable_withSameTypedControls );
 		CPPUNIT_TEST( testAddLink_withSameTypedControls );
 		CPPUNIT_TEST( testAddLink_withDifferentTypedControls );
-		CPPUNIT_TEST( testIsConnected_WithBaseTypedOutControl_AfterConnection );
-		CPPUNIT_TEST( testIsConnected_WithBaseTypedOutControl_WithNoConnection );
-		CPPUNIT_TEST( testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreConnected );
-		CPPUNIT_TEST( testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreNotConnected );
+		CPPUNIT_TEST( testIsConnected_WithOutControl_AfterConnection );
+		CPPUNIT_TEST( testIsConnected_WithOutControl_WithNoConnection );
+		CPPUNIT_TEST( testIsConnectedTo_WithOutControl_WhenControlsAreConnected );
+		CPPUNIT_TEST( testIsConnectedTo_WithOutControl_WhenControlsAreNotConnected );
 
 		// testing CascadingTypedInControl
 		CPPUNIT_TEST( testCascadingTypedInControl_DoControl_ChangesInternalState );
@@ -248,7 +248,7 @@ namespace CLAMTest {
 			CPPUNIT_ASSERT_EQUAL(true, concreteOut.IsConnectedTo(concreteIn));
 		}
 		
-		void testIsConnected_WithBaseTypedOutControl_AfterConnection()
+		void testIsConnected_WithOutControl_AfterConnection()
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
@@ -258,14 +258,14 @@ namespace CLAMTest {
 			CPPUNIT_ASSERT_EQUAL(true, out.IsConnected());
 		}
 
-		void testIsConnected_WithBaseTypedOutControl_WithNoConnection()
+		void testIsConnected_WithOutControl_WithNoConnection()
 		{
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
 			CLAM::OutControlBase & out = concreteOut;
 			CPPUNIT_ASSERT_EQUAL(false, out.IsConnected());
 		}
 
-		void testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreConnected()
+		void testIsConnectedTo_WithOutControl_WhenControlsAreConnected()
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
@@ -275,7 +275,7 @@ namespace CLAMTest {
 			CPPUNIT_ASSERT_EQUAL(true, out.IsConnectedTo(in));
 		}
 		
-		void testIsConnectedTo_WithBaseTypedOutControl_WhenControlsAreNotConnected()
+		void testIsConnectedTo_WithOutControl_WhenControlsAreNotConnected()
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");

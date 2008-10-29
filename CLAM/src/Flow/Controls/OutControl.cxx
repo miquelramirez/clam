@@ -28,10 +28,10 @@ namespace CLAM {
 // Creation/Destruction
 
 OutControl::OutControl(const std::string& name, Processing* parent, const bool publish)
-	: BaseTypedOutControl(name, parent, publish)
+	: OutControlBase(name, parent, publish)
 {
 }
-bool OutControl::IsLinkable(const BaseTypedInControl& in)
+bool OutControl::IsLinkable(const InControlBase& in)
 {
 	return typeid(TControlData) == in.ControlType();
 

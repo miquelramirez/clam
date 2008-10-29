@@ -16,7 +16,7 @@ namespace CLAM {
 	*
 	*/
 	template<class TypedControlData>
-	class TypedOutControl : public BaseTypedOutControl
+	class TypedOutControl : public OutControlBase
 	{
 		// This is required to solve the parsing problem with iterators.
 		typedef TypedInControl<TypedControlData> PeerTypedInControl;
@@ -27,19 +27,19 @@ namespace CLAM {
 		TypedOutControl(const std::string &name = "unnamed typed in control", Processing * proc = 0);
 
 		void SendControl(const TypedControlData& val);
-		bool IsLinkable(const BaseTypedInControl& in);
+		bool IsLinkable(const InControlBase& in);
 	};
 	
 	template<class TypedControlData>
 	TypedOutControl<TypedControlData>::TypedOutControl(const std::string &name, Processing * proc)
-		: BaseTypedOutControl(name,proc)
+		: OutControlBase(name,proc)
 	{
 	}
 
 	template<class TypedControlData>
 	void TypedOutControl<TypedControlData>::SendControl(const TypedControlData& val)
 	{
-		typename std::list< BaseTypedInControl * >::iterator it;
+		typename std::list< InControlBase * >::iterator it;
 		
 		for (it=mLinks.begin(); it!=mLinks.end(); it++) 
 		{
@@ -48,7 +48,7 @@ namespace CLAM {
 	}
 
 	template<class TypedControlData>
-	bool TypedOutControl<TypedControlData>::IsLinkable(const BaseTypedInControl& in)
+	bool TypedOutControl<TypedControlData>::IsLinkable(const InControlBase& in)
 	{
 		return typeid(TypedControlData) == in.ControlType();
 		

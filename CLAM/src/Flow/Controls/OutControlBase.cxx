@@ -1,27 +1,27 @@
-#include <CLAM/BaseTypedOutControl.hxx>
+#include <CLAM/OutControlBase.hxx>
 #include <CLAM/Processing.hxx>
 
 namespace CLAM{
-	BaseTypedOutControl::BaseTypedOutControl(const std::string &name, Processing * proc, bool publish)
+	OutControlBase::OutControlBase(const std::string &name, Processing * proc, bool publish)
 		: mName(name)
 		, mProcessing(proc)
 	{
 		if (proc and publish) proc->RegisterOutControl(this);
 	}
 	
-	BaseTypedOutControl::~BaseTypedOutControl()
+	OutControlBase::~OutControlBase()
 	{
 		while (!mLinks.empty())
 			RemoveLink(*mLinks.front());
 		if (mProcessing)
 			mProcessing->GetOutControls().ProcessingInterface_Unregister(this);
 	}
-	BaseTypedOutControl::Peers::iterator BaseTypedOutControl::BeginInControlsConnected()
+	OutControlBase::Peers::iterator OutControlBase::BeginInControlsConnected()
 	{
 		return mLinks.begin();
 	}
 
-	BaseTypedOutControl::Peers::iterator BaseTypedOutControl::EndInControlsConnected()
+	OutControlBase::Peers::iterator OutControlBase::EndInControlsConnected()
 	{
 		return mLinks.end();
 	}
