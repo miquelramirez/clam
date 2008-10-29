@@ -5,7 +5,7 @@
 #include <list>
 #include <typeinfo>
 #include "Assert.hxx"
-#include "BaseTypedOutControl.hxx"
+#include "OutControl.hxx"
 #include "TypedInControl.hxx"
 
 namespace CLAM {
