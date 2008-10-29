@@ -27,7 +27,6 @@
 #include <CLAM/OSDefines.hxx>
 #include <CLAM/Audio.hxx>
 #include <CLAM/AudioOutPort.hxx>
-#include <CLAM/InControl.hxx>
 #include <CLAM/Enum.hxx>
 #include <string>
 
@@ -39,42 +38,30 @@ namespace CLAM
 class ESquareWaveControls : public Enum
 {
 public:
-
-	static tEnumValue sEnumValues[];
-	static tValue sDefault;
-
-	ESquareWaveControls() 
-		: Enum(sEnumValues, sDefault) 
+	enum 
 	{
-	}
-	
-	ESquareWaveControls(tValue v)
-		: Enum(sEnumValues, v) 
+		pitch=0,
+		amplitude,
+		modidx,
+		phase
+	} tEnum;
+	static tEnumValue * ValueTable() 
 	{
-	}
-	
-	ESquareWaveControls(std::string s)
-		: Enum(sEnumValues, s)
-	{
-	}
-	
-	~ESquareWaveControls() 
-	{
-	};
-
-	Component * Species() const 
-	{
-		return new ESquareWaveControls;
-	}
-
-	typedef enum 
+		static tEnumValue sValueTable[] =
 		{
-			pitch=0,
-			amplitude,
-			modidx,
-			phase
-		} tEnum;
+			{ ESquareWaveControls::pitch, "pitch" },
+			{ ESquareWaveControls::amplitude, "amplitude" },
+			{ ESquareWaveControls::phase, "phase" },
+			{ 0, NULL }
+		};
+		return sValueTable;
+	}
 
+	ESquareWaveControls() : Enum(ValueTable(), pitch) { }
+	ESquareWaveControls(tValue v) : Enum(ValueTable(), v) { }
+	ESquareWaveControls(std::string s) : Enum(ValueTable(), s) { }
+
+	Component * Species() const { return new ESquareWaveControls; }
 };
 
 class SquareWaveConfig: public ProcessingConfig

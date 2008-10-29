@@ -39,18 +39,6 @@ namespace Hidden
 	
 	
 
-// SquareWave controls enumeration
-
-Enum::tEnumValue ESquareWaveControls::sEnumValues[] =
-	{
-		{ ESquareWaveControls::pitch, "pitch" },
-		{ ESquareWaveControls::amplitude, "amplitude" },
-		{ ESquareWaveControls::phase, "phase" },
-		{ 0, NULL }
-	};
-
-Enum::tValue ESquareWaveControls::sDefault = ESquareWaveControls::pitch;
-
 // SquareWaveConfig method definition
 void SquareWaveConfig::DefaultInit(void)
 {
