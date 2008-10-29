@@ -85,9 +85,9 @@ namespace CLAM {
 	#Controls
 	f.write( "\n\t\t/** Controls **/\n" )
 	for cmin,cmax,control_name in incontrols:
-		f.write( "\t\tInControl " + member_style + control_name.replace(' ', '') + ";\n" )
+		f.write( "\t\tFloatInControl " + member_style + control_name.replace(' ', '') + ";\n" )
 	for cmin,cmax,control_name in outcontrols:
-		f.write( "\t\tOutControl " + member_style + control_name.replace(' ', '') + ";\n" )
+		f.write( "\t\tFloatOutControl " + member_style + control_name.replace(' ', '') + ";\n" )
 	
 	f.write( "\n\tpublic:\n" )
 	

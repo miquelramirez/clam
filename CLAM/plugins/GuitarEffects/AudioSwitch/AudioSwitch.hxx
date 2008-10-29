@@ -63,7 +63,7 @@ private:
 	AudioOutPort     mOutputPort;		
 
 	/** Controls **/
-	InControl mSwitch;
+	FloatInControl mSwitch;
 
 	void RemovePortsAndControls();
 	void CreatePortsAndControls();

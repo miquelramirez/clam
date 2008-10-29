@@ -45,7 +45,7 @@ namespace CLAM
 		InDataPort mInput;
 		OutDataPort mOutput;
 		
-		InControl mGainCtl;
+		FloatInControl mGainCtl;
 	};
 }
 

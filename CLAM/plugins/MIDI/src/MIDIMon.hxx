@@ -11,9 +11,9 @@ namespace CLAM {
 	class MIDIMon : public CLAM::Processing
 	{ 
 		/** Controls **/
-		OutControl mMIDIMessage;
-		OutControl mMIDIData1;
-		OutControl mMIDIData2;
+		FloatOutControl mMIDIMessage;
+		FloatOutControl mMIDIData1;
+		FloatOutControl mMIDIData2;
 
 		RtMidiIn *mMIDIin;
 	

@@ -26,6 +26,7 @@
 #include <list>
 #include <string>
 #include "Assert.hxx"
+#include "BaseTypedOutControl.hxx"
 
 namespace CLAM
 {
@@ -42,16 +43,10 @@ class Processing;
 * Controls are limited to emmit and receive TControlData (float) numbers. 
 * Though extensible typed connections are future planned development: @see TypedOutControl
 */
-class OutControl
+class OutControl : public BaseTypedOutControl
 {
-//Attributes
-private:
-	std::list<InControl*> mLinks;
-	std::string mName;
-	Processing * mParent;
 //Constructor/Destructor
 public:
-	virtual ~OutControl();
 	/**
 	* Constructor of the OutControl.
 	* 
@@ -71,22 +66,17 @@ public:
 	
 //Methods
 public:
-	virtual void AddLink(InControl& in); //TODO think if should be renamed to Connect
-	void RemoveLink(InControl& in);
-
-	std::list<InControl*>::iterator BeginInControlsConnected();
-	std::list<InControl*>::iterator EndInControlsConnected();
-
-	int SendControl(TControlData val);
+	virtual bool IsLinkable(const BaseTypedInControl& in);
+	void SendControl(TControlData val);
 	
 	/**
 	* \brief Sends a 0.0 or 1.0 float control depending on the parameter.
 	*
 	* To be used in conjunction with InControl::GetLastValueAsBoolean
 	*/
-	int SendControlAsBoolean( bool booleanValue )
+	void SendControlAsBoolean( bool booleanValue )
 	{
-		return SendControl( booleanValue ? TControlData(1) : TControlData(0) );
+		SendControl( booleanValue ? TControlData(1) : TControlData(0) );
 	}
 
 	/**
@@ -94,20 +84,16 @@ public:
 	*
 	* To be used in conjunction with InControl::GetLastValueAsBoolean
 	*/
-	int SendControlAsInteger( int intvalue )
+	void SendControlAsInteger( int intvalue )
 	{
-		return SendControl( (TControlData)intvalue );
+		SendControl( (TControlData)intvalue );
 	}
 
-	const std::string& GetName(void) const { return mName; }
-	bool IsConnected();
-	bool IsConnectedTo( InControl & );
-	Processing * GetProcessing() const { return mParent;}
 };
 
 //REFACTORING Typed Controls
 typedef OutControl FloatOutControl;
-typedef OutControl OutControlBase;
+typedef BaseTypedOutControl OutControlBase;
 
 }; // namespace CLAM
 

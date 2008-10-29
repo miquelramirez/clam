@@ -123,12 +123,12 @@ void LadspaWrapper::RemovePortsAndControls()
 		delete *itOutPort;
 	outputPorts.clear();
 
-	std::vector< InControl* >::iterator itInControl;
+	std::vector< FloatInControl* >::iterator itInControl;
 	for(itInControl=_inputControls.begin(); itInControl!=_inputControls.end(); itInControl++)
 		delete *itInControl;
 	_inputControls.clear();
 
-	std::vector< OutControl* >::iterator itOutControl;
+	std::vector< FloatOutControl* >::iterator itOutControl;
 	for(itOutControl=_outputControls.begin(); itOutControl!=_outputControls.end(); itOutControl++)
 		delete *itOutControl;
 	_outputControls.clear();
@@ -165,7 +165,7 @@ void LadspaWrapper::ConfigurePortsAndControls()
 		// in control
 		if(LADSPA_IS_PORT_INPUT(portDescriptor) && LADSPA_IS_PORT_CONTROL(portDescriptor)) 
 		{
-			InControl * control = new InControl(_descriptor->PortNames[i], this);
+			FloatInControl * control = new FloatInControl(_descriptor->PortNames[i], this);
 
 			const LADSPA_PortRangeHint & hint = _descriptor->PortRangeHints[i];
 			bool isBounded = (
@@ -182,7 +182,7 @@ void LadspaWrapper::ConfigurePortsAndControls()
 		// out control
 		if (LADSPA_IS_PORT_OUTPUT(portDescriptor) && LADSPA_IS_PORT_CONTROL(portDescriptor)) 
 		{
-			OutControl * control = new OutControl(_descriptor->PortNames[i], this);
+			FloatOutControl * control = new FloatOutControl(_descriptor->PortNames[i], this);
 			_outputControlValues.push_back(LADSPA_Data());
 			_outputControls.push_back(control);
 		}				

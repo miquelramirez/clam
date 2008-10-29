@@ -47,7 +47,7 @@ namespace CLAM{
 		InPort<Spectrum> mInSpectrum;
 		OutPort<Spectrum> mOutSpectrum;
 
-		InControl mControl;
+		FloatInControl mControl;
 	public:
 
 		SMSGenderChange()

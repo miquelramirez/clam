@@ -41,9 +41,9 @@ namespace CLAM{
 	class GlottalSourceGenerator: public Processing
 	{
 		OutPort<SpectralPeakArray> mOut;
-		InControl mFundamental;
-		InControl mJitter;
-		InControl mShimmer;
+		FloatInControl mFundamental;
+		FloatInControl mJitter;
+		FloatInControl mShimmer;
 		TData mTime;
 
 	public:

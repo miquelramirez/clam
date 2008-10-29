@@ -52,7 +52,7 @@ namespace CLAM
 	class Fund2MIDI : public Processing
 	{
 		InPort< Fundamental > mInFund;
-		OutControl mFreqControlOut;
+		FloatOutControl mFreqControlOut;
 
 		Fund2MIDIConfig mConfig;
 	public:

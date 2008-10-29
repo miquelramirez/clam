@@ -46,8 +46,8 @@ namespace CLAM {
 		AudioInPort mAudioInput;
 
 		/** Controls **/
-		InControl mThreshold;
-		OutControl mTrigger;
+		FloatInControl mThreshold;
+		FloatOutControl mTrigger;
 
 	public:
 		ThresholdTrigger(const Config & config=Config())

@@ -74,8 +74,8 @@ namespace CLAM
 			AdjustBeatWRTOnsetsConfig mConfig;
 			TimeSeriesFinder          mSeriesFinder;
 			PulseGridGenerator        mGridGenerator;
-			InControl                 mFirstTransientPosition;
-			InControl                 mLastTransientPosition;
+			FloatInControl                 mFirstTransientPosition;
+			FloatInControl                 mLastTransientPosition;
 			
 		};
 

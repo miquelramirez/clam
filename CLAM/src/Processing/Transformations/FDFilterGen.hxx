@@ -25,10 +25,9 @@
 
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
-#include "OutPort.hxx"
-#include "InControl.hxx"
 #include "DataTypes.hxx"
 #include "Audio.hxx"
+#include "OutPort.hxx"
 #include "Spectrum.hxx"
 #include "Enum.hxx"
 

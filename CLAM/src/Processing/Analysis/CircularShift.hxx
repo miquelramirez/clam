@@ -47,7 +47,7 @@ namespace CLAM {
 		AudioInPort  mInput;
 		AudioOutPort mOutput;
 
-		InControl mSteps;
+		FloatInControl mSteps;
 	protected:
 
 		const char *GetClassName() const {return "CircularShift";}

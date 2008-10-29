@@ -62,7 +62,7 @@ namespace CLAM{
 		AudioOutPort mOutputAudio;
 
 		/** Controls **/
-		InControl mInputControl; ///< gain control
+		FloatInControl mInputControl; ///< gain control
 
 
 	public:

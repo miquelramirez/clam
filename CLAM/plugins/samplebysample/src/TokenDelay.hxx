@@ -89,7 +89,7 @@ private:
 	// Ports and control
 	InPort<T> mInput;
 	OutPort<T> mOutput;
-	InControl mDelayControl;
+	FloatInControl mDelayControl;
 
 public:
 	TokenDelay(const TokenDelayConfig& cfg = TokenDelayConfig() ) :

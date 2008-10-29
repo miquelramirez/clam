@@ -52,7 +52,7 @@ class NetworkTest : public CppUnit::TestFixture
 	CPPUNIT_TEST( testGetProcessing_WhenNoProcessings );
 	CPPUNIT_TEST( testGetProcessing_WhenProcessingAdded );
 	CPPUNIT_TEST( testGetProcessing_WithTwoProcessings );
-	CPPUNIT_TEST(  testAddProcessing_UsingFactory );
+	CPPUNIT_TEST( testAddProcessing_UsingFactory );
 	CPPUNIT_TEST( testHasProcessing_WhenHasIt );
 	CPPUNIT_TEST( testHasProcessing_WhenHasntIt );
 	CPPUNIT_TEST( testDestructor_DeletesChildrenProcessings );
@@ -248,11 +248,11 @@ class NetworkTest : public CppUnit::TestFixture
 		{	
 			return Network::GetOutPortByCompleteName( name );
 		}	
-		CLAM::InControl & GetInControlByCompleteName( const std::string& name )
+		CLAM::InControlBase & GetInControlByCompleteName( const std::string& name )
 		{	
 			return Network::GetInControlByCompleteName( name );
 		}	
-		CLAM::OutControl & GetOutControlByCompleteName( const std::string& name )
+		CLAM::OutControlBase & GetOutControlByCompleteName( const std::string& name )
 		{	
 			return Network::GetOutControlByCompleteName( name );
 		}
@@ -456,8 +456,8 @@ class NetworkTest : public CppUnit::TestFixture
 
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
-		CLAM::InControl* expectedInControl = 
-			new CLAM::InControl( std::string("theOnlyInControl"), theProc );
+		CLAM::InControlBase * expectedInControl = 
+			new CLAM::FloatInControl( std::string("theOnlyInControl"), theProc );
 	
 		// exercice and test
 		CPPUNIT_ASSERT_EQUAL( 
@@ -532,8 +532,8 @@ class NetworkTest : public CppUnit::TestFixture
 
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
-		CLAM::InControl* expectedInControl = 
-			new CLAM::InControl( std::string("theOnlyInControl"), theProc );
+		CLAM::InControlBase* expectedInControl = 
+			new CLAM::FloatInControl( std::string("theOnlyInControl"), theProc );
 	
 		// exercice and test
 		CPPUNIT_ASSERT_EQUAL( 
@@ -558,8 +558,8 @@ class NetworkTest : public CppUnit::TestFixture
 
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
-		CLAM::OutControl* expectedOutControl = 
-			new CLAM::OutControl( std::string("theOnlyOutControl"), theProc );
+		CLAM::OutControlBase* expectedOutControl = 
+			new CLAM::FloatOutControl( std::string("theOnlyOutControl"), theProc );
 	
 		// exercice and test
 		CPPUNIT_ASSERT_EQUAL( 
@@ -634,8 +634,8 @@ class NetworkTest : public CppUnit::TestFixture
 
 		DummyProcessing* theProc = new DummyProcessing;
 		net.AddProcessing( "theOnlyProcessing", theProc );
-		CLAM::OutControl* expectedOutControl = 
-			new CLAM::OutControl( std::string("theOnlyOutControl"), theProc );
+		CLAM::OutControlBase* expectedOutControl = 
+			new CLAM::FloatOutControl( std::string("theOnlyOutControl"), theProc );
 	
 		// exercice and test
 		CPPUNIT_ASSERT_EQUAL( 
@@ -770,11 +770,11 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "second", secondProc );
 
 		const int dummyLength = 1;
-		CLAM::OutControl* outControlOfFirstProc =  
-			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
+		CLAM::OutControlBase* outControlOfFirstProc =  
+			new CLAM::FloatOutControl( std::string("outControlOfFirstProc"), firstProc );
 
-		CLAM::InControl* inControlOfSecondProc = 
-			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
+		CLAM::InControlBase* inControlOfSecondProc = 
+			new CLAM::FloatInControl( std::string("inControlOfSecondProc"), secondProc );
 		
 		net.ConnectControls("first.outControlOfFirstProc","second.inControlOfSecondProc");
 		CPPUNIT_ASSERT_EQUAL( true, outControlOfFirstProc->IsConnectedTo(*inControlOfSecondProc) );
@@ -791,11 +791,11 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "second", secondProc );
 
 		const int dummyLength = 1;
-		CLAM::OutControl* outControlOfFirstProc =  
-			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
+		CLAM::OutControlBase* outControlOfFirstProc =  
+			new CLAM::FloatOutControl( std::string("outControlOfFirstProc"), firstProc );
 
-		CLAM::InControl* inControlOfSecondProc = 
-			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
+		CLAM::InControlBase* inControlOfSecondProc = 
+			new CLAM::FloatInControl( std::string("inControlOfSecondProc"), secondProc );
 		
 		CPPUNIT_ASSERT_EQUAL( false, outControlOfFirstProc->IsConnectedTo(*inControlOfSecondProc) );
 	}
@@ -811,11 +811,11 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "second", secondProc );
 
 		const int dummyLength = 1;
-		CLAM::OutControl* outControlOfFirstProc =  
-			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
+		CLAM::OutControlBase* outControlOfFirstProc =  
+			new CLAM::FloatOutControl( std::string("outControlOfFirstProc"), firstProc );
 
-		CLAM::InControl* inControlOfSecondProc = 
-			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
+		CLAM::InControlBase* inControlOfSecondProc = 
+			new CLAM::FloatInControl( std::string("inControlOfSecondProc"), secondProc );
 		
 		CPPUNIT_ASSERT_EQUAL( false, net.DisconnectControls( "first.outControlOfFirstProc","second.inControlOfSecondProc"  ));
 
@@ -832,11 +832,11 @@ class NetworkTest : public CppUnit::TestFixture
 		net.AddProcessing( "second", secondProc );
 
 		const int dummyLength = 1;
-		CLAM::OutControl* outControlOfFirstProc =  
-			new CLAM::OutControl( std::string("outControlOfFirstProc"), firstProc );
+		CLAM::OutControlBase* outControlOfFirstProc =  
+			new CLAM::FloatOutControl( std::string("outControlOfFirstProc"), firstProc );
 
-		CLAM::InControl* inControlOfSecondProc = 
-			new CLAM::InControl( std::string("inControlOfSecondProc"), secondProc );
+		CLAM::InControlBase* inControlOfSecondProc = 
+			new CLAM::FloatInControl( std::string("inControlOfSecondProc"), secondProc );
 		
 		net.ConnectControls("first.outControlOfFirstProc","second.inControlOfSecondProc");
 		CPPUNIT_ASSERT_EQUAL( true, net.DisconnectControls( "first.outControlOfFirstProc","second.inControlOfSecondProc" ));

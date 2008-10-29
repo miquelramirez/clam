@@ -47,7 +47,7 @@ bool Dispatcher::ConcreteConfigure( const ProcessingConfig& c )
 	{
 		for ( j = 0; j < mNInValues;j++)
 		{
-			mValuesOut.AddElem( new OutControl("",this ) );
+			mValuesOut.AddElem( new FloatOutControl("",this ) );
 			GetOutControl(k).AddLink(mInstruments[i]->GetInControl(j+1));
 			//LinkOutWithInControl( k , mInstruments[ i ], j+1);
 			k++;

@@ -26,9 +26,8 @@
 #include <string>
 #include <vector>
 #include "Err.hxx"
-#include "InControl.hxx"
 #include "MIDIEnums.hxx"
-
+#include "InControl.hxx"
 
 namespace CLAM{
 

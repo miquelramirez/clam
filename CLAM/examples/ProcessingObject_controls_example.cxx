@@ -35,7 +35,6 @@
 //
 
 #include "Processing.hxx"
-#include "InControl.hxx"
 #include "OutControl.hxx"
 #include <string>
 #include <stdexcept>
@@ -59,8 +58,8 @@ private:
 	InControlTmpl<MyProcObj> mInPitch;
 	InControlTmpl<MyProcObj> mInAmplitude;
 	
-	OutControl mOutNoteOn;
-	OutControl mOutNoteOff;
+	FloatOutControl mOutNoteOn;
+	FloatOutControl mOutNoteOff;
 private:
 	bool ConcreteConfigure(const ProcessingConfig &c) {return true;}
 // Constructor/Destructor

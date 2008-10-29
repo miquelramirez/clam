@@ -61,7 +61,7 @@ public:
 	const ProcessingConfig &GetConfig() const {return mConfig;}
 
 // public controls:
-	OutControl Gain, HighCutOff, LowCutOff, PassBandSlope, StopBandSlope;
+	FloatOutControl Gain, HighCutOff, LowCutOff, PassBandSlope, StopBandSlope;
 
 private:
 	FDFilterGenConfig mConfig;

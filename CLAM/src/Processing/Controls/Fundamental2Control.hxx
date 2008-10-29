@@ -44,7 +44,7 @@ class Fundamental2Control : public Processing
 {
 
 	InPort< Fundamental > mInFund;
-	OutControl mFreqControlOut;
+	FloatOutControl mFreqControlOut;
 
 
 	Fundamental2ControlConfig mConfig;

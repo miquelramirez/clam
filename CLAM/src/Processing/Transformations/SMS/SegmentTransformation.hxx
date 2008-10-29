@@ -45,7 +45,7 @@ namespace CLAM {
 		FrameTransformation* mFrameTransformation;
 
 	protected:
-//		OutControl mSendAmount; //TODO privatize
+//		FloatOutControl mSendAmount; //TODO privatize
 		/** Internally stored configuration */
 		SegmentTransformationConfig mConfig;
 		/** Boolean member that indicates whether BPF or single value is to be used. This is not
@@ -57,7 +57,7 @@ namespace CLAM {
 		/** Control to state whether a particular transformation is on or off. This control may be
 		 *	used as a bypass when the transformation is connected in a Chain.
 		 */
-		InControl mOnCtrl;
+		FloatInControl mOnCtrl;
 		
 		Segment* mInput;
 		Segment* mOutput;

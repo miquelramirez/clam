@@ -10,7 +10,7 @@ class QtSlot2Control : public QObject
 {
 	Q_OBJECT
 
-	CLAM::OutControl _sender;
+	CLAM::FloatOutControl _sender;
 	const char * _name;
 	float _controlMinBound;
 	float _controlMaxBound;
@@ -24,7 +24,7 @@ public:
 
 	}
 	virtual ~QtSlot2Control(){}
-	void linkControl(CLAM::InControl & receiver)
+	void linkControl(CLAM::InControlBase & receiver)
 	{
 		_sender.AddLink(receiver);
 	}

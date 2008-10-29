@@ -25,6 +25,7 @@
 #include <sstream>
 #include <string>
 #include <list>
+#include "BaseTypedInControl.hxx"
 
 namespace CLAM {
 
@@ -32,37 +33,36 @@ namespace CLAM {
 class Processing;
 class OutControl;
 
-/// Control events type
-typedef float TControlData;
-
 /**
 * \brief Processing in control class.
 *
 * Controls are limited to emmit and receive TControlData (float) numbers. 
 * Though extensible typed connections are future planned development: @see TypedInControl
 */
-class InControl
+class InControl : public BaseTypedInControl
 {
 // Attributes:
 protected:
-	std::list<OutControl*> mLinks;
 	TControlData mLastValue;
-	std::string mName;
-	Processing * mParent;
-	TControlData mDefaultValue;
-	TControlData mUpperBound;
-	TControlData mLowerBound;
 
-	bool mBounded;
-	bool mHasDefaultValue;
-
+public:
+//Constructor/Destructor
+	/**
+	 * \param parent Optional. If present, is the processing where to be published.
+	 */
+	InControl(const std::string &name, Processing* parent=0, const bool publish=true);
+	virtual ~InControl();
+	const std::type_info & ControlType() const
+	{
+		return typeid(TControlData);
+	}
 // Methods:
 public:
 	/**
 	 * Stores the incoming control value. It can be retrieved
 	 * using \c GetLastValue
 	 */
-	virtual int DoControl(TControlData val) { mLastValue = val; return 0; };
+	virtual void DoControl(TControlData val) { mLastValue = val; };
 	/// Returns the last TControlData (float) received event
 	const TControlData& GetLastValue() const { return mLastValue; };
 	/// Returns the last TControlData (float) received interpreted as a bool
@@ -72,31 +72,8 @@ public:
 	};
 	/// Returns the last TControlData (float) received interpireted as an integer
 	int GetLastValueAsInteger() const { return (int)(mLastValue+0.5f); };
-	const std::string& GetName() const { return mName; }
-	bool IsConnectedTo( OutControl & );
-	bool IsConnected() const;
-	bool IsBounded() const;
-	TControlData UpperBound() const;
-	TControlData LowerBound() const;
 	/** Returns the bounds mean or the value set with SetDefaultValue() if its the case */
 	TControlData DefaultValue() const;
-	void SetDefaultValue(TControlData val);
-	void SetBounds(TControlData lower, TControlData upper);
-
-	Processing * GetProcessing() const { return mParent; }
-	
-	/// Implementation detail just to be used from OutControl
-	void OutControlInterface_AddLink(OutControl & outControl);
-	/// Implementation detail just to be used from OutControl
-	void OutControlInterface_RemoveLink(OutControl & outControl);
-
-//Constructor/Destructor
-	/**
-	 * \todo constructor rework. 
-	 * \param parent Optional. If present, is the processing where to be published.
-	 */
-	InControl(const std::string &name, Processing* parent=0, const bool publish=true);
-	virtual ~InControl();
 };
 
 /**
@@ -120,7 +97,7 @@ private:
 
 public:
 	// redeclaration
-	int DoControl(TControlData val);
+	void DoControl(TControlData val);
 
 	bool ExistMemberFunc() { return (mFunc==0); };
 	void SetMemberFunc(TPtrMemberFunc f) { mFunc = f; };
@@ -170,21 +147,20 @@ public:
 
 // REFACTORING typed connections
 typedef InControl FloatInControl;
-typedef InControl InControlBase;
+typedef BaseTypedInControl InControlBase;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //  Implementation of class InControlTmpl
 //
 
 template<class ProcObj>
-int InControlTmpl<ProcObj>::DoControl(TControlData val)
+void InControlTmpl<ProcObj>::DoControl(TControlData val)
 {
 	InControl::DoControl(val);
 	if(mFunc)
-		return (mProcObj->*mFunc)(val);
-	if (mFuncId)
-		return (mProcObj->*mFuncId)(mId,val);
-	return 0;
+		(mProcObj->*mFunc)(val);
+	else if (mFuncId)
+		(mProcObj->*mFuncId)(mId,val);
 }
 
 

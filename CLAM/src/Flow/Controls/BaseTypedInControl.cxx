@@ -3,7 +3,7 @@
 
 namespace CLAM
 {
-	BaseTypedInControl::BaseTypedInControl(const std::string &name, Processing * proc)
+	BaseTypedInControl::BaseTypedInControl(const std::string &name, Processing * proc, bool publish)
 		: mName(name)
 		, mProcessing(proc)
 		, mUpperBound(1)
@@ -11,16 +11,21 @@ namespace CLAM
 		, mBounded(false)
 		, mHasDefaultValue(false)
 	{
-		if (proc) proc->RegisterTypedInControl(this);
+		if (proc && publish) proc->RegisterInControl(this);
 	}
 	
 	BaseTypedInControl::~BaseTypedInControl()
 	{
-//		if (mProcessing)
-//			mProcessing->GetInControls().ProcessingInterface_Unregister(this);
 		while (!mLinks.empty())
 			mLinks.front()->RemoveLink(*this);
+		if (mProcessing)
+			mProcessing->GetInControls().ProcessingInterface_Unregister(this);
 	}
+	bool BaseTypedInControl::IsConnectedTo(BaseTypedOutControl & out)
+	{
+		return out.IsConnectedTo(*this);
+	}
+
 	bool BaseTypedInControl::IsBounded() const
 	{
 		return mBounded;

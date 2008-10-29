@@ -85,7 +85,7 @@ public:
 		ControlMapper                 mMapperPitchBend;
 		ControlMultiplier             mFreqMultiplier;
 		InControlTmpl< MyInstrument >  mPitchBendIn;
-		OutControl                    mPitchBendOut;
+		FloatOutControl                    mPitchBendOut;
 	
 		int UpdatePitchBend( TControlData value )
 		{

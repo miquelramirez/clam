@@ -15,12 +15,12 @@
  */
 class Spherical2CartesianControl : public CLAM::Processing
 { 
-	CLAM::InControl _azimuth;
-	CLAM::InControl _elevation;
-	CLAM::InControl _module;
-	CLAM::OutControl _x;
-	CLAM::OutControl _y;
-	CLAM::OutControl _z;
+	CLAM::FloatInControl _azimuth;
+	CLAM::FloatInControl _elevation;
+	CLAM::FloatInControl _module;
+	CLAM::FloatOutControl _x;
+	CLAM::FloatOutControl _y;
+	CLAM::FloatOutControl _z;
 public:
 	const char* GetClassName() const { return "Spherical2CartesianControl"; }
 	Spherical2CartesianControl(const Config& config = Config()) 

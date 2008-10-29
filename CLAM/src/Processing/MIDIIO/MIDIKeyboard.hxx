@@ -31,10 +31,10 @@ class MIDIKeyboard : public Processing
 		MIDIIOConfig mNoteInConfig;
 		MIDIInControl mNoteIn;
 
-		InControl mNoteInControl;
-		InControl mVelocityInControl;
-		InControl mPitchBendInControl;
-		InControl mModulationInControl;
+		FloatInControl mNoteInControl;
+		FloatInControl mVelocityInControl;
+		FloatInControl mPitchBendInControl;
+		FloatInControl mModulationInControl;
 
 		MIDIIOConfig mPitchBendInConfig;
 		MIDIInControl mPitchBendIn;

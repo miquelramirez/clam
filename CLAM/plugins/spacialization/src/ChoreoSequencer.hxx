@@ -47,16 +47,16 @@ class ChoreoSequencer : public CLAM::Processing
 	};
 
 	Config _config;
-	OutControl _targetX;
-	OutControl _targetY;
-	OutControl _targetZ;
-	OutControl _targetAzimuth;
-	OutControl _targetZenith;
-	OutControl _sourceX;
-	OutControl _sourceY;
-	OutControl _sourceZ;
-	OutControl _sourceAzimuth;
-	OutControl _sourceZenith;
+	FloatOutControl _targetX;
+	FloatOutControl _targetY;
+	FloatOutControl _targetZ;
+	FloatOutControl _targetAzimuth;
+	FloatOutControl _targetZenith;
+	FloatOutControl _sourceX;
+	FloatOutControl _sourceY;
+	FloatOutControl _sourceZ;
+	FloatOutControl _sourceAzimuth;
+	FloatOutControl _sourceZenith;
 	AudioInPort _syncIn;
 
 	unsigned _samplesPerControl;

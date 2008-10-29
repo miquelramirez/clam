@@ -47,8 +47,8 @@ namespace CLAM
 	class MIDIDispatcher : public Processing
 	{
 
-		std::vector< InControl* > mInputControls;
-		std::vector< OutControl* > mOutputControls;
+		std::vector< FloatInControl* > mInputControls;
+		std::vector< FloatOutControl* > mOutputControls;
 
 		void CreateControls();
 		void RemoveControls();

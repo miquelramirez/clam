@@ -60,7 +60,7 @@ namespace CLAM{
 		/**  An interpolation factor of 0.0 means that the resulting sound sinusoidal envelope will match the source's one, and 
 		*   factor of 1.0 means that the resulting sound sinusoidal envelope matches exactly the target's one.
 		*/
-		InControl mInterpolationFactor; 
+		FloatInControl mInterpolationFactor; 
 
 	public:
 		SMSMorph()

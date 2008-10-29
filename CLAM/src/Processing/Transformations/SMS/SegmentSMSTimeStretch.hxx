@@ -70,7 +70,7 @@ namespace CLAM{
 		Frame& GetCurrentFrame(Segment& out);
 		const Frame& GetCurrentFrame(const Segment& in);
 		
-		InControl mAmount;
+		FloatInControl mAmount;
 	protected:
 		bool HaveFinished();
 		void UpdateTimeAndIndex(const Segment& in);

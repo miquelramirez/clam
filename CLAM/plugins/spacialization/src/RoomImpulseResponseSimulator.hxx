@@ -90,13 +90,13 @@ private:
 	OutPort< ImpulseResponse* > _XImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _YImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _ZImpulseResponseOutPort;
-	InControl _emitterX;
-	InControl _emitterY;
-	InControl _emitterZ;
-	InControl _receiverX;
-	InControl _receiverY;
-	InControl _receiverZ;
-	OutControl _directSoundPressure;
+	FloatInControl _emitterX;
+	FloatInControl _emitterY;
+	FloatInControl _emitterZ;
+	FloatInControl _receiverX;
+	FloatInControl _receiverY;
+	FloatInControl _receiverZ;
+	FloatOutControl _directSoundPressure;
 	BFormatIR _impulseResponses[nCachedIRs];
 	BFormatIR  * _current;
 	BFormatIR  * _previous;
@@ -192,7 +192,7 @@ public:
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
 
-	static unsigned map(InControl & control, unsigned limit)
+	static unsigned map(FloatInControl & control, unsigned limit)
 	{
 		unsigned result = unsigned(std::floor(control.GetLastValue()*limit));
 		return result < limit? result : limit-1;

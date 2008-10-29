@@ -34,7 +34,7 @@ namespace CLAM
 		
 			FrameTransformationConfig mConfig;
 			
-			InControl mAmount; //soon to be deprecated
+			FloatInControl mAmount; //soon to be deprecated
 	};
 	
 	//@todo: could also add ports here

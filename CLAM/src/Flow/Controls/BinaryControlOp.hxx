@@ -52,7 +52,7 @@ namespace CLAM {
 		TControlData mOutValue;
 		TControlData mFirstParmLastValue;
 		TControlData mSecondParmLastValue;
-		OutControl mOutput;
+		FloatOutControl mOutput;
 		BinaryControlOpConfig mConfig;
 		BinOp mOperation;
 

@@ -53,7 +53,7 @@ int main()
 	
 	MIDIInControl inStop;
 	ConfigureAndCheck(inStop,inStopCfg);
-	InControl stopReceiver("stop-receiver");
+	FloatInControl stopReceiver("stop-receiver");
 
 	inStop.GetOutControl(0).AddLink(stopReceiver);
 	ConnectControls(inNote, 0, outNote, 0);

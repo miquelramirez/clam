@@ -50,7 +50,7 @@ public:
 	bool ConcreteConfigure(const ProcessingConfig& c) {return true;}
 
 	// this is only because we are pretending that this class is a Processing
-	void PublishInControl(InControl* i) {};
+	void PublishInControl(InControlBase* i) {};
 
 private:
 	int StupidCallback(TControlData data) {

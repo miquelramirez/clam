@@ -123,7 +123,7 @@ void MIDIDispatcher::CreateControls()
 	{
 		std::stringstream number;
 		number << i;
-		InControl* inControl = new InControl( "InControl " + number.str(), this );
+		FloatInControl* inControl = new FloatInControl( "InControl " + number.str(), this );
 		mInputControls.push_back( inControl );
 	}
 
@@ -146,7 +146,7 @@ void MIDIDispatcher::CreateControls()
 		{
 			std::stringstream number("");
 			number << i << j;
-			mOutputControls.push_back( new OutControl("a" + number.str(),this ) );
+			mOutputControls.push_back( new FloatOutControl("a" + number.str(),this ) );
 //			GetOutControl(k).AddLink( mInstruments[i]->GetImConfig.GetInControl(j+1));
 //			LinkOutWithInControl( k , mInstruments[ i ], j+1);
 			k++;
@@ -156,7 +156,7 @@ void MIDIDispatcher::CreateControls()
 
 void MIDIDispatcher::RemoveControls()
 {
-	std::vector< InControl* >::iterator itInControl;
+	std::vector< FloatInControl* >::iterator itInControl;
 	
 	for( itInControl=mInputControls.begin(); itInControl!=mInputControls.end(); itInControl++)
 		delete *itInControl;

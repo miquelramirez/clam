@@ -96,12 +96,12 @@ InControlRegistry::ConstIterator InControlRegistry::End() const
 	return mInControls.end();
 }
 
-void InControlRegistry::ProcessingInterface_Register( InControl * in )
+void InControlRegistry::ProcessingInterface_Register( InControlBase * in )
 {
 	mInControls.push_back( in );
 }
 
-void InControlRegistry::ProcessingInterface_Unregister( InControl * in )
+void InControlRegistry::ProcessingInterface_Unregister( InControlBase * in )
 {
 	for (Iterator it=mInControls.begin(); it!=mInControls.end(); it++)
 	{

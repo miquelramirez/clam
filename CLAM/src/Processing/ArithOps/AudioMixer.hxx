@@ -56,7 +56,7 @@ private:
 
 	std::vector< AudioInPort* > mInputPorts;
 	AudioOutPort     mOutputPort;		
-	std::vector< InControl* > mInputControls;
+	std::vector< FloatInControl* > mInputControls;
 	
 	void RemovePortsAndControls();
 	void CreatePortsAndControls();

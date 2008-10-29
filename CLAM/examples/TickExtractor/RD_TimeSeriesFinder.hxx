@@ -96,13 +96,13 @@ public:
 	const char* GetClassName() const;
 
 private:
-	InControl mOffsetMin;
-	InControl mOffsetMax;
-	InControl mOffsetStep;
-	InControl mIntervalMin;
-	InControl mIntervalMax;
-	InControl mIntervalStep;
-	InControl mOverSubdivisionPenalty;
+	FloatInControl mOffsetMin;
+	FloatInControl mOffsetMax;
+	FloatInControl mOffsetStep;
+	FloatInControl mIntervalMin;
+	FloatInControl mIntervalMax;
+	FloatInControl mIntervalStep;
+	FloatInControl mOverSubdivisionPenalty;
 
 	static const unsigned long mInfinite;
 

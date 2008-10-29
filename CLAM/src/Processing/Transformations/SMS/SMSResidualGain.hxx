@@ -41,7 +41,7 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
-		InControl mGain;
+		FloatInControl mGain;
 	public:
 
 		SMSResidualGain() 

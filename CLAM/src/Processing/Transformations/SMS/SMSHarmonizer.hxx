@@ -58,7 +58,7 @@ namespace CLAM{
 		InPort<Spectrum> mInSpectrum;
 		OutPort<Spectrum> mOutSpectrum;
 
-		InControl mInputVoiceGain; ///< Input 'clean' voice gain
+		FloatInControl mInputVoiceGain; ///< Input 'clean' voice gain
 
 		//(fixed) max amount of voices: adding many voices is translated into many performance issues
 		#define MAX_AMOUNT_OF_VOICES 6
@@ -129,7 +129,8 @@ namespace CLAM{
 
 		int IgnoreResidual(TControlData value)
 		{
-			return mPitchShift.mIgnoreResidual.DoControl(value);
+			mPitchShift.mIgnoreResidual.DoControl(value);
+			return 0;
 		}
 
 		typedef SMSHarmonizerConfig Config;

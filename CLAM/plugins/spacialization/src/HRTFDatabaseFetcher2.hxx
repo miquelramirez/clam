@@ -188,10 +188,10 @@ private:
 	OutPort< ImpulseResponse* > _impulseResponseR;
 	OutPort< ImpulseResponse* > _previousImpulseResponseL;
 	OutPort< ImpulseResponse* > _previousImpulseResponseR;
-	InControl _elevation; ///< angle to the horizon
-	InControl _azimuth; ///< horizontal angle from viewpoint (north-south-east-west)
-	OutControl _chosenElevation; ///< angle to the horizon
-	OutControl _chosenAzimuth; ///< horizontal angle from viewpoint (north-south-east-west)
+	FloatInControl _elevation; ///< angle to the horizon
+	FloatInControl _azimuth; ///< horizontal angle from viewpoint (north-south-east-west)
+	FloatOutControl _chosenElevation; ///< angle to the horizon
+	FloatOutControl _chosenAzimuth; ///< horizontal angle from viewpoint (north-south-east-west)
 	GeodesicDatabase2 _database; 
 	ImpulseResponse * _previousL;
 	ImpulseResponse * _previousR;
@@ -230,7 +230,7 @@ public:
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
 
-	static unsigned map(InControl & control, unsigned nIndexes, double min, double max)
+	static unsigned map(FloatInControl & control, unsigned nIndexes, double min, double max)
 	{
 		double normalizedValue = (control.GetLastValue() - min) / (max-min);
 		unsigned result = unsigned(std::floor(normalizedValue*nIndexes+.5));

@@ -72,7 +72,7 @@ namespace CLAM
 			IOIHistogram                   mPulseHist;
 			Array<TimeIndex>               mPulseHistPeaks;
 
-			InControl                      mRateLowerBound;
+			FloatInControl                      mRateLowerBound;
 			
 		};
 	}

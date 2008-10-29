@@ -9,6 +9,9 @@ namespace CLAM {
 	class Processing; 
 	class BaseTypedOutControl;
 	
+	/// Control events type
+	typedef float TControlData;
+
 	/**
 	* \brief Processing in control base class.
 	*
@@ -19,15 +22,15 @@ namespace CLAM {
 		std::string mName;
 		Processing * mProcessing;
 	protected:
-		float mDefaultValue;
-		float mUpperBound;
-		float mLowerBound;
+		TControlData mDefaultValue;
+		TControlData mUpperBound;
+		TControlData mLowerBound;
 		bool mBounded;
 		bool mHasDefaultValue;
 		std::list< BaseTypedOutControl * > mLinks;
 
 	public:
-		BaseTypedInControl(const std::string &name, Processing * proc = 0);
+		BaseTypedInControl(const std::string &name, Processing * proc = 0, bool publish = true);
 		virtual ~BaseTypedInControl();
 		virtual const std::type_info& ControlType() const = 0;
 		const std::string& GetName() const { return mName; }
@@ -36,17 +39,18 @@ namespace CLAM {
 		{
 			return not mLinks.empty();
 		}
+		bool IsConnectedTo(BaseTypedOutControl & out);
 		/** @name Float specific services
 		* 
 		*/
 		//{@
 		bool IsBounded() const;
-		float UpperBound() const;
-		float LowerBound() const;
+		TControlData UpperBound() const;
+		TControlData LowerBound() const;
 		/** Returns the bounds mean or the value set with SetDefaultValue() if its the case */
-		float DefaultValue() const;
-		void SetDefaultValue(float val);
-		void SetBounds(float lower, float upper);
+		TControlData DefaultValue() const;
+		void SetDefaultValue(TControlData val);
+		void SetBounds(TControlData lower, TControlData upper);
 		//@}
 		/// Implementation detail just to be used from OutControl
 		void OutControlInterface_AddLink(BaseTypedOutControl & outControl)

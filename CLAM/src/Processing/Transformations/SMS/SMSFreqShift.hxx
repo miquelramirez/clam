@@ -39,7 +39,7 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-		InControl mSteps;
+		FloatInControl mSteps;
 	public:
 		const char* GetClassName() const
 		{

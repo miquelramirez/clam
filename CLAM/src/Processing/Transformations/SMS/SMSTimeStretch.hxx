@@ -112,7 +112,7 @@ namespace CLAM{
 // 		const Frame& GetCurrentFrame(const Segment& in);
 // 		
 
-// 		InControl mFactor;
+// 		FloatInControl mFactor;
 
 		typedef SMSTimeStretchConfig Config;
 

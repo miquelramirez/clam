@@ -25,8 +25,8 @@ class VelocityAdapter : public CLAM::Processing
 	CLAM::AudioOutPort _vxOut;
 	CLAM::AudioInPort _vyIn;
 	CLAM::AudioOutPort _vyOut;
-	CLAM::InControl _betaIn;
-	CLAM::OutControl _betaOut;
+	CLAM::FloatInControl _betaIn;
+	CLAM::FloatOutControl _betaOut;
 public:
 	const char* GetClassName() const { return "VelocityAdapter"; }
 	VelocityAdapter(const Config& config = Config()) 

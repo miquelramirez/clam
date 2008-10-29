@@ -121,7 +121,7 @@ namespace CLAM
 			unsigned nOutControls = proc->GetNOutControls();
 			for (unsigned i = 0; i<nOutControls; i++)
 			{
-				OutControl & outControl = proc->GetOutControl(i);
+				OutControlBase & outControl = proc->GetOutControl(i);
 				std::string outControlName = name+ "." + outControl.GetName();
 				NamesList namesInControls = GetInControlsConnectedTo(outControlName);
 				NamesList::iterator namesIterator;
@@ -444,8 +444,8 @@ namespace CLAM
 
 	bool FlattenedNetwork::ConnectControls( const std::string & producer, const std::string & consumer )
 	{
-		OutControl & outcontrol = GetOutControlByCompleteName(producer);
-		InControl & incontrol = GetInControlByCompleteName(consumer);
+		OutControlBase & outcontrol = GetOutControlByCompleteName(producer);
+		InControlBase & incontrol = GetInControlByCompleteName(consumer);
 
 		if ( outcontrol.IsConnectedTo(incontrol) ) 
 			return false;
@@ -475,8 +475,8 @@ namespace CLAM
 
 	bool FlattenedNetwork::DisconnectControls( const std::string & producer, const std::string & consumer)
 	{
-		OutControl & outcontrol = GetOutControlByCompleteName(producer);
-		InControl & incontrol = GetInControlByCompleteName(consumer);
+		OutControlBase & outcontrol = GetOutControlByCompleteName(producer);
+		InControlBase & incontrol = GetInControlByCompleteName(consumer);
 
 		if ( !outcontrol.IsConnectedTo( incontrol )) 
 			return false;
@@ -510,13 +510,13 @@ namespace CLAM
 		return proc.GetOutPort( GetConnectorIdentifier(name) );
 	}
 
-	InControl & FlattenedNetwork::GetInControlByCompleteName( const std::string & name ) const
+	InControlBase & FlattenedNetwork::GetInControlByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetInControl( GetConnectorIdentifier(name) );
 	}
 
-	OutControl & FlattenedNetwork::GetOutControlByCompleteName( const std::string & name ) const
+	OutControlBase & FlattenedNetwork::GetOutControlByCompleteName( const std::string & name ) const
 	{
 		Processing& proc = GetProcessing( GetProcessingIdentifier(name) );
 		return proc.GetOutControl( GetConnectorIdentifier(name) );
@@ -627,10 +627,10 @@ namespace CLAM
 
 	FlattenedNetwork::NamesList  FlattenedNetwork::GetInControlsConnectedTo( const std::string & producer ) const
 	{		
-		OutControl & out = GetOutControlByCompleteName( producer );
+		OutControlBase & out = GetOutControlByCompleteName( producer );
 		NamesList consumers;
 
-		std::list<InControl*>::iterator it;
+		std::list<InControlBase*>::iterator it;
 		for(it=out.BeginInControlsConnected();
 		    it!=out.EndInControlsConnected();
 		    it++)

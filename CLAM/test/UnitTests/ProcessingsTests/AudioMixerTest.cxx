@@ -41,8 +41,8 @@ class AudioMixerTest : public CppUnit::TestFixture
 	CPPUNIT_TEST_SUITE_END();
 	
 	//processing
-	CLAM::OutControl mOut1;
-	CLAM::OutControl mOut2;
+	CLAM::FloatOutControl mOut1;
+	CLAM::FloatOutControl mOut2;
 	CLAM::AudioMixer<2> mMixer;
 
 	//data

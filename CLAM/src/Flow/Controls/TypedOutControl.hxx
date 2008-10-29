@@ -4,9 +4,9 @@
 #include <string>
 #include <list>
 #include <typeinfo>
-#include <CLAM/Assert.hxx>
-#include <CLAM/BaseTypedOutControl.hxx>
-#include <CLAM/TypedInControl.hxx>
+#include "Assert.hxx"
+#include "BaseTypedOutControl.hxx"
+#include "TypedInControl.hxx"
 
 namespace CLAM {
 	class Processing;
@@ -28,11 +28,6 @@ namespace CLAM {
 
 		void SendControl(const TypedControlData& val);
 		bool IsLinkable(const BaseTypedInControl& in);
-//		std::list<BaseTypedInControl*>::iterator BeginInControlsConnected();
-//		std::list<BaseTypedInControl*>::iterator EndInControlsConnected();
-		
-		//bool DoTypedLink(BaseTypedInControl& in);
-
 	};
 	
 	template<class TypedControlData>
@@ -58,19 +53,6 @@ namespace CLAM {
 		return typeid(TypedControlData) == in.ControlType();
 		
 	}
-/*
-	template<class TypedControlData>
-	std::list<BaseTypedInControl*>::iterator TypedOutControl<TypedControlData>::BeginInControlsConnected()
-	{
-		return mLinks.begin();
-	}
 
-	template<class TypedControlData>
-	std::list<BaseTypedInControl*>::iterator TypedOutControl<TypedControlData>::EndInControlsConnected()
-	{
-		return mLinks.end();
-	}
-*/	
-	
 } // END NAMESPACE CLAM
 #endif // _TypedOutControl_

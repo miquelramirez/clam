@@ -72,7 +72,7 @@ namespace CLAM {
 
 		InPort<SpectralPeakArray> mInput;
 		OutPort<SpectralPeakArray> mOutput;
-		InControl mFundFreqValue;
+		FloatInControl mFundFreqValue;
 
 	public:
 

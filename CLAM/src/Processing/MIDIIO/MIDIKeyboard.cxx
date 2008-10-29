@@ -3,6 +3,7 @@
 
 #include "ProcessingFactory.hxx"
 #include "MIDIKeyboard.hxx"
+#include "DataTypes.hxx"
 
 
 namespace CLAM 
@@ -80,10 +81,10 @@ bool MIDIKeyboard::ConcreteConfigure( const ProcessingConfig& cfg )
 	mModulationConfig.SetFirstData( 0x01 );	// modulation 
 	ConfigureAndCheck( mModulationIn, mModulationConfig );
 
-	OutControl& outNote = mNoteIn.GetOutControl(1);
-	OutControl& outVelocity = mNoteIn.GetOutControl(2); 
-	OutControl& outPitchBend = mPitchBendIn.GetOutControl(1);
-	OutControl& outModulation = mModulationIn.GetOutControl(1);
+	FloatOutControl& outNote = (FloatOutControl&) mNoteIn.GetOutControl(1);
+	FloatOutControl& outVelocity = (FloatOutControl&) mNoteIn.GetOutControl(2); 
+	FloatOutControl& outPitchBend = (FloatOutControl&) mPitchBendIn.GetOutControl(1);
+	FloatOutControl& outModulation = (FloatOutControl&) mModulationIn.GetOutControl(1);
 
 	mNoteOut.PublishOutControl( outNote );
 	mVelocityOut.PublishOutControl( outVelocity );

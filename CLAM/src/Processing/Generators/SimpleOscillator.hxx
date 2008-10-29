@@ -99,7 +99,7 @@ protected:
 	SimpleOscillatorCtrl* mAmpCtl;
 	
 	//xamat: kludge to convert this into an LFO, eventually separate into a different class
-	InControl mSamplesBetweenCallsCtl;
+	FloatInControl mSamplesBetweenCallsCtl;
 protected:	
 
 	inline void ApplyFreqAndAmpControls()

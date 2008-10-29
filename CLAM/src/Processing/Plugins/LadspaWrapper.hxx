@@ -16,8 +16,6 @@ namespace CLAM
 {
 	class AudioInPort;
 	class AudioOutPort;
-	class InControl;
-	class OutControl;
 
 class LadspaWrapper : public Processing
 {
@@ -31,8 +29,8 @@ private:
 	std::vector< AudioInPort* > _inputPorts;
 	std::vector< AudioOutPort* > outputPorts;
 
-	std::vector< InControl* > _inputControls;
-	std::vector< OutControl* > _outputControls;
+	std::vector< FloatInControl* > _inputControls;
+	std::vector< FloatOutControl* > _outputControls;
 	std::vector< LADSPA_Data > _outputControlValues;
 	unsigned _bufferSize;
 	std::string _factoryKey;

@@ -22,8 +22,8 @@ namespace CLAM
 	protected: // attributes
 		
 		Config       _config;
-		OutControl   _jumpOutput;
-		InControl    _progressInput;
+		FloatOutControl   _jumpOutput;
+		FloatInControl    _progressInput;
 };
 
 } //namespace CLAM

@@ -50,8 +50,8 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 		
-		InControl mCenterFreqCtl;
-		InControl mFocusAmount;
+		FloatInControl mCenterFreqCtl;
+		FloatInControl mFocusAmount;
 
 	public:
 

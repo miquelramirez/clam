@@ -55,8 +55,8 @@ namespace CLAM{
 		InPort<Spectrum> mInSpectrum;
 		OutPort<Spectrum> mOutSpectrum;
 
-		InControl mIsHarmonic;
-		InControl mPitchSteps;
+		FloatInControl mIsHarmonic;
+		FloatInControl mPitchSteps;
 	public:
 		SMSPitchShift()
 			:
@@ -125,7 +125,7 @@ namespace CLAM{
 		/** In some cases, such as in the harmonizer it makes sense to ignore the residual spectrum in order to keep
 		 *	things manageable. This should if fact be a configuration param, but we don't want to introduce specific
 		 *	params that prevent us from using the generic one*/
-		InControl mIgnoreResidual;
+		FloatInControl mIgnoreResidual;
 	};		
 }	//namespace CLAM
 

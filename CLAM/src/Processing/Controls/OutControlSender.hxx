@@ -79,7 +79,7 @@ protected:
 class OutControlSender : public Processing
 {
 	OutControlSenderConfig mConfig;
-	OutControl mOutput;
+	FloatOutControl mOutput;
 	TControlData mLastValue;
 	bool mFirstDoAfterStart;
 public:

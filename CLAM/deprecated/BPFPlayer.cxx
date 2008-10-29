@@ -92,7 +92,7 @@ namespace CLAM
 			oscCfg.SetAmplitude(TData(0.6));
 			SimpleOscillator osc(oscCfg);
 			
-			InControl& freqControl = osc.GetInControls().Get("Pitch");
+			InControlBase& freqControl = osc.GetInControls().Get("Pitch");
     
 			Audio samplesL;             
 			Audio samplesR;

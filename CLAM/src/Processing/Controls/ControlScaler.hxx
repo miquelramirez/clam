@@ -44,9 +44,9 @@ class ControlScalerConfig : public ProcessingConfig
 class ControlScaler : public Processing
 {
 	ControlScalerConfig mConfig;
-	InControl mInControl;
-	InControl mGainControl;
-	OutControl mOutControl;
+	FloatInControl mInControl;
+	FloatInControl mGainControl;
+	FloatOutControl mOutControl;
 
 	public:
 

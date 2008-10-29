@@ -250,110 +250,37 @@ namespace CLAM {
 			//TODO2: If all amount controls were named the same I might be able to get rid of the string comparison
 			ProcessingFactory & theFactory = ProcessingFactory::GetInstance();
 			
-			if ( classname=="SMSFreqShift") 
+			SegmentTransformation* wrapper = new SegmentTransformation;	
+			Processing * proc = theFactory.Create(classname);
+			struct Supported
 			{
-				SegmentTransformation* wrapper = new SegmentTransformation;	
-				Processing * proc = theFactory.Create(classname);
-				FrameTransformation* freqshift = dynamic_cast<FrameTransformation*>(proc); 
-				wrapper->WrapFrameTransformation(freqshift);
-				wrapper->mAmountCtrl.PublishInControl(freqshift->GetInControl("Shift Steps"));
-//				ConnectControls(*wrapper,"Out Control", *freqshift, "Shift Amount");
-				Insert( *wrapper );
-				return;
-			}
-			
-			if ( classname=="SMSSinusoidalGain") 
+				const char * name;
+				const char * control;
+			} supported[] =  {
+					{"SMSFreqShift", "Shift Steps"},
+					{"SMSSinusoidalGain", "Gain"},
+					{"SMSResidualGain", "Gain"},
+					{"SMSPitchShift", "PitchSteps"},
+					{"SMSOddEvenHarmonicRatio", "Odd Factor"},
+					{"SMSSpectralShapeShift", "Shift Steps"},
+					{"SMSPitchDiscretization", 0},
+					{"SMSGenderChange", "Amount"},
+					{"SMSSineFilter", 0},
+					{0,0}
+			};
+			for (Supported * processing = supported; processing->name; processing ++)
 			{
-				SegmentTransformation* wrapper = new SegmentTransformation;	
-				Processing * proc = theFactory.Create(classname);
-				FrameTransformation* singain = dynamic_cast<FrameTransformation*>(proc); 
-				wrapper->WrapFrameTransformation(singain);
-				wrapper->mAmountCtrl.PublishInControl(singain->GetInControl("Gain"));
-//				ConnectControls(*wrapper,"Out Control", *singain, "Gain Amount");
-				Insert( *wrapper );
-				return;
-			}
-
-			if ( classname=="SMSResidualGain") 
-			{
-				SegmentTransformation* wrapper = new SegmentTransformation;	
-				Processing * proc = theFactory.Create(classname);
-				FrameTransformation* resgain = dynamic_cast<FrameTransformation*>(proc); 
-				wrapper->WrapFrameTransformation(resgain);
-				wrapper->mAmountCtrl.PublishInControl(resgain->GetInControl("Gain"));
-//				ConnectControls(*wrapper,"Out Control", *resgain, "Gain Amount");
+				if (classname != processing->name) continue;
+				FrameTransformation * transformation = dynamic_cast<FrameTransformation*> (proc);
+				wrapper->WrapFrameTransformation(transformation);
+				if (processing->control)
+						wrapper->mAmountCtrl.PublishInControl((FloatInControl&)proc->GetInControl(processing->control));
 				Insert( *wrapper );
 				return;
 			}
 
-			if ( classname=="SMSPitchShift") 
-			{
-				SegmentTransformation* wrapper = new SegmentTransformation;	
-				Processing * proc = theFactory.Create(classname);
-				FrameTransformation* pitchshift = dynamic_cast<FrameTransformation*>(proc); 
-				wrapper->WrapFrameTransformation(pitchshift);
-				wrapper->mAmountCtrl.PublishInControl(pitchshift->GetInControl("PitchSteps"));
-//				ConnectControls(*wrapper,"Out Control", *pitchshift, "Shift Amount");
-				Insert( *wrapper );
-				return;
-			}
-
-			if ( classname=="SMSOddEvenHarmonicRatio") 
-			{
-				SegmentTransformation* wrapper = new SegmentTransformation;	
-				Processing * proc = theFactory.Create(classname);
-				FrameTransformation* oddEvenHarmRatio = dynamic_cast<FrameTransformation*>(proc); 
-				wrapper->WrapFrameTransformation(oddEvenHarmRatio);
-				wrapper->mAmountCtrl.PublishInControl(oddEvenHarmRatio->GetInControl("Odd Factor"));
-//				ConnectControls(*wrapper,"Out Control", *oddEvenHarmRatio, "Odd Harmonics Factor");
-				Insert( *wrapper );
-				return;
-			}
-
-			if ( classname=="SMSSpectralShapeShift") 
-			{
-				SegmentTransformation* wrapper = new SegmentTransformation;	
-				Processing * proc = theFactory.Create(classname);
-				FrameTransformation* spectralShapeShift = dynamic_cast<FrameTransformation*>(proc); 
-				wrapper->WrapFrameTransformation(spectralShapeShift);
-				wrapper->mAmountCtrl.PublishInControl(spectralShapeShift->GetInControl("Shift Steps"));
-//				ConnectControls(*wrapper,"Out Control", *spectralShapeShift, "Shift Amount");
-				Insert( *wrapper );
-				return;
-			}
-
-			if ( classname=="SMSPitchDiscretization") 
-			{
-				SegmentTransformation* wrapper = new SegmentTransformation;	
-				Processing * proc = theFactory.Create(classname);
-				FrameTransformation* pitchDiscretization = dynamic_cast<FrameTransformation*>(proc); 
-				wrapper->WrapFrameTransformation(pitchDiscretization);
-				Insert( *wrapper );
-				return;
-			}
-
-			if ( classname=="SMSGenderChange") 
-			{
-				SegmentTransformation* wrapper = new SegmentTransformation;	
-				Processing * proc = theFactory.Create(classname);
-				FrameTransformation* genderChange = dynamic_cast<FrameTransformation*>(proc); 
-				wrapper->WrapFrameTransformation(genderChange);
-				wrapper->mAmountCtrl.PublishInControl(genderChange->GetInControl("Amount"));
-//				ConnectControls(*wrapper,"Out Control", *genderChange, "Gender Factor");
-				Insert( *wrapper );
-				return;
-			}
-
-			if ( classname=="SMSSineFilter") 
-			{
-				SegmentTransformation* wrapper = new SegmentTransformation;	
-				Processing * proc = theFactory.Create(classname);
-				FrameTransformation* sineFilter = dynamic_cast<FrameTransformation*>(proc); 
-				wrapper->WrapFrameTransformation(sineFilter);
-				Insert( *wrapper );
-				return;
-			}
-			Insert( *( theFactory.Create( classname ) ) );
+			delete wrapper;
+			Insert( *proc );
 		}
 		/** Helper method for updating frame counters both in ports and in internal data*/
 		void NextFrame()

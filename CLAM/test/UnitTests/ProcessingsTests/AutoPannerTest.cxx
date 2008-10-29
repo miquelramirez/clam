@@ -66,8 +66,8 @@ public:
 
 private:
 	//fixture attributes
-	CLAM::InControl mReceiverLeft;
-	CLAM::InControl mReceiverRight;
+	CLAM::FloatInControl mReceiverLeft;
+	CLAM::FloatInControl mReceiverRight;
 	double mDelta;
 
 	void testDo_WhenFreqEqualSamplingRateAndNoPhase()

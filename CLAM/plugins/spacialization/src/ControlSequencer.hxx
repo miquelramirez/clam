@@ -57,13 +57,13 @@ class ControlSequencer : public CLAM::Processing
 	};
 
 	Config _config;
-	OutControl _out1;
-	OutControl _out2;
-	OutControl _out3;
-	OutControl _out4;
-	OutControl _out5;
-	OutControl _out6;
-	OutControl _out7;
+	FloatOutControl _out1;
+	FloatOutControl _out2;
+	FloatOutControl _out3;
+	FloatOutControl _out4;
+	FloatOutControl _out5;
+	FloatOutControl _out6;
+	FloatOutControl _out7;
 	AudioInPort _syncIn;
 
 	unsigned _samplesPerControl;

@@ -30,8 +30,8 @@ protected:
 class ControlSurface : public Processing
 {
 	ControlSurfaceConfig mConfig;
-	OutControl mOutputX;
-	OutControl mOutputY;
+	FloatOutControl mOutputX;
+	FloatOutControl mOutputY;
 	TControlData mLastValueX;
 	TControlData mLastValueY;
 	bool mFirstDoAfterStart;

@@ -46,7 +46,7 @@ private:
 	MyProcessingWithPortsAndControlsConfig mConfig;
 
 	// This processing will have an input control to get the value of modulation
-	InControl mModControl;
+	FloatInControl mModControl;
 	// Two ports: one for the input data and one for the output after the processing is done. Note that
 	// the instances are templatized by the type of data they receive.
 	AudioInPort mInput;

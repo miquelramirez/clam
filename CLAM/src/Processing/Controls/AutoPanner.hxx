@@ -54,8 +54,8 @@ private:
 	int mFrameSize;
 
 	AutoPannerConfig mConfig;
-	OutControl mLeft;
-	OutControl mRight;
+	FloatOutControl mLeft;
+	FloatOutControl mRight;
 
 public:
 	AutoPanner();

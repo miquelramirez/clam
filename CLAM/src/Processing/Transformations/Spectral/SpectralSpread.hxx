@@ -50,7 +50,7 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 		
-		InControl mCenterFreqCtl;
+		FloatInControl mCenterFreqCtl;
 	public:
 
 		SpectralSpread() 

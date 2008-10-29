@@ -34,8 +34,8 @@ class OneOverF : public Processing
 private:
 
 	OneOverFConfig mConfig;
-	InControl mInput;
-	OutControl mOutput;
+	FloatInControl mInput;
+	FloatOutControl mOutput;
 	int mDelayFactor;
 	int mMinNote;
 	int mMaxNote;

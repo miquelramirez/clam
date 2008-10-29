@@ -45,9 +45,9 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 		
-		InControl mLowCutoffFreqCtl;
-		InControl mHighCutoffFreqCtl;
-		InControl mThresholdCtl;
+		FloatInControl mLowCutoffFreqCtl;
+		FloatInControl mHighCutoffFreqCtl;
+		FloatInControl mThresholdCtl;
 	public:
 
 		SMSDeesser() 

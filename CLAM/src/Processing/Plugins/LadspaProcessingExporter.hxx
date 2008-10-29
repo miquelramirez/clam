@@ -25,7 +25,6 @@
 #include "Audio.hxx"
 #include "AudioOutPort.hxx"
 #include "AudioInPort.hxx"
-#include "InControl.hxx"
 #include "OutControl.hxx"
 #include "Processing.hxx"
 #include "ProcessingFactory.hxx"

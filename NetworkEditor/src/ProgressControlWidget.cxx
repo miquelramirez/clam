@@ -1,6 +1,4 @@
 #include "ProgressControlWidget.hxx"
-#include <CLAM/InControl.hxx>
-#include <CLAM/OutControl.hxx>
 #include <cmath>
 
 ProgressControlWidget::ProgressControlWidget(QWidget *parent, CLAM::Processing *processing)

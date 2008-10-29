@@ -27,77 +27,20 @@ namespace CLAM
 {
 
 InControl::InControl(const std::string &name, Processing* parent, const bool publish)
-	: mLastValue(0)
-	, mName(name)
-	, mParent(parent)
-	, mUpperBound(1)
-	, mLowerBound(0)
-	, mBounded(false)
-	, mHasDefaultValue(false)
-
+	: BaseTypedInControl(name, parent, publish)
 {
-	if (parent && publish) parent->RegisterInControl(this);
 }
 
 
 InControl::~InControl() 
 {
-	while (!mLinks.empty())
-		mLinks.front()->RemoveLink(*this);
-	
-	if (mParent)
-		mParent->GetInControls().ProcessingInterface_Unregister(this);
 }
 
-bool InControl::IsConnectedTo( OutControl & out)
-{
-	return out.IsConnectedTo( *this );
-}
-
-bool InControl::IsConnected() const
-{
-	return !mLinks.empty();
-}
-
-bool InControl::IsBounded() const
-{
-	return mBounded;
-}
-TControlData InControl::UpperBound() const
-{
-	return mUpperBound;
-}
-TControlData InControl::LowerBound() const
-{
-	return mLowerBound;
-}
-void InControl::SetBounds( TControlData lower, TControlData upper )
-{
-	mLowerBound = lower;
-	mUpperBound = upper;
-	mBounded = true;
-}
-void InControl::SetDefaultValue( TControlData val )
-{
-	mDefaultValue = val;
-	mHasDefaultValue = true;
-}
 TControlData InControl::DefaultValue() const
 {
 	if (mHasDefaultValue) return mDefaultValue;
 	return (mUpperBound+mLowerBound)/2.f;
 }
-
-void InControl::OutControlInterface_AddLink(OutControl & outControl)
-{
-	mLinks.push_back(&outControl);
-}
-
-void InControl::OutControlInterface_RemoveLink(OutControl & outControl)
-{
-	mLinks.remove(&outControl);
-}
-
 
 }; // namespace CLAM
 
