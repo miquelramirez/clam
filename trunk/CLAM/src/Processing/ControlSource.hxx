@@ -51,7 +51,7 @@ namespace CLAM{
 	{
 	private:
 		ControlSourceConfig mConf;
-		OutControl mOutput;
+		FloatOutControl mOutput;
 		
 	public:
 		ControlSource() 

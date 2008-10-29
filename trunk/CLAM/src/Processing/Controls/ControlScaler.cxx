@@ -48,7 +48,8 @@ bool ControlScaler::Do()
 {
 	TControlData in = mInControl.GetLastValue();
 	TControlData gain = mGainControl.GetLastValue();
-	return mOutControl.SendControl(in * gain);
+	mOutControl.SendControl(in * gain);
+	return true;
 }
 }
 

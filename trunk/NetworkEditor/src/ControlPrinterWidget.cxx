@@ -12,7 +12,7 @@ ControlPrinterWidget::ControlPrinterWidget(CLAM::Processing * processing)
 	unsigned nLabels = _processing->GetNInControls();
 	for (unsigned i = 0; i < nLabels; i++)
 	{
-		CLAM::InControl & control = _processing->GetInControl(i);
+		CLAM::FloatInControl & control = dynamic_cast<CLAM::FloatInControl&> (_processing->GetInControl(i));
 		QString name(control.GetName().c_str());
 
 		QLabel *label = new QLabel(name);
@@ -37,7 +37,7 @@ void ControlPrinterWidget::timerEvent(QTimerEvent *event)
 	int nLabels = _processing->GetNInControls();
 	for (int i = 0; i < nLabels; i++)
 	{
-		CLAM::InControl & control = _processing->GetInControl(i);
+		CLAM::FloatInControl & control = dynamic_cast<CLAM::FloatInControl&> (_processing->GetInControl(i));
 		CLAM::TControlData value = control.GetLastValue();
 		_labels[i]->setText(QString::number(value, 'f', 6));
 	}

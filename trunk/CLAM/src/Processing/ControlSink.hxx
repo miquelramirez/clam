@@ -49,7 +49,7 @@ namespace CLAM{
 	{
 	private:
 		ControlSinkConfig mConf;
-		InControl mInput;
+		FloatInControl mInput;
 		
 	public:
 		ControlSink() 

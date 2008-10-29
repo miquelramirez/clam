@@ -47,9 +47,9 @@ namespace CLAM
 		InControlTmpl< Instrument >   mNoteIn;
 		InControlTmpl< Instrument >   mVelocityIn;
 
-		OutControl                    mStateOut;
-		OutControl                    mNoteOut;
-		OutControl                    mVelocityOut;
+		FloatOutControl                    mStateOut;
+		FloatOutControl                    mNoteOut;
+		FloatOutControl                    mVelocityOut;
 
 	public:
 		friend class Dispatcher;

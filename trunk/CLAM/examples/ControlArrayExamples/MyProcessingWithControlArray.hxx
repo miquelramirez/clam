@@ -64,7 +64,7 @@ public:
 	int VoiceControlCallbackId(int id, TControlData val);
 
 	/**  this is only because this class is impersonating a Processing*/
-	void PublishInControl(InControl* i) {};
+	void PublishInControl(InControlBase* i) {};
 };
 
 

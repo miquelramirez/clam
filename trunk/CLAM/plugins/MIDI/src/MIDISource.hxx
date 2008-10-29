@@ -11,14 +11,14 @@ namespace CLAM {
 	class MIDISource : public CLAM::Processing
 	{ 
 		/** Controls **/
-		OutControl mMIDIMessage;
-		OutControl mMIDIData1;
-		OutControl mMIDIData2;
+		FloatOutControl mMIDIMessage;
+		FloatOutControl mMIDIData1;
+		FloatOutControl mMIDIData2;
 
 		/**
 		* mTrigger should be connected to an InControlTmpl to inform that all MIDI Data is placed and can be used.
 		*/
-		OutControl mTrigger; 
+		FloatOutControl mTrigger; 
 
 		RtMidiIn *mMIDIin;
 

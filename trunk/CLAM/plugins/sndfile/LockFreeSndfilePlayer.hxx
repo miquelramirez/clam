@@ -68,9 +68,9 @@ namespace CLAM
 		typedef SndfilePlayerConfig Config;
 		typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 		OutPorts _outports;		
-		CLAM::OutControl _outControlSeek;
-		CLAM::InControl _inControlSeek;
-		CLAM::InControl _inControlPause;
+		CLAM::FloatOutControl _outControlSeek;
+		CLAM::FloatInControl _inControlSeek;
+		CLAM::FloatInControl _inControlPause;
 		SndfileHandle* _infile;
 		SndfilePlayerConfig _config;
 		unsigned _sampleSize;

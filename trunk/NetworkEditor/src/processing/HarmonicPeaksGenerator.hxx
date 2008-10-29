@@ -36,7 +36,7 @@ namespace CLAM{
 	class HarmonicPeaksGenerator: public Processing
 	{
 		OutPort<SpectralPeakArray> mOut;
-		InControl mFundamental;
+		FloatInControl mFundamental;
 		TData mTime;
 
 	public:

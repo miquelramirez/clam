@@ -86,9 +86,9 @@ protected:
 										Spectrum& targetResidualSpectrum);
 
 private:
-	InControl mPitchControl;
-	InControl mAmplitudeControl;
-	InControl mBrightnessControl;
+	FloatInControl mPitchControl;
+	FloatInControl mAmplitudeControl;
+	FloatInControl mBrightnessControl;
 	OutPort<SpectralPeakArray> mOutputSpectralPeaks;
 	OutPort<Spectrum> mOutputResidualSpectrum;
 

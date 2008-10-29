@@ -11,14 +11,14 @@ namespace CLAM {
 	class MIDISink : public CLAM::Processing
 	{ 
 		/** Controls **/
-		InControl mMIDIMessage;
-		InControl mMIDIData1;
-		InControl mMIDIData2;
+		FloatInControl mMIDIMessage;
+		FloatInControl mMIDIData1;
+		FloatInControl mMIDIData2;
 
 		/*
 		* TODO: mTrigger should be an InControlTmpl 
 		*/
-		InControl mTrigger; 
+		FloatInControl mTrigger; 
 
 		RtMidiOut *mMIDIout;
 

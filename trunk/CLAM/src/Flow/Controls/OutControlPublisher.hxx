@@ -10,31 +10,31 @@
 
 namespace CLAM
 {
-    class OutControlPublisher : public OutControl
+    class OutControlPublisher : public FloatOutControl
 	{
-			OutControl* mPublished;
+			FloatOutControl* mPublished;
 
 		public:
 			OutControlPublisher() 
-				: OutControl( "OutControlPublisher", 0 ) 
+				: FloatOutControl( "OutControlPublisher", 0 ) 
 			{
 				mPublished=NULL;
 			} 
 
 			OutControlPublisher( const std::string& name, Processing* father )
-				: OutControl( name, father ) 
+				: FloatOutControl( name, father ) 
 			{
 				mPublished=NULL;
 			}
 
-			void PublishOutControl( OutControl& out )
+			void PublishOutControl( FloatOutControl& out )
 			{
 				mPublished = &out;
 			}
 
-			void AddLink( InControl& in )
+			void AddLink( InControlBase& in )
 			{
-				OutControl::AddLink( in );
+				FloatOutControl::AddLink( in );
 				if(mPublished) mPublished->AddLink( in );
 			}
 	};

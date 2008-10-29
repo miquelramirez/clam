@@ -40,9 +40,9 @@ namespace CLAM{
 	{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
-		InControl mF1;
-		InControl mF2;
-		InControl mF3;
+		FloatInControl mF1;
+		FloatInControl mF2;
+		FloatInControl mF3;
 	public:
 		typedef NullProcessingConfig Config;
 		const char* GetClassName() const { return "VowelResonator"; }

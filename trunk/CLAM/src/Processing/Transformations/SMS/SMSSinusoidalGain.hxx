@@ -42,7 +42,7 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-		InControl mGain;
+		FloatInControl mGain;
 	public:
 
 		SMSSinusoidalGain() 

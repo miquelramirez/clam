@@ -59,7 +59,7 @@ namespace CLAM
 
 		DispatcherConfig                      mConfig;
 		Array< Instrument* >                  mInstruments;
-		Array< OutControl* >                  mValuesOut;
+		Array< FloatOutControl* >                  mValuesOut;
 		InControlTmpl< Dispatcher >           mStateIn;
 		InControlTmpl< Dispatcher >           mNoteIn;
 		InControlTmpl< Dispatcher >           mVelocityIn;

@@ -114,23 +114,23 @@ public:
 private:
 	void testInControl_DoControl_ChangesInternalState()
 	{
-		CLAM::InControl in("i'm an in control");
+		CLAM::FloatInControl in("i'm an in control");
 		in.DoControl(1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
 	}
 
 	void testLinkAndSendControl_ChangesInControlInternalState()
 	{
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		out.AddLink(in);
 		out.SendControl(1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f , in.GetLastValue() );
 	}
 	void testGetLastValueAsBoolean_NearZeroIsFalse()
 	{
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		out.AddLink(in);
 		out.SendControl(-0.001f);
 		CPPUNIT_ASSERT( false==in.GetLastValueAsBoolean() );
@@ -139,8 +139,8 @@ private:
 	}
 	void testGetLastValueAsBoolean_NonZeroIsTrue()
 	{
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		out.AddLink(in);
 		out.SendControl(-0.2f); //not-so-near zero
 		CPPUNIT_ASSERT( true==in.GetLastValueAsBoolean() );
@@ -149,8 +149,8 @@ private:
 	}
 	void testGetLastValueAsInteger()
 	{
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		out.AddLink(in);
 		out.SendControl(0.9f);
 		CPPUNIT_ASSERT_EQUAL( 1, in.GetLastValueAsInteger() );
@@ -160,7 +160,7 @@ private:
 	// this method is used by the CLAM::InControlTmpl<T>
 	// here we are simulating that this class is the parent processing object
 public:
-	void PublishInControl(CLAM::InControl* c) 
+	void PublishInControl(CLAM::InControlBase* c) 
 	{
 		ToLog() << "InControl published\n";
 	}	
@@ -218,7 +218,7 @@ private:
 	}
 	void testOutControl_GetName_ChangesInteralState()
 	{
-		CLAM::OutControl out("out name");
+		CLAM::FloatOutControl out("out name");
 		CPPUNIT_ASSERT_EQUAL(std::string("out name"), out.GetName() );
 	}
 
@@ -259,23 +259,23 @@ private:
 
 	void testIsConnected_WithOutControl_AfterConnection()
 	{	
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		out.AddLink(in);
 		CPPUNIT_ASSERT_EQUAL( true, out.IsConnected() );
 	}
 
 	void testIsConnected_WithOutControl_WithoutConnection()
 	{	
-		CLAM::OutControl out("out");
+		CLAM::FloatOutControl out("out");
 		CPPUNIT_ASSERT_EQUAL(  false, out.IsConnected() );		
 	}
 
 
 	void testIsConnectedTo_WithInControl_WhenControlsAreConnected()
 	{
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		out.AddLink(in);
 		CPPUNIT_ASSERT_EQUAL( true, in.IsConnectedTo(out) );
 
@@ -283,8 +283,8 @@ private:
 
 	void testIsConnectedTo_WithInControl_WhenControlsAreNotConnected()
 	{
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		CPPUNIT_ASSERT_EQUAL( false, in.IsConnectedTo(out) );
 
 	}
@@ -293,26 +293,26 @@ private:
 
 	void testIsConnectedTo_WithOutControl_WhenControlsAreConnected()
 	{
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		out.AddLink(in);
 		CPPUNIT_ASSERT_EQUAL( true, out.IsConnectedTo(in) );
 	}
 
 	void testIsConnectedTo_WithOutControl_WhenControlsAreNotConnected()
 	{
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		CPPUNIT_ASSERT_EQUAL( false, out.IsConnectedTo(in) );
 	}
 
 	void testOutControlPublisher()
 	{
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		CLAM::OutControlPublisher outPublisher;
 		outPublisher.PublishOutControl( out );
-		CLAM::OutControl& publisherBaseRef = outPublisher;
+		CLAM::FloatOutControl& publisherBaseRef = outPublisher;
 		publisherBaseRef.AddLink(in);
 		out.SendControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
@@ -320,11 +320,11 @@ private:
 	
 	void testInControlPublisher()
 	{
-		CLAM::InControl in("in");
-		CLAM::OutControl out("out");
+		CLAM::FloatInControl in("in");
+		CLAM::FloatOutControl out("out");
 		CLAM::InControlPublisher inPublisher;
 		inPublisher.PublishInControl( in );
-		CLAM::InControl& publisherBaseRef = inPublisher;
+		CLAM::FloatInControl& publisherBaseRef = inPublisher;
 		out.AddLink( publisherBaseRef );
 		out.SendControl( 1.f );
 		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
@@ -364,8 +364,8 @@ private:
 	void testOutControlPublisher_ConnectControlsFromPublisher()
 	{
 		DummyProcessing proc;
-		CLAM::OutControl innerControlPublished("published"); // does the role of a "hidden" inner control
-		CLAM::InControl receiver("receiver");
+		CLAM::FloatOutControl innerControlPublished("published"); // does the role of a "hidden" inner control
+		CLAM::FloatInControl receiver("receiver");
 		proc.outControlPublisher.PublishOutControl( innerControlPublished );
 		proc.outControlPublisher.AddLink( receiver );
 		innerControlPublished.SendControl( 1.f );
@@ -375,8 +375,8 @@ private:
 	void testInControlPublisher_ConnectControlsFromPublisher()
 	{
 		DummyProcessing proc;
-		CLAM::InControl innerControlPublished("published"); // does the role of a "hidden" inner control
-		CLAM::OutControl sender("sender");
+		CLAM::FloatInControl innerControlPublished("published"); // does the role of a "hidden" inner control
+		CLAM::FloatOutControl sender("sender");
 		proc.inControlPublisher.PublishInControl( innerControlPublished );
 		sender.AddLink( proc.inControlPublisher );
 		sender.SendControl( 1.f );
@@ -386,7 +386,7 @@ private:
 	void testOutControlPublisher_SendControlWhenNothingPublished()
 	{
 		CLAM::OutControlPublisher publisher;
-		CLAM::InControl receiver("receiver");
+		CLAM::FloatInControl receiver("receiver");
 		publisher.AddLink(receiver);
 		publisher.SendControl(1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f, receiver.GetLastValue() );		
@@ -400,38 +400,38 @@ private:
 	}
 	void testInControlIsConnected_byDefault()
 	{
-		CLAM::InControl in("Receiver");
+		CLAM::FloatInControl in("Receiver");
 		CPPUNIT_ASSERT_EQUAL(false, in.IsConnected());
 	}
 	void testInControlIsConnected_whenConnected()
 	{
-		CLAM::InControl in("Receiver");
-		CLAM::OutControl out("Sender");
+		CLAM::FloatInControl in("Receiver");
+		CLAM::FloatOutControl out("Sender");
 		out.AddLink(in);
 		CPPUNIT_ASSERT_EQUAL(true, in.IsConnected());
 	}
 	void testInControlIsConnected_whenDisconnected()
 	{
-		CLAM::InControl in("Receiver");
-		CLAM::OutControl out("Sender");
+		CLAM::FloatInControl in("Receiver");
+		CLAM::FloatOutControl out("Sender");
 		out.AddLink(in);
 		out.RemoveLink(in);
 		CPPUNIT_ASSERT_EQUAL(false, in.IsConnected());
 	}
 	void testInControlDestructor_disconnectsOutControl()
 	{
-		CLAM::OutControl out("Sender");
+		CLAM::FloatOutControl out("Sender");
 		{
-			CLAM::InControl in("Receiver");
+			CLAM::FloatInControl in("Receiver");
 			out.AddLink(in);
 		}
 		CPPUNIT_ASSERT_EQUAL(false, out.IsConnected());
 	}
 	void testOutControlDestructor_disconnectsInControl()
 	{
-		CLAM::InControl in("Receiver");
+		CLAM::FloatInControl in("Receiver");
 		{
-			CLAM::OutControl out("Sender");
+			CLAM::FloatOutControl out("Sender");
 			out.AddLink(in);
 		}
 		CPPUNIT_ASSERT_EQUAL(false, in.IsConnected());
@@ -439,38 +439,38 @@ private:
 
 	void testInControl_doesntHaveBoundsBydefault()
 	{
-		CLAM::InControl inControl("inControl");
+		CLAM::FloatInControl inControl("inControl");
 		CPPUNIT_ASSERT_EQUAL( false, inControl.IsBounded() );
 	}
 	void testInControl_defaultBounds()
 	{
-		CLAM::InControl inControl("inControl");
+		CLAM::FloatInControl inControl("inControl");
 		CPPUNIT_ASSERT_EQUAL( 0.0f, inControl.LowerBound() );
 		CPPUNIT_ASSERT_EQUAL( 1.0f, inControl.UpperBound() );
 	}
 	void testInControl_settingBounds()
 	{
-		CLAM::InControl inControl("inControl");
+		CLAM::FloatInControl inControl("inControl");
 		inControl.SetBounds(-1.f, 2.f);
 		CPPUNIT_ASSERT_EQUAL( -1.f, inControl.LowerBound() );
 		CPPUNIT_ASSERT_EQUAL( 2.f, inControl.UpperBound() );
 	}
 	void testInControl_boundedDefaultValue()
 	{
-		CLAM::InControl inControl("inControl");
+		CLAM::FloatInControl inControl("inControl");
 		inControl.SetBounds(0.f, 10.f);
 		CPPUNIT_ASSERT_EQUAL( 5.f, inControl.DefaultValue() );
 	}
 	void testInControl_isBoundedWhenTrue()
 	{
-		CLAM::InControl inControl("inControl");
+		CLAM::FloatInControl inControl("inControl");
 		inControl.SetBounds(0.f, 0.f);
 		CPPUNIT_ASSERT_EQUAL( true, inControl.IsBounded() );
 	}
 
 	void testInControl_setDefaultprevailstoBounds()
 	{
-		CLAM::InControl inControl("inControl");
+		CLAM::FloatInControl inControl("inControl");
 		inControl.SetBounds(0.f, 10.f);
 		inControl.SetDefaultValue(0.0f);
 		CPPUNIT_ASSERT_EQUAL( 0.0f, inControl.DefaultValue() );

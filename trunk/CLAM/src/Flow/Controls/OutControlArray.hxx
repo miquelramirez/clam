@@ -26,7 +26,7 @@
 #include "OutControl.hxx"
 
 namespace CLAM{
-	typedef ControlArray<OutControl> OutControlArray;
+	typedef ControlArray<FloatOutControl> OutControlArray;
 };
 
 #endif

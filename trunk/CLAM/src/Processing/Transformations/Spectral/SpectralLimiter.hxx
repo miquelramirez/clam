@@ -26,7 +26,6 @@
 
 #include "InPort.hxx"
 #include "OutPort.hxx"
-#include "InControl.hxx"
 #include "Frame.hxx"
 #include "FrameTransformation.hxx"
 #include "FrameTransformationConfig.hxx"

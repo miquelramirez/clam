@@ -54,7 +54,7 @@ void AudioMixer::CreatePortsAndControls()
 		inPort->SetHop( mConfig.GetFrameSize() );
 		mInputPorts.push_back( inPort );
 		
-		mInputControls.push_back( new InControl("Gain " + number.str(), this) );
+		mInputControls.push_back( new FloatInControl("Gain " + number.str(), this) );
 	}
 	for( int i=0; i<mConfig.GetNumberOfInPorts(); i++ )
 	{
@@ -73,7 +73,7 @@ void AudioMixer::RemovePortsAndControls()
 		delete *itInPort;
 	mInputPorts.clear();
 
-	std::vector< InControl* >::iterator itInControl;
+	std::vector< FloatInControl* >::iterator itInControl;
 	for(itInControl=mInputControls.begin(); itInControl!=mInputControls.end(); itInControl++)
 		delete *itInControl;
 	mInputControls.clear();

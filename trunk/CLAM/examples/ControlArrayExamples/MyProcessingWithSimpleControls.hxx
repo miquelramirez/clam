@@ -58,7 +58,7 @@ public:
 	VFxInControl dSingleControl;
 	
 	/**  this is only because this class is impersonating a Processing*/
-	void PublishInControl(InControl* i) {};
+	void PublishInControl(InControlBase* i) {};
 
 	MyProcessingWithSimpleControls();
 	virtual ~MyProcessingWithSimpleControls();

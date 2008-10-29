@@ -15,7 +15,8 @@ namespace CLAM {
 	* \brief Processing out control base class.
 	*
 	*/
-	class BaseTypedOutControl{
+	class BaseTypedOutControl
+	{
 		std::string mName;
 		Processing * mProcessing;
 	protected:
@@ -23,7 +24,7 @@ namespace CLAM {
 		/// mLinks will store the pointers to the connected TypedInPorts
 		Peers mLinks;
 	public:
-		BaseTypedOutControl(const std::string &name, Processing * proc = 0);
+		BaseTypedOutControl(const std::string &name, Processing * proc = 0, bool publish=true);
 		virtual ~BaseTypedOutControl();
 		/**
 			@pre You should call IsLinkable before using the AddLink function to avoid errors.
@@ -54,8 +55,8 @@ namespace CLAM {
 		}
 		const std::string& GetName() const { return mName; }
 		Processing * GetProcessing() const { return mProcessing; }
-//		virtual Peers::iterator BeginInControlsConnected() = 0;
-//		virtual Peers::iterator EndInControlsConnected() = 0;
+		virtual Peers::iterator BeginInControlsConnected();
+		virtual Peers::iterator EndInControlsConnected();
 	};
 } // END NAMESPACE CLAM
 #endif // _BaseTypedOutControl_

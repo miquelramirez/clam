@@ -43,7 +43,7 @@ namespace CLAM{
 		InPort<SpectralPeakArray> mIn;
 		OutPort<SpectralPeakArray> mOut;
 
-		InControl mOddFactor;
+		FloatInControl mOddFactor;
 	public:
 
 		SMSOddEvenHarmonicRatio() 

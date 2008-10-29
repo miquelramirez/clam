@@ -34,19 +34,19 @@ namespace CLAM
 class AbsoluteCoordinates2RelativeAngles : public CLAM::Processing
 { 
 
-	CLAM::InControl _targetX;
-	CLAM::InControl _targetY;
-	CLAM::InControl _targetZ;
-	CLAM::InControl _targetRoll;
-	CLAM::InControl _targetElevation;
-	CLAM::InControl _targetAzimuth;
+	CLAM::FloatInControl _targetX;
+	CLAM::FloatInControl _targetY;
+	CLAM::FloatInControl _targetZ;
+	CLAM::FloatInControl _targetRoll;
+	CLAM::FloatInControl _targetElevation;
+	CLAM::FloatInControl _targetAzimuth;
 
-	CLAM::InControl _sourceX;
-	CLAM::InControl _sourceY;
-	CLAM::InControl _sourceZ;
-	CLAM::OutControl _sourceRoll;
-	CLAM::OutControl _sourceElevation;
-	CLAM::OutControl _sourceAzimuth;
+	CLAM::FloatInControl _sourceX;
+	CLAM::FloatInControl _sourceY;
+	CLAM::FloatInControl _sourceZ;
+	CLAM::FloatOutControl _sourceRoll;
+	CLAM::FloatOutControl _sourceElevation;
+	CLAM::FloatOutControl _sourceAzimuth;
 public:
 	const char* GetClassName() const { return "AbsoluteCoordinates2RelativeAngles"; }
 	AbsoluteCoordinates2RelativeAngles(const Config& config = Config()) 

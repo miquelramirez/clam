@@ -121,7 +121,7 @@ namespace CLAM{
 		AudioOutPort mOutputAudio;
 
 		/** Controls **/
-		InControl mDrive; ///< Drive amount
+		FloatInControl mDrive; ///< Drive amount
 
 
 		EDistType mDistType; ///< kind of distortion selector

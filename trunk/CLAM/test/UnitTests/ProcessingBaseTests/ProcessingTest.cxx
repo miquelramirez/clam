@@ -66,9 +66,6 @@ public:
 	template<class TControlData>
 	class TypedOutControl;
 
-	typedef CLAM::TypedInControl<int>* IntTypedInControlPointer;
-	typedef CLAM::TypedOutControl<int>* IntTypedOutControlPointer;
-	
 	// void implementation the pure virtual methods of processing
 	ProcessingTest() : 
 		mInControl("in", this), 
@@ -95,10 +92,10 @@ private:
 	const char * GetClassName() const { return "ProcessingTest"; };	
 	int ControlHandler( CLAM::TControlData ) { return 0; };
 	
-	CLAM::InControl mInControl;
+	CLAM::FloatInControl mInControl;
 	CLAM::InControlTmpl<ProcessingTest> mInControlTmpl;
-	CLAM::OutControl mOutControl1;
-	CLAM::OutControl mOutControl2;
+	CLAM::FloatOutControl mOutControl1;
+	CLAM::FloatOutControl mOutControl2;
 	
 	CLAM::TypedInControl<int> mTypedInControl;
 	CLAM::TypedOutControl<int> mTypedOutControl;
@@ -146,14 +143,14 @@ private:
 
 	void testInControls_GetByNumber_GetTheRightControl()
 	{
-		CLAM::InControl* returned = &GetInControl(0);
-		CLAM::InControl* expected = &mInControl;
+		CLAM::InControlBase* returned = &GetInControl(0);
+		CLAM::InControlBase* expected = &mInControl;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 	void testOutControls_GetByNumber_GetTheRightControl()
 	{
-		CLAM::OutControl* returned = &GetOutControl(1); // get the second control
-		CLAM::OutControl* expected = &mOutControl2;
+		CLAM::OutControlBase* returned = &GetOutControl(1); // get the second control
+		CLAM::OutControlBase* expected = &mOutControl2;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 	void testOutPorts_GetByNumber_GetTheRightPort()
@@ -170,15 +167,15 @@ private:
 	}
 	void testInControls_GetByName_GetTheRightControl()
 	{
-		CLAM::InControl* returned = &GetInControl("in");
-		CLAM::InControl* expected = &mInControl;
+		CLAM::InControlBase* returned = &GetInControl("in");
+		CLAM::InControlBase* expected = &mInControl;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 
 	void testOutControls_GetByName_GetTheRightControl()
 	{
-		CLAM::OutControl* returned = &GetOutControl("out2"); // get the second control
-		CLAM::OutControl* expected = &mOutControl2;
+		CLAM::OutControlBase* returned = &GetOutControl("out2"); // get the second control
+		CLAM::OutControlBase* expected = &mOutControl2;
 		CPPUNIT_ASSERT_EQUAL( expected, returned );
 	}
 	void testOutPorts_GetByName_GetTheRightPort()
@@ -196,11 +193,11 @@ private:
 
 	void testInControls_Size()
 	{
-		CPPUNIT_ASSERT_EQUAL( 2, GetInControls().Size() );
+		CPPUNIT_ASSERT_EQUAL( 3, GetInControls().Size() );
 	}
 	void testOutControls_Size()
 	{
-		CPPUNIT_ASSERT_EQUAL( 2, GetOutControls().Size() );
+		CPPUNIT_ASSERT_EQUAL( 4, GetOutControls().Size() );
 	}
 	void testInPorts_Size()
 	{
@@ -231,7 +228,7 @@ private:
 	void testOutControls_Delete()
 	{
 		int initialNumControls = GetOutControls().Size();
-		CLAM::OutControl* control = new CLAM::OutControl( "outControl", this);
+		CLAM::OutControlBase* control = new CLAM::FloatOutControl( "outControl", this);
 		CPPUNIT_ASSERT_EQUAL( initialNumControls+1, GetOutControls().Size() );
 		delete control;
 		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetOutControls().Size() );
@@ -240,7 +237,7 @@ private:
 	void testInControls_Delete()
 	{
 		int initialNumControls = GetInControls().Size();
-		CLAM::InControl* control = new CLAM::InControl( "inControl", this);
+		CLAM::FloatInControl* control = new CLAM::FloatInControl( "inControl", this);
 		CPPUNIT_ASSERT_EQUAL( initialNumControls+1, GetInControls().Size() );
 		delete control;
 		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetInControls().Size() );
@@ -258,12 +255,12 @@ private:
 	}
 	void testUnRegistredOutControls()
 	{	int initialNumControls = GetOutControls().Size();
-		new CLAM::OutControl( "outControl");
+		new CLAM::FloatOutControl( "outControl");
 		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetOutControls().Size() );
 	}	
 	void testUnRegistredInControls()
 	{	int initialNumControls = GetInControls().Size();
-		new CLAM::InControl( "inControl");
+		new CLAM::FloatInControl( "inControl");
 		CPPUNIT_ASSERT_EQUAL( initialNumControls, GetInControls().Size() );
 	}
 
@@ -272,8 +269,8 @@ private:
 	public:
 		CLAM::InPort<int> in;
 		CLAM::OutPort<int> out;
-		CLAM::InControl inControl;
-		CLAM::OutControl outControl;
+		CLAM::FloatInControl inControl;
+		CLAM::FloatOutControl outControl;
 //		CLAM::TypedInControl<int> typedInControl;
 //		CLAM::TypedOutControl<int> typedOutControl;
 		

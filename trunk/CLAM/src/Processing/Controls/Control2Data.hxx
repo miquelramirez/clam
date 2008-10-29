@@ -131,7 +131,7 @@ protected:
 	/** Special input control to be able to stop the process in response to an external
 	 *	control event.
 	 */
-	InControl mStop;
+	FloatInControl mStop;
 	
 	/** Internal configuration */
 	Control2DataConfig mConfig;

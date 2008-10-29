@@ -68,9 +68,9 @@ namespace CLAM
 
 			bool ConcreteConfigure(const ProcessingConfig&);
 		private:
-			InControl mStart;
-			InControl mGap;
-			InControl mEnd;
+			FloatInControl mStart;
+			FloatInControl mGap;
+			FloatInControl mEnd;
 			PulseGridGeneratorConfig mConfig;
 		};
 

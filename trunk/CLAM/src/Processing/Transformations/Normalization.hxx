@@ -79,7 +79,7 @@ namespace CLAM
 		/**
 		 * This control will send a signal for each Do execution, telling if the passed audio is silence (0) or not (1)
 		 * */
-		OutControl mIsSilenceCtrl;
+		FloatOutControl mIsSilenceCtrl;
 
 		int mType;
 		TSize mFrameSize;

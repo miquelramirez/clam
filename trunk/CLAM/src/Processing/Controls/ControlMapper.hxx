@@ -50,7 +50,7 @@ namespace CLAM {
 		Mapping* mMappingPtr;
 
 		InControlTmpl<ControlMapper> mInput;
-		OutControl mOutput;
+		FloatOutControl mOutput;
 	public:
 		ControlMapper();
 		ControlMapper(const ControlMapperConfig& cfg);

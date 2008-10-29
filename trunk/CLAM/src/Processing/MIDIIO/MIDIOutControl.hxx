@@ -32,7 +32,7 @@ namespace CLAM {
 class MIDIOutControl:public MIDIOut
 {
 	private:
-		Array<InControl*> mMyInControls;
+		Array<FloatInControl*> mMyInControls;
 
 		/* keep a unique id for each message we are constructing,
 		 * to make sure we have each controlled byte only once

@@ -7,10 +7,10 @@
 
 class Cartesian2PolarControl : public CLAM::Processing
 { 
-	CLAM::InControl _x;
-	CLAM::InControl _y;
-	CLAM::OutControl _angle;
-	CLAM::OutControl _module;
+	CLAM::FloatInControl _x;
+	CLAM::FloatInControl _y;
+	CLAM::FloatOutControl _angle;
+	CLAM::FloatOutControl _module;
 public:
 	const char* GetClassName() const { return "Cartesian2PolarControl"; }
 	Cartesian2PolarControl(const Config& config = Config()) 

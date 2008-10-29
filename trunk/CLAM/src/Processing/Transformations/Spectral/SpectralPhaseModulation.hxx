@@ -39,8 +39,8 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
-		InControl mFreqCtl;
-		InControl mWidthCtl;
+		FloatInControl mFreqCtl;
+		FloatInControl mWidthCtl;
 	public:
 		const char* GetClassName() const
 		{

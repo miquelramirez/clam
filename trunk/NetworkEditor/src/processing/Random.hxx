@@ -30,8 +30,8 @@ class Random : public Processing
 private:
 	
 	RandomConfig mConfig;
-	InControl mInput;
-	OutControl mOutput;
+	FloatInControl mInput;
+	FloatOutControl mOutput;
 	int mDelayFactor;
 	int mMinNote;
 	int mMaxNote;

@@ -448,7 +448,9 @@ void MainWindow::stop()
 
 void MainWindow::timerEvent(QTimerEvent *event)
 {
-	double time = _network.GetInControlByCompleteName(_progressControl+".Progress Update").GetLastValue() * _length;
+	CLAM::FloatInControl & inControl =
+		(CLAM::FloatInControl&) _network.GetInControlByCompleteName(_progressControl+".Progress Update");
+	double time = inControl.GetLastValue() * _length;
 	_pcpSource.setCurrentTime(time);
 	_keySpaceSource.setCurrentTime(time);
 	_chordCorrelationSource.setCurrentTime(time);

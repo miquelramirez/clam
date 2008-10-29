@@ -76,9 +76,9 @@ namespace CLAM
 		InPort<SpectralPeakArray> mInPeaks;
 		OutPort<SpectralPeakArray> mOutPeaks;
 
-		InControl mIndexCtl;//says what the amount sent as control is modifying
+		FloatInControl mIndexCtl;//says what the amount sent as control is modifying
 		InControlTmpl<SMSSineFilter> mUpdateBPFCtl;//"boolean" control used to say that we want to update BPF
-		InControl mGainCtl;
+		FloatInControl mGainCtl;
 		
 		int UpdateBPF(TControlData value)
 		{

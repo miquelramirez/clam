@@ -39,12 +39,12 @@ namespace CLAM{
 		InPort<Spectrum> mIn;
 		OutPort<Spectrum> mOut;
 
-		InControl mBand0GainCtl;
-		InControl mBand1GainCtl;
-		InControl mBand2GainCtl;
-		InControl mBand3GainCtl;
-		InControl mNumBandsCtl;
-		InControl mFreqShiftCtl;
+		FloatInControl mBand0GainCtl;
+		FloatInControl mBand1GainCtl;
+		FloatInControl mBand2GainCtl;
+		FloatInControl mBand3GainCtl;
+		FloatInControl mNumBandsCtl;
+		FloatInControl mFreqShiftCtl;
 		
 	public:
 		const char* GetClassName() const

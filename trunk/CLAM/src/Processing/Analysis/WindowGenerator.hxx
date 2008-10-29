@@ -115,7 +115,7 @@ class ProcessingConfig;
 		AudioOutPort  mOutput;
 
 	private:
-		InControl   mSize;
+		FloatInControl   mSize;
 		DataArray   mTable;
 
 		void CreateTable(DataArray& table,EWindowType windowType,long windowsize) const;

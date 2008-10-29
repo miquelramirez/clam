@@ -27,7 +27,7 @@
 
 namespace CLAM
 {
-	typedef ControlArray<InControl> InControlArray;
+	typedef ControlArray<FloatInControl> InControlArray;
 };
 
 #endif

@@ -27,71 +27,24 @@ namespace CLAM {
 
 // Creation/Destruction
 
-OutControl::OutControl(const std::string& name, Processing* parent, const bool publish) :
-	mName(name), mParent(parent)
+OutControl::OutControl(const std::string& name, Processing* parent, const bool publish)
+	: BaseTypedOutControl(name, parent, publish)
 {
-	if (parent && publish) 	parent->RegisterOutControl(this);
+}
+bool OutControl::IsLinkable(const BaseTypedInControl& in)
+{
+	return typeid(TControlData) == in.ControlType();
+
 }
 		
-OutControl::~OutControl()
+void OutControl::SendControl(TControlData val)
 {
-	while (!mLinks.empty())
-		RemoveLink(*mLinks.front());
-
-	if (mParent)
-		mParent->GetOutControls().ProcessingInterface_Unregister(this);
-}
-// Methods
-
-std::list<InControl*>::iterator OutControl::BeginInControlsConnected()
-{
-	return mLinks.begin();
-}
-
-std::list<InControl*>::iterator OutControl::EndInControlsConnected()
-{
-	return mLinks.end();
-}
-
-
-
-void OutControl::AddLink(InControl& in)
-{
-	mLinks.push_back(&in);
-	in.OutControlInterface_AddLink(*this);
-}
-void OutControl::RemoveLink(InControl& in)
-{
-	mLinks.remove( &in );
-	in.OutControlInterface_RemoveLink(*this);
-}
-int OutControl::SendControl(TControlData val)
-{
-	int ret=0;
-	std::list<InControl*>::iterator it;
+	Peers::iterator it;
 	for (it=mLinks.begin(); it!=mLinks.end(); it++) 
 	{
-		ret = (*it)->DoControl(val);
+		((FloatInControl*)(*it))->DoControl(val);
 	}
-	// TODO: depracate controls with return value.
-	return ret;
 }
-
-bool OutControl::IsConnected()
-{
-	return ! mLinks.empty();
-}
-
-bool OutControl::IsConnectedTo( InControl & in)
-{
-	std::list<InControl*>::iterator it;
-	for (it=mLinks.begin(); it!=mLinks.end(); it++) 
-		if ((*it) == &in)
-			return true;
-
-	return false;
-}
-
 
 
 

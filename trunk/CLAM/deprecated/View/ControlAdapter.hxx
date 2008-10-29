@@ -29,7 +29,7 @@
 
 namespace CLAMVM
 {
-		using CLAM::InControl;
+		using CLAM::InControlBase;
 		using CLAM::OutControl;
 
 		class ControlAdapter
@@ -82,7 +82,7 @@ namespace CLAMVM
 						mValueRangeChanged = true;
 				}
 
-				virtual bool BindTo( InControl&  adaptee );
+				virtual bool BindTo( InControlBase&  adaptee );
 
 				bool IsBound() const
 				{

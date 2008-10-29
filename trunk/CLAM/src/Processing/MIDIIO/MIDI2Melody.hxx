@@ -43,7 +43,7 @@ public:
 	/** Concrete output port of type MIDIMelody */
 	OutPort<MIDIMelody> mOutput;
 	/** Special input control for keeping trace of the time*/
-	InControl mTime;
+	FloatInControl mTime;
     
 protected:
 

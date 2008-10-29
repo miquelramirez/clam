@@ -74,11 +74,11 @@ namespace CLAM
 	class CardinalVowel : public Processing
 	{
 		CardinalVowelConfig mConfig;
-		InControl mVowelControl;
-		InControl mStepControl;
-		OutControl mF1Control;
-		OutControl mF2Control;
-		OutControl mF3Control;
+		FloatInControl mVowelControl;
+		FloatInControl mStepControl;
+		FloatOutControl mF1Control;
+		FloatOutControl mF2Control;
+		FloatOutControl mF3Control;
 		float CalcF1();
 		float CalcF2();
 		float CalcF3();

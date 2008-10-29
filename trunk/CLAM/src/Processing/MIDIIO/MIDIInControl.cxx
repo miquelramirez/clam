@@ -138,7 +138,7 @@ bool MIDIInControl::ConcreteConfigure(const ProcessingConfig& c)
 			/* add the InControl, and remember which message byte it will
 			 * control */
 			mMsgByteIdToControlId[i] = ctrlid++;
-			mMyOutControls.AddElem(new OutControl(tmp.c_str(),this));
+			mMyOutControls.AddElem(new FloatOutControl(tmp.c_str(),this));
 		}else{
 			mMsgByteIdToControlId[i] = 0xFF;
 		}

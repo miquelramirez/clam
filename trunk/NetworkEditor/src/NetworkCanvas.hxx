@@ -1005,17 +1005,17 @@ public: // Actions
 	}
 	float incontrolDefaultValue(CLAM::Processing * processing, unsigned index) const //TODO remove
 	{
-		CLAM::InControl& inControl = processing->GetInControl(index);
+		CLAM::InControlBase& inControl = processing->GetInControl(index);
 		return inControl.DefaultValue();
 	}
 	float incontrolLowerBound(CLAM::Processing * processing, unsigned index) const
 	{
-		CLAM::InControl& inControl = processing->GetInControl(index);
+		CLAM::InControlBase& inControl = processing->GetInControl(index);
 		return inControl.LowerBound();
 	}
 	float incontrolUpperBound(CLAM::Processing * processing, unsigned index) const
 	{
-		CLAM::InControl& inControl = processing->GetInControl(index);
+		CLAM::InControlBase& inControl = processing->GetInControl(index);
 		return inControl.UpperBound();
 	}
 

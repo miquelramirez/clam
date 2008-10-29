@@ -31,7 +31,7 @@ namespace CLAM {
 class MIDIInControl:public MIDIIn
 {
 private:
-	Array<OutControl*> mMyOutControls;
+	Array<FloatOutControl*> mMyOutControls;
 
 	int mMessageSize;
 	int mControllingBytes;

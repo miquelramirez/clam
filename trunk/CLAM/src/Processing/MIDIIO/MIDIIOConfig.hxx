@@ -50,14 +50,14 @@ public:
 	DYN_ATTRIBUTE (1, public, unsigned short, Message);
 
 	/** The Channel attribute allows you to create a MIDIOut that sends midi
-	 *  messages on a certain channel. If you leave it 0 (default), an 
-	 *  InControl will be created to control the channel of each MIDI message.
+	 *  messages on a certain channel. If you leave it 0 (default), a
+	 *  FloatInControl will be created to control the channel of each MIDI message.
 	 **/
 	DYN_ATTRIBUTE (2, public, unsigned short, Channel);
 
 	/** The Message attribute allows you to create a MIDIOut that sends midi
 	 *  messages with a certain first data byte (typically usefull for
-	 *  control messages). If you leave it 128 (default), an InControl will
+	 *  control messages). If you leave it 128 (default), a FloatInControl will
 	 *  be created to control the first data byte. */
 	DYN_ATTRIBUTE (3, public, unsigned short, FirstData);
 
@@ -75,13 +75,13 @@ protected:
 		SetMessage(0);
 		
 		/** For MIDIIn   0 means: listen to all channels, and add an OutControl.
-		 *  For MIDIOut  0 means: channel is controlled by an InControl
+		 *  For MIDIOut  0 means: channel is controlled by a FloatInControl
 		 **/
 		SetChannel(0);
 		
 		/** For MIDIIn   128 means: listen to all first data bytes, and add an 
 		 *                          OutControl
-		 *  For MIDIOut  128 means: first data byte is controlled by an InControl
+		 *  For MIDIOut  128 means: first data byte is controlled by a FloatInControl
 		 **/
 		SetFirstData(128); 
 	}

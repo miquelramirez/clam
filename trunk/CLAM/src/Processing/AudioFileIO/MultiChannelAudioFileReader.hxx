@@ -69,7 +69,7 @@ namespace CLAM
 
 		MultiChannelAudioFileReaderConfig   mConfig;
 		OutputVector                        mOutputs;
-		OutControl                          mTimeOutput;
+		FloatOutControl                          mTimeOutput;
 		Array< TIndex >                     mSelectedChannels;
 		Array< TData* >                     mSamplesMatrix;
 		AudioCodecs::Stream*                mNativeStream;

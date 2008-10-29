@@ -27,12 +27,12 @@ namespace CLAM {
 	class MIDIController : public CLAM::Processing
 	{ 
 	protected:
-		InControl mMIDIMessage;
-		InControl mMIDIData1;
-		InControl mMIDIData2;
-		InControl mTrigger;
+		FloatInControl mMIDIMessage;
+		FloatInControl mMIDIData1;
+		FloatInControl mMIDIData2;
+		FloatInControl mTrigger;
 
-		OutControl mMIDIControllerValue;
+		FloatOutControl mMIDIControllerValue;
 
 		MIDIControllerConfig mConfig;
 		

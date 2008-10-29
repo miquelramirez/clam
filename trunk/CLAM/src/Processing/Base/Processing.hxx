@@ -156,7 +156,7 @@ namespace CLAM
 	 * done. 
 	 * Asyncronous comunication is done using the Control abstraction.
 	 * 
-	 * @see InPortBase, OutPortBase, InControlBase, OutControl
+	 * @see InPortBase, OutPortBase, InControlBase, OutControlBase
 	 *
 	 * An initial setup is needed before using any processing.
 	 * You can specify this initial setup by providing the

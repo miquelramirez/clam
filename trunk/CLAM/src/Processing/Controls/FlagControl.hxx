@@ -26,7 +26,7 @@ class FlagControl : public Processing
 private:
 	
 	FlagControlConfig mConfig;
-	OutControl mFlagOutControl;
+	FloatOutControl mFlagOutControl;
 
 public:
 	FlagControl();

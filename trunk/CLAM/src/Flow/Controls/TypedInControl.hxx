@@ -23,7 +23,6 @@ namespace CLAM {
 		
 	public:
 		TypedInControl(const std::string &name = "unnamed in control", Processing * proc = 0);
-		~TypedInControl();
 		
 		void DoControl(const TypedControlData& val);
 		const TypedControlData& GetLastValue() const;

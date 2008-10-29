@@ -98,7 +98,7 @@ private:
 	// Ports and control
 	InPort<TData> mInput;
 	OutPort<TData> mOutput;
-	InControl mDelayControl;
+	FloatInControl mDelayControl;
 
 public:
 	DataDelay(const DataDelayConfig& cfg = DataDelayConfig() ) :

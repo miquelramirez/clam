@@ -2,7 +2,6 @@
 #define _INCONTROL_PUBLISHER_HXX_
 
 #include "InControl.hxx"
-#include "InControl.hxx"
 #include <string>
 
 // TODO: Refactoring...
@@ -30,11 +29,12 @@ namespace CLAM
 			{
 				mPublished = &in;
 			}
-			int DoControl(TControlData val)
+			void DoControl(TControlData val)
 			{
 				if(mPublished)
-					return mPublished->DoControl(val);
-				return FloatInControl::DoControl(val);
+					mPublished->DoControl(val);
+				else
+					FloatInControl::DoControl(val);
 			}
 			const TControlData& GetLastValue() const 
 			{ 

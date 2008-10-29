@@ -22,7 +22,6 @@
 #include "LadspaLoader.hxx"
 #include "AudioInPort.hxx"
 #include "AudioOutPort.hxx"
-#include "InControl.hxx"
 #include "OutControl.hxx"
 #include "Audio.hxx"
 #include "ProcessingFactory.hxx"
@@ -153,7 +152,7 @@ void LadspaLoader::RemovePortsAndControls()
 		delete *itOutPort;
 	mOutputPorts.clear();
 
-	std::vector< InControl* >::iterator itInControl;
+	std::vector< InControlBase* >::iterator itInControl;
 	for(itInControl=mInputControls.begin(); itInControl!=mInputControls.end(); itInControl++)
 		delete *itInControl;
 	mInputControls.clear();
@@ -219,7 +218,7 @@ void LadspaLoader::ConfigurePortsAndControls()
 		// in control
 		if(LADSPA_IS_PORT_INPUT(mDescriptor->PortDescriptors[i]) && LADSPA_IS_PORT_CONTROL(mDescriptor->PortDescriptors[i])) 
 		{
-			InControl * control = new InControl(mDescriptor->PortNames[i], this);
+			InControlBase * control = new FloatInControl(mDescriptor->PortNames[i], this);
 			mInputControlValues.push_back(LADSPA_Data());
 			mDescriptor->connect_port(mInstance, i, &mInputControlValues[mInputControlValues.size()-1]);
 			mInputControls.push_back(control);

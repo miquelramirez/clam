@@ -25,7 +25,7 @@ namespace CLAM {
 		AudioOutPort mOutputAudio;
 
 		/** Controls **/
-		InControl mInputControl;
+		FloatInControl mInputControl;
 
 	public:
 		BaseProcessing(const Config & config=Config())

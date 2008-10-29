@@ -28,8 +28,6 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "Network.hxx"
-#include "TypedInControl.hxx"
-#include "TypedOutControl.hxx"
 
 #include <cstring>
 #include <string>
@@ -55,16 +53,6 @@ namespace CLAM
 		out.AddLink(in);
 	}
 	
-/*
-	void ConnectTypedControls(
-			Processing & sender, const std::string & typedOutControlName, 
-			Processing & receiver, const std::string & typedInControlName )
-	{
-		BaseTypedOutControl & out = sender.GetTypedOutControl(typedOutControlName);
-		BaseTypedInControl & in = receiver.GetTypedInControl(typedInControlName);
-		out.AddLink(in);
-	}
-*/	
 	void ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
 			Processing & receiver, unsigned inPortNumber )
@@ -78,20 +66,11 @@ namespace CLAM
 			Processing & sender, unsigned outControlNumber, 
 			Processing & receiver, unsigned inControlNumber )
 	{
-		OutControl & out = sender.GetOutControl(outControlNumber);
-		InControl & in = receiver.GetInControl(inControlNumber);
+		OutControlBase & out = sender.GetOutControl(outControlNumber);
+		InControlBase & in = receiver.GetInControl(inControlNumber);
 		out.AddLink(in);
 	}
-/*
-	void ConnectTypedControls(
-			Processing & sender, unsigned typedOutControlNumber, 
-			Processing & receiver, unsigned typedInControlNumber )
-	{
-		BaseTypedOutControl & out = sender.GetTypedOutControl(typedOutControlNumber);
-		BaseTypedInControl & in = receiver.GetTypedInControl(typedInControlNumber);
-		out.AddLink(in);
-	}
-*/	
+
 	void ConnectPorts(
 			Processing & sender, unsigned outPortNumber, 
 			InPortBase & in )
@@ -242,7 +221,7 @@ namespace CLAM
 		mInPortRegistry.ProcessingInterface_Register(in);
 	}
 
-	void Processing::RegisterOutControl(OutControl* out) 
+	void Processing::RegisterOutControl(OutControlBase* out) 
 	{
 		mOutControlRegistry.ProcessingInterface_Register(out);
 	}
@@ -250,16 +229,6 @@ namespace CLAM
 	{
 		mInControlRegistry.ProcessingInterface_Register(in);
 	}
-/*
-	void Processing::RegisterTypedOutControl(BaseTypedOutControl* out) 
-	{
-		mTypedOutControlRegistry.ProcessingInterface_Register(out);
-	}
-	void Processing::RegisterTypedInControl(BaseTypedInControl* in)
-	{
-		mTypedInControlRegistry.ProcessingInterface_Register(in);
-	}
-*/	
 	void Processing::SetParent(Processing * parent)
 	{
 		ProcessingComposite * composite;

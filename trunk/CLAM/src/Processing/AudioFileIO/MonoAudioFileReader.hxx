@@ -58,7 +58,7 @@ namespace CLAM
 		MonoAudioFileReaderConfig mConfig;
 		AudioFileSource           mAudioFile;
 		AudioOutPort	          mOutput;
-		OutControl                mTimeOutput;
+		FloatOutControl                mTimeOutput;
 		AudioCodecs::Stream*      mNativeStream;
 		TTime                     mCurrentBeginTime;
 		TTime                     mDeltaTime;

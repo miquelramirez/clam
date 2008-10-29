@@ -70,14 +70,14 @@ namespace CLAM
 		private:
 
 			AdjustTickWRTOnsetsConfig mConfig;
-			InControl        mTSF_OffsetMin;
-			InControl        mTSF_OffsetStep;
-			InControl        mTSF_IntervalMin;
-			InControl        mTSF_IntervalMax;
-			InControl        mTSF_IntervalStep;
-			InControl        mTSF_OverSubdivisionPenalty;
-			InControl        mFirstTransientPosition;
-			InControl        mLastTransientPosition;
+			FloatInControl        mTSF_OffsetMin;
+			FloatInControl        mTSF_OffsetStep;
+			FloatInControl        mTSF_IntervalMin;
+			FloatInControl        mTSF_IntervalMax;
+			FloatInControl        mTSF_IntervalStep;
+			FloatInControl        mTSF_OverSubdivisionPenalty;
+			FloatInControl        mFirstTransientPosition;
+			FloatInControl        mLastTransientPosition;
 
 			PulseGridGenerator mGridGenerator;
 			TimeSeriesFinder   mTimeSeriesFinder;

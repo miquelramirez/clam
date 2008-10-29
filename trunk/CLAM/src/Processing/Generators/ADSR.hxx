@@ -69,7 +69,7 @@ namespace CLAM
 		TData                  mLevel;
 		TData                  mDLevel;
 		Status                 mStatus;
-		OutControl             mState;
+		FloatOutControl             mState;
 
 	protected:
 		void HandleAttack(void);
