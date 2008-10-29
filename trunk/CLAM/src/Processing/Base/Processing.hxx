@@ -192,8 +192,8 @@ namespace CLAM
 		friend class OutPortBase;
 		friend class InControl;
 		friend class OutControl;
-		friend class BaseTypedInControl;
-		friend class BaseTypedOutControl;
+		friend class InControlBase;
+		friend class OutControlBase;
 // Basic usage interface:
 
 	public:

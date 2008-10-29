@@ -1,9 +1,9 @@
-#include <CLAM/BaseTypedInControl.hxx>
+#include <CLAM/InControlBase.hxx>
 #include <CLAM/Processing.hxx>
 
 namespace CLAM
 {
-	BaseTypedInControl::BaseTypedInControl(const std::string &name, Processing * proc, bool publish)
+	InControlBase::InControlBase(const std::string &name, Processing * proc, bool publish)
 		: mName(name)
 		, mProcessing(proc)
 		, mUpperBound(1)
@@ -14,42 +14,42 @@ namespace CLAM
 		if (proc && publish) proc->RegisterInControl(this);
 	}
 	
-	BaseTypedInControl::~BaseTypedInControl()
+	InControlBase::~InControlBase()
 	{
 		while (!mLinks.empty())
 			mLinks.front()->RemoveLink(*this);
 		if (mProcessing)
 			mProcessing->GetInControls().ProcessingInterface_Unregister(this);
 	}
-	bool BaseTypedInControl::IsConnectedTo(BaseTypedOutControl & out)
+	bool InControlBase::IsConnectedTo(OutControlBase & out)
 	{
 		return out.IsConnectedTo(*this);
 	}
 
-	bool BaseTypedInControl::IsBounded() const
+	bool InControlBase::IsBounded() const
 	{
 		return mBounded;
 	}
-	float BaseTypedInControl::UpperBound() const
+	float InControlBase::UpperBound() const
 	{
 		return mUpperBound;
 	}
-	float BaseTypedInControl::LowerBound() const
+	float InControlBase::LowerBound() const
 	{
 		return mLowerBound;
 	}
-	void BaseTypedInControl::SetBounds( float lower, float upper )
+	void InControlBase::SetBounds( float lower, float upper )
 	{
 		mLowerBound = lower;
 		mUpperBound = upper;
 		mBounded = true;
 	}
-	void BaseTypedInControl::SetDefaultValue( float val )
+	void InControlBase::SetDefaultValue( float val )
 	{
 		mDefaultValue = val;
 		mHasDefaultValue = true;
 	}
-	float BaseTypedInControl::DefaultValue() const
+	float InControlBase::DefaultValue() const
 	{
 		if (mHasDefaultValue) return mDefaultValue;
 		return (mUpperBound+mLowerBound)/2.f;

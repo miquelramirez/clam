@@ -26,7 +26,7 @@
 #include <list>
 #include <string>
 #include "Assert.hxx"
-#include "BaseTypedOutControl.hxx"
+#include "OutControlBase.hxx"
 
 namespace CLAM
 {
@@ -43,7 +43,7 @@ class Processing;
 * Controls are limited to emmit and receive TControlData (float) numbers. 
 * Though extensible typed connections are future planned development: @see TypedOutControl
 */
-class OutControl : public BaseTypedOutControl
+class OutControl : public OutControlBase
 {
 //Constructor/Destructor
 public:
@@ -66,7 +66,7 @@ public:
 	
 //Methods
 public:
-	virtual bool IsLinkable(const BaseTypedInControl& in);
+	virtual bool IsLinkable(const InControlBase& in);
 	void SendControl(TControlData val);
 	
 	/**
@@ -93,7 +93,6 @@ public:
 
 //REFACTORING Typed Controls
 typedef OutControl FloatOutControl;
-typedef BaseTypedOutControl OutControlBase;
 
 }; // namespace CLAM
 

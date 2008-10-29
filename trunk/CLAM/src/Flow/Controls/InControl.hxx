@@ -25,7 +25,7 @@
 #include <sstream>
 #include <string>
 #include <list>
-#include "BaseTypedInControl.hxx"
+#include "InControlBase.hxx"
 
 namespace CLAM {
 
@@ -34,12 +34,10 @@ class Processing;
 class OutControl;
 
 /**
-* \brief Processing in control class.
-*
+* Processing in control class for floats.
 * Controls are limited to emmit and receive TControlData (float) numbers. 
-* Though extensible typed connections are future planned development: @see TypedInControl
 */
-class InControl : public BaseTypedInControl
+class InControl : public InControlBase
 {
 // Attributes:
 protected:
@@ -47,9 +45,6 @@ protected:
 
 public:
 //Constructor/Destructor
-	/**
-	 * \param parent Optional. If present, is the processing where to be published.
-	 */
 	InControl(const std::string &name, Processing* parent=0, const bool publish=true);
 	virtual ~InControl();
 	const std::type_info & ControlType() const
@@ -147,7 +142,6 @@ public:
 
 // REFACTORING typed connections
 typedef InControl FloatInControl;
-typedef BaseTypedInControl InControlBase;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //  Implementation of class InControlTmpl

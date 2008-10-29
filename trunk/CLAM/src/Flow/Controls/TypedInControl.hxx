@@ -4,18 +4,18 @@
 #include <string>
 #include <list>
 #include <typeinfo>
-#include <CLAM/BaseTypedInControl.hxx>
-#include <CLAM/BaseTypedOutControl.hxx>
+#include <CLAM/InControlBase.hxx>
+#include <CLAM/OutControlBase.hxx>
 
 namespace CLAM {
 	class Processing;
-	class BaseTypedOutControl;
+	class OutControlBase;
 
 	template<class TypedControlData>
 	class TypedOutControl;
 	
 	template<class TypedControlData>
-	class TypedInControl : public BaseTypedInControl
+	class TypedInControl : public InControlBase
 	{
 		
 	protected:
@@ -41,7 +41,7 @@ namespace CLAM {
 	// TypedInControl Class Implementation
 	template<class TypedControlData>
 	TypedInControl<TypedControlData>::TypedInControl(const std::string &name, Processing * proc)
-		: BaseTypedInControl(name,proc)
+		: InControlBase(name,proc)
 	{
 	}
 	
