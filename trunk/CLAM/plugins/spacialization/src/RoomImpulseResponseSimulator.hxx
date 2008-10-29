@@ -260,27 +260,16 @@ private:
 			_scene->normalizedToModelZ(_currentEmitterZ)
 			);
 
-std:: cout << "receiver x,y,z = " 
-<< _scene->normalizedToModelX(_currentReceiverX) << " "
-<< _scene->normalizedToModelY(_currentReceiverY) << " "
-<< _scene->normalizedToModelZ(_currentReceiverZ) << std::endl;
-std:: cout << "emitter x,y,z = " 
-<< _scene->normalizedToModelX(_currentEmitterX) << " "
-<< _scene->normalizedToModelY(_currentEmitterY) << " "
-<< _scene->normalizedToModelZ(_currentEmitterZ) << std::endl;
-
 
 		std::string responsesPath = "";
 		if (_config.GetStripDirectSound())
 		{
 
-std::cout << "+++ SEPARATED DS and IR con reverb \n";
 			_scene->computeDirectSoundOverTime();
 			_scene->raytracingReverbOverTime(responsesPath, "IR" );
 		}
 		else
 		{
-std::cout << "+++ IR:  DS and reverb \n";
 			_scene->raytracingOverTime(responsesPath, "IR" );
 		}
 		double directSoundPressure = 0;
@@ -292,13 +281,6 @@ std::cout << "+++ IR:  DS and reverb \n";
 		{
 			offsetToStrip = initialDelay;
 		}
-
-std::cout << "DS pressure " << directSoundPressure << std::endl;
-std::cout << "DS offsetToStrip " << offsetToStrip << std::endl;
-std::cout << "IR W size  " << _scene->getTimeResponse_P().size() << std::endl;
-std::cout << "IR W : ";
-for (int i=0; i<0; i++) std::cout << _scene->getTimeResponse_P()[i] << " ";
-std::cout << std::endl;
 
 		std::string errorMsg;
 		if (
