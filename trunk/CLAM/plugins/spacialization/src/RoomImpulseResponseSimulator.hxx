@@ -269,34 +269,43 @@ std:: cout << "emitter x,y,z = "
 << _scene->normalizedToModelY(_currentEmitterY) << " "
 << _scene->normalizedToModelZ(_currentEmitterZ) << std::endl;
 
-		double directSoundPressure = 0;
-		unsigned offset = 0;
-		if (_config.HasSupressInitialDelay() and _config.GetSupressInitialDelay())
-		{
-			_scene->computeDirectSoundOverTime();
-			offset = _scene->getDirectSoundDelayInSamples();
-			directSoundPressure = _scene->getDirectSoundPressure();
-		}
 
 		std::string responsesPath = "";
-		if (_config.HasStripDirectSound() and _config.GetStripDirectSound())
-			_scene->raytracingReverbOverTime(responsesPath, "IR");
+		if (_config.GetStripDirectSound())
+		{
+
+std::cout << "+++ SEPARATED DS and IR con reverb \n";
+			_scene->computeDirectSoundOverTime();
+			_scene->raytracingReverbOverTime(responsesPath, "IR" );
+		}
 		else
+		{
+std::cout << "+++ IR:  DS and reverb \n";
 			_scene->raytracingOverTime(responsesPath, "IR" );
+		}
+		double directSoundPressure = 0;
+		unsigned initialDelay = 0;
+		unsigned offsetToStrip = 0;
+		initialDelay = _scene->getDirectSoundDelayInSamples();
+		directSoundPressure = _scene->getDirectSoundPressure();
+		if ( _config.GetSupressInitialDelay())
+		{
+			offsetToStrip = initialDelay;
+		}
 
 std::cout << "DS pressure " << directSoundPressure << std::endl;
-std::cout << "DS offset " << offset << std::endl;
+std::cout << "DS offsetToStrip " << offsetToStrip << std::endl;
 std::cout << "IR W size  " << _scene->getTimeResponse_P().size() << std::endl;
-std::cout << "IR W  " << offset << std::endl;
-for (int i=0; i<2; i++) std::cout << _scene->getTimeResponse_P()[i] << " ";
+std::cout << "IR W : ";
+for (int i=0; i<0; i++) std::cout << _scene->getTimeResponse_P()[i] << " ";
 std::cout << std::endl;
 
 		std::string errorMsg;
 		if (
-			!computeResponseSpectrums(_scene->getTimeResponse_P(), _current->W, _config.GetFrameSize(), errorMsg, offset) ||
-			!computeResponseSpectrums(_scene->getTimeResponse_Vx(), _current->X, _config.GetFrameSize(), errorMsg, offset) ||
-			!computeResponseSpectrums(_scene->getTimeResponse_Vy(), _current->Y, _config.GetFrameSize(), errorMsg, offset) ||
-			!computeResponseSpectrums(_scene->getTimeResponse_Vz(), _current->Z, _config.GetFrameSize(), errorMsg, offset) )
+			!computeResponseSpectrums(_scene->getTimeResponse_P(), _current->W, _config.GetFrameSize(), errorMsg, offsetToStrip) ||
+			!computeResponseSpectrums(_scene->getTimeResponse_Vx(), _current->X, _config.GetFrameSize(), errorMsg, offsetToStrip) ||
+			!computeResponseSpectrums(_scene->getTimeResponse_Vy(), _current->Y, _config.GetFrameSize(), errorMsg, offsetToStrip) ||
+			!computeResponseSpectrums(_scene->getTimeResponse_Vz(), _current->Z, _config.GetFrameSize(), errorMsg, offsetToStrip) )
 		{
 			std::cout << "ERROR: RoomImpulseResponseSimulator::Do can not open IR files.\n" << errorMsg << std::endl;
 			return false;
