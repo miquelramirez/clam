@@ -56,7 +56,7 @@ public:
 		DYN_ATTRIBUTE( 4, public, unsigned, NRebounds);
 		DYN_ATTRIBUTE( 5, public, float, IrLength);
 		DYN_ATTRIBUTE( 6, public, CLAM::Text, ExtraOptions);
-		DYN_ATTRIBUTE( 7, public, bool, StripDirectSound);
+		DYN_ATTRIBUTE( 7, public, bool, SeparateDirectSoundAndReverb);
 		DYN_ATTRIBUTE( 8, public, bool, SupressInitialDelay);
 	protected:
 		void DefaultInit()
@@ -69,7 +69,7 @@ public:
 			SetNRays(200);
 			SetNRebounds(20);
 			SetIrLength(1.0);
-			SetStripDirectSound(false);
+			SetSeparateDirectSoundAndReverb(false);
 			SetSupressInitialDelay(false);
 		};
 	};
@@ -262,7 +262,7 @@ private:
 
 
 		std::string responsesPath = "";
-		if (_config.GetStripDirectSound())
+		if (_config.GetSeparateDirectSoundAndReverb())
 		{
 
 			_scene->computeDirectSoundOverTime();

@@ -135,7 +135,7 @@
     <NRebounds>50</NRebounds>
     <IrLength>0.2</IrLength>
     <ExtraOptions>--ignore-sources</ExtraOptions>
-    <StripDirectSound>1</StripDirectSound>
+    <SeparateDirectSoundAndReverb>1</SeparateDirectSoundAndReverb>
     <SupressInitialDelay>1</SupressInitialDelay>
   </processing>
 

@@ -238,15 +238,6 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="Direct Sound Gain" position="1671,584" size="367,73" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.01</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-    <Mapping>Linear</Mapping>
-  </processing>
-
   <processing id="HRTFDatabaseFetcher2" position="237,999" size="167,94" type="HRTFDatabaseFetcher2">
     <FrameSize>512</FrameSize>
     <Path>%(hrtf_database_file)s</Path>
@@ -465,9 +456,18 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
+  <processing id="Direct Sound Gain" position="1671,584" size="367,73" type="OutControlSender">
+    <Min>0</Min>
+    <Default>1</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
   <processing id="Reverb Gain" position="1365,589" size="280,73" type="OutControlSender">
     <Min>0</Min>
-    <Default>0.5</Default>
+    <Default>0.0</Default>
     <Max>1</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
@@ -482,7 +482,7 @@
     <NRebounds>%(num_rebounds)i</NRebounds>
     <IrLength>%(ir_length)f</IrLength>
     <ExtraOptions>%(extra_options)s</ExtraOptions>
-    <StripDirectSound>1</StripDirectSound>
+    <SeparateDirectSoundAndReverb>1</SeparateDirectSoundAndReverb>
     <SupressInitialDelay>%(supress_initial_delay)i</SupressInitialDelay>
   </processing>
 
