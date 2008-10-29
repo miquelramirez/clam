@@ -1,7 +1,6 @@
 #include <CLAM/TypedInControl.hxx>
-#include <CLAM/TypedInControlRegistry.hxx>
 #include <CLAM/TypedOutControl.hxx>
-#include <CLAM/TypedOutControlRegistry.hxx>
+#include <CLAM/OutControlRegistry.hxx>
 #include <CLAM/Processing.hxx>
 #include <cppunit/extensions/HelperMacros.h>
 #include "BaseLoggable.hxx"
@@ -55,12 +54,12 @@ namespace CLAMTest {
 		CPPUNIT_TEST( testLinkAndSendWithCascadingTypedInControl_CallbackWithIdMethodGetsCalled );
 		
 		// Typed*ControlRegistry Tests
-		CPPUNIT_TEST( testTypedInControlRegistry_ProcessingInterface_Register_ChangesInternalState );
-		CPPUNIT_TEST( testTypedOutControlRegistry_ProcessingInterface_Register_ChangesInternalState );
-		CPPUNIT_TEST( testTypedInControlRegistry_Has_loadingControlWithSameName );
-		CPPUNIT_TEST( testTypedOutControlRegistry_Has_loadingControlWithSameName );
-		CPPUNIT_TEST( testTypedInControlRegistry_Has_withNoControls );
-		CPPUNIT_TEST( testTypedOutControlRegistry_Has_withNoControls );
+		CPPUNIT_TEST( testInControlRegistry_ProcessingInterface_Register_ChangesInternalState );
+		CPPUNIT_TEST( testOutControlRegistry_ProcessingInterface_Register_ChangesInternalState );
+		CPPUNIT_TEST( testInControlRegistry_Has_loadingControlWithSameName );
+		CPPUNIT_TEST( testOutControlRegistry_Has_loadingControlWithSameName );
+		CPPUNIT_TEST( testInControlRegistry_Has_withNoControls );
+		CPPUNIT_TEST( testOutControlRegistry_Has_withNoControls );
 		
 		// Testing bounds
 		CPPUNIT_TEST( testTypedInControl_doesntHaveBoundsBydefault );
@@ -213,8 +212,8 @@ namespace CLAMTest {
 		{
 			CLAM::TypedInControl<int> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::BaseTypedInControl & in = concreteIn;
-			CLAM::BaseTypedOutControl & out = concreteOut;
+			CLAM::InControlBase & in = concreteIn;
+			CLAM::OutControlBase & out = concreteOut;
 			CPPUNIT_ASSERT_EQUAL(false, out.IsLinkable(in));
 		}
 
@@ -222,8 +221,8 @@ namespace CLAMTest {
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::BaseTypedInControl & in = concreteIn;
-			CLAM::BaseTypedOutControl & out = concreteOut;
+			CLAM::InControlBase & in = concreteIn;
+			CLAM::OutControlBase & out = concreteOut;
 			CPPUNIT_ASSERT_EQUAL(true, out.IsLinkable(in));
 		}
 
@@ -231,8 +230,8 @@ namespace CLAMTest {
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<int> concreteOut("Concrete Out");
-			CLAM::BaseTypedInControl & in = concreteIn;
-			CLAM::BaseTypedOutControl & out = concreteOut;
+			CLAM::InControlBase & in = concreteIn;
+			CLAM::OutControlBase & out = concreteOut;
 			try {
 				out.AddLink(in);
 				CPPUNIT_FAIL("assertion failed expected, but nothing happened");
@@ -243,8 +242,8 @@ namespace CLAMTest {
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::BaseTypedInControl & in = concreteIn;
-			CLAM::BaseTypedOutControl & out = concreteOut;
+			CLAM::InControlBase & in = concreteIn;
+			CLAM::OutControlBase & out = concreteOut;
 			out.AddLink(in);
 			CPPUNIT_ASSERT_EQUAL(true, concreteOut.IsConnectedTo(concreteIn));
 		}
@@ -253,8 +252,8 @@ namespace CLAMTest {
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::BaseTypedInControl & in = concreteIn;
-			CLAM::BaseTypedOutControl & out = concreteOut;
+			CLAM::InControlBase & in = concreteIn;
+			CLAM::OutControlBase & out = concreteOut;
 			out.AddLink(in);
 			CPPUNIT_ASSERT_EQUAL(true, out.IsConnected());
 		}
@@ -262,7 +261,7 @@ namespace CLAMTest {
 		void testIsConnected_WithBaseTypedOutControl_WithNoConnection()
 		{
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::BaseTypedOutControl & out = concreteOut;
+			CLAM::OutControlBase & out = concreteOut;
 			CPPUNIT_ASSERT_EQUAL(false, out.IsConnected());
 		}
 
@@ -270,8 +269,8 @@ namespace CLAMTest {
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::BaseTypedInControl & in = concreteIn;
-			CLAM::BaseTypedOutControl & out = concreteOut;
+			CLAM::InControlBase & in = concreteIn;
+			CLAM::OutControlBase & out = concreteOut;
 			out.AddLink(in);
 			CPPUNIT_ASSERT_EQUAL(true, out.IsConnectedTo(in));
 		}
@@ -280,8 +279,8 @@ namespace CLAMTest {
 		{
 			CLAM::TypedInControl<float> concreteIn("Concrete In");
 			CLAM::TypedOutControl<float> concreteOut("Concrete Out");
-			CLAM::BaseTypedInControl & in = concreteIn;
-			CLAM::BaseTypedOutControl & out = concreteOut;
+			CLAM::InControlBase & in = concreteIn;
+			CLAM::OutControlBase & out = concreteOut;
 			CPPUNIT_ASSERT_EQUAL(false, out.IsConnectedTo(in));
 		}
 		
@@ -332,71 +331,71 @@ namespace CLAMTest {
 		
 		// Typed*ControlRegistry Tests
 		// testing TypedInControl and TypedOutControl
-		void testTypedInControlRegistry_ProcessingInterface_Register_ChangesInternalState()
+		void testInControlRegistry_ProcessingInterface_Register_ChangesInternalState()
 		{
 			CLAM::TypedInControl<int> concreteIn("IntInControl");
-			CLAM::BaseTypedInControl & in = concreteIn;
-			CLAM::TypedInControlRegistry inRegistry;
+			CLAM::InControlBase & in = concreteIn;
+			CLAM::InControlRegistry inRegistry;
 			inRegistry.ProcessingInterface_Register(&in);
 			CPPUNIT_ASSERT_EQUAL( &in, &inRegistry.Get("IntInControl") );
 		}
 
-		void testTypedOutControlRegistry_ProcessingInterface_Register_ChangesInternalState()
+		void testOutControlRegistry_ProcessingInterface_Register_ChangesInternalState()
 		{
 			CLAM::TypedOutControl<int> concreteOut("IntOutControl");
-			CLAM::BaseTypedOutControl & out = concreteOut;
-			CLAM::TypedOutControlRegistry outRegistry;
+			CLAM::OutControlBase & out = concreteOut;
+			CLAM::OutControlRegistry outRegistry;
 			outRegistry.ProcessingInterface_Register(&out);
 			CPPUNIT_ASSERT_EQUAL( &out, &outRegistry.Get("IntOutControl") );
 		}
 
-		void testTypedInControlRegistry_Has_loadingControlWithSameName()
+		void testInControlRegistry_Has_loadingControlWithSameName()
 		{
 			CLAM::TypedInControl<int> concreteIn("IntInControl");
-			CLAM::BaseTypedInControl & in = concreteIn;
-			CLAM::TypedInControlRegistry inRegistry;
+			CLAM::InControlBase & in = concreteIn;
+			CLAM::InControlRegistry inRegistry;
 			inRegistry.ProcessingInterface_Register(&in);
 			CPPUNIT_ASSERT_EQUAL( true, inRegistry.Has("IntInControl") );
 		}
 
-		void testTypedOutControlRegistry_Has_loadingControlWithSameName()
+		void testOutControlRegistry_Has_loadingControlWithSameName()
 		{
 			CLAM::TypedOutControl<int> concreteOut("IntOutControl");
-			CLAM::BaseTypedOutControl & out = concreteOut;
-			CLAM::TypedOutControlRegistry outRegistry;
+			CLAM::OutControlBase & out = concreteOut;
+			CLAM::OutControlRegistry outRegistry;
 			outRegistry.ProcessingInterface_Register(&out);
 			CPPUNIT_ASSERT_EQUAL( true, outRegistry.Has("IntOutControl") );
 		}
 
-		void testTypedInControlRegistry_Has_withNoControls()
+		void testInControlRegistry_Has_withNoControls()
 		{
-			CLAM::TypedInControlRegistry inRegistry;
+			CLAM::InControlRegistry inRegistry;
 			CPPUNIT_ASSERT_EQUAL( false, inRegistry.Has("IntInControl") );
 		}
 
-		void testTypedOutControlRegistry_Has_withNoControls()
+		void testOutControlRegistry_Has_withNoControls()
 		{
-			CLAM::TypedOutControlRegistry outRegistry;
+			CLAM::OutControlRegistry outRegistry;
 			CPPUNIT_ASSERT_EQUAL( false, outRegistry.Has("IntOutControl") );
 		}
 
 	void testTypedInControl_doesntHaveBoundsBydefault()
 	{
 		CLAM::TypedInControl<float> concreteIn("InControl");
-		CLAM::BaseTypedInControl & inControl = concreteIn;
+		CLAM::InControlBase & inControl = concreteIn;
 		CPPUNIT_ASSERT_EQUAL( false, inControl.IsBounded() );
 	}
 	void testTypedInControl_defaultBounds()
 	{
 		CLAM::TypedInControl<float> concreteIn("InControl");
-		CLAM::BaseTypedInControl & inControl = concreteIn;
+		CLAM::InControlBase & inControl = concreteIn;
 		CPPUNIT_ASSERT_EQUAL( 0.0f, inControl.LowerBound() );
 		CPPUNIT_ASSERT_EQUAL( 1.0f, inControl.UpperBound() );
 	}
 	void testTypedInControl_settingBounds()
 	{
 		CLAM::TypedInControl<float> concreteIn("InControl");
-		CLAM::BaseTypedInControl & inControl = concreteIn;
+		CLAM::InControlBase & inControl = concreteIn;
 		inControl.SetBounds(-1.f, 2.f);
 		CPPUNIT_ASSERT_EQUAL( -1.f, inControl.LowerBound() );
 		CPPUNIT_ASSERT_EQUAL( 2.f, inControl.UpperBound() );
@@ -404,14 +403,14 @@ namespace CLAMTest {
 	void testTypedInControl_boundedDefaultValue()
 	{
 		CLAM::TypedInControl<float> concreteIn("InControl");
-		CLAM::BaseTypedInControl & inControl = concreteIn;
+		CLAM::InControlBase & inControl = concreteIn;
 		inControl.SetBounds(0.f, 10.f);
 		CPPUNIT_ASSERT_EQUAL( 5.f, inControl.DefaultValue() );
 	}
 	void testTypedInControl_isBoundedWhenTrue()
 	{
 		CLAM::TypedInControl<float> concreteIn("InControl");
-		CLAM::BaseTypedInControl & inControl = concreteIn;
+		CLAM::InControlBase & inControl = concreteIn;
 		inControl.SetBounds(0.f, 0.f);
 		CPPUNIT_ASSERT_EQUAL( true, inControl.IsBounded() );
 	}
@@ -419,7 +418,7 @@ namespace CLAMTest {
 	void testTypedInControl_setDefaultprevailstoBounds()
 	{
 		CLAM::TypedInControl<float> concreteIn("InControl");
-		CLAM::BaseTypedInControl & inControl = concreteIn;
+		CLAM::InControlBase & inControl = concreteIn;
 		inControl.SetBounds(0.f, 10.f);
 		inControl.SetDefaultValue(0.0f);
 		CPPUNIT_ASSERT_EQUAL( 0.0f, inControl.DefaultValue() );
