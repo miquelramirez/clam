@@ -458,7 +458,7 @@
 
   <processing id="Direct Sound Gain" position="1671,584" size="367,73" type="OutControlSender">
     <Min>0</Min>
-    <Default>1</Default>
+    <Default>%(direct_gain)f</Default>
     <Max>1</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
@@ -467,7 +467,7 @@
 
   <processing id="Reverb Gain" position="1365,589" size="280,73" type="OutControlSender">
     <Min>0</Min>
-    <Default>0.0</Default>
+    <Default>%(reverb_gain)f</Default>
     <Max>1</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
