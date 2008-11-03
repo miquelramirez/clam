@@ -125,8 +125,8 @@ _isPassiveRotation=true;
 		const CLAM::DataArray& vz =_Zin.GetAudio().GetBuffer();
 		const CLAM::DataArray& vx =_Xin.GetAudio().GetBuffer();
 		const CLAM::DataArray& vy =_Yin.GetAudio().GetBuffer();
-		std::cout<<"Elevation: "<<elevation*180/M_PI<<std::endl;
-		std::cout<<"Azimuth: "<<azimuth*180/M_PI<<std::endl; 
+//		std::cout<<"Elevation: "<<elevation*180/M_PI<<std::endl;
+//		std::cout<<"Azimuth: "<<azimuth*180/M_PI<<std::endl; 
 		for (int i=0; i<vz.Size(); i++)
 		{
 			CLAM::TData* Xout = &_Xout.GetAudio().GetBuffer()[0];
