@@ -34,17 +34,27 @@ namespace CLAM
 class AudioMixerConfig: public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (AudioMixerConfig, 2, ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (AudioMixerConfig, 3, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, int, NumberOfInPorts);
 	DYN_ATTRIBUTE (1, public, int, FrameSize);
+	DYN_ATTRIBUTE (2, public, CLAM::Array<TControlData>, DefaultGains);
 
 protected:
 	void DefaultInit(void)
 	{
 		AddAll();
 		UpdateData();
-		SetNumberOfInPorts(2);
+		unsigned int numberOfInPorts=2;
+		SetNumberOfInPorts(numberOfInPorts);
 		SetFrameSize(512);
+		CLAM::Array<TControlData> gains;
+		gains.Resize(numberOfInPorts);
+		gains.SetSize(numberOfInPorts);
+		for (unsigned portNumber=0;portNumber<numberOfInPorts;portNumber++)
+		{
+			gains[portNumber]=1;
+		}
+		SetDefaultGains(gains);
 	}
 
 };
