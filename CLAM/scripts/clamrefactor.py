@@ -20,12 +20,15 @@ from xml.etree import ElementTree, ElementPath
 import xml.dom
 import sys
 
+class NotACommand(Exception) :
+	def __init__(self, command, available) :
+		self.command = command
+		self.available = available
+	def __str__(self) : 
+		return "'%s' is not an available command. Try with: %s"%(
+			self.command, ", ".join(self.available))
+
 class ClamNetwork() :
-	class NotACommand(Exception) :
-		def __init__(self, command) :
-			self.command = command
-		def __str__(self) : 
-			return "'%s' is not an available command."%(self.command)
 
 	def __init__ (self, networkfile) :
 		self.document = ElementTree.parse(networkfile)
@@ -46,7 +49,7 @@ class ClamNetwork() :
 		tokens = shlex.split(command)
 		try: method=getattr(self, tokens[0])
 		except AttributeError:
-			raise ClamNetwork.NotACommand(tokens[0])
+			raise NotACommand(tokens[0], self._availableCommands())
 		method(*tokens[1:])
 
 	def _log(self, message) :
@@ -69,6 +72,9 @@ class ClamNetwork() :
 			if processing.get('id') == id :
 				return processing
 		return None
+	def _availableCommands(self) :
+		return [ method for method in dir(self)
+			if method[0] != '_' and callable(getattr(self,method)) ]
 
 	def beVerbose(self, shouldBe=True) :
 		self.verbose = shouldBe
@@ -172,6 +178,9 @@ class ClamNetwork() :
 	def help(self, command) :
 		help(getattr(self,command))
 
+	def commands(self) :
+		print "Available commands:", ", ".join(_availableCommands)
+
 
 def test() :
 	testInput = "../../NetworkEditor/example-data/FilePlayer.clamnetwork"
@@ -199,6 +208,7 @@ def test() :
 		network.setConfig('NonExistingId', "Max", "2")
 	except: print "Exception caugth"
 #	network.dump()
+	network.commands()
 	sys.exit(0)
 
 if __name__ == "__main__" :
