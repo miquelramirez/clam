@@ -60,8 +60,6 @@ clam.add_subtask('count lines of code', [
 	{CMD:'echo %(sandbox)s/NetworkEditor'%localDefinitions, STATS: lambda x: {'networkeditor_loc': countLines(x) } },
 ] )
 clam.add_deployment( [
-	{ CMD:'echo path $PATH ld library path $LD_LIBRARY_PATH clam plugin path $CLAM_PLUGIN_PATH', INFO: lambda x:x },
-	{STATUS_OK: lambda x:False},
 	'cd %(sandbox)s/CLAM'%localDefinitions,
 	'rm -rf %(installPath)s/*'%localDefinitions,
 	'cd %(sandbox)s/CLAM/'%localDefinitions,
