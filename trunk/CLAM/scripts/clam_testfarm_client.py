@@ -154,7 +154,7 @@ clam.add_subtask('Padova Speech SMS (external repository)', [
 
 Runner( clam, 
 	continuous = False,
-	first_run_always = True,
+	first_run_always = False,
 	remote_server_url = 'http://localhost/testfarm_server'
 #	local_base_dir='/tmp'
 )
