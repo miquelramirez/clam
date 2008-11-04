@@ -262,21 +262,24 @@ private:
 
 
 		std::string responsesPath = "";
+		double directSoundPressure = 0;
+		unsigned initialDelay = 0;
+		unsigned offsetToStrip = 0;
 		if (_config.GetSeparateDirectSoundAndReverb())
 		{
 
 			_scene->computeDirectSoundOverTime();
+			directSoundPressure = _scene->getDirectSoundPressure();
+			initialDelay = _scene->getDirectSoundDelayInSamples();
 			_scene->raytracingReverbOverTime(responsesPath, "IR" );
 		}
 		else
 		{
 			_scene->raytracingOverTime(responsesPath, "IR" );
+			initialDelay = _scene->getDirectSoundDelayInSamples();
+			directSoundPressure = _scene->getDirectSoundPressure();
 		}
-		double directSoundPressure = 0;
-		unsigned initialDelay = 0;
-		unsigned offsetToStrip = 0;
-		initialDelay = _scene->getDirectSoundDelayInSamples();
-		directSoundPressure = _scene->getDirectSoundPressure();
+
 		if ( _config.GetSupressInitialDelay())
 		{
 			offsetToStrip = initialDelay;
