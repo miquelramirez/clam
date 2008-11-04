@@ -135,11 +135,13 @@
   <processing id="AudioMixer_1" position="1645,854" size="110,62" type="AudioMixer">
     <NumberOfInPorts>2</NumberOfInPorts>
     <FrameSize>512</FrameSize>
+    <DefaultGains>%(reverb_gain)f %(direct_gain)f</DefaultGains>
   </processing>
 
   <processing id="AudioMixer_2" position="1636,1036" size="110,62" type="AudioMixer">
     <NumberOfInPorts>2</NumberOfInPorts>
     <FrameSize>512</FrameSize>
+    <DefaultGains>%(reverb_gain)f %(direct_gain)f</DefaultGains>
   </processing>
 
   <processing id="AudioMixer_3" position="1357,954" size="110,62" type="AudioMixer">
