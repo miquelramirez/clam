@@ -95,8 +95,6 @@ namespace CLAM
 			oscCfg.SetAmplitude(0.6);
 			SimpleOscillator osc(oscCfg);
 			
-			FloatInControl& freqControl = osc.GetInControl("Pitch");
-    
 			Audio samplesAudio0;
 			Audio samplesAudio1;
 			Audio samplesBpf;
