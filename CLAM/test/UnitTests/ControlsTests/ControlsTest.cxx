@@ -67,7 +67,7 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	CPPUNIT_TEST( testIsConnectedTo_WithInControl_WhenControlsAreNotConnected );
 
 	// tests for Control Publishers
-	CPPUNIT_TEST( testOutControlPublisher );
+//TODO	CPPUNIT_TEST( testOutControlPublisher );
 	CPPUNIT_TEST( testOutControlPublisher_GetsRegisteredToAProcessing );
 	CPPUNIT_TEST( testOutControlPublisher_ConnectControlsFromPublisher );
 	CPPUNIT_TEST( testOutControlPublisher_SendControlWhenNothingPublished );
