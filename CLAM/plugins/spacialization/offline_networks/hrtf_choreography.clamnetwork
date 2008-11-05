@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioBuffer2Stream_L" position="892,141" size="158,58" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream_L1" position="757,163" size="165,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -10,7 +10,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioBuffer2Stream_R" position="892,188" size="160,58" type="AudioBuffer2Stream">
+  <processing id="AudioBuffer2Stream_L2" position="760,209" size="165,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -19,13 +19,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioBufferCrossFader_L" position="698,134" size="176,62" type="AudioBufferCrossFader"/>
-
-  <processing id="AudioBufferCrossFader_R" position="698,192" size="178,62" type="AudioBufferCrossFader"/>
-
-  <processing id="AudioSource" position="120,305" size="128,108" type="AudioSource"/>
-
-  <processing id="AudioWindowing" position="283,314" size="127,58" type="AudioWindowing">
+  <processing id="AudioBuffer2Stream_R1" position="757,258" size="167,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -34,115 +28,129 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Azimuth" position="163,210" size="162,84" type="ControlPrinter">
+  <processing id="AudioBuffer2Stream_R2" position="755,302" size="167,58" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="AudioSink_L" position="585,48" size="128,111" type="AudioSink"/>
+
+  <processing id="AudioSink_R" position="595,359" size="128,111" type="AudioSink"/>
+
+  <processing id="AudioSource" position="12,371" size="128,108" type="AudioSource"/>
+
+  <processing id="AudioWindowing" position="161,392" size="127,58" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="Azimuth" position="172,294" size="162,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="ChoreoSequencer" position="259,11" size="194,58" type="ChoreoSequencer">
+  <processing id="ChoreoSequencer" position="108,51" size="194,58" type="ChoreoSequencer">
     <Filename></Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>15</ControlsPerSecond>
+    <ControlsPerSecond>24</ControlsPerSecond>
     <SizeX>1</SizeX>
     <SizeY>1</SizeY>
     <SizeZ>1</SizeZ>
   </processing>
 
-  <processing id="Elevation" position="10,210" size="162,84" type="ControlPrinter">
+  <processing id="Elevation" position="10,293" size="162,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="HRTFDatabaseFetcher2" position="41,89" size="167,94" type="HRTFDatabaseFetcher2">
+  <processing id="HRTFDatabaseFetcher2" position="15,168" size="167,94" type="HRTFDatabaseFetcher2">
     <FrameSize>512</FrameSize>
     <Path>HRTFs/kreuzerDatabase.hrtfs</Path>
     <Prefix></Prefix>
   </processing>
 
-  <processing id="IFFT_L1" position="593,86" size="79,58" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="IRSwappingDelay_L" position="228,156" size="147,62" type="IRSwappingDelay"/>
 
-  <processing id="IFFT_L2" position="588,133" size="79,58" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="IRSwappingDelay_R" position="216,238" size="149,62" type="IRSwappingDelay"/>
 
-  <processing id="IFFT_R1" position="588,179" size="81,58" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="IFFT_R2" position="590,228" size="81,58" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="IRDelayCascade_L" position="227,91" size="141,62" type="IRDelayCascade"/>
-
-  <processing id="IRDelayCascade_R" position="224,161" size="143,62" type="IRDelayCascade"/>
-
-  <processing id="L" position="1077,20" size="128,111" type="AudioSink"/>
-
-  <processing id="LowLatencyConvolution_L1" position="390,82" size="187,62" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_L1" position="461,158" size="187,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_L2" position="392,128" size="187,62" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_L2" position="457,205" size="187,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_R1" position="393,177" size="189,62" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_R1" position="459,254" size="189,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="LowLatencyConvolution_R2" position="391,228" size="189,62" type="LowLatencyConvolution">
+  <processing id="LowLatencyConvolution_R2" position="456,305" size="189,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="MyFFT" position="436,314" size="71,58" type="MyFFT">
+  <processing id="MyFFT" position="303,401" size="71,58" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope_L" position="790,21" size="288,113" type="Oscilloscope"/>
+  <processing id="MyIFFT_L1" position="666,162" size="95,58" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
 
-  <processing id="Oscilloscope_R" position="783,269" size="288,110" type="Oscilloscope"/>
+  <processing id="MyIFFT_L2" position="664,209" size="95,58" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
 
-  <processing id="R" position="1069,265" size="128,111" type="AudioSink"/>
+  <processing id="MyIFFT_R1" position="653,256" size="97,58" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="MyIFFT_R2" position="657,306" size="97,58" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="Oscilloscope_L" position="722,49" size="288,113" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_R" position="729,358" size="288,110" type="Oscilloscope"/>
+
+  <processing id="XFadeAndSwitch_L" position="434,57" size="142,94" type="XFadeAndSwitch"/>
+
+  <processing id="XFadeAndSwitch_R" position="430,372" size="144,94" type="XFadeAndSwitch"/>
 
   <port_connection>
-    <out>AudioBuffer2Stream_L.Audio stream</out>
-    <in>Oscilloscope_L.Input</in>
+    <out>AudioBuffer2Stream_L1.Audio stream</out>
+    <in>XFadeAndSwitch_L.Audio1</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioBuffer2Stream_L.Audio stream</out>
-    <in>L.AudioIn</in>
+    <out>AudioBuffer2Stream_L2.Audio stream</out>
+    <in>XFadeAndSwitch_L.Audio2</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioBuffer2Stream_R.Audio stream</out>
-    <in>Oscilloscope_R.Input</in>
+    <out>AudioBuffer2Stream_R1.Audio stream</out>
+    <in>XFadeAndSwitch_R.Audio1</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioBuffer2Stream_R.Audio stream</out>
-    <in>R.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioBufferCrossFader_L.CrossFadedBuffer</out>
-    <in>AudioBuffer2Stream_L.Audio buffer</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioBufferCrossFader_R.CrossFadedBuffer</out>
-    <in>AudioBuffer2Stream_R.Audio buffer</in>
+    <out>AudioBuffer2Stream_R2.Audio stream</out>
+    <in>XFadeAndSwitch_R.Audio2</in>
   </port_connection>
 
   <port_connection>
@@ -162,72 +170,72 @@
 
   <port_connection>
     <out>HRTFDatabaseFetcher2.ImpulseResponseL</out>
-    <in>IRDelayCascade_L.Input IR</in>
+    <in>IRSwappingDelay_L.Input IR</in>
   </port_connection>
 
   <port_connection>
     <out>HRTFDatabaseFetcher2.ImpulseResponseR</out>
-    <in>IRDelayCascade_R.Input IR</in>
+    <in>IRSwappingDelay_R.Input IR</in>
   </port_connection>
 
   <port_connection>
-    <out>IFFT_L1.Audio Buffer</out>
-    <in>AudioBufferCrossFader_L.FadingIn</in>
+    <out>IRSwappingDelay_L.Current IR</out>
+    <in>XFadeAndSwitch_L.ImpulseResponse1</in>
   </port_connection>
 
   <port_connection>
-    <out>IFFT_L2.Audio Buffer</out>
-    <in>AudioBufferCrossFader_L.FadingOut</in>
-  </port_connection>
-
-  <port_connection>
-    <out>IFFT_R1.Audio Buffer</out>
-    <in>AudioBufferCrossFader_R.FadingIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>IFFT_R2.Audio Buffer</out>
-    <in>AudioBufferCrossFader_R.FadingOut</in>
-  </port_connection>
-
-  <port_connection>
-    <out>IRDelayCascade_L.Current IR</out>
+    <out>IRSwappingDelay_L.Current IR</out>
     <in>LowLatencyConvolution_L1.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IRDelayCascade_L.Previous IR</out>
+    <out>IRSwappingDelay_L.Previous IR</out>
+    <in>XFadeAndSwitch_L.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_L.Previous IR</out>
     <in>LowLatencyConvolution_L2.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IRDelayCascade_R.Current IR</out>
+    <out>IRSwappingDelay_R.Current IR</out>
     <in>LowLatencyConvolution_R1.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>IRDelayCascade_R.Previous IR</out>
+    <out>IRSwappingDelay_R.Current IR</out>
+    <in>XFadeAndSwitch_R.ImpulseResponse1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IRSwappingDelay_R.Previous IR</out>
     <in>LowLatencyConvolution_R2.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
+    <out>IRSwappingDelay_R.Previous IR</out>
+    <in>XFadeAndSwitch_R.ImpulseResponse2</in>
+  </port_connection>
+
+  <port_connection>
     <out>LowLatencyConvolution_L1.Output</out>
-    <in>IFFT_L1.Complex Spectrum</in>
+    <in>MyIFFT_L1.Complex Spectrum</in>
   </port_connection>
 
   <port_connection>
     <out>LowLatencyConvolution_L2.Output</out>
-    <in>IFFT_L2.Complex Spectrum</in>
+    <in>MyIFFT_L2.Complex Spectrum</in>
   </port_connection>
 
   <port_connection>
     <out>LowLatencyConvolution_R1.Output</out>
-    <in>IFFT_R1.Complex Spectrum</in>
+    <in>MyIFFT_R1.Complex Spectrum</in>
   </port_connection>
 
   <port_connection>
     <out>LowLatencyConvolution_R2.Output</out>
-    <in>IFFT_R2.Complex Spectrum</in>
+    <in>MyIFFT_R2.Complex Spectrum</in>
   </port_connection>
 
   <port_connection>
@@ -248,6 +256,46 @@
   <port_connection>
     <out>MyFFT.Complex Spectrum</out>
     <in>LowLatencyConvolution_R2.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_L1.Audio Buffer</out>
+    <in>AudioBuffer2Stream_L1.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_L2.Audio Buffer</out>
+    <in>AudioBuffer2Stream_L2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_R1.Audio Buffer</out>
+    <in>AudioBuffer2Stream_R1.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MyIFFT_R2.Audio Buffer</out>
+    <in>AudioBuffer2Stream_R2.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch_L.CrossFadedBuffer</out>
+    <in>AudioSink_L.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch_L.CrossFadedBuffer</out>
+    <in>Oscilloscope_L.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch_R.CrossFadedBuffer</out>
+    <in>AudioSink_R.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>XFadeAndSwitch_R.CrossFadedBuffer</out>
+    <in>Oscilloscope_R.Input</in>
   </port_connection>
 
   <control_connection>

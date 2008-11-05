@@ -42,8 +42,8 @@
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
     <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
   <processing id="AudioBuffer2Stream_13" position="2214,443" size="165,66" type="AudioBuffer2Stream">
@@ -135,11 +135,13 @@
   <processing id="AudioMixer_1" position="1645,854" size="110,62" type="AudioMixer">
     <NumberOfInPorts>2</NumberOfInPorts>
     <FrameSize>512</FrameSize>
+    <DefaultGains>0.5 0.5</DefaultGains>
   </processing>
 
   <processing id="AudioMixer_2" position="1636,1036" size="110,62" type="AudioMixer">
     <NumberOfInPorts>2</NumberOfInPorts>
     <FrameSize>512</FrameSize>
+    <DefaultGains>0.5 0.5</DefaultGains>
   </processing>
 
   <processing id="AudioMixer_3" position="1357,954" size="110,62" type="AudioMixer">
@@ -198,9 +200,9 @@
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
+    <WindowSize>513</WindowSize>
     <WindowType>None</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
   <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation">
@@ -216,7 +218,7 @@
   </processing>
 
   <processing id="ChoreoSequencer_1" position="104,22" size="194,59" type="ChoreoSequencer">
-    <Filename>/home/parumi/data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
+    <Filename>../../../../data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
@@ -238,18 +240,9 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="Direct Sound Gain" position="1671,584" size="367,78" type="OutControlSender">
-    <Min>0</Min>
-    <Default>0.5</Default>
-    <Max>1</Max>
-    <Step>0.01</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-    <Mapping>Linear</Mapping>
-  </processing>
-
   <processing id="HRTFDatabaseFetcher2" position="237,999" size="167,94" type="HRTFDatabaseFetcher2">
     <FrameSize>512</FrameSize>
-    <Path>/home/parumi/acustica/HRTFs/mitKemarFullL.hrtfs</Path>
+    <Path>../../../../acustica/HRTFs/mitKemarFullL.hrtfs</Path>
     <Prefix></Prefix>
   </processing>
 
@@ -465,6 +458,15 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
+  <processing id="Direct Sound Gain" position="1671,584" size="367,78" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.5</Default>
+    <Max>1</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
   <processing id="Reverb Gain" position="1365,589" size="280,78" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
@@ -476,7 +478,7 @@
 
   <processing id="RoomImpulseResponseSimulator" position="61,172" size="267,100" type="RoomImpulseResponseSimulator">
     <FrameSize>512</FrameSize>
-    <Model3DFile>/home/vokimon/CajitasDeArena/acustica/raytracing/entorns/cubic_room_arrebola.data</Model3DFile>
+    <Model3DFile>../../../../acustica/raytracing/entorns/cubic_room_arrebola.data</Model3DFile>
     <GridDivisions>500</GridDivisions>
     <NRays>200</NRays>
     <NRebounds>50</NRebounds>
