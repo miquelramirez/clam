@@ -79,7 +79,7 @@ class ClamNetwork() :
 	def beVerbose(self, shouldBe=True) :
 		self.verbose = shouldBe
 	def dump(self, file=sys.stdout) :
-		xml.etree.ElementTree.dump(self.document)
+		self.document.write(file)
 	def dumpLog(self, file=sys.stdout) :
 		print >> file, "\n".join(self.log)
 
