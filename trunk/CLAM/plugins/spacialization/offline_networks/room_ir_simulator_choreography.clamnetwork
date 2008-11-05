@@ -129,13 +129,13 @@
 
   <processing id="RoomImpulseResponseSimulator" position="58,164" size="267,100" type="RoomImpulseResponseSimulator">
     <FrameSize>512</FrameSize>
-    <Model3DFile>/home/vokimon/CajitasDeArena/acustica/raytracing/entorns/cubic_room_arrebola.data</Model3DFile>
+    <Model3DFile>../../../../acustica/raytracing/entorns/cubic_room_arrebola.data</Model3DFile>
     <GridDivisions>500</GridDivisions>
     <NRays>50</NRays>
     <NRebounds>50</NRebounds>
     <IrLength>0.2</IrLength>
     <ExtraOptions>--ignore-sources</ExtraOptions>
-    <SeparateDirectSoundAndReverb>1</SeparateDirectSoundAndReverb>
+    <SeparateDirectSoundAndReverb>0</SeparateDirectSoundAndReverb>
     <SupressInitialDelay>1</SupressInitialDelay>
   </processing>
 
