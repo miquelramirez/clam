@@ -201,7 +201,7 @@ void register_DataArray_class(){
 
 			DataArray_exposer.def( 
                 "__setitem__"
-				, __setitem___function_type(&::CLAM::Array< float >::EditElem )
+				, __setitem___function_type(&::CLAM::Array< float >::SetElem )
                 , ( bp::arg("where"), bp::arg("elem") ) );
         }
     }
