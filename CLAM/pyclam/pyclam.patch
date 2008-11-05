@@ -50,7 +50,7 @@ Index: CLAM/src/Standard/Array.hxx
  		new(&mpData[where]) T(elem);
  		mSize++;
  	}
-+	void	EditElem(int where,const T& elem)
++	void	SetElem(int where,const T& elem)
 +	{
 +		CLAM_DEBUG_ASSERT(where>=0,msgIndexOutOfRange);
 +		CLAM_DEBUG_ASSERT(where<mSize,msgIndexOutOfRange);
