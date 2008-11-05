@@ -5,7 +5,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -14,7 +14,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -23,7 +23,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -32,7 +32,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -42,8 +42,8 @@
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
     <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
   <processing id="AudioBuffer2Stream_13" position="2214,443" size="165,66" type="AudioBuffer2Stream">
@@ -59,7 +59,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -68,7 +68,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -77,7 +77,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -86,7 +86,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -95,7 +95,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -104,7 +104,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -113,7 +113,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -122,7 +122,7 @@
     <HopSize>512</HopSize>
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
+    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -200,9 +200,9 @@
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
+    <WindowSize>513</WindowSize>
     <WindowType>None</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
   <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation">
