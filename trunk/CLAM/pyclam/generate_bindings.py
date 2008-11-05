@@ -32,7 +32,9 @@ if not os.path.exists(options_filename):
 clam_path = "/usr/local/include"; plugins_path = ''
 for line in open(options_filename).readlines():
 	(name,value) = line.split(' = ')
-	if name=='clam_prefix': clam_path=value[1:-2]+"/include"
+	if name=='clam_prefix':
+		clam_prefix = value[1:-2]
+		clam_path=value[1:-2]+"/include"
 	if name=='plugins_prefix':
 		if value=='True': plugins_path=clam_path
 		else: plugins_path=value[1:-2]
@@ -43,17 +45,48 @@ clam_file_list = [] # Files going to be automatically parsed
 exported_manually_file_list = [] # Files already (manually) exposed / not going to be parsed
 
 
-clam_file_list += ['DynamicTypeMacros.hxx','Flags.hxx','SpecTypeFlags.hxx','Component.hxx','Storage.hxx', 'XMLStorage.hxx','OutControl.hxx','InControl.hxx']
+clam_file_list += [
+	'DynamicTypeMacros.hxx',
+	'Flags.hxx',
+	'SpecTypeFlags.hxx',
+	'Component.hxx',
+	'Storage.hxx',
+	'XMLStorage.hxx',
+	'OutControl.hxx',
+	'InControl.hxx',
+	'FFT.hxx',
+	'FFT_base.hxx',
+	'FFT_ooura.hxx',
+	'FFT_fftw3.hxx',
+]
 
-clam_file_list += ['FFT.hxx','FFT_base.hxx','FFT_ooura.hxx','FFT_fftw3.hxx']
 exported_manually_file_list += ['FFTConfig.hxx']
 
-clam_file_list += ['Processing.hxx','ProcessingConfig.hxx','ProcessingData.hxx','ProcessingDataConfig.hxx','ProcessingDataPlugin.hxx','FlowControl.hxx','FlattenedNetwork.hxx','Network.hxx','NetworkPlayer.hxx','DataTypes.hxx','Enum.hxx','CLAM_Math.hxx','Err.hxx','MonoAudioFileReader.hxx','AudioInFilename.hxx','AudioFile.hxx','Text.hxx','Filename.hxx']
+clam_file_list += [
+	'Processing.hxx',
+	'ProcessingConfig.hxx',
+	'ProcessingData.hxx',
+	'ProcessingDataConfig.hxx',
+	'ProcessingDataPlugin.hxx',
+	'FlowControl.hxx',
+	'FlattenedNetwork.hxx',
+	'Network.hxx',
+	'NetworkPlayer.hxx',
+	'DataTypes.hxx',
+	'Enum.hxx',
+	'CLAM_Math.hxx',
+	'Err.hxx',
+	'MonoAudioFileReader.hxx',
+	'AudioInFilename.hxx',
+	'AudioFile.hxx',
+	'Text.hxx',
+	'Filename.hxx',
+]
 
-exported_manually_file_list += ['AudioTextDescriptors.hxx']
+exported_manually_file_list += [ 'AudioTextDescriptors.hxx' ]
 exported_manually_file_list += [ 'EAudioFileCodec.hxx','EAudioFileEncoding.hxx','EAudioFileEndianess.hxx','EAudioFileFormat.hxx' ] # Original CLAM file for all these classes is 'AudioFileFormats.hxx'
-exported_manually_file_list += ['DataArray.hxx'] # Original CLAM file declaring this class/type is 'Array.hxx'
-exported_manually_file_list += ['AudioFileHeader.hxx','Audio.hxx','MonoAudioFileReaderConfig.hxx','SpectrumConfig.hxx','Spectrum.hxx']
+exported_manually_file_list += [ 'DataArray.hxx' ] # Original CLAM file declaring this class/type is 'Array.hxx'
+exported_manually_file_list += [ 'AudioFileHeader.hxx','Audio.hxx','MonoAudioFileReaderConfig.hxx','SpectrumConfig.hxx','Spectrum.hxx' ]
 
 # Removes class names that could be added by accident to the list to be parsed (they're already exposed manually)
 for classname in exported_manually_file_list:
@@ -85,13 +118,17 @@ clam_include_path = [ '.' ]
 clam_include_path.append( clam_path )
 if enablePlugins: clam_include_path.append( plugins_path )
 
+clam_modules = [ 'clam_core', 'clam_audioio', 'clam_processing' ]
+cflags_list = os.popen( 'PKG_CONFIG_PATH=%s/lib/pkgconfig pkg-config --cflags-only-other %s'%(clam_prefix," ".join(clam_modules))  ).read()[:-1].split(' ')
+define_list = [ item[2:] for item in cflags_list if item[:2]=='-D' ]
+
 # Creating an instance of class that will help you to expose your declarations
 mb = module_builder.module_builder_t (
-					file_list
-					, working_directory = r"."
-					, include_paths = clam_include_path
-		 			, define_symbols = [ 'CLAM_FLOAT','_DEBUG','USE_PTHREADS=1','USE_XERCES=1','CLAM_USE_XML','USE_LADSPA=1','USE_FFTW3=1','USE_SNDFILE=1','USE_OGGVORBIS=1','WITH_VORBIS=1','USE_MAD=1','WITH_MAD=1','USE_ID3=1','USE_ALSA=1','USE_JACK=1','USE_PORTAUDIO=1' ]
-					, indexing_suite_version = 2
+	file_list,
+	working_directory = r".",
+	include_paths = clam_include_path,
+	define_symbols = define_list,
+	indexing_suite_version = 2,
 )
 
 mem_funs = mb.calldefs()
@@ -166,3 +203,4 @@ mb.code_creator.license = """/*
 
 # Writing code to files
 mb.split_module( './src/automatic' )
+
