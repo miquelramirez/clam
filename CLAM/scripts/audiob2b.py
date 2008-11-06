@@ -120,6 +120,9 @@ just call:
 	./back2back --accept case1 case2
 where case1 and case2 are the cases to be accepted.
 
+To know which are the available cases:
+	./back2back --list
+
 To accept any failing cases (USE IT WITH CARE) call:
 	./back2back --acceptall
 
@@ -138,6 +141,11 @@ def runBack2BackProgram(datapath, argv, back2back_files, help=help) :
 	os.access( datapath, os.X_OK ) or die(
 		"Datapath at '%s' not available. "%datapath +
 		"Check the back 2 back script on information on how to obtain it.")
+
+	if "--list" in argv :
+		for case, command, outputs in back2back_files :
+			print case
+		sys.exit()
 
 	if "--accept" in argv :
 		cases = argv[argv.index("--accept")+1:]
