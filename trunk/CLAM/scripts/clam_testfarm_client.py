@@ -74,7 +74,7 @@ clam.add_subtask('Unit Tests', [
 	'scons test_data_path=%(sandbox)s/testdata clam_prefix=%(installPath)s'%localDefinitions, # TODO: test_data_path and release
 	'cd UnitTests',
 	{INFO : lambda x:startTimer() }, 
-	{CMD: './UnitTests', INFO: lambda x:x},
+	{CMD: './UnitTests'},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
 clam.add_subtask('Functional Tests', [
@@ -83,7 +83,7 @@ clam.add_subtask('Functional Tests', [
 	'scons test_data_path=%(sandbox)s/testdata clam_prefix=%(installPath)s'%localDefinitions, # TODO: test_data_path and release
 	'cd FunctionalTests',
 	{INFO : lambda x:startTimer() }, 
-	{CMD:'./FunctionalTests', INFO: lambda x:x},
+	{CMD:'./FunctionalTests'},
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
 ] )
 clam.add_subtask('CLAM Examples', [
@@ -116,6 +116,18 @@ clam.add_subtask('NetworkEditor installation', [
 	'scons install',
 ] )
 
+
+
+clam.add_subtask('BM-Audio update'), [
+	'cd ~/data_acustica',
+	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
+	'cd ~/acustica',
+	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
+	'cd ~/acustica/raytracing',
+	'scons',
+] )
+
+
 clam.add_subtask("CLAM Plugins", [
 	'cd %(sandbox)s/CLAM/plugins/spacialization'%localDefinitions,
 	'scons clam_prefix=%(installPath)s raytracing=0'%localDefinitions,
@@ -137,10 +149,16 @@ clam.add_subtask("CLAM Plugins", [
 	'scons clam_prefix=%(installPath)s'%localDefinitions,
 	'scons install',
 ] )
-
 clam.add_subtask('Back-to-back network tests', [
 	'cd %(sandbox)s/CLAM/plugins/spacialization'%localDefinitions,
 	'./back2back.py',
+] )
+clam.add_subtask('BM-Audio tests back-to-back', [
+	'./back2back',
+	'cd ~/data_acustica/test_coreos',
+	'./back2back',
+	'cd ~/acustica/bformat2binaural',
+	'./back2back',
 ] )
 
 clam.add_subtask('Padova Speech SMS (external repository)', [
