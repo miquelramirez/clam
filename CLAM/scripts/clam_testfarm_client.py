@@ -155,9 +155,9 @@ clam.add_subtask('Back-to-back network tests', [
 ] )
 clam.add_subtask('BM-Audio tests back-to-back', [
 	'cd ~/data_acustica/test_coreos',
-	'./back2back',
+	'./back2back.py',
 	'cd ~/acustica/bformat2binaural',
-	'./back2back',
+	'./back2back.py',
 ] )
 
 clam.add_subtask('Padova Speech SMS (external repository)', [
@@ -169,7 +169,7 @@ clam.add_subtask('Padova Speech SMS (external repository)', [
 
 Runner( clam, 
 	continuous = False,
-	first_run_always = False,
+	first_run_always = True,
 	remote_server_url = 'http://localhost/testfarm_server'
 #	local_base_dir='/tmp'
 )
