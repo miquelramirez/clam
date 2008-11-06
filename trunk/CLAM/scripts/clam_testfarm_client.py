@@ -154,7 +154,6 @@ clam.add_subtask('Back-to-back network tests', [
 	'./back2back.py',
 ] )
 clam.add_subtask('BM-Audio tests back-to-back', [
-	'./back2back',
 	'cd ~/data_acustica/test_coreos',
 	'./back2back',
 	'cd ~/acustica/bformat2binaural',
