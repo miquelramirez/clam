@@ -118,7 +118,7 @@ clam.add_subtask('NetworkEditor installation', [
 
 
 
-clam.add_subtask('BM-Audio update'), [
+clam.add_subtask('BM-Audio update', [
 	'cd ~/data_acustica',
 	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
 	'cd ~/acustica',
