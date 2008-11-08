@@ -161,7 +161,7 @@ namespace CLAM
 				AddProcessing(name, procDefinition.GetProcessing()); 
 			else
 			{
-				std::string newName = GetUnusedName(name);
+				std::string newName = GetUnusedName(name,true);
 				CLAM::Processing * processing =procDefinition.GetProcessing();
 //				std::string key=processing->GetClassName();
 //				std::string newName= AddProcessing(key);
@@ -358,15 +358,22 @@ namespace CLAM
 		return name;
 	}
 
-	std::string FlattenedNetwork::GetUnusedName( const std::string& prefix ) const
+	std::string FlattenedNetwork::GetUnusedName( const std::string& prefix, const bool cutOnLastSeparator, const std::string separator ) const
 	{
 		std::string name;
+		std::string newPrefix=prefix;
+		if (cutOnLastSeparator==true)
+		{
+			int lastSeparatorPos=prefix.rfind(separator);
+			if (lastSeparatorPos!=-1)
+				newPrefix=prefix.substr(0,lastSeparatorPos);
+		}
 
 		for ( int i = 0; i<9999999; i++ ) 
 		{
 			std::stringstream tmp; 
 			tmp << i;
-			name = i? prefix + "_" + tmp.str() : prefix; 
+			name = i? newPrefix + separator + tmp.str() : newPrefix; 
 			if (!this->HasProcessing( name ) ) return name;
 		}
 		CLAM_ASSERT(false, "All valid id's for given prefix are exhausted");
