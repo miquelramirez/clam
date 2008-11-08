@@ -103,7 +103,7 @@ public:
 	//! add method using a key to get the new processing from factory
 	void AddProcessing( const std::string & name, const std::string & key );
 	std::string AddProcessing( const std::string& key );
-	std::string GetUnusedName( const std::string& prefix ) const;
+	std::string GetUnusedName( const std::string& prefix, const bool cutOnLastSeparator=false, const std::string separator="_") const;
 	void RemoveProcessing ( const std::string & );
 	bool HasProcessing( const std::string & name ) const;
 	/** It configures the processing with the given processing id and config object and

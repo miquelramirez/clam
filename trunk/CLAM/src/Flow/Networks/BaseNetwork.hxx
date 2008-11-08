@@ -98,7 +98,7 @@ public:
 	//! add method using a key to get the new processing from factory
 	virtual void AddProcessing( const std::string & name, const std::string & key ) = 0;
 	virtual std::string AddProcessing( const std::string& key ) = 0;
-	virtual std::string GetUnusedName( const std::string& prefix ) const = 0;
+	virtual std::string GetUnusedName( const std::string& prefix, const bool cutOnLastSeparator=false, const std::string separator="_") const=0;
 	virtual bool RenameProcessing( const std::string & oldName, const std::string & newName ) = 0;
 	virtual void RemoveProcessing ( const std::string & ) = 0;
 
