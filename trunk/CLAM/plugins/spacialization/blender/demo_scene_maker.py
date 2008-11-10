@@ -56,7 +56,7 @@ def main():
 	Blender.Run(MainSceneMaker)
 
 	scene=data.scenes.active
-	sources=data.groups['AudioSources'].objects
+	sources=data.groups['Audio_Sources'].objects
 	for object in sources:
 		object.setIpo(makeCircleIpo(object,object.name+"demo",6,2*math.pi*list(sources).index(object)/len(sources)))
 		firstFrame=Blender.Get('staframe')
@@ -81,9 +81,9 @@ def makeCircleIpo(object,name,points,startPhase=0):
 		t=parameter*1./points
 		curveXPos=int(t*frames)+Blender.Get('staframe') #lineal time
 		angle=2*math.pi*t + startPhase # just one cicle
-		LocX.append((curveXPos,math.cos(angle)*3.5))
-		LocY.append((curveXPos,math.sin(angle)*3.5))
-		LocZ.append((curveXPos,(t*5)-2.5))
+		LocX.append((curveXPos,math.cos(angle)*2))
+		LocY.append((curveXPos,math.sin(angle)*2))
+		LocZ.append((curveXPos,(t*4)-1.5))
 	return newIpo
 
 # This lets you can import the script without running it
