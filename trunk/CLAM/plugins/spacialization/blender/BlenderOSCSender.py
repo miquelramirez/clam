@@ -101,13 +101,13 @@ def main():
 		location=object.mat.translationPart()
 		roll, descention, azimuth=object.mat.toEuler()
 		elevation = -descention
-		rotation = (roll,elevation,azimuth)
+		rotation = (math.radians(roll),math.radians(elevation),math.radians(azimuth))
 		if isSource(object):
 			typename='sources'
 			sources=getSources()
 			objectNumber=sources.index(object)
 			sendObjectValue(objectNumber,typename,"location",location,7000)
-			print "UPDATE L Source "+str(objectNumber)+" Port"+str(7000)+" "+str(location)
+#			print "UPDATE L Source "+str(objectNumber)+" Port"+str(7000)+" "+str(location)
 			return
 		if isListener(object):
 			listeners=getListeners()
@@ -115,7 +115,7 @@ def main():
 			objectNumber=listeners.index(object)
 			sendObjectValue(objectNumber,typename,"location",location,7000)
 			sendObjectValue(objectNumber,typename,"rotation",rotation,7000)
-			print "UPDATE L Listener "+str(objectNumber)+" Port"+str(7000)+" "+str(location)
+#			print "UPDATE L Listener "+str(objectNumber)+" Port"+str(7000)+" "+str(location)
 			return
 		if not typename:
 			return
