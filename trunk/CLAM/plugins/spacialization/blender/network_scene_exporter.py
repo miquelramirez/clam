@@ -65,7 +65,8 @@ def GenerateNetworkOSCReceiver(filename):
 	path="/SpatDIF/sources/%(objectNumber)s/xyz/location"
 	port=7000
 #create sources receivers and its monitors
-	sources=BlenderOSCSender.getSources()
+	scene=Blender.Scene.GetCurrent()
+	sources=BlenderOSCSender.getSources(scene)
 	for source in sources:
 		libloName="source_"+source.name
 		printerName="printer_source_"+source.name
@@ -79,7 +80,7 @@ def GenerateNetworkOSCReceiver(filename):
 	xPosition=50
 	yPosition=600
 #create listeners receivers and its monitors
-	listeners=BlenderOSCSender.getListeners()
+	listeners=BlenderOSCSender.getListeners(scene)
 	path="/SpatDIF/listeners/%(objectNumber)s/xyz/location"
 	for listener in listeners:
 		libloName="listener_"+listener.name
