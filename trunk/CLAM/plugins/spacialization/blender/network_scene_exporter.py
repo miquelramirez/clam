@@ -50,7 +50,7 @@ TODO:
 
 # use bpy module of Blender:
 from bpy import data
-import Blender
+import Blender,BlenderOSCSender
 
 def main():
 	Blender.Window.FileSelector(GenerateNetworkOSCReceiver, "Generate CLAM network OSC monitor",Blender.sys.makename(ext='.clamnetwork'))
@@ -65,8 +65,8 @@ def GenerateNetworkOSCReceiver(filename):
 	path="/SpatDIF/sources/%(objectNumber)s/xyz/location"
 	port=7000
 #create sources receivers and its monitors
-	objectsList=list(data.groups['Audio_Sources'].objects)
-	for source in data.groups['Audio_Sources'].objects:
+	sources=BlenderOSCSender.getSources()
+	for source in sources:
 		libloName="source_"+source.name
 		printerName="printer_source_"+source.name
 		objectNumber=str(objectsList.index(source))
@@ -79,9 +79,9 @@ def GenerateNetworkOSCReceiver(filename):
 	xPosition=50
 	yPosition=600
 #create listeners receivers and its monitors
-	objectsList=list(data.groups['Audio_Listeners'].objects)
+	listeners=BlenderOSCSender.getListeners()
 	path="/SpatDIF/listeners/%(objectNumber)s/xyz/location"
-	for listener in data.groups['Audio_Listeners'].objects:
+	for listener in listeners:
 		libloName="listener_"+listener.name
 		printerName="printer_listener_"+listener.name
 		objectNumber=str(objectsList.index(listener))
