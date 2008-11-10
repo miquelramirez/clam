@@ -39,16 +39,16 @@ int CLAM::MultiLibloSource::controls_handler(const char *path, const char *types
 {
 	CLAM::MultiLibloSource & self = *((CLAM::MultiLibloSource*)user_data);
 	/* example showing pulling the argument values out of the argv array */
-	printf("%s <- f:",path);
+//	printf("%s <- f:",path);
 	for (int i=0;i<argc;i++)
 	{
-		if(i>0) 
-			printf(", ");
-		printf ("%f", argv[i]->f);
+//		if(i>0) 
+//			printf(", ");
+//		printf ("%f", argv[i]->f);
 		self._outControls[i].SendControl( argv[i]->f );
 	}
-	printf("\n\n");
-	fflush(stdout);
+//	printf("\n\n");
+//	fflush(stdout);
 	return 0;
 }
 
