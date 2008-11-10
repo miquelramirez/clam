@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioInput" position="23,470" size="128,108" type="AudioSource"/>
+  <processing id="AudioInput" position="23,470" size="128,108" type="AudioSource" />
 
   <processing id="AudioMixer" position="168,678" size="107,62" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
@@ -69,13 +68,13 @@
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Delay P" position="370,184" size="84,62" type="IRSwappingDelay"/>
+  <processing id="Delay P" position="370,184" size="84,62" type="IRSwappingDelay" />
 
-  <processing id="Delay X" position="372,299" size="85,62" type="IRSwappingDelay"/>
+  <processing id="Delay X" position="372,299" size="85,62" type="IRSwappingDelay" />
 
-  <processing id="Delay Y" position="363,398" size="84,62" type="IRSwappingDelay"/>
+  <processing id="Delay Y" position="363,398" size="84,62" type="IRSwappingDelay" />
 
-  <processing id="Delay Z" position="361,509" size="85,62" type="IRSwappingDelay"/>
+  <processing id="Delay Z" position="361,509" size="85,62" type="IRSwappingDelay" />
 
   <processing id="Gain 0" position="184,572" size="262,78" type="OutControlSender">
     <Min>0</Min>
@@ -133,21 +132,21 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="W" position="1077,475" size="128,111" type="AudioSink"/>
+  <processing id="W" position="1077,475" size="128,111" type="AudioSink" />
 
-  <processing id="X" position="1077,571" size="128,111" type="AudioSink"/>
+  <processing id="X" position="1077,571" size="128,111" type="AudioSink" />
 
-  <processing id="XFade P" position="966,179" size="85,94" type="XFadeAndSwitch"/>
+  <processing id="XFade P" position="966,179" size="85,94" type="XFadeAndSwitch" />
 
-  <processing id="XFade X" position="967,280" size="86,94" type="XFadeAndSwitch"/>
+  <processing id="XFade X" position="967,280" size="86,94" type="XFadeAndSwitch" />
 
-  <processing id="XFade Y" position="967,381" size="85,94" type="XFadeAndSwitch"/>
+  <processing id="XFade Y" position="967,381" size="85,94" type="XFadeAndSwitch" />
 
-  <processing id="XFade Z" position="972,487" size="86,94" type="XFadeAndSwitch"/>
+  <processing id="XFade Z" position="972,487" size="86,94" type="XFadeAndSwitch" />
 
-  <processing id="Y" position="1077,669" size="128,111" type="AudioSink"/>
+  <processing id="Y" position="1077,669" size="128,111" type="AudioSink" />
 
-  <processing id="Z" position="1078,767" size="128,111" type="AudioSink"/>
+  <processing id="Z" position="1078,767" size="128,111" type="AudioSink" />
 
   <processing id="toStream P" position="809,181" size="106,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>

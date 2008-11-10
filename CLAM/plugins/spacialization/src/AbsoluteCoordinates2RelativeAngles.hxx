@@ -27,7 +27,6 @@ namespace CLAM
  @param[in] "source Z" [Control] Z coord of the source in absolute coords
  @param[out] "target azimuth" [Control] Relative azimuth of the target
  @param[out] "target elevation" [Control] Relative elevation of the target
- @param[out] "target roll" [Control] Relative roll of the target
  @ingroup SpatialAudio
  @see AmbisonicsConventions
 */
@@ -44,7 +43,6 @@ class AbsoluteCoordinates2RelativeAngles : public CLAM::Processing
 	CLAM::FloatInControl _sourceX;
 	CLAM::FloatInControl _sourceY;
 	CLAM::FloatInControl _sourceZ;
-	CLAM::FloatOutControl _sourceRoll;
 	CLAM::FloatOutControl _sourceElevation;
 	CLAM::FloatOutControl _sourceAzimuth;
 public:
@@ -59,7 +57,6 @@ public:
 		, _sourceX("source X", this)
 		, _sourceY("source Y", this)
 		, _sourceZ("source Z", this)		
-		, _sourceRoll("source roll", this)
 		, _sourceElevation("source elevation", this)
 		, _sourceAzimuth("source azimuth", this)
 	{
@@ -86,27 +83,29 @@ public:
 		double sinAzimuth = std::sin(targetAzimuth);
 		double cosZenith = std::cos(targetZenith);
 		double sinZenith = std::sin(targetZenith);
-//		double cosRoll = std::cos(targetRoll);
-//		double sinRoll = std::sin(targetRoll);
 
-		double rotatedX = + cosAzimuth*sinZenith * dx + sinAzimuth * sinZenith * dy+ cosZenith * dz;
-		double rotatedY = - sinAzimuth * dx + cosAzimuth * dy - 0 * dz;
-		double rotatedZ = - cosZenith * cosAzimuth *dx + -cosZenith*sinAzimuth*dy 	+ sinZenith  * dz;
+		double rotatedX = 
+			+ dx * cosAzimuth * sinZenith
+			+ dy * sinAzimuth * sinZenith 
+			+ dz * cosZenith;
+		double rotatedY = 
+			- dx * sinAzimuth
+			+ dy * cosAzimuth
+			- dz * 0;
+		double rotatedZ =
+			- dx * cosZenith * cosAzimuth
+			- dy * cosZenith * sinAzimuth
+			+ dz * sinZenith;
 
 		// TODO: Test that with target elevation and azimuth
 		double dazimuth = 180./M_PI*std::atan2(rotatedY,rotatedX);
 		double delevation = 180./M_PI*std::asin(rotatedZ/std::sqrt(rotatedX*rotatedX+rotatedY*rotatedY+rotatedZ*rotatedZ));
 
 		//TODO calculate the roll relative between the listener and the source
-		Orientation angles;
-		angles.elevation=delevation;
-		angles.azimuth=dazimuth;
-		angles=normalizeAngles(angles);
-		_sourceRoll.SendControl( targetRoll );
-//		_sourceElevation.SendControl( delevation );
-//		_sourceAzimuth.SendControl( dazimuth );
-		_sourceElevation.SendControl( angles.elevation );
-		_sourceAzimuth.SendControl( angles.azimuth );
+		Orientation orientation = {dazimuth, delevation};
+		orientation=normalizeAngles(orientation);
+		_sourceAzimuth.SendControl( orientation.azimuth );
+		_sourceElevation.SendControl( orientation.elevation );
 		return true;
 	}
 
