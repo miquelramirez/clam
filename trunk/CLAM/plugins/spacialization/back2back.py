@@ -17,7 +17,7 @@ from audiob2b import runBack2BackProgram
 
 os.system('rm E?.wav')
 for i in 'xyzw' :
-	os.system('ln -s ~/acustica/bformat2binaural/equivalentIRs/MIT/full-L/E%s.wav .'%i)
+	os.system('ln -s ../../../../acustica/bformat2binaural/equivalentIRs/MIT/full-L/E%s.wav .'%i)
 
 data_path="b2b/spacialization"
 
