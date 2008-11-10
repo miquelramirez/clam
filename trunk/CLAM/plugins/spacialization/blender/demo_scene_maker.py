@@ -45,6 +45,7 @@ See also:
 from bpy import data
 import Blender
 import math
+import BlenderOSCSender
 
 MainSceneMaker="scene_maker.py"
 
@@ -56,7 +57,8 @@ def main():
 	Blender.Run(MainSceneMaker)
 
 	scene=data.scenes.active
-	sources=data.groups['Audio_Sources'].objects
+#	sources=data.groups['Audio_Sources'].objects
+	sources=BlenderOSCSender.getSources(scene)
 	for object in sources:
 		object.setIpo(makeCircleIpo(object,object.name+"demo",6,2*math.pi*list(sources).index(object)/len(sources)))
 		firstFrame=Blender.Get('staframe')

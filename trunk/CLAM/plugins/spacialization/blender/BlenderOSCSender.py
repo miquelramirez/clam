@@ -87,21 +87,19 @@ for testpath in pathToOSCList:
 if configured==0:
 	print "Can't found OSC.py. Aborting."
 	
-def sendGroupObjectsPositions(listeners, sources,typeName):
-	for source in sources:
-		sourceLocation=source.mat.translationPart()
-		sourceNumber=sources.index(source)
-		sendObjectValue(sourceNumber,typeName,"location",sourceLocation,7000+sourceNumber)
-#		print "ANIMATION Send Source "+repr(sourceNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(sourceLocation)
-		for listener in listeners:
-			listenerLocation=listener.mat.translationPart()
-			listenerNumber=listeners.index(listener)
-			roll, descention, azimuth=listener.mat.toEuler()
-			elevation = -descention
-			rotation = (roll,elevation,azimuth)
-			sendObjectValue(listenerNumber,typeName,"location",sourceLocation,7000+sourceNumber)
-			sendObjectValue(listenerNumber,typeName,"rotation",rotation,7000+sourceNumber)
-#			print "ANIMATION Send Listener"+repr(listenerNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(listenerLocation)
+#def sendGroupObjectsPositions(listeners, sources,typeName):
+#	for source in sources:
+#		sourceLocation=source.mat.translationPart()
+#		sourceNumber=sources.index(source)
+#		sendObjectValue(sourceNumber,typeName,"location",sourceLocation,7000+sourceNumber)
+#		for listener in listeners:
+#			listenerLocation=listener.mat.translationPart()
+#			listenerNumber=listeners.index(listener)
+#			roll, descention, azimuth=listener.mat.toEuler()
+#			elevation = -descention
+#			rotation = (roll,elevation,azimuth)
+#			sendObjectValue(listenerNumber,typeName,"location",sourceLocation,7000+sourceNumber)
+#			sendObjectValue(listenerNumber,typeName,"rotation",rotation,7000+sourceNumber)
 		
 
 def sendObjectValue(objectNumber,typeName,typeValue,value,port):
@@ -115,8 +113,6 @@ def main():
 		frame=Blender.Get('curframe')
 		Message("/SpatDIF/sync/FrameChanged",[frame]).sendlocal(7000)
 		return
-#		sendGroupObjectsPositions(getListeners(),getSources())
-#list(data.groups[ListenersGroupName].objects),list(data.groups[SourcesGroupName].objects),'sources')
 
 	if Blender.bylink==True and Blender.event=='ObjectUpdate':
 		object=Blender.link
@@ -128,17 +124,16 @@ def main():
 			typename='sources'
 			sources=getSources()
 			objectNumber=sources.index(object)
-			sendObjectValue(objectNumber,typename,"location",location,7000+objectNumber)
-#			print "UPDATE L Source "+repr(objectNumber)+" Port"+repr(7000+objectNumber)+" "+repr(location)
+			sendObjectValue(objectNumber,typename,"location",location,7000)
+			print "UPDATE L Source "+str(objectNumber)+" Port"+str(7000)+" "+str(location)
 			return
 		if isListener(object):
 			listeners=getListeners()
 			typename='listeners'
 			objectNumber=listeners.index(object)
-			sendObjectValue(objectNumber,typename,"location",location,7000+objectNumber)
-			sendObjectValue(objectNumber,typename,"rotation",rotation,7000+objectNumber)
-#			print "UPDATE L Listener "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(location)
-#			print "UPDATE R Listener "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(rotation)
+			sendObjectValue(objectNumber,typename,"location",location,7000)
+			sendObjectValue(objectNumber,typename,"rotation",rotation,7000)
+			print "UPDATE L Listener "+str(objectNumber)+" Port"+str(7000)+" "+str(location)
 			return
 		if not typename:
 			return
