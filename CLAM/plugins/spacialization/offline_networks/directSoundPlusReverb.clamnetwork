@@ -249,8 +249,7 @@
   <processing id="HRTFDatabaseFetcher2" position="237,999" size="167,94" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>HRTFs/kreuzerDatabase.hrtfs</Path>
-    <Prefix />
-  </processing>
+    </processing>
 
   <processing id="IRSwappingDelay" position="434,979" size="133,62" type="IRSwappingDelay" />
 
