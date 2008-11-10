@@ -26,7 +26,7 @@ or
     ObjectUpdate event
 """
 #
-# Copyright (c) 2008 Fundació Barcelona Media Universitat Pompeu Fabra
+# Copyright (c) 2008 Fundacio Barcelona Media Universitat Pompeu Fabra
 #
 #
 # This program is free software; you can redistribute it and/or modify
@@ -49,8 +49,31 @@ from sys import path
 from os import getenv
 import Blender, math
 
-SourcesGroupName='Audio_Sources'
-ListenersGroupName='Audio_Listeners'
+#SourcesGroupName='Audio_Sources'
+#ListenersGroupName='Audio_Listeners'
+
+SourcesSubstring='source'
+ListenersSubstring='listener'
+
+def isSource (object):
+	return (object.name.lower().search(SourcesSubstring)!=-1)
+def getSources(scene=Blender.Scene.GetCurrent()):
+	# old method: #sources=list(data.groups[SourcesGroupName].objects)
+	sources=list()
+	for object in scene.objects:
+		if isSource(object):
+			sources.append(object)
+	return sources
+
+def isListener (object):
+	return (object.name.lower().search(ListenersSubstring)!=-1)
+def getListeners(scene=Blender.Scene.GetCurrent()):
+	# old method: #listeners=list(data.groups[ListenersGroupName].objects)
+	listeners=list()
+	for object in scene.objects:
+		if isListener(object):
+			listeners.append(object)
+	return listeners
 
 # use OSC client module for python - by Stefan Kersten
 pathToOSCList=["../../osc/oscpython",getenv("HOME")+"/src/liblo",getenv("HOME")+"/acustica/realtime_blender_demo"]
@@ -91,30 +114,32 @@ def main():
 	if Blender.event=='FrameChanged':
 		frame=Blender.Get('curframe')
 		Message("/SpatDIF/sync/FrameChanged",[frame]).sendlocal(7000)
-		sendGroupObjectsPositions(list(data.groups[ListenersGroupName].objects),list(data.groups[SourcesGroupName].objects),'sources')
+		return
+#		sendGroupObjectsPositions(getListeners(),getSources())
+#list(data.groups[ListenersGroupName].objects),list(data.groups[SourcesGroupName].objects),'sources')
+
 	if Blender.bylink==True and Blender.event=='ObjectUpdate':
 		object=Blender.link
-		location=object.getLocation()
-		sources=list(data.groups[SourcesGroupName].objects)
-		listeners=list(data.groups[ListenersGroupName].objects)
-		if sources.count(object)!=0:
+		location=object.mat.translationPart()
+		roll, descention, azimuth=object.mat.toEuler()
+		elevation = -descention
+		rotation = (roll,elevation,azimuth)
+		if isSource(object):
 			typename='sources'
+			sources=getSources()
 			objectNumber=sources.index(object)
 			sendObjectValue(objectNumber,typename,"location",location,7000+objectNumber)
 #			print "UPDATE L Source "+repr(objectNumber)+" Port"+repr(7000+objectNumber)+" "+repr(location)
-		if listeners.count(object)!=0:
+			return
+		if isListener(object):
+			listeners=getListeners()
 			typename='listeners'
 			objectNumber=listeners.index(object)
-			roll, descention, azimuth=object.mat.toEuler()
-			elevation = -descention
-			rotation = (roll,elevation,azimuth)
-			for source in sources:
-				sourceNumber = sources.index(source)
-				sendObjectValue(objectNumber,typename,"location",location,7000+sourceNumber)
-				sendObjectValue(objectNumber,typename,"rotation",rotation,7000+sourceNumber)
-#				print "UPDATE L Listener "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(location)
-#				print "UPDATE R Listener "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(rotation)
-				
+			sendObjectValue(objectNumber,typename,"location",location,7000+objectNumber)
+			sendObjectValue(objectNumber,typename,"rotation",rotation,7000+objectNumber)
+#			print "UPDATE L Listener "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(location)
+#			print "UPDATE R Listener "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(rotation)
+			return
 		if not typename:
 			return
 
