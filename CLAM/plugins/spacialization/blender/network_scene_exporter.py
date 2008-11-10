@@ -69,7 +69,7 @@ def GenerateNetworkOSCReceiver(filename):
 	for source in sources:
 		libloName="source_"+source.name
 		printerName="printer_source_"+source.name
-		objectNumber=str(objectsList.index(source))
+		objectNumber=str(sources.index(source))
 		liblos+=makeLibloSource(libloName,path % vars(),(xPosition,yPosition),3,port)
 		printers+=makeControlPrinter(printerName,(xPosition,yPosition+150),3)
 		for o in range(3):
@@ -84,7 +84,7 @@ def GenerateNetworkOSCReceiver(filename):
 	for listener in listeners:
 		libloName="listener_"+listener.name
 		printerName="printer_listener_"+listener.name
-		objectNumber=str(objectsList.index(listener))
+		objectNumber=str(listeners.index(listener))
 		liblos+=makeLibloSource(libloName,path % vars(),(xPosition,yPosition),3,port)
 		printers+=makeControlPrinter(printerName,(xPosition,yPosition+150),3)
 		for o in range(3):
