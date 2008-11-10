@@ -44,6 +44,7 @@ Usage:
 import Blender
 from bpy import data
 from sys import path
+import BlenderOSCSender
 
 if Blender.sys.exists("network_scene_exporter.py")==1:
 	path.append(Blender.sys.dirname("network_scene_exporter.py"))
@@ -62,8 +63,13 @@ def GetGroupObjects(objects,groupName):
 def WriteSceneAsChoreo (choreoFilename):
 #	Window.WaitCursor(1)
 	SelectedObjects = Blender.Object.GetSelected()
-	listeners=GetGroupObjects(SelectedObjects,'Audio_Listeners')
-	sources=GetGroupObjects(SelectedObjects,'Audio_Sources')
+	listeners=[]
+	sources=[]
+	for object in SelectedObjects:
+		if BlenderOSCSender.isListener(object):
+			listeners.append(object)
+		if BlenderOSCSender.isSource(object):
+			sources.append(object)
 	if (len(listeners)!=1) or (len(sources)!=1):
 		Blender.Draw.PupMenu('You have to select one source and one listener objects!')
 		return
