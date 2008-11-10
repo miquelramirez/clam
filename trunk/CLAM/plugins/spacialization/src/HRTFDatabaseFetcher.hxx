@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef HRTFDatabaseFetcher2_hxx
-#define HRTFDatabaseFetcher2_hxx
+#ifndef HRTFDatabaseFetcher_hxx
+#define HRTFDatabaseFetcher_hxx
 
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
@@ -159,10 +159,10 @@ public:
 };
 
 /**
- @todo document HRTFDatabaseFetcher2
+ @todo document HRTFDatabaseFetcher
  @ingroup SpatialAudio
 */
-class HRTFDatabaseFetcher2 : public Processing
+class HRTFDatabaseFetcher : public Processing
 { 
 public:
 	class Config : public ProcessingConfig
@@ -197,8 +197,8 @@ private:
 	ImpulseResponse * _previousR;
 
 public:
-	const char* GetClassName() const { return "HRTFDatabaseFetcher2"; }
-	HRTFDatabaseFetcher2(const Config& config = Config()) 
+	const char* GetClassName() const { return "HRTFDatabaseFetcher"; }
+	HRTFDatabaseFetcher(const Config& config = Config()) 
 		: _impulseResponseL("ImpulseResponseL", this)
 		, _impulseResponseR("ImpulseResponseR", this)
 		, _elevation("elevation", this)
@@ -266,5 +266,5 @@ public:
 } // namespace CLAM
 
 
-#endif // HRTFDatabaseFetcher2_hxx
+#endif // HRTFDatabaseFetcher_hxx
 

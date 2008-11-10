@@ -18,15 +18,15 @@
  *
  */
 
-#include "HRTFDatabaseFetcher2.hxx"
+#include "HRTFDatabaseFetcher.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 namespace detail
 {
 	static const char* metadata[] = {
-		"key", "HRTFDatabaseFetcher2",
+		"key", "HRTFDatabaseFetcher",
 		"category", "[plugin] 3D Audio",
-		"description", "HRTFDatabaseFetcher2",
+		"description", "HRTFDatabaseFetcher",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::HRTFDatabaseFetcher2> reg = metadata;
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::HRTFDatabaseFetcher> reg = metadata;
 }
