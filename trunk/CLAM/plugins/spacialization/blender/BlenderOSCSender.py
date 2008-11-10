@@ -18,12 +18,8 @@ Requires:
     (CLAM SVN relative path) or '~/src/liblo'
 
 Usage:
-- Link the script to a scene/world FrameChanged event, and the positions of 
-    the 'Audio_Sources' and 'Audio_Listeners' groups will be sent on every new frame
-or
-- Link the script to an ObjectUpdate event of an object of the 'AudioSources' 
-    or 'Audio_Listeners' groups and the position of the object will be sent on every
-    ObjectUpdate event
+- Link the script to an ObjectUpdate event of an object named with substring "source" 
+    or "listener" and the position will be sent on every ObjectUpdate event
 """
 #
 # Copyright (c) 2008 Fundacio Barcelona Media Universitat Pompeu Fabra
@@ -87,20 +83,6 @@ for testpath in pathToOSCList:
 if configured==0:
 	print "Can't found OSC.py. Aborting."
 	
-#def sendGroupObjectsPositions(listeners, sources,typeName):
-#	for source in sources:
-#		sourceLocation=source.mat.translationPart()
-#		sourceNumber=sources.index(source)
-#		sendObjectValue(sourceNumber,typeName,"location",sourceLocation,7000+sourceNumber)
-#		for listener in listeners:
-#			listenerLocation=listener.mat.translationPart()
-#			listenerNumber=listeners.index(listener)
-#			roll, descention, azimuth=listener.mat.toEuler()
-#			elevation = -descention
-#			rotation = (roll,elevation,azimuth)
-#			sendObjectValue(listenerNumber,typeName,"location",sourceLocation,7000+sourceNumber)
-#			sendObjectValue(listenerNumber,typeName,"rotation",rotation,7000+sourceNumber)
-		
 
 def sendObjectValue(objectNumber,typeName,typeValue,value,port):
 	message="/SpatDIF/%s/%i/xyz/%s" % (typeName,objectNumber,typeValue)
