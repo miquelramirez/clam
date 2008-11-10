@@ -98,7 +98,7 @@ public:
 		double delevation = 180./M_PI*std::asin(rotatedZ/std::sqrt(rotatedX*rotatedX+rotatedY*rotatedY+rotatedZ*rotatedZ));
 
 		//TODO calculate the roll relative between the listener and the source
-		tupleAngles angles;
+		Orientation angles;
 		angles.elevation=delevation;
 		angles.azimuth=dazimuth;
 		angles=normalizeAngles(angles);
@@ -110,17 +110,17 @@ public:
 		return true;
 	}
 
-	typedef struct
+	struct Orientation
 	{
 		double azimuth;
 		double elevation;
-	} tupleAngles;
+	};
 
-	tupleAngles normalizeAngles (const tupleAngles & inAngles)
+	Orientation normalizeAngles (const Orientation & inAngles)
 	{
 		double elevation=inAngles.elevation;
 		double azimuth=inAngles.azimuth;
-		tupleAngles returnAngles;
+		Orientation returnAngles;
 		elevation += 90;
 		elevation = fmod(elevation, 360);
 		if (elevation>180)
