@@ -56,7 +56,7 @@ SourcesSubstring='source'
 ListenersSubstring='listener'
 
 def isSource (object):
-	return (object.name.lower().search(SourcesSubstring)!=-1)
+	return (object.name.lower().find(SourcesSubstring)!=-1)
 def getSources(scene=Blender.Scene.GetCurrent()):
 	# old method: #sources=list(data.groups[SourcesGroupName].objects)
 	sources=list()
@@ -66,7 +66,7 @@ def getSources(scene=Blender.Scene.GetCurrent()):
 	return sources
 
 def isListener (object):
-	return (object.name.lower().search(ListenersSubstring)!=-1)
+	return (object.name.lower().find(ListenersSubstring)!=-1)
 def getListeners(scene=Blender.Scene.GetCurrent()):
 	# old method: #listeners=list(data.groups[ListenersGroupName].objects)
 	listeners=list()

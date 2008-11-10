@@ -78,6 +78,10 @@ def main():
 		Blender.Run(NetworkExporter.name)
 	if (OSCSenderFilename and Blender.sys.exists(OSCSenderFilename)==1):
 		OSCSender=Blender.Text.Load(OSCSenderFilename)
+		import BlenderOSCSender
+		for object in data.scenes.active.objects:
+			if BlenderOSCSender.isSource(object) or BlenderOSCSender.isListener(object):
+				object.addScriptLink(OSCSender.name,'ObjectUpdate')
 		data.scenes.active.addScriptLink(OSCSender.name,'FrameChanged')
 	if (ChoreoExporterFilename and Blender.sys.exists(ChoreoExporterFilename)==1):
 		Blender.Text.Load(ChoreoExporterFilename)
