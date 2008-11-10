@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
   <processing id="AudioBuffer2Stream" position="920,992" size="144,58" type="AudioBuffer2Stream">
@@ -152,11 +151,11 @@
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="AudioSink" position="1879,815" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink" position="1879,815" size="128,111" type="AudioSink" />
 
-  <processing id="AudioSink_1" position="1796,1029" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink_1" position="1796,1029" size="128,111" type="AudioSink" />
 
-  <processing id="AudioSource_1" position="34,340" size="128,108" type="AudioSource"/>
+  <processing id="AudioSource_1" position="34,340" size="128,108" type="AudioSource" />
 
   <processing id="AudioWindowing" position="204,686" size="127,58" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -247,23 +246,23 @@
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="HRTFDatabaseFetcher2" position="237,999" size="167,94" type="HRTFDatabaseFetcher2">
+  <processing id="HRTFDatabaseFetcher2" position="237,999" size="167,94" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>HRTFs/kreuzerDatabase.hrtfs</Path>
-    <Prefix></Prefix>
+    <Prefix />
   </processing>
 
-  <processing id="IRSwappingDelay" position="434,979" size="133,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay" position="434,979" size="133,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_1" position="423,1088" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_1" position="423,1088" size="147,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_2" position="353,52" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_2" position="353,52" size="147,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_3" position="344,176" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_3" position="344,176" size="147,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_4" position="352,270" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_4" position="352,270" size="147,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_5" position="351,374" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_5" position="351,374" size="147,62" type="IRSwappingDelay" />
 
   <processing id="ImpulseResponseLoader" position="1425,387" size="251,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
@@ -285,9 +284,9 @@
     <ImpulseResponse>Ez.wav</ImpulseResponse>
   </processing>
 
-  <processing id="Inverter" position="1928,437" size="75,58" type="ComplexSpectrumInverter"/>
+  <processing id="Inverter" position="1928,437" size="75,58" type="ComplexSpectrumInverter" />
 
-  <processing id="Inverter V" position="2055,146" size="86,58" type="ComplexSpectrumInverter"/>
+  <processing id="Inverter V" position="2055,146" size="86,58" type="ComplexSpectrumInverter" />
 
   <processing id="LowLatencyConvolution" position="624,987" size="166,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -445,17 +444,17 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope" position="867,861" size="288,113" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="867,861" size="288,113" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_1" position="886,1187" size="288,110" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="886,1187" size="288,110" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_2" position="1215,301" size="132,156" type="Oscilloscope"/>
+  <processing id="Oscilloscope_2" position="1215,301" size="132,156" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_3" position="1218,447" size="132,153" type="Oscilloscope"/>
+  <processing id="Oscilloscope_3" position="1218,447" size="132,153" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_4" position="594,648" size="238,173" type="Oscilloscope"/>
+  <processing id="Oscilloscope_4" position="594,648" size="238,173" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_5" position="1219,586" size="133,159" type="Oscilloscope"/>
+  <processing id="Oscilloscope_5" position="1219,586" size="133,159" type="Oscilloscope" />
 
   <processing id="OutControlSender" position="88,576" size="262,78" type="OutControlSender">
     <Min>0</Min>
@@ -486,27 +485,27 @@
     <SupressInitialDelay>1</SupressInitialDelay>
   </processing>
 
-  <processing id="SumWXZ" position="1946,258" size="85,62" type="ComplexSpectrumSum"/>
+  <processing id="SumWXZ" position="1946,258" size="85,62" type="ComplexSpectrumSum" />
 
-  <processing id="SumXZ" position="1951,141" size="74,62" type="ComplexSpectrumSum"/>
+  <processing id="SumXZ" position="1951,141" size="74,62" type="ComplexSpectrumSum" />
 
-  <processing id="Sum_L" position="2033,367" size="73,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum_L" position="2033,367" size="73,62" type="ComplexSpectrumSum" />
 
-  <processing id="Sum_R" position="2026,444" size="75,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum_R" position="2026,444" size="75,62" type="ComplexSpectrumSum" />
 
-  <processing id="XFadeAndSwitch" position="656,873" size="128,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch" position="656,873" size="128,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_1" position="689,1199" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_1" position="689,1199" size="142,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_2" position="992,56" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_2" position="992,56" size="142,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_3" position="989,166" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_3" position="989,166" size="142,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_4" position="998,267" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_4" position="998,267" size="142,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_5" position="1001,371" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_5" position="1001,371" size="142,94" type="XFadeAndSwitch" />
 
-  <processing id="amp_mono0" position="1426,318" size="134,66" type="amp_mono0"/>
+  <processing id="amp_mono0" position="1426,318" size="134,66" type="amp_mono0" />
 
   <processing id="directSoundPressure" position="754,513" size="247,100" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
