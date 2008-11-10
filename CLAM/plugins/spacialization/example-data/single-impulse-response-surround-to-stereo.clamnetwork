@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
   <processing id="2StreamR" position="1151,429" size="95,58" type="AudioBuffer2Stream">
@@ -19,7 +18,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioInput" position="55,57" size="128,108" type="AudioSource"/>
+  <processing id="AudioInput" position="55,57" size="128,108" type="AudioSource" />
 
   <processing id="AudioWindowing" position="182,56" size="135,58" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -30,7 +29,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Cartesian2PolarControl" position="213,527" size="179,58" type="Cartesian2PolarControl"/>
+  <processing id="Cartesian2PolarControl" position="213,527" size="179,58" type="Cartesian2PolarControl" />
 
   <processing id="ControlPrinter" position="214,598" size="161,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
@@ -158,7 +157,7 @@
     <ImpulseResponse>room1/vy_emissor_0-0-0_receptor_0-9-0.wav</ImpulseResponse>
   </processing>
 
-  <processing id="L" position="1257,278" size="128,111" type="AudioSink"/>
+  <processing id="L" position="1257,278" size="128,111" type="AudioSink" />
 
   <processing id="MyFFT" position="337,56" size="71,58" type="MyFFT">
     <AudioSize>1024</AudioSize>
@@ -184,7 +183,7 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="R" position="1255,429" size="128,111" type="AudioSink"/>
+  <processing id="R" position="1255,429" size="128,111" type="AudioSink" />
 
   <processing id="Receiver Orientation" position="210,335" size="160,180" type="ControlSurface">
     <MinX>-1</MinX>
@@ -195,23 +194,23 @@
     <MaxY>1</MaxY>
   </processing>
 
-  <processing id="Sum" position="1044,539" size="61,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum" position="1044,539" size="61,62" type="ComplexSpectrumSum" />
 
-  <processing id="Sum2" position="1042,610" size="69,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum2" position="1042,610" size="69,62" type="ComplexSpectrumSum" />
 
-  <processing id="Sum3" position="974,426" size="69,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum3" position="974,426" size="69,62" type="ComplexSpectrumSum" />
 
-  <processing id="Sum4" position="1129,568" size="69,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum4" position="1129,568" size="69,62" type="ComplexSpectrumSum" />
 
-  <processing id="SumL" position="1058,42" size="67,62" type="ComplexSpectrumSum"/>
+  <processing id="SumL" position="1058,42" size="67,62" type="ComplexSpectrumSum" />
 
-  <processing id="SumL2" position="1064,136" size="75,62" type="ComplexSpectrumSum"/>
+  <processing id="SumL2" position="1064,136" size="75,62" type="ComplexSpectrumSum" />
 
-  <processing id="SumL3" position="1152,90" size="75,62" type="ComplexSpectrumSum"/>
+  <processing id="SumL3" position="1152,90" size="75,62" type="ComplexSpectrumSum" />
 
-  <processing id="SumL4" position="971,281" size="75,62" type="ComplexSpectrumSum"/>
+  <processing id="SumL4" position="971,281" size="75,62" type="ComplexSpectrumSum" />
 
-  <processing id="Surround" position="480,464" size="92,110" type="Surround"/>
+  <processing id="Surround" position="480,464" size="92,110" type="Surround" />
 
   <processing id="toStream P" position="573,132" size="104,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>

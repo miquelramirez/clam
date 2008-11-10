@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
   <processing id="Convolution P" position="525,400" size="111,62" type="LowLatencyConvolution">
@@ -118,11 +117,11 @@
     <ImpulseResponse>Ez.wav</ImpulseResponse>
   </processing>
 
-  <processing id="Invert Y" position="693,488" size="75,58" type="ComplexSpectrumInverter"/>
+  <processing id="Invert Y" position="693,488" size="75,58" type="ComplexSpectrumInverter" />
 
-  <processing id="L" position="1090,365" size="128,111" type="AudioSink"/>
+  <processing id="L" position="1090,365" size="128,111" type="AudioSink" />
 
-  <processing id="R" position="1087,463" size="128,111" type="AudioSink"/>
+  <processing id="R" position="1087,463" size="128,111" type="AudioSink" />
 
   <processing id="Streamer L" position="974,381" size="94,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -142,27 +141,27 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Sum Center" position="743,218" size="99,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum Center" position="743,218" size="99,62" type="ComplexSpectrumSum" />
 
-  <processing id="Sum L" position="791,380" size="69,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum L" position="791,380" size="69,62" type="ComplexSpectrumSum" />
 
-  <processing id="Sum R" position="783,457" size="71,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum R" position="783,457" size="71,62" type="ComplexSpectrumSum" />
 
-  <processing id="Sum XZ" position="635,215" size="77,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum XZ" position="635,215" size="77,62" type="ComplexSpectrumSum" />
 
-  <processing id="W" position="16,347" size="128,108" type="AudioSource"/>
+  <processing id="W" position="16,347" size="128,108" type="AudioSource" />
 
-  <processing id="X" position="16,105" size="128,108" type="AudioSource"/>
+  <processing id="X" position="16,105" size="128,108" type="AudioSource" />
 
-  <processing id="Y" position="21,474" size="128,108" type="AudioSource"/>
+  <processing id="Y" position="21,474" size="128,108" type="AudioSource" />
 
-  <processing id="Z" position="11,235" size="128,108" type="AudioSource"/>
+  <processing id="Z" position="11,235" size="128,108" type="AudioSource" />
 
-  <processing id="amp_mono0" position="221,377" size="103,58" type="amp_mono0"/>
+  <processing id="amp_mono0" position="221,377" size="103,58" type="amp_mono0" />
 
-  <processing id="amp_mono0_1" position="158,225" size="117,58" type="amp_mono0"/>
+  <processing id="amp_mono0_1" position="158,225" size="117,58" type="amp_mono0" />
 
-  <processing id="amp_mono0_2" position="159,106" size="117,58" type="amp_mono0"/>
+  <processing id="amp_mono0_2" position="159,106" size="117,58" type="amp_mono0" />
 
   <port_connection>
     <out>Convolution P.Output</out>
