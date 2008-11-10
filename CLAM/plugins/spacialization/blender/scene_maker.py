@@ -52,7 +52,7 @@ TODO:
 # 
 
 from bpy import data
-import Blender, math
+import Blender, math, BPyNMesh
 
 #comment the filenames of the scripts you don't want to use
 NetworkExporterFilename="network_scene_exporter.py"
@@ -82,42 +82,48 @@ def main():
 	if (ChoreoExporterFilename and Blender.sys.exists(ChoreoExporterFilename)==1):
 		Blender.Text.Load(ChoreoExporterFilename)
 		
-def ShowConfigurationDialog(defaultSources=1,defaultSinks=1):
+def ShowConfigurationDialog(defaultSources=1,defaultListeners=1):
 	Draw=Blender.Draw
 	SourcesNumber=Draw.Create(defaultSources)
-	SinksNumber=Draw.Create(defaultSinks)
+	ListenersNumber=Draw.Create(defaultListeners)
 	
 	if not Draw.PupBlock('Define the objects to create',[\
 	('Sources number:',SourcesNumber,1,100,'number of sources'),\
-	('Sinks number:',SinksNumber,1,100,'number of sinks'),\
+	('Listeners number:',ListenersNumber,1,100,'number of listeners'),\
 	]):
 	    return 0,0
 	else:
-	    return SourcesNumber,SinksNumber
+	    return SourcesNumber,ListenersNumber
 
-def AddSinks(scene,sinksNumber):
-	group=data.groups.new('AudioSinks')
-	offsetX=(sinksNumber-1)*3./(-2)
+def AddSinks(scene,listenersNumber):
+	group=data.groups.new('Audio_Listeners')
+	offsetX=(listenersNumber-1)*1.0/(-2)
 	mesh=Blender.Mesh.Primitives.Monkey()
-	mesh.name="omni_sink_model"
-	for i in range(sinksNumber):
-		object=scene.objects.new(mesh,'sink'+str(i))
+	mesh.name="omni_listener_model"
+	objectModel=scene.objects.new(mesh,'listenerModel')
+	objectModel.RotX=math.pi/2
+	objectModel.RotY=0
+	objectModel.RotZ=math.pi/2
+	objectModel.SizeX=.23 # 23 cmts
+	objectModel.SizeY=.25 # 25 cmts
+	objectModel.SizeZ=.28 # 28 cmts
+	BPyNMesh.ApplySizeAndRotation(objectModel)
+	scene.objects.unlink(objectModel)
+	for i in range(listenersNumber):
+		object=scene.objects.new(mesh,'listener%i' % i)
 		object.setLocation([offsetX,0,0])
-		object.RotX = math.pi/2;
-		object.RotY = 0;
-		object.RotZ = math.pi/2;
-		offsetX+=3
+		offsetX+=1 #a meter
 		group.objects.link(object)
 	
 def AddSources(scene,sourcesNumber):
-	group=data.groups.new('AudioSources')
-	offsetX=(sourcesNumber-1)*3./(-2)
-	mesh=Blender.Mesh.Primitives.UVsphere(32,32,1)
+	group=data.groups.new('Audio_Sources')
+	offsetX=(sourcesNumber-1)*1./(-2)
+	mesh=Blender.Mesh.Primitives.UVsphere(32,32,0.2)
 	mesh.name="omni_source_model"	
 	for i in range(sourcesNumber):
-		object=scene.objects.new(mesh,'source'+str(i))
-		object.setLocation([offsetX,5,0])
-		offsetX+=3
+		object=scene.objects.new(mesh,'source%i' % i)
+		object.setLocation([offsetX,1,0])
+		offsetX+=1
 		group.objects.link(object)
 
 # This lets you can import the script without running it
