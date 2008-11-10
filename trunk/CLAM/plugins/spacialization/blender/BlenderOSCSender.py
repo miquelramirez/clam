@@ -49,8 +49,8 @@ from sys import path
 from os import getenv
 import Blender, math
 
-SourcesGroupName='AudioSources'
-SinksGroupName='AudioSinks'
+SourcesGroupName='Audio_Sources'
+ListenersGroupName='Audio_Listeners'
 
 # use OSC client module for python - by Stefan Kersten
 pathToOSCList=["../../osc/oscpython",getenv("HOME")+"/src/liblo",getenv("HOME")+"/acustica/realtime_blender_demo"]
@@ -64,22 +64,20 @@ for testpath in pathToOSCList:
 if configured==0:
 	print "Can't found OSC.py. Aborting."
 	
-def sendGroupObjectsPositions(sinks, sources,typeName):
+def sendGroupObjectsPositions(listeners, sources,typeName):
 	for source in sources:
-		sourceLocation=source.getLocation()
+		sourceLocation=source.mat.translationPart()
 		sourceNumber=sources.index(source)
 		sendObjectValue(sourceNumber,typeName,"location",sourceLocation,7000+sourceNumber)
 #		print "ANIMATION Send Source "+repr(sourceNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(sourceLocation)
-		for sink in sinks:
-			sinkLocation=sink.getLocation()
-			sinkNumber=sinks.index(sink)
-			roll = sink.RotX
-			elevation = sink.RotY
-			azimuth = sink.RotZ
-			rotation = ()
-			rotation = roll,elevation,azimuth
-			sendObjectValue(sinkNumber,typeName,"location",sourceLocation,7000+sourceNumber)
-			sendObjectValue(sinkNumber,typeName,"rotation",rotation,7000+sourceNumber)
+		for listener in listeners:
+			listenerLocation=listener.mat.translationPart()
+			listenerNumber=listeners.index(listener)
+			roll, descention, azimuth=listener.mat.toEuler()
+			elevation = -descention
+			rotation = (roll,elevation,azimuth)
+			sendObjectValue(listenerNumber,typeName,"location",sourceLocation,7000+sourceNumber)
+			sendObjectValue(listenerNumber,typeName,"rotation",rotation,7000+sourceNumber)
 #			print "ANIMATION Send Sink "+repr(sinkNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(sinkLocation)
 		
 
@@ -93,7 +91,7 @@ def main():
 	if Blender.event=='FrameChanged':
 		frame=Blender.Get('curframe')
 		Message("/SpatDIF/sync/FrameChanged",[frame]).sendlocal(7000)
-		sendGroupObjectsPositions(list(data.groups[SinksGroupName].objects),list(data.groups[SourcesGroupName].objects),'sources')
+		sendGroupObjectsPositions(list(data.groups[ListenersGroupName].objects),list(data.groups[SourcesGroupName].objects),'sources')
 	if Blender.bylink==True and Blender.event=='ObjectUpdate':
 		object=Blender.link
 		location=object.getLocation()
@@ -104,20 +102,18 @@ def main():
 			objectNumber=sources.index(object)
 			sendObjectValue(objectNumber,typename,"location",location,7000+objectNumber)
 #			print "UPDATE L Source "+repr(objectNumber)+" Port"+repr(7000+objectNumber)+" "+repr(location)
-		if sinks.count(object)!=0:
-			typename='sinks'
-			objectNumber=sinks.index(object)
-			elevation = object.RotX-(math.pi/2)
-			roll = object.RotY
-			azimuth = object.RotZ-(math.pi/2)
-			rotation = ()
-			rotation = roll,elevation,azimuth
+		if listeners.count(object)!=0:
+			typename='listeners'
+			objectNumber=listeners.index(object)
+			roll, descention, azimuth=object.mat.toEuler()
+			elevation = -descention
+			rotation = (roll,elevation,azimuth)
 			for source in sources:
 				sourceNumber = sources.index(source)
 				sendObjectValue(objectNumber,typename,"location",location,7000+sourceNumber)
 				sendObjectValue(objectNumber,typename,"rotation",rotation,7000+sourceNumber)
 #				print "UPDATE L Sink "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(location)
-				print "UPDATE R Sink "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(rotation)
+#				print "UPDATE R Sink "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(rotation)
 				
 		if not typename:
 			return
