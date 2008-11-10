@@ -81,7 +81,6 @@ def main():
 		import BlenderOSCSender
 		for object in data.scenes.active.objects:
 			if BlenderOSCSender.isSource(object) or BlenderOSCSender.isListener(object):
-				print "----objeto %s es un listener o un source" % object.name
 				object.addScriptLink(OSCSender.name,'ObjectUpdate')
 		data.scenes.active.addScriptLink(OSCSender.name,'FrameChanged')
 	if (ChoreoExporterFilename and Blender.sys.exists(ChoreoExporterFilename)==1):
