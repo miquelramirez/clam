@@ -3,7 +3,7 @@
 Name: 'CLAM ChoreoSequencer file exporter'
 Blender: 244
 Group: 'Export'
-Tooltip: 'Generate a CLAM ChoreoSequencer readable file with one source and one sink'
+Tooltip: 'Generate a CLAM ChoreoSequencer readable file with one source and one listener'
 """
 __author__ = ("Natanael Olaiz", "CLAM Team")
 __url__ = ("http://clam.iua.upf.edu/")
@@ -17,8 +17,8 @@ Requires:
      also a ready made CLAM network monitor.
 
 Usage:
- - Select one object member of 'AudioSinks' group and one of the 'AudioSources'
-    one as a sink an a source, then run the script. It will ask for a 
+ - Select one object member of 'Audio_Listeners' group and one of the 'Audio_Sources'
+    one as a listener and a source, then run the script. It will ask for a 
     ChoreoSequencer file first, and then (if 'network_scene_exporter.py' is on
     path) for a network filename.
 """
@@ -62,25 +62,21 @@ def GetGroupObjects(objects,groupName):
 def WriteSceneAsChoreo (choreoFilename):
 #	Window.WaitCursor(1)
 	SelectedObjects = Blender.Object.GetSelected()
-	sinks=GetGroupObjects(SelectedObjects,'AudioSinks')
-	sources=GetGroupObjects(SelectedObjects,'AudioSources')
-	if (len(sinks)!=1) or (len(sources)!=1):
-		Blender.Draw.PupMenu('You have to select one source and one sink objects!')
+	listeners=GetGroupObjects(SelectedObjects,'Audio_Listeners')
+	sources=GetGroupObjects(SelectedObjects,'Audio_Sources')
+	if (len(listeners)!=1) or (len(sources)!=1):
+		Blender.Draw.PupMenu('You have to select one source and one listener objects!')
 		return
-	sink=sinks[0]
+	listener=listeners[0]
 	source=sources[0]
 	scene = Blender.Scene.GetCurrent()
 	f=open(choreoFilename,'w')
 	for frame in range(Blender.Get('staframe'),Blender.Get('endframe')):
 		Blender.Set('curframe',frame)
-		targetAzimuth=sink.RotY # use y for azimuth
-		targetElevation=sink.RotX # and x for elevation
-		targetX=sink.LocX
-		targetY=sink.LocY
-		targetZ=sink.LocZ
-		sourceX=source.LocX
-		sourceY=source.LocY
-		sourceZ=source.LocZ
+		targetRoll, targetDescention,targetAzimuth=listener.mat.toEuler()
+		targetElevation=-targetDescention
+		targetX,targetY,targetZ=listener.mat.translationPart()
+		sourceX,sourceY,sourceZ=source.mat.translationPart()
 		f.write(row % vars())
 	f.close()
 	print "Exported choreo file: %s" % choreoFilename
