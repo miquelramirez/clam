@@ -19,10 +19,10 @@ Requires:
 
 Usage:
 - Link the script to a scene/world FrameChanged event, and the positions of 
-    the 'AudioSources' and 'AudioSinks' groups will be sent on every new frame
+    the 'Audio_Sources' and 'Audio_Listeners' groups will be sent on every new frame
 or
 - Link the script to an ObjectUpdate event of an object of the 'AudioSources' 
-    or 'AudioSinks' groups and the position of the object will be sent on every
+    or 'Audio_Listeners' groups and the position of the object will be sent on every
     ObjectUpdate event
 """
 #
@@ -78,7 +78,7 @@ def sendGroupObjectsPositions(listeners, sources,typeName):
 			rotation = (roll,elevation,azimuth)
 			sendObjectValue(listenerNumber,typeName,"location",sourceLocation,7000+sourceNumber)
 			sendObjectValue(listenerNumber,typeName,"rotation",rotation,7000+sourceNumber)
-#			print "ANIMATION Send Sink "+repr(sinkNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(sinkLocation)
+#			print "ANIMATION Send Listener"+repr(listenerNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(listenerLocation)
 		
 
 def sendObjectValue(objectNumber,typeName,typeValue,value,port):
@@ -96,7 +96,7 @@ def main():
 		object=Blender.link
 		location=object.getLocation()
 		sources=list(data.groups[SourcesGroupName].objects)
-		sinks=list(data.groups[SinksGroupName].objects)
+		listeners=list(data.groups[ListenersGroupName].objects)
 		if sources.count(object)!=0:
 			typename='sources'
 			objectNumber=sources.index(object)
@@ -112,8 +112,8 @@ def main():
 				sourceNumber = sources.index(source)
 				sendObjectValue(objectNumber,typename,"location",location,7000+sourceNumber)
 				sendObjectValue(objectNumber,typename,"rotation",rotation,7000+sourceNumber)
-#				print "UPDATE L Sink "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(location)
-#				print "UPDATE R Sink "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(rotation)
+#				print "UPDATE L Listener "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(location)
+#				print "UPDATE R Listener "+repr(objectNumber)+" Port"+repr(7000+sourceNumber)+" "+repr(rotation)
 				
 		if not typename:
 			return

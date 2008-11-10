@@ -3,15 +3,15 @@
 Name: 'CLAM scene generator'
 Blender: 244
 Group: 'Export'
-Tooltip: 'Create a new scene with m audio sinks and n audio sources'
+Tooltip: 'Create a new scene with m audio listeners and n audio sources'
 """
 __author__ = ("Natanael Olaiz", "CLAM Team")
 __url__ = ("http://clam.iua.upf.edu/")
 __email__ = ["clam@iua.upf.edu"]
 __version__ = "CLAM 1.3.1 - GSOC 2008"
 __bpydoc__ = """\
-This script generates a new blender scene with audio sinks and sources 
-(for now just UVSpheres, within the groups 'AudioSinks' and 'AudioSources').
+This script generates a new blender scene with audio listeners and sources 
+(for now just UVSpheres, within the groups 'Audio_Listeners' and 'Audio_Sources').
 
 Optional:
  - 'BlenderOSCSender.py' on path, to link the OSC sender to the new scene 
@@ -60,7 +60,7 @@ OSCSenderFilename="BlenderOSCSender.py"
 ChoreoExporterFilename="choreofile_exporter.py"
 
 def main():
-	SourcesNumber,SinksNumber=ShowConfigurationDialog(1,1)
+	SourcesNumber,ListenersNumber=ShowConfigurationDialog(1,1)
 	newscene=data.scenes.new()
 	data.scenes.active=newscene
 #TODO: this doesn't clear all the data!
@@ -71,7 +71,7 @@ def main():
 			scene.objects.unlink(ob)
 		if scene!=newscene:
 			data.scenes.unlink(scene)
-	AddSinks(newscene,SinksNumber.val)
+	AddListeners(newscene,ListenersNumber.val)
 	AddSources(newscene,SourcesNumber.val)
 	if (NetworkExporterFilename and Blender.sys.exists(NetworkExporterFilename)==1): # if is an existent filename
 		NetworkExporter=Blender.Text.Load(NetworkExporterFilename)
@@ -95,7 +95,7 @@ def ShowConfigurationDialog(defaultSources=1,defaultListeners=1):
 	else:
 	    return SourcesNumber,ListenersNumber
 
-def AddSinks(scene,listenersNumber):
+def AddListeners(scene,listenersNumber):
 	group=data.groups.new('Audio_Listeners')
 	offsetX=(listenersNumber-1)*1.0/(-2)
 	mesh=Blender.Mesh.Primitives.Monkey()

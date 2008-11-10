@@ -11,7 +11,7 @@ __email__ = ["clam@iua.upf.edu"]
 __version__ = "CLAM 1.3.1 - GSOC 2008"
 __bpydoc__ = """\
 This script generates a CLAM Network with one OSC receiver for each audio
- object of the scene (contained in 'AudioSources' and 'AudioSinks' groups)
+ object of the scene (contained in 'Audio_Sources' and 'Audio_Listeners' groups)
  and connect them to a ControlPrinter as monitor. Useful to use as a template
  network for the Blender scene.
 
@@ -62,11 +62,11 @@ def GenerateNetworkOSCReceiver(filename):
 	argumentNumbers=3
 	xPosition=50
 	yPosition=150
-	path="/SpatDIF/sources/%(objectNumber)s/xyz"
+	path="/SpatDIF/sources/%(objectNumber)s/xyz/location"
 	port=7000
 #create sources receivers and its monitors
-	objectsList=list(data.groups['AudioSources'].objects)
-	for source in data.groups['AudioSources'].objects:
+	objectsList=list(data.groups['Audio_Sources'].objects)
+	for source in data.groups['Audio_Sources'].objects:
 		libloName="source_"+source.name
 		printerName="printer_source_"+source.name
 		objectNumber=str(objectsList.index(source))
@@ -78,13 +78,13 @@ def GenerateNetworkOSCReceiver(filename):
 		xPosition+=300
 	xPosition=50
 	yPosition=600
-#create sinks receivers and its monitors
-	objectsList=list(data.groups['AudioSinks'].objects)
-	path="/SpatDIF/sinks/%(objectNumber)s/xyz"
-	for sink in data.groups['AudioSinks'].objects:
-		libloName="sink_"+sink.name
-		printerName="printer_sink_"+sink.name
-		objectNumber=str(objectsList.index(sink))
+#create listeners receivers and its monitors
+	objectsList=list(data.groups['Audio_Listeners'].objects)
+	path="/SpatDIF/listeners/%(objectNumber)s/xyz/location"
+	for listener in data.groups['Audio_Listeners'].objects:
+		libloName="listener_"+listener.name
+		printerName="printer_listener_"+listener.name
+		objectNumber=str(objectsList.index(listener))
 		liblos+=makeLibloSource(libloName,path % vars(),(xPosition,yPosition),3,port)
 		printers+=makeControlPrinter(printerName,(xPosition,yPosition+150),3)
 		for o in range(3):
