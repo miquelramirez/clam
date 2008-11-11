@@ -38,7 +38,7 @@ namespace CLAM
 {
 
 
-class GeodesicDatabase2
+class GeodesicDatabase
 {
 	static double angularDistance(float azimut1, float elevation1, float azimut2, float elevation2)
 	{
@@ -89,7 +89,7 @@ class GeodesicDatabase2
 	}
 public:
 	unsigned NElevation;
-	GeodesicDatabase2()
+	GeodesicDatabase()
 		: NElevation(14)
 	{
 	}
@@ -191,7 +191,7 @@ private:
 	FloatInControl _azimuth; ///< horizontal angle from viewpoint (north-south-east-west)
 	FloatOutControl _chosenElevation; ///< angle to the horizon
 	FloatOutControl _chosenAzimuth; ///< horizontal angle from viewpoint (north-south-east-west)
-	GeodesicDatabase2 _database; 
+	GeodesicDatabase _database; 
 	ImpulseResponse * _previousL;
 	ImpulseResponse * _previousR;
 
