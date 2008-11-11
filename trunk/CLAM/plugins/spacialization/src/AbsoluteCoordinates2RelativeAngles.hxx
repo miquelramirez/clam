@@ -25,8 +25,9 @@ namespace CLAM
  @param[in] "source X" [Control] X coord of the source in absolute coords
  @param[in] "source Y" [Control] Y coord of the source in absolute coords
  @param[in] "source Z" [Control] Z coord of the source in absolute coords
- @param[out] "target azimuth" [Control] Relative azimuth of the target
- @param[out] "target elevation" [Control] Relative elevation of the target
+ @param[out] "source azimuth" [Control] Relative azimuth of the source on target's frame
+ @param[out] "source elevation" [Control] Relative elevation of the source on target's frame
+ @todo Input roll is not considered at all
  @ingroup SpatialAudio
  @see AmbisonicsConventions
 */
