@@ -44,6 +44,7 @@ from bpy import data
 from sys import path
 from os import getenv
 import Blender, math
+import re
 
 #SourcesGroupName='Audio_Sources'
 #ListenersGroupName='Audio_Listeners'
@@ -102,21 +103,26 @@ def main():
 		roll, descention, azimuth=object.mat.toEuler()
 		elevation = -descention
 		rotation = (math.radians(roll),math.radians(elevation),math.radians(azimuth))
+		port=7000
+		# try to get the port on object name:
+		portInName=re.search('_p[0-9]+$',object.name)
+		if portInName!=None:
+			port=int(portInName.group()[2:])	
 		if isSource(object):
 			typename='sources'
 			sources=getSources()
 			objectNumber=sources.index(object)
-			sendObjectValue(objectNumber,typename,"location",location,7000)
-			sendObjectValue(objectNumber,typename,"rotation",rotation,7000)
-#			print "UPDATE L Source "+str(objectNumber)+" Port"+str(7000)+" "+str(location)
+			sendObjectValue(objectNumber,typename,"location",location,port)
+			sendObjectValue(objectNumber,typename,"rotation",rotation,port)
+#			print "UPDATE L Source "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 			return
 		if isListener(object):
 			listeners=getListeners()
 			typename='listeners'
 			objectNumber=listeners.index(object)
-			sendObjectValue(objectNumber,typename,"location",location,7000)
-			sendObjectValue(objectNumber,typename,"rotation",rotation,7000)
-#			print "UPDATE L Listener "+str(objectNumber)+" Port"+str(7000)+" "+str(location)
+			sendObjectValue(objectNumber,typename,"location",location,port)
+			sendObjectValue(objectNumber,typename,"rotation",rotation,port)
+#			print "UPDATE L Listener "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 			return
 		if not typename:
 			return
