@@ -113,6 +113,7 @@ public:
 
 		std::ifstream index(path.c_str());
 		if (!index) return error(errorMsg, "Could not open the file "+path);
+		_lines.clear();
 		while (true)
 		{
 			double elevation;
