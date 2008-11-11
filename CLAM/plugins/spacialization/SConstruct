@@ -57,6 +57,8 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
 	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'local','lib')] )
 env.Append( LIBS=['fftw3'] )
+env.AppendUnique(CPPPATH=sourcePaths)
+env.AppendUnique(CPPPATH=sourcePaths)
 
 if env['raytracing'] :
 	env.Append(CPPPATH=[os.path.join('..','..','..','..','acustica','raytracing')])
@@ -69,6 +71,11 @@ libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
 	]
 
+tests = [
+	env.Program("UnitTests", scanFiles("*.cxx", ['tests'])+libraries),
+	]
+runTests = Command("UnitTests.passed",tests,"LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:. valgrind -q --leak-check=yes ./UnitTests")
+
 examples = scanFiles('*.clamnetwork', ['example-data'])
 examples+= scanFiles('*.ui', ['example-data'])
 
@@ -78,6 +85,7 @@ install = [
 	]
 
 env.Alias('install', install)
+env.Alias('tests', runTests)
 env.Default(libraries)
 
 
