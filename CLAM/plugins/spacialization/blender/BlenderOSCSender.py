@@ -107,6 +107,7 @@ def main():
 			sources=getSources()
 			objectNumber=sources.index(object)
 			sendObjectValue(objectNumber,typename,"location",location,7000)
+			sendObjectValue(objectNumber,typename,"rotation",rotation,7000)
 #			print "UPDATE L Source "+str(objectNumber)+" Port"+str(7000)+" "+str(location)
 			return
 		if isListener(object):

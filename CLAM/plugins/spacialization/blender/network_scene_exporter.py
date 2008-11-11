@@ -62,36 +62,41 @@ def GenerateNetworkOSCReceiver(filename):
 	argumentNumbers=3
 	xPosition=50
 	yPosition=150
-	path="/SpatDIF/sources/%(objectNumber)s/xyz/location"
 	port=7000
 #create sources receivers and its monitors
 	scene=Blender.Scene.GetCurrent()
 	sources=BlenderOSCSender.getSources(scene)
+	templatePath="/SpatDIF/sources/%(objectNumber)s/xyz/%(sufix_path)s"
+	dictionary_paths=['location','rotation']
 	for source in sources:
-		libloName="source_"+source.name
-		printerName="printer_source_"+source.name
-		objectNumber=str(sources.index(source))
-		liblos+=makeLibloSource(libloName,path % vars(),(xPosition,yPosition),3,port)
-		printers+=makeControlPrinter(printerName,(xPosition,yPosition+150),3)
-		for o in range(3):
-			sufix="_"+str(o)
-			connections+=makeControlConnection(libloName,(path%vars()).replace("/","_")+sufix,printerName,"ControlPrinter"+sufix)
-		xPosition+=300
+		for sufix_path in dictionary_paths:
+			libloName="source_%s_%s" % (source.name,sufix_path)
+			printerName="printer_source_%s_%s" % (source.name,sufix_path)
+			objectNumber=str(sources.index(source))
+			liblos+=makeLibloSource(libloName,templatePath % vars(),(xPosition,yPosition),3,port)
+			printers+=makeControlPrinter(printerName,(xPosition,yPosition+150),3)
+			for o in range(3):
+				sufix="_"+str(o)
+				connections+=makeControlConnection(libloName,(templatePath%vars()).replace("/","_")+sufix,printerName,"ControlPrinter"+sufix)
+			xPosition+=300
+		xPosition+=150
 	xPosition=50
 	yPosition=600
 #create listeners receivers and its monitors
 	listeners=BlenderOSCSender.getListeners(scene)
-	path="/SpatDIF/listeners/%(objectNumber)s/xyz/location"
+	templatePath="/SpatDIF/listeners/%(objectNumber)s/xyz/%(sufix_path)s"
 	for listener in listeners:
-		libloName="listener_"+listener.name
-		printerName="printer_listener_"+listener.name
-		objectNumber=str(listeners.index(listener))
-		liblos+=makeLibloSource(libloName,path % vars(),(xPosition,yPosition),3,port)
-		printers+=makeControlPrinter(printerName,(xPosition,yPosition+150),3)
-		for o in range(3):
-			sufix="_"+str(o)
-			connections+=makeControlConnection(libloName,(path%vars()).replace("/","_")+sufix,printerName,"ControlPrinter"+sufix)
-		xPosition+=300
+		for sufix_path in dictionary_paths:
+			libloName="listener_%s_%s" % (listener.name,sufix_path)
+			printerName="printer_listener_%s_%s" % (listener.name,sufix_path)
+			objectNumber=str(listeners.index(listener))
+			liblos+=makeLibloSource(libloName,templatePath % vars(),(xPosition,yPosition),3,port)
+			printers+=makeControlPrinter(printerName,(xPosition,yPosition+150),3)
+			for o in range(3):
+				sufix="_"+str(o)
+				connections+=makeControlConnection(libloName,(templatePath%vars()).replace("/","_")+sufix,printerName,"ControlPrinter"+sufix)
+			xPosition+=300
+		xPosition+=150
 #create sync receivers and it monitors
 	path="/SpatDIF/sync/FrameChanged"
 	libloName="sync_Framechanged"
