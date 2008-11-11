@@ -1,0 +1,3 @@
+beVerbose
+renameClass HRTFDatabaseFetcher2 HRTFDatabaseFetcher
+removeConfig HRTFDatabaseFetcher Prefix
