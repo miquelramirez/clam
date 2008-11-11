@@ -51,6 +51,7 @@ TODO:
 # use bpy module of Blender:
 from bpy import data
 import Blender,BlenderOSCSender
+import re
 
 def main():
 	Blender.Window.FileSelector(GenerateNetworkOSCReceiver, "Generate CLAM network OSC monitor",Blender.sys.makename(ext='.clamnetwork'))
@@ -62,13 +63,17 @@ def GenerateNetworkOSCReceiver(filename):
 	argumentNumbers=3
 	xPosition=50
 	yPosition=150
-	port=7000
 #create sources receivers and its monitors
 	scene=Blender.Scene.GetCurrent()
 	sources=BlenderOSCSender.getSources(scene)
 	templatePath="/SpatDIF/sources/%(objectNumber)s/xyz/%(sufix_path)s"
 	dictionary_paths=['location','rotation']
 	for source in sources:
+		port=7000
+		# try to get the port on object name:
+		portInName=re.search('_p[0-9]+$',source.name)
+		if portInName!=None:
+			port=int(portInName.group()[2:])
 		for sufix_path in dictionary_paths:
 			libloName="source_%s_%s" % (source.name,sufix_path)
 			printerName="printer_source_%s_%s" % (source.name,sufix_path)
@@ -86,6 +91,11 @@ def GenerateNetworkOSCReceiver(filename):
 	listeners=BlenderOSCSender.getListeners(scene)
 	templatePath="/SpatDIF/listeners/%(objectNumber)s/xyz/%(sufix_path)s"
 	for listener in listeners:
+		port=7000
+		# try to get the port on object name:
+		portInName=re.search('_p[0-9]+$',listener.name)
+		if portInName!=None:
+			port=int(portInName.group()[2:])
 		for sufix_path in dictionary_paths:
 			libloName="listener_%s_%s" % (listener.name,sufix_path)
 			printerName="printer_listener_%s_%s" % (listener.name,sufix_path)
