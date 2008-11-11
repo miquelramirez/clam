@@ -71,9 +71,9 @@ def GenerateNetworkOSCReceiver(filename):
 	for source in sources:
 		port=7000
 		# try to get the port on object name:
-		portInName=re.search('_p[0-9]+$',source.name)
+		portInName=re.search('_p([0-9]+)$',source.name)
 		if portInName!=None:
-			port=int(portInName.group()[2:])
+			port=int(portInName.group(1))
 		for sufix_path in dictionary_paths:
 			libloName="source_%s_%s" % (source.name,sufix_path)
 			printerName="printer_source_%s_%s" % (source.name,sufix_path)
@@ -93,9 +93,9 @@ def GenerateNetworkOSCReceiver(filename):
 	for listener in listeners:
 		port=7000
 		# try to get the port on object name:
-		portInName=re.search('_p[0-9]+$',listener.name)
+		portInName=re.search('_p([0-9]+)$',listener.name)
 		if portInName!=None:
-			port=int(portInName.group()[2:])
+			port=int(portInName.group(1))
 		for sufix_path in dictionary_paths:
 			libloName="listener_%s_%s" % (listener.name,sufix_path)
 			printerName="printer_listener_%s_%s" % (listener.name,sufix_path)

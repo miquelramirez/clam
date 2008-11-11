@@ -105,9 +105,9 @@ def main():
 		rotation = (math.radians(roll),math.radians(elevation),math.radians(azimuth))
 		port=7000
 		# try to get the port on object name:
-		portInName=re.search('_p[0-9]+$',object.name)
+		portInName=re.search('_p([0-9]+)$',object.name)
 		if portInName!=None:
-			port=int(portInName.group()[2:])	
+			port=int(portInName.group(1))
 		if isSource(object):
 			typename='sources'
 			sources=getSources()
