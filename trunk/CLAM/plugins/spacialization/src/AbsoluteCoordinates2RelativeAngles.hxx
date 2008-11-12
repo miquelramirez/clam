@@ -76,15 +76,36 @@ public:
 		float targetZ = _targetZ.GetLastValue();
 		double targetRoll = _targetRoll.GetLastValue();
 		//We sum pi/2 because the matrix is for zenith and no elevation. TODO change zenith for elevation
-		double targetZenith = _targetElevation.GetLastValue()+M_PI/2; 
+		double targetElevation = _targetElevation.GetLastValue(); 
 		double targetAzimuth = _targetAzimuth.GetLastValue();
-		double dx = (sourceX - targetX);
-		double dy = (sourceY - targetY);
-		double dz = (sourceZ - targetZ);
-		double cosAzimuth = std::cos(targetAzimuth);
-		double sinAzimuth = std::sin(targetAzimuth);
-		double cosZenith = std::cos(targetZenith);
-		double sinZenith = std::sin(targetZenith);
+		Orientation orientation = computeRelativeOrientation(
+			targetX, targetY, targetZ,
+			targetAzimuth, targetElevation, targetRoll,
+			sourceX, sourceY, sourceZ);
+		_sourceAzimuth.SendControl( orientation.azimuth );
+		_sourceElevation.SendControl( orientation.elevation );
+		return true;
+	}
+
+	Orientation computeRelativeOrientation(
+		double frameX,
+		double frameY,
+		double frameZ,
+		double frameAzimuth,
+		double frameElevation,
+		double frameRoll,
+		double pointX,
+		double pointY,
+		double pointZ)
+	{
+		double frameZenith = frameAzimuth+M_PI/2;
+		double dx = (pointX - frameX);
+		double dy = (pointY - frameY);
+		double dz = (pointZ - frameZ);
+		double cosAzimuth = std::cos(frameAzimuth);
+		double sinAzimuth = std::sin(frameAzimuth);
+		double cosZenith = std::cos(frameZenith);
+		double sinZenith = std::sin(frameZenith);
 
 		double rotatedX = 
 			+ dx * cosAzimuth * sinZenith
@@ -106,9 +127,7 @@ public:
 		//TODO calculate the roll relative between the listener and the source
 		Orientation orientation(dazimuth, delevation);
 		orientation.normalize();
-		_sourceAzimuth.SendControl( orientation.azimuth );
-		_sourceElevation.SendControl( orientation.elevation );
-		return true;
+		return orientation;
 	}
 
 };
