@@ -27,8 +27,13 @@ public:
 		TEST_CASE( testToPoint_45right );
 		TEST_CASE( testToPoint_45up );
 		TEST_CASE( testToPoint_45down );
+		TEST_CASE( testToPoint_atOrigin );
 		TEST_CASE( testRelativeOrientation_front );
 		TEST_CASE( testRelativeOrientation_behind );
+		TEST_CASE( testRelativeOrientation_arbitrary );
+		TEST_CASE( testRelativeOrientation_arbitraryNegativeAzimuth );
+		TEST_CASE( testChordDistance_back2back );
+		TEST_CASE( testChordDistance_isSimmetric );
 	}
 	void testDefaultInit()
 	{
@@ -117,7 +122,7 @@ public:
 	{
 		Orientation orientation;
 		orientation.toPoint(0,0,-1);
-		ASSERT_EQUALS(Orientation(0,-90), orientation);
+		ASSERT_EQUALS(Orientation(180,-90), orientation);
 	}
 	void testToPoint_45left()
 	{
@@ -140,11 +145,18 @@ public:
 	void testToPoint_45down()
 	{
 		Orientation orientation;
-		orientation.toPoint(1.,0.,-1.);
-		ASSERT_EQUALS(Orientation(0.,-45.), orientation);
+		orientation.toPoint(1,0,-1);
+		ASSERT_EQUALS(Orientation(0,-45), orientation);
+	}
+	void testToPoint_atOrigin()
+	{
+		Orientation orientation;
+		orientation.toPoint(0,0,0);
+		ASSERT_EQUALS(Orientation(0,0), orientation);
 	}
 
 
+	// Tests Back2Back with the client code
 	void testRelativeOrientation_front()
 	{
 		Orientation orientation = CLAM::AbsoluteCoordinates2RelativeAngles::
@@ -158,7 +170,37 @@ public:
 			computeRelativeOrientation
 				( 0,0,0, 0,0,0, -1,0,0 );
 		ASSERT_EQUALS(Orientation(180, 0), orientation);
+	}
+	void testRelativeOrientation_arbitrary()
+	{
+		Orientation orientation = CLAM::AbsoluteCoordinates2RelativeAngles::
+			computeRelativeOrientation
+				( 0,0,0, 30,45,0, 1,1,1 );
+		ASSERT_EQUALS(Orientation(138.45129188967510458, -6.1029851391410261385), orientation);
 	}	
+	void testRelativeOrientation_arbitraryNegativeAzimuth()
+	{
+		Orientation orientation = CLAM::AbsoluteCoordinates2RelativeAngles::
+			computeRelativeOrientation
+				( 0,0,0, 30,-45,0, 1,1,1 );
+		ASSERT_EQUALS(Orientation(70.126623500664067024, 45.471805944275757838), orientation);
+	}
+	void testChordDistance_back2back()
+	{
+		Orientation orientation1(10,20);
+		Orientation orientation2(30,-40);
+		ASSERT_EQUALS(
+			1.0868240888334650407,
+			orientation1.chordDistance(orientation2));
+	}
+	void testChordDistance_isSimmetric()
+	{
+		Orientation orientation1(10,20);
+		Orientation orientation2(30,-40);
+		ASSERT_EQUALS(
+			orientation1.chordDistance(orientation2),
+			orientation2.chordDistance(orientation1));
+	}
 };
 
 REGISTER_FIXTURE(TestsOrientation)
