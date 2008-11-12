@@ -304,17 +304,19 @@ public:
 			TestsListener::theInstance().testHasFailed();
 		}
 	}
-
 	static void assertTrue(char* strExpression, bool expression,
-			const char* file="", int line=0);
+		const char* file="", int line=0);
 
 	static void assertTrueMessage(char* strExpression, bool expression, 
-			const char* message, const char* file="", int line=0);
+		const char* message, const char* file="", int line=0);
 
 	static void assertEquals( const char * expected, const char * result,
 		const char* file="", int line=0 );
 	
 	static void assertEquals( const bool& expected, const bool& result,
+		const char* file="", int line=0 );
+
+	static void assertEquals( double expected, double result,
 		const char* file="", int line=0 );
 
 	static int notEqualIndex( const std::string & one, const std::string & other );
