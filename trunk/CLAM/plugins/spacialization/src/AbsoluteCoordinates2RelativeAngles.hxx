@@ -6,72 +6,10 @@
 #include <CLAM/OutControl.hxx>
 #include <cmath>
 #include <iomanip>
-#define PI 3.14159265
+#include "Orientation.hxx"
 
 namespace CLAM
 {
-
-/**
- Represents spherical orientation of a point
- from a given reference frame expressed as the
- azimuth and the elevation angles in degrees.
-
- @see AmbisonicsConventions
-*/
-struct Orientation
-{
-	double azimuth;
-	double elevation;
-
-	Orientation(double anAzimuth=0.0, double anElevation=0.0)
-		: azimuth(anAzimuth)
-		, elevation(anElevation)
-	{}
-	/**
-	 Converts the orientation values for azimuth and elevation to be
-	 within the ranges according AmbisonicsConventions.
-	*/
-	void normalize()
-	{
-		elevation += 90;
-		elevation = _module(elevation, 360);
-		if (elevation>180)
-		{
-			azimuth += 180;
-			elevation = 360 - elevation;
-		}
-		azimuth = _module(azimuth, 360.);
-		elevation -= 90;
-	}
-	bool operator!=(const Orientation & other) const
-	{
-		if (fabs(azimuth-other.azimuth)>1e-20) return true;
-		if (fabs(elevation-other.elevation)>1e-20) return true;
-		return false;
-	}
-	operator std::string() const
-	{
-		std::ostringstream os;
-		os << *this;
-		return os.str();
-	}
-	friend std::ostream & operator<<(std::ostream & os, const Orientation & orientation)
-	{
-		return os
-			<< std::setprecision(4)
-			<< orientation.azimuth
-			<< " "
-			<< orientation.elevation
-			;
-	}
-
-private:
-	double _module(double input, double factor)
-	{
-		while (input<0) input+=factor;
-		return fmod(input, factor);
-	}
-};
 
 /**
  Computes the azimuth and elevation angles of
@@ -138,7 +76,7 @@ public:
 		float targetZ = _targetZ.GetLastValue();
 		double targetRoll = _targetRoll.GetLastValue();
 		//We sum pi/2 because the matrix is for zenith and no elevation. TODO change zenith for elevation
-		double targetZenith = _targetElevation.GetLastValue()+PI/2; 
+		double targetZenith = _targetElevation.GetLastValue()+M_PI/2; 
 		double targetAzimuth = _targetAzimuth.GetLastValue();
 		double dx = (sourceX - targetX);
 		double dy = (sourceY - targetY);
