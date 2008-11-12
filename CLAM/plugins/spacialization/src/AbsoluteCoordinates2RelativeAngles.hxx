@@ -99,27 +99,26 @@ public:
 		double pointZ)
 	{
 		//TODO calculate the roll relative between the listener and the source
-		double frameZenith = frameElevation+M_PI/2;
 		double dx = (pointX - frameX);
 		double dy = (pointY - frameY);
 		double dz = (pointZ - frameZ);
 		double cosAzimuth = std::cos(frameAzimuth);
 		double sinAzimuth = std::sin(frameAzimuth);
-		double cosZenith = std::cos(frameZenith);
-		double sinZenith = std::sin(frameZenith);
+		double sinElevation = std::sin(frameElevation);
+		double cosElevation = std::cos(frameElevation);
 
 		double rotatedX = 
-			+ dx * cosAzimuth * sinZenith
-			+ dy * sinAzimuth * sinZenith 
-			+ dz * cosZenith;
+			+ dx * cosAzimuth * cosElevation
+			+ dy * sinAzimuth * cosElevation 
+			- dz * sinElevation;
 		double rotatedY = 
 			- dx * sinAzimuth
 			+ dy * cosAzimuth
 			- dz * 0;
 		double rotatedZ =
-			- dx * cosZenith * cosAzimuth
-			- dy * cosZenith * sinAzimuth
-			+ dz * sinZenith;
+			+ dx * sinElevation * cosAzimuth
+			+ dy * sinElevation * sinAzimuth
+			+ dz * cosElevation;
 
 		Orientation orientation;
 		orientation.toPoint(rotatedX, rotatedY, rotatedZ);
