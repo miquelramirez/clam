@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2003-2004  Pau Arumí & David García
+ * Copyright (c) 2003-2004  Pau ArumÃ­ & David GarcÃ­a
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -19,6 +19,7 @@
  */
 
 #include "MiniCppUnit.hxx"
+#include <iomanip>
 
 TestsListener& TestsListener::theInstance()
 {
@@ -128,6 +129,19 @@ void Assert::assertEquals( const bool& expected, const bool& result,
 	assertEquals(
 		(expected?"true":"false"), 
 		(result?"true":"false"),
+		file, line);
+}
+
+static std::string doubleToString(double value)
+{
+	std::ostringstream os;
+	os << std::setprecision(20) << value;
+	return os.str();
+}
+void Assert::assertEquals( double expected, double result,
+	const char* file, int line )
+{
+	assertEquals(doubleToString(expected), doubleToString(result),
 		file, line);
 }
 
