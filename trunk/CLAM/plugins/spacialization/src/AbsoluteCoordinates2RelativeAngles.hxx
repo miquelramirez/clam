@@ -5,10 +5,73 @@
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutControl.hxx>
 #include <cmath>
+#include <iomanip>
 #define PI 3.14159265
 
 namespace CLAM
 {
+
+/**
+ Represents spherical orientation of a point
+ from a given reference frame expressed as the
+ azimuth and the elevation angles in degrees.
+
+ @see AmbisonicsConventions
+*/
+struct Orientation
+{
+	double azimuth;
+	double elevation;
+
+	Orientation(double anAzimuth=0.0, double anElevation=0.0)
+		: azimuth(anAzimuth)
+		, elevation(anElevation)
+	{}
+	/**
+	 Converts the orientation values for azimuth and elevation to be
+	 within the ranges according AmbisonicsConventions.
+	*/
+	void normalize()
+	{
+		elevation += 90;
+		elevation = _module(elevation, 360);
+		if (elevation>180)
+		{
+			azimuth += 180;
+			elevation = 360 - elevation;
+		}
+		azimuth = _module(azimuth, 360.);
+		elevation -= 90;
+	}
+	bool operator!=(const Orientation & other) const
+	{
+		if (fabs(azimuth-other.azimuth)>1e-20) return true;
+		if (fabs(elevation-other.elevation)>1e-20) return true;
+		return false;
+	}
+	operator std::string() const
+	{
+		std::ostringstream os;
+		os << *this;
+		return os.str();
+	}
+	friend std::ostream & operator<<(std::ostream & os, const Orientation & orientation)
+	{
+		return os
+			<< std::setprecision(4)
+			<< orientation.azimuth
+			<< " "
+			<< orientation.elevation
+			;
+	}
+
+private:
+	double _module(double input, double factor)
+	{
+		while (input<0) input+=factor;
+		return fmod(input, factor);
+	}
+};
 
 /**
  Computes the azimuth and elevation angles of
@@ -103,36 +166,11 @@ public:
 		double delevation = 180./M_PI*std::asin(rotatedZ/std::sqrt(rotatedX*rotatedX+rotatedY*rotatedY+rotatedZ*rotatedZ));
 
 		//TODO calculate the roll relative between the listener and the source
-		Orientation orientation = {dazimuth, delevation};
-		orientation=normalizeAngles(orientation);
+		Orientation orientation(dazimuth, delevation);
+		orientation.normalize();
 		_sourceAzimuth.SendControl( orientation.azimuth );
 		_sourceElevation.SendControl( orientation.elevation );
 		return true;
-	}
-
-	struct Orientation
-	{
-		double azimuth;
-		double elevation;
-	};
-
-	Orientation normalizeAngles (const Orientation & inAngles)
-	{
-		double elevation=inAngles.elevation;
-		double azimuth=inAngles.azimuth;
-		Orientation returnAngles;
-		elevation += 90;
-		elevation = fmod(elevation, 360);
-		if (elevation>180)
-		{
-			azimuth += 180;
-			elevation = 360 - elevation;
-		}
-		elevation -=90;
-		azimuth = fmod(azimuth, 360);
-		returnAngles.elevation=elevation;
-		returnAngles.azimuth=azimuth;
-		return returnAngles;
 	}
 
 };

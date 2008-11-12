@@ -72,9 +72,9 @@ libraries = [
 	]
 
 tests = [
-	env.Program("UnitTests", scanFiles("*.cxx", ['tests'])+libraries),
+	env.Program("UnitTests", scanFiles("*.cxx", ['tests'])),
 	]
-runTests = Command("UnitTests.passed",tests,"LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:. valgrind -q --leak-check=yes ./UnitTests")
+runTests = Command("UnitTests.passed",tests,"valgrind -q --leak-check=yes ./UnitTests")
 
 examples = scanFiles('*.clamnetwork', ['example-data'])
 examples+= scanFiles('*.ui', ['example-data'])
