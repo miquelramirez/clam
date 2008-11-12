@@ -43,10 +43,17 @@ struct Orientation
 		azimuth = _module(azimuth, 360.);
 		elevation -= 90;
 	}
+	void toPoint(double x, double y, double z)
+	{
+		azimuth = 180./M_PI*std::atan2(y,x);
+		elevation = 180./M_PI*std::asin(z/std::sqrt(x*x+y*y+z*z));
+		normalize();
+	}
+
 	bool operator!=(const Orientation & other) const
 	{
-		if (fabs(azimuth-other.azimuth)>1e-20) return true;
-		if (fabs(elevation-other.elevation)>1e-20) return true;
+		if (fabs(azimuth-other.azimuth)>1e-14) return true;
+		if (fabs(elevation-other.elevation)>1e-14) return true;
 		return false;
 	}
 	operator std::string() const
@@ -58,7 +65,7 @@ struct Orientation
 	friend std::ostream & operator<<(std::ostream & os, const Orientation & orientation)
 	{
 		return os
-			<< std::setprecision(4)
+			<< std::setprecision(20)
 			<< orientation.azimuth
 			<< " "
 			<< orientation.elevation

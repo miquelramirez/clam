@@ -19,6 +19,16 @@ public:
 		TEST_CASE( testNormalizeAngle_withElevationBeyondMinus90 );
 		TEST_CASE( testNormalizeAngle_afterAdjustingElevationAzimuthStillInRange );
 		TEST_CASE( testNormalizeAngle_withVeryNegativeAzimuth );
+		TEST_CASE( testToPoint_front );
+		TEST_CASE( testToPoint_back );
+		TEST_CASE( testToPoint_up );
+		TEST_CASE( testToPoint_down );
+		TEST_CASE( testToPoint_45left );
+		TEST_CASE( testToPoint_45right );
+		TEST_CASE( testToPoint_45up );
+		TEST_CASE( testToPoint_45down );
+		TEST_CASE( testRelativeOrientation_front );
+		TEST_CASE( testRelativeOrientation_behind );
 	}
 	void testDefaultInit()
 	{
@@ -85,6 +95,70 @@ public:
 		orientation.normalize();
 		ASSERT_EQUALS(Orientation(350.0,20.0), orientation);
 	}
+	void testToPoint_front()
+	{
+		Orientation orientation;
+		orientation.toPoint(1,0,0);
+		ASSERT_EQUALS(Orientation(0,0), orientation);
+	}
+	void testToPoint_back()
+	{
+		Orientation orientation;
+		orientation.toPoint(-1,0,0);
+		ASSERT_EQUALS(Orientation(180,0), orientation);
+	}
+	void testToPoint_up()
+	{
+		Orientation orientation;
+		orientation.toPoint(0,0,1);
+		ASSERT_EQUALS(Orientation(0,90), orientation);
+	}
+	void testToPoint_down()
+	{
+		Orientation orientation;
+		orientation.toPoint(0,0,-1);
+		ASSERT_EQUALS(Orientation(0,-90), orientation);
+	}
+	void testToPoint_45left()
+	{
+		Orientation orientation;
+		orientation.toPoint(1,1,0);
+		ASSERT_EQUALS(Orientation(45,0), orientation);
+	}
+	void testToPoint_45right()
+	{
+		Orientation orientation;
+		orientation.toPoint(1,-1,0);
+		ASSERT_EQUALS(Orientation(315,0), orientation);
+	}
+	void testToPoint_45up()
+	{
+		Orientation orientation;
+		orientation.toPoint(1,0,1);
+		ASSERT_EQUALS(Orientation(0,45), orientation);
+	}
+	void testToPoint_45down()
+	{
+		Orientation orientation;
+		orientation.toPoint(1.,0.,-1.);
+		ASSERT_EQUALS(Orientation(0.,-45.), orientation);
+	}
+
+
+	void testRelativeOrientation_front()
+	{
+		Orientation orientation = CLAM::AbsoluteCoordinates2RelativeAngles::
+			computeRelativeOrientation
+				( 0,0,0, 0,0,0, 1,0,0 );
+		ASSERT_EQUALS(Orientation(0, 0), orientation);
+	}	
+	void testRelativeOrientation_behind()
+	{
+		Orientation orientation = CLAM::AbsoluteCoordinates2RelativeAngles::
+			computeRelativeOrientation
+				( 0,0,0, 0,0,0, -1,0,0 );
+		ASSERT_EQUALS(Orientation(180, 0), orientation);
+	}	
 };
 
 REGISTER_FIXTURE(TestsOrientation)
