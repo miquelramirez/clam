@@ -122,7 +122,7 @@ public:
 	{
 		Orientation orientation;
 		orientation.toPoint(0,0,-1);
-		ASSERT_EQUALS(Orientation(180,-90), orientation);
+		ASSERT_EQUALS(Orientation(0,-90), orientation);
 	}
 	void testToPoint_45left()
 	{

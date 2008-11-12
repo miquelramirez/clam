@@ -34,13 +34,9 @@ public:
 	Orientation(double anAzimuth=0.0, double anElevation=0.0)
 		: azimuth(anAzimuth)
 		, elevation(anElevation)
-		, eradians(M_PI*elevation/180.)
-		, aradians(M_PI*azimuth/180.)
-		, ce(std::cos(eradians))
-		, se(std::sin(eradians))
-		, ca(std::cos(aradians))
-		, sa(std::sin(aradians))
-	{}
+	{
+		precompute();
+	}
 	/**
 	 Converts the orientation values for azimuth and elevation to be
 	 within the ranges according @ref AmbisonicsConventions.
@@ -60,6 +56,7 @@ public:
 	/**
 	 Set the orientation to the one of the vector (x,y,z)
 	 For vectors of module less than 1e-12 elevation is set to z.
+	 Result is normalized according @ref AmbisonicsConventions.
 	*/
 	void toPoint(double x, double y, double z)
 	{
@@ -69,6 +66,7 @@ public:
 			elevation = 180./M_PI*z;
 		else
 			elevation = 180./M_PI*std::asin(z/module);
+		precompute();
 		normalize();
 	}
 	/**
@@ -114,6 +112,15 @@ private:
 	{
 		while (input<0) input+=factor;
 		return std::fmod(input, factor);
+	}
+	void precompute()
+	{
+		eradians=(M_PI*elevation/180.);
+		aradians=(M_PI*azimuth/180.);
+		ce=(std::cos(eradians));
+		se=(std::sin(eradians));
+		ca=(std::cos(aradians));
+		sa=(std::sin(aradians));
 	}
 };
 
