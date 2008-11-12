@@ -103,7 +103,7 @@ def main():
 		location=object.mat.translationPart()
 		roll, descention, azimuth=object.mat.toEuler()
 		elevation = -descention
-		rotation = (math.radians(roll),math.radians(elevation),math.radians(azimuth))
+		rotation = (roll,elevation,azimuth)
 		port=7000
 		# try to get the port on object name:
 		portInName=re.search('_p([0-9]+)$',object.name)
