@@ -20,9 +20,9 @@ namespace CLAM
  @param[in] "target X" [Control] X coord of the listener in absolute coords
  @param[in] "target Y" [Control] Y coord of the listener in absolute coords
  @param[in] "target Z" [Control] Z coord of the listener in absolute coords
- @param[in] "target azimuth" [Control] Azimuth of the listener orientation
- @param[in] "target elevation" [Control] Elevation of the listener orientation
- @param[in] "target roll" [Control] Roll of the listener orientation
+ @param[in] "target azimuth" [Control] Azimuth of the listener orientation (degrees)
+ @param[in] "target elevation" [Control] Elevation of the listener orientation (degrees)
+ @param[in] "target roll" [Control] Roll of the listener orientation (degrees)
  @param[in] "source X" [Control] X coord of the source in absolute coords
  @param[in] "source Y" [Control] Y coord of the source in absolute coords
  @param[in] "source Z" [Control] Z coord of the source in absolute coords
@@ -68,12 +68,12 @@ public:
 	bool Do()
 	{	
 
-		float sourceX = _sourceX.GetLastValue();
-		float sourceY = _sourceY.GetLastValue();
-		float sourceZ = _sourceZ.GetLastValue();
-		float targetX = _targetX.GetLastValue();
-		float targetY = _targetY.GetLastValue();
-		float targetZ = _targetZ.GetLastValue();
+		double sourceX = _sourceX.GetLastValue();
+		double sourceY = _sourceY.GetLastValue();
+		double sourceZ = _sourceZ.GetLastValue();
+		double targetX = _targetX.GetLastValue();
+		double targetY = _targetY.GetLastValue();
+		double targetZ = _targetZ.GetLastValue();
 		double targetRoll = _targetRoll.GetLastValue();
 		//We sum pi/2 because the matrix is for zenith and no elevation. TODO change zenith for elevation
 		double targetElevation = _targetElevation.GetLastValue(); 
@@ -98,27 +98,34 @@ public:
 		double pointY,
 		double pointZ)
 	{
-		//TODO calculate the roll relative between the listener and the source
 		double dx = (pointX - frameX);
 		double dy = (pointY - frameY);
 		double dz = (pointZ - frameZ);
-		double cosAzimuth = std::cos(frameAzimuth);
-		double sinAzimuth = std::sin(frameAzimuth);
-		double sinElevation = std::sin(frameElevation);
-		double cosElevation = std::cos(frameElevation);
+		double radAzimuth = M_PI/180. * frameAzimuth;
+		double cosAzimuth = std::cos(radAzimuth);
+		double sinAzimuth = std::sin(radAzimuth);
+		double radElevation = M_PI/180. * frameElevation;
+		double sinElevation = std::sin(radElevation);
+		double cosElevation = std::cos(radElevation);
+		double radRoll = M_PI/180. * frameRoll;
+		double sinRoll = std::sin(radRoll);
+		double cosRoll = std::cos(radRoll);
+
+		double cosASinE = cosAzimuth * sinElevation;
+		double sinASinE = sinAzimuth * sinElevation;
 
 		double rotatedX = 
 			+ dx * cosAzimuth * cosElevation
 			+ dy * sinAzimuth * cosElevation 
-			- dz * sinElevation;
+			+ dz * sinElevation;
 		double rotatedY = 
-			- dx * sinAzimuth
-			+ dy * cosAzimuth
-			- dz * 0;
+			+ dx * (- sinAzimuth*cosRoll - cosASinE*sinRoll)
+			+ dy * (+ cosAzimuth*cosRoll - sinASinE*sinRoll)
+			+ dz * (+ cosElevation*sinRoll);
 		double rotatedZ =
-			+ dx * sinElevation * cosAzimuth
-			+ dy * sinElevation * sinAzimuth
-			+ dz * cosElevation;
+			+ dx * (- cosASinE*cosRoll + sinAzimuth*sinRoll)
+			+ dy * (- sinASinE*cosRoll - cosAzimuth*sinRoll)
+			+ dz * (+ cosElevation*cosRoll);
 
 		Orientation orientation;
 		orientation.toPoint(rotatedX, rotatedY, rotatedZ);
