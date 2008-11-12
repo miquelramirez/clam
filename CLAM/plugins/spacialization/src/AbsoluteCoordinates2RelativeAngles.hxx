@@ -87,7 +87,7 @@ public:
 		return true;
 	}
 
-	Orientation computeRelativeOrientation(
+	static Orientation computeRelativeOrientation(
 		double frameX,
 		double frameY,
 		double frameZ,
@@ -98,7 +98,8 @@ public:
 		double pointY,
 		double pointZ)
 	{
-		double frameZenith = frameAzimuth+M_PI/2;
+		//TODO calculate the roll relative between the listener and the source
+		double frameZenith = frameElevation+M_PI/2;
 		double dx = (pointX - frameX);
 		double dy = (pointY - frameY);
 		double dz = (pointZ - frameZ);
@@ -120,13 +121,8 @@ public:
 			- dy * cosZenith * sinAzimuth
 			+ dz * sinZenith;
 
-		// TODO: Test that with target elevation and azimuth
-		double dazimuth = 180./M_PI*std::atan2(rotatedY,rotatedX);
-		double delevation = 180./M_PI*std::asin(rotatedZ/std::sqrt(rotatedX*rotatedX+rotatedY*rotatedY+rotatedZ*rotatedZ));
-
-		//TODO calculate the roll relative between the listener and the source
-		Orientation orientation(dazimuth, delevation);
-		orientation.normalize();
+		Orientation orientation;
+		orientation.toPoint(rotatedX, rotatedY, rotatedZ);
 		return orientation;
 	}
 
