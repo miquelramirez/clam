@@ -31,13 +31,16 @@ if not os.path.exists(options_filename):
 	exit(1)
 clam_path = "/usr/local/include"; plugins_path = ''
 for line in open(options_filename).readlines():
-	(name,value) = line.split(' = ')
-	if name=='clam_prefix':
-		clam_prefix = value[1:-2]
-		clam_path=value[1:-2]+"/include"
-	if name=='plugins_prefix':
-		if value=='True': plugins_path=clam_path
-		else: plugins_path=value[1:-2]
+	try:
+		(name,value) = line.split(' = ')
+		if name=='clam_prefix':
+			clam_prefix = value[1:-2]
+			clam_path=value[1:-2]+"/include"
+		if name=='plugins_prefix':
+			if value=='True': plugins_path=clam_path
+			else: plugins_path=value[1:-2]
+	except:
+		print "Bad config line"
 enablePlugins = True if plugins_path!='' else False
 
 
