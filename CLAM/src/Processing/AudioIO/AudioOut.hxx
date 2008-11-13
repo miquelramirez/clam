@@ -49,7 +49,7 @@ public:
 	 *  Note that the user can not call this method directly. He will use Configure instead. The argument is expected to be an object of the necesary concrete configuration class.
 	 *  @return true if the object has been configured correctly; true otherwise
 	 *  @param The related ProcessingConfig object
-	 *  @throws A bad_cast exception if the arguments is not the expected configuration class
+	 *  @throw A bad_cast exception if the arguments is not the expected configuration class
 	 */
 	bool ConcreteConfigure(const ProcessingConfig& c)
 	 throw(ErrProcessingObj);
