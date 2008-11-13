@@ -48,7 +48,7 @@ public:
 	 *  necesary concrete configuration class.
 	 *  @return true if the object has been configured correctly
 	 *  @param The related ProcessingConfig object
-	 *  @throws ErrProcessingObj when there is an error on device adquisition
+	 *  @throw ErrProcessingObj when there is an error on device adquisition
 	 */
 	virtual bool ConcreteConfigure(const ProcessingConfig& c)
 		throw(ErrProcessingObj);

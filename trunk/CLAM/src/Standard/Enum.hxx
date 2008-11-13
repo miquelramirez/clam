@@ -111,7 +111,7 @@ protected:
 	 * @param values An array of tEnumValue structures in wich the last
 	 * one has a NULL pointer as name.
 	 * @param value An initialization numeric value.
-	 * @throws A IllegalValue exception when the value is not valid.
+	 * @throw A IllegalValue exception when the value is not valid.
 	 */
 	Enum (const tEnumValue * values, const tValue & value) /* throw IllegalValue */ {
 		mEnumValues = values;
@@ -122,7 +122,7 @@ protected:
 	 * @param values An array of tEnumValue structures in wich the last
 	 * one has a NULL pointer as name.
 	 * @param value An initialization symbolic value.
-	 * @throws A IllegalValue exception when the value is not valid.
+	 * @throw A IllegalValue exception when the value is not valid.
 	 */
 	Enum (const tEnumValue * values, const std::string & value) /* throw IllegalValue */ {
 		mEnumValues = values;
@@ -164,7 +164,7 @@ public:
 	 * That is it checks the value is ok for the enum and throws a
 	 * catchable exception if not.
 	 * @param v The new numeric value
-	 * @throws IllegalValue when the value is not valid for the enum
+	 * @throw IllegalValue when the value is not valid for the enum
 	 * @todo Fill IllegalValue with useful information to recover 
 	 * instead a insightfull string.
 	 */
@@ -196,7 +196,7 @@ public:
 	 * That is it checks the value is ok for the enum and throws a
 	 * catchable exception if not.
 	 * @param s The new symbolic value
-	 * @throws IllegalValue when the value is not valid for the enum
+	 * @throw IllegalValue when the value is not valid for the enum
 	 * @todo Fill IllegalValue with useful information to recover 
 	 * instead a insightfull string.
 	 */

@@ -66,7 +66,7 @@ public:
 	void RestoreObject(Component & component); ///< Restores the component from the selected node
 	/**
 	 * Moves the node selection to the specified path.
-	 * @throws XmlStorageErr whenever a step is not found
+	 * @throw XmlStorageErr whenever a step is not found
 	 * The path is a subset of XPath.
 	 * Absolute and relative paths can be used but node
 	 * names are the only step specifier to be used.

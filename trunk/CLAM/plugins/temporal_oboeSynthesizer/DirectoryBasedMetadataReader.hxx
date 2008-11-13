@@ -61,7 +61,7 @@ public:
 	* deserializes SampleMetadata objects from that, and copies them into the
 	* given vector.
 	*
-	* @throws BadFilenameException if the given directory path is invalid
+	* @throw BadFilenameException if the given directory path is invalid
 	* TODO add an exception for invalid XML formats
 	*/
 	void ReadMetadata(std::string& directoryPath, std::vector<CLAM::SampleMetadata>& argMetadataVector);
