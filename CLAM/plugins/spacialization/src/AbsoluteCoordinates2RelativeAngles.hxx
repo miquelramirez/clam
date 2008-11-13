@@ -86,14 +86,15 @@ public:
 			sourceX, sourceY, sourceZ);
 		_sourceAzimuth.SendControl( orientation.azimuth );
 		_sourceElevation.SendControl( orientation.elevation );
-		_gainBecauseDistance.SendControl (getGainByInverseSquareDistance(sourceX,sourceY,sourceZ,targetX,targetY,targetZ));
+		double distance=getDistance(sourceX,sourceY,sourceZ,targetX,targetY,targetZ);
+		_gainBecauseDistance.SendControl ( 1 / (distance<1 ? 1 : distance) );
 		return true;
 	}
 
 
-	double getGainByInverseSquareDistance(double sourceX,double sourceY,double sourceZ,double targetX,double targetY,double targetZ)
+	double getDistance(double sourceX,double sourceY,double sourceZ,double targetX,double targetY,double targetZ)
 	{
-		return 1/(pow((sourceX-targetX),2)+pow((sourceY-targetY),2)+pow((sourceZ-targetZ),2));
+		return sqrt(pow((sourceX-targetX),2)+pow((sourceY-targetY),2)+pow((sourceZ-targetZ),2));
 	}
 
 	static Orientation computeRelativeOrientation(
