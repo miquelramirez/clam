@@ -46,16 +46,12 @@ from os import getenv
 import Blender, math
 import re
 
-#SourcesGroupName='Audio_Sources'
-#ListenersGroupName='Audio_Listeners'
-
 SourcesSubstring='source'
 ListenersSubstring='listener'
 
 def isSource (object):
 	return (object.name.lower().find(SourcesSubstring)!=-1)
 def getSources(scene=Blender.Scene.GetCurrent()):
-	# old method: #sources=list(data.groups[SourcesGroupName].objects)
 	sources=list()
 	for object in scene.objects:
 		if isSource(object):
@@ -65,7 +61,6 @@ def getSources(scene=Blender.Scene.GetCurrent()):
 def isListener (object):
 	return (object.name.lower().find(ListenersSubstring)!=-1)
 def getListeners(scene=Blender.Scene.GetCurrent()):
-	# old method: #listeners=list(data.groups[ListenersGroupName].objects)
 	listeners=list()
 	for object in scene.objects:
 		if isListener(object):
@@ -104,25 +99,29 @@ def main():
 		roll, descention, azimuth=object.mat.toEuler()
 		elevation = -descention
 		rotation = (roll,elevation,azimuth)
-		port=7000
-		# try to get the port on object name:
-		portInName=re.search('_p([0-9]+)$',object.name)
-		if portInName!=None:
-			port=int(portInName.group(1))
+		ports=[7000]
+		# try to get the ports on object name:
+		if re.search('_p([0-9_]+)$',object.name)!=None:
+			ports=[]
+			portsInName=re.search("_p([0-9_]+)$",object.name).group(1).split("_")
+			for portString in portsInName:
+				ports.append(int(portString))
 		if isSource(object):
 			typename='sources'
 			sources=getSources()
 			objectNumber=sources.index(object)
-			sendObjectValue(objectNumber,typename,"location",location,port)
-			sendObjectValue(objectNumber,typename,"rotation",rotation,port)
+			for port in ports:
+				sendObjectValue(objectNumber,typename,"location",location,port)
+				sendObjectValue(objectNumber,typename,"rotation",rotation,port)
 #			print "UPDATE L Source "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 			return
 		if isListener(object):
 			listeners=getListeners()
 			typename='listeners'
 			objectNumber=listeners.index(object)
-			sendObjectValue(objectNumber,typename,"location",location,port)
-			sendObjectValue(objectNumber,typename,"rotation",rotation,port)
+			for port in ports:
+				sendObjectValue(objectNumber,typename,"location",location,port)
+				sendObjectValue(objectNumber,typename,"rotation",rotation,port)
 #			print "UPDATE L Listener "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 			return
 		if not typename:
