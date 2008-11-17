@@ -47,12 +47,6 @@ protected:
 	unsigned _nChannels;
 	Config _config;
 
-	NSurround(int) 
-		: _p("p", this)
-		, _vx("vx", this)
-		, _vy("vy", this)
-		, _beta("beta", this)
-	{}
 public:
 	const char* GetClassName() const { return "NSurround"; }
 	NSurround(const Config& config = Config()) 
@@ -64,7 +58,8 @@ public:
 	{
 		Configure( config );
 		_beta.SetBounds(-360, 360); //a complete spin on each slider direction
-		
+		_beta.DoControl(0.);
+
 	}
 	const CLAM::ProcessingConfig & GetConfig() const
 	{
@@ -118,11 +113,11 @@ public:
 		for (unsigned channel=0; channel<_nChannels; channel++)
 			channels[channel] = &_outputs[channel]->GetAudio().GetBuffer()[0];
 
+
 		for (int i=0; i<p.Size(); i++)
 		{
 			double ux = vx[i] * cosBeta - vy[i] * sinBeta;
 			double uy = vx[i] * sinBeta + vy[i] * cosBeta;
-			
 			for (unsigned channel=0; channel<_nChannels; channel++)
 			{
 				channels[channel][i] = 0.5*( p[i] - ux * _cosAlphas[channel] - uy * _sinAlphas[channel] );

@@ -29,7 +29,7 @@ class Surround : public NSurround
 public:
 	const char* GetClassName() const { return "Surround"; }
 	Surround(const Config& config = Config())
-		: NSurround(0)
+		: NSurround()
 	{
 		Configure( config );
 		_nChannels = 5;
