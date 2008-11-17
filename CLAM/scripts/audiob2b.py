@@ -46,9 +46,9 @@ def prefix(datapath, case, output) :
 	outputBasename = os.path.splitext(os.path.basename(output))[0]
 	return os.path.join(datapath, case + '_' + outputBasename )
 
-def accept(datapath, back2back_files, archSpecific=False, cases=[]) :
+def accept(datapath, back2BackCases, archSpecific=False, cases=[]) :
 	remainingCases = cases[:]
-	for case, command, outputs in back2back_files :
+	for case, command, outputs in back2BackCases :
 		if cases and case not in cases : continue
 		if cases : remainingCases.remove(case)
 		for output in outputs :
@@ -67,9 +67,9 @@ def removeIfExists(filename) :
 	try: os.remove(filename)
 	except: pass
 
-def passB2BTests(datapath, back2back_files) :
+def passB2BTests(datapath, back2BackCases) :
 	failedCases = []
-	for case, command, outputs in back2back_files :
+	for case, command, outputs in back2BackCases :
 		phase("Test: %s Command: '%s'"%(case,command))
 		caseFailed = False
 		msgs = []
@@ -96,7 +96,7 @@ def passB2BTests(datapath, back2back_files) :
 			failedCases.append((case, msgs))
 
 	print "Summary:"
-	print '\033[32m%i passed cases\033[0m'%(len(back2back_files)-len(failedCases))
+	print '\033[32m%i passed cases\033[0m'%(len(back2BackCases)-len(failedCases))
 
 	if not failedCases : return True
 
@@ -131,7 +131,10 @@ due to floating point missmatches, use:
 	./back2back --arch --accept case1 case2
 """
 
-def runBack2BackProgram(datapath, argv, back2back_files, help=help) :
+def _caseList(cases) :
+	return "".join(["\t"+case+"\n" for case in cases])
+
+def runBack2BackProgram(datapath, argv, back2BackCases, help=help) :
 
 	"--help" not in sys.argv or die(help, 0)
 
@@ -142,23 +145,29 @@ def runBack2BackProgram(datapath, argv, back2back_files, help=help) :
 		"Datapath at '%s' not available. "%datapath +
 		"Check the back 2 back script on information on how to obtain it.")
 
+	availableCases = [case for case, command, outputs in back2BackCases]
+
 	if "--list" in argv :
-		for case, command, outputs in back2back_files :
+		
+		for case in availableCases :
 			print case
 		sys.exit()
 
 	if "--accept" in argv :
 		cases = argv[argv.index("--accept")+1:]
-		cases or die("Option --accept needs a set of cases to accept. Try")
-		accept(datapath, back2back_files, architectureSpecific, cases)
+		cases or die("Option --accept needs a set of cases to accept.\nAvailable cases:\n"+"\n".join(["\t"+case for case, command, outputs in back2BackCases]))
+		unsupportedCases = set(cases).difference(set(availableCases))
+		if unsupportedCases:
+			die("The following specified cases are not available:\n" + _caseList(unsupportedCases) + "Try with:\n" + _caseList(availableCases))
+		accept(datapath, back2BackCases, architectureSpecific, cases)
 		sys.exit()
 
 	if "--acceptall" in argv :
 		print "Warning: Accepting any faling case"
-		accept(datapath, back2back_files, architectureSpecific)
+		accept(datapath, back2BackCases, architectureSpecific)
 		sys.exit()
 
-	passB2BTests(datapath, back2back_files) or die("Tests not passed")
+	passB2BTests(datapath, back2BackCases) or die("Tests not passed")
 
 
 ### End of generic stuff
