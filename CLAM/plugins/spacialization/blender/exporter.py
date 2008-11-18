@@ -178,7 +178,7 @@ def normalizePosition(originalPosition,offset=_normalizationOffset,scale=_normal
 	return normalizedPosition
 
 
-def choreoExport (scene):
+def choreoExport (scene,normalize=True):
 	SelectedObjects = Blender.Object.GetSelected()
 	listeners=Acoustic.getListeners()
 	sources=[]
@@ -196,18 +196,26 @@ def choreoExport (scene):
 		return
 	allAcousticObjects=Acoustic.getAcousticObjects(scene)
 	# print list(allAcousticObjects)
-	normalizationOffset,normalizationScale=getNormalizationParameters(allAcousticObjects)
+	#TODO: refactor this (checked three times!)
+	if normalize==True:
+		normalizationOffset,normalizationScale=getNormalizationParameters(allAcousticObjects)
 	for frame in range(Blender.Get('staframe'),Blender.Get('endframe')):
 		Blender.Set('curframe',frame)
 		roll,descention,azimuth=target.mat.toEuler()
 		targetElevation=(-descention+90)%360
 		targetRoll=(roll)%360
 		targetAzimuth=(azimuth)%360
-		targetX,targetY,targetZ=normalizePosition(listener.mat.translationPart(),normalizationOffset,normalizationScale)
+		if normalize==True:
+			targetX,targetY,targetZ=normalizePosition(listener.mat.translationPart(),normalizationOffset,normalizationScale)
+		else:
+			targetX,targetY,targetZ=listener.mat.translationPart()
 		sourcesPositions=""
 		for source in sources:
 			if source.sel==1:
-				sourceX,sourceY,sourceZ=normalizePosition(source.mat.translationPart(),normalizationOffset,normalizationScale)
+				if normalize==True:
+					sourceX,sourceY,sourceZ=normalizePosition(source.mat.translationPart(),normalizationOffset,normalizationScale)
+				else:
+					sourceX,sourceY,sourceZ=source.mat.translationPart()
 				sourcesPositions+=" %f %f %f" % (sourceX,sourceY,sourceZ)
 		buffer+=ChoreoLineTemplate % vars()
 	return buffer

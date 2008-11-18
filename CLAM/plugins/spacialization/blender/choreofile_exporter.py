@@ -44,48 +44,25 @@ Usage:
 import Blender
 from bpy import data
 from sys import path
+import os
 import BlenderOSCSender
+
+path.append ( os.getcwd() )
+path.append ( "%s/clam/CLAM/plugins/spacialization/blender" % os.getenv("HOME") )
+import exporter
 
 if Blender.sys.exists("network_scene_exporter.py")==1:
 	path.append(Blender.sys.dirname("network_scene_exporter.py"))
 	import network_scene_exporter as SceneExporter
 
-row="""%(frame)i 0 %(targetAzimuth)f %(targetElevation)f %(targetX)f %(targetY)f %(targetZ)f %(sourceX)f %(sourceY)f %(sourceZ)f
-"""
-
-def GetGroupObjects(objects,groupName):
-	returnList=list()
-	for object in data.groups[groupName].objects:
-		if (list(objects).count(object)>0):
-			returnList.append(object)
-	return returnList
-
 def WriteSceneAsChoreo (choreoFilename):
 #	Window.WaitCursor(1)
-	SelectedObjects = Blender.Object.GetSelected()
-	listeners=[]
-	sources=[]
-	for object in SelectedObjects:
-		if BlenderOSCSender.isListener(object):
-			listeners.append(object)
-		if BlenderOSCSender.isSource(object):
-			sources.append(object)
-	if (len(listeners)!=1) or (len(sources)!=1):
-		Blender.Draw.PupMenu('You have to select one source and one listener objects!')
-		return
-	listener=listeners[0]
-	source=sources[0]
-	scene = Blender.Scene.GetCurrent()
-	f=open(choreoFilename,'w')
-	for frame in range(Blender.Get('staframe'),Blender.Get('endframe')):
-		Blender.Set('curframe',frame)
-		targetRoll, targetDescention,targetAzimuth=listener.mat.toEuler()
-		targetElevation=-targetDescention
-		targetX,targetY,targetZ=listener.mat.translationPart()
-		sourceX,sourceY,sourceZ=source.mat.translationPart()
-		f.write(row % vars())
-	f.close()
-	print "Exported choreo file: %s" % choreoFilename
+	bufferToWrite=exporter.choreoExport(Blender.Scene.GetCurrent(),False)
+	if bufferToWrite:
+		f=open(choreoFilename,'w')
+		f.write(bufferToWrite)
+		f.close()
+		print "Exported choreo file: %s" % choreoFilename
 	WriteChoreoNetwork(choreoFilename)
 
 # generate CLAM network with the choreo sequencer and monitors
