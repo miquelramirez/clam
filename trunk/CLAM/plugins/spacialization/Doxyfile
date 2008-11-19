@@ -1,4 +1,4 @@
-# Doxyfile 1.5.5
+# Doxyfile 1.5.6
 
 #---------------------------------------------------------------------------
 # Project related configuration options
@@ -33,6 +33,7 @@ OPTIMIZE_OUTPUT_VHDL   = NO
 BUILTIN_STL_SUPPORT    = NO
 CPP_CLI_SUPPORT        = NO
 SIP_SUPPORT            = NO
+IDL_PROPERTY_SUPPORT   = YES
 DISTRIBUTE_GROUP_DOC   = NO
 SUBGROUPING            = YES
 TYPEDEF_HIDES_STRUCT   = NO
@@ -66,6 +67,8 @@ ENABLED_SECTIONS       =
 MAX_INITIALIZER_LINES  = 30
 SHOW_USED_FILES        = YES
 SHOW_DIRECTORIES       = NO
+SHOW_FILES             = YES
+SHOW_NAMESPACES        = YES
 FILE_VERSION_FILTER    = 
 #---------------------------------------------------------------------------
 # configuration options related to warning and progress messages
@@ -131,12 +134,14 @@ HTML_DYNAMIC_SECTIONS  = NO
 CHM_FILE               = 
 HHC_LOCATION           = 
 GENERATE_CHI           = NO
+CHM_INDEX_ENCODING     = 
 BINARY_TOC             = NO
 TOC_EXPAND             = NO
 DISABLE_INDEX          = NO
 ENUM_VALUES_PER_LINE   = 4
 GENERATE_TREEVIEW      = NO
 TREEVIEW_WIDTH         = 250
+FORMULA_FONTSIZE       = 10
 #---------------------------------------------------------------------------
 # configuration options related to the LaTeX output
 #---------------------------------------------------------------------------
@@ -171,7 +176,7 @@ MAN_LINKS              = NO
 #---------------------------------------------------------------------------
 # configuration options related to the XML output
 #---------------------------------------------------------------------------
-GENERATE_XML           = NO
+GENERATE_XML           = YES
 XML_OUTPUT             = xml
 XML_SCHEMA             = 
 XML_DTD                = 
@@ -214,6 +219,8 @@ CLASS_DIAGRAMS         = YES
 MSCGEN_PATH            = 
 HIDE_UNDOC_RELATIONS   = YES
 HAVE_DOT               = NO
+DOT_FONTNAME           = FreeSans
+DOT_FONTPATH           = 
 CLASS_GRAPH            = YES
 COLLABORATION_GRAPH    = YES
 GROUP_GRAPHS           = YES
