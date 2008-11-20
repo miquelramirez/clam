@@ -40,7 +40,7 @@ namespace CLAM
 		EAudioFileWriter( std::string s ) : Enum(EnumValues(), s) {}
 		virtual Component* Species() const { return new EAudioFileWriter; }
 
-		typedef enum
+		enum
 		{
 			eDefault = 0,
 			ePCM_16 = SF_FORMAT_WAV | SF_FORMAT_PCM_16,      /* Signed 16 bit data */
