@@ -89,7 +89,7 @@ private:
 
 		CLAM::XMLStorage::Dump(foo, "network", _output, false);
 
-		assertXmlBodyEquals( "<network id=\"FooNetwork\"/>" );
+		assertXmlBodyEquals( "<network clamVersion=\""+_version+"\" id=\"FooNetwork\"/>" );
 	}
 	
 	void TestLoadNetworkWithOneProcessing()
@@ -116,7 +116,7 @@ private:
 		CLAM::XMLStorage::Dump(foo, "network",_output, false);
 
 		assertXmlBodyEquals(
-			"<network id=\"FooNetworkWithOneProcessing\" clamVersion=\""+_version+"\">"
+			"<network clamVersion=\""+_version+"\" id=\"FooNetworkWithOneProcessing\">"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
 			"<Frequency>440</Frequency>"
 			"<Amplitude>1</Amplitude>"
@@ -156,7 +156,7 @@ private:
 		CLAM::XMLStorage::Dump(foo, "network", _output, false );
 		
 		assertXmlBodyEquals(
-			"<network id=\"FooNetworkWithMoreThanOneProcessing\" clamVersion=\""+_version+"\">"
+			"<network clamVersion=\""+_version+"\" id=\"FooNetworkWithMoreThanOneProcessing\">"
 			"<processing id=\"fftw\" type=\"FFT\">"
 			"<AudioSize>1024</AudioSize>"
 			"</processing>"
@@ -195,7 +195,7 @@ private:
 		CLAM::XMLStorage::Dump(foo, "network", _output, false );
 		
 		assertXmlBodyEquals(
-			"<network id=\"FooNetworkWithPortsConnection\" clamVersion=\""+_version+"\">"
+			"<network clamVersion=\""+_version+"\" id=\"FooNetworkWithPortsConnection\">"
 			"<processing id=\"multiplier\" type=\"AudioMultiplier\"/>"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
 			"<Frequency>440</Frequency>"
@@ -238,7 +238,7 @@ private:
 		CLAM::XMLStorage::Dump(foo, "network", _output, false );
 
 		assertXmlBodyEquals(
-			"<network id=\"FooNetworkWithControlsConnection\" clamVersion=\""+_version+"\">"
+			"<network clamVersion=\""+_version+"\" id=\"FooNetworkWithControlsConnection\">"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
 			"<Frequency>440</Frequency>"
 			"<Amplitude>1</Amplitude>"
