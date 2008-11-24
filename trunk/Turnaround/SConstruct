@@ -53,7 +53,7 @@ import versionInfo
 version, fullVersion = versionInfo.versionFromLocalInfo("Turnaround")
 print "Version: ", version
 print "Package version: ", fullVersion
-versionInfo.generateVersionSources(os.path.join('src','TurnaroundVersion'), "Turnaround", fullVersion)
+versionInfo.generateVersionSources(os.path.join('src','TurnaroundVersion'), "Turnaround", version, fullVersion)
 
 
 env['CXXFILESUFFIX'] = '.cxx'

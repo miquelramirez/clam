@@ -52,7 +52,7 @@ import versionInfo
 version, fullVersion = versionInfo.versionFromLocalInfo("Voice2MIDI")
 print "Version: ", version
 print "Package version: ", fullVersion
-versionInfo.generateVersionSources(os.path.join('src','Voice2MIDIVersion'), "Voice2MIDI", fullVersion)
+versionInfo.generateVersionSources(os.path.join('src','Voice2MIDIVersion'), "Voice2MIDI", version, fullVersion)
 
 
 

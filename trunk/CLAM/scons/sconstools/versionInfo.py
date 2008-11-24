@@ -53,11 +53,14 @@ def versionFromRemoteSvn( product="CLAM" ) :
 	revision = _svnRevisionOf( remoteRepository )
 	return version, _svnVersion(version, revision)
 	
-def generateVersionSources(fileBase, namespace, versionString) :
+def generateVersionSources(fileBase, namespace, versionString, fullVersionString=None) :
+	if not fullVersionString:  fullVersionString = versionString
 	header = file(fileBase+".hxx", "w")
 	header.write('namespace %s { const char * GetFullVersion(); }\n'%namespace)
+	header.write('namespace %s { const char * GetVersion(); }\n'%namespace)
 	header.close()
 	source = file(fileBase+".cxx", "w")
-	source.write('namespace %s { const char * GetFullVersion() {return "%s";} }\n'%(namespace,versionString))
+	source.write('namespace %s { const char * GetFullVersion() {return "%s";} }\n'%(namespace,fullVersionString))
+	source.write('namespace %s { const char * GetVersion() {return "%s";} }\n'%(namespace,versionString))
 	source.close()
 

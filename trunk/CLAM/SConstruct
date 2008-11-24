@@ -235,7 +235,7 @@ print "Version: ", version
 print "Package version: ", fullVersion
 
 
-versionInfo.generateVersionSources(os.path.join('src','Defines','CLAMVersion'), "CLAM", fullVersion)
+versionInfo.generateVersionSources(os.path.join('src','Defines','CLAMVersion'), "CLAM", version, fullVersion)
 
 Export('clam_env')
 

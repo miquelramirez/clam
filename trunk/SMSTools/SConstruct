@@ -48,7 +48,7 @@ import versionInfo
 version, fullVersion = versionInfo.versionFromLocalInfo("SMSTools")
 print "Version: ", version
 print "Package version: ", fullVersion
-versionInfo.generateVersionSources(os.path.join('src','SMSToolsVersion'), "SMSTools", fullVersion)
+versionInfo.generateVersionSources(os.path.join('src','SMSToolsVersion'), "SMSTools", version, fullVersion)
 
 # KLUDGE!!!!!!!!!!!!!!!!!!
 #env['RCCOM'] = '$RC $_CPPDEFFLAGS $_CPPINCFLAGS $RCFLAGS /fo$TARGET $SOURCES' # the original one

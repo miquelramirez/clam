@@ -53,7 +53,7 @@ import versionInfo
 version, fullVersion = versionInfo.versionFromLocalInfo("NetworkEditor")
 print "Version: ", version
 print "Package version: ", fullVersion
-versionInfo.generateVersionSources(os.path.join('src','NetworkEditorVersion'), "NetworkEditor", fullVersion)
+versionInfo.generateVersionSources(os.path.join('src','NetworkEditorVersion'), "NetworkEditor", version, fullVersion)
 
 
 env['CXXFILESUFFIX'] = '.cxx'
