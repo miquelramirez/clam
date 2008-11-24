@@ -29,6 +29,7 @@
 #include "FFT.hxx" // CLAM
 #include "XMLStorage.hxx" // CLAM
 #include "cppUnitHelper.hxx"
+#include <CLAM/CLAMVersion.hxx>
 
 namespace CLAMTest {
 
@@ -55,10 +56,12 @@ class NetworkSerializationTest : public CppUnit::TestFixture
 
 	std::string mPathToTestData;
 	std::stringstream _output;
+	std::string _version;
 
 public: // TestFixture interface
 	void setUp()
 	{
+		_version = CLAM::GetVersion();
 		mPathToTestData = GetTestDataDirectory("networkTestsData/");
 	}
 private:
@@ -113,7 +116,7 @@ private:
 		CLAM::XMLStorage::Dump(foo, "network",_output, false);
 
 		assertXmlBodyEquals(
-			"<network id=\"FooNetworkWithOneProcessing\">"
+			"<network id=\"FooNetworkWithOneProcessing\" clamVersion=\""+_version+"\">"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
 			"<Frequency>440</Frequency>"
 			"<Amplitude>1</Amplitude>"
@@ -153,7 +156,7 @@ private:
 		CLAM::XMLStorage::Dump(foo, "network", _output, false );
 		
 		assertXmlBodyEquals(
-			"<network id=\"FooNetworkWithMoreThanOneProcessing\">"
+			"<network id=\"FooNetworkWithMoreThanOneProcessing\" clamVersion=\""+_version+"\">"
 			"<processing id=\"fftw\" type=\"FFT\">"
 			"<AudioSize>1024</AudioSize>"
 			"</processing>"
@@ -192,7 +195,7 @@ private:
 		CLAM::XMLStorage::Dump(foo, "network", _output, false );
 		
 		assertXmlBodyEquals(
-			"<network id=\"FooNetworkWithPortsConnection\">"
+			"<network id=\"FooNetworkWithPortsConnection\" clamVersion=\""+_version+"\">"
 			"<processing id=\"multiplier\" type=\"AudioMultiplier\"/>"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
 			"<Frequency>440</Frequency>"
@@ -235,7 +238,7 @@ private:
 		CLAM::XMLStorage::Dump(foo, "network", _output, false );
 
 		assertXmlBodyEquals(
-			"<network id=\"FooNetworkWithControlsConnection\">"
+			"<network id=\"FooNetworkWithControlsConnection\" clamVersion=\""+_version+"\">"
 			"<processing id=\"oscillator\" type=\"Oscillator\">"
 			"<Frequency>440</Frequency>"
 			"<Amplitude>1</Amplitude>"
