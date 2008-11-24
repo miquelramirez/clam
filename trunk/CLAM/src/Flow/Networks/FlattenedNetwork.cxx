@@ -56,7 +56,6 @@ namespace CLAM
 		storage.Store(strAdapter);
 
 		std::string version = CLAM::GetVersion();
-		std::cout << "Storing version: " << version << std::endl;
 		XMLAdapter<std::string> versionAdapter( version, "clamVersion");
 		storage.Store(versionAdapter);
 
