@@ -39,11 +39,13 @@ class ClamNetwork() :
 			inport = self.document.findall("port_connection/in"),
 			outport = self.document.findall("port_connection/out"),
 			)
-		self.version = self.document.find("/").attrib.get("version","1.3")
+		self.version = self.document.find("/").attrib.get("clamVersion","1.3.0")
 		self.log = []
 		self.verbose = False
 		self.ensuredVersion = ""
 
+	def _featuredVersion(self, fullVersion) :
+		feature = ".".join(fullVersion.split(".")[:2])
 	def runCommand(self, command) :
 		import shlex
 		tokens = shlex.split(command)
@@ -56,7 +58,11 @@ class ClamNetwork() :
 		if self.verbose : print message
 		self.log.append(message)
 	def _versionNotApplies(self) :
-		return self.ensuredVersion and self.version != self.ensuredVersion
+		if not self.ensuredVersion : return True
+		featuredVersion = self._featuredVersion(self.version)
+		if featuredVersion == self._featuredVersion(self.ensuredVersion) :
+			return True
+		return False
 	def _namesForType(self, type) :
 		return [ processing.get("id")
 			for processing in self.processings
@@ -91,7 +97,7 @@ class ClamNetwork() :
 		
 	def upgrade(self, version) :
 		if self._versionNotApplies() : return
-		self.document.find('/').attrib['version'] = version
+		self.document.find('/').attrib['clamVersion'] = version
 		self.version = version
 
 	def renameClass(self, oldType, newType) :
@@ -179,7 +185,7 @@ class ClamNetwork() :
 		help(getattr(self,command))
 
 	def commands(self) :
-		print "Available commands:", ", ".join(_availableCommands)
+		print "Available commands:", ", ".join(self._availableCommands())
 
 
 def test() :
@@ -207,7 +213,7 @@ def test() :
 	try:
 		network.setConfig('NonExistingId', "Max", "2")
 	except: print "Exception caugth"
-#	network.dump()
+	network.dump()
 	network.commands()
 	sys.exit(0)
 
