@@ -31,6 +31,7 @@
 #ifdef USE_LADSPA //TODO alway include it. move conditional code in LFactory.hxx
 #	include "ProcessingFactory.hxx"
 #endif
+#include "CLAMVersion.hxx"
 
 namespace CLAM
 {	
@@ -53,6 +54,11 @@ namespace CLAM
 	{
 		XMLAdapter<std::string> strAdapter( _name, "id");
 		storage.Store(strAdapter);
+
+		std::string version = CLAM::GetVersion();
+		std::cout << "Storing version: " << version << std::endl;
+		XMLAdapter<std::string> versionAdapter( version, "clamVersion");
+		storage.Store(versionAdapter);
 
 		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings();it!=EndProcessings();it++)
