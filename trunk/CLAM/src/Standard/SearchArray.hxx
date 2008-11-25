@@ -86,13 +86,13 @@ template <class T>
 	TIndex inc = 1;
 	TIndex upperLimit;
 
-	if ( value >= (*mpArray)[guessIndex] == ascending)
+	if ( (value >= (*mpArray)[guessIndex]) == ascending)
 	{
 		if (guessIndex == n-1)
 			return -1;//X.A. changed to -1 for consistency
 
 		upperLimit = guessIndex+1;
-		while (	value >= (*mpArray)[upperLimit] == ascending)
+		while (	(value >= (*mpArray)[upperLimit]) == ascending)
 		{
 			guessIndex = upperLimit;
 			inc += inc;
@@ -113,7 +113,7 @@ template <class T>
 			return -1;
 		
 		upperLimit = guessIndex--;
-		while (	value < (*mpArray)[guessIndex] == ascending)
+		while (	(value < (*mpArray)[guessIndex]) == ascending)
 		{
 			upperLimit = guessIndex;
 			inc += inc;
@@ -141,7 +141,7 @@ template <class T>
 	while (upperLimit-lowerLimit > 1)
 	{
 		TIndex midPoint = (upperLimit+lowerLimit)>>1;
-		if ( value >= (*mpArray)[midPoint] == ascending)
+		if ( (value >= (*mpArray)[midPoint]) == ascending)
 			lowerLimit = midPoint;
 		else
 			upperLimit = midPoint;
