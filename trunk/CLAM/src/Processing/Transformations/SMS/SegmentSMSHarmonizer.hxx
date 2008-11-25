@@ -43,12 +43,12 @@ namespace CLAM{
 		const char *GetClassName() const {return "SegmentSMSHarmonizer";}
 		
 		FloatInControl mIndexCtl;//says what the amount sent as control is modifying
-		InControlTmpl<SegmentSMSHarmonizer> mUpdateBPFCtl;//"boolean" control used to say that we want to update BPF
 		FloatInControl mTransCtl;
 		/** xamat:adding residual does not improve results much and adds a lot of overhead, there should
 		 *	probably be a configuration parameter to control whether we want to add residual or not, but that
 		 *	would mean changing the kind of configuration. For the time being the output residual is the input.*/
 		InControlTmpl<SegmentSMSHarmonizer> mIgnoreResidualCtl;
+		InControlTmpl<SegmentSMSHarmonizer> mUpdateBPFCtl;///< "boolean" control used to say that we want to update BPF
 	public:
 			
 		int UpdateBPF(TControlData value)
@@ -70,11 +70,11 @@ namespace CLAM{
 		}
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
-		SegmentSMSHarmonizer():
-			mIndexCtl("Index", this),
-			mTransCtl("Transposition",this),
-			mIgnoreResidualCtl("IgnoreResidual",this, &SegmentSMSHarmonizer::IgnoreResidual, true),
-			mUpdateBPFCtl("UpdateBPF", this, &SegmentSMSHarmonizer::UpdateBPF, true)
+		SegmentSMSHarmonizer()
+			: mIndexCtl("Index", this)
+			, mTransCtl("Transposition",this)
+			, mIgnoreResidualCtl("IgnoreResidual",this, &SegmentSMSHarmonizer::IgnoreResidual)
+			, mUpdateBPFCtl("UpdateBPF", this, &SegmentSMSHarmonizer::UpdateBPF)
 		{
 			Configure(FrameTransformationConfig());
 			mTmpFrame.AddAll();
