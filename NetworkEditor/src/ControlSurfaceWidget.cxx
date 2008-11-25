@@ -8,6 +8,8 @@
 
 ControlSurfaceWidget::ControlSurfaceWidget(QWidget * parent, CLAM::Processing * processing)
 	: QWidget(parent)
+	, _spinBoxX(0)
+	, _spinBoxY(0)
 	, _sender(0)
 	, _minX(0)
 	, _minY(0)
@@ -15,8 +17,6 @@ ControlSurfaceWidget::ControlSurfaceWidget(QWidget * parent, CLAM::Processing * 
 	, _maxY(1)
 	, _defaultX(0)
 	, _defaultY(0)
-	, _spinBoxX(0)
-	, _spinBoxY(0)
 	, _updating(false)
 	, _dragging(false)
 	, _areSpinBoxesHidden(false)
