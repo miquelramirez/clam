@@ -35,8 +35,8 @@
 
 namespace CLAM
 {
-
-/*	class SMSSineFilterConfig : public ProcessingConfig
+#if 0
+	class SMSSineFilterConfig : public ProcessingConfig
 	{
 
 	   public:
@@ -44,7 +44,7 @@ namespace CLAM
 			/** Single Value Parameter */
 //			DYN_ATTRIBUTE (0, public, TData, Amount);
 			/** BPF (envelope-like) Parameter */
-/*			DYN_ATTRIBUTE (0, public, BPF, BPF);
+			DYN_ATTRIBUTE (0, public, BPF, BPF);
 
 
 		private:
@@ -64,7 +64,7 @@ namespace CLAM
 			}
 
 	};
-*/
+#endif
 	class SMSSineFilter: public FrameTransformation
 	{
 		
@@ -96,12 +96,11 @@ namespace CLAM
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SMSSineFilter()
-			:
-			mInPeaks("In SpectralPeaks", this),
-			mOutPeaks("Out SpectralPeaks", this),
-			mIndexCtl("Index", this),
-			mGainCtl("Gain",this),
-			mUpdateBPFCtl("UpdateBPF", this, &SMSSineFilter::UpdateBPF, true)
+			: mInPeaks("In SpectralPeaks", this)
+			, mOutPeaks("Out SpectralPeaks", this)
+			, mIndexCtl("Index", this)
+			, mUpdateBPFCtl("UpdateBPF", this, &SMSSineFilter::UpdateBPF)
+			, mGainCtl("Gain",this)
 
 		{
 			
@@ -114,12 +113,11 @@ namespace CLAM
 		 *  @param c SegmentTransformationConfig object created by the user
 		*/
 		SMSSineFilter(const FrameTransformationConfig& cfg )
-			:
-			mInPeaks("In SpectralPeaks", this),
-			mOutPeaks("Out SpectralPeaks", this),
-			mIndexCtl("Index", this),
-			mGainCtl("Gain",this),
-			mUpdateBPFCtl("UpdateBPF", this, &SMSSineFilter::UpdateBPF, true)
+			: mInPeaks("In SpectralPeaks", this)
+			, mOutPeaks("Out SpectralPeaks", this)
+			, mIndexCtl("Index", this)
+			, mUpdateBPFCtl("UpdateBPF", this, &SMSSineFilter::UpdateBPF)
+			, mGainCtl("Gain",this)
 		{
 			Configure( cfg );
 		}
