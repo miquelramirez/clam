@@ -108,7 +108,7 @@ def geometryExport(scene):
 		bufferObject+= "<VERTS>\n"
 #		location=object.getLocation()
 		location=object.mat.translationPart()
-		for vert in data.verts:
+		for vert in data.verts[::-1]:
 			bufferObject+="%f %f %f\n" % (vert.co[0]+location[0],vert.co[1]+location[1],vert.co[2]+location[2])
 		bufferObject+="<FACES>\n"
 		materials=Acoustic.getObjectMaterials(object)
