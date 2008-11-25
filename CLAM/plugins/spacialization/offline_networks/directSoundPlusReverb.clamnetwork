@@ -215,7 +215,7 @@
   </processing>
 
   <processing id="ChoreoSequencer_1" position="104,22" size="194,59" type="ChoreoSequencer">
-    <Filename>/home/vokimon/CajitasDeArena/data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
+    <Filename>~/data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
@@ -474,7 +474,7 @@
 
   <processing id="RoomImpulseResponseSimulator" position="61,172" size="267,100" type="RoomImpulseResponseSimulator">
     <FrameSize>512</FrameSize>
-    <Model3DFile>/home/vokimon/CajitasDeArena/acustica/raytracing/entorns/cubic_room_arrebola.data</Model3DFile>
+    <Model3DFile>../../../acustica/raytracing/entorns/cubic_room_arrebola.data</Model3DFile>
     <GridDivisions>500</GridDivisions>
     <NRays>200</NRays>
     <NRebounds>50</NRebounds>
