@@ -40,14 +40,14 @@ int main( int argc, char** argv )
 		std::cerr << "No input file" << std::endl;
 		std::cerr << "Usage: FileInfo <input file name>" << std::endl;
 
-		exit( - 1 );
+		return -1;
 	}
 	else if ( argc > 2 ) // Too many parameters
 	{
 		std::cerr << "Too many parameters" << std::endl;
 		std::cerr << "Usage: FileInfo <input file name>" << std::endl;
 		
-		exit( -1 );
+		return -1;
 	}
 
 	// Now we take argv[1] ( the second token in the command used to invoke this
@@ -67,7 +67,7 @@ int main( int argc, char** argv )
 	{
 		std::cerr << "Error: file " << file.GetLocation() << " cannot be opened ";
 		std::cerr << "or is encoded in an unrecognized format" << std::endl;
-		exit(-1);
+		return -1;
 	}
 
 	// If it was readable now we can safely assume we can access its header

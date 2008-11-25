@@ -208,12 +208,12 @@ int main( int argc, char** argv )
 	catch( CLAM::Err& e )
 	{
 		e.Print();
-		exit(-1);
+		return -1;
 	}
 	catch( std::exception& e )
 	{
 		std::cerr << e.what() << std::endl;
-		exit(-1);
+		return -1;
 	}
 
 	return 0;
