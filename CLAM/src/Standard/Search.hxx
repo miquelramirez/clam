@@ -80,34 +80,33 @@ template <class U, class T>
 	bool ascending = (*mpData)[n-1] >= (*mpData)[0];
 	TIndex inc = 1;
 	TIndex upperLimit;
-	if ( value >= (*mpData)[guessIndex] == ascending)
+	if ( (value >= (*mpData)[guessIndex]) == ascending)
 	{
 		if (guessIndex == n-1)
 			return -1;//X.A. changed to -1 for consistency
 		upperLimit = guessIndex+1;
-		while (	value >= (*mpData)[upperLimit] == ascending)
+		while (	(value >= (*mpData)[upperLimit]) == ascending)
 		{
 			guessIndex = upperLimit;
 			inc += inc;
 			upperLimit += inc;
 			if (upperLimit >= n) {
-	result=Bisection(value,guessIndex);
+				result=Bisection(value,guessIndex);
 				if(result==n-1) return -1;
-	else return result;
+				else return result;
 			}
 		}
 	} else {
-		if (guessIndex==0) 
-			return -1;
+		if (guessIndex==0) return -1;
 		upperLimit = guessIndex--;
-		while (	value < (*mpData)[guessIndex] == ascending)
+		while (	(value < (*mpData)[guessIndex]) == ascending)
 		{
 			upperLimit = guessIndex;
 			inc += inc;
 			if (inc >= upperLimit) {
 				result = Bisection(value,0,upperLimit);
-	if(result==0) return -1;
-	else return result;
+				if(result==0) return -1;
+				else return result;
 			}
 			guessIndex = upperLimit-inc;
 		}
@@ -124,7 +123,7 @@ template <class U, class T>
 	while (upperLimit-lowerLimit > 1)
 	{
 		TIndex midPoint = (upperLimit+lowerLimit)>>1;
-		if ( value >= (*mpData)[midPoint] == ascending)
+		if ( (value >= (*mpData)[midPoint]) == ascending)
 			lowerLimit = midPoint;
 		else
 			upperLimit = midPoint;
