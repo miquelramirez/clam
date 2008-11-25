@@ -86,6 +86,7 @@ def sendObjectValue(objectNumber,typeName,typeValue,value,port):
 	Message(message,value).sendlocal(port)
 
 def main():
+	typename=None
 	if (configured==0):
 		return
 	if Blender.event=='FrameChanged':
@@ -130,3 +131,4 @@ def main():
 # This lets you can import the script without running it
 if __name__ == '__main__':
 	main()
+
