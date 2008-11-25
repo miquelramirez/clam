@@ -322,7 +322,7 @@ namespace CLAMTest {
 
 		void testExtraction_withIncorrectInputs()
 		{
-			char * inputstring[] =
+			const char * inputstring[] =
 			{
 				"{flag0 fla2 flag3 }",
 				"{fla0 flag2 flag3 }",
@@ -344,7 +344,7 @@ namespace CLAMTest {
 		}
 
 		void testExtraction_withCorrectInputs() {
-			char * inputstring[] = {
+			const char * inputstring[] = {
 				"{flag0 flag2 flag3}",
 				"{ flag0 flag2 flag3 }",
 				" { flag0 flag2 flag3 } ",
@@ -361,7 +361,7 @@ namespace CLAMTest {
 		}
 
 		void testExtraction_withResetFlags() {
-			char * inputstring[] = {
+			const char * inputstring[] = {
 				"{}",
 				" {  } ",
 				" { } ",
