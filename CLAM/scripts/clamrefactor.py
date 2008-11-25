@@ -58,11 +58,11 @@ class ClamNetwork() :
 		if self.verbose : print message
 		self.log.append(message)
 	def _versionNotApplies(self) :
-		if not self.ensuredVersion : return True
+		if not self.ensuredVersion : return False
 		featuredVersion = self._featuredVersion(self.version)
 		if featuredVersion == self._featuredVersion(self.ensuredVersion) :
-			return True
-		return False
+			return False
+		return True
 	def _namesForType(self, type) :
 		return [ processing.get("id")
 			for processing in self.processings
