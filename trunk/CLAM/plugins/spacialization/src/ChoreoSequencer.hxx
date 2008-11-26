@@ -20,7 +20,7 @@ class ChoreoSequencer : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 9, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 10, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, InFilename, Filename);
 		DYN_ATTRIBUTE( 1, public, unsigned, SourceIndex); // first is 0
 		DYN_ATTRIBUTE( 2, public, unsigned, FrameSize);
@@ -30,6 +30,7 @@ class ChoreoSequencer : public CLAM::Processing
 		DYN_ATTRIBUTE( 6, public, TData, SizeY);
 		DYN_ATTRIBUTE( 7, public, TData, SizeZ);
 		DYN_ATTRIBUTE( 8, public, bool, UseSpiralIfNoFilename);
+		DYN_ATTRIBUTE( 9, public, bool, ReadElevations);
 	protected:
 		void DefaultInit()
 		{
@@ -44,6 +45,7 @@ class ChoreoSequencer : public CLAM::Processing
 			SetSizeY(1);
 			SetSizeZ(1);
 			SetUseSpiralIfNoFilename(false);		
+			SetReadElevations(false);
 		};
 	};
 
@@ -114,11 +116,25 @@ public:
 			double dz = _sizeZ * (row[SourceZColumn+3*sourceIndex] - row[TargetZColumn]);
 			double cosAzimuth = std::cos(M_PI/180*row[TargetAzimutColumn]);
 			double sinAzimuth = std::sin(M_PI/180*row[TargetAzimutColumn]);
-			double cosZenith = std::cos(M_PI/180*row[TargetZenitColumn]);
-			double sinZenith = std::sin(M_PI/180*row[TargetZenitColumn]);
-			double rotatedX = + cosAzimuth*sinZenith * dx + sinAzimuth * dy - cosAzimuth*cosZenith * dz;
-			double rotatedY = - sinAzimuth*sinZenith * dx + cosAzimuth * dy + sinAzimuth*cosZenith * dz;
-			double rotatedZ = + cosZenith * dx + /* 0 * vy[i] */  + sinZenith  * dz;
+			bool readElevation = _config.HasReadElevations() and _config.GetReadElevations();
+			double elevation = readElevation ?  row[TargetZenitColumn] : 90 - row[TargetZenitColumn];
+			double cosElevation = std::cos(M_PI/180*elevation);
+			double sinElevation = std::sin(M_PI/180*elevation);
+			double roll = 0;
+			double cosRoll = std::cos(M_PI/180*roll);
+			double sinRoll = std::sin(M_PI/180*roll);
+			double rotatedX =
+				+ dx * cosAzimuth * cosElevation 
+				+ dy * sinAzimuth
+				- dz * cosAzimuth * sinElevation;
+			double rotatedY =
+				- dx * sinAzimuth * cosElevation
+				+ dy * cosAzimuth
+				+ dz * sinAzimuth * sinElevation;
+			double rotatedZ =
+				+ dx * sinElevation
+//				+ dy * 0
+				+ dz * cosElevation;
 
 			// TODO: Test that with target elevation and azimuth
 			double dazimuth = 180./M_PI*std::atan2(rotatedY,rotatedX);
