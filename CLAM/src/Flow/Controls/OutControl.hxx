@@ -40,7 +40,7 @@ class Processing;
 /**
 * \brief Processing out control class.
 *
-* Controls are limited to emmit and receive TControlData (float) numbers. 
+* Controls are limited to emit and receive TControlData (float) numbers. 
 * Though extensible typed connections are future planned development: @see TypedOutControl
 */
 class OutControl : public OutControlBase
@@ -49,17 +49,8 @@ class OutControl : public OutControlBase
 public:
 	/**
 	* Constructor of the OutControl.
-	* 
-	* \warning notice that if the out control object is going to suffer a copy
-	* (i.e.creating controls that will be copied inside an STL container)
-	* the original pointer published will be no longer meaningfull . For avoiding this
-	* case we recommend using the flag publish=false. And invoque the PublishInControl
-	* method of the processing object, once the copy is made.
-	* \param publish This flag (true by default) concerns the publication of the 
-	* control pointer at the base processing object.
-	* \param parent Optional. The processing object that owns the control object. The one where
-	* to publish the control if it is the case (publish flag set)
-	* \todo improve construction mechanism (params set)
+	* \param name The name of the control 
+	* \param parent Optional. The processing object that owns the control object.
 	*/
 	OutControl(const std::string& name, Processing* parent=0);	
 	
