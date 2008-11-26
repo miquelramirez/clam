@@ -2,11 +2,11 @@
 #include <CLAM/Processing.hxx>
 
 namespace CLAM{
-	OutControlBase::OutControlBase(const std::string &name, Processing * proc, bool publish)
+	OutControlBase::OutControlBase(const std::string &name, Processing * proc)
 		: mName(name)
 		, mProcessing(proc)
 	{
-		if (proc and publish) proc->RegisterOutControl(this);
+		if (proc) proc->RegisterOutControl(this);
 	}
 	
 	OutControlBase::~OutControlBase()

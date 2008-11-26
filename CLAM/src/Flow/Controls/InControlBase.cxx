@@ -3,7 +3,7 @@
 
 namespace CLAM
 {
-	InControlBase::InControlBase(const std::string &name, Processing * proc, bool publish)
+	InControlBase::InControlBase(const std::string &name, Processing * proc)
 		: mName(name)
 		, mProcessing(proc)
 		, mUpperBound(1)
@@ -11,7 +11,7 @@ namespace CLAM
 		, mBounded(false)
 		, mHasDefaultValue(false)
 	{
-		if (proc && publish) proc->RegisterInControl(this);
+		if (proc) proc->RegisterInControl(this);
 	}
 	
 	InControlBase::~InControlBase()
