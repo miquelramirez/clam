@@ -5,17 +5,17 @@
 namespace CLAM
 {
 
-template<class T>
-class LADSPAInfo
-{
-public:
-	std::string name;
-	T* processing;
-	LADSPA_Data *dataBuffer;
-};
-
 class NetworkLADSPAPlugin
 {
+	template<class T>
+	class LADSPAInfo
+	{
+	public:
+		std::string name;
+		T* processing;
+		LADSPA_Data *dataBuffer;
+	};
+
 private:
 	typedef std::vector< LADSPAInfo<AudioSource> > LADSPAInPortList;
 	typedef std::vector< LADSPAInfo<AudioSink> > LADSPAOutPortList;
