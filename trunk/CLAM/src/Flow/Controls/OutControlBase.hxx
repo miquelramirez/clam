@@ -34,7 +34,7 @@ namespace CLAM {
 		 @todo Is there any need for the publish parameter? If so, 
 		       consider it when desregistering, If not remove it.
 		*/
-		OutControlBase(const std::string &name, Processing * proc = 0, bool publish=true);
+		OutControlBase(const std::string &name, Processing * proc = 0);
 		/**
 		 Class destructor.
 		 Destruction clears any connection left and unregisters the control from the processing.

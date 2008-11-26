@@ -27,8 +27,8 @@ namespace CLAM {
 
 // Creation/Destruction
 
-OutControl::OutControl(const std::string& name, Processing* parent, const bool publish)
-	: OutControlBase(name, parent, publish)
+OutControl::OutControl(const std::string& name, Processing* parent)
+	: OutControlBase(name, parent)
 {
 }
 bool OutControl::IsLinkable(const InControlBase& in)

@@ -61,7 +61,7 @@ public:
 	* to publish the control if it is the case (publish flag set)
 	* \todo improve construction mechanism (params set)
 	*/
-	OutControl(const std::string& name, Processing* parent=0, const bool publish=true );	
+	OutControl(const std::string& name, Processing* parent=0);	
 	
 	
 //Methods

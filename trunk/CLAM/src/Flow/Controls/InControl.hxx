@@ -45,7 +45,7 @@ protected:
 
 public:
 //Constructor/Destructor
-	InControl(const std::string &name, Processing* parent=0, const bool publish=true);
+	InControl(const std::string &name, Processing* parent=0);
 	virtual ~InControl();
 	const std::type_info & ControlType() const
 	{
@@ -115,24 +115,22 @@ public:
 	* @parent The processing object that owns the control object. The one where
 	* to publish the control if it is the case (publish flag set)
 	*/
-	InControlTmpl(const std::string &name, ProcObj* parent, TPtrMemberFunc f = 0,const bool publish=true )	:
-		InControl(name,parent,publish),
+	InControlTmpl(const std::string &name, ProcObj* parent, TPtrMemberFunc f = 0)	:
+		InControl(name,parent),
 		mFunc(f),
 		mFuncId(0),
 		mProcObj(parent)
 
 		{
-//			if (publish) mProcObj->PublishInControl(this);
 		};
 
-	InControlTmpl(int id,const std::string &name, ProcObj* parent, TPtrMemberFuncId f,const bool publish=true )	:
-		InControl(name,parent,publish),
+	InControlTmpl(int id,const std::string &name, ProcObj* parent, TPtrMemberFuncId f)	:
+		InControl(name,parent),
 		mFunc(0),
 		mFuncId(f),
 		mProcObj(parent),
 		mId(id)
 		{
-//			if (publish && mProcObj) mProcObj->PublishInControl(this);
 		};
 
 	~InControlTmpl(){};
