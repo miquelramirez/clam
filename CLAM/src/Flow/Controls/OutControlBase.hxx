@@ -25,14 +25,13 @@ namespace CLAM {
 		typedef std::list<InControlBase*> Peers;
 		/// Stores the pointers to the connected incontrols
 		Peers mLinks;
+		/** Private copy constructor to avoid copies */
+		OutControlBase(const OutControlBase & toBeCopied ) {}
 	public:
 		/**
 		 Class constructor.
 		 @param name Unique name of the control within the processing.
 		 @param processing Host processing (0 for a free control).
-		 @param publish Whether to make the control visible to the outside.
-		 @todo Is there any need for the publish parameter? If so, 
-		       consider it when desregistering, If not remove it.
 		*/
 		OutControlBase(const std::string &name, Processing * proc = 0);
 		/**
