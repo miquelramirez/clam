@@ -28,34 +28,17 @@ void MIDIKeyboardConfig::DefaultInit(void)
 	SetMidiDevice("alsa:hw:1,0");
 }
 
-MIDIKeyboard::MIDIKeyboard()
-	:
-	mCurrentTime( 0.0 ),
-	mCurrentTimeIncrement( 0 ),	
-	mNoteInControl( "NoteIn", this, false ),
-	mVelocityInControl( "VelocityIn", this, false ),
-	mPitchBendInControl( "PitchBendIn", this, false ),
-	mModulationInControl( "ModulationIn", this, false ),
-	mNoteOut( "NoteOut", this ),
-	mVelocityOut( "VelocityOut", this ),
-	mPitchBendOut( "PitchBendOut", this ),
-	mModulationOut( "ModulationOut", this )
-{ 
-	Configure( mConfig );
-}
-
-MIDIKeyboard::MIDIKeyboard( ProcessingConfig& cfg )
-	:
-	mCurrentTime( 0.0 ),
-	mCurrentTimeIncrement( 0 ),	
-	mNoteInControl( "NoteIn", this),
-	mVelocityInControl( "VelocityIn", this, false ),
-	mPitchBendInControl( "PitchBendIn", this, false ),
-	mModulationInControl( "ModulationIn", this, false ),
-	mNoteOut( "NoteOut", this ),
-	mVelocityOut( "VelocityOut", this ),
-	mPitchBendOut( "PitchBendOut", this ),
-	mModulationOut( "ModulationOut", this )
+MIDIKeyboard::MIDIKeyboard( const MIDIKeyboardConfig & cfg )
+	: mCurrentTime( 0.0 )
+	, mCurrentTimeIncrement( 0 )
+	, mNoteInControl( "NoteIn", this)
+	, mVelocityInControl( "VelocityIn") // TODO: Check why this should not be published
+	, mPitchBendInControl( "PitchBendIn") // TODO: Check why this should not be published
+	, mModulationInControl( "ModulationIn") // TODO: Check why this should not be published
+	, mNoteOut( "NoteOut", this )
+	, mVelocityOut( "VelocityOut", this )
+	, mPitchBendOut( "PitchBendOut", this )
+	, mModulationOut( "ModulationOut", this )
 {
 	Configure( cfg );	
 }

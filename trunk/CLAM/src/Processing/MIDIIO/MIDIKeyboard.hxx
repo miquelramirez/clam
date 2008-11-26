@@ -54,9 +54,7 @@ class MIDIKeyboard : public Processing
 
 		const char* GetClassName() const { return "MIDIKeyboard"; }
 
-		MIDIKeyboard();
-		
-		MIDIKeyboard( ProcessingConfig& cfg );
+		MIDIKeyboard( const MIDIKeyboardConfig & cfg = MIDIKeyboardConfig() );
 
 		bool ConcreteConfigure( const ProcessingConfig& cfg );
 
