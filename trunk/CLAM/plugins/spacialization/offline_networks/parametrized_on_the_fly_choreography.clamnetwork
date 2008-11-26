@@ -26,6 +26,7 @@
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
     <ControlsPerSecond>%(controls_per_second)i</ControlsPerSecond>
+    <UseSpiralIfNoFilename>0</UseSpiralIfNoFilename>
   </processing>
 
   <processing id="Convolution_P" position="513,174" size="127,62" type="LowLatencyConvolution">
