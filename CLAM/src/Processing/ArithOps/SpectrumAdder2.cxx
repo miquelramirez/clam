@@ -146,7 +146,7 @@ namespace CLAM {
 			mSize = in1.GetSize();
 			CLAM_ASSERT(mSize,"SpectrumAdder2::SetPrototypes: Zero size spectrum");
 		}
-		if (t2.bMagPhase || t2.bComplex || t2.bPolar)
+		if (t2.bMagPhase || t2.bComplex || t2.bPolar) {
 			if (mSize) {
 				CLAM_ASSERT(mSize == in2.GetSize(),"SpectrumAdder2::SetPrototypes:Size mismatch in spectrum sum");
 			}
@@ -154,7 +154,8 @@ namespace CLAM {
 				mSize = in2.GetSize();
 				CLAM_ASSERT(mSize,"SpectrumAdder2::SetPrototypes: Zero size spectrum");
 			}
-		if (to.bMagPhase || to.bComplex || to.bPolar)
+		}
+		if (to.bMagPhase || to.bComplex || to.bPolar) {
 			if (mSize) {
 				CLAM_ASSERT(mSize == out.GetSize(),"SpectrumAdder2::SetPrototypes:Size mismatch in spectrum sum");
 			}
@@ -162,6 +163,7 @@ namespace CLAM {
 				mSize = out.GetSize();
 				CLAM_ASSERT(mSize,"SpectrumAdder2::SetPrototypes: Zero size spectrum");
 			}
+		}
 
 		// Spectral Range.  
 		// We could also ignore BPF-only objects here, but in
@@ -172,16 +174,18 @@ namespace CLAM {
 			in1.GetSpectralRange() == out.GetSpectralRange() ,"SpectrumAdder2::SetPrototypes: Spectral range mismatch in spectrum sum");
 
 		// Scale.
-		if (in1.GetScale() == EScale::eLinear)
+		if (in1.GetScale() == EScale::eLinear) {
 			if (in2.GetScale() == EScale::eLinear)
 				mScaleState=Slinlin;
 			else
 				mScaleState=Slinlog;
-		else
+		}
+		else {
 			if (in2.GetScale() == EScale::eLinear)
 				mScaleState=Sloglin;
 			else
 				mScaleState=Sloglog;
+		}
 		// Log scale output might be useful, for example when working
 		// with BPF objects at the three ports. But right for now...
 		CLAM_ASSERT(out.GetScale() != EScale::eLog,"SpectrumAdder2: Log Scale Output not implemented");
