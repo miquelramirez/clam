@@ -87,7 +87,6 @@ public:
 private:
 	TPtrMemberFunc   mFunc;
 	TPtrMemberFuncId mFuncId;
-	ProcObj* mProcObj;
 	int mId;
 
 public:
@@ -103,33 +102,33 @@ public:
 
 	/**
 	* Constructor of the InControlTmpl with a member-service-function associated. 
-	* @param publish This flag (true by default) concerns the publication of the 
-	* control pointer at the base processing object.
-	* <b>Important:</b> notice that if the out control object is going to suffer a copy
-	* (i.e.creating controls that will be copied inside an STL container)
-	* the original pointer published will be no longer . For avoiding this
-	* case we recommend using the flag publish=true. And invoke the PublishInControl
-	* method of the processing object, once the copy is made.
+	* @param name The name for the control.
+	* @param parent The processing object that owns the control object.
 	* @param f The member function that will act as a service funtion each time
 	* the DoControl method is invoqued.
-	* @parent The processing object that owns the control object. The one where
-	* to publish the control if it is the case (publish flag set)
 	*/
-	InControlTmpl(const std::string &name, ProcObj* parent, TPtrMemberFunc f = 0)	:
-		InControl(name,parent),
-		mFunc(f),
-		mFuncId(0),
-		mProcObj(parent)
-
+	InControlTmpl(const std::string &name, ProcObj* parent, TPtrMemberFunc f = 0)
+		: InControl(name,parent)
+		, mFunc(f)
+		, mFuncId(0)
 		{
 		};
 
-	InControlTmpl(int id,const std::string &name, ProcObj* parent, TPtrMemberFuncId f)	:
-		InControl(name,parent),
-		mFunc(0),
-		mFuncId(f),
-		mProcObj(parent),
-		mId(id)
+	/**
+	* Constructor of the InControlTmpl with a member-service-function associated
+	* and an extra identifier. The identifier can be used for the function to
+	* discriminate the control if several controls are served by the same callback.
+	* @param id The id number that will be sent to the callback.
+	* @param name The name for the control.
+	* @param parent The processing object that owns the control object.
+	* @param f The member function that will act as a service funtion each time
+	* the DoControl method is invoqued.
+	*/
+	InControlTmpl(int id,const std::string &name, ProcObj* parent, TPtrMemberFuncId f)
+		: InControl(name,parent)
+		, mFunc(0)
+		, mFuncId(f)
+		, mId(id)
 		{
 		};
 
@@ -149,10 +148,11 @@ template<class ProcObj>
 void InControlTmpl<ProcObj>::DoControl(TControlData val)
 {
 	InControl::DoControl(val);
-	if(mFunc)
-		(mProcObj->*mFunc)(val);
+	ProcObj * processing = (ProcObj *) mProcessing;
+	if (mFunc)
+		((processing)->*mFunc)(val);
 	else if (mFuncId)
-		(mProcObj->*mFuncId)(mId,val);
+		((processing)->*mFuncId)(mId,val);
 }
 
 
