@@ -66,6 +66,7 @@
     <SizeX>1</SizeX>
     <SizeY>1</SizeY>
     <SizeZ>1</SizeZ>
+    <UseSpiralIfNoFilename>0</UseSpiralIfNoFilename>
   </processing>
 
   <processing id="Elevation" position="10,293" size="162,84" type="ControlPrinter">
