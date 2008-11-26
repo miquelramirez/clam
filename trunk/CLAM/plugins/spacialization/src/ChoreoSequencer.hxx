@@ -5,6 +5,7 @@
 #include <CLAM/OutControl.hxx>
 #include <CLAM/AudioInPort.hxx>
 #include <CLAM/Filename.hxx>
+#include "AbsoluteCoordinates2RelativeAngles.hxx"
 #include <string>
 #include <cmath>
 #include <fstream>
@@ -59,7 +60,7 @@ class ChoreoSequencer : public CLAM::Processing
 	FloatOutControl _sourceY;
 	FloatOutControl _sourceZ;
 	FloatOutControl _sourceAzimuth;
-	FloatOutControl _sourceZenith;
+	FloatOutControl _sourceElevation;
 	AudioInPort _syncIn;
 
 	unsigned _samplesPerControl;
@@ -84,7 +85,7 @@ public:
 		, _sourceY("source Y", this)
 		, _sourceZ("source Z", this)
 		, _sourceAzimuth("source azimuth", this)
-		, _sourceZenith("source elevation", this)
+		, _sourceElevation("source elevation", this)
 		, _syncIn("sync", this)
 	{
 		Configure( config );
@@ -111,36 +112,24 @@ public:
 			_sourceX.SendControl( row[SourceXColumn+3*sourceIndex] );
 			_sourceY.SendControl( row[SourceYColumn+3*sourceIndex] );
 			_sourceZ.SendControl( row[SourceZColumn+3*sourceIndex] );
-			double dx = _sizeX * (row[SourceXColumn+3*sourceIndex] - row[TargetXColumn]);
-			double dy = _sizeY * (row[SourceYColumn+3*sourceIndex] - row[TargetYColumn]);
-			double dz = _sizeZ * (row[SourceZColumn+3*sourceIndex] - row[TargetZColumn]);
-			double cosAzimuth = std::cos(M_PI/180*row[TargetAzimutColumn]);
-			double sinAzimuth = std::sin(M_PI/180*row[TargetAzimutColumn]);
-			bool readElevation = _config.HasReadElevations() and _config.GetReadElevations();
-			double elevation = readElevation ?  row[TargetZenitColumn] : 90 - row[TargetZenitColumn];
-			double cosElevation = std::cos(M_PI/180*elevation);
-			double sinElevation = std::sin(M_PI/180*elevation);
-			double roll = 0;
-			double cosRoll = std::cos(M_PI/180*roll);
-			double sinRoll = std::sin(M_PI/180*roll);
-			double rotatedX =
-				+ dx * cosAzimuth * cosElevation 
-				+ dy * sinAzimuth
-				- dz * cosAzimuth * sinElevation;
-			double rotatedY =
-				- dx * sinAzimuth * cosElevation
-				+ dy * cosAzimuth
-				+ dz * sinAzimuth * sinElevation;
-			double rotatedZ =
-				+ dx * sinElevation
-//				+ dy * 0
-				+ dz * cosElevation;
 
-			// TODO: Test that with target elevation and azimuth
-			double dazimuth = 180./M_PI*std::atan2(rotatedY,rotatedX);
-			double delevation = 180./M_PI*std::asin(rotatedZ/std::sqrt(rotatedX*rotatedX+rotatedY*rotatedY+rotatedZ*rotatedZ));
-			_sourceAzimuth.SendControl( dazimuth );
-			_sourceZenith.SendControl( delevation );
+			double targetX = _sizeX * row[TargetXColumn];
+			double targetY = _sizeY * row[TargetYColumn];
+			double targetZ = _sizeZ * row[TargetZColumn];
+			double targetAzimuth = row[TargetAzimutColumn];
+			bool readElevation = _config.HasReadElevations() and _config.GetReadElevations();
+			double targetElevation = readElevation ?  row[TargetZenitColumn] : 90 - row[TargetZenitColumn];
+			double targetRoll = 0;
+			double sourceX = _sizeX * row[SourceXColumn+3*sourceIndex];
+			double sourceY = _sizeY * row[SourceYColumn+3*sourceIndex];
+			double sourceZ = _sizeZ * row[SourceZColumn+3*sourceIndex];
+
+			Orientation orientation = AbsoluteCoordinates2RelativeAngles::computeRelativeOrientation(
+				targetX, targetY, targetZ,
+				targetAzimuth, targetElevation, targetRoll,
+				sourceX, sourceY, sourceZ);
+			_sourceAzimuth.SendControl( orientation.azimuth );
+			_sourceElevation.SendControl( orientation.elevation );
 			/* 
 			std::cout 
 				<< "\t" << _sizeX*row[TargetXColumn+3*sourceIndex]
