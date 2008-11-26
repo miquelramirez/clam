@@ -20,7 +20,7 @@ class ChoreoSequencer : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 8, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 9, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, InFilename, Filename);
 		DYN_ATTRIBUTE( 1, public, unsigned, SourceIndex); // first is 0
 		DYN_ATTRIBUTE( 2, public, unsigned, FrameSize);
@@ -29,6 +29,7 @@ class ChoreoSequencer : public CLAM::Processing
 		DYN_ATTRIBUTE( 5, public, TData, SizeX);
 		DYN_ATTRIBUTE( 6, public, TData, SizeY);
 		DYN_ATTRIBUTE( 7, public, TData, SizeZ);
+		DYN_ATTRIBUTE( 8, public, bool, UseSpiralIfNoFilename);
 	protected:
 		void DefaultInit()
 		{
@@ -42,7 +43,7 @@ class ChoreoSequencer : public CLAM::Processing
 			SetSizeX(1);
 			SetSizeY(1);
 			SetSizeZ(1);
-		
+			SetUseSpiralIfNoFilename(false);		
 		};
 	};
 
@@ -212,11 +213,14 @@ protected:
 
 		_controlSequence.clear();
 
-		//Load the sequence
-		if (_config.GetFilename()=="") // Walk in circles version
+		if (_config.HasUseSpiralIfNoFilename())
 		{
-			fillDummyChoreo();
-			return true;
+			// if UseSpiralIfNoFilename==true, Load the sequence
+			if (_config.GetUseSpiralIfNoFilename()==true and _config.GetFilename()=="") // Walk in circles version
+			{
+				fillDummyChoreo();
+				return true;
+			}
 		}
 		// Load the file version
 //		std::cout << "ChoreoSequencer: read from file version. File: "<< _config.GetFilename() << std::endl;
