@@ -34,14 +34,13 @@ def diff_files(expected, result, diffbase) :
 		print "Expected file not found: ", result
 		return False
 	diffwav = diffbase+'.wav'
-	substractResult = run('sox -m -v 1 %s -v -1 %s %s 2>&1 && echo OK '%(expected, result, diffwav))
+	substractResult = silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 && echo OK '%(expected, result, diffwav))
 	if 'OK' not in substractResult :
 		print "files substraction with sox failed. Check sample-rate of both expected and result files:", expected, result
 		return False
 		
 	errorString = silentrun("sndfile-info %s | awk '/Signal/ {print $5}'"%(diffwav))[1:]
 	if errorString == "-inf" : return true
-	print "sndfile error string: ", errorString
 	max_dbs = float(errorString)
 	if max_dbs > threshold :
 		silentrun('wav2png --input %s --width 700 --linecolor ff0088 --backgroundcolor dddddd --zerocolor 000000'%(diffwav))
