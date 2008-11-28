@@ -53,7 +53,8 @@ clam.set_check_for_new_commits(
 clam.add_subtask( 'List of new commits', [
 	'cd %(sandbox)s/'%localDefinitions,
 	] + [
-		{CMD: 'pushd %s; svn log -r BASE:HEAD; popd'%repo, INFO: lambda x:x }
+		# 'true' is needed in order testfarm not to catch the 'cd'
+		{CMD: 'true ; cd %s; svn log -r BASE:HEAD; cd ..'%repo, INFO: lambda x:x }
 		for repo in repositories
 	] + [
 		{CMD: 'svn up %s'%repo, INFO: lambda x:x }
