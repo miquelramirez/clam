@@ -53,10 +53,10 @@ clam.set_check_for_new_commits(
 clam.add_subtask( 'List of new commits', [
 	'cd %(sandbox)s/'%localDefinitions,
 	] + [
-		{CMD: 'echo "== Log for repository %(repo)s ==" ; svn log -r BASE:HEAD %(repo)s'%{'repo': repo}, INFO: lambda x:x }
+		{CMD: 'pushd %s; svn log -r BASE:HEAD; popd'%repo, INFO: lambda x:x },
 		for repo in repositories
 	] + [
-		{CMD: 'svn up %(repo)s'%{'repo': repo}, INFO: lambda x:x }
+		{CMD: 'svn up %s'%repo, INFO: lambda x:x }
 		for repo in repositories
 	] )
 
