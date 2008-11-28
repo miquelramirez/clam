@@ -171,9 +171,12 @@ clam.add_subtask('Padova Speech SMS (external repository)', [
 	'make',
 ] )
 
+forceRun = len(sys.argv)>1
+print "force Run: ", forceRun
+
 Runner( clam, 
 	continuous = False,
-	first_run_always = True,
+	first_run_always = forceRun,
 	remote_server_url = 'http://localhost/testfarm_server'
 #	local_base_dir='/tmp'
 )
