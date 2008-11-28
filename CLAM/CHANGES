@@ -3,7 +3,7 @@
  * Typed controls: Controls with other type than floats.
  * Networks can pause without stopping the backend.
  * Processing::Get{In,Out}{Control,Port}() overloaded for indexes and names.
- * Processing::GetN{In,Out}{Controls,Ports}() to get the number of connectors
+ * Processing::GetN{In,Out}{Controls,Ports}() to get the number of connectors.
  * Processing::Get{In,Out}{Controls,Ports}() are now protected methods
 
 2008-08-11 CLAM 1.3.0
