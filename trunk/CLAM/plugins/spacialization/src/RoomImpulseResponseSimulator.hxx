@@ -174,6 +174,7 @@ public:
 		settings.model_filename = _config.GetModel3DFile();
 		settings.num_rays = _config.GetNRays();
 		settings.num_rebounds = _config.GetNRebounds();
+		settings.physical_output = 0;
 		settings.ir_length = _config.GetIrLength();
 		CLAM_WARNING(_config.HasExtraOptions() and _config.GetExtraOptions() != "",
 			"Extra options not supported");
