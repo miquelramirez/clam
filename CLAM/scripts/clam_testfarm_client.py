@@ -33,7 +33,9 @@ localDefinitions = dict(
 	installPath= '$HOME/testfarm_sandboxes/local',
 	qt3dir='',
 	qt4dir='',
+	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms"
 )
+repositories = localDefinitions['repositories'].split()
 
 client = Client(localDefinitions['name'])
 client.brief_description = localDefinitions['description']
@@ -45,17 +47,17 @@ clam = Task(
 	task_name='svn up|DEBUG' 
 	)
 clam.set_check_for_new_commits( 
-		checking_cmd='cd %(sandbox)s && svn status -u clam acustica data_acustica clam/testdata | grep \*'%localDefinitions,
+		checking_cmd='cd %(sandbox)s && svn status -u %(repositories)s | grep \*'%localDefinitions,
 		minutes_idle=15
 )
 clam.add_subtask( 'List of new commits', [
 	'cd %(sandbox)s/'%localDefinitions,
 	] + [
-		{CMD: 'echo "== Log for repository %(repo)s ==" ; svn log -r BASE:HEAD %(repo)s'%repo , INFO: lambda x:x }
-		for repo in "clam acustica data_acustica clam/testdata".split() 
+		{CMD: 'echo "== Log for repository %(repo)s ==" ; svn log -r BASE:HEAD %(repo)s'%{'repo': repo}, INFO: lambda x:x }
+		for repo in repositories
 	] + [
-		{CMD: 'svn up repo'%repo, INFO: lambda x:x }
-		for repo in "clam acustica data_acustica clam/testdata".split()
+		{CMD: 'svn up repo'%{'repo': repo}, INFO: lambda x:x }
+		for repo in repositories
 	] )
 
 clam.add_subtask('count lines of code', [
