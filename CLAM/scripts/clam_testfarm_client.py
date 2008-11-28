@@ -56,7 +56,7 @@ clam.add_subtask( 'List of new commits', [
 		{CMD: 'echo "== Log for repository %(repo)s ==" ; svn log -r BASE:HEAD %(repo)s'%{'repo': repo}, INFO: lambda x:x }
 		for repo in repositories
 	] + [
-		{CMD: 'svn up repo'%{'repo': repo}, INFO: lambda x:x }
+		{CMD: 'svn up %(repo)s'%{'repo': repo}, INFO: lambda x:x }
 		for repo in repositories
 	] )
 
