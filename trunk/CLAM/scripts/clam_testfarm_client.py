@@ -42,7 +42,7 @@ client.brief_description = localDefinitions['description']
 
 
 clam = Task(
-		project = Project('CLAM','<a href="http://clam.iua.upf.edu">clam web</a>' ), 
+	project = Project('CLAM','<a href="http://clam.iua.upf.edu">clam web</a>' ), 
 	client = client, 
 	task_name='svn up|DEBUG' 
 	)
@@ -53,7 +53,7 @@ clam.set_check_for_new_commits(
 clam.add_subtask( 'List of new commits', [
 	'cd %(sandbox)s/'%localDefinitions,
 	] + [
-		{CMD: 'pushd %s; svn log -r BASE:HEAD; popd'%repo, INFO: lambda x:x },
+		{CMD: 'pushd %s; svn log -r BASE:HEAD; popd'%repo, INFO: lambda x:x }
 		for repo in repositories
 	] + [
 		{CMD: 'svn up %s'%repo, INFO: lambda x:x }
