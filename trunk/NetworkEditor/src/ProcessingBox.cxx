@@ -382,6 +382,8 @@ void ProcessingBox::mousePressEvent(QMouseEvent * event)
 void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 {
 	_highLightRegion=noRegion;;
+
+
 	if (_actionMode==Moving)
 	{
 		_canvas->setCursor(Qt::SizeAllCursor);
@@ -402,56 +404,61 @@ void ProcessingBox::mouseMoveEvent(QMouseEvent * event)
 	Region region = getRegion(_canvas->translatedPos(event));
 	if (region==noRegion) return;
 	_canvas->setCursor(Qt::ArrowCursor);
-	if (region==inportsRegion)
-	{
-		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_highLightRegion=region;
-		_highLightConnection=index;
-		
-		_canvas->setToolTip(_canvas->inportTooltip(_processing, index));
-		return;
-	}
-	if (region==outportsRegion)
-	{
-		int index = portIndexByYPos(_canvas->translatedPos(event));
-		_highLightRegion=region;
-		_highLightConnection=index;
-		_canvas->setToolTip(_canvas->outportTooltip(_processing, index));
-		return;
-	}
-	if (region==incontrolsRegion)
-	{
-		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_highLightRegion=region;
-		_highLightConnection=index;
-		_canvas->setToolTip(_canvas->incontrolTooltip(_processing, index));
-		return;
-	}
-	if (region==outcontrolsRegion)
-	{
-		int index = controlIndexByXPos(_canvas->translatedPos(event));
-		_highLightRegion=region;
-		_highLightConnection=index;
-		_canvas->setToolTip(_canvas->outcontrolTooltip(_processing, index));
-		return;
-	}
-	if (region==resizeHandleRegion)
-	{
-		_canvas->setCursor(Qt::SizeFDiagCursor);
-		_canvas->setStatusTip(QObject::tr("Drag: resize"));
-		return;
-	}
-	if (region==bodyRegion)
-	{
-		if (not _canvas->isOk(_processing)) 
-			_canvas->setToolTip(_canvas->errorMessage(_processing));
-		_canvas->setStatusTip(QObject::tr("Double click: configure. Left click: Processing menu"));
-		return;
-	}
-	if (region==nameRegion)
-	{
-		if (not _canvas->isOk(_processing)) _canvas->setToolTip(_canvas->errorMessage(_processing));
-		_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
+	switch (region)
+	{	
+		case noRegion:
+			break;		// it should not reach this point, is handled by a previous conditional....
+		case inportsRegion:
+		{
+			int index = portIndexByYPos(_canvas->translatedPos(event));
+			_highLightRegion=region;
+			_highLightConnection=index;
+			_canvas->setToolTip(_canvas->inportTooltip(_processing, index));
+			break;
+		}
+		case outportsRegion:
+		{
+			int index = portIndexByYPos(_canvas->translatedPos(event));
+			_highLightRegion=region;
+			_highLightConnection=index;
+			_canvas->setToolTip(_canvas->outportTooltip(_processing, index));
+			break;
+		}
+		case incontrolsRegion:
+		{
+			int index = controlIndexByXPos(_canvas->translatedPos(event));
+			_highLightRegion=region;
+			_highLightConnection=index;
+			_canvas->setToolTip(_canvas->incontrolTooltip(_processing, index));
+			break;
+		}
+		case outcontrolsRegion:
+		{	
+			int index = controlIndexByXPos(_canvas->translatedPos(event));
+			_highLightRegion=region;
+			_highLightConnection=index;
+			_canvas->setToolTip(_canvas->outcontrolTooltip(_processing, index));
+			break;
+		}
+		case resizeHandleRegion:
+		{
+			_canvas->setCursor(Qt::SizeFDiagCursor);
+			_canvas->setStatusTip(QObject::tr("Drag: resize"));
+			break;
+		}
+		case bodyRegion:
+		{
+			if (not _canvas->isOk(_processing)) 
+				_canvas->setToolTip(_canvas->errorMessage(_processing));
+			_canvas->setStatusTip(QObject::tr("Double click: configure. Left click: Processing menu"));
+			break;
+		}
+		case nameRegion:
+		{
+			if (not _canvas->isOk(_processing)) _canvas->setToolTip(_canvas->errorMessage(_processing));
+			_canvas->setStatusTip(QObject::tr("Drag: move. Double click: rename. Left click: Processing menu"));
+			break;
+		}
 		return;
 	}
 }
