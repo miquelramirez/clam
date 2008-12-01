@@ -51,6 +51,8 @@ class ChoreoSequencer : public CLAM::Processing
 	};
 
 	Config _config;
+	FloatInControl _frameSeek;
+	FloatOutControl _frame;
 	FloatOutControl _targetX;
 	FloatOutControl _targetY;
 	FloatOutControl _targetZ;
@@ -62,6 +64,7 @@ class ChoreoSequencer : public CLAM::Processing
 	FloatOutControl _sourceAzimuth;
 	FloatOutControl _sourceElevation;
 	AudioInPort _syncIn;
+	unsigned _lastFrameSeek;
 
 	unsigned _samplesPerControl;
 	unsigned _sampleCount;
@@ -76,7 +79,9 @@ class ChoreoSequencer : public CLAM::Processing
 
 public:
 	ChoreoSequencer(const Config& config = Config()) 
-		: _targetX("target X", this)
+		: _frameSeek("frame seek", this)
+		, _frame("frame number", this)
+		, _targetX("target X", this)
 		, _targetY("target Y", this)
 		, _targetZ("target Z", this)
 		, _targetAzimuth("target azimuth", this)
@@ -87,6 +92,7 @@ public:
 		, _sourceAzimuth("source azimuth", this)
 		, _sourceElevation("source elevation", this)
 		, _syncIn("sync", this)
+		, _lastFrameSeek(0)
 	{
 		Configure( config );
 	}
@@ -97,6 +103,13 @@ public:
 	bool Do()
 	{
 		CLAM_DEBUG_ASSERT(_sampleCount<2*_samplesPerControl,"_sampleCount too large" );
+		unsigned frameSeek = _frameSeek.GetLastValue();
+		if (frameSeek != _lastFrameSeek)
+		{
+			unsigned firstFrame = _controlSequence[0][FrameColumn];
+			_sequenceIndex = frameSeek - firstFrame;
+			_lastFrameSeek = frameSeek;
+		}
 		_sampleCount += _frameSize;
 		int sourceIndex = _config.GetSourceIndex();
 		if (_sampleCount>=_samplesPerControl)
@@ -104,6 +117,7 @@ public:
 			//std::cout << "("<<_sequenceIndex << "/" <<_controlSequence.size() << ")" << std::flush;
 			const Row & row = _controlSequence[_sequenceIndex];
 			//TODO check that _indexTargetX,Y,Z < row.size()
+			_frame.SendControl( row[FrameColumn]);
 			_targetX.SendControl( row[TargetXColumn] );
 			_targetY.SendControl( row[TargetYColumn] );
 			_targetZ.SendControl( row[TargetZColumn] );
@@ -166,7 +180,7 @@ protected:
 	}
 	enum FileColumns {
 		FrameColumn=0,
-		// TODO: What does the column 1 means?
+		FieldOfView=1,
 		TargetAzimutColumn=2,
 		TargetZenitColumn=3,
 		TargetXColumn=4,
