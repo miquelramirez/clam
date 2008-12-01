@@ -581,17 +581,17 @@
 
   <port_connection>
     <out>toStream P.Audio stream</out>
-    <in>Surround.p</in>
+    <in>Surround.W</in>
   </port_connection>
 
   <port_connection>
     <out>toStream Vx.Audio stream</out>
-    <in>Surround.vx</in>
+    <in>Surround.X</in>
   </port_connection>
 
   <port_connection>
     <out>toStream Vy.Audio stream</out>
-    <in>Surround.vy</in>
+    <in>Surround.Y</in>
   </port_connection>
 
   <port_connection>
