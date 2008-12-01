@@ -2,8 +2,8 @@
 <network clamVersion="1.3.1" id="Unnamed">
 
   <processing id="AudioAmplifier" position="1412,322" size="114,58" type="AudioAmplifier">
-    <MaxGain>1</MaxGain>
-    <InitGain>0.3</InitGain>
+    <MaxGain>3</MaxGain>
+    <InitGain>1.26</InitGain>
   </processing>
 
   <processing id="AudioBuffer2Stream" position="920,992" size="144,58" type="AudioBuffer2Stream">
@@ -216,13 +216,13 @@
 
   <processing id="Beta" position="1885,6" size="406,78" type="OutControlSender">
     <Min>0</Min>
-    <Default>0.3</Default>
-    <Max>1</Max>
+    <Default>1.26</Default>
+    <Max>3</Max>
     <Step>0.01</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="ChoreoSequencer_1" position="104,22" size="194,59" type="ChoreoSequencer">
+  <processing id="ChoreoSequencer_1" position="104,22" size="210,59" type="ChoreoSequencer">
     <Filename>../../../../data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
@@ -292,9 +292,7 @@
     <ImpulseResponse>Ez.wav</ImpulseResponse>
   </processing>
 
-  <processing id="Inverter" position="1928,437" size="75,58" type="ComplexSpectrumInverter"/>
-
-  <processing id="Inverter V" position="2055,146" size="86,58" type="ComplexSpectrumInverter"/>
+  <processing id="Inverter" position="1943,500" size="75,58" type="ComplexSpectrumInverter"/>
 
   <processing id="LowLatencyConvolution" position="624,987" size="166,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -846,12 +844,7 @@
 
   <port_connection>
     <out>Inverter.Output</out>
-    <in>Sum_L.Term2</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Inverter V.Output</out>
-    <in>SumWXZ.Term1</in>
+    <in>Sum_R.Term2</in>
   </port_connection>
 
   <port_connection>
@@ -891,7 +884,7 @@
 
   <port_connection>
     <out>LowLatencyConvolution_14.Output</out>
-    <in>Sum_R.Term2</in>
+    <in>Sum_L.Term2</in>
   </port_connection>
 
   <port_connection>
@@ -1121,7 +1114,7 @@
 
   <port_connection>
     <out>SumXZ.Sum</out>
-    <in>Inverter V.Input</in>
+    <in>SumWXZ.Term1</in>
   </port_connection>
 
   <port_connection>
