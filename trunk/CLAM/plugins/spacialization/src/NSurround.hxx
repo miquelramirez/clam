@@ -11,10 +11,9 @@
  Converts pressure and velocity input into N equiangular surround
  channels with the first one at the front and going to the left.
  @param NChannels [Config] The number of channels that are to be generated. That configuration parameter changes number of output ports the processing will have and the separation among the speakers.
- @param[in] beta [Control] Angle in degrees for a simulated rotation of the receiver in the xy plane to the right.
- @param[in] p [Port] Pressure to be reproduced at the sweet-spot
- @param[in] vx [Port] X component of the velocity to be reproduced at the sweet-spot
- @param[in] vy [Port] Y component of the velocity to be reproduced at the sweet-spot
+ @param[in] W [Port] W to be reproduced at the sweet-spot
+ @param[in] X [Port] X ambisonics component
+ @param[in] Y [Port] Y ambisonics component
  @param[out] "out AAA" [Ports] Audio signals to be emitted by the speaker at AAA. Here AAA is the angle in degrees for each one of the speakers.
  @bug It should take W,X,Y,Z instead pressure and velocity according to conventions
  @todo Review the rotation direction with the conventions.
@@ -36,10 +35,9 @@ protected:
 		};
 	};
 
-	CLAM::AudioInPort _p;
-	CLAM::AudioInPort _vx;
-	CLAM::AudioInPort _vy;
-	CLAM::InControl _beta;
+	CLAM::AudioInPort _w;
+	CLAM::AudioInPort _x;
+	CLAM::AudioInPort _y;
 	std::vector<double> _sinAlphas;
 	std::vector<double> _cosAlphas;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
@@ -50,15 +48,12 @@ protected:
 public:
 	const char* GetClassName() const { return "NSurround"; }
 	NSurround(const Config& config = Config()) 
-		: _p("p", this)
-		, _vx("vx", this)
-		, _vy("vy", this)
-		, _beta("beta", this) // angle in degrees
+		: _w("W", this)
+		, _x("X", this)
+		, _y("Y", this)
 		, _nChannels(15)
 	{
 		Configure( config );
-		_beta.SetBounds(-360, 360); //a complete spin on each slider direction
-		_beta.DoControl(0.);
 
 	}
 	const CLAM::ProcessingConfig & GetConfig() const
@@ -91,42 +86,39 @@ public:
 			_outputs.push_back( port );
 		}
 		
-		_p.SetSize(buffersize);
-		_p.SetHop(buffersize);
-		_vx.SetSize(buffersize);
-		_vx.SetHop(buffersize);
-		_vy.SetSize(buffersize);
-		_vy.SetHop(buffersize);
+		_w.SetSize(buffersize);
+		_w.SetHop(buffersize);
+		_x.SetSize(buffersize);
+		_x.SetHop(buffersize);
+		_y.SetSize(buffersize);
+		_y.SetHop(buffersize);
 		return true;
 	}
  
 	bool Do()
 	{
-		const double beta=_beta.GetLastValue()*M_PI/180; //conversion. beta is in radians
-		const double cosBeta=std::cos(beta);
-		const double sinBeta=std::sin(beta);
-		const CLAM::DataArray& p =_p.GetAudio().GetBuffer();
-		const CLAM::DataArray& vx =_vx.GetAudio().GetBuffer();
-		const CLAM::DataArray& vy =_vy.GetAudio().GetBuffer();
+		const CLAM::DataArray& w =_w.GetAudio().GetBuffer();
+		const CLAM::DataArray& x =_x.GetAudio().GetBuffer();
+		const CLAM::DataArray& y =_y.GetAudio().GetBuffer();
+		const float sqrt2 = sqrt(2);
+		const float sqrtN = sqrt(_nChannels);
 		CLAM::TData* channels[_nChannels];
 	
 		for (unsigned channel=0; channel<_nChannels; channel++)
 			channels[channel] = &_outputs[channel]->GetAudio().GetBuffer()[0];
 
 
-		for (int i=0; i<p.Size(); i++)
+		for (int i=0; i<w.Size(); i++)
 		{
-			double ux = vx[i] * cosBeta - vy[i] * sinBeta;
-			double uy = vx[i] * sinBeta + vy[i] * cosBeta;
 			for (unsigned channel=0; channel<_nChannels; channel++)
 			{
-				channels[channel][i] = 0.5*( p[i] - ux * _cosAlphas[channel] - uy * _sinAlphas[channel] );
+				channels[channel][i] = 1./sqrtN * ( sqrt2 * w[i] + x[i] * _cosAlphas[channel] + y[i] * _sinAlphas[channel] ) ;
 			}
 		}
 
-		_p.Consume();
-		_vx.Consume();
-		_vy.Consume();
+		_w.Consume();
+		_x.Consume();
+		_y.Consume();
 		// Tell the ports this is done
 		for (unsigned channel=0; channel<_nChannels; channel++)
 			_outputs[channel]->Produce();

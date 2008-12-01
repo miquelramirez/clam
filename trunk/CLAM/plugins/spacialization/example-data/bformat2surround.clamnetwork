@@ -49,17 +49,17 @@
 
   <port_connection>
     <out>W.AudioOut</out>
-    <in>Surround.p</in>
+    <in>Surround.W</in>
   </port_connection>
 
   <port_connection>
     <out>X.AudioOut</out>
-    <in>Surround.vx</in>
+    <in>Surround.X</in>
   </port_connection>
 
   <port_connection>
     <out>Y.AudioOut</out>
-    <in>Surround.vy</in>
+    <in>Surround.Y</in>
   </port_connection>
 
 </network>
