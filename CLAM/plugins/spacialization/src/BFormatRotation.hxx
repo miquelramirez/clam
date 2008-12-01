@@ -66,7 +66,7 @@ public:
 	{
 		Configure( config );
 		_azimuth.SetBounds(-360, 360); //a complete spin on each slider direction
-		_elevation.SetBounds(0, 180); //a complete spin on each slider direction
+		_elevation.SetBounds(-90, 90); //a complete spin on each slider direction
 //		unsigned buffersize = BackendBufferSize();
 //		When buffersize==1024 a 512 delay is added to the W channel. This is strange!
 //		there is a dataflow scheduling problem. --Pau
@@ -100,20 +100,18 @@ public:
 	bool Do()
 	{
 		double azimuth=_azimuth.GetLastValue()*M_PI/180; //conversion. azimuth is in radians
-		const double givenElevation=_elevation.GetLastValue()*M_PI/180; //conversion. elevation is in radians
-		double elevation;
-		if (givenElevation>M_PI)
+		double elevationDeg = _elevation.GetLastValue(); 
+		if (elevationDeg > 90.)
 		{
-			std::cout << "WARNING: elevation should be smaller than 180" << std::endl;
-			elevation = M_PI;
+			std::cout << "WARNING: elevation should be smaller than 90, but was " << elevationDeg << std::endl;
+			elevationDeg = 90.;
 		}
-		else if (givenElevation<0)
+		else if (elevationDeg<-90.)
 		{
-			std::cout << "WARNING: elevation should be greater than 0" << std::endl;
-			elevation = 0;
+			std::cout << "WARNING: elevation should be greater than -90, but was " << elevationDeg << std::endl;
+			elevationDeg = -90.;
 		}
-		else 
-			elevation = givenElevation;
+		double elevation = elevationDeg*M_PI/180; //conversion. elevation is in radians
 //TODO fix: eliminate param
 _isPassiveRotation=true;
 //azimuth *= -1;
@@ -125,17 +123,40 @@ _isPassiveRotation=true;
 		const CLAM::DataArray& vz =_Zin.GetAudio().GetBuffer();
 		const CLAM::DataArray& vx =_Xin.GetAudio().GetBuffer();
 		const CLAM::DataArray& vy =_Yin.GetAudio().GetBuffer();
+		const double roll = 0.;
+		double sinRoll = std::sin(roll);
+		double cosRoll = std::cos(roll);
+
+		double cosASinE = cosAzimuth * sinElevation;
+		double sinASinE = sinAzimuth * sinElevation;
+
+		CLAM::TData* Xout = &_Xout.GetAudio().GetBuffer()[0];
+		CLAM::TData* Yout = &_Yout.GetAudio().GetBuffer()[0];
+		CLAM::TData* Zout = &_Zout.GetAudio().GetBuffer()[0];
 //		std::cout<<"Elevation: "<<elevation*180/M_PI<<std::endl;
 //		std::cout<<"Azimuth: "<<azimuth*180/M_PI<<std::endl; 
 		for (int i=0; i<vz.Size(); i++)
 		{
-			CLAM::TData* Xout = &_Xout.GetAudio().GetBuffer()[0];
-			CLAM::TData* Yout = &_Yout.GetAudio().GetBuffer()[0];
-			CLAM::TData* Zout = &_Zout.GetAudio().GetBuffer()[0];
+#if 0
+ 
+			Xout[i] = cosAzimuth*cosElevation * vx[i] + sinAzimuth * vy[i] - cosAzimuth*sinElevation * vz[i]; 
+			Yout[i] = -sinAzimuth*cosElevation * vx[i] + cosAzimuth * vy[i] + sinAzimuth*sinElevation * vz[i];
+			Zout[i] = sinElevation * vx[i] + /* 0 * vy[i] */  + cosElevation  * vz[i];
+#endif
 
-			Xout[i] = cosAzimuth*sinElevation * vx[i] + sinAzimuth * vy[i] - cosAzimuth*cosElevation * vz[i]; 
-			Yout[i] = -sinAzimuth*sinElevation * vx[i] + cosAzimuth * vy[i] + sinAzimuth*cosElevation * vz[i];
-			Zout[i] = cosElevation * vx[i] + /* 0 * vy[i] */  + sinElevation  * vz[i];
+			Xout[i] = 
+				+ vx[i] * cosAzimuth * cosElevation
+				+ vy[i] * sinAzimuth * cosElevation 
+				+ vz[i] * sinElevation;
+			Yout[i] = 
+				+ vx[i] * (- sinAzimuth*cosRoll - cosASinE*sinRoll)
+				+ vy[i] * (+ cosAzimuth*cosRoll - sinASinE*sinRoll)
+				+ vz[i] * (+ cosElevation*sinRoll);
+			Zout[i] =
+				+ vx[i] * (- cosASinE*cosRoll + sinAzimuth*sinRoll)
+				+ vy[i] * (- sinASinE*cosRoll - cosAzimuth*sinRoll)
+				+ vz[i] * (+ cosElevation*cosRoll);
+
 		}
 
 		_Xin.Consume();
