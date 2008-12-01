@@ -37,8 +37,9 @@ namespace CLAM{
 	class AudioAmplifierConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE( AudioAmplifierConfig, 1, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( AudioAmplifierConfig, 2, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, double, MaxGain );
+		DYN_ATTRIBUTE( 1, public, double, InitGain);
 
 	protected:
 		void DefaultInit();
@@ -64,14 +65,10 @@ namespace CLAM{
 		/** Controls **/
 		FloatInControl mInputControl; ///< gain control
 
-
 	public:
-
-		AudioAmplifier()
-			:
+		AudioAmplifier() :
 			mInputAudio("Input Audio",this ),
 			mOutputAudio("Audio Output",this),
-
 			mInputControl("Gain", this)
 		{
 			Configure( mConfig );
@@ -94,7 +91,6 @@ namespace CLAM{
 			int size = in.GetSize();
 
 			TData gain = mInputControl.GetLastValue();
-
 			const DataArray& inb = in.GetBuffer();
 			DataArray& outb = out.GetBuffer();
 
@@ -118,9 +114,10 @@ namespace CLAM{
 			CopyAsConcreteConfig( mConfig, config );
 
 			double max_gain = mConfig.GetMaxGain();
+			double init_gain = mConfig.HasInitGain() ? mConfig.GetInitGain() : 1. ;
 			mInputControl.SetBounds(0.,max_gain);
-			mInputControl.SetDefaultValue(1.);
-			mInputControl.DoControl(1.);
+			mInputControl.SetDefaultValue(init_gain);
+			mInputControl.DoControl(init_gain);
 			return true;
 		}
 
