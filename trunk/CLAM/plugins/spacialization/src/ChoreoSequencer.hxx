@@ -21,7 +21,7 @@ class ChoreoSequencer : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 10, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 9, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, InFilename, Filename);
 		DYN_ATTRIBUTE( 1, public, unsigned, SourceIndex); // first is 0
 		DYN_ATTRIBUTE( 2, public, unsigned, FrameSize);
@@ -31,7 +31,6 @@ class ChoreoSequencer : public CLAM::Processing
 		DYN_ATTRIBUTE( 6, public, TData, SizeY);
 		DYN_ATTRIBUTE( 7, public, TData, SizeZ);
 		DYN_ATTRIBUTE( 8, public, bool, UseSpiralIfNoFilename);
-		DYN_ATTRIBUTE( 9, public, bool, ReadElevations);
 	protected:
 		void DefaultInit()
 		{
@@ -46,7 +45,6 @@ class ChoreoSequencer : public CLAM::Processing
 			SetSizeY(1);
 			SetSizeZ(1);
 			SetUseSpiralIfNoFilename(false);		
-			SetReadElevations(false);
 		};
 	};
 
@@ -57,7 +55,7 @@ class ChoreoSequencer : public CLAM::Processing
 	FloatOutControl _targetY;
 	FloatOutControl _targetZ;
 	FloatOutControl _targetAzimuth;
-	FloatOutControl _targetZenith;
+	FloatOutControl _targetElevation;
 	FloatOutControl _sourceX;
 	FloatOutControl _sourceY;
 	FloatOutControl _sourceZ;
@@ -85,7 +83,7 @@ public:
 		, _targetY("target Y", this)
 		, _targetZ("target Z", this)
 		, _targetAzimuth("target azimuth", this)
-		, _targetZenith("target elevation", this)
+		, _targetElevation("target elevation", this)
 		, _sourceX("source X", this)
 		, _sourceY("source Y", this)
 		, _sourceZ("source Z", this)
@@ -122,7 +120,11 @@ public:
 			_targetY.SendControl( row[TargetYColumn] );
 			_targetZ.SendControl( row[TargetZColumn] );
 			_targetAzimuth.SendControl( row[TargetAzimutColumn] );
-			_targetZenith.SendControl( row[TargetZenitColumn] );
+
+			const readElevation = false;
+			double targetElevation = readElevation ?  row[TargetZenitColumn] : 90 - row[TargetZenitColumn];
+			_targetElevation.SendControl( targetElevation );
+
 			_sourceX.SendControl( row[SourceXColumn+3*sourceIndex] );
 			_sourceY.SendControl( row[SourceYColumn+3*sourceIndex] );
 			_sourceZ.SendControl( row[SourceZColumn+3*sourceIndex] );
@@ -131,8 +133,6 @@ public:
 			double targetY = _sizeY * row[TargetYColumn];
 			double targetZ = _sizeZ * row[TargetZColumn];
 			double targetAzimuth = row[TargetAzimutColumn];
-			bool readElevation = _config.HasReadElevations() and _config.GetReadElevations();
-			double targetElevation = readElevation ?  row[TargetZenitColumn] : 90 - row[TargetZenitColumn];
 			double targetRoll = 0;
 			double sourceX = _sizeX * row[SourceXColumn+3*sourceIndex];
 			double sourceY = _sizeY * row[SourceYColumn+3*sourceIndex];
