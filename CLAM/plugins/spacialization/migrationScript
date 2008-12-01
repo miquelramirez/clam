@@ -1,3 +1,10 @@
 beVerbose
 renameClass HRTFDatabaseFetcher2 HRTFDatabaseFetcher
 removeConfig HRTFDatabaseFetcher Prefix
+renameConnector Surround inport p W
+renameConnector Surround inport vx X
+renameConnector Surround inport vy Y
+renameConnector NSurround inport p W
+renameConnector NSurround inport vx X
+renameConnector NSurround inport vy Y
+
