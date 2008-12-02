@@ -77,7 +77,6 @@ public:
 		double targetY = _targetY.GetLastValue();
 		double targetZ = _targetZ.GetLastValue();
 		double targetRoll = _targetRoll.GetLastValue();
-		//We sum pi/2 because the matrix is for zenith and no elevation. TODO change zenith for elevation
 		double targetElevation = _targetElevation.GetLastValue(); 
 		double targetAzimuth = _targetAzimuth.GetLastValue();
 		Orientation orientation = computeRelativeOrientation(
