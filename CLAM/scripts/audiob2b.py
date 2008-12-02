@@ -71,8 +71,7 @@ def passB2BTests(datapath, back2BackCases) :
 	failedCases = []
 	for case, command, outputs in back2BackCases :
 		phase("Test: %s Command: '%s'"%(case,command))
-		caseFailed = False
-		msgs = []
+		failures = []
 		for output in outputs :
 			removeIfExists(output)
 		os.system(command)
@@ -80,20 +79,19 @@ def passB2BTests(datapath, back2BackCases) :
 			base = prefix(datapath, case, output)
 			expected = expectedName(base)
 			diffbase = diffBaseName(base)
-			equals = diff_files(expected, output, diffbase)
-			if equals:
-				print "\033[32m Equals\033[0m"
+			difference = diff_files(expected, output, diffbase)
+			if not difference:
+				print "\033[32m Passed\033[0m"
 				removeIfExists(diffbase+'.wav')
 				removeIfExists(diffbase+'.wav.png')
 				removeIfExists(badResultName(base))
 			else:
-				caseFailed = True
-				print "\033[31m Non equals\033[0m"
+				print "\033[31m Failed\033[0m"
 				os.system('cp %s %s' % (output, badResultName(base)) )
-				msgs.append("Output %s mismatch"%base)
+				failures.append("Output '%s': %s"%(base, difference))
 			removeIfExists(output)
-		if caseFailed :
-			failedCases.append((case, msgs))
+		if failures :
+			failedCases.append((case, failures))
 
 	print "Summary:"
 	print '\033[32m%i passed cases\033[0m'%(len(back2BackCases)-len(failedCases))
