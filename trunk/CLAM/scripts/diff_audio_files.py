@@ -24,33 +24,35 @@ def norun(command) :
 	print "\033[31mXX ", command, "\033[0m"
 
 
-threshold_db = -80.0 # dB
-threshold_amplitude = 10**(threshold_db/20)
+threshold_dBs = -80.0 # dB
+threshold_amplitude = 10**(threshold_dBs/20)
 
+import math
 def diff_files(expected, result, diffbase) :
 	if not os.access(result, os.R_OK):
 		print "Result file not found: ", result
-		return False
+		return "Result was not generated: '%s'"%result
 	if not os.access(expected, os.R_OK):
 		print "Expected file not found: ", result
-		return False
+		return "No expectation for the output. Check the results and accept them with the --accept option."
 	diffwav = diffbase+'.wav'
 	substractResult = silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 && echo OK '%(expected, result, diffwav))
 	if 'OK' not in substractResult :
-		print "files substraction with sox failed. Check sample-rate of both expected and result files:", expected, result
-		return False
+		print "files substraction with sox failed. They might not be comparable: (different lenght or sample-rate:", expected, result
+		return "Non comparable waves (different lenght, channels or sample-rate)"
 		
 	errorString = silentrun("soxsucks --max-value '%s'" % diffwav)
-	max_amplitude =float(errorString)
-	print "threshold db and amplitude: ", threshold_db, threshold_amplitude
-	if max_amplitude > threshold_amplitude :
+	max_amplitude = abs(float(errorString))
+	if not max_amplitude : return None
+
+	max_dBs = 20*math.log10(max_amplitude)
+	if max_dBs > threshold_dBs :
 		silentrun('wav2png --input %s --width 700 --linecolor ff0088 --backgroundcolor dddddd --zerocolor 000000'%(diffwav))
-		print "Files are different with threshold ", threshold_db, " (dB's)", threshold_amplitude, "(amplitude)"
-		print "Max diff is :", max_amplitude, " (amplitude)"
-		print "expected:",expected
-		print "result:",result
-		return False
-	return True
+		print "Files are different with threshold ", threshold_dBs, "(dB's)", threshold_amplitude, "(amplitude)"
+		print "Max diff is :", max_amplitude, "(amplitude)", max_dBs, "(dB's)"
+		return "Differences of %s [%s dB] (threshold: %s [%s dB])" % (
+			max_amplitude, max_dBs, threshold_amplitude, threshold_dBs)
+	return None
 
 
 if __name__=="__main__" :
