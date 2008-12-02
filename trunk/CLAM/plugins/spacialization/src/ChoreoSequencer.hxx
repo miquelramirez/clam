@@ -121,7 +121,7 @@ public:
 			_targetZ.SendControl( row[TargetZColumn] );
 			_targetAzimuth.SendControl( row[TargetAzimutColumn] );
 
-			const bool readElevation = false;
+			const bool readElevation = true;
 			double targetElevation = readElevation ?  row[TargetZenitColumn] : 90 - row[TargetZenitColumn];
 			_targetElevation.SendControl( targetElevation );
 
@@ -207,7 +207,7 @@ protected:
 			row.push_back(i);
 			row.push_back(0); //Dummy
 			row.push_back(alpha); // Target Azimuth
-			row.push_back(90); // Target Zenith 
+			row.push_back(0.); // Target Elevation
 			row.push_back(.5); // receiver X
 			row.push_back(.5); // receiver Y
 			row.push_back(.5); // receiver Z
