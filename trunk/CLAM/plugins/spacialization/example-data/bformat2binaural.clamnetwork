@@ -1,42 +1,63 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="Convolution P" position="525,400" size="111,62" type="LowLatencyConvolution">
+  <processing id="AudioAmplifier" position="37,-118" size="114,58" type="AudioAmplifier">
+    <MaxGain>3</MaxGain>
+    <InitGain>1.41421</InitGain>
+  </processing>
+
+  <processing id="AudioAmplifier_1" position="32,24" size="128,58" type="AudioAmplifier">
+    <MaxGain>5</MaxGain>
+    <InitGain>1.12</InitGain>
+  </processing>
+
+  <processing id="AudioAmplifier_2" position="33,136" size="128,58" type="AudioAmplifier">
+    <MaxGain>5</MaxGain>
+    <InitGain>1.12</InitGain>
+  </processing>
+
+  <processing id="AudioAmplifier_3" position="39,292" size="128,58" type="AudioAmplifier">
+    <MaxGain>5</MaxGain>
+    <InitGain>1.12</InitGain>
+  </processing>
+
+  <processing id="Convolution P" position="541,-68" size="146,66" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution X" position="498,136" size="111,62" type="LowLatencyConvolution">
+  <processing id="Convolution X" position="472,65" size="146,66" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution Y" position="534,490" size="111,62" type="LowLatencyConvolution">
+  <processing id="Convolution Y" position="456,336" size="146,66" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="Convolution Z" position="510,254" size="110,62" type="LowLatencyConvolution">
+  <processing id="Convolution Z" position="464,169" size="145,66" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="FFT P" position="432,375" size="66,58" type="MyFFT">
+  <processing id="FFT P" position="342,-143" size="84,66" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="FFT X" position="386,105" size="66,58" type="MyFFT">
+  <processing id="FFT X" position="355,18" size="84,66" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="FFT Y" position="438,473" size="66,58" type="MyFFT">
+  <processing id="FFT Y" position="349,315" size="84,66" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="FFT Z" position="386,227" size="70,58" type="MyFFT">
+  <processing id="FFT Z" position="362,140" size="83,66" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Framer P" position="339,377" size="84,58" type="AudioWindowing">
+  <processing id="Framer P" position="180,-127" size="109,66" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -45,7 +66,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Framer X" position="293,106" size="84,58" type="AudioWindowing">
+  <processing id="Framer X" position="235,6" size="109,66" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -54,7 +75,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Framer Y" position="340,473" size="84,58" type="AudioWindowing">
+  <processing id="Framer Y" position="220,309" size="109,66" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -63,76 +84,50 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Framer Z" position="291,226" size="83,58" type="AudioWindowing">
+  <processing id="Framer Z" position="208,135" size="108,66" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Gain" position="739,86" size="201,73" type="OutControlSender">
-    <Min>0</Min>
-    <Default>1.26</Default>
-    <Max>2</Max>
-    <Step>0.01</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-  </processing>
-
-  <processing id="Gain_1" position="165,-3" size="177,73" type="OutControlSender">
-    <Min>-1</Min>
-    <Default>1</Default>
-    <Max>1</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-    <Mapping>Linear</Mapping>
-  </processing>
-
-  <processing id="IFFT L" position="887,380" size="68,58" type="MyIFFT">
+  <processing id="IFFT L" position="961,165" size="87,66" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="IFFT R" position="882,459" size="70,58" type="MyIFFT">
+  <processing id="IFFT R" position="864,391" size="90,66" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="ImpulseResponseLoader P" position="320,424" size="183,58" type="ImpulseResponseLoader">
+  <processing id="ImpulseResponseLoader P" position="233,-67" size="251,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ew.wav</ImpulseResponse>
   </processing>
 
-  <processing id="ImpulseResponseLoader Vx" position="273,166" size="189,58" type="ImpulseResponseLoader">
+  <processing id="ImpulseResponseLoader Vx" position="182,80" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ex.wav</ImpulseResponse>
   </processing>
 
-  <processing id="ImpulseResponseLoader Vy" position="326,525" size="189,58" type="ImpulseResponseLoader">
+  <processing id="ImpulseResponseLoader Vy" position="175,376" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ey.wav</ImpulseResponse>
   </processing>
 
-  <processing id="ImpulseResponseLoader Vz" position="267,275" size="189,58" type="ImpulseResponseLoader">
+  <processing id="ImpulseResponseLoader Vz" position="171,192" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ez.wav</ImpulseResponse>
   </processing>
 
-  <processing id="Invert Y" position="693,488" size="75,58" type="ComplexSpectrumInverter" />
+  <processing id="Invert Y" position="671,360" size="96,66" type="ComplexSpectrumInverter"/>
 
-  <processing id="L" position="1090,365" size="128,111" type="AudioSink" />
+  <processing id="L" position="1205,189" size="128,111" type="AudioSink"/>
 
-  <processing id="R" position="1087,463" size="128,111" type="AudioSink" />
+  <processing id="R" position="1128,391" size="128,111" type="AudioSink"/>
 
-  <processing id="Streamer L" position="974,381" size="94,58" type="AudioBuffer2Stream">
-    <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>BlackmanHarris92</WindowType>
-    <DoHalfWindowShift>1</DoHalfWindowShift>
-  </processing>
-
-  <processing id="Streamer R" position="972,456" size="96,58" type="AudioBuffer2Stream">
+  <processing id="Streamer L" position="1021,237" size="123,66" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -141,31 +136,62 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Sum Center" position="743,218" size="99,62" type="ComplexSpectrumSum" />
+  <processing id="Streamer R" position="960,409" size="126,66" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
 
-  <processing id="Sum L" position="791,380" size="69,62" type="ComplexSpectrumSum" />
+  <processing id="Sum L" position="874,158" size="86,66" type="ComplexSpectrumSum"/>
 
-  <processing id="Sum R" position="783,457" size="71,62" type="ComplexSpectrumSum" />
+  <processing id="Sum PXZ" position="714,5" size="130,66" type="ComplexSpectrumSum"/>
 
-  <processing id="Sum XZ" position="635,215" size="77,62" type="ComplexSpectrumSum" />
+  <processing id="Sum R" position="794,286" size="89,66" type="ComplexSpectrumSum"/>
 
-  <processing id="W" position="16,347" size="128,108" type="AudioSource" />
+  <processing id="Sum XZ" position="626,119" size="99,66" type="ComplexSpectrumSum"/>
 
-  <processing id="X" position="16,105" size="128,108" type="AudioSource" />
+  <processing id="W" position="-118,-140" size="128,108" type="AudioSource"/>
 
-  <processing id="Y" position="21,474" size="128,108" type="AudioSource" />
+  <processing id="X" position="-120,2" size="128,108" type="AudioSource"/>
 
-  <processing id="Z" position="11,235" size="128,108" type="AudioSource" />
+  <processing id="Y" position="-121,280" size="128,108" type="AudioSource"/>
 
-  <processing id="amp_mono0" position="221,377" size="103,58" type="amp_mono0" />
+  <processing id="Z" position="-123,136" size="128,108" type="AudioSource"/>
 
-  <processing id="amp_mono0_1" position="158,225" size="117,58" type="amp_mono0" />
+  <processing id="first 2 zero order gain" position="770,-136" size="194,95" type="OutControlSender">
+    <Min>0</Min>
+    <Default>1.12</Default>
+    <Max>5</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
 
-  <processing id="amp_mono0_2" position="159,106" size="117,58" type="amp_mono0" />
+  <port_connection>
+    <out>AudioAmplifier.Audio Output</out>
+    <in>Framer P.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier_1.Audio Output</out>
+    <in>Framer X.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier_2.Audio Output</out>
+    <in>Framer Z.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier_3.Audio Output</out>
+    <in>Framer Y.Input</in>
+  </port_connection>
 
   <port_connection>
     <out>Convolution P.Output</out>
-    <in>Sum Center.Term2</in>
+    <in>Sum PXZ.Term1</in>
   </port_connection>
 
   <port_connection>
@@ -274,18 +300,18 @@
   </port_connection>
 
   <port_connection>
-    <out>Sum Center.Sum</out>
+    <out>Sum L.Sum</out>
+    <in>IFFT L.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sum PXZ.Sum</out>
     <in>Sum L.Term1</in>
   </port_connection>
 
   <port_connection>
-    <out>Sum Center.Sum</out>
+    <out>Sum PXZ.Sum</out>
     <in>Sum R.Term1</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Sum L.Sum</out>
-    <in>IFFT L.Complex Spectrum</in>
   </port_connection>
 
   <port_connection>
@@ -295,57 +321,42 @@
 
   <port_connection>
     <out>Sum XZ.Sum</out>
-    <in>Sum Center.Term1</in>
+    <in>Sum PXZ.Term2</in>
   </port_connection>
 
   <port_connection>
     <out>W.AudioOut</out>
-    <in>amp_mono0.Input</in>
+    <in>AudioAmplifier.Input Audio</in>
   </port_connection>
 
   <port_connection>
     <out>X.AudioOut</out>
-    <in>amp_mono0_2.Input</in>
+    <in>AudioAmplifier_1.Input Audio</in>
   </port_connection>
 
   <port_connection>
     <out>Y.AudioOut</out>
-    <in>Framer Y.Input</in>
+    <in>AudioAmplifier_3.Input Audio</in>
   </port_connection>
 
   <port_connection>
     <out>Z.AudioOut</out>
-    <in>amp_mono0_1.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>amp_mono0.Output</out>
-    <in>Framer P.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>amp_mono0_1.Output</out>
-    <in>Framer Z.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>amp_mono0_2.Output</out>
-    <in>Framer X.Input</in>
+    <in>AudioAmplifier_2.Input Audio</in>
   </port_connection>
 
   <control_connection>
-    <out>Gain.out</out>
-    <in>amp_mono0.Gain</in>
+    <out>first 2 zero order gain.out</out>
+    <in>AudioAmplifier_1.Gain</in>
   </control_connection>
 
   <control_connection>
-    <out>Gain_1.out</out>
-    <in>amp_mono0_1.Gain</in>
+    <out>first 2 zero order gain.out</out>
+    <in>AudioAmplifier_2.Gain</in>
   </control_connection>
 
   <control_connection>
-    <out>Gain_1.out</out>
-    <in>amp_mono0_2.Gain</in>
+    <out>first 2 zero order gain.out</out>
+    <in>AudioAmplifier_3.Gain</in>
   </control_connection>
 
 </network>
