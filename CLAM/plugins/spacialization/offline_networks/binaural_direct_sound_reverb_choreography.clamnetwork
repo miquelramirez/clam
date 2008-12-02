@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="AudioAmplifier" position="1412,322" size="114,58" type="AudioAmplifier">
-    <MaxGain>3</MaxGain>
-    <InitGain>1.26</InitGain>
-  </processing>
-
   <processing id="AudioBuffer2Stream" position="920,992" size="144,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
@@ -38,24 +33,6 @@
     <SamplingRate>48000</SamplingRate>
     <FFTSize>1024</FFTSize>
     <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
-
-  <processing id="AudioBuffer2Stream_12" position="2216,368" size="165,66" type="AudioBuffer2Stream">
-    <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
-
-  <processing id="AudioBuffer2Stream_13" position="2214,443" size="165,66" type="AudioBuffer2Stream">
-    <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>1025</WindowSize>
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
@@ -159,49 +136,7 @@
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="AudioSink" position="1879,815" size="128,111" type="AudioSink"/>
-
-  <processing id="AudioSink_1" position="1796,1029" size="128,111" type="AudioSink"/>
-
-  <processing id="AudioSource_1" position="34,340" size="128,108" type="AudioSource"/>
-
   <processing id="AudioWindowing" position="204,686" size="127,58" type="AudioWindowing">
-    <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
-
-  <processing id="AudioWindowing_2" position="1573,312" size="141,66" type="AudioWindowing">
-    <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
-
-  <processing id="AudioWindowing_3" position="1479,68" size="141,66" type="AudioWindowing">
-    <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
-
-  <processing id="AudioWindowing_4" position="1432,464" size="141,66" type="AudioWindowing">
-    <HopSize>512</HopSize>
-    <SamplingRate>44100</SamplingRate>
-    <FFTSize>1024</FFTSize>
-    <WindowSize>513</WindowSize>
-    <WindowType>None</WindowType>
-    <DoHalfWindowShift>0</DoHalfWindowShift>
-  </processing>
-
-  <processing id="AudioWindowing_5" position="1437,192" size="141,66" type="AudioWindowing">
     <HopSize>512</HopSize>
     <SamplingRate>44100</SamplingRate>
     <FFTSize>1024</FFTSize>
@@ -212,14 +147,6 @@
 
   <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation">
     <IsPassiveRotation>1</IsPassiveRotation>
-  </processing>
-
-  <processing id="Beta" position="1885,6" size="406,78" type="OutControlSender">
-    <Min>0</Min>
-    <Default>1.26</Default>
-    <Max>3</Max>
-    <Step>0.01</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
   <processing id="ChoreoSequencer_1" position="104,22" size="210,59" type="ChoreoSequencer">
@@ -246,6 +173,26 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
+  <processing id="Convolution W" position="1916,42" size="146,66" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution X" position="1890,203" size="146,66" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution Y" position="1874,474" size="146,66" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
+  <processing id="Convolution Z" position="1882,307" size="145,66" type="LowLatencyConvolution">
+    <MaxFrames>0</MaxFrames>
+    <FrameSize>512</FrameSize>
+  </processing>
+
   <processing id="Direct Sound Gain" position="1671,584" size="367,78" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
@@ -255,9 +202,89 @@
     <Mapping>Linear</Mapping>
   </processing>
 
+  <processing id="FFT W" position="1760,-5" size="84,66" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT X" position="1773,156" size="84,66" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT Y" position="1767,453" size="84,66" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="FFT Z" position="1780,278" size="83,66" type="MyFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="Framer W" position="1598,11" size="109,66" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="Framer X" position="1653,144" size="109,66" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="Framer Y" position="1638,447" size="109,66" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="Framer Z" position="1626,273" size="108,66" type="AudioWindowing">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>513</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
+
+  <processing id="GainW" position="1455,20" size="114,58" type="AudioAmplifier">
+    <MaxGain>3</MaxGain>
+    <InitGain>1.41421</InitGain>
+  </processing>
+
+  <processing id="GainX" position="1438,164" size="128,58" type="AudioAmplifier">
+    <MaxGain>5</MaxGain>
+    <InitGain>1.12</InitGain>
+  </processing>
+
+  <processing id="GainY" position="1429,425" size="128,58" type="AudioAmplifier">
+    <MaxGain>5</MaxGain>
+    <InitGain>1.12</InitGain>
+  </processing>
+
+  <processing id="GainZ" position="1430,274" size="128,58" type="AudioAmplifier">
+    <MaxGain>5</MaxGain>
+    <InitGain>1.12</InitGain>
+  </processing>
+
   <processing id="HRTFDatabaseFetcher2" position="237,999" size="167,94" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <Path>../../../../acustica/HRTFs/mitKemarFullL.hrtfs</Path>
+  </processing>
+
+  <processing id="IFFT L" position="2347,186" size="87,66" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
+  </processing>
+
+  <processing id="IFFT R" position="2292,441" size="90,66" type="MyIFFT">
+    <AudioSize>1024</AudioSize>
   </processing>
 
   <processing id="IRSwappingDelay" position="434,979" size="133,62" type="IRSwappingDelay"/>
@@ -272,27 +299,29 @@
 
   <processing id="IRSwappingDelay_5" position="351,374" size="147,62" type="IRSwappingDelay"/>
 
-  <processing id="ImpulseResponseLoader" position="1425,387" size="251,66" type="ImpulseResponseLoader">
+  <processing id="ImpulseResponseLoader W" position="1651,71" size="251,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ew.wav</ImpulseResponse>
   </processing>
 
-  <processing id="ImpulseResponseLoader_1" position="1424,130" size="260,66" type="ImpulseResponseLoader">
+  <processing id="ImpulseResponseLoader X" position="1600,218" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ex.wav</ImpulseResponse>
   </processing>
 
-  <processing id="ImpulseResponseLoader_2" position="1432,522" size="260,66" type="ImpulseResponseLoader">
+  <processing id="ImpulseResponseLoader Y" position="1593,514" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ey.wav</ImpulseResponse>
   </processing>
 
-  <processing id="ImpulseResponseLoader_3" position="1419,245" size="260,66" type="ImpulseResponseLoader">
+  <processing id="ImpulseResponseLoader Z" position="1589,330" size="260,66" type="ImpulseResponseLoader">
     <FrameSize>512</FrameSize>
     <ImpulseResponse>Ez.wav</ImpulseResponse>
   </processing>
 
-  <processing id="Inverter" position="1943,500" size="75,58" type="ComplexSpectrumInverter"/>
+  <processing id="Invert Y" position="2089,498" size="96,66" type="ComplexSpectrumInverter"/>
+
+  <processing id="L" position="1801,795" size="128,111" type="AudioSink"/>
 
   <processing id="LowLatencyConvolution" position="624,987" size="166,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -310,26 +339,6 @@
   </processing>
 
   <processing id="LowLatencyConvolution_11" position="519,411" size="187,62" type="LowLatencyConvolution">
-    <MaxFrames>0</MaxFrames>
-    <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="LowLatencyConvolution_12" position="1754,379" size="187,66" type="LowLatencyConvolution">
-    <MaxFrames>0</MaxFrames>
-    <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="LowLatencyConvolution_13" position="1722,107" size="187,66" type="LowLatencyConvolution">
-    <MaxFrames>0</MaxFrames>
-    <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="LowLatencyConvolution_14" position="1719,490" size="187,66" type="LowLatencyConvolution">
-    <MaxFrames>0</MaxFrames>
-    <FrameSize>512</FrameSize>
-  </processing>
-
-  <processing id="LowLatencyConvolution_15" position="1722,223" size="187,66" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
     <FrameSize>512</FrameSize>
   </processing>
@@ -378,22 +387,6 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyFFT_2" position="1719,311" size="85,66" type="MyFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="MyFFT_3" position="1632,70" size="85,66" type="MyFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="MyFFT_4" position="1592,466" size="85,66" type="MyFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="MyFFT_5" position="1604,192" size="85,66" type="MyFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
   <processing id="MyIFFT" position="829,991" size="74,58" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
@@ -407,14 +400,6 @@
   </processing>
 
   <processing id="MyIFFT_11" position="723,409" size="95,59" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="MyIFFT_12" position="2129,367" size="95,66" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
-
-  <processing id="MyIFFT_13" position="2124,446" size="95,66" type="MyIFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
@@ -470,6 +455,8 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
+  <processing id="R" position="1796,1029" size="128,111" type="AudioSink"/>
+
   <processing id="Reverb Gain" position="1365,589" size="280,78" type="OutControlSender">
     <Min>0</Min>
     <Default>0.5</Default>
@@ -491,13 +478,33 @@
     <SupressInitialDelay>1</SupressInitialDelay>
   </processing>
 
-  <processing id="SumWXZ" position="1946,258" size="85,62" type="ComplexSpectrumSum"/>
+  <processing id="Source" position="34,340" size="128,108" type="AudioSource"/>
 
-  <processing id="SumXZ" position="1951,141" size="74,62" type="ComplexSpectrumSum"/>
+  <processing id="Streamer L" position="2407,269" size="123,66" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
 
-  <processing id="Sum_L" position="2033,367" size="73,62" type="ComplexSpectrumSum"/>
+  <processing id="Streamer R" position="2388,459" size="126,66" type="AudioBuffer2Stream">
+    <HopSize>512</HopSize>
+    <SamplingRate>44100</SamplingRate>
+    <FFTSize>1024</FFTSize>
+    <WindowSize>1025</WindowSize>
+    <WindowType>None</WindowType>
+    <DoHalfWindowShift>0</DoHalfWindowShift>
+  </processing>
 
-  <processing id="Sum_R" position="2026,444" size="75,62" type="ComplexSpectrumSum"/>
+  <processing id="Sum L" position="2242,182" size="86,66" type="ComplexSpectrumSum"/>
+
+  <processing id="Sum R" position="2222,336" size="89,66" type="ComplexSpectrumSum"/>
+
+  <processing id="Sum WXZ" position="2103,118" size="130,66" type="ComplexSpectrumSum"/>
+
+  <processing id="Sum XZ" position="2044,257" size="99,66" type="ComplexSpectrumSum"/>
 
   <processing id="XFadeAndSwitch" position="656,873" size="128,94" type="XFadeAndSwitch"/>
 
@@ -517,10 +524,13 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <port_connection>
-    <out>AudioAmplifier.Audio Output</out>
-    <in>AudioWindowing_2.Input</in>
-  </port_connection>
+  <processing id="first 2 zero order gain" position="2206,8" size="194,95" type="OutControlSender">
+    <Min>0</Min>
+    <Default>1.12</Default>
+    <Max>5</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+  </processing>
 
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
@@ -540,16 +550,6 @@
   <port_connection>
     <out>AudioBuffer2Stream_11.Audio stream</out>
     <in>XFadeAndSwitch_5.Audio2</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioBuffer2Stream_12.Audio stream</out>
-    <in>AudioMixer_1.Input 0</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioBuffer2Stream_13.Audio stream</out>
-    <in>AudioMixer_2.Input 0</in>
   </port_connection>
 
   <port_connection>
@@ -599,12 +599,12 @@
 
   <port_connection>
     <out>AudioMixer_1.Output Audio</out>
-    <in>AudioSink.AudioIn</in>
+    <in>L.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>AudioMixer_2.Output Audio</out>
-    <in>AudioSink_1.AudioIn</in>
+    <in>R.AudioIn</in>
   </port_connection>
 
   <port_connection>
@@ -618,48 +618,8 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_1.AudioOut</out>
-    <in>AudioMixer.Input 0</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioSource_1.AudioOut</out>
-    <in>ChoreoSequencer_1.sync</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioSource_1.AudioOut</out>
-    <in>RoomImpulseResponseSimulator.synchronization</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioSource_1.AudioOut</out>
-    <in>Oscilloscope_4.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>AudioWindowing.Output</out>
     <in>MyFFT.Audio Buffer</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioWindowing_2.Output</out>
-    <in>MyFFT_2.Audio Buffer</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioWindowing_3.Output</out>
-    <in>MyFFT_3.Audio Buffer</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioWindowing_4.Output</out>
-    <in>MyFFT_4.Audio Buffer</in>
-  </port_connection>
-
-  <port_connection>
-    <out>AudioWindowing_5.Output</out>
-    <in>MyFFT_5.Audio Buffer</in>
   </port_connection>
 
   <port_connection>
@@ -669,7 +629,7 @@
 
   <port_connection>
     <out>BFormatRotation.vx</out>
-    <in>AudioWindowing_3.Input</in>
+    <in>GainX.Input Audio</in>
   </port_connection>
 
   <port_connection>
@@ -679,17 +639,102 @@
 
   <port_connection>
     <out>BFormatRotation.vy</out>
-    <in>AudioWindowing_4.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormatRotation.vz</out>
-    <in>AudioWindowing_5.Input</in>
+    <in>GainY.Input Audio</in>
   </port_connection>
 
   <port_connection>
     <out>BFormatRotation.vz</out>
     <in>Oscilloscope_5.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormatRotation.vz</out>
+    <in>GainZ.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution W.Output</out>
+    <in>Sum WXZ.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution X.Output</out>
+    <in>Sum XZ.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution Y.Output</out>
+    <in>Invert Y.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution Y.Output</out>
+    <in>Sum L.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Convolution Z.Output</out>
+    <in>Sum XZ.Term2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT W.Complex Spectrum</out>
+    <in>Convolution W.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT X.Complex Spectrum</out>
+    <in>Convolution X.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT Y.Complex Spectrum</out>
+    <in>Convolution Y.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>FFT Z.Complex Spectrum</out>
+    <in>Convolution Z.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Framer W.Output</out>
+    <in>FFT W.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Framer X.Output</out>
+    <in>FFT X.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Framer Y.Output</out>
+    <in>FFT Y.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Framer Z.Output</out>
+    <in>FFT Z.Audio Buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>GainW.Audio Output</out>
+    <in>Framer W.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>GainX.Audio Output</out>
+    <in>Framer X.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>GainY.Audio Output</out>
+    <in>Framer Y.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>GainZ.Audio Output</out>
+    <in>Framer Z.Input</in>
   </port_connection>
 
   <port_connection>
@@ -700,6 +745,16 @@
   <port_connection>
     <out>HRTFDatabaseFetcher2.ImpulseResponseR</out>
     <in>IRSwappingDelay_1.Input IR</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IFFT L.Audio Buffer</out>
+    <in>Streamer L.Audio buffer</in>
+  </port_connection>
+
+  <port_connection>
+    <out>IFFT R.Audio Buffer</out>
+    <in>Streamer R.Audio buffer</in>
   </port_connection>
 
   <port_connection>
@@ -823,28 +878,28 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader.ImpulseResponse</out>
-    <in>LowLatencyConvolution_12.ImpulseResponse</in>
+    <out>ImpulseResponseLoader W.ImpulseResponse</out>
+    <in>Convolution W.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader_1.ImpulseResponse</out>
-    <in>LowLatencyConvolution_13.ImpulseResponse</in>
+    <out>ImpulseResponseLoader X.ImpulseResponse</out>
+    <in>Convolution X.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader_2.ImpulseResponse</out>
-    <in>LowLatencyConvolution_14.ImpulseResponse</in>
+    <out>ImpulseResponseLoader Y.ImpulseResponse</out>
+    <in>Convolution Y.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseLoader_3.ImpulseResponse</out>
-    <in>LowLatencyConvolution_15.ImpulseResponse</in>
+    <out>ImpulseResponseLoader Z.ImpulseResponse</out>
+    <in>Convolution Z.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
-    <out>Inverter.Output</out>
-    <in>Sum_R.Term2</in>
+    <out>Invert Y.Output</out>
+    <in>Sum R.Term2</in>
   </port_connection>
 
   <port_connection>
@@ -865,31 +920,6 @@
   <port_connection>
     <out>LowLatencyConvolution_11.Output</out>
     <in>MyIFFT_11.Complex Spectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LowLatencyConvolution_12.Output</out>
-    <in>SumWXZ.Term2</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LowLatencyConvolution_13.Output</out>
-    <in>SumXZ.Term1</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LowLatencyConvolution_14.Output</out>
-    <in>Inverter.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LowLatencyConvolution_14.Output</out>
-    <in>Sum_L.Term2</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LowLatencyConvolution_15.Output</out>
-    <in>SumXZ.Term2</in>
   </port_connection>
 
   <port_connection>
@@ -993,26 +1023,6 @@
   </port_connection>
 
   <port_connection>
-    <out>MyFFT_2.Complex Spectrum</out>
-    <in>LowLatencyConvolution_12.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_3.Complex Spectrum</out>
-    <in>LowLatencyConvolution_13.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_4.Complex Spectrum</out>
-    <in>LowLatencyConvolution_14.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyFFT_5.Complex Spectrum</out>
-    <in>LowLatencyConvolution_15.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>MyIFFT.Audio Buffer</out>
     <in>AudioBuffer2Stream.Audio buffer</in>
   </port_connection>
@@ -1030,16 +1040,6 @@
   <port_connection>
     <out>MyIFFT_11.Audio Buffer</out>
     <in>AudioBuffer2Stream_11.Audio buffer</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyIFFT_12.Audio Buffer</out>
-    <in>AudioBuffer2Stream_12.Audio buffer</in>
-  </port_connection>
-
-  <port_connection>
-    <out>MyIFFT_13.Audio Buffer</out>
-    <in>AudioBuffer2Stream_13.Audio buffer</in>
   </port_connection>
 
   <port_connection>
@@ -1103,28 +1103,58 @@
   </port_connection>
 
   <port_connection>
-    <out>SumWXZ.Sum</out>
-    <in>Sum_L.Term1</in>
+    <out>Source.AudioOut</out>
+    <in>AudioMixer.Input 0</in>
   </port_connection>
 
   <port_connection>
-    <out>SumWXZ.Sum</out>
-    <in>Sum_R.Term1</in>
+    <out>Source.AudioOut</out>
+    <in>ChoreoSequencer_1.sync</in>
   </port_connection>
 
   <port_connection>
-    <out>SumXZ.Sum</out>
-    <in>SumWXZ.Term1</in>
+    <out>Source.AudioOut</out>
+    <in>RoomImpulseResponseSimulator.synchronization</in>
   </port_connection>
 
   <port_connection>
-    <out>Sum_L.Sum</out>
-    <in>MyIFFT_12.Complex Spectrum</in>
+    <out>Source.AudioOut</out>
+    <in>Oscilloscope_4.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>Sum_R.Sum</out>
-    <in>MyIFFT_13.Complex Spectrum</in>
+    <out>Streamer L.Audio stream</out>
+    <in>AudioMixer_1.Input 0</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Streamer R.Audio stream</out>
+    <in>AudioMixer_2.Input 0</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sum L.Sum</out>
+    <in>IFFT L.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sum R.Sum</out>
+    <in>IFFT R.Complex Spectrum</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sum WXZ.Sum</out>
+    <in>Sum L.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sum WXZ.Sum</out>
+    <in>Sum R.Term1</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Sum XZ.Sum</out>
+    <in>Sum WXZ.Term2</in>
   </port_connection>
 
   <port_connection>
@@ -1149,7 +1179,7 @@
 
   <port_connection>
     <out>XFadeAndSwitch_2.CrossFadedBuffer</out>
-    <in>AudioAmplifier.Input Audio</in>
+    <in>GainW.Input Audio</in>
   </port_connection>
 
   <port_connection>
@@ -1166,11 +1196,6 @@
     <out>XFadeAndSwitch_5.CrossFadedBuffer</out>
     <in>BFormatRotation.vz</in>
   </port_connection>
-
-  <control_connection>
-    <out>Beta.out</out>
-    <in>AudioAmplifier.Gain</in>
-  </control_connection>
 
   <control_connection>
     <out>ChoreoSequencer_1.target X</out>
@@ -1270,6 +1295,21 @@
   <control_connection>
     <out>RoomImpulseResponseSimulator.directSoundPressure</out>
     <in>directSoundPressure.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>first 2 zero order gain.out</out>
+    <in>GainX.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>first 2 zero order gain.out</out>
+    <in>GainZ.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>first 2 zero order gain.out</out>
+    <in>GainY.Gain</in>
   </control_connection>
 
 </network>
