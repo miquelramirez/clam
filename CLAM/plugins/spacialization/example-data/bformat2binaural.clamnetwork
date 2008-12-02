@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
   <processing id="Convolution W" position="498,-96" size="146,66" type="LowLatencyConvolution">
@@ -121,11 +120,11 @@
     <ImpulseResponse>Ez.wav</ImpulseResponse>
   </processing>
 
-  <processing id="Invert Y" position="671,360" size="96,66" type="ComplexSpectrumInverter"/>
+  <processing id="Invert Y" position="671,360" size="96,66" type="ComplexSpectrumInverter" />
 
-  <processing id="L" position="1137,159" size="128,111" type="AudioSink"/>
+  <processing id="L" position="1137,159" size="128,111" type="AudioSink" />
 
-  <processing id="R" position="1128,391" size="128,111" type="AudioSink"/>
+  <processing id="R" position="1128,391" size="128,111" type="AudioSink" />
 
   <processing id="Streamer L" position="979,219" size="123,66" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -145,21 +144,21 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="Sum L" position="814,132" size="86,66" type="ComplexSpectrumSum"/>
+  <processing id="Sum L" position="814,132" size="86,66" type="ComplexSpectrumSum" />
 
-  <processing id="Sum R" position="794,286" size="89,66" type="ComplexSpectrumSum"/>
+  <processing id="Sum R" position="794,286" size="89,66" type="ComplexSpectrumSum" />
 
-  <processing id="Sum WXZ" position="685,-20" size="130,66" type="ComplexSpectrumSum"/>
+  <processing id="Sum WXZ" position="685,-20" size="130,66" type="ComplexSpectrumSum" />
 
-  <processing id="Sum XZ" position="626,119" size="99,66" type="ComplexSpectrumSum"/>
+  <processing id="Sum XZ" position="626,119" size="99,66" type="ComplexSpectrumSum" />
 
-  <processing id="W" position="-118,-140" size="128,108" type="AudioSource"/>
+  <processing id="W" position="-118,-140" size="128,108" type="AudioSource" />
 
-  <processing id="X" position="-120,2" size="128,108" type="AudioSource"/>
+  <processing id="X" position="-120,2" size="128,108" type="AudioSource" />
 
-  <processing id="Y" position="-121,280" size="128,108" type="AudioSource"/>
+  <processing id="Y" position="-121,280" size="128,108" type="AudioSource" />
 
-  <processing id="Z" position="-123,136" size="128,108" type="AudioSource"/>
+  <processing id="Z" position="-123,136" size="128,108" type="AudioSource" />
 
   <processing id="first 2 zero order gain" position="770,-136" size="194,95" type="OutControlSender">
     <Min>0</Min>
