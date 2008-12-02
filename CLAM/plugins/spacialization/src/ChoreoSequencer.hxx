@@ -121,7 +121,7 @@ public:
 			_targetZ.SendControl( row[TargetZColumn] );
 			_targetAzimuth.SendControl( row[TargetAzimutColumn] );
 
-			const readElevation = false;
+			const bool readElevation = false;
 			double targetElevation = readElevation ?  row[TargetZenitColumn] : 90 - row[TargetZenitColumn];
 			_targetElevation.SendControl( targetElevation );
 
