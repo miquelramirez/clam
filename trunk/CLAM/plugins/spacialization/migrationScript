@@ -7,3 +7,4 @@ renameConnector Surround inport vy Y
 renameConnector NSurround inport p W
 renameConnector NSurround inport vx X
 renameConnector NSurround inport vy Y
+removeConfig BFormatRotation IsPassiveRotation

@@ -17,8 +17,7 @@
   </processing>
 
   <processing id="BFormatRotation" position="775,558" size="143,78" type="BFormatRotation">
-    <IsPassiveRotation>1</IsPassiveRotation>
-  </processing>
+    </processing>
 
   <processing id="ChoreoSequencer" position="101,14" size="194,59" type="ChoreoSequencer">
     <Filename>../../../acustica/realitzacions/Simple_02.coreo</Filename>

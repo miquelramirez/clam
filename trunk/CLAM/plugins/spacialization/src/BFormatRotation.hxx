@@ -10,8 +10,8 @@
 
 /**
  This Processing rotates a B-format source
- @todo BFormatRotation explain how the rotations are performed
- @param IsPassiveRotation [Config] Is true when the listener is the one that rotates and false when the sources are the ones that rotate
+ @todo BFormatRotation explain how the rotations are performed. 
+ Rotation is "passive", meaning that is the listener who rotates and not the sources.
  @param[in] azimuth [Control]
  @param[in] elevation [Control]
  @param[in] vx [Port] The X component to be rotated
@@ -25,20 +25,6 @@
 */
 class BFormatRotation : public CLAM::Processing
 {
-protected:
-	class Config : public CLAM::ProcessingConfig
-	{
-	    DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, bool, IsPassiveRotation);
-    	protected:
-	    void DefaultInit()
-	    {
-		AddAll();
-		UpdateData();
-		SetIsPassiveRotation(true);
-	    };
-	};
-
 	
 public:
 	const char* GetClassName() const { return "BFormatRotation"; }
@@ -52,7 +38,6 @@ public:
 	CLAM::InControl _elevation;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 	Config _config;
-	bool _isPassiveRotation;
 public:
 	BFormatRotation(const Config& config = Config()) 
 		: _Xin("vx", this)
@@ -94,7 +79,6 @@ public:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
 //		std::cout << "BFormatRotation::ConcreteConfigure()"<<std::endl;
-		_isPassiveRotation = _config.GetIsPassiveRotation();
 		return true;
 	}
 	bool Do()
@@ -112,10 +96,6 @@ public:
 			elevationDeg = -90.;
 		}
 		double elevation = elevationDeg*M_PI/180; //conversion. elevation is in radians
-//TODO fix: eliminate param
-_isPassiveRotation=true;
-//azimuth *= -1;
-
 		const double cosAzimuth=std::cos(azimuth);
 		const double sinAzimuth=std::sin(azimuth);
 		const double cosElevation=std::cos(elevation);
