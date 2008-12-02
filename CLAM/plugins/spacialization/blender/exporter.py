@@ -202,7 +202,7 @@ def choreoExport (scene,normalize=True):
 	for frame in range(Blender.Get('staframe'),Blender.Get('endframe')):
 		Blender.Set('curframe',frame)
 		roll,descention,azimuth=target.mat.toEuler()
-		targetElevation=(-descention+90)%360
+		targetElevation=(-descention)%360
 		targetRoll=(roll)%360
 		targetAzimuth=(azimuth)%360
 		if normalize==True:
