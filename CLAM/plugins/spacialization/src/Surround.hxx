@@ -58,7 +58,6 @@ public:
 			double rad = M_PI*angle/180;
 			_sinAlphas.push_back( std::sin(rad) );
 			_cosAlphas.push_back( std::cos(rad) );
-//			std::cout << "sin "<< angle << " "<< std::sin(rad) << std::endl;
 
 			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( speaker[i].name, this);
 			port->SetSize( buffersize );
@@ -77,7 +76,7 @@ public:
 	}
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
-		std::cout << "Surround::ConcreteConfigure()"<<std::endl;
+		// Just avoid base class configuration
 		return true;
 	}
 
