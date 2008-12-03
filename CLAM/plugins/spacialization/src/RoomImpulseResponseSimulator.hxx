@@ -94,22 +94,22 @@ private:
 	OutPort< ImpulseResponse* > _XImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _YImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _ZImpulseResponseOutPort;
-	FloatInControl _emitterX;
-	FloatInControl _emitterY;
-	FloatInControl _emitterZ;
-	FloatInControl _receiverX;
-	FloatInControl _receiverY;
-	FloatInControl _receiverZ;
+	FloatInControl _sourceX;
+	FloatInControl _sourceY;
+	FloatInControl _sourceZ;
+	FloatInControl _listenerX;
+	FloatInControl _listenerY;
+	FloatInControl _listenerZ;
 	FloatOutControl _directSoundPressure;
 	BFormatIR _impulseResponses[nCachedIRs];
 	BFormatIR  * _current;
 	BFormatIR  * _previous;
-	float _currentEmitterX;
-	float _currentEmitterY;
-	float _currentEmitterZ;
-	float _currentReceiverX;
-	float _currentReceiverY;
-	float _currentReceiverZ;
+	float _currentSourceX;
+	float _currentSourceY;
+	float _currentSourceZ;
+	float _currentListenerX;
+	float _currentListenerY;
+	float _currentListenerZ;
 	float _delta;
 	unsigned _currentCacheIndex;
 	Scene * _scene;
@@ -122,32 +122,32 @@ public:
 		, _XImpulseResponseOutPort("X IR", this)
 		, _YImpulseResponseOutPort("Y IR", this)
 		, _ZImpulseResponseOutPort("Z IR", this)
-		, _emitterX("emitterX", this)
-		, _emitterY("emitterY", this)
-		, _emitterZ("emitterZ", this)
-		, _receiverX("receiverX", this)
-		, _receiverY("receiverY", this)
-		, _receiverZ("receiverZ", this)
+		, _sourceX("source X", this)
+		, _sourceY("source Y", this)
+		, _sourceZ("source Z", this)
+		, _listenerX("listener X", this)
+		, _listenerY("listener Y", this)
+		, _listenerZ("listener Z", this)
 		, _directSoundPressure("directSoundPressure", this)
 		, _current(0)
 		, _previous(0)
-		, _currentEmitterX(0)
-		, _currentEmitterY(0)
-		, _currentEmitterZ(0)
-		, _currentReceiverX(0)
-		, _currentReceiverY(0)
-		, _currentReceiverZ(0)
+		, _currentSourceX(0)
+		, _currentSourceY(0)
+		, _currentSourceZ(0)
+		, _currentListenerX(0)
+		, _currentListenerY(0)
+		, _currentListenerZ(0)
 		, _delta(1)
 		, _currentCacheIndex(0)
 		, _scene(0)
 	{
 		Configure( config );
-		_emitterX.SetBounds(0,1);
-		_emitterY.SetBounds(0,1);
-		_emitterZ.SetBounds(0,1);
-		_receiverX.SetBounds(0,1);
-		_receiverY.SetBounds(0,1);
-		_receiverZ.SetBounds(0,1);
+		_sourceX.SetBounds(0,1);
+		_sourceY.SetBounds(0,1);
+		_sourceZ.SetBounds(0,1);
+		_listenerX.SetBounds(0,1);
+		_listenerY.SetBounds(0,1);
+		_listenerZ.SetBounds(0,1);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
@@ -163,12 +163,12 @@ public:
 		}
 		_syncAudio.SetSize(_config.GetFrameSize());
 		_syncAudio.SetHop(_config.GetFrameSize());
-		_emitterX.DoControl(0.2);
-		_emitterY.DoControl(0.5);
-		_emitterZ.DoControl(0.2);
-		_receiverX.DoControl(0.5);
-		_receiverY.DoControl(0.5);
-		_receiverZ.DoControl(0.2);
+		_sourceX.DoControl(0.2);
+		_sourceY.DoControl(0.5);
+		_sourceZ.DoControl(0.2);
+		_listenerX.DoControl(0.5);
+		_listenerY.DoControl(0.5);
+		_listenerZ.DoControl(0.2);
 		_delta = 1./_config.GetGridDivisions();
 
 		Settings settings;
@@ -220,49 +220,49 @@ private:
 		}
 		std::cout << "." << std::flush;
 
-		float x1 = _emitterX.GetLastValue();
-		float y1 = _emitterY.GetLastValue();
-		float z1 = _emitterZ.GetLastValue();
-		float x2 = _receiverX.GetLastValue();
-		float y2 = _receiverY.GetLastValue();
-		float z2 = _receiverZ.GetLastValue();
+		float x1 = _sourceX.GetLastValue();
+		float y1 = _sourceY.GetLastValue();
+		float z1 = _sourceZ.GetLastValue();
+		float x2 = _listenerX.GetLastValue();
+		float y2 = _listenerY.GetLastValue();
+		float z2 = _listenerZ.GetLastValue();
 
 		//TODO : have into account Z
-		bool changeSnappedIR = fabs(_currentReceiverX-x2) > _delta 
-			|| fabs(_currentReceiverY-y2) > _delta 
-			|| fabs(_currentEmitterX-x1) > _delta
-			|| fabs(_currentEmitterY-y1) > _delta
+		bool changeSnappedIR = fabs(_currentListenerX-x2) > _delta 
+			|| fabs(_currentListenerY-y2) > _delta 
+			|| fabs(_currentSourceX-x1) > _delta
+			|| fabs(_currentSourceY-y1) > _delta
 			;
 
 		// If we already have one but the movement is small enough, keep it
 		if (_current and not changeSnappedIR) return true;
 
-//		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
+//		std::cout << _currentListenerX << " " << x2 << " " << fabs(_currentListenerX-x1) << std::endl;
 		
 //		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		// swap _current but leave _previous
 		_current = &_impulseResponses[_currentCacheIndex];
 		_currentCacheIndex = (_currentCacheIndex+1) % nCachedIRs;
 		if (not _previous) _previous = _current;
-		_currentEmitterX = x1;
-		_currentEmitterY = y1;
-		_currentEmitterZ = z1;
-		_currentReceiverX = x2;
-		_currentReceiverY = y2;
-		_currentReceiverZ = z2;
+		_currentSourceX = x1;
+		_currentSourceY = y1;
+		_currentSourceZ = z1;
+		_currentListenerX = x2;
+		_currentListenerY = y2;
+		_currentListenerZ = z2;
 		std::cout << "|" << std::flush;
 
 		_scene->setReceiverPos(
-			_scene->normalizedToModelX(_currentReceiverX),
-			_scene->normalizedToModelY(_currentReceiverY),
-			_scene->normalizedToModelZ(_currentReceiverZ)
+			_scene->normalizedToModelX(_currentListenerX),
+			_scene->normalizedToModelY(_currentListenerY),
+			_scene->normalizedToModelZ(_currentListenerZ)
 			);
 		_scene->setComputedSource(0);
 		_scene->clearSources();
 		_scene->appendSource(
-			_scene->normalizedToModelX(_currentEmitterX),
-			_scene->normalizedToModelY(_currentEmitterY),
-			_scene->normalizedToModelZ(_currentEmitterZ)
+			_scene->normalizedToModelX(_currentSourceX),
+			_scene->normalizedToModelY(_currentSourceY),
+			_scene->normalizedToModelZ(_currentSourceZ)
 			);
 
 

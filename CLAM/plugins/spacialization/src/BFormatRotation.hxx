@@ -40,12 +40,12 @@ public:
 	Config _config;
 public:
 	BFormatRotation(const Config& config = Config()) 
-		: _Xin("vx", this)
-		, _Yin("vy", this)
-		, _Zin("vz", this)
-		, _Xout("vx", this)
-		, _Yout("vy", this)
-		, _Zout("vz", this)
+		: _Xin("X", this)
+		, _Yin("Y", this)
+		, _Zin("Z", this)
+		, _Xout("X", this)
+		, _Yout("Y", this)
+		, _Zout("Z", this)
 		, _azimuth("azimuth", this) // angle in degrees
 		, _elevation("elevation", this) // angle in degrees
 	{
