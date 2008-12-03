@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="2MagPhase" position="376,915" size="107,65" type="Complex2MagPhaseSpectrum"/>
+  <processing id="2MagPhase" position="376,915" size="107,65" type="Complex2MagPhaseSpectrum" />
 
-  <processing id="2MagPhase X" position="368,975" size="118,65" type="Complex2MagPhaseSpectrum"/>
+  <processing id="2MagPhase X" position="368,975" size="118,65" type="Complex2MagPhaseSpectrum" />
 
-  <processing id="2Spectrum" position="497,914" size="102,65" type="MagPhaseSpectrum2Spectrum"/>
+  <processing id="2Spectrum" position="497,914" size="102,65" type="MagPhaseSpectrum2Spectrum" />
 
-  <processing id="2Spectrum X" position="495,976" size="113,65" type="MagPhaseSpectrum2Spectrum"/>
+  <processing id="2Spectrum X" position="495,976" size="113,65" type="MagPhaseSpectrum2Spectrum" />
 
   <processing id="2StreamR" position="1261,599" size="95,65" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -27,7 +26,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioInput" position="24,795" size="128,108" type="AudioSource"/>
+  <processing id="AudioInput" position="24,795" size="128,108" type="AudioSource" />
 
   <processing id="AudioWindowing" position="143,800" size="135,65" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -50,7 +49,7 @@
     <NumberOfArguments>2</NumberOfArguments>
   </processing>
 
-  <processing id="BufferOscilloscope" position="1034,866" size="349,191" type="BufferOscilloscope"/>
+  <processing id="BufferOscilloscope" position="1034,866" size="349,191" type="BufferOscilloscope" />
 
   <processing id="Conv C" position="1011,519" size="77,65" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -127,9 +126,9 @@
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="DebugImpulseResponse" position="163,919" size="184,65" type="DebugImpulseResponse"/>
+  <processing id="DebugImpulseResponse" position="163,919" size="184,65" type="DebugImpulseResponse" />
 
-  <processing id="DebugImpulseResponse_1" position="150,976" size="198,65" type="DebugImpulseResponse"/>
+  <processing id="DebugImpulseResponse_1" position="150,976" size="198,65" type="DebugImpulseResponse" />
 
   <processing id="EquidistantSurround" position="560,617" size="163,190" type="NSurround">
     <NChannels>5</NChannels>
@@ -198,7 +197,7 @@
     <Prefix>vy</Prefix>
   </processing>
 
-  <processing id="L" position="1367,448" size="128,111" type="AudioSink"/>
+  <processing id="L" position="1367,448" size="128,111" type="AudioSink" />
 
   <processing id="MyFFT" position="298,800" size="76,65" type="MyFFT">
     <AudioSize>1024</AudioSize>
@@ -240,35 +239,35 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope" position="724,199" size="131,96" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="724,199" size="131,96" type="Oscilloscope" />
 
-  <processing id="R" position="1365,599" size="128,111" type="AudioSink"/>
+  <processing id="R" position="1365,599" size="128,111" type="AudioSink" />
 
-  <processing id="SpectrumView" position="635,852" size="237,91" type="SpectrumView"/>
+  <processing id="SpectrumView" position="635,852" size="237,91" type="SpectrumView" />
 
-  <processing id="SpectrumView_1" position="635,941" size="236,93" type="SpectrumView"/>
+  <processing id="SpectrumView_1" position="635,941" size="236,93" type="SpectrumView" />
 
-  <processing id="Sum" position="1154,709" size="61,65" type="ComplexSpectrumSum"/>
+  <processing id="Sum" position="1154,709" size="61,65" type="ComplexSpectrumSum" />
 
-  <processing id="Sum2" position="1152,780" size="69,65" type="ComplexSpectrumSum"/>
+  <processing id="Sum2" position="1152,780" size="69,65" type="ComplexSpectrumSum" />
 
-  <processing id="Sum3" position="1084,596" size="69,65" type="ComplexSpectrumSum"/>
+  <processing id="Sum3" position="1084,596" size="69,65" type="ComplexSpectrumSum" />
 
-  <processing id="Sum4" position="1239,738" size="69,65" type="ComplexSpectrumSum"/>
+  <processing id="Sum4" position="1239,738" size="69,65" type="ComplexSpectrumSum" />
 
-  <processing id="SumL" position="1168,212" size="68,65" type="ComplexSpectrumSum"/>
+  <processing id="SumL" position="1168,212" size="68,65" type="ComplexSpectrumSum" />
 
-  <processing id="SumL2" position="1174,306" size="75,65" type="ComplexSpectrumSum"/>
+  <processing id="SumL2" position="1174,306" size="75,65" type="ComplexSpectrumSum" />
 
-  <processing id="SumL3" position="1262,260" size="75,65" type="ComplexSpectrumSum"/>
+  <processing id="SumL3" position="1262,260" size="75,65" type="ComplexSpectrumSum" />
 
-  <processing id="SumL4" position="1081,451" size="75,65" type="ComplexSpectrumSum"/>
+  <processing id="SumL4" position="1081,451" size="75,65" type="ComplexSpectrumSum" />
 
-  <processing id="XFader_P" position="611,266" size="91,65" type="AudioBufferCrossFader"/>
+  <processing id="XFader_P" position="611,266" size="91,65" type="AudioBufferCrossFader" />
 
-  <processing id="XFader_Vx" position="605,370" size="98,65" type="AudioBufferCrossFader"/>
+  <processing id="XFader_Vx" position="605,370" size="98,65" type="AudioBufferCrossFader" />
 
-  <processing id="XFader_Vy" position="612,475" size="98,65" type="AudioBufferCrossFader"/>
+  <processing id="XFader_Vy" position="612,475" size="98,65" type="AudioBufferCrossFader" />
 
   <processing id="beta" position="370,35" size="323,88" type="OutControlSender">
     <Min>-360</Min>
@@ -772,7 +771,7 @@
 
   <port_connection>
     <out>toStream P.Audio stream</out>
-    <in>EquidistantSurround.p</in>
+    <in>EquidistantSurround.W</in>
   </port_connection>
 
   <port_connection>
@@ -782,12 +781,12 @@
 
   <port_connection>
     <out>toStream Vx.Audio stream</out>
-    <in>EquidistantSurround.vx</in>
+    <in>EquidistantSurround.X</in>
   </port_connection>
 
   <port_connection>
     <out>toStream Vy.Audio stream</out>
-    <in>EquidistantSurround.vy</in>
+    <in>EquidistantSurround.Y</in>
   </port_connection>
 
   <port_connection>

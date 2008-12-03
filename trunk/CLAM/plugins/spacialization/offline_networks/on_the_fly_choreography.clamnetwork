@@ -17,8 +17,7 @@
   </processing>
 
   <processing id="BFormatRotation" position="743,752" size="143,78" type="BFormatRotation">
-    <IsPassiveRotation>1</IsPassiveRotation>
-  </processing>
+    </processing>
 
   <processing id="CameraTracking" position="93,152" size="194,59" type="ChoreoSequencer">
     <Filename />
@@ -542,27 +541,27 @@
   </port_connection>
 
   <control_connection>
-    <out>CameraTracking.target X</out>
+    <out>CameraTracking.listener X</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverX</in>
   </control_connection>
 
   <control_connection>
-    <out>CameraTracking.target Y</out>
+    <out>CameraTracking.listener Y</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverY</in>
   </control_connection>
 
   <control_connection>
-    <out>CameraTracking.target Z</out>
+    <out>CameraTracking.listener Z</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverZ</in>
   </control_connection>
 
   <control_connection>
-    <out>CameraTracking.target azimuth</out>
+    <out>CameraTracking.listener azimuth</out>
     <in>BFormatRotation.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>CameraTracking.target elevation</out>
+    <out>CameraTracking.listener elevation</out>
     <in>BFormatRotation.elevation</in>
   </control_connection>
 

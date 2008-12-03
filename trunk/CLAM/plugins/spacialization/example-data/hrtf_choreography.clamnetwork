@@ -298,12 +298,12 @@
   </port_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.source azimuth</out>
+    <out>ChoreoSequencer.relative azimuth</out>
     <in>HRTFDatabaseFetcher2.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.source elevation</out>
+    <out>ChoreoSequencer.relative elevation</out>
     <in>HRTFDatabaseFetcher2.elevation</in>
   </control_connection>
 

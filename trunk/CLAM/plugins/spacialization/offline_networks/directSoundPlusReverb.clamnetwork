@@ -203,8 +203,7 @@
   </processing>
 
   <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation">
-    <IsPassiveRotation>1</IsPassiveRotation>
-  </processing>
+    </processing>
 
   <processing id="Beta" position="1885,6" size="406,73" type="OutControlSender">
     <Min>0</Min>
@@ -1174,27 +1173,27 @@
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.target X</out>
+    <out>ChoreoSequencer_1.listener X</out>
     <in>RoomImpulseResponseSimulator.receiverX</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.target Y</out>
+    <out>ChoreoSequencer_1.listener Y</out>
     <in>RoomImpulseResponseSimulator.receiverY</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.target Z</out>
+    <out>ChoreoSequencer_1.listener Z</out>
     <in>RoomImpulseResponseSimulator.receiverZ</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.target azimuth</out>
+    <out>ChoreoSequencer_1.listener azimuth</out>
     <in>BFormatRotation.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.target elevation</out>
+    <out>ChoreoSequencer_1.listener elevation</out>
     <in>BFormatRotation.elevation</in>
   </control_connection>
 
@@ -1214,12 +1213,12 @@
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.source azimuth</out>
+    <out>ChoreoSequencer_1.relative azimuth</out>
     <in>HRTFDatabaseFetcher2.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.source elevation</out>
+    <out>ChoreoSequencer_1.relative elevation</out>
     <in>HRTFDatabaseFetcher2.elevation</in>
   </control_connection>
 

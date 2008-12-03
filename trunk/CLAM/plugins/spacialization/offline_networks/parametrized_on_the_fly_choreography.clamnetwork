@@ -17,8 +17,7 @@
   </processing>
 
   <processing id="BFormatRotation" position="743,752" size="143,78" type="BFormatRotation">
-    <IsPassiveRotation>1</IsPassiveRotation>
-  </processing>
+    </processing>
 
   <processing id="ChoreoSequencer" position="93,152" size="194,59" type="ChoreoSequencer">
     <Filename>%(path_file)s</Filename>
@@ -542,27 +541,27 @@
   </port_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.target X</out>
+    <out>ChoreoSequencer.listener X</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverX</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.target Y</out>
+    <out>ChoreoSequencer.listener Y</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverY</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.target Z</out>
+    <out>ChoreoSequencer.listener Z</out>
     <in>ImpulseResponseCalculatedOnTheFly.receiverZ</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.target azimuth</out>
+    <out>ChoreoSequencer.listener azimuth</out>
     <in>BFormatRotation.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.target elevation</out>
+    <out>ChoreoSequencer.listener elevation</out>
     <in>BFormatRotation.elevation</in>
   </control_connection>
 
