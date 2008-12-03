@@ -23,3 +23,7 @@ renameConnector AbsoluteCoordinates2RelativeAngles incontrol 'target azimuth' 'l
 renameConnector AbsoluteCoordinates2RelativeAngles incontrol 'target elevation' 'listener elevation'
 renameConnector AbsoluteCoordinates2RelativeAngles outcontrol 'source azimuth' 'relative azimuth'
 renameConnector AbsoluteCoordinates2RelativeAngles outcontrol 'source elevation' 'relative elevation'
+renameConnector RoomImpulseResponseSimulator outport 'pressure IR' 'W IR'
+renameConnector RoomImpulseResponseSimulator outport 'vx IR' 'X IR'
+renameConnector RoomImpulseResponseSimulator outport 'vy IR' 'Y IR'
+renameConnector RoomImpulseResponseSimulator outport 'vz IR' 'Z IR'

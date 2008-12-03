@@ -118,24 +118,23 @@ public:
 		{
 			//std::cout << "("<<_sequenceIndex << "/" <<_controlSequence.size() << ")" << std::flush;
 			const Row & row = _controlSequence[_sequenceIndex];
-			//TODO check that _indexTargetX,Y,Z < row.size()
 			_frame.SendControl( row[FrameColumn]);
-			_listenerX.SendControl( row[TargetXColumn] );
-			_listenerY.SendControl( row[TargetYColumn] );
-			_listenerZ.SendControl( row[TargetZColumn] );
-			_listenerAzimuth.SendControl( row[TargetAzimutColumn] );
+			_listenerX.SendControl( row[ListenerXColumn] );
+			_listenerY.SendControl( row[ListenerYColumn] );
+			_listenerZ.SendControl( row[ListenerZColumn] );
+			_listenerAzimuth.SendControl( row[ListenerAzimutColumn] );
 
-			double listenerElevation =  row[TargetElevationColumn]; 
+			double listenerElevation =  row[ListenerElevationColumn]; 
 			_listenerElevation.SendControl( listenerElevation );
 
 			_sourceX.SendControl( row[SourceXColumn+3*sourceIndex] );
 			_sourceY.SendControl( row[SourceYColumn+3*sourceIndex] );
 			_sourceZ.SendControl( row[SourceZColumn+3*sourceIndex] );
 
-			double listenerX = _sizeX * row[TargetXColumn];
-			double listenerY = _sizeY * row[TargetYColumn];
-			double listenerZ = _sizeZ * row[TargetZColumn];
-			double listenerAzimuth = row[TargetAzimutColumn];
+			double listenerX = _sizeX * row[ListenerXColumn];
+			double listenerY = _sizeY * row[ListenerYColumn];
+			double listenerZ = _sizeZ * row[ListenerZColumn];
+			double listenerAzimuth = row[ListenerAzimutColumn];
 			double listenerRoll = 0;
 			double sourceX = _sizeX * row[SourceXColumn+3*sourceIndex];
 			double sourceY = _sizeY * row[SourceYColumn+3*sourceIndex];
@@ -149,9 +148,9 @@ public:
 			_sourceElevation.SendControl( orientation.elevation );
 			/* 
 			std::cout 
-				<< "\t" << _sizeX*row[TargetXColumn+3*sourceIndex]
-				<< "\t" << _sizeY*row[TargetYColumn+3*sourceIndex] 
-				<< "\t" << _sizeZ*row[TargetZColumn+3*sourceIndex] 
+				<< "\t" << _sizeX*row[ListenerXColumn+3*sourceIndex]
+				<< "\t" << _sizeY*row[ListenerYColumn+3*sourceIndex] 
+				<< "\t" << _sizeZ*row[ListenerZColumn+3*sourceIndex] 
 				<< "\t" << _sizeX*row[SourceXColumn+3*sourceIndex]
 				<< "\t" << _sizeY*row[SourceYColumn+3*sourceIndex] 
 				<< "\t" << _sizeZ*row[SourceZColumn+3*sourceIndex] 
@@ -184,11 +183,11 @@ protected:
 	enum FileColumns {
 		FrameColumn=0,
 		FieldOfView=1,
-		TargetAzimutColumn=2,
-		TargetElevationColumn=3,
-		TargetXColumn=4,
-		TargetYColumn=5,
-		TargetZColumn=6,
+		ListenerAzimutColumn=2,
+		ListenerElevationColumn=3,
+		ListenerXColumn=4,
+		ListenerYColumn=5,
+		ListenerZColumn=6,
 		SourceXColumn=7,
 		SourceYColumn=8,
 		SourceZColumn=9,
@@ -209,8 +208,8 @@ protected:
 			Row row;
 			row.push_back(i);
 			row.push_back(0); //Dummy
-			row.push_back(alpha); // Target Azimuth
-			row.push_back(0.); // Target Elevation
+			row.push_back(alpha); // Listener Azimuth
+			row.push_back(0.); // Listener Elevation
 			row.push_back(.5); // receiver X
 			row.push_back(.5); // receiver Y
 			row.push_back(.5); // receiver Z
