@@ -192,8 +192,6 @@ private:
 	FloatOutControl _chosenElevation; ///< angle to the horizon
 	FloatOutControl _chosenAzimuth; ///< horizontal angle from viewpoint (north-south-east-west)
 	GeodesicDatabase _database; 
-	ImpulseResponse * _previousL;
-	ImpulseResponse * _previousR;
 
 public:
 	const char* GetClassName() const { return "HRTFDatabaseFetcher"; }
@@ -204,8 +202,6 @@ public:
 		, _azimuth("azimuth", this)
 		, _chosenElevation("chosen elevation", this)
 		, _chosenAzimuth("chosen azimuth", this)
-		, _previousL(0)
-		, _previousR(0)
 	{
 		Configure( config );
 		_elevation.SetBounds(-90,90);
@@ -223,8 +219,6 @@ public:
 			return false;
 		}
 		std::cout << "HRTF database loaded." << std::endl;
-		_previousL = 0;
-		_previousR = 0;
 		return true;
 	}
 	const ProcessingConfig & GetConfig() const { return _config; }
@@ -248,14 +242,6 @@ public:
 		ImpulseResponse * currentL = _impulseResponseL.GetData()= &_database.get(indexL);
 		ImpulseResponse * currentR = _impulseResponseR.GetData()= &_database.get(indexR);
 
-		if ( _previousL != currentL) 
-		{
-		//	std::cout << "HRTF (elevation, azimuth) : "<<elevation<<","<<azimuth<<std::endl;
-		//	std::cout << "L : "<<_database.elevationForIndex(indexL)<<","<<_database.azimutForIndex(indexL)<<std::endl;
-		//	std::cout << "R : "<<_database.elevationForIndex(indexR)<<","<<_database.azimutForIndex(indexR)<<std::endl;
-		}
-		_previousL = currentL;
-		_previousR = currentR;
 		_impulseResponseL.Produce();
 		_impulseResponseR.Produce();
 		return true;
