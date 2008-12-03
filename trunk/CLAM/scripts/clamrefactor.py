@@ -110,7 +110,7 @@ class ClamNetwork() :
 	def renameConnector(self, processingType, connectorKind, oldName, newName) :
 		if self._versionNotApplies() : return
 		names = self._namesForType(processingType)
-		for connection in self.connections["inport"] :
+		for connection in self.connections[connectorKind] :
 			processing, connector = connection.text.split(".")
 			if processing not in names: continue
 			if connector != oldName: continue
