@@ -26,6 +26,11 @@
  @param[out] Zout [Port] The Z component after rotation and zoom
  @see AmbisonicsConventions 
  @ingroup SpatialAudio
+
+ @todo Check whether it needs to update to the new rotation matrix in BFormatR#otation
+ @todo Split the rotation from the zoom itself or introducing the roll
+ @todo rename the ports to ambisonics
+ 
 */
 class BFormatRotationZoom : public CLAM::Processing
 {

@@ -562,27 +562,27 @@
   </port_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.target X</out>
+    <out>ChoreoSequencer.listener X</out>
     <in>RoomImpulseResponseSimulator.receiverX</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.target Y</out>
+    <out>ChoreoSequencer.listener Y</out>
     <in>RoomImpulseResponseSimulator.receiverY</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.target Z</out>
+    <out>ChoreoSequencer.listener Z</out>
     <in>RoomImpulseResponseSimulator.receiverZ</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.target azimuth</out>
+    <out>ChoreoSequencer.listener azimuth</out>
     <in>BFormatRotation.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer.target elevation</out>
+    <out>ChoreoSequencer.listener elevation</out>
     <in>BFormatRotation.elevation</in>
   </control_connection>
 

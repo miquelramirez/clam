@@ -49,13 +49,16 @@ class ChoreoSequencer : public CLAM::Processing
 	};
 
 	Config _config;
+
 	FloatInControl _frameSeek;
 	FloatOutControl _frame;
-	FloatOutControl _targetX;
-	FloatOutControl _targetY;
-	FloatOutControl _targetZ;
-	FloatOutControl _targetAzimuth;
-	FloatOutControl _targetElevation;
+	FloatOutControl _listenerX;
+	FloatOutControl _listenerY;
+	FloatOutControl _listenerZ;
+	FloatOutControl _listenerRoll;
+	FloatOutControl _listenerAzimuth;
+	FloatOutControl _listenerElevation;
+
 	FloatOutControl _sourceX;
 	FloatOutControl _sourceY;
 	FloatOutControl _sourceZ;
@@ -79,16 +82,17 @@ public:
 	ChoreoSequencer(const Config& config = Config()) 
 		: _frameSeek("frame seek", this)
 		, _frame("frame number", this)
-		, _targetX("target X", this)
-		, _targetY("target Y", this)
-		, _targetZ("target Z", this)
-		, _targetAzimuth("target azimuth", this)
-		, _targetElevation("target elevation", this)
+		, _listenerX("listener X", this)
+		, _listenerY("listener Y", this)
+		, _listenerZ("listener Z", this)
+		, _listenerRoll("listener roll", this)
+		, _listenerAzimuth("listener azimuth", this)
+		, _listenerElevation("listener elevation", this)
 		, _sourceX("source X", this)
 		, _sourceY("source Y", this)
 		, _sourceZ("source Z", this)
-		, _sourceAzimuth("source azimuth", this)
-		, _sourceElevation("source elevation", this)
+		, _sourceAzimuth("relative azimuth", this)
+		, _sourceElevation("relative elevation", this)
 		, _syncIn("sync", this)
 		, _lastFrameSeek(0)
 	{
@@ -116,30 +120,30 @@ public:
 			const Row & row = _controlSequence[_sequenceIndex];
 			//TODO check that _indexTargetX,Y,Z < row.size()
 			_frame.SendControl( row[FrameColumn]);
-			_targetX.SendControl( row[TargetXColumn] );
-			_targetY.SendControl( row[TargetYColumn] );
-			_targetZ.SendControl( row[TargetZColumn] );
-			_targetAzimuth.SendControl( row[TargetAzimutColumn] );
+			_listenerX.SendControl( row[TargetXColumn] );
+			_listenerY.SendControl( row[TargetYColumn] );
+			_listenerZ.SendControl( row[TargetZColumn] );
+			_listenerAzimuth.SendControl( row[TargetAzimutColumn] );
 
-			double targetElevation =  row[TargetElevationColumn]; 
-			_targetElevation.SendControl( targetElevation );
+			double listenerElevation =  row[TargetElevationColumn]; 
+			_listenerElevation.SendControl( listenerElevation );
 
 			_sourceX.SendControl( row[SourceXColumn+3*sourceIndex] );
 			_sourceY.SendControl( row[SourceYColumn+3*sourceIndex] );
 			_sourceZ.SendControl( row[SourceZColumn+3*sourceIndex] );
 
-			double targetX = _sizeX * row[TargetXColumn];
-			double targetY = _sizeY * row[TargetYColumn];
-			double targetZ = _sizeZ * row[TargetZColumn];
-			double targetAzimuth = row[TargetAzimutColumn];
-			double targetRoll = 0;
+			double listenerX = _sizeX * row[TargetXColumn];
+			double listenerY = _sizeY * row[TargetYColumn];
+			double listenerZ = _sizeZ * row[TargetZColumn];
+			double listenerAzimuth = row[TargetAzimutColumn];
+			double listenerRoll = 0;
 			double sourceX = _sizeX * row[SourceXColumn+3*sourceIndex];
 			double sourceY = _sizeY * row[SourceYColumn+3*sourceIndex];
 			double sourceZ = _sizeZ * row[SourceZColumn+3*sourceIndex];
 
 			Orientation orientation = AbsoluteCoordinates2RelativeAngles::computeRelativeOrientation(
-				targetX, targetY, targetZ,
-				targetAzimuth, targetElevation, targetRoll,
+				listenerX, listenerY, listenerZ,
+				listenerAzimuth, listenerElevation, listenerRoll,
 				sourceX, sourceY, sourceZ);
 			_sourceAzimuth.SendControl( orientation.azimuth );
 			_sourceElevation.SendControl( orientation.elevation );

@@ -8,3 +8,18 @@ renameConnector NSurround inport p W
 renameConnector NSurround inport vx X
 renameConnector NSurround inport vy Y
 removeConfig BFormatRotation IsPassiveRotation
+renameConnector ChoreoSequencer outcontrol 'target X' 'listener X'
+renameConnector ChoreoSequencer outcontrol 'target Y' 'listener Y'
+renameConnector ChoreoSequencer outcontrol 'target Z' 'listener Z'
+renameConnector ChoreoSequencer outcontrol 'target azimuth' 'listener azimuth'
+renameConnector ChoreoSequencer outcontrol 'target elevation' 'listener elevation'
+renameConnector ChoreoSequencer outcontrol 'source azimuth' 'relative azimuth'
+renameConnector ChoreoSequencer outcontrol 'source elevation' 'relative elevation'
+renameConnector AbsoluteCoordinates2RelativeAngles incontrol 'target X' 'listener X'
+renameConnector AbsoluteCoordinates2RelativeAngles incontrol 'target Y' 'listener Y'
+renameConnector AbsoluteCoordinates2RelativeAngles incontrol 'target Z' 'listener Z'
+renameConnector AbsoluteCoordinates2RelativeAngles incontrol 'target roll' 'listener roll'
+renameConnector AbsoluteCoordinates2RelativeAngles incontrol 'target azimuth' 'listener azimuth'
+renameConnector AbsoluteCoordinates2RelativeAngles incontrol 'target elevation' 'listener elevation'
+renameConnector AbsoluteCoordinates2RelativeAngles outcontrol 'source azimuth' 'relative azimuth'
+renameConnector AbsoluteCoordinates2RelativeAngles outcontrol 'source elevation' 'relative elevation'

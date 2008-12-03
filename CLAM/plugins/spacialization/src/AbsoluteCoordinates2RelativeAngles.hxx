@@ -35,12 +35,12 @@ namespace CLAM
 class AbsoluteCoordinates2RelativeAngles : public CLAM::Processing
 { 
 
-	CLAM::FloatInControl _targetX;
-	CLAM::FloatInControl _targetY;
-	CLAM::FloatInControl _targetZ;
-	CLAM::FloatInControl _targetRoll;
-	CLAM::FloatInControl _targetElevation;
-	CLAM::FloatInControl _targetAzimuth;
+	CLAM::FloatInControl _listenerX;
+	CLAM::FloatInControl _listenerY;
+	CLAM::FloatInControl _listenerZ;
+	CLAM::FloatInControl _listenerRoll;
+	CLAM::FloatInControl _listenerElevation;
+	CLAM::FloatInControl _listenerAzimuth;
 
 	CLAM::FloatInControl _sourceX;
 	CLAM::FloatInControl _sourceY;
@@ -51,17 +51,17 @@ class AbsoluteCoordinates2RelativeAngles : public CLAM::Processing
 public:
 	const char* GetClassName() const { return "AbsoluteCoordinates2RelativeAngles"; }
 	AbsoluteCoordinates2RelativeAngles(const Config& config = Config()) 
-		: _targetX("target X", this)
-		, _targetY("target Y", this)
-		, _targetZ("target Z", this)		
-		, _targetRoll("target roll", this)
-		, _targetElevation("target elevation", this)
-		, _targetAzimuth("target azimuth", this)
+		: _listenerX("listener X", this)
+		, _listenerY("listener Y", this)
+		, _listenerZ("listener Z", this)		
+		, _listenerRoll("listener roll", this)
+		, _listenerElevation("listener elevation", this)
+		, _listenerAzimuth("listener azimuth", this)
 		, _sourceX("source X", this)
 		, _sourceY("source Y", this)
 		, _sourceZ("source Z", this)		
-		, _sourceElevation("source elevation", this)
-		, _sourceAzimuth("source azimuth", this)
+		, _sourceElevation("relative elevation", this)
+		, _sourceAzimuth("relative azimuth", this)
 		, _gainBecauseDistance("output gain because of distance", this)
 	{
 		Configure( config );
@@ -73,12 +73,12 @@ public:
 		double sourceX = _sourceX.GetLastValue();
 		double sourceY = _sourceY.GetLastValue();
 		double sourceZ = _sourceZ.GetLastValue();
-		double targetX = _targetX.GetLastValue();
-		double targetY = _targetY.GetLastValue();
-		double targetZ = _targetZ.GetLastValue();
-		double targetRoll = _targetRoll.GetLastValue();
-		double targetElevation = _targetElevation.GetLastValue(); 
-		double targetAzimuth = _targetAzimuth.GetLastValue();
+		double targetX = _listenerX.GetLastValue();
+		double targetY = _listenerY.GetLastValue();
+		double targetZ = _listenerZ.GetLastValue();
+		double targetRoll = _listenerRoll.GetLastValue();
+		double targetElevation = _listenerElevation.GetLastValue(); 
+		double targetAzimuth = _listenerAzimuth.GetLastValue();
 		Orientation orientation = computeRelativeOrientation(
 			targetX, targetY, targetZ,
 			targetAzimuth, targetElevation, targetRoll,
