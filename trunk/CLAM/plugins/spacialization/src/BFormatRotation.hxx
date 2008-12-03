@@ -14,12 +14,12 @@
  Rotation is "passive", meaning that is the listener who rotates and not the sources.
  @param[in] azimuth [Control]
  @param[in] elevation [Control]
- @param[in] vx [Port] The X component to be rotated
- @param[in] vy [Port] The Y component to be rotated
- @param[in] vz [Port] The Z component to be rotated
- @param[out] vx [Port] The X component after rotation
- @param[out] vy [Port] The Y component after rotation
- @param[out] vz [Port] The Z component after rotation
+ @param[in] X [Port] The X component to be rotated
+ @param[in] Y [Port] The Y component to be rotated
+ @param[in] Z [Port] The Z component to be rotated
+ @param[out] X [Port] The X component after rotation
+ @param[out] Y [Port] The Y component after rotation
+ @param[out] Z [Port] The Z component after rotation
  @see AmbisonicsConventions
  @ingroup SpatialAudio
 */

@@ -13,21 +13,21 @@ namespace CLAM
 
 /**
  Computes the azimuth and elevation angles of
- a point (source) relative to the listener (target)
+ a point (source) relative to the listener (listener)
  position and orientation.
  Angles are expressed in degrees. 
  Coordinates systems and rotations follow @ref AmbisonicsConventions.
- @param[in] "target X" [Control] X coord of the listener in absolute coords
- @param[in] "target Y" [Control] Y coord of the listener in absolute coords
- @param[in] "target Z" [Control] Z coord of the listener in absolute coords
- @param[in] "target azimuth" [Control] Azimuth of the listener orientation (degrees)
- @param[in] "target elevation" [Control] Elevation of the listener orientation (degrees)
- @param[in] "target roll" [Control] Roll of the listener orientation (degrees)
+ @param[in] "listener X" [Control] X coord of the listener in absolute coords
+ @param[in] "listener Y" [Control] Y coord of the listener in absolute coords
+ @param[in] "listener Z" [Control] Z coord of the listener in absolute coords
+ @param[in] "listener azimuth" [Control] Azimuth of the listener orientation (degrees)
+ @param[in] "listener elevation" [Control] Elevation of the listener orientation (degrees)
+ @param[in] "listener roll" [Control] Roll of the listener orientation (degrees)
  @param[in] "source X" [Control] X coord of the source in absolute coords
  @param[in] "source Y" [Control] Y coord of the source in absolute coords
  @param[in] "source Z" [Control] Z coord of the source in absolute coords
- @param[out] "source azimuth" [Control] Relative azimuth of the source on target's frame
- @param[out] "source elevation" [Control] Relative elevation of the source on target's frame
+ @param[out] "relative azimuth" [Control] Relative azimuth of the source on listener's frame
+ @param[out] "relative elevation" [Control] Relative elevation of the source on listener's frame
  @todo Input roll is not considered at all
  @ingroup SpatialAudio
  @see AmbisonicsConventions
@@ -73,27 +73,27 @@ public:
 		double sourceX = _sourceX.GetLastValue();
 		double sourceY = _sourceY.GetLastValue();
 		double sourceZ = _sourceZ.GetLastValue();
-		double targetX = _listenerX.GetLastValue();
-		double targetY = _listenerY.GetLastValue();
-		double targetZ = _listenerZ.GetLastValue();
-		double targetRoll = _listenerRoll.GetLastValue();
-		double targetElevation = _listenerElevation.GetLastValue(); 
-		double targetAzimuth = _listenerAzimuth.GetLastValue();
+		double listenerX = _listenerX.GetLastValue();
+		double listenerY = _listenerY.GetLastValue();
+		double listenerZ = _listenerZ.GetLastValue();
+		double listenerRoll = _listenerRoll.GetLastValue();
+		double listenerElevation = _listenerElevation.GetLastValue(); 
+		double listenerAzimuth = _listenerAzimuth.GetLastValue();
 		Orientation orientation = computeRelativeOrientation(
-			targetX, targetY, targetZ,
-			targetAzimuth, targetElevation, targetRoll,
+			listenerX, listenerY, listenerZ,
+			listenerAzimuth, listenerElevation, listenerRoll,
 			sourceX, sourceY, sourceZ);
 		_sourceAzimuth.SendControl( orientation.azimuth );
 		_sourceElevation.SendControl( orientation.elevation );
-		double distance=getDistance(sourceX,sourceY,sourceZ,targetX,targetY,targetZ);
+		double distance=getDistance(sourceX,sourceY,sourceZ,listenerX,listenerY,listenerZ);
 		_gainBecauseDistance.SendControl ( 1 / (distance<1 ? 1 : distance) );
 		return true;
 	}
 
 
-	double getDistance(double sourceX,double sourceY,double sourceZ,double targetX,double targetY,double targetZ)
+	double getDistance(double sourceX,double sourceY,double sourceZ,double listenerX,double listenerY,double listenerZ)
 	{
-		return sqrt(pow((sourceX-targetX),2)+pow((sourceY-targetY),2)+pow((sourceZ-targetZ),2));
+		return sqrt(pow((sourceX-listenerX),2)+pow((sourceY-listenerY),2)+pow((sourceZ-listenerZ),2));
 	}
 
 	static Orientation computeRelativeOrientation(

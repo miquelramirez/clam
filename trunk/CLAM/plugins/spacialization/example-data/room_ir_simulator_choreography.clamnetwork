@@ -482,22 +482,22 @@
   </port_connection>
 
   <port_connection>
-    <out>RoomImpulseResponseSimulator.pressure IR</out>
+    <out>RoomImpulseResponseSimulator.W IR</out>
     <in>Delay P.Input IR</in>
   </port_connection>
 
   <port_connection>
-    <out>RoomImpulseResponseSimulator.vx IR</out>
+    <out>RoomImpulseResponseSimulator.X IR</out>
     <in>Delay X.Input IR</in>
   </port_connection>
 
   <port_connection>
-    <out>RoomImpulseResponseSimulator.vy IR</out>
+    <out>RoomImpulseResponseSimulator.Y IR</out>
     <in>Delay Y.Input IR</in>
   </port_connection>
 
   <port_connection>
-    <out>RoomImpulseResponseSimulator.vz IR</out>
+    <out>RoomImpulseResponseSimulator.Z IR</out>
     <in>Delay Z.Input IR</in>
   </port_connection>
 

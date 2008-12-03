@@ -39,6 +39,10 @@ namespace CLAM
 {
 
 /**
+ @param[out] 'W IR' [Port] The W component of the impulse response
+ @param[out] 'X IR' [Port] The X component of the impulse response
+ @param[out] 'Y IR' [Port] The Y component of the impulse response
+ @param[out] 'Z IR' [Port] The Z component of the impulse response
  @todo Document RoomImpulseResponseSimulator
  @see ImpulseResponseCalculatedOnTheFly, ImpulseResponseDatabaseFetcher
  @ingroup SpatialAudio
@@ -114,10 +118,10 @@ public:
 	const char* GetClassName() const { return "RoomImpulseResponseSimulator"; }
 	RoomImpulseResponseSimulator(const Config& config = Config()) 
 		: _syncAudio("synchronization", this)
-		, _WImpulseResponseOutPort("pressure IR", this)
-		, _XImpulseResponseOutPort("vx IR", this)
-		, _YImpulseResponseOutPort("vy IR", this)
-		, _ZImpulseResponseOutPort("vz IR", this)
+		, _WImpulseResponseOutPort("W IR", this)
+		, _XImpulseResponseOutPort("X IR", this)
+		, _YImpulseResponseOutPort("Y IR", this)
+		, _ZImpulseResponseOutPort("Z IR", this)
 		, _emitterX("emitterX", this)
 		, _emitterY("emitterY", this)
 		, _emitterZ("emitterZ", this)
