@@ -40,9 +40,9 @@ namespace CLAM
  @param[in] FrameSize [Config] How many samples the controls must be sent
  @param[in] SampleRate [Config] The sample rate of the input audio
  @param[in] ControlsPerSecond [Config] How many lines of the coreos are feed in a second
- @param[in] SizeX [Config] X scaling factor for the coordinates
- @param[in] SizeY [Config] Y scaling factor for the coordinates
- @param[in] SizeZ [Config] Z scaling factor for the coordinates
+ @param[in] SizeX [Config] X scaling factor for the coordinates (just used to compute relative angles)
+ @param[in] SizeY [Config] Y scaling factor for the coordinates (just used to compute relative angles)
+ @param[in] SizeZ [Config] Z scaling factor for the coordinates (just used to compute relative angles)
  @param[in] UseSpiralIfNoFilename [Config] Enables a dummy choreo instead of the file.
  @param[in] "sync" [Port] Audio used as time synchrony
  @param[in] "frame seek" [Control] Change current time position to the one of the received frame.
