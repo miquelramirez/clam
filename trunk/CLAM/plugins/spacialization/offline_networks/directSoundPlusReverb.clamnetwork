@@ -653,32 +653,32 @@
   </port_connection>
 
   <port_connection>
-    <out>BFormatRotation.vx</out>
+    <out>BFormatRotation.X</out>
     <in>Oscilloscope_2.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormatRotation.vx</out>
+    <out>BFormatRotation.X</out>
     <in>AudioWindowing_3.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormatRotation.vy</out>
+    <out>BFormatRotation.Y</out>
     <in>Oscilloscope_3.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormatRotation.vy</out>
+    <out>BFormatRotation.Y</out>
     <in>AudioWindowing_4.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormatRotation.vz</out>
+    <out>BFormatRotation.Z</out>
     <in>AudioWindowing_5.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormatRotation.vz</out>
+    <out>BFormatRotation.Z</out>
     <in>Oscilloscope_5.Input</in>
   </port_connection>
 
@@ -1149,17 +1149,17 @@
 
   <port_connection>
     <out>XFadeAndSwitch_3.CrossFadedBuffer</out>
-    <in>BFormatRotation.vx</in>
+    <in>BFormatRotation.X</in>
   </port_connection>
 
   <port_connection>
     <out>XFadeAndSwitch_4.CrossFadedBuffer</out>
-    <in>BFormatRotation.vy</in>
+    <in>BFormatRotation.Y</in>
   </port_connection>
 
   <port_connection>
     <out>XFadeAndSwitch_5.CrossFadedBuffer</out>
-    <in>BFormatRotation.vz</in>
+    <in>BFormatRotation.Z</in>
   </port_connection>
 
   <port_connection>
@@ -1174,17 +1174,17 @@
 
   <control_connection>
     <out>ChoreoSequencer_1.listener X</out>
-    <in>RoomImpulseResponseSimulator.receiverX</in>
+    <in>RoomImpulseResponseSimulator.listener X</in>
   </control_connection>
 
   <control_connection>
     <out>ChoreoSequencer_1.listener Y</out>
-    <in>RoomImpulseResponseSimulator.receiverY</in>
+    <in>RoomImpulseResponseSimulator.listener Y</in>
   </control_connection>
 
   <control_connection>
     <out>ChoreoSequencer_1.listener Z</out>
-    <in>RoomImpulseResponseSimulator.receiverZ</in>
+    <in>RoomImpulseResponseSimulator.listener Z</in>
   </control_connection>
 
   <control_connection>
@@ -1199,17 +1199,17 @@
 
   <control_connection>
     <out>ChoreoSequencer_1.source X</out>
-    <in>RoomImpulseResponseSimulator.emitterX</in>
+    <in>RoomImpulseResponseSimulator.source X</in>
   </control_connection>
 
   <control_connection>
     <out>ChoreoSequencer_1.source Y</out>
-    <in>RoomImpulseResponseSimulator.emitterY</in>
+    <in>RoomImpulseResponseSimulator.source Y</in>
   </control_connection>
 
   <control_connection>
     <out>ChoreoSequencer_1.source Z</out>
-    <in>RoomImpulseResponseSimulator.emitterZ</in>
+    <in>RoomImpulseResponseSimulator.source Z</in>
   </control_connection>
 
   <control_connection>

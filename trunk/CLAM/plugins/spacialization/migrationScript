@@ -27,3 +27,15 @@ renameConnector RoomImpulseResponseSimulator outport 'pressure IR' 'W IR'
 renameConnector RoomImpulseResponseSimulator outport 'vx IR' 'X IR'
 renameConnector RoomImpulseResponseSimulator outport 'vy IR' 'Y IR'
 renameConnector RoomImpulseResponseSimulator outport 'vz IR' 'Z IR'
+renameConnector RoomImpulseResponseSimulator incontrol 'emitterX' 'source X'
+renameConnector RoomImpulseResponseSimulator incontrol 'emitterY' 'source Y'
+renameConnector RoomImpulseResponseSimulator incontrol 'emitterZ' 'source Z'
+renameConnector RoomImpulseResponseSimulator incontrol 'receiverX' 'listener X'
+renameConnector RoomImpulseResponseSimulator incontrol 'receiverY' 'listener Y'
+renameConnector RoomImpulseResponseSimulator incontrol 'receiverZ' 'listener Z'
+renameConnector BFormatRotation inport vx X
+renameConnector BFormatRotation inport vy Y
+renameConnector BFormatRotation inport vz Z
+renameConnector BFormatRotation outport vx X
+renameConnector BFormatRotation outport vy Y
+renameConnector BFormatRotation outport vz Z

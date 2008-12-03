@@ -246,17 +246,17 @@
   </port_connection>
 
   <port_connection>
-    <out>BFormatRotation.vx</out>
+    <out>BFormatRotation.X</out>
     <in>X.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormatRotation.vy</out>
+    <out>BFormatRotation.Y</out>
     <in>Y.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormatRotation.vz</out>
+    <out>BFormatRotation.Z</out>
     <in>Z.AudioIn</in>
   </port_connection>
 
@@ -487,17 +487,17 @@
 
   <port_connection>
     <out>XFade X.CrossFadedBuffer</out>
-    <in>BFormatRotation.vx</in>
+    <in>BFormatRotation.X</in>
   </port_connection>
 
   <port_connection>
     <out>XFade Y.CrossFadedBuffer</out>
-    <in>BFormatRotation.vy</in>
+    <in>BFormatRotation.Y</in>
   </port_connection>
 
   <port_connection>
     <out>XFade Z.CrossFadedBuffer</out>
-    <in>BFormatRotation.vz</in>
+    <in>BFormatRotation.Z</in>
   </port_connection>
 
   <port_connection>
