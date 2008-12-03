@@ -14,6 +14,50 @@ namespace CLAM
 {
 
 /**
+ Reads a CLAM 3D object choreography and sequences its values as controls.
+ It uses  the "sync" input as time synchrony and allows frame seeking by
+ using the "frame seek" control.
+
+ Choreo files are text files containing a row per frame and each
+ frame contains the following space separated columns:
+ -# frame number
+ -# field of view (not used)
+ -# listener azimuth
+ -# listener elevation
+ -# listener x coord
+ -# listener y coord
+ -# listener z coord
+ -# source0 x coord
+ -# source0 y coord
+ -# source0 z coord
+ -# source1 x coord
+ -# ...
+
+ @todo Document where to find the blender choreography exporters
+
+ @param[in] InFilename [Config] The file containing the choreo
+ @param[in] SourceIndex [Config] The selected source (choreos may have more than one)
+ @param[in] FrameSize [Config] How many samples the controls must be sent
+ @param[in] SampleRate [Config] The sample rate of the input audio
+ @param[in] ControlsPerSecond [Config] How many lines of the coreos are feed in a second
+ @param[in] SizeX [Config] X scaling factor for the coordinates
+ @param[in] SizeY [Config] Y scaling factor for the coordinates
+ @param[in] SizeZ [Config] Z scaling factor for the coordinates
+ @param[in] UseSpiralIfNoFilename [Config] Enables a dummy choreo instead of the file.
+ @param[in] "sync" [Port] Audio used as time synchrony
+ @param[in] "frame seek" [Control] Change current time position to the one of the received frame.
+ @param[out] "frame number" [Control] outputs the current frame number being sent
+ @param[out] "listener X" [Control] X coordinate of the listener
+ @param[out] "listener Y" [Control] Y coordinate of the listener
+ @param[out] "listener Z" [Control] Z coordinate of the listener
+ @param[out] "listener roll" [Control] roll of the listener (degrees)
+ @param[out] "listener azimuth" [Control] azimuth of the listener (degrees)
+ @param[out] "listener elevation" [Control] elevation of the listener (degrees)
+ @param[out] "source X" [Control] X coordinate of the audio source
+ @param[out] "source Y" [Control] Y coordinate of the audio source
+ @param[out] "source Z" [Control] Z coordinate of the audio source
+ @param[out] "relative azimuth" [Control] azimuth of the source orientation in listener reference fram (computed, not in file)
+ @param[out] "relative elevation" [Control] elevation of the source orientation in listener reference frame (computed, not in file)
  @todo Document ChoreoSequencer
  @ingroup SpatialAudio
 */

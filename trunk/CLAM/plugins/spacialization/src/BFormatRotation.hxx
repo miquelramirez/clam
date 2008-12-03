@@ -9,11 +9,14 @@
 #include <cmath>
 
 /**
- This Processing rotates a B-format source
- @todo BFormatRotation explain how the rotations are performed. 
- Rotation is "passive", meaning that is the listener who rotates and not the sources.
- @param[in] azimuth [Control]
- @param[in] elevation [Control]
+ This Processing rotates a B-format signal.
+ The rotated B-format is equivalent to the input one but
+ expressed in the reference frame of a listener that has been
+ rotated the given roll, azimuth and elevation from the original frame.
+ In summary, the rotation angles refers to rotation of the listener.
+ Roll, azimuth and elevation are applied as in @ref AmbisonicsConventions.
+ @param[in] azimuth [Control] in degrees [-360..360]
+ @param[in] elevation [Control] in degrees [-90..90]
  @param[in] X [Port] The X component to be rotated
  @param[in] Y [Port] The Y component to be rotated
  @param[in] Z [Port] The Z component to be rotated
@@ -34,10 +37,10 @@ public:
 	CLAM::AudioOutPort _Xout;
 	CLAM::AudioOutPort _Yout;
 	CLAM::AudioOutPort _Zout;
+	CLAM::InControl _roll;
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
-	Config _config;
 public:
 	BFormatRotation(const Config& config = Config()) 
 		: _Xin("X", this)
@@ -46,12 +49,16 @@ public:
 		, _Xout("X", this)
 		, _Yout("Y", this)
 		, _Zout("Z", this)
+		, _roll("roll", this) // angle in degrees
 		, _azimuth("azimuth", this) // angle in degrees
 		, _elevation("elevation", this) // angle in degrees
 	{
 		Configure( config );
 		_azimuth.SetBounds(-360, 360); //a complete spin on each slider direction
-		_elevation.SetBounds(-90, 90); //a complete spin on each slider direction
+		_elevation.SetBounds(-90, 90);
+		_roll.DoControl(0);
+		_azimuth.DoControl(0);
+		_elevation.DoControl(0);
 //		unsigned buffersize = BackendBufferSize();
 //		When buffersize==1024 a 512 delay is added to the W channel. This is strange!
 //		there is a dataflow scheduling problem. --Pau
@@ -68,22 +75,11 @@ public:
 		_Yout.SetSize(buffersize);
 		_Yout.SetHop(buffersize);
 		_Zout.SetSize(buffersize);
-		_Zin.SetHop(buffersize);
+		_Zout.SetHop(buffersize);
 		
-	}
-	const CLAM::ProcessingConfig & GetConfig() const
-	{
-		return _config;
-	}
-
-	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
-	{
-//		std::cout << "BFormatRotation::ConcreteConfigure()"<<std::endl;
-		return true;
 	}
 	bool Do()
 	{
-		double azimuth=_azimuth.GetLastValue()*M_PI/180; //conversion. azimuth is in radians
 		double elevationDeg = _elevation.GetLastValue(); 
 		if (elevationDeg > 90.)
 		{
@@ -95,17 +91,18 @@ public:
 			std::cout << "WARNING: elevation should be greater than -90, but was " << elevationDeg << std::endl;
 			elevationDeg = -90.;
 		}
-		double elevation = elevationDeg*M_PI/180; //conversion. elevation is in radians
-		const double cosAzimuth=std::cos(azimuth);
-		const double sinAzimuth=std::sin(azimuth);
-		const double cosElevation=std::cos(elevation);
-		const double sinElevation=std::sin(elevation);
+		double elevationRadians = elevationDeg*M_PI/180;
+		double azimuthRadians=_azimuth.GetLastValue()*M_PI/180;
+		double rollRadians = _roll.GetLastValue()*M_PI/180;
+		const double cosAzimuth=std::cos(azimuthRadians);
+		const double sinAzimuth=std::sin(azimuthRadians);
+		const double cosElevation=std::cos(elevationRadians);
+		const double sinElevation=std::sin(elevationRadians);
 		const CLAM::DataArray& vz =_Zin.GetAudio().GetBuffer();
 		const CLAM::DataArray& vx =_Xin.GetAudio().GetBuffer();
 		const CLAM::DataArray& vy =_Yin.GetAudio().GetBuffer();
-		const double roll = 0.;
-		double sinRoll = std::sin(roll);
-		double cosRoll = std::cos(roll);
+		double sinRoll = std::sin(rollRadians);
+		double cosRoll = std::cos(rollRadians);
 
 		double cosASinE = cosAzimuth * sinElevation;
 		double sinASinE = sinAzimuth * sinElevation;
@@ -113,17 +110,8 @@ public:
 		CLAM::TData* Xout = &_Xout.GetAudio().GetBuffer()[0];
 		CLAM::TData* Yout = &_Yout.GetAudio().GetBuffer()[0];
 		CLAM::TData* Zout = &_Zout.GetAudio().GetBuffer()[0];
-//		std::cout<<"Elevation: "<<elevation*180/M_PI<<std::endl;
-//		std::cout<<"Azimuth: "<<azimuth*180/M_PI<<std::endl; 
 		for (int i=0; i<vz.Size(); i++)
 		{
-#if 0
- 
-			Xout[i] = cosAzimuth*cosElevation * vx[i] + sinAzimuth * vy[i] - cosAzimuth*sinElevation * vz[i]; 
-			Yout[i] = -sinAzimuth*cosElevation * vx[i] + cosAzimuth * vy[i] + sinAzimuth*sinElevation * vz[i];
-			Zout[i] = sinElevation * vx[i] + /* 0 * vy[i] */  + cosElevation  * vz[i];
-#endif
-
 			Xout[i] = 
 				+ vx[i] * cosAzimuth * cosElevation
 				+ vy[i] * sinAzimuth * cosElevation 
@@ -136,7 +124,6 @@ public:
 				+ vx[i] * (- cosASinE*cosRoll + sinAzimuth*sinRoll)
 				+ vy[i] * (- sinASinE*cosRoll - cosAzimuth*sinRoll)
 				+ vz[i] * (+ cosElevation*cosRoll);
-
 		}
 
 		_Xin.Consume();
