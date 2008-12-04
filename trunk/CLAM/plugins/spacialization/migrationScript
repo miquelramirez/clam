@@ -40,3 +40,4 @@ renameConnector BFormatRotation outport vx X
 renameConnector BFormatRotation outport vy Y
 renameConnector BFormatRotation outport vz Z
 renameConfig HRTFDatabaseFetcher Path HrtfDatabase
+renameClass ImpulseResponseCalculatedOnTheFly RoomImpulseResponseSimulatorCommandLine

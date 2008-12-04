@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef ImpulseResponseCalculatedOnTheFly_hxx
-#define ImpulseResponseCalculatedOnTheFly_hxx
+#ifndef RoomImpulseResponseSimulatorCommandLine_hxx
+#define RoomImpulseResponseSimulatorCommandLine_hxx
 
 #include <CLAM/InControl.hxx>
 #include <CLAM/OutPort.hxx>
@@ -37,11 +37,11 @@ namespace CLAM
 
 
 /**
- @todo Document ImpulseResponseCalculatedOnTheFly
+ @todo Document RoomImpulseResponseSimulatorCommandLine
  @see RoomImpulseResponseSimulator, ImpulseResponseDatabaseFetcher
  @ingroup SpatialAudio
 */
-class ImpulseResponseCalculatedOnTheFly : public Processing
+class RoomImpulseResponseSimulatorCommandLine : public Processing
 { 
 	struct BFormatIR
 	{
@@ -107,8 +107,8 @@ private:
 	unsigned _currentCacheIndex;
 
 public:
-	const char* GetClassName() const { return "ImpulseResponseCalculatedOnTheFly"; }
-	ImpulseResponseCalculatedOnTheFly(const Config& config = Config()) 
+	const char* GetClassName() const { return "RoomImpulseResponseSimulatorCommandLine"; }
+	RoomImpulseResponseSimulatorCommandLine(const Config& config = Config()) 
 		: _syncAudio("synchronization", this)
 		, _WImpulseResponseOutPort("pressure IR", this)
 		, _XImpulseResponseOutPort("vx IR", this)
@@ -142,7 +142,7 @@ public:
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
-		std::cout << "ImpulseResponseCalculatedOnTheFly::ConcreteConfigure"<<std::endl;
+		std::cout << "RoomImpulseResponseSimulatorCommandLine::ConcreteConfigure"<<std::endl;
 		CopyAsConcreteConfig(_config, config);
 		//TODO use _config params instead of hardcoded
 		_syncAudio.SetSize(512);
@@ -233,7 +233,7 @@ private:
 		int error = std::system( command.str().c_str() );
 		if (error)
 		{
-			std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do at visualitzador execution!!" <<std::endl;
+			std::cout << "ERROR: RoomImpulseResponseSimulatorCommandLine::Do at visualitzador execution!!" <<std::endl;
 			std::cout << "Offending command:\n"<<  command.str() << std::endl;
 			return false;
 		}
@@ -267,7 +267,7 @@ private:
 			|| !computeResponseSpectrums(fileY, _current->Y , _config.GetFrameSize(), errorMsg) 
 			|| !computeResponseSpectrums(fileZ, _current->Z , _config.GetFrameSize(), errorMsg) )
 		{
-			std::cout << "ERROR: ImpulseResponseCalculatedOnTheFly::Do can not open IR files.\n" << errorMsg << std::endl;
+			std::cout << "ERROR: RoomImpulseResponseSimulatorCommandLine::Do can not open IR files.\n" << errorMsg << std::endl;
 			return false;
 		}
 		if (false) // save all IRs
@@ -307,5 +307,5 @@ public:
 } // namespace CLAM
 
 
-#endif // ImpulseResponseCalculatedOnTheFly_hxx
+#endif // RoomImpulseResponseSimulatorCommandLine_hxx
 
