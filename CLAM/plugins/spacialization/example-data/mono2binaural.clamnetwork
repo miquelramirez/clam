@@ -35,7 +35,7 @@
 
   <processing id="HRTFDatabaseFetcher2" position="7,402" size="167,62" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>../../../../acustica/HRTFs/mitKemarFullL.hrtfs</Path>
+    <HrtfDatabase>../../../../acustica/HRTFs/mitKemarFullL.hrtfs</HrtfDatabase>
     </processing>
 
   <processing id="IFFT_L1" position="502,338" size="79,58" type="MyIFFT">
