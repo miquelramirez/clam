@@ -56,7 +56,7 @@ class GeodesicDatabase
 	class SpherePosition
 	{
 	public:
-		SpherePosition(int elevation, double azimuth, const std::string & filename)
+		SpherePosition(double elevation, double azimuth, const std::string & filename)
 			: elevation(elevation)
 			, azimuth(azimuth)
 			, eradians(M_PI*elevation/180.)
