@@ -1,4 +1,4 @@
-<network id="Unnamed">
+<network clamVersion="1.3.1" id="Unnamed">
 
   <processing id="AudioBuffer2Stream" position="920,992" size="144,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -202,8 +202,7 @@
     <DoHalfWindowShift>1</DoHalfWindowShift>
   </processing>
 
-  <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation">
-    </processing>
+  <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation" />
 
   <processing id="Beta" position="1885,6" size="406,73" type="OutControlSender">
     <Min>0</Min>
@@ -213,7 +212,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="ChoreoSequencer_1" position="104,22" size="194,59" type="ChoreoSequencer">
+  <processing id="ChoreoSequencer_1" position="104,22" size="226,59" type="ChoreoSequencer">
     <Filename>~/data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
@@ -249,7 +248,7 @@
   <processing id="HRTFDatabaseFetcher2" position="237,999" size="167,94" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <HrtfDatabase>HRTFs/kreuzerDatabase.hrtfs</HrtfDatabase>
-    </processing>
+  </processing>
 
   <processing id="IRSwappingDelay" position="434,979" size="133,62" type="IRSwappingDelay" />
 
@@ -1185,6 +1184,11 @@
   <control_connection>
     <out>ChoreoSequencer_1.listener Z</out>
     <in>RoomImpulseResponseSimulator.listener Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.listener roll</out>
+    <in>BFormatRotation.roll</in>
   </control_connection>
 
   <control_connection>
