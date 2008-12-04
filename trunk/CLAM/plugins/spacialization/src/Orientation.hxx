@@ -73,7 +73,7 @@ public:
 	 Computes the chord size of the projections of the orientations
 	 into a unit sphere.
 	 Comparing chord distaces is equivalent to comparing angles,
-	 or comparing surface distances
+	 or comparing distances on the sphere surface
 	*/
 	double chordDistance(const Orientation & other)
 	{

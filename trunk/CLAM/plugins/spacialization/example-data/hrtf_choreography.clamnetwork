@@ -77,7 +77,7 @@
 
   <processing id="HRTFDatabaseFetcher2" position="15,168" size="167,94" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
-    <Path>../../../acustica/HRTFs/mitKemarFullL.hrtfs</Path>
+    <HrtfDatabase>../../../acustica/HRTFs/mitKemarFullL.hrtfs</HrtfDatabase>
     </processing>
 
   <processing id="IRSwappingDelay_L" position="228,156" size="147,62" type="IRSwappingDelay" />
