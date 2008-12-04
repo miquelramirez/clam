@@ -41,3 +41,14 @@ renameConnector BFormatRotation outport vy Y
 renameConnector BFormatRotation outport vz Z
 renameConfig HRTFDatabaseFetcher Path HrtfDatabase
 renameClass ImpulseResponseCalculatedOnTheFly RoomImpulseResponseSimulatorCommandLine
+renameConnector RoomImpulseResponseSimulatorCommandLine outport 'pressure IR' 'W IR'
+renameConnector RoomImpulseResponseSimulatorCommandLine outport 'vx IR' 'X IR'
+renameConnector RoomImpulseResponseSimulatorCommandLine outport 'vy IR' 'Y IR'
+renameConnector RoomImpulseResponseSimulatorCommandLine outport 'vz IR' 'Z IR'
+renameConnector RoomImpulseResponseSimulatorCommandLine incontrol 'emitterX' 'source X'
+renameConnector RoomImpulseResponseSimulatorCommandLine incontrol 'emitterY' 'source Y'
+renameConnector RoomImpulseResponseSimulatorCommandLine incontrol 'emitterZ' 'source Z'
+renameConnector RoomImpulseResponseSimulatorCommandLine incontrol 'receiverX' 'listener X'
+renameConnector RoomImpulseResponseSimulatorCommandLine incontrol 'receiverY' 'listener Y'
+renameConnector RoomImpulseResponseSimulatorCommandLine incontrol 'receiverZ' 'listener Z'
+renameConfig RoomImpulseResponseSimulatorCommandLine StripDirectSound SeparateDirectSoundAndReverb 

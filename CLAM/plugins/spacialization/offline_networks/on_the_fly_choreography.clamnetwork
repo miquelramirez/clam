@@ -381,22 +381,22 @@
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.pressure IR</out>
+    <out>ImpulseResponseCalculatedOnTheFly.W IR</out>
     <in>Delay P.Input IR</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.vx IR</out>
+    <out>ImpulseResponseCalculatedOnTheFly.X IR</out>
     <in>Delay X.Input IR</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.vy IR</out>
+    <out>ImpulseResponseCalculatedOnTheFly.Y IR</out>
     <in>Delay Y.Input IR</in>
   </port_connection>
 
   <port_connection>
-    <out>ImpulseResponseCalculatedOnTheFly.vz IR</out>
+    <out>ImpulseResponseCalculatedOnTheFly.Z IR</out>
     <in>Delay Z.Input IR</in>
   </port_connection>
 
@@ -542,17 +542,17 @@
 
   <control_connection>
     <out>CameraTracking.listener X</out>
-    <in>ImpulseResponseCalculatedOnTheFly.receiverX</in>
+    <in>ImpulseResponseCalculatedOnTheFly.listener X</in>
   </control_connection>
 
   <control_connection>
     <out>CameraTracking.listener Y</out>
-    <in>ImpulseResponseCalculatedOnTheFly.receiverY</in>
+    <in>ImpulseResponseCalculatedOnTheFly.listener Y</in>
   </control_connection>
 
   <control_connection>
     <out>CameraTracking.listener Z</out>
-    <in>ImpulseResponseCalculatedOnTheFly.receiverZ</in>
+    <in>ImpulseResponseCalculatedOnTheFly.listener Z</in>
   </control_connection>
 
   <control_connection>
@@ -567,17 +567,17 @@
 
   <control_connection>
     <out>CameraTracking.source X</out>
-    <in>ImpulseResponseCalculatedOnTheFly.emitterX</in>
+    <in>ImpulseResponseCalculatedOnTheFly.source X</in>
   </control_connection>
 
   <control_connection>
     <out>CameraTracking.source Y</out>
-    <in>ImpulseResponseCalculatedOnTheFly.emitterY</in>
+    <in>ImpulseResponseCalculatedOnTheFly.source Y</in>
   </control_connection>
 
   <control_connection>
     <out>CameraTracking.source Z</out>
-    <in>ImpulseResponseCalculatedOnTheFly.emitterZ</in>
+    <in>ImpulseResponseCalculatedOnTheFly.source Z</in>
   </control_connection>
 
   <control_connection>

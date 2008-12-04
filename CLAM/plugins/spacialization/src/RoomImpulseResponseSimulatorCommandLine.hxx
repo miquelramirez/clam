@@ -37,7 +37,45 @@ namespace CLAM
 
 
 /**
- @todo Document RoomImpulseResponseSimulatorCommandLine
+ Simulates the impulse response from a source position to a listener point
+ within a 3D acoustic environment (command line version).
+ First order ambisonics components of the ImpulseResponse are computed.
+ This is equivalent to RoomImpulseResponseSimulator but instead of using
+ a raytracing library it uses a binary, so that it enables the use
+ of propietary simulators by no linking to them.
+
+ The processing detects when the "synchronization" input is silence to
+ save computations meanwhile.
+ Also a new impulse response is computed just when the positions move
+ a given delta from the last computed one.
+ Such a delta is equal to the full size in any dimension divided by
+ the GridDivisions parameter.
+
+ @todo Turn GridDivisions into a more meaningfull parameter (Hysteresis?)
+ @todo Document RoomImpulseResponseSimulator
+ @todo Document Model 3D format or providing a reference
+
+ @param FrameSize [Config] The size used to split the ImpulseResponses
+ @param Model3DFile [Config] The file containing the geometry to be simulated
+ @param GridDivisions [Config] The number of divisions of the full space
+ @param NRays [Config] Number of rays to cast
+ @param NRebounds [Config] Number of rebounds to consider for each ray
+ @param IrLength [Config] length in seconds of the impulse response (0 for no limit)
+ @param ExtraOptions [Config] deprecated parameter (for backward compatibility with commandline version)
+ @param SeparateDirectSoundAndReverb [Config] When true direct sound won't be on the impulse response, direct sounds related controls are still sent
+ @param SupressInitialDelay [Config] If true, sample 0 of the impulse response matches the direct sound time.
+ @param[in] "synchronization" [Port] The audio to be convolved just to detect silences
+ @param[in] "source X" [Control] X coordinate of the sound source (normalized [0..1])
+ @param[in] "source Y" [Control] Y coordinate of the sound source (normalized [0..1])
+ @param[in] "source Z" [Control] Z coordinate of the sound source (normalized [0..1])
+ @param[in] "listener X" [Control] X coordinate of the listener (normalized [0..1])
+ @param[in] "listener Y" [Control] Y coordinate of the listener (normalized [0..1])
+ @param[in] "listener Z" [Control] Z coordinate of the listener (normalized [0..1])
+ @param[out] "W IR" [Port] The W component of the impulse response
+ @param[out] "X IR" [Port] The X component of the impulse response
+ @param[out] "Y IR" [Port] The Y component of the impulse response
+ @param[out] "Z IR" [Port] The Z component of the impulse response
+ @param[out] "directSoundPressure" [Control] The amplification value for the direct sound
  @see RoomImpulseResponseSimulator, ImpulseResponseDatabaseFetcher
  @ingroup SpatialAudio
 */
@@ -62,7 +100,7 @@ public:
 		DYN_ATTRIBUTE( 4, public, unsigned, NRebounds);
 		DYN_ATTRIBUTE( 5, public, float, IrLength);
 		DYN_ATTRIBUTE( 6, public, CLAM::Text, ExtraOptions);
-		DYN_ATTRIBUTE( 7, public, bool, StripDirectSound);
+		DYN_ATTRIBUTE( 7, public, bool, SeparateDirectSoundAndReverb);
 		DYN_ATTRIBUTE( 8, public, bool, SupressInitialDelay);
 	protected:
 		void DefaultInit()
@@ -75,7 +113,7 @@ public:
 			SetNRays(200);
 			SetNRebounds(20);
 			SetIrLength(1.0);
-			SetStripDirectSound(false);
+			SetSeparateDirectSoundAndReverb(false);
 			SetSupressInitialDelay(false);
 		};
 	};
@@ -87,21 +125,21 @@ private:
 	OutPort< ImpulseResponse* > _XImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _YImpulseResponseOutPort;
 	OutPort< ImpulseResponse* > _ZImpulseResponseOutPort;
-	InControl _emitterX;
-	InControl _emitterY;
-	InControl _emitterZ;
-	InControl _receiverX;
-	InControl _receiverY;
-	InControl _receiverZ;
+	InControl _sourceX;
+	InControl _sourceY;
+	InControl _sourceZ;
+	InControl _listenerX;
+	InControl _listenerY;
+	InControl _listenerZ;
 	BFormatIR _impulseResponses[nCachedIRs];
 	BFormatIR  * _current;
 	BFormatIR  * _previous;
-	float _currentEmitterX;
-	float _currentEmitterY;
-	float _currentEmitterZ;
-	float _currentReceiverX;
-	float _currentReceiverY;
-	float _currentReceiverZ;
+	float _currentSourceX;
+	float _currentSourceY;
+	float _currentSourceZ;
+	float _currentListenerX;
+	float _currentListenerY;
+	float _currentListenerZ;
 	float _delta;
 	int _irCount;
 	unsigned _currentCacheIndex;
@@ -110,35 +148,35 @@ public:
 	const char* GetClassName() const { return "RoomImpulseResponseSimulatorCommandLine"; }
 	RoomImpulseResponseSimulatorCommandLine(const Config& config = Config()) 
 		: _syncAudio("synchronization", this)
-		, _WImpulseResponseOutPort("pressure IR", this)
-		, _XImpulseResponseOutPort("vx IR", this)
-		, _YImpulseResponseOutPort("vy IR", this)
-		, _ZImpulseResponseOutPort("vz IR", this)
-		, _emitterX("emitterX", this)
-		, _emitterY("emitterY", this)
-		, _emitterZ("emitterZ", this)
-		, _receiverX("receiverX", this)
-		, _receiverY("receiverY", this)
-		, _receiverZ("receiverZ", this)
+		, _WImpulseResponseOutPort("W IR", this)
+		, _XImpulseResponseOutPort("X IR", this)
+		, _YImpulseResponseOutPort("Y IR", this)
+		, _ZImpulseResponseOutPort("Z IR", this)
+		, _sourceX("source X", this)
+		, _sourceY("source Y", this)
+		, _sourceZ("source Z", this)
+		, _listenerX("listener X", this)
+		, _listenerY("listener Y", this)
+		, _listenerZ("listener Z", this)
 		, _current(0)
 		, _previous(0)
-		, _currentEmitterX(0)
-		, _currentEmitterY(0)
-		, _currentEmitterZ(0)
-		, _currentReceiverX(0)
-		, _currentReceiverY(0)
-		, _currentReceiverZ(0)
+		, _currentSourceX(0)
+		, _currentSourceY(0)
+		, _currentSourceZ(0)
+		, _currentListenerX(0)
+		, _currentListenerY(0)
+		, _currentListenerZ(0)
 		, _delta(1)
 		, _irCount(0)
 		, _currentCacheIndex(0)
 	{
 		Configure( config );
-		_emitterX.SetBounds(0,1);
-		_emitterY.SetBounds(0,1);
-		_emitterZ.SetBounds(0,1);
-		_receiverX.SetBounds(0,1);
-		_receiverY.SetBounds(0,1);
-		_receiverZ.SetBounds(0,1);
+		_sourceX.SetBounds(0,1);
+		_sourceY.SetBounds(0,1);
+		_sourceZ.SetBounds(0,1);
+		_listenerX.SetBounds(0,1);
+		_listenerY.SetBounds(0,1);
+		_listenerZ.SetBounds(0,1);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
@@ -148,12 +186,12 @@ public:
 		_syncAudio.SetSize(512);
 		_syncAudio.SetHop(512);
 		//end TODO
-		_emitterX.DoControl(0.2);
-		_emitterY.DoControl(0.5);
-		_emitterZ.DoControl(0.2);
-		_receiverX.DoControl(0.5);
-		_receiverY.DoControl(0.5);
-		_receiverZ.DoControl(0.2);
+		_sourceX.DoControl(0.2);
+		_sourceY.DoControl(0.5);
+		_sourceZ.DoControl(0.2);
+		_listenerX.DoControl(0.5);
+		_listenerY.DoControl(0.5);
+		_listenerZ.DoControl(0.2);
 		_delta = 1./_config.GetGridDivisions();
 		return true;
 	}
@@ -182,52 +220,52 @@ private:
 		}
 		std::cout << "." << std::flush;
 
-		float x1 = _emitterX.GetLastValue();
-		float y1 = _emitterY.GetLastValue();
-		float z1 = _emitterZ.GetLastValue();
-		float x2 = _receiverX.GetLastValue();
-		float y2 = _receiverY.GetLastValue();
-		float z2 = _receiverZ.GetLastValue();
+		float x1 = _sourceX.GetLastValue();
+		float y1 = _sourceY.GetLastValue();
+		float z1 = _sourceZ.GetLastValue();
+		float x2 = _listenerX.GetLastValue();
+		float y2 = _listenerY.GetLastValue();
+		float z2 = _listenerZ.GetLastValue();
 
-		bool changeSnappedIR = fabs(_currentReceiverX-x2) > _delta 
-			|| fabs(_currentReceiverY-y2) > _delta 
-			|| fabs(_currentEmitterX-x1) > _delta
-			|| fabs(_currentEmitterY-y1) > _delta
+		bool changeSnappedIR = fabs(_currentListenerX-x2) > _delta 
+			|| fabs(_currentListenerY-y2) > _delta 
+			|| fabs(_currentSourceX-x1) > _delta
+			|| fabs(_currentSourceY-y1) > _delta
 			;
 
 		// If we already have one but the movement is small enough, keep it
 		if (_current and not changeSnappedIR) return true;
 
-//		std::cout << _currentReceiverX << " " << x2 << " " << fabs(_currentReceiverX-x1) << std::endl;
+//		std::cout << _currentListenerX << " " << x2 << " " << fabs(_currentListenerX-x1) << std::endl;
 		
 //		std::cout << "IR : "<<x1<<","<<y1<<","<<z1<<" - "<<x2<<","<<y2<<","<<z2<<std::endl;
 		// swap _current but leave _previous
 		_current = &_impulseResponses[_currentCacheIndex];
 		_currentCacheIndex = (_currentCacheIndex+1) % nCachedIRs;
 		if (not _previous) _previous = _current;
-		_currentEmitterX = x1;
-		_currentEmitterY = y1;
-		_currentEmitterZ = z1;
-		_currentReceiverX = x2;
-		_currentReceiverY = y2;
-		_currentReceiverZ = z2;
+		_currentSourceX = x1;
+		_currentSourceY = y1;
+		_currentSourceZ = z1;
+		_currentListenerX = x2;
+		_currentListenerY = y2;
+		_currentListenerZ = z2;
 		std::cout << "|" << std::flush;
 		std::ostringstream command;
 		command << "raytracing "
 			<< " --compute-ir"
 			<< " --model-file=" << _config.GetModel3DFile()
-			<< " --listener-x-pos=" << _currentReceiverX
-			<< " --listener-y-pos=" << _currentReceiverY
-			<< " --listener-z-pos=" << _currentReceiverZ
-			<< " --source-x-pos=" << _currentEmitterX
-			<< " --source-y-pos=" << _currentEmitterY 
-			<< " --source-z-pos=" << _currentEmitterZ
+			<< " --listener-x-pos=" << _currentListenerX
+			<< " --listener-y-pos=" << _currentListenerY
+			<< " --listener-z-pos=" << _currentListenerZ
+			<< " --source-x-pos=" << _currentSourceX
+			<< " --source-y-pos=" << _currentSourceY 
+			<< " --source-z-pos=" << _currentSourceZ
 			;
 		if (_config.HasNRebounds()) command << " --num-rebounds=" <<  _config.GetNRebounds();
 		if (_config.HasNRays()) command << " --num-rays=" << _config.GetNRays();
 		if (_config.HasIrLength()) command << " --ir-length=" << _config.GetIrLength();
 		if (_config.HasExtraOptions()) command << " " << _config.GetExtraOptions() << " ";
-		if (_config.HasStripDirectSound() and _config.GetStripDirectSound()) command << " --reverb";
+		if (_config.HasSeparateDirectSoundAndReverb() and _config.GetSeparateDirectSoundAndReverb()) command << " --reverb";
 		command << " > /dev/null";
 		// std::cout << command.str() << std::endl;
 		int error = std::system( command.str().c_str() );

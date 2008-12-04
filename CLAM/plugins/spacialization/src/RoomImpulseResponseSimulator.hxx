@@ -39,12 +39,45 @@ namespace CLAM
 {
 
 /**
- @param[out] 'W IR' [Port] The W component of the impulse response
- @param[out] 'X IR' [Port] The X component of the impulse response
- @param[out] 'Y IR' [Port] The Y component of the impulse response
- @param[out] 'Z IR' [Port] The Z component of the impulse response
+ Simulates the impulse response from a source position to a listener point
+ within a 3D acoustic environment.
+ First order ambisonics components of the ImpulseResponse are computed.
+ This processing is disabled in GPL binaries as it relies in a propietary
+ raytracing library. Feel free to implement your own one.
+
+ The processing detects when the "synchronization" input is silence to
+ save computations meanwhile.
+ Also a new impulse response is computed just when the positions move
+ a given delta from the last computed one.
+ Such a delta is equal to the full size in any dimension divided by
+ the GridDivisions parameter.
+
+ @todo Turn GridDivisions into a more meaningfull parameter (Hysteresis?)
  @todo Document RoomImpulseResponseSimulator
- @see ImpulseResponseCalculatedOnTheFly, ImpulseResponseDatabaseFetcher
+ @todo Document Model 3D format or providing a reference
+
+ @param FrameSize [Config] The size used to split the ImpulseResponses
+ @param Model3DFile [Config] The file containing the geometry to be simulated
+ @param GridDivisions [Config] The number of divisions of the full space
+ @param NRays [Config] Number of rays to cast
+ @param NRebounds [Config] Number of rebounds to consider for each ray
+ @param IrLength [Config] length in seconds of the impulse response (0 for no limit)
+ @param ExtraOptions [Config] deprecated parameter (for backward compatibility with commandline version)
+ @param SeparateDirectSoundAndReverb [Config] When true direct sound won't be on the impulse response, direct sounds related controls are still sent
+ @param SupressInitialDelay [Config] If true, sample 0 of the impulse response matches the direct sound time.
+ @param[in] "synchronization" [Port] The audio to be convolved just to detect silences
+ @param[in] "source X" [Control] X coordinate of the sound source (normalized [0..1])
+ @param[in] "source Y" [Control] Y coordinate of the sound source (normalized [0..1])
+ @param[in] "source Z" [Control] Z coordinate of the sound source (normalized [0..1])
+ @param[in] "listener X" [Control] X coordinate of the listener (normalized [0..1])
+ @param[in] "listener Y" [Control] Y coordinate of the listener (normalized [0..1])
+ @param[in] "listener Z" [Control] Z coordinate of the listener (normalized [0..1])
+ @param[out] "W IR" [Port] The W component of the impulse response
+ @param[out] "X IR" [Port] The X component of the impulse response
+ @param[out] "Y IR" [Port] The Y component of the impulse response
+ @param[out] "Z IR" [Port] The Z component of the impulse response
+ @param[out] "directSoundPressure" [Control] The amplification value for the direct sound
+ @see RoomImpulseResponseSimulatorCommandLine, ImpulseResponseDatabaseFetcher, AmbisonicsConventions
  @ingroup SpatialAudio
 */
 class RoomImpulseResponseSimulator : public Processing
