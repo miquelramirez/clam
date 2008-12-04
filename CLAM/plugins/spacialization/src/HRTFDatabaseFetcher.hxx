@@ -26,6 +26,7 @@
 #include <CLAM/OutPort.hxx>
 #include <CLAM/Processing.hxx>
 #include <CLAM/Filename.hxx>
+#include "Orientation.hxx"
 #include "ComplexSpectrum.hxx"
 #include "LoadImpulseResponse.hxx"
 #include <vector>
@@ -43,47 +44,9 @@ namespace CLAM
 */
 class GeodesicDatabase
 {
-	static double angularDistance(float azimut1, float elevation1, float azimut2, float elevation2)
-	{
-		// From http://www.codeguru.com/Cpp/Cpp/algorithms/article.php/c5115/
-		// cos (90 - lat2) * cos (90 - lat1) + sin (90 - lat2) * sin (90 - lat1) * cos (lon2 - lon1)
-		// taking that elevation = 90 - latitude
-		return std::acos(std::cos(elevation1)*std::cos(elevation2) + std::sin(elevation1)*std::sin(elevation2)*std::cos(azimut2-azimut1));
-		// TODO: Possible optimization: precompute cos and sinus
-		// cos a1-a2 = cos a1 cos a2 + sin a1 sin a2
-		// so:   acos( ce1*ce2 + se1*se2 *(sa1 sa2 + ca1 ca2) )
-	}
-	class SpherePosition
-	{
-	public:
-		SpherePosition(double elevation, double azimuth, const std::string & filename)
-			: elevation(elevation)
-			, azimuth(azimuth)
-			, eradians(M_PI*elevation/180.)
-			, aradians(M_PI*azimuth/180.)
-			, ce(std::cos(eradians))
-			, se(std::sin(eradians))
-			, ca(std::cos(aradians))
-			, sa(std::sin(aradians))
-			, filename(filename)
-		{
-		}
-		int elevation;
-		double azimuth;
-		double eradians, aradians;
-		double ce, se, ca, sa;
-		std::string filename;
-		double angularDistanceTo(const SpherePosition & line)
-		{
-			double dz = se-line.se;
-			double dy = ce*sa-line.ce*line.sa;
-			double dx = ce*ca-line.ce*line.ca;
-			return dx*dx + dy*dy + dz*dz;
-			return std::acos(ce*line.ce+se*line.se*(ca*line.ca+sa*line.sa));
-		}
-	};
 	std::vector<ImpulseResponse> _storage;
-	std::vector<SpherePosition> _lines;
+	std::vector<std::string> _waveFiles;
+	std::vector<Orientation> _orientations;
 	bool error(std::string & errorMsg, const std::string & message)
 	{
 		errorMsg += message;
@@ -116,7 +79,8 @@ public:
 
 		std::ifstream index(path.c_str());
 		if (!index) return error(errorMsg, "Could not open the file "+path);
-		_lines.clear();
+		_orientations.clear();
+		_waveFiles.clear();
 		while (true)
 		{
 			double elevation;
@@ -128,32 +92,33 @@ public:
 			std::string filename;
 			std::getline(index, filename);
 		//	std::cout << elevation << " " << azimuth << " '" << base << filename << "'" << std::endl;
-			_lines.push_back(SpherePosition(elevation, azimuth, base+filename));
+			_orientations.push_back(Orientation(azimuth, elevation));
+			_waveFiles.push_back(base+filename);
 		}
-		_storage.resize(_lines.size());
+		_storage.resize(_orientations.size());
 		for (unsigned i=0; i < _storage.size(); i++)
-			if (!computeResponseSpectrums(_lines[i].filename, _storage[i], frameSize, errorMsg))
+			if (!computeResponseSpectrums(_waveFiles[i], _storage[i], frameSize, errorMsg))
 				return false;
 		return true;
 	}
 	double azimutForIndex(unsigned index) const
 	{
-		return _lines[index].azimuth;
+		return _orientations[index].azimuth;
 	}
 	double elevationForIndex(unsigned index) const
 	{
-		return _lines[index].elevation;
+		return _orientations[index].elevation;
 	}
 	
 	ImpulseResponse & get(unsigned index) { return _storage[index]; }
 	unsigned getIndex(double elevation, double azimuth)
 	{
-		SpherePosition target(elevation, azimuth, "dummy");
-		unsigned chosen = _lines.size();
+		Orientation target(azimuth, elevation);
+		unsigned chosen = _orientations.size();
 		double minDistance = 10000;
-		for (unsigned i=0; i < _lines.size(); i++)
+		for (unsigned i=0; i < _orientations.size(); i++)
 		{
-			double distance = _lines[i].angularDistanceTo(target);
+			double distance = _orientations[i].chordDistance(target);
 			if (distance>minDistance) continue;
 			minDistance = distance;
 			chosen = i;
@@ -262,8 +227,8 @@ public:
 		_chosenElevation.SendControl(_database.elevationForIndex(indexL));
 		_chosenAzimuth.SendControl(_database.azimutForIndex(indexL));
 
-		ImpulseResponse * currentL = _impulseResponseL.GetData()= &_database.get(indexL);
-		ImpulseResponse * currentR = _impulseResponseR.GetData()= &_database.get(indexR);
+		_impulseResponseL.GetData()= &_database.get(indexL);
+		_impulseResponseR.GetData()= &_database.get(indexR);
 
 		_impulseResponseL.Produce();
 		_impulseResponseR.Produce();
