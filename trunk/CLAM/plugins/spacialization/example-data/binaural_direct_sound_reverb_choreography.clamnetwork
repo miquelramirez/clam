@@ -144,10 +144,9 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation">
-    </processing>
+  <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation" />
 
-  <processing id="ChoreoSequencer_1" position="104,22" size="210,59" type="ChoreoSequencer">
+  <processing id="ChoreoSequencer_1" position="104,22" size="226,59" type="ChoreoSequencer">
     <Filename>../../../../data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
@@ -1208,6 +1207,11 @@
   <control_connection>
     <out>ChoreoSequencer_1.listener Z</out>
     <in>RoomImpulseResponseSimulator.listener Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.listener roll</out>
+    <in>BFormatRotation.roll</in>
   </control_connection>
 
   <control_connection>

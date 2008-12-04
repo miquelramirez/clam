@@ -1,4 +1,4 @@
-<network id="Unnamed">
+<network clamVersion="1.3.1" id="Unnamed">
 
   <processing id="AudioInput" position="31,332" size="128,108" type="AudioSource" />
 
@@ -16,10 +16,9 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BFormatRotation" position="775,558" size="143,78" type="BFormatRotation">
-    </processing>
+  <processing id="BFormatRotation" position="775,558" size="143,78" type="BFormatRotation" />
 
-  <processing id="ChoreoSequencer" position="101,14" size="194,59" type="ChoreoSequencer">
+  <processing id="ChoreoSequencer" position="101,14" size="226,59" type="ChoreoSequencer">
     <Filename>../../../acustica/realitzacions/Simple_02.coreo</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
@@ -574,6 +573,11 @@
   <control_connection>
     <out>ChoreoSequencer.listener Z</out>
     <in>RoomImpulseResponseSimulator.listener Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer.listener roll</out>
+    <in>BFormatRotation.roll</in>
   </control_connection>
 
   <control_connection>

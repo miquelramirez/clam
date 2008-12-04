@@ -1,4 +1,4 @@
-<network id="Unnamed">
+<network clamVersion="1.3.1" id="Unnamed">
 
   <processing id="AudioInput" position="23,470" size="128,108" type="AudioSource" />
 
@@ -16,10 +16,9 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BFormatRotation" position="743,752" size="143,78" type="BFormatRotation">
-    </processing>
+  <processing id="BFormatRotation" position="743,752" size="143,78" type="BFormatRotation" />
 
-  <processing id="CameraTracking" position="93,152" size="194,59" type="ChoreoSequencer">
+  <processing id="CameraTracking" position="93,152" size="226,59" type="ChoreoSequencer">
     <Filename />
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
@@ -553,6 +552,11 @@
   <control_connection>
     <out>CameraTracking.listener Z</out>
     <in>ImpulseResponseCalculatedOnTheFly.listener Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>CameraTracking.listener roll</out>
+    <in>BFormatRotation.roll</in>
   </control_connection>
 
   <control_connection>
