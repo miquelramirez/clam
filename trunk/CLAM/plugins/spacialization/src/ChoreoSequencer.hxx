@@ -166,6 +166,7 @@ public:
 			_listenerX.SendControl( row[ListenerXColumn] );
 			_listenerY.SendControl( row[ListenerYColumn] );
 			_listenerZ.SendControl( row[ListenerZColumn] );
+			_listenerRoll.SendControl( 0 ); // row[ListenerRollColumn] ); // TODO: incorporate listener roll in the choreo
 			_listenerAzimuth.SendControl( row[ListenerAzimutColumn] );
 
 			double listenerElevation =  row[ListenerElevationColumn]; 
