@@ -260,11 +260,13 @@ private:
 		float y2 = _listenerY.GetLastValue();
 		float z2 = _listenerZ.GetLastValue();
 
-		//TODO : have into account Z
-		bool changeSnappedIR = fabs(_currentListenerX-x2) > _delta 
+		bool changeSnappedIR
+			=  fabs(_currentListenerX-x2) > _delta 
 			|| fabs(_currentListenerY-y2) > _delta 
+			|| fabs(_currentListenerZ-z2) > _delta 
 			|| fabs(_currentSourceX-x1) > _delta
 			|| fabs(_currentSourceY-y1) > _delta
+			|| fabs(_currentSourceZ-z1) > _delta
 			;
 
 		// If we already have one but the movement is small enough, keep it
