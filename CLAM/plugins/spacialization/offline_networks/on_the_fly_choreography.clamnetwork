@@ -84,7 +84,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="ImpulseResponseCalculatedOnTheFly" position="50,302" size="267,100" type="ImpulseResponseCalculatedOnTheFly">
+  <processing id="ImpulseResponseCalculatedOnTheFly" position="50,302" size="267,100" type="RoomImpulseResponseSimulatorCommandLine">
     <FrameSize>512</FrameSize>
     <Model3DFile>scene.data</Model3DFile>
     <GridDivisions>500</GridDivisions>

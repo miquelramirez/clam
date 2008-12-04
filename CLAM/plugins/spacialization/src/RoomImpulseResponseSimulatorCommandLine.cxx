@@ -18,17 +18,17 @@
  *
  */
 
-#include "ImpulseResponseCalculatedOnTheFly.hxx"
+#include "RoomImpulseResponseSimulatorCommandLine.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
 namespace detail
 {
 	static const char* metadata[] = {
-		"key", "ImpulseResponseCalculatedOnTheFly",
+		"key", "RoomImpulseResponseSimulatorCommandLine",
 		"category", "[plugin] 3D Audio",
-		"description", "ImpulseResponseCalculatedOnTheFly",
+		"description", "RoomImpulseResponseSimulatorCommandLine",
 		0
 	};
-	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::ImpulseResponseCalculatedOnTheFly> reg = metadata;
+	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::RoomImpulseResponseSimulatorCommandLine> reg = metadata;
 }
 
