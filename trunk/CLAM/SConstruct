@@ -209,6 +209,10 @@ toolChain = 'default'
 if sys.platform == "win32": toolChain = 'mingw'
 clam_env = Environment( ENV=os.environ, tools=[toolChain])
 clam_env.SConsignFile()
+# scons optimizations
+clam_env.Decider('MD5-timestamp') # do not MD5 if the dates don't differ
+clam_env.SetOption('max_drift', 60) # just 60 seconds of clock drift
+clam_env.SetOption('implicit_cache', 1)
 setup_build_options( clam_env )
 SetupSpawn(clam_env) # to solve long command line problems (in win32)
 
