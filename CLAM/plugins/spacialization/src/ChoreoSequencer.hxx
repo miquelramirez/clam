@@ -297,11 +297,23 @@ protected:
 			AddConfigErrorMessage("Unable to open the file "+_config.GetFilename());
 			return false;
 		}
+
+		std::string firstLine;
+		std::getline(file,firstLine);
+		const std::string header="ClamChoreoVersion ";
+		const std::string requiredVersion="1";
+		if ( firstLine[0]!='#' or firstLine.substr(firstLine.find(header)+header.size())!=requiredVersion )
+		{
+			AddConfigErrorMessage("Wrong choreo version! ChoreoSequencer requires version "+requiredVersion);
+			return false;			
+		}
+
 		while (file)
 		{
 			std::string line;
 			std::getline(file, line);
-			if (line=="" or line[0]=='#') continue; 
+			if (line=="" or line=="#") 
+				continue;
 			std::istringstream is(line);
 			Row row;
 			while (is)
