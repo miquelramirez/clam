@@ -298,16 +298,14 @@ protected:
 			return false;
 		}
 
+		std::string filetype = "ClamChoreoVersion 1";
 		std::string firstLine;
 		std::getline(file,firstLine);
-		const std::string header="ClamChoreoVersion ";
-		const std::string requiredVersion="1";
-		if ( firstLine[0]!='#' or firstLine.substr(firstLine.find(header)+header.size())!=requiredVersion )
+		if (firstLine != ("#"+filetype))
 		{
-			AddConfigErrorMessage("Wrong choreo version! ChoreoSequencer requires version "+requiredVersion);
+			AddConfigErrorMessage("File format is not a "+filetype);
 			return false;			
 		}
-
 		while (file)
 		{
 			std::string line;
