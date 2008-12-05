@@ -56,12 +56,11 @@ bool OscillatingSpectralNotch::Do(const Spectrum& in, Spectrum& out)
 	int centerFreq= Round(mFreqCtl.GetLastValue()*spectralResolution*(1+currentOscAmp));
 	int band = Round(mBandwidthCtl.GetLastValue()*spectralResolution);
 	TData gain = log2lin(mGainCtl.GetLastValue());
-	int n;
 	int leftLimit = centerFreq-band;
 	if(leftLimit<0) leftLimit = 0;
 	int rightLimit = centerFreq+band+1;
 	if(rightLimit>spectrumSize) rightLimit=spectrumSize;
-	for (n=leftLimit; n<rightLimit;n++)
+	for (int n=leftLimit; n<rightLimit;n++)
 	{ 
 		outMag[n] *= gain ;
 	}
