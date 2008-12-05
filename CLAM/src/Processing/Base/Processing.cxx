@@ -104,35 +104,43 @@ namespace CLAM
 	}
 	
 	void SendFloatToInControl(Processing & receiver, const std::string & inControlName, float value){
+		InControlBase & in = receiver.GetInControl(inControlName);
 		FloatOutControl controlSender("tmpOutControl");
-		controlSender.AddLink(receiver.GetInControl(inControlName));
+		CLAM_ASSERT(controlSender.IsLinkable(in), "GetFloatFromInControl: the control was not a Float control");
+		controlSender.AddLink(in);
 		controlSender.SendControl(value);
 	}
 
 	void SendFloatToInControl(Processing & receiver, int inControlIndex, float value){
+		InControlBase & in = receiver.GetInControl(inControlIndex);
 		FloatOutControl controlSender("tmpOutControl");
-		controlSender.AddLink(receiver.GetInControl(inControlIndex));
+		CLAM_ASSERT(controlSender.IsLinkable(in), "GetFloatFromInControl: the control was not a Float control");
+		controlSender.AddLink(in);
 		controlSender.SendControl(value);
 	}
 	
 	void SendFloatToOutControl(Processing & sender, const std::string & inControlName, float value){
-		FloatOutControl& out = *(dynamic_cast<FloatOutControl*>(&(sender.GetOutControl(inControlName))));
-		out.SendControl(value);
+		FloatOutControl * out = dynamic_cast<FloatOutControl*>(&(sender.GetOutControl(inControlName)));
+		CLAM_ASSERT(out, "SendFloatToOutControl: the control was not a Float control");
+		out->SendControl(value);
 	}
 	
-	void SendFloatToOutControl(Processing & sender, int inControlIndex, float value){
-		FloatOutControl& out = *(dynamic_cast<FloatOutControl*>(&(sender.GetOutControl(inControlIndex))));
-		out.SendControl(value);
+	void SendFloatToOutControl(Processing & sender, int outControlIndex, float value){
+		FloatOutControl * out = dynamic_cast<FloatOutControl*>(&(sender.GetOutControl(outControlIndex)));
+		CLAM_ASSERT(out, "SendFloatToOutControl: the control was not a Float control");
+		out->SendControl(value);
 	}
 	
 	float GetFloatFromInControl(Processing & proc, const std::string & inControlName){
-		FloatInControl& in = *(dynamic_cast<FloatInControl*>(&(proc.GetInControl(inControlName))));
-		return in.GetLastValue();
+		FloatInControl * in = dynamic_cast<FloatInControl*>(&(proc.GetInControl(inControlName)));
+		CLAM_ASSERT(in, "GetFloatFromInControl: the control was not a Float control");
+		return in->GetLastValue();
 	}
 	
 	float GetFloatFromInControl(Processing & proc, int inControlIndex){
-		FloatInControl& in = *(dynamic_cast<FloatInControl*>(&(proc.GetInControl(inControlIndex))));
-		return in.GetLastValue();
+		FloatInControl * in = dynamic_cast<FloatInControl*>(&(proc.GetInControl(inControlIndex)));
+		CLAM_ASSERT(in, "GetFloatFromInControl: the control was not a Float control");
+		return in->GetLastValue();
 	}
 	
 	Processing::Processing() 
