@@ -298,7 +298,7 @@ protected:
 			return false;
 		}
 
-		std::string filetype = "ClamChoreoVersion 1";
+		std::string filetype = "ClamChoreoVersion 1.1";
 		std::string firstLine;
 		std::getline(file,firstLine);
 		if (firstLine != ("#"+filetype))
