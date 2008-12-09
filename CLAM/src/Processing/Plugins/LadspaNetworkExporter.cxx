@@ -42,8 +42,8 @@ public:
 	void ConnectTo(unsigned long port, LADSPA_Data * data);
 	
 	void Run( unsigned long nsamples );
-	void CopyLadspaBuffersToGenerators(const unsigned long nframes);
-	void CopySinksToLadspaBuffers(const unsigned long nframes);
+	void EstablishLadspaBuffersToAudioSources(const unsigned long nframes);
+	void EstablishLadspaBuffersToAudioSinks(const unsigned long nframes);
 	void ProcessInControlValues();
 	void ProcessOutControlValues();
 	static LADSPA_Descriptor * CreateLADSPADescriptor(
@@ -151,12 +151,12 @@ void NetworkLADSPAPlugin::LocateConnections()
 	CLAM_ASSERT( mSenderList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered output ports");
 	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
 	CLAM_ASSERT( mOutControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
-
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
 	{
 		CLAM::Processing * processing = it->second;
 		const std::string & className = processing->GetClassName();
+
 		if (className == "AudioSource")
 		{
 			LADSPAInfo<AudioSource> info;
@@ -262,15 +262,15 @@ void NetworkLADSPAPlugin::Run( unsigned long nsamples )
 	}		
 	
 	ProcessInControlValues();
-	
-	CopyLadspaBuffersToGenerators(nsamples);
 
+	EstablishLadspaBuffersToAudioSources(nsamples);
+	EstablishLadspaBuffersToAudioSinks(nsamples); 
 	//Do() as much as it is needed
 	for (int stepcount=0; stepcount < (int(mExternBufferSize)/int(mClamBufferSize)); stepcount++)
 		_network.Do();
 
-	CopySinksToLadspaBuffers(nsamples);
 	ProcessOutControlValues();
+
 }
 
 void NetworkLADSPAPlugin::ProcessInControlValues()
@@ -285,13 +285,15 @@ void NetworkLADSPAPlugin::ProcessOutControlValues()
 		*(it->dataBuffer)=it->processing->GetControlValue();
 }
 
-void NetworkLADSPAPlugin::CopyLadspaBuffersToGenerators(const unsigned long nframes)
+void NetworkLADSPAPlugin::EstablishLadspaBuffersToAudioSources(const unsigned long nframes)
 {
 	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
+	{
 		it->processing->SetExternalBuffer(it->dataBuffer, nframes );
+	}
 }
 
-void NetworkLADSPAPlugin::CopySinksToLadspaBuffers(const unsigned long nframes)
+void NetworkLADSPAPlugin::EstablishLadspaBuffersToAudioSinks(const unsigned long nframes)
 {
 	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
 		it->processing->SetExternalBuffer(it->dataBuffer, nframes );
