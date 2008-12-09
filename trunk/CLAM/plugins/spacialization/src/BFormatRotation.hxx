@@ -41,7 +41,7 @@ public:
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
-public:
+
 	BFormatRotation(const Config& config = Config()) 
 		: _Xin("X", this)
 		, _Yin("Y", this)
@@ -56,6 +56,7 @@ public:
 		Configure( config );
 		_azimuth.SetBounds(-360, 360); //a complete spin on each slider direction
 		_elevation.SetBounds(-90, 90);
+		_roll.SetBounds(-360, 360);
 		_roll.DoControl(0);
 		_azimuth.DoControl(0);
 		_elevation.DoControl(0);
@@ -98,9 +99,9 @@ public:
 		const double sinAzimuth=std::sin(azimuthRadians);
 		const double cosElevation=std::cos(elevationRadians);
 		const double sinElevation=std::sin(elevationRadians);
-		const CLAM::DataArray& vz =_Zin.GetAudio().GetBuffer();
-		const CLAM::DataArray& vx =_Xin.GetAudio().GetBuffer();
-		const CLAM::DataArray& vy =_Yin.GetAudio().GetBuffer();
+		const CLAM::DataArray& X =_Xin.GetAudio().GetBuffer();
+		const CLAM::DataArray& Y =_Yin.GetAudio().GetBuffer();
+		const CLAM::DataArray& Z =_Zin.GetAudio().GetBuffer();
 		double sinRoll = std::sin(rollRadians);
 		double cosRoll = std::cos(rollRadians);
 
@@ -110,20 +111,23 @@ public:
 		CLAM::TData* Xout = &_Xout.GetAudio().GetBuffer()[0];
 		CLAM::TData* Yout = &_Yout.GetAudio().GetBuffer()[0];
 		CLAM::TData* Zout = &_Zout.GetAudio().GetBuffer()[0];
-		for (int i=0; i<vz.Size(); i++)
+		for (int i=0; i<Z.Size(); i++)
 		{
-			Xout[i] = 
-				+ vx[i] * cosAzimuth * cosElevation
-				+ vy[i] * sinAzimuth * cosElevation 
-				+ vz[i] * sinElevation;
-			Yout[i] = 
-				+ vx[i] * (- sinAzimuth*cosRoll - cosASinE*sinRoll)
-				+ vy[i] * (+ cosAzimuth*cosRoll - sinASinE*sinRoll)
-				+ vz[i] * (+ cosElevation*sinRoll);
-			Zout[i] =
-				+ vx[i] * (- cosASinE*cosRoll + sinAzimuth*sinRoll)
-				+ vy[i] * (- sinASinE*cosRoll - cosAzimuth*sinRoll)
-				+ vz[i] * (+ cosElevation*cosRoll);
+			float rotatedX = 
+				+ X[i] * cosAzimuth * cosElevation
+				+ Y[i] * sinAzimuth * cosElevation 
+				+ Z[i] * sinElevation;
+			float rotatedY = 
+				+ X[i] * (- sinAzimuth*cosRoll - cosASinE*sinRoll)
+				+ Y[i] * (+ cosAzimuth*cosRoll - sinASinE*sinRoll)
+				+ Z[i] * (+ cosElevation*sinRoll);
+			float rotatedZ =
+				+ X[i] * (- cosASinE*cosRoll + sinAzimuth*sinRoll)
+				+ Y[i] * (- sinASinE*cosRoll - cosAzimuth*sinRoll)
+				+ Z[i] * (+ cosElevation*cosRoll);
+			Xout[i] = rotatedX;
+			Yout[i] = rotatedY;
+			Zout[i] = rotatedZ;
 		}
 
 		_Xin.Consume();

@@ -11,43 +11,27 @@
 
 /**
  This Processing implements the rotation and zoom of a B-format signal set.
- The rotation is performed on the set X,Y,Z such as the new set of axes X',Y',Z' has X' facing the direction specified by the Azimuth and Elevation angles.
+ The rotation is performed on the set X,Y,Z such as the new set of axes X',Y',Z' has X' 
+ facing the direction specified by the Azimuth and Elevation angles.
  The Zoom effect (Dominance effect) is applied after rotation and takes place along the X' direction.
- @param[in] azimuth [Control] The counterclockwise angle of rotation on the horizontal plane
- @param[in] elevation [Control] The angle of vertical rotation
- @param[in] dominance [Control] The parameter related to the level of zoom in the X' direction. A value of 1 leaves the components untouched. Values greater than 1 produce a zoom-in effect, while values less than 1 produce the zoom out.
- @param[in] Win [Port] The W input component
- @param[in] Xin [Port] The X component to be rotated
- @param[in] Yin [Port] The Y component to be rotated
- @param[in] Zin [Port] The Z component to be rotated
- @param[out] Wout [Port] The W component after rotation and zoom
- @param[out] Xout [Port] The X component after rotation and zoom
- @param[out] Yout [Port] The Y component after rotation and zoom	
- @param[out] Zout [Port] The Z component after rotation and zoom
+ @param[in] azimuth [Control] The counterclockwise angle of rotation on the horizontal plane. In degrees [-360..360]
+ @param[in] elevation [Control] The angle of vertical rotation. In degrees [-90..90]
+ @param[in] dominance [Control] The parameter related to the level of zoom in the X' direction. A value of 1 leaves the components untouched. Values greater than 1 produce a zoom-in effect, while values less than 1 produce the zoom out. Range [0.25 .. 4]
+ @param[in] W [Port] The W input component
+ @param[in] X [Port] The X component to be rotated
+ @param[in] Y [Port] The Y component to be rotated
+ @param[in] Z [Port] The Z component to be rotated
+ @param[out] W [Port] The W component after rotation and zoom
+ @param[out] X [Port] The X component after rotation and zoom
+ @param[out] Y [Port] The Y component after rotation and zoom	
+ @param[out] Z [Port] The Z component after rotation and zoom
  @see AmbisonicsConventions 
  @ingroup SpatialAudio
 
- @todo Check whether it needs to update to the new rotation matrix in BFormatR#otation
  @todo Split the rotation from the zoom itself or introducing the roll
- @todo rename the ports to ambisonics
- 
 */
 class BFormatRotationZoom : public CLAM::Processing
 {
-protected:
-	class Config : public CLAM::ProcessingConfig
-	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
-		DYN_ATTRIBUTE( 0, public, bool, IsPassiveRotation);
-	protected:
-		void DefaultInit()
-		{
-			AddAll();
-			UpdateData();
-			SetIsPassiveRotation(true);
-		};
-	};
-
 	
 public:
 	const char* GetClassName() const { return "BFormatRotationZoom"; }
@@ -55,139 +39,132 @@ public:
 	CLAM::AudioInPort _Xin;
 	CLAM::AudioInPort _Yin;
 	CLAM::AudioInPort _Zin;
-	CLAM::AudioOutPort _Wout;//add
+	CLAM::AudioOutPort _Wout;
 	CLAM::AudioOutPort _Xout;
 	CLAM::AudioOutPort _Yout;
 	CLAM::AudioOutPort _Zout;
+	CLAM::InControl _roll;
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
-	CLAM::InControl _dominance;//add
+	CLAM::InControl _dominance;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
-	Config _config;
-	bool _isPassiveRotation;
-public:
+
 	BFormatRotationZoom(const Config& config = Config()) 
-		: _Win("p", this)//add
-		, _Xin("vx", this)
-		, _Yin("vy", this)
-		, _Zin("vz", this)
-		, _Wout("p", this)//add
-		, _Xout("vx", this)
-		, _Yout("vy", this)
-		, _Zout("vz", this)
+		: _Win("W", this)
+		, _Xin("X", this)
+		, _Yin("Y", this)
+		, _Zin("Z", this)
+		, _Wout("W", this)
+		, _Xout("X", this)
+		, _Yout("Y", this)
+		, _Zout("Z", this)
+		, _roll("roll", this) // angle in degrees
 		, _azimuth("azimuth", this) // angle in degrees
 		, _elevation("elevation", this) // angle in degrees
-		, _dominance("dominance", this) //domination value	//add
+		, _dominance("dominance", this) //domination value	
 	{
 		Configure( config );
 		_azimuth.SetBounds(-360, 360); //a complete spin on each slider direction
-		_elevation.SetBounds(0, 180); //a complete spin on each slider direction
-		_dominance.SetBounds(0.25, 4);//add
+		_elevation.SetBounds(-90, 90);
+		_roll.SetBounds(-360, 360);
+		_dominance.SetBounds(0.25, 4);
+		_roll.DoControl(0);
+		_azimuth.DoControl(0);
+		_elevation.DoControl(0);
 //		unsigned buffersize = BackendBufferSize();
 //		When buffersize==1024 a 512 delay is added to the W channel. This is strange!
 //		there is a dataflow scheduling problem. --Pau
 		unsigned buffersize=512;
-std::cout << "BUFFER SIZE " << buffersize << std::endl;
-		_Win.SetSize(buffersize);//add
-		_Win.SetHop(buffersize);//add
+//std::cout << "BUFFER SIZE " << buffersize << std::endl;
+		_Win.SetSize(buffersize);
+		_Win.SetHop(buffersize);
 		_Xin.SetSize(buffersize);
 		_Xin.SetHop(buffersize);
 		_Yin.SetSize(buffersize);
 		_Yin.SetHop(buffersize);
 		_Zin.SetSize(buffersize);
 		_Zin.SetHop(buffersize);
-		_Wout.SetSize(buffersize);//add
-		_Wout.SetHop(buffersize);//add
+		_Wout.SetSize(buffersize);
+		_Wout.SetHop(buffersize);
 		_Xout.SetSize(buffersize);
 		_Xout.SetHop(buffersize);
 		_Yout.SetSize(buffersize);
 		_Yout.SetHop(buffersize);
 		_Zout.SetSize(buffersize);
-		_Zin.SetHop(buffersize);
+		_Zout.SetHop(buffersize);
 		
-	}
-	const CLAM::ProcessingConfig & GetConfig() const
-	{
-		return _config;
-	}
-
-	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
-	{
-//		std::cout << "BFormatRotation::ConcreteConfigure()"<<std::endl;
-		_isPassiveRotation = _config.GetIsPassiveRotation();
-		return true;
 	}
 	bool Do()
 	{
-		double azimuth=_azimuth.GetLastValue()*M_PI/180; //conversion. azimuth is in radians
-		const double givenElevation=_elevation.GetLastValue()*M_PI/180; //conversion. elevation is in radians
-		double elevation;
-		double dominance=_dominance.GetLastValue();//add
-		if (givenElevation>M_PI)
+		double elevationDeg = _elevation.GetLastValue(); 
+		if (elevationDeg > 90.)
 		{
-			std::cout << "WARNING: elevation should be smaller than 180" << std::endl;
-			elevation = M_PI;
+			std::cout << "WARNING: elevation should be smaller than 90, but was " << elevationDeg << std::endl;
+			elevationDeg = 90.;
 		}
-		else if (givenElevation<0)
+		else if (elevationDeg<-90.)
 		{
-			std::cout << "WARNING: elevation should be greater than 0" << std::endl;
-			elevation = 0;
+			std::cout << "WARNING: elevation should be greater than -90, but was " << elevationDeg << std::endl;
+			elevationDeg = -90.;
 		}
-		else 
-			elevation = givenElevation;
-//TODO fix: eliminate param
-_isPassiveRotation=true;
-//azimuth *= -1;
+		double elevationRadians = elevationDeg*M_PI/180;
+		double azimuthRadians=_azimuth.GetLastValue()*M_PI/180;
+		double rollRadians = _roll.GetLastValue()*M_PI/180;
+		const double cosAzimuth=std::cos(azimuthRadians);
+		const double sinAzimuth=std::sin(azimuthRadians);
+		const double cosElevation=std::cos(elevationRadians);
+		const double sinElevation=std::sin(elevationRadians);
+		const CLAM::DataArray& W =_Win.GetAudio().GetBuffer();
+		const CLAM::DataArray& X =_Xin.GetAudio().GetBuffer();
+		const CLAM::DataArray& Y =_Yin.GetAudio().GetBuffer();
+		const CLAM::DataArray& Z =_Zin.GetAudio().GetBuffer();
+		double sinRoll = std::sin(rollRadians);
+		double cosRoll = std::cos(rollRadians);
 
-		const double cosAzimuth=std::cos(azimuth);
-		const double sinAzimuth=std::sin(azimuth);
-		const double cosElevation=std::cos(elevation);
-		const double sinElevation=std::sin(elevation);
-		const CLAM::DataArray& p =_Win.GetAudio().GetBuffer();//add
-		const CLAM::DataArray& vz =_Zin.GetAudio().GetBuffer();
-		const CLAM::DataArray& vx =_Xin.GetAudio().GetBuffer();
-		const CLAM::DataArray& vy =_Yin.GetAudio().GetBuffer();
-		const double dominanceWW = 0.5*(dominance+1/dominance);
-		const double dominanceWX = 1/sqrt(8)*(dominance-1/dominance);
-		const double dominanceXW = 1/sqrt(2)*(dominance-1/dominance);
-		const double dominanceXX = 0.5*(dominance+1/dominance);
-		CLAM::TData* Wout = &_Wout.GetAudio().GetBuffer()[0];//add
+		double cosASinE = cosAzimuth * sinElevation;
+		double sinASinE = sinAzimuth * sinElevation;
+
 		CLAM::TData* Xout = &_Xout.GetAudio().GetBuffer()[0];
 		CLAM::TData* Yout = &_Yout.GetAudio().GetBuffer()[0];
 		CLAM::TData* Zout = &_Zout.GetAudio().GetBuffer()[0];
+		CLAM::TData* Wout = &_Wout.GetAudio().GetBuffer()[0];
 
-		for (int i=0; i<vz.Size(); i++)
+		double dominance=_dominance.GetLastValue();
+		// matrix coeficient from Win to Wout
+		const double dominanceWW = 0.5*(dominance+1/dominance);
+		// matrix coeficient from Xin to Wout
+		const double dominanceWX = 1/sqrt(8)*(dominance-1/dominance);
+		// matrix coeficient from Win to Xout
+		const double dominanceXW = 1/sqrt(2)*(dominance-1/dominance);
+		// matrix coeficient from Xin to Xout
+		const double dominanceXX = 0.5*(dominance+1/dominance);
+		for (int i=0; i<Z.Size(); i++)
 		{
-			//insert dominance gain	
-			Wout[i] = 
-				+ dominanceWW * p[i] 
-				+ dominanceWX *(
-					+ cosAzimuth*sinElevation * vx[i] 
-					+ sinAzimuth * vy[i]
-					- cosAzimuth*cosElevation * vz[i]
-					);//add
-			Xout[i] =
-				+ dominanceXW *p[i]
-				+ dominanceXX*(
-					+ cosAzimuth*sinElevation * vx[i] 
-					+ sinAzimuth * vy[i]
-					- cosAzimuth*cosElevation * vz[i]
-					); //add
-			Yout[i] = 
-				- sinAzimuth*sinElevation * vx[i] 
-				+ cosAzimuth * vy[i]
-				+ sinAzimuth*cosElevation * vz[i];
-			Zout[i] =
-				+ cosElevation * vx[i]
-				+  0 * vy[i]
-				+ sinElevation  * vz[i];
+			float rotatedX = 
+				+ X[i] * cosAzimuth * cosElevation
+				+ Y[i] * sinAzimuth * cosElevation 
+				+ Z[i] * sinElevation;
+			float rotatedY = 
+				+ X[i] * (- sinAzimuth*cosRoll - cosASinE*sinRoll)
+				+ Y[i] * (+ cosAzimuth*cosRoll - sinASinE*sinRoll)
+				+ Z[i] * (+ cosElevation*sinRoll);
+			float rotatedZ =
+				+ X[i] * (- cosASinE*cosRoll + sinAzimuth*sinRoll)
+				+ Y[i] * (- sinASinE*cosRoll - cosAzimuth*sinRoll)
+				+ Z[i] * (+ cosElevation*cosRoll);
+			
+			// zoom phase:
+			Wout[i] = dominanceWX * rotatedX + dominanceWW * W[i];
+			Xout[i] = dominanceXX * rotatedX + dominanceXW * W[i];
+			Yout[i] = rotatedY;
+			Zout[i] = rotatedZ;
 		}
 
-		_Win.Consume();//add
+		_Win.Consume();
 		_Xin.Consume();
 		_Yin.Consume();
 		_Zin.Consume();
-		_Wout.Produce();//add
+		_Wout.Produce();
 		_Xout.Produce();
 		_Yout.Produce();
 		_Zout.Produce();
