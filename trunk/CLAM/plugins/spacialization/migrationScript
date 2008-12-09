@@ -51,4 +51,12 @@ renameConnector RoomImpulseResponseSimulatorCommandLine incontrol 'emitterZ' 'so
 renameConnector RoomImpulseResponseSimulatorCommandLine incontrol 'receiverX' 'listener X'
 renameConnector RoomImpulseResponseSimulatorCommandLine incontrol 'receiverY' 'listener Y'
 renameConnector RoomImpulseResponseSimulatorCommandLine incontrol 'receiverZ' 'listener Z'
-renameConfig RoomImpulseResponseSimulatorCommandLine StripDirectSound SeparateDirectSoundAndReverb 
+renameConfig RoomImpulseResponseSimulatorCommandLine StripDirectSound SeparateDirectSoundAndReverb
+renameConnector BFormatRotationZoom inport 'p' 'W'
+renameConnector BFormatRotationZoom outport 'p' 'W'
+renameConnector BFormatRotationZoom inport 'vx' 'X'
+renameConnector BFormatRotationZoom outport 'vx' 'X'
+renameConnector BFormatRotationZoom inport 'vy' 'Y'
+renameConnector BFormatRotationZoom outport 'vy' 'Y'
+renameConnector BFormatRotationZoom inport 'vz' 'Z'
+renameConnector BFormatRotationZoom outport 'vz' 'Z'
