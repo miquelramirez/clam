@@ -171,8 +171,6 @@ namespace CLAM
 //				std::string key=processing->GetClassName();
 //				std::string newName= AddProcessing(key);
 				AddProcessing(newName,processing);
-				CLAM::Processing & newProcessing = GetProcessing(newName);
-				newProcessing.Configure(processing->GetConfig());
 				newProcNames.insert(changeProcNames::value_type(name,newName));
 				name=newName;
 			}
