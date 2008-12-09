@@ -175,12 +175,6 @@ public:
 		, _scene(0)
 	{
 		Configure( config );
-		_sourceX.SetBounds(0,1);
-		_sourceY.SetBounds(0,1);
-		_sourceZ.SetBounds(0,1);
-		_listenerX.SetBounds(0,1);
-		_listenerY.SetBounds(0,1);
-		_listenerZ.SetBounds(0,1);
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
