@@ -146,6 +146,43 @@ public:
 	{
 		return _config;
 	}
+
+	
+	void sendRowControls (const Row & row)
+	{
+		int sourceIndex = _config.GetSourceIndex();
+		_frame.SendControl( row[FrameColumn]);
+		_listenerX.SendControl( row[ListenerXColumn] );
+		_listenerY.SendControl( row[ListenerYColumn] );
+		_listenerZ.SendControl( row[ListenerZColumn] );
+		_listenerRoll.SendControl( 0 ); // row[ListenerRollColumn] ); // TODO: incorporate listener roll in the choreo
+		_listenerAzimuth.SendControl( row[ListenerAzimutColumn] );
+
+		double listenerElevation =  row[ListenerElevationColumn]; 
+		_listenerElevation.SendControl( listenerElevation );
+
+		_sourceX.SendControl( row[SourceXColumn+3*sourceIndex] );
+		_sourceY.SendControl( row[SourceYColumn+3*sourceIndex] );
+		_sourceZ.SendControl( row[SourceZColumn+3*sourceIndex] );
+
+		double listenerX = _sizeX * row[ListenerXColumn];
+		double listenerY = _sizeY * row[ListenerYColumn];
+		double listenerZ = _sizeZ * row[ListenerZColumn];
+		double listenerAzimuth = row[ListenerAzimutColumn];
+		double listenerRoll = 0;
+		double sourceX = _sizeX * row[SourceXColumn+3*sourceIndex];
+		double sourceY = _sizeY * row[SourceYColumn+3*sourceIndex];
+		double sourceZ = _sizeZ * row[SourceZColumn+3*sourceIndex];
+
+		Orientation orientation = AbsoluteCoordinates2RelativeAngles::computeRelativeOrientation(
+			listenerX, listenerY, listenerZ,
+			listenerAzimuth, listenerElevation, listenerRoll,
+			sourceX, sourceY, sourceZ);
+		_sourceAzimuth.SendControl( orientation.azimuth );
+		_sourceElevation.SendControl( orientation.elevation );
+	}
+
+
 	bool Do()
 	{
 		CLAM_DEBUG_ASSERT(_sampleCount<2*_samplesPerControl,"_sampleCount too large" );
@@ -157,41 +194,14 @@ public:
 			_lastFrameSeek = frameSeek;
 		}
 		_sampleCount += _frameSize;
-		int sourceIndex = _config.GetSourceIndex();
 		if (_sampleCount>=_samplesPerControl)
 		{
 			//std::cout << "("<<_sequenceIndex << "/" <<_controlSequence.size() << ")" << std::flush;
+
+
 			const Row & row = _controlSequence[_sequenceIndex];
-			_frame.SendControl( row[FrameColumn]);
-			_listenerX.SendControl( row[ListenerXColumn] );
-			_listenerY.SendControl( row[ListenerYColumn] );
-			_listenerZ.SendControl( row[ListenerZColumn] );
-			_listenerRoll.SendControl( 0 ); // row[ListenerRollColumn] ); // TODO: incorporate listener roll in the choreo
-			_listenerAzimuth.SendControl( row[ListenerAzimutColumn] );
-
-			double listenerElevation =  row[ListenerElevationColumn]; 
-			_listenerElevation.SendControl( listenerElevation );
-
-			_sourceX.SendControl( row[SourceXColumn+3*sourceIndex] );
-			_sourceY.SendControl( row[SourceYColumn+3*sourceIndex] );
-			_sourceZ.SendControl( row[SourceZColumn+3*sourceIndex] );
-
-			double listenerX = _sizeX * row[ListenerXColumn];
-			double listenerY = _sizeY * row[ListenerYColumn];
-			double listenerZ = _sizeZ * row[ListenerZColumn];
-			double listenerAzimuth = row[ListenerAzimutColumn];
-			double listenerRoll = 0;
-			double sourceX = _sizeX * row[SourceXColumn+3*sourceIndex];
-			double sourceY = _sizeY * row[SourceYColumn+3*sourceIndex];
-			double sourceZ = _sizeZ * row[SourceZColumn+3*sourceIndex];
-
-			Orientation orientation = AbsoluteCoordinates2RelativeAngles::computeRelativeOrientation(
-				listenerX, listenerY, listenerZ,
-				listenerAzimuth, listenerElevation, listenerRoll,
-				sourceX, sourceY, sourceZ);
-			_sourceAzimuth.SendControl( orientation.azimuth );
-			_sourceElevation.SendControl( orientation.elevation );
-			/* 
+			sendRowControls (row);
+		/* 
 			std::cout 
 				<< "\t" << _sizeX*row[ListenerXColumn+3*sourceIndex]
 				<< "\t" << _sizeY*row[ListenerYColumn+3*sourceIndex] 
@@ -223,6 +233,7 @@ protected:
 	{
 		_sampleCount=0;
 		_sequenceIndex=0;
+		sendRowControls(_controlSequence[_sequenceIndex]);
 		return true;
 	}
 	enum FileColumns {
