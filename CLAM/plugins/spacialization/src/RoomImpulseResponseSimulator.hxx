@@ -286,21 +286,10 @@ private:
 		_currentListenerY = y2;
 		_currentListenerZ = z2;
 		std::cout << "|" << std::flush;
-
-		_scene->setReceiverPos(
-			_scene->normalizedToModelX(_currentListenerX),
-			_scene->normalizedToModelY(_currentListenerY),
-			_scene->normalizedToModelZ(_currentListenerZ)
-			);
+		_scene->setReceiverPos(_currentListenerX,_currentListenerY,_currentListenerZ);
 		_scene->setComputedSource(0);
 		_scene->clearSources();
-		_scene->appendSource(
-			_scene->normalizedToModelX(_currentSourceX),
-			_scene->normalizedToModelY(_currentSourceY),
-			_scene->normalizedToModelZ(_currentSourceZ)
-			);
-
-
+		_scene->appendSource(_currentSourceX,_currentSourceY,_currentSourceZ);
 		std::string responsesPath = "";
 		double directSoundPressure = 0;
 		unsigned initialDelay = 0;
