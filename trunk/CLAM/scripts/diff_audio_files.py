@@ -43,14 +43,14 @@ def diff_files(expected, result, diffbase) :
 			print "files substraction with sox failed. They might not be comparable: (different lenght or sample-rate: %s %s)" % (expected, result)
 			return "Non comparable waves (different lenght, channels or sample-rate)"
 		substractResult="".join(substractResult)
-# TODO: REFACTOR!!
+# TODO: REFACTOR, and use wrapper python of soxsucks compare function!!
 		stringToSearch="amplitude diff: "
 		errorString=substractResult[substractResult.find(stringToSearch)+len(stringToSearch):].split(")")[0]
 		stringToSearch="on second "
 		timeErrorString=substractResult[substractResult.find(stringToSearch)+len(stringToSearch):].split("\n")[0]
 		stringToSearch="in the sample "
 		sampleString=substractResult[substractResult.find(stringToSearch)+len(stringToSearch):].split(",")[0]
-		silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 && echo OK '%(expected, result, diffwav))
+		silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 '%(expected, result, diffwav))
 #####
 		max_amplitude = abs(float(errorString))
 		if not max_amplitude : return None
