@@ -1,0 +1,44 @@
+#! /usr/bin/python
+
+import os, glob, sys
+libraryName='ladspa_plugin.so'
+print 'Building', libraryName
+options = Options('../options.cache', ARGUMENTS)
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('prefix', 'Installation prefix (normally /usr, by default this is clam_prefix)', '', validator=PathOption.PathAccept))
+options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
+
+toolChain = 'default'
+if sys.platform == 'win32': toolChain = 'mingw'
+env = Environment(ENV=os.environ, tools=[toolChain], options=options)
+#options.Save('options.cache', env) # do not save options in NetworkEditor generated plugins
+Help(options.GenerateHelpText(env))
+env.SConsignFile() # Single signature file
+
+CLAMInstallDir = env['clam_prefix']
+InstallDir = env['prefix'] or env['clam_prefix']
+clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
+if env['crossmingw'] :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.EnableClamModules([
+	'clam_core',
+	'clam_audioio',
+	'clam_processing',
+	] , CLAMInstallDir)
+
+sources = ['ladspa_plugin.cxx']
+extraPaths = [
+	CLAMInstallDir+'/include',
+	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
+]
+env.Append(CPPPATH=extraPaths)
+
+env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+libraries = [
+	env.SharedLibrary(target=libraryName, source = sources, SHLIBPREFIX=''),
+	]
+install = env.Install(os.path.join(InstallDir,'lib','ladspa'), libraries)
+env.Alias('install', install)
+env.Default(libraries)
+
