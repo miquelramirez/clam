@@ -24,12 +24,42 @@ public:
 	SegmentationView(QWidget * parent=0, CLAM::VM::SegmentationDataSource * dataSource=0)
 		: QWidget(parent)
 		, _dataSource(dataSource)
-		, _lineColor(Qt::green)
+		, _lineColor(Qt::darkGray)
 		, _pointColor(Qt::white)
 		, _centred(false)
 		, _timeSpan(20.)
 	{
 		startTimer(50);
+	}
+	QColor colorForLabel(const std::string & label)
+	{
+		static std::map<std::string, QColor> labelToColor;
+		std::map<std::string, QColor>::iterator item = labelToColor.find(label);
+		if (item != labelToColor.end())
+		{
+			return item->second;
+		}
+		static unsigned colorIndex = 0;
+		static const char * colors[] =
+		{
+			"#C99",
+			"#EC8",
+			"#FD1",
+			"#FE2",
+			"#FF3",
+			"#EE2",
+			"#CD0",
+			"#AD2",
+			"#7D8",
+			"#9E9",
+			"#9DD",
+			"#99D",
+			"#AAF",
+			"#88F",
+			0
+		};
+		if (not colors[colorIndex]) colorIndex=0;
+		return labelToColor[label] = QColor(colors[colorIndex++]);
 	}
 	void paintEvent(QPaintEvent * event)
 	{
@@ -46,15 +76,23 @@ public:
 		{
 			float onsetPosition = width()*(segmentation.onsets()[i]-minTime)/(maxTime-minTime);
 			float offsetPosition = width()*(segmentation.offsets()[i]-minTime)/(maxTime-minTime);
-			segmentBoxes << QRectF(onsetPosition,margin,offsetPosition-onsetPosition,height()-2*margin);
+			QRectF box(onsetPosition,margin,offsetPosition-onsetPosition,height()-2*margin);
+			segmentBoxes << box;
 		}
 		QPainter painter(this);
 		painter.setPen(QPen(_lineColor,3));
-		painter.setBrush(_pointColor);
-		painter.drawRects(segmentBoxes);
+		for (unsigned i=0; i<segmentation.onsets().size(); i++)
+		{
+			if (segmentation.onsets()[i]>maxTime) continue;
+			if (segmentation.offsets()[i]<minTime) continue;
+			painter.setBrush(colorForLabel(segmentation.labels()[i]));
+			painter.drawRoundedRect(segmentBoxes[i], margin, margin);
+		}
 		painter.setPen(Qt::black);
 		for (unsigned i=0; i<segmentation.onsets().size(); i++)
 		{
+			if (segmentation.onsets()[i]>maxTime) continue;
+			if (segmentation.offsets()[i]<minTime) continue;
 			painter.drawText(segmentBoxes[i], Qt::AlignCenter|Qt::TextWordWrap, segmentation.labels()[i].c_str());
 		}
 		_dataSource->release();
