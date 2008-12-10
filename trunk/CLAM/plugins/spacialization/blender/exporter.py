@@ -38,6 +38,7 @@ _geometryDataFilename="geometry.data"
 _wavsDataFilename="exported_wavs.data"
 _choreoFilename="exported_coreo.data"
 _choreoHeader="#ClamChoreoVersion 1.1\n"
+#_choreoHeader="#ClamChoreoVersion 1.2\n"
 
 #options:
 _convertToTriangles=True
@@ -240,7 +241,7 @@ def main():
 	file.close()
 	print "done!"
 
-	buffer=choreoExport(scene)
+	buffer=choreoExport(scene,(_choreoHeader=="#ClamChoreoVersion 1.1\n"))
 	file=open(_choreoFilename,'w')
 	choreoFilename="%s/%s" % (os.getcwd(),file.name)
 	print "Exporting coreo sequence on file: %s..." % choreoFilename 
