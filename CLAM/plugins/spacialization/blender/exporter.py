@@ -37,13 +37,14 @@ _geometryHeader="#3ds exported\n"
 _geometryDataFilename="geometry.data"
 _wavsDataFilename="exported_wavs.data"
 _choreoFilename="exported_coreo.data"
+_choreoHeader="#ClamChoreoVersion 1.1\n"
 
 #options:
 _convertToTriangles=True
 
 #templates:
 FaceLineTemplate="%(verts)s %(impedanceReal)f %(impedanceImag)f %(diffusion)f %(materialName)s\n"
-ChoreoLineTemplate="%(frame)i 0 %(targetAzimuth)f %(targetElevation)f %(targetX)f %(targetY)f %(targetZ)f %(sourcesPositions)s\n"
+ChoreoLineTemplate="%(frame)i\t0\t%(targetAzimuth)f\t%(targetElevation)f\t%(targetX)f\t%(targetY)f\t%(targetZ)f\t%(sourcesPositions)s\n"
 WavLineTemplate="%(wavFilename)s\t%(objectName)s\n"
 
 
@@ -61,7 +62,7 @@ def getGeometryLimits(objectsList):
 	maxLocation=[location[0],location[1],location[2]]
 	for object in objectsList:
 		if type(object.getData())!=Blender.Types.NMeshType:
-			return minLocation,maxLocation
+			continue
 		vectorList=object.getBoundBox()
 		for vector in vectorList:
 			for dimension in range(3):
@@ -159,7 +160,6 @@ def getNormalizationParameters(objects):
 				minLocation[dimension]=minLocationFrame[dimension]
 			if maxLocationFrame[dimension]>maxLocation[dimension]:
 				maxLocation[dimension]=maxLocationFrame[dimension]
-#	offset=Blender.Mathutils.Vector(minLocation)
 	for dimension in range(3):
 		distance=maxLocation[dimension]-minLocation[dimension]
 		if distance==0:
@@ -167,14 +167,15 @@ def getNormalizationParameters(objects):
 		else:
 			_normalizationScale[dimension]=1./distance
 		_normalizationOffset[dimension]=minLocation[dimension]
-#	_normalizationOffset=minLocation
 	return _normalizationOffset,_normalizationScale
 
 
-def normalizePosition(originalPosition,offset=_normalizationOffset,scale=_normalizationScale):
+def normalizePosition(originalPosition,offset=_normalizationOffset,scale=_normalizationScale,version1=False):
 	normalizedPosition=[0,0,0]
 	for dimension in range(3):
-		normalizedPosition[dimension]=(originalPosition[dimension]-offset[dimension])*scale[dimension]
+		normalizedPosition[dimension]=(originalPosition[dimension]-offset[dimension])
+		if version1==True:
+			normalizedPosition[dimension]*=scale[dimension]
 	return normalizedPosition
 
 
@@ -206,17 +207,17 @@ def choreoExport (scene,normalize=True):
 		targetRoll=(roll)%360
 		targetAzimuth=(azimuth)%360
 		if normalize==True:
-			targetX,targetY,targetZ=normalizePosition(listener.mat.translationPart(),normalizationOffset,normalizationScale)
+			targetX,targetY,targetZ=normalizePosition(listener.mat.translationPart(),normalizationOffset,normalizationScale,False)
 		else:
 			targetX,targetY,targetZ=listener.mat.translationPart()
 		sourcesPositions=""
 		for source in sources:
 			if source.sel==1:
 				if normalize==True:
-					sourceX,sourceY,sourceZ=normalizePosition(source.mat.translationPart(),normalizationOffset,normalizationScale)
+					sourceX,sourceY,sourceZ=normalizePosition(source.mat.translationPart(),normalizationOffset,normalizationScale,False)
 				else:
 					sourceX,sourceY,sourceZ=source.mat.translationPart()
-				sourcesPositions+=" %f %f %f" % (sourceX,sourceY,sourceZ)
+				sourcesPositions+=" %f\t%f\t%f" % (sourceX,sourceY,sourceZ)
 		buffer+=ChoreoLineTemplate % vars()
 	return buffer
 
@@ -243,6 +244,7 @@ def main():
 	file=open(_choreoFilename,'w')
 	choreoFilename="%s/%s" % (os.getcwd(),file.name)
 	print "Exporting coreo sequence on file: %s..." % choreoFilename 
+	file.write(_choreoHeader)
 	file.write(buffer)
 	file.close()
 	print "done!"
