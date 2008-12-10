@@ -57,10 +57,11 @@ def diff_files(expected, result, diffbase) :
 		max_dBs = 20*math.log10(max_amplitude)
 		if max_dBs > threshold_dBs :
 			silentrun('wav2png --input %s --width 700 --linecolor ff0088 --backgroundcolor dddddd --zerocolor 000000'%(diffwav))
-			print "Files are different with threshold ", threshold_dBs, "(dB's)", threshold_amplitude, "(amplitude)"
-			print "Max diff is :", max_amplitude, "(amplitude)", max_dBs, "(dB's)"
-			return "Differences of %s [%s dB] (threshold: %s [%s dB]) at %s seconds (sample %s)" % (
-				max_amplitude, max_dBs, threshold_amplitude, threshold_dBs, timeErrorString, sampleString)
+			print "Files are different with threshold %f dB (amplitude: %f)" % (threshold_dBs, threshold_amplitude)
+			print "\tMax diff is %f dB (amplitude: %f)" % ( max_dBs, max_amplitude)
+			print "\tOn sample: %s" % sampleString
+			return "Differences of %s dB (threshold: %s dB) at %s seconds (sample %s)" % (
+				max_dBs, threshold_dBs, timeErrorString, sampleString)
 	return None
 
 
