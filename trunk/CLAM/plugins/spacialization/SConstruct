@@ -42,6 +42,7 @@ sources = dict.fromkeys(sources).keys()
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 	print "adding optimization flags"
+	"""
 	env.Append( CCFLAGS=[
 		'-fomit-frame-pointer', 
 		'-ffast-math',
@@ -50,7 +51,7 @@ if sys.platform=='linux2' :
 #		'-march=nocona',
 		'-msse',
 		'-mfpmath=sse'
-	])
+	]) """
 
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
