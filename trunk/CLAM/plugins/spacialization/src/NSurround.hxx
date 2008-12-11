@@ -112,6 +112,8 @@ public:
 		{
 			for (unsigned channel=0; channel<_nChannels; channel++)
 			{
+// TODO use 1/nChannels. And see why it does not break tests 
+//				channels[channel][i] = 1./_nChannels * ( sqrt2 * w[i] + x[i] * _cosAlphas[channel] + y[i] * _sinAlphas[channel] ) ;
 				channels[channel][i] = 1./sqrtN * ( sqrt2 * w[i] + x[i] * _cosAlphas[channel] + y[i] * _sinAlphas[channel] ) ;
 			}
 		}
