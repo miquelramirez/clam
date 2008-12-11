@@ -28,7 +28,7 @@
 */
 class Surround : public NSurround
 {
-	
+	typedef Processing::Config Config;
 public:
 	const char* GetClassName() const { return "Surround"; }
 	Surround(const Config& config = Config())
@@ -74,6 +74,12 @@ public:
 		_y.SetHop(buffersize);
 
 	}
+	const CLAM::ProcessingConfig & GetConfig() const
+	{
+		static Config config;
+		return config;
+	}
+
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
 		// Just avoid base class configuration
