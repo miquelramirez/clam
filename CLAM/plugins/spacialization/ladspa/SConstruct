@@ -37,6 +37,7 @@ env.Append(CPPPATH=extraPaths)
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources, SHLIBPREFIX=''),
+	env.Program("main.cxx" ),
 	]
 install = env.Install(os.path.join(InstallDir,'lib','ladspa'), libraries)
 env.Alias('install', install)
