@@ -37,8 +37,8 @@ _geometryHeader="#3ds exported\n"
 _geometryDataFilename="geometry.data"
 _wavsDataFilename="exported_wavs.data"
 _choreoFilename="exported_coreo.data"
-_choreoHeader="#ClamChoreoVersion 1.1\n"
-#_choreoHeader="#ClamChoreoVersion 1.2\n"
+#_choreoHeader="#ClamChoreoVersion 1.1\n"
+_choreoHeader="#ClamChoreoVersion 1.2\n"
 
 #options:
 _convertToTriangles=True
