@@ -28,11 +28,11 @@ inlineSubstitutions = [
 	(r"FALLA", r"FAIL"),
 ]
 inlineSubstitutions = [
-	(r"'referencia': 100", r"'referencia': 150"),
+	(r"'referencia': 50", r"'referencia': 100"),
 
 ]
 filesToSubstitute = [
-	"/var/www/testfarm_logs/practiques_ES1/ES1-*.testfarmlog",
+	"/var/www/testfarm_logs/practiques_ES1/ES1_*.testfarmlog",
 ]
 # --------------------------
 # End of user configuration
