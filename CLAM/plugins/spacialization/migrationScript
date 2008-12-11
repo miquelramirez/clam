@@ -60,3 +60,4 @@ renameConnector BFormatRotationZoom inport 'vy' 'Y'
 renameConnector BFormatRotationZoom outport 'vy' 'Y'
 renameConnector BFormatRotationZoom inport 'vz' 'Z'
 renameConnector BFormatRotationZoom outport 'vz' 'Z'
+removeConfig Surround NChannels

@@ -9,8 +9,7 @@
   <processing id="SR" position="605,278" size="128,111" type="AudioSink" />
 
   <processing id="Surround" position="241,154" size="92,110" type="Surround">
-    <NChannels>0</NChannels>
-  </processing>
+    </processing>
 
   <processing id="W" position="63,75" size="128,108" type="AudioSource" />
 
