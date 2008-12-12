@@ -28,6 +28,10 @@ namespace CLAM {
 
 		void SendControl(const TypedControlData& val);
 		bool IsLinkable(const InControlBase& in);
+		virtual const std::type_info & GetTypeId() const 
+		{
+			return typeid(TypedControlData);
+		};
 	};
 	
 	template<class TypedControlData>
@@ -50,7 +54,7 @@ namespace CLAM {
 	template<class TypedControlData>
 	bool TypedOutControl<TypedControlData>::IsLinkable(const InControlBase& in)
 	{
-		return typeid(TypedControlData) == in.ControlType();
+		return typeid(TypedControlData) == in.GetTypeId();
 		
 	}
 

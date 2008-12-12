@@ -1,5 +1,5 @@
-#ifndef _BaseTypedOutControl_
-#define _BaseTypedOutControl_
+#ifndef BaseOutControl_hxx
+#define BaseOutControl_hxx
 
 #include <string>
 #include <list>
@@ -54,6 +54,7 @@ namespace CLAM {
 					if ((*it) == &in) return true;
 				return false;
 		}
+		virtual const std::type_info& GetTypeId() const = 0;
 		/**
 		 Returns whether the control can be connected to the provided in control.
 		 Concrete in controls redefine this function to provide or extend the set
@@ -89,4 +90,4 @@ namespace CLAM {
 		Peers::iterator EndInControlsConnected();
 	};
 } // END NAMESPACE CLAM
-#endif // _BaseTypedOutControl_
+#endif // BaseOutControl_hxx

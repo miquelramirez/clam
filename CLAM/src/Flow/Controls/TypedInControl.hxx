@@ -35,8 +35,8 @@ namespace CLAM {
 		int GetLastValueAsInteger() const { return (int)(mLastValue+0.5f); };
 		
 		// For the typed linking check
-		virtual const std::type_info& ControlType() const { return typeid(TypedControlData); };
-	}; // End TypedInControl Class
+		virtual const std::type_info& GetTypeId() const { return typeid(TypedControlData); };
+	};
 	
 	// TypedInControl Class Implementation
 	template<class TypedControlData>
