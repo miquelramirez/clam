@@ -23,6 +23,7 @@
 #include "Assert.hxx"
 #include "TypeInfoStd.hxx"
 #include "StaticBool.hxx"
+#include <typeinfo>
 
 //////////////////////////////////////////////////////////////////////
 // Reimplementation using chained template methods
