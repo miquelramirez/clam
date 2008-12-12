@@ -203,6 +203,7 @@ public:
 		std::vector<double> onsets = _segmentation.onsets();
 		std::vector<double> offsets = _segmentation.offsets();
 		unsigned lastSegment = onsets.size();
+		CLAM_ASSERT(segment<lastSegment, "changeChordIfSegmentTooSmall: Accessing a segment beyond lastSegment");
 
 		if(offsets[segment]-onsets[segment] < minSegmentLength)
 		{
