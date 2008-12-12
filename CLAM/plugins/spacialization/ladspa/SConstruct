@@ -1,7 +1,7 @@
 #! /usr/bin/python
 
 import os, glob, sys
-libraryName='ladspa_plugin.so'
+libraryName='clam_ladspas.so'
 print 'Building', libraryName
 options = Options('../options.cache', ARGUMENTS)
 options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
@@ -27,7 +27,7 @@ env.EnableClamModules([
 	'clam_processing',
 	] , CLAMInstallDir)
 
-sources = ['ladspa_plugin.cxx']
+sources = ['clam_plugin.cxx']
 extraPaths = [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes

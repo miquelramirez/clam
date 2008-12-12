@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed Network">
+
+  <processing id="C" position="438,479" size="128,111" type="AudioSink"/>
+
+  <processing id="L" position="373,12" size="128,111" type="AudioSink"/>
+
+  <processing id="R" position="401,133" size="128,111" type="AudioSink"/>
+
+  <processing id="SL" position="405,252" size="128,111" type="AudioSink"/>
+
+  <processing id="SR" position="444,363" size="128,111" type="AudioSink"/>
+
+  <processing id="W" position="75,110" size="128,108" type="AudioSource"/>
+
+  <processing id="X" position="74,211" size="128,108" type="AudioSource"/>
+
+  <processing id="Y" position="79,314" size="128,108" type="AudioSource"/>
+
+  <processing id="Z" position="87,436" size="128,108" type="AudioSource"/>
+
+  <port_connection>
+    <out>W.AudioOut</out>
+    <in>L.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>W.AudioOut</out>
+    <in>R.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>X.AudioOut</out>
+    <in>SL.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Y.AudioOut</out>
+    <in>SR.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Z.AudioOut</out>
+    <in>C.AudioIn</in>
+  </port_connection>
+
+</network>

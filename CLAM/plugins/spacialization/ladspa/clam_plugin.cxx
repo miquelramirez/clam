@@ -3,12 +3,14 @@
 #include <CLAM/LadspaLibrary.hxx>
 static CLAM::LadspaLibrary library;
 
-CLAM_EXTERNAL_FILE_DATA(mono2bformat_embededNetwork,"../example-data/mono2bformat.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformatRotationZoom_embededNetwork,"../example-data/mono2bformat.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(mono2bformat_embededNetwork,"../example-data/mono2bformat_nofaders.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(bformatRotationZoom_embededNetwork,"../example-data/bformatRotationZoom.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat2surround_embededNetwork,"../example-data/bformat2surround.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat2binaural_embededNetwork,"../example-data/bformat2binaural.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(mono2binaural_embededNetwork,"../example-data/mono2binaural.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(lalanetwork,"../lala.clamnetwork")
+//fakes:
+CLAM_EXTERNAL_FILE_DATA(fake_bformat2surround_embededNetwork,"fake_bformat2surround.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(fake_bformat2binaural_embededNetwork,"fake_bformat2binaural.clamnetwork")
 
 #include <iostream>
 
@@ -38,10 +40,16 @@ return 0;
 	static CLAM::LadspaNetworkExporter n104(library, mono2binaural_embededNetwork, 104,
 			"mono2binaural", "Mono to binaural (HRTF)",
 			"BarcelonaMedia-Audio", "GNU GPL");
-	static CLAM::LadspaNetworkExporter n105(library, lalanetwork, 105,
-			"dummy", "dummy network with configurations",
-			"BarcelonaMedia-Audio", "GNU GPL");
 */
+	static CLAM::LadspaNetworkExporter n106(library, fake_bformat2surround_embededNetwork, 106,
+			"bformat2surround", "BFormat to Surround 5.0",
+			"BarcelonaMedia-Audio", "GNU GPL");
+	static CLAM::LadspaNetworkExporter n107(library, fake_bformat2binaural_embededNetwork, 107,
+			"bformat2surround", "BFormat to binaural for headphones (using HRTF's)",
+			"BarcelonaMedia-Audio", "GNU GPL");
+	static CLAM::LadspaNetworkExporter n108(library, fake_bformat2binaural_embededNetwork, 108,
+			"bformat2surround", "BFormat to stereo for speakers (located at -30 and 30 degrees)",
+			"BarcelonaMedia-Audio", "GNU GPL");
 
 	return library.pluginAt(index);
 }
