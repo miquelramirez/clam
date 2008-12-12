@@ -173,12 +173,17 @@ void ProcessingBox::paintBox(QPainter & painter)
 		drawConnector(painter, outportsRegion, i);
 	}
 	// Controls
-	painter.setBrush(_canvas->colorControl());
 	painter.setPen(_canvas->colorControlOutline());
 	for (unsigned i = 0; i<_nIncontrols; i++)
+	{
+		painter.setBrush(_canvas->incontrolColor(_processing,i));
 		drawConnector(painter, incontrolsRegion, i);
+	}
 	for (unsigned i = 0; i<_nOutcontrols; i++)
+	{
+		painter.setBrush(_canvas->outcontrolColor(_processing,i));
 		drawConnector(painter, outcontrolsRegion, i);
+	}
 
 	// Highlights
 	if (_highLightRegion != noRegion)

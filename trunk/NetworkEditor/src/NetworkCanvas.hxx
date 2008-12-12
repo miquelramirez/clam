@@ -630,6 +630,8 @@ public:
 	virtual unsigned nOutcontrols(void * processing) = 0;
 	virtual QColor inportColor(void * processing, unsigned index) const = 0;
 	virtual QColor outportColor(void * processing, unsigned index) const = 0;
+	virtual QColor incontrolColor(void * processing, unsigned index) const = 0;
+	virtual QColor outcontrolColor(void * processing, unsigned index) const = 0;
 	virtual QString inportName(void * processing, unsigned index) const = 0;
 	virtual QString outportName(void * processing, unsigned index) const = 0;
 	virtual QString incontrolName(void * processing, unsigned index) const = 0;
@@ -1124,6 +1126,20 @@ public: // Actions
 		const std::type_info& porttype = processing->GetOutPort(index).GetTypeId();
 		return getConnectorColorByType(porttype);
 	}
+	virtual QColor incontrolColor(void * element, unsigned index) const
+	{
+		if (!element) return colorControl();
+		CLAM::Processing * processing = (CLAM::Processing*) element;
+		const std::type_info& controltype = processing->GetInControl(index).GetTypeId();
+		return getConnectorColorByType(controltype);
+	}
+	virtual QColor outcontrolColor(void * element, unsigned index) const
+	{
+		if (!element) return colorControl();
+		CLAM::Processing * processing = (CLAM::Processing*) element;
+		const std::type_info& controltype = processing->GetOutControl(index).GetTypeId();
+		return getConnectorColorByType(controltype);
+	}
 	virtual QString inportName(void * processing, unsigned index) const
 	{
 		if (!processing) return QString("Inport_%1").arg(index);
@@ -1148,37 +1164,41 @@ public: // Actions
 		CLAM::OutControlBase & control = ((CLAM::Processing*)processing)->GetOutControl(index);
 		return control.GetName().c_str();
 	}
+	template <typename Connector>
+	QString connectorTooltip(Connector & connector) const
+	{
+		const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(connector.GetTypeId()).c_str();
+		return QObject::tr("%1\nType: %2", "Connector tooltip")
+			.arg(connector.GetName().c_str())
+			.arg(typeString)
+			;
+	}
 	QString outportTooltip(void * processing, unsigned index) const
 	{
 		if (!processing) return outportName(processing, index);
 		CLAM::OutPortBase & port = ((CLAM::Processing*)processing)->GetOutPort(index);
-		const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
-		return QObject::tr("%1\nType: %3","Outport tooltip")
-			.arg(port.GetName().c_str())
-			.arg(typeString)
-			;
+		return connectorTooltip(port);
 	}
 	QString inportTooltip(void * processing, unsigned index) const
 	{
 		if (!processing) return inportName(processing, index);
 		CLAM::InPortBase & port = ((CLAM::Processing*)processing)->GetInPort(index);
-		const char * typeString = CLAM::ProcessingDataPlugin::displayNameFor(port.GetTypeId()).c_str();
-		return QObject::tr("%1\nType: %3","Inport tooltip")
-			.arg(port.GetName().c_str())
-			.arg(typeString)
-			;
+		return connectorTooltip(port);
 	}
 	QString outcontrolTooltip(void * processing, unsigned index) const
 	{
-		return outcontrolName(processing, index);
+		if (!processing) return outcontrolName(processing, index);
+		CLAM::OutControlBase & control = ((CLAM::Processing*)processing)->GetOutControl(index);
+		return connectorTooltip(control);
 	}
 	QString incontrolTooltip(void * processing, unsigned index) const
 	{
 		CLAM::InControlBase& inControl = ((CLAM::Processing*)processing)->GetInControl(index);
+		// TODO: Bound info composing should be moved to the connector
 		QString boundInfo = inControl.IsBounded() ? 
-			QString(" (bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
-			" (not bounded)";
-		return incontrolName(processing, index)+boundInfo;
+			QString("\n(bounds: [%1, %2] )").arg(inControl.LowerBound()).arg(inControl.UpperBound()) :
+			"\n(not bounded)";
+		return connectorTooltip(inControl) + boundInfo;
 	}
 	virtual bool isOk(void * processing)
 	{
@@ -1253,7 +1273,11 @@ protected:
 	bool canConnectControls(ProcessingBox * source, unsigned outlet, ProcessingBox * target, unsigned inlet)
 	{
 		if (networkIsDummy()) return true;
-		return true;
+		QString outName = source->getName() + "." + source->getOutcontrolName(outlet);
+		QString inName = target->getName() + "." + incontrolName(target->model(),inlet);
+		CLAM::OutControlBase & out = _network->GetOutControlByCompleteName(outName.toStdString());
+		CLAM::InControlBase & in = _network->GetInControlByCompleteName(inName.toStdString());
+		return out.IsLinkable(in);
 	}
 	virtual bool networkAddPortConnection(const QString & outlet, const QString & inlet)
 	{
