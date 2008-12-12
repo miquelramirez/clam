@@ -460,6 +460,9 @@ namespace CLAM
 		if ( outcontrol.IsConnectedTo(incontrol) ) 
 			return false;
 
+		if ( !outcontrol.IsLinkable(incontrol) ) //they have different type
+			return false;
+
 		if (!IsStopped()) Stop();
 
 		outcontrol.AddLink( incontrol );
