@@ -1,3 +1,9 @@
-2008-07-?? Turnaround 0.0.1 SVN $Revision: 11172 $
-''
- * Minimal application
+2008-07-?? Turnaround 1.0 SVN $Revision: 11172 $
+'The Birth'
+ * First working version
+ * Loading song in mp3, ogg, wavs...
+ * Offline chord analysis
+ * Many displays: KeySpace, Tonnetz, Chroma Peak, PCPgram, Chord ranking, Segment view
+ * Displays can be activated or deactivated at will
+ * Jump to whatever part of the song
+
