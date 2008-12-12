@@ -29,7 +29,7 @@
  * Sample by sample processings now are a plugin.
  * New processings:
    * AudioFileMemoryLoader: an audio file reader without locks and with seek
-     but loading the full audio into memory (a ringbuffer based on the way)
+     but loading the full audio into memory (a ringbuffer based on the way).
    * Resampler: Resamples audio streams using libsamplerate (not stable)
  * TickExtractor example working again (thanks 
  * Fix: NetEditor Windows installer should not install .def and .lib for
