@@ -47,7 +47,7 @@ public:
 //Constructor/Destructor
 	InControl(const std::string &name, Processing* parent=0);
 	virtual ~InControl();
-	const std::type_info & ControlType() const
+	const std::type_info & GetTypeId() const
 	{
 		return typeid(TControlData);
 	}

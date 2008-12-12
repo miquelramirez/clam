@@ -33,7 +33,7 @@ OutControl::OutControl(const std::string& name, Processing* parent)
 }
 bool OutControl::IsLinkable(const InControlBase& in)
 {
-	return typeid(TControlData) == in.ControlType();
+	return typeid(TControlData) == in.GetTypeId();
 
 }
 		

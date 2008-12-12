@@ -57,7 +57,7 @@ namespace CLAM {
 		 different colors to connectors depending on this type.
 		 @todo Add a link to the 
 		*/
-		virtual const std::type_info& ControlType() const = 0;
+		virtual const std::type_info& GetTypeId() const = 0;
 		/// @returns The unique name that the control takes within the processing.
 		const std::string& GetName() const { return mName; }
 		/// @returns The hosting processing

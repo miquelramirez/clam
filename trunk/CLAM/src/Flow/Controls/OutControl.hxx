@@ -58,6 +58,10 @@ public:
 //Methods
 public:
 	virtual bool IsLinkable(const InControlBase& in);
+	virtual const std::type_info & GetTypeId() const 
+	{
+		return typeid(TControlData);
+	};
 	void SendControl(TControlData val);
 	
 	/**
