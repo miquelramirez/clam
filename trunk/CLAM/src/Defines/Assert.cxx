@@ -27,8 +27,34 @@
 #include <execinfo.h>
 #endif
 
+#ifdef __GNUC__
+#include <cxxabi.h> // For demangling symbols
+#endif//__GNUC__
+
+
 
 namespace CLAM {
+
+// TODO: This code is duplicated in ProcessingDataPlugin.cxx
+std::string demangleSymbol(const std::string & mangledName)
+{
+	std::string result=mangledName;
+	#ifdef __GNUC__
+		size_t parenthesisPos = result.find_first_of('(');
+		if (parenthesisPos == std::string::npos) return result;
+		size_t endPos = result.find_first_of("+", parenthesisPos);
+		if (endPos == std::string::npos) endPos = result.find_first_of(")", parenthesisPos);
+		std::string head = result.substr(0,parenthesisPos+1);
+		std::string tail = result.substr(endPos);
+		std::string mangled = result.substr(parenthesisPos+1, endPos-parenthesisPos-1);
+		int demangleError = 0;
+		char * demangled = abi::__cxa_demangle(mangled.c_str(),0,0,&demangleError);
+		if (!demangleError && demangled)
+			result = head+demangled+tail;
+		if (demangled) free(demangled);
+	#endif//__GNUC__
+	return result;
+}
 
 void DumpBacktrace(std::ostream & os)
 {
@@ -50,7 +76,7 @@ void DumpBacktrace(std::ostream & os)
 
 	os << "\n Backtrace:\n" << std::endl;
 	for (int i = 0; i < num_entries; i++) {
-		os << "[" << i << "] " <<  bt_strings[i] << std::endl;
+		os << "[" << i << "] " <<  demangleSymbol(bt_strings[i]) << std::endl;
 	}
 	free(bt_strings);
 #else
