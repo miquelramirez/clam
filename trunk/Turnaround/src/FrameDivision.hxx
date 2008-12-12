@@ -22,7 +22,7 @@
 
 #ifndef FrameDivision_hxx
 #define FrameDivision_hxx
-#include <typeinfo>
+
 #include <CLAM/DynamicType.hxx>
 
 namespace CLAM_Annotator
