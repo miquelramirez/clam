@@ -3,7 +3,7 @@ Section: libs
 Priority: optional
 Maintainer: CLAM Team <clam@iua.upf.edu>
 Uploaders: Paul Brossier <piem@debian.org>
-Build-Depends: debhelper (>= 5.0.0), scons, ladspa-sdk, libxerces28-dev | libxerces-c2-dev, portaudio19-dev, libfftw3-dev | fftw3-dev, libjack-dev, libmad0-dev, libogg-dev, libsndfile1-dev, libvorbis-dev, libid3-3.8.3-dev, libasound2-dev, liblo0-dev, doxygen
+Build-Depends: debhelper (>= 5.0.0), scons, ladspa-sdk, libxerces-c2-dev, portaudio19-dev, libfftw3-dev | fftw3-dev, libjack-dev, libmad0-dev, libogg-dev, libsndfile1-dev, libvorbis-dev, libid3-3.8.3-dev, libasound2-dev, liblo0-dev, doxygen
 Standards-Version: 3.8.0
 Homepage: http://clam.iua.upf.edu/
 Vcs-Browser: https://iua-share.upf.edu/svn/clam/trunk/CLAM
