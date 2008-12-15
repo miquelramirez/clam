@@ -1,0 +1,9 @@
+?package(clam-turnaround): \
+	needs="X11"  \
+	section="Applications/Sound" \
+	hints="Qt,CLAM" \
+	title="CLAM Turnaround" \
+	longtitle="CLAM Turnaround (Chord detection tool)" \
+	icon="/usr/share/pixmaps/clam-turnaround.xpm" \
+	command="/usr/bin/Turnaround"
+
