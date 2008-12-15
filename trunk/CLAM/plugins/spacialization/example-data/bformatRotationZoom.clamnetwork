@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <processing id="Azimuth" position="249,95" size="127,58" type="ControlSource">
+    <MinValue>-360</MinValue>
+    <MaxValue>360</MaxValue>
+    <Step>1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="BFormatRotationZoom" position="248,267" size="157,94" type="BFormatRotationZoom"/>
+
+  <processing id="Dominance" position="326,201" size="127,58" type="ControlSource">
+    <MinValue>0.25</MinValue>
+    <MaxValue>4</MaxValue>
+    <Step>0.001</Step>
+    <UnitName>ratio</UnitName>
+  </processing>
+
+  <processing id="Elevation" position="298,148" size="127,58" type="ControlSource">
+    <MinValue>-90</MinValue>
+    <MaxValue>90</MaxValue>
+    <Step>1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="Roll" position="182,31" size="113,58" type="ControlSource">
+    <MinValue>-360</MinValue>
+    <MaxValue>360</MaxValue>
+    <Step>1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="Win" position="-12,10" size="128,108" type="AudioSource"/>
+
+  <processing id="Wout" position="471,44" size="128,111" type="AudioSink"/>
+
+  <processing id="Xin" position="-9,112" size="128,108" type="AudioSource"/>
+
+  <processing id="Xout" position="472,154" size="128,111" type="AudioSink"/>
+
+  <processing id="Yin" position="-10,215" size="128,108" type="AudioSource"/>
+
+  <processing id="Yout" position="478,262" size="128,111" type="AudioSink"/>
+
+  <processing id="Zin" position="-10,326" size="128,108" type="AudioSource"/>
+
+  <processing id="Zout" position="483,373" size="128,111" type="AudioSink"/>
+
+  <port_connection>
+    <out>BFormatRotationZoom.W</out>
+    <in>Wout.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormatRotationZoom.X</out>
+    <in>Xout.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormatRotationZoom.Y</out>
+    <in>Yout.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormatRotationZoom.Z</out>
+    <in>Zout.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Win.AudioOut</out>
+    <in>BFormatRotationZoom.W</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Xin.AudioOut</out>
+    <in>BFormatRotationZoom.X</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Yin.AudioOut</out>
+    <in>BFormatRotationZoom.Y</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Zin.AudioOut</out>
+    <in>BFormatRotationZoom.Z</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Azimuth.output</out>
+    <in>BFormatRotationZoom.azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Dominance.output</out>
+    <in>BFormatRotationZoom.dominance</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Elevation.output</out>
+    <in>BFormatRotationZoom.elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Roll.output</out>
+    <in>BFormatRotationZoom.roll</in>
+  </control_connection>
+
+</network>
