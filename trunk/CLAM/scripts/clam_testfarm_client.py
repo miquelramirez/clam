@@ -1,4 +1,9 @@
 #! /usr/bin/python
+
+# to install as a cron script, use this line in crontab
+# 0,5,10,15,20,25,30,35,40,45,50,55 * * * *    (cd /home/parumi/testfarm_sandboxes/clam/CLAM/scripts && svn up clam_testfarm_client.py && ./runOnce.py lock ./clam_testfarm_client.py) 2>&1 | cat > /tmp/err_testfarm_clam
+
+
 import os, sys, time
 sys.path.append('%s/testfarm/src' % os.environ['HOME'])
 from task import *
