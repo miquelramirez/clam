@@ -50,7 +50,7 @@ public:
 	ProcessingData(const ProcessingData& prototype, bool shareData=false, bool deep=true)
 		: DynamicType(prototype, shareData, deep)
 	{};
-	virtual ~ProcessingData(){};
+	virtual ~ProcessingData();
 
 };
 

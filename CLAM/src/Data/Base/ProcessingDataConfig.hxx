@@ -51,7 +51,7 @@ public:
 	ProcessingDataConfig(const ProcessingDataConfig& prototype, bool shareData=false, bool deep=true)
 		: DynamicType(prototype, shareData, deep)
 	{};
-	virtual ~ProcessingDataConfig(){};
+	virtual ~ProcessingDataConfig();
 };
 
 }; //namespace CLAM
