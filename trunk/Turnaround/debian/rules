@@ -30,7 +30,7 @@ build-stamp: configure-stamp
 	mkdir -p $(CURDIR)/debian/clam-turnaround/usr
 	scons -C$(CURDIR) $(OPTIONS)
 	# Add here commands to compile the indep part of the package.
-	convert -resize 32x32 -colors 24 src/images/turnaround-icon.png $(CURDIR)/clam-turnaround.xpm
+	convert -resize 32x32 -colors 24 src/images/segmentation.svg $(CURDIR)/clam-turnaround.xpm
 	#docbook-to-man debian/ChordExtractor.sgml > ChordExtractor.1
 	touch $@
 
