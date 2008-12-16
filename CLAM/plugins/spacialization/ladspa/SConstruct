@@ -35,6 +35,7 @@ extraPaths = [
 env.Append(CPPPATH=extraPaths)
 
 env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+env.Depends( "clam_plugin.os", glob.glob("../example-data/*.clamnetwork"))
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources, SHLIBPREFIX=''),
 	env.Program("main.cxx" ),
