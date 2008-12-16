@@ -10,11 +10,12 @@ from versionInfo import versionFromRemoteSvn
 proxyoption = "--http-proxy 'http://proxy.upf.edu:8080/'"
 proxyoption = ""
 distributions = [
+#	('debian', 'lenny',   "http://ftp.de.debian.org/debian/", ['main']),
+	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 #	('ubuntu', 'gutsy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 	('ubuntu', 'hardy', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 	('ubuntu', 'intrepid', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
-#	('debian', 'lenny',   "http://ftp.de.debian.org/debian/", ['main']),
-	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
+	('ubuntu', 'jaunty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 ]
 repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
 repositories = [
@@ -23,6 +24,7 @@ repositories = [
 	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
 	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
 	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
+	( 'Turnaround',     'clam-turnaround',   versionFromRemoteSvn('Turnaround')[1] ),
 ]
 
 hooks = {
