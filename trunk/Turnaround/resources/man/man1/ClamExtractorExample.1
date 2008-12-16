@@ -1,0 +1,50 @@
+.TH ClamExtractorExample 1 "August 24, 2005" "version 0.3.0" "MISCELLANEOUS"
+.SH NAME
+ClamExtractorExample \- Extracts music features from audio
+.SH SYNOPSIS
+.B ClamExtractorExample [-s] [-f <suffix>] <wavefile1> <wavefile2> ...
+.SH DESCRIPTION
+.PP
+Extracts low level descriptors and id3 information usitable for \fBAnnotator\fR
+.SH OPTIONS
+.TP
+-h
+shows this help
+.TP
+-s
+dump the schema to the standard output
+.TP
+-f suffix
+append suffix to the generated descriptors file (default: '.pool')
+.TP
+-p project
+Generates a dummy project with all the wave files
+.SH EXAMPLES
+Dump the schema into schema.sc
+
+.EX
+	$ ClamExtractorExample -s schema.sc
+.EE
+
+Dump song1.wav.beats, song2.mp3.beats and song3.ogg.beats with the extracted description.
+
+.EX
+	$ ClamExtractorExample -f .beats song1.wav song2.mp3 song3.ogg
+.EE
+
+Generate the project file and the schema file with default settings.
+
+.EX
+	$ ClamExtractorExample -p path/to/project/Project.pro
+.EE
+
+Generate the project and the schema using .beats as suffix and generating all the descriptions.
+
+.EX
+	$ ClamExtractorExample -p path/to/project/Project.pro -f .beats path/to/project/*.{wav,ogg,mp3}
+.EE
+
+.SH AUTHOR
+CLAM development team (clam (at) iua.upf.es)
+.SH SEE ALSO
+Annotator(1)
