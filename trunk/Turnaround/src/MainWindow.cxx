@@ -28,7 +28,6 @@
 
 #include <CLAM/CLAMVersion.hxx>
 #include <CLAM/PANetworkPlayer.hxx>
-#include <CLAM/JACKNetworkPlayer.hxx>
 #include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/AudioFileMemoryLoader.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
