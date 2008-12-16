@@ -55,7 +55,7 @@ namespace CLAM {
 			{};
 
 
-		virtual ~ProcessingConfig(){};
+		virtual ~ProcessingConfig();
 
 		virtual const char * GetClassName() const {return "Processing";}
 	};

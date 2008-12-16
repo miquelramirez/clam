@@ -39,7 +39,7 @@ class Component {
 // Construction/Destruction
 public:
 	//* The required virtual destructor
-	virtual ~Component() {};
+	virtual ~Component();
 // Redifinible methods
 public:
 	/** 
