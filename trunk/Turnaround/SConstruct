@@ -158,7 +158,7 @@ pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQDESIGNER_EXPORT_WIDGETS','-D_RE
 env.AppendUnique(CPPFLAGS=pluginDefines)
 
 manpages = [
-	#'resources/man/man1/Turnaround.1',
+	'resources/man/man1/Turnaround.1',
 	]
 
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
