@@ -33,25 +33,26 @@ def set_qtdir_to_qt3(x) :
 	os.environ['QTDIR']=localDefinitions['qt3dir']
 
 sandbox = os.path.expanduser('~/')
-localDefinitions = {
-	'name': 'mac-10.4.8-intel-macbook',
-	'description': '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>',
-	'sandbox': sandbox,
-	'clamsrcroot': sandbox+"clam",
-	'installPath': sandbox+"local",
-	'qt3dir':'/opt/local/',
-#	'qt4dir':'/usr/local/Trolltech/Qt-4.2.2/',
-	'qt4dir':'/opt/local/',
-	'cppunit_prefix': sandbox+"local",
-	'packageWildcard':'*.dmg',
-	'downloadPlatform':'mac',
-	'extraLibOptions': '',
-	'extraAppOptions': '',
-}
+localDefinitions = dict(
+	name = 'mac-10.4.8-intel-macbook',
+	description = '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>',
+	sandbox = sandbox,
+	repositories = "clam clam/testdata",
+	installPath = os.path.join(sandbox,"local"),
+	qt3dir ='/opt/local/',
+#	qt4dir ='/usr/local/Trolltech/Qt-4.2.2/',
+	qt4dir ='/opt/local/',
+	cppunit_prefix = os.path.join(sandbox,"local"),
+	packageWildcard ='*.dmg',
+	downloadPlatform ='mac',
+	extraLibOptions = '',
+	extraAppOptions = '',
+)
+repositories = localDefinitions['repositories'].split()
 
 client = Client(localDefinitions['name'])
 client.brief_description = localDefinitions['description']
-	
+
 
 clam = Task(
 	project = Project("CLAM"), 
@@ -59,116 +60,147 @@ clam = Task(
 	task_name="with svn update" 
 	)
 clam.set_check_for_new_commits( 
-		checking_cmd="cd %(clamsrcroot)s && svn status -u | grep \*"%localDefinitions,
-		minutes_idle=15
+	checking_cmd='cd %(sandbox)s && svn status -u %(repositories)s | grep \'[*!]\''%localDefinitions,
+	minutes_idle=15
 )
-
-clam.add_subtask( "List of new commits", [
-	"cd %(clamsrcroot)s"%localDefinitions,
-	{CMD:"svn log -r BASE:HEAD", INFO: lambda x:x },
-	{CMD: "svn up", INFO: lambda x:x },
+clam.add_subtask( 'List of new commits', [
+	'cd %(sandbox)s/'%localDefinitions,
+	] + [
+		# 'true' is needed in order testfarm not to catch the 'cd'
+		{CMD: 'true ; cd %s; svn log -r BASE:HEAD; cd -'%repo, INFO: lambda x:x }
+		for repo in repositories
+	] + [
+		{CMD: 'svn up %s'%repo, INFO: lambda x:x }
+		for repo in repositories
 	] )
 
-clam.add_subtask("count lines of code", [
-	{CMD:"echo %(clamsrcroot)s/CLAM"%localDefinitions, STATS: lambda x: {"clam_loc": countLines(x) } },
-	{CMD:"echo %(clamsrcroot)s/SMSTools"%localDefinitions, STATS: lambda x: {"smstools_loc": countLines(x) } },
-	{CMD:"echo %(clamsrcroot)s/NetworkEditor"%localDefinitions, STATS: lambda x: {"networkeditor_loc": countLines(x) } },
+clam.add_subtask('count lines of code', [
+	{CMD:'echo %(sandbox)s/clam/CLAM'%localDefinitions, STATS: lambda x: {'clam_loc': countLines(x) } },
+	{CMD:'echo %(sandbox)s/clam/SMSTools'%localDefinitions, STATS: lambda x: {'smstools_loc': countLines(x) } },
+	{CMD:'echo %(sandbox)s/clam/NetworkEditor'%localDefinitions, STATS: lambda x: {'networkeditor_loc': countLines(x) } },
 ] )
 clam.add_deployment( [
-	"cd %(clamsrcroot)s/CLAM"%localDefinitions,
-	"rm -rf %(installPath)s/*"%localDefinitions,
-	"cd %(clamsrcroot)s/CLAM/"%localDefinitions,
-#	"scons configure prefix=%(installPath)s %(extraLibOptions)s"%localDefinitions,
-	"scons",
-	"scons install",
+	'cd %(sandbox)s/clam/CLAM'%localDefinitions,
+#	'rm -rf %(installPath)s/*'%localDefinitions,
+	'scons configure prefix=%(installPath)s %(extraLibOptions)s'%localDefinitions,
+	'scons',
+	'scons install',
 ] )
 
-clam.add_subtask("Unit Tests", [
-	"cd %(clamsrcroot)s/CLAM"%localDefinitions,
-	"cd test",
-	"scons test_data_path=%(clamsrcroot)s/testdata clam_prefix=%(installPath)s"%localDefinitions, # TODO: test_data_path and release
+clam.add_subtask('Unit Tests', [
+	'cd %(sandbox)s/clam/CLAM'%localDefinitions,
+	'cd test',
+	'scons test_data_path=%(sandbox)s/clam/testdata clam_prefix=%(installPath)s'%localDefinitions, # TODO: test_data_path and release
 	{INFO : lambda x:startTimer() }, 
-	{CMD: "scons run_unit_tests", INFO: lambda x:x, STATUS_OK: lambda x:True},
+	{CMD: 'scons run_unit_tests', INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
-clam.add_subtask("Functional Tests", [
-	"cd %(clamsrcroot)s/CLAM"%localDefinitions,
-	"cd test",
-	"scons test_data_path=%(clamsrcroot)s/testdata clam_prefix=%(installPath)s"%localDefinitions, # TODO: test_data_path and release
+clam.add_subtask('Functional Tests', [
+	'cd %(sandbox)s/clam/CLAM'%localDefinitions,
+	'cd test',
+	'scons test_data_path=%(sandbox)s/clam/testdata clam_prefix=%(installPath)s'%localDefinitions, # TODO: test_data_path and release
 	{INFO : lambda x:startTimer() }, 
-	{CMD:"scons run_functional_tests", INFO: lambda x:x, STATUS_OK: lambda x:True},
+	{CMD:'scons run_functional_tests', INFO: lambda x:x, STATUS_OK: lambda x:True},
 	{STATS : lambda x: {'exectime_functests' : ellapsedTime()} },
 ] )
-clam.add_subtask("CLAM Examples", [
-	{CMD: "echo set QTDIR to qt4", INFO: set_qtdir_to_qt4},
-	"cd %(clamsrcroot)s/CLAM/examples"%localDefinitions,
-	"scons clam_prefix=%(installPath)s"%localDefinitions,
+
+clam.add_subtask('CLAM Examples', [
+	{CMD: 'echo set QTDIR to qt4', INFO: set_qtdir_to_qt4},
+	'cd %(sandbox)s/clam/CLAM/examples'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 ] )
-clam.add_subtask("CLAM Plugins", [
+clam.add_subtask('CLAM Plugins', [
 	{CMD: "echo set QTDIR to qt4", INFO: set_qtdir_to_qt4},
-
-	'cd %(clamsrcroot)s/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions,
+	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
-	'cd %(clamsrcroot)s/CLAM/plugins/speech'%localDefinitions,
+	'cd %(sandbox)s/clam/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
-	'cd %(clamsrcroot)s/CLAM/plugins/osc'%localDefinitions,
+	'cd %(sandbox)s/clam/CLAM/plugins/GuitarEffects/'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
-	'cd %(clamsrcroot)s/CLAM/plugins/spacialization'%localDefinitions,
+	'cd %(sandbox)s/clam/CLAM/plugins/osc'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 
-	'cd %(clamsrcroot)s/CLAM/plugins/GuitarEffects/'%localDefinitions,
+	'cd %(sandbox)s/clam/CLAM/plugins/speech'%localDefinitions,
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
+] )
+clam.add_subtask('Back-to-back network tests', [
+	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
+	'./back2back.py',
 ] )
 """
-clam.add_subtask("SMSTools packaging", [
-	{CMD: "echo setting QTDIR to qt3 path ", INFO: set_qtdir_to_qt3},
-	"cd %(clamsrcroot)s/SMSTools"%localDefinitions,
-	"scons prefix=%(installPath)s clam_prefix=%(installPath)s"%localDefinitions,
-	"%(clamsrcroot)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
-	"rm -f %(packageWildcard)s"%localDefinitions,
-	"scons package",
-	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
+clam.add_subtask('SMSTools packaging', [
+	{CMD: 'echo setting QTDIR to qt3 path ', INFO: set_qtdir_to_qt3},
+	'cd %(sandbox)s/clam/SMSTools'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s'%localDefinitions,
+	'%(sandbox)s/clam/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
+	'rm -f %(packageWildcard)s'%localDefinitions,
+	'scons package',
+	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
 	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 """
 clam.add_subtask('vmqt4 compilation and examples', [
-	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
-	"cd %(clamsrcroot)s/Annotator/vmqt"%localDefinitions,
+	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
+	'cd %(sandbox)s/clam/Annotator/vmqt'%localDefinitions,
 	'scons clam_prefix=%(installPath)s release=1 %(extraAppOptions)s'%localDefinitions,
 	'scons examples',
 ] )
-clam.add_subtask("Annotator packaging", [
-	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
-	"cd %(clamsrcroot)s/Annotator"%localDefinitions,
-	"scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s "%localDefinitions,
-#	"rm -f %(packageWildcard)s"%localDefinitions,
-	"scons package",
-#	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
+clam.add_subtask('Annotator packaging', [
+	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
+	'cd %(sandbox)s/clam/Annotator'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
+	'rm -f %(packageWildcard)s'%localDefinitions,
+	'scons package',
+#	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
 #	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
-clam.add_subtask("NetworkEditor packaging", [
-	{CMD: "echo setting QTDIR to qt4 path ", INFO: set_qtdir_to_qt4},
-	"cd %(clamsrcroot)s/NetworkEditor"%localDefinitions,
-	"scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraAppOptions)s "%localDefinitions,
-	"%(clamsrcroot)s/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools "%localDefinitions,
-#	"rm -f %(packageWildcard)s"%localDefinitions,
-	"scons package",
-#	"ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/"%localDefinitions,
+clam.add_subtask('NetworkEditor packaging', [
+	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
+	'cd %(sandbox)s/clam/NetworkEditor'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraAppOptions)s '%localDefinitions,
+	'%(sandbox)s/clam/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
+	'rm -f %(packageWildcard)s'%localDefinitions,
+	'scons package',
+#	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
 #	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
+
+clam.add_subtask('Turnaround packaging', [
+	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
+	'cd %(sandbox)s/clam/Turnaround'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraAppOptions)s '%localDefinitions,
+	'scons package',
+	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
+	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+] )
+
+clam.add_subtask('Voice2MIDI packaging', [
+	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
+	'cd %(sandbox)s/clam/Voice2MIDI'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraAppOptions)s '%localDefinitions,
+	'%(sandbox)s/clam/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
+	'rm -f %(packageWildcard)s'%localDefinitions,
+#	'scons package',
+#	'ls *svn1* > /dev/null ; scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
+#	'ls *svn1* > /dev/null ; slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+] )
+
+forceRun = len(sys.argv)>1
+print "force Run: ", forceRun
 
 Runner( clam, 
-	continuous = True,
-	remote_server_url = 'http://ocata48123.upf.es/testfarm_server',
+	continuous = False,
+	first_run_always = forceRun,
+	remote_server_url = 'http://84.88.76.190/testfarm_server',
 #	local_base_dir='/tmp',
 )
 
