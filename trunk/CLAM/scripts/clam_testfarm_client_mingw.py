@@ -129,11 +129,11 @@ clam.add_subtask('CLAM Plugins', [
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 ] )
+"""
 clam.add_subtask('Back-to-back network tests', [
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
 	'./back2back.py',
 ] )
-"""
 clam.add_subtask('SMSTools packaging', [
 	{CMD: 'echo setting QTDIR to qt3 path ', INFO: set_qtdir_to_qt3},
 	'cd %(sandbox)s/clam/SMSTools'%localDefinitions,
@@ -188,8 +188,8 @@ clam.add_subtask('Voice2MIDI packaging', [
 	'%(sandbox)s/clam/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
 	'rm -f %(packageWildcard)s'%localDefinitions,
 #	'scons package',
-#	'ls *svn1* > /dev/null ; scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
-#	'ls *svn1* > /dev/null ; slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+#	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
+#	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 forceRun = len(sys.argv)>1
