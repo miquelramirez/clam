@@ -98,6 +98,8 @@ Section "Principal" SEC01
   File '${EXTERNALDLLDIR}\intl.dll'
   File '${EXTERNALDLLDIR}\zlib1.dll'
   File '${EXTERNALDLLDIR}\libgmodule-2.0-0.dll'
+  SetOutPath "$INSTDIR\bin\iconengines"
+  File '${QTDIR}\plugins\iconengines\qsvgicon4.dll'
   SetOutPath "$INSTDIR\share\turnaround\i18n"
 ;  File "..\src\i18n\Turnaround_ca.qm"
 ;  File "..\src\i18n\Turnaround_es.qm"
