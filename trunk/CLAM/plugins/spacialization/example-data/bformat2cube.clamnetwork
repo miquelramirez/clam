@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="BFormat2Cube" position="191,198" size="117,158" type="BFormat2Cube">
-  </processing>
+  <processing id="BFormat2Cube" position="191,198" size="117,158" type="BFormat2Cube"/>
 
   <processing id="Base Back Right" position="462,304" size="128,111" type="AudioSink"/>
 
@@ -11,6 +10,22 @@
   <processing id="Base Front Left" position="465,11" size="128,111" type="AudioSink"/>
 
   <processing id="Base Front Right" position="466,106" size="128,111" type="AudioSink"/>
+
+  <processing id="Oscilloscope" position="469,422" size="134,95" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_1" position="352,419" size="127,103" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_2" position="345,507" size="140,89" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_3" position="467,504" size="127,92" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_4" position="604,425" size="121,96" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_5" position="719,429" size="118,91" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_6" position="599,504" size="131,91" type="Oscilloscope"/>
+
+  <processing id="Oscilloscope_7" position="716,505" size="125,87" type="Oscilloscope"/>
 
   <processing id="Top Base Left" position="592,205" size="128,111" type="AudioSink"/>
 
@@ -34,8 +49,18 @@
   </port_connection>
 
   <port_connection>
+    <out>BFormat2Cube.Base Front Left</out>
+    <in>Oscilloscope.Input</in>
+  </port_connection>
+
+  <port_connection>
     <out>BFormat2Cube.Base Front Right</out>
     <in>Base Front Right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Cube.Base Front Right</out>
+    <in>Oscilloscope_1.Input</in>
   </port_connection>
 
   <port_connection>
@@ -44,8 +69,18 @@
   </port_connection>
 
   <port_connection>
+    <out>BFormat2Cube.Base Back Left</out>
+    <in>Oscilloscope_2.Input</in>
+  </port_connection>
+
+  <port_connection>
     <out>BFormat2Cube.Base Back Right</out>
     <in>Base Back Right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Cube.Base Back Right</out>
+    <in>Oscilloscope_3.Input</in>
   </port_connection>
 
   <port_connection>
@@ -54,8 +89,18 @@
   </port_connection>
 
   <port_connection>
+    <out>BFormat2Cube.Top Front Left</out>
+    <in>Oscilloscope_4.Input</in>
+  </port_connection>
+
+  <port_connection>
     <out>BFormat2Cube.Top Front Right</out>
     <in>Top Front Right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Cube.Top Front Right</out>
+    <in>Oscilloscope_5.Input</in>
   </port_connection>
 
   <port_connection>
@@ -64,8 +109,18 @@
   </port_connection>
 
   <port_connection>
+    <out>BFormat2Cube.Top Back Left</out>
+    <in>Oscilloscope_6.Input</in>
+  </port_connection>
+
+  <port_connection>
     <out>BFormat2Cube.Top Back Right</out>
     <in>Top Base Right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Cube.Top Back Right</out>
+    <in>Oscilloscope_7.Input</in>
   </port_connection>
 
   <port_connection>

@@ -40,8 +40,10 @@ protected:
 	CLAM::AudioInPort _x;
 	CLAM::AudioInPort _y;
 	CLAM::AudioInPort _z;
-	std::vector<double> _sinAlphas;
-	std::vector<double> _cosAlphas;
+	std::vector<double> _sinAzimuths;
+	std::vector<double> _cosAzimuths;
+	std::vector<double> _sinElevations;
+	std::vector<double> _cosElevations;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 	OutPorts _outputs;
 	unsigned _nChannels;
@@ -68,8 +70,10 @@ public:
 	{
 		CopyAsConcreteConfig(_config, config);
 		RemovePortsAndControls();
-		_sinAlphas.clear();
-		_cosAlphas.clear();
+		_sinElevations.clear();
+		_cosElevations.clear();
+		_sinAzimuths.clear();
+		_cosAzimuths.clear();
 
 //		_nChannels=_config.GetNChannels();
 		unsigned buffersize = BackendBufferSize();
@@ -78,8 +82,10 @@ public:
 		{
 			double angle = 360.*i/_nChannels;
 			double rad = M_PI*angle/180;
-			_sinAlphas.push_back( std::sin(rad) );
-			_cosAlphas.push_back( std::cos(rad) );
+			_sinElevations.push_back( std::sin(rad) );
+			_cosElevations.push_back( std::cos(rad) );
+			_sinAzimuths.push_back( std::sin(rad) );
+			_cosAzimuths.push_back( std::cos(rad) );
 	//		std::cout << "sin "<< angle << " "<< std::sin(rad) << std::endl;
 
 			std::ostringstream nameStream;
@@ -94,19 +100,20 @@ public:
 
 		struct SpeakerPositions {
 			const char * name;
-			int angle;
+			float azimuth;
+			float elevation;
 		} speaker[] =
 		{
 		// The following angles are "encoding" angles not ITU exhibiton setup angles.
-			{"Base Front Left", 0},
-			{"Base Front Right", 1},
-			{"Base Back Left", 2},
-			{"Base Back Right", 3},
-			{"Top Front Left", 4},
-			{"Top Front Right", 5},
-			{"Top Back Left", 6},
-			{"Top Back Right", 7},
-			{0,0}
+			{"Base Front Left", 45., -35.2},
+			{"Base Front Right", -45., -35.2},
+			{"Base Back Left", 135., -35.2},
+			{"Base Back Right", -135, -35.2},
+			{"Top Front Left", 45., 35.2},
+			{"Top Front Right", -45., 35.2},
+			{"Top Back Left", 135., 35.2},
+			{"Top Back Right", -135., 35.2},
+			{0, 0., 0.}
 		};
 		for (unsigned i=0; speaker[i].name; i++)
 		{
@@ -114,8 +121,14 @@ public:
 			port->SetSize( buffersize );
 			port->SetHop( buffersize );
 			_outputs.push_back( port );
-		}
 
+			_sinAzimuths.push_back( std::sin( M_PI*speaker[i].azimuth/180 ) );
+			_cosAzimuths.push_back( std::cos( M_PI*speaker[i].azimuth/180 ) );
+			_sinElevations.push_back( std::sin( M_PI*speaker[i].elevation/180 ) );
+			_cosElevations.push_back( std::cos( M_PI*speaker[i].elevation/180 ) );
+
+		}
+		
 		
 		_w.SetSize(buffersize);
 		_w.SetHop(buffersize);
@@ -137,15 +150,25 @@ public:
 		const float sqrt2 = sqrt(2);
 		const float sqrtN = sqrt(_nChannels);
 		CLAM::TData* channels[_nChannels];
-	
+		const float wGain = 1.;
+		const float velocitiesGain = 2.;
+
 		for (unsigned channel=0; channel<_nChannels; channel++)
 			channels[channel] = &_outputs[channel]->GetAudio().GetBuffer()[0];
-
-
+		
+		
 		for (int i=0; i<w.Size(); i++)
 		{
 			for (unsigned channel=0; channel<_nChannels; channel++)
 			{
+
+				channels[channel][i] = 
+					w[i] * wGain + (
+					x[i] * _cosAzimuths[channel] * _cosElevations[channel] + 
+					y[i] * _sinAzimuths[channel] * _cosElevations[channel] +
+					z[i] * _sinElevations[channel]
+					) * velocitiesGain;
+#if 0
 				switch (channel)
 				{
 					case 0: // base l
@@ -176,6 +199,7 @@ public:
 						std::cout << "ERROR at BFormat2Cube: bad channel number."<< std::endl;
 						break;
 				}
+#endif 
 			}
 		}
 
