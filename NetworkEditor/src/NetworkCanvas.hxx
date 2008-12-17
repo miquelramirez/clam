@@ -1405,45 +1405,6 @@ public:
 		}
 	}
 
-	static quint32 positionFileMagicNumber() { return 0x01026420; }
-
-	void savePositions(const QString & filename)
-	{
-		QFile file(filename);
-		file.open(QIODevice::WriteOnly);
-		QDataStream stream(&file);
-		stream << positionFileMagicNumber();
-		for (unsigned i=0; i<_processings.size(); i++)
-		{
-			stream << _processings[i]->getName();
-			stream << _processings[i]->pos();
-			stream << _processings[i]->size();
-		}
-	}
-	void loadPositions(const QString & filename)
-	{
-		QFile file(filename);
-		file.open(QIODevice::ReadOnly);
-		QDataStream stream(&file);
-		quint32 magic;
-		stream >> magic;
-		if (magic!=positionFileMagicNumber()) return;
-		while (!stream.atEnd())
-		{
-			QString name;
-			QPoint pos;
-			QSize size;
-			stream >> name;
-			stream >> pos;
-			stream >> size;
-			if (stream.status()!=QDataStream::Ok) break;
-			ProcessingBox * box = getBox(name);
-			if (!box) continue;
-			box->move(pos);
-			box->resize(size);
-		}
-	}
-
 	bool updateGeometriesOnXML(QPoint offsetPoint=QPoint(0,0))
 	{
 		CLAM::BaseNetwork::ProcessingsGeometriesMap processingsGeometriesMap;
