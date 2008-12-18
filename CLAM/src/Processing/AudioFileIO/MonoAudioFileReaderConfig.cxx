@@ -30,5 +30,8 @@ namespace CLAM
 		SetLoop(false);
 		SetSelectedChannel( 0 );
 	}
+	MonoAudioFileReaderConfig::~MonoAudioFileReaderConfig()
+	{
+	}
 }
 
