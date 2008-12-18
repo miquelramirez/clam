@@ -140,12 +140,11 @@ clam.add_subtask('NetworkEditor installation', [
 	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
 	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
-
+"""
 clam.add_subtask('Back-to-back network tests', [
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
 	'./back2back.py',
 ] )
-
 clam.add_subtask('SMSTools installation', [
 	{CMD: 'echo setting QTDIR to qt3 path ', INFO: set_qtdir_to_qt3},
 	'cd %(sandbox)s/clam/SMSTools'%localDefinitions,
