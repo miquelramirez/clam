@@ -137,9 +137,8 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & name, const std::st
 	if (_network.HasUnconnectedInPorts())
 	{
 		std::cerr << "CLAM LADSPA: Error loading CLAM network based plugin '" << name << "'." <<std::endl;
-		std::cerr << "Some internal inports were not connected in the network." <<std::endl;
-		std::cerr << _network.GetUnconnectedInPorts() << std::endl;
-		std::cerr << "Plugin not loaded." << std::endl;
+		std::cerr << "Plugin not loaded because internal network inports were unconnected." <<std::endl;
+		std::cerr << _network.GetUnconnectedInPorts() << std::flush;
 		return;
 	}
 
