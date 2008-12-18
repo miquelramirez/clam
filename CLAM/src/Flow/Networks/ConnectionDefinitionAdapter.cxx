@@ -23,6 +23,7 @@
 #include "ConnectionDefinitionAdapter.hxx"
 #include "Assert.hxx"
 #include "XMLAdapter.hxx"
+#include "XMLStorage.hxx"
 
 namespace CLAM
 {
@@ -49,10 +50,12 @@ namespace CLAM
 	void ConnectionDefinitionAdapter::LoadFrom (Storage & store) 
 	{
 		XMLAdapter<Text> outAdapter( mOut, "out", true);
+		if (not store.Load(outAdapter))
+			throw XmlStorageErr("Failed to read a connection");
+
 		XMLAdapter<Text> inAdapter( mIn, "in", true);	
-		
-		store.Load(outAdapter);
-		store.Load(inAdapter);
+		if (not store.Load(inAdapter))
+			throw XmlStorageErr("Failed to read a connection");
 	}
 } // namespace CLAM
 
