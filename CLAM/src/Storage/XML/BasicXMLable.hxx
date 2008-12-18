@@ -65,7 +65,7 @@ public:
 	 */
 	BasicXMLable (const char * name=0, bool isXMLElement=false);
 	
-	virtual ~BasicXMLable() {};
+	virtual ~BasicXMLable();
 // Accessors
 public:
 	//* @return A pointer to the XMLName

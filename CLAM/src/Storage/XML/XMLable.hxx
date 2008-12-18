@@ -46,7 +46,7 @@ namespace CLAM {
 class XMLable : public Storable {
 // Construction/Destruction
 public:
-	virtual ~XMLable() {};
+	virtual ~XMLable();
 // Redifinible methods
 public:
 	//* @return A pointer to the XMLName
