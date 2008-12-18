@@ -150,11 +150,8 @@ namespace CLAMTest {
 			std::stringstream stream;
 			XMLStorage storage;
 			storage.Dump(component, "object", stream, false);
-
-			std::string expected = 
-				"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>"
-				"<object><Text>La cadena esperada</Text></object>";
-			CPPUNIT_ASSERT_EQUAL(expected, stream.str());
+			CLAMTEST_ASSERT_XML_EQUAL(
+				"<object><Text>La cadena esperada</Text></object>\n", stream.str());
 
 		}
 
