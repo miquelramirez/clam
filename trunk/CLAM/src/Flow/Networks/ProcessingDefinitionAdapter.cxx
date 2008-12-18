@@ -64,12 +64,14 @@ namespace CLAM
 	}
 
 	void ProcessingDefinitionAdapter::LoadFrom (Storage & store) 
-	{	
+	{
 		XMLAdapter<Text> nameAdapter( mName, "id");
-		store.Load(nameAdapter);
-		Text className("");
+		if (!store.Load(nameAdapter))
+			throw XmlStorageErr("Processing without id attribute");
+		Text className;
 		XMLAdapter<Text> classNameAdapter( className, "type");
-		store.Load(classNameAdapter);
+		if (!store.Load(classNameAdapter))
+			throw XmlStorageErr("Processing without type attribute");
 
 		XMLAdapter<Text> positionAdapter (mPosition, "position");
 		store.Load(positionAdapter);
@@ -86,10 +88,13 @@ namespace CLAM
 				className + "' which is not available.";
 			throw XmlStorageErr(msg);
 		}
-		ProcessingConfig&  cfg = (ProcessingConfig&)mAdaptee->GetConfig();
-		XMLComponentAdapter configAdapter( cfg );
+		Component * cfg = mAdaptee->GetConfig().DeepCopy();
+		XMLComponentAdapter configAdapter( *cfg );
 		store.Load(configAdapter);
-		mAdaptee->Configure(cfg);
+		ProcessingConfig * config = dynamic_cast<ProcessingConfig *>(cfg);
+		CLAM_ASSERT(config, "Retrieved config fails to cast as a ProcessingConfig");
+		mAdaptee->Configure(*config);
+		delete cfg;
 	}
 } // namespace CLAM
 
