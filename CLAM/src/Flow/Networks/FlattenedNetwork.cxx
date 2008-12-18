@@ -148,8 +148,8 @@ namespace CLAM
 
 	void FlattenedNetwork::LoadFrom( Storage & storage)
 	{
-		typedef std::map <std::string, std::string> changeProcNames;
-		changeProcNames newProcNames;
+		typedef std::map <std::string, std::string> NamesMap;
+		NamesMap namesMap;
 		if (!_setPasteMode) Clear();
 		XMLAdapter<std::string> strAdapter( _name, "id");
 		storage.Load(strAdapter);
@@ -159,28 +159,24 @@ namespace CLAM
 		{
 			ProcessingDefinitionAdapter procDefinition;
 			XMLComponentAdapter xmlAdapter(procDefinition, "processing", true);
-			if(storage.Load(xmlAdapter) == false) break;
-			std::string name=procDefinition.GetName();
-			
-			if (!_setPasteMode)
-				AddProcessing(name, procDefinition.GetProcessing()); 
-			else
+			if (not storage.Load(xmlAdapter)) break;
+
+			const std::string & definitionName = procDefinition.GetName();
+			CLAM::Processing * processing = procDefinition.GetProcessing();
+			std::string finalName = definitionName;
+			if (_setPasteMode)
 			{
-				std::string newName = GetUnusedName(name,true);
-				CLAM::Processing * processing =procDefinition.GetProcessing();
-//				std::string key=processing->GetClassName();
-//				std::string newName= AddProcessing(key);
-				AddProcessing(newName,processing);
-				newProcNames.insert(changeProcNames::value_type(name,newName));
-				name=newName;
+				finalName = GetUnusedName(definitionName, true);
+				namesMap.insert(std::make_pair(definitionName,finalName));
 			}
+			AddProcessing(finalName, processing); 
 			// if exists canvas geometries, restore them
 			if (procDefinition.GetPosition()!="" && procDefinition.GetSize()!="")
 			{
-				Geometry processingGeometry;
-				StringPairToInts(procDefinition.GetPosition(),processingGeometry.x,processingGeometry.y);
-				StringPairToInts(procDefinition.GetSize(),processingGeometry.width,processingGeometry.height);
-				_processingsGeometries.insert(ProcessingsGeometriesMap::value_type(name,processingGeometry));
+				Geometry geometry;
+				StringPairToInts(procDefinition.GetPosition(),geometry.x,geometry.y);
+				StringPairToInts(procDefinition.GetSize(),geometry.width,geometry.height);
+				_processingsGeometries.insert(ProcessingsGeometriesMap::value_type(finalName,geometry));
 			}
 		}
 
@@ -188,24 +184,18 @@ namespace CLAM
 		{
 			ConnectionDefinitionAdapter connectionDefinition;
 			XMLComponentAdapter xmlAdapter(connectionDefinition, "port_connection", true);
-			if (!storage.Load(xmlAdapter)) break;
-			const std::string & fullOut = connectionDefinition.GetOutName();
-			const std::string & fullIn = connectionDefinition.GetInName();
-			try
+			if (not storage.Load(xmlAdapter)) break;
+			std::string fullOut = connectionDefinition.GetOutName();
+			std::string fullIn = connectionDefinition.GetInName();
+			if (_setPasteMode)
 			{
-				if (!_setPasteMode)
-					ConnectPorts( fullOut, fullIn );
-				else
-				{
-					const std::string newNameOut = newProcNames.find(GetProcessingIdentifier(fullOut))->second
-						+"."+GetConnectorIdentifier(fullOut);
-					const std::string newNameIn = newProcNames.find(GetProcessingIdentifier(fullIn))->second
-						+"."+GetConnectorIdentifier(fullIn);
-					ConnectPorts( newNameOut, newNameIn );
-				}
-				
+				fullOut = namesMap.find(GetProcessingIdentifier(fullOut))->second
+					+"."+GetConnectorIdentifier(fullOut);
+				fullIn = namesMap.find(GetProcessingIdentifier(fullIn))->second
+					+"."+GetConnectorIdentifier(fullIn);
 			}
-			catch (Err & e) { throw XmlStorageErr(e.what()); }
+			if (not ConnectPorts( fullOut, fullIn ))
+				throw XmlStorageErr(std::string("Unable to connect ports '")+fullOut+"->"+fullIn+".");
 		}
 
 		while(1)
@@ -213,22 +203,17 @@ namespace CLAM
 			ConnectionDefinitionAdapter connectionDefinition;
 			XMLComponentAdapter xmlAdapter(connectionDefinition, "control_connection", true);
 			if (!storage.Load(xmlAdapter)) break;
-			const std::string & fullOut = connectionDefinition.GetOutName();
-			const std::string & fullIn = connectionDefinition.GetInName();
-			try
+			std::string fullOut = connectionDefinition.GetOutName();
+			std::string fullIn = connectionDefinition.GetInName();
+			if (_setPasteMode)
 			{
-				if (!_setPasteMode)
-					ConnectControls( fullOut, fullIn );
-				else
-				{
-					const std::string newNameOut = newProcNames.find(GetProcessingIdentifier(fullOut))->second
-						+"."+GetConnectorIdentifier(fullOut);
-					const std::string newNameIn = newProcNames.find(GetProcessingIdentifier(fullIn))->second
-						+"."+GetConnectorIdentifier(fullIn);
-					ConnectControls( newNameOut, newNameIn );
-				}
+				fullOut = namesMap.find(GetProcessingIdentifier(fullOut))->second
+					+"."+GetConnectorIdentifier(fullOut);
+				fullIn = namesMap.find(GetProcessingIdentifier(fullIn))->second
+					+"."+GetConnectorIdentifier(fullIn);
 			}
-			catch (Err & e) { throw XmlStorageErr(e.what()); }
+			if (not ConnectControls( fullOut, fullIn ))
+				throw XmlStorageErr(std::string("Unable to connect controls '")+fullOut+"->"+fullIn+".");
 		}
 		_setPasteMode=false;
 	}
