@@ -70,6 +70,7 @@ else :
 
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources),
+	env.SharedLibrary(target="clam_plugins", source = sources+['ladspa/clam_plugin.cxx'], SHLIBPREFIX=''),
 	]
 
 tests = [
