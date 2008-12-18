@@ -3,7 +3,7 @@
 # optional: wav2png 
 # svn checkout http://wav2png.googlecode.com/svn/trunk/ wav2png-read-only
 
-import os, sys
+import os, sys, numpy
 def run(command) :
 	print "\033[32m:: ", command, "\033[0m"
 	lines = []
@@ -53,6 +53,9 @@ def diff_files(expected, result, diffbase) :
 		silentrun('sox -m -v 1 %s -v -1 %s %s 2>&1 '%(expected, result, diffwav))
 #####
 		max_amplitude = abs(float(errorString))
+		if not numpy.isfinite(max_amplitude) :
+			print "One of the files contains infinite values or NaN's"
+			return "One of the files contains infinite values or NaN's"
 		if not max_amplitude : return None
 		max_dBs = 20*math.log10(max_amplitude)
 		if max_dBs > threshold_dBs :
