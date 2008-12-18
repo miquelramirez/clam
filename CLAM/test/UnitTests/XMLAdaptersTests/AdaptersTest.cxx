@@ -111,7 +111,7 @@ public:
 	double d;
 	char c;
 	std::string s;
-	static char * kind() {return "Simple Adapter";}
+	static const char * kind() {return "Simple Adapter";}
 	SimpleAdapterTestCase(bool b) {
 		i = 3;
 		d = 3.5;
@@ -192,7 +192,7 @@ protected:
 	std::string *sarray;
 	unsigned isize, dsize, csize, ssize;
 public:
-	static char * kind() {return "Array of Simple type Adapter";}
+	static const char * kind() {return "Array of Simple type Adapter";}
 	template <class T>
 	void Fill(T*& target, unsigned & targetsize, T* source, unsigned size) {
 		target=new T[size];
@@ -325,7 +325,7 @@ public:
 		cv.assign(carray, carray+csize);
 		sv.assign(sarray, sarray+ssize);
 	}
-	static char * kind() {return "XMLIterableAdapter";}
+	static const char * kind() {return "XMLIterableAdapter";}
 	void AdaptToStore(Storage & storer, bool asContent, bool asElement) {
 		CLAM_ASSERT(!(asContent && asElement),
 			"Testing logic calling in AdaptToStore");
@@ -472,7 +472,7 @@ public:
 	ComponentAdapterTestCase(char c, bool b) : mComponent(c) {
 		mComponent.modify();
 	}
-	static char * kind() {return "XMLComponentAdapter";}
+	static const char * kind() {return "XMLComponentAdapter";}
 	void AdaptToStore(Storage & storer, bool asContent, bool asElement) const {
 		CLAM_ASSERT(!(asContent && asElement),
 			"Testing logic calling in AdaptToStore");
