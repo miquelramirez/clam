@@ -26,6 +26,9 @@
 
 namespace CLAM
 {
+AudioWindowingConfig::~AudioWindowingConfig()
+{
+}
 
 void AudioWindowingConfig::DefaultInit()
 {

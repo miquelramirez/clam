@@ -74,6 +74,7 @@ namespace CLAM {
 		DYN_ATTRIBUTE (5, public, bool, Invert);
 	public:
 		void DefaultValues();
+		~WindowGeneratorConfig();
 	protected:
 		void DefaultInit();
 
