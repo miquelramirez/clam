@@ -487,7 +487,8 @@ template <typename ConcreteConfig>
 inline void Processing::CopyAsConcreteConfig(ConcreteConfig & concrete, const ProcessingConfig & abstract) const 
 {
 	CLAM_ASSERT(typeid(ConcreteConfig)==typeid(abstract), 
-		"Configuring a Processing with a configuration not being the proper type.");
+		(std::string("Configuring a processing with a configuration of type ") + typeid(abstract).name() + 
+		" while it was expected a " + typeid(ConcreteConfig).name() + ".").c_str());
 	concrete = static_cast<const ConcreteConfig &>(abstract);
 }
 
