@@ -43,9 +43,9 @@ public:
 	ProcessingDefinitionAdapter( Processing * adaptee = 0, const std::string & name = "", const std::string & position="", const std::string & size = "");
 	virtual ~ProcessingDefinitionAdapter();	
 	Processing * GetProcessing(){return mAdaptee;}
-	const std::string & GetName(){return mName;}
-	const std::string & GetPosition(){return mPosition;}
-	const std::string & GetSize(){return mSize;}
+	const std::string & GetName() const {return mName;}
+	const std::string & GetPosition() const {return mPosition;}
+	const std::string & GetSize() const {return mSize;}
 
 public:
 	//* Returns the class name
