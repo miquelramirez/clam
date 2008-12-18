@@ -24,6 +24,10 @@
 
 using namespace CLAM;
 
+BasicXMLable::~BasicXMLable() 
+{
+}
+
 BasicXMLable::BasicXMLable (const char * name, bool isXMLElement)
 {
 	CLAM_BEGIN_CHECK
