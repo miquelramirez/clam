@@ -34,14 +34,14 @@ os.environ['CLAM_PLUGIN_PATH']='%s/testfarm_sandboxes/local/lib/clam' % HOME
 localDefinitions = dict(
 	name= 'linux_ubuntu_hardy',
 	description= '<img src="http://clam.iua.upf.es/images/linux_icon.png"/> <img src="http://clam.iua.upf.es/images/ubuntu_icon.png"/>',
-	sandbox= '$HOME/testfarm_sandboxes',
+	sandbox= '$HOME/CajitasDeArena',
 	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms",
 	qt3dir='',
 	qt4dir='',
 	extraLibOptions = 'release=0',
 	extraAppOptions = '',
 )
-localDefinitions['installPath'] = os.path.join(localDefinitions['sandbox'],"local"),
+localDefinitions['installPath'] = os.path.join(localDefinitions['sandbox'],"local")
 repositories = localDefinitions['repositories'].split()
 
 client = Client(localDefinitions['name'])
