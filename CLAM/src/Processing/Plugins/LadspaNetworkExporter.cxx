@@ -30,7 +30,7 @@ private:
 	unsigned long mClamBufferSize, mExternBufferSize;
 	
 public:
-	NetworkLADSPAPlugin(const std::string & networkXmlContent);
+	NetworkLADSPAPlugin(const std::string & label, const std::string & networkXmlContent);
 	~NetworkLADSPAPlugin();
 	
 	void Activate();
@@ -65,7 +65,7 @@ extern "C"
 	static LADSPA_Handle Instantiate(const LADSPA_Descriptor * descriptor, unsigned long sampleRate)
 	{
 //		std::cerr << "Network2Ladspa: instantiate" << std::endl;
-		return new CLAM::NetworkLADSPAPlugin((const char*)descriptor->ImplementationData);
+		return new CLAM::NetworkLADSPAPlugin(descriptor->Label, (const char*)descriptor->ImplementationData);
 	}
 	// Destruct plugin instance
 	static void CleanUp(LADSPA_Handle handle)
@@ -108,7 +108,7 @@ namespace CLAM
 {
 
 
-NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & networkXmlContent)
+NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & name, const std::string & networkXmlContent)
 {
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
@@ -122,8 +122,24 @@ NetworkLADSPAPlugin::NetworkLADSPAPlugin(const std::string & networkXmlContent)
 	}
 	catch ( XmlStorageErr err)
 	{
-		std::cerr << "CLAM::NetworkLADSPAPlugin WARNING: error opening file <" << xmlfile << "> . Plugin not loaded" <<std::endl;
+		std::cerr << "CLAM LADSPA: Error while loading CLAM network based plugin '" << name << "'." <<std::endl;
 		std::cerr << err.what() << std::endl;
+		std::cerr << "Plugin not loaded." << std::endl;
+		return;
+	}
+	if (_network.HasMisconfiguredProcessings())
+	{
+		std::cerr << "CLAM LADSPA: Error while configuring CLAM network based plugin '" << name << "'." <<std::endl;
+		std::cerr << _network.GetConfigurationErrors() << std::endl;
+		std::cerr << "Plugin not loaded." << std::endl;
+		return;
+	}
+	if (_network.HasUnconnectedInPorts())
+	{
+		std::cerr << "CLAM LADSPA: Error loading CLAM network based plugin '" << name << "'." <<std::endl;
+		std::cerr << "Some internal inports were not connected in the network." <<std::endl;
+		std::cerr << _network.GetUnconnectedInPorts() << std::endl;
+		std::cerr << "Plugin not loaded." << std::endl;
 		return;
 	}
 
@@ -322,7 +338,7 @@ LADSPA_Descriptor * NetworkLADSPAPlugin::CreateLADSPADescriptor(
 	const std::string & copyright
 	)
 {
-	CLAM::NetworkLADSPAPlugin plugin(networkXmlContent);
+	CLAM::NetworkLADSPAPlugin plugin(label, networkXmlContent);
 
 	unsigned numports =
 		plugin.mReceiverList.size() + plugin.mSenderList.size() +
