@@ -23,6 +23,10 @@
 
 namespace CLAM
 {
+	WindowGeneratorConfig::~WindowGeneratorConfig()
+	{
+	}
+
 	void WindowGeneratorConfig::DefaultInit()
 	{
 		/* All Attributes are added */

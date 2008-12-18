@@ -41,6 +41,7 @@ class AudioWindowingConfig:public ProcessingConfig
 	DYN_ATTRIBUTE(4,public,EWindowType, WindowType);
 	DYN_ATTRIBUTE(5,public,bool, DoHalfWindowShift);
 
+	~AudioWindowingConfig();
 private:
 	void DefaultInit();
 
