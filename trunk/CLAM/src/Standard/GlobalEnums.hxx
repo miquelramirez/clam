@@ -108,6 +108,7 @@ public:
 	EWindowType() : Enum(ValueTable(), eHamming) {}
 	EWindowType(tValue v) : Enum(ValueTable(), v) {};
 	EWindowType(std::string s) : Enum(ValueTable(), s) {};
+	virtual ~EWindowType();
 	virtual Component* Species() const { return new EWindowType(eHamming); }
 
 	enum {

@@ -56,6 +56,7 @@ namespace CLAM
 		DYN_ATTRIBUTE( 1, public, TIndex, SelectedChannel );
 		DYN_ATTRIBUTE( 2, public, bool, Loop );
 		
+		~MonoAudioFileReaderConfig();
 	protected:
 		void DefaultInit();
 	};
