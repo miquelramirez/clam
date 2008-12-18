@@ -1,28 +1,22 @@
 
 #include <CLAM/LadspaNetworkExporter.hxx>
 #include <CLAM/LadspaLibrary.hxx>
-static CLAM::LadspaLibrary library;
 
-CLAM_EXTERNAL_FILE_DATA(mono2bformat_embededNetwork,"../example-data/mono2bformat_nofaders.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformatRotationZoom_embededNetwork,"../example-data/bformatRotationZoom.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat2surround_embededNetwork,"../example-data/bformat2surround.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat2binaural_embededNetwork,"../example-data/bformat2binaural.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(mono2binaural_embededNetwork,"../example-data/mono2binaural.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(bformat2cube_embededNetwork,"../example-data/bformat2cube.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(mono2bformat_embededNetwork,"example-data/mono2bformat_nofaders.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(bformatRotationZoom_embededNetwork,"example-data/bformatRotationZoom.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(bformat2surround_embededNetwork,"example-data/bformat2surround.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(bformat2binaural_embededNetwork,"example-data/bformat2binaural.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(mono2binaural_embededNetwork,"example-data/mono2binaural.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(bformat2cube_embededNetwork,"example-data/bformat2cube.clamnetwork")
 //fakes:
-CLAM_EXTERNAL_FILE_DATA(fake_bformat2surround_embededNetwork,"fake_bformat2surround.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(fake_bformat2binaural_embededNetwork,"fake_bformat2binaural.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(fake_bformat2surround_embededNetwork,"ladspa/fake_bformat2surround.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(fake_bformat2binaural_embededNetwork,"ladspa/fake_bformat2binaural.clamnetwork")
 
 #include <iostream>
 
 extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 {
-
-#if 0
-CLAM::Network network;
-CLAM::XMLStorage::Restore( network, "../example-data/bformat2binaural.clamnetwork");
-return 0;
-#endif
+	static CLAM::LadspaLibrary library;
 
 	static CLAM::LadspaNetworkExporter n100(library, mono2bformat_embededNetwork, 100,
 			"mono2bformat", "Mono to BFormat",
@@ -34,14 +28,12 @@ return 0;
 	static CLAM::LadspaNetworkExporter n102(library, bformat2surround_embededNetwork, 102,
 			"bformat2surround", "BFormat to Surround 5.0",
 			"BarcelonaMedia-Audio", "GNU GPL");
-/*
 	static CLAM::LadspaNetworkExporter n103(library, bformat2binaural_embededNetwork, 103,
 			"bformat2binaural", "BFormat to binaural (HRTF)",
 			"BarcelonaMedia-Audio", "GNU GPL");
 	static CLAM::LadspaNetworkExporter n104(library, mono2binaural_embededNetwork, 104,
 			"mono2binaural", "Mono to binaural (HRTF)",
 			"BarcelonaMedia-Audio", "GNU GPL");
-*/
 	static CLAM::LadspaNetworkExporter n106(library, fake_bformat2surround_embededNetwork, 106,
 			"bformat2surround", "BFormat to Surround 5.0",
 			"BarcelonaMedia-Audio", "GNU GPL");
