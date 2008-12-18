@@ -35,11 +35,13 @@ localDefinitions = dict(
 	name= 'linux_ubuntu_hardy',
 	description= '<img src="http://clam.iua.upf.es/images/linux_icon.png"/> <img src="http://clam.iua.upf.es/images/ubuntu_icon.png"/>',
 	sandbox= '$HOME/testfarm_sandboxes',
-	installPath= '$HOME/testfarm_sandboxes/local',
+	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms",
 	qt3dir='',
 	qt4dir='',
-	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms"
+	extraLibOptions = 'release=0',
+	extraAppOptions = '',
 )
+localDefinitions['installPath'] = os.path.join(localDefinitions['sandbox'],"local"),
 repositories = localDefinitions['repositories'].split()
 
 client = Client(localDefinitions['name'])
@@ -52,8 +54,8 @@ clam = Task(
 	task_name='svn up|DEBUG' 
 	)
 clam.set_check_for_new_commits( 
-		checking_cmd='cd %(sandbox)s && svn status -u %(repositories)s | grep \'[*!]\''%localDefinitions,
-		minutes_idle=15
+	checking_cmd='cd %(sandbox)s && svn status -u %(repositories)s | grep \'[*!]\''%localDefinitions,
+	minutes_idle=15
 )
 clam.add_subtask( 'List of new commits', [
 	'cd %(sandbox)s/'%localDefinitions,
@@ -74,8 +76,7 @@ clam.add_subtask('count lines of code', [
 clam.add_deployment( [
 	'cd %(sandbox)s/clam/CLAM'%localDefinitions,
 	'rm -rf %(installPath)s/*'%localDefinitions,
-	'cd %(sandbox)s/clam/CLAM/'%localDefinitions,
-	'scons configure prefix=%(installPath)s release=0'%localDefinitions,
+	'scons configure prefix=%(installPath)s %(extraLibOptions)s'%localDefinitions,
 	'scons',
 	'scons install',
 ] )
@@ -83,7 +84,7 @@ clam.add_deployment( [
 clam.add_subtask('Unit Tests', [
 	'cd %(sandbox)s/clam/CLAM'%localDefinitions,
 	'cd test',
-	'scons test_data_path=%(sandbox)s/clam/testdata clam_prefix=%(installPath)s'%localDefinitions, # TODO: test_data_path and release
+	'scons test_data_path=%(sandbox)s/clam/testdata clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions, # TODO: test_data_path and release
 	'cd UnitTests',
 	{INFO : lambda x:startTimer() }, 
 	{CMD: './UnitTests'},
@@ -100,7 +101,57 @@ clam.add_subtask('Functional Tests', [
 ] )
 clam.add_subtask('CLAM Examples', [
 	'cd %(sandbox)s/clam/CLAM/examples'%localDefinitions,
-	'scons clam_prefix=%(installPath)s'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+] )
+
+clam.add_subtask('BM-Audio Raytracing', [
+	'cd %(sandbox)s/acustica/raytracing'%localDefinitions,
+	'scons',
+	'./back2back.py',
+] )
+
+clam.add_subtask('CLAM Plugins', [
+	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s raytracing=0'%localDefinitions,
+	'scons install',
+
+	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s raytracing=1'%localDefinitions,
+	'scons install',
+
+	'cd %(sandbox)s/clam/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
+
+	'cd %(sandbox)s/clam/CLAM/plugins/GuitarEffects/'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
+
+	'cd %(sandbox)s/clam/CLAM/plugins/osc'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
+
+	'cd %(sandbox)s/clam/CLAM/plugins/speech'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
+] )
+
+clam.add_subtask('NetworkEditor installation', [
+	'cd %(sandbox)s/clam/NetworkEditor'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'scons install',
+] )
+
+clam.add_subtask('Back-to-back network tests', [
+	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
+	'./back2back.py',
+] )
+
+clam.add_subtask('BM-Audio tests back-to-back', [
+	'cd %(sandbox)s/acustica/bformat2binaural'%localDefinitions,
+	'./back2back.py',
+	'cd %(sandbox)s/data_acustica/test_coreos'%localDefinitions,
+	'./back2back.py',
 ] )
 
 clam.add_subtask('SMSTools installation', [
@@ -110,7 +161,6 @@ clam.add_subtask('SMSTools installation', [
 	'%(sandbox)s/clam/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
 ] )
 
-
 clam.add_subtask('vmqt4 compilation and examples', [
 	'cd %(sandbox)s/clam/Annotator/vmqt'%localDefinitions,
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s release=1 double=1'%localDefinitions,
@@ -118,58 +168,20 @@ clam.add_subtask('vmqt4 compilation and examples', [
 ] )
 clam.add_subtask('Annotator installation', [
 	'cd %(sandbox)s/clam/Annotator'%localDefinitions,
-	'scons clam_vmqt4_path=vmqt prefix=%(installPath)s clam_prefix=%(installPath)s'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
 	'scons install',
 ] )
 
-clam.add_subtask('NetworkEditor installation', [
-	'cd %(sandbox)s/clam/NetworkEditor'%localDefinitions,
-	'scons prefix=%(installPath)s clam_prefix=%(installPath)s'%localDefinitions,
+clam.add_subtask('Turnaround installation', [
+	'cd %(sandbox)s/clam/Turnaround'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
 	'scons install',
 ] )
 
-
-
-clam.add_subtask('BM-Audio update', [
-	'cd %(sandbox)s/data_acustica'%localDefinitions,
-	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
-	'cd %(sandbox)s/acustica'%localDefinitions,
-	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
-	'cd %(sandbox)s/acustica/raytracing'%localDefinitions,
-	'scons',
-] )
-
-
-clam.add_subtask("CLAM Plugins", [
-	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
-	'scons clam_prefix=%(installPath)s raytracing=0'%localDefinitions,
+clam.add_subtask('Voice2MIDI installation', [
+	'cd %(sandbox)s/clam/Voice2MIDI'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
 	'scons install',
-
-	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
-	'scons clam_prefix=%(installPath)s raytracing=1'%localDefinitions,
-	'scons install',
-
-	'cd %(sandbox)s/clam/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions,
-	'scons clam_prefix=%(installPath)s'%localDefinitions,
-	'scons install',
-
-	'cd %(sandbox)s/clam/CLAM/plugins/osc'%localDefinitions,
-	'scons clam_prefix=%(installPath)s'%localDefinitions,
-	'scons install',
-
-	'cd %(sandbox)s/clam/CLAM/plugins/speech'%localDefinitions,
-	'scons clam_prefix=%(installPath)s'%localDefinitions,
-	'scons install',
-] )
-clam.add_subtask('Back-to-back network tests', [
-	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
-	'./back2back.py',
-] )
-clam.add_subtask('BM-Audio tests back-to-back', [
-	'cd %(sandbox)s/data_acustica/test_coreos'%localDefinitions,
-	'./back2back.py',
-	'cd %(sandbox)s/acustica/bformat2binaural'%localDefinitions,
-	'./back2back.py',
 ] )
 
 clam.add_subtask('Padova Speech SMS (external repository)', [
@@ -198,7 +210,7 @@ print "force Run: ", forceRun
 Runner( clam, 
 	continuous = False,
 	first_run_always = forceRun,
-	remote_server_url = 'http://localhost/testfarm_server'
-#	local_base_dir='/tmp'
+	remote_server_url = 'http://84.88.76.190/testfarm_server',
+#	local_base_dir='/tmp',
 )
 

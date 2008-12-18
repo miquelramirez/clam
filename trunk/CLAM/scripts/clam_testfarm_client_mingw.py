@@ -8,8 +8,8 @@ from runner import Runner
 from commands import getoutput
 
 def countLines( path ):
-	print "loc for path:", path
-	lines =  getoutput("find %s -name '*.?xx' -exec wc -l {} \;" % path.strip() ).split("\n")
+	print 'loc for path:', path
+	lines =  getoutput("find %s -name '*.?xx' -exec wc -l {} \;" % path.strip() ).split('\n')
 	return reduce( lambda x,y: x+y , map( lambda x: int(x.split()[0]), lines) )
 
 startTime = -1
@@ -52,9 +52,9 @@ client.brief_description = localDefinitions['description']
 
 
 clam = Task(
-	project = Project("CLAM"), 
+	project = Project('CLAM'), 
 	client = client, 
-	task_name="with svn update" 
+	task_name='with svn update' 
 	)
 clam.set_check_for_new_commits( 
 	checking_cmd='cd %(sandbox)s && svn status -u %(repositories)s | grep \'[*!]\''%localDefinitions,
@@ -129,12 +129,24 @@ clam.add_subtask('CLAM Plugins', [
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 	'scons install',
 ] )
-"""
+
+clam.add_subtask('NetworkEditor installation', [
+	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
+	'cd %(sandbox)s/clam/NetworkEditor'%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
+	'%(sandbox)s/clam/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
+	'rm -f %(packageWildcard)s'%localDefinitions,
+	'scons package',
+	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
+	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+] )
+
 clam.add_subtask('Back-to-back network tests', [
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
 	'./back2back.py',
 ] )
-clam.add_subtask('SMSTools packaging', [
+
+clam.add_subtask('SMSTools installation', [
 	{CMD: 'echo setting QTDIR to qt3 path ', INFO: set_qtdir_to_qt3},
 	'cd %(sandbox)s/clam/SMSTools'%localDefinitions,
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s'%localDefinitions,
@@ -151,7 +163,7 @@ clam.add_subtask('vmqt4 compilation and examples', [
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s release=1 double=1 %(extraAppOptions)s'%localDefinitions,
 	'scons examples',
 ] )
-clam.add_subtask('Annotator packaging', [
+clam.add_subtask('Annotator installation', [
 	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
 	'cd %(sandbox)s/clam/Annotator'%localDefinitions,
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
@@ -161,27 +173,16 @@ clam.add_subtask('Annotator packaging', [
 	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
-clam.add_subtask('NetworkEditor packaging', [
-	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
-	'cd %(sandbox)s/clam/NetworkEditor'%localDefinitions,
-	'scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraAppOptions)s '%localDefinitions,
-	'%(sandbox)s/clam/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
-	'rm -f %(packageWildcard)s'%localDefinitions,
-	'scons package',
-	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
-	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
-] )
-
-clam.add_subtask('Turnaround packaging', [
+clam.add_subtask('Turnaround installation', [
 	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
 	'cd %(sandbox)s/clam/Turnaround'%localDefinitions,
-	'scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraAppOptions)s '%localDefinitions,
+	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
 	'scons package',
 	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
 	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
 ] )
 
-clam.add_subtask('Voice2MIDI packaging', [
+clam.add_subtask('Voice2MIDI installation', [
 	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
 	'cd %(sandbox)s/clam/Voice2MIDI'%localDefinitions,
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraAppOptions)s '%localDefinitions,
