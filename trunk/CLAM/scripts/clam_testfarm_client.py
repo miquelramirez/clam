@@ -25,17 +25,12 @@ def ellapsedTime():
 	global startTime
 	return time.time() - startTime
 
-HOME = os.environ['HOME']
-PATH = os.environ['PATH']
-os.environ['LD_LIBRARY_PATH']='%s/testfarm_sandboxes/local/lib:/usr/local/lib' % HOME
-os.environ['PATH']='%s/testfarm_sandboxes/local/bin:%s' % (HOME, PATH)
-os.environ['CLAM_PLUGIN_PATH']='%s/testfarm_sandboxes/local/lib/clam' % HOME
-
 localDefinitions = dict(
 	name= 'linux_ubuntu_hardy',
 	description= '<img src="http://clam.iua.upf.es/images/linux_icon.png"/> <img src="http://clam.iua.upf.es/images/ubuntu_icon.png"/>',
-	sandbox= '$HOME/CajitasDeArena',
-	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms",
+#	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms",
+	repositories = "clam acustica data_acustica clam/testdata",
+	sandbox= os.path.expanduser('~/'),
 	qt3dir='',
 	qt4dir='',
 	extraLibOptions = 'release=0',
@@ -43,6 +38,10 @@ localDefinitions = dict(
 )
 localDefinitions['installPath'] = os.path.join(localDefinitions['sandbox'],"local")
 repositories = localDefinitions['repositories'].split()
+os.environ['LD_LIBRARY_PATH']='%(installPath)s/lib:/usr/local/lib' %localDefinitions
+os.environ['PATH']='%(installPath)s/bin:' % localDefinitions + os.environ['PATH']
+os.environ['CLAM_PLUGIN_PATH']='%(installPath)s/lib/clam' % localDefinitions
+
 
 client = Client(localDefinitions['name'])
 client.brief_description = localDefinitions['description']
@@ -82,8 +81,7 @@ clam.add_deployment( [
 ] )
 
 clam.add_subtask('Unit Tests', [
-	'cd %(sandbox)s/clam/CLAM'%localDefinitions,
-	'cd test',
+	'cd %(sandbox)s/clam/CLAM/test'%localDefinitions,
 	'scons test_data_path=%(sandbox)s/clam/testdata clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions, # TODO: test_data_path and release
 	'cd UnitTests',
 	{INFO : lambda x:startTimer() }, 
@@ -91,8 +89,7 @@ clam.add_subtask('Unit Tests', [
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
 clam.add_subtask('Functional Tests', [
-	'cd %(sandbox)s/clam/CLAM'%localDefinitions,
-	'cd test',
+	'cd %(sandbox)s/clam/CLAM/test'%localDefinitions,
 	'scons test_data_path=%(sandbox)s/clam/testdata clam_prefix=%(installPath)s'%localDefinitions, # TODO: test_data_path and release
 	'cd FunctionalTests',
 	{INFO : lambda x:startTimer() }, 
@@ -147,7 +144,11 @@ clam.add_subtask('Back-to-back network tests', [
 	'./back2back.py',
 ] )
 
-clam.add_subtask('BM-Audio tests back-to-back', [
+clam.add_subtask('BM-Audio back-to-back tests', [
+	'cd %(sandbox)s/acustica/soxsucks/'%localDefinitions,
+	'scons',
+	'ln -s %(sandbox)s/acustica/soxsucks/soxsucks $(installPath)s/bin'%localDefinitions,
+	'ln -s %(sandbox)s/acustica/rendercoreo/rendercoreo $(installPath)s/bin'%localDefinitions,
 	'cd %(sandbox)s/acustica/bformat2binaural'%localDefinitions,
 	'./back2back.py',
 	'cd %(sandbox)s/data_acustica/test_coreos'%localDefinitions,
@@ -183,14 +184,14 @@ clam.add_subtask('Voice2MIDI installation', [
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
 	'scons install',
 ] )
-
+"""
 clam.add_subtask('Padova Speech SMS (external repository)', [
 	'cd %(sandbox)s/clam/padova-speech-sms/'%localDefinitions,
 	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
 	{CMD: 'svn up', INFO: lambda x:x },
 	'make',
 ] )
-'''
+
 clam.add_subtask('pyCLAM update', [
 	'cd %(sandbox)s/CLAM/pyclam'%localDefinitions,
 	{CMD:'svn log -r BASE:HEAD', INFO: lambda x:x },
@@ -203,7 +204,7 @@ clam.add_subtask('pyCLAM Unit Tests', [
 	{CMD: './UnitTestsSuite.py'},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ])
-'''
+"""
 forceRun = len(sys.argv)>1
 print "force Run: ", forceRun
 
