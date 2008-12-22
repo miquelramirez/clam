@@ -147,8 +147,8 @@ clam.add_subtask('Back-to-back network tests', [
 clam.add_subtask('BM-Audio back-to-back tests', [
 	'cd %(sandbox)s/acustica/soxsucks/'%localDefinitions,
 	'scons',
-	'ln -s %(sandbox)s/acustica/soxsucks/soxsucks $(installPath)s/bin'%localDefinitions,
-	'ln -s %(sandbox)s/acustica/rendercoreo/rendercoreo $(installPath)s/bin'%localDefinitions,
+	'ln -s %(sandbox)s/acustica/soxsucks/soxsucks %(installPath)s/bin'%localDefinitions,
+	'ln -s %(sandbox)s/acustica/rendercoreo/rendercoreo %(installPath)s/bin'%localDefinitions,
 	'cd %(sandbox)s/acustica/bformat2binaural'%localDefinitions,
 	'./back2back.py',
 	'cd %(sandbox)s/data_acustica/test_coreos'%localDefinitions,
