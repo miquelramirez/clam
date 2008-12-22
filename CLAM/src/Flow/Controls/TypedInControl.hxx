@@ -24,8 +24,8 @@ namespace CLAM {
 	public:
 		TypedInControl(const std::string &name = "unnamed in control", Processing * proc = 0);
 		
-		void DoControl(const TypedControlData& val);
-		const TypedControlData& GetLastValue() const;
+		virtual void DoControl(const TypedControlData& val) { mLastValue = val; };
+		const TypedControlData& GetLastValue() const { return mLastValue; };
 		/** ONLY TO USE WHEN TypedControlData == float. Returns the last TypedControlData (float) received interpreted as a bool. */
 		bool GetLastValueAsBoolean() const 
 		{ 
@@ -44,20 +44,7 @@ namespace CLAM {
 		: InControlBase(name,proc)
 	{
 	}
-	
-	template<class TypedControlData>
-	void TypedInControl<TypedControlData>::DoControl(const TypedControlData& val)
-	{
-		mLastValue = val;
-	}
 
-	template<class TypedControlData>
-	const TypedControlData& TypedInControl<TypedControlData>::GetLastValue() const
-	{
-		return mLastValue;
-	}
-
-	
 	/**
 	* Subclass of TypedInControl that provides the typedincontrol with a callback method
 	* The method must be defined inside the parent \c Processing class.
