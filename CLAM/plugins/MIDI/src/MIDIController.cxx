@@ -1,6 +1,6 @@
 #include "MIDIController.hxx"
 #include <CLAM/ProcessingFactory.hxx>
-
+#include <iostream>
 namespace CLAM
 {
 
@@ -34,7 +34,7 @@ namespace Hidden
 		if(statusByte[7] == 1 && statusByte[6] == 0 && statusByte[5] == 1 && statusByte[4] == 1)
 		{
 			if(((int)inMessage[1]) == mConfig.GetControlNumber()){
-				mMIDIControlValue.SendControl((float)inMessage[3]);
+				mMIDIControlValue.SendControl((float)inMessage[2]);
 			}
 		}
 		
