@@ -22,9 +22,9 @@ namespace CLAM {
 
 		~MIDISink();
 
-		bool Do() {};
+		bool Do() { return true; };
 		
-		int MIDISink::DoCallback(MIDI::Message inMessage);
+		int DoCallback(MIDI::Message inMessage);
 	};
 } // End namespace
 #endif // MIDISink_hxx
