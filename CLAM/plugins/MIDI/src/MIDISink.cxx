@@ -1,6 +1,5 @@
 #include "MIDISink.hxx"
 #include <CLAM/ProcessingFactory.hxx>
-
 namespace CLAM
 {
 
@@ -15,10 +14,7 @@ namespace Hidden
 }
 
 	MIDISink::MIDISink(const Config& config) 
-		: mMIDIMessage("MIDI Message", this),
-			mMIDIData1("MIDI Data 1", this),
-			mMIDIData2("MIDI Data 2", this),
-			mTrigger("Trigger", this)
+		: mMIDIMessage("MIDI Message In", this, &MIDISink::DoCallback)
 	{
 		// Create RtMidiIn Object
 		try {
@@ -36,6 +32,9 @@ namespace Hidden
 		catch ( RtError &error ) {
 			error.printMessage();
 		}
+		
+		// Make default message
+		mLastMessage.Update(0,0,0,0);
 		Configure( config );
 	}
 
@@ -43,5 +42,20 @@ namespace Hidden
 		if ( mMIDIout )
 			delete mMIDIout;
 	}
+
+	int MIDISink::DoCallback(MIDI::Message inMessage){
+		inMessage = mMIDIMessage.GetLastValue();
+		
+		std::vector< unsigned char > message;
+		
+		message.push_back((inMessage)[0]);
+		message.push_back((inMessage)[1]);
+		message.push_back((inMessage)[2]);
+		message.push_back((inMessage)[3]);
+
+		mMIDIout->sendMessage( &message );
+			
+		return 0;
+	};
 
 }

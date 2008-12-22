@@ -1,28 +1,19 @@
 #ifndef MIDISink_hxx
 #define MIDISink_hxx
 
-#include <CLAM/OutControl.hxx>
 #include <CLAM/Processing.hxx>
-
+#include <CLAM/TypedInControl.hxx>
+#include <CLAM/MIDIMessage.hxx>
 #include "../RtMidi.hxx"
-
+#include <iostream>
 namespace CLAM {
 
 	class MIDISink : public CLAM::Processing
 	{ 
 		/** Controls **/
-		FloatInControl mMIDIMessage;
-		FloatInControl mMIDIData1;
-		FloatInControl mMIDIData2;
-
-		/*
-		* TODO: mTrigger should be an InControlTmpl 
-		*/
-		FloatInControl mTrigger; 
-
+		CascadingTypedInControl< MIDI::Message, MIDISink > mMIDIMessage;
+		MIDI::Message mLastMessage;
 		RtMidiOut *mMIDIout;
-
-		//static void RtMidiCallback( double deltatime, std::vector< unsigned char > *message, void *userData );
 
 	public:
 		const char* GetClassName() const { return "MIDISink"; }
@@ -31,24 +22,9 @@ namespace CLAM {
 
 		~MIDISink();
 
-		bool Do()
-		{
-			std::vector< unsigned char > message;
-			if((bool)(mTrigger.GetLastValue())){
-				message.push_back(mMIDIMessage.GetLastValue());
-				message.push_back(mMIDIData1.GetLastValue());
-				message.push_back(mMIDIData2.GetLastValue());
-				
-				mMIDIout->sendMessage( &message );
-				
-				mMIDIMessage.DoControl(0);
-				mMIDIData1.DoControl(0);
-				mMIDIData2.DoControl(0);
-				mTrigger.DoControl(0);
-			}
-			return true;
-		}
+		bool Do() {};
+		
+		int MIDISink::DoCallback(MIDI::Message inMessage);
 	};
-	
 } // End namespace
 #endif // MIDISink_hxx
