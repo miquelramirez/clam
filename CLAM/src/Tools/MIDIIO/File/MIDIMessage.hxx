@@ -53,6 +53,14 @@ namespace MIDI
 
 		Byte operator [] (int i) const { return mVal[i]; }
 
+		bool operator== (Message message) const { 
+			return (( mData.mStatus == message[0] ) && ( mData.mData1 == message[1] ) && ( mData.mData2 == message[2] ) && ( mData.mData3 == message[3] ));
+		};
+	
+		bool operator!= (Message message) const { 
+			return ( ( message[0] != mData.mStatus) || ( message[1] != mData.mData1 ) || ( message[2] != mData.mData2 ) || ( message[3] != mData.mData3 ) );
+		};
+
 		void Update(Byte status = 0,Byte data1 = 0,Byte data2 = 0,Byte data3 = 0)
 		{
 			if(status) {mData.mStatus = status;}
