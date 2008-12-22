@@ -21,10 +21,7 @@ namespace Hidden
 	}
 
 	MIDISource::MIDISource(const Config& config) 
-		: mMIDIMessage("MIDI Message", this),
-			mMIDIData1("MIDI Data 1", this),
-			mMIDIData2("MIDI Data 2", this),
-			mTrigger("Trigger", this)
+		: mMIDIMessage("MIDI Message Out", this)
 	{
 		// Create RtMidiIn Object
 		try {

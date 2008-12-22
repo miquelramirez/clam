@@ -15,11 +15,8 @@ namespace Hidden
 }
 
 	MIDIController::MIDIController() 
-		: mMIDIMessage("MIDI Message", this),
-			mMIDIData1("MIDI Data 1", this),
-			mMIDIData2("MIDI Data 2", this),
-			mTrigger("Trigger", this),
-			mMIDIControllerValue("Control Output", this)
+		: mMIDIMessage("MIDI Message Input", this, &MIDIController::DoCallback),
+			mMIDIControlValue("Control Output", this)
 	{
 		Configure( mConfig );
 	}
@@ -28,20 +25,20 @@ namespace Hidden
 
 	bool MIDIController::Do()
 	{ 
-		if(mTrigger.GetLastValue())
-		{
-			std::bitset<CHAR_BIT> statusByte;
-			statusByte = (std::bitset<CHAR_BIT>)((unsigned char)mMIDIMessage.GetLastValue());
-			if(statusByte[7] == 1 && statusByte[6] == 0 && statusByte[5] == 1 && statusByte[4] == 1)
-			{
-				if(((int)mMIDIData1.GetLastValue()) == mConfig.GetControlNumber()){
-					mMIDIControllerValue.SendControl((float)mMIDIData2.GetLastValue());
-				}
-			}
-		}		
 		return true;
-		 }
-
+	}
+	
+	int MIDIController::DoCallback(MIDI::Message inMessage){
+		std::bitset<CHAR_BIT> statusByte;
+		statusByte = (std::bitset<CHAR_BIT>)((unsigned char)inMessage[0]);
+		if(statusByte[7] == 1 && statusByte[6] == 0 && statusByte[5] == 1 && statusByte[4] == 1)
+		{
+			if(((int)inMessage[1]) == mConfig.GetControlNumber()){
+				mMIDIControlValue.SendControl((float)inMessage[3]);
+			}
+		}
+		
+	}
 	bool MIDIController::ConcreteConfigure(const ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig(mConfig, c);

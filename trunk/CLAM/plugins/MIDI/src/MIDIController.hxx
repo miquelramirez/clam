@@ -1,9 +1,10 @@
 #ifndef MIDIController_hxx
 #define MIDIController_hxx
 
-#include <CLAM/OutControl.hxx>
-#include <CLAM/InControl.hxx>
 #include <CLAM/Processing.hxx>
+#include <CLAM/TypedInControl.hxx>
+#include <CLAM/OutControl.hxx>
+#include <CLAM/MIDIMessage.hxx>
 #include <bitset>
 
 namespace CLAM {
@@ -27,12 +28,9 @@ namespace CLAM {
 	class MIDIController : public CLAM::Processing
 	{ 
 	protected:
-		FloatInControl mMIDIMessage;
-		FloatInControl mMIDIData1;
-		FloatInControl mMIDIData2;
-		FloatInControl mTrigger;
+		CascadingTypedInControl<MIDI::Message, MIDIController> mMIDIMessage;
 
-		FloatOutControl mMIDIControllerValue;
+		FloatOutControl mMIDIControlValue;
 
 		MIDIControllerConfig mConfig;
 		
@@ -46,6 +44,8 @@ namespace CLAM {
 		~MIDIController();
 
 		bool Do();
+		
+		int DoCallback(MIDI::Message inMessage);
 	};
 	
 } // End namespace
