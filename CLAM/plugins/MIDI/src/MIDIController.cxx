@@ -37,7 +37,7 @@ namespace Hidden
 				mMIDIControlValue.SendControl((float)inMessage[2]);
 			}
 		}
-		
+		return 0;
 	}
 	bool MIDIController::ConcreteConfigure(const ProcessingConfig& c)
 	{
