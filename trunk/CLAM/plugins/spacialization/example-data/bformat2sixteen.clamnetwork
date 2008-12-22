@@ -21,15 +21,17 @@
     <InitGain>0</InitGain>
   </processing>
 
-  <processing id="BFormat2Cube" position="522,247" size="117,158" type="BFormat2Cube"/>
+  <processing id="BFormat2Sixteen" position="499,233" size="128,222" type="BFormat2Sixteen"/>
+
+  <processing id="Base Back Left" position="796,257" size="128,111" type="AudioSink"/>
 
   <processing id="Base Back Right" position="793,353" size="128,111" type="AudioSink"/>
-
-  <processing id="Base Base Left" position="796,257" size="128,111" type="AudioSink"/>
 
   <processing id="Base Front Left" position="796,60" size="128,111" type="AudioSink"/>
 
   <processing id="Base Front Right" position="797,155" size="128,111" type="AudioSink"/>
+
+  <processing id="Front horizontal" position="791,456" size="138,111" type="AudioSink"/>
 
   <processing id="Gain" position="191,-27" size="177,78" type="OutControlSender">
     <Min>0</Min>
@@ -49,25 +51,15 @@
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="Oscilloscope" position="800,471" size="134,95" type="Oscilloscope"/>
+  <processing id="Left horizontal" position="921,456" size="138,111" type="AudioSink"/>
 
-  <processing id="Oscilloscope_1" position="683,468" size="127,103" type="Oscilloscope"/>
+  <processing id="Rear Horizontal" position="788,557" size="138,111" type="AudioSink"/>
 
-  <processing id="Oscilloscope_2" position="676,556" size="140,89" type="Oscilloscope"/>
+  <processing id="Right horizontal" position="924,562" size="138,111" type="AudioSink"/>
 
-  <processing id="Oscilloscope_3" position="798,553" size="127,92" type="Oscilloscope"/>
+  <processing id="Top Back Left" position="923,254" size="128,111" type="AudioSink"/>
 
-  <processing id="Oscilloscope_4" position="935,474" size="121,96" type="Oscilloscope"/>
-
-  <processing id="Oscilloscope_5" position="1050,478" size="118,91" type="Oscilloscope"/>
-
-  <processing id="Oscilloscope_6" position="930,553" size="131,91" type="Oscilloscope"/>
-
-  <processing id="Oscilloscope_7" position="1047,554" size="125,87" type="Oscilloscope"/>
-
-  <processing id="Top Base Left" position="923,254" size="128,111" type="AudioSink"/>
-
-  <processing id="Top Base Right" position="923,355" size="128,111" type="AudioSink"/>
+  <processing id="Top Back Right" position="923,355" size="128,111" type="AudioSink"/>
 
   <processing id="Top Front Left" position="932,58" size="128,111" type="AudioSink"/>
 
@@ -95,102 +87,82 @@
 
   <port_connection>
     <out>AudioAmplifier.Audio Output</out>
-    <in>BFormat2Cube.W</in>
+    <in>BFormat2Sixteen.W</in>
   </port_connection>
 
   <port_connection>
     <out>AudioAmplifier_1.Audio Output</out>
-    <in>BFormat2Cube.X</in>
+    <in>BFormat2Sixteen.X</in>
   </port_connection>
 
   <port_connection>
     <out>AudioAmplifier_2.Audio Output</out>
-    <in>BFormat2Cube.Y</in>
+    <in>BFormat2Sixteen.Y</in>
   </port_connection>
 
   <port_connection>
     <out>AudioAmplifier_3.Audio Output</out>
-    <in>BFormat2Cube.Z</in>
+    <in>BFormat2Sixteen.Z</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Base Front Left</out>
+    <out>BFormat2Sixteen.Base Front Left</out>
     <in>Base Front Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Base Front Left</out>
-    <in>Oscilloscope.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Cube.Base Front Right</out>
+    <out>BFormat2Sixteen.Base Front Right</out>
     <in>Base Front Right.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Base Front Right</out>
-    <in>Oscilloscope_1.Input</in>
+    <out>BFormat2Sixteen.Base Back Left</out>
+    <in>Base Back Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Base Back Left</out>
-    <in>Base Base Left.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Cube.Base Back Left</out>
-    <in>Oscilloscope_2.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Cube.Base Back Right</out>
+    <out>BFormat2Sixteen.Base Back Right</out>
     <in>Base Back Right.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Base Back Right</out>
-    <in>Oscilloscope_3.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Cube.Top Front Left</out>
+    <out>BFormat2Sixteen.Top Front Left</out>
     <in>Top Front Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Top Front Left</out>
-    <in>Oscilloscope_4.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Cube.Top Front Right</out>
+    <out>BFormat2Sixteen.Top Front Right</out>
     <in>Top Front Right.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Top Front Right</out>
-    <in>Oscilloscope_5.Input</in>
+    <out>BFormat2Sixteen.Top Back Left</out>
+    <in>Top Back Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Top Back Left</out>
-    <in>Top Base Left.AudioIn</in>
+    <out>BFormat2Sixteen.Top Back Right</out>
+    <in>Top Back Right.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Top Back Left</out>
-    <in>Oscilloscope_6.Input</in>
+    <out>BFormat2Sixteen.Front Horizontal</out>
+    <in>Front horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Top Back Right</out>
-    <in>Top Base Right.AudioIn</in>
+    <out>BFormat2Sixteen.Left Horizontal</out>
+    <in>Left horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Cube.Top Back Right</out>
-    <in>Oscilloscope_7.Input</in>
+    <out>BFormat2Sixteen.Rear Horizontal</out>
+    <in>Rear Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Right Horizontal</out>
+    <in>Right horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
