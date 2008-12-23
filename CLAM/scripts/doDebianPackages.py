@@ -84,7 +84,7 @@ for package, srcpackage, version in repositories :
 	tarball = srcpackage + "_" + version + ".orig.tar.gz"
 	run( "svn export --force %s %s"%(module, srcdir) )
 	run( "tar cvfz %s %s"%(tarball, srcdir) )
-	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='clam@iua.upf.edu' dch -d 'Autobuilt package' --distribution='UNRELEASED'"%(srcdir) )
+	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='clam@iua.upf.edu' dch -d 'Autobuilt package' --distribution='unstable' --force-distribution"%(srcdir) )
 	run( "dpkg-source -b %s"%(srcdir))
 
 sys.exit(0)
