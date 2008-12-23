@@ -78,6 +78,7 @@ clam.add_deployment( [
 	'scons configure prefix=%(installPath)s %(extraLibOptions)s'%localDefinitions,
 	'scons',
 	'scons install',
+	'mkdir -p %(installPath)s/bin'%localDefinitions,
 ] )
 
 clam.add_subtask('Unit Tests', [
