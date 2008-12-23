@@ -14,7 +14,6 @@
 
 SCONS_OPTIONS= prefix_for_packaging=$(CURDIR)/debian/tmp/usr prefix=/usr xmlbackend=xercesc release=yes double=0 with_fftw3=yes with_fftw=no verbose=1
 SCONS= scons
-PLUGINS=continuousExcitationSynthesizer osc spacialization GuitarEffects/AudioSwitch GuitarEffects/AutomaticGainControl GuitarEffects/DCRemoval GuitarEffects/GuitarDistortion
 
 
 # shared library versions, option 1
@@ -38,13 +37,7 @@ build: build-stamp
 build-stamp: configure-stamp 
 	dh_testdir
 	cd $(CURDIR); $(SCONS) core processing audioio
-#	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) clam_prefix=$(CURDIR)/debian/tmp/usr; done
-	# First, tarballize the examples folder
-	tar zcvf examples.tar.gz examples
-	# and now doxygenate CLAM stuff
 	doxygen $(CURDIR)/doxygen.cfg
-	# tarballize dox
-	tar zcvf clam-doxydocs.tar.gz doxygen
 	touch build-stamp
 
 clean:
@@ -52,7 +45,6 @@ clean:
 	dh_testroot
 	rm -f build-stamp configure-stamp
 	-cd $(CURDIR) && $(SCONS) -c
-#	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) -c clam_prefix=$(CURDIR)/debian/tmp/usr; done # TODO: This cannot work without clam installed
 	find $(CURDIR) -name .*sconf_temp* | xargs rm -rf
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
@@ -75,7 +67,6 @@ install: build
 	dh_installdirs
 	mkdir -p $(CURDIR)/debian/tmp/usr
 	cd $(CURDIR) && $(SCONS) install
-#	for plugin in $(PLUGINS); do cd $(CURDIR)/plugins/$$plugin; $(SCONS) install clam_prefix=$(CURDIR)/debian/tmp/usr; done
 	dh_install --sourcedir=debian/tmp
 
 # Build architecture-independent files here.
