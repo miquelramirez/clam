@@ -101,6 +101,12 @@ clam.add_subtask('CLAM Examples', [
 	'scons clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions,
 ] )
 
+clam.add_subtask('BM-Audio Soxsucks', [
+	'cd %(sandbox)s/acustica/soxsucks/'%localDefinitions,
+	'scons',
+	'ln -s %(sandbox)s/acustica/soxsucks/soxsucks %(installPath)s/bin'%localDefinitions,
+] )
+
 clam.add_subtask('BM-Audio Raytracing', [
 	'cd %(sandbox)s/acustica/raytracing'%localDefinitions,
 	'scons',
@@ -145,9 +151,6 @@ clam.add_subtask('Back-to-back network tests', [
 ] )
 
 clam.add_subtask('BM-Audio back-to-back tests', [
-	'cd %(sandbox)s/acustica/soxsucks/'%localDefinitions,
-	'scons',
-	'ln -s %(sandbox)s/acustica/soxsucks/soxsucks %(installPath)s/bin'%localDefinitions,
 	'ln -s %(sandbox)s/acustica/rendercoreo/rendercoreo %(installPath)s/bin'%localDefinitions,
 	'cd %(sandbox)s/acustica/bformat2binaural'%localDefinitions,
 	'./back2back.py',
