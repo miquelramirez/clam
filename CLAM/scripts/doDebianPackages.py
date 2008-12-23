@@ -24,7 +24,7 @@ repositories = [
 	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
 	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
 	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
-	( 'Turnaround',     'clam-turnaround',   versionFromRemoteSvn('Turnaround')[1] ),
+	( 'Turnaround',    'clam-turnaround',    versionFromRemoteSvn('Turnaround')[1] ),
 ]
 
 hooks = {
@@ -78,18 +78,16 @@ run ("chmod a+x hooks/*")
 phase( "Obtaining latest sources" )
 
 print repositories
-for repository in repositories :
-	(package, srcpackage, version) = repository
+for package, srcpackage, version in repositories :
 	module = repositoryBase + package
 	srcdir = srcpackage + "-" + version
+	tarball = srcpackage + "_" + version + ".orig.tar.gz"
 	run( "svn export --force %s %s"%(module, srcdir) )
-#	if os.path.isdir(srcdir) :
-#		run( "svn up %s"%(srcdir) )
-#	else :
-#		run( "svn co %s %s"%(module, srcdir) )
-	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='clam@iua.upf.edu' dch -d 'Autobuilt package'"%(srcdir) )
-	run ( "dpkg-source -b %s"%(srcdir))
+	run( "tar cvfz %s %s"%(tarball, srcdir) )
+	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='clam@iua.upf.edu' dch -d 'Autobuilt package' --distribution='UNRELEASED'"%(srcdir) )
+	run( "dpkg-source -b %s"%(srcdir))
 
+sys.exit(0)
 
 for (maindistro, distribution, mirror, components) in distributions :
 	phase( "Preparing chroot for '%s'"%distribution )
