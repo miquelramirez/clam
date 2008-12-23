@@ -52,8 +52,9 @@ clam = Task(
 	client = client, 
 	task_name='svn up|DEBUG' 
 	)
+print "Update command: ", 'for a in %(repositories)s; do ( cd %(sandbox)s/$a && svn status -u); done | grep \'[*!]\''%localDefinitions,
 clam.set_check_for_new_commits( 
-	checking_cmd=('cd %(sandbox)s && '+ ";".join("(cd %s; svn status -u)"%repository for repository in repositories)+ ' | grep \'[*!]\'')%localDefinitions,
+	checking_cmd='for repository in %(repositories)s; do ( cd %(sandbox)s && svn status -u); done | grep \'[*!]\''%localDefinitions,
 	minutes_idle=15
 )
 clam.add_subtask( 'List of new commits', [
