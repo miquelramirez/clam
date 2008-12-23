@@ -1,6 +1,7 @@
 #include "MIDINote2Freq.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 #include <cmath>
+#include <climits> // for CHAR_BIT
 namespace CLAM
 {
 

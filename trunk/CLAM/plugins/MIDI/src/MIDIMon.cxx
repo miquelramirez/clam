@@ -1,6 +1,7 @@
 // Version beyond 1.1.0
 #include "MIDIMon.hxx"
 #include <CLAM/ProcessingFactory.hxx>
+#include <cstdlib>
 
 namespace CLAM
 {
@@ -32,7 +33,7 @@ namespace Hidden
 		}
 		catch ( RtError &error ) {
 			error.printMessage();
-			exit( EXIT_FAILURE );
+			std::exit( EXIT_FAILURE );
 		}
 
 		// Don't ignore sysex, timing, or active sensing messages.

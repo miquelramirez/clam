@@ -1,5 +1,6 @@
 #include "MIDISource.hxx"
 #include <CLAM/ProcessingFactory.hxx>
+#include <cstdlib>
 
 namespace CLAM
 {
@@ -29,7 +30,7 @@ namespace Hidden
 		}
 		catch ( RtError &error ) {
 			error.printMessage();
-			exit( EXIT_FAILURE );
+			std::exit( EXIT_FAILURE );
 		}
 
 		// Don't ignore sysex, timing, or active sensing messages.

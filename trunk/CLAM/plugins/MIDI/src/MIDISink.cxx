@@ -1,5 +1,6 @@
 #include "MIDISink.hxx"
 #include <CLAM/ProcessingFactory.hxx>
+#include <cstdlib>
 namespace CLAM
 {
 
@@ -22,7 +23,7 @@ namespace Hidden
 		}
 		catch ( RtError &error ) {
 			error.printMessage();
-			exit( EXIT_FAILURE );
+			std::exit( EXIT_FAILURE );
 		}
 
 		// Open Virtual Port

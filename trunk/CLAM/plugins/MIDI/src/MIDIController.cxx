@@ -1,6 +1,7 @@
 #include "MIDIController.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 #include <iostream>
+#include <climits> // FOR CHAR_BIT
 namespace CLAM
 {
 
