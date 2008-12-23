@@ -52,9 +52,9 @@ clam = Task(
 	client = client, 
 	task_name='svn up|DEBUG' 
 	)
-print "Update command: ", 'for a in %(repositories)s; do ( cd %(sandbox)s/$a && svn status -u); done | grep \'[*!]\''%localDefinitions,
+print "Update command: ", 'for a in %(repositories)s; do ( cd %(sandbox)s/$a && svn status -u); done | grep \'[*!]\''%localDefinitions
 clam.set_check_for_new_commits( 
-	checking_cmd='for a in %(repositories)s; do ( cd %(sandbox)s && svn status -u); done | grep \'[*!]\''%localDefinitions,
+	checking_cmd='for a in %(repositories)s; do ( cd %(sandbox)s/$a && svn status -u); done | grep \'[*!]\''%localDefinitions,
 	minutes_idle=15
 )
 clam.add_subtask( 'List of new commits', [
