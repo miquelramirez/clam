@@ -53,7 +53,7 @@ clam = Task(
 	task_name='svn up|DEBUG' 
 	)
 clam.set_check_for_new_commits( 
-	checking_cmd=('cd %(sandbox)s && '+ ";".join("svn status -u %s")%repositori for repository in repositories))+ ' | grep \'[*!]\'')%localDefinitions,
+	checking_cmd=('cd %(sandbox)s && '+ ";".join("svn status -u %s"%repositori for repository in repositories)+ ' | grep \'[*!]\'')%localDefinitions,
 	minutes_idle=15
 )
 clam.add_subtask( 'List of new commits', [
