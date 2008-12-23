@@ -71,7 +71,24 @@ namespace CLAMTest {
 		::CLAMTest::checkXmlEqual( expected, actual,      \
 		CPPUNIT_SOURCELINE() )
 
-
+	inline std::string xmlHeader()
+	{
+		return
+		#ifdef USE_XERCES
+		"<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>";
+		#else
+		"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+		#endif
+	}
+	inline std::string xmlFooter()
+	{
+		return
+		#ifdef USE_XERCES
+		"";
+		#else
+		"\n";
+		#endif
+	}
 }
 #endif//_XMLTESTHELPER_
 
