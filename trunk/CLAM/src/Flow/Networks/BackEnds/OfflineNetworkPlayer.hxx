@@ -4,7 +4,8 @@
 #include "NetworkPlayer.hxx"
 #include "AudioSource.hxx"
 #include "AudioSink.hxx"
-
+#include <fstream>
+#include <sndfile.hh>  
 
 namespace CLAM
 {
@@ -31,6 +32,7 @@ public:
 	// base class (virtual) interface:
 	bool IsWorking() const;
 	std::string NonWorkingReason() const;
+	std::string listOfSourcesSinksAndFiles(std::vector<SndfileHandle*> outfiles,std::vector<SndfileHandle*> outfiles);
 	virtual void Start();
 	virtual void Stop();
 
