@@ -1,8 +1,7 @@
 #include "OfflineNetworkPlayer.hxx"
 #include "MonoAudioFileReader.hxx"
 #include "MonoAudioFileWriter.hxx"
-#include <fstream>
-#include <sndfile.hh>  
+
 
 namespace CLAM
 {
@@ -20,6 +19,49 @@ std::string OfflineNetworkPlayer::NonWorkingReason() const
 		<< _outFileNames.size() << " output files provided" << std::ends;
 	return ss.str();
 }
+
+std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(std::vector<SndfileHandle*> infiles,std::vector<SndfileHandle*> outfiles)
+{
+	std::ostringstream sources;
+	std::ostringstream sinks;
+	Network & net = GetNetwork();
+	unsigned inFileIndex=0;
+	unsigned outFileIndex=0;
+	unsigned inChannel = 0;
+	unsigned outChannel = 0;
+	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
+	{
+		std::string processingType = it->second->GetClassName();
+		if ( processingType == "AudioSource" )
+		{	
+			inChannel++;
+			sources << " * source:\t" << it->first << "\t";		
+			sources << "In:\t" << _inFileNames[inFileIndex] << "\tchannel " << inChannel << "\n";
+
+			//We have read all the channels of infiles[inFileIndex]
+			if((unsigned)infiles[inFileIndex]->channels()==inChannel)
+			{
+				inFileIndex++;
+				inChannel =0;	
+			}
+		}
+		else if ( processingType == "AudioSink" )
+		{	outChannel++;
+			sinks << " * sink:\t" << it->first << "\t";
+			sinks << "Out:\t" << _outFileNames[outFileIndex] << "\tchannel " << outChannel << "\n";
+
+			//We have read all the channels of outfiles[outFileIndex]
+			if((unsigned)outfiles[outFileIndex]->channels()==outChannel)
+			{
+				outFileIndex++;
+				outChannel =0;
+			}
+		}
+	}
+	sources << sinks.str();
+	return sources.str();
+}
+
 void OfflineNetworkPlayer::Start()
 {
 	if ( IsPlaying() ) return;
@@ -85,19 +127,29 @@ void OfflineNetworkPlayer::Start()
 		exit(-1);			
 	}
 
+
+	std::cout << "Sources and Sinks list:" <<std::endl;
+	std::cout << listOfSourcesSinksAndFiles(infiles,outfiles)<<std::endl;
+
 	// Prepare the sources
 	std::vector<DataArray> inbuffers( inputChannelsCount);
 	unsigned sourceIndex=0;
 	unsigned fileIndex = 0;
 	while(sourceIndex<GetAudioSources().size())
 	{	
+		if(fileIndex>=infiles.size())
+		{
+			std::cout << "The number of sources is greater than the intput files. " << "There are "<<GetAudioSources().size()<<" sources "<<" and "<<infiles.size()<<"input files"<<std::endl;
+			exit(-1);
+		}
+
 		for(int channel=0;channel<infiles[fileIndex]->channels();channel++)
 		{
 			inbuffers[sourceIndex].Resize( frameSize );
 			inbuffers[sourceIndex].SetSize( frameSize );
 			AudioSource& source = *GetAudioSources()[sourceIndex];				
 			source.SetExternalBuffer( &(inbuffers[sourceIndex][0]),frameSize);
-			std::cout << " In: " << _inFileNames[fileIndex] << " channel "<< channel+1<< std::endl;
+			//std::cout << " In: " << _inFileNames[fileIndex] << " channel "<< channel+1<< std::endl;
 			sourceIndex++;
 		}
 		fileIndex++;
@@ -123,7 +175,7 @@ void OfflineNetworkPlayer::Start()
 			outbuffers[sinkIndex].SetSize( frameSize );
 			AudioSink& sink = *GetAudioSinks()[sinkIndex];
 			sink.SetExternalBuffer( &(outbuffers[sinkIndex][0]) ,frameSize);
-			std::cout << " Out: " << _outFileNames[fileIndex] << " channel "<< channel+1<< std::endl;
+			//std::cout << " Out: " << _outFileNames[fileIndex] << " channel "<< channel+1<< std::endl;
 			sinkIndex++;
 		}		
 		fileIndex++;
