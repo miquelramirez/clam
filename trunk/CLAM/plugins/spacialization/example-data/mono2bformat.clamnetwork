@@ -65,28 +65,7 @@
     <InitGain>0</InitGain>
   </processing>
 
-  <processing id="azimuth" position="413,682" size="127,58" type="ControlSource">
-    <MinValue>0</MinValue>
-    <MaxValue>100</MaxValue>
-    <Step>1</Step>
-    <UnitName>-</UnitName>
-  </processing>
-
-  <processing id="elevation" position="460,741" size="127,58" type="ControlSource">
-    <MinValue>0</MinValue>
-    <MaxValue>100</MaxValue>
-    <Step>1</Step>
-    <UnitName>-</UnitName>
-  </processing>
-
-  <processing id="gain directionality" position="329,607" size="130,58" type="ControlSource">
-    <MinValue>0</MinValue>
-    <MaxValue>100</MaxValue>
-    <Step>1</Step>
-    <UnitName>-</UnitName>
-  </processing>
-
-  <processing id="x" position="81,283" size="162,84" type="ControlPrinter">
+    <processing id="x" position="81,283" size="162,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>1</NumberOfInputs>
     <GuiOnly>1</GuiOnly>
