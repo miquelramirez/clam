@@ -24,6 +24,7 @@ namespace CLAM
  -# field of view (not used)
  -# listener azimuth
  -# listener elevation
+ -# listener roll
  -# listener x coord
  -# listener y coord
  -# listener z coord
@@ -65,16 +66,13 @@ class ChoreoSequencer : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 9, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 6, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, InFilename, Filename);
 		DYN_ATTRIBUTE( 1, public, unsigned, SourceIndex); // first is 0
 		DYN_ATTRIBUTE( 2, public, unsigned, FrameSize);
 		DYN_ATTRIBUTE( 3, public, unsigned, SampleRate);
 		DYN_ATTRIBUTE( 4, public, unsigned, ControlsPerSecond);
-		DYN_ATTRIBUTE( 5, public, TData, SizeX);
-		DYN_ATTRIBUTE( 6, public, TData, SizeY);
-		DYN_ATTRIBUTE( 7, public, TData, SizeZ);
-		DYN_ATTRIBUTE( 8, public, bool, UseSpiralIfNoFilename);
+		DYN_ATTRIBUTE( 5, public, bool, UseSpiralIfNoFilename);
 	protected:
 		void DefaultInit()
 		{
@@ -85,9 +83,6 @@ class ChoreoSequencer : public CLAM::Processing
 			SetFrameSize(512);
 			SetSampleRate(48000);
 			SetControlsPerSecond(24);
-			SetSizeX(1);
-			SetSizeY(1);
-			SetSizeZ(1);
 			SetUseSpiralIfNoFilename(false);		
 		};
 	};
@@ -118,9 +113,6 @@ class ChoreoSequencer : public CLAM::Processing
 
 	typedef std::vector<float> Row;
 	std::vector<Row> _controlSequence;
-	double _sizeX;
-	double _sizeY;
-	double _sizeZ;
 
 public:
 	ChoreoSequencer(const Config& config = Config()) 
@@ -152,27 +144,28 @@ public:
 	{
 		int sourceIndex = _config.GetSourceIndex();
 		_frame.SendControl( row[FrameColumn]);
-		_listenerX.SendControl( row[ListenerXColumn] );
-		_listenerY.SendControl( row[ListenerYColumn] );
-		_listenerZ.SendControl( row[ListenerZColumn] );
-		_listenerRoll.SendControl( 0 ); // row[ListenerRollColumn] ); // TODO: incorporate listener roll in the choreo
-		_listenerAzimuth.SendControl( row[ListenerAzimutColumn] );
 
-		double listenerElevation =  row[ListenerElevationColumn]; 
-		_listenerElevation.SendControl( listenerElevation );
-
-		_sourceX.SendControl( row[SourceXColumn+3*sourceIndex] );
-		_sourceY.SendControl( row[SourceYColumn+3*sourceIndex] );
-		_sourceZ.SendControl( row[SourceZColumn+3*sourceIndex] );
-
-		double listenerX = _sizeX * row[ListenerXColumn];
-		double listenerY = _sizeY * row[ListenerYColumn];
-		double listenerZ = _sizeZ * row[ListenerZColumn];
+		double listenerX = row[ListenerXColumn];
+		double listenerY = row[ListenerYColumn];
+		double listenerZ = row[ListenerZColumn];
 		double listenerAzimuth = row[ListenerAzimutColumn];
-		double listenerRoll = 0;
-		double sourceX = _sizeX * row[SourceXColumn+3*sourceIndex];
-		double sourceY = _sizeY * row[SourceYColumn+3*sourceIndex];
-		double sourceZ = _sizeZ * row[SourceZColumn+3*sourceIndex];
+		double listenerElevation =  row[ListenerElevationColumn]; 
+		double listenerRoll = row[ListenerRollColumn];
+		double sourceX = row[SourceXColumn+3*sourceIndex];
+		double sourceY = row[SourceYColumn+3*sourceIndex];
+		double sourceZ = row[SourceZColumn+3*sourceIndex];
+
+		_listenerX.SendControl( listenerX );
+		_listenerY.SendControl( listenerY );
+		_listenerZ.SendControl( listenerZ );
+		_listenerAzimuth.SendControl( listenerAzimuth );
+		_listenerElevation.SendControl( listenerElevation );
+		_listenerRoll.SendControl( listenerRoll ); 
+
+		_sourceX.SendControl( sourceX );
+		_sourceY.SendControl( sourceY );
+		_sourceZ.SendControl( sourceZ );
+
 
 		Orientation orientation = AbsoluteCoordinates2RelativeAngles::computeRelativeOrientation(
 			listenerX, listenerY, listenerZ,
@@ -241,12 +234,13 @@ protected:
 		FieldOfView=1,
 		ListenerAzimutColumn=2,
 		ListenerElevationColumn=3,
-		ListenerXColumn=4,
-		ListenerYColumn=5,
-		ListenerZColumn=6,
-		SourceXColumn=7,
-		SourceYColumn=8,
-		SourceZColumn=9,
+		ListenerRollColumn=4,
+		ListenerXColumn=5,
+		ListenerYColumn=6,
+		ListenerZColumn=7,
+		SourceXColumn=8,
+		SourceYColumn=9,
+		SourceZColumn=10,
 	};
 	void fillDummyChoreo()
 	{
@@ -266,6 +260,7 @@ protected:
 			row.push_back(0); //Dummy
 			row.push_back(alpha); // Listener Azimuth
 			row.push_back(0.); // Listener Elevation
+			row.push_back(0.); // Listener Roll
 			row.push_back(.5); // receiver X
 			row.push_back(.5); // receiver Y
 			row.push_back(.5); // receiver Z
@@ -284,10 +279,6 @@ protected:
 		_sampleCount=0;
 		_frameSize=_config.GetFrameSize();
 		_sequenceIndex=0;
-		_sizeX = _config.HasSizeX()? _config.GetSizeX(): 1.;
-		_sizeY = _config.HasSizeY()? _config.GetSizeY(): 1.;
-		_sizeZ = _config.HasSizeZ()? _config.GetSizeZ(): 1.;
-
 		_controlSequence.clear();
 
 		if (_config.HasUseSpiralIfNoFilename())
@@ -309,7 +300,7 @@ protected:
 			return false;
 		}
 
-		std::string filetype = "ClamChoreoVersion 1.2";
+		std::string filetype = "ClamChoreoVersion 1.3";
 		std::string firstLine;
 		std::getline(file,firstLine);
 		if (firstLine != ("#"+filetype))
