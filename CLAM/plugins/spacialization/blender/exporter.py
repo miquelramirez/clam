@@ -37,15 +37,14 @@ _geometryHeader="#3ds exported\n"
 _geometryDataFilename="geometry.data"
 _wavsDataFilename="exported_wavs.data"
 _choreoFilename="exported_coreo.data"
-#_choreoHeader="#ClamChoreoVersion 1.1\n"
-_choreoHeader="#ClamChoreoVersion 1.2\n"
+_choreoHeader="#ClamChoreoVersion 1.3\n"
 
 #options:
 _convertToTriangles=True
 
 #templates:
 FaceLineTemplate="%(verts)s %(impedanceReal)f %(impedanceImag)f %(diffusion)f %(materialName)s\n"
-ChoreoLineTemplate="%(frame)i\t0\t%(targetAzimuth)f\t%(targetElevation)f\t%(targetX)f\t%(targetY)f\t%(targetZ)f\t%(sourcesPositions)s\n"
+ChoreoLineTemplate="%(frame)i\t0\t%(targetAzimuth)f\t%(targetElevation)f\t%(targetRoll)f\t%(targetX)f\t%(targetY)f\t%(targetZ)f\t%(sourcesPositions)s\n"
 WavLineTemplate="%(wavFilename)s\t%(objectName)s\n"
 
 
