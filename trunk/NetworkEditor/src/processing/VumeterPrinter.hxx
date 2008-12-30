@@ -12,10 +12,14 @@ namespace CLAM
 class VumeterPrinter : public CLAM::Processing
 {
 	AudioInPort _input;
+	double _max;
+	unsigned _sampleCount;
 
 public:
 	VumeterPrinter(const Config& config = Config())
 		: _input("Input", this)
+		, _max(0.)
+		, _sampleCount(0)
 	{
 		Configure( config );
 	}
@@ -23,21 +27,26 @@ public:
 
 	bool Do()
 	{
-
-		double max = 1e-10;
+		const int sampleRate = 44100;
+		const int samplesPerFrame = sampleRate/25;
 		unsigned size = _input.GetAudio().GetBuffer().Size();
 		const CLAM::TData * data = &(_input.GetAudio().GetBuffer()[0]);
 
 		for (unsigned i=0; i<size; i++)
 		{
-			const CLAM::TData & bin = data[i];
-			if (bin>max) max=bin;
-			if (bin<-max) max=-bin;
+			const CLAM::TData & current = data[i];
+			if (current>_max) _max=current;
+			if (current<-_max) _max=-current;
+			_sampleCount++;
+			if (_sampleCount >= samplesPerFrame)
+			{
+				double logEnergy = 60 + 20*log(_max);
+				std::ofstream file("vumeter.data", std::fstream::app);
+				file << logEnergy << std::endl;
+				_max = 1e-10;
+				_sampleCount=0;
+			}
 		}
-		double logEnergy = 60 + 20*log(max);
-
-		std::ofstream file("vumeter.data", std::fstream::app);
-		file << logEnergy << std::endl;
 
 		_input.Consume();
 		return true;
