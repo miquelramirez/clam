@@ -48,7 +48,7 @@ private:
 		const CLAM::MelCepstrum & data = FreezeAndGetData();
 		const CLAM::Array<CLAM::TData> & buffer = data.GetCoefficients();
 		_size = buffer.Size();
-		return & buffer[0];
+		return _size? & buffer[0] : 0;
 	}
 	void release()
 	{
