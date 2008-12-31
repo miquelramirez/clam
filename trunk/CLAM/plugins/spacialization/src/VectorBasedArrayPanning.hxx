@@ -15,7 +15,7 @@
  by using the two nearer speakers of an
  ITU 5.1 Surround speaker system with channels 
  L(30), R(-30), C(0), SL(110), SR(-110).
- @param[in] p [Port] Pressure that the virtual sound emits.
+ @param[in] w [Port] Ambisonics B-format W channel (omni directionsl pressure) that the virtual sound emits.
  @param[out] center [Port] Output for channel  placed at 0 degrees.
  @param[out] right [Port] Output for channel  placed at -30 degrees.
  @param[out] surroundRight [Port] Output for channel  placed at -110 degrees.
@@ -23,13 +23,12 @@
  @param[out] left [Port] Output for channel  placed at 30 degrees.
  @todo Is that what is called ITU 5.1?
  @todo Control value beta, controls a simulated rotation of the receiver
- @todo Review whether the input should be ambisonics or pressure/velocity
  @ingroup SpatialAudio
 */
 
 class VectorBasedArrayPanning : public CLAM::Processing
 { 
-	CLAM::AudioInPort _p;
+	CLAM::AudioInPort _w;
 	CLAM::AudioOutPort _center;
 	CLAM::AudioOutPort _left;
 	CLAM::AudioOutPort _right;
@@ -40,7 +39,7 @@ class VectorBasedArrayPanning : public CLAM::Processing
 public:
 	const char* GetClassName() const { return "VectorBasedArrayPanning"; }
 	VectorBasedArrayPanning(const Config& config = Config()) 
-		: _p("p", this)
+		: _w("W", this)
 		, _center("center", this)
 		, _left("left", this)
 		, _right("right", this)
@@ -64,7 +63,7 @@ public:
 	{
 		const double beta=fmod(_beta.GetLastValue()+180,360)-180;
 		CLAM_DEBUG_ASSERT(beta>=-180 and beta<=+180, "beta expected in range -180, +180");
-		const CLAM::DataArray& p =_p.GetAudio().GetBuffer();
+		const CLAM::DataArray& w =_w.GetAudio().GetBuffer();
 		CLAM::DataArray& center =_center.GetAudio().GetBuffer();
 		CLAM::DataArray& left =_left.GetAudio().GetBuffer();
 		CLAM::DataArray& right =_right.GetAudio().GetBuffer();
@@ -95,22 +94,22 @@ public:
 		{
 			if (channel==lower)
 			{
-				for (int i=0; i<p.Size(); i++)
-					channels[channel][i]=p[i]*gLower;
+				for (int i=0; i<w.Size(); i++)
+					channels[channel][i]=w[i]*gLower;
 			}
 			else if (channel==upper)
 			{
-				for (int i=0; i<p.Size(); i++)
-					channels[channel][i]=p[i]*gUpper;
+				for (int i=0; i<w.Size(); i++)
+					channels[channel][i]=w[i]*gUpper;
 			}
 			else
 			{
-				for (int i=0; i<p.Size(); i++)
+				for (int i=0; i<w.Size(); i++)
 					channels[channel][i]=0.;
 			}
 		}
 		// Tell the ports this is done
-		_p.Consume();
+		_w.Consume();
 		_center.Produce();
 		_left.Produce();
 		_right.Produce();
