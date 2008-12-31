@@ -322,7 +322,7 @@ protected:
 				is >> data;
 				row.push_back(data);
 			}
-			if ( ((row.size()-8)%3) != 0 ) // if number of columns is not 8 + 3*sources:
+			if ( row.size() < 11 or ((row.size()-8)%3) != 0 ) // if number of columns is not 8 + 3*sources:
 			{
 				AddConfigErrorMessage("Wrong number of columns in choreo file! It needs to have 8, plus 3 more (X,Y,Z positions) for each source.");
 				return false;
