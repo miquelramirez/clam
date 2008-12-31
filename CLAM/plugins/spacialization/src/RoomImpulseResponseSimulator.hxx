@@ -307,6 +307,13 @@ private:
 		{
 			offsetToStrip = initialDelay;
 		}
+#if 0 // for debugging TODO remove
+		std::cout << "IR size " << _scene->getTimeResponse_P().size() << std::endl;
+		std::cout << "offset to strip " << offsetToStrip << std::endl;
+		for (unsigned i=offsetToStrip; i<offsetToStrip+1000; i++)
+			std::cout << _scene->getTimeResponse_P()[i] << " ";
+		std::cout << std::endl;
+#endif
 
 		std::string errorMsg;
 		if (
