@@ -22,7 +22,8 @@
 class BFormat2Sixteen : public CLAM::Processing
 { 
 protected:
-/*
+/* TODO add enum paramter with kind of exhibition setup
+ 
 	class Config : public CLAM::ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( Config, 1, ProcessingConfig );
@@ -69,34 +70,13 @@ public:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		RemovePortsAndControls();
+		RemovePorts();
 		_sinElevations.clear();
 		_cosElevations.clear();
 		_sinAzimuths.clear();
 		_cosAzimuths.clear();
 
-//		_nChannels=_config.GetNChannels();
 		unsigned buffersize = BackendBufferSize();
-#if 0
-		for (unsigned i=0; i<_nChannels; i++)
-		{
-			double angle = 360.*i/_nChannels;
-			double rad = M_PI*angle/180;
-			_sinElevations.push_back( std::sin(rad) );
-			_cosElevations.push_back( std::cos(rad) );
-			_sinAzimuths.push_back( std::sin(rad) );
-			_cosAzimuths.push_back( std::cos(rad) );
-	//		std::cout << "sin "<< angle << " "<< std::sin(rad) << std::endl;
-
-			std::ostringstream nameStream;
-			nameStream << "out " << angle;
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( nameStream.str(), this);
-			port->SetSize( buffersize );
-			port->SetHop( buffersize );
-			_outputs.push_back( port );
-		}	
-		
-#endif
 
 		struct SpeakerPositions {
 			const char * name;
@@ -104,7 +84,6 @@ public:
 			float elevation;
 		} speaker[] =
 		{
-		// The following angles are "encoding" angles not ITU exhibiton setup angles.
 			{"Base Front Left", 45., -45.},
 			{"Base Front Right", -45., -45.},
 			{"Base Back Left", 135., -45.},
@@ -174,38 +153,6 @@ public:
 					y[i] * _sinAzimuths[channel] * _cosElevations[channel] +
 					z[i] * _sinElevations[channel]
 					) * velocitiesGain;
-#if 0
-				switch (channel)
-				{
-					case 0: // base l
-						channels[channel][i] = w[i] + x[i] + y[i] - z[i];
-						break;
-					case 1: // base r
-						channels[channel][i] = w[i] + x[i] - y[i] - z[i];
-						break;
-					case 2: // base bl
-						channels[channel][i] = w[i] - x[i] + y[i] - z[i];
-						break;
-					case 3: // base br
-						channels[channel][i] = w[i] - x[i] - y[i] - z[i];
-						break;
-					case 4: // top l
-						channels[channel][i] = w[i] + x[i] + y[i] + z[i];
-						break;
-					case 5: // top r
-						channels[channel][i] = w[i] + x[i] - y[i] + z[i];
-						break;
-					case 6: // top bl
-						channels[channel][i] = w[i] - x[i] + y[i] + z[i];
-						break;
-					case 7: // top br
-						channels[channel][i] = w[i] - x[i] -y[i] + z[i];
-						break;
-					default:
-						std::cout << "ERROR at BFormat2Cube: bad channel number."<< std::endl;
-						break;
-				}
-#endif 
 			}
 		}
 
@@ -219,7 +166,7 @@ public:
 		
 		return true;
 	}
-	void RemovePortsAndControls()
+	void RemovePorts()
 	{
 		OutPorts::iterator it;
 		for(it=_outputs.begin(); it!=_outputs.end(); it++)
@@ -230,7 +177,7 @@ public:
 	}
 	~BFormat2Sixteen()
 	{
-		RemovePortsAndControls();
+		RemovePorts();
 	}
 
 
