@@ -44,13 +44,13 @@ public:
 	void normalize()
 	{
 		elevation += 90.;
-		elevation = _module(elevation, 360.);
+		elevation = module(elevation, 360.);
 		if (elevation>180.+1e-13)
 		{
 			azimuth += 180;
 			elevation = 360 - elevation;
 		}
-		azimuth = _module(azimuth, 360.);
+		azimuth = module(azimuth, 360.);
 		elevation -= 90;
 	}
 	/**
@@ -108,7 +108,7 @@ public:
 	}
 
 private:
-	double _module(double input, double factor)
+	double module(double input, double factor)
 	{
 		while (input<0) input+=factor;
 		return std::fmod(input, factor);
