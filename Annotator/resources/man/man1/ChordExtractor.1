@@ -1,13 +1,14 @@
-.TH ONSETEXTRACTOR "1" "December 2008" "OnsetExtractor" "User Commands"
+.TH CHORDEXTRACTOR "1" "December 2008" "ChordExtractor" "User Commands"
 .SH NAME
-OnsetExtractor \- Detects starting notes in a wave file
+ChordExtractor \- Detects starting notes in a wave file
 .SH SYNOPSIS
-.B OnsetExtractor
+.B ChordExtractor
 [\fIoptions\fR] \fIaudiofile1 audiofile2 \fR...
 .SH DESCRIPTION
-OnsetExtractor extracts the onsets of a wave file containing music,
+ChordExtractor extracts tonal information from a wave file containing music
 and exports it as CLAM Annotator XML format.
-An onset is the starting point of a note or a percusion instrument.
+Tonal information includes the chord segmentation and instant pitch
+class profile among others.
 .SH OPTIONS
 .TP
 \fB\-\-version\fR
@@ -32,5 +33,5 @@ Appends SUFFIX to the generated descriptors file
 Specifies a configuration file with the options for
 the extractor.
 .SH "SEE ALSO"
-Annotator(1), ClamExtractorExample(1), ChordExtractor(1)
+Annotator(1), ClamExtractorExample(1), OnsetExtractor(1)
 
