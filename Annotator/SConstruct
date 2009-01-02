@@ -170,7 +170,7 @@ onsetSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  onsetSources )
 fftwlib = "fftw3"
 fftwlibpath = [os.path.join(env['prefix'],'lib')]
 sndfilelib = 'sndfile'
-programs += [ env.Program(target='OnsetExtractor', source = onsetSources, LIBS=[fftwlib,sndfilelib], LIBPATH=fftwlibpath) ]
+programs += [ env.Program(target='OnsetExtractorCore', source = onsetSources, LIBS=[fftwlib,sndfilelib], LIBPATH=fftwlibpath) ]
 
 env.Uic4(source="SimacServicesClient/GUI.ui")
 bocaClientSources = [
@@ -180,10 +180,7 @@ bocaClientSources = [
 ]
 programs += [ env.Program(target="BocaClient", source = bocaClientSources) ]
 
-manpages = [
-	'resources/man/man1/Annotator.1',
-	'resources/man/man1/ClamExtractorExample.1',
-	]
+manpages = glob.glob('resources/man/man1/*.1')
 
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
 translatableSources = scanFiles('*.cxx', sourcePaths);
