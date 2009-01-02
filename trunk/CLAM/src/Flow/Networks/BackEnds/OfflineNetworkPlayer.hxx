@@ -32,7 +32,7 @@ public:
 	// base class (virtual) interface:
 	bool IsWorking() const;
 	std::string NonWorkingReason() const;
-	std::string listOfSourcesSinksAndFiles(std::vector<SndfileHandle*> outfiles,std::vector<SndfileHandle*> outfiles);
+	std::string listOfSourcesSinksAndFiles(std::vector<SndfileHandle*> infiles,std::vector<SndfileHandle*> outfiles);
 	virtual void Start();
 	virtual void Stop();
 
