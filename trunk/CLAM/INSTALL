@@ -1,6 +1,13 @@
 This file explains how to compile and install the CLAM libraries and 
-applications from the source tarballs. Alternatively, CLAM website
-provides already compiled packages for several platforms.
+applications from the source tarballs or a subversion checkous. 
+Alternatively, CLAM website provides already compiled packages for several 
+platforms.
+
+http://clam.iua.upf.edu/download.html
+
+Checkout the subversion repository
+
+	$ svn co http://iua-share.upf.edu/svn/clam/trunk clam
 
  1. Install CLAM dependencies
 
@@ -9,16 +16,7 @@ provides already compiled packages for several platforms.
    
  2. Compile CLAM libraries from the source
 
- Checkout the subversion repository
- $ svn co http://iua-share.upf.edu/svn/clam/trunk 
-
- Or download the CLAM tarball (stable release or cvs snapshot) from the 
- web: [http://clam.iua.upf.es/download.html] 
- 
- Change directory to CLAM/
- NEW! (April 4th) build directory is now CLAM/ instead of CLAM/scons/libs
-
- The simplest way to build and install the libraries is issuing :
+ Change the directory to CLAM/ and execute:
 
         $ scons configure
         $ scons
@@ -61,8 +59,9 @@ provides already compiled packages for several platforms.
  3. Compile CLAM applications.
 
  Applications can be download from the CLAM website in separate tarballs.
- If you are using svn they are folders at the CLAM trunk.
- Go to the root of the application source tree and issue: (maybe changing the prefix)
+ If you are using svn they are folders at the clam trunk.
+ Go to the root of the application source tree (e.g. NetworkEditor) 
+ and issue: (maybe changing the prefix)
 
         $ scons prefix=/usr/local clam_prefix=/usr/local
 
@@ -81,10 +80,10 @@ provides already compiled packages for several platforms.
  (do "sudo apt-get install <packages>")
 
  * Packages to compile clam libs:
- build-essential scons ladspa-sdk libxerces27-dev libfftw3-dev libjack-dev libmad0-dev libogg-dev libsndfile1-dev libvorbis-dev libid3-3.8.3-dev libasound2-dev portaudio19-dev 
+   build-essential scons ladspa-sdk  libfftw3-dev libjack-dev libmad0-dev libogg-dev libsndfile1-dev libvorbis-dev libid3-3.8.3-dev libasound2-dev portaudio19-dev libxerces-c2-dev
 
-NOTE about libxerces:
-libxerces dev package to be installed in Ubuntu 8.10: libxerces-c2-dev
+NOTE about libxerces: devel package to be installed for versions of Ubuntu < 8.10 is libxerces27-dev
+libxerces27-dev
 
  ** to pass the tests: libcppunit-dev 
 
