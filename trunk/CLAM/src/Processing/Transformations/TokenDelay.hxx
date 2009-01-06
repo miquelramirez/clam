@@ -50,11 +50,6 @@ public:
 	DYN_ATTRIBUTE (0, public, unsigned, Delay);
 	DYN_ATTRIBUTE (1, public, unsigned, MaxDelay );
 protected:
-	/** 
-	* Dynamic type initialization: all attributes are instantiated.
-	* ActualDelay is set to 0 and MaxDelay to a default value (i.e. 1000 tokens)
-	* 
-	*/
 	void DefaultInit(void)
 	{
 		AddDelay();
@@ -208,6 +203,7 @@ template <class T>
 bool TokenDelay<T>::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig, c);
+	// TODO: Put some sanity checks on the configuration here
 	mCapacity = mConfig.GetMaxDelay();
 	mDelayControl.DoControl(TControlData(mConfig.GetDelay()));
 	mGivenDelay = CastDelayControlValue(mDelayControl.GetLastValue());
@@ -252,8 +248,7 @@ bool TokenDelay<T>::Do(const T& in, T& out)
 template <class T> 
 void TokenDelay<T>::WriteNewSample(const T& in)
 {
-	mTokenQueue[mWritePointer] = in;
-	mWritePointer++;
+	mTokenQueue[mWritePointer++] = in;
 	if(mWritePointer==mCapacity) mWritePointer=0;
 
 }
@@ -262,11 +257,9 @@ void TokenDelay<T>::WriteNewSample(const T& in)
 template <class T>
 void TokenDelay<T>::ReadCurrentSample(T& out)
 {
-	CLAM_DEBUG_ASSERT(mReadPointer>0, "Trying to read outside buffer");
-	int oldReadPointer = mReadPointer;
-	mReadPointer++;
+	CLAM_DEBUG_ASSERT(mReadPointer>=0, "Trying to read outside buffer");
+	out = mTokenQueue[mReadPointer++];
 	if(mReadPointer==mCapacity) mReadPointer=0;
-	out = mTokenQueue[oldReadPointer];
 }
 
 
@@ -309,38 +302,6 @@ void TokenDelay<T>::FulfillsInvariant() const
 	if (mFirst <0 || mLast<0 || mCapacity <= 0)  throw Err("TokenDelay : invariant not fullfilled!: some very bad thing...");
 */
 }
-
-// Control Enumeration
-
-class ETokenDelayControls
-: public Enum
-{
-
-public:
-	ETokenDelayControls() : Enum( ValueTable(), delay ) { } 
-	ETokenDelayControls( tValue v ) : Enum( ValueTable(), v ) { } 
-	ETokenDelayControls( std::string s ) : Enum( ValueTable(), s ) { } 
-	~ETokenDelayControls() { } 
-	Component* Species() const
-	{
-		return new ETokenDelayControls;
-	}
-
-	typedef enum 
-	{ 
-		delay = 0
-	} tEnum;
-	static tEnumValue * ValueTable()
-	{
-		static tEnumValue sEnumValues[] =
-		{
-			{ delay, "delay" },
-			{ 0, NULL }
-		};
-		return sEnumValues;
-	}
-
-};
 
 }; //namespace CLAM
 
