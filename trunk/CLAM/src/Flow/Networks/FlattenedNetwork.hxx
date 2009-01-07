@@ -87,6 +87,7 @@ public:
 	const ProcessingsGeometriesMap GetAndClearGeometries();
 
 	//! sources and sink order 
+	const Geometry findProcessingGeometry(Processing* ) const;
 	const AudioSinks getOrderedSinks() const;
 	const AudioSources getOrderedSources() const;
 	static const bool compareGeometriesUpperThan(ProcessingAndGeometry &, ProcessingAndGeometry &);
