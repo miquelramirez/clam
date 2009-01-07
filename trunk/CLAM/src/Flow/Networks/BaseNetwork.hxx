@@ -44,7 +44,7 @@ public:
 	typedef std::list<InPortBase *> InPortsList;
 
 	typedef struct { int x, y, width, height; } Geometry;
-	typedef struct { std::string processingName; Geometry geometry; } GeometryWithProcessingName;
+	typedef struct { Processing* processing; Geometry geometry; } ProcessingAndGeometry;
 	typedef std::map <std::string, Geometry> ProcessingsGeometriesMap;
 	typedef struct { std::string sourceName, sinkName; } Connection;
 	typedef std::list<Connection> ConnectionsList;
