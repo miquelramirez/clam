@@ -92,10 +92,8 @@ void PANetworkPlayer::Start()
 	if (CheckPaError(Pa_Initialize())) return;
 	displayPADevices();
 
-	CollectSourcesAndSinks();
-
-	int nInChannels = _sources.size();
-	int nOutChannels = _sinks.size();
+	int nInChannels = GetAudioSources().size();
+	int nOutChannels = GetAudioSinks().size();
 
 	PaHostApiTypeId apiTryList[] = {
 		paDirectSound,
@@ -278,7 +276,8 @@ void PANetworkPlayer::Do(const void *inputBuffers, void *outputBuffers,
 void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 {
 	int i=0;
-	for ( AudioSources::iterator it=_sources.begin(); it!=_sources.end(); it++ )
+	Network::AudioSources sources=GetAudioSources();
+	for ( Network::AudioSources::iterator it=sources.begin(); it!=sources.end(); it++ )
 	{
 		(*it)->SetExternalBuffer( input[i++], nframes );
 	}
@@ -287,7 +286,8 @@ void PANetworkPlayer::DoInPorts(float** input, unsigned long nframes)
 void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 {
 	int i=0;
-	for (AudioSinks::iterator it=_sinks.begin(); it!=_sinks.end(); it++)
+	Network::AudioSinks sinks=GetAudioSinks();
+	for (Network::AudioSinks::iterator it=sinks.begin(); it!=sinks.end(); it++)
 	{
 		(*it)->SetExternalBuffer(output[i++], nframes);
 	}
@@ -295,7 +295,8 @@ void PANetworkPlayer::DoOutPorts(float** output, unsigned long nframes)
 
 void PANetworkPlayer::MuteOutBuffers(float** output, unsigned long nframes)
 {
-	for (unsigned i=0; i<_sinks.size(); i++)
+	unsigned nSinks=GetAudioSinks().size();
+	for (unsigned i=0; i<nSinks; i++)
 		std::memset(output[i], 0, nframes*sizeof(float));
 }
 

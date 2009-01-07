@@ -28,9 +28,9 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(std::vector<Sndfile
 	unsigned outFileIndex=0;
 	unsigned inChannel = 0;
 	unsigned outChannel = 0;
-	AudioSources sources = GetAudioSources();
-	AudioSinks sinks = GetAudioSinks();
-	for (AudioSources::iterator it=sources.begin(); it!=sources.end(); it++)
+	Network::AudioSources sources = GetAudioSources();
+	Network::AudioSinks sinks = GetAudioSinks();
+	for (Network::AudioSources::iterator it=sources.begin(); it!=sources.end(); it++)
 	{
 		inChannel++;
 		result << " * source:\t" << net.GetNetworkId( *it ) << "\t";		
@@ -44,7 +44,7 @@ std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(std::vector<Sndfile
 		}
 	}
 
-	for (AudioSinks::iterator it=sinks.begin(); it!=sinks.end(); it++)
+	for (Network::AudioSinks::iterator it=sinks.begin(); it!=sinks.end(); it++)
 	{
 		outChannel++;
 		result << " * sink:\t" << net.GetNetworkId( *it ) << "\t";
@@ -64,7 +64,6 @@ void OfflineNetworkPlayer::Start()
 {
 	if ( IsPlaying() ) return;
 	BePlaying();
-	CollectSourcesAndSinks();
 
 	const int frameSize = 512;
 	//Open the files, get the total number of channels and the sample rate

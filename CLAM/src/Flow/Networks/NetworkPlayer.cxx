@@ -24,57 +24,21 @@
 namespace CLAM
 {
 
-void NetworkPlayer::CollectSourcesAndSinks()
-{
-	_sources.clear();
-	_sinks.clear();
-	Network & net = GetNetwork();
-
-//TODO refactor: delegate to Network::getOrderedSources/Sinks
-std::list<AudioSource*> orderedSourcesList=net.getOrderedSources();
-std::list<AudioSink*> orderedSinksList=net.getOrderedSinks();
-if (orderedSourcesList.empty() or orderedSinksList.empty())
-{
-	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
+	std::string NetworkPlayer::SourcesAndSinksToString()
 	{
-		std::string processingType = it->second->GetClassName();
-		if ( processingType == "AudioSource" )
-			_sources.push_back( (AudioSource*)it->second );
-		else if ( processingType == "AudioSink" )
-			_sinks.push_back( (AudioSink*)it->second );
-	}
-}
-else
-{
-	std::list<AudioSink*>::const_iterator itSinksList;
-	for (itSinksList=orderedSinksList.begin();itSinksList!=orderedSinksList.end();itSinksList++)
-	{
-		_sinks.push_back( *itSinksList );
-	}
-	std::list<AudioSource*>::const_iterator itSourcesList;
-	for (itSourcesList=orderedSourcesList.begin();itSourcesList!=orderedSourcesList.end();itSourcesList++)
-	{
-		_sources.push_back( *itSourcesList );
-	}
-}
+		std::string sourceNames;
+		std::string sinkNames;
+		Network & net = GetNetwork();
+		Network::AudioSources sources = GetAudioSources();
+		Network::AudioSinks sinks = GetAudioSinks();
+		for (Network::AudioSources::iterator it=sources.begin(); it!=sources.end(); it++)
+			sourceNames += " * source:\t"+net.GetNetworkId( *it )+"\n";
 
-}
-std::string NetworkPlayer::SourcesAndSinksToString()
-{
-std::cout << "NetworkPlayer::SourcesAndSinksToString()"<<std::endl;
-	std::string sourceNames;
-	std::string sinkNames;
-	Network & net = GetNetwork();
-	AudioSources sources = GetAudioSources();
-	AudioSinks sinks = GetAudioSinks();
-	for (AudioSources::iterator it=sources.begin(); it!=sources.end(); it++)
-		sourceNames += " * source:\t"+net.GetNetworkId( *it )+"\n";
+		for (Network::AudioSinks::iterator it=sinks.begin(); it!=sinks.end(); it++)
+			sinkNames += " * sink:\t"+net.GetNetworkId( *it )+"\n";
+			
 
-	for (AudioSinks::iterator it=sinks.begin(); it!=sinks.end(); it++)
-		sinkNames += " * sink:\t"+net.GetNetworkId( *it )+"\n";
-		
-
-	return (sourceNames+sinkNames);
-}
+		return (sourceNames+sinkNames);
+	}
 } //namespace
 

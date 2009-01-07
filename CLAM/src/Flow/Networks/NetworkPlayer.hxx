@@ -39,8 +39,6 @@ namespace CLAM
 class NetworkPlayer
 {
 protected:
-	typedef std::vector<AudioSource*> AudioSources;
-	typedef std::vector<AudioSink*> AudioSinks;
 	enum Status { Playing=0, Stopped=1, Paused=2 };
 public:
 	NetworkPlayer()
@@ -96,21 +94,16 @@ protected:
 		CLAM_ASSERT( (_network!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
 		return *_network;
 	}
-	void CollectSourcesAndSinks();//TODO refactor: remove
 
-	AudioSources& GetAudioSources() 
-	{ 
-		CollectSourcesAndSinks();
-		return _sources; 
+	Network::AudioSources GetAudioSources() 
+	{
+		return GetNetwork().getOrderedSources();
 	}
-	AudioSinks& GetAudioSinks() 
+	Network::AudioSinks GetAudioSinks() 
 	{ 
-		CollectSourcesAndSinks();
-		return 	_sinks; 
+		return GetNetwork().getOrderedSinks(); 
 	}
 
-	AudioSources _sources;
-	AudioSinks _sinks;
 private:
 	Network *_network;
 	volatile Status _status;

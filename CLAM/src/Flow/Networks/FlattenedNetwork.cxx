@@ -239,10 +239,10 @@ namespace CLAM
 		return true;
 	}
 
-	const std::list<AudioSink*> FlattenedNetwork::getOrderedSinks() const
+	const Network::AudioSinks FlattenedNetwork::getOrderedSinks() const
 	{
 		std::list <ProcessingAndGeometry> sinksAndGeometries;
-		std::list<AudioSink*> orderedSinksList;
+		AudioSinks orderedSinks;
 		if (_processingsGeometries.empty())
 		{
 			CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sinks.");
@@ -269,20 +269,20 @@ namespace CLAM
 				{
 					AudioSink* sink = dynamic_cast<AudioSink*>(it->processing);
 					CLAM_ASSERT(sink, "Expected an AudioSink");
-					orderedSinksList.push_back( sink );
+					orderedSinks.push_back( sink );
 				}
 
 			}
-		return orderedSinksList;
+		return orderedSinks;
 	}
 
 
 
 
-	const std::list<AudioSource*> FlattenedNetwork::getOrderedSources() const
+	const Network::AudioSources FlattenedNetwork::getOrderedSources() const
 	{
 		std::list <ProcessingAndGeometry> sourcesAndGeometries;
-		std::list<AudioSource*> orderedSourcesList;
+		AudioSources orderedSources;
 		if (_processingsGeometries.empty())
 		{
 			CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sources.");
@@ -309,11 +309,11 @@ namespace CLAM
 				{
 					AudioSource* source = dynamic_cast<AudioSource*>(it->processing);
 					CLAM_ASSERT(source, "Expected an AudioSource");
-					orderedSourcesList.push_back( source );
+					orderedSources.push_back( source );
 				}
 
 			}
-		return orderedSourcesList;
+		return orderedSources;
 	}
 
 	bool FlattenedNetwork::SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries)

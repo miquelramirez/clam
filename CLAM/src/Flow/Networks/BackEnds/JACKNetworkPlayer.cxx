@@ -89,22 +89,21 @@ void JACKNetworkPlayer::RegisterPorts()
 void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 {
 
-std::list<AudioSource*> sourcesList=net.getOrderedSources();
-std::list<AudioSource*>::const_iterator itSourcesList;
+	Network::AudioSources sources=net.getOrderedSources();
 
 	CLAM_ASSERT( _sourceJackBindings.empty(),
 		"JACKNetworkPlayer::RegisterInputPorts() : there are already registered input ports");
 
 	SourceJackBinding pair;
-	//Get them from the Network and add it to local list		
-	for (itSourcesList=sourcesList.begin();itSourcesList!=sourcesList.end();itSourcesList++)
+	//Get them from the Network and add it to local list
+	for (Network::AudioSources::const_iterator it=sources.begin(); it!=sources.end(); it++)
 	{
 		//Get Processing address
-		pair.source=*itSourcesList;
+		pair.source=*it;
 		pair.source->SetFrameAndHopSize(_jackBufferSize);
 
 		//Register port on the JACK server
-		const std::string & processingName = net.GetNetworkId(*itSourcesList);
+		const std::string & processingName = net.GetNetworkId(*it);
 		pair.jackPort=jack_port_register (_jackClient,
 			processingName.c_str(),
 			JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
@@ -117,22 +116,21 @@ std::list<AudioSource*>::const_iterator itSourcesList;
 void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 {
 
-	std::list<AudioSink*> sinksList=net.getOrderedSinks();
-	std::list<AudioSink*>::const_iterator itSinksList;
+	Network::AudioSinks sinks=net.getOrderedSinks();
 
 	CLAM_ASSERT( _sinkJackBindings.empty(),
 		"JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");	
 
 	SinkJackBinding pair;
 
-	for (itSinksList=sinksList.begin();itSinksList!=sinksList.end();itSinksList++)
+	for (Network::AudioSinks::const_iterator it=sinks.begin(); it!=sinks.end(); it++)
 	{
 		//Get Processing address
-		pair.sink=*itSinksList;
+		pair.sink=*it;
 		pair.sink->SetFrameAndHopSize(_jackBufferSize);
 
 		//Register port on the JACK server
-		const std::string & processingName = net.GetNetworkId( *itSinksList );
+		const std::string & processingName = net.GetNetworkId( *it );
 		pair.jackPort=jack_port_register (_jackClient,
 			processingName.c_str(),
 			JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
