@@ -50,19 +50,19 @@ public:
 	virtual ~PANetworkPlayer();
 
 	// base class (virtual) interface:
-	bool IsWorking() const;
-	std::string NonWorkingReason() const;
+	bool IsWorking();
+	std::string NonWorkingReason();
 	virtual void Start();
 	virtual void Stop();
 	
 private:
 	static int ProcessCallback (
-							const void *inputBuffers,
-							void *outputBuffers,
-                            unsigned long framesPerBuffer,
-                            const PaStreamCallbackTimeInfo* timeInfo,
-                            PaStreamCallbackFlags statusFlags,
-                            void *userData);
+			const void *inputBuffers,
+			void *outputBuffers,
+			unsigned long framesPerBuffer,
+			const PaStreamCallbackTimeInfo* timeInfo,
+			PaStreamCallbackFlags statusFlags,
+			void *userData);
 	inline bool CheckPaError(PaError result);
 	//Buffer copying methods
 	void Do(const void *inputBuffers, void *outputBuffers, unsigned long framesPerBuffer);

@@ -217,12 +217,12 @@ void PANetworkPlayer::Stop()
 	Pa_Terminate();
 }
 
-bool PANetworkPlayer::IsWorking() const
+bool PANetworkPlayer::IsWorking()
 {
 	return mError==paNoError;
 }
 
-std::string PANetworkPlayer::NonWorkingReason() const
+std::string PANetworkPlayer::NonWorkingReason()
 {
 	return mErrorMessage;
 }

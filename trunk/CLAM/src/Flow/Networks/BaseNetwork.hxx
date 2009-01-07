@@ -44,6 +44,7 @@ public:
 	typedef std::list<InPortBase *> InPortsList;
 
 	typedef struct { int x, y, width, height; } Geometry;
+	typedef struct { std::string processingName; Geometry geometry; } GeometryWithProcessingName;
 	typedef std::map <std::string, Geometry> ProcessingsGeometriesMap;
 	typedef struct { std::string sourceName, sinkName; } Connection;
 	typedef std::list<Connection> ConnectionsList;
@@ -136,6 +137,12 @@ public:
 	// canvas related geometries
 	virtual bool SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries) = 0;
 	virtual const ProcessingsGeometriesMap GetAndClearGeometries() = 0;
+
+	virtual const std::list<std::string> getOrderedSinks() const = 0;
+	virtual const std::list<std::string> getOrderedSources() const = 0;
+
+
+
 /*// TODO: make individual geometries loadings/storings??
 	const Geometry GetAndEraseGeometry(std::string name);*/
 

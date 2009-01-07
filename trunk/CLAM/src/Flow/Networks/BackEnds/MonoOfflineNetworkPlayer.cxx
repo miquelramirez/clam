@@ -6,11 +6,11 @@
 namespace CLAM
 {
 
-bool MonoOfflineNetworkPlayer::IsWorking() const
+bool MonoOfflineNetworkPlayer::IsWorking() 
 {
 	return _filenames.size()!=GetAudioSinks().size()+GetAudioSources().size();
 }
-std::string MonoOfflineNetworkPlayer::NonWorkingReason() const
+std::string MonoOfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
 	ss << GetAudioSources().size() << " inputs and " 

@@ -6,11 +6,11 @@
 namespace CLAM
 {
 
-bool OfflineNetworkPlayer::IsWorking() const
+bool OfflineNetworkPlayer::IsWorking()
 {
 	return (_outFileNames.size()!=GetAudioSinks().size())&&(_inFileNames.size()!=GetAudioSources().size());
 }
-std::string OfflineNetworkPlayer::NonWorkingReason() const
+std::string OfflineNetworkPlayer::NonWorkingReason()
 {
 	std::stringstream ss;
 	ss << GetAudioSources().size() << " inputs and " 
@@ -22,44 +22,42 @@ std::string OfflineNetworkPlayer::NonWorkingReason() const
 
 std::string OfflineNetworkPlayer::listOfSourcesSinksAndFiles(std::vector<SndfileHandle*> infiles,std::vector<SndfileHandle*> outfiles)
 {
-	std::ostringstream sources;
-	std::ostringstream sinks;
+	std::ostringstream result;
 	Network & net = GetNetwork();
 	unsigned inFileIndex=0;
 	unsigned outFileIndex=0;
 	unsigned inChannel = 0;
 	unsigned outChannel = 0;
-	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
+	AudioSources sources = GetAudioSources();
+	AudioSinks sinks = GetAudioSinks();
+	for (AudioSources::iterator it=sources.begin(); it!=sources.end(); it++)
 	{
-		std::string processingType = it->second->GetClassName();
-		if ( processingType == "AudioSource" )
-		{	
-			inChannel++;
-			sources << " * source:\t" << it->first << "\t";		
-			sources << "In:\t" << _inFileNames[inFileIndex] << "\tchannel " << inChannel << "\n";
+		inChannel++;
+		result << " * source:\t" << net.GetNetworkId( *it ) << "\t";		
+		result << "In:\t" << _inFileNames[inFileIndex] << "\tchannel " << inChannel << "\n";
 
-			//We have read all the channels of infiles[inFileIndex]
-			if((unsigned)infiles[inFileIndex]->channels()==inChannel)
-			{
-				inFileIndex++;
-				inChannel =0;	
-			}
-		}
-		else if ( processingType == "AudioSink" )
-		{	outChannel++;
-			sinks << " * sink:\t" << it->first << "\t";
-			sinks << "Out:\t" << _outFileNames[outFileIndex] << "\tchannel " << outChannel << "\n";
-
-			//We have read all the channels of outfiles[outFileIndex]
-			if((unsigned)outfiles[outFileIndex]->channels()==outChannel)
-			{
-				outFileIndex++;
-				outChannel =0;
-			}
+		//We have read all the channels of infiles[inFileIndex]
+		if((unsigned)infiles[inFileIndex]->channels()==inChannel)
+		{
+			inFileIndex++;
+			inChannel = 0;	
 		}
 	}
-	sources << sinks.str();
-	return sources.str();
+
+	for (AudioSinks::iterator it=sinks.begin(); it!=sinks.end(); it++)
+	{
+		outChannel++;
+		result << " * sink:\t" << net.GetNetworkId( *it ) << "\t";
+		result << "Out:\t" << _outFileNames[outFileIndex] << "\tchannel " << outChannel << "\n";
+
+		//We have read all the channels of outfiles[outFileIndex]
+		if((unsigned)outfiles[outFileIndex]->channels()==outChannel)
+		{
+			outFileIndex++;
+			outChannel = 0;
+		}
+	}
+	return result.str();
 }
 
 void OfflineNetworkPlayer::Start()

@@ -29,6 +29,12 @@ void NetworkPlayer::CollectSourcesAndSinks()
 	_sources.clear();
 	_sinks.clear();
 	Network & net = GetNetwork();
+
+//TODO refactor: delegate to Network::getOrderedSources/Sinks
+std::list<std::string> orderedSourcesList=net.getOrderedSources();
+std::list<std::string> orderedSinksList=net.getOrderedSinks();
+if (orderedSourcesList.empty() or orderedSinksList.empty())
+{
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 	{
 		std::string processingType = it->second->GetClassName();
@@ -38,23 +44,37 @@ void NetworkPlayer::CollectSourcesAndSinks()
 			_sinks.push_back( (AudioSink*)it->second );
 	}
 }
+else
+{
+	std::list<std::string>::const_iterator itSinksNames;
+	for (itSinksNames=orderedSinksList.begin();itSinksNames!=orderedSinksList.end();itSinksNames++)
+	{
+		_sinks.push_back( (AudioSink*) &net.GetProcessing(*itSinksNames));
+	}
+	std::list<std::string>::const_iterator itSourcesNames;
+	for (itSourcesNames=orderedSourcesList.begin();itSourcesNames!=orderedSourcesList.end();itSourcesNames++)
+	{
+		_sources.push_back( (AudioSource*) &net.GetProcessing(*itSourcesNames));
+	}
+}
+
+}
 std::string NetworkPlayer::SourcesAndSinksToString()
 {
-
+std::cout << "NetworkPlayer::SourcesAndSinksToString()"<<std::endl;
 	std::string sourceNames;
 	std::string sinkNames;
 	Network & net = GetNetwork();
+	AudioSources sources = GetAudioSources();
+	AudioSinks sinks = GetAudioSinks();
+	for (AudioSources::iterator it=sources.begin(); it!=sources.end(); it++)
+		sourceNames += " * source:\t"+net.GetNetworkId( *it )+"\n";
 
-	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
-	{
-		std::string processingType = it->second->GetClassName();
-		if ( processingType == "AudioSource" )
-			sourceNames += " * source:\t"+it->first+"\n";
-		else if ( processingType == "AudioSink" )
-			sinkNames += " * sink:\t"+it->first+"\n";
-	}
+	for (AudioSinks::iterator it=sinks.begin(); it!=sinks.end(); it++)
+		sinkNames += " * sink:\t"+net.GetNetworkId( *it )+"\n";
+		
+
 	return (sourceNames+sinkNames);
 }
-
 } //namespace
 

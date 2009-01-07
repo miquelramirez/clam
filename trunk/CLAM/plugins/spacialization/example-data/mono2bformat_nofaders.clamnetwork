@@ -11,7 +11,7 @@
 
   <processing id="Y" position="848,388" size="128,111" type="AudioSink"/>
 
-  <processing id="Z" position="880,559" size="128,111" type="AudioSink"/>
+  <processing id="Z" position="840,512" size="128,111" type="AudioSink"/>
 
   <processing id="amp_W" position="504,203" size="114,58" type="AudioAmplifier">
     <MaxGain>1</MaxGain>

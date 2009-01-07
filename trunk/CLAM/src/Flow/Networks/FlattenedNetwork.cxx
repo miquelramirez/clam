@@ -32,7 +32,6 @@
 #	include "ProcessingFactory.hxx"
 #endif
 #include "CLAMVersion.hxx"
-
 namespace CLAM
 {	
 	FlattenedNetwork::FlattenedNetwork() :
@@ -216,6 +215,7 @@ namespace CLAM
 				throw XmlStorageErr(std::string("Unable to connect controls '")+fullOut+"->"+fullIn+".");
 		}
 		_setPasteMode=false;
+//		OrderSinksAndSources(_processingsGeometries);
 	}
 
 	bool FlattenedNetwork::UpdateSelections (const NamesList & processingsNamesList)
@@ -239,21 +239,100 @@ namespace CLAM
 		return true;
 	}
 
+	const std::list<std::string> FlattenedNetwork::getOrderedSinks() const
+	{
+		std::list <GeometryWithProcessingName> sinksGeometriesWithNames;
+		std::list<std::string> orderedSinksNames;
+		if (_processingsGeometries.empty())
+		{
+			CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sinks.");
+		}
+		ProcessingsGeometriesMap::const_iterator it;
+		for (it=_processingsGeometries.begin();it!=_processingsGeometries.end();it++)
+		{
+			ProcessingsMap::const_iterator itProcessing=_processings.find(it->first);
+			if (itProcessing==_processings.end())
+				continue;
+			const std::string className=itProcessing->second->GetClassName();
+			if (className!="AudioSink")
+				continue;
+			GeometryWithProcessingName processingWithGeometry;
+			processingWithGeometry.processingName=it->first;
+			processingWithGeometry.geometry=it->second;
+			sinksGeometriesWithNames.push_back(processingWithGeometry);
+		}
+			if (sinksGeometriesWithNames.size()!=0)
+			{
+				sinksGeometriesWithNames.sort(compareGeometriesUpperThan);
+				for (std::list<GeometryWithProcessingName>::const_iterator it=sinksGeometriesWithNames.begin();
+					it!=sinksGeometriesWithNames.end();it++)
+				{
+					orderedSinksNames.push_back((*it).processingName);
+				}
+
+			}
+		return orderedSinksNames;
+	}
+
+
+
+
+	const std::list<std::string> FlattenedNetwork::getOrderedSources() const
+	{
+		std::list <GeometryWithProcessingName> sourcesGeometriesWithNames;
+		std::list<std::string> orderedSourcesNames;
+		if (_processingsGeometries.empty())
+		{
+			CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sources.");
+		}
+		ProcessingsGeometriesMap::const_iterator it;
+		for (it=_processingsGeometries.begin();it!=_processingsGeometries.end();it++)
+		{
+			ProcessingsMap::const_iterator itProcessing=_processings.find(it->first);
+			if (itProcessing==_processings.end())
+				continue;
+			const std::string className=itProcessing->second->GetClassName();
+			if (className!="AudioSource")
+				continue;
+			GeometryWithProcessingName processingWithGeometry;
+			processingWithGeometry.processingName=it->first;
+			processingWithGeometry.geometry=it->second;
+			sourcesGeometriesWithNames.push_back(processingWithGeometry);
+		}
+			if (sourcesGeometriesWithNames.size()!=0)
+			{
+				sourcesGeometriesWithNames.sort(compareGeometriesUpperThan);
+				for (std::list<GeometryWithProcessingName>::const_iterator it=sourcesGeometriesWithNames.begin();
+					it!=sourcesGeometriesWithNames.end();it++)
+				{
+					orderedSourcesNames.push_back((*it).processingName);
+				}
+
+			}
+		return orderedSourcesNames;
+	}
+
 	bool FlattenedNetwork::SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries)
 	{
-		_processingsGeometries.clear();
+		_processingsGeometries.clear(); 
 		if (processingsGeometries.empty())
 			return true;
 		_processingsGeometries=processingsGeometries;
 		return false;
 	}
 
-
 	const FlattenedNetwork::ProcessingsGeometriesMap FlattenedNetwork::GetAndClearGeometries()
 	{
 		const ProcessingsGeometriesMap copyProcessingsGeometry(_processingsGeometries);
 		_processingsGeometries.clear();
 		return copyProcessingsGeometry;
+	}
+
+	const bool FlattenedNetwork::compareGeometriesUpperThan (GeometryWithProcessingName & processingWithGeometry1, GeometryWithProcessingName & processingWithGeometry2)
+	{
+		if (processingWithGeometry1.geometry.y<processingWithGeometry2.geometry.y)
+			return true;
+		return false;
 	}
 
 /*	// TODO: use individual geometries loadings/storings??:
@@ -543,7 +622,10 @@ namespace CLAM
 		ProcessingsMap::iterator it;
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
 		{
-			if (it->second->IsRunning()) continue;
+			if (it->second->IsRunning()) 
+{
+			continue;
+}
 			if (it->second->IsConfigured())
 			{
 				it->second->Start();
