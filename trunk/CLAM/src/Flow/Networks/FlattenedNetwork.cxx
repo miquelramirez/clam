@@ -245,7 +245,9 @@ namespace CLAM
 		AudioSinks orderedSinks;
 		if (_processingsGeometries.empty())
 		{
-			CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sinks.");
+			//TODO: if geometries doesn't exists, return other vector. 
+			// CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sinks.");
+			std::cout<<"The geometries map is empty!! Cannot get ordered sinks."<<std::endl;
 		}
 		ProcessingsGeometriesMap::const_iterator it;
 		for (it=_processingsGeometries.begin();it!=_processingsGeometries.end();it++)
@@ -285,7 +287,9 @@ namespace CLAM
 		AudioSources orderedSources;
 		if (_processingsGeometries.empty())
 		{
-			CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sources.");
+			//TODO: if geometries doesn't exists, return other vector. 
+			// CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sources.");
+			std::cout<<"The geometries map is empty!! Cannot get ordered sources."<<std::endl;
 		}
 		ProcessingsGeometriesMap::const_iterator it;
 		for (it=_processingsGeometries.begin();it!=_processingsGeometries.end();it++)
