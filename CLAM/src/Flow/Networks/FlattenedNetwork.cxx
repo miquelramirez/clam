@@ -241,7 +241,7 @@ namespace CLAM
 
 	const std::list<AudioSink*> FlattenedNetwork::getOrderedSinks() const
 	{
-		std::list <GeometryWithProcessingName> sinksGeometriesWithNames;
+		std::list <ProcessingAndGeometry> sinksAndGeometries;
 		std::list<AudioSink*> orderedSinksList;
 		if (_processingsGeometries.empty())
 		{
@@ -256,18 +256,18 @@ namespace CLAM
 			const std::string className=itProcessing->second->GetClassName();
 			if (className!="AudioSink")
 				continue;
-			GeometryWithProcessingName processingWithGeometry;
-			processingWithGeometry.processingName=it->first;
+			ProcessingAndGeometry processingWithGeometry;
+			processingWithGeometry.processing= &GetProcessing(it->first);
 			processingWithGeometry.geometry=it->second;
-			sinksGeometriesWithNames.push_back(processingWithGeometry);
+			sinksAndGeometries.push_back(processingWithGeometry);
 		}
-			if (sinksGeometriesWithNames.size()!=0)
+			if (sinksAndGeometries.size()!=0)
 			{
-				sinksGeometriesWithNames.sort(compareGeometriesUpperThan);
-				for (std::list<GeometryWithProcessingName>::const_iterator it=sinksGeometriesWithNames.begin();
-					it!=sinksGeometriesWithNames.end();it++)
+				sinksAndGeometries.sort(compareGeometriesUpperThan);
+				for (std::list<ProcessingAndGeometry>::const_iterator it=sinksAndGeometries.begin();
+					it!=sinksAndGeometries.end();it++)
 				{
-					AudioSink* sink = dynamic_cast<AudioSink*> (&GetProcessing( (*it).processingName) );
+					AudioSink* sink = dynamic_cast<AudioSink*>(it->processing);
 					CLAM_ASSERT(sink, "Expected an AudioSink");
 					orderedSinksList.push_back( sink );
 				}
@@ -281,7 +281,7 @@ namespace CLAM
 
 	const std::list<AudioSource*> FlattenedNetwork::getOrderedSources() const
 	{
-		std::list <GeometryWithProcessingName> sourcesGeometriesWithNames;
+		std::list <ProcessingAndGeometry> sourcesAndGeometries;
 		std::list<AudioSource*> orderedSourcesList;
 		if (_processingsGeometries.empty())
 		{
@@ -296,18 +296,18 @@ namespace CLAM
 			const std::string className=itProcessing->second->GetClassName();
 			if (className!="AudioSource")
 				continue;
-			GeometryWithProcessingName processingWithGeometry;
-			processingWithGeometry.processingName=it->first;
+			ProcessingAndGeometry processingWithGeometry;
+			processingWithGeometry.processing=&GetProcessing(it->first);
 			processingWithGeometry.geometry=it->second;
-			sourcesGeometriesWithNames.push_back(processingWithGeometry);
+			sourcesAndGeometries.push_back(processingWithGeometry);
 		}
-			if (sourcesGeometriesWithNames.size()!=0)
+			if (sourcesAndGeometries.size()!=0)
 			{
-				sourcesGeometriesWithNames.sort(compareGeometriesUpperThan);
-				for (std::list<GeometryWithProcessingName>::const_iterator it=sourcesGeometriesWithNames.begin();
-					it!=sourcesGeometriesWithNames.end();it++)
+				sourcesAndGeometries.sort(compareGeometriesUpperThan);
+				for (std::list<ProcessingAndGeometry>::const_iterator it=sourcesAndGeometries.begin();
+					it!=sourcesAndGeometries.end();it++)
 				{
-					AudioSource* source = dynamic_cast<AudioSource*> (&GetProcessing((*it).processingName));
+					AudioSource* source = dynamic_cast<AudioSource*>(it->processing);
 					CLAM_ASSERT(source, "Expected an AudioSource");
 					orderedSourcesList.push_back( source );
 				}
@@ -332,11 +332,9 @@ namespace CLAM
 		return copyProcessingsGeometry;
 	}
 
-	const bool FlattenedNetwork::compareGeometriesUpperThan (GeometryWithProcessingName & processingWithGeometry1, GeometryWithProcessingName & processingWithGeometry2)
+	const bool FlattenedNetwork::compareGeometriesUpperThan (ProcessingAndGeometry & arg1, ProcessingAndGeometry & arg2)
 	{
-		if (processingWithGeometry1.geometry.y<processingWithGeometry2.geometry.y)
-			return true;
-		return false;
+		return arg1.geometry.y < arg2.geometry.y ;
 	}
 
 /*	// TODO: use individual geometries loadings/storings??:

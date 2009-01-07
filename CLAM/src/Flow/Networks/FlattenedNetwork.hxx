@@ -91,7 +91,7 @@ public:
 	//! sources and sink order 
 	const std::list<AudioSink*> getOrderedSinks() const;
 	const std::list<AudioSource*> getOrderedSources() const;
-	static const bool compareGeometriesUpperThan(GeometryWithProcessingName &,GeometryWithProcessingName &);
+	static const bool compareGeometriesUpperThan(ProcessingAndGeometry &, ProcessingAndGeometry &);
 
 
 /*// TODO: make individual geometries loadings/storings??
