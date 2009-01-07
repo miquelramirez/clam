@@ -32,8 +32,6 @@
 #include "InControl.hxx"
 #include "OutControl.hxx"
 #include "BaseNetwork.hxx"
-#include "AudioSink.hxx"
-#include "AudioSource.hxx"
 #include <string>
 #include <list>
 #include <map>
@@ -89,8 +87,8 @@ public:
 	const ProcessingsGeometriesMap GetAndClearGeometries();
 
 	//! sources and sink order 
-	const std::list<AudioSink*> getOrderedSinks() const;
-	const std::list<AudioSource*> getOrderedSources() const;
+	const AudioSinks getOrderedSinks() const;
+	const AudioSources getOrderedSources() const;
 	static const bool compareGeometriesUpperThan(ProcessingAndGeometry &, ProcessingAndGeometry &);
 
 

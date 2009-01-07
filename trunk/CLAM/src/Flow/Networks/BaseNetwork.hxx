@@ -26,8 +26,11 @@
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
+#include "AudioSink.hxx"
+#include "AudioSource.hxx"
 #include <string>
 #include <list>
+#include <vector>
 #include <map>
 #include <set>
 #include "Component.hxx"
@@ -42,6 +45,9 @@ public:
 	typedef std::list<std::string> NamesList;
 	typedef std::map <std::string, Processing* > ProcessingsMap;
 	typedef std::list<InPortBase *> InPortsList;
+
+	typedef std::vector<AudioSource*> AudioSources;
+	typedef std::vector<AudioSink*> AudioSinks;
 
 	typedef struct { int x, y, width, height; } Geometry;
 	typedef struct { Processing* processing; Geometry geometry; } ProcessingAndGeometry;

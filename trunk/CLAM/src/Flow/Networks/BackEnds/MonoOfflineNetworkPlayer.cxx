@@ -22,7 +22,6 @@ void MonoOfflineNetworkPlayer::Start()
 {
 	if ( IsPlaying() ) return;
 	BePlaying();
-	CollectSourcesAndSinks();
 
 	const int frameSize = 512;
 	const int sampleRate = 48000; //TODO deduce from inputs.
