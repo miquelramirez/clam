@@ -239,86 +239,73 @@ namespace CLAM
 		return true;
 	}
 
+
+	const FlattenedNetwork::Geometry FlattenedNetwork::findProcessingGeometry(Processing* processing) const
+	{
+		//TODO: use the map find!!!!
+		for (ProcessingsGeometriesMap::const_iterator it=_processingsGeometries.begin();it!=_processingsGeometries.end();it++)
+		{
+			if ( &GetProcessing(it->first) == processing )
+				return it->second;
+		}
+		Geometry nullGeometry={0,10000,0,0};
+		return nullGeometry;
+	}
+
 	const Network::AudioSinks FlattenedNetwork::getOrderedSinks() const
 	{
 		std::list <ProcessingAndGeometry> sinksAndGeometries;
 		AudioSinks orderedSinks;
-		if (_processingsGeometries.empty())
+		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
 		{
-			//TODO: if geometries doesn't exists, return other vector. 
-			// CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sinks.");
-			std::cout<<"The geometries map is empty!! Cannot get ordered sinks."<<std::endl;
-		}
-		ProcessingsGeometriesMap::const_iterator it;
-		for (it=_processingsGeometries.begin();it!=_processingsGeometries.end();it++)
-		{
-			ProcessingsMap::const_iterator itProcessing=_processings.find(it->first);
-			if (itProcessing==_processings.end())
-				continue;
-			const std::string className=itProcessing->second->GetClassName();
+			Processing * proc = it->second;
+			const std::string className = proc->GetClassName();
 			if (className!="AudioSink")
 				continue;
-			ProcessingAndGeometry processingWithGeometry;
-			processingWithGeometry.processing= &GetProcessing(it->first);
-			processingWithGeometry.geometry=it->second;
-			sinksAndGeometries.push_back(processingWithGeometry);
+			ProcessingAndGeometry item;
+			item.processing = proc;
+			item.geometry = findProcessingGeometry(proc);
+			sinksAndGeometries.push_back(item);
+			sinksAndGeometries.sort(compareGeometriesUpperThan);
 		}
-			if (sinksAndGeometries.size()!=0)
+			for (std::list<ProcessingAndGeometry>::const_iterator it=sinksAndGeometries.begin();
+				it!=sinksAndGeometries.end();it++)
 			{
-				sinksAndGeometries.sort(compareGeometriesUpperThan);
-				for (std::list<ProcessingAndGeometry>::const_iterator it=sinksAndGeometries.begin();
-					it!=sinksAndGeometries.end();it++)
-				{
-					AudioSink* sink = dynamic_cast<AudioSink*>(it->processing);
-					CLAM_ASSERT(sink, "Expected an AudioSink");
-					orderedSinks.push_back( sink );
-				}
-
+				AudioSink* sink = dynamic_cast<AudioSink*>(it->processing);
+				CLAM_ASSERT(sink, "Expected an AudioSink");
+				orderedSinks.push_back( sink );
 			}
 		return orderedSinks;
 	}
-
-
-
 
 	const Network::AudioSources FlattenedNetwork::getOrderedSources() const
 	{
 		std::list <ProcessingAndGeometry> sourcesAndGeometries;
 		AudioSources orderedSources;
-		if (_processingsGeometries.empty())
+		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
 		{
-			//TODO: if geometries doesn't exists, return other vector. 
-			// CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sources.");
-			std::cout<<"The geometries map is empty!! Cannot get ordered sources."<<std::endl;
-		}
-		ProcessingsGeometriesMap::const_iterator it;
-		for (it=_processingsGeometries.begin();it!=_processingsGeometries.end();it++)
-		{
-			ProcessingsMap::const_iterator itProcessing=_processings.find(it->first);
-			if (itProcessing==_processings.end())
-				continue;
-			const std::string className=itProcessing->second->GetClassName();
+			Processing * proc = it->second;
+			const std::string className = proc->GetClassName();
 			if (className!="AudioSource")
 				continue;
-			ProcessingAndGeometry processingWithGeometry;
-			processingWithGeometry.processing=&GetProcessing(it->first);
-			processingWithGeometry.geometry=it->second;
-			sourcesAndGeometries.push_back(processingWithGeometry);
+			ProcessingAndGeometry item;
+			item.processing = proc;
+			item.geometry =findProcessingGeometry(proc);
+		
+			sourcesAndGeometries.push_back(item);
+			sourcesAndGeometries.sort(compareGeometriesUpperThan);
 		}
-			if (sourcesAndGeometries.size()!=0)
+			for (std::list<ProcessingAndGeometry>::const_iterator it=sourcesAndGeometries.begin();
+				it!=sourcesAndGeometries.end();it++)
 			{
-				sourcesAndGeometries.sort(compareGeometriesUpperThan);
-				for (std::list<ProcessingAndGeometry>::const_iterator it=sourcesAndGeometries.begin();
-					it!=sourcesAndGeometries.end();it++)
-				{
-					AudioSource* source = dynamic_cast<AudioSource*>(it->processing);
-					CLAM_ASSERT(source, "Expected an AudioSource");
-					orderedSources.push_back( source );
-				}
-
+				AudioSource* source = dynamic_cast<AudioSource*>(it->processing);
+				CLAM_ASSERT(source, "Expected an AudioSource");
+				orderedSources.push_back( source );
 			}
 		return orderedSources;
 	}
+
+
 
 	bool FlattenedNetwork::SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries)
 	{
