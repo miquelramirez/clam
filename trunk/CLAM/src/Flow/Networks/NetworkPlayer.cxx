@@ -31,8 +31,8 @@ void NetworkPlayer::CollectSourcesAndSinks()
 	Network & net = GetNetwork();
 
 //TODO refactor: delegate to Network::getOrderedSources/Sinks
-std::list<std::string> orderedSourcesList=net.getOrderedSources();
-std::list<std::string> orderedSinksList=net.getOrderedSinks();
+std::list<AudioSource*> orderedSourcesList=net.getOrderedSources();
+std::list<AudioSink*> orderedSinksList=net.getOrderedSinks();
 if (orderedSourcesList.empty() or orderedSinksList.empty())
 {
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
@@ -46,15 +46,15 @@ if (orderedSourcesList.empty() or orderedSinksList.empty())
 }
 else
 {
-	std::list<std::string>::const_iterator itSinksNames;
-	for (itSinksNames=orderedSinksList.begin();itSinksNames!=orderedSinksList.end();itSinksNames++)
+	std::list<AudioSink*>::const_iterator itSinksList;
+	for (itSinksList=orderedSinksList.begin();itSinksList!=orderedSinksList.end();itSinksList++)
 	{
-		_sinks.push_back( (AudioSink*) &net.GetProcessing(*itSinksNames));
+		_sinks.push_back( *itSinksList );
 	}
-	std::list<std::string>::const_iterator itSourcesNames;
-	for (itSourcesNames=orderedSourcesList.begin();itSourcesNames!=orderedSourcesList.end();itSourcesNames++)
+	std::list<AudioSource*>::const_iterator itSourcesList;
+	for (itSourcesList=orderedSourcesList.begin();itSourcesList!=orderedSourcesList.end();itSourcesList++)
 	{
-		_sources.push_back( (AudioSource*) &net.GetProcessing(*itSourcesNames));
+		_sources.push_back( *itSourcesList );
 	}
 }
 

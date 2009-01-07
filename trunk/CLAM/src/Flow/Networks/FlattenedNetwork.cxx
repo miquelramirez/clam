@@ -239,10 +239,10 @@ namespace CLAM
 		return true;
 	}
 
-	const std::list<std::string> FlattenedNetwork::getOrderedSinks() const
+	const std::list<AudioSink*> FlattenedNetwork::getOrderedSinks() const
 	{
 		std::list <GeometryWithProcessingName> sinksGeometriesWithNames;
-		std::list<std::string> orderedSinksNames;
+		std::list<AudioSink*> orderedSinksList;
 		if (_processingsGeometries.empty())
 		{
 			CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sinks.");
@@ -267,20 +267,22 @@ namespace CLAM
 				for (std::list<GeometryWithProcessingName>::const_iterator it=sinksGeometriesWithNames.begin();
 					it!=sinksGeometriesWithNames.end();it++)
 				{
-					orderedSinksNames.push_back((*it).processingName);
+					AudioSink* sink = dynamic_cast<AudioSink*> (&GetProcessing( (*it).processingName) );
+					CLAM_ASSERT(sink, "Expected an AudioSink");
+					orderedSinksList.push_back( sink );
 				}
 
 			}
-		return orderedSinksNames;
+		return orderedSinksList;
 	}
 
 
 
 
-	const std::list<std::string> FlattenedNetwork::getOrderedSources() const
+	const std::list<AudioSource*> FlattenedNetwork::getOrderedSources() const
 	{
 		std::list <GeometryWithProcessingName> sourcesGeometriesWithNames;
-		std::list<std::string> orderedSourcesNames;
+		std::list<AudioSource*> orderedSourcesList;
 		if (_processingsGeometries.empty())
 		{
 			CLAM_ASSERT(false, "The geometries map is empty!! Cannot get ordered sources.");
@@ -305,11 +307,13 @@ namespace CLAM
 				for (std::list<GeometryWithProcessingName>::const_iterator it=sourcesGeometriesWithNames.begin();
 					it!=sourcesGeometriesWithNames.end();it++)
 				{
-					orderedSourcesNames.push_back((*it).processingName);
+					AudioSource* source = dynamic_cast<AudioSource*> (&GetProcessing((*it).processingName));
+					CLAM_ASSERT(source, "Expected an AudioSource");
+					orderedSourcesList.push_back( source );
 				}
 
 			}
-		return orderedSourcesNames;
+		return orderedSourcesList;
 	}
 
 	bool FlattenedNetwork::SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries)

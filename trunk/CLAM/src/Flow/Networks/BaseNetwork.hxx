@@ -138,11 +138,6 @@ public:
 	virtual bool SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries) = 0;
 	virtual const ProcessingsGeometriesMap GetAndClearGeometries() = 0;
 
-	virtual const std::list<std::string> getOrderedSinks() const = 0;
-	virtual const std::list<std::string> getOrderedSources() const = 0;
-
-
-
 /*// TODO: make individual geometries loadings/storings??
 	const Geometry GetAndEraseGeometry(std::string name);*/
 
