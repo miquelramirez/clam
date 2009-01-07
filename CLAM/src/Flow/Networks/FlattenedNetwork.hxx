@@ -21,6 +21,8 @@
 
 
 
+
+
 #ifndef _FlattenedNetwork_hxx_
 #define _FlattenedNetwork_hxx_
 
@@ -37,7 +39,6 @@
 //#include "Component.hxx"
 //#include "Storage.hxx"
 #include "BaseNetwork.hxx"
-
 namespace CLAM
 {
 class NetworkPlayer;
@@ -87,6 +88,12 @@ public:
 	//! canvas related geometries
 	bool SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries);
 	const ProcessingsGeometriesMap GetAndClearGeometries();
+
+	//! sources and sink order 
+	const std::list<std::string> getOrderedSinks() const;
+	const std::list<std::string> getOrderedSources() const;
+	static const bool compareGeometriesUpperThan(GeometryWithProcessingName &,GeometryWithProcessingName &);
+
 
 /*// TODO: make individual geometries loadings/storings??
 	const Geometry GetAndEraseGeometry(std::string name);*/
@@ -184,6 +191,7 @@ private:
 	mutable ProcessingsGeometriesMap _processingsGeometries;
 	void StringPairToInts(const std::string & geometryInString, int & a, int & b);
 	const std::string IntsToString (const int & a, const int & b) const;
+
 
 };
 

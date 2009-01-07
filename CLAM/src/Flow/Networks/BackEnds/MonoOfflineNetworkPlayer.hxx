@@ -24,8 +24,8 @@ public:
 	void AddInputFile( const std::string& );
 	void AddOutputFile( const std::string& );
 	// base class (virtual) interface:
-	bool IsWorking() const;
-	std::string NonWorkingReason() const;
+	bool IsWorking();
+	std::string NonWorkingReason();
 	virtual void Start();
 	virtual void Stop();
 

@@ -53,9 +53,9 @@ public:
 	{
 	}
 	/// Should return true when the backend is able to run the network
-	virtual bool IsWorking() const = 0;
+	virtual bool IsWorking() = 0;
 	/// Whenever the backend is not working, this method returns the reason
-	virtual std::string NonWorkingReason() const = 0;
+	virtual std::string NonWorkingReason() = 0;
 
 	/// Redefine to add any initialization after being attached to a network
 	/// TODO: Consider removing it as just Jack backend uses it but it is redundant
@@ -96,11 +96,18 @@ protected:
 		CLAM_ASSERT( (_network!=NULL), "NetworkPlayer::GetNetwork() : NetworkPlayer does not have any Network");
 		return *_network;
 	}
-	void CollectSourcesAndSinks();
-	const AudioSources& GetAudioSources() const { return _sources; }
-	const AudioSinks& GetAudioSinks() const { return _sinks; }
-	AudioSources& GetAudioSources() { return _sources; }
-	AudioSinks& GetAudioSinks() { return _sinks; }
+	void CollectSourcesAndSinks();//TODO refactor: remove
+
+	AudioSources& GetAudioSources() 
+	{ 
+		CollectSourcesAndSinks();
+		return _sources; 
+	}
+	AudioSinks& GetAudioSinks() 
+	{ 
+		CollectSourcesAndSinks();
+		return 	_sinks; 
+	}
 
 	AudioSources _sources;
 	AudioSinks _sinks;

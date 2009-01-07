@@ -28,7 +28,6 @@ JACKNetworkPlayer::JACKNetworkPlayer(const std::string & name)
 {
 	_autoConnect=false;
 	_jackClient=0;
-	std::cout << "JACKNetworkPlayer:: Constructor" << std::endl;
 	InitClient();
 }
 
@@ -45,12 +44,12 @@ JACKNetworkPlayer::~JACKNetworkPlayer()
 	}
 }
 
-bool JACKNetworkPlayer::IsWorking() const
+bool JACKNetworkPlayer::IsWorking()
 {
 	return _jackClient != 0;
 }
 
-std::string JACKNetworkPlayer::NonWorkingReason() const
+std::string JACKNetworkPlayer::NonWorkingReason()
 {
 	if (_jackClient) return "";
 	return "No connection to JACK server available";
@@ -89,23 +88,26 @@ void JACKNetworkPlayer::RegisterPorts()
 
 void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 {
+
+std::list<std::string> listOfSourcesNames=net.getOrderedSources();
+std::list<std::string>::const_iterator itSourcesNamesList;
+
 	CLAM_ASSERT( _sourceJackBindings.empty(),
 		"JACKNetworkPlayer::RegisterInputPorts() : there are already registered input ports");
-	
-	SourceJackBinding pair;
-	
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
-	{
-		std::string processingClass = it->second->GetClassName();
-		if (processingClass != "AudioSource") continue;
+	net.getOrderedSources();
 
+
+	SourceJackBinding pair;
+
+	//Get them from the Network and add it to local list		
+	for (itSourcesNamesList=listOfSourcesNames.begin();itSourcesNamesList!=listOfSourcesNames.end();itSourcesNamesList++)
+	{
 		//Get Processing address
-		pair.source=(AudioSource*)it->second;
+		pair.source=(AudioSource*)&net.GetProcessing(*itSourcesNamesList);
 		pair.source->SetFrameAndHopSize(_jackBufferSize);
 
 		//Register port on the JACK server
-		const std::string & processingName = it->first;
+		const std::string & processingName = (*itSourcesNamesList);
 		pair.jackPort=jack_port_register (_jackClient,
 			processingName.c_str(),
 			JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
@@ -117,23 +119,25 @@ void JACKNetworkPlayer::RegisterInputPorts(const Network& net)
 
 void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 {
-	CLAM_ASSERT( _sinkJackBindings.empty(),
-		"JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");
-	
-	SinkJackBinding pair;
-	
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
-	{
-		std::string processingClass = it->second->GetClassName();
-		if (processingClass != "AudioSink") continue;
 
+	std::list<std::string> listOfSinksNames=net.getOrderedSinks();
+	std::list<std::string>::const_iterator itSinksNamesList;
+
+
+	CLAM_ASSERT( _sinkJackBindings.empty(),
+		"JACKNetworkPlayer::RegisterOutputPorts() : there are already registered output ports");	
+
+	SinkJackBinding pair;
+
+
+	for (itSinksNamesList=listOfSinksNames.begin();itSinksNamesList!=listOfSinksNames.end();itSinksNamesList++)
+	{
 		//Get Processing address
-		pair.sink=(AudioSink*)it->second;
+		pair.sink=(AudioSink*)&net.GetProcessing((*itSinksNamesList));
 		pair.sink->SetFrameAndHopSize(_jackBufferSize);
 
 		//Register port on the JACK server
-		const std::string & processingName = it->first;
+		const std::string & processingName = (*itSinksNamesList);
 		pair.jackPort=jack_port_register (_jackClient,
 			processingName.c_str(),
 			JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
@@ -141,6 +145,7 @@ void JACKNetworkPlayer::RegisterOutputPorts(const Network& net)
 		//Add the pair (jack port, clam jack receiver) to the list
 		_sinkJackBindings.push_back(pair);
 	}
+
 }
 
 void JACKNetworkPlayer::UnRegisterPorts()
@@ -229,12 +234,10 @@ void JACKNetworkPlayer::Start()
 }
 void JACKNetworkPlayer::Init()
 {
-	std::cout << "JACKNetworkPlayer:: Init" << std::endl;
 	if (not _jackClient) InitClient();
 }
 void JACKNetworkPlayer::OnShutdown()
 {
-	std::cout << "JACK backend shutdown..." << std::endl;
 	if (not _jackClient) return;
 	BeStopped();
 	GetNetwork().Stop();
@@ -325,12 +328,12 @@ void JACKNetworkPlayer::RestoreConnections()
 void JACKNetworkPlayer::AutoConnectPorts()
 {
 	//Automatically connect the ports to external jack ports
-	std::cout << "Automatically connecting to JACK input and output ports" << std::endl;
+	//std::cout << "Automatically connecting to JACK input and output ports" << std::endl;
 	
 	//CONNECT JACK OUTPUT PORTS TO CLAM EXTERNGENERATORS
 	const char ** portnames= jack_get_ports ( _jackClient , _jackOutPortAutoConnectList.c_str(), NULL, JackPortIsOutput);
 
-	if (portnames==NULL)
+	if (not portnames)
 	{
 		std::cout << " -WARNING: couldn't locate any JACK output port <"
 			<< _jackOutPortAutoConnectList << ">"<<std::endl;
@@ -360,7 +363,7 @@ void JACKNetworkPlayer::AutoConnectPorts()
 	//CONNECT CLAM EXTERNSINKS TO JACK INPUT PORTS
 	portnames= jack_get_ports ( _jackClient , _jackInPortAutoConnectList.c_str(), NULL, JackPortIsInput);
 
-	if (portnames==NULL)
+	if ( not portnames)
 	{
 		std::cout << " -WARNING: couldn't locate any JACK input port <"
 			<< _jackInPortAutoConnectList << ">"<<std::endl;

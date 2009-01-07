@@ -428,7 +428,9 @@ public slots:
 					).arg(_network.GetUnconnectedInPorts().c_str()));
 			return;
 		}
+		_canvas->updateGeometriesOnXML();
 		_network.Start();
+		_network.GetAndClearGeometries();
 		updatePlayStatusIndicator();
 	}
 	void on_action_Stop_triggered()

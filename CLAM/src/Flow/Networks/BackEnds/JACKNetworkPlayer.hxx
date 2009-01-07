@@ -63,8 +63,8 @@ public:
 	virtual ~JACKNetworkPlayer();
 
 	void InitClient();
-	bool IsWorking() const;
-	std::string NonWorkingReason() const;
+	bool IsWorking();
+	std::string NonWorkingReason();
 	
 	//JACK sever (un)registration methods
 	void RegisterPorts();

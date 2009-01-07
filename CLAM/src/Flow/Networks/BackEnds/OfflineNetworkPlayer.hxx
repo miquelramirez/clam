@@ -30,8 +30,8 @@ public:
 	void AddNumChannels(int channel);
 	void SetFormat(int format);
 	// base class (virtual) interface:
-	bool IsWorking() const;
-	std::string NonWorkingReason() const;
+	bool IsWorking();
+	std::string NonWorkingReason();
 	std::string listOfSourcesSinksAndFiles(std::vector<SndfileHandle*> infiles,std::vector<SndfileHandle*> outfiles);
 	virtual void Start();
 	virtual void Stop();
