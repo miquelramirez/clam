@@ -31,14 +31,13 @@
 #include "OutPort.hxx"
 #include "InControl.hxx"
 #include "OutControl.hxx"
+#include "BaseNetwork.hxx"
+#include "AudioSink.hxx"
+#include "AudioSource.hxx"
 #include <string>
 #include <list>
 #include <map>
 #include <set>
-
-//#include "Component.hxx"
-//#include "Storage.hxx"
-#include "BaseNetwork.hxx"
 namespace CLAM
 {
 class NetworkPlayer;
@@ -90,8 +89,8 @@ public:
 	const ProcessingsGeometriesMap GetAndClearGeometries();
 
 	//! sources and sink order 
-	const std::list<std::string> getOrderedSinks() const;
-	const std::list<std::string> getOrderedSources() const;
+	const std::list<AudioSink*> getOrderedSinks() const;
+	const std::list<AudioSource*> getOrderedSources() const;
 	static const bool compareGeometriesUpperThan(GeometryWithProcessingName &,GeometryWithProcessingName &);
 
 
