@@ -88,7 +88,6 @@ namespace CLAM
 			void DrawTop(QPainter & painter);
 			void DrawLabels(QPainter & painter);
 
-			int GetTicks();
 			int GetMaxLabelWidth();
 			bool IsVisible(double value);
 			QString GetLabel(double value);
