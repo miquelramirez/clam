@@ -2,6 +2,7 @@
 #define RulerTicks_hxx
 
 #include <cmath>
+#include "Assert.hxx"
 namespace CLAM
 {
 
@@ -114,7 +115,7 @@ class RulerTicks
 		// Returns the pixel position of a given domain value
 		double toPixel(double value) const
 		{
-			return (value-_min)*width/(_max-_min);
+			return (value-_min)*_width/(_max-_min);
 		}
 		// Returns the number of ticks that will appear
 		unsigned nTicks() const
