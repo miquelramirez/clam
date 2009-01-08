@@ -62,12 +62,12 @@ class RulerTicks
 		}
 		double markOffset() const
 		{
-			if (_needsUpdate) computeMarkOffset();
+			if (_needsUpdate) update();
 			return _markOffset;
 		}
 		double markGap() const
 		{
-			if (_needsUpdate) computeMarkOffset();
+			if (_needsUpdate) update();
 			return _markGap;
 		}
 		void update() const
@@ -103,7 +103,7 @@ class RulerTicks
 		/// Returns the domain value corresponding to tick i
 		double tickValue(unsigned i) const
 		{
-			if (_needsUpdate) computeMarkOffset();
+			if (_needsUpdate) update();
 			return _markOffset+_markGap*i;
 		}
 		/// Returns the pixel position of tick i
@@ -116,7 +116,12 @@ class RulerTicks
 		{
 			return (value-min)*size/(_max-_min);
 		}
-
+		// Returns the number of ticks that will appear
+		unsigned nTicks() const
+		{
+			if (_needsUpdate) update();
+			return std::floor((_max-_markOffset)/_markGap);
+		}
 };
 
 } // namespace CLAM
