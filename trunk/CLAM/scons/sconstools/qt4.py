@@ -235,7 +235,7 @@ def generate(env):
 		fullpath = env.Detect([command+'-qt4', command+'4', command])
 		if not (fullpath is None) : return fullpath
 
-		raise "Qt4 command '" + command + "' not found. Tried: " + ', '.join(triedPaths)
+		raise Exception("Qt4 command '" + command + "' not found. Tried: " + ', '.join(triedPaths))
 		
 
 	CLVar = SCons.Util.CLVar
@@ -428,8 +428,8 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
 		if module not in validModules :
 			invalidModules.append(module)
 	if invalidModules :
-		raise "Modules %s are not Qt4 modules. Valid Qt4 modules are: %s"% \
-			(str(invalidModules),str(validModules))
+		raise Exception("Modules %s are not Qt4 modules. Valid Qt4 modules are: %s"% (
+			str(invalidModules),str(validModules)))
 
 	moduleDefines = {
 		'QtScript'   : ['QT_SCRIPT_LIB'],
