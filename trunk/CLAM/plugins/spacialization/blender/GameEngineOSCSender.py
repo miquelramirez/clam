@@ -36,7 +36,7 @@ Requires:
 
 from sys import path
 from os import getenv
-#import Blender, math
+import Blender
 import re
 #import GameLogic
 
@@ -48,8 +48,11 @@ def getTypeOfObject(controller):
 		"fixed_source": "source",
 		"listener": "listener" }
 	for sensorName in dictTypes.keys():
-		sensor=controller.getSensor(sensorName)
-		if sensor.isTriggered() and sensor.isPositive():
+		try:
+			sensor=controller.getSensor(sensorName)
+		except:
+			continue
+		if sensor.triggered and sensor.positive:
 			return dictTypes[sensorName]
 	return False
 
@@ -97,8 +100,8 @@ def main():
 	if typeName==False:
 		return
 	for port in ports:
-		sendObjectValue(object.name,typeName,"location",location,port)
-		sendObjectValue(object.name,typeName,"rotation",rotation,port)
+		sendObjectValue(object.name.replace(".","_"),typeName,"location",location,port)
+		sendObjectValue(object.name.replace(".","_"),typeName,"rotation",rotation,port)
 #		print "UPDATE L Source "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 	return
 
