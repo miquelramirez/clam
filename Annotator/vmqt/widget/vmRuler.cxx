@@ -126,12 +126,12 @@ namespace CLAM
 			mValuesToDraw.clear();
 			bool vertical = (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight);
 			int size = vertical? height() : width();
-			int labelSpan = 6 + (vertical? mLabelHeight: GetMaxLabelWidth()); 
+			int labelSpan = 20 + (vertical? mLabelHeight: GetMaxLabelWidth()); 
 			_majorTicks.setWidth(size);
 			_majorTicks.setMinGap(labelSpan);
 			_majorTicks.setRange(mCurrentRange.min,mCurrentRange.max);
 			_minorTicks.setWidth(size);
-			_minorTicks.setMinGap(std::max(6.,_majorTicks.markGap()*.1*size/mCurrentRange.Span()));
+			_minorTicks.setMinGap(std::max(10.,_majorTicks.markGap()*.1*size/mCurrentRange.Span()));
 			_minorTicks.setRange(mCurrentRange.min,mCurrentRange.max);
 			double markGap = _majorTicks.markGap();
 			for (double tick = _majorTicks.markOffset();
@@ -154,15 +154,16 @@ namespace CLAM
 					break;
 				case CLAM::VM::eRight:
 					DrawRight();
+					DrawLabels(painter);
 					break;
 				case CLAM::VM::eBottom:
 					DrawBottom();
+					DrawLabels(painter);
 					break;
 				case CLAM::VM::eTop:
 					DrawTop(painter);
 					break;
 			}
-			DrawLabels(painter);
 		}
 
 		void Ruler::DrawLeft(QPainter & painter)
@@ -170,10 +171,18 @@ namespace CLAM
 			double x0 = double(width())-5.0;
 			double x1 = double(width())-1.0;
 			QVector<QLineF> lines;
-			for(unsigned i=0; i < mValuesToDraw.size(); i++)
+			for (unsigned i=0; i<_majorTicks.nTicks(); i++)
 			{
-				double tickPos = height()-(mValuesToDraw[i]-mCurrentRange.min)*height()/mCurrentRange.Span();
+				double tickValue = _majorTicks.tickValue(i);
+				double tickPos = _majorTicks.toPixel(tickValue);
 				lines << QLineF(x0,tickPos,x1,tickPos);
+				QFontMetrics font_metrics(mFont);
+				int label_width = font_metrics.width(QString::number(tickValue,'f',mShowFloats?2:0));
+				double x = std::max(0,width() - label_width-8);
+				double y = tickPos + mLabelHeight/4;
+				painter.drawText(
+					QRectF(x,y-mLabelHeight, label_width, mLabelHeight),
+					GetLabel(tickValue));
 			}
 			// draw axis
 			lines << QLineF(x1,0,x1,height());
@@ -216,25 +225,30 @@ namespace CLAM
 
 		void Ruler::DrawTop(QPainter & painter)
 		{
-			double y0 = 5.0;
-			double y1 = height()-1;
+			double minorTickSize = 10;
+			double baseY = height()-1;
+			int margin=3;
+			double labelWidth = _majorTicks.markGap()*width()/mCurrentRange.Span() -2*margin;
 			QVector<QLineF> lines;
-			// draw ticks
-			for(unsigned i=0; i < mValuesToDraw.size(); i++)
+			for (unsigned i=0; i<_majorTicks.nTicks(); i++)
 			{
-				double tickPos = (mValuesToDraw[i]-mCurrentRange.min)*width()/mCurrentRange.Span();
-				lines << QLineF(tickPos,y0,tickPos,y1);
+				double tickValue = _majorTicks.tickValue(i);
+				double tickPos = _majorTicks.toPixel(tickValue);
+				lines << QLineF(tickPos,height()/2,tickPos,baseY);
+				painter.drawText(
+					QRectF(
+						tickPos + margin, (height()-mLabelHeight)/2,
+						labelWidth, mLabelHeight), 
+					GetLabel(tickValue));
 			}
-			double markGap = _minorTicks.markGap();
-			for (double tick = _minorTicks.markOffset();
-				tick<mCurrentRange.max;
-				tick+=markGap)
+			for (unsigned i=0; i<_minorTicks.nTicks(); i++)
 			{
-				double tickPos = (tick-mCurrentRange.min)*width()/mCurrentRange.Span();
-				lines << QLineF(tickPos,height()-10,tickPos,y1);
+				double tickValue = _minorTicks.tickValue(i);
+				double tickPos = _minorTicks.toPixel(tickValue);
+				lines << QLineF(tickPos,height()-minorTickSize,tickPos,baseY);
 			}
 			// draw axis
-			lines << QLineF(0,y1,width(),y1);
+			lines << QLineF(0,baseY,width(),baseY);
 			painter.drawLines(lines);
 		}
 
@@ -246,17 +260,6 @@ namespace CLAM
 					GetLabelCoords(mValuesToDraw[i]),
 					GetLabel(mValuesToDraw[i]));
 			}
-		}
-
-		int Ruler::GetTicks()
-		{
-			if (mCurrentRange.Span() < 0.05) return MINTICKS;
-			int label_span = (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight) 
-				? mLabelHeight+6
-				: GetMaxLabelWidth()+6;
-			return (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight) 
-				? height()/label_span
-				: width()/label_span;
 		}
 
 		int Ruler::GetMaxLabelWidth()
