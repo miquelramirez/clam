@@ -21,6 +21,7 @@ void CLAM::MultiLibloSource::error(int num, const char *msg, const char *path)
 int CLAM::MultiLibloSource::generic_handler(const char *path, const char *types, lo_arg **argv,
 		    int argc, void *data, void *user_data)
 {
+#if 0
 	int i;
 	printf("path: <%s>\n", path);
 	for (i=0; i<argc; i++) 
@@ -31,6 +32,7 @@ int CLAM::MultiLibloSource::generic_handler(const char *path, const char *types,
 	}
 	printf("\n");
 	fflush(stdout);
+#endif
 	return 1;
 }
 
