@@ -56,7 +56,7 @@ class LowLatencyConvolution : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, CLAM::ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, unsigned, MaxFrames);
 		DYN_ATTRIBUTE( 1, public, int, FrameSize);
 
@@ -121,15 +121,16 @@ public:
 		const ComplexSpectrum & input = _input.GetData();
 		ComplexSpectrum & output = _output.GetData();
 		std::vector<ComplexSpectrum> & impulseResponse = *_impulseResponse.GetData();
-		unsigned nBlocks = GetLimitedFrames(impulseResponse.size());
+		const unsigned nBlocks = GetLimitedFrames(impulseResponse.size());
+		const unsigned nBins = input.bins.size();
+		CLAM_ASSERT(nBins == impulseResponse[0].bins.size(), "LowLatencyConvolution: Input doesn't match ImpulseResponse frame size.");
 		if (_delayedSpectrums.size()!=nBlocks)
 		{
-			InitialitzeDelaySpectrums( nBlocks, impulseResponse[0].bins.size(), impulseResponse[0].spectralRange );
+			InitialitzeDelaySpectrums( nBlocks, nBins, impulseResponse[0].spectralRange );
 		}
 
-		output.spectralRange = input.spectralRange;
-		const unsigned nBins = input.bins.size(); 
 		output.bins.resize( nBins );
+		output.spectralRange = input.spectralRange;
 		for (unsigned i=0; i<output.bins.size(); i++)
 			output.bins[i]=0;
 
