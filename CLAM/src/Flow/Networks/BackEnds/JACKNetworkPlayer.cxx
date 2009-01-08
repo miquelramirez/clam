@@ -1,8 +1,6 @@
 
 #include "JACKNetworkPlayer.hxx"
-
 #include "PushFlowControl.hxx"
-#include "XMLStorage.hxx"
 
 #include <iostream>
 namespace CLAM
