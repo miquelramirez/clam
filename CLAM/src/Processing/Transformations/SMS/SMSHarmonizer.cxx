@@ -97,13 +97,14 @@ bool SMSHarmonizer::Do(const Frame& in, Frame& out)
 		 );
 }
 
-bool SMSHarmonizer::Do( const SpectralPeakArray& inPeaks, 
+bool SMSHarmonizer::Do(
+			const SpectralPeakArray& inPeaks, 
 			const Fundamental& inFund,
 			const Spectrum& inSpectrum, 
 			SpectralPeakArray& outPeaks,
 			Fundamental& outFund,
 			Spectrum& outSpectrum
-		      )
+		)
 {
 	outPeaks = inPeaks;
 	outFund = inFund;
