@@ -59,10 +59,6 @@ namespace CLAM
 			enum { COLOR_SONOGRAM=0, BW_SONOGRAM=1 };
 
 			void InitSpectrogramPlot();
-		   
-			void SetXRange(double xmin, double xmax, ERulerScale scale=CLAM::VM::eLinearScale);
-			void SetYRange(double ymin, double ymax, ERulerScale scale=CLAM::VM::eLinearScale);
-			void SetZoomSteps(int hsteps, int vsteps);
 
 			std::pair<int,int> GetZoomSteps(TSize size, TData yrange);
 			Array<Spectrum> GetSpecMatrix(const Segment& in);
