@@ -38,7 +38,7 @@
 
 namespace CLAM
 {
-	static std::string concat(const std::list<std::string> & strings)
+	static std::string join(const std::list<std::string> & strings)
 	{
 		std::string result;
 		std::list<std::string>::const_iterator it;
@@ -82,7 +82,7 @@ namespace CLAM
 		_documentHandler->SetReadingContext(&rootContext);
 		component.LoadFrom(*this);
 		_documentHandler->GetReadingContext()->release();
-		_errors += concat(_documentHandler->GetReadingContext()->errors());
+		_errors += join(_documentHandler->GetReadingContext()->errors());
 		if (_errors!="")
 			throw XmlStorageErr(_errors);
 	}
@@ -187,7 +187,7 @@ namespace CLAM
 			_documentHandler->SetReadingContext(&innerContext);
 			LoadContentAndChildren(xmlable);
 			_documentHandler->SetReadingContext(innerContext.release());
-			_errors += concat(innerContext.errors());
+			_errors += join(innerContext.errors());
 			return true;
 		}
 
