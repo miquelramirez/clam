@@ -35,6 +35,23 @@ namespace CLAM
 class AbsoluteCoordinates2RelativeAngles : public CLAM::Processing
 { 
 
+	class Config : public CLAM::ProcessingConfig
+	{
+		DYNAMIC_TYPE_USING_INTERFACE(Config,2,ProcessingConfig);
+		DYN_ATTRIBUTE(0,public,TData,DistanceExponent);
+		DYN_ATTRIBUTE(1,public,TData,MinimumDistance);
+	protected:
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+			SetDistanceExponent(1.0);
+			SetMinimumDistance(1.0);
+		};
+	};
+
+	Config _config;
+
 	CLAM::FloatInControl _listenerX;
 	CLAM::FloatInControl _listenerY;
 	CLAM::FloatInControl _listenerZ;
@@ -67,6 +84,12 @@ public:
 		Configure( config );
 	}
  
+
+	const CLAM::ProcessingConfig & GetConfig() const
+	{
+		return _config;
+	}
+
 	bool Do()
 	{	
 
@@ -86,7 +109,12 @@ public:
 		_sourceAzimuth.SendControl( orientation.azimuth );
 		_sourceElevation.SendControl( orientation.elevation );
 		double distance=getDistance(sourceX,sourceY,sourceZ,listenerX,listenerY,listenerZ);
-		_gainBecauseDistance.SendControl ( 1 / (distance<1 ? 1 : distance) );
+		const double minimumDistance= ( _config.HasMinimumDistance() ? _config.GetMinimumDistance() : 1.0 );
+		if (distance < minimumDistance)
+			distance=minimumDistance;
+		const double exponent = _config.HasDistanceExponent() ? _config.GetDistanceExponent() : 1.0;
+		const double gain=1.0/pow(distance,exponent);
+		_gainBecauseDistance.SendControl ( gain );
 		return true;
 	}
 
@@ -139,6 +167,11 @@ public:
 		Orientation orientation;
 		orientation.toPoint(rotatedX, rotatedY, rotatedZ);
 		return orientation;
+	}
+	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
+	{
+		CopyAsConcreteConfig(_config,config);
+		return true;
 	}
 
 };
