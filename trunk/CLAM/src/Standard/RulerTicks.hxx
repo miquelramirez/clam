@@ -33,11 +33,13 @@ class RulerTicks
 		mutable double _markGap;
 	public:
 		RulerTicks()
-			: _needsUpdate(false)
+			: _needsUpdate(true)
 			, _min(0)
 			, _max(1)
 			, _minGap(5)
 			, _width(100)
+			, _markOffset(666)
+			, _markGap(69)
 		{
 		}
 		/// Sets the domain value range
@@ -74,7 +76,7 @@ class RulerTicks
 		void update() const
 		{
 			double mappedMinGap = std::fabs(_minGap*(_max-_min)/_width);
-			double _markGap=1;
+			_markGap=1;
 			if (mappedMinGap>=1)
 			{
 				while (true)
@@ -121,7 +123,7 @@ class RulerTicks
 		unsigned nTicks() const
 		{
 			if (_needsUpdate) update();
-			return std::floor((_max-_markOffset)/_markGap);
+			return std::ceil((_max-_markOffset)/_markGap);
 		}
 };
 

@@ -26,6 +26,7 @@ namespace CLAMTest {
 		CPPUNIT_TEST (testOffsetAndGap_withOffsetAndMarkNotOnOffset);
 		CPPUNIT_TEST (testOffsetAndGap_withNegativeRange);
 		CPPUNIT_TEST (testOffsetAndGap_withZoomOut);
+		CPPUNIT_TEST (testNTicks);
 
 		CPPUNIT_TEST_SUITE_END();
 	private:
@@ -100,6 +101,14 @@ namespace CLAMTest {
 			ruler.setWidth(100);
 			CPPUNIT_ASSERT_EQUAL(10., ruler.markGap());
 			CPPUNIT_ASSERT_EQUAL(10.0, ruler.markOffset());
+		}
+		void testNTicks()
+		{
+			CLAM::RulerTicks ruler;
+			ruler.setRange(4,104);
+			ruler.setMinGap(10);
+			ruler.setWidth(100);
+			CPPUNIT_ASSERT_EQUAL(10u, ruler.nTicks());
 		}
 	};
 
