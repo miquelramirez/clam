@@ -114,21 +114,6 @@ namespace CLAM
 					mPanel,SLOT(updateLabels(QString,QString,QString,QString)));
 		}
 		   
-		void SpectrogramPlot::SetXRange(double xmin, double xmax, ERulerScale scale)
-		{
-			SegmentationPlot::SetXRange(xmin,xmax,scale);
-		}
-
-		void SpectrogramPlot::SetYRange(double ymin, double ymax, ERulerScale scale)
-		{
-			SegmentationPlot::SetYRange(ymin,ymax,scale);
-		}
-
-		void SpectrogramPlot::SetZoomSteps(int hsteps, int vsteps)
-		{
-			SegmentationPlot::SetZoomSteps(hsteps,vsteps);
-		}
-
 		std::pair<int,int> SpectrogramPlot::GetZoomSteps(TSize size, TData yrange)
 		{
 			double n = 5.0;
