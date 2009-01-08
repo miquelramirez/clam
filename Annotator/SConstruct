@@ -171,6 +171,7 @@ fftwlib = "fftw3"
 fftwlibpath = [os.path.join(env['prefix'],'lib')]
 sndfilelib = 'sndfile'
 programs += [ env.Program(target='OnsetExtractorCore', source = onsetSources, LIBS=[fftwlib,sndfilelib], LIBPATH=fftwlibpath) ]
+programs += [ 'OnsetExtractor.py' ]
 
 env.Uic4(source="SimacServicesClient/GUI.ui")
 bocaClientSources = [
@@ -250,7 +251,7 @@ if isWindowsPlatform :
 	env.Alias('package', win_packages)
 
 if sys.platform=='darwin' :
-	# TODO: Review why those flags were added# TODO: Review why those flags were added# TODO: Review why those flags were added
+	# TODO: Review why those flags were added
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
 
