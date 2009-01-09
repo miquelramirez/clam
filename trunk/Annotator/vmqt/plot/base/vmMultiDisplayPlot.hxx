@@ -51,9 +51,6 @@ namespace CLAM
 			void InitMultiDisplayPlot(int master_id);
 			void SetMasterId(int id);
 
-		private slots:
-			void setMaxHScroll(int);
-
 		private:
 			int mMasterId;
 		};

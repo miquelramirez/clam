@@ -35,6 +35,7 @@ namespace CLAM
 	{
 
 		class Renderer2D;
+		class ScrollGroup;
 		class Ruler;
 
 		/**
@@ -68,12 +69,6 @@ namespace CLAM
 			void SendToBack(const QString& key);
 
 		signals:
-			void hZoomRatio(QString);
-			void vZoomRatio(QString);
-			void hScrollValue(int);
-			void vScrollValue(int);
-			void hScrollMaxValue(int);
-			void vScrollMaxValue(int);
 			void xRangeChanged(double,double);
 			void yRangeChanged(double,double);
 			void hBoundsChanged(double,double);
@@ -104,6 +99,8 @@ namespace CLAM
 			void needUpdate();
 			void setXRuler(Ruler * ruler) {mXRuler=ruler;}
 			void setYRuler(Ruler * ruler) {mYRuler=ruler;}
+			void setXRangeController(ScrollGroup * controller) {mXRangeController=controller;}
+			void setYRangeController(ScrollGroup * controller) {mYRangeController=controller;}
 
 		protected:
 			void paintGL(); 
@@ -150,6 +147,8 @@ namespace CLAM
 
 			Ruler * mXRuler;
 			Ruler * mYRuler;
+			ScrollGroup * mXRangeController;
+			ScrollGroup * mYRangeController;
 
 			std::pair<int,int>   mMousePos;
 			std::vector<QString> mDrawOrder;
@@ -165,6 +164,8 @@ namespace CLAM
 
 			void UpdateHBounds(bool zin);
 			void UpdateVBounds(bool zin);
+			void updateXRangeController();
+			void updateYRangeController();
 
 			int GetXPixels();
 			int GetYPixels();

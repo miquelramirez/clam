@@ -71,10 +71,6 @@ namespace CLAM
 			void updateLocator(double, bool);
 			void setCurrentSegmentFollowsPlay(bool active);
 			
-		private slots:
-			void setMaxVScroll(int);
-			void setMaxHScroll(int);
-
 		protected:
 			QGridLayout* mLayout;    
 			PlotCanvas*      mPlot;
