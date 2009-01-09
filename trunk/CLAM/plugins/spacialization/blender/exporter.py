@@ -100,7 +100,10 @@ def geometryExport(scene):
 		if actors.count(object)!=0:
 			print "%s is an actor, skipping" % object.name
 			continue
-
+		materials=Acoustic.getObjectMaterials(object)
+		if materials==None or materials==[]: 
+			print "doesnt contains acoustic material, skipping..."
+			continue #if doesnt have any acoustic (by name) material, doesnt export
 		BPyNMesh.ApplySizeAndRotation(object)
 #		data=object.getData() # do it again after transformation
 		data=bpy.data.meshes[object.getData().name]
@@ -112,10 +115,6 @@ def geometryExport(scene):
 		for vert in data.verts:
 			bufferObject+="%f %f %f\n" % (vert.co[0]+location[0],vert.co[1]+location[1],vert.co[2]+location[2])
 		bufferObject+="<FACES>\n"
-		materials=Acoustic.getObjectMaterials(object)
-		if materials==None: 
-			print "doesnt contains acoustic material, skipping..."
-			continue #if doesnt have any acoustic (by name) material, doesnt export
 
 		# else, use first linked material with acoustic properties 
 		impedance=complex(0,0)
