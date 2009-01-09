@@ -35,6 +35,7 @@ namespace CLAM
 	{
 
 		class Renderer2D;
+		class Ruler;
 
 		/**
 		 * 	A Plot2D is an OpenGl surface for a 2D plot.
@@ -101,6 +102,8 @@ namespace CLAM
 			* Several calls to this method wihout update are safely
 			* ignored. */
 			void needUpdate();
+			void setXRuler(Ruler * ruler) {mXRuler=ruler;}
+			void setYRuler(Ruler * ruler) {mYRuler=ruler;}
 
 		protected:
 			void paintGL(); 
@@ -144,6 +147,9 @@ namespace CLAM
 			GLView     mView;
 			/// Widget size in pixels
 			GLViewport mViewport;
+
+			Ruler * mXRuler;
+			Ruler * mYRuler;
 
 			std::pair<int,int>   mMousePos;
 			std::vector<QString> mDrawOrder;
