@@ -84,20 +84,20 @@ public:
 			float elevation;
 		} speaker[] =
 		{
-			{"Base Front Left", 45., -45.},
-			{"Base Front Right", -45., -45.},
+			{"Back Horizontal", 180., 0.},
 			{"Base Back Left", 135., -45.},
 			{"Base Back Right", -135, -45.},
-			{"Top Front Left", 45., 45.},
-			{"Top Front Right", -45., 45.},
-			{"Top Back Left", 135., 45.},
-			{"Top Back Right", -135., 45.},
+			{"Base Front Left", 45., -45.},
+			{"Base Front Right", -45., -45.},
 			{"Front Horizontal", 0., 0.},
 			{"Front Left Horizontal", 60., 0.},
-			{"Rear Left Horizontal", 120., 0.},
-			{"Back Horizontal", 180., 0.},
-			{"Rear Right Horizontal", -120., 0.},
 			{"Front Right Horizontal", -60., 0.},
+			{"Rear Left Horizontal", 120., 0.},
+			{"Rear Right Horizontal", -120., 0.},
+			{"Top Back Left", 135., 45.},
+			{"Top Back Right", -135., 45.},
+			{"Top Front Left", 45., 45.},
+			{"Top Front Right", -45., 45.},
 			{0, 0., 0.}
 		};
 		for (unsigned i=0; speaker[i].name; i++)
