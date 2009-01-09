@@ -23,7 +23,7 @@
 #include "Assert.hxx"
 #include "vmRuler.hxx"
 #include "vmScrollGroup.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 #include "vmGrid.hxx"
 #include "vmLocatorRenderer.hxx"
 #include "vmDataArrayRenderer.hxx"
@@ -131,7 +131,7 @@ namespace CLAM
 			mDisplay.resize(2);
 			for(unsigned i=0; i < mDisplay.size(); i++) 
 			{
-				mDisplay[i] = new Plot2D(this);
+				mDisplay[i] = new PlotCanvas(this);
 			}
 			_grid0 = new Grid;
 			_grid1 = new Grid;

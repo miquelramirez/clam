@@ -20,7 +20,7 @@
  */
 
 #include "vmRuler.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 #include "vmDataArrayRenderer.hxx"
 #include "vmFundamentalPlot.hxx"
 

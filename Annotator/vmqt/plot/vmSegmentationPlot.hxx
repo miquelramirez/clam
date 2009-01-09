@@ -34,7 +34,7 @@ namespace CLAM
 	namespace VM
 	{
 		class Ruler;
-		class Plot2D;
+		class PlotCanvas;
 		class ScrollGroup;
 		class SegmentEditor;
 		class Locator;
@@ -77,7 +77,7 @@ namespace CLAM
 
 		protected:
 			QGridLayout* mLayout;    
-			Plot2D*      mPlot;
+			PlotCanvas*      mPlot;
 			Ruler*       mXRuler;
 			Ruler*       mYRuler;
 			Locator*       _locator;

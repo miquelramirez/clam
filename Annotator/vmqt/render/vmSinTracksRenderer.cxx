@@ -22,7 +22,7 @@
 #include "CLAMGL.hxx"
 #include "vmSinTracksBuilder.hxx"
 #include "vmSinTracksRenderer.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 
 namespace CLAM
 {
