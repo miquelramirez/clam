@@ -23,7 +23,7 @@
 #include "CLAM_Math.hxx"
 #include "vmGrid.hxx"
 #include "vmBPFEditor.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 
 namespace CLAM
 {

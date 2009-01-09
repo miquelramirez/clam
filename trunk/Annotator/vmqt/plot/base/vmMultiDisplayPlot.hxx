@@ -30,7 +30,7 @@ namespace CLAM
 	namespace VM
 	{
 		class Ruler;
-		class Plot2D;
+		class PlotCanvas;
 		class ScrollGroup;
 
 		class MultiDisplayPlot : public WPlot
@@ -44,7 +44,7 @@ namespace CLAM
 			Ruler*       mXRuler;
 			ScrollGroup* mHScroll;
 
-			std::vector<Plot2D*> mDisplay;
+			std::vector<PlotCanvas*> mDisplay;
 
 			virtual void CreateDisplay()=0;
 

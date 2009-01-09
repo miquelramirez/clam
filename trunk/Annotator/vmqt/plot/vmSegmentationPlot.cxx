@@ -21,7 +21,7 @@
 
 #include <QtGui/QGridLayout>
 #include "vmRuler.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 #include "vmScrollGroup.hxx"
 #include <CLAM/Segmentation.hxx>
 #include "vmSegmentEditor.hxx"
@@ -140,7 +140,7 @@ namespace CLAM
 			mHScroll = new ScrollGroup(CLAM::VM::eHorizontal,this);
 			mVScroll = new ScrollGroup(CLAM::VM::eVertical,this);
 
-			mPlot = new Plot2D(this);
+			mPlot = new PlotCanvas(this);
 			_locator =  new Locator();
 			mPlot->AddRenderer("locator", _locator);
 			mSegmentation = new SegmentEditor();

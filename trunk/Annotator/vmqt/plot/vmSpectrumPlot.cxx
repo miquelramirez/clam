@@ -22,7 +22,7 @@
 #include "CLAM_Math.hxx"
 #include "SpecTypeFlags.hxx"
 #include "vmRuler.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 #include "vmPeaksRenderer.hxx"
 #include "vmDataArrayRenderer.hxx"
 #include "vmSpectrumPlot.hxx"

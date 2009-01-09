@@ -22,7 +22,7 @@
 #include "CLAMGL.hxx"
 #include <CLAM/Segmentation.hxx>
 #include "vmSegmentEditor.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 
 //#define __SEGMENT_EDITOR__DEBUG__
 

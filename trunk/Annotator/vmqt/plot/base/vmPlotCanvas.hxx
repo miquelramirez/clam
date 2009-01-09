@@ -38,19 +38,19 @@ namespace CLAM
 		class Ruler;
 
 		/**
-		 * 	A Plot2D is an OpenGl surface for a 2D plot.
+		 * 	A PlotCanvas is an OpenGl surface for a 2D plot.
 		 * 	The plot is conformed by two coordinates axis
 		 * 	and the content is drawn by a stack of interactive
 		 * 	layers, called Renderer2D's.
 		 */
-		class Plot2D : public QGLWidget
+		class PlotCanvas : public QGLWidget
 		{
 			typedef std::map<QString, Renderer2D*> Renderers;
 			
 			Q_OBJECT
 		public:
-			Plot2D(QWidget* parent=0);
-			~Plot2D();
+			PlotCanvas(QWidget* parent=0);
+			~PlotCanvas();
 
 			void SetBackgroundColor(const QColor& c);
 

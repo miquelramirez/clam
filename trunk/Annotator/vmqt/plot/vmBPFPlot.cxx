@@ -19,7 +19,7 @@
  *
  */
 
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 #include "vmBPFEditor.hxx"
 #include "vmBPFPlot.hxx"
 

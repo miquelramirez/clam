@@ -22,7 +22,7 @@
 #include "CLAMGL.hxx"
 #include "vmSonogramBuilder.hxx"
 #include "vmSpectrogramRenderer.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 
 namespace CLAM
 {

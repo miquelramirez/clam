@@ -25,7 +25,7 @@
 #include <QtGui/QComboBox>
 #include <QtGui/QCheckBox>
 #include <QtGui/QPixmap>
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 #include "vmGrid.hxx"
 #include "vmBPFEditor.hxx"
 #include "vmLocatorRenderer.hxx"

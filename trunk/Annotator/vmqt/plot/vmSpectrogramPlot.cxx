@@ -21,7 +21,7 @@
 
 #include <QtGui/QGridLayout>
 #include "vmRuler.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 #include "vmSonogramBuilder.hxx"
 #include "vmSpecgramPanel.hxx"
 #include "vmSpectrogramRenderer.hxx"

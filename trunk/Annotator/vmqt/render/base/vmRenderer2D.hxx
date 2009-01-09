@@ -32,11 +32,11 @@ namespace CLAM
 	namespace VM
 	{
 		class Grid;
-		class Plot2D;
+		class PlotCanvas;
 
 		class Renderer2D : public QObject
 		{
-			friend class Plot2D;
+			friend class PlotCanvas;
 
 			Q_OBJECT
 		public:
@@ -44,7 +44,7 @@ namespace CLAM
 			virtual ~Renderer2D();
 
 			void SetGrid(Grid* grid);
-			void setContainer(Plot2D * container) { _container = container; }
+			void setContainer(PlotCanvas * container) { _container = container; }
 			virtual void SetEnabled(bool enabled);
 
 		protected:
@@ -79,7 +79,7 @@ namespace CLAM
 			Range      mYRange;
 			Keyboard   mKeyboard;
 			Grid*      mGrid;
-			Plot2D * _container;
+			PlotCanvas * _container;
 		};
 	}
 }

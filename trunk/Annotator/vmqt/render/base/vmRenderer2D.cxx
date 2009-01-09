@@ -21,7 +21,7 @@
 
 #include "CLAMGL.hxx"
 #include "vmRenderer2D.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 
 namespace CLAM
 {

@@ -21,7 +21,7 @@
 
 #include <QtGui/QResizeEvent>
 #include "vmRenderer2D.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 #include <QtCore/QTimer>
 #include <iostream>
 #include "vmRuler.hxx"
@@ -31,7 +31,7 @@ namespace CLAM
 	namespace VM
 	{
 
-		Plot2D::Plot2D(QWidget* parent)
+		PlotCanvas::PlotCanvas(QWidget* parent)
 			: QGLWidget(parent)
 			, mBgColor(255,255,255,255)
 			, mToolTip("")
@@ -57,12 +57,12 @@ namespace CLAM
 			mToolTipFont.setStyleHint(QFont::Courier);
 		}
 
-		Plot2D::~Plot2D()
+		PlotCanvas::~PlotCanvas()
 		{
 			ClearRenderers();
 		}
 
-		void Plot2D::SetXRange(double xmin, double xmax)
+		void PlotCanvas::SetXRange(double xmin, double xmax)
 		{
 			if(xmax <= xmin) return;
 			mXRange.min = xmin;
@@ -80,7 +80,7 @@ namespace CLAM
 			emit xRangeChanged(mXRange.min, mXRange.max);
 		}
 
-		void Plot2D::SetYRange(double ymin, double ymax)
+		void PlotCanvas::SetYRange(double ymin, double ymax)
 		{
 			if(ymax <= ymin) return;
 			mYRange.min = ymin;
@@ -98,7 +98,7 @@ namespace CLAM
 			emit yRangeChanged(mView.bottom ,mView.top);
 		}
 	
-		void Plot2D::SetZoomSteps(int xsteps, int ysteps)
+		void PlotCanvas::SetZoomSteps(int xsteps, int ysteps)
 		{
 			if(xsteps < 0 || ysteps < 0) return;
 			mXZoomSteps = xsteps;
@@ -108,7 +108,7 @@ namespace CLAM
 			SetYRange(mYRange.min,mYRange.max);
 		}
 
-		bool Plot2D::AddRenderer(const QString& key, Renderer2D* renderer)
+		bool PlotCanvas::AddRenderer(const QString& key, Renderer2D* renderer)
 		{
 			if(ExistRenderer(key)) return false;
 			mRenderers[key] = renderer;
@@ -122,20 +122,20 @@ namespace CLAM
 			return true;
 		}
 
-		bool Plot2D::SetRendererEnabled(const QString& key, bool enabled)
+		bool PlotCanvas::SetRendererEnabled(const QString& key, bool enabled)
 		{
 			if(!ExistRenderer(key)) return false;
 			mRenderers[key]->SetEnabled(enabled);
 			return true;
 		}
 	
-		Renderer2D* Plot2D::GetRenderer(const QString& key)
+		Renderer2D* PlotCanvas::GetRenderer(const QString& key)
 		{
 			if(!ExistRenderer(key)) return 0;
 			return mRenderers[key];
 		}
 
-		void Plot2D::hZoomIn()
+		void PlotCanvas::hZoomIn()
 		{
 			double newSpan = mCurrentXSpan*0.5;
 			double midPoint = ReferenceIsVisible() ? GetReference(): ((mView.right+mView.left)/2);
@@ -148,7 +148,7 @@ namespace CLAM
 			emit hBoundsChanged(mView.left, mView.right);
 		}
 
-		void Plot2D::hZoomOut()
+		void PlotCanvas::hZoomOut()
 		{
 			double newSpan = mCurrentXSpan*2;
 			double midPoint = ReferenceIsVisible()? GetReference(): ((mView.right+mView.left)/2);
@@ -166,7 +166,7 @@ namespace CLAM
 			emit hBoundsChanged(mView.left, mView.right);
 		}
 
-		void Plot2D::vZoomIn()
+		void PlotCanvas::vZoomIn()
 		{
 			if(!mCurrentYZoomStep) return;
 			mCurrentYSpan /= 2.0;
@@ -178,7 +178,7 @@ namespace CLAM
 			emit vScrollValue(GetVScrollValue());
 		}
 
-		void Plot2D::vZoomOut()
+		void PlotCanvas::vZoomOut()
 		{
 			if(mCurrentYZoomStep == mYZoomSteps) return;
 			mCurrentYSpan *= 2.0;
@@ -190,7 +190,7 @@ namespace CLAM
 			emit vScrollValue(GetVScrollValue());
 		}
 		
-		void Plot2D::updateHScrollValue(int value)
+		void PlotCanvas::updateHScrollValue(int value)
 		{
 			double left = mXRange.Span()/double(GetXPixels())*double(value)+mXRange.min;
 			double right = left+mCurrentXSpan;
@@ -198,7 +198,7 @@ namespace CLAM
 			emit hBoundsChanged(left,right);
 		}
 
-		void Plot2D::updateVScrollValue(int value)
+		void PlotCanvas::updateVScrollValue(int value)
 		{
 			double bottom = mYRange.Span()/double(GetYPixels())*double(value)+mYRange.min;
 			double top = bottom+mCurrentYSpan;
@@ -208,7 +208,7 @@ namespace CLAM
 			SetVBounds(bottom,top);
 		}
 
-		void Plot2D::setHBounds(double left, double right)
+		void PlotCanvas::setHBounds(double left, double right)
 		{
 			SetHBounds(left,right);
 			mCurrentXSpan = mView.right-mView.left;
@@ -216,12 +216,12 @@ namespace CLAM
 			emit hScrollValue(GetHScrollValue());
 		}
 
-		void Plot2D::setVBounds(double bottom, double top)
+		void PlotCanvas::setVBounds(double bottom, double top)
 		{
 			SetVBounds(bottom,top);
 		}
 
-		void Plot2D::paintGL()
+		void PlotCanvas::paintGL()
 		{
 			if(mDoResize)
 			{
@@ -245,7 +245,7 @@ namespace CLAM
 			mUpdatePending=0;
 		}
 		
-		void Plot2D::resizeEvent(QResizeEvent* e)
+		void PlotCanvas::resizeEvent(QResizeEvent* e)
 		{
 			mViewport.w = e->size().width();
 			mViewport.h = e->size().height();
@@ -267,7 +267,7 @@ namespace CLAM
 			emit yRangeChanged(mView.bottom, mView.top);
 		}
 
-		void Plot2D::mouseMoveEvent(QMouseEvent* e)
+		void PlotCanvas::mouseMoveEvent(QMouseEvent* e)
 		{
 			mMousePos = std::make_pair(e->x(),e->y());
 			std::pair<double,double> coords = GetXY(mMousePos.first,mMousePos.second);
@@ -276,7 +276,7 @@ namespace CLAM
 				it->second->MouseMoveEvent(coords.first,coords.second);
 		}
 
-		void Plot2D::mousePressEvent(QMouseEvent* e)
+		void PlotCanvas::mousePressEvent(QMouseEvent* e)
 		{
 			std::pair<double,double> coords = GetXY(e->x(),e->y());
 			Renderers::iterator it = mRenderers.begin();
@@ -284,7 +284,7 @@ namespace CLAM
 				it->second->MousePressEvent(coords.first,coords.second);
 		}
 
-		void Plot2D::mouseReleaseEvent(QMouseEvent* e)
+		void PlotCanvas::mouseReleaseEvent(QMouseEvent* e)
 		{
 			std::pair<double,double> coords = GetXY(e->x(),e->y());
 			Renderers::iterator it = mRenderers.begin();
@@ -292,7 +292,7 @@ namespace CLAM
 				it->second->MouseReleaseEvent(coords.first,coords.second);
 		}
 
-		void Plot2D::mouseDoubleClickEvent(QMouseEvent* e)
+		void PlotCanvas::mouseDoubleClickEvent(QMouseEvent* e)
 		{
 			std::pair<double,double> coords = GetXY(e->x(),e->y());
 			Renderers::iterator it = mRenderers.begin();
@@ -300,21 +300,21 @@ namespace CLAM
 				it->second->MouseDoubleclickEvent(coords.first,coords.second);
 		}
 
-		void Plot2D::keyPressEvent(QKeyEvent * e)
+		void PlotCanvas::keyPressEvent(QKeyEvent * e)
 		{
 			Renderers::iterator it = mRenderers.begin();
 			for(;it != mRenderers.end(); it++)
 				it->second->KeyPressEvent(e->key());
 		}
 
-		void Plot2D::keyReleaseEvent(QKeyEvent * e)
+		void PlotCanvas::keyReleaseEvent(QKeyEvent * e)
 		{
 			Renderers::iterator it = mRenderers.begin();
 			for(;it != mRenderers.end(); it++)
 				it->second->KeyReleaseEvent(e->key());
 		}
 
-		void Plot2D::enterEvent(QEvent* e)
+		void PlotCanvas::enterEvent(QEvent* e)
 		{
 			Renderers::iterator it = mRenderers.begin();
 			for(;it != mRenderers.end(); it++)
@@ -322,7 +322,7 @@ namespace CLAM
 			QGLWidget::enterEvent(e);
 		}
 
-		void Plot2D::leaveEvent(QEvent* e)
+		void PlotCanvas::leaveEvent(QEvent* e)
 		{
 			Renderers::iterator it = mRenderers.begin();
 			for(;it != mRenderers.end(); it++)
@@ -330,32 +330,32 @@ namespace CLAM
 			QGLWidget::leaveEvent(e);
 		}
 
-		void Plot2D::updateRenderers()
+		void PlotCanvas::updateRenderers()
 		{
 			SetRenderersHBounds(mView.left,mView.right);
 			SetRenderersVBounds(mView.bottom,mView.top);
 			needUpdate();
 		}
 
-		void Plot2D::setHZoomPivot(double ref)
+		void PlotCanvas::setHZoomPivot(double ref)
 		{
 			if(ref < mXRange.min || ref > mXRange.max) return;
 			mHZoomRef = ref;
 		}
 
-		void Plot2D::needUpdate()
+		void PlotCanvas::needUpdate()
 		{
 			if (mUpdatePending++) return;
 			QTimer::singleShot(10, this, SLOT(updateGL()));
 		}
 
-		void Plot2D::setToolTip(QString str)
+		void PlotCanvas::setToolTip(QString str)
 		{
 			mToolTip = str;
 			needUpdate();
 		}
 
-		void Plot2D::rendererWorking(QString key,bool working)
+		void PlotCanvas::rendererWorking(QString key,bool working)
 		{
 			// TODO: Maybe using the event handling system is enough
 			Renderers::iterator it = mRenderers.begin();
@@ -377,13 +377,13 @@ namespace CLAM
 			}
 		}
 
-		void Plot2D::DrawRenderers()
+		void PlotCanvas::DrawRenderers()
 		{
 			std::vector<QString>::iterator it = mDrawOrder.begin();
 			for(; it != mDrawOrder.end(); it++) mRenderers[(*it)]->Render();
 		}
 
-		void Plot2D::RenderToolTip()
+		void PlotCanvas::RenderToolTip()
 		{
 			if(mToolTip.isEmpty()) return;
 
@@ -420,7 +420,7 @@ namespace CLAM
 			glMatrixMode(GL_MODELVIEW);
 		}
 
-		void Plot2D::ClearRenderers()
+		void PlotCanvas::ClearRenderers()
 		{
 			Renderers::iterator it = mRenderers.begin();
 			for(; it != mRenderers.end(); it++) delete it->second;
@@ -428,12 +428,12 @@ namespace CLAM
 			mRenderers.clear();
 		}
 
-		bool Plot2D::ExistRenderer(const QString& key)
+		bool PlotCanvas::ExistRenderer(const QString& key)
 		{
 			return (mRenderers.find(key) != mRenderers.end());
 		}
 
-		void Plot2D::SetHBounds(double left, double right)
+		void PlotCanvas::SetHBounds(double left, double right)
 		{
 			if(left==mView.left && right==mView.right) return;
 			mView.left = left;
@@ -444,7 +444,7 @@ namespace CLAM
 			needUpdate();
 		}
 
-		void Plot2D::SetVBounds(double bottom, double top)
+		void PlotCanvas::SetVBounds(double bottom, double top)
 		{
 			if(bottom==mView.bottom && top==mView.top) return;
 			mView.bottom = bottom;
@@ -455,7 +455,7 @@ namespace CLAM
 			needUpdate();
 		}
 
-		void Plot2D::UpdateVBounds(bool zin)
+		void PlotCanvas::UpdateVBounds(bool zin)
 		{
 			double bottom = mView.bottom;
 			double top = mView.top;
@@ -482,49 +482,49 @@ namespace CLAM
 			SetVBounds(bottom,top);
 		}
 
-		int Plot2D::GetXPixels() 
+		int PlotCanvas::GetXPixels() 
 		{
 			return int(mXRange.Span()*double(mViewport.w)/mCurrentXSpan);
 		}
 		
-		int Plot2D::GetYPixels() 
+		int PlotCanvas::GetYPixels() 
 		{
 			return int(mYRange.Span()*double(mViewport.h)/mCurrentYSpan);
 		}
 
-		int Plot2D::GetHScrollValue() 
+		int PlotCanvas::GetHScrollValue() 
 		{
 			return int((mView.left-mXRange.min)*double(GetXPixels())/mXRange.Span());
 		}
 
-		int Plot2D::GetVScrollValue() 
+		int PlotCanvas::GetVScrollValue() 
 		{
 			return int((mYRange.max-mView.top)*double(GetYPixels())/mYRange.Span());
 		}
 
-		bool Plot2D::ReferenceIsVisible() const
+		bool PlotCanvas::ReferenceIsVisible() const
 		{
 			return (mHZoomRef >= mView.left && mHZoomRef <= mView.right);
 		}
 
-		double Plot2D::GetReference() const
+		double PlotCanvas::GetReference() const
 		{
 			return mHZoomRef;
 		}
 
-		void Plot2D::SetRenderersHBounds(double left, double right)
+		void PlotCanvas::SetRenderersHBounds(double left, double right)
 		{
 			Renderers::iterator it = mRenderers.begin();
 			for(; it != mRenderers.end(); it++) it->second->SetHBounds(left,right); 
 		}
 
-		void Plot2D::SetRenderersVBounds(double bottom, double top)
+		void PlotCanvas::SetRenderersVBounds(double bottom, double top)
 		{
 			Renderers::iterator it = mRenderers.begin();
 			for(; it != mRenderers.end(); it++) it->second->SetVBounds(bottom,top);
 		}
 
-		std::pair<double,double> Plot2D::GetXY(int x, int y)
+		std::pair<double,double> PlotCanvas::GetXY(int x, int y)
 		{
 			double xcoord = double(x);
 			xcoord *= (mView.right-mView.left);
@@ -537,7 +537,7 @@ namespace CLAM
 			return std::make_pair(xcoord,ycoord);
 		}
 
-		QRect Plot2D::ToolTipRect()
+		QRect PlotCanvas::ToolTipRect()
 		{
 			QFontMetrics font_metrics(mToolTipFont);
 			
@@ -553,7 +553,7 @@ namespace CLAM
 			return QRect(x,y,w,h);
 		}
 
-		void Plot2D::BringToFront(const QString& key)
+		void PlotCanvas::BringToFront(const QString& key)
 		{
 			if(mDrawOrder.size() <= 1) return;
 			if(mDrawOrder[mDrawOrder.size()-1] == key) return;
@@ -570,7 +570,7 @@ namespace CLAM
 			mDrawOrder[mDrawOrder.size()-1] = key;
 		}
 
-		void Plot2D::SendToBack(const QString& key)
+		void PlotCanvas::SendToBack(const QString& key)
 		{
 			if(mDrawOrder.size() <= 1) return;
 			if(mDrawOrder[0] == key) return;
@@ -587,7 +587,7 @@ namespace CLAM
 			mDrawOrder[0] = key;
 		}
 
-		void Plot2D::SetBackgroundColor(const QColor& c)
+		void PlotCanvas::SetBackgroundColor(const QColor& c)
 		{
 			mBgColor = c;
 			updateGL();

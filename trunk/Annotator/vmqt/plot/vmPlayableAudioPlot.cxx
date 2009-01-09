@@ -24,7 +24,7 @@
 #include <QtGui/QFrame>
 #include <QtGui/QComboBox>
 #include <QtGui/QPixmap>
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 #include "vmLocatorRenderer.hxx"
 #include "vmWPlayer.hxx"
 #include "vmAudioPlayer.hxx"

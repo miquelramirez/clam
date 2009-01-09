@@ -22,7 +22,7 @@
 #include <algorithm>
 #include "CLAMGL.hxx"
 #include "vmDataArrayRenderer.hxx"
-#include "vmPlot2D.hxx"
+#include "vmPlotCanvas.hxx"
 
 namespace CLAM
 {
