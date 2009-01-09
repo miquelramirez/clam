@@ -71,6 +71,7 @@ public:
 		_roll.DoControl(0);
 		_azimuth.DoControl(0);
 		_elevation.DoControl(0);
+		_dominance.DoControl(1);
 //		unsigned buffersize = BackendBufferSize();
 //		When buffersize==1024 a 512 delay is added to the W channel. This is strange!
 //		there is a dataflow scheduling problem. --Pau
