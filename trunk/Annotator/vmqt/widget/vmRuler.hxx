@@ -51,8 +51,6 @@ namespace CLAM
 			void ShowFloats();
 			void ShowIntegers();
 
-			const QFont& GetFont() const;
-
 		signals:
 			void valueChanged(double, double);
 	    
@@ -65,7 +63,6 @@ namespace CLAM
 		private:
 			int    mLabelHeight;
 			bool   mShowFloats;
-			QFont  mFont;
 	
 			ERulerPos   mPosition;
 			ERulerScale mScale;
@@ -75,23 +72,16 @@ namespace CLAM
 			QColor       mBgColor;
 			QColor       mFgColor;
 
-			std::vector<double> mValuesToDraw;
-
-			enum { MINTICKS=3 };
-
 			void Rebuild();
 
 			void Draw();
-			void DrawLeft(QPainter & painter);
-			void DrawRight(QPainter & painter);
-			void DrawBottom(QPainter & painter);
-			void DrawTop(QPainter & painter);
-			void DrawLabels(QPainter & painter);
+			void drawAtLeft(QPainter & painter);
+			void drawAtRight(QPainter & painter);
+			void drawAtBottom(QPainter & painter);
+			void drawAtTop(QPainter & painter);
 
 			int GetMaxLabelWidth();
-			bool IsVisible(double value);
 			QString GetLabel(double value);
-			QPointF GetLabelCoords(double value);
 			CLAM::RulerTicks _majorTicks;
 			CLAM::RulerTicks _minorTicks;
 		};

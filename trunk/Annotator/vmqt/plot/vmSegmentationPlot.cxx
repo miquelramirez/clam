@@ -55,7 +55,6 @@ namespace CLAM
 			mPlot->SetYRange(ymin,ymax);
 			mYRuler->SetRange(ymin,ymax);
 			mYRuler->SetScale(scale);
-			AdjustYRulerWidth(ymin,ymax);
 		}
 
 		void SegmentationPlot::SetSegmentation(Segmentation* s)
@@ -138,12 +137,6 @@ namespace CLAM
 			mXRuler = new Ruler(this,CLAM::VM::eTop);
 			mYRuler = new Ruler(this,CLAM::VM::eLeft);
 
-			QFontMetrics fm(mYRuler->GetFont());
-			int yruler_width = fm.width("-0.0e+00")+12;
-
-			mXRuler->setFixedHeight(40);
-			mYRuler->setFixedWidth(yruler_width);
-
 			mHScroll = new ScrollGroup(CLAM::VM::eHorizontal,this);
 			mVScroll = new ScrollGroup(CLAM::VM::eVertical,this);
 
@@ -195,22 +188,6 @@ namespace CLAM
 			connect(mSegmentation,SIGNAL(segmentInserted(unsigned)),this,SIGNAL(segmentInserted(unsigned)));
 			connect(mSegmentation,SIGNAL(segmentDeleted(unsigned)),this,SIGNAL(segmentDeleted(unsigned)));
 			connect(mSegmentation,SIGNAL(currentSegmentChanged()),this,SIGNAL(currentSegmentChanged()));
-		}
-
-		void SegmentationPlot::AdjustYRulerWidth(double min, double max)
-		{
-			if(mYRuler->GetScale() == CLAM::VM::eLogScale) return;
-			
-			int length_min = QString::number(min,'f',2).length();
-			int length_max = QString::number(max,'f',2).length();
-
-			QFontMetrics fm(mYRuler->GetFont());
-
-			int width = (length_min > length_max) 
-				? fm.width(QString::number(min,'f',2)) 
-				: fm.width(QString::number(max,'f',2));
-			width += 12;
-			if(mYRuler->width() < width) mYRuler->setFixedWidth(width);
 		}
 	}
 }

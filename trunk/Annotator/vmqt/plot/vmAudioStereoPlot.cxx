@@ -177,12 +177,6 @@ namespace CLAM
 			mYRuler0 = new Ruler(this,CLAM::VM::eLeft);
 			mYRuler1 = new Ruler(this,CLAM::VM::eLeft);
 			mVScroll = new ScrollGroup(CLAM::VM::eVertical,this);
-			QFontMetrics fm(mYRuler0->GetFont());
-			int yruler_width = fm.width("-0.0e+00")+12;
-			mYRuler0->setFixedWidth(yruler_width);
-			mYRuler1->setFixedWidth(yruler_width);
-
-			mVScroll->setFixedWidth(20);
 
 			// layout
 			mLayout = new QGridLayout(this);
