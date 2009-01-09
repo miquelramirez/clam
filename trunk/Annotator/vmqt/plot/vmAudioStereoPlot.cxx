@@ -196,10 +196,8 @@ namespace CLAM
 //			mYRuler1->SetStep(0.05);
 		   
 			// connect yrulers and vertical scroll group
-			connect(mDisplay[MASTER],SIGNAL(yRulerRange(double,double)),
-					mYRuler0,SLOT(updateRange(double,double)));
-			connect(mDisplay[MASTER],SIGNAL(yRulerRange(double,double)),
-					mYRuler1,SLOT(updateRange(double,double)));
+			mDisplay[MASTER]->setYRuler(mYRuler0);
+			mDisplay[SLAVE]->setYRuler(mYRuler1);
 			
 			connect(mVScroll,SIGNAL(zoomIn()),mDisplay[MASTER],SLOT(vZoomIn()));
 			connect(mVScroll,SIGNAL(zoomOut()),mDisplay[MASTER],SLOT(vZoomOut()));
@@ -210,7 +208,7 @@ namespace CLAM
 			connect(mDisplay[MASTER],SIGNAL(vScrollMaxValue(int)),this,SLOT(setMaxVScroll(int)));
 			
 			// synchronize vertical scrolling
-			connect(mDisplay[MASTER],SIGNAL(yRulerRange(double,double)),
+			connect(mDisplay[MASTER],SIGNAL(yRangeChanged(double,double)),
 					mDisplay[SLAVE],SLOT(setVBounds(double,double)));
 
 			backgroundWhite();

@@ -56,8 +56,7 @@ namespace CLAM
 			mHScroll->setFixedHeight(20);
 
 			// connect xruler and horizontal scroll group
-			connect(mDisplay[mMasterId],SIGNAL(xRulerRange(double,double)),
-					mXRuler,SLOT(updateRange(double,double)));
+			mDisplay[mMasterId]->setXRuler(mXRuler);
 
 			connect(mHScroll,SIGNAL(zoomIn()),mDisplay[mMasterId],SLOT(hZoomIn()));
 			connect(mHScroll,SIGNAL(zoomOut()),mDisplay[mMasterId],SLOT(hZoomOut()));
@@ -71,7 +70,7 @@ namespace CLAM
 			for(unsigned i=0; i < mDisplay.size(); i++)
 			{
 				if(i == (unsigned)mMasterId) continue;
-				connect(mDisplay[mMasterId],SIGNAL(xRulerRange(double,double)),
+				connect(mDisplay[mMasterId],SIGNAL(xRangeChanged(double,double)),
 						mDisplay[i],SLOT(setHBounds(double,double)));
 			}
 		}

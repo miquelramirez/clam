@@ -76,8 +76,8 @@ namespace CLAM
 			int sv = GetHScrollValue();
 			emit hScrollMaxValue(GetXPixels());
 			emit hScrollValue(sv);
-			if (mXRuler) mXRuler->updateRange(mXRange.min,mXRange.max);
-			emit xRulerRange(mXRange.min,mXRange.max);
+			if (mXRuler) mXRuler->updateRange(mXRange.min, mXRange.max);
+			emit xRangeChanged(mXRange.min, mXRange.max);
 		}
 
 		void Plot2D::SetYRange(double ymin, double ymax)
@@ -90,12 +90,12 @@ namespace CLAM
 			mView.top = mYRange.max;
 			Renderers::iterator it = mRenderers.begin();
 			for(; it != mRenderers.end(); it++) it->second->SetYRange(mYRange.min,mYRange.max);
-			SetRenderersVBounds(mYRange.min,mYRange.max);
+			SetRenderersVBounds(mYRange.min, mYRange.max);
 			int sv = GetVScrollValue();
 			emit vScrollMaxValue(GetYPixels());
 			emit vScrollValue(sv);
-			if (mYRuler) mYRuler->updateRange(mYRange.min,mYRange.max);
-			emit yRulerRange(mYRange.min,mYRange.max);
+			if (mYRuler) mYRuler->updateRange(mYRange.min, mYRange.max);
+			emit yRangeChanged(mView.bottom ,mView.top);
 		}
 	
 		void Plot2D::SetZoomSteps(int xsteps, int ysteps)
@@ -261,10 +261,10 @@ namespace CLAM
 			emit vScrollMaxValue(GetYPixels());
 			emit vScrollValue(sv);
 	
-			if (mXRuler) mXRuler->updateRange(mView.left,mView.right);
-			emit xRulerRange(mView.left,mView.right);
-			if (mYRuler) mYRuler->updateRange(mView.bottom,mView.top);
-			emit yRulerRange(mView.bottom,mView.top);
+			if (mXRuler) mXRuler->updateRange(mView.left, mView.right);
+			emit xRangeChanged(mView.left, mView.right);
+			if (mYRuler) mYRuler->updateRange(mView.bottom, mView.top);
+			emit yRangeChanged(mView.bottom, mView.top);
 		}
 
 		void Plot2D::mouseMoveEvent(QMouseEvent* e)
@@ -439,8 +439,8 @@ namespace CLAM
 			mView.left = left;
 			mView.right = right;
 			SetRenderersHBounds(mView.left,mView.right);
-			if (mXRuler) mXRuler->updateRange(mView.left,mView.right);
-			emit xRulerRange(mView.left, mView.right);
+			if (mXRuler) mXRuler->updateRange(mView.left, mView.right);
+			emit xRangeChanged(mView.left, mView.right);
 			needUpdate();
 		}
 
@@ -449,9 +449,9 @@ namespace CLAM
 			if(bottom==mView.bottom && top==mView.top) return;
 			mView.bottom = bottom;
 			mView.top = top;
-			SetRenderersVBounds(mView.bottom,mView.top);
-			if (mYRuler) mYRuler->updateRange(mView.bottom,mView.top);
-			emit yRulerRange(mView.bottom, mView.top);
+			SetRenderersVBounds(mView.bottom, mView.top);
+			if (mYRuler) mYRuler->updateRange(mView.bottom, mView.top);
+			emit yRangeChanged(mView.bottom, mView.top);
 			needUpdate();
 		}
 

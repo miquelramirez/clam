@@ -267,8 +267,11 @@ namespace CLAM
 			// TODO: Should take the whole range (not just displayed) 
 			// so that the ruler does not change size when scrolling.
 			return std::max(
-				fontMetrics().width(GetLabel(mCurrentRange.min)),
-				fontMetrics().width(GetLabel(mCurrentRange.max)));
+				fontMetrics().width("-5000.00"),
+				std::max(
+					fontMetrics().width(GetLabel(mCurrentRange.min)),
+					fontMetrics().width(GetLabel(mCurrentRange.max)))
+				);
 		}
 
 		QString Ruler::GetLabel(double value)
