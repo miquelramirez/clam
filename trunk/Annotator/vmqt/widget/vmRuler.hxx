@@ -51,9 +51,6 @@ namespace CLAM
 			void ShowFloats();
 			void ShowIntegers();
 
-		signals:
-			void valueChanged(double, double);
-	    
 		public slots:
 			void updateRange(double, double);
 

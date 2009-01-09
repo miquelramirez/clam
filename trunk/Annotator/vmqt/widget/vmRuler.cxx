@@ -94,12 +94,11 @@ namespace CLAM
 		void Ruler::updateRange(double min, double max)
 		{
 			if((mCurrentRange.min==min) && (mCurrentRange.max==max)) return;
-			if(min >= max) return;
+			CLAM_ASSERT(min < max, "VM::Ruler: inverted range");
 			mCurrentRange.min = min;
 			mCurrentRange.max = max;
 			Rebuild();
 			update();
-			emit valueChanged(mCurrentRange.min,mCurrentRange.max);
 		}
 	
 		void Ruler::paintEvent(QPaintEvent * event)
