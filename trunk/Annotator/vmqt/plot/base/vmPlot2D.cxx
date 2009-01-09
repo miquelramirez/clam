@@ -24,6 +24,7 @@
 #include "vmPlot2D.hxx"
 #include <QtCore/QTimer>
 #include <iostream>
+#include "vmRuler.hxx"
 
 namespace CLAM
 {
@@ -43,6 +44,8 @@ namespace CLAM
 			, mXRange(-1.0,1.0)
 			, mYRange(-1.0,1.0)
 			, mViewport(0,0,10,10)
+			, mXRuler(0)
+			, mYRuler(0)
 		{
 			setFocusPolicy(Qt::StrongFocus);
 			setMouseTracking(true);
@@ -73,6 +76,7 @@ namespace CLAM
 			int sv = GetHScrollValue();
 			emit hScrollMaxValue(GetXPixels());
 			emit hScrollValue(sv);
+			if (mXRuler) mXRuler->updateRange(mXRange.min,mXRange.max);
 			emit xRulerRange(mXRange.min,mXRange.max);
 		}
 
@@ -90,6 +94,7 @@ namespace CLAM
 			int sv = GetVScrollValue();
 			emit vScrollMaxValue(GetYPixels());
 			emit vScrollValue(sv);
+			if (mYRuler) mYRuler->updateRange(mYRange.min,mYRange.max);
 			emit yRulerRange(mYRange.min,mYRange.max);
 		}
 	
@@ -256,7 +261,9 @@ namespace CLAM
 			emit vScrollMaxValue(GetYPixels());
 			emit vScrollValue(sv);
 	
+			if (mXRuler) mXRuler->updateRange(mView.left,mView.right);
 			emit xRulerRange(mView.left,mView.right);
+			if (mYRuler) mYRuler->updateRange(mView.bottom,mView.top);
 			emit yRulerRange(mView.bottom,mView.top);
 		}
 
@@ -432,6 +439,7 @@ namespace CLAM
 			mView.left = left;
 			mView.right = right;
 			SetRenderersHBounds(mView.left,mView.right);
+			if (mXRuler) mXRuler->updateRange(mView.left,mView.right);
 			emit xRulerRange(mView.left, mView.right);
 			needUpdate();
 		}
@@ -442,6 +450,7 @@ namespace CLAM
 			mView.bottom = bottom;
 			mView.top = top;
 			SetRenderersVBounds(mView.bottom,mView.top);
+			if (mYRuler) mYRuler->updateRange(mView.bottom,mView.top);
 			emit yRulerRange(mView.bottom, mView.top);
 			needUpdate();
 		}
