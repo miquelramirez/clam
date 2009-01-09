@@ -160,8 +160,6 @@ namespace CLAM
 
 			mPlot->setXRuler(mXRuler);
 			mPlot->setYRuler(mYRuler);
-//			connect(mPlot,SIGNAL(xRulerRange(double,double)),mXRuler,SLOT(updateRange(double,double)));
-//			connect(mPlot,SIGNAL(yRulerRange(double,double)),mYRuler,SLOT(updateRange(double,double)));
 	
 			connect(mVScroll,SIGNAL(zoomIn()),mPlot,SLOT(vZoomIn()));
 			connect(mVScroll,SIGNAL(zoomOut()),mPlot,SLOT(vZoomOut()));

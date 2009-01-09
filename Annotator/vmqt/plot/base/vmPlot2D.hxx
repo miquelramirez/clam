@@ -74,8 +74,8 @@ namespace CLAM
 			void vScrollValue(int);
 			void hScrollMaxValue(int);
 			void vScrollMaxValue(int);
-			void xRulerRange(double,double);
-			void yRulerRange(double,double);
+			void xRangeChanged(double,double);
+			void yRangeChanged(double,double);
 			void hBoundsChanged(double,double);
 			
 		public slots:
