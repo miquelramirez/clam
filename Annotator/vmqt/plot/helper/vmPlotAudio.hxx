@@ -23,7 +23,6 @@
 #define __VMQT_PLOT_AUDIO_H__
 
 #include <string>
-#include "vmQAppWrapper.hxx"
 #include "vmPlayableAudioPlot.hxx"
 
 namespace CLAM
@@ -38,14 +37,14 @@ namespace CLAM
 					  int h=250, 
 					  const std::string& title="Audio Plot")
 		{
-			QAppWrapper::Init();
+			QApplication app;
 			PlayableAudioPlot plot;
 			plot.SetTitle(title.c_str());
 			plot.SetGeometry(x,y,w,h);
 			plot.SetData(audio);
 			plot.SetSegmentation(s);
 			plot.show();
-			return QAppWrapper::Run();
+			return app.exec();
 		}
 	}
 }

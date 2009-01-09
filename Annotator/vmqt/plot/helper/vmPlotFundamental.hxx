@@ -23,7 +23,6 @@
 #define __VMQT_PLOT_FUNDAMENTAL_H__
 
 #include <string>
-#include "vmQAppWrapper.hxx"
 #include "vmPlayableFundamentalPlot.hxx"
 
 namespace CLAM
@@ -37,13 +36,13 @@ namespace CLAM
 							int h=250,
 							const std::string& title="Fundamental Frequency Plot")
 		{
-			QAppWrapper::Init();
+			QApplication app;
 			PlayableFundamentalPlot plot;
 			plot.SetTitle(title.c_str());
 			plot.SetGeometry(x,y,w,h);
 			plot.SetData(s);
 			plot.show();
-			return QAppWrapper::Run();
+			return app.exec();
 		}
 	}
 }
