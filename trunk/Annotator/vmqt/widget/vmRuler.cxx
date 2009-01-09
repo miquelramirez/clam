@@ -126,7 +126,7 @@ namespace CLAM
 			mValuesToDraw.clear();
 			bool vertical = (mPosition==CLAM::VM::eLeft || mPosition==CLAM::VM::eRight);
 			int size = vertical? height() : width();
-			int labelSpan = 20 + (vertical? mLabelHeight: GetMaxLabelWidth()); 
+			int labelSpan = 20 + (vertical? mLabelHeight*2: GetMaxLabelWidth()); 
 			_majorTicks.setWidth(size);
 			_majorTicks.setMinGap(labelSpan);
 			_majorTicks.setRange(mCurrentRange.min,mCurrentRange.max);
@@ -153,12 +153,10 @@ namespace CLAM
 					DrawLeft(painter);
 					break;
 				case CLAM::VM::eRight:
-					DrawRight();
-					DrawLabels(painter);
+					DrawRight(painter);
 					break;
 				case CLAM::VM::eBottom:
-					DrawBottom();
-					DrawLabels(painter);
+					DrawBottom(painter);
 					break;
 				case CLAM::VM::eTop:
 					DrawTop(painter);
@@ -168,14 +166,15 @@ namespace CLAM
 
 		void Ruler::DrawLeft(QPainter & painter)
 		{
-			double x0 = double(width())-5.0;
-			double x1 = double(width())-1.0;
+			const double axisPos = width()-1;
+			double majorTickSize = 8.;
+			double minorTickSize = 3.;
 			QVector<QLineF> lines;
 			for (unsigned i=0; i<_majorTicks.nTicks(); i++)
 			{
 				double tickValue = _majorTicks.tickValue(i);
-				double tickPos = _majorTicks.toPixel(tickValue);
-				lines << QLineF(x0,tickPos,x1,tickPos);
+				double tickPos = height()-_majorTicks.toPixel(tickValue);
+				lines << QLineF(axisPos-majorTickSize,tickPos,axisPos,tickPos);
 				QFontMetrics font_metrics(mFont);
 				int label_width = font_metrics.width(QString::number(tickValue,'f',mShowFloats?2:0));
 				double x = std::max(0,width() - label_width-8);
@@ -184,12 +183,18 @@ namespace CLAM
 					QRectF(x,y-mLabelHeight, label_width, mLabelHeight),
 					GetLabel(tickValue));
 			}
+			for (unsigned i=0; i<_minorTicks.nTicks(); i++)
+			{
+				double tickValue = _minorTicks.tickValue(i);
+				double tickPos = height()-_minorTicks.toPixel(tickValue);
+				lines << QLineF(axisPos-minorTickSize,tickPos,axisPos,tickPos);
+			}
 			// draw axis
-			lines << QLineF(x1,0,x1,height());
+			lines << QLineF(axisPos,0,axisPos,height());
 			painter.drawLines(lines);
 		}
 
-		void Ruler::DrawRight()
+		void Ruler::DrawRight(QPainter & painter)
 		{
 			double x0 = 1.0;
 			double x1 = 5.0;
@@ -204,9 +209,10 @@ namespace CLAM
 			glVertex2d(x0,mCurrentRange.min);
 			glVertex2d(x0,mCurrentRange.max);
 			glEnd();		 
+			DrawLabels(painter);
 		}
 	
-		void Ruler::DrawBottom()
+		void Ruler::DrawBottom(QPainter & painter)
 		{
 			double y0 = double(height())-6.0;
 			double y1 = double(height())-1.0;
@@ -221,20 +227,21 @@ namespace CLAM
 			glVertex2d(mCurrentRange.min,y1);
 			glVertex2d(mCurrentRange.max,y1);
 			glEnd();			
+			DrawLabels(painter);
 		}
 
 		void Ruler::DrawTop(QPainter & painter)
 		{
-			double minorTickSize = 10;
-			double baseY = height()-1;
-			int margin=3;
+			const double axisPos = height()-1;
+			const double minorTickSize = 9;
+			const int margin=3;
 			double labelWidth = _majorTicks.markGap()*width()/mCurrentRange.Span() -2*margin;
 			QVector<QLineF> lines;
 			for (unsigned i=0; i<_majorTicks.nTicks(); i++)
 			{
 				double tickValue = _majorTicks.tickValue(i);
 				double tickPos = _majorTicks.toPixel(tickValue);
-				lines << QLineF(tickPos,height()/2,tickPos,baseY);
+				lines << QLineF(tickPos,height()/2,tickPos,axisPos);
 				painter.drawText(
 					QRectF(
 						tickPos + margin, (height()-mLabelHeight)/2,
@@ -245,10 +252,10 @@ namespace CLAM
 			{
 				double tickValue = _minorTicks.tickValue(i);
 				double tickPos = _minorTicks.toPixel(tickValue);
-				lines << QLineF(tickPos,height()-minorTickSize,tickPos,baseY);
+				lines << QLineF(tickPos,axisPos-minorTickSize,tickPos,axisPos);
 			}
 			// draw axis
-			lines << QLineF(0,baseY,width(),baseY);
+			lines << QLineF(0,axisPos,width(),axisPos);
 			painter.drawLines(lines);
 		}
 

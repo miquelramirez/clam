@@ -83,8 +83,8 @@ namespace CLAM
 
 			void Draw();
 			void DrawLeft(QPainter & painter);
-			void DrawRight();
-			void DrawBottom();
+			void DrawRight(QPainter & painter);
+			void DrawBottom(QPainter & painter);
 			void DrawTop(QPainter & painter);
 			void DrawLabels(QPainter & painter);
 
