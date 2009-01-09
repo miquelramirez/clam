@@ -89,7 +89,6 @@ namespace CLAM
 			ScrollGroup* mVScroll;
 
 			void InitSegmentationPlot();
-			void AdjustYRulerWidth(double min, double max);
 		};
 	}
 }

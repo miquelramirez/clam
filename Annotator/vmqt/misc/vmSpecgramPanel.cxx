@@ -47,8 +47,8 @@ namespace CLAM
 
 		void SpecgramPanel::setFixedLabels(QString specRange, QString totalSlices)
 		{
-			mSpectralRange->setText("Spectral Range (Hz): "+specRange);
-			mTotalSlices->setText("Slices: "+totalSlices);
+			mSpectralRange->setText(tr("Spectral Range (Hz): %1").arg(specRange));
+			mTotalSlices->setText(tr("Slices: %1").arg(totalSlices));
 		}
 
 		void SpecgramPanel::updateLabels(QString freq, QString db, QString slice, QString time)
@@ -56,7 +56,7 @@ namespace CLAM
 			mFrequency->setText(freq);
 			mDecibels->setText(db);
 			mSlice->setText(slice);
-			(time=="--") ? mTime->setText("  t: "+time) : mTime->setText("  t: "+time+" s.");
+			mTime->setText(tr("  t: %1%2").arg(time).arg(time=="--"?"":tr(" s.")));
 		}
 
 		void SpecgramPanel::InitSpecgramPanel()
