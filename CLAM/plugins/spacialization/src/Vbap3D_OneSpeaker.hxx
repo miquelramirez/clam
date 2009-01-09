@@ -1,5 +1,5 @@
-#ifndef Vbap3D_hxx
-#define Vbap3D_hxx
+#ifndef Vbap3D_OneSpeaker_hxx
+#define Vbap3D_OneSpeaker_hxx
 #include <CLAM/AudioInPort.hxx>
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/Processing.hxx>
@@ -17,7 +17,7 @@
  @ingroup SpatialAudio
 */
 
-class Vbap3D : public CLAM::Processing
+class Vbap3D_OneSpeaker : public CLAM::Processing
 {
 	typedef std::vector<unsigned> Triangle;
 
@@ -33,8 +33,8 @@ class Vbap3D : public CLAM::Processing
 	std::vector<Triangle> _triangles;
 	unsigned _closerSpeaker;
 public:
-	const char* GetClassName() const { return "Vbap3D"; }
-	Vbap3D(const Config& config = Config()) 
+	const char* GetClassName() const { return "Vbap3D_OneSpeaker"; }
+	Vbap3D_OneSpeaker(const Config& config = Config()) 
 		: _w("W", this)
 		, _azimuth("azimuth", this) // angle in degrees
 		, _elevation("elevation", this) // angle in degrees

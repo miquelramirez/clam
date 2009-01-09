@@ -23,21 +23,21 @@
 
   <processing id="BFormat2Sixteen" position="413,311" size="128,254" type="BFormat2Sixteen"/>
 
-  <processing id="Back Horizontal" position="866,368" size="128,111" type="AudioSink"/>
+  <processing id="Back Horizontal" position="668,40" size="128,111" type="AudioSink"/>
 
-  <processing id="Base Back Left" position="700,208" size="128,111" type="AudioSink"/>
+  <processing id="Base Back Left" position="783,92" size="128,111" type="AudioSink"/>
 
-  <processing id="Base Back Right" position="699,303" size="128,111" type="AudioSink"/>
+  <processing id="Base Back Right" position="900,129" size="128,111" type="AudioSink"/>
 
-  <processing id="Base Front Left" position="699,0" size="128,111" type="AudioSink"/>
+  <processing id="Base Front Left" position="1012,194" size="128,111" type="AudioSink"/>
 
-  <processing id="Base Front Right" position="698,102" size="128,111" type="AudioSink"/>
+  <processing id="Base Front Right" position="1284,302" size="128,111" type="AudioSink"/>
 
-  <processing id="Fron Horizontal" position="897,54" size="128,111" type="AudioSink"/>
+  <processing id="Fron Horizontal" position="748,408" size="128,111" type="AudioSink"/>
 
-  <processing id="Front Left Horizontal" position="864,167" size="144,111" type="AudioSink"/>
+  <processing id="Front Left Horizontal" position="916,436" size="144,111" type="AudioSink"/>
 
-  <processing id="Front Right Horizontal" position="867,581" size="153,111" type="AudioSink"/>
+  <processing id="Front Right Horizontal" position="1116,473" size="153,111" type="AudioSink"/>
 
   <processing id="Gain W" position="267,28" size="177,78" type="OutControlSender">
     <Min>0</Min>
@@ -57,21 +57,17 @@
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="Oscilloscope" position="1100,-8" size="305,271" type="Oscilloscope"/>
+  <processing id="Rear Left Horizontal" position="1346,501" size="143,111" type="AudioSink"/>
 
-  <processing id="Oscilloscope_1" position="1099,267" size="305,271" type="Oscilloscope"/>
+  <processing id="Rear Right Horizontal" position="858,566" size="152,111" type="AudioSink"/>
 
-  <processing id="Rear Left Horizontal" position="864,268" size="143,111" type="AudioSink"/>
+  <processing id="Top Back Left" position="750,589" size="128,111" type="AudioSink"/>
 
-  <processing id="Rear Right Horizontal" position="866,472" size="152,111" type="AudioSink"/>
+  <processing id="Top Back Right" position="896,770" size="128,111" type="AudioSink"/>
 
-  <processing id="Top Back Left" position="701,604" size="128,111" type="AudioSink"/>
+  <processing id="Top Front Left" position="820,789" size="128,111" type="AudioSink"/>
 
-  <processing id="Top Back Right" position="700,705" size="128,111" type="AudioSink"/>
-
-  <processing id="Top Front Left" position="699,401" size="128,111" type="AudioSink"/>
-
-  <processing id="Top Front Right" position="700,503" size="128,111" type="AudioSink"/>
+  <processing id="Top Front Right" position="726,806" size="128,111" type="AudioSink"/>
 
   <processing id="W in" position="25,132" size="128,108" type="AudioSource"/>
 
@@ -114,13 +110,8 @@
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Base Front Left</out>
-    <in>Base Front Left.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Sixteen.Base Front Right</out>
-    <in>Base Front Right.AudioIn</in>
+    <out>BFormat2Sixteen.Back Horizontal</out>
+    <in>Back Horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
@@ -134,13 +125,38 @@
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Front Left</out>
-    <in>Top Front Left.AudioIn</in>
+    <out>BFormat2Sixteen.Base Front Left</out>
+    <in>Base Front Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Front Right</out>
-    <in>Top Front Right.AudioIn</in>
+    <out>BFormat2Sixteen.Base Front Right</out>
+    <in>Base Front Right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Front Horizontal</out>
+    <in>Fron Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Front Left Horizontal</out>
+    <in>Front Left Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Front Right Horizontal</out>
+    <in>Front Right Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Rear Left Horizontal</out>
+    <in>Rear Left Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Rear Right Horizontal</out>
+    <in>Rear Right Horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
@@ -154,43 +170,13 @@
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Front Horizontal</out>
-    <in>Fron Horizontal.AudioIn</in>
+    <out>BFormat2Sixteen.Top Front Left</out>
+    <in>Top Front Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Front Horizontal</out>
-    <in>Oscilloscope.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Sixteen.Front Left Horizontal</out>
-    <in>Front Left Horizontal.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Sixteen.Rear Left Horizontal</out>
-    <in>Rear Left Horizontal.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Sixteen.Back Horizontal</out>
-    <in>Back Horizontal.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Sixteen.Back Horizontal</out>
-    <in>Oscilloscope_1.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Sixteen.Rear Right Horizontal</out>
-    <in>Rear Right Horizontal.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>BFormat2Sixteen.Front Right Horizontal</out>
-    <in>Front Right Horizontal.AudioIn</in>
+    <out>BFormat2Sixteen.Top Front Right</out>
+    <in>Top Front Right.AudioIn</in>
   </port_connection>
 
   <port_connection>
