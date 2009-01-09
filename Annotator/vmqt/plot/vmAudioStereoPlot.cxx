@@ -117,15 +117,6 @@ namespace CLAM
 			_locator1->updateLocator(value,flag);
 		}
 
-		void AudioStereoPlot::setMaxVScroll(int value)
-		{
-			int max = value-mDisplay[MASTER]->height();
-			if(max < 0) max=0;
-			if(mVScroll->GetMaxScrollValue() == max) return;
-			mVScroll->setMaxScrollValue(max);
-
-		}
-
 		void AudioStereoPlot::CreateDisplay()
 		{
 			mDisplay.resize(2);
@@ -198,15 +189,12 @@ namespace CLAM
 			// connect yrulers and vertical scroll group
 			mDisplay[MASTER]->setYRuler(mYRuler0);
 			mDisplay[SLAVE]->setYRuler(mYRuler1);
+			mDisplay[MASTER]->setYRangeController(mVScroll);
 			
 			connect(mVScroll,SIGNAL(zoomIn()),mDisplay[MASTER],SLOT(vZoomIn()));
 			connect(mVScroll,SIGNAL(zoomOut()),mDisplay[MASTER],SLOT(vZoomOut()));
 			connect(mVScroll,SIGNAL(scrollValueChanged(int)),mDisplay[MASTER],SLOT(updateVScrollValue(int)));
 
-			connect(mDisplay[MASTER],SIGNAL(vZoomRatio(QString)),mVScroll,SLOT(updateZoomRatio(QString)));
-			connect(mDisplay[MASTER],SIGNAL(vScrollValue(int)),mVScroll,SLOT(updateScrollValue(int)));
-			connect(mDisplay[MASTER],SIGNAL(vScrollMaxValue(int)),this,SLOT(setMaxVScroll(int)));
-			
 			// synchronize vertical scrolling
 			connect(mDisplay[MASTER],SIGNAL(yRangeChanged(double,double)),
 					mDisplay[SLAVE],SLOT(setVBounds(double,double)));

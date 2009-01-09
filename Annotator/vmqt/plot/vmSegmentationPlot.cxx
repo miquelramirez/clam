@@ -111,22 +111,6 @@ namespace CLAM
 			mSegmentation->checkCurrent(value);
 		}
 
-		void SegmentationPlot::setMaxVScroll(int value)
-		{
-			int max = value-mPlot->height();
-			if(max < 0) max=0;
-			if(mVScroll->GetMaxScrollValue() == max) return;		
-			mVScroll->setMaxScrollValue(max);
-		}
-
-		void SegmentationPlot::setMaxHScroll(int value)
-		{
-			int max = value-mPlot->width();
-			if(max < 0) max=0;;
-			if(mHScroll->GetMaxScrollValue() == max) return;
-			mHScroll->setMaxScrollValue(max);
-		}
-
 		void SegmentationPlot::setVisibleXRange(double min, double max)
 		{
 			mPlot->setHBounds(min, max);
@@ -160,7 +144,9 @@ namespace CLAM
 
 			mPlot->setXRuler(mXRuler);
 			mPlot->setYRuler(mYRuler);
-	
+			mPlot->setXRangeController(mHScroll);
+			mPlot->setYRangeController(mVScroll);
+
 			connect(mVScroll,SIGNAL(zoomIn()),mPlot,SLOT(vZoomIn()));
 			connect(mVScroll,SIGNAL(zoomOut()),mPlot,SLOT(vZoomOut()));
 			connect(mVScroll,SIGNAL(scrollValueChanged(int)),mPlot,SLOT(updateVScrollValue(int)));
@@ -169,14 +155,6 @@ namespace CLAM
 			connect(mHScroll,SIGNAL(zoomOut()),mPlot,SLOT(hZoomOut()));
 			connect(mHScroll,SIGNAL(scrollValueChanged(int)),mPlot,SLOT(updateHScrollValue(int)));
 			
-			connect(mPlot,SIGNAL(vZoomRatio(QString)),mVScroll,SLOT(updateZoomRatio(QString)));
-			connect(mPlot,SIGNAL(vScrollValue(int)),mVScroll,SLOT(updateScrollValue(int)));
-			connect(mPlot,SIGNAL(vScrollMaxValue(int)),this,SLOT(setMaxVScroll(int)));
-
-			connect(mPlot,SIGNAL(hZoomRatio(QString)),mHScroll,SLOT(updateZoomRatio(QString)));
-			connect(mPlot,SIGNAL(hScrollValue(int)),mHScroll,SLOT(updateScrollValue(int)));
-			connect(mPlot,SIGNAL(hScrollMaxValue(int)),this,SLOT(setMaxHScroll(int)));
-
 			connect(mPlot, SIGNAL(hBoundsChanged(double,double)),this, SIGNAL(visibleXRangeChanged(double,double)));
 			
 			connect(_locator,SIGNAL(selectedRegion(double,double)),this,SIGNAL(selectedRegion(double,double)));

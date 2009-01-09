@@ -57,14 +57,11 @@ namespace CLAM
 
 			// connect xruler and horizontal scroll group
 			mDisplay[mMasterId]->setXRuler(mXRuler);
+			mDisplay[mMasterId]->setXRangeController(mHScroll);
 
 			connect(mHScroll,SIGNAL(zoomIn()),mDisplay[mMasterId],SLOT(hZoomIn()));
 			connect(mHScroll,SIGNAL(zoomOut()),mDisplay[mMasterId],SLOT(hZoomOut()));
 			connect(mHScroll,SIGNAL(scrollValueChanged(int)),mDisplay[mMasterId],SLOT(updateHScrollValue(int)));
-
-			connect(mDisplay[mMasterId],SIGNAL(hZoomRatio(QString)),mHScroll,SLOT(updateZoomRatio(QString)));
-			connect(mDisplay[mMasterId],SIGNAL(hScrollValue(int)),mHScroll,SLOT(updateScrollValue(int)));
-			connect(mDisplay[mMasterId],SIGNAL(hScrollMaxValue(int)),this,SLOT(setMaxHScroll(int)));
 
 			// synchronize horizontal scrolling
 			for(unsigned i=0; i < mDisplay.size(); i++)
@@ -80,14 +77,6 @@ namespace CLAM
 			CLAM_ASSERT(mDisplay.size()>0,"MultiDisplayPlot::SetMasterId: master display has not been created yet.");
 			CLAM_ASSERT(id >=0 && id < (int)mDisplay.size(), "MultiDisplayPlot::SetMasterId: invalid masterId.");
 			mMasterId = id;
-		}
-
-		void MultiDisplayPlot::setMaxHScroll(int value)
-		{
-			int max = value-mDisplay[0]->width();
-			if(max < 0) max = 0;
-			if(mHScroll->GetMaxScrollValue() == max) return;
-			mHScroll->setMaxScrollValue(max);
 		}
 	}
 }

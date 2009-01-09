@@ -25,6 +25,7 @@
 #include <QtCore/QTimer>
 #include <iostream>
 #include "vmRuler.hxx"
+#include "vmScrollGroup.hxx"
 
 namespace CLAM
 {
@@ -46,6 +47,8 @@ namespace CLAM
 			, mViewport(0,0,10,10)
 			, mXRuler(0)
 			, mYRuler(0)
+			, mXRangeController(0)
+			, mYRangeController(0)
 		{
 			setFocusPolicy(Qt::StrongFocus);
 			setMouseTracking(true);
@@ -73,9 +76,7 @@ namespace CLAM
 			Renderers::iterator it = mRenderers.begin();
 			for(; it != mRenderers.end(); it++) it->second->SetXRange(mXRange.min,mXRange.max);
 			SetRenderersHBounds(mXRange.min,mXRange.max);
-			int sv = GetHScrollValue();
-			emit hScrollMaxValue(GetXPixels());
-			emit hScrollValue(sv);
+			updateXRangeController();
 			if (mXRuler) mXRuler->updateRange(mXRange.min, mXRange.max);
 			emit xRangeChanged(mXRange.min, mXRange.max);
 		}
@@ -91,9 +92,7 @@ namespace CLAM
 			Renderers::iterator it = mRenderers.begin();
 			for(; it != mRenderers.end(); it++) it->second->SetYRange(mYRange.min,mYRange.max);
 			SetRenderersVBounds(mYRange.min, mYRange.max);
-			int sv = GetVScrollValue();
-			emit vScrollMaxValue(GetYPixels());
-			emit vScrollValue(sv);
+			updateYRangeController();
 			if (mYRuler) mYRuler->updateRange(mYRange.min, mYRange.max);
 			emit yRangeChanged(mView.bottom ,mView.top);
 		}
@@ -143,8 +142,7 @@ namespace CLAM
 			double right=std::min(mXRange.max, left+newSpan);
 			mCurrentXSpan = right - left;
 			SetHBounds(left,right);
-			emit hScrollMaxValue(GetXPixels());
-			emit hScrollValue(GetHScrollValue());
+			updateXRangeController();
 			emit hBoundsChanged(mView.left, mView.right);
 		}
 
@@ -161,9 +159,14 @@ namespace CLAM
 			}
 			mCurrentXSpan = right - left;
 			SetHBounds(left,right);
-			emit hScrollMaxValue(GetXPixels());
-			emit hScrollValue(GetHScrollValue());
+			updateXRangeController();
 			emit hBoundsChanged(mView.left, mView.right);
+		}
+		void PlotCanvas::updateXRangeController()
+		{
+			if (!mXRangeController) return;
+			mXRangeController->setMaxScrollValue(std::max(0,GetXPixels()-width()));
+			mXRangeController->updateScrollValue(GetHScrollValue());
 		}
 
 		void PlotCanvas::vZoomIn()
@@ -172,10 +175,7 @@ namespace CLAM
 			mCurrentYSpan /= 2.0;
 			UpdateVBounds(true);
 			mCurrentYZoomStep--;
-			int yratio=1 << mCurrentYZoomStep;
-			emit vZoomRatio("1:"+QString::number(yratio));
-			emit vScrollMaxValue(GetYPixels());
-			emit vScrollValue(GetVScrollValue());
+			updateYRangeController();
 		}
 
 		void PlotCanvas::vZoomOut()
@@ -184,10 +184,16 @@ namespace CLAM
 			mCurrentYSpan *= 2.0;
 			UpdateVBounds(false);
 			mCurrentYZoomStep++;
-			int yratio=1 << mCurrentYZoomStep;
-			emit vZoomRatio("1:"+QString::number(yratio));
-			emit vScrollMaxValue(GetYPixels()); 
-			emit vScrollValue(GetVScrollValue());
+			updateYRangeController();
+		}
+		void PlotCanvas::updateYRangeController()
+		{
+			if (!mYRangeController) return;
+			QString yratio = "1:"+QString::number(1<<mCurrentYZoomStep);
+			mYRangeController->updateZoomRatio(yratio);
+			mYRangeController->setMaxScrollValue(
+				std::max(0,GetYPixels()-height()));
+			mYRangeController->updateScrollValue(GetVScrollValue());
 		}
 		
 		void PlotCanvas::updateHScrollValue(int value)
@@ -212,8 +218,7 @@ namespace CLAM
 		{
 			SetHBounds(left,right);
 			mCurrentXSpan = mView.right-mView.left;
-			emit hScrollMaxValue(GetXPixels());
-			emit hScrollValue(GetHScrollValue());
+			updateXRangeController();
 		}
 
 		void PlotCanvas::setVBounds(double bottom, double top)
@@ -253,13 +258,8 @@ namespace CLAM
 			Renderers::iterator it = mRenderers.begin();
 			for(; it != mRenderers.end(); it++)
 				it->second->SetViewport(mViewport);
-			int sv = GetHScrollValue();
-			emit hScrollMaxValue(GetXPixels());
-			emit hScrollValue(sv);
-
-			sv = GetVScrollValue();
-			emit vScrollMaxValue(GetYPixels());
-			emit vScrollValue(sv);
+			updateXRangeController();
+			updateYRangeController();
 	
 			if (mXRuler) mXRuler->updateRange(mView.left, mView.right);
 			emit xRangeChanged(mView.left, mView.right);

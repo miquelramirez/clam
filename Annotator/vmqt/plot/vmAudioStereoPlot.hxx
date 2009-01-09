@@ -59,9 +59,6 @@ namespace CLAM
 			
 			enum { MASTER=0, SLAVE=1 };
 
-		private slots:
-			void setMaxVScroll(int);
-
 		private:
 			Ruler*       mYRuler0;
 			Ruler*       mYRuler1;
