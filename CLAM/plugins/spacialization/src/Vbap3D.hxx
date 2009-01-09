@@ -18,7 +18,9 @@
 */
 
 class Vbap3D : public CLAM::Processing
-{ 
+{
+	typedef std::vector<unsigned> Triangle;
+
 	CLAM::AudioInPort _w;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 	OutPorts _outputs;
@@ -28,6 +30,7 @@ class Vbap3D : public CLAM::Processing
 	std::vector<double> _elevations;
 	std::vector<double> _azimuths;
 	std::vector<std::string> _names;
+	std::vector<Triangle> _triangles;
 	unsigned _closerSpeaker;
 public:
 	const char* GetClassName() const { return "Vbap3D"; }
@@ -47,27 +50,66 @@ public:
 
 		unsigned buffersize = BackendBufferSize();
 		struct SpeakerPositions {
+			int id;
 			const char * name;
 			float azimuth;
 			float elevation;
-		} speakers[] =
-		{
-			{"Base Front Left", 45., -45.},
-			{"Base Front Right", -45., -45.},
-			{"Base Back Left", 135., -45.},
-			{"Base Back Right", -135, -45.},
-			{"Top Front Left", 45., 45.},
-			{"Top Front Right", -45., 45.},
-			{"Top Back Left", 135., 45.},
-			{"Top Back Right", -135., 45.},
-			{"Front Horizontal", 0., 0.},
-			{"Front Left Horizontal", 60., 0.},
-			{"Rear Left Horizontal", 120., 0.},
-			{"Back Horizontal", 180., 0.},
-			{"Rear Right Horizontal", -120., 0.},
-			{"Front Right Horizontal", -60., 0.},
-			{0, 0., 0.}
+		} speakers[] =	{
+			{1, "Back Horizontal", 180., 0. },
+			{2, "Base Back Left", 135., -45.},
+			{3, "Base Back Right", -135, -45.},
+			{4, "Base Front Left", 45., -45.},
+			{5, "Base Front Right", -45., -45.},
+			{6, "Front Horizontal", 0., 0.},
+			{7, "Front Left Horizontal", 60., 0.},
+			{8, "Front Right Horizontal", -60., 0.},
+			{9, "Rear Left Horizontal", 120., 0.},
+			{10, "Rear Right Horizontal", -120., 0.},
+			{11, "Top Back Left", 135., 45.},
+			{12, "Top Back Right", -135., 45.},
+			{13, "Top Front Left", 45., 45.},
+			{14, "Top Front Right", -45., 45.},
+			{0, 0, 0., 0.}
 		};
+		struct Triangles {
+			unsigned one;
+			unsigned two;
+			unsigned three;
+		} triangles[] = {
+			//front
+			{6, 8, 13},
+			{6, 8, 5},
+			{6, 7, 4},
+			{6, 7, 14},
+			{6, 13, 14},
+			{6, 4, 5},
+			//back
+			{1, 9, 11},
+			{1, 9, 2},
+			{1, 10, 12},
+			{1, 10, 3},
+			{1, 12, 11},
+			{1, 2, 3},
+			//left
+			{9, 7, 14},
+			{9, 7, 4},
+			{9, 4, 2},
+			{9, 14, 11},
+			//right
+			{10, 8, 13},
+			{10, 8, 5},
+			{10, 3, 5},
+			{10, 12, 13},
+			//up
+			{13, 14, 11},
+			{13, 12, 11},
+			//down
+			{5, 4, 2},
+			{5, 3, 2},
+
+			{0,0,0}
+		};
+		 
 		for (unsigned i=0; speakers[i].name; i++)
 		{
 			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( speakers[i].name, this);
@@ -77,8 +119,15 @@ public:
 			_azimuths.push_back( speakers[i].azimuth );
 			_elevations.push_back( speakers[i].elevation );
 			_names.push_back( speakers[i].name );
-
-
+		}
+		for (unsigned i=0; triangles[i].one; i++)
+		{
+			Triangle t;
+			t.resize(3);
+			t[0]=triangles[i].one;
+			t[1]=triangles[i].two;
+			t[2]=triangles[i].three;
+			_triangles.push_back(t);
 		}
 		_elevation.DoControl(0.);
 		_azimuth.DoControl(0.);
