@@ -23,7 +23,6 @@
 #define __VMQT_PLOT_BPF_H__
 
 #include <string>
-#include "vmQAppWrapper.hxx"
 #include "vmPlayableBPFPlot.hxx"
 
 namespace CLAM
@@ -40,7 +39,7 @@ namespace CLAM
 					int x=100, int y=100, int w=600, int h=250, // geometry
 					const std::string& title="BPF Plot")
 		{
-			QAppWrapper::Init();
+			QApplication app;
 			PlayableBPFPlot plot;
 			plot.SetTitle(title.c_str());
 			plot.SetGeometry(x,y,w,h);
@@ -51,7 +50,7 @@ namespace CLAM
 			plot.SetData(bpf);
 			plot.readOnly(); 
 			plot.show();
-			return QAppWrapper::Run();
+			return app.exec();
 		}
 	}
 }
