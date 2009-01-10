@@ -86,7 +86,6 @@ namespace CLAM
 		void SegmentEditor::SetVBounds(double bottom, double top)
 		{
 			Renderer2D::SetVBounds(bottom,top);
-			mVMargin = double(PIXMARGIN)*(mView.top-mView.bottom)/double(mViewport.h);
 		}
 
 		void SegmentEditor::Render()
@@ -95,6 +94,7 @@ namespace CLAM
 			if(!mEnabled) return;
 			unsigned nElems = mSegmentation->onsets().size();
 			if(!nElems) return;
+			mVMargin = double(PIXMARGIN)*(mView.top-mView.bottom)/double(mViewport.h);
 			unsigned current = mSegmentation->current();
 			const Segmentation::TimePositions & beginnings = mSegmentation->onsets();
 			const Segmentation::TimePositions & endings = mSegmentation->offsets();
@@ -369,12 +369,6 @@ namespace CLAM
 			mHighlighted = -1;
 			_container->setToolTip("");
 			_container->rendererWorking(mKey,false);
-		}
-
-		void SegmentEditor::SetViewport(const GLViewport& v)
-		{
-			Renderer2D::SetViewport(v);
-			mVMargin = double(PIXMARGIN)*(mView.top-mView.bottom)/double(mViewport.h);
 		}
 
 		void SegmentEditor::Colorize()
