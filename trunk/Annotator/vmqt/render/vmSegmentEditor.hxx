@@ -61,7 +61,6 @@ namespace CLAM
 			void KeyPressEvent(int key);
 			void KeyReleaseEvent(int key);
 			void LeaveEvent();
-			void SetViewport(const GLViewport& v);
 
 		private:
 			Segmentation* mSegmentation;
