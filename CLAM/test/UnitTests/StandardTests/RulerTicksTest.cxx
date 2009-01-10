@@ -8,7 +8,6 @@
 
  */
 
-
 namespace CLAMTest {
 	
 	class RulerTicksTest;
