@@ -122,14 +122,16 @@ namespace CLAM
 
 		void ScrollGroup::updateScrollValue(int value)
 		{
-			if(mScrollBar->value() == value) return;		
+			if (mScrollBar->value() == value) return;		
 			mScrollBar->setValue(value);
 		}
 
-		void ScrollGroup::setMaxScrollValue(int value)
+		void ScrollGroup::setMaxScrollValue(int maxValue, int pageSize)
 		{
-			if(value < 0 || mScrollBar->maximum() == value) return;
-			mScrollBar->setMaximum(value);		
+			if (mScrollBar->maximum() == maxValue) return;
+			if (maxValue < 0) return;
+			mScrollBar->setMaximum(maxValue);
+			mScrollBar->setPageStep(pageSize);
 		}
 
 		void ScrollGroup::updateZoomRatio(QString str)

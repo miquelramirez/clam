@@ -26,6 +26,7 @@
 #include <iostream>
 #include "vmRuler.hxx"
 #include "vmScrollGroup.hxx"
+#include <CLAM/RangeView.hxx>
 
 namespace CLAM
 {
@@ -36,15 +37,10 @@ namespace CLAM
 			: QGLWidget(parent)
 			, mBgColor(255,255,255,255)
 			, mToolTip("")
-			, mXZoomSteps(0)
-			, mYZoomSteps(0)
 			, mHZoomRef(0.0)
-			, mCurrentXSpan(1.0)
-			, mCurrentYSpan(1.0)
 			, mUpdatePending(0)
 			, mXRange(-1.0,1.0)
 			, mYRange(-1.0,1.0)
-			, mViewport(0,0,10,10)
 			, mXRuler(0)
 			, mYRuler(0)
 			, mXRangeController(0)
@@ -63,48 +59,6 @@ namespace CLAM
 		PlotCanvas::~PlotCanvas()
 		{
 			ClearRenderers();
-		}
-
-		void PlotCanvas::SetXRange(double xmin, double xmax)
-		{
-			if(xmax <= xmin) return;
-			mXRange.min = xmin;
-			mXRange.max = xmax;
-			mCurrentXSpan = mXRange.Span();
-			mView.left = mXRange.min;
-			mView.right = mXRange.max;
-			Renderers::iterator it = mRenderers.begin();
-			for(; it != mRenderers.end(); it++) it->second->SetXRange(mXRange.min,mXRange.max);
-			SetRenderersHBounds(mXRange.min,mXRange.max);
-			updateXRangeController();
-			if (mXRuler) mXRuler->updateRange(mXRange.min, mXRange.max);
-			emit xRangeChanged(mXRange.min, mXRange.max);
-		}
-
-		void PlotCanvas::SetYRange(double ymin, double ymax)
-		{
-			if(ymax <= ymin) return;
-			mYRange.min = ymin;
-			mYRange.max = ymax;
-			mCurrentYSpan = mYRange.Span();
-			mView.bottom = mYRange.min;
-			mView.top = mYRange.max;
-			Renderers::iterator it = mRenderers.begin();
-			for(; it != mRenderers.end(); it++) it->second->SetYRange(mYRange.min,mYRange.max);
-			SetRenderersVBounds(mYRange.min, mYRange.max);
-			updateYRangeController();
-			if (mYRuler) mYRuler->updateRange(mYRange.min, mYRange.max);
-			emit yRangeChanged(mView.bottom ,mView.top);
-		}
-	
-		void PlotCanvas::SetZoomSteps(int xsteps, int ysteps)
-		{
-			if(xsteps < 0 || ysteps < 0) return;
-			mXZoomSteps = xsteps;
-			mYZoomSteps = ysteps;
-			mCurrentYZoomStep = mYZoomSteps;
-			SetXRange(mXRange.min,mXRange.max);
-			SetYRange(mYRange.min,mYRange.max);
 		}
 
 		bool PlotCanvas::AddRenderer(const QString& key, Renderer2D* renderer)
@@ -134,91 +88,184 @@ namespace CLAM
 			return mRenderers[key];
 		}
 
-		void PlotCanvas::hZoomIn()
+		void PlotCanvas::BringToFront(const QString& key)
 		{
-			double newSpan = mCurrentXSpan*0.5;
-			double midPoint = ReferenceIsVisible() ? GetReference(): ((mView.right+mView.left)/2);
-			double left=std::max(mXRange.min, midPoint-newSpan/2);
-			double right=std::min(mXRange.max, left+newSpan);
-			mCurrentXSpan = right - left;
-			SetHBounds(left,right);
-			updateXRangeController();
-			emit hBoundsChanged(mView.left, mView.right);
+			std::list<QString>::iterator it =
+				std::find(mDrawOrder.begin(), mDrawOrder.end(), key);
+			if (it == mDrawOrder.end()) return; // Not found!
+			if (mDrawOrder.back() == key) return; // Already there
+			mDrawOrder.erase(it);
+			mDrawOrder.push_back(key);
 		}
 
+		void PlotCanvas::SendToBack(const QString& key)
+		{
+			std::list<QString>::iterator it =
+				std::find(mDrawOrder.begin(), mDrawOrder.end(), key);
+			if (it == mDrawOrder.end()) return; // Not found!
+			if (mDrawOrder.front() == key) return; // Already there
+			mDrawOrder.erase(it);
+			mDrawOrder.push_front(key);
+		}
+
+		void PlotCanvas::SetXRange(double xmin, double xmax)
+		{
+			if(xmax <= xmin) return;
+			mXRange.min = xmin;
+			mXRange.max = xmax;
+			for (Renderers::iterator it = mRenderers.begin();
+				it != mRenderers.end(); it++)
+				it->second->SetXRange(mXRange.min,mXRange.max);
+			SetHBounds(mXRange.min, mXRange.max);
+			updateXRangeController();
+		}
+
+		void PlotCanvas::SetHBounds(double left, double right)
+		{
+			if(left==mView.left && right==mView.right) return;
+			CLAM::RangeView::keepWithinInterval(left, right, mXRange.min, mXRange.max);
+			mView.left = left;
+			mView.right = right;
+			SetRenderersHBounds(mView.left,mView.right);
+			if (mXRuler) mXRuler->updateRange(mView.left, mView.right);
+			needUpdate();
+			emit xRangeChanged(mView.left, mView.right);
+		}
+
+		void PlotCanvas::SetYRange(double ymin, double ymax)
+		{
+			if(ymax <= ymin) return;
+			mYRange.min = ymin;
+			mYRange.max = ymax;
+			for (Renderers::iterator it = mRenderers.begin();
+				it != mRenderers.end(); it++)
+				it->second->SetYRange(mYRange.min,mYRange.max);
+			SetVBounds(mYRange.min,mYRange.max);
+			updateYRangeController();
+		}
+
+		void PlotCanvas::SetVBounds(double bottom, double top)
+		{
+			if(bottom==mView.bottom && top==mView.top) return;
+			CLAM::RangeView::keepWithinInterval(bottom, top, mYRange.min, mYRange.max);
+			mView.bottom = bottom;
+			mView.top = top;
+			SetRenderersVBounds(mView.bottom, mView.top);
+			if (mYRuler) mYRuler->updateRange(mView.bottom, mView.top);
+			updateYRangeController();
+			emit yRangeChanged(mView.bottom, mView.top);
+			needUpdate();
+		}
+
+		void PlotCanvas::hZoomIn()
+		{
+			double low = mView.left;
+			double high = mView.right;
+			double excentricity = CLAM::RangeView::zoomExcentricity(
+				low, high, GetReference());
+			CLAM::RangeView::zoom(low, high, .5, excentricity);
+			SetHBounds(low,high);
+			updateXRangeController();
+			emit hBoundsChanged(low, high);
+		}
 		void PlotCanvas::hZoomOut()
 		{
-			double newSpan = mCurrentXSpan*2;
-			double midPoint = ReferenceIsVisible()? GetReference(): ((mView.right+mView.left)/2);
-			double left=std::max(mXRange.min, midPoint-newSpan/2);
-			double right=left+newSpan;
-			if (right > mXRange.max)
-			{
-				right=mXRange.max;
-				left=std::max(mXRange.min, right-newSpan);
-			}
-			mCurrentXSpan = right - left;
-			SetHBounds(left,right);
+			double low = mView.left;
+			double high = mView.right;
+			double excentricity = CLAM::RangeView::zoomExcentricity(
+				low, high, GetReference());
+			CLAM::RangeView::zoom(low, high, 2., excentricity);
+			SetHBounds(low,high);
 			updateXRangeController();
-			emit hBoundsChanged(mView.left, mView.right);
+			emit hBoundsChanged(low, high);
 		}
+		void PlotCanvas::vZoomIn()
+		{
+			double low = mView.bottom;
+			double high = mView.top;
+			CLAM::RangeView::zoom(low, high, .5, .5);
+			SetVBounds(low,high);
+			updateYRangeController();
+		}
+		void PlotCanvas::vZoomOut()
+		{
+			double low = mView.bottom;
+			double high = mView.top;
+			CLAM::RangeView::zoom(low, high, 2., .5);
+			SetVBounds(low,high);
+			updateYRangeController();
+		}
+
+	
+		void PlotCanvas::SetZoomSteps(unsigned xsteps, unsigned ysteps)
+		{
+			SetXRange(mXRange.min,mXRange.max);
+			SetYRange(mYRange.min,mYRange.max);
+		}
+
 		void PlotCanvas::updateXRangeController()
 		{
 			if (!mXRangeController) return;
-			mXRangeController->setMaxScrollValue(std::max(0,GetXPixels()-width()));
-			mXRangeController->updateScrollValue(GetHScrollValue());
+			double low=mView.left;
+			double high=mView.right;
+			int page = width();
+			double span=high-low;
+			int fullPixelSize = std::floor(mXRange.Span()*page/(high-low));
+			int max = std::max(0,fullPixelSize-page);
+			int val = (low-mXRange.min)*page/span;
+			mXRangeController->setMaxScrollValue(max, page);
+			mXRangeController->updateScrollValue(val);
 		}
 
-		void PlotCanvas::vZoomIn()
-		{
-			if(!mCurrentYZoomStep) return;
-			mCurrentYSpan /= 2.0;
-			UpdateVBounds(true);
-			mCurrentYZoomStep--;
-			updateYRangeController();
-		}
-
-		void PlotCanvas::vZoomOut()
-		{
-			if(mCurrentYZoomStep == mYZoomSteps) return;
-			mCurrentYSpan *= 2.0;
-			UpdateVBounds(false);
-			mCurrentYZoomStep++;
-			updateYRangeController();
-		}
 		void PlotCanvas::updateYRangeController()
 		{
 			if (!mYRangeController) return;
-			QString yratio = "1:"+QString::number(1<<mCurrentYZoomStep);
-			mYRangeController->updateZoomRatio(yratio);
-			mYRangeController->setMaxScrollValue(
-				std::max(0,GetYPixels()-height()));
-			mYRangeController->updateScrollValue(GetVScrollValue());
+			double low=mView.bottom;
+			double high=mView.top;
+			int page = height();
+			double span=high-low;
+			int fullPixelSize = std::floor(mYRange.Span()*page/span);
+			int max = std::max(0,fullPixelSize-page);
+			int val = (mYRange.max-high)*page/span;
+			mYRangeController->setMaxScrollValue(max, page);
+			mYRangeController->updateScrollValue(val);
 		}
 		
-		void PlotCanvas::updateHScrollValue(int value)
+		void PlotCanvas::updateHScrollValue(int action)
 		{
-			double left = mXRange.Span()/double(GetXPixels())*double(value)+mXRange.min;
-			double right = left+mCurrentXSpan;
-			SetHBounds(left,right);
-			emit hBoundsChanged(left,right);
+			CLAM_ASSERT(mXRangeController,
+				"PlotCanvas::updateHScrollValue: Received a scroll signal "
+				"without bein connected.");
+			double = CLAM::RangeView::scrollOffset(low, high, lowest,mYRange.max)
+			double pixelOffset = mXRangeController->GetScrollValue();
+			double low = mView.left;
+			double high = mView.right;
+			int page = width();
+			double span = high-low;
+			low = mXRange.min+pixelOffset*span/page;
+			high = low+span;
+			SetHBounds(low,high);
+			emit hBoundsChanged(low,high);
 		}
 
-		void PlotCanvas::updateVScrollValue(int value)
+		void PlotCanvas::updateVScrollValue(int action)
 		{
-			double bottom = mYRange.Span()/double(GetYPixels())*double(value)+mYRange.min;
-			double top = bottom+mCurrentYSpan;
-			double tmp = bottom;
-			bottom = mYRange.min+(mYRange.max-top);
-			top = mYRange.max-(tmp-mYRange.min);
-			SetVBounds(bottom,top);
+			CLAM_ASSERT(mYRangeController,
+				"PlotCanvas::updateVScrollValue: Received a scroll signal "
+				"without bein connected.");
+			double pixelOffset = mYRangeController->GetScrollValue();
+			double low = mView.bottom;
+			double high = mView.top;
+			int page = height();
+			double span = high-low;
+			high = mYRange.max-pixelOffset*span/page;
+			low = high-span;
+			SetVBounds(low,high);
 		}
 
 		void PlotCanvas::setHBounds(double left, double right)
 		{
 			SetHBounds(left,right);
-			mCurrentXSpan = mView.right-mView.left;
-			updateXRangeController();
 		}
 
 		void PlotCanvas::setVBounds(double bottom, double top)
@@ -230,7 +277,7 @@ namespace CLAM
 		{
 			if(mDoResize)
 			{
-				glViewport(0,0,mViewport.w,mViewport.h);
+				glViewport(0,0,width(),height());
 				mDoResize = false;
 			}
 			glMatrixMode(GL_PROJECTION);
@@ -252,12 +299,13 @@ namespace CLAM
 		
 		void PlotCanvas::resizeEvent(QResizeEvent* e)
 		{
-			mViewport.w = e->size().width();
-			mViewport.h = e->size().height();
+			GLViewport viewPort(0,0,
+				e->size().width(),
+				e->size().height());
 			mDoResize = true;
 			Renderers::iterator it = mRenderers.begin();
 			for(; it != mRenderers.end(); it++)
-				it->second->SetViewport(mViewport);
+				it->second->SetViewport(viewPort);
 			updateXRangeController();
 			updateYRangeController();
 	
@@ -265,6 +313,7 @@ namespace CLAM
 			emit xRangeChanged(mView.left, mView.right);
 			if (mYRuler) mYRuler->updateRange(mView.bottom, mView.top);
 			emit yRangeChanged(mView.bottom, mView.top);
+			needUpdate();
 		}
 
 		void PlotCanvas::mouseMoveEvent(QMouseEvent* e)
@@ -339,7 +388,8 @@ namespace CLAM
 
 		void PlotCanvas::setHZoomPivot(double ref)
 		{
-			if(ref < mXRange.min || ref > mXRange.max) return;
+			if (ref < mXRange.min) return;
+			if (ref > mXRange.max) return;
 			mHZoomRef = ref;
 		}
 
@@ -379,7 +429,7 @@ namespace CLAM
 
 		void PlotCanvas::DrawRenderers()
 		{
-			std::vector<QString>::iterator it = mDrawOrder.begin();
+			std::list<QString>::iterator it = mDrawOrder.begin();
 			for(; it != mDrawOrder.end(); it++) mRenderers[(*it)]->Render();
 		}
 
@@ -394,7 +444,7 @@ namespace CLAM
 			glMatrixMode(GL_PROJECTION);
 			glPushMatrix();
 			glLoadIdentity();
-			glOrtho(0.0,mViewport.w,mViewport.h,0.0,-1.0,1.0);
+			glOrtho(0.0,width(),height(),0.0,-1.0,1.0);
 			glMatrixMode(GL_MODELVIEW);
 			glColor3ub(255,255,0);
 			glBegin(GL_QUADS);
@@ -433,75 +483,6 @@ namespace CLAM
 			return (mRenderers.find(key) != mRenderers.end());
 		}
 
-		void PlotCanvas::SetHBounds(double left, double right)
-		{
-			if(left==mView.left && right==mView.right) return;
-			mView.left = left;
-			mView.right = right;
-			SetRenderersHBounds(mView.left,mView.right);
-			if (mXRuler) mXRuler->updateRange(mView.left, mView.right);
-			emit xRangeChanged(mView.left, mView.right);
-			needUpdate();
-		}
-
-		void PlotCanvas::SetVBounds(double bottom, double top)
-		{
-			if(bottom==mView.bottom && top==mView.top) return;
-			mView.bottom = bottom;
-			mView.top = top;
-			SetRenderersVBounds(mView.bottom, mView.top);
-			if (mYRuler) mYRuler->updateRange(mView.bottom, mView.top);
-			emit yRangeChanged(mView.bottom, mView.top);
-			needUpdate();
-		}
-
-		void PlotCanvas::UpdateVBounds(bool zin)
-		{
-			double bottom = mView.bottom;
-			double top = mView.top;
-			if(zin)
-			{
-				bottom += mCurrentYSpan/2.0;
-				top -= mCurrentYSpan/2.0;
-			}
-			else
-			{
-				bottom -= mCurrentYSpan/4.0;
-				top += mCurrentYSpan/4.0;
-				if(bottom < mYRange.min)
-				{
-					bottom = mYRange.min;
-					top = bottom+mCurrentYSpan;
-				}
-				if(top > mYRange.max)
-				{
-					top = mYRange.max;
-					bottom = top-mCurrentYSpan;
-				}
-			}
-			SetVBounds(bottom,top);
-		}
-
-		int PlotCanvas::GetXPixels() 
-		{
-			return int(mXRange.Span()*double(mViewport.w)/mCurrentXSpan);
-		}
-		
-		int PlotCanvas::GetYPixels() 
-		{
-			return int(mYRange.Span()*double(mViewport.h)/mCurrentYSpan);
-		}
-
-		int PlotCanvas::GetHScrollValue() 
-		{
-			return int((mView.left-mXRange.min)*double(GetXPixels())/mXRange.Span());
-		}
-
-		int PlotCanvas::GetVScrollValue() 
-		{
-			return int((mYRange.max-mView.top)*double(GetYPixels())/mYRange.Span());
-		}
-
 		bool PlotCanvas::ReferenceIsVisible() const
 		{
 			return (mHZoomRef >= mView.left && mHZoomRef <= mView.right);
@@ -515,24 +496,26 @@ namespace CLAM
 		void PlotCanvas::SetRenderersHBounds(double left, double right)
 		{
 			Renderers::iterator it = mRenderers.begin();
-			for(; it != mRenderers.end(); it++) it->second->SetHBounds(left,right); 
+			for(; it != mRenderers.end(); it++)
+				it->second->SetHBounds(left,right); 
 		}
 
 		void PlotCanvas::SetRenderersVBounds(double bottom, double top)
 		{
 			Renderers::iterator it = mRenderers.begin();
-			for(; it != mRenderers.end(); it++) it->second->SetVBounds(bottom,top);
+			for(; it != mRenderers.end(); it++)
+				it->second->SetVBounds(bottom,top);
 		}
 
 		std::pair<double,double> PlotCanvas::GetXY(int x, int y)
 		{
 			double xcoord = double(x);
 			xcoord *= (mView.right-mView.left);
-			xcoord /= double(mViewport.w);
+			xcoord /= double(width());
 			xcoord += mView.left;
-			double ycoord = double(-y+mViewport.h);
+			double ycoord = double(-y+height());
 			ycoord *= (mView.top-mView.bottom);
-			ycoord /= double(mViewport.h);
+			ycoord /= double(height());
 			ycoord += mView.bottom;
 			return std::make_pair(xcoord,ycoord);
 		}
@@ -547,44 +530,10 @@ namespace CLAM
 			int w = font_metrics.width(mToolTip)+10;
 			int h = font_metrics.height()+10;
 
-			if(x+w > mViewport.w) x -= w;
-			if(y+h > mViewport.h) y -= h;
+			if(x+w > width()) x -= w;
+			if(y+h > height()) y -= h;
 
 			return QRect(x,y,w,h);
-		}
-
-		void PlotCanvas::BringToFront(const QString& key)
-		{
-			if(mDrawOrder.size() <= 1) return;
-			if(mDrawOrder[mDrawOrder.size()-1] == key) return;
-			unsigned i=0;
-			for(; i < mDrawOrder.size(); i++) if(mDrawOrder[i]==key) break;
-			if(i==mDrawOrder.size()) return;
-			std::vector<QString> tmp;
-			for(unsigned k=0; k < mDrawOrder.size(); k++)
-			{
-				if(k==i) continue;
-				tmp.push_back(mDrawOrder[k]);
-			}
-			for(i=0; i < tmp.size(); i++) mDrawOrder[i]=tmp[i];
-			mDrawOrder[mDrawOrder.size()-1] = key;
-		}
-
-		void PlotCanvas::SendToBack(const QString& key)
-		{
-			if(mDrawOrder.size() <= 1) return;
-			if(mDrawOrder[0] == key) return;
-			unsigned i=0;
-			for(; i < mDrawOrder.size(); i++) if(mDrawOrder[i]==key) break;
-			if(i==mDrawOrder.size()) return;
-			std::vector<QString> tmp;
-			for(unsigned k=0; k < mDrawOrder.size(); k++)
-			{
-				if(k==i) continue;
-				tmp.push_back(mDrawOrder[k]);
-			}
-			for(i=1; i < mDrawOrder.size(); i++) mDrawOrder[i]=tmp[i-1];
-			mDrawOrder[0] = key;
 		}
 
 		void PlotCanvas::SetBackgroundColor(const QColor& c)

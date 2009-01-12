@@ -52,9 +52,9 @@ namespace CLAM
 			void zoomOut();
 			void scrollValueChanged(int);
 
-		public slots:
+		public:
 			void updateScrollValue(int);
-			void setMaxScrollValue(int);
+			void setMaxScrollValue(int maxValue, int page);
 			void updateZoomRatio(QString);
 
 		private:

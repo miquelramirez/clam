@@ -33,8 +33,6 @@ namespace CLAM
 			double right;
 			double bottom;
 			double top;
-			double mNear;
-			double mFar;
 
 			GLView();
 			GLView(double leftv, double rightv, double bottomv, double topv, double nearv, double farv);

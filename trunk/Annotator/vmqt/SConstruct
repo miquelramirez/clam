@@ -135,10 +135,10 @@ if sys.platform=='darwin' :
 
 exampleSources = scanFiles('*.cxx', ['examples/utils'])
 
+env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
 staticLibrary = env.StaticLibrary(target='clam_vmqt4', source=sources)
 env.Append(LIBPATH='.')
 env.Prepend(LIBS='clam_vmqt4')
-env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
 examples = []
 for main in examplesMainSources :
 	executable = 'examples/'+os.path.splitext(os.path.basename(main))[0]
