@@ -27,7 +27,7 @@
 #include <QtGui/QWidget>
 #include <QtCore/QVariant>
 
-// Designer widgets
+
 #include "Oscilloscope.hxx"
 #include "OscilloscopeMonitor.hxx"
 #include "Vumeter.hxx"
@@ -56,6 +56,7 @@
 #include "SegmentationViewMonitor.hxx"
 #include "ProgressControl.hxx"
 #include "ProgressControlWidget.hxx"
+#include <CLAM/ControlSource.hxx>
 
 inline bool FileExists( const std::string filename )
 {
@@ -200,6 +201,47 @@ public:
 		}
 	}	
 };
+
+void ControlSourceSender::send(int value)
+{
+	_source->Do(value/100.);
+}
+
+class ControlSourceBinder : public PrototypeBinder
+{
+	std::list<ControlSourceSender *> _toDelete;
+public:
+	ControlSourceBinder()
+	{
+	}
+	~ControlSourceBinder()
+	{
+		for (std::list<ControlSourceSender *>::iterator it=_toDelete.begin();
+			it!=_toDelete.end(); it++)
+			delete *it;
+	}
+	virtual void bindWidgets(Network & network, QWidget * userInterface)
+	{
+		std::cout << "Looking for ControlSource widgets..." << std::endl;
+		QList<QAbstractSlider*> widgets = userInterface->findChildren<QAbstractSlider*>(QRegExp("ControlSource__.*"));
+		for (QList<QAbstractSlider*>::Iterator it=widgets.begin();
+			it!=widgets.end();
+			it++)
+		{
+			QAbstractSlider * aWidget = *it;
+			std::string processingName=GetNetworkNameFromWidgetName(aWidget->objectName().mid(QString("ControlSource__").size()).toAscii());
+			std::cout << "* Slider connected to ControlSource port " << processingName << std::endl;
+			Processing & processing = network.GetProcessing(processingName);
+			ControlSource * source = dynamic_cast<ControlSource*> (&processing);
+			CLAM_ASSERT(source, "TODO: Handle not proper processing class");
+			_toDelete.push_back(new ControlSourceSender(source));
+			QObject::connect(aWidget, SIGNAL(valueChanged(int)), _toDelete.back(), SLOT(send(int)));
+		}
+	}
+
+};
+
+static ControlSourceBinder controlSourceBinder;
 
 static MonitorBinder<Oscilloscope,OscilloscopeMonitor> oscilloscopeBinder
 	("OutPort__.*", "Oscilloscope");

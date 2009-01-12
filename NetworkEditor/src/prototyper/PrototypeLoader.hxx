@@ -67,6 +67,21 @@ private:
 	void UpdatePlayStatus();
 };
 
+class ControlSource;
+class ControlSourceSender : public QObject
+{
+	Q_OBJECT
+	ControlSource * _source;
+public:
+	ControlSourceSender(ControlSource * processing)
+		: _source(processing)
+	{
+	}
+public slots:
+	void send(int value);
+};
+
+
 } //end namespace CLAM
 
 #endif
