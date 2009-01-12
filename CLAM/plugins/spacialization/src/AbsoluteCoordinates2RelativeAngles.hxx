@@ -37,16 +37,12 @@ class AbsoluteCoordinates2RelativeAngles : public CLAM::Processing
 
 	class Config : public CLAM::ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE(Config,2,ProcessingConfig);
-		DYN_ATTRIBUTE(0,public,TData,DistanceExponent);
-		DYN_ATTRIBUTE(1,public,TData,MinimumDistance);
+		DYNAMIC_TYPE_USING_INTERFACE(Config,0,ProcessingConfig);
 	protected:
 		void DefaultInit()
 		{
 			AddAll();
 			UpdateData();
-			SetDistanceExponent(1.0);
-			SetMinimumDistance(1.0);
 		};
 	};
 
@@ -64,7 +60,7 @@ class AbsoluteCoordinates2RelativeAngles : public CLAM::Processing
 	CLAM::FloatInControl _sourceZ;
 	CLAM::FloatOutControl _sourceElevation;
 	CLAM::FloatOutControl _sourceAzimuth;
-	CLAM::FloatOutControl _gainBecauseDistance;
+	CLAM::FloatOutControl _distance;
 public:
 	const char* GetClassName() const { return "AbsoluteCoordinates2RelativeAngles"; }
 	AbsoluteCoordinates2RelativeAngles(const Config& config = Config()) 
@@ -79,7 +75,7 @@ public:
 		, _sourceZ("source Z", this)		
 		, _sourceElevation("relative elevation", this)
 		, _sourceAzimuth("relative azimuth", this)
-		, _gainBecauseDistance("output gain because of distance", this)
+		, _distance("distance", this)
 	{
 		Configure( config );
 	}
@@ -109,12 +105,7 @@ public:
 		_sourceAzimuth.SendControl( orientation.azimuth );
 		_sourceElevation.SendControl( orientation.elevation );
 		double distance=getDistance(sourceX,sourceY,sourceZ,listenerX,listenerY,listenerZ);
-		const double minimumDistance= ( _config.HasMinimumDistance() ? _config.GetMinimumDistance() : 1.0 );
-		if (distance < minimumDistance)
-			distance=minimumDistance;
-		const double exponent = _config.HasDistanceExponent() ? _config.GetDistanceExponent() : 1.0;
-		const double gain=1.0/pow(distance,exponent);
-		_gainBecauseDistance.SendControl ( gain );
+		_distance.SendControl(distance);
 		return true;
 	}
 
