@@ -25,7 +25,7 @@
 #include <QtOpenGL/QGLWidget>
 #undef GetClassName
 #include <map>
-#include <vector>
+#include <list>
 #include <QtGui/QCursor>
 #include "vmDataTypes.hxx"
 
@@ -55,16 +55,17 @@ namespace CLAM
 
 			void SetBackgroundColor(const QColor& c);
 
+			/// Sets the x domain limits for the data.
 			void SetXRange(double xmin, double xmax);
+			/// Sets the y domain limits for the data.
 			void SetYRange(double ymin, double ymax);
-	
-			void SetZoomSteps(int xsteps, int ysteps);
+			/// Sets the number of zoom steps in each dimension.
+			/// Step zero means the full range, and halves each step.
+			void SetZoomSteps(unsigned xsteps, unsigned ysteps);
   
 			bool AddRenderer(const QString& key, Renderer2D* renderer);
 			bool SetRendererEnabled(const QString& key, bool enabled);
-	
 			Renderer2D* GetRenderer(const QString& key);
-
 			void BringToFront(const QString& key);
 			void SendToBack(const QString& key);
 
@@ -123,13 +124,7 @@ namespace CLAM
 			QString   mToolTip;
 			QFont     mToolTipFont;
 
-			int    mXZoomSteps;
-			int    mYZoomSteps;
-			int    mCurrentXZoomStep;
-			int    mCurrentYZoomStep;
 			double mHZoomRef;
-			double mCurrentXSpan;
-			double mCurrentYSpan;
 			bool   mDoResize;
 
 			/// Marks when an update is pending to be served.
@@ -151,7 +146,7 @@ namespace CLAM
 			ScrollGroup * mYRangeController;
 
 			std::pair<int,int>   mMousePos;
-			std::vector<QString> mDrawOrder;
+			std::list<QString> mDrawOrder;
 
 		private:
 			void DrawRenderers();
@@ -162,15 +157,8 @@ namespace CLAM
 			void SetHBounds(double left, double right);
 			void SetVBounds(double bottom, double top);
 
-			void UpdateHBounds(bool zin);
-			void UpdateVBounds(bool zin);
 			void updateXRangeController();
 			void updateYRangeController();
-
-			int GetXPixels();
-			int GetYPixels();
-			int GetHScrollValue();
-			int GetVScrollValue();
 
 			bool ReferenceIsVisible() const;
 			double GetReference() const;
