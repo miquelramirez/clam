@@ -34,7 +34,7 @@ public:
 		Configure( config );
 		_azimuth.SetBounds(-180,180);
 		_elevation.SetBounds(-90,90);
-		_module.DoControl(0);
+		_module.DoControl(1.0);
 	}
  
 	bool Do()
