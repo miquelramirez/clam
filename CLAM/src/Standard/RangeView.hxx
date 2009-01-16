@@ -13,6 +13,7 @@ namespace CLAM
 */
 class RangeView
 {
+	public:
 		static double zoomExcentricity(double low, double high, double stiked)
 		{
 			if (stiked<low) return 0.;
