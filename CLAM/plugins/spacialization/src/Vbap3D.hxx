@@ -38,6 +38,8 @@ class Vbap3D : public CLAM::Processing
 	std::vector<double> _azimuths;
 	std::vector<std::string> _names;
 	std::vector<Triangle> _triangles;
+	std::vector<Vector> _normals;
+	std::vector<float> _ortogonalProjection;
 	unsigned _currentTriangle;
 
 	Vector vectorialProduct(const Vector& arg1, const Vector& arg2)
@@ -99,6 +101,7 @@ public:
 			{12, "Top Back Right", -135., 45.},
 			{13, "Top Front Left", 45., 45.},
 			{14, "Top Front Right", -45., 45.},
+			{15, "Top", 0., 89.},
 			{0, 0, 0., 0.}
 		};
 		struct Triangles {
@@ -130,7 +133,7 @@ public:
 			{10, 8, 5},
 			{10, 3, 5},
 			{10, 12, 13},
-			//up
+			//up TODO change using the 15th spk
 			{13, 14, 11},
 			{13, 12, 11},
 			//down
@@ -174,6 +177,8 @@ public:
 				substract(speakersPos[0], speakersPos[1]),  
 				substract(speakersPos[0], speakersPos[2])
 				);
+			_normals.push_back(n);
+			_ortogonalProjection.push_back( escalarProduct(n,speakersPos[2]) );
 		}
 		_elevation.DoControl(0.);
 		_azimuth.DoControl(0.);
