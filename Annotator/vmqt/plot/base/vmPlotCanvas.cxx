@@ -236,7 +236,8 @@ namespace CLAM
 			CLAM_ASSERT(mXRangeController,
 				"PlotCanvas::updateHScrollValue: Received a scroll signal "
 				"without bein connected.");
-			double = CLAM::RangeView::scrollOffset(low, high, lowest,mYRange.max)
+			// TODO: Use the RangeView for that
+//			double offset = CLAM::RangeView::scrollOffset(low, high, lowest,mYRange.max);
 			double pixelOffset = mXRangeController->GetScrollValue();
 			double low = mView.left;
 			double high = mView.right;
