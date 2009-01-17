@@ -61,12 +61,6 @@ MainWindow::MainWindow()
 	connect(playbackPlayAction, SIGNAL(triggered()), this, SLOT(play()));
 	connect(playbackPauseAction, SIGNAL(triggered()), this, SLOT(pause()));
 	connect(playbackStopAction, SIGNAL(triggered()), this, SLOT(stop()));
-	connect(viewSpectrogramAction, SIGNAL(toggled(bool)), this, SLOT(toggleSpectrogram(bool)));
-	connect(viewTonnetzAction, SIGNAL(toggled(bool)), this, SLOT(toggleTonnetz(bool)));
-	connect(viewKeySpaceAction, SIGNAL(toggled(bool)), this, SLOT(toggleKeySpace(bool)));
-	connect(viewChromaPeaksAction, SIGNAL(toggled(bool)), this, SLOT(toggleChromaPeaks(bool)));
-	connect(viewChordRankingAction, SIGNAL(toggled(bool)), this, SLOT(toggleChordRanking(bool)));
-	connect(viewSegmentationAction, SIGNAL(toggled(bool)), this, SLOT(toggleSegmentation(bool)));
 	connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(about()));	
 	connect(helpOnlineTutorialAction, SIGNAL(triggered()), this, SLOT(onlineTutorial()));	
 
@@ -83,8 +77,8 @@ MainWindow::MainWindow()
 	_network.ConnectControls(_progressControl+".Progress Jump", _fileReader+".Current Time Position (%)");
 	_progressControlWidget->SetProcessing(progress);
 
-	_audioSink = _network.AddProcessing("AudioSink");
-	_network.ConnectPorts(_fileReader+".Samples Read", _audioSink+".AudioIn");
+	std::string audioSink = _network.AddProcessing("AudioSink");
+	_network.ConnectPorts(_fileReader+".Samples Read", audioSink+".AudioIn");
 
 	_spectrogram = new CLAM::VM::Spectrogram(centralwidget);
 	vboxLayout->addWidget(_spectrogram);
@@ -122,12 +116,12 @@ MainWindow::MainWindow()
 		.arg(Turnaround::GetFullVersion())
 		.arg(CLAM::GetFullVersion()));
 
-	viewSpectrogramAction->setChecked(true);
-	viewTonnetzAction->setChecked(true);
-	viewKeySpaceAction->setChecked(true);
-	viewChromaPeaksAction->setChecked(true);
-	viewChordRankingAction->setChecked(true);
-	viewSegmentationAction->setChecked(true);
+	connect(viewSpectrogramAction, SIGNAL(toggled(bool)), _spectrogram, SLOT(setVisible(bool)));
+	connect(viewTonnetzAction, SIGNAL(toggled(bool)), _tonnetz, SLOT(setVisible(bool)));
+	connect(viewKeySpaceAction, SIGNAL(toggled(bool)), _keySpace, SLOT(setVisible(bool)));
+	connect(viewChromaPeaksAction, SIGNAL(toggled(bool)), _polarChromaPeaks, SLOT(setVisible(bool)));
+	connect(viewChordRankingAction, SIGNAL(toggled(bool)), _chordRanking, SLOT(setVisible(bool)));
+	connect(viewSegmentationAction, SIGNAL(toggled(bool)), _segmentationView, SLOT(setVisible(bool)));
 
 	QSettings settings;
 	_recentFiles = settings.value("RecentFiles").toStringList();
@@ -190,6 +184,8 @@ void MainWindow::appendRecentFile(const QString & recentFile)
 	_recentFiles.push_front(recentFile);
 	while (_recentFiles.size() > 8)
 		_recentFiles.pop_back();
+	QSettings settings;
+	settings.setValue("RecentFiles", _recentFiles);
 	updateRecentMenu();
 }
 
@@ -455,36 +451,6 @@ void MainWindow::timerEvent(QTimerEvent *event)
 	_chordCorrelationSource.setCurrentTime(time);
 	_chromaPeaksSource.setCurrentTime(time);
 	_segmentationSource.setCurrentTime(time);
-}
-
-void MainWindow::toggleSpectrogram(bool checked)
-{
-	_spectrogram->setVisible(checked);
-}
-
-void MainWindow::toggleTonnetz(bool checked)
-{
-	_tonnetz->setVisible(checked);
-}
-
-void MainWindow::toggleKeySpace(bool checked)
-{
-	_keySpace->setVisible(checked);
-}
-
-void MainWindow::toggleChromaPeaks(bool checked)
-{
-	_polarChromaPeaks->setVisible(checked);
-}
-
-void MainWindow::toggleChordRanking(bool checked)
-{
-	_chordRanking->setVisible(checked);
-}
-
-void MainWindow::toggleSegmentation(bool checked)
-{
-	_segmentationView->setVisible(checked);
 }
 
 void MainWindow::about()

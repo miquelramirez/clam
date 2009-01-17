@@ -60,13 +60,6 @@ public slots:
 	void pause();
 	void stop();
 
-	void toggleSpectrogram(bool checked);
-	void toggleTonnetz(bool checked);
-	void toggleKeySpace(bool checked);
-	void toggleChromaPeaks(bool checked);
-	void toggleChordRanking(bool checked);
-	void toggleSegmentation(bool checked);
-	
 	void about();
 	void onlineTutorial();
 
@@ -84,7 +77,6 @@ private:
 	CLAM::MonoAudioFileReaderConfig _fileReaderConfig;
 	std::string _fileReader;
 	std::string _progressControl;
-	std::string _audioSink;
 	
 	CLAM::TonalAnalysis *_tonalAnalysis;
 	
