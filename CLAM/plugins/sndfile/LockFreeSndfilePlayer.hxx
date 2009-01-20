@@ -120,14 +120,10 @@ namespace CLAM
 			// PAUSE CONTROL
 			//User has moved the slider and we have to change the position
 			//TODO potentially dangerous since a different thread is reading!
-			if(_infile)
-			{	
-				if(_inControlPause.GetLastValue()<0.5)
-					WriteSilenceToPorts();
-				else
-					ReadBufferAndWriteToPorts();
-			}		
-			
+			if(_inControlPause.GetLastValue()<0.5)
+				WriteSilenceToPorts();
+			else
+				ReadBufferAndWriteToPorts();
 			// SEEK CONTROL
 			static CLAM::TControlData controlSeekValue = _inControlSeek.GetLastValue();		
 			//User has moved the slider and we have to change the position
@@ -139,12 +135,9 @@ namespace CLAM
 			}		
 			//Calculate the seek position between 0 and 1
 			float seekPosition = ((float)_numReadFrames/(float)_numTotalFrames);
-			if(seekPosition >1)
-			{	_numReadFrames = _numReadFrames -_numTotalFrames;
-				seekPosition = ((float)_numReadFrames/(float)_numTotalFrames);							
-			}
-			_outControlSeek.SendControl(seekPosition);
-		
+			if(seekPosition <=1)
+				_outControlSeek.SendControl(seekPosition);
+
 			/* Tell the disk thread there is work to do.  If it is already
 			 * running, the lock will not be available.  We can't wait
 			 * here in the process() thread, but we don't need to signal
@@ -173,7 +166,8 @@ namespace CLAM
 				channels[channel] = &_outports[channel]->GetAudio().GetBuffer()[0];
 
 			//case 1 ringbuffer is empty. Fill the ports with zeros
-			if (not _infile)
+//!!!!!!!!!!!!!
+			if (_numReadFrames>=_numTotalFrames and not _config.GetLoop())
 			{
 				WriteSilenceToPorts();
 				return;
@@ -203,11 +197,11 @@ namespace CLAM
 				frameIndex++;
 			}
 
-			delete _infile;	
-			_infile = 0;
-		
 			if(_config.GetLoop())
-				_infile = new SndfileHandle(_config.GetSourceFile().c_str(), SFM_READ);	
+			{
+				_numReadFrames = _numReadFrames -_numTotalFrames;
+				_infile->seek(_numReadFrames,SEEK_SET);
+			}
 			return;					
 		}
 		void WriteSilenceToPorts()
@@ -347,6 +341,9 @@ namespace CLAM
 				return false;
 			}
 
+			if(_infile)
+				delete _infile;
+
 			_infile = new SndfileHandle(location.c_str(), SFM_READ);
 			// check if the file is open
 			if(!*_infile)
@@ -432,6 +429,8 @@ namespace CLAM
 
 		~LockFreeSndfilePlayer()
 		{
+			if (_infile)
+				delete _infile;
 			RemovePorts();
 		}
 	};
