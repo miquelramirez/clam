@@ -166,7 +166,6 @@ namespace CLAM
 				channels[channel] = &_outports[channel]->GetAudio().GetBuffer()[0];
 
 			//case 1 ringbuffer is empty. Fill the ports with zeros
-//!!!!!!!!!!!!!
 			if (_numReadFrames>=_numTotalFrames and not _config.GetLoop())
 			{
 				WriteSilenceToPorts();
