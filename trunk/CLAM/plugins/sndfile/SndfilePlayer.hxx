@@ -16,7 +16,26 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
+ *//*
+ * Copyright (c) 2008 Fundació Barcelona Media Universitat Pompeu Fabra
+ *
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *
  */
+
 #ifndef SndfilePlayer_hxx
 #define SndfilePlayer_hxx
 
@@ -93,12 +112,16 @@ namespace CLAM
 			static CLAM::TControlData controlSliderValue = 0;			
 			//User has moved the slider and we have to change the position
 			//TODO potentially dangerous since a different thread is reading!
-			if(controlSliderValue != _inControlSeek.GetLastValue() and _infile)
-			{	controlSliderValue = _inControlSeek.GetLastValue();
+			if(controlSliderValue != _inControlSeek.GetLastValue())
+			{
+				// If there is no file thread and loop is not setted, open it on a new thread
+				if(not _infile and not _config.GetLoop() )
+					_infile = new SndfileHandle(_config.GetSourceFile().c_str(), SFM_READ);
+				controlSliderValue = _inControlSeek.GetLastValue();
 				_numReadFrames = controlSliderValue*_numTotalFrames;
 				_infile->seek(_numReadFrames ,SEEK_SET);
-			}		
 
+			}
 			//Calculate the seek position between 0 and 1
 			float seekPosition = ((float)_numReadFrames/(float)_numTotalFrames);
 			if(seekPosition >1)
