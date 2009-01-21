@@ -77,6 +77,7 @@ namespace CLAM
 		unsigned _numChannels;
 		unsigned _numReadFrames;
 		unsigned _numTotalFrames;
+		float  _lastControlSeek;
 		std::vector<float> _buffer; 
 
 		pthread_t _threadId;
@@ -101,6 +102,7 @@ namespace CLAM
 			, _numChannels(0)
 			, _numReadFrames(0)
 			, _numTotalFrames(0)
+			, _lastControlSeek(0)
 			, _overruns(0)
 		{ 
 			static pthread_cond_t sPthreadCondInitializer = PTHREAD_COND_INITIALIZER;
@@ -125,12 +127,10 @@ namespace CLAM
 			else
 				ReadBufferAndWriteToPorts();
 			// SEEK CONTROL
-			static CLAM::TControlData controlSeekValue = _inControlSeek.GetLastValue();		
 			//User has moved the slider and we have to change the position
-			//TODO potentially dangerous since a different thread is reading!
-			if(controlSeekValue != _inControlSeek.GetLastValue() and _infile)
-			{	controlSeekValue = _inControlSeek.GetLastValue();
-				_numReadFrames = controlSeekValue*_numTotalFrames;
+			if(_lastControlSeek != _inControlSeek.GetLastValue() and _infile)
+			{	_lastControlSeek = _inControlSeek.GetLastValue();
+				_numReadFrames = _lastControlSeek*_numTotalFrames;
 				_infile->seek(_numReadFrames ,SEEK_SET);
 			}		
 			//Calculate the seek position between 0 and 1
