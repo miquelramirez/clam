@@ -39,30 +39,45 @@ class Vbap3D : public CLAM::Processing
 	std::vector<std::string> _names;
 	std::vector<Triangle> _triangles;
 	std::vector<Vector> _normals;
+	std::vector< std::vector<Vector> > _speakersPositions;
 	std::vector<float> _ortogonalProjection;
 	unsigned _currentTriangle;
 
-	Vector vectorialProduct(const Vector& arg1, const Vector& arg2)
+	Vector vectorialProduct(const Vector& v1, const Vector& v2)
 	{
 		Vector result = {
-			arg1.y * arg2.z - arg1.z * arg2.y ,
-			arg1.z * arg2.x - arg1.x * arg2.z ,
-			arg1.x * arg2.y - arg1.y * arg2.x ,
+			v1.y * v2.z - v1.z * v2.y ,
+			v1.z * v2.x - v1.x * v2.z ,
+			v1.x * v2.y - v1.y * v2.x ,
 			};
 		return result;
 	}
-	float escalarProduct(const Vector& arg1, const Vector& arg2)
+	Vector product(const float& factor, const Vector& v)
 	{
-		return arg1.x * arg2.x + arg1.y * arg2.y + arg1.z + arg2.z;
+		Vector result = { factor * v.x, factor * v.y, factor * v.z };
+		return result;
 	}
-	Vector substract(const Vector& arg1, const Vector& arg2)
+
+	float escalarProduct(const Vector& v1, const Vector& v2)
+	{
+		return v1.x * v2.x + v1.y * v2.y + v1.z + v2.z;
+	}
+	Vector substract(const Vector& v1, const Vector& v2)
 	{
 		Vector result = {
-			arg1.x - arg2.x ,
-			arg1.y - arg2.y ,
-			arg1.z - arg2.z ,
+			v1.x - v2.x ,
+			v1.y - v2.y ,
+			v1.z - v2.z ,
 			};
 		return result;
+	}
+	float mod(const Vector& v)
+	{
+		return v.x*v.x + v.y*v.y + v.z*v.z;
+	}
+	float angle(const Vector& v1, const Vector& v2)
+	{
+		return acos( escalarProduct(v1,v2) / mod(v1)*mod(v2) );
 	}
 public:
 	const char* GetClassName() const { return "Vbap3D"; }
@@ -76,11 +91,10 @@ public:
 		_azimuth.SetBounds(-360, 360); //a complete spin on each slider direction
 		_elevation.SetBounds(-90, 90);
 	}
+
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
-		RemovePorts();
-
-		unsigned buffersize = BackendBufferSize();
+#if 0	
 		struct SpeakerPositions {
 			int id;
 			const char * name;
@@ -142,7 +156,41 @@ public:
 
 			{0,0,0}
 		};
-		 
+		
+#endif 
+//testing setup 
+		struct SpeakerPositions {
+			int id;
+			const char * name;
+			float azimuth;
+			float elevation;
+		} speakers[] =	{
+			{1, "left", -45., -45. },
+			{2, "right", 45., -45.},
+			{3, "back", -180., -45.},
+			{4, "top", 0., 89.},
+			{0, 0, 0., 0.}
+		};
+		struct Triangles {
+			unsigned one;
+			unsigned two;
+			unsigned three;
+		} triangles[] = {
+			//floor
+			{1, 2, 3},
+			//front
+			{1, 2, 4},
+			//left
+			{1,3,4},
+			//right
+			{2,3,4},
+			//end
+			{0,0,0}
+		};
+//end testing setup
+
+		RemovePorts();
+		const unsigned buffersize = BackendBufferSize();
 		for (unsigned i=0; speakers[i].name; i++)
 		{
 			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( speakers[i].name, this);
@@ -173,6 +221,7 @@ public:
 					};
 				speakersPos[j]=r;
 			}
+			_speakersPositions.push_back( speakersPos );
 			Vector n = vectorialProduct( 
 				substract(speakersPos[0], speakersPos[1]),  
 				substract(speakersPos[0], speakersPos[2])
@@ -189,16 +238,38 @@ public:
 
 	bool Do()
 	{
-		const double delta = 0.001;
-		const double azimuth=fmod(_azimuth.GetLastValue()+360+180,360)-180;
-		const double elevation=_elevation.GetLastValue();
-		CLAM_DEBUG_ASSERT(azimuth>=-180 and azimuth<=+180, "azimuth expected in range -180, +180");
-		CLAM_DEBUG_ASSERT(elevation>=-90 and elevation<=+90, "elevation expected in range -90, +90");
-		
+		const float delta = 0.00001;
+		const float as=fmod(_azimuth.GetLastValue()+360+180,360)-180;
+		const float es=_elevation.GetLastValue();
+		CLAM_DEBUG_ASSERT(as>=-180 and as<=+180, "azimuth expected in range -180, +180");
+		CLAM_DEBUG_ASSERT(es>=-90 and es<=+90, "elevation expected in range -90, +90");
+		//TODO extract method find triangle	
 		unsigned newTriangle = 0;
-		// find triangle
-		Vector r1 = {cos(delta), delta, delta};//TODO borra
-
+		// find triangle testing them all
+		for (unsigned i=0; i<_triangles.size(); i++)
+		{
+			Vector r_source = {
+					cos(es) * cos(as),
+					cos(es) * sin(as),
+					sin(es),
+				};
+			const float divisor = escalarProduct(_normals[i], r_source);
+			if (abs(divisor) < delta) continue;
+			const float t =  _ortogonalProjection[i] / divisor;
+			if (t>1. or t<0.) continue;
+			Vector r_I = product(t, r_source);
+			Vector v1 = substract( _speakersPositions[i][0], r_I);
+			Vector v2 = substract( _speakersPositions[i][1], r_I);
+			Vector v3 = substract( _speakersPositions[i][2], r_I);
+			if (abs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < delta)
+			{
+				// found!
+				newTriangle = i;
+				break;
+			}
+			
+		}
+		if (newTriangle==0) std::cout << "ERROR: no triangle found!" << std::endl;
 		// change triangle
 		if (_currentTriangle != newTriangle) // changed triangle
 		{
@@ -206,20 +277,44 @@ public:
 			std::cout << "last " << _currentTriangle << " current " << newTriangle << std::endl;
 			_currentTriangle = newTriangle;
 		}
+		// obtain the three gains.
+		unsigned speaker1 = _triangles[_currentTriangle][0];
+		unsigned speaker2 = _triangles[_currentTriangle][1];
+		unsigned speaker3 = _triangles[_currentTriangle][2];
+		double& a1 = _azimuths[speaker1];
+		double& a2 = _azimuths[speaker2];
+		double& a3 = _azimuths[speaker3];
+		double& e1 = _elevations[speaker1];
+		double& e2 = _elevations[speaker2];
+		double& e3 = _elevations[speaker3];
+		double g1 = cos(a3)*cos(e3)*cos(es)*sin(as)*sin(e2)
+			+ cos(as)*cos(es) * (cos(e2)*sin(a2)*sin(e3) - cos(e3)*sin(a3)*sin(e2)) 
+			- cos(e2)*(cos(a2)*cos(es)*sin(as)*sin(e3) + cos(e3)*sin(a2-a3)*sin(es));
+		float g2 = cos(e3)*(cos(es)*sin(a3-as)*sin(e1)
+			+ cos(e1)*sin(a1-a3)*sin(es)) 
+			- cos(e1)*cos(es)*sin(a1-as)*sin(e3);
+		float g3 = cos(a2)*cos(e2)*cos(es)*sin(as)*sin(e1)
+			+ cos(as)*cos(es)*(cos(e1)*sin(a1)*sin(e2)
+			- cos(e2)*sin(a2)*sin(e1)) 
+			- cos(e1)*(cos(a1)*cos(es)*sin(as)*sin(e2)
+			+ cos(e2)*sin(a1-a2)*sin(es))
+		;
 		// copy audio in->out
+		// TODO extract method
 		const CLAM::DataArray& w =_w.GetAudio().GetBuffer();
 		for (unsigned i=0; i<_outputs.size(); i++)
 		{
-			unsigned speaker1 = _triangles[_currentTriangle][0];
-			unsigned speaker2 = _triangles[_currentTriangle][1];
-			unsigned speaker3 = _triangles[_currentTriangle][2];
-
+			float gainToApply;
+			if (i==speaker1) gainToApply = g1;
+			if (i==speaker2) gainToApply = g2;
+			if (i==speaker3) gainToApply = g3;
+			else gainToApply = 0.;
 			CLAM::DataArray& out =_outputs[i]->GetAudio().GetBuffer();
 			for (int sample=0; sample<w.Size(); sample++)
-				out[sample] = (i==speaker1 || i==speaker2 || i==speaker3)? w[sample] : 0.; //TODO the algorithm
-			_outputs[i]->Produce();
+				out[sample] = gainToApply>delta ? w[sample]*gainToApply : 0.;
 			
-		}
+			_outputs[i]->Produce();
+		}	
 		_w.Consume();
 		return true;
 	}
