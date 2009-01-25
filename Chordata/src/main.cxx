@@ -46,12 +46,12 @@ int main( int argc, char ** argv )
 	app.installTranslator(&qtTranslator);
 
 	QTranslator translator;
-	translator.load(I18N_PATH "share/turnaround/i18n/Turnaround_"+ locale);
+	translator.load(I18N_PATH "share/chordata/i18n/Chordata_"+ locale);
 	app.installTranslator(&translator);
 
 	QCoreApplication::setOrganizationName("CLAM");
 	QCoreApplication::setOrganizationDomain("clam.iua.upf.edu");
-	QCoreApplication::setApplicationName("Turnaround");
+	QCoreApplication::setApplicationName("Chordata");
 	MainWindow w;
 	w.show();
 	return app.exec();

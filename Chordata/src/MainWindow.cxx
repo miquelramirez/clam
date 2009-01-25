@@ -16,7 +16,7 @@
 
 #include "MainWindow.hxx"
 
-#include "TurnaroundVersion.hxx"
+#include "ChordataVersion.hxx"
 
 #include "ui_About.hxx"
 #include <QtGui/QFileDialog>
@@ -111,9 +111,9 @@ MainWindow::MainWindow()
 	Ui::About aboutUi;
 	aboutUi.setupUi(_aboutDialog);
 	aboutUi.versionInfo->setText(tr(
-			"<p><b>Turnaround version %1</b></p>"
+			"<p><b>Chordata version %1</b></p>"
 			"<p>Using CLAM version %2</p>")
-		.arg(Turnaround::GetFullVersion())
+		.arg(Chordata::GetFullVersion())
 		.arg(CLAM::GetFullVersion()));
 
 	connect(viewSpectrogramAction, SIGNAL(toggled(bool)), _spectrogram, SLOT(setVisible(bool)));
@@ -310,7 +310,7 @@ void MainWindow::loadAudioFile(const std::string & fileName)
 	CLAM::MonoAudioFileReader fileReader(_fileReaderConfig);
 	CLAM::AudioInPort &analysisInput = (CLAM::AudioInPort&)(_tonalAnalysis->GetInPort("Audio Input"));
 
-	std::string title = "Turnaround: ";
+	std::string title = "Chordata: ";
 	const CLAM::AudioTextDescriptors &textDescriptors = fileReader.GetTextDescriptors();
 	title += textDescriptors.HasArtist() ? textDescriptors.GetArtist() : "Unknown Artist";
 	title += " - ";
@@ -460,6 +460,6 @@ void MainWindow::about()
 
 void MainWindow::onlineTutorial()
 {
-	QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Turnaround_tutorial";
+	QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Chordata_tutorial";
 	QDesktopServices::openUrl(helpUrl);
 }

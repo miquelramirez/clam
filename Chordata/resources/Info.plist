@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleExecutable</key>
-	<string>Turnaround</string>
+	<string>chordata</string>
 	<key>CFBundleIconFile</key>
-	<string>CLAM-Turnaround.icns</string>
+	<string>CLAM-Chordata.icns</string>
 	<key>CFBundleName</key>
-	<string>Turnaround</string>
+	<string>Chordata</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>

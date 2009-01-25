@@ -12,7 +12,7 @@
 #export DH_VERBOSE=1
 
 
-OPTIONS= clam_prefix=/usr prefix=$(CURDIR)/debian/clam-turnaround/usr release=1 verbose=0 double=0
+OPTIONS= clam_prefix=/usr prefix=$(CURDIR)/debian/clam-chordata/usr release=1 verbose=0 double=0
 
 configure: configure-stamp
 configure-stamp:
@@ -27,10 +27,10 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the arch part of the package.
-	mkdir -p $(CURDIR)/debian/clam-turnaround/usr
+	mkdir -p $(CURDIR)/debian/clam-chordata/usr
 	scons -C$(CURDIR) $(OPTIONS)
 	# Add here commands to compile the indep part of the package.
-	convert -resize 32x32 -colors 24 src/images/segmentation.svg $(CURDIR)/clam-turnaround.xpm
+	convert -resize 32x32 -colors 24 src/images/segmentation.svg $(CURDIR)/clam-chordata.xpm
 	#docbook-to-man debian/ChordExtractor.sgml > ChordExtractor.1
 	touch $@
 
@@ -60,10 +60,10 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	# Add here commands to install the package into debian/clam-turnaround.
-	mkdir -p $(CURDIR)/debian/clam-turnaround/usr
+	# Add here commands to install the package into debian/clam-chordata.
+	mkdir -p $(CURDIR)/debian/clam-chordata/usr
 	scons install $(OPTIONS)
-	cp $(CURDIR)/clam-turnaround.xpm ${CURDIR}/debian/clam-turnaround/usr/share/pixmaps
+	cp $(CURDIR)/clam-chordata.xpm ${CURDIR}/debian/clam-chordata/usr/share/pixmaps
 
 # Build architecture-independent files here.
 binary-indep: build install
