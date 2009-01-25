@@ -179,8 +179,8 @@ clam.add_subtask('Annotator installation', [
 	'scons install',
 ] )
 
-clam.add_subtask('Turnaround installation', [
-	'cd %(sandbox)s/clam/Turnaround'%localDefinitions,
+clam.add_subtask('Chordata installation', [
+	'cd %(sandbox)s/clam/Chordata'%localDefinitions,
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
 	'scons install',
 ] )

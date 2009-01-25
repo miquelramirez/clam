@@ -1,18 +1,18 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=CLAM Turnaround
+Name=CLAM Chordata
 GenericName=Chord detector
 Comment=MP3/OGG/Wav songs chord analyser
-Icon=/usr/share/pixmaps/clam-turnaround.xpm
+Icon=/usr/share/pixmaps/clam-chordata.xpm
 Type=Application
 Categories=Application;AudioVideo;Audio;Music;Qt
-Exec=Turnaround
+Exec=chordata
 Terminal=false
 MimeType=application/ogg;audio/basic;audio/mpeg;audio/x-aiff;audio/x-mp3;audio/x-wav;
 
 [Desktop Action Edit]
-Exec=Turnaround %f
-Name=Analize chords (Turnaround)
+Exec=chordata %f
+Name=Analize chords (Chordata)
 
 
 

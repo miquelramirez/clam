@@ -50,10 +50,10 @@ if crosscompiling :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
-version, fullVersion = versionInfo.versionFromLocalInfo("Turnaround")
+version, fullVersion = versionInfo.versionFromLocalInfo("Chordata")
 print "Version: ", version
 print "Package version: ", fullVersion
-versionInfo.generateVersionSources(os.path.join('src','TurnaroundVersion'), "Turnaround", version, fullVersion)
+versionInfo.generateVersionSources(os.path.join('src','ChordataVersion'), "Chordata", version, fullVersion)
 
 
 env['CXXFILESUFFIX'] = '.cxx'
@@ -88,7 +88,7 @@ env.EnableQt4Modules([
 	)
 
 mainSources = {
-	'Turnaround' : os.path.join('src','main.cxx'),
+	'chordata' : os.path.join('src','main.cxx'),
 }
 
 sourcePaths = [
@@ -127,18 +127,18 @@ uifiles = scanFiles("*.ui", sourcePaths)
 if uifiles: uiheaders = env.Uic4(source=uifiles)
 
 if isWindowsPlatform :
-	sources += env.RES(source=["resources/Turnaround.rc"])
+	sources += env.RES(source=["resources/Chordata.rc"])
 
 env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=[CLAMVmQtPath])
 #env.Prepend(LIBS="clam_vmqt4")
 if sys.platform=='darwin' :
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Turnaround.app/Contents/Resources\\""')
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Chordata.app/Contents/Resources\\""')
 else :
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['prefix'] + '/share/turnaround\\""')
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['prefix'] + '/share/chordata\\""')
 if sys.platform!='win32' :
 	# TODO: This should not be hardcoded neither prefix (because package intall)
-	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"%s\\""'%env['prefix'] + '/share/turnaround/example-data')
+	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"%s\\""'%env['prefix'] + '/share/chordata/example-data')
 
 if sys.platform=='linux2' :
 	if env['release'] :
@@ -146,7 +146,7 @@ if sys.platform=='linux2' :
 	else :
 		env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
-#commonObjects = env.StaticLibrary(target="turnaround", source=sources)
+#commonObjects = env.StaticLibrary(target="chordata", source=sources)
 programs = [ env.Program(target=program, source = [main] + sources)
 	for program, main in mainSources.items()]
 
@@ -158,7 +158,7 @@ pluginDefines=['-DQT_PLUGIN','-DQT_NO_DEBUG','-DQDESIGNER_EXPORT_WIDGETS','-D_RE
 env.AppendUnique(CPPFLAGS=pluginDefines)
 
 manpages = [
-	'resources/man/man1/Turnaround.1',
+	'resources/man/man1/chordata.1',
 	]
 
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
@@ -168,7 +168,7 @@ translatableSources+= scanFiles('*.ui', sourcePaths);
 translatableSources = filter( (lambda a : a.rfind( "generated/")==-1 ),  translatableSources )
 translations = []
 if len(tsfiles) :
-	# Manual step: lupdate-qt4 *xx *ui -ts Turnaround_ca.ts
+	# Manual step: lupdate-qt4 *xx *ui -ts Chordata_ca.ts
 	#tsNodes = env.Ts(target=tsfiles, source = translatableSources)
 	# TODO: move those settings to the qt4 tool
 	#env.Precious(tsNodes) # Do not remove it until really regenerated
@@ -230,25 +230,25 @@ if isWindowsPlatform :
 
 if sys.platform=='darwin' :
 	# TODO: Review why those flags were added# TODO: Review why those flags were added# TODO: Review why those flags were added
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Turnaround.app/Contents/Resources\\""')
+	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Chordata.app/Contents/Resources\\""')
 	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
 
 	#TODO install resources
 	installTargets = []
 	
 	mac_bundle = env.Bundle( 
-		BUNDLE_NAME='Turnaround', 
+		BUNDLE_NAME='Chordata', 
 		BUNDLE_BINARIES=programs,
 	#	BUNDLE_RESOURCEDIRS=['foo','bar'],
 		BUNDLE_PLIST='resources/Info.plist',
-		BUNDLE_ICON='resources/CLAM-Turnaround.icns',
+		BUNDLE_ICON='resources/CLAM-Chordata.icns',
 	 )
 	env.Alias('bundle', mac_bundle)
 
 	#TODO mac_bundle should be dependency of Dmga:	
 	arch = os.popen("uname -p").read().strip()
-	mac_packages = env.Dmg('CLAM_Turnaround-%s-%s.dmg'% (fullVersion, arch), [
-		env.Dir('Turnaround.app/'),
+	mac_packages = env.Dmg('CLAM_Chordata-%s-%s.dmg'% (fullVersion, arch), [
+		env.Dir('Chordata.app/'),
 		env.Dir('example-data/'),
 	]+installTargets )
 	env.Alias('package', mac_packages)
