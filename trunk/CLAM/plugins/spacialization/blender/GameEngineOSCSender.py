@@ -40,8 +40,6 @@ import Blender
 import re
 #import GameLogic
 
-#SourcesSubstring='momo'
-#ListenersSubstring='frankie'
 
 def getTypeOfObject(controller):
 	dictTypes={"moving_source": "source",
@@ -74,7 +72,6 @@ def sendObjectValue(objectName,typeName,typeValue,value,port):
 	Message(message,value).sendlocal(port)
 
 def main():
-#	print "main de BlenderOSCSender"
 	typename=None
 	controller=GameLogic.getCurrentController()
 	object=controller.getOwner()
