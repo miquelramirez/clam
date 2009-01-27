@@ -55,11 +55,11 @@ class TDFilterGenExample : public ProcessingComposite {
 	void AttachChildren();
 	bool ConfigureChildren();
 	bool ConfigureData();
-	void ConfigureTDFilterGen( const DataArray &a );
-	void ConfigureTDFilter();
-	void ConfigureLPC();
-	void ConfigureDownSampling();
-	void ConfigureFileIO();
+	bool ConfigureTDFilterGen( const DataArray &a );
+	bool ConfigureTDFilter();
+	bool ConfigureLPC();
+	bool ConfigureDownSampling();
+	bool ConfigureFileIO();
 
 	const char* GetClassName() const {return "TDFilterGenExample";}
 
@@ -122,36 +122,36 @@ bool TDFilterGenExample::ConfigureFileIO()
 
 }
 
-void TDFilterGenExample::ConfigureLPC()
+bool TDFilterGenExample::ConfigureLPC()
 {
 	LPCConfig LPC_cfg;
 	LPC_cfg.SetName( "LPC" );
 	LPC_cfg.SetOrder( mConfig.GetOrder() );
 
-	mLPC.Configure( LPC_cfg );
+	return mLPC.Configure( LPC_cfg );
 }
 
-void TDFilterGenExample::ConfigureTDFilter()
+bool TDFilterGenExample::ConfigureTDFilter()
 {
 	TDFilterConfig cfg;
 
 	cfg.SetName( "TDFilter" );
 	cfg.SetAudioSize( mDownSize );
 
-	mTDFilter.Configure( cfg );
+	return mTDFilter.Configure( cfg );
 }
 
-void TDFilterGenExample::ConfigureDownSampling()
+bool TDFilterGenExample::ConfigureDownSampling()
 {
 	DownSamplingConfig	downSampling_cfg;
 	downSampling_cfg.SetName( "DownSampling" );
 	downSampling_cfg.SetDownSamplingRate( mConfig.GetDownSamplingRate() );
 
-	mDownSampling.Configure( downSampling_cfg );
+	return mDownSampling.Configure( downSampling_cfg );
 }
 
 
-void TDFilterGenExample::ConfigureTDFilterGen( const DataArray &a )
+bool TDFilterGenExample::ConfigureTDFilterGen( const DataArray &a )
 {
 	TDFilterGenConfig cfg;
 
@@ -162,7 +162,7 @@ void TDFilterGenExample::ConfigureTDFilterGen( const DataArray &a )
 
 	if( mTDFilterGen.IsRunning() ) mTDFilterGen.Stop();
 
-	mTDFilterGen.Configure( cfg );
+	return mTDFilterGen.Configure( cfg );
 }
 
 bool TDFilterGenExample::ConfigureData()
