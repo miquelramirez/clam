@@ -84,7 +84,7 @@ mainSources = {
 #	'DP_Test' : 'MDP/DP_test.cxx',
 	'Permute_Test' : 'MDP/Permute_test.cxx',
 	'MagnitudeFR_Test' : 'TDFilterGenerator/MagnitudeFR_test.cxx',
-	'TDFilter_Test' : os.path.join('TDFilterGenerator','TDFilter_text.cxx'),
+	'TDFilter_Test' : os.path.join('TDFilterGenerator','TDFilter_test.cxx'),
 	'LPC_Example': 'LPC/LPC_Example.cxx',
 
 }
