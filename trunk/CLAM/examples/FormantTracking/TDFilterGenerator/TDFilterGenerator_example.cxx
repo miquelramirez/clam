@@ -55,7 +55,6 @@ class TDFilterGenExample : public ProcessingComposite {
 	void AttachChildren();
 	bool ConfigureChildren();
 	bool ConfigureData();
-	void ConfigureAudio();
 	void ConfigureTDFilterGen( const DataArray &a );
 	void ConfigureTDFilter();
 	void ConfigureLPC();
@@ -98,18 +97,14 @@ void TDFilterGenExample::AttachChildren()
 
 bool TDFilterGenExample::ConfigureChildren()
 {
-	ConfigureFileIO();
-
-	ConfigureLPC();
-
-	ConfigureDownSampling();
-
-	ConfigureTDFilter();
-
+	if (not ConfigureFileIO()) return false;
+	if (not ConfigureLPC()) return false;
+	if (not ConfigureDownSampling()) return false;
+	if (not ConfigureTDFilter()) return false;
 	return true;
 }
 
-void TDFilterGenExample::ConfigureFileIO()
+bool TDFilterGenExample::ConfigureFileIO()
 {
 	MonoAudioFileReaderConfig readerCfg;
 	readerCfg.SetSourceFile(mConfig.GetFilenameIn());
@@ -123,7 +118,7 @@ void TDFilterGenExample::ConfigureFileIO()
 	MonoAudioFileWriterConfig writerCfg;
 	writerCfg.SetTargetFile(mConfig.GetFilenameOut());
 	writerCfg.SetSampleRate(mNewSamplingRate );
-	mFileOut.Configure(writerCfg);
+	return mFileOut.Configure(writerCfg);
 
 }
 
@@ -156,19 +151,6 @@ void TDFilterGenExample::ConfigureDownSampling()
 }
 
 
-void TDFilterGenExample::ConfigureAudio()
-{
-	mInputData.SetSize(mSizeIn);
-	mInputData.SetSampleRate(mConfig.GetSamplingRate());
-	
-	mDownInputData.SetSize( mDownSize);
-	mDownInputData.SetSampleRate( mConfig.GetDownSamplingRate() );
-
-	mOutputData.SetSize( mDownSize);
-	mOutputData.SetSampleRate( mConfig.GetDownSamplingRate() );
-
-}
-
 void TDFilterGenExample::ConfigureTDFilterGen( const DataArray &a )
 {
 	TDFilterGenConfig cfg;
@@ -185,20 +167,27 @@ void TDFilterGenExample::ConfigureTDFilterGen( const DataArray &a )
 
 bool TDFilterGenExample::ConfigureData()
 {
-	ConfigureAudio();
+	mInputData.SetSize(mSizeIn);
+	mInputData.SetSampleRate(mConfig.GetSamplingRate());
+
+	mDownInputData.SetSize( mDownSize);
+	mDownInputData.SetSampleRate( mConfig.GetDownSamplingRate() );
+
+	mOutputData.SetSize( mDownSize);
+	mOutputData.SetSampleRate( mConfig.GetDownSamplingRate() );
 	return true;
 }
 
 bool TDFilterGenExample::ConcreteConfigure(const ProcessingConfig& c)
 {
 	CopyAsConcreteConfig(mConfig,c);
-	ConfigureChildren();
+	if (not ConfigureChildren()) return false;
 	ConfigureData();
 	return true;
 }
 
-TDFilterGenExample::TDFilterGenExample(const TDFilterGenExampleConfig &cfg):
-mSizeIn(512)
+TDFilterGenExample::TDFilterGenExample(const TDFilterGenExampleConfig &cfg)
+	: mSizeIn(512)
 {
 	AttachChildren();
 	Configure(cfg);
