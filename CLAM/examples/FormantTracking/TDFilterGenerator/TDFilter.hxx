@@ -24,6 +24,9 @@
 
 #include "Processing.hxx"
 #include "Audio.hxx"
+#include "InPort.hxx"
+#include "AudioInPort.hxx"
+#include "AudioOutPort.hxx"
 #include "TDFilterKernel.hxx"
 
 namespace CLAM
@@ -49,10 +52,12 @@ namespace CLAM
 
 	class TDFilter: public Processing
 	{
+		InPort<TDFilterKernel> _filterKernel;
+		AudioInPort _input;
+		AudioOutPort _output;
+		
 	public:
-		TDFilter();
-
-		TDFilter( TDFilterConfig &cfg );
+		TDFilter( const TDFilterConfig &cfg = TDFilterConfig());
 
 		virtual ~TDFilter();
 
@@ -60,7 +65,7 @@ namespace CLAM
 
 		const ProcessingConfig &GetConfig(void) const { return mConfig; }
 
-		bool Do(void) { return true; }
+		bool Do(void);
 
 		bool Do( const Audio &x,
 				 const TDFilterKernel &h, Audio &y );

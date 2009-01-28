@@ -26,16 +26,12 @@
 
 namespace CLAM
 {
-	TDFilter::TDFilter() :
-		mSize( 0 )
-	{
-		TDFilterConfig cfg;
 
-		Configure( cfg );
-	}
-
-	TDFilter::TDFilter( TDFilterConfig &cfg ) :
-		mSize( 0 )
+	TDFilter::TDFilter( const TDFilterConfig &cfg )
+		: _filterKernel("Convolution kernel", this)
+		, _input("Input", this)
+		, _output("Output", this)
+		, mSize( 0 )
 	{
 		Configure( cfg );
 	}
@@ -82,21 +78,30 @@ namespace CLAM
 
 		CLAM_END_CHECK
 	}
+	bool TDFilter::Do()
+	{
+		const TDFilterKernel & kernel = _filterKernel.GetData();
+		const Audio & input = _input.GetAudio();
+		Audio & output = _output.GetAudio();
+		bool result = Do(input, kernel, output);
+		_filterKernel.Consume();
+		_input.Consume();
+		_output.Produce();
+		return result;
+	}
 
-	bool TDFilter::Do( const Audio &X, 
-					   const TDFilterKernel &H, Audio &Y )
+	bool TDFilter::Do( const Audio &X, const TDFilterKernel &H, Audio &Y )
 	{		
 		int n, m;
 		DataArray xv, yv;
 		TData gain, sumA, sumB;
-		TData *XBuffer, *YBuffer;
 	
 		if( !AbleToExecute() ) return true;
 		
 		CheckTypes( X, Y );
 
-		XBuffer = X.GetBuffer().GetPtr();
-		YBuffer = Y.GetBuffer().GetPtr();
+		TData * XBuffer = X.GetBuffer().GetPtr();
+		TData * YBuffer = Y.GetBuffer().GetPtr();
 		
 		// Unused variable: TSize nIn = X.GetSize();
 		
