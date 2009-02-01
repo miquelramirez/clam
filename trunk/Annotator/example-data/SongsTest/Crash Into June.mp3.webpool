@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Description>
+  <ScopePool name="Song" size="1">
+    <AttributePool name="Artist">DevonMiles
+</AttributePool>
+    <AttributePool name="Album">Nine Hundred
+</AttributePool>
+    <AttributePool name="Track-No">2
+</AttributePool>
+    <AttributePool name="Title">Crash Into June
+</AttributePool>
+    <AttributePool name="Date">2006-07-22 02:10:15
+</AttributePool>
+    <AttributePool name="Lyrics">Too much comfort&lt;br /&gt;&#13;
+Always ruins inspiration&lt;br /&gt;&#13;
+Place yourself in the action&lt;br /&gt;&#13;
+This is a daily quest for passion&lt;br /&gt;&#13;
+&lt;br /&gt;&#13;
+Emergency !&lt;br /&gt;&#13;
+We need to be&lt;br /&gt;&#13;
+In a rush&lt;br /&gt;&#13;
+In a rush for something&lt;br /&gt;&#13;
+&lt;br /&gt;&#13;
+And as we crash into june&lt;br /&gt;&#13;
+We'll have no excuses&lt;br /&gt;&#13;
+If we deceive somebody&lt;br /&gt;&#13;
+If we deceive someone&lt;br /&gt;&#13;
+&lt;br /&gt;&#13;
+I keep my head fresh&lt;br /&gt;&#13;
+Helped by a bit of loneliness&lt;br /&gt;&#13;
+Erase the untold, shout the unwritten&lt;br /&gt;&#13;
+There can't be last-minute corrections&lt;br /&gt;&#13;
+&lt;br /&gt;&#13;
+Emergency !&lt;br /&gt;&#13;
+We need to be&lt;br /&gt;&#13;
+In a rush&lt;br /&gt;&#13;
+In a rush for something&lt;br /&gt;&#13;
+&lt;br /&gt;&#13;
+And as we crash into june&lt;br /&gt;&#13;
+We'll have no excuses&lt;br /&gt;&#13;
+If we deceive somebody&lt;br /&gt;&#13;
+If we deceive someone
+</AttributePool>
+    <AttributePool name="Songlist-URI">http://dbtune.org/jamendo/track/16861
+http://dbtune.org/jamendo/track/16862
+http://dbtune.org/jamendo/track/16863
+http://dbtune.org/jamendo/track/16864
+http://dbtune.org/jamendo/track/16865
+</AttributePool>
+    <AttributePool name="Photo-URI">http://img.jamendo.com/albums/2397/covers/1.0.jpg
+http://img.jamendo.com/albums/2397/covers/1.100.jpg
+http://img.jamendo.com/albums/2397/covers/1.300.jpg
+http://img.jamendo.com/albums/2397/covers/1.500.jpg
+</AttributePool>
+    <AttributePool name="Tag-Jamendo">rock
+alternativerock
+classicrock
+hardrock
+jrock
+noisy
+emo
+math
+</AttributePool>
+    <AttributePool name="Tag-MusicBrainz">noisy
+</AttributePool>
+    <AttributePool name="Tag-SemWeb">emo
+math
+noisy
+rock
+</AttributePool>
+    <AttributePool name="Album-Description">5 titres, 15 minutes, pour un DevonMiles plus direct. Les guitares trahissent des influences aussi noise que stoner, et beaucoup plus rock'n'roll qu'auparavant. DevonMiles est d茅sormais une rencontre improbable entre Shellac et Pretty Girls Make Graves buvant une bi猫re devant une vid茅o de Iron Maiden et se fendant bien la gueule...&#13;
+&#13;
+Nine Hundred sort en coproduction entre PP&amp;M et le label HB Records, g茅r茅 par Sly, bassiste des d茅funts Homeboys. DevonMiles est le premier groupe a虁 signer un disque sur ce label, qui a d茅ja虁 sorti le tribute a虁 Seven Hate en 2005.
+</AttributePool>
+    <AttributePool name="Review">Fugazi,Shelac,Helmet,je prend les yeux ferm茅!&lt;br /&gt; C'est vrais il y a un passage ou l'autres, qui font pens茅 a Haram dans le morceau "Do It A Breack" ,mai la sauce est bien mijot茅es est dans un style personnel est inventif "Crash Into June" j'adh猫re!&lt;br /&gt; &lt;br /&gt; &lt;br /&gt; 
+Da schl盲gt das Rockherz h枚her&lt;br /&gt; &lt;br /&gt; Sauber Produzierte, gut gepsielte, abwechslungsreiche Rockmusik... das gef盲llt.
+it took literally two seconds before i decided that i was going to steal this record. frankly, it's not something i do often. where i come from, we just don't have time to, what with our lives being run at hyperspeed, thus, i save my bandwidth for only the finest records. frankly, i really dug all of the tracks, and so there wasn't one that stood out in particular. maybe the first track. that has some hot drumming on it. in a live environment, doubtless, this would destroy all onlookers in a frenzy of mathed-out noise and ear-shattering heaviosity. so do yourself a favour and download this record so you can practice your sweet windmills in peace.
+is a great tune&lt;br /&gt; &lt;br /&gt; can't decide whether overall I like the album better than the previous Devon Miles effort, though I like both a lot.
+worth the download.
+yop les kids, je viens de d茅couvrir votre came a虁 l'instant et 莽a met des claques ! 莽a me rappelle Coliseum ou les trucs genre Doomriders...je suis forcement preneur. heavy heavy heavy, 莽a tape. Ya un peu de Haram la虁 dedans, enfin je sais pas mais 莽a me plait fort bien...
+</AttributePool>
+    <AttributePool name="Genre">noisy emo math rock
+</AttributePool>
+    <AttributePool name="Albumlist-URI">http://dbtune.org/jamendo/record/2397
+http://dbtune.org/jamendo/record/2859
+http://dbtune.org/jamendo/record/2860
+</AttributePool>
+    <AttributePool name="Artist-Photo">http://img.jamendo.com/artists/d/devonmiles.jpg
+</AttributePool>
+    <AttributePool name="Artist-Homepage-URI">http://www.devonmiles.com
+</AttributePool>
+    <AttributePool name="Artist-Location-URI">http://sws.geonames.org/2997857/
+</AttributePool>
+    <AttributePool name="Album-Rating"> 8.6
+</AttributePool>
+    <AttributePool name="Songlist"> &lt;a href='/en/track/16861'&gt; Generic (Drug) &lt;/a&gt; 
+ &lt;a href='/en/track/16862'&gt; Crash Into June &lt;/a&gt; 
+ &lt;a href='/en/track/16863'&gt; 2 Salles 2 Ambiances &lt;/a&gt; 
+ &lt;a href='/en/track/16864'&gt; Do It a Break &lt;/a&gt; 
+ &lt;a href='/en/track/16865'&gt; Dekkis Mokton &lt;/a&gt; 
+</AttributePool>
+  </ScopePool>
+</Description>
