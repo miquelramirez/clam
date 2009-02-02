@@ -121,12 +121,8 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 	item->setText( 0, name.c_str() );
 	item->setIcon( 0, attributeIcon );
 	
-	std::cout<< "arraySize is: \n" <<arraySize <<std::endl;
-	
 	for(int i=0; i<arraySize; i++)
 	{
-		std::cout<< "Parser has Attribute  " << i <<">>>>"<<mParser.sourceAttribute[i].c_str()<<std::endl;
-		std::cout<< "The extractor ID  " << i <<">>>>"<<mParser.sourceId[i].c_str()<<std::endl;
 		if((mParser.sourceAttribute[i]==name)&&(mParser.sourceId[i].c_str()==parent->text(0)))
 		{
 			state=Qt::Checked;
