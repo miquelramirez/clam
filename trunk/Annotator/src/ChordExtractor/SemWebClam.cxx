@@ -54,9 +54,9 @@ Adapted from Python code of GNAT by Yves Raimond at Queen Mary
 
 const char * copyright =
 	"SemWeb extraction v1.0.\n"
-	"Copyright 2008 Universitat Pompeu Fabra\n"
-	"Original algorithm by Yves Raimond.\n"
-	"Ported to C++ by Jun Wang and David Garcia Garzon.\n"
+	"Copyright 2009 Universitat Pompeu Fabra\n"
+	"Coding by Jun Wang and David Garcia Garzon.\n"
+	"Adapted from Python code of GNAT by Yves Raimond at Queen Mary\n"	
 	"\n"
 	;
 const char * usage =
@@ -79,25 +79,28 @@ const char * schemaContent =
 " <Attributes>\n"
 "   <Attribute name='Artist' scope='Song' type='String'/>\n"
 "   <Attribute name='Album' scope='Song' type='String'/>\n"
-"   <Attribute name='Track-No' scope='Song' type='String'/>\n"
+"   <Attribute name='TrackNo' scope='Song' type='String'/>\n"
 "   <Attribute name='Title' scope='Song' type='String'/>\n"
 "   <Attribute name='Date' scope='Song' type='String'/>\n"
 "   <Attribute name='Lyrics' scope='Song' type='String'/>\n"
-"   <Attribute name='Songlist-URI' scope='Song' type='String'/>\n"
-"   <Attribute name='Photo-URI' scope='Song' type='String'/>\n"
-"   <Attribute name='Tag-Jamendo' scope='Song' type='String'/>\n"
-"   <Attribute name='Tag-MusicBrainz' scope='Song' type='String'/>\n"
-"   <Attribute name='Tag-SemWeb' scope='Song' type='String'/>\n"
-"   <Attribute name='Album-Description' scope='Song' type='String'/>\n"
+"   <Attribute name='SonglistURI' scope='Song' type='String'/>\n"
+"   <Attribute name='PhotoURI' scope='Song' type='String'/>\n"
+"   <Attribute name='TagJamendo' scope='Song' type='String'/>\n"
+"   <Attribute name='TagMusicBrainz' scope='Song' type='String'/>\n"
+"   <Attribute name='TagSemWeb' scope='Song' type='String'/>\n"
+"   <Attribute name='AlbumDescription' scope='Song' type='String'/>\n"
 "   <Attribute name='Review' scope='Song' type='String'/>\n"
 "   <Attribute name='Genre' scope='Song' type='String'/>\n"
-"   <Attribute name='Albumlist-URI' scope='Song' type='String'/>\n"
-"   <Attribute name='Artist-Photo' scope='Song' type='String'/>\n"
-"   <Attribute name='Artist-Homepage-URI' scope='Song' type='String'/>\n"
-"   <Attribute name='Artist-Location-URI' scope='Song' type='String'/>\n"
-"   <Attribute name='Album-Rating' scope='Song' type='String'/>\n"
+"   <Attribute name='AlbumlistURI' scope='Song' type='String'/>\n"
+"   <Attribute name='ArtistPhoto' scope='Song' type='String'/>\n"
+"   <Attribute name='ArtistHomepageURI' scope='Song' type='String'/>\n"
+"   <Attribute name='ArtistLocationURI' scope='Song' type='String'/>\n"
+"   <Attribute name='AlbumRating' scope='Song' type='String'/>\n"
 "   <Attribute name='Songlist' scope='Song' type='String'/>\n"
-
+"   <Attribute name='Usage' scope='Song' type='String'/>\n"
+"   <Attribute name='Expression' scope='Song' type='String'/>\n"
+"   <Attribute name='Emotion' scope='Song' type='String'/>\n"
+"   <Attribute name='DynamicStructure' scope='Song' type='String'/>\n"
 "  </Attributes>\n"
 "\n"
 "</DescriptionScheme>\n"
@@ -114,24 +117,28 @@ public:
 	{
 		_schema.AddAttribute<CLAM::Text>("Song", "Artist");
 		_schema.AddAttribute<CLAM::Text>("Song", "Album");
-		_schema.AddAttribute<CLAM::Text>("Song", "Track-No");
+		_schema.AddAttribute<CLAM::Text>("Song", "TrackNo");
 		_schema.AddAttribute<CLAM::Text>("Song", "Title");
 		_schema.AddAttribute<CLAM::Text>("Song", "Date");
 		_schema.AddAttribute<CLAM::Text>("Song", "Lyrics");
-		_schema.AddAttribute<CLAM::Text>("Song", "Songlist-URI");
-		_schema.AddAttribute<CLAM::Text>("Song", "Photo-URI");
-		_schema.AddAttribute<CLAM::Text>("Song", "Tag-Jamendo");
-		_schema.AddAttribute<CLAM::Text>("Song", "Tag-MusicBrainz");
-		_schema.AddAttribute<CLAM::Text>("Song", "Tag-SemWeb");
-		_schema.AddAttribute<CLAM::Text>("Song", "Album-Description");
+		_schema.AddAttribute<CLAM::Text>("Song", "SonglistURI");
+		_schema.AddAttribute<CLAM::Text>("Song", "PhotoURI");
+		_schema.AddAttribute<CLAM::Text>("Song", "TagJamendo");
+		_schema.AddAttribute<CLAM::Text>("Song", "TagMusicBrainz");
+		_schema.AddAttribute<CLAM::Text>("Song", "TagSemWeb");
+		_schema.AddAttribute<CLAM::Text>("Song", "AlbumDescription");
 		_schema.AddAttribute<CLAM::Text>("Song", "Review");
 		_schema.AddAttribute<CLAM::Text>("Song", "Genre");
-		_schema.AddAttribute<CLAM::Text>("Song", "Albumlist-URI");
-		_schema.AddAttribute<CLAM::Text>("Song", "Artist-Photo");
-		_schema.AddAttribute<CLAM::Text>("Song", "Artist-Homepage-URI");
-		_schema.AddAttribute<CLAM::Text>("Song", "Artist-Location-URI");
-		_schema.AddAttribute<CLAM::Text>("Song", "Album-Rating");
+		_schema.AddAttribute<CLAM::Text>("Song", "AlbumlistURI");
+		_schema.AddAttribute<CLAM::Text>("Song", "ArtistPhoto");
+		_schema.AddAttribute<CLAM::Text>("Song", "ArtistHomepageURI");
+		_schema.AddAttribute<CLAM::Text>("Song", "ArtistLocationURI");
+		_schema.AddAttribute<CLAM::Text>("Song", "AlbumRating");
 		_schema.AddAttribute<CLAM::Text>("Song", "Songlist");
+		_schema.AddAttribute<CLAM::Text>("Song", "Usage");
+		_schema.AddAttribute<CLAM::Text>("Song", "Expression");
+		_schema.AddAttribute<CLAM::Text>("Song", "Emotion");
+		_schema.AddAttribute<CLAM::Text>("Song", "DynamicStructure");
 		
 		_pool = new CLAM::DescriptionDataPool(_schema);
 		_pool->SetNumberOfContexts("Song", 1);		
@@ -146,25 +153,29 @@ public:
 	{	// Write Song level descriptors	
 		std::cout<<"temp_1 is processing-----------------   "<<std::endl;
 		getData("temp_1", _pool->GetWritePool<CLAM::Text>("Song","Title"));
-		getData("temp_2", _pool->GetWritePool<CLAM::Text>("Song","Track-No"));
+		getData("temp_2", _pool->GetWritePool<CLAM::Text>("Song","TrackNo"));
 		getData("temp_3", _pool->GetWritePool<CLAM::Text>("Song","Lyrics"));
 		getData("temp_4", _pool->GetWritePool<CLAM::Text>("Song","Genre"));
-		getData("temp_5", _pool->GetWritePool<CLAM::Text>("Song","Album-Rating"));
-		getData("temp_6", _pool->GetWritePool<CLAM::Text>("Song","Tag-MusicBrainz"));
+		getData("temp_5", _pool->GetWritePool<CLAM::Text>("Song","AlbumRating"));
+		getData("temp_6", _pool->GetWritePool<CLAM::Text>("Song","TagMusicBrainz"));
 		getData("temp_7", _pool->GetWritePool<CLAM::Text>("Song","Album"));
 		getData("temp_8", _pool->GetWritePool<CLAM::Text>("Song","Date"));
-		getData("temp_9", _pool->GetWritePool<CLAM::Text>("Song","Photo-URI"));
-		getData("temp_10", _pool->GetWritePool<CLAM::Text>("Song","Songlist-URI"));
-		getData("temp_11", _pool->GetWritePool<CLAM::Text>("Song","Tag-SemWeb"));
+		getData("temp_9", _pool->GetWritePool<CLAM::Text>("Song","PhotoURI"));
+		getData("temp_10", _pool->GetWritePool<CLAM::Text>("Song","SonglistURI"));
+		getData("temp_11", _pool->GetWritePool<CLAM::Text>("Song","TagSemWeb"));
 		getData("temp_12", _pool->GetWritePool<CLAM::Text>("Song","Songlist"));
-		getData("temp_13", _pool->GetWritePool<CLAM::Text>("Song","Album-Description"));
+		getData("temp_13", _pool->GetWritePool<CLAM::Text>("Song","AlbumDescription"));
 		getData("temp_14", _pool->GetWritePool<CLAM::Text>("Song","Review"));
-		getData("temp_15", _pool->GetWritePool<CLAM::Text>("Song","Tag-Jamendo"));
+		getData("temp_15", _pool->GetWritePool<CLAM::Text>("Song","TagJamendo"));
 		getData("temp_16", _pool->GetWritePool<CLAM::Text>("Song","Artist"));
-		getData("temp_17", _pool->GetWritePool<CLAM::Text>("Song","Artist-Location-URI"));
-		getData("temp_18", _pool->GetWritePool<CLAM::Text>("Song","Artist-Homepage-URI"));
-		getData("temp_19", _pool->GetWritePool<CLAM::Text>("Song","Artist-Photo"));
-		getData("temp_20", _pool->GetWritePool<CLAM::Text>("Song","Albumlist-URI"));
+		getData("temp_17", _pool->GetWritePool<CLAM::Text>("Song","ArtistLocationURI"));
+		getData("temp_18", _pool->GetWritePool<CLAM::Text>("Song","ArtistHomepageURI"));
+		getData("temp_19", _pool->GetWritePool<CLAM::Text>("Song","ArtistPhoto"));
+		getData("temp_20", _pool->GetWritePool<CLAM::Text>("Song","AlbumlistURI"));
+		_pool->GetWritePool<CLAM::Text>("Song","Usage");
+		_pool->GetWritePool<CLAM::Text>("Song","Expression");
+		_pool->GetWritePool<CLAM::Text>("Song","Emotion");
+		_pool->GetWritePool<CLAM::Text>("Song","DynamicStructure");
 	}
 
 	void getData(const char*  tempFile, CLAM::Text * metadata)
@@ -193,7 +204,6 @@ public:
 				}
 			
 			metadata[0] = str;
-			std::cout<<"the content is: "<<str<<std::endl;
 			free(str);
 			fclose(fp);
 			if(remove(tempFile)!=0)
@@ -223,10 +233,11 @@ int processFile(const std::string & waveFile, const std::string & suffix, unsign
 	int   iRetVal = 0;
 
 	//introduce the python module
-	pMod = PyImport_ImportModule("SemWebCrawler"); //jun: obsolute path!!!
+	pMod = PyImport_ImportModule("SemWebCrawler"); //jun: absolute path!!!
 	if(!pMod)
 		{
 		std::cerr << "Cant open python file!" << std::endl;
+		std::cerr << "Please check whether the path of the .py scripts is in the system path." << std::endl;
 		return -1;
 		}
 	pDict = PyModule_GetDict(pMod);
@@ -236,36 +247,17 @@ int processFile(const std::string & waveFile, const std::string & suffix, unsign
 		return -1;
 		}
 	
-	std::cout<<"the input of waveFile is:   "<<waveFile<<std::endl;
 	//create 1 parameter
 	pParm = PyTuple_New(1);
-	std::cout<<"0-----pParm is initialed:   "<<std::endl;
 	pClass = PyDict_GetItemString(pDict, "SemWebCrawler");
-	std::cout<<"1-----pClass is done:   "<<std::endl;
-
 	PyTuple_SetItem(pParm, 0, Py_BuildValue("s",waveFile.c_str()));
-	std::cout<<"1-----pParm is done:   "<<std::endl;
-
 	pInstance = PyInstance_New(pClass, pParm, NULL);   
-	std::cout<<"3-----pInstance is done:   "<<std::endl;
 	pRetVal=PyObject_CallMethod(pInstance, "spider", NULL);
-	std::cout<<"4-----pRetVal is done:   "<<std::endl;
-	//PyArg_Parse(pRetVal, "(sss)", &testA, &testB, &testC);
-	/*std::list<std::string>::iterator it = metadata.begin();*/
 	Py_DECREF(pMod);
-	std::cout<<"6-----py_DECREF is done:   "<<std::endl;
-	
-	//PyAPI_FUNC(PyObject *) PyString_FromString(const char *);
 	SemWebDescriptionDumper dumper;
-	std::cout<<"7-----dumper initiate is done:   "<<std::endl;
 	dumper.doIt();
-	std::cout<<"8-----dumper.doIt is done:   "<<std::endl;
 	std::ofstream outputPool((waveFile+suffix).c_str());
-	std::cout<<"9-----outputpool waveFile+suffix is ready:   "<<std::endl;
-	//testPool=dumper.getPool();
-	//std::cout<<testPool.GetReadPool<CLAM::Text>("Song","Review")<<std::endl;
 	CLAM::XMLStorage::Dump(dumper.getPool(), "Description", outputPool);
-	std::cout<<"10-----pool is done:   "<<std::endl;
 	return 0;
 }
 
@@ -277,8 +269,7 @@ int main(int argc, char* argv[])			// access command line arguments
 	if(!Py_IsInitialized())
 		return -1;
 	PyRun_SimpleString("import sys\nprint sys.path\nprint sys.version\n");
-	PyRun_SimpleString("sys.path.append('C:\\Jun\\devel\\Annotator\\src\\SemWebExtractor')");
-	PyRun_SimpleString("\n\nprint sys.path\nprint sys.version\n");
+	PyRun_SimpleString("sys.path.append('C:\\Jun\\devel\\Annotator\\src\\SemWebExtractor')"); //Alert: absolute path!!
 	
 	std::cout << copyright << std::endl;
 	std::list<std::string> songs;
@@ -347,6 +338,7 @@ int main(int argc, char* argv[])			// access command line arguments
 	}
 
 	Py_Finalize();
+	std::cout << "\n\nDone!" << std::endl;
 	return 0;
 }
 
