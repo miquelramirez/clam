@@ -15,11 +15,11 @@
     </AttributePool>
     <AttributePool name="DynamicComplexity">8.1</AttributePool>
     <AttributePool name="BPM">100</AttributePool>
-    <AttributePool name="RandomSegments" size="83">1.45979 4.52493 8.36809 8.81805 10.6059 13.6135 14.8852 16.3733 16.9006 20.8526 23.33 26.2047 30.2018 32.8339 34.4701 34.9679 37.3022 38.1829 38.8495 40.3538 44.1988 45.2903 46.3946 49.279 52.7913 55.896 58.7053 60.0736 61.9412 63.6485 64.4748 65.9276 69.5039 70.092 73.2758 74.5954 75.5375 76.7752 78.5297 79.6951 80.8771 82.0129 82.3708 84.9762 87.7523 88.1664 90.8003 93.7691 95.7139 98.9509 99.9122 101.162 102.319 104.31 106.465 107.498 108.32 109.138 110.858 112.109 113.675 117.378 118.951 119.756 121.71 123.124 124.676 125.166 125.716 126.662 127.044 129.413 131.389 133.634 136.667 137.81 140.377 143.235 146.792 147.723 151.106 153.015 156.224</AttributePool>
+    <AttributePool name="RandomSegments" size="71">2.49141 6.03488 7.38017 9.89258 12.4944 14.3808 16.5296 20.2674 23.7862 25.54 26.5412 30.5309 33.0454 34.7206 38.2438 41.3746 44.853 48.4529 50.319 53.2749 54.802 55.1274 58.7691 61.0373 64.8239 67.2423 68.8125 72.1083 73.4637 74.1461 77.4369 77.8606 79.582 82.1563 84.2791 86.0511 89.3929 91.0172 91.8376 94.632 97.7878 101.249 103.658 106.788 110.633 111.427 113.875 114.559 115.162 117.625 118.028 120.392 123.431 124.926 126.504 130.456 132.129 134.212 135.602 136.346 137.58 139.122 140.253 143.874 144.522 147.249 149.853 153.66 154.858 155.947 157.131</AttributePool>
     <AttributePool name="Onsets" size="44">0.437 0.644 2.392 2.806 4.094 7.613 9.315 9.752 10.166 11.063 12.857 13.294 13.731 15.525 19.872 24.288 46.115 63.641 67.988 68.885 70.587 77.602 84.594 86.319 86.733 88.09 88.987 89.838 90.689 91.586 92.506 93.357 95.105 95.979 99.475 101.223 102.994 103.822 109.043 141.473 144.072 148.902 149.339 150.19</AttributePool>
-    <AttributePool name="Notes" size="504">0.496841 0.998248 1.41167 1.49773 1.79008 2.43656 2.85428 2.99508 3.41557 3.75337 4.02401 4.28137 4.72623 5.52001 5.60056 5.63042 5.79235 5.81391 6.21653 6.68109 6.73346 7.48366 7.9105 8.28652 8.38733 8.98337 9.46349 9.54218 9.97888 10.6655 11.0848 11.8835 12.3831 12.9498 13.1945 13.8253 14.0077 14.4203 14.4309 14.6969 14.8511 15.6305 15.9929 16.1075 16.426 16.5309 16.8087 17.2572 17.3637 17.5621 17.9017 18.492 18.5544 19.2895 19.4093 20.1809 20.6008 20.7856 20.7871 21.0742 21.201 21.3989 21.4162 21.7853 21.8028 22.2768 22.3101 22.9168 23.0057 23.3447 23.6995 24.2358 24.3177 24.7721 24.8559 24.8821 25.2035 25.2878 25.5931 26.076 26.0946 26.2401 26.6711 27.1725 27.66 27.9263 28.2041 28.9906 29.4718 29.5476 29.7585 30.5281 30.6252 30.779 31.206 31.3512 31.8104 31.8714 32.08 32.6333 32.7589 32.838 33.0634 33.6948 34.1234 34.2053 34.4171 34.8799 35.0764 35.6426 35.741 36.3853 36.45 36.5131 36.9395 37.739 38.0636 38.4232 38.5444 38.9075 38.9249 39.0757 39.5312 39.5904 39.8134 40.365 40.6437 41.1445 41.3936 42.084 42.4245 42.7593 42.9316 43.3424 43.6305 44.3869 44.8221 45.1279 45.2918 45.7117 46.164 46.2743 46.7572 47.1258 47.553 47.6294 47.8455 48.4571 48.7929 49.5487 49.8096 50.5785 50.8558 51.0717 51.2951 51.3089 51.4547 51.568 51.6617 52.396 52.7234 53.1734 53.3129 54.0532 54.4272 54.4649 54.5639 54.605 54.9633 55.0583 55.5568 56.1746 56.5373 56.5386 56.7137 57.1309 57.4347 57.6701 58.0012 58.7904 58.8397 59.5603 59.7589 60.355 60.3803 60.3829 60.5261 60.7426 61.015 61.3008 61.5846 62.254 62.4036 62.9559 63.413 63.6972 63.8385 64.2267 64.3319 64.8722 65.342 66.0855 66.4998 66.8021 67.2695 67.5181 67.8002 68.2764 68.6846 69.2001 69.6428 70.3521 70.6105 71.2555 71.5819 72.1442 72.1853 72.9527 73.4365 73.8119 74.0872 74.5286 74.6797 75.3346 75.5218 76.057 76.3416 76.3475 76.4982 76.5137 76.6578 76.6917 76.7494 77.0194 77.2704 77.7141 77.7858 78.1725 78.4743 79.2308 79.7003 79.7172 80.0803 80.7538 80.7762 81.221 81.6481 81.9579 82.0783 82.5701 82.7253 83.0486 83.1411 83.4182 83.807 84.5713 84.9983 85.6595 85.9145 86.1837 86.5281 86.7261 87.1699 87.1968 87.6219 88.2407 88.7291 89.2668 89.5133 89.7888 89.911 90.3054 90.5378 90.7023 90.7476 91.056 91.2224 91.5831 91.7574 91.7632 91.8375 92.1197 92.3274 92.3457 92.7735 93.3885 93.469 94.2651 94.6367 94.9549 95.0958 95.8597 96.2896 96.4284 96.5516 96.7008 97.0917 97.5504 97.7978 98.0025 98.3308 98.4301 98.4525 99.1036 99.5607 100.27 100.352 100.518 100.799 100.957 101.089 101.432 101.662 102.032 102.364 102.708 102.958 103.16 103.361 103.635 103.674 104.093 104.449 104.953 105.333 105.5 105.691 106.247 106.537 107.321 107.61 108.4 108.82 109.187 109.359 109.472 109.892 110.417 110.625 110.748 110.969 111.699 111.954 112.092 112.521 112.633 112.993 113.7 113.996 114.506 114.62 114.667 115.131 115.331 115.786 116.015 116.45 116.584 116.633 116.959 117.431 117.544 117.56 118.125 118.512 118.828 118.959 119.249 119.661 119.674 119.972 120.154 120.263 120.352 120.74 121.075 121.105 121.494 121.759 122.4 122.464 122.602 122.676 123.365 123.559 123.986 124.119 124.121 124.219 124.439 124.925 125.591 125.894 125.984 126.454 126.778 127.144 127.446 127.796 127.816 128.057 128.356 128.723 129.19 129.523 130.101 130.37 131.169 131.575 131.983 132.142 132.746 133.068 133.473 133.704 133.8 134.097 134.281 134.506 134.52 134.659 134.787 134.972 135.075 135.241 135.924 136.26 136.447 136.702 136.913 137.085 137.347 137.578 137.609 137.679 138.113 138.158 138.219 138.241 138.565 139.012 139.112 139.408 139.788 139.889 140.448 140.566 141.262 141.613 141.698 141.906 142.484 142.579 143.266 143.482 143.576 144.032 144.22 144.655 145.057 145.274 145.528 145.854 145.959 146.177 146.364 146.568 147.024 147.188 147.92 148.085 148.712 148.77 148.892 148.96 149.637 149.835 150.008 150.173 150.807 151.26 151.93 152.127 152.661 152.928 153.575 153.618 153.838 153.924 153.946 154.18 154.718 154.902 155.066 155.504 156.261 156.318 156.383 156.591 156.827 157.201 157.505 157.612 158.363</AttributePool>
-    <AttributePool name="Chords" size="41">2.34461 4.48231 12.3621 19.6709 21.4248 27.308 30.177 34.9105 41.5026 43.655 48.9921 54.1097 61.3376 63.2664 65.5849 71.7384 74.6768 78.7362 82.223 83.6516 85.0454 86.5347 87.4236 88.3267 91.4834 93.9349 97.7494 103.744 106.112 109.209 111.051 116.175 117.215 119.014 124.375 131.216 131.849 138.469 140.084 143.955 149.785</AttributePool>
-    <AttributePool name="Structure" size="12">0.43263 29.9803 30.4125 54.8331 58.688 80.6228 81.5113 97.7267 98.5156 126.531 128.436 142.676</AttributePool>
+    <AttributePool name="Notes" size="494">0.0215766 0.682705 0.963186 1.18224 1.37084 2.06381 2.52734 3.23544 3.69372 4.19173 4.21799 4.8361 4.89632 5.24586 5.37332 5.73881 5.99282 6.00097 6.07957 6.39443 6.51328 7.14485 7.22024 7.7882 8.05031 8.72392 8.92363 9.17757 9.63998 9.73718 10.07 10.5162 10.5292 10.9557 11.326 11.357 11.6378 12.2005 12.5798 13.2318 13.4792 14.1689 14.2574 14.7153 14.7611 15.3538 15.7068 16.481 16.7429 17.4602 17.9415 18.5704 18.5826 18.8738 18.943 18.9966 19.0639 19.0996 19.3275 20.0136 20.0467 20.6384 20.9878 21.5874 21.9468 22.1304 22.4272 23.1117 23.2983 23.5467 23.7112 24.0161 24.318 24.4709 24.9649 25.3235 25.5383 25.6645 25.7543 26.0162 26.1385 26.8682 27.1925 27.78 28.0562 28.4484 28.5206 28.7982 28.8184 28.9525 29.1183 29.2784 29.2889 29.4941 29.505 29.5947 29.9825 30.1441 30.3996 31.0413 31.4559 32.1632 32.3127 32.9947 33.338 33.7614 34.25 34.3888 34.4217 34.5354 34.8165 34.9168 34.9932 35.6802 35.7097 36.4747 36.9335 37.0379 37.3041 37.8717 37.8784 37.995 38.2309 38.4378 38.5871 38.9008 39.2633 39.7636 40.0175 40.6322 41.027 41.2164 41.2684 41.3898 41.7573 41.9804 42.4024 43.0637 43.3356 43.9768 44.0212 44.5647 44.6385 45.2238 45.4178 45.8733 46.3454 46.7063 46.8923 47.5148 47.551 47.6271 47.8678 48.6239 48.7381 48.9202 49.203 49.5211 49.6735 49.7136 50.1547 50.3765 50.693 51.3326 51.5964 51.8947 51.9498 52.3431 52.7589 52.8107 53.307 53.8412 54.2127 54.4418 54.7592 54.9976 55.3701 56.0972 56.5776 56.9771 57.1393 57.5054 57.9755 58.1561 58.4205 58.8709 59.3007 59.767 60.0892 60.1337 60.4655 61.2086 61.4695 61.5566 61.632 61.9611 62.2547 62.5246 62.6764 62.7591 62.7899 62.9954 63.2627 63.5738 63.788 63.797 63.862 64.4678 64.8053 65.4237 65.7594 66.2897 66.4593 67.0394 67.3984 67.882 68.3301 68.3525 68.6173 68.6825 68.9394 69.4832 69.5383 70.0061 70.3595 70.8991 71.0786 71.2984 71.7609 72.0546 72.3549 72.7611 73.0625 73.4203 73.5641 74.2539 74.6052 74.9519 75.0242 75.6831 75.826 75.8969 76.1693 76.7971 76.8658 77.3999 77.5971 78.0099 78.4999 78.8198 78.9742 79.5838 79.7381 79.8301 80.01 80.1082 80.2944 80.6281 80.7176 81.4165 81.5867 81.8383 82.1847 82.8889 82.9789 83.5477 83.6851 83.8987 84.038 84.5687 84.8672 85.6611 85.8319 86.4831 86.9613 87.7526 88.0507 88.7737 88.9558 88.9764 89.3931 90.009 90.096 90.8509 91.0111 91.6012 91.8682 92.2112 92.2666 92.9147 93.1348 93.9127 94.307 94.7583 95.0973 95.2385 95.3258 95.4498 95.6631 95.7137 95.7266 96.0009 96.4068 96.8388 96.97 97.7209 97.8149 98.3601 98.7346 99.2009 99.4152 100.2 100.283 100.491 100.495 100.677 101.175 101.539 101.619 101.755 101.84 102.127 102.566 103.06 103.25 103.275 103.305 103.413 103.725 104.458 104.748 105.542 106.027 106.543 106.803 107.222 107.285 107.671 107.885 108.324 108.717 109.025 109.423 109.43 109.601 109.62 109.921 110.317 110.788 111.353 111.438 112.074 112.302 112.782 112.847 112.956 113.149 113.278 113.653 113.872 113.982 114.115 114.352 114.414 114.56 114.78 115.209 115.837 116.167 116.567 116.951 117.398 117.424 117.844 117.882 118.298 118.491 118.688 119.013 119.741 120.198 120.566 121.021 121.448 121.711 121.792 122.164 122.274 122.388 123.134 123.167 123.88 124.038 124.121 124.502 125 125.165 125.539 125.723 126.477 126.607 126.664 126.769 127.538 127.563 128.158 128.304 128.868 129.354 129.469 129.845 130.58 130.995 131.171 131.23 131.547 131.849 132.217 132.306 132.714 132.956 133.641 134.004 134.063 134.52 135.289 135.786 135.955 136.246 137.037 137.038 137.355 137.839 138.09 138.42 138.648 138.868 139.122 139.557 139.985 140.203 140.973 141.183 141.378 141.76 141.773 142.249 142.391 142.668 142.914 143.308 143.649 144.097 144.872 145.305 145.847 146.187 146.187 146.506 147.075 147.422 147.532 147.59 147.856 148.097 148.394 148.86 149.136 149.152 149.193 149.513 150.124 150.509 151.295 151.328 152.043 152.515 152.845 153.331 153.688 154.144 154.39 154.809 155.08 155.256 155.932 155.939 156.221 156.686 157.098 157.125 157.343 157.58 158.175</AttributePool>
+    <AttributePool name="Chords" size="33">6.9993 11.4307 16.7179 21.0081 24.2488 29.498 30.6723 31.3756 35.8614 42.7909 47.0692 53.3594 58.3973 65.7136 73.2625 77.2631 79.1566 80.7827 83.7547 89.9751 94.092 101.85 109.679 116.61 117.649 122.78 128.141 131.289 138.932 140.911 143.497 145.917 147.649</AttributePool>
+    <AttributePool name="Structure" size="16">0.799707 17.515 21.146 26.8004 27.0065 49.1648 49.8544 77.2954 79.1766 85.6413 89.5057 107.185 107.562 136.278 137.201 147.287</AttributePool>
     <AttributePool name="Frames">
       <FrameDivision>
         <FirstCenter>511.5</FirstCenter>
@@ -28,43 +28,23 @@
     </AttributePool>
   </ScopePool>
   <ScopePool name="Onset" size="44">
-    <AttributePool name="Relevance">7.28477 8.29798 3.7495 1.41606 2.23548 5.73321 9.86145 8.69106 3.92102 8.83358 7.4163 8.10877 2.2663 3.25205 4.2552 2.81411 8.78018 1.39317 1.46245 7.64306 2.68654 7.60491 0.1236 9.94201 8.30927 4.62447 9.33287 1.63884 3.70281 1.27567 5.45122 2.56386 0.536821 1.41179 2.61483 5.01785 5.22843 4.11237 4.49232 9.59502 1.3242 5.12803 7.2924 2.25105</AttributePool>
+    <AttributePool name="Relevance">8.04437 5.20402 1.70446 1.79662 3.96893 9.23948 0.854518 7.28416 0.492569 2.35969 0.0128178 2.04657 8.31019 2.45979 4.99954 1.35563 0.876492 4.77462 0.194708 0.0292978 0.0708029 2.85592 7.33024 1.53447 8.11029 5.79852 0.524918 3.33842 5.71368 1.71728 7.57653 8.50948 6.51723 7.47307 7.49992 3.57036 7.73675 4.6495 4.31532 2.59804 7.08213 1.78045 7.08914 7.57653</AttributePool>
     <AttributePool name="DetectedChange">
       <Enumerated>EnergyChange</Enumerated>
       <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
       <Enumerated>EnergyChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>PitchChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>PitchChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>PitchChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
       <Enumerated>EnergyChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
       <Enumerated>EnergyChange</Enumerated>
       <Enumerated>EnergyChange</Enumerated>
-      <Enumerated>EnergyChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
       <Enumerated>EnergyChange</Enumerated>
       <Enumerated>EnergyChange</Enumerated>
@@ -73,372 +53,375 @@
       <Enumerated>EnergyChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
+      <Enumerated>EnergyChange</Enumerated>
       <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>EnergyChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>EnergyChange</Enumerated>
+      <Enumerated>EnergyChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>EnergyChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>PitchChange</Enumerated>
+      <Enumerated>EnergyChange</Enumerated>
     </AttributePool>
   </ScopePool>
-  <ScopePool name="Note" size="252">
+  <ScopePool name="Note" size="247">
     <AttributePool name="Pitch">
-      <Enumerated>A#</Enumerated>
-      <Enumerated>B</Enumerated>
+      <Enumerated>F</Enumerated>
       <Enumerated>D</Enumerated>
+      <Enumerated>D#</Enumerated>
       <Enumerated>B</Enumerated>
       <Enumerated>F#</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>C</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>C#</Enumerated>
       <Enumerated>B</Enumerated>
       <Enumerated>G</Enumerated>
       <Enumerated>F#</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>B</Enumerated>
       <Enumerated>A</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>F</Enumerated>
       <Enumerated>D#</Enumerated>
       <Enumerated>D</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>C#</Enumerated>
+      <Enumerated>D#</Enumerated>
       <Enumerated>G#</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>B</Enumerated>
       <Enumerated>D#</Enumerated>
       <Enumerated>A#</Enumerated>
-      <Enumerated>A</Enumerated>
       <Enumerated>E</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>G#</Enumerated>
       <Enumerated>A#</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>C</Enumerated>
       <Enumerated>G</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>E</Enumerated>
       <Enumerated>B</Enumerated>
-      <Enumerated>F</Enumerated>
+      <Enumerated>G</Enumerated>
       <Enumerated>F#</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>C</Enumerated>
       <Enumerated>D#</Enumerated>
       <Enumerated>C</Enumerated>
       <Enumerated>G#</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>E</Enumerated>
       <Enumerated>G#</Enumerated>
       <Enumerated>A#</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>B</Enumerated>
       <Enumerated>D</Enumerated>
-      <Enumerated>B</Enumerated>
       <Enumerated>C#</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>D</Enumerated>
-      <Enumerated>A</Enumerated>
       <Enumerated>A#</Enumerated>
       <Enumerated>B</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>A#</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>D#</Enumerated>
       <Enumerated>B</Enumerated>
       <Enumerated>D#</Enumerated>
-      <Enumerated>C#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>B</Enumerated>
       <Enumerated>C</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>B</Enumerated>
       <Enumerated>G#</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>F</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>A#</Enumerated>
       <Enumerated>C#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>A</Enumerated>
       <Enumerated>E</Enumerated>
       <Enumerated>F#</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>D#</Enumerated>
       <Enumerated>F#</Enumerated>
       <Enumerated>D</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>A</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>F#</Enumerated>
       <Enumerated>G#</Enumerated>
       <Enumerated>F#</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>G#</Enumerated>
       <Enumerated>A</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>D</Enumerated>
       <Enumerated>A</Enumerated>
       <Enumerated>E</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>D#</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>C</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>G</Enumerated>
     </AttributePool>
-    <AttributePool name="Octave">4 5 5 5 6 5 4 6 6 6 4 4 4 4 4 5 5 6 6 5 6 5 6 4 6 5 6 5 5 4 6 4 5 6 6 5 6 4 5 6 4 6 4 6 6 6 4 6 5 4 4 5 6 6 5 5 4 6 4 4 4 4 5 6 4 6 4 4 5 4 4 6 5 5 6 4 6 5 6 5 6 4 6 6 4 5 5 4 6 4 5 5 4 5 4 4 6 4 6 6 5 4 6 6 6 4 6 5 5 4 6 5 6 5 6 5 5 5 5 4 6 6 6 4 6 4 5 5 5 6 4 5 5 5 6 6 4 4 4 4 4 5 4 5 4 4 5 6 5 4 4 4 6 5 6 6 5 6 6 5 4 5 6 6 5 6 6 5 5 4 6 6 6 5 5 4 6 4 6 6 4 6 4 5 6 6 5 6 4 4 5 4 6 5 4 6 5 5 4 6 4 6 5 4 4 4 6 6 5 5 4 4 6 5 6 6 4 6 5 5 6 5 5 5 6 6 6 4 4 6 5 6 5 4 4 4 4 4 4 5 5 6 5 5 6 6 6 5 4 6 6 6</AttributePool>
+    <AttributePool name="Octave">4 6 6 6 5 4 6 4 6 5 6 4 5 5 6 4 4 6 6 4 4 5 6 6 4 6 6 5 5 4 4 6 6 5 5 5 6 5 5 6 5 6 4 6 5 4 4 6 5 4 4 5 5 5 4 4 6 5 6 5 4 5 6 6 6 5 5 6 4 6 5 6 4 5 5 4 5 4 5 6 5 5 4 4 4 6 6 5 6 5 6 5 4 5 4 5 5 5 4 6 5 4 4 5 4 4 5 6 6 6 4 6 5 4 5 6 4 4 4 6 5 4 5 6 4 5 4 5 4 4 5 6 4 6 6 6 5 5 4 4 5 6 4 4 6 5 4 5 4 5 4 5 5 4 5 5 5 5 4 4 4 6 5 5 6 5 6 6 4 6 4 4 6 4 5 6 6 4 6 5 6 6 6 5 5 6 6 4 5 4 6 4 5 5 5 4 4 5 4 5 6 4 4 4 5 5 6 6 5 6 6 6 4 6 4 4 4 6 5 4 5 6 5 4 5 4 6 5 5 6 6 5 4 5 6 6 5 4 4 6 6 6 6 4 4 4 5</AttributePool>
   </ScopePool>
-  <ScopePool name="Chord" size="42">
+  <ScopePool name="Chord" size="34">
     <AttributePool name="Root">
-      <Enumerated>G#</Enumerated>
-      <Enumerated>F</Enumerated>
       <Enumerated>A</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>E</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>F#</Enumerated>
+      <Enumerated>B</Enumerated>
+      <Enumerated>A#</Enumerated>
+      <Enumerated>F</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>C#</Enumerated>
+      <Enumerated>D</Enumerated>
       <Enumerated>C#</Enumerated>
       <Enumerated>D</Enumerated>
       <Enumerated>D</Enumerated>
       <Enumerated>E</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>D#</Enumerated>
       <Enumerated>F</Enumerated>
-      <Enumerated>D#</Enumerated>
       <Enumerated>F</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>F</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>C</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>A#</Enumerated>
+      <Enumerated>D</Enumerated>
       <Enumerated>A#</Enumerated>
       <Enumerated>A#</Enumerated>
       <Enumerated>B</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>F#</Enumerated>
-      <Enumerated>G#</Enumerated>
       <Enumerated>F</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>B</Enumerated>
-      <Enumerated>G</Enumerated>
-      <Enumerated>C#</Enumerated>
-      <Enumerated>G#</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>F#</Enumerated>
+      <Enumerated>D</Enumerated>
       <Enumerated>A</Enumerated>
-      <Enumerated>D#</Enumerated>
-      <Enumerated>C#</Enumerated>
+      <Enumerated>G</Enumerated>
+      <Enumerated>B</Enumerated>
       <Enumerated>F</Enumerated>
-      <Enumerated>A#</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>D</Enumerated>
+      <Enumerated>G#</Enumerated>
+      <Enumerated>G</Enumerated>
     </AttributePool>
     <AttributePool name="Mode">
       <Enumerated>Diminished</Enumerated>
-      <Enumerated>Diminished</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Diminished</Enumerated>
-      <Enumerated>Minor</Enumerated>
-      <Enumerated>Diminished</Enumerated>
-      <Enumerated>Diminished</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Major</Enumerated>
-      <Enumerated>Minor</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Minor</Enumerated>
-      <Enumerated>Minor</Enumerated>
-      <Enumerated>Diminished</Enumerated>
-      <Enumerated>Minor</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Minor</Enumerated>
-      <Enumerated>Minor</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Diminished</Enumerated>
       <Enumerated>Major</Enumerated>
       <Enumerated>Major</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Major</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Diminished</Enumerated>
-      <Enumerated>Diminished</Enumerated>
-      <Enumerated>Diminished</Enumerated>
-      <Enumerated>Minor</Enumerated>
-      <Enumerated>Minor</Enumerated>
-      <Enumerated>Major</Enumerated>
-      <Enumerated>Minor</Enumerated>
-      <Enumerated>Major</Enumerated>
-      <Enumerated>Diminished</Enumerated>
-      <Enumerated>Augmented</Enumerated>
-      <Enumerated>Augmented</Enumerated>
       <Enumerated>Major</Enumerated>
       <Enumerated>Diminished</Enumerated>
       <Enumerated>Diminished</Enumerated>
+      <Enumerated>Diminished</Enumerated>
+      <Enumerated>Diminished</Enumerated>
+      <Enumerated>Major</Enumerated>
+      <Enumerated>Diminished</Enumerated>
+      <Enumerated>Augmented</Enumerated>
+      <Enumerated>Minor</Enumerated>
+      <Enumerated>Major</Enumerated>
+      <Enumerated>Diminished</Enumerated>
+      <Enumerated>Minor</Enumerated>
+      <Enumerated>Diminished</Enumerated>
+      <Enumerated>Augmented</Enumerated>
+      <Enumerated>Major</Enumerated>
+      <Enumerated>Major</Enumerated>
+      <Enumerated>Augmented</Enumerated>
+      <Enumerated>Diminished</Enumerated>
+      <Enumerated>Major</Enumerated>
+      <Enumerated>Augmented</Enumerated>
+      <Enumerated>Diminished</Enumerated>
+      <Enumerated>Augmented</Enumerated>
+      <Enumerated>Augmented</Enumerated>
+      <Enumerated>Minor</Enumerated>
+      <Enumerated>Minor</Enumerated>
+      <Enumerated>Diminished</Enumerated>
+      <Enumerated>Augmented</Enumerated>
+      <Enumerated>Augmented</Enumerated>
+      <Enumerated>Minor</Enumerated>
+      <Enumerated>Major</Enumerated>
+      <Enumerated>Augmented</Enumerated>
     </AttributePool>
   </ScopePool>
-  <ScopePool name="StructuralPart" size="6">
+  <ScopePool name="StructuralPart" size="8">
     <AttributePool name="Description">
-      <Enumerated>Accapella</Enumerated>
       <Enumerated>Solo</Enumerated>
-      <Enumerated>Solo</Enumerated>
+      <Enumerated>Chorus</Enumerated>
       <Enumerated>Versus</Enumerated>
       <Enumerated>Versus</Enumerated>
+      <Enumerated>Solo</Enumerated>
       <Enumerated>Accapella</Enumerated>
+      <Enumerated>Accapella</Enumerated>
+      <Enumerated>Solo</Enumerated>
     </AttributePool>
     <AttributePool name="SimilarityGroup">
-      <Enumerated>C</Enumerated>
+      <Enumerated>I</Enumerated>
       <Enumerated>C</Enumerated>
       <Enumerated>F</Enumerated>
-      <Enumerated>E</Enumerated>
-      <Enumerated>D</Enumerated>
+      <Enumerated>I</Enumerated>
       <Enumerated>J</Enumerated>
+      <Enumerated>A</Enumerated>
+      <Enumerated>I</Enumerated>
+      <Enumerated>I</Enumerated>
     </AttributePool>
   </ScopePool>
   <ScopePool name="Frame" size="6837">

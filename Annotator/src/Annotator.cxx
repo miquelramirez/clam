@@ -138,6 +138,7 @@ void Annotator::computeSongDescriptors()
 	std::string configurationOption = mProject.File()+str2;
 	bool ok = runner->run(mProject.GetExtractor().c_str(),
 		QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str() << "-c" <<configurationOption.c_str(),
+		//QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str() << "-c" <<configurationOption.c_str()<<"-s"<<mProject.GetSchema().c_str(),
 		//QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str(),
 		QDir::current().path());
 	

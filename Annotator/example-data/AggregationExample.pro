@@ -10,8 +10,8 @@ TODO: Explain how this aggregation extractor should be reviewed.
 &lt;/p&gt;
 </Description>
   <Schema>AggregationExample.sc</Schema>
-  <Extractor>D:/devel/Annotator/scripts/dist/AggregationExtractor.exe</Extractor>
-  <PoolSuffix>.aggregatedPool</PoolSuffix>
+  <Extractor>C:/Jun/Devel/Annotator/scripts/dist/AggregationExtractor.exe</Extractor>
+  <PoolSuffix>.aggPool</PoolSuffix>
   <Config></Config>
   <Configuration>sources = [
 	("example", FileMetadataSource(path=".",
@@ -20,15 +20,17 @@ TODO: Explain how this aggregation extractor should be reviewed.
 		extractor="ClamExtractorExample")),
 	("chord", FileMetadataSource(path=".",
 		schemaFile="Chords.sc",
-		poolSuffix=".chords",
+		poolSuffix=".chord",
 		extractor="ChordExtractor")),
 ]
 
 map = [
+	# ('TargetScope::TargetAttribute', 'sourceId', 'SourceScope::SourceAttribute'),
 	("Song::Frames", "example", "Song::Frames"),
 	("Song::ChordFrames", "chord", "Song::Frames"),
 	("Song::Danceable", "example", "Song::Danceability"),
 	("Frame::Energy", "example", "Frame::Energy"),
+	("ChordFrame::Energy", "chord", "Frame::Energy"),
 	("ChordFrame::ChordHartePcp", "chord", "Frame::HartePcp"),
 	("ChordFrame::HarteChordCorrelation", "chord", "Frame::HarteChordCorrelation"),
 	("Song::Harte", "chord", "Song::Chords_Harte"),
@@ -43,16 +45,5 @@ map = [
       <SoundFile>SongsTest/Debaser-WoodenHouse.mp3</SoundFile>
     </Song>
   </Songs>
-  <Views>
-    <View>
-      <Type>Tonnetz</Type>
-      <AttributeScope>ChordFrame</AttributeScope>
-      <AttributeName>ChordHartePcp</AttributeName>
-    </View>
-    <View>
-      <Type>KeySpace</Type>
-      <AttributeScope>ChordFrame</AttributeScope>
-      <AttributeName>HarteChordCorrelation</AttributeName>
-    </View>
-  </Views>
+  <Views/>
 </Project>
