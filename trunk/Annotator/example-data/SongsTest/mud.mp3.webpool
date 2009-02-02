@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Description>
+<Pool>
   <ScopePool name="Song" size="1">
     <AttributePool name="Artist">Talking Cure
 </AttributePool>
     <AttributePool name="Album">Hausarbeit
 </AttributePool>
-    <AttributePool name="Track-No">3
+    <AttributePool name="TrackNo">3
 </AttributePool>
     <AttributePool name="Title">Mud
 </AttributePool>
     <AttributePool name="Date">2005-06-16 16:44:38
 </AttributePool>
-    <AttributePool name="Lyrics">
-</AttributePool>
-    <AttributePool name="Songlist-URI">http://dbtune.org/jamendo/track/1260
+    <AttributePool name="Lyrics"></AttributePool>
+    <AttributePool name="SonglistURI">http://dbtune.org/jamendo/track/1260
 http://dbtune.org/jamendo/track/1261
 http://dbtune.org/jamendo/track/1262
 http://dbtune.org/jamendo/track/1263
@@ -26,12 +25,12 @@ http://dbtune.org/jamendo/track/1269
 http://dbtune.org/jamendo/track/1270
 http://dbtune.org/jamendo/track/1271
 </AttributePool>
-    <AttributePool name="Photo-URI">http://img.jamendo.com/albums/196/covers/1.0.jpg
+    <AttributePool name="PhotoURI">http://img.jamendo.com/albums/196/covers/1.0.jpg
 http://img.jamendo.com/albums/196/covers/1.100.jpg
 http://img.jamendo.com/albums/196/covers/1.300.jpg
 http://img.jamendo.com/albums/196/covers/1.500.jpg
 </AttributePool>
-    <AttributePool name="Tag-Jamendo">pop
+    <AttributePool name="TagJamendo">pop
 80s
 rock
 newwave
@@ -42,8 +41,8 @@ alternative
 plus
 mieux
 </AttributePool>
-    <AttributePool name="Tag-MusicBrainz"></AttributePool>
-    <AttributePool name="Tag-SemWeb">80s
+    <AttributePool name="TagMusicBrainz"></AttributePool>
+    <AttributePool name="TagSemWeb">80s
 alternatif
 mieux
 musicbrainz
@@ -53,7 +52,7 @@ pop
 rock
 stupefiant
 </AttributePool>
-    <AttributePool name="Album-Description">Comme le nom l'indique, 莽a a 茅t茅 fait a虁 la maison.&lt;br /&gt;&#13;
+    <AttributePool name="AlbumDescription">Comme le nom l'indique, 莽a a 茅t茅 fait a虁 la maison.&lt;br /&gt;&#13;
 Les morceaux qui composent l'album ont 茅t茅 r茅alis茅s entre&lt;br /&gt;&#13;
 1998 et 2005.&lt;br /&gt;&#13;
 &lt;br /&gt;&#13;
@@ -72,18 +71,18 @@ Bon, on nous demande d'锚tre sinc猫re et courtois. Heureusement qu'on ne nous 
 </AttributePool>
     <AttributePool name="Genre">Alternatif
 </AttributePool>
-    <AttributePool name="Albumlist-URI">http://dbtune.org/jamendo/record/1434
+    <AttributePool name="AlbumlistURI">http://dbtune.org/jamendo/record/1434
 http://dbtune.org/jamendo/record/196
 </AttributePool>
-    <AttributePool name="Artist-Photo">http://img.jamendo.com/artists/t/talking.cure.jpg
+    <AttributePool name="ArtistPhoto">http://img.jamendo.com/artists/t/talking.cure.jpg
 </AttributePool>
-    <AttributePool name="Artist-Homepage-URI">http://cyrille.lips.club.fr/
+    <AttributePool name="ArtistHomepageURI">http://cyrille.lips.club.fr/
 </AttributePool>
-    <AttributePool name="Artist-Location-URI">http://sws.geonames.org/2975517/
+    <AttributePool name="ArtistLocationURI">http://sws.geonames.org/2975517/
 </AttributePool>
-    <AttributePool name="Album-Rating"> 6.9
+    <AttributePool name="AlbumRating">6.9
 </AttributePool>
-    <AttributePool name="Songlist"> &lt;a href='/en/track/1260'&gt; Comfort &lt;/a&gt; 
+    <AttributePool name="Songlist">&lt;a href='/en/track/1260'&gt; Comfort &lt;/a&gt; 
  &lt;a href='/en/track/1261'&gt; Chanson pour elle &lt;/a&gt; 
  &lt;a href='/en/track/1262'&gt; Mud &lt;/a&gt; 
  &lt;a href='/en/track/1263'&gt; A Song Of Suicide &lt;/a&gt; 
@@ -97,4 +96,4 @@ http://dbtune.org/jamendo/record/196
  &lt;a href='/en/track/1271'&gt; So Sad Monday &lt;/a&gt; 
 </AttributePool>
   </ScopePool>
-</Description>
+</Pool>
