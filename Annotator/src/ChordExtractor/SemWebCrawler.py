@@ -26,9 +26,12 @@ class SemWebCrawler:
 
 	def _tempRecord(self,filename,data):
 		op = open(filename, "wb")
+		i=0
 		for str in data:
 			op.write(str)
-			op.write('\n')
+			i=i+1
+			if (i<data.__len__()):
+				op.write('\n')
 		op.close()
 		return 1
 	
