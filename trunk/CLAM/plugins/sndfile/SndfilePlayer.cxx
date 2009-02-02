@@ -18,13 +18,13 @@
  *
  */
 
-#include "SndfilePlayer.hxx"
+#include "LockFreeSndfilePlayer.hxx"
 #include <CLAM/ProcessingFactory.hxx>
 
 static const char * metadata[] = {
-	"key", "SndfilePlayer",
+	"key", "LockFreeSndfilePlayer",
 	"category", "[plugin] Sndfile Read/Write",
 	0
 	};
 
-static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::SndfilePlayer> registratorSndfile(metadata);
+static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::LockFreeSndfilePlayer> registratorSndfile(metadata);
