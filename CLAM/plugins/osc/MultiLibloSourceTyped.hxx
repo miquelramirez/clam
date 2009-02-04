@@ -181,7 +181,12 @@ protected:
 			type=EnumOSCTypes(_config.GetOSCTypesMask());
 
 		for (unsigned i=0;i<nOutputs;i++)
-			_outControls.push_back(createControl(type,"name"));
+		{
+			std::ostringstream controlName;
+			controlName<<oscPath<<"_"<<i;
+		//this->GetName()<<"_"<<i;
+			_outControls.push_back(createControl(type,controlName.str()));
+		}
 
 		std::string port = _config.GetServerPort();
 		/* not defined port */
