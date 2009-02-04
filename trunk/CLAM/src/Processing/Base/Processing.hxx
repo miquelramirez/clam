@@ -103,32 +103,38 @@ namespace CLAM
 			InPortBase & receiver );
 	/**
 	 * Tries to send a float to an inaccessible InControl, this is kept for compatibility
-	 * This function uses the InControl's name to identfy it.
+	 * This function uses the InControl's name to identify it.
+	 * @pre The type of the control is Float
 	 */
 	void SendFloatToInControl(Processing & receiver, const std::string & inControlName, float value);
 	/**
 	 * Tries to send a float to an inaccessible InControl, this is kept for compatibility
-	 * This function uses the InControl's registry index to identfy it.
+	 * This function uses the InControl's registry index to identify it.
+	 * @pre The type of the control is Float
 	*/
 	void SendFloatToInControl(Processing & receiver, int inControlIndex, float value);
 	/**
 	 * Tries to send a float to an inaccessible OutControl, this is kept for compatibility
-	 * This function uses the OutControl's registry index to identfy it.
+	 * This function uses the OutControl's registry index to identify it.
+	 * @pre The type of the control is Float
 	*/
 	void SendFloatToOutControl(Processing & sender, const std::string & inControlName, float value);
 	/**
 	 * Tries to send a float to an inaccessible OutControl, this is kept for compatibility
-	 * This function uses the OutControl's registry index to identfy it.
+	 * This function uses the OutControl's registry index to identify it.
+	 * @pre The type of the control is Float
 	*/
 	void SendFloatToOutControl(Processing & sender, int inControlIndex, float value);
 	/**
 	 * Gets a float from an inaccesible InControl, this is kept for compatibility
-	 * This function uses the InControl's name to identfy it.
+	 * This function uses the InControl's name to identify it.
+	 * @pre The type of the control is Float
 	*/
 	float GetFloatFromInControl(Processing & proc, const std::string & inControlName);
 	/**
 	 * Gets a float from an inaccesible InControl, this is kept for compatibility
-	 * This function uses the InControl's name to identfy it.
+	 * This function uses the InControl's name to identify it.
+	 * @pre The type of the control is Float
 	*/
 	float GetFloatFromInControl(Processing & proc, int inControlIndex);
 
