@@ -90,6 +90,10 @@ namespace CLAM {
 		{
 				mLinks.remove(&outControl);
 		}
+		virtual const std::string GetLastValueAsString ()
+		{
+			return "Non printable type";
+		}
 	};
 } // End namespace CLAM
 #endif // InControlBase_hxx

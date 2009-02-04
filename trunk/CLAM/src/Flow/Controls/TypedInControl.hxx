@@ -26,6 +26,12 @@ namespace CLAM {
 		
 		virtual void DoControl(const TypedControlData& val) { mLastValue = val; };
 		const TypedControlData& GetLastValue() const { return mLastValue; };
+		const std::string GetLastValueAsString() // TODO: Use plugins as soon we start to use non streamable types
+		{
+			std::ostringstream valueStream;
+			valueStream << GetLastValue();
+			return valueStream.str();
+		}
 		/** ONLY TO USE WHEN TypedControlData == float. Returns the last TypedControlData (float) received interpreted as a bool. */
 		bool GetLastValueAsBoolean() const 
 		{ 
