@@ -116,6 +116,10 @@ protected:
 		_outControls.clear();
 		GetOutControls().Clear();
 	}
+
+
+//TODO: REFACTOR THESE FOLLOWING THREE METHODS!!!!
+
 	OutControlBase * createControl(const EnumOSCTypes & type, const std::string & name)
 	{
 		if (type==EnumOSCTypes::eString)
@@ -138,7 +142,6 @@ protected:
 		if (type == EnumOSCTypes::eInt64) return 'h';
 		return '?';
 	}
-
 
 	static void sendControl(OutControlBase * control, lo_arg valueToSend)
 	{
