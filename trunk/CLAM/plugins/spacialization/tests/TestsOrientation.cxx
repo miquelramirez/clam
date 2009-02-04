@@ -176,14 +176,14 @@ public:
 		Orientation orientation = CLAM::AbsoluteCoordinates2RelativeAngles::
 			computeRelativeOrientation
 				( 0,0,0, 30,45,0, 1,1,1 );
-		ASSERT_EQUALS(Orientation(138.45129188967510458, -6.1029851391410261385), orientation);
+		ASSERT_EQUALS(Orientation(12.340705747005989323, -8.5938519506549795324), orientation);
 	}	
 	void testRelativeOrientation_arbitraryNegativeAzimuth()
 	{
 		Orientation orientation = CLAM::AbsoluteCoordinates2RelativeAngles::
 			computeRelativeOrientation
 				( 0,0,0, 30,-45,0, 1,1,1 );
-		ASSERT_EQUALS(Orientation(70.126623500664067024, 45.471805944275757838), orientation);
+		ASSERT_EQUALS(Orientation(54.735610317245345868, 75.), orientation);
 	}
 	void testChordDistance_back2back()
 	{
