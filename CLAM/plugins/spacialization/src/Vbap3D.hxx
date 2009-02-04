@@ -41,9 +41,10 @@ class Vbap3D : public CLAM::Processing
 	std::vector<Vector> _normals;
 	std::vector< std::vector<Vector> > _speakersPositions;
 	std::vector<float> _ortogonalProjection;
-	unsigned _currentTriangle;
+	int _currentTriangle;
+	float _delta;
 
-	Vector vectorialProduct(const Vector& v1, const Vector& v2)
+	Vector vectorialProduct(const Vector& v1, const Vector& v2) const
 	{
 		Vector result = {
 			v1.y * v2.z - v1.z * v2.y ,
@@ -52,17 +53,17 @@ class Vbap3D : public CLAM::Processing
 			};
 		return result;
 	}
-	Vector product(const float& factor, const Vector& v)
+	Vector product(const float& factor, const Vector& v) const
 	{
 		Vector result = { factor * v.x, factor * v.y, factor * v.z };
 		return result;
 	}
 
-	float escalarProduct(const Vector& v1, const Vector& v2)
+	float escalarProduct(const Vector& v1, const Vector& v2) const
 	{
 		return v1.x * v2.x + v1.y * v2.y + v1.z + v2.z;
 	}
-	Vector substract(const Vector& v1, const Vector& v2)
+	Vector substract(const Vector& v1, const Vector& v2) const
 	{
 		Vector result = {
 			v1.x - v2.x ,
@@ -71,14 +72,19 @@ class Vbap3D : public CLAM::Processing
 			};
 		return result;
 	}
-	float mod(const Vector& v)
+	float mod(const Vector& v) const
 	{
 		return v.x*v.x + v.y*v.y + v.z*v.z;
 	}
-	float angle(const Vector& v1, const Vector& v2)
+	float angle(const Vector& v1, const Vector& v2) const
 	{
 		return acos( escalarProduct(v1,v2) / mod(v1)*mod(v2) );
 	}
+	void print(const Vector& v, std::string name="") const
+	{
+		std::cout << name << " (" << v.x << ", " << v.y << ", " << v.z << ")" << std::endl;
+	}
+
 public:
 	const char* GetClassName() const { return "Vbap3D"; }
 	Vbap3D(const Config& config = Config()) 
@@ -90,6 +96,7 @@ public:
 		Configure( config );
 		_azimuth.SetBounds(-360, 360); //a complete spin on each slider direction
 		_elevation.SetBounds(-90, 90);
+		_delta = 0.00001; 
 	}
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
@@ -235,40 +242,54 @@ public:
 		_w.SetHop(buffersize);
 		return true;
 	}
-
-	bool Do()
+	
+	/// params: the source azimuth and elevation
+	int findTriangle(float azimuth, float elevation) const
 	{
-		const float delta = 0.00001;
-		const float as=fmod(_azimuth.GetLastValue()+360+180,360)-180;
-		const float es=_elevation.GetLastValue();
-		CLAM_DEBUG_ASSERT(as>=-180 and as<=+180, "azimuth expected in range -180, +180");
-		CLAM_DEBUG_ASSERT(es>=-90 and es<=+90, "elevation expected in range -90, +90");
-		//TODO extract method find triangle	
-		unsigned newTriangle = 0;
+std::cout << "\nfind Triangle. triangles " << _triangles.size() << std::endl;
+
+		unsigned triangle = 0;
 		// find triangle testing them all
 		for (unsigned i=0; i<_triangles.size(); i++)
 		{
 			Vector r_source = {
-					cos(es) * cos(as),
-					cos(es) * sin(as),
-					sin(es),
+					cos(elevation) * cos(azimuth),
+					cos(elevation) * sin(azimuth),
+					sin(elevation),
 				};
+std::cout << "checking triangle "<< i << std::endl;
+print(r_source, "r_source");
+print(_normals[i], "normal");
 			const float divisor = escalarProduct(_normals[i], r_source);
-			if (abs(divisor) < delta) continue;
+			if (fabs(divisor) < _delta) 
+			{
+std::cout << "divisor is 0 !!" << std::endl;
+				continue;
+			}
 			const float t =  _ortogonalProjection[i] / divisor;
+			std::cout << " t " << t << std::endl;
 			if (t>1. or t<0.) continue;
 			Vector r_I = product(t, r_source);
 			Vector v1 = substract( _speakersPositions[i][0], r_I);
 			Vector v2 = substract( _speakersPositions[i][1], r_I);
 			Vector v3 = substract( _speakersPositions[i][2], r_I);
-			if (abs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < delta)
+			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _delta)
 			{
 				// found!
-				newTriangle = i;
+				triangle = i;
 				break;
-			}
-			
+			}	
 		}
+		return triangle;
+	}
+
+	bool Do()
+	{
+		const float as=fmod(_azimuth.GetLastValue()+360+180,360)-180; // as: azimuth_source
+		const float es=_elevation.GetLastValue(); // es: elevation_source
+		CLAM_DEBUG_ASSERT(as>=-180 and as<=+180, "azimuth expected in range -180, +180");
+		CLAM_DEBUG_ASSERT(es>=-90 and es<=+90, "elevation expected in range -90, +90");
+		int newTriangle = findTriangle(as, es);
 		if (newTriangle==0) std::cout << "ERROR: no triangle found!" << std::endl;
 		// change triangle
 		if (_currentTriangle != newTriangle) // changed triangle
@@ -311,7 +332,7 @@ public:
 			else gainToApply = 0.;
 			CLAM::DataArray& out =_outputs[i]->GetAudio().GetBuffer();
 			for (int sample=0; sample<w.Size(); sample++)
-				out[sample] = gainToApply>delta ? w[sample]*gainToApply : 0.;
+				out[sample] = gainToApply>_delta ? w[sample]*gainToApply : 0.;
 			
 			_outputs[i]->Produce();
 		}	

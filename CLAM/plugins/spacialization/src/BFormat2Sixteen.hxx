@@ -57,7 +57,7 @@ public:
 		, _x("X", this)
 		, _y("Y", this)
 		, _z("Z", this)
-		, _nChannels(14)
+		, _nChannels(0)
 	{
 		Configure( config );
 
@@ -98,6 +98,7 @@ public:
 			{"Top Back Right", -135., 45.},
 			{"Top Front Left", 45., 45.},
 			{"Top Front Right", -45., 45.},
+			{"Top", 0., 89.},
 			{0, 0., 0.}
 		};
 		for (unsigned i=0; speaker[i].name; i++)
@@ -113,6 +114,7 @@ public:
 			_cosElevations.push_back( std::cos( M_PI*speaker[i].elevation/180 ) );
 
 		}
+		_nChannels=_outputs.size();
 		
 		
 		_w.SetSize(buffersize);
