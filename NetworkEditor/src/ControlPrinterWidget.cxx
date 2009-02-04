@@ -1,5 +1,6 @@
 #include "ControlPrinterWidget.hxx"
-#include <CLAM/InControl.hxx>
+#include "ControlPrinter.hxx"
+#include <CLAM/InControlBase.hxx>
 #include <QtGui/QGridLayout>
 #include <QtGui/QLabel>
 
@@ -12,8 +13,9 @@ ControlPrinterWidget::ControlPrinterWidget(CLAM::Processing * processing)
 	unsigned nLabels = _processing->GetNInControls();
 	for (unsigned i = 0; i < nLabels; i++)
 	{
-		CLAM::FloatInControl & control = dynamic_cast<CLAM::FloatInControl&> (_processing->GetInControl(i));
-		QString name(control.GetName().c_str());
+		CLAM::InControlBase & control = _processing->GetInControl(i);
+		QString name;
+		name=QString(control.GetName().c_str());
 
 		QLabel *label = new QLabel(name);
 		grid->addWidget(label, i, 0, Qt::AlignRight);
@@ -35,11 +37,12 @@ ControlPrinterWidget::~ControlPrinterWidget()
 void ControlPrinterWidget::timerEvent(QTimerEvent *event)
 {
 	int nLabels = _processing->GetNInControls();
+
 	for (int i = 0; i < nLabels; i++)
 	{
-		CLAM::FloatInControl & control = dynamic_cast<CLAM::FloatInControl&> (_processing->GetInControl(i));
-		CLAM::TControlData value = control.GetLastValue();
-		_labels[i]->setText(QString::number(value, 'f', 6));
+		CLAM::InControlBase & control = _processing->GetInControl(i);
+		const std::string value=control.GetLastValueAsString();
+		_labels[i]->setText(value.c_str());
 	}
 }
 

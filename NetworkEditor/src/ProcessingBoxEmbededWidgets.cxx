@@ -59,7 +59,7 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 	if (className=="ControlSurface")
 		return new ControlSurfaceWidget(this, processing);
 
-	if (className=="ControlPrinter" || className=="ControlTraceWriter")
+	if (className=="ControlPrinter" || className=="ControlTraceWriter" || className=="ControlPrinterTyped" )
 		return new ControlPrinterWidget(processing);
 
 	if (className=="ProgressControl")
