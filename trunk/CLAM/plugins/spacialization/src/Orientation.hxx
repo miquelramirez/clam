@@ -77,12 +77,12 @@ public:
 	*/
 	double chordDistance(const Orientation & other)
 	{
+		return 2 -2*(se*other.se + ce*other.ce * (sa*other.sa + ca*other.ca));
+		// TODO: Use the optimized form
 		double dz = se-other.se;
 		double dy = ce*sa-other.ce*other.sa;
 		double dx = ce*ca-other.ce*other.ca;
 		return dx*dx + dy*dy + dz*dz;
-		// TODO: Use the optimized form
-		return 2 -2*(se*other.se + ce*other.ce * (sa*other.sa + ca*other.ca));
 	}
 
 	bool operator!=(const Orientation & other) const
