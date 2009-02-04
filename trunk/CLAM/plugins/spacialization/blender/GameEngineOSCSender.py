@@ -41,6 +41,28 @@ import re
 #import GameLogic
 
 
+def MatrixToEuler(mat):
+	import math
+
+	cy=math.sqrt( math.pow(mat[0][0],2) + math.pow(mat[0][1],2) )
+
+	eul1=[]
+	eul2=[]
+
+	eul1.insert(0,math.degrees(math.atan2(mat[1][2],mat[2][2])))
+	eul1.insert(1,math.degrees(math.atan2(-mat[0][2],cy)))
+	eul1.insert(2,math.degrees(math.atan2(mat[0][1],mat[0][0])))
+
+	eul2.insert(0,math.degrees(math.atan2(-mat[1][2],-mat[2][2])))
+	eul2.insert(1,math.degrees(math.atan2(-mat[0][2],-cy)))
+	eul2.insert(2,math.degrees(math.atan2(-mat[0][1],-mat[0][0])))
+	
+	
+	if sum([math.fabs(i) for i in eul1]) < sum([math.fabs(i) for i in eul2]):
+		return eul1
+	else:
+		return eul2
+
 def getTypeOfObject(controller):
 	dictTypes={"moving_source": "source",
 		"fixed_source": "source",
@@ -58,8 +80,10 @@ def getTypeOfObject(controller):
 home=getenv("HOME")
 pathToOSCList=["../../osc/oscpython","%s/src/liblo" % home, "%s/acustica/realtime_blender_demo" % home, "%s/clam/CLAM/plugins/osc/oscpython"%home]
 configured=0
+import os.path
 for testpath in pathToOSCList:
-	if Blender.sys.exists(testpath+"/OSC.py"):
+	pathWithName="%s/OSC.py" % testpath
+	if os.path.exists(pathWithName) and os.path.isfile(pathWithName):
 		path.append(testpath)
 		from OSC import Message
 		configured=1
@@ -70,21 +94,35 @@ if configured==0:
 def sendObjectValue(objectName,typeName,typeValue,value,port):
 	message="/SpatDIF/%s/%s/xyz/%s" % (typeName,objectName,typeValue)
 	Message(message,value).sendlocal(port)
+#	Message(message,value).sendto("84.88.76.190",port)
 
 def main():
 	typename=None
 	controller=GameLogic.getCurrentController()
 	object=controller.getOwner()
-#	print object.name
+	print object.name
 	location=object.getPosition()
 #	print location
 	ori=object.orientation
-#	print ori
+#	print type(ori)
 	matr=Blender.Mathutils.Matrix(ori[0],ori[1],ori[2])
 	roll, descention, azimuth=matr.transpose().toEuler()
 	elevation = -descention
 	azimuth+=90
-	rotation = (roll,elevation,azimuth)
+	print "aeaeae(Blender): %f,%f,%f" % (roll,elevation,azimuth)
+#	rotation = (roll,elevation,azimuth)
+#	print ori
+#	print str(matr.transpose().toEuler())
+#	print "ori size: %i, columns size: %i" % (len(ori),len(ori[0]) )
+#	print MatrixToEuler(ori)
+	roll2,descention2,azimuth2=MatrixToEuler(ori)
+	elevation2=-descention2
+	azimuth2+=90
+	azimuth2*=-1
+	azimuth2=azimuth2+180
+	rotation=(roll2,elevation2,azimuth2)
+	print "aeaeae(standalone): %f,%f,%f" % (roll2,elevation2,azimuth2)
+#	print "a: %f,%f,%f" % (a[0],a[1],a[2])
 	ports=[7000]
 	# try to get the ports on object name:
 	if re.search('_p([0-9_]+)$',object.name)!=None:

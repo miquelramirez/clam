@@ -3,6 +3,7 @@
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/TypedOutControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/ControlArray.hxx>
 #include <CLAM/Enum.hxx>
 #include <string>
@@ -125,7 +126,7 @@ protected:
 		if (type==EnumOSCTypes::eString)
 			return new TypedOutControl<std::string> (name,this);
 		if (type==EnumOSCTypes::eFloat)
-			return new TypedOutControl<float> (name,this);
+			return new FloatOutControl (name,this);
 		if (type==EnumOSCTypes::eDouble)
 			return new TypedOutControl<double> (name,this);
 		if (type==EnumOSCTypes::eInt or type==EnumOSCTypes::eInt64)
@@ -149,7 +150,8 @@ protected:
 		if (typeName=="Ss")
 			dynamic_cast<TypedOutControl<std::string> *> (control)->SendControl( (const char*) &valueToSend.s);
 		if(typeName=="f")
-			dynamic_cast<TypedOutControl<float> *> (control)->SendControl(valueToSend.f);
+//			dynamic_cast<TypedOutControl<float> *> (control)->SendControl(valueToSend.f);
+			dynamic_cast<FloatOutControl *>(control)->SendControl(valueToSend.f);
 		if(typeName=="d")
 			dynamic_cast<TypedOutControl<double> *> (control)->SendControl(valueToSend.f32);
 		if(typeName=="i")
@@ -184,7 +186,6 @@ protected:
 		{
 			std::ostringstream controlName;
 			controlName<<oscPath<<"_"<<i;
-		//this->GetName()<<"_"<<i;
 			_outControls.push_back(createControl(type,controlName.str()));
 		}
 
