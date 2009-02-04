@@ -9,6 +9,7 @@
 #include <cmath>
 #include <algorithm>
 #include <map>
+#include <vector>
 
 #include "lo/lo.h"
 #ifdef GetClassName // windows.h introduces that
@@ -87,7 +88,7 @@ public:
 	
 	~MultiLibloSourceTyped()
 	{
-		DeleteMethod();
+		UnregisterOscCallback();
 		RemoveOldControls();
 	}
 
@@ -107,8 +108,50 @@ protected:
 
         void RemoveOldControls()
         {
-		_outControls.Clear();
+		std::vector<OutControlBase *>::iterator it;
+		for (it=_outControls.begin();it!=_outControls.end();it++)
+		{
+			delete *it;
+		}
+		_outControls.clear();
 		GetOutControls().Clear();
+	}
+	OutControlBase * createControl(const EnumOSCTypes & type, const std::string & name)
+	{
+		if (type==EnumOSCTypes::eString)
+			return new TypedOutControl<std::string> (name,this);
+		if (type==EnumOSCTypes::eFloat)
+			return new TypedOutControl<float> (name,this);
+		if (type==EnumOSCTypes::eDouble)
+			return new TypedOutControl<double> (name,this);
+		if (type==EnumOSCTypes::eInt or type==EnumOSCTypes::eInt64)
+			return new TypedOutControl<int> (name,this);
+		// TODO: Decide whether ASSERTing (contract) or throw (control) 
+		return 0;
+	}
+	char oscTypeChar(const EnumOSCTypes & type) const
+	{
+		if (type == EnumOSCTypes::eString) return 's';
+		if (type == EnumOSCTypes::eFloat) return 'f';
+		if (type == EnumOSCTypes::eDouble) return 'd';
+		if (type == EnumOSCTypes::eInt) return 'i';
+		if (type == EnumOSCTypes::eInt64) return 'h';
+		return '?';
+	}
+
+
+	static void sendControl(OutControlBase * control, lo_arg valueToSend)
+	{
+		const std::string typeName=control->GetTypeId().name();
+		if (typeName=="Ss")
+			dynamic_cast<TypedOutControl<std::string> *> (control)->SendControl( (const char*) &valueToSend.s);
+		if(typeName=="f")
+			dynamic_cast<TypedOutControl<float> *> (control)->SendControl(valueToSend.f);
+		if(typeName=="d")
+			dynamic_cast<TypedOutControl<double> *> (control)->SendControl(valueToSend.f32);
+		if(typeName=="i")
+			dynamic_cast<TypedOutControl<int> *> (control)->SendControl(valueToSend.i);
+		return;
 	}
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
@@ -118,7 +161,7 @@ protected:
 //		_config.AddAll();
 //		_config.UpdateData();
 //set outputs:
-		int nOutputs = int(_config.GetNumberOfArguments());
+		unsigned nOutputs = unsigned (_config.GetNumberOfArguments());
 		if (nOutputs < 1)
 		{
 			_config.SetNumberOfArguments(1);
@@ -127,51 +170,32 @@ protected:
 		// multi-port names share user-configured identifier
 		std::string oscPath=_config.GetOscPath();
 		std::replace(oscPath.begin(),oscPath.end(),'/','_');
-		_outControls.Resize(nOutputs,oscPath, this);
+
+		// define processing callback catcher (strings)
+
+		unsigned int type=EnumOSCTypes::eFloat;
+		if (_config.HasOSCTypesMask())
+			type=EnumOSCTypes(_config.GetOSCTypesMask());
+
+		for (unsigned i=0;i<nOutputs;i++)
+			_outControls.push_back(createControl(type,"name"));
 
 		std::string port = _config.GetServerPort();
 		/* not defined port */
 		if (port=="")
 		{
-			std::cout << "MultiLibloSourceTyped::ConcreteConfigure server NOT started -- default config" << std::endl;
-			return true;
+			AddConfigErrorMessage("No port defined");
+			return false;
 		}
 		if (_methodSetted) // if exists delete previous method (with previous _port, _oscPath and _typespec)
 		{ 
-			DeleteMethod();
+			UnregisterOscCallback();
 		}
-		// define processing callback catcher (strings)
+
 		std::string typespecMask="";
-		std::string typeChar="";
-
-		unsigned int type=EnumOSCTypes::eFloat;
-
-		if (_config.HasOSCTypesMask())
-			type=EnumOSCTypes(_config.GetOSCTypesMask());
-		switch (type)
+		for (unsigned i=0;i<nOutputs;i++)
 		{
-			case EnumOSCTypes::eString:
-				typeChar="s";
-				break;
-			case EnumOSCTypes::eFloat:
-				typeChar="f";
-				break;
-			case EnumOSCTypes::eDouble:
-				typeChar="d";
-				break;
-			case EnumOSCTypes::eInt:
-				typeChar="i";
-				break;
-			case EnumOSCTypes::eInt64:
-				typeChar="h";
-				break;
-			default:
-				typeChar="f";
-		}
-std::cout<<EnumOSCTypes(type);
-		for (int i=0;i<nOutputs;i++)
-		{
-			typespecMask+=typeChar; //if type is not defined, add "f"s as arguments
+			typespecMask+=oscTypeChar(type); //if type is not defined, add "f"s as arguments
 		}
 		_typespec=typespecMask;
 		_oscPath=_config.GetOscPath();
@@ -181,19 +205,21 @@ std::cout<<EnumOSCTypes(type);
 		{
 			_serverThread = (*ServersInstances().find(_port.c_str())).second.thread;	//uses existing thread
 		}
-		// if there are no servers on port. IMPORTANT: the conditional need to be explicit, since the server could be removed by the last conditional
-		if (not IsPortUsed(port.c_str())) 
+		else
 		{ 
 			_serverThread = ServerStart(port.c_str()); // start new server
 		}
-		if (AddMethod()==false)
+		if (RegisterOscCallback()==false)
+		{
+			AddConfigErrorMessage("Error creating OSC server instance");
 			return false;
+		}
 		_methodSetted=true;
 		// add instance on map
 		return true; // Configuration ok
 	}
 
-	void DeleteMethod()
+	void UnregisterOscCallback()
 	{
 		// if exists a previous method handler
 		if (_methodSetted)
@@ -210,7 +236,7 @@ std::cout<<EnumOSCTypes(type);
 			_serverThread=0;
 		}
 	}
-	bool AddMethod()
+	bool RegisterOscCallback()
 	{
 		if (InsertInstance(_port.c_str(), _oscPath.c_str(), _typespec.c_str()))
 		{
@@ -267,7 +293,7 @@ private:
 	std::string _port;
 	bool _methodSetted;
 	Config _config;
-	OutTypedControlArray _outControls;
+	std::vector <OutControlBase *> _outControls;
 };
 
 } //namespace

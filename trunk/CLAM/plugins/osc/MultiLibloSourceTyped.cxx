@@ -43,13 +43,7 @@ int CLAM::MultiLibloSourceTyped::controls_handler(const char *path, const char *
 	/* example showing pulling the argument values out of the argv array */
 //	printf("%s <- f:",path);
 	for (int i=0;i<argc;i++)
-	{
-//		if(i>0) 
-//			printf(", ");
-//		printf ("%f", argv[i]->f);
-		const char* tempString=&argv[i]->s;
-		self._outControls[i].SendControl(tempString); 
-	}
+		sendControl(self._outControls[i],*argv[i]);
 //	printf("\n\n");
 //	fflush(stdout);
 	return 0;
@@ -72,6 +66,7 @@ lo_server_thread CLAM::MultiLibloSourceTyped::ServerStart(const char* port)
 	}
 	std::cout << "MultiLibloSourceTyped: Starting the server on port" << port << std::endl;
 	lo_server_thread serverThread = lo_server_thread_new(port, error);
+	if (not serverThread) return 0;
 	ServerInstance server;
 	server.thread=serverThread;
 	MethodsMultiMap methods; // create an empty map
