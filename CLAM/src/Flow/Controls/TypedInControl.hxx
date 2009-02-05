@@ -4,8 +4,10 @@
 #include <string>
 #include <list>
 #include <typeinfo>
+#include <CLAM/TypeInfo.hxx>
 #include <CLAM/InControlBase.hxx>
 #include <CLAM/OutControlBase.hxx>
+#include <sstream>
 
 namespace CLAM {
 	class Processing;
@@ -17,7 +19,7 @@ namespace CLAM {
 	template<class TypedControlData>
 	class TypedInControl : public InControlBase
 	{
-		
+		typedef typename TypeInfo<TypedControlData>::StorableAsLeaf TokenIsStorableAsLeaf;
 	protected:
 		TypedControlData mLastValue;
 		
@@ -26,20 +28,23 @@ namespace CLAM {
 		
 		virtual void DoControl(const TypedControlData& val) { mLastValue = val; };
 		const TypedControlData& GetLastValue() const { return mLastValue; };
-		const std::string GetLastValueAsString() // TODO: Use plugins as soon we start to use non streamable types
+	private:
+		std::string GetLastValueAsString(StaticFalse* /*isStreamable*/) const
+		{
+			return "Not printable";
+		}
+		/** @return A string with the extracted XML content */
+		std::string GetLastValueAsString(StaticTrue* /*isStreamable*/) const
 		{
 			std::ostringstream valueStream;
 			valueStream << GetLastValue();
 			return valueStream.str();
 		}
-		/** ONLY TO USE WHEN TypedControlData == float. Returns the last TypedControlData (float) received interpreted as a bool. */
-		bool GetLastValueAsBoolean() const 
-		{ 
-			return (mLastValue > 0) ? mLastValue>0.01 : mLastValue<-0.01;
-		};
-		/** ONLY TO USE WHEN TypedControlData == float. Returns the last TControlData (float) received interpireted as an integer */
-		int GetLastValueAsInteger() const { return (int)(mLastValue+0.5f); };
-		
+	public:
+		const std::string GetLastValueAsString() // TODO: Use plugins as soon we start to use non streamable types
+		{
+			return GetLastValueAsString((TokenIsStorableAsLeaf*)0);
+		}
 		// For the typed linking check
 		virtual const std::type_info& GetTypeId() const { return typeid(TypedControlData); };
 	};
