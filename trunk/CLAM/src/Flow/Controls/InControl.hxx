@@ -67,8 +67,6 @@ public:
 	};
 	/// Returns the last TControlData (float) received interpireted as an integer
 	int GetLastValueAsInteger() const { return (int)(mLastValue+0.5f); };
-	/** Returns the bounds mean or the value set with SetDefaultValue() if its the case */
-	TControlData DefaultValue() const;
 
 	const std::string GetLastValueAsString() // TODO: remove duplicated code on TypedInControl (Natanael)
 	{

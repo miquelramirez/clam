@@ -36,11 +36,5 @@ InControl::~InControl()
 {
 }
 
-TControlData InControl::DefaultValue() const
-{
-	if (mHasDefaultValue) return mDefaultValue;
-	return (mUpperBound+mLowerBound)/2.f;
-}
-
 }; // namespace CLAM
 
