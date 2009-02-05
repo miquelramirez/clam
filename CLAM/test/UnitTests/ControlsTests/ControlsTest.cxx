@@ -43,9 +43,6 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	// testing InControl and OutControl :
 	CPPUNIT_TEST( testInControl_DoControl_ChangesInternalState );
 	CPPUNIT_TEST( testLinkAndSendControl_ChangesInControlInternalState );
-	CPPUNIT_TEST( testGetLastValueAsBoolean_NearZeroIsFalse );
-	CPPUNIT_TEST( testGetLastValueAsBoolean_NonZeroIsTrue );
-	CPPUNIT_TEST( testGetLastValueAsInteger );
 	CPPUNIT_TEST( testInControlTmpl_DoControl_ChangesInternalState );
 	CPPUNIT_TEST( testLinkAndSendWithInControlTmpl_CallbackMethodGetsCalled );
 	CPPUNIT_TEST( testControlHandlerId_WritesToLog );
@@ -126,36 +123,6 @@ private:
 		out.AddLink(in);
 		out.SendControl(1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f , in.GetLastValue() );
-	}
-	void testGetLastValueAsBoolean_NearZeroIsFalse()
-	{
-		CLAM::FloatInControl in("in");
-		CLAM::FloatOutControl out("out");
-		out.AddLink(in);
-		out.SendControl(-0.001f);
-		CPPUNIT_ASSERT( false==in.GetLastValueAsBoolean() );
-		out.SendControl( 0.001f);
-		CPPUNIT_ASSERT( false==in.GetLastValueAsBoolean() );
-	}
-	void testGetLastValueAsBoolean_NonZeroIsTrue()
-	{
-		CLAM::FloatInControl in("in");
-		CLAM::FloatOutControl out("out");
-		out.AddLink(in);
-		out.SendControl(-0.2f); //not-so-near zero
-		CPPUNIT_ASSERT( true==in.GetLastValueAsBoolean() );
-		out.SendControl( 0.2f); //not-so-near zero
-		CPPUNIT_ASSERT( true==in.GetLastValueAsBoolean() );
-	}
-	void testGetLastValueAsInteger()
-	{
-		CLAM::FloatInControl in("in");
-		CLAM::FloatOutControl out("out");
-		out.AddLink(in);
-		out.SendControl(0.9f);
-		CPPUNIT_ASSERT_EQUAL( 1, in.GetLastValueAsInteger() );
-		out.SendControl(1.001f);
-		CPPUNIT_ASSERT_EQUAL( 1, in.GetLastValueAsInteger() );
 	}
 	// this method is used by the CLAM::InControlTmpl<T>
 	// here we are simulating that this class is the parent processing object
