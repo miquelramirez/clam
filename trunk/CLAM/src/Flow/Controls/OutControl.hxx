@@ -63,26 +63,6 @@ public:
 		return typeid(TControlData);
 	};
 	void SendControl(TControlData val);
-	
-	/**
-	* \brief Sends a 0.0 or 1.0 float control depending on the parameter.
-	*
-	* To be used in conjunction with InControl::GetLastValueAsBoolean
-	*/
-	void SendControlAsBoolean( bool booleanValue )
-	{
-		SendControl( booleanValue ? TControlData(1) : TControlData(0) );
-	}
-
-	/**
-	* \brief Sends the given int value as a control (float)
-	*
-	* To be used in conjunction with InControl::GetLastValueAsBoolean
-	*/
-	void SendControlAsInteger( int intvalue )
-	{
-		SendControl( (TControlData)intvalue );
-	}
 
 };
 
