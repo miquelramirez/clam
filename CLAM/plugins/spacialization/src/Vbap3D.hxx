@@ -61,7 +61,7 @@ class Vbap3D : public CLAM::Processing
 
 	float escalarProduct(const Vector& v1, const Vector& v2) const
 	{
-		return v1.x * v2.x + v1.y * v2.y + v1.z + v2.z;
+		return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 	}
 	Vector substract(const Vector& v1, const Vector& v2) const
 	{
@@ -74,15 +74,19 @@ class Vbap3D : public CLAM::Processing
 	}
 	float mod(const Vector& v) const
 	{
-		return v.x*v.x + v.y*v.y + v.z*v.z;
+		return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
 	}
 	float angle(const Vector& v1, const Vector& v2) const
 	{
-		return acos( escalarProduct(v1,v2) / mod(v1)*mod(v2) );
+		return acos( escalarProduct(v1,v2) / (mod(v1)*mod(v2)) );
 	}
 	void print(const Vector& v, std::string name="") const
 	{
 		std::cout << name << " (" << v.x << ", " << v.y << ", " << v.z << ")" << std::endl;
+	}
+	float rad( float deg ) const
+	{
+		return deg / 180 * M_PI;
 	}
 
 public:
@@ -101,28 +105,28 @@ public:
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
-#if 0	
+#if 1	
 		struct SpeakerPositions {
 			int id;
 			const char * name;
 			float azimuth;
 			float elevation;
 		} speakers[] =	{
-			{1, "Back Horizontal", 180., 0. },
-			{2, "Base Back Left", 135., -45.},
-			{3, "Base Back Right", -135, -45.},
-			{4, "Base Front Left", 45., -45.},
-			{5, "Base Front Right", -45., -45.},
-			{6, "Front Horizontal", 0., 0.},
-			{7, "Front Left Horizontal", 60., 0.},
-			{8, "Front Right Horizontal", -60., 0.},
-			{9, "Rear Left Horizontal", 120., 0.},
-			{10, "Rear Right Horizontal", -120., 0.},
-			{11, "Top Back Left", 135., 45.},
-			{12, "Top Back Right", -135., 45.},
-			{13, "Top Front Left", 45., 45.},
-			{14, "Top Front Right", -45., 45.},
-			{15, "Top", 0., 89.},
+			{0, "Back Horizontal", 180., 0. },
+			{1, "Base Back Left", 135., -45.},
+			{2, "Base Back Right", -135, -45.},
+			{3, "Base Front Left", 45., -45.},
+			{4, "Base Front Right", -45., -45.},
+			{5, "Front Horizontal", 0., 0.},
+			{6, "Front Left Horizontal", 60., 0.},
+			{7, "Front Right Horizontal", -60., 0.},
+			{8, "Rear Left Horizontal", 120., 0.},
+			{9, "Rear Right Horizontal", -120., 0.},
+			{10, "Top Back Left", 135., 45.},
+			{11, "Top Back Right", -135., 45.},
+			{12, "Top Front Left", 45., 45.},
+			{13, "Top Front Right", -45., 45.},
+			{14, "Top", 0., 89.},
 			{0, 0, 0., 0.}
 		};
 		struct Triangles {
@@ -131,40 +135,40 @@ public:
 			unsigned three;
 		} triangles[] = {
 			//front
-			{6, 8, 13},
-			{6, 8, 5},
-			{6, 7, 4},
-			{6, 7, 14},
-			{6, 13, 14},
-			{6, 4, 5},
+			{5, 7, 12},
+			{5, 7, 4},
+			{5, 6, 3},
+			{5, 6, 13},
+			{5, 12, 13},
+			{5, 3, 4},
 			//back
-			{1, 9, 11},
-			{1, 9, 2},
-			{1, 10, 12},
-			{1, 10, 3},
-			{1, 12, 11},
-			{1, 2, 3},
+			{0, 8, 10},
+			{0, 8, 1},
+			{0, 9, 11},
+			{0, 9, 2},
+			{0, 11, 10},
+			{0, 1, 2},
 			//left
-			{9, 7, 14},
-			{9, 7, 4},
-			{9, 4, 2},
-			{9, 14, 11},
+			{8, 6, 13},
+			{8, 6, 3},
+			{8, 3, 1},
+			{8, 13, 10},
 			//right
-			{10, 8, 13},
-			{10, 8, 5},
-			{10, 3, 5},
-			{10, 12, 13},
+			{9, 7, 12},
+			{9, 7, 4},
+			{9, 2, 4},
+			{9, 11, 12},
 			//up TODO change using the 15th spk
-			{13, 14, 11},
-			{13, 12, 11},
+			{12, 13, 10},
+			{12, 11, 10},
 			//down
-			{5, 4, 2},
-			{5, 3, 2},
+			{4, 3, 1},
+			{4, 2, 1},
 
 			{0,0,0}
 		};
 		
-#endif 
+#else
 //testing setup 
 		struct SpeakerPositions {
 			int id;
@@ -172,10 +176,10 @@ public:
 			float azimuth;
 			float elevation;
 		} speakers[] =	{
-			{1, "left", -45., -45. },
-			{2, "right", 45., -45.},
-			{3, "back", -180., -45.},
-			{4, "top", 0., 89.},
+			{0, "left", -45., -45. },
+			{1, "right", 45., -45.},
+			{2, "back", -180., -45.},
+			{3, "top", 0., 89.},
 			{0, 0, 0., 0.}
 		};
 		struct Triangles {
@@ -184,19 +188,20 @@ public:
 			unsigned three;
 		} triangles[] = {
 			//floor
-			{1, 2, 3},
+			{0, 1, 2},
 			//front
-			{1, 2, 4},
+			{0, 1, 3},
 			//left
-			{1,3,4},
+			{0,2,3},
 			//right
-			{2,3,4},
+			{1,2,3},
 			//end
 			{0,0,0}
 		};
 //end testing setup
-
+#endif
 		RemovePorts();
+		_triangles.clear();
 		const unsigned buffersize = BackendBufferSize();
 		for (unsigned i=0; speakers[i].name; i++)
 		{
@@ -208,7 +213,7 @@ public:
 			_elevations.push_back( speakers[i].elevation );
 			_names.push_back( speakers[i].name );
 		}
-		for (unsigned i=0; triangles[i].one; i++)
+		for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
 		{
 			Triangle t;
 			t.resize(3);
@@ -222,10 +227,11 @@ public:
 			for (unsigned j=0; j<3; j++)
 			{
 				Vector r = {
-					cos(speakers[t[j]].elevation) * cos(speakers[t[j]].azimuth),
-					cos(speakers[t[j]].elevation) * sin(speakers[t[j]].azimuth),
-					sin(speakers[t[j]].elevation),
+					cos(rad(speakers[t[j]].elevation)) * cos(rad(speakers[t[j]].azimuth)),
+					cos(rad(speakers[t[j]].elevation)) * sin(rad(speakers[t[j]].azimuth)),
+					sin(rad(speakers[t[j]].elevation)),
 					};
+
 				speakersPos[j]=r;
 			}
 			_speakersPositions.push_back( speakersPos );
@@ -246,39 +252,51 @@ public:
 	/// params: the source azimuth and elevation
 	int findTriangle(float azimuth, float elevation) const
 	{
+		float azimuthRad = rad(azimuth);
+		float elevationRad = rad(elevation);
 std::cout << "\nfind Triangle. triangles " << _triangles.size() << std::endl;
 
-		unsigned triangle = 0;
+		unsigned triangle = -1;
 		// find triangle testing them all
 		for (unsigned i=0; i<_triangles.size(); i++)
 		{
 			Vector r_source = {
-					cos(elevation) * cos(azimuth),
-					cos(elevation) * sin(azimuth),
-					sin(elevation),
+					cos(elevationRad) * cos(azimuthRad),
+					cos(elevationRad) * sin(azimuthRad),
+					sin(elevationRad),
 				};
-std::cout << "checking triangle "<< i << std::endl;
+std::cout << "\nchecking triangle "<< i << std::endl;
 print(r_source, "r_source");
 print(_normals[i], "normal");
+print(_speakersPositions[i][0], "speak 0");
+print(_speakersPositions[i][1], "speak 1");
+print(_speakersPositions[i][2], "speak 2");
+
 			const float divisor = escalarProduct(_normals[i], r_source);
 			if (fabs(divisor) < _delta) 
 			{
-std::cout << "divisor is 0 !!" << std::endl;
+	std::cout << "divisor is 0 !!" << std::endl;
 				continue;
 			}
 			const float t =  _ortogonalProjection[i] / divisor;
-			std::cout << " t " << t << std::endl;
+			std::cout << "--> t " << t << std::endl;
 			if (t>1. or t<0.) continue;
+	std::cout << "--> Ok intersection line < 1" << std::endl;
 			Vector r_I = product(t, r_source);
 			Vector v1 = substract( _speakersPositions[i][0], r_I);
 			Vector v2 = substract( _speakersPositions[i][1], r_I);
 			Vector v3 = substract( _speakersPositions[i][2], r_I);
 			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _delta)
 			{
+std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
 				// found!
+				//TODO change this assert code for a simple "break;"
+				CLAM_ASSERT(triangle==-1, "Vbap3D: found more than one intersecting triangles!");
 				triangle = i;
-				break;
-			}	
+				
+			}
+			else
+				std::cout << "BUT outside the triangle";
 		}
 		return triangle;
 	}
@@ -290,7 +308,9 @@ std::cout << "divisor is 0 !!" << std::endl;
 		CLAM_DEBUG_ASSERT(as>=-180 and as<=+180, "azimuth expected in range -180, +180");
 		CLAM_DEBUG_ASSERT(es>=-90 and es<=+90, "elevation expected in range -90, +90");
 		int newTriangle = findTriangle(as, es);
-		if (newTriangle==0) std::cout << "ERROR: no triangle found!" << std::endl;
+		//CLAM_ASSERT(newTriangle > -1, "Vbap3D: findTriangle() found no triangle for the given angle!");
+		if (newTriangle==-1) newTriangle = 0;
+		
 		// change triangle
 		if (_currentTriangle != newTriangle) // changed triangle
 		{
