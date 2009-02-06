@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-#ifndef LockFreeSndfilePlayer_hxx
-#define LockFreeSndfilePlayer_hxx
+#ifndef SndfilePlayer_hxx
+#define SndfilePlayer_hxx
 
 #include <CLAM/Processing.hxx>
 #include <CLAM/AudioOutPort.hxx>
@@ -48,7 +48,7 @@ namespace CLAM
 		};	
 	};
 
-	class LockFreeSndfilePlayer : public  Processing
+	class SndfilePlayer : public  Processing
 	{ 
 		class Lock
 		{
@@ -92,9 +92,9 @@ namespace CLAM
 		jack_ringbuffer_t* _rb;		
 
 	public:
-		const char* GetClassName() const { return "LockFreeSndfilePlayer"; }
+		const char* GetClassName() const { return "SndfilePlayer"; }
 
-		LockFreeSndfilePlayer(const ProcessingConfig& config =  Config()) 
+		SndfilePlayer(const ProcessingConfig& config =  Config()) 
 			: _outControlSeek("Position out-Control",this) 
 			, _inControlSeek("Seek in-Control",this) 
 			, _inControlPause("Pause in-Control",this)
@@ -255,14 +255,14 @@ namespace CLAM
 
 		static void* DiskThreadCallback (void *arg)
 		{
-			LockFreeSndfilePlayer * player = static_cast<LockFreeSndfilePlayer*> (arg);
+			SndfilePlayer * player = static_cast<SndfilePlayer*> (arg);
 			player->DiskThread();
 			return 0;
 		}
 
 		bool ConcreteStart()	
 		{	
-			CLAM_ASSERT(_infile, "LockFreeSndfilePlayer::ConcreteStart() should have _infile with value.");
+			CLAM_ASSERT(_infile, "SndfilePlayer::ConcreteStart() should have _infile with value.");
 
 			//initial configuration for the controls.
 			_inControlSeek.SetBounds(0,1);
@@ -426,7 +426,7 @@ namespace CLAM
 			GetOutPorts().Clear();
 		}
 
-		~LockFreeSndfilePlayer()
+		~SndfilePlayer()
 		{
 			if (_infile)
 				delete _infile;
@@ -435,5 +435,5 @@ namespace CLAM
 	};
 
 }// namespace CLAM
-#endif // LockFreeSndfilePlayer_hxx
+#endif // SndfilePlayer_hxx
 
