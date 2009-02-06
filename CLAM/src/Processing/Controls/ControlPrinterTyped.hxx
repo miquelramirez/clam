@@ -72,9 +72,7 @@ class ControlPrinterTypedConfig : public ProcessingConfig
 		DYNAMIC_TYPE_USING_INTERFACE (ControlPrinterTypedConfig, 3, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Identifier);
 		DYN_ATTRIBUTE (1, public, std::string, TypesMask);
-//		DYN_ATTRIBUTE (1, public, unsigned, NumberOfInputs);
 		DYN_ATTRIBUTE (2, public, bool, GuiOnly );
-//		DYN_ATTRIBUTE (3, public, EnumTypedTypes, TypedType);
 
 		
 

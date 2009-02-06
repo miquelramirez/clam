@@ -23,7 +23,6 @@ namespace Hidden
 		UpdateData();
 		SetIdentifier( "ControlPrinterTyped" );
 		SetTypesMask("f");
-//		SetNumberOfInputs(1.);
 		SetGuiOnly(true);
 	}
 
@@ -146,7 +145,6 @@ namespace Hidden
 
 	void ControlPrinterTyped::RemoveOldControls()
 	{
-		//mInControls.Clear();
 		ClearControls();
 		GetInControls().Clear();
 	}
