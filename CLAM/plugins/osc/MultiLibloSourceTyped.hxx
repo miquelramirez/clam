@@ -39,11 +39,11 @@ public:
         {
                 static tEnumValue sValueTable[] =
                 {
-			{eString,"string"},
-			{eFloat,"float"},
-			{eDouble,"double"},
-			{eInt,"integer"},
-			{eInt64,"integer64"},
+			{eString,"s"},
+			{eFloat,"f"},
+			{eDouble,"d"},
+			{eInt,"i"},
+			{eInt64,"h"},
                         {0,NULL}
                 };
                 return sValueTable;
@@ -53,18 +53,17 @@ public:
 
 class MultiLibloSourceTypedConfig : public CLAM::ProcessingConfig
 {
-	DYNAMIC_TYPE_USING_INTERFACE( MultiLibloSourceTypedConfig, 4, ProcessingConfig );
+	DYNAMIC_TYPE_USING_INTERFACE( MultiLibloSourceTypedConfig, 3, ProcessingConfig );
 	DYN_ATTRIBUTE( 0, public, std::string, OscPath);
 	DYN_ATTRIBUTE( 1, public, std::string, ServerPort);
-	DYN_ATTRIBUTE( 2, public, CLAM::TData, NumberOfArguments);
-	DYN_ATTRIBUTE( 3, public, EnumOSCTypes, OSCTypesMask);
+	DYN_ATTRIBUTE( 2, public, std::string, OSCTypeSpec);
 	//TODO number of arguments/ports
 protected:
 	void DefaultInit()
 	{
 		AddAll();
 		UpdateData();
-		SetNumberOfArguments(3);
+		SetOSCTypeSpec("fff");
 		SetOscPath("/clam/target");
 		SetServerPort("");
 	};
@@ -78,7 +77,7 @@ class MultiLibloSourceTyped : public CLAM::Processing
 public:
 	MultiLibloSourceTyped(const Config& config = Config()) 
 		: _serverThread(0)
-		, _typespec("fff")
+		, _typespec("")
 		, _oscPath(config.GetOscPath())
 		, _port("")
 		, _methodSetted(false)
@@ -119,73 +118,76 @@ protected:
 	}
 
 
-//TODO: REFACTOR THESE FOLLOWING THREE METHODS!!!!
+//TODO: REFACTOR THE FOLLOWING METHODS!!!!
 
-	OutControlBase * createControl(const EnumOSCTypes & type, const std::string & name)
+	OutControlBase * createControl(const std::string & type, const std::string & name)
 	{
-		if (type==EnumOSCTypes::eString)
+		if (type=="s")
 			return new TypedOutControl<std::string> (name,this);
-		if (type==EnumOSCTypes::eFloat)
+		if (type=="f")
 			return new FloatOutControl (name,this);
-		if (type==EnumOSCTypes::eDouble)
+		if (type=="d")
 			return new TypedOutControl<double> (name,this);
-		if (type==EnumOSCTypes::eInt or type==EnumOSCTypes::eInt64)
+		if (type=="i" or type=="h")
 			return new TypedOutControl<int> (name,this);
 		// TODO: Decide whether ASSERTing (contract) or throw (control) 
 		return 0;
 	}
-	char oscTypeChar(const EnumOSCTypes & type) const
-	{
-		if (type == EnumOSCTypes::eString) return 's';
-		if (type == EnumOSCTypes::eFloat) return 'f';
-		if (type == EnumOSCTypes::eDouble) return 'd';
-		if (type == EnumOSCTypes::eInt) return 'i';
-		if (type == EnumOSCTypes::eInt64) return 'h';
-		return '?';
-	}
 
-	static void sendControl(OutControlBase * control, lo_arg valueToSend)
+	static void sendControl(OutControlBase * control, lo_arg * valueToSend)
 	{
 		const std::string typeName=control->GetTypeId().name();
 		if (typeName=="Ss")
-			dynamic_cast<TypedOutControl<std::string> *> (control)->SendControl( (const char*) &valueToSend.s);
+			dynamic_cast<TypedOutControl<std::string> *> (control)->SendControl(&(valueToSend->s));
 		if(typeName=="f")
-//			dynamic_cast<TypedOutControl<float> *> (control)->SendControl(valueToSend.f);
-			dynamic_cast<FloatOutControl *>(control)->SendControl(valueToSend.f);
+			dynamic_cast<FloatOutControl *>(control)->SendControl(valueToSend->f);
 		if(typeName=="d")
-			dynamic_cast<TypedOutControl<double> *> (control)->SendControl(valueToSend.f32);
+			dynamic_cast<TypedOutControl<double> *> (control)->SendControl(valueToSend->f32);
 		if(typeName=="i")
-			dynamic_cast<TypedOutControl<int> *> (control)->SendControl(valueToSend.i);
+			dynamic_cast<TypedOutControl<int> *> (control)->SendControl(valueToSend->i);
 		return;
+	}
+
+	unsigned int GetOutputsNumber()
+	{
+		unsigned nOutputs;
+		std::string typespec;
+		typespec=_config.GetOSCTypeSpec();
+		for (nOutputs=0; nOutputs<typespec.size();nOutputs++)
+		{
+			const char oscType = typespec[nOutputs];
+			if (oscType!='s' and oscType!='i' 
+				and oscType != 'f' and oscType !='d'
+				and oscType != 'h')
+				return 0; // return 0 if there is any non-compatible type
+		}
+		return nOutputs;
 	}
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		RemoveOldControls();
 		CopyAsConcreteConfig(_config, config);
-//		_config.AddAll();
-//		_config.UpdateData();
-//set outputs:
-		unsigned nOutputs = unsigned (_config.GetNumberOfArguments());
-		if (nOutputs < 1)
+		//set outputs:
+		unsigned nOutputs = GetOutputsNumber();
+		if (nOutputs==0)
 		{
-			_config.SetNumberOfArguments(1);
-			nOutputs = 1;
+			AddConfigErrorMessage("No proper OSCTypeSpec setup. Use: 'f' for float, 'd' for double, 'i' for integer, 'h' for integer 64.");
+			return false;
 		}
+
 		// multi-port names share user-configured identifier
 		std::string oscPath=_config.GetOscPath();
 		std::replace(oscPath.begin(),oscPath.end(),'/','_');
 
 		// define processing callback catcher (strings)
 
-		unsigned int type=EnumOSCTypes::eFloat;
-		if (_config.HasOSCTypesMask())
-			type=EnumOSCTypes(_config.GetOSCTypesMask());
-
 		for (unsigned i=0;i<nOutputs;i++)
 		{
 			std::ostringstream controlName;
 			controlName<<oscPath<<"_"<<i;
+			std::string type;
+			type=_config.GetOSCTypeSpec()[i];
 			_outControls.push_back(createControl(type,controlName.str()));
 		}
 
@@ -201,12 +203,7 @@ protected:
 			UnregisterOscCallback();
 		}
 
-		std::string typespecMask="";
-		for (unsigned i=0;i<nOutputs;i++)
-		{
-			typespecMask+=oscTypeChar(type); //if type is not defined, add "f"s as arguments
-		}
-		_typespec=typespecMask;
+		_typespec=_config.GetOSCTypeSpec();
 		_oscPath=_config.GetOscPath();
 		_port=port;
 
