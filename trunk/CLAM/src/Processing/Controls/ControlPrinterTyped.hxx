@@ -55,10 +55,10 @@ public:
         {
                 static tEnumValue sValueTable[] =
                 {
-			{eString,"string"},
-			{eFloat,"float"},
-			{eDouble,"double"},
-			{eInt,"integer"},
+			{eString,"s"},
+			{eFloat,"f"},
+			{eDouble,"d"},
+			{eInt,"i"},
                         {0,NULL}
                 };
                 return sValueTable;
@@ -69,11 +69,14 @@ public:
 class ControlPrinterTypedConfig : public ProcessingConfig
 {
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (ControlPrinterTypedConfig, 4, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (ControlPrinterTypedConfig, 3, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, std::string, Identifier);
-		DYN_ATTRIBUTE (1, public, unsigned, NumberOfInputs);
+		DYN_ATTRIBUTE (1, public, std::string, TypesMask);
+//		DYN_ATTRIBUTE (1, public, unsigned, NumberOfInputs);
 		DYN_ATTRIBUTE (2, public, bool, GuiOnly );
-		DYN_ATTRIBUTE (3, public, EnumTypedTypes, TypedType);
+//		DYN_ATTRIBUTE (3, public, EnumTypedTypes, TypedType);
+
+		
 
 	private:
 		void DefaultInit();
@@ -98,7 +101,10 @@ class ControlPrinterTyped : public Processing
 	private:
 		void ResizeControls(unsigned nInputs, const std::string & baseName);
 		void ResizeControls(unsigned nInputs, const std::list<std::string> & names);
-		InControlBase * createControl(const CLAM::EnumTypedTypes & type, const std::string & name);
+		
+		const unsigned int GetInputsNumber() const;
+
+		InControlBase * createControl(const std::string & type, const std::string & name);
 		void ClearControls();
 };
 

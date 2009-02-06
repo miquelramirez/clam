@@ -148,7 +148,7 @@ protected:
 		return;
 	}
 
-	unsigned int GetOutputsNumber()
+	const unsigned int GetOutputsNumber() const
 	{
 		unsigned nOutputs;
 		std::string typespec;

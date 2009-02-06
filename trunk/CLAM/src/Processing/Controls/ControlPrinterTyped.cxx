@@ -22,7 +22,8 @@ namespace Hidden
 		AddAll();
 		UpdateData();
 		SetIdentifier( "ControlPrinterTyped" );
-		SetNumberOfInputs(1.);
+		SetTypesMask("f");
+//		SetNumberOfInputs(1.);
 		SetGuiOnly(true);
 	}
 
@@ -38,6 +39,22 @@ namespace Hidden
 	ControlPrinterTyped::~ControlPrinterTyped()
 	{
 		RemoveOldControls();
+	}
+
+	const unsigned int ControlPrinterTyped::GetInputsNumber() const
+	{
+		unsigned nInputs;
+		std::string typespec;
+		typespec=_config.GetTypesMask();
+		for (nInputs=0; nInputs<typespec.size();nInputs++)
+		{
+			const char type = typespec[nInputs];
+			if (type != 's' and type != 'i' 
+				and type != 'f' and type != 'd'
+				and type != 'h')
+				return 0; // return 0 if there is any non-compatible type
+		}
+		return nInputs;
 	}
 
 	void ControlPrinterTyped::ResizeControls(unsigned nInputs, const std::string & baseName)
@@ -57,28 +74,30 @@ namespace Hidden
 		}
 		ResizeControls(nInputs, names);
 	}
-	InControlBase * ControlPrinterTyped::createControl(const CLAM::EnumTypedTypes & type, const std::string & name)
+	InControlBase * ControlPrinterTyped::createControl(const std::string & type, const std::string & name)
 	{
-		if (type==EnumTypedTypes::eString)
+		if (type=="s")
 			return new TypedInControl<std::string> (name,this);
-		if (type==EnumTypedTypes::eFloat)
+		if (type=="f")
 			return new FloatInControl (name,this);
-		if (type==EnumTypedTypes::eDouble)
+		if (type=="d")
 			return new TypedInControl<double> (name,this);
-		if (type==EnumTypedTypes::eInt)
+		if (type=="i")
 			return new TypedInControl<int> (name,this);
 		// TODO: Decide whether ASSERTing (contract) or throw (control) 
 		return 0;
 	}
 	void ControlPrinterTyped::ResizeControls(unsigned nInputs, const std::list<std::string> & names)
 	{
-
-		unsigned int type=EnumTypedTypes::eFloat;
-		if (_config.HasTypedType())
-			type=EnumTypedTypes(_config.GetTypedType());
 		ClearControls();
+		unsigned i=0;
 		for (std::list<std::string>::const_iterator it = names.begin(); it != names.end(); it++)
+		{
+			std::string type;
+			type=_config.GetTypesMask()[i];
 			mInControls.push_back(createControl(type,*it));
+			i++;
+		}
 	}
 	void ControlPrinterTyped::ClearControls()
 	{
@@ -96,11 +115,11 @@ namespace Hidden
 		_config.AddAll();
 		_config.UpdateData();
 
-		unsigned nInputs = _config.GetNumberOfInputs();
+		unsigned nInputs = GetInputsNumber();
 		if (nInputs == 0)
 		{
-			_config.SetNumberOfInputs(1);
-			nInputs = 1;
+			AddConfigErrorMessage("No proper OSCTypeSpec setup. Use: 'f' for float, 'd' for double, 'i' for integer, 'h' for integer 64.");
+			return false;
 		}
 		std::string baseName = nInputs==1 ?  "In Control" : _config.GetIdentifier();
 		ResizeControls(nInputs, baseName);
