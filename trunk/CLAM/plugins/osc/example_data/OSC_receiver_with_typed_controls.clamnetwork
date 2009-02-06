@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <processing id="ControlPrinterTyped" position="63,183" size="274,130" type="ControlPrinterTyped">
+    <Identifier>ControlPrinterTyped</Identifier>
+    <NumberOfInputs>3</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+    <TypedType>string</TypedType>
+  </processing>
+
+  <processing id="ControlPrinterTyped_1" position="337,180" size="181,130" type="ControlPrinterTyped">
+    <Identifier>ControlPrinterTyped</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+    <TypedType>float</TypedType>
+  </processing>
+
+  <processing id="MultiLibloSourceTyped" position="102,20" size="160,58" type="MultiLibloSourceTyped">
+    <OscPath>/clam/target</OscPath>
+    <ServerPort>7000</ServerPort>
+    <OSCTypeSpec>sssf</OSCTypeSpec>
+  </processing>
+
+  <control_connection>
+    <out>MultiLibloSourceTyped._clam_target_0</out>
+    <in>ControlPrinterTyped.ControlPrinterTyped_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSourceTyped._clam_target_1</out>
+    <in>ControlPrinterTyped.ControlPrinterTyped_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSourceTyped._clam_target_2</out>
+    <in>ControlPrinterTyped.ControlPrinterTyped_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSourceTyped._clam_target_3</out>
+    <in>ControlPrinterTyped_1.In Control</in>
+  </control_connection>
+
+</network>
