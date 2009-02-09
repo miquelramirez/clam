@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>983</width>
-    <height>626</height>
+    <width>743</width>
+    <height>617</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -25,7 +25,8 @@
    <string>Music Annotator</string>
   </property>
   <property name="windowIcon" >
-   <iconset resource="images.qrc" >:/logos/images/annotator-icon1.png</iconset>
+   <iconset resource="images.qrc" >
+    <normaloff>:/logos/images/annotator-icon1.png</normaloff>:/logos/images/annotator-icon1.png</iconset>
   </property>
   <widget class="QWidget" name="widget" >
    <layout class="QVBoxLayout" >
@@ -38,7 +39,7 @@
     <item>
      <widget class="QTabWidget" name="mMainTabWidget" >
       <property name="currentIndex" >
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="mSongLevelTab" >
        <attribute name="title" >
@@ -64,11 +65,11 @@
             </sizepolicy>
            </property>
            <property name="whatsThis" >
-            <string>&lt;p>The &lt;b>project song list&lt;/b> is a list with the working songs for the project.
-You can add songs to work with just by selecting the &lt;tt>Project/Add Song to Project&lt;/tt> option on the menu.
-Click on one song to load its description.&lt;/p>
-&lt;p>If there is no computed description, you can generate it for the selected song it
-by clicking the &lt;tt>Compute Descriptors&lt;/tt> button and, once the computation is finished,
+            <string>&lt;p>The &lt;b>project song list&lt;/b> is a list with the working songs for the project.&#xd;
+You can add songs to work with just by selecting the &lt;tt>Project/Add Song to Project&lt;/tt> option on the menu.&#xd;
+Click on one song to load its description.&lt;/p>&#xd;
+&lt;p>If there is no computed description, you can generate it for the selected song it&#xd;
+by clicking the &lt;tt>Compute Descriptors&lt;/tt> button and, once the computation is finished,&#xd;
 the &lt;tt>Reload Descriptors&lt;/tt> one.&lt;/p></string>
            </property>
            <property name="alternatingRowColors" >
@@ -103,11 +104,14 @@ the &lt;tt>Reload Descriptors&lt;/tt> one.&lt;/p></string>
             <enum>Qt::WheelFocus</enum>
            </property>
            <property name="whatsThis" >
-            <string>&lt;p>The &lt;b>song level descriptors table&lt;/b>
-contains descriptors values for song level descriptors.
-Song level descriptors are those that has a single occurrence for each song.
-As constrast, 'note level descriptors' would have an occurrence for each note.&lt;/p>
+            <string>&lt;p>The &lt;b>song level descriptors table&lt;/b>&#xd;
+contains descriptors values for song level descriptors.&#xd;
+Song level descriptors are those that has a single occurrence for each song.&#xd;
+As constrast, 'note level descriptors' would have an occurrence for each note.&lt;/p>&#xd;
 &lt;p>You can edit the values by clicking to the proper cell.&lt;/p></string>
+           </property>
+           <property name="autoFillBackground" >
+            <bool>false</bool>
            </property>
            <property name="selectionMode" >
             <enum>QAbstractItemView::NoSelection</enum>
@@ -122,6 +126,7 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
          </widget>
         </item>
        </layout>
+       <zorder>mSongLevelSplit</zorder>
       </widget>
       <widget class="QWidget" name="mIntrasongLevelTab" >
        <attribute name="title" >
@@ -152,7 +157,7 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak" >
     <bool>false</bool>
@@ -177,7 +182,7 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
     <enum>Qt::Horizontal</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak" >
     <bool>false</bool>
@@ -194,8 +199,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>983</width>
-     <height>32</height>
+     <width>743</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mSongMenu" >
@@ -269,7 +274,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </widget>
   <action name="fileExitAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/exit.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/exit.png</normaloff>:/icons/images/exit.png</iconset>
    </property>
    <property name="text" >
     <string>E&amp;xit</string>
@@ -297,7 +303,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="newProjectAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/window_new.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/window_new.png</normaloff>:/icons/images/window_new.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;New project</string>
@@ -317,7 +324,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="fileSave_projectAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/project_save.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/project_save.png</normaloff>:/icons/images/project_save.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Save project</string>
@@ -337,7 +345,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="fileOpen_projectAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/project_open.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/project_open.png</normaloff>:/icons/images/project_open.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Open project</string>
@@ -357,7 +366,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="addSongAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/vcs_add.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/vcs_add.png</normaloff>:/icons/images/vcs_add.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Add songs to project</string>
@@ -377,7 +387,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/vcs_remove.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/vcs_remove.png</normaloff>:/icons/images/vcs_remove.png</iconset>
    </property>
    <property name="text" >
     <string>Remove song from project</string>
@@ -394,7 +405,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="browseSchemaAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/view_tree.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/view_tree.png</normaloff>:/icons/images/view_tree.png</iconset>
    </property>
    <property name="text" >
     <string>Browse &amp;Schema</string>
@@ -408,7 +420,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
     <bool>false</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/filesave.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/filesave.png</normaloff>:/icons/images/filesave.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Save Descriptors</string>
@@ -422,7 +435,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/auralizeOnsets.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/auralizeOnsets.png</normaloff>:/icons/images/auralizeOnsets.png</iconset>
    </property>
    <property name="text" >
     <string>Auralize segments &amp;onsets</string>
@@ -436,7 +450,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/auralizeFrameLevel.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/auralizeFrameLevel.png</normaloff>:/icons/images/auralizeFrameLevel.png</iconset>
    </property>
    <property name="text" >
     <string>Auralize &amp;frame level descriptors</string>
@@ -447,7 +462,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="songComputeDescriptorsAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/gear.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/gear.png</normaloff>:/icons/images/gear.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Compute descriptors</string>
@@ -458,7 +474,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="helpWhatsThisAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/contexthelp.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/contexthelp.png</normaloff>:/icons/images/contexthelp.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;What's this?</string>
@@ -472,7 +489,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="playAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/player_play.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/player_play.png</normaloff>:/icons/images/player_play.png</iconset>
    </property>
    <property name="text" >
     <string>Play</string>
@@ -486,7 +504,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="pauseAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/player_pause.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/player_pause.png</normaloff>:/icons/images/player_pause.png</iconset>
    </property>
    <property name="text" >
     <string>Pause</string>
@@ -500,7 +519,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="stopAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/player_stop.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/player_stop.png</normaloff>:/icons/images/player_stop.png</iconset>
    </property>
    <property name="text" >
     <string>Stop</string>
@@ -517,7 +537,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
     <bool>true</bool>
    </property>
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/segmentFollows.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/segmentFollows.png</normaloff>:/icons/images/segmentFollows.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Link current segment to playback</string>
@@ -536,7 +557,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="reloadDescriptorsAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/reload.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/reload.png</normaloff>:/icons/images/reload.png</iconset>
    </property>
    <property name="text" >
     <string>&amp;Reload descriptors</string>
@@ -560,7 +582,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="editProjectPropertiesAction" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/edit.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/edit.png</normaloff>:/icons/images/edit.png</iconset>
    </property>
    <property name="text" >
     <string>Edit project properties</string>
@@ -568,7 +591,8 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
   <action name="actionOnline_Tutorial" >
    <property name="icon" >
-    <iconset resource="images.qrc" >:/icons/images/help.png</iconset>
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/help.png</normaloff>:/icons/images/help.png</iconset>
    </property>
    <property name="text" >
     <string>Online &amp;Tutorial</string>
@@ -576,14 +600,6 @@ As constrast, 'note level descriptors' would have an occurrence for each note.&l
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11" />
- <customwidgets>
-  <customwidget>
-   <class>CLAM::VM::BPFPlot</class>
-   <extends>QFrame</extends>
-   <header>vmBPFPlot.hxx</header>
-   <container>1</container>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>mMainTabWidget</tabstop>
   <tabstop>mSongListView</tabstop>
