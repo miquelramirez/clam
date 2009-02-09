@@ -1,16 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Pool>
   <ScopePool name="Song" size="1">
-    <AttributePool name="Artist">Talking Cure
-</AttributePool>
-    <AttributePool name="Album">Hausarbeit
-</AttributePool>
-    <AttributePool name="TrackNo">3
-</AttributePool>
-    <AttributePool name="Title">Mud
-</AttributePool>
-    <AttributePool name="Date">2005-06-16 16:44:38
-</AttributePool>
+    <AttributePool name="Artist">Talking Cure</AttributePool>
+    <AttributePool name="Album">Hausarbeit</AttributePool>
+    <AttributePool name="TrackNo">3</AttributePool>
+    <AttributePool name="Title">Mud</AttributePool>
+    <AttributePool name="Date">2005-06-16 16:44:38</AttributePool>
     <AttributePool name="Lyrics"></AttributePool>
     <AttributePool name="SonglistURI">http://dbtune.org/jamendo/track/1260
 http://dbtune.org/jamendo/track/1261
@@ -23,13 +18,11 @@ http://dbtune.org/jamendo/track/1267
 http://dbtune.org/jamendo/track/1268
 http://dbtune.org/jamendo/track/1269
 http://dbtune.org/jamendo/track/1270
-http://dbtune.org/jamendo/track/1271
-</AttributePool>
+http://dbtune.org/jamendo/track/1271</AttributePool>
     <AttributePool name="PhotoURI">http://img.jamendo.com/albums/196/covers/1.0.jpg
 http://img.jamendo.com/albums/196/covers/1.100.jpg
 http://img.jamendo.com/albums/196/covers/1.300.jpg
-http://img.jamendo.com/albums/196/covers/1.500.jpg
-</AttributePool>
+http://img.jamendo.com/albums/196/covers/1.500.jpg</AttributePool>
     <AttributePool name="TagJamendo">pop
 80s
 rock
@@ -39,8 +32,7 @@ oldschool
 stupefiant
 alternative
 plus
-mieux
-</AttributePool>
+mieux</AttributePool>
     <AttributePool name="TagMusicBrainz"></AttributePool>
     <AttributePool name="TagSemWeb">80s
 alternatif
@@ -50,14 +42,12 @@ oldschool
 plus
 pop
 rock
-stupefiant
-</AttributePool>
+stupefiant</AttributePool>
     <AttributePool name="AlbumDescription">Comme le nom l'indique, 莽a a 茅t茅 fait a虁 la maison.&lt;br /&gt;&#13;
 Les morceaux qui composent l'album ont 茅t茅 r茅alis茅s entre&lt;br /&gt;&#13;
 1998 et 2005.&lt;br /&gt;&#13;
 &lt;br /&gt;&#13;
-Bonne 茅coute.
-</AttributePool>
+Bonne 茅coute.</AttributePool>
     <AttributePool name="Review">Talking cure ?&lt;br /&gt; Talking pour Talking Head et Cure pour the Cure ?&lt;br /&gt; &lt;br /&gt; En tout cas j'yu trouve plein de sonorit茅s des ann茅es 80, Tant么t Fiction Factory, Tant么t The stranglers, voir un petit c么te Jesus and the mary chain.&lt;br /&gt; &lt;br /&gt; C'est tr猫s Easy listening, plein de r茅verbe sur la voix (comme dans les 80's).&lt;br /&gt; &lt;br /&gt; Je trouve 莽a excellent, sauf qu'en fran莽ais 莽a aurait 茅t茅 un plus, Chanson pour elle annonce la couleur avec un petit cot茅 Daniel Darc (Taxi Girls).&lt;br /&gt; &lt;br /&gt; Je suis s茅duit quoi!
 J'aime beaucoup "Chansson pour elle"&lt;br /&gt; &lt;br /&gt; &lt;br /&gt; jolie accords bonne rythmique !!
 Si j'ai du mal a虁 appr茅cier certains morceaux par leur aspect trop pop le reste est vraiment bien (enfin pour moi...). Une influence curiste certainement. Mes titres pr茅f茅r茅s : &lt;i&gt;A mediocre man&lt;/i&gt;, &lt;i&gt;Interlude&lt;/i&gt;, &lt;i&gt;Hausarbeit&lt;/i&gt;, &lt;i&gt;Without you&lt;/i&gt;, &lt;i&gt;So Sad Monday&lt;/i&gt;.
@@ -67,21 +57,14 @@ Franchement, rien a虁 dire !! Bravo !! qualit茅 instru et vocale 茅panouies !
 Bon, on nous demande d'锚tre sinc猫re et courtois. Heureusement qu'on ne nous demande pas d'锚tre objectif, parce que j'aurais du mal.&lt;br /&gt; J'ai d茅couvert ce CD t么t 茅tant donn茅 que la personne qui a compos茅 ce CD me l'a donn茅 en personne.&lt;br /&gt; Mes pistes pr茅f茅r茅es : en fait, j'en ai deux que j'appr茅cie beaucoup : interlude et in paradisium. (C'est tr猫s 茅tonnant quand on me connais ! :p)&lt;br /&gt; Pour r茅pondre a虁 Ehma, talking cure, c'est la Cure par la Parole, ce qu'a "cr茅茅" Freud, qu'appr茅cie beaucoup, si je ne me trompe pas, l'auteur de ce disque.&lt;br /&gt; Je suis pas d'accord de dire qu'avec plus de fran莽ais 莽a serait mieux, parce que tous ces po猫mes 茅trangers mis en chanson, c'est ce qui fait le charme de ce disque.&lt;br /&gt; &lt;br /&gt; Pour r茅sumer, c'est un bon CD a虁 茅couter dans beaucoup d'occasions, que je fais 茅couter a虁 tous les gens a虁 qui je peux le passer.
 
 
-
 </AttributePool>
-    <AttributePool name="Genre">Alternatif
-</AttributePool>
+    <AttributePool name="Genre">Alternatif</AttributePool>
     <AttributePool name="AlbumlistURI">http://dbtune.org/jamendo/record/1434
-http://dbtune.org/jamendo/record/196
-</AttributePool>
-    <AttributePool name="ArtistPhoto">http://img.jamendo.com/artists/t/talking.cure.jpg
-</AttributePool>
-    <AttributePool name="ArtistHomepageURI">http://cyrille.lips.club.fr/
-</AttributePool>
-    <AttributePool name="ArtistLocationURI">http://sws.geonames.org/2975517/
-</AttributePool>
-    <AttributePool name="AlbumRating">6.9
-</AttributePool>
+http://dbtune.org/jamendo/record/196</AttributePool>
+    <AttributePool name="ArtistPhoto">http://img.jamendo.com/artists/t/talking.cure.jpg</AttributePool>
+    <AttributePool name="ArtistHomepageURI">http://cyrille.lips.club.fr/</AttributePool>
+    <AttributePool name="ArtistLocationURI">http://sws.geonames.org/2975517/</AttributePool>
+    <AttributePool name="AlbumRating">6.9</AttributePool>
     <AttributePool name="Songlist">&lt;a href='/en/track/1260'&gt; Comfort &lt;/a&gt; 
  &lt;a href='/en/track/1261'&gt; Chanson pour elle &lt;/a&gt; 
  &lt;a href='/en/track/1262'&gt; Mud &lt;/a&gt; 
@@ -93,7 +76,10 @@ http://dbtune.org/jamendo/record/196
  Interlude 
  Hausarbeit 
  Without You 
- &lt;a href='/en/track/1271'&gt; So Sad Monday &lt;/a&gt; 
-</AttributePool>
+ &lt;a href='/en/track/1271'&gt; So Sad Monday &lt;/a&gt; </AttributePool>
+    <AttributePool name="Usage"></AttributePool>
+    <AttributePool name="Expression"></AttributePool>
+    <AttributePool name="Emotion"></AttributePool>
+    <AttributePool name="DynamicStructure"></AttributePool>
   </ScopePool>
 </Pool>
