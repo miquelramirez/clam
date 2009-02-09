@@ -13,13 +13,15 @@ TODO: Explain what the descriptors mean and how this should be reviewed.
   <Schema>Semwebextractor.sc</Schema>
   <Extractor>SemWebExtractor</Extractor>
   <PoolSuffix>.webpool</PoolSuffix>
+  <Config></Config>
   <Configuration></Configuration>
   <Songs>
     <Song>
       <SoundFile>SongsTest/Mud.mp3</SoundFile>
     </Song>
     <Song>
-      <SoundFile>SongsTest/Crash Into June.mp3</SoundFile>
+      <SoundFile>SongsTest/Crash-Into-June.mp3</SoundFile>
     </Song>
   </Songs>
+  <Views/>
 </Project>

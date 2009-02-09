@@ -24,6 +24,10 @@
    <Attribute name='ArtistLocationURI' scope='Song' type='String'/>
    <Attribute name='AlbumRating' scope='Song' type='String'/>
    <Attribute name='Songlist' scope='Song' type='String'/>
+   <Attribute name='Usage' scope='Song' type='String'/>
+   <Attribute name='Expression' scope='Song' type='String'/>
+   <Attribute name='Emotion' scope='Song' type='String'/>
+   <Attribute name='DynamicStructure' scope='Song' type='String'/>
   </Attributes>
 
 </DescriptionScheme>
