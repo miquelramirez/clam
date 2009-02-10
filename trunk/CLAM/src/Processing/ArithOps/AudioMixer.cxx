@@ -56,13 +56,17 @@ void AudioMixer::CreatePortsAndControls()
 		
 		mInputControls.push_back( new FloatInControl("Gain " + number.str(), this) );
 	}
+	unsigned int inPortsNumber=mConfig.GetNumberOfInPorts();
 	CLAM::Array<TControlData> gainsArray;
 	bool useConfigGains = mConfig.HasDefaultGains();
 	if (useConfigGains)
 		gainsArray=mConfig.GetDefaultGains();
-	for( int i=0; i<mConfig.GetNumberOfInPorts(); i++ )
+		gainsArray.Resize(inPortsNumber);
+		gainsArray.SetSize(inPortsNumber);
+		mConfig.SetDefaultGains(gainsArray);
+	for( int i=0; i<inPortsNumber; i++ )
 	{
-		if (useConfigGains)
+		if (useConfigGains) // and gainsArray.size()>i)
 			mInputControls[i]->DoControl(gainsArray[i]);
 		else
 			/* Set gain = 1 by default */
