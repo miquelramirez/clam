@@ -41,6 +41,40 @@ namespace Hidden
 		AddAll();
 		UpdateData();
 		SetMaxGain(1.);
+		SetPortsNumber(1);
 	}
+
+	void AudioAmplifier::CreatePorts()
+	{
+		for( int i=0; i<mConfig.GetPortsNumber(); i++ )
+		{
+			std::ostringstream number("");
+			number << i;
+			AudioInPort * inPort = new AudioInPort( "Input " + number.str(), this );
+			mInputPorts.push_back( inPort );
+			AudioOutPort * outPort = new AudioOutPort ( "Output " + number.str(), this);
+			mOutputPorts.push_back(outPort);
+		}
+	}
+
+	void AudioAmplifier::RemovePorts()
+	{
+		std::vector< AudioInPort* >::iterator itInPort;
+		for(itInPort=mInputPorts.begin(); itInPort!=mInputPorts.end(); itInPort++)
+			delete *itInPort;
+		mInputPorts.clear();
+		
+		std::vector<AudioOutPort*>::iterator itOutPort;
+		for(itOutPort=mOutputPorts.begin(); itOutPort!=mOutputPorts.end(); itOutPort++)
+			delete *itOutPort;
+		mOutputPorts.clear();
+
+		GetInPorts().Clear();
+		GetOutPorts().Clear();
+	}
+
+
+
+
 
 }

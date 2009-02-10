@@ -37,9 +37,10 @@ namespace CLAM{
 	class AudioAmplifierConfig : public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE( AudioAmplifierConfig, 2, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( AudioAmplifierConfig, 3, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, double, MaxGain );
 		DYN_ATTRIBUTE( 1, public, double, InitGain);
+		DYN_ATTRIBUTE( 2, public, int, PortsNumber);
 
 	protected:
 		void DefaultInit();
@@ -59,16 +60,14 @@ namespace CLAM{
 		const char *GetClassName() const { return "AudioAmplifier"; }
 		
 		/** Ports **/
-		AudioInPort mInputAudio;
-		AudioOutPort mOutputAudio;
+		std::vector<AudioInPort*> mInputPorts;
+		std::vector<AudioOutPort*> mOutputPorts;
 
 		/** Controls **/
 		FloatInControl mInputControl; ///< gain control
 
 	public:
 		AudioAmplifier() :
-			mInputAudio("Input Audio",this ),
-			mOutputAudio("Audio Output",this),
 			mInputControl("Gain", this)
 		{
 			Configure( mConfig );
@@ -78,10 +77,17 @@ namespace CLAM{
 
 		bool Do()
 		{
-			bool result = Do( mInputAudio.GetAudio(), mOutputAudio.GetAudio() );
 
-			mInputAudio.Consume(); 
-			mOutputAudio.Produce();
+
+			bool result=true;
+			unsigned i;
+			for (i=0; i<mInputPorts.size(); i++)
+			{
+				result&=Do( mInputPorts[i]->GetAudio(), mOutputPorts[i]->GetAudio() );
+
+				mInputPorts[i]->Consume(); 
+				mOutputPorts[i]->Produce();
+			}
 
 			return result;
 		}
@@ -112,15 +118,17 @@ namespace CLAM{
 		bool ConcreteConfigure(const ProcessingConfig& config) {
 
 			CopyAsConcreteConfig( mConfig, config );
-
+			RemovePorts();
 			double max_gain = mConfig.GetMaxGain();
 			double init_gain = mConfig.HasInitGain() ? mConfig.GetInitGain() : 1. ;
 			mInputControl.SetBounds(0.,max_gain);
 			mInputControl.SetDefaultValue(init_gain);
 			mInputControl.DoControl(init_gain);
+			CreatePorts();
 			return true;
 		}
-
+		void CreatePorts();
+		void RemovePorts();
 
 	private:
 
