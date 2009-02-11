@@ -1,5 +1,9 @@
 2008-??-?? Annotator 0.4.1 SVN $Revision$
 ''
+ * Fix: Overlapping numbers on the rulers
+ * Man pages added for the companion executables
+ * Renamed OnsetDetector(.exe) -> OnsetDetectorCore(.exe)
+ * Renamed OnsetDetector.py -> OnsetDetector
 
 2008-08-11 Annotator 0.4.0
 'Shooting flying plugins release'
