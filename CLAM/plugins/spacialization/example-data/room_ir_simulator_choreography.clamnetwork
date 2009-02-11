@@ -4,8 +4,7 @@
 
   <processing id="AudioMixer" position="176,540" size="107,62" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
-  </processing>
+    </processing>
 
   <processing id="AudioWindowing" position="330,542" size="143,59" type="AudioWindowing">
     <HopSize>512</HopSize>

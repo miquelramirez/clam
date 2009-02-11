@@ -1,12 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioInput" position="203,161" size="128,108" type="AudioSource"/>
+  <processing id="AudioInput" position="203,161" size="128,108" type="AudioSource" />
 
   <processing id="AudioMixer" position="368,160" size="96,58" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
-  </processing>
+    </processing>
 
   <processing id="AudioWindowing" position="482,154" size="127,58" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -17,7 +15,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="C" position="1132,120" size="128,111" type="AudioSink"/>
+  <processing id="C" position="1132,120" size="128,111" type="AudioSink" />
 
   <processing id="ControlPrinter" position="142,627" size="110,84" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
@@ -103,7 +101,7 @@
     <Prefix>vy</Prefix>
   </processing>
 
-  <processing id="L" position="1143,528" size="128,111" type="AudioSink"/>
+  <processing id="L" position="1143,528" size="128,111" type="AudioSink" />
 
   <processing id="MyFFT" position="633,158" size="71,58" type="MyFFT">
     <AudioSize>1024</AudioSize>
@@ -133,23 +131,23 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="R" position="1136,222" size="128,111" type="AudioSink"/>
+  <processing id="R" position="1136,222" size="128,111" type="AudioSink" />
 
-  <processing id="SL" position="1138,424" size="128,111" type="AudioSink"/>
+  <processing id="SL" position="1138,424" size="128,111" type="AudioSink" />
 
-  <processing id="SR" position="1139,325" size="128,111" type="AudioSink"/>
+  <processing id="SR" position="1139,325" size="128,111" type="AudioSink" />
 
   <processing id="Surround" position="976,458" size="85,110" type="Surround">
     <NChannels>0</NChannels>
   </processing>
 
-  <processing id="VelocityAdapter" position="824,472" size="120,62" type="VelocityAdapter"/>
+  <processing id="VelocityAdapter" position="824,472" size="120,62" type="VelocityAdapter" />
 
-  <processing id="XFader_P" position="554,334" size="89,62" type="AudioBufferCrossFader"/>
+  <processing id="XFader_P" position="554,334" size="89,62" type="AudioBufferCrossFader" />
 
-  <processing id="XFader_Vx" position="552,438" size="95,62" type="AudioBufferCrossFader"/>
+  <processing id="XFader_Vx" position="552,438" size="95,62" type="AudioBufferCrossFader" />
 
-  <processing id="XFader_Vy" position="556,525" size="95,62" type="AudioBufferCrossFader"/>
+  <processing id="XFader_Vy" position="556,525" size="95,62" type="AudioBufferCrossFader" />
 
   <processing id="toStream P" position="667,334" size="94,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>

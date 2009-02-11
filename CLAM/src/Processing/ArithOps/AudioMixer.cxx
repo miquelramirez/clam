@@ -45,13 +45,15 @@ AudioMixer::AudioMixer()
 
 void AudioMixer::CreatePortsAndControls()
 {
+	unsigned portSize = BackendBufferSize();
+	
 	for( int i=0; i<mConfig.GetNumberOfInPorts(); i++ )
 	{
 		std::stringstream number("");
 		number << i;
 		AudioInPort * inPort = new AudioInPort( "Input " + number.str(), this );
-		inPort->SetSize( mConfig.GetFrameSize() );
-		inPort->SetHop( mConfig.GetFrameSize() );
+		inPort->SetSize( portSize );
+		inPort->SetHop( portSize );
 		mInputPorts.push_back( inPort );
 		
 		mInputControls.push_back( new FloatInControl("Gain " + number.str(), this) );
@@ -64,7 +66,7 @@ void AudioMixer::CreatePortsAndControls()
 		gainsArray.Resize(inPortsNumber);
 		gainsArray.SetSize(inPortsNumber);
 		mConfig.SetDefaultGains(gainsArray);
-	for( int i=0; i<inPortsNumber; i++ )
+	for( unsigned int i=0; i<inPortsNumber; i++ )
 	{
 		if (useConfigGains) 
 			mInputControls[i]->DoControl(gainsArray[i]);
@@ -73,8 +75,8 @@ void AudioMixer::CreatePortsAndControls()
 			mInputControls[i]->DoControl(1.);
 	}
 	
-	mOutputPort.SetSize( mConfig.GetFrameSize());
-	mOutputPort.SetHop( mConfig.GetFrameSize());
+	mOutputPort.SetSize( portSize );
+	mOutputPort.SetHop( portSize );
 }
 
 void AudioMixer::RemovePortsAndControls()
@@ -103,7 +105,9 @@ bool AudioMixer::ConcreteConfigure(const ProcessingConfig& c)
 
 bool AudioMixer::Do()
 {
-	unsigned int frameSize = mConfig.GetFrameSize();
+std::cout<<"AudioMixer::Do()"<<std::endl;
+
+	unsigned int frameSize = BackendBufferSize(); 
 	unsigned int numInPorts = mConfig.GetNumberOfInPorts();
 
 	TData normConstant = (TData)1.0 /TData(numInPorts);

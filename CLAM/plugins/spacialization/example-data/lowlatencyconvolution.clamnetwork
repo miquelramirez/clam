@@ -11,8 +11,7 @@
 
   <processing id="AudioMixer_0" position="298,333" size="132,60" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
-  </processing>
+    </processing>
 
   <processing id="AudioSink_0" position="485,335" size="128,111" type="AudioSink" />
 
