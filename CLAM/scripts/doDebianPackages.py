@@ -24,7 +24,7 @@ repositories = [
 	( 'NetworkEditor', 'clam-networkeditor', versionFromRemoteSvn('NetworkEditor')[1] ),
 	( 'SMSTools',      'clam-smstools',      versionFromRemoteSvn('SMSTools')[1] ),
 	( 'Annotator',     'clam-annotator',     versionFromRemoteSvn('Annotator')[1] ),
-	( 'Chordata',      'clam-chordata',    versionFromRemoteSvn('Chordata')[1] ),
+	( 'chordata',      'clam-chordata',      versionFromRemoteSvn('chordata')[1] ),
 ]
 
 hooks = {

@@ -174,7 +174,7 @@ clam.add_subtask('Annotator installation', [
 
 clam.add_subtask('Chordata installation', [
 	{CMD: 'echo setting QTDIR to qt4 path ', INFO: set_qtdir_to_qt4},
-	'cd %(sandbox)s/clam/Chordata'%localDefinitions,
+	'cd %(sandbox)s/clam/chordata'%localDefinitions,
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
 	'scons package',
 	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
