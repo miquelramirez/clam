@@ -84,7 +84,6 @@ namespace CLAM{
 			for (i=0; i<mInputPorts.size(); i++)
 			{
 				result&=Do( mInputPorts[i]->GetAudio(), mOutputPorts[i]->GetAudio() );
-
 				mInputPorts[i]->Consume(); 
 				mOutputPorts[i]->Produce();
 			}
