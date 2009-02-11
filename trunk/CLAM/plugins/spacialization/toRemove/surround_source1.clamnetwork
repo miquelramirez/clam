@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioBufferCrossFader" position="782,419" size="176,62" type="AudioBufferCrossFader"/>
+  <processing id="AudioBufferCrossFader" position="782,419" size="176,62" type="AudioBufferCrossFader" />
 
-  <processing id="AudioBufferCrossFader_1" position="820,577" size="190,62" type="AudioBufferCrossFader"/>
+  <processing id="AudioBufferCrossFader_1" position="820,577" size="190,62" type="AudioBufferCrossFader" />
 
-  <processing id="AudioBufferCrossFader_2" position="813,750" size="190,62" type="AudioBufferCrossFader"/>
+  <processing id="AudioBufferCrossFader_2" position="813,750" size="190,62" type="AudioBufferCrossFader" />
 
   <processing id="AudioWindowing" position="162,270" size="161,60" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -16,9 +15,9 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="C" position="1001,72" size="128,111" type="AudioSink"/>
+  <processing id="C" position="1001,72" size="128,111" type="AudioSink" />
 
-  <processing id="Cartesian2PolarControl" position="1112,354" size="205,60" type="Cartesian2PolarControl"/>
+  <processing id="Cartesian2PolarControl" position="1112,354" size="205,60" type="Cartesian2PolarControl" />
 
   <processing id="Emitter Position" position="202,50" size="204,194" type="ControlSurface">
     <MinX>0</MinX>
@@ -63,7 +62,7 @@
     <Prefix>vy</Prefix>
   </processing>
 
-  <processing id="L" position="878,115" size="128,111" type="AudioSink"/>
+  <processing id="L" position="878,115" size="128,111" type="AudioSink" />
 
   <processing id="LibloSource" position="504,157" size="106,58" type="LibloSource">
     <OscPath>/clam/target</OscPath>
@@ -128,17 +127,17 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope C" position="945,-4" size="150,94" type="Oscilloscope"/>
+  <processing id="Oscilloscope C" position="945,-4" size="150,94" type="Oscilloscope" />
 
-  <processing id="Oscilloscope L" position="754,131" size="144,84" type="Oscilloscope"/>
+  <processing id="Oscilloscope L" position="754,131" size="144,84" type="Oscilloscope" />
 
-  <processing id="Oscilloscope R" position="1155,134" size="142,83" type="Oscilloscope"/>
+  <processing id="Oscilloscope R" position="1155,134" size="142,83" type="Oscilloscope" />
 
-  <processing id="Oscilloscope SL" position="800,261" size="150,95" type="Oscilloscope"/>
+  <processing id="Oscilloscope SL" position="800,261" size="150,95" type="Oscilloscope" />
 
-  <processing id="Oscilloscope SR" position="1108,262" size="158,85" type="Oscilloscope"/>
+  <processing id="Oscilloscope SR" position="1108,262" size="158,85" type="Oscilloscope" />
 
-  <processing id="R" position="1122,110" size="128,111" type="AudioSink"/>
+  <processing id="R" position="1122,110" size="128,111" type="AudioSink" />
 
   <processing id="Receiver Orientation" position="929,117" size="191,188" type="ControlSurface">
     <MinX>-1</MinX>
@@ -158,15 +157,15 @@
     <MaxY>1</MaxY>
   </processing>
 
-  <processing id="SL" position="893,216" size="128,111" type="AudioSink"/>
+  <processing id="SL" position="893,216" size="128,111" type="AudioSink" />
 
-  <processing id="SR" position="1129,211" size="128,111" type="AudioSink"/>
+  <processing id="SR" position="1129,211" size="128,111" type="AudioSink" />
 
-  <processing id="Source1" position="24,267" size="128,108" type="AudioSource"/>
+  <processing id="Source1" position="24,267" size="128,108" type="AudioSource" />
 
-  <processing id="Surround" position="1195,501" size="105,110" type="Surround"/>
+  <processing id="Surround" position="1195,501" size="105,110" type="Surround" />
 
-  <processing id="VelocityAdapter" position="1137,622" size="131,62" type="VelocityAdapter"/>
+  <processing id="VelocityAdapter" position="1137,622" size="131,62" type="VelocityAdapter" />
 
   <processing id="boost SL" position="1343,339" size="122,58" type="AudioAmplifier">
     <MaxGain>1</MaxGain>

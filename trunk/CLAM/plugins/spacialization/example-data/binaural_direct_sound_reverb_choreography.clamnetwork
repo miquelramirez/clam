@@ -110,30 +110,25 @@
 
   <processing id="AudioMixer" position="79,681" size="107,62" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
-  </processing>
+    </processing>
 
   <processing id="AudioMixer_1" position="1645,854" size="110,62" type="AudioMixer">
     <NumberOfInPorts>2</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
     <DefaultGains size="2">0.5 0.5</DefaultGains>
   </processing>
 
   <processing id="AudioMixer_2" position="1636,1036" size="110,62" type="AudioMixer">
     <NumberOfInPorts>2</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
     <DefaultGains size="2">0.5 0.5</DefaultGains>
   </processing>
 
   <processing id="AudioMixer_3" position="1357,954" size="110,62" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
-  </processing>
+    </processing>
 
   <processing id="AudioMixer_4" position="1367,1132" size="110,62" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
-  </processing>
+    </processing>
 
   <processing id="AudioWindowing" position="204,686" size="127,58" type="AudioWindowing">
     <HopSize>512</HopSize>
