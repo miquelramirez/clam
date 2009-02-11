@@ -105,7 +105,6 @@ bool AudioMixer::ConcreteConfigure(const ProcessingConfig& c)
 
 bool AudioMixer::Do()
 {
-std::cout<<"AudioMixer::Do()"<<std::endl;
 
 	unsigned int frameSize = BackendBufferSize(); 
 	unsigned int numInPorts = mConfig.GetNumberOfInPorts();
