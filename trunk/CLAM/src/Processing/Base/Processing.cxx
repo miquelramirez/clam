@@ -213,7 +213,12 @@ namespace CLAM
 	}
 	unsigned Processing::BackendBufferSize()
 	{
-		return _network? _network->BackendBufferSize() : 1024;
+		if (_network)
+			return _network->BackendBufferSize();
+		//TODO: 1- inherit the buffer size on embeded processings without linked network
+		//TODO: 2- resolve the multiple configuration instances, that makes the first ConcreteConfigure (on XML loading) print this message
+		std::cout<<"Warning: no linked network, using hardcoded backend buffer size (1024) on processing "<<GetClassName()<<std::endl;
+		return 1024;
 	}
 	unsigned Processing::BackendSampleRate()
 	{
