@@ -66,7 +66,7 @@ void AudioMixer::CreatePortsAndControls()
 		mConfig.SetDefaultGains(gainsArray);
 	for( int i=0; i<inPortsNumber; i++ )
 	{
-		if (useConfigGains) // and gainsArray.size()>i)
+		if (useConfigGains) 
 			mInputControls[i]->DoControl(gainsArray[i]);
 		else
 			/* Set gain = 1 by default */
