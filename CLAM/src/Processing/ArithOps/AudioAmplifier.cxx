@@ -46,13 +46,17 @@ namespace Hidden
 
 	void AudioAmplifier::CreatePorts()
 	{
-		for( int i=0; i<mConfig.GetPortsNumber(); i++ )
+		unsigned portsNumber=1;
+		if (mConfig.HasPortsNumber())
+			portsNumber=mConfig.GetPortsNumber();
+		for( unsigned i=0; i<portsNumber; i++ )
 		{
 			std::ostringstream number("");
-			number << i;
-			AudioInPort * inPort = new AudioInPort( "Input " + number.str(), this );
+			if (i>0)
+				number << " "<< i;
+			AudioInPort * inPort = new AudioInPort( "Input Audio" + number.str(), this );
 			mInputPorts.push_back( inPort );
-			AudioOutPort * outPort = new AudioOutPort ( "Output " + number.str(), this);
+			AudioOutPort * outPort = new AudioOutPort ( "Audio Output" + number.str(), this);
 			mOutputPorts.push_back(outPort);
 		}
 	}
