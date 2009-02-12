@@ -17,7 +17,7 @@
 
   <processing id="MultiSampler" position="92,194" size="106,58" type="MultiSampler">
     <LoopDefaultState>1</LoopDefaultState>
-    <BasePath>../../../../acustica/wavs/</BasePath>
+    <BasePath>../../../../../acustica/wavs/</BasePath>
     <Samples>InLanguageAnecoic-cut_48000.wav&gt;roland_drums_100s_48khz.wav</Samples>
   </processing>
 
