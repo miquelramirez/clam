@@ -115,6 +115,7 @@ namespace CLAM
 	 
 		bool Do()
 		{
+
 			/* Do nothing until we're ready to begin. */
 			if ((!_canProcess) || (!_canPlay))
 				return false;
@@ -123,9 +124,9 @@ namespace CLAM
 			//User has moved the slider and we have to change the position
 			//TODO potentially dangerous since a different thread is reading!
 			if(_inControlPause.GetLastValue()<0.5)
-				WriteSilenceToPorts();
-			else
 				ReadBufferAndWriteToPorts();
+			else
+				WriteSilenceToPorts();
 			// SEEK CONTROL
 			//User has moved the slider and we have to change the position
 			if(_lastControlSeek != _inControlSeek.GetLastValue() and _infile)
