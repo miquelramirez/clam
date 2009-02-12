@@ -32,10 +32,12 @@ namespace CLAM {
 		TControlData mLowerBound;
 		bool mBounded;
 		bool mHasDefaultValue;
+		mutable bool _hasBeenRead;
 	private:
 		/** Private copy constructor to avoid copies */
 		InControlBase(const InControlBase & toBeCopied ) {}
 	public:
+		const bool HasBeenRead() const { return _hasBeenRead; }
 		/**
 		 Class constructor.
 		 @param name Unique name of the control within the processing.
