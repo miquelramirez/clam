@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <processing id="AudioSink" position="335,28" size="128,111" type="AudioSink"/>
+
+  <processing id="ControlPrinterTyped" position="16,266" size="181,130" type="ControlPrinterTyped">
+    <Identifier>ControlPrinterTyped</Identifier>
+    <TypesMask>isi</TypesMask>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="MultiLibloSourceTyped" position="24,33" size="160,58" type="MultiLibloSourceTyped">
+    <OscPath>/clam/target</OscPath>
+    <ServerPort>7000</ServerPort>
+    <OSCTypeSpec>isi</OSCTypeSpec>
+  </processing>
+
+  <processing id="MultiSampler" position="92,194" size="106,58" type="MultiSampler">
+    <LoopDefaultState>1</LoopDefaultState>
+    <BasePath>../../../../acustica/wavs/</BasePath>
+    <Samples>InLanguageAnecoic-cut_48000.wav&gt;roland_drums_100s_48khz.wav</Samples>
+  </processing>
+
+  <processing id="Vumeter" position="259,149" size="80,197" type="Vumeter"/>
+
+  <port_connection>
+    <out>MultiSampler.audio out port</out>
+    <in>Vumeter.Input</in>
+  </port_connection>
+
+  <port_connection>
+    <out>MultiSampler.audio out port</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <control_connection>
+    <out>MultiLibloSourceTyped._clam_target_0</out>
+    <in>MultiSampler.set active sample number</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSourceTyped._clam_target_0</out>
+    <in>ControlPrinterTyped.ControlPrinterTyped_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSourceTyped._clam_target_1</out>
+    <in>MultiSampler.trigger control input (play/stop)</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSourceTyped._clam_target_1</out>
+    <in>ControlPrinterTyped.ControlPrinterTyped_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSourceTyped._clam_target_2</out>
+    <in>MultiSampler.loop value (1,0)</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MultiLibloSourceTyped._clam_target_2</out>
+    <in>ControlPrinterTyped.ControlPrinterTyped_2</in>
+  </control_connection>
+
+</network>
