@@ -115,7 +115,6 @@ namespace CLAM
 	 
 		bool Do()
 		{
-
 			/* Do nothing until we're ready to begin. */
 			if ((!_canProcess) || (!_canPlay))
 				return false;
@@ -129,8 +128,9 @@ namespace CLAM
 				WriteSilenceToPorts();
 			// SEEK CONTROL
 			//User has moved the slider and we have to change the position
-			if(_lastControlSeek != _inControlSeek.GetLastValue() and _infile)
-			{	_lastControlSeek = _inControlSeek.GetLastValue();
+			if(not _inControlSeek.HasBeenRead() and _infile)
+			{
+				_lastControlSeek = _inControlSeek.GetLastValue();
 				_numReadFrames = _lastControlSeek*_numTotalFrames;
 				_infile->seek(_numReadFrames ,SEEK_SET);
 			}		
