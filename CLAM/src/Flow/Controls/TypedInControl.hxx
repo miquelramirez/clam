@@ -26,8 +26,16 @@ namespace CLAM {
 	public:
 		TypedInControl(const std::string &name = "unnamed in control", Processing * proc = 0);
 		
-		virtual void DoControl(const TypedControlData& val) { mLastValue = val; };
-		const TypedControlData& GetLastValue() const { return mLastValue; };
+		virtual void DoControl(const TypedControlData& val) 
+		{
+			mLastValue = val;
+			_hasBeenRead=false;
+		};
+		const TypedControlData& GetLastValue() const 
+		{
+			_hasBeenRead=true;
+			return mLastValue; 
+		};
 	private:
 		std::string GetLastValueAsString(StaticFalse* /*isStreamable*/) const
 		{

@@ -57,9 +57,17 @@ public:
 	 * Stores the incoming control value. It can be retrieved
 	 * using \c GetLastValue
 	 */
-	virtual void DoControl(TControlData val) { mLastValue = val; };
+	virtual void DoControl(TControlData val) 
+	{
+		mLastValue = val;
+		_hasBeenRead=false;
+	};
 	/// Returns the last TControlData (float) received event
-	const TControlData& GetLastValue() const { return mLastValue; };
+	const TControlData& GetLastValue() const 
+	{
+		_hasBeenRead=true;
+		return mLastValue;
+	};
 
 	const std::string GetLastValueAsString() // TODO: remove duplicated code on TypedInControl (Natanael)
 	{
