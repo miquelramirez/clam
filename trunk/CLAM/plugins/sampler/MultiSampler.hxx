@@ -24,6 +24,7 @@
 #include <CLAM/AudioOutPort.hxx>
 #include <CLAM/AudioOutPortPublisher.hxx>
 #include <CLAM/TypedInControl.hxx>
+#include <CLAM/OutControl.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 
 
@@ -54,16 +55,18 @@ namespace CLAM
 	};
 class MultiSampler : public Processing
 {
-//protected:
-	MultiSamplerConfig _config;
+		MultiSamplerConfig _config;
 
 		CLAM::AudioOutPortPublisher _proxyOutPublisher;
 		CLAM::AudioMixer _mixer;
 		CLAM::TypedInControl<int> _activeSample;
 		CLAM::TypedInControl<std::string> _triggerControl;
 		CLAM::TypedInControl<int> _loop;
-		CLAM::TypedInControl<std::string> _sampleName;
+//		CLAM::TypedInControl<std::string> _sampleName;
 		std::vector<CLAM::SndfilePlayer *> _samples; 
+
+		std::vector<CLAM::FloatOutControl *> _seekDummyControls;
+		std::vector<CLAM::FloatOutControl *> _pauseDummyControls;
 
 public:
 	const char* GetClassName () const { return "MultiSampler"; }
@@ -72,36 +75,43 @@ public:
 		, _activeSample("set active sample number",this)
 		, _triggerControl("trigger control input (play/stop)",this)
 		, _loop("loop value (1,0)",this)
-		, _sampleName("sample name",this)
+//		, _sampleName("sample name",this)
 	{
+		_proxyOutPublisher.PublishOutPort(_mixer.GetOutPort(0)); 
 		Configure (config);
 	}
 	
-
-	void ClearSamplers()
-	{
-		std::vector<CLAM::SndfilePlayer *>::iterator it;
-		for (it=_samples.begin();it!=_samples.end();it++)
-		{
-			delete *it;
-		}
-		_samples.clear();
-	}
 
 	~MultiSampler()	{ ; }
 
 	bool Do()
 	{	
-//std::cout<<"MultiSampler::Do()"<<std::endl;
 		if (_samples.size()==0)
 			return true;
-		unsigned actualSample=_activeSample.GetLastValue();
+		unsigned int actualSample=_activeSample.GetLastValue();
 		if (actualSample>=_samples.size())
 			actualSample=0;
-#if 1
+
+		if (not _triggerControl.HasBeenRead())
+		{
+			const std::string triggerControl = _triggerControl.GetLastValue();
+
+			if (triggerControl=="play" or triggerControl=="PLAY")
+			{
+//				std::cout<<"multisampler play! of sample: "<<actualSample<<std::endl;
+				_seekDummyControls[actualSample]->SendControl(0.);
+				_pauseDummyControls[actualSample]->SendControl(0.);
+			}
+
+
+			if (triggerControl=="stop" or triggerControl=="STOP")
+			{
+//				std::cout<<"multisampler stop! of sample: "<<actualSample<<std::endl;
+				_pauseDummyControls[actualSample]->SendControl(1.);
+			}
+		}
+
 		CLAM::SndfilePlayerConfig configClone = dynamic_cast<const CLAM::SndfilePlayerConfig &> (_samples[actualSample]->GetConfig());
-		std::cout<<_sampleName.GetLastValue()<<std::endl;
-#endif
 		std::vector<CLAM::SndfilePlayer *>::iterator it;
 		for (it=_samples.begin();it!=_samples.end();it++)
 		{
@@ -115,7 +125,6 @@ public:
 
 	bool ConcreteStart()
 	{
-//std::cout<<"MultiSampler::ConcreteStart()"<<std::endl;
 		_mixer.Start();
 		std::vector<CLAM::SndfilePlayer *>::iterator it;
 		for (it=_samples.begin();it!=_samples.end();it++)
@@ -127,7 +136,6 @@ public:
 
 	bool ConcreteStop()
 	{
-//std::cout<<"MultiSampler::ConcreteStop()"<<std::endl;
 		_mixer.Stop();
 		std::vector<CLAM::SndfilePlayer *>::iterator it;
 		for (it=_samples.begin();it!=_samples.end();it++)
@@ -142,7 +150,7 @@ public:
 		return _config;
 	}
 
-	std::vector<std::string> GetDefinedSamples()
+	const std::vector<std::string> GetDefinedSamples() const 
 	{
 		std::vector<std::string> samplesVector;
 		if (not _config.HasSamples())
@@ -176,18 +184,17 @@ public:
 	}
 
 
+
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 
 		_activeSample.DoControl(0);
 		_triggerControl.DoControl("");
 		_loop.DoControl(0);
-//		_sampleName.DoControl("InLanguageAnecoic-cut_48000.wav");
-
 
 		CopyAsConcreteConfig(_config,config);
 
-		ClearSamplers();
+		ClearPlayers();
 		std::vector<std::string> fileNames=GetDefinedSamples();
 
 
@@ -205,36 +212,75 @@ public:
 		_mixer.Configure(mixerConfig);
 
 
-		std::vector<std::string>::iterator it;
+		if (not createPlayers(fileNames))
+			return false;
+
+
+
+		return true;
+	}
+
+private:
+	bool createPlayers(const std::vector<std::string> fileNames)
+	{
+		std::vector<std::string>::const_iterator it;
 		unsigned counter=0;
 		for (it=fileNames.begin();it!=fileNames.end();it++)
 		{
-			CLAM::SndfilePlayer * samplerInstance = new CLAM::SndfilePlayer();
+			CLAM::SndfilePlayer * fileplayerInstance = new CLAM::SndfilePlayer();
 
 			if (_network)
-				samplerInstance->SetNetworkBackLink(_network);
+				fileplayerInstance->SetNetworkBackLink(_network);
 
 			CLAM::SndfilePlayerConfig playerConfig=CLAM::SndfilePlayerConfig();
 			playerConfig.SetLoop(_config.GetLoopDefaultState());
 			playerConfig.SetSourceFile(*it);
-			if (not samplerInstance->Configure(playerConfig))
+			if (not fileplayerInstance->Configure(playerConfig))
 			{
-				AddConfigErrorMessage(samplerInstance->GetConfigErrorMessage());
+				AddConfigErrorMessage(fileplayerInstance->GetConfigErrorMessage());
 				return false;
 			}
-			std::cout<< playerConfig.GetSourceFile()<<std::endl;
 
-			_samples.push_back(samplerInstance);
+			_samples.push_back(fileplayerInstance);
+			CLAM::ConnectPorts(fileplayerInstance->GetOutPort(0), _mixer, counter);
 
-			CLAM::ConnectPorts(samplerInstance->GetOutPort(0), _mixer, counter);
+			CLAM::FloatOutControl * seekControl=new CLAM::FloatOutControl("dummy",0);
+			seekControl->AddLink(fileplayerInstance->GetInControl("Seek in-Control"));
+			_seekDummyControls.push_back(seekControl);
+
+			CLAM::FloatOutControl * pauseControl=new CLAM::FloatOutControl("dummy",0);
+			pauseControl->AddLink(fileplayerInstance->GetInControl("Pause in-Control"));
+			_pauseDummyControls.push_back(pauseControl);
+
 			counter++;
 		}
-
-
-		_proxyOutPublisher.PublishOutPort(_mixer.GetOutPort(0)); 
-
 		return true;
 	}
+
+	void ClearPlayers()
+	{
+
+		// clear players
+
+		std::vector<CLAM::SndfilePlayer *>::iterator itPlayers;
+		for (itPlayers=_samples.begin();itPlayers!=_samples.end();itPlayers++)
+			delete *itPlayers;
+
+		_samples.clear();
+		// clear dummy controls:
+		std::vector<CLAM::FloatOutControl *>::iterator itControls;
+
+		for (itControls=_seekDummyControls.begin();itControls!=_seekDummyControls.end();itControls++)
+			delete *itControls;
+		for (itControls=_pauseDummyControls.begin();itControls!=_pauseDummyControls.end();itControls++)
+			delete *itControls;
+
+		_seekDummyControls.clear();
+		_pauseDummyControls.clear();
+
+	}
+
+
 };
 }
 #endif
