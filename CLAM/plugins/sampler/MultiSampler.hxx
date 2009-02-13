@@ -67,6 +67,7 @@ class MultiSampler : public Processing
 
 		std::vector<CLAM::FloatOutControl *> _seekDummyControls;
 		std::vector<CLAM::FloatOutControl *> _pauseDummyControls;
+		std::vector<CLAM::FloatOutControl *> _loopDummyControls;
 
 public:
 	const char* GetClassName () const { return "MultiSampler"; }
@@ -99,6 +100,8 @@ public:
 			if (triggerControl=="play" or triggerControl=="PLAY")
 			{
 //				std::cout<<"multisampler play! of sample: "<<actualVoice<<std::endl;
+				if (not _loop.HasBeenRead())
+					_loopDummyControls[actualVoice]->SendControl(_loop.GetLastValue());
 				_seekDummyControls[actualVoice]->SendControl(0.);
 				_pauseDummyControls[actualVoice]->SendControl(0.);
 			}
@@ -192,11 +195,12 @@ public:
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 
+		CopyAsConcreteConfig(_config,config);
+
 		_activeVoice.DoControl(0);
 		_triggerControl.DoControl("");
-		_loop.DoControl(0);
+		_loop.DoControl(_config.GetLoopDefaultState() ? 1 : 0);
 
-		CopyAsConcreteConfig(_config,config);
 
 		ClearPlayers();
 		std::vector<std::string> fileNames=GetDefinedSamples();
@@ -252,6 +256,10 @@ private:
 			pauseControl->AddLink(fileplayerInstance->GetInControl("Pause in-Control"));
 			_pauseDummyControls.push_back(pauseControl);
 
+			CLAM::FloatOutControl * loopControl=new CLAM::FloatOutControl("dummy",0);
+			loopControl->AddLink(fileplayerInstance->GetInControl("Loop in-Control"));
+			_loopDummyControls.push_back(loopControl);
+
 			counter++;
 		}
 		return true;
@@ -274,12 +282,14 @@ private:
 			delete *itControls;
 		for (itControls=_pauseDummyControls.begin();itControls!=_pauseDummyControls.end();itControls++)
 			delete *itControls;
+		for (itControls=_loopDummyControls.begin();itControls!=_loopDummyControls.end();itControls++)
+			delete *itControls;
 
 		_seekDummyControls.clear();
 		_pauseDummyControls.clear();
+		_loopDummyControls.clear();
 
 	}
-
 
 };
 }
