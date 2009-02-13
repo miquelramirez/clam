@@ -35,7 +35,7 @@
 
   <control_connection>
     <out>MultiLibloSourceTyped._clam_target_0</out>
-    <in>MultiSampler.set active sample number</in>
+    <in>MultiSampler.set active voice number</in>
   </control_connection>
 
   <control_connection>

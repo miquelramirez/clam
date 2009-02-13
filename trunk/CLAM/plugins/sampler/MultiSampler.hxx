@@ -59,11 +59,11 @@ class MultiSampler : public Processing
 
 		CLAM::AudioOutPortPublisher _proxyOutPublisher;
 		CLAM::AudioMixer _mixer;
-		CLAM::TypedInControl<int> _activeSample;
+		CLAM::TypedInControl<int> _activeVoice;
 		CLAM::TypedInControl<std::string> _triggerControl;
 		CLAM::TypedInControl<int> _loop;
 //		CLAM::TypedInControl<std::string> _sampleName;
-		std::vector<CLAM::SndfilePlayer *> _samples; 
+		std::vector<CLAM::SndfilePlayer *> _filePlayers; 
 
 		std::vector<CLAM::FloatOutControl *> _seekDummyControls;
 		std::vector<CLAM::FloatOutControl *> _pauseDummyControls;
@@ -72,7 +72,7 @@ public:
 	const char* GetClassName () const { return "MultiSampler"; }
 	MultiSampler ( const ProcessingConfig & config=MultiSamplerConfig())
 		: _proxyOutPublisher("audio out port",this)
-		, _activeSample("set active sample number",this)
+		, _activeVoice("set active voice number",this)
 		, _triggerControl("trigger control input (play/stop)",this)
 		, _loop("loop value (1,0)",this)
 //		, _sampleName("sample name",this)
@@ -86,11 +86,11 @@ public:
 
 	bool Do()
 	{	
-		if (_samples.size()==0)
+		if (_filePlayers.size()==0)
 			return true;
-		unsigned int actualSample=_activeSample.GetLastValue();
-		if (actualSample>=_samples.size())
-			actualSample=0;
+		unsigned int actualVoice=_activeVoice.GetLastValue();
+		if (actualVoice>=_filePlayers.size())
+			actualVoice=0;
 
 		if (not _triggerControl.HasBeenRead())
 		{
@@ -98,22 +98,22 @@ public:
 
 			if (triggerControl=="play" or triggerControl=="PLAY")
 			{
-//				std::cout<<"multisampler play! of sample: "<<actualSample<<std::endl;
-				_seekDummyControls[actualSample]->SendControl(0.);
-				_pauseDummyControls[actualSample]->SendControl(0.);
+//				std::cout<<"multisampler play! of sample: "<<actualVoice<<std::endl;
+				_seekDummyControls[actualVoice]->SendControl(0.);
+				_pauseDummyControls[actualVoice]->SendControl(0.);
 			}
 
 
 			if (triggerControl=="stop" or triggerControl=="STOP")
 			{
-//				std::cout<<"multisampler stop! of sample: "<<actualSample<<std::endl;
-				_pauseDummyControls[actualSample]->SendControl(1.);
+//				std::cout<<"multisampler stop! of sample: "<<actualVoice<<std::endl;
+				_pauseDummyControls[actualVoice]->SendControl(1.);
 			}
 		}
 
-		CLAM::SndfilePlayerConfig configClone = dynamic_cast<const CLAM::SndfilePlayerConfig &> (_samples[actualSample]->GetConfig());
+		CLAM::SndfilePlayerConfig configClone = dynamic_cast<const CLAM::SndfilePlayerConfig &> (_filePlayers[actualVoice]->GetConfig());
 		std::vector<CLAM::SndfilePlayer *>::iterator it;
-		for (it=_samples.begin();it!=_samples.end();it++)
+		for (it=_filePlayers.begin();it!=_filePlayers.end();it++)
 		{
 			if ((*it)->IsRunning() and (*it)->CanConsumeAndProduce())
 				(*it)->Do();
@@ -127,7 +127,7 @@ public:
 	{
 		_mixer.Start();
 		std::vector<CLAM::SndfilePlayer *>::iterator it;
-		for (it=_samples.begin();it!=_samples.end();it++)
+		for (it=_filePlayers.begin();it!=_filePlayers.end();it++)
 		{
 			(*it)->Start();
 		}
@@ -138,7 +138,7 @@ public:
 	{
 		_mixer.Stop();
 		std::vector<CLAM::SndfilePlayer *>::iterator it;
-		for (it=_samples.begin();it!=_samples.end();it++)
+		for (it=_filePlayers.begin();it!=_filePlayers.end();it++)
 		{
 			(*it)->Stop();
 		}
@@ -178,24 +178,21 @@ public:
 			samplesVector.push_back(basePath+samplesString.substr(i,foundPos-i));
 			i=foundPos+1;
 		}
-
-/*		std::vector<std::string>::iterator it;
+/*
+		std::vector<std::string>::iterator it;
 		std::cout<<"vector de strings: "<<std::endl;
 		for (it=samplesVector.begin();it!=samplesVector.end();it++)
 		{
 			std::cout<<"\t"<<(*it)<<std::endl;
 		}
 */
-
 		return samplesVector;
 	}
-
-
 
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
 
-		_activeSample.DoControl(0);
+		_activeVoice.DoControl(0);
 		_triggerControl.DoControl("");
 		_loop.DoControl(0);
 
@@ -203,7 +200,6 @@ public:
 
 		ClearPlayers();
 		std::vector<std::string> fileNames=GetDefinedSamples();
-
 
 		if (_network)
 			_mixer.SetNetworkBackLink(_network);
@@ -218,11 +214,8 @@ public:
 		mixerConfig.SetNumberOfInPorts(numberOfSamples);
 		_mixer.Configure(mixerConfig);
 
-
 		if (not createPlayers(fileNames))
 			return false;
-
-
 
 		return true;
 	}
@@ -248,7 +241,7 @@ private:
 				return false;
 			}
 
-			_samples.push_back(fileplayerInstance);
+			_filePlayers.push_back(fileplayerInstance);
 			CLAM::ConnectPorts(fileplayerInstance->GetOutPort(0), _mixer, counter);
 
 			CLAM::FloatOutControl * seekControl=new CLAM::FloatOutControl("dummy",0);
@@ -270,10 +263,10 @@ private:
 		// clear players
 
 		std::vector<CLAM::SndfilePlayer *>::iterator itPlayers;
-		for (itPlayers=_samples.begin();itPlayers!=_samples.end();itPlayers++)
+		for (itPlayers=_filePlayers.begin();itPlayers!=_filePlayers.end();itPlayers++)
 			delete *itPlayers;
 
-		_samples.clear();
+		_filePlayers.clear();
 		// clear dummy controls:
 		std::vector<CLAM::FloatOutControl *>::iterator itControls;
 
