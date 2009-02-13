@@ -3,25 +3,25 @@
 
   <processing id="AudioSink" position="335,28" size="128,111" type="AudioSink"/>
 
-  <processing id="ControlPrinterTyped" position="16,266" size="181,130" type="ControlPrinterTyped">
+  <processing id="ControlPrinterTyped" position="16,266" size="185,130" type="ControlPrinterTyped">
     <Identifier>ControlPrinterTyped</Identifier>
     <TypesMask>isi</TypesMask>
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="MultiLibloSourceTyped" position="24,33" size="160,58" type="MultiLibloSourceTyped">
+  <processing id="MultiLibloSourceTyped" position="24,33" size="174,59" type="MultiLibloSourceTyped">
     <OscPath>/clam/target</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>isi</OSCTypeSpec>
   </processing>
 
-  <processing id="MultiSampler" position="92,194" size="106,58" type="MultiSampler">
+  <processing id="MultiSampler" position="92,194" size="118,59" type="MultiSampler">
     <LoopDefaultState>1</LoopDefaultState>
     <BasePath>../../../../../acustica/wavs/</BasePath>
-    <Samples>InLanguageAnecoic-cut_48000.wav&gt;roland_drums_100s_48khz.wav</Samples>
+    <Samples>InLanguageAnecoic-cut_48000.wav, roland_drums_100s_48khz.wav</Samples>
   </processing>
 
-  <processing id="Vumeter" position="259,149" size="80,197" type="Vumeter"/>
+  <processing id="Vumeter" position="259,149" size="89,197" type="Vumeter"/>
 
   <port_connection>
     <out>MultiSampler.audio out port</out>

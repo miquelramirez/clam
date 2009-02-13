@@ -26,7 +26,7 @@
 #include <CLAM/TypedInControl.hxx>
 #include <CLAM/OutControl.hxx>
 #include <CLAM/ProcessingConfig.hxx>
-
+#include <CLAM/Text.hxx>
 
 #include <CLAM/AudioMixer.hxx>
 #include "../sndfile/SndfilePlayer.hxx"
@@ -40,8 +40,8 @@ namespace CLAM
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( MultiSamplerConfig,3, ProcessingConfig );
 		DYN_ATTRIBUTE(0,public,bool,LoopDefaultState);
-		DYN_ATTRIBUTE(1,public,std::string,BasePath);
-		DYN_ATTRIBUTE(2,public,std::string,Samples);
+		DYN_ATTRIBUTE(1,public,CLAM::Text,BasePath);
+		DYN_ATTRIBUTE(2,public,CLAM::Text,Samples);
 
 		protected:	
 		void DefaultInit()
@@ -158,12 +158,18 @@ public:
 		std::string samplesString = _config.GetSamples();
 		std::string basePath="./";
 		if (_config.HasBasePath())
+		{
 			basePath = _config.GetBasePath();
+			if (basePath.substr(basePath.size()-1,1)!="/")
+				basePath+="/";
+		}
 
 		size_t i=0;
 		while (i<samplesString.size() and i!=-1)
 		{
-			size_t foundPos=samplesString.find(">",i); // (", ",i);
+			size_t foundPos=samplesString.find(",",i); // (", ",i);
+			while (samplesString.substr(i,1)==" ")
+				i++;
 			if (foundPos==-1) // last coincidence
 			{
 				samplesVector.push_back(basePath+samplesString.substr(i,samplesString.size()-i));
@@ -173,13 +179,13 @@ public:
 			i=foundPos+1;
 		}
 
-/*		std::vector<std::string>::iterator it;
+		std::vector<std::string>::iterator it;
 		std::cout<<"vector de strings: "<<std::endl;
 		for (it=samplesVector.begin();it!=samplesVector.end();it++)
 		{
 			std::cout<<"\t"<<(*it)<<std::endl;
 		}
-*/
+
 		return samplesVector;
 	}
 
