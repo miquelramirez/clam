@@ -6,7 +6,7 @@
   <processing id="MultiSampler" position="79,74" size="106,58" type="MultiSampler">
     <LoopDefaultState>1</LoopDefaultState>
     <BasePath>../../../../../acustica/wavs/</BasePath>
-    <Samples>InLanguageAnecoic-cut_48000.wav&gt;roland_drums_100s_48khz.wav</Samples>
+    <Samples>"InLanguageAnecoic-cut_48000.wav, roland_drums_100s_48khz.wav"</Samples>
   </processing>
 
   <processing id="Vumeter" position="280,96" size="80,76" type="Vumeter"/>
