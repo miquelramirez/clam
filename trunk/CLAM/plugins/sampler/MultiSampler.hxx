@@ -179,12 +179,13 @@ public:
 			i=foundPos+1;
 		}
 
-		std::vector<std::string>::iterator it;
+/*		std::vector<std::string>::iterator it;
 		std::cout<<"vector de strings: "<<std::endl;
 		for (it=samplesVector.begin();it!=samplesVector.end();it++)
 		{
 			std::cout<<"\t"<<(*it)<<std::endl;
 		}
+*/
 
 		return samplesVector;
 	}
