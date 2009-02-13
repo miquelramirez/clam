@@ -71,6 +71,7 @@ namespace CLAM
 		CLAM::FloatOutControl _outControlSeek;
 		CLAM::FloatInControl _inControlSeek;
 		CLAM::FloatInControl _inControlPause;
+		CLAM::FloatInControl _inControlLoop;
 		SndfileHandle* _infile;
 		SndfilePlayerConfig _config;
 		unsigned _sampleSize;
@@ -98,6 +99,7 @@ namespace CLAM
 			: _outControlSeek("Position out-Control",this) 
 			, _inControlSeek("Seek in-Control",this) 
 			, _inControlPause("Pause in-Control",this)
+			, _inControlLoop("Loop in-Control",this)
 			, _infile(0)				
 			, _numChannels(0)
 			, _numReadFrames(0)
@@ -167,7 +169,7 @@ namespace CLAM
 				channels[channel] = &_outports[channel]->GetAudio().GetBuffer()[0];
 
 			//case 1 ringbuffer is empty. Fill the ports with zeros
-			if (_numReadFrames>=_numTotalFrames and not _config.GetLoop())
+			if (_numReadFrames>=_numTotalFrames and _inControlLoop.GetLastValue()<=0.5)
 			{
 				WriteSilenceToPorts();
 				return;
@@ -197,7 +199,7 @@ namespace CLAM
 				frameIndex++;
 			}
 
-			if(_config.GetLoop())
+			if(_inControlLoop.GetLastValue()>0.5)
 			{
 				_numReadFrames = _numReadFrames -_numTotalFrames;
 				_infile->seek(_numReadFrames,SEEK_SET);
@@ -368,13 +370,16 @@ namespace CLAM
 					return false;
 				}
 			}
+
+			_inControlLoop.DoControl(_config.GetLoop() ? 1 : 0);
+
 			_numChannels = _infile->channels();
 			_sampleSize = _numChannels*sizeof(TData);
 			_config.SetSavedNumberOfChannels(_infile->channels() );
 			_buffer.resize(portSize*_numChannels);
 			_numTotalFrames = _infile->frames();
 			// The file has not size, perhaps that's because the file is empty			
-			if(_numTotalFrames == 0)_numTotalFrames = 1;
+			if(_numTotalFrames == 0) _numTotalFrames = 1;
 	
 			// case 1: maintain the same ports
 			if ( (unsigned)_infile->channels() == _outports.size() )
