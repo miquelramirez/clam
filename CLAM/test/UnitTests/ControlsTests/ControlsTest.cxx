@@ -55,7 +55,6 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 	CPPUNIT_TEST( testInControlTmplArray_ReceivesControl_HandlerReceivesControlAndId );
 
 	// tests for IsConnected / IsConnectedTo
-
 	CPPUNIT_TEST( testIsConnected_WithOutControl_AfterConnection );
 	CPPUNIT_TEST( testIsConnected_WithOutControl_WithoutConnection );
 	CPPUNIT_TEST( testIsConnectedTo_WithOutControl_WhenControlsAreConnected );
@@ -92,16 +91,13 @@ class ControlsTest : public CppUnit::TestFixture, public BaseLoggable, public CL
 
 	// Testing default value
 	CPPUNIT_TEST( testInControl_setDefaultprevailstoBounds );
-	
-	
+
 	CPPUNIT_TEST_SUITE_END();
-	
+
 	// Testing pattern: Self Shunt
 	// Processing interface:
 	const char* GetClassName() const { return "for testing"; }
 	bool Do() { return false; }
-	const CLAM::ProcessingConfig& GetConfig() const { throw 0; }
-	bool ConcreteConfigure( const CLAM::ProcessingConfig& ) { return false; }
 
 public:
 	void tearDown() {

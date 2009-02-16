@@ -44,7 +44,7 @@ namespace Hidden
 			delete mMIDIout;
 	}
 
-	int MIDISink::DoCallback(MIDI::Message inMessage){
+	void MIDISink::DoCallback(MIDI::Message inMessage){
 		inMessage = mMIDIMessage.GetLastValue();
 		
 		std::vector< unsigned char > message;
@@ -55,8 +55,6 @@ namespace Hidden
 		message.push_back((inMessage)[3]);
 
 		mMIDIout->sendMessage( &message );
-			
-		return 0;
 	};
 
 }

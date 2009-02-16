@@ -28,7 +28,7 @@ namespace CLAM {
 	class MIDINote2Freq : public CLAM::Processing
 	{ 
 	protected:
-		CascadingTypedInControl<MIDI::Message, MIDINote2Freq> mMIDIMessage;
+		TypedInControl<MIDI::Message> mMIDIMessage;
 
 		FloatOutControl mFreq;
 		FloatOutControl	mAmplitude;
@@ -46,7 +46,7 @@ namespace CLAM {
 
 		bool Do();
 		
-		int DoCallback(MIDI::Message inMessage);
+		void DoCallback(MIDI::Message inMessage);
 	};
 	
 } // End namespace

@@ -15,21 +15,91 @@ namespace CLAM {
 
 	template<class TypedControlData>
 	class TypedOutControl;
-	
+
 	template<class TypedControlData>
 	class TypedInControl : public InControlBase
 	{
+	private:
 		typedef typename TypeInfo<TypedControlData>::StorableAsLeaf TokenIsStorableAsLeaf;
+		class Callback
+		{
+			public:
+				virtual ~Callback() {}
+				virtual void DoControl(const TypedControlData & val) =0;
+		};
+		class NullCallback : public Callback
+		{
+			public:
+				virtual void DoControl(const TypedControlData & val) {}
+		};
+		template <typename ProcessingType, typename ValueParameterType>
+		class MethodCallback : public Callback
+		{
+		protected:
+			ProcessingType * _processing;
+			void (ProcessingType::*_method)(ValueParameterType);
+		public:
+			MethodCallback(ProcessingType * processing, void (ProcessingType::*method)(ValueParameterType) )
+				: _processing(processing)
+				, _method(method)
+			{
+			}
+			virtual void DoControl(const TypedControlData & value)
+			{
+				(_processing->*_method)(value);
+			}
+		};
+		template <typename ProcessingType, typename ValueParameterType>
+		class MethodCallbackWithId : public Callback
+		{
+			ProcessingType * _processing;
+			void (ProcessingType::*_method)(unsigned, ValueParameterType);
+			unsigned _id;
+		public:
+			MethodCallbackWithId(ProcessingType * processing, void (ProcessingType::*method)(unsigned,ValueParameterType), unsigned id )
+				: _processing(processing)
+				, _method(method)
+				, _id(id)
+			{
+			}
+			virtual void DoControl(const TypedControlData & value)
+			{
+				(_processing->*_method)(_id, value);
+			}
+		};
+
+		Callback * _callback;
 	protected:
 		TypedControlData mLastValue;
 		
 	public:
-		TypedInControl(const std::string &name = "unnamed in control", Processing * proc = 0);
-		
+		TypedInControl(const std::string &name = "unnamed in control", Processing * proc = 0)
+			: InControlBase(name,proc)
+			, _callback(new NullCallback)
+		{
+		}
+		template <typename ProcessingType, typename ParameterType>
+		TypedInControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(ParameterType))
+			: InControlBase(name,proc)
+			, _callback(new MethodCallback<ProcessingType,ParameterType>(proc, callback))
+		{
+		}
+		template <typename ProcessingType, typename ParameterType>
+		TypedInControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, ParameterType))
+			: InControlBase(name,proc)
+			, _callback(new MethodCallbackWithId<ProcessingType,ParameterType>(proc, callback, id))
+		{
+		}
+		~TypedInControl()
+		{
+			delete _callback;
+		}
+
 		virtual void DoControl(const TypedControlData& val) 
 		{
 			mLastValue = val;
 			_hasBeenRead=false;
+			_callback->DoControl(val);
 		};
 		const TypedControlData& GetLastValue() const 
 		{
@@ -57,81 +127,6 @@ namespace CLAM {
 		virtual const std::type_info& GetTypeId() const { return typeid(TypedControlData); };
 	};
 	
-	// TypedInControl Class Implementation
-	template<class TypedControlData>
-	TypedInControl<TypedControlData>::TypedInControl(const std::string &name, Processing * proc)
-		: InControlBase(name,proc)
-	{
-	}
-
-	/**
-	* Subclass of TypedInControl that provides the typedincontrol with a callback method
-	* The method must be defined inside the parent \c Processing class.
-	* See the \c CascadingTypedInControl constructors for learn how to provide
-	* the callback to the \c CascadingTypedInControl
-	*/
-	template<class TypedControlData, class ProcObj>
-	class CascadingTypedInControl : public TypedInControl<TypedControlData>
-	{
-		public:
-			typedef int (ProcObj::*TPtrMemberFunc)(TypedControlData);
-			typedef int (ProcObj::*TPtrMemberFuncId)(int,TypedControlData);
-
-		private:
-			TPtrMemberFunc   mFunc;
-			TPtrMemberFuncId mFuncId;
-			ProcObj* mProcObj;
-			int mId;
-		
-		public:
-			// redeclaration
-			void DoControl(const TypedControlData& val);
-
-			bool ExistMemberFunc() { return (mFunc==0); };
-			void SetMemberFunc(TPtrMemberFunc f) { mFunc = f; };
-
-			int GetId(void) const { return mId; }
-	
-		/**
-		* Constructor of the CascadingTypedInControl with a member-service-function associated. 
-		*
-		* @param f The member function that will act as a service funtion each time
-		* the DoControl method is invoqued.
-		* @parent The processing object that owns the control object.
-		*/
-		CascadingTypedInControl(const std::string &name, ProcObj* processing, TPtrMemberFunc f = 0)	:
-				TypedInControl<TypedControlData>(name,processing),
-				mFunc(f),
-				mFuncId(0),
-				mProcObj(processing)
-		{
-		};
-		
-		CascadingTypedInControl(int id,const std::string &name, ProcObj* processing, TPtrMemberFuncId f)
-			: TypedInControl<TypedControlData>(name,processing)
-			, mFunc(0)
-			, mFuncId(f)
-			, mProcObj(processing)
-			, mId(id)
-		{
-		};
-
-		~CascadingTypedInControl(){};
-		
-	};
-
-	/////////////////////////////////////////////////////////////////////////////////////////
-	//  Implementation of class CascadingTypedInControl
-	//
-	template<class TypedControlData, class ProcObj>
-	void CascadingTypedInControl<TypedControlData, ProcObj>::DoControl(const TypedControlData& val)
-	{
-		TypedInControl<TypedControlData>::DoControl(val);
-		if(mFunc)
-			(mProcObj->*mFunc)(val);
-		else if (mFuncId)
-			(mProcObj->*mFuncId)(mId,val);
-	}
 	
 } // End namespace CLAM
 #endif // _TypedInControl_
