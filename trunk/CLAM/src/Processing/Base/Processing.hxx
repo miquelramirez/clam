@@ -425,10 +425,14 @@ namespace CLAM
 
 // Helpers only for subclasses
 	protected:
-		
-		/** Method to prepend a message to _configErrorMessage
-		* CLAM_ASSERT */
-		void AddConfigErrorMessage( const std::string& msg );
+		/**
+		 * Use this method to append a configuration errors
+		 * to the processing when implementing ConcreteConfigure.
+		 * For convenience, it returns false so when a configuration error
+		 * is found, you can append the message and return from 
+		 * ConcreteConfigure in a single statement.
+		*/
+		bool AddConfigErrorMessage( const std::string& msg );
 	
 		/** In debug-mode checks that the processing is configured and started. 
 		 * And always checks it's not disabled */

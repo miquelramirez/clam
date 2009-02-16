@@ -264,9 +264,12 @@ namespace CLAM
 	{
 		_network=network;
 	}
-	void Processing::AddConfigErrorMessage( const std::string& msg )
+	bool Processing::AddConfigErrorMessage( const std::string& msg )
 	{
 		_configErrorMessage += msg;
+		// For convenience, so you can report and exit in one line from ConcreteConfigure
+		// return AddConfigErrorMessage("My error");
+		return false;
 	}
 	
 	bool Processing::CanConsumeAndProduce()
