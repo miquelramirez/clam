@@ -66,7 +66,7 @@ friend class MIDIDevice;
 protected:
 	MIDIClockerConfig mConfig;
 	MIDIDevice* mpDevice;
-	InControlTmpl<MIDIClocker> mInput;
+	FloatInControl mInput;
 public:
 
 	/** Configuration method interface. The Processing base class forces all the concrete classes derived from it to implement this method, which must actually perform the specific configuration tasks.  
@@ -121,10 +121,9 @@ public:
 	 *  @param val The value received with this message
 	 *  @return 1 if method has been executed correctly
 	 */
-	int DoClock(TControlData val)
+	void DoClock(TControlData val)
 	{
 		if (mpDevice) mpDevice->SetClock(val);
-		return 1;
 	}
 
 protected:

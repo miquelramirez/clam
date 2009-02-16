@@ -167,10 +167,10 @@ namespace CLAM
 
 	public:
 
-		InControlTmpl<EnvelopeExtractor> cInterpolationPeriod;
-		InControlTmpl<EnvelopeExtractor> cIntegrationLength;
-		InControlTmpl<EnvelopeExtractor> cNormalLevel;
-		InControlTmpl<EnvelopeExtractor> cSilenceLevel;
+		FloatInControl cInterpolationPeriod;
+		FloatInControl cIntegrationLength;
+		FloatInControl cNormalLevel;
+		FloatInControl cSilenceLevel;
 
 		InPort<Audio> Input;
 		OutPort<Envelope> Output;
@@ -183,7 +183,7 @@ namespace CLAM
 
 		void Attach(Audio& inp, Envelope& env);
 
-		bool Do(void);
+		bool Do();
 
 		bool Do(const Audio& inp, Envelope& env);
 
@@ -278,13 +278,13 @@ namespace CLAM
 
 		void InitializeControls();
 
-		int InterpolationPeriodChange(TControlData val);
+		void InterpolationPeriodChange(TControlData val);
 
-		int IntegrationLengthChange(TControlData val);
+		void IntegrationLengthChange(TControlData val);
 
-		int NormalLevelChange(TControlData val);
+		void NormalLevelChange(TControlData val);
 
-		int SilenceLevelChange(TControlData val);
+		void SilenceLevelChange(TControlData val);
 
 	};
 	

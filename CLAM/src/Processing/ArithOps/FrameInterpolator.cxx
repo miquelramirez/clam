@@ -45,37 +45,19 @@ namespace CLAM {
 	}
 
 
-	FrameInterpolator::FrameInterpolator()
-		: mFrameInterpolationFactorCtl("FrameInterpolationFactor",this,&FrameInterpolator::DoFrameFactorControl),
-		  mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl),
-		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
-		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
-		  mResidualInterpolationFactorCtl("ResidualInterpolationFactor",this,&FrameInterpolator::DoResidualFactorControl),
-		  mPitch1Ctl("Pitch1",this,&FrameInterpolator::DoPitch1Control),
-		  mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control),
-		  mIsHarmonicCtl("IsHarmonic",this,&FrameInterpolator::DoHarmonicControl),
-		  mIn1("Input 1",this),
-		  mIn2("Input 2",this),
-		  mOut("Output",this),
-		  mpSpectralShape(0)
-	{
-		AttachChildren();
-		Configure(FrameInterpConfig());
-	}
-
 	FrameInterpolator::FrameInterpolator(const FrameInterpConfig &c)
-		: mFrameInterpolationFactorCtl("FrameInterpolationFactor",this,&FrameInterpolator::DoFrameFactorControl),
-		  mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl),
-		  mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl),
-		  mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl),
-		  mResidualInterpolationFactorCtl("ResidualInterpolationFactor",this,&FrameInterpolator::DoResidualFactorControl),
-		  mPitch1Ctl("Pitch1",this,&FrameInterpolator::DoPitch1Control),
-		  mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control),
-		  mIsHarmonicCtl("IsHarmonic",this,&FrameInterpolator::DoHarmonicControl),
-		  mIn1("Input 1",this),
-		  mIn2("Input 2",this),
-		  mOut("Output",this),
-		  mpSpectralShape(0)
+		: mFrameInterpolationFactorCtl("FrameInterpolationFactor",this,&FrameInterpolator::DoFrameFactorControl)
+		, mMagInterpolationFactorCtl("MagInterpolationFactor",this,&FrameInterpolator::DoMagFactorControl)
+		, mFreqInterpolationFactorCtl("FreqInterpolationFactor",this,&FrameInterpolator::DoFreqFactorControl)
+		, mPitchInterpolationFactorCtl("PitchInterpolationFactor",this,&FrameInterpolator::DoPitchFactorControl)
+		, mResidualInterpolationFactorCtl("ResidualInterpolationFactor",this,&FrameInterpolator::DoResidualFactorControl)
+		, mPitch1Ctl("Pitch1",this,&FrameInterpolator::DoPitch1Control)
+		, mPitch2Ctl("Pitch2",this,&FrameInterpolator::DoPitch2Control)
+		, mIsHarmonicCtl("IsHarmonic",this,&FrameInterpolator::DoHarmonicControl)
+		, mIn1("Input 1",this)
+		, mIn2("Input 2",this)
+		, mOut("Output",this)
+		, mpSpectralShape(0)
 	{
 		AttachChildren();
 		Configure(c);
@@ -167,55 +149,47 @@ namespace CLAM {
 	}
 
 	
-	int FrameInterpolator::DoFrameFactorControl(TControlData value)
+	void FrameInterpolator::DoFrameFactorControl(TControlData value)
 	{
 		mMagInterpolationFactorCtl.DoControl(value);
 		mFreqInterpolationFactorCtl.DoControl(value);
 		mPitchInterpolationFactorCtl.DoControl(value);
 		mResidualInterpolationFactorCtl.DoControl(value);
-		return 0;
 	}
 
-	int FrameInterpolator::DoMagFactorControl(TControlData value)
+	void FrameInterpolator::DoMagFactorControl(TControlData value)
 	{
 		mPO_PeaksInterpolator.mMagInterpolationFactorCtl.DoControl(value);
-		return 0;
 	}
 
-	int FrameInterpolator::DoFreqFactorControl(TControlData value)
+	void FrameInterpolator::DoFreqFactorControl(TControlData value)
 	{
 		mPO_PeaksInterpolator.mFreqInterpolationFactorCtl.DoControl(value);
-		return 0;
 	}
 
-	int FrameInterpolator::DoPitchFactorControl(TControlData value)
+	void FrameInterpolator::DoPitchFactorControl(TControlData value)
 	{
 		mPO_PeaksInterpolator.mPitchInterpolationFactorCtl.DoControl(value);
-		return 0;
 	}
 
-	int FrameInterpolator::DoResidualFactorControl(TControlData value)
+	void FrameInterpolator::DoResidualFactorControl(TControlData value)
 	{
 		mPO_SpectrumInterpolator.mInterpolationFactorCtl.DoControl(value);
-		return 0;
 	}
 
-	int FrameInterpolator::DoPitch1Control(TControlData value)
+	void FrameInterpolator::DoPitch1Control(TControlData value)
 	{
 		mPO_PeaksInterpolator.mPitch1Ctl.DoControl(value);
-		return 0;
 	}
 
-	int FrameInterpolator::DoPitch2Control(TControlData value)
+	void FrameInterpolator::DoPitch2Control(TControlData value)
 	{
 		mPO_PeaksInterpolator.mPitch2Ctl.DoControl(value);
-		return 0;
 	}
 
-	int FrameInterpolator::DoHarmonicControl(TControlData value)
+	void FrameInterpolator::DoHarmonicControl(TControlData value)
 	{
 		mPO_PeaksInterpolator.mIsHarmonicCtl.DoControl(value);
-		return 0;
 	}
 
 

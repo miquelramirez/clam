@@ -55,8 +55,8 @@ class MyProcObj : public Processing
 {
 private:
 	MyProcConf mConfig;
-	InControlTmpl<MyProcObj> mInPitch;
-	InControlTmpl<MyProcObj> mInAmplitude;
+	FloatInControl mInPitch;
+	FloatInControl mInAmplitude;
 	
 	FloatOutControl mOutNoteOn;
 	FloatOutControl mOutNoteOff;
@@ -79,15 +79,13 @@ public:
 	
 public:
 	// Callbacks to receive controls
-	int DoInPitchControl(TControlData val) 
+	void DoInPitchControl(TControlData val) 
 	{ 
 		std::cout << GetClassName() << ": DoInPitchControl activated. Value="<< val << std::endl;  
-		return 1; 
 	}
-	int DoInAmplitudeControl(TControlData val) 
+	void DoInAmplitudeControl(TControlData val) 
 	{ 
 		std::cout << GetClassName() << ": DoInAmplitudeControl activated. Value="<< val << std::endl;  
-		return 2; 
 	}
 
 	// The do

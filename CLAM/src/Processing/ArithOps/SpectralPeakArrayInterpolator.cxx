@@ -42,21 +42,6 @@ namespace CLAM {
 	}
 
 
-	SpectralPeakArrayInterpolator::SpectralPeakArrayInterpolator()
-		:	mMagInterpolationFactorCtl("MagInterpolationFactor",this),
-			mFreqInterpolationFactorCtl("FreqInterpolationFactor",this),
-			mPitchInterpolationFactorCtl("PitchInterpolationFactor",this),
-			mPitch1Ctl("Pitch1",this),
-			mPitch2Ctl("Pitch2",this),
-			mIsHarmonicCtl("IsHarmonic",this),
-			mIn1("Input 1",this),
-			mIn2("Input 2",this),
-			mOut("Output",this),
-			mpSpectralShape(0)
-	{
-		Configure(PeaksInterpConfig());
-	}
-
 	SpectralPeakArrayInterpolator::SpectralPeakArrayInterpolator(const PeaksInterpConfig &c)
 		: 	mMagInterpolationFactorCtl("MagInterpolationFactor",this),
 			mFreqInterpolationFactorCtl("FreqInterpolationFactor",this),

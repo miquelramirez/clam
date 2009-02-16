@@ -26,17 +26,9 @@
 namespace CLAM
 {
 
-
-
-PhaseManagement::PhaseManagement():
-	mCurrentTime("CurrentTime",this),mCurrentPitch("CurrentPitch",this)
-{
-	Configure(PhaseManagementConfig());
-	Init();
-}
-
-PhaseManagement::PhaseManagement(PhaseManagementConfig& c):
-	mCurrentTime("CurrentTime",this),mCurrentPitch("CurrentPitch",this)
+PhaseManagement::PhaseManagement(const PhaseManagementConfig& c)
+	: mCurrentTime("CurrentTime",this)
+	, mCurrentPitch("CurrentPitch",this)
 {
 	Configure(c);
 	Init();

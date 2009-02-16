@@ -51,14 +51,12 @@ namespace CLAM {
 /** This class performs the interpolation of two SpectralPeakArray processing data
  * objects.
  */
-	class SpectralPeakArrayInterpolator: public Processing {
-		
-		typedef InControlTmpl<SpectralPeakArrayInterpolator> SpectralPeakArrayInterpolatorCtl;	
-		
-		PeaksInterpConfig mConfig;
+	class SpectralPeakArrayInterpolator: public Processing
+	{
+		typedef PeaksInterpConfig Config;
+		Config mConfig;
 
 		const char *GetClassName() const {return "SpectralPeakArrayInterpolator";}
-
 
 		/** Config change method
 		 * @pre argument should be an SpecInterpConfig
@@ -66,9 +64,7 @@ namespace CLAM {
 		bool ConcreteConfigure(const ProcessingConfig&);
 
 	public:
-		SpectralPeakArrayInterpolator();
-
-		SpectralPeakArrayInterpolator(const PeaksInterpConfig &c);
+		SpectralPeakArrayInterpolator(const PeaksInterpConfig &c = Config());
 
 		~SpectralPeakArrayInterpolator() {};
 
@@ -80,17 +76,17 @@ namespace CLAM {
 		bool Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2,const Spectrum& spectralShape, SpectralPeakArray& out);
 	
 		/** Input control for interpolation factor */
-		SpectralPeakArrayInterpolatorCtl  mMagInterpolationFactorCtl;
-		SpectralPeakArrayInterpolatorCtl  mFreqInterpolationFactorCtl;
-		SpectralPeakArrayInterpolatorCtl  mPitchInterpolationFactorCtl;
+		FloatInControl  mMagInterpolationFactorCtl;
+		FloatInControl  mFreqInterpolationFactorCtl;
+		FloatInControl  mPitchInterpolationFactorCtl;
 
 		/** Input controls for input pitch needed for harmonic interpolation */
 		
-		SpectralPeakArrayInterpolatorCtl  mPitch1Ctl;
-		SpectralPeakArrayInterpolatorCtl  mPitch2Ctl;
+		FloatInControl  mPitch1Ctl;
+		FloatInControl  mPitch2Ctl;
 
 		/** Input control for whether harmonic interpolation has to be performed*/
-		SpectralPeakArrayInterpolatorCtl mIsHarmonicCtl;
+		FloatInControl mIsHarmonicCtl;
 
 		/** Ports */
 		InPort<SpectralPeakArray> mIn1;

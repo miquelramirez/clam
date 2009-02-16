@@ -65,7 +65,7 @@ class MIDIOutControl:public MIDIOut
 		void Handle(unsigned char* msg,int size);
 		
 		/* callback function for each received control value */
-		int DoControl(int id,TControlData val);
+		void DoControl(unsigned id,TControlData val);
 	public:
 		MIDIOutControl();
 		MIDIOutControl(const MIDIIOConfig &c);

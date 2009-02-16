@@ -129,52 +129,50 @@ bool MIDIOutControl::ConcreteConfigure(const ProcessingConfig& c)
 		}
 		if (fieldname)
 		{
-			std::string tmp = std::string() + MIDI::GetMessageInfo(m).name + ":" + fieldname;
+			std::string controlName = std::string(MIDI::GetMessageInfo(m).name) + ":" + fieldname;
 			/* add the InControl, and remember which message byte it will
 			 * control */
 			mControlIdToMsgByteId[ctrlid] = i;
-			mMyInControls.AddElem(new InControlTmpl<MIDIOutControl>(ctrlid++,tmp.c_str(),this,&MIDIOutControl::DoControl));
+			mMyInControls.AddElem(new FloatInControl(ctrlid++,controlName,this,&MIDIOutControl::DoControl));
 		}
 	}
 
 	return true;
 }
 
-int MIDIOutControl::DoControl(int id,TControlData val)
+void MIDIOutControl::DoControl(unsigned id,TControlData val)
 {
 	/* we keep a uniq id to check if each message has been fully 
 	 * constructed */
-	if (mReceivedUniqId[id]==mUniqId)
+	if (mReceivedUniqId[id]!=mUniqId)
 	{
-		/* ok, we still needed this byte */
-		int i = mControlIdToMsgByteId[id];
-		
-		if (i==0)
-		{
-			/* for the first byte, we need to keep the status, and
-			 * modify the channel */
-			mStatusByte = (mStatusByte&0xF0) | ((unsigned char)(val)-1);
-		}else{
-			mMessage[i] = (unsigned char) val;
-		}
-		mReceivedUniqId[id]++;
-		mControlsReceived++;
-		if (mControlsReceived==mControlledBytes)
-		{
-			/* we got all controlled bytes, so we increment the mUniqId
-			 * for the next message, reset mControlsReceived, and 
-			 * call Handle to send the message to the device */
-			mUniqId++;
-			mControlsReceived = 0;
-                        mMessage[0]=mStatusByte;
-			Handle(mMessage,mMessageSize);
-		}
-	}else{
 		/* receiving a byte when the prev message was not fully
 		 * constructed yet... TODO: should we throw or assert? */
 		fprintf(stderr,"ERROR!!!! receiving a byte when the prev message was not fully constructed yet... TODO: should we throw or assert?\n");
+		return;
 	}
-	return 1;
+	/* ok, we still needed this byte */
+	int i = mControlIdToMsgByteId[id];
+	if (i==0)
+	{
+		/* for the first byte, we need to keep the status, and
+		 * modify the channel */
+		mStatusByte = (mStatusByte&0xF0) | ((unsigned char)(val)-1);
+	}else{
+		mMessage[i] = (unsigned char) val;
+	}
+	mReceivedUniqId[id]++;
+	mControlsReceived++;
+	if (mControlsReceived==mControlledBytes)
+	{
+		/* we got all controlled bytes, so we increment the mUniqId
+		 * for the next message, reset mControlsReceived, and 
+		 * call Handle to send the message to the device */
+		mUniqId++;
+		mControlsReceived = 0;
+					mMessage[0]=mStatusByte;
+		Handle(mMessage,mMessageSize);
+	}
 }
 
 void MIDIOutControl::Handle(unsigned char* msg,int size)

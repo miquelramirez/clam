@@ -58,10 +58,8 @@ namespace CLAM {
  *	in the configuration.
  */
 	class FrameInterpolator: public ProcessingComposite {
-		
-		typedef InControlTmpl<FrameInterpolator> FrameInterpolatorCtl;	
-		
-		FrameInterpConfig mConfig;
+		typedef FrameInterpConfig Config;
+		Config mConfig;
 
 
 		const char *GetClassName() const {return "FrameInterpolator";}
@@ -75,9 +73,7 @@ namespace CLAM {
 		void AttachChildren();
 
 	public:
-		FrameInterpolator();
-
-		FrameInterpolator(const FrameInterpConfig &c);
+		FrameInterpolator(const FrameInterpConfig &c=Config());
 
 		~FrameInterpolator() {};
 
@@ -89,20 +85,20 @@ namespace CLAM {
 
 	
 		/** Input control for interpolation factor */
-		FrameInterpolatorCtl mFrameInterpolationFactorCtl;
+		FloatInControl mFrameInterpolationFactorCtl;
 		
-		FrameInterpolatorCtl  mMagInterpolationFactorCtl;
-		FrameInterpolatorCtl  mFreqInterpolationFactorCtl;
-		FrameInterpolatorCtl  mPitchInterpolationFactorCtl;
-		FrameInterpolatorCtl  mResidualInterpolationFactorCtl;
+		FloatInControl  mMagInterpolationFactorCtl;
+		FloatInControl  mFreqInterpolationFactorCtl;
+		FloatInControl  mPitchInterpolationFactorCtl;
+		FloatInControl  mResidualInterpolationFactorCtl;
 
 		/** Input controls for input pitch needed for harmonic interpolation */
 		
-		FrameInterpolatorCtl  mPitch1Ctl;
-		FrameInterpolatorCtl  mPitch2Ctl;
+		FloatInControl  mPitch1Ctl;
+		FloatInControl  mPitch2Ctl;
 
 		/** Input control for whether harmonic interpolation has to be performed*/
-		FrameInterpolatorCtl mIsHarmonicCtl;
+		FloatInControl mIsHarmonicCtl;
 
 		/** Ports */
 		InPort<Frame> mIn1;
@@ -118,17 +114,17 @@ namespace CLAM {
 		SpectralPeakArrayInterpolator mPO_PeaksInterpolator;
 
 		/** callbacks for controls */
-		int DoFrameFactorControl(TControlData value);
+		void DoFrameFactorControl(TControlData value);
 
-		int DoMagFactorControl(TControlData value);
-		int DoFreqFactorControl(TControlData value);
-		int DoPitchFactorControl(TControlData value);
-		int DoResidualFactorControl(TControlData value);
+		void DoMagFactorControl(TControlData value);
+		void DoFreqFactorControl(TControlData value);
+		void DoPitchFactorControl(TControlData value);
+		void DoResidualFactorControl(TControlData value);
 
-		int DoPitch1Control(TControlData value);
-		int DoPitch2Control(TControlData value);
+		void DoPitch1Control(TControlData value);
+		void DoPitch2Control(TControlData value);
 
-		int DoHarmonicControl(TControlData value);
+		void DoHarmonicControl(TControlData value);
 	
 	};
 

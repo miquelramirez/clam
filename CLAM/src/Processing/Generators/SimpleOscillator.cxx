@@ -53,42 +53,19 @@ void SimpleOscillatorConfig::DefaultInit(void)
 	SetSamplingRate( 44100 );
 }
 
-
-// Oscillator method definition
-SimpleOscillator::SimpleOscillator()
-	:mOutput("Audio Output", this),
-	mFreqUpdated( false ),
-	mAmpUpdated( false ),
-	mFreqCtl(0),
-	mAmpCtl(0),
-	mSamplesBetweenCallsCtl("SamplesBetweenCalls", this)
-
-{
-	mFreqCtl = new SimpleOscillatorCtrl( "Pitch", this, &SimpleOscillator::UpdateFreq );
-	mAmpCtl = new SimpleOscillatorCtrl( "Amplitude", this, &SimpleOscillator::UpdateAmp );
-
-	SimpleOscillatorConfig cfg;
-
-	Configure( cfg );
-}
-
 SimpleOscillator::SimpleOscillator( const SimpleOscillatorConfig& cfg )
-	:mOutput("Audio Output", this),
-	mFreqUpdated( false ),
-	mAmpUpdated( false ),
-	mFreqCtl(0),
-	mAmpCtl(0),
-	mSamplesBetweenCallsCtl("SamplesBetweenCalls", this)
+	: mOutput("Audio Output", this)
+	, mFreqUpdated( false )
+	, mAmpUpdated( false )
+	, mFreqCtl( "Pitch", this, &SimpleOscillator::UpdateFreq )
+	, mAmpCtl( "Amplitude", this, &SimpleOscillator::UpdateAmp )
+	, mSamplesBetweenCallsCtl("SamplesBetweenCalls", this)
 {
-	mFreqCtl = new SimpleOscillatorCtrl( "Pitch", this, &SimpleOscillator::UpdateFreq );
-	mAmpCtl = new SimpleOscillatorCtrl( "Amplitude", this, &SimpleOscillator::UpdateAmp );
 	Configure( cfg );
 }
 
 SimpleOscillator::~SimpleOscillator()
 {
-	delete mFreqCtl;
-	delete mAmpCtl;
 }
 
 bool SimpleOscillator::ConcreteConfigure( const ProcessingConfig& c )
@@ -149,18 +126,14 @@ bool SimpleOscillator::Do( TData& out )
 }
 
 
-int SimpleOscillator::UpdateFreq( TControlData value )
+void SimpleOscillator::UpdateFreq( TControlData value )
 {
 	mFreqUpdated = true;
-
-	return 0;
 }
 
-int SimpleOscillator::UpdateAmp( TControlData value )
+void SimpleOscillator::UpdateAmp( TControlData value )
 {
 	mAmpUpdated = true;
-
-	return 0;
 }
 
 } // namespace CLAM

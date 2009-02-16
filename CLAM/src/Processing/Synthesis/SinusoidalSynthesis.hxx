@@ -64,7 +64,8 @@ namespace CLAM {
 
 	private:
 		// Configuration data
-		SMSSynthesisConfig mConfig;
+		typedef SMSSynthesisConfig Config;
+		Config mConfig;
 
 		int mCurrentFrame;
 
@@ -94,8 +95,7 @@ namespace CLAM {
 		TInt32 CalculatePowerOfTwo(TInt32 size);
 
 	public:
-		SinusoidalSynthesis(const SMSSynthesisConfig& cfg);
-		SinusoidalSynthesis();
+		SinusoidalSynthesis(const Config& cfg = Config());
 		~SinusoidalSynthesis();
 		
 		// Processing Object compliance methods.
@@ -138,8 +138,8 @@ namespace CLAM {
 
 	public:
 		//Controls
-		InControlTmpl<SinusoidalSynthesis> mCurrentTimeControl;
-		InControlTmpl<SinusoidalSynthesis> mCurrentPitch;
+		FloatInControl mCurrentTimeControl;
+		FloatInControl mCurrentPitch;
 
 
 	};

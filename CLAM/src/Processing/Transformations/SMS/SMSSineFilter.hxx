@@ -77,10 +77,10 @@ namespace CLAM
 		OutPort<SpectralPeakArray> mOutPeaks;
 
 		FloatInControl mIndexCtl;//says what the amount sent as control is modifying
-		InControlTmpl<SMSSineFilter> mUpdateBPFCtl;//"boolean" control used to say that we want to update BPF
+		FloatInControl mUpdateBPFCtl;//"boolean" control used to say that we want to update BPF
 		FloatInControl mGainCtl;
 		
-		int UpdateBPF(TControlData value)
+		void UpdateBPF(TControlData value)
 		{
 			CLAM::BPF& bpf= mConfig.GetBPF();
 			//this should never happen, it should be initialized at configuration time
@@ -90,7 +90,6 @@ namespace CLAM
 			}
 			
 			bpf.SetValue((int)mIndexCtl.GetLastValue(), mGainCtl.GetLastValue());
-			return 0;
 		}
 		
 	public:

@@ -47,11 +47,11 @@ namespace CLAM{
 		/** xamat:adding residual does not improve results much and adds a lot of overhead, there should
 		 *	probably be a configuration parameter to control whether we want to add residual or not, but that
 		 *	would mean changing the kind of configuration. For the time being the output residual is the input.*/
-		InControlTmpl<SegmentSMSHarmonizer> mIgnoreResidualCtl;
-		InControlTmpl<SegmentSMSHarmonizer> mUpdateBPFCtl;///< "boolean" control used to say that we want to update BPF
+		FloatInControl mIgnoreResidualCtl;
+		FloatInControl mUpdateBPFCtl;///< "boolean" control used to say that we want to update BPF
 	public:
 			
-		int UpdateBPF(TControlData value)
+		void UpdateBPF(TControlData value)
 		{
 			CLAM::BPF& bpf= mConfig.GetBPF();
 			//this should never happen, it should be initialized at configuration time
@@ -61,12 +61,10 @@ namespace CLAM{
 			}
 			
 			bpf.SetValue((int)mIndexCtl.GetLastValue(), mTransCtl.GetLastValue());
-			return 0;
 		}
-		int IgnoreResidual(TControlData value)
+		void IgnoreResidual(TControlData value)
 		{
 			mPitchShift.mIgnoreResidual.DoControl(value);
-			return 0;
 		}
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/

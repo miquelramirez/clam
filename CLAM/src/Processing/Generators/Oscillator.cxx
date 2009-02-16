@@ -55,25 +55,12 @@ void OscillatorConfig::DefaultInit(void)
 }
 
 
-Oscillator::Oscillator()
-	:mInputPhaseMod("Input Phase Modulation", this ),
-	mInputFreqMod("Input Frequency Modulation", this ),
-	mModIdxUpdated( false ),
-	mModIdxCtl(0)
-{
-	mModIdxCtl = new OscillatorCtrl( "ModIndex", this, &Oscillator::UpdateModIdx );
-	
-	OscillatorConfig cfg;
-	Configure( cfg );
-}
-
 Oscillator::Oscillator(const OscillatorConfig& c )
-	: mInputPhaseMod("Input Phase Modulation", this ),
-	mInputFreqMod("Input Frequency Modulation", this ),
-	mModIdxUpdated( false ),
-	mModIdxCtl(0)
+	: mInputPhaseMod("Input Phase Modulation", this )
+	, mInputFreqMod("Input Frequency Modulation", this )
+	, mModIdxUpdated( false )
+	, mModIdxCtl("ModIndex", this, &Oscillator::UpdateModIdx )
 {	
-	mModIdxCtl = new OscillatorCtrl( "ModIndex", this, &Oscillator::UpdateModIdx );
 
 	SimpleOscillatorConfig simpleCfg;
 	simpleCfg.SetFrequency( c.GetFrequency() );
@@ -85,7 +72,6 @@ Oscillator::Oscillator(const OscillatorConfig& c )
 
 Oscillator::~Oscillator()
 {
-	delete mModIdxCtl;
 }
 
 bool Oscillator::ConcreteConfigure( const ProcessingConfig& c )
@@ -183,11 +169,9 @@ bool Oscillator::Do( const int& dum, const Audio& phaseModIn, Audio& out )
 	return true;
 }
 
-int Oscillator::UpdateModIdx( TControlData value )
+void Oscillator::UpdateModIdx( TControlData value )
 {
 	mModIdxUpdated = true;
-
-	return 0;
 }
 
 

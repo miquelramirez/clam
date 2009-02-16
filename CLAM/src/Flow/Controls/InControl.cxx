@@ -26,14 +26,9 @@
 namespace CLAM 
 {
 
-InControl::InControl(const std::string &name, Processing* parent)
-	: InControlBase(name, parent)
-{
-}
-
-
 InControl::~InControl() 
 {
+		delete _callback;
 }
 
 }; // namespace CLAM

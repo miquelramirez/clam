@@ -46,23 +46,22 @@ namespace CLAM {
 	class ControlMapper:public Processing
 	{
 	private:
-		ControlMapperConfig mConfig;
+		typedef ControlMapperConfig Config;
+		Config mConfig;
 		Mapping* mMappingPtr;
 
-		InControlTmpl<ControlMapper> mInput;
+		FloatInControl mInput;
 		FloatOutControl mOutput;
 	public:
-		ControlMapper();
-		ControlMapper(const ControlMapperConfig& cfg);
+		ControlMapper(const Config& cfg = Config());
 		~ControlMapper()
 		{
 		}
 		const char * GetClassName() const {return "ControlMapper";}
 		bool ConcreteConfigure(const ProcessingConfig& c);
-		int DoMap(TControlData val)
+		void DoMap(TControlData val)
 		{
 			mOutput.SendControl(TControlData(mMappingPtr->Map(val)));
-			return 1;
 		}
 		bool Do(void) { return true; }
 		inline const ProcessingConfig &GetConfig() const { return mConfig;}

@@ -69,7 +69,7 @@ public:
 	// void implementation the pure virtual methods of processing
 	ProcessingTest() : 
 		mInControl("in", this), 
-		mInControlTmpl("in tmpl",this,&ProcessingTest::ControlHandler),
+		mInControlCallback("in tmpl",this,&ProcessingTest::ControlHandler),
 		mOutControl1("out1", this),
 		mOutControl2("out2", this),
 		
@@ -90,10 +90,10 @@ private:
 	}
 	bool Do(void){ return false; }
 	const char * GetClassName() const { return "ProcessingTest"; };	
-	int ControlHandler( CLAM::TControlData ) { return 0; };
+	void ControlHandler( CLAM::TControlData ) { };
 	
 	CLAM::FloatInControl mInControl;
-	CLAM::InControlTmpl<ProcessingTest> mInControlTmpl;
+	CLAM::FloatInControl mInControlCallback;
 	CLAM::FloatOutControl mOutControl1;
 	CLAM::FloatOutControl mOutControl2;
 	

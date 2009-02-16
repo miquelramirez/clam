@@ -29,13 +29,8 @@ namespace CLAM {
 
 	/* Processing  object Method  implementations */
 
-	FDCombFilter::FDCombFilter():mFreq("Frequency",this)
-	{
-		mFreq.DoControl(0);
-		Configure(FDCombFilterConfig());
-	}
-
-	FDCombFilter::FDCombFilter(const FDCombFilterConfig &c = FDCombFilterConfig()):mFreq("Frequency",this)
+	FDCombFilter::FDCombFilter(const Config &c)
+		: mFreq("Frequency",this)
 	{
 		mFreq.DoControl(0);
 		Configure(c);
@@ -45,35 +40,9 @@ namespace CLAM {
 	{}
 
 
-	/* Configure the Processing Object according to the Config object */
-
-	bool FDCombFilter::ConcreteConfigure(const ProcessingConfig& c)
-	{
-
-		CopyAsConcreteConfig(mConfig, c);
-		return true;
-	}
-
-	/* Setting Prototypes for faster processing */
-
-	bool FDCombFilter::SetPrototypes(const Spectrum& input,Spectrum& output)
-	{
-		return true;
-	}
-
-	bool FDCombFilter::SetPrototypes()
-	{
-		return true;
-	}
-	
-	bool FDCombFilter::UnsetPrototypes()
-	{
-		return true;
-	}
-
 	/* The supervised Do() function */
 
-	bool  FDCombFilter::Do(void) 
+	bool  FDCombFilter::Do() 
 	{
 		CLAM_ASSERT(false,CLASS"::Do(): Supervised mode not implemented");
 		return false;
@@ -83,62 +52,55 @@ namespace CLAM {
 	/* The  unsupervised Do() function */
 	bool  FDCombFilter::Do(const Spectrum& input, Spectrum& output)
 	{
-		if (mFreq.GetLastValue() > 0)
+		if (mFreq.GetLastValue() <= 0) return false;
+
+		output.SetSize(input.GetSize());
+		Spectrum tmpSpec=input;
+		bool wasDB=false;
+		if(output.GetScale()==EScale::eLog)
 		{
-			output.SetSize(input.GetSize());
-			Spectrum tmpSpec=input;
-			bool wasDB=false;
-			if(output.GetScale()==EScale::eLog)
-			{
-				wasDB=true;
-				output.SetScale(EScale::eLinear);
-			}
-			
-			tmpSpec.ToLinear();
-
-			
-			TData samplingRate=input.GetSpectralRange()*2;
-			TSize sizeSpectrum=input.GetSize();
-			TData pitch=mFreq.GetLastValue();
-			TData period = pitch /	samplingRate * sizeSpectrum * 2.0; 
-			int i;
-			DataArray& inputMag = input.GetMagBuffer();
-			DataArray& inputPhase = input.GetPhaseBuffer();
-			DataArray& outputMag = output.GetMagBuffer();
-			DataArray& outputPhase = output.GetPhaseBuffer();
-			
-			TData twoPiOverPeriod = TWO_PI/period;
-			TData oneOverTwo = 1./2.0;
-			for(i=0; i<sizeSpectrum; i++)
-			{
-				//todo: this loop is very inefficient because of the sin and cos but there are ways of optimizing
-				//these kind of iterative sine computations
-				TData combReal = (1.f +CLAM_cos(i*twoPiOverPeriod)) * oneOverTwo;
-				TData combImag = (1.f -CLAM_sin(i*twoPiOverPeriod)) * oneOverTwo;
-				
-				TData mag=inputMag[i];
-				TData phase=inputPhase[i];
-				TData real=mag*CLAM_cos(phase);
-				TData imag=mag*CLAM_sin(phase);
-
-								
-				TData newReal=real*combReal-imag*combImag;
-				TData newImag=real*combImag+imag*combReal;
-				TData newMag=CLAM_sqrt(newReal*newReal+newImag*newImag);
-				TData newPhase=CLAM_atan2(newImag,newReal);
-
-				
-				
-				outputMag[i] = newMag;
-				outputPhase[i] = newPhase;
-			}
-
-			if(wasDB) output.ToDB();
-		
-
-			return true;
+			wasDB=true;
+			output.SetScale(EScale::eLinear);
 		}
-		else return false;
+		
+		tmpSpec.ToLinear();
+
+		
+		TData samplingRate=input.GetSpectralRange()*2;
+		const TSize sizeSpectrum=input.GetSize();
+		TData pitch=mFreq.GetLastValue();
+		TData period = pitch /	samplingRate * sizeSpectrum * 2.0; 
+		DataArray & inputMag = input.GetMagBuffer();
+		DataArray & inputPhase = input.GetPhaseBuffer();
+		DataArray & outputMag = output.GetMagBuffer();
+		DataArray & outputPhase = output.GetPhaseBuffer();
+		
+		TData twoPiOverPeriod = TWO_PI/period;
+		TData oneOverTwo = 1./2.0;
+		for(unsigned i=0; i<sizeSpectrum; i++)
+		{
+			//todo: this loop is very inefficient because of the sin and cos but there are ways of optimizing
+			//these kind of iterative sine computations
+			TData combReal = (1.f +CLAM_cos(i*twoPiOverPeriod)) * oneOverTwo;
+			TData combImag = (1.f -CLAM_sin(i*twoPiOverPeriod)) * oneOverTwo;
+			
+			TData mag=inputMag[i];
+			TData phase=inputPhase[i];
+			TData real=mag*CLAM_cos(phase);
+			TData imag=mag*CLAM_sin(phase);
+
+			TData newReal=real*combReal-imag*combImag;
+			TData newImag=real*combImag+imag*combReal;
+			TData newMag=CLAM_sqrt(newReal*newReal+newImag*newImag);
+			TData newPhase=CLAM_atan2(newImag,newReal);
+			
+			outputMag[i] = newMag;
+			outputPhase[i] = newPhase;
+		}
+
+		if(wasDB) output.ToDB();
+
+		return true;
 	}
 
 

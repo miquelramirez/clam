@@ -44,19 +44,9 @@ void ControlMapperConfig::DefaultInit(void)
 	UpdateData();
 }
 
-
-ControlMapper::ControlMapper()
-:mInput("input",this,&ControlMapper::DoMap)
-,mOutput("output",this)
-{
-	mMappingPtr = 0;
-	ControlMapperConfig cfg;
-	Configure(cfg);
-}
-
-ControlMapper::ControlMapper(const ControlMapperConfig& cfg)
-:mInput("input",this,&ControlMapper::DoMap)
-,mOutput("output",this)
+ControlMapper::ControlMapper(const Config& cfg)
+	: mInput("input",this,&ControlMapper::DoMap)
+	, mOutput("output",this)
 {
 	mMappingPtr = 0;
 	Configure(cfg);
@@ -68,16 +58,12 @@ bool ControlMapper::ConcreteConfigure( const ProcessingConfig& c )
 
 	if (mMappingPtr) delete mMappingPtr;
 	mMappingPtr = Mapping::Create(mConfig.GetMapping());
-	if (mMappingPtr)
+	if (!mMappingPtr)
 	{
-		mMappingPtr->Set(mConfig.GetArguments());
+		AddConfigErrorMessage( "Unknown mapping");
+		return false;
 	}
-	else 
-		{ 
-			AddConfigErrorMessage( "Unknown mapping");
-			return false;
-		}
-
+	mMappingPtr->Set(mConfig.GetArguments());
 	return true;
 }
 

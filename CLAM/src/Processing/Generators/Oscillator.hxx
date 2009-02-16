@@ -40,41 +40,38 @@ public:
 	DYN_ATTRIBUTE (0, public, TData, Frequency);
 	DYN_ATTRIBUTE (1, public, TData, Amplitude);
 	DYN_ATTRIBUTE (2, public, TData, ModIndex);
-	DYN_ATTRIBUTE (3, public, TData , Phase);
-	DYN_ATTRIBUTE (4, public, TData , SamplingRate);
+	DYN_ATTRIBUTE (3, public, TData, Phase);
+	DYN_ATTRIBUTE (4, public, TData, SamplingRate);
 protected:
 	void DefaultInit(void);
 };
 
 class Oscillator : public SimpleOscillator
 {
-	OscillatorConfig mConfig;
+	typedef OscillatorConfig Config;
+	Config mConfig;
 
 	AudioInPort mInputPhaseMod;
 	AudioInPort mInputFreqMod;
 	TData mModIndex;
 
-	typedef InControlTmpl<Oscillator> OscillatorCtrl;
-
 	bool mModIdxUpdated;
-	Oscillator::OscillatorCtrl * mModIdxCtl;
+	FloatInControl mModIdxCtl;
 
 	
 	inline void ApplyControls()
 	{
 		ApplyFreqAndAmpControls();
 		if ( mModIdxUpdated )
-			{
-				mModIndex = mModIdxCtl->GetLastValue();
-				mModIdxUpdated = false;
-			}
+		{
+			mModIndex = mModIdxCtl.GetLastValue();
+			mModIdxUpdated = false;
+		}
 	}
-	int UpdateModIdx( TControlData );
+	void UpdateModIdx( TControlData );
 
 public:
-	Oscillator();
-	
-	Oscillator(const OscillatorConfig& c );
+	Oscillator(const Config& c = Config());
 
 	virtual ~Oscillator();
 	bool ConcreteConfigure( const ProcessingConfig& c );

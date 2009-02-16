@@ -37,8 +37,6 @@ namespace CLAM{
 	class SegmentSMSMorph: public SegmentTransformation
 	{
 		
-		typedef InControlTmpl<SegmentSMSMorph> SegmentSMSMorphCtrl;	
-	
 	public:
 		/** Base constructor of class. Calls Configure method with a SegmentTransformationConfig initialised by default*/
 		SegmentSMSMorph();
@@ -79,32 +77,32 @@ namespace CLAM{
 		void SetSegmentToMorph(Segment&segmentToMorph);
 
 		bool mUseGlobalFactor;
-		SegmentSMSMorphCtrl  mHybBPF;
+		FloatInControl  mHybBPF;
 
 		bool mUseSynchronizeTime;
-		SegmentSMSMorphCtrl  mSynchronizeTime;
+		FloatInControl  mSynchronizeTime;
 		
 		bool mUseSinAmp;
-		SegmentSMSMorphCtrl  mHybSinAmp;
+		FloatInControl  mHybSinAmp;
 
 		bool mUseSinSpectralShape;
-		SegmentSMSMorphCtrl  mHybSinSpectralShape;
-		SegmentSMSMorphCtrl  mHybSinShapeW1;
-		SegmentSMSMorphCtrl  mHybSinShapeW2;
+		FloatInControl  mHybSinSpectralShape;
+		FloatInControl  mHybSinShapeW1;
+		FloatInControl  mHybSinShapeW2;
 		
 		bool mUsePitch;
-		SegmentSMSMorphCtrl  mHybPitch;
+		FloatInControl  mHybPitch;
 		
 		bool mUseSinFreq;
-		SegmentSMSMorphCtrl  mHybSinFreq;
+		FloatInControl  mHybSinFreq;
 		
 		bool mUseResAmp;
-		SegmentSMSMorphCtrl  mHybResAmp;
+		FloatInControl  mHybResAmp;
 		
 		bool mUseResSpectralShape;
-		SegmentSMSMorphCtrl  mHybResSpectralShape;
-		SegmentSMSMorphCtrl  mHybResShapeW1;
-		SegmentSMSMorphCtrl  mHybResShapeW2;
+		FloatInControl  mHybResSpectralShape;
+		FloatInControl  mHybResShapeW1;
+		FloatInControl  mHybResShapeW2;
 						
 	protected:
 		

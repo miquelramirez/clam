@@ -84,6 +84,7 @@ protected:
 class SimpleOscillator : public Processing
 {
 protected:
+	typedef SimpleOscillatorConfig Config;
 	AudioOutPort mOutput;
 	SimpleOscillatorConfig mConfig;
 	TData mAmp;
@@ -91,39 +92,35 @@ protected:
 	TData mDeltaPhase;
 	TData mSamplingRate;
 
-	typedef InControlTmpl<SimpleOscillator> SimpleOscillatorCtrl;
-
 	bool           mFreqUpdated;
 	bool           mAmpUpdated;
-	SimpleOscillatorCtrl* mFreqCtl;
-	SimpleOscillatorCtrl* mAmpCtl;
-	
+	FloatInControl mFreqCtl;
+	FloatInControl mAmpCtl;
 	//xamat: kludge to convert this into an LFO, eventually separate into a different class
 	FloatInControl mSamplesBetweenCallsCtl;
+	
 protected:	
 
 	inline void ApplyFreqAndAmpControls()
 	{
 		if ( mFreqUpdated )
-			{
-				mDeltaPhase = TData(2. * PI * mFreqCtl->GetLastValue() / mSamplingRate);
-				mFreqUpdated = false;
-			}
+		{
+			mDeltaPhase = TData(2. * PI * mFreqCtl.GetLastValue() / mSamplingRate);
+			mFreqUpdated = false;
+		}
 		if ( mAmpUpdated )
-			{
-				mAmp = mAmpCtl->GetLastValue();
-				mAmpUpdated = false;
-			}
+		{
+			mAmp = mAmpCtl.GetLastValue();
+			mAmpUpdated = false;
+		}
 	}
 
-	int UpdateFreq( TControlData );
-	int UpdateAmp( TControlData );
+	void UpdateFreq( TControlData );
+	void UpdateAmp( TControlData );
 
 public:
 
-	SimpleOscillator();
-	
-	SimpleOscillator(const SimpleOscillatorConfig& c );
+	SimpleOscillator(const SimpleOscillatorConfig& c = Config() );
 
 	virtual ~SimpleOscillator();
 
