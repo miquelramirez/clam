@@ -28,7 +28,7 @@ namespace CLAM {
 	class MIDIController : public CLAM::Processing
 	{ 
 	protected:
-		CascadingTypedInControl<MIDI::Message, MIDIController> mMIDIMessage;
+		TypedInControl<MIDI::Message> mMIDIMessage;
 
 		FloatOutControl mMIDIControlValue;
 
@@ -45,7 +45,7 @@ namespace CLAM {
 
 		bool Do();
 		
-		int DoCallback(MIDI::Message inMessage);
+		void DoCallback(MIDI::Message inMessage);
 	};
 	
 } // End namespace

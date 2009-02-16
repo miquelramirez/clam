@@ -11,7 +11,7 @@ namespace CLAM {
 	class MIDISink : public CLAM::Processing
 	{ 
 		/** Controls **/
-		CascadingTypedInControl< MIDI::Message, MIDISink > mMIDIMessage;
+		TypedInControl< MIDI::Message> mMIDIMessage;
 		MIDI::Message mLastMessage;
 		RtMidiOut *mMIDIout;
 
@@ -24,7 +24,7 @@ namespace CLAM {
 
 		bool Do() { return true; };
 		
-		int DoCallback(MIDI::Message inMessage);
+		void DoCallback(MIDI::Message inMessage);
 	};
 } // End namespace
 #endif // MIDISink_hxx

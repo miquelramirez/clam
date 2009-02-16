@@ -16,8 +16,8 @@ namespace Hidden
 }
 
 	MIDIController::MIDIController() 
-		: mMIDIMessage("MIDI Message Input", this, &MIDIController::DoCallback),
-			mMIDIControlValue("Control Output", this)
+		: mMIDIMessage("MIDI Message Input", this, &MIDIController::DoCallback)
+		, mMIDIControlValue("Control Output", this)
 	{
 		Configure( mConfig );
 	}
@@ -29,7 +29,7 @@ namespace Hidden
 		return true;
 	}
 	
-	int MIDIController::DoCallback(MIDI::Message inMessage){
+	void MIDIController::DoCallback(MIDI::Message inMessage){
 		std::bitset<CHAR_BIT> statusByte;
 		statusByte = (std::bitset<CHAR_BIT>)((unsigned char)inMessage[0]);
 		if(statusByte[7] == 1 && statusByte[6] == 0 && statusByte[5] == 1 && statusByte[4] == 1)
@@ -38,7 +38,6 @@ namespace Hidden
 				mMIDIControlValue.SendControl((float)inMessage[2]);
 			}
 		}
-		return 0;
 	}
 	bool MIDIController::ConcreteConfigure(const ProcessingConfig& c)
 	{

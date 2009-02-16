@@ -16,9 +16,9 @@ namespace Hidden
 }
 
 	MIDINote2Freq::MIDINote2Freq() 
-		: mMIDIMessage("MIDI Message Input", this, &MIDINote2Freq::DoCallback),
-		mFreq("Frequency Output", this),
-		mAmplitude("Amplitude Output", this)
+		: mMIDIMessage("MIDI Message Input", this, &MIDINote2Freq::DoCallback)
+		, mFreq("Frequency Output", this)
+		, mAmplitude("Amplitude Output", this)
 	{
 		Configure( mConfig );
 	}
@@ -30,7 +30,8 @@ namespace Hidden
 		return true;
 	}
 	
-	int MIDINote2Freq::DoCallback(MIDI::Message inMessage){
+	void MIDINote2Freq::DoCallback(MIDI::Message inMessage)
+	{
 		std::bitset<CHAR_BIT> statusByte;
 		statusByte = (std::bitset<CHAR_BIT>)((unsigned char)inMessage[0]);
 		if(statusByte[7] == 1 && statusByte[6] == 0 && statusByte[5] == 0 && statusByte[4] == 1)
@@ -40,7 +41,6 @@ namespace Hidden
 			mFreq.SendControl(frequency);
 			mAmplitude.SendControl(inMessage[2] * mConfig.GetScaleAmplitude() / 127.0); 
 		}
-		return 0;
 	}
 	bool MIDINote2Freq::ConcreteConfigure(const ProcessingConfig& c)
 	{
