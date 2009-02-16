@@ -24,7 +24,6 @@
 #include "OutControlPublisher.hxx"
 #include "InControlPublisher.hxx"
 #include "InControlArray.hxx"
-#include "InControlTmplArray.hxx"
 #include "BaseLoggable.hxx"
 #include "Processing.hxx"
 #include <cppunit/extensions/HelperMacros.h>

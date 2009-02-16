@@ -29,7 +29,7 @@
 #include "ProcessingData.hxx"
 #include "InPort.hxx"
 #include "OutPort.hxx"
-#include "InControlTmplArray.hxx"
+#include "InControlArray.hxx"
 #include "ProcessingFactory.hxx"
 #include "Array.hxx"
 
