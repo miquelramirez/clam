@@ -30,14 +30,10 @@ void Control2DataConfig::DefaultInit(void)
 	SetNumControls(0);
 }
 
-Control2Data::Control2Data(const Control2DataConfig& c):mStop("stop",this)
+Control2Data::Control2Data(const Config& c)
+	: mStop("stop",this)
 {
 	Configure(c);
-}
-
-Control2Data::Control2Data():mStop("stop",this)
-{
-	Configure(Control2DataConfig());
 }
 
 bool Control2Data::ConcreteConfigure(const ProcessingConfig& c)
@@ -46,8 +42,8 @@ bool Control2Data::ConcreteConfigure(const ProcessingConfig& c)
 	int nControls=mConfig.GetNumControls();
 	
 	// Initializing InControlArray
-	mpInArray=new InControlTmplArray<Control2Data>(nControls, "array_control", this,&Control2Data::ControlCallbackId);
-       	  
+	mInArray.Resize(nControls, "array_control", this, &Control2Data::EnqueueControl);
+
 	// Buffer Queues initialization
 	BufferQueueInit( nControls );
 	//Initialize mStop to false
@@ -146,10 +142,9 @@ TControlData Control2Data::PopControl(unsigned id)
 	return ret;
 }
 
-int Control2Data::ControlCallbackId(int id, TControlData val)
+void Control2Data::ControlCallbackId(int id, TControlData val)
 {
 	EnqueueControl(id,val);
-	return 0;
 }
 
 }; //namespace CLAM

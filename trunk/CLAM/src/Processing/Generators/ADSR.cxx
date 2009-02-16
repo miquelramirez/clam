@@ -51,20 +51,6 @@ void ADSRConfig::DefaultInit(void)
 	SetSampleRate( 8000 );
 }
 
-ADSR::ADSR()
-	: mOutput("Audio Output",this)
-	, mAmplitude( "Amplitude", this, &ADSR::UpdateAmp )
-	, mAmpValue(0)
-	, mLevel(0)
-	, mDLevel(0)
-	, mStatus(Done)
-	, mState( "State", this )
-{
-	ADSRConfig cfg;
-
-	Configure( cfg );
-}
-
 ADSR::ADSR( const ADSRConfig& cfg )
 	: mOutput("Audio Output",this)
 	, mAmplitude("Amplitude",this, &ADSR::UpdateAmp )

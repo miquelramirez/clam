@@ -24,7 +24,9 @@
 
 #include "InControl.hxx"
 #include <vector>
+#include "InControlArray.hxx"
 
+#if 0
 namespace CLAM
 {
 /**
@@ -110,7 +112,7 @@ void InControlTmplArray<TProcessing>::Resize(int size, const std::string& name, 
 	}
 }
 
-template <class TProcessing>
+template <class TProcessing, typename ValueType>
 void InControlTmplArray<TProcessing>::Resize(int size, const std::list<std::string>& names , TProcessing* parent, TPtrMemberFuncId f)
 {
 	int previousSize = mControls.size();
@@ -147,6 +149,7 @@ InControlTmplArray<TProcessing>::~InControlTmplArray()
 }
 
 } //namespace CLAM
+#endif
 
 #endif
 

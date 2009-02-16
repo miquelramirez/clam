@@ -131,18 +131,17 @@ public:
 private:
 	void testInControlTmpl_DoControl_ChangesInternalState()
 	{
-		CLAM::InControlTmpl<ControlsTest> in("I'm an in ctrl template", this);// calls this->PublishInControl
+		CLAM::FloatInControl in("I'm an in ctrl template", this);// calls this->PublishInControl
 		in.DoControl(1.f);
 		CPPUNIT_ASSERT_EQUAL( 1.f, in.GetLastValue() );
 	}
 	// helper method used for handling incoming control
-	int ControlHandler(CLAM::TControlData val) {
+	void ControlHandler(CLAM::TControlData val) {
 		ToLog() << "ControlHandler called with: " << val;
-		return 0;
 	}
 	void testLinkAndSendWithInControlTmpl_CallbackMethodGetsCalled()
 	{
-		CLAM::InControlTmpl<ControlsTest> 
+		CLAM::FloatInControl 
 			in("in", this, &ControlsTest::ControlHandler); // calls this->PublishInControl
 		
 		ClearLog();
@@ -151,9 +150,8 @@ private:
 	}
 
 	// helper method for handling incoming control plus incontrol ID
-	int ControlHandlerId(int id, CLAM::TControlData val) {
+	void ControlHandlerId(unsigned id, CLAM::TControlData val) {
 		ToLog() << "ControlHandler called with id : " << id << " and value : " << val;
-		return 0;
 	}
 	void testControlHandlerId_WritesToLog()
 	{
@@ -164,7 +162,7 @@ private:
 	void testLinkAndSendWithInControlTmpl_CallbackWithIdMethodGetsCalled()
 	{
 		const int controlId=2;
-		CLAM::InControlTmpl<ControlsTest> 
+		CLAM::FloatInControl 
 			in( controlId, "in", this, &ControlsTest::ControlHandlerId ); // calls this->PublishInControl
 				
 		in.DoControl( 1.f );
@@ -197,7 +195,7 @@ private:
 
 	void testInControlTmplArray_Constructor_GeneratesCorrectName()
 	{
-		CLAM::InControlTmplArray<ControlsTest>
+		CLAM::InControlArray
 			inControls(4, "in", this, &ControlsTest::ControlHandlerId);
 
 		CPPUNIT_ASSERT_EQUAL( 
@@ -207,7 +205,7 @@ private:
 
 	void testInControlTmplArray_ReceivesControl_HandlerReceivesControlAndId()
 	{
-		CLAM::InControlTmplArray<ControlsTest> 
+		CLAM::InControlArray
 			ins( 2, /*num controls*/
 				"in", 
 				this, /*parent to publish (the fixture class is impersonating a processing)*/ 

@@ -23,17 +23,17 @@
 #define __BINARYCONTROLOP__
 
 #include "Processing.hxx"
-#include "InControl.hxx" // MRJ: For the TControlData definition :D
+#include "InControl.hxx"
 #include "OutControl.hxx"
 #include <iosfwd>
 
 namespace CLAM {
 
+
 	class BinaryControlOpConfig: public ProcessingConfig
 	{
 	public:
 		DYNAMIC_TYPE_USING_INTERFACE (BinaryControlOpConfig, 1,ProcessingConfig);
-
 		DYN_ATTRIBUTE (0, public, std::string, Name);
 
 	protected:
@@ -58,44 +58,32 @@ namespace CLAM {
 
 		inline const char *GetClassName() const;
 
-		int HandleFirst( TControlData incoming_parm )
+		void HandleFirst( TControlData incoming_parm )
 		{
 			mFirstParmLastValue = incoming_parm;
 			mOutValue = DoOperation();
 			Do();
-			return 1 ;
 		}
 
-		int HandleSecond( TControlData incoming_parm )
+		void HandleSecond( TControlData incoming_parm )
 		{
 			mSecondParmLastValue = incoming_parm;
 			mOutValue = DoOperation();
 			Do();
-			return 1;
 		}
 
 	public:
-		InControlTmpl< BinaryControlOp > mFirst;
-		InControlTmpl< BinaryControlOp > mSecond;
-		
-		BinaryControlOp()
-			: mOutValue(0),
-			  mFirstParmLastValue( BinOp::IdentityElement ),
-			  mSecondParmLastValue(BinOp::IdentityElement),
-			  mOutput( "output", this ),
-			  mFirst( "first_parm", this, &BinaryControlOp::HandleFirst ),
-			  mSecond( "second_parm", this, &BinaryControlOp::HandleSecond )
-		{
-			Configure( BinaryControlOpConfig() );
-		}
-
-		BinaryControlOp(const BinaryControlOpConfig& cfg)
-			: mOutValue(0),
-			  mFirstParmLastValue( BinOp::IdentityElement ),
-			  mSecondParmLastValue(BinOp::IdentityElement),
-  			  mOutput( "output", this ),
-			  mFirst( "first_parm", this, &BinaryControlOp::HandleFirst ),
-			  mSecond( "second_parm", this, &BinaryControlOp::HandleSecond )
+		typedef BinaryControlOpConfig Config;
+		FloatInControl mFirst;
+		FloatInControl mSecond;
+	
+		BinaryControlOp(const BinaryControlOpConfig& cfg = Config())
+			: mOutValue(0)
+			, mFirstParmLastValue( BinOp::IdentityElement )
+			, mSecondParmLastValue(BinOp::IdentityElement)
+  			, mOutput( "output", this )
+			, mFirst( "first_parm", this, &BinaryControlOp::HandleFirst )
+			, mSecond( "second_parm", this, &BinaryControlOp::HandleSecond )
 		{
 			Configure(cfg);
 		}
@@ -113,7 +101,7 @@ namespace CLAM {
 			return mOperation( mFirstParmLastValue, mSecondParmLastValue );
 		}
 
-		bool Do(void) 
+		bool Do() 
 		{
 			mOutput.SendControl( mOutValue );	
 			return true ;

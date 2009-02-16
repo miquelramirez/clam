@@ -33,25 +33,13 @@ namespace CLAM {
 		UpdateData();
 	}
 
-
-	SpectrumInterpolator::SpectrumInterpolator()
-		: mSize(0),
-		  mIn1("Input 1",this),
-		  mIn2("Input 2",this),
-		  mOut("Output",this),
-		  mProtoState(SOther),
-		  mInterpolationFactorCtl("InterpolationFactor",this)
-	{
-		Configure(SpecInterpConfig());
-	}
-
 	SpectrumInterpolator::SpectrumInterpolator(const SpecInterpConfig &c)
-		: mSize(0),
-		  mIn1("Input 1",this),
-		  mIn2("Input 2",this),
-		  mOut("Output",this),
-		  mProtoState(SOther),
-		  mInterpolationFactorCtl("InterpolationFactor",this)
+		: mSize(0)
+		, mIn1("Input 1",this)
+		, mIn2("Input 2",this)
+		, mOut("Output",this)
+		, mProtoState(SOther)
+		, mInterpolationFactorCtl("InterpolationFactor",this)
 	{
 		Configure(c);
 	}

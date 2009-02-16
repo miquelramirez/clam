@@ -57,7 +57,7 @@ bool Dispatcher::ConcreteConfigure( const ProcessingConfig& c )
 	return true;
 }
 
-int Dispatcher::UpdateState( TControlData availableInstr )
+void Dispatcher::UpdateState( TControlData availableInstr )
 {
 	std::list<InstrStatus>::iterator it;
 	for (it=mInstrStatusList.begin();it!=mInstrStatusList.end();it++)
@@ -67,13 +67,12 @@ int Dispatcher::UpdateState( TControlData availableInstr )
 			mInstrStatusList.erase(it);
 			InstrStatus status = { -1,-1, int(availableInstr) };
 			mInstrStatusList.push_front(status);
-			return 0;
+			return;
 		}
 	}
-	return 0;
 }
 
-void Dispatcher::Dispatch(void)
+void Dispatcher::Dispatch()
 {
 	if( mVelocity == 0.0 ) 
 	{

@@ -65,8 +65,8 @@ protected:
 class Control2Data : public Processing
 {
 public:
-	Control2Data ();	
-	Control2Data(const Control2DataConfig& c);
+	typedef Control2DataConfig Config;
+	Control2Data(const Config& c=Config());
 	virtual ~Control2Data (){};
 	/** Already implemented Do operation. This operation is in charge of reading the enqueued
 	 *	events and producing the processing data output. But for doing so it relies on the 
@@ -111,9 +111,9 @@ protected:
 	/** Callback that will be called when a particular control receives an event and that
 	 *	will be in charge of enqueing the event.
 	 *	@param id is the identifier of the control
-	 *	@val is the value of the control event
+	 *	@param val is the value of the control event
 	 */
-	int ControlCallbackId(int id, TControlData val );
+	void ControlCallbackId(int id, TControlData val );
 
 	/** Concrete configuration for particular Processing */
 	virtual bool ConcreteConfigure(const ProcessingConfig&);
@@ -126,7 +126,7 @@ protected:
 	/** Array of input control arrays that is initialized in the ConcreteConfigure method. 
 	 *	Number of controls is indicated in the configuration
 	 */
-	InControlTmplArray<Control2Data>* mpInArray;
+	InControlArray mInArray;
 	
 	/** Special input control to be able to stop the process in response to an external
 	 *	control event.
@@ -134,7 +134,7 @@ protected:
 	FloatInControl mStop;
 	
 	/** Internal configuration */
-	Control2DataConfig mConfig;
+	Config mConfig;
 	
 	/** Vector of queues containing events for each control*/
 	std::vector<TQueue> mDataQueues;

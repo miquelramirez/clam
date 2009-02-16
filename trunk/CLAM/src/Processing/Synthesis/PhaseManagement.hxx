@@ -45,14 +45,13 @@ namespace CLAM
 class	PhaseManagement:public Processing
 {
 public:
-
-	PhaseManagement();
-	PhaseManagement(PhaseManagementConfig& c);
+	typedef PhaseManagementConfig Config;
+	PhaseManagement(const PhaseManagementConfig& c = Config());
 	~PhaseManagement	();
 
 	const char * GetClassName() const {return "PhaseManagement";}
 	
-	bool Do(void){ return false;}
+	bool Do(){ return false;}
 	bool Do(Frame& currentFrame);
 	
 	/** Basic non-supervised Do.@todo: the way the algorithms are now, they just allow inplace
@@ -67,8 +66,8 @@ public:
 	void Init();
 
 	//Controls
-	InControlTmpl<PhaseManagement> mCurrentTime;
-	InControlTmpl<PhaseManagement> mCurrentPitch;
+	FloatInControl mCurrentTime;
+	FloatInControl mCurrentPitch;
 
 public:
 	void ResetPhaseAlignment();	

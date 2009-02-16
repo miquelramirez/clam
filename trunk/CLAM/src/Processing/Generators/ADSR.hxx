@@ -48,6 +48,7 @@ namespace CLAM
 	class ADSR: public Processing
 	{
 	public:
+		typedef ADSRConfig Config;
 		AudioOutPort mOutput;
 		enum Status {
 		Attack = 0,
@@ -58,7 +59,7 @@ namespace CLAM
 		};
 
 	private:
-		InControlTmpl< ADSR >  mAmplitude;
+		FloatInControl         mAmplitude;
 		ADSRConfig             mConfig;
 		TControlData           mAmpValue;
 		TData                  mAttackTime;
@@ -72,13 +73,13 @@ namespace CLAM
 		FloatOutControl             mState;
 
 	protected:
-		void HandleAttack(void);
+		void HandleAttack();
 
-		void HandleDecay(void);
+		void HandleDecay();
 
-		void HandleRelease(void);
+		void HandleRelease();
 		
-		void HandleAmplitude(void)
+		void HandleAmplitude()
 		{
 			if ( mAmpValue > 0 )
 				HandleAttack();
@@ -87,7 +88,7 @@ namespace CLAM
 				HandleRelease();			
 		}
 
-		void UpdateState(void)
+		void UpdateState()
 		{
 			if( mStatus == Done )
 				mState.SendControl( 0 );  // Available instrument
@@ -95,19 +96,14 @@ namespace CLAM
 				mState.SendControl( 1 );  // Busy intrument
 		}
 
-		int UpdateAmp( TControlData value )
+		void UpdateAmp( TControlData value )
 		{
 			mAmpValue = value ;
 			HandleAmplitude();
-			return 0;
 		}
 
 	public:
-
-		ADSR();
-
-		ADSR( const ADSRConfig& c );
-
+		ADSR( const ADSRConfig& c = Config() );
 		~ADSR(){}
 
 		const char * GetClassName() const {return "ADSR";}

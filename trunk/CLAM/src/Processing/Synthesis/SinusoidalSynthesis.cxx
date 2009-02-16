@@ -44,24 +44,12 @@ void SinusoidalSynthesis::AttachChildren()
 	mOverlapAddSin.SetParent(this);
 }
 
-SinusoidalSynthesis::SinusoidalSynthesis():
-mInputSinSpectralPeaks("InputSinPeaks",this),
-mOutputSpectrum("OutputSpectrum",this),
-mOutputAudio("OutputAudio",this),
-mCurrentTimeControl("CurrentTime",this),
-mCurrentPitch("CurrentPitch",this)
-{
-	mCurrentFrame = 0;
-	Configure(SMSSynthesisConfig());
-	AttachChildren();
-}
-
-SinusoidalSynthesis::SinusoidalSynthesis(const SMSSynthesisConfig& cfg):
-mInputSinSpectralPeaks("InputSinPeaks",this),
-mOutputSpectrum("OutputSpectrum",this),
-mOutputAudio("OutputAudio",this),
-mCurrentTimeControl("CurrentTime",this),
-mCurrentPitch("CurrentPitch",this)
+SinusoidalSynthesis::SinusoidalSynthesis(const SMSSynthesisConfig& cfg)
+	: mInputSinSpectralPeaks("InputSinPeaks",this)
+	, mOutputSpectrum("OutputSpectrum",this)
+	, mOutputAudio("OutputAudio",this)
+	, mCurrentTimeControl("CurrentTime",this)
+	, mCurrentPitch("CurrentPitch",this)
 {
 	mCurrentFrame = 0;
 	Configure(cfg);

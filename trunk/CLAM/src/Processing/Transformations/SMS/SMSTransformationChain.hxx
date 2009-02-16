@@ -44,7 +44,7 @@ namespace CLAM {
 	class SMSTransformationChain: public ProcessingComposite
 	{
 		
-		InControlTmplArray<SMSTransformationChain> *mpOnCtrlArray;
+		InControlArray mOnCtrlArray;
 
 		/** Temporal ProcessingData used as an internal node for intermediate Processing */
 		Array<Segment*> mpTmpDataArray;
@@ -64,7 +64,6 @@ namespace CLAM {
 			mpChainOutput(0)
 			{
 				mpConfig=NULL;
-				mpOnCtrlArray=NULL;
 			}
 		/** Destructor. Deletes temporal ProcessingData and Configuration and any previously
 		 *	allocated Processing chainee. 
@@ -95,7 +94,7 @@ namespace CLAM {
 				SegmentTransformation& trans = dynamic_cast<SegmentTransformation&>(proc);
 				//TODO have a list instead of being a composite
 				
-				if((*mpOnCtrlArray)[i].GetLastValue()||i==0||i==int(composite_size())-1)
+				if(mOnCtrlArray[i].GetLastValue()||i==0||i==int(composite_size())-1)
 				//Note: First and last chainee's will always be active regartheless the value
 				//of their On control.
 				{
@@ -178,13 +177,13 @@ namespace CLAM {
 		/** Accessor to On/off control. Turns on the specified control in the array.*/
 		void TurnOn(TIndex index)
 		{
-			(*mpOnCtrlArray)[index].DoControl(1);
+			mOnCtrlArray[index].DoControl(1);
 		}
 
 		/** Accessor to On/off control. Turns on the specified control in the array.*/
 		void TurnOff(TIndex index)
 		{
-			(*mpOnCtrlArray)[index].DoControl(0);
+			mOnCtrlArray[index].DoControl(0);
 		}
 
 		const ProcessingConfig& GetConfig() const
@@ -219,12 +218,11 @@ namespace CLAM {
 			//TODO: right now there is no way to add or remove controls than to instantiate control array again
 			CLAM_ASSERT(mpConfig->GetOnArray().Size()==(int)composite_size(),"SMSTransformationChain::ConcreteConfigure: On array does not have same size as number of configurations");
 			TSize nControls=composite_size();
-			if(mpOnCtrlArray) delete mpOnCtrlArray;
-			mpOnCtrlArray= new InControlTmplArray<SMSTransformationChain>(nControls,"OnControlArray",this,NULL);
+			mOnCtrlArray.Resize(nControls,"OnControlArray",this);
 			
 			for(int i=0;i<nControls;i++)
 			{
-				(*mpOnCtrlArray)[i].DoControl(mpConfig->GetOnArray()[i]);
+				mOnCtrlArray[i].DoControl(mpConfig->GetOnArray()[i]);
 			}
 			return result;
 		}

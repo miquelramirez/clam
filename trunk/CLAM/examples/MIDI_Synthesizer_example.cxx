@@ -84,14 +84,12 @@ public:
 		ControlMapper                 mMapperVel;
 		ControlMapper                 mMapperPitchBend;
 		ControlMultiplier             mFreqMultiplier;
-		InControlTmpl< MyInstrument >  mPitchBendIn;
-		FloatOutControl                    mPitchBendOut;
+		FloatInControl                mPitchBendIn;
+		FloatOutControl               mPitchBendOut;
 	
-		int UpdatePitchBend( TControlData value )
+		void UpdatePitchBend( TControlData value )
 		{
 			mPitchBendOut.SendControl( value );
-
-			return 0;
 		}
 
 		void LinkControls(void)
@@ -109,17 +107,9 @@ public:
 		}
 
 	public:
-		MyInstrument():
-		  mPitchBendIn( "PitchBend", this, &MyInstrument::UpdatePitchBend ),
-		  mPitchBendOut( "PitchBendOut", this )
-		{
-			MyInstrumentConfig cfg;
-			Configure( cfg );
-		}
-
-		MyInstrument( const MyInstrumentConfig& c):
-		  mPitchBendIn( "PitchBend", this, &MyInstrument::UpdatePitchBend ),
-		  mPitchBendOut( "PitchBendOut", this )
+		MyInstrument( const MyInstrumentConfig& c = MyInstrumentConfig())
+			: mPitchBendIn( "PitchBend", this, &MyInstrument::UpdatePitchBend )
+			, mPitchBendOut( "PitchBendOut", this )
 		{
 			  Configure( c );
 		}
@@ -359,9 +349,7 @@ void MyAudioApplication::AudioMain(void)
 
 		// Mixer Declaration
 		AudioMixerConfig mixerCfg;
-		mixerCfg.SetFrameSize(buffersize);
 		mixerCfg.SetNumberOfInPorts(nVoices);
-
 		AudioMixer mixer;
 		mixer.Configure(mixerCfg);
 

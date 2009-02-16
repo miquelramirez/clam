@@ -49,6 +49,7 @@ namespace CLAM
 	class Dispatcher:public Processing
 	{
 	private:
+		typedef DispatcherConfig Config;
 		struct InstrStatus
 		{
 		public:
@@ -57,12 +58,12 @@ namespace CLAM
 				int  mId;
 		};
 
-		DispatcherConfig                      mConfig;
+		Config                      mConfig;
 		Array< Instrument* >                  mInstruments;
-		Array< FloatOutControl* >                  mValuesOut;
-		InControlTmpl< Dispatcher >           mStateIn;
-		InControlTmpl< Dispatcher >           mNoteIn;
-		InControlTmpl< Dispatcher >           mVelocityIn;
+		Array< FloatOutControl* >             mValuesOut;
+		FloatInControl                        mStateIn;
+		FloatInControl                        mNoteIn;
+		FloatInControl                        mVelocityIn;
 		int                                   mNInValues;
 		int                                   mMInstruments;
 		TControlData                          mVelocity;
@@ -71,47 +72,30 @@ namespace CLAM
 	
 	protected:
 
-		int UpdateState( TControlData availableInstr );
+		void UpdateState( TControlData availableInstr );
 
-		int UpdateVel( TControlData value )
+		void UpdateVel( TControlData value )
 		{
 //			printf("UpdateVel = %f\n",value);
 			mVelocity = value;
-
-			return 0;
 		}
 
-		int UpdateNote( TControlData value )
+		void UpdateNote( TControlData value )
 		{
 //			printf("UpdateNote = %f\n",value);
 			mNote = value;
 			Dispatch();
-
-			return 0;
 		}
 
 		void Dispatch(void);
 
 	public:
-
-		Dispatcher():
-		  mStateIn("",this,&Dispatcher::UpdateState),
-		  mNoteIn( "Note", this, &Dispatcher::UpdateNote ),
-		  mVelocityIn( "Velocity", this, &Dispatcher::UpdateVel ),
-		  mVelocity( 0 ),
-		  mNote( 0 )
-		{
-			DispatcherConfig cfg;
-
-			Configure( cfg );
-		}
-
-		Dispatcher( const DispatcherConfig& c):
-		  mStateIn("",this,&Dispatcher::UpdateState),
-		  mNoteIn( "Note", this, &Dispatcher::UpdateNote ),
-		  mVelocityIn( "Velocity", this, &Dispatcher::UpdateVel ),
-		  mVelocity( 0 ),
-		  mNote( 0 )
+		Dispatcher( const Config& c = Config())
+			: mStateIn("",this,&Dispatcher::UpdateState)
+			, mNoteIn( "Note", this, &Dispatcher::UpdateNote)
+			, mVelocityIn( "Velocity", this, &Dispatcher::UpdateVel)
+			, mVelocity( 0 )
+			, mNote( 0 )
 		{
 			  Configure( c );
 		}

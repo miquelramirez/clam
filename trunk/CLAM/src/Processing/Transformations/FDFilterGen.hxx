@@ -126,38 +126,36 @@ protected:
 class FDFilterGen: public Processing
 {
 private:
-	typedef InControlTmpl<FDFilterGen> FDFilterGenCtrl;
+	typedef FDFilterGenConfig Config;
 
 public:
 	OutPort<Spectrum> Output;
 	
-	FDFilterGenCtrl Gain;
-	FDFilterGenCtrl HighCutOff;
-	FDFilterGenCtrl LowCutOff;
-	FDFilterGenCtrl PassBandSlope;
-	FDFilterGenCtrl StopBandSlope;
+	FloatInControl Gain;
+	FloatInControl HighCutOff;
+	FloatInControl LowCutOff;
+	FloatInControl PassBandSlope;
+	FloatInControl StopBandSlope;
 	
 private:
 	TData SpectralRange;
 	EFDFilterType Type;
 	
-	FDFilterGenConfig mConfig;
+	Config mConfig;
 	
 	bool mControlChanged;
 protected:
 	
 	// Control change callback function
-	int UpdateControlChangedFlag(TControlData);
+	void UpdateControlChangedFlag(TControlData);
 
 		
 public:
 	
-	FDFilterGen();
-	
 	/** Configuration constructor.
 	 * @param Configuration object. 
 	 */
-	FDFilterGen(const FDFilterGenConfig &c);
+	FDFilterGen(const Config &c = Config());
 	
 
 	virtual ~FDFilterGen()
@@ -166,7 +164,7 @@ public:
 	/** Supervised-mode Do function.
 	 * UNINPLEMENTED
 	 */
-	bool Do(void);
+	bool Do();
 	
 	/** Non-supervised mode Do function.
 	 * @todo: decide ConstantOutput mode.

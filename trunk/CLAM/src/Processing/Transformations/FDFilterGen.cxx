@@ -44,33 +44,16 @@ namespace CLAM {
 		
 	}
 
-	
-
-	FDFilterGen::FDFilterGen() :
-		Output("Output",this),
-		Gain("Gain",this, &FDFilterGen::UpdateControlChangedFlag), 
-		HighCutOff( "High Cutoff Frequency",this, &FDFilterGen::UpdateControlChangedFlag),
-		LowCutOff( "Low Cutoff Frequency",this, &FDFilterGen::UpdateControlChangedFlag),
-		PassBandSlope("Pass Band Slope",this, &FDFilterGen::UpdateControlChangedFlag),
-		StopBandSlope( "Stop Band Slope",this, &FDFilterGen::UpdateControlChangedFlag),
-		SpectralRange(0),
-		Type( EFDFilterType::eLowPass ),
-		mControlChanged( false )
-
-	{ 
-		Configure(FDFilterGenConfig()); // here all controls are initialized
-	};
-
-	FDFilterGen::FDFilterGen( const FDFilterGenConfig& c) :
-		Output("Output",this),
-		Gain("Gain",this, &FDFilterGen::UpdateControlChangedFlag), 
-		HighCutOff( "High Cutoff Frecuency",this, &FDFilterGen::UpdateControlChangedFlag),
-		LowCutOff( "Low Cutoff Frecuency",this, &FDFilterGen::UpdateControlChangedFlag),
-		PassBandSlope("Pass Band Slope",this, &FDFilterGen::UpdateControlChangedFlag),
-		StopBandSlope( "Stop Band Slope",this, &FDFilterGen::UpdateControlChangedFlag),
-		SpectralRange(0),
-		Type( EFDFilterType::eLowPass ),
-		mControlChanged( false )
+	FDFilterGen::FDFilterGen( const FDFilterGenConfig& c)
+		: Output("Output",this)
+		, Gain("Gain",this, &FDFilterGen::UpdateControlChangedFlag)
+		, HighCutOff( "High Cutoff Frecuency",this, &FDFilterGen::UpdateControlChangedFlag)
+		, LowCutOff( "Low Cutoff Frecuency",this, &FDFilterGen::UpdateControlChangedFlag)
+		, PassBandSlope("Pass Band Slope",this, &FDFilterGen::UpdateControlChangedFlag)
+		, StopBandSlope( "Stop Band Slope",this, &FDFilterGen::UpdateControlChangedFlag)
+		, SpectralRange(0)
+		, Type( EFDFilterType::eLowPass )
+		, mControlChanged( false )
 	{ 
 		Configure(c); // here all controls are initialized
 	};
@@ -101,14 +84,13 @@ namespace CLAM {
 		return true;
 	}
   
-	int FDFilterGen::UpdateControlChangedFlag(TControlData val)
+	void FDFilterGen::UpdateControlChangedFlag(TControlData val)
 	{
 		mControlChanged=true;
-		return 0;
 	}
 	
 	
-	bool FDFilterGen::Do(void)
+	bool FDFilterGen::Do()
 	{
 		return 0;
 	}

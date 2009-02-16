@@ -119,22 +119,22 @@ namespace CLAM {
 #define CONTROL(name) c##name(#name,this,&EnvelopeExtractor::name##Change)
 
 	EnvelopeExtractor::EnvelopeExtractor(const EnvExtractorConfig& c)
-		: CONTROL(InterpolationPeriod),
-		  CONTROL(IntegrationLength),
-		  CONTROL(NormalLevel),
-		  CONTROL(SilenceLevel),
-		  Input("Input",this),
-		  Output("Output",this),
-		  mPointsPerFrame(0),
-		  mNMemoryPoints(0),
-		  mNormalLevel(0.0),
-		  mSilenceLevel(0.0),
-		  mDeltaX(0.0),
-		  mFrameTime(0.0),
-		  mFrameSize(0),
-		  mInterpolationPeriod(0.0),
-		  mIntegrationLength(0.0),
-		  mIsSpline(false)
+		: CONTROL(InterpolationPeriod)
+		, CONTROL(IntegrationLength)
+		, CONTROL(NormalLevel)
+		, CONTROL(SilenceLevel)
+		, Input("Input",this)
+		, Output("Output",this)
+		, mPointsPerFrame(0)
+		, mNMemoryPoints(0)
+		, mNormalLevel(0.0)
+		, mSilenceLevel(0.0)
+		, mDeltaX(0.0)
+		, mFrameTime(0.0)
+		, mFrameSize(0)
+		, mInterpolationPeriod(0.0)
+		, mIntegrationLength(0.0)
+		, mIsSpline(false)
 	{
 		Configure(c);
 	}
@@ -367,32 +367,28 @@ namespace CLAM {
 
 
 
-	int EnvelopeExtractor::InterpolationPeriodChange(TControlData val)
+	void EnvelopeExtractor::InterpolationPeriodChange(TControlData val)
 	{
 		SetInterpolationPeriod(mIpMin + val * mIpFactor);
 		mInterpolationPeriodControl = val;
-		return 0;
 	}
 
-	int EnvelopeExtractor::IntegrationLengthChange(TControlData val)
+	void EnvelopeExtractor::IntegrationLengthChange(TControlData val)
 	{
 		SetIntegrationLength(mIlMin + val * mIlFactor);
 		mIntegrationLengthControl = val;
-		return 0;
 	}
 
-	int EnvelopeExtractor::NormalLevelChange(TControlData val)
+	void EnvelopeExtractor::NormalLevelChange(TControlData val)
 	{
 		SetNormalLevel(mNlMin + val * mNlFactor);
 		mNormalLevelControl = val;
-		return 0;
 	}
 
-	int EnvelopeExtractor::SilenceLevelChange(TControlData val)
+	void EnvelopeExtractor::SilenceLevelChange(TControlData val)
 	{
 		SetSilenceLevel(mSlMin + val * mSlFactor);
 		mSilenceLevelControl = val;
-		return 0;
 	}
 
 	void EnvelopeExtractor::InitializeControls(void)

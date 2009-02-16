@@ -75,11 +75,10 @@ namespace CLAM {
  * range and point possition, the way to go is obvious, but in other
  * situations it is not so simple. Whe should probably merge both
  * BPFs, into a new BPF.  */
-	class SpectrumInterpolator: public Processing {
-		
-		typedef InControlTmpl<SpectrumInterpolator> SpectrumInterpolatorCtl;	
-		
-		SpecInterpConfig mConfig;
+	class SpectrumInterpolator: public Processing
+	{
+		typedef SpecInterpConfig Config;
+		Config mConfig;
 
 		/** Size of the input/output vectors */
 		int mSize;
@@ -128,16 +127,10 @@ namespace CLAM {
 		 * @pre argument should be an SpecInterpConfig
 		 */
 		bool ConcreteConfigure(const ProcessingConfig&);
-
 	public:
-		SpectrumInterpolator();
-
-		SpectrumInterpolator(const SpecInterpConfig &c);
-
+		SpectrumInterpolator(const SpecInterpConfig &c=Config());
 		~SpectrumInterpolator() {};
-
 		const ProcessingConfig &GetConfig() const { return mConfig;}
-
 		bool Do(void);
 
 // 		FIXME bool Do(const Spectrum& in1, const Spectrum& in2, Spectrum& out);
@@ -160,7 +153,7 @@ namespace CLAM {
 		bool MayDisableExecution() const {return true;}
 
 		/** Input control for interpolation factor */
-		SpectrumInterpolatorCtl  mInterpolationFactorCtl;
+		FloatInControl mInterpolationFactorCtl;
 
 	private:
 

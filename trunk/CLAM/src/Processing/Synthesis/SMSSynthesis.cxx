@@ -53,32 +53,16 @@ void SMSSynthesis::AttachChildren()
 	mOverlapAddGlobal.SetParent(this);
 }
 
-SMSSynthesis::SMSSynthesis():
-mInputSinSpectralPeaks("InputSinPeaks",this),
-mInputResSpectrum("InputResSpectrum",this),
-mOutputSinSpectrum("OutputSinSpectrum",this),
-mOutputSpectrum("OutputSpectrum",this),
-mOutputAudio("OutputAudio",this),
-mOutputResAudio("OutputResAudio",this),
-mOutputSinAudio("OutputSinAudio",this),
-mCurrentTimeControl("CurrentTime",this),
-mCurrentPitch("CurrentPitch",this)
-{
-	mCurrentFrame = 0;
-	Configure(SMSSynthesisConfig());
-	AttachChildren();
-}
-
-SMSSynthesis::SMSSynthesis(const SMSSynthesisConfig& cfg):
-mInputSinSpectralPeaks("InputSinPeaks",this),
-mInputResSpectrum("InputResSpectrum",this),
-mOutputSinSpectrum("OutputSinSpectrum",this),
-mOutputSpectrum("OutputSpectrum",this),
-mOutputAudio("OutputAudio",this),
-mOutputResAudio("OutputResAudio",this),
-mOutputSinAudio("OutputSinAudio",this),
-mCurrentTimeControl("CurrentTime",this),
-mCurrentPitch("CurrentPitch",this)
+SMSSynthesis::SMSSynthesis(const SMSSynthesisConfig& cfg)
+	: mInputSinSpectralPeaks("InputSinPeaks",this)
+	, mInputResSpectrum("InputResSpectrum",this)
+	, mOutputSinSpectrum("OutputSinSpectrum",this)
+	, mOutputSpectrum("OutputSpectrum",this)
+	, mOutputAudio("OutputAudio",this)
+	, mOutputResAudio("OutputResAudio",this)
+	, mOutputSinAudio("OutputSinAudio",this)
+	, mCurrentTimeControl("CurrentTime",this)
+	, mCurrentPitch("CurrentPitch",this)
 {
 	mCurrentFrame = 0;
 	Configure(cfg);

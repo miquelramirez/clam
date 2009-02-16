@@ -28,16 +28,7 @@
 
 namespace CLAM {
 
-
-	SpectralPeakArrayAdder::SpectralPeakArrayAdder()
-		: mIn1("Input 1",this),
-		  mIn2("Input 2",this),
-		  mOut("Output",this)
-	{
-		Configure(PeaksAddConfig());
-	}
-
-	SpectralPeakArrayAdder::SpectralPeakArrayAdder(const PeaksAddConfig &c)
+	SpectralPeakArrayAdder::SpectralPeakArrayAdder(const Config &c)
 		: mIn1("Input 1",this),
 		  mIn2("Input 2",this),
 		  mOut("Output",this)
@@ -45,13 +36,6 @@ namespace CLAM {
 		Configure(c);
 	}
 
-
-	bool SpectralPeakArrayAdder::ConcreteConfigure(const ProcessingConfig&c)
-	{
-		CopyAsConcreteConfig(mConfig, c);
-
-		return true;
-	}
 
 	// Unsupervised Do() function.
 	bool SpectralPeakArrayAdder::Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2, SpectralPeakArray& out)

@@ -40,32 +40,32 @@ namespace CLAM
 			eBusy = 1
 		} mStatus;
 
-		int                           mId;
+		int              mId;
 
 	protected:
-		InControlTmpl< Instrument >   mStateIn;
-		InControlTmpl< Instrument >   mNoteIn;
-		InControlTmpl< Instrument >   mVelocityIn;
+		FloatInControl   mStateIn;
+		FloatInControl   mNoteIn;
+		FloatInControl   mVelocityIn;
 
-		FloatOutControl                    mStateOut;
-		FloatOutControl                    mNoteOut;
-		FloatOutControl                    mVelocityOut;
+		FloatOutControl  mStateOut;
+		FloatOutControl  mNoteOut;
+		FloatOutControl  mVelocityOut;
 
 	public:
 		friend class Dispatcher;
 		
 		void SetId(int id) { mId = id; }
 
-		Instrument():
-			mOut("AudioOut",this),	
-			mStatus( eDone ),
-			mStateIn( "StateIn", this, &Instrument::UpdateState ),
-			mNoteIn( "Note", this, &Instrument::UpdateNote ),
-			mVelocityIn( "Velocity", this, &Instrument::UpdateVel ),
+		Instrument()
+			: mOut("AudioOut",this)
+			, mStatus( eDone )
+			, mStateIn( "StateIn", this, &Instrument::UpdateState )
+			, mNoteIn( "Note", this, &Instrument::UpdateNote )
+			, mVelocityIn( "Velocity", this, &Instrument::UpdateVel )
 
-			mStateOut( "State", this ),
-			mNoteOut( "NoteOut", this ),
-			mVelocityOut( "VelocityOut", this )
+			, mStateOut( "State", this )
+			, mNoteOut( "NoteOut", this )
+			, mVelocityOut( "VelocityOut", this )
 		{
 		}
 		
@@ -75,7 +75,7 @@ namespace CLAM
 //			LinkOutWithInControl( 0, inProc, inId );
 		}
 
-		int UpdateState( TControlData value )
+		void UpdateState( TControlData value )
 		{
 			if ( value == 0.0 )
 			{
@@ -84,22 +84,16 @@ namespace CLAM
 			}
 			else
 				mStatus = eBusy;
-			
-			return 0;
 		}
 
-		int UpdateNote( TControlData value )
+		void UpdateNote( TControlData value )
 		{
 			mNoteOut.SendControl( value );
-
-			return 0;
 		}
 		
-		int UpdateVel( TControlData value )
+		void UpdateVel( TControlData value )
 		{
 			mVelocityOut.SendControl( value );
-
-			return 0;
 		}
 
 	public:

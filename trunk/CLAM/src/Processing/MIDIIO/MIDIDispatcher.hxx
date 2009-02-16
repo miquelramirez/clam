@@ -62,38 +62,34 @@ namespace CLAM
 				int  mId;
 		};
 
-		MIDIDispatcherConfig                      mConfig;
-		InControlTmpl< MIDIDispatcher >           mStateIn;
-		InControlTmpl< MIDIDispatcher >           mNoteIn;
-		InControlTmpl< MIDIDispatcher >           mVelocityIn;
-		int                                   mNInControls;
-		int                                   mNVoices;
-		TControlData                          mVelocity;
-		TControlData                          mNote;
-		std::list< VoiceStatus >			  mVoiceStatusList;
+		MIDIDispatcherConfig       mConfig;
+		FloatInControl             mStateIn;
+		FloatInControl             mNoteIn;
+		FloatInControl             mVelocityIn;
+		int                        mNInControls;
+		int                        mNVoices;
+		TControlData               mVelocity;
+		TControlData               mNote;
+		std::list< VoiceStatus >   mVoiceStatusList;
 	
 	protected:
 
-		int UpdateState( TControlData availableInstr );
+		void UpdateState( TControlData availableInstr );
 
 
-		int UpdateVel( TControlData value )
+		void UpdateVel( TControlData value )
 		{
 			mVelocity = value;
-
-			return 0;
 		}
 
 
-		int UpdateNote( TControlData value )
+		void UpdateNote( TControlData value )
 		{
 			mNote = value;
 			Dispatch();
-
-			return 0;
 		}
 
-		void Dispatch(void);
+		void Dispatch();
 
 	public:
 

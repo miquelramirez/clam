@@ -33,10 +33,10 @@
 namespace CLAM {
 
 
-	class PeaksAddConfig: public ProcessingConfig
+	class PeaksAdConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (PeaksAddConfig, 1,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (PeaksAdConfig, 1,ProcessingConfig);
 		//TODO: As a matter of fact I wouldn't even need this attributte
 		DYN_ATTRIBUTE(0, public, std::string, Name);
 		
@@ -45,30 +45,15 @@ namespace CLAM {
 /** This class performs the interpolation of two SpectralPeakArray processing data
  * objects.
  */
-	class SpectralPeakArrayAdder: public Processing {
-		
-		typedef InControlTmpl<SpectralPeakArrayAdder> SpectralPeakArrayAdderCtl;	
-		
-		PeaksAddConfig mConfig;
-
+	class SpectralPeakArrayAdder: public Processing
+	{
 		const char *GetClassName() const {return "SpectralPeakArrayAdder";}
 
-
-		/** Config change method
-		 * @pre argument should be an SpecInterpConfig
-		 */
-		bool ConcreteConfigure(const ProcessingConfig&);
-
 	public:
-		SpectralPeakArrayAdder();
-
-		SpectralPeakArrayAdder(const PeaksAddConfig &c);
-
+		SpectralPeakArrayAdder(const Config &c = Config());
 		~SpectralPeakArrayAdder() {};
 
-		const ProcessingConfig &GetConfig() const { return mConfig;}
-
-		bool Do(void) {return false;}
+		bool Do() {return false;}
 
 		bool Do(const SpectralPeakArray& in1, const SpectralPeakArray& in2, SpectralPeakArray& out);
 

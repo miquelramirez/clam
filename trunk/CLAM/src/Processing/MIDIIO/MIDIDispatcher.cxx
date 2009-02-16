@@ -68,7 +68,7 @@ bool MIDIDispatcher::ConcreteConfigure( const ProcessingConfig& cfg )
 }
 
 
-int MIDIDispatcher::UpdateState( TControlData availableInstr )
+void MIDIDispatcher::UpdateState( TControlData availableInstr )
 {
 	std::list<VoiceStatus>::iterator it;
 
@@ -79,12 +79,9 @@ int MIDIDispatcher::UpdateState( TControlData availableInstr )
 			mVoiceStatusList.erase(it);
 			VoiceStatus status = { -1,-1, int(availableInstr) };
 			mVoiceStatusList.push_front(status);
-			return 0;
+			return;
 		}
 	}
-
-	return 0;
-
 }
 
 

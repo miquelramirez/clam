@@ -44,16 +44,20 @@ class ControlArray
 	Controls mControls;
 
 public:
-	ControlArray() { mControls.resize(0); }
+	ControlArray() { }
 	ControlArray(int size, const std::string &name, Processing* parent) {
-		mControls.resize(0);
 		Resize(size,name,parent);
 	}
 	ControlArray(int size, const std::list<std::string> &names,
 			Processing* parent)
 	{
-		mControls.resize(0);
 		Resize(size, names, parent);
+	}
+	template <typename ProcessingType, typename ValueType>
+	ControlArray(int size, const std::string &name, ProcessingType * parent,
+		void (ProcessingType::*method)(unsigned, ValueType) )
+	{
+		Resize(size,name,parent,method);
 	}
 	~ControlArray() { Clear(); }
 
@@ -62,6 +66,23 @@ public:
 
 	void Resize(int size, const std::string &name, Processing* parent);
 	void Resize(int size, const std::list<std::string>& names, Processing* parent);
+	template <typename ProcessingType, typename ValueType>
+	void Resize(int size, const std::string &name, ProcessingType * parent,
+		void (ProcessingType::*method)(unsigned, ValueType) )
+	{
+		int previousSize = mControls.size();
+		if(size < previousSize) 
+		{
+			Shrink(size);
+			return;
+		}
+		mControls.resize(size);
+		for (int i = previousSize; i<size; i++) {
+			std::stringstream str;
+			str << name << "_" << i;
+			mControls[i] = new ControlT(i, str.str(), parent, method);	
+		}
+	}
 
 	void Append(int size, const std::string &names, Processing* parent);
 	void Append(int size, const std::list<std::string>& names, Processing* parent);
