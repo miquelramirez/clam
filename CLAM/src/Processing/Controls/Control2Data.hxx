@@ -24,7 +24,7 @@
 
 #include "Processing.hxx"
 #include "ProcessingData.hxx"
-#include "InControlTmplArray.hxx"
+#include "InControlArray.hxx"
 
 #include <vector>
 #include <queue>
