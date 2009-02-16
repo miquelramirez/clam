@@ -44,18 +44,17 @@ public:
 private:
 	enum { NControlsArray=5 };
 
-	typedef InControlTmpl<MyProcessingWithSimpleControls> VFxInControl;
-	typedef std::vector< VFxInControl* > VFxInControls;
+	typedef std::vector< FloatInControl* > FloatInControls;
 	typedef std::vector< TransformationDummy* > Transformations;
 
 	/** Let's pretend we have sub processing objects doing transformations */
 	Transformations subPOsTransformation;
 	
 public:
-	VFxInControls aInControlArray;
-	VFxInControls bInControlArray;
-	VFxInControl cSingleControl;
-	VFxInControl dSingleControl;
+	FloatInControls aInControlArray;
+	FloatInControls bInControlArray;
+	FloatInControl cSingleControl;
+	FloatInControl dSingleControl;
 	
 	/**  this is only because this class is impersonating a Processing*/
 	void PublishInControl(InControlBase* i) {};
@@ -71,24 +70,22 @@ private:
 	void InitChildrenPOs();
 	void InitAInControlArray();
 	void DeleteSubPOs();
-	void DeleteControls(VFxInControls& c);
+	void DeleteControls(FloatInControls& c);
 
 	/** in control callback definitions: */
-	int SimpleCallback( TControlData data )
+	void SimpleCallback( TControlData data )
 	{
 		std::cout << "MyProcessingWithSimpleControls::SimpleCallback(" << data <<")\n";
 		// in the real case we would send the data to the apropiate sub-processing in-control
-		return 0;
 	}
 
 	/** template callback methods to associate to different array controls  */
 	template<int N> 
-	int ACallback( TControlData data)
+	void ACallback( TControlData data)
 	{
 		std::cout << "MyProcessingWithSimpleControls::ACallback<" << N << "> (" << data <<")\n";
 		// we send the data to the N-th in control of subPOsTransformation
 		subPOsTransformation.at(N)->voiceInControl.DoControl( data );
-		return 0;
 	}
 
 };
