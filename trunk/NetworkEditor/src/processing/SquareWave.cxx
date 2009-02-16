@@ -57,40 +57,19 @@ void SquareWaveConfig::DefaultInit(void)
 
 
 // SquareWave method definition
-SquareWave::SquareWave()
-	:mOutput("Audio Output",this),
-	mFreqCtl(0),
-	mAmpCtl(0),
-	mFreqUpdated( false ),
-	mAmpUpdated( false )
-
-{
-	mFreqCtl = new SquareWaveCtrl( "Pitch", this, &SquareWave::UpdateFreq );
-	mAmpCtl = new SquareWaveCtrl( "Amplitude", this, &SquareWave::UpdateAmp );
-
-	SquareWaveConfig cfg;
-
-	Configure( cfg );
-}
-
 SquareWave::SquareWave( const SquareWaveConfig& cfg )
-	:mOutput("Audio Output",this),
-	mFreqCtl(0),
-	mAmpCtl(0),
-	mFreqUpdated( false ),
-	mAmpUpdated( false )
-
+	: mOutput("Audio Output",this)
+	, mFreqCtl ( "Pitch", this, &SquareWave::UpdateFreq )
+	, mAmpCtl ( "Amplitude", this, &SquareWave::UpdateAmp )
+	, mFreqUpdated( false )
+	, mAmpUpdated( false )
 {
-	mFreqCtl = new SquareWaveCtrl( "Pitch", this, &SquareWave::UpdateFreq );
-	mAmpCtl = new SquareWaveCtrl( "Amplitude", this, &SquareWave::UpdateAmp );
 
 	Configure( cfg );
 }
 
 SquareWave::~SquareWave()
 {
-	delete mFreqCtl;
-	delete mAmpCtl;
 }
 
 bool SquareWave::ConcreteConfigure( const ProcessingConfig& c )
@@ -132,19 +111,15 @@ bool SquareWave::Do( Audio& out )
 	return true;
 }
 
-int SquareWave::UpdateFreq( TControlData value )
+void SquareWave::UpdateFreq( TControlData value )
 {
 	mFreqUpdated = true;
-
-	return 0;
 }
 
 
-int SquareWave::UpdateAmp( TControlData value )
+void SquareWave::UpdateAmp( TControlData value )
 {
 	mAmpUpdated = true;
-
-	return 0;
 }
 
 } // namespace CLAM
