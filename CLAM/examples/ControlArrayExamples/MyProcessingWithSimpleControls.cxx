@@ -34,27 +34,27 @@ void MyProcessingWithSimpleControls::InitChildrenPOs()
 void MyProcessingWithSimpleControls::InitAInControlArray()
 {
 	// init in controls array:
-	aInControlArray.push_back( new VFxInControl (
+	aInControlArray.push_back( new FloatInControl (
 			"A_In_Control_0",
 			this,
 			&MyProcessingWithSimpleControls::ACallback< eVoice0 > ) );
 
-	aInControlArray.push_back( new VFxInControl (
+	aInControlArray.push_back( new FloatInControl (
 			"A_In_Control_1",
 			this,
 			&MyProcessingWithSimpleControls::ACallback< eVoice1 > ) );
 
-	aInControlArray.push_back( new VFxInControl (
+	aInControlArray.push_back( new FloatInControl (
 			"A_In_Control_2",
 			this,
 			&MyProcessingWithSimpleControls::ACallback< eVoice2 > ) );
 
-	aInControlArray.push_back( new VFxInControl (
+	aInControlArray.push_back( new FloatInControl (
 			"A_In_Control_3",
 			this,
 			&MyProcessingWithSimpleControls::ACallback< eVoice3 > ) );
 
-	aInControlArray.push_back( new VFxInControl (
+	aInControlArray.push_back( new FloatInControl (
 			"A_In_Control_4",
 			this,
 			&MyProcessingWithSimpleControls::ACallback< eVoice4 > ) );
@@ -84,9 +84,9 @@ void MyProcessingWithSimpleControls::DeleteSubPOs()
 		delete (*it); // (it) points to a PO pointer
 }
 
-void MyProcessingWithSimpleControls::DeleteControls( VFxInControls& c )
+void MyProcessingWithSimpleControls::DeleteControls( FloatInControls& c )
 {
-	VFxInControls::iterator it;
+	FloatInControls::iterator it;
 	for(it=c.begin(); it!=c.end(); it++)
 		delete (*it); // (it) points to a control pointer
 }

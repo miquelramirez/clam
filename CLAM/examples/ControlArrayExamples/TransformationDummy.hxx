@@ -33,7 +33,7 @@ namespace CLAM
 class TransformationDummy : public Processing
 {
 public:
-	InControlTmpl<TransformationDummy> voiceInControl;
+	FloatInControl voiceInControl;
 
 	TransformationDummy() :
 		voiceInControl(
@@ -53,10 +53,9 @@ public:
 	void PublishInControl(InControlBase* i) {};
 
 private:
-	int StupidCallback(TControlData data) {
+	void StupidCallback(TControlData data) {
 		std::cout << "\tTransformationDummy::StupidCallback(" << 
 			data << ") with this==" << this << std::endl;
-		return 0;
 	}
 
 };

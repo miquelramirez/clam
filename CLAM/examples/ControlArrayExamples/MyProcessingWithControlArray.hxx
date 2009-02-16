@@ -41,12 +41,12 @@ private:
 public:
 	enum {NVoices = 4};
 	Transformations mSubPOsTransformation;
-	InControlTmpl<ThisProc> mIn;
-	InControlTmpl<ThisProc> mIn2;
+	FloatInControl mIn;
+	FloatInControl mIn2;
 
-	InControlTmplArray<ThisProc> mInArray;
+	InControlArray mInArray;
 
-	InControlTmplArray<ThisProc> mVoiceControl;
+	InControlArray mVoiceControl;
 
 	bool Do(){return 0;}
 	const ProcessingConfig& GetConfig() const {throw 0;}
@@ -55,13 +55,12 @@ public:
 
 	MyProcessingWithControlArray();
 	~MyProcessingWithControlArray();
-	int CallbackId(int id, TControlData val );
-	int Callback(TControlData val ) { 
+	void CallbackId(unsigned id, TControlData val );
+	void Callback(TControlData val ) { 
 		std::cout << "Callback( "<<val<<std::endl; 
-		return 0;
 	};
 
-	int VoiceControlCallbackId(int id, TControlData val);
+	void VoiceControlCallbackId(unsigned id, TControlData val);
 
 	/**  this is only because this class is impersonating a Processing*/
 	void PublishInControl(InControlBase* i) {};
