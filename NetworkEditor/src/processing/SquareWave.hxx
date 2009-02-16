@@ -86,10 +86,8 @@ protected:
 	TData mDeltaPhase;
 	TData mSamplingRate;
 
-	typedef InControlTmpl<SquareWave> SquareWaveCtrl;
-
-	SquareWaveCtrl* mFreqCtl;
-	SquareWaveCtrl* mAmpCtl;
+	FloatInControl mFreqCtl;
+	FloatInControl mAmpCtl;
 
 	bool           mFreqUpdated;
 	bool           mAmpUpdated;
@@ -99,26 +97,24 @@ protected:
 	inline void ApplyControls()
 	{
 		if ( mFreqUpdated )
-			{
-				mDeltaPhase = TData(2. * PI * mFreqCtl->GetLastValue() / mSamplingRate);
-				mFreqUpdated = false;
-			}
+		{
+			mDeltaPhase = TData(2. * PI * mFreqCtl.GetLastValue() / mSamplingRate);
+			mFreqUpdated = false;
+		}
 		if ( mAmpUpdated )
-			{
-				mAmp = mAmpCtl->GetLastValue();
-				mAmpUpdated = false;
-			}
+		{
+			mAmp = mAmpCtl.GetLastValue();
+			mAmpUpdated = false;
+		}
 	}
 
-	int UpdateFreq( TControlData );
+	void UpdateFreq( TControlData );
 
-	int UpdateAmp( TControlData );
+	void UpdateAmp( TControlData );
 
 public:
 
-	SquareWave();
-	
-	SquareWave(const SquareWaveConfig& c );
+	SquareWave(const SquareWaveConfig& c = SquareWaveConfig());
 
 	virtual ~SquareWave();
 
