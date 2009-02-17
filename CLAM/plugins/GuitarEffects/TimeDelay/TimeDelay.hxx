@@ -132,6 +132,7 @@ namespace CLAM {
 		*/
 		const char *GetClassName() const { return "TimeDelay"; }
 
+	protected:
 		/** Ports **/
 		AudioInPort mInput;
 		AudioOutPort mOutput;
@@ -165,11 +166,10 @@ namespace CLAM {
 
 		bool Do(const Audio& in, Audio& out);
 
-	private:
+	protected:
 		/** Configuration **/
 		TimeDelayConfig mConfig;
 
-	protected:
 		const ProcessingConfig& GetConfig() const {	return mConfig; }
 		bool ConcreteConfigure(const ProcessingConfig& config);
 

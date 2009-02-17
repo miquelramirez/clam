@@ -1,6 +1,7 @@
 == Description ==
 
-Delay: useful for adjusting the time, for example for synchronization of two sources.
+TimeDelay: useful for adjusting the time, for example for synchronization of two sources.
+DelayWetDry: time delay with a wet/dry control
 
 == Install ==
 
