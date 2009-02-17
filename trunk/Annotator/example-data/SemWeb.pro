@@ -10,7 +10,7 @@ The goal of this project is to review the results of the Web information extract
 TODO: Explain what the descriptors mean and how this should be reviewed.
 &lt;/p&gt;
 </Description>
-  <Schema>Semwebextractor.sc</Schema>
+  <Schema>SemWebExtractor.sc</Schema>
   <Extractor>SemWebExtractor</Extractor>
   <PoolSuffix>.webpool</PoolSuffix>
   <Config></Config>
