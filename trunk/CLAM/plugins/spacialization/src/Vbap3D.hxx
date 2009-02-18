@@ -42,7 +42,8 @@ class Vbap3D : public CLAM::Processing
 	std::vector< std::vector<Vector> > _speakersPositions;
 	std::vector<float> _ortogonalProjection;
 	int _currentTriangle;
-	float _delta;
+	float _deltaAngle;
+	float _deltaNumeric;
 
 	Vector vectorialProduct(const Vector& v1, const Vector& v2) const
 	{
@@ -78,6 +79,13 @@ class Vbap3D : public CLAM::Processing
 	}
 	float angle(const Vector& v1, const Vector& v2) const
 	{
+		float divisor = mod(v1)*mod(v2);
+//		CLAM_ASSERT( divisor == 0, "Cannot compute an angle of a zero vector"); TODO
+		if ( divisor == 0 )
+		{
+			std::cout << "ERROR computing angle. A vector is zero" << std::endl;
+			return -1;
+		}
 		return acos( escalarProduct(v1,v2) / (mod(v1)*mod(v2)) );
 	}
 	void print(const Vector& v, std::string name="") const
@@ -100,7 +108,8 @@ public:
 		Configure( config );
 		_azimuth.SetBounds(-360, 360); //a complete spin on each slider direction
 		_elevation.SetBounds(-90, 90);
-		_delta = 0.00001; 
+		_deltaAngle = 0.001; 
+		_deltaNumeric = 0.00001; 
 	}
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
@@ -124,8 +133,8 @@ public:
 			{9, "Rear Right Horizontal", -120., 0.},
 			{10, "Top Back Left", 135., 45.},
 			{11, "Top Back Right", -135., 45.},
-			{12, "Top Front Left", 45., 45.},
-			{13, "Top Front Right", -45., 45.},
+			{12, "Top Front Right", -45., 45.},
+			{13, "Top Front Left", 45., 45.},
 			{14, "Top", 0., 89.},
 			{0, 0, 0., 0.}
 		};
@@ -158,9 +167,11 @@ public:
 			{9, 7, 4},
 			{9, 2, 4},
 			{9, 11, 12},
-			//up TODO change using the 15th spk
-			{12, 13, 10},
-			{12, 11, 10},
+			//up 
+			{14, 10, 11},
+			{14, 11, 12},
+			{14, 12, 13},
+			{14, 13, 10},
 			//down
 			{4, 3, 1},
 			{4, 2, 1},
@@ -265,7 +276,7 @@ std::cout << "\nfind Triangle. triangles " << _triangles.size() << std::endl;
 					cos(elevationRad) * sin(azimuthRad),
 					sin(elevationRad),
 				};
-std::cout << "\nchecking triangle "<< i << std::endl;
+std::cout << "\n\nchecking triangle "<< i << std::endl;
 print(r_source, "r_source");
 print(_normals[i], "normal");
 print(_speakersPositions[i][0], "speak 0");
@@ -273,25 +284,35 @@ print(_speakersPositions[i][1], "speak 1");
 print(_speakersPositions[i][2], "speak 2");
 
 			const float divisor = escalarProduct(_normals[i], r_source);
-			if (fabs(divisor) < _delta) 
+			if (fabs(divisor) < _deltaNumeric) 
 			{
 	std::cout << "divisor is 0 !!" << std::endl;
 				continue;
 			}
 			const float t =  _ortogonalProjection[i] / divisor;
-			std::cout << "--> t " << t << std::endl;
-			if (t>1. or t<0.) continue;
+			std::cout << "--> t " << t  << " t-1 " << t-1. << std::endl;
+			if (t > 1.+_deltaNumeric or t < 0.) continue;
 	std::cout << "--> Ok intersection line < 1" << std::endl;
 			Vector r_I = product(t, r_source);
 			Vector v1 = substract( _speakersPositions[i][0], r_I);
 			Vector v2 = substract( _speakersPositions[i][1], r_I);
 			Vector v3 = substract( _speakersPositions[i][2], r_I);
-			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _delta)
+
+std::cout << " angles sum - 2pi" << fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) << std::endl;
+
+			if (mod(v1)*mod(v2)*mod(v3) < _deltaNumeric)
+			{
+std::cout << "source is at one speaker" << std::endl;
+std::cout << "--> FOUND triangle "<< i <<  std::endl;
+				triangle = i;
+
+			}
+			else if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _deltaAngle)
 			{
 std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
 				// found!
 				//TODO change this assert code for a simple "break;"
-				CLAM_ASSERT(triangle==-1, "Vbap3D: found more than one intersecting triangles!");
+				//CLAM_ASSERT(triangle==-1, "Vbap3D: found more than one intersecting triangles!");
 				triangle = i;
 				
 			}
@@ -352,7 +373,7 @@ std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
 			else gainToApply = 0.;
 			CLAM::DataArray& out =_outputs[i]->GetAudio().GetBuffer();
 			for (int sample=0; sample<w.Size(); sample++)
-				out[sample] = gainToApply>_delta ? w[sample]*gainToApply : 0.;
+				out[sample] = gainToApply>_deltaNumeric ? w[sample]*gainToApply : 0.;
 			
 			_outputs[i]->Produce();
 		}	
