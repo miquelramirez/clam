@@ -285,10 +285,14 @@ namespace CLAM
 	}
 	void Processing::ConsumeAndProduce()
 	{
-		for (unsigned i=0; i<GetNOutPorts(): i++)
-			GetOutPort(i).Produce()
-		for (unsigned i=0; i<GetNInPorts(): i++)
-			GetInPort(i).Consume()
+		// TODO: Not yet implemented
+		/*
+		for (unsigned i=0; i<GetNOutPorts(); i++)
+			GetOutPort(i).Produce();
+		for (unsigned i=0; i<GetNInPorts(); i++)
+			GetInPort(i).Consume();
+		*/
+		
 	}
 
 	const ProcessingConfig& Processing::GetConfig() const
