@@ -174,39 +174,35 @@ public:
 
 	void getData(const char*  tempFile, CLAM::Text * metadata)
 	{
-		FILE * fp;
-		char* str;
-		long lSize, result;
-		
-		if(fp=fopen(tempFile,"rb"))
+		FILE * fp=fopen(tempFile,"rb");
+		if(not fp)
 		{
-			fseek (fp , 0 , SEEK_END);
-			lSize = ftell (fp);
-			fseek(fp, 0, SEEK_SET);
-			str = (char*) malloc (sizeof(char)*(lSize+1));
-			if (str == NULL) 
-				{
-				std::cerr<<"Memory error"<<std::endl;
-				return;
-				}
-			result = fread (str, sizeof(char), lSize, fp);
-			str[lSize]='\0';
-			if (result != lSize) 
-				{
-				std::cerr<<"Reading error"<<std::endl;
-				return;
-				}
-			
-			metadata[0] = str;
-			free(str);
-			fclose(fp);
-			if(remove(tempFile)!=0)
-				std::cerr << "Cant delete file:" << tempFile<<std::endl;	
+			std::cerr << "No such file or directory:" << tempFile << std::endl;
+			return;
 		}
-		else
-			{
-				std::cout<<"No such file or directory:"<<tempFile<<std::endl;
-			}
+		fseek (fp , 0 , SEEK_END);
+		long lSize = ftell (fp);
+		fseek(fp, 0, SEEK_SET);
+		char* str = (char*) malloc (sizeof(char)*(lSize+1));
+		if (str == NULL) 
+		{
+			std::cerr << "Memory error" << std::endl;
+			return;
+		}
+		long result = fread (str, sizeof(char), lSize, fp);
+		str[lSize]='\0';
+		if (result != lSize) 
+		{
+			std::cerr << "Reading error" << std::endl;
+			return;
+		}
+		
+		metadata[0] = str;
+		free(str);
+		fclose(fp);
+		if(remove(tempFile)!=0)
+			std::cerr << "Cant delete file:" << tempFile << std::endl;	
+		}
 	}
 	
 	~SemWebDescriptionDumper()
@@ -215,7 +211,7 @@ public:
 	}	
 };
 
-int processFile(const std::string & waveFile, const std::string & suffix, unsigned segmentationMethod)
+int processFile(const std::string & waveFile, const std::string & suffix)
 {
 	PyObject* pMod = NULL;
 	PyObject* pParm = NULL;
@@ -229,17 +225,17 @@ int processFile(const std::string & waveFile, const std::string & suffix, unsign
 	//introduce the python module
 	pMod = PyImport_ImportModule("SemWebCrawler"); //jun: relative path!!!
 	if(!pMod)
-		{
+	{
 		std::cerr << "Cant open python file!" << std::endl;
 		std::cerr << "Please check whether the path of the .py scripts is in the system path." << std::endl;
 		return -1;
-		}
+	}
 	pDict = PyModule_GetDict(pMod);
 	if(!pDict)
-		{
+	{
 		std::cerr<< "Cant find dictionary!"<< std::endl;
 		return -1;
-		}
+	}
 	
 	//create 1 parameter
 	pParm = PyTuple_New(1);
@@ -270,7 +266,6 @@ int main(int argc, char* argv[])			// access command line arguments
 	std::list<std::string> songs;
 	std::string suffix = ".pool";
 	std::string schemaLocation = "";
-	unsigned segmentationMethod = 0;
 	if (argc==1) 
 	{
 		std::cerr << usage << std::endl;
@@ -281,7 +276,6 @@ int main(int argc, char* argv[])			// access command line arguments
 	bool isSchema = false;
 	bool isSuffix = false;
 	bool isConfiguration = false;
-	bool isSegmentationMethod = false;
 	for (unsigned i = 1; i<argc; i++)
 	{
 		std::string parameter = argv[i];
@@ -299,11 +293,6 @@ int main(int argc, char* argv[])			// access command line arguments
 		{
 			suffix = parameter;
 			isSuffix=false;
-		}
-		else if (isSegmentationMethod)
-		{
-			segmentationMethod = atoi( argv[i] );
-			isSegmentationMethod=false;
 		}
 		else if (isConfiguration)
 		{
@@ -327,7 +316,7 @@ int main(int argc, char* argv[])			// access command line arguments
 			it!= songs.end();
 			it++)
 	{
-		int error = processFile(*it, suffix, segmentationMethod);
+		int error = processFile(*it, suffix);
 		if (error) return error;
 	}
 
