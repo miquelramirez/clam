@@ -57,19 +57,19 @@
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="Rear_Left_Horizontal" position="1346,501" size="151,111" type="AudioSink"/>
+  <processing id="Rear_Left_Horizontal" position="1279,505" size="151,111" type="AudioSink"/>
 
-  <processing id="Rear_Right_Horizontal" position="858,566" size="160,111" type="AudioSink"/>
+  <processing id="Rear_Right_Horizontal" position="1378,596" size="160,111" type="AudioSink"/>
 
   <processing id="Top" position="629,865" size="128,111" type="AudioSink"/>
 
-  <processing id="Top_Back_Left" position="750,589" size="128,111" type="AudioSink"/>
+  <processing id="Top_Back_Left" position="1090,724" size="128,111" type="AudioSink"/>
 
-  <processing id="Top_Back_Right" position="896,770" size="128,111" type="AudioSink"/>
+  <processing id="Top_Back_Right" position="970,772" size="128,111" type="AudioSink"/>
 
-  <processing id="Top_Front_Left" position="820,789" size="128,111" type="AudioSink"/>
+  <processing id="Top_Front_Left" position="736,827" size="128,111" type="AudioSink"/>
 
-  <processing id="Top_Front_Right" position="726,806" size="128,111" type="AudioSink"/>
+  <processing id="Top_Front_Right" position="830,802" size="128,111" type="AudioSink"/>
 
   <processing id="W in" position="25,132" size="128,108" type="AudioSource"/>
 
@@ -172,13 +172,13 @@
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Front Left</out>
-    <in>Top_Front_Left.AudioIn</in>
+    <out>BFormat2Sixteen.Top Front Right</out>
+    <in>Top_Front_Right.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Front Right</out>
-    <in>Top_Front_Right.AudioIn</in>
+    <out>BFormat2Sixteen.Top Front Left</out>
+    <in>Top_Front_Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
