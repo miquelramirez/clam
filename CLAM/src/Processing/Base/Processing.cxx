@@ -283,6 +283,14 @@ namespace CLAM
 //		std::cerr << "outports ready? " << GetOutPorts().AreReadyForWriting() << std::endl;
 		return GetInPorts().AreReadyForReading() && GetOutPorts().AreReadyForWriting();
 	}
+	void Processing::ConsumeAndProduce()
+	{
+		for (unsigned i=0; i<GetNOutPorts(): i++)
+			GetOutPort(i).Produce()
+		for (unsigned i=0; i<GetNInPorts(): i++)
+			GetInPort(i).Consume()
+	}
+
 	const ProcessingConfig& Processing::GetConfig() const
 	{
 		static NullProcessingConfig nullConfig;
