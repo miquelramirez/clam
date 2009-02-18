@@ -188,9 +188,7 @@ namespace CLAM
 				frameIndex ++;			
 			}
 
-			if(frameIndex == portSize)
-			{	return;
-			}
+			if(frameIndex == portSize) return;
 
 			while(frameIndex < portSize)
 			{	for(unsigned channel = 0; channel<_numChannels; channel++)
@@ -204,18 +202,17 @@ namespace CLAM
 				_numReadFrames = _numReadFrames -_numTotalFrames;
 				_infile->seek(_numReadFrames,SEEK_SET);
 			}
-			return;					
 		}
 		void WriteSilenceToPorts()
 		{
 			//all the ports have to have the same buffer size
-			const int portSize = _outports[0]->GetAudio().GetBuffer().Size();
+			const unsigned portSize = _outports[0]->GetAudio().GetBuffer().Size();
 			CLAM::TData* channels[_numChannels];
 
 			for (unsigned channel=0; channel<_numChannels; channel++)
 				channels[channel] = &_outports[channel]->GetAudio().GetBuffer()[0];
 
-			for(int i=0; i< portSize; i++) 
+			for (unsigned i=0; i<portSize; i++) 
 				for(unsigned channel = 0; channel<_numChannels; channel++)
 					channels[channel][i] = 0;					
 			return;	
@@ -227,13 +224,11 @@ namespace CLAM
 			pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 			Lock lock(_diskThreadLock);			
 					
-			while (1) 
+			while (true) 
 			{	
 				ReadFileAndWriteRingBuffer();
 				// wait until process() signals more data 
-				if(_isStopped)
-				{	return;
-				}
+				if(_isStopped) return;
 				pthread_cond_wait(&_dataReadyCondition, &_diskThreadLock);				
 			}		
 		}
@@ -246,14 +241,11 @@ namespace CLAM
 			while((jack_ringbuffer_read_space(_rb)< (portSize)*_numChannels) and _infile)
 			{	
 				unsigned readSize = _infile->read(frameBuffer,_numChannels);
-				if (readSize != _numChannels) 
-				{ 	return;
-				}
+				if (readSize != _numChannels) return;
 				unsigned writeSize = jack_ringbuffer_write(_rb, (char*)frameBuffer,_sampleSize);
-				if(writeSize != _sampleSize)
+				if (writeSize != _sampleSize)
 					_overruns++;	
-			}	
-			return;			
+			}
 		}
 
 		static void* DiskThreadCallback (void *arg)
@@ -317,16 +309,10 @@ namespace CLAM
 		{
 			CopyAsConcreteConfig(_config, config);
 			unsigned portSize = BackendBufferSize();
-			std::ostringstream nameStream;
 			std::string nameOutPort = "out";
 			if(_outports.empty())
 			{
-				//initialization port
-				nameStream<<nameOutPort<<1;
-				AudioOutPort * port = new AudioOutPort( nameStream.str(), this);
-				port->SetSize(portSize);
-				port->SetHop( portSize );
-				_outports.push_back( port );
+				ResizePorts(1);
 				_numChannels = _outports.size();
 			}
 
@@ -343,9 +329,7 @@ namespace CLAM
 				return false;
 			}
 
-			if(_infile)
-				delete _infile;
-
+			if(_infile) delete _infile;
 			_infile = new SndfileHandle(location.c_str(), SFM_READ);
 			// check if the file is open
 			if(!*_infile)
@@ -365,8 +349,11 @@ namespace CLAM
 			{
 				if( _config.GetSavedNumberOfChannels() !=(unsigned)_infile->channels() )
 				{				
-					AddConfigErrorMessage("The configuration have a number of channels saved which \ndoes not correspond to the channels in the provided audio \nfile. If you want to just open a file, first choose '0' in the\n SavedNumberOfChannels config parameter");
-
+					AddConfigErrorMessage(
+						"The configuration have a number of channels saved which \n"
+						"does not correspond to the channels in the provided audio \n"
+						"file. If you want to just open a file, first choose '0' in the\n"
+						"SavedNumberOfChannels config parameter");
 					return false;
 				}
 			}
@@ -380,63 +367,32 @@ namespace CLAM
 			_numTotalFrames = _infile->frames();
 			// The file has not size, perhaps that's because the file is empty			
 			if(_numTotalFrames == 0) _numTotalFrames = 1;
-	
-			// case 1: maintain the same ports
-			if ( (unsigned)_infile->channels() == _outports.size() )
-			{
-				return true;
-			}
-
-			// case 2: increase number of same ports
-			if ( (unsigned)_infile->channels() > _outports.size() )
-			{
-				for (int i=_outports.size()+1; i<= _infile->channels(); i++)
-				{
-					std::ostringstream nameStream;
-					nameStream << nameOutPort << i;
-					AudioOutPort * port = new AudioOutPort( nameStream.str(), this);
-					port->SetSize( portSize );
-					port->SetHop( portSize );
-					_outports.push_back( port );
-				}
-				return true;
-			}
-
-			// case 3: decrease number of same ports
-			if ( (unsigned)_infile->channels() < _outports.size() )
-			{
-				for (unsigned i=_infile->channels(); i<_outports.size(); i++)
-				{
-					delete _outports[i];
-				}
-				_outports.resize( _infile->channels() );
-				
-				return true;
-			}			
-			CLAM_ASSERT(false, "Should not reach here");
-			return false;			
-		}
-
-		void RemovePorts()
-		{
-			if(!_outports.empty())
-			{
-				for(OutPorts::iterator itOutPorts=_outports.begin();itOutPorts!=_outports.end();itOutPorts++)
-				{	
-					delete *itOutPorts;
-				}				
-			}		
-			_outports.clear();
-
-			// Delete ports from Processing (base class) register
-			GetOutPorts().Clear();
+			ResizePorts(_infile->channels());
+			return true;			
 		}
 
 		~SndfilePlayer()
 		{
-			if (_infile)
-				delete _infile;
-			RemovePorts();
+			if (_infile) delete _infile;
+			ResizePorts(0);
+		}
+	private:
+		void ResizePorts(unsigned nPorts)
+		{
+			const std::string nameBase = "out";
+			const unsigned portSize = BackendBufferSize();
+			for (unsigned i=_outports.size(); i<nPorts; i++)
+			{
+				std::ostringstream nameStream;
+				nameStream << nameBase << i;
+				AudioOutPort * port = new AudioOutPort( nameStream.str(), this);
+				port->SetSize( portSize );
+				port->SetHop( portSize );
+				_outports.push_back( port );
+			}
+			for (unsigned i=nPorts; i<_outports.size(); i++)
+				delete _outports[i];
+			_outports.resize(nPorts);
 		}
 	};
 
