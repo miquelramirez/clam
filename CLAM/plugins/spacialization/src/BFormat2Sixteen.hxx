@@ -96,8 +96,8 @@ public:
 			{"Rear Right Horizontal", -120., 0.},
 			{"Top Back Left", 135., 45.},
 			{"Top Back Right", -135., 45.},
-			{"Top Front Left", 45., 45.}, //TODO !!!!!!!!!!!!!!!!!!1
 			{"Top Front Right", -45., 45.},
+			{"Top Front Left", 45., 45.}, 
 			{"Top", 0., 89.},
 			{0, 0., 0.}
 		};
