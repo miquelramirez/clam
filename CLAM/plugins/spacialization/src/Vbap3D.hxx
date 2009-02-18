@@ -220,8 +220,8 @@ public:
 			port->SetSize( buffersize );
 			port->SetHop( buffersize );
 			_outputs.push_back( port );
-			_azimuths.push_back( speakers[i].azimuth );
-			_elevations.push_back( speakers[i].elevation );
+			_azimuths.push_back( rad(speakers[i].azimuth) );
+			_elevations.push_back( rad(speakers[i].elevation) );
 			_names.push_back( speakers[i].name );
 		}
 		for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
@@ -263,53 +263,50 @@ public:
 	/// params: the source azimuth and elevation
 	int findTriangle(float azimuth, float elevation) const
 	{
-		float azimuthRad = rad(azimuth);
-		float elevationRad = rad(elevation);
-std::cout << "\nfind Triangle. triangles " << _triangles.size() << std::endl;
+//std::cout << "\nfind Triangle. triangles " << _triangles.size() << std::endl;
 
 		unsigned triangle = -1;
 		// find triangle testing them all
 		for (unsigned i=0; i<_triangles.size(); i++)
 		{
 			Vector r_source = {
-					cos(elevationRad) * cos(azimuthRad),
-					cos(elevationRad) * sin(azimuthRad),
-					sin(elevationRad),
+					cos(elevation) * cos(azimuth),
+					cos(elevation) * sin(azimuth),
+					sin(elevation),
 				};
-std::cout << "\n\nchecking triangle "<< i << std::endl;
-print(r_source, "r_source");
-print(_normals[i], "normal");
-print(_speakersPositions[i][0], "speak 0");
-print(_speakersPositions[i][1], "speak 1");
-print(_speakersPositions[i][2], "speak 2");
+//std::cout << "\n\nchecking triangle "<< i << std::endl;
+//print(r_source, "r_source");
+//print(_normals[i], "normal");
+//print(_speakersPositions[i][0], "speak 0");
+//print(_speakersPositions[i][1], "speak 1");
+//print(_speakersPositions[i][2], "speak 2");
 
 			const float divisor = escalarProduct(_normals[i], r_source);
 			if (fabs(divisor) < _deltaNumeric) 
 			{
-	std::cout << "divisor is 0 !!" << std::endl;
+//std::cout << "divisor is 0 !!" << std::endl;
 				continue;
 			}
 			const float t =  _ortogonalProjection[i] / divisor;
-			std::cout << "--> t " << t  << " t-1 " << t-1. << std::endl;
+//std::cout << "--> t " << t  << " t-1 " << t-1. << std::endl;
 			if (t > 1.+_deltaNumeric or t < 0.) continue;
-	std::cout << "--> Ok intersection line < 1" << std::endl;
+//std::cout << "--> Ok intersection line < 1" << std::endl;
 			Vector r_I = product(t, r_source);
 			Vector v1 = substract( _speakersPositions[i][0], r_I);
 			Vector v2 = substract( _speakersPositions[i][1], r_I);
 			Vector v3 = substract( _speakersPositions[i][2], r_I);
 
-std::cout << " angles sum - 2pi" << fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) << std::endl;
+//std::cout << " angles sum - 2pi" << fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) << std::endl;
 
 			if (mod(v1)*mod(v2)*mod(v3) < _deltaNumeric)
 			{
-std::cout << "source is at one speaker" << std::endl;
-std::cout << "--> FOUND triangle "<< i <<  std::endl;
+//std::cout << "--> source is at one speaker FOUND triangle "<< i <<  std::endl;
 				triangle = i;
 
 			}
 			else if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _deltaAngle)
 			{
-std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
+//std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
 				// found!
 				//TODO change this assert code for a simple "break;"
 				//CLAM_ASSERT(triangle==-1, "Vbap3D: found more than one intersecting triangles!");
@@ -317,17 +314,22 @@ std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
 				
 			}
 			else
-				std::cout << "BUT outside the triangle";
+			{
+//std::cout << "BUT outside the triangle";
+			}
 		}
 		return triangle;
 	}
 
 	bool Do()
 	{
-		const float as=fmod(_azimuth.GetLastValue()+360+180,360)-180; // as: azimuth_source
-		const float es=_elevation.GetLastValue(); // es: elevation_source
-		CLAM_DEBUG_ASSERT(as>=-180 and as<=+180, "azimuth expected in range -180, +180");
-		CLAM_DEBUG_ASSERT(es>=-90 and es<=+90, "elevation expected in range -90, +90");
+		//TODO use free funtions to clamp elevation-azimuth
+		const float azimuthDegrees = fmod(_azimuth.GetLastValue()+360+180,360)-180; // as: azimuth_source
+		const float elevationDegrees = _elevation.GetLastValue(); // es: elevation_source
+		CLAM_DEBUG_ASSERT(azimuthDegrees >=- 180 and azimuthDegrees <=+ 180, "azimuth expected in range -180, +180");
+		CLAM_DEBUG_ASSERT(elevationDegrees >= -90 and elevationDegrees <= +90, "elevation expected in range -90, +90");
+		const float as = rad( azimuthDegrees );
+		const float es = rad( elevationDegrees );
 		int newTriangle = findTriangle(as, es);
 		//CLAM_ASSERT(newTriangle > -1, "Vbap3D: findTriangle() found no triangle for the given angle!");
 		if (newTriangle==-1) newTriangle = 0;
@@ -335,9 +337,11 @@ std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
 		// change triangle
 		if (_currentTriangle != newTriangle) // changed triangle
 		{
-			std::cout << _names[newTriangle] << " - ";
 			std::cout << "last " << _currentTriangle << " current " << newTriangle << std::endl;
 			_currentTriangle = newTriangle;
+std::cout << " speakers: "<< _triangles[_currentTriangle][0] << " " 
+<< _triangles[_currentTriangle][1] << " "
+<< _triangles[_currentTriangle][2] << std::endl;
 		}
 		// obtain the three gains.
 		unsigned speaker1 = _triangles[_currentTriangle][0];
@@ -351,18 +355,20 @@ std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
 		double& e3 = _elevations[speaker3];
 		double g1 = cos(a3)*cos(e3)*cos(es)*sin(as)*sin(e2)
 			+ cos(as)*cos(es) * (cos(e2)*sin(a2)*sin(e3) - cos(e3)*sin(a3)*sin(e2)) 
-			- cos(e2)*(cos(a2)*cos(es)*sin(as)*sin(e3) + cos(e3)*sin(a2-a3)*sin(es));
+			- cos(e2) * (cos(a2)*cos(es)*sin(as)*sin(e3) + cos(e3)*sin(a2-a3)*sin(es));
 		float g2 = cos(e3)*(cos(es)*sin(a3-as)*sin(e1)
 			+ cos(e1)*sin(a1-a3)*sin(es)) 
 			- cos(e1)*cos(es)*sin(a1-as)*sin(e3);
 		float g3 = cos(a2)*cos(e2)*cos(es)*sin(as)*sin(e1)
-			+ cos(as)*cos(es)*(cos(e1)*sin(a1)*sin(e2)
+			+ cos(as)*cos(es) * (cos(e1)*sin(a1)*sin(e2)
 			- cos(e2)*sin(a2)*sin(e1)) 
 			- cos(e1)*(cos(a1)*cos(es)*sin(as)*sin(e2)
 			+ cos(e2)*sin(a1-a2)*sin(es))
 		;
+//		g1 = g2 = g3 = 0.3;	
 		// copy audio in->out
 		// TODO extract method
+std::cout << speaker1 << ": " << g1 << " " << speaker2 << ": " << g2 << " " << speaker3 << ": " << g3 << std::endl;
 		const CLAM::DataArray& w =_w.GetAudio().GetBuffer();
 		for (unsigned i=0; i<_outputs.size(); i++)
 		{
@@ -370,13 +376,14 @@ std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
 			if (i==speaker1) gainToApply = g1;
 			if (i==speaker2) gainToApply = g2;
 			if (i==speaker3) gainToApply = g3;
-			else gainToApply = 0.;
+			if (i!=speaker1 and i!=speaker2 and i!=speaker3)
+				gainToApply = 0.;
 			CLAM::DataArray& out =_outputs[i]->GetAudio().GetBuffer();
 			for (int sample=0; sample<w.Size(); sample++)
 				out[sample] = gainToApply>_deltaNumeric ? w[sample]*gainToApply : 0.;
 			
 			_outputs[i]->Produce();
-		}	
+		}
 		_w.Consume();
 		return true;
 	}
