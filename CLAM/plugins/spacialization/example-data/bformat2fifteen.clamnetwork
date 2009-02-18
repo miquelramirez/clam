@@ -61,6 +61,8 @@
 
   <processing id="Rear_Right_Horizontal" position="858,566" size="160,111" type="AudioSink"/>
 
+  <processing id="Top" position="629,865" size="128,111" type="AudioSink"/>
+
   <processing id="Top_Back_Left" position="750,589" size="128,111" type="AudioSink"/>
 
   <processing id="Top_Back_Right" position="896,770" size="128,111" type="AudioSink"/>
@@ -177,6 +179,11 @@
   <port_connection>
     <out>BFormat2Sixteen.Top Front Right</out>
     <in>Top_Front_Right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>BFormat2Sixteen.Top</out>
+    <in>Top.AudioIn</in>
   </port_connection>
 
   <port_connection>
