@@ -270,21 +270,21 @@ namespace CLAM
 		 * @throw This method must throw a bad_cast exception if the
 		 * argument is not an object of the expected configuration class.
 		 * */
-		virtual bool ConcreteConfigure(const ProcessingConfig&) { return true; }; 
+		virtual bool ConcreteConfigure(const ProcessingConfig&) { return true; }
 		
 		/**
 		 * Processing objects have to redefine this method when starting
 		 * them implies some internal changes. ie: adquiring resources.
 		 * @returns Whether start changes have been successful
 		 */
-		virtual bool ConcreteStart() {return true;};
+		virtual bool ConcreteStart() {return true;}
 
 		/**
 		 * Processing objects have to redefine this method when stoping
 		 * them implies some internal changes. ie: releasing resources.
 		 * @returns Whether stop changes have been successful
 		 */
-		virtual bool ConcreteStop() {return true;};
+		virtual bool ConcreteStop() {return true;}
 		
 		/// Given by the NetworkPlayer (backend) if exists
 		unsigned BackendBufferSize();
@@ -294,6 +294,13 @@ namespace CLAM
 	public:
 		/** Check that Supervised Do() can be safely called */
 		bool CanConsumeAndProduce();
+
+		/**
+		 * Acknoledges data tokens in published ports as read/writen
+		 * by calling Produce() for all registered OutPorts and
+		 * Consume() to all registered InPorts.
+		 */
+		void ConsumeAndProduce();
 
 		/** Configuration getter.
 		 * Gets the configuration parameters used to create the object.
