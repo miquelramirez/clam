@@ -8,7 +8,7 @@ public:
 	typedef CLAM::Orientation Orientation;
 	TEST_FIXTURE( TestsOrientation )
 	{
-		TEST_CASE( testDefaultInit );
+/*		TEST_CASE( testDefaultInit );
 		TEST_CASE( testChangingValues );
 		TEST_CASE( testValuedInit );
 		TEST_CASE( testNormalizeAngle_withZeroAngles );
@@ -34,7 +34,7 @@ public:
 		TEST_CASE( testRelativeOrientation_arbitraryNegativeAzimuth );
 		TEST_CASE( testChordDistance_back2back );
 		TEST_CASE( testChordDistance_isSimmetric );
-	}
+*/	}
 	void testDefaultInit()
 	{
 		Orientation orientation;
