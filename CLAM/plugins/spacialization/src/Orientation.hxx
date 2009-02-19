@@ -78,7 +78,8 @@ public:
 	double chordDistance(const Orientation & other)
 	{
 		return 2 -2*(se*other.se + ce*other.ce * (sa*other.sa + ca*other.ca));
-		// TODO: Use the optimized form
+		// This is a sub-optimized and less numerically accurate formula
+		// left here as reference.
 		double dz = se-other.se;
 		double dy = ce*sa-other.ce*other.sa;
 		double dx = ce*ca-other.ce*other.ca;
