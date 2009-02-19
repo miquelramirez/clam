@@ -33,6 +33,10 @@ namespace CLAM
 	}
 }
 
+Audio::~Audio()
+{
+}
+
 void Audio::DefaultInit(void)
 {
 	// Attribute instantiation.
