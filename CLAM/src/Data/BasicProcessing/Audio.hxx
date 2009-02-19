@@ -61,7 +61,7 @@ namespace CLAM {
 		void DefaultInit(); // To be used from the dynamic-type-generated constructor.
 
 	public:
-
+		~Audio();
 	
 		/** @return the audio buffer size in samples*/
 		int GetSize() const {return GetBuffer().Size();}
