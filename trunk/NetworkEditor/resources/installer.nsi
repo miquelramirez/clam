@@ -71,6 +71,7 @@ Section "Principal" SEC01
   File '${QTDIR}\bin\QtOpenGL4.dll'
   File '${QTDIR}\bin\QtXml4.dll'
   File '${QTDIR}\bin\QtSvg4.dll'
+  File '${QTDIR}\bin\QtWebKit4.dll'
   File '${QTDIR}\bin\QtNetwork4.dll'
   File '${QTDIR}\bin\QtDesigner4.dll'
   File '${QTDIR}\bin\QtDesignerComponents4.dll'
