@@ -80,12 +80,7 @@ class Vbap3D : public CLAM::Processing
 	float angle(const Vector& v1, const Vector& v2) const
 	{
 		float divisor = mod(v1)*mod(v2);
-//		CLAM_ASSERT( divisor == 0, "Cannot compute an angle of a zero vector"); TODO
-		if ( divisor == 0 )
-		{
-			std::cout << "ERROR computing angle. A vector is zero" << std::endl;
-			return -1;
-		}
+		CLAM_ASSERT( divisor != 0., "Cannot compute an angle of a zero vector"); 
 		return acos( escalarProduct(v1,v2) / (mod(v1)*mod(v2)) );
 	}
 	void print(const Vector& v, std::string name="") const
@@ -265,7 +260,7 @@ public:
 	{
 //std::cout << "\nfind Triangle. triangles " << _triangles.size() << std::endl;
 
-		unsigned triangle = -1;
+		int triangle = -1;
 		// find triangle testing them all
 		for (unsigned i=0; i<_triangles.size(); i++)
 		{
@@ -296,27 +291,30 @@ public:
 			Vector v2 = substract( _speakersPositions[i][1], r_I);
 			Vector v3 = substract( _speakersPositions[i][2], r_I);
 
-//std::cout << " angles sum - 2pi" << fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) << std::endl;
-
 			if (mod(v1)*mod(v2)*mod(v3) < _deltaNumeric)
 			{
 //std::cout << "--> source is at one speaker FOUND triangle "<< i <<  std::endl;
+				if (triangle!=-1) 
+					std::cout <<  "WARNING Vbap3D: found more than one intersecting triangles!" << std::endl;
 				triangle = i;
+				break;
 
 			}
-			else if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _deltaAngle)
+			else 
+{
+std::cout << "angles: " << std::endl;
+std::cout << angle(v1,v2) << " " << angle(v2,v3) << " " << angle(v3,v1) << std::endl; 
+			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _deltaAngle)
 			{
 //std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
 				// found!
-				//TODO change this assert code for a simple "break;"
-				//CLAM_ASSERT(triangle==-1, "Vbap3D: found more than one intersecting triangles!");
+				if (triangle!=-1) 
+					std::cout <<  "WARNING Vbap3D: found more than one intersecting triangles!" << std::endl;
 				triangle = i;
+				break;
 				
 			}
-			else
-			{
-//std::cout << "BUT outside the triangle";
-			}
+}
 		}
 		return triangle;
 	}
@@ -339,9 +337,8 @@ public:
 		{
 			std::cout << "last " << _currentTriangle << " current " << newTriangle << std::endl;
 			_currentTriangle = newTriangle;
-std::cout << " speakers: "<< _triangles[_currentTriangle][0] << " " 
-<< _triangles[_currentTriangle][1] << " "
-<< _triangles[_currentTriangle][2] << std::endl;
+
+//std::cout << " speakers: "<< _triangles[_currentTriangle][0] << " " << _triangles[_currentTriangle][1] << " " << _triangles[_currentTriangle][2] << std::endl;
 		}
 		// obtain the three gains.
 		unsigned speaker1 = _triangles[_currentTriangle][0];
@@ -365,14 +362,16 @@ std::cout << " speakers: "<< _triangles[_currentTriangle][0] << " "
 			- cos(e1)*(cos(a1)*cos(es)*sin(as)*sin(e2)
 			+ cos(e2)*sin(a1-a2)*sin(es))
 		;
-//		g1 = g2 = g3 = 0.3;	
+		float normalization = 1. / sqrt(g1*g1 + g2*g2 + g3*g3);
+		g1 = fabs(g1) * normalization;
+		g2 = fabs(g2) * normalization;
+		g3 = fabs(g3) * normalization;
 		// copy audio in->out
 		// TODO extract method
-std::cout << speaker1 << ": " << g1 << " " << speaker2 << ": " << g2 << " " << speaker3 << ": " << g3 << std::endl;
 		const CLAM::DataArray& w =_w.GetAudio().GetBuffer();
 		for (unsigned i=0; i<_outputs.size(); i++)
 		{
-			float gainToApply;
+			float gainToApply = 0.;
 			if (i==speaker1) gainToApply = g1;
 			if (i==speaker2) gainToApply = g2;
 			if (i==speaker3) gainToApply = g3;
