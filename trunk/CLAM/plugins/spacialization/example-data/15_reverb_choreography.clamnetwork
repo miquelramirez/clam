@@ -13,6 +13,8 @@
 
   <processing id="14 up front left" position="2328,1086" size="128,111" type="AudioSink"/>
 
+  <processing id="15 Top" position="1850,1146" size="128,111" type="AudioSink"/>
+
   <processing id="2 down rear left" position="1968,599" size="128,111" type="AudioSink"/>
 
   <processing id="3 down rear right" position="2077,617" size="128,111" type="AudioSink"/>
@@ -103,7 +105,6 @@
 
   <processing id="AudioMixer" position="79,681" size="107,62" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="AudioWindowing" position="204,686" size="127,58" type="AudioWindowing">
@@ -115,7 +116,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BFormat2Sixteen" position="1711,511" size="128,254" type="BFormat2Sixteen"/>
+  <processing id="BFormat2Sixteen" position="1711,511" size="128,270" type="BFormat2Sixteen"/>
 
   <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation"/>
 
@@ -371,13 +372,18 @@
   </port_connection>
 
   <port_connection>
+    <out>BFormat2Sixteen.Top Front Right</out>
+    <in>14 up front left.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
     <out>BFormat2Sixteen.Top Front Left</out>
     <in>13 up front right.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Front Right</out>
-    <in>14 up front left.AudioIn</in>
+    <out>BFormat2Sixteen.Top</out>
+    <in>15 Top.AudioIn</in>
   </port_connection>
 
   <port_connection>
