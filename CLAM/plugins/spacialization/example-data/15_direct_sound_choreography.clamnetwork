@@ -13,6 +13,8 @@
 
   <processing id="14 up front left" position="1430,2032" size="128,111" type="AudioSink"/>
 
+  <processing id="15 Top" position="958,2068" size="128,111" type="AudioSink"/>
+
   <processing id="2 down rear left" position="1070,1545" size="128,111" type="AudioSink"/>
 
   <processing id="3 down rear right" position="1179,1563" size="128,111" type="AudioSink"/>
@@ -103,7 +105,6 @@
 
   <processing id="AudioMixer" position="79,681" size="107,62" type="AudioMixer">
     <NumberOfInPorts>1</NumberOfInPorts>
-    <FrameSize>512</FrameSize>
   </processing>
 
   <processing id="AudioWindowing" position="204,686" size="127,58" type="AudioWindowing">
@@ -115,7 +116,7 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BFormat2Sixteen" position="1711,511" size="128,254" type="BFormat2Sixteen"/>
+  <processing id="BFormat2Sixteen" position="1711,511" size="128,270" type="BFormat2Sixteen"/>
 
   <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation"/>
 
@@ -246,7 +247,7 @@
 
   <processing id="Source" position="34,340" size="128,108" type="AudioSource"/>
 
-  <processing id="Vbap3D" position="860,1478" size="79,254" type="Vbap3D"/>
+  <processing id="Vbap3D" position="860,1478" size="79,270" type="Vbap3D"/>
 
   <processing id="XFadeAndSwitch_2" position="992,56" size="142,94" type="XFadeAndSwitch"/>
 
@@ -648,13 +649,18 @@
   </port_connection>
 
   <port_connection>
+    <out>Vbap3D.Top Front Right</out>
+    <in>13 up front right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
     <out>Vbap3D.Top Front Left</out>
     <in>14 up front left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>Vbap3D.Top Front Right</out>
-    <in>13 up front right.AudioIn</in>
+    <out>Vbap3D.Top</out>
+    <in>15 Top.AudioIn</in>
   </port_connection>
 
   <port_connection>
