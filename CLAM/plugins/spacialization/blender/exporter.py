@@ -201,7 +201,14 @@ def choreoExport (scene,normalize=True):
 		normalizationOffset,normalizationScale=getNormalizationParameters(allAcousticObjects)
 	for frame in range(Blender.Get('staframe'),Blender.Get('endframe')):
 		Blender.Set('curframe',frame)
-		roll,descention,azimuth=target.mat.toEuler()
+
+		sourceOrientationMatrix=target.mat
+		if target.type=='Camera': # if the listener is a camera, do a proper rotation acording to conventions: azimuth 0: seeing at x+
+			rotationMatrix=Blender.Mathutils.Euler(90,0,-90).toMatrix().invert().resize4x4()
+			sourceOrientationMatrix = rotationMatrix * sourceOrientationMatrix
+
+		roll,descention,azimuth=sourceOrientationMatrix.toEuler()
+
 		targetElevation=(-descention)%360
 		if targetElevation>180:
 			targetElevation=targetElevation-360
