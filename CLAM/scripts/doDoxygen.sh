@@ -5,10 +5,10 @@
 GenerateDoxygen()
 {
 	Name=$1
-	Branch=$2
+	CheckoutRevision=$2
 	TargetDir=$3
 	Date=$4
-	svn co http://iua-share.upf.edu/svn/clam/trunk/CLAM CLAM-for-doxygen
+	svn co http://clam-project.org/clam/trunk/CLAM $CheckoutRevision CLAM-for-doxygen
 	(
 		cd CLAM-for-doxygen
 		Version=`grep "CLAM" CHANGES | (read date name version svn revisionTag revision dollar; echo $version )`
@@ -30,17 +30,17 @@ GenerateDoxygen()
 		tar cfvj $Tarball $TargetDir
 
 		echo removing old remote dir $TargetDir
-		ssh clamadm@www.iua.upf.es mv $TargetDir $TargetDir-old
+		ssh clamadm@clam-project.org mv $TargetDir $TargetDir-old
 		echo transferring new tarball
-		scp -r $Tarball "clamadm@www.iua.upf.es:"
+		scp -r $Tarball "clamadm@clam-project.org:"
 		echo extracting new tarball on remote
-		ssh clamadm@www.iua.upf.es tar xfvj $Tarball
+		ssh clamadm@clam-project.org tar xfvj $Tarball
 		echo cleaning remote tarball
-		ssh clamadm@www.iua.upf.es rm $Tarball
+		ssh clamadm@clam-project.org rm $Tarball
 		echo transferring Doxy Tags
-		scp -r CLAM.tag "clamadm@www.iua.upf.es:$TargetDir"
+		scp -r CLAM.tag "clamadm@clam-project.org:$TargetDir"
 		echo transferring DoxyLog
-		scp -r DoxyLog "clamadm@www.iua.upf.es:$TargetDir"
+		scp -r DoxyLog "clamadm@clam-project.org:$TargetDir"
 	)
 	echo removing local temporary CLAM repository
 #	rm -rf CLAM-for-doxygen
@@ -49,7 +49,7 @@ GenerateDoxygen()
 
 if [ "$1" == "main" ]
 then
-	GenerateDoxygen "CLAM" "-rCLAM-stable" "CLAM-doxygen" ""
+	GenerateDoxygen "CLAM" "" "CLAM-doxygen" ""
 elif [ "$1" == "devel" ]
 then
 	Date=`date -u +"%Y-%m-%d"`
