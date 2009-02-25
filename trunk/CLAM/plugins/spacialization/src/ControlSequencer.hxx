@@ -9,7 +9,6 @@
 #include <cmath>
 #include <fstream>
 
-
 namespace CLAM
 {
 
@@ -112,7 +111,9 @@ protected:
 	{
 		for (unsigned i=0;i<_config.GetNumberOfColumns();i++)
 		{
-			FloatOutControl * outControl=new FloatOutControl ("Output "+i,this);
+			std::ostringstream name;
+			name << "Output " <<i;
+			FloatOutControl * outControl=new FloatOutControl (name.str(),this);
 			_outControls.push_back(outControl);
 		}
 	}
