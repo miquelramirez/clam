@@ -302,8 +302,7 @@ public:
 			}
 			else 
 {
-std::cout << "angles: " << std::endl;
-std::cout << angle(v1,v2) << " " << angle(v2,v3) << " " << angle(v3,v1) << std::endl; 
+//std::cout << "angles: " << angle(v1,v2) << " " << angle(v2,v3) << " " << angle(v3,v1) << std::endl; 
 			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _deltaAngle)
 			{
 //std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
@@ -335,7 +334,7 @@ std::cout << angle(v1,v2) << " " << angle(v2,v3) << " " << angle(v3,v1) << std::
 		// change triangle
 		if (_currentTriangle != newTriangle) // changed triangle
 		{
-			std::cout << "last " << _currentTriangle << " current " << newTriangle << std::endl;
+			std::cout << " changing triangle: " << _currentTriangle << "->" << newTriangle << " " << std::flush;
 			_currentTriangle = newTriangle;
 
 //std::cout << " speakers: "<< _triangles[_currentTriangle][0] << " " << _triangles[_currentTriangle][1] << " " << _triangles[_currentTriangle][2] << std::endl;
