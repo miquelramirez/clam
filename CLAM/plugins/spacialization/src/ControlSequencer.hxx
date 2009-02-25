@@ -13,23 +13,6 @@
 namespace CLAM
 {
 
-/*
-// Don't know how to make this class work. So use string instad --Pau
-
-class DataInFilename : public InFilename
-{
-public:
-	DataInFilename(const std::string & s="") : InFilename(s) {}
-	DataInFilename(const char * s) : InFilename(s) {}
-	const char* TypeFamily() const;
-	const Filter * Filters() const;
-};
-CLAM_TYPEINFOGROUP(BasicCTypeInfo, CLAM::DataInFilename);
-*/
-
-
-typedef std::string DataInFilename;
-
 /**
  Sends the control values stored in a file in tab separated columns.
  @todo: move ControlSequencer into CLAM as it is too general to be in the spacialization plugin.
@@ -39,11 +22,12 @@ class ControlSequencer : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 4, ProcessingConfig );
-		DYN_ATTRIBUTE( 0, public, DataInFilename, Filename);
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 5, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, InFilename, Filename);
 		DYN_ATTRIBUTE( 1, public, unsigned, FrameSize);
 		DYN_ATTRIBUTE( 2, public, unsigned, SampleRate);
-		DYN_ATTRIBUTE( 3, public, unsigned, ControlsPerSecond);
+		DYN_ATTRIBUTE( 3, public, unsigned, NumberOfColumns);
+		DYN_ATTRIBUTE( 4, public, unsigned, ControlsPerSecond);
 	protected:
 		void DefaultInit()
 		{
@@ -52,18 +36,13 @@ class ControlSequencer : public CLAM::Processing
 			SetFilename("");
 			SetFrameSize(512);
 			SetSampleRate(48000);
-			SetControlsPerSecond(15);
+			SetNumberOfColumns(1);
+			SetControlsPerSecond(24);
 		};
 	};
 
 	Config _config;
-	FloatOutControl _out1;
-	FloatOutControl _out2;
-	FloatOutControl _out3;
-	FloatOutControl _out4;
-	FloatOutControl _out5;
-	FloatOutControl _out6;
-	FloatOutControl _out7;
+	std::vector<FloatOutControl*> _outControls;
 	AudioInPort _syncIn;
 
 	unsigned _samplesPerControl;
@@ -73,24 +52,10 @@ class ControlSequencer : public CLAM::Processing
 
 	typedef std::vector<float> Row;
 	std::vector<Row> _controlSequence;
-	unsigned _indexOut1;
-	unsigned _indexOut2;
-	unsigned _indexOut3;
-	unsigned _indexOut4;
-	unsigned _indexOut5;
-	unsigned _indexOut6;
-	unsigned _indexOut7;
 
 public:
 	ControlSequencer(const Config& config = Config()) 
-		: _out1("out 1", this)
-		, _out2("out 2", this)
-		, _out3("out 3", this)
-		, _out4("out 4", this)
-		, _out5("out 5", this)
-		, _out6("out 6", this)
-		, _out7("out 7", this)
-		, _syncIn("sync", this)
+		: _syncIn("sync", this)
 	{
 		Configure( config );
 	}
@@ -107,13 +72,10 @@ public:
 		{
 			//std::cout << ", ctl "<<_sequenceIndex << "/" <<_controlSequence.size() << std::flush;
 			//TODO check that _indexOut1,2,3 < _controlSequence[_sequenceIndex].size()
-			_out1.SendControl( _controlSequence[_sequenceIndex][_indexOut1] );
-			_out2.SendControl( _controlSequence[_sequenceIndex][_indexOut2] );
-			_out3.SendControl( _controlSequence[_sequenceIndex][_indexOut3] );
-			_out4.SendControl( _controlSequence[_sequenceIndex][_indexOut4] );
-			_out5.SendControl( _controlSequence[_sequenceIndex][_indexOut5] );
-			_out6.SendControl( _controlSequence[_sequenceIndex][_indexOut6] );
-			_out7.SendControl( _controlSequence[_sequenceIndex][_indexOut7] );
+			for (unsigned i=0;i<_config.GetNumberOfColumns();i++)
+			{
+				_outControls[i]->SendControl ( _controlSequence[_sequenceIndex][i] );
+			}
 			_sampleCount -= _samplesPerControl;
 			_sequenceIndex++;
 			if (_sequenceIndex >= _controlSequence.size())
@@ -129,7 +91,32 @@ public:
 	{
 		return "ControlSequencer";
 	}
+
+	~ControlSequencer()
+	{
+		RemoveOldControls();
+	}
 protected:
+
+	void RemoveOldControls()
+	{
+		std::vector<FloatOutControl*>::iterator it;
+		for (it=_outControls.begin();it!=_outControls.end();it++)
+		{
+			delete *it;
+		}
+		_outControls.clear();
+	}
+
+	void CreateControls()
+	{
+		for (unsigned i=0;i<_config.GetNumberOfColumns();i++)
+		{
+			FloatOutControl * outControl=new FloatOutControl ("Output "+i,this);
+			_outControls.push_back(outControl);
+		}
+	}
+
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
@@ -139,48 +126,15 @@ protected:
 		_sampleCount=0;
 		_frameSize=_config.GetFrameSize();
 		_sequenceIndex=0;
-
 		_controlSequence.clear();
 
 		//Load the sequence
-		if (_config.GetFilename()=="") // Walk in circles version
+		if (_config.GetFilename()=="") 
 		{
-			std::cout << "spiral version"<<std::endl;
-			_indexOut1=0;
-			_indexOut2=1;
-			_indexOut3=2;
-
-			// by now, let's do a circle in the room
-			unsigned NPoints = 100;
-			float delta=3*M_PI/2;
-			float alpha=0.; //listener angle;
-			float deltaInc=2*M_PI/NPoints;
-			float ratio=1;
-//			float alphaInc=360./NPoints;
-			for (unsigned i=0; i<NPoints; i++)
-			{
-				ratio = float(NPoints-i)/NPoints;
-				float x=std::cos(delta)*0.49*ratio+0.5;
-				float y=std::sin(delta)*0.49*ratio+0.5;
-				Row row;
-				row.push_back(x);
-				row.push_back(y);
-				row.push_back(alpha);
-				_controlSequence.push_back(row);
-				delta+=deltaInc;
-		//		alpha+=alphaInc;
-			}
-			return true;
+			AddConfigErrorMessage("Not filename defined");
+			return false;
 		}
-		// Load the file version
-		std::cout << "ControlSequencer: read from file version. File: "<< _config.GetFilename() << std::endl;
-		_indexOut1=4; // x target
-		_indexOut2=5; // y target	
-		_indexOut3=2; // beta target
-		_indexOut4=7; // x orig 1
-		_indexOut5=8; // y orig 1
-		_indexOut6=10; // x orig 2
-		_indexOut7=11; //y orig 2
+		std::cout << "ControlSequencer: reading file: "<< _config.GetFilename() << std::endl;
 		// Load table from file
 		std::ifstream file( _config.GetFilename().c_str() );
 		while (file)
@@ -190,14 +144,23 @@ protected:
 			if (line=="" or line[0]=='#') continue; 
 			std::istringstream is(line);
 			Row row;
-			while (is)
+			while (is and not is.eof())
 			{
 				float data;
 				is >> data;
+				if (not is) break;
 				row.push_back(data);
+			}
+			if ( row.size() != _config.GetNumberOfColumns() )
+			{
+				AddConfigErrorMessage("Columns number in file differs to configuration.");
+				return false;
 			}
 			_controlSequence.push_back(row);
 		}
+
+		RemoveOldControls();
+		CreateControls();
 		return true;
 	}
 };
