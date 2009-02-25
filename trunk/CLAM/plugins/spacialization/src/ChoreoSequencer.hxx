@@ -320,6 +320,7 @@ protected:
 			{
 				float data;
 				is >> data;
+				if (not is) break;
 				row.push_back(data);
 			}
 			if ( row.size() < 11 or ((row.size()-8)%3) != 0 ) // if number of columns is not 8 + 3*sources:
