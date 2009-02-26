@@ -25,29 +25,69 @@
 #include <CLAM/Processing.hxx>
 #include <samplerate.h>
 
+#include <CLAM/Enum.hxx>
+
 namespace CLAM
 {
+
+class EInterpolatorType : public Enum
+{
+public:
+	EInterpolatorType() : Enum(ValueTable(), SRC_SINC_FASTEST) {}
+	EInterpolatorType(tValue v) : Enum(ValueTable(), v) {};
+	EInterpolatorType(std::string s) : Enum(ValueTable(), s) {};
+	virtual Component* Species() const { return new EInterpolatorType(SRC_SINC_FASTEST); }
+
+	static tEnumValue * ValueTable()
+	{
+		static tEnumValue sValueTable[] =
+		{
+			{SRC_SINC_BEST_QUALITY,"SINC_BEST_QUALITY"},
+			{SRC_SINC_MEDIUM_QUALITY,"SINC_MEDIUM_QUALITY"},
+			{SRC_SINC_FASTEST,"SINC_FASTEST"},
+			{SRC_ZERO_ORDER_HOLD,"ZERO_ORDER_HOLD"},
+			{SRC_LINEAR,"LINEAR"},
+			{0,NULL}
+		};
+		return sValueTable;
+	}
+};
 
 class ResamplerByRatioConfig : public ProcessingConfig
 {
 public:
-	DYNAMIC_TYPE_USING_INTERFACE (ResamplerByRatioConfig, 1, ProcessingConfig);
+	DYNAMIC_TYPE_USING_INTERFACE (ResamplerByRatioConfig, 2, ProcessingConfig);
 	DYN_ATTRIBUTE (0, public, float, Ratio);
-
+	DYN_ATTRIBUTE (1, public, EInterpolatorType, Interpolator);
 protected:
 	void DefaultInit(void)
 	{
 		AddAll();
 		UpdateData();
 		SetRatio(1.);
+		SetInterpolator(SRC_SINC_FASTEST);
 	}
 };
 
 /**
 * \brief Resampler by ratio.
 *
-* Versatile resampling processing only based in the resampling ratio
-* Useful for upsampling and downsampling by factors (x2, etc)
+*	Versatile resampling processing only based in the resampling ratio, but with many configuration options for interpolation method.
+*	Useful for upsampling and downsampling by factors (x2, etc)
+*
+*
+*	Interpolator options (from SRC documentation: http://www.mega-nerd.com/SRC/api_misc.html):
+*
+*	SRC_SINC_BEST_QUALITY - This is a bandlimited interpolator derived from the mathematical sinc function and this is the highest quality sinc
+*	  based converter, providing a worst case Signal-to-Noise Ratio (SNR) of 97 decibels (dB) at a bandwidth of 97%. All three SRC_SINC_* converters
+*	  are based on the techniques of Julius O. Smith although this code was developed independantly.
+*	SRC_SINC_MEDIUM_QUALITY - This is another bandlimited interpolator much like the previous one. It has an SNR of 97dB and a bandwidth of 90%.
+*	  The speed of the conversion is much faster than the previous one.
+*	SRC_SINC_FASTEST - This is the fastest bandlimited interpolator and has an SNR of 97dB and a bandwidth of 80%.
+*	SRC_ZERO_ORDER_HOLD - A Zero Order Hold converter (interpolated value is equal to the last value). The quality is poor but the conversion speed
+*	  is blindlingly fast.
+*	SRC_LINEAR - A linear converter. Again the quality is poor, but the conversion speed is blindingly fast
+* 
 */
 class ResamplerByRatio : public Processing
 {
@@ -56,7 +96,10 @@ public:
 private:
 	AudioInPort _input;
 	AudioOutPort _output;
+
 	ResamplerByRatioConfig mConfig;
+
+	EInterpolatorType mInterpolatorType;
 public:
 	const char* GetClassName() const { return "ResamplerByRatio"; }
 	ResamplerByRatio(const ResamplerByRatioConfig & config = ResamplerByRatioConfig()) 
@@ -87,7 +130,7 @@ public:
 		resampleData.output_frames = output.GetSize();
 		resampleData.src_ratio = mConfig.GetRatio();
 
-		int error = src_simple ( &resampleData, SRC_SINC_FASTEST, 1);
+		int error = src_simple ( &resampleData, mConfig.GetInterpolator(), 1);
 
 		std::cout << (error?src_strerror(error):".") << std::flush;
 		// Tell the ports this is done
