@@ -284,7 +284,7 @@ protected:
 		if (_config.HasUseSpiralIfNoFilename())
 		{
 			// if UseSpiralIfNoFilename==true, Load the sequence
-			if (_config.GetUseSpiralIfNoFilename()==true and _config.GetFilename()=="") // Walk in circles version
+			if (_config.GetUseSpiralIfNoFilename() and _config.GetFilename()=="") // Walk in circles version
 			{
 				fillDummyChoreo();
 				return true;
@@ -294,12 +294,9 @@ protected:
 //		std::cout << "ChoreoSequencer: read from file version. File: "<< _config.GetFilename() << std::endl;
 		// Load table from file
 		std::ifstream file( _config.GetFilename().c_str() );
-		if (!file)
-		{
-			AddConfigErrorMessage("Unable to open the file "+_config.GetFilename());
-			return false;
-		}
-
+		if (not file)
+			return AddConfigErrorMessage("Unable to open the file "+_config.GetFilename());
+		unsigned lineCount = 0;
 		std::string filetype = "ClamChoreoVersion 1.3";
 		std::string firstLine;
 		std::getline(file,firstLine);
@@ -310,10 +307,11 @@ protected:
 		}
 		while (file)
 		{
+			lineCount++;
 			std::string line;
 			std::getline(file, line);
-			if (line=="" or line=="#") 
-				continue;
+			line.erase(0,line.find_first_not_of("\t\r\n "));
+			if (line=="" or line[0]=='#') continue;
 			std::istringstream is(line);
 			Row row;
 			while (is and not is.eof())
@@ -323,23 +321,18 @@ protected:
 				if (not is) break;
 				row.push_back(data);
 			}
-			if ( row.size() < 11 or ((row.size()-8)%3) != 0 ) // if number of columns is not 8 + 3*sources:
-			{
-				AddConfigErrorMessage("Wrong number of columns in choreo file! It needs to have 8, plus 3 more (X,Y,Z positions) for each source.");
-				return false;
-			}
+			if ( row.size() < 11) // if number of columns is not 8 + 3*sources:
+				return AddConfigErrorMessage("Wrong number of columns in choreo file! It needs to have 8, plus 3 more (X,Y,Z positions) for each source.");
+			if ( (row.size()-8)%3 != 0 ) // if number of columns is not 8 + 3*sources:
+				return AddConfigErrorMessage("Wrong number of columns in choreo file! It needs to have 8, plus 3 more (X,Y,Z positions) for each source.");
 			_controlSequence.push_back(row);
 		}
+
 		if (!_controlSequence.size())
-		{
-			AddConfigErrorMessage("Empty file "+_config.GetFilename());
-			return false;
-		}
+			return AddConfigErrorMessage("Empty file "+_config.GetFilename());
+
 		if (_samplesPerControl<_frameSize)
-		{
-			AddConfigErrorMessage("Samples per control should be greater than frame size. (This limitation is provisional: To be implemented)");
-			return false;
-		}	
+			return AddConfigErrorMessage("Samples per control should be greater than frame size. (This limitation is provisional: To be implemented)");
 		return true;
 	}
 };
