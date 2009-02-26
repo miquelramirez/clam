@@ -13,7 +13,7 @@ namespace CLAM
 {
 
 /**
- Sends the control values stored in a file in tab separated columns.
+ Sends the control values stored in a file in space separated columns.
  @todo: move ControlSequencer into CLAM as it is too general to be in the spacialization plugin.
 */
 
@@ -65,12 +65,9 @@ public:
 	bool Do()
 	{
 		CLAM_DEBUG_ASSERT(_sampleCount<2*_samplesPerControl,"_sampleCount too large" );
-
 		_sampleCount += _frameSize;
 		if (_sampleCount>=_samplesPerControl)
 		{
-			//std::cout << ", ctl "<<_sequenceIndex << "/" <<_controlSequence.size() << std::flush;
-			//TODO check that _indexOut1,2,3 < _controlSequence[_sequenceIndex].size()
 			for (unsigned i=0;i<_config.GetNumberOfColumns();i++)
 			{
 				_outControls[i]->SendControl ( _controlSequence[_sequenceIndex][i] );
@@ -80,7 +77,7 @@ public:
 			if (_sequenceIndex >= _controlSequence.size())
 			{
 				_sequenceIndex=0;
-				std::cout << std::endl << "\n End of control sequence. Starting new iteration\n"<<std::endl;;
+//				std::cout << std::endl << "\n End of control sequence. Starting new iteration\n"<<std::endl;
 			}
 		}
 		_syncIn.Consume();
@@ -93,29 +90,22 @@ public:
 
 	~ControlSequencer()
 	{
-		RemoveOldControls();
+		ResizeControls(0);
 	}
 protected:
 
-	void RemoveOldControls()
+	void ResizeControls(unsigned newSize)
 	{
-		std::vector<FloatOutControl*>::iterator it;
-		for (it=_outControls.begin();it!=_outControls.end();it++)
-		{
-			delete *it;
-		}
-		_outControls.clear();
-	}
-
-	void CreateControls()
-	{
-		for (unsigned i=0;i<_config.GetNumberOfColumns();i++)
+		for (unsigned i=_outControls.size(); i<newSize; i++)
 		{
 			std::ostringstream name;
 			name << "Output " <<i;
 			FloatOutControl * outControl=new FloatOutControl (name.str(),this);
 			_outControls.push_back(outControl);
 		}
+		for (unsigned i=newSize; i<_outControls.size(); i++)
+			delete _outControls[i];
+		_outControls.resize(newSize);
 	}
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
@@ -131,18 +121,20 @@ protected:
 
 		//Load the sequence
 		if (_config.GetFilename()=="") 
-		{
-			AddConfigErrorMessage("Not filename defined");
-			return false;
-		}
-		std::cout << "ControlSequencer: reading file: "<< _config.GetFilename() << std::endl;
+			return AddConfigErrorMessage("Not filename defined");
+
 		// Load table from file
 		std::ifstream file( _config.GetFilename().c_str() );
+		if (not file)
+			return AddConfigErrorMessage("Unable to open the file "+_config.GetFilename());
+		unsigned lineCount = 0;
 		while (file)
 		{
+			lineCount++;
 			std::string line;
 			std::getline(file, line);
-			if (line=="" or line[0]=='#') continue; 
+			line.erase(0,line.find_first_not_of("\t\r\n "));
+			if (line=="" or line[0]=='#') continue;
 			std::istringstream is(line);
 			Row row;
 			while (is and not is.eof())
@@ -152,16 +144,27 @@ protected:
 				if (not is) break;
 				row.push_back(data);
 			}
+			if (not is.eof())
+			{
+				std::ostringstream os;
+				os
+					<< "Bad sequence file, at line " << lineCount 
+					<< ", not a float number at columns " << row.size() << ".";
+				return AddConfigErrorMessage(os.str());
+			}
 			if ( row.size() != _config.GetNumberOfColumns() )
 			{
-				AddConfigErrorMessage("Columns number in file differs to configuration.");
-				return false;
+				std::ostringstream os;
+				os
+					<< "Bad sequence file, at line " << lineCount 
+					<< ", expected "
+					<< _config.GetNumberOfColumns() << " columns, but got " << row.size() << ".";
+				return AddConfigErrorMessage(os.str());
 			}
 			_controlSequence.push_back(row);
 		}
 
-		RemoveOldControls();
-		CreateControls();
+		ResizeControls(_config.GetNumberOfColumns());
 		return true;
 	}
 };
