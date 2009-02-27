@@ -93,11 +93,11 @@ class ResamplerByRatio : public Processing
 {
 public:
 	typedef ResamplerByRatioConfig Config;
-private:
+protected:
 	AudioInPort _input;
 	AudioOutPort _output;
 
-	ResamplerByRatioConfig mConfig;
+	Config mConfig;
 
 	EInterpolatorType mInterpolatorType;
 public:
