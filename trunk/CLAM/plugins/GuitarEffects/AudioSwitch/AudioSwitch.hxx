@@ -52,6 +52,7 @@ protected:
 /**	\brief Audio switcher
 *
 *	Switchs between a configurable amount of inputs (like a multiplexer)
+*	Useful to perform a 'true bypass' of an effect or processing
 */
 class AudioSwitch: public Processing
 {

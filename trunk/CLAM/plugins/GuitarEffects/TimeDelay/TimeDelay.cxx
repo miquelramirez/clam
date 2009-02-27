@@ -29,7 +29,7 @@ namespace Hidden
 	static const char * metadata[] = {
 		"key", "TimeDelay",
 		"category", "Plugins",
-		"description", "TimeDelay",
+		"description", "Time Delay ",
 		0
 	};
 	static FactoryRegistrator<ProcessingFactory, TimeDelay> reg = metadata;
