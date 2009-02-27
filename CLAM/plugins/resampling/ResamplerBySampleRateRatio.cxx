@@ -24,7 +24,7 @@ namespace Hidden
 	static const char* metadata[] = {
 		"key", "ResamplerBySampleRateRatio",
 		"category", "[plugin] New Spectral Processing",
-		"description", "Resampler by SampleRate ratio.",
+		"description", "Resampler by SampleRate ratio",
 		0
 	};
 	static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, ResamplerBySampleRateRatio> reg(metadata);
