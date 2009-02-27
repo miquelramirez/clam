@@ -82,7 +82,7 @@ class StatusBarDumper
 		StatusBarDumper & operator << (const QString & object)
 		{
 			(*os) << object.toLocal8Bit().constData();
-			std::cout << object.toStdString();
+			std::cout << object.toLocal8Bit().constData();
 			return *this;
 		}
 		template <typename ObjectType>
