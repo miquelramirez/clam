@@ -86,7 +86,11 @@ public:
 			if (segmentation.onsets()[i]>maxTime) continue;
 			if (segmentation.offsets()[i]<minTime) continue;
 			painter.setBrush(colorForLabel(segmentation.labels()[i]));
+#if QT_VERSION < 0x040400
+			painter.drawRect(segmentBoxes[i]);
+#else
 			painter.drawRoundedRect(segmentBoxes[i], margin, margin);
+#endif
 		}
 		painter.setPen(Qt::black);
 		for (unsigned i=0; i<segmentation.onsets().size(); i++)
