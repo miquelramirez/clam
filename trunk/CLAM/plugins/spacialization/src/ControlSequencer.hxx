@@ -21,19 +21,17 @@ class ControlSequencer : public CLAM::Processing
 {
 	class Config : public CLAM::ProcessingConfig
 	{ 
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 5, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 4, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, InFilename, Filename);
-		DYN_ATTRIBUTE( 1, public, unsigned, FrameSize);
-		DYN_ATTRIBUTE( 2, public, unsigned, SampleRate);
-		DYN_ATTRIBUTE( 3, public, unsigned, NumberOfColumns);
-		DYN_ATTRIBUTE( 4, public, unsigned, ControlsPerSecond);
+		DYN_ATTRIBUTE( 1, public, unsigned, SampleRate);
+		DYN_ATTRIBUTE( 2, public, unsigned, NumberOfColumns);
+		DYN_ATTRIBUTE( 3, public, unsigned, ControlsPerSecond);
 	protected:
 		void DefaultInit()
 		{
 			AddAll();
 			UpdateData();
 			SetFilename("");
-			SetFrameSize(512);
 			SetSampleRate(48000);
 			SetNumberOfColumns(1);
 			SetControlsPerSecond(24);
@@ -111,11 +109,11 @@ protected:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		_syncIn.SetSize( _config.GetFrameSize() );
-		_syncIn.SetHop( _config.GetFrameSize() );
+		_frameSize=BackendBufferSize();
+		_syncIn.SetSize( _frameSize );
+		_syncIn.SetHop( _frameSize );
 		_samplesPerControl = _config.GetSampleRate()/_config.GetControlsPerSecond();
 		_sampleCount=0;
-		_frameSize=_config.GetFrameSize();
 		_sequenceIndex=0;
 		_controlSequence.clear();
 
