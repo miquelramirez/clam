@@ -21,7 +21,9 @@
 // copied from Annotator:
 #include "TaskRunner.hxx"
 
+#if QT_VERSION >= 0x040400
 #include <QtWebKit/QWebView>
+#endif
 #include <QtSvg/QSvgWidget>
 #include <QtCore/QProcess>
 #if QT_VERSION >= 0x040200
@@ -289,6 +291,7 @@ public slots:
 
 	void browseUrlInternalFromProcessing()
 	{
+#if QT_VERSION >= 0x040400
 		QDockWidget * browser=new QDockWidget(this);
 		QWebView * view=new QWebView(browser);
 		view->setContextMenuPolicy(Qt::NoContextMenu);
@@ -298,6 +301,7 @@ public slots:
 		browser->setWidget(view);
 		browser->setWindowTitle(tr("Browsing %1").arg(fileName));
 		addDockWidget(Qt::BottomDockWidgetArea,browser);
+#endif
 	}
 
 	void on_action_Embed_SVG_Diagrams_Option_changed()
