@@ -37,7 +37,16 @@
 #endif
 #endif
 
-
+void usage(const std::string & program)
+{
+	std::cout 
+		<< " Usage: " << program
+		<< " <networkfile> [-b <backend>] [--help]\n"
+		<< "Options:\n"
+		<< " -b <backend>   The backend can be JACK, PortAudio or Auto.\n"
+		<< " --help         This help.\n"
+		<< std::endl;
+}
 
 int main( int argc, char ** argv )
 {
@@ -49,6 +58,49 @@ int main( int argc, char ** argv )
 #endif
 
 	QApplication app( argc, argv );
+
+	QString networkFile = "";
+	QString backendName = "Auto";
+
+	enum { none, backend } optionArgument = none;
+	int argument=0;
+	for (int i=1; i<argc; i++)
+	{
+		std::string arg = argv[i];
+		if (optionArgument!=none)
+		{
+			backendName = arg.c_str();
+			optionArgument=none;
+			continue;
+		}
+		if (arg[0]=='-')
+		{
+			if (arg=="--help")
+			{
+				usage(argv[0]);
+				return 0;
+			}
+			if (arg=="-b")
+			{
+				optionArgument=backend;
+				continue;
+			}
+			std::cerr << "Invalid option '" << arg << "'." << std::endl;
+			usage(argv[0]);
+			return -1;
+		}
+		switch (argument++)
+		{
+			case 0:
+				networkFile = arg.c_str();
+			break;
+			default:
+				std::cerr << "Too much arguments." << std::endl;
+				usage(argv[0]);
+				return -1;
+		}
+	}
+
 
 	QString locale = QLocale::system().name();
 
@@ -65,8 +117,11 @@ int main( int argc, char ** argv )
 	QCoreApplication::setApplicationName("Network Editor");
 	MainWindow w;
 	w.show();
-	if (argc>1) w.load(argv[1]);
+
+	w.setBackend(backendName);
+	if (networkFile!="") w.load(networkFile);
 	else w.clear();
+
 	return app.exec();
 }
 
