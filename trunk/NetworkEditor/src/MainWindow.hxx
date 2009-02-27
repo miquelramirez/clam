@@ -103,47 +103,17 @@ public:
 		ui.action_Embed_SVG_Diagrams_Option->setChecked(embedSvgDiagramsOption);
 
 		_network.AddFlowControl( new CLAM::NaiveFlowControl );
-		QString backend = "None";
-		QString backendLogo = ":/icons/images/editdelete.png"; // TODO: Change this icon
-		if (_networkPlayer) delete _networkPlayer;
-		_networkPlayer = 0;
 
 #ifdef USE_LADSPA
 		ui.menuFaust->setEnabled(true);
 		ui.action_Compile_Faust_Modules->setEnabled(true);
 #endif
 
-#ifdef USE_JACK
-		CLAM::JACKNetworkPlayer * jackPlayer = new CLAM::JACKNetworkPlayer();
-		backend = "JACK";
-		backendLogo = ":/icons/images/jacklogo-mini.png";
-		if ( jackPlayer->IsWorking())
-		{
-			_networkPlayer = jackPlayer;
-#ifdef AFTER13RELEASE
-			_jackCanvas = new ClamNetworkCanvas; // TODO: This should be a JackNetworkCanvas
-			backendScroll->setWidget(_jackCanvas);
-#endif//AFTER13RELEASE
-		}
-		else
-			delete jackPlayer;
-#endif
-#ifdef USE_PORTAUDIO
-		if (! _networkPlayer)
-		{
-			backend = "PortAudio";
-			backendLogo = ":/icons/images/portaudiologo-mini.png";
-			_networkPlayer = new CLAM::PANetworkPlayer();
-		}
-#endif
-		_network.SetPlayer( _networkPlayer );
-
 		_playingLabel = new QLabel;
 		statusBar()->addPermanentWidget(_playingLabel);
 		_backendLabel = new QLabel;
 		statusBar()->addPermanentWidget(_backendLabel);
-		_backendLabel->setToolTip(tr("<p>Audio Backend: %1</p>").arg(backend));
-		_backendLabel->setPixmap(QPixmap(backendLogo));
+
 		ui.action_Play->setEnabled(true);
 		ui.action_Stop->setEnabled(false);
 		ui.action_Pause->setEnabled(false);
@@ -257,6 +227,53 @@ public:
 		_network.Clear();
 		_canvas->loadNetwork(isDummy?0:&_network);
 		updateCaption();
+	}
+
+	void setBackend(QString &backend)
+	{
+		QString backendLogo = ":/icons/images/editdelete.png"; // TODO: Change this icon
+		if (_networkPlayer) delete _networkPlayer;
+		_networkPlayer = 0;
+
+#ifdef USE_JACK
+		if (backend=="JACK" || backend=="Auto")
+		{
+			CLAM::JACKNetworkPlayer *jackPlayer = new CLAM::JACKNetworkPlayer();
+			if ( jackPlayer->IsWorking() )
+			{
+				backend = "JACK";
+				backendLogo = ":/icons/images/jacklogo-mini.png";
+				_networkPlayer = jackPlayer;
+#ifdef AFTER13RELEASE
+				_jackCanvas = new ClamNetworkCanvas; // TODO: This should be a JackNetworkCanvas
+				backendScroll->setWidget(_jackCanvas);
+#endif//AFTER13RELEASE
+			}
+			else
+				delete jackPlayer;
+		}
+#endif
+
+#ifdef USE_PORTAUDIO
+		if (backend=="PortAudio" || backend=="Auto")
+		{
+			if (! _networkPlayer)
+			{
+				backend = "PortAudio";
+				backendLogo = ":/icons/images/portaudiologo-mini.png";
+				_networkPlayer = new CLAM::PANetworkPlayer();
+			}
+		}
+#endif
+
+		CLAM_ASSERT(_networkPlayer!=0, "Problem setting the backend.");
+		if (_networkPlayer==0) backend = "None";
+		_network.SetPlayer( _networkPlayer );
+
+		_backendLabel->setToolTip(tr("<p>Audio Backend: %1</p>").arg(backend));
+		_backendLabel->setPixmap(QPixmap(backendLogo));
+
+		updatePlayStatusIndicator();
 	}
 
 	void closeEvent(QCloseEvent *event)
