@@ -42,6 +42,7 @@ public:
 
 	// Processes
 	virtual void process (float **inputs, float **outputs, long sampleFrames);
+	virtual void processReplacing (float **inputs, float **outputs, VstInt32 sampleFrames) {} // TODO
 
 	// Program
 	virtual void setProgramName (char *name);
@@ -57,7 +58,7 @@ public:
 	virtual bool getEffectName (char* name);
 	virtual bool getVendorString (char* text);
 	virtual bool getProductString (char* text);
-	virtual long getVendorVersion () { return 1000; }
+	virtual VstInt32 getVendorVersion () { return 1000; }
 	
 	virtual VstPlugCategory getPlugCategory () { return kPlugCategEffect; }
 
@@ -72,7 +73,7 @@ protected:
 private:
 	CLAM::Network& GetNetwork() { return *mNet; }
 	void FillNetwork();
-	int GetNumberOfParameters( char* );
+	int GetNumberOfParameters(const char* );
 	void ProcessInputControls();
 	void ProcessInputPorts();
 	void ProcessOutputPorts();
