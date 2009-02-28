@@ -13,17 +13,25 @@
 
 using namespace CLAM;
 
-//char* xmlfile="wire.xml"; //2
-//char* xmlfile="externSMSmess.xml"; //1
-char* xmlfile="../../example-data/simpleModulator.clamnetwork"; 
-//char* xmlfile="inputMultiplier.xml"; //2
+//const char* xmlfile="wire.xml"; //2
+//const char* xmlfile="externSMSmess.xml"; //1
+const char* xmlfile="../../example-data/simpleModulator.clamnetwork"; 
+//const char* xmlfile="inputMultiplier.xml"; //2
+
+AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
+{
+	return new CLAMTest(audioMaster);
+}
+
 
 
 //---------------------------------------------------------------------
 CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 	: AudioEffectX (audioMaster, 1, GetNumberOfParameters(xmlfile) )	// 1 program, 1 parameter only
 {
-	mNet=new Network();
+	std::cout << "== Constructor" << std::endl;
+	mNet=new Network;
+	std::cout << "== Network constructed" << std::endl;
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
 
@@ -53,7 +61,7 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 
 	setNumInputs (2);			// stereo in
 	setNumOutputs (2);			// stereo out
-	setUniqueID ('CLAM');			// identify
+	setUniqueID ('CLAM');		// identify TODO: Get one
 	//canMono ();				// makes sense to feed both inputs with the same signal
 	strcpy (programName, "Default");	// default program name
 }
@@ -66,7 +74,7 @@ CLAMTest::~CLAMTest ()
 }
 
 //---------------------------------------------------------------------
-int CLAMTest::GetNumberOfParameters( char* file )
+int CLAMTest::GetNumberOfParameters( const char* file )
 {
 #ifdef NO_NETWORK_FILE
 	return 1; 
@@ -136,7 +144,7 @@ void CLAMTest::getParameterName (long index, char *label)
 void CLAMTest::getParameterDisplay (long index, char *text)
 {
 	//TODO: alguna mena de switch() per distingir entre dB, Hz, etc...
-	float2string ( mInControlList.at(index).lastvalue, text);
+	float2string ( mInControlList.at(index).lastvalue, text, kVstMaxParamStrLen);
 }
 
 //---------------------------------------------------------------------
