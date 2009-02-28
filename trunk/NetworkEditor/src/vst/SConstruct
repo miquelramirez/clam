@@ -3,138 +3,144 @@ import os
 import glob
 import sys
 
-
-version='testing-version'
 options = Options('options.cache', ARGUMENTS)
-options.Add(PathOption('prefix', 'The prefix where the networkeditor will be installed', ''))
-options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', ''))
+options.Add(PathOption('prefix', 'The prefix where the application will be installed', '/usr/local'))
+options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', '/usr/local'))
+options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(PathOption('vstsdk_path', 'The path to vstsdk (root dir)', ''))
-options.Add(BoolOption('release', 'Build CLAM Vst plugin enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
-
+if sys.platform=="linux2" :
+	options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
 def scanFiles(pattern, paths) :
 	files = []
 	for path in paths :
-		files+=glob.glob(path+"/"+pattern)
+		files+=glob.glob(os.path.join(path,pattern))
 	return files
 
 def recursiveDirs(root) :
 	return filter( (lambda a : a.rfind( ".svn")==-1 ),  [ a[0] for a in os.walk(root)]  )
 
 
-env = Environment(ENV=os.environ, tools=['default'], options=options)
+toolchain='default'
+if sys.platform == 'win32': toolchain = 'mingw'
+env = Environment(ENV=os.environ, tools=[toolchain], options=options)
 options.Save('options.cache', env)
-
-env.Help(options.GenerateHelpText(env))
+Help(options.GenerateHelpText(env))
 
 env.SConsignFile() # Single signature file
 
-CLAMInstallDir = env['clam_prefix']
+crosscompiling = env.has_key("crossmingw") and env["crossmingw"]
+isWindowsPlatform = sys.platform=='win32' or crosscompiling
+isLinuxPlatform = sys.platform=='linux2' and not crosscompiling
+isDarwinPlatform = sys.platform=='darwin'
 
+CLAMInstallDir = env['clam_prefix']
 clam_sconstoolspath = os.path.join(CLAMInstallDir,'share','clam','sconstools')
-env.Tool('clam', toolpath=[clam_sconstoolspath])
+
 env.Tool('qt4', toolpath=[clam_sconstoolspath])
+env.Tool('clam', toolpath=[clam_sconstoolspath])
+env.Tool('nsis', toolpath=[clam_sconstoolspath])
+if sys.platform=='darwin' : env.Tool('bundle', toolpath=[clam_sconstoolspath])
+env.Tool('dmg', toolpath=[clam_sconstoolspath])
+if crosscompiling :
+	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
+sys.path.append(clam_sconstoolspath)
 
 env['CXXFILESUFFIX'] = ['.cxx','.cpp']
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
+	env['SHCXXCOMSTR'] = '== Compiling shared $SOURCE'
 	env['LINKCOMSTR'] = '== Linking $TARGET'
 	env['SHLINKCOMSTR'] = '== Linking library $TARGET'
+	env['QT4_RCCCOMSTR'] = '== Embeding resources $SOURCE'
+	env['QT4_UICCOMSTR'] = '== Compiling interface $SOURCE'
+	env['QT4_LRELEASECOMSTR'] = '== Compiling translation $TARGET'
+	env['QT4_MOCFROMHCOMSTR'] = '== Generating metaobjects for $SOURCE'
+	env['QT4_MOCFROMCXXCOMSTR'] = '== Generating metaobjects for $SOURCE'
 
 env.EnableClamModules([
 	'clam_core',
 	'clam_audioio',
 	'clam_processing',
-	] , CLAMInstallDir)
+	], CLAMInstallDir)
 
 env.EnableQt4Modules([
 	'QtCore',
 	'QtGui',
 	'QtOpenGL',
-#	'QtSql',
-#	'QtNetwork',
-#	'QtTest',
 	'QtXml',
-#	'QtSvg',
+	'QtSvg',
 	'QtUiTools',
-#	'QtDesigner',
-#	'Qt3Support',
-	], debug=False)
-#vstsdk_path ='F:\\clam-external-libs\\vstsdk2.3'
-vstsdk_common_path = os.path.join( env['vstsdk_path'], 'source', 'common' )
+	],
+	debug=False,
+	crosscompiling=crosscompiling,
+	)
+
+
+vstsdk_common_path = os.path.join( env['vstsdk_path'], 'public.sdk', 'source', 'vst2.x' )
+vstgui_path = os.path.join( env['vstsdk_path'], 'vstgui.sf', 'vstgui' )
 
 sourcePaths = [
 	os.path.join('.'),
 	os.path.join( vstsdk_common_path )
 ]
-extraPaths = []
-extraPaths += [
+extraPaths = [
+	env['vstsdk_path'],
+	vstgui_path,
+	vstsdk_common_path,
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
 ]
-
 includePaths = sourcePaths + extraPaths
 
-#commonSources = scanFiles('*.cpp', os.path.join(vstsdk_common_path, 'ADelay')
-#commonSources = scanFiles('*.cpp', '.')
-commonSources = ["CLAMVstPlugin.cxx"]
-commonSources.append( os.path.join(vstsdk_common_path, 'AudioEffect.cpp') )
-commonSources.append( os.path.join(vstsdk_common_path, 'audioeffectx.cpp') )
-
+commonSources = scanFiles("*.cpp", [vstsdk_common_path])
+vstguiSources = scanFiles("*.cpp", [vstgui_path])
 
 #env.Append(LIBS=['vstgui'])
 env.Append(CPPPATH=includePaths)
 env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"' + env['prefix'] + '/share/networkeditor\\""')
-env.Append(CPPDEFINES=[ ('FFTW_HEADER','"<rfftw.h>"') ])
 
 env.Append(CPPFLAGS=['-D_USE_MATH_DEFINES']) # to have M_PI defined TESTING - bug-fix: Load Simple Clam Networks
 
-env['WIN32_INSERT_DEF'] = 1
+env.AppendUnique(LIBS = [
+	'ole32',
+	'gdi32',
+	'uuid',
+	'comdlg32',
+])
+
 if env['release'] :
 	env.Append(CPPDEFINES=['NDEBUG'])
+	env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall','-pipe'] )
 else :
 	env.Append(CPPDEFINES=['_DEBUG'])
-#	env.Append( LINKFLAGS=['-rdynamic'] ) # TODO: Is it needed for MacOSX?
+	env.Append( CCFLAGS=['-g','-O3','-Wall','-pipe'] )
 
-envConsole = env.Copy()
-envPlugin = env.Copy()
+plugins = [
+	env.SharedLibrary("CLAMVstPlugin", source = commonSources + [
+		"CLAMVstPlugin.cxx",
+		]),
+#	# A VstGui based plugin would need that
+#	env.SharedLibrary("CLAMVstPlugin", source = commonSources + vstguiSources [
+#		"CLAMVstGuiPlugin.cxx",
+#		"CLAMVstGuiEditor.cxx",
+#		env.RES("CLAMVstGuiEditor.rc"),
+#	# A Vst Qt based plugin would need that
+#	env.SharedLibrary("CLAMVstPlugin", source = commonSources + [
+#		"CLAMVstQtlugin.cxx",
+#		"CLAMVstQtditor.cxx",
+#		env.Qrc("CLAMVstQtEditor.qrc"),
+#		]),
+]
 
-if sys.platform == "win32" :
-	envPlugin.Append( LINKFLAGS=['/subsystem:windows','/machine:i386'] )
-
-programs = []
-programs += [ envConsole.Program(target="TestPlugin", source = commonSources+["TestPlugin.cxx"]) ]
-
-vstplugin = envPlugin.SharedLibrary("CLAMVstPlugin", source = commonSources+["CLAMVstPluginMain.cxx"] )
-#vstplugin = envPlugin.SharedLibrary("ADelay", source = commonSources )
-
-
-# Manual step: lupdate-
 installation = {
-	'/bin' : programs,
-	'/bin' : vstplugin,
+	'/bin' : plugins,
 }
 
 installTargets = [
-	envPlugin.Install( env['prefix']+path, files ) for path, files in installation.items() ]
+	env.Install( env['prefix']+path, files ) for path, files in installation.items() ]
 
+env.Alias('install', installTargets )
+env.Default([plugins])
 
-if sys.platform=='macosx' : # not really tested!!!
-	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"CLAMVst.app/Contents/Resources\\""')
-	#Binaries: networkeditor + sample extractor
-	env.AppendUnique( LINKFLAGS=['-dynamic','-bind_at_load'])
-
-	#Resource installation in Mac application directory (binaries, xml metadata, icon, sound)
-	installTargets = [
-		env.Install( 'CLAMVst.app/Contents/MacOS', programs ),
-		env.Install( 'CLAMVst.app/Contents', 'resources/Info.plist'),
-		env.Install( 'CLAMVst.app/Contents/Resources', 'resources/CLAM.icns'),
-		]
-	mac_packages = env.Dmg('notused', installTargets )
-	env.Alias('package', mac_packages)
-
-envPlugin.Alias('install', installTargets )
-
-envPlugin.Default([vstplugin])
-envConsole.Default(programs)
