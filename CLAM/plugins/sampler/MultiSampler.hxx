@@ -60,8 +60,9 @@ class MultiSampler : public Processing
 		CLAM::AudioOutPortPublisher _proxyOutPublisher;
 		CLAM::AudioMixer _mixer;
 		CLAM::TypedInControl<int> _activeVoice;
-		CLAM::TypedInControl<std::string> _triggerControl;
+		CLAM::TypedInControl<int> _playToggle;
 		CLAM::TypedInControl<int> _loop;
+//		CLAM::FloatInControl _seek;
 //		CLAM::TypedInControl<std::string> _sampleName;
 		std::vector<CLAM::SndfilePlayer *> _filePlayers; 
 
@@ -74,7 +75,7 @@ public:
 	MultiSampler ( const ProcessingConfig & config=MultiSamplerConfig())
 		: _proxyOutPublisher("audio out port",this)
 		, _activeVoice("set active voice number",this)
-		, _triggerControl("trigger control input (play/stop)",this)
+		, _playToggle("play state (1,0)",this)
 		, _loop("loop value (1,0)",this)
 //		, _sampleName("sample name",this)
 	{
@@ -93,21 +94,17 @@ public:
 		if (actualVoice>=_filePlayers.size())
 			actualVoice=0;
 
-		if (not _triggerControl.HasBeenRead())
+		if (not _playToggle.HasBeenRead())
 		{
-			const std::string triggerControl = _triggerControl.GetLastValue();
-
-			if (triggerControl=="play" or triggerControl=="PLAY")
+		//	const play= _triggerControl.GetLastValue();
+			if (_playToggle.GetLastValue())	// play
 			{
-//				std::cout<<"multisampler play! of sample: "<<actualVoice<<std::endl;
 				if (not _loop.HasBeenRead())
-					_loopDummyControls[actualVoice]->SendControl(_loop.GetLastValue());
+						_loopDummyControls[actualVoice]->SendControl(_loop.GetLastValue());
 				_seekDummyControls[actualVoice]->SendControl(0.);
 				_pauseDummyControls[actualVoice]->SendControl(0.);
 			}
-
-
-			if (triggerControl=="stop" or triggerControl=="STOP")
+			else	// stop
 			{
 //				std::cout<<"multisampler stop! of sample: "<<actualVoice<<std::endl;
 				_pauseDummyControls[actualVoice]->SendControl(1.);
@@ -198,7 +195,7 @@ public:
 		CopyAsConcreteConfig(_config,config);
 
 		_activeVoice.DoControl(0);
-		_triggerControl.DoControl("");
+		_playToggle.DoControl(0);
 		_loop.DoControl(_config.GetLoopDefaultState() ? 1 : 0);
 
 

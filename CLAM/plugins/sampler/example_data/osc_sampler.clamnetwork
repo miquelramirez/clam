@@ -5,14 +5,14 @@
 
   <processing id="ControlPrinterTyped" position="16,266" size="185,130" type="ControlPrinterTyped">
     <Identifier>ControlPrinterTyped</Identifier>
-    <TypesMask>isi</TypesMask>
+    <TypesMask>iii</TypesMask>
     <GuiOnly>1</GuiOnly>
   </processing>
 
   <processing id="MultiLibloSourceTyped" position="24,33" size="174,59" type="MultiLibloSourceTyped">
-    <OscPath>/clam/target</OscPath>
+    <OscPath>/SpatDIF/source/OBSphere/sampler/control</OscPath>
     <ServerPort>7000</ServerPort>
-    <OSCTypeSpec>isi</OSCTypeSpec>
+    <OSCTypeSpec>iii</OSCTypeSpec>
   </processing>
 
   <processing id="MultiSampler" position="92,194" size="118,59" type="MultiSampler">
@@ -34,32 +34,32 @@
   </port_connection>
 
   <control_connection>
-    <out>MultiLibloSourceTyped._clam_target_0</out>
+    <out>MultiLibloSourceTyped._SpatDIF_source_OBSphere_sampler_control_0</out>
     <in>MultiSampler.set active voice number</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSourceTyped._clam_target_0</out>
+    <out>MultiLibloSourceTyped._SpatDIF_source_OBSphere_sampler_control_0</out>
     <in>ControlPrinterTyped.ControlPrinterTyped_0</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSourceTyped._clam_target_1</out>
-    <in>MultiSampler.trigger control input (play/stop)</in>
+    <out>MultiLibloSourceTyped._SpatDIF_source_OBSphere_sampler_control_1</out>
+    <in>MultiSampler.play state (1,0)</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSourceTyped._clam_target_1</out>
+    <out>MultiLibloSourceTyped._SpatDIF_source_OBSphere_sampler_control_1</out>
     <in>ControlPrinterTyped.ControlPrinterTyped_1</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSourceTyped._clam_target_2</out>
+    <out>MultiLibloSourceTyped._SpatDIF_source_OBSphere_sampler_control_2</out>
     <in>MultiSampler.loop value (1,0)</in>
   </control_connection>
 
   <control_connection>
-    <out>MultiLibloSourceTyped._clam_target_2</out>
+    <out>MultiLibloSourceTyped._SpatDIF_source_OBSphere_sampler_control_2</out>
     <in>ControlPrinterTyped.ControlPrinterTyped_2</in>
   </control_connection>
 
