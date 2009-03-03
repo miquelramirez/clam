@@ -113,7 +113,7 @@ def main():
 			for portString in portsInName:
 				ports.append(int(portString))
 
-		objectId=object.name
+		objectId=object.name.replace(".","_")
 		if isSource(object):
 			typename='sources'
 			sources=getSources()
