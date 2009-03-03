@@ -68,7 +68,7 @@ if configured==0:
 	print "Can't found OSC.py. Aborting."
 	
 def sendObjectValue(objectName,typeName,typeValue,value,port):
-	message="/SpatDIF/%s/%s/xyz/%s" % (typeName,objectName,typeValue)
+	message="/SpatDIF/%s/%s/%s" % (typeName,objectName,typeValue)
 	Message(message,value).sendlocal(port)
 
 def main():
@@ -81,10 +81,10 @@ def main():
 	ori=object.orientation
 #	print ori
 	matr=Blender.Mathutils.Matrix(ori[0],ori[1],ori[2])
-	roll, descention, azimuth=matr.transpose().toEuler()
-	elevation = -descention
+	roll, descention, yaw=matr.transpose().toEuler()
+	pitch = -descention
 	azimuth+=90
-	rotation = (roll,elevation,azimuth)
+	rotation = (yaw,pitch,roll)
 	ports=[7000]
 	# try to get the ports on object name:
 	if re.search('_p([0-9_]+)$',object.name)!=None:
@@ -97,8 +97,8 @@ def main():
 	if typeName==False:
 		return
 	for port in ports:
-		sendObjectValue(object.name.replace(".","_"),typeName,"location",location,port)
-		sendObjectValue(object.name.replace(".","_"),typeName,"rotation",rotation,port)
+		sendObjectValue(object.name.replace(".","_"),typeName,"xyz",location,port)
+		sendObjectValue(object.name.replace(".","_"),typeName,"ypr",rotation,port)
 #		print "UPDATE L Source "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 	return
 
