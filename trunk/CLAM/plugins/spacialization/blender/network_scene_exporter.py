@@ -66,8 +66,8 @@ def GenerateNetworkOSCReceiver(filename):
 #create sources receivers and its monitors
 	scene=Blender.Scene.GetCurrent()
 	sources=BlenderOSCSender.getSources(scene)
-	templatePath="/SpatDIF/sources/%(objectNumber)s/xyz/%(sufix_path)s"
-	dictionary_paths=['location','rotation']
+	templatePath="/SpatDIF/sources/%(objectNumber)s/%(sufix_path)s"
+	dictionary_paths=['xyz','ypr']
 	for source in sources:
 		port=7000
 		# try to get the port on object name:
@@ -89,7 +89,7 @@ def GenerateNetworkOSCReceiver(filename):
 	yPosition=600
 #create listeners receivers and its monitors
 	listeners=BlenderOSCSender.getListeners(scene)
-	templatePath="/SpatDIF/listeners/%(objectNumber)s/xyz/%(sufix_path)s"
+	templatePath="/SpatDIF/listeners/%(objectNumber)s/%(sufix_path)s"
 	for listener in listeners:
 		port=7000
 		# try to get the port on object name:
