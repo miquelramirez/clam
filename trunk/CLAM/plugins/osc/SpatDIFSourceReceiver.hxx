@@ -198,7 +198,7 @@ protected:
 
 	void UnregisterOscCallback(std::string port, std::string oscPath, std::string typespec)
 	{
-		std::vector<pathHandler>::iterator itConfiguredPaths;
+		std::vector<PathHandler>::iterator itConfiguredPaths;
 		for (itConfiguredPaths=_configuredPaths.begin();itConfiguredPaths!=_configuredPaths.end();itConfiguredPaths++)
 		{
 			if ((*itConfiguredPaths).oscPath==oscPath and (*itConfiguredPaths).typespec==typespec)
@@ -225,7 +225,7 @@ protected:
 		if (InsertInstance(port.c_str(), oscPath.c_str(), typespec.c_str()))
 		{
 			lo_server_thread_add_method(_serverThread, oscPath.c_str(), typespec.c_str(), controls_handler, this);
-			pathHandler configuredPath;
+			PathHandler configuredPath;
 			configuredPath.oscPath=oscPath;
 			configuredPath.typespec=typespec;
 			_configuredPaths.push_back(configuredPath);
@@ -249,32 +249,20 @@ protected:
 			voice<<i;
 			oscPath=_baseOSCPath+"/sampler/"+voice.str()+"/play";
 
-std::cout<< "---path: "<< oscPath<<std::endl;
-std::string status=allOK? "true" : "false"; 
-std::cout<< "allOK status (before): "<< status<<std::endl;
-std::cout<< "vector size(before): "<<_configuredPaths.size()<<std::endl;
 			allOK &= RegisterOscCallback(_port,oscPath,"ii"); // play with loop setting
 			allOK &= RegisterOscCallback(_port,oscPath,"i"); //play without loop setting
 			oscPath=_baseOSCPath+"/sampler/"+voice.str()+"/setLoop";
 			allOK &= RegisterOscCallback(_port,oscPath,"i");
-status=allOK? "true" : "false"; 
-std::cout<< "allOK status (after): "<<status<<std::endl;
-std::cout<< "vector size(after): "<<_configuredPaths.size()<<std::endl;
-
 		}
 		return allOK;
 	}
 
 	void UnregisterOscCallbacks()
 	{
-
-std::cout<<"UnregisterOscCallbacks()"<<std::endl;
 		while (_configuredPaths.size()!=0)
 		{
-pathHandler structure=_configuredPaths.front();
-std::cout<<"unregistering: "<<structure.oscPath<< " - (vector size: "<<_configuredPaths.size()<<")"<<std::endl;
-			UnregisterOscCallback(_port, structure.oscPath, structure.typespec);
-std::cout<<"unregistered (?): "<<structure.oscPath<< " - (vector size: "<<_configuredPaths.size()<<")"<<std::endl;
+			PathHandler firstPath=_configuredPaths.front();
+			UnregisterOscCallback(_port, firstPath.oscPath, firstPath.typespec);
 		}
 
 
@@ -344,9 +332,9 @@ private:
 	{
 		std::string oscPath;
 		std::string typespec;
-	} pathHandler;
+	} PathHandler;
 
-	std::vector<pathHandler> _configuredPaths;
+	std::vector<PathHandler> _configuredPaths;
 
 
 
