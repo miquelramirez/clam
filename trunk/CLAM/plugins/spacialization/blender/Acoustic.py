@@ -44,10 +44,6 @@ def AcousticParameters():
 			 'diffusion': 0.15 }
 def SourcesParameters():
 	return { _sourcesWavPropertyId: str() }
-# TODO: make it a class??
-#class Acoustic:
-#	def __init__(self,scene):
-#	...
 
 def testObjectName(patternId,object,caseSensitive=False):
 	name=object.name
@@ -182,5 +178,6 @@ def initProperties(scene=Blender.Scene.GetCurrent()):
 				fileName=sounds[0].getFilename()
 				makeProperty(source,_sourcesWavPropertyId,fileName)
 			else:
-				print "Error: there are sources, but there is any available sound file. Aborting.."
-				return -1
+				makeProperty(source,_sourcesWavPropertyId,"nofilename.wav")
+#				print "Error: there are sources, but there is any available sound file. Aborting.."
+#				return -1
