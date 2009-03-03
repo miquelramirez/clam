@@ -38,7 +38,18 @@ from sys import path
 from os import getenv
 import Blender
 import re
-#import GameLogic
+
+
+CheckObjectsNames=False
+listenerId="listener"
+sourceId="source"
+def checkObjectName(object):
+	if object.name.lower().find(listenerId)!=-1:
+		return "listener"
+	if object.name.lower().find(sourceId)!=-1:
+		return "source"
+	return None
+
 
 
 def getTypeOfObject(controller):
@@ -76,6 +87,11 @@ def main():
 	controller=GameLogic.getCurrentController()
 	object=controller.getOwner()
 #	print object.name
+
+	
+	if CheckObjectsNames and checkObjectName(object)==None:
+		return
+
 	location=object.getPosition()
 #	print location
 	ori=object.orientation
