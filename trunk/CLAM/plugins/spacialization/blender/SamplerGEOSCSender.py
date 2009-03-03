@@ -2,8 +2,8 @@
 """
 Name: 'Blender GameEngine OSC Sender'
 Blender: 248
-Group: 'Object, Animation, GameEngine'
-Tooltip: 'Open Sound Control Sender of GameEngine Objects. To be used as controller linked to "moving_source"/"fixed_source"/"listener" sensors'
+Group: 'GameEngine'
+Tooltip: 'Open Sound Control Sender of GameEngine Objects. To be used as controller linked to "play"/"playloop"/"stop" sensors'
 """
 __author__ = ("Barcelona Media Audio Group")
 __url__ = ("http://www.barcelonamedia.org/laboratoris/6/en")
@@ -71,15 +71,17 @@ def main():
 			portsInName=re.search("_p([0-9_]+)$",object.name).group(1).split("_")
 			for portString in portsInName:
 				ports.append(int(portString))
-
+		# play without loop:
 		if re.search("play_([0-9]+)",str(sensor)):
 			loop=0
 			value=1
 			voice=re.search("play_([0-9]+)",str(sensor)).group(1)
+		# play with loop:
 		if re.search("playloop_([0-9]+)",str(sensor)):
 			loop=1
 			value=1
 			voice=re.search("play_([0-9]+)",str(sensor)).group(1)
+		# stop:
 		if re.search("stop_([0-9]+)",str(sensor)):
 			loop=0
 			value=0
