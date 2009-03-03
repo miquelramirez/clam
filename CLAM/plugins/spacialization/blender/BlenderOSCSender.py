@@ -82,7 +82,7 @@ if configured==0:
 	
 
 def sendObjectValue(objectNumber,typeName,typeValue,value,port):
-	message="/SpatDIF/%s/%i/xyz/%s" % (typeName,objectNumber,typeValue)
+	message="/SpatDIF/%s/%i/%s" % (typeName,objectNumber,typeValue)
 	Message(message,value).sendlocal(port)
 
 def main():
@@ -97,9 +97,9 @@ def main():
 	if Blender.bylink==True and Blender.event=='ObjectUpdate':
 		object=Blender.link
 		location=object.mat.translationPart()
-		roll, descention, azimuth=object.mat.toEuler()
-		elevation = -descention
-		rotation = (roll,elevation,azimuth)
+		roll, descention, yaw=object.mat.toEuler()
+		pitch = -descention
+		rotation = (yaw,pitch,roll)
 		ports=[7000]
 		# try to get the ports on object name:
 		if re.search('_p([0-9_]+)$',object.name)!=None:
@@ -112,8 +112,8 @@ def main():
 			sources=getSources()
 			objectNumber=sources.index(object)
 			for port in ports:
-				sendObjectValue(objectNumber,typename,"location",location,port)
-				sendObjectValue(objectNumber,typename,"rotation",rotation,port)
+				sendObjectValue(objectNumber,typename,"xyz",location,port)
+				sendObjectValue(objectNumber,typename,"ypr",rotation,port)
 #			print "UPDATE L Source "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 			return
 		if isListener(object):
@@ -121,8 +121,8 @@ def main():
 			typename='listeners'
 			objectNumber=listeners.index(object)
 			for port in ports:
-				sendObjectValue(objectNumber,typename,"location",location,port)
-				sendObjectValue(objectNumber,typename,"rotation",rotation,port)
+				sendObjectValue(objectNumber,typename,"xyz",location,port)
+				sendObjectValue(objectNumber,typename,"ypr",rotation,port)
 #			print "UPDATE L Listener "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 			return
 		if not typename:
