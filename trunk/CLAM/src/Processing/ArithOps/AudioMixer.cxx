@@ -64,8 +64,13 @@ void AudioMixer::CreatePortsAndControls()
 	if (useConfigGains)
 	{
 		gainsArray=mConfig.GetDefaultGains();
+		unsigned numberofConfiguredGains=gainsArray.Size();
 		gainsArray.Resize(inPortsNumber);
 		gainsArray.SetSize(inPortsNumber);
+		for (unsigned i=numberofConfiguredGains;i<gainsArray.Size();i++)
+		{
+			gainsArray[i]=1;
+		}
 		mConfig.SetDefaultGains(gainsArray);
 	}
 	for( unsigned int i=0; i<inPortsNumber; i++ )
