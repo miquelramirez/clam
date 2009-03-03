@@ -141,7 +141,7 @@ def geometryExport(scene):
 			bpy.data.meshes[object.getData().name].quadToTriangle(0)
 		for face in data.faces:
 			verts=""
-			for vert in face.verts[::-1]:
+			for vert in face.verts:
 				verts+="%s " % str(vert.index+1)
 			bufferObject+=FaceLineTemplate % vars()
 		buffer+=bufferObject
