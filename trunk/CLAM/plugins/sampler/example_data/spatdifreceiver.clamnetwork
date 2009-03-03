@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <processing id="AudioSink" position="808,198" size="128,111" type="AudioSink"/>
+
+  <processing id="MultiSampler" position="595,174" size="118,59" type="MultiSampler">
+    <LoopDefaultState>1</LoopDefaultState>
+    <BasePath>../../../../../acustica/wavs/</BasePath>
+    <Samples>InLanguageAnecoic-cut_48000.wav, roland_drums_100s_48khz.wav</Samples>
+  </processing>
+
+  <processing id="SpatDIFSourceReceiver" position="151,8" size="178,58" type="SpatDIFSourceReceiver">
+    <SourceName>OBSphere</SourceName>
+    <VoicesNumber>4</VoicesNumber>
+    <ServerPort>7000</ServerPort>
+  </processing>
+
+  <processing id="XYZ" position="17,165" size="180,130" type="ControlPrinter">
+    <Identifier>XYZ</Identifier>
+    <NumberOfInputs>3</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="aer" position="199,165" size="180,130" type="ControlPrinter">
+    <Identifier>aer</Identifier>
+    <NumberOfInputs>3</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="sample,play,loop" position="383,169" size="195,130" type="ControlPrinterTyped">
+    <Identifier>ControlPrinterTyped</Identifier>
+    <TypesMask>iii</TypesMask>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <port_connection>
+    <out>MultiSampler.audio out port</out>
+    <in>AudioSink.AudioIn</in>
+  </port_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.X position</out>
+    <in>XYZ.XYZ_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.Y position</out>
+    <in>XYZ.XYZ_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.Z position</out>
+    <in>XYZ.XYZ_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.azimuth</out>
+    <in>aer.aer_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.elevation</out>
+    <in>aer.aer_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.roll</out>
+    <in>aer.aer_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.voice number</out>
+    <in>sample,play,loop.ControlPrinterTyped_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.voice number</out>
+    <in>MultiSampler.set active voice number</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.voice play toggle</out>
+    <in>sample,play,loop.ControlPrinterTyped_1</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.voice play toggle</out>
+    <in>MultiSampler.play state (1,0)</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.voice loop toggle</out>
+    <in>sample,play,loop.ControlPrinterTyped_2</in>
+  </control_connection>
+
+  <control_connection>
+    <out>SpatDIFSourceReceiver.voice loop toggle</out>
+    <in>MultiSampler.loop value (1,0)</in>
+  </control_connection>
+
+</network>
