@@ -46,8 +46,13 @@ from os import getenv
 import Blender, math
 import re
 
+
+SendObjectsNames=False
+
+
 SourcesSubstring='source'
 ListenersSubstring='listener'
+
 
 def isSource (object):
 	return (object.name.lower().find(SourcesSubstring)!=-1)
@@ -81,8 +86,8 @@ if configured==0:
 	print "Can't found OSC.py. Aborting."
 	
 
-def sendObjectValue(objectNumber,typeName,typeValue,value,port):
-	message="/SpatDIF/%s/%i/%s" % (typeName,objectNumber,typeValue)
+def sendObjectValue(objectId,typeName,typeValue,value,port):
+	message="/SpatDIF/%s/%i/%s" % (typeName,objectId,typeValue)
 	Message(message,value).sendlocal(port)
 
 def main():
@@ -107,22 +112,26 @@ def main():
 			portsInName=re.search("_p([0-9_]+)$",object.name).group(1).split("_")
 			for portString in portsInName:
 				ports.append(int(portString))
+
+		objectId=object.name
 		if isSource(object):
 			typename='sources'
 			sources=getSources()
-			objectNumber=sources.index(object)
+			if not SendObjectsNames:
+				objectId=sources.index(object)
 			for port in ports:
-				sendObjectValue(objectNumber,typename,"xyz",location,port)
-				sendObjectValue(objectNumber,typename,"ypr",rotation,port)
+				sendObjectValue(objectId,typename,"xyz",location,port)
+				sendObjectValue(objectId,typename,"ypr",rotation,port)
 #			print "UPDATE L Source "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 			return
 		if isListener(object):
 			listeners=getListeners()
 			typename='listeners'
-			objectNumber=listeners.index(object)
+			if not SendObjectsNames:
+				objectId=listeners.index(object)
 			for port in ports:
-				sendObjectValue(objectNumber,typename,"xyz",location,port)
-				sendObjectValue(objectNumber,typename,"ypr",rotation,port)
+				sendObjectValue(objectId,typename,"xyz",location,port)
+				sendObjectValue(objectId,typename,"ypr",rotation,port)
 #			print "UPDATE L Listener "+str(objectNumber)+" Port"+str(port)+" "+str(location)
 			return
 		if not typename:
