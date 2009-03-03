@@ -99,7 +99,7 @@ def main():
 	matr=Blender.Mathutils.Matrix(ori[0],ori[1],ori[2])
 	roll, descention, yaw=matr.transpose().toEuler()
 	pitch = -descention
-	azimuth+=90
+	yaw+=90
 	rotation = (yaw,pitch,roll)
 	ports=[7000]
 	# try to get the ports on object name:
