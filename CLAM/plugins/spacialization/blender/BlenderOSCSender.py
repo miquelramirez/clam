@@ -115,7 +115,7 @@ def main():
 
 		objectId=object.name.replace(".","_")
 		if isSource(object):
-			typename='sources'
+			typename='source'
 			sources=getSources()
 			if not SendObjectsNames:
 				objectId=sources.index(object)
@@ -126,7 +126,7 @@ def main():
 			return
 		if isListener(object):
 			listeners=getListeners()
-			typename='listeners'
+			typename='listener'
 			if not SendObjectsNames:
 				objectId=listeners.index(object)
 			for port in ports:
