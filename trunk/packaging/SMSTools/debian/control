@@ -1,0 +1,18 @@
+Source: clam-smstools
+Section: sound
+Priority: optional
+Maintainer: CLAM Team <clam@iua.upf.edu>
+Homepage: http://clam-project.org
+Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, libqt3-headers, libqt3-mt-dev, docbook-to-man, imagemagick
+Standards-Version: 3.8.0
+
+Package: clam-smstools
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: CLAM SMSTools, SMS based audio authoring tool
+ SmsTools is an audio authoring application which allows to
+ analyze the audio using Spectral Model Synthesis (SMS)
+ and perform pipelined transformations on such representation.
+ SMS representation makes easy to perform quality effects
+ such as gender change, pitch shift, time streetch, morphing...
+

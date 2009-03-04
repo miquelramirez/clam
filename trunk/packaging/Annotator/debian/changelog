@@ -1,0 +1,56 @@
+clam-annotator (0.3.6-1) unstable; urgency=low
+
+  * New uptream release
+  * lintian advice: fixed hyphens in man page for ClamExtractorExample
+
+ -- CLAM Team <clam@iua.upf.edu>  Fri,  9 Feb 2007 14:16:46 +0100
+
+clam-annotator (0.3.5-1) unstable; urgency=low
+
+  * Only one libclam0 package
+  * Splitted clam-annotator-examples to contain data
+
+ -- CLAM Team <clam@iua.upf.es>  Sat, 30 Dec 2006 10:22:34 +0100
+
+clam-annotator (0.3.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- CLAM Team <clam@iua.upf.es>  Sat, 23 Dec 2006 10:22:34 +0100
+
+clam-annotator (0.3.3-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- CLAM Team <clam@iua.upf.es>  Tue, 22 Jun 2006 10:22:34 +0100
+
+clam-annotator (0.3.2-2) unstable; urgency=low
+
+  * Added freedesktop menu entry
+  * Examples modified to access the wavs at the proper location
+  * Open files on /usr/share/<app>/example-data
+
+ -- CLAM Team <clam@iua.upf.es>  Tue, 15 Jun 2006 10:22:34 +0100
+
+clam-annotator (0.3.2-1) unstable; urgency=low
+
+  * New upstream release
+  * References to CLAM library names changed
+  * Added BocaClient and Extractors
+  * Lintian
+  * Icons and menus
+
+ -- CLAM Team <clam@iua.upf.es>  Tue,  10 Jun 2006 17:30:21 +0100
+
+clam-annotator (0.3.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- David García <dgarcia@iua.upf.es>  Tue,  9 May 2006 17:30:21 +0100
+
+clam-annotator (0.2.0-1) unstable; urgency=low
+
+  * First 0.2 official release
+
+ -- Pau Arumí­ <parumi@iua.upf.es>  Wed,  8 Feb 2006 12:43:31 +0100
+

@@ -1,0 +1,45 @@
+Source: clam-annotator
+Section: sound
+Priority: optional
+Maintainer: CLAM Team <clam@iua.upf.edu>
+Homepage: http://clam-project.org
+Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, qt4-dev-tools, libqt4-dev, libqt4-dev (<4.4) | libqt4-opengl-dev, docbook-to-man, imagemagick
+Standards-Version: 3.8.0
+
+Package: clam-annotator
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: clam-annotator-examples (= ${source:Version} )
+Description: CLAM audio annotation tool
+ The CLAM Annotator is a tool to visualize, check and modify music
+ information extracted from audio: low level features, note
+ segmentation, chords, structure... The tool is intended to be useful for
+ the music information retrieval research whenever you need to:
+  * Supervise and correct the results of automated audio feature
+  extraction algorithms.
+  * Generate manually edited annotations of audio as training examples or
+  ground truth for those algorithms.
+ .
+ The application adapts to user defined description schemes, auralizes
+ annotations and provides import and export support for wavesurfer formats.
+ It also has support for collaborative and distributed annotation campaigns.
+
+Package: clam-annotator-examples
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, clam-annotator (>= ${source:Version} ), clam-annotator (<< ${source:Version}.1~)
+Description: CLAM audio annotation tool
+ The CLAM Annotator is a tool to visualize, check and modify music
+ information extracted from audio: low level features, note
+ segmentation, chords, structure... The tool is intended to be useful for
+ the music information retrieval research whenever you need to:
+  * Supervise and correct the results of automated audio feature
+  extraction algorithms.
+  * Generate manually edited annotations of audio as training examples or
+  ground truth for those algorithms.
+ .
+ The application adapts to user defined description schemes, auralizes
+ annotations and provides import and export support for wavesurfer formats.
+ It also has support for collaborative and distributed annotation campaigns.
+ .
+ This package contains example projects that uses the provided extractors.
+

@@ -1,0 +1,9 @@
+?package(clam-annotator): \
+	needs="X11"  \
+	section="Applications/Sound" \
+	hints="Qt,CLAM" \
+	title="CLAM Music Annotator" \
+	longtitle="CLAM Music Annotator (Music annotation tool)" \
+	icon="/usr/share/pixmaps/clam-annotator.xpm" \
+	command="/usr/bin/Annotator"
+
