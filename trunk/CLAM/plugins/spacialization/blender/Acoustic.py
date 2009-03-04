@@ -40,7 +40,7 @@ _sourcesWavPropertyId='WAV_SOURCE'
 _acousticsPropertyId='Acoustic_parameters'
 
 def AcousticParameters():
-	return	{ 'impedance': { 'real': 10000.0, 'imag': 0.0 },
+	return	{ 'impedance': { 'real': 100.0, 'imag': 0.0 },
 			 'diffusion': 0.15 }
 def SourcesParameters():
 	return { _sourcesWavPropertyId: str() }
