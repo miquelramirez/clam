@@ -13,9 +13,9 @@ distributions = [
 #	('debian', 'lenny',   "http://ftp.de.debian.org/debian/", ['main']),
 	('debian', 'sid',    "http://ftp.de.debian.org/debian/", ['main']),
 #	('ubuntu', 'gutsy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
-	('ubuntu', 'hardy', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
-	('ubuntu', 'intrepid', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
-	('ubuntu', 'jaunty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+#	('ubuntu', 'hardy', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+#	('ubuntu', 'intrepid', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+#	('ubuntu', 'jaunty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 ]
 repositoryBase = "http://clam-project.org/clam/trunk/"
 repositories = [
@@ -80,11 +80,13 @@ phase( "Obtaining latest sources" )
 print repositories
 for package, srcpackage, version in repositories :
 	module = repositoryBase + package
+	modulePackaging = repositoryBase + 'packaging/' + os.path.basename(package) + '/debian'
 	srcdir = srcpackage + "-" + version
 	tarball = srcpackage + "_" + version + ".orig.tar.gz"
 	run( "svn export --force %s %s"%(module, srcdir) )
 	run( "tar cvfz %s %s"%(tarball, srcdir) )
-	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='clam@iua.upf.edu' dch -d 'Autobuilt package' --distribution='unstable' --force-distribution"%(srcdir) )
+	run( "svn export --force %s %s"%(modulePackaging, srcdir+"/debian") )
+	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='developers@clam-project.org' dch -d 'Autobuilt package' --distribution='unstable' --force-distribution"%(srcdir) )
 	run( "dpkg-source -b %s"%(srcdir))
 
 sys.exit(0)
