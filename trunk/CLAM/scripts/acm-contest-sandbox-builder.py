@@ -16,25 +16,25 @@ def main(development = True):
 		'': [
 		],
 		'doc': [
-			'http://clam.iua.upf.edu/doc/icmc05-clam.pdf'
+			'http://clam-project.org/doc/icmc05-clam.pdf'
 		
 		],
 		'installers/windows' : [
-			'http://clam.iua.upf.edu/download/win/CLAM-SMSTools-0.4.1-CVS-20060601-1_setup.exe',
-			'http://clam.iua.upf.edu/download/win/CLAM-NetworkEditor-0.3.1-CVS-20060601-1_setup.exe',
-			'http://clam.iua.upf.edu/download/win/CLAM-Annotator-0.3.2-CVS-20060601-1_setup.exe'
+			'http://clam-project.org/download/win/CLAM-SMSTools-0.4.1-CVS-20060601-1_setup.exe',
+			'http://clam-project.org/download/win/CLAM-NetworkEditor-0.3.1-CVS-20060601-1_setup.exe',
+			'http://clam-project.org/download/win/CLAM-Annotator-0.3.2-CVS-20060601-1_setup.exe'
 		],
 #		'installers/macosx/tiger' : [
-#			'http://clam.iua.upf.edu/download/mac/external-libraries-for-CLAM-0.90.dmg',
-#			'http://clam.iua.upf.edu/download/mac/CLAM-libs-0.90.0.dmg',
-#			'http://clam.iua.upf.edu/download/mac/CLAM_QtSMSTools-0.4.dmg',
-#			'http://clam.iua.upf.edu/download/mac/CLAM_NetworkEditor-0.3.dmg',
-#			'http://clam.iua.upf.edu/download/mac/CLAM_Annotator-0.2.dmg',
+#			'http://clam-project.org/download/mac/external-libraries-for-CLAM-0.90.dmg',
+#			'http://clam-project.org/download/mac/CLAM-libs-0.90.0.dmg',
+#			'http://clam-project.org/download/mac/CLAM_QtSMSTools-0.4.dmg',
+#			'http://clam-project.org/download/mac/CLAM_NetworkEditor-0.3.dmg',
+#			'http://clam-project.org/download/mac/CLAM_Annotator-0.2.dmg',
 #		],
 		'installers/linux/fedora5' : [
-			'http://clam.iua.upf.edu/download/linux-fc5/CLAM-0.91.0-3.i386.rpm',
-			'http://clam.iua.upf.edu/download/linux-fc5/CLAM-devel-0.91.0-3.i386.rpm',
-			'http://clam.iua.upf.edu/download/linux-fc5/CLAM-applications-0.91.0-3.i386.rpm',
+			'http://clam-project.org/download/linux-fc5/CLAM-0.91.0-3.i386.rpm',
+			'http://clam-project.org/download/linux-fc5/CLAM-devel-0.91.0-3.i386.rpm',
+			'http://clam-project.org/download/linux-fc5/CLAM-applications-0.91.0-3.i386.rpm',
 			'http://rpm.livna.org/fedora/5/i386/libmad-0.15.1-2.b.lvn5.i386.rpm',
 			'http://rpm.livna.org/fedora/5/i386/libmad-devel-0.15.1-2.b.lvn5.i386.rpm',
 			'http://ccrma.stanford.edu/planetccrma/mirror/fedora/linux/planetccrma/5/i386/jack-audio-connection-kit-devel-0.101.0-0.2.cvs.rhfc5.ccrma.i386.rpm',
@@ -73,7 +73,7 @@ def main(development = True):
 	#	base = 'doc/MusicAnnotator'
 	#	page = 'Music_Annotator_tutorial'
 		print base, page
-		os.system("wget -q -c -H -k -nd -P'%s' -p 'http://iua-share.upf.edu/wikis/clam/index.php?title=%s&printable=yes'"%(base,page))
+		os.system("wget -q -c -H -k -nd -P'%s' -p 'http://clam-project.org/wiki/%s?printable=yes'"%(base,page))
 		os.rename(base+'/index.php?title=%s&printable=yes'%page, base+'/index.html')
 
 	for sourceModule in sourceModules :
@@ -86,7 +86,7 @@ def main(development = True):
 		os.system('wget -c -P "%s" %s'%(location, " ".join(["'"+url+"'" for url in binaries]))) 
 
 	#windows external libraries
-	os.system('wget -c -P src/ "http://clam.iua.upf.edu/download/win/windows-external-libs.tar.gz"')
+	os.system('wget -c -P src/ "http://clam-project.org/download/win/windows-external-libs.tar.gz"')
 	os.system('cd src && tar xvzf windows-external-libs.tar.gz' )
 	os.system('cd src && rm windows-external-libs.tar.gz')
 		

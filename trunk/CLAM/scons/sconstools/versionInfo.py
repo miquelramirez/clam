@@ -29,7 +29,7 @@ def _svnVersion(version, revision) :
 
 # public methods:
 
-remoteRepository = 'http://iua-share.upf.edu/svn/clam/trunk/'
+remoteRepository = 'http://clam-project.org/clam/trunk/'
 
 def remoteSvnRevision() :
 	return _svnRevisionOf( remoteRepository )

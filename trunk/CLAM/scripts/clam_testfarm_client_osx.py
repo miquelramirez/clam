@@ -35,7 +35,7 @@ def set_qtdir_to_qt3(x) :
 sandbox = os.path.expanduser('~/')
 localDefinitions = dict(
 	name = 'mac-10.4.8-intel-macbook',
-	description = '<img src="http://clam.iua.upf.es/images/apple_icon.png"/>',
+	description = '<img src="http://clam-project.org/images/apple_icon.png"/>',
 	sandbox = sandbox,
 	repositories = "clam clam/testdata",
 	installPath = os.path.join(sandbox,"local"),

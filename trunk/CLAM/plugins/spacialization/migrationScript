@@ -61,6 +61,3 @@ renameConnector BFormatRotationZoom outport 'vy' 'Y'
 renameConnector BFormatRotationZoom inport 'vz' 'Z'
 renameConnector BFormatRotationZoom outport 'vz' 'Z'
 removeConfig Surround NChannels
-removeConfig ChoreoSequencer SizeX
-removeConfig ChoreoSequencer SizeY
-removeConfig ChoreoSequencer SizeZ

@@ -27,7 +27,7 @@ def ellapsedTime():
 
 localDefinitions = dict(
 	name= 'linux_ubuntu_hardy',
-	description= '<img src="http://clam.iua.upf.es/images/linux_icon.png"/> <img src="http://clam.iua.upf.es/images/ubuntu_icon.png"/>',
+	description= '<img src="http://clam-project.org/images/linux_icon.png"/> <img src="http://clam-project.org/images/ubuntu_icon.png"/>',
 #	repositories = "clam acustica data_acustica clam/testdata clam/padova-speech-sms",
 	repositories = "clam acustica data_acustica clam/testdata",
 	sandbox= os.path.expanduser('~/'),
@@ -48,7 +48,7 @@ client.brief_description = localDefinitions['description']
 
 
 clam = Task(
-	project = Project('CLAM','<a href="http://clam.iua.upf.edu">clam web</a>' ), 
+	project = Project('CLAM','<a href="http://clam-project.org">clam web</a>' ), 
 	client = client, 
 	task_name='svn up|DEBUG' 
 	)

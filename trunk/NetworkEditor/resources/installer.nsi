@@ -4,8 +4,8 @@
 !define PRODUCT_NAME "CLAM-NetworkEditor"
 !define PRODUCT_VERSION "${VERSION}"
 !define PRODUCT_PUBLISHER "CLAM devel"
-!define PRODUCT_WEB_SITE "http://clam.iua.upf.edu"
-!define PRODUCT_HELP "http://clam.iua.upf.edu/wikis/clam/index.php/Network_Editor_tutorial"
+!define PRODUCT_WEB_SITE "http://clam-project.org"
+!define PRODUCT_HELP "http://clam-project.org/wiki/Network_Editor_tutorial"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\NetworkEditor.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 
@@ -75,6 +75,7 @@ Section "Principal" SEC01
   File '${QTDIR}\bin\QtNetwork4.dll'
   File '${QTDIR}\bin\QtDesigner4.dll'
   File '${QTDIR}\bin\QtDesignerComponents4.dll'
+  File '${QTDIR}\bin\QtWebKit4.dll'
   File '${QTDIR}\bin\QtAssistantClient4.dll'
   File '${QTDIR}\bin\mingwm10.dll'
   File '${CLAMINSTALLDIR}\lib\clam_audioio.dll'

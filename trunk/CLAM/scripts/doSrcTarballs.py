@@ -30,7 +30,7 @@ print "remoteSvnRevision: ", versionInfo.remoteSvnRevision()
 for package, version in versions.iteritems() : 
 	if package == "CLAM" :
 		sandbox = "CLAM-%s" % (version)
-		run("svn export http://iua-share.upf.edu/svn/clam/trunk/CLAM %s"% sandbox)
+		run("svn export http://clam-project.org/clam/trunk/CLAM %s"% sandbox)
 	else:
 		dict =  { 
 		"package" : package,
@@ -39,7 +39,7 @@ for package, version in versions.iteritems() :
 		}
 		#sandbox = "%(package)s-%(ver)s_using_CLAM-%(clamver)s" % dict
 		sandbox = "%(package)s-%(ver)s" % dict
-		run("svn export http://iua-share.upf.edu/svn/clam/trunk/%s %s" % (package, sandbox))
+		run("svn export http://clam-project.org/clam/trunk/%s %s" % (package, sandbox))
 	tarball = "%s.tar.gz" % sandbox
 	run("echo '%s' > %s/SVN_REVISION" % (versionInfo.remoteSvnRevision(), sandbox) )
 	run("tar czf %s %s " % (tarball, sandbox) )

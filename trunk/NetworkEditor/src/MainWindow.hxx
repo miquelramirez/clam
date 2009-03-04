@@ -343,7 +343,7 @@ public slots:
 
 	void on_action_Online_tutorial_triggered()
 	{
-		QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Network_Editor_tutorial";
+		QString helpUrl = "http://clam-project.org/wiki/Network_Editor_tutorial";
 		QDesktopServices::openUrl(helpUrl);
 	}
 	void on_action_About_triggered()

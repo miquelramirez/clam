@@ -17,7 +17,7 @@ for rev in range(10216,10220) :
 	print os.popen("""
 		mkdir -p %(prefix)s
 		cd ~/manyclams
-		svn export http://iua-share.upf.edu/svn/clam/trunk -r%(rev)s %(sandbox)s
+		svn export http://clam-project.org/clam/trunk -r%(rev)s %(sandbox)s
 		""" % vars ).read()
 
 	print "\n\n __  CLAM compilation %s \n\n"% rev

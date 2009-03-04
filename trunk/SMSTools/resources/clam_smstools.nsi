@@ -4,7 +4,7 @@
 !define PRODUCT_NAME "CLAM-SMSTools"
 !define PRODUCT_VERSION "${VERSION}"
 !define PRODUCT_PUBLISHER "CLAM devel"
-!define PRODUCT_WEB_SITE "http://clam.iua.upf.edu"
+!define PRODUCT_WEB_SITE "http://clam-project.org"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\SMSTools.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"

@@ -83,6 +83,7 @@ int main( int argc, char *argv[] )
 	if (! prototype.LoadNetwork( networkFile ) ) return -1;
 	if (!isInteractive) 
 	{
+		std::cout << QObject::tr("Non interface mode set. Press Ctrl-C to end.").toLocal8Bit().constData() << std::endl;
 		prototype.Start();
 		while (true) ; // Until Ctrl-C
 	}

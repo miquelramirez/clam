@@ -33,7 +33,7 @@ def set_qtdir_to_qt3(x) :
 sandbox = os.path.expanduser('~/CajitasDeArena/mingw/')
 localDefinitions = dict(
 	name = 'mingw-crosscompiled-office',
-	description = '<img src="http://clam.iua.upf.es/images/windows_icon.png"/>',
+	description = '<img src="http://clam-project.org/images/windows_icon.png"/>',
 	sandbox = sandbox,
 	repositories = "clam clam/testdata",
 	installPath = os.path.join(sandbox,"local"),

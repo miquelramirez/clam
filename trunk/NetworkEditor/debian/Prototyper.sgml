@@ -119,7 +119,7 @@ manpage.1: manpage.sgml
 
 	<para>Refer the <citetitle>Network Editor Tutorial</citetitle> for more information
 	on how to specify such binding.</para>
-	<para>It is available at http://iua-share.upf.edu/wikis/clam/Network_Editor_tutorial</para>
+	<para>It is available at http://clam-project.org/wiki/Network_Editor_tutorial</para>
 
   </refsect1>
   <refsect1>
