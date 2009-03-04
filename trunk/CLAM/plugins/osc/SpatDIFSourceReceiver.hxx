@@ -8,6 +8,7 @@
 #include <CLAM/Enum.hxx>
 #include <CLAM/Text.hxx>
 #include <string>
+#include <cstring>
 #include <cmath>
 #include <algorithm>
 #include <map>
