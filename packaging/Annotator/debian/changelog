@@ -1,3 +1,10 @@
+clam-annotator (0.4.0-1) unstable; urgency=low
+
+  * Updated the new website to http://clam-project.org
+  * debian specific files moved to a different svn branch
+
+ -- CLAM Team <developers@clam-project.org>  Wed, 04 Mar 2009 21:31:09 +0100
+
 clam-annotator (0.3.6-1) unstable; urgency=low
 
   * New uptream release
