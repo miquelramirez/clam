@@ -198,7 +198,7 @@ print "force Run: ", forceRun
 Runner( clam, 
 	continuous = False,
 	first_run_always = forceRun,
-	remote_server_url = 'http://84.88.76.190/testfarm_server',
+	remote_server_url = 'http://84.88.76.186/testfarm_server',
 #	local_base_dir='/tmp',
 #	scp_target='clamadm@www.iua.upf.es:testfarm/',
 )
