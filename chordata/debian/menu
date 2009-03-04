@@ -1,9 +1,0 @@
-?package(clam-chordata): \
-	needs="X11"  \
-	section="Applications/Sound" \
-	hints="Qt,CLAM" \
-	title="CLAM Chordata" \
-	longtitle="CLAM Chordata (Chord detection tool)" \
-	icon="/usr/share/pixmaps/clam-chordata.xpm" \
-	command="/usr/bin/chordata"
-
