@@ -1,7 +1,7 @@
 Source: clam-plugins
 Section: sound
 Priority: optional
-Maintainer: CLAM Team <clam@iua.upf.edu>
+Maintainer: CLAM Team <developers@clam-project.org>
 Homepage: http://clam-project.org
 Build-Depends: debhelper (>= 5.0.0), scons, libclam-dev, liblo0-dev
 Standards-Version: 3.8.0
