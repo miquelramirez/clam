@@ -50,7 +50,7 @@ if crosscompiling :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 import versionInfo
-version, fullVersion = versionInfo.versionFromLocalInfo("Chordata")
+version, fullVersion = versionInfo.versionFromLocalInfo("chordata")
 print "Version: ", version
 print "Package version: ", fullVersion
 versionInfo.generateVersionSources(os.path.join('src','ChordataVersion'), "Chordata", version, fullVersion)
