@@ -1,9 +1,0 @@
-?package(clam-smstools): \
-	needs="X11"  \
-	section="Applications/Sound" \
-	hints="Qt,CLAM" \
-	title="CLAM SMSTools" \
-	longtitle="CLAM SMSTools (Spectral Model authoring tool)" \
-	icon="/usr/share/pixmaps/clam-smstools.xpm" \
-	command="/usr/bin/SMSTools"
-
