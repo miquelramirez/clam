@@ -42,8 +42,8 @@ bool TimeDelay::ConcreteConfigure(const ProcessingConfig& config) {
 	TSize maxDelay = mConfig.GetMaxDelay();
 
 	mDelay.SetBounds(0,maxDelay);
-	mDelay.SetDefaultValue(maxDelay/2);
-	mDelay.DoControl(maxDelay/2);
+	mDelay.SetDefaultValue(0);
+	mDelay.DoControl(0);
 
 	mBuffer.DelayInitParams(44100,512,maxDelay);
 	mBuffer.SetDelay( int(mDelay.GetLastValue())  );

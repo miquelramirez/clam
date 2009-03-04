@@ -116,7 +116,7 @@ namespace CLAM {
 		{
 			AddAll();
 			UpdateData();
-			SetMaxDelay(20);
+			SetMaxDelay(30);
 		}
 
 	};
