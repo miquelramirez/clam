@@ -119,11 +119,11 @@ protected:
 	{
 	unsigned i=0;
 	char* inputcharp=(char*)input.c_str();
-	inputcharp=strtok(inputcharp,"/");
+	inputcharp=std::strtok(inputcharp,"/");
 
 	while (i!=tokenNumber and inputcharp!=NULL)
 	{
-		inputcharp=strtok(NULL,"/");
+		inputcharp=std::strtok(NULL,"/");
 		i++;
 	}
 		if (inputcharp==NULL)
