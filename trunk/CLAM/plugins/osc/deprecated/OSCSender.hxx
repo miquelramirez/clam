@@ -59,7 +59,7 @@ namespace CLAM{
 		char mBuffer[IP_MTU_SIZE];
 		UdpTransmitSocket *mTransmitSocket;
 		ExecState mState;
-		InControlTmpl<OSCSender> mInput;
+		FloatInControl mInput;
 		
 	public:
 		OSCSender() 
