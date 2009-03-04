@@ -17,7 +17,7 @@ distributions = [
 	('ubuntu', 'intrepid', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 	('ubuntu', 'jaunty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 ]
-repositoryBase = "http://iua-share.upf.edu/svn/clam/trunk/"
+repositoryBase = "http://clam-project.org/clam/trunk/"
 repositories = [
 	( 'CLAM',          'clam',               versionFromRemoteSvn('CLAM')[1] ),
 	( 'CLAM/plugins',  'clam-plugins',       versionFromRemoteSvn('CLAM')[1] ),

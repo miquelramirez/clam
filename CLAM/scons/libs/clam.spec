@@ -26,7 +26,7 @@ Name:				clam
 Version:			%{CLAM_version}
 Release:			1
 License:			GPL
-URL:				http://clam.iua.upf.edu
+URL:				http://clam-project.org
 Group:				System/Libraries
 Source0:			CLAM-%{CLAM_version}.tar.gz
 Source1:			NetworkEditor-%{NetworkEditor_version}.tar.gz

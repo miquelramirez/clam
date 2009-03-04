@@ -1057,7 +1057,7 @@ void Annotator::on_browseSchemaAction_triggered()
 
 void Annotator::on_actionOnline_Tutorial_triggered()
 {
-	QString helpUrl = "http://iua-share.upf.edu/wikis/clam/index.php/Manual_Annotator";
+	QString helpUrl = "http://clam-project.org/wiki/Manual_Annotator";
 	#if QT_VERSION >= 0x040200
 	QDesktopServices::openUrl(helpUrl);
 	#else

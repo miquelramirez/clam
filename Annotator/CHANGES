@@ -11,7 +11,7 @@
  * Using CLAM 1.3.0
  * Native windows compilation (using mingw) working without patches (GSoC:jun)
  * New AggregationExtractor.py to aggregate several extractors
-   see (http://iua-share.upf.edu/wikis/clam/index.php/Manual_Annotator)
+   see (http://clam-project.org/wiki/Manual_Annotator)
  * Now you can specify a configuration file for the extractor
  * New extractor option to be able to write back to the descriptors source
  * Several bugs on the segmentation handling solved

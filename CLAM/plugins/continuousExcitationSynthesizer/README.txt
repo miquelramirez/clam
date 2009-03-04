@@ -7,7 +7,7 @@ To run this code as a standalone, type "scons" to build the executable, and then
 
 Where can you get such SDIF files and metadata?
 An example directory of SDIF data exists already in the clam_test_data repository caled EBowGuitarSDIFSmall. For instructions on how to download the clam_test_data repository, go to:
-http://clam.iua.upf.edu/wikis/clam/index.php/Devel
+http://clam-project.org/wiki/Devel
 Alternatively, you can also make your own database of SDIF files using the tool loopMaker in CLAM/examples. This creates the SDIF files as well as the XML metadata. See that application's README for more information.
 Or yet another alternative is to create your own SDIF files using some other SDIF tool. (My personal favorite is SPEAR.) And to create the metadata by hand by editing the metadata template included in this directory.
 

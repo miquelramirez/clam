@@ -1,16 +1,31 @@
 This package was debianized by mramirez <clam@iua.upf.es> on
 Mon, 29 Aug 2005 15:19:44 +0200.
 
-The original source can be found at: http://clam.iua.upf.edu/ .
-
-Copyright:
+The original source can be found at: http://clam-project.org/
 
 Upstream Authors: CLAM development team <clam@iua.upf.es>
 
-License:
-
-Copyright (c) 2001-2005 MUSIC TECHNOLOGY GROUP (MTG)
+Copyright (c) 2001-2007 MUSIC TECHNOLOGY GROUP (MTG)
                 UNIVERSITAT POMPEU FABRA
+Copyright (c) 2007-2009 UNIVERSITAT POMPEU FABRA
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License or,
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License with
+  the Debian GNU/Linux distribution in file /usr/share/common-licenses/GPL;
+  if not, write to the Free Software Foundation, Inc., 59 Temple Place,
+  Suite 330, Boston, MA  02111-1307  USA
+
+On Debian systems, the complete text of the GNU General Public
+License, version 2, can be found in /usr/share/common-licenses/GPL.
 
 The entire code base may be distributed under the terms of the GNU General
 Public License (GPL), which appears immediately below.  Alternatively, all
@@ -19,4 +34,25 @@ distributed under the GNU Lesser General Public License (LGPL), at the
 choice of the distributor. The complete text of the LGPL appears at the
 bottom of this file.
 
-See /usr/share/common-licenses/(GPL|LGPL)
+See /usr/share/common-licenses/GPL
+
+Files in examples/TickExtractor/libresample-0.1.3 are
+Copyright 2003 by Dominic Mazzoni <dominic@minorninth.com>.
+This library was based heavily on Resample-1.7, Copyright 
+1994-2002 by Julius O. Smith III <jos@ccrma.stanford.edu>,
+all rights reserved.
+
+Permission to use and copy is granted subject to the terms of the
+"GNU Lesser General Public License" (LGPL) as published by the
+Free Software Foundation; either version 2.1 of the License,
+or any later version.  In addition, Julius O. Smith III requests
+that a copy of any modified files be sent by email to
+jos@ccrma.stanford.edu so that he may incorporate them into the
+CCRMA version.
+
+   This library is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+   Lesser General Public License for more details.
+
+

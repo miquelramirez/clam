@@ -460,6 +460,6 @@ void MainWindow::about()
 
 void MainWindow::onlineTutorial()
 {
-	QString helpUrl = "http://iua-share.upf.es/wikis/clam/index.php/Chordata_tutorial";
+	QString helpUrl = "http://clam-project.org/wiki/Chordata_tutorial";
 	QDesktopServices::openUrl(helpUrl);
 }

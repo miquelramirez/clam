@@ -1,7 +1,7 @@
 
 
 Checkout the clam-test-data repository at any directory
- $ svn co https://iua-share.upf.edu/svn/clam-test-data/trunk clam-test-data
+ $ svn co https://clam-project.org/clam_data/trunk clam-test-data
 
 And compile with 
  $ scons test_data_path=path/to/clam-test-data clam_prefix=/usr/local or clam_prefix=~/local

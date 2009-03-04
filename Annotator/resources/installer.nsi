@@ -4,8 +4,8 @@
 !define PRODUCT_NAME "CLAM-Annotator"
 !define PRODUCT_VERSION "${VERSION}"
 !define PRODUCT_PUBLISHER "CLAM devel"
-!define PRODUCT_WEB_SITE "http://clam.iua.upf.edu"
-!define PRODUCT_HELP "http://clam.iua.upf.edu/wikis/clam/index.php/Music_Annotator"
+!define PRODUCT_WEB_SITE "http://clam-project.org"
+!define PRODUCT_HELP "http://clam-project.org/wiki/Music_Annotator"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Annotator.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 

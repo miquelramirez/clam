@@ -60,7 +60,7 @@ install_path = 'D:\\CLAM-sandboxes\\CLAM-bin'
 sconstools_path = 'D:\\CLAM-sandboxes\\CLAM\\scons\\sconstools'
 
 windows = Client("windows_xp-msvc")
-windows.brief_description = '<img src="http://clam.iua.upf.es/images/windows_icon.png"/>'
+windows.brief_description = '<img src="http://clam-project.org/images/windows_icon.png"/>'
 
 clam = Task(
 	project = Project("CLAM"), 
