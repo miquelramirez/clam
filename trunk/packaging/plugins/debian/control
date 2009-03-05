@@ -11,7 +11,7 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends} 
 Recommends: clam-networkeditor
 Homepage: http://clam-project.org
-Description: Extension plugin for the CLAM framework
+Description: Extension plugins for the CLAM framework
  This package provides several plugins for the CLAM audio library, including:
   * OSC support
   * Real-time 3D acoustics scene simulation (ambisonics, raytracing, HRTF's)
@@ -20,6 +20,5 @@ Description: Extension plugin for the CLAM framework
   * Guitar effects
   * Sample by sample convolution effects
   * Lock-free wave file reader
- The SMS synthesizer also includes some stand-alone programs.
 
 
