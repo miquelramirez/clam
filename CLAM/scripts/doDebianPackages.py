@@ -89,7 +89,6 @@ for package, srcpackage, version in repositories :
 	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='developers@clam-project.org' dch -d 'Autobuilt package' --distribution='unstable' --force-distribution"%(srcdir) )
 	run( "dpkg-source -b %s"%(srcdir))
 
-sys.exit(0)
 
 for (maindistro, distribution, mirror, components) in distributions :
 	phase( "Preparing chroot for '%s'"%distribution )
@@ -168,9 +167,9 @@ for (maindistro, distribution, mirror, components) in distributions :
 
 	if "~svn" in repositories[0][2]:
 		targetWebDir += "svnsnapshots/"
-	run("slogin clamadm@www.iua.upf.edu mkdir -p %s" % targetWebDir )
-	run("scp %s/* clamadm@www.iua.upf.edu:%s " % ( resultdir, targetWebDir) )
-	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
+	run("slogin clamadm@clam-project.org mkdir -p clam-project.org/%s" % targetWebDir )
+	run("scp %s/* clamadm@clam-project.org:clam-project.org/%s " % ( resultdir, targetWebDir) )
+	run("slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py")
 
 if failedSteps :
 	print "Those steps have failed:"
