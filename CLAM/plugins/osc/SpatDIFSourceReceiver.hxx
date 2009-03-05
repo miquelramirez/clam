@@ -87,6 +87,9 @@ public:
 		, _azimuth("azimuth",this)
 		, _elevation("elevation",this)
 		, _roll("roll",this)
+		, _velocityX("X instant velocity",this)
+		, _velocityY("Y instant velocity",this)
+		, _velocityZ("Z instant velocity",this)
 		, _voice("voice number", this)
 		, _play("voice play toggle",this)
 		, _loop("voice loop toggle",this)
@@ -244,6 +247,8 @@ protected:
 		allOK &= RegisterOscCallback(_port,oscPath,"fff");
 		oscPath=_baseOSCPath+"/ypr";
 		allOK &= RegisterOscCallback(_port,oscPath,"fff");
+		oscPath=_baseOSCPath+"/velocity";
+		allOK &= RegisterOscCallback(_port,oscPath,"fff");
 		for (unsigned i=0;i<_config.GetVoicesNumber();i++)
 		{
 			std::ostringstream voice;
@@ -324,6 +329,9 @@ private:
 	FloatOutControl _azimuth;
 	FloatOutControl _elevation;
 	FloatOutControl _roll;
+	FloatOutControl _velocityX;
+	FloatOutControl _velocityY;
+	FloatOutControl _velocityZ;
 	TypedOutControl <int> _voice;
 //	TypedOutControl <std::string> _voiceControlMessage;
 	TypedOutControl <int> _play;
