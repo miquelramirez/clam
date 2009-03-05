@@ -204,8 +204,8 @@ clam.add_subtask('neteditor package', [
 	'cd NetworkEditor',
 	'rm -f *.exe',
 	'scons package',
-	'scp *.exe clamadm@www.iua.upf.edu:download/win/svnsnapshots/',
-	'slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py'
+	'scp *.exe clamadm@clam-project.org:clam-project.org/download/win/svnsnapshots/',
+	'slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py'
 
 ])
 

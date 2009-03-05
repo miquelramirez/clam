@@ -50,9 +50,9 @@ if raw_input().strip() in ['y', 'Y', 'yes']:
 
 	if "~svn" in versions["CLAM"]: destDir = "src/svnsnapshots/"
 	else : destDir = "src/"
-	run("scp *.tar.gz clamadm@www.iua.upf.edu:download/"+destDir )
+	run("scp *.tar.gz clamadm@clam-project.org:clam-project.org/download/"+destDir )
 	phase("regenerating web download dirs")
-	run("slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py")
+	run("slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py")
 
 print "Remove created tarballs in local (rm *.tar.gz) ? [y/n]"
 if raw_input().strip() in ['y', 'Y', 'yes']:

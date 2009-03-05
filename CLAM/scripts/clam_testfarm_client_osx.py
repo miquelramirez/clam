@@ -143,8 +143,8 @@ clam.add_subtask('SMSTools packaging', [
 	'%(sandbox)s/clam/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
 	'rm -f %(packageWildcard)s'%localDefinitions,
 	'scons package',
-	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
-	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@clam-project.org:clam-project.org/download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
+	'ls *svn1* > /dev/null || slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py',
 ] )
 """
 clam.add_subtask('vmqt4 compilation and examples', [
@@ -159,8 +159,8 @@ clam.add_subtask('Annotator packaging', [
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s %(extraAppOptions)s '%localDefinitions,
 	'rm -f %(packageWildcard)s'%localDefinitions,
 	'scons package',
-#	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
-#	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+#	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@clam-project.org:clam-project.org/download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
+#	'ls *svn1* > /dev/null || slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 clam.add_subtask('NetworkEditor packaging', [
@@ -170,8 +170,8 @@ clam.add_subtask('NetworkEditor packaging', [
 	'%(sandbox)s/clam/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
 	'rm -f %(packageWildcard)s'%localDefinitions,
 	'scons package',
-#	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
-#	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+#	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@clam-project.org:clam-project.org/download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
+#	'ls *svn1* > /dev/null || slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 clam.add_subtask('Chordata packaging', [
@@ -179,8 +179,8 @@ clam.add_subtask('Chordata packaging', [
 	'cd %(sandbox)s/clam/chordata'%localDefinitions,
 	'scons prefix=%(installPath)s clam_prefix=%(installPath)s  %(extraAppOptions)s '%localDefinitions,
 	'scons package',
-	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
-	'ls *svn1* > /dev/null || slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+	'ls *svn1* > /dev/null || scp %(packageWildcard)s clamadm@clam-project.org:clam-project.org/download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
+	'ls *svn1* > /dev/null || slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 clam.add_subtask('Voice2MIDI packaging', [
@@ -190,8 +190,8 @@ clam.add_subtask('Voice2MIDI packaging', [
 	'%(sandbox)s/clam/CLAM/scons/sconstools/changeExampleDataPath.py %(installPath)s/share/smstools '%localDefinitions,
 	'rm -f %(packageWildcard)s'%localDefinitions,
 #	'scons package',
-#	'ls *svn1* > /dev/null ; scp %(packageWildcard)s clamadm@www.iua.upf.edu:download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
-#	'ls *svn1* > /dev/null ; slogin clamadm@www.iua.upf.edu scripts/regenerateDownloadDirsIndex.py',
+#	'ls *svn1* > /dev/null ; scp %(packageWildcard)s clamadm@clam-project.org:clam-project.org/download/%(downloadPlatform)s/svnsnapshots/'%localDefinitions,
+#	'ls *svn1* > /dev/null ; slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py',
 ] )
 
 forceRun = len(sys.argv)>1
