@@ -1,13 +1,19 @@
-This package was debianized by mramirez <developers@clam-project.org> on
-Mon, 29 Aug 2005 15:19:44 +0200.
+This package was debianized by CLAM development team <developers@clam-project.org>
+on Mon, 29 Aug 2005 15:19:44 +0200.
 
-The original source can be found at: http://clam-project.org/
-
-Upstream Authors: CLAM development team <developers@clam-project.org>
+The original source can be found at: http://clam-project.org/ .
 
 Copyright (c) 2001-2007 MUSIC TECHNOLOGY GROUP (MTG)
                 UNIVERSITAT POMPEU FABRA
 Copyright (c) 2007-2009 UNIVERSITAT POMPEU FABRA
+
+Upstream Authors: CLAM development team <developers@clam-project.org>
+
+License:
+
+The entire code base, with exceptions noted below, may be distributed
+under the terms of the GNU General Public License (GPL) version 2 or
+any later, which appears immediately below.
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -21,20 +27,12 @@ Copyright (c) 2007-2009 UNIVERSITAT POMPEU FABRA
 
   You should have received a copy of the GNU General Public License with
   the Debian GNU/Linux distribution in file /usr/share/common-licenses/GPL;
-  if not, write to the Free Software Foundation, Inc., 59 Temple Place,
-  Suite 330, Boston, MA  02111-1307  USA
+  if not, write to the Free Software Foundation, Inc., 51 Franklin St,
+  Fifth Floor, Boston, MA 02110-1301, USA.
 
 On Debian systems, the complete text of the GNU General Public
 License, version 2, can be found in /usr/share/common-licenses/GPL.
 
-The entire code base may be distributed under the terms of the GNU General
-Public License (GPL), which appears immediately below.  Alternatively, all
-of the source code as any code derived from that code may instead be
-distributed under the GNU Lesser General Public License (LGPL), at the
-choice of the distributor. The complete text of the LGPL appears at the
-bottom of this file.
-
-See /usr/share/common-licenses/GPL
 
 Files in examples/TickExtractor/libresample-0.1.3 are
 Copyright 2003 by Dominic Mazzoni <dominic@minorninth.com>.
@@ -54,5 +52,56 @@ CCRMA version.
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    Lesser General Public License for more details.
+
+On Debian systems, the complete text of the GNU Lesser General Public
+License, version 2, can be found in /usr/share/common-licenses/LGPL.
+
+Files src/Tools/AudioIO/RtAudio/RtAudio.{cxx,hxx} are
+Copyright (c) 2001-2002 Gary P. Scavone
+
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation files
+    (the "Software"), to deal in the Software without restriction,
+    including without limitation the rights to use, copy, modify, merge,
+    publish, distribute, sublicense, and/or sell copies of the Software,
+    and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    Any person wishing to distribute modifications to the Software is
+    requested to send the modifications to the original developer so that
+    they can be incorporated into the canonical version.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
+    ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+    CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+File scons/sconstools/qt4.py is
+Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006, 2007 The SCons Foundation
+    
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+    
+    The above copyright notice and this permission notice shall be included
+    in all copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+    KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+    WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
