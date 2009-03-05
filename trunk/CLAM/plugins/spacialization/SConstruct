@@ -59,13 +59,13 @@ if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
 	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'local','lib')] )
 env.Append( LIBS=['fftw3'] )
 env.AppendUnique(CPPPATH=sourcePaths)
-env.AppendUnique(CPPPATH=sourcePaths)
 
 if env['raytracing'] :
 	env.Append(CPPPATH=[os.path.join('..','..','..','..','acustica','raytracing')])
 	env.Append(LIBPATH=[os.path.join('..','..','..','..','acustica','raytracing')])
 	env.Append(LIBS=['raytracing',"GL","GLU","lo"])
 else :
+	print sources
 	sources.remove(os.path.join('src','RoomImpulseResponseSimulator.cxx'))
 
 libraries = [
