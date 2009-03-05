@@ -11,10 +11,10 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends} 
 Recommends: clam-networkeditor
 Homepage: http://clam-project.org
-Description: Spacialization plugin for the CLAM framework
+Description: Extension plugin for the CLAM framework
  This package provides several plugins for the CLAM audio library, including:
   * OSC support
-  * Real-time 3D acoustics scene simulation (HRTF, scene IR databases...)
+  * Real-time 3D acoustics scene simulation (ambisonics, raytracing, HRTF's)
   * Speech synthesis and analysis
   * Simple SMS based synthesizer
   * Guitar effects
