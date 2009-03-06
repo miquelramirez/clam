@@ -14,8 +14,8 @@ int usage(const std::string & program)
 {
 	// If you change that remember to update the manpage with help2man
 	// $ help2man -N ./OfflinePlayer -n "Plays CLAM networks off-line"
-	std::cout << "`OfflinePlayer' plays CLAM networks off-line\n"
-		<< "Usage: " << program
+	std::cout
+		<< "Usage: OfflinePlayer"
 		<< " <networkfile> OPTIONS... [<inwave> ...] -o [[-c CHANNELS] <outwave> ...]\n"
 		<< "Executes a CLAM network off-line, by mapping audio sink\n"
 		<< "and audio sources to wave files.\n"
