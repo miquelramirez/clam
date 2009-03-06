@@ -5,8 +5,10 @@ import os, glob, sys
 libraryName='plugins_spacialization'
 
 def scanFiles(pattern, paths) :
+	os.system("find")
 	files = []
 	for path in paths :
+		print "path:", path, "files:", glob.glob(os.path.join(path,patterns)) 
 		files+=glob.glob(os.path.join(path,pattern))
 	return files
 
