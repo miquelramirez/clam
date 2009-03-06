@@ -207,6 +207,7 @@ manpages = [
 	'resources/man/man1/NetworkEditor.1',
 	'resources/man/man1/Prototyper.1',
 	'resources/man/man1/OfflinePlayer.1',
+	'resources/man/man1/MonoOfflinePlayer.1',
 	]
 
 tsfiles = scanFiles("*.ts", ["src/i18n/"])
