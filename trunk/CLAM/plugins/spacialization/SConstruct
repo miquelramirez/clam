@@ -5,10 +5,8 @@ import os, glob, sys
 libraryName='plugins_spacialization'
 
 def scanFiles(pattern, paths) :
-	os.system("find")
 	files = []
 	for path in paths :
-		print "path:", path, "files:", glob.glob(os.path.join(path,patterns)) 
 		files+=glob.glob(os.path.join(path,pattern))
 	return files
 
@@ -40,8 +38,6 @@ env.EnableClamModules([
 
 sourcePaths = ["src"]
 sources = scanFiles('*.cxx', sourcePaths)
-print sources
-print glob.glob("*.*")
 sources = dict.fromkeys(sources).keys()
 if sys.platform=='linux2' :
 	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
@@ -69,7 +65,6 @@ if env['raytracing'] :
 	env.Append(LIBPATH=[os.path.join('..','..','..','..','acustica','raytracing')])
 	env.Append(LIBS=['raytracing',"GL","GLU","lo"])
 else :
-	print sources
 	sources.remove(os.path.join('src','RoomImpulseResponseSimulator.cxx'))
 
 libraries = [
