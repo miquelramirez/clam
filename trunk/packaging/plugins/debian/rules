@@ -58,13 +58,12 @@ clean:
 	find $(CURDIR) -type f -name *.pyc | xargs rm -rf
 	find $(CURDIR) -type f -name *.o | xargs rm -rf
 	find $(CURDIR) -type f -name *.os | xargs rm -rf
+	find $(CURDIR) -type f -name *.so* | xargs rm -rf
 	find $(CURDIR) -type f -name *.a | xargs rm -rf
 	find $(CURDIR) -type f -name .*.swp | xargs rm -rf
 	find $(CURDIR) -type f -name .sconsign | xargs rm -rf
 	find $(CURDIR) -type f -name *.db | xargs rm -rf
-	-rm -rf $(CURDIR)/.sconsign.dblite config.log \
-		$(CURDIR)/*/{*.conf,include,src,*.so*,*.pc,CLAM} \
-		$(CURDIR)/*.conf
+	-rm -rf $(CURDIR)/*/.sconsign.dblite 
 	dh_clean 
 
 install: build
