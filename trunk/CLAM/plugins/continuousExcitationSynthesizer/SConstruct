@@ -41,7 +41,7 @@ env.EnableClamModules([
 sourcePaths = recursiveDirs(".")
 print sourcePaths
 sources = glob.glob('*.cxx')
-sources += glob.glob('toreview/*.cxx')
+#sources += glob.glob('toreview/*.cxx')
 extraPaths = [
 	CLAMInstallDir+'/include',
 	CLAMInstallDir+'/include/CLAM', # KLUDGE to keep old style includes
@@ -60,14 +60,15 @@ if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	
 mainSources = {
 	'ContinuousExcitationSynthesizer': 'ContinuousExcitationSynthesizer.cxx',
-	'TestAudioDatabaseReader': os.path.join('toreview','TestAudioDatabaseReader.cxx'),
-	'EbowSynthesizer': os.path.join('toreview','ebowSynthesizer.cxx'),
+#	'TestAudioDatabaseReader': os.path.join('toreview','TestAudioDatabaseReader.cxx'),
+#	'EbowSynthesizer': os.path.join('toreview','ebowSynthesizer.cxx'),
 }
 for binary, mainSource in mainSources.items() :
 	sources.remove(mainSource)
 
 programs = [ env.Program(target=program, source = [mainSource] + sources)
 	for program, mainSource in mainSources.items()]
+
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources)
 	]
@@ -77,10 +78,15 @@ examples = [
 	'synth_with_sliders.clamnetwork',
 	]
 
+# TODO: Execute that command as part of the scons
+# help2man -N -n 'OSC controlled synthesizer based on Spectral Modelling techniques' ./ContinuousExcitationSynthesizer > ContinuousExcitationSynthesizer.1
+manpages = [ program+".1" for program in mainSources.keys() ]
+
 install = [
 	env.Install(os.path.join(InstallDir,'lib','clam'), libraries),
 	env.Install(os.path.join(InstallDir,'bin'), programs),
-	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples)
+	env.Install(os.path.join(InstallDir,'share','networkeditor','example-data'), examples),
+	env.Install(os.path.join(InstallDir,'share','man','man1'), manpages),
 	]
 env.Alias('install', install)
 env.Default(programs + libraries)
