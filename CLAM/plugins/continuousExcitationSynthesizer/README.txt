@@ -5,9 +5,9 @@ To use this as a plugin in the NetworkEditor, type "sudo scons install" at the c
 
 To run this code as a standalone, type "scons" to build the executable, and then ./ContinuousExcitationSynthesizer  The application itself should give you instructions on what arguments it takes.
 
-Where can you get such SDIF files and metadata?
-An example directory of SDIF data exists already in the clam_test_data repository caled EBowGuitarSDIFSmall. For instructions on how to download the clam_test_data repository, go to:
-http://clam-project.org/wiki/Devel
+Download or checkout using subversion the following directory:
+http://clam-project.org/clam_data/trunk/OboeSDIF/
+
 Alternatively, you can also make your own database of SDIF files using the tool loopMaker in CLAM/examples. This creates the SDIF files as well as the XML metadata. See that application's README for more information.
 Or yet another alternative is to create your own SDIF files using some other SDIF tool. (My personal favorite is SPEAR.) And to create the metadata by hand by editing the metadata template included in this directory.
 
