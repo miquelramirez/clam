@@ -80,12 +80,13 @@ phase( "Obtaining latest sources" )
 print repositories
 for package, srcpackage, version in repositories :
 	module = repositoryBase + package
-	modulePackaging = repositoryBase + 'packaging/' + os.path.basename(package) + '/debian'
+	modulePackaging = module + '/debian'
 	srcdir = srcpackage + "-" + version
 	tarball = srcpackage + "_" + version + ".orig.tar.gz"
 	run( "svn export --force %s %s"%(module, srcdir) )
+	run( "rm -rf  %s/debian"%(srcdir) )
 	run( "tar cvfz %s %s"%(tarball, srcdir) )
-	run( "svn export --force %s %s"%(modulePackaging, srcdir+"/debian") )
+	run( "svn export --force %s %s/debian"%(modulePackaging, srcdir) )
 	run( "cd %s; DEBFULLNAME='CLAM Team' DEBEMAIL='developers@clam-project.org' dch -d 'Autobuilt package' --distribution='unstable' --force-distribution"%(srcdir) )
 	run( "dpkg-source -b %s"%(srcdir))
 
