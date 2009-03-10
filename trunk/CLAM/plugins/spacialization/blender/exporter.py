@@ -137,12 +137,15 @@ def geometryExport(scene):
 		impedanceImag=impedance.imag
 		if _convertToTriangles==True:
 			print "Converting mesh to triangles..."
-#			bpy.data.meshes[data.name].quadToTriangle(0)
-			bpy.data.meshes[object.getData().name].quadToTriangle(0)
+			data.quadToTriangle(0)
 		for face in data.faces:
 			verts=""
+			vertCount=0
 			for vert in face.verts:
+				vertCount+=1
 				verts+="%s " % str(vert.index+1)
+			if vertCount>3:
+				print "WARNING!! Object %s have more than 3 verts (%i) per face!!!" % (object.name,vertCount)
 			bufferObject+=FaceLineTemplate % vars()
 		buffer+=bufferObject
 		print "Added Object: %s" % object.name
