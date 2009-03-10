@@ -418,6 +418,23 @@ void MainWindow::loadAudioFile(const std::string & fileName)
 
 void MainWindow::play()
 {
+	if (_network.HasMisconfiguredProcessings())
+	{
+		QMessageBox::critical(this, tr("Unable to play"),
+			_network.GetConfigurationErrors().c_str()
+			);
+		return;
+	}
+	if (_network.HasUnconnectedInPorts() )
+	{
+		QMessageBox::critical(this, tr("Unable to play the network"),
+				tr(
+				"<p><b>Some inports in the network are not connected.</b></p>"
+				"<p>To play the network you should connect the following inports.</p>"
+				"<pre>%1</pre"
+				).arg(_network.GetUnconnectedInPorts().c_str()));
+		return;
+	}
 	if (not _network.IsPlaying())
 		_network.Start();
 	if (_timerID == 0)
@@ -443,6 +460,11 @@ void MainWindow::stop()
 
 void MainWindow::timerEvent(QTimerEvent *event)
 {
+	if (not _timerID) 
+	{
+		std::cout << "Warning: serving timer events after stoping." << std::endl;
+		return;
+	}
 	CLAM::FloatInControl & inControl =
 		(CLAM::FloatInControl&) _network.GetInControlByCompleteName(_progressControl+".Progress Update");
 	double time = inControl.GetLastValue() * _length;
@@ -463,3 +485,4 @@ void MainWindow::onlineTutorial()
 	QString helpUrl = "http://clam-project.org/wiki/Chordata_tutorial";
 	QDesktopServices::openUrl(helpUrl);
 }
+
