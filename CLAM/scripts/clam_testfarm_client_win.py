@@ -40,7 +40,7 @@ def filter_svn_update( text ):
 	return text
 
 #update_command = { CMD: "cvs -q up -Pd", INFO: filter_cvs_update }
-update_command = { CMD: "svn up", INFO: filter_svn_update }
+update_command = { CMD: "svn up --accept postpone", INFO: filter_svn_update }
 
 def set_qtdir_to_qt4_fn(x) : 
 	os.environ['QTDIR']='D:\\CLAM-sandboxes\\Qt\\4.2.1'
@@ -75,7 +75,7 @@ clam.set_check_for_new_commits(
 
 clam.add_deployment([
 	cd_clam,
-	{ CMD: "svn up", INFO: filter_svn_update },
+	{ CMD: "svn up --accept postpone", INFO: filter_svn_update },
 	cd_clam,
 	"rm -rf CLAM-bin\\*",
 	'cd CLAM',

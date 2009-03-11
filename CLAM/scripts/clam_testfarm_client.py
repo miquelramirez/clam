@@ -50,7 +50,7 @@ client.brief_description = localDefinitions['description']
 clam = Task(
 	project = Project('CLAM','<a href="http://clam-project.org">clam web</a>' ), 
 	client = client, 
-	task_name='svn up|DEBUG' 
+	task_name='svn up --accept postpone|DEBUG' 
 	)
 
 clam.set_check_for_new_commits( 
@@ -64,7 +64,7 @@ clam.add_subtask( 'List of new commits', [
 		{CMD: 'true ; cd %s; svn log -r BASE:HEAD; cd -'%repo, INFO: lambda x:x }
 		for repo in repositories
 	] + [
-		{CMD: 'svn up %s'%repo, INFO: lambda x:x }
+		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:x }
 		for repo in repositories
 	] )
 
