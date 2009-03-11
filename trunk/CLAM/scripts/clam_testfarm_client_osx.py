@@ -70,7 +70,7 @@ clam.add_subtask( 'List of new commits', [
 		{CMD: 'true ; cd %s; svn log -r BASE:HEAD; cd -'%repo, INFO: lambda x:x }
 		for repo in repositories
 	] + [
-		{CMD: 'svn up %s'%repo, INFO: lambda x:x }
+		{CMD: 'svn up --accept postpone %s'%repo, INFO: lambda x:x }
 		for repo in repositories
 	] )
 
