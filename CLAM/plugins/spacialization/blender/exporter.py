@@ -106,7 +106,7 @@ def geometryExport(scene):
 			continue #if doesnt have any acoustic (by name) material, doesnt export
 		BPyNMesh.ApplySizeAndRotation(object)
 #		data=object.getData() # do it again after transformation
-		data=bpy.data.meshes[object.getData().name]
+		data=object.getData(False,True) # get mesh instead name or NMesh (name_only=False / mesh=True)
 		print "Exporting %s..."%object.name
 		bufferObject= "<%s>\n" % object.name
 		bufferObject+= "<VERTS>\n"
@@ -137,6 +137,8 @@ def geometryExport(scene):
 		impedanceImag=impedance.imag
 		if _convertToTriangles==True:
 			print "Converting mesh to triangles..."
+			Blender.Mesh.Mode(3) # select faces
+			Blender.Window.EditMode(0) # non-edit mode!
 			data.quadToTriangle(0)
 		for face in data.faces:
 			verts=""
