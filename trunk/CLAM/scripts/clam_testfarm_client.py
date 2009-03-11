@@ -118,11 +118,11 @@ clam.add_subtask('BM-Audio Raytracing', [
 
 clam.add_subtask('CLAM Plugins', [
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
-	'scons clam_prefix=%(installPath)s %(extraAppOptions)s raytracing=0'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s raytracing=disabled'%localDefinitions,
 	'scons install',
 
 	'cd %(sandbox)s/clam/CLAM/plugins/spacialization'%localDefinitions,
-	'scons clam_prefix=%(installPath)s %(extraAppOptions)s raytracing=1'%localDefinitions,
+	'scons clam_prefix=%(installPath)s %(extraAppOptions)s raytracing=traditional'%localDefinitions,
 	'scons install',
 
 	'cd %(sandbox)s/clam/CLAM/plugins/continuousExcitationSynthesizer'%localDefinitions,
