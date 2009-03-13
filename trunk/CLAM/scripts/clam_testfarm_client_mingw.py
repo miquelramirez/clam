@@ -89,7 +89,7 @@ clam.add_subtask('Unit Tests', [
 	'cd test',
 	'scons test_data_path=%(sandbox)s/clam/testdata cppunit_prefix=%(cppunit_prefix)s clam_prefix=%(installPath)s %(extraAppOptions)s'%localDefinitions, # TODO: test_data_path and release
 	{INFO : lambda x:startTimer() }, 
-	{CMD: 'scons run_unit_tests', INFO: lambda x:x, STATUS_OK: lambda x:True},
+	{CMD: 'scons run_unit_tests', INFO: lambda x:x, }, # STATUS_OK: lambda x:True},
 	{STATS : lambda x:{'exectime_unittests' : ellapsedTime()} },
 ] )
 clam.add_subtask('Functional Tests', [
