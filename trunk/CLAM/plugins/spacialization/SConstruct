@@ -82,7 +82,12 @@ libraries = [
 tests = [
 	env.Program("UnitTests", scanFiles("*.cxx", ['tests'])),
 	]
-runTests = Command("UnitTests.passed",tests, "LD_LIBRARY_PATH=%s ./UnitTests"%env['ENV']['LD_LIBRARY_PATH'])
+# TODO: This is a hack until LD_LIBRARY_PATH environment is nicely propagated
+ld_library_path = ""
+if env['ENV'].has_key("LD_LIBRARY_PATH") :
+	ld_library_path = "LD_LIBRARY_PATH=%s "%env['ENV']['LD_LIBRARY_PATH']
+
+runTests = Command("UnitTests.passed",tests, "%s ./UnitTests"%ld_library_path)
 
 examples = scanFiles('*.clamnetwork', ['example-data'])
 examples+= scanFiles('*.ui', ['example-data'])
