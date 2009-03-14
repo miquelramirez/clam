@@ -28,6 +28,5 @@ sys.argv += "py2exe -b 1".split(" ")
 setup(console=[{
 	'script':'Manager.py', 
 	'dest_base':'BocaTaskManager',
-	'includes' : ['dbhash','xml.parser.expat'],
 	}])
 
