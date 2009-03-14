@@ -22,13 +22,6 @@
 import os,sys
 import os.path
 
-# Needed for the py2exe to know it should include them
-import dbhash
-import xml.parsers.expat
-import xml.sax.expatreader
-import xml.sax.xmlreader
-import xml.sax.drivers2.drv_pyexpat
-
 from Tasker import Tasker, TaskerError
 
 
