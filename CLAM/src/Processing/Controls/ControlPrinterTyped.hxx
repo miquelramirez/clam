@@ -35,8 +35,6 @@
 namespace CLAM
 {
 
-
-
 class EnumTypedTypes: public CLAM::Enum {
 public:
         EnumTypedTypes() : CLAM::Enum(ValueTable(), eFloat) {}
@@ -49,16 +47,18 @@ public:
                 eString=0,
                 eFloat=1,
                 eDouble=2,
-		eInt=3,
+                eInt=3,
+                eMidi=4,
         } tEnum;
         static tEnumValue * ValueTable()
         {
                 static tEnumValue sValueTable[] =
                 {
-			{eString,"s"},
-			{eFloat,"f"},
-			{eDouble,"d"},
-			{eInt,"i"},
+                        {eString,"s"},
+                        {eFloat,"f"},
+                        {eDouble,"d"},
+                        {eInt,"i"},
+                        {eMidi,"M"},
                         {0,NULL}
                 };
                 return sValueTable;
@@ -74,7 +74,6 @@ class ControlPrinterTypedConfig : public ProcessingConfig
 		DYN_ATTRIBUTE (1, public, std::string, TypesMask);
 		DYN_ATTRIBUTE (2, public, bool, GuiOnly );
 
-		
 
 	private:
 		void DefaultInit();
