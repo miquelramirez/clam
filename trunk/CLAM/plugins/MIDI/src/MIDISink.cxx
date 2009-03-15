@@ -48,11 +48,11 @@ namespace Hidden
 		inMessage = mMIDIMessage.GetLastValue();
 		
 		std::vector< unsigned char > message;
-		
+
 		message.push_back((inMessage)[0]);
 		message.push_back((inMessage)[1]);
 		message.push_back((inMessage)[2]);
-		message.push_back((inMessage)[3]);
+// 		message.push_back((inMessage)[3]);
 
 		mMIDIout->sendMessage( &message );
 	};
