@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/" >
+        <file alias="images/clamlogo.svg">../../artwork/clamlogo.svg</file>
+    </qresource>
+</RCC>

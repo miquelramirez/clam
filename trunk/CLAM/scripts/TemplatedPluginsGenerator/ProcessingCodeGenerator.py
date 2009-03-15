@@ -21,6 +21,7 @@ from PyQt4.QtCore import *
 from PyQt4 import uic
 import TemplateGenerator
 import TemplatedPluginsGenerator
+import graphlib
 
 (Ui_MainWindow, Ui_MainWindow_base) = uic.loadUiType('main.ui')
 class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
@@ -71,8 +72,7 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 		self.setupUi(self)
 
 		self.setWindowTitle( "Processing Code Generator" )
-		if os.path.isfile('./clamlogo.svg'): clam_logo_svg = "./clamlogo.svg"
-		else: clam_logo_svg = "../../artwork/clamlogo.svg"
+		clam_logo_svg = ":images/clamlogo.svg"
 		self.setWindowIcon( QIcon(clam_logo_svg) )
 		self.clamLogo.setPixmap( QPixmap(clam_logo_svg) )
 
