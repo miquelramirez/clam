@@ -16,14 +16,6 @@
    <locale country="UnitedStates" language="English" />
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>783</width>
-     <height>808</height>
-    </rect>
-   </property>
    <layout class="QVBoxLayout" >
     <item>
      <layout class="QVBoxLayout" >
@@ -192,6 +184,11 @@
               <item>
                <property name="text" >
                 <string>GPL</string>
+               </property>
+              </item>
+              <item>
+               <property name="text" >
+                <string>GPL3</string>
                </property>
               </item>
               <item>
@@ -609,14 +606,6 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>808</y>
-     <width>783</width>
-     <height>28</height>
-    </rect>
-   </property>
    <property name="sizeGripEnabled" >
     <bool>true</bool>
    </property>
