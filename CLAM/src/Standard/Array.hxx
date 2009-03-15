@@ -206,6 +206,12 @@ public:
 		new(&mpData[where]) T(elem);
 		mSize++;
 	}
+	void	SetElem(int where,const T& elem)
+	{
+		CLAM_DEBUG_ASSERT(where>=0,msgIndexOutOfRange);
+		CLAM_DEBUG_ASSERT(where<mSize,msgIndexOutOfRange);
+		mpData[where] = elem;
+	}
 	void	DeleteElem(int where)
 	{
 		CLAM_ASSERT(OwnsMemory(),"Array::DeleteElem(): Resize requiered,"
