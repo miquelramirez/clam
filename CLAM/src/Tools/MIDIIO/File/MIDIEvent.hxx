@@ -24,7 +24,7 @@
 #ifndef __MIDIEvent__
 #define __MIDIEvent__
 
-#include "MIDIMessage.hxx"
+#include <CLAM/MIDIMessage.hxx>
 
 namespace MIDI
 {

@@ -30,6 +30,7 @@ folders = [
 	'src/System',
 	'src/System/Threads',
 	'externals/CbLib',
+	'src/Tools/MIDIIO/Message',
 	]
 
 blacklist = [
