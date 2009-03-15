@@ -25,7 +25,7 @@
 #define __MIDIReader__
 
 #include <stdio.h>
-#include "MIDIDataTypes.hxx"
+#include <CLAM/MIDIDataTypes.hxx>
 #include "MIDIChunkType.hxx"
 
 namespace MIDI
