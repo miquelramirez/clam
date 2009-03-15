@@ -25,6 +25,7 @@
 #define __MIDIMessage__
 
 #include "MIDIDataTypes.hxx"
+#include <iostream>
 
 namespace MIDI
 {
@@ -84,7 +85,7 @@ namespace MIDI
 		};
 	};
 
+	std::ostream& operator<< (std::ostream &os, const Message& m);
 }
-
 #endif
 
