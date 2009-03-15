@@ -37,13 +37,17 @@
     <NumberOfInPorts>1</NumberOfInPorts>
   </processing>
 
-  <processing id="ChoreoSequencer_1" position="375,73" size="226,59" type="ChoreoSequencer">
-    <Filename>../../../../data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
+  <processing id="ChoreoSequencerViaControl" position="354,59" size="226,58" type="ChoreoSequencerViaControl">
+    <Filename>/home/parumi/data_acustica/coreo_examples/room_acoustics/exported_coreo.data</Filename>
     <SourceIndex>0</SourceIndex>
-    <FrameSize>512</FrameSize>
-    <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>6</ControlsPerSecond>
+    <ControlsPerSecond>25</ControlsPerSecond>
     <UseSpiralIfNoFilename>0</UseSpiralIfNoFilename>
+  </processing>
+
+  <processing id="ControlPrinter" position="103,171" size="184,98" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
   </processing>
 
   <processing id="GainBecauseOfDistance" position="399,358" size="168,58" type="GainBecauseOfDistance">
@@ -51,6 +55,8 @@
     <MinimumDistance>1</MinimumDistance>
     <DistanceThreshold>0</DistanceThreshold>
   </processing>
+
+  <processing id="MTCReceiver" position="152,29" size="109,58" type="MTCReceiver"/>
 
   <processing id="Source" position="34,340" size="128,108" type="AudioSource"/>
 
@@ -64,11 +70,6 @@
   <port_connection>
     <out>Source.AudioOut</out>
     <in>AudioMixer.Input 0</in>
-  </port_connection>
-
-  <port_connection>
-    <out>Source.AudioOut</out>
-    <in>ChoreoSequencer_1.sync</in>
   </port_connection>
 
   <port_connection>
@@ -162,53 +163,63 @@
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.listener X</out>
+    <out>ChoreoSequencerViaControl.listener X</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener X</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.listener Y</out>
+    <out>ChoreoSequencerViaControl.listener Y</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener Y</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.listener Z</out>
+    <out>ChoreoSequencerViaControl.listener Z</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener Z</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.listener roll</out>
+    <out>ChoreoSequencerViaControl.listener roll</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.listener azimuth</out>
+    <out>ChoreoSequencerViaControl.listener azimuth</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.listener elevation</out>
+    <out>ChoreoSequencerViaControl.listener elevation</out>
     <in>AbsoluteCoordinates2RelativeAngles.listener elevation</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.source X</out>
+    <out>ChoreoSequencerViaControl.source X</out>
     <in>AbsoluteCoordinates2RelativeAngles.source X</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.source Y</out>
+    <out>ChoreoSequencerViaControl.source Y</out>
     <in>AbsoluteCoordinates2RelativeAngles.source Y</in>
   </control_connection>
 
   <control_connection>
-    <out>ChoreoSequencer_1.source Z</out>
+    <out>ChoreoSequencerViaControl.source Z</out>
     <in>AbsoluteCoordinates2RelativeAngles.source Z</in>
   </control_connection>
 
   <control_connection>
     <out>GainBecauseOfDistance.calculated output gain</out>
     <in>AudioMixer.Gain 0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MTCReceiver.MIDI Message Out</out>
+    <in>ChoreoSequencerViaControl.time in milliseconds</in>
+  </control_connection>
+
+  <control_connection>
+    <out>MTCReceiver.MIDI Message Out</out>
+    <in>ControlPrinter.In Control</in>
   </control_connection>
 
 </network>

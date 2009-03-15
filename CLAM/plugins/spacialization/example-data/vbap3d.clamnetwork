@@ -45,12 +45,6 @@
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="LockFreeSndfilePlayer" position="10,526" size="158,58" type="LockFreeSndfilePlayer">
-    <SourceFile>/home/parumi/clam/CLAM/plugins/spacialization/wavs/metronom.wav</SourceFile>
-    <Loop>1</Loop>
-    <SavedNumberOfChannels>1</SavedNumberOfChannels>
-  </processing>
-
   <processing id="Vbap3D" position="367,150" size="79,270" type="Vbap3D"/>
 
   <processing id="azimuth" position="364,-30" size="395,78" type="OutControlSender">
@@ -74,11 +68,6 @@
   <port_connection>
     <out>AudioAmplifier.Audio Output</out>
     <in>Vbap3D.W</in>
-  </port_connection>
-
-  <port_connection>
-    <out>LockFreeSndfilePlayer.out1</out>
-    <in>AudioAmplifier.Input Audio</in>
   </port_connection>
 
   <port_connection>
