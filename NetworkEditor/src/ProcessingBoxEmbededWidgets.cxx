@@ -34,10 +34,12 @@
 #include "VectorViewMonitor.hxx"
 #include "SegmentationView.hxx"
 #include "SegmentationViewMonitor.hxx"
+#include "MIDIPianoWidget.hxx"
 #include "ControlPrinterWidget.hxx"
 #include "ControlSenderWidget.hxx"
 #include "ControlSurfaceWidget.hxx"
 #include "ProgressControlWidget.hxx"
+
 
 #include <typeinfo>
 #include <CLAM/ProcessingDataPlugin.hxx>
@@ -61,6 +63,9 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 
 	if (className=="ControlPrinter" || className=="ControlTraceWriter" || className=="ControlPrinterTyped" )
 		return new ControlPrinterWidget(processing);
+
+	if (className=="ControlPiano")
+		return new MIDIPianoWidget(processing);
 
 	if (className=="ProgressControl")
 		return new ProgressControlWidget(this, processing);
