@@ -159,6 +159,7 @@ pluginsources = dict.fromkeys(pluginsources).keys()
 # //TODO: review this
 pluginsources.append(os.path.join('src','widgets','SpectrumView.cxx'))
 pluginsources.append(os.path.join('src','widgets','PeakView.cxx'))
+pluginsources.append(os.path.join('src','widgets','MIDIPianoWidget.cxx'))
 pluginsources.append(os.path.join('src','widgets','PolarChromaPeaks.cxx'))
 pluginsources.append(os.path.join('src','widgets','Oscilloscope.cxx'))
 pluginsources.append(os.path.join('src','widgets','PixmapWidgets.cxx'))

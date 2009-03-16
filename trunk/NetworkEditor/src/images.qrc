@@ -758,6 +758,7 @@
     <file>images/lau_logo.png</file>
     <file>images/clear_left.png</file>
     <file>images/reload.svg</file>
+    <file>images/piano.svg</file>
   </qresource>
   <qresource prefix="/interfaces" >
     <file>prototyper/DefaultInterface.ui</file>
