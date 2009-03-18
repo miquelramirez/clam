@@ -50,6 +50,9 @@ public:
 
 		_notes.resize(12); // one octave
 		for(unsigned int i=0;i<_notes.size();i++) { _notes[i]=false; }
+
+		_velocity = 90; // fixed velocity. TODO: add it as a processing configuration parameter.
+		_octave = 4; // fixed octave (C4). TODO: add it as a processing configuration parameter.
 	}
 
 	~ControlPiano()
@@ -85,18 +88,30 @@ public:
 		mOutputMIDIMessage.SendControl(msg);
 	}
 
-	bool SetNoteStatus(unsigned int i)
+	bool SetNoteStatus(TSize i, bool state)
+	{
+		_notes[i] = state;
+	}
+
+	bool GetNoteStatus(TSize i)
 	{
 		return _notes[i];
 	}
 
-	bool GetNoteStatus(unsigned int i)
+	TSize GetVelocity()
 	{
-		return _notes[i];
+		return _velocity;
+	}
+
+	TSize GetOctave()
+	{
+		return _octave;
 	}
 
 protected:
 	std::vector<bool> _notes; ///< Enabled/Disabled. Size: 12. One octave, from A to G#
+	TSize _velocity;
+	TSize _octave;
 };
 
 }

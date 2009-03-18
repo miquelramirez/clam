@@ -19,6 +19,7 @@
 
 #include "MIDIPianoWidget.hxx"
 #include <CLAM/ProcessingFactory.hxx>
+#include <CLAM/CLAM_Math.hxx>
 
 #include <QtGui/QMouseEvent>
 
@@ -35,7 +36,7 @@ void MIDIPianoWidget::paintEvent(QPaintEvent *event)
 	painter.drawImage(0, 0, buffer);
 
 	//pressed keys
-	for(unsigned int midiNote=0;midiNote<12;midiNote++) {
+	for(TSize midiNote=0;midiNote<12;midiNote++) {
 		if (_controlPiano->GetNoteStatus(midiNote)) {
 			switch(	midiNote ) {
 			case eANote:
@@ -59,59 +60,176 @@ void MIDIPianoWidget::paintEvent(QPaintEvent *event)
 	event->accept();
 }
 
-void MIDIPianoWidget::pressPixmapMainKey(QPainter &painter, unsigned int keyNumber)
+void MIDIPianoWidget::pressPixmapMainKey(QPainter &painter, TSize keyNumber)
 {
-	unsigned PIXMAP_KEY_WIDTH = width()/7.;
-	unsigned STEP = 1;
+	TSize PIXMAP_KEY_WIDTH = width()/7.;
+	TSize STEP = PIXMAP_KEY_WIDTH/52.;
 
 	painter.setPen(QColor("black")); //edge
 	painter.setBrush(palette().highlight()); //fill
 
-	unsigned int xpos = 0;
+	TSize xpos = 0.;
 	switch( keyNumber )
 	{
 	case eCNote: //C
-		xpos = 0; break;
+		xpos = 0.; break;
 	case eDNote:
 		xpos = STEP + PIXMAP_KEY_WIDTH; break;
 	case eENote:
-		xpos = 2*STEP + PIXMAP_KEY_WIDTH*2; break;
+		xpos = 2.*STEP + PIXMAP_KEY_WIDTH*2.; break;
 	case eFNote:
-		xpos = 3*STEP + PIXMAP_KEY_WIDTH*3; break;
+		xpos = 3.*STEP + PIXMAP_KEY_WIDTH*3.; break;
 	case eGNote:
-		xpos = 4*STEP + PIXMAP_KEY_WIDTH*4; break;
+		xpos = 3.*STEP + PIXMAP_KEY_WIDTH*4.; break;
 	case eANote:
-		xpos = 5*STEP + PIXMAP_KEY_WIDTH*5; break;
+		xpos = 3.*STEP + PIXMAP_KEY_WIDTH*5.; break;
 	case eBNote:
-		xpos = 6*STEP + PIXMAP_KEY_WIDTH*6; break;
+		xpos = 3.*STEP + PIXMAP_KEY_WIDTH*6.; break;
 	default: return; //keyNumber error
 	}
 	painter.drawRect(PIXMAP_KEY_WIDTH/4.+xpos, height()*3./4., PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
 }
 
-void MIDIPianoWidget::pressPixmapSharpKey(QPainter &painter, unsigned int keyNumber)
+void MIDIPianoWidget::pressPixmapSharpKey(QPainter &painter, TSize keyNumber)
 {
-	unsigned PIXMAP_KEY_WIDTH = width()/7.;
-	unsigned STEP = 1;
-	unsigned PIXMAP_SHARP_KEY_WIDTH = PIXMAP_KEY_WIDTH*.7;
+	TSize PIXMAP_KEY_WIDTH = width()/7.;
+	TSize STEP = PIXMAP_KEY_WIDTH/52.;
+	TSize PIXMAP_SHARP_KEY_WIDTH = PIXMAP_KEY_WIDTH*.7;
 
 	painter.setPen(QColor("black")); //edge
 	painter.setBrush(palette().highlight()); //fill
 
-	unsigned int xpos = 0;
+	TSize xpos = 0.;
 	switch( keyNumber )
 	{
 	case eCSharpNote:
 		xpos = PIXMAP_KEY_WIDTH*3./4.; break;
 	case eDSharpNote:
-		xpos = 2*STEP+PIXMAP_KEY_WIDTH*7./4.; break;
+		xpos = 2.*STEP+PIXMAP_KEY_WIDTH*7./4.; break;
 	case eFSharpNote:
-		xpos = 3*STEP+PIXMAP_KEY_WIDTH*15./4.; break;
+		xpos = 3.*STEP+PIXMAP_KEY_WIDTH*15./4.; break;
 	case eGSharpNote:
-		xpos = 4*STEP+PIXMAP_KEY_WIDTH*19./4.; break;
+		xpos = 4.*STEP+PIXMAP_KEY_WIDTH*19./4.; break;
 	case eASharpNote:
-		xpos = 5*STEP+PIXMAP_KEY_WIDTH*23./4.; break;
+		xpos = 5.*STEP+PIXMAP_KEY_WIDTH*23./4.; break;
 	default: return; //keyNumber error
 	}
 	painter.drawRect(xpos, height()/2.2, PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
+}
+
+void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::LeftButton) {
+		TSize x=event->x(), y=event->y();
+
+		TSize note = identifyMidiByPosition(x,y);
+		_controlPiano->SetNoteStatus(note%12,true);
+		note += 21 + (_controlPiano->GetOctave()-1)*12;
+
+		MIDI::Message tmpMessage(144, note, _controlPiano->GetVelocity(), 0); //144 NoteOff, note, velocity
+		_controlPiano->SendMIDIMessage(tmpMessage);
+		update();
+		event->accept();
+	}
+}
+
+void MIDIPianoWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::LeftButton) {
+		TSize x=event->x(), y=event->y();
+
+//FIXME: there is a bug if you press in one note, move the mouse and release the click in a different (note) one
+
+		TSize note = identifyMidiByPosition(x,y);
+		_controlPiano->SetNoteStatus(note%12,false);
+		note += 21 + (_controlPiano->GetOctave()-1)*12;
+		MIDI::Message tmpMessage(128, note, _controlPiano->GetVelocity(), 0); //128 NoteOff, note, velocity
+		_controlPiano->SendMIDIMessage(tmpMessage);
+		update();
+		event->accept();
+	}
+}
+
+TSize MIDIPianoWidget::identifyMidiByPosition(TSize x, TSize y)
+{
+	TSize SHARP_BREAK = height()*.5;
+	TSize PIXMAP_KEY_WIDTH = width()/7.;
+	TSize note = 0;
+	const TSize octaveConst = 12;
+
+	if (y>SHARP_BREAK) {
+		//below: only main keys
+		switch ((int)round(x/PIXMAP_KEY_WIDTH))
+		{
+		case 0:
+			note = eCNote; break;
+		case 1:
+			note = eDNote; break;
+		case 2:
+			note = eENote; break;
+		case 3:
+			note = eFNote; break;
+		case 4:
+			note = eGNote; break;
+		case 5:
+			note = eANote+octaveConst; break;
+		case 6:
+			note = eBNote+octaveConst; break;
+		}
+		return note;
+	}
+	else {
+		//above: main and sharp keys
+		TSize SHARP_WIDTH = PIXMAP_KEY_WIDTH/2.;
+
+		if (x<PIXMAP_KEY_WIDTH*3./4.)
+		{
+			note = eCNote;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*3./4. && x<PIXMAP_KEY_WIDTH*3./4.+SHARP_WIDTH)
+		{
+			note = eCSharpNote;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*(1.+1./4.) && x<PIXMAP_KEY_WIDTH*(1.+3./4.))
+		{
+			note = eDNote;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*(1.+3./4.) && x<PIXMAP_KEY_WIDTH*(1.+3./4.)+SHARP_WIDTH)
+		{
+			note = eDSharpNote;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*(2.+1./4.) && x<PIXMAP_KEY_WIDTH*3.)
+		{
+			note = eENote;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*3. && x<PIXMAP_KEY_WIDTH*(3.+3./4.))
+		{
+			note = eFNote;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*(3.+3./4.) && x<PIXMAP_KEY_WIDTH*(3.+3./4.)+SHARP_WIDTH)
+		{
+			note = eFSharpNote;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*(4.+1./4.) && x<PIXMAP_KEY_WIDTH*(4.+3./4.))
+		{
+			note = eGNote;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*(4.+3./4.) && x<PIXMAP_KEY_WIDTH*(4.+3./4.)+SHARP_WIDTH)
+		{
+			note = eGSharpNote;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*(5.+1./4.) && x<PIXMAP_KEY_WIDTH*(5.+3./4.))
+		{
+			note = eANote+octaveConst;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*(5.+3./4.) && x<PIXMAP_KEY_WIDTH*(5.+3./4.)+SHARP_WIDTH)
+		{
+			note = eASharpNote+octaveConst;
+		}
+		else if (x>PIXMAP_KEY_WIDTH*(6.+1./4.) && x<PIXMAP_KEY_WIDTH*7.)
+		{
+			note = eBNote+octaveConst;
+		}
+		return note;
+	}
 }

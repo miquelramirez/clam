@@ -32,6 +32,7 @@
 #include <CLAM/InControlBase.hxx>
 #include <CLAM/ControlPiano.hxx>
 
+typedef unsigned int TSize;
 
 /**	\brief MIDI piano widget
 *
@@ -66,17 +67,21 @@ protected:
 		eFNote = 8,
 		eFSharpNote = 9,
 		eGNote = 10,
-		eGSharpNote = 11,
+		eGSharpNote = 11
 	};
 
 	QSvgRenderer * _background;
 	QImage buffer;
 
 	void paintEvent(QPaintEvent *event);
+	void mousePressEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *event);
 	void timerEvent(QTimerEvent *event) { update(); }
 
 	void pressPixmapMainKey(QPainter &painter, unsigned int keyNumber);
 	void pressPixmapSharpKey(QPainter &painter, unsigned int keyNumber);
+
+	TSize identifyMidiByPosition(TSize x, TSize y);
 
 private:
 	CLAM::Processing *_processing;
