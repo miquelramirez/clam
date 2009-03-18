@@ -1,7 +1,18 @@
+clam-plugins (1.3.1-1) unstable; urgency=low
+
+  * Excluded TestAudioDatabaseReader binary: is a test binary
+  * Excluded EbowSynthesizer binary: old version for 
+    ContinuousExcitationSynthesizer
+  * Man pages added for ContinuousExcitationSynthesizer
+  * Signing with a personal key instead of a shared CLAM Team one
+
+ -- CLAM Team <developers@clam-project.org>  Wed, 18 Mar 2009 02:40:23 +0100
+
 clam-plugins (1.3.0-1) unstable; urgency=low
 
   * Updated the new website to http://clam-project.org
   * debian specific files moved to a different svn branch
+  * Changed CLAM Team mantainer web
 
  -- CLAM Team <developers@clam-project.org>  Wed, 04 Mar 2009 21:44:36 +0100
 
