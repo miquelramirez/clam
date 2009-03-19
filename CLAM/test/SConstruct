@@ -50,12 +50,15 @@ if sys.platform == 'darwin':
 	env.AppendUnique( LIBS=['xerces-c'] )
 	env.AppendUnique( LIBPATH=['/opt/local/lib'] )
 
+if 'crossmingw' in env['TOOLS']:
+#	env.ParseOptions( 'PKG_CONFIG=~/CajitasDeArena/mingw/local/lib/pkgconfig pkg-config -libs'  )
+	env.Append( LIBS="xerces-c2_8_0 xml++-2.6 xml2 glibmm-2.4 gobject-2.0 sigc-2.0 glib-2.0".split())
 
 
 #TODO: KLUDGE to allow old style and new style CLAM headers
 env.Append(CPPPATH=env['clam_prefix']+'/include/CLAM')
 env.Append(CPPPATH=env['clam_prefix']+'/include')
-env.Append(CPPPATH='include')
+env.Append(CPPPATH=['include'])
 env.Append(CPPPATH=os.path.join('..','UnitTests', 'CommonHelpers'))
 env.Append(CPPPATH=os.path.join('..','UnitTests'))
 env.Append(CPPPATH=os.path.join('..','FunctionalTests','CommonHelpers'))
