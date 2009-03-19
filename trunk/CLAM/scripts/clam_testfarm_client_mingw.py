@@ -42,7 +42,7 @@ localDefinitions = dict(
 	cppunit_prefix = os.path.join(sandbox,"local"),
 	packageWildcard ='*_setup.exe',
 	downloadPlatform ='win',
-	extraLibOptions = 'crossmingw=1 release=1 sandbox_path=%s audio_backend=portaudio xmlbackend=xercesc'%sandbox,
+	extraLibOptions = 'crossmingw=1 release=1 sandbox_path=%s audio_backend=portaudio xmlbackend=both'%sandbox,
 	extraAppOptions = 'crossmingw=1 release=1 sandbox_path=%s external_dll_path=%s'%(sandbox, sandbox+'local/bin'),
 )
 repositories = localDefinitions['repositories'].split()
