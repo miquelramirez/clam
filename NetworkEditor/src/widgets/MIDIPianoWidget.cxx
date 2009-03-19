@@ -159,7 +159,7 @@ TSize MIDIPianoWidget::identifyMidiByPosition(TSize x, TSize y)
 
 	if (y>SHARP_BREAK) {
 		//below: only main keys
-		switch ((int)round(x/PIXMAP_KEY_WIDTH))
+		switch ((int)round(float(x)/PIXMAP_KEY_WIDTH))
 		{
 		case 0:
 			note = eCNote; break;
