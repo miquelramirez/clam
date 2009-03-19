@@ -1,3 +1,5 @@
+#ifdef USE_XMLPP
+
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
 
@@ -619,4 +621,6 @@ private:
 
 } // namespace Test
 } // namespace Cuidado
+
+#endif//USE_XMLPP
 
