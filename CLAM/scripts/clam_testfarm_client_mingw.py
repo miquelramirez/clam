@@ -21,7 +21,7 @@ def ellapsedTime():
 	return time.time() - startTime
 
 HOME = os.environ['HOME']
-os.environ['LD_LIBRARY_PATH']='%s/local/lib:/usr/local/lib' % HOME
+#os.environ['LD_LIBRARY_PATH']='%s/local/lib:/usr/local/lib' % HOME
 
 def set_qtdir_to_qt4(x) :
 	os.environ['QTDIR']=localDefinitions['qt4dir']
@@ -42,7 +42,7 @@ localDefinitions = dict(
 	cppunit_prefix = os.path.join(sandbox,"local"),
 	packageWildcard ='*_setup.exe',
 	downloadPlatform ='win',
-	extraLibOptions = 'crossmingw=1 release=1 sandbox_path=%s audio_backend=portaudio xmlbackend=xmlpp'%sandbox,
+	extraLibOptions = 'crossmingw=1 release=1 sandbox_path=%s audio_backend=portaudio xmlbackend=xercesc'%sandbox,
 	extraAppOptions = 'crossmingw=1 release=1 sandbox_path=%s external_dll_path=%s'%(sandbox, sandbox+'local/bin'),
 )
 repositories = localDefinitions['repositories'].split()
