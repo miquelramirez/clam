@@ -397,9 +397,9 @@ private:
 
 };
 
-#endif//USE_XMLPP
-
-
 } // namespace Test
 } // namespace Cuidado
+
+#endif//USE_XMLPP
+
 
