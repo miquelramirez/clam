@@ -524,7 +524,7 @@ private:
 			result+= *it + '\n';
 
 		CPPUNIT_ASSERT_EQUAL(std::string(
-			"Unexpected content: 'Offending input\none line more' at position /ContextElement\n"),
+			"Unexpected content: 'Offending input\none line more' at position /TestDoc/ContextElement\n"),
 			result
 			);
 	}
@@ -546,7 +546,7 @@ private:
 			result+= *it + '\n';
 
 		CPPUNIT_ASSERT_EQUAL(std::string(
-			"Unexpected Element: 'Offender' at position /ContextElement\n"),
+			"Unexpected Element: 'Offender' at position /TestDoc/ContextElement\n"),
 			result
 			);
 	}
@@ -609,7 +609,7 @@ private:
 
 		std::string path = context3.getPath();
 
-		CPPUNIT_ASSERT_EQUAL(std::string("/ContextElement/Element1/Element2/Element3"),path);
+		CPPUNIT_ASSERT_EQUAL(std::string("/TestDoc/ContextElement/Element1/Element2/Element3"),path);
 	}
 
 
