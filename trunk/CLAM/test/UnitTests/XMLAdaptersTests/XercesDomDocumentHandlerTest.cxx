@@ -82,7 +82,7 @@ private:
 	{
 		xercesc::DOMImplementation * imp =
 			xercesc::DOMImplementation::getImplementation();
-		xercesc::DOMDocument * domDoc = imp->createDocument(0,X("RootNode"),0);
+		xercesc::DOMDocument * domDoc = imp->createDocument(0,U("RootNode"),0);
 
 		XercesDomDocumentHandler doc;
 		doc.setDocument(domDoc);
