@@ -33,13 +33,28 @@ folders = [
 	os.path.join('XMLAdaptersTests'),
 	os.path.join('VisualizationTests'),
 	]
+print env['CPPDEFINES']
 blacklist = [
 	os.path.join('.','TestRunnerQt.cxx'),
 	os.path.join('FactoryTest','PolymorphicTest.cxx'),
-#	os.path.join('ProcessingsTests','AudioMixerTest.cxx'),
+	os.path.join('ProcessingsTests','AudioMixerTest.cxx'), # Uses old fashioned idioms that don't compil
 	os.path.join('TonalAnalysis','ChordCorrelatorTest.cxx'), # recognized labels not the current ones
 	os.path.join('TonalAnalysis','ChordExtractorTest.cxx'), # last too long
 	os.path.join('DescriptorsTests','ProofOfConceptTest.cxx'), # Fails always because FFT size, should be rewritten and moved to functional tests
+	]
+if 'crossmingw' in env['TOOLS'] :
+	# They lauch exceptions unsuported in crossmingw until upgrade
+	blacklist += [
+	os.path.join('DescriptorsTests','DescriptionXmlTest.cxx'),
+	os.path.join('DescriptorsTests','SpectralDescriptorsTest.cxx'),
+	os.path.join('DescriptorsTests','SpectralPeakDescriptorsTest.cxx'),
+	os.path.join('ProcessingBaseTests','ProcessingTest.cxx'), # this one just don't notice the exception
+	os.path.join('NonComponentData','FlagsTest.cxx'),
+	os.path.join('FlowControlTests','NetworkTest.cxx'),
+	os.path.join('DynamicTypeTests','DynamicTypeBasicTest.cxx'),
+	os.path.join('XMLAdaptersTests','LibXmlDomDocumentHandlerTest.cxx'),
+	os.path.join('XMLAdaptersTests','LibXmlDomReaderTest.cxx'),
+	os.path.join('XMLAdaptersTests','XercesDom2ClamObjectsTest.cxx'),
 	]
 
 
@@ -50,9 +65,6 @@ headers = scanFiles('*.hxx', folders)
 for blacksheep in blacklist :
 	sources.remove(blacksheep) 
 
-
-if sys.platform != 'win32'  :
-	env.Append( CPPPATH=['include'] )
 
 unit_tests = env.Program( 'UnitTests', sources )
 test_alias = Alias( 'run_unit_tests', [unit_tests], unit_tests[0].abspath )
