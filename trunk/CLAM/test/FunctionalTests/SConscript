@@ -20,6 +20,7 @@ folders = [
 	os.path.join('CommonHelpers'),
 	os.path.join('FlowControlTests'),
 	os.path.join('ProcessingTests'),
+#	os.path.join('Applications','MIRTests'),
 	]
 blacklist = [
 	os.path.join('..','UnitTests','TestRunnerQt.cxx'),
@@ -27,8 +28,15 @@ blacklist = [
 	os.path.join('ProcessingTests','TestOnsetDetector.cxx'),
 	os.path.join('ProcessingTests','TestSpectralPeakDetect.cxx'),
 	os.path.join('ProcessingTests','TestSMSAnalysis.cxx'),
-#	'TestAudioFileIn',
 	]
+
+if 'crossmingw' in env['TOOLS']  or 'mingw' in env['TOOLS']:
+	blacklist += [
+	os.path.join('ProcessingTests','TestControlTraces.cxx'),
+	os.path.join('ProcessingTests','TestMultiChannelAudioFileReader.cxx'),
+	os.path.join('ProcessingTests','TestMultiChannelAudioFileWriter.cxx'),
+	]
+
 
 #folders = [ os.path.join('..','..','..','test', folder) for folder in folders ]
 #blacklist = [ os.path.join('..','..','..','test', blacksheep) for blacksheep in blacklist ]
