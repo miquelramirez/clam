@@ -39,13 +39,6 @@ blacklist = [
 	os.path.join('ProcessingsTests','AudioMixerTest.cxx'),
 	os.path.join('TonalAnalysis','ChordCorrelatorTest.cxx'), # recognized labels not the current ones
 	os.path.join('TonalAnalysis','ChordExtractorTest.cxx'), # last too long
-	# TODO see for libxml?
-#	os.path.join('XMLAdaptersTests','LibXmlDomDocumentHandlerTest.cxx'),
-#	os.path.join('XMLAdaptersTests','LibXmlDomReaderTest.cxx'),
-#	os.path.join('XMLAdaptersTests','LibXmlDomReadingContextTest.cxx'),
-#	os.path.join('XMLAdaptersTests','LibXmlDomWriterTest.cxx'),
-#	os.path.join('XMLAdaptersTests','XercesDom2ClamObjectsTest.cxx'),
-#	os.path.join('XMLAdaptersTests','XercesDomDocumentHandlerTest.cxx'),
 	os.path.join('DescriptorsTests','ProofOfConceptTest.cxx'),
 	]
 
