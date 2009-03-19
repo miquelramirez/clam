@@ -36,10 +36,10 @@ folders = [
 blacklist = [
 	os.path.join('.','TestRunnerQt.cxx'),
 	os.path.join('FactoryTest','PolymorphicTest.cxx'),
-	os.path.join('ProcessingsTests','AudioMixerTest.cxx'),
+#	os.path.join('ProcessingsTests','AudioMixerTest.cxx'),
 	os.path.join('TonalAnalysis','ChordCorrelatorTest.cxx'), # recognized labels not the current ones
 	os.path.join('TonalAnalysis','ChordExtractorTest.cxx'), # last too long
-	os.path.join('DescriptorsTests','ProofOfConceptTest.cxx'),
+	os.path.join('DescriptorsTests','ProofOfConceptTest.cxx'), # Fails always because FFT size, should be rewritten and moved to functional tests
 	]
 
 
