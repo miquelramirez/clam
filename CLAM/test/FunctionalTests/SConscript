@@ -32,6 +32,7 @@ blacklist = [
 
 if 'crossmingw' in env['TOOLS']  or 'mingw' in env['TOOLS']:
 	blacklist += [
+	# use exceptions not supported by hardy mingw (they use sjlj)
 	os.path.join('ProcessingTests','TestControlTraces.cxx'),
 	os.path.join('ProcessingTests','TestMultiChannelAudioFileReader.cxx'),
 	os.path.join('ProcessingTests','TestMultiChannelAudioFileWriter.cxx'),
