@@ -29,6 +29,17 @@
 #define I18N_PATH "../"
 #endif
 
+void usage(const std::string & program)
+{
+	std::cout 
+		<< " Usage: " << program
+		<< " [-b <backend>] [--help]\n"
+		<< "Options:\n"
+		<< " -b <backend>   The backend can be JACK, PortAudio or Auto.\n"
+		<< " --help         This help.\n"
+		<< std::endl;
+}
+
 int main( int argc, char ** argv )
 {
 
@@ -38,6 +49,35 @@ int main( int argc, char ** argv )
 #endif
 	
 	QApplication app( argc, argv );
+
+	QString backendName = "Auto";
+	enum { none, backend } optionArgument = none;
+	for (int i=1; i<argc; i++)
+	{
+		std::string arg = argv[i];
+		if (optionArgument!=none)
+		{
+			backendName = arg.c_str();
+			optionArgument=none;
+			continue;
+		}
+		if (arg[0]=='-')
+		{
+			if (arg=="--help")
+			{
+				usage(argv[0]);
+				return 0;
+			}
+			if (arg=="-b")
+			{
+				optionArgument=backend;
+				continue;
+			}
+			std::cerr << "Invalid option '" << arg << "'." << std::endl;
+			usage(argv[0]);
+			return -1;
+		}
+	}
 
 	QString locale = QLocale::system().name();
 
@@ -54,5 +94,7 @@ int main( int argc, char ** argv )
 	QCoreApplication::setApplicationName("Chordata");
 	MainWindow w;
 	w.show();
+	w.setBackend(backendName);
+
 	return app.exec();
 }

@@ -52,6 +52,8 @@ public:
 	MainWindow();
 	virtual ~MainWindow();
 	
+	void setBackend(QString &backend);
+
 public slots:
 	void fileOpen();
 	void recentFileOpen();

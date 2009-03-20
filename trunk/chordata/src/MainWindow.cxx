@@ -27,11 +27,18 @@
 #include <QDesktopServices>
 
 #include <CLAM/CLAMVersion.hxx>
-#include <CLAM/PANetworkPlayer.hxx>
 #include <CLAM/TonalAnalysis.hxx>
 #include <CLAM/AudioFileMemoryLoader.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
 #include <CLAM/AudioTextDescriptors.hxx>
+
+#ifdef USE_JACK
+#include <CLAM/JACKNetworkPlayer.hxx>
+#endif
+#ifdef USE_PORTAUDIO
+#include <CLAM/PANetworkPlayer.hxx>
+#endif
+
 #include "KeySpace.hxx"
 #include "Spectrogram.hxx"
 #include "Tonnetz.hxx"
@@ -101,9 +108,6 @@ MainWindow::MainWindow()
 	_segmentationView = new SegmentationView(centralwidget);
 	_segmentationView->beCentred(true);
 	vboxLayout->addWidget(_segmentationView);
-
-	_networkPlayer = new CLAM::PANetworkPlayer;
-	_network.SetPlayer(_networkPlayer);
 
 	_tonalAnalysis = new CLAM::TonalAnalysis;
 
@@ -486,3 +490,38 @@ void MainWindow::onlineTutorial()
 	QDesktopServices::openUrl(helpUrl);
 }
 
+void MainWindow::setBackend(QString &backend)
+{
+	if (_networkPlayer) delete _networkPlayer;
+	_networkPlayer = 0;
+
+	#ifdef USE_JACK
+	if (backend=="JACK" || backend=="Auto")
+	{
+		CLAM::JACKNetworkPlayer *jackPlayer = new CLAM::JACKNetworkPlayer();
+		if ( jackPlayer->IsWorking() )
+		{
+			backend = "JACK";
+			_networkPlayer = jackPlayer;
+		}
+		else
+			delete jackPlayer;
+	}
+	#endif
+
+	#ifdef USE_PORTAUDIO
+	if (backend=="PortAudio" || backend=="Auto")
+	{
+		if (! _networkPlayer)
+		{
+			backend = "PortAudio";
+			_networkPlayer = new CLAM::PANetworkPlayer();
+		}
+	}
+	#endif
+
+	CLAM_ASSERT(_networkPlayer!=0, "Problem setting the backend.");
+	if (_networkPlayer==0) backend = "None";
+	_network.SetPlayer( _networkPlayer );
+	std::cout << "Audio backend: " << backend.toStdString() << std::endl;
+}
