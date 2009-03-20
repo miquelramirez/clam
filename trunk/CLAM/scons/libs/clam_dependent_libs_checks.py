@@ -237,7 +237,7 @@ def test_xml_backend( env, conf ) :
 			return config_error( "Could not find xerces c headers! Defaulting to the null xml backend" )
 		env.Append(ENV=os.environ)
 		print('path of app: ' + env['ENV']['PATH'])
-		if not conf.CheckLibrarySample('xerces-c', 'c++', 'xerces-c', xerces_test_code, 'xerces-c_2' ) :
+		if not conf.CheckLibrarySample('xerces-c', 'c++', 'xerces-c', xerces_test_code, 'libxerces-c2_8_0' ) :
 			return config_error( "xerces c code compile/link/run test failed!" )
 
 		env.Append( CPPFLAGS=['-DUSE_XERCES=1', '-DCLAM_USE_XML'] )
