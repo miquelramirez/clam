@@ -91,7 +91,10 @@ void MIDIPianoWidget::pressPixmapMainKey(QPainter &painter, TSize keyNumber)
 		xpos = 3.*STEP + PIXMAP_KEY_WIDTH*6.; break;
 	default: return; //keyNumber error
 	}
-	painter.drawRect(PIXMAP_KEY_WIDTH/4.+xpos, height()*3./4., PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
+	if ( width()>5.*height() )
+		painter.drawRect(PIXMAP_KEY_WIDTH/4.+xpos, height()*3./4., PIXMAP_KEY_WIDTH/2., height()/6.);
+	else
+		painter.drawRect(PIXMAP_KEY_WIDTH/4.+xpos, height()*3./4., PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
 }
 
 void MIDIPianoWidget::pressPixmapSharpKey(QPainter &painter, TSize keyNumber)
@@ -117,7 +120,10 @@ void MIDIPianoWidget::pressPixmapSharpKey(QPainter &painter, TSize keyNumber)
 		xpos = 5.*STEP+PIXMAP_KEY_WIDTH*23./4.; break;
 	default: return; //keyNumber error
 	}
-	painter.drawRect(xpos, height()/2.2, PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
+	if ( width()>5.*height() )
+		painter.drawRect(xpos, height()/2.2, PIXMAP_KEY_WIDTH/2., height()/6.);
+	else
+		painter.drawRect(xpos, height()/2.2, PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
 }
 
 void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
@@ -256,13 +262,9 @@ void MIDIPianoWidget::processData()
 	{
 		//(bin+10)%12 since dataSource array starts in 'G' and NoteStatus one in 'A'
 		if (_data[bin]>0.01)
-		{
 			_controlPiano->SetNoteStatus((bin+10)%12,true);
-		}
 		else
-		{
 			_controlPiano->SetNoteStatus((bin+10)%12,false);
-		}
 	}
 }
 
