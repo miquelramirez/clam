@@ -1,6 +1,4 @@
 /*
- * Copyright (c) 2001-2004 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -49,6 +47,17 @@ bool Fund2MIDI::Do( const Fundamental& inFund )
 	CLAM_DEBUG_ASSERT( fund_note>=0 & fund_note<128, "Fundamental MIDI note should be betweeen 0..127");
 
 	mFreqControlOut.SendControl( fund_note );
+
+	if (fund_note!=_previousNote)
+	{
+		MIDI::Message tmpMessage1(128, _previousNote, 90, 0); //128 NoteOff, note, velocity (fixed in 90)
+		mOutputMIDIMessage.SendControl(tmpMessage1);
+
+		MIDI::Message tmpMessage2(144, fund_note, 90, 0); //144 NoteOn, note, velocity (fixed in 90)
+		mOutputMIDIMessage.SendControl(tmpMessage2);
+		_previousNote = fund_note;
+	}
+
 	return true;
 }
 
