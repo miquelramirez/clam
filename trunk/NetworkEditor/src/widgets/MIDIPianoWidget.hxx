@@ -20,19 +20,20 @@
 
 #include <QtGui/QWidget>
 #include <QtGui/QPainter>
-
 #include <QtSvg/QSvgRenderer>
 
-#include <CLAM/TypedInControl.hxx>
-#include <CLAM/MIDIMessage.hxx>
-
-#include <CLAM/Processing.hxx>
 #include <vector>
 
+#include "FloatArrayDataSource.hxx"
+#include <CLAM/TypedInControl.hxx>
+#include <CLAM/MIDIMessage.hxx>
+#include <CLAM/Processing.hxx>
 #include <CLAM/InControlBase.hxx>
 #include <CLAM/ControlPiano.hxx>
 
 typedef unsigned int TSize;
+
+namespace CLAM {
 
 /**	\brief MIDI piano widget
 *
@@ -41,21 +42,35 @@ typedef unsigned int TSize;
 class MIDIPianoWidget: public QWidget
 {	
 	Q_OBJECT
+
 public:
-	MIDIPianoWidget(CLAM::Processing *processing, QWidget * parent=NULL)
+	MIDIPianoWidget(Processing *processing, QWidget * parent=NULL)
 		:
 		QWidget(parent),
 		_processing(processing)
 	{
 		_background = new QSvgRenderer(QString(":/icons/images/piano.svg"), this);
-		_controlPiano = dynamic_cast< CLAM::ControlPiano* >(_processing);
+		_controlPiano = dynamic_cast< ControlPiano* >(_processing);
+
+		noDataSource();
 
 		startTimer(50);
 	}
 
 	~MIDIPianoWidget() {}
 
+	void setDataSource( VM::FloatArrayDataSource & dataSource );
+	void noDataSource();
+
+	void setClickEnabled(bool clickEnabled) { _clickEnabled = clickEnabled; }
+
 protected:
+	unsigned _nBins;
+	VM::FloatArrayDataSource * _dataSource;
+	const TData * _data;
+
+	bool _clickEnabled; ///< the option to enable/disable the mouse events / keys pressed. Chordata is the use case for this.
+
 	enum TemperedNotes {
 		eANote = 0,
 		eASharpNote = 1,
@@ -79,14 +94,18 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *event);
 	void timerEvent(QTimerEvent *event) { update(); }
 
-	void pressPixmapMainKey(QPainter &painter, unsigned int keyNumber);
-	void pressPixmapSharpKey(QPainter &painter, unsigned int keyNumber);
+	void pressPixmapMainKey(QPainter &painter, TSize keyNumber);
+	void pressPixmapSharpKey(QPainter &painter, TSize keyNumber);
 
 	TSize identifyMidiByPosition(TSize x, TSize y);
+	void processData();
 
 private:
-	CLAM::Processing *_processing;
-	CLAM::ControlPiano *_controlPiano;
+	Processing *_processing;
+	ControlPiano *_controlPiano;
 };
 
+} //namespace CLAM
+
 #endif // _MIDIPianoWidget_
+

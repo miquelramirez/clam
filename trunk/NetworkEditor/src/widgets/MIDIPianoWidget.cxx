@@ -23,6 +23,8 @@
 
 #include <QtGui/QMouseEvent>
 
+namespace CLAM {
+
 void MIDIPianoWidget::paintEvent(QPaintEvent *event)
 {
 	if ( buffer.size() != size() ) {
@@ -34,6 +36,8 @@ void MIDIPianoWidget::paintEvent(QPaintEvent *event)
 	}
 	QPainter painter(this);
 	painter.drawImage(0, 0, buffer);
+
+	if (_dataSource) processData();
 
 	//pressed keys
 	for(TSize midiNote=0;midiNote<12;midiNote++) {
@@ -87,14 +91,16 @@ void MIDIPianoWidget::pressPixmapMainKey(QPainter &painter, TSize keyNumber)
 		xpos = 3.*STEP + PIXMAP_KEY_WIDTH*6.; break;
 	default: return; //keyNumber error
 	}
-	painter.drawRect(PIXMAP_KEY_WIDTH/4.+xpos, height()*3./4., PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
+	if ( width()>5.*height() )
+		painter.drawRect(PIXMAP_KEY_WIDTH/4.+xpos, height()*3./4., PIXMAP_KEY_WIDTH/2., height()/6.);
+	else
+		painter.drawRect(PIXMAP_KEY_WIDTH/4.+xpos, height()*3./4., PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
 }
 
 void MIDIPianoWidget::pressPixmapSharpKey(QPainter &painter, TSize keyNumber)
 {
 	TSize PIXMAP_KEY_WIDTH = width()/7.;
 	TSize STEP = PIXMAP_KEY_WIDTH/52.;
-	TSize PIXMAP_SHARP_KEY_WIDTH = PIXMAP_KEY_WIDTH*.7;
 
 	painter.setPen(QColor("black")); //edge
 	painter.setBrush(palette().highlight()); //fill
@@ -114,11 +120,15 @@ void MIDIPianoWidget::pressPixmapSharpKey(QPainter &painter, TSize keyNumber)
 		xpos = 5.*STEP+PIXMAP_KEY_WIDTH*23./4.; break;
 	default: return; //keyNumber error
 	}
-	painter.drawRect(xpos, height()/2.2, PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
+	if ( width()>5.*height() )
+		painter.drawRect(xpos, height()/2.2, PIXMAP_KEY_WIDTH/2., height()/6.);
+	else
+		painter.drawRect(xpos, height()/2.2, PIXMAP_KEY_WIDTH/2., PIXMAP_KEY_WIDTH/2.);
 }
 
 void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
 {
+	if (!_clickEnabled) return;
 	if (event->button() == Qt::LeftButton) {
 		TSize x=event->x(), y=event->y();
 
@@ -126,7 +136,7 @@ void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
 		_controlPiano->SetNoteStatus(note%12,true);
 		note += 21 + (_controlPiano->GetOctave()-1)*12;
 
-		MIDI::Message tmpMessage(144, note, _controlPiano->GetVelocity(), 0); //144 NoteOff, note, velocity
+		MIDI::Message tmpMessage(144, note, _controlPiano->GetVelocity(), 0); //144 NoteOn, note, velocity
 		_controlPiano->SendMIDIMessage(tmpMessage);
 		update();
 		event->accept();
@@ -135,6 +145,7 @@ void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
 
 void MIDIPianoWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+	if (!_clickEnabled) return;
 	if (event->button() == Qt::LeftButton) {
 		TSize x=event->x(), y=event->y();
 
@@ -233,3 +244,30 @@ TSize MIDIPianoWidget::identifyMidiByPosition(TSize x, TSize y)
 		return note;
 	}
 }
+
+void MIDIPianoWidget::setDataSource(VM::FloatArrayDataSource & dataSource )
+{
+	_dataSource = &dataSource;
+	_nBins = _dataSource->nBins();
+}
+
+void MIDIPianoWidget::noDataSource()
+{
+	_dataSource = 0;
+	_nBins = 0;
+}
+
+void MIDIPianoWidget::processData()
+{
+	_data = _dataSource->frameData();
+	for (unsigned bin = 0; bin < _nBins; bin++)
+	{
+		//(bin+10)%12 since dataSource array starts in 'G' and NoteStatus one in 'A'
+		if (_data[bin]>0.01)
+			_controlPiano->SetNoteStatus((bin+10)%12,true);
+		else
+			_controlPiano->SetNoteStatus((bin+10)%12,false);
+	}
+}
+
+} //namespace CLAM

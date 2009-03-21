@@ -65,7 +65,7 @@ QWidget * ClamNetworkCanvas::embededWidgetFor(void * model)
 		return new ControlPrinterWidget(processing);
 
 	if (className=="ControlPiano")
-		return new MIDIPianoWidget(processing);
+		return new CLAM::MIDIPianoWidget(processing);
 
 	if (className=="ProgressControl")
 		return new ProgressControlWidget(this, processing);
