@@ -1,6 +1,4 @@
 /*
- * Copyright (c) 2004 MUSIC TECHNOLOGY GROUP (MTG)
- *                         UNIVERSITAT POMPEU FABRA
  *
  *
  * This program is free software; you can redistribute it and/or modify
@@ -27,7 +25,9 @@
 #include "ProcessingConfig.hxx"
 #include "InPort.hxx"
 #include "OutControl.hxx"
+#include "TypedOutControl.hxx"
 #include "Fundamental.hxx"
+#include "MIDIMessage.hxx"
 
 namespace CLAM
 {
@@ -53,8 +53,11 @@ namespace CLAM
 	{
 		InPort< Fundamental > mInFund;
 		FloatOutControl mFreqControlOut;
+		TypedOutControl< MIDI::Message > mOutputMIDIMessage;
 
 		Fund2MIDIConfig mConfig;
+
+		TSize _previousNote; ///< MIDI note previously sent
 	public:
 
 		const char *GetClassName() const { return "Fund2MIDI"; }
@@ -62,7 +65,9 @@ namespace CLAM
 		Fund2MIDI()
 			:
 			mInFund("In Fundamental", this),
-			mFreqControlOut("MIDI Out", this)
+			mFreqControlOut("MIDI Out", this),
+			mOutputMIDIMessage("MIDI Message Out", this),
+			_previousNote(0)
 		{
 			Configure( mConfig );
 		}
@@ -70,7 +75,9 @@ namespace CLAM
 		Fund2MIDI( const Fund2MIDIConfig& cfg ) 
 			:
 			mInFund("In Fundamental", this),
-			mFreqControlOut("MIDI Out", this)
+			mFreqControlOut("Frequency", this),
+			mOutputMIDIMessage("MIDI Message Out", this),
+			_previousNote(0)
 		{ 
 			Configure( cfg );
 		}
