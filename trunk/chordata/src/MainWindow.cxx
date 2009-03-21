@@ -134,6 +134,7 @@ MainWindow::MainWindow()
 	connect(viewChromaPeaksAction, SIGNAL(toggled(bool)), _polarChromaPeaks, SLOT(setVisible(bool)));
 	connect(viewChordRankingAction, SIGNAL(toggled(bool)), _chordRanking, SLOT(setVisible(bool)));
 	connect(viewSegmentationAction, SIGNAL(toggled(bool)), _segmentationView, SLOT(setVisible(bool)));
+	connect(viewPianoAction, SIGNAL(toggled(bool)), _pianoView, SLOT(setVisible(bool)));
 
 	QSettings settings;
 	_recentFiles = settings.value("RecentFiles").toStringList();
@@ -144,6 +145,7 @@ MainWindow::MainWindow()
 	viewChromaPeaksAction->setChecked(settings.value("ChromaPeaksVisible", true).toBool());
 	viewChordRankingAction->setChecked(settings.value("ChordRankingVisible", true).toBool());
 	viewSegmentationAction->setChecked(settings.value("SegmentationVisible", true).toBool());
+	viewPianoAction->setChecked(settings.value("PianoVisible", true).toBool());
 }
 
 MainWindow::~MainWindow()
@@ -156,6 +158,7 @@ MainWindow::~MainWindow()
 	settings.setValue("ChromaPeaksVisible",  viewChromaPeaksAction->isChecked());
 	settings.setValue("ChordRankingVisible", viewChordRankingAction->isChecked());
 	settings.setValue("SegmentationVisible", viewSegmentationAction->isChecked());
+	settings.setValue("PianoVisible", viewPianoAction->isChecked());
 
 	stop();
 
