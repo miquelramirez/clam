@@ -128,6 +128,7 @@ void MIDIPianoWidget::pressPixmapSharpKey(QPainter &painter, TSize keyNumber)
 
 void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
 {
+	if (!_clickEnabled) return;
 	if (event->button() == Qt::LeftButton) {
 		TSize x=event->x(), y=event->y();
 
@@ -144,6 +145,7 @@ void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
 
 void MIDIPianoWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+	if (!_clickEnabled) return;
 	if (event->button() == Qt::LeftButton) {
 		TSize x=event->x(), y=event->y();
 

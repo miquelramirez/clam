@@ -115,6 +115,7 @@ MainWindow::MainWindow()
 	_controlPiano = _network.GetUnusedName("ControlPiano");
 	_network.AddProcessing(_controlPiano, control);
 	_pianoView = new CLAM::MIDIPianoWidget(control, centralwidget);
+	_pianoView->setClickEnabled(false);
 	vboxLayout->addWidget(_pianoView);
 
 	_tonalAnalysis = new CLAM::TonalAnalysis;

@@ -42,6 +42,7 @@ namespace CLAM {
 class MIDIPianoWidget: public QWidget
 {	
 	Q_OBJECT
+
 public:
 	MIDIPianoWidget(Processing *processing, QWidget * parent=NULL)
 		:
@@ -61,10 +62,14 @@ public:
 	void setDataSource( VM::FloatArrayDataSource & dataSource );
 	void noDataSource();
 
+	void setClickEnabled(bool clickEnabled) { _clickEnabled = clickEnabled; }
+
 protected:
 	unsigned _nBins;
 	VM::FloatArrayDataSource * _dataSource;
 	const TData * _data;
+
+	bool _clickEnabled; ///< the option to enable/disable the mouse events / keys pressed. Chordata is the use case for this.
 
 	enum TemperedNotes {
 		eANote = 0,
@@ -89,7 +94,6 @@ protected:
 	void mouseReleaseEvent(QMouseEvent *event);
 	void timerEvent(QTimerEvent *event) { update(); }
 
-//TODO: add the option to enable/disable the mouse events / keys pressed. Chordata is the use case for this
 	void pressPixmapMainKey(QPainter &painter, TSize keyNumber);
 	void pressPixmapSharpKey(QPainter &painter, TSize keyNumber);
 
