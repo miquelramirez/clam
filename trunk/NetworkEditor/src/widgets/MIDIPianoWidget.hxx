@@ -42,8 +42,9 @@ class MIDIPianoWidget: public QWidget
 {	
 	Q_OBJECT
 public:
-	MIDIPianoWidget(CLAM::Processing *processing)
-		: 
+	MIDIPianoWidget(CLAM::Processing *processing, QWidget * parent=NULL)
+		:
+		QWidget(parent),
 		_processing(processing)
 	{
 		_background = new QSvgRenderer(QString(":/icons/images/piano.svg"), this);
