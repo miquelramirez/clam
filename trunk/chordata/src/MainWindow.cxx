@@ -31,6 +31,7 @@
 #include <CLAM/AudioFileMemoryLoader.hxx>
 #include <CLAM/MonoAudioFileReader.hxx>
 #include <CLAM/AudioTextDescriptors.hxx>
+#include <CLAM/ControlPiano.hxx>
 
 #ifdef USE_JACK
 #include <CLAM/JACKNetworkPlayer.hxx>
@@ -48,6 +49,7 @@
 #include "ProgressControl.hxx"
 #include "FloatVectorStorage.hxx"
 #include "FloatPairVectorStorage.hxx"
+#include "MIDIPianoWidget.hxx"
 
 #include <iostream>
 #include <vector>
@@ -108,6 +110,12 @@ MainWindow::MainWindow()
 	_segmentationView = new SegmentationView(centralwidget);
 	_segmentationView->beCentred(true);
 	vboxLayout->addWidget(_segmentationView);
+
+	CLAM::ControlPiano * control = new CLAM::ControlPiano;
+	_controlPiano = _network.GetUnusedName("ControlPiano");
+	_network.AddProcessing(_controlPiano, control);
+	_pianoView = new CLAM::MIDIPianoWidget(control, centralwidget);
+	vboxLayout->addWidget(_pianoView);
 
 	_tonalAnalysis = new CLAM::TonalAnalysis;
 
@@ -280,6 +288,7 @@ void MainWindow::loadAudioFile(const std::string & fileName)
 	_keySpace->noDataSource();
 	_chordRanking->noDataSource();
 	_segmentationView->noDataSource();
+	_pianoView->noDataSource();
 	
 	// Point the data sources to no storage and delete old storages
 	_pcpSource.clearData();
@@ -392,6 +401,7 @@ void MainWindow::loadAudioFile(const std::string & fileName)
 	_pcpSource.setStorage(_pcpStorage, sampleRate, &_frameDivision, nFrames);
 	_spectrogram->setDataSource(_pcpSource);
 	_tonnetz->setDataSource(_pcpSource);
+	_pianoView->setDataSource(_pcpSource);
 
 	const char * minorChords[] = { 
 		"g", "g#", "a", "a#",

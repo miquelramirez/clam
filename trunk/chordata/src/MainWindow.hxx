@@ -33,6 +33,7 @@ namespace CLAM
 {
 	class NetworkPlayer;
 	class TonalAnalysis;
+	class MIDIPianoWidget;
 namespace VM
 {
 	class Spectrogram;
@@ -79,6 +80,7 @@ private:
 	CLAM::MonoAudioFileReaderConfig _fileReaderConfig;
 	std::string _fileReader;
 	std::string _progressControl;
+	std::string _controlPiano;
 	
 	CLAM::TonalAnalysis *_tonalAnalysis;
 	
@@ -89,7 +91,8 @@ private:
 	CLAM::VM::ChordRanking *_chordRanking;
 	PolarChromaPeaks *_polarChromaPeaks;
 	SegmentationView *_segmentationView;
-	
+	CLAM::MIDIPianoWidget	*_pianoView;
+
 	FloatVectorStorage *_pcpStorage;
 	FloatVectorStorage *_chordCorrelationStorage;
 	FloatPairVectorStorage *_chromaPeaksStorage;
