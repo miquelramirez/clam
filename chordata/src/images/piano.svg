@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="70.146431"
+   height="39.463238"
+   id="svg3178"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="piano.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   version="1.0">
+  <defs
+     id="defs3180">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective3186" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="14.85464"
+     inkscape:cx="35.073215"
+     inkscape:cy="19.731619"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1428"
+     inkscape:window-height="870"
+     inkscape:window-x="6"
+     inkscape:window-y="24" />
+  <metadata
+     id="metadata3183">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Piano</dc:title>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title />
+          </cc:Agent>
+        </dc:publisher>
+        <dc:description>Mini piano keyboard</dc:description>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Hernan Ordiales</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:date>2009-03-11</dc:date>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title />
+          </cc:Agent>
+        </dc:rights>
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/by/3.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/by/3.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Notice" />
+        <cc:requires
+           rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-556.24204,-247.18794)">
+    <rect
+       style="fill:#fff7ff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.71172899;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2386"
+       width="9.2287683"
+       height="38.668175"
+       x="556.5979"
+       y="247.60194"
+       ry="3.39762"
+       rx="0.60375088" />
+    <rect
+       style="fill:#fff7ff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.71172899;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3189"
+       width="9.2287683"
+       height="38.668175"
+       x="566.61896"
+       y="247.6109"
+       ry="3.39762"
+       rx="0.60375088" />
+    <rect
+       style="fill:#fff7ff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.71200001;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3191"
+       width="9.2287683"
+       height="38.668175"
+       x="576.64014"
+       y="247.627"
+       ry="3.39762"
+       rx="0.60375088" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.4259001;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3213"
+       width="5.7735667"
+       height="22.132952"
+       x="563.14575"
+       y="247.47447"
+       ry="1.9447351"
+       rx="0.37770975" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.4259001;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3724"
+       width="5.7735667"
+       height="22.132952"
+       x="573.58978"
+       y="247.504"
+       ry="1.9447351"
+       rx="0.37770975" />
+    <rect
+       style="fill:#fff7ff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.71172899;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3726"
+       width="9.2287683"
+       height="38.668175"
+       x="586.64673"
+       y="247.58339"
+       ry="3.39762"
+       rx="0.60375088" />
+    <rect
+       style="fill:#fff7ff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.71172899;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3728"
+       width="9.2287683"
+       height="38.668175"
+       x="596.68555"
+       y="247.58339"
+       ry="3.39762"
+       rx="0.60375088" />
+    <rect
+       style="fill:#fff7ff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.71172899;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3734"
+       width="9.2287683"
+       height="38.668175"
+       x="606.73975"
+       y="247.58073"
+       ry="3.39762"
+       rx="0.60375088" />
+    <rect
+       style="fill:#fff7ff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.71172899;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3736"
+       width="9.2287683"
+       height="38.668175"
+       x="616.80383"
+       y="247.58072"
+       ry="3.39762"
+       rx="0.60375088" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.4259001;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3738"
+       width="5.7735667"
+       height="22.132952"
+       x="593.22107"
+       y="247.43658"
+       ry="1.9447351"
+       rx="0.37770975" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.4259001;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3740"
+       width="5.7735667"
+       height="22.132952"
+       x="603.43536"
+       y="247.43658"
+       ry="1.9447351"
+       rx="0.37770975" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.4259001;stroke-linejoin:round;stroke-miterlimit:3.4000001;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3742"
+       width="5.7735667"
+       height="22.132952"
+       x="613.42426"
+       y="247.43658"
+       ry="1.9447351"
+       rx="0.37770975" />
+    <rect
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.50852579;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3744"
+       width="69.587593"
+       height="2.2189431"
+       x="556.5072"
+       y="247.4422"
+       rx="0.67642331"
+       ry="0" />
+    <text
+       xml:space="preserve"
+       style="font-size:9px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Verdana;-inkscape-font-specification:Verdana"
+       x="557.95459"
+       y="284.11383"
+       id="text3746"><tspan
+         sodipodi:role="line"
+         id="tspan3748"
+         x="557.95459"
+         y="284.11383">C</tspan></text>
+  </g>
+</svg>

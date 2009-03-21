@@ -14,6 +14,7 @@
     <file>images/segmentation.svg</file>
     <file>images/spectrogram.svg</file>
     <file>images/tonnetz.svg</file>
+    <file>images/piano.svg</file>
   </qresource>
   <qresource prefix="/logos" />
 </RCC>

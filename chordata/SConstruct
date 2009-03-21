@@ -82,6 +82,7 @@ env.EnableQt4Modules([
 	'QtCore',
 	'QtGui',
 	'QtOpenGL',
+	'QtSvg',
 	],
 	debug=False,
 	crosscompiling=crosscompiling,
