@@ -146,6 +146,15 @@ MainWindow::MainWindow()
 	viewChordRankingAction->setChecked(settings.value("ChordRankingVisible", true).toBool());
 	viewSegmentationAction->setChecked(settings.value("SegmentationVisible", true).toBool());
 	viewPianoAction->setChecked(settings.value("PianoVisible", true).toBool());
+
+	//Below lines are a workaround since setChecked should raise the toggled signal and since is connected, call setVisible() but seems there is no call, with the consequent bug at startup
+	_spectrogram->setVisible(settings.value("SpectrogramVisible", true).toBool());
+	_tonnetz->setVisible(settings.value("TonnetzVisible", true).toBool());
+	_keySpace->setVisible(settings.value("KeySpaceVisible", true).toBool());
+	_polarChromaPeaks->setVisible(settings.value("ChromaPeaksVisible", true).toBool());
+	_chordRanking->setVisible(settings.value("ChordRankingVisible", true).toBool());
+	_segmentationView->setVisible(settings.value("SegmentationVisible", true).toBool());
+	_pianoView->setVisible(settings.value("PianoVisible", true).toBool());
 }
 
 MainWindow::~MainWindow()
