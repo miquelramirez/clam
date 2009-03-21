@@ -29,7 +29,7 @@
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>28</height>
+     <height>31</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile" >
@@ -64,6 +64,7 @@
     <addaction name="viewKeySpaceAction" />
     <addaction name="viewChordRankingAction" />
     <addaction name="viewSegmentationAction" />
+    <addaction name="viewPianoAction" />
    </widget>
    <widget class="QMenu" name="menu_Help" >
     <property name="title" >
@@ -101,6 +102,7 @@
    <addaction name="viewKeySpaceAction" />
    <addaction name="viewChordRankingAction" />
    <addaction name="viewSegmentationAction" />
+   <addaction name="viewPianoAction" />
    <addaction name="separator" />
    <addaction name="helpOnlineTutorialAction" />
    <addaction name="helpWhatsThisAction" />
@@ -279,6 +281,18 @@
    </property>
    <property name="text" >
     <string>Real time capture</string>
+   </property>
+  </action>
+  <action name="viewPianoAction" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="images.qrc" >
+     <normaloff>:/icons/images/piano.svg</normaloff>:/icons/images/piano.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>&amp;Piano</string>
    </property>
   </action>
  </widget>
