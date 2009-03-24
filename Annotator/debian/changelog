@@ -1,8 +1,9 @@
-clam-annotator (0.4.0-1) unstable; urgency=low
+clam-annotator (0.4.1~svn12860-1) unstable; urgency=low
 
   * Updated the new website to http://clam-project.org
-  * debian specific files moved to a different svn branch
+  * debian specific files not part of upstream tarball
   * Added python dependency for helper scripts
+  * Added David García Garzón as Uploader
 
  -- CLAM Team <developers@clam-project.org>  Wed, 04 Mar 2009 21:31:09 +0100
 

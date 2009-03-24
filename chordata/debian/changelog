@@ -1,7 +1,8 @@
-clam-chordata (0.9.0-1ubuntu1) unstable; urgency=low
+clam-chordata (1.0.0~svn12860-1) unstable; urgency=low
 
   * Updated the new website to http://clam-project.org
-  * debian specific files moved to a different svn branch
+  * debian specific files not part of upstream tarball
+  * Added David García Garzón as Uploader
 
  -- CLAM Team <developers@clam-project.org>  Wed, 04 Mar 2009 21:43:53 +0100
 
