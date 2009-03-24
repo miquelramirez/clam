@@ -83,7 +83,6 @@ public:
 	virtual void Init();
 	virtual unsigned BackendBufferSize() 
 	{
-		std::cout << "JACKNetworkPlayer::BackendBufferSize" << std::endl;
 		return _jackBufferSize; 
 	}
 	virtual unsigned BackendSampleRate() { return _jackSampleRate; }
