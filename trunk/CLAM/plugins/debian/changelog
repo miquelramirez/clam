@@ -1,4 +1,4 @@
-clam-plugins (1.3.1-1) unstable; urgency=low
+clam-plugins (1.3.1~svn12850-1) unstable; urgency=low
 
   * Excluded TestAudioDatabaseReader binary: is a test binary
   * Excluded EbowSynthesizer binary: old version for 
