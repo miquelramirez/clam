@@ -6,7 +6,7 @@ Group: 'Misc, Export'
 Tooltip: 'Generate a Blender scene and make the sources move in circles around the coordinates origin'
 """
 __author__ = ("Natanael Olaiz", "CLAM Team")
-__url__ = ("http://clam.iua.upf.edu/")
+__url__ = ("http://clam-project.org/")
 __email__ = ["clam@iua.upf.edu"]
 __version__ = "CLAM 1.3.1 - GSOC 2008"
 __bpydoc__ = """\

@@ -6,7 +6,7 @@ Group: 'Object, Animation'
 Tooltip: 'Open Sound Control Sender (link to objects ObjectUpdate events, or Scene/World FrameChanged events) '
 """
 __author__ = ("Natanael Olaiz", "CLAM Team")
-__url__ = ("http://clam.iua.upf.edu/")
+__url__ = ("http://clam-project.org/")
 __email__ = ["clam@iua.upf.edu"]
 __version__ = "CLAM 1.3.1 - GSOC 2008"
 __bpydoc__ = """\
