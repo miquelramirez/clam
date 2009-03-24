@@ -43,9 +43,9 @@ public:
 	CLAM::AudioOutPort _Xout;
 	CLAM::AudioOutPort _Yout;
 	CLAM::AudioOutPort _Zout;
-	CLAM::InControl _roll;
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
+	CLAM::InControl _roll;
 	CLAM::InControl _dominance;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 
@@ -58,9 +58,9 @@ public:
 		, _Xout("X", this)
 		, _Yout("Y", this)
 		, _Zout("Z", this)
-		, _roll("roll", this) // angle in degrees
 		, _azimuth("azimuth", this) // angle in degrees
 		, _elevation("elevation", this) // angle in degrees
+		, _roll("roll", this) // angle in degrees
 		, _dominance("dominance", this) //domination value	
 	{
 		Configure( config );

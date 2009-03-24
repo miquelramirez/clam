@@ -37,9 +37,9 @@ public:
 	CLAM::AudioOutPort _Xout;
 	CLAM::AudioOutPort _Yout;
 	CLAM::AudioOutPort _Zout;
-	CLAM::InControl _roll;
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
+	CLAM::InControl _roll;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 
 	BFormatRotation(const Config& config = Config()) 
@@ -49,9 +49,9 @@ public:
 		, _Xout("X", this)
 		, _Yout("Y", this)
 		, _Zout("Z", this)
-		, _roll("roll", this) // angle in degrees
 		, _azimuth("azimuth", this) // angle in degrees
 		, _elevation("elevation", this) // angle in degrees
+		, _roll("roll", this) // angle in degrees
 	{
 		Configure( config );
 		_azimuth.SetBounds(-360, 360); //a complete spin on each slider direction
