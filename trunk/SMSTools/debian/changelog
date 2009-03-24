@@ -1,8 +1,10 @@
-clam-smstools (0.4.5-1) feisty; urgency=low
+clam-smstools (0.4.11~svn12860-1) unstable; urgency=low
 
   * Upstream release
+  * Updated the new website to http://clam-project.org
+  * Added David García Garzón as Uploader
 
- -- CLAM Team <clam@iua.upf.edu>  Fri,  9 Feb 2007 15:27:08 +0100
+ -- CLAM Team <developers@clam-project.org>  Wed, 04 Mar 2009 21:37:44 +0100
 
 clam-smstools (0.4.4-1) unstable; urgency=low
 
