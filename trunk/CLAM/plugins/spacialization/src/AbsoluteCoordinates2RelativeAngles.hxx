@@ -51,15 +51,15 @@ class AbsoluteCoordinates2RelativeAngles : public CLAM::Processing
 	CLAM::FloatInControl _listenerX;
 	CLAM::FloatInControl _listenerY;
 	CLAM::FloatInControl _listenerZ;
-	CLAM::FloatInControl _listenerRoll;
-	CLAM::FloatInControl _listenerElevation;
 	CLAM::FloatInControl _listenerAzimuth;
+	CLAM::FloatInControl _listenerElevation;
+	CLAM::FloatInControl _listenerRoll;
 
 	CLAM::FloatInControl _sourceX;
 	CLAM::FloatInControl _sourceY;
 	CLAM::FloatInControl _sourceZ;
-	CLAM::FloatOutControl _sourceElevation;
 	CLAM::FloatOutControl _sourceAzimuth;
+	CLAM::FloatOutControl _sourceElevation;
 	CLAM::FloatOutControl _distance;
 public:
 	const char* GetClassName() const { return "AbsoluteCoordinates2RelativeAngles"; }
@@ -67,14 +67,14 @@ public:
 		: _listenerX("listener X", this)
 		, _listenerY("listener Y", this)
 		, _listenerZ("listener Z", this)		
-		, _listenerRoll("listener roll", this)
-		, _listenerElevation("listener elevation", this)
 		, _listenerAzimuth("listener azimuth", this)
+		, _listenerElevation("listener elevation", this)
+		, _listenerRoll("listener roll", this)
 		, _sourceX("source X", this)
 		, _sourceY("source Y", this)
 		, _sourceZ("source Z", this)		
-		, _sourceElevation("relative elevation", this)
 		, _sourceAzimuth("relative azimuth", this)
+		, _sourceElevation("relative elevation", this)
 		, _distance("distance", this)
 	{
 		Configure( config );
