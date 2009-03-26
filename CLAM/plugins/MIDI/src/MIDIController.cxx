@@ -46,7 +46,7 @@ namespace Hidden
 				if (controllerNumber==_config.GetControlNumber() and _MSBReceived)
 				{
 					unsigned int completeValue=(_MSBValue<<7) | ((unsigned char)inMessage[2] & 0x7F);
-					_MIDIControlValue.SendControl((float)completeValue);
+					_MIDIControlValue.SendControl(QuantizedInt2Float(completeValue));
 					_MSBValue=0;
 					_MSBReceived=false;
 					return;
@@ -56,7 +56,7 @@ namespace Hidden
 			// 7 bit control message:
 			if(controllerNumber == _config.GetControlNumber())
 			{
-				_MIDIControlValue.SendControl((float)inMessage[2]);
+				_MIDIControlValue.SendControl(QuantizedInt2Float((unsigned int)inMessage[2]));
 			}
 		}
 	}
@@ -64,6 +64,11 @@ namespace Hidden
 	{
 		CopyAsConcreteConfig(_config, c);
 		_MSBReceived=false;
+		_expectedMin = _config.HasExpectedMinValue() ? _config.GetExpectedMinValue() : 0;
+		_expectedMax = _config.HasExpectedMaxValue() ? _config.GetExpectedMaxValue() : 127;
+		double maxInt = (_config.HasEnable14BitMessage() && _config.GetEnable14BitMessage()) ? 16383. : 127.;
+		_scale = maxInt / (_expectedMax - _expectedMin);
 		return true;
 	}
 }
+

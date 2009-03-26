@@ -12,10 +12,12 @@ namespace CLAM {
 	class MIDIControllerConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (MIDIControllerConfig, 3, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (MIDIControllerConfig, 5, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, int, ControlNumber);
 		DYN_ATTRIBUTE (1, public, bool, Enable14BitMessage);
 		DYN_ATTRIBUTE (2, public, int, ControlNumberMSB);
+		DYN_ATTRIBUTE (3, public, float, ExpectedMinValue);
+		DYN_ATTRIBUTE (4, public, float, ExpectedMaxValue);
 
 	protected:
 		void DefaultInit(void)
@@ -25,6 +27,8 @@ namespace CLAM {
 			SetControlNumber(74);
 			SetEnable14BitMessage(false);
 			SetControlNumberMSB(42);
+			SetExpectedMinValue(0);
+			SetExpectedMaxValue(127);
 		}
 
 	};
@@ -40,6 +44,17 @@ namespace CLAM {
 
 		bool _MSBReceived;
 		unsigned char _MSBValue;
+		float _expectedMin;
+		float _expectedMax;
+		double _scale;
+
+		unsigned int Float2QuantizedInt (float originalFloat) const
+			{ return (originalFloat - _expectedMin) * _scale; }
+
+		float QuantizedInt2Float (unsigned int originalInt) const
+			{ return (originalInt / _scale) + _expectedMin; }
+
+		void DoCallback(MIDI::Message inMessage);
 		
 	public:
 		const char* GetClassName() const { return "MIDIController"; }
@@ -52,7 +67,6 @@ namespace CLAM {
 
 		bool Do();
 		
-		void DoCallback(MIDI::Message inMessage);
 	};
 	
 } // End namespace
