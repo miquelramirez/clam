@@ -12,8 +12,10 @@ namespace CLAM {
 	class MIDIControllerConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (MIDIControllerConfig, 1, ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (MIDIControllerConfig, 3, ProcessingConfig);
 		DYN_ATTRIBUTE (0, public, int, ControlNumber);
+		DYN_ATTRIBUTE (1, public, bool, Enable14BitMessage);
+		DYN_ATTRIBUTE (2, public, int, ControlNumberMSB);
 
 	protected:
 		void DefaultInit(void)
@@ -21,6 +23,8 @@ namespace CLAM {
 			AddAll();
 			UpdateData();
 			SetControlNumber(74);
+			SetEnable14BitMessage(false);
+			SetControlNumberMSB(42);
 		}
 
 	};
@@ -28,17 +32,20 @@ namespace CLAM {
 	class MIDIController : public CLAM::Processing
 	{ 
 	protected:
-		TypedInControl<MIDI::Message> mMIDIMessage;
+		TypedInControl<MIDI::Message> _MIDIMessage;
 
-		FloatOutControl mMIDIControlValue;
+		FloatOutControl _MIDIControlValue;
 
-		MIDIControllerConfig mConfig;
+		MIDIControllerConfig _config;
+
+		bool _MSBReceived;
+		unsigned char _MSBValue;
 		
 	public:
 		const char* GetClassName() const { return "MIDIController"; }
 		
 		bool ConcreteConfigure(const ProcessingConfig& c);
-		const ProcessingConfig &GetConfig() const { return mConfig;}
+		const ProcessingConfig &GetConfig() const { return _config;}
 		
 		MIDIController();
 		~MIDIController();
