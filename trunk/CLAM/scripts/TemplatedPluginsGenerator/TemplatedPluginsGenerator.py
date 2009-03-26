@@ -75,9 +75,9 @@ def make_license_text(definitions_dict):
 		sys.exit(2)
 	license_text = f.read(); f.close()
 	if definitions_dict["copyright_holder"]!="":
-		license_text = license_text.replace( "Copyright (c)", "Copyright (c) " + definitions_dict["year"] + " " + definitions_dict["copyright_holder"] )
+		license_text = license_text.replace( "Copyright (C)", "Copyright (C) " + definitions_dict["year"] + " " + definitions_dict["copyright_holder"] )
 	else:
-		license_text = license_text.replace( "Copyright (c)", "" )
+		license_text = license_text.replace( "Copyright (C)", "" )
 	return license_text
 #make_license_text()
 
