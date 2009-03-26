@@ -16,10 +16,10 @@ namespace Hidden
 }
 
 	MIDIController::MIDIController() 
-		: mMIDIMessage("MIDI Message Input", this, &MIDIController::DoCallback)
-		, mMIDIControlValue("Control Output", this)
+		: _MIDIMessage("MIDI Message Input", this, &MIDIController::DoCallback)
+		, _MIDIControlValue("Control Output", this)
 	{
-		Configure( mConfig );
+		Configure( _config );
 	}
 
 	MIDIController::~MIDIController() {}
@@ -29,19 +29,41 @@ namespace Hidden
 		return true;
 	}
 	
-	void MIDIController::DoCallback(MIDI::Message inMessage){
-		std::bitset<CHAR_BIT> statusByte;
-		statusByte = (std::bitset<CHAR_BIT>)((unsigned char)inMessage[0]);
-		if(statusByte[7] == 1 && statusByte[6] == 0 && statusByte[5] == 1 && statusByte[4] == 1)
+	void MIDIController::DoCallback(MIDI::Message inMessage)
+	{
+		unsigned char controllerNumber=(unsigned char)inMessage[1];
+		if( ((unsigned char)inMessage[0] & 0xF0) == 0xB0 )
 		{
-			if(((int)inMessage[1]) == mConfig.GetControlNumber()){
-				mMIDIControlValue.SendControl((float)inMessage[2]);
+			// 14 bit control message:
+			if (_config.HasEnable14BitMessage() and _config.GetEnable14BitMessage()==true)
+			{
+				if (controllerNumber==_config.GetControlNumberMSB())
+				{
+					_MSBValue=(unsigned char)inMessage[2] & 0x7F;
+					_MSBReceived=true;
+					return;
+				}
+				if (controllerNumber==_config.GetControlNumber() and _MSBReceived)
+				{
+					unsigned int completeValue=(_MSBValue<<7) | ((unsigned char)inMessage[2] & 0x7F);
+					_MIDIControlValue.SendControl((float)completeValue);
+					_MSBValue=0;
+					_MSBReceived=false;
+					return;
+				}
+				return; // if received LSB without MSB 
+			}
+			// 7 bit control message:
+			if(controllerNumber == _config.GetControlNumber())
+			{
+				_MIDIControlValue.SendControl((float)inMessage[2]);
 			}
 		}
 	}
 	bool MIDIController::ConcreteConfigure(const ProcessingConfig& c)
 	{
-		CopyAsConcreteConfig(mConfig, c);
+		CopyAsConcreteConfig(_config, c);
+		_MSBReceived=false;
 		return true;
 	}
 }
