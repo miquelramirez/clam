@@ -22,6 +22,7 @@ from PyQt4 import uic
 import TemplateGenerator
 import TemplatedPluginsGenerator
 import graphlib
+import time
 
 (Ui_MainWindow, Ui_MainWindow_base) = uic.loadUiType('main.ui')
 class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
@@ -75,6 +76,8 @@ class MainWindow(Ui_MainWindow_base, Ui_MainWindow):
 		clam_logo_svg = ":images/clamlogo.svg"
 		self.setWindowIcon( QIcon(clam_logo_svg) )
 		self.clamLogo.setPixmap( QPixmap(clam_logo_svg) )
+		
+		self.lineEdit_Year.setText( str(time.localtime()[0]) )
 
 		#Ports table setup:
 		self.ports_manager = MainWindow.RowItemsManager( self.tableWidget_Ports, rowsWidth=[100, 200, 400] )

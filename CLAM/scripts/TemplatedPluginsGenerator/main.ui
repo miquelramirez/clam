@@ -208,7 +208,7 @@
             <item>
              <widget class="QLineEdit" name="lineEdit_Year" >
               <property name="text" >
-               <string>2009</string>
+               <string/>
               </property>
              </widget>
             </item>
