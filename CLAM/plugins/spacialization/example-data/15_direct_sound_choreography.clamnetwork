@@ -47,7 +47,7 @@
   </processing>
 
   <processing id="GainBecauseOfDistance" position="399,358" size="168,58" type="GainBecauseOfDistance">
-    <DistanceExponent>1.5</DistanceExponent>
+    <DistanceExponent>1.0</DistanceExponent>
     <MinimumDistance>1</MinimumDistance>
     <DistanceThreshold>0</DistanceThreshold>
   </processing>
