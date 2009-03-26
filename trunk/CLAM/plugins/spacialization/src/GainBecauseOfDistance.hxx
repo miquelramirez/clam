@@ -24,7 +24,7 @@ class GainBecauseOfDistance : public CLAM::Processing
 		{
 			AddAll();
 			UpdateData();
-			SetDistanceExponent(1.5);
+			SetDistanceExponent(1.0);
 			SetMinimumDistance(1.0);
 			SetDistanceThreshold(0.0);	//0 means no limit
 		};
