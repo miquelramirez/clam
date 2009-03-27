@@ -41,7 +41,7 @@ bool ThreeBandCompressor::Do(const Spectrum& in, Spectrum& out)
 	out = in; //even if out needs to be preserved, we need to copy content
 	
 	DataArray& oMag = out.GetMagBuffer();
-	DataArray& iMag = in.GetMagBuffer();
+	const DataArray& iMag = in.GetMagBuffer();
 	
 	int spectrumSize = in.GetSize();
 	
@@ -55,19 +55,18 @@ bool ThreeBandCompressor::Do(const Spectrum& in, Spectrum& out)
 	TData midThreshold = 	log2lin(mMidThresholdCtl.GetLastValue());
 	TData highThreshold = 	log2lin(mHighThresholdCtl.GetLastValue());
 	
-	int i;
 	TData currentThreshold = lowThreshold;
-	for( i = 0; i<lowCutoff; i++)
+	for(int i = 0; i<lowCutoff; i++)
 	{
 		if(iMag[i]>lowThreshold)
 			oMag[i] = lowThreshold;
 	}
-	for( i = lowCutoff; i<highCutoff; i++)
+	for(int i = lowCutoff; i<highCutoff; i++)
 	{
 		if(iMag[i]>midThreshold)
 			oMag[i] = midThreshold;
 	}
-	for( i = highCutoff; i<spectrumSize; i++)
+	for(int i = highCutoff; i<spectrumSize; i++)
 	{
 		if(iMag[i]>highThreshold)
 			oMag[i] = highThreshold;

@@ -50,16 +50,17 @@ namespace CLAM{
 		}
 
 		ThreeBandCompressor() 
-			: 
-			mIn("In Spectrum", this), 
-			mOut("Out Spectrum", this) ,
-			mLowCutoffFreqCtl("LowCutoff", this),
-			mHighCutoffFreqCtl("HighCutoff", this),
-			mLowThresholdCtl("LowThreshold", this),
-			mMidThresholdCtl("MidThreshold", this),
-			mHighThresholdCtl("HighThreshold", this)
+			: mIn("In Spectrum", this)
+			, mOut("Out Spectrum", this)
+			, mLowCutoffFreqCtl("LowCutoff", this)
+			, mHighCutoffFreqCtl("HighCutoff", this)
+			, mLowThresholdCtl("LowThreshold", this)
+			, mMidThresholdCtl("MidThreshold", this)
+			, mHighThresholdCtl("HighThreshold", this)
 		{
 			Configure( FrameTransformationConfig() );
+			mLowCutoffFreqCtl.SetBounds(0.,1.);
+			mHighCutoffFreqCtl.SetBounds(0.,1.);
 		}
 
  		~ThreeBandCompressor() {}	
@@ -76,11 +77,9 @@ namespace CLAM{
 			return true;
 		}
 
-
 		bool Do(const Frame& in, Frame& out)
 		{
-			return Do(in.GetSpectrum(), 
-				  out.GetSpectrum());
+			return Do(in.GetSpectrum(), out.GetSpectrum());
 		}
 
 		bool Do(const Spectrum& in, Spectrum& out);
@@ -92,7 +91,7 @@ namespace CLAM{
 			mOut.Produce();
 			return result;
 		}
-	};		
-};//namespace CLAM
+	};
+}//namespace CLAM
 
 #endif // _ThreeBandCompressor_
