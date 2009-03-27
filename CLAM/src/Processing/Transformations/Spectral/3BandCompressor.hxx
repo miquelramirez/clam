@@ -32,7 +32,20 @@
 #include "FrameTransformationConfig.hxx"
 
 namespace CLAM{
-
+/**
+	Limits the spectrum magnitude to different threshold for each of three bands.
+	Notice that despite the name, this is a Limiter not a Compressor.
+	Cutoff frequencies are normalized in the interval 0,1 which maps
+	into the full spectral range of the input spectrum.
+	@param[in] "In Spectrum" [Port] Input spectrum
+	@param[out] "Out Spectrum" [Port] Output spectrum
+	@param[in] LowCutoff [Control] Normalized frequency that separes the first and second bands. [0..1]
+	@param[in] HighCutoff [Control] Normalized frequency that separes the second and third bands. [0..1]
+	@param[in] LowThreshold [Control] Gain in dB's for the first band.
+	@param[in] MidThreshold [Control] Gain in dB's for the second band.
+	@param[in] HighThreshold [Control] Gain in dB's for the third band.
+	@ingroup SpectralTransformations
+*/
 	class ThreeBandCompressor: public FrameTransformationTmpl<Spectrum>
 	{
 		InPort<Spectrum> mIn;
