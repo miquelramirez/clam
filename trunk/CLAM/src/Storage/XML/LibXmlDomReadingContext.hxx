@@ -182,7 +182,7 @@ public:
 
 	/**
 	 * Returns true if there is non-space content on the content stream.
-	 * As side effect it skips any space (including \n \t \r...) caracters.
+	 * As side effect it skips any space (including \\n \\t \\r...) caracters.
 	 */
 	bool contentLeft()
 	{
