@@ -33,7 +33,7 @@ folders = [
 	os.path.join('XMLAdaptersTests'),
 	os.path.join('VisualizationTests'),
 	]
-print env['CPPDEFINES']
+
 blacklist = [
 	os.path.join('.','TestRunnerQt.cxx'),
 	os.path.join('FactoryTest','PolymorphicTest.cxx'),
@@ -52,9 +52,9 @@ if 'crossmingw' in env['TOOLS'] :
 	os.path.join('NonComponentData','FlagsTest.cxx'),
 	os.path.join('FlowControlTests','NetworkTest.cxx'),
 	os.path.join('DynamicTypeTests','DynamicTypeBasicTest.cxx'),
-	os.path.join('XMLAdaptersTests','LibXmlDomDocumentHandlerTest.cxx'),
-	os.path.join('XMLAdaptersTests','LibXmlDomReaderTest.cxx'),
-	os.path.join('XMLAdaptersTests','XercesDom2ClamObjectsTest.cxx'),
+	os.path.join('XmlTests','LibXmlDomDocumentHandlerTest.cxx'),
+	os.path.join('XmlTests','LibXmlDomReaderTest.cxx'),
+	os.path.join('XmlTests','XercesDom2ClamObjectsTest.cxx'),
 	]
 
 
