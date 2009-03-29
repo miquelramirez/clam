@@ -203,6 +203,8 @@ public:
 
 	std::string getPath()
 	{
+		return L(_context->get_path());
+		// TODO: Remove the by hand way
 		std::string path;
 		if (_parentContext) path=_parentContext->getPath();
 		path += '/';
