@@ -10,6 +10,15 @@
 namespace CLAM
 {
 
+struct SphericalHarmonicsDefinition
+{
+	const char * name;
+	unsigned order;
+	unsigned zProjection;
+	signed sign;
+	double weightFuMa;
+};
+
 /**
  Represents spherical orientation of a point
  from a given reference frame expressed as the
@@ -30,6 +39,61 @@ private:
 	double ca;
 	double sa;
 public:
+	static SphericalHarmonicsDefinition * sphericalHarmonics()
+	{
+		// taken from http://www.york.ac.uk/inst/mustech/3d_audio/higher_order_ambisonics.pdf
+		static SphericalHarmonicsDefinition sphericalHarmonicsDefinition [] = 
+		{
+			{"W", 0,0,+1, 1./std::sqrt(2)},
+			{"X", 1,1,+1, 1.},
+			{"Y", 1,1,-1, 1.},
+			{"Z", 1,0,+1, 1.},
+			{"R", 2,0,+1, 1.},
+			{"S", 2,1,+1, 2./std::sqrt(3)},
+			{"T", 2,1,-1, 2./std::sqrt(3)},
+			{"U", 2,2,+1, 2./std::sqrt(3)},
+			{"V", 2,2,-1, 2./std::sqrt(3)},
+			{"K", 3,0,+1, 1.},
+			{"L", 3,1,+1, std::sqrt(45./32.)},
+			{"M", 3,1,-1, std::sqrt(45./32.)},
+			{"N", 3,2,+1, std::sqrt(9./5.)},
+			{"O", 3,2,-1, std::sqrt(9./5.)},
+			{"P", 3,3,+1, std::sqrt(8./5.)},
+			{"Q", 3,3,-1, std::sqrt(8./5.)},
+			{0, 0, 0, 0, 0}
+		};
+		return sphericalHarmonicsDefinition;
+	}
+	double sphericalHarmonic(unsigned order, unsigned zProjection, bool positiveSpin)
+	{
+		double zComponent = positiveSpin? 
+			std::cos(zProjection*aradians): 
+			std::sin(zProjection*aradians);
+		switch (order) 
+		{
+		case 0:
+			if (zProjection==0) return 1.;
+			CLAM_ASSERT(false,"Degree greater than order");
+		case 1:
+			if (zProjection==0) return              se;
+			if (zProjection==1) return zComponent * ce;
+			CLAM_ASSERT(false,"Degree greater than order");
+		case 2:
+			if (zProjection==0) return              std::sqrt(1./4)*(3*se*se -1);
+			if (zProjection==1) return zComponent * std::sqrt(3./1)*se*ce;
+			if (zProjection==2) return zComponent * std::sqrt(3./4)*ce*ce;
+			CLAM_ASSERT(false,"Degree greater than order");
+		case 3:
+			if (zProjection==0) return              std::sqrt( 1./4)*se*(5*se*se -3);
+			if (zProjection==1) return zComponent * std::sqrt( 3./8)*ce*(5*se*se -1);
+			if (zProjection==2) return zComponent * std::sqrt(15./4)*se*ce*ce;
+			if (zProjection==3) return zComponent * std::sqrt( 5./8)*ce*ce*ce;
+			CLAM_ASSERT(false,"Degree greater than order");
+		default:
+			CLAM_ASSERT(false,"Unsupported order");
+		}
+		return 0;
+	}
 
 	Orientation(double anAzimuth=0.0, double anElevation=0.0)
 		: azimuth(anAzimuth)
