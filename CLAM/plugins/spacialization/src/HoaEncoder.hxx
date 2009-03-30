@@ -13,8 +13,12 @@
  Considers the audio a plane wave coming from the direction
  indicated by azimuth and elevation controls (in degrees).
  
+ @param[in] Order [Config] The Ambisonics order to generate [0,1,2,3]
+ @param[in] UseFuMa [Config] Whether to normalize by the Fu-Ma factors.
  @param[in] Input [Port] Audio to be encoded.
- @param[out] W/X/Y/Z [Port] Pressure that the virtual sound emits.
+ @param[out] XX [Port] Ambisonics component were XX is one of W,X,Y,Z,R,S,T,U,V,K,L,M,N,O,P,Q.
+ @param[in] azimuth [Control] Azimuth in degrees acording #AmbisonicsConventions
+ @param[in] elevation [Control] Elevation in degrees acording #AmbisonicsConventions
  @ingroup SpatialAudio
  @see AmbisonicsConventions
 */
