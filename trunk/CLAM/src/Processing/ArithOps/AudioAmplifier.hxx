@@ -73,7 +73,10 @@ namespace CLAM{
 			Configure( mConfig );
 		}
 
- 		~AudioAmplifier() {}
+ 		~AudioAmplifier()
+		{
+			RemovePorts();
+		}
 
 		bool Do()
 		{
