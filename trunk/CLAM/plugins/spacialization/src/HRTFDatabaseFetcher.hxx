@@ -54,9 +54,7 @@ class GeodesicDatabase
 		return false;
 	}
 public:
-	unsigned NElevation;
 	GeodesicDatabase()
-		: NElevation(14)
 	{
 	}
 	unsigned NAzimuth(unsigned elevation) 
