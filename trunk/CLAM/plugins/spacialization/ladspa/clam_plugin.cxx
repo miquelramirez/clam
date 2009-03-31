@@ -14,6 +14,7 @@ CLAM_EXTERNAL_FILE_DATA(bformat2cube_embededNetwork,"../example-data/bformat2cub
 //CLAM_EXTERNAL_FILE_DATA(fake_bformat2binaural_embededNetwork,"fake_bformat2binaural.clamnetwork")
 
 CLAM_EXTERNAL_FILE_DATA(vbap3d_embededNetwork,"../example-data/vbap3d_nofaders.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(dummyControls_embededNetwork,"dummy_azimuth_elevation_controls.clamnetwork")
 
 #include <iostream>
 
@@ -40,6 +41,10 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 	static CLAM::LadspaNetworkExporter n106(library, vbap3d_embededNetwork, 106,
 			"vbap3d", "Mono to VBAP (15 speakers)",
 			"BarcelonaMedia-Audio", "GNU GPL");
+	static CLAM::LadspaNetworkExporter n107(library, dummyControls_embededNetwork, 106,
+			"dummy_controls", "Dummy controls for azimuth - elevation",
+			"BarcelonaMedia-Audio", "GNU GPL");
+
 /*
 	static CLAM::LadspaNetworkExporter n106(library, fake_bformat2surround_embededNetwork, 106,
 			"bformat2surround", "BFormat to Surround 5.0",

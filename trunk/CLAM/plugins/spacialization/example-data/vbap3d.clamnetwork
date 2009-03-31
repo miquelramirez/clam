@@ -36,19 +36,19 @@
   <processing id="Vbap3D" position="367,150" size="79,270" type="Vbap3D"/>
 
   <processing id="azimuth" position="364,-30" size="395,78" type="OutControlSender">
-    <Min>-360</Min>
+    <Min>0</Min>
     <Default>0</Default>
     <Max>360</Max>
-    <Step>1</Step>
+    <Step>0.1</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
     <Mapping>Linear</Mapping>
   </processing>
 
   <processing id="elevation" position="414,45" size="354,78" type="OutControlSender">
-    <Min>-90</Min>
+    <Min>-89.999</Min>
     <Default>0</Default>
-    <Max>90</Max>
-    <Step>1</Step>
+    <Max>89.999</Max>
+    <Step>0.1</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
     <Mapping>Linear</Mapping>
   </processing>
