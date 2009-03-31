@@ -116,7 +116,7 @@ public:
 		CLAM::SphericalHarmonicsDefinition *sh = CLAM::Orientation::sphericalHarmonics();
 		for (unsigned i=0; i<_outputs.size(); i++)
 		{
-			double gainToApply = incidence.sphericalHarmonic(sh[i].order, sh[i].zProjection, sh[i].sign>=0);
+			double gainToApply = incidence.sphericalHarmonic(sh[i]);
 			if (_config.GetUseFuMa()) gainToApply *= sh[i].weightFuMa;
 			CLAM::DataArray& out =_outputs[i]->GetAudio().GetBuffer();
 			for (int sample=0; sample<w.Size(); sample++)
