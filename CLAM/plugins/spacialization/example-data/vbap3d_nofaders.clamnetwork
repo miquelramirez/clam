@@ -33,25 +33,21 @@
 
   <processing id="Audio Input" position="173,168" size="128,108" type="AudioSource"/>
 
+  <processing id="Azimuth" position="317,25" size="113,58" type="ControlSource">
+    <MinValue>-360</MinValue>
+    <MaxValue>360</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="Elevation" position="442,26" size="113,58" type="ControlSource">
+    <MinValue>-89.99</MinValue>
+    <MaxValue>89.99</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
   <processing id="Vbap3D" position="367,150" size="79,270" type="Vbap3D"/>
-
-  <processing id="azimuth" position="364,-30" size="395,78" type="OutControlSender">
-    <Min>-360</Min>
-    <Default>0</Default>
-    <Max>360</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-    <Mapping>Linear</Mapping>
-  </processing>
-
-  <processing id="elevation" position="414,45" size="354,78" type="OutControlSender">
-    <Min>-90</Min>
-    <Default>0</Default>
-    <Max>90</Max>
-    <Step>1</Step>
-    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
-    <Mapping>Linear</Mapping>
-  </processing>
 
   <port_connection>
     <out>Audio Input.AudioOut</out>
@@ -134,12 +130,12 @@
   </port_connection>
 
   <control_connection>
-    <out>azimuth.out</out>
+    <out>Azimuth.output</out>
     <in>Vbap3D.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>elevation.out</out>
+    <out>Elevation.output</out>
     <in>Vbap3D.elevation</in>
   </control_connection>
 
