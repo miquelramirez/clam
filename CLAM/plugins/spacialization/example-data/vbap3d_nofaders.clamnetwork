@@ -33,14 +33,14 @@
 
   <processing id="Audio Input" position="173,168" size="128,108" type="AudioSource"/>
 
-  <processing id="Azimuth" position="317,25" size="113,58" type="ControlSource">
-    <MinValue>-360</MinValue>
+  <processing id="Azimuth" position="317,24" size="113,58" type="ControlSource">
+    <MinValue>0</MinValue>
     <MaxValue>360</MaxValue>
     <Step>0.1</Step>
     <UnitName>degrees</UnitName>
   </processing>
 
-  <processing id="Elevation" position="442,26" size="113,58" type="ControlSource">
+  <processing id="Elevation" position="428,23" size="113,58" type="ControlSource">
     <MinValue>-89.99</MinValue>
     <MaxValue>89.99</MaxValue>
     <Step>0.1</Step>

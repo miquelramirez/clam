@@ -101,7 +101,7 @@ public:
 		, _currentTriangle(0)
 	{
 		Configure( config );
-		_azimuth.SetBounds(-360, 360); //a complete spin on each slider direction
+		_azimuth.SetBounds(0, 360); //a complete spin on each slider direction
 		_elevation.SetBounds(-90, 90);
 		_deltaAngle = 0.001; 
 		_deltaNumeric = 0.00001; 
