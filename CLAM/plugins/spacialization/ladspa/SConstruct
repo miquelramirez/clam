@@ -38,7 +38,6 @@ env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 env.Depends( "clam_plugin.os", glob.glob("../example-data/*.clamnetwork"))
 libraries = [
 	env.SharedLibrary(target=libraryName, source = sources, SHLIBPREFIX=''),
-	env.Program("main.cxx" ),
 	]
 install = env.Install(os.path.join(InstallDir,'lib','ladspa'), libraries)
 env.Alias('install', install)
