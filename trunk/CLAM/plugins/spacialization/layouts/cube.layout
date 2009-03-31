@@ -1,9 +1,9 @@
-  45 -35.2 Base Front Left
- -45 -35.2 Base Front Right
- 135 -35.2 Base Back Left
--135 -35.2 Base Back Right
-  45  35.2 Top Front Left
- -45  35.2 Top Front Right
- 135  35.2 Top Back Left
--135  35.2 Top Back Right
+-35.2   45 Base Front Left
+-35.2  -45 Base Front Right
+-35.2  135 Base Back Left
+-35.2 -135 Base Back Right
+ 35.2   45 Top Front Left
+ 35.2  -45 Top Front Right
+ 35.2  135 Top Back Left
+ 35.2 -135 Top Back Right
 
