@@ -30,13 +30,7 @@ class HoaEncoder : public CLAM::Processing
 	OutPorts _outputs;
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
-	float _deltaAngle;
-	float _deltaNumeric;
 
-	float rad( float deg ) const
-	{
-		return deg / 180 * M_PI;
-	}
 public:
 	class Config : public CLAM::ProcessingConfig
 	{
@@ -67,21 +61,14 @@ public:
 		_elevation.SetBounds(-90, 90);
 		_azimuth.SetDefaultValue(0);
 		_elevation.SetDefaultValue(0);
-		_deltaAngle = 0.001; 
-		_deltaNumeric = 0.00001; 
 	}
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		const unsigned buffersize = BackendBufferSize();
+		const unsigned buffersize = 512; // BackendBufferSize();
 		unsigned order = _config.GetOrder();
-		if (order>3) 
-		{
-			std::ostringstream os;
-			os << "Order " << order << " not supported." << std::endl;
-			return AddConfigErrorMessage(os.str());
-		}
+		if (order>3) return AddConfigErrorMessage("Ambisonics orders beyond 3rd are not supported");
 		CLAM::SphericalHarmonicsDefinition *sh = CLAM::Orientation::sphericalHarmonics();
 		unsigned i=0;
 		for (;sh[i].name; i++)
@@ -95,9 +82,7 @@ public:
 		}
 		unsigned actualSize=i;
 		for (;i<_outputs.size(); i++)
-		{
 			delete _outputs[i];
-		}
 		_outputs.resize(actualSize);
 
 		_elevation.DoControl(0.);
@@ -125,6 +110,12 @@ public:
 		}
 		_input.Consume();
 		return true;
+	}
+	~HoaEncoder()
+	{
+		for (unsigned i=0; i<_outputs.size(); i++)
+			delete _outputs[i];
+		
 	}
 
 };
