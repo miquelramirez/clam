@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <processing id="AudioSource" position="277,198" size="128,108" type="AudioSource"/>
+
+  <processing id="Azimuth" position="50,56" size="113,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>360</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="Elevation" position="190,56" size="113,58" type="ControlSource">
+    <MinValue>-90</MinValue>
+    <MaxValue>90</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="output" position="73,212" size="147,107" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>2</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <control_connection>
+    <out>Azimuth.output</out>
+    <in>output.ControlPrinter_0</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Elevation.output</out>
+    <in>output.ControlPrinter_1</in>
+  </control_connection>
+
+</network>
