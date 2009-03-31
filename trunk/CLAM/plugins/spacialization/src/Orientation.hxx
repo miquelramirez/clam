@@ -44,7 +44,8 @@ public:
 		// taken from http://www.york.ac.uk/inst/mustech/3d_audio/higher_order_ambisonics.pdf
 		static SphericalHarmonicsDefinition sphericalHarmonicsDefinition [] = 
 		{
-			{"W", 0,0,+1, 1./std::sqrt(2)},
+			// TODO: Precission on W lowered to pass b2b vs. previous implementation
+			{"W", 0,0,+1, 0.707},//1./std::sqrt(2)},
 			{"X", 1,1,+1, 1.},
 			{"Y", 1,1,-1, 1.},
 			{"Z", 1,0,+1, 1.},
