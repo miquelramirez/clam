@@ -64,7 +64,11 @@ public:
 		};
 		return sphericalHarmonicsDefinition;
 	}
-	double sphericalHarmonic(unsigned order, unsigned zProjection, bool positiveSpin)
+	double sphericalHarmonic(const SphericalHarmonicsDefinition & sh) const
+	{
+		return sphericalHarmonic(sh.order, sh.zProjection, sh.sign>=0);
+	}
+	double sphericalHarmonic(unsigned order, unsigned zProjection, bool positiveSpin) const
 	{
 		double zComponent = positiveSpin? 
 			std::cos(zProjection*aradians): 
