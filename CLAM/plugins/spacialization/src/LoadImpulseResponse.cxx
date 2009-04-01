@@ -90,7 +90,7 @@ bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> 
 		errorMsg += windower.GetConfigErrorMessage();
 		return false;
 	}
-	FFTConfig fftConfig; 
+	MyFFT::Config fftConfig; 
 	fftConfig.SetAudioSize(framesize*2);
 	MyFFT fft(fftConfig);
 

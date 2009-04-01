@@ -119,7 +119,7 @@ protected:
 			return false;
 		}
 
-		FFTConfig fftConfig; 
+		MyFFT::Config fftConfig; 
 		fftConfig.SetAudioSize(mConfig.GetFrameSize()*2);
 		MyFFT fft(fftConfig);
 		if (not fft.IsConfigured())
