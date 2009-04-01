@@ -6,65 +6,9 @@
 #include <CLAM/Audio.hxx>
 #include <CLAM/InControl.hxx>
 #include <CLAM/Filename.hxx>
-#include <cmath>
 #include "Orientation.hxx"
-#include <fstream>
-
-/**
- An spatial layout of labeled speakers.
- A layout contains the orientation of each speaker referred to the listener or the center of the setup.
- A layout can be read from a .layout file which contains a row for each speaker and for each row:
- # elevation in degrees
- # azimuth in degrees
- # the speaker label (may containing spaces as it takes the rest of the line)
- Empty lines are ignored. 
-*/
-class SpeakerLayout
-{
-	std::vector<std::string> _names;
-	std::vector<CLAM::Orientation> _orientations;
-	bool error(std::string & errorMsg, const std::string & message)
-	{
-		errorMsg += message;
-		errorMsg += "\n";
-		return false;
-	}
-public:
-	unsigned size() const { return _names.size(); }
-	const std::string & name(unsigned i) const { return _names[i]; }
-	const CLAM::Orientation & orientation(unsigned i) const { return _orientations[i]; }
-	void add(double azimuthDegrees, double elevationDegrees, const std::string & name)
-	{
-		std::cout << elevationDegrees << " " << azimuthDegrees << " '" << name << "'" << std::endl;
-		_orientations.push_back(CLAM::Orientation(azimuthDegrees, elevationDegrees));
-		_names.push_back(name);
-	}
-	bool load(
-			const std::string & path,
-			std::string & errorMsg )
-	{
-		if (path.empty()) return error(errorMsg, "No speaker layout file specified");
-		std::ifstream file(path.c_str());
-		if (!file) return error(errorMsg, "Could not open the speaker layout file "+path);
-		_orientations.clear();
-		_names.clear();
-		while (true)
-		{
-			double elevation;
-			double azimuth;
-			file >> elevation;
-			file >> azimuth;
-			if (!file) break;
-			file >> std::ws;
-			std::string name;
-			std::getline(file, name);
-			// TODO: Issue an error if illegal port name
-			add(azimuth, elevation, name);
-		}
-		return true;
-	}
-};
-
+#include "SpeakerLayout.hxx"
+#include <cmath>
 
 /**
  Decodes a Nth order signal for a regular array of speakers.
