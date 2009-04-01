@@ -219,7 +219,7 @@ private:
 	}
 	unsigned firstDirtySpeaker() const
 	{
-		for (unsigned speaker ; speaker<_layout.size(); speaker++)
+		for (unsigned speaker = 0; speaker<_layout.size(); speaker++)
 		{
 			if (speaker>=_outputs.size()) return speaker; 
 			if (_outputs[speaker]->GetName() != _layout.name(speaker)) return speaker;
