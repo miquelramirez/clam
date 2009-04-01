@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
+
+  <processing id="AudioAmplifier" position="198,131" size="137,59" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+  </processing>
+
+  <processing id="AudioAmplifier_1" position="202,261" size="155,59" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+  </processing>
+
+  <processing id="AudioAmplifier_2" position="197,318" size="155,59" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+  </processing>
+
+  <processing id="AudioAmplifier_3" position="199,368" size="155,59" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+  </processing>
+
+  <processing id="Back_Horizontal" position="668,40" size="150,111" type="AudioSink"/>
+
+  <processing id="Base_Back_Left" position="783,92" size="149,111" type="AudioSink"/>
+
+  <processing id="Base_Back_Right" position="900,129" size="158,111" type="AudioSink"/>
+
+  <processing id="Base_Front_Left" position="1012,194" size="152,111" type="AudioSink"/>
+
+  <processing id="Base_Front_Right" position="1284,302" size="161,111" type="AudioSink"/>
+
+  <processing id="Front_Horizontal" position="748,408" size="153,111" type="AudioSink"/>
+
+  <processing id="Front_Left_Horizontal" position="916,436" size="189,111" type="AudioSink"/>
+
+  <processing id="Front_Right_Horizontal" position="1116,473" size="198,111" type="AudioSink"/>
+
+  <processing id="Gain W" position="267,28" size="190,80" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.1</Default>
+    <Max>2</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="Gain_V" position="398,120" size="190,80" type="OutControlSender">
+    <Min>0</Min>
+    <Default>0.1</Default>
+    <Max>2</Max>
+    <Step>0.01</Step>
+    <ControlRepresentation>Horizontal Slider</ControlRepresentation>
+    <Mapping>Linear</Mapping>
+  </processing>
+
+  <processing id="Hoa2RegularSpeakerArray" position="402,340" size="225,286" type="Hoa2RegularSpeakerArray">
+    <Order>3</Order>
+    <SpeakerLayout>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/layouts/sixteen.layout</SpeakerLayout>
+  </processing>
+
+  <processing id="K in" position="19,629" size="128,108" type="AudioSource"/>
+
+  <processing id="L in" position="66,632" size="128,108" type="AudioSource"/>
+
+  <processing id="M in" position="117,635" size="128,108" type="AudioSource"/>
+
+  <processing id="N in" position="172,639" size="128,108" type="AudioSource"/>
+
+  <processing id="O in" position="228,642" size="128,108" type="AudioSource"/>
+
+  <processing id="P in" position="279,646" size="128,108" type="AudioSource"/>
+
+  <processing id="Q in" position="335,649" size="128,108" type="AudioSource"/>
+
+  <processing id="R in" position="8,470" size="128,108" type="AudioSource"/>
+
+  <processing id="Rear_Left_Horizontal" position="1279,505" size="184,111" type="AudioSink"/>
+
+  <processing id="Rear_Right_Horizontal" position="1378,596" size="193,111" type="AudioSink"/>
+
+  <processing id="S" position="52,474" size="128,108" type="AudioSource"/>
+
+  <processing id="T in" position="106,478" size="128,108" type="AudioSource"/>
+
+  <processing id="Top" position="629,865" size="128,111" type="AudioSink"/>
+
+  <processing id="Top_Back_Left" position="1090,724" size="137,111" type="AudioSink"/>
+
+  <processing id="Top_Back_Right" position="970,772" size="146,111" type="AudioSink"/>
+
+  <processing id="Top_Front_Left" position="736,827" size="140,111" type="AudioSink"/>
+
+  <processing id="Top_Front_Right" position="830,802" size="149,111" type="AudioSink"/>
+
+  <processing id="U in" position="162,480" size="128,108" type="AudioSource"/>
+
+  <processing id="V in" position="213,484" size="128,108" type="AudioSource"/>
+
+  <processing id="W in" position="38,90" size="128,108" type="AudioSource"/>
+
+  <processing id="X in" position="7,247" size="128,108" type="AudioSource"/>
+
+  <processing id="Y in" position="20,303" size="128,108" type="AudioSource"/>
+
+  <processing id="Z in" position="36,355" size="128,108" type="AudioSource"/>
+
+  <processing id="out" position="413,242" size="115,84" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <processing id="out_1" position="435,29" size="115,84" type="ControlPrinter">
+    <Identifier>ControlPrinter</Identifier>
+    <NumberOfInputs>1</NumberOfInputs>
+    <GuiOnly>1</GuiOnly>
+  </processing>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output</out>
+    <in>Hoa2RegularSpeakerArray.W</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier_1.Audio Output</out>
+    <in>Hoa2RegularSpeakerArray.X</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier_2.Audio Output</out>
+    <in>Hoa2RegularSpeakerArray.Y</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier_3.Audio Output</out>
+    <in>Hoa2RegularSpeakerArray.Z</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Back Horizontal</out>
+    <in>Back_Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Base Back Left</out>
+    <in>Base_Back_Left.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Base Back Right</out>
+    <in>Base_Back_Right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Base Front Left</out>
+    <in>Base_Front_Left.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Base Front Right</out>
+    <in>Base_Front_Right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Front Horizontal</out>
+    <in>Front_Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Front Left Horizontal</out>
+    <in>Front_Left_Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Front Right Horizontal</out>
+    <in>Front_Right_Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Rear Left Horizontal</out>
+    <in>Rear_Left_Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Rear Right Horizontal</out>
+    <in>Rear_Right_Horizontal.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Top Back Left</out>
+    <in>Top_Back_Left.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Top Back Right</out>
+    <in>Top_Back_Right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Top Front Right</out>
+    <in>Top_Front_Right.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Top Front Left</out>
+    <in>Top_Front_Left.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Hoa2RegularSpeakerArray.Top</out>
+    <in>Top.AudioIn</in>
+  </port_connection>
+
+  <port_connection>
+    <out>K in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.K</in>
+  </port_connection>
+
+  <port_connection>
+    <out>L in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.L</in>
+  </port_connection>
+
+  <port_connection>
+    <out>M in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.M</in>
+  </port_connection>
+
+  <port_connection>
+    <out>N in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.N</in>
+  </port_connection>
+
+  <port_connection>
+    <out>O in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.O</in>
+  </port_connection>
+
+  <port_connection>
+    <out>P in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.P</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Q in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.Q</in>
+  </port_connection>
+
+  <port_connection>
+    <out>R in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.R</in>
+  </port_connection>
+
+  <port_connection>
+    <out>S.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.S</in>
+  </port_connection>
+
+  <port_connection>
+    <out>T in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.T</in>
+  </port_connection>
+
+  <port_connection>
+    <out>U in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.U</in>
+  </port_connection>
+
+  <port_connection>
+    <out>V in.AudioOut</out>
+    <in>Hoa2RegularSpeakerArray.V</in>
+  </port_connection>
+
+  <port_connection>
+    <out>W in.AudioOut</out>
+    <in>AudioAmplifier.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>X in.AudioOut</out>
+    <in>AudioAmplifier_1.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Y in.AudioOut</out>
+    <in>AudioAmplifier_2.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Z in.AudioOut</out>
+    <in>AudioAmplifier_3.Input Audio</in>
+  </port_connection>
+
+  <control_connection>
+    <out>Gain W.out</out>
+    <in>AudioAmplifier.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain W.out</out>
+    <in>out_1.In Control</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain_V.out</out>
+    <in>AudioAmplifier_1.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain_V.out</out>
+    <in>AudioAmplifier_2.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain_V.out</out>
+    <in>AudioAmplifier_3.Gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>Gain_V.out</out>
+    <in>out.In Control</in>
+  </control_connection>
+
+</network>
