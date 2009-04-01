@@ -32,6 +32,18 @@ back2BackTests = [
 		, [
 			"bformat.wav",
 		]),
+	("mono2hoa3",
+		"OfflinePlayer example-data/mono2hoa3.clamnetwork b2b/spacialization/inputs/jaume.wav -o -c 16 hoa3.wav"
+		, [
+			"hoa3.wav",
+		]),
+	("hoa2sixteen",
+		"OfflinePlayer example-data/mono2hoa3.clamnetwork b2b/spacialization/inputs/jaume.wav -o -c 16 hoa3.wav;"
+		"OfflinePlayer example-data/hoa32fifteen.clamnetwork hoa3.wav -o -c 15 sixteen.wav;"
+		, [
+			"hoa3.wav",
+			"sixteen.wav",
+		]),
 	# TODO: take an existing bformat
 	("bformat2binaural",
 		"OfflinePlayer example-data/mono2bformat.clamnetwork b2b/spacialization/inputs/jaume.wav -o -c 4 bformat.wav;"
@@ -48,6 +60,14 @@ back2BackTests = [
 			"bformat.wav",
 			"surround.wav",
 		]),
+	("bformat2sixteen",
+		"OfflinePlayer example-data/mono2bformat.clamnetwork b2b/spacialization/inputs/jaume.wav -o -c 4 bformat.wav;"
+		"OfflinePlayer example-data/bformat2fifteen.clamnetwork bformat.wav -o -c 15 sixteen.wav;"
+		, [
+			"bformat.wav",
+			"sixteen.wav",
+		]),
+		
 ]
 
 runBack2BackProgram(data_path, sys.argv, back2BackTests)
