@@ -103,6 +103,7 @@ private:
 	OutPorts _outputs;
 	InPorts _inputs;
 	Config _config;
+	double _decoding[4];
 
 public:
 	const char* GetClassName() const { return "Hoa2RegularSpeakerArray"; }
@@ -118,8 +119,7 @@ public:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		unsigned buffersize = BackendBufferSize();
-
+		unsigned buffersize = 512; // BackendBufferSize();
 		unsigned order = _config.GetOrder();
 		bool errorHappened = false;
 		if (order>3)
@@ -130,6 +130,7 @@ public:
 			// Don't exit yet, we want to keep outports connections when loading from a network
 		}
 		else ResizePortsToOrder(order, buffersize);
+		ComputeDecoding(order);
 
 		std::string errorMessage;
 		if (not _layout.load(_config.GetSpeakerLayout(), errorMessage))
@@ -138,7 +139,6 @@ public:
 
 		return not errorHappened;
 	}
- 
 	bool Do()
 	{
 		// Ambisonics definition assures us one component for order 0 so we can do that:
@@ -154,10 +154,10 @@ public:
 
 		double componentWeight[nComponents];
 		CLAM::SphericalHarmonicsDefinition * sh = CLAM::Orientation::sphericalHarmonics();
-		for (unsigned speaker=0; speaker<_outputs.size(); speaker++)
+		for (unsigned speaker=0; speaker<nSpeakers; speaker++)
 		{
 			for (unsigned hoaComponent=0; hoaComponent<nComponents; hoaComponent++)
-				componentWeight[hoaComponent] = _layout.orientation(speaker).sphericalHarmonic(sh[hoaComponent]);
+				componentWeight[hoaComponent] = _decoding[sh[hoaComponent].zProjection] * _layout.orientation(speaker).sphericalHarmonic(sh[hoaComponent]);
 			CLAM::TData * speakerBuffer = speakers[speaker];
 			for (unsigned sample=0; sample<nSamples; sample++)
 			{
@@ -167,9 +167,9 @@ public:
 				speakerBuffer[sample] = sampleValue;
 			}
 		}
-		for (unsigned speaker=0; speaker<_outputs.size(); speaker++)
+		for (unsigned speaker=0; speaker<nSpeakers; speaker++)
 			_outputs[speaker]->Produce();
-		for (unsigned component=0; component<nSpeakers; component++)
+		for (unsigned component=0; component<nComponents; component++)
 			_inputs[component]->Consume();
 		return true;
 	}
@@ -226,6 +226,28 @@ private:
 		}
 		return _layout.size();
 	}
+	void ComputeDecoding(unsigned order)
+	{
+		for (unsigned i=0; i<=order; i++)
+			_decoding[i] = inphaseDecoding(order, i);
+		for (unsigned i=order+1; i<4; i++)
+			_decoding[i] = 0;
+	}
+	double inphaseDecoding(unsigned maxOrder, unsigned order)
+	{
+		/*
+			1..n * 1..n / (1..n-l) / (1..n+l) = n-l+1..n / n+1..n+l
+		*/
+		double g = 1;
+		for (unsigned i=maxOrder-order+1; i<=maxOrder; i++)
+			g *= i;
+		for (unsigned i=maxOrder+1; i<=maxOrder+order; i++)
+			g /= i;
+		if (order) g *= 2;
+		std::cout << "Inphase decoding " << maxOrder << "," << order << " " << g << std::endl;
+		return g;
+	}
+ 
 };
 #endif
 
