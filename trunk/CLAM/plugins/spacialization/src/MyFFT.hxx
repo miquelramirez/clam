@@ -27,7 +27,6 @@
 #endif
 
 #include <CLAM/Processing.hxx>
-#include <CLAM/FFTConfig.hxx>
 #include <CLAM/InPort.hxx>
 #include <CLAM/OutPort.hxx>
 #include <CLAM/Audio.hxx>
@@ -36,7 +35,6 @@
 namespace CLAM
 {
 
-	class FFTConfig;
 	class ComplexSpectrum;
 	class Audio;
 
@@ -49,6 +47,7 @@ namespace CLAM
 
  @param[in] "Audio Buffer" [Port] An audio buffer
  @param[out] "Complex Spectrum" [Port] A complex spectrum
+ @param[in] "AudioSize" [Config] The size of the incomming audio (default 1024)
 
  @todo Document MyFFT configuration parameters
  @todo Frequencies related to each bin
@@ -58,9 +57,20 @@ namespace CLAM
 	class MyFFT: public Processing
 	{
 	public:
-		typedef FFTConfig Config;
+		class Config : public ProcessingConfig
+		{
+			DYNAMIC_TYPE_USING_INTERFACE (Config, 1, ProcessingConfig);
+			DYN_ATTRIBUTE (0, public, int, AudioSize);
+			void DefaultInit()
+			{
+				AddAll();
+				UpdateData();
+				SetAudioSize(1024);
+			}
+		
+		};
 
-		MyFFT(const FFTConfig &c=FFTConfig());
+		MyFFT(const Config &c=Config());
 		~MyFFT();
 		const char * GetClassName() const {return "MyFFT";}
 

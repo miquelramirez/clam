@@ -96,7 +96,7 @@ void MyFFT::SetupMemory()
 	_fftw3 = new MyFFT::Implementation(mSize);
 }
 
-MyFFT::MyFFT(const FFTConfig &c)
+MyFFT::MyFFT(const Config &c)
 	: mInput("Audio Buffer", this)
 	, mOutput("Complex Spectrum", this)
 	, mSize(0)
