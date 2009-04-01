@@ -57,7 +57,7 @@
 
   <processing id="Hoa2RegularSpeakerArray" position="402,340" size="225,286" type="Hoa2RegularSpeakerArray">
     <Order>3</Order>
-    <SpeakerLayout>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/spacialization/layouts/sixteen.layout</SpeakerLayout>
+    <SpeakerLayout>layouts/sixteen.layout</SpeakerLayout>
   </processing>
 
   <processing id="K in" position="19,629" size="128,108" type="AudioSource"/>
