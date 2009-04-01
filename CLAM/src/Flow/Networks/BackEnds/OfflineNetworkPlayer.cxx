@@ -136,7 +136,11 @@ void OfflineNetworkPlayer::Start()
 	{	
 		if(fileIndex>=infiles.size())
 		{
-			std::cout << "The number of sources is greater than the intput files. " << "There are "<<GetAudioSources().size()<<" sources "<<" and "<<infiles.size()<<"input files"<<std::endl;
+			std::cout 
+				<< "The number of sources is greater than the intput files. " 
+				<< "There are " << GetAudioSources().size() <<" sources and "
+				<< infiles.size() << "input files" 
+				<< std::endl;
 			exit(-1);
 		}
 
@@ -180,8 +184,6 @@ void OfflineNetworkPlayer::Start()
 
 	long iterationIndex = 0;
 	bool timeLimitedMode = _resultWavsTime > 0.001;
-	float*	bufferReader;
-	float*	bufferWriter;
 	fileIndex = 0;
 	while(true)
 	{
@@ -189,9 +191,10 @@ void OfflineNetworkPlayer::Start()
 		unsigned inAudioIndex =0;
 		bool someInputFinished=false;
 		for(std::vector<SndfileHandle*>::iterator it=infiles.begin();it!=infiles.end();it++)
-		{	
+		{
+			CLAM_ASSERT((*it)->channels(), "The audio had no channels");
 			int bufferReaderSize = (*it)->channels()*frameSize;
-			bufferReader = new float[bufferReaderSize];
+			float * bufferReader = new float[bufferReaderSize];
 			int readSize = (*it)->read(bufferReader,bufferReaderSize);
 
 			//We have read the last part (not complete) of the buffer file. Fill the buffer with zeros.
@@ -213,7 +216,7 @@ void OfflineNetworkPlayer::Start()
 			}
 			inAudioIndex += (*it)->channels();
 			fileIndex ++;
-			delete(bufferReader);
+			delete[] bufferReader;
 		}		
 
 		GetNetwork().Do();
@@ -222,7 +225,7 @@ void OfflineNetworkPlayer::Start()
 		for(std::vector<SndfileHandle*>::iterator it=outfiles.begin();it!=outfiles.end();it++)
 		{	
 			int bufferWriterSize = (*it)->channels()*frameSize;
-			bufferWriter = new float[bufferWriterSize];
+			float*	bufferWriter = new float[bufferWriterSize];
 	
 			//Save the sources' buffers into the bufferWriter.
 			for(int frameIndex=0; frameIndex <frameSize; frameIndex ++)
@@ -233,7 +236,7 @@ void OfflineNetworkPlayer::Start()
 			int writeSize = (*it)->write(bufferWriter,bufferWriterSize);
 			CLAM_ASSERT(writeSize==bufferWriterSize,"The outfile has not been written correctly");
 			outAudioIndex += (*it)->channels();
-			delete bufferWriter;	
+			delete[] bufferWriter;	
 		}
 
 		if (timeLimitedMode and float(iterationIndex*frameSize)/sampleRate > _resultWavsTime)
