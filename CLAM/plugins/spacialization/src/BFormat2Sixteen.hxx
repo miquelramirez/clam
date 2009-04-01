@@ -142,8 +142,7 @@ public:
 
 		for (unsigned channel=0; channel<_nChannels; channel++)
 			channels[channel] = &_outputs[channel]->GetAudio().GetBuffer()[0];
-		
-		
+
 		for (int i=0; i<w.Size(); i++)
 		{
 			for (unsigned channel=0; channel<_nChannels; channel++)
@@ -155,6 +154,7 @@ public:
 					y[i] * _sinAzimuths[channel] * _cosElevations[channel] +
 					z[i] * _sinElevations[channel]
 					) * velocitiesGain;
+				channels[channel][i] /= _nChannels;
 			}
 		}
 

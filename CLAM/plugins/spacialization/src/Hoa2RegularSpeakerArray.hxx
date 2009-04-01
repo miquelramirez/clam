@@ -101,7 +101,7 @@ public:
 		for (unsigned speaker=0; speaker<nSpeakers; speaker++)
 		{
 			for (unsigned hoaComponent=0; hoaComponent<nComponents; hoaComponent++)
-				componentWeight[hoaComponent] = _decoding[sh[hoaComponent].zProjection] * _layout.orientation(speaker).sphericalHarmonic(sh[hoaComponent]);
+				componentWeight[hoaComponent] = _decoding[sh[hoaComponent].zProjection] * _layout.orientation(speaker).sphericalHarmonic(sh[hoaComponent]) / nSpeakers;
 			CLAM::TData * speakerBuffer = speakers[speaker];
 			for (unsigned sample=0; sample<nSamples; sample++)
 			{
