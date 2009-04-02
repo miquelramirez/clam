@@ -68,7 +68,8 @@ public:
 		CopyAsConcreteConfig(_config, config);
 		const unsigned buffersize = 512; // BackendBufferSize();
 		unsigned order = _config.GetOrder();
-		if (order>3) return AddConfigErrorMessage("Ambisonics orders beyond 3rd are not supported");
+		if (order>3) return AddConfigErrorMessage(
+			"Ambisonics orders beyond 3rd are not supported");
 		CLAM::SphericalHarmonicsDefinition *sh = CLAM::Orientation::sphericalHarmonics();
 		unsigned i=0;
 		for (;sh[i].name; i++)
@@ -97,15 +98,15 @@ public:
 	bool Do()
 	{
 		CLAM::Orientation incidence(_azimuth.GetLastValue(), _elevation.GetLastValue());
-		const CLAM::DataArray& w =_input.GetAudio().GetBuffer();
+		const CLAM::DataArray& input =_input.GetAudio().GetBuffer();
 		CLAM::SphericalHarmonicsDefinition *sh = CLAM::Orientation::sphericalHarmonics();
 		for (unsigned i=0; i<_outputs.size(); i++)
 		{
 			double gainToApply = incidence.sphericalHarmonic(sh[i]);
 			if (_config.GetUseFuMa()) gainToApply *= sh[i].weightFuMa;
 			CLAM::DataArray& out =_outputs[i]->GetAudio().GetBuffer();
-			for (int sample=0; sample<w.Size(); sample++)
-				out[sample] = w[sample]*gainToApply;
+			for (int sample=0; sample<input.Size(); sample++)
+				out[sample] = input[sample]*gainToApply;
 			_outputs[i]->Produce();
 		}
 		_input.Consume();
@@ -115,7 +116,6 @@ public:
 	{
 		for (unsigned i=0; i<_outputs.size(); i++)
 			delete _outputs[i];
-		
 	}
 
 };
