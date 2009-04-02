@@ -1,9 +1,5 @@
 #include <cppunit/extensions/HelperMacros.h>
 
-/*
-  TODO:
-  - 
- */
 
 
 namespace Test {
