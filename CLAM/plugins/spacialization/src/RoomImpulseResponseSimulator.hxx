@@ -212,6 +212,7 @@ public:
 		settings.ignore_sources_models = true;
 		settings.use_osc = false;
 		settings.use_dat = false;
+		settings.hoa_order = 1;
 
 		if (_scene) delete _scene;
 		_scene = new Scene(settings);
