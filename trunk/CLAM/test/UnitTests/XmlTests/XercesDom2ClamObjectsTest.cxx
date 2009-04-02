@@ -500,6 +500,7 @@ private:
 		for (char buffer[255]; is.get(buffer,255,'\0');)
 			result += buffer;
 		CPPUNIT_ASSERT_EQUAL(expected,result);
+		remove("deleteme.xml");
 	}
 
 	void testRestoreFromFragmentUsingPrimitives()
