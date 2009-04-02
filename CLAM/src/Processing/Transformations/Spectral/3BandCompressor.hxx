@@ -41,9 +41,9 @@ namespace CLAM{
 	@param[out] "Out Spectrum" [Port] Output spectrum
 	@param[in] LowCutoff [Control] Normalized frequency that separes the first and second bands. [0..1]
 	@param[in] HighCutoff [Control] Normalized frequency that separes the second and third bands. [0..1]
-	@param[in] LowThreshold [Control] Gain in dB's for the first band.
-	@param[in] MidThreshold [Control] Gain in dB's for the second band.
-	@param[in] HighThreshold [Control] Gain in dB's for the third band.
+	@param[in] LowThreshold [Control] Threshold in dB's for the first band.
+	@param[in] MidThreshold [Control] Threshold in dB's for the second band.
+	@param[in] HighThreshold [Control] Threshold in dB's for the third band.
 	@ingroup SpectralTransformations
 */
 	class ThreeBandCompressor: public FrameTransformationTmpl<Spectrum>

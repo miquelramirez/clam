@@ -33,6 +33,20 @@
 
 namespace CLAM{
 
+/**
+	Amplifies the spectrum magnitude to different gain for each of three bands.
+	Cutoff frequencies are normalized in the interval 0,1 which maps
+	into the full spectral range of the input spectrum.
+	It applies one spectral bin transitions to avoid Gibbs effect.
+	@param[in] "In Spectrum" [Port] Input spectrum
+	@param[out] "Out Spectrum" [Port] Output spectrum
+	@param[in] LowCutoff [Control] Normalized frequency that separes the first and second bands.
+	@param[in] HighCutoff [Control] Normalized frequency that separes the second and third bands. [0..1]
+	@param[in] LowGain [Control] Gain in dB's for the first band.
+	@param[in] MidGain [Control] Gain in dB's for the second band.
+	@param[in] HighGain [Control] Gain in dB's for the third band.
+	@ingroup SpectralTransformations
+*/
 	class ThreeBandFilter: public FrameTransformationTmpl<Spectrum>
 	{
 		InPort<Spectrum> mIn;
@@ -50,14 +64,13 @@ namespace CLAM{
 		}
 
 		ThreeBandFilter() 
-			: 
-			mIn("In Spectrum", this), 
-			mOut("Out Spectrum", this) ,
-			mLowCutoffFreqCtl("LowCutoff", this),
-			mHighCutoffFreqCtl("HighCutoff", this),
-			mLowGainCtl("LowGain", this),
-			mMidGainCtl("MidGain", this),
-			mHighGainCtl("HighGain", this)
+			: mIn("In Spectrum", this)
+			, mOut("Out Spectrum", this)
+			, mLowCutoffFreqCtl("LowCutoff", this)
+			, mHighCutoffFreqCtl("HighCutoff", this)
+			, mLowGainCtl("LowGain", this)
+			, mMidGainCtl("MidGain", this)
+			, mHighGainCtl("HighGain", this)
 		{
 			Configure( FrameTransformationConfig() );
 		}
