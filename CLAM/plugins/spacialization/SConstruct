@@ -61,15 +61,10 @@ if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
 env.Append( LIBS=['fftw3'] )
 env.AppendUnique(CPPPATH=sourcePaths)
 
-if env['raytracing']=='traditional' :
-	print 'linking with traditional raytracing'
+if env['raytracing']=='traditional' or env['raytracing']=='convergent':
+	print 'linking with raytracing'
 	env.Append(CPPPATH=[os.path.join('..','..','..','..','acustica','raytracing')])
 	env.Append(LIBPATH=[os.path.join('..','..','..','..','acustica','raytracing')])
-	env.Append(LIBS=['raytracing',"GL","GLU","lo"])
-elif env['raytracing']=='convergent' :
-	print 'linking with convergent raytracing'
-	env.Append(CPPPATH=[os.path.join('..','..','..','..','acustica','raytracing_convergence')])
-	env.Append(LIBPATH=[os.path.join('..','..','..','..','acustica','raytracing_convergence')])
 	env.Append(LIBS=['raytracing',"GL","GLU","lo"])
 else :
 	sources.remove(os.path.join('src','RoomImpulseResponseSimulator.cxx'))
