@@ -65,6 +65,10 @@ public:
 		};
 		return sphericalHarmonicsDefinition;
 	}
+	double sphericalHarmonic(unsigned shIndex) const
+	{
+		return sphericalHarmonic(sphericalHarmonics()[shIndex]);
+	}
 	double sphericalHarmonic(const SphericalHarmonicsDefinition & sh) const
 	{
 		return sphericalHarmonic(sh.order, sh.zProjection, sh.sign>=0);
