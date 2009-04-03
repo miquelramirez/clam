@@ -67,6 +67,11 @@ back2BackTests = [
 			"bformat.wav",
 			"sixteen.wav",
 		]),
+	("vbap_to_15",
+		"OfflinePlayer example-data/15_direct_sound_choreography.clamnetwork b2b/spacialization/inputs/jaume.wav -o -c 15 vbap15.wav;"
+		, [
+			"vbap15.wav"
+		 ]),
 		
 ]
 
