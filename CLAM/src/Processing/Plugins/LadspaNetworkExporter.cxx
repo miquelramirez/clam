@@ -273,6 +273,8 @@ void NetworkLADSPAPlugin::Run( unsigned long nsamples )
 	if (nsamples!=mExternBufferSize)
 	{
 		mExternBufferSize=nsamples;
+		if (nsamples==0)
+			return; // Seems that in Ardour2.8 it does never runs plugins with 0 samples
 		UpdatePortFrameAndHopSize();
 	}		
 	
@@ -281,8 +283,11 @@ void NetworkLADSPAPlugin::Run( unsigned long nsamples )
 	EstablishLadspaBuffersToAudioSources(nsamples);
 	EstablishLadspaBuffersToAudioSinks(nsamples); 
 	//Do() as much as it is needed
-	for (int stepcount=0; stepcount < (int(mExternBufferSize)/int(mClamBufferSize)); stepcount++)
+//	for (int stepcount=0; stepcount < (int(mExternBufferSize)/int(mClamBufferSize)); stepcount++)
+	{
 		_network.Do();
+//		if (stepcount>0) std::cout << "ieeps!" << std::flush;
+	}
 
 	ProcessOutControlValues();
 
