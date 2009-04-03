@@ -29,6 +29,7 @@
 #include <CLAM/Filename.hxx>
 #include "ComplexSpectrum.hxx"
 #include "LoadImpulseResponse.hxx"
+#include "Orientation.hxx" // SH definition
 #include <vector>
 #include <sstream>
 #include <string>
@@ -62,6 +63,7 @@ namespace CLAM
  @param NRays [Config] Number of rays to cast
  @param NRebounds [Config] Number of rebounds to consider for each ray
  @param IrLength [Config] length in seconds of the impulse response (0 for no limit)
+ @param Order [Config] Order of Ambisonics to generate the output (0,1,2 or 3)
  @param ExtraOptions [Config] deprecated parameter (for backward compatibility with commandline version)
  @param SeparateDirectSoundAndReverb [Config] When true direct sound won't be on the impulse response, direct sounds related controls are still sent
  @param SupressInitialDelay [Config] If true, sample 0 of the impulse response matches the direct sound time.
@@ -85,16 +87,17 @@ class RoomImpulseResponseSimulator : public Processing
 public:
 	class Config : public ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 9, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 10, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, int, FrameSize);
 		DYN_ATTRIBUTE( 1, public, InFilename, Model3DFile);
 		DYN_ATTRIBUTE( 2, public, unsigned, GridDivisions);
 		DYN_ATTRIBUTE( 3, public, unsigned, NRays);
 		DYN_ATTRIBUTE( 4, public, unsigned, NRebounds);
 		DYN_ATTRIBUTE( 5, public, float, IrLength);
-		DYN_ATTRIBUTE( 6, public, CLAM::Text, ExtraOptions);
-		DYN_ATTRIBUTE( 7, public, bool, SeparateDirectSoundAndReverb);
-		DYN_ATTRIBUTE( 8, public, bool, SupressInitialDelay);
+		DYN_ATTRIBUTE( 6, public, unsigned, Order);
+		DYN_ATTRIBUTE( 7, public, CLAM::Text, ExtraOptions);
+		DYN_ATTRIBUTE( 8, public, bool, SeparateDirectSoundAndReverb);
+		DYN_ATTRIBUTE( 9, public, bool, SupressInitialDelay);
 	protected:
 		void DefaultInit()
 		{
@@ -116,17 +119,16 @@ public:
 		ImpulseResponse X;
 		ImpulseResponse Y;
 		ImpulseResponse Z;
-
 	};
+	typedef std::vector<ImpulseResponse> HoaIR;
 
 private:
 	enum {nCachedIRs=3};
 	Config _config;
 	AudioInPort _syncAudio;
-	OutPort< ImpulseResponse* > _WImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _XImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _YImpulseResponseOutPort;
-	OutPort< ImpulseResponse* > _ZImpulseResponseOutPort;
+	typedef OutPort<ImpulseResponse*> IROutPort;
+	typedef std::vector< IROutPort* > ImpulseResponseOutPorts;
+	ImpulseResponseOutPorts _outputs;
 	FloatInControl _sourceX;
 	FloatInControl _sourceY;
 	FloatInControl _sourceZ;
@@ -134,9 +136,9 @@ private:
 	FloatInControl _listenerY;
 	FloatInControl _listenerZ;
 	FloatOutControl _directSoundPressure;
-	BFormatIR _impulseResponses[nCachedIRs];
-	BFormatIR  * _current;
-	BFormatIR  * _previous;
+	HoaIR _impulseResponses[nCachedIRs];
+	HoaIR  * _current;
+	HoaIR  * _previous;
 	float _currentSourceX;
 	float _currentSourceY;
 	float _currentSourceZ;
@@ -151,10 +153,6 @@ public:
 	const char* GetClassName() const { return "RoomImpulseResponseSimulator"; }
 	RoomImpulseResponseSimulator(const Config& config = Config()) 
 		: _syncAudio("synchronization", this)
-		, _WImpulseResponseOutPort("W IR", this)
-		, _XImpulseResponseOutPort("X IR", this)
-		, _YImpulseResponseOutPort("Y IR", this)
-		, _ZImpulseResponseOutPort("Z IR", this)
 		, _sourceX("source X", this)
 		, _sourceY("source Y", this)
 		, _sourceZ("source Z", this)
@@ -178,16 +176,30 @@ public:
 	}
 	bool ConcreteConfigure(const ProcessingConfig & config)
 	{
-		std::cout << "RoomImpulseResponseSimulator::ConcreteConfigure"<<std::endl;
 		CopyAsConcreteConfig(_config, config);
-		std::ifstream modelcheck( _config.GetModel3DFile().c_str() );
-		if ( not modelcheck.is_open() )
+		if (not _config.HasOrder())
 		{
-			std::string err("Could not open 3D model file: "); 
-			err += _config.GetModel3DFile();
-			AddConfigErrorMessage(err);
-			return false;
+			_config.AddOrder();
+			_config.UpdateData();
+			_config.SetOrder(1);
 		}
+		unsigned order = _config.GetOrder();
+		if (order>3) return AddConfigErrorMessage(
+			"Ambisonics orders beyond 3rd are not supported");
+		SphericalHarmonicsDefinition *sh = Orientation::sphericalHarmonics();
+		unsigned i=0;
+		for (;sh[i].name; i++)
+		{
+			if (sh[i].order > order) break;
+			if (i<_outputs.size()) continue;
+			IROutPort * port = new IROutPort(sh[i].name+std::string(" IR"), this);
+			_outputs.push_back( port );
+		}
+		unsigned actualSize=i;
+		for (;i<_outputs.size(); i++)
+			delete _outputs[i];
+		_outputs.resize(actualSize);
+
 		_syncAudio.SetSize(_config.GetFrameSize());
 		_syncAudio.SetHop(_config.GetFrameSize());
 		_sourceX.DoControl(0.2);
@@ -197,6 +209,15 @@ public:
 		_listenerY.DoControl(0.5);
 		_listenerZ.DoControl(0.2);
 		_delta = 1./_config.GetGridDivisions();
+
+		std::ifstream modelcheck( _config.GetModel3DFile().c_str() );
+		if ( not modelcheck.is_open() )
+		{
+			std::string err("Could not open 3D model file: "); 
+			err += _config.GetModel3DFile();
+			AddConfigErrorMessage(err);
+			return false;
+		}
 
 		Settings settings;
 		settings.repeatable = true; // TODO: It should be configurable
@@ -212,7 +233,7 @@ public:
 		settings.ignore_sources_models = true;
 		settings.use_osc = false;
 		settings.use_dat = false;
-		settings.hoa_order = 1;
+		settings.hoa_order = _config.HasOrder()?_config.GetOrder():1;
 
 		if (_scene) delete _scene;
 		_scene = new Scene(settings);
@@ -317,12 +338,13 @@ private:
 #endif
 
 		std::string errorMsg;
-		if (
-			!computeResponseSpectrums(_scene->getTimeResponse_P(), _current->W, _config.GetFrameSize(), errorMsg, offsetToStrip) ||
-			!computeResponseSpectrums(_scene->getTimeResponse_Vx(), _current->X, _config.GetFrameSize(), errorMsg, offsetToStrip) ||
-			!computeResponseSpectrums(_scene->getTimeResponse_Vy(), _current->Y, _config.GetFrameSize(), errorMsg, offsetToStrip) ||
-			!computeResponseSpectrums(_scene->getTimeResponse_Vz(), _current->Z, _config.GetFrameSize(), errorMsg, offsetToStrip) )
+		SphericalHarmonicsDefinition *sh = Orientation::sphericalHarmonics();
+		_current->resize(_outputs.size());
+		for (unsigned component = 0; component < _outputs.size(); component++)
 		{
+			const std::vector<double> & response =
+				_scene->getTimeResponse(sh[component].order, sh[component].zProjection*sh[component].sign);
+			if (computeResponseSpectrums(response, (*_current)[component], _config.GetFrameSize(), errorMsg, offsetToStrip)) continue;
 			std::cout << "ERROR: RoomImpulseResponseSimulator::Do can not open IR files.\n" << errorMsg << std::endl;
 			return false;
 		}
@@ -337,17 +359,12 @@ public:
 		CLAM_ASSERT(ok, "Error reading the IR");
 
 		if (not _previous) _previous = _current;
-
-		_WImpulseResponseOutPort.GetData()= &_current->W;
-		_XImpulseResponseOutPort.GetData()= &_current->X;
-		_YImpulseResponseOutPort.GetData()= &_current->Y;
-		_ZImpulseResponseOutPort.GetData()= &_current->Z;
+		for (unsigned component = 0; component < _outputs.size(); component++)
+			_outputs[component]->GetData() = &(*_current)[component];
 
 		_syncAudio.Consume();
-		_WImpulseResponseOutPort.Produce();
-		_XImpulseResponseOutPort.Produce();
-		_YImpulseResponseOutPort.Produce();
-		_ZImpulseResponseOutPort.Produce();
+		for (unsigned component = 0; component < _outputs.size(); component++)
+			_outputs[component]->Produce();
 		
 		_previous=_current;
 		return true;
