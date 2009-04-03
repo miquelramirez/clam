@@ -87,7 +87,10 @@ class Vbap3D : public CLAM::Processing
 	{
 		float divisor = mod(v1)*mod(v2);
 		CLAM_ASSERT( divisor != 0., "Cannot compute an angle of a zero vector"); 
-		return acos( escalarProduct(v1,v2) / (mod(v1)*mod(v2)) );
+		float arg =  escalarProduct(v1,v2) / (mod(v1)*mod(v2));
+		//TODO revise this
+		if (arg <=-1 or arg >=1) return M_PI;
+		return acos( arg );
 	}
 	void print(const Vector& v, std::string name="") const
 	{
@@ -335,18 +338,14 @@ public:
 		const float elevationDegrees = ori.elevation;
 		if (_lastAzimuth!=azimuthDegrees or _lastElevation!=elevationDegrees)
 		{
-			std::cout<<"VBAP azimuth: "<<azimuthDegrees
-			<<"\tVBAP elevation: "<<elevationDegrees<<std::endl;
 			_lastAzimuth=azimuthDegrees;
 			_lastElevation=elevationDegrees;
 		}
 
-//		CLAM_DEBUG_ASSERT(azimuthDegrees >=- 180 and azimuthDegrees <=+ 180, "azimuth expected in range -180, +180");
-		CLAM_DEBUG_ASSERT(elevationDegrees >= -90 and elevationDegrees <= +90, "elevation expected in range -90, +90");
 		const float as = rad( azimuthDegrees );
 		const float es = rad( elevationDegrees );
 		int newTriangle = findTriangle(as, es);
-		//CLAM_ASSERT(newTriangle > -1, "Vbap3D: findTriangle() found no triangle for the given angle!");
+		CLAM_ASSERT(newTriangle > -1, "Vbap3D: findTriangle() found no triangle for the given angle!");
 		if (newTriangle==-1) newTriangle = 0;
 		
 		// change triangle
