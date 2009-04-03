@@ -109,9 +109,10 @@ public:
 			SetNRays(200);
 			SetNRebounds(20);
 			SetIrLength(1.0);
+			SetOrder(1);
 			SetSeparateDirectSoundAndReverb(false);
 			SetSupressInitialDelay(false);
-		};
+		}
 	};
 	struct BFormatIR
 	{
