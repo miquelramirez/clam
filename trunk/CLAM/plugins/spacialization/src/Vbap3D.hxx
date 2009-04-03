@@ -6,6 +6,7 @@
 #include <CLAM/Audio.hxx>
 #include <CLAM/InControl.hxx>
 #include <cmath>
+#include "SpeakerLayout.hxx"
 
 /**
  This processing implements a 3D 
@@ -206,6 +207,7 @@ public:
 		};
 //end testing setup
 #endif
+
 		RemovePorts();
 		_triangles.clear();
 		const unsigned buffersize = BackendBufferSize();
@@ -301,7 +303,7 @@ public:
 
 			}
 			else 
-{
+		{
 //std::cout << "angles: " << angle(v1,v2) << " " << angle(v2,v3) << " " << angle(v3,v1) << std::endl; 
 			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _deltaAngle)
 			{
@@ -349,17 +351,27 @@ public:
 		double& e1 = _elevations[speaker1];
 		double& e2 = _elevations[speaker2];
 		double& e3 = _elevations[speaker3];
-		double g1 = cos(a3)*cos(e3)*cos(es)*sin(as)*sin(e2)
-			+ cos(as)*cos(es) * (cos(e2)*sin(a2)*sin(e3) - cos(e3)*sin(a3)*sin(e2)) 
-			- cos(e2) * (cos(a2)*cos(es)*sin(as)*sin(e3) + cos(e3)*sin(a2-a3)*sin(es));
-		float g2 = cos(e3)*(cos(es)*sin(a3-as)*sin(e1)
-			+ cos(e1)*sin(a1-a3)*sin(es)) 
+		double g1 = 
+			+ cos(a3)*cos(e3)*cos(es)*sin(as)*sin(e2)
+			+ cos(as)*cos(es)*(
+				+ cos(e2)*sin(a2)*sin(e3)
+				- cos(e3)*sin(a3)*sin(e2)) 
+			- cos(e2) * (
+				+ cos(a2)*cos(es)*sin(as)*sin(e3) 
+				+ cos(e3)*sin(a2-a3)*sin(es));
+		float g2 = 
+			+ cos(e3)*(
+				+ cos(es)*sin(a3-as)*sin(e1)
+				+ cos(e1)*sin(a1-a3)*sin(es)) 
 			- cos(e1)*cos(es)*sin(a1-as)*sin(e3);
-		float g3 = cos(a2)*cos(e2)*cos(es)*sin(as)*sin(e1)
-			+ cos(as)*cos(es) * (cos(e1)*sin(a1)*sin(e2)
-			- cos(e2)*sin(a2)*sin(e1)) 
-			- cos(e1)*(cos(a1)*cos(es)*sin(as)*sin(e2)
-			+ cos(e2)*sin(a1-a2)*sin(es))
+		float g3 =
+			+ cos(a2)*cos(e2)*cos(es)*sin(as)*sin(e1)
+			+ cos(as)*cos(es) * (
+				+ cos(e1)*sin(a1)*sin(e2)
+				- cos(e2)*sin(a2)*sin(e1))
+			- cos(e1)*(
+				+ cos(a1)*cos(es)*sin(as)*sin(e2)
+				+ cos(e2)*sin(a1-a2)*sin(es))
 		;
 		float normalization = 1. / sqrt(g1*g1 + g2*g2 + g3*g3);
 		g1 = fabs(g1) * normalization;
@@ -374,8 +386,6 @@ public:
 			if (i==speaker1) gainToApply = g1;
 			if (i==speaker2) gainToApply = g2;
 			if (i==speaker3) gainToApply = g3;
-			if (i!=speaker1 and i!=speaker2 and i!=speaker3)
-				gainToApply = 0.;
 			CLAM::DataArray& out =_outputs[i]->GetAudio().GetBuffer();
 			for (int sample=0; sample<w.Size(); sample++)
 				out[sample] = gainToApply>_deltaNumeric ? w[sample]*gainToApply : 0.;
