@@ -38,16 +38,16 @@
   </processing>
 
   <processing id="ChoreoSequencer_1" position="375,73" size="226,59" type="ChoreoSequencer">
-    <Filename>../../../../data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
+    <Filename>example-data/horizontal-vertical.choreo</Filename>
     <SourceIndex>0</SourceIndex>
     <FrameSize>512</FrameSize>
     <SampleRate>48000</SampleRate>
-    <ControlsPerSecond>6</ControlsPerSecond>
+    <ControlsPerSecond>24</ControlsPerSecond>
     <UseSpiralIfNoFilename>0</UseSpiralIfNoFilename>
   </processing>
 
   <processing id="GainBecauseOfDistance" position="399,358" size="168,58" type="GainBecauseOfDistance">
-    <DistanceExponent>1.0</DistanceExponent>
+    <DistanceExponent>1</DistanceExponent>
     <MinimumDistance>1</MinimumDistance>
     <DistanceThreshold>0</DistanceThreshold>
   </processing>
@@ -147,13 +147,13 @@
   </port_connection>
 
   <control_connection>
-    <out>AbsoluteCoordinates2RelativeAngles.relative elevation</out>
-    <in>Vbap3D.elevation</in>
+    <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
+    <in>Vbap3D.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
-    <in>Vbap3D.azimuth</in>
+    <out>AbsoluteCoordinates2RelativeAngles.relative elevation</out>
+    <in>Vbap3D.elevation</in>
   </control_connection>
 
   <control_connection>
