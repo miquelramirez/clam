@@ -5,6 +5,7 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/Audio.hxx>
 #include <CLAM/InControl.hxx>
+#include <Orientation.hxx>
 #include <cmath>
 #include "SpeakerLayout.hxx"
 
@@ -26,6 +27,10 @@ class Vbap3D : public CLAM::Processing
 		float y;
 		float z;
 	};
+
+
+	float _lastAzimuth;
+	float _lastElevation;
 
 	typedef std::vector<unsigned> Triangle;
 
@@ -96,7 +101,9 @@ class Vbap3D : public CLAM::Processing
 public:
 	const char* GetClassName() const { return "Vbap3D"; }
 	Vbap3D(const Config& config = Config()) 
-		: _w("W", this)
+		: _lastAzimuth(0)
+		, _lastElevation(0)
+		, _w("W", this)
 		, _azimuth("azimuth", this) // angle in degrees
 		, _elevation("elevation", this) // angle in degrees
 		, _currentTriangle(0)
@@ -322,10 +329,19 @@ public:
 
 	bool Do()
 	{
-		//TODO use free funtions to clamp elevation-azimuth
-		const float azimuthDegrees = fmod(_azimuth.GetLastValue()+360+180,360)-180; // as: azimuth_source
-		const float elevationDegrees = _elevation.GetLastValue(); // es: elevation_source
-		CLAM_DEBUG_ASSERT(azimuthDegrees >=- 180 and azimuthDegrees <=+ 180, "azimuth expected in range -180, +180");
+		CLAM::Orientation ori = CLAM::Orientation(_azimuth.GetLastValue(), _elevation.GetLastValue());
+		ori.normalize();
+		const float azimuthDegrees = ori.azimuth;
+		const float elevationDegrees = ori.elevation;
+		if (_lastAzimuth!=azimuthDegrees or _lastElevation!=elevationDegrees)
+		{
+			std::cout<<"VBAP azimuth: "<<azimuthDegrees
+			<<"\tVBAP elevation: "<<elevationDegrees<<std::endl;
+			_lastAzimuth=azimuthDegrees;
+			_lastElevation=elevationDegrees;
+		}
+
+//		CLAM_DEBUG_ASSERT(azimuthDegrees >=- 180 and azimuthDegrees <=+ 180, "azimuth expected in range -180, +180");
 		CLAM_DEBUG_ASSERT(elevationDegrees >= -90 and elevationDegrees <= +90, "elevation expected in range -90, +90");
 		const float as = rad( azimuthDegrees );
 		const float es = rad( elevationDegrees );
