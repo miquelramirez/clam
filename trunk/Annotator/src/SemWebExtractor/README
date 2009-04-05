@@ -1,0 +1,43 @@
+SemWebExtractor v0.1
+---------
+
+A web-based audio descriptor extraction tool to extract descriptors of local audio files with semantic web URIs.
+
+REQUIREMENTS
+------------
+
+- Written and tested on python 2.5
+
+- Python libraries :
+	- gnat [1] 
+		-- mopy [1] (included in gnat)
+		-- genpuid [5] (included in gnat)(NOTE: AACTagReader is not used on Linux since AAC files are not supported.)
+  - rdflib v2.4.0 [2] (easy_install)
+  - mutagen v1.11 [3] (easy_install)
+  - musicbrainz2 SVN later than 02/08/2007  [4]
+
+USAGE
+-----
+	SemWebExtractor [-s out.sc] [-f <suffix>] <wavefile1> <wavefile2> ...
+	Options:
+	-h            shows help
+	-s            dump the schema to the standard output
+	-f <suffix>   append <suffix> to the generated descriptors file (default: '.pool')
+	Usage examples:
+	SemWebExtractor -s schema.sc
+	SemWebExtractor -f .beats song1.wav song2.mp3 song3.ogg
+
+
+AUTHORS
+-------
+- Jun Wang <wangjun at dsp dot ac dot cn >
+- David Garcia Garzon <dgarcia at iua dot upf dot edu>
+
+
+REFERENCES
+-------
+[1] http://sourceforge.net/projects/motools/
+[2] http://rdflib.net/
+[3] http://www.sacredchao.net/quodlibet/wiki/Development/Mutagen
+[4] http://musicbrainz.org/doc/PythonMusicBrainz2Download
+[5] http://www.musicip.com/dns/downloads.jsp
