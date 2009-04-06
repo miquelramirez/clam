@@ -31,13 +31,20 @@
 
   <processing id="9 mid back left" position="902,479" size="128,111" type="AudioSink"/>
 
-  <processing id="Audio Input" position="173,168" size="128,108" type="AudioSource"/>
+  <processing id="Audio Input" position="-39,185" size="128,108" type="AudioSource"/>
 
   <processing id="Azimuth" position="317,24" size="113,58" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>360</MaxValue>
     <Step>0.1</Step>
     <UnitName>degrees</UnitName>
+  </processing>
+
+  <processing id="Distance" position="198,17" size="113,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>1000</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>meters</UnitName>
   </processing>
 
   <processing id="Elevation" position="428,23" size="113,58" type="ControlSource">
@@ -47,10 +54,34 @@
     <UnitName>degrees</UnitName>
   </processing>
 
+  <processing id="ExponentForDistance" position="191,84" size="152,58" type="ControlSource">
+    <MinValue>0</MinValue>
+    <MaxValue>3</MaxValue>
+    <Step>0.1</Step>
+    <UnitName>u</UnitName>
+  </processing>
+
+  <processing id="GainBecauseOfDistance" position="148,194" size="168,58" type="GainBecauseOfDistance">
+    <DistanceExponent>1</DistanceExponent>
+    <MinimumDistance>1</MinimumDistance>
+    <DistanceThreshold>0</DistanceThreshold>
+  </processing>
+
+  <processing id="Input Gain" position="163,362" size="114,58" type="AudioAmplifier">
+    <MaxGain>3</MaxGain>
+    <InitGain>1</InitGain>
+    <PortsNumber>1</PortsNumber>
+  </processing>
+
   <processing id="Vbap3D" position="367,150" size="79,270" type="Vbap3D"/>
 
   <port_connection>
     <out>Audio Input.AudioOut</out>
+    <in>Input Gain.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>Input Gain.Audio Output</out>
     <in>Vbap3D.W</in>
   </port_connection>
 
@@ -135,8 +166,23 @@
   </control_connection>
 
   <control_connection>
+    <out>Distance.output</out>
+    <in>GainBecauseOfDistance.input distance</in>
+  </control_connection>
+
+  <control_connection>
     <out>Elevation.output</out>
     <in>Vbap3D.elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ExponentForDistance.output</out>
+    <in>GainBecauseOfDistance.inverse exponent to calculate gain</in>
+  </control_connection>
+
+  <control_connection>
+    <out>GainBecauseOfDistance.calculated output gain</out>
+    <in>Input Gain.Gain</in>
   </control_connection>
 
 </network>
