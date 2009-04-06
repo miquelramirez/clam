@@ -321,7 +321,8 @@ protected:
 				if (not is) break;
 				row.push_back(data);
 			}
-			if ( row.size() < 11) // if number of columns is not 8 + 3*sources:
+			const unsigned int minSourceColumns=(_config.GetSourceIndex()+1)*3;
+			if ( row.size() < 8 + minSourceColumns) // if number of columns is not 8 + 3*sources:
 				return AddConfigErrorMessage("Wrong number of columns in choreo file! It needs to have 8, plus 3 more (X,Y,Z positions) for each source.");
 			if ( (row.size()-8)%3 != 0 ) // if number of columns is not 8 + 3*sources:
 				return AddConfigErrorMessage("Wrong number of columns in choreo file! It needs to have 8, plus 3 more (X,Y,Z positions) for each source.");
