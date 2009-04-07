@@ -104,8 +104,8 @@ protected slots:
 	
 
 private:
-	int parseSources();
-	int parseMap();
+	void parseSources();
+	void parseMap();
 	void editSource(QTreeWidgetItem * current);
 	void renameTarget(QTreeWidgetItem * current);
 	QTreeWidgetItem *  hasScope(const std::string & scope,  QTreeWidgetItem * parent);
