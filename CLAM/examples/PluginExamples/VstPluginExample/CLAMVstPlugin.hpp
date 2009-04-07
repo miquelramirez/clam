@@ -34,7 +34,12 @@ namespace CLAM
 class VstNetworkExporter : public AudioEffectX
 {
 public:
-	VstNetworkExporter (audioMasterCallback audioMaster);
+	VstNetworkExporter (
+		audioMasterCallback audioMaster,
+		const std::string & effectName,
+		const std::string & productString,
+		const std::string & vendor,
+		int version);
 	~VstNetworkExporter ();
 
 	bool ok() const { return true; }
@@ -63,19 +68,18 @@ public:
 
 protected:
 	char programName[kVstMaxProgNameLen];
-	CLAM::Network* mNet;
+	CLAM::Network _network;
 	CLAM::VSTInControlList mInControlList;
 	CLAM::VSTInPortList mReceiverList;
 	CLAM::VSTOutPortList mSenderList;
 	int mClamBufferSize, mExternBufferSize;
 
 private:
-	CLAM::Network& GetNetwork() { return *mNet; }
+	CLAM::Network& GetNetwork() { return _network; }
 	void FillNetwork();
 	int GetNumberOfParameters(const char* );
+	void LocateConnections();
 	void ProcessInputControls();
-	void ProcessInputPorts();
-	void ProcessOutputPorts();
 	void UpdatePortFrameAndHopSize();
 
 	std::string _effectName;

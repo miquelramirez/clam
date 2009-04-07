@@ -15,7 +15,13 @@ CLAM_EMBEDDED_FILE(embededNetwork,"genwire.xml")
 
 AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 {
-	CLAM::VstNetworkExporter * effect = new CLAM::VstNetworkExporter(audioMaster);
+	CLAM::VstNetworkExporter * effect = new CLAM::VstNetworkExporter(
+		audioMaster,
+		"CLAM effect",
+		"Example of CLAM based VST plugin",
+		"CLAM Project",
+		1000
+	);
 	if (effect->ok()) return effect;
 	delete effect;
 	return 0;
@@ -66,52 +72,58 @@ void VstNetworkExporter::getProgramName (char *name)
 
 void VstNetworkExporter::setParameter (long index, float value)
 {
-	float realval = value * ( mInControlList.at(index).max - mInControlList.at(index).min ) - fabs( mInControlList.at(index).min );
+	ExternControlInfo & controlInfo = mInControlList[index];
+	float realval = value * ( controlInfo.max - controlInfo.min ) - fabs( controlInfo.min );
 
-	mInControlList.at(index).lastvalue = realval;
-	mInControlList.at(index).processing->Do(realval);
+	controlInfo.lastvalue = realval;
+	controlInfo.processing->Do(realval);
 }
 
 float VstNetworkExporter::getParameter (long index)
 {
-	return mInControlList.at(index).lastvalue;
+	return mInControlList[index].lastvalue;
 }
 
 void VstNetworkExporter::getParameterName (long index, char *label)
 {
-	strncpy ( label, mInControlList.at(index).name.c_str(), kVstMaxParamStrLen ); 
+	strncpy ( label, mInControlList[index].name.c_str(), kVstMaxParamStrLen ); 
 }
 
 void VstNetworkExporter::getParameterDisplay (long index, char *text)
 {
-	float2string ( mInControlList.at(index).lastvalue, text, kVstMaxParamStrLen);
+	float2string ( mInControlList[index].lastvalue, text, kVstMaxParamStrLen);
 }
 
 void VstNetworkExporter::getParameterLabel(long index, char *label)
 {
 	ControlSourceConfig& conf=const_cast<ControlSourceConfig&>(
 		dynamic_cast<const ControlSourceConfig&>(
-			mInControlList.at(index).processing->GetConfig() ));
+			mInControlList[index].processing->GetConfig() ));
 	strncpy (label, conf.GetUnitName().c_str(), kVstMaxParamStrLen);
 }
 
 //---------------------------------------------------------------------
-VstNetworkExporter::VstNetworkExporter (audioMasterCallback audioMaster)
+VstNetworkExporter::VstNetworkExporter (
+		audioMasterCallback audioMaster,
+		const std::string & effectName,
+		const std::string & productString,
+		const std::string & vendor,
+		int version
+	)
 	: AudioEffectX (audioMaster, 1 /*nPrograms*/, GetNumberOfParameters(embededNetwork) )
-	, _effectName("CLAMTest-effectname")
-	, _productString("CLAMTest-productstring")
-	, _vendor("clam-devel")
-	, _version(1000)
+	, _effectName(effectName)
+	, _productString(productString)
+	, _vendor(vendor)
+	, _version(version)
 {
 	std::cout << "== Constructor" << std::endl;
-	mNet=new Network;
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
 
 	try
 	{
 		std::istringstream xmlfile(embededNetwork);
-		XmlStorage::Restore( *mNet, xmlfile );
+		XmlStorage::Restore( _network, xmlfile );
 	}
 	catch ( std::exception& err)
 	{
@@ -120,34 +132,26 @@ VstNetworkExporter::VstNetworkExporter (audioMasterCallback audioMaster)
 			<< "exception.what() " << err.what() << std::endl;
 		FillNetwork();
 	}
-	GetNetwork().Start();
+	_network.Start();
+	LocateConnections();
 
-	ProcessInputPorts();
-	ProcessOutputPorts();
-	ProcessInputControls();
-
-	UpdatePortFrameAndHopSize();
-
-	setNumInputs (2);			// stereo in
-	setNumOutputs (2);			// stereo out
-	setUniqueID ('CLAM');		// identify TODO: Get one
-	//canMono ();				// makes sense to feed both inputs with the same signal
-	strncpy (programName, "Default", kVstMaxProgNameLen);	// default program name
+	setNumInputs (mReceiverList.size());
+	setNumOutputs (mSenderList.size());
+	setUniqueID (CCONST('C','L','A','M'));
+	// default program name
+	strncpy (programName, "Default", kVstMaxProgNameLen);
 }
 
 //---------------------------------------------------------------------
 VstNetworkExporter::~VstNetworkExporter ()
 {
-	GetNetwork().Stop();
-	delete mNet;
+	_network.Stop();
 }
 
 //---------------------------------------------------------------------
 int VstNetworkExporter::GetNumberOfParameters( const char* networkXmlContent )
 {
 	Network net;
-	int count=0;
-	
 	try
 	{
 		std::istringstream file(embededNetwork);
@@ -160,14 +164,13 @@ int VstNetworkExporter::GetNumberOfParameters( const char* networkXmlContent )
 		return -2;
 	}
 
+	int count=0;
 	for (Network::ProcessingsMap::const_iterator it=net.BeginProcessings(); it!=net.EndProcessings(); it++)
 	{
-		std::cout << "proc: " << it->second->GetClassName() << std::endl;
-		if (std::string("ControlSource")==std::string(it->second->GetClassName())) {
-			count++;
-			std::cout << "Found ControlSource: " << it->second->GetClassName() << std::endl;
-			
-		}
+		std::string controlSourceClass = "ControlSource";
+		if (it->second->GetClassName() != controlSourceClass) continue;
+		count++;
+		std::cout << "Found ControlSource: " << it->first << std::endl;
 	}
 
 	std::cout << "returning : " << count << std::endl;
@@ -203,7 +206,7 @@ void VstNetworkExporter::process (float **inputs, float **outputs, long sampleFr
 	mSenderList.at(0).processing->SetExternalBuffer( out1 , sampleFrames );
 	if (! mono) mSenderList.at(1).processing->SetExternalBuffer( out2 , sampleFrames );
 
-	GetNetwork().Do();
+	_network.Do();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -211,85 +214,62 @@ void VstNetworkExporter::FillNetwork()
 {
 	CLAM::SimpleOscillator();
 	CLAM::Oscillator();
-	GetNetwork().SetName("VST net");
-	GetNetwork().AddProcessing("AudioSink", "AudioSink");
-	GetNetwork().AddProcessing("AudioSource", "AudioSource");
-	GetNetwork().AddProcessing("Oscillator", "SimpleOscillator");
-	GetNetwork().AddProcessing("Modulator", "Oscillator");
-	GetNetwork().AddProcessing("ControlSource_0", "ControlSource");
-	GetNetwork().ConnectPorts("AudioSource.AudioOut","Modulator.Input Phase Modulation");
-	GetNetwork().ConnectPorts("Modulator.Audio Output","AudioSink.AudioIn");
-	GetNetwork().ConnectPorts("Oscillator.Audio Output","Modulator.Input Frequency Modulation");
-	GetNetwork().ConnectControls("ControlSource_0.output","Modulator.Pitch");
+	_network.SetName("VST net");
+	_network.AddProcessing("AudioSink", "AudioSink");
+	_network.AddProcessing("AudioSource", "AudioSource");
+	_network.AddProcessing("Oscillator", "SimpleOscillator");
+	_network.AddProcessing("Modulator", "Oscillator");
+	_network.AddProcessing("ControlSource_0", "ControlSource");
+	_network.ConnectPorts("AudioSource.AudioOut","Modulator.Input Phase Modulation");
+	_network.ConnectPorts("Modulator.Audio Output","AudioSink.AudioIn");
+	_network.ConnectPorts("Oscillator.Audio Output","Modulator.Input Frequency Modulation");
+	_network.ConnectControls("ControlSource_0.output","Modulator.Pitch");
 }
 
-void VstNetworkExporter::ProcessInputControls()
+void VstNetworkExporter::LocateConnections()
 {
-	CLAM_ASSERT( mInControlList.empty(), "VstNetworkExporter::ProcessInputControls() : there are already registered controls");
+	CLAM_ASSERT( mReceiverList.empty(), "VstNetworkExporter::LocateConnections() : there are already registered input ports");
+	CLAM_ASSERT( mSenderList.empty(), "VstNetworkExporter::LocateConnections() : there are already registered output ports");
+	CLAM_ASSERT( mInControlList.empty(), "VstNetworkExporter::LocateConnections() : there are already registered controls");
 
-	ExternControlInfo info;
-
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
+	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
 	{
-		if (std::string(it->second->GetClassName()) != "ControlSource") continue;
-		const ControlSourceConfig & conf= dynamic_cast<const ControlSourceConfig&>(it->second->GetConfig() );
+		CLAM::Processing * processing = it->second;
+		std::string className = processing->GetClassName();
+		if (className == "AudioSource")
+		{
+			std::cout << "AudioSource: " << it->first << std::endl;
+			DataInfo<AudioSource> info;
+			info.name=it->first;
+			info.processing=(AudioSource*)processing;
+			info.processing->SetFrameAndHopSize( mExternBufferSize );
+			mReceiverList.push_back(info);
+		}
+		if (className == "AudioSink")
+		{
+			std::cout << "AudioSink: " << it->first << std::endl;
+			DataInfo<AudioSink> info;
+			info.name=it->first;
+			info.processing=(AudioSink*)processing;
+			info.processing->SetFrameAndHopSize( mExternBufferSize );
+			mSenderList.push_back(info);
+		}
 
-		//Store Processing name
-		info.name=it->first;
-		
-		//Get Processing address
-		info.processing=(ControlSource*)it->second;
+		if (className == "ControlSource")
+		{
+			std::cout << "ControlSource: " << it->first << std::endl;
+			const ControlSourceConfig & conf= dynamic_cast<const ControlSourceConfig&>(it->second->GetConfig() );
 
-		//Store range data
-		info.min=conf.GetMinValue();
-		info.max=conf.GetMaxValue();
-		info.lastvalue=info.max;
-		
-		//Add the info 
-		mInControlList.push_back(info);
+			ExternControlInfo info;
+			info.name=it->first;
+			info.processing=(ControlSource*)processing;
+			info.min=conf.GetMinValue();
+			info.max=conf.GetMaxValue();
+			info.lastvalue=info.max;
+			mInControlList.push_back(info);
+		}
 	}
-}
 
-void VstNetworkExporter::ProcessInputPorts()
-{
-	CLAM_ASSERT( mReceiverList.empty(), "VstNetworkExporter::ProcessInputPorts() : there are already registered input ports");
-
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
-	{
-		if (std::string(it->second->GetClassName()) != "AudioSource") continue;
-		DataInfo<AudioSource> info;
-		//Store Processing name
-		info.name=it->first;
-		
-		//Get Processing address
-		info.processing=(AudioSource*)it->second;
-		info.processing->SetFrameAndHopSize( mExternBufferSize );
-
-		//Add the info 
-		mReceiverList.push_back(info);
-	}
-}
-
-void VstNetworkExporter::ProcessOutputPorts()
-{
-	CLAM_ASSERT( mSenderList.empty(), "VstNetworkExporter::ProcessInputPorts() : there are already registered output ports");
-
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
-	{
-		if (std::string(it->second->GetClassName()) != "AudioSink") continue;
-		//Store Processing name
-		DataInfo<AudioSink> info;
-		info.name=it->first;
-		//Get Processing address
-		info.processing=(AudioSink*)it->second;
-		info.processing->SetFrameAndHopSize( mExternBufferSize );
-
-		//Add the info 
-		mSenderList.push_back(info);
-	}
 }
 
 void VstNetworkExporter::UpdatePortFrameAndHopSize()
