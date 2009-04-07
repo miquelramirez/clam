@@ -299,52 +299,37 @@ void AggregationEditor::editConfiguration()
 
 void AggregationEditor::setConfiguration()
 {
-	QTreeWidgetItem * attributeItem;
-	QTreeWidgetItem * scopeItem;
-	QTreeWidgetItem * sourceItem;
-	std::string::size_type posStart=0;
-	std::string::size_type posA;
-	std::string::size_type posB;
+	size_t posStart = mConfig.find("map",0);         
+	size_t mapStart = mConfig.find("[", posStart+1) + 1;  
+	size_t mapSize = mConfig.find("]", posStart+1) - mapStart;
+	mConfig.erase(mapStart, mapSize);
 
-	int arraySize = -1;
-
-	posStart = mConfig.find("map",0);         
-	posA = mConfig.find("[", posStart+1);  
-	posB = mConfig.find("]", posStart+1);
-	mConfig.erase(posA+1, posB-posA-1); //erase the map content
 	std::string newContent="\n";
-	std::string str1="\t(\"";
-	std::string str2="::";
-	std::string str3="\", \"";
-	std::string str4="::";
-	std::string str5="\"),\n";
-
 	for(int i=0; i<attributeList->topLevelItemCount(); i++)  //ugly.....is there any clearer way?
 	{
-		sourceItem=attributeList->topLevelItem(i);
+		QTreeWidgetItem * sourceItem = attributeList->topLevelItem(i);
 		for(int j=0; j<sourceItem->childCount();j++)
 		{
-			scopeItem = sourceItem->child(j);
+			QTreeWidgetItem * scopeItem = sourceItem->child(j);
 			for(int k=0; k<scopeItem->childCount();k++)
 			{
-				attributeItem = scopeItem->child(k);
-					if(attributeItem->checkState(0)==Qt::Checked)
-				{
-					//the default names will be automatically writen after "accepted"
-					if(attributeItem->text(1)=="") attributeItem->setText(1, attributeItem->text(0));
-					if(scopeItem->text(1)=="") scopeItem->setText(1, scopeItem->text(0));
-					newContent+=str1+scopeItem->text(1).toStdString()+str2+
-						attributeItem->text(1).toStdString()+str3+
-						sourceItem->text(0).toStdString()+str3+
-						scopeItem->text(0).toStdString()+str4+
-						attributeItem->text(0).toStdString()+str5;
-				}
+				QTreeWidgetItem * attributeItem = scopeItem->child(k);
+				if(attributeItem->checkState(0)!=Qt::Checked) continue;
+				//the default names will be automatically writen after "accepted"
+				if(attributeItem->text(1)=="") attributeItem->setText(1, attributeItem->text(0));
+				if(scopeItem->text(1)=="") scopeItem->setText(1, scopeItem->text(0));
+				newContent += QString("\t(\"%1::%2\" , \"%3\", \"%4::%5\"),\n")
+					.arg(scopeItem->text(1))
+					.arg(attributeItem->text(1))
+					.arg(sourceItem->text(0))
+					.arg(scopeItem->text(0))
+					.arg(attributeItem->text(0))
+					.toStdString();
 			}
 			
 		}
-		
 	}
-	mConfig.insert(posA+1, newContent);
+	mConfig.insert(mapStart, newContent);
 	std::cout<< "the newly edited Configuration is ..............\n" << mConfig << std::endl;
 	
 }
