@@ -232,26 +232,22 @@ void VstNetworkExporter::ProcessInputControls()
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
 	{
-		if (std::string("ControlSource")==std::string(it->second->GetClassName()))
-		{
-			ControlSourceConfig& conf=const_cast<ControlSourceConfig&>(
-				dynamic_cast<const ControlSourceConfig&>(
-					it->second->GetConfig() ));
+		if (std::string(it->second->GetClassName()) != "ControlSource") continue;
+		const ControlSourceConfig & conf= dynamic_cast<const ControlSourceConfig&>(it->second->GetConfig() );
 
-			//Store Processing name
-			info.name=it->first;
-			
-			//Get Processing address
-			info.processing=(ControlSource*)it->second;
+		//Store Processing name
+		info.name=it->first;
+		
+		//Get Processing address
+		info.processing=(ControlSource*)it->second;
 
-			//Store range data
-			info.min=conf.GetMinValue();
-			info.max=conf.GetMaxValue();
-			info.lastvalue=info.max;
-			
-			//Add the info 
-			mInControlList.push_back(info);
-		}
+		//Store range data
+		info.min=conf.GetMinValue();
+		info.max=conf.GetMaxValue();
+		info.lastvalue=info.max;
+		
+		//Add the info 
+		mInControlList.push_back(info);
 	}
 }
 
@@ -259,23 +255,20 @@ void VstNetworkExporter::ProcessInputPorts()
 {
 	CLAM_ASSERT( mReceiverList.empty(), "VstNetworkExporter::ProcessInputPorts() : there are already registered input ports");
 
-	DataInfo<AudioSource> info;
-
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
 	{
-		if (std::string("AudioSource")==std::string(it->second->GetClassName()))
-		{
-			//Store Processing name
-			info.name=it->first;
-			
-			//Get Processing address
-			info.processing=(AudioSource*)it->second;
-			info.processing->SetFrameAndHopSize( mExternBufferSize );
+		if (std::string(it->second->GetClassName()) != "AudioSource") continue;
+		DataInfo<AudioSource> info;
+		//Store Processing name
+		info.name=it->first;
+		
+		//Get Processing address
+		info.processing=(AudioSource*)it->second;
+		info.processing->SetFrameAndHopSize( mExternBufferSize );
 
-			//Add the info 
-			mReceiverList.push_back(info);
-		}
+		//Add the info 
+		mReceiverList.push_back(info);
 	}
 }
 
@@ -283,23 +276,19 @@ void VstNetworkExporter::ProcessOutputPorts()
 {
 	CLAM_ASSERT( mSenderList.empty(), "VstNetworkExporter::ProcessInputPorts() : there are already registered output ports");
 
-	DataInfo<AudioSink> info;
-
 	//Get them from the Network and add it to local list		
 	for (Network::ProcessingsMap::const_iterator it=GetNetwork().BeginProcessings(); it!=GetNetwork().EndProcessings(); it++)
 	{
-		if (std::string("AudioSink")==std::string(it->second->GetClassName()))
-		{
-			//Store Processing name
-			info.name=it->first;
-			
-			//Get Processing address
-			info.processing=(AudioSink*)it->second;
-			info.processing->SetFrameAndHopSize( mExternBufferSize );
+		if (std::string(it->second->GetClassName()) != "AudioSink") continue;
+		//Store Processing name
+		DataInfo<AudioSink> info;
+		info.name=it->first;
+		//Get Processing address
+		info.processing=(AudioSink*)it->second;
+		info.processing->SetFrameAndHopSize( mExternBufferSize );
 
-			//Add the info 
-			mSenderList.push_back(info);
-		}
+		//Add the info 
+		mSenderList.push_back(info);
 	}
 }
 
