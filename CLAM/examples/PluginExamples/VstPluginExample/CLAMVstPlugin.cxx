@@ -15,7 +15,7 @@ CLAM_EMBEDDED_FILE(embededNetwork,"genwire.xml")
 
 AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 {
-	CLAM::CLAMTest * effect = new CLAM::CLAMTest(audioMaster);
+	CLAM::VstNetworkExporter * effect = new CLAM::VstNetworkExporter(audioMaster);
 	if (effect->ok()) return effect;
 	delete effect;
 	return 0;
@@ -26,37 +26,37 @@ namespace CLAM
 
 // VST interface: Metadata
 
-bool CLAMTest::getEffectName (char* name)
+bool VstNetworkExporter::getEffectName (char* name)
 {
 	strncpy (name, _effectName.c_str(), kVstMaxEffectNameLen);
 	return true;
 }
 
-bool CLAMTest::getProductString (char* text)
+bool VstNetworkExporter::getProductString (char* text)
 {
 	strncpy (text, _productString.c_str(), kVstMaxProductStrLen);
 	return true;
 }
 
-bool CLAMTest::getVendorString (char* text)
+bool VstNetworkExporter::getVendorString (char* text)
 {
 	strncpy (text, _vendor.c_str(), kVstMaxVendorStrLen);
 	return true;
 }
 
-VstInt32 CLAMTest::getVendorVersion ()
+VstInt32 VstNetworkExporter::getVendorVersion ()
 {
 	return _version;
 }
 
 // VST interface: Program management
 
-void CLAMTest::setProgramName (char *name)
+void VstNetworkExporter::setProgramName (char *name)
 {
 	strncpy (programName, name, kVstMaxProgNameLen);
 }
 
-void CLAMTest::getProgramName (char *name)
+void VstNetworkExporter::getProgramName (char *name)
 {
 	strncpy (name, programName, kVstMaxProgNameLen);
 }
@@ -64,7 +64,7 @@ void CLAMTest::getProgramName (char *name)
 
 // VST interface: Parameter management
 
-void CLAMTest::setParameter (long index, float value)
+void VstNetworkExporter::setParameter (long index, float value)
 {
 	float realval = value * ( mInControlList.at(index).max - mInControlList.at(index).min ) - fabs( mInControlList.at(index).min );
 
@@ -72,22 +72,22 @@ void CLAMTest::setParameter (long index, float value)
 	mInControlList.at(index).processing->Do(realval);
 }
 
-float CLAMTest::getParameter (long index)
+float VstNetworkExporter::getParameter (long index)
 {
 	return mInControlList.at(index).lastvalue;
 }
 
-void CLAMTest::getParameterName (long index, char *label)
+void VstNetworkExporter::getParameterName (long index, char *label)
 {
 	strncpy ( label, mInControlList.at(index).name.c_str(), kVstMaxParamStrLen ); 
 }
 
-void CLAMTest::getParameterDisplay (long index, char *text)
+void VstNetworkExporter::getParameterDisplay (long index, char *text)
 {
 	float2string ( mInControlList.at(index).lastvalue, text, kVstMaxParamStrLen);
 }
 
-void CLAMTest::getParameterLabel(long index, char *label)
+void VstNetworkExporter::getParameterLabel(long index, char *label)
 {
 	ControlSourceConfig& conf=const_cast<ControlSourceConfig&>(
 		dynamic_cast<const ControlSourceConfig&>(
@@ -96,7 +96,7 @@ void CLAMTest::getParameterLabel(long index, char *label)
 }
 
 //---------------------------------------------------------------------
-CLAMTest::CLAMTest (audioMasterCallback audioMaster)
+VstNetworkExporter::VstNetworkExporter (audioMasterCallback audioMaster)
 	: AudioEffectX (audioMaster, 1 /*nPrograms*/, GetNumberOfParameters(embededNetwork) )
 	, _effectName("CLAMTest-effectname")
 	, _productString("CLAMTest-productstring")
@@ -105,7 +105,6 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 {
 	std::cout << "== Constructor" << std::endl;
 	mNet=new Network;
-	std::cout << "== Network constructed" << std::endl;
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
 
@@ -116,7 +115,7 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 	}
 	catch ( std::exception& err)
 	{
-		std::cerr << "CLAMTest WARNING: error parsing embeded network. "
+		std::cerr << "VstNetworkExporter WARNING: error parsing embeded network. "
 				"Plugin not loaded" << std::endl
 			<< "exception.what() " << err.what() << std::endl;
 		FillNetwork();
@@ -137,14 +136,14 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 }
 
 //---------------------------------------------------------------------
-CLAMTest::~CLAMTest ()
+VstNetworkExporter::~VstNetworkExporter ()
 {
 	GetNetwork().Stop();
 	delete mNet;
 }
 
 //---------------------------------------------------------------------
-int CLAMTest::GetNumberOfParameters( const char* networkXmlContent )
+int VstNetworkExporter::GetNumberOfParameters( const char* networkXmlContent )
 {
 	Network net;
 	int count=0;
@@ -156,7 +155,7 @@ int CLAMTest::GetNumberOfParameters( const char* networkXmlContent )
 	}
 	catch ( XmlStorageErr err)
 	{
-		std::cerr << "CLAMTest WARNING: error loading embedded network. "
+		std::cerr << "VstNetworkExporter WARNING: error loading embedded network. "
 			"Plugin not loaded" <<std::endl;
 		return -2;
 	}
@@ -175,7 +174,7 @@ int CLAMTest::GetNumberOfParameters( const char* networkXmlContent )
 	return count;
 }
 
-void CLAMTest::process (float **inputs, float **outputs, long sampleFrames)
+void VstNetworkExporter::process (float **inputs, float **outputs, long sampleFrames)
 {
 	const bool mono = true;
 	float *in1  =  inputs[0];
@@ -208,7 +207,7 @@ void CLAMTest::process (float **inputs, float **outputs, long sampleFrames)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////
-void CLAMTest::FillNetwork()
+void VstNetworkExporter::FillNetwork()
 {
 	CLAM::SimpleOscillator();
 	CLAM::Oscillator();
@@ -224,9 +223,9 @@ void CLAMTest::FillNetwork()
 	GetNetwork().ConnectControls("ControlSource_0.output","Modulator.Pitch");
 }
 
-void CLAMTest::ProcessInputControls()
+void VstNetworkExporter::ProcessInputControls()
 {
-	CLAM_ASSERT( mInControlList.empty(), "CLAMTest::ProcessInputControls() : there are already registered controls");
+	CLAM_ASSERT( mInControlList.empty(), "VstNetworkExporter::ProcessInputControls() : there are already registered controls");
 
 	ExternControlInfo info;
 
@@ -256,9 +255,9 @@ void CLAMTest::ProcessInputControls()
 	}
 }
 
-void CLAMTest::ProcessInputPorts()
+void VstNetworkExporter::ProcessInputPorts()
 {
-	CLAM_ASSERT( mReceiverList.empty(), "CLAMTest::ProcessInputPorts() : there are already registered input ports");
+	CLAM_ASSERT( mReceiverList.empty(), "VstNetworkExporter::ProcessInputPorts() : there are already registered input ports");
 
 	DataInfo<AudioSource> info;
 
@@ -280,9 +279,9 @@ void CLAMTest::ProcessInputPorts()
 	}
 }
 
-void CLAMTest::ProcessOutputPorts()
+void VstNetworkExporter::ProcessOutputPorts()
 {
-	CLAM_ASSERT( mSenderList.empty(), "CLAMTest::ProcessInputPorts() : there are already registered output ports");
+	CLAM_ASSERT( mSenderList.empty(), "VstNetworkExporter::ProcessInputPorts() : there are already registered output ports");
 
 	DataInfo<AudioSink> info;
 
@@ -304,7 +303,7 @@ void CLAMTest::ProcessOutputPorts()
 	}
 }
 
-void CLAMTest::UpdatePortFrameAndHopSize()
+void VstNetworkExporter::UpdatePortFrameAndHopSize()
 {
 	//AudioSources
 	for (VSTInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
