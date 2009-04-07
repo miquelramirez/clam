@@ -76,10 +76,10 @@ void AggregationEditor::setSchema()
 {	
 	//attributeProperties->hide();
 	attributeList->clear();
-	int arraySize=parseSources();
+	parseSources();
 
 	CLAM_Annotator::Schema sourceSchema;
-	for(int i = 0; i <arraySize; i++)
+	for(int i = 0; i <mParser.sources.size(); i++)
 	{
 		Source & source = mParser.sources[i];
 		CLAM::XMLStorage::Restore(sourceSchema, source.path+"/"+source.schemaFile);
@@ -94,7 +94,7 @@ void AggregationEditor::setSchema()
 void AggregationEditor::addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem * parent)
 {
 	QTreeWidgetItem * scopeItem = 0;
-	int arraySize = parseMap();
+	parseMap();
 	Qt::CheckState  state=Qt::Unchecked;
 	if(!(scopeItem=hasScope(scope, parent)))
 	{
@@ -108,7 +108,7 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 	item->setText( 0, name.c_str() );
 	item->setIcon( 0, attributeIcon );
 	
-	for(int i=0; i<arraySize; i++)
+	for(int i=0; i<mParser.maps.size(); i++)
 	{
 		if (mParser.maps[i].sourceAttribute != name) continue;
 		if (mParser.maps[i].sourceId.c_str()!=parent->text(0)) continue;
@@ -153,7 +153,7 @@ QTreeWidgetItem *  AggregationEditor::hasScope(const std::string & scope,  QTree
 
  // TODO: dealing with exceptions
  // TODO: allowing "#" in the script
-int AggregationEditor::parseSources()
+void AggregationEditor::parseSources()
 {
 	std::string::size_type posStart=0;
 	std::string::size_type posEnd, posSourcesEnd;
@@ -168,7 +168,7 @@ int AggregationEditor::parseSources()
 	if(!arraySize)
 	{
 		std::cout<< "There is no source. Please check whether the Aggregator is correctly configured." <<std::endl;//todo: replace this with unique Failure assertion
-		return arraySize;
+		return;
 	}
 
 	mParser.sources.resize(arraySize);
@@ -189,11 +189,9 @@ int AggregationEditor::parseSources()
 		posStart = posEnd;
 		posEnd = mConfig.find("),", posStart+1);		
 	}
-	return arraySize;
-	
 }
 
-int AggregationEditor::parseMap() 
+void AggregationEditor::parseMap() 
 {
 	std::string::size_type posStart=0;
 	std::string::size_type posA, posB, posEnd, posAttributesEnd;
@@ -211,7 +209,7 @@ int AggregationEditor::parseMap()
 		arraySize++;
 	}
 
-	if(!arraySize)	return arraySize;
+	if(!arraySize)	return;
 	mParser.maps.resize(arraySize);
 
 	posEnd = mConfig.find("),", posStart+1);
@@ -236,8 +234,6 @@ int AggregationEditor::parseMap()
 
 		posEnd = mConfig.find("),", posEnd+1);		
 	}	
-	return arraySize;
-	
 }
 
 
