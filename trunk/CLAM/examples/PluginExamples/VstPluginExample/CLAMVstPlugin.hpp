@@ -10,7 +10,6 @@
 
 namespace CLAM
 {
-	
 	template<class T>
 	class DataInfo
 	{
@@ -32,11 +31,11 @@ namespace CLAM
 	typedef std::vector< DataInfo< CLAM::AudioSink > > VSTOutPortList;
 
 //-------------------------------------------------------------------------------------------------------
-class CLAMTest : public AudioEffectX
+class VstNetworkExporter : public AudioEffectX
 {
 public:
-	CLAMTest (audioMasterCallback audioMaster);
-	~CLAMTest ();
+	VstNetworkExporter (audioMasterCallback audioMaster);
+	~VstNetworkExporter ();
 
 	bool ok() const { return true; }
 
