@@ -31,8 +31,6 @@ namespace CLAM
 	typedef std::vector< DataInfo< CLAM::AudioSource > > VSTInPortList;
 	typedef std::vector< DataInfo< CLAM::AudioSink > > VSTOutPortList;
 
-}
-
 //-------------------------------------------------------------------------------------------------------
 class CLAMTest : public AudioEffectX
 {
@@ -63,7 +61,7 @@ public:
 	virtual VstPlugCategory getPlugCategory () { return kPlugCategEffect; }
 
 protected:
-	char programName[32];
+	char programName[kVstMaxProgNameLen];
 	CLAM::Network* mNet;
 	CLAM::VSTInControlList mInControlList;
 	CLAM::VSTInPortList mReceiverList;
@@ -79,5 +77,7 @@ private:
 	void ProcessOutputPorts();
 	void UpdatePortFrameAndHopSize();
 };
+
+}
 
 #endif

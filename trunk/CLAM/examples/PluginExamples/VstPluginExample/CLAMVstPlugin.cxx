@@ -7,27 +7,25 @@
 #include <sstream>
 #include <cmath>
 
+#include <CLAM/EmbeddedFile.hxx>
 #include "SimpleOscillator.hxx" //TODO remove
 #include "Oscillator.hxx" //TODO remove
+
+CLAM_EMBEDDED_FILE(embededNetwork,"genwire.xml")
 //#define NO_NETWORK_FILE
-
-using namespace CLAM;
-
-//const char* xmlfile="wire.xml"; //2
-//const char* xmlfile="externSMSmess.xml"; //1
-const char* xmlfile="../../example-data/simpleModulator.clamnetwork"; 
-//const char* xmlfile="inputMultiplier.xml"; //2
 
 AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 {
-	return new CLAMTest(audioMaster);
+	return new CLAM::CLAMTest(audioMaster);
 }
 
+namespace CLAM
+{
 
 
 //---------------------------------------------------------------------
 CLAMTest::CLAMTest (audioMasterCallback audioMaster)
-	: AudioEffectX (audioMaster, 1, GetNumberOfParameters(xmlfile) )	// 1 program, 1 parameter only
+	: AudioEffectX (audioMaster, 1 /*nPrograms*/, GetNumberOfParameters(embededNetwork) )
 {
 	std::cout << "== Constructor" << std::endl;
 	mNet=new Network;
@@ -41,13 +39,14 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 #ifdef NO_NETWORK_FILE
 		FillNetwork(); //Testing interest
 #else 
+		std::istringstream xmlfile(embededNetwork);
 		XmlStorage::Restore( *mNet, xmlfile );
 	}
 	catch ( std::exception& err)
 	{
-		std::cerr << "CLAMTest WARNING: error opening file <"
-			<< xmlfile << "> . Plugin not loaded" << std::endl
-		        << "exception.what() " << err.what() << std::endl;
+		std::cerr << "CLAMTest WARNING: error parsing embeded network. "
+				"Plugin not loaded" << std::endl
+			<< "exception.what() " << err.what() << std::endl;
 		FillNetwork();
 	}
 #endif	
@@ -63,7 +62,7 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 	setNumOutputs (2);			// stereo out
 	setUniqueID ('CLAM');		// identify TODO: Get one
 	//canMono ();				// makes sense to feed both inputs with the same signal
-	strcpy (programName, "Default");	// default program name
+	strncpy (programName, "Default", kVstMaxProgNameLen);	// default program name
 }
 
 //---------------------------------------------------------------------
@@ -74,7 +73,7 @@ CLAMTest::~CLAMTest ()
 }
 
 //---------------------------------------------------------------------
-int CLAMTest::GetNumberOfParameters( const char* file )
+int CLAMTest::GetNumberOfParameters( const char* networkXmlContent )
 {
 #ifdef NO_NETWORK_FILE
 	return 1; 
@@ -84,12 +83,13 @@ int CLAMTest::GetNumberOfParameters( const char* file )
 	
 	try
 	{
+		std::istringstream file(embededNetwork);
 		XmlStorage::Restore( net, file );
 	}
 	catch ( XmlStorageErr err)
 	{
-		std::cerr << "CLAMTest WARNING: error opening file <"
-			<< file << "> . Plugin not loaded" <<std::endl;
+		std::cerr << "CLAMTest WARNING: error loading embedded network. "
+			"Plugin not loaded" <<std::endl;
 		return -2;
 	}
 
@@ -110,13 +110,13 @@ int CLAMTest::GetNumberOfParameters( const char* file )
 //---------------------------------------------------------------------
 void CLAMTest::setProgramName (char *name)
 {
-	strcpy (programName, name);
+	strncpy (programName, name, kVstMaxProgNameLen);
 }
 
 //---------------------------------------------------------------------
 void CLAMTest::getProgramName (char *name)
 {
-	strcpy (name, programName);
+	strncpy (name, programName, kVstMaxProgNameLen);
 }
 
 //---------------------------------------------------------------------
@@ -154,31 +154,27 @@ void CLAMTest::getParameterLabel(long index, char *label)
 	ControlSourceConfig& conf=const_cast<ControlSourceConfig&>(
 		dynamic_cast<const ControlSourceConfig&>(
 			mInControlList.at(index).processing->GetConfig() ));
-	strcpy (label, conf.GetUnitName().c_str() );
+	strncpy (label, conf.GetUnitName().c_str(), kVstMaxParamStrLen);
 }
 
-//---------------------------------------------------------------------
 bool CLAMTest::getEffectName (char* name)
 {
-	strcpy (name, "CLAMTest-effectname");
+	strncpy (name, "CLAMTest-effectname", kVstMaxEffectNameLen);
 	return true;
 }
 
-//---------------------------------------------------------------------
 bool CLAMTest::getProductString (char* text)
 {
-	strcpy (text, "CLAMTest-productstring");
+	strncpy (text, "CLAMTest-productstring", kVstMaxProductStrLen);
 	return true;
 }
 
-//---------------------------------------------------------------------
 bool CLAMTest::getVendorString (char* text)
 {
-	strcpy (text, "clam-devel");
+	strncpy (text, "clam-devel", kVstMaxVendorStrLen);
 	return true;
 }
 
-//---------------------------------------------------------------------
 void CLAMTest::process (float **inputs, float **outputs, long sampleFrames)
 {
 	const bool mono = true;
@@ -318,4 +314,7 @@ void CLAMTest::UpdatePortFrameAndHopSize()
 	for (VSTOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
 		it->processing->SetFrameAndHopSize( mExternBufferSize );
 }
-									
+
+} // CLAM
+
+

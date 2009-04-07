@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network id="CLAM">
+<network clamVersion="1.3.1" id="CLAM">
 
-  <processing id="AudioSource_0" type="AudioSource"/>
+  <processing id="AudioSource_0" position="23,-22" size="143,108" type="AudioSource"/>
 
-  <processing id="OutOutOut" type="ControlSink">
+  <processing id="OutOutOut" position="188,39" size="115,59" type="ControlSink">
     <MinValue>0</MinValue>
     <MaxValue>800</MaxValue>
     <Step>1</Step>
   </processing>
 
-  <processing id="SimpleOscillator_0" type="SimpleOscillator">
+  <processing id="SimpleOscillator_0" position="136,96" size="168,59" type="SimpleOscillator">
     <Frequency>440</Frequency>
     <Amplitude>1</Amplitude>
     <Phase>0</Phase>
     <SamplingRate>44100</SamplingRate>
   </processing>
 
-  <processing id="in1" type="AudioSource"/>
+  <processing id="in1" position="20,155" size="128,108" type="AudioSource"/>
 
-  <processing id="out1" type="AudioSink"/>
+  <processing id="out1" position="341,60" size="128,111" type="AudioSink"/>
 
-  <processing id="out2" type="AudioSink"/>
+  <processing id="out2" position="341,157" size="128,111" type="AudioSink"/>
 
-  <processing id="pitch" type="ControlSource">
+  <processing id="pitch" position="169,-51" size="69,59" type="ControlSource">
     <MinValue>100</MinValue>
     <MaxValue>800</MaxValue>
     <Step>2</Step>
