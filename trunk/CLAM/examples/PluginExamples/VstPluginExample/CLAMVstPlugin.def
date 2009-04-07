@@ -233,111 +233,109 @@ EXPORTS
     _ZN4CLAM18VstNetworkExporter16getProductStringEPc @232
     _ZN4CLAM18VstNetworkExporter16getVendorVersionEv @233
     _ZN4CLAM18VstNetworkExporter16processReplacingEPPfS2_i @234
-    _ZN4CLAM18VstNetworkExporter17ProcessInputPortsEv @235
+    _ZN4CLAM18VstNetworkExporter17LocateConnectionsEv @235
     _ZN4CLAM18VstNetworkExporter17getParameterLabelElPc @236
-    _ZN4CLAM18VstNetworkExporter18ProcessOutputPortsEv @237
-    _ZN4CLAM18VstNetworkExporter19getParameterDisplayElPc @238
-    _ZN4CLAM18VstNetworkExporter20ProcessInputControlsEv @239
-    _ZN4CLAM18VstNetworkExporter21GetNumberOfParametersEPKc @240
-    _ZN4CLAM18VstNetworkExporter25UpdatePortFrameAndHopSizeEv @241
-    _ZN4CLAM18VstNetworkExporter7processEPPfS2_l @242
-    _ZN4CLAM18VstNetworkExporterC1EPFiP7AEffectiiiPvfE @243
-    _ZN4CLAM18VstNetworkExporterC2EPFiP7AEffectiiiPvfE @244
-    _ZN4CLAM18VstNetworkExporterD0Ev @245
-    _ZN4CLAM18VstNetworkExporterD1Ev @246
-    _ZN4CLAM18VstNetworkExporterD2Ev @247
-    _ZN4CLAM22SimpleOscillatorConfig10_new_PhaseEPv @248
-    _ZN4CLAM22SimpleOscillatorConfig10_new_PhaseEPvS1_ @249
-    _ZN4CLAM22SimpleOscillatorConfig13MandatoryInitEv @250
-    _ZN4CLAM22SimpleOscillatorConfig14_new_AmplitudeEPv @251
-    _ZN4CLAM22SimpleOscillatorConfig14_new_AmplitudeEPvS1_ @252
-    _ZN4CLAM22SimpleOscillatorConfig14_new_FrequencyEPv @253
-    _ZN4CLAM22SimpleOscillatorConfig14_new_FrequencyEPvS1_ @254
-    _ZN4CLAM22SimpleOscillatorConfig17LoadDynAttributesERNS_7StorageE @255
-    _ZN4CLAM22SimpleOscillatorConfig17_destructor_PhaseEPv @256
-    _ZN4CLAM22SimpleOscillatorConfig17_new_SamplingRateEPv @257
-    _ZN4CLAM22SimpleOscillatorConfig17_new_SamplingRateEPvS1_ @258
-    _ZN4CLAM22SimpleOscillatorConfig21_destructor_AmplitudeEPv @259
-    _ZN4CLAM22SimpleOscillatorConfig21_destructor_FrequencyEPv @260
-    _ZN4CLAM22SimpleOscillatorConfig24_destructor_SamplingRateEPv @261
-    _ZN4CLAM22SimpleOscillatorConfig9InformAllEv @262
-    _ZN4CLAM22SimpleOscillatorConfigD0Ev @263
-    _ZN4CLAM22SimpleOscillatorConfigD1Ev @264
-    _ZN4CLAM7NetworkD0Ev @265
-    _ZN4CLAM7NetworkD1Ev @266
-    _ZNK4CLAM10XMLAdapterIfE10XMLContentEv @267
-    _ZNK4CLAM11DynamicType7StoreOnERNS_7StorageE @268
-    _ZNK4CLAM12BasicXMLable12IsXMLElementEv @269
-    _ZNK4CLAM12BasicXMLable14IsXMLAttributeEv @270
-    _ZNK4CLAM12BasicXMLable7XMLNameEv @271
-    _ZNK4CLAM12BasicXMLable9IsXMLTextEv @272
-    _ZNK4CLAM16FlattenedNetwork12GetClassNameEv @273
-    _ZNK4CLAM16FlattenedNetwork7GetNameEv @274
-    _ZNK4CLAM16OscillatorConfig12GetClassNameEv @275
-    _ZNK4CLAM16OscillatorConfig18GetDynamicTypeCopyEbb @276
-    _ZNK4CLAM16OscillatorConfig18StoreDynAttributesERNS_7StorageE @277
-    _ZNK4CLAM16OscillatorConfig9GetTypeIdEj @278
-    _ZNK4CLAM22SimpleOscillatorConfig12GetClassNameEv @279
-    _ZNK4CLAM22SimpleOscillatorConfig18GetDynamicTypeCopyEbb @280
-    _ZNK4CLAM22SimpleOscillatorConfig18StoreDynAttributesERNS_7StorageE @281
-    _ZNK4CLAM22SimpleOscillatorConfig9GetTypeIdEj @282
-    _ZNK4CLAM3Err4whatEv @283
-    _ZNK4CLAM9Component11ShallowCopyEv @284
-    _ZNK4CLAM9Component8DeepCopyEv @285
-    _ZNSs12_S_constructIPcEES0_T_S1_RKSaIcESt20forward_iterator_tag @286
-    _ZNSt6vectorIN4CLAM17ExternControlInfoESaIS1_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS1_S3_EERKS1_ @287
-    _ZNSt6vectorIN4CLAM8DataInfoINS0_11AudioSourceEEESaIS3_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS3_S5_EERKS3_ @288
-    _ZNSt6vectorIN4CLAM8DataInfoINS0_9AudioSinkEEESaIS3_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS3_S5_EERKS3_ @289
-    _ZTI11AudioEffect @290 DATA
-    _ZTI12AudioEffectX @291 DATA
-    _ZTIN4CLAM10XMLAdapterIfEE @292 DATA
-    _ZTIN4CLAM11BaseNetworkE @293 DATA
-    _ZTIN4CLAM11DynamicTypeE @294 DATA
-    _ZTIN4CLAM12BasicXMLableE @295 DATA
-    _ZTIN4CLAM13XmlStorageErrE @296 DATA
-    _ZTIN4CLAM16FlattenedNetworkE @297 DATA
-    _ZTIN4CLAM16OscillatorConfigE @298 DATA
-    _ZTIN4CLAM16ProcessingConfigE @299 DATA
-    _ZTIN4CLAM18ErrAssertionFailedE @300 DATA
-    _ZTIN4CLAM18VstNetworkExporterE @301 DATA
-    _ZTIN4CLAM19ControlSourceConfigE @302 DATA
-    _ZTIN4CLAM22SimpleOscillatorConfigE @303 DATA
-    _ZTIN4CLAM3ErrE @304 DATA
-    _ZTIN4CLAM7NetworkE @305 DATA
-    _ZTIN4CLAM7XMLableE @306 DATA
-    _ZTIN4CLAM8StorableE @307 DATA
-    _ZTIN4CLAM9ComponentE @308 DATA
-    _ZTISt9exception @309 DATA
-    _ZTS11AudioEffect @310 DATA
-    _ZTS12AudioEffectX @311 DATA
-    _ZTSN4CLAM10XMLAdapterIfEE @312 DATA
-    _ZTSN4CLAM11BaseNetworkE @313 DATA
-    _ZTSN4CLAM11DynamicTypeE @314 DATA
-    _ZTSN4CLAM12BasicXMLableE @315 DATA
-    _ZTSN4CLAM13XmlStorageErrE @316 DATA
-    _ZTSN4CLAM16FlattenedNetworkE @317 DATA
-    _ZTSN4CLAM16OscillatorConfigE @318 DATA
-    _ZTSN4CLAM16ProcessingConfigE @319 DATA
-    _ZTSN4CLAM18ErrAssertionFailedE @320 DATA
-    _ZTSN4CLAM18VstNetworkExporterE @321 DATA
-    _ZTSN4CLAM19ControlSourceConfigE @322 DATA
-    _ZTSN4CLAM22SimpleOscillatorConfigE @323 DATA
-    _ZTSN4CLAM3ErrE @324 DATA
-    _ZTSN4CLAM7NetworkE @325 DATA
-    _ZTSN4CLAM7XMLableE @326 DATA
-    _ZTSN4CLAM8StorableE @327 DATA
-    _ZTSN4CLAM9ComponentE @328 DATA
-    _ZTSSt9exception @329 DATA
-    _ZTV11AudioEffect @330 DATA
-    _ZTV12AudioEffectX @331 DATA
-    _ZTVN4CLAM10XMLAdapterIfEE @332 DATA
-    _ZTVN4CLAM16OscillatorConfigE @333 DATA
-    _ZTVN4CLAM18ErrAssertionFailedE @334 DATA
-    _ZTVN4CLAM18VstNetworkExporterE @335 DATA
-    _ZTVN4CLAM22SimpleOscillatorConfigE @336 DATA
-    _ZTVN4CLAM7NetworkE @337 DATA
-    _ZZN4CLAM16OscillatorConfig13MandatoryInitEvE19staticTypeDescTable @338 DATA
-    _ZZN4CLAM16OscillatorConfig13MandatoryInitEvE22staticTableInitialized @339 DATA
-    _ZZN4CLAM22SimpleOscillatorConfig13MandatoryInitEvE19staticTypeDescTable @340 DATA
-    _ZZN4CLAM22SimpleOscillatorConfig13MandatoryInitEvE22staticTableInitialized @341 DATA
-    hInstance @342 DATA
+    _ZN4CLAM18VstNetworkExporter19getParameterDisplayElPc @237
+    _ZN4CLAM18VstNetworkExporter21GetNumberOfParametersEPKc @238
+    _ZN4CLAM18VstNetworkExporter25UpdatePortFrameAndHopSizeEv @239
+    _ZN4CLAM18VstNetworkExporter7processEPPfS2_l @240
+    _ZN4CLAM18VstNetworkExporterC1EPFiP7AEffectiiiPvfERKSsS7_S7_i @241
+    _ZN4CLAM18VstNetworkExporterC2EPFiP7AEffectiiiPvfERKSsS7_S7_i @242
+    _ZN4CLAM18VstNetworkExporterD0Ev @243
+    _ZN4CLAM18VstNetworkExporterD1Ev @244
+    _ZN4CLAM18VstNetworkExporterD2Ev @245
+    _ZN4CLAM22SimpleOscillatorConfig10_new_PhaseEPv @246
+    _ZN4CLAM22SimpleOscillatorConfig10_new_PhaseEPvS1_ @247
+    _ZN4CLAM22SimpleOscillatorConfig13MandatoryInitEv @248
+    _ZN4CLAM22SimpleOscillatorConfig14_new_AmplitudeEPv @249
+    _ZN4CLAM22SimpleOscillatorConfig14_new_AmplitudeEPvS1_ @250
+    _ZN4CLAM22SimpleOscillatorConfig14_new_FrequencyEPv @251
+    _ZN4CLAM22SimpleOscillatorConfig14_new_FrequencyEPvS1_ @252
+    _ZN4CLAM22SimpleOscillatorConfig17LoadDynAttributesERNS_7StorageE @253
+    _ZN4CLAM22SimpleOscillatorConfig17_destructor_PhaseEPv @254
+    _ZN4CLAM22SimpleOscillatorConfig17_new_SamplingRateEPv @255
+    _ZN4CLAM22SimpleOscillatorConfig17_new_SamplingRateEPvS1_ @256
+    _ZN4CLAM22SimpleOscillatorConfig21_destructor_AmplitudeEPv @257
+    _ZN4CLAM22SimpleOscillatorConfig21_destructor_FrequencyEPv @258
+    _ZN4CLAM22SimpleOscillatorConfig24_destructor_SamplingRateEPv @259
+    _ZN4CLAM22SimpleOscillatorConfig9InformAllEv @260
+    _ZN4CLAM22SimpleOscillatorConfigD0Ev @261
+    _ZN4CLAM22SimpleOscillatorConfigD1Ev @262
+    _ZN4CLAM7NetworkD0Ev @263
+    _ZN4CLAM7NetworkD1Ev @264
+    _ZNK4CLAM10XMLAdapterIfE10XMLContentEv @265
+    _ZNK4CLAM11DynamicType7StoreOnERNS_7StorageE @266
+    _ZNK4CLAM12BasicXMLable12IsXMLElementEv @267
+    _ZNK4CLAM12BasicXMLable14IsXMLAttributeEv @268
+    _ZNK4CLAM12BasicXMLable7XMLNameEv @269
+    _ZNK4CLAM12BasicXMLable9IsXMLTextEv @270
+    _ZNK4CLAM16FlattenedNetwork12GetClassNameEv @271
+    _ZNK4CLAM16FlattenedNetwork7GetNameEv @272
+    _ZNK4CLAM16OscillatorConfig12GetClassNameEv @273
+    _ZNK4CLAM16OscillatorConfig18GetDynamicTypeCopyEbb @274
+    _ZNK4CLAM16OscillatorConfig18StoreDynAttributesERNS_7StorageE @275
+    _ZNK4CLAM16OscillatorConfig9GetTypeIdEj @276
+    _ZNK4CLAM22SimpleOscillatorConfig12GetClassNameEv @277
+    _ZNK4CLAM22SimpleOscillatorConfig18GetDynamicTypeCopyEbb @278
+    _ZNK4CLAM22SimpleOscillatorConfig18StoreDynAttributesERNS_7StorageE @279
+    _ZNK4CLAM22SimpleOscillatorConfig9GetTypeIdEj @280
+    _ZNK4CLAM3Err4whatEv @281
+    _ZNK4CLAM9Component11ShallowCopyEv @282
+    _ZNK4CLAM9Component8DeepCopyEv @283
+    _ZNSs12_S_constructIPcEES0_T_S1_RKSaIcESt20forward_iterator_tag @284
+    _ZNSt6vectorIN4CLAM17ExternControlInfoESaIS1_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS1_S3_EERKS1_ @285
+    _ZNSt6vectorIN4CLAM8DataInfoINS0_11AudioSourceEEESaIS3_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS3_S5_EERKS3_ @286
+    _ZNSt6vectorIN4CLAM8DataInfoINS0_9AudioSinkEEESaIS3_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS3_S5_EERKS3_ @287
+    _ZTI11AudioEffect @288 DATA
+    _ZTI12AudioEffectX @289 DATA
+    _ZTIN4CLAM10XMLAdapterIfEE @290 DATA
+    _ZTIN4CLAM11BaseNetworkE @291 DATA
+    _ZTIN4CLAM11DynamicTypeE @292 DATA
+    _ZTIN4CLAM12BasicXMLableE @293 DATA
+    _ZTIN4CLAM13XmlStorageErrE @294 DATA
+    _ZTIN4CLAM16FlattenedNetworkE @295 DATA
+    _ZTIN4CLAM16OscillatorConfigE @296 DATA
+    _ZTIN4CLAM16ProcessingConfigE @297 DATA
+    _ZTIN4CLAM18ErrAssertionFailedE @298 DATA
+    _ZTIN4CLAM18VstNetworkExporterE @299 DATA
+    _ZTIN4CLAM19ControlSourceConfigE @300 DATA
+    _ZTIN4CLAM22SimpleOscillatorConfigE @301 DATA
+    _ZTIN4CLAM3ErrE @302 DATA
+    _ZTIN4CLAM7NetworkE @303 DATA
+    _ZTIN4CLAM7XMLableE @304 DATA
+    _ZTIN4CLAM8StorableE @305 DATA
+    _ZTIN4CLAM9ComponentE @306 DATA
+    _ZTISt9exception @307 DATA
+    _ZTS11AudioEffect @308 DATA
+    _ZTS12AudioEffectX @309 DATA
+    _ZTSN4CLAM10XMLAdapterIfEE @310 DATA
+    _ZTSN4CLAM11BaseNetworkE @311 DATA
+    _ZTSN4CLAM11DynamicTypeE @312 DATA
+    _ZTSN4CLAM12BasicXMLableE @313 DATA
+    _ZTSN4CLAM13XmlStorageErrE @314 DATA
+    _ZTSN4CLAM16FlattenedNetworkE @315 DATA
+    _ZTSN4CLAM16OscillatorConfigE @316 DATA
+    _ZTSN4CLAM16ProcessingConfigE @317 DATA
+    _ZTSN4CLAM18ErrAssertionFailedE @318 DATA
+    _ZTSN4CLAM18VstNetworkExporterE @319 DATA
+    _ZTSN4CLAM19ControlSourceConfigE @320 DATA
+    _ZTSN4CLAM22SimpleOscillatorConfigE @321 DATA
+    _ZTSN4CLAM3ErrE @322 DATA
+    _ZTSN4CLAM7NetworkE @323 DATA
+    _ZTSN4CLAM7XMLableE @324 DATA
+    _ZTSN4CLAM8StorableE @325 DATA
+    _ZTSN4CLAM9ComponentE @326 DATA
+    _ZTSSt9exception @327 DATA
+    _ZTV11AudioEffect @328 DATA
+    _ZTV12AudioEffectX @329 DATA
+    _ZTVN4CLAM10XMLAdapterIfEE @330 DATA
+    _ZTVN4CLAM16OscillatorConfigE @331 DATA
+    _ZTVN4CLAM18ErrAssertionFailedE @332 DATA
+    _ZTVN4CLAM18VstNetworkExporterE @333 DATA
+    _ZTVN4CLAM22SimpleOscillatorConfigE @334 DATA
+    _ZTVN4CLAM7NetworkE @335 DATA
+    _ZZN4CLAM16OscillatorConfig13MandatoryInitEvE19staticTypeDescTable @336 DATA
+    _ZZN4CLAM16OscillatorConfig13MandatoryInitEvE22staticTableInitialized @337 DATA
+    _ZZN4CLAM22SimpleOscillatorConfig13MandatoryInitEvE19staticTypeDescTable @338 DATA
+    _ZZN4CLAM22SimpleOscillatorConfig13MandatoryInitEvE22staticTableInitialized @339 DATA
+    hInstance @340 DATA
