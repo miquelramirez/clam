@@ -1,48 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<network id="CLAM">
+<network clamVersion="1.3.1" id="CLAM">
 
-  <processing id="ControlSource_0" type="ControlSource">
+  <processing id="ControlSource_0" position="10,263" size="155,59" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>100</MaxValue>
     <Step>1</Step>
     <UnitName>p</UnitName>
   </processing>
 
-  <processing id="ControlSource_1" type="ControlSource">
+  <processing id="ControlSource_1" position="78,282" size="155,59" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>100</MaxValue>
     <Step>1</Step>
     <UnitName>p</UnitName>
   </processing>
 
-  <processing id="ControlSource_2" type="ControlSource">
+  <processing id="ControlSource_2" position="157,304" size="155,59" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>100</MaxValue>
     <Step>1</Step>
     <UnitName>p</UnitName>
   </processing>
 
-  <processing id="ControlSource_3" type="ControlSource">
+  <processing id="ControlSource_3" position="232,325" size="155,59" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>100</MaxValue>
     <Step>1</Step>
     <UnitName>p</UnitName>
   </processing>
 
-  <processing id="ControlSource_4" type="ControlSource">
+  <processing id="ControlSource_4" position="316,340" size="155,59" type="ControlSource">
     <MinValue>0</MinValue>
     <MaxValue>100</MaxValue>
     <Step>1</Step>
     <UnitName>p</UnitName>
   </processing>
 
-  <processing id="in1" type="AudioSource"/>
+  <processing id="in1" position="14,67" size="128,108" type="AudioSource"/>
 
-  <processing id="in2" type="AudioSource"/>
+  <processing id="in2" position="19,176" size="128,108" type="AudioSource"/>
 
-  <processing id="out1" type="AudioSink"/>
+  <processing id="out1" position="304,43" size="128,111" type="AudioSink"/>
 
-  <processing id="out2" type="AudioSink"/>
+  <processing id="out2" position="281,167" size="128,111" type="AudioSink"/>
 
   <port_connection>
     <out>in1.AudioOut</out>

@@ -35,6 +35,12 @@ class VstNetworkExporter : public AudioEffectX
 {
 public:
 	VstNetworkExporter (
+		const std::string & networkContent,
+		const std::string & effectName,
+		const std::string & productString,
+		const std::string & vendor,
+		int version);
+	VstNetworkExporter (
 		audioMasterCallback audioMaster,
 		const std::string & effectName,
 		const std::string & productString,
@@ -42,10 +48,19 @@ public:
 		int version);
 	~VstNetworkExporter ();
 
+	AudioEffectX * createEffect(audioMasterCallback audioMaster)
+	{
+		if (not ok()) return 0;
+		return new VstNetworkExporter(audioMaster,
+			_effectName,
+			_productString,
+			_vendor,
+			_version);
+	}
 	bool ok() const { return true; }
 
 	// Processes
-	virtual void process (float **inputs, float **outputs, long sampleFrames);
+	virtual void process (float **inputs, float **outputs, VstInt32 sampleFrames);
 	virtual void processReplacing (float **inputs, float **outputs, VstInt32 sampleFrames) {} // TODO
 
 	// Program
@@ -53,11 +68,11 @@ public:
 	virtual void getProgramName (char *name);
 
 	// Parameters
-	virtual void setParameter (long index, float value);
-	virtual float getParameter (long index);
-	virtual void getParameterLabel (long index, char *label);
-	virtual void getParameterDisplay (long index, char *text);
-	virtual void getParameterName (long index, char *text);
+	virtual void setParameter (VstInt32 index, float value);
+	virtual float getParameter (VstInt32 index);
+	virtual void getParameterLabel (VstInt32 index, char *label);
+	virtual void getParameterDisplay (VstInt32 index, char *text);
+	virtual void getParameterName (VstInt32 index, char *text);
 
 	// Metadata
 	virtual bool getEffectName (char* name);
@@ -76,8 +91,7 @@ protected:
 
 private:
 	CLAM::Network& GetNetwork() { return _network; }
-	void FillNetwork();
-	int GetNumberOfParameters(const char* );
+	int GetNumberOfParameters(const std::string & networkXmlContent);
 	void LocateConnections();
 	void ProcessInputControls();
 	void UpdatePortFrameAndHopSize();
