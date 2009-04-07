@@ -26,7 +26,7 @@
 #include "AggregationEditor.hxx"  //may be iterating
 
 /*
-struct configurationParser
+struct ConfigurationParser
 {
   std::string * source, *extractor, *suffix, *schemaFile, *configFile, *path;
   std::string *targetScope, *targetAttribute, *sourceId, *sourceScope, *sourceAttribute;
@@ -38,7 +38,7 @@ class SourceEditor : public QDialog
 {
 		Q_OBJECT
 	public:
-		SourceEditor(AggregationEditor * parent =0, AggregationEditor::configurationParser* parser=0)
+		SourceEditor(AggregationEditor * parent =0, AggregationEditor::ConfigurationParser* parser=0)
 			: QDialog(parent)
 		{
 			_ui.setupUi(this);
@@ -52,7 +52,7 @@ class SourceEditor : public QDialog
 
 	private:
 
-		void loadParameter(AggregationEditor::configurationParser* parser);
+		void loadParameter(AggregationEditor::ConfigurationParser* parser);
 		
 	private slots:
 		void setItemChangedFlag();

@@ -66,13 +66,30 @@ public:
 		return mConfig;	
 	}
 
+	struct Source
+	{
+		std::string source;
+		std::string extractor;
+		std::string suffix;
+		std::string schemaFile;
+		std::string configFile;
+		std::string path;
+	};
 
-struct configurationParser
-{
-  std::string * source, *extractor, *suffix, *schemaFile, *configFile, *path;
-  std::string *targetScope, *targetAttribute, *sourceId, *sourceScope, *sourceAttribute;
-  int sourceCnt, attributeCnt;
-};
+	struct AttributeMap
+	{
+		std::string targetScope;
+		std::string targetAttribute;
+		std::string sourceId;
+		std::string sourceScope;
+		std::string sourceAttribute;
+	};
+
+	struct ConfigurationParser
+	{
+		std::vector<Source> sources;
+		std::vector<AttributeMap> maps;
+	};
 
 	
 
@@ -99,7 +116,7 @@ private:
 	QPixmap scopeIcon;
 	QPixmap attributeIcon;
 		
-	configurationParser mParser;
+	ConfigurationParser mParser;
 	std::string mConfig;
 
 };
