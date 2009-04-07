@@ -60,8 +60,8 @@ public:
 	bool ok() const { return true; }
 
 	// Processes
-	virtual void process (float **inputs, float **outputs, VstInt32 sampleFrames);
-	virtual void processReplacing (float **inputs, float **outputs, VstInt32 sampleFrames) {} // TODO
+	virtual void processReplacing (float **inputs, float **outputs, VstInt32 sampleFrames);
+	virtual void process (float **inputs, float **outputs, VstInt32 sampleFrames) {} // TODO
 
 	// Program
 	virtual void setProgramName (char *name);

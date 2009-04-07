@@ -196,7 +196,7 @@ int VstNetworkExporter::GetNumberOfParameters( const std::string & networkXmlCon
 	return count;
 }
 
-void VstNetworkExporter::process (float **inputs, float **outputs, VstInt32 sampleFrames)
+void VstNetworkExporter::processReplacing (float **inputs, float **outputs, VstInt32 sampleFrames)
 {
 	std::cout << "." << std::flush;
 	if (sampleFrames!=mExternBufferSize)
