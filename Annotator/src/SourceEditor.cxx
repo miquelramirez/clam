@@ -58,16 +58,17 @@ void SourceEditor::applyUpdates()
 		
 }
 
-void SourceEditor::loadParameter(AggregationEditor::configurationParser* parser)
+void SourceEditor::loadParameter(AggregationEditor::ConfigurationParser* parser)
 {
-	for (int i=0; i<parser->sourceCnt; i++)
+	for (int i=0; i<parser->sources.size(); i++)
 	{
-		QTableWidgetItem *sourceItem = new QTableWidgetItem(parser->source[i].c_str(),0);
-		QTableWidgetItem *extractorItem = new QTableWidgetItem(parser->extractor[i].c_str(),0);
-		QTableWidgetItem *schemaFileItem = new QTableWidgetItem(parser->schemaFile[i].c_str(),0);
-		QTableWidgetItem *suffixItem = new QTableWidgetItem(parser->suffix[i].c_str(),0);
-		QTableWidgetItem *configFileItem = new QTableWidgetItem(parser->configFile[i].c_str(),0);
-		QTableWidgetItem *pathItem = new QTableWidgetItem(parser->path[i].c_str(),0);
+		const AggregationEditor::Source & source = parser->sources[i];
+		QTableWidgetItem *sourceItem = new QTableWidgetItem(source.source.c_str(),0);
+		QTableWidgetItem *extractorItem = new QTableWidgetItem(source.extractor.c_str(),0);
+		QTableWidgetItem *schemaFileItem = new QTableWidgetItem(source.schemaFile.c_str(),0);
+		QTableWidgetItem *suffixItem = new QTableWidgetItem(source.suffix.c_str(),0);
+		QTableWidgetItem *configFileItem = new QTableWidgetItem(source.configFile.c_str(),0);
+		QTableWidgetItem *pathItem = new QTableWidgetItem(source.path.c_str(),0);
 		_ui.parameterTable->insertRow(i); //(i+1)?
 		_ui.parameterTable->setItem(i, 0, sourceItem);
 		_ui.parameterTable->setItem(i, 1, extractorItem);

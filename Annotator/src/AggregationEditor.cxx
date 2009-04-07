@@ -56,18 +56,6 @@ AggregationEditor::AggregationEditor(QWidget *parent, Qt::WFlags fl )
  */
 AggregationEditor::~AggregationEditor()
 {
-	delete [] mParser.source;
-	delete [] mParser.extractor;
-	delete [] mParser.schemaFile;	
-	delete [] mParser.suffix;
-	delete [] mParser.configFile;
-	delete [] mParser.path;
-	delete [] mParser.sourceAttribute;
-	delete [] mParser.sourceScope;
-	delete [] mParser.sourceId;
-	delete [] mParser.targetAttribute;
-	delete [] mParser.targetScope;
-	//is "delete mParser" just enough?
 }
 
 typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
@@ -91,17 +79,16 @@ void AggregationEditor::setSchema()
 	int arraySize=parseSources();
 
 	CLAM_Annotator::Schema sourceSchema;
-	for(int it = 0; it <arraySize; it++)
+	for(int i = 0; i <arraySize; i++)
 	{
-		CLAM::XMLStorage::Restore(sourceSchema, mParser.path[it]+"/"+mParser.schemaFile[it]);
-		addSource(mParser.source[it], sourceSchema);
+		Source & source = mParser.sources[i];
+		CLAM::XMLStorage::Restore(sourceSchema, source.path+"/"+source.schemaFile);
+		addSource(source.source, sourceSchema);
 	}
-
 	attributeList->show();
 	attributeList->resizeColumnToContents(0);
 	attributeList->resizeColumnToContents(1);
 	attributeList->show();	
-
 }
 
 void AggregationEditor::addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem * parent)
@@ -123,12 +110,11 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 	
 	for(int i=0; i<arraySize; i++)
 	{
-		if((mParser.sourceAttribute[i]==name)&&(mParser.sourceId[i].c_str()==parent->text(0)))
-		{
-			state=Qt::Checked;
-			item->setText(1, mParser.targetAttribute[i].c_str());
-			scopeItem->setText(1, mParser.targetScope[i].c_str());
-		}
+		if (mParser.maps[i].sourceAttribute != name) continue;
+		if (mParser.maps[i].sourceId.c_str()!=parent->text(0)) continue;
+		state=Qt::Checked;
+		item->setText(1, mParser.maps[i].targetAttribute.c_str());
+		scopeItem->setText(1, mParser.maps[i].targetScope.c_str());
 	}
 
 	item->setCheckState( 0, state);
@@ -179,25 +165,13 @@ int AggregationEditor::parseSources()
 		posStart=mConfig.find("FileMetadataSource", posStart+1,18);  //Keyword "FileMetadataSource" 
 		arraySize++;
 	}
-	mParser.sourceCnt=arraySize;
 	if(!arraySize)
 	{
 		std::cout<< "There is no source. Please check whether the Aggregator is correctly configured." <<std::endl;//todo: replace this with unique Failure assertion
 		return arraySize;
 	}
 
-	mParser.source=new std::string[arraySize];
-	CLAM_ASSERT(mParser.source!=NULL, "Memory allocation failed");
-	mParser.extractor=new std::string[arraySize];
-	CLAM_ASSERT(mParser.extractor!=NULL, "Memory allocation failed");
-	mParser.schemaFile=new std::string[arraySize];
-	CLAM_ASSERT(mParser.schemaFile!=NULL, "Memory allocation failed");
-	mParser.suffix=new std::string[arraySize];
-	CLAM_ASSERT(mParser.suffix!=NULL, "Memory allocation failed");
-	mParser.configFile=new std::string[arraySize];
-	CLAM_ASSERT(mParser.configFile!=NULL, "Memory allocation failed");
-	mParser.path=new std::string[arraySize];
-	CLAM_ASSERT(mParser.path!=NULL, "Memory allocation failed");
+	mParser.sources.resize(arraySize);
 
 	posStart = mConfig.find("sources", 0);
 	posEnd = mConfig.find("),", posStart+1);
@@ -205,15 +179,16 @@ int AggregationEditor::parseSources()
 
 	for(int i=0; i<arraySize && posEnd<posSourcesEnd; i++)
 	{
-		mParser.source[i] = parseQuotationMark(posStart, posEnd, "(");
-		mParser.path[i] = parseQuotationMark(posStart, posEnd, "path");
-		mParser.schemaFile[i] = parseQuotationMark(posStart, posEnd, "schemaFile");
-		mParser.suffix[i] = parseQuotationMark(posStart, posEnd, "poolSuffix");
-		mParser.extractor[i] = parseQuotationMark(posStart, posEnd, "extractor");
+		Source & source = mParser.sources[i];
+		source.source = parseQuotationMark(posStart, posEnd, "(");
+		source.path = parseQuotationMark(posStart, posEnd, "path");
+		source.schemaFile = parseQuotationMark(posStart, posEnd, "schemaFile");
+		source.suffix = parseQuotationMark(posStart, posEnd, "poolSuffix");
+		source.extractor = parseQuotationMark(posStart, posEnd, "extractor");
 
 		posStart = posEnd;
 		posEnd = mConfig.find("),", posStart+1);		
-	}	
+	}
 	return arraySize;
 	
 }
@@ -235,39 +210,29 @@ int AggregationEditor::parseMap()
 		posA = mConfig.find("),", posA+1);  //key word"),"
 		arraySize++;
 	}
-	mParser.attributeCnt=arraySize;
-	
-	if(!arraySize)	return arraySize;
 
-	mParser.targetScope=new std::string[arraySize];	
-	CLAM_ASSERT(mParser.targetScope!=NULL, "Memory allocation failed");
-	mParser.targetAttribute=new std::string[arraySize];
-	CLAM_ASSERT(mParser.targetAttribute!=NULL, "Memory allocation failed");
-	mParser.sourceId=new std::string[arraySize];	
-	CLAM_ASSERT(mParser.sourceId!=NULL, "Memory allocation failed");
-	mParser.sourceScope=new std::string[arraySize];
-	CLAM_ASSERT(mParser.sourceScope!=NULL, "Memory allocation failed");
-	mParser.sourceAttribute=new std::string[arraySize];
-	CLAM_ASSERT(mParser.sourceAttribute!=NULL, "Memory allocation failed");
+	if(!arraySize)	return arraySize;
+	mParser.maps.resize(arraySize);
 
 	posEnd = mConfig.find("),", posStart+1);
 	
 	for(int i=0; i<arraySize && posEnd<posAttributesEnd; i++)
 	{
+		AttributeMap & map = mParser.maps[i];
 		posA = mConfig.rfind("::", posEnd);
 		posB = mConfig.rfind("\"", posEnd);
-		mParser.sourceAttribute[i] = mConfig.substr(posA+2, posB-posA-2);
+		map.sourceAttribute = mConfig.substr(posA+2, posB-posA-2);
 		posB = mConfig.rfind("\"", posA);
-		mParser.sourceScope[i] = mConfig.substr(posB+1, posA-posB-1);
+		map.sourceScope = mConfig.substr(posB+1, posA-posB-1);
 		posA = mConfig.rfind("\"", posB-1);
 		posB = mConfig.rfind("\"", posA-1);
-		mParser.sourceId[i] = mConfig.substr(posB+1, posA-posB-1);
+		map.sourceId = mConfig.substr(posB+1, posA-posB-1);
 		
 		posA = mConfig.rfind("::", posB-1);
 		posB = mConfig.rfind("\"", posB-1);
-		mParser.targetAttribute[i] = mConfig.substr(posA+2, posB-posA-2);
+		map.targetAttribute = mConfig.substr(posA+2, posB-posA-2);
 		posB = mConfig.rfind("\"", posA);
-		mParser.targetScope[i] = mConfig.substr(posB+1, posA-posB-1);
+		map.targetScope = mConfig.substr(posB+1, posA-posB-1);
 
 		posEnd = mConfig.find("),", posEnd+1);		
 	}	
