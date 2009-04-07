@@ -12,7 +12,6 @@
 #include "Oscillator.hxx" //TODO remove
 
 CLAM_EMBEDDED_FILE(embededNetwork,"genwire.xml")
-//#define NO_NETWORK_FILE
 
 AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 {
@@ -35,10 +34,6 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 
 	try
 	{
-
-#ifdef NO_NETWORK_FILE
-		FillNetwork(); //Testing interest
-#else 
 		std::istringstream xmlfile(embededNetwork);
 		XmlStorage::Restore( *mNet, xmlfile );
 	}
@@ -49,7 +44,6 @@ CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 			<< "exception.what() " << err.what() << std::endl;
 		FillNetwork();
 	}
-#endif	
 	GetNetwork().Start();
 
 	ProcessInputPorts();
@@ -75,9 +69,6 @@ CLAMTest::~CLAMTest ()
 //---------------------------------------------------------------------
 int CLAMTest::GetNumberOfParameters( const char* networkXmlContent )
 {
-#ifdef NO_NETWORK_FILE
-	return 1; 
-#endif
 	Network net;
 	int count=0;
 	
