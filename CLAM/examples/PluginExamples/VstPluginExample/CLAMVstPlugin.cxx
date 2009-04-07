@@ -15,16 +15,93 @@ CLAM_EMBEDDED_FILE(embededNetwork,"genwire.xml")
 
 AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 {
-	return new CLAM::CLAMTest(audioMaster);
+	CLAM::CLAMTest * effect = new CLAM::CLAMTest(audioMaster);
+	if (effect->ok()) return effect;
+	delete effect;
+	return 0;
 }
 
 namespace CLAM
 {
 
+// VST interface: Metadata
+
+bool CLAMTest::getEffectName (char* name)
+{
+	strncpy (name, _effectName.c_str(), kVstMaxEffectNameLen);
+	return true;
+}
+
+bool CLAMTest::getProductString (char* text)
+{
+	strncpy (text, _productString.c_str(), kVstMaxProductStrLen);
+	return true;
+}
+
+bool CLAMTest::getVendorString (char* text)
+{
+	strncpy (text, _vendor.c_str(), kVstMaxVendorStrLen);
+	return true;
+}
+
+VstInt32 CLAMTest::getVendorVersion ()
+{
+	return _version;
+}
+
+// VST interface: Program management
+
+void CLAMTest::setProgramName (char *name)
+{
+	strncpy (programName, name, kVstMaxProgNameLen);
+}
+
+void CLAMTest::getProgramName (char *name)
+{
+	strncpy (name, programName, kVstMaxProgNameLen);
+}
+
+
+// VST interface: Parameter management
+
+void CLAMTest::setParameter (long index, float value)
+{
+	float realval = value * ( mInControlList.at(index).max - mInControlList.at(index).min ) - fabs( mInControlList.at(index).min );
+
+	mInControlList.at(index).lastvalue = realval;
+	mInControlList.at(index).processing->Do(realval);
+}
+
+float CLAMTest::getParameter (long index)
+{
+	return mInControlList.at(index).lastvalue;
+}
+
+void CLAMTest::getParameterName (long index, char *label)
+{
+	strncpy ( label, mInControlList.at(index).name.c_str(), kVstMaxParamStrLen ); 
+}
+
+void CLAMTest::getParameterDisplay (long index, char *text)
+{
+	float2string ( mInControlList.at(index).lastvalue, text, kVstMaxParamStrLen);
+}
+
+void CLAMTest::getParameterLabel(long index, char *label)
+{
+	ControlSourceConfig& conf=const_cast<ControlSourceConfig&>(
+		dynamic_cast<const ControlSourceConfig&>(
+			mInControlList.at(index).processing->GetConfig() ));
+	strncpy (label, conf.GetUnitName().c_str(), kVstMaxParamStrLen);
+}
 
 //---------------------------------------------------------------------
 CLAMTest::CLAMTest (audioMasterCallback audioMaster)
 	: AudioEffectX (audioMaster, 1 /*nPrograms*/, GetNumberOfParameters(embededNetwork) )
+	, _effectName("CLAMTest-effectname")
+	, _productString("CLAMTest-productstring")
+	, _vendor("clam-devel")
+	, _version(1000)
 {
 	std::cout << "== Constructor" << std::endl;
 	mNet=new Network;
@@ -96,74 +173,6 @@ int CLAMTest::GetNumberOfParameters( const char* networkXmlContent )
 
 	std::cout << "returning : " << count << std::endl;
 	return count;
-}
-	
-//---------------------------------------------------------------------
-void CLAMTest::setProgramName (char *name)
-{
-	strncpy (programName, name, kVstMaxProgNameLen);
-}
-
-//---------------------------------------------------------------------
-void CLAMTest::getProgramName (char *name)
-{
-	strncpy (name, programName, kVstMaxProgNameLen);
-}
-
-//---------------------------------------------------------------------
-void CLAMTest::setParameter (long index, float value)
-{
-	float realval = value * ( mInControlList.at(index).max - mInControlList.at(index).min ) - fabs( mInControlList.at(index).min );
-
-	mInControlList.at(index).lastvalue = realval;
-	mInControlList.at(index).processing->Do(realval);
-}
-
-//---------------------------------------------------------------------
-float CLAMTest::getParameter (long index)
-{
-	return mInControlList.at(index).lastvalue;
-}
-
-//---------------------------------------------------------------------
-void CLAMTest::getParameterName (long index, char *label)
-{
-	strcpy ( label, mInControlList.at(index).name.c_str() ); 
-}
-
-//---------------------------------------------------------------------
-void CLAMTest::getParameterDisplay (long index, char *text)
-{
-	//TODO: alguna mena de switch() per distingir entre dB, Hz, etc...
-	float2string ( mInControlList.at(index).lastvalue, text, kVstMaxParamStrLen);
-}
-
-//---------------------------------------------------------------------
-void CLAMTest::getParameterLabel(long index, char *label)
-{
-	//strcpy (label, "db");
-	ControlSourceConfig& conf=const_cast<ControlSourceConfig&>(
-		dynamic_cast<const ControlSourceConfig&>(
-			mInControlList.at(index).processing->GetConfig() ));
-	strncpy (label, conf.GetUnitName().c_str(), kVstMaxParamStrLen);
-}
-
-bool CLAMTest::getEffectName (char* name)
-{
-	strncpy (name, "CLAMTest-effectname", kVstMaxEffectNameLen);
-	return true;
-}
-
-bool CLAMTest::getProductString (char* text)
-{
-	strncpy (text, "CLAMTest-productstring", kVstMaxProductStrLen);
-	return true;
-}
-
-bool CLAMTest::getVendorString (char* text)
-{
-	strncpy (text, "clam-devel", kVstMaxVendorStrLen);
-	return true;
 }
 
 void CLAMTest::process (float **inputs, float **outputs, long sampleFrames)
