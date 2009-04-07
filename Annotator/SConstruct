@@ -114,10 +114,6 @@ extraPaths += [
 ]
 
 includePaths = sourcePaths + extraPaths
-# Jun: added for test
-# to embed Python scripts in C++ code, Python.h needs to be included,
-#TODO: replace the absolute path with an option
-includePaths += ['C:/Python25/include']
 
 sources = scanFiles('*.cxx', sourcePaths)
 sources = filter( (lambda a : a.rfind( "moc_")==-1 ),  sources )
@@ -139,8 +135,6 @@ env.Append(CPPPATH=includePaths)
 env.Append(LIBPATH=[CLAMVmQtPath])
 env.Prepend(LIBS="clam_vmqt4")
 
-env.Append(LIBPATH=['C:/Python25/libs'])
-env.Prepend(LIBS="python25")
 if sys.platform=='darwin' :
 	env.Append(CPPFLAGS='-DRESOURCES_BASE="\\"Annotator.app/Contents/Resources\\""')
 else :
@@ -171,7 +165,13 @@ chordSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  chordSources )
 chordSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  chordSources )
 
 programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
-
+"""
+# Jun: added for test
+# to embed Python scripts in C++ code, Python.h needs to be included,
+#TODO: replace the absolute path with an option
+includePaths += ['C:/Python25/include']
+env.Append(LIBPATH=['C:/Python25/libs'])
+env.Prepend(LIBS="python25")
 semwebSources = scanFiles("*.cxx", ["src/SemWebExtractor"])
 semwebSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  semwebSources )
 semwebSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  semwebSources )
@@ -181,6 +181,7 @@ clamlibpath = [os.path.join(env['prefix'],'lib')]
 
 ##programs += [ env.Program(target='SemWebExtractor', source = semwebSources, LIBPATH=[clamlibpath,pythonlibpath]) ]  #, LIBPATH=pythonlibpath
 programs += [ env.Program(target='SemWebExtractor', source = semwebSources) ]
+"""
 
 onsetSources = scanFiles("*.cpp", ["src/OnsetExtractor"])
 onsetSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  onsetSources )
