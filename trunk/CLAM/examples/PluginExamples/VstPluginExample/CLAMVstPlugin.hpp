@@ -38,6 +38,8 @@ public:
 	CLAMTest (audioMasterCallback audioMaster);
 	~CLAMTest ();
 
+	bool ok() const { return true; }
+
 	// Processes
 	virtual void process (float **inputs, float **outputs, long sampleFrames);
 	virtual void processReplacing (float **inputs, float **outputs, VstInt32 sampleFrames) {} // TODO
@@ -53,11 +55,11 @@ public:
 	virtual void getParameterDisplay (long index, char *text);
 	virtual void getParameterName (long index, char *text);
 
+	// Metadata
 	virtual bool getEffectName (char* name);
 	virtual bool getVendorString (char* text);
 	virtual bool getProductString (char* text);
-	virtual VstInt32 getVendorVersion () { return 1000; }
-	
+	virtual VstInt32 getVendorVersion ();
 	virtual VstPlugCategory getPlugCategory () { return kPlugCategEffect; }
 
 protected:
@@ -76,6 +78,11 @@ private:
 	void ProcessInputPorts();
 	void ProcessOutputPorts();
 	void UpdatePortFrameAndHopSize();
+
+	std::string _effectName;
+	std::string _productString;
+	std::string _vendor;
+	int _version;
 };
 
 }
