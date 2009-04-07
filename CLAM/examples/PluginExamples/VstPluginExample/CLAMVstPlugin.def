@@ -1,0 +1,345 @@
+EXPORTS
+    MAIN @1
+    VSTPluginMain @2
+    _Z13opcode2Stringi @3
+    _Z20createEffectInstancePFiP7AEffectiiiPvfE @4
+    _ZN10HostCanDos12canDoOfflineE @5 DATA
+    _ZN10HostCanDos15canDoSizeWindowE @6 DATA
+    _ZN10HostCanDos18canDoSendVstEventsE @7 DATA
+    _ZN10HostCanDos18canDoShellCategoryE @8 DATA
+    _ZN10HostCanDos20canDoAcceptIOChangesE @9 DATA
+    _ZN10HostCanDos20canDoSendVstTimeInfoE @10 DATA
+    _ZN10HostCanDos21canDoOpenFileSelectorE @11 DATA
+    _ZN10HostCanDos21canDoReceiveVstEventsE @12 DATA
+    _ZN10HostCanDos21canDoSendVstMidiEventE @13 DATA
+    _ZN10HostCanDos21canDoStartStopProcessE @14 DATA
+    _ZN10HostCanDos22canDoCloseFileSelectorE @15 DATA
+    _ZN10HostCanDos24canDoReceiveVstMidiEventE @16 DATA
+    _ZN10HostCanDos28canDoReportConnectionChangesE @17 DATA
+    _ZN10HostCanDos35canDoSendVstMidiEventFlagIsRealtimeE @18 DATA
+    _ZN10PlugCanDos11canDoBypassE @19 DATA
+    _ZN10PlugCanDos12canDoOfflineE @20 DATA
+    _ZN10PlugCanDos18canDoSendVstEventsE @21 DATA
+    _ZN10PlugCanDos21canDoMidiProgramNamesE @22 DATA
+    _ZN10PlugCanDos21canDoReceiveVstEventsE @23 DATA
+    _ZN10PlugCanDos21canDoSendVstMidiEventE @24 DATA
+    _ZN10PlugCanDos23canDoReceiveVstTimeInfoE @25 DATA
+    _ZN10PlugCanDos24canDoReceiveVstMidiEventE @26 DATA
+    _ZN11AudioEffect10dispatcherEiiiPvf @27
+    _ZN11AudioEffect10getAeffectEv @28
+    _ZN11AudioEffect10getProgramEv @29
+    _ZN11AudioEffect10int2stringEiPci @30
+    _ZN11AudioEffect10masterIdleEv @31
+    _ZN11AudioEffect10setProgramEi @32
+    _ZN11AudioEffect11setUniqueIDEi @33
+    _ZN11AudioEffect12float2stringEfPci @34
+    _ZN11AudioEffect12getBlockSizeEv @35
+    _ZN11AudioEffect12getParameterEi @36
+    _ZN11AudioEffect12setBlockSizeEi @37
+    _ZN11AudioEffect12setNumInputsEi @38
+    _ZN11AudioEffect12setParameterEif @39
+    _ZN11AudioEffect13getSampleRateEv @40
+    _ZN11AudioEffect13setNumOutputsEi @41
+    _ZN11AudioEffect13setSampleRateEf @42
+    _ZN11AudioEffect14getProgramNameEPc @43
+    _ZN11AudioEffect14setProgramNameEPc @44
+    _ZN11AudioEffect15setInitialDelayEi @45
+    _ZN11AudioEffect16getMasterVersionEv @46
+    _ZN11AudioEffect16getParameterNameEiPc @47
+    _ZN11AudioEffect17__getVuDeprecatedEv @48
+    _ZN11AudioEffect17__hasVuDeprecatedEb @49
+    _ZN11AudioEffect17getParameterClassEP7AEffecti @50
+    _ZN11AudioEffect17getParameterLabelEiPc @51
+    _ZN11AudioEffect17programsAreChunksEb @52
+    _ZN11AudioEffect17setParameterClassEP7AEffectif @53
+    _ZN11AudioEffect18canDoubleReplacingEb @54
+    _ZN11AudioEffect18getCurrentUniqueIdEv @55
+    _ZN11AudioEffect19__canMonoDeprecatedEb @56
+    _ZN11AudioEffect19__hasClipDeprecatedEb @57
+    _ZN11AudioEffect19__processDeprecatedEPPfS1_i @58
+    _ZN11AudioEffect19canProcessReplacingEb @59
+    _ZN11AudioEffect19dispatchEffectClassEP7AEffectiiiPvf @60
+    _ZN11AudioEffect19getParameterDisplayEiPc @61
+    _ZN11AudioEffect21processClassReplacingEP7AEffectPPfS3_i @62
+    _ZN11AudioEffect21setParameterAutomatedEif @63
+    _ZN11AudioEffect22processDoubleReplacingEPPdS1_i @64
+    _ZN11AudioEffect24__processClassDeprecatedEP7AEffectPPfS3_i @65
+    _ZN11AudioEffect27processClassDoubleReplacingEP7AEffectPPdS3_i @66
+    _ZN11AudioEffect28__isInputConnectedDeprecatedEi @67
+    _ZN11AudioEffect29__isOutputConnectedDeprecatedEi @68
+    _ZN11AudioEffect31__setOfflineQualitiesDeprecatedEi @69
+    _ZN11AudioEffect32__setRealtimeQualitiesDeprecatedEi @70
+    _ZN11AudioEffect4openEv @71
+    _ZN11AudioEffect5closeEv @72
+    _ZN11AudioEffect6resumeEv @73
+    _ZN11AudioEffect7suspendEv @74
+    _ZN11AudioEffect8getChunkEPPvb @75
+    _ZN11AudioEffect8setChunkEPvib @76
+    _ZN11AudioEffect9Hz2stringEfPci @77
+    _ZN11AudioEffect9dB2stringEfPci @78
+    _ZN11AudioEffect9getEditorEv @79
+    _ZN11AudioEffect9ms2stringEfPci @80
+    _ZN11AudioEffect9setEditorEP10AEffEditor @81
+    _ZN11AudioEffectC1EPFiP7AEffectiiiPvfEii @82
+    _ZN11AudioEffectC2EPFiP7AEffectiiiPvfEii @83
+    _ZN11AudioEffectD0Ev @84
+    _ZN11AudioEffectD1Ev @85
+    _ZN11AudioEffectD2Ev @86
+    _ZN12AudioEffectX10dispatcherEiiiPvf @87
+    _ZN12AudioEffectX10offlineRunEP14VstOfflineTaski @88
+    _ZN12AudioEffectX10sizeWindowEii @89
+    _ZN12AudioEffectX11copySpeakerEP20VstSpeakerPropertiesS1_ @90
+    _ZN12AudioEffectX11getTimeInfoEi @91
+    _ZN12AudioEffectX11offlineReadEP14VstOfflineTask16VstOfflineOptionb @92
+    _ZN12AudioEffectX11stopProcessEv @93
+    _ZN12AudioEffectX12getDirectoryEv @94
+    _ZN12AudioEffectX12offlineStartEP12VstAudioFileii @95
+    _ZN12AudioEffectX12offlineWriteEP14VstOfflineTask16VstOfflineOption @96
+    _ZN12AudioEffectX12startProcessEv @97
+    _ZN12AudioEffectX13beginLoadBankEP17VstPatchChunkInfo @98
+    _ZN12AudioEffectX13endSetProgramEv @99
+    _ZN12AudioEffectX13getEffectNameEPc @100
+    _ZN12AudioEffectX13getVstVersionEv @101
+    _ZN12AudioEffectX13offlineNotifyEP12VstAudioFileib @102
+    _ZN12AudioEffectX13processEventsEP9VstEvents @103
+    _ZN12AudioEffectX13updateDisplayEv @104
+    _ZN12AudioEffectX14getGetTailSizeEv @105
+    _ZN12AudioEffectX14getMidiKeyNameEiP11MidiKeyName @106
+    _ZN12AudioEffectX14offlinePrepareEP14VstOfflineTaski @107
+    _ZN12AudioEffectX14vendorSpecificEiiPvf @108
+    _ZN12AudioEffectX15beginSetProgramEv @109
+    _ZN12AudioEffectX15getHostLanguageEv @110
+    _ZN12AudioEffectX15getInputLatencyEv @111
+    _ZN12AudioEffectX15getPlugCategoryEv @112
+    _ZN12AudioEffectX15getVendorStringEPc @113
+    _ZN12AudioEffectX15updateBlockSizeEv @114
+    _ZN12AudioEffectX16beginLoadProgramEP17VstPatchChunkInfo @115
+    _ZN12AudioEffectX16getOutputLatencyEv @116
+    _ZN12AudioEffectX16getProductStringEPc @117
+    _ZN12AudioEffectX16getVendorVersionEv @118
+    _ZN12AudioEffectX16matchArrangementEPP21VstSpeakerArrangementS1_ @119
+    _ZN12AudioEffectX16openFileSelectorEP13VstFileSelect @120
+    _ZN12AudioEffectX16string2parameterEiPc @121
+    _ZN12AudioEffectX16updateSampleRateEv @122
+    _ZN12AudioEffectX17closeFileSelectorEP13VstFileSelect @123
+    _ZN12AudioEffectX17processVariableIoEP13VstVariableIo @124
+    _ZN12AudioEffectX18__fxIdleDeprecatedEv @125
+    _ZN12AudioEffectX18getAutomationStateEv @126
+    _ZN12AudioEffectX18getInputPropertiesEiP16VstPinProperties @127
+    _ZN12AudioEffectX18getMidiProgramNameEiP15MidiProgramName @128
+    _ZN12AudioEffectX18getNextShellPluginEPc @129
+    _ZN12AudioEffectX18hostVendorSpecificEiiPvf @130
+    _ZN12AudioEffectX19__getIconDeprecatedEv @131
+    _ZN12AudioEffectX19__tempoAtDeprecatedEi @132
+    _ZN12AudioEffectX19allocateArrangementEPP21VstSpeakerArrangementi @133
+    _ZN12AudioEffectX19getHostVendorStringEPc @134
+    _ZN12AudioEffectX19getOutputPropertiesEiP16VstPinProperties @135
+    _ZN12AudioEffectX19offlineGetNumPassesEv @136
+    _ZN12AudioEffectX19sendVstEventsToHostEP9VstEvents @137
+    _ZN12AudioEffectX19setProcessPrecisionEi @138
+    _ZN12AudioEffectX20__needIdleDeprecatedEv @139
+    _ZN12AudioEffectX20getHostProductStringEPc @140
+    _ZN12AudioEffectX20getHostVendorVersionEv @141
+    _ZN12AudioEffectX21deallocateArrangementEPP21VstSpeakerArrangement @142
+    _ZN12AudioEffectX21getCurrentMidiProgramEiP15MidiProgramName @143
+    _ZN12AudioEffectX21getProgramNameIndexedEiiPc @144
+    _ZN12AudioEffectX21getSpeakerArrangementEPP21VstSpeakerArrangementS2_ @145
+    _ZN12AudioEffectX21offlineGetCurrentPassEv @146
+    _ZN12AudioEffectX21setSpeakerArrangementEP21VstSpeakerArrangementS1_ @147
+    _ZN12AudioEffectX22__openWindowDeprecatedEP21__VstWindowDeprecated @148
+    _ZN12AudioEffectX22__wantEventsDeprecatedEi @149
+    _ZN12AudioEffectX22getCurrentProcessLevelEv @150
+    _ZN12AudioEffectX22getMidiProgramCategoryEiP19MidiProgramCategory @151
+    _ZN12AudioEffectX22getParameterPropertiesEiP22VstParameterProperties @152
+    _ZN12AudioEffectX22hasMidiProgramsChangedEi @153
+    _ZN12AudioEffectX23__closeWindowDeprecatedEP21__VstWindowDeprecated @154
+    _ZN12AudioEffectX23__copyProgramDeprecatedEi @155
+    _ZN12AudioEffectX23__getNextPlugDeprecatedEi @156
+    _ZN12AudioEffectX23canParameterBeAutomatedEi @157
+    _ZN12AudioEffectX23getNumMidiInputChannelsEv @158
+    _ZN12AudioEffectX23offlineGetNumMetaPassesEv @159
+    _ZN12AudioEffectX23setTotalSampleToProcessEi @160
+    _ZN12AudioEffectX24__getChunkFileDeprecatedEPv @161
+    _ZN12AudioEffectX24__getErrorTextDeprecatedEPc @162
+    _ZN12AudioEffectX24__keysRequiredDeprecatedEv @163
+    _ZN12AudioEffectX24getNumMidiOutputChannelsEv @164
+    _ZN12AudioEffectX25offlineGetCurrentMetaPassEv @165
+    _ZN12AudioEffectX26__inputConnectedDeprecatedEib @166
+    _ZN12AudioEffectX27__getPreviousPlugDeprecatedEi @167
+    _ZN12AudioEffectX27__outputConnectedDeprecatedEib @168
+    _ZN12AudioEffectX27__setViewPositionDeprecatedEii @169
+    _ZN12AudioEffectX28__getNumCategoriesDeprecatedEv @170
+    _ZN12AudioEffectX29__hasExternalBufferDeprecatedEb @171
+    _ZN12AudioEffectX30__wantAsyncOperationDeprecatedEb @172
+    _ZN12AudioEffectX31__setOutputSamplerateDeprecatedEf @173
+    _ZN12AudioEffectX32__willProcessReplacingDeprecatedEv @174
+    _ZN12AudioEffectX33__reportCurrentPositionDeprecatedEv @175
+    _ZN12AudioEffectX35__reportDestinationBufferDeprecatedEv @176
+    _ZN12AudioEffectX36__getParameterQuantizationDeprecatedEv @177
+    _ZN12AudioEffectX37__setBlockSizeAndSampleRateDeprecatedEif @178
+    _ZN12AudioEffectX38__getInputSpeakerArrangementDeprecatedEv @179
+    _ZN12AudioEffectX39__getNumAutomatableParametersDeprecatedEv @180
+    _ZN12AudioEffectX39__getOutputSpeakerArrangementDeprecatedEv @181
+    _ZN12AudioEffectX5canDoEPc @182
+    _ZN12AudioEffectX6noTailEb @183
+    _ZN12AudioEffectX6resumeEv @184
+    _ZN12AudioEffectX7endEditEi @185
+    _ZN12AudioEffectX7isSynthEb @186
+    _ZN12AudioEffectX9beginEditEi @187
+    _ZN12AudioEffectX9canHostDoEPc @188
+    _ZN12AudioEffectX9ioChangedEv @189
+    _ZN12AudioEffectX9setBypassEb @190
+    _ZN12AudioEffectX9setPanLawEif @191
+    _ZN12AudioEffectXC1EPFiP7AEffectiiiPvfEii @192
+    _ZN12AudioEffectXC2EPFiP7AEffectiiiPvfEii @193
+    _ZN12AudioEffectXD0Ev @194
+    _ZN12AudioEffectXD1Ev @195
+    _ZN4CLAM10XMLAdapterIfE10XMLContentERSi @196
+    _ZN4CLAM10XMLAdapterIfED0Ev @197
+    _ZN4CLAM10XMLAdapterIfED1Ev @198
+    _ZN4CLAM11DynamicType8LoadFromERNS_7StorageE @199
+    _ZN4CLAM16FlattenedNetwork12setPasteModeEv @200
+    _ZN4CLAM16FlattenedNetwork7SetNameERKSs @201
+    _ZN4CLAM16OscillatorConfig10_new_PhaseEPv @202
+    _ZN4CLAM16OscillatorConfig10_new_PhaseEPvS1_ @203
+    _ZN4CLAM16OscillatorConfig13MandatoryInitEv @204
+    _ZN4CLAM16OscillatorConfig13_new_ModIndexEPv @205
+    _ZN4CLAM16OscillatorConfig13_new_ModIndexEPvS1_ @206
+    _ZN4CLAM16OscillatorConfig14_new_AmplitudeEPv @207
+    _ZN4CLAM16OscillatorConfig14_new_AmplitudeEPvS1_ @208
+    _ZN4CLAM16OscillatorConfig14_new_FrequencyEPv @209
+    _ZN4CLAM16OscillatorConfig14_new_FrequencyEPvS1_ @210
+    _ZN4CLAM16OscillatorConfig17LoadDynAttributesERNS_7StorageE @211
+    _ZN4CLAM16OscillatorConfig17_destructor_PhaseEPv @212
+    _ZN4CLAM16OscillatorConfig17_new_SamplingRateEPv @213
+    _ZN4CLAM16OscillatorConfig17_new_SamplingRateEPvS1_ @214
+    _ZN4CLAM16OscillatorConfig20_destructor_ModIndexEPv @215
+    _ZN4CLAM16OscillatorConfig21_destructor_AmplitudeEPv @216
+    _ZN4CLAM16OscillatorConfig21_destructor_FrequencyEPv @217
+    _ZN4CLAM16OscillatorConfig24_destructor_SamplingRateEPv @218
+    _ZN4CLAM16OscillatorConfig9InformAllEv @219
+    _ZN4CLAM16OscillatorConfigD0Ev @220
+    _ZN4CLAM16OscillatorConfigD1Ev @221
+    _ZN4CLAM18ErrAssertionFailedD0Ev @222
+    _ZN4CLAM18ErrAssertionFailedD1Ev @223
+    _ZN4CLAM22SimpleOscillatorConfig10_new_PhaseEPv @224
+    _ZN4CLAM22SimpleOscillatorConfig10_new_PhaseEPvS1_ @225
+    _ZN4CLAM22SimpleOscillatorConfig13MandatoryInitEv @226
+    _ZN4CLAM22SimpleOscillatorConfig14_new_AmplitudeEPv @227
+    _ZN4CLAM22SimpleOscillatorConfig14_new_AmplitudeEPvS1_ @228
+    _ZN4CLAM22SimpleOscillatorConfig14_new_FrequencyEPv @229
+    _ZN4CLAM22SimpleOscillatorConfig14_new_FrequencyEPvS1_ @230
+    _ZN4CLAM22SimpleOscillatorConfig17LoadDynAttributesERNS_7StorageE @231
+    _ZN4CLAM22SimpleOscillatorConfig17_destructor_PhaseEPv @232
+    _ZN4CLAM22SimpleOscillatorConfig17_new_SamplingRateEPv @233
+    _ZN4CLAM22SimpleOscillatorConfig17_new_SamplingRateEPvS1_ @234
+    _ZN4CLAM22SimpleOscillatorConfig21_destructor_AmplitudeEPv @235
+    _ZN4CLAM22SimpleOscillatorConfig21_destructor_FrequencyEPv @236
+    _ZN4CLAM22SimpleOscillatorConfig24_destructor_SamplingRateEPv @237
+    _ZN4CLAM22SimpleOscillatorConfig9InformAllEv @238
+    _ZN4CLAM22SimpleOscillatorConfigD0Ev @239
+    _ZN4CLAM22SimpleOscillatorConfigD1Ev @240
+    _ZN4CLAM7NetworkD0Ev @241
+    _ZN4CLAM7NetworkD1Ev @242
+    _ZN8CLAMTest11FillNetworkEv @243
+    _ZN8CLAMTest12getParameterEl @244
+    _ZN8CLAMTest12setParameterElf @245
+    _ZN8CLAMTest13getEffectNameEPc @246
+    _ZN8CLAMTest14getProgramNameEPc @247
+    _ZN8CLAMTest14setProgramNameEPc @248
+    _ZN8CLAMTest15getPlugCategoryEv @249
+    _ZN8CLAMTest15getVendorStringEPc @250
+    _ZN8CLAMTest16getParameterNameElPc @251
+    _ZN8CLAMTest16getProductStringEPc @252
+    _ZN8CLAMTest16getVendorVersionEv @253
+    _ZN8CLAMTest16processReplacingEPPfS1_i @254
+    _ZN8CLAMTest17ProcessInputPortsEv @255
+    _ZN8CLAMTest17getParameterLabelElPc @256
+    _ZN8CLAMTest18ProcessOutputPortsEv @257
+    _ZN8CLAMTest19getParameterDisplayElPc @258
+    _ZN8CLAMTest20ProcessInputControlsEv @259
+    _ZN8CLAMTest21GetNumberOfParametersEPKc @260
+    _ZN8CLAMTest25UpdatePortFrameAndHopSizeEv @261
+    _ZN8CLAMTest7processEPPfS1_l @262
+    _ZN8CLAMTestC1EPFiP7AEffectiiiPvfE @263
+    _ZN8CLAMTestC2EPFiP7AEffectiiiPvfE @264
+    _ZN8CLAMTestD0Ev @265
+    _ZN8CLAMTestD1Ev @266
+    _ZN8CLAMTestD2Ev @267
+    _ZNK4CLAM10XMLAdapterIfE10XMLContentEv @268
+    _ZNK4CLAM11DynamicType7StoreOnERNS_7StorageE @269
+    _ZNK4CLAM12BasicXMLable12IsXMLElementEv @270
+    _ZNK4CLAM12BasicXMLable14IsXMLAttributeEv @271
+    _ZNK4CLAM12BasicXMLable7XMLNameEv @272
+    _ZNK4CLAM12BasicXMLable9IsXMLTextEv @273
+    _ZNK4CLAM16FlattenedNetwork12GetClassNameEv @274
+    _ZNK4CLAM16FlattenedNetwork7GetNameEv @275
+    _ZNK4CLAM16OscillatorConfig12GetClassNameEv @276
+    _ZNK4CLAM16OscillatorConfig18GetDynamicTypeCopyEbb @277
+    _ZNK4CLAM16OscillatorConfig18StoreDynAttributesERNS_7StorageE @278
+    _ZNK4CLAM16OscillatorConfig9GetTypeIdEj @279
+    _ZNK4CLAM22SimpleOscillatorConfig12GetClassNameEv @280
+    _ZNK4CLAM22SimpleOscillatorConfig18GetDynamicTypeCopyEbb @281
+    _ZNK4CLAM22SimpleOscillatorConfig18StoreDynAttributesERNS_7StorageE @282
+    _ZNK4CLAM22SimpleOscillatorConfig9GetTypeIdEj @283
+    _ZNK4CLAM3Err4whatEv @284
+    _ZNK4CLAM9Component11ShallowCopyEv @285
+    _ZNK4CLAM9Component8DeepCopyEv @286
+    _ZNSs12_S_constructIPcEES0_T_S1_RKSaIcESt20forward_iterator_tag @287
+    _ZNSt6vectorIN4CLAM17ExternControlInfoESaIS1_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS1_S3_EERKS1_ @288
+    _ZNSt6vectorIN4CLAM8DataInfoINS0_11AudioSourceEEESaIS3_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS3_S5_EERKS3_ @289
+    _ZNSt6vectorIN4CLAM8DataInfoINS0_9AudioSinkEEESaIS3_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS3_S5_EERKS3_ @290
+    _ZTI11AudioEffect @291 DATA
+    _ZTI12AudioEffectX @292 DATA
+    _ZTI8CLAMTest @293 DATA
+    _ZTIN4CLAM10XMLAdapterIfEE @294 DATA
+    _ZTIN4CLAM11BaseNetworkE @295 DATA
+    _ZTIN4CLAM11DynamicTypeE @296 DATA
+    _ZTIN4CLAM12BasicXMLableE @297 DATA
+    _ZTIN4CLAM13XmlStorageErrE @298 DATA
+    _ZTIN4CLAM16FlattenedNetworkE @299 DATA
+    _ZTIN4CLAM16OscillatorConfigE @300 DATA
+    _ZTIN4CLAM16ProcessingConfigE @301 DATA
+    _ZTIN4CLAM18ErrAssertionFailedE @302 DATA
+    _ZTIN4CLAM19ControlSourceConfigE @303 DATA
+    _ZTIN4CLAM22SimpleOscillatorConfigE @304 DATA
+    _ZTIN4CLAM3ErrE @305 DATA
+    _ZTIN4CLAM7NetworkE @306 DATA
+    _ZTIN4CLAM7XMLableE @307 DATA
+    _ZTIN4CLAM8StorableE @308 DATA
+    _ZTIN4CLAM9ComponentE @309 DATA
+    _ZTISt9exception @310 DATA
+    _ZTS11AudioEffect @311 DATA
+    _ZTS12AudioEffectX @312 DATA
+    _ZTS8CLAMTest @313 DATA
+    _ZTSN4CLAM10XMLAdapterIfEE @314 DATA
+    _ZTSN4CLAM11BaseNetworkE @315 DATA
+    _ZTSN4CLAM11DynamicTypeE @316 DATA
+    _ZTSN4CLAM12BasicXMLableE @317 DATA
+    _ZTSN4CLAM13XmlStorageErrE @318 DATA
+    _ZTSN4CLAM16FlattenedNetworkE @319 DATA
+    _ZTSN4CLAM16OscillatorConfigE @320 DATA
+    _ZTSN4CLAM16ProcessingConfigE @321 DATA
+    _ZTSN4CLAM18ErrAssertionFailedE @322 DATA
+    _ZTSN4CLAM19ControlSourceConfigE @323 DATA
+    _ZTSN4CLAM22SimpleOscillatorConfigE @324 DATA
+    _ZTSN4CLAM3ErrE @325 DATA
+    _ZTSN4CLAM7NetworkE @326 DATA
+    _ZTSN4CLAM7XMLableE @327 DATA
+    _ZTSN4CLAM8StorableE @328 DATA
+    _ZTSN4CLAM9ComponentE @329 DATA
+    _ZTSSt9exception @330 DATA
+    _ZTV11AudioEffect @331 DATA
+    _ZTV12AudioEffectX @332 DATA
+    _ZTV8CLAMTest @333 DATA
+    _ZTVN4CLAM10XMLAdapterIfEE @334 DATA
+    _ZTVN4CLAM16OscillatorConfigE @335 DATA
+    _ZTVN4CLAM18ErrAssertionFailedE @336 DATA
+    _ZTVN4CLAM22SimpleOscillatorConfigE @337 DATA
+    _ZTVN4CLAM7NetworkE @338 DATA
+    _ZZN4CLAM16OscillatorConfig13MandatoryInitEvE19staticTypeDescTable @339 DATA
+    _ZZN4CLAM16OscillatorConfig13MandatoryInitEvE22staticTableInitialized @340 DATA
+    _ZZN4CLAM22SimpleOscillatorConfig13MandatoryInitEvE19staticTypeDescTable @341 DATA
+    _ZZN4CLAM22SimpleOscillatorConfig13MandatoryInitEvE22staticTableInitialized @342 DATA
+    hInstance @343 DATA
+    xmlfile @344 DATA
