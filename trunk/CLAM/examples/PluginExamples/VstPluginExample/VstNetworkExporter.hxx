@@ -34,6 +34,7 @@ class VstNetworkExporter : public AudioEffectX
 	typedef std::vector< DataInfo< CLAM::AudioSink > > VSTOutPortList;
 
 public:
+	typedef VstNetworkExporter Plugin;
 	VstNetworkExporter (
 		const std::string & networkContent,
 		const std::string & effectName,
@@ -49,7 +50,7 @@ public:
 		int version);
 	~VstNetworkExporter ();
 
-	AudioEffectX * createEffect(audioMasterCallback audioMaster);
+	Plugin * createEffect(audioMasterCallback audioMaster);
 	bool ok() const { return true; }
 
 	// Processes
