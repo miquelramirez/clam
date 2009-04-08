@@ -1,5 +1,5 @@
-#ifndef __CLAMTest_H
-#define __CLAMTest_H
+#ifndef VstNetworkExporter_hxx
+#define VstNetworkExporter_hxx
 
 #include "audioeffectx.h"
 
@@ -42,21 +42,14 @@ public:
 		int version);
 	VstNetworkExporter (
 		audioMasterCallback audioMaster,
+		const std::string & networkContent,
 		const std::string & effectName,
 		const std::string & productString,
 		const std::string & vendor,
 		int version);
 	~VstNetworkExporter ();
 
-	AudioEffectX * createEffect(audioMasterCallback audioMaster)
-	{
-		if (not ok()) return 0;
-		return new VstNetworkExporter(audioMaster,
-			_effectName,
-			_productString,
-			_vendor,
-			_version);
-	}
+	AudioEffectX * createEffect(audioMasterCallback audioMaster);
 	bool ok() const { return true; }
 
 	// Processes
@@ -96,6 +89,7 @@ private:
 	void ProcessInputControls();
 	void UpdatePortFrameAndHopSize();
 
+	std::string _embeddedNetwork;
 	std::string _effectName;
 	std::string _productString;
 	std::string _vendor;
