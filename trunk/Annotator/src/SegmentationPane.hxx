@@ -195,11 +195,13 @@ public slots:
 			{
 				theSegmentation = new CLAM::DiscontinuousSegmentation;
 			} break;
+			default: CLAM_ASSERT(false, "Unsupported kind of segmentation");
 		}
 		if (_segmentation) delete _segmentation;
 		_segmentation = theSegmentation;
 		_segmentation->maxPosition(audioDuration);
-		_segmentation->takeArray(&descriptorsMarks[0], &descriptorsMarks[0]+nMarks);
+		const CLAM::TData * marks = nMarks? (&descriptorsMarks[0]) : 0;
+		_segmentation->takeArray(marks, marks+nMarks);
 		_segmentation->xUnits("s");
 		_segmentEditor->SetSegmentation(_segmentation);
 
