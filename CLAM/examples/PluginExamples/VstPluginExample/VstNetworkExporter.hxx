@@ -75,7 +75,7 @@ public:
 	virtual VstPlugCategory getPlugCategory () { return kPlugCategEffect; }
 
 protected:
-	char programName[kVstMaxProgNameLen];
+	std::string _programName;
 	CLAM::Network _network;
 	VSTInControlList mInControlList;
 	VSTInPortList mReceiverList;
