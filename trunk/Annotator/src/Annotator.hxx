@@ -134,8 +134,7 @@ public slots:
 	void saveDescriptors();
 	void askToSaveDescriptorsIfNeeded();
 	void computeSongDescriptors();
-	void runExtraction(bool done);
-	void endExtractorRunner(bool done);
+	void endExtractorRunner(bool ok);
 	void refreshAudioData();
 	void updateAuralizationOptions();
 	void linkCurrentSegmentToPlayback(bool enabled);

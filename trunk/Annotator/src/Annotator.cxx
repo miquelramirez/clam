@@ -106,110 +106,65 @@ bool Annotator::loaderFinished()
 
 void Annotator::computeSongDescriptors()
 {
+	QString context = tr("Extracting descriptors");
+	if (!mSongListView->currentItem()) return;
 	if (!mProject.HasExtractor() || mProject.GetExtractor()=="")
 	{
-		QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("<p><b>Error: No extractor was defined for the project.</b></p>\n"));
+		QMessageBox::critical(this, context,
+			tr("<p><b>Error: No extractor was defined for the project.</b></p>\n"));
 		return;
 	}
-	mStatusBar << "Launching Extractor -c .. -s.." << mStatusBar;
+	std::string filename = mSongListView->currentItem()->text(0).toStdString();
+	filename  = mProject.RelativeToAbsolute(filename);
+	QString qfilename = QString::fromStdString(filename);
+	if (!std::ifstream(filename.c_str()))
+	{
+		QMessageBox::critical(this, context,
+			tr("<p><b>Unable to open selected file '%1'</b></p>.")
+				.arg(qfilename));
+		return;
+	}
+	mStatusBar << "Launching Extractor..." << mStatusBar;
 	TaskRunner * runner = new TaskRunner();
-	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(runExtraction(bool)));
-	qApp->processEvents();
+	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
+	//jun: comment out as it occupies to much CPU&MEM while executing ClamExtractorExample
+	addDockWidget( Qt::BottomDockWidgetArea, runner);
+	qApp->processEvents(); // Repaint before heavy CPU
 
-	std::string configurationOption = mProject.File()+".conf";
-	std::string schemaPath = mProject.RelativeToAbsolute(mProject.GetSchema());
-	bool ok = runner->run(mProject.GetExtractor().c_str(),
-		QStringList()
-			<< "-c" << configurationOption.c_str()
-			<< "-s" << schemaPath.c_str()
-			,	QDir::current().path());
+	QTemporaryFile * configFile = new QTemporaryFile(runner); // delete it with 'runner'
+	configFile->open();
+	configFile->write(mProject.GetConfiguration().c_str());
+	QString configFileName = configFile->fileName();
+	configFile->close();
+
+	bool ok =runner->run(mProject.GetExtractor().c_str(),
+		QStringList() 
+			<< qfilename 
+			<< "-f" << mProject.PoolSuffix().c_str() 
+			<< "-c" << configFileName,
+		QDir::current().path());
 	
 	if (!ok)
 	{
-		QMessageBox::critical(this, tr("Extracting descriptors"),
-			tr("<p><b>Error: Unable to launch the extractor with options -c .. -s ...</b></p>\n"
+		QMessageBox::critical(this, context,
+			tr("<p><b>Error: Unable to launch the extractor.</b></p>\n"
 				"<p>Check that the project extractor is well configured and you have permissions to run it.</p>\n"
 				"<p>The configured command was:</p>\n<tt>%1</tt>")
 			.arg(mProject.GetExtractor().c_str())
 			);
 		delete runner;
 	}
-	return;
 }
 
-void Annotator::runExtraction(bool done)
+void Annotator::endExtractorRunner(bool ok)
 {
-	if (done){
-		if (!mSongListView->currentItem()) return;
-		std::string filename = mSongListView->currentItem()->text(0).toStdString();
-		filename  = mProject.RelativeToAbsolute(filename);
-		QString qfilename = QString::fromStdString(filename);
-		if (!std::ifstream(filename.c_str()))
-		{
-			QMessageBox::critical(this, tr("Extracting descriptors"),
-					tr("<p><b>Unable to open selected file '%1'</b></p>.").arg(qfilename));
-			return;
-		}
-		mStatusBar << "Launching Extractor..." << mStatusBar;
-		TaskRunner * runner = new TaskRunner();
-		connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
-		//jun: comment out as it occupies to much CPU&MEM while executing ClamExtractorExample
-		addDockWidget( Qt::BottomDockWidgetArea, runner);
-		
-		// Wait the window to be redrawn after the reconfiguration
-		// before loading the cpu with the extractor
-		qApp->processEvents();
-
-		std::string configurationOption = mProject.File()+".conf";
-		bool ok =runner->run(mProject.GetExtractor().c_str(),
-			QStringList() << qfilename << "-f" << mProject.PoolSuffix().c_str() << "-c" <<configurationOption.c_str(),
-			QDir::current().path());
-		
-		if (!ok)
-		{
-			QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("<p><b>Error: Unable to launch the extractor.</b></p>\n"
-					"<p>Check that the project extractor is well configured and you have permissions to run it.</p>\n"
-					"<p>The configured command was:</p>\n<tt>%1</tt>")
-				.arg(mProject.GetExtractor().c_str())
-				);
-			delete runner;
-		}
-		return;
-		/*loadDescriptorPool(); // TODO: This should be done thru an slot from the runner
-		while (extractor.isRunning())
-		{
-		}
-		if (!extractor.normalExit())
-		{
-			QMessageBox::critical(this, tr("Extracting descriptors"),
-					tr("<p><b>Error: The extractor was terminated with an error.</b></p>"));
-			return;
-		}
-	*/
-		}
-	else
+	if (not ok)
 	{
 		QMessageBox::critical(this, tr("Extracting descriptors"),
 				tr("<p><b>Error: The extractor was terminated with an error.</b></p>"));
 		return;
 	}
-}
-
-
-void Annotator::endExtractorRunner(bool done)
-{
-	if (done){
-		initProject();
-		loadDescriptorPool();
-		}
-	else
-	{
-		QMessageBox::critical(this, tr("Extracting descriptors"),
-				tr("<p><b>Error: The extractor was terminated with an error.</b></p>"));
-		return;
-	}
+	loadDescriptorPool();
 }
 
 Annotator::Annotator(const std::string & nameProject = "")
