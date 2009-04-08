@@ -1,4 +1,4 @@
-#include "CLAMVstPlugin.hpp"
+#include "VstNetworkExporter.hxx"
 #include <iostream>
 int main()
 {
