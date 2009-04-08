@@ -22,7 +22,7 @@ What works:
 - The ui interface is loaded as plugin editor.
 
 What doesn't work:
-- Some metadata (uniqueId!) is still hardcoded
+- Loading errors are silently ignored
 - The user interface does not take the ui size but a fixed one
 - The interface is still pretty useless (no communication)
 - Some ui events are not properly handled (focus, d&d...)
