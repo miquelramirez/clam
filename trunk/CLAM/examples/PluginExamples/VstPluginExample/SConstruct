@@ -47,7 +47,11 @@ if crosscompiling :
 	env.Tool('crossmingw', toolpath=[clam_sconstoolspath])
 sys.path.append(clam_sconstoolspath)
 
-env['CXXFILESUFFIX'] = ['.cxx','.cpp']
+env['CXXFILESUFFIX'] = ['.cxx']
+env['QT4_UICDECLSUFFIX'] = '.hxx'
+env['QT4_MOCHPREFIX'] = os.path.join('generated','moc_')
+env['QT4_UICDECLPREFIX'] = os.path.join('generated','uic_')
+env['QT4_QRCCXXPREFIX'] = os.path.join('generated','qrc_')
 if not env['verbose']:
 	env['CXXCOMSTR'] = '== Compiling $SOURCE'
 	env['SHCXXCOMSTR'] = '== Compiling shared $SOURCE'
