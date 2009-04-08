@@ -10,6 +10,9 @@
 
 namespace CLAM
 {
+//-------------------------------------------------------------------------------------------------------
+class VstNetworkExporter : public AudioEffectX
+{
 	template<class T>
 	class DataInfo
 	{
@@ -30,9 +33,6 @@ namespace CLAM
 	typedef std::vector< DataInfo< CLAM::AudioSource > > VSTInPortList;
 	typedef std::vector< DataInfo< CLAM::AudioSink > > VSTOutPortList;
 
-//-------------------------------------------------------------------------------------------------------
-class VstNetworkExporter : public AudioEffectX
-{
 public:
 	VstNetworkExporter (
 		const std::string & networkContent,
@@ -77,9 +77,9 @@ public:
 protected:
 	char programName[kVstMaxProgNameLen];
 	CLAM::Network _network;
-	CLAM::VSTInControlList mInControlList;
-	CLAM::VSTInPortList mReceiverList;
-	CLAM::VSTOutPortList mSenderList;
+	VSTInControlList mInControlList;
+	VSTInPortList mReceiverList;
+	VSTOutPortList mSenderList;
 	int mClamBufferSize, mExternBufferSize;
 
 private:
