@@ -1,9 +1,31 @@
 
-You need to download the VST SDK directly from
+This is a still under development example on how
+to build a VST plugin given a CLAM network and
+a Qt Designer file.
+
+Most source files will eventually be moved to CLAM
+library so that ClamVstPlugin.cxx is the only source
+user should write.
+
+You need to download the VST SDK 2.4 directly from
 Steinberg, since its licence doesn't allow us to
-do it.
+distribute it. Use the vstsdk_path SCons option
+to make it point the proper place.
 
-We provide a scons option with the path to 
-the vst stk.
+This example can be compiled just on Windows or 
+crosscompiled from Linux with a crosscompiled CLAM.
 
-It has been tested with vstsdk2.3
+What works:
+- The network is properly loaded and executed
+- AudioSinks and AudioSources are exported as Ports.
+- ControlSources are exported as Parameters.
+- The ui interface is loaded as plugin editor.
+
+What doesn't work:
+- Some metadata (uniqueId!) is still hardcoded
+- The user interface does not take the ui size but a fixed one
+- The interface is still pretty useless (no communication)
+- Some ui events are not properly handled (focus, d&d...)
+
+
+

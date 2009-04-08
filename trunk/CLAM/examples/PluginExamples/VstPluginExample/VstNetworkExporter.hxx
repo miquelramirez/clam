@@ -37,17 +37,19 @@ public:
 	typedef VstNetworkExporter Plugin;
 	VstNetworkExporter (
 		const std::string & networkContent,
+		VstInt32 uniqueId,
 		const std::string & effectName,
 		const std::string & productString,
 		const std::string & vendor,
-		int version);
+		VstInt32 version);
 	VstNetworkExporter (
 		audioMasterCallback audioMaster,
 		const std::string & networkContent,
+		VstInt32 uniqueId,
 		const std::string & effectName,
 		const std::string & productString,
 		const std::string & vendor,
-		int version);
+		VstInt32 version);
 	~VstNetworkExporter ();
 
 	Plugin * createEffect(audioMasterCallback audioMaster);
@@ -90,11 +92,12 @@ private:
 	void ProcessInputControls();
 	void UpdatePortFrameAndHopSize();
 
+	VstInt32 _uniqueId;
 	std::string _embeddedNetwork;
 	std::string _effectName;
 	std::string _productString;
 	std::string _vendor;
-	int _version;
+	VstInt32 _version;
 };
 
 }
