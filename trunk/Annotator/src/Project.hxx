@@ -57,6 +57,7 @@ class Extractor : public CLAM::DynamicType
 private:
 	Schema _schema;
 	bool generateSchema(const QString & configFile, const QString schemaFile);
+	void loadSchemaFile(const std::string & schemaFile);
 public:
 	bool generateSchema(QWidget * window);
 	const Schema & schema() const;

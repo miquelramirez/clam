@@ -36,7 +36,9 @@ bool Extractor::generateSchema(const QString & configFileName, const QString sch
 {
 	if (!HasExtractor()) return false;
 	if (GetExtractor()=="") return false;
-	std::cout << schemaFileName.toStdString() << " " << configFileName.toStdString() << std::endl;
+	std::cout 
+		<< "Schema: " << schemaFileName.toStdString() << std::endl
+		<< "Config: " << configFileName.toStdString() << std::endl;
 	QProcess process;
 	process.start(GetExtractor().c_str(),
 		QStringList()
@@ -45,8 +47,8 @@ bool Extractor::generateSchema(const QString & configFileName, const QString sch
 			);
 	std::cout << "Launched extractor to get the schema..." << std::endl;
 	process.waitForFinished(-1); // TODO: This stalls
-	std::cout << process.readAllStandardOutput().constData() << std::endl;
-	std::cerr << process.readAllStandardError().constData() << std::endl;
+	std::cout << "Output:\n" << process.readAllStandardOutput().constData() << std::endl;
+	std::cerr << "Error:\n" << process.readAllStandardError().constData() << std::endl;
 	return process.exitCode()==0;
 }
 
@@ -54,70 +56,49 @@ const Schema & Extractor::schema() const
 {
 	return _schema;
 }
+void Extractor::loadSchemaFile(const std::string & schemaFile)
+{
+	CLAM_Annotator::Schema tempSchema;
+	CLAM::XMLStorage::Restore(tempSchema,schemaFile); // Throws exception if failed
+	_schema = tempSchema;
+}
 
 bool Extractor::generateSchema(QWidget * window)
 {
-	if (HasSchema() && GetSchema()!="")
+	bool debugging = false;
+	QTemporaryFile configFile;
+	configFile.setAutoRemove(not debugging);
+	QTemporaryFile schemaFile;
+	schemaFile.setAutoRemove(not debugging);
+	if (GetExtractor()!="")
 	{
-		CLAM_Annotator::Schema tempSchema;
-		try
-		{
-			CLAM::XMLStorage::Restore(tempSchema,GetSchema());
-		}
-		catch (CLAM::XmlStorageErr & err)
+		configFile.open();
+		configFile.write(GetConfiguration().c_str());
+		QString configFileName = configFile.fileName();
+		configFile.close();
+		schemaFile.open();
+		QString schemaFileName = schemaFile.fileName();
+		schemaFile.close();
+		if (not generateSchema(configFileName, schemaFileName))
 		{
 			QMessageBox::critical(window, QObject::tr("Regenerating Schema"),
-				QObject::tr("<p><b>Error: Unable read schema file %1</b></p>\n%2")
-					.arg(GetSchema().c_str())
-					.arg(err.what())
+				QObject::tr(
+					"<p><b>Error: Unable to launch the extractor to regenerate the schema</b></p>\n"
+					"<p>Check that the project extractor is well configured and you have permissions to run it.</p>\n"
+					"<p>The configured command was:</p>\n<tt>%1</tt>")
+				.arg(GetExtractor().c_str())
 				);
 			return false;
 		}
-		_schema = tempSchema;
+		loadSchemaFile(schemaFileName.toStdString());
 		return true;
 	}
-	if (!HasExtractor()) return false;
-	if (GetExtractor()=="") return false;
-	std::cout << "Generating Schema..." << std::endl;
-	QTemporaryFile configFile;
-	configFile.setAutoRemove(false);
-	configFile.open();
-	configFile.write(GetConfiguration().c_str());
-	QString configFileName = configFile.fileName();
-	configFile.close();
-	QTemporaryFile schemaFile;
-	schemaFile.setAutoRemove(false);
-	schemaFile.open();
-	QString schemaFileName = schemaFile.fileName();
-	schemaFile.close();
-
-	if (not generateSchema(configFileName, schemaFileName))
+	if (HasSchema() && GetSchema()!="")
 	{
-		QMessageBox::critical(window, QObject::tr("Regenerating Schema"),
-			QObject::tr(
-				"<p><b>Error: Unable to launch the extractor to regenerate the schema</b></p>\n"
-				"<p>Check that the project extractor is well configured and you have permissions to run it.</p>\n"
-				"<p>The configured command was:</p>\n<tt>%1</tt>")
-			.arg(GetExtractor().c_str())
-			);
-		return false;
+		loadSchemaFile(GetSchema());
+		return true;
 	}
-	CLAM_Annotator::Schema tempSchema;
-	try
-	{
-		CLAM::XMLStorage::Restore(tempSchema,schemaFileName.toStdString());
-	}
-	catch (CLAM::XmlStorageErr & err)
-	{
-		QMessageBox::critical(window, QObject::tr("Regenerating Schema"),
-			QObject::tr("<p><b>Error: Unable read generated schema %1</b></p>\n%2")
-				.arg(schemaFileName)
-				.arg(err.what())
-			);
-		return false;
-	}
-	_schema = tempSchema;
-	return true;
+	return false;
 }
 
 void Project::DumpSchema()
@@ -170,9 +151,15 @@ void Project::CreatePoolScheme()
 
 bool Project::LoadSchema()
 {
-	CLAM_Annotator::Schema tempSchema;
-	CLAM::XMLStorage::Restore(tempSchema,RelativeToAbsolute(GetSchema())); // May throw an exception
-	GetAnnotatorSchema() = tempSchema;
+	CLAM_Annotator::Extractor extractor;
+	if (HasExtractor())
+		extractor.SetExtractor(GetExtractor());
+	if (HasSchema())
+		extractor.SetSchema(RelativeToAbsolute(GetSchema()));
+	if (HasConfig())
+		extractor.SetConfigFile(GetConfig()); // Or Configuration?
+	if (not extractor.generateSchema(0)) return false;
+	GetAnnotatorSchema() = extractor.schema();
 	CreatePoolScheme();
 	return true;
 }
