@@ -4,22 +4,22 @@
 #include <iostream>
 
 CLAM_EMBEDDED_FILE(embededNetwork,"wire.xml")
-CLAM_EMBEDDED_FILE(designerUI, "interface.ui")
+CLAM_EMBEDDED_FILE(embededUI, "interface.ui")
 
 
 AudioEffect* createEffectInstance (audioMasterCallback audioMaster)
 {
-	std::cout << "== createEffectInstance" << std::endl;
 	static CLAM::VstNetworkExporter exporter(
 		embededNetwork,
-		"CLAM effect",
-		"Example of CLAM based VST plugin",
-		"CLAM Project",
-		1000
+		CCONST('C','L','A','M'),
+		"CLAM effect", // Effect name
+		"Example of CLAM based VST plugin", // Product string
+		"CLAM Project", // Vendor
+		10 // Version
 	);
 	CLAM::VstNetworkExporter::Plugin * effect = exporter.createEffect(audioMaster);
 	if (!effect) return 0;
-	new QClamVstEditor(effect, designerUI);
+	new QClamVstEditor(effect, embededUI);
 	return effect;
 }
 

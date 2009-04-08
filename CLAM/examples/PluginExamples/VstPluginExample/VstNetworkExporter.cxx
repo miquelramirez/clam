@@ -12,6 +12,7 @@ VstNetworkExporter::Plugin * VstNetworkExporter::createEffect(audioMasterCallbac
 	return new VstNetworkExporter::Plugin(
 		audioMaster,
 		_embeddedNetwork,
+		_uniqueId,
 		_effectName,
 		_productString,
 		_vendor,
@@ -99,13 +100,15 @@ void VstNetworkExporter::getParameterLabel(VstInt32 index, char *label)
 //---------------------------------------------------------------------
 VstNetworkExporter::VstNetworkExporter (
 		const std::string & networkContent,
+		VstInt32 uniqueId,
 		const std::string & effectName,
 		const std::string & productString,
 		const std::string & vendor,
-		int version
+		VstInt32 version
 	)
 	: AudioEffectX (0, 1 /*nPrograms*/, GetNumberOfParameters(networkContent) )
 	, _embeddedNetwork(networkContent)
+	, _uniqueId(uniqueId)
 	, _effectName(effectName)
 	, _productString(productString)
 	, _vendor(vendor)
@@ -117,19 +120,20 @@ VstNetworkExporter::VstNetworkExporter (
 VstNetworkExporter::VstNetworkExporter (
 		audioMasterCallback audioMaster,
 		const std::string & embededNetwork,
+		VstInt32 uniqueId,
 		const std::string & effectName,
 		const std::string & productString,
 		const std::string & vendor,
 		int version
 	)
 	: AudioEffectX (audioMaster, 1 /*nPrograms*/, GetNumberOfParameters(embededNetwork) )
+	, _uniqueId(uniqueId)
 	, _embeddedNetwork(embededNetwork)
 	, _effectName(effectName)
 	, _productString(productString)
 	, _vendor(vendor)
 	, _version(version)
 {
-	std::cout << "== Constructor" << std::endl;
 	mClamBufferSize=512;
 	mExternBufferSize=mClamBufferSize;
 
@@ -150,7 +154,7 @@ VstNetworkExporter::VstNetworkExporter (
 
 	setNumInputs (mReceiverList.size());
 	setNumOutputs (mSenderList.size());
-	setUniqueID (CCONST('C','L','A','M'));
+	setUniqueID (_uniqueId);
 	_programName = "Default";
 }
 
