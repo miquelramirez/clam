@@ -276,7 +276,7 @@ bool QClamVstEditor::open(void * ptr)
 	else layout->addWidget(ui);
 //	_widget->setStyleSheet("background-color: blue; border: red solid 2pt;");
 //	ui->setStyleSheet("background-color: white; padding: 3pt; border: yellow solid 2pt;");
-//	ui->adjustSize();
+	ui->adjustSize();
 	return true;
 }
 
