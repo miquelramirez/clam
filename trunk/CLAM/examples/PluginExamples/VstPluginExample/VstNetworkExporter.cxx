@@ -47,12 +47,12 @@ VstInt32 VstNetworkExporter::getVendorVersion ()
 
 void VstNetworkExporter::setProgramName (char *name)
 {
-	strncpy (programName, name, kVstMaxProgNameLen);
+	_programName = name;
 }
 
 void VstNetworkExporter::getProgramName (char *name)
 {
-	strncpy (name, programName, kVstMaxProgNameLen);
+	strncpy (name, _programName.c_str(), kVstMaxProgNameLen);
 }
 
 
@@ -151,8 +151,7 @@ VstNetworkExporter::VstNetworkExporter (
 	setNumInputs (mReceiverList.size());
 	setNumOutputs (mSenderList.size());
 	setUniqueID (CCONST('C','L','A','M'));
-	// default program name
-	strncpy (programName, "Default", kVstMaxProgNameLen);
+	_programName = "Default";
 }
 
 //---------------------------------------------------------------------
