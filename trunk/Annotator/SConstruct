@@ -143,11 +143,10 @@ if sys.platform!='win32' :
 	# TODO: This should not be hardcoded neither prefix (because package intall)
 	env.Append(CPPFLAGS='-DDATA_EXAMPLES_PATH="\\"%s\\""'%env['prefix'] + '/share/annotator/example-data')
 
-if sys.platform=='linux2' :
-	if env['release'] :
-		env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
-	else :
-		env.Append( CCFLAGS=['-g','-O3','-Wall'] )
+if env['release'] :
+	env.Append( CCFLAGS=['-g','-O3','-fomit-frame-pointer','-Wall'] )
+else :
+	env.Append( CCFLAGS=['-g','-O3','-Wall'] )
 
 #commonObjects = env.StaticLibrary(target="annotator", source=sources)
 programs = [ env.Program(target=program, source = [main] + sources)
@@ -165,6 +164,23 @@ chordSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  chordSources )
 chordSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  chordSources )
 
 programs += [ env.Program(target='ChordExtractor', source = chordSources) ]
+
+onsetSources = scanFiles("*.cpp", ["src/OnsetExtractor"])
+onsetSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  onsetSources )
+onsetSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  onsetSources )
+fftwlib = "fftw3"
+fftwlibpath = [os.path.join(env['prefix'],'lib')]
+sndfilelib = 'sndfile'
+programs += [ env.Program(target='OnsetExtractorCore', source = onsetSources, LIBS=[fftwlib,sndfilelib], LIBPATH=fftwlibpath) ]
+programs += [ 'OnsetExtractor' ]
+
+env.Uic4(source="SimacServicesClient/GUI.ui")
+bocaClientSources = [
+	"SimacServicesClient/BocaClientMain.cxx",
+	env.Moc4("SimacServicesClient/BocaClientGui.hxx"),
+	"SimacServicesClient/BocaTaskRunner.cxx",
+]
+programs += [ env.Program(target="BocaClient", source = bocaClientSources) ]
 """
 # Jun: added for test
 # to embed Python scripts in C++ code, Python.h needs to be included,
@@ -183,22 +199,6 @@ clamlibpath = [os.path.join(env['prefix'],'lib')]
 programs += [ env.Program(target='SemWebExtractor', source = semwebSources) ]
 """
 
-onsetSources = scanFiles("*.cpp", ["src/OnsetExtractor"])
-onsetSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  onsetSources )
-onsetSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  onsetSources )
-fftwlib = "fftw3"
-fftwlibpath = [os.path.join(env['prefix'],'lib')]
-sndfilelib = 'sndfile'
-programs += [ env.Program(target='OnsetExtractorCore', source = onsetSources, LIBS=[fftwlib,sndfilelib], LIBPATH=fftwlibpath) ]
-programs += [ 'OnsetExtractor' ]
-
-env.Uic4(source="SimacServicesClient/GUI.ui")
-bocaClientSources = [
-	"SimacServicesClient/BocaClientMain.cxx",
-	env.Moc4("SimacServicesClient/BocaClientGui.hxx"),
-	"SimacServicesClient/BocaTaskRunner.cxx",
-]
-programs += [ env.Program(target="BocaClient", source = bocaClientSources) ]
 
 manpages = glob.glob('resources/man/man1/*.1')
 
