@@ -259,13 +259,6 @@ Annotator::Annotator(const std::string & nameProject = "")
 	*/
 	updateAuralizationOptions();
 	QTimer::singleShot(1000, splash, SLOT(close()));
-#if 0
-	// Testing the Extractor class
-	CLAM_Annotator::Extractor extractor;
-	extractor.SetExtractor("./ChordExtractor");
-	extractor.generateSchema(this);
-	CLAM::XMLStorage::Dump(extractor.schema(), "Generated", std::cout);
-#endif
 }
 
 
@@ -356,7 +349,6 @@ void Annotator::initInterface()
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
 
 	//mAggregationEditor = new AggregationEditor;
-
 	//mMainTabWidget->addTab(mAggregationEditor, tr("Aggregation Editor"));
 	
 	_auralizer = new Auralizer(this);
