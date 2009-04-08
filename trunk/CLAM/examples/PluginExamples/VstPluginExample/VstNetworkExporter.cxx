@@ -70,8 +70,10 @@ void VstNetworkExporter::setParameter (VstInt32 index, float value)
 
 float VstNetworkExporter::getParameter (VstInt32 index)
 {
-	std::cout << "== getParameter " << mInControlList[index].lastvalue << std::endl;
-	return mInControlList[index].lastvalue;
+	ExternControlInfo & control = mInControlList[index];
+	float interfaceValue = (control.lastvalue-control.min)/(control.max-control.min);
+	std::cout << "== getParameter " << control.lastvalue << " -> " << interfaceValue << std::endl;
+	return interfaceValue;
 }
 
 void VstNetworkExporter::getParameterName (VstInt32 index, char *label)
