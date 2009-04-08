@@ -7,9 +7,9 @@
 namespace CLAM
 {
 
-AudioEffectX * VstNetworkExporter::createEffect(audioMasterCallback audioMaster)
+VstNetworkExporter::Plugin * VstNetworkExporter::createEffect(audioMasterCallback audioMaster)
 {
-	return new VstNetworkExporter(
+	return new VstNetworkExporter::Plugin(
 		audioMaster,
 		_embeddedNetwork,
 		_effectName,
