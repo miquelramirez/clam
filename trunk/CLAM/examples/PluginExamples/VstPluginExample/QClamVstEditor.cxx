@@ -84,6 +84,7 @@ QVstWindow::QVstWindow(WId handle, QClamVstEditor * editor)
 	std::cout << "Widget Construction" << std::endl;
 //	_oldWndProc = GetWindowLongPtr(handle, GWLP_WNDPROC);
 //	_oldWndData = GetWindowLongPtr(handle, GWLP_USERDATA);
+
 	RECT rect;
 	GetWindowRect((WId)_parent, &rect);
 
@@ -91,7 +92,7 @@ QVstWindow::QVstWindow(WId handle, QClamVstEditor * editor)
 		0, PluginEditorWindowClassName().c_str(), "Window",
 		WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, 
 		0, 0, rect.right-rect.left, rect.bottom-rect.top, 
-		handle, 0, hInstance, NULL);
+		_parent, 0, hInstance, NULL);
 
 //	SetWindowLongPtr ((HWND)child, GWLP_USERDATA, (LONG_PTR)this);
 	std::cout << "Widget Creating" << std::endl;
@@ -262,11 +263,10 @@ bool QClamVstEditor::open(void * ptr)
 	requireQApp();
 	_widget = new QVstWindow((WId)ptr, this);
 	std::cout << "Widget Showing" << std::endl;
-	_widget->show();
 	std::cout << "Widget Shown" << std::endl;
 	std::cout << "Setting the layout" << std::endl;
+	_widget->show();
 	QHBoxLayout * layout = new QHBoxLayout(_widget);
-
 	std::cout << "Adding the widget" << std::endl;
 	QUiLoader loader;
 	QBuffer file;
@@ -274,9 +274,9 @@ bool QClamVstEditor::open(void * ptr)
 	QWidget * ui = loader.load(&file, _widget);
 	if (not ui) std::cerr << "Error loading interface" << std::endl;
 	else layout->addWidget(ui);
-//	_widget->setStyleSheet("background-color: blue;border: red solid 2pt; color:red;");
-//	ui->setStyleSheet("background-color: yellow; padding: 3pt; border: red solid 2pt; color:red;");
-	ui->adjustSize();
+//	_widget->setStyleSheet("background-color: blue; border: red solid 2pt;");
+//	ui->setStyleSheet("background-color: white; padding: 3pt; border: yellow solid 2pt;");
+//	ui->adjustSize();
 	return true;
 }
 
