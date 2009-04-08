@@ -69,6 +69,7 @@ void AggregationEditor::addSource(const std::string & source, CLAM_Annotator::Sc
 	attributeList->expandItem(sourceItem);
 	
 	setListedSchema(schema, sourceItem);	
+	attributeProperties->hide();
 	
 }
 
@@ -123,7 +124,6 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 
 void AggregationEditor::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem * parentItem)
 {
-	attributeProperties->hide();
 	//mSchema = &schema;
 	SchemaAttributes & attributes = schema.GetAttributes();
 	for (SchemaAttributes::iterator it = attributes.begin();
@@ -137,6 +137,7 @@ void AggregationEditor::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWi
 	attributeList->resizeColumnToContents(0);
 	attributeList->resizeColumnToContents(1);
 	attributeList->show();
+	attributeProperties->hide();
 }
 
 
@@ -331,7 +332,7 @@ void AggregationEditor::setConfiguration()
 	}
 	mConfig.insert(mapStart, newContent);
 	std::cout<< "the newly edited Configuration is ..............\n" << mConfig << std::endl;
-	
+
 }
 
 

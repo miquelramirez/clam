@@ -31,10 +31,52 @@
 #include <vector>
 #include <QtGui/QInputDialog>
 
+#include <QtCore/QTemporaryFile>
+#include <QtCore/QProcess>
+#include <QtGui/QMessageBox>
+#include <CLAM/XMLStorage.hxx>
+
 namespace CLAM_Annotator
 {
 class Schema;
 
+class Extractor : public CLAM::DynamicType
+{
+	DYNAMIC_TYPE(Extractor,6);
+	DYN_ATTRIBUTE(0, public, std::string, Name);
+	DYN_ATTRIBUTE(1, public, CLAM::Filename, Extractor);
+	DYN_ATTRIBUTE(2, public, CLAM::Text, Configuration);
+	DYN_ATTRIBUTE(3, public, CLAM::Filename, Schema);
+	DYN_ATTRIBUTE(4, public, std::string, PoolSuffix);
+	DYN_ATTRIBUTE(5, public, CLAM::Filename, ConfigFile);
+	void DefaultInit()
+	{
+		AddAll();
+		UpdateData();
+	}
+private:
+	Schema _schema;
+	bool generateSchema(const QString & configFile, const QString schemaFile);
+public:
+	bool generateSchema(QWidget * window);
+	const Schema & schema() const;
+};
+/*
+class AttributeMap : public CLAM::DynamicType
+{
+	DYNAMIC_TYPE(AttributeMap,5);
+	DYN_ATTRIBUTE(0, public, std::string, TargetScope);
+	DYN_ATTRIBUTE(1, public, std::string, TargetAttribute);
+	DYN_ATTRIBUTE(2, public, std::string, Source);
+	DYN_ATTRIBUTE(3, public, std::string, SourceScope);
+	DYN_ATTRIBUTE(4, public, std::string, SourceAttribute);
+	void DefaultInit()
+	{
+		AddAll();
+		UpdateData();
+	}
+};
+*/
 class Project : public CLAM::DynamicType
 {
 	DYNAMIC_TYPE(Project,8);
@@ -55,7 +97,7 @@ class Project : public CLAM::DynamicType
 public:
 	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 public:
-	bool LoadScheme(const std::string & GetSchemaRelative);
+	bool LoadSchema();
 	void DumpSchema();
 	void DumpSchema(std::ostream & os);
 

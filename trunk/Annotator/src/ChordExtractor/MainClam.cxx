@@ -349,10 +349,9 @@ int main(int argc, char* argv[])			// access command line arguments
 	if (argc==1) 
 	{
 		std::cerr << usage << std::endl;
-		return -1;
+		return 0;
 	}
 
-	bool hasSchemaOption = false;
 	bool isSchema = false;
 	bool isSuffix = false;
 	bool isConfiguration = false;
@@ -363,7 +362,7 @@ int main(int argc, char* argv[])			// access command line arguments
 		if (parameter=="-h")
 		{
 			std::cerr << usage << std::endl;
-			return -1;
+			return 0;
 		}
 		else if (isSchema)
 		{
@@ -386,7 +385,7 @@ int main(int argc, char* argv[])			// access command line arguments
 			isConfiguration=false;
 		}
 		else if (parameter=="-f") isSuffix = true;
-		else if (parameter=="-s") isSchema = hasSchemaOption = true;
+		else if (parameter=="-s") isSchema = true;
 		else if (parameter=="-m") isSegmentationMethod = true;
 		else if (parameter=="-c") isConfiguration = true;
 		else if (parameter=="-w") return 0; // No write back

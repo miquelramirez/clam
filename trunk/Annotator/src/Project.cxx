@@ -31,6 +31,95 @@
 namespace CLAM_Annotator
 {
 
+
+bool Extractor::generateSchema(const QString & configFileName, const QString schemaFileName)
+{
+	if (!HasExtractor()) return false;
+	if (GetExtractor()=="") return false;
+	std::cout << schemaFileName.toStdString() << " " << configFileName.toStdString() << std::endl;
+	QProcess process;
+	process.start(GetExtractor().c_str(),
+		QStringList()
+			<< "-c" << configFileName
+			<< "-s" << schemaFileName
+			);
+	std::cout << "Launched extractor to get the schema..." << std::endl;
+	process.waitForFinished(-1); // TODO: This stalls
+	std::cout << process.readAllStandardOutput().constData() << std::endl;
+	std::cerr << process.readAllStandardError().constData() << std::endl;
+	return process.exitCode()==0;
+}
+
+const Schema & Extractor::schema() const
+{
+	return _schema;
+}
+
+bool Extractor::generateSchema(QWidget * window)
+{
+	if (HasSchema() && GetSchema()!="")
+	{
+		CLAM_Annotator::Schema tempSchema;
+		try
+		{
+			CLAM::XMLStorage::Restore(tempSchema,GetSchema());
+		}
+		catch (CLAM::XmlStorageErr & err)
+		{
+			QMessageBox::critical(window, QObject::tr("Regenerating Schema"),
+				QObject::tr("<p><b>Error: Unable read schema file %1</b></p>\n%2")
+					.arg(GetSchema().c_str())
+					.arg(err.what())
+				);
+			return false;
+		}
+		_schema = tempSchema;
+		return true;
+	}
+	if (!HasExtractor()) return false;
+	if (GetExtractor()=="") return false;
+	std::cout << "Generating Schema..." << std::endl;
+	QTemporaryFile configFile;
+	configFile.setAutoRemove(false);
+	configFile.open();
+	configFile.write(GetConfiguration().c_str());
+	QString configFileName = configFile.fileName();
+	configFile.close();
+	QTemporaryFile schemaFile;
+	schemaFile.setAutoRemove(false);
+	schemaFile.open();
+	QString schemaFileName = schemaFile.fileName();
+	schemaFile.close();
+
+	if (not generateSchema(configFileName, schemaFileName))
+	{
+		QMessageBox::critical(window, QObject::tr("Regenerating Schema"),
+			QObject::tr(
+				"<p><b>Error: Unable to launch the extractor to regenerate the schema</b></p>\n"
+				"<p>Check that the project extractor is well configured and you have permissions to run it.</p>\n"
+				"<p>The configured command was:</p>\n<tt>%1</tt>")
+			.arg(GetExtractor().c_str())
+			);
+		return false;
+	}
+	CLAM_Annotator::Schema tempSchema;
+	try
+	{
+		CLAM::XMLStorage::Restore(tempSchema,schemaFileName.toStdString());
+	}
+	catch (CLAM::XmlStorageErr & err)
+	{
+		QMessageBox::critical(window, QObject::tr("Regenerating Schema"),
+			QObject::tr("<p><b>Error: Unable read generated schema %1</b></p>\n%2")
+				.arg(schemaFileName)
+				.arg(err.what())
+			);
+		return false;
+	}
+	_schema = tempSchema;
+	return true;
+}
+
 void Project::DumpSchema()
 {
 	CLAM::XMLStorage::Dump(GetAnnotatorSchema(), "DescriptionScheme", RelativeToAbsolute(GetSchema()));
@@ -79,10 +168,10 @@ void Project::CreatePoolScheme()
 	mSchema.FillDescriptionScheme(mDescriptionScheme);
 }
 
-bool Project::LoadScheme(const std::string & relativeSchema)
+bool Project::LoadSchema()
 {
 	CLAM_Annotator::Schema tempSchema;
-	CLAM::XMLStorage::Restore(tempSchema,RelativeToAbsolute(relativeSchema)); // May throw an exception
+	CLAM::XMLStorage::Restore(tempSchema,RelativeToAbsolute(GetSchema())); // May throw an exception
 	GetAnnotatorSchema() = tempSchema;
 	CreatePoolScheme();
 	return true;

@@ -120,7 +120,10 @@ void Annotator::computeSongDescriptors()
 	std::string configurationOption = mProject.File()+".conf";
 	std::string schemaPath = mProject.RelativeToAbsolute(mProject.GetSchema());
 	bool ok = runner->run(mProject.GetExtractor().c_str(),
-		QStringList() << "-c" <<configurationOption.c_str()<<"-s"<<schemaPath.c_str(),	QDir::current().path());
+		QStringList()
+			<< "-c" << configurationOption.c_str()
+			<< "-s" << schemaPath.c_str()
+			,	QDir::current().path());
 	
 	if (!ok)
 	{
@@ -133,7 +136,6 @@ void Annotator::computeSongDescriptors()
 		delete runner;
 	}
 	return;
-
 }
 
 void Annotator::runExtraction(bool done)
@@ -257,6 +259,13 @@ Annotator::Annotator(const std::string & nameProject = "")
 	*/
 	updateAuralizationOptions();
 	QTimer::singleShot(1000, splash, SLOT(close()));
+#if 0
+	// Testing the Extractor class
+	CLAM_Annotator::Extractor extractor;
+	extractor.SetExtractor("./ChordExtractor");
+	extractor.generateSchema(this);
+	CLAM::XMLStorage::Dump(extractor.schema(), "Generated", std::cout);
+#endif
 }
 
 
@@ -398,7 +407,7 @@ void Annotator::initProject()
 
 	try
 	{
-		mProject.LoadScheme(mProject.GetSchema());
+		mProject.LoadSchema();
 	}
 	catch (CLAM::XmlStorageErr & e)
 	{
