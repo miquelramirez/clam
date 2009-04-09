@@ -75,7 +75,7 @@ namespace Hidden
 			CLAM_ASSERT(0,ss.str().c_str());
 		}
 		if (!in.HasBuffer())
-			CLAM_ASSERT(0,"FFT Do: Float attribute required for Audio object.");
+			CLAM_ASSERT(0,"FFT Do: Received an audio without buffer.");
 		if (out.GetSize() != mSize/2+1 ) { // ALGORITHM DEPENDENT CHECKING
 			std::stringstream ss;
 			ss << "FFT::Do: wrong size  Spectrum.\n"
@@ -112,30 +112,21 @@ namespace Hidden
 		int oldSize = mSize;
 		
 		CopyAsConcreteConfig(mConfig, c);
-		if (mConfig.HasAudioSize()) {
-			CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
-			mSize = mConfig.GetAudioSize();
-			if(mSize>0)
-			{
-				mInput.SetSize( mSize );
-				mInput.SetHop( mSize );
-			}
-		}
+		if (not mConfig.HasAudioSize())
+			return AddConfigErrorMessage("AudioSize parameter is required");
+		mSize = mConfig.GetAudioSize();
+		if (mSize<=0)
+			return AddConfigErrorMessage("AudioSize should be greater than 0");
 
-		CLAM_ASSERT(mSize>=0, "Negative Size in FFT configuration");
+		mInput.SetSize( mSize );
+		mInput.SetHop( mSize );
 
 		mState=sOther;
 		mComplexflags.bComplex=1;
 		mComplexflags.bMagPhase=0;
-		if (mSize == 0) 
-		{
-			fftbuffer = 0;
-			return false;
-		}
 		if (mSize == oldSize)
 			return true;
-
-		delete [] fftbuffer;
+		if (fftbuffer) delete [] fftbuffer;
 		fftbuffer = new TData[mSize];	
 
 		SpectrumConfig cfg;
