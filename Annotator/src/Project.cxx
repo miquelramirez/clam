@@ -65,7 +65,7 @@ void Extractor::loadSchemaFile(const std::string & schemaFile)
 
 bool Extractor::generateSchema(QWidget * window)
 {
-	bool debugging = false;
+	bool debugging = true;
 	QTemporaryFile configFile;
 	configFile.setAutoRemove(not debugging);
 	QTemporaryFile schemaFile;
@@ -74,6 +74,7 @@ bool Extractor::generateSchema(QWidget * window)
 	{
 		configFile.open();
 		configFile.write(GetConfiguration().c_str());
+		std::cout << "Config content:" << std::endl << GetConfiguration() << std::endl;
 		QString configFileName = configFile.fileName();
 		configFile.close();
 		schemaFile.open();
@@ -156,8 +157,8 @@ bool Project::LoadSchema()
 		extractor.SetExtractor(GetExtractor());
 	if (HasSchema())
 		extractor.SetSchema(RelativeToAbsolute(GetSchema()));
-	if (HasConfig())
-		extractor.SetConfigFile(GetConfig()); // Or Configuration?
+	if (HasConfiguration())
+		extractor.SetConfiguration(GetConfiguration()); // Or Configuration?
 	if (not extractor.generateSchema(0)) return false;
 	GetAnnotatorSchema() = extractor.schema();
 	CreatePoolScheme();

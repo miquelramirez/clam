@@ -23,5 +23,6 @@
 
 TaskRunner::~TaskRunner()
 {
+	std::cout << "Deleting task" << std::endl;
 }
 

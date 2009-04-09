@@ -32,6 +32,22 @@ ProjectEditor::~ProjectEditor()
 {
 }
 
+// New project initialization
+void ProjectEditor::setProjectPath(const std::string & file)
+{
+	mProject.AddAll();
+	mProject.UpdateData();
+	mProject.SetProjectPath(file);
+	mProject.SetDescription(
+		tr("<h1>My annotation project</h1>\n"
+		"<h2>Description</h2>\n"
+		"<p>This is a place holder for the project documentation."
+		"Edit at will.</p>\n").toStdString()
+		);
+	updateFields();
+}
+
+// Edit project initialization
 void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 {
 	mProject.AddAll();
@@ -40,8 +56,6 @@ void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 	mProject.SetDescription(project.GetDescription());
 	mProject.SetSchema(project.GetSchema());
 	mProject.SetExtractor(project.GetExtractor());
-	if (project.HasConfig())
-		mProject.SetConfig(project.GetConfig());
 	if (project.HasConfiguration())
 	{
 		mProject.SetConfiguration(project.GetConfiguration());
@@ -61,23 +75,7 @@ void ProjectEditor::applyChanges(CLAM_Annotator::Project & project)
 	project.SetConfiguration(mProject.GetConfiguration());
 	project.SetSchema(mProject.GetSchema());
 	project.SetExtractor(mProject.GetExtractor());
-	project.SetConfig(mProject.GetConfig());
 	project.SetPoolSuffix(mProject.PoolSuffix());
-}
-
-void ProjectEditor::setProjectPath(const std::string & file)
-{
-	mProject.SetProjectPath(file);
-	updateProject();
-	updateFields();
-}
-
-void ProjectEditor::updateProject()
-{
-	mProject.SetDescription(ui.projectInfo->toPlainText().toStdString());
-	mProject.SetConfiguration(ui.configurationInfo->toPlainText().toStdString());
-//	mProject.SetExtractor(ui.extractor->text().toStdString());
-//	mProject.SetSchema(mProject.AbsoluteToRelative(file.toStdString()));
 }
 
 void ProjectEditor::updateFields()
@@ -87,22 +85,9 @@ void ProjectEditor::updateFields()
 	ui.suffix->setEditText(mProject.PoolSuffix().c_str());
 	if (mProject.HasExtractor())
 		ui.extractor->setText(mProject.GetExtractor().c_str());
-	ui.configuration->setText(mProject.GetConfig().c_str());
 	ui.projectInfo->setPlainText(mProject.GetDescription().c_str());
 	ui.configurationInfo->setPlainText(mProject.GetConfiguration().c_str());
 	ui.htmlPreview->setHtml(mProject.GetDescription().c_str());
-}
-
-void ProjectEditor::updateConfiguration()
-{
-	QString filePath(mProject.File().c_str());
-	QFile *file=new QFile(filePath.append(".conf"));
-	if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
-		return;
-	if(!file->resize(0))
-		return; 
-	QTextStream out(file);
-	out << ui.configurationInfo->toPlainText();	
 }
 
 
@@ -147,32 +132,27 @@ void ProjectEditor::on_extractorBrowseButton_clicked()
 	updateFields();
 }
 
-void ProjectEditor::on_configurationBrowseButton_clicked()
+void ProjectEditor::on_loadConfigurationButton_clicked()
 {
 	QString file = QFileDialog::getOpenFileName(this, 
 			"Select a configuration file",
-			mProject.GetConfig().c_str(),
+			0,
 			"Configuration file (*)"
 			);
 	if (file.isNull()) return;
-	mProject.SetConfig(file.toStdString());
+	std::cout << "Loading config " << file.toStdString() << std::endl;
+	QFile loadedConfig(file);
+	if (not loadedConfig.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		QMessageBox::warning(this, tr("Loading configuration"),
+			tr("Unable to open the selected file"));
+		return;
+	}
+	CLAM::Text configData = loadedConfig.readAll().constData();
+	mProject.SetConfiguration(configData);
 	updateFields();
 }
 
-void ProjectEditor::on_configuration_textChanged()
-{
-	mProject.SetConfig(ui.configuration->text().toStdString());
-}
-
-
-void ProjectEditor::on_configurationEditButton_clicked()
-{
-	ConfigurationEditor configDialog(this);
- 
-	configDialog.setConfiguration(ui.configuration->text());
-	if(configDialog.exec()==QDialog::Rejected) return;  //??needed??
-	
-}
 
 void ProjectEditor::on_graphicalEditButton_clicked()
 {
@@ -186,18 +166,6 @@ void ProjectEditor::on_graphicalEditButton_clicked()
 void ProjectEditor::on_extractor_textChanged()
 {
 	mProject.SetExtractor(ui.extractor->text().toStdString());
-}
-
-
-void ProjectEditor::on_buttonBox_accepted()
-{
-	updateConfiguration();
-	this->accept();
-}
-
-void ProjectEditor::on_buttonBox_rejected()
-{
-	this->reject();
 }
 
 
