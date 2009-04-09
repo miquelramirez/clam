@@ -81,6 +81,8 @@ private slots:
 private:
 	void dump(QString output, bool error)
 	{
+		std::string ansiColor = error? "\033[31m" : ""; 
+		std::cout << ansiColor << output.toStdString() << "\033[0m" << std::flush;
 		output.replace("&","&amp;");
 		output.replace("<","&lt;");
 		output.replace("\n","<br/>");
