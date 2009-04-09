@@ -99,8 +99,8 @@ const char * projectDescription =
 	"</p>\n"
 	;
 
-unsigned fftSize = 512;
-unsigned frameSize = 1023;
+unsigned fftSize = 513;
+unsigned frameSize = 1024;
  
    
 int main(int argc, char ** argv)
@@ -115,10 +115,12 @@ int main(int argc, char ** argv)
 		0
 	};
 
+	for (unsigned i=0; i<argc; i++) std::cout << argv[i] << std::endl;
+
 	if (argc==1) 
 	{
 		std::cerr << usage << std::endl;
-		return -1;
+		return 0;
 	}
 
 	// Firstly scan for project option (paths are stored relative to that path)
