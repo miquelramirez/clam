@@ -73,6 +73,8 @@ bool FFT_fftw3::ConcreteConfigure(const ProcessingConfig& c)
 {
 	int oldSize=mSize;
 	FFT_base::ConcreteConfigure(c);
+	CLAM_WARNING(isPowerOfTwo(mSize),
+		"FFT_fftw3: Do(): Not a power of two");
 	if (mSize<=0) 
 	{
 		AddConfigErrorMessage("Invalid zero or negative input size");
@@ -118,10 +120,6 @@ bool FFT_fftw3::Do(const Audio& in, Spectrum &out)
 {
 	CLAM_DEBUG_ASSERT(IsRunning(),
 		"FFT_fftw3: Do(): Not in execution mode");
-	CLAM_BEGIN_DEBUG_CHECK
-		CLAM_WARNING(isPowerOfTwo(mSize),
-			"FFT_fftw3: Do(): Not a power of two");
-	CLAM_END_DEBUG_CHECK
 
 	out.SetSpectralRange(in.GetSampleRate()/2);
 	if (mState==sOther) CheckTypes(in,out);
