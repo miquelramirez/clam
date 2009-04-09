@@ -29,6 +29,9 @@ parser.add_option("-c",# "--print-configuration",
 		help="Specifies a configuration file with the options for the aggregation."
 	)
 parser.add_option("-w","--writeback",
+		action='store_true',
+		dest='writeback',
+		default=False,
 		help="Writes back the descriptors to the source."
 	)
 (options, args) = parser.parse_args()
