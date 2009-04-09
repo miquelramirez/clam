@@ -23,8 +23,9 @@
 #define ProjectEditor_hxx
 
 #include "ui_ProjectEditor.hxx"
-#include "GraphicConfigEditor.hxx"
 #include "Project.hxx"
+
+class GraphicConfigEditor;
 
 namespace CLAM_Annotator { class Project; }
 
@@ -53,16 +54,10 @@ class ProjectEditor : public QDialog
 		void on_suffix_editTextChanged();
 		void on_extractor_textChanged();
 		void on_extractorBrowseButton_clicked();
-		void on_configurationBrowseButton_clicked();
-		void on_configuration_textChanged();
-		void on_configurationEditButton_clicked();
+		void on_loadConfigurationButton_clicked();
 		void on_graphicalEditButton_clicked();
-		void on_buttonBox_accepted();
-		void on_buttonBox_rejected();
 	private:
 		void updateFields();
-		void updateProject();
-		void updateConfiguration();
 	private:
 		Ui::ProjectEditor ui;
 		CLAM_Annotator::Project mProject;

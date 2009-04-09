@@ -42,13 +42,12 @@ class Schema;
 
 class Extractor : public CLAM::DynamicType
 {
-	DYNAMIC_TYPE(Extractor,6);
+	DYNAMIC_TYPE(Extractor,5);
 	DYN_ATTRIBUTE(0, public, std::string, Name);
 	DYN_ATTRIBUTE(1, public, CLAM::Filename, Extractor);
 	DYN_ATTRIBUTE(2, public, CLAM::Text, Configuration);
 	DYN_ATTRIBUTE(3, public, CLAM::Filename, Schema);
 	DYN_ATTRIBUTE(4, public, std::string, PoolSuffix);
-	DYN_ATTRIBUTE(5, public, CLAM::Filename, ConfigFile);
 	void DefaultInit()
 	{
 		AddAll();
