@@ -64,6 +64,11 @@ void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 	mProject.SetPoolSuffix(project.PoolSuffix());
 	if (project.HasViews())
 		mProject.SetViews(project.GetViews());
+	for (unsigned i=0; i<mProject.GetSources().size(); i++)
+	{
+		CLAM_Annotator::Extractor & extractor = mProject.GetSources()[i];
+		extractor.generateSchema(this);
+	}
 	updateFields();
 }
 
@@ -95,10 +100,12 @@ void ProjectEditor::updateFields()
 	ui.sources->clear();
 	for (unsigned i=0; i<mProject.GetSources().size(); i++)
 	{
-		QString itemName = mProject.GetSources()[i].GetName().c_str();
+		CLAM_Annotator::Extractor & extractor = mProject.GetSources()[i];
+		QString itemName = extractor.GetName().c_str();
 		QListWidgetItem * item = new QListWidgetItem(itemName);
 		ui.sources->addItem(item);
 	}
+	ui.mappings->loadProject(mProject);
 }
 
 

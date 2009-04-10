@@ -56,7 +56,7 @@ AggregationEditor::~AggregationEditor()
 }
 
 typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
-void AggregationEditor::addSource(const std::string & source, CLAM_Annotator::Schema & schema)
+void AggregationEditor::addSource(const std::string & source, const CLAM_Annotator::Schema & schema)
 {
 
 	QTreeWidgetItem * sourceItem = 0;
@@ -71,6 +71,7 @@ void AggregationEditor::addSource(const std::string & source, CLAM_Annotator::Sc
 
 void AggregationEditor::loadProject(const CLAM_Annotator::Project & project)
 {
+	clear();
 	for (unsigned i=0; i<project.GetSources().size(); i++)
 	{
 		const CLAM_Annotator::Extractor & extractor = project.GetSources()[i];
@@ -80,7 +81,13 @@ void AggregationEditor::loadProject(const CLAM_Annotator::Project & project)
 		source.schemaFile = extractor.GetSchema();
 		source.suffix = extractor.GetPoolSuffix();
 		source.extractor = extractor.GetExtractor();
+		mParser.sources.push_back(source);
+		addSource(extractor.GetName(), extractor.schema());
 	}
+	show();
+	resizeColumnToContents(0);
+	resizeColumnToContents(1);
+	show();	
 }
 
 void AggregationEditor::setSchema()
@@ -129,7 +136,7 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 }
 
 
-void AggregationEditor::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem * parentItem)
+void AggregationEditor::setListedSchema(const CLAM_Annotator::Schema & schema, QTreeWidgetItem * parentItem)
 {
 	//mSchema = &schema;
 	SchemaAttributes & attributes = schema.GetAttributes();
