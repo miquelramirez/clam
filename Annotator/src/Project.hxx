@@ -59,6 +59,8 @@ private:
 	void loadSchemaFile(const std::string & schemaFile);
 public:
 	bool generateSchema(QWidget * window);
+	bool isRunnable(QWidget * window);
+	bool computeDescriptors(QWidget * window, const QString & wavefile);
 	const Schema & schema() const;
 };
 /*
@@ -84,8 +86,8 @@ class Project : public CLAM::DynamicType
 	DYN_ATTRIBUTE(1, public, CLAM::Filename, Schema);
 	DYN_ATTRIBUTE(2, public, CLAM::Filename, Extractor);
 	DYN_ATTRIBUTE(3, public, std::string, PoolSuffix);
-	DYN_ATTRIBUTE(4, public, std::string, Config);
-	DYN_ATTRIBUTE(5, public, CLAM::Text, Configuration);
+	DYN_ATTRIBUTE(4, public, CLAM::Text, Configuration);
+	DYN_CONTAINER_ATTRIBUTE(5, public, std::vector<Extractor>, Sources, Source);
 	DYN_CONTAINER_ATTRIBUTE(6, public, std::vector<Song>, Songs, Song);
 	DYN_CONTAINER_ATTRIBUTE(7, public, std::vector<InstantView>, Views, View);
 
@@ -97,6 +99,18 @@ class Project : public CLAM::DynamicType
 public:
 	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 public:
+	void LoadFrom(CLAM::Storage & storage)
+	{
+		// Hack to upgrade version<1.4 projects
+		DynamicType::LoadFrom(storage);
+		if ( HasSources()) return; // A modern one
+		AddSources();
+		UpdateData();
+		GetSources().resize(1);
+		Extractor & extractor = GetSources()[0];
+		extractor.SetName("Extractor1");
+		dumpExtractorInfo(extractor);
+	}
 	bool LoadSchema();
 	void DumpSchema();
 	void DumpSchema(std::ostream & os);
@@ -109,12 +123,6 @@ public:
 		return GetPoolSuffix();
 	}
 
-	std::string Config() const
-	{
-		if (!HasConfig()) return "";
-		return GetConfig();
-	}
-	
 	void InitInstance(const std::string & scope, unsigned instance, CLAM::DescriptionDataPool & data)
 	{
 		mSchema.InitInstance(scope, instance, data );
@@ -183,6 +191,7 @@ public:
 	std::string AbsoluteToRelative(const std::string & file) const;
 	void CreatePoolScheme();
 	void InitConfiguration();
+	void dumpExtractorInfo(Extractor & extractor);
 private:
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM_Annotator::Schema mSchema;

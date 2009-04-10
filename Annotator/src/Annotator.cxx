@@ -127,7 +127,6 @@ void Annotator::computeSongDescriptors()
 	mStatusBar << "Launching Extractor..." << mStatusBar;
 	TaskRunner * runner = new TaskRunner();
 	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
-	//jun: comment out as it occupies to much CPU&MEM while executing ClamExtractorExample
 	addDockWidget( Qt::BottomDockWidgetArea, runner);
 	qApp->processEvents(); // Repaint before heavy CPU
 

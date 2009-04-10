@@ -101,6 +101,40 @@ bool Extractor::generateSchema(QWidget * window)
 	}
 	return false;
 }
+bool Extractor::isRunnable(QWidget * window)
+{
+	QProcess process;
+	process.start(GetExtractor().c_str(),
+		QStringList()
+			);
+	if (not process.waitForStarted(-1)) return false;
+	if (not process.waitForFinished(2000)) return false;
+	std::cout << "Output:\n" << process.readAllStandardOutput().constData() << std::endl;
+	std::cerr << "Error:\n" << process.readAllStandardError().constData() << std::endl;
+
+	return true;
+}
+
+bool Extractor::computeDescriptors(QWidget * window, const QString & wavefile)
+{
+	QProcess process;
+	QTemporaryFile * configFile = new QTemporaryFile(&process);
+	configFile->open();
+	QString configFileName = configFile->fileName();
+	configFile->write(GetConfiguration().c_str());
+	configFile->close();
+	process.start(GetExtractor().c_str(),
+		QStringList()
+			<< "-c" << configFileName
+			<< "-f" << GetPoolSuffix().c_str()
+			<< wavefile
+			);
+	std::cout << "Launched extractor to get the descriptors..." << std::endl;
+	process.waitForFinished(-1); // TODO: This stalls
+	std::cout << "Output:\n" << process.readAllStandardOutput().constData() << std::endl;
+	std::cerr << "Error:\n" << process.readAllStandardError().constData() << std::endl;
+	return process.exitCode()==0;
+}
 
 void Project::DumpSchema()
 {
@@ -150,15 +184,24 @@ void Project::CreatePoolScheme()
 	mSchema.FillDescriptionScheme(mDescriptionScheme);
 }
 
-bool Project::LoadSchema()
+void Project::dumpExtractorInfo(CLAM_Annotator::Extractor & extractor)
 {
-	CLAM_Annotator::Extractor extractor;
+	extractor.AddAll();
+	extractor.UpdateData();
 	if (HasExtractor())
 		extractor.SetExtractor(GetExtractor());
 	if (HasSchema())
 		extractor.SetSchema(RelativeToAbsolute(GetSchema()));
 	if (HasConfiguration())
-		extractor.SetConfiguration(GetConfiguration()); // Or Configuration?
+		extractor.SetConfiguration(GetConfiguration());
+	if (HasPoolSuffix())
+		extractor.SetPoolSuffix(GetPoolSuffix());
+}
+
+bool Project::LoadSchema()
+{
+	CLAM_Annotator::Extractor extractor;
+	dumpExtractorInfo(extractor);
 	if (not extractor.generateSchema(0)) return false;
 	GetAnnotatorSchema() = extractor.schema();
 	CreatePoolScheme();

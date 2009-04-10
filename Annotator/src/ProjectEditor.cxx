@@ -56,6 +56,7 @@ void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 	mProject.SetDescription(project.GetDescription());
 	mProject.SetSchema(project.GetSchema());
 	mProject.SetExtractor(project.GetExtractor());
+	mProject.SetSources(project.GetSources());
 	if (project.HasConfiguration())
 	{
 		mProject.SetConfiguration(project.GetConfiguration());
@@ -76,6 +77,7 @@ void ProjectEditor::applyChanges(CLAM_Annotator::Project & project)
 	project.SetSchema(mProject.GetSchema());
 	project.SetExtractor(mProject.GetExtractor());
 	project.SetPoolSuffix(mProject.PoolSuffix());
+	project.SetSources(mProject.GetSources());
 }
 
 void ProjectEditor::updateFields()
@@ -88,6 +90,39 @@ void ProjectEditor::updateFields()
 	ui.projectInfo->setPlainText(mProject.GetDescription().c_str());
 	ui.configurationInfo->setPlainText(mProject.GetConfiguration().c_str());
 	ui.htmlPreview->setHtml(mProject.GetDescription().c_str());
+	ui.sources->clear();
+	for (unsigned i=0; i<mProject.GetSources().size(); i++)
+	{
+		QString itemName = mProject.GetSources()[i].GetName().c_str();
+		QListWidgetItem * item = new QListWidgetItem(itemName);
+		ui.sources->addItem(item);
+	}
+}
+
+
+
+void ProjectEditor::on_newSourceButton_clicked()
+{
+	CLAM_Annotator::Extractor extractor;
+	extractor.SetName("Extractor");
+	SourceEditor * editor = new SourceEditor(extractor, this);
+	if (editor->exec() != QDialog::Accepted) return; // Cancelled
+	mProject.GetSources().push_back(extractor);
+	updateFields();
+}
+
+void ProjectEditor::on_sources_itemActivated(QListWidgetItem * item)
+{
+	int row = ui.sources->row(item);
+	CLAM_ASSERT(row>=0 && row<mProject.GetSources().size()+0,
+		"ProjectEditor: Unexpected item");
+
+	CLAM_Annotator::Extractor extractor = mProject.GetSources()[row]; // Copia
+	SourceEditor * editor = new SourceEditor(extractor, this);
+	if (editor->exec() != QDialog::Accepted) return; // Cancelled
+
+	mProject.GetSources()[row] = extractor; // Commit
+	updateFields();
 }
 
 
@@ -106,6 +141,11 @@ void ProjectEditor::on_suffix_editTextChanged()
 {
 	mProject.SetPoolSuffix(ui.suffix->currentText().toStdString());
 }
+void ProjectEditor::on_extractor_textChanged()
+{
+	mProject.SetExtractor(ui.extractor->text().toStdString());
+}
+
 
 void ProjectEditor::on_schemaBrowseButton_clicked()
 {
@@ -163,9 +203,125 @@ void ProjectEditor::on_graphicalEditButton_clicked()
 	mProject.SetConfiguration(mGraphicConfigEditor->getConfiguration()); // parameter of std::string type 
 }
 
-void ProjectEditor::on_extractor_textChanged()
+void ProjectEditor::on_testExtractorButton_clicked()
 {
-	mProject.SetExtractor(ui.extractor->text().toStdString());
+	QString file = QFileDialog::getOpenFileName(this, 
+			"Open a Description Scheme",
+			0,
+			"Wavefile (*.mp3)"
+			);
+	if (file.isNull()) return;
+	CLAM_Annotator::Extractor extractor;
+	mProject.dumpExtractorInfo(extractor);
+	if (not extractor.computeDescriptors(this, file))
+		ui.extractor->setStyleSheet("background:#fbb; color:black;");
+}
+
+///// Source Editor
+
+void SourceEditor::updateFields()
+{
+	_ui.sourceName->setText(_extractor.GetName().c_str());
+	_ui.schema->setText(_extractor.GetSchema().c_str());
+	_ui.suffix->setEditText(_extractor.GetPoolSuffix().c_str());
+	_ui.extractor->setText(_extractor.GetExtractor().c_str());
+	_ui.configurationInfo->setPlainText(_extractor.GetConfiguration().c_str());
+}
+
+void SourceEditor::on_loadConfigurationButton_clicked()
+{
+	QString file = QFileDialog::getOpenFileName(this, 
+			"Select a configuration file to load",
+			0,
+			"Configuration file (*)"
+			);
+	if (file.isNull()) return;
+	std::cout << "Loading config " << file.toStdString() << std::endl;
+	QFile loadedConfig(file);
+	if (not loadedConfig.open(QIODevice::ReadOnly | QIODevice::Text))
+	{
+		QMessageBox::warning(this, tr("Loading configuration"),
+			tr("Unable to open the selected file"));
+		return;
+	}
+	CLAM::Text configData = loadedConfig.readAll().constData();
+	_extractor.SetConfiguration(configData);
+	updateFields();
+}
+
+void SourceEditor::on_extractorBrowseButton_clicked()
+{
+	QString file = QFileDialog::getOpenFileName(this, 
+			"Select an extractor executable",
+			_extractor.GetExtractor().c_str(),
+			"Executable file (*)"
+			);
+	if (file.isNull()) return;
+	_extractor.SetExtractor(file.toStdString());
+	updateFields();
+}
+
+void SourceEditor::on_sourceName_textChanged()
+{
+	_extractor.SetName(_ui.sourceName->text().toStdString());
+	std::cout << "* Name Changed" << std::endl;
+}
+
+void SourceEditor::on_extractor_textChanged()
+{
+	_extractor.SetExtractor(_ui.extractor->text().toStdString());
+	std::cout << "* Extractor Changed" << std::endl;
+}
+void SourceEditor::on_configurationInfo_textChanged()
+{
+	_extractor.SetConfiguration(_ui.configurationInfo->toPlainText().toStdString());
+	std::cout << "* Configuration Changed" << std::endl;
+}
+
+void SourceEditor::on_suffix_editTextChanged()
+{
+	_extractor.SetPoolSuffix(_ui.suffix->currentText().toStdString());
+	std::cout << "* Suffix Changed" << std::endl;
+}
+
+void SourceEditor::on_buttonBox_accepted()
+{
+	if (not check()) return;
+	accept();
+}
+
+bool SourceEditor::check()
+{
+	QString context = "Checking extractor";
+	_ui.extractor->setStyleSheet("");
+	_ui.configurationInfo->setStyleSheet("");
+	if (not _extractor.isRunnable(this))
+	{
+		_ui.extractor->setStyleSheet("background-color: #fbb; color:black;");
+		QMessageBox::warning(this, context,
+			tr("The extractor command is not runnable"));
+		return false;
+	}
+	try
+	{
+		if (not _extractor.generateSchema(this))
+		{
+			_ui.configurationInfo->setStyleSheet("background-color: #fbb; color:black;");
+			QMessageBox::warning(this, context,
+				tr("Cannot obtain the schema from the extractor."));
+			return false;
+		}
+	}
+	catch (CLAM::XmlStorageErr & e)
+	{
+		_ui.extractor->setStyleSheet("background-color: #fbb; color:black;");
+		QMessageBox::warning(this, context,
+			tr("Generated schema is not valid.\n%1")
+			.arg(e.what())
+		);
+		return false;
+	}
+	return true;
 }
 
 
