@@ -60,6 +60,7 @@ class ProjectEditor : public QDialog
 		void on_testExtractorButton_clicked();
 		void on_newSourceButton_clicked();
 		void on_sources_itemActivated(QListWidgetItem * item);
+		void on_mappings_itemChanged(QTreeWidgetItem * item, int col);
 	private:
 		void updateFields();
 	private:

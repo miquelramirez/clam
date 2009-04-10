@@ -32,6 +32,26 @@ namespace CLAM_Annotator
 {
 
 
+void Project::MapAllSchemaAttributes(Extractor & extractor)
+{
+	typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
+	if (not extractor.generateSchema(0)) return;
+	const CLAM_Annotator::Schema & schema = extractor.schema();
+	SchemaAttributes & attributes = schema.GetAttributes();
+	for (SchemaAttributes::iterator it = attributes.begin();
+			it!=attributes.end();
+			it++)
+	{
+		std::cout << "Mapping " << extractor.GetName() << "/" << it->GetScope() << "::" << it->GetName() << std::endl;
+		AttributeMap map;
+		map.SetSource(extractor.GetName());
+		map.SetTargetScope(it->GetScope());
+		map.SetSourceScope(it->GetScope());
+		map.SetTargetAttribute(it->GetName());
+		map.SetSourceAttribute(it->GetName());
+		GetMaps().push_back(map);
+	}
+}
 bool Extractor::generateSchema(const QString & configFileName, const QString schemaFileName)
 {
 	if (!HasExtractor()) return false;

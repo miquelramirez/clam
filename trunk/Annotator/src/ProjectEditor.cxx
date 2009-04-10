@@ -20,8 +20,6 @@
  */
 
 #include "ProjectEditor.hxx"
-#include "ConfigurationEditor.hxx"
-#include "GraphicConfigEditor.hxx"
 #include <QtGui/QFileDialog>
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
@@ -57,6 +55,7 @@ void ProjectEditor::setProject(const CLAM_Annotator::Project & project)
 	mProject.SetSchema(project.GetSchema());
 	mProject.SetExtractor(project.GetExtractor());
 	mProject.SetSources(project.GetSources());
+	mProject.SetMaps(project.GetMaps());
 	if (project.HasConfiguration())
 	{
 		mProject.SetConfiguration(project.GetConfiguration());
@@ -83,6 +82,7 @@ void ProjectEditor::applyChanges(CLAM_Annotator::Project & project)
 	project.SetExtractor(mProject.GetExtractor());
 	project.SetPoolSuffix(mProject.PoolSuffix());
 	project.SetSources(mProject.GetSources());
+	project.SetMaps(mProject.GetMaps());
 	std::cout << "Aggregation Script:\n" 
 		<< project.aggregationScript() << std::endl;
 }
@@ -90,12 +90,12 @@ void ProjectEditor::applyChanges(CLAM_Annotator::Project & project)
 void ProjectEditor::updateFields()
 {
 	ui.projectFile->setText(mProject.File().c_str());
-	ui.schema->setText(mProject.GetSchema().c_str());
+//	ui.schema->setText(mProject.GetSchema().c_str());
 	ui.suffix->setEditText(mProject.PoolSuffix().c_str());
-	if (mProject.HasExtractor())
-		ui.extractor->setText(mProject.GetExtractor().c_str());
+//	if (mProject.HasExtractor())
+//		ui.extractor->setText(mProject.GetExtractor().c_str());
 	ui.projectInfo->setPlainText(mProject.GetDescription().c_str());
-	ui.configurationInfo->setPlainText(mProject.GetConfiguration().c_str());
+//	ui.configurationInfo->setPlainText(mProject.GetConfiguration().c_str());
 	ui.htmlPreview->setHtml(mProject.GetDescription().c_str());
 	ui.sources->clear();
 	for (unsigned i=0; i<mProject.GetSources().size(); i++)
@@ -105,7 +105,7 @@ void ProjectEditor::updateFields()
 		QListWidgetItem * item = new QListWidgetItem(itemName);
 		ui.sources->addItem(item);
 	}
-	ui.mappings->loadProject(mProject);
+	ui.mappings->bindProject(mProject);
 }
 
 
@@ -123,7 +123,8 @@ void ProjectEditor::on_newSourceButton_clicked()
 void ProjectEditor::on_sources_itemActivated(QListWidgetItem * item)
 {
 	int row = ui.sources->row(item);
-	CLAM_ASSERT(row>=0 && row<mProject.GetSources().size()+0,
+	int size = mProject.GetSources().size();
+	CLAM_ASSERT(row>=0 && row<size,
 		"ProjectEditor: Unexpected item");
 
 	CLAM_Annotator::Extractor extractor = mProject.GetSources()[row]; // Copia
@@ -134,6 +135,12 @@ void ProjectEditor::on_sources_itemActivated(QListWidgetItem * item)
 	updateFields();
 }
 
+void ProjectEditor::on_mappings_itemChanged(QTreeWidgetItem * item, int col)
+{
+	std::cout << "* Mappings item changed" << std::endl;
+	ui.mappings->takeMaps();
+	CLAM::XMLStorage::Dump(mProject, "Project", std::cout);
+}
 
 void ProjectEditor::on_projectInfo_textChanged()
 {
@@ -143,7 +150,7 @@ void ProjectEditor::on_projectInfo_textChanged()
 
 void ProjectEditor::on_configurationInfo_textChanged()
 {
-	mProject.SetConfiguration(ui.configurationInfo->toPlainText().toStdString());
+//	mProject.SetConfiguration(ui.configurationInfo->toPlainText().toStdString());
 }
 
 void ProjectEditor::on_suffix_editTextChanged()
@@ -152,7 +159,7 @@ void ProjectEditor::on_suffix_editTextChanged()
 }
 void ProjectEditor::on_extractor_textChanged()
 {
-	mProject.SetExtractor(ui.extractor->text().toStdString());
+//	mProject.SetExtractor(ui.extractor->text().toStdString());
 }
 
 
@@ -205,11 +212,20 @@ void ProjectEditor::on_loadConfigurationButton_clicked()
 
 void ProjectEditor::on_graphicalEditButton_clicked()
 {
-	mGraphicConfigEditor = new GraphicConfigEditor(this);
-	mGraphicConfigEditor->setConfiguration(mProject.GetConfiguration().c_str());
-	if(mGraphicConfigEditor->exec()==QDialog::Rejected) return;	
-
-	mProject.SetConfiguration(mGraphicConfigEditor->getConfiguration()); // parameter of std::string type 
+	CLAM_Annotator::Project copyProject = mProject;
+	QDialog dialog(this);
+	dialog.setLayout(new QVBoxLayout(&dialog));
+	AggregationEditor * mapEditor = new AggregationEditor(this);
+	dialog.layout()->addWidget(mapEditor);
+	QDialogButtonBox * buttons = new QDialogButtonBox(&dialog);
+	dialog.layout()->addWidget(buttons);
+	connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
+	connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
+	mapEditor->bindProject(copyProject);
+	mapEditor->loadConfig(mProject.GetConfiguration());
+	if(dialog.exec()==QDialog::Rejected) return;	
+	mapEditor->takeMaps();
+	mProject = copyProject;
 	updateFields();
 }
 
@@ -223,8 +239,8 @@ void ProjectEditor::on_testExtractorButton_clicked()
 	if (file.isNull()) return;
 	CLAM_Annotator::Extractor extractor;
 	mProject.dumpExtractorInfo(extractor);
-	if (not extractor.computeDescriptors(this, file))
-		ui.extractor->setStyleSheet("background:#fbb; color:black;");
+//	if (not extractor.computeDescriptors(this, file))
+//		ui.extractor->setStyleSheet("background:#fbb; color:black;");
 }
 
 ///// Source Editor
@@ -232,10 +248,10 @@ void ProjectEditor::on_testExtractorButton_clicked()
 void SourceEditor::updateFields()
 {
 	_ui.sourceName->setText(_extractor.GetName().c_str());
-	_ui.schema->setText(_extractor.GetSchema().c_str());
+//	_ui.schema->setText(_extractor.GetSchema().c_str());
 	_ui.suffix->setEditText(_extractor.GetPoolSuffix().c_str());
-	_ui.extractor->setText(_extractor.GetExtractor().c_str());
-	_ui.configurationInfo->setPlainText(_extractor.GetConfiguration().c_str());
+//	_ui.extractor->setText(_extractor.GetExtractor().c_str());
+//	_ui.configurationInfo->setPlainText(_extractor.GetConfiguration().c_str());
 }
 
 void SourceEditor::on_loadConfigurationButton_clicked()
@@ -273,12 +289,12 @@ void SourceEditor::on_extractorBrowseButton_clicked()
 
 void SourceEditor::on_sourceName_textChanged()
 {
-	_extractor.SetName(_ui.sourceName->text().toStdString());
+//	_extractor.SetName(_ui.sourceName->text().toStdString());
 }
 
 void SourceEditor::on_extractor_textChanged()
 {
-	_extractor.SetExtractor(_ui.extractor->text().toStdString());
+//	_extractor.SetExtractor(_ui.extractor->text().toStdString());
 }
 void SourceEditor::on_configurationInfo_textChanged()
 {
