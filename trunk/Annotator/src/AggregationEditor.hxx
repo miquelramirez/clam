@@ -57,15 +57,15 @@ public:
 	void addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem* parent);
 	void setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem* parent);
 	void addSource(const std::string & source, CLAM_Annotator::Schema & schema);
+	void loadProject(const CLAM_Annotator::Project & project);
 	void loadConfig(std::string config)
 	{
-		mConfig=config;
 		parseSources(config);
 		parseMap(config);
 	}
 	std::string outputConfig()
 	{
-		std::string config = "\n\n\nsources = [\n";
+		std::string config = "\nsources = [\n";
 		for (unsigned i=0; i<mParser.sources.size(); i++)
 		{
 			Source & source = mParser.sources[i];
@@ -141,7 +141,6 @@ private:
 	QPixmap attributeIcon;
 		
 	ConfigurationParser mParser;
-	std::string mConfig;
 };
 
 #endif
