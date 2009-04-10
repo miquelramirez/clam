@@ -27,7 +27,7 @@
 #include "Project.hxx"
 #include <QtCore/QVariant>
 #include <QtGui/QPixmap>
-#include <QtGui/QWidget>
+#include <QtGui/QTreeWidget>
 
 #include <string>
 
@@ -45,7 +45,7 @@ class QLineEdit;
 class QTreeWidgetItem;
 namespace CLAM_Annotator { class Schema; }
 
-class AggregationEditor : public SchemaBrowser
+class AggregationEditor : public QTreeWidget
 {
     Q_OBJECT
 
@@ -118,6 +118,7 @@ private:
 		
 	ConfigurationParser mParser;
 	std::string mConfig;
+	QTreeWidget * attributeList;
 
 };
 

@@ -25,11 +25,26 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QLineEdit" name="projectFile">
+    <widget class="QLabel" name="projectFile">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
      <property name="text">
       <string>/home/me/Annotations/FirstWeek/Project.pro</string>
      </property>
-     <property name="readOnly">
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="readOnly" stdset="0">
       <bool>true</bool>
      </property>
     </widget>
