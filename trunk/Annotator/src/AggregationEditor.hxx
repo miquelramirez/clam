@@ -60,6 +60,8 @@ public:
 	void loadConfig(std::string config)
 	{
 		mConfig=config;
+		parseSources(config);
+		parseMap(config);
 	}
 	std::string outputConfig()
 	{
@@ -102,11 +104,11 @@ protected slots:
 	
 
 private:
-	void parseSources();
-	void parseMap();
+	void parseSources(const std::string & config);
+	void parseMap(const std::string & config);
 	void renameTarget(QTreeWidgetItem * current);
 	QTreeWidgetItem *  hasScope(const std::string & scope,  QTreeWidgetItem * parent);
-	std::string parseQuotationMark(std::string::size_type beginPos, std::string::size_type limitedPos, std::string keyWord );
+	std::string parseQuotationMark(const std::string & config, size_t beginPos, size_t limitedPos, std::string keyWord );
 
 private:
 	QPixmap sourceIcon;
