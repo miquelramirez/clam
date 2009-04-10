@@ -6,7 +6,7 @@ CLAM_EXTERNAL_FILE_DATA(mono2bformat_embededNetwork,"../example-data/mono2bforma
 CLAM_EXTERNAL_FILE_DATA(bformatRotationZoom_embededNetwork,"../example-data/bformatRotationZoom.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat2surround_embededNetwork,"../example-data/bformat2surround.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat2binaural_embededNetwork,"../example-data/bformat2binaural.clamnetwork")
-CLAM_EXTERNAL_FILE_DATA(mono2binaural_embededNetwork,"../example-data/mono2binaural.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(mono2binaural_embededNetwork,"../example-data/mono2binaural_nofaders.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat2cube_embededNetwork,"../example-data/bformat2cube.clamnetwork")
 
 //fakes:
