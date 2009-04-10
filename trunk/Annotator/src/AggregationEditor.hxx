@@ -65,23 +65,32 @@ public:
 	}
 	std::string outputConfig()
 	{
-		size_t posStart = mConfig.find("map",0);
-		size_t mapStart = mConfig.find("[", posStart+1) + 1;  
-		size_t mapSize = mConfig.find("]", posStart+1) - mapStart;
-		mConfig.erase(mapStart, mapSize);
-		std::string newContent="\n";
+		std::string config = "\n\n\nsources = [\n";
+		for (unsigned i=0; i<mParser.sources.size(); i++)
+		{
+			Source & source = mParser.sources[i];
+			config+=
+				"\t(\""+source.source+"\", FileMetadataSource(\n"
+				"\t\tpath=\""+source.path+"\",\n"
+				"\t\tschemaFile=\""+source.schemaFile+"\",\n"
+				"\t\tpoolSuffix=\""+source.suffix+"\",\n"
+				"\t\textractor=\""+source.extractor+"\")),\n"
+			;
+		}
+		config	+= "\t]\n";
+		config += "map = [\n";
 		for (unsigned i=0; i<mParser.maps.size(); i++)
 		{
 			AttributeMap & map = mParser.maps[i];
-			newContent += 
+			config += 
 				"\t(\""+map.targetScope+"::"+map.targetAttribute+"\" , "
 					"\""+map.sourceId+"\", "
 					"\""+map.sourceScope+"::"+map.sourceAttribute+"\"),\n"
 				;
 		}
-		mConfig.insert(mapStart, newContent);
-		std::cout<< "the newly edited Configuration is ..............\n" << mConfig << std::endl;
-		return mConfig;	
+		config	+= "\t]\n";
+		std::cout<< "the newly edited Configuration is ..............\n" << config << std::endl;
+		return config;	
 	}
 
 	struct Source
