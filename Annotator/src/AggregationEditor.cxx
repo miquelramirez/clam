@@ -72,7 +72,6 @@ void AggregationEditor::addSource(const std::string & source, CLAM_Annotator::Sc
 void AggregationEditor::setSchema()
 {	
 	clear();
-	parseSources();
 
 	for(unsigned i = 0; i <mParser.sources.size(); i++)
 	{
@@ -90,7 +89,6 @@ void AggregationEditor::setSchema()
 void AggregationEditor::addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem * parent)
 {
 	QTreeWidgetItem * scopeItem = 0;
-	parseMap();
 	Qt::CheckState  state=Qt::Unchecked;
 	if(!(scopeItem=hasScope(scope, parent)))
 	{
@@ -144,7 +142,7 @@ QTreeWidgetItem *  AggregationEditor::hasScope(const std::string & scope,  QTree
 
  // TODO: dealing with exceptions
  // TODO: allowing "#" in the script
-void AggregationEditor::parseSources()
+void AggregationEditor::parseSources(const std::string & config)
 {
 	std::string::size_type posStart=0;
 	std::string::size_type posEnd, posSourcesEnd;
@@ -153,7 +151,7 @@ void AggregationEditor::parseSources()
 
 	while (true) 
 	{
-		posStart=mConfig.find("FileMetadataSource", posStart+1,18);  //Keyword "FileMetadataSource" 
+		posStart=config.find("FileMetadataSource", posStart+1,18);  //Keyword "FileMetadataSource" 
 		if (posStart == std::string::npos) break;
 		arraySize++;
 	}
@@ -165,38 +163,38 @@ void AggregationEditor::parseSources()
 
 	mParser.sources.resize(arraySize);
 
-	posStart = mConfig.find("sources", 0);
-	posEnd = mConfig.find("),", posStart+1);
-	posSourcesEnd = mConfig.find("]", posStart+1);
+	posStart = config.find("sources", 0);
+	posEnd = config.find("),", posStart+1);
+	posSourcesEnd = config.find("]", posStart+1);
 
 	for(unsigned i=0; i<arraySize && posEnd<posSourcesEnd; i++)
 	{
 		Source & source = mParser.sources[i];
-		source.source = parseQuotationMark(posStart, posEnd, "(");
-		source.path = parseQuotationMark(posStart, posEnd, "path");
-		source.schemaFile = parseQuotationMark(posStart, posEnd, "schemaFile");
-		source.suffix = parseQuotationMark(posStart, posEnd, "poolSuffix");
-		source.extractor = parseQuotationMark(posStart, posEnd, "extractor");
+		source.source = parseQuotationMark(config, posStart, posEnd, "(");
+		source.path = parseQuotationMark(config, posStart, posEnd, "path");
+		source.schemaFile = parseQuotationMark(config, posStart, posEnd, "schemaFile");
+		source.suffix = parseQuotationMark(config, posStart, posEnd, "poolSuffix");
+		source.extractor = parseQuotationMark(config, posStart, posEnd, "extractor");
 
 		posStart = posEnd;
-		posEnd = mConfig.find("),", posStart+1);		
+		posEnd = config.find("),", posStart+1);		
 	}
 }
 
-void AggregationEditor::parseMap() 
+void AggregationEditor::parseMap(const std::string & config) 
 {
 	std::string::size_type posStart=0;
 	std::string::size_type posA, posB, posEnd, posAttributesEnd;
 
-	posStart = mConfig.find("map",0);         //keyword "map" 
+	posStart = config.find("map",0);         //keyword "map" 
 	posA = posStart;	
-	posEnd = mConfig.find("]", posStart+1);
+	posEnd = config.find("]", posStart+1);
 	posAttributesEnd = posEnd; 
 
 	unsigned arraySize = 0;
 	while(true)  
 	{
-		posA = mConfig.find("),", posA+1);  //key word"),"
+		posA = config.find("),", posA+1);  //key word"),"
 		if (posA>=posEnd) break;
 		arraySize++;
 	}
@@ -204,36 +202,36 @@ void AggregationEditor::parseMap()
 	if(!arraySize)	return;
 	mParser.maps.resize(arraySize);
 
-	posEnd = mConfig.find("),", posStart+1);
+	posEnd = config.find("),", posStart+1);
 	
 	for(unsigned i=0; i<arraySize && posEnd<posAttributesEnd; i++)
 	{
 		AttributeMap & map = mParser.maps[i];
-		posA = mConfig.rfind("::", posEnd);
-		posB = mConfig.rfind("\"", posEnd);
-		map.sourceAttribute = mConfig.substr(posA+2, posB-posA-2);
-		posB = mConfig.rfind("\"", posA);
-		map.sourceScope = mConfig.substr(posB+1, posA-posB-1);
-		posA = mConfig.rfind("\"", posB-1);
-		posB = mConfig.rfind("\"", posA-1);
-		map.sourceId = mConfig.substr(posB+1, posA-posB-1);
+		posA = config.rfind("::", posEnd);
+		posB = config.rfind("\"", posEnd);
+		map.sourceAttribute = config.substr(posA+2, posB-posA-2);
+		posB = config.rfind("\"", posA);
+		map.sourceScope = config.substr(posB+1, posA-posB-1);
+		posA = config.rfind("\"", posB-1);
+		posB = config.rfind("\"", posA-1);
+		map.sourceId = config.substr(posB+1, posA-posB-1);
 		
-		posA = mConfig.rfind("::", posB-1);
-		posB = mConfig.rfind("\"", posB-1);
-		map.targetAttribute = mConfig.substr(posA+2, posB-posA-2);
-		posB = mConfig.rfind("\"", posA);
-		map.targetScope = mConfig.substr(posB+1, posA-posB-1);
+		posA = config.rfind("::", posB-1);
+		posB = config.rfind("\"", posB-1);
+		map.targetAttribute = config.substr(posA+2, posB-posA-2);
+		posB = config.rfind("\"", posA);
+		map.targetScope = config.substr(posB+1, posA-posB-1);
 
-		posEnd = mConfig.find("),", posEnd+1);		
+		posEnd = config.find("),", posEnd+1);		
 	}	
 }
 
 
 
-std::string AggregationEditor::parseQuotationMark(size_t beginPos, size_t limitedPos, std::string keyWord )
+std::string AggregationEditor::parseQuotationMark(const std::string & config, size_t beginPos, size_t limitedPos, std::string keyWord )
 {
 	std::string::size_type pos2;
-	pos2 = mConfig.find(keyWord, beginPos);
+	pos2 = config.find(keyWord, beginPos);
 	if(pos2==std::string::npos||pos2>limitedPos)
 	{
 		std::cout<< "can not find" << keyWord << std::endl;
@@ -241,9 +239,9 @@ std::string AggregationEditor::parseQuotationMark(size_t beginPos, size_t limite
 	}
 	else
 	{
-		beginPos = mConfig.find("\"", pos2+1, 1);
-		pos2= mConfig.find("\"",beginPos+1);
-		return mConfig.substr(beginPos+1,pos2-beginPos-1); 
+		beginPos = config.find("\"", pos2+1, 1);
+		pos2= config.find("\"",beginPos+1);
+		return config.substr(beginPos+1,pos2-beginPos-1); 
 	}
 	
 }
