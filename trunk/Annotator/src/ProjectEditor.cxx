@@ -78,6 +78,8 @@ void ProjectEditor::applyChanges(CLAM_Annotator::Project & project)
 	project.SetExtractor(mProject.GetExtractor());
 	project.SetPoolSuffix(mProject.PoolSuffix());
 	project.SetSources(mProject.GetSources());
+	std::cout << "Aggregation Script:\n" 
+		<< project.aggregationScript() << std::endl;
 }
 
 void ProjectEditor::updateFields()
@@ -264,24 +266,20 @@ void SourceEditor::on_extractorBrowseButton_clicked()
 void SourceEditor::on_sourceName_textChanged()
 {
 	_extractor.SetName(_ui.sourceName->text().toStdString());
-	std::cout << "* Name Changed" << std::endl;
 }
 
 void SourceEditor::on_extractor_textChanged()
 {
 	_extractor.SetExtractor(_ui.extractor->text().toStdString());
-	std::cout << "* Extractor Changed" << std::endl;
 }
 void SourceEditor::on_configurationInfo_textChanged()
 {
 	_extractor.SetConfiguration(_ui.configurationInfo->toPlainText().toStdString());
-	std::cout << "* Configuration Changed" << std::endl;
 }
 
 void SourceEditor::on_suffix_editTextChanged()
 {
 	_extractor.SetPoolSuffix(_ui.suffix->currentText().toStdString());
-	std::cout << "* Suffix Changed" << std::endl;
 }
 
 void SourceEditor::on_buttonBox_accepted()

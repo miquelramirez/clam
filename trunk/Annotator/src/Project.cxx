@@ -136,6 +136,24 @@ bool Extractor::computeDescriptors(QWidget * window, const QString & wavefile)
 	return process.exitCode()==0;
 }
 
+std::string Project::aggregationScript() const
+{
+	std::string result;
+	result += "\n\nsources = [\n";
+	for (unsigned i=0; i<GetSources().size(); i++)
+	{
+		const Extractor & extractor = GetSources()[i];
+		result += 
+			"\t(\""+extractor.GetName()+"\", FileMetadataSource(path=\".\",\n"
+			"\t\tschemaFile=\""+extractor.GetSchema()+"\",\n"
+			"\t\tpoolSuffix=\""+extractor.GetPoolSuffix()+"\",\n"
+			"\t\textractor=\""+extractor.GetExtractor()+"\")),\n"
+		;
+	}
+	result += "]\n\n";
+	return result;
+}
+
 void Project::DumpSchema()
 {
 	CLAM::XMLStorage::Dump(GetAnnotatorSchema(), "DescriptionScheme", RelativeToAbsolute(GetSchema()));

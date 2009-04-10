@@ -192,6 +192,7 @@ public:
 	void CreatePoolScheme();
 	void InitConfiguration();
 	void dumpExtractorInfo(Extractor & extractor);
+	std::string aggregationScript() const;
 private:
 	CLAM::DescriptionScheme mDescriptionScheme;
 	CLAM_Annotator::Schema mSchema;
