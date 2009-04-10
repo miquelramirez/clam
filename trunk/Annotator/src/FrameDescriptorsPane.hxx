@@ -164,7 +164,7 @@ public:
 	{
 		// dummy EPF in case no row selected
 		static const CLAM::EquidistantPointsFunction nullEPF;
-		unsigned index = mFrameLevelAttributeList->currentRow();
+		int index = mFrameLevelAttributeList->currentRow();
 		if (index == -1) return nullEPF; // No row selected
 		return _EPFs[index];
 	}
