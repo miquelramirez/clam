@@ -48,75 +48,15 @@ namespace CLAM_Annotator { class Schema; }
 class AggregationEditor : public QTreeWidget
 {
     Q_OBJECT
-
+	CLAM_Annotator::Project * _project;
 public:
-	AggregationEditor( QWidget * parent = 0, Qt::WFlags fl = 0 );
+	AggregationEditor(QWidget * parent = 0);
 	~AggregationEditor();
-	void setSchema();
-	void setConfiguration();
-	void addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem* parent);
-	void setListedSchema(const CLAM_Annotator::Schema & schema, QTreeWidgetItem* parent);
-	void addSource(const std::string & source, const CLAM_Annotator::Schema & schema);
-	void loadProject(const CLAM_Annotator::Project & project);
-	void loadConfig(std::string config)
-	{
-		parseSources(config);
-		parseMap(config);
-	}
-	std::string outputConfig()
-	{
-		std::string config = "\nsources = [\n";
-		for (unsigned i=0; i<mParser.sources.size(); i++)
-		{
-			Source & source = mParser.sources[i];
-			config+=
-				"\t(\""+source.source+"\", FileMetadataSource(\n"
-				"\t\tpath=\""+source.path+"\",\n"
-				"\t\tschemaFile=\""+source.schemaFile+"\",\n"
-				"\t\tpoolSuffix=\""+source.suffix+"\",\n"
-				"\t\textractor=\""+source.extractor+"\")),\n"
-			;
-		}
-		config	+= "\t]\n";
-		config += "map = [\n";
-		for (unsigned i=0; i<mParser.maps.size(); i++)
-		{
-			AttributeMap & map = mParser.maps[i];
-			config += 
-				"\t(\""+map.targetScope+"::"+map.targetAttribute+"\" , "
-					"\""+map.sourceId+"\", "
-					"\""+map.sourceScope+"::"+map.sourceAttribute+"\"),\n"
-				;
-		}
-		config	+= "\t]\n";
-		std::cout<< "the newly edited Configuration is ..............\n" << config << std::endl;
-		return config;	
-	}
-
-	struct Source
-	{
-		std::string source;
-		std::string extractor;
-		std::string suffix;
-		std::string schemaFile;
-		std::string configFile;
-		std::string path;
-	};
-
-	struct AttributeMap
-	{
-		std::string targetScope;
-		std::string targetAttribute;
-		std::string sourceId;
-		std::string sourceScope;
-		std::string sourceAttribute;
-	};
-
-	struct ConfigurationParser
-	{
-		std::vector<Source> sources;
-		std::vector<AttributeMap> maps;
-	};
+	void takeMaps(); //< update the project with maps
+	void bindProject(CLAM_Annotator::Project & project); //< Sets the work project and reloads the data in the interface
+	void reloadProject(); //< update the maps with the ones in the project
+	void loadConfig(std::string config);
+	std::string outputConfig();
 
 	
 
@@ -129,6 +69,9 @@ protected slots:
 	
 
 private:
+	void addSource(const std::string & source, const CLAM_Annotator::Schema & schema);
+	void addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem* parent);
+
 	void parseSources(const std::string & config);
 	void parseMap(const std::string & config);
 	void renameTarget(QTreeWidgetItem * current);
@@ -140,7 +83,7 @@ private:
 	QPixmap scopeIcon;
 	QPixmap attributeIcon;
 		
-	ConfigurationParser mParser;
+	bool _reloading;
 };
 
 #endif

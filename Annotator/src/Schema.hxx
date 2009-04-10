@@ -238,6 +238,7 @@ namespace CLAM_Annotator{
 			std::string message = "Accessing an attribute '";
 			message += scope + "':'" + name + "' not in the scheme.";
 			CLAM_ASSERT(false, message.c_str());
+			throw 0;
 		}
 	private:
 		void AddAttribute(SchemaAttribute & attribute)

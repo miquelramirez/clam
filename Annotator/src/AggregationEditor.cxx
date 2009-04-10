@@ -34,11 +34,13 @@
 #include <QtGui/QFrame>
 #include <iostream>
 
-AggregationEditor::AggregationEditor(QWidget *parent, Qt::WFlags fl )
+AggregationEditor::AggregationEditor(QWidget *parent)
     : QTreeWidget( parent)
+	, _project(0)
     , sourceIcon(":/icons/images/gear.png")
     , scopeIcon(":/icons/images/xkill.png")
     , attributeIcon(":/icons/images/label.png")
+	, _reloading(false)
 {
 	setHeaderLabels( QStringList()
 		<< tr( "Source" )
@@ -55,7 +57,28 @@ AggregationEditor::~AggregationEditor()
 {
 }
 
-typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
+void AggregationEditor::bindProject(CLAM_Annotator::Project & project)
+{
+	_project = & project;
+	reloadProject();
+}
+
+void AggregationEditor::reloadProject()
+{
+	_reloading = true;
+	clear();
+	for (unsigned i=0; i<_project->GetSources().size(); i++)
+	{
+		CLAM_Annotator::Extractor & extractor = _project->GetSources()[i];
+		addSource(extractor.GetName(), extractor.schema());
+	}
+	show();
+	resizeColumnToContents(0);
+	resizeColumnToContents(1);
+	show();	
+	_reloading = false;
+}
+
 void AggregationEditor::addSource(const std::string & source, const CLAM_Annotator::Schema & schema)
 {
 
@@ -65,88 +88,50 @@ void AggregationEditor::addSource(const std::string & source, const CLAM_Annotat
 	sourceItem->setIcon( 0, sourceIcon );
 	expandItem(sourceItem);
 	
-	setListedSchema(schema, sourceItem);	
-	
-}
-
-void AggregationEditor::loadProject(const CLAM_Annotator::Project & project)
-{
-	clear();
-	for (unsigned i=0; i<project.GetSources().size(); i++)
-	{
-		const CLAM_Annotator::Extractor & extractor = project.GetSources()[i];
-		Source source;
-		source.source = extractor.GetName();
-		source.path = ".";
-		source.schemaFile = extractor.GetSchema();
-		source.suffix = extractor.GetPoolSuffix();
-		source.extractor = extractor.GetExtractor();
-		mParser.sources.push_back(source);
-		addSource(extractor.GetName(), extractor.schema());
-	}
-	show();
-	resizeColumnToContents(0);
-	resizeColumnToContents(1);
-	show();	
-}
-
-void AggregationEditor::setSchema()
-{	
-	clear();
-
-	for(unsigned i = 0; i <mParser.sources.size(); i++)
-	{
-		CLAM_Annotator::Schema sourceSchema;
-		Source & source = mParser.sources[i];
-		CLAM::XMLStorage::Restore(sourceSchema, source.path+"/"+source.schemaFile);
-		addSource(source.source, sourceSchema);
-	}
-	show();
-	resizeColumnToContents(0);
-	resizeColumnToContents(1);
-	show();	
-}
-
-void AggregationEditor::addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem * parent)
-{
-	QTreeWidgetItem * scopeItem = 0;
-	Qt::CheckState  state=Qt::Unchecked;
-	if(!(scopeItem=hasScope(scope, parent)))
-	{
-		scopeItem = new QTreeWidgetItem( parent);
-		scopeItem->setText( 0, scope.c_str() );
-		scopeItem->setIcon( 0, scopeIcon );
-		expandItem(scopeItem);		
-	}
-	
-	QTreeWidgetItem * item = new QTreeWidgetItem( scopeItem);
-	item->setText( 0, name.c_str() );
-	item->setIcon( 0, attributeIcon );
-	
-	for(unsigned i=0; i<mParser.maps.size(); i++)
-	{
-		if (mParser.maps[i].sourceAttribute != name) continue;
-		if (mParser.maps[i].sourceId.c_str()!=parent->text(0)) continue;
-		state=Qt::Checked;
-		item->setText(1, mParser.maps[i].targetAttribute.c_str());
-		scopeItem->setText(1, mParser.maps[i].targetScope.c_str());
-	}
-
-	item->setCheckState( 0, state);
-}
-
-
-void AggregationEditor::setListedSchema(const CLAM_Annotator::Schema & schema, QTreeWidgetItem * parentItem)
-{
-	//mSchema = &schema;
+	typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
 	SchemaAttributes & attributes = schema.GetAttributes();
 	for (SchemaAttributes::iterator it = attributes.begin();
 			it!=attributes.end();
 			it++)
 	{
-		addAttribute(it->GetScope(), it->GetName(), parentItem);
+		addAttribute(it->GetScope(), it->GetName(), sourceItem);
 	}
+}
 
+void AggregationEditor::addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem * parent)
+{
+	QFont changedFont=font();
+	changedFont.setBold(true);
+	Qt::CheckState  state=Qt::Unchecked;
+	QTreeWidgetItem * scopeItem = hasScope(scope, parent);
+	if(not scopeItem)
+	{
+		scopeItem = new QTreeWidgetItem( parent);
+		scopeItem->setText( 0, scope.c_str() );
+		scopeItem->setIcon( 0, scopeIcon );
+		parent->addChild(scopeItem);
+		expandItem(scopeItem);		
+	}
+	QTreeWidgetItem * item = new QTreeWidgetItem;
+	item->setText( 0, name.c_str() );
+	item->setIcon( 0, attributeIcon );
+	std::string source = parent->text(0).toStdString();
+	for(unsigned i=0; i<_project->GetMaps().size(); i++)
+	{
+		const CLAM_Annotator::AttributeMap & map = _project->GetMaps()[i];
+		if (map.GetSource() != source) continue;
+		if (map.GetSourceAttribute() != name) continue;
+		state=Qt::Checked;
+		item->setText(1, map.GetTargetAttribute().c_str());
+		scopeItem->setText(1, map.GetTargetScope().c_str());
+		bool renamed = map.GetTargetAttribute() != map.GetSourceAttribute();
+		if (renamed) item->setFont(1,changedFont);
+		bool scopeRenamed = map.GetTargetScope() != map.GetSourceScope();
+		if (scopeRenamed) scopeItem->setFont(1,changedFont);
+		break;
+	}
+	item->setCheckState( 0, state);
+	scopeItem->addChild(item);
 }
 
 
@@ -161,19 +146,20 @@ QTreeWidgetItem *  AggregationEditor::hasScope(const std::string & scope,  QTree
 }
 
 
+void AggregationEditor::loadConfig(std::string config)
+{
+	parseSources(config);
+	parseMap(config);
+}
  // TODO: dealing with exceptions
  // TODO: allowing "#" in the script
 void AggregationEditor::parseSources(const std::string & config)
 {
-	std::string::size_type posStart=0;
-	std::string::size_type posEnd, posSourcesEnd;
-
 	unsigned arraySize = 0;
-
-	while (true) 
+	for (size_t pos = 0; true; pos++)
 	{
-		posStart=config.find("FileMetadataSource", posStart+1,18);  //Keyword "FileMetadataSource" 
-		if (posStart == std::string::npos) break;
+		pos=config.find("FileMetadataSource", pos);
+		if (pos == std::string::npos) break;
 		arraySize++;
 	}
 	if(!arraySize)
@@ -182,20 +168,19 @@ void AggregationEditor::parseSources(const std::string & config)
 		return;
 	}
 
-	posStart = config.find("sources", 0);
-	posEnd = config.find("),", posStart+1);
-	posSourcesEnd = config.find("]", posStart+1);
+	size_t posStart = config.find("sources", 0);
+	size_t posEnd = config.find("),", posStart+1);
+	size_t posSourcesEnd = config.find("]", posStart+1);
 
-	mParser.sources.resize(arraySize);
+	_project->GetSources().resize(arraySize);
 	for(unsigned i=0; i<arraySize && posEnd<posSourcesEnd; i++)
 	{
-		Source & source = mParser.sources[i];
-		source.source = parseQuotationMark(config, posStart, posEnd, "(");
-		source.path = parseQuotationMark(config, posStart, posEnd, "path");
-		source.schemaFile = parseQuotationMark(config, posStart, posEnd, "schemaFile");
-		source.suffix = parseQuotationMark(config, posStart, posEnd, "poolSuffix");
-		source.extractor = parseQuotationMark(config, posStart, posEnd, "extractor");
-
+		CLAM_Annotator::Extractor & source = _project->GetSources()[i];
+		source.SetName(parseQuotationMark(config, posStart, posEnd, "("));
+		parseQuotationMark(config, posStart, posEnd, "path");
+		source.SetSchema(parseQuotationMark(config, posStart, posEnd, "schemaFile"));
+		source.SetPoolSuffix(parseQuotationMark(config, posStart, posEnd, "poolSuffix"));
+		source.SetExtractor(parseQuotationMark(config, posStart, posEnd, "extractor"));
 		posStart = posEnd;
 		posEnd = config.find("),", posStart+1);		
 	}
@@ -220,27 +205,25 @@ void AggregationEditor::parseMap(const std::string & config)
 	}
 
 	if(!arraySize)	return;
-	mParser.maps.resize(arraySize);
-
+	_project->GetMaps().resize(arraySize);
 	posEnd = config.find("),", posStart+1);
-	
 	for(unsigned i=0; i<arraySize && posEnd<posAttributesEnd; i++)
 	{
-		AttributeMap & map = mParser.maps[i];
+		CLAM_Annotator::AttributeMap & map = _project->GetMaps()[i];
 		posA = config.rfind("::", posEnd);
 		posB = config.rfind("\"", posEnd);
-		map.sourceAttribute = config.substr(posA+2, posB-posA-2);
+		map.SetSourceAttribute(config.substr(posA+2, posB-posA-2));
 		posB = config.rfind("\"", posA);
-		map.sourceScope = config.substr(posB+1, posA-posB-1);
+		map.SetSourceScope(config.substr(posB+1, posA-posB-1));
 		posA = config.rfind("\"", posB-1);
 		posB = config.rfind("\"", posA-1);
-		map.sourceId = config.substr(posB+1, posA-posB-1);
+		map.SetSource(config.substr(posB+1, posA-posB-1));
 		
 		posA = config.rfind("::", posB-1);
 		posB = config.rfind("\"", posB-1);
-		map.targetAttribute = config.substr(posA+2, posB-posA-2);
+		map.SetTargetAttribute(config.substr(posA+2, posB-posA-2));
 		posB = config.rfind("\"", posA);
-		map.targetScope = config.substr(posB+1, posA-posB-1);
+		map.SetTargetScope (config.substr(posB+1, posA-posB-1));
 
 		posEnd = config.find("),", posEnd+1);		
 	}	
@@ -263,7 +246,36 @@ std::string AggregationEditor::parseQuotationMark(const std::string & config, si
 		pos2= config.find("\"",beginPos+1);
 		return config.substr(beginPos+1,pos2-beginPos-1); 
 	}
-	
+}
+
+std::string AggregationEditor::outputConfig()
+{
+	std::string config = "\nsources = [\n";
+	for (unsigned i=0; i<_project->GetSources().size(); i++)
+	{
+		CLAM_Annotator::Extractor & source = _project->GetSources()[i];
+		config+=
+			"\t(\""+source.GetName()+"\", FileMetadataSource(\n"
+			"\t\tpath=\""+"."+"\",\n"
+			"\t\tschemaFile=\""+source.GetSchema()+"\",\n"
+			"\t\tpoolSuffix=\""+source.GetPoolSuffix()+"\",\n"
+			"\t\textractor=\""+source.GetExtractor()+"\")),\n"
+		;
+	}
+	config	+= "\t]\n";
+	config += "map = [\n";
+	for (unsigned i=0; i<_project->GetMaps().size(); i++)
+	{
+		CLAM_Annotator::AttributeMap & map = _project->GetMaps()[i];
+		config += 
+			"\t(\""+map.GetTargetScope()+"::"+map.GetTargetAttribute()+"\" , "
+				"\""+map.GetSource()+"\", "
+				"\""+map.GetSourceScope()+"::"+map.GetSourceAttribute()+"\"),\n"
+			;
+	}
+	config	+= "\t]\n";
+	std::cout<< "the newly edited Configuration is ..............\n" << config << std::endl;
+	return config;	
 }
 
 void AggregationEditor::renameTarget(QTreeWidgetItem * current)
@@ -284,9 +296,10 @@ void AggregationEditor::editConfiguration()
 
 }
 
-void AggregationEditor::setConfiguration()
+void AggregationEditor::takeMaps()
 {
-	mParser.maps.clear();
+	if (_reloading) return;
+	_project->GetMaps().clear();
 	for(int i=0; i<topLevelItemCount(); i++)  //ugly.....is there any clearer way?
 	{
 		QTreeWidgetItem * sourceItem = topLevelItem(i);
@@ -297,20 +310,21 @@ void AggregationEditor::setConfiguration()
 			{
 				QTreeWidgetItem * attributeItem = scopeItem->child(k);
 				if(attributeItem->checkState(0)!=Qt::Checked) continue;
-				//the default names will be automatically writen after "accepted"
-				if(attributeItem->text(1)=="") attributeItem->setText(1, attributeItem->text(0));
-				if(scopeItem->text(1)=="") scopeItem->setText(1, scopeItem->text(0));
-				AttributeMap map;
-				map.targetScope = scopeItem->text(1).toStdString();
-				map.targetAttribute = attributeItem->text(1).toStdString();
-				map.sourceId = sourceItem->text(0).toStdString();
-				map.sourceScope = scopeItem->text(0).toStdString();
-				map.sourceAttribute = attributeItem->text(0).toStdString();
-				mParser.maps.push_back(map);
+				CLAM_Annotator::AttributeMap map;
+				map.SetTargetScope(scopeItem->text(1).toStdString());
+				map.SetTargetAttribute(attributeItem->text(1).toStdString());
+				map.SetSource(sourceItem->text(0).toStdString());
+				map.SetSourceScope(scopeItem->text(0).toStdString());
+				map.SetSourceAttribute(attributeItem->text(0).toStdString());
+				if (map.GetTargetScope()=="") map.SetTargetScope(map.GetSourceScope());
+				if (map.GetTargetAttribute()=="") map.SetTargetAttribute(map.GetSourceAttribute());
+				_project->GetMaps().push_back(map);
 			}
 		}
 	}
+	_project->SetConfiguration(outputConfig());
 }
+
 
 
 

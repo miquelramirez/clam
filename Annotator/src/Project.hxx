@@ -63,7 +63,7 @@ public:
 	bool computeDescriptors(QWidget * window, const QString & wavefile);
 	const Schema & schema() const;
 };
-/*
+
 class AttributeMap : public CLAM::DynamicType
 {
 	DYNAMIC_TYPE(AttributeMap,5);
@@ -78,18 +78,19 @@ class AttributeMap : public CLAM::DynamicType
 		UpdateData();
 	}
 };
-*/
+
 class Project : public CLAM::DynamicType
 {
-	DYNAMIC_TYPE(Project,8);
+	DYNAMIC_TYPE(Project,9);
 	DYN_ATTRIBUTE(0, public, CLAM::Text, Description);
 	DYN_ATTRIBUTE(1, public, CLAM::Filename, Schema);
 	DYN_ATTRIBUTE(2, public, CLAM::Filename, Extractor);
 	DYN_ATTRIBUTE(3, public, std::string, PoolSuffix);
 	DYN_ATTRIBUTE(4, public, CLAM::Text, Configuration);
 	DYN_CONTAINER_ATTRIBUTE(5, public, std::vector<Extractor>, Sources, Source);
-	DYN_CONTAINER_ATTRIBUTE(6, public, std::vector<Song>, Songs, Song);
-	DYN_CONTAINER_ATTRIBUTE(7, public, std::vector<InstantView>, Views, View);
+	DYN_CONTAINER_ATTRIBUTE(6, public, std::vector<AttributeMap>, Maps, Map);
+	DYN_CONTAINER_ATTRIBUTE(7, public, std::vector<Song>, Songs, Song);
+	DYN_CONTAINER_ATTRIBUTE(8, public, std::vector<InstantView>, Views, View);
 
 	void DefaultInit()
 	{
@@ -103,14 +104,24 @@ public:
 	{
 		// Hack to upgrade version<1.4 projects
 		DynamicType::LoadFrom(storage);
-		if ( HasSources()) return; // A modern one
-		AddSources();
-		UpdateData();
-		GetSources().resize(1);
-		Extractor & extractor = GetSources()[0];
-		extractor.SetName("Extractor1");
-		dumpExtractorInfo(extractor);
+		if (not HasMaps())
+		{
+			AddMaps();
+			UpdateData();
+		}
+		if (not HasSources())
+		{
+			AddSources();
+			UpdateData();
+			GetSources().resize(1);
+			Extractor & extractor = GetSources()[0];
+			extractor.SetName("Extractor1");
+			dumpExtractorInfo(extractor); // Copy fields
+			if (GetMaps().size()==0) 
+				MapAllSchemaAttributes(extractor);
+		}
 	}
+	void MapAllSchemaAttributes(Extractor & extractor);
 	bool LoadSchema();
 	void DumpSchema();
 	void DumpSchema(std::ostream & os);
