@@ -40,8 +40,6 @@ AggregationEditor::AggregationEditor(QWidget *parent, Qt::WFlags fl )
     , scopeIcon(":/icons/images/xkill.png")
     , attributeIcon(":/icons/images/label.png")
 {
-	setObjectName( "aggregationEditor" );
-
 	setHeaderLabels( QStringList()
 		<< tr( "Source" )
 		<< tr( "Target" )
@@ -130,10 +128,6 @@ void AggregationEditor::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWi
 		addAttribute(it->GetScope(), it->GetName(), parentItem);
 	}
 
-	show();
-	resizeColumnToContents(0);
-	resizeColumnToContents(1);
-	show();
 }
 
 
