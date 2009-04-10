@@ -55,8 +55,8 @@ public:
 	void setSchema();
 	void setConfiguration();
 	void addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem* parent);
-	void setListedSchema(CLAM_Annotator::Schema & schema, QTreeWidgetItem* parent);
-	void addSource(const std::string & source, CLAM_Annotator::Schema & schema);
+	void setListedSchema(const CLAM_Annotator::Schema & schema, QTreeWidgetItem* parent);
+	void addSource(const std::string & source, const CLAM_Annotator::Schema & schema);
 	void loadProject(const CLAM_Annotator::Project & project);
 	void loadConfig(std::string config)
 	{
