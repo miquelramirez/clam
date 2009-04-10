@@ -20,7 +20,7 @@
  */
 
 #include "AggregationEditor.hxx"
-#include "SourceEditor.hxx"
+//#include "SourceEditor.hxx"
 #include "Assert.hxx"
 
 #include <CLAM/XMLStorage.hxx>
@@ -270,6 +270,7 @@ void AggregationEditor::languageChange()
 
 void AggregationEditor::editSource(QTreeWidgetItem * current)
 {
+/*
 	//pop out a new QDialog with "Source   Extractor   Suffix   SchemaFile  ConfigFile" list
 	SourceEditor sourceEditor(this, &mParser);
 	if(sourceEditor.exec()==QDialog::Rejected) //maybe not a conventional way to consider 'X' as accepted 
@@ -277,6 +278,7 @@ void AggregationEditor::editSource(QTreeWidgetItem * current)
 		sourceEditor.applyUpdates();
 		return;
 	}
+*/
 }
 
 void AggregationEditor::renameTarget(QTreeWidgetItem * current)

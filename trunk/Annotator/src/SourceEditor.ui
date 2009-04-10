@@ -1,94 +1,250 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>SourceEditor</class>
- <widget class="QDialog" name="SourceEditor" >
-  <property name="geometry" >
+ <widget class="QDialog" name="SourceEditor">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>605</width>
-    <height>311</height>
+    <width>653</width>
+    <height>412</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string>Dialog</string>
+  <property name="windowTitle">
+   <string>Editing data source</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" >
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout" >
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_name">
+     <property name="text">
+      <string>Source &amp;name</string>
+     </property>
+     <property name="buddy">
+      <cstring>sourceName</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QLineEdit" name="sourceName">
+     <property name="text">
+      <string>My extractor</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_command">
+     <property name="text">
+      <string>Source &amp;command:</string>
+     </property>
+     <property name="buddy">
+      <cstring>extractor</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <layout class="QHBoxLayout" name="_3">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
      <item>
-      <widget class="QTableWidget" name="parameterTable" >
-       <property name="styleSheet" >
-        <string notr="true" />
+      <widget class="QLineEdit" name="extractor">
+       <property name="text">
+        <string>MyExtractor.exe</string>
        </property>
-       <column>
-        <property name="text" >
-         <string>Source</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Extractor</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>SchemaFile</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Suffix</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>ConfigFile</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Path</string>
-        </property>
-       </column>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout" >
-       <item>
-        <spacer name="horizontalSpacer" >
-         <property name="orientation" >
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0" >
-          <size>
-           <width>288</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QPushButton" name="addButton" >
-         <property name="text" >
-          <string>Add</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="deleteButton" >
-         <property name="text" >
-          <string>Delete</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QPushButton" name="extractorBrowseButton">
+       <property name="icon">
+        <iconset resource="images.qrc">
+         <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
+       </property>
+      </widget>
      </item>
     </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_schema">
+     <property name="text">
+      <string>Description &amp;scheme:</string>
+     </property>
+     <property name="buddy">
+      <cstring>schemaBrowseButton</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <layout class="QHBoxLayout" name="_4">
+     <property name="spacing">
+      <number>6</number>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLineEdit" name="schema">
+       <property name="text">
+        <string>Schema.sc</string>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="schemaBrowseButton">
+       <property name="icon">
+        <iconset resource="images.qrc">
+         <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_suffix">
+     <property name="text">
+      <string>File suffix:</string>
+     </property>
+     <property name="buddy">
+      <cstring>suffix</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QComboBox" name="suffix">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="editable">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>.pool</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="label_configuration">
+       <property name="text">
+        <string>Configuration: </string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+       </property>
+       <property name="buddy">
+        <cstring>configurationInfo</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="loadConfigurationButton">
+       <property name="toolTip">
+        <string>Load config from a file</string>
+       </property>
+       <property name="text">
+        <string>Load</string>
+       </property>
+       <property name="icon">
+        <iconset resource="images.qrc">
+         <normaloff>:/icons/images/fileopen.png</normaloff>:/icons/images/fileopen.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QPlainTextEdit" name="configurationInfo">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QPushButton" name="checkExtractorButton">
+     <property name="toolTip">
+      <string>Execute with a sample wave</string>
+     </property>
+     <property name="text">
+      <string>Check extractor</string>
+     </property>
+     <property name="icon">
+      <iconset resource="images.qrc">
+       <normaloff>:/icons/images/gear.png</normaloff>:/icons/images/gear.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1">
+    <widget class="QPushButton" name="schemaEditButton">
+     <property name="toolTip">
+      <string>View resulting schema</string>
+     </property>
+     <property name="text">
+      <string>Show Schema</string>
+     </property>
+     <property name="icon">
+      <iconset resource="images.qrc">
+       <normaloff>:/icons/images/view_tree.png</normaloff>:/icons/images/view_tree.png</iconset>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources>
-  <include location="images.qrc" />
+  <include location="images.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SourceEditor</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
