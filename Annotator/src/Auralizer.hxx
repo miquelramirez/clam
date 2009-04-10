@@ -194,7 +194,7 @@ private:
 		CLAM::Audio silence;
 		silence.SetSize(frameSize);
 
-		unsigned bpfIndex = FirstIndex();
+		int bpfIndex = FirstIndex();
 		unsigned nSamples = unsigned(mTimeBounds.max*mSamplingRate);
 		unsigned leftIndex = unsigned(mBeginTime*mSamplingRate);
 
