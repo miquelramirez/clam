@@ -69,6 +69,20 @@ void AggregationEditor::addSource(const std::string & source, CLAM_Annotator::Sc
 	
 }
 
+void AggregationEditor::loadProject(const CLAM_Annotator::Project & project)
+{
+	for (unsigned i=0; i<project.GetSources().size(); i++)
+	{
+		const CLAM_Annotator::Extractor & extractor = project.GetSources()[i];
+		Source source;
+		source.source = extractor.GetName();
+		source.path = ".";
+		source.schemaFile = extractor.GetSchema();
+		source.suffix = extractor.GetPoolSuffix();
+		source.extractor = extractor.GetExtractor();
+	}
+}
+
 void AggregationEditor::setSchema()
 {	
 	clear();
@@ -161,12 +175,11 @@ void AggregationEditor::parseSources(const std::string & config)
 		return;
 	}
 
-	mParser.sources.resize(arraySize);
-
 	posStart = config.find("sources", 0);
 	posEnd = config.find("),", posStart+1);
 	posSourcesEnd = config.find("]", posStart+1);
 
+	mParser.sources.resize(arraySize);
 	for(unsigned i=0; i<arraySize && posEnd<posSourcesEnd; i++)
 	{
 		Source & source = mParser.sources[i];
