@@ -20,7 +20,6 @@
  */
 
 #include "AggregationEditor.hxx"
-//#include "SourceEditor.hxx"
 #include "Assert.hxx"
 
 #include <CLAM/XMLStorage.hxx>
@@ -40,15 +39,14 @@ AggregationEditor::AggregationEditor(QWidget *parent, Qt::WFlags fl )
     , sourceIcon(":/icons/images/gear.png")
     , scopeIcon(":/icons/images/xkill.png")
     , attributeIcon(":/icons/images/label.png")
-	, attributeList(this)
 {
 	setObjectName( "aggregationEditor" );
 
-	attributeList->setHeaderLabels( QStringList()
+	setHeaderLabels( QStringList()
 		<< tr( "Source" )
 		<< tr( "Target" )
 		);
-	connect(attributeList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
+	connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
             this, SLOT(editConfiguration()));
 }
 
@@ -64,20 +62,18 @@ void AggregationEditor::addSource(const std::string & source, CLAM_Annotator::Sc
 {
 
 	QTreeWidgetItem * sourceItem = 0;
-	sourceItem = new QTreeWidgetItem(attributeList);
+	sourceItem = new QTreeWidgetItem(this);
 	sourceItem->setText( 0, source.c_str() );
 	sourceItem->setIcon( 0, sourceIcon );
-	attributeList->expandItem(sourceItem);
+	expandItem(sourceItem);
 	
 	setListedSchema(schema, sourceItem);	
-//	attributeProperties->hide();
 	
 }
 
 void AggregationEditor::setSchema()
 {	
-	//attributeProperties->hide();
-	attributeList->clear();
+	clear();
 	parseSources();
 
 	for(unsigned i = 0; i <mParser.sources.size(); i++)
@@ -87,10 +83,10 @@ void AggregationEditor::setSchema()
 		CLAM::XMLStorage::Restore(sourceSchema, source.path+"/"+source.schemaFile);
 		addSource(source.source, sourceSchema);
 	}
-	attributeList->show();
-	attributeList->resizeColumnToContents(0);
-	attributeList->resizeColumnToContents(1);
-	attributeList->show();	
+	show();
+	resizeColumnToContents(0);
+	resizeColumnToContents(1);
+	show();	
 }
 
 void AggregationEditor::addAttribute(const std::string & scope, const std::string & name, QTreeWidgetItem * parent)
@@ -103,7 +99,7 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 		scopeItem = new QTreeWidgetItem( parent);
 		scopeItem->setText( 0, scope.c_str() );
 		scopeItem->setIcon( 0, scopeIcon );
-		attributeList->expandItem(scopeItem);		
+		expandItem(scopeItem);		
 	}
 	
 	QTreeWidgetItem * item = new QTreeWidgetItem( scopeItem);
@@ -134,11 +130,10 @@ void AggregationEditor::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWi
 		addAttribute(it->GetScope(), it->GetName(), parentItem);
 	}
 
-	attributeList->show();
-	attributeList->resizeColumnToContents(0);
-	attributeList->resizeColumnToContents(1);
-	attributeList->show();
-//	attributeProperties->hide();
+	show();
+	resizeColumnToContents(0);
+	resizeColumnToContents(1);
+	show();
 }
 
 
@@ -241,7 +236,7 @@ void AggregationEditor::parseMap()
 
 
 
-std::string AggregationEditor::parseQuotationMark(std::string::size_type beginPos, std::string::size_type limitedPos, std::string keyWord )
+std::string AggregationEditor::parseQuotationMark(size_t beginPos, size_t limitedPos, std::string keyWord )
 {
 	std::string::size_type pos2;
 	pos2 = mConfig.find(keyWord, beginPos);
@@ -259,59 +254,30 @@ std::string AggregationEditor::parseQuotationMark(std::string::size_type beginPo
 	
 }
 
-void AggregationEditor::updateCurrentAttribute()
-{
-	return;
-}
-
-void AggregationEditor::languageChange()
-{
-	return;
-}
-
-void AggregationEditor::editSource(QTreeWidgetItem * current)
-{
-/*
-	//pop out a new QDialog with "Source   Extractor   Suffix   SchemaFile  ConfigFile" list
-	SourceEditor sourceEditor(this, &mParser);
-	if(sourceEditor.exec()==QDialog::Rejected) //maybe not a conventional way to consider 'X' as accepted 
-	{
-		sourceEditor.applyUpdates();
-		return;
-	}
-*/
-}
-
 void AggregationEditor::renameTarget(QTreeWidgetItem * current)
 {
 	current->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled |Qt::ItemIsEditable);
-	attributeList->editItem(current, 1);
+	editItem(current, 1);
 }
 
 void AggregationEditor::editConfiguration()
 {
-	QTreeWidgetItem * current = attributeList->currentItem();
+	QTreeWidgetItem * current = currentItem();
 	if(!current) return;
 	QTreeWidgetItem * parent=current->parent();
 
-	if(!parent)    //Source
-		editSource(current);
-	else
-		renameTarget(current);
+	if(!parent) return;   //Source
+	// Scope or attribute
+	renameTarget(current);
 
 }
 
 void AggregationEditor::setConfiguration()
 {
-	size_t posStart = mConfig.find("map",0);         
-	size_t mapStart = mConfig.find("[", posStart+1) + 1;  
-	size_t mapSize = mConfig.find("]", posStart+1) - mapStart;
-	mConfig.erase(mapStart, mapSize);
-
-	std::string newContent="\n";
-	for(int i=0; i<attributeList->topLevelItemCount(); i++)  //ugly.....is there any clearer way?
+	mParser.maps.clear();
+	for(int i=0; i<topLevelItemCount(); i++)  //ugly.....is there any clearer way?
 	{
-		QTreeWidgetItem * sourceItem = attributeList->topLevelItem(i);
+		QTreeWidgetItem * sourceItem = topLevelItem(i);
 		for(int j=0; j<sourceItem->childCount();j++)
 		{
 			QTreeWidgetItem * scopeItem = sourceItem->child(j);
@@ -322,16 +288,30 @@ void AggregationEditor::setConfiguration()
 				//the default names will be automatically writen after "accepted"
 				if(attributeItem->text(1)=="") attributeItem->setText(1, attributeItem->text(0));
 				if(scopeItem->text(1)=="") scopeItem->setText(1, scopeItem->text(0));
-				newContent += QString("\t(\"%1::%2\" , \"%3\", \"%4::%5\"),\n")
-					.arg(scopeItem->text(1))
-					.arg(attributeItem->text(1))
-					.arg(sourceItem->text(0))
-					.arg(scopeItem->text(0))
-					.arg(attributeItem->text(0))
-					.toStdString();
+				AttributeMap map;
+				map.targetScope = scopeItem->text(1).toStdString();
+				map.targetAttribute = attributeItem->text(1).toStdString();
+				map.sourceId = sourceItem->text(0).toStdString();
+				map.sourceScope = scopeItem->text(0).toStdString();
+				map.sourceAttribute = attributeItem->text(0).toStdString();
+				mParser.maps.push_back(map);
 			}
 			
 		}
+	}
+	size_t posStart = mConfig.find("map",0);
+	size_t mapStart = mConfig.find("[", posStart+1) + 1;  
+	size_t mapSize = mConfig.find("]", posStart+1) - mapStart;
+	mConfig.erase(mapStart, mapSize);
+	std::string newContent="\n";
+	for (unsigned i=0; i<mParser.maps.size(); i++)
+	{
+		AttributeMap & map = mParser.maps[i];
+		newContent += 
+			"\t(\""+map.targetScope+"::"+map.targetAttribute+"\" , "
+				"\""+map.sourceId+"\", "
+				"\""+map.sourceScope+"::"+map.sourceAttribute+"\"),\n"
+			;
 	}
 	mConfig.insert(mapStart, newContent);
 	std::cout<< "the newly edited Configuration is ..............\n" << mConfig << std::endl;

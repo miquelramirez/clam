@@ -98,15 +98,12 @@ protected:
     //QGridLayout* attributePropertiesLayout;
 
 protected slots:
-	void languageChange();
-	void updateCurrentAttribute();
 	void editConfiguration();
 	
 
 private:
 	void parseSources();
 	void parseMap();
-	void editSource(QTreeWidgetItem * current);
 	void renameTarget(QTreeWidgetItem * current);
 	QTreeWidgetItem *  hasScope(const std::string & scope,  QTreeWidgetItem * parent);
 	std::string parseQuotationMark(std::string::size_type beginPos, std::string::size_type limitedPos, std::string keyWord );
@@ -118,8 +115,6 @@ private:
 		
 	ConfigurationParser mParser;
 	std::string mConfig;
-	QTreeWidget * attributeList;
-
 };
 
 #endif
