@@ -36,10 +36,11 @@
 #include <iostream>
 
 AggregationEditor::AggregationEditor(QWidget *parent, Qt::WFlags fl )
-    : SchemaBrowser( parent, fl )
+    : QTreeWidget( parent)
     , sourceIcon(":/icons/images/gear.png")
     , scopeIcon(":/icons/images/xkill.png")
     , attributeIcon(":/icons/images/label.png")
+	, attributeList(this)
 {
 	setObjectName( "aggregationEditor" );
 
@@ -69,7 +70,7 @@ void AggregationEditor::addSource(const std::string & source, CLAM_Annotator::Sc
 	attributeList->expandItem(sourceItem);
 	
 	setListedSchema(schema, sourceItem);	
-	attributeProperties->hide();
+//	attributeProperties->hide();
 	
 }
 
@@ -79,9 +80,9 @@ void AggregationEditor::setSchema()
 	attributeList->clear();
 	parseSources();
 
-	CLAM_Annotator::Schema sourceSchema;
 	for(unsigned i = 0; i <mParser.sources.size(); i++)
 	{
+		CLAM_Annotator::Schema sourceSchema;
 		Source & source = mParser.sources[i];
 		CLAM::XMLStorage::Restore(sourceSchema, source.path+"/"+source.schemaFile);
 		addSource(source.source, sourceSchema);
@@ -137,7 +138,7 @@ void AggregationEditor::setListedSchema(CLAM_Annotator::Schema & schema, QTreeWi
 	attributeList->resizeColumnToContents(0);
 	attributeList->resizeColumnToContents(1);
 	attributeList->show();
-	attributeProperties->hide();
+//	attributeProperties->hide();
 }
 
 
