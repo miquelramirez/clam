@@ -203,6 +203,7 @@ void ProjectEditor::on_graphicalEditButton_clicked()
 	if(mGraphicConfigEditor->exec()==QDialog::Rejected) return;	
 
 	mProject.SetConfiguration(mGraphicConfigEditor->getConfiguration()); // parameter of std::string type 
+	updateFields();
 }
 
 void ProjectEditor::on_testExtractorButton_clicked()
