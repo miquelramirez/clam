@@ -288,26 +288,8 @@ void AggregationEditor::setConfiguration()
 				map.sourceAttribute = attributeItem->text(0).toStdString();
 				mParser.maps.push_back(map);
 			}
-			
 		}
 	}
-	size_t posStart = mConfig.find("map",0);
-	size_t mapStart = mConfig.find("[", posStart+1) + 1;  
-	size_t mapSize = mConfig.find("]", posStart+1) - mapStart;
-	mConfig.erase(mapStart, mapSize);
-	std::string newContent="\n";
-	for (unsigned i=0; i<mParser.maps.size(); i++)
-	{
-		AttributeMap & map = mParser.maps[i];
-		newContent += 
-			"\t(\""+map.targetScope+"::"+map.targetAttribute+"\" , "
-				"\""+map.sourceId+"\", "
-				"\""+map.sourceScope+"::"+map.sourceAttribute+"\"),\n"
-			;
-	}
-	mConfig.insert(mapStart, newContent);
-	std::cout<< "the newly edited Configuration is ..............\n" << mConfig << std::endl;
-
 }
 
 
