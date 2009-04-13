@@ -14,7 +14,7 @@ namespace CLAM
 class VstNetworkExporter : public AudioEffectX
 {
 	template<class T>
-	class DataInfo
+	class ConnectorInfo
 	{
 	public:
 		std::string name;
@@ -30,8 +30,8 @@ class VstNetworkExporter : public AudioEffectX
 	};
 
 	typedef std::vector< ExternControlInfo > VSTInControlList;
-	typedef std::vector< DataInfo< CLAM::AudioSource > > VSTInPortList;
-	typedef std::vector< DataInfo< CLAM::AudioSink > > VSTOutPortList;
+	typedef std::vector< ConnectorInfo< CLAM::AudioSource > > VSTInPortList;
+	typedef std::vector< ConnectorInfo< CLAM::AudioSink > > VSTOutPortList;
 
 public:
 	typedef VstNetworkExporter Plugin;
@@ -55,9 +55,10 @@ public:
 	Plugin * createEffect(audioMasterCallback audioMaster);
 	bool ok() const { return true; }
 
+	// * VST AudioEffectX API *
+
 	// Processes
 	virtual void processReplacing (float **inputs, float **outputs, VstInt32 sampleFrames);
-	virtual void process (float **inputs, float **outputs, VstInt32 sampleFrames) {} // TODO
 
 	// Program
 	virtual void setProgramName (char *name);

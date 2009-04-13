@@ -226,7 +226,7 @@ void VstNetworkExporter::LocateConnections()
 		if (className == "AudioSource")
 		{
 			std::cout << "AudioSource: " << it->first << std::endl;
-			DataInfo<AudioSource> info;
+			ConnectorInfo<AudioSource> info;
 			info.name=it->first;
 			info.processing=(AudioSource*)processing;
 			info.processing->SetFrameAndHopSize( mExternBufferSize );
@@ -235,7 +235,7 @@ void VstNetworkExporter::LocateConnections()
 		if (className == "AudioSink")
 		{
 			std::cout << "AudioSink: " << it->first << std::endl;
-			DataInfo<AudioSink> info;
+			ConnectorInfo<AudioSink> info;
 			info.name=it->first;
 			info.processing=(AudioSink*)processing;
 			info.processing->SetFrameAndHopSize( mExternBufferSize );
@@ -256,7 +256,6 @@ void VstNetworkExporter::LocateConnections()
 			mInControlList.push_back(info);
 		}
 	}
-
 }
 
 void VstNetworkExporter::UpdatePortFrameAndHopSize()
