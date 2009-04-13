@@ -139,7 +139,6 @@ void ProjectEditor::on_mappings_itemChanged(QTreeWidgetItem * item, int col)
 {
 	std::cout << "* Mappings item changed" << std::endl;
 	ui.mappings->takeMaps();
-	CLAM::XMLStorage::Dump(mProject, "Project", std::cout);
 }
 
 void ProjectEditor::on_projectInfo_textChanged()
@@ -248,10 +247,10 @@ void ProjectEditor::on_testExtractorButton_clicked()
 void SourceEditor::updateFields()
 {
 	_ui.sourceName->setText(_extractor.GetName().c_str());
-//	_ui.schema->setText(_extractor.GetSchema().c_str());
+	_ui.schema->setText(_extractor.GetSchema().c_str());
 	_ui.suffix->setEditText(_extractor.GetPoolSuffix().c_str());
-//	_ui.extractor->setText(_extractor.GetExtractor().c_str());
-//	_ui.configurationInfo->setPlainText(_extractor.GetConfiguration().c_str());
+	_ui.extractor->setText(_extractor.GetExtractor().c_str());
+	_ui.configurationInfo->setPlainText(_extractor.GetConfiguration().c_str());
 }
 
 void SourceEditor::on_loadConfigurationButton_clicked()
@@ -289,12 +288,12 @@ void SourceEditor::on_extractorBrowseButton_clicked()
 
 void SourceEditor::on_sourceName_textChanged()
 {
-//	_extractor.SetName(_ui.sourceName->text().toStdString());
+	_extractor.SetName(_ui.sourceName->text().toStdString());
 }
 
 void SourceEditor::on_extractor_textChanged()
 {
-//	_extractor.SetExtractor(_ui.extractor->text().toStdString());
+	_extractor.SetExtractor(_ui.extractor->text().toStdString());
 }
 void SourceEditor::on_configurationInfo_textChanged()
 {
