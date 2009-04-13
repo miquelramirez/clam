@@ -346,11 +346,6 @@ void Annotator::initProject()
 		projectDescription += tr("<p><em>(No project documentation available)</em></p>");
 	mProjectDocumentation->setHtml(projectDescription);
 
-	if (mProject.HasConfiguration())
-	{
-		mProject.InitConfiguration();
-	}
-
 	try
 	{
 		mProject.LoadSchema();
