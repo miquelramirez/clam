@@ -514,7 +514,7 @@ typedef XmlStorage XMLStorage;
 		StoreMyArray(storage);
 		StoreMyDummyComponent(storage);
 	}
-	void ConcreteDT::LoadOn(CLAM::Storage & storage)
+	void ConcreteDT::LoadFrom(CLAM::Storage & storage)
 	{
 		// First of all asure that all attributes are instantiated
 		AddAll()
@@ -562,7 +562,7 @@ void ConcreteDT::StoreOn(CLAM::Storage & storage)s
 	storage.Store(&adapter2);
 }
 
-void ConcreteDT::LoadOn(CLAM::Storage & storage)
+void ConcreteDT::LoadFrom(CLAM::Storage & storage)
 {
 	// std::string is not vulnerable to buffer overflows on loading
 	std::string foo; // A temp
@@ -607,7 +607,7 @@ void ConcreteDT::StoreOn(CLAM::Storage & storage)
 		storage.Store(&adapter);
 	}
 }
-void ConcreteDT::LoadOn(CLAM::Storage & storage)
+void ConcreteDT::LoadFrom(CLAM::Storage & storage)
 {
 	// First of all asure that all attributes are instantiated
 	AddAll()
