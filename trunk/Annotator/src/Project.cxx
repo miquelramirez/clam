@@ -32,6 +32,29 @@ namespace CLAM_Annotator
 {
 
 
+void Project::LoadFrom(CLAM::Storage & storage)
+{
+	// Hack to upgrade version<1.4 projects
+	DynamicType::LoadFrom(storage);
+	if (not HasMaps())
+	{
+		std::cout << "* Old Project detected: adding mappings" << std::endl;
+		AddMaps();
+		UpdateData();
+	}
+	if (not HasSources())
+	{
+		std::cout << "* Old Project detected: Copying sources from old extractor" << std::endl;
+		AddSources();
+		UpdateData();
+		GetSources().resize(1);
+		Extractor & extractor = GetSources()[0];
+		extractor.SetName("Extractor1");
+		dumpExtractorInfo(extractor); // Copy fields
+		if (GetMaps().size()==0) 
+			MapAllSchemaAttributes(extractor);
+	}
+}
 void Project::MapAllSchemaAttributes(Extractor & extractor)
 {
 	typedef std::list<CLAM_Annotator::SchemaAttribute> SchemaAttributes;
@@ -68,7 +91,7 @@ bool Extractor::generateSchema(const QString & configFileName, const QString sch
 	std::cout << "Launched extractor to get the schema..." << std::endl;
 	process.waitForFinished(-1); // TODO: This stalls
 	std::cout << "Output:\n" << process.readAllStandardOutput().constData() << std::endl;
-	std::cerr << "Error:\n" << process.readAllStandardError().constData() << std::endl;
+	std::cerr << "\033[31m" << process.readAllStandardError().constData() << "\033[0m" << std::endl;
 	return process.exitCode()==0;
 }
 
@@ -187,18 +210,6 @@ void Project::SetProjectPath(const std::string & path)
 	mFile = path;
 	mBasePath = QFileInfo(path.c_str()).path().toStdString();
 	std::cout << "Project file: " << mFile << " at Base " << mBasePath << std::endl;
-}
-
-void Project::InitConfiguration()
-{
-	QString filePath(File().c_str());
-	QFile *file=new QFile(filePath.append(".conf"));
-	if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
-		return;
-	if(!file->resize(0))
-		return; 
-	QTextStream out(file);
-	out << GetConfiguration().c_str();	
 }
 
 std::string Project::RelativeToAbsolute(const std::string & projectRelative) const

@@ -100,27 +100,7 @@ class Project : public CLAM::DynamicType
 public:
 	typedef std::list<CLAM_Annotator::SchemaAttribute> ScopeSchema;
 public:
-	void LoadFrom(CLAM::Storage & storage)
-	{
-		// Hack to upgrade version<1.4 projects
-		DynamicType::LoadFrom(storage);
-		if (not HasMaps())
-		{
-			AddMaps();
-			UpdateData();
-		}
-		if (not HasSources())
-		{
-			AddSources();
-			UpdateData();
-			GetSources().resize(1);
-			Extractor & extractor = GetSources()[0];
-			extractor.SetName("Extractor1");
-			dumpExtractorInfo(extractor); // Copy fields
-			if (GetMaps().size()==0) 
-				MapAllSchemaAttributes(extractor);
-		}
-	}
+	void LoadFrom(CLAM::Storage & storage);
 	void MapAllSchemaAttributes(Extractor & extractor);
 	bool LoadSchema();
 	void DumpSchema();
@@ -201,7 +181,6 @@ public:
 	std::string RelativeToAbsolute(const std::string & file) const;
 	std::string AbsoluteToRelative(const std::string & file) const;
 	void CreatePoolScheme();
-	void InitConfiguration();
 	void dumpExtractorInfo(Extractor & extractor);
 	std::string aggregationScript() const;
 private:
