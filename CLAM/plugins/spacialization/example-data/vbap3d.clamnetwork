@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
+  <processing id="1 Audio Input" position="173,168" size="128,108" type="AudioSource"/>
+
   <processing id="1 mid back" position="569,108" size="128,111" type="AudioSink"/>
 
   <processing id="10 mid back right" position="1029,541" size="128,111" type="AudioSink"/>
@@ -31,8 +33,6 @@
 
   <processing id="9 mid back left" position="902,479" size="128,111" type="AudioSink"/>
 
-  <processing id="Audio Input" position="173,168" size="128,108" type="AudioSource"/>
-
   <processing id="Vbap3D" position="367,150" size="79,270" type="Vbap3D"/>
 
   <processing id="azimuth" position="364,-30" size="395,78" type="OutControlSender">
@@ -54,7 +54,7 @@
   </processing>
 
   <port_connection>
-    <out>Audio Input.AudioOut</out>
+    <out>1 Audio Input.AudioOut</out>
     <in>Vbap3D.W</in>
   </port_connection>
 

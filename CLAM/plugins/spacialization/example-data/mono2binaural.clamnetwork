@@ -1,4 +1,5 @@
-<network id="Unnamed">
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<network clamVersion="1.3.1" id="Unnamed">
 
   <processing id="AudioWindowing" position="281,89" size="127,58" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -8,8 +9,6 @@
     <WindowType>None</WindowType>
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
-
-  <processing id="BufferOscilloscope" position="564,528" size="188,133" type="BufferOscilloscope" />
 
   <processing id="Convolution_L1" position="355,336" size="121,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -31,12 +30,10 @@
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="DebugImpulseResponse" position="249,537" size="184,58" type="DebugImpulseResponse" />
-
   <processing id="HRTFDatabaseFetcher2" position="7,402" size="167,62" type="HRTFDatabaseFetcher">
     <FrameSize>512</FrameSize>
     <HrtfDatabase>../../../../acustica/HRTFs/mitKemarFullL.hrtfs</HrtfDatabase>
-    </processing>
+  </processing>
 
   <processing id="IFFT_L1" position="502,338" size="79,58" type="MyIFFT">
     <AudioSize>1024</AudioSize>
@@ -54,35 +51,23 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="IRSwappingDelay_L" position="180,363" size="147,62" type="IRSwappingDelay" />
+  <processing id="IRSwappingDelay_L" position="180,363" size="147,62" type="IRSwappingDelay"/>
 
-  <processing id="IRSwappingDelay_R" position="187,450" size="149,62" type="IRSwappingDelay" />
+  <processing id="IRSwappingDelay_R" position="187,450" size="149,62" type="IRSwappingDelay"/>
 
-  <processing id="L" position="919,251" size="128,111" type="AudioSink" />
+  <processing id="L" position="919,251" size="128,111" type="AudioSink"/>
 
-  <processing id="Monoaural" position="118,83" size="128,108" type="AudioSource" />
+  <processing id="Monoaural" position="118,83" size="128,108" type="AudioSource"/>
 
   <processing id="MyFFT" position="441,87" size="71,58" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="MyIFFT_1" position="445,533" size="105,60" type="MyIFFT">
-    <AudioSize>1024</AudioSize>
-  </processing>
+  <processing id="R" position="912,528" size="128,111" type="AudioSink"/>
 
-  <processing id="Oscilloscope" position="773,109" size="198,117" type="Oscilloscope" />
+  <processing id="XFadeAndSwitch_L" position="752,272" size="142,94" type="XFadeAndSwitch"/>
 
-  <processing id="Oscilloscope_L" position="770,347" size="207,111" type="Oscilloscope" />
-
-  <processing id="Oscilloscope_R" position="769,441" size="208,105" type="Oscilloscope" />
-
-  <processing id="R" position="912,528" size="128,111" type="AudioSink" />
-
-  <processing id="SpectrumView" position="564,650" size="187,120" type="SpectrumView" />
-
-  <processing id="XFadeAndSwitch_L" position="752,272" size="142,94" type="XFadeAndSwitch" />
-
-  <processing id="XFadeAndSwitch_R" position="751,529" size="144,94" type="XFadeAndSwitch" />
+  <processing id="XFadeAndSwitch_R" position="751,529" size="144,94" type="XFadeAndSwitch"/>
 
   <processing id="azimuth" position="318,219" size="565,81" type="OutControlSender">
     <Min>0</Min>
@@ -111,10 +96,6 @@
     <Step>1</Step>
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
-
-  <processing id="toClamSpectrum" position="420,647" size="125,58" type="MagPhaseSpectrum2Spectrum" />
-
-  <processing id="toMagPhase" position="420,601" size="103,58" type="Complex2MagPhaseSpectrum" />
 
   <processing id="toStream_L1" position="606,338" size="104,60" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -178,23 +159,8 @@
   </port_connection>
 
   <port_connection>
-    <out>DebugImpulseResponse.Output</out>
-    <in>MyIFFT_1.Complex Spectrum</in>
-  </port_connection>
-
-  <port_connection>
-    <out>DebugImpulseResponse.Output</out>
-    <in>toMagPhase.ComplexSpectrum</in>
-  </port_connection>
-
-  <port_connection>
     <out>HRTFDatabaseFetcher2.ImpulseResponseL</out>
     <in>IRSwappingDelay_L.Input IR</in>
-  </port_connection>
-
-  <port_connection>
-    <out>HRTFDatabaseFetcher2.ImpulseResponseL</out>
-    <in>DebugImpulseResponse.ImpulseResponse</in>
   </port_connection>
 
   <port_connection>
@@ -268,11 +234,6 @@
   </port_connection>
 
   <port_connection>
-    <out>Monoaural.AudioOut</out>
-    <in>Oscilloscope.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>MyFFT.Complex Spectrum</out>
     <in>Convolution_L1.Input</in>
   </port_connection>
@@ -293,38 +254,13 @@
   </port_connection>
 
   <port_connection>
-    <out>MyIFFT_1.Audio Buffer</out>
-    <in>BufferOscilloscope.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>XFadeAndSwitch_L.CrossFadedBuffer</out>
     <in>L.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>XFadeAndSwitch_L.CrossFadedBuffer</out>
-    <in>Oscilloscope_L.Input</in>
-  </port_connection>
-
-  <port_connection>
     <out>XFadeAndSwitch_R.CrossFadedBuffer</out>
     <in>R.AudioIn</in>
-  </port_connection>
-
-  <port_connection>
-    <out>XFadeAndSwitch_R.CrossFadedBuffer</out>
-    <in>Oscilloscope_R.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>toClamSpectrum.Spectrum</out>
-    <in>SpectrumView.Input</in>
-  </port_connection>
-
-  <port_connection>
-    <out>toMagPhase.MagPhaseSpectrum</out>
-    <in>toClamSpectrum.MagPhaseSpectrum</in>
   </port_connection>
 
   <port_connection>
