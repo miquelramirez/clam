@@ -49,7 +49,7 @@ void Project::LoadFrom(CLAM::Storage & storage)
 		UpdateData();
 		GetSources().resize(1);
 		Extractor & extractor = GetSources()[0];
-		extractor.SetName("Extractor1");
+		extractor.SetName("Extractor_1");
 		dumpExtractorInfo(extractor); // Copy fields
 		if (GetMaps().size()==0) 
 			MapAllSchemaAttributes(extractor);

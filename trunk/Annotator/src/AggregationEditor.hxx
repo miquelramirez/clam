@@ -64,9 +64,9 @@ protected:
     QHBoxLayout* aggregationEditorLayout;
     //QGridLayout* attributePropertiesLayout;
 
-protected slots:
-	void editConfiguration();
-	
+private slots:
+	void editRow();
+	void updateBold(QTreeWidgetItem*row,int column);
 
 private:
 	void addSource(const std::string & source, const CLAM_Annotator::Schema & schema);
@@ -74,7 +74,6 @@ private:
 
 	void parseSources(const std::string & config);
 	void parseMap(const std::string & config);
-	void renameTarget(QTreeWidgetItem * current);
 	QTreeWidgetItem *  hasScope(const std::string & scope,  QTreeWidgetItem * parent);
 	std::string parseQuotationMark(const std::string & config, size_t beginPos, size_t limitedPos, std::string keyWord );
 
