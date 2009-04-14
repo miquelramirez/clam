@@ -86,10 +86,9 @@ class Vbap3D : public CLAM::Processing
 	float angle(const Vector& v1, const Vector& v2) const
 	{
 		float divisor = mod(v1)*mod(v2);
-		CLAM_ASSERT( divisor != 0., "Cannot compute an angle of a zero vector"); 
+		CLAM_ASSERT( divisor > _deltaNumeric, "Cannot compute an angle of a zero vector"); 
 		float arg =  escalarProduct(v1,v2) / (mod(v1)*mod(v2));
-		//TODO revise this
-		if (arg <=-1 or arg >=1) return M_PI;
+		if (arg <-1 or arg >1) return arg < 0 ? M_PI : 0;
 		return acos( arg );
 	}
 	void print(const Vector& v, std::string name="") const
@@ -270,6 +269,7 @@ public:
 	/// params: the source azimuth and elevation
 	int findTriangle(float azimuth, float elevation) const
 	{
+
 //std::cout << "\nfind Triangle. triangles " << _triangles.size() << std::endl;
 
 		int triangle = -1;
@@ -340,6 +340,8 @@ public:
 		{
 			_lastAzimuth=azimuthDegrees;
 			_lastElevation=elevationDegrees;
+//std::cout << "\nazimuth, elevation: " << azimuthDegrees << "\t" << elevationDegrees << std::endl;
+
 		}
 
 		const float as = rad( azimuthDegrees );
