@@ -67,6 +67,10 @@ void AggregationEditor::reloadProject()
 {
 	_reloading = true;
 	clear();
+	setHeaderLabels( QStringList()
+		<< tr( "Source" )
+		<< tr( "Target" )
+		);
 	for (unsigned i=0; i<_project->GetSources().size(); i++)
 	{
 		CLAM_Annotator::Extractor & extractor = _project->GetSources()[i];
