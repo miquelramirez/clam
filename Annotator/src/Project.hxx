@@ -53,6 +53,10 @@ class Extractor : public CLAM::DynamicType
 		AddAll();
 		UpdateData();
 	}
+	void CopyInit(const Extractor & copied)
+	{
+		_schema = copied._schema;
+	}
 private:
 	Schema _schema;
 	bool generateSchema(const QString & configFile, const QString schemaFile);
