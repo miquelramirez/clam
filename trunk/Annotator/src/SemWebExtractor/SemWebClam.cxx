@@ -202,7 +202,6 @@ public:
 		fclose(fp);
 		if(remove(tempFile)!=0)
 			std::cerr << "Cant delete file:" << tempFile << std::endl;	
-		}
 	}
 	
 	~SemWebDescriptionDumper()
