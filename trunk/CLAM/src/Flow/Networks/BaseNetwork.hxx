@@ -28,6 +28,8 @@
 #include "OutControl.hxx"
 #include "AudioSink.hxx"
 #include "AudioSource.hxx"
+#include "ControlSink.hxx"
+#include "ControlSource.hxx"
 #include <string>
 #include <list>
 #include <vector>
@@ -48,6 +50,9 @@ public:
 
 	typedef std::vector<AudioSource*> AudioSources;
 	typedef std::vector<AudioSink*> AudioSinks;
+
+	typedef std::vector<ControlSource*> ControlSources;
+	typedef std::vector<ControlSink*> ControlSinks;
 
 	typedef struct { int x, y, width, height; } Geometry;
 	typedef struct { Processing* processing; Geometry geometry; } ProcessingAndGeometry;

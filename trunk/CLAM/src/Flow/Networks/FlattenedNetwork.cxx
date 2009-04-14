@@ -266,15 +266,17 @@ namespace CLAM
 			item.processing = proc;
 			item.geometry = findProcessingGeometry(proc);
 			sinksAndGeometries.push_back(item);
-			sinksAndGeometries.sort(compareGeometriesUpperThan);
+			sinksAndGeometries.sort(compareGeometriesUpperYThan);
 		}
-			for (std::list<ProcessingAndGeometry>::const_iterator it=sinksAndGeometries.begin();
-				it!=sinksAndGeometries.end();it++)
-			{
-				AudioSink* sink = dynamic_cast<AudioSink*>(it->processing);
-				CLAM_ASSERT(sink, "Expected an AudioSink");
-				orderedSinks.push_back( sink );
-			}
+
+		for (std::list<ProcessingAndGeometry>::const_iterator it=sinksAndGeometries.begin();
+			it!=sinksAndGeometries.end();it++)
+		{
+			AudioSink* sink = dynamic_cast<AudioSink*>(it->processing);
+			CLAM_ASSERT(sink, "Expected an AudioSink");
+			orderedSinks.push_back( sink );
+		}
+
 		return orderedSinks;
 	}
 
@@ -293,19 +295,75 @@ namespace CLAM
 			item.geometry =findProcessingGeometry(proc);
 		
 			sourcesAndGeometries.push_back(item);
-			sourcesAndGeometries.sort(compareGeometriesUpperThan);
+			sourcesAndGeometries.sort(compareGeometriesUpperYThan);
 		}
-			for (std::list<ProcessingAndGeometry>::const_iterator it=sourcesAndGeometries.begin();
-				it!=sourcesAndGeometries.end();it++)
-			{
-				AudioSource* source = dynamic_cast<AudioSource*>(it->processing);
-				CLAM_ASSERT(source, "Expected an AudioSource");
-				orderedSources.push_back( source );
-			}
+
+		for (std::list<ProcessingAndGeometry>::const_iterator it=sourcesAndGeometries.begin();
+			it!=sourcesAndGeometries.end();it++)
+		{
+			AudioSource* source = dynamic_cast<AudioSource*>(it->processing);
+			CLAM_ASSERT(source, "Expected an AudioSource");
+			orderedSources.push_back( source );
+		}
+
 		return orderedSources;
 	}
 
+	const Network::ControlSinks FlattenedNetwork::getOrderedControlSinks() const
+	{
+		std::list <ProcessingAndGeometry> controlSinksAndGeometries;
+		ControlSinks orderedControlSinks;
+		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
+		{
+			Processing * proc = it->second;
+			const std::string className = proc->GetClassName();
+			if (className!="ControlSink")
+				continue;
+			ProcessingAndGeometry item;
+			item.processing = proc;
+			item.geometry = findProcessingGeometry(proc);
+			controlSinksAndGeometries.push_back(item);
+			controlSinksAndGeometries.sort(compareGeometriesUpperXThan);
+		}
 
+		for (std::list<ProcessingAndGeometry>::const_iterator it=controlSinksAndGeometries.begin();
+			it!=controlSinksAndGeometries.end();it++)
+		{
+			ControlSink* controlSink = dynamic_cast<ControlSink*>(it->processing);
+			CLAM_ASSERT(controlSink, "Expected an AudioSink");
+			orderedControlSinks.push_back( controlSink );
+		}
+
+		return orderedControlSinks;
+	}
+	
+	const Network::ControlSources FlattenedNetwork::getOrderedControlSources() const
+	{
+		std::list <ProcessingAndGeometry> controlSourcesAndGeometries;
+		ControlSources orderedControlSources;
+		for (ProcessingsMap::const_iterator it=_processings.begin(); it!=_processings.end(); it++)
+		{
+			Processing * proc = it->second;
+			const std::string className = proc->GetClassName();
+			if (className!="ControlSource")
+				continue;
+			ProcessingAndGeometry item;
+			item.processing = proc;
+			item.geometry = findProcessingGeometry(proc);
+			controlSourcesAndGeometries.push_back(item);
+			controlSourcesAndGeometries.sort(compareGeometriesUpperXThan);
+		}
+
+		for (std::list<ProcessingAndGeometry>::const_iterator it=controlSourcesAndGeometries.begin();
+			it!=controlSourcesAndGeometries.end();it++)
+		{
+			ControlSource* controlSource = dynamic_cast<ControlSource*>(it->processing);
+			CLAM_ASSERT(controlSource, "Expected an AudioSink");
+			orderedControlSources.push_back( controlSource );
+		}
+
+		return orderedControlSources;
+	}
 
 	bool FlattenedNetwork::SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries)
 	{
@@ -323,9 +381,14 @@ namespace CLAM
 		return copyProcessingsGeometry;
 	}
 
-	const bool FlattenedNetwork::compareGeometriesUpperThan (ProcessingAndGeometry & arg1, ProcessingAndGeometry & arg2)
+	const bool FlattenedNetwork::compareGeometriesUpperYThan (ProcessingAndGeometry & arg1, ProcessingAndGeometry & arg2)
 	{
 		return arg1.geometry.y < arg2.geometry.y ;
+	}
+
+	const bool FlattenedNetwork::compareGeometriesUpperXThan (ProcessingAndGeometry & arg1, ProcessingAndGeometry & arg2)
+	{
+		return arg1.geometry.x < arg2.geometry.x ;
 	}
 
 /*	// TODO: use individual geometries loadings/storings??:

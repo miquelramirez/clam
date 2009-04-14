@@ -86,12 +86,14 @@ public:
 	bool SetProcessingsGeometries (const ProcessingsGeometriesMap & processingsGeometries);
 	const ProcessingsGeometriesMap GetAndClearGeometries();
 
-	//! sources and sink order 
+	//! audio sources and sinks and control sources and sinks  order 
 	const Geometry findProcessingGeometry(Processing* ) const;
 	const AudioSinks getOrderedSinks() const;
 	const AudioSources getOrderedSources() const;
-	static const bool compareGeometriesUpperThan(ProcessingAndGeometry &, ProcessingAndGeometry &);
-
+	const ControlSinks getOrderedControlSinks() const;
+	const ControlSources getOrderedControlSources() const;
+	static const bool compareGeometriesUpperYThan(ProcessingAndGeometry &, ProcessingAndGeometry &);
+	static const bool compareGeometriesUpperXThan(ProcessingAndGeometry &, ProcessingAndGeometry &);
 
 /*// TODO: make individual geometries loadings/storings??
 	const Geometry GetAndEraseGeometry(std::string name);*/
