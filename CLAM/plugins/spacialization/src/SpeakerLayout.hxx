@@ -29,6 +29,11 @@ public:
 	const CLAM::Orientation & orientation(unsigned i) const { return _orientations[i]; }
 	void add(double azimuthDegrees, double elevationDegrees, const std::string & name);
 	bool load(const std::string & path, std::string & errorMsg);
+	void clear()
+	{
+		_names.clear();
+		_orientations.clear();
+	}
 };
 #endif
 
