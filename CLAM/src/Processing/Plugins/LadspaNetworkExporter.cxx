@@ -160,49 +160,53 @@ void NetworkLADSPAPlugin::Deactivate()
 	_network.Stop();
 }
 
+
 void NetworkLADSPAPlugin::LocateConnections()
 {
 	CLAM_ASSERT( mReceiverList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered input ports");
 	CLAM_ASSERT( mSenderList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered output ports");
 	CLAM_ASSERT( mInControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
 	CLAM_ASSERT( mOutControlList.empty(), "NetworkLADSPAPlugin::LocateConnections() : there are already registered controls");
-	//Get them from the Network and add it to local list		
-	for (Network::ProcessingsMap::const_iterator it=_network.BeginProcessings(); it!=_network.EndProcessings(); it++)
-	{
-		CLAM::Processing * processing = it->second;
-		const std::string & className = processing->GetClassName();
+	
+	Network::AudioSources sources=_network.getOrderedSources();
+	Network::AudioSinks sinks=_network.getOrderedSinks();
+	Network::ControlSources controlSources = _network.getOrderedControlSources();
+	Network::ControlSinks controlSinks = _network.getOrderedControlSinks();
 
-		if (className == "AudioSource")
-		{
-			LADSPAInfo<AudioSource> info;
-			info.name=it->first;
-			info.processing=(AudioSource*)processing;
-			info.processing->SetFrameAndHopSize( mExternBufferSize );
-			mReceiverList.push_back(info);
-		}
-		if (className == "AudioSink")
-		{
-			LADSPAInfo<AudioSink> info;
-			info.name=it->first;
-			info.processing=(AudioSink*)it->second;
-			info.processing->SetFrameAndHopSize( mExternBufferSize );
-			mSenderList.push_back(info);
-		}
-		if (className == "ControlSource")
-		{
-			LADSPAInfo<ControlSource> info;
-			info.name=it->first;
-			info.processing=(ControlSource*)it->second;
-			mInControlList.push_back(info);
-		}
-		if (className == "ControlSink")
-		{
-			LADSPAInfo<ControlSink> info;
-			info.name=it->first;
-			info.processing=(ControlSink*)it->second;
-			mOutControlList.push_back(info);
-		}
+	for (Network::AudioSources::const_iterator it=sources.begin(); it!=sources.end(); it++)
+	{
+		LADSPAInfo<AudioSource> info;
+		info.name = _network.GetNetworkId(*it).c_str();
+		info.processing=*it;
+		info.processing->SetFrameAndHopSize( mExternBufferSize );
+		mReceiverList.push_back(info);
 	}
+
+	for (Network::AudioSinks::const_iterator it=sinks.begin(); it!=sinks.end(); it++)
+	{
+		LADSPAInfo<AudioSink> info;
+		info.name = _network.GetNetworkId( *it ).c_str();
+		info.processing =*it;
+		info.processing->SetFrameAndHopSize ( mExternBufferSize );		
+		mSenderList.push_back(info);	
+	}
+
+	for (Network::ControlSources::const_iterator it=controlSources.begin(); it!=controlSources.end(); it++)
+	{
+		LADSPAInfo<ControlSource> info;
+		info.name = _network.GetNetworkId(*it).c_str();
+		info.processing=*it;
+		mInControlList.push_back(info);
+	}
+
+	for (Network::ControlSinks::const_iterator it=controlSinks.begin(); it!=controlSinks.end(); it++)
+	{
+		LADSPAInfo<ControlSink> info;
+		info.name = _network.GetNetworkId( *it ).c_str();
+		info.processing =*it;
+		mOutControlList.push_back(info);	
+	}
+
 }
 
 void NetworkLADSPAPlugin::UpdatePortFrameAndHopSize()
