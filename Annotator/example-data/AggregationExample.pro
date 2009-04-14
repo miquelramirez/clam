@@ -12,7 +12,6 @@ TODO: Explain how this aggregation extractor should be reviewed.
   <Schema>AggregationExample.sc</Schema>
   <Extractor>C:/Jun/Devel/Annotator/scripts/dist/AggregationExtractor.exe</Extractor>
   <PoolSuffix>.aggPool</PoolSuffix>
-  <Config></Config>
   <Configuration>sources = [
 	("example", FileMetadataSource(path=".",
 		schemaFile="CLAMDescriptors.sc",
