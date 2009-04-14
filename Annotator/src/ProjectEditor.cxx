@@ -109,7 +109,6 @@ void ProjectEditor::updateFields()
 }
 
 
-
 void ProjectEditor::on_newSourceButton_clicked()
 {
 	CLAM_Annotator::Extractor extractor;
@@ -117,15 +116,16 @@ void ProjectEditor::on_newSourceButton_clicked()
 	SourceEditor * editor = new SourceEditor(extractor, this);
 	if (editor->exec() != QDialog::Accepted) return; // Cancelled
 	mProject.GetSources().push_back(extractor);
+	mProject.MapAllSchemaAttributes(mProject.GetSources().back());
 	updateFields();
 }
 
 void ProjectEditor::on_removeSourceButton_clicked()
 {
 	int row = ui.sources->currentRow();
-	if (row=-1) return;
-	// TODO: Are you sure?
-	if (row>=mProject.GetSources().size()) return; // some
+	std::cout << "Erasing " << row << std::endl;
+	if (row<0) return; // No item selected, ignored
+	if (row>=mProject.GetSources().size()) return; // Weird!!
 	mProject.GetSources().erase(mProject.GetSources().begin()+row);
 	updateFields();
 }
@@ -138,6 +138,7 @@ void ProjectEditor::on_sources_itemActivated(QListWidgetItem * item)
 		"ProjectEditor: Unexpected item");
 
 	CLAM_Annotator::Extractor extractor = mProject.GetSources()[row]; // Copia
+	std::string oldName = extractor.GetName();
 	SourceEditor * editor = new SourceEditor(extractor, this);
 	if (editor->exec() != QDialog::Accepted) return; // Cancelled
 
