@@ -47,7 +47,9 @@ AggregationEditor::AggregationEditor(QWidget *parent)
 		<< tr( "Target" )
 		);
 	connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)),
-            this, SLOT(editConfiguration()));
+            this, SLOT(editRow()));
+	connect(this, SIGNAL(itemChanged(QTreeWidgetItem*,int)),
+			this, SLOT(updateBold(QTreeWidgetItem*,int)));
 }
 
 /*
@@ -282,22 +284,27 @@ std::string AggregationEditor::outputConfig()
 	return config;	
 }
 
-void AggregationEditor::renameTarget(QTreeWidgetItem * current)
-{
-	current->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled | Qt::ItemIsDragEnabled |Qt::ItemIsEditable);
-	editItem(current, 1);
-}
-
-void AggregationEditor::editConfiguration()
+void AggregationEditor::editRow()
 {
 	QTreeWidgetItem * current = currentItem();
 	if(!current) return;
-	QTreeWidgetItem * parent=current->parent();
-
-	if(!parent) return;   //Source
+	if(!current->parent()) return; // It is a source
 	// Scope or attribute
-	renameTarget(current);
+	current->setFlags(current->flags()| Qt::ItemIsEditable);
+	editItem(current, 1);
+}
 
+void AggregationEditor::updateBold(QTreeWidgetItem* row, int column)
+{
+	if (_reloading) return; // Software editing, ignore
+	if (not row) return; // No line
+	if (not row->parent()) return; // Source line
+	if (row->text(0) == row->text(1)) return; // No difference
+	_reloading=true;
+	QFont changedFont=font();
+	changedFont.setBold(true);
+	row->setFont(1,changedFont);
+	_reloading=false;
 }
 
 void AggregationEditor::takeMaps()
