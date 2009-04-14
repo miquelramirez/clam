@@ -56,7 +56,7 @@
 
   <processing id="ExponentForDistance" position="191,84" size="152,58" type="ControlSource">
     <MinValue>0</MinValue>
-    <MaxValue>3</MaxValue>
+    <MaxValue>2</MaxValue>
     <Step>0.1</Step>
     <UnitName>u</UnitName>
   </processing>
