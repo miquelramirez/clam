@@ -104,7 +104,7 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 	changedFont.setBold(true);
 	Qt::CheckState  state=Qt::Unchecked;
 	QTreeWidgetItem * scopeItem = hasScope(scope, parent);
-	if(not scopeItem)
+	if (not scopeItem)
 	{
 		scopeItem = new QTreeWidgetItem( parent);
 		scopeItem->setText( 0, scope.c_str() );
@@ -116,7 +116,7 @@ void AggregationEditor::addAttribute(const std::string & scope, const std::strin
 	item->setText( 0, name.c_str() );
 	item->setIcon( 0, attributeIcon );
 	std::string source = parent->text(0).toStdString();
-	for(unsigned i=0; i<_project->GetMaps().size(); i++)
+	for (unsigned i=0; i<_project->GetMaps().size(); i++)
 	{
 		const CLAM_Annotator::AttributeMap & map = _project->GetMaps()[i];
 		if (map.GetSource() != source) continue;
@@ -299,8 +299,9 @@ void AggregationEditor::editConfiguration()
 void AggregationEditor::takeMaps()
 {
 	if (_reloading) return;
+	std::cout << "* Taking maps" << std::endl;
 	_project->GetMaps().clear();
-	for(int i=0; i<topLevelItemCount(); i++)  //ugly.....is there any clearer way?
+	for(int i=0; i<topLevelItemCount(); i++)
 	{
 		QTreeWidgetItem * sourceItem = topLevelItem(i);
 		for(int j=0; j<sourceItem->childCount();j++)

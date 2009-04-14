@@ -120,6 +120,16 @@ void ProjectEditor::on_newSourceButton_clicked()
 	updateFields();
 }
 
+void ProjectEditor::on_removeSourceButton_clicked()
+{
+	int row = ui.sources->currentRow();
+	if (row=-1) return;
+	// TODO: Are you sure?
+	if (row>=mProject.GetSources().size()) return; // some
+	mProject.GetSources().erase(mProject.GetSources().begin()+row);
+	updateFields();
+}
+
 void ProjectEditor::on_sources_itemActivated(QListWidgetItem * item)
 {
 	int row = ui.sources->row(item);
@@ -137,7 +147,6 @@ void ProjectEditor::on_sources_itemActivated(QListWidgetItem * item)
 
 void ProjectEditor::on_mappings_itemChanged(QTreeWidgetItem * item, int col)
 {
-	std::cout << "* Mappings item changed" << std::endl;
 	ui.mappings->takeMaps();
 }
 
@@ -208,25 +217,6 @@ void ProjectEditor::on_loadConfigurationButton_clicked()
 	updateFields();
 }
 
-
-void ProjectEditor::on_graphicalEditButton_clicked()
-{
-	CLAM_Annotator::Project copyProject = mProject;
-	QDialog dialog(this);
-	dialog.setLayout(new QVBoxLayout(&dialog));
-	AggregationEditor * mapEditor = new AggregationEditor(this);
-	dialog.layout()->addWidget(mapEditor);
-	QDialogButtonBox * buttons = new QDialogButtonBox(&dialog);
-	dialog.layout()->addWidget(buttons);
-	connect(buttons, SIGNAL(accepted()), &dialog, SLOT(accept()));
-	connect(buttons, SIGNAL(rejected()), &dialog, SLOT(reject()));
-	mapEditor->bindProject(copyProject);
-	mapEditor->loadConfig(mProject.GetConfiguration());
-	if(dialog.exec()==QDialog::Rejected) return;	
-	mapEditor->takeMaps();
-	mProject = copyProject;
-	updateFields();
-}
 
 void ProjectEditor::on_testExtractorButton_clicked()
 {
