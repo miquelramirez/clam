@@ -160,7 +160,7 @@ p, li { white-space: pre-wrap; }
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="removeSource">
+      <widget class="QPushButton" name="removeSourceButton">
        <property name="text">
         <string>&amp;Remove</string>
        </property>
@@ -267,7 +267,13 @@ p, li { white-space: pre-wrap; }
     </layout>
    </item>
    <item row="5" column="1">
-    <widget class="AggregationEditor" name="mappings"/>
+    <widget class="AggregationEditor" name="mappings">
+     <column>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </column>
+    </widget>
    </item>
    <item row="6" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -290,7 +296,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>projectInfo</tabstop>
   <tabstop>htmlPreview</tabstop>
   <tabstop>newSourceButton</tabstop>
-  <tabstop>removeSource</tabstop>
+  <tabstop>removeSourceButton</tabstop>
   <tabstop>sources</tabstop>
   <tabstop>testExtractorButton</tabstop>
   <tabstop>schemaEditButton</tabstop>

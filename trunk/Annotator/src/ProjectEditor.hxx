@@ -56,9 +56,9 @@ class ProjectEditor : public QDialog
 		void on_extractor_textChanged(); // done
 		void on_extractorBrowseButton_clicked();
 		void on_loadConfigurationButton_clicked(); //
-		void on_graphicalEditButton_clicked();
 		void on_testExtractorButton_clicked();
 		void on_newSourceButton_clicked();
+		void on_removeSourceButton_clicked();
 		void on_sources_itemActivated(QListWidgetItem * item);
 		void on_mappings_itemChanged(QTreeWidgetItem * item, int col);
 	private:
