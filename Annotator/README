@@ -44,5 +44,11 @@ The INSTALL file contains instructions about compiling and installing.
 The COPYING file contains the license terms to use, modify and 
 redistribute this software.
 
+== SemWebExtractor ==
+
+sudo apt-get install python-xml python-rdflib python-mutagen python-musicbrainz2
+scons semweb=1
+
+
 
 
