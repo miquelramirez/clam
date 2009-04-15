@@ -258,7 +258,7 @@ int main(int argc, char* argv[])			// access command line arguments
 	if(!Py_IsInitialized())
 		return -1;
 	PyRun_SimpleString("import sys\n");
-	PyRun_SimpleString("sys.path.append('C:\\Jun\\devel\\Annotator\\src\\SemWebExtractor')"); //Alert: absolute path!!
+	PyRun_SimpleString("sys.path.append('src/SemWebExtractor')"); //Alert: absolute path!!
 	
 	std::cout << copyright << std::endl;
 	std::cout<<"Connecting to Linking Open Data Servers, Please wait.................."<<std::endl;

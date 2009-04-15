@@ -9,6 +9,7 @@ options.Add(PathOption('clam_prefix', 'The prefix where CLAM was installed', '')
 options.Add(BoolOption('release', 'Enabling compiler optimizations', 'no') )
 options.Add(BoolOption('verbose', 'Display the full command line instead a short command description', 'no') )
 options.Add(PathOption('external_dll_path', '(Windows only) The place where the NSIS packager takes the installed DLL from', '.'))
+options.Add(BoolOption('semweb', 'An extractor that requires python (provisional option)', 'no'))
 if sys.platform=="linux2" :
 	options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 
@@ -182,21 +183,21 @@ bocaClientSources = [
 ]
 programs += [ env.Program(target="BocaClient", source = bocaClientSources) ]
 
-if False:
+if env['semweb']:
 	# Jun: added for test
 	# to embed Python scripts in C++ code, Python.h needs to be included,
 	#TODO: replace the absolute path with an option
-	#includePaths += ['C:/Python25/include']
-	env.AppendUnique(CPPPATH= ['/usr/include/python2.6'])
-	#env.Append(LIBPATH=['C:/Python25/libs'])
-	#env.Prepend(LIBS="python25")
-	env.Prepend(LIBS="python2.6")
+#	env.AppendUnique(CPPPATH=['C:/Python25/include')]
+	env.AppendUnique(CPPPATH= ['/usr/include/python2.5'])
+#	env.Append(LIBPATH=['C:/Python25/libs'])
+#	env.Prepend(LIBS="python25")
+	env.Prepend(LIBS="python2.5")
 	semwebSources = scanFiles("*.cxx", ["src/SemWebExtractor"])
 	semwebSources = filter ( (lambda a : a.rfind( "Test")==-1 ),  semwebSources )
 	semwebSources = filter ( (lambda a : a.rfind( "cppunit")==-1 ),  semwebSources )
 	clamlibpath = [os.path.join(env['prefix'],'lib')]
 
-	##programs += [ env.Program(target='SemWebExtractor', source = semwebSources, LIBPATH=[clamlibpath,pythonlibpath]) ]  #, LIBPATH=pythonlibpath
+#	programs += [ env.Program(target='SemWebExtractor', source = semwebSources, LIBPATH=[clamlibpath,pythonlibpath]) ]  #, LIBPATH=pythonlibpath
 	programs += [ env.Program(target='SemWebExtractor', source = semwebSources) ]
 
 
