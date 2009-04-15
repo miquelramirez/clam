@@ -125,10 +125,8 @@ void Annotator::computeSongDescriptors()
 		return;
 	}
 	mStatusBar << "Launching Extractor..." << mStatusBar;
+
 	TaskRunner * runner = new TaskRunner();
-	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
-	addDockWidget( Qt::BottomDockWidgetArea, runner);
-	qApp->processEvents(); // Repaint before heavy CPU
 
 	QTemporaryFile * configFile = new QTemporaryFile(runner); // delete it with 'runner'
 	configFile->open();
@@ -136,14 +134,19 @@ void Annotator::computeSongDescriptors()
 	QString configFileName = configFile->fileName();
 	configFile->close();
 
-	bool ok =runner->run(mProject.GetExtractor().c_str(),
+	runner->setCommand(mProject.GetExtractor().c_str(),
 		QStringList() 
 			<< qfilename 
 			<< "-f" << mProject.PoolSuffix().c_str() 
 			<< "-c" << configFileName,
 		QDir::current().path());
-	
-	if (!ok)
+
+	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
+	addDockWidget( Qt::BottomDockWidgetArea, runner);
+	qApp->processEvents(); // Repaint before heavy CPU
+
+
+	if (not runner->run())
 	{
 		QMessageBox::critical(this, context,
 			tr("<p><b>Error: Unable to launch the extractor.</b></p>\n"
