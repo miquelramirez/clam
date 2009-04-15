@@ -116,35 +116,19 @@ void Annotator::computeSongDescriptors()
 	}
 	std::string filename = mSongListView->currentItem()->text(0).toStdString();
 	filename  = mProject.RelativeToAbsolute(filename);
-	QString qfilename = QString::fromStdString(filename);
 	if (!std::ifstream(filename.c_str()))
 	{
 		QMessageBox::critical(this, context,
 			tr("<p><b>Unable to open selected file '%1'</b></p>.")
-				.arg(qfilename));
+				.arg(filename.c_str()));
 		return;
 	}
 	mStatusBar << "Launching Extractor..." << mStatusBar;
 
-	TaskRunner * runner = new TaskRunner();
-
-	QTemporaryFile * configFile = new QTemporaryFile(runner); // delete it with 'runner'
-	configFile->open();
-	configFile->write(mProject.GetConfiguration().c_str());
-	QString configFileName = configFile->fileName();
-	configFile->close();
-
-	runner->setCommand(mProject.GetExtractor().c_str(),
-		QStringList() 
-			<< qfilename 
-			<< "-f" << mProject.PoolSuffix().c_str() 
-			<< "-c" << configFileName,
-		QDir::current().path());
-
+	TaskRunner * runner = mProject.CreateExtractionTaskRunner(filename);
 	connect(runner, SIGNAL(taskDone(bool)), this, SLOT(endExtractorRunner(bool)));
 	addDockWidget( Qt::BottomDockWidgetArea, runner);
 	qApp->processEvents(); // Repaint before heavy CPU
-
 
 	if (not runner->run())
 	{
