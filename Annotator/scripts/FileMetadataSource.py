@@ -27,7 +27,12 @@ class FileMetadataSource :
 
 	def __init__(self, path=None, schemaFile='schema.sc', poolSuffix=".pool", extractor=None ) :
 		self.path = path
-		self.schemaFile = schemaFile if self.path is None else os.path.join(self.path, schemaFile)
+		if not schemaFile :
+			self.schemaFile=os.tmpnam() # TODO: Unsecure
+		elif self.path is None :
+			self.schemaFile = schemaFile
+		else :
+			self.schemaFile = os.path.join(self.path, schemaFile)
 		self.idsToRecalculate = []
 		self.poolSuffix=poolSuffix
 		# TODO: there should be an InvalidExtractorPath exception check
