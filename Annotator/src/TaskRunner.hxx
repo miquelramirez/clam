@@ -44,18 +44,24 @@ public:
 		setAttribute(Qt::WA_DeleteOnClose, true);
 	}
 	virtual ~TaskRunner();
-	bool run(QString command, QStringList & arguments, QString workingDir)
+	void setCommand(const QString command, const QStringList & arguments, const QString & workingDir)
+	{
+		_command=command;
+		_arguments = arguments;
+		_workingDir = workingDir;
+	}
+	bool run()
 	{
 		_output = ("<div style='color: blue;'>" + tr("Executing '<tt>%1 %2</tt>'") + "</div><br/>")
-			.arg(command)
-			.arg(arguments.join(" "));
+			.arg(_command)
+			.arg(_arguments.join(" "));
 		updateText();
 		_process = new QProcess(this);
-		_process->setWorkingDirectory(workingDir);
+		_process->setWorkingDirectory(_workingDir);
 		connect(_process, SIGNAL(readyReadStandardError()), this, SLOT(dumpError()));
 		connect(_process, SIGNAL(readyReadStandardOutput()), this, SLOT(dumpOutput()));
 		connect(_process, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(finished()));
-		_process->start(command, arguments);
+		_process->start(_command, _arguments);
 		return _process->waitForStarted();
 	}
 signals:
@@ -101,6 +107,9 @@ private:
 	QTextEdit * _outputDisplay;
 	QProcess * _process;
 	QString _output;
+	QString _command;
+	QStringList _arguments;
+	QString _workingDir;
 };
 
 
