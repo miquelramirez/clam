@@ -43,7 +43,7 @@ class FileMetadataSource :
 
 	def QueryDescriptors(self, id, ignoreCache=False, computeIfNotCached=False, keepCache=True) :
 		print "Computing", self.extractor, "for", id
-		if not ignoreCache or True : # TODO: Use properly the ignoreCache flag
+		if not ignoreCache and False : # TODO: Use properly the ignoreCache flag
 			try :
 				result = Pool(file(self._poolPath(id)))
 				print "Using cached data"
