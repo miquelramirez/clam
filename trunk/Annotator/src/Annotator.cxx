@@ -25,7 +25,6 @@
 #include "FrameDivision.hxx"
 #include "AudioLoadThread.hxx"
 #include "SchemaBrowser.hxx"
-//#include "AggregationEditor.hxx"
 #include "TaskRunner.hxx"
 #include "ui_About.hxx"
 #include "ProjectEditor.hxx"
@@ -289,9 +288,6 @@ void Annotator::initInterface()
 	mSchemaBrowser = new SchemaBrowser;
 	mMainTabWidget->addTab(mSchemaBrowser, tr("Description Schema"));
 
-	//mAggregationEditor = new AggregationEditor;
-	//mMainTabWidget->addTab(mAggregationEditor, tr("Aggregation Editor"));
-	
 	_auralizer = new Auralizer(this);
 	_auralizer->setAudio(mCurrentAudio);
 
@@ -340,7 +336,7 @@ void Annotator::initProject()
 	catch (CLAM::XmlStorageErr & e)
 	{
 		QMessageBox::warning(this,tr("Error Loading Schema File"),
-				constructFileError(mProject.GetSchema(),e));
+				constructFileError("temporary generated schema",e)); // TODO: Better message
 		return;
 	}
 	adaptInterfaceToCurrentSchema();
@@ -362,17 +358,7 @@ void Annotator::adaptInterfaceToCurrentSchema()
 		_segmentationPanes[i]->adaptToSchema();
 	mStatusBar << tr("Updating schema browser...") << mStatusBar;
 	mSchemaBrowser->setSchema(mProject.GetAnnotatorSchema());
-	/*
-	if(mProject.GetConfiguration()=="")
-		mStatusBar << tr("Aggregation editor is void, skip...") << mStatusBar;
-	else
-	{
-		mStatusBar << tr("Updating aggregation editor...") << mStatusBar;
-		mAggregationEditor->loadConfig(mProject.GetConfiguration().c_str());
-		mAggregationEditor->setSchema();
-	}
-	*/
-		
+
 	mStatusBar << tr("Creating instant views...") << mStatusBar;
 	adaptInstantViewsToSchema();
 	mStatusBar << tr("User interface adapted to the new schema.") << mStatusBar;

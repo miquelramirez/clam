@@ -271,14 +271,10 @@ void Project::dumpExtractorInfo(CLAM_Annotator::Extractor & extractor)
 {
 	extractor.AddAll();
 	extractor.UpdateData();
-	if (HasExtractor())
-		extractor.SetExtractor(GetExtractor());
-	if (HasSchema())
-		extractor.SetSchema(RelativeToAbsolute(GetSchema()));
-	if (HasConfiguration())
-		extractor.SetConfiguration(GetConfiguration());
-	if (HasPoolSuffix())
-		extractor.SetPoolSuffix(GetPoolSuffix());
+	extractor.SetExtractor("scripts/AggregationExtractor.py");
+	extractor.SetSchema("");
+	extractor.SetConfiguration(aggregationScript());
+	extractor.SetPoolSuffix(PoolSuffix());
 }
 
 bool Project::LoadSchema()
