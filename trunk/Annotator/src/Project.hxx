@@ -36,6 +36,8 @@
 #include <QtGui/QMessageBox>
 #include <CLAM/XMLStorage.hxx>
 
+class TaskRunner;
+
 namespace CLAM_Annotator
 {
 class Schema;
@@ -179,6 +181,7 @@ public:
 	{
 		return mSchema.GetAttribute(scope, name);
 	}
+	TaskRunner * CreateExtractionTaskRunner(const std::string & filename);
 	void SetProjectPath(const std::string & path);
 	const std::string & File() const { return mFile; }
 	const std::string & BaseDir() const { return mBasePath; }

@@ -21,6 +21,7 @@
 
 
 #include "Project.hxx"
+#include "TaskRunner.hxx"
 #include <CLAM/Text.hxx>
 #include <CLAM/XMLStorage.hxx>
 #include <QtCore/QDir>
@@ -93,6 +94,26 @@ bool Extractor::generateSchema(const QString & configFileName, const QString sch
 	std::cout << "Output:\n" << process.readAllStandardOutput().constData() << std::endl;
 	std::cerr << "\033[31m" << process.readAllStandardError().constData() << "\033[0m" << std::endl;
 	return process.exitCode()==0;
+}
+
+TaskRunner * Project::CreateExtractionTaskRunner(const std::string & filename)
+{
+	TaskRunner * runner = new TaskRunner();
+	QString qfilename = QString::fromStdString(filename);
+
+	QTemporaryFile * configFile = new QTemporaryFile(runner); // delete it with 'runner'
+	configFile->open();
+	configFile->write(GetConfiguration().c_str());
+	QString configFileName = configFile->fileName();
+	configFile->close();
+
+	runner->setCommand(GetExtractor().c_str(),
+		QStringList() 
+			<< qfilename 
+			<< "-f" << PoolSuffix().c_str() 
+			<< "-c" << configFileName,
+		QDir::current().path());
+	return runner;
 }
 
 const Schema & Extractor::schema() const

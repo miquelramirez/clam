@@ -71,7 +71,11 @@ private slots:
 	{
 		dumpOutput();
 		dumpError();
-		_output += tr("<div style='color: blue;'>Done.</div>");
+		bool success = _process->exitCode()==0;
+		if (success)
+			_output += tr("<div style='color: blue;'>Done.</div>");
+		else
+			_output += tr("<div style='color: red;'>Finnished with errors!</div>");
 		updateText();
 		QTimer::singleShot(5000, this, SLOT(close()));
 		emit taskDone(_process->exitCode()==0);
