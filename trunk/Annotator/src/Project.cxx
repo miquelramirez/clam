@@ -103,11 +103,13 @@ TaskRunner * Project::CreateExtractionTaskRunner(const std::string & filename)
 
 	QTemporaryFile * configFile = new QTemporaryFile(runner); // delete it with 'runner'
 	configFile->open();
-	configFile->write(GetConfiguration().c_str());
+//	configFile->write(GetConfiguration().c_str());
+	configFile->write(aggregationScript().c_str());
 	QString configFileName = configFile->fileName();
 	configFile->close();
 
-	runner->setCommand(GetExtractor().c_str(),
+//	runner->setCommand(GetExtractor().c_str(),
+	runner->setCommand("scripts/AggregationExtractor.py",
 		QStringList() 
 			<< qfilename 
 			<< "-f" << PoolSuffix().c_str() 
@@ -212,6 +214,17 @@ std::string Project::aggregationScript() const
 			"\t\tschemaFile=\""+extractor.GetSchema()+"\",\n"
 			"\t\tpoolSuffix=\""+extractor.GetPoolSuffix()+"\",\n"
 			"\t\textractor=\""+extractor.GetExtractor()+"\")),\n"
+		;
+	}
+	result += "]\n\n";
+	result += "\n\nmap = [\n";
+	for (unsigned i=0; i<GetMaps().size(); i++)
+	{
+		const AttributeMap & map = GetMaps()[i];
+		result += 
+			"\t(\""+map.GetTargetScope()+"::"+map.GetTargetAttribute()+"\", "
+				"\""+map.GetSource()+"\", "
+				"\""+map.GetSourceScope()+"::"+map.GetSourceAttribute()+"\"),\n";
 		;
 	}
 	result += "]\n\n";
