@@ -107,12 +107,6 @@ void Annotator::computeSongDescriptors()
 {
 	QString context = tr("Extracting descriptors");
 	if (!mSongListView->currentItem()) return;
-	if (!mProject.HasExtractor() || mProject.GetExtractor()=="")
-	{
-		QMessageBox::critical(this, context,
-			tr("<p><b>Error: No extractor was defined for the project.</b></p>\n"));
-		return;
-	}
 	std::string filename = mSongListView->currentItem()->text(0).toStdString();
 	filename  = mProject.RelativeToAbsolute(filename);
 	if (!std::ifstream(filename.c_str()))
