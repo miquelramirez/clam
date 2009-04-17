@@ -75,7 +75,7 @@ for audiofile in args:
 	if audiofile.endswith(".mp3") :
 		os.popen('mpg123 -w lala.wav %s'%audiofile).read()
 		audiofile="lala.wav"
-	f=os.popen('./OnsetExtractor %s'%audiofile,'r')
+	f=os.popen('./OnsetExtractorCore %s'%audiofile,'r')
 	onsets = [ str(float(onset)/2) for onset in f ]
 	target = open(audiofile+options.suffix,'w')
 	print >> target, dataTemplate%(len(onsets), " ".join(onsets))
