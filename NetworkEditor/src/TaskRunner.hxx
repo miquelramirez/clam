@@ -44,8 +44,9 @@ public:
 		_process(0)
 	{
 		_outputDisplay = new QTextEdit(this);
-		QDialogButtonBox * buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel
-                                      | QDialogButtonBox::Close,Qt::Vertical,this);
+		QDialogButtonBox * buttonBox = new QDialogButtonBox(
+			QDialogButtonBox::Cancel | QDialogButtonBox::Close,
+			Qt::Vertical,this);
 		_cancelButton=buttonBox->button(QDialogButtonBox::Cancel);
 		_closeButton=buttonBox->button(QDialogButtonBox::Close);
 		_cancelButton->setEnabled(true);
@@ -72,15 +73,23 @@ public:
 	} CommandAndEnvironment;
 
 	typedef QList<CommandAndEnvironment> CommandsAndEnvironmentsList;
-
-	bool run (CommandsAndEnvironmentsList & commandsList, bool stopOnError=true)
+	void enqueueSubtask(const QString & command, const QStringList & arguments, const QString & workingDir)
+	{
+		CommandsAndEnvironmentsList commandsQList;
+		CommandAndEnvironment task;
+		// define compilation using make:
+		task.command=command;
+		task.arguments=arguments;
+		task.workingDir=workingDir;
+		_queuedCommandsList.append(task);
+	}
+	bool runQueued(bool stopOnError=true)
 	{
 		_error=false;
 		_stopOnError=stopOnError;
 		_output.clear();
-		_queuedCommandsList=commandsList;
 		if (_queuedCommandsList.size()==0)
-			return 0;
+			return false;
 		return getAndRunQueuedCommand();
 	}
 	bool run (QString command, QStringList & arguments, QString workingDir)
@@ -89,7 +98,7 @@ public:
 		_output.clear();
 		_queuedCommandsList.clear();
 		return runCommand(command,arguments,workingDir);
-	}
+}
 
 signals:
 	void taskDone(bool success);
@@ -128,7 +137,7 @@ private slots:
 		updateText();
 	}
 private:
-	bool runCommand(QString command, QStringList & arguments, QString workingDir)
+	bool runCommand(QString command, const QStringList & arguments, QString workingDir)
 	{
 		printCommand(QString("%1 %2").arg(command).arg(arguments.join(" ")));
 		_process = new QProcess(this);
@@ -142,7 +151,7 @@ private:
 	}
 	bool getAndRunQueuedCommand()
 	{
-		CommandAndEnvironment command = _queuedCommandsList.takeFirst();
+		const CommandAndEnvironment & command = _queuedCommandsList.takeFirst();
 		return runCommand(command.command, command.arguments, command.workingDir);
 	}
 	void finishedQueue()

@@ -240,6 +240,9 @@ Building LADSPA plugins requires the development files or SDK not just the run t
        </item>
        <item row="7" column="1">
         <widget class="QCheckBox" name="keepIntermediateFiles">
+         <property name="whatsThis">
+          <string>If checked, the temporary folder containing the source it will not be deleted after compiling the plugin.</string>
+         </property>
          <property name="text">
           <string>Keep intermediate files</string>
          </property>
