@@ -1,10 +1,5 @@
-#include "MainWindow.hxx"
 #include <QtCore/QTemporaryFile>
 #include "uic_LadspaMetadataEditor.hxx"
-
-MainWindow::~MainWindow()
-{
-}
 
 
 //////////////////////
@@ -150,7 +145,8 @@ void MainWindow::on_action_CompileAsLadspaPlugin_triggered()
 	settings.setValue("ClamPrefix", ui.clamPrefix->location());
 
 	LadspaPluginCompilationTask ladspaCompilation(this, _network);
-//	ladspaCompilation.keepFiles();
+	if (ui.keepIntermediateFiles->isChecked())
+		ladspaCompilation.keepFiles();
 	ladspaCompilation.run(
 		ui.ladspaUniqueId->value(), 
 		ui.ladspaLabel->text(), 
