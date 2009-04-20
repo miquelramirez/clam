@@ -777,13 +777,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="PauseButton" >
-       <property name="text" >
-        <string>Pause</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="StopButton" >
        <property name="text" >
         <string>Stop</string>
@@ -822,5 +815,22 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>CloseButton</sender>
+   <signal>clicked()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>804</x>
+     <y>668</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>855</x>
+     <y>631</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
