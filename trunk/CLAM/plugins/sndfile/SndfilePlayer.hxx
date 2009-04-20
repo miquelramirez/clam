@@ -263,7 +263,7 @@ namespace CLAM
 			_inControlSeek.SetBounds(0,1);
 			_inControlSeek.DoControl(0.);
 			_inControlPause.SetBounds(0,1);
-			_inControlPause.DoControl(0.5);
+			_inControlPause.DoControl(0.0);
 			_outControlSeek.SendControl(0.);
 			_numReadFrames = 0;
 			_isStopped = false;
