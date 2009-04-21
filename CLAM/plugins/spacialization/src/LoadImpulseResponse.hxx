@@ -50,6 +50,8 @@ bool computeResponseSpectrums(
 		std::string & errorMsg,
 		unsigned samplesOffset=0);
 
+unsigned neededFramesForNSamples(unsigned nsamples, unsigned frameSize);
+
 class ImpulseResponseDatabase
 {
 	typedef std::vector<ImpulseResponse> ImpulseResponses;
