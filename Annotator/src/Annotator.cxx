@@ -372,7 +372,8 @@ void Annotator::adaptInstantViewsToSchema()
 			QMessageBox::warning(this,
 				tr("Invalid instant view"), 
 				tr("The project tried to create a instant view of type '%1' "
-					"which is not available in your system")
+					"which is not available in your system. "
+					"You may have to install a plugin to support it.")
 					.arg(instantViews[i].GetType().c_str())
 			);
 			continue;
@@ -598,12 +599,6 @@ void Annotator::loadProject(const std::string & projectName)
 		return;
 	}
 	mProject = temporaryProject;
-	// To cope with old projects
-	if (!mProject.HasViews())
-	{
-		mProject.AddViews();
-		mProject.UpdateData();
-	}
 	mProject.SetProjectPath(projectName);
 	initProject();
 }
