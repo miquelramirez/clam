@@ -39,7 +39,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out0" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -63,7 +63,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_2" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out1" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___1" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -87,7 +87,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_3" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out2" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___2" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -111,7 +111,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_4" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out3" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___3" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -139,7 +139,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_5" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out4" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___4" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -163,7 +163,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_6" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out5" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___5" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -187,7 +187,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_7" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out6" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___6" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -211,7 +211,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_8" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out7" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___7" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -239,7 +239,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_9" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out8" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___8" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -263,7 +263,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_10" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out9" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___9" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -287,7 +287,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_11" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out10" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___10" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -311,7 +311,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_12" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out11" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___11" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -339,7 +339,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_13" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out12" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___12" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -363,7 +363,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_14" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out13" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___13" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -387,7 +387,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_15" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out14" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___14" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -411,7 +411,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_16" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out15" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___15" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -439,7 +439,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_17" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out16" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___16" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -463,7 +463,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_18" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out17" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___17" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -487,7 +487,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_19" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out18" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___18" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -511,7 +511,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_20" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out19" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___19" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -539,7 +539,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_21" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out20" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___20" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -563,7 +563,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_22" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out21" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___21" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -587,7 +587,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_23" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out22" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___22" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
@@ -611,7 +611,7 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_24" >
             <item>
-             <widget class="Oscilloscope" native="1" name="OutPort__SndfilePlayer__out23" >
+             <widget class="Oscilloscope" native="1" name="OutPort__AudioAmplifier__Audio___Output___23" >
               <property name="sizePolicy" >
                <sizepolicy vsizetype="MinimumExpanding" hsizetype="MinimumExpanding" >
                 <horstretch>0</horstretch>
