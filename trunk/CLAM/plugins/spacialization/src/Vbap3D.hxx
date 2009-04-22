@@ -265,12 +265,12 @@ public:
 			speakersPos.resize(3);
 			for (unsigned j=0; j<3; j++)
 			{
+				const CLAM::Orientation & speaker=_layout.orientation(t[j]);
 				Vector r = {
-					cos(rad(speakers[t[j]].elevation)) * cos(rad(speakers[t[j]].azimuth)),
-					cos(rad(speakers[t[j]].elevation)) * sin(rad(speakers[t[j]].azimuth)),
-					sin(rad(speakers[t[j]].elevation)),
+					speaker.ce * speaker.ca,
+					speaker.ce * speaker.sa,
+					speaker.se,
 					};
-
 				speakersPos[j]=r;
 			}
 			_speakersPositions.push_back( speakersPos );
