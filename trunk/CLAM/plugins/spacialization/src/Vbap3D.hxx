@@ -368,28 +368,33 @@ public:
 		double& e1 = _elevations[speaker1];
 		double& e2 = _elevations[speaker2];
 		double& e3 = _elevations[speaker3];
+		double xs = cos(as)*cos(es);
+		double ys = sin(as)*cos(es);
+		double zs = sin(es);
+		double project1s = -xs*sin(a1)+ys*cos(a1);
+		double project2s = -xs*sin(a2)+ys*cos(a2);
+		double project3s = -xs*sin(a3)+ys*cos(a3);
 		double g1 = 
-			+ cos(a3)*cos(e3)*cos(es)*sin(as)*sin(e2)
-			+ cos(as)*cos(es)*(
-				+ cos(e2)*sin(a2)*sin(e3)
-				- cos(e3)*sin(a3)*sin(e2)) 
-			- cos(e2) * (
-				+ cos(a2)*cos(es)*sin(as)*sin(e3) 
-				+ cos(e3)*sin(a2-a3)*sin(es));
+			+ cos(e3)*sin(e2)*project3s
+			- cos(e2)*(
+				+ sin(e3)*project2s
+				+ zs*cos(e3)*sin(a2-a3)
+				)
+			;
 		float g2 = 
-			+ cos(e3)*(
-				+ cos(es)*sin(a3-as)*sin(e1)
-				+ cos(e1)*sin(a1-a3)*sin(es)) 
-			- cos(e1)*cos(es)*sin(a1-as)*sin(e3);
+			+ cos(e1)*sin(e3)*project1s
+			- cos(e3)*(
+				+ sin(e1)*project3s
+				+ zs*cos(e1)*sin(a3-a1)
+				) 
+			;
 		float g3 =
-			+ cos(a2)*cos(e2)*cos(es)*sin(as)*sin(e1)
-			+ cos(as)*cos(es) * (
-				+ cos(e1)*sin(a1)*sin(e2)
-				- cos(e2)*sin(a2)*sin(e1))
+			+ cos(e2)*sin(e1)*project2s
 			- cos(e1)*(
-				+ cos(a1)*cos(es)*sin(as)*sin(e2)
-				+ cos(e2)*sin(a1-a2)*sin(es))
-		;
+				+ sin(e2)*project1s
+				+ zs*cos(e2)*sin(a1-a2)
+				)
+			;
 		float normalization = 1. / sqrt(g1*g1 + g2*g2 + g3*g3);
 		g1 = fabs(g1) * normalization;
 		g2 = fabs(g2) * normalization;
