@@ -37,6 +37,12 @@ void Project::LoadFrom(CLAM::Storage & storage)
 {
 	// Hack to upgrade version<1.4 projects
 	DynamicType::LoadFrom(storage);
+	// To cope with old projects
+	if (not HasViews())
+	{
+		AddViews();
+		UpdateData();
+	}
 	if (not HasMaps())
 	{
 		std::cout << "* Old Project detected: adding mappings" << std::endl;
@@ -51,7 +57,11 @@ void Project::LoadFrom(CLAM::Storage & storage)
 		GetSources().resize(1);
 		Extractor & extractor = GetSources()[0];
 		extractor.SetName("Extractor_1");
-		dumpExtractorInfo(extractor); // Copy fields
+		extractor.SetExtractor(GetExtractor());
+		extractor.SetSchema("");
+		extractor.SetConfiguration("");
+		extractor.SetPoolSuffix(PoolSuffix()+"1");
+		std::cout << "Maps has " << GetMaps().size() << std::endl;
 		if (GetMaps().size()==0) 
 			MapAllSchemaAttributes(extractor);
 	}
