@@ -74,20 +74,20 @@ namespace CLAM
 
 	class SndfileWriterConfig : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( SndfileWriterConfig, 4, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, AudioOutFilename, TargetFile);
-  	    DYN_ATTRIBUTE( 1, public, EAudioFileWriter, Format);
-	    DYN_ATTRIBUTE( 2, public, int, SampleRate);
-	    DYN_ATTRIBUTE( 3, public, unsigned, NumberChannels);
+		DYNAMIC_TYPE_USING_INTERFACE( SndfileWriterConfig, 4, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, AudioOutFilename, TargetFile);
+		DYN_ATTRIBUTE( 1, public, EAudioFileWriter, Format);
+		DYN_ATTRIBUTE( 2, public, int, SampleRate);
+		DYN_ATTRIBUTE( 3, public, unsigned, NumberChannels);
 
-		protected:	
+		protected:
 		void DefaultInit()
 		{
 			AddAll();
 			UpdateData();
 			SetSampleRate(44100);
 			SetNumberChannels(0);
-		};	
+		};
 	};
 
 	class LockFreeSndfileWriter : public  Processing
@@ -98,8 +98,8 @@ namespace CLAM
 			public:
 				Lock(pthread_mutex_t & diskThreadLock)
 					: _diskThreadLock(diskThreadLock)
-				{	
-					pthread_mutex_lock(&diskThreadLock);					
+				{
+					pthread_mutex_lock(&diskThreadLock);
 				}
 				~Lock()
 				{
@@ -126,8 +126,8 @@ namespace CLAM
 		/* Synchronization between process thread and disk thread. */
 		pthread_mutex_t _diskThreadLock;
 		pthread_cond_t  _dataReadyCondition;
-		jack_ringbuffer_t* _rb;		
-		
+		jack_ringbuffer_t* _rb;
+
 	public:
 		const char* GetClassName() const { return "LockFreeSndfileWriter"; }
 
@@ -135,7 +135,7 @@ namespace CLAM
 			: _outfile(0)
 			, _numChannels(0)
 			, _overruns(0)
-		{			
+		{
 			static pthread_cond_t sPthreadCondInitializer = PTHREAD_COND_INITIALIZER;
 			static pthread_mutex_t sPthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
 			_dataReadyCondition = sPthreadCondInitializer;
@@ -143,9 +143,9 @@ namespace CLAM
 			_isStopped = true;
 			Configure( config );
 		}
-	 
+
 		bool Do()
-		{	
+		{
 			/* Do nothing until we're ready to begin. */
 			if ((!_canProcess) || (!_canCapture))
 				return false;
@@ -176,8 +176,9 @@ namespace CLAM
 			 * data queued before waiting again. */
 
 			if (pthread_mutex_trylock(&_diskThreadLock) == 0) 
-			{	    pthread_cond_signal (&_dataReadyCondition);
-				    pthread_mutex_unlock (&_diskThreadLock);
+			{
+				pthread_cond_signal (&_dataReadyCondition);
+				pthread_mutex_unlock (&_diskThreadLock);
 			}
 
 			for (unsigned channel=0; channel<_numChannels; channel++)
@@ -223,54 +224,56 @@ namespace CLAM
 			return 0;
 		}
 
-		bool ConcreteStart()	
-		{	
+		bool ConcreteStart()
+		{
 			_isStopped = false;
 			_canProcess = 0;
 			_rb = jack_ringbuffer_create (_sampleSize*_ringBufferSize*_numChannels);
 			memset(_rb->buf, 0, _rb->size);
-				
+
 			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
-			
+
 			// check if the file is open
 			if(!*_outfile)
-			{	CLAM_ASSERT(_outfile, "The file is not writeable");
+			{
+				CLAM_ASSERT(_outfile, "The file is not writeable");
 				return false;
 			}
 			//report sndfile library errors
 			if(_outfile->error() != 0)
-			{	CLAM_ASSERT(_outfile, _outfile->strError());
+			{
+				CLAM_ASSERT(_outfile, _outfile->strError());
 				return false;
 			}
 			_canCapture = 0;
 			pthread_create(&_threadId, NULL,DiskThreadCallback,this);
 			_canProcess = 1;
 			_canCapture = 1;
-			return true;		
+			return true;
 		}
 
-		bool ConcreteStop()	
-		{			
+		bool ConcreteStop()
+		{
 			_isStopped = true;
 			if (pthread_mutex_trylock(&_diskThreadLock) == 0) 
-			{	    pthread_cond_signal (&_dataReadyCondition);
-				    pthread_mutex_unlock (&_diskThreadLock);
+			{
+				pthread_cond_signal (&_dataReadyCondition);
+				pthread_mutex_unlock (&_diskThreadLock);
 			}
-			pthread_join (_threadId, NULL);			
+			pthread_join (_threadId, NULL);
 			
 			if(_outfile)
 			{
 				delete _outfile;
-			}	
-
+			}
 			if (_overruns > 0) 
 			{
 				CLAM_ASSERT(_overruns,"Overruns is greater than 0. Try a bigger buffer");			
 			}
 			jack_ringbuffer_free (_rb);
-			return true; 
+			return true;
 		}
-	
+
 		const ProcessingConfig& GetConfig() const
 		{
 			return _config;
@@ -283,14 +286,16 @@ namespace CLAM
 
 			//case0: if formatFileName has a value and formatConfigure hasn't, then return formatFileName
 			if(formatFileName !=0 && formatConfigure == 0)
-			{	_config.SetFormat(formatFileName);
+			{
+				_config.SetFormat(formatFileName);
 				return formatFileName;
 			}
 			//case1: formatfileName is .wav
 			if(formatFileName == EAudioFileWriter::ePCM_16)
-			{	//if formatConfigure is also wav integer type, return formatConfigure because it has priority
+			{
+				//if formatConfigure is also wav integer type, return formatConfigure because it has priority
 				if(formatConfigure==EAudioFileWriter::ePCM_16 || formatConfigure==EAudioFileWriter::ePCM_24 || formatConfigure==EAudioFileWriter::ePCM_32)
-					return formatConfigure;		
+					return formatConfigure;
 
 				//if formatConfigure is also wav Float type, return formatConfigure because it has priority
 				if(formatConfigure==EAudioFileWriter::ePCMFLOAT || formatConfigure==EAudioFileWriter::ePCMDOUBLE)
@@ -301,11 +306,12 @@ namespace CLAM
 			}
 			//case2: formatfileName is .flac
 			if(formatFileName == EAudioFileWriter::eFLAC_16)
-			{	//if formatConfigure is also wav integer type, return formatConfigure because it has priority
+			{
+				//if formatConfigure is also wav integer type, return formatConfigure because it has priority
 				if(formatConfigure==EAudioFileWriter::eFLAC_16)
 					return formatConfigure;
 				//if formatConfigure is not another type, return 0 because It's a contradiction.
-				return 0;			
+				return 0;
 			}
 			return formatConfigure;
 		}
@@ -313,7 +319,7 @@ namespace CLAM
 		bool ConcreteConfigure(const ProcessingConfig & config)
 		{
 			CopyAsConcreteConfig(_config, config);
-			unsigned portSize = BackendBufferSize();	
+			unsigned portSize = BackendBufferSize();
 			std::ostringstream nameStream;
 			std::string nameInPort = "in";
 			if(_inports.empty())
@@ -342,7 +348,7 @@ namespace CLAM
 			_format=ChooseFormat(location); 
 			_numChannels = _config.GetNumberChannels();
 			_sampleSize = _numChannels*sizeof(TData);
- 			_sampleRate = _config.GetSampleRate();
+			_sampleRate = _config.GetSampleRate();
 
 			if (_numChannels == 0)
 			{
@@ -351,7 +357,7 @@ namespace CLAM
 			}
 
 			// case 1: maintain the same ports
-			if (_numChannels == _inports.size() )
+			if ( _numChannels == _inports.size() )
 			{
 				return true;
 			}
@@ -359,7 +365,7 @@ namespace CLAM
 			// case 2: increase number of same ports
 			if ( _numChannels > _inports.size() )
 			{
-				for (unsigned i=_inports.size()+1; i<= _numChannels; i++)
+				for (unsigned i=_inports.size()+1; i<=_numChannels; i++)
 				{
 					std::ostringstream nameStream;
 					nameStream << nameInPort << i;
@@ -378,13 +384,13 @@ namespace CLAM
 				{
 					delete _inports[i];
 				}
-				_inports.resize( _numChannels );
+				_inports.resize(_numChannels);
 				
 				return true;
 			}
 			
 			CLAM_ASSERT(false, "Should not reach here");
-			return false;	
+			return false;
 		}
 		
 		void RemovePorts()

@@ -72,55 +72,55 @@ namespace CLAM
 
 	class SndfileWriterConfig : public ProcessingConfig
 	{
-	    DYNAMIC_TYPE_USING_INTERFACE( SndfileWriterConfig, 4, ProcessingConfig );
-	    DYN_ATTRIBUTE( 0, public, AudioOutFilename, TargetFile);
-  	    DYN_ATTRIBUTE( 1, public, EAudioFileWriter, Format);
-	    DYN_ATTRIBUTE( 2, public, int, SampleRate);
-	    DYN_ATTRIBUTE( 3, public, unsigned, NumberChannels);
+		DYNAMIC_TYPE_USING_INTERFACE( SndfileWriterConfig, 4, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, AudioOutFilename, TargetFile);
+		DYN_ATTRIBUTE( 1, public, EAudioFileWriter, Format);
+		DYN_ATTRIBUTE( 2, public, int, SampleRate);
+		DYN_ATTRIBUTE( 3, public, unsigned, NumberChannels);
 
-		protected:	
+		protected:
 		void DefaultInit()
 		{
 			AddAll();
 			UpdateData();
 			SetSampleRate(44100);
 			SetNumberChannels(0);
-		};	
+		};
 	};
 
 	class SndfileWriter : public  Processing
 	{ 
 		typedef SndfileWriterConfig Config;
-		typedef std::vector<CLAM::AudioInPort*> InPorts;		
+		typedef std::vector<CLAM::AudioInPort*> InPorts;
 		InPorts _inports;
 		SndfileHandle* _outfile;
 		SndfileWriterConfig _config;
 		unsigned _numChannels;
 		int _sampleRate;
 		int _format;
-		
+
 	public:
 		const char* GetClassName() const { return "SndfileWriter"; }
 
 		SndfileWriter(const ProcessingConfig& config =  Config()) 
 			: _outfile(0)
-			,_numChannels(0)
-		{ 
+			, _numChannels(0)
+		{
 			Configure( config );
 		}
-	 
+
 		bool Do()
-		{	bool isDone;			
+		{	bool isDone;
 			isDone = ReadBufferAndWriteToPorts();
 			for (unsigned channel=0; channel<_numChannels; channel++)
-				_inports[channel]->Consume();		
+				_inports[channel]->Consume();
 			return isDone;
 		}
 
 		bool ReadBufferAndWriteToPorts()
 		{
 			//all the ports have to have the same buffer size
-			const int portSize = _inports[0]->GetAudio().GetBuffer().Size();
+			const unsigned portSize = _inports[0]->GetAudio().GetBuffer().Size();
 
 			CLAM::TData* channels[_numChannels];
 			for (unsigned channel=0; channel<_numChannels; channel++)
@@ -139,43 +139,44 @@ namespace CLAM
 
 				}
 				frameIndex ++;
-			}			
+			}
 
 			int writeSize = _outfile->write( buffer,bufferSize);
 
-			if (writeSize == bufferSize) return true;	
+			if (writeSize == bufferSize) return true;
 
-			return false;		
-		}		
+			return false;
+		}
 
 
-		bool ConcreteStart()	
-		{	
+		bool ConcreteStart()
+		{
 			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
-			
+
 			// check if the file is open
 			if(!*_outfile)
-			{	CLAM_ASSERT(_outfile, "The file is not writeable");
+			{
+				CLAM_ASSERT(_outfile, "The file is not writeable");
 				return false;
 			}
 			//report sndfile library errors
 			if(_outfile->error() != 0)
-			{	CLAM_ASSERT(_outfile, _outfile->strError());
+			{
+				CLAM_ASSERT(_outfile, _outfile->strError());
 				return false;
 			}
-			
-			return true; // Configuration ok		
+			return true;
 		}
 
-		bool ConcreteStop()	
+		bool ConcreteStop()
 		{
 			if(_outfile)
-			{	
+			{
 				delete _outfile;
-			}	
-			return true; // Configuration ok
+			}
+			return true;
 		}
-	
+
 		const ProcessingConfig& GetConfig() const
 		{
 			return _config;
@@ -188,15 +189,16 @@ namespace CLAM
 
 			//case0: if formatFileName has a value and formatConfigure hasn't, then return formatFileName
 			if(formatFileName !=0 && formatConfigure == 0)
-			{	_config.SetFormat(formatFileName);
+			{
+				_config.SetFormat(formatFileName);
 				return formatFileName;
 			}
-
 			//case1: formatfileName is .wav
 			if(formatFileName == EAudioFileWriter::ePCM_16)
-			{	//if formatConfigure is also wav integer type, return formatConfigure because it has priority
+			{
+				//if formatConfigure is also wav integer type, return formatConfigure because it has priority
 				if(formatConfigure==EAudioFileWriter::ePCM_16 || formatConfigure==EAudioFileWriter::ePCM_24 || formatConfigure==EAudioFileWriter::ePCM_32)
-					return formatConfigure;		
+					return formatConfigure;
 
 				//if formatConfigure is also wav Float type, return formatConfigure because it has priority
 				if(formatConfigure==EAudioFileWriter::ePCMFLOAT || formatConfigure==EAudioFileWriter::ePCMDOUBLE)
@@ -207,13 +209,13 @@ namespace CLAM
 			}
 			//case2: formatfileName is .flac
 			if(formatFileName == EAudioFileWriter::eFLAC_16)
-			{	//if formatConfigure is also wav integer type, return formatConfigure because it has priority
+			{
+				//if formatConfigure is also wav integer type, return formatConfigure because it has priority
 				if(formatConfigure==EAudioFileWriter::eFLAC_16)
 					return formatConfigure;
 				//if formatConfigure is not another type, return 0 because It's a contradiction.
-				return 0;			
+				return 0;
 			}
-
 			return formatConfigure;
 		}
 
@@ -245,11 +247,10 @@ namespace CLAM
 				AddConfigErrorMessage("No file selected");
 				return false;
 			}
-
 			//Choose the format from the filename
 			_format=ChooseFormat(location); 
 			_numChannels = _config.GetNumberChannels();
- 			_sampleRate = _config.GetSampleRate();
+			_sampleRate = _config.GetSampleRate();
 
 			if (_numChannels == 0)
 			{
@@ -285,13 +286,13 @@ namespace CLAM
 				{
 					delete _inports[i];
 				}
-				_inports.resize( _numChannels);
+				_inports.resize(_numChannels);
 				
 				return true;
 			}
 			
 			CLAM_ASSERT(false, "Should not reach here");
-			return false;	
+			return false;
 		}
 		
 		void RemovePortsAndControls()
@@ -299,10 +300,10 @@ namespace CLAM
 			if(!_inports.empty())
 			{
 				for(InPorts::iterator itInPorts=_inports.begin();itInPorts!=_inports.end();itInPorts++)
-				{	
+				{
 					delete *itInPorts;
-				}				
-			}		
+				}
+			}
 			_inports.clear();
 
 			// Delete ports from Processing (base class) register
