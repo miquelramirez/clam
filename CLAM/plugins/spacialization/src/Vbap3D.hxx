@@ -271,16 +271,14 @@ public:
 	{
 
 //std::cout << "\nfind Triangle. triangles " << _triangles.size() << std::endl;
-
-		int triangle = -1;
 		// find triangle testing them all
+		Vector r_source = {
+			cos(elevation) * cos(azimuth),
+			cos(elevation) * sin(azimuth),
+			sin(elevation),
+		};
 		for (unsigned i=0; i<_triangles.size(); i++)
 		{
-			Vector r_source = {
-					cos(elevation) * cos(azimuth),
-					cos(elevation) * sin(azimuth),
-					sin(elevation),
-				};
 //std::cout << "\n\nchecking triangle "<< i << std::endl;
 //print(r_source, "r_source");
 //print(_normals[i], "normal");
@@ -306,28 +304,16 @@ public:
 			if (mod(v1)*mod(v2)*mod(v3) < _deltaNumeric)
 			{
 //std::cout << "--> source is at one speaker FOUND triangle "<< i <<  std::endl;
-				if (triangle!=-1) 
-					std::cout <<  "WARNING Vbap3D: found more than one intersecting triangles!" << std::endl;
-				triangle = i;
-				break;
-
+				return i; // Matches one of the speakers
 			}
-			else 
-		{
 //std::cout << "angles: " << angle(v1,v2) << " " << angle(v2,v3) << " " << angle(v3,v1) << std::endl; 
 			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _deltaAngle)
 			{
 //std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
-				// found!
-				if (triangle!=-1) 
-					std::cout <<  "WARNING Vbap3D: found more than one intersecting triangles!" << std::endl;
-				triangle = i;
-				break;
-				
+				return i; // Inside a triangle
 			}
-}
 		}
-		return triangle;
+		return -1; // None found
 	}
 
 	bool Do()
