@@ -365,18 +365,19 @@ public:
 //std::cout << " speakers: "<< _triangles[_currentTriangle][0] << " " << _triangles[_currentTriangle][1] << " " << _triangles[_currentTriangle][2] << std::endl;
 		}
 		// obtain the three gains.
-		unsigned speaker1 = _triangles[_currentTriangle][0];
-		unsigned speaker2 = _triangles[_currentTriangle][1];
-		unsigned speaker3 = _triangles[_currentTriangle][2];
-		const CLAM::Orientation & orientation1 = _layout.orientation(speaker1);
-		const CLAM::Orientation & orientation2 = _layout.orientation(speaker2);
-		const CLAM::Orientation & orientation3 = _layout.orientation(speaker3);
-		const double& a1 = orientation1.aradians;
-		const double& a2 = orientation2.aradians;
-		const double& a3 = orientation3.aradians;
-		const double& e1 = orientation1.eradians;
-		const double& e2 = orientation2.eradians;
-		const double& e3 = orientation3.eradians;
+		Triangle & triangle = _triangles[_currentTriangle];
+		unsigned speaker1 = triangle[0];
+		unsigned speaker2 = triangle[1];
+		unsigned speaker3 = triangle[2];
+		const CLAM::Orientation & o1 = _layout.orientation(speaker1);
+		const CLAM::Orientation & o2 = _layout.orientation(speaker2);
+		const CLAM::Orientation & o3 = _layout.orientation(speaker3);
+		double a1 = o1.aradians;
+		double a2 = o2.aradians;
+		double a3 = o3.aradians;
+		double e1 = o1.eradians;
+		double e2 = o2.eradians;
+		double e3 = o3.eradians;
 		double xs = cos(as)*cos(es);
 		double ys = sin(as)*cos(es);
 		double zs = sin(es);
