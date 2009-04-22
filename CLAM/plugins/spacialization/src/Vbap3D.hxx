@@ -253,14 +253,7 @@ public:
 			_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
 		}
 		const unsigned buffersize = BackendBufferSize();
-		RemovePorts();
-		for (unsigned i=0; i<_layout.size(); i++)
-		{
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( _layout.name(i), this);
-			port->SetSize( buffersize );
-			port->SetHop( buffersize );
-			_outputs.push_back( port );
-		}
+		ResizePortsToLayout(buffersize);
 		_triangles.clear();
 		_speakersPositions.clear();
 		_normals.clear();
@@ -445,6 +438,41 @@ private:
 		_outputs.clear();
 		// Delete ports from Processing (base class) register
 		GetOutPorts().Clear();
+	}
+	void ResizePortsToLayout(unsigned buffersize)
+	{
+		RemovePorts();
+		for (unsigned i=0; i<_layout.size(); i++)
+		{
+			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( _layout.name(i), this);
+			port->SetSize( buffersize );
+			port->SetHop( buffersize );
+			_outputs.push_back( port );
+		}
+		return;
+		// Set up the outputs according to the layout
+		unsigned speakerToUpdate = firstDirtySpeaker();
+		// delete existing speakers from the first one with different name
+		for (unsigned oldSpeaker=speakerToUpdate ; oldSpeaker<_outputs.size(); oldSpeaker++)
+			delete _outputs[oldSpeaker];
+		_outputs.resize(speakerToUpdate);
+		// adding new speakers
+		for ( ; speakerToUpdate<_layout.size(); speakerToUpdate++)
+		{
+			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( _layout.name(speakerToUpdate), this);
+			port->SetSize( buffersize );
+			port->SetHop( buffersize );
+			_outputs.push_back( port );
+		}
+	}
+	unsigned firstDirtySpeaker() const
+	{
+		for (unsigned speaker = 0; speaker<_layout.size(); speaker++)
+		{
+			if (speaker>=_outputs.size()) return speaker; 
+			if (_outputs[speaker]->GetName() != _layout.name(speaker)) return speaker;
+		}
+		return _layout.size();
 	}
 	
 
