@@ -14,6 +14,7 @@ int usage(const std::string & program)
 			<< "Options:\n"
 			<< " -o             Non interactive mode\n"
 			<< " -b <backend>   Try backend (portaudio, alsa, jack).\n"
+			<< " -start-paused  Pause just at start.\n"
 			<< std::endl;
 		return -1;
 }
@@ -32,6 +33,7 @@ int main( int argc, char *argv[] )
 	std::string uiFile;
 	std::list<std::string> backends;
 	bool isInteractive = true;
+	bool startPaused = false;
 
 	enum { none, backend } optionArgument = none;
 	int argument=0;
@@ -55,6 +57,11 @@ int main( int argc, char *argv[] )
 			if (arg=="-o")
 			{
 				isInteractive=false;
+				continue;
+			}
+			if (arg=="--start-paused")
+			{
+				startPaused=true;
 				continue;
 			}
 			std::cerr << "Invalid option '" << arg << "'." << std::endl;
@@ -92,6 +99,8 @@ int main( int argc, char *argv[] )
 	prototype.ConnectWithNetwork();
 
 	prototype.Start();
+	if (startPaused)
+		prototype.Pause();
 	int result = app.exec();
 	prototype.Stop();
 
