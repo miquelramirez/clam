@@ -60,7 +60,7 @@ private:
 	Config _config;
 	std::vector<Triangle> _triangles;
 	std::vector<Vector> _normals;
-	std::vector< std::vector<Vector> > _speakersPositions;
+	std::vector<Vector> _speakersPositions;
 	std::vector<float> _ortogonalProjection;
 	int _currentTriangle;
 	float _deltaAngle;
@@ -244,14 +244,21 @@ public:
 #endif
 
 		_layout.clear();
+		_speakersPositions.clear();
 		for (unsigned i=0; speakers[i].name; i++)
 		{
 			_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
+			const CLAM::Orientation & speaker=_layout.orientation(i);
+			Vector r = {
+				speaker.ce * speaker.ca,
+				speaker.ce * speaker.sa,
+				speaker.se,
+				};
+			_speakersPositions.push_back(r);
 		}
 		const unsigned buffersize = BackendBufferSize();
 		ResizePortsToLayout(buffersize);
 		_triangles.clear();
-		_speakersPositions.clear();
 		_normals.clear();
 		_ortogonalProjection.clear();
 		for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
@@ -263,25 +270,12 @@ public:
 			t[2]=triangles[i].three;
 			_triangles.push_back(t);
 			
-			std::vector<Vector> speakersPos;
-			speakersPos.resize(3);
-			for (unsigned j=0; j<3; j++)
-			{
-				const CLAM::Orientation & speaker=_layout.orientation(t[j]);
-				Vector r = {
-					speaker.ce * speaker.ca,
-					speaker.ce * speaker.sa,
-					speaker.se,
-					};
-				speakersPos[j]=r;
-			}
-			_speakersPositions.push_back( speakersPos );
 			Vector n = vectorialProduct( 
-				substract(speakersPos[0], speakersPos[1]),  
-				substract(speakersPos[0], speakersPos[2])
+				substract(_speakersPositions[t[0]], _speakersPositions[t[1]]),  
+				substract(_speakersPositions[t[0]], _speakersPositions[t[2]])
 				);
 			_normals.push_back(n);
-			_ortogonalProjection.push_back( escalarProduct(n,speakersPos[2]) );
+			_ortogonalProjection.push_back( escalarProduct(n,_speakersPositions[t[2]]) );
 		}
 		_elevation.DoControl(0.);
 		_azimuth.DoControl(0.);
@@ -310,6 +304,7 @@ public:
 //print(_speakersPositions[i][1], "speak 1");
 //print(_speakersPositions[i][2], "speak 2");
 
+			const Triangle & triangle = _triangles[i];
 			const float divisor = escalarProduct(_normals[i], r_source);
 			// If source direction and the plane are almost ortogonal, continue
 			// (also avoids a divide by zero)
@@ -321,9 +316,9 @@ public:
 			if (t > 1.+_deltaNumeric) continue; // TODOC: what does it means
 //std::cout << "--> Ok intersection line < 1" << std::endl;
 			Vector intersection = product(t, r_source);
-			Vector v1 = substract( _speakersPositions[i][0], intersection);
-			Vector v2 = substract( _speakersPositions[i][1], intersection);
-			Vector v3 = substract( _speakersPositions[i][2], intersection);
+			Vector v1 = substract( _speakersPositions[triangle[0]], intersection);
+			Vector v2 = substract( _speakersPositions[triangle[1]], intersection);
+			Vector v3 = substract( _speakersPositions[triangle[2]], intersection);
 			// If intersection is too close to one of the vertex, consider this triangle
 			if (mod(v1)*mod(v2)*mod(v3) < _deltaNumeric)
 			{
