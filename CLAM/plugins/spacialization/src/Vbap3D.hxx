@@ -287,29 +287,27 @@ public:
 //print(_speakersPositions[i][2], "speak 2");
 
 			const float divisor = escalarProduct(_normals[i], r_source);
-			if (fabs(divisor) < _deltaNumeric) 
-			{
-//std::cout << "divisor is 0 !!" << std::endl;
-				continue;
-			}
+			// If source direction and the plane are almost ortogonal, continue
+			// (also avoids a divide by zero)
+			if (fabs(divisor) < _deltaNumeric) continue;
+
 			const float t =  _ortogonalProjection[i] / divisor;
 //std::cout << "--> t " << t  << " t-1 " << t-1. << std::endl;
-			if (t > 1.+_deltaNumeric or t < 0.) continue;
+			if (t < 0.) continue; // opposite direction
+			if (t > 1.+_deltaNumeric) continue; // TODOC: what does it means
 //std::cout << "--> Ok intersection line < 1" << std::endl;
-			Vector r_I = product(t, r_source);
-			Vector v1 = substract( _speakersPositions[i][0], r_I);
-			Vector v2 = substract( _speakersPositions[i][1], r_I);
-			Vector v3 = substract( _speakersPositions[i][2], r_I);
-
+			Vector intersection = product(t, r_source);
+			Vector v1 = substract( _speakersPositions[i][0], intersection);
+			Vector v2 = substract( _speakersPositions[i][1], intersection);
+			Vector v3 = substract( _speakersPositions[i][2], intersection);
+			// If intersection is too close to one of the vertex, consider this triangle
 			if (mod(v1)*mod(v2)*mod(v3) < _deltaNumeric)
 			{
-//std::cout << "--> source is at one speaker FOUND triangle "<< i <<  std::endl;
 				return i; // Matches one of the speakers
 			}
-//std::cout << "angles: " << angle(v1,v2) << " " << angle(v2,v3) << " " << angle(v3,v1) << std::endl; 
+			// if the sum of the relative angles is 
 			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _deltaAngle)
 			{
-//std::cout << "--> OK inside triangle.    FOUND triangle "<< i <<  std::endl;
 				return i; // Inside a triangle
 			}
 		}
