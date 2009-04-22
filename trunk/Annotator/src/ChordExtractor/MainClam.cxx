@@ -73,6 +73,7 @@ const char * schemaContent =
 "     <ChildScope>ExtractedChord</ChildScope>\n"
 "     <SegmentationPolicy>Discontinuous</SegmentationPolicy>\n"
 "   </Attribute>\n"
+#if 0
 "    <Attribute name='DebugFrameSegments' scope='Song' type='Segmentation'>\n"
 "	  <Documentation>\n"
 "	  	This segmentation is just to check that the segments and the frames are properly aligned.\n"
@@ -80,6 +81,7 @@ const char * schemaContent =
 "      <ChildScope></ChildScope>\n"
 "      <SegmentationPolicy>Continuous</SegmentationPolicy>\n"
 "    </Attribute>\n"
+#endif
 "    <Attribute name='Frames' scope='Song' type='FrameDivision'>\n"
 "      <ChildScope>Frame</ChildScope>\n"
 "    </Attribute>\n"
@@ -160,7 +162,7 @@ public:
 		, _samplingRate(samplingRate)
 	{
 		_schema.AddAttribute<CLAM::DataArray>("Song", "Chords_Harte");
-		_schema.AddAttribute<CLAM::DataArray>("Song", "DebugFrameSegments");
+	//	_schema.AddAttribute<CLAM::DataArray>("Song", "DebugFrameSegments");
 		_schema.AddAttribute<Simac::FrameDivision>("Song", "Frames");
 		_schema.AddAttribute<CLAM::TData>("Frame", "TunningPosition");
 		_schema.AddAttribute<CLAM::TData>("Frame", "TunningStrength");
