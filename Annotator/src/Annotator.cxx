@@ -731,6 +731,7 @@ void Annotator::on_newProjectAction_triggered()
 	if (projectDialog.exec()== QDialog::Rejected) return;
 	projectDialog.applyChanges(mProject);
 	mProject.GetSongs().clear();
+	mProject.GetViews().clear();
 	initProject();
 	markProjectChanged(true);
 }
