@@ -133,6 +133,11 @@ public:
 		_deltaAngle = 0.001; 
 		_deltaNumeric = 0.00001; 
 	}
+	~Vbap3D()
+	{
+		for (unsigned speaker=0; speaker<_outputs.size(); speaker++)
+			delete _outputs[speaker];
+	}
 
 	const CLAM::ProcessingConfig & GetConfig() const
 	{
@@ -247,8 +252,8 @@ public:
 			_elevations.push_back( rad(speakers[i].elevation) );
 			_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
 		}
-		RemovePorts();
 		const unsigned buffersize = BackendBufferSize();
+		RemovePorts();
 		for (unsigned i=0; i<_layout.size(); i++)
 		{
 			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( _layout.name(i), this);
