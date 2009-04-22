@@ -252,9 +252,9 @@ public:
 		}
 		RemovePorts();
 		const unsigned buffersize = BackendBufferSize();
-		for (unsigned i=0; speakers[i].name; i++)
+		for (unsigned i=0; i<_layout.size(); i++)
 		{
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( speakers[i].name, this);
+			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( _layout.name(i), this);
 			port->SetSize( buffersize );
 			port->SetHop( buffersize );
 			_outputs.push_back( port );
