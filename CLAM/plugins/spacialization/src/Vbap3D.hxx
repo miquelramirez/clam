@@ -375,34 +375,34 @@ public:
 		double a1 = o1.aradians;
 		double a2 = o2.aradians;
 		double a3 = o3.aradians;
-		double e1 = o1.eradians;
-		double e2 = o2.eradians;
-		double e3 = o3.eradians;
+		double se1=o1.se, ce1=o1.ce, sa1=o1.sa, ca1=o1.ca;
+		double se2=o2.se, ce2=o2.ce, sa2=o2.sa, ca2=o2.ca;
+		double se3=o3.se, ce3=o3.ce, sa3=o3.sa, ca3=o3.ca;
 		double xs = cos(as)*cos(es);
 		double ys = sin(as)*cos(es);
 		double zs = sin(es);
-		double project1s = -xs*sin(a1)+ys*cos(a1);
-		double project2s = -xs*sin(a2)+ys*cos(a2);
-		double project3s = -xs*sin(a3)+ys*cos(a3);
+		double project1s = -xs*sa1 +ys*ca1;
+		double project2s = -xs*sa2 +ys*ca2;
+		double project3s = -xs*sa3 +ys*ca3;
 		double g1 = 
-			+ cos(e3)*sin(e2)*project3s
-			- cos(e2)*(
-				+ sin(e3)*project2s
-				+ zs*cos(e3)*sin(a2-a3)
+			+ ce3*se2*project3s
+			- ce2*(
+				+ se3*project2s
+				+ zs*ce3*sin(a2-a3)
 				)
 			;
 		float g2 = 
-			+ cos(e1)*sin(e3)*project1s
-			- cos(e3)*(
-				+ sin(e1)*project3s
-				+ zs*cos(e1)*sin(a3-a1)
+			+ ce1*se3*project1s
+			- ce3*(
+				+ se1*project3s
+				+ zs*ce1*sin(a3-a1)
 				) 
 			;
 		float g3 =
-			+ cos(e2)*sin(e1)*project2s
-			- cos(e1)*(
-				+ sin(e2)*project1s
-				+ zs*cos(e2)*sin(a1-a2)
+			+ ce2*se1*project2s
+			- ce1*(
+				+ se2*project1s
+				+ zs*ce2*sin(a1-a2)
 				)
 			;
 		float normalization = 1. / sqrt(g1*g1 + g2*g2 + g3*g3);
