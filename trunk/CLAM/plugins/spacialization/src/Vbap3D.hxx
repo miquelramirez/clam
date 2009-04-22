@@ -270,12 +270,12 @@ public:
 			t[2]=triangles[i].three;
 			_triangles.push_back(t);
 			
-			Vector n = vectorialProduct( 
+			Vector normal = vectorialProduct( 
 				substract(_speakersPositions[t[0]], _speakersPositions[t[1]]),  
 				substract(_speakersPositions[t[0]], _speakersPositions[t[2]])
 				);
-			_normals.push_back(n);
-			_ortogonalProjection.push_back( escalarProduct(n,_speakersPositions[t[2]]) );
+			_normals.push_back(normal);
+			_ortogonalProjection.push_back( escalarProduct(normal,_speakersPositions[t[2]]) );
 		}
 		_elevation.DoControl(0.);
 		_azimuth.DoControl(0.);
