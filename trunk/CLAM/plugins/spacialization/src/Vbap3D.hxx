@@ -58,8 +58,6 @@ private:
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
 	Config _config;
-	std::vector<double> _elevations;
-	std::vector<double> _azimuths;
 	std::vector<Triangle> _triangles;
 	std::vector<Vector> _normals;
 	std::vector< std::vector<Vector> > _speakersPositions;
@@ -243,13 +241,9 @@ public:
 //end testing setup
 #endif
 
-		_azimuths.clear();
-		_elevations.clear();
 		_layout.clear();
 		for (unsigned i=0; speakers[i].name; i++)
 		{
-			_azimuths.push_back( rad(speakers[i].azimuth) );
-			_elevations.push_back( rad(speakers[i].elevation) );
 			_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
 		}
 		const unsigned buffersize = BackendBufferSize();
@@ -374,12 +368,15 @@ public:
 		unsigned speaker1 = _triangles[_currentTriangle][0];
 		unsigned speaker2 = _triangles[_currentTriangle][1];
 		unsigned speaker3 = _triangles[_currentTriangle][2];
-		double& a1 = _azimuths[speaker1];
-		double& a2 = _azimuths[speaker2];
-		double& a3 = _azimuths[speaker3];
-		double& e1 = _elevations[speaker1];
-		double& e2 = _elevations[speaker2];
-		double& e3 = _elevations[speaker3];
+		const CLAM::Orientation & orientation1 = _layout.orientation(speaker1);
+		const CLAM::Orientation & orientation2 = _layout.orientation(speaker2);
+		const CLAM::Orientation & orientation3 = _layout.orientation(speaker3);
+		const double& a1 = orientation1.aradians;
+		const double& a2 = orientation2.aradians;
+		const double& a3 = orientation3.aradians;
+		const double& e1 = orientation1.eradians;
+		const double& e2 = orientation2.eradians;
+		const double& e3 = orientation3.eradians;
 		double xs = cos(as)*cos(es);
 		double ys = sin(as)*cos(es);
 		double zs = sin(es);

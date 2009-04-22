@@ -31,7 +31,7 @@ struct Orientation
 {
 	double azimuth;
 	double elevation;
-private:
+public:
 	double eradians;
 	double aradians;
 	double ce;
