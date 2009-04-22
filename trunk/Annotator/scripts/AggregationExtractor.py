@@ -93,7 +93,7 @@ for audiofile in args:
 	target = open(audiofile+options.suffix,'w')
 	poolToCopy=provider.QueryDescriptors(audiofile, provider.AvailableDescriptors())
 	poolToCopy.Dump(target)
-	if options.writeback is not None:
+	if options.writeback:
 		provider.UpdateDescriptors(audiofile,poolToCopy)
 	target.close()
 
