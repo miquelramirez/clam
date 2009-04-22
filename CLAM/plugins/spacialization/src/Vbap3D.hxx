@@ -239,7 +239,9 @@ public:
 #endif
 
 		RemovePorts();
-		_triangles.clear();
+		_azimuths.clear();
+		_elevations.clear();
+		_names.clear();
 		const unsigned buffersize = BackendBufferSize();
 		for (unsigned i=0; speakers[i].name; i++)
 		{
@@ -251,6 +253,10 @@ public:
 			_elevations.push_back( rad(speakers[i].elevation) );
 			_names.push_back( speakers[i].name );
 		}
+		_triangles.clear();
+		_speakersPositions.clear();
+		_normals.clear();
+		_ortogonalProjection.clear();
 		for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
 		{
 			Triangle t;
