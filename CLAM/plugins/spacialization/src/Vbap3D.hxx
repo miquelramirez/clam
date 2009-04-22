@@ -432,27 +432,22 @@ public:
 private:
 	void ResizePortsToLayout(unsigned buffersize)
 	{
-		for (unsigned speaker=0; speaker<_outputs.size(); speaker++)
-			delete _outputs[speaker];
-		_outputs.clear();
-		for (unsigned i=0; i<_layout.size(); i++)
-		{
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( _layout.name(i), this);
-			port->SetSize( buffersize );
-			port->SetHop( buffersize );
-			_outputs.push_back( port );
-		}
-		return;
 		// Set up the outputs according to the layout
 		unsigned speakerToUpdate = firstDirtySpeaker();
 		// delete existing speakers from the first one with different name
-		for (unsigned oldSpeaker=speakerToUpdate ; oldSpeaker<_outputs.size(); oldSpeaker++)
-			delete _outputs[oldSpeaker];
+		for (unsigned speaker=0; speaker<speakerToUpdate; speaker++)
+		{
+			// Update the size and hop just in case
+			_outputs[speaker]->SetSize( buffersize );
+			_outputs[speaker]->SetHop( buffersize );
+		}
+		for (unsigned speaker=speakerToUpdate ; speaker<_outputs.size(); speaker++)
+			delete _outputs[speaker];
 		_outputs.resize(speakerToUpdate);
 		// adding new speakers
-		for ( ; speakerToUpdate<_layout.size(); speakerToUpdate++)
+		for (unsigned speaker=speakerToUpdate; speaker<_layout.size(); speaker++)
 		{
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( _layout.name(speakerToUpdate), this);
+			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( _layout.name(speaker), this);
 			port->SetSize( buffersize );
 			port->SetHop( buffersize );
 			_outputs.push_back( port );
