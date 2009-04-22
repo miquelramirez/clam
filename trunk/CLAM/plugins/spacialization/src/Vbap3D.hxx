@@ -143,6 +143,8 @@ public:
 	}
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
+
+		CopyAsConcreteConfig(_config, config);
 #if 1	
 		struct SpeakerPositions {
 			int id;
