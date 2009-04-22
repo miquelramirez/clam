@@ -51,6 +51,7 @@ private:
 
 	typedef std::vector<unsigned> Triangle;
 
+	SpeakerLayout _layout;
 	CLAM::AudioInPort _w;
 	typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 	OutPorts _outputs;
@@ -242,6 +243,7 @@ public:
 		_azimuths.clear();
 		_elevations.clear();
 		_names.clear();
+		_layout.clear();
 		const unsigned buffersize = BackendBufferSize();
 		for (unsigned i=0; speakers[i].name; i++)
 		{
@@ -252,6 +254,7 @@ public:
 			_azimuths.push_back( rad(speakers[i].azimuth) );
 			_elevations.push_back( rad(speakers[i].elevation) );
 			_names.push_back( speakers[i].name );
+			_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
 		}
 		_triangles.clear();
 		_speakersPositions.clear();
