@@ -5,13 +5,15 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/Audio.hxx>
 #include <CLAM/InControl.hxx>
-#include <Orientation.hxx>
-#include <cmath>
+#include <CLAM/Filename.hxx>
+#include "Orientation.hxx"
 #include "SpeakerLayout.hxx"
+#include <cmath>
 
 /**
- This processing implements a 3D 
- Vector Based Array Panning (VBAP)
+ This processing implements a 3D Vector Based Array Panning (VBAP)
+ @param SpeakerLayout [Config] A file containing the target speaker layout.
+ @param Triangulation [Config] A file containing a triangulation for the layout.
  @param[in] w [Port] Pressure that the virtual sound emits.
  @todo Control value azimuth, controls a simulated rotation of the receiver
  @todo Control value elevation, controls a simulated rotation of the receiver
@@ -21,13 +23,28 @@
 
 class Vbap3D : public CLAM::Processing
 {
+public:
+	class Config : public CLAM::ProcessingConfig
+	{
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYN_ATTRIBUTE( 0, public, CLAM::InFilename, SpeakerLayout);
+		DYN_ATTRIBUTE( 1, public, CLAM::InFilename, Triangulation);
+	protected:
+		void DefaultInit()
+		{
+			AddAll();
+			UpdateData();
+		};
+	};
+
+private:
+
 	struct Vector
 	{
 		float x;
 		float y;
 		float z;
 	};
-
 
 	float _lastAzimuth;
 	float _lastElevation;
@@ -39,7 +56,7 @@ class Vbap3D : public CLAM::Processing
 	OutPorts _outputs;
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
-	unsigned _lower;
+	Config _config;
 	std::vector<double> _elevations;
 	std::vector<double> _azimuths;
 	std::vector<std::string> _names;
@@ -117,6 +134,10 @@ public:
 		_deltaNumeric = 0.00001; 
 	}
 
+	const CLAM::ProcessingConfig & GetConfig() const
+	{
+		return _config;
+	}
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
 #if 1	
