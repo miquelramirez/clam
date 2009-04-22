@@ -60,7 +60,6 @@ private:
 	Config _config;
 	std::vector<double> _elevations;
 	std::vector<double> _azimuths;
-	std::vector<std::string> _names;
 	std::vector<Triangle> _triangles;
 	std::vector<Vector> _normals;
 	std::vector< std::vector<Vector> > _speakersPositions;
@@ -241,13 +240,11 @@ public:
 
 		_azimuths.clear();
 		_elevations.clear();
-		_names.clear();
 		_layout.clear();
 		for (unsigned i=0; speakers[i].name; i++)
 		{
 			_azimuths.push_back( rad(speakers[i].azimuth) );
 			_elevations.push_back( rad(speakers[i].elevation) );
-			_names.push_back( speakers[i].name );
 			_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
 		}
 		RemovePorts();
