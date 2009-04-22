@@ -8,12 +8,19 @@ print """<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 """
 for speaker in xrange(nSpeakers) :
-	print '<processing id="%02i" position="%i,%i" size="128,111" type="AudioSink"/>\n' % (speaker+1, 400+64*(speaker%6), (speaker%6)*6+(speaker//6)*95 )
+	print """
+  <processing id="%02i" position="%i,%i" size="128,111" type="AudioSink"/>""" % (
+	speaker+1, 400+64*(speaker%6), (speaker%6)*6+(speaker//6)*95 )
+
 print """
   <processing id="1" position="25,480" size="128,108" type="AudioSource"/>
+
   <processing id="2" position="130,498" size="128,108" type="AudioSource"/>
+
   <processing id="3" position="237,516" size="128,108" type="AudioSource"/>
+
   <processing id="4" position="343,535" size="128,108" type="AudioSource"/>
+
   <processing id="LoopBack" position="450,555" size="128,108" type="AudioSource"/>
 
   <processing id="AudioAmplifier" position="200,64" size="114,414" type="AudioAmplifier">
@@ -22,7 +29,7 @@ print """
     <PortsNumber>%(nSpeakers)s</PortsNumber>
   </processing>
 
-  <processing id="Oscilloscope" position="734,156" size="196,226" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="850,156" size="196,226" type="Oscilloscope"/>
 
   <processing id="SndfilePlayer" position="41,64" size="107,414" type="SndfilePlayer">
     <SourceFile>multiSweep24.wav</SourceFile>
@@ -66,7 +73,6 @@ print """
     <out>SndfilePlayer.out0</out>
     <in>Oscilloscope.Input</in>
   </port_connection>
-
 """% { 'nSpeakers': nSpeakers }
 
 for speaker in xrange(nSpeakers) :
@@ -79,8 +85,7 @@ for speaker in xrange(nSpeakers) :
   <port_connection>
     <out>AudioAmplifier.Audio Output%(mixerPort)s</out>
     <in>%(sourceNumber)s.AudioIn</in>
-  </port_connection>
-""" % {
+  </port_connection>""" % {
 	'mixerPort': (" %i"%speaker) if speaker else '',
 	'playerPort': str(speaker),
 	'sourceNumber': "%02i"%(speaker+1),
