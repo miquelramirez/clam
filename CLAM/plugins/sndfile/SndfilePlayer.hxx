@@ -318,15 +318,13 @@ namespace CLAM
 
 			if ( !_config.HasSourceFile() )
 			{
-				AddConfigErrorMessage("The provided config object lacked the field 'SourceFile'");
-				return false;
+				return AddConfigErrorMessage("The provided config object lacked the field 'SourceFile'");
 			}
 
 			const std::string & location = _config.GetSourceFile();
 			if ( location == "")
 			{
-				AddConfigErrorMessage("No file selected");
-				return false;
+				return AddConfigErrorMessage("No file selected");
 			}
 
 			if(_infile) delete _infile;
@@ -334,28 +332,23 @@ namespace CLAM
 			// check if the file is open
 			if(!*_infile)
 			{
-				AddConfigErrorMessage("The audio file '" + location + "' could not be opened");
-				return false;
+				return AddConfigErrorMessage("The audio file '" + location + "' could not be opened");
 			}
-			
+
 			//report sndfile library errors
 			if(_infile->error() != 0)
 			{
-				AddConfigErrorMessage(_infile->strError());
-				return false;
-			}			
-
-			if(_config.GetSavedNumberOfChannels() != 0)
+				return AddConfigErrorMessage(_infile->strError());
+			}
+			unsigned savedChannels = _config.GetSavedNumberOfChannels();
+			if (savedChannels and savedChannels != _infile->channels() )
 			{
-				if( _config.GetSavedNumberOfChannels() !=(unsigned)_infile->channels() )
-				{				
-					AddConfigErrorMessage(
-						"The configuration have a number of channels saved which \n"
-						"does not correspond to the channels in the provided audio \n"
-						"file. If you want to just open a file, first choose '0' in the\n"
-						"SavedNumberOfChannels config parameter");
-					return false;
-				}
+				ResizePorts(savedChannels);
+				return AddConfigErrorMessage(
+					"The configuration have a number of channels saved which \n"
+					"does not correspond to the channels in the provided audio \n"
+					"file. If you want to just open a file, first choose '0' in the\n"
+					"SavedNumberOfChannels config parameter");
 			}
 
 			_inControlLoop.DoControl(_config.GetLoop() ? 1 : 0);
