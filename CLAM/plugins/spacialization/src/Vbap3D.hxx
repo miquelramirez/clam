@@ -239,11 +239,18 @@ public:
 //end testing setup
 #endif
 
-		RemovePorts();
 		_azimuths.clear();
 		_elevations.clear();
 		_names.clear();
 		_layout.clear();
+		for (unsigned i=0; speakers[i].name; i++)
+		{
+			_azimuths.push_back( rad(speakers[i].azimuth) );
+			_elevations.push_back( rad(speakers[i].elevation) );
+			_names.push_back( speakers[i].name );
+			_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
+		}
+		RemovePorts();
 		const unsigned buffersize = BackendBufferSize();
 		for (unsigned i=0; speakers[i].name; i++)
 		{
@@ -251,10 +258,6 @@ public:
 			port->SetSize( buffersize );
 			port->SetHop( buffersize );
 			_outputs.push_back( port );
-			_azimuths.push_back( rad(speakers[i].azimuth) );
-			_elevations.push_back( rad(speakers[i].elevation) );
-			_names.push_back( speakers[i].name );
-			_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
 		}
 		_triangles.clear();
 		_speakersPositions.clear();
