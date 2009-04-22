@@ -10,6 +10,7 @@
 #include "SpeakerLayout.hxx"
 #include <cmath>
 
+
 /**
  This processing implements a 3D Vector Based Array Panning (VBAP)
  @param SpeakerLayout [Config] A file containing the target speaker layout.
@@ -63,10 +64,10 @@ private:
 	std::vector<Vector> _speakersPositions;
 	std::vector<float> _ortogonalProjection;
 	int _currentTriangle;
-	float _deltaAngle;
-	float _deltaNumeric;
+	static const float _deltaAngle = 0.001;
+	static const float _deltaNumeric = 0.00001; 
 
-	Vector vectorialProduct(const Vector& v1, const Vector& v2) const
+	static Vector vectorialProduct(const Vector& v1, const Vector& v2)
 	{
 		Vector result = {
 			v1.y * v2.z - v1.z * v2.y ,
@@ -75,17 +76,17 @@ private:
 			};
 		return result;
 	}
-	Vector product(const float& factor, const Vector& v) const
+	static Vector product(const float& factor, const Vector& v)
 	{
 		Vector result = { factor * v.x, factor * v.y, factor * v.z };
 		return result;
 	}
 
-	float escalarProduct(const Vector& v1, const Vector& v2) const
+	static float escalarProduct(const Vector& v1, const Vector& v2)
 	{
 		return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 	}
-	Vector substract(const Vector& v1, const Vector& v2) const
+	static Vector substract(const Vector& v1, const Vector& v2)
 	{
 		Vector result = {
 			v1.x - v2.x ,
@@ -94,11 +95,11 @@ private:
 			};
 		return result;
 	}
-	float mod(const Vector& v) const
+	static float mod(const Vector& v)
 	{
 		return sqrt(v.x*v.x + v.y*v.y + v.z*v.z);
 	}
-	float angle(const Vector& v1, const Vector& v2) const
+	static float angle(const Vector& v1, const Vector& v2)
 	{
 		float divisor = mod(v1)*mod(v2);
 		CLAM_ASSERT( divisor > _deltaNumeric, "Cannot compute an angle of a zero vector"); 
@@ -106,14 +107,55 @@ private:
 		if (arg <-1 or arg >1) return arg < 0 ? M_PI : 0;
 		return acos( arg );
 	}
-	void print(const Vector& v, std::string name="") const
+	static void print(const Vector& v, std::string name="")
 	{
 		std::cout << name << " (" << v.x << ", " << v.y << ", " << v.z << ")" << std::endl;
 	}
-	float rad( float deg ) const
+	static float rad( float deg )
 	{
 		return deg / 180 * M_PI;
 	}
+
+	class Triangulation
+	{
+		std::vector<Triangle> _triangles;
+		std::vector<Vector> _normals;
+		std::vector<float> _orthogonalProjection;
+		const SpeakerLayout & _layout;
+		const std::vector<Vector> _speakersPositions;
+	public:
+		Triangulation(const SpeakerLayout & layout, const std::vector<Vector> & speakerPositions)
+			: _layout(layout)
+			, _speakersPositions(speakerPositions)
+		{
+		}
+		void add(unsigned v1, unsigned v2, unsigned v3)
+		{
+			Triangle t;
+			t.resize(3);
+			t[0]=v1;
+			t[1]=v2;
+			t[2]=v3;
+			_triangles.push_back(t);
+			Vector normal = vectorialProduct( 
+				substract(_speakersPositions[v1], _speakersPositions[v2]),  
+				substract(_speakersPositions[v1], _speakersPositions[v3])
+				);
+			_normals.push_back(normal);
+			_orthogonalProjection.push_back(escalarProduct(normal,_speakersPositions[v3]));
+		}
+		void clear()
+		{
+			_triangles.clear();
+			_normals.clear();
+			_orthogonalProjection.clear();
+		}
+		const Triangle & triangle(unsigned index) const { return _triangles[index]; }
+		const Vector & normal(unsigned index) const { return _normals[index]; }
+		float orthoProjection(unsigned index) const { return _orthogonalProjection[index]; }
+	};
+
+	Triangulation _triangulation;
 
 public:
 	const char* GetClassName() const { return "Vbap3D"; }
@@ -124,12 +166,11 @@ public:
 		, _azimuth("azimuth", this) // angle in degrees
 		, _elevation("elevation", this) // angle in degrees
 		, _currentTriangle(0)
+		, _triangulation(_layout, _speakersPositions)
 	{
 		Configure( config );
 		_azimuth.SetBounds(0, 360); //a complete spin on each slider direction
 		_elevation.SetBounds(-90, 90);
-		_deltaAngle = 0.001; 
-		_deltaNumeric = 0.00001; 
 	}
 	~Vbap3D()
 	{
