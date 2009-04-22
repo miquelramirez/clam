@@ -1,57 +1,58 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="01" position="226,66" size="128,111" type="AudioSink"/>
 
-  <processing id="02" position="290,72" size="128,111" type="AudioSink"/>
+  <processing id="01" position="400,0" size="128,111" type="AudioSink"/>
 
-  <processing id="03" position="359,78" size="128,111" type="AudioSink"/>
+  <processing id="02" position="464,6" size="128,111" type="AudioSink"/>
 
-  <processing id="04" position="426,85" size="128,111" type="AudioSink"/>
+  <processing id="03" position="528,12" size="128,111" type="AudioSink"/>
 
-  <processing id="05" position="490,90" size="128,111" type="AudioSink"/>
+  <processing id="04" position="592,18" size="128,111" type="AudioSink"/>
 
-  <processing id="06" position="553,94" size="128,111" type="AudioSink"/>
+  <processing id="05" position="656,24" size="128,111" type="AudioSink"/>
 
-  <processing id="07" position="226,159" size="128,111" type="AudioSink"/>
+  <processing id="06" position="720,30" size="128,111" type="AudioSink"/>
 
-  <processing id="08" position="291,165" size="128,111" type="AudioSink"/>
+  <processing id="07" position="400,95" size="128,111" type="AudioSink"/>
 
-  <processing id="09" position="356,171" size="128,111" type="AudioSink"/>
+  <processing id="08" position="464,101" size="128,111" type="AudioSink"/>
+
+  <processing id="09" position="528,107" size="128,111" type="AudioSink"/>
+
+  <processing id="10" position="592,113" size="128,111" type="AudioSink"/>
+
+  <processing id="11" position="656,119" size="128,111" type="AudioSink"/>
+
+  <processing id="12" position="720,125" size="128,111" type="AudioSink"/>
+
+  <processing id="13" position="400,190" size="128,111" type="AudioSink"/>
+
+  <processing id="14" position="464,196" size="128,111" type="AudioSink"/>
+
+  <processing id="15" position="528,202" size="128,111" type="AudioSink"/>
+
+  <processing id="16" position="592,208" size="128,111" type="AudioSink"/>
+
+  <processing id="17" position="656,214" size="128,111" type="AudioSink"/>
+
+  <processing id="18" position="720,220" size="128,111" type="AudioSink"/>
+
+  <processing id="19" position="400,285" size="128,111" type="AudioSink"/>
+
+  <processing id="20" position="464,291" size="128,111" type="AudioSink"/>
+
+  <processing id="21" position="528,297" size="128,111" type="AudioSink"/>
+
+  <processing id="22" position="592,303" size="128,111" type="AudioSink"/>
+
+  <processing id="23" position="656,309" size="128,111" type="AudioSink"/>
+
+  <processing id="24" position="720,315" size="128,111" type="AudioSink"/>
 
   <processing id="1" position="25,480" size="128,108" type="AudioSource"/>
 
-  <processing id="10" position="421,177" size="128,111" type="AudioSink"/>
-
-  <processing id="11" position="483,183" size="128,111" type="AudioSink"/>
-
-  <processing id="12" position="544,188" size="128,111" type="AudioSink"/>
-
-  <processing id="13" position="225,257" size="128,111" type="AudioSink"/>
-
-  <processing id="14" position="291,263" size="128,111" type="AudioSink"/>
-
-  <processing id="15" position="354,268" size="128,111" type="AudioSink"/>
-
-  <processing id="16" position="420,274" size="128,111" type="AudioSink"/>
-
-  <processing id="17" position="488,280" size="128,111" type="AudioSink"/>
-
-  <processing id="18" position="556,283" size="128,111" type="AudioSink"/>
-
-  <processing id="19" position="224,352" size="128,111" type="AudioSink"/>
-
   <processing id="2" position="130,498" size="128,108" type="AudioSource"/>
-
-  <processing id="20" position="292,356" size="128,111" type="AudioSink"/>
-
-  <processing id="21" position="360,361" size="128,111" type="AudioSink"/>
-
-  <processing id="22" position="427,365" size="128,111" type="AudioSink"/>
-
-  <processing id="23" position="491,367" size="128,111" type="AudioSink"/>
-
-  <processing id="24" position="559,371" size="128,111" type="AudioSink"/>
 
   <processing id="3" position="237,516" size="128,108" type="AudioSource"/>
 
@@ -59,10 +60,16 @@
 
   <processing id="LoopBack" position="450,555" size="128,108" type="AudioSource"/>
 
-  <processing id="Oscilloscope" position="734,156" size="196,226" type="Oscilloscope"/>
+  <processing id="AudioAmplifier" position="200,64" size="114,414" type="AudioAmplifier">
+    <MaxGain>1</MaxGain>
+    <InitGain>0</InitGain>
+    <PortsNumber>24</PortsNumber>
+  </processing>
 
-  <processing id="SndfilePlayer" position="60,66" size="107,414" type="SndfilePlayer">
-    <SourceFile>/home/david.garcia/CajitasDeArena/clam/CLAM/plugins/spacialization/multiSweep24.wav</SourceFile>
+  <processing id="Oscilloscope" position="850,156" size="196,226" type="Oscilloscope"/>
+
+  <processing id="SndfilePlayer" position="41,64" size="107,414" type="SndfilePlayer">
+    <SourceFile>multiSweep24.wav</SourceFile>
     <Loop>0</Loop>
     <SavedNumberOfChannels>24</SavedNumberOfChannels>
   </processing>
@@ -101,127 +108,250 @@
 
   <port_connection>
     <out>SndfilePlayer.out0</out>
+    <in>Oscilloscope.Input</in>
+  </port_connection>
+
+
+  <port_connection>
+    <out>SndfilePlayer.out0</out>
+    <in>AudioAmplifier.Input Audio</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output</out>
     <in>01.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>SndfilePlayer.out0</out>
-    <in>Oscilloscope.Input</in>
+    <out>SndfilePlayer.out1</out>
+    <in>AudioAmplifier.Input Audio 1</in>
   </port_connection>
 
   <port_connection>
-    <out>SndfilePlayer.out1</out>
+    <out>AudioAmplifier.Audio Output 1</out>
     <in>02.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out2</out>
+    <in>AudioAmplifier.Input Audio 2</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 2</out>
     <in>03.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out3</out>
+    <in>AudioAmplifier.Input Audio 3</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 3</out>
     <in>04.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out4</out>
+    <in>AudioAmplifier.Input Audio 4</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 4</out>
     <in>05.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out5</out>
+    <in>AudioAmplifier.Input Audio 5</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 5</out>
     <in>06.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out6</out>
+    <in>AudioAmplifier.Input Audio 6</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 6</out>
     <in>07.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out7</out>
+    <in>AudioAmplifier.Input Audio 7</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 7</out>
     <in>08.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out8</out>
+    <in>AudioAmplifier.Input Audio 8</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 8</out>
     <in>09.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out9</out>
+    <in>AudioAmplifier.Input Audio 9</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 9</out>
     <in>10.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out10</out>
+    <in>AudioAmplifier.Input Audio 10</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 10</out>
     <in>11.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out11</out>
+    <in>AudioAmplifier.Input Audio 11</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 11</out>
     <in>12.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out12</out>
+    <in>AudioAmplifier.Input Audio 12</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 12</out>
     <in>13.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out13</out>
+    <in>AudioAmplifier.Input Audio 13</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 13</out>
     <in>14.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out14</out>
+    <in>AudioAmplifier.Input Audio 14</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 14</out>
     <in>15.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out15</out>
+    <in>AudioAmplifier.Input Audio 15</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 15</out>
     <in>16.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out16</out>
+    <in>AudioAmplifier.Input Audio 16</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 16</out>
     <in>17.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out17</out>
+    <in>AudioAmplifier.Input Audio 17</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 17</out>
     <in>18.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out18</out>
+    <in>AudioAmplifier.Input Audio 18</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 18</out>
     <in>19.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out19</out>
+    <in>AudioAmplifier.Input Audio 19</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 19</out>
     <in>20.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out20</out>
+    <in>AudioAmplifier.Input Audio 20</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 20</out>
     <in>21.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out21</out>
+    <in>AudioAmplifier.Input Audio 21</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 21</out>
     <in>22.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out22</out>
+    <in>AudioAmplifier.Input Audio 22</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 22</out>
     <in>23.AudioIn</in>
   </port_connection>
 
   <port_connection>
     <out>SndfilePlayer.out23</out>
+    <in>AudioAmplifier.Input Audio 23</in>
+  </port_connection>
+
+  <port_connection>
+    <out>AudioAmplifier.Audio Output 23</out>
     <in>24.AudioIn</in>
   </port_connection>
 
+
 </network>
+
