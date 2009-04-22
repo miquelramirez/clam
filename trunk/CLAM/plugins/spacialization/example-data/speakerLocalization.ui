@@ -631,6 +631,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QSlider" name="InControl__AudioAmplifier__Gain" >
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QGroupBox" name="groupBox_2" >
        <property name="sizePolicy" >
         <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
