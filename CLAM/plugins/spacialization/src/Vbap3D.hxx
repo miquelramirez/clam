@@ -430,7 +430,7 @@ public:
 		return true;
 	}
 private:
-	void RemovePorts()
+	void ResizePortsToLayout(unsigned buffersize)
 	{
 		OutPorts::iterator it;
 		for(it=_outputs.begin(); it!=_outputs.end(); it++)
@@ -438,10 +438,6 @@ private:
 		_outputs.clear();
 		// Delete ports from Processing (base class) register
 		GetOutPorts().Clear();
-	}
-	void ResizePortsToLayout(unsigned buffersize)
-	{
-		RemovePorts();
 		for (unsigned i=0; i<_layout.size(); i++)
 		{
 			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( _layout.name(i), this);
