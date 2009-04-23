@@ -150,6 +150,7 @@ private:
 			_normals.clear();
 			_orthogonalProjection.clear();
 		}
+		unsigned size() const { return _triangles.size(); }
 		const Triangle & triangle(unsigned index) const { return _triangles[index]; }
 		const Vector & normal(unsigned index) const { return _normals[index]; }
 		float orthoProjection(unsigned index) const { return _orthogonalProjection[index]; }
@@ -302,6 +303,7 @@ public:
 		_triangles.clear();
 		_normals.clear();
 		_ortogonalProjection.clear();
+		_triangulation.clear();
 		for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
 		{
 			Triangle t;
@@ -309,6 +311,7 @@ public:
 			t[0]=triangles[i].one;
 			t[1]=triangles[i].two;
 			t[2]=triangles[i].three;
+			_triangulation.add(t[0], t[1], t[2]);
 			_triangles.push_back(t);
 			
 			Vector normal = vectorialProduct( 
