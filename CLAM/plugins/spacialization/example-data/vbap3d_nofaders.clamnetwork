@@ -74,6 +74,8 @@
   </processing>
 
   <processing id="Vbap3D" position="367,150" size="79,270" type="Vbap3D">
+    <SpeakerLayout></SpeakerLayout>
+    <Triangulation></Triangulation>
   </processing>
 
   <port_connection>
