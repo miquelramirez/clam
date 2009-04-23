@@ -315,6 +315,12 @@ namespace CLAM
 				ResizePorts(1);
 				_numChannels = _outports.size();
 			}
+			// Even if further config fails, if we have SavedChannels, create them
+			unsigned savedChannels = _config.GetSavedNumberOfChannels();
+			if (savedChannels)
+			{
+				ResizePorts(savedChannels);
+			}
 
 			if ( !_config.HasSourceFile() )
 			{
@@ -340,10 +346,8 @@ namespace CLAM
 			{
 				return AddConfigErrorMessage(_infile->strError());
 			}
-			unsigned savedChannels = _config.GetSavedNumberOfChannels();
 			if (savedChannels and savedChannels != _infile->channels() )
 			{
-				ResizePorts(savedChannels);
 				return AddConfigErrorMessage(
 					"The configuration have a number of channels saved which \n"
 					"does not correspond to the channels in the provided audio \n"
