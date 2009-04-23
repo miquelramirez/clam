@@ -60,7 +60,6 @@ private:
 	CLAM::InControl _elevation;
 	Config _config;
 	std::vector<Triangle> _triangles;
-	std::vector<Vector> _normals;
 	std::vector<Vector> _speakersPositions;
 	std::vector<float> _ortogonalProjection;
 	int _currentTriangle;
@@ -122,7 +121,7 @@ private:
 		std::vector<Vector> _normals;
 		std::vector<float> _orthogonalProjection;
 		const SpeakerLayout & _layout;
-		const std::vector<Vector> _speakersPositions;
+		const std::vector<Vector> & _speakersPositions;
 	public:
 		Triangulation(const SpeakerLayout & layout, const std::vector<Vector> & speakerPositions)
 			: _layout(layout)
@@ -301,7 +300,6 @@ public:
 		const unsigned buffersize = BackendBufferSize();
 		ResizePortsToLayout(buffersize);
 		_triangles.clear();
-		_normals.clear();
 		_ortogonalProjection.clear();
 		_triangulation.clear();
 		for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
@@ -318,7 +316,6 @@ public:
 				substract(_speakersPositions[t[0]], _speakersPositions[t[1]]),  
 				substract(_speakersPositions[t[0]], _speakersPositions[t[2]])
 				);
-			_normals.push_back(normal);
 			_ortogonalProjection.push_back( escalarProduct(normal,_speakersPositions[t[2]]) );
 		}
 		_elevation.DoControl(0.);
@@ -349,7 +346,7 @@ public:
 //print(_speakersPositions[i][2], "speak 2");
 
 			const Triangle & triangle = _triangles[i];
-			const float divisor = escalarProduct(_normals[i], r_source);
+			const float divisor = escalarProduct(_triangulation.normal(i), r_source);
 			// If source direction and the plane are almost ortogonal, continue
 			// (also avoids a divide by zero)
 			if (fabs(divisor) < _deltaNumeric) continue;
