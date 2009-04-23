@@ -59,9 +59,7 @@ private:
 	CLAM::InControl _azimuth;
 	CLAM::InControl _elevation;
 	Config _config;
-	std::vector<Triangle> _triangles;
 	std::vector<Vector> _speakersPositions;
-	std::vector<float> _ortogonalProjection;
 	int _currentTriangle;
 	static const float _deltaAngle = 0.001;
 	static const float _deltaNumeric = 0.00001; 
@@ -299,8 +297,6 @@ public:
 		}
 		const unsigned buffersize = BackendBufferSize();
 		ResizePortsToLayout(buffersize);
-		_triangles.clear();
-		_ortogonalProjection.clear();
 		_triangulation.clear();
 		for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
 		{
@@ -310,13 +306,6 @@ public:
 			t[1]=triangles[i].two;
 			t[2]=triangles[i].three;
 			_triangulation.add(t[0], t[1], t[2]);
-			_triangles.push_back(t);
-			
-			Vector normal = vectorialProduct( 
-				substract(_speakersPositions[t[0]], _speakersPositions[t[1]]),  
-				substract(_speakersPositions[t[0]], _speakersPositions[t[2]])
-				);
-			_ortogonalProjection.push_back( escalarProduct(normal,_speakersPositions[t[2]]) );
 		}
 		_elevation.DoControl(0.);
 		_azimuth.DoControl(0.);
@@ -336,7 +325,7 @@ public:
 			cos(elevation) * sin(azimuth),
 			sin(elevation),
 		};
-		for (unsigned i=0; i<_triangles.size(); i++)
+		for (unsigned i=0; i<_triangulation.size(); i++)
 		{
 //std::cout << "\n\nchecking triangle "<< i << std::endl;
 //print(r_source, "r_source");
@@ -345,13 +334,13 @@ public:
 //print(_speakersPositions[i][1], "speak 1");
 //print(_speakersPositions[i][2], "speak 2");
 
-			const Triangle & triangle = _triangles[i];
+			const Triangle & triangle = _triangulation.triangle(i);
 			const float divisor = escalarProduct(_triangulation.normal(i), r_source);
 			// If source direction and the plane are almost ortogonal, continue
 			// (also avoids a divide by zero)
 			if (fabs(divisor) < _deltaNumeric) continue;
 
-			const float t =  _ortogonalProjection[i] / divisor;
+			const float t =  _triangulation.orthoProjection(i) / divisor;
 //std::cout << "--> t " << t  << " t-1 " << t-1. << std::endl;
 			if (t < 0.) continue; // opposite direction
 			if (t > 1.+_deltaNumeric) continue; // TODOC: what does it means
@@ -403,7 +392,7 @@ public:
 //std::cout << " speakers: "<< _triangles[_currentTriangle][0] << " " << _triangles[_currentTriangle][1] << " " << _triangles[_currentTriangle][2] << std::endl;
 		}
 		// obtain the three gains.
-		Triangle & triangle = _triangles[_currentTriangle];
+		const Triangle & triangle = _triangulation.triangle(_currentTriangle);
 		unsigned speaker1 = triangle[0];
 		unsigned speaker2 = triangle[1];
 		unsigned speaker3 = triangle[2];
