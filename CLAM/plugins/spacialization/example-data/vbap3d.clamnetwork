@@ -33,7 +33,10 @@
 
   <processing id="9 mid back left" position="902,479" size="128,111" type="AudioSink"/>
 
-  <processing id="Vbap3D" position="367,150" size="79,270" type="Vbap3D"/>
+  <processing id="Vbap3D" position="367,150" size="79,270" type="Vbap3D">
+    <SpeakerLayout />
+    <Triangulation />
+  </processing>
 
   <processing id="azimuth" position="364,-30" size="395,78" type="OutControlSender">
     <Min>0</Min>
