@@ -202,17 +202,22 @@ public:
 	{
 		return _config;
 	}
-	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
-	{
 
-		CopyAsConcreteConfig(_config, config);
-#if 1	
-		struct SpeakerPositions {
-			int id;
-			const char * name;
-			float azimuth;
-			float elevation;
-		} speakers[] =	{
+	struct SpeakerPositions
+	{
+		int id;
+		const char * name;
+		float azimuth;
+		float elevation;
+	};
+	struct Triangles {
+		unsigned one;
+		unsigned two;
+		unsigned three;
+	};
+	const SpeakerPositions * layoutFor15Speakers()
+	{
+		static SpeakerPositions speakers[] =	{
 			{0, "Back Horizontal", 180., 0. },
 			{1, "Base Back Left", 135., -45.},
 			{2, "Base Back Right", -135, -45.},
@@ -230,11 +235,11 @@ public:
 			{14, "Top", 0., 89.},
 			{0, 0, 0., 0.}
 		};
-		struct Triangles {
-			unsigned one;
-			unsigned two;
-			unsigned three;
-		} triangles[] = {
+		return speakers;
+	}
+	const Triangles * trianglesFor15Speakers()
+	{
+		static Triangles triangles[] = {
 			//front
 			{5, 7, 12},
 			{5, 7, 4},
@@ -270,26 +275,24 @@ public:
 
 			{0,0,0}
 		};
-		
-#else
-//testing setup 
-		struct SpeakerPositions {
-			int id;
-			const char * name;
-			float azimuth;
-			float elevation;
-		} speakers[] =	{
+		return triangles;
+	}
+	const SpeakerPositions * layoutFor4Speakers()
+	{
+		static SpeakerPositions speakers[] =
+		{
 			{0, "left", -45., -45. },
 			{1, "right", 45., -45.},
 			{2, "back", -180., -45.},
 			{3, "top", 0., 89.},
 			{0, 0, 0., 0.}
 		};
-		struct Triangles {
-			unsigned one;
-			unsigned two;
-			unsigned three;
-		} triangles[] = {
+		return speakers;
+	}
+	const Triangles * trianglesFor4Speakers()
+	{
+		static Triangles triangles[] =
+		{
 			//floor
 			{0, 1, 2},
 			//front
@@ -301,14 +304,28 @@ public:
 			//end
 			{0,0,0}
 		};
-//end testing setup
-#endif
+		return triangles;
+	}
+
+	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
+	{
+
+		CopyAsConcreteConfig(_config, config);
+	#if 1
+		const SpeakerPositions * speakers = layoutFor15Speakers();
+		const Triangles * triangles = trianglesFor15Speakers();
+	#else
+		const SpeakerPositions * speakers = layoutFor4Speakers();
+		const Triangles * triangles = trianglesFor4Speakers();
+	#endif
 
 		_layout.clear();
-		_speakersPositions.clear();
 		for (unsigned i=0; speakers[i].name; i++)
-		{
 			_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
+
+		_speakersPositions.clear();
+		for (unsigned i=0; i<_layout.size(); i++)
+		{
 			const CLAM::Orientation & speaker=_layout.orientation(i);
 			Vector r = {
 				speaker.ce * speaker.ca,
@@ -317,18 +334,14 @@ public:
 				};
 			_speakersPositions.push_back(r);
 		}
+
 		const unsigned buffersize = BackendBufferSize();
 		ResizePortsToLayout(buffersize);
+
 		_triangulation.clear();
 		for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
-		{
-			Triangle t;
-			t.resize(3);
-			t[0]=triangles[i].one;
-			t[1]=triangles[i].two;
-			t[2]=triangles[i].three;
-			_triangulation.add(t[0], t[1], t[2]);
-		}
+			_triangulation.add(t.one, t.two, t.three);
+
 		_elevation.DoControl(0.);
 		_azimuth.DoControl(0.);
 		_w.SetSize(buffersize);
