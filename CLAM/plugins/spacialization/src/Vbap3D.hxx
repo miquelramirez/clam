@@ -318,10 +318,15 @@ public:
 		const SpeakerPositions * speakers = layoutFor4Speakers();
 		const Triangles * triangles = trianglesFor4Speakers();
 	#endif
-
-		_layout.clear();
-		for (unsigned i=0; speakers[i].name; i++)
-			_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
+		std::string errorMessage;
+		if (not _config.HasSpeakerLayout() or _config.GetSpeakerLayout() == "")
+		{
+			_layout.clear();
+			for (unsigned i=0; speakers[i].name; i++)
+				_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
+		}
+		else if (not _layout.load(_config.GetSpeakerLayout(), errorMessage))
+			return AddConfigErrorMessage(errorMessage);
 
 		_speakersPositions.clear();
 		for (unsigned i=0; i<_layout.size(); i++)
@@ -338,9 +343,14 @@ public:
 		const unsigned buffersize = BackendBufferSize();
 		ResizePortsToLayout(buffersize);
 
-		_triangulation.clear();
-		for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
-			_triangulation.add(t.one, t.two, t.three);
+		if (not _config.HasSpeakerLayout() or _config.GetTriangulation() == "")
+		{
+			_triangulation.clear();
+			for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
+				_triangulation.add(triangles[i].one, triangles[i].two, triangles[i].three);
+		}
+		else if (not _triangulation.load(_config.GetTriangulation(), errorMessage))
+			return AddConfigErrorMessage(errorMessage);
 
 		_elevation.DoControl(0.);
 		_azimuth.DoControl(0.);
