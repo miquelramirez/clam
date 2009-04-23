@@ -120,6 +120,12 @@ private:
 		std::vector<float> _orthogonalProjection;
 		const SpeakerLayout & _layout;
 		const std::vector<Vector> & _speakersPositions;
+		bool error(std::string & errorMsg, const std::string & message)
+		{
+			errorMsg += message;
+			errorMsg += "\n";
+			return false;
+		}
 	public:
 		Triangulation(const SpeakerLayout & layout, const std::vector<Vector> & speakerPositions)
 			: _layout(layout)
@@ -140,6 +146,22 @@ private:
 				);
 			_normals.push_back(normal);
 			_orthogonalProjection.push_back(escalarProduct(normal,_speakersPositions[v3]));
+		}
+		bool load(const std::string & path, std::string & errorMsg)
+		{
+			
+			if (path.empty()) return error(errorMsg, "No triangulation file specified");
+			std::ifstream file(path.c_str());
+			if (!file) return error(errorMsg, "Could not open the triangulation file "+path);
+			clear();
+			while (true)
+			{
+				double v1, v2, v3;
+				file >> v1 >> v2 >> v3;
+				if (!file) break;
+				add(v1,v2,v3);
+			}
+			return true;
 		}
 		void clear()
 		{
