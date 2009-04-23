@@ -16,8 +16,7 @@ bool SpeakerLayout::load(
 	if (path.empty()) return error(errorMsg, "No speaker layout file specified");
 	std::ifstream file(path.c_str());
 	if (!file) return error(errorMsg, "Could not open the speaker layout file "+path);
-	_orientations.clear();
-	_names.clear();
+	clear();
 	while (true)
 	{
 		double elevation;
