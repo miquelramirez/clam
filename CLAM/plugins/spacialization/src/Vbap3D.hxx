@@ -154,11 +154,14 @@ private:
 			std::ifstream file(path.c_str());
 			if (!file) return error(errorMsg, "Could not open the triangulation file "+path);
 			clear();
+			unsigned nSpeakers = _layout.size();
 			while (true)
 			{
 				double v1, v2, v3;
 				file >> v1 >> v2 >> v3;
 				if (!file) break;
+				if (v1>=nSpeakers or v2>=nSpeakers or v3>=nSpeakers)
+					return error(errorMsg, "Triangulation uses speakers that are not available");
 				add(v1,v2,v3);
 			}
 			return true;
