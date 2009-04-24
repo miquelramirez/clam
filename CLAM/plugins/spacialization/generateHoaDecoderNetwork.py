@@ -25,8 +25,9 @@ print """<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 
 for speaker, label in enumerate(speakers) :
 	print """
-  <processing id="%i %s" position="%i,%i" size="128,111" type="AudioSink"/>""" % (
-	speaker+1, label, 600+64*(speaker%6), 80+(speaker%6)*6+(speaker//6)*95 )
+  <processing id="%s" position="%i,%i" size="128,111" type="AudioSink"/>""" % (
+	"%02i"%(speaker+1), 600+64*(speaker%6), 80+(speaker%6)*6+(speaker//6)*95 )
+#	speaker+1, label, 600+64*(speaker%6), 80+(speaker%6)*6+(speaker//6)*95 )
 
 for i, channel in enumerate(channels) :
 	print """
@@ -35,8 +36,9 @@ for i, channel in enumerate(channels) :
 
 print """\
   <processing id="Hoa2RegularSpeakerArray" position="257,290" size="128,270" type="Hoa2RegularSpeakerArray">
-	<Order>%(order)i</Order>
-	<SpeakerLayout>%(layoutFile)s</SpeakerLayout>
+    <Order>%(order)i</Order>
+    <SpeakerLayout>%(layoutFile)s</SpeakerLayout>
+    <IgnoreLabels>1</IgnoreLabels>
   </processing>
 """ % dict(order=order, layoutFile=layoutFileName)
 
@@ -52,11 +54,11 @@ for speaker, label in enumerate(speakers) :
 	print """\
   <port_connection>
     <out>Hoa2RegularSpeakerArray.%(speakerName)s</out>
-    <in>%(speakerNumber)s %(speakerName)s.AudioIn</in>
+    <in>%(speakerName)s.AudioIn</in>
   </port_connection>
 """ % dict(
-	speakerNumber=speaker+1,
-	speakerName=label,
+#	speakerNumber=speaker+1,
+	speakerName="%02i"%(speaker+1), #label,
 	)
 
 print """
