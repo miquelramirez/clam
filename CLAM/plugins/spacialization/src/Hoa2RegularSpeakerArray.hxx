@@ -29,15 +29,17 @@ class Hoa2RegularSpeakerArray : public CLAM::Processing
 public:
 	class Config : public CLAM::ProcessingConfig
 	{
-		DYNAMIC_TYPE_USING_INTERFACE( Config, 2, ProcessingConfig );
+		DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, unsigned, Order);
 		DYN_ATTRIBUTE( 1, public, CLAM::InFilename, SpeakerLayout);
+		DYN_ATTRIBUTE( 2, public, bool, IgnoreLabels);
 	protected:
 		void DefaultInit()
 		{
 			AddAll();
 			UpdateData();
 			SetOrder(1);
+			SetIgnoreLabels(true);
 		};
 	};
 private:
@@ -63,7 +65,7 @@ public:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
 		CopyAsConcreteConfig(_config, config);
-		unsigned buffersize = 512; // BackendBufferSize();
+		unsigned buffersize = BackendBufferSize();
 		unsigned order = _config.GetOrder();
 		bool errorHappened = false;
 		if (order>3)
@@ -149,24 +151,40 @@ private:
 		// Set up the outputs according to the layout
 		unsigned speakerToUpdate = firstDirtySpeaker();
 		// delete existing speakers from the first one with different name
-		for (unsigned oldSpeaker=speakerToUpdate ; oldSpeaker<_outputs.size(); oldSpeaker++)
-			delete _outputs[oldSpeaker];
+		for (unsigned speaker=0; speaker<speakerToUpdate; speaker++)
+		{
+			// Update the size and hop just in case
+			_outputs[speaker]->SetSize( buffersize );
+			_outputs[speaker]->SetHop( buffersize );
+		}
+		for (unsigned speaker=speakerToUpdate ; speaker<_outputs.size(); speaker++)
+			delete _outputs[speaker];
 		_outputs.resize(speakerToUpdate);
 		// adding new speakers
-		for ( ; speakerToUpdate<_layout.size(); speakerToUpdate++)
+		for (unsigned speaker=speakerToUpdate; speaker<_layout.size(); speaker++)
 		{
-			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( _layout.name(speakerToUpdate), this);
+			CLAM::AudioOutPort * port = new CLAM::AudioOutPort( portName(speaker), this);
 			port->SetSize( buffersize );
 			port->SetHop( buffersize );
 			_outputs.push_back( port );
 		}
+	}
+	std::string portName(unsigned speaker) const
+	{
+		if (_config.HasIgnoreLabels() and _config.GetIgnoreLabels())
+		{
+			std::ostringstream os;
+			os << std::setw(2) << std::setfill('0') << (speaker+1);
+			return os.str();
+		}
+		return _layout.name(speaker);
 	}
 	unsigned firstDirtySpeaker() const
 	{
 		for (unsigned speaker = 0; speaker<_layout.size(); speaker++)
 		{
 			if (speaker>=_outputs.size()) return speaker; 
-			if (_outputs[speaker]->GetName() != _layout.name(speaker)) return speaker;
+			if (_outputs[speaker]->GetName() != portName(speaker)) return speaker;
 		}
 		return _layout.size();
 	}
