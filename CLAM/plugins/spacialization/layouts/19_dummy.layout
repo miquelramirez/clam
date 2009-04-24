@@ -1,19 +1,19 @@
-1 2 3 pica pared 19 0
-1 2 3 pica pared 19 1
-1 2 3 pica pared 19 2
-1 2 3 pica pared 19 3
-1 2 3 pica pared 19 4
-1 2 3 pica pared 19 5
-1 2 3 pica pared 19 6
-1 2 3 pica pared 19 7
-1 2 3 pica pared 19 8
-1 2 3 pica pared 19 9
-1 2 3 pica pared 19 10
-1 2 3 pica pared 19 11
-1 2 3 pica pared 19 12
-1 2 3 pica pared 19 13
-1 2 3 pica pared 19 14
-1 2 3 pica pared 19 15
-1 2 3 pica pared 19 16
-1 2 3 pica pared 19 17
-1 2 3 pica pared 19 18
+62 318 dummy 19 0
+76 348 dummy 19 1
+-89 18 dummy 19 2
+-74 47 dummy 19 3
+-59 77 dummy 19 4
+-44 107 dummy 19 5
+-30 136 dummy 19 6
+-15 166 dummy 19 7
+0 196 dummy 19 8
+15 225 dummy 19 9
+30 255 dummy 19 10
+45 284 dummy 19 11
+59 314 dummy 19 12
+74 344 dummy 19 13
+89 13 dummy 19 14
+-76 43 dummy 19 15
+-61 73 dummy 19 16
+-47 102 dummy 19 17
+-32 132 dummy 19 18
