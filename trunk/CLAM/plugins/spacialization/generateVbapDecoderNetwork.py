@@ -23,7 +23,8 @@ print """<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 for speaker, label in enumerate(speakers) :
 	print """
   <processing id="%s" position="%i,%i" size="128,111" type="AudioSink"/>""" % (
-	label, 600+64*(speaker%6), 80+(speaker%6)*6+(speaker//6)*95 )
+	"%02i"%(speaker+1), 600+64*(speaker%6), 80+(speaker%6)*6+(speaker//6)*95 )
+#	speaker+1, label, 600+64*(speaker%6), 80+(speaker%6)*6+(speaker//6)*95 )
 
 print """
   <processing id="1 Audio Input" position="0,305" size="128,108" type="AudioSource"/>
@@ -71,6 +72,7 @@ print """
   <processing id="Vbap3D" position="367,150" size="79,270" type="Vbap3D">
     <SpeakerLayout>%(layoutFile)s</SpeakerLayout>
     <Triangulation>%(triangulationFile)s</Triangulation>
+    <IgnoreLabels>1</IgnoreLabels>
   </processing>
 
   <port_connection>
@@ -95,7 +97,8 @@ for i, label in enumerate(speakers) :
     <in>%(speakerLabel)s.AudioIn</in>
   </port_connection>
 """ % {
-	'speakerLabel' : label,
+	'speakerNumber' : i+1,
+	'speakerLabel' : "%02i"%(i+1), #label,
 }
 
 print """
