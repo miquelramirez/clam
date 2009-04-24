@@ -8,5 +8,8 @@ do
 	sudo ln -s  $dummylayout /usr/local/share/clam/layouts/$a.layout
 	sudo ln -s  $dummytriangulation /usr/local/share/clam/layouts/$a.triangulation
 done
-
+sudo rm /usr/local/share/clam/layouts/15.layout
+sudo rm /usr/local/share/clam/layouts/15.triangulation
+sudo ln -s  `pwd`/layouts/sixteen.layout /usr/local/share/clam/layouts/15.layout
+sudo ln -s  `pwd`/layouts/sixteen.triangulation /usr/local/share/clam/layouts/15.triangulation
 
