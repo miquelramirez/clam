@@ -135,7 +135,12 @@ private:
 		for (;sh[i].name; i++)
 		{
 			if (sh[i].order > order) break;
-			if (i<_inputs.size()) continue;
+			if (i<_inputs.size())
+			{
+				_inputs[i]->SetSize( buffersize );
+				_inputs[i]->SetHop( buffersize );
+				continue;
+			}
 			CLAM::AudioInPort * port = new CLAM::AudioInPort( sh[i].name, this);
 			port->SetSize( buffersize );
 			port->SetHop( buffersize );
