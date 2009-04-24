@@ -158,20 +158,25 @@ private:
 			if (!file) return error(errorMsg, "Could not open the triangulation file "+path);
 			clear();
 			unsigned nSpeakers = _layout.size();
+			unsigned i=0;
 			while (true)
 			{
 				std::string line;
 				getline(file,line);
 				if (file.eof()) break;
 				if (line[0]=='#') continue;
-				std::istringstream os(line);
-				double v1, v2, v3;
-				os >> v1 >> v2 >> v3;
-				if (!file) return error(errorMsg, "Bad format for triangulation file");
+				std::ostringstream os;
+				os << i;
+				std::istringstream is(line);
+				int v1, v2, v3;
+				if (not (is >> v1)) return error(errorMsg, "Bad vertex index 1 on triangle "+os.str());
+				if (not (is >> v2)) return error(errorMsg, "Bad vertex index 2 on triangle "+os.str());
+				if (not (is >> v3)) return error(errorMsg, "Bad vertex index 3 on triangle "+os.str());
 				if (v1>=nSpeakers or v2>=nSpeakers or v3>=nSpeakers)
 					return error(errorMsg, "Triangulation uses speakers that are not available");
 				std::cout << v1 << " " << v2 << " " << v3 << std::endl;
 				add(v1,v2,v3);
+				i++;
 			}
 			return true;
 		}
