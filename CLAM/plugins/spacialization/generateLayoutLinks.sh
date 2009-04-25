@@ -10,6 +10,10 @@ do
 done
 sudo rm /usr/local/share/clam/layouts/15.layout
 sudo rm /usr/local/share/clam/layouts/15.triangulation
+sudo rm /usr/local/share/clam/layouts/22.layout
+sudo rm /usr/local/share/clam/layouts/22.triangulation
 sudo ln -s  `pwd`/layouts/sixteen.layout /usr/local/share/clam/layouts/15.layout
 sudo ln -s  `pwd`/layouts/sixteen.triangulation /usr/local/share/clam/layouts/15.triangulation
+sudo ln -s  `pwd`/layouts/22_twyford_design.layout /usr/local/share/clam/layouts/22.layout
+sudo ln -s  `pwd`/layouts/22_twyford_design_stereographic.triangulation /usr/local/share/clam/layouts/22.triangulation
 
