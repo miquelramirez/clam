@@ -1,0 +1,22 @@
+10	5	3	front up left
+10	5	-3	front down left
+10	-5	3	front up right
+10	-5	-3	front donw right
+10	5	0	front left
+10	2.5	0	front center-left	
+10	0	0	front center
+10	-2.5	0	front center-right
+10	-5	0	front right
+4	-5	0	right 1
+4	5	0	left 1
+0	-5	0	right 2
+0	5	0	left 2
+-4	-5	0	right 3
+-4	5	0	left 4
+3	0	3	top front
+-3	0	3	top back
+-10	3	0	back left
+-10	0	0	back center
+-10	-3	0	back right
+-5	-5	-3	back down right
+-5	5	-3	back down left
