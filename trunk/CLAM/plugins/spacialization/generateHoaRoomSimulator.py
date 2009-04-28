@@ -4,6 +4,10 @@ import sys
 
 if len(sys.argv)!=4 :
 	print >> sys.stderr, "Usage: %s <order> <choreo> <geometry>"%sys.argv[0]
+	print >> sys.stderr, """
+Generates a network for a Hoa encoder from a given order 
+of ambisonics using room simulation and source-listener choreography.
+"""
 	sys.exit()
 
 

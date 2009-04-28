@@ -1,9 +1,18 @@
 #!/usr/bin/python
 
+
+
 import sys
 
 if len(sys.argv)!=3 :
 	print >> sys.stderr, "Usage: %s <layout_file> <order>"%sys.argv[0]
+	print >> sys.stderr, """
+Generates a network for a Hoa decoder from a given order 
+of ambisonics to a given regular speaker layout.
+Each row of the layout file contains the elevation 
+and azimuth in degrees of each speaker separated by spaces.
+Lines with # as the first character are ignored as comments.
+"""
 	sys.exit()
 
 
