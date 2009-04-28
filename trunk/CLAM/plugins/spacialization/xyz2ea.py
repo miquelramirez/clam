@@ -42,7 +42,7 @@ def xyz2ea(input, output, dumpDistance=False) :
 		x,y,z = float(tokens[0]), float(tokens[1]), float(tokens[2])
 		label = "%02i"%(i+1) if len(tokens)<4 else " ".join(tokens[3:])
 		d = math.sqrt(x*x + y*y + z*z)
-		a = math.degrees(math.atan2(x,y))
+		a = math.degrees(math.atan2(y,x))
 		e = math.degrees(math.asin(z/d))
 		e, a = conventionEA(e,a)
 		if '-d' in sys.argv :
