@@ -249,7 +249,7 @@ if __name__ == "__main__" :
 		
 
 	for filename in args :
-		print "Processing", filename
+		print >> sys.stderr, "Processing", filename
 		network = ClamNetwork(file(filename))
 		for command in commands :
 			network.runCommand(command)
