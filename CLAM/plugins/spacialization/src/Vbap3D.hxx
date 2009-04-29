@@ -326,18 +326,14 @@ public:
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig& config)
 	{
+		// Whether to use 15 or 4 speaker hardcoded layout if no layout or triangulation is given
+		bool use15Harcoded = true;
 
 		CopyAsConcreteConfig(_config, config);
-	#if 1
-		const SpeakerPositions * speakers = layoutFor15Speakers();
-		const Triangles * triangles = trianglesFor15Speakers();
-	#else
-		const SpeakerPositions * speakers = layoutFor4Speakers();
-		const Triangles * triangles = trianglesFor4Speakers();
-	#endif
 		std::string errorMessage;
 		if (not _config.HasSpeakerLayout() or _config.GetSpeakerLayout() == "")
 		{
+			const SpeakerPositions * speakers = use15Harcoded? layoutFor15Speakers() : layoutFor4Speakers();
 			_layout.clear();
 			for (unsigned i=0; speakers[i].name; i++)
 				_layout.add(speakers[i].azimuth, speakers[i].elevation, speakers[i].name);
@@ -362,6 +358,7 @@ public:
 
 		if (not _config.HasSpeakerLayout() or _config.GetTriangulation() == "")
 		{
+			const Triangles * triangles = use15Harcoded? trianglesFor15Speakers() : trianglesFor4Speakers();
 			_triangulation.clear();
 			for (unsigned i=0; triangles[i].one!=triangles[i].two; i++)
 				_triangulation.add(triangles[i].one, triangles[i].two, triangles[i].three);
