@@ -21,20 +21,21 @@ wavs = [
 algorithms = [
 	# name, n intermediate channels, encoder, decoder
 	("hoa1", 4, "hoa1roomsimulator.clamnetwork", "hoa1to15decoder.clamnetwork"),
-#	("hoa2", 9, "hoa2roomsimulator.clamnetwork", "hoa2to15decoder.clamnetwork"),
-#	("hoa3", 16, "hoa3roomsimulator.clamnetwork", "hoa3to15decoder.clamnetwork"),
-#	("vbap", 1, None, "vbap15decoder.clamnetwork"),
-#	("hoa1rev", 4, "hoa1revroomsimulator.clamnetwork", "hoa1to15decoder.clamnetwork"),
+	("hoa2", 9, "hoa2roomsimulator.clamnetwork", "hoa2to15decoder.clamnetwork"),
+	("hoa3", 16, "hoa3roomsimulator.clamnetwork", "hoa3to15decoder.clamnetwork"),
+	("vbap", 1, None, "vbap15decoder.clamnetwork"),
+	("hoa1rev", 4, "hoa1revroomsimulator.clamnetwork", "hoa1to15decoder.clamnetwork"),
 ]
 
 ambients = [
 	# name, zr
 	("anechoich", 0),
-#	("littlereverb", 100),
-#	("fullreverb", 1000000),
+	("littlereverb", 100),
+	("fullreverb", 1000000),
 ]
-
-os.makedirs("usertest")
+try:
+	os.makedirs("usertest")
+except : pass
 
 print "Generate choreography"
 for i, (e,a) in enumerate(localizations) :
@@ -42,9 +43,10 @@ for i, (e,a) in enumerate(localizations) :
 	choreoFileName = 'usertest/position_%i.coreo'%i
 	choreo = open(choreoFileName, 'w')
 	# frame, fov,la,le,lr,lx,ly,lz,sx,sy,sz
-	x = math.cos(math.radians(a))*math.cos(math.radians(e))
-	y = math.sin(math.radians(a))*math.cos(math.radians(e))
-	z = math.sin(math.radians(e))
+	r = 1.2
+	x = r*math.cos(math.radians(a))*math.cos(math.radians(e))
+	y = r*math.sin(math.radians(a))*math.cos(math.radians(e))
+	z = r*math.sin(math.radians(e))
 	choreoLine = "0 0  0 0 0  0 0 0  %f %f %f"%(x,y,z)
 	print >> choreo, "#ClamChoreoVersion 1.3"
 	for a in xrange(100) :
@@ -58,14 +60,14 @@ for space_name, z in ambients :
 	geometry = open(geometryFileName, 'w')
 	print >> geometry, """<sala_01>
 <VERTS>
--1.7 -1.7 0.0
-1.7 -1.7 0.0
--1.7 1.7 0.0
-1.7 1.7 0.0
--1.7 -1.7 3.4
-1.7 -1.7 3.4
--1.7 1.7 3.4
-1.7 1.7 3.4
+-2.7 -2.7 -2.7
+2.7 -2.7 -2.7
+-2.7 2.7 -2.7
+2.7 2.7 -2.7
+-2.7 -2.7 2.7
+2.7 -2.7 2.7
+-2.7 2.7 2.7
+2.7 2.7 2.7
 <FACES>
 3 1 4 13.0 %(z)s 0.0 material0
 2 4 1 13.0 %(z)s 0.0 material0
@@ -87,6 +89,7 @@ for i in 1, 2, 3 :
 	run("./generateHoaDecoderNetwork.py layouts/sixteen.layout %(i)i > usertest/hoa%(i)ito15decoder.clamnetwork"%globals())
 run("cp usertest/hoa1roomsimulator.clamnetwork usertest/hoa1revroomsimulator.clamnetwork")
 run("./generateVbapDecoderNetwork.py layouts/sixteen.layout layouts/sixteen.triangulation > usertest/vbap15decoder.clamnetwork ")
+run("clamrefactor.py usertest/hoa1roomsimulator.clamnetwork -c 'setConfig RoomImpulseResponseSimulator SeparateDirectSoundAndReverb 1' > usertest/hoa1revroomsimulator.clamnetwork")
 
 for space_name, z in ambients :
 	run("cp usertest/geometry_%s.data usertest/geometry"%space_name)
