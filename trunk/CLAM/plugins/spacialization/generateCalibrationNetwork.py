@@ -32,7 +32,7 @@ print """
   <processing id="Oscilloscope" position="850,156" size="196,226" type="Oscilloscope"/>
 
   <processing id="SndfilePlayer" position="41,64" size="107,414" type="SndfilePlayer">
-    <SourceFile>multiSweep24.wav</SourceFile>
+    <SourceFile>multiSweep%(nSpeakers)s.wav</SourceFile>
     <Loop>0</Loop>
     <SavedNumberOfChannels>%(nSpeakers)s</SavedNumberOfChannels>
   </processing>
