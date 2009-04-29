@@ -227,6 +227,7 @@ protected:
 		_sampleCount=0;
 		_sequenceIndex=0;
 		sendRowControls(_controlSequence[_sequenceIndex]);
+		_frameSeek.DoControl(0);
 		return true;
 	}
 	enum FileColumns {
