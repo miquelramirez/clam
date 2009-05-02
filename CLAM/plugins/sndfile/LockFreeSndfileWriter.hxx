@@ -23,9 +23,9 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/AudioInPort.hxx>
-#include <CLAM/AudioOutFilename.hxx> 
+#include <CLAM/AudioOutFilename.hxx>
 #include <CLAM/Audio.hxx>
-#include <sndfile.hh> 
+#include <sndfile.hh>
 #include <CLAM/Enum.hxx>
 #include <pthread.h>
 #include <jack/ringbuffer.h>
@@ -44,11 +44,11 @@ namespace CLAM
 		{
 			eDefault = 0,
 			ePCM_16 = SF_FORMAT_WAV | SF_FORMAT_PCM_16,      /* Signed 16 bit data */
-			ePCM_24 = SF_FORMAT_WAV | SF_FORMAT_PCM_24,	/* Signed 24 bit data */
-			ePCM_32 = SF_FORMAT_WAV | SF_FORMAT_PCM_32,	/* Signed 32 bit data */
-			ePCMFLOAT = SF_FORMAT_WAV | SF_FORMAT_FLOAT,	/* 32 bit float data */
-			ePCMDOUBLE = SF_FORMAT_WAV | SF_FORMAT_DOUBLE,	/* 64 bit float data */
-			eFLAC_16 = SF_FORMAT_FLAC | SF_FORMAT_PCM_16,	/* FLAC lossless file format 16 bit data */
+			ePCM_24 = SF_FORMAT_WAV | SF_FORMAT_PCM_24,      /* Signed 24 bit data */
+			ePCM_32 = SF_FORMAT_WAV | SF_FORMAT_PCM_32,      /* Signed 32 bit data */
+			ePCMFLOAT = SF_FORMAT_WAV | SF_FORMAT_FLOAT,     /* 32 bit float data */
+			ePCMDOUBLE = SF_FORMAT_WAV | SF_FORMAT_DOUBLE,   /* 64 bit float data */
+			eFLAC_16 = SF_FORMAT_FLAC | SF_FORMAT_PCM_16,    /* FLAC lossless file format 16 bit data */
 		};
 
 		static tValue     DefaultValue() { return eDefault; }
@@ -91,7 +91,7 @@ namespace CLAM
 	};
 
 	class LockFreeSndfileWriter : public  Processing
-	{ 
+	{
 		class Lock
 		{
 			pthread_mutex_t & _diskThreadLock;
@@ -131,15 +131,15 @@ namespace CLAM
 	public:
 		const char* GetClassName() const { return "LockFreeSndfileWriter"; }
 
-		LockFreeSndfileWriter(const ProcessingConfig& config =  Config()) 
+		LockFreeSndfileWriter(const ProcessingConfig& config =  Config())
 			: _outfile(0)
 			, _numChannels(0)
 			, _overruns(0)
 		{
-			static pthread_cond_t sPthreadCondInitializer = PTHREAD_COND_INITIALIZER;
-			static pthread_mutex_t sPthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
-			_dataReadyCondition = sPthreadCondInitializer;
-			_diskThreadLock = sPthreadMutexInitializer;
+			pthread_cond_t pthreadCondInitializer = PTHREAD_COND_INITIALIZER;
+			pthread_mutex_t pthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
+			_dataReadyCondition = pthreadCondInitializer;
+			_diskThreadLock = pthreadMutexInitializer;
 			_isStopped = true;
 			Configure( config );
 		}
@@ -149,7 +149,7 @@ namespace CLAM
 			/* Do nothing until we're ready to begin. */
 			if ((!_canProcess) || (!_canCapture))
 				return false;
-												
+
 			//all the ports have to have the same buffer size
 			const unsigned portSize = _inports[0]->GetAudio().GetBuffer().Size();
 
@@ -165,56 +165,50 @@ namespace CLAM
 				{
 					buffer[channel] = channels[channel][frameIndex];
 				}
-							
+
 				if(jack_ringbuffer_write(_rb, (char*)buffer,_sampleSize)<_sampleSize)
 					_overruns++;
-			}				
+			}
 			/* Tell the disk thread there is work to do.  If it is already
 			 * running, the lock will not be available.  We can't wait
 			 * here in the process() thread, but we don't need to signal
 			 * in that case, because the disk thread will read all the
 			 * data queued before waiting again. */
 
-			if (pthread_mutex_trylock(&_diskThreadLock) == 0) 
+			if (pthread_mutex_trylock(&_diskThreadLock) == 0)
 			{
 				pthread_cond_signal (&_dataReadyCondition);
 				pthread_mutex_unlock (&_diskThreadLock);
 			}
-
 			for (unsigned channel=0; channel<_numChannels; channel++)
 				_inports[channel]->Consume();
-			return true;					
-		}	
+			return true;
+		}
 
 		void DiskThread()
 		{
-			static unsigned total_captured = 0; 
-		
+			static unsigned total_captured = 0;
 			TData framebuf[_numChannels];
-
 			pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-
 			Lock lock(_diskThreadLock);
-					
-			while (1) 
-			{	
+
+			while (true)
+			{
 				while ((jack_ringbuffer_read_space (_rb) >=_sampleSize)) {
 					jack_ringbuffer_read (_rb,(char*) framebuf,_sampleSize);
 					unsigned writeSize = _outfile->write(framebuf,_numChannels);
-					if (writeSize != _numChannels) 
+					if (writeSize != _numChannels)
 					{
-						CLAM_ASSERT(_outfile,"Error writing the file.");						
+						CLAM_ASSERT(_outfile,"Error writing the file.");
 						return;
 					}
-					total_captured++;						
+					total_captured++;
 				}
 
-				if(_isStopped){
-				 	return;
-				}
-				// wait until process() signals more data 
+				if(_isStopped) return;
+				// wait until process() signals more data
 				pthread_cond_wait (&_dataReadyCondition, &_diskThreadLock);
-			}	
+			}
 		}
 
 		static void* DiskThreadCallback (void *arg)
@@ -255,7 +249,7 @@ namespace CLAM
 		bool ConcreteStop()
 		{
 			_isStopped = true;
-			if (pthread_mutex_trylock(&_diskThreadLock) == 0) 
+			if (pthread_mutex_trylock(&_diskThreadLock) == 0)
 			{
 				pthread_cond_signal (&_dataReadyCondition);
 				pthread_mutex_unlock (&_diskThreadLock);
@@ -266,7 +260,7 @@ namespace CLAM
 			{
 				delete _outfile;
 			}
-			if (_overruns > 0) 
+			if (_overruns > 0)
 			{
 				CLAM_ASSERT(_overruns,"Overruns is greater than 0. Try a bigger buffer");			
 			}
@@ -345,7 +339,7 @@ namespace CLAM
 				return false;
 			}
 
-			_format=ChooseFormat(location); 
+			_format=ChooseFormat(location);
 			_numChannels = _config.GetNumberChannels();
 			_sampleSize = _numChannels*sizeof(TData);
 			_sampleRate = _config.GetSampleRate();
@@ -395,17 +389,11 @@ namespace CLAM
 		
 		void RemovePorts()
 		{
-			if(!_inports.empty())
+			for(InPorts::iterator itInPorts=_inports.begin();itInPorts!=_inports.end();itInPorts++)
 			{
-				for(InPorts::iterator itInPorts=_inports.begin();itInPorts!=_inports.end();itInPorts++)
-				{	
-					delete *itInPorts;
-				}				
-			}		
+				delete *itInPorts;
+			}
 			_inports.clear();
-
-			// Delete ports from Processing (base class) register
-			GetInPorts().Clear();
 		}
 
 		~LockFreeSndfileWriter()
