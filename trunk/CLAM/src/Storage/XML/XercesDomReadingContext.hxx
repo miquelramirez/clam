@@ -129,7 +129,7 @@ public:
 		if (!contentLeft()) return;
 		std::ostringstream os;
 		os << "Unexpected content: '";
-		for (int c=_plainContentToParse.get(); c!=EOF; c=_plainContentToParse.get())
+		for (int c=_plainContentToParse.get(); not _plainContentToParse.eof(); c=_plainContentToParse.get())
 			os.put(c);
 		os << "' at position ";
 		os << getPath();
@@ -196,7 +196,7 @@ public:
 	bool contentLeft()
 	{
 		int c = _plainContentToParse.peek();
-		while (c != EOF)
+		while (not _plainContentToParse.eof())
 		{
 			if (!isspace(c)) return true;
 			_plainContentToParse.ignore();
