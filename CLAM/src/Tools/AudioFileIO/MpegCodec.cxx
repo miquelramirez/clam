@@ -425,7 +425,7 @@ namespace AudioCodecs
 			txt.UpdateData();
 			txt.SetTrackNumber( tracknum );
 		}
-		const char * tracknum = getField(fileTag, ID3FID_COMPOSER);
+		const char * composer = getField(fileTag, ID3FID_COMPOSER);
 		if ( composer )
 		{
 			txt.AddComposer();
