@@ -23,9 +23,9 @@
 #include <CLAM/Processing.hxx>
 #include <CLAM/ProcessingConfig.hxx>
 #include <CLAM/AudioInPort.hxx>
-#include <CLAM/AudioOutFilename.hxx> 
+#include <CLAM/AudioOutFilename.hxx>
 #include <CLAM/Audio.hxx>
-#include <sndfile.hh> 
+#include <sndfile.hh>
 #include <CLAM/Enum.hxx>
 
 namespace CLAM
@@ -42,11 +42,11 @@ namespace CLAM
 		{
 			eDefault = 0,
 			ePCM_16 = SF_FORMAT_WAV | SF_FORMAT_PCM_16,      /* Signed 16 bit data */
-			ePCM_24 = SF_FORMAT_WAV | SF_FORMAT_PCM_24,	/* Signed 24 bit data */
-			ePCM_32 = SF_FORMAT_WAV | SF_FORMAT_PCM_32,	/* Signed 32 bit data */
-			ePCMFLOAT = SF_FORMAT_WAV | SF_FORMAT_FLOAT,	/* 32 bit float data */
-			ePCMDOUBLE = SF_FORMAT_WAV | SF_FORMAT_DOUBLE,	/* 64 bit float data */
-			eFLAC_16 = SF_FORMAT_FLAC | SF_FORMAT_PCM_16,	/* FLAC lossless file format 16 bit data */
+			ePCM_24 = SF_FORMAT_WAV | SF_FORMAT_PCM_24,      /* Signed 24 bit data */
+			ePCM_32 = SF_FORMAT_WAV | SF_FORMAT_PCM_32,      /* Signed 32 bit data */
+			ePCMFLOAT = SF_FORMAT_WAV | SF_FORMAT_FLOAT,     /* 32 bit float data */
+			ePCMDOUBLE = SF_FORMAT_WAV | SF_FORMAT_DOUBLE,   /* 64 bit float data */
+			eFLAC_16 = SF_FORMAT_FLAC | SF_FORMAT_PCM_16,    /* FLAC lossless file format 16 bit data */
 		};
 
 		static tValue     DefaultValue() { return eDefault; }
@@ -89,7 +89,7 @@ namespace CLAM
 	};
 
 	class SndfileWriter : public  Processing
-	{ 
+	{
 		typedef SndfileWriterConfig Config;
 		typedef std::vector<CLAM::AudioInPort*> InPorts;
 		InPorts _inports;
@@ -102,7 +102,7 @@ namespace CLAM
 	public:
 		const char* GetClassName() const { return "SndfileWriter"; }
 
-		SndfileWriter(const ProcessingConfig& config =  Config()) 
+		SndfileWriter(const ProcessingConfig& config =  Config())
 			: _outfile(0)
 			, _numChannels(0)
 		{
@@ -110,8 +110,8 @@ namespace CLAM
 		}
 
 		bool Do()
-		{	bool isDone;
-			isDone = ReadBufferAndWriteToPorts();
+		{
+			bool isDone = ReadBufferAndWriteToPorts();
 			for (unsigned channel=0; channel<_numChannels; channel++)
 				_inports[channel]->Consume();
 			return isDone;
@@ -136,18 +136,13 @@ namespace CLAM
 				for(unsigned channel= 0;channel<_numChannels;channel++)
 				{
 					buffer[i+channel] = channels[channel][frameIndex];
-
 				}
 				frameIndex ++;
 			}
-
 			int writeSize = _outfile->write( buffer,bufferSize);
-
-			if (writeSize == bufferSize) return true;
-
-			return false;
+			if (writeSize != bufferSize) return false;
+			return true;
 		}
-
 
 		bool ConcreteStart()
 		{
@@ -248,7 +243,7 @@ namespace CLAM
 				return false;
 			}
 			//Choose the format from the filename
-			_format=ChooseFormat(location); 
+			_format=ChooseFormat(location);
 			_numChannels = _config.GetNumberChannels();
 			_sampleRate = _config.GetSampleRate();
 
@@ -295,24 +290,18 @@ namespace CLAM
 			return false;
 		}
 		
-		void RemovePortsAndControls()
+		void RemovePorts()
 		{
-			if(!_inports.empty())
+			for(InPorts::iterator itInPorts=_inports.begin();itInPorts!=_inports.end();itInPorts++)
 			{
-				for(InPorts::iterator itInPorts=_inports.begin();itInPorts!=_inports.end();itInPorts++)
-				{
-					delete *itInPorts;
-				}
+				delete *itInPorts;
 			}
 			_inports.clear();
-
-			// Delete ports from Processing (base class) register
-			GetInPorts().Clear();
 		}
 
 		~SndfileWriter()
 		{
-			RemovePortsAndControls();
+			RemovePorts();
 		}
 	};
 
