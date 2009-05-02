@@ -40,7 +40,7 @@ except : pass
 print "Generate choreography"
 for i, (e,a) in enumerate(localizations) :
 	print "Dumping coreo for localization", i, "at", (e,a)
-	choreoFileName = 'usertest/position_%i.coreo'%i
+	choreoFileName = 'usertest/position_%02i.coreo'%i
 	choreo = open(choreoFileName, 'w')
 	# frame, fov,la,le,lr,lx,ly,lz,sx,sy,sz
 	r = 1.2
@@ -94,15 +94,15 @@ run("clamrefactor.py usertest/hoa1roomsimulator.clamnetwork -c 'setConfig RoomIm
 for space_name, z in ambients :
 	run("cp usertest/geometry_%s.data usertest/geometry"%space_name)
 	for posi, pos in enumerate(localizations) :
-		run("cp usertest/position_%i.coreo usertest/coreo"%posi)
+		run("cp usertest/position_%02i.coreo usertest/coreo"%posi)
 		for algorithm_name, channels, encoder, decoder in algorithms :
 			for wav in wavs :
 				print "Generating", algorithm_name, "for", wav, "with absortion", z
 				if encoder and decoder :
-					run("OfflinePlayer usertest/%(encoder)s %(wav)s -o -c %(channels)s usertest/encoded_%(algorithm_name)s_%(space_name)s_%(posi)i_%(wav)s"%dict(globals()))
-					run("OfflinePlayer usertest/%(decoder)s usertest/encoded_%(algorithm_name)s_%(space_name)s_%(posi)i_%(wav)s -o -c 15 usertest/%(algorithm_name)s_%(space_name)s_%(posi)i_%(wav)s"%dict(globals()))
+					run("OfflinePlayer usertest/%(encoder)s %(wav)s -o -c %(channels)s usertest/encoded_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%dict(globals()))
+					run("OfflinePlayer usertest/%(decoder)s usertest/encoded_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s -o -c 15 usertest/15_%(algorithm_name)s_%(space_name)s_%(posi)i_%(wav)s"%dict(globals()))
 				elif decoder and not encoder :
-					run("OfflinePlayer usertest/%(decoder)s %(wav)s -o -c 15 usertest/%(algorithm_name)s_%(space_name)s_%(posi)i_%(wav)s"%dict(globals()))
+					run("OfflinePlayer usertest/%(decoder)s %(wav)s -o -c 15 usertest/15_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%dict(globals()))
 					
 
 
