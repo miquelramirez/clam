@@ -71,49 +71,40 @@ namespace AudioCodecs
 	static
 	int parse_xing(struct xing *xing, struct mad_bitptr ptr, unsigned int bitlen)
 	{
-		if (bitlen < 64 || mad_bit_read(&ptr, 32) != XING_MAGIC)
-			goto fail;
-		
+		if (bitlen < 64) goto fail;
+		if (mad_bit_read(&ptr, 32) != XING_MAGIC) goto fail;
+
 		xing->flags = mad_bit_read(&ptr, 32);
 		bitlen -= 64;
 		
 		if (xing->flags & XING_FRAMES) {
-			if (bitlen < 32)
-				goto fail;
+			if (bitlen < 32) goto fail;
 			
 			xing->frames = mad_bit_read(&ptr, 32);
 			bitlen -= 32;
 		}
 		
 		if (xing->flags & XING_BYTES) {
-			if (bitlen < 32)
-				goto fail;
+			if (bitlen < 32) goto fail;
 			
 			xing->bytes = mad_bit_read(&ptr, 32);
 			bitlen -= 32;
 		}
 		
 		if (xing->flags & XING_TOC) {
-			int i;
-			
-			if (bitlen < 800)
-				goto fail;
+			if (bitlen < 800) goto fail;
 			
 			// MRJ: We just need the 8 least significant bits
-			for (i = 0; i < 100; ++i)
+			for (unsigned i = 0; i < 100; ++i)
 				xing->toc[i] = (unsigned char)mad_bit_read(&ptr, 8);
-			
 			bitlen -= 800;
 		}
 		
 		if (xing->flags & XING_SCALE) {
-			if (bitlen < 32)
-				goto fail;
-			
+			if (bitlen < 32) goto fail;
 			xing->scale = mad_bit_read(&ptr, 32);
 			bitlen -= 32;
 		}
-		
 		return 1;
 		
 	fail:
@@ -392,96 +383,62 @@ namespace AudioCodecs
 	}
 
 
+	static const char * getField(ID3_Tag & tag, const ID3_FrameID & field)
+	{
+		ID3_Frame* fieldFrame = tag.Find( field );
+		if (not fieldFrame) return 0;
+		ID3_Field* artistStr = fieldFrame->GetField( ID3FN_TEXT );
+		if (not artistStr) return 0;
+		return artistStr->GetRawText();
+	}
+
 	void   MpegCodec::RetrieveTextDescriptors( std::string uri, AudioTextDescriptors& txt )
 	{
 
 		ID3_Tag fileTag;
-
 		fileTag.Link( uri.c_str() );
-
-		ID3_Frame* artistFrame = fileTag.Find( ID3FID_LEADARTIST );
-
-		if ( artistFrame != NULL )
+		const char * artist = getField(fileTag, ID3FID_LEADARTIST);
+		if (artist)
 		{
 			txt.AddArtist();
 			txt.UpdateData();
-			ID3_Field* artistStr = artistFrame->GetField( ID3FN_TEXT );
-			
-			if ( artistStr != NULL )
-			{
-				if ( artistStr->GetRawText() != NULL )
-					txt.SetArtist( artistStr->GetRawText() );
-			}
+			txt.SetArtist(artist);
 		}
-
-		ID3_Frame* titleFrame = fileTag.Find( ID3FID_TITLE );
-
-		if ( titleFrame != NULL )
+		const char * title = getField(fileTag, ID3FID_TITLE);
+		if (title)
 		{
 			txt.AddTitle();
 			txt.UpdateData();
-			ID3_Field* titleStr = titleFrame->GetField( ID3FN_TEXT );
-
-			if ( titleStr!=NULL )
-				if ( titleStr->GetRawText() != NULL )
-					txt.SetTitle( titleStr->GetRawText() );
+			txt.SetTitle( title );
 		}
-
-		ID3_Frame* albumFrame = fileTag.Find( ID3FID_ALBUM );
-
-		if ( albumFrame != NULL )
+		const char * album = getField(fileTag, ID3FID_ALBUM);
+		if (album)
 		{
 			txt.AddAlbum();
 			txt.UpdateData();
-			ID3_Field* albumStr = albumFrame->GetField( ID3FN_TEXT );
-
-			if ( albumStr != NULL )
-				if ( albumStr->GetRawText() != NULL )
-					txt.SetAlbum( albumStr->GetRawText() );
+			txt.SetAlbum( album );
 		}
-
-		ID3_Frame* tracknumFrame = fileTag.Find( ID3FID_TRACKNUM );
-
-		if ( tracknumFrame != NULL )
+		const char * tracknum = getField(fileTag, ID3FID_TRACKNUM);
+		if (tracknum)
 		{
 			txt.AddTrackNumber();
 			txt.UpdateData();
-
-			ID3_Field* tracknumStr = tracknumFrame->GetField( ID3FN_TEXT );
-			
-			if ( tracknumStr != NULL )
-				if ( tracknumStr->GetRawText() != NULL )
-					txt.SetTrackNumber( tracknumStr->GetRawText() );
+			txt.SetTrackNumber( tracknum );
 		}
-
-		ID3_Frame* composerFrame = fileTag.Find( ID3FID_COMPOSER );
-
-		if ( composerFrame != NULL )
+		const char * tracknum = getField(fileTag, ID3FID_COMPOSER);
+		if ( composer )
 		{
 			txt.AddComposer();
 			txt.UpdateData();
-
-			ID3_Field* composerStr = composerFrame->GetField( ID3FN_TEXT );
-
-			if ( composerStr != NULL )
-				if ( composerStr->GetRawText() != NULL )
-					txt.SetComposer( composerStr->GetRawText() );
+			txt.SetComposer( composer );
 		}
-
-		ID3_Frame* performerFrame = fileTag.Find( ID3FID_CONDUCTOR );
-
-		if ( performerFrame != NULL )
+		const char * performer = getField(fileTag, ID3FID_CONDUCTOR);
+		if (performer)
 		{
 			txt.AddPerformer();
 			txt.UpdateData();
-
-			ID3_Field* performerStr = performerFrame->GetField( ID3FN_TEXT );
-
-			if ( performerStr != NULL )
-				if ( performerStr->GetRawText() != NULL )
-					txt.SetPerformer( performerStr->GetRawText() );
+			txt.SetPerformer( performer );
 		}
-
 	}
 
 }
