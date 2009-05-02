@@ -2,21 +2,28 @@
 
 import math
 import os
+import sys
 
-
-def run(command) :
-	print "\033[32m$ %s\033[0m"%command
-	return os.system(command)
-
-
-localizations = [
+locations = [
 	# elevation, azimuth
 	(0, 30),
 ]
 
 wavs = [
-	"pinknoise.wav"
+	"pinknoise.wav",
 ]
+
+interTestSilence = 5 # seconds
+
+
+def die(message) :
+	print "\033[31m%s\033[0m"%message
+	sys.exit(-1)
+
+def run(command) :
+	print "\033[32m$ %s\033[0m"%command
+	os.system(command)==0 or die("Command failed: "+command)
+
 
 algorithms = [
 	# name, n intermediate channels, encoder, decoder
@@ -33,12 +40,17 @@ ambients = [
 	("littlereverb", 100),
 	("fullreverb", 1000000),
 ]
+
+for wav in wavs :
+	if os.path.basename(wav) != wav :
+		die("Wavs should be in the working dir. Use simbolic links.")
+
 try:
 	os.makedirs("usertest")
 except : pass
 
 print "Generate choreography"
-for i, (e,a) in enumerate(localizations) :
+for i, (e,a) in enumerate(locations) :
 	print "Dumping coreo for localization", i, "at", (e,a)
 	choreoFileName = 'usertest/position_%02i.coreo'%i
 	choreo = open(choreoFileName, 'w')
@@ -84,6 +96,7 @@ for space_name, z in ambients :
 """%dict(z=z)
 	geometry.close()
 
+
 for i in 1, 2, 3 :
 	run("./generateHoaRoomSimulator.py %(i)i usertest/coreo usertest/geometry > usertest/hoa%(i)iroomsimulator.clamnetwork"%globals())
 	run("./generateHoaDecoderNetwork.py layouts/sixteen.layout %(i)i > usertest/hoa%(i)ito15decoder.clamnetwork"%globals())
@@ -93,17 +106,38 @@ run("clamrefactor.py usertest/hoa1roomsimulator.clamnetwork -c 'setConfig RoomIm
 
 for space_name, z in ambients :
 	run("cp usertest/geometry_%s.data usertest/geometry"%space_name)
-	for posi, pos in enumerate(localizations) :
+	for posi, pos in enumerate(locations) :
 		run("cp usertest/position_%02i.coreo usertest/coreo"%posi)
 		for algorithm_name, channels, encoder, decoder in algorithms :
 			for wav in wavs :
 				print "Generating", algorithm_name, "for", wav, "with absortion", z
 				if encoder and decoder :
 					run("OfflinePlayer usertest/%(encoder)s %(wav)s -o -c %(channels)s usertest/encoded_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%dict(globals()))
-					run("OfflinePlayer usertest/%(decoder)s usertest/encoded_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s -o -c 15 usertest/15_%(algorithm_name)s_%(space_name)s_%(posi)i_%(wav)s"%dict(globals()))
+					run("OfflinePlayer usertest/%(decoder)s usertest/encoded_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s -o -c 15 usertest/15_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%dict(globals()))
 				elif decoder and not encoder :
 					run("OfflinePlayer usertest/%(decoder)s %(wav)s -o -c 15 usertest/15_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%dict(globals()))
+				run("soxsucks -N usertest/15_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s usertest/temp.wav"%dict(globals()))
+				run("mv usertest/temp.wav usertest/15_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%dict(globals()))
 					
+
+import glob, random
+
+
+run("sox -c 15 -n usertest/silence.wav synth %(interTestSilence)s sin 0 gain 0"%dict(globals()))
+
+testFiles = glob.glob('usertest/15_*wav')
+random.shuffle(testFiles)
+print testFiles
+f=file("usertest/usertest.txt",'w')
+print >> f, "Order:"
+print >> f, "\n".join(testFiles)
+print >> f, "\nPoints (index: elevation, azimuth):"
+print >> f, "\n".join(["\t%02i: %s %s"%(i,e,a) for i,(e,a) in enumerate(locations)])
+print >> f, "\nAmbients (name: Re(Z)):"
+print >> f, "\n".join(["\t%s: %f"%(name,z) for name,z in ambients])
+print >> f
+
+run("sox "+" usertest/silence.wav ".join(testFiles)+" usertest/usertest.wav ")
 
 
 
