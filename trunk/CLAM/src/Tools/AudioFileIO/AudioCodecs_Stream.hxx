@@ -47,7 +47,6 @@ namespace AudioCodecs
 		Stream();
 		virtual ~Stream();
 
-		virtual void SetFOI( const AudioFile& ) = 0;
 		virtual void PrepareReading()   = 0;
 		virtual void PrepareWriting()   = 0;
 		virtual void PrepareReadWrite() = 0;
