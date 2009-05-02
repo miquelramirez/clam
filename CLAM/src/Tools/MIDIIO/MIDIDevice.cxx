@@ -150,8 +150,8 @@ void MIDIDevice::SetTarget(
 	{
 		if (chn==0)
 		{
-			fprintf(stderr,"SysEx not	yet implemented\n");
-			exit(-1);
+			CLAM_WARNING(true,"CLAM::MIDIDevice: SysEx not yet implemented");
+			return;
 		}
 	}else{
 		if (chn==0)
