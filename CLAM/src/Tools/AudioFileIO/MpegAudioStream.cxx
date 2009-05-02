@@ -40,7 +40,7 @@ namespace AudioCodecs
 	MpegAudioStream::MpegAudioStream( const AudioFile& file )
 		: mpHandle( NULL )
 	{
-		SetFOI( file );
+		AudioFileToNative( file );
 	}
 
 	MpegAudioStream::~MpegAudioStream()
@@ -59,11 +59,6 @@ namespace AudioCodecs
 		
 	}
 	
-	void MpegAudioStream::SetFOI( const AudioFile& file )
-	{
-		AudioFileToNative( file );		
-	}
-
 	void MpegAudioStream::AudioFileToNative( const AudioFile& file )
 	{
 		mName = file.GetLocation();
@@ -192,8 +187,6 @@ namespace AudioCodecs
 		}
 
 		mSamplesTransferred += samplesToRead;
-		
-
 	}
 
 	void MpegAudioStream::MemoryToDiskTransfer()

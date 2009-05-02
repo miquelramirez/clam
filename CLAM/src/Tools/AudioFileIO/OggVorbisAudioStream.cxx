@@ -53,7 +53,9 @@ namespace AudioCodecs
 	OggVorbisAudioStream::OggVorbisAudioStream( const AudioFile& file )
 		: mFileHandle( NULL ), mValidFileParams( false ), mEncoding( false )
 	{
-		SetFOI( file );
+		if ( mValidFileParams )
+			Dispose();
+		AudioFileToNative( file );
 		mBlockBuffer.Resize( mMaxBlockSize );
 		mBlockBuffer.SetSize( mMaxBlockSize );
 
@@ -63,14 +65,6 @@ namespace AudioCodecs
 	{
 		if ( mValidFileParams )
 			Dispose();
-	}
-
-	void OggVorbisAudioStream::SetFOI( const AudioFile& file )
-	{
-		if ( mValidFileParams )
-			Dispose();
-		AudioFileToNative( file );
-		
 	}
 
 	void OggVorbisAudioStream::AudioFileToNative( const AudioFile& file )
