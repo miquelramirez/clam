@@ -114,13 +114,6 @@ public:
 			SetSupressInitialDelay(false);
 		}
 	};
-	struct BFormatIR
-	{
-		ImpulseResponse W;
-		ImpulseResponse X;
-		ImpulseResponse Y;
-		ImpulseResponse Z;
-	};
 	typedef std::vector<ImpulseResponse> HoaIR;
 
 private:
