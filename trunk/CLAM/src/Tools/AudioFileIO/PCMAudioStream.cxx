@@ -45,8 +45,9 @@ namespace AudioCodecs
 	PCMAudioStream::PCMAudioStream( const AudioFile& file )
 		: mFileHandle( NULL )
 	{
-		SetFOI( file );
-
+		Dispose();
+		AudioFileToNative(file);
+		SetChannels( mNativeFileParams.channels );
 	}
 
 	PCMAudioStream::~PCMAudioStream()
@@ -63,13 +64,6 @@ namespace AudioCodecs
 		mNativeFileParams.channels = file.GetHeader().GetChannels();
 		mNativeFileParams.samplerate = (int) file.GetHeader().GetSampleRate();
 		mNativeFileParams.format = file.GetHeader().GetFormat() | file.GetHeader().GetEncoding() | file.GetHeader().GetEndianess();
-	}
-
-	void PCMAudioStream::SetFOI( const AudioFile& file )
-	{
-		Dispose();
-		AudioFileToNative(file);
-		SetChannels( mNativeFileParams.channels );
 	}
 
 	void PCMAudioStream::PrepareReading()

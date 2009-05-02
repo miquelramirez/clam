@@ -43,8 +43,6 @@ namespace AudioCodecs
 		
 		~MpegAudioStream();
 
-		void SetFOI( const AudioFile& file );
-
 		void PrepareReading();
 		void PrepareWriting();
 		void PrepareReadWrite();
