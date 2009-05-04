@@ -64,7 +64,7 @@ private:
 	Config _config;
 	std::vector<Vector> _speakersPositions;
 	int _currentTriangle;
-	static const float _deltaAngle = 0.001;
+	static const float _deltaAngle = 0.01;
 	static const float _deltaNumeric = 0.00001; 
 
 	static Vector vectorialProduct(const Vector& v1, const Vector& v2)
@@ -376,8 +376,6 @@ public:
 	/// params: the source azimuth and elevation
 	int findTriangle(float azimuth, float elevation) const
 	{
-
-//std::cout << "\nfind Triangle. triangles " << _triangles.size() << std::endl;
 		// find triangle testing them all
 		Vector r_source = {
 			cos(elevation) * cos(azimuth),
@@ -388,13 +386,13 @@ public:
 		{
 //std::cout << "\n\nchecking triangle "<< i << std::endl;
 //print(r_source, "r_source");
-//print(_normals[i], "normal");
-//print(_speakersPositions[i][0], "speak 0");
-//print(_speakersPositions[i][1], "speak 1");
-//print(_speakersPositions[i][2], "speak 2");
+//print(_triangulation.normal(i), "normal");
 
 			const Triangle & triangle = _triangulation.triangle(i);
 			const float divisor = escalarProduct(_triangulation.normal(i), r_source);
+//print(_speakersPositions[triangle[0]], "speak 0");
+//print(_speakersPositions[triangle[1]], "speak 1");
+//print(_speakersPositions[triangle[2]], "speak 2");
 			// If source direction and the plane are almost ortogonal, continue
 			// (also avoids a divide by zero)
 			if (fabs(divisor) < _deltaNumeric) continue;
@@ -409,11 +407,13 @@ public:
 			Vector v2 = substract( _speakersPositions[triangle[1]], intersection);
 			Vector v3 = substract( _speakersPositions[triangle[2]], intersection);
 			// If intersection is too close to one of the vertex, consider this triangle
+//std::cout << "product of modules " <<  (mod(v1)*mod(v2)*mod(v3) < _deltaNumeric) << std::endl;
 			if (mod(v1)*mod(v2)*mod(v3) < _deltaNumeric)
 			{
 				return i; // Matches one of the speakers
 			}
 			// if the sum of the relative angles is 
+//std::cout << "suma de angulos - 2pi (if <0 inside) " << fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) << std::endl;
 			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _deltaAngle)
 			{
 				return i; // Inside a triangle
@@ -436,6 +436,7 @@ public:
 
 		}
 
+
 		const float as = rad( azimuthDegrees );
 		const float es = rad( elevationDegrees );
 		int newTriangle = findTriangle(as, es);
@@ -447,8 +448,10 @@ public:
 		{
 			std::cout << " changing triangle: " << _currentTriangle << "->" << newTriangle << " " << std::flush;
 			_currentTriangle = newTriangle;
-
-//std::cout << " speakers: "<< _triangles[_currentTriangle][0] << " " << _triangles[_currentTriangle][1] << " " << _triangles[_currentTriangle][2] << std::endl;
+//std::cout << " speakers: "
+//	<< _triangulation.triangle(_currentTriangle)[0] << " " 
+//	<< _triangulation.triangle(_currentTriangle)[1] << " " 
+//	<< _triangulation.triangle(_currentTriangle)[2] << " " << std::endl;
 		}
 		// obtain the three gains.
 		const Triangle & triangle = _triangulation.triangle(_currentTriangle);
