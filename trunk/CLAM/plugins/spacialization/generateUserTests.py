@@ -4,6 +4,8 @@ import math
 import os
 import sys
 
+interTestSilence = 5 # seconds
+reverbGain = 1.0
 locations = [
 	# elevation, azimuth
 	(0, 30),
@@ -20,9 +22,6 @@ ambients = [
 	("fullreverb", 1000000),
 ]
 
-
-interTestSilence = 5 # seconds
-reverbGain = 1.5
 
 def die(message) :
 	print "\033[31m%s\033[0m"%message
@@ -132,7 +131,7 @@ for space_name, z in ambients :
 				run("soxsucks -N usertest/15_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s usertest/tocat_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%dict(globals()))
 
 import glob, random
-run("sox -c 15 -n -c 15 usertest/silence.wav trim 0 %(interTestSilence)s"%dict(globals()))
+run("sox -c 15 -r 48000 -n -c 15 usertest/silence.wav trim 0 %(interTestSilence)s"%dict(globals()))
 
 testFiles = glob.glob('usertest/tocat_*wav')
 random.shuffle(testFiles)
