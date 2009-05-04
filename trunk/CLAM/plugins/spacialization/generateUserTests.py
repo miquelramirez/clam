@@ -82,18 +82,18 @@ for space_name, z in ambients :
 -2.7 2.7 2.7
 2.7 2.7 2.7
 <FACES>
-3 1 4 %(z)s 13.0 0.0 material0
-2 4 1 %(z)s 13.0 0.0 material0
-6 5 8 %(z)s 13.0 0.0 material0
-7 8 5 %(z)s 13.0 0.0 material0
-2 1 6 %(z)s 13.0 0.0 material0
-5 6 1 %(z)s 13.0 0.0 material0
-4 2 8 %(z)s 13.0 0.0 material0
-6 8 2 %(z)s 13.0 0.0 material0
-3 4 7 %(z)s 13.0 0.0 material0
-8 7 4 %(z)s 13.0 0.0 material0
-1 3 5 %(z)s 13.0 0.0 material0
-7 5 3 %(z)s 13.0 0.0 material0
+3 1 4 %(z)s 0.0 0.5 material0
+2 4 1 %(z)s 0.0 0.5 material0
+6 5 8 %(z)s 0.0 0.5 material0
+7 8 5 %(z)s 0.0 0.5 material0
+2 1 6 %(z)s 0.0 0.5 material0
+5 6 1 %(z)s 0.0 0.5 material0
+4 2 8 %(z)s 0.0 0.5 material0
+6 8 2 %(z)s 0.0 0.5 material0
+3 4 7 %(z)s 0.0 0.5 material0
+8 7 4 %(z)s 0.0 0.5 material0
+1 3 5 %(z)s 0.0 0.5 material0
+7 5 3 %(z)s 0.0 0.5 material0
 """%dict(z=z)
 	geometry.close()
 
@@ -132,8 +132,7 @@ for space_name, z in ambients :
 				run("soxsucks -N usertest/15_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s usertest/tocat_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%dict(globals()))
 
 import glob, random
-
-run("sox -c 15 -n usertest/silence.wav synth %(interTestSilence)s sin 0 gain 0"%dict(globals()))
+run("sox -c 15 -n -c 15 usertest/silence.wav trim 0 %(interTestSilence)s"%dict(globals()))
 
 testFiles = glob.glob('usertest/tocat_*wav')
 random.shuffle(testFiles)
