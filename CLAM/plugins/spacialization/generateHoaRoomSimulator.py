@@ -66,9 +66,9 @@ print """
     <FrameSize>512</FrameSize>
     <Model3DFile>%(geometry)s</Model3DFile>
     <GridDivisions>500</GridDivisions>
-    <NRays>50</NRays>
-    <NRebounds>50</NRebounds>
-    <IrLength>0.2</IrLength>
+    <NRays>20000</NRays>
+    <NRebounds>500</NRebounds>
+    <IrLength>10.</IrLength>
     <Order>%(order)s</Order>
     <ExtraOptions>--ignore-sources</ExtraOptions>
     <SeparateDirectSoundAndReverb>0</SeparateDirectSoundAndReverb>
