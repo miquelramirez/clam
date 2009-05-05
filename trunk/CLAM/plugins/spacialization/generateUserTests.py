@@ -17,8 +17,8 @@ wavs = [
 
 ambients = [
 	# name, zr, d, reverbGain
-#	("anechoich", 1, 0.0, .5),
-#	("littlereverb", 100., 0.5, 0.5),
+	("anechoich", 1, 0.0, .5),
+	("littlereverb", 100., 0.5, 0.5),
 	("fullreverb", 1000000, 0.5, 0.5),
 ]
 
@@ -147,22 +147,22 @@ for space_name, z, d, reverbGain in ambients :
 # Mixing reverb and direct sound
 for space_name, z, d, reverbGain in ambients :
 	mixer = "usertest/mixer_%(space_name)s.clamnetwork"%globals()
+	speakers = 15
 	for posi, pos in enumerate(locations) :
 		for order in 1, 2, 3 :
 			channels = (order+1)**2
-			speakers = 15
 			decoder = "usertest/hoa%(order)i_15decoder.clamnetwork"%globals()
 			for wav in wavs :
 				reverb = "usertest/decoded_hoa%(order)i_rev_%(space_name)s_%(posi)02i_%(wav)s"%globals()
 				direct_sound = "usertest/decoded_hoa%(order)i_ds_%(space_name)s_%(posi)02i_%(wav)s"%globals()
 				mixed = "usertest/mixed_hoa%(order)i_%(space_name)s_%(posi)02i_%(wav)s"%globals()
-				run("OfflinePlayer %(mixer)s %(direct_sound)s %(reverb)s -o -c %(channels)s %(mixed)s"%globals())
+				run("OfflinePlayer %(mixer)s %(direct_sound)s %(reverb)s -o -c %(speakers)s %(mixed)s"%globals())
 		for wav in wavs :
 			order = 1
 			reverb       = "usertest/decoded_hoa%(order)i_rev_%(space_name)s_%(posi)02i_%(wav)s"%globals()
 			direct_sound = "usertest/decoded_vbap_ds_%(space_name)s_%(posi)02i_%(wav)s"%globals()
 			mixed        = "usertest/mixed_vbap_%(space_name)s_%(posi)02i_%(wav)s"%globals()
-			run("OfflinePlayer %(mixer)s %(direct_sound)s %(reverb)s -o -c %(channels)s %(mixed)s"%globals())
+			run("OfflinePlayer %(mixer)s %(direct_sound)s %(reverb)s -o -c %(speakers)s %(mixed)s"%globals())
 
 # Normalizing
 for space_name, z, d, reverbGain in ambients :
