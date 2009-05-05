@@ -4,8 +4,9 @@ import math
 import os
 import sys
 
+
+
 interTestSilence = 5 # seconds
-reverbGain = 1.0
 locations = [
 	# elevation, azimuth
 	(0, 30),
@@ -23,6 +24,9 @@ ambients = [
 ]
 
 
+
+
+
 def die(message) :
 	print "\033[31m%s\033[0m"%message
 	sys.exit(-1)
@@ -30,16 +34,6 @@ def die(message) :
 def run(command) :
 	print "\033[32m$ %s\033[0m"%command
 	os.system(command)==0 or die("Command failed: "+command)
-
-
-algorithms = [
-	# name, n intermediate channels, encoder, decoder
-	("hoa1", 4, "hoa1roomsimulator.clamnetwork", "hoa1to15decoder.clamnetwork"),
-	("hoa2", 9, "hoa2roomsimulator.clamnetwork", "hoa2to15decoder.clamnetwork"),
-	("hoa3", 16, "hoa3roomsimulator.clamnetwork", "hoa3to15decoder.clamnetwork"),
-	("hoa1rev", 4, "hoa1revroomsimulator.clamnetwork", "hoa1to15decoder.clamnetwork"),
-	("vbap", 15, "vbap15decoder.clamnetwork", "vbaphoa1mixer.clamnetwork"),
-]
 
 for wav in wavs :
 	if os.path.basename(wav) != wav :
