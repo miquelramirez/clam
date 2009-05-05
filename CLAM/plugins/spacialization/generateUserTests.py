@@ -146,11 +146,11 @@ for space_name, z, d, reverbGain in ambients :
 
 # Mixing reverb and direct sound
 for space_name, z, d, reverbGain in ambients :
+	mixer = "usertest/mixer_%(space_name)s.clamnetwork"%globals()
 	for posi, pos in enumerate(locations) :
 		for order in 1, 2, 3 :
 			channels = (order+1)**2
 			speakers = 15
-			mixer = "usertest/mix%(order)i_%(space_name)s.clamnetwork"%globals()
 			decoder = "usertest/hoa%(order)i_15decoder.clamnetwork"%globals()
 			for wav in wavs :
 				reverb = "usertest/decoded_hoa%(order)i_rev_%(space_name)s_%(posi)02i_%(wav)s"%globals()
