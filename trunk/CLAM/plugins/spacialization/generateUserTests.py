@@ -17,8 +17,8 @@ wavs = [
 
 ambients = [
 	# name, zr, d, reverbGain
-	("anechoich", 1, 0.0, .5),
-	("littlereverb", 100., 0.5, 0.5),
+#	("anechoich", 1, 0.0, .5),
+#	("littlereverb", 100., 0.5, 0.5),
 	("fullreverb", 1000000, 0.5, 0.5),
 ]
 
@@ -104,10 +104,9 @@ for i in 1, 2, 3 :
 	run("./generateHoaRoomSimulator.py %(i)i usertest/coreo usertest/geometry > usertest/hoa%(i)i_room.clamnetwork"%globals())
 	run("./generateHoaDecoderNetwork.py layouts/sixteen.layout %(i)i > usertest/hoa%(i)i_15decoder.clamnetwork"%globals())
 	run("clamrefactor.py usertest/hoa%(i)i_room.clamnetwork -c 'setConfig RoomImpulseResponseSimulator NRebounds 0' > usertest/hoa%(i)i_room_ds.clamnetwork"%globals())
-	run("clamrefactor.py usertest/hoa%(i)i_room.clamnetwork -c 'setConfig RoomImpulseResponseSimulator SeparateDirectSoundAndReverb 1' > usertest/hoa%(i)i_room_ds.clamnetwork"%globals())
+	run("clamrefactor.py usertest/hoa%(i)i_room.clamnetwork -c 'setConfig RoomImpulseResponseSimulator SeparateDirectSoundAndReverb 1' > usertest/hoa%(i)i_room_rev.clamnetwork"%globals())
 
 run("./generateVbapDecoderNetwork.py layouts/sixteen.layout layouts/sixteen.triangulation > usertest/vbap_ds.clamnetwork ")
-
 
 # Generating direct sounds
 for space_name, z, d, reverbGain in ambients :
@@ -126,7 +125,7 @@ for space_name, z, d, reverbGain in ambients :
 				run("OfflinePlayer %(decoder)s %(encoded)s -o -c %(speakers)i %(decoded)s"%globals())
 		for wav in wavs :
 			decoder = "usertest/vbap_ds.clamnetwork"%globals()
-			decoded = "usertest/decoded_directSound_%(space_name)s_%(posi)02i_%(wav)s"%globals()
+			decoded = "usertest/decoded_vbap_ds_%(space_name)s_%(posi)02i_%(wav)s"%globals()
 			run("OfflinePlayer %(decoder)s %(wav)s -o -c %(speakers)s %(decoded)s"%globals())
 
 # Generating reverbs
@@ -165,19 +164,19 @@ for space_name, z, d, reverbGain in ambients :
 			mixed        = "usertest/mixed_vbap_%(space_name)s_%(posi)02i_%(wav)s"%globals()
 			run("OfflinePlayer %(mixer)s %(direct_sound)s %(reverb)s -o -c %(channels)s %(mixed)s"%globals())
 
-
+# Normalizing
 for space_name, z, d, reverbGain in ambients :
 	for posi, pos in enumerate(locations) :
 		for algorithm_name in 'hoa1', 'hoa2', 'hoa3', 'vbap' :
 			for wav in wavs :
 				run("soxsucks -N usertest/mixed_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s usertest/tocat_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%globals())
 
+# Shuffling and save the shuffled order for later reference
 import random
 import glob
-run("sox -c 15 -r 48000 -n -c 15 usertest/silence.wav trim 0 %(interTestSilence)s"%globals())
-
 testFiles = glob.glob('usertest/tocat_*wav')
 random.shuffle(testFiles)
+
 f=file("usertest/usertest.txt",'w')
 print >> f, "Order:"
 print >> f, "\n".join(testFiles)
@@ -188,7 +187,8 @@ print >> f, "\n".join(["\t%s: %f"%(name,z) for name,z,d, reverbGain in ambients]
 print >> f
 f.close()
 
+# Concatenating them
+run("sox -c 15 -r 48000 -n -c 15 usertest/silence.wav trim 0 %(interTestSilence)s"%globals())
 run("sox "+" usertest/silence.wav ".join(testFiles)+" usertest/usertest.wav ")
-
 
 
