@@ -9,7 +9,7 @@ import sys
 interTestSilence = 5 # seconds
 locations = [
 	# elevation, azimuth
-	(1, 30),
+	(0, 60),
 ]
 
 wavs = [
@@ -18,9 +18,9 @@ wavs = [
 
 ambients = [
 	# name, zr, d, reverbGain
-	("anechoich", 1, 0.0 ),
+#	("anechoich", 1, 0.0 ),
 	("littlereverb", 100., 0.7),
-	("fullreverb", 1000000, 0.7),
+#	("fullreverb", 1000000, 0.7),
 ]
 
 reverbGain = 0.0224
@@ -102,7 +102,7 @@ for i in 1, 2, 3 :
 	run("clamrefactor.py usertest/hoa%(i)i_room.clamnetwork -c 'setConfig RoomImpulseResponseSimulator NRebounds 0' > usertest/hoa%(i)i_room_ds.clamnetwork"%globals())
 	run("clamrefactor.py usertest/hoa%(i)i_room.clamnetwork -c 'setConfig RoomImpulseResponseSimulator SeparateDirectSoundAndReverb 1' > usertest/hoa%(i)i_room_rev.clamnetwork"%globals())
 
-run("./generateVbapDecoderNetwork.py layouts/sixteen.layout layouts/sixteen.triangulation > usertest/vbap_ds.clamnetwork ")
+run("./generateVbapDecoderNetwork.py layouts/sixteen.layout layouts/sixteen.triangulation usertest/coreo > usertest/vbap_ds.clamnetwork ")
 
 # Generating direct sounds
 for space_name, z, d in ambients :

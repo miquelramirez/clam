@@ -2,13 +2,14 @@
 
 import sys
 
-if len(sys.argv)!=3 :
-	print >> sys.stderr, "Usage: %s <layout_file> <triangulation_file>"%sys.argv[0]
+if len(sys.argv)!=4 :
+	print >> sys.stderr, "Usage: %s <layout_file> <triangulation_file> <choreo_file>"%sys.argv[0]
 	sys.exit()
 
 
 layoutFileName = sys.argv[1]
 triangulationFileName = sys.argv[2]
+choreoFileName = sys.argv[3]
 
 speakers = [ label for label in [" ".join(line.split()[2:]) for line in open(layoutFileName).readlines() if line[0]!='#' ] if label ]
 nSpeakers = len(speakers)
@@ -29,33 +30,16 @@ for speaker, label in enumerate(speakers) :
 print """
   <processing id="1 Audio Input" position="0,305" size="128,108" type="AudioSource"/>
 
-  <processing id="Azimuth" position="57,9" size="113,58" type="ControlSource">
-    <MinValue>0</MinValue>
-    <MaxValue>360</MaxValue>
-    <Step>0.1</Step>
-    <UnitName>degrees</UnitName>
+  <processing id="ChoreoSequencer_1" position="155,2" size="226,59" type="ChoreoSequencer">
+    <Filename>%(choreo)s</Filename>
+    <SourceIndex>0</SourceIndex>
+    <FrameSize>512</FrameSize>
+    <SampleRate>48000</SampleRate>
+    <ControlsPerSecond>24</ControlsPerSecond>
+    <UseSpiralIfNoFilename>0</UseSpiralIfNoFilename>
   </processing>
 
-  <processing id="Distance" position="158,10" size="113,58" type="ControlSource">
-    <MinValue>0</MinValue>
-    <MaxValue>1000</MaxValue>
-    <Step>0.1</Step>
-    <UnitName>meters</UnitName>
-  </processing>
-
-  <processing id="Elevation" position="270,9" size="113,58" type="ControlSource">
-    <MinValue>-89.99</MinValue>
-    <MaxValue>89.99</MaxValue>
-    <Step>0.1</Step>
-    <UnitName>degrees</UnitName>
-  </processing>
-
-  <processing id="ExponentForDistance" position="386,11" size="152,58" type="ControlSource">
-    <MinValue>0</MinValue>
-    <MaxValue>2</MaxValue>
-    <Step>0.1</Step>
-    <UnitName>u</UnitName>
-  </processing>
+  <processing id="AbsoluteCoordinates2RelativeAngles" position="155,80" size="239,58" type="AbsoluteCoordinates2RelativeAngles"/>
 
   <processing id="GainBecauseOfDistance" position="148,194" size="168,58" type="GainBecauseOfDistance">
     <DistanceExponent>1</DistanceExponent>
@@ -84,10 +68,16 @@ print """
     <out>Input Gain.Audio Output</out>
     <in>Vbap3D.W</in>
   </port_connection>
+
+  <port_connection>
+    <out>1 Audio Input.AudioOut</out>
+    <in>ChoreoSequencer_1.sync</in>
+  </port_connection>
 """% {
 	'nSpeakers': nSpeakers,
 	'layoutFile': layoutFileName,
 	'triangulationFile': triangulationFileName,
+	'choreo': choreoFileName,
 }
 
 for i, label in enumerate(speakers) :
@@ -103,23 +93,63 @@ for i, label in enumerate(speakers) :
 
 print """
   <control_connection>
-    <out>Azimuth.output</out>
+    <out>AbsoluteCoordinates2RelativeAngles.relative azimuth</out>
     <in>Vbap3D.azimuth</in>
   </control_connection>
 
   <control_connection>
-    <out>Distance.output</out>
-    <in>GainBecauseOfDistance.input distance</in>
-  </control_connection>
-
-  <control_connection>
-    <out>Elevation.output</out>
+    <out>AbsoluteCoordinates2RelativeAngles.relative elevation</out>
     <in>Vbap3D.elevation</in>
   </control_connection>
 
   <control_connection>
-    <out>ExponentForDistance.output</out>
-    <in>GainBecauseOfDistance.inverse exponent to calculate gain</in>
+    <out>AbsoluteCoordinates2RelativeAngles.distance</out>
+    <in>GainBecauseOfDistance.input distance</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.listener X</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.listener Y</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.listener Z</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener Z</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.listener roll</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener roll</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.listener azimuth</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener azimuth</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.listener elevation</out>
+    <in>AbsoluteCoordinates2RelativeAngles.listener elevation</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.source X</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source X</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.source Y</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source Y</in>
+  </control_connection>
+
+  <control_connection>
+    <out>ChoreoSequencer_1.source Z</out>
+    <in>AbsoluteCoordinates2RelativeAngles.source Z</in>
   </control_connection>
 
   <control_connection>
