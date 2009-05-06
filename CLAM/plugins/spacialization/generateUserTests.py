@@ -9,7 +9,7 @@ import sys
 interTestSilence = 5 # seconds
 locations = [
 	# elevation, azimuth
-	(0, 30),
+	(1, 30),
 ]
 
 wavs = [
@@ -18,12 +18,15 @@ wavs = [
 
 ambients = [
 	# name, zr, d, reverbGain
-	("anechoich", 1, 0.0, .022),
-	("littlereverb", 100., 0.7, 0.022),
-	("fullreverb", 1000000, 0.7, 0.022),
+	("anechoich", 1, 0.0 ),
+	("littlereverb", 100., 0.7),
+	("fullreverb", 1000000, 0.7),
 ]
 
-orders = 1, 2, 3
+reverbGain = 0.0224
+vbapGain = 0.1122
+orders = 1, # 2, 3,
+speakers = 15
 
 
 def die(message) :
@@ -59,7 +62,7 @@ for i, (e,a) in enumerate(locations) :
 	choreo.close()
 
 print "Generate geometries"
-for space_name, z, d, reverbGain in ambients :
+for space_name, z, d in ambients :
 	print "Generate geometry for", space_name
 	geometryFileName = 'usertest/geometry_%s.data'%space_name
 	geometry = open(geometryFileName, 'w')
@@ -88,9 +91,9 @@ for space_name, z, d, reverbGain in ambients :
 7 5 3 %(z)s 0.0 %(d)s material0
 """%dict(z=z, d=d)
 	geometry.close()
-	directSoundGain = 1 if  reverbGain<1 else 1./reverbGain
-	reverbGain = reverbGain if reverbGain<1. else 1
-	run("./generateNChannelMixer.py 15 %(directSoundGain)s %(reverbGain)s > usertest/mixer_%(space_name)s.clamnetwork"%globals())
+
+run("./generateNChannelMixer.py %(speakers)s 1 %(reverbGain)s > usertest/mixer_hoa.clamnetwork"%globals())
+run("./generateNChannelMixer.py %(speakers)s %(vbapGain)s %(reverbGain)s > usertest/mixer_vbap.clamnetwork"%globals())
 
 
 for i in 1, 2, 3 :
@@ -102,13 +105,12 @@ for i in 1, 2, 3 :
 run("./generateVbapDecoderNetwork.py layouts/sixteen.layout layouts/sixteen.triangulation > usertest/vbap_ds.clamnetwork ")
 
 # Generating direct sounds
-for space_name, z, d, reverbGain in ambients :
+for space_name, z, d in ambients :
 	run("cp usertest/geometry_%s.data usertest/geometry"%space_name)
 	for posi, pos in enumerate(locations) :
 		run("cp usertest/position_%02i.coreo usertest/coreo"%posi)
 		for order in orders :
 			channels = (order+1)**2
-			speakers = 15
 			encoder = "usertest/hoa%(order)i_room_ds.clamnetwork"%globals()
 			decoder = "usertest/hoa%(order)i_15decoder.clamnetwork"%globals()
 			for wav in wavs :
@@ -122,13 +124,12 @@ for space_name, z, d, reverbGain in ambients :
 			run("OfflinePlayer %(decoder)s %(wav)s -o -c %(speakers)s %(decoded)s"%globals())
 
 # Generating reverbs
-for space_name, z, d, reverbGain in ambients :
+for space_name, z, d in ambients :
 	run("cp usertest/geometry_%s.data usertest/geometry"%space_name)
 	for posi, pos in enumerate(locations) :
 		run("cp usertest/position_%02i.coreo usertest/coreo"%posi)
 		for order in orders :
 			channels = (order+1)**2
-			speakers = 15
 			encoder = "usertest/hoa%(order)i_room_rev.clamnetwork"%globals()
 			decoder = "usertest/hoa%(order)i_15decoder.clamnetwork"%globals()
 			for wav in wavs :
@@ -138,10 +139,9 @@ for space_name, z, d, reverbGain in ambients :
 				run("OfflinePlayer %(decoder)s %(encoded)s -o -c %(speakers)i %(decoded)s"%globals())
 
 # Mixing reverb and direct sound
-for space_name, z, d, reverbGain in ambients :
-	mixer = "usertest/mixer_%(space_name)s.clamnetwork"%globals()
-	speakers = 15
+for space_name, z, d in ambients :
 	for posi, pos in enumerate(locations) :
+		mixer = "usertest/mixer_hoa.clamnetwork"%globals()
 		for order in orders :
 			channels = (order+1)**2
 			decoder = "usertest/hoa%(order)i_15decoder.clamnetwork"%globals()
@@ -150,6 +150,7 @@ for space_name, z, d, reverbGain in ambients :
 				direct_sound = "usertest/decoded_hoa%(order)i_ds_%(space_name)s_%(posi)02i_%(wav)s"%globals()
 				mixed = "usertest/mixed_hoa%(order)i_%(space_name)s_%(posi)02i_%(wav)s"%globals()
 				run("OfflinePlayer %(mixer)s %(direct_sound)s %(reverb)s -o -c %(speakers)s %(mixed)s"%globals())
+		mixer = "usertest/mixer_vbap.clamnetwork"%globals()
 		for wav in wavs :
 			order = 1
 			reverb       = "usertest/decoded_hoa%(order)i_rev_%(space_name)s_%(posi)02i_%(wav)s"%globals()
@@ -158,7 +159,7 @@ for space_name, z, d, reverbGain in ambients :
 			run("OfflinePlayer %(mixer)s %(direct_sound)s %(reverb)s -o -c %(speakers)s %(mixed)s"%globals())
 
 # Normalizing
-for space_name, z, d, reverbGain in ambients :
+for space_name, z, d in ambients :
 	for posi, pos in enumerate(locations) :
 		for algorithm_name in ['hoa%i'%o for o in orders] + ['vbap'] :
 			for wav in wavs :
@@ -176,12 +177,12 @@ print >> f, "\n".join(testFiles)
 print >> f, "\nPoints (index: elevation, azimuth):"
 print >> f, "\n".join(["\t%02i: %s %s"%(i,e,a) for i,(e,a) in enumerate(locations)])
 print >> f, "\nAmbients (name: Re(Z)):"
-print >> f, "\n".join(["\t%s: %f"%(name,z) for name,z,d, reverbGain in ambients])
+print >> f, "\n".join(["\t%s: %f"%(name,z) for name,z,d in ambients])
 print >> f
 f.close()
 
 # Concatenating them
-run("sox -c 15 -r 48000 -n -c 15 usertest/silence.wav trim 0 %(interTestSilence)s"%globals())
+run("sox -c %(speakers)s -r 48000 -n -c %(speakers)s usertest/silence.wav trim 0 %(interTestSilence)s"%globals())
 run("sox "+" usertest/silence.wav ".join(testFiles)+" usertest/usertest.wav ")
 
 
