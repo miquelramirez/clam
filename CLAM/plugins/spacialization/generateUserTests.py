@@ -13,18 +13,17 @@ locations = [
 ]
 
 wavs = [
-	"pinknoise.wav",
+	"metronom.wav",
 ]
 
 ambients = [
 	# name, zr, d, reverbGain
-	("anechoich", 1, 0.0, .5),
-	("littlereverb", 100., 0.5, 0.5),
-	("fullreverb", 1000000, 0.5, 0.5),
+	("anechoich", 1, 0.0, .022),
+	("littlereverb", 100., 0.7, 0.022),
+	("fullreverb", 1000000, 0.7, 0.022),
 ]
 
-
-
+orders = 1, 2, 3
 
 
 def die(message) :
@@ -107,7 +106,7 @@ for space_name, z, d, reverbGain in ambients :
 	run("cp usertest/geometry_%s.data usertest/geometry"%space_name)
 	for posi, pos in enumerate(locations) :
 		run("cp usertest/position_%02i.coreo usertest/coreo"%posi)
-		for order in 1, 2, 3 :
+		for order in orders :
 			channels = (order+1)**2
 			speakers = 15
 			encoder = "usertest/hoa%(order)i_room_ds.clamnetwork"%globals()
@@ -127,7 +126,7 @@ for space_name, z, d, reverbGain in ambients :
 	run("cp usertest/geometry_%s.data usertest/geometry"%space_name)
 	for posi, pos in enumerate(locations) :
 		run("cp usertest/position_%02i.coreo usertest/coreo"%posi)
-		for order in 1, 2, 3 :
+		for order in orders :
 			channels = (order+1)**2
 			speakers = 15
 			encoder = "usertest/hoa%(order)i_room_rev.clamnetwork"%globals()
@@ -143,7 +142,7 @@ for space_name, z, d, reverbGain in ambients :
 	mixer = "usertest/mixer_%(space_name)s.clamnetwork"%globals()
 	speakers = 15
 	for posi, pos in enumerate(locations) :
-		for order in 1, 2, 3 :
+		for order in orders :
 			channels = (order+1)**2
 			decoder = "usertest/hoa%(order)i_15decoder.clamnetwork"%globals()
 			for wav in wavs :
@@ -161,7 +160,7 @@ for space_name, z, d, reverbGain in ambients :
 # Normalizing
 for space_name, z, d, reverbGain in ambients :
 	for posi, pos in enumerate(locations) :
-		for algorithm_name in 'hoa1', 'hoa2', 'hoa3', 'vbap' :
+		for algorithm_name in ['hoa%i'%o for o in orders] + ['vbap'] :
 			for wav in wavs :
 				run("soxsucks -N usertest/mixed_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s usertest/tocat_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%globals())
 
