@@ -10,6 +10,9 @@ interTestSilence = 5 # seconds
 locations = [
 	# elevation, azimuth
 	(0, 60),
+	(0, 30),
+	(20, 30),
+	(-20, 30),
 ]
 
 wavs = [
@@ -18,14 +21,14 @@ wavs = [
 
 ambients = [
 	# name, zr, d, reverbGain
-#	("anechoich", 1, 0.0 ),
+	("anechoich", 1, 0.0 ),
 	("littlereverb", 100., 0.7),
-#	("fullreverb", 1000000, 0.7),
+	("fullreverb", 1000000, 0.7),
 ]
 
 reverbGain = 0.0224
 vbapGain = 0.1122
-orders = 1, # 2, 3,
+orders = 1, 2, 3,
 speakers = 15
 
 
@@ -159,11 +162,12 @@ for space_name, z, d in ambients :
 			run("OfflinePlayer %(mixer)s %(direct_sound)s %(reverb)s -o -c %(speakers)s %(mixed)s"%globals())
 
 # Normalizing
+run("sox -c %(speakers)s -r 48000 -n -c %(speakers)s usertest/silence.wav trim 0 %(interTestSilence)s"%globals())
 for space_name, z, d in ambients :
 	for posi, pos in enumerate(locations) :
 		for algorithm_name in ['hoa%i'%o for o in orders] + ['vbap'] :
 			for wav in wavs :
-				run("soxsucks -N usertest/mixed_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s usertest/tocat_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%globals())
+				run("soxsucks -N usertest/mixed_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s usertest/silence.wav usertest/tocat_%(algorithm_name)s_%(space_name)s_%(posi)02i_%(wav)s"%globals())
 
 # Shuffling and save the shuffled order for later reference
 import random
@@ -182,7 +186,15 @@ print >> f
 f.close()
 
 # Concatenating them
-run("sox -c %(speakers)s -r 48000 -n -c %(speakers)s usertest/silence.wav trim 0 %(interTestSilence)s"%globals())
-run("sox "+" usertest/silence.wav ".join(testFiles)+" usertest/usertest.wav ")
+def wavcat(files, outputBase, maxFilesAtOnce=32) :
+	if len(files) <= maxFilesAtOnce :
+		run("sox "+" ".join(files)+" %s.wav"%outputBase)
+		return [outputBase]
+	for i, start in enumerate(xrange(0,len(testFiles),maxFilesAtOnce)) :
+		wavcat(files[start:min(len(files),start+maxFilesAtOnce)], "%s-%i"%(outputBase, i))
+	files = ["%s-%i.wav"%(outputBase, i) for i, start in enumerate(xrange(0,len(testFiles),maxFilesAtOnce))]
+		
+	
+wavcat(testFiles,"usertest/usertest")
 
 
