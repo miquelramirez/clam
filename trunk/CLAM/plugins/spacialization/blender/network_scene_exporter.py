@@ -69,14 +69,15 @@ def GenerateNetworkOSCReceiver(filename):
 	templatePath="/SpatDIF/sources/%(objectNumber)s/%(sufix_path)s"
 	dictionary_paths=['xyz','ypr']
 	for source in sources:
+		sourceName=source.name.replace(".","_")
 		port=7000
 		# try to get the port on object name:
-		portInName=re.search('_p([0-9]+)$',source.name)
+		portInName=re.search('_p([0-9]+)$',sourceName)
 		if portInName!=None:
 			port=int(portInName.group(1))
 		for sufix_path in dictionary_paths:
-			libloName="source_%s_%s" % (source.name,sufix_path)
-			printerName="printer_source_%s_%s" % (source.name,sufix_path)
+			libloName="source_%s_%s" % (sourceName,sufix_path)
+			printerName="printer_source_%s_%s" % (sourceName,sufix_path)
 			objectNumber=str(sources.index(source))
 			liblos+=makeLibloSource(libloName,templatePath % vars(),(xPosition,yPosition),3,port)
 			printers+=makeControlPrinter(printerName,(xPosition,yPosition+150),3)
@@ -91,14 +92,15 @@ def GenerateNetworkOSCReceiver(filename):
 	listeners=BlenderOSCSender.getListeners(scene)
 	templatePath="/SpatDIF/listeners/%(objectNumber)s/%(sufix_path)s"
 	for listener in listeners:
+		listenerName=listener.name.replace(".","_")
 		port=7000
 		# try to get the port on object name:
-		portInName=re.search('_p([0-9]+)$',listener.name)
+		portInName=re.search('_p([0-9]+)$',listenerName)
 		if portInName!=None:
 			port=int(portInName.group(1))
 		for sufix_path in dictionary_paths:
-			libloName="listener_%s_%s" % (listener.name,sufix_path)
-			printerName="printer_listener_%s_%s" % (listener.name,sufix_path)
+			libloName="listener_%s_%s" % (listenerName,sufix_path)
+			printerName="printer_listener_%s_%s" % (listenerName,sufix_path)
 			objectNumber=str(listeners.index(listener))
 			liblos+=makeLibloSource(libloName,templatePath % vars(),(xPosition,yPosition),3,port)
 			printers+=makeControlPrinter(printerName,(xPosition,yPosition+150),3)
