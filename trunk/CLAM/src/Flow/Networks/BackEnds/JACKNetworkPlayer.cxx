@@ -339,11 +339,8 @@ void JACKNetworkPlayer::AutoConnectPorts()
 			std::cout << "- Connecting " << portnames[i] << " -> " 
 				<< it->PortName() << std::endl;
 
-			if ( jack_connect( _jackClient, portnames[i], 
-						it->PortName() ) !=0 )
-			{
+			if ( jack_connect( _jackClient, portnames[i], it->PortName() ) !=0 )
 				std::cerr << " -WARNING: couldn't connect" << std::endl;
-			}
 		
 			i++;
 			if (portnames[i]==NULL) break;
@@ -358,27 +355,21 @@ void JACKNetworkPlayer::AutoConnectPorts()
 	{
 		std::cout << " -WARNING: couldn't locate any JACK input port <"
 			<< _jackInPortAutoConnectList << ">"<<std::endl;
+		return;
 	}
-	else
+	int i=0;
+
+	//Double iterate found JACK in ports & ExterSinks
+	for (SinkJackBindings::iterator it= _sinkJackBindings.begin(); it!=_sinkJackBindings.end(); it++)
 	{
-		int i=0;
+		std::cout << "- Connecting "<< it->PortName()
+			<< " -> " << portnames[i] << std::endl;
 
-		//Double iterate found JACK in ports & ExterSinks
-		for (SinkJackBindings::iterator it= _sinkJackBindings.begin(); it!=_sinkJackBindings.end(); it++)
-		{
-			std::cout << "- Connecting "<< it->PortName()
-				<< " -> " << portnames[i] << std::endl;
-
-			if ( jack_connect( _jackClient, it->PortName(),
-						portnames[i]) != 0)
-			{
-				std::cerr << " -WARNING: couldn't connect" << std::endl;
-			}
-		
-			i++;
-			if (portnames[i]==NULL) break;
-		}
-	}			
+		if ( jack_connect( _jackClient, it->PortName(), portnames[i]) != 0)
+			std::cerr << " -WARNING: couldn't connect" << std::endl;
+		i++;
+		if (portnames[i]==NULL) break;
+	}
 	free(portnames);
 }
 
