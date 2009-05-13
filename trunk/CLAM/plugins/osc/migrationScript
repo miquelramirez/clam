@@ -1,0 +1,4 @@
+beVerbose
+renameConfig MultiLibloSource NumberOfArguments OSCTypeSpec
+transformConfigByType MultiLibloSource OSCTypeSpec '"f"*int(value)'
+renameClass MultiLibloSourceTyped MultiLibloSource 

@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
   <processing id="* (-2000)" position="667,76" size="109,58" type="ControlScaler">
     <Amount>-2000</Amount>
   </processing>
 
-  <processing id="AbsoluteCoordinates2RelativeAngles" position="381,564" size="239,58" type="AbsoluteCoordinates2RelativeAngles"/>
+  <processing id="AbsoluteCoordinates2RelativeAngles" position="381,564" size="239,58" type="AbsoluteCoordinates2RelativeAngles" />
 
   <processing id="AudioBuffer2Stream" position="1469,615" size="144,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -100,9 +99,9 @@
     <HrtfDatabase>/home/natanael.olaiz/acustica/HRTFs/kreuzerDatabase2.hrtfs</HrtfDatabase>
   </processing>
 
-  <processing id="IRSwappingDelay" position="829,613" size="133,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay" position="829,613" size="133,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_1" position="826,709" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_1" position="826,709" size="147,62" type="IRSwappingDelay" />
 
   <processing id="Instant velocity" position="150,299" size="225,130" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
@@ -110,7 +109,7 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="L" position="1396,343" size="128,111" type="AudioSink"/>
+  <processing id="L" position="1396,343" size="128,111" type="AudioSink" />
 
   <processing id="LowLatencyConvolution" position="1140,598" size="166,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -167,11 +166,11 @@
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="Oscilloscope" position="1360,451" size="288,113" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="1360,451" size="288,113" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_1" position="1366,846" size="288,110" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="1366,846" size="288,110" type="Oscilloscope" />
 
-  <processing id="R" position="1379,965" size="128,111" type="AudioSink"/>
+  <processing id="R" position="1379,965" size="128,111" type="AudioSink" />
 
   <processing id="Resonance" position="940,294" size="177,73" type="OutControlSender">
     <Min>0</Min>
@@ -194,9 +193,9 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="XFadeAndSwitch" position="1160,487" size="128,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch" position="1160,487" size="128,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_1" position="1156,850" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_1" position="1156,850" size="142,94" type="XFadeAndSwitch" />
 
   <processing id="XYZ" position="29,164" size="180,130" type="ControlPrinter">
     <Identifier>XYZ</Identifier>
@@ -213,16 +212,16 @@
   <processing id="listener x/y/z" position="88,416" size="126,58" type="MultiLibloSource">
     <OscPath>/SpatDIF/listener/OBlistener_p7001/xyz</OscPath>
     <ServerPort>7001</ServerPort>
-    <NumberOfArguments>3</NumberOfArguments>
+    <OSCTypeSpec>fff</OSCTypeSpec>
   </processing>
 
   <processing id="listener yaw/pitch/roll" position="266,415" size="148,58" type="MultiLibloSource">
     <OscPath>/SpatDIF/listener/OBlistener_p7001/ypr</OscPath>
     <ServerPort>7001</ServerPort>
-    <NumberOfArguments>3</NumberOfArguments>
+    <OSCTypeSpec>fff</OSCTypeSpec>
   </processing>
 
-  <processing id="lsFilter0" position="784,437" size="82,58" type="lsFilter0"/>
+  <processing id="lsFilter0" position="784,437" size="82,58" type="lsFilter0" />
 
   <processing id="sample,play,loop" position="371,165" size="195,130" type="ControlPrinterTyped">
     <Identifier>ControlPrinterTyped</Identifier>
