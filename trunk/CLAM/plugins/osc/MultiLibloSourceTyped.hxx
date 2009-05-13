@@ -251,6 +251,11 @@ protected:
 		}
 		return false;
 	}
+protected:
+	static bool IsPortUsed(const char* port)
+	{
+		return ( ServersInstances().find(port) != ServersInstances().end() );
+	}
 
 private:
 	static void error(int num, const char *m, const char *path);
@@ -284,10 +289,7 @@ private:
 		static OscServersMap sOscServersMap;
 		return sOscServersMap;
 	}
-	static bool IsPortUsed(const char* port)
-	{
-		return ( ServersInstances().find(port) != ServersInstances().end() );
-	}
+
 	static lo_server_thread ServerStart(const char* port);
 	static bool RemoveServer(const char* port);
 	static bool IncInstance(const char* port);
