@@ -16,3 +16,6 @@ http://www.audiomulch.com/~rossb/code/oscpack/oscpack_1_0_2.zip
 edit Makefile adding -fPIC to COPTS:
 COPTS  = -Wall -O3 -fPIC
 
+IMPORTANT (rev. 13148): MultiLibloSource class removed, and MultiLibloSourceTyped -> MultiLibloSource. 
+The networks using it was updated, but if you have a network using one of them, just run 
+CLAM/scripts/clamrefactor.py -x -f CLAM/plugins/osc/migrationScript networktochange.clamnetwork

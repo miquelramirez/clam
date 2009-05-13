@@ -44,10 +44,8 @@ int CLAM::MultiLibloSource::controls_handler(const char *path, const char *types
 //	printf("%s <- f:",path);
 	for (int i=0;i<argc;i++)
 	{
-//		if(i>0) 
-//			printf(", ");
-//		printf ("%f", argv[i]->f);
-		self._outControls[i].SendControl( argv[i]->f );
+		sendControl(self._outControls[i],argv[i]);
+		
 	}
 //	printf("\n\n");
 //	fflush(stdout);
@@ -71,6 +69,7 @@ lo_server_thread CLAM::MultiLibloSource::ServerStart(const char* port)
 	}
 	std::cout << "MultiLibloSource: Starting the server on port" << port << std::endl;
 	lo_server_thread serverThread = lo_server_thread_new(port, error);
+	if (not serverThread) return 0;
 	ServerInstance server;
 	server.thread=serverThread;
 	MethodsMultiMap methods; // create an empty map

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed Network">
 
   <processing id="ControlPrinterTyped" position="100,224" size="181,153" type="ControlPrinterTyped">
@@ -7,7 +6,7 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="MultiLibloSourceTyped" position="47,65" size="160,58" type="MultiLibloSourceTyped">
+  <processing id="MultiLibloSourceTyped" position="47,65" size="160,58" type="MultiLibloSource">
     <OscPath>/clam/target</OscPath>
     <ServerPort>7000</ServerPort>
     <OSCTypeSpec>sssf</OSCTypeSpec>
