@@ -55,7 +55,7 @@ class ClamNetwork() :
 		method(*tokens[1:])
 
 	def _log(self, message) :
-		if self.verbose : print message
+		if self.verbose : print >> sys.stderr,message
 		self.log.append(message)
 	def _versionNotApplies(self) :
 		if not self.ensuredVersion : return False
@@ -137,6 +137,17 @@ class ClamNetwork() :
 				config.text = value
 				self._log("Setting configuration parameter %s.%s = %s" %(
 					processing.get("id"), name, value))
+
+	def transformConfigByType(self, processingType, name, expression) :
+		"""Transform the value for a config parameter"""
+		if self._versionNotApplies() : return
+		for processing in self._processingsOfType(processingType) : 
+			configs = processing.findall(name)
+			for config in configs :
+				value=config.text
+				config.text = eval(expression)
+				self._log("Setting configuration parameter %s.%s = %s" %(
+					processing.get("id"), name, config.text))
 
 	def setConfig(self, processingId, param, value) :
 		"""Change the value for a config parameter"""
