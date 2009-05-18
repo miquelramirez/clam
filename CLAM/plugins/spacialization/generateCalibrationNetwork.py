@@ -25,7 +25,7 @@ print """
 
   <processing id="AudioAmplifier" position="200,64" size="114,414" type="AudioAmplifier">
     <MaxGain>1</MaxGain>
-    <InitGain>.5</InitGain>
+    <InitGain>.04</InitGain>
     <PortsNumber>%(nSpeakers)s</PortsNumber>
   </processing>
 
