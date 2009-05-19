@@ -263,6 +263,8 @@ if __name__ == "__main__" :
 		print >> sys.stderr, "Processing", filename
 		network = ClamNetwork(file(filename))
 		for command in commands :
+			if not command.strip() or command.strip()[0]=='#' :
+				continue
 			network.runCommand(command)
 
 		output = sys.stdout
