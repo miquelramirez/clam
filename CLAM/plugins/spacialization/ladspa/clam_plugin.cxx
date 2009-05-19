@@ -20,6 +20,7 @@ CLAM_EXTERNAL_FILE_DATA(dummyControls_embededNetwork,"dummy_azimuth_elevation_co
 CLAM_EXTERNAL_FILE_DATA(bformat_to_15_embededNetwork,"../example-data/bformat2fifteen.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat_to_22_embededNetwork,"../example-data/bformat_to_22.clamnetwork")
 
+CLAM_EXTERNAL_FILE_DATA(bformat14,"bformat14.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat15,"bformat15.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat16,"bformat16.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat17,"bformat17.clamnetwork")
@@ -29,6 +30,7 @@ CLAM_EXTERNAL_FILE_DATA(bformat20,"bformat20.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat21,"bformat21.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(bformat22,"bformat22.clamnetwork")
 
+CLAM_EXTERNAL_FILE_DATA(vbap14,"vbap14.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(vbap15,"vbap15.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(vbap16,"vbap16.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(vbap17,"vbap17.clamnetwork")
@@ -79,6 +81,9 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 			"BarcelonaMedia-Audio", "GNU GPL");
 */
 
+	static CLAM::LadspaNetworkExporter n1014(library, vbap14, 1014,
+			"id_vbap_14", "vbap14",
+			"BarcelonaMedia-Audio", "GNU GPL");
 	static CLAM::LadspaNetworkExporter n1015(library, vbap15, 1015,
 			"id_vbap_15", "vbap15",
 			"BarcelonaMedia-Audio", "GNU GPL");
@@ -104,6 +109,9 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 			"id_vbap_22", "vbap22",
 			"BarcelonaMedia-Audio", "GNU GPL");
 
+	static CLAM::LadspaNetworkExporter n2014(library, bformat14, 2014,
+			"id_bformat_14", "bformat14",
+			"BarcelonaMedia-Audio", "GNU GPL");
 	static CLAM::LadspaNetworkExporter n2015(library, bformat15, 2015,
 			"id_bformat_15", "bformat15",
 			"BarcelonaMedia-Audio", "GNU GPL");
