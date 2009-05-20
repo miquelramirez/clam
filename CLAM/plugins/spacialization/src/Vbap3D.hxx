@@ -500,16 +500,22 @@ public:
 		g3 = fabs(g3) * normalization;
 		// copy audio in->out
 		// TODO extract method
-		const CLAM::DataArray& w =_w.GetAudio().GetBuffer();
+		const CLAM::DataArray& w = _w.GetAudio().GetBuffer();
+		const CLAM::TData * in = w.GetPtr();
+		const unsigned size = w.Size();
 		for (unsigned i=0; i<_outputs.size(); i++)
 		{
 			float gainToApply = 0.;
 			if (i==speaker1) gainToApply = g1;
 			if (i==speaker2) gainToApply = g2;
 			if (i==speaker3) gainToApply = g3;
-			CLAM::DataArray& out =_outputs[i]->GetAudio().GetBuffer();
-			for (int sample=0; sample<w.Size(); sample++)
-				out[sample] = gainToApply>_deltaNumeric ? w[sample]*gainToApply : 0.;
+			CLAM::TData * out =_outputs[i]->GetAudio().GetBuffer().GetPtr();
+			if (gainToApply>_deltaAngle)
+				for (int sample=0; sample<size; sample++)
+					out[sample] = in[sample]*gainToApply;
+			else
+				for (int sample=0; sample<size; sample++)
+					out[sample] = 0.;
 			
 			_outputs[i]->Produce();
 		}
