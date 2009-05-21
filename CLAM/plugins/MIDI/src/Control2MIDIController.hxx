@@ -13,9 +13,11 @@ namespace CLAM {
 	class Control2MIDIControllerConfig: public ProcessingConfig
 	{
 	public:
-		DYNAMIC_TYPE_USING_INTERFACE (Control2MIDIControllerConfig,2,ProcessingConfig);
+		DYNAMIC_TYPE_USING_INTERFACE (Control2MIDIControllerConfig,4,ProcessingConfig);
 		DYN_ATTRIBUTE (0,public,int,ChannelNumber);
 		DYN_ATTRIBUTE (1,public,int,ControllerNumber);
+		DYN_ATTRIBUTE (2,public,float,ExpectedMinValue);
+		DYN_ATTRIBUTE (3,public,float,ExpectedMaxValue);
 	protected:
 		void DefaultInit(void)
 		{
@@ -23,13 +25,15 @@ namespace CLAM {
 			UpdateData();
 			SetChannelNumber(0);
 			SetControllerNumber(0);
+			SetExpectedMinValue(0.);
+			SetExpectedMaxValue(127.);
 		}
 	};
 
 	class Control2MIDIController : public CLAM::Processing
 	{ 
+	protected:
 		/** Controls **/
-//		TypedInControl <unsigned int> _InControlValue;
 //		TypedInControl <float> _InControlValue; //TODO: WHY THIS GetLastValue() DOESN'T WORK IN THIS WAY?????
 		FloatInControl _InControlValue;
 //		TypedInControl <unsigned int> _InControlChannelNumber;
@@ -37,6 +41,17 @@ namespace CLAM {
 		TypedOutControl<MIDI::Message> _MIDIMessage;
 
 		Control2MIDIControllerConfig _config;
+
+		float _expectedMin;
+		float _expectedMax;
+		double _scale;
+
+		unsigned int Float2QuantizedInt (float originalFloat) const
+			{ return (originalFloat - _expectedMin) * _scale; }
+
+		float QuantizedInt2Float (unsigned int originalInt) const
+			{ return (originalInt / _scale) + _expectedMin; }
+
 
 	public:
 		const char* GetClassName() const { return "Control2MIDIController"; }
@@ -52,9 +67,12 @@ namespace CLAM {
 
 			statusByte = 0xB0 | (_config.GetChannelNumber() & 0x0F); // Set status byte: control change, with channel
 			dataByte0 = 0x7F & (unsigned char)_config.GetControllerNumber();
-			dataByte1 = 0x7F & (unsigned char)_InControlValue.GetLastValue();
+
+			const unsigned char scaledCharValue=Float2QuantizedInt(_InControlValue.GetLastValue());
+
+			dataByte1 = 0x7F & scaledCharValue;
 			// Send Message
-			std::cout<< "status: "<<statusByte<<" ; data0: "<<dataByte0<<" ; data1: "<<dataByte1<<std::endl;
+//			std::cout<< "status: "<<statusByte<<" ; data0: "<<dataByte0<<" ; data1: "<<dataByte1<<std::endl;
 				MIDI::Message tmpMessage( statusByte,dataByte0,dataByte1);
 				_MIDIMessage.SendControl(tmpMessage);
 			return true;
