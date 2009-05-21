@@ -28,6 +28,10 @@ namespace Hidden
 	bool Control2MIDIController::ConcreteConfigure(const CLAM::ProcessingConfig& c)
 	{
 		CopyAsConcreteConfig(_config,c);
+		_expectedMin = _config.GetExpectedMinValue();
+		_expectedMax = _config.GetExpectedMaxValue();
+		double maxInt = 127.; //TODO: change when enable 14 bit messages
+		_scale = maxInt / (_expectedMax - _expectedMin);
 		return true;
 	}
 }
