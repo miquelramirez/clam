@@ -99,8 +99,8 @@ namespace CLAM{
 			int size = in.GetSize();
 
 			TData gain = mInputControl.GetLastValue();
-			const DataArray& inb = in.GetBuffer();
-			DataArray& outb = out.GetBuffer();
+			const TData * inb = in.GetBuffer().GetPtr();
+			TData * outb = out.GetBuffer().GetPtr();
 
 			for (int i=0;i<size;i++) 
 			{
