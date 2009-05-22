@@ -21,6 +21,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include "cppUnitHelper.hxx"
+#include "XMLTestHelper.hxx"
 
 #include "Pool.hxx" // CLAM
 #include "DataTypes.hxx" // CLAM
@@ -103,8 +104,7 @@ private:
 
 	void assertXmlBodyEquals(const std::string & expectedXmlBody)
 	{
-		std::string xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>";
-		CPPUNIT_ASSERT_EQUAL(xmlHeader+expectedXmlBody, _targetStream.str());
+		CPPUNIT_ASSERT_EQUAL(xmlHeader()+expectedXmlBody+xmlFooter(), _targetStream.str());
 	}
 
 	void testDumpAttributePool_withSimpleData()
