@@ -4,7 +4,7 @@
 
 void SpeakerLayout::add(double azimuthDegrees, double elevationDegrees, const std::string & name)
 {
-	std::cout << elevationDegrees << " " << azimuthDegrees << " '" << name << "'" << std::endl;
+//	std::cout << elevationDegrees << " " << azimuthDegrees << " '" << name << "'" << std::endl;
 	_orientations.push_back(CLAM::Orientation(azimuthDegrees, elevationDegrees));
 	_names.push_back(name);
 }
