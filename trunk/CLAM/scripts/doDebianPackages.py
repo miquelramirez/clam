@@ -15,7 +15,7 @@ distributions = [
 #	('ubuntu', 'gutsy',   "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('ubuntu', 'hardy', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 #	('ubuntu', 'intrepid', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
-#	('ubuntu', 'jaunty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
+	('ubuntu', 'jaunty', "http://es.archive.ubuntu.com/ubuntu/", ['main','universe']),
 ]
 repositoryBase = "http://clam-project.org/clam/trunk/"
 repositories = [
@@ -172,11 +172,12 @@ for (maindistro, distribution, mirror, components) in distributions :
 	run("scp %s/* clamadm@clam-project.org:clam-project.org/%s " % ( resultdir, targetWebDir) )
 	run("slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py")
 
+if '--noupload' not in sys.argv :
+	run("slogin clamadm@clam-project.org clam-project.org/scripts/regenerateDownloadDirsIndex.py")
+
+
 if failedSteps :
 	print "Those steps have failed:"
 	for step in failedSteps :
 		print step
-
-
-
 
