@@ -174,7 +174,7 @@ private:
 				if (not (is >> v3)) return error(errorMsg, "Bad vertex index 3 on triangle "+os.str());
 				if (v1>=nSpeakers or v2>=nSpeakers or v3>=nSpeakers)
 					return error(errorMsg, "Triangulation uses speakers that are not available");
-				std::cout << v1 << " " << v2 << " " << v3 << std::endl;
+//				std::cout << v1 << " " << v2 << " " << v3 << std::endl;
 				add(v1,v2,v3);
 				i++;
 			}
