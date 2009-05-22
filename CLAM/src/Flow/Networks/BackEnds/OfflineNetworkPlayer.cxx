@@ -79,7 +79,7 @@ void OfflineNetworkPlayer::Start()
 		CLAM_ASSERT(checkfile.is_open(), std::string(std::string("Could not open one of the input files: ")+_inFileNames[fileIndex]).c_str());
 		SndfileHandle* infile = new SndfileHandle(_inFileNames[fileIndex].c_str(), SFM_READ );
 		CLAM_ASSERT(*infile, "Can not create the infile ");		
-		 inputChannelsCount += infile->channels();
+		inputChannelsCount += infile->channels();
 		if(fileIndex==0)
 			sampleRate = infile->samplerate();
 		if(infile->samplerate() != sampleRate)
@@ -192,8 +192,9 @@ void OfflineNetworkPlayer::Start()
 		bool someInputFinished=false;
 		for(std::vector<SndfileHandle*>::iterator it=infiles.begin();it!=infiles.end();it++)
 		{
+			unsigned int nChannels = (*it)->channels();
 			CLAM_ASSERT((*it)->channels(), "The audio had no channels");
-			int bufferReaderSize = (*it)->channels()*frameSize;
+			int bufferReaderSize = nChannels*frameSize;
 			float * bufferReader = new float[bufferReaderSize];
 			int readSize = (*it)->read(bufferReader,bufferReaderSize);
 
@@ -210,11 +211,12 @@ void OfflineNetworkPlayer::Start()
 			}
 			//Save the bufferReader into the sources' buffers.
 			for(int frameIndex=0; frameIndex <frameSize; frameIndex ++)
-			{	for(int channel=0; channel < (*it)->channels(); channel++)
-				{	inbuffers[inAudioIndex+channel][frameIndex] = bufferReader[(frameIndex*(*it)->channels())+channel];
+			{	for(int channel=0; channel < nChannels; channel++)
+				{
+					inbuffers[inAudioIndex+channel][frameIndex] = bufferReader[(frameIndex*nChannels)+channel];
 				}
 			}
-			inAudioIndex += (*it)->channels();
+			inAudioIndex += nChannels;
 			fileIndex ++;
 			delete[] bufferReader;
 		}		
