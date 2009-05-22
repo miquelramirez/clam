@@ -17,10 +17,10 @@
     <UnitName>degrees</UnitName>
   </processing>
 
-  <processing id="output" position="73,212" size="147,107" type="ControlPrinter">
+  <processing id="output" position="73,212" size="148,108" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
     <NumberOfInputs>2</NumberOfInputs>
-    <GuiOnly>1</GuiOnly>
+    <GuiOnly>0</GuiOnly>
   </processing>
 
   <control_connection>
