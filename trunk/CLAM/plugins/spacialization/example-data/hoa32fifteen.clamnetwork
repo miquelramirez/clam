@@ -19,7 +19,8 @@
 
   <processing id="Hoa2RegularSpeakerArray" position="402,340" size="225,286" type="Hoa2RegularSpeakerArray">
     <Order>3</Order>
-    <SpeakerLayout>layouts/sixteen.layout</SpeakerLayout>
+    <SpeakerLayout>layouts/15_audiolab.layout</SpeakerLayout>
+    <IgnoreLabels>0</IgnoreLabels>
   </processing>
 
   <processing id="K in" position="4,559" size="128,108" type="AudioSource"/>
