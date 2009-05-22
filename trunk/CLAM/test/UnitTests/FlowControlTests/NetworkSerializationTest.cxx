@@ -30,6 +30,7 @@
 #include "XMLStorage.hxx" // CLAM
 #include "cppUnitHelper.hxx"
 #include <CLAM/CLAMVersion.hxx>
+#include "XMLTestHelper.hxx"
 
 namespace CLAMTest {
 
@@ -67,8 +68,9 @@ public: // TestFixture interface
 private:
 	void assertXmlBodyEquals(const std::string & expectedXmlBody)
 	{
-		std::string xmlHeader = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>";
-		CPPUNIT_ASSERT_EQUAL(xmlHeader+expectedXmlBody, _output.str());
+		CPPUNIT_ASSERT_EQUAL(
+			xmlHeader()+expectedXmlBody+xmlFooter(),
+			_output.str());
 	}
 
 	void TestLoadEmptyNetwork()
