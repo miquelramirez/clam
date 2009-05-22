@@ -31,6 +31,16 @@ def setup_global_environment( env, conf ) :
 		env.Append( CPPFLAGS=['-DCLAM_USE_RELEASE_ASSERTS'] )
 	if env['optimize_and_lose_precision'] :
 		env.Append( CPPFLAGS=['-DCLAM_OPTIMIZE'] )
+	if env['intel_optimize'] :
+		env.AppendUnique( CPPFLAGS=[
+			'-fomit-frame-pointer', 
+			'-ffast-math',
+			'-funroll-loops',
+			'-mmmx',
+#			'-march=nocona',
+			'-msse',
+			'-mfpmath=sse'
+		]) 
 
 	if env['release'] :
 		print 'COMPILING IN RELEASE MODE'

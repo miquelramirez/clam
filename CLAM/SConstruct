@@ -127,6 +127,7 @@ def setup_build_options( env ) :
 	if isWindowsPlatform :
 		opts.Add( PathOption( 'sandbox_path', 'The working directory in mingw where the external libraries are placed', '' ) )
 	opts.Add( BoolOption( 'release', 'Build CLAM with optimizations and stripping debug symbols', 'no'))
+	opts.Add( BoolOption( 'intel_optimize', 'Build CLAM with newer intel specific optimizations', 'no'))
 	opts.Add( BoolOption( 'double', 'CLAM TData type will be double','no'))
 	opts.Add( BoolOption( 'checks', 'Postcondition checks enabled', 'yes' ))
 	if sys.platform == "linux2" :
