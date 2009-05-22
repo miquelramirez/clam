@@ -11,7 +11,7 @@ options.Add(BoolOption('crossmingw', 'Using MinGW crosscompiler mode', 'no') )
 toolChain = 'default'
 if sys.platform == 'win32': toolChain = 'mingw'
 env = Environment(ENV=os.environ, tools=[toolChain], options=options)
-#options.Save('options.cache', env) # do not save options in NetworkEditor generated plugins
+options.Save('options.cache', env) # do not save options in NetworkEditor generated plugins
 Help(options.GenerateHelpText(env))
 env.SConsignFile() # Single signature file
 
