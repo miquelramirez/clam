@@ -32,6 +32,7 @@ CLAM_EXTERNAL_FILE_DATA(bformat22,"bformat22.clamnetwork")
 
 CLAM_EXTERNAL_FILE_DATA(vbap14,"vbap14.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(vbap15,"vbap15.clamnetwork")
+CLAM_EXTERNAL_FILE_DATA(vbap15_shorter_distance,"vbap15_shorter_distance.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(vbap16,"vbap16.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(vbap17,"vbap17.clamnetwork")
 CLAM_EXTERNAL_FILE_DATA(vbap18,"vbap18.clamnetwork")
@@ -67,19 +68,24 @@ extern "C" const LADSPA_Descriptor * ladspa_descriptor(unsigned long index)
 	static CLAM::LadspaNetworkExporter n104(library, mono2binaural_embededNetwork, 104,
 			"mono2binaural", "Mono to binaural (HRTF)",
 			"BarcelonaMedia-Audio", "GNU GPL");
-	static CLAM::LadspaNetworkExporter n106(library, fake_bformat2surround_embededNetwork, 106,
+	static CLAM::LadspaNetworkExporter n106(library, fake_bformat2surround_embededNetwork, 108,
 			"bformat2surround", "BFormat to Surround 5.0",
 			"BarcelonaMedia-Audio", "GNU GPL");
-	static CLAM::LadspaNetworkExporter n107(library, fake_bformat2binaural_embededNetwork, 107,
+	static CLAM::LadspaNetworkExporter n107(library, fake_bformat2binaural_embededNetwork, 109,
 			"bformat2surround", "BFormat to binaural for headphones (using HRTF's)",
 			"BarcelonaMedia-Audio", "GNU GPL");
-	static CLAM::LadspaNetworkExporter n108(library, fake_bformat2binaural_embededNetwork, 108,
+	static CLAM::LadspaNetworkExporter n108(library, fake_bformat2binaural_embededNetwork, 110,
 			"bformat2surround", "BFormat to stereo for speakers (located at -30 and 30 degrees)",
 			"BarcelonaMedia-Audio", "GNU GPL");
-	static CLAM::LadspaNetworkExporter n109(library, bformat2cube_embededNetwork, 109,
+	static CLAM::LadspaNetworkExporter n111(library, bformat2cube_embededNetwork, 111,
 			"bformat2cube", "BFormat to Cube for 8 speakers",
 			"BarcelonaMedia-Audio", "GNU GPL");
 */
+
+
+	static CLAM::LadspaNetworkExporter n3015(library, vbap15_shorter_distance, 3015,
+			"id_vbap_15_shorter_distance", "vbap15_shorter_distance",
+			"BarcelonaMedia-Audio", "GNU GPL");
 
 	static CLAM::LadspaNetworkExporter n1014(library, vbap14, 1014,
 			"id_vbap_14", "vbap14",
