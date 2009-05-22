@@ -53,135 +53,138 @@
 
   <processing id="9 Rear_Left_Horizontal" position="963,422" size="161,111" type="AudioSink"/>
 
-  <processing id="BFormat2Sixteen" position="257,290" size="128,270" type="BFormat2Sixteen"/>
+  <processing id="Hoa2RegularSpeakerArray" position="257,290" size="128,270" type="Hoa2RegularSpeakerArray">
+	<Order>1</Order>
+	<SpeakerLayout>layouts/sixteen.layout</SpeakerLayout>
+  </processing>
 
   <port_connection>
     <out>1 W in.AudioOut</out>
-    <in>BFormat2Sixteen.W</in>
+    <in>Hoa2RegularSpeakerArray.W</in>
   </port_connection>
 
   <port_connection>
     <out>2 X in.AudioOut</out>
-    <in>BFormat2Sixteen.X</in>
+    <in>Hoa2RegularSpeakerArray.X</in>
   </port_connection>
 
   <port_connection>
     <out>3 Y in.AudioOut</out>
-    <in>BFormat2Sixteen.Y</in>
+    <in>Hoa2RegularSpeakerArray.Y</in>
   </port_connection>
 
   <port_connection>
     <out>4 Z in.AudioOut</out>
-    <in>BFormat2Sixteen.Z</in>
+    <in>Hoa2RegularSpeakerArray.Z</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Back Horizontal</out>
+    <out>Hoa2RegularSpeakerArray.Back Horizontal</out>
     <in>1 Back_Horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Base Back Left</out>
+    <out>Hoa2RegularSpeakerArray.Base Back Left</out>
     <in>2 Base_Back_Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Base Back Right</out>
+    <out>Hoa2RegularSpeakerArray.Base Back Right</out>
     <in>3 Base_Back_Right.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Base Front Left</out>
+    <out>Hoa2RegularSpeakerArray.Base Front Left</out>
     <in>4 Base_Front_Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Base Front Right</out>
+    <out>Hoa2RegularSpeakerArray.Base Front Right</out>
     <in>5 Base_Front_Right.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Front Horizontal</out>
+    <out>Hoa2RegularSpeakerArray.Front Horizontal</out>
     <in>6 Front_Horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Front Left Horizontal</out>
+    <out>Hoa2RegularSpeakerArray.Front Left Horizontal</out>
     <in>7 Front_Left_Horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Front Right Horizontal</out>
+    <out>Hoa2RegularSpeakerArray.Front Right Horizontal</out>
     <in>8 Front_Right_Horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Rear Left Horizontal</out>
+    <out>Hoa2RegularSpeakerArray.Rear Left Horizontal</out>
     <in>9 Rear_Left_Horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Rear Right Horizontal</out>
+    <out>Hoa2RegularSpeakerArray.Rear Right Horizontal</out>
     <in>10 Rear_Right_Horizontal.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Back Left</out>
+    <out>Hoa2RegularSpeakerArray.Top Back Left</out>
     <in>11 Top_Back_Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Back Right</out>
+    <out>Hoa2RegularSpeakerArray.Top Back Right</out>
     <in>12 Top_Back_Right.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Front Right</out>
+    <out>Hoa2RegularSpeakerArray.Top Front Right</out>
     <in>13 Top_Front_Right.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top Front Left</out>
+    <out>Hoa2RegularSpeakerArray.Top Front Left</out>
     <in>14 Top_Front_Left.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top</out>
+    <out>Hoa2RegularSpeakerArray.Top</out>
     <in>15 Top.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top</out>
+    <out>Hoa2RegularSpeakerArray.Top</out>
     <in>16.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top</out>
+    <out>Hoa2RegularSpeakerArray.Top</out>
     <in>17.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top</out>
+    <out>Hoa2RegularSpeakerArray.Top</out>
     <in>18.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top</out>
+    <out>Hoa2RegularSpeakerArray.Top</out>
     <in>19.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top</out>
+    <out>Hoa2RegularSpeakerArray.Top</out>
     <in>20.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top</out>
+    <out>Hoa2RegularSpeakerArray.Top</out>
     <in>21.AudioIn</in>
   </port_connection>
 
   <port_connection>
-    <out>BFormat2Sixteen.Top</out>
+    <out>Hoa2RegularSpeakerArray.Top</out>
     <in>22.AudioIn</in>
   </port_connection>
 
