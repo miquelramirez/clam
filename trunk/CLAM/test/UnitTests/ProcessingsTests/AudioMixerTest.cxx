@@ -43,7 +43,7 @@ class AudioMixerTest : public CppUnit::TestFixture
 	//processing
 	CLAM::FloatOutControl mOut1;
 	CLAM::FloatOutControl mOut2;
-	CLAM::AudioMixer<2> mMixer;
+	CLAM::AudioMixer mMixer;
 
 	//data
 	CLAM::Audio mInAudio1;
@@ -56,8 +56,8 @@ public:
 	{
 
 		//add link to in controls of mixer
-		mOut1.AddLink(&mMixer.GetInControl("Input Gain_0"));
-		mOut2.AddLink(&mMixer.GetInControl("Input Gain_1"));
+		mOut1.AddLink(mMixer.GetInControl("Input Gain_0"));
+		mOut2.AddLink(mMixer.GetInControl("Input Gain_1"));
 
 		mInAudio1.SetSize(1);
 		mInAudio2.SetSize(1);
