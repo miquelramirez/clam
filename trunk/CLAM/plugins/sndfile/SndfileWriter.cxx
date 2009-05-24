@@ -20,7 +20,6 @@
 
 #include "SndfileWriter.hxx"
 #include <CLAM/ProcessingFactory.hxx>
-#include <algorithm>
 
 
 static const char * metadata[] = {
