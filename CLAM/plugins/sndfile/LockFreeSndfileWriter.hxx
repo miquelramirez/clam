@@ -125,7 +125,7 @@ namespace CLAM
 		/* Synchronization between process thread and disk thread. */
 		pthread_mutex_t _diskThreadLock;
 		pthread_cond_t  _dataReadyCondition;
-		jack_ringbuffer_t* _rb;
+		jack_ringbuffer_t* _ringBuffer;
 
 	public:
 		const char* GetClassName() const { return "LockFreeSndfileWriter"; }
@@ -167,7 +167,7 @@ namespace CLAM
 					buffer[channel] = channels[channel][frameIndex];
 				}
 
-				if(jack_ringbuffer_write(_rb, (char*)buffer,_sampleSize)<_sampleSize)
+				if(jack_ringbuffer_write(_ringBuffer, (char*)buffer,_sampleSize)<_sampleSize)
 					_overruns++;
 			}
 			/* Tell the disk thread there is work to do.  If it is already
@@ -195,8 +195,8 @@ namespace CLAM
 
 			while (true)
 			{
-				while ((jack_ringbuffer_read_space (_rb) >=_sampleSize)) {
-					jack_ringbuffer_read (_rb,(char*) framebuf,_sampleSize);
+				while ((jack_ringbuffer_read_space (_ringBuffer) >=_sampleSize)) {
+					jack_ringbuffer_read (_ringBuffer,(char*) framebuf,_sampleSize);
 					unsigned writeSize = _outfile->write(framebuf,_numChannels);
 					if (writeSize != _numChannels)
 					{
@@ -223,8 +223,8 @@ namespace CLAM
 		{
 			_isStopped = false;
 			_canProcess = 0;
-			_rb = jack_ringbuffer_create (_sampleSize*_ringBufferSize*_numChannels);
-			memset(_rb->buf, 0, _rb->size);
+			_ringBuffer = jack_ringbuffer_create (_sampleSize*_ringBufferSize*_numChannels);
+			memset(_ringBuffer->buf, 0, _ringBuffer->size);
 
 			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
 
@@ -260,7 +260,7 @@ namespace CLAM
 			if (_outfile) delete _outfile;
 			// TODO: This will halt the app!!!! Can not be an assert!
 			CLAM_ASSERT(_overruns,"Overruns is greater than 0. Try a bigger buffer");			
-			jack_ringbuffer_free (_rb);
+			jack_ringbuffer_free (_ringBuffer);
 			return true;
 		}
 
