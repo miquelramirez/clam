@@ -32,13 +32,13 @@
 
 namespace CLAM
 {
-	class EAudioFileWriter : public Enum
+	class EAudioFileWriteFormat : public Enum
 	{
 	public:
-		EAudioFileWriter() : Enum(EnumValues(), DefaultValue()) {}
-		EAudioFileWriter( tValue val ) : Enum(EnumValues(), val) {}
-		EAudioFileWriter( std::string s ) : Enum(EnumValues(), s) {}
-		virtual Component* Species() const { return new EAudioFileWriter; }
+		EAudioFileWriteFormat() : Enum(EnumValues(), DefaultValue()) {}
+		EAudioFileWriteFormat( tValue val ) : Enum(EnumValues(), val) {}
+		EAudioFileWriteFormat( std::string s ) : Enum(EnumValues(), s) {}
+		virtual Component* Species() const { return new EAudioFileWriteFormat; }
 
 		enum
 		{
@@ -61,22 +61,21 @@ namespace CLAM
 				{ ePCM_32,    "Wav Integer 32 bit" },
 				{ ePCMFLOAT,  "Wav Float 32 bit"},
 				{ ePCMDOUBLE, "Wav Float 64 bit"},
-				{ eFLAC_16,      "FLAC 16 bit"},
+				{ eFLAC_16,   "FLAC 16 bit"},
 				{ 0, 0 }
 			};
 
 			return sEnumValues;
 		}
 	public:
-		static  EAudioFileWriter FormatFromFilename( std::string filename );
-
+		static  EAudioFileWriteFormat FormatFromFilename( std::string filename );
 	};
 
 	class SndfileWriterConfig : public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( SndfileWriterConfig, 4, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, AudioOutFilename, TargetFile);
-		DYN_ATTRIBUTE( 1, public, EAudioFileWriter, Format);
+		DYN_ATTRIBUTE( 1, public, EAudioFileWriteFormat, Format);
 		DYN_ATTRIBUTE( 2, public, int, SampleRate);
 		DYN_ATTRIBUTE( 3, public, unsigned, NumberChannels);
 
@@ -92,18 +91,18 @@ namespace CLAM
 
 	class LockFreeSndfileWriter : public  Processing
 	{
-		class Lock
+		class ScopedLock
 		{
-			pthread_mutex_t & _diskThreadLock;
+			pthread_mutex_t & _mutex;
 			public:
-				Lock(pthread_mutex_t & diskThreadLock)
-					: _diskThreadLock(diskThreadLock)
+				ScopedLock(pthread_mutex_t & mutex)
+					: _mutex(mutex)
 				{
-					pthread_mutex_lock(&diskThreadLock);
+					pthread_mutex_lock(&_mutex);
 				}
-				~Lock()
+				~ScopedLock()
 				{
-					pthread_mutex_unlock(&_diskThreadLock);
+					pthread_mutex_unlock(&_mutex);
 				}
 		};
 
@@ -135,12 +134,14 @@ namespace CLAM
 			: _outfile(0)
 			, _numChannels(0)
 			, _overruns(0)
+			, _isStopped(true)
 		{
 			pthread_cond_t pthreadCondInitializer = PTHREAD_COND_INITIALIZER;
-			pthread_mutex_t pthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
 			_dataReadyCondition = pthreadCondInitializer;
+
+			pthread_mutex_t pthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
 			_diskThreadLock = pthreadMutexInitializer;
-			_isStopped = true;
+
 			Configure( config );
 		}
 
@@ -190,7 +191,7 @@ namespace CLAM
 			static unsigned total_captured = 0;
 			TData framebuf[_numChannels];
 			pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-			Lock lock(_diskThreadLock);
+			ScopedLock lock(_diskThreadLock);
 
 			while (true)
 			{
@@ -256,14 +257,9 @@ namespace CLAM
 			}
 			pthread_join (_threadId, NULL);
 			
-			if(_outfile)
-			{
-				delete _outfile;
-			}
-			if (_overruns > 0)
-			{
-				CLAM_ASSERT(_overruns,"Overruns is greater than 0. Try a bigger buffer");			
-			}
+			if (_outfile) delete _outfile;
+			// TODO: This will halt the app!!!! Can not be an assert!
+			CLAM_ASSERT(_overruns,"Overruns is greater than 0. Try a bigger buffer");			
 			jack_ringbuffer_free (_rb);
 			return true;
 		}
@@ -273,71 +269,55 @@ namespace CLAM
 			return _config;
 		}
 
-		EAudioFileWriter ChooseFormat(std::string location)
+		EAudioFileWriteFormat ChooseFormat(std::string location)
 		{
-			EAudioFileWriter formatFileName = EAudioFileWriter::FormatFromFilename(location);
-			EAudioFileWriter formatConfigure = _config.GetFormat();
+			EAudioFileWriteFormat fileNameFormat = EAudioFileWriteFormat::FormatFromFilename(location);
+			EAudioFileWriteFormat configuredFormat = _config.GetFormat();
 
-			//case0: if formatFileName has a value and formatConfigure hasn't, then return formatFileName
-			if(formatFileName !=0 && formatConfigure == 0)
+			if (configuredFormat == 0)
 			{
-				_config.SetFormat(formatFileName);
-				return formatFileName;
+				_config.SetFormat(fileNameFormat);
+				return fileNameFormat;
 			}
-			//case1: formatfileName is .wav
-			if(formatFileName == EAudioFileWriter::ePCM_16)
+			// .wav extension
+			if (fileNameFormat == EAudioFileWriteFormat::ePCM_16)
 			{
-				//if formatConfigure is also wav integer type, return formatConfigure because it has priority
-				if(formatConfigure==EAudioFileWriter::ePCM_16 || formatConfigure==EAudioFileWriter::ePCM_24 || formatConfigure==EAudioFileWriter::ePCM_32)
-					return formatConfigure;
-
-				//if formatConfigure is also wav Float type, return formatConfigure because it has priority
-				if(formatConfigure==EAudioFileWriter::ePCMFLOAT || formatConfigure==EAudioFileWriter::ePCMDOUBLE)
-					return formatConfigure;
-
-				//if formatConfigure is not another type, return 0 because It's a contradiction.
-				return 0;
+				switch (configuredFormat)
+				{
+					// Valid formats for .wav
+					case EAudioFileWriteFormat::ePCM_16:
+					case EAudioFileWriteFormat::ePCM_24:
+					case EAudioFileWriteFormat::ePCM_32:
+					case EAudioFileWriteFormat::ePCMFLOAT:
+					case EAudioFileWriteFormat::ePCMDOUBLE:
+						return configuredFormat;
+					default:
+						return 0;
+				}
 			}
-			//case2: formatfileName is .flac
-			if(formatFileName == EAudioFileWriter::eFLAC_16)
+			// .flac extension
+			if (fileNameFormat == EAudioFileWriteFormat::eFLAC_16)
 			{
-				//if formatConfigure is also wav integer type, return formatConfigure because it has priority
-				if(formatConfigure==EAudioFileWriter::eFLAC_16)
-					return formatConfigure;
-				//if formatConfigure is not another type, return 0 because It's a contradiction.
-				return 0;
+				switch (configuredFormat)
+				{
+					// Valid formats for .flac
+					case EAudioFileWriteFormat::eFLAC_16:
+						return configuredFormat;
+					default:
+						return 0;
+				}
 			}
-			return formatConfigure;
+			return configuredFormat;
 		}
 
 		bool ConcreteConfigure(const ProcessingConfig & config)
 		{
 			CopyAsConcreteConfig(_config, config);
-			unsigned portSize = BackendBufferSize();
-			std::ostringstream nameStream;
-			std::string nameInPort = "in";
-			if(_inports.empty())
-			{
-				//initialization port
-				nameStream<<nameInPort<<1;
-				AudioInPort * port = new AudioInPort( nameStream.str(), this);
-				port->SetSize(portSize);
-				port->SetHop( portSize );
-				_inports.push_back( port );
-			}
-
-			if ( !_config.HasTargetFile() )
-			{
-				AddConfigErrorMessage("The provided config object lacked the field 'TargetFile'");
-				return false;
-			}
+			if(_inports.empty()) ResizePorts(1);
 
 			const std::string & location = _config.GetTargetFile();
 			if ( location == "")
-			{
-				AddConfigErrorMessage("No file selected");
-				return false;
-			}
+				return AddConfigErrorMessage("No file selected");
 
 			_format=ChooseFormat(location);
 			_numChannels = _config.GetNumberChannels();
@@ -345,60 +325,37 @@ namespace CLAM
 			_sampleRate = _config.GetSampleRate();
 
 			if (_numChannels == 0)
-			{
-				AddConfigErrorMessage("The number of channels has to be greater than 0");
-				return false;
-			}
+				return AddConfigErrorMessage("The number of channels has to be greater than 0");
 
-			// case 1: maintain the same ports
-			if ( _numChannels == _inports.size() )
-			{
-				return true;
-			}
-
-			// case 2: increase number of same ports
-			if ( _numChannels > _inports.size() )
-			{
-				for (unsigned i=_inports.size()+1; i<=_numChannels; i++)
-				{
-					std::ostringstream nameStream;
-					nameStream << nameInPort << i;
-					AudioInPort * port = new AudioInPort( nameStream.str(), this);
-					port->SetSize( portSize );
-					port->SetHop( portSize );
-					_inports.push_back( port );
-				}
-				return true;
-			}
-
-			// case 3: decrease number of same ports
-			if ( _numChannels < _inports.size() )
-			{
-				for (unsigned i=_numChannels; i<_inports.size(); i++)
-				{
-					delete _inports[i];
-				}
-				_inports.resize(_numChannels);
-				
-				return true;
-			}
-			
-			CLAM_ASSERT(false, "Should not reach here");
-			return false;
+			ResizePorts(_numChannels);
+			return true;
 		}
 		
-		void RemovePorts()
+		void ResizePorts(unsigned nPorts)
 		{
-			for(InPorts::iterator itInPorts=_inports.begin();itInPorts!=_inports.end();itInPorts++)
+			unsigned oldNPorts = _inports.size();
+			for (unsigned i=nPorts; i<oldNPorts; i++)
+				delete _inports[i];
+			_inports.resize(nPorts);
+			for (unsigned i=oldNPorts; i<nPorts; i++)
 			{
-				delete *itInPorts;
+				static const char * nameInPort = "in";
+				std::ostringstream nameStream;
+				nameStream << nameInPort << i+1;
+				AudioInPort * port = new AudioInPort( nameStream.str(), this);
+				_inports.push_back( port );
 			}
-			_inports.clear();
+			unsigned portSize = BackendBufferSize();
+			for (unsigned i=0; i<nPorts; i++)
+			{
+				_inports[i]->SetSize( portSize );
+				_inports[i]->SetHop( portSize );
+			}
 		}
 
 		~LockFreeSndfileWriter()
 		{
-			RemovePorts();
+			ResizePorts(0);
 		}
 	};
 
