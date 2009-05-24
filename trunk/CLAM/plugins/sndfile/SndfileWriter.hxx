@@ -30,13 +30,13 @@
 
 namespace CLAM
 {
-	class EAudioFileWriter : public Enum
+	class EAudioFileWriteFormat : public Enum
 	{
 	public:
-		EAudioFileWriter() : Enum(EnumValues(), DefaultValue()) {}
-		EAudioFileWriter( tValue val ) : Enum(EnumValues(), val) {}
-		EAudioFileWriter( std::string s ) : Enum(EnumValues(), s) {}
-		virtual Component* Species() const { return new EAudioFileWriter; }
+		EAudioFileWriteFormat() : Enum(EnumValues(), DefaultValue()) {}
+		EAudioFileWriteFormat( tValue val ) : Enum(EnumValues(), val) {}
+		EAudioFileWriteFormat( std::string s ) : Enum(EnumValues(), s) {}
+		virtual Component* Species() const { return new EAudioFileWriteFormat; }
 
 		enum
 		{
@@ -59,22 +59,21 @@ namespace CLAM
 				{ ePCM_32,    "Wav Integer 32 bit" },
 				{ ePCMFLOAT,  "Wav Float 32 bit"},
 				{ ePCMDOUBLE, "Wav Float 64 bit"},
-				{ eFLAC_16,      "FLAC 16 bit"},
+				{ eFLAC_16,   "FLAC 16 bit"},
 				{ 0, 0 }
 			};
 
 			return sEnumValues;
 		}
 	public:
-		static  EAudioFileWriter FormatFromFilename( std::string filename );
-
+		static  EAudioFileWriteFormat FormatFromFilename( std::string filename );
 	};
 
 	class SndfileWriterConfig : public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( SndfileWriterConfig, 4, ProcessingConfig );
 		DYN_ATTRIBUTE( 0, public, AudioOutFilename, TargetFile);
-		DYN_ATTRIBUTE( 1, public, EAudioFileWriter, Format);
+		DYN_ATTRIBUTE( 1, public, EAudioFileWriteFormat, Format);
 		DYN_ATTRIBUTE( 2, public, int, SampleRate);
 		DYN_ATTRIBUTE( 3, public, unsigned, NumberChannels);
 
@@ -165,10 +164,7 @@ namespace CLAM
 
 		bool ConcreteStop()
 		{
-			if(_outfile)
-			{
-				delete _outfile;
-			}
+			if (_outfile) delete _outfile;
 			return true;
 		}
 
@@ -177,36 +173,36 @@ namespace CLAM
 			return _config;
 		}
 
-		EAudioFileWriter ChooseFormat(std::string location)
+		EAudioFileWriteFormat ChooseFormat(std::string location)
 		{
-			EAudioFileWriter formatFileName = EAudioFileWriter::FormatFromFilename(location);
-			EAudioFileWriter formatConfigure = _config.GetFormat();
+			EAudioFileWriteFormat fileNameFormat = EAudioFileWriteFormat::FormatFromFilename(location);
+			EAudioFileWriteFormat formatConfigure = _config.GetFormat();
 
-			//case0: if formatFileName has a value and formatConfigure hasn't, then return formatFileName
-			if(formatFileName !=0 && formatConfigure == 0)
+			//case0: if fileNameFormat has a value and formatConfigure hasn't, then return fileNameFormat
+			if(fileNameFormat !=0 && formatConfigure == 0)
 			{
-				_config.SetFormat(formatFileName);
-				return formatFileName;
+				_config.SetFormat(fileNameFormat);
+				return fileNameFormat;
 			}
 			//case1: formatfileName is .wav
-			if(formatFileName == EAudioFileWriter::ePCM_16)
+			if(fileNameFormat == EAudioFileWriteFormat::ePCM_16)
 			{
 				//if formatConfigure is also wav integer type, return formatConfigure because it has priority
-				if(formatConfigure==EAudioFileWriter::ePCM_16 || formatConfigure==EAudioFileWriter::ePCM_24 || formatConfigure==EAudioFileWriter::ePCM_32)
+				if(formatConfigure==EAudioFileWriteFormat::ePCM_16 || formatConfigure==EAudioFileWriteFormat::ePCM_24 || formatConfigure==EAudioFileWriteFormat::ePCM_32)
 					return formatConfigure;
 
 				//if formatConfigure is also wav Float type, return formatConfigure because it has priority
-				if(formatConfigure==EAudioFileWriter::ePCMFLOAT || formatConfigure==EAudioFileWriter::ePCMDOUBLE)
+				if(formatConfigure==EAudioFileWriteFormat::ePCMFLOAT || formatConfigure==EAudioFileWriteFormat::ePCMDOUBLE)
 					return formatConfigure;
 
 				//if formatConfigure is not another type, return 0 because It's a contradiction.
 				return 0;
 			}
 			//case2: formatfileName is .flac
-			if(formatFileName == EAudioFileWriter::eFLAC_16)
+			if(fileNameFormat == EAudioFileWriteFormat::eFLAC_16)
 			{
 				//if formatConfigure is also wav integer type, return formatConfigure because it has priority
-				if(formatConfigure==EAudioFileWriter::eFLAC_16)
+				if(formatConfigure==EAudioFileWriteFormat::eFLAC_16)
 					return formatConfigure;
 				//if formatConfigure is not another type, return 0 because It's a contradiction.
 				return 0;
@@ -307,5 +303,4 @@ namespace CLAM
 
 }// namespace CLAM
 #endif // SndfileWriter_hxx
-
 

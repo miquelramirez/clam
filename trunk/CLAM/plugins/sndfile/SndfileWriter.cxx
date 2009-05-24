@@ -34,7 +34,7 @@ static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::SndfileWriter> re
 namespace CLAM
 {
 	
-	EAudioFileWriter EAudioFileWriter::FormatFromFilename( std::string filename )
+	EAudioFileWriteFormat EAudioFileWriteFormat::FormatFromFilename( std::string filename )
 	{
 		std::string::iterator dotPos = std::find( filename.begin(), filename.end(), '.' );
 		if ( dotPos == filename.end() )
