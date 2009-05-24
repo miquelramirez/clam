@@ -27,6 +27,8 @@
 #include <CLAM/Audio.hxx>
 #include <sndfile.hh>
 #include <CLAM/Enum.hxx>
+#include <pthread.h>
+#include <jack/ringbuffer.h>
 
 namespace CLAM
 {
@@ -89,14 +91,41 @@ namespace CLAM
 
 	class SndfileWriter : public  Processing
 	{
+		class ScopedLock
+		{
+			pthread_mutex_t & _mutex;
+			public:
+				ScopedLock(pthread_mutex_t & mutex)
+					: _mutex(mutex)
+				{
+					pthread_mutex_lock(&_mutex);
+				}
+				~ScopedLock()
+				{
+					pthread_mutex_unlock(&_mutex);
+				}
+		};
+
 		typedef SndfileWriterConfig Config;
 		typedef std::vector<CLAM::AudioInPort*> InPorts;
 		InPorts _inports;
 		SndfileHandle* _outfile;
 		SndfileWriterConfig _config;
 		unsigned _numChannels;
+		unsigned _sampleSize;
 		int _sampleRate;
 		int _format;
+
+		pthread_t _threadId;
+		long _overruns;
+		const static unsigned _ringBufferSize = 16384;
+		volatile int _canCapture;
+		volatile int _canProcess;
+		volatile int _isStopped;
+		/* Synchronization between process thread and disk thread. */
+		pthread_mutex_t _diskThreadLock;
+		pthread_cond_t  _dataReadyCondition;
+		jack_ringbuffer_t* _ringBuffer;
 
 	public:
 		const char* GetClassName() const { return "SndfileWriter"; }
@@ -104,20 +133,24 @@ namespace CLAM
 		SndfileWriter(const ProcessingConfig& config =  Config())
 			: _outfile(0)
 			, _numChannels(0)
+			, _overruns(0)
+			, _isStopped(true)
 		{
+			pthread_cond_t pthreadCondInitializer = PTHREAD_COND_INITIALIZER;
+			_dataReadyCondition = pthreadCondInitializer;
+
+			pthread_mutex_t pthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
+			_diskThreadLock = pthreadMutexInitializer;
+
 			Configure( config );
 		}
 
 		bool Do()
 		{
-			bool isDone = ReadBufferAndWriteToPorts();
-			for (unsigned channel=0; channel<_numChannels; channel++)
-				_inports[channel]->Consume();
-			return isDone;
-		}
+			/* Do nothing until we're ready to begin. */
+			if (not _canProcess) return false;
+			if (not _canCapture) return false;
 
-		bool ReadBufferAndWriteToPorts()
-		{
 			//all the ports have to have the same buffer size
 			const unsigned portSize = _inports[0]->GetAudio().GetBuffer().Size();
 
@@ -125,26 +158,74 @@ namespace CLAM
 			for (unsigned channel=0; channel<_numChannels; channel++)
 				channels[channel] = &_inports[channel]->GetAudio().GetBuffer()[0];
 
-			const int bufferSize =  portSize * _numChannels;
-			float buffer[bufferSize];
-
+			TData buffer [_numChannels];
 			// produce the portion write (normally the whole buffer)
-			int frameIndex = 0;
-			for(int i=0;i<bufferSize;i+=_numChannels)
+			for(unsigned frameIndex=0;frameIndex<portSize;frameIndex++)
 			{
 				for(unsigned channel= 0;channel<_numChannels;channel++)
 				{
-					buffer[i+channel] = channels[channel][frameIndex];
+					buffer[channel] = channels[channel][frameIndex];
 				}
-				frameIndex ++;
+
+				if(jack_ringbuffer_write(_ringBuffer, (char*)buffer, _sampleSize) < _sampleSize)
+					_overruns++;
 			}
-			int writeSize = _outfile->write( buffer,bufferSize);
-			if (writeSize != bufferSize) return false;
+			/* Tell the disk thread there is work to do.  If it is already
+			 * running, the lock will not be available.  We can't wait
+			 * here in the process() thread, but we don't need to signal
+			 * in that case, because the disk thread will read all the
+			 * data queued before waiting again. */
+
+			if (pthread_mutex_trylock(&_diskThreadLock) == 0)
+			{
+				pthread_cond_signal (&_dataReadyCondition);
+				pthread_mutex_unlock (&_diskThreadLock);
+			}
+			for (unsigned channel=0; channel<_numChannels; channel++)
+				_inports[channel]->Consume();
 			return true;
+		}
+
+		void DiskThread()
+		{
+			static unsigned total_captured = 0;
+			TData framebuf[_numChannels];
+			pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+			ScopedLock lock(_diskThreadLock);
+
+			while (true)
+			{
+				while ((jack_ringbuffer_read_space (_ringBuffer) >=_sampleSize)) {
+					jack_ringbuffer_read (_ringBuffer,(char*) framebuf,_sampleSize);
+					unsigned writeSize = _outfile->write(framebuf,_numChannels);
+					if (writeSize != _numChannels)
+					{
+						CLAM_ASSERT(_outfile,"Error writing the file.");
+						return;
+					}
+					total_captured++;
+				}
+
+				if(_isStopped) return;
+				// wait until process() signals more data
+				pthread_cond_wait (&_dataReadyCondition, &_diskThreadLock);
+			}
+		}
+
+		static void* DiskThreadCallback (void *arg)
+		{
+			SndfileWriter * writer = static_cast<SndfileWriter*> (arg);
+			writer->DiskThread();
+			return 0;
 		}
 
 		bool ConcreteStart()
 		{
+			_isStopped = false;
+			_canProcess = 0;
+			_ringBuffer = jack_ringbuffer_create (_sampleSize*_ringBufferSize*_numChannels);
+			memset(_ringBuffer->buf, 0, _ringBuffer->size);
+
 			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
 
 			// check if the file is open
@@ -159,12 +240,27 @@ namespace CLAM
 				CLAM_ASSERT(_outfile, _outfile->strError());
 				return false;
 			}
+			_canCapture = 0;
+			pthread_create(&_threadId, NULL,DiskThreadCallback,this);
+			_canProcess = 1;
+			_canCapture = 1;
 			return true;
 		}
 
 		bool ConcreteStop()
 		{
+			_isStopped = true;
+			if (pthread_mutex_trylock(&_diskThreadLock) == 0)
+			{
+				pthread_cond_signal (&_dataReadyCondition);
+				pthread_mutex_unlock (&_diskThreadLock);
+			}
+			pthread_join (_threadId, NULL);
+			
 			if (_outfile) delete _outfile;
+			// TODO: This will halt the app!!!! Can not be an assert!
+			CLAM_ASSERT(_overruns,"Overruns is greater than 0. Try a bigger buffer");			
+			jack_ringbuffer_free (_ringBuffer);
 			return true;
 		}
 
@@ -176,128 +272,90 @@ namespace CLAM
 		EAudioFileWriteFormat ChooseFormat(std::string location)
 		{
 			EAudioFileWriteFormat fileNameFormat = EAudioFileWriteFormat::FormatFromFilename(location);
-			EAudioFileWriteFormat formatConfigure = _config.GetFormat();
+			EAudioFileWriteFormat configuredFormat = _config.GetFormat();
 
-			//case0: if fileNameFormat has a value and formatConfigure hasn't, then return fileNameFormat
-			if(fileNameFormat !=0 && formatConfigure == 0)
+			if (configuredFormat == 0)
 			{
 				_config.SetFormat(fileNameFormat);
 				return fileNameFormat;
 			}
-			//case1: formatfileName is .wav
-			if(fileNameFormat == EAudioFileWriteFormat::ePCM_16)
+			// .wav extension
+			if (fileNameFormat == EAudioFileWriteFormat::ePCM_16)
 			{
-				//if formatConfigure is also wav integer type, return formatConfigure because it has priority
-				if(formatConfigure==EAudioFileWriteFormat::ePCM_16 || formatConfigure==EAudioFileWriteFormat::ePCM_24 || formatConfigure==EAudioFileWriteFormat::ePCM_32)
-					return formatConfigure;
-
-				//if formatConfigure is also wav Float type, return formatConfigure because it has priority
-				if(formatConfigure==EAudioFileWriteFormat::ePCMFLOAT || formatConfigure==EAudioFileWriteFormat::ePCMDOUBLE)
-					return formatConfigure;
-
-				//if formatConfigure is not another type, return 0 because It's a contradiction.
-				return 0;
+				switch (configuredFormat)
+				{
+					// Valid formats for .wav
+					case EAudioFileWriteFormat::ePCM_16:
+					case EAudioFileWriteFormat::ePCM_24:
+					case EAudioFileWriteFormat::ePCM_32:
+					case EAudioFileWriteFormat::ePCMFLOAT:
+					case EAudioFileWriteFormat::ePCMDOUBLE:
+						return configuredFormat;
+					default:
+						return 0;
+				}
 			}
-			//case2: formatfileName is .flac
-			if(fileNameFormat == EAudioFileWriteFormat::eFLAC_16)
+			// .flac extension
+			if (fileNameFormat == EAudioFileWriteFormat::eFLAC_16)
 			{
-				//if formatConfigure is also wav integer type, return formatConfigure because it has priority
-				if(formatConfigure==EAudioFileWriteFormat::eFLAC_16)
-					return formatConfigure;
-				//if formatConfigure is not another type, return 0 because It's a contradiction.
-				return 0;
+				switch (configuredFormat)
+				{
+					// Valid formats for .flac
+					case EAudioFileWriteFormat::eFLAC_16:
+						return configuredFormat;
+					default:
+						return 0;
+				}
 			}
-			return formatConfigure;
+			return configuredFormat;
 		}
 
 		bool ConcreteConfigure(const ProcessingConfig & config)
 		{
 			CopyAsConcreteConfig(_config, config);
-			unsigned portSize = BackendBufferSize();
-			std::ostringstream nameStream;
-			std::string nameInPort = "in";
-			if(_inports.empty())
-			{
-				//initialization port
-				nameStream<<nameInPort<<1;
-				AudioInPort * port = new AudioInPort( nameStream.str(), this);
-				port->SetSize(portSize);
-				port->SetHop( portSize );
-				_inports.push_back( port );
-			}
-
-			if ( !_config.HasTargetFile() )
-			{
-				AddConfigErrorMessage("The provided config object lacked the field 'TargetFile'");
-				return false;
-			}
+			if(_inports.empty()) ResizePorts(1);
 
 			const std::string & location = _config.GetTargetFile();
 			if ( location == "")
-			{
-				AddConfigErrorMessage("No file selected");
-				return false;
-			}
-			//Choose the format from the filename
+				return AddConfigErrorMessage("No file selected");
+
 			_format=ChooseFormat(location);
 			_numChannels = _config.GetNumberChannels();
+			_sampleSize = _numChannels*sizeof(TData);
 			_sampleRate = _config.GetSampleRate();
 
 			if (_numChannels == 0)
-			{
-				AddConfigErrorMessage("The number of channels has to be greater than 0");
-				return false;
-			}
+				return AddConfigErrorMessage("The number of channels has to be greater than 0");
 
-			// case 1: maintain the same ports
-			if ( _numChannels == _inports.size() )
-			{
-				return true;
-			}
-
-			// case 2: increase number of same ports
-			if ( _numChannels > _inports.size() )
-			{
-				for (unsigned i=_inports.size()+1; i<=_numChannels; i++)
-				{
-					std::ostringstream nameStream;
-					nameStream << nameInPort << i;
-					AudioInPort * port = new AudioInPort( nameStream.str(), this);
-					port->SetSize( portSize );
-					port->SetHop( portSize );
-					_inports.push_back( port );
-				}
-				return true;
-			}
-
-			// case 3: decrease number of same ports
-			if ( _numChannels < _inports.size() )
-			{
-				for (unsigned i=_numChannels; i<_inports.size(); i++)
-				{
-					delete _inports[i];
-				}
-				_inports.resize(_numChannels);
-				
-				return true;
-			}
-			
-			CLAM_ASSERT(false, "Should not reach here");
-			return false;
+			ResizePorts(_numChannels);
+			return true;
 		}
 		
-		void RemovePorts()
+		void ResizePorts(unsigned nPorts)
 		{
-			for(InPorts::iterator itInPorts=_inports.begin();itInPorts!=_inports.end();itInPorts++)
+			unsigned oldNPorts = _inports.size();
+			for (unsigned i=nPorts; i<oldNPorts; i++)
+				delete _inports[i];
+			_inports.resize(nPorts);
+			for (unsigned i=oldNPorts; i<nPorts; i++)
 			{
-				delete *itInPorts;
+				static const char * nameInPort = "in";
+				std::ostringstream nameStream;
+				nameStream << nameInPort << i+1;
+				AudioInPort * port = new AudioInPort( nameStream.str(), this);
+				_inports.push_back( port );
 			}
-			_inports.clear();
+			unsigned portSize = BackendBufferSize();
+			for (unsigned i=0; i<nPorts; i++)
+			{
+				_inports[i]->SetSize( portSize );
+				_inports[i]->SetHop( portSize );
+			}
 		}
 
 		~SndfileWriter()
 		{
-			RemovePorts();
+			ResizePorts(0);
 		}
 	};
 
