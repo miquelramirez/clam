@@ -148,8 +148,8 @@ namespace CLAM
 		bool Do()
 		{
 			/* Do nothing until we're ready to begin. */
-			if ((!_canProcess) || (!_canCapture))
-				return false;
+			if (not _canProcess) return false;
+			if (not _canCapture) return false;
 
 			//all the ports have to have the same buffer size
 			const unsigned portSize = _inports[0]->GetAudio().GetBuffer().Size();
@@ -167,7 +167,7 @@ namespace CLAM
 					buffer[channel] = channels[channel][frameIndex];
 				}
 
-				if(jack_ringbuffer_write(_ringBuffer, (char*)buffer,_sampleSize)<_sampleSize)
+				if(jack_ringbuffer_write(_ringBuffer, (char*)buffer, _sampleSize) < _sampleSize)
 					_overruns++;
 			}
 			/* Tell the disk thread there is work to do.  If it is already
