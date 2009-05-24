@@ -31,31 +31,3 @@ static const char * metadata[] = {
 
 static CLAM::FactoryRegistrator<CLAM::ProcessingFactory, CLAM::SndfileWriter> registratorSndfile(metadata);
 
-namespace CLAM
-{
-	
-	EAudioFileWriteFormat EAudioFileWriteFormat::FormatFromFilename( std::string filename )
-	{
-		std::string::iterator dotPos = std::find( filename.begin(), filename.end(), '.' );
-		if ( dotPos == filename.end() )
-			return eDefault;
-		std::string extension( dotPos+1, filename.end() );
-		for(unsigned i=0; i<extension.size();++i)
-			extension[i] = std::tolower(extension[i]);
-
-		static struct { 
-			const char * extension;
-			Enum::tValue format;
-		} extensionMap[] =
-		{
-			{"wav", ePCM_16},
-			{"flac", eFLAC_16},
-			{0,0}
-		};
-
-		for (unsigned i=0; extensionMap[i].extension; i++)
-			if (extension==extensionMap[i].extension)
-				return extensionMap[i].format;
-		return eDefault;
-	}
-}
