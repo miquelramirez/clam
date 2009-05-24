@@ -20,6 +20,7 @@
 
 #include "LockFreeSndfileWriter.hxx"
 #include <CLAM/ProcessingFactory.hxx>
+#include <algorithm>
 
 
 namespace CLAM
