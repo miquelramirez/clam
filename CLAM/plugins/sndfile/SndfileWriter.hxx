@@ -182,8 +182,6 @@ namespace CLAM
 
 		pthread_t _threadId;
 		const static unsigned _ringBufferSize = 16384;
-		volatile int _canCapture;
-		volatile int _canProcess;
 		volatile int _isStopped;
 		/* Synchronization between process thread and disk thread. */
 		RingBuffer * _ringBuffer;
@@ -201,10 +199,6 @@ namespace CLAM
 
 		bool Do()
 		{
-			/* Do nothing until we're ready to begin. */
-			if (not _canProcess) return false;
-			if (not _canCapture) return false;
-
 			//all the ports have to have the same buffer size
 			const unsigned portSize = _inports[0]->GetAudio().GetBuffer().Size();
 
@@ -262,7 +256,6 @@ namespace CLAM
 		bool ConcreteStart()
 		{
 			_isStopped = false;
-			_canProcess = 0;
 			_ringBuffer = new RingBuffer(_ringBufferSize*_numChannels);
 			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
 
@@ -278,10 +271,7 @@ namespace CLAM
 				CLAM_ASSERT(_outfile, _outfile->strError());
 				return false;
 			}
-			_canCapture = 0;
 			pthread_create(&_threadId, NULL,DiskThreadCallback,this);
-			_canProcess = 1;
-			_canCapture = 1;
 			return true;
 		}
 
