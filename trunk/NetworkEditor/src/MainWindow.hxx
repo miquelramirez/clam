@@ -9,6 +9,7 @@
 #include <QtGui/QMessageBox>
 #include <QtCore/QSettings>
 #include <QtCore/QStringList>
+#include <QtCore/QTimer>
 #include "uic_About.hxx"
 #include <CLAM/Network.hxx>
 #include <CLAM/NetworkPlayer.hxx>
@@ -117,7 +118,7 @@ public:
 		ui.action_Play->setEnabled(true);
 		ui.action_Stop->setEnabled(false);
 		ui.action_Pause->setEnabled(false);
-		updatePlayStatusIndicator();
+		periodicPlayStatusUpdate(); // Should be directly called just once
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), _processingTreeDock, SLOT(setVisible(bool)));
 		connect(_processingTreeDock, SIGNAL(visibilityChanged(bool)), ui.action_Show_processing_toolbox, SLOT(setChecked(bool)));
@@ -292,6 +293,12 @@ public:
 	}
 
 public slots:
+	// Do not call this slot but by the timer, call updatePlayStatusIndicator instead
+	void periodicPlayStatusUpdate()
+	{
+		updatePlayStatusIndicator();
+		QTimer::singleShot(200, this, SLOT(periodicPlayStatusUpdate()));
+	}
 	void updateCaption()
 	{
 		setWindowTitle(tr("CLAM Network Editor - %1%2")
