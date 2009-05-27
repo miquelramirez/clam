@@ -45,7 +45,7 @@ namespace VM
 class PolarChromaPeaks;
 class SegmentationView;
 
-class MainWindow : public QMainWindow, public Ui::MainWindow
+class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
@@ -110,6 +110,7 @@ private:
 	QStringList _recentFiles;
 	int _timerID;
 	QDialog *_aboutDialog;
+	Ui::MainWindow _ui;
 };
 
 #endif

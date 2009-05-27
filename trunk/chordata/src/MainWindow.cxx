@@ -57,24 +57,23 @@
 
 MainWindow::MainWindow()
 	: QMainWindow(0)
-	, Ui::MainWindow()
 	, _networkPlayer(0)
 	, _tonalAnalysis(0)
 	, _pcpStorage(0)
 	, _timerID(0)
 {
-	setupUi(this);
+	_ui.setupUi(this);
 	
-	connect(fileOpenAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
-	connect(fileExitAction, SIGNAL(triggered()), this, SLOT(close()));
-	connect(playbackPlayAction, SIGNAL(triggered()), this, SLOT(play()));
-	connect(playbackPauseAction, SIGNAL(triggered()), this, SLOT(pause()));
-	connect(playbackStopAction, SIGNAL(triggered()), this, SLOT(stop()));
-	connect(helpAboutAction, SIGNAL(triggered()), this, SLOT(about()));	
-	connect(helpOnlineTutorialAction, SIGNAL(triggered()), this, SLOT(onlineTutorial()));	
+	connect(_ui.fileOpenAction, SIGNAL(triggered()), this, SLOT(fileOpen()));
+	connect(_ui.fileExitAction, SIGNAL(triggered()), this, SLOT(close()));
+	connect(_ui.playbackPlayAction, SIGNAL(triggered()), this, SLOT(play()));
+	connect(_ui.playbackPauseAction, SIGNAL(triggered()), this, SLOT(pause()));
+	connect(_ui.playbackStopAction, SIGNAL(triggered()), this, SLOT(stop()));
+	connect(_ui.helpAboutAction, SIGNAL(triggered()), this, SLOT(about()));	
+	connect(_ui.helpOnlineTutorialAction, SIGNAL(triggered()), this, SLOT(onlineTutorial()));	
 
-	QVBoxLayout * vboxLayout = new QVBoxLayout(centralwidget);
-	_progressControlWidget = new ProgressControlWidget(centralwidget);
+	QVBoxLayout * vboxLayout = new QVBoxLayout(_ui.centralwidget);
+	_progressControlWidget = new ProgressControlWidget(_ui.centralwidget);
 	vboxLayout->addWidget(_progressControlWidget);
 
 	_fileReader = _network.AddProcessing("AudioFileMemoryLoader");
@@ -89,32 +88,32 @@ MainWindow::MainWindow()
 	std::string audioSink = _network.AddProcessing("AudioSink");
 	_network.ConnectPorts(_fileReader+".Samples Read", audioSink+".AudioIn");
 
-	_spectrogram = new CLAM::VM::Spectrogram(centralwidget);
+	_spectrogram = new CLAM::VM::Spectrogram(_ui.centralwidget);
 	vboxLayout->addWidget(_spectrogram);
 
-	_tonnetz = new CLAM::VM::Tonnetz(centralwidget);
+	_tonnetz = new CLAM::VM::Tonnetz(_ui.centralwidget);
 	vboxLayout->addWidget(_tonnetz);
 
-	_keySpace = new CLAM::VM::KeySpace(centralwidget);
+	_keySpace = new CLAM::VM::KeySpace(_ui.centralwidget);
 	vboxLayout->addWidget(_keySpace);
 
 	QHBoxLayout * hboxLayout = new QHBoxLayout;
 	vboxLayout->addLayout(hboxLayout);
 
-	_polarChromaPeaks = new PolarChromaPeaks(centralwidget);
+	_polarChromaPeaks = new PolarChromaPeaks(_ui.centralwidget);
 	hboxLayout->addWidget(_polarChromaPeaks);
 
-	_chordRanking = new CLAM::VM::ChordRanking(centralwidget);
+	_chordRanking = new CLAM::VM::ChordRanking(_ui.centralwidget);
 	hboxLayout->addWidget(_chordRanking);
 
-	_segmentationView = new SegmentationView(centralwidget);
+	_segmentationView = new SegmentationView(_ui.centralwidget);
 	_segmentationView->beCentred(true);
 	vboxLayout->addWidget(_segmentationView);
 
 	CLAM::ControlPiano * control = new CLAM::ControlPiano;
 	_controlPiano = _network.GetUnusedName("ControlPiano");
 	_network.AddProcessing(_controlPiano, control);
-	_pianoView = new CLAM::MIDIPianoWidget(control, centralwidget);
+	_pianoView = new CLAM::MIDIPianoWidget(control, _ui.centralwidget);
 	_pianoView->setClickEnabled(false);
 	vboxLayout->addWidget(_pianoView);
 
@@ -129,24 +128,24 @@ MainWindow::MainWindow()
 		.arg(Chordata::GetFullVersion())
 		.arg(CLAM::GetFullVersion()));
 
-	connect(viewSpectrogramAction, SIGNAL(toggled(bool)), _spectrogram, SLOT(setVisible(bool)));
-	connect(viewTonnetzAction, SIGNAL(toggled(bool)), _tonnetz, SLOT(setVisible(bool)));
-	connect(viewKeySpaceAction, SIGNAL(toggled(bool)), _keySpace, SLOT(setVisible(bool)));
-	connect(viewChromaPeaksAction, SIGNAL(toggled(bool)), _polarChromaPeaks, SLOT(setVisible(bool)));
-	connect(viewChordRankingAction, SIGNAL(toggled(bool)), _chordRanking, SLOT(setVisible(bool)));
-	connect(viewSegmentationAction, SIGNAL(toggled(bool)), _segmentationView, SLOT(setVisible(bool)));
-	connect(viewPianoAction, SIGNAL(toggled(bool)), _pianoView, SLOT(setVisible(bool)));
+	connect(_ui.viewSpectrogramAction, SIGNAL(toggled(bool)), _spectrogram, SLOT(setVisible(bool)));
+	connect(_ui.viewTonnetzAction, SIGNAL(toggled(bool)), _tonnetz, SLOT(setVisible(bool)));
+	connect(_ui.viewKeySpaceAction, SIGNAL(toggled(bool)), _keySpace, SLOT(setVisible(bool)));
+	connect(_ui.viewChromaPeaksAction, SIGNAL(toggled(bool)), _polarChromaPeaks, SLOT(setVisible(bool)));
+	connect(_ui.viewChordRankingAction, SIGNAL(toggled(bool)), _chordRanking, SLOT(setVisible(bool)));
+	connect(_ui.viewSegmentationAction, SIGNAL(toggled(bool)), _segmentationView, SLOT(setVisible(bool)));
+	connect(_ui.viewPianoAction, SIGNAL(toggled(bool)), _pianoView, SLOT(setVisible(bool)));
 
 	QSettings settings;
 	_recentFiles = settings.value("RecentFiles").toStringList();
 	updateRecentMenu();
-	viewSpectrogramAction->setChecked(settings.value("SpectrogramVisible", true).toBool());
-	viewTonnetzAction->setChecked(settings.value("TonnetzVisible", true).toBool());
-	viewKeySpaceAction->setChecked(settings.value("KeySpaceVisible", true).toBool());
-	viewChromaPeaksAction->setChecked(settings.value("ChromaPeaksVisible", true).toBool());
-	viewChordRankingAction->setChecked(settings.value("ChordRankingVisible", true).toBool());
-	viewSegmentationAction->setChecked(settings.value("SegmentationVisible", true).toBool());
-	viewPianoAction->setChecked(settings.value("PianoVisible", true).toBool());
+	_ui.viewSpectrogramAction->setChecked(settings.value("SpectrogramVisible", true).toBool());
+	_ui.viewTonnetzAction->setChecked(settings.value("TonnetzVisible", true).toBool());
+	_ui.viewKeySpaceAction->setChecked(settings.value("KeySpaceVisible", true).toBool());
+	_ui.viewChromaPeaksAction->setChecked(settings.value("ChromaPeaksVisible", true).toBool());
+	_ui.viewChordRankingAction->setChecked(settings.value("ChordRankingVisible", true).toBool());
+	_ui.viewSegmentationAction->setChecked(settings.value("SegmentationVisible", true).toBool());
+	_ui.viewPianoAction->setChecked(settings.value("PianoVisible", true).toBool());
 
 	//Below lines are a workaround since setChecked should raise the toggled signal and since is connected, call setVisible() but seems there is no call, with the consequent bug at startup
 	_spectrogram->setVisible(settings.value("SpectrogramVisible", true).toBool());
@@ -162,13 +161,13 @@ MainWindow::~MainWindow()
 {
 	QSettings settings;
 	settings.setValue("RecentFiles", _recentFiles);
-	settings.setValue("SpectrogramVisible",  viewSpectrogramAction->isChecked());
-	settings.setValue("TonnetzVisible",      viewTonnetzAction->isChecked());
-	settings.setValue("KeySpaceVisible",     viewKeySpaceAction->isChecked());
-	settings.setValue("ChromaPeaksVisible",  viewChromaPeaksAction->isChecked());
-	settings.setValue("ChordRankingVisible", viewChordRankingAction->isChecked());
-	settings.setValue("SegmentationVisible", viewSegmentationAction->isChecked());
-	settings.setValue("PianoVisible", viewPianoAction->isChecked());
+	settings.setValue("SpectrogramVisible",  _ui.viewSpectrogramAction->isChecked());
+	settings.setValue("TonnetzVisible",      _ui.viewTonnetzAction->isChecked());
+	settings.setValue("KeySpaceVisible",     _ui.viewKeySpaceAction->isChecked());
+	settings.setValue("ChromaPeaksVisible",  _ui.viewChromaPeaksAction->isChecked());
+	settings.setValue("ChordRankingVisible", _ui.viewChordRankingAction->isChecked());
+	settings.setValue("SegmentationVisible", _ui.viewSegmentationAction->isChecked());
+	settings.setValue("PianoVisible", _ui.viewPianoAction->isChecked());
 
 	stop();
 
@@ -183,14 +182,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateRecentMenu()
 {
-	menuOpenRecent->clear();
+	_ui.menuOpenRecent->clear();
 	
 	if (_recentFiles.size() == 0)
 	{
-		menuOpenRecent->setEnabled(false);
+		_ui.menuOpenRecent->setEnabled(false);
 		return;
 	}
-	menuOpenRecent->setEnabled(true);
+	_ui.menuOpenRecent->setEnabled(true);
 	
 	int i=0;
 	for (QStringList::iterator it = _recentFiles.begin(); it!=_recentFiles.end(); it++)
@@ -198,7 +197,7 @@ void MainWindow::updateRecentMenu()
 		QString text = QString("&%1 %2").arg(++i).arg(*it);
 		QAction * recentFileAction = new QAction(text, this);
 		recentFileAction->setData(*it);
-		menuOpenRecent->addAction(recentFileAction);
+		_ui.menuOpenRecent->addAction(recentFileAction);
 		connect(recentFileAction, SIGNAL(triggered()), this, SLOT(recentFileOpen()));
 	}
 }
