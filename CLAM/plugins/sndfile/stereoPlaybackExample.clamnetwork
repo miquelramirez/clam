@@ -19,7 +19,7 @@
 
   <processing id="SndfilePlayer" position="35,108" size="114,62" type="SndfilePlayer">
     <SourceFile>/home/vokimon/CajitasDeArena/clam/CLAM/plugins/sndfile/output.wav</SourceFile>
-    <Loop>0</Loop>
+    <Loop>1</Loop>
     <SavedNumberOfChannels>2</SavedNumberOfChannels>
   </processing>
 
