@@ -101,12 +101,6 @@ namespace CLAM
 			RingBuffer(unsigned size)
 				: _overruns(0)
 			{
-				pthread_cond_t pthreadCondInitializer = PTHREAD_COND_INITIALIZER;
-				_dataReadyCondition = pthreadCondInitializer;
-
-				pthread_mutex_t pthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
-				_diskThreadLock = pthreadMutexInitializer;
-
 				_ringBuffer = jack_ringbuffer_create (size*_sampleSize);
 				memset(_ringBuffer->buf, 0, _ringBuffer->size);
 			}
@@ -128,7 +122,27 @@ namespace CLAM
 				return true;
 			}
 			bool hadOverRuns() { return _overruns>0; }
-			void signalAvailableData()
+		private:
+			const static unsigned _ringBufferSize = 16384;
+			const static unsigned _sampleSize = sizeof(TokenType);
+			long _overruns;
+			jack_ringbuffer_t* _ringBuffer;
+		};
+		class WorkerSemaphore
+		{
+			pthread_mutex_t _diskThreadLock;
+			pthread_cond_t _dataReadyCondition;
+		public:
+			WorkerSemaphore()
+			{
+				static pthread_cond_t sPthreadCondInitializer = PTHREAD_COND_INITIALIZER;
+				_dataReadyCondition = sPthreadCondInitializer;
+
+				static pthread_mutex_t sPthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
+				_diskThreadLock = sPthreadMutexInitializer;
+			}
+			
+			void signalWorkToDo()
 			{
 				/* Tell the disk thread there is work to do.  If it is already
 				 * running, the lock will not be available.  We can't wait
@@ -143,17 +157,16 @@ namespace CLAM
 			}
 			/// Wait until the real-time process provides data
 			/// To be called by the non-real-time worker thread
-			void waitForDataAvailable()
+			void waitMoreWork()
 			{
 				pthread_cond_wait (&_dataReadyCondition, &_diskThreadLock);
 			}
-
 			class ScopedLock
 			{
 				pthread_mutex_t & _mutex;
 				public:
-					ScopedLock(RingBuffer & ringBuffer)
-						: _mutex(ringBuffer._diskThreadLock)
+					ScopedLock(WorkerSemaphore & semaphore)
+						: _mutex(semaphore._diskThreadLock)
 					{
 						pthread_mutex_lock(&_mutex);
 					}
@@ -162,14 +175,6 @@ namespace CLAM
 						pthread_mutex_unlock(&_mutex);
 					}
 			};
-
-		private:
-			const static unsigned _ringBufferSize = 16384;
-			const static unsigned _sampleSize = sizeof(TokenType);
-			long _overruns;
-			jack_ringbuffer_t* _ringBuffer;
-			pthread_mutex_t _diskThreadLock;
-			pthread_cond_t _dataReadyCondition;
 		};
 
 		typedef std::vector<CLAM::AudioInPort*> InPorts;
@@ -185,6 +190,7 @@ namespace CLAM
 		volatile int _isStopped;
 		/* Synchronization between process thread and disk thread. */
 		RingBuffer * _ringBuffer;
+		WorkerSemaphore * _diskSemaphore;
 
 	public:
 		const char* GetClassName() const { return "SndfileWriter"; }
@@ -193,6 +199,7 @@ namespace CLAM
 			: _outfile(0)
 			, _numChannels(0)
 			, _isStopped(true)
+			, _diskSemaphore(0)
 		{
 			Configure( config );
 		}
@@ -216,8 +223,7 @@ namespace CLAM
 				}
 				_ringBuffer->write(buffer, _numChannels);
 			}
-
-			_ringBuffer->signalAvailableData();
+			_diskSemaphore->signalWorkToDo();
 
 			for (unsigned channel=0; channel<_numChannels; channel++)
 				_inports[channel]->Consume();
@@ -227,7 +233,7 @@ namespace CLAM
 		{
 			TData framebuf[_numChannels];
 			pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-			RingBuffer::ScopedLock lock(*_ringBuffer);
+			WorkerSemaphore::ScopedLock lock(*_diskSemaphore);
 
 			while (true)
 			{
@@ -240,9 +246,9 @@ namespace CLAM
 						CLAM_WARNING(false,"Error writing the file.");
 					}
 				}
-				if(_isStopped) return;
+				if (_isStopped) return;
 				// wait until process() signals more data
-				_ringBuffer->waitForDataAvailable();
+				_diskSemaphore->waitMoreWork();
 			}
 		}
 
@@ -258,6 +264,7 @@ namespace CLAM
 			_isStopped = false;
 			_ringBuffer = new RingBuffer(_ringBufferSize*_numChannels);
 			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
+			_diskSemaphore = new WorkerSemaphore;
 
 			// check if the file is open
 			if(!*_outfile)
@@ -271,18 +278,19 @@ namespace CLAM
 				CLAM_ASSERT(_outfile, _outfile->strError());
 				return false;
 			}
-			pthread_create(&_threadId, NULL,DiskThreadCallback,this);
+			pthread_create(&_threadId, NULL, DiskThreadCallback, this);
 			return true;
 		}
 
 		bool ConcreteStop()
 		{
 			_isStopped = true;
-			_ringBuffer->signalAvailableData();
+			_diskSemaphore->signalWorkToDo();
 			pthread_join (_threadId, NULL);
 			if (_outfile) delete _outfile;
 			CLAM_WARNING(not _ringBuffer->hadOverRuns(),"SndfileWriter: Overruns detected, try a higher buffer.");			
 			delete _ringBuffer;
+			delete _diskSemaphore;
 			return true;
 		}
 
