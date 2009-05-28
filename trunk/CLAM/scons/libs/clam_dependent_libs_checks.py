@@ -33,7 +33,6 @@ def setup_global_environment( env, conf ) :
 		env.Append( CPPFLAGS=['-DCLAM_OPTIMIZE'] )
 	if env['intel_optimize'] :
 		env.AppendUnique( CPPFLAGS=[
-			'-fomit-frame-pointer', 
 			'-ffast-math',
 			'-funroll-loops',
 			'-mmmx',
@@ -44,11 +43,11 @@ def setup_global_environment( env, conf ) :
 
 	if env['release'] :
 		print 'COMPILING IN RELEASE MODE'
-		env.Append( CCFLAGS='-g -O2 -fomit-frame-pointer -Wall'.split(' ') )
+		env.AppendUnique( CCFLAGS='-g -O3 -fomit-frame-pointer -Wall'.split(' ') )
 	else :
 		print 'COMPILING IN DEBUG MODE'
-		env.Append( CCFLAGS='-g -Wall'.split(' ') )
-		env.Append( CPPFLAGS = ['-D_DEBUG'] )
+		env.AppendUnique( CCFLAGS='-g -Wall'.split(' ') )
+		env.AppendUnique( CPPFLAGS = ['-D_DEBUG'] )
 
 	# pthreads testing
 	if not conf.CheckCHeader('pthread.h') :
