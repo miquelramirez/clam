@@ -95,28 +95,23 @@ namespace Hidden
 		const std::string & location = mConfig.GetTargetFile();
 
 		if ( location == "")
-		{
-			AddConfigErrorMessage("No file selected");
-			return false;
-		}
+			return AddConfigErrorMessage("No file selected");
+
 		AudioFileHeader header;
 		header.SetValues( mConfig.GetSampleRate(), 1, EAudioFileFormat::FormatFromFilename(location));
 		mFile.CreateNew(location, header);
 		if ( ! mFile.GetHeader().HasChannels())
 		{
-			AddConfigErrorMessage("The file is not writeable");
-			return false;
+			return AddConfigErrorMessage("The file is not writeable");
 		}
 		if ( mFile.GetHeader().GetChannels() != 1 ) // this is the 'mono' file writer...
 		{
-			AddConfigErrorMessage("Too many channels!");
-			return false;
+			return AddConfigErrorMessage("Too many channels!");
 		}
 
 		if ( !mFile.IsWritable() )
 		{
-			AddConfigErrorMessage("The format does not support such number of channels, endiannes or sampling rate.");
-			return false;
+			return AddConfigErrorMessage("The format does not support such number of channels, endiannes or sampling rate.");
 		}
 
 		if ( FileSystem::GetInstance().IsFileLocked( mConfig.GetTargetFile() ) )
@@ -134,8 +129,7 @@ namespace Hidden
 
 		if ( !mOutStream )
 		{
-			AddConfigErrorMessage("Could not get a valid audio file stream!");
-			return false;			
+			return AddConfigErrorMessage("Could not get a valid audio file stream!");
 		}
 
 		return true;
