@@ -111,14 +111,14 @@ namespace AudioCodecs
 
 	void PCMAudioStream::DiskToMemoryTransfer()
 	{
-		int channelCount = mNativeFileParams.channels;			
-		
-		sf_count_t framesRead = CLAM_sf_read( mFileHandle, 
-						       mInterleavedData.GetPtr(),
-						       mFramesToRead );
+		int nChannels = mNativeFileParams.channels;			
 
+		TData* begin = &mInterleavedData[0];
+		const TData* end = begin + mInterleavedData.size();
+
+		sf_count_t framesRead = CLAM_sf_read( mFileHandle, begin, mFramesToRead );
 		mFramesLastRead = (TSize)framesRead;
-		
+
 		if ( framesRead == 0 ) // No more data to read - EOF reached
 		{
 			mEOFReached = true;
@@ -128,23 +128,18 @@ namespace AudioCodecs
 		if ( framesRead < mFramesToRead ) // EOF reached
 		{
 			// We set the remainder to zero
-
-			const TData* end = mInterleavedData.GetPtr() + mInterleavedData.Size();
-
-			for ( TData* i = mInterleavedData.GetPtr() + ( framesRead * channelCount );
-			      i != end;
-			      i++ )
+			for (TData* i = begin + ( framesRead * nChannels ); i != end; i++ )
 				*i = 0.0;
-			
 			mEOFReached = true;
-		}		
+		}
 	}
 
 	
 	void PCMAudioStream::MemoryToDiskTransfer()
 	{
+		const TData* begin = &mInterleavedDataOut[0];
 		sf_count_t samplesWritten = CLAM_sf_write( mFileHandle,
-							   mInterleavedDataOut.GetPtr(),
+							   begin,
 							   mFramesToWrite );
 
 		CLAM_DEBUG_ASSERT( samplesWritten == mFramesToWrite,

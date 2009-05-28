@@ -86,9 +86,9 @@ namespace AudioCodecs
 		bool               mEncoding;
 		int                mOffset;
 
-		static const TSize      mMaxBlockSize;
-		static const TSize      mAnalysisWindowSize;
-		std::vector<TInt16>           mBlockBuffer;
+		static const unsigned     mMaxBlockSize;
+		static const unsigned     mAnalysisWindowSize;
+		std::vector<TInt16>       mBlockBuffer;
 		std::vector<std::deque<TData> >       mEncodeBuffer;
 		std::deque<TInt16>      mDecodeBuffer;
 		

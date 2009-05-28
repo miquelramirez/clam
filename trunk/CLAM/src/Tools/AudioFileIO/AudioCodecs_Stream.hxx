@@ -23,7 +23,6 @@
 #define __AUDIOCODECS_STREAM__
 
 #include "DataTypes.hxx"
-#include "Array.hxx"
 #include "DataTypes.hxx"
 #include <vector>
 
@@ -87,8 +86,8 @@ namespace AudioCodecs
 		std::vector<bool>   mChannelsConsumed;
 		std::vector<bool>   mChannelsProduced;
 		bool                mStrictStreaming;
-		DataArray           mInterleavedData;
-		DataArray           mInterleavedDataOut;
+		std::vector<TData>  mInterleavedData;
+		std::vector<TData>  mInterleavedDataOut;
 		bool                mEOFReached;
 		TSize               mFramesToRead;
 		TSize               mFramesToWrite;
@@ -98,7 +97,7 @@ namespace AudioCodecs
 		void CheckForFileReading( TSize samplesToRead );
 		void PrepareFileWriting( TSize samplesToWrite );
 
-		static bool  HandleReAllocation( DataArray& buffer, TSize newSize );
+		static bool  HandleReAllocation( std::vector<TData>& buffer, TSize newSize );
 
 	};
 

@@ -39,8 +39,8 @@ namespace CLAM
 
 namespace AudioCodecs
 {
-	const TSize OggVorbisAudioStream::mMaxBlockSize = 4096 / sizeof(TInt16); // Seems to be the 'reference' value
-	const TSize OggVorbisAudioStream::mAnalysisWindowSize = 1024;
+	const unsigned OggVorbisAudioStream::mMaxBlockSize = 4096 / sizeof(TInt16); // Seems to be the 'reference' value
+	const unsigned OggVorbisAudioStream::mAnalysisWindowSize = 1024;
 	
 	OggVorbisAudioStream::OggVorbisAudioStream()
 		: mFileHandle( NULL )
@@ -229,20 +229,20 @@ namespace AudioCodecs
 
 	void OggVorbisAudioStream::ConsumeDecodedSamples()
 	{
-		CLAM_ASSERT( mDecodeBuffer.size() >= unsigned(mInterleavedData.Size()),
+		CLAM_ASSERT( mDecodeBuffer.size() >= unsigned(mInterleavedData.size()),
 			     "This method cannot be called if the decode buffer"
 			     " has less samples than requested by the upper level");
 
 		static const TData norm = 1.0 / 32768.0;
 
-		TData* pSamples = mInterleavedData.GetPtr();
-		const TData* pSamplesEnd = mInterleavedData.GetPtr() + mInterleavedData.Size();
+		TData* pSamples = &mInterleavedData[0];
+		const TData* pSamplesEnd = pSamples + mInterleavedData.size();
 		for( std::deque<TInt16>::iterator i = mDecodeBuffer.begin();
 		     pSamples < pSamplesEnd; i++, pSamples++ )
 			*pSamples = TData(*i)*norm;		
 		
 		mDecodeBuffer.erase( mDecodeBuffer.begin(),
-				     mDecodeBuffer.begin()+mInterleavedData.Size() );
+				     mDecodeBuffer.begin()+mInterleavedData.size() );
 	}
 
 	void OggVorbisAudioStream::DiskToMemoryTransfer()
@@ -250,7 +250,7 @@ namespace AudioCodecs
 		//Unused variable: TSize nBytes = 0;
 		unsigned samplesRead = 0;
 
-		while ( mDecodeBuffer.size() < unsigned(mInterleavedData.Size()) )
+		while ( mDecodeBuffer.size() < unsigned(mInterleavedData.size()) )
 		{
 			mLastBytesRead = ov_read( &mNativeFileParams, 
 						  (char*)&mBlockBuffer[0], 
@@ -276,10 +276,10 @@ namespace AudioCodecs
 		if ( !mDecodeBuffer.empty() )
 		{
 
-			if ( mDecodeBuffer.size() < unsigned(mInterleavedData.Size()) )
+			if ( mDecodeBuffer.size() < unsigned(mInterleavedData.size()) )
 			{
 				mDecodeBuffer.insert( mDecodeBuffer.end(),
-						      mInterleavedData.Size() - mDecodeBuffer.size(),
+						      mInterleavedData.size() - mDecodeBuffer.size(),
 						      0);
 			}
 			
@@ -296,13 +296,13 @@ namespace AudioCodecs
 		
 		// We expose the buffer for submitting data to the encoder
 
-		TIndex currentOffset = 0;
-		int i;
+		unsigned currentOffset = 0;
+		unsigned i;
 
 		do
 		{
 			for ( i = mEncodeBuffer[0].size(); 
-			      i < mAnalysisWindowSize && currentOffset < mInterleavedDataOut.Size(); 
+			      i < mAnalysisWindowSize && currentOffset < mInterleavedDataOut.size(); 
 			      i++ )
 			{
 				for ( int j = 0; j < mEncodedChannels; j++ )
@@ -314,7 +314,7 @@ namespace AudioCodecs
 			if ( i == mAnalysisWindowSize ) // enough samples acquired
 				DoVorbisAnalysis();
 			
-		} while ( currentOffset < mInterleavedDataOut.Size() );
+		} while ( currentOffset < mInterleavedDataOut.size() );
 
 	}
 
@@ -362,7 +362,7 @@ namespace AudioCodecs
 
 		for ( int j = 0; j < mEncodedChannels; j++ )
 		{
-			int i = 0;
+			unsigned i = 0;
 
 			while( !mEncodeBuffer[j].empty() )
 			{
