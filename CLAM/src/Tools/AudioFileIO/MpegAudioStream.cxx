@@ -93,7 +93,7 @@ namespace AudioCodecs
 
 	void MpegAudioStream::DiskToMemoryTransfer()
 	{
-		unsigned samplesToRead = mInterleavedData.Size()/mEncodedChannels;
+		unsigned samplesToRead = mInterleavedData.size()/mEncodedChannels;
 
 		while( mDecodeBuffer[0].size() < samplesToRead
 		       && mBitstream.NextFrame() )
@@ -143,14 +143,14 @@ namespace AudioCodecs
 
 	void MpegAudioStream::ConsumeDecodedSamples()
 	{
-		TSize samplesToRead = mInterleavedData.Size()/mEncodedChannels;
+		TSize samplesToRead = mInterleavedData.size()/mEncodedChannels;
 
 		for ( int i = 0; i < mEncodedChannels; i++ )
 		{
 			TIndex currOffset = 0;
 
 			for ( std::deque<mad_fixed_t>::iterator j = mDecodeBuffer[i].begin();
-			      currOffset < mInterleavedData.Size(); 
+			      currOffset < mInterleavedData.size(); 
 			      j++, currOffset+=mEncodedChannels )
 			{
 				double sampleValue = mad_f_todouble(*j);

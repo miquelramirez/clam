@@ -26,7 +26,7 @@
 #include "AudioCodecs_Stream.hxx"
 #include "MpegBitstream.hxx"
 #include <deque>
-#include "Array.hxx"
+#include <string>
 
 namespace CLAM
 {

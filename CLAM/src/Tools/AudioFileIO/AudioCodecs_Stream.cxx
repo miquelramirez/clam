@@ -74,19 +74,11 @@ namespace AudioCodecs
 			mChannelsConsumed[i]=false;
 	}
 
-	bool Stream::HandleReAllocation( DataArray& buffer, TSize newSize )
+	bool Stream::HandleReAllocation( std::vector<TData>& buffer, TSize newSize )
 	{
-		if ( newSize  > buffer.Size() )
-		{
-			buffer.Resize( newSize );
-			buffer.SetSize( newSize );
-			return true;
-		}
-		else
-		{
-			buffer.SetSize( newSize );		
-			return false;
-		}
+		bool increasing = newSize > buffer.size();
+		buffer.resize( newSize );
+		return increasing;
 	}
 
 	void Stream::CheckForFileReading( TSize howmany )
@@ -111,11 +103,11 @@ namespace AudioCodecs
 		// Actual data reading
 		int channelCount = mChannels;
 		
-		const TData* end = mInterleavedData.GetPtr() + mInterleavedData.Size();
+		const TData* begin = &mInterleavedData[0];
+		const TData* end = begin + mInterleavedData.size();
 		const int stride = channelCount;
 		
-		for ( TData* i = mInterleavedData.GetPtr() + channel;
-			  i < end; i+=stride, ptr++ )
+		for (const TData* i = begin + channel; i < end; i+=stride, ptr++ )
 			*ptr = *i;
 		
 		mChannelsConsumed[ channel ] = true;
@@ -134,7 +126,8 @@ namespace AudioCodecs
 		// Actual data reading
 		int channelCount = mChannels;
 		
-		const TData*  end = mInterleavedData.GetPtr() + mInterleavedData.Size();
+		const TData* begin = &mInterleavedData[0];
+		const TData* end = begin + mInterleavedData.size();
 		//Unused variable TData** const samplesEnd = samples + nchannels;
 		const int* endChannels = channels + nchannels;
 		std::vector<bool>::iterator cIt = mChannelsConsumed.begin();
@@ -149,9 +142,7 @@ namespace AudioCodecs
 			const int stride = channelCount;
 			TData* pSamples = *(samples + channelIndex);
 			
-			for ( const TData* i = mInterleavedData.GetPtr() + channelIndex;
-				  i<end;
-				  i+=stride, pSamples++ )
+			for ( const TData* i = begin + channelIndex; i<end; i+=stride, pSamples++ )
 			{
 				*pSamples = *i;
 			}
@@ -175,8 +166,8 @@ namespace AudioCodecs
 	{
 		PrepareFileWriting( howmany );
 		int channelCount = mChannels;
-		TData* beginData = mInterleavedDataOut.GetPtr();
-		TData* endData = beginData+mInterleavedDataOut.Size();
+		TData* beginData = &mInterleavedDataOut[0];
+		TData* endData = beginData+mInterleavedDataOut.size();
 		const int stride = channelCount;
 
 		for (TData* data = beginData + channel;
@@ -197,8 +188,8 @@ namespace AudioCodecs
 	
 		int channelCount = mChannels;
 
-		TData* begin = mInterleavedDataOut.GetPtr();
-		TData* end = begin + mInterleavedDataOut.Size();
+		TData* begin = &mInterleavedDataOut[0];
+		TData* end = begin + mInterleavedDataOut.size();
 		const int* endChannels = channels + nchannels;
 		//Unused variable TData** const samplesEnd = samples + nchannels;
 		std::vector<bool>::iterator cIt = mChannelsProduced.begin();

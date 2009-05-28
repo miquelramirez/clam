@@ -24,6 +24,7 @@
 #endif
 
 #include <cstdio>
+#include <cstring>
 #include <string>
 #include <algorithm>
 #include <vorbis/vorbisfile.h>
