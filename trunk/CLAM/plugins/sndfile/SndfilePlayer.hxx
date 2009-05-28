@@ -32,6 +32,46 @@
 
 namespace CLAM
 {
+	template <typename BaseType>
+	class RingBuffer
+	{
+	public:
+		RingBuffer(unsigned size)
+		{
+			_rb = jack_ringbuffer_create(sizeof(BaseType)*size);
+			memset(_rb->buf, 0, _rb->size);
+		}
+		~RingBuffer()
+		{
+			jack_ringbuffer_free (_rb);
+		}
+		void read(BaseType * buffer, unsigned n)
+		{
+			jack_ringbuffer_read(_rb, (char*)buffer, n*sizeof(BaseType));
+		}
+		void writableRegion(BaseType *(&buffer), unsigned & len)
+		{
+			jack_ringbuffer_data_t writeSpace;
+			jack_ringbuffer_get_write_vector(_rb, &writeSpace);
+			buffer = (BaseType*) writeSpace.buf;
+			len = writeSpace.len/sizeof(BaseType);
+		}
+		unsigned readSpace()
+		{
+			return jack_ringbuffer_read_space(_rb)/sizeof(BaseType);
+		}
+		void advanceWrite(unsigned n)
+		{
+			jack_ringbuffer_write_advance(_rb, n*sizeof(BaseType));
+		}
+		void write(BaseType* buffer, unsigned n)
+		{
+			jack_ringbuffer_write(_rb, (char*) buffer, n*sizeof(BaseType));
+		}
+	private:
+		jack_ringbuffer_t * _rb;
+	};
+
 	class SndfilePlayerConfig : public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( SndfilePlayerConfig,3, ProcessingConfig );
@@ -90,25 +130,6 @@ namespace CLAM
 		pthread_mutex_t _diskThreadLock;
 		pthread_cond_t  _dataReadyCondition;
 
-		template <typename BaseType>
-		class RingBuffer
-		{
-		public:
-			RingBuffer(unsigned size)
-			{
-				_rb = jack_ringbuffer_create(sizeof(BaseType)*size);
-				memset(_rb->buf, 0, _rb->size);
-			}
-			~RingBuffer()
-			{
-				jack_ringbuffer_free (_rb);
-			}
-			void read(BaseType * buffer, unsigned n)
-			{
-				jack_ringbuffer_read(_rb, (char*)buffer, n*sizeof(BaseType));
-			}
-			jack_ringbuffer_t * _rb;
-		};
 
 		RingBuffer<TData> * _ringBuffer;
 		RingBuffer<unsigned> * _positionsBuffer;
@@ -169,7 +190,7 @@ namespace CLAM
 				channels[channel] = &_outports[channel]->GetAudio().GetBuffer()[0];
 
 			// Ring buffer empty (loopless end of file or xrun)
-			if (jack_ringbuffer_read_space(_ringBuffer->_rb) < nBytes)
+			if (_ringBuffer->readSpace() < nItems)
 			{
 //				std::cout << "X" << std::flush;
 				for (unsigned i=0; i<nFrames; i++) 
@@ -244,10 +265,11 @@ namespace CLAM
 			const unsigned nItems = nFrames * _numChannels;
 			const unsigned nBytes = sizeof(TData) * nItems;
 
-			jack_ringbuffer_data_t ringWriteSpace;
-			jack_ringbuffer_get_write_vector(_ringBuffer->_rb, &ringWriteSpace);
-			if (ringWriteSpace.len<nBytes) return false;
-			TData * buffer = (TData*) ringWriteSpace.buf;
+			TData * buffer = 0;
+			unsigned writableLength;
+			_ringBuffer->writableRegion(buffer, writableLength);
+
+			if (writableLength < nItems) return false;
 
 			if (not _inControlSeek.HasBeenRead())
 			{
@@ -262,7 +284,7 @@ namespace CLAM
 
 			if (readItems)
 			{
-				jack_ringbuffer_write(_positionsBuffer->_rb, (char*) &_numReadFrames, sizeof(unsigned));
+				_positionsBuffer->write(&_numReadFrames, 1);
 			}
 
 			if (readItems<nItems and _inControlLoop.GetLastValue()>0.5)
@@ -276,7 +298,7 @@ namespace CLAM
 			// Missing frames to zero
 			for (unsigned i = readItems; i<nItems; i++)
 				buffer[i]=0.;
-			jack_ringbuffer_write_advance(_ringBuffer->_rb, nBytes);
+			_ringBuffer->advanceWrite(nItems);
 			_numReadFrames+=readItems/_numChannels;
 
 			return true;
