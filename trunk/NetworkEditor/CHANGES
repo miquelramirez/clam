@@ -5,6 +5,7 @@
  * Configurators: Support for negative floating point numbers
  * Configurators: increased precission from 2 to now 5 decimals
  * .pos files for processing boxes positions deprecated.
+ * Fix: Playback status changes from the backend side are pooled by the indicator
 
 
 2008-08-11 NetworkEditor 1.3.0

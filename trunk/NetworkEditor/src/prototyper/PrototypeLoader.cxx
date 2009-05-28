@@ -27,6 +27,7 @@
 #endif
 #include <QtGui/QWidget>
 #include <QtCore/QVariant>
+#include <QtCore/QTimer>
 
 
 #include "Oscilloscope.hxx"
@@ -299,7 +300,11 @@ static ConfigurationBinder configurationBinder;
 PrototypeLoader::PrototypeLoader()
 	: _player(0)
 	, _interface(0)
+	, _playButton(0)
+	, _pauseButton(0)
+	, _stopButton(0)
 {
+	periodicPlaybackStatusUpdate();
 }
 
 PrototypeLoader::Binders & PrototypeLoader::binders()
@@ -463,14 +468,12 @@ void PrototypeLoader::ConnectWithNetwork()
 
 	ConnectWidgetsWithProgressControls();
 
-	QObject * playButton = _interface->findChild<QObject*>("PlayButton");
-	if (playButton) connect(playButton, SIGNAL(clicked()), this, SLOT(Start()));  
-
-	QObject * pauseButton = _interface->findChild<QObject*>("PauseButton");
-	if (pauseButton) connect(pauseButton, SIGNAL(clicked()), this, SLOT(Pause()));  
-
-	QObject * stopButton = _interface->findChild<QObject*>("StopButton");
-	if (stopButton) connect(stopButton, SIGNAL(clicked()), this, SLOT(Stop()));
+	_playButton = _interface->findChild<QPushButton*>("PlayButton");
+	_pauseButton = _interface->findChild<QPushButton*>("PauseButton");
+	_stopButton = _interface->findChild<QPushButton*>("StopButton");
+	if (_playButton) connect(_playButton, SIGNAL(clicked()), this, SLOT(Start()));  
+	if (_pauseButton) connect(_pauseButton, SIGNAL(clicked()), this, SLOT(Pause()));  
+	if (_stopButton) connect(_stopButton, SIGNAL(clicked()), this, SLOT(Stop()));
 
 	QLabel * backendIndicator = _interface->findChild<QLabel*>("BackendIndicator");
 	if (backendIndicator)
@@ -563,6 +566,12 @@ void PrototypeLoader::Pause()
 	UpdatePlayStatus();
 }
 
+void PrototypeLoader::periodicPlaybackStatusUpdate()
+{
+	UpdatePlayStatus();
+	QTimer::singleShot(500, this, SLOT(periodicPlaybackStatusUpdate()));
+}
+
 void PrototypeLoader::UpdatePlayStatus()
 {
 	QLabel * playbackIndicator = _interface->findChild<QLabel*>("PlaybackIndicator");
@@ -575,12 +584,9 @@ void PrototypeLoader::UpdatePlayStatus()
 		else
 			playbackIndicator->setText(tr("<p style='color:red'>Stopped</p>"));
 	}
-	QPushButton * playButton = _interface->findChild<QPushButton*>("PlayButton");
-	if (playButton) playButton->setEnabled(not _network.IsPlaying());
-	QPushButton * pauseButton = _interface->findChild<QPushButton*>("PauseButton");
-	if (pauseButton) pauseButton->setEnabled(_network.IsPlaying());
-	QPushButton * stopButton = _interface->findChild<QPushButton*>("StopButton");
-	if (stopButton) stopButton->setEnabled(not _network.IsStopped());
+	if (_playButton) _playButton->setEnabled(not _network.IsPlaying());
+	if (_pauseButton) _pauseButton->setEnabled(_network.IsPlaying());
+	if (_stopButton) _stopButton->setEnabled(not _network.IsStopped());
 }
 
 void PrototypeLoader::Substitute(std::string & subject, const char * pattern, const char * substitution)
