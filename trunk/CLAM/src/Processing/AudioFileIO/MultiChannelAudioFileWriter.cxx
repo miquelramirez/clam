@@ -112,10 +112,10 @@ namespace Hidden
 
 		for( InputVec::iterator i = inputs.begin();
 		     i != inputs.end(); i++ )
-		  mSamplesMatrix[ j++ ] = (*i).GetBuffer().GetPtr();
+			mSamplesMatrix[ j++ ] = (*i).GetBuffer().GetPtr();
 
 		mNativeStream->WriteData( mChannelsToWrite.GetPtr(), mChannelsToWrite.Size(),
-					 mSamplesMatrix.GetPtr(), inputsSize );
+					mSamplesMatrix.GetPtr(), inputsSize );
 
 		return true;
 
@@ -134,18 +134,18 @@ namespace Hidden
 
 		for ( VectorOfInputs::iterator i = mInputs.begin();
 		      i!= mInputs.end(); i++ )
-		  {
+		{
 		    inputsRef.push_back( &((*i)->GetAudio()) );
-		  }
+		}
 
 		inputsSize = inputsRef[0]->GetSize();
 
 		for ( InputsRefVector::iterator i = inputsRef.begin();
 		      i!= inputsRef.end() && allInputsSameSize;
 		      i++ )
-		  {
+		{
 		    allInputsSameSize = ( inputsSize == (*i)->GetSize() );
-		  }
+		}
 
 
 		CLAM_ASSERT( allInputsSameSize, "Input sizes differ!" );
@@ -180,15 +180,13 @@ namespace Hidden
 
 		if (filename=="")
 		{
-			AddConfigErrorMessage("No file selected");
-			return false;
+			return AddConfigErrorMessage("No file selected");
 		}
 		
 		unsigned nChannels = mConfig.HasNChannels()? mConfig.GetNChannels() : 1;
 		if ( nChannels < 1 )
 		{
-			AddConfigErrorMessage("Channels should be, at least, 1.");
-			return false;
+			return AddConfigErrorMessage("Channels should be, at least, 1.");
 		}
 		AudioFileHeader header;
 		header.SetValues(
@@ -198,9 +196,7 @@ namespace Hidden
 		mAudioFile.CreateNew(filename, header);
 		if ( !mAudioFile.IsWritable() )
 		{
-			AddConfigErrorMessage("The format does not support such number of channels, endiannes or sampling rate.");
-
-			return false;
+			return AddConfigErrorMessage("The format does not support such number of channels, endiannes or sampling rate.");
 		}
 
 		if ( FileSystem::GetInstance().IsFileLocked( filename ) )
@@ -238,8 +234,7 @@ namespace Hidden
 
 		if ( !mNativeStream )
 		{
-			AddConfigErrorMessage("Could not acquire an audio file stream!");
-			return false;
+			return AddConfigErrorMessage("Could not acquire an audio file stream!");
 		}
 
 		return true;
