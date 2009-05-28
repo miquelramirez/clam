@@ -30,50 +30,10 @@
 #include <pthread.h>
 #include <jack/ringbuffer.h>
 #include "WorkerSemaphore.hxx"
+#include "RingBuffer.hxx"
 
 namespace CLAM
 {
-	template <typename BaseType>
-	class RingBuffer
-	{
-	public:
-		RingBuffer(unsigned size)
-		{
-			_rb = jack_ringbuffer_create(sizeof(BaseType)*size);
-			memset(_rb->buf, 0, _rb->size);
-		}
-		~RingBuffer()
-		{
-			jack_ringbuffer_free (_rb);
-		}
-		void read(BaseType * buffer, unsigned n)
-		{
-			jack_ringbuffer_read(_rb, (char*)buffer, n*sizeof(BaseType));
-		}
-		void writableRegion(BaseType *(&buffer), unsigned & len)
-		{
-			jack_ringbuffer_data_t writeSpace;
-			jack_ringbuffer_get_write_vector(_rb, &writeSpace);
-			buffer = (BaseType*) writeSpace.buf;
-			len = writeSpace.len/sizeof(BaseType);
-		}
-		unsigned readSpace()
-		{
-			return jack_ringbuffer_read_space(_rb)/sizeof(BaseType);
-		}
-		void advanceWrite(unsigned n)
-		{
-			jack_ringbuffer_write_advance(_rb, n*sizeof(BaseType));
-		}
-		void write(BaseType* buffer, unsigned n)
-		{
-			jack_ringbuffer_write(_rb, (char*) buffer, n*sizeof(BaseType));
-		}
-	private:
-		jack_ringbuffer_t * _rb;
-	};
-
-
 	class SndfilePlayerConfig : public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( SndfilePlayerConfig,3, ProcessingConfig );
