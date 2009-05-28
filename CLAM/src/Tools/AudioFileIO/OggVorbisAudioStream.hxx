@@ -33,7 +33,6 @@
 #include <vector>
 #include "AudioCodecs_Stream.hxx"
 #include "DataTypes.hxx"
-#include "Array.hxx"
 
 namespace CLAM
 {
@@ -55,7 +54,6 @@ namespace AudioCodecs
 		void Dispose();
 
 	protected:
-		void AudioFileToNative( const AudioFile& file );
 		void DiskToMemoryTransfer();
 		void MemoryToDiskTransfer();
 
@@ -90,7 +88,7 @@ namespace AudioCodecs
 
 		static const TSize      mMaxBlockSize;
 		static const TSize      mAnalysisWindowSize;
-		Array<TInt16>           mBlockBuffer;
+		std::vector<TInt16>           mBlockBuffer;
 		std::vector<std::deque<TData> >       mEncodeBuffer;
 		std::deque<TInt16>      mDecodeBuffer;
 		

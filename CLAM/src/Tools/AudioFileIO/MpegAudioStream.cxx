@@ -40,34 +40,19 @@ namespace AudioCodecs
 	MpegAudioStream::MpegAudioStream( const AudioFile& file )
 		: mpHandle( NULL )
 	{
-		AudioFileToNative( file );
+		mName = file.GetLocation();
+		mEncodedSampleRate = (int)file.GetHeader().GetSampleRate();
+		mEncodedChannels = (int)file.GetHeader().GetChannels();
+		mDecodeBuffer.resize( mEncodedChannels );
 	}
 
 	MpegAudioStream::~MpegAudioStream()
 	{
 		
-		if ( mpHandle )
-		{
-			if ( fclose(mpHandle) )
-			{
-				std::string msgString = "Could not close ";
-				msgString += mName;
-
-				CLAM_ASSERT( false, msgString.c_str() );
-			}			
-		}
-		
+		if ( not mpHandle ) return;
+		fclose(mpHandle);
 	}
 	
-	void MpegAudioStream::AudioFileToNative( const AudioFile& file )
-	{
-		mName = file.GetLocation();
-		mEncodedSampleRate = (int)file.GetHeader().GetSampleRate();
-		mEncodedChannels = (int)file.GetHeader().GetChannels();
-
-		mDecodeBuffer.resize( mEncodedChannels );
-	}
-
 	void MpegAudioStream::PrepareReading()
 	{
 		mpHandle = fopen( mName.c_str(), "rb");

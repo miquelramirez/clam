@@ -43,22 +43,25 @@ namespace AudioCodecs
 	const TSize OggVorbisAudioStream::mAnalysisWindowSize = 1024;
 	
 	OggVorbisAudioStream::OggVorbisAudioStream()
-		: mFileHandle( NULL ), mValidFileParams( false ), mEncoding( false )
+		: mFileHandle( NULL )
+		, mValidFileParams( false )
+		, mEncoding( false )
 	{
-		mBlockBuffer.Resize( mMaxBlockSize );
-		mBlockBuffer.SetSize( mMaxBlockSize );
-
+		mBlockBuffer.resize( mMaxBlockSize );
 	}
 
 	OggVorbisAudioStream::OggVorbisAudioStream( const AudioFile& file )
-		: mFileHandle( NULL ), mValidFileParams( false ), mEncoding( false )
+		: mFileHandle( NULL )
+		, mValidFileParams( false )
+		, mEncoding( false )
 	{
 		if ( mValidFileParams )
 			Dispose();
-		AudioFileToNative( file );
-		mBlockBuffer.Resize( mMaxBlockSize );
-		mBlockBuffer.SetSize( mMaxBlockSize );
-
+		mName = file.GetLocation();
+		mEncodedSampleRate = (int)file.GetHeader().GetSampleRate();
+		mEncodedChannels = (int)file.GetHeader().GetChannels();
+		mEncodeBuffer.resize( mEncodedChannels ); // as many stream buffers as channels
+		mBlockBuffer.resize( mMaxBlockSize );
 	}
 
 	OggVorbisAudioStream::~OggVorbisAudioStream()
@@ -66,17 +69,6 @@ namespace AudioCodecs
 		if ( mValidFileParams )
 			Dispose();
 	}
-
-	void OggVorbisAudioStream::AudioFileToNative( const AudioFile& file )
-	{
-		mName = file.GetLocation();
-		mEncodedSampleRate = (int)file.GetHeader().GetSampleRate();
-		mEncodedChannels = (int)file.GetHeader().GetChannels();
-		
-		mEncodeBuffer.resize( mEncodedChannels ); // as many stream buffers as channels
-
-	}
-
 
 	void OggVorbisAudioStream::PrepareReading()
 	{
@@ -126,7 +118,6 @@ namespace AudioCodecs
 		VorbisI_EncoderSetup();
 		MarkAllChannelsAsProduced();
 		mEncoding = true;
-
 	}
 
 	void OggVorbisAudioStream::VorbisI_EncoderSetup()
@@ -252,19 +243,17 @@ namespace AudioCodecs
 		
 		mDecodeBuffer.erase( mDecodeBuffer.begin(),
 				     mDecodeBuffer.begin()+mInterleavedData.Size() );
-		
 	}
 
 	void OggVorbisAudioStream::DiskToMemoryTransfer()
 	{
-
 		//Unused variable: TSize nBytes = 0;
 		unsigned samplesRead = 0;
 
 		while ( mDecodeBuffer.size() < unsigned(mInterleavedData.Size()) )
 		{
 			mLastBytesRead = ov_read( &mNativeFileParams, 
-						  (char*)mBlockBuffer.GetPtr(), 
+						  (char*)&mBlockBuffer[0], 
 						  mMaxBlockSize*sizeof(TInt16),
 						  HOST_ENDIANESS,
 						  2, 1, &mCurrentSection );
@@ -278,8 +267,8 @@ namespace AudioCodecs
 
 			
 			mDecodeBuffer.insert( mDecodeBuffer.end(),
-					      mBlockBuffer.GetPtr(),
-					      mBlockBuffer.GetPtr() + samplesRead);				
+					      mBlockBuffer.begin(),
+					      mBlockBuffer.begin() + samplesRead);				
 		}
 
 		mFramesLastRead = mDecodeBuffer.size();
@@ -298,7 +287,6 @@ namespace AudioCodecs
 		}
 
 		mEOFReached = ( mLastBytesRead == 0) && (mDecodeBuffer.empty());
-	
 	}
 
 	void OggVorbisAudioStream::MemoryToDiskTransfer()

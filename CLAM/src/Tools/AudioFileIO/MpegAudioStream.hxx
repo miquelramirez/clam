@@ -50,7 +50,6 @@ namespace AudioCodecs
 
 	protected:
 
-		void AudioFileToNative( const AudioFile& file );
 		void DiskToMemoryTransfer();
 		void MemoryToDiskTransfer();
 
