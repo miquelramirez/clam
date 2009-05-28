@@ -89,16 +89,29 @@ namespace CLAM
 		/* Synchronization between process thread and disk thread. */
 		pthread_mutex_t _diskThreadLock;
 		pthread_cond_t  _dataReadyCondition;
-		jack_ringbuffer_t* _positions;
 
 		template <typename BaseType>
 		class RingBuffer
 		{
-			public:
-				jack_ringbuffer_t * _rb;
+		public:
+			RingBuffer(unsigned size)
+			{
+				_rb = jack_ringbuffer_create(sizeof(BaseType)*size);
+				memset(_rb->buf, 0, _rb->size);
+			}
+			~RingBuffer()
+			{
+				jack_ringbuffer_free (_rb);
+			}
+			void read(BaseType * buffer, unsigned n)
+			{
+				jack_ringbuffer_read(_rb, (char*)buffer, n*sizeof(BaseType));
+			}
+			jack_ringbuffer_t * _rb;
 		};
 
 		RingBuffer<TData> * _ringBuffer;
+		RingBuffer<unsigned> * _positionsBuffer;
 
 	public:
 		const char* GetClassName() const { return "SndfilePlayer"; }
@@ -147,7 +160,6 @@ namespace CLAM
 		void ReadBufferAndWriteToPorts()
 		{
 			const unsigned itemSize = sizeof(TData); 
-			const unsigned frameSize = itemSize*_numChannels; 
 			const unsigned nFrames = _outports[0]->GetAudio().GetBuffer().Size();
 			const unsigned nItems = nFrames*_numChannels;
 			const unsigned nBytes = nItems*itemSize;
@@ -170,14 +182,14 @@ namespace CLAM
 				float frameBuffer[_numChannels];
 				for (unsigned i=0; i<nFrames; i++)
 				{
-					jack_ringbuffer_read(_ringBuffer->_rb,(char*) frameBuffer, frameSize);
+					_ringBuffer->read(frameBuffer, _numChannels);
 					for (unsigned channel = 0; channel<_numChannels; channel++)
 					{
 						channels[channel][i] = frameBuffer[channel];
 					}
 				}
 				unsigned currentPosition;
-				jack_ringbuffer_read(_positions, (char*) &currentPosition, sizeof(unsigned));
+				_positionsBuffer->read(&currentPosition, 1);
 				float seekPosition = (float) currentPosition/ (float)_numTotalFrames;
 				if (seekPosition<=1) 
 					_outControlSeek.SendControl(seekPosition);
@@ -250,7 +262,7 @@ namespace CLAM
 
 			if (readItems)
 			{
-				jack_ringbuffer_write(_positions, (char*) &_numReadFrames, sizeof(unsigned));
+				jack_ringbuffer_write(_positionsBuffer->_rb, (char*) &_numReadFrames, sizeof(unsigned));
 			}
 
 			if (readItems<nItems and _inControlLoop.GetLastValue()>0.5)
@@ -291,11 +303,8 @@ namespace CLAM
 			_isStopped = false;
 			_canProcess = 0;
 			const unsigned nFrames = _outports[0]->GetAudio().GetBuffer().Size();
-			_ringBuffer = new RingBuffer<TData>;
-			_ringBuffer->_rb = jack_ringbuffer_create(sizeof(TData)*_numChannels*nFrames*_ringBufferSize);
-			memset(_ringBuffer->_rb->buf, 0, _ringBuffer->_rb->size);
-			_positions = jack_ringbuffer_create(sizeof(unsigned)*_ringBufferSize);
-			memset(_positions->buf, 0, _positions->size);
+			_ringBuffer = new RingBuffer<TData>(_numChannels*nFrames*_ringBufferSize);
+			_positionsBuffer = new RingBuffer<unsigned>(_ringBufferSize);
 			_infile->seek(0,SEEK_SET);
 			_canPlay = 0;
 			pthread_create(&_threadId, NULL, DiskThreadCallback, this);
@@ -319,8 +328,8 @@ namespace CLAM
 			{
 				CLAM_ASSERT(_overruns,"Overruns is greater than 0. Try a bigger buffer");
 			}
-			jack_ringbuffer_free (_ringBuffer->_rb);
-			jack_ringbuffer_free (_positions);
+			delete _ringBuffer;
+			delete _positionsBuffer;
 			_numReadFrames = 0;
 			return true; 
 		}
