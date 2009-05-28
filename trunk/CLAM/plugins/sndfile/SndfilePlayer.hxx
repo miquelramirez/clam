@@ -89,8 +89,16 @@ namespace CLAM
 		/* Synchronization between process thread and disk thread. */
 		pthread_mutex_t _diskThreadLock;
 		pthread_cond_t  _dataReadyCondition;
-		jack_ringbuffer_t* _rb;
 		jack_ringbuffer_t* _positions;
+
+		template <typename BaseType>
+		class RingBuffer
+		{
+			public:
+				jack_ringbuffer_t * _rb;
+		};
+
+		RingBuffer<TData> * _ringBuffer;
 
 	public:
 		const char* GetClassName() const { return "SndfilePlayer"; }
@@ -105,6 +113,7 @@ namespace CLAM
 			, _numReadFrames(0)
 			, _numTotalFrames(0)
 			, _overruns(0)
+			, _ringBuffer(0)
 		{ 
 			static pthread_cond_t sPthreadCondInitializer = PTHREAD_COND_INITIALIZER;
 			_dataReadyCondition = sPthreadCondInitializer;
@@ -148,7 +157,7 @@ namespace CLAM
 				channels[channel] = &_outports[channel]->GetAudio().GetBuffer()[0];
 
 			// Ring buffer empty (loopless end of file or xrun)
-			if (jack_ringbuffer_read_space(_rb) < nBytes)
+			if (jack_ringbuffer_read_space(_ringBuffer->_rb) < nBytes)
 			{
 //				std::cout << "X" << std::flush;
 				for (unsigned i=0; i<nFrames; i++) 
@@ -161,7 +170,7 @@ namespace CLAM
 				float frameBuffer[_numChannels];
 				for (unsigned i=0; i<nFrames; i++)
 				{
-					jack_ringbuffer_read(_rb,(char*) frameBuffer, frameSize);
+					jack_ringbuffer_read(_ringBuffer->_rb,(char*) frameBuffer, frameSize);
 					for (unsigned channel = 0; channel<_numChannels; channel++)
 					{
 						channels[channel][i] = frameBuffer[channel];
@@ -224,7 +233,7 @@ namespace CLAM
 			const unsigned nBytes = sizeof(TData) * nItems;
 
 			jack_ringbuffer_data_t ringWriteSpace;
-			jack_ringbuffer_get_write_vector(_rb, &ringWriteSpace);
+			jack_ringbuffer_get_write_vector(_ringBuffer->_rb, &ringWriteSpace);
 			if (ringWriteSpace.len<nBytes) return false;
 			TData * buffer = (TData*) ringWriteSpace.buf;
 
@@ -255,7 +264,7 @@ namespace CLAM
 			// Missing frames to zero
 			for (unsigned i = readItems; i<nItems; i++)
 				buffer[i]=0.;
-			jack_ringbuffer_write_advance(_rb, nBytes);
+			jack_ringbuffer_write_advance(_ringBuffer->_rb, nBytes);
 			_numReadFrames+=readItems/_numChannels;
 
 			return true;
@@ -282,8 +291,9 @@ namespace CLAM
 			_isStopped = false;
 			_canProcess = 0;
 			const unsigned nFrames = _outports[0]->GetAudio().GetBuffer().Size();
-			_rb = jack_ringbuffer_create(sizeof(TData)*_numChannels*nFrames*_ringBufferSize);
-			memset(_rb->buf, 0, _rb->size);
+			_ringBuffer = new RingBuffer<TData>;
+			_ringBuffer->_rb = jack_ringbuffer_create(sizeof(TData)*_numChannels*nFrames*_ringBufferSize);
+			memset(_ringBuffer->_rb->buf, 0, _ringBuffer->_rb->size);
 			_positions = jack_ringbuffer_create(sizeof(unsigned)*_ringBufferSize);
 			memset(_positions->buf, 0, _positions->size);
 			_infile->seek(0,SEEK_SET);
@@ -309,7 +319,7 @@ namespace CLAM
 			{
 				CLAM_ASSERT(_overruns,"Overruns is greater than 0. Try a bigger buffer");
 			}
-			jack_ringbuffer_free (_rb);
+			jack_ringbuffer_free (_ringBuffer->_rb);
 			jack_ringbuffer_free (_positions);
 			_numReadFrames = 0;
 			return true; 
