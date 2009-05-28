@@ -31,6 +31,7 @@
 #include <pthread.h>
 #include <jack/ringbuffer.h>
 #include "WorkerSemaphore.hxx"
+#include "RingBuffer.hxx"
 
 namespace CLAM
 {
@@ -95,41 +96,6 @@ namespace CLAM
 			};
 		};
 
-		class RingBuffer
-		{
-		public:
-			typedef CLAM::TData TokenType;
-			RingBuffer(unsigned size)
-				: _overruns(0)
-			{
-				_ringBuffer = jack_ringbuffer_create (size*_sampleSize);
-				memset(_ringBuffer->buf, 0, _ringBuffer->size);
-			}
-			~RingBuffer()
-			{
-				jack_ringbuffer_free (_ringBuffer);
-			}
-			void write(TokenType * buffer, unsigned nFrames)
-			{
-				unsigned sizeInBytes = nFrames * _sampleSize;
-				unsigned actuallyRead = jack_ringbuffer_write(_ringBuffer, (char*)buffer, sizeInBytes);
-				if (actuallyRead < nFrames) _overruns++;
-			}
-			bool read(TokenType * buffer, unsigned nFrames)
-			{
-				unsigned sizeInBytes = nFrames * _sampleSize;
-				if (jack_ringbuffer_read_space(_ringBuffer) < sizeInBytes) return false;
-				jack_ringbuffer_read(_ringBuffer,(char*) buffer, sizeInBytes);
-				return true;
-			}
-			bool hadOverRuns() { return _overruns>0; }
-		private:
-			const static unsigned _ringBufferSize = 16384;
-			const static unsigned _sampleSize = sizeof(TokenType);
-			long _overruns;
-			jack_ringbuffer_t* _ringBuffer;
-		};
-
 		typedef std::vector<CLAM::AudioInPort*> InPorts;
 		InPorts _inports;
 		SndfileHandle* _outfile;
@@ -142,7 +108,7 @@ namespace CLAM
 		const static unsigned _ringBufferSize = 16384;
 		volatile int _isStopped;
 		/* Synchronization between process thread and disk thread. */
-		RingBuffer * _ringBuffer;
+		RingBuffer<TData> * _ringBuffer;
 		WorkerSemaphore * _diskSemaphore;
 
 	public:
@@ -215,7 +181,7 @@ namespace CLAM
 		bool ConcreteStart()
 		{
 			_isStopped = false;
-			_ringBuffer = new RingBuffer(_ringBufferSize*_numChannels);
+			_ringBuffer = new RingBuffer<TData>(_ringBufferSize*_numChannels);
 			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
 			_diskSemaphore = new WorkerSemaphore;
 
