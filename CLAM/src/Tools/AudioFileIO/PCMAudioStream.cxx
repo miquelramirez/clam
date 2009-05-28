@@ -69,7 +69,7 @@ namespace AudioCodecs
 
 		CLAM_ASSERT( mFileHandle != NULL,
 			     "Cannot open file for reading!!!" );
-		MarkAllChannelsAsConsumed();
+		MarkAllChannelsAsDone();
 		mEOFReached = false;
 	}
 
@@ -83,21 +83,7 @@ namespace AudioCodecs
 		CLAM_ASSERT( mFileHandle != NULL,
 			     "Cannot open file for writing!!!" );
 
-		MarkAllChannelsAsProduced();
-	}
-
-	void PCMAudioStream::PrepareReadWrite()
-	{
-		mFileHandle = sf_open( mName.c_str(),
-				       SFM_RDWR,
-				       &mNativeFileParams );
-
-		CLAM_ASSERT( mFileHandle != NULL,
-			     "Cannot open file for reading/writing!!!" );
-
-		MarkAllChannelsAsConsumed();
-		MarkAllChannelsAsProduced();
-		mEOFReached = false;
+		MarkAllChannelsAsDone();
 	}
 
 	void PCMAudioStream::Dispose()

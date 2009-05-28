@@ -92,7 +92,7 @@ namespace AudioCodecs
 		vorbis_info* info = ov_info( &mNativeFileParams, -1 );
 		
 		SetChannels( info->channels );
-		MarkAllChannelsAsConsumed();
+		MarkAllChannelsAsDone();
 
 		mValidFileParams = true;
 		mCurrentSection = 0;
@@ -116,7 +116,7 @@ namespace AudioCodecs
 		}
 		
 		VorbisI_EncoderSetup();
-		MarkAllChannelsAsProduced();
+		MarkAllChannelsAsDone();
 		mEncoding = true;
 	}
 
@@ -185,11 +185,6 @@ namespace AudioCodecs
 		}
 
 
-	}
-
-	void OggVorbisAudioStream::PrepareReadWrite()
-	{
-		CLAM_ASSERT( false, "Cannot be done!" );
 	}
 
 	void OggVorbisAudioStream::Dispose()

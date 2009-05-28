@@ -48,7 +48,6 @@ namespace AudioCodecs
 
 		virtual void PrepareReading()   = 0;
 		virtual void PrepareWriting()   = 0;
-		virtual void PrepareReadWrite() = 0;
 		virtual void Dispose()          = 0;
 		
 		void DeactivateStrictStreaming();
@@ -71,20 +70,15 @@ namespace AudioCodecs
 		virtual void DiskToMemoryTransfer() = 0;
 		virtual void MemoryToDiskTransfer() = 0;
 
-		bool AllChannelsConsumed();
-		void ResetConsumedChannels();
-		void MarkAllChannelsAsConsumed();
-
-		bool AllChannelsProduced();
-		void ResetProducedChannels();
-		void MarkAllChannelsAsProduced();
+		bool AllChannelsDone();
+		void ResetDoneChannels();
+		void MarkAllChannelsAsDone();
 
 		void SetChannels( TSize nChannels );
 
 	protected:
 		TSize               mChannels;
-		std::vector<bool>   mChannelsConsumed;
-		std::vector<bool>   mChannelsProduced;
+		std::vector<bool>   mChannelsDone;
 		bool                mStrictStreaming;
 		std::vector<TData>  mInterleavedData;
 		std::vector<TData>  mInterleavedDataOut;

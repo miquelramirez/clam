@@ -46,7 +46,6 @@ namespace AudioCodecs
 
 		void PrepareReading();
 		void PrepareWriting();
-		void PrepareReadWrite();
 		void Dispose();
 
 	protected:
