@@ -72,6 +72,53 @@ namespace CLAM
 		jack_ringbuffer_t * _rb;
 	};
 
+	class WorkerSemaphore
+	{
+		pthread_mutex_t _diskThreadLock;
+		pthread_cond_t  _dataReadyCondition;
+	public:
+		WorkerSemaphore()
+		{
+			static pthread_cond_t sPthreadCondInitializer = PTHREAD_COND_INITIALIZER;
+			_dataReadyCondition = sPthreadCondInitializer;
+
+			static pthread_mutex_t sPthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
+			_diskThreadLock = sPthreadMutexInitializer;
+		}
+		void wait()
+		{
+			pthread_cond_wait(&_dataReadyCondition, &_diskThreadLock);
+		}
+		/* Tell the disk thread there is work to do.  If it is already
+		 * running, the lock will not be available.  We can't wait
+		 * here in the process() thread, but we don't need to signal
+		 * in that case, because the disk thread will read all the
+		 * data queued before waiting again. */
+		void signalAvailable()
+		{
+			if (pthread_mutex_trylock(&_diskThreadLock) == 0) 
+			{
+				pthread_cond_signal (&_dataReadyCondition);
+				pthread_mutex_unlock (&_diskThreadLock);
+			}
+		}
+		class Lock
+		{
+			pthread_mutex_t & _diskThreadLock;
+		public:
+			Lock(WorkerSemaphore & semaphore)
+				: _diskThreadLock(semaphore._diskThreadLock)
+			{
+				pthread_mutex_lock(&_diskThreadLock);
+			}
+			~Lock()
+			{
+				pthread_mutex_unlock(&_diskThreadLock);
+			}
+		};
+
+	};
+
 	class SndfilePlayerConfig : public ProcessingConfig
 	{
 		DYNAMIC_TYPE_USING_INTERFACE( SndfilePlayerConfig,3, ProcessingConfig );
@@ -90,21 +137,6 @@ namespace CLAM
 
 	class SndfilePlayer : public  Processing
 	{ 
-		class Lock
-		{
-			pthread_mutex_t & _diskThreadLock;
-			public:
-				Lock(pthread_mutex_t & diskThreadLock)
-					: _diskThreadLock(diskThreadLock)
-				{
-					pthread_mutex_lock(&diskThreadLock);
-				}
-				~Lock()
-				{
-					pthread_mutex_unlock(&_diskThreadLock);
-				}
-		};
-
 		typedef SndfilePlayerConfig Config;
 		typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 		OutPorts _outports;
@@ -127,8 +159,7 @@ namespace CLAM
 		volatile int _canProcess;
 		volatile int _isStopped;
 		/* Synchronization between process thread and disk thread. */
-		pthread_mutex_t _diskThreadLock;
-		pthread_cond_t  _dataReadyCondition;
+		WorkerSemaphore _diskSemaphore;
 
 
 		RingBuffer<TData> * _ringBuffer;
@@ -149,12 +180,6 @@ namespace CLAM
 			, _overruns(0)
 			, _ringBuffer(0)
 		{ 
-			static pthread_cond_t sPthreadCondInitializer = PTHREAD_COND_INITIALIZER;
-			_dataReadyCondition = sPthreadCondInitializer;
-
-			static pthread_mutex_t sPthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
-			_diskThreadLock = sPthreadMutexInitializer;
-
 			_isStopped = true;
 			Configure( config );
 		}
@@ -180,10 +205,8 @@ namespace CLAM
 
 		void ReadBufferAndWriteToPorts()
 		{
-			const unsigned itemSize = sizeof(TData); 
 			const unsigned nFrames = _outports[0]->GetAudio().GetBuffer().Size();
 			const unsigned nItems = nFrames*_numChannels;
-			const unsigned nBytes = nItems*itemSize;
 
 			CLAM::TData* channels[_numChannels];
 			for (unsigned channel=0; channel<_numChannels; channel++)
@@ -215,17 +238,7 @@ namespace CLAM
 				if (seekPosition<=1) 
 					_outControlSeek.SendControl(seekPosition);
 			}
-
-			/* Tell the disk thread there is work to do.  If it is already
-			 * running, the lock will not be available.  We can't wait
-			 * here in the process() thread, but we don't need to signal
-			 * in that case, because the disk thread will read all the
-			 * data queued before waiting again. */
-			if (pthread_mutex_trylock(&_diskThreadLock) == 0) 
-			{
-				pthread_cond_signal (&_dataReadyCondition);
-				pthread_mutex_unlock (&_diskThreadLock);
-			}
+			_diskSemaphore.signalAvailable();
 		}
 		void WriteSilenceToPorts(unsigned offset=0)
 		{
@@ -245,7 +258,7 @@ namespace CLAM
 		void DiskThread()
 		{
 			pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-			Lock lock(_diskThreadLock);
+			WorkerSemaphore::Lock lock(_diskSemaphore);
 
 			while (true) 
 			{
@@ -253,7 +266,7 @@ namespace CLAM
 				{
 					// wait until process() signals more data required
 //					std::cout << "W" << std::flush;
-					pthread_cond_wait(&_dataReadyCondition, &_diskThreadLock);
+					_diskSemaphore.wait();
 				}
 				if (_isStopped) return;
 			}
@@ -263,7 +276,6 @@ namespace CLAM
 		{
 			const unsigned nFrames = _outports[0]->GetAudio().GetBuffer().Size();
 			const unsigned nItems = nFrames * _numChannels;
-			const unsigned nBytes = sizeof(TData) * nItems;
 
 			TData * buffer = 0;
 			unsigned writableLength;
@@ -337,11 +349,7 @@ namespace CLAM
 		bool ConcreteStop()
 		{
 			_isStopped = true;
-			if (pthread_mutex_trylock(&_diskThreadLock) == 0) 
-			{
-				pthread_cond_signal (&_dataReadyCondition);
-				pthread_mutex_unlock (&_diskThreadLock);
-			}
+			_diskSemaphore.signalAvailable();
 			pthread_join (_threadId, NULL);
 			if (_infile) delete _infile;
 			_infile = new SndfileHandle(_config.GetSourceFile().c_str(), SFM_READ);
