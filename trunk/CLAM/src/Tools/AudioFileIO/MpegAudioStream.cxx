@@ -70,18 +70,13 @@ namespace AudioCodecs
 		mBitstream.Init( mpHandle );
 
 		SetChannels( mEncodedChannels );
-		MarkAllChannelsAsConsumed();
+		MarkAllChannelsAsDone();
 
 		mSamplesDecoded = 0;
 		mSamplesTransferred = 0;
 	}
 
 	void MpegAudioStream::PrepareWriting()
-	{
-		CLAM_ASSERT( false, "CLAM does not encode Mpeg Audio!!!");
-	}
-
-	void MpegAudioStream::PrepareReadWrite()
 	{
 		CLAM_ASSERT( false, "CLAM does not encode Mpeg Audio!!!");
 	}

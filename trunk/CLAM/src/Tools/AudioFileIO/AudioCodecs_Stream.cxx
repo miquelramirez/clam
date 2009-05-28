@@ -36,42 +36,23 @@ namespace AudioCodecs
 	{
 	}
 
-	bool Stream::AllChannelsProduced()
+	bool Stream::AllChannelsDone()
 	{
-		for (unsigned i=0; i<mChannelsProduced.size(); i++)
-			if (not mChannelsProduced[i]) return false;
+		for (unsigned i=0; i<mChannelsDone.size(); i++)
+			if (not mChannelsDone[i]) return false;
 		return true;
 	}
 
-	void Stream::MarkAllChannelsAsProduced()
+	void Stream::MarkAllChannelsAsDone()
 	{
-		for (unsigned i=0; i<mChannelsProduced.size(); i++)
-			mChannelsProduced[i]=true;
+		for (unsigned i=0; i<mChannelsDone.size(); i++)
+			mChannelsDone[i]=true;
 	}
 
-	void Stream::ResetProducedChannels()
+	void Stream::ResetDoneChannels()
 	{
-		for (unsigned i=0; i<mChannelsProduced.size(); i++)
-			mChannelsProduced[i]=false;
-	}
-
-	bool Stream::AllChannelsConsumed()
-	{
-		for (unsigned i=0; i<mChannelsConsumed.size(); i++)
-			if (not mChannelsConsumed[i]) return false;
-		return true;
-	}
-
-	void Stream::MarkAllChannelsAsConsumed()
-	{
-		for (unsigned i=0; i<mChannelsConsumed.size(); i++)
-			mChannelsConsumed[i]=true;
-	}
-
-	void Stream::ResetConsumedChannels()
-	{
-		for (unsigned i=0; i<mChannelsConsumed.size(); i++)
-			mChannelsConsumed[i]=false;
+		for (unsigned i=0; i<mChannelsDone.size(); i++)
+			mChannelsDone[i]=false;
 	}
 
 	bool Stream::HandleReAllocation( std::vector<TData>& buffer, TSize newSize )
@@ -83,8 +64,8 @@ namespace AudioCodecs
 
 	void Stream::CheckForFileReading( TSize howmany )
 	{
-		if ( StrictStreaming() and not AllChannelsConsumed()) return;
-		ResetConsumedChannels();
+		if ( StrictStreaming() and not AllChannelsDone()) return;
+		ResetDoneChannels();
 		
 		if ( HandleReAllocation( mInterleavedData, howmany*mChannels ) )
 			mFramesToRead = howmany;
@@ -110,7 +91,7 @@ namespace AudioCodecs
 		for (const TData* i = begin + channel; i < end; i+=stride, ptr++ )
 			*ptr = *i;
 		
-		mChannelsConsumed[ channel ] = true;
+		mChannelsDone[ channel ] = true;
 		
 		return mEOFReached;
 		       
@@ -130,7 +111,7 @@ namespace AudioCodecs
 		const TData* end = begin + mInterleavedData.size();
 		//Unused variable TData** const samplesEnd = samples + nchannels;
 		const int* endChannels = channels + nchannels;
-		std::vector<bool>::iterator cIt = mChannelsConsumed.begin();
+		std::vector<bool>::iterator cIt = mChannelsDone.begin();
 		
 		for( int* currentChannel = channels;
 			 currentChannel != endChannels;
@@ -155,8 +136,8 @@ namespace AudioCodecs
 
 	void Stream::PrepareFileWriting( TSize howmany )
 	{
-		if ( not AllChannelsProduced() ) return;
-		ResetProducedChannels();
+		if ( not AllChannelsDone() ) return;
+		ResetDoneChannels();
 			
 		if ( HandleReAllocation( mInterleavedDataOut, howmany * mChannels ) )
 			mFramesToWrite = howmany;
@@ -175,9 +156,9 @@ namespace AudioCodecs
 		      data += stride, ptr++ )
 			*data = *ptr;
 
-		mChannelsProduced[channel] = true;
+		mChannelsDone[channel] = true;
 
-		if ( AllChannelsProduced() )
+		if ( AllChannelsDone() )
 			MemoryToDiskTransfer();
 	}
 
@@ -192,7 +173,7 @@ namespace AudioCodecs
 		TData* end = begin + mInterleavedDataOut.size();
 		const int* endChannels = channels + nchannels;
 		//Unused variable TData** const samplesEnd = samples + nchannels;
-		std::vector<bool>::iterator cIt = mChannelsProduced.begin();
+		std::vector<bool>::iterator cIt = mChannelsDone.begin();
 
 		for( int* currentChannel = channels;
 		     currentChannel != endChannels;
@@ -213,15 +194,14 @@ namespace AudioCodecs
 
 		}
 
-		if ( AllChannelsProduced() )
+		if ( AllChannelsDone() )
 			MemoryToDiskTransfer();
 	}
 
 	void Stream::SetChannels( TSize nChannels )
 	{
 		mChannels = nChannels;
-		mChannelsConsumed.resize( nChannels );
-		mChannelsProduced.resize( nChannels );
+		mChannelsDone.resize( nChannels );
 	}
 
 }
