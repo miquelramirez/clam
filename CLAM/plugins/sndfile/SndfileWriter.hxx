@@ -30,6 +30,7 @@
 #include <CLAM/FileSystem.hxx>
 #include <pthread.h>
 #include <jack/ringbuffer.h>
+#include "WorkerSemaphore.hxx"
 
 namespace CLAM
 {
@@ -127,54 +128,6 @@ namespace CLAM
 			const static unsigned _sampleSize = sizeof(TokenType);
 			long _overruns;
 			jack_ringbuffer_t* _ringBuffer;
-		};
-		class WorkerSemaphore
-		{
-			pthread_mutex_t _diskThreadLock;
-			pthread_cond_t _dataReadyCondition;
-		public:
-			WorkerSemaphore()
-			{
-				static pthread_cond_t sPthreadCondInitializer = PTHREAD_COND_INITIALIZER;
-				_dataReadyCondition = sPthreadCondInitializer;
-
-				static pthread_mutex_t sPthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
-				_diskThreadLock = sPthreadMutexInitializer;
-			}
-			
-			void signalWorkToDo()
-			{
-				/* Tell the disk thread there is work to do.  If it is already
-				 * running, the lock will not be available.  We can't wait
-				 * here in the process() thread, but we don't need to signal
-				 * in that case, because the disk thread will read all the
-				 * data queued before waiting again. */
-				if (pthread_mutex_trylock(&_diskThreadLock) == 0)
-				{
-					pthread_cond_signal (&_dataReadyCondition);
-					pthread_mutex_unlock (&_diskThreadLock);
-				}
-			}
-			/// Wait until the real-time process provides data
-			/// To be called by the non-real-time worker thread
-			void waitMoreWork()
-			{
-				pthread_cond_wait (&_dataReadyCondition, &_diskThreadLock);
-			}
-			class ScopedLock
-			{
-				pthread_mutex_t & _mutex;
-				public:
-					ScopedLock(WorkerSemaphore & semaphore)
-						: _mutex(semaphore._diskThreadLock)
-					{
-						pthread_mutex_lock(&_mutex);
-					}
-					~ScopedLock()
-					{
-						pthread_mutex_unlock(&_mutex);
-					}
-			};
 		};
 
 		typedef std::vector<CLAM::AudioInPort*> InPorts;

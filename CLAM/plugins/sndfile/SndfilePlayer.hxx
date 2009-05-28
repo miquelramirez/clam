@@ -29,6 +29,7 @@
 #include <sndfile.hh>
 #include <pthread.h>
 #include <jack/ringbuffer.h>
+#include "WorkerSemaphore.hxx"
 
 namespace CLAM
 {
@@ -72,62 +73,6 @@ namespace CLAM
 		jack_ringbuffer_t * _rb;
 	};
 
-	class WorkerSemaphore
-	{
-		pthread_mutex_t _diskThreadLock;
-		pthread_cond_t  _dataReadyCondition;
-	public:
-		WorkerSemaphore()
-		{
-			static pthread_cond_t sPthreadCondInitializer = PTHREAD_COND_INITIALIZER;
-			_dataReadyCondition = sPthreadCondInitializer;
-
-			static pthread_mutex_t sPthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
-			_diskThreadLock = sPthreadMutexInitializer;
-		}
-		/**
-		Called by the blockable worker thread whenever the work is
-		exhausted. The worker thread will sleep until the real-time
-		thread provides more work and calls signalWorkToDo.
-		*/
-		void waitMoreWork()
-		{
-			pthread_cond_wait(&_dataReadyCondition, &_diskThreadLock);
-		}
-		/**
-		Called by the real-time thread when it adds more things to do
-		for the blockable worker thread.
-		If the worker is already working, this has no effect.
-		If the worker was sleeping, it will wake up.
-		*/
-		void signalWorkToDo()
-		{
-			if (pthread_mutex_trylock(&_diskThreadLock) == 0) 
-			{
-				pthread_cond_signal (&_dataReadyCondition);
-				pthread_mutex_unlock (&_diskThreadLock);
-			}
-		}
-		/**
-		If instanciated in the main scope of the worker thread,
-		it will avoid the realtime thread to nag it with signals.
-		*/
-		class ScopedLock
-		{
-			pthread_mutex_t & _diskThreadLock;
-		public:
-			ScopedLock(WorkerSemaphore & semaphore)
-				: _diskThreadLock(semaphore._diskThreadLock)
-			{
-				pthread_mutex_lock(&_diskThreadLock);
-			}
-			~ScopedLock()
-			{
-				pthread_mutex_unlock(&_diskThreadLock);
-			}
-		};
-
-	};
 
 	class SndfilePlayerConfig : public ProcessingConfig
 	{
