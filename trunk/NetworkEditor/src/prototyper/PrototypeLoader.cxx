@@ -4,6 +4,7 @@
 #include <QtDesigner/QFormBuilder>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
 #include <QtGui/QDialog>
+#include <QtGui/QPushButton>
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QMessageBox>
 #include <QtGui/QFileDialog>
@@ -574,6 +575,12 @@ void PrototypeLoader::UpdatePlayStatus()
 		else
 			playbackIndicator->setText(tr("<p style='color:red'>Stopped</p>"));
 	}
+	QPushButton * playButton = _interface->findChild<QPushButton*>("PlayButton");
+	if (playButton) playButton->setEnabled(not _network.IsPlaying());
+	QPushButton * pauseButton = _interface->findChild<QPushButton*>("PauseButton");
+	if (pauseButton) pauseButton->setEnabled(_network.IsPlaying());
+	QPushButton * stopButton = _interface->findChild<QPushButton*>("StopButton");
+	if (stopButton) stopButton->setEnabled(not _network.IsStopped());
 }
 
 void PrototypeLoader::Substitute(std::string & subject, const char * pattern, const char * substitution)
