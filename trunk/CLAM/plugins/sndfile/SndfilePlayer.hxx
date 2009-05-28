@@ -85,16 +85,22 @@ namespace CLAM
 			static pthread_mutex_t sPthreadMutexInitializer = PTHREAD_MUTEX_INITIALIZER;
 			_diskThreadLock = sPthreadMutexInitializer;
 		}
-		void wait()
+		/**
+		Called by the blockable worker thread whenever the work is
+		exhausted. The worker thread will sleep until the real-time
+		thread provides more work and calls signalWorkToDo.
+		*/
+		void waitMoreWork()
 		{
 			pthread_cond_wait(&_dataReadyCondition, &_diskThreadLock);
 		}
-		/* Tell the disk thread there is work to do.  If it is already
-		 * running, the lock will not be available.  We can't wait
-		 * here in the process() thread, but we don't need to signal
-		 * in that case, because the disk thread will read all the
-		 * data queued before waiting again. */
-		void signalAvailable()
+		/**
+		Called by the real-time thread when it adds more things to do
+		for the blockable worker thread.
+		If the worker is already working, this has no effect.
+		If the worker was sleeping, it will wake up.
+		*/
+		void signalWorkToDo()
 		{
 			if (pthread_mutex_trylock(&_diskThreadLock) == 0) 
 			{
@@ -102,16 +108,20 @@ namespace CLAM
 				pthread_mutex_unlock (&_diskThreadLock);
 			}
 		}
-		class Lock
+		/**
+		If instanciated in the main scope of the worker thread,
+		it will avoid the realtime thread to nag it with signals.
+		*/
+		class ScopedLock
 		{
 			pthread_mutex_t & _diskThreadLock;
 		public:
-			Lock(WorkerSemaphore & semaphore)
+			ScopedLock(WorkerSemaphore & semaphore)
 				: _diskThreadLock(semaphore._diskThreadLock)
 			{
 				pthread_mutex_lock(&_diskThreadLock);
 			}
-			~Lock()
+			~ScopedLock()
 			{
 				pthread_mutex_unlock(&_diskThreadLock);
 			}
@@ -238,7 +248,7 @@ namespace CLAM
 				if (seekPosition<=1) 
 					_outControlSeek.SendControl(seekPosition);
 			}
-			_diskSemaphore.signalAvailable();
+			_diskSemaphore.signalWorkToDo();
 		}
 		void WriteSilenceToPorts(unsigned offset=0)
 		{
@@ -258,7 +268,7 @@ namespace CLAM
 		void DiskThread()
 		{
 			pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
-			WorkerSemaphore::Lock lock(_diskSemaphore);
+			WorkerSemaphore::ScopedLock lock(_diskSemaphore);
 
 			while (true) 
 			{
@@ -266,7 +276,7 @@ namespace CLAM
 				{
 					// wait until process() signals more data required
 //					std::cout << "W" << std::flush;
-					_diskSemaphore.wait();
+					_diskSemaphore.waitMoreWork();
 				}
 				if (_isStopped) return;
 			}
@@ -349,7 +359,7 @@ namespace CLAM
 		bool ConcreteStop()
 		{
 			_isStopped = true;
-			_diskSemaphore.signalAvailable();
+			_diskSemaphore.signalWorkToDo();
 			pthread_join (_threadId, NULL);
 			if (_infile) delete _infile;
 			_infile = new SndfileHandle(_config.GetSourceFile().c_str(), SFM_READ);
