@@ -46,6 +46,33 @@
 #define DATA_EXAMPLES_PATH "example-data"
 #endif
 
+class PlaybackIndicator : public QLabel
+{
+Q_OBJECT
+public:
+	PlaybackIndicator()
+		: _network(0)
+	{
+	}
+	void setNetwork(CLAM::Network * network)
+	{
+		_network = network;
+	}
+	void updatePlayStatus()
+	{
+		if (not _network)
+			setText(tr("<p style='color:blue'>Dummy</p>"));
+		else if (_network->IsPlaying())
+			setText(tr("<p style='color:green'>Playing...</p>"));
+		else if (_network->IsPaused())
+			setText(tr("<p style='color:orange;text-decoration:blink'>Paused</p>"));
+		else
+			setText(tr("<p style='color:red'>Stopped</p>"));
+	}
+private:
+	CLAM::Network * _network;
+};
+
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -110,14 +137,11 @@ public:
 		ui.action_Compile_Faust_Modules->setEnabled(true);
 #endif
 
-		_playingLabel = new QLabel;
+		_playingLabel = new PlaybackIndicator;
 		statusBar()->addPermanentWidget(_playingLabel);
 		_backendLabel = new QLabel;
 		statusBar()->addPermanentWidget(_backendLabel);
 
-		ui.action_Play->setEnabled(true);
-		ui.action_Stop->setEnabled(false);
-		ui.action_Pause->setEnabled(false);
 		periodicPlayStatusUpdate(); // Should be directly called just once
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), _processingTreeDock, SLOT(setVisible(bool)));
@@ -134,14 +158,7 @@ public:
 		ui.action_Play->setEnabled(not _network.IsPlaying());
 		ui.action_Stop->setEnabled(not _network.IsStopped());
 		ui.action_Pause->setEnabled(_network.IsPlaying());
-		if (_canvas->networkIsDummy() )
-			_playingLabel->setText(tr("<p style='color:blue'>Dummy</p>"));
-		else if (_network.IsPlaying())
-			_playingLabel->setText(tr("<p style='color:green'>Playing...</p>"));
-		else if (_network.IsPaused())
-			_playingLabel->setText(tr("<p style='color:orange;text-decoration:blink'>Paused</p>"));
-		else
-			_playingLabel->setText(tr("<p style='color:red'>Stopped</p>"));
+		_playingLabel->updatePlayStatus();
 	}
 	void updateRecentMenu()
 	{
@@ -204,6 +221,7 @@ public:
 			clear();
 			return;
 		}
+		_playingLabel->setNetwork(&_network);
 		_canvas->loadNetwork(&_network);
 		_canvas->loadGeometriesFromXML();
 		appendRecentFile(filename);
@@ -226,6 +244,7 @@ public:
 		_network.Stop();
 		_networkFile = QString();
 		_network.Clear();
+		_playingLabel->setNetwork(isDummy?0:&_network);
 		_canvas->loadNetwork(isDummy?0:&_network);
 		updateCaption();
 	}
@@ -297,7 +316,7 @@ public slots:
 	void periodicPlayStatusUpdate()
 	{
 		updatePlayStatusIndicator();
-		QTimer::singleShot(200, this, SLOT(periodicPlayStatusUpdate()));
+		QTimer::singleShot(500, this, SLOT(periodicPlayStatusUpdate()));
 	}
 	void updateCaption()
 	{
@@ -520,7 +539,7 @@ private:
 	CLAM::NetworkPlayer * _networkPlayer;
 	QString _networkFile;
 	QLabel * _backendLabel;
-	QLabel * _playingLabel;
+	PlaybackIndicator * _playingLabel;
 	QStringList _recentFiles;
 	
 	QDockWidget * _processingTreeDock;

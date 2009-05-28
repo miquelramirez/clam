@@ -12,6 +12,8 @@
 #include <list>
 #include <string>
 
+class QPushButton;
+
 namespace CLAM
 {
 
@@ -26,6 +28,10 @@ private:
 	Network _network;
 	NetworkPlayer * _player;
 	QWidget * _interface;
+	QPushButton * _playButton;
+	QPushButton * _pauseButton;
+	QPushButton * _stopButton;
+
 //	std::list<CLAM::VM::NetPlot * > mPortMonitors; //QT4PORT
 public:
 	PrototypeLoader();
@@ -65,6 +71,8 @@ private:
 	bool ReportMissingOutPort(const std::string & fullControlName);
 
 	void UpdatePlayStatus();
+private slots:
+	void periodicPlaybackStatusUpdate();
 };
 
 class ControlSource;
