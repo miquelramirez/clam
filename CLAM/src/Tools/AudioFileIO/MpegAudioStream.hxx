@@ -33,11 +33,9 @@ namespace CLAM
 
 namespace AudioCodecs
 {
-	class MpegAudioStream 
-		: public Stream
+	class MpegAudioStream : public Stream
 	{
 	public:
-
 		MpegAudioStream();
 		MpegAudioStream( const AudioFile& file );
 		
@@ -48,14 +46,13 @@ namespace AudioCodecs
 		void Dispose();
 
 	protected:
-
 		void DiskToMemoryTransfer();
 		void MemoryToDiskTransfer();
 
+	private:
 		void ConsumeDecodedSamples();
 
 	protected:
-		
 		std::string   mName;
 		FILE*         mpHandle;
 		MpegBitstream mBitstream;

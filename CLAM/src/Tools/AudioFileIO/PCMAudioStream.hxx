@@ -49,9 +49,8 @@ namespace AudioCodecs
 		void Dispose();
 
 	protected:
-		
 		void DiskToMemoryTransfer();
-		void MemoryToDiskTransfer();		
+		void MemoryToDiskTransfer();
 
 	protected:
 		SNDFILE*            mFileHandle;

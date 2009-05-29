@@ -24,11 +24,11 @@
 #include "Assert.hxx"
 
 #ifdef CLAM_DOUBLE
-#define CLAM_sf_read sf_readf_double
-#define CLAM_sf_write sf_writef_double
+#define CLAM_sf_readf sf_readf_double
+#define CLAM_sf_writef sf_writef_double
 #else
-#define CLAM_sf_read sf_readf_float
-#define CLAM_sf_write sf_writef_float
+#define CLAM_sf_readf sf_readf_float
+#define CLAM_sf_writef sf_writef_float
 #endif
 
 namespace CLAM
@@ -93,12 +93,13 @@ namespace AudioCodecs
 
 	void PCMAudioStream::DiskToMemoryTransfer()
 	{
-		int nChannels = mNativeFileParams.channels;			
+		int nChannels = mNativeFileParams.channels;
+		unsigned nFrames = mInterleavedData.size()/nChannels;
 
 		TData* begin = &mInterleavedData[0];
 		const TData* end = begin + mInterleavedData.size();
 
-		sf_count_t framesRead = CLAM_sf_read( mFileHandle, begin, mFramesToRead );
+		sf_count_t framesRead = CLAM_sf_readf( mFileHandle, begin, nFrames );
 		mFramesLastRead = (TSize)framesRead;
 
 		if ( framesRead == 0 ) // No more data to read - EOF reached
@@ -107,7 +108,7 @@ namespace AudioCodecs
 			return;
 		}
 		
-		if ( framesRead < mFramesToRead ) // EOF reached
+		if ( framesRead < nFrames ) // EOF reached
 		{
 			// We set the remainder to zero
 			for (TData* i = begin + ( framesRead * nChannels ); i != end; i++ )
@@ -119,12 +120,13 @@ namespace AudioCodecs
 	
 	void PCMAudioStream::MemoryToDiskTransfer()
 	{
+		unsigned nFrames = mInterleavedData.size()/mChannels;
 		const TData* begin = &mInterleavedData[0];
-		sf_count_t samplesWritten = CLAM_sf_write( mFileHandle,
+		sf_count_t samplesWritten = CLAM_sf_writef( mFileHandle,
 							   begin,
-							   mFramesToWrite );
+							   nFrames );
 
-		CLAM_DEBUG_ASSERT( samplesWritten == mFramesToWrite,
+		CLAM_DEBUG_ASSERT( samplesWritten == nFrames,
 			     "Could not write all samples to disk!" );
 	}
 

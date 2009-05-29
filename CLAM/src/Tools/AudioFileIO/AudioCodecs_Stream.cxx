@@ -27,8 +27,7 @@ namespace CLAM
 namespace AudioCodecs
 {
 	Stream::Stream()
-		: mStrictStreaming( true )
-		, mFramesLastRead( 0 )
+		: mFramesLastRead( 0 )
 	{
 	}
 
@@ -36,16 +35,9 @@ namespace AudioCodecs
 	{
 	}
 
-	bool Stream::HandleReAllocation( std::vector<TData>& buffer, unsigned newSize )
-	{
-		bool increasing = newSize > buffer.size();
-		buffer.resize( newSize );
-		return increasing;
-	}
-
 	bool Stream::ReadData( int channel, TData* buffer, unsigned nFrames )
 	{
-		CheckForFileReading( nFrames );
+		AdjustInterleavedBuffer( nFrames );
 		DiskToMemoryTransfer();
 		if ( mFramesLastRead == 0 ) return mEOFReached;
 
@@ -60,7 +52,7 @@ namespace AudioCodecs
 	}
 	bool Stream::ReadData(TData** buffers, unsigned nFrames )
 	{
-		CheckForFileReading( nFrames );
+		AdjustInterleavedBuffer( nFrames );
 		DiskToMemoryTransfer();
 		if ( mFramesLastRead == 0 ) return mEOFReached;
 
@@ -74,7 +66,7 @@ namespace AudioCodecs
 
 	bool Stream::ReadData( int* channels, int nchannels, TData** buffers, unsigned nFrames )
 	{
-		CheckForFileReading( nFrames );
+		AdjustInterleavedBuffer( nFrames );
 		DiskToMemoryTransfer();
 		if ( mFramesLastRead == 0 ) return mEOFReached;
 
@@ -97,20 +89,16 @@ namespace AudioCodecs
 		return mEOFReached;
 	}
 
-	void Stream::PrepareFileWriting( unsigned nFrames )
+	void Stream::AdjustInterleavedBuffer( unsigned nFrames )
 	{
-		if ( HandleReAllocation( mInterleavedData, nFrames * mChannels ) )
-			mFramesToWrite = nFrames;
-	}
-	void Stream::CheckForFileReading( unsigned nFrames )
-	{
-		if ( HandleReAllocation( mInterleavedData, nFrames*mChannels ) )
-			mFramesToRead = nFrames;
+		unsigned newSize = nFrames * mChannels;
+		if (newSize == mInterleavedData.size()) return;
+		mInterleavedData.resize( nFrames * mChannels );
 	}
 
 	void Stream::WriteData( int channel, const TData* buffer, unsigned nFrames )
 	{
-		PrepareFileWriting( nFrames );
+		AdjustInterleavedBuffer( nFrames );
 		TData* beginData = &mInterleavedData[0];
 		TData* endData = beginData + mInterleavedData.size();
 		for (TData* data = beginData+channel; data < endData; data += mChannels)
@@ -121,7 +109,7 @@ namespace AudioCodecs
 
 	void Stream::WriteData(TData ** const buffers, unsigned nFrames)
 	{
-		PrepareFileWriting( nFrames );
+		AdjustInterleavedBuffer( nFrames );
 
 		TData * interleaved = &mInterleavedData[0];
 		for (unsigned iFrame=0; iFrame<nFrames; iFrame++)
@@ -134,7 +122,7 @@ namespace AudioCodecs
 	void Stream::WriteData( int* channels, int nchannels,
 				TData** const samples, unsigned nFrames )
 	{
-		PrepareFileWriting( nFrames );
+		AdjustInterleavedBuffer( nFrames );
 
 		TData* begin = &mInterleavedData[0];
 		TData* end = begin + mInterleavedData.size();
