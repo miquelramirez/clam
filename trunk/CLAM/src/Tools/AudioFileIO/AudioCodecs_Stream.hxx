@@ -51,8 +51,6 @@ namespace AudioCodecs
 		virtual void Dispose()          = 0;
 		
 		void DeactivateStrictStreaming();
-		void ActivateStrictStreaming();
-		bool StrictStreaming() const;
 
 		bool ReadData( int channel, TData* ptr, TSize howmany );
 		bool ReadData( int* channels, int nchannels,
@@ -102,21 +100,10 @@ namespace AudioCodecs
 	}
 
 	// inline methods
-	inline void Stream::ActivateStrictStreaming()
-	{
-		mStrictStreaming = true;
-	}
-
 	inline void Stream::DeactivateStrictStreaming()
 	{
 		mStrictStreaming = false;
 	}
-
-	inline bool Stream::StrictStreaming() const
-	{
-		return mStrictStreaming;
-	}
-
 }
 
 }
