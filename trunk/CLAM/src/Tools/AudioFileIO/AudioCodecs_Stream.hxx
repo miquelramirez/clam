@@ -52,13 +52,15 @@ namespace AudioCodecs
 		
 		void DeactivateStrictStreaming();
 
-		bool ReadData( int channel, TData* ptr, TSize howmany );
+		bool ReadData( int channel, TData* buffer, unsigned nFrames );
+		bool ReadData( TData** buffers, unsigned nFrames );
 		bool ReadData( int* channels, int nchannels,
-			       TData** samples, TSize howmany );
+			       TData** buffers, unsigned nFrames );
 
-		void WriteData( int channel, const TData* ptr, TSize howmany );
+		void WriteData( int channel, const TData* buffer, unsigned nFrames );
+		void WriteData( TData** const buffers, unsigned nFrames );
 		void WriteData( int* channels, int nchannels,
-				TData** const samples, TSize howmany );
+				TData** const buffers, unsigned nFrames );
 
 		bool WasSomethingRead() const;
 
@@ -66,27 +68,22 @@ namespace AudioCodecs
 		virtual void DiskToMemoryTransfer() = 0;
 		virtual void MemoryToDiskTransfer() = 0;
 
-		bool AllChannelsDone();
-		void ResetDoneChannels();
-		void MarkAllChannelsAsDone();
-
-		void SetChannels( TSize nChannels );
+		void SetChannels( unsigned nChannels );
 
 	protected:
-		TSize               mChannels;
-		std::vector<bool>   mChannelsDone;
+		unsigned            mChannels;
 		bool                mStrictStreaming;
 		std::vector<TData>  mInterleavedData;
 		bool                mEOFReached;
-		TSize               mFramesToRead;
-		TSize               mFramesToWrite;
-		TSize               mFramesLastRead;
+		unsigned            mFramesToRead;
+		unsigned            mFramesToWrite;
+		unsigned            mFramesLastRead;
 
 	private:
-		void CheckForFileReading( TSize samplesToRead );
-		void PrepareFileWriting( TSize samplesToWrite );
+		void CheckForFileReading( unsigned samplesToRead );
+		void PrepareFileWriting( unsigned samplesToWrite );
 
-		static bool  HandleReAllocation( std::vector<TData>& buffer, TSize newSize );
+		static bool  HandleReAllocation( std::vector<TData>& buffer, unsigned newSize );
 
 	};
 

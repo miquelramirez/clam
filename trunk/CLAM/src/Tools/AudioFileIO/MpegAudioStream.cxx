@@ -64,13 +64,11 @@ namespace AudioCodecs
 			msgString += " for reading!";
 
 			CLAM_ASSERT( false, msgString.c_str() );
-			
 		}
 
 		mBitstream.Init( mpHandle );
 
 		SetChannels( mEncodedChannels );
-		MarkAllChannelsAsDone();
 
 		mSamplesDecoded = 0;
 		mSamplesTransferred = 0;

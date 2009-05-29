@@ -36,172 +36,128 @@ namespace AudioCodecs
 	{
 	}
 
-	bool Stream::AllChannelsDone()
-	{
-		for (unsigned i=0; i<mChannelsDone.size(); i++)
-			if (not mChannelsDone[i]) return false;
-		return true;
-	}
-
-	void Stream::MarkAllChannelsAsDone()
-	{
-		for (unsigned i=0; i<mChannelsDone.size(); i++)
-			mChannelsDone[i]=true;
-	}
-
-	void Stream::ResetDoneChannels()
-	{
-		for (unsigned i=0; i<mChannelsDone.size(); i++)
-			mChannelsDone[i]=false;
-	}
-
-	bool Stream::HandleReAllocation( std::vector<TData>& buffer, TSize newSize )
+	bool Stream::HandleReAllocation( std::vector<TData>& buffer, unsigned newSize )
 	{
 		bool increasing = newSize > buffer.size();
 		buffer.resize( newSize );
 		return increasing;
 	}
 
-	void Stream::CheckForFileReading( TSize howmany )
+	bool Stream::ReadData( int channel, TData* buffer, unsigned nFrames )
 	{
-		if ( mStrictStreaming and not AllChannelsDone()) return;
-		ResetDoneChannels();
-		
-		if ( HandleReAllocation( mInterleavedData, howmany*mChannels ) )
-			mFramesToRead = howmany;
-
-		// Acquire samples from file 
-
+		CheckForFileReading( nFrames );
 		DiskToMemoryTransfer();
-	}
-
-	bool Stream::ReadData( int channel, TData* ptr, TSize howmany )
-	{
-		CheckForFileReading( howmany );
-
 		if ( mFramesLastRead == 0 ) return mEOFReached;
 
 		// Actual data reading
-		int channelCount = mChannels;
-		
 		const TData* begin = &mInterleavedData[0];
 		const TData* end = begin + mInterleavedData.size();
-		const int stride = channelCount;
-		
-		for (const TData* i = begin + channel; i < end; i+=stride, ptr++ )
-			*ptr = *i;
-		
-		mChannelsDone[ channel ] = true;
+		for (const TData* i = begin + channel; i < end; i+=mChannels, buffer++ )
+			*buffer = *i;
 		
 		return mEOFReached;
 		       
 	}
-
-	bool Stream::ReadData( int* channels, int nchannels,
-			       TData** samples, TSize howmany )
+	bool Stream::ReadData(TData** buffers, unsigned nFrames )
 	{
-		CheckForFileReading( howmany );
+		CheckForFileReading( nFrames );
+		DiskToMemoryTransfer();
+		if ( mFramesLastRead == 0 ) return mEOFReached;
 
+		const TData * interleaved = &mInterleavedData[0];
+		for (unsigned iFrame=0; iFrame<nFrames; iFrame++)
+			for (unsigned iChannel=0; iChannel<mChannels; iChannel++)
+				buffers[iChannel][iFrame] = *interleaved++;
+
+		return mEOFReached;
+	}
+
+	bool Stream::ReadData( int* channels, int nchannels, TData** buffers, unsigned nFrames )
+	{
+		CheckForFileReading( nFrames );
+		DiskToMemoryTransfer();
 		if ( mFramesLastRead == 0 ) return mEOFReached;
 
 		// Actual data reading
-		int channelCount = mChannels;
-		
 		const TData* begin = &mInterleavedData[0];
 		const TData* end = begin + mInterleavedData.size();
-		//Unused variable TData** const samplesEnd = samples + nchannels;
 		const int* endChannels = channels + nchannels;
-		std::vector<bool>::iterator cIt = mChannelsDone.begin();
 		
 		for( int* currentChannel = channels;
 			 currentChannel != endChannels;
 			 currentChannel++ )
 		{
 			const int channelIndex = *currentChannel;
-			// mark channel as consumed
-			*(cIt + channelIndex ) = true;
-			const int stride = channelCount;
-			TData* pSamples = *(samples + channelIndex);
-			
-			for ( const TData* i = begin + channelIndex; i<end; i+=stride, pSamples++ )
+			TData* pSamples = buffers[channelIndex];
+			for ( const TData* i = begin + channelIndex; i<end; i+=mChannels)
 			{
-				*pSamples = *i;
+				*pSamples++ = *i;
 			}
-			
 		}
-
 		return mEOFReached;
-		
 	}
 
-	void Stream::PrepareFileWriting( TSize howmany )
+	void Stream::PrepareFileWriting( unsigned nFrames )
 	{
-		if ( not AllChannelsDone() ) return;
-		ResetDoneChannels();
-			
-		if ( HandleReAllocation( mInterleavedData, howmany * mChannels ) )
-			mFramesToWrite = howmany;
+		if ( HandleReAllocation( mInterleavedData, nFrames * mChannels ) )
+			mFramesToWrite = nFrames;
+	}
+	void Stream::CheckForFileReading( unsigned nFrames )
+	{
+		if ( HandleReAllocation( mInterleavedData, nFrames*mChannels ) )
+			mFramesToRead = nFrames;
 	}
 
-	void Stream::WriteData( int channel, const TData* ptr, TSize howmany )
+	void Stream::WriteData( int channel, const TData* buffer, unsigned nFrames )
 	{
-		PrepareFileWriting( howmany );
-		int channelCount = mChannels;
+		PrepareFileWriting( nFrames );
 		TData* beginData = &mInterleavedData[0];
-		TData* endData = beginData+mInterleavedData.size();
-		const int stride = channelCount;
+		TData* endData = beginData + mInterleavedData.size();
+		for (TData* data = beginData+channel; data < endData; data += mChannels)
+			*data = *buffer++;
 
-		for (TData* data = beginData + channel;
-		      data < endData;
-		      data += stride, ptr++ )
-			*data = *ptr;
+		MemoryToDiskTransfer();
+	}
 
-		mChannelsDone[channel] = true;
+	void Stream::WriteData(TData ** const buffers, unsigned nFrames)
+	{
+		PrepareFileWriting( nFrames );
 
-		if ( AllChannelsDone() )
-			MemoryToDiskTransfer();
+		TData * interleaved = &mInterleavedData[0];
+		for (unsigned iFrame=0; iFrame<nFrames; iFrame++)
+			for (unsigned iChannel=0; iChannel<mChannels; iChannel++)
+				*interleaved++ = buffers[iChannel][iFrame];
+
+		MemoryToDiskTransfer();
 	}
 
 	void Stream::WriteData( int* channels, int nchannels,
-				TData** const samples, TSize howmany )
+				TData** const samples, unsigned nFrames )
 	{
-		PrepareFileWriting( howmany );
-	
-		int channelCount = mChannels;
+		PrepareFileWriting( nFrames );
 
 		TData* begin = &mInterleavedData[0];
 		TData* end = begin + mInterleavedData.size();
 		const int* endChannels = channels + nchannels;
-		//Unused variable TData** const samplesEnd = samples + nchannels;
-		std::vector<bool>::iterator cIt = mChannelsDone.begin();
 
 		for( int* currentChannel = channels;
 		     currentChannel != endChannels;
 		     currentChannel++ )
 		{
 			const int channelIndex = *currentChannel;
-			// mark channel as consumed
-			*(cIt + channelIndex ) = true;
-			const int stride = channelCount;
 			const TData* pSamples = *(samples + channelIndex);
-
-			for ( TData* i = begin + channelIndex;
-			      i<end;
-			      i+=stride, pSamples++ )
+			for ( TData* i = begin + channelIndex; i<end; i+=mChannels, pSamples++ )
 			{
 				*i = *pSamples; 
 			}
-
 		}
 
-		if ( AllChannelsDone() )
-			MemoryToDiskTransfer();
+		MemoryToDiskTransfer();
 	}
 
-	void Stream::SetChannels( TSize nChannels )
+	void Stream::SetChannels( unsigned nChannels )
 	{
 		mChannels = nChannels;
-		mChannelsDone.resize( nChannels );
 	}
 
 }
