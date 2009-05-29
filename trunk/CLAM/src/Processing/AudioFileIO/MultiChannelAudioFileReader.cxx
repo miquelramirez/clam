@@ -58,7 +58,6 @@ namespace Hidden
 	{
 		if ( mNativeStream )
 			delete mNativeStream;
-		
 		DestroyOldOutputs();
 	}
 
@@ -333,12 +332,9 @@ namespace Hidden
 
 	void MultiChannelAudioFileReader::DestroyOldOutputs()
 	{
-		for( OutputVector::iterator i = mOutputs.begin();
-		     i != mOutputs.end(); i++ )
-			if( *i ) delete *i;
-
+		for (unsigned i=0; i<mOutputs.size(); i++)
+			delete mOutputs[i];
 		mOutputs.clear();
-		GetOutPorts().Clear();
 	}
 
 	bool MultiChannelAudioFileReader::ConcreteStart()
