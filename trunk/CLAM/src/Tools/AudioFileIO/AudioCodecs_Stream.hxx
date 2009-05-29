@@ -61,8 +61,6 @@ namespace AudioCodecs
 				TData** const samples, TSize howmany );
 
 		bool WasSomethingRead() const;
-		
-
 
 	protected:
 		virtual void DiskToMemoryTransfer() = 0;
@@ -79,7 +77,6 @@ namespace AudioCodecs
 		std::vector<bool>   mChannelsDone;
 		bool                mStrictStreaming;
 		std::vector<TData>  mInterleavedData;
-		std::vector<TData>  mInterleavedDataOut;
 		bool                mEOFReached;
 		TSize               mFramesToRead;
 		TSize               mFramesToWrite;

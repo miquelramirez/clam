@@ -260,7 +260,6 @@ namespace AudioCodecs
 
 			samplesRead = mLastBytesRead / sizeof(TInt16 );
 
-			
 			mDecodeBuffer.insert( mDecodeBuffer.end(),
 					      mBlockBuffer.begin(),
 					      mBlockBuffer.begin() + samplesRead);				
@@ -270,14 +269,12 @@ namespace AudioCodecs
 
 		if ( !mDecodeBuffer.empty() )
 		{
-
 			if ( mDecodeBuffer.size() < unsigned(mInterleavedData.size()) )
 			{
 				mDecodeBuffer.insert( mDecodeBuffer.end(),
 						      mInterleavedData.size() - mDecodeBuffer.size(),
 						      0);
 			}
-			
 			ConsumeDecodedSamples();
 		}
 
@@ -293,34 +290,31 @@ namespace AudioCodecs
 
 		unsigned currentOffset = 0;
 		unsigned i;
-
 		do
 		{
 			for ( i = mEncodeBuffer[0].size(); 
-			      i < mAnalysisWindowSize && currentOffset < mInterleavedDataOut.size(); 
+			      i < mAnalysisWindowSize && currentOffset < mInterleavedData.size(); 
 			      i++ )
 			{
 				for ( int j = 0; j < mEncodedChannels; j++ )
-					mEncodeBuffer[j].push_front( mInterleavedDataOut[ currentOffset + j ] );
+					mEncodeBuffer[j].push_front( mInterleavedData[ currentOffset + j ] );
 
 				currentOffset += mEncodedChannels;
 			}
 
 			if ( i == mAnalysisWindowSize ) // enough samples acquired
 				DoVorbisAnalysis();
-			
-		} while ( currentOffset < mInterleavedDataOut.size() );
+
+		} while ( currentOffset < mInterleavedData.size() );
 
 	}
 
 	void OggVorbisAudioStream::PushAnalysisBlocksOntoOggStream()
 	{
 		int eos = 0;
-
 		while( vorbis_analysis_blockout( &mDSPState, &mVorbisBlock ) == 1 && !eos )
 		{
 			// we assume we want bitrate management
-
 			vorbis_analysis( &mVorbisBlock, NULL );
 			vorbis_bitrate_addblock( &mVorbisBlock );
 
@@ -330,8 +324,6 @@ namespace AudioCodecs
 				ogg_stream_packetin( &mOggStreamState, &mOggPacket );				
 
 				// page writeout
-
-				
 				while( ogg_stream_pageout( &mOggStreamState, &mOggPage ) > 0 
 					&& !eos)
 				{
@@ -339,12 +331,9 @@ namespace AudioCodecs
 					fwrite( mOggPage.body, 1, mOggPage.body_len, mFileHandle );
 					
 					eos = ( ogg_page_eos( &mOggPage ) )? 1 : 0;
-
 				}
-			
 			}
 		}
-
 	}
 
 	void OggVorbisAudioStream::DoVorbisAnalysis()
@@ -358,10 +347,8 @@ namespace AudioCodecs
 		for ( int j = 0; j < mEncodedChannels; j++ )
 		{
 			unsigned i = 0;
-
 			while( !mEncodeBuffer[j].empty() )
 			{
-
 				encBuffer[j][i] = mEncodeBuffer[j].back();
 				mEncodeBuffer[j].pop_back();				
 				i++;
@@ -373,14 +360,9 @@ namespace AudioCodecs
 				encBuffer[j][i] = 0.0;
 				i++;
 			}
-
 		}
-
 		vorbis_analysis_wrote( &mDSPState, mAnalysisWindowSize );
-		
 		PushAnalysisBlocksOntoOggStream();
-	
-
 	}
 }	
 
