@@ -64,7 +64,7 @@ namespace AudioCodecs
 
 	void Stream::CheckForFileReading( TSize howmany )
 	{
-		if ( StrictStreaming() and not AllChannelsDone()) return;
+		if ( mStrictStreaming and not AllChannelsDone()) return;
 		ResetDoneChannels();
 		
 		if ( HandleReAllocation( mInterleavedData, howmany*mChannels ) )
