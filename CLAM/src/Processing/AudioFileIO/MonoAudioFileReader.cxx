@@ -166,8 +166,6 @@ namespace Hidden
 
 		// Reseting the playback to the begining
 		ConcreteStop();
-		mNativeStream = mAudioFile.GetStream();
-		mNativeStream->DeactivateStrictStreaming();
 		ConcreteStart();
 		return true;
 	}
