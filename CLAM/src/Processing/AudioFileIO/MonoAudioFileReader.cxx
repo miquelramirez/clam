@@ -96,19 +96,13 @@ namespace Hidden
 		}
 
 		mNativeStream = mAudioFile.GetStream();
-
-		mNativeStream->DeactivateStrictStreaming();
-
 		return true;
 	}
 
 	bool MonoAudioFileReader::ConcreteStart()
 	{
-		if ( mNativeStream == NULL )
-		{
+		if ( not mNativeStream )
 			mNativeStream = mAudioFile.GetStream();
-			mNativeStream->DeactivateStrictStreaming();
-		}
 
 		mNativeStream->PrepareReading();
 		mCurrentBeginTime = 0.0;
