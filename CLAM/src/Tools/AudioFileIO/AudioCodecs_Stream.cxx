@@ -139,7 +139,7 @@ namespace AudioCodecs
 		if ( not AllChannelsDone() ) return;
 		ResetDoneChannels();
 			
-		if ( HandleReAllocation( mInterleavedDataOut, howmany * mChannels ) )
+		if ( HandleReAllocation( mInterleavedData, howmany * mChannels ) )
 			mFramesToWrite = howmany;
 	}
 
@@ -147,8 +147,8 @@ namespace AudioCodecs
 	{
 		PrepareFileWriting( howmany );
 		int channelCount = mChannels;
-		TData* beginData = &mInterleavedDataOut[0];
-		TData* endData = beginData+mInterleavedDataOut.size();
+		TData* beginData = &mInterleavedData[0];
+		TData* endData = beginData+mInterleavedData.size();
 		const int stride = channelCount;
 
 		for (TData* data = beginData + channel;
@@ -169,8 +169,8 @@ namespace AudioCodecs
 	
 		int channelCount = mChannels;
 
-		TData* begin = &mInterleavedDataOut[0];
-		TData* end = begin + mInterleavedDataOut.size();
+		TData* begin = &mInterleavedData[0];
+		TData* end = begin + mInterleavedData.size();
 		const int* endChannels = channels + nchannels;
 		//Unused variable TData** const samplesEnd = samples + nchannels;
 		std::vector<bool>::iterator cIt = mChannelsDone.begin();

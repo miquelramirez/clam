@@ -123,7 +123,7 @@ namespace AudioCodecs
 	
 	void PCMAudioStream::MemoryToDiskTransfer()
 	{
-		const TData* begin = &mInterleavedDataOut[0];
+		const TData* begin = &mInterleavedData[0];
 		sf_count_t samplesWritten = CLAM_sf_write( mFileHandle,
 							   begin,
 							   mFramesToWrite );
