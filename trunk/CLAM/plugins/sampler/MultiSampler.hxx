@@ -111,7 +111,7 @@ public:
 			}
 		}
 
-		CLAM::SndfilePlayerConfig configClone = dynamic_cast<const CLAM::SndfilePlayerConfig &> (_filePlayers[actualVoice]->GetConfig());
+		CLAM::SndfilePlayer::Config configClone = dynamic_cast<const CLAM::SndfilePlayer::Config &> (_filePlayers[actualVoice]->GetConfig());
 		std::vector<CLAM::SndfilePlayer *>::iterator it;
 		for (it=_filePlayers.begin();it!=_filePlayers.end();it++)
 		{
@@ -218,6 +218,10 @@ public:
 		if (not createPlayers(fileNames))
 			return false;
 
+		std::vector<CLAM::FloatOutControl *>::iterator itControls;
+		for (itControls=_pauseDummyControls.begin();itControls!=_pauseDummyControls.end();itControls++)
+			(*itControls)->SendControl(1.);
+
 		return true;
 	}
 
@@ -233,7 +237,7 @@ private:
 			if (_network)
 				fileplayerInstance->SetNetworkBackLink(_network);
 
-			CLAM::SndfilePlayerConfig playerConfig=CLAM::SndfilePlayerConfig();
+			CLAM::SndfilePlayer::Config playerConfig=CLAM::SndfilePlayer::Config();
 			playerConfig.SetLoop(_config.GetLoopDefaultState());
 			playerConfig.SetSourceFile(*it);
 			if (not fileplayerInstance->Configure(playerConfig))
