@@ -43,12 +43,12 @@ public:
 			{
 				double logEnergy =10 + 10*log(_energy);
 				
-				if (logEnergy < -60)
-					logEnergy = -60;
-				if (logEnergy > 0)
-					logEnergy = 0.;
-				if(logEnergy-_lastLogEnergy<-5) 
-					logEnergy=_lastLogEnergy-5;
+				//if (logEnergy < -60)
+				//	logEnergy = -60;
+				//if (logEnergy > 0)
+				//	logEnergy = 0.;
+				//if(logEnergy-_lastLogEnergy<-5) 
+					//logEnergy=_lastLogEnergy-5;
 
 				std::ofstream file("vumeterRMS.data", std::fstream::app);
 				file << logEnergy << std::endl;
