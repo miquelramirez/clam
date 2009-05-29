@@ -34,25 +34,26 @@
 
 namespace CLAM
 {
-	class SndfilePlayerConfig : public ProcessingConfig
-	{
-		DYNAMIC_TYPE_USING_INTERFACE( SndfilePlayerConfig,3, ProcessingConfig );
-		DYN_ATTRIBUTE( 0, public, AudioInFilename, SourceFile );
-		DYN_ATTRIBUTE( 1, public, bool, Loop );
-		DYN_ATTRIBUTE( 2, public, unsigned, SavedNumberOfChannels );
-
-		protected:
-		void DefaultInit()
-		{
-			AddAll();
-			UpdateData();
-			SetSavedNumberOfChannels(0);
-		};
-	};
-
 	class SndfilePlayer : public  Processing
-	{ 
-		typedef SndfilePlayerConfig Config;
+	{
+	public:
+		class Config : public ProcessingConfig
+		{
+			DYNAMIC_TYPE_USING_INTERFACE( Config, 3, ProcessingConfig );
+			DYN_ATTRIBUTE( 0, public, AudioInFilename, SourceFile );
+			DYN_ATTRIBUTE( 1, public, bool, Loop );
+			DYN_ATTRIBUTE( 2, public, unsigned, SavedNumberOfChannels );
+
+			protected:
+			void DefaultInit()
+			{
+				AddAll();
+				UpdateData();
+				SetSavedNumberOfChannels(0);
+			};
+		};
+
+	private:
 		typedef std::vector<CLAM::AudioOutPort*> OutPorts;
 		OutPorts _outports;
 		CLAM::FloatOutControl _outControlSeek;
@@ -60,7 +61,7 @@ namespace CLAM
 		CLAM::FloatInControl _inControlPause;
 		CLAM::FloatInControl _inControlLoop;
 		SndfileHandle* _infile;
-		SndfilePlayerConfig _config;
+		Config _config;
 		unsigned _sampleSize;
 		unsigned _numChannels;
 		unsigned _numReadFrames;
@@ -98,7 +99,11 @@ namespace CLAM
 			_isStopped = true;
 			Configure( config );
 		}
-
+		~SndfilePlayer()
+		{
+			if (_infile) delete _infile;
+			ResizePorts(0);
+		}
 		bool Do()
 		{
 			/* Do nothing until we're ready to begin. */
@@ -117,7 +122,11 @@ namespace CLAM
 
 			return true;
 		}
-
+		const ProcessingConfig& GetConfig() const
+		{
+			return _config;
+		}
+	private:
 		void ReadBufferAndWriteToPorts()
 		{
 			const unsigned nFrames = _outports[0]->GetAudio().GetBuffer().Size();
@@ -279,10 +288,6 @@ namespace CLAM
 			return true; 
 		}
 
-		const ProcessingConfig& GetConfig() const
-		{
-			return _config;
-		}
 
 		bool ConcreteConfigure(const ProcessingConfig & config)
 		{
@@ -325,7 +330,8 @@ namespace CLAM
 			{
 				return AddConfigErrorMessage(_infile->strError());
 			}
-			if (savedChannels and savedChannels != _infile->channels() )
+			unsigned fileChannels = _infile->channels();
+			if (savedChannels and savedChannels != fileChannels )
 			{
 				return AddConfigErrorMessage(
 					"The configuration have a number of channels saved which \n"
@@ -336,7 +342,7 @@ namespace CLAM
 
 			_inControlLoop.DoControl(_config.GetLoop() ? 1 : 0);
 
-			_numChannels = _infile->channels();
+			_numChannels = fileChannels;
 			_sampleSize = _numChannels*sizeof(TData);
 			_config.SetSavedNumberOfChannels(_numChannels);
 			_buffer.resize(portSize*_numChannels);
@@ -347,12 +353,6 @@ namespace CLAM
 			return true;
 		}
 
-		~SndfilePlayer()
-		{
-			if (_infile) delete _infile;
-			ResizePorts(0);
-		}
-	private:
 		void ResizePorts(unsigned nPorts)
 		{
 			const std::string nameBase = "out";

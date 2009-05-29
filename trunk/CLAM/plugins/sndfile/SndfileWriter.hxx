@@ -123,6 +123,10 @@ namespace CLAM
 			Configure( config );
 		}
 
+		~SndfileWriter()
+		{
+			ResizePorts(0);
+		}
 		bool Do()
 		{
 			//all the ports have to have the same buffer size
@@ -148,6 +152,12 @@ namespace CLAM
 				_inports[channel]->Consume();
 			return true;
 		}
+		const ProcessingConfig& GetConfig() const
+		{
+			return _config;
+		}
+
+	private:
 		void DiskThread()
 		{
 			TData framebuf[_numChannels];
@@ -165,7 +175,7 @@ namespace CLAM
 						CLAM_WARNING(false,"Error writing the file.");
 					}
 				}
-				if (_isStopped) return;
+				if (_isStopped) break;
 				// wait until process() signals more data
 				_diskSemaphore->waitMoreWork();
 			}
@@ -184,6 +194,7 @@ namespace CLAM
 			_ringBuffer = new RingBuffer<TData>(_ringBufferSize*_numChannels);
 			_outfile = new SndfileHandle(_config.GetTargetFile().c_str(), SFM_WRITE,_format,_numChannels,_sampleRate);
 			_diskSemaphore = new WorkerSemaphore;
+			_outfile->setString(SF_STR_SOFTWARE, "CLAM");
 
 			// check if the file is open
 			if(!*_outfile)
@@ -211,11 +222,6 @@ namespace CLAM
 			delete _ringBuffer;
 			delete _diskSemaphore;
 			return true;
-		}
-
-		const ProcessingConfig& GetConfig() const
-		{
-			return _config;
 		}
 
 		EAudioFileWriteFormat ChooseFormat(std::string location)
@@ -308,10 +314,6 @@ namespace CLAM
 			}
 		}
 
-		~SndfileWriter()
-		{
-			ResizePorts(0);
-		}
 	};
 
 }// namespace CLAM
