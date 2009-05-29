@@ -69,21 +69,17 @@ namespace AudioCodecs
 
 		CLAM_ASSERT( mFileHandle != NULL,
 			     "Cannot open file for reading!!!" );
-		MarkAllChannelsAsDone();
 		mEOFReached = false;
 	}
 
 	void PCMAudioStream::PrepareWriting()
 	{
-		
 		mFileHandle = sf_open( mName.c_str(),
 				       SFM_WRITE,
 				       &mNativeFileParams );
 
 		CLAM_ASSERT( mFileHandle != NULL,
 			     "Cannot open file for writing!!!" );
-
-		MarkAllChannelsAsDone();
 	}
 
 	void PCMAudioStream::Dispose()

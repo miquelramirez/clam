@@ -92,7 +92,6 @@ namespace AudioCodecs
 		vorbis_info* info = ov_info( &mNativeFileParams, -1 );
 		
 		SetChannels( info->channels );
-		MarkAllChannelsAsDone();
 
 		mValidFileParams = true;
 		mCurrentSection = 0;
@@ -116,7 +115,6 @@ namespace AudioCodecs
 		}
 		
 		VorbisI_EncoderSetup();
-		MarkAllChannelsAsDone();
 		mEncoding = true;
 	}
 
