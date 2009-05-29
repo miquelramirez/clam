@@ -86,9 +86,8 @@ namespace AudioCodecs
 
 	void MpegAudioStream::DiskToMemoryTransfer()
 	{
-		unsigned samplesToRead = mInterleavedData.size()/mEncodedChannels;
-
-		while( mDecodeBuffer[0].size() < samplesToRead
+		unsigned nFrames = mInterleavedData.size()/mEncodedChannels;
+		while( mDecodeBuffer[0].size() < nFrames
 		       && mBitstream.NextFrame() )
 		{
 			mBitstream.SynthesizeCurrent();
@@ -120,10 +119,10 @@ namespace AudioCodecs
 		{
 
 			for ( int i = 0; i < mEncodedChannels; i++ )
-				if ( mDecodeBuffer[i].size() < samplesToRead )
+				if ( mDecodeBuffer[i].size() < nFrames )
 				{
 					mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
-								 samplesToRead - mDecodeBuffer[i].size(),
+								 nFrames - mDecodeBuffer[i].size(),
 								 mad_fixed_t(0) );
 					
 				}
@@ -136,8 +135,7 @@ namespace AudioCodecs
 
 	void MpegAudioStream::ConsumeDecodedSamples()
 	{
-		TSize samplesToRead = mInterleavedData.size()/mEncodedChannels;
-
+		unsigned nFrames = mInterleavedData.size()/mEncodedChannels;
 		for ( int i = 0; i < mEncodedChannels; i++ )
 		{
 			TIndex currOffset = 0;
@@ -155,16 +153,15 @@ namespace AudioCodecs
 					sampleValue = 1.0;
 				else if ( sampleValue < -1.0 )
 					sampleValue = -1.0;
-					
-				
+
 				mInterleavedData[ currOffset + i ] = TData(sampleValue);
 			}
 			
 			mDecodeBuffer[i].erase( mDecodeBuffer[i].begin(),
-						mDecodeBuffer[i].begin() + samplesToRead );
+						mDecodeBuffer[i].begin() + nFrames );
 		}
 
-		mSamplesTransferred += samplesToRead;
+		mSamplesTransferred += nFrames;
 	}
 
 	void MpegAudioStream::MemoryToDiskTransfer()

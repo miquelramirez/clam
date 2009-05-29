@@ -45,59 +45,47 @@ namespace AudioCodecs
 	public:
 		Stream();
 		virtual ~Stream();
-
+		/// Open the stream in read mode
 		virtual void PrepareReading()   = 0;
+		/// Open the stream in write mode
 		virtual void PrepareWriting()   = 0;
+		/// Close the stream
 		virtual void Dispose()          = 0;
-		
-		void DeactivateStrictStreaming();
-
-		bool ReadData( int channel, TData* buffer, unsigned nFrames );
-		bool ReadData( TData** buffers, unsigned nFrames );
-		bool ReadData( int* channels, int nchannels,
-			       TData** buffers, unsigned nFrames );
-
-		void WriteData( int channel, const TData* buffer, unsigned nFrames );
-		void WriteData( TData** const buffers, unsigned nFrames );
-		void WriteData( int* channels, int nchannels,
-				TData** const buffers, unsigned nFrames );
-
-		bool WasSomethingRead() const;
-
 	protected:
+		/// Move data from the file to mInterleavedData
 		virtual void DiskToMemoryTransfer() = 0;
+		/// Move data from mInterleavedData to the file
 		virtual void MemoryToDiskTransfer() = 0;
 
+	public:
+		/// Read a picked channel
+		bool ReadData( int channel, TData* buffer, unsigned nFrames );
+		/// Read all the channels
+		bool ReadData( TData** buffers, unsigned nFrames );
+		/// Read many picked channels
+		bool ReadData( int* channels, int nchannels,
+		               TData** buffers, unsigned nFrames );
+
+		/// Read a picked channel (Do it has sense?)
+		void WriteData( int channel, const TData* buffer, unsigned nFrames );
+		/// Read all the channels
+		void WriteData( TData** const buffers, unsigned nFrames );
+		/// Read many picked channels (Do it has sense?)
+		void WriteData( int* channels, int nchannels,
+		                TData** const buffers, unsigned nFrames );
+
+	protected:
 		void SetChannels( unsigned nChannels );
 
 	protected:
 		unsigned            mChannels;
-		bool                mStrictStreaming;
 		std::vector<TData>  mInterleavedData;
 		bool                mEOFReached;
-		unsigned            mFramesToRead;
-		unsigned            mFramesToWrite;
 		unsigned            mFramesLastRead;
 
 	private:
-		void CheckForFileReading( unsigned samplesToRead );
-		void PrepareFileWriting( unsigned samplesToWrite );
-
-		static bool  HandleReAllocation( std::vector<TData>& buffer, unsigned newSize );
-
+		void AdjustInterleavedBuffer( unsigned nFrames );
 	};
-
-
-	inline bool Stream::WasSomethingRead() const
-	{
-		return mFramesLastRead != 0;
-	}
-
-	// inline methods
-	inline void Stream::DeactivateStrictStreaming()
-	{
-		mStrictStreaming = false;
-	}
 }
 
 }

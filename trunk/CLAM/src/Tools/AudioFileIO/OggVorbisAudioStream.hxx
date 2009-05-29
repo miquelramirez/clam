@@ -56,6 +56,7 @@ namespace AudioCodecs
 		void DiskToMemoryTransfer();
 		void MemoryToDiskTransfer();
 
+	private:
 		void VorbisI_EncoderSetup();
 		void WriteBitstreamHeader();
 

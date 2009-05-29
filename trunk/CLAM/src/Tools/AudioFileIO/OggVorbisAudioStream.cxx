@@ -336,12 +336,9 @@ namespace AudioCodecs
 
 	void OggVorbisAudioStream::DoVorbisAnalysis()
 	{
-
-		float** encBuffer = vorbis_analysis_buffer( &mDSPState, 
-							    mAnalysisWindowSize);
+		float** encBuffer = vorbis_analysis_buffer(
+			&mDSPState, mAnalysisWindowSize);
 		
-		//Unused variable: int samplesWrote = 0;
-
 		for ( int j = 0; j < mEncodedChannels; j++ )
 		{
 			unsigned i = 0;
