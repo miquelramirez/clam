@@ -168,11 +168,9 @@ namespace AudioCodecs
 		return mFatalError || ferror(mpFile)!=0;
 	}
 
-	bool MpegBitstream::SynthesizeCurrent()
+	void MpegBitstream::SynthesizeCurrent()
 	{
 		mad_synth_frame( &mMpegSynth, &mCurrentFrame );
-
-		return true;
 	}
 
 	struct mad_frame& MpegBitstream::CurrentFrame()
