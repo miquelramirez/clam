@@ -61,7 +61,7 @@ namespace AudioCodecs
 		bool   EOS();
 		bool   FatalError();
 		bool   NextFrame();
-		bool   SynthesizeCurrent();
+		void   SynthesizeCurrent();
 		struct mad_frame& CurrentFrame();
 		struct mad_synth&  CurrentSynthesis();
 		struct mad_stream& StreamState();
