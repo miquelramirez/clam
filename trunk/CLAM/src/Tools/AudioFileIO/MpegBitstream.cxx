@@ -155,8 +155,6 @@ namespace AudioCodecs
 				// we add this frame duration to the bitstream internal timer
 				mad_timer_add( &mStreamTimer, mCurrentFrame.header.duration );
 			}
-
-
 		}
 
 		return validFrameFound;
