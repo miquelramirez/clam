@@ -36,9 +36,7 @@ namespace AudioCodecs
 	class MpegAudioStream : public Stream
 	{
 	public:
-		MpegAudioStream();
 		MpegAudioStream( const AudioFile& file );
-		
 		~MpegAudioStream();
 
 		void PrepareReading();
@@ -52,7 +50,7 @@ namespace AudioCodecs
 	private:
 		void ConsumeDecodedSamples();
 
-	protected:
+	private:
 		std::string   mName;
 		FILE*         mpHandle;
 		MpegBitstream mBitstream;

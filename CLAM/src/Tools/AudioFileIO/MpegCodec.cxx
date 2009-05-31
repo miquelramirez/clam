@@ -126,52 +126,34 @@ namespace AudioCodecs
 	MpegCodec& MpegCodec::Instantiate()
 	{
 		static MpegCodec theInstance;
-
 		return theInstance;
 	}
 
 	bool MpegCodec::IsReadable( std::string uri ) const
 	{
-		// We will just check there is a Mpeg frame in the given
-		// file
+		// If has extension and it is not mp3 reject it
+		std::string::size_type startExt = uri.rfind( '.' );
+		if ( startExt != std::string::npos )
+		{
+			std::string ext = uri.substr(startExt+1);
+			if ( ext!="mp3" && ext!="mpg" && ext!="mpeg")
+				return false;
+		}
 
+		// If it is not readable reject it
 		FILE* handle = fopen( uri.c_str(), "rb" );
-
 		if ( !handle ) // File doesn't exists / not readable
 			return false;
 
+		// Look for an Mpeg frame
 		MpegBitstream bitstream( handle );
-
 		bitstream.Init();
-
 		bool   foundSomeMpegFrame = false;
-		//Unused variable: int    status = 0;
-
 		while( !foundSomeMpegFrame 
 		       && !bitstream.EOS() && !bitstream.FatalError() )
 			foundSomeMpegFrame = bitstream.NextFrame();
-
 		bitstream.Finish();
 		fclose( handle );
-
-		if ( uri.size() > 4 )
-		{
-
-			std::string::size_type startExt = uri.rfind( '.' );
-
-			if ( startExt != std::string::npos )
-			{
-
-				std::string ext;
-				ext.assign( uri, startExt+1, uri.size()-startExt+1 );
-				
-				
-				if ( ext != "mp3" && ext != "mpg" )
-					return false;
-			}
-		}
-
-
 		return foundSomeMpegFrame;
 	}
 
@@ -387,9 +369,9 @@ namespace AudioCodecs
 	{
 		ID3_Frame* fieldFrame = tag.Find( field );
 		if (not fieldFrame) return 0;
-		ID3_Field* artistStr = fieldFrame->GetField( ID3FN_TEXT );
-		if (not artistStr) return 0;
-		return artistStr->GetRawText();
+		ID3_Field* fieldString = fieldFrame->GetField( ID3FN_TEXT );
+		if (not fieldString) return 0;
+		return fieldString->GetRawText();
 	}
 
 	void   MpegCodec::RetrieveTextDescriptors( std::string uri, AudioTextDescriptors& txt )

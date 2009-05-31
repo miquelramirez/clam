@@ -32,11 +32,6 @@ namespace AudioCodecs
 	// A reasonable multiple of four
 	const TSize MpegAudioStream::mMaxDecodedBlockSize = 8192;
 
-	MpegAudioStream::MpegAudioStream()
-		: mpHandle( NULL )
-	{
-	}
-
 	MpegAudioStream::MpegAudioStream( const AudioFile& file )
 		: mpHandle( NULL )
 	{
@@ -108,23 +103,20 @@ namespace AudioCodecs
 							 channelData,
 							 channelData + samplesDecodedThisTime );
 			}
-			
 			mSamplesDecoded += mBitstream.CurrentSynthesis().pcm.length;
-
 		}
 		
 		mFramesLastRead = mDecodeBuffer[0].size();
 
 		if ( !mDecodeBuffer[0].empty() )
 		{
-
 			for ( int i = 0; i < mEncodedChannels; i++ )
 				if ( mDecodeBuffer[i].size() < nFrames )
 				{
-					mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
-								 nFrames - mDecodeBuffer[i].size(),
-								 mad_fixed_t(0) );
-					
+					mDecodeBuffer[i].insert(
+						mDecodeBuffer[i].end(),
+						nFrames - mDecodeBuffer[i].size(),
+						mad_fixed_t(0) );
 				}
 			
 			ConsumeDecodedSamples();
