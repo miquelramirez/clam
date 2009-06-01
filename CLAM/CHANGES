@@ -7,6 +7,23 @@
  * Processing::Get{In,Out}{Control,Port}() overloaded for indexes and names.
  * Processing::GetN{In,Out}{Controls,Ports}() to get the number of connectors.
  * Processing::Get{In,Out}{Controls,Ports}() are now protected methods.
+ * AudioFileIO implementation simplified, API documented
+ * FIX: sndfileplayer didn't loop and stoped sending position control.
+ * Added 'intel-optimize' option to optimize for intel architectures
+ * plugins/spatialization:
+   * Global doxygenation
+   * Vbap3D: 3D panning on whatever 3D speaker layout
+   * New scripts (xyz2ea and ea2xyz) to convert layout files
+   * HoaEncoder: Encodes a plane wave as Higher Order Ambisonics (up to 3rd order)
+   * Hoa2RegularSpeakerArray: Decodes HOA into speaker array
+   * RoomImpulseResponseSimulator: Now supports HOA
+   * ImpulseResponseComputedOnTheFly -> RoomImpulseResponseSimulatorCommandLine
+   * TODO: Blender and Ardour integration
+   * ChoreoSequencer: Changed the input format
+   * LowLatencyConvolution: Fix: Regression on loading IR's smaller than 512 samples
+   * RoomImpulseResponseSimulator: SuppressInitialDelay and SeparateDirectSoundAndReverb options
+   * BFormatRotation: Fixed formulas
+   * CrossCorrelation: Computes the cross-correlation of two audios on spectral domain
 
 2008-08-11 CLAM 1.3.0
 'Shooting flying plugins release'
