@@ -31,7 +31,7 @@ namespace AudioCodecs
 {
 	class PCMCodec : public Codec
 	{
-	protected:
+	private:
 		PCMCodec();
 	public:
 		virtual          ~PCMCodec();

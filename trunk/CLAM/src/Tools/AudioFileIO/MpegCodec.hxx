@@ -36,7 +36,7 @@ namespace AudioCodecs
 
 	class MpegCodec : public Codec
 	{
-	protected:
+	private:
 		MpegCodec();
 
 	public:
