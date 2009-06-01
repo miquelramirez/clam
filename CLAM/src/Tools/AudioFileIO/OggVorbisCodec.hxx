@@ -31,7 +31,7 @@ namespace AudioCodecs
 	/** Codec inplementation for the Ogg Vorbis audio file format */
 	class OggVorbisCodec : public Codec
 	{
-	protected:
+	private:
 		OggVorbisCodec();
 	public:
 		virtual                ~OggVorbisCodec();
