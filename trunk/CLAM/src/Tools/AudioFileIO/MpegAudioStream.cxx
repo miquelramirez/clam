@@ -153,6 +153,12 @@ namespace AudioCodecs
 	{
 		CLAM_ASSERT( false, "CLAM does not encode Mpeg Audio!!!");
 	}
+
+	void MpegAudioStream::SeekTo(unsigned long framePosition)
+	{
+		// Ignore it by now
+		std::cout << "Seek ignored" << std::endl;
+	}
 }
 	
 }
