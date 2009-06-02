@@ -27,7 +27,8 @@ namespace CLAM
 namespace AudioCodecs
 {
 	Stream::Stream()
-		: mFramesLastRead( 0 )
+		: mFramesLastRead(0)
+		, mFramePosition(0)
 	{
 	}
 

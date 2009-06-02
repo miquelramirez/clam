@@ -42,14 +42,6 @@ namespace AudioCodecs
 	const unsigned OggVorbisAudioStream::mMaxBlockSize = 4096 / sizeof(TInt16); // Seems to be the 'reference' value
 	const unsigned OggVorbisAudioStream::mAnalysisWindowSize = 1024;
 	
-	OggVorbisAudioStream::OggVorbisAudioStream()
-		: mFileHandle( NULL )
-		, mValidFileParams( false )
-		, mEncoding( false )
-	{
-		mBlockBuffer.resize( mMaxBlockSize );
-	}
-
 	OggVorbisAudioStream::OggVorbisAudioStream( const AudioFile& file )
 		: mFileHandle( NULL )
 		, mValidFileParams( false )

@@ -36,12 +36,6 @@ namespace CLAM
 
 namespace AudioCodecs
 {
-	PCMAudioStream::PCMAudioStream()
-		: mFileHandle( NULL )
-	{
-		mNativeFileParams.format = 0;
-	}
-
 	PCMAudioStream::PCMAudioStream( const AudioFile& file )
 		: mFileHandle( NULL )
 	{

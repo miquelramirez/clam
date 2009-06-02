@@ -39,9 +39,7 @@ namespace AudioCodecs
 	class PCMAudioStream : public Stream
 	{
 	public:
-		PCMAudioStream();
 		PCMAudioStream( const AudioFile& file );
-
 		~PCMAudioStream();
 
 		void PrepareReading();

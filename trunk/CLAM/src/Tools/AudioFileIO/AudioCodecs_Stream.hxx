@@ -51,9 +51,11 @@ namespace AudioCodecs
 		virtual void PrepareWriting()   = 0;
 		/// Close the stream
 		virtual void Dispose()          = 0;
-		// Moves the current position to framePosition.
-		// If such functionality is not supported by the stream it will be ignored.
+		/// Moves the current position to framePosition.
+		/// If such functionality is not supported by the stream it will be ignored.
 		virtual void SeekTo(unsigned long framePosition) {}
+		/// Returns the current frame position
+		virtual unsigned long GetFramePosition() const {return mFramePosition;}
 	protected:
 		/// Move data from the file to mInterleavedData
 		virtual void DiskToMemoryTransfer() = 0;
@@ -85,6 +87,7 @@ namespace AudioCodecs
 		std::vector<TData>  mInterleavedData;
 		bool                mEOFReached;
 		unsigned            mFramesLastRead;
+		unsigned long       mFramePosition;
 
 	private:
 		void AdjustInterleavedBuffer( unsigned nFrames );
