@@ -43,9 +43,7 @@ namespace AudioCodecs
 	{
 
 	public:
-		OggVorbisAudioStream();
 		OggVorbisAudioStream( const AudioFile& file );
-
 		~OggVorbisAudioStream();
 
 		void PrepareReading();
