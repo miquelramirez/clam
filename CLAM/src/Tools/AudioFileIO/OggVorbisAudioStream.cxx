@@ -164,16 +164,16 @@ namespace AudioCodecs
 			fwrite( mOggPage.header, 1, mOggPage.header_len, mFileHandle );
 			fwrite( mOggPage.body, 1, mOggPage.body_len, mFileHandle );
 		}
-
-
 	}
 
 	void OggVorbisAudioStream::Dispose()
 	{
 		if ( mFileHandle == NULL) return;
-		if ( !mEncoding )
+		if ( not mEncoding )
 		{
 			ov_clear( &mNativeFileParams );
+			fclose( mFileHandle );
+			mFileHandle = NULL;
 			return;
 		}
 		// Encoding dispose is more complex
@@ -197,7 +197,7 @@ namespace AudioCodecs
 		vorbis_info_clear( &mStreamInfo );
 
 		fclose( mFileHandle );
-
+		mFileHandle = NULL;
 		mEncoding = false;
 	}
 
