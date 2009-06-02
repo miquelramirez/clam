@@ -172,7 +172,6 @@ namespace AudioCodecs
 		if ( not mEncoding )
 		{
 			ov_clear( &mNativeFileParams );
-			fclose( mFileHandle );
 			mFileHandle = NULL;
 			return;
 		}
