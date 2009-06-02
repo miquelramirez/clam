@@ -10,6 +10,7 @@ namespace CLAM
 		, mLowerBound(0)
 		, mBounded(false)
 		, mHasDefaultValue(false)
+		, _hasBeenRead(true)
 	{
 		if (proc) proc->RegisterInControl(this);
 	}
