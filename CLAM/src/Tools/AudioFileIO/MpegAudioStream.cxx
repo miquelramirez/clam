@@ -124,7 +124,7 @@ namespace AudioCodecs
 		unsigned nFrames = mInterleavedData.size()/mChannels;
 		for (unsigned i = 0; i < mChannels; i++ )
 		{
-			TIndex currOffset = 0;
+			unsigned currOffset = 0;
 			for ( std::deque<mad_fixed_t>::iterator j = mDecodeBuffer[i].begin();
 			      currOffset < mInterleavedData.size(); 
 			      j++, currOffset+=mChannels )
@@ -156,8 +156,25 @@ namespace AudioCodecs
 
 	void MpegAudioStream::SeekTo(unsigned long framePosition)
 	{
-		// Ignore it by now
-		std::cout << "Seek ignored" << std::endl;
+		if (framePosition==mFramePosition) return;
+		// Mad doesn't know going back so rewind it all if we move backwards
+		if (framePosition<mFramePosition)
+		{
+			fseek(mpHandle, 0, SEEK_SET);
+			mBitstream.Init();
+			mFramePosition = 0;
+		}
+		// And now in any case move frame to frame
+		while ( mBitstream.NextFrame() )
+		{
+			std::cout << "Seeking " << mFramePosition << std::endl;
+			unsigned frameSize= 32*MAD_NSBSAMPLES(&mBitstream.CurrentFrame().header);
+			if (mFramePosition+2*frameSize>framePosition)
+				break;
+			mFramePosition+=frameSize;
+		}
+		// We should synthsize the previous frame to the one we want.
+		mBitstream.SynthesizeCurrent();
 	}
 }
 	
