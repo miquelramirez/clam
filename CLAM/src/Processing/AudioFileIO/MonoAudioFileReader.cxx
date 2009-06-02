@@ -40,9 +40,9 @@ namespace Hidden
 	
 	
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )
-		: mOutput( "Samples Read", this ),
-		  mTimeOutput( "Current Time Position", this),
-		  mNativeStream( NULL )
+		: mOutput( "Samples Read", this )
+		, mTimeOutput( "Current Time Position", this)
+		, mNativeStream( NULL )
 	{
 		Configure( cfg );
 	}
@@ -129,36 +129,34 @@ namespace Hidden
 	}
 
 
-	bool MonoAudioFileReader::Do( Audio & outputSamples )		
+	bool MonoAudioFileReader::Do( Audio & output )		
 	{
-		if ( !AbleToExecute() )
-			return false;
+		TData * outputBuffer = output.GetBuffer().GetPtr();
+		const unsigned outputSize = output.GetSize();
 
-		if ( !mEOFReached ) 
+		if ( not mEOFReached ) 
 		{
-			mEOFReached = mNativeStream->ReadData( mConfig.GetSelectedChannel(),
-					       outputSamples.GetBuffer().GetPtr(),
-					       outputSamples.GetSize() );
+			mEOFReached = mNativeStream->ReadData(mConfig.GetSelectedChannel(), outputBuffer, outputSize);
 		}
 		else 
 		{
-			if ( mEOFReached ) mCurrentBeginTime = GetHeader().GetLength();// /1000;
-			memset ((void *)outputSamples.GetBuffer().GetPtr(), 0, outputSamples.GetSize()*sizeof(TData));
+			mCurrentBeginTime = GetHeader().GetLength();// /1000;
+			memset ((void *)outputBuffer, 0, outputSize*sizeof(TData));
 		}
-		
-		outputSamples.SetBeginTime( mCurrentBeginTime );
-		if ( !mEOFReached )
+		output.SetBeginTime( mCurrentBeginTime );
+
+		if ( not mEOFReached )
 		{
-			mDeltaTime = outputSamples.GetSize() / mAudioFile.GetHeader().GetSampleRate()*1000;
-			mCurrentBeginTime += mDeltaTime;
+			TTime deltaTime = output.GetSize() / mAudioFile.GetHeader().GetSampleRate()*1000;
+			mCurrentBeginTime += deltaTime;
 		}
 		mTimeOutput.SendControl( mCurrentBeginTime / 1000 );
-		outputSamples.SetSampleRate( mAudioFile.GetHeader().GetSampleRate() );
+		output.SetSampleRate( mAudioFile.GetHeader().GetSampleRate() );
 		
-		if ( ! mEOFReached ) return true;
-		if ( ! mConfig.GetLoop() ) return false;
+		if ( not mEOFReached ) return true; // Still in the middle
+		if ( not mConfig.GetLoop() ) return false; // End reached, not looping
 
-		// Reseting the playback to the begining
+		// Looping TODO: This could imply some expensive operations
 		ConcreteStop();
 		ConcreteStart();
 		return true;
