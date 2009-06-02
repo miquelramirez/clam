@@ -61,7 +61,6 @@ namespace CLAM
 		FloatOutControl           mTimeOutput;
 		AudioCodecs::Stream*      mNativeStream;
 		TTime                     mCurrentBeginTime;
-		TTime                     mDeltaTime;
 		bool                      mEOFReached;
 	};
 }
