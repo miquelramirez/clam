@@ -89,7 +89,7 @@ namespace AudioCodecs
 		std::deque<TInt16>      mDecodeBuffer;
 		
 		TSize                   mLastBytesRead;
-  	};
+	};
 }
 
 }
