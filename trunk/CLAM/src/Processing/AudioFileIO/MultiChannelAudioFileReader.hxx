@@ -50,6 +50,7 @@ namespace CLAM
 		const AudioFileHeader & GetHeader() const { return mAudioFile.GetHeader(); }
 		const AudioTextDescriptors & GetTextDescriptors () const { return mAudioFile.GetTextDescriptors(); }
 		const EAudioFileCodec GetCodec() const { return mAudioFile.GetCodec(); }
+		const std::vector<TIndex> & GetSelectedChannels() const {return mSelectedChannels;}
 		
 	        void Pause() { mIsPaused = (mIsPaused)?false:true; }; //TODO change to Qt boolean interface (pau)
 	
