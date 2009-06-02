@@ -51,8 +51,8 @@ namespace AudioCodecs
 			Dispose();
 		mName = file.GetLocation();
 		mEncodedSampleRate = (int)file.GetHeader().GetSampleRate();
-		mEncodedChannels = (int)file.GetHeader().GetChannels();
-		mEncodeBuffer.resize( mEncodedChannels ); // as many stream buffers as channels
+		mChannels = (int)file.GetHeader().GetChannels();
+		mEncodeBuffer.resize( mChannels ); // as many stream buffers as channels
 		mBlockBuffer.resize( mMaxBlockSize );
 	}
 
@@ -87,6 +87,7 @@ namespace AudioCodecs
 
 		mValidFileParams = true;
 		mCurrentSection = 0;
+		mFramePosition = 0;
 		
 		// MRJ: Seen on Audacity sources. It seems that
 		// not all encoders respect the specs right: sometimes
@@ -118,7 +119,7 @@ namespace AudioCodecs
 		// encoding mode choosing
 
 		int retValue = vorbis_encode_init_vbr( &mStreamInfo, 
-						       mEncodedChannels,
+						       mChannels,
 						       mEncodedSampleRate,
 						       0.5 );
 
@@ -139,7 +140,6 @@ namespace AudioCodecs
 
 		WriteBitstreamHeader();
 
-		SetChannels( mEncodedChannels );
 	}
 
 	void OggVorbisAudioStream::WriteBitstreamHeader()
@@ -214,20 +214,24 @@ namespace AudioCodecs
 
 	void OggVorbisAudioStream::ConsumeDecodedSamples()
 	{
-		CLAM_ASSERT( mDecodeBuffer.size() >= unsigned(mInterleavedData.size()),
+		unsigned nFrames = mInterleavedData.size();
+		TData* pSamples = &mInterleavedData[0];
+
+		CLAM_ASSERT( mDecodeBuffer.size() >= nFrames,
 			     "This method cannot be called if the decode buffer"
 			     " has less samples than requested by the upper level");
 
 		static const TData norm = 1.0 / 32768.0;
 
-		TData* pSamples = &mInterleavedData[0];
-		const TData* pSamplesEnd = pSamples + mInterleavedData.size();
-		for( std::deque<TInt16>::iterator i = mDecodeBuffer.begin();
-		     pSamples < pSamplesEnd; i++, pSamples++ )
-			*pSamples = TData(*i)*norm;		
-		
-		mDecodeBuffer.erase( mDecodeBuffer.begin(),
-				     mDecodeBuffer.begin()+mInterleavedData.size() );
+		const TData* pSamplesEnd = pSamples + nFrames;
+		typedef std::deque<TInt16> sampleDeque;
+		for( sampleDeque::iterator i = mDecodeBuffer.begin(); pSamples < pSamplesEnd; i++)
+			*pSamples++ = TData(*i)*norm;
+
+		mDecodeBuffer.erase(
+			mDecodeBuffer.begin(),
+			mDecodeBuffer.begin()+nFrames );
+		mFramePosition+=nFrames;
 	}
 
 	void OggVorbisAudioStream::DiskToMemoryTransfer()
@@ -235,7 +239,7 @@ namespace AudioCodecs
 		//Unused variable: TSize nBytes = 0;
 		unsigned samplesRead = 0;
 
-		while ( mDecodeBuffer.size() < unsigned(mInterleavedData.size()) )
+		while (mDecodeBuffer.size() < mInterleavedData.size())
 		{
 			mLastBytesRead = ov_read( &mNativeFileParams, 
 						  (char*)&mBlockBuffer[0], 
@@ -244,31 +248,31 @@ namespace AudioCodecs
 						  2, 1, &mCurrentSection );
 			
 			CLAM_ASSERT( mLastBytesRead >= 0, "Malformed OggVorbis file!" );
-			CLAM_ASSERT( mLastBytesRead % mEncodedChannels == 0, "BIG Whoops!" );
+			CLAM_ASSERT( mLastBytesRead % mChannels == 0, "BIG Whoops!" );
 
 			if ( mLastBytesRead == 0 ) break;
 
 			samplesRead = mLastBytesRead / sizeof(TInt16 );
 
-			mDecodeBuffer.insert( mDecodeBuffer.end(),
-					      mBlockBuffer.begin(),
-					      mBlockBuffer.begin() + samplesRead);				
+			mDecodeBuffer.insert(
+				mDecodeBuffer.end(),
+				mBlockBuffer.begin(),
+				mBlockBuffer.begin() + samplesRead);				
 		}
 
 		mFramesLastRead = mDecodeBuffer.size();
-
-		if ( !mDecodeBuffer.empty() )
-		{
-			if ( mDecodeBuffer.size() < unsigned(mInterleavedData.size()) )
-			{
-				mDecodeBuffer.insert( mDecodeBuffer.end(),
-						      mInterleavedData.size() - mDecodeBuffer.size(),
-						      0);
-			}
-			ConsumeDecodedSamples();
-		}
-
 		mEOFReached = ( mLastBytesRead == 0) && (mDecodeBuffer.empty());
+
+		if (mDecodeBuffer.empty()) return;
+
+		if (mDecodeBuffer.size() < mInterleavedData.size())
+		{
+			mDecodeBuffer.insert(
+				mDecodeBuffer.end(),
+				mInterleavedData.size() - mDecodeBuffer.size(),
+				0);
+		}
+		ConsumeDecodedSamples();
 	}
 
 	void OggVorbisAudioStream::MemoryToDiskTransfer()
@@ -286,10 +290,10 @@ namespace AudioCodecs
 			      i < mAnalysisWindowSize && currentOffset < mInterleavedData.size(); 
 			      i++ )
 			{
-				for ( int j = 0; j < mEncodedChannels; j++ )
+				for (unsigned j=0; j<mChannels; j++)
 					mEncodeBuffer[j].push_front( mInterleavedData[ currentOffset + j ] );
 
-				currentOffset += mEncodedChannels;
+				currentOffset += mChannels;
 			}
 
 			if ( i == mAnalysisWindowSize ) // enough samples acquired
@@ -331,7 +335,7 @@ namespace AudioCodecs
 		float** encBuffer = vorbis_analysis_buffer(
 			&mDSPState, mAnalysisWindowSize);
 		
-		for ( int j = 0; j < mEncodedChannels; j++ )
+		for (unsigned j = 0; j < mChannels; j++ )
 		{
 			unsigned i = 0;
 			while( !mEncodeBuffer[j].empty() )
