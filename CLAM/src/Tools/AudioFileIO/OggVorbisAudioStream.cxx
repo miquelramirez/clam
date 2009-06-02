@@ -80,8 +80,8 @@ namespace AudioCodecs
 		}
 
 		vorbis_info* info = ov_info( &mNativeFileParams, -1 );
-		
-		SetChannels( info->channels );
+		CLAM_ASSERT(mChannels==info->channels,
+			"OggVorbisAudioStream: channels info changed before opening");
 
 		mValidFileParams = true;
 		mCurrentSection = 0;
@@ -116,10 +116,8 @@ namespace AudioCodecs
 		vorbis_info_init( &mStreamInfo );
 
 		// encoding mode choosing
-		int retValue = vorbis_encode_init_vbr( &mStreamInfo, 
-						       mChannels,
-						       mEncodedSampleRate,
-						       0.5 );
+		int retValue = vorbis_encode_init_vbr(
+			&mStreamInfo, mChannels, mEncodedSampleRate, 0.5 );
 
 		CLAM_ASSERT( retValue == 0, "Error trying to initialize Vorbis encoder!" );
 
@@ -137,7 +135,6 @@ namespace AudioCodecs
 		ogg_stream_init( &mOggStreamState, rand() );
 
 		WriteBitstreamHeader();
-
 	}
 
 	void OggVorbisAudioStream::WriteBitstreamHeader()
