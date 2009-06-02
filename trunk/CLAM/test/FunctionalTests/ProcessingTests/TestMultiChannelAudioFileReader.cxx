@@ -137,12 +137,12 @@ namespace CLAMTest
 			CLAM::MultiChannelAudioFileReaderConfig cfgToBeChecked =
 				dynamic_cast< const CLAM::MultiChannelAudioFileReaderConfig& > ( proc.GetConfig() );
 			
-			const CLAM::Array< CLAM::TIndex >& channels = proc.GetSelectedChannels();
+			const std::vector< CLAM::TIndex >& channels = proc.GetSelectedChannels();
 
-			CPPUNIT_ASSERT_EQUAL ( channels.Size(), proc.GetHeader().GetChannels() );
+			CPPUNIT_ASSERT_EQUAL ( channels.size(), unsigned(proc.GetHeader().GetChannels()) );
 
 			bool allChannelsPresent = true;
-			for ( int i = 0; i < channels.Size(); i++ )
+			for ( unsigned i = 0; i < channels.size(); i++ )
 				allChannelsPresent &= (channels[i] == i);
 
 			CPPUNIT_ASSERT_EQUAL( true, allChannelsPresent );
@@ -180,12 +180,12 @@ namespace CLAMTest
 			CLAM::MultiChannelAudioFileReaderConfig cfgToBeChecked =
 				dynamic_cast< const CLAM::MultiChannelAudioFileReaderConfig& > ( proc.GetConfig() );
 			
-			const CLAM::Array< CLAM::TIndex >& channels = proc.GetSelectedChannels();
+			const std::vector< CLAM::TIndex >& channels = proc.GetSelectedChannels();
 
-			CPPUNIT_ASSERT_EQUAL ( channels.Size(), cfg.GetSelectedChannels().Size() );
+			CPPUNIT_ASSERT_EQUAL ( channels.size(), unsigned(cfg.GetSelectedChannels().Size()) );
 
 			bool allChannelsPresent = true;
-			for ( int i = 0; i < channels.Size(); i++ )
+			for (unsigned i = 0; i < channels.size(); i++ )
 				allChannelsPresent &= (channels[i] == cfg.GetSelectedChannels()[i] );
 			CPPUNIT_ASSERT_EQUAL( true,
 					      allChannelsPresent );
@@ -772,12 +772,16 @@ namespace CLAMTest
 			CLAM::MultiChannelAudioFileReaderConfig cfgReader;
 			cfgReader.SetSourceFile( mPathToTestData+"test-stereo-decoding-64_44.mp3" );
 			CLAM::MultiChannelAudioFileReader procReader(cfgReader);
+			if (not procReader.IsConfigured())
+				std::cout << "Reader: " << procReader.GetConfigErrorMessage() << std::endl;
 
 			CLAM::MultiChannelAudioFileWriterConfig cfgWriter;
 			cfgWriter.SetTargetFile( "test-mp3-64-44.wav" );
 			cfgWriter.SetSampleRate( procReader.GetHeader().GetSampleRate() );
 			cfgWriter.SetNChannels( procReader.GetHeader().GetChannels() );
 			CLAM::MultiChannelAudioFileWriter procWriter(cfgWriter);
+			if (not procWriter.IsConfigured())
+				std::cout << "Writer: " << procWriter.GetConfigErrorMessage() << std::endl;
 
 			std::vector<CLAM::Audio> samples(2);
 			samples[0].SetSize( 4096 );
