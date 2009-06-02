@@ -71,8 +71,6 @@ namespace CLAM
 		pthread_t _threadId;
 		long _overruns;
 		const static unsigned _ringBufferSize = 4;
-		volatile int _canPlay;
-		volatile int _canProcess;
 		volatile int _isStopped;
 		/* Synchronization between process thread and disk thread. */
 		WorkerSemaphore _diskSemaphore;
@@ -106,10 +104,6 @@ namespace CLAM
 		}
 		bool Do()
 		{
-			/* Do nothing until we're ready to begin. */
-			if (not _canProcess) return false;
-			if (not _canPlay) return false;
-
 			// PAUSE CONTROL
 			if (_inControlPause.GetLastValue()<0.5)
 				ReadBufferAndWriteToPorts();
@@ -259,15 +253,11 @@ namespace CLAM
 			_outControlSeek.SendControl(0.);
 			_numReadFrames = 0;
 			_isStopped = false;
-			_canProcess = 0;
 			const unsigned nFrames = _outports[0]->GetAudio().GetBuffer().Size();
 			_ringBuffer = new RingBuffer<TData>(_numChannels*nFrames*_ringBufferSize);
 			_positionsBuffer = new RingBuffer<unsigned>(_ringBufferSize);
 			_infile->seek(0,SEEK_SET);
-			_canPlay = 0;
 			pthread_create(&_threadId, NULL, DiskThreadCallback, this);
-			_canProcess = 1;
-			_canPlay = 1;
 			return true; 
 		}
 		bool ConcreteStop()
