@@ -203,23 +203,25 @@ namespace AudioCodecs
 
 	void OggVorbisAudioStream::ConsumeDecodedSamples()
 	{
-		unsigned nFrames = mInterleavedData.size();
+		unsigned nItems = mInterleavedData.size();
 		TData* pSamples = &mInterleavedData[0];
 
-		CLAM_ASSERT( mDecodeBuffer.size() >= nFrames,
+		CLAM_ASSERT( mDecodeBuffer.size() >= nItems,
 			     "This method cannot be called if the decode buffer"
 			     " has less samples than requested by the upper level");
 
 		static const TData norm = 1.0 / 32768.0;
 
-		const TData* pSamplesEnd = pSamples + nFrames;
+		const TData* pSamplesEnd = pSamples + nItems;
 		typedef std::deque<TInt16> sampleDeque;
 		for( sampleDeque::iterator i = mDecodeBuffer.begin(); pSamples < pSamplesEnd; i++)
 			*pSamples++ = TData(*i)*norm;
 
 		mDecodeBuffer.erase(
 			mDecodeBuffer.begin(),
-			mDecodeBuffer.begin()+nFrames );
+			mDecodeBuffer.begin()+nItems );
+
+		unsigned nFrames = nItems / mChannels;
 		mFramePosition+=nFrames;
 	}
 
