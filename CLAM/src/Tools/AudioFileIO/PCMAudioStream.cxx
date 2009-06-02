@@ -58,7 +58,7 @@ namespace AudioCodecs
 				       &mNativeFileParams );
 
 		CLAM_ASSERT( mFileHandle != NULL,
-			     "Cannot open file for reading!!!" );
+			"Cannot open file for reading!!!" );
 		mEOFReached = false;
 		mFramePosition = 0;
 	}
@@ -70,7 +70,7 @@ namespace AudioCodecs
 				       &mNativeFileParams );
 
 		CLAM_ASSERT( mFileHandle != NULL,
-			     "Cannot open file for writing!!!" );
+			"Cannot open file for writing!!!" );
 	}
 
 	void PCMAudioStream::Dispose()
@@ -122,6 +122,7 @@ namespace AudioCodecs
 	void PCMAudioStream::SeekTo(long unsigned framePosition)
 	{
 		mFramePosition = sf_seek(mFileHandle, framePosition, SEEK_SET);
+		mEOFReached = false;
 	}
 }
 }
