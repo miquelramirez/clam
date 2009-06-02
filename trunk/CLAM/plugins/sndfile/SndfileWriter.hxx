@@ -27,7 +27,6 @@
 #include <CLAM/Audio.hxx>
 #include <sndfile.hh>
 #include <CLAM/Enum.hxx>
-#include <CLAM/FileSystem.hxx>
 #include <pthread.h>
 #include <jack/ringbuffer.h>
 #include "WorkerSemaphore.hxx"
@@ -267,13 +266,6 @@ namespace CLAM
 
 		bool ConcreteConfigure(const ProcessingConfig & config)
 		{
-			if ( _config.HasTargetFile() )
-			{
-				const AudioOutFilename & oldFilename = _config.GetTargetFile();
-				if ( not oldFilename.empty() )
-					FileSystem::GetInstance().UnlockFile( oldFilename );
-			}
-
 			CopyAsConcreteConfig(_config, config);
 			if(_inports.empty()) ResizePorts(1);
 
