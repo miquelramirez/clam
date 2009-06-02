@@ -56,8 +56,7 @@ namespace AudioCodecs
 
 	OggVorbisAudioStream::~OggVorbisAudioStream()
 	{
-		if ( mValidFileParams )
-			Dispose();
+		Dispose();
 	}
 
 	void OggVorbisAudioStream::PrepareReading()
@@ -114,7 +113,6 @@ namespace AudioCodecs
 	{
 
 		vorbis_info_init( &mStreamInfo );
-
 		// encoding mode choosing
 		int retValue = vorbis_encode_init_vbr(
 			&mStreamInfo, mChannels, mEncodedSampleRate, 0.5 );
@@ -176,7 +174,8 @@ namespace AudioCodecs
 	{
 		if ( !mEncoding )
 		{
-			ov_clear( &mNativeFileParams );
+			if (mValidFileParams)
+				ov_clear( &mNativeFileParams );
 			mValidFileParams = false;
 		}
 		else
