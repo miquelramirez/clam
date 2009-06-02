@@ -172,12 +172,12 @@ namespace Hidden
 
 	bool MultiChannelAudioFileWriter::ConcreteConfigure( const ProcessingConfig& cfg )
 	{
-		const AudioOutFilename & filename = mConfig.GetTargetFile();
 		if ( mConfig.HasTargetFile() )
-			FileSystem::GetInstance().UnlockFile( filename );
+			FileSystem::GetInstance().UnlockFile( mConfig.GetTargetFile() );
 
 		CopyAsConcreteConfig( mConfig, cfg );
 
+		const AudioOutFilename & filename = mConfig.GetTargetFile();
 		if (filename=="")
 		{
 			return AddConfigErrorMessage("No file selected");

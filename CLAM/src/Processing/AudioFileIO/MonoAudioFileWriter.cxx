@@ -93,7 +93,6 @@ namespace Hidden
 		CopyAsConcreteConfig( mConfig, cfg );
 
 		const std::string & location = mConfig.GetTargetFile();
-
 		if ( location == "")
 			return AddConfigErrorMessage("No file selected");
 
