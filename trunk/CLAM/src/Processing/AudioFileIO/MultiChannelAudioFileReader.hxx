@@ -47,7 +47,6 @@ namespace CLAM
 		virtual bool Do();
 		virtual bool Do( std::vector<Audio>& outputs );
 		bool ModifiesPortsAndControlsAtConfiguration();
-		const Array<TIndex> & GetSelectedChannels() const {return mSelectedChannels;}
 		const AudioFileHeader & GetHeader() const { return mAudioFile.GetHeader(); }
 		const AudioTextDescriptors & GetTextDescriptors () const { return mAudioFile.GetTextDescriptors(); }
 		const EAudioFileCodec GetCodec() const { return mAudioFile.GetCodec(); }
@@ -60,7 +59,7 @@ namespace CLAM
 		virtual bool ConcreteStart();
 		virtual bool ConcreteStop();
 		
-		void DestroyOldOutputs();
+		void ResizePorts(unsigned nPorts);
 		
 	protected: // attributes
 
@@ -68,10 +67,10 @@ namespace CLAM
 		typedef std::vector< Audio* > OutRefsVector;
 
 		MultiChannelAudioFileReaderConfig   mConfig;
-		OutputVector                        mOutputs;
-		FloatOutControl                          mTimeOutput;
-		Array< TIndex >                     mSelectedChannels;
-		Array< TData* >                     mSamplesMatrix;
+		OutputVector                        _outputs;
+		FloatOutControl                     mTimeOutput;
+		std::vector< TIndex >               mSelectedChannels;
+		std::vector< TData* >               mSamplesMatrix;
 		AudioCodecs::Stream*                mNativeStream;
 		TTime                               mCurrentBeginTime;
 		TTime                               mDeltaTime;

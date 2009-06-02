@@ -58,7 +58,7 @@ namespace Hidden
 	{
 		if ( mNativeStream )
 			delete mNativeStream;
-		DestroyOldOutputs();
+		ResizePorts(0);
 	}
 
 	const char* MultiChannelAudioFileReader::GetClassName() const
@@ -116,16 +116,17 @@ namespace Hidden
 		// read the data
 		if ( !mEOFReached && !mIsPaused ) 
 		{
-			mEOFReached = mNativeStream->ReadData( mSelectedChannels.GetPtr(),
-					       mSelectedChannels.Size(),
-					       mSamplesMatrix.GetPtr(),
-					       sizeTmp );
+			mEOFReached = mNativeStream->ReadData( 
+				&mSelectedChannels[0],
+				mSelectedChannels.size(),
+				&mSamplesMatrix[0],
+				sizeTmp );
 		}
 		else
 		{
 			if ( mEOFReached ) 
 				mCurrentBeginTime = GetHeader().GetLength()/1000;
-			for ( int i = 0; i != mSamplesMatrix.Size(); i++ ) 
+			for (unsigned i = 0; i != mSamplesMatrix.size(); i++ ) 
 				memset ((void *)mSamplesMatrix[i], 0, sizeTmp*sizeof(TData));
 		}
 		// Audio 'simple meta-data' setup
@@ -166,8 +167,8 @@ namespace Hidden
 		// TODO: update this code, because GetData doesn't modifies state anymore
 		OutRefsVector outRefs;
 
-		for ( OutputVector::iterator i = mOutputs.begin();
-		      i!= mOutputs.end();
+		for ( OutputVector::iterator i = _outputs.begin();
+		      i!= _outputs.end();
 		      i++ )
 			outRefs.push_back( &((*i)->GetAudio()) );
 		
@@ -194,16 +195,17 @@ namespace Hidden
 		
 		if ( !mEOFReached && !mIsPaused ) 
 		{
-			mEOFReached = mNativeStream->ReadData( mSelectedChannels.GetPtr(),
-					       mSelectedChannels.Size(),
-					       mSamplesMatrix.GetPtr(),
-					       sizeTmp );
+			mEOFReached = mNativeStream->ReadData(
+				&mSelectedChannels[0],
+				mSelectedChannels.size(),
+				&mSamplesMatrix[0],
+				sizeTmp );
 		}
 		else 
 		{
 			if ( mEOFReached ) 
 				mCurrentBeginTime = GetHeader().GetLength()/1000;
-			for ( int i = 0; i != mSamplesMatrix.Size(); i++) 
+			for (unsigned i = 0; i != mSamplesMatrix.size(); i++) 
 			{
 				memset ((void *)mSamplesMatrix[i], 0, sizeTmp*sizeof(TData));
 		  	}
@@ -226,8 +228,8 @@ namespace Hidden
 			
 		mTimeOutput.SendControl( mCurrentBeginTime );
 		
-		for ( OutputVector::iterator i = mOutputs.begin();
-		      i!= mOutputs.end(); i++ )
+		for ( OutputVector::iterator i = _outputs.begin();
+		      i!= _outputs.end(); i++ )
 		{	
 			(*i)->Produce();
 		}
@@ -260,81 +262,65 @@ namespace Hidden
 
 		if ( !mConfig.HasSelectedChannels() )
 		{
-			mSelectedChannels.Resize( mAudioFile.GetHeader().GetChannels() );
-			mSelectedChannels.SetSize( mAudioFile.GetHeader().GetChannels() );
+			mSelectedChannels.resize( mAudioFile.GetHeader().GetChannels() );
 
-			DestroyOldOutputs();
+			ResizePorts(mSelectedChannels.size());
 
-			for ( int i = 0; i < mSelectedChannels.Size(); i++ )
+			for (unsigned i = 0; i < mSelectedChannels.size(); i++ )
 			{
-				std::stringstream sstr;
-				sstr << i;
-
-				mOutputs.push_back(
-					new AudioOutPort( "Channel #" + sstr.str(), this )
-					);
-
 				mSelectedChannels[ i ] = i;
 			}
 
-			mSamplesMatrix.Resize( mSelectedChannels.Size() );
-			mSamplesMatrix.SetSize( mSelectedChannels.Size() );
+			mSamplesMatrix.resize( mSelectedChannels.size() );
 
 		}
 		else
 		{
 			// Checking selected channels validity
-			mSelectedChannels = mConfig.GetSelectedChannels();
+			const Array<TIndex> & selectedChannels = mConfig.GetSelectedChannels();
+			mSelectedChannels.assign(
+				selectedChannels.GetPtr(),
+				selectedChannels.GetPtr()+selectedChannels.Size());
 
-			if ( mSelectedChannels.Size() != mAudioFile.GetHeader().GetChannels() )
+			if ( mSelectedChannels.size() != mAudioFile.GetHeader().GetChannels() )
 			{
-				AddConfigErrorMessage("The configuration asked for more channels than the audio file has.");
-				return false;
+				return AddConfigErrorMessage(
+					"The configuration asked for more channels than the audio file has.");
 			}
 
 			int maxChannels = mAudioFile.GetHeader().GetChannels();
 
-			for ( int i = 0; i < mSelectedChannels.Size(); i++ )
+			for (unsigned i = 0; i < mSelectedChannels.size(); i++ )
 				if ( mSelectedChannels[i] < 0
 				     || mSelectedChannels[i] >= maxChannels )
 				{
-					AddConfigErrorMessage("Invalid channel index in configuration!");
-					return false;
+					return AddConfigErrorMessage(
+						"Invalid channel index in configuration!");
 				}
 
+			ResizePorts(0);
 
-			DestroyOldOutputs();
-
-			for ( int i = 0; i < mSelectedChannels.Size(); i++ )
+			for (unsigned i = 0; i < mSelectedChannels.size(); i++ )
 			{
 				std::stringstream sstr;
 				sstr << mSelectedChannels[i];
 
-				mOutputs.push_back(
+				_outputs.push_back(
 					new AudioOutPort( "Channel #" + sstr.str(), this )
 					);
 			}
 
-			mSamplesMatrix.Resize( maxChannels );
-			mSamplesMatrix.SetSize( maxChannels );
+			mSamplesMatrix.resize( maxChannels );
 		}
 
 		mNativeStream = mAudioFile.GetStream();
 
-		if (!mNativeStream )
+		if (not mNativeStream )
 		{
-			AddConfigErrorMessage("Could not get a valid audio file stream!");
-			return false;
+			return AddConfigErrorMessage("Could not get a valid audio file stream!");
 		}
 
 		return true;
-	}
-
-	void MultiChannelAudioFileReader::DestroyOldOutputs()
-	{
-		for (unsigned i=0; i<mOutputs.size(); i++)
-			delete mOutputs[i];
-		mOutputs.clear();
 	}
 
 	bool MultiChannelAudioFileReader::ConcreteStart()
@@ -357,5 +343,28 @@ namespace Hidden
 
 		return true;
 	}
+	void MultiChannelAudioFileReader::ResizePorts(unsigned nPorts)
+	{
+		const std::string nameBase = "Channel #";
+		for (unsigned i=_outputs.size(); i<nPorts; i++)
+		{
+			std::ostringstream nameStream;
+			nameStream << nameBase << i;
+			AudioOutPort * port = new AudioOutPort( nameStream.str(), this);
+			_outputs.push_back( port );
+		}
+		for (unsigned i=nPorts; i<_outputs.size(); i++)
+			delete _outputs[i];
+		_outputs.resize(nPorts);
+/*
+		const unsigned portSize = BackendBufferSize();
+		for (unsigned i=0; i<_outputs.size(); i++)
+		{
+			_outputs[i]->SetSize( portSize );
+			_outputs[i]->SetHop( portSize );
+		}
+*/
+	}
+
 }
 
