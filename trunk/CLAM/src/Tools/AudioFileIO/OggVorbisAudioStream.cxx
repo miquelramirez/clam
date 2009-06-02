@@ -79,7 +79,7 @@ namespace AudioCodecs
 		}
 
 		vorbis_info* info = ov_info(&mNativeFileParams, -1);
-		CLAM_ASSERT(mChannels==info->channels,
+		CLAM_ASSERT(mChannels==unsigned(info->channels),
 			"OggVorbisAudioStream: channels info changed before opening");
 
 		mCurrentSection = 0;
