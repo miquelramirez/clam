@@ -37,8 +37,8 @@ namespace AudioCodecs
 	{
 		mName = file.GetLocation();
 		mEncodedSampleRate = (int)file.GetHeader().GetSampleRate();
-		mEncodedChannels = (int)file.GetHeader().GetChannels();
-		mDecodeBuffer.resize( mEncodedChannels );
+		mChannels = (int)file.GetHeader().GetChannels();
+		mDecodeBuffer.resize( mChannels );
 	}
 
 	MpegAudioStream::~MpegAudioStream()
@@ -63,10 +63,9 @@ namespace AudioCodecs
 
 		mBitstream.Init( mpHandle );
 
-		SetChannels( mEncodedChannels );
-
 		mSamplesDecoded = 0;
 		mSamplesTransferred = 0;
+		mFramePosition = 0;
 	}
 
 	void MpegAudioStream::PrepareWriting()
@@ -81,60 +80,56 @@ namespace AudioCodecs
 
 	void MpegAudioStream::DiskToMemoryTransfer()
 	{
-		unsigned nFrames = mInterleavedData.size()/mEncodedChannels;
+		unsigned nFrames = mInterleavedData.size()/mChannels;
 		while( mDecodeBuffer[0].size() < nFrames
 		       && mBitstream.NextFrame() )
 		{
 			mBitstream.SynthesizeCurrent();
 			
-			CLAM_ASSERT( mEncodedChannels == MAD_NCHANNELS( &mBitstream.CurrentFrame().header ),
-				     "This frame hasn't mEncodedChannels channels!" );
-			
-			CLAM_ASSERT( mEncodedChannels == mBitstream.CurrentSynthesis().pcm.channels,
-				     "Synthesis result does not have the expected number of channels" );
+			CLAM_ASSERT( mChannels == MAD_NCHANNELS( &mBitstream.CurrentFrame().header ),
+				     "MpegAudioStream: A frame had not the expected channels." );
+			CLAM_ASSERT( mChannels == mBitstream.CurrentSynthesis().pcm.channels,
+				     "MpegAudioStream: Synthesis result had not the expected number of channels" );
 			
 			TSize samplesDecodedThisTime = mBitstream.CurrentSynthesis().pcm.length;
-			
-			for( int i = 0; i < mEncodedChannels; i++ )
+			for(unsigned i = 0; i < mChannels; i++ )
 			{
 				mad_fixed_t* channelData = mBitstream.CurrentSynthesis().pcm.samples[i];
-				
 				mDecodeBuffer[i].insert( mDecodeBuffer[i].end(),
 							 channelData,
 							 channelData + samplesDecodedThisTime );
 			}
-			mSamplesDecoded += mBitstream.CurrentSynthesis().pcm.length;
+			mSamplesDecoded += samplesDecodedThisTime;
 		}
 		
 		mFramesLastRead = mDecodeBuffer[0].size();
 
-		if ( !mDecodeBuffer[0].empty() )
-		{
-			for ( int i = 0; i < mEncodedChannels; i++ )
-				if ( mDecodeBuffer[i].size() < nFrames )
-				{
-					mDecodeBuffer[i].insert(
-						mDecodeBuffer[i].end(),
-						nFrames - mDecodeBuffer[i].size(),
-						mad_fixed_t(0) );
-				}
-			
-			ConsumeDecodedSamples();
-		}
-
 		mEOFReached = mBitstream.EOS() && mDecodeBuffer[0].empty();
+
+		if (mDecodeBuffer[0].empty()) return;
+
+		for (unsigned i = 0; i < mChannels; i++ )
+		{
+			if ( mDecodeBuffer[i].size() < nFrames )
+			{
+				mDecodeBuffer[i].insert(
+					mDecodeBuffer[i].end(),
+					nFrames - mDecodeBuffer[i].size(),
+					mad_fixed_t(0) );
+			}
+		}
+		ConsumeDecodedSamples();
 	}
 
 	void MpegAudioStream::ConsumeDecodedSamples()
 	{
-		unsigned nFrames = mInterleavedData.size()/mEncodedChannels;
-		for ( int i = 0; i < mEncodedChannels; i++ )
+		unsigned nFrames = mInterleavedData.size()/mChannels;
+		for (unsigned i = 0; i < mChannels; i++ )
 		{
 			TIndex currOffset = 0;
-
 			for ( std::deque<mad_fixed_t>::iterator j = mDecodeBuffer[i].begin();
 			      currOffset < mInterleavedData.size(); 
-			      j++, currOffset+=mEncodedChannels )
+			      j++, currOffset+=mChannels )
 			{
 				double sampleValue = mad_f_todouble(*j);
 
@@ -150,10 +145,11 @@ namespace AudioCodecs
 			}
 			
 			mDecodeBuffer[i].erase( mDecodeBuffer[i].begin(),
-						mDecodeBuffer[i].begin() + nFrames );
+				mDecodeBuffer[i].begin() + nFrames );
 		}
 
 		mSamplesTransferred += nFrames;
+		mFramePosition += nFrames;
 	}
 
 	void MpegAudioStream::MemoryToDiskTransfer()
