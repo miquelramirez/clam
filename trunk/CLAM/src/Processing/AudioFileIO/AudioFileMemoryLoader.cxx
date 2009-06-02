@@ -40,11 +40,11 @@ namespace Hidden
 	
 	
 	AudioFileMemoryLoader::AudioFileMemoryLoader( const ProcessingConfig& cfg )
-		: _output( "Samples Read", this ),
-		  _timeOutput( "Current Time Position", this ),
-		  _positionInput( "Current Time Position (%)", this ),
-		  _lastPosition( 0 ),
-		  _position( 0 )
+		: _output( "Samples Read", this )
+		, _timeOutput( "Current Time Position", this )
+		, _positionInput( "Current Time Position (%)", this )
+		, _lastPosition( 0 )
+		, _position( 0 )
 	{
 		Configure( cfg );
 		_positionInput.SetBounds( 0.0, 1.0 );
