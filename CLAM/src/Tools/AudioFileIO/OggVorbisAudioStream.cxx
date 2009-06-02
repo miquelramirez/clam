@@ -47,8 +47,6 @@ namespace AudioCodecs
 		, mValidFileParams( false )
 		, mEncoding( false )
 	{
-		if ( mValidFileParams )
-			Dispose();
 		mName = file.GetLocation();
 		mEncodedSampleRate = (int)file.GetHeader().GetSampleRate();
 		mChannels = (int)file.GetHeader().GetChannels();
@@ -99,7 +97,8 @@ namespace AudioCodecs
 
 	void OggVorbisAudioStream::PrepareWriting()
 	{
-		if ( ( mFileHandle = fopen( mName.c_str(), "wb" ) ) == NULL )
+		mFileHandle = fopen(mName.c_str(), "wb");
+		if ( mFileHandle==NULL )
 		{
 			std::string msgString = "Could not open ";
 			msgString += mName;
@@ -117,7 +116,6 @@ namespace AudioCodecs
 		vorbis_info_init( &mStreamInfo );
 
 		// encoding mode choosing
-
 		int retValue = vorbis_encode_init_vbr( &mStreamInfo, 
 						       mChannels,
 						       mEncodedSampleRate,
@@ -208,7 +206,6 @@ namespace AudioCodecs
 			fclose( mFileHandle );
 			
 			mEncoding = false;
-
 		}
 	}
 

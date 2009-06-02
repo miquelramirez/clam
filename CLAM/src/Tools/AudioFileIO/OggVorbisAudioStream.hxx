@@ -80,9 +80,7 @@ namespace AudioCodecs
 		vorbis_block       mVorbisBlock;    // vb
 		
 		int                mEncodedSampleRate;
-		int                mEncodedChannels;
 		bool               mEncoding;
-		int                mOffset;
 
 		static const unsigned     mMaxBlockSize;
 		static const unsigned     mAnalysisWindowSize;
