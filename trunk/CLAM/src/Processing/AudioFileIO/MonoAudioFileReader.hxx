@@ -40,7 +40,7 @@ namespace CLAM
 		virtual const char* GetClassName() const;
 		virtual const ProcessingConfig& GetConfig() const;
 		virtual bool Do( Audio & outputSamples );
-		virtual bool Do();	
+		virtual bool Do();
 		virtual ~MonoAudioFileReader();
 		const AudioFileHeader & GetHeader() const { return mAudioFile.GetHeader(); }
 		const AudioTextDescriptors & GetTextDescriptors () const { return mAudioFile.GetTextDescriptors(); }
@@ -57,8 +57,8 @@ namespace CLAM
 		
 		MonoAudioFileReaderConfig mConfig;
 		AudioFileSource           mAudioFile;
-		AudioOutPort	          mOutput;
-		FloatOutControl                mTimeOutput;
+		AudioOutPort              mOutput;
+		FloatOutControl           mTimeOutput;
 		AudioCodecs::Stream*      mNativeStream;
 		TTime                     mCurrentBeginTime;
 		TTime                     mDeltaTime;
