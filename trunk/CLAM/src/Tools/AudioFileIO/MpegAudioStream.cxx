@@ -64,7 +64,6 @@ namespace AudioCodecs
 		mBitstream.Init( mpHandle );
 
 		mSamplesDecoded = 0;
-		mSamplesTransferred = 0;
 		mFramePosition = 0;
 	}
 
@@ -103,7 +102,6 @@ namespace AudioCodecs
 		}
 		
 		mFramesLastRead = mDecodeBuffer[0].size();
-
 		mEOFReached = mBitstream.EOS() && mDecodeBuffer[0].empty();
 
 		if (mDecodeBuffer[0].empty()) return;
@@ -148,7 +146,6 @@ namespace AudioCodecs
 				mDecodeBuffer[i].begin() + nFrames );
 		}
 
-		mSamplesTransferred += nFrames;
 		mFramePosition += nFrames;
 	}
 
