@@ -55,12 +55,10 @@ namespace AudioCodecs
 		FILE*         mpHandle;
 		MpegBitstream mBitstream;
 		int           mEncodedSampleRate;
-		int           mEncodedChannels;
 
 		static const TSize                    mMaxDecodedBlockSize;
 		std::vector<std::deque<mad_fixed_t> > mDecodeBuffer;
 		TSize                                 mSamplesDecoded;
-		TSize                                 mSamplesTransferred;
 	};
 }
 
