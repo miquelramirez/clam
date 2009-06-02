@@ -42,6 +42,8 @@ namespace Hidden
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )
 		: mOutput( "Samples Read", this )
 		, mTimeOutput( "Current Time Position", this)
+		, mFramePositionOutput( "Current Frame Position", this)
+		, mProgressOutput( "Progress", this)
 		, mNativeStream( NULL )
 	{
 		Configure( cfg );
@@ -105,7 +107,6 @@ namespace Hidden
 			mNativeStream = mAudioFile.GetStream();
 
 		mNativeStream->PrepareReading();
-		mCurrentBeginTime = 0.0;
 		mEOFReached = false;
 
 		return true;
@@ -134,25 +135,26 @@ namespace Hidden
 		TData * outputBuffer = output.GetBuffer().GetPtr();
 		const unsigned outputSize = output.GetSize();
 
-		if ( not mEOFReached ) 
+		const unsigned long framePosition = mNativeStream->GetFramePosition();
+		const TTime secondsPosition =
+			framePosition / mAudioFile.GetHeader().GetSampleRate();
+
+		if (not mEOFReached)
 		{
-			mEOFReached = mNativeStream->ReadData(mConfig.GetSelectedChannel(), outputBuffer, outputSize);
+			mEOFReached = mNativeStream->ReadData(
+				mConfig.GetSelectedChannel(), outputBuffer, outputSize);
 		}
 		else 
 		{
-			mCurrentBeginTime = GetHeader().GetLength();// /1000;
-			memset ((void *)outputBuffer, 0, outputSize*sizeof(TData));
+			memset (outputBuffer, 0, outputSize*sizeof(TData));
 		}
-		output.SetBeginTime( mCurrentBeginTime );
-
-		if ( not mEOFReached )
-		{
-			TTime deltaTime = output.GetSize() / mAudioFile.GetHeader().GetSampleRate()*1000;
-			mCurrentBeginTime += deltaTime;
-		}
-		mTimeOutput.SendControl( mCurrentBeginTime / 1000 );
+		output.SetBeginTime( secondsPosition*1000 );
 		output.SetSampleRate( mAudioFile.GetHeader().GetSampleRate() );
-		
+
+		mTimeOutput.SendControl( secondsPosition*1000.);
+		mFramePositionOutput.SendControl( framePosition );
+		mProgressOutput.SendControl( float(framePosition)/GetHeader().GetSamples());
+
 		if ( not mEOFReached ) return true; // Still in the middle
 		if ( not mConfig.GetLoop() ) return false; // End reached, not looping
 
