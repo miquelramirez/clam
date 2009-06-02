@@ -49,6 +49,7 @@ namespace AudioCodecs
 		void PrepareReading();
 		void PrepareWriting();
 		void Dispose();
+		void SeekTo(unsigned long framePosition);
 
 	protected:
 		void DiskToMemoryTransfer();

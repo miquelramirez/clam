@@ -346,6 +346,11 @@ namespace AudioCodecs
 		vorbis_analysis_wrote( &mDSPState, mAnalysisWindowSize );
 		PushAnalysisBlocksOntoOggStream();
 	}
+	void OggVorbisAudioStream::SeekTo(unsigned long framePosition)
+	{
+		ov_pcm_seek( &mNativeFileParams, framePosition );
+		mFramePosition = ov_pcm_tell(&mNativeFileParams);
+	}
 }	
 
 }
