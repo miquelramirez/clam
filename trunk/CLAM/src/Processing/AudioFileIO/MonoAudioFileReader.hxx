@@ -59,6 +59,7 @@ namespace CLAM
 		MonoAudioFileReaderConfig mConfig;
 		AudioFileSource           mAudioFile;
 		AudioOutPort              mOutput;
+		FloatInControl            mSeekControl;
 		FloatOutControl           mTimeOutput;
 		TypedOutControl<unsigned long> mFramePositionOutput;
 		FloatOutControl           mProgressOutput;

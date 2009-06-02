@@ -41,12 +41,14 @@ namespace Hidden
 	
 	MonoAudioFileReader::MonoAudioFileReader( const ProcessingConfig& cfg )
 		: mOutput( "Samples Read", this )
+		, mSeekControl( "Seek", this)
 		, mTimeOutput( "Current Time Position", this)
 		, mFramePositionOutput( "Current Frame Position", this)
 		, mProgressOutput( "Progress", this)
 		, mNativeStream( NULL )
 	{
 		Configure( cfg );
+		mSeekControl.SetBounds(0.,1.);
 	}
 
 	MonoAudioFileReader::~MonoAudioFileReader()
@@ -134,6 +136,12 @@ namespace Hidden
 	{
 		TData * outputBuffer = output.GetBuffer().GetPtr();
 		const unsigned outputSize = output.GetSize();
+
+		if (not mSeekControl.HasBeenRead())
+		{
+			mNativeStream->SeekTo(GetHeader().GetSamples()*mSeekControl.GetLastValue());
+			mEOFReached=false;
+		}
 
 		const unsigned long framePosition = mNativeStream->GetFramePosition();
 		const TTime secondsPosition =
