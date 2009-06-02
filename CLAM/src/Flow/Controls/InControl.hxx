@@ -97,18 +97,21 @@ public:
 	InControl(const std::string &name, Processing* parent=0)
 		: InControlBase(name, parent)
 		, _callback(new NullCallback)
+		, _hasBeenRead(true)
 	{
 	}
 	template <typename ProcessingType, typename ParameterType>
 	InControl(const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(ParameterType))
 		: InControlBase(name,proc)
 		, _callback(new MethodCallback<ProcessingType,ParameterType>(proc, callback))
+		, _hasBeenRead(true)
 	{
 	}
 	template <typename ProcessingType, typename ParameterType>
 	InControl(unsigned id, const std::string &name, ProcessingType * proc, void (ProcessingType::*callback)(unsigned, ParameterType))
 		: InControlBase(name,proc)
 		, _callback(new MethodCallbackWithId<ProcessingType,ParameterType>(proc, callback, id))
+		, _hasBeenRead(true)
 	{
 	}
 	virtual ~InControl();
