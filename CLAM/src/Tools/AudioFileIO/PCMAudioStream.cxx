@@ -45,7 +45,6 @@ namespace AudioCodecs
 	PCMAudioStream::PCMAudioStream( const AudioFile& file )
 		: mFileHandle( NULL )
 	{
-		Dispose();
 		mName = file.GetLocation();
 		mNativeFileParams.channels = file.GetHeader().GetChannels();
 		mNativeFileParams.samplerate = (int) file.GetHeader().GetSampleRate();
