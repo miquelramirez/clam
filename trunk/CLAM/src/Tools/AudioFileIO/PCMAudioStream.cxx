@@ -60,6 +60,7 @@ namespace AudioCodecs
 		CLAM_ASSERT( mFileHandle != NULL,
 			     "Cannot open file for reading!!!" );
 		mEOFReached = false;
+		mFramePosition = 0;
 	}
 
 	void PCMAudioStream::PrepareWriting()
@@ -91,19 +92,18 @@ namespace AudioCodecs
 
 		sf_count_t framesRead = CLAM_sf_readf( mFileHandle, begin, nFrames );
 		mFramesLastRead = (TSize)framesRead;
+		mFramePosition += mFramesLastRead;
 
-		if ( framesRead == 0 ) // No more data to read - EOF reached
+		if (not framesRead) // No more data to read - EOF reached
 		{
 			mEOFReached = true;
 			return;
 		}
-
-		if ( framesRead < nFrames ) // EOF reached
+		if (framesRead<nFrames) // EOF reached
 		{
-			// We set the remainder to zero
-			for (TData* i = begin + ( framesRead * nChannels ); i != end; i++ )
-				*i = 0.0;
 			mEOFReached = true;
+			for (TData * p=begin+framesRead*nChannels; p!=end; p++)
+				*p= 0.0
 		}
 	}
 
@@ -121,7 +121,7 @@ namespace AudioCodecs
 
 	void PCMAudioStream::SeekTo(long unsigned framePosition)
 	{
-		sf_count_t newPos = sf_seek(mFileHandle, framePosition, SEEK_SET);
+		mFramePosition = sf_seek(mFileHandle, framePosition, SEEK_SET);
 	}
 }
 }

@@ -51,7 +51,7 @@ namespace AudioCodecs
 		void DiskToMemoryTransfer();
 		void MemoryToDiskTransfer();
 
-	protected:
+	private:
 		SNDFILE*            mFileHandle;
 		SF_INFO             mNativeFileParams;
 		std::string         mName;
