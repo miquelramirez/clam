@@ -54,10 +54,7 @@ namespace AudioCodecs
 
 	PCMAudioStream::~PCMAudioStream()
 	{
-		if ( mFileHandle )
-		{
-			sf_close( mFileHandle );
-		}
+		Dispose();
 	}
 
 	void PCMAudioStream::PrepareReading()
@@ -106,7 +103,7 @@ namespace AudioCodecs
 			mEOFReached = true;
 			return;
 		}
-		
+
 		if ( framesRead < nFrames ) // EOF reached
 		{
 			// We set the remainder to zero
@@ -116,7 +113,6 @@ namespace AudioCodecs
 		}
 	}
 
-	
 	void PCMAudioStream::MemoryToDiskTransfer()
 	{
 		unsigned nFrames = mInterleavedData.size()/mChannels;
@@ -129,6 +125,10 @@ namespace AudioCodecs
 			     "Could not write all samples to disk!" );
 	}
 
+	void PCMAudioStream::SeekTo(long unsigned framePosition)
+	{
+		sf_count_t newPos = sf_seek(mFileHandle, framePosition, SEEK_SET);
+	}
 }
 }
 
