@@ -54,14 +54,17 @@ int CLAM::SpatDIFSourceReceiver::controls_handler(const char *path, const char *
 	unsigned int baseOutControlNumber=0;
 	if (cuttedPath=="ypr") baseOutControlNumber=3;
 	if (cuttedPath=="velocity") baseOutControlNumber=6;
-	if (SplitPath(path,3)=="sampler")
+	if (SplitPath(path,3)=="sampler") 
 	{
-//		sendControl(&self.GetOutControl(6,&self._voice.GetLastValue());
-//		if (cuttedPath=="setVoice")
-//			return 0;
-		dynamic_cast <TypedOutControl<int>*> (&self.GetOutControl(9))->SendControl(atoi(SplitPath(path,4).c_str()));
-		if (cuttedPath=="play") baseOutControlNumber=10;
-		if (cuttedPath=="setLoop") baseOutControlNumber=11;
+		CLAM::MultiSampler::SamplerMessage samplerMessage;
+		samplerMessage.voice=atoi(SplitPath(path,4).c_str());
+		if (cuttedPath=="play" && argc==2)
+		{
+			samplerMessage.play = (argv[0]->i == 1);
+			samplerMessage.loop= (argv[1]->i == 1);
+			dynamic_cast<TypedOutControl <CLAM::MultiSampler::SamplerMessage> * > (&self.GetOutControl("Sampler typed messages"))->SendControl(samplerMessage);
+		}
+		return 0;
 	}
 
 	for (int i=0;i<argc;i++)
