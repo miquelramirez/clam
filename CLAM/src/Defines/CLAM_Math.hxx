@@ -388,9 +388,9 @@ inline float CLAM_exp(register float x)
 #ifndef __USE_ISOC99
 #ifndef __APPLE__
 inline double  round(double _X)
-        {return (floor(_X+0.5)); }
+	{return (floor(_X+0.5)); }
 inline float  round(float _X)
-        {return (floorf(_X+0.5f)); }
+	{return (floorf(_X+0.5f)); }
 #endif // __APPLE__
 #endif // __USE_ISOC99
 
