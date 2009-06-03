@@ -14,44 +14,18 @@
 #include <map>
 #include <vector>
 
+
+#include "MultiLibloSource.hxx"
+#include "MultiSampler.hxx"
+
 #include "lo/lo.h"
 #ifdef GetClassName // windows.h introduces that
 #undef GetClassName
 #endif
 
+
 namespace CLAM
 {
-
-class EnumOSCTypes : public CLAM::Enum {
-public:
-        EnumOSCTypes() : CLAM::Enum(ValueTable(), eFloat) {}
-        EnumOSCTypes(tValue v) : CLAM::Enum(ValueTable(), v) {};
-        EnumOSCTypes(const std::string & s) : CLAM::Enum(ValueTable(), s) {};
-
-        virtual CLAM::Component * Species() const {return new EnumOSCTypes();}
-
-        typedef enum {
-                eString=0,
-                eFloat=1,
-                eDouble=2,
-		eInt=3,
-		eInt64=4
-        } tEnum;
-        static tEnumValue * ValueTable()
-        {
-                static tEnumValue sValueTable[] =
-                {
-			{eString,"s"},
-			{eFloat,"f"},
-			{eDouble,"d"},
-			{eInt,"i"},
-			{eInt64,"h"},
-                        {0,NULL}
-                };
-                return sValueTable;
-        }
-};
-
 
 class SpatDIFSourceReceiverConfig : public CLAM::ProcessingConfig
 {
@@ -90,9 +64,7 @@ public:
 		, _velocityX("X instant velocity",this)
 		, _velocityY("Y instant velocity",this)
 		, _velocityZ("Z instant velocity",this)
-		, _voice("voice number", this)
-		, _play("voice play toggle",this)
-		, _loop("voice loop toggle",this)
+		, _outputSamplerMessage("Sampler typed messages",this)
 	{
 		Configure( config );
 	}
@@ -153,6 +125,7 @@ protected:
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
+
 		CopyAsConcreteConfig(_config, config);
 
 		if (_config.GetSourceName()=="")
@@ -309,7 +282,7 @@ private:
 	}
 	static bool IsPortUsed(const char* port)
 	{
-		return ( ServersInstances().find(port) != ServersInstances().end() );
+		return ( ServersInstances().find(port) != ServersInstances().end() or CLAM::MultiLibloSource::IsPortUsed(port) );
 	}
 	static lo_server_thread ServerStart(const char* port);
 	static bool RemoveServer(const char* port);
@@ -332,10 +305,15 @@ private:
 	FloatOutControl _velocityX;
 	FloatOutControl _velocityY;
 	FloatOutControl _velocityZ;
-	TypedOutControl <int> _voice;
-//	TypedOutControl <std::string> _voiceControlMessage;
-	TypedOutControl <int> _play;
-	TypedOutControl <int> _loop;
+
+
+	TypedOutControl <CLAM::MultiSampler::SamplerMessage> _outputSamplerMessage;
+	TypedOutControl <int> _outputTestInt;
+
+//	TypedOutControl <int> _voice;
+////	TypedOutControl <std::string> _voiceControlMessage;
+//	TypedOutControl <int> _play;
+//	TypedOutControl <int> _loop;
 
 	typedef struct
 	{

@@ -53,65 +53,71 @@ namespace CLAM
 			SetSamples("");
 		};	
 	};
+
 class MultiSampler : public Processing
 {
-		MultiSamplerConfig _config;
 
-		CLAM::AudioOutPortPublisher _proxyOutPublisher;
-		CLAM::AudioMixer _mixer;
-		CLAM::TypedInControl<int> _activeVoice;
-		CLAM::TypedInControl<int> _playToggle;
-		CLAM::TypedInControl<int> _loop;
-//		CLAM::FloatInControl _seek;
-//		CLAM::TypedInControl<std::string> _sampleName;
-		std::vector<CLAM::SndfilePlayer *> _filePlayers; 
+public:
+	struct SamplerMessage
+	{
+		int voice;
+		bool play;
+		bool loop;
+		virtual ~SamplerMessage();
+	};
 
-		std::vector<CLAM::FloatOutControl *> _seekDummyControls;
-		std::vector<CLAM::FloatOutControl *> _pauseDummyControls;
-		std::vector<CLAM::FloatOutControl *> _loopDummyControls;
+private:
+	MultiSamplerConfig _config;
+
+	CLAM::AudioOutPortPublisher _proxyOutPublisher;
+	CLAM::AudioMixer _mixer;
+	CLAM::TypedInControl<SamplerMessage> _inControlMessage;
+	CLAM::TypedInControl<int> _pruebaInt;
+
+	std::vector<CLAM::SndfilePlayer *> _filePlayers; 
+	std::vector<CLAM::FloatOutControl *> _seekDummyControls;
+	std::vector<CLAM::FloatOutControl *> _pauseDummyControls;
+	std::vector<CLAM::FloatOutControl *> _loopDummyControls;
 
 public:
 	const char* GetClassName () const { return "MultiSampler"; }
 	MultiSampler ( const ProcessingConfig & config=MultiSamplerConfig())
 		: _proxyOutPublisher("audio out port",this)
-		, _activeVoice("set active voice number",this)
-		, _playToggle("play state (1,0)",this)
-		, _loop("loop value (1,0)",this)
-//		, _sampleName("sample name",this)
+		, _inControlMessage("In control messages (voice-play-loop)",this)
 	{
 		_proxyOutPublisher.PublishOutPort(_mixer.GetOutPort(0)); 
 		Configure (config);
 	}
 	
-
 	~MultiSampler()	{ ; }
 
 	bool Do()
 	{	
 		if (_filePlayers.size()==0)
 			return true;
-		unsigned int actualVoice=_activeVoice.GetLastValue();
-		if (actualVoice>=_filePlayers.size())
-			actualVoice=0;
 
-		if (not _playToggle.HasBeenRead())
+
+		if (not _inControlMessage.HasBeenRead())
 		{
-		//	const play= _triggerControl.GetLastValue();
-			if (_playToggle.GetLastValue())	// play
+			SamplerMessage lastControlMessage=_inControlMessage.GetLastValue();
+			unsigned int actualVoice=lastControlMessage.voice;
+			if (actualVoice>=_filePlayers.size())
+				actualVoice=0;
+
+			_loopDummyControls[actualVoice]->SendControl( lastControlMessage.loop ? 1 : 0);
+			if (lastControlMessage.play)
 			{
-				if (not _loop.HasBeenRead())
-						_loopDummyControls[actualVoice]->SendControl(_loop.GetLastValue());
 				_seekDummyControls[actualVoice]->SendControl(0.);
 				_pauseDummyControls[actualVoice]->SendControl(0.);
 			}
 			else	// stop
 			{
-//				std::cout<<"multisampler stop! of sample: "<<actualVoice<<std::endl;
+	//				std::cout<<"multisampler stop! of sample: "<<actualVoice<<std::endl;
 				_pauseDummyControls[actualVoice]->SendControl(1.);
 			}
 		}
 
-		CLAM::SndfilePlayer::Config configClone = dynamic_cast<const CLAM::SndfilePlayer::Config &> (_filePlayers[actualVoice]->GetConfig());
+//		CLAM::SndfilePlayer::Config configClone = dynamic_cast<const CLAM::SndfilePlayer::Config &> (_filePlayers[actualVoice]->GetConfig());
 		std::vector<CLAM::SndfilePlayer *>::iterator it;
 		for (it=_filePlayers.begin();it!=_filePlayers.end();it++)
 		{
@@ -194,10 +200,11 @@ public:
 
 		CopyAsConcreteConfig(_config,config);
 
-		_activeVoice.DoControl(0);
-		_playToggle.DoControl(0);
-		_loop.DoControl(_config.GetLoopDefaultState() ? 1 : 0);
-
+		SamplerMessage samplerMessage;
+		samplerMessage.voice=0.0;
+		samplerMessage.play=false;
+		samplerMessage.loop=_config.GetLoopDefaultState();
+		_inControlMessage.DoControl(samplerMessage);
 
 		ClearPlayers();
 		std::vector<std::string> fileNames=GetDefinedSamples();
@@ -268,9 +275,7 @@ private:
 
 	void ClearPlayers()
 	{
-
 		// clear players
-
 		std::vector<CLAM::SndfilePlayer *>::iterator itPlayers;
 		for (itPlayers=_filePlayers.begin();itPlayers!=_filePlayers.end();itPlayers++)
 			delete *itPlayers;
@@ -289,7 +294,6 @@ private:
 		_seekDummyControls.clear();
 		_pauseDummyControls.clear();
 		_loopDummyControls.clear();
-
 	}
 
 };
