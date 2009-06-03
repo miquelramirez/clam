@@ -32,6 +32,7 @@
 #include "../sndfile/SndfilePlayer.hxx"
 
 #include <vector>
+#include <queue>
 
 namespace CLAM
 {
@@ -79,11 +80,13 @@ private:
 	std::vector<CLAM::FloatOutControl *> _pauseDummyControls;
 	std::vector<CLAM::FloatOutControl *> _loopDummyControls;
 
+	std::queue<SamplerMessage> _queuedMessages;
+
 public:
 	const char* GetClassName () const { return "MultiSampler"; }
 	MultiSampler ( const ProcessingConfig & config=MultiSamplerConfig())
 		: _proxyOutPublisher("audio out port",this)
-		, _inControlMessage("In control messages (voice-play-loop)",this)
+		, _inControlMessage("In control messages (voice-play-loop)",this,&CLAM::MultiSampler::ControlCallback)
 	{
 		_proxyOutPublisher.PublishOutPort(_mixer.GetOutPort(0)); 
 		Configure (config);
@@ -91,15 +94,27 @@ public:
 	
 	~MultiSampler()	{ ; }
 
+	void ControlCallback(const SamplerMessage & value)
+	{
+		
+		if (not IsRunning())
+			return; 
+		SamplerMessage messageToPush;
+		messageToPush.voice=value.voice;
+		messageToPush.play=value.play;
+		messageToPush.loop=value.loop;
+		_queuedMessages.push(messageToPush);
+	}
 	bool Do()
 	{	
 		if (_filePlayers.size()==0)
 			return true;
 
 
-		if (not _inControlMessage.HasBeenRead())
+		while (!_queuedMessages.empty())
 		{
-			SamplerMessage lastControlMessage=_inControlMessage.GetLastValue();
+			SamplerMessage lastControlMessage=_queuedMessages.front();
+			_queuedMessages.pop();
 			unsigned int actualVoice=lastControlMessage.voice;
 			if (actualVoice>=_filePlayers.size())
 				actualVoice=0;
