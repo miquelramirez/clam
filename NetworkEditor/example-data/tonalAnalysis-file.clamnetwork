@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" position="-148,31" size="141,111" type="AudioSink"/>
+  <processing id="AudioSink_0" position="-148,31" size="141,111" type="AudioSink" />
 
-  <processing id="ChordRanking_0" position="-2,127" size="576,171" type="ChordRanking"/>
+  <processing id="ChordRanking_0" position="-2,127" size="576,171" type="ChordRanking" />
 
-  <processing id="KeySpace_0" position="88,289" size="439,246" type="KeySpace"/>
+  <processing id="KeySpace_0" position="88,289" size="439,246" type="KeySpace" />
 
   <processing id="MonoAudioFileReader_0" position="-223,-28" size="246,64" type="MonoAudioFileReader">
     <SourceFile>example-data/Guillamino_CitiusAltiusFortius.mp3</SourceFile>
@@ -13,7 +12,7 @@
     <Loop>1</Loop>
   </processing>
 
-  <processing id="PolarChromaPeaks_0" position="-186,295" size="270,245" type="PolarChromaPeaks"/>
+  <processing id="PolarChromaPeaks_0" position="-186,295" size="270,245" type="PolarChromaPeaks" />
 
   <processing id="TonalAnalysis_0" position="-180,76" size="173,126" type="TonalAnalysis">
     <FilterInertia>0.7</FilterInertia>
@@ -23,7 +22,7 @@
     <SegmentationMethod>1</SegmentationMethod>
   </processing>
 
-  <processing id="Tonnetz_0" position="-1,-40" size="495,175" type="Tonnetz"/>
+  <processing id="Tonnetz_0" position="-1,-40" size="495,175" type="Tonnetz" />
 
   <port_connection>
     <out>MonoAudioFileReader_0.Samples Read</out>
@@ -32,7 +31,7 @@
 
   <port_connection>
     <out>MonoAudioFileReader_0.Samples Read</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <port_connection>

@@ -1,13 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSource_0" position="-197,-16" size="165,108" type="AudioSource"/>
+  <processing id="AudioSource_0" position="-197,-16" size="165,108" type="AudioSource" />
 
-  <processing id="ChordRanking_0" position="21,123" size="576,171" type="ChordRanking"/>
+  <processing id="ChordRanking_0" position="21,123" size="576,171" type="ChordRanking" />
 
-  <processing id="KeySpace_0" position="108,280" size="439,246" type="KeySpace"/>
+  <processing id="KeySpace_0" position="108,280" size="439,246" type="KeySpace" />
 
-  <processing id="PolarChromaPeaks_0" position="-186,295" size="270,245" type="PolarChromaPeaks"/>
+  <processing id="PolarChromaPeaks_0" position="-186,295" size="270,245" type="PolarChromaPeaks" />
 
   <processing id="TonalAnalysis_0" position="-179,122" size="173,110" type="TonalAnalysis">
     <FilterInertia>0.7</FilterInertia>
@@ -17,12 +16,12 @@
     <SegmentationMethod>1</SegmentationMethod>
   </processing>
 
-  <processing id="Tonnetz_0" position="-1,-40" size="495,175" type="Tonnetz"/>
+  <processing id="Tonnetz_0" position="-1,-40" size="495,175" type="Tonnetz" />
 
-  <processing id="Tunner_0" position="528,-59" size="370,240" type="Tunner"/>
+  <processing id="Tunner_0" position="528,-59" size="370,240" type="Tunner" />
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>TonalAnalysis_0.Audio Input</in>
   </port_connection>
 

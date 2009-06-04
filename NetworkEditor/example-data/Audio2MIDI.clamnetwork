@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="AudioSink" position="409,102" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink" position="409,102" size="128,111" type="AudioSink" />
 
-  <processing id="Fund2MIDI" position="328,215" size="127,64" type="Fund2MIDI"/>
+  <processing id="Fund2MIDI" position="328,215" size="127,64" type="Fund2MIDI" />
 
   <processing id="MIDI Out" position="345,373" size="271,129" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
@@ -11,7 +10,7 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="MIDISink" position="679,185" size="176,87" type="MIDISink"/>
+  <processing id="MIDISink" position="679,185" size="176,87" type="MIDISink" />
 
   <processing id="MonoAudioFileReader" position="22,37" size="226,64" type="MonoAudioFileReader">
     <SourceFile>example-data/jaume-voice.mp3</SourceFile>
@@ -109,7 +108,7 @@
 
   <port_connection>
     <out>MonoAudioFileReader.Samples Read</out>
-    <in>AudioSink.AudioIn</in>
+    <in>AudioSink.1</in>
   </port_connection>
 
   <port_connection>

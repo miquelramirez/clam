@@ -27,7 +27,7 @@
 
   <port_connection>
     <out>AudioMixer.Output Audio</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <control_connection>
