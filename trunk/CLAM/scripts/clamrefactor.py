@@ -232,7 +232,9 @@ def test() :
 if __name__ == "__main__" :
 	from optparse import OptionParser
 	parser = OptionParser(
-		usage="usage: %prog [-c COMMAND|-f SCRIPTFILE] network1 network2...")
+		usage="usage: %prog [-c COMMAND|-f SCRIPTFILE] network1 network2...",
+		version="%prog 0.9"
+		)
 	parser.add_option("-v", "--verbose", dest='verbose', action='store_true')
 	parser.add_option("-q", "--quiet", dest='verbose', action='store_false')
 	parser.add_option("-f", "--file", dest='scriptFile',
