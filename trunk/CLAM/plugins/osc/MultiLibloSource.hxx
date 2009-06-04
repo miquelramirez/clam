@@ -12,6 +12,8 @@
 #include <map>
 #include <vector>
 
+#include "LibloSingleton.hxx"
+
 #include "lo/lo.h"
 #ifdef GetClassName // windows.h introduces that
 #undef GetClassName
@@ -215,7 +217,7 @@ protected:
 		{ 
 			_serverThread = ServerStart(port.c_str()); // start new server
 		}
-		if (RegisterOscCallback()==false)
+		if (RegisterOscCallback(_port.c_str(), _oscPath.c_str(), _typespec.c_str())==false)
 		{
 			AddConfigErrorMessage("Error creating OSC server instance");
 			return false;
@@ -242,21 +244,23 @@ protected:
 			_serverThread=0;
 		}
 	}
-	bool RegisterOscCallback()
+	bool RegisterOscCallback(std::string port, std::string oscPath, std::string typespec)
 	{
-		if (InsertInstance(_port.c_str(), _oscPath.c_str(), _typespec.c_str()))
+		if (InsertInstance(port.c_str(), oscPath.c_str(), typespec.c_str()))
 		{
-			lo_server_thread_add_method(_serverThread, _oscPath.c_str(), _typespec.c_str(), controls_handler, this);
+			lo_server_thread_add_method(_serverThread, oscPath.c_str(), typespec.c_str(), controls_handler, this);
 			return true;
 		}
 		return false;
 	}
 
-	static bool IsPortUsed(const char* port)
+//TODO: remove as public on refactoring
+public:	static bool IsPortUsed(const char* port)
 	{
 		return ( ServersInstances().find(port) != ServersInstances().end() );
 	}
 
+protected:
 	static void error(int num, const char *m, const char *path);
 
 	static int generic_handler(const char *path, const char *types, lo_arg **argv,

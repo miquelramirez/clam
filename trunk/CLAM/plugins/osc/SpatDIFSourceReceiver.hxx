@@ -17,6 +17,7 @@
 
 #include "MultiLibloSource.hxx"
 #include "MultiSampler.hxx"
+#include "LibloSingleton.hxx"
 
 #include "lo/lo.h"
 #ifdef GetClassName // windows.h introduces that
@@ -65,6 +66,7 @@ public:
 		, _velocityY("Y instant velocity",this)
 		, _velocityZ("Z instant velocity",this)
 		, _outputSamplerMessage("Sampler typed messages",this)
+		, _libloSingleton(LibloSingleton::GetInstance())
 	{
 		Configure( config );
 	}
@@ -89,6 +91,8 @@ public:
 
 	const std::vector<std::string> GetSourcesNames() const;
 
+	static int controls_handler(const char *path, const char *types, lo_arg **argv, int argc,
+			 void *data, void *user_data);
 protected:
 
 	static std::string SplitPath(std::string input, unsigned tokenNumber)
@@ -126,6 +130,7 @@ protected:
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
 
+		_libloSingleton=_libloSingleton.GetInstance();
 		CopyAsConcreteConfig(_config, config);
 
 		if (_config.GetSourceName()=="")
@@ -150,20 +155,17 @@ protected:
 			return false;
 		}
 
-		// if exists previous callback methods clear them
-		if (_configuredPaths.size()!=0)
-			UnregisterOscCallbacks();
-
 		_port=port;
 
-		if (IsPortUsed(port.c_str())) // if exist server on port
-		{
-			_serverThread = (*ServersInstances().find(_port.c_str())).second.thread;	//uses existing thread
-		}
-		else
-		{ 
-			_serverThread = ServerStart(port.c_str()); // start new server
-		}
+std::cout<<"debug - - - - - configuredpaths: " << _libloSingleton.GetConfiguredPaths().size()<<std::endl;
+
+
+		// if exists previous callback methods clear them
+		if (_libloSingleton.GetConfiguredPaths().size()!=0)
+			UnregisterOscCallbacks();
+
+		_serverThread=_libloSingleton.GetServerThread(port);
+
 		if (RegisterOscCallbacks()==false)
 		{
 			AddConfigErrorMessage("Error creating OSC server instance");
@@ -173,123 +175,44 @@ protected:
 		return true; // Configuration ok
 	}
 
-	void UnregisterOscCallback(std::string port, std::string oscPath, std::string typespec)
-	{
-		std::vector<PathHandler>::iterator itConfiguredPaths;
-		for (itConfiguredPaths=_configuredPaths.begin();itConfiguredPaths!=_configuredPaths.end();itConfiguredPaths++)
-		{
-			if ((*itConfiguredPaths).oscPath==oscPath and (*itConfiguredPaths).typespec==typespec)
-				break;
-		}
-		// if don't exist a previous method handler
-		if (itConfiguredPaths == _configuredPaths.end())
-			return;
-
-		if (EraseInstance(port.c_str(), oscPath.c_str(),typespec.c_str()))
-			lo_server_thread_del_method(_serverThread,oscPath.c_str(),typespec.c_str()); //delete it
-		_configuredPaths.erase(itConfiguredPaths); //remove from the list
-		if (IsPortUsed(port.c_str()) && GetInstances(port.c_str())==0) // if was the last instance
-		{
-			std::cout <<"SpatDIFSourceReceiver: Shutting down the server..."<<std::endl;
-			lo_server_thread_free(_serverThread);
-			RemoveServer(port.c_str());
-			_serverThread=0;
-		}
-	}
-
-	bool RegisterOscCallback(std::string port, std::string oscPath, std::string typespec)
-	{
-		if (InsertInstance(port.c_str(), oscPath.c_str(), typespec.c_str()))
-		{
-			lo_server_thread_add_method(_serverThread, oscPath.c_str(), typespec.c_str(), controls_handler, this);
-			PathHandler configuredPath;
-			configuredPath.oscPath=oscPath;
-			configuredPath.typespec=typespec;
-			_configuredPaths.push_back(configuredPath);
-			return true;
-		}
-		return false;
-	}
-
-
 	bool RegisterOscCallbacks()
 	{
 		bool allOK=true;
 		std::string oscPath;
 		oscPath=_baseOSCPath+"/xyz";
-		allOK &= RegisterOscCallback(_port,oscPath,"fff");
+		allOK &= _libloSingleton.RegisterOscCallback(_port,oscPath,"fff",&controls_handler);
 		oscPath=_baseOSCPath+"/ypr";
-		allOK &= RegisterOscCallback(_port,oscPath,"fff");
+		allOK &= _libloSingleton.RegisterOscCallback(_port,oscPath,"fff",&controls_handler);
 		oscPath=_baseOSCPath+"/velocity";
-		allOK &= RegisterOscCallback(_port,oscPath,"fff");
+		allOK &= _libloSingleton.RegisterOscCallback(_port,oscPath,"fff",&controls_handler);
 		for (unsigned i=0;i<_config.GetVoicesNumber();i++)
 		{
 			std::ostringstream voice;
 			voice<<i;
 			oscPath=_baseOSCPath+"/sampler/"+voice.str()+"/play";
 
-			allOK &= RegisterOscCallback(_port,oscPath,"ii"); // play with loop setting
-			allOK &= RegisterOscCallback(_port,oscPath,"i"); //play without loop setting
+			allOK &= _libloSingleton.RegisterOscCallback(_port,oscPath,"ii",&controls_handler); // play with loop setting
+			allOK &= _libloSingleton.RegisterOscCallback(_port,oscPath,"i",&controls_handler); //play without loop setting
 			oscPath=_baseOSCPath+"/sampler/"+voice.str()+"/setLoop";
-			allOK &= RegisterOscCallback(_port,oscPath,"i");
+			allOK &= _libloSingleton.RegisterOscCallback(_port,oscPath,"i",&controls_handler);
 		}
 		return allOK;
 	}
 
 	void UnregisterOscCallbacks()
 	{
-		while (_configuredPaths.size()!=0)
+
+std::cout<<"unregistering callbacks...."<<std::endl;
+		while (_libloSingleton.GetConfiguredPaths().size()!=0)
 		{
-			PathHandler firstPath=_configuredPaths.front();
-			UnregisterOscCallback(_port, firstPath.oscPath, firstPath.typespec);
+std::cout<<"\tgetconfiguredpaths.size: "<<_libloSingleton.GetConfiguredPaths().size()<<std::endl;
+			CLAM::LibloSingleton::PathHandler firstPath=_libloSingleton.GetConfiguredPaths().front();
+std::cout<<"\tpath= "<<firstPath.oscPath << " - port: "<<_port<<" - typespec: "<<firstPath.typespec<<std::endl;
+			_libloSingleton.UnregisterOscCallback(_port, firstPath.oscPath, firstPath.typespec);
 		}
-
-
 	}
-
 
 private:
-	static void error(int num, const char *m, const char *path);
-
-	static int generic_handler(const char *path, const char *types, lo_arg **argv,
-			 int argc, void *data, void *user_data);
-
-	static int controls_handler(const char *path, const char *types, lo_arg **argv, int argc,
-			 void *data, void *user_data);
-
-	static int quit_handler(const char *path, const char *types, lo_arg **argv, int argc,
-			 void *data, void *user_data);
-
-	static bool EraseInstance(const char* port, const char * path, const char * typespec);
-	static bool InsertInstance(const char* port, const char * path, const char * typespec);
-
-
-	// server management related structs, methods, and attributes
-	// key: path, value: typespec
-	typedef std::multimap<std::string,std::string> MethodsMultiMap;
-	typedef struct
-	{
-		lo_server_thread thread;
-		MethodsMultiMap methods;
-	} ServerInstance;
-
-	// map key: port
-	typedef std::map<std::string,ServerInstance> OscServersMap;
-	static OscServersMap & ServersInstances()
-	{
-		static OscServersMap sOscServersMap;
-		return sOscServersMap;
-	}
-	static bool IsPortUsed(const char* port)
-	{
-		return ( ServersInstances().find(port) != ServersInstances().end()); 
-	}
-	static lo_server_thread ServerStart(const char* port);
-	static bool RemoveServer(const char* port);
-	static bool IncInstance(const char* port);
-	static bool DecInstance(const char* port);
-	static const unsigned int GetInstances (const char* port);
-	lo_server_thread _serverThread;
 
 	std::string _baseOSCPath;
 	std::string _port;
@@ -306,24 +229,10 @@ private:
 	FloatOutControl _velocityY;
 	FloatOutControl _velocityZ;
 
-
 	TypedOutControl <CLAM::MultiSampler::SamplerMessage> _outputSamplerMessage;
-	TypedOutControl <int> _outputTestInt;
 
-//	TypedOutControl <int> _voice;
-////	TypedOutControl <std::string> _voiceControlMessage;
-//	TypedOutControl <int> _play;
-//	TypedOutControl <int> _loop;
-
-	typedef struct
-	{
-		std::string oscPath;
-		std::string typespec;
-	} PathHandler;
-
-	std::vector<PathHandler> _configuredPaths;
-
-
+	lo_server_thread _serverThread;
+	CLAM::LibloSingleton & _libloSingleton;
 
 
 };
