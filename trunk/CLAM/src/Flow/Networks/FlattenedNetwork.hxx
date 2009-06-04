@@ -18,11 +18,6 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
  */
-
-
-
-
-
 #ifndef _FlattenedNetwork_hxx_
 #define _FlattenedNetwork_hxx_
 
@@ -36,8 +31,11 @@
 #include <list>
 #include <map>
 #include <set>
+#include <utility>
+
 namespace CLAM
 {
+
 class NetworkPlayer;
 class FlowControl;
 
@@ -72,7 +70,6 @@ public:
 	void SetPlayer( NetworkPlayer* player);
 	unsigned BackendBufferSize();
 	unsigned BackendSampleRate();
-
 
 	//! serialization methods
 	virtual void StoreOn( Storage & storage) const;
@@ -174,6 +171,14 @@ public:
 	 */
 	std::string GetUnconnectedInPorts() const;
 
+	/**
+	 * Has true if ports have the old name AudioIn or AudioOut
+	 * and which connections are broken
+	 */
+	typedef std::pair<bool, std::string> ConnectionState; 
+	ConnectionState GetConnectionReport() const;
+	void ResetConnectionReport();
+
 private:
 	// fields
 	std::string _name;
@@ -192,7 +197,9 @@ private:
 	void StringPairToInts(const std::string & geometryInString, int & a, int & b);
 	const std::string IntsToString (const int & a, const int & b) const;
 
-
+private:
+	bool BrokenConnection( const std::string & producer, const std::string & consumer );
+	std::vector<std::string> _brokenConnections;
 };
 
 }// namespace

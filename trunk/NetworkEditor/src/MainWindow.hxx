@@ -206,6 +206,8 @@ public:
 	}
 	void load(const QString & filename)
 	{
+		_network.ResetConnectionReport();
+
 		std::string localFilename = filename.toLocal8Bit().constData();
 		std::cout << "Loading " << localFilename << "..." << std::endl;
 		clear();
@@ -224,6 +226,15 @@ public:
 		_playingLabel->setNetwork(&_network);
 		_canvas->loadNetwork(&_network);
 		_canvas->loadGeometriesFromXML();
+
+		CLAM::FlattenedNetwork::ConnectionState connectionState = _network.GetConnectionReport();
+		if (connectionState.first)
+		{
+			QMessageBox::warning(this, tr("Old clamnetwork file detected"), 
+				tr("<p>The clamnetwork file is older than 1.3.1, the following connections are broken.<p>" 
+					"<p><b>%1</b></p>").arg(connectionState.second.c_str()));
+		}
+
 		appendRecentFile(filename);
 		_networkFile = filename;
 		updateCaption();
@@ -355,10 +366,10 @@ public slots:
 	}
 	void on_action_White_colors_Option_changed()
 	{
-		QAction *action = qobject_cast<QAction *>(sender());	
+		QAction *action = qobject_cast<QAction *>(sender());
 		// Change colors scheme
 		if (action->isChecked())
-			_canvas->setWhiteColorsForBoxes();		
+			_canvas->setWhiteColorsForBoxes();
 		else
 			_canvas->setGreenColorsForBoxes();
 	}

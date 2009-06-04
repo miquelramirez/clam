@@ -28,6 +28,26 @@
 
 namespace CLAM
 {
+
+namespace {
+
+template<typename Container, typename Audio>
+unsigned GetSize(Container const& t)
+{
+	unsigned nrOfPorts = 0;
+
+	for (typename Container::const_iterator it = t.begin(); it != t.end(); ++it)
+	{
+		// contained type is not deductable
+		typename Audio::Ports ports = (*it)->GetPorts();
+		nrOfPorts += ports.size();
+	}
+
+	return nrOfPorts;
+}
+
+} // namespace
+
 /**
  * A NetworkPlayer is an object that controls the playback of a 
  * Network providing a high level transport like interface.
@@ -50,6 +70,7 @@ public:
 	virtual ~NetworkPlayer()
 	{
 	}
+
 	/// Should return true when the backend is able to run the network
 	virtual bool IsWorking() = 0;
 	/// Whenever the backend is not working, this method returns the reason
@@ -86,6 +107,7 @@ public:
 		return 44100;
 	}
 	std::string SourcesAndSinksToString();
+
 protected:
 	Network& GetNetwork()
 	{
@@ -100,6 +122,16 @@ protected:
 	Network::AudioSinks GetAudioSinks() 
 	{ 
 		return GetNetwork().getOrderedSinks(); 
+	}
+
+	unsigned GetSourcesSize()
+	{
+		return GetSize<Network::AudioSources, AudioSource>(GetAudioSources());
+	}
+
+	unsigned GetSinksSize()
+	{
+		return GetSize<Network::AudioSinks, AudioSink>(GetAudioSinks());
 	}
 
 private:

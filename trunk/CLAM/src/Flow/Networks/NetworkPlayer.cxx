@@ -40,5 +40,6 @@ namespace CLAM
 
 		return (sourceNames+sinkNames);
 	}
+
 } //namespace
 

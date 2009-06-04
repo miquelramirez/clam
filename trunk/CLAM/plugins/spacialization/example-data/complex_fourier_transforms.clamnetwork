@@ -91,7 +91,7 @@
 
   <port_connection>
     <out>AudioMixer_0.Output Audio</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <port_connection>
@@ -141,7 +141,7 @@
 
   <port_connection>
     <out>Sin28_0.out</out>
-    <in>AudioSink_1.AudioIn</in>
+    <in>AudioSink_1.1</in>
   </port_connection>
 
   <port_connection>

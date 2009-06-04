@@ -286,16 +286,16 @@
 
   <port_connection>
     <out>2StreamR.Audio stream</out>
-    <in>R.AudioIn</in>
+    <in>R.1</in>
   </port_connection>
 
   <port_connection>
     <out>2streamL.Audio stream</out>
-    <in>L.AudioIn</in>
+    <in>L.1</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>AudioWindowing.Input</in>
   </port_connection>
 

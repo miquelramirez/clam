@@ -290,12 +290,12 @@
 
   <port_connection>
     <out>Streamer L.Audio stream</out>
-    <in>L.AudioIn</in>
+    <in>L.1</in>
   </port_connection>
 
   <port_connection>
     <out>Streamer R.Audio stream</out>
-    <in>R.AudioIn</in>
+    <in>R.1</in>
   </port_connection>
 
   <port_connection>
@@ -324,22 +324,22 @@
   </port_connection>
 
   <port_connection>
-    <out>W.AudioOut</out>
+    <out>W.1</out>
     <in>GainW.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>X.AudioOut</out>
+    <out>X.1</out>
     <in>GainX.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>Y.AudioOut</out>
+    <out>Y.1</out>
     <in>GainY.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>Z.AudioOut</out>
+    <out>Z.1</out>
     <in>GainZ.Input Audio</in>
   </port_connection>
 

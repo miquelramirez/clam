@@ -1,5 +1,5 @@
-#ifndef _OfflineNetworkPlayer_hxx_
-#define _OfflineNetworkPlayer_hxx_
+#ifndef OfflineNetworkPlayer_hxx
+#define OfflineNetworkPlayer_hxx
 
 #include "NetworkPlayer.hxx"
 #include "AudioSource.hxx"
@@ -10,12 +10,15 @@
 namespace CLAM
 {
 
-
 class OfflineNetworkPlayer : public NetworkPlayer
 {
-	std::vector<std::string> _inFileNames;
-	std::vector<std::string> _outFileNames;
-	std::vector<int> _outChannelsFiles;
+	typedef std::vector<std::string> FileNames;
+	FileNames _inFileNames;
+	FileNames _outFileNames;
+
+	typedef std::vector<int> ChannelsFiles;
+	ChannelsFiles _outChannelsFiles;
+	
 	int _format;
 	bool _enableLoopInputWavs;
 	float _resultWavsTime;
@@ -24,7 +27,9 @@ public:
 	OfflineNetworkPlayer()
 		: _enableLoopInputWavs(false)
 		, _resultWavsTime(0.0)
-	{}
+	{
+	}
+
 	void AddInputFile( const std::string& );
 	void AddOutputFile( const std::string& );
 	void AddNumChannels(int channel);
@@ -32,13 +37,16 @@ public:
 	// base class (virtual) interface:
 	bool IsWorking();
 	std::string NonWorkingReason();
-	std::string listOfSourcesSinksAndFiles(std::vector<SndfileHandle*> infiles,std::vector<SndfileHandle*> outfiles);
+	
+	typedef std::vector<SndfileHandle*> SndFileHandles;
+	std::string listOfSourcesSinksAndFiles(SndFileHandles const& infiles, SndFileHandles const& outfiles);
+	
 	virtual void Start();
 	virtual void Stop();
 
 	void ProcessInputFile();
 
-// specific interface - not inherited	
+	// specific interface - not inherited	
 	void EnableLoopInputWavs() 
 	{
 		_enableLoopInputWavs=true;

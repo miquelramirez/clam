@@ -574,21 +574,21 @@
 
   <port_connection>
     <out>2StreamR.Audio stream</out>
-    <in>R.AudioIn</in>
+    <in>R.1</in>
   </port_connection>
 
   <port_connection>
     <out>2streamL.Audio stream</out>
-    <in>L.AudioIn</in>
+    <in>L.1</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>ControlSequencer.sync</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>AudioMixer.Input 0</in>
   </port_connection>
 
@@ -804,12 +804,12 @@
 
   <port_connection>
     <out>VelocityAdapter.Vx output</out>
-    <in>EquidistantSurround.vx</in>
+    <in>EquidistantSurround.X</in>
   </port_connection>
 
   <port_connection>
     <out>VelocityAdapter.Vy output</out>
-    <in>EquidistantSurround.vy</in>
+    <in>EquidistantSurround.Y</in>
   </port_connection>
 
   <port_connection>
@@ -1209,7 +1209,7 @@
 
   <port_connection>
     <out>toStream P.Audio stream</out>
-    <in>EquidistantSurround.p</in>
+    <in>EquidistantSurround.W</in>
   </port_connection>
 
   <port_connection>

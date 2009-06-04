@@ -106,81 +106,81 @@
 
   <port_connection>
     <out>BFormat2Sixteen.Base Front Left</out>
-    <in>Base Front Left.AudioIn</in>
+    <in>Base Front Left.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Base Front Right</out>
-    <in>Base Front Right.AudioIn</in>
+    <in>Base Front Right.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Base Back Left</out>
-    <in>Base Back Left.AudioIn</in>
+    <in>Base Back Left.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Base Back Right</out>
-    <in>Base Back Right.AudioIn</in>
+    <in>Base Back Right.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Top Front Left</out>
-    <in>Top Front Left.AudioIn</in>
+    <in>Top Front Left.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Top Front Right</out>
-    <in>Top Front Right.AudioIn</in>
+    <in>Top Front Right.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Top Back Left</out>
-    <in>Top Back Left.AudioIn</in>
+    <in>Top Back Left.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Top Back Right</out>
-    <in>Top Back Right.AudioIn</in>
+    <in>Top Back Right.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Front Horizontal</out>
-    <in>Front horizontal.AudioIn</in>
+    <in>Front horizontal.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Left Horizontal</out>
-    <in>Left horizontal.AudioIn</in>
+    <in>Left horizontal.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Rear Horizontal</out>
-    <in>Rear Horizontal.AudioIn</in>
+    <in>Rear Horizontal.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Right Horizontal</out>
-    <in>Right horizontal.AudioIn</in>
+    <in>Right horizontal.1</in>
   </port_connection>
 
   <port_connection>
-    <out>W.AudioOut</out>
+    <out>W.1</out>
     <in>AudioAmplifier.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>X.AudioOut</out>
+    <out>X.1</out>
     <in>AudioAmplifier_1.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>Y.AudioOut</out>
+    <out>Y.1</out>
     <in>AudioAmplifier_2.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>Z.AudioOut</out>
+    <out>Z.1</out>
     <in>AudioAmplifier_3.Input Audio</in>
   </port_connection>
 

@@ -114,7 +114,7 @@
 
   <port_connection>
     <out>BFormat2Cube.Base Front Left</out>
-    <in>Base Front Left.AudioIn</in>
+    <in>Base Front Left.1</in>
   </port_connection>
 
   <port_connection>
@@ -124,7 +124,7 @@
 
   <port_connection>
     <out>BFormat2Cube.Base Front Right</out>
-    <in>Base Front Right.AudioIn</in>
+    <in>Base Front Right.1</in>
   </port_connection>
 
   <port_connection>
@@ -134,7 +134,7 @@
 
   <port_connection>
     <out>BFormat2Cube.Base Back Left</out>
-    <in>Base Base Left.AudioIn</in>
+    <in>Base Base Left.1</in>
   </port_connection>
 
   <port_connection>
@@ -144,7 +144,7 @@
 
   <port_connection>
     <out>BFormat2Cube.Base Back Right</out>
-    <in>Base Back Right.AudioIn</in>
+    <in>Base Back Right.1</in>
   </port_connection>
 
   <port_connection>
@@ -154,7 +154,7 @@
 
   <port_connection>
     <out>BFormat2Cube.Top Front Left</out>
-    <in>Top Front Left.AudioIn</in>
+    <in>Top Front Left.1</in>
   </port_connection>
 
   <port_connection>
@@ -164,7 +164,7 @@
 
   <port_connection>
     <out>BFormat2Cube.Top Front Right</out>
-    <in>Top Front Right.AudioIn</in>
+    <in>Top Front Right.1</in>
   </port_connection>
 
   <port_connection>
@@ -174,7 +174,7 @@
 
   <port_connection>
     <out>BFormat2Cube.Top Back Left</out>
-    <in>Top Base Left.AudioIn</in>
+    <in>Top Base Left.1</in>
   </port_connection>
 
   <port_connection>
@@ -184,7 +184,7 @@
 
   <port_connection>
     <out>BFormat2Cube.Top Back Right</out>
-    <in>Top Base Right.AudioIn</in>
+    <in>Top Base Right.1</in>
   </port_connection>
 
   <port_connection>
@@ -193,22 +193,22 @@
   </port_connection>
 
   <port_connection>
-    <out>W.AudioOut</out>
+    <out>W.1</out>
     <in>AudioAmplifier.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>X.AudioOut</out>
+    <out>X.1</out>
     <in>AudioAmplifier_1.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>Y.AudioOut</out>
+    <out>Y.1</out>
     <in>AudioAmplifier_2.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>Z.AudioOut</out>
+    <out>Z.1</out>
     <in>AudioAmplifier_3.Input Audio</in>
   </port_connection>
 

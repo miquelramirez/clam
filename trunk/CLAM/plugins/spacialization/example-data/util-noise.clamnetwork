@@ -22,7 +22,7 @@
 
   <port_connection>
     <out>noise_white0.Output</out>
-    <in>AudioSink.AudioIn</in>
+    <in>AudioSink.1</in>
   </port_connection>
 
   <control_connection>

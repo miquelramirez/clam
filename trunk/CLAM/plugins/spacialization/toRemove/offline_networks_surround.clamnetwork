@@ -138,8 +138,7 @@
   <processing id="SR" position="1139,325" size="128,111" type="AudioSink" />
 
   <processing id="Surround" position="976,458" size="85,110" type="Surround">
-    <NChannels>0</NChannels>
-  </processing>
+    </processing>
 
   <processing id="VelocityAdapter" position="824,472" size="120,62" type="VelocityAdapter" />
 
@@ -177,12 +176,12 @@
   </processing>
 
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>ControlSequencer.sync</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>AudioMixer.Input 0</in>
   </port_connection>
 
@@ -318,37 +317,37 @@
 
   <port_connection>
     <out>Surround.center</out>
-    <in>C.AudioIn</in>
+    <in>C.1</in>
   </port_connection>
 
   <port_connection>
     <out>Surround.right</out>
-    <in>R.AudioIn</in>
+    <in>R.1</in>
   </port_connection>
 
   <port_connection>
     <out>Surround.surroundRight</out>
-    <in>SR.AudioIn</in>
+    <in>SR.1</in>
   </port_connection>
 
   <port_connection>
     <out>Surround.surroundLeft</out>
-    <in>SL.AudioIn</in>
+    <in>SL.1</in>
   </port_connection>
 
   <port_connection>
     <out>Surround.left</out>
-    <in>L.AudioIn</in>
+    <in>L.1</in>
   </port_connection>
 
   <port_connection>
     <out>VelocityAdapter.Vx output</out>
-    <in>Surround.vx</in>
+    <in>Surround.X</in>
   </port_connection>
 
   <port_connection>
     <out>VelocityAdapter.Vy output</out>
-    <in>Surround.vy</in>
+    <in>Surround.Y</in>
   </port_connection>
 
   <port_connection>
@@ -368,7 +367,7 @@
 
   <port_connection>
     <out>toStream P.Audio stream</out>
-    <in>Surround.p</in>
+    <in>Surround.W</in>
   </port_connection>
 
   <port_connection>

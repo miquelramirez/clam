@@ -66,16 +66,20 @@ bool computeResponseSpectrums(const std::vector<double> & buffer, std::vector<Co
 	// TODO: case where offset > size
 	const unsigned validSamples = buffer.size() - samplesOffset;
 	AudioSource source;
-	source.SetExternalBuffer(&buffer[0]+samplesOffset, validSamples);
+	int portIndex(0);
+	source.SetExternalBuffer(&buffer[0]+samplesOffset, validSamples, portIndex);
 	const unsigned nSamples = neededFramesForNSamples( validSamples, framesize) * framesize;
+
+	// this works by the grace of audiocource being constructed locally,
+	// by default always having one port with index '0'
 	source.GetOutPort(0).SetSize(nSamples);
 	source.GetOutPort(0).SetHop(nSamples);
+	
 	return computeResponseSpectrums(source, responseSpectrums, framesize, errorMsg);
 }
 
 bool computeResponseSpectrums(Processing & source, std::vector<ComplexSpectrum> & responseSpectrums, unsigned framesize, std::string & errorMsg)
 {
-
 	AudioWindowingConfig windowerConfig;
 	windowerConfig.SetSamplingRate(44100); // TODO: Take it from the file
 	windowerConfig.SetHopSize(framesize);
