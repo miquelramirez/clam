@@ -51,7 +51,6 @@ namespace AudioCodecs
 		FILE*              mpFile;
 
 	public:
-		MpegBitstream( FILE* bitstream );
 		MpegBitstream();
 		~MpegBitstream();
 

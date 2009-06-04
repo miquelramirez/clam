@@ -43,7 +43,6 @@ namespace AudioCodecs
 
 	MpegAudioStream::~MpegAudioStream()
 	{
-		
 		if ( not mpHandle ) return;
 		fclose(mpHandle);
 	}
