@@ -146,8 +146,8 @@ namespace AudioCodecs
 			return false;
 
 		// Look for an Mpeg frame
-		MpegBitstream bitstream( handle );
-		bitstream.Init();
+		MpegBitstream bitstream;
+		bitstream.Init(handle);
 		bool   foundSomeMpegFrame = false;
 		while( !foundSomeMpegFrame 
 		       && !bitstream.EOS() && !bitstream.FatalError() )
@@ -219,9 +219,9 @@ namespace AudioCodecs
 		hdr.AddLength();
 		hdr.UpdateData();
 		
-		MpegBitstream bitstream( handle );
+		MpegBitstream bitstream;
 
-		bitstream.Init();
+		bitstream.Init(handle);
 
 		int frameCount = 0;
 		struct xing xingHeader;
