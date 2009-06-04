@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="AbsoluteCoordinates2RelativeAngles" position="323,-61" size="239,58" type="AbsoluteCoordinates2RelativeAngles"/>
+  <processing id="AbsoluteCoordinates2RelativeAngles" position="323,-61" size="239,58" type="AbsoluteCoordinates2RelativeAngles" />
 
   <processing id="AudioBuffer2Stream_L1" position="757,163" size="165,58" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -39,11 +38,11 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="AudioSink_L" position="585,48" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink_L" position="585,48" size="128,111" type="AudioSink" />
 
-  <processing id="AudioSink_R" position="595,359" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink_R" position="595,359" size="128,111" type="AudioSink" />
 
-  <processing id="AudioSource" position="12,371" size="128,108" type="AudioSource"/>
+  <processing id="AudioSource" position="12,371" size="128,108" type="AudioSource" />
 
   <processing id="AudioWindowing" position="161,392" size="127,58" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -90,9 +89,9 @@
     <HrtfDatabase>/home/parumi/acustica/HRTFs/mitKemarFullL.hrtfs</HrtfDatabase>
   </processing>
 
-  <processing id="IRSwappingDelay_L" position="228,156" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_L" position="228,156" size="147,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_R" position="216,238" size="149,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_R" position="216,238" size="149,62" type="IRSwappingDelay" />
 
   <processing id="LowLatencyConvolution_L1" position="461,158" size="187,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -114,7 +113,7 @@
     <FrameSize>512</FrameSize>
   </processing>
 
-  <processing id="MTCReceiver" position="-8,-117" size="109,58" type="MTCReceiver"/>
+  <processing id="MTCReceiver" position="-8,-117" size="109,58" type="MTCReceiver" />
 
   <processing id="MyFFT" position="303,401" size="71,58" type="MyFFT">
     <AudioSize>1024</AudioSize>
@@ -136,13 +135,13 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="Oscilloscope_L" position="722,49" size="288,113" type="Oscilloscope"/>
+  <processing id="Oscilloscope_L" position="722,49" size="288,113" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_R" position="729,358" size="288,110" type="Oscilloscope"/>
+  <processing id="Oscilloscope_R" position="729,358" size="288,110" type="Oscilloscope" />
 
-  <processing id="XFadeAndSwitch_L" position="434,57" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_L" position="434,57" size="142,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_R" position="430,372" size="144,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_R" position="430,372" size="144,94" type="XFadeAndSwitch" />
 
   <port_connection>
     <out>AudioBuffer2Stream_L1.Audio stream</out>
@@ -165,7 +164,7 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioSource.AudioOut</out>
+    <out>AudioSource.1</out>
     <in>AudioWindowing.Input</in>
   </port_connection>
 
@@ -286,7 +285,7 @@
 
   <port_connection>
     <out>XFadeAndSwitch_L.CrossFadedBuffer</out>
-    <in>AudioSink_L.AudioIn</in>
+    <in>AudioSink_L.1</in>
   </port_connection>
 
   <port_connection>
@@ -296,7 +295,7 @@
 
   <port_connection>
     <out>XFadeAndSwitch_R.CrossFadedBuffer</out>
-    <in>AudioSink_R.AudioIn</in>
+    <in>AudioSink_R.1</in>
   </port_connection>
 
   <port_connection>

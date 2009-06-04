@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
   <processing id="AudioWindowing" position="281,89" size="136,59" type="AudioWindowing">
@@ -51,23 +50,23 @@
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="IRSwappingDelay_L" position="180,363" size="156,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_L" position="180,363" size="156,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_R" position="187,450" size="157,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_R" position="187,450" size="157,62" type="IRSwappingDelay" />
 
-  <processing id="L" position="919,251" size="128,111" type="AudioSink"/>
+  <processing id="L" position="919,251" size="128,111" type="AudioSink" />
 
-  <processing id="Monoaural" position="118,83" size="128,108" type="AudioSource"/>
+  <processing id="Monoaural" position="118,83" size="128,108" type="AudioSource" />
 
   <processing id="MyFFT" position="441,87" size="73,59" type="MyFFT">
     <AudioSize>1024</AudioSize>
   </processing>
 
-  <processing id="R" position="912,528" size="128,111" type="AudioSink"/>
+  <processing id="R" position="912,528" size="128,111" type="AudioSink" />
 
-  <processing id="XFadeAndSwitch_L" position="752,272" size="152,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_L" position="752,272" size="152,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_R" position="751,529" size="153,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_R" position="751,529" size="153,94" type="XFadeAndSwitch" />
 
   <processing id="azimuth" position="65,35" size="140,59" type="ControlSource">
     <MinValue>0</MinValue>
@@ -227,7 +226,7 @@
   </port_connection>
 
   <port_connection>
-    <out>Monoaural.AudioOut</out>
+    <out>Monoaural.1</out>
     <in>AudioWindowing.Input</in>
   </port_connection>
 
@@ -253,12 +252,12 @@
 
   <port_connection>
     <out>XFadeAndSwitch_L.CrossFadedBuffer</out>
-    <in>L.AudioIn</in>
+    <in>L.1</in>
   </port_connection>
 
   <port_connection>
     <out>XFadeAndSwitch_R.CrossFadedBuffer</out>
-    <in>R.AudioIn</in>
+    <in>R.1</in>
   </port_connection>
 
   <port_connection>

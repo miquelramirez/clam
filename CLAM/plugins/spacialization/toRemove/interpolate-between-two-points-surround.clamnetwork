@@ -157,17 +157,17 @@
 
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
-    <in>Surround.p</in>
+    <in>Surround.W</in>
   </port_connection>
 
   <port_connection>
     <out>AudioBuffer2Stream_1.Audio stream</out>
-    <in>Surround.vx</in>
+    <in>Surround.X</in>
   </port_connection>
 
   <port_connection>
     <out>AudioBuffer2Stream_2.Audio stream</out>
-    <in>Surround.vy</in>
+    <in>Surround.Y</in>
   </port_connection>
 
   <port_connection>
@@ -221,7 +221,7 @@
   </port_connection>
 
   <port_connection>
-    <out>InLanguage.AudioOut</out>
+    <out>InLanguage.1</out>
     <in>AudioWindowing.Input</in>
   </port_connection>
 
@@ -272,7 +272,7 @@
 
   <port_connection>
     <out>Surround.center</out>
-    <in>C.AudioIn</in>
+    <in>C.1</in>
   </port_connection>
 
   <port_connection>
@@ -282,7 +282,7 @@
 
   <port_connection>
     <out>Surround.right</out>
-    <in>R.AudioIn</in>
+    <in>R.1</in>
   </port_connection>
 
   <port_connection>
@@ -292,7 +292,7 @@
 
   <port_connection>
     <out>Surround.surroundRight</out>
-    <in>SR.AudioIn</in>
+    <in>SR.1</in>
   </port_connection>
 
   <port_connection>
@@ -302,7 +302,7 @@
 
   <port_connection>
     <out>Surround.surroundLeft</out>
-    <in>SL.AudioIn</in>
+    <in>SL.1</in>
   </port_connection>
 
   <port_connection>
@@ -312,7 +312,7 @@
 
   <port_connection>
     <out>Surround.left</out>
-    <in>L.AudioIn</in>
+    <in>L.1</in>
   </port_connection>
 
   <port_connection>

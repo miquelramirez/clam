@@ -1,21 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="Back_Horizontal" position="668,40" size="150,111" type="AudioSink"/>
+  <processing id="Back_Horizontal" position="668,40" size="150,111" type="AudioSink" />
 
-  <processing id="Base_Back_Left" position="783,92" size="149,111" type="AudioSink"/>
+  <processing id="Base_Back_Left" position="783,92" size="149,111" type="AudioSink" />
 
-  <processing id="Base_Back_Right" position="900,129" size="158,111" type="AudioSink"/>
+  <processing id="Base_Back_Right" position="900,129" size="158,111" type="AudioSink" />
 
-  <processing id="Base_Front_Left" position="1012,194" size="152,111" type="AudioSink"/>
+  <processing id="Base_Front_Left" position="1012,194" size="152,111" type="AudioSink" />
 
-  <processing id="Base_Front_Right" position="1284,302" size="161,111" type="AudioSink"/>
+  <processing id="Base_Front_Right" position="1284,302" size="161,111" type="AudioSink" />
 
-  <processing id="Front_Horizontal" position="748,408" size="153,111" type="AudioSink"/>
+  <processing id="Front_Horizontal" position="748,408" size="153,111" type="AudioSink" />
 
-  <processing id="Front_Left_Horizontal" position="916,436" size="189,111" type="AudioSink"/>
+  <processing id="Front_Left_Horizontal" position="916,436" size="189,111" type="AudioSink" />
 
-  <processing id="Front_Right_Horizontal" position="1116,473" size="198,111" type="AudioSink"/>
+  <processing id="Front_Right_Horizontal" position="1116,473" size="198,111" type="AudioSink" />
 
   <processing id="Hoa2RegularSpeakerArray" position="402,340" size="225,286" type="Hoa2RegularSpeakerArray">
     <Order>3</Order>
@@ -23,204 +22,204 @@
     <IgnoreLabels>0</IgnoreLabels>
   </processing>
 
-  <processing id="K in" position="4,559" size="128,108" type="AudioSource"/>
+  <processing id="K in" position="4,559" size="128,108" type="AudioSource" />
 
-  <processing id="L in" position="111,579" size="128,108" type="AudioSource"/>
+  <processing id="L in" position="111,579" size="128,108" type="AudioSource" />
 
-  <processing id="M in" position="217,599" size="128,108" type="AudioSource"/>
+  <processing id="M in" position="217,599" size="128,108" type="AudioSource" />
 
-  <processing id="N in" position="7,661" size="128,108" type="AudioSource"/>
+  <processing id="N in" position="7,661" size="128,108" type="AudioSource" />
 
-  <processing id="O in" position="115,682" size="128,108" type="AudioSource"/>
+  <processing id="O in" position="115,682" size="128,108" type="AudioSource" />
 
-  <processing id="P in" position="223,702" size="128,108" type="AudioSource"/>
+  <processing id="P in" position="223,702" size="128,108" type="AudioSource" />
 
-  <processing id="Q in" position="331,723" size="128,108" type="AudioSource"/>
+  <processing id="Q in" position="331,723" size="128,108" type="AudioSource" />
 
-  <processing id="R in" position="8,311" size="128,108" type="AudioSource"/>
+  <processing id="R in" position="8,311" size="128,108" type="AudioSource" />
 
-  <processing id="Rear_Left_Horizontal" position="1279,505" size="184,111" type="AudioSink"/>
+  <processing id="Rear_Left_Horizontal" position="1279,505" size="184,111" type="AudioSink" />
 
-  <processing id="Rear_Right_Horizontal" position="1378,596" size="193,111" type="AudioSink"/>
+  <processing id="Rear_Right_Horizontal" position="1378,596" size="193,111" type="AudioSink" />
 
-  <processing id="S" position="115,335" size="128,108" type="AudioSource"/>
+  <processing id="S" position="115,335" size="128,108" type="AudioSource" />
 
-  <processing id="T in" position="226,361" size="128,108" type="AudioSource"/>
+  <processing id="T in" position="226,361" size="128,108" type="AudioSource" />
 
-  <processing id="Top" position="629,865" size="128,111" type="AudioSink"/>
+  <processing id="Top" position="629,865" size="128,111" type="AudioSink" />
 
-  <processing id="Top_Back_Left" position="1090,724" size="137,111" type="AudioSink"/>
+  <processing id="Top_Back_Left" position="1090,724" size="137,111" type="AudioSink" />
 
-  <processing id="Top_Back_Right" position="970,772" size="146,111" type="AudioSink"/>
+  <processing id="Top_Back_Right" position="970,772" size="146,111" type="AudioSink" />
 
-  <processing id="Top_Front_Left" position="736,827" size="140,111" type="AudioSink"/>
+  <processing id="Top_Front_Left" position="736,827" size="140,111" type="AudioSink" />
 
-  <processing id="Top_Front_Right" position="830,802" size="149,111" type="AudioSink"/>
+  <processing id="Top_Front_Right" position="830,802" size="149,111" type="AudioSink" />
 
-  <processing id="U in" position="57,426" size="128,108" type="AudioSource"/>
+  <processing id="U in" position="57,426" size="128,108" type="AudioSource" />
 
-  <processing id="V in" position="172,450" size="128,108" type="AudioSource"/>
+  <processing id="V in" position="172,450" size="128,108" type="AudioSource" />
 
-  <processing id="W in" position="231,56" size="128,108" type="AudioSource"/>
+  <processing id="W in" position="231,56" size="128,108" type="AudioSource" />
 
-  <processing id="X in" position="16,178" size="128,108" type="AudioSource"/>
+  <processing id="X in" position="16,178" size="128,108" type="AudioSource" />
 
-  <processing id="Y in" position="125,203" size="128,108" type="AudioSource"/>
+  <processing id="Y in" position="125,203" size="128,108" type="AudioSource" />
 
-  <processing id="Z in" position="236,237" size="128,108" type="AudioSource"/>
+  <processing id="Z in" position="236,237" size="128,108" type="AudioSource" />
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Back Horizontal</out>
-    <in>Back_Horizontal.AudioIn</in>
+    <in>Back_Horizontal.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Base Back Left</out>
-    <in>Base_Back_Left.AudioIn</in>
+    <in>Base_Back_Left.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Base Back Right</out>
-    <in>Base_Back_Right.AudioIn</in>
+    <in>Base_Back_Right.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Base Front Left</out>
-    <in>Base_Front_Left.AudioIn</in>
+    <in>Base_Front_Left.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Base Front Right</out>
-    <in>Base_Front_Right.AudioIn</in>
+    <in>Base_Front_Right.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Front Horizontal</out>
-    <in>Front_Horizontal.AudioIn</in>
+    <in>Front_Horizontal.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Front Left Horizontal</out>
-    <in>Front_Left_Horizontal.AudioIn</in>
+    <in>Front_Left_Horizontal.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Front Right Horizontal</out>
-    <in>Front_Right_Horizontal.AudioIn</in>
+    <in>Front_Right_Horizontal.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Rear Left Horizontal</out>
-    <in>Rear_Left_Horizontal.AudioIn</in>
+    <in>Rear_Left_Horizontal.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Rear Right Horizontal</out>
-    <in>Rear_Right_Horizontal.AudioIn</in>
+    <in>Rear_Right_Horizontal.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Top Back Left</out>
-    <in>Top_Back_Left.AudioIn</in>
+    <in>Top_Back_Left.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Top Back Right</out>
-    <in>Top_Back_Right.AudioIn</in>
+    <in>Top_Back_Right.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Top Front Right</out>
-    <in>Top_Front_Right.AudioIn</in>
+    <in>Top_Front_Right.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Top Front Left</out>
-    <in>Top_Front_Left.AudioIn</in>
+    <in>Top_Front_Left.1</in>
   </port_connection>
 
   <port_connection>
     <out>Hoa2RegularSpeakerArray.Top</out>
-    <in>Top.AudioIn</in>
+    <in>Top.1</in>
   </port_connection>
 
   <port_connection>
-    <out>K in.AudioOut</out>
+    <out>K in.1</out>
     <in>Hoa2RegularSpeakerArray.K</in>
   </port_connection>
 
   <port_connection>
-    <out>L in.AudioOut</out>
+    <out>L in.1</out>
     <in>Hoa2RegularSpeakerArray.L</in>
   </port_connection>
 
   <port_connection>
-    <out>M in.AudioOut</out>
+    <out>M in.1</out>
     <in>Hoa2RegularSpeakerArray.M</in>
   </port_connection>
 
   <port_connection>
-    <out>N in.AudioOut</out>
+    <out>N in.1</out>
     <in>Hoa2RegularSpeakerArray.N</in>
   </port_connection>
 
   <port_connection>
-    <out>O in.AudioOut</out>
+    <out>O in.1</out>
     <in>Hoa2RegularSpeakerArray.O</in>
   </port_connection>
 
   <port_connection>
-    <out>P in.AudioOut</out>
+    <out>P in.1</out>
     <in>Hoa2RegularSpeakerArray.P</in>
   </port_connection>
 
   <port_connection>
-    <out>Q in.AudioOut</out>
+    <out>Q in.1</out>
     <in>Hoa2RegularSpeakerArray.Q</in>
   </port_connection>
 
   <port_connection>
-    <out>R in.AudioOut</out>
+    <out>R in.1</out>
     <in>Hoa2RegularSpeakerArray.R</in>
   </port_connection>
 
   <port_connection>
-    <out>S.AudioOut</out>
+    <out>S.1</out>
     <in>Hoa2RegularSpeakerArray.S</in>
   </port_connection>
 
   <port_connection>
-    <out>T in.AudioOut</out>
+    <out>T in.1</out>
     <in>Hoa2RegularSpeakerArray.T</in>
   </port_connection>
 
   <port_connection>
-    <out>U in.AudioOut</out>
+    <out>U in.1</out>
     <in>Hoa2RegularSpeakerArray.U</in>
   </port_connection>
 
   <port_connection>
-    <out>V in.AudioOut</out>
+    <out>V in.1</out>
     <in>Hoa2RegularSpeakerArray.V</in>
   </port_connection>
 
   <port_connection>
-    <out>W in.AudioOut</out>
+    <out>W in.1</out>
     <in>Hoa2RegularSpeakerArray.W</in>
   </port_connection>
 
   <port_connection>
-    <out>X in.AudioOut</out>
+    <out>X in.1</out>
     <in>Hoa2RegularSpeakerArray.X</in>
   </port_connection>
 
   <port_connection>
-    <out>Y in.AudioOut</out>
+    <out>Y in.1</out>
     <in>Hoa2RegularSpeakerArray.Y</in>
   </port_connection>
 
   <port_connection>
-    <out>Z in.AudioOut</out>
+    <out>Z in.1</out>
     <in>Hoa2RegularSpeakerArray.Z</in>
   </port_connection>
 

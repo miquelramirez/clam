@@ -61,3 +61,8 @@ renameConnector BFormatRotationZoom outport 'vy' 'Y'
 renameConnector BFormatRotationZoom inport 'vz' 'Z'
 renameConnector BFormatRotationZoom outport 'vz' 'Z'
 removeConfig Surround NChannels
+
+# the multiple ports patch needs to rename the ports
+renameConnector AudioSource outport "AudioOut" 1
+renameConnector AudioSink inport "AudioIn" 1
+

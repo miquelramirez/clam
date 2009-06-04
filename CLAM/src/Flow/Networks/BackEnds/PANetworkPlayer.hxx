@@ -31,7 +31,6 @@
 namespace CLAM
 {
 
-
 class PANetworkPlayer : public NetworkPlayer
 {
 	int mPreferredBufferSize;
@@ -54,7 +53,7 @@ public:
 	std::string NonWorkingReason();
 	virtual void Start();
 	virtual void Stop();
-	
+
 private:
 	static int ProcessCallback (
 			const void *inputBuffers,

@@ -1,35 +1,34 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="1 mid back" position="1960,490" size="128,111" type="AudioSink"/>
+  <processing id="1 mid back" position="1960,490" size="128,111" type="AudioSink" />
 
-  <processing id="10 mid back right" position="2420,923" size="128,111" type="AudioSink"/>
+  <processing id="10 mid back right" position="2420,923" size="128,111" type="AudioSink" />
 
-  <processing id="11 up back left" position="1967,1017" size="128,111" type="AudioSink"/>
+  <processing id="11 up back left" position="1967,1017" size="128,111" type="AudioSink" />
 
-  <processing id="12 up back right" position="2083,1043" size="128,111" type="AudioSink"/>
+  <processing id="12 up back right" position="2083,1043" size="128,111" type="AudioSink" />
 
-  <processing id="13 up front right" position="2200,1072" size="128,111" type="AudioSink"/>
+  <processing id="13 up front right" position="2200,1072" size="128,111" type="AudioSink" />
 
-  <processing id="14 up front left" position="2328,1086" size="128,111" type="AudioSink"/>
+  <processing id="14 up front left" position="2328,1086" size="128,111" type="AudioSink" />
 
-  <processing id="15 Top" position="1850,1146" size="128,111" type="AudioSink"/>
+  <processing id="15 Top" position="1850,1146" size="128,111" type="AudioSink" />
 
-  <processing id="2 down rear left" position="1968,599" size="128,111" type="AudioSink"/>
+  <processing id="2 down rear left" position="1968,599" size="128,111" type="AudioSink" />
 
-  <processing id="3 down rear right" position="2077,617" size="128,111" type="AudioSink"/>
+  <processing id="3 down rear right" position="2077,617" size="128,111" type="AudioSink" />
 
-  <processing id="4 down front left" position="2188,636" size="128,111" type="AudioSink"/>
+  <processing id="4 down front left" position="2188,636" size="128,111" type="AudioSink" />
 
-  <processing id="5 down front right" position="2299,663" size="130,111" type="AudioSink"/>
+  <processing id="5 down front right" position="2299,663" size="130,111" type="AudioSink" />
 
-  <processing id="6 mid front" position="1941,794" size="128,111" type="AudioSink"/>
+  <processing id="6 mid front" position="1941,794" size="128,111" type="AudioSink" />
 
-  <processing id="7 mid front left" position="2059,814" size="128,111" type="AudioSink"/>
+  <processing id="7 mid front left" position="2059,814" size="128,111" type="AudioSink" />
 
-  <processing id="8 mid front right" position="2176,841" size="128,111" type="AudioSink"/>
+  <processing id="8 mid front right" position="2176,841" size="128,111" type="AudioSink" />
 
-  <processing id="9 mid back left" position="2293,861" size="128,111" type="AudioSink"/>
+  <processing id="9 mid back left" position="2293,861" size="128,111" type="AudioSink" />
 
   <processing id="AudioBuffer2Stream_10" position="828,363" size="165,59" type="AudioBuffer2Stream">
     <HopSize>512</HopSize>
@@ -116,9 +115,9 @@
     <DoHalfWindowShift>0</DoHalfWindowShift>
   </processing>
 
-  <processing id="BFormat2Sixteen" position="1711,511" size="128,270" type="BFormat2Sixteen"/>
+  <processing id="BFormat2Sixteen" position="1711,511" size="128,270" type="BFormat2Sixteen" />
 
-  <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation"/>
+  <processing id="BFormatRotation" position="1183,150" size="143,78" type="BFormatRotation" />
 
   <processing id="ChoreoSequencer_1" position="104,22" size="226,59" type="ChoreoSequencer">
     <Filename>../../../../data_acustica/test_coreos/horitzontal/exported_coreo.data</Filename>
@@ -149,13 +148,13 @@
     <InitGain>1.12</InitGain>
   </processing>
 
-  <processing id="IRSwappingDelay_2" position="353,52" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_2" position="353,52" size="147,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_3" position="344,176" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_3" position="344,176" size="147,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_4" position="352,270" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_4" position="352,270" size="147,62" type="IRSwappingDelay" />
 
-  <processing id="IRSwappingDelay_5" position="351,374" size="147,62" type="IRSwappingDelay"/>
+  <processing id="IRSwappingDelay_5" position="351,374" size="147,62" type="IRSwappingDelay" />
 
   <processing id="LowLatencyConvolution_10" position="524,358" size="187,62" type="LowLatencyConvolution">
     <MaxFrames>0</MaxFrames>
@@ -245,15 +244,15 @@
     <SupressInitialDelay>1</SupressInitialDelay>
   </processing>
 
-  <processing id="Source" position="34,340" size="128,108" type="AudioSource"/>
+  <processing id="Source" position="34,340" size="128,108" type="AudioSource" />
 
-  <processing id="XFadeAndSwitch_2" position="992,56" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_2" position="992,56" size="142,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_3" position="989,166" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_3" position="989,166" size="142,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_4" position="998,267" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_4" position="998,267" size="142,94" type="XFadeAndSwitch" />
 
-  <processing id="XFadeAndSwitch_5" position="1001,371" size="142,94" type="XFadeAndSwitch"/>
+  <processing id="XFadeAndSwitch_5" position="1001,371" size="142,94" type="XFadeAndSwitch" />
 
   <processing id="directSoundPressure" position="754,513" size="247,100" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
@@ -313,77 +312,77 @@
 
   <port_connection>
     <out>BFormat2Sixteen.Back Horizontal</out>
-    <in>1 mid back.AudioIn</in>
+    <in>1 mid back.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Base Back Left</out>
-    <in>2 down rear left.AudioIn</in>
+    <in>2 down rear left.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Base Back Right</out>
-    <in>3 down rear right.AudioIn</in>
+    <in>3 down rear right.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Base Front Left</out>
-    <in>4 down front left.AudioIn</in>
+    <in>4 down front left.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Base Front Right</out>
-    <in>5 down front right.AudioIn</in>
+    <in>5 down front right.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Front Horizontal</out>
-    <in>6 mid front.AudioIn</in>
+    <in>6 mid front.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Front Left Horizontal</out>
-    <in>7 mid front left.AudioIn</in>
+    <in>7 mid front left.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Front Right Horizontal</out>
-    <in>8 mid front right.AudioIn</in>
+    <in>8 mid front right.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Rear Left Horizontal</out>
-    <in>9 mid back left.AudioIn</in>
+    <in>9 mid back left.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Rear Right Horizontal</out>
-    <in>10 mid back right.AudioIn</in>
+    <in>10 mid back right.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Top Back Left</out>
-    <in>11 up back left.AudioIn</in>
+    <in>11 up back left.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Top Back Right</out>
-    <in>12 up back right.AudioIn</in>
+    <in>12 up back right.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Top Front Right</out>
-    <in>14 up front left.AudioIn</in>
+    <in>14 up front left.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Top Front Left</out>
-    <in>13 up front right.AudioIn</in>
+    <in>13 up front right.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormat2Sixteen.Top</out>
-    <in>15 Top.AudioIn</in>
+    <in>15 Top.1</in>
   </port_connection>
 
   <port_connection>
@@ -642,17 +641,17 @@
   </port_connection>
 
   <port_connection>
-    <out>Source.AudioOut</out>
+    <out>Source.1</out>
     <in>AudioMixer.Input 0</in>
   </port_connection>
 
   <port_connection>
-    <out>Source.AudioOut</out>
+    <out>Source.1</out>
     <in>ChoreoSequencer_1.sync</in>
   </port_connection>
 
   <port_connection>
-    <out>Source.AudioOut</out>
+    <out>Source.1</out>
     <in>RoomImpulseResponseSimulator.synchronization</in>
   </port_connection>
 

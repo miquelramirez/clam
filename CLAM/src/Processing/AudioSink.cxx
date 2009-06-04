@@ -7,7 +7,7 @@
 namespace CLAM
 {
 
-namespace Hidden
+namespace 
 {
 	static const char* metadata[] = {
 		"key", "AudioSink",
@@ -19,36 +19,50 @@ namespace Hidden
 	};
 	static FactoryRegistrator<ProcessingFactory, AudioSink> reg = metadata;
 }
-	
 
 bool AudioSink::Do()
 {
-	const CLAM::Audio& so=mIn.GetAudio();
-	CLAM_DEBUG_ASSERT(mFloatBuffer, "No float buffer");
-	CLAM_DEBUG_ASSERT(!mDoubleBuffer, "There should not be double buffer");
-	CLAM_DEBUG_ASSERT(mBufferSize>0, "internal buffer size must be greater than 0");
-	const CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
-	for (unsigned i=0; i<mBufferSize; i++)
-		mFloatBuffer[i] = audioBuffer[i];
-	mIn.Consume();
-	return true;
+	for (Ports::iterator it = _ports.begin(); it != _ports.end(); ++it)
+	{
+		Port& port = (*it);
+		AudioInPort* in = port.mAudioIn;
+
+		const CLAM::Audio& so=in->GetAudio();
+		CLAM_DEBUG_ASSERT(port.mFloatBuffer, "No float buffer");
+		CLAM_DEBUG_ASSERT(!port.mDoubleBuffer, "There should not be double buffer");
+		CLAM_DEBUG_ASSERT(port.mBufferSize>0, "internal buffer size must be greater than 0");
+		const CLAM::TData * audioBuffer = so.GetBuffer().GetPtr();
+
+		for (unsigned i=0; i<port.mBufferSize; i++)
+			port.mFloatBuffer[i] = audioBuffer[i];
+
+		in->Consume();
+	}
+
+		return true;
 }
 
-void AudioSink::SetExternalBuffer( float* buf, unsigned nframes)
+void AudioSink::SetExternalBuffer(float* buf, unsigned nframes, unsigned index)
 {
-	mFloatBuffer = buf;
-	mBufferSize = nframes;
-	mDoubleBuffer = 0;
-	mIn.SetSize(nframes);
-	mIn.SetHop(nframes);
+	CLAM_ASSERT(index < _ports.size(), "AudioInPort index out of range");
+	Port& port = _ports[index];
+	port.mAudioIn->SetSize(nframes);
+	port.mAudioIn->SetHop(nframes);
+	port.mFloatBuffer = buf;
+	port.mBufferSize = nframes;
+	port.mDoubleBuffer = 0;
+
 }
-void AudioSink::SetExternalBuffer( double* buf, unsigned nframes)
+
+void AudioSink::SetExternalBuffer(double* buf, unsigned nframes, unsigned index)
 {
-	mDoubleBuffer = buf;
-	mBufferSize = nframes;
-	mFloatBuffer = 0;
-	mIn.SetSize(nframes);
-	mIn.SetHop(nframes);
+	CLAM_ASSERT(index < _ports.size(), "AudioInPort index out of range");
+	Port& port = _ports[index];
+	port.mAudioIn->SetSize(nframes);
+	port.mAudioIn->SetHop(nframes);
+	port.mDoubleBuffer = buf;
+	port.mBufferSize = nframes;
+	port.mFloatBuffer = 0;
 }
 
 } //namespace CLAM

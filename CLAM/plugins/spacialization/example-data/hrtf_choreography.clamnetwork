@@ -150,12 +150,12 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioSource.AudioOut</out>
+    <out>AudioSource.1</out>
     <in>AudioWindowing.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource.AudioOut</out>
+    <out>AudioSource.1</out>
     <in>ChoreoSequencer.sync</in>
   </port_connection>
 
@@ -276,7 +276,7 @@
 
   <port_connection>
     <out>XFadeAndSwitch_L.CrossFadedBuffer</out>
-    <in>AudioSink_L.AudioIn</in>
+    <in>AudioSink_L.1</in>
   </port_connection>
 
   <port_connection>
@@ -286,7 +286,7 @@
 
   <port_connection>
     <out>XFadeAndSwitch_R.CrossFadedBuffer</out>
-    <in>AudioSink_R.AudioIn</in>
+    <in>AudioSink_R.1</in>
   </port_connection>
 
   <port_connection>

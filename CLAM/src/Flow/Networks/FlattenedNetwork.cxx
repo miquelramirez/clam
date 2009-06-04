@@ -32,6 +32,12 @@
 #	include "ProcessingFactory.hxx"
 #endif
 #include "CLAMVersion.hxx"
+
+#include <sstream>
+#include <algorithm>
+#include <iterator>
+
+
 namespace CLAM
 {	
 	FlattenedNetwork::FlattenedNetwork() :
@@ -186,6 +192,7 @@ namespace CLAM
 			if (not storage.Load(xmlAdapter)) break;
 			std::string fullOut = connectionDefinition.GetOutName();
 			std::string fullIn = connectionDefinition.GetInName();
+                        
 			if (_setPasteMode)
 			{
 				fullOut = namesMap.find(GetProcessingIdentifier(fullOut))->second
@@ -193,8 +200,14 @@ namespace CLAM
 				fullIn = namesMap.find(GetProcessingIdentifier(fullIn))->second
 					+"."+GetConnectorIdentifier(fullIn);
 			}
+
+			if (BrokenConnection(fullOut, fullIn))
+				continue;
+
 			if (not ConnectPorts( fullOut, fullIn ))
+			{
 				throw XmlStorageErr(std::string("Unable to connect ports '")+fullOut+"->"+fullIn+".");
+			}
 		}
 
 		while(1)
@@ -657,19 +670,22 @@ namespace CLAM
 
 	bool FlattenedNetwork::IsStopped() const
 	{
-		if (! _player) return true;
+		if (! _player) 
+			return true;
 		return _player->IsStopped();
 	}
 
 	bool FlattenedNetwork::IsPlaying() const
 	{
-		if (! _player) return false;
+		if (! _player) 
+			return false;
 		return _player->IsPlaying();
 	}
 
 	bool FlattenedNetwork::IsPaused() const
 	{
-		if (! _player) return false;
+		if (! _player) 
+			return false;
 		return _player->IsPaused();
 	}
 
@@ -679,19 +695,21 @@ namespace CLAM
 		for (it=BeginProcessings(); it!=EndProcessings(); it++)
 		{
 			if (it->second->IsRunning()) 
-{
-			continue;
-}
+			{
+				continue;
+			}
 			if (it->second->IsConfigured())
 			{
 				it->second->Start();
 			}
 			else
 			{	
-				std::cerr << "Warning: could not start processing for not being Configured: '" << it->first<< "' of class " << it->second->GetClassName() << std::endl;
+				std::cerr << "Warning: could not start processing for not being Configured: '" 
+						<< it->first<< "' of class " << it->second->GetClassName() << std::endl;
 			}
 		}
-		if (_player) _player->Start();
+		if (_player) 
+			_player->Start();
 	}
 	
 	void FlattenedNetwork::Stop()
@@ -889,5 +907,37 @@ namespace CLAM
 		return errorMessage.str();
 	}
 
+	bool FlattenedNetwork::BrokenConnection( const std::string & producer, const std::string & consumer )
+	{
+		bool brokenConnection = false;
+
+		Processing& prod = GetProcessing( GetProcessingIdentifier(producer) );
+		Processing& cons = GetProcessing( GetProcessingIdentifier(consumer) );
+
+		if (!prod.HasOutPort(GetConnectorIdentifier(producer)))
+			 brokenConnection = true;
+
+		if (!cons.HasInPort(GetConnectorIdentifier(consumer)))
+			 brokenConnection = true;
+
+		if (brokenConnection)
+			_brokenConnections.push_back(producer + " -> " + consumer);
+
+		return brokenConnection;
+	} 
+
+	FlattenedNetwork::ConnectionState FlattenedNetwork::GetConnectionReport() const
+	{
+		std::ostringstream os;
+		std::copy(_brokenConnections.begin(), _brokenConnections.end(), 
+				  std::ostream_iterator<std::string> (os, "<br/> "));
+
+		return std::make_pair(_brokenConnections.size() != 0, os.str());
+	}
+
+	void FlattenedNetwork::ResetConnectionReport()
+	{
+		_brokenConnections.clear();
+	}
 }
 

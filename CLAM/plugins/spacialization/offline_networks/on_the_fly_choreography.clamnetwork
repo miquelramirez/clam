@@ -219,17 +219,17 @@
   </processing>
 
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>AudioMixer.Input 0</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>CameraTracking.sync</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioInput.AudioOut</out>
+    <out>AudioInput.1</out>
     <in>ImpulseResponseCalculatedOnTheFly.synchronization</in>
   </port_connection>
 
@@ -245,17 +245,17 @@
 
   <port_connection>
     <out>BFormatRotation.X</out>
-    <in>X.AudioIn</in>
+    <in>X.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormatRotation.Y</out>
-    <in>Y.AudioIn</in>
+    <in>Y.1</in>
   </port_connection>
 
   <port_connection>
     <out>BFormatRotation.Z</out>
-    <in>Z.AudioIn</in>
+    <in>Z.1</in>
   </port_connection>
 
   <port_connection>
@@ -480,7 +480,7 @@
 
   <port_connection>
     <out>XFade P.CrossFadedBuffer</out>
-    <in>W.AudioIn</in>
+    <in>W.1</in>
   </port_connection>
 
   <port_connection>

@@ -14,6 +14,7 @@ class NetworkLADSPAPlugin
 		std::string name;
 		T* processing;
 		LADSPA_Data *dataBuffer;
+		unsigned port;
 	};
 
 private:
@@ -28,19 +29,19 @@ private:
 	LADSPAInControlList mInControlList;
 	LADSPAOutControlList mOutControlList;
 	unsigned long mClamBufferSize, mExternBufferSize;
-	
+
 public:
 	NetworkLADSPAPlugin(const std::string & label, const std::string & networkXmlContent);
 	~NetworkLADSPAPlugin();
-	
+
 	void Activate();
 	void Deactivate();
-	
+
 	void LocateConnections();
 	void UpdatePortFrameAndHopSize();
 	void FillPortInfo( LADSPA_PortDescriptor* descriptors, char** names, LADSPA_PortRangeHint* rangehints );
 	void ConnectTo(unsigned long port, LADSPA_Data * data);
-	
+
 	void Run( unsigned long nsamples );
 	void EstablishLadspaBuffersToAudioSources(const unsigned long nframes);
 	void EstablishLadspaBuffersToAudioSinks(const unsigned long nframes);
@@ -175,20 +176,46 @@ void NetworkLADSPAPlugin::LocateConnections()
 
 	for (Network::AudioSources::const_iterator it=sources.begin(); it!=sources.end(); it++)
 	{
-		LADSPAInfo<AudioSource> info;
-		info.name = _network.GetNetworkId(*it).c_str();
-		info.processing=*it;
-		info.processing->SetFrameAndHopSize( mExternBufferSize );
-		mReceiverList.push_back(info);
+		std::string processingName = _network.GetNetworkId(*it);
+
+		AudioSource::Ports ports = (*it)->GetPorts();
+		for(unsigned port = 0; port < ports.size(); ++port)
+		{
+			std::stringstream portName;
+			if (ports.size() == 1)
+				portName << processingName;
+			else
+				portName << processingName << "_" << port;
+
+			LADSPAInfo<AudioSource> info;
+			info.name = portName.str().c_str();
+			info.port = port;
+			info.processing=*it;
+			info.processing->SetFrameAndHopSize( mExternBufferSize );
+			mReceiverList.push_back(info);
+		}
 	}
 
 	for (Network::AudioSinks::const_iterator it=sinks.begin(); it!=sinks.end(); it++)
 	{
-		LADSPAInfo<AudioSink> info;
-		info.name = _network.GetNetworkId( *it ).c_str();
-		info.processing =*it;
-		info.processing->SetFrameAndHopSize ( mExternBufferSize );		
-		mSenderList.push_back(info);	
+        std::string processingName = _network.GetNetworkId( *it );
+
+        CLAM::AudioSink::Ports ports = (*it)->GetPorts();
+        for(unsigned port = 0; port < ports.size(); ++port)
+        {
+			std::stringstream portName;
+			if (ports.size() == 1)
+				portName << processingName;
+			else
+				portName << processingName << "_" << port;
+
+			LADSPAInfo<AudioSink> info;
+			info.name = portName.str().c_str();
+			info.port = port;
+			info.processing =*it;
+			info.processing->SetFrameAndHopSize ( mExternBufferSize );		
+			mSenderList.push_back(info);	
+		}
 	}
 
 	for (Network::ControlSources::const_iterator it=controlSources.begin(); it!=controlSources.end(); it++)
@@ -294,7 +321,6 @@ void NetworkLADSPAPlugin::Run( unsigned long nsamples )
 	}
 
 	ProcessOutControlValues();
-
 }
 
 void NetworkLADSPAPlugin::ProcessInControlValues()
@@ -312,15 +338,13 @@ void NetworkLADSPAPlugin::ProcessOutControlValues()
 void NetworkLADSPAPlugin::EstablishLadspaBuffersToAudioSources(const unsigned long nframes)
 {
 	for (LADSPAInPortList::iterator it=mReceiverList.begin(); it!=mReceiverList.end(); it++)
-	{
-		it->processing->SetExternalBuffer(it->dataBuffer, nframes );
-	}
+		it->processing->SetExternalBuffer(it->dataBuffer, nframes, it->port );
 }
 
 void NetworkLADSPAPlugin::EstablishLadspaBuffersToAudioSinks(const unsigned long nframes)
 {
 	for (LADSPAOutPortList::iterator it=mSenderList.begin(); it!=mSenderList.end(); it++)
-		it->processing->SetExternalBuffer(it->dataBuffer, nframes );
+		it->processing->SetExternalBuffer(it->dataBuffer, nframes, it->port );
 }
 
 void NetworkLADSPAPlugin::ConnectTo(unsigned long port, LADSPA_Data * data)

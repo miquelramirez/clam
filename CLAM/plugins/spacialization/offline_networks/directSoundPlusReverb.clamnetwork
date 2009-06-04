@@ -580,12 +580,12 @@
 
   <port_connection>
     <out>AudioMixer_1.Output Audio</out>
-    <in>AudioSink.AudioIn</in>
+    <in>AudioSink.1</in>
   </port_connection>
 
   <port_connection>
     <out>AudioMixer_2.Output Audio</out>
-    <in>AudioSink_1.AudioIn</in>
+    <in>AudioSink_1.1</in>
   </port_connection>
 
   <port_connection>
@@ -599,22 +599,22 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_1.AudioOut</out>
+    <out>AudioSource_1.1</out>
     <in>AudioMixer.Input 0</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_1.AudioOut</out>
+    <out>AudioSource_1.1</out>
     <in>ChoreoSequencer_1.sync</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_1.AudioOut</out>
+    <out>AudioSource_1.1</out>
     <in>RoomImpulseResponseSimulator.synchronization</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_1.AudioOut</out>
+    <out>AudioSource_1.1</out>
     <in>Oscilloscope_4.Input</in>
   </port_connection>
 

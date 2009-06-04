@@ -196,10 +196,10 @@ private:
 		net.AddProcessing( "Analysis", new CLAM::SMSAnalysisCore );
 		net.AddProcessing( "Synthesis", new CLAM::SMSSynthesis );
 
-		net.ConnectPorts("Source.AudioOut", "Analysis.Input Audio");
+		net.ConnectPorts("Source.1", "Analysis.Input Audio");
 		net.ConnectPorts("Analysis.Sinusoidal Peaks", "Synthesis.InputSinPeaks");
 		net.ConnectPorts("Analysis.Residual Spectrum", "Synthesis.InputResSpectrum");
-		net.ConnectPorts("Synthesis.OutputAudio", "Sink.AudioIn");
+		net.ConnectPorts("Synthesis.OutputAudio", "Sink.1");
 		net.ConfigureProcessing("Analysis", helperAnalysisConfigInstance() );
 		net.ConfigureProcessing("Synthesis", helperSynthesisConfigInstance() );
 

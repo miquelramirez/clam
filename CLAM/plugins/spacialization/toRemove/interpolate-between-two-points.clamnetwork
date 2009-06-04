@@ -60,11 +60,11 @@
 
   <port_connection>
     <out>AudioBuffer2Stream.Audio stream</out>
-    <in>AudioSink.AudioIn</in>
+    <in>AudioSink.1</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource.AudioOut</out>
+    <out>AudioSource.1</out>
     <in>AudioWindowing.Input</in>
   </port_connection>
 

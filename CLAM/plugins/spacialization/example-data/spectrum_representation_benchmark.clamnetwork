@@ -108,7 +108,7 @@
 
   <port_connection>
     <out>AudioMixer_0.Output Audio</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <port_connection>
@@ -117,22 +117,22 @@
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>AudioWindowing_0.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>Oscilloscope_1.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
-    <in>AudioSink_1.AudioIn</in>
+    <out>AudioSource_0.1</out>
+    <in>AudioSink_1.1</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_1.AudioOut</out>
+    <out>AudioSource_1.1</out>
     <in>AudioWindowing_1.Input</in>
   </port_connection>
 

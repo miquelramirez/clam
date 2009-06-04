@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include "NetworkPlayer.hxx"
 #include "Network.hxx"
 #include <jack/jack.h>
@@ -21,7 +22,9 @@ private:
 		}
 		jack_port_t* jackPort;
 		AudioSource* source;
+		unsigned port;
 	};
+	typedef std::vector<SourceJackBinding> SourceJackBindings;
 
 	struct SinkJackBinding
 	{
@@ -31,15 +34,17 @@ private:
 		}
 		jack_port_t* jackPort;
 		AudioSink* sink;
+		unsigned port;
 	};
-	typedef std::vector<SourceJackBinding> SourceJackBindings;
 	typedef std::vector<SinkJackBinding> SinkJackBindings;
+        
 	struct JackConnection
 	{
 		std::string processingName;
 		const char ** outsideConnections;
 	};
 	typedef std::list<JackConnection> JackConnections;
+
 private:
 	int _jackSampleRate;
 	int _jackBufferSize;
@@ -57,6 +62,9 @@ private:
 	//JACK CODE
 	jack_client_t * _jackClient;
 	std::string _jackClientName;
+
+private:
+        void AddSourceJackBinding(Network::AudioSources::const_iterator& it, std::string const& name, unsigned index);
 
 public:
 	JACKNetworkPlayer(const std::string & name="CLAM network player");

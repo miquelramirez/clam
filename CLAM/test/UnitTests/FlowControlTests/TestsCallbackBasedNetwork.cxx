@@ -211,7 +211,7 @@ private:
 		CLAM::AudioSink * sink = new CLAM::AudioSink;
 		_network.AddProcessing("Source", source);
 		_network.AddProcessing("Sink", sink);
-		_network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
+		_network.ConnectPorts("Source.1", "Sink.1");
 		_network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
@@ -240,8 +240,8 @@ private:
 		_network.AddProcessing("Source", source);
 		_network.AddProcessing("Sink", sink);
 		_network.AddProcessing("Filter", filter);
-		_network.ConnectPorts("Source.AudioOut", "Filter.in");
-		_network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		_network.ConnectPorts("Source.1", "Filter.in");
+		_network.ConnectPorts("Filter.out", "Sink.1");
 		_network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
@@ -257,8 +257,8 @@ private:
 		_network.AddProcessing("Source", source);
 		_network.AddProcessing("Sink", sink);
 		_network.AddProcessing("Filter", filter);
-		_network.ConnectPorts("Source.AudioOut", "Filter.in");
-		_network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		_network.ConnectPorts("Source.1", "Filter.in");
+		_network.ConnectPorts("Filter.out", "Sink.1");
 		_network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
@@ -274,8 +274,8 @@ private:
 		_network.AddProcessing("Source", source);
 		_network.AddProcessing("Sink", sink);
 		_network.AddProcessing("Filter", filter);
-		_network.ConnectPorts("Source.AudioOut", "Filter.in");
-		_network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		_network.ConnectPorts("Source.1", "Filter.in");
+		_network.ConnectPorts("Filter.out", "Sink.1");
 		_network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
@@ -303,8 +303,8 @@ private:
 		_network.AddProcessing("Source", source);
 		_network.AddProcessing("Sink", sink);
 		_network.AddProcessing("Filter", filter);
-		_network.ConnectPorts("Source.AudioOut", "Filter.in");
-		_network.ConnectPorts("Filter.out", "Sink.AudioIn");
+		_network.ConnectPorts("Source.1", "Filter.in");
+		_network.ConnectPorts("Filter.out", "Sink.1");
 		_network.Start();
 		source->SetExternalBuffer(_inFloat, 2);
 		sink->SetExternalBuffer(_outFloat, 2);
@@ -335,8 +335,8 @@ private:
 		_network.AddProcessing("Source", source);
 		_network.AddProcessing("Sink", sink);
 		_network.AddProcessing("Filter", filter);
-		_network.ConnectPorts("Source.AudioOut", "Filter.in");
-		_network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
+		_network.ConnectPorts("Source.1", "Filter.in");
+		_network.ConnectPorts("Source.1", "Sink.1");
 		_network.Start();
 		for (int i=0; i<iterations; i++)
 		{
@@ -356,8 +356,8 @@ private:
 		_network.AddProcessing("Source", source);
 		_network.AddProcessing("Sink", sink);
 		_network.AddProcessing("Filter", filter);
-		_network.ConnectPorts("Source.AudioOut", "Filter.in");
-		_network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
+		_network.ConnectPorts("Source.1", "Filter.in");
+		_network.ConnectPorts("Source.1", "Sink.1");
 		_network.Start();
 		source->SetExternalBuffer(_inFloat, callbackStep);
 		sink->SetExternalBuffer(_outFloat, callbackStep);
@@ -371,7 +371,7 @@ private:
 		DummyGenerator * generator = new DummyGenerator(3);
 		_network.AddProcessing("Sink", sink);
 		_network.AddProcessing("Generator", generator);
-		_network.ConnectPorts("Generator.out", "Sink.AudioIn");
+		_network.ConnectPorts("Generator.out", "Sink.1");
 		_network.Start();
 		sink->SetExternalBuffer(_outFloat, 4);
 		_network.Do();
@@ -387,7 +387,7 @@ private:
 		_network.AddProcessing("Source", source);
 		_network.AddProcessing("Sink", sink);
 		_network.AddProcessing("IsolatedGenerator", isolated);
-		_network.ConnectPorts("Source.AudioOut", "Sink.AudioIn");
+		_network.ConnectPorts("Source.1", "Sink.1");
 		_network.Start();
 		sink->SetExternalBuffer(_outFloat, 4);
 		source->SetExternalBuffer(_inFloat, 4);

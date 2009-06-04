@@ -113,7 +113,7 @@
 
   <port_connection>
     <out>AudioBuffer2Stream_0.Audio stream</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <port_connection>
