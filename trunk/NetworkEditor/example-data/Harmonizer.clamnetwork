@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" position="950,395" size="141,111" type="AudioSink"/>
+  <processing id="AudioSink_0" position="950,395" size="141,111" type="AudioSink" />
 
   <processing id="Gain_0" position="352,96" size="199,91" type="OutControlSender">
     <Min>0</Min>
@@ -35,7 +34,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Input" position="-41,267" size="128,108" type="AudioSource"/>
+  <processing id="Input" position="-41,267" size="128,108" type="AudioSource" />
 
   <processing id="Input Voice Gain" position="352,17" size="206,91" type="OutControlSender">
     <Min>-2</Min>
@@ -45,13 +44,13 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Oscilloscope_0" position="262,493" size="379,131" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="262,493" size="379,131" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_1" position="687,493" size="381,130" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="687,493" size="381,130" type="Oscilloscope" />
 
-  <processing id="PeakView_0" position="265,619" size="376,140" type="PeakView"/>
+  <processing id="PeakView_0" position="265,619" size="376,140" type="PeakView" />
 
-  <processing id="PeakView_1" position="692,621" size="376,137" type="PeakView"/>
+  <processing id="PeakView_1" position="692,621" size="376,137" type="PeakView" />
 
   <processing id="Pitch_0" position="519,96" size="217,91" type="OutControlSender">
     <Min>-24</Min>
@@ -291,12 +290,12 @@
   </processing>
 
   <port_connection>
-    <out>Input.AudioOut</out>
+    <out>Input.1</out>
     <in>SMSAnalysisCore_0.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>Input.AudioOut</out>
+    <out>Input.1</out>
     <in>Oscilloscope_0.Input</in>
   </port_connection>
 
@@ -337,7 +336,7 @@
 
   <port_connection>
     <out>SMSSynthesis_0.OutputAudio</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <port_connection>

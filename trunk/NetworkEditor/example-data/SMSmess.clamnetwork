@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
-  <processing id="AudioSource_0" position="2,115" size="165,108" type="AudioSource"/>
+  <processing id="AudioSource_0" position="2,115" size="165,108" type="AudioSource" />
 
   <processing id="OutControlSender" position="227,12" size="441,91" type="OutControlSender">
     <Min>-11025</Min>
@@ -11,7 +10,7 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Output" position="721,185" size="128,111" type="AudioSink"/>
+  <processing id="Output" position="721,185" size="128,111" type="AudioSink" />
 
   <processing id="SMSAnalysisCore" position="61,177" size="187,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
@@ -162,7 +161,7 @@
   </processing>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>SMSAnalysisCore.Input Audio</in>
   </port_connection>
 
@@ -193,7 +192,7 @@
 
   <port_connection>
     <out>SMSSynthesis.OutputAudio</out>
-    <in>Output.AudioIn</in>
+    <in>Output.1</in>
   </port_connection>
 
   <control_connection>

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="CLAM">
 
   <processing id="Amount" position="19,416" size="232,91" type="OutControlSender">
@@ -93,7 +92,7 @@
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="Oscilloscope_0" position="477,12" size="222,129" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="477,12" size="222,129" type="Oscilloscope" />
 
   <processing id="OverlapAdd_0" position="292,587" size="158,64" type="OverlapAdd">
     <FrameSize>512</FrameSize>
@@ -111,9 +110,9 @@
     <PreserveOuts>0</PreserveOuts>
   </processing>
 
-  <processing id="Spectral Input" position="21,6" size="158,108" type="AudioSource"/>
+  <processing id="Spectral Input" position="21,6" size="158,108" type="AudioSource" />
 
-  <processing id="Spectral Output" position="491,587" size="174,111" type="AudioSink"/>
+  <processing id="Spectral Output" position="491,587" size="174,111" type="AudioSink" />
 
   <processing id="SpectralAnalysis_0" position="226,46" size="200,64" type="SpectralAnalysis">
     <WindowGenerator>
@@ -169,9 +168,9 @@
     <prHopSize>512</prHopSize>
   </processing>
 
-  <processing id="SpectrumView_0" position="221,119" size="272,150" type="SpectrumView"/>
+  <processing id="SpectrumView_0" position="221,119" size="272,150" type="SpectrumView" />
 
-  <processing id="SpectrumView_1" position="220,268" size="274,144" type="SpectrumView"/>
+  <processing id="SpectrumView_1" position="220,268" size="274,144" type="SpectrumView" />
 
   <processing id="ThreeBandFilter_0" position="82,503" size="194,64" type="ThreeBandFilter">
     <PreserveOuts>0</PreserveOuts>
@@ -196,7 +195,7 @@
 
   <port_connection>
     <out>OverlapAdd_0.Audio Output</out>
-    <in>Spectral Output.AudioIn</in>
+    <in>Spectral Output.1</in>
   </port_connection>
 
   <port_connection>
@@ -205,17 +204,17 @@
   </port_connection>
 
   <port_connection>
-    <out>Spectral Input.AudioOut</out>
+    <out>Spectral Input.1</out>
     <in>SpectralAnalysis_0.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>Spectral Input.AudioOut</out>
+    <out>Spectral Input.1</out>
     <in>Oscilloscope_0.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>Spectral Input.AudioOut</out>
+    <out>Spectral Input.1</out>
     <in>TonalAnalysis_0.Audio Input</in>
   </port_connection>
 

@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" position="954,78" size="141,111" type="AudioSink"/>
+  <processing id="AudioSink_0" position="954,78" size="141,111" type="AudioSink" />
 
-  <processing id="Input 1" position="4,380" size="268,106" type="Oscilloscope"/>
+  <processing id="Input 1" position="4,380" size="268,106" type="Oscilloscope" />
 
-  <processing id="Input 2" position="3,472" size="274,128" type="Oscilloscope"/>
+  <processing id="Input 2" position="3,472" size="274,128" type="Oscilloscope" />
 
   <processing id="Interpolation Factor" position="455,41" size="207,91" type="OutControlSender">
     <Min>0</Min>
@@ -27,11 +26,11 @@
     <Loop>1</Loop>
   </processing>
 
-  <processing id="Oscilloscope_1" position="496,468" size="278,129" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="496,468" size="278,129" type="Oscilloscope" />
 
-  <processing id="PeakView_0" position="3,586" size="272,123" type="PeakView"/>
+  <processing id="PeakView_0" position="3,586" size="272,123" type="PeakView" />
 
-  <processing id="PeakView_1" position="496,583" size="276,128" type="PeakView"/>
+  <processing id="PeakView_1" position="496,583" size="276,128" type="PeakView" />
 
   <processing id="SMSAnalysisCore_0" position="164,29" size="207,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
@@ -330,7 +329,7 @@
 
   <port_connection>
     <out>SMSSynthesis_0.OutputAudio</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <port_connection>

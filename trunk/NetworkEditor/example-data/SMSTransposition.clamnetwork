@@ -1,15 +1,14 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="Input" position="15,14" size="128,108" type="AudioSource"/>
+  <processing id="Input" position="15,14" size="128,108" type="AudioSource" />
 
-  <processing id="Oscilloscope_0" position="577,210" size="174,342" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="577,210" size="174,342" type="Oscilloscope" />
 
-  <processing id="PeakView_0" position="97,408" size="495,130" type="PeakView"/>
+  <processing id="PeakView_0" position="97,408" size="495,130" type="PeakView" />
 
-  <processing id="PeakView_1" position="101,209" size="488,134" type="PeakView"/>
+  <processing id="PeakView_1" position="101,209" size="488,134" type="PeakView" />
 
-  <processing id="PeakView_2" position="96,622" size="494,130" type="PeakView"/>
+  <processing id="PeakView_2" position="96,622" size="494,130" type="PeakView" />
 
   <processing id="SMSAnalysisCore" position="65,107" size="187,110" type="SMSAnalysisCore">
     <SinSpectralAnalysis>
@@ -224,12 +223,12 @@
     <ControlRepresentation>Horizontal Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Transposed_0" position="545,40" size="153,111" type="AudioSink"/>
+  <processing id="Transposed_0" position="545,40" size="153,111" type="AudioSink" />
 
-  <processing id="Transposed_1" position="566,732" size="153,111" type="AudioSink"/>
+  <processing id="Transposed_1" position="566,732" size="153,111" type="AudioSink" />
 
   <port_connection>
-    <out>Input.AudioOut</out>
+    <out>Input.1</out>
     <in>SMSAnalysisCore.Input Audio</in>
   </port_connection>
 
@@ -260,7 +259,7 @@
 
   <port_connection>
     <out>SMSSynthesis_0.OutputAudio</out>
-    <in>Transposed_0.AudioIn</in>
+    <in>Transposed_0.1</in>
   </port_connection>
 
   <port_connection>
@@ -270,7 +269,7 @@
 
   <port_connection>
     <out>SMSSynthesis_1.OutputAudio</out>
-    <in>Transposed_1.AudioIn</in>
+    <in>Transposed_1.1</in>
   </port_connection>
 
   <port_connection>
