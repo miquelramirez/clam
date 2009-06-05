@@ -7,6 +7,7 @@
 #include <QtGui/QWhatsThis>
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
+#include <QtGui/QTextEdit>
 #include <QtCore/QSettings>
 #include <QtCore/QStringList>
 #include <QtCore/QTimer>
@@ -108,6 +109,14 @@ public:
 		_processingTreeDock->setWidget(_processingTree);
 		addDockWidget(Qt::LeftDockWidgetArea, _processingTreeDock);
 
+		// add a Description Panel for description of networks
+		_descriptionPanel = new QDockWidget(this);
+		_descriptionPanel->setObjectName("Description");
+		_descriptionPanel->setWindowTitle(tr("Description"));
+		_textDescriptionEdit = new QTextEdit(_descriptionPanel);
+		_descriptionPanel->setWidget(_textDescriptionEdit);
+		addDockWidget(Qt::LeftDockWidgetArea, _descriptionPanel);
+
 		_aboutDialog = new QDialog(this);
 		Ui::About aboutUi;
 		aboutUi.setupUi(_aboutDialog);
@@ -145,11 +154,11 @@ public:
 		periodicPlayStatusUpdate(); // Should be directly called just once
 
 		connect(ui.action_Show_processing_toolbox, SIGNAL(toggled(bool)), _processingTreeDock, SLOT(setVisible(bool)));
-		connect(_processingTreeDock, SIGNAL(visibilityChanged(bool)), ui.action_Show_processing_toolbox, SLOT(setChecked(bool)));
 		connect(ui.action_Print, SIGNAL(triggered()), _canvas, SLOT(print()));
 		connect(_canvas, SIGNAL(changed()), this, SLOT(updateCaption()));
 		connect(_canvas, SIGNAL(openFileWithExternalApplicationRequest()), this, SLOT(openFileWithExternalApplicationFromProcessing()));
 		connect(_canvas, SIGNAL(browseUrlRequest()),this,SLOT(browseUrlInternalFromProcessing()));
+		connect(_textDescriptionEdit, SIGNAL(textChanged()), this, SLOT(updateNetworkDescription()));
 		updateCaption();
 
 	}
@@ -223,6 +232,8 @@ public:
 			clear();
 			return;
 		}
+		_textDescriptionEdit->setText(_network.GetDescription().c_str());
+
 		_playingLabel->setNetwork(&_network);
 		_canvas->loadNetwork(&_network);
 		_canvas->loadGeometriesFromXML();
@@ -356,6 +367,16 @@ public slots:
 		browser->setWindowTitle(tr("Browsing %1").arg(fileName));
 		addDockWidget(Qt::BottomDockWidgetArea,browser);
 #endif
+	}
+
+	void updateNetworkDescription()
+	{
+		QString text(_textDescriptionEdit->toPlainText());
+		
+		if(!_canvas->isChanged())
+			_canvas->markAsChanged();
+		
+		_network.SetDescription(text.toStdString());
 	}
 
 	void on_action_Embed_SVG_Diagrams_Option_changed()
@@ -552,7 +573,9 @@ private:
 	QLabel * _backendLabel;
 	PlaybackIndicator * _playingLabel;
 	QStringList _recentFiles;
-	
+	QDockWidget * _descriptionPanel;
+	QTextEdit * _textDescriptionEdit; 
+
 	QDockWidget * _processingTreeDock;
 	NetworkGUI::ProcessingTree * _processingTree;
 };
