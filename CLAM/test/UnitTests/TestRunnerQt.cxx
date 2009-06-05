@@ -3,7 +3,7 @@
 #include <cppunit/TestSuite.h>
 #include <cppunit/ui/qt/TestRunner.h>
 
-#include <qapplication.h>
+#include <QtGui/QApplication>
 
 #include "cppUnitHelper.hxx"
 #include "Assert.hxx"
