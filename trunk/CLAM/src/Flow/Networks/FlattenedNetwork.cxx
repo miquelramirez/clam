@@ -64,8 +64,11 @@ namespace CLAM
 		XMLAdapter<std::string> versionAdapter( version, "clamVersion");
 		storage.Store(versionAdapter);
 		
-		XMLAdapter<Text> descriptionAdapter(_description, "description", true);
-		storage.Store(descriptionAdapter);
+		if (not _description.empty())
+		{
+			XMLAdapter<Text> descriptionAdapter(_description, "description", true);
+			storage.Store(descriptionAdapter);
+		}
 		
 		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings();it!=EndProcessings();it++)
