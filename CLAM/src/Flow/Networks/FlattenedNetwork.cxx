@@ -29,7 +29,7 @@
 #include "ProcessingFactory.hxx"
 #include "XmlStorageErr.hxx"
 #ifdef USE_LADSPA //TODO alway include it. move conditional code in LFactory.hxx
-#	include "ProcessingFactory.hxx"
+#include "ProcessingFactory.hxx"
 #endif
 #include "CLAMVersion.hxx"
 
@@ -63,7 +63,10 @@ namespace CLAM
 		std::string version = CLAM::GetVersion();
 		XMLAdapter<std::string> versionAdapter( version, "clamVersion");
 		storage.Store(versionAdapter);
-
+		
+		XMLAdapter<Text> descriptionAdapter(_description, "description", true);
+		storage.Store(descriptionAdapter);
+		
 		ProcessingsMap::const_iterator it;
 		for(it=BeginProcessings();it!=EndProcessings();it++)
 		{
@@ -160,6 +163,9 @@ namespace CLAM
 		storage.Load(strAdapter);
 		_processingsGeometries.clear();
 
+		XMLAdapter<Text> descriptionAdapter(_description, "description", true);
+		if(not storage.Load(descriptionAdapter)) _description="";
+	
 		while(1)
 		{
 			ProcessingDefinitionAdapter procDefinition;

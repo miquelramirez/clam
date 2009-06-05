@@ -50,6 +50,10 @@ public:
 	// Methods related to network itself
 	const std::string& GetName() const { return _name; }
 	void SetName( const std::string& name ) { _name=name; }
+
+	const Text& GetDescription() const {return _description;};
+	void SetDescription( const Text& description ) {_description=description;};
+
 	virtual const char * GetClassName() const
 	{
 		return "FlattenedNetwork";
@@ -182,6 +186,7 @@ public:
 private:
 	// fields
 	std::string _name;
+	Text _description;
 	ProcessingsMap _processings;
 	FlowControl* _flowControl;
 	NetworkPlayer* _player;

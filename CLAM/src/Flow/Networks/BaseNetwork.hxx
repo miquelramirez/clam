@@ -36,6 +36,7 @@
 #include <map>
 #include <set>
 #include "Component.hxx"
+#include <Text.hxx>
 
 namespace CLAM
 {
@@ -74,6 +75,10 @@ public:
 	virtual const std::string& GetName() const = 0;
 	virtual void SetName( const std::string& name ) = 0;
 	virtual const std::string & GetNetworkId(const Processing * proc) const = 0;
+
+	// description
+	virtual const Text& GetDescription() const = 0;
+	virtual void SetDescription( const Text& description ) = 0;
 
 	// accessors to nodes and processing
 	virtual ProcessingsMap::iterator BeginProcessings() = 0; // { return _processings.begin(); }
