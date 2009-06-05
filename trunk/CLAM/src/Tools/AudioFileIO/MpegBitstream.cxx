@@ -119,77 +119,66 @@ namespace AudioCodecs
 		return mFatalError || ferror(mpFile)!=0;
 	}
 
+	bool MpegBitstream::EnsureEnoughBufferData()
+	{
+		bool firstFrameAfterSeek = mBitstream.buffer == NULL;
+		bool lastDecodeNeededMoreData = mBitstream.error == MAD_ERROR_BUFLEN;
+		if ( not firstFrameAfterSeek and not lastDecodeNeededMoreData) return true;
+
+		TSize remaining = 0;
+		if (not firstFrameAfterSeek)
+		{
+			remaining = mBitstream.bufend - mBitstream.next_frame;
+			memmove( mInputBuffer, mBitstream.next_frame, remaining );
+		}
+		unsigned char * readStart = mInputBuffer + remaining;
+		TSize readSize = mInputBufferSize - remaining;
+		TSize actuallyRead = fread( readStart, sizeof(unsigned char), readSize, mpFile );
+
+		if ( actuallyRead == 0 ) return false; // Eof or ferror
+		// Less bytes than expected were read, add buffer guard
+		if ( actuallyRead < readSize )
+		{
+			CLAM_ASSERT( readStart + actuallyRead + MAD_BUFFER_GUARD <= mInputBuffer + mInputBufferSize,
+				"Whoops! no room left for buffer guard bytes" );
+			// Add mad buffer guard
+			memset(readStart+actuallyRead, 0, MAD_BUFFER_GUARD);
+			actuallyRead += MAD_BUFFER_GUARD;
+		}
+
+		mad_stream_buffer( &mBitstream, mInputBuffer, actuallyRead+remaining );
+		mBitstream.error = MAD_ERROR_NONE; // DGG: Why that?
+		return true;
+	}
+
+	/// Returns false on eof, fatal decoding error or file error
+	/// Returns true on successfull frame read
 	bool MpegBitstream::NextFrame()
 	{
-		bool validFrameFound = false;
-		while( !validFrameFound && !FatalError() )
+		while( not ferror(mpFile) )
 		{
-			// the first condition ( mStream.buffer == NULL ) handles the first time we 
-			// seek a new Mpeg frame since the stream object does not have a buffer attached.			
-			// Last time we tried to decode a frame, there wasn't enough data on the buffer,
-			// so we must re-read from the file.
+			if (not EnsureEnoughBufferData()) return false;
 
-			if ( mBitstream.buffer == NULL 
-			     || mBitstream.error == MAD_ERROR_BUFLEN ) 
+			int error = mad_frame_decode(&mCurrentFrame, &mBitstream);
+			if (error != -1) 
 			{
-
-				TSize readSize, remaining;
-				unsigned char*  readStart;
-			
-				if ( mBitstream.next_frame != NULL )
-				{
-					remaining = mBitstream.bufend - mBitstream.next_frame;
-					memmove( mInputBuffer, mBitstream.next_frame, remaining );
-					readStart = mInputBuffer+remaining;
-					readSize = mInputBufferSize - remaining;
-				}
-				else
-				{
-					readSize = mInputBufferSize;
-					readStart = mInputBuffer;
-					remaining = 0;
-				}
-				
-				TSize readbytes = fread( readStart, sizeof(unsigned char), readSize, mpFile );
-			
-				if ( readbytes == 0 ) // Nothing read
-					return false;
-				else if ( readbytes < readSize ) // Less bytes than expected were read
-				{
-					CLAM_DEBUG_ASSERT( readStart + readbytes + MAD_BUFFER_GUARD <=
-							   mInputBuffer + mInputBufferSize,
-							   "Whoops! no room left for buffer guard bytes" );
-					unsigned char* startPadding = readStart + readbytes;
-
-					for ( int i = 0; i < MAD_BUFFER_GUARD; i++ )
-						startPadding[i] = 0;
-
-					readSize = readbytes + MAD_BUFFER_GUARD;
-				}
-				else
-					readSize = readbytes;
-
-			
-				mad_stream_buffer( &mBitstream, mInputBuffer, readSize+remaining );
-				mBitstream.error = MAD_ERROR_NONE;
-			}
-
-			if (mad_frame_decode( &mCurrentFrame, &mBitstream )==-1 ) // error
-			{
-				// some *recoverable* error occured
-				if ( !MAD_RECOVERABLE( mBitstream.error ) )
-					if ( mBitstream.error != MAD_ERROR_BUFLEN )					
-						mFatalError = true;								
-			}
-			else // frame was decoded right
-			{
-				// we signal that a good frame has been decoded
-				validFrameFound = true;
+				// frame was decoded right
 				// we add this frame duration to the bitstream internal timer
 				mad_timer_add( &mStreamTimer, mCurrentFrame.header.duration );
+				return true;
 			}
+
+			if ( MAD_RECOVERABLE( mBitstream.error ) )
+			{
+				std::cerr << "MP3 recoverable error ignored: " << MadError(mBitstream.error) << std::endl;
+				continue; // Recoverable error, ignore
+			}
+			if ( mBitstream.error == MAD_ERROR_BUFLEN )	continue; // Not enough data, take more
+			// Some fatal error happened!
+			mFatalError = true;
+			return false;
 		}
-		return validFrameFound;
+		return false; // file error
 	}
 
 	void MpegBitstream::SynthesizeCurrent()
