@@ -41,13 +41,12 @@ namespace AudioCodecs
 		struct mad_frame   mCurrentFrame;
 		struct mad_synth   mMpegSynth;
 		mad_timer_t        mStreamTimer;
-		
+
 		unsigned char*     mInputBuffer;
 		static const int   mInputBufferSize;
+		unsigned long      mBufferFileOffset; ///< The offset of the buffer in the file
 
-		int                mStatus;
 		bool               mFatalError;
-		int                mDecodedFrames;
 		FILE*              mpFile;
 
 	public:
@@ -62,6 +61,7 @@ namespace AudioCodecs
 		bool   NextFrame();
 		void   SynthesizeCurrent();
 		bool   EnsureEnoughBufferData();
+		unsigned long CurrentFrameFileOffset() const;
 		struct mad_frame& CurrentFrame();
 		struct mad_synth&  CurrentSynthesis();
 		struct mad_stream& StreamState();

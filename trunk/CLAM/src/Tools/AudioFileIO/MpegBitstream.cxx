@@ -133,6 +133,7 @@ namespace AudioCodecs
 		}
 		unsigned char * readStart = mInputBuffer + remaining;
 		TSize readSize = mInputBufferSize - remaining;
+		mBufferFileOffset = ftell(mpFile) - remaining;
 		TSize actuallyRead = fread( readStart, sizeof(unsigned char), readSize, mpFile );
 
 		if ( actuallyRead == 0 ) return false; // Eof or ferror
@@ -170,15 +171,22 @@ namespace AudioCodecs
 
 			if ( MAD_RECOVERABLE( mBitstream.error ) )
 			{
-				std::cerr << "MP3 recoverable error ignored: " << MadError(mBitstream.error) << std::endl;
+//				std::cerr << "MP3 recoverable error ignored: " << MadError(mBitstream.error) << std::endl;
 				continue; // Recoverable error, ignore
 			}
 			if ( mBitstream.error == MAD_ERROR_BUFLEN )	continue; // Not enough data, take more
 			// Some fatal error happened!
 			mFatalError = true;
+			std::cerr << "MP3 fatal error: " << MadError(mBitstream.error) << std::endl;
 			return false;
 		}
 		return false; // file error
+	}
+
+	unsigned long MpegBitstream::CurrentFrameFileOffset() const
+	{
+		unsigned long frameOffset = mBitstream.this_frame - mInputBuffer;
+		return mBufferFileOffset + frameOffset;
 	}
 
 	void MpegBitstream::SynthesizeCurrent()
