@@ -281,17 +281,14 @@ namespace AudioCodecs
 			frameCount++;
 		}
 
-		mad_timer_t   madFmtTime;
-
 		if ( !isVBR )
 		{
 			double time = ( fileLength * 8.0 ) / bitstream.CurrentFrame().header.bitrate;
 			double timeFrac = (double)time - ((long)(time));
 			long   nsamples = 32 * MAD_NSBSAMPLES(&bitstream.CurrentFrame().header); // samples per frame
 			numFrames = ( long) ( time * bitstream.CurrentFrame().header.samplerate / nsamples );
-			
+			mad_timer_t   madFmtTime;
 			mad_timer_set( &madFmtTime, (long)time, (long)(timeFrac*100), 100 );
-
 			bitstream.Finish();
 
             //std::cerr << "Not VBR: " << (TTime)mad_timer_count( madFmtTime, MAD_UNITS_MILLISECONDS )/1000.  << std::endl;
@@ -299,10 +296,8 @@ namespace AudioCodecs
 		}
 		else if ( hasXingHeader )
 		{
-			mad_timer_multiply( &bitstream.CurrentFrame().header.duration,
-					    numFrames );
-			madFmtTime = bitstream.CurrentFrame().header.duration;
-
+			mad_timer_multiply( &bitstream.CurrentFrame().header.duration, numFrames );
+			mad_timer_t madFmtTime = bitstream.CurrentFrame().header.duration;
 			bitstream.Finish();
 
             //std::cerr << "Has XING Header: "<< (TTime)mad_timer_count( madFmtTime, MAD_UNITS_MILLISECONDS )/1000.  << std::endl;
