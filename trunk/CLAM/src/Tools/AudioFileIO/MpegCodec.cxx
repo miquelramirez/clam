@@ -255,7 +255,7 @@ namespace AudioCodecs
 						 bitstream.StreamState().anc_bitlen ) )
 				{
 					isVBR = true;
-					
+
 					if ( xingHeader.flags & XING_FRAMES )
 					{
 						/* We use the Xing tag only for frames. If it doesn't have that
@@ -265,7 +265,7 @@ namespace AudioCodecs
                         numFrames = xingHeader.frames;
 						break;					
 					}
-				}	
+				}
 				bitrate = bitstream.CurrentFrame().header.bitrate;
 			}
 			
@@ -273,8 +273,6 @@ namespace AudioCodecs
 			{
 				if ( bitstream.CurrentFrame().header.bitrate != bitrate )
 					isVBR = true;
-				else
-					bitrate = bitstream.CurrentFrame().header.bitrate;
 			}		       
 			
 			if ( !isVBR && frameCount > 20 )
@@ -324,7 +322,6 @@ namespace AudioCodecs
 		hdr.SetEndianess( EAudioFileEndianess::eDefault );
 
 		fclose( handle );
-		
 	}
 
 	void MpegCodec::RetrieveMPEGFrameInfo( const struct mad_frame& MPEGFrame,
