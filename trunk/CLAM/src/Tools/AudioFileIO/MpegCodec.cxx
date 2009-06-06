@@ -376,53 +376,32 @@ namespace AudioCodecs
 
 	void   MpegCodec::RetrieveTextDescriptors( std::string uri, AudioTextDescriptors& txt )
 	{
-
 		ID3_Tag fileTag;
 		fileTag.Link( uri.c_str() );
-		const char * artist = getField(fileTag, ID3FID_LEADARTIST);
-		if (artist)
-		{
-			txt.AddArtist();
-			txt.UpdateData();
-			txt.SetArtist(artist);
-		}
-		const char * title = getField(fileTag, ID3FID_TITLE);
-		if (title)
-		{
-			txt.AddTitle();
-			txt.UpdateData();
-			txt.SetTitle( title );
-		}
-		const char * album = getField(fileTag, ID3FID_ALBUM);
-		if (album)
-		{
-			txt.AddAlbum();
-			txt.UpdateData();
-			txt.SetAlbum( album );
-		}
-		const char * tracknum = getField(fileTag, ID3FID_TRACKNUM);
-		if (tracknum)
-		{
-			txt.AddTrackNumber();
-			txt.UpdateData();
-			txt.SetTrackNumber( tracknum );
-		}
-		const char * composer = getField(fileTag, ID3FID_COMPOSER);
-		if ( composer )
-		{
-			txt.AddComposer();
-			txt.UpdateData();
-			txt.SetComposer( composer );
-		}
-		const char * performer = getField(fileTag, ID3FID_CONDUCTOR);
-		if (performer)
-		{
-			txt.AddPerformer();
-			txt.UpdateData();
-			txt.SetPerformer( performer );
-		}
-	}
 
+		const char * artist = getField(fileTag, ID3FID_LEADARTIST);
+		const char * title = getField(fileTag, ID3FID_TITLE);
+		const char * album = getField(fileTag, ID3FID_ALBUM);
+		const char * tracknum = getField(fileTag, ID3FID_TRACKNUM);
+		const char * composer = getField(fileTag, ID3FID_COMPOSER);
+		const char * performer = getField(fileTag, ID3FID_CONDUCTOR);
+
+		if (artist) txt.AddArtist();
+		if (title) txt.AddTitle();
+		if (album) txt.AddAlbum();
+		if (tracknum) txt.AddTrackNumber();
+		if (composer) txt.AddComposer();
+		if (performer) txt.AddPerformer();
+
+		txt.UpdateData();
+
+		if (artist) txt.SetArtist(artist);
+		if (title) txt.SetTitle(title);
+		if (album) txt.SetAlbum(album);
+		if (tracknum) txt.SetTrackNumber(tracknum);
+		if (composer) txt.SetComposer(composer);
+		if (performer) txt.SetPerformer(performer);
+	}
 }
 
 }
