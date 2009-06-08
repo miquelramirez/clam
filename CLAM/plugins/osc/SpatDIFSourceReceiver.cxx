@@ -42,9 +42,7 @@ int CLAM::SpatDIFSourceReceiver::controls_handler(const char *path, const char *
 
 	for (int i=0;i<argc;i++)
 	{
-std::cout<< "spatdifreceiver - argc: "<<argc<< " - GetNOutControls: " <<self.GetNOutControls() << " - i: "<<i<<std::endl;
-
-		sendControl(&self.GetOutControl(baseOutControlNumber+i),argv[i]);
+		sendControl(&self._outControls[baseOutControlNumber+i],argv[i]);
 	}
 	return 0;
 }

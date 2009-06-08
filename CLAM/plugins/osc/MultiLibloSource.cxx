@@ -16,6 +16,7 @@ int CLAM::MultiLibloSource::controls_handler(const char *path, const char *types
 //	printf("%s <- f:",path);
 	for (int i=0;i<argc;i++)
 	{
+		//TODO: replace by ASSERT?
 		if (self._outControls.size()>i)
 			CLAM::MultiLibloSource::sendControl(self._outControls[i],argv[i]);
 	}
