@@ -56,6 +56,7 @@ if sys.platform=='linux2' :
 
 if sys.platform=="darwin" : #TODO fix. should be available in clamlibs pc
 	env.Append( LIBPATH=['/opt/local/lib'] )
+	env.Append( LIBS='sndfile' )
 if sys.platform=="win32" or 'crossmingw' in env['TOOLS'] :
 	env.Append( LIBPATH=[os.path.join(env['sandbox_path'],'local','lib')] )
 env.Append( LIBS=['fftw3'] )
