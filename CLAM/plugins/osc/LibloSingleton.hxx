@@ -1,12 +1,12 @@
 #ifndef LibloSingleton_hxx
 #define LibloSingleton_hxx
 
-
 #include <string>
 #include <cmath>
 #include <algorithm>
 #include <map>
 #include <vector>
+#include <list>
 
 #include <iostream>
 
@@ -18,126 +18,137 @@ namespace CLAM
 class LibloSingleton
 {
 public:
-	struct PathHandler
+	struct OSCInstance
 	{
-		std::string oscPath;
+		OSCInstance() {}
+		OSCInstance(unsigned int initPort,lo_server_thread initThread, std::string initPath, std::string initTypespec)
+		: port(initPort)
+		, thread(initThread)
+		, path(initPath)
+		, typespec(initTypespec)
+		{}
+		unsigned int port;
+		lo_server_thread thread;
+		std::string path;
 		std::string typespec;
 	};
+
 private:
-	std::vector<PathHandler> _configuredPaths;
+	std::list<OSCInstance> _OSCInstances;
 
 	LibloSingleton() {}
 	LibloSingleton(const LibloSingleton &) {}
 
-public:
-	static LibloSingleton& GetInstance();
-
-	const std::vector<PathHandler> & GetConfiguredPaths()
+	const lo_server_thread GetServerThread(const unsigned int & port) const
 	{
-std::cout<<"=-=-=-=-=-=-=-"<< _configuredPaths.size()<<std::endl;
-		return _configuredPaths;
-	}
-
-	void UnregisterOscCallback(std::string port, std::string oscPath, std::string typespec)
-	{
-		std::vector<PathHandler>::iterator itConfiguredPaths;
-		for (itConfiguredPaths=_configuredPaths.begin();itConfiguredPaths!=_configuredPaths.end();itConfiguredPaths++)
+		std::list<OSCInstance>::const_iterator it;
+		for (it=_OSCInstances.begin();it!=_OSCInstances.end();it++)
 		{
-			if ((*itConfiguredPaths).oscPath==oscPath and (*itConfiguredPaths).typespec==typespec)
-				break;
+			if ((*it).port==port)
+			{
+				return (*it).thread;
+			}
 		}
-		// if don't exist a previous method handler
-		if (itConfiguredPaths == _configuredPaths.end())
-			return;
+		return NULL;
+	}
 
-		lo_server_thread serverThread=GetServerThread(port);
+	const bool IsPortUsed(const unsigned int & port) const
+	{
+		return (GetServerThread(port)!=NULL);
+	}
 
-		if (EraseInstance(port.c_str(), oscPath.c_str(),typespec.c_str()))
-			lo_server_thread_del_method(serverThread,oscPath.c_str(),typespec.c_str()); //delete it
-		_configuredPaths.erase(itConfiguredPaths); //remove from the list
-std::cout<<"\t\tactual number of configured paths: "<<_configuredPaths.size()<<std::endl;
-		if (IsPortUsed(port.c_str()) && GetInstances(port.c_str())==0) // if was the last instance
+	const lo_server_thread StartServer(const unsigned int & port)
+	{
+		if (IsPortUsed(port))
 		{
-			std::cout <<"Liblo: Shutting down the server..."<<std::endl;
-			lo_server_thread_free(serverThread);
-			RemoveServer(port.c_str());
-			serverThread=0;
+			std::cout<< "LibloSigleton: server not started (previous instance exists)"<<std::endl;
+			return NULL;
 		}
-	}
 
-	bool RegisterOscCallback(std::string port, std::string oscPath, std::string typespec, int (*callBackMethod)(const char *, const char *, lo_arg **, int, void *, void *))
-	{
-std::cout<<"trying to register callback for path \""<<oscPath<<"\", port: "<<port<<" - typespec: \""<<typespec<<"\""<<std::endl;
-		if (InsertInstance(port.c_str(), oscPath.c_str(), typespec.c_str()))
-		{
-std::cout<<"\tsi"<<std::endl;
-			lo_server_thread serverThread=GetServerThread(port);
-			lo_server_thread_add_method(serverThread, oscPath.c_str(), typespec.c_str(), callBackMethod, this);
-			PathHandler configuredPath;
-			configuredPath.oscPath=oscPath;
-			configuredPath.typespec=typespec;
-			_configuredPaths.push_back(configuredPath);
-std::cout<<"\t\tactual number of configured paths: "<<_configuredPaths.size()<<std::endl;
-//std::cout<<"\t\t\tfrom GetConfiguredPaths: "<<GetConfiguredPaths().size()<<std::endl;
-			return true;
-		}
-std::cout<<"\tno"<<std::endl;
-		return false;
-	}
-	static bool IsPortUsed(const char* port)
-	{
-		return ( ServersInstances().find(port) != ServersInstances().end()); 
-	}
+		char portCString[10];
+		sprintf(portCString,"%u",port);
 
-	const lo_server_thread GetServerThread(const std::string & port)
-	{
-		lo_server_thread serverThread;
+		std::cout << "LibloSingleton: Starting the server on port " << portCString << std::endl;
 
-		if (IsPortUsed(port.c_str())) // if exist server on port
-			serverThread = (*ServersInstances().find(port.c_str())).second.thread;	//uses existing thread
-		else
-			serverThread = ServerStart(port.c_str()); // start new server
-
+		lo_server_thread serverThread = lo_server_thread_new(portCString, error);
+		if (not serverThread) return NULL;
+		/* add method that will match any path and args */
+		lo_server_thread_add_method(serverThread, NULL, NULL, generic_handler, NULL);
+		/* add method that will match the path /quit with no args */
+		lo_server_thread_add_method(serverThread, "/quit", "", quit_handler, NULL);
+		lo_server_thread_start(serverThread);
 		return serverThread;
 	}
+	
+public:
+	static LibloSingleton& GetInstance()
+{
+	static LibloSingleton theInstance;
+	return theInstance;
+}
 
+	const bool RegisterOscCallback(const unsigned int & port, const std::string & path,
+				 const std::string & typespec, lo_method_handler callbackMethod,void * instanceData)
+	{
+		bool newServer=false;
+		lo_server_thread thread=GetServerThread(port);
+		if (thread==NULL)
+		{
+			std::cout<<"LibloSingleton: starting server thread for port "<<port<<std::endl;
+std::cout<<" (path: "<<path<<")"<<std::endl;
+			thread=StartServer(port);
+			if (thread==NULL)
+			{
+				std::cout<<"LibloSingleton: Error starting the server on port "<<port<<std::endl;
+				return false;
+			}
+			newServer=true;
+		}
+
+		if (not newServer and IsPathRegistered(port,path,typespec))
+		{
+			std::cout<<"LibloSingleton: Cannot create a method instance of an already registered path"<<std::endl;
+			return false;
+		}
+
+		lo_server_thread_add_method(thread, path.c_str(), typespec.c_str(), callbackMethod, instanceData);
+		_OSCInstances.push_back(OSCInstance(port,thread,path,typespec));
+std::cout<< "mirar aqu21: registrando controls_handler address: "<<&callbackMethod<<std::endl;
+
+std::cout<<"LibloSingleton - _OSCInstances.push_back. Size: "<<_OSCInstances.size()<<std::endl;
+		return true;
+	}
+
+	const bool UnregisterOscCallback(const unsigned int & port, const std::string & path, const std::string & typespec)
+	{
+		if (not IsPathRegistered(port,path,typespec))
+		{
+			std::cout<<"LibloSingleton: cannot unregister an unexistent path " << path << " on port "<<port <<"!"<<std::endl;
+			return false;
+		}
+
+		const lo_server_thread & thread=GetServerThread(port);
+		RemoveRegisteredPath(port,path,typespec);
+
+		if (not IsPortUsed(port)) // if was the last instance
+		{
+			std::cout <<"Liblo: Shutting down the server..."<<std::endl;
+			lo_server_thread_free(thread);
+		}
+		return true;
+	}
+
+	const bool IsPathRegistered(const unsigned int & port, const std::string & path, const std::string & typespec) const;
 private:
+	bool RemoveRegisteredPath(const unsigned int & port, const std::string & path, const std::string & typespec);
+
 	static void error(int num, const char *m, const char *path);
 
 	static int generic_handler(const char *path, const char *types, lo_arg **argv,
 			 int argc, void *data, void *user_data);
 
-//	static int controls_handler(const char *path, const char *types, lo_arg **argv, int argc,
-//			 void *data, void *user_data);
-
 	static int quit_handler(const char *path, const char *types, lo_arg **argv, int argc,
 			 void *data, void *user_data);
-
-	static bool EraseInstance(const char* port, const char * path, const char * typespec);
-	static bool InsertInstance(const char* port, const char * path, const char * typespec);
-
-	// server management related structs, methods, and attributes
-	// key: path, value: typespec
-	typedef std::multimap<std::string,std::string> MethodsMultiMap;
-	struct ServerInstance
-	{
-		lo_server_thread thread;
-		MethodsMultiMap methods;
-	};
-
-	// map key: port
-	typedef std::map<std::string,ServerInstance> OscServersMap;
-	static OscServersMap & ServersInstances()
-	{
-		static OscServersMap sOscServersMap;
-		return sOscServersMap;
-	}
-	static lo_server_thread ServerStart(const char* port);
-	static bool RemoveServer(const char* port);
-	static bool IncInstance(const char* port);
-	static bool DecInstance(const char* port);
-	static const unsigned int GetInstances (const char* port);
-
 
 };
 
