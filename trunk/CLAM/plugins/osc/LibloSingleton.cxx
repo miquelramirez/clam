@@ -1,10 +1,10 @@
 #include "LibloSingleton.hxx"
 
-/*CLAM::LibloSingleton& CLAM::LibloSingleton::GetInstance()
+CLAM::LibloSingleton& CLAM::LibloSingleton::GetInstance()
 {
 	static CLAM::LibloSingleton theInstance;
 	return theInstance;
-}*/
+}
 
 
 const bool CLAM::LibloSingleton::IsPathRegistered(const unsigned int & port, const std::string & path, const std::string & typespec) const
