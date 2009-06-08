@@ -64,8 +64,9 @@ private:
 	Config _config;
 	std::vector<Vector> _speakersPositions;
 	int _currentTriangle;
-	static const float _deltaAngle = 0.01;
-	static const float _deltaNumeric = 0.00001; 
+	
+	static float deltaAngle() { return 0.01; }
+	static float deltaNumeric() { 0.00001; } 
 
 	static Vector vectorialProduct(const Vector& v1, const Vector& v2)
 	{
@@ -102,7 +103,7 @@ private:
 	static float angle(const Vector& v1, const Vector& v2)
 	{
 		float divisor = mod(v1)*mod(v2);
-		CLAM_ASSERT( divisor > _deltaNumeric, "Cannot compute an angle of a zero vector"); 
+		CLAM_ASSERT( divisor > deltaNumeric(), "Cannot compute an angle of a zero vector"); 
 		float arg =  escalarProduct(v1,v2) / (mod(v1)*mod(v2));
 		if (arg <-1 or arg >1) return arg < 0 ? M_PI : 0;
 		return acos( arg );
@@ -174,7 +175,7 @@ private:
 				if (not (is >> v3)) return error(errorMsg, "Bad vertex index 3 on triangle "+os.str());
 				if (v1>=nSpeakers or v2>=nSpeakers or v3>=nSpeakers)
 					return error(errorMsg, "Triangulation uses speakers that are not available");
-//				std::cout << v1 << " " << v2 << " " << v3 << std::endl;
+				std::cout << v1 << " " << v2 << " " << v3 << std::endl;
 				add(v1,v2,v3);
 				i++;
 			}
@@ -395,26 +396,26 @@ public:
 //print(_speakersPositions[triangle[2]], "speak 2");
 			// If source direction and the plane are almost ortogonal, continue
 			// (also avoids a divide by zero)
-			if (fabs(divisor) < _deltaNumeric) continue;
+			if (fabs(divisor) < deltaNumeric()) continue;
 
 			const float t =  _triangulation.orthoProjection(i) / divisor;
 //std::cout << "--> t " << t  << " t-1 " << t-1. << std::endl;
 			if (t < 0.) continue; // opposite direction
-			if (t > 1.+_deltaNumeric) continue; // TODOC: what does it means
+			if (t > 1.+deltaNumeric()) continue; // TODOC: what does it means
 //std::cout << "--> Ok intersection line < 1" << std::endl;
 			Vector intersection = product(t, r_source);
 			Vector v1 = substract( _speakersPositions[triangle[0]], intersection);
 			Vector v2 = substract( _speakersPositions[triangle[1]], intersection);
 			Vector v3 = substract( _speakersPositions[triangle[2]], intersection);
 			// If intersection is too close to one of the vertex, consider this triangle
-//std::cout << "product of modules " <<  (mod(v1)*mod(v2)*mod(v3) < _deltaNumeric) << std::endl;
-			if (mod(v1)*mod(v2)*mod(v3) < _deltaNumeric)
+//std::cout << "product of modules " <<  (mod(v1)*mod(v2)*mod(v3) < deltaNumeric()) << std::endl;
+			if (mod(v1)*mod(v2)*mod(v3) < deltaNumeric())
 			{
 				return i; // Matches one of the speakers
 			}
 			// if the sum of the relative angles is 
 //std::cout << "suma de angulos - 2pi (if <0 inside) " << fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) << std::endl;
-			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < _deltaAngle)
+			if (fabs(angle(v1,v2) + angle(v2,v3) + angle(v3,v1) - 2*M_PI) < deltaAngle())
 			{
 				return i; // Inside a triangle
 			}
@@ -510,7 +511,7 @@ public:
 			if (i==speaker2) gainToApply = g2;
 			if (i==speaker3) gainToApply = g3;
 			CLAM::TData * out =_outputs[i]->GetAudio().GetBuffer().GetPtr();
-			if (gainToApply>_deltaAngle)
+			if (gainToApply>deltaAngle())
 				for (int sample=0; sample<size; sample++)
 					out[sample] = in[sample]*gainToApply;
 			else
