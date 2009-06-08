@@ -136,8 +136,6 @@ protected:
 
 	bool ConcreteConfigure(const CLAM::ProcessingConfig & config)
 	{
-
-std::cout<<" address of this: "<<this<<std::endl;
 		RemoveOldControls();
 		CopyAsConcreteConfig(_config, config);
 		//set outputs:
@@ -161,7 +159,6 @@ std::cout<<" address of this: "<<this<<std::endl;
 			std::string type;
 			type=_config.GetOSCTypeSpec()[i];
 			_outControls.push_back(createControl(type,controlName.str()));
-			std::cout<<"_outControls size: "<<_outControls.size() << " - address: "<<&_outControls<<std::endl;
 		}
 
 		unsigned int port = _config.GetServerPort();
