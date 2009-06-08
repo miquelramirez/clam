@@ -51,14 +51,15 @@ public:
 		, _oscPath(config.GetOscPath())
 		, _port(0)
 		, _libloSingleton(LibloSingleton::GetInstance())
-		
+		, _isConfigured(false)
 	{
 		Configure( config );
 	}
 	
 	~MultiLibloSource()
 	{
-		_libloSingleton.UnregisterOscCallback(_port,_oscPath,_typespec);
+		if (IsConfigured())
+			_libloSingleton.UnregisterOscCallback(_port,_oscPath,_typespec);
 		RemoveOldControls();
 	}
 
@@ -143,14 +144,13 @@ protected:
 		if (nOutputs==0)
 		{
 			AddConfigErrorMessage("No proper OSCTypeSpec setup. Use: 'f' for float, 'd' for double, 'i' for integer, 'h' for integer 64.");
+			_isConfigured=false;
 			return false;
 		}
 
 		// multi-port names share user-configured identifier
 		std::string oscPath=_config.GetOscPath();
 		std::replace(oscPath.begin(),oscPath.end(),'/','_');
-
-		// define processing callback catcher (strings)
 
 		for (unsigned i=0;i<nOutputs;i++)
 		{
@@ -166,10 +166,10 @@ protected:
 		if (port==0)
 		{
 			AddConfigErrorMessage("No port defined");
+			_isConfigured=false;
 			return false;
 		}
-
-		if (_libloSingleton.IsPathRegistered(_port,_oscPath,_typespec)) // if exists delete previous method (with previous _port, _oscPath and _typespec)
+		if (_libloSingleton.IsPathRegistered(_port,_oscPath,_typespec) and _isConfigured) // if exists delete previous method (with previous _port, _oscPath and _typespec)
 		{ 
 			_libloSingleton.UnregisterOscCallback(_port,_oscPath,_typespec);
 		}
@@ -181,9 +181,10 @@ protected:
 		if (_libloSingleton.RegisterOscCallback(_port, _oscPath, _typespec,&controls_handler,this)==false)
 		{
 			AddConfigErrorMessage("Error creating OSC server instance");
+			_isConfigured=false;
 			return false;
 		}
-		// add instance on map
+		_isConfigured=true;
 		return true; // Configuration ok
 	}
 
@@ -200,6 +201,7 @@ protected:
 	Config _config;
 	std::vector <OutControlBase *> _outControls;
 	CLAM::LibloSingleton & _libloSingleton;
+	bool _isConfigured;
 };
 
 } //namespace

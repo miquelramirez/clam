@@ -81,12 +81,7 @@ private:
 	}
 	
 public:
-	static LibloSingleton& GetInstance()
-{
-	static LibloSingleton theInstance;
-	return theInstance;
-}
-
+	static LibloSingleton& GetInstance();
 	const bool RegisterOscCallback(const unsigned int & port, const std::string & path,
 				 const std::string & typespec, lo_method_handler callbackMethod,void * instanceData)
 	{
@@ -95,7 +90,7 @@ public:
 		if (thread==NULL)
 		{
 			std::cout<<"LibloSingleton: starting server thread for port "<<port<<std::endl;
-std::cout<<" (path: "<<path<<")"<<std::endl;
+			std::cout<<" (path: "<<path<<")"<<std::endl;
 			thread=StartServer(port);
 			if (thread==NULL)
 			{
@@ -129,7 +124,7 @@ std::cout<<" (path: "<<path<<")"<<std::endl;
 
 		if (not IsPortUsed(port)) // if was the last instance
 		{
-			std::cout <<"Liblo: Shutting down the server..."<<std::endl;
+			std::cout <<"LibloSingleton: Shutting down the server..."<<std::endl;
 			lo_server_thread_free(thread);
 		}
 		return true;
