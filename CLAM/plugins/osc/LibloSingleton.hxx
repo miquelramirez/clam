@@ -113,9 +113,6 @@ std::cout<<" (path: "<<path<<")"<<std::endl;
 
 		lo_server_thread_add_method(thread, path.c_str(), typespec.c_str(), callbackMethod, instanceData);
 		_OSCInstances.push_back(OSCInstance(port,thread,path,typespec));
-std::cout<< "mirar aqu21: registrando controls_handler address: "<<&callbackMethod<<std::endl;
-
-std::cout<<"LibloSingleton - _OSCInstances.push_back. Size: "<<_OSCInstances.size()<<std::endl;
 		return true;
 	}
 
