@@ -39,9 +39,6 @@ blacklist = [
 if sys.platform == 'win32' or crosscompiling :
 	folders.append('src/Defines/Windows')
 
-if sys.platform == 'win32' or crosscompiling :
-	blacklist.append( 'Watchdog.+' )
-
 if env['xmlbackend'] == 'xercesc' :
 	blacklist.append( 'LibXml.+')
 	blacklist.append( 'NullDom.+' )
