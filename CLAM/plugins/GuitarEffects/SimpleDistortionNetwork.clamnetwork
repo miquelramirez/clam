@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink" position="665,195" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink" position="665,195" size="128,111" type="AudioSink" />
 
-  <processing id="AudioSource" position="11,226" size="128,108" type="AudioSource"/>
+  <processing id="AudioSource" position="11,226" size="128,108" type="AudioSource" />
 
   <processing id="AudioSwitch" position="472,253" size="109,62" type="AudioSwitch">
     <NumberOfInPorts>2</NumberOfInPorts>
@@ -27,32 +26,32 @@
     <Mapping>Log</Mapping>
   </processing>
 
-  <processing id="Input" position="137,357" size="319,137" type="Oscilloscope"/>
+  <processing id="Input" position="137,357" size="319,137" type="Oscilloscope" />
 
-  <processing id="Output" position="629,349" size="310,137" type="Oscilloscope"/>
+  <processing id="Output" position="629,349" size="310,137" type="Oscilloscope" />
 
   <processing id="ZynDistortion" position="325,200" size="118,58" type="ZynDistortion">
     <DistortionType>Arctangent</DistortionType>
   </processing>
 
   <port_connection>
-    <out>AudioSource.AudioOut</out>
+    <out>AudioSource.1</out>
     <in>Input.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource.AudioOut</out>
+    <out>AudioSource.1</out>
     <in>ZynDistortion.Input Audio</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource.AudioOut</out>
+    <out>AudioSource.1</out>
     <in>AudioSwitch.Input 1</in>
   </port_connection>
 
   <port_connection>
     <out>AudioSwitch.Output Audio</out>
-    <in>AudioSink.AudioIn</in>
+    <in>AudioSink.1</in>
   </port_connection>
 
   <port_connection>

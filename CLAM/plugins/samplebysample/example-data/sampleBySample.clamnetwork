@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" position="1222,105" size="140,63" type="AudioSink"/>
+  <processing id="AudioSink_0" position="1222,105" size="140,63" type="AudioSink" />
 
-  <processing id="AudioSource_0" position="80,12" size="161,63" type="AudioSource"/>
+  <processing id="AudioSource_0" position="80,12" size="161,63" type="AudioSource" />
 
   <processing id="AudioStreamer_0" position="159,359" size="182,63" type="AudioStreamer">
     <FrameSize>1024</FrameSize>
@@ -13,15 +12,15 @@
     <FrameSize>1024</FrameSize>
   </processing>
 
-  <processing id="DataAdder_0" position="557,316" size="145,63" type="DataAdder"/>
+  <processing id="DataAdder_0" position="557,316" size="145,63" type="DataAdder" />
 
-  <processing id="DataAdder_1" position="715,316" size="145,63" type="DataAdder"/>
+  <processing id="DataAdder_1" position="715,316" size="145,63" type="DataAdder" />
 
-  <processing id="DataAdder_2" position="856,315" size="145,63" type="DataAdder"/>
+  <processing id="DataAdder_2" position="856,315" size="145,63" type="DataAdder" />
 
-  <processing id="DataAdder_3" position="991,316" size="145,63" type="DataAdder"/>
+  <processing id="DataAdder_3" position="991,316" size="145,63" type="DataAdder" />
 
-  <processing id="DataAdder_4" position="1130,308" size="145,63" type="DataAdder"/>
+  <processing id="DataAdder_4" position="1130,308" size="145,63" type="DataAdder" />
 
   <processing id="DataDelay_0" position="200,614" size="142,63" type="DataDelay">
     <Delay>1</Delay>
@@ -48,17 +47,17 @@
     <MaxDelay>10</MaxDelay>
   </processing>
 
-  <processing id="DataGain_0" position="362,480" size="134,63" type="DataGain"/>
+  <processing id="DataGain_0" position="362,480" size="134,63" type="DataGain" />
 
-  <processing id="DataGain_1" position="328,273" size="134,63" type="DataGain"/>
+  <processing id="DataGain_1" position="328,273" size="134,63" type="DataGain" />
 
-  <processing id="DataGain_2" position="552,477" size="133,63" type="DataGain"/>
+  <processing id="DataGain_2" position="552,477" size="133,63" type="DataGain" />
 
-  <processing id="DataGain_3" position="706,477" size="133,63" type="DataGain"/>
+  <processing id="DataGain_3" position="706,477" size="133,63" type="DataGain" />
 
-  <processing id="DataGain_4" position="860,474" size="133,63" type="DataGain"/>
+  <processing id="DataGain_4" position="860,474" size="133,63" type="DataGain" />
 
-  <processing id="DataGain_5" position="1003,476" size="133,63" type="DataGain"/>
+  <processing id="DataGain_5" position="1003,476" size="133,63" type="DataGain" />
 
   <processing id="Delay" position="0,411" size="142,305" type="OutControlSender">
     <Min>0</Min>
@@ -76,9 +75,9 @@
     <ControlRepresentation>Vertical Slider</ControlRepresentation>
   </processing>
 
-  <processing id="Oscilloscope_0" position="235,57" size="243,192" type="Oscilloscope"/>
+  <processing id="Oscilloscope_0" position="235,57" size="243,192" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_1" position="1121,419" size="334,281" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="1121,419" size="334,281" type="Oscilloscope" />
 
   <processing id="OutControlSender_0" position="553,58" size="207,184" type="OutControlSender">
     <Min>0</Min>
@@ -104,12 +103,12 @@
   </processing>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>Oscilloscope_0.Input</in>
   </port_connection>
 
   <port_connection>
-    <out>AudioSource_0.AudioOut</out>
+    <out>AudioSource_0.1</out>
     <in>AudioStreamer_0.Input</in>
   </port_connection>
 
@@ -120,7 +119,7 @@
 
   <port_connection>
     <out>Data2Audio_0.Output</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <port_connection>

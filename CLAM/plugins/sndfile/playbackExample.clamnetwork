@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="AudioSink_1" position="324,52" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink_1" position="324,52" size="128,111" type="AudioSink" />
 
-  <processing id="Oscilloscope" position="205,18" size="117,123" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="205,18" size="117,123" type="Oscilloscope" />
 
   <processing id="Position out-Control" position="42,262" size="240,70" type="ControlPrinter">
     <Identifier>ControlPrinter</Identifier>
@@ -11,7 +10,7 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="ProgressControl" position="13,-46" size="403,69" type="ProgressControl"/>
+  <processing id="ProgressControl" position="13,-46" size="403,69" type="ProgressControl" />
 
   <processing id="SndfilePlayer" position="35,108" size="114,62" type="SndfilePlayer">
     <SourceFile>/home/vokimon/CajitasDeArena/acustica/wavs/InLanguageAnecoic-cut_48000.wav</SourceFile>
@@ -26,7 +25,7 @@
 
   <port_connection>
     <out>SndfilePlayer.out0</out>
-    <in>AudioSink_1.AudioIn</in>
+    <in>AudioSink_1.1</in>
   </port_connection>
 
   <control_connection>

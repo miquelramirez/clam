@@ -371,7 +371,7 @@
 
   <port_connection>
     <out>XFadeAndSwitch.CrossFadedBuffer</out>
-    <in>L.AudioIn</in>
+    <in>L.1</in>
   </port_connection>
 
   <port_connection>
@@ -381,7 +381,7 @@
 
   <port_connection>
     <out>XFadeAndSwitch_1.CrossFadedBuffer</out>
-    <in>R.AudioIn</in>
+    <in>R.1</in>
   </port_connection>
 
   <port_connection>

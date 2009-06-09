@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
   <processing id="AudioAmplifier" position="869,226" size="133,59" type="AudioAmplifier">
     <MaxGain>2</MaxGain>
   </processing>
 
-  <processing id="AudioSink" position="1044,80" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink" position="1044,80" size="128,111" type="AudioSink" />
 
   <processing id="AudioSwitch" position="695,234" size="118,78" type="AudioSwitch">
     <NumberOfInPorts>3</NumberOfInPorts>
@@ -56,9 +55,9 @@
     <Loop>1</Loop>
   </processing>
 
-  <processing id="Oscilloscope" position="641,427" size="384,211" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="641,427" size="384,211" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_1" position="65,434" size="337,235" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="65,434" size="337,235" type="Oscilloscope" />
 
   <processing id="Param_0" position="349,135" size="198,76" type="OutControlSender">
     <Min>0</Min>
@@ -94,7 +93,7 @@
 
   <port_connection>
     <out>AudioAmplifier.Audio Output</out>
-    <in>AudioSink.AudioIn</in>
+    <in>AudioSink.1</in>
   </port_connection>
 
   <port_connection>
