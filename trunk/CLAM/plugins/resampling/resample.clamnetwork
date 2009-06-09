@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink" position="360,47" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink" position="360,47" size="128,111" type="AudioSink" />
 
   <processing id="MonoAudioFileReader" position="29,25" size="158,58" type="MonoAudioFileReader">
     <SourceFile>/home/vokimon/CajitasDeArena/acustica/wavs/3InLanguage.wav</SourceFile>
@@ -9,9 +8,9 @@
     <Loop>1</Loop>
   </processing>
 
-  <processing id="Oscilloscope" position="317,127" size="149,103" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="317,127" size="149,103" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_1" position="154,129" size="144,101" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="154,129" size="144,101" type="Oscilloscope" />
 
   <processing id="Resampler" position="219,27" size="94,58" type="Resampler">
     <InputSamples>1024</InputSamples>
@@ -30,7 +29,7 @@
 
   <port_connection>
     <out>Resampler.Output</out>
-    <in>AudioSink.AudioIn</in>
+    <in>AudioSink.1</in>
   </port_connection>
 
   <port_connection>

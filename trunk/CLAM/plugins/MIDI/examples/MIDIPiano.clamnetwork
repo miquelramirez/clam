@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
-  <processing id="ControlPiano" position="232,143" size="398,229" type="ControlPiano"/>
+  <processing id="ControlPiano" position="232,143" size="398,229" type="ControlPiano" />
 
   <processing id="ControlPrinterTyped" position="228,429" size="267,115" type="ControlPrinterTyped">
     <Identifier>ControlPrinterTyped</Identifier>
@@ -9,9 +8,9 @@
     <GuiOnly>1</GuiOnly>
   </processing>
 
-  <processing id="MIDISink" position="673,402" size="111,63" type="MIDISink"/>
+  <processing id="MIDISink" position="673,402" size="111,63" type="MIDISink" />
 
-  <processing id="MIDISource" position="85,54" size="131,63" type="MIDISource"/>
+  <processing id="MIDISource" position="85,54" size="131,63" type="MIDISource" />
 
   <control_connection>
     <out>ControlPiano.MIDI Message Out</out>

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network clamVersion="1.3.1" id="Unnamed">
 
   <processing id="Amplitude" position="66,48" size="182,74" type="OutControlSender">
@@ -10,11 +9,11 @@
     <Mapping>Linear</Mapping>
   </processing>
 
-  <processing id="AudioSink" position="318,12" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink" position="318,12" size="128,111" type="AudioSink" />
 
-  <processing id="Oscilloscope" position="226,256" size="150,143" type="Oscilloscope"/>
+  <processing id="Oscilloscope" position="226,256" size="150,143" type="Oscilloscope" />
 
-  <processing id="Oscilloscope_1" position="243,53" size="130,129" type="Oscilloscope"/>
+  <processing id="Oscilloscope_1" position="243,53" size="130,129" type="Oscilloscope" />
 
   <processing id="Pitch_1" position="50,-5" size="206,74" type="OutControlSender">
     <Min>0</Min>
@@ -69,7 +68,7 @@
 
   <port_connection>
     <out>SquareWave.Audio Output</out>
-    <in>AudioSink.AudioIn</in>
+    <in>AudioSink.1</in>
   </port_connection>
 
   <control_connection>

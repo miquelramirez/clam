@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
 <network id="Unnamed">
 
-  <processing id="AudioSink_0" position="465,66" size="128,111" type="AudioSink"/>
+  <processing id="AudioSink_0" position="465,66" size="128,111" type="AudioSink" />
 
   <processing id="AudioWindowing_0" position="-24,73" size="141,58" type="AudioWindowing">
     <HopSize>512</HopSize>
@@ -12,7 +11,7 @@
     <DoHalfWindowShift>1</DoHalfWindowShift>
   </processing>
 
-  <processing id="FormantExtractor_0" position="-24,144" size="141,58" type="FormantExtractor"/>
+  <processing id="FormantExtractor_0" position="-24,144" size="141,58" type="FormantExtractor" />
 
   <processing id="MonoAudioFileReader_0" position="-56,16" size="172,58" type="MonoAudioFileReader">
     <SourceFile>/home/abe/media/audio/vowels/uw_8k.wav</SourceFile>
@@ -20,7 +19,7 @@
     <Loop>1</Loop>
   </processing>
 
-  <processing id="PeakView_0" position="179,238" size="345,272" type="PeakView"/>
+  <processing id="PeakView_0" position="179,238" size="345,272" type="PeakView" />
 
   <processing id="SMSSynthesis_0" position="297,27" size="127,110" type="SMSSynthesis">
     <SynthSineSpectrum>
@@ -127,7 +126,7 @@
 
   <port_connection>
     <out>SMSSynthesis_0.OutputSinAudio</out>
-    <in>AudioSink_0.AudioIn</in>
+    <in>AudioSink_0.1</in>
   </port_connection>
 
   <port_connection>

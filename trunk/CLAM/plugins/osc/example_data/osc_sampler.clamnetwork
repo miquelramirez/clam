@@ -29,7 +29,7 @@
 
   <port_connection>
     <out>MultiSampler.audio out port</out>
-    <in>AudioSink.AudioIn</in>
+    <in>AudioSink.1</in>
   </port_connection>
 
   <control_connection>
