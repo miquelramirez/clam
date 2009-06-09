@@ -76,17 +76,17 @@ MainWindow::MainWindow()
 	_progressControlWidget = new ProgressControlWidget(_ui.centralwidget);
 	vboxLayout->addWidget(_progressControlWidget);
 
-	_fileReader = _network.AddProcessing("AudioFileMemoryLoader");
+	_fileReader = _network.AddProcessing("MonoAudioFileReader");
 
 	CLAM::ProgressControl * progress = new CLAM::ProgressControl;
 	_progressControl = _network.GetUnusedName("ProgressControl");
 	_network.AddProcessing(_progressControl, progress);
-	_network.ConnectControls(_fileReader+".Current Time Position", _progressControl+".Progress Update");
-	_network.ConnectControls(_progressControl+".Progress Jump", _fileReader+".Current Time Position (%)");
+	_network.ConnectControls(_fileReader+".Progress", _progressControl+".Progress Update");
+	_network.ConnectControls(_progressControl+".Progress Jump", _fileReader+".Seek");
 	_progressControlWidget->SetProcessing(progress);
 
 	std::string audioSink = _network.AddProcessing("AudioSink");
-	_network.ConnectPorts(_fileReader+".Samples Read", audioSink+".AudioIn");
+	_network.ConnectPorts(_fileReader+".Samples Read", audioSink+".1");
 
 	_spectrogram = new CLAM::VM::Spectrogram(_ui.centralwidget);
 	vboxLayout->addWidget(_spectrogram);
