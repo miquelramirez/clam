@@ -88,7 +88,7 @@ public:
 		mOutputMIDIMessage.SendControl(msg);
 	}
 
-	bool SetNoteStatus(TSize i, bool state)
+	void SetNoteStatus(TSize i, bool state)
 	{
 		_notes[i] = state;
 	}
