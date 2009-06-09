@@ -56,7 +56,7 @@ public:
 		startTimer(50);
 	}
 
-	~MIDIPianoWidget() {}
+	~MIDIPianoWidget();
 
 	void setDataSource( VM::FloatArrayDataSource & dataSource );
 	void noDataSource();
@@ -99,6 +99,9 @@ protected:
 	unsigned identifyMidiByPosition(TSize x, TSize y);
 	void processData();
 
+private:
+	void noteOn(unsigned note);
+	void noteOff(unsigned note);
 private:
 	Processing *_processing;
 	ControlPiano *_controlPiano;
