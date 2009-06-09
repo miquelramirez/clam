@@ -25,6 +25,10 @@
 
 namespace CLAM {
 
+MIDIPianoWidget::~MIDIPianoWidget()
+{
+}
+
 void MIDIPianoWidget::paintEvent(QPaintEvent *event)
 {
 	if ( buffer.size() != size() ) {
@@ -129,15 +133,12 @@ void MIDIPianoWidget::pressPixmapSharpKey(QPainter &painter, TSize keyNumber)
 void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
 {
 	if (!_clickEnabled) return;
-	if (event->button() == Qt::LeftButton) {
+	if (event->button() == Qt::LeftButton)
+	{
 		TSize x=event->x(), y=event->y();
 
 		unsigned note = identifyMidiByPosition(x,y);
-		_controlPiano->SetNoteStatus(note%12,true);
-		note += 21 + (_controlPiano->GetOctave()-1)*12;
-
-		MIDI::Message tmpMessage(144, note, _controlPiano->GetVelocity(), 0); //144 NoteOn, note, velocity
-		_controlPiano->SendMIDIMessage(tmpMessage);
+		noteOn(note);
 		update();
 		event->accept();
 	}
@@ -146,20 +147,40 @@ void MIDIPianoWidget::mousePressEvent(QMouseEvent *event)
 void MIDIPianoWidget::mouseReleaseEvent(QMouseEvent *event)
 {
 	if (!_clickEnabled) return;
-	if (event->button() == Qt::LeftButton) {
+	if (event->button() == Qt::LeftButton)
+	{
 		TSize x=event->x(), y=event->y();
 
 //FIXME: there is a bug if you press in one note, move the mouse and release the click in a different (note) one
 // DGG: Suggestion: keep the state of a pressed key, and here, just release the one we pressed
 
 		unsigned note = identifyMidiByPosition(x,y);
-		_controlPiano->SetNoteStatus(note%12,false);
-		note += 21 + (_controlPiano->GetOctave()-1)*12;
-		MIDI::Message tmpMessage(128, note, _controlPiano->GetVelocity(), 0); //128 NoteOff, note, velocity
-		_controlPiano->SendMIDIMessage(tmpMessage);
+		noteOff(note);
 		update();
 		event->accept();
 	}
+}
+
+void MIDIPianoWidget::noteOn(unsigned note)
+{
+	_controlPiano->SetNoteStatus(note%12,true);
+
+	// TODO: Shouldn't the controlPiano be responsible of that?
+	unsigned midiNote = note + 21 + (_controlPiano->GetOctave()-1)*12;
+	//144 NoteOn, note, velocity
+	MIDI::Message tmpMessage(144, note, _controlPiano->GetVelocity(), 0);
+	_controlPiano->SendMIDIMessage(tmpMessage);
+}
+
+void MIDIPianoWidget::noteOff(unsigned note)
+{
+	_controlPiano->SetNoteStatus(note%12,false);
+
+	// TODO: Shouldn't the controlPiano be responsible of that?
+	unsigned midiNote = note + 21 + (_controlPiano->GetOctave()-1)*12;
+	//128 NoteOff, note, velocity
+	MIDI::Message tmpMessage(128, note, _controlPiano->GetVelocity(), 0);
+	_controlPiano->SendMIDIMessage(tmpMessage);
 }
 
 unsigned MIDIPianoWidget::identifyMidiByPosition(TSize x, TSize y)
